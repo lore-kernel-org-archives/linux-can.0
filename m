@@ -7,48 +7,49 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6FD9C432BE
-	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:12:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59D1DC4320A
+	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:12:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B531360F44
-	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:12:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3D5846008E
+	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 14:12:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234476AbhGZNcU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 26 Jul 2021 09:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53420 "EHLO
+        id S234513AbhGZNcX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 26 Jul 2021 09:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234410AbhGZNbi (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 26 Jul 2021 09:31:38 -0400
+        with ESMTP id S234679AbhGZNbz (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 26 Jul 2021 09:31:55 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A694FC061796
-        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 07:12:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10EC5C061388
+        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 07:12:14 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1m81Kv-00012m-3E
-        for linux-can@vger.kernel.org; Mon, 26 Jul 2021 16:12:05 +0200
+        id 1m81L2-0001JX-IP
+        for linux-can@vger.kernel.org; Mon, 26 Jul 2021 16:12:12 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 3B06E6581BD
-        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 14:11:55 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 33CF06581F7
+        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 14:12:03 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 178D0658161;
-        Mon, 26 Jul 2021 14:11:47 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3A6E365817E;
+        Mon, 26 Jul 2021 14:11:49 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2da52f5d;
-        Mon, 26 Jul 2021 14:11:45 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2415cfdd;
+        Mon, 26 Jul 2021 14:11:46 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: [PATCH net-next 06/46] can: j1939: j1939_xtp_rx_dat_one(): use separate pointer for session skb control buffer
-Date:   Mon, 26 Jul 2021 16:11:04 +0200
-Message-Id: <20210726141144.862529-7-mkl@pengutronix.de>
+        kernel@pengutronix.de, Faiz Abbas <faiz_abbas@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Rob Herring <robh@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 13/46] dt-bindings: net: can: Document transceiver implementation as phy
+Date:   Mon, 26 Jul 2021 16:11:11 +0200
+Message-Id: <20210726141144.862529-14-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210726141144.862529-1-mkl@pengutronix.de>
 References: <20210726141144.862529-1-mkl@pengutronix.de>
@@ -62,54 +63,39 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-In the j1939_xtp_rx_dat_one() function, there are 2 variables (skb and
-se_skb) holding a skb. The control buffer of the skbs is accessed one
-after the other, but using the same "skcb" variable.
+From: Faiz Abbas <faiz_abbas@ti.com>
 
-To avoid confusion introduce a new variable "se_skcb" to access the
-se_skb's control buffer as done in the rest of this file, too.
+Some transceivers need a configuration step (for example, pulling the
+standby or enable lines) for them to start sending messages. The
+transceiver can be implemented as a phy with the configuration done in
+the phy driver. The bit rate limitation can the be obtained by the
+driver using the phy node.
 
-Cc: Robin van der Gracht <robin@protonic.nl>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20210616102811.2449426-6-mkl@pengutronix.de
+Document the above implementation in the bosch mcan bindings.
+
+Link: https://lore.kernel.org/r/20210510052541.14168-2-a-govindraju@ti.com
+Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/j1939/transport.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ Documentation/devicetree/bindings/net/can/bosch,m_can.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 8de69c7681c4..efdf79de3db6 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -1771,7 +1771,7 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- 				 struct sk_buff *skb)
- {
- 	struct j1939_priv *priv = session->priv;
--	struct j1939_sk_buff_cb *skcb;
-+	struct j1939_sk_buff_cb *skcb, *se_skcb;
- 	struct sk_buff *se_skb = NULL;
- 	const u8 *dat;
- 	u8 *tpdat;
-@@ -1822,8 +1822,8 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- 		goto out_session_cancel;
- 	}
+diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+index f84e31348d80..a7b5807c5543 100644
+--- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
++++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+@@ -107,6 +107,9 @@ properties:
+   can-transceiver:
+     $ref: can-transceiver.yaml#
  
--	skcb = j1939_skb_to_cb(se_skb);
--	offset = packet * 7 - skcb->offset;
-+	se_skcb = j1939_skb_to_cb(se_skb);
-+	offset = packet * 7 - se_skcb->offset;
- 	nbytes = se_skb->len - offset;
- 	if (nbytes > 7)
- 		nbytes = 7;
-@@ -1851,7 +1851,7 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- 	if (packet == session->pkt.rx)
- 		session->pkt.rx++;
- 
--	if (skcb->addr.type != J1939_ETP &&
-+	if (se_skcb->addr.type != J1939_ETP &&
- 	    j1939_cb_is_broadcast(&session->skcb)) {
- 		if (session->pkt.rx >= session->pkt.total)
- 			final = true;
++  phys:
++    maxItems: 1
++
+ required:
+   - compatible
+   - reg
 -- 
 2.30.2
 
