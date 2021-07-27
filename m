@@ -2,84 +2,84 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72C21C4320A
-	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 22:46:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDA69C4338F
+	for <linux-can@archiver.kernel.org>; Tue, 27 Jul 2021 01:59:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5328A60F6B
-	for <linux-can@archiver.kernel.org>; Mon, 26 Jul 2021 22:46:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B4E8360F55
+	for <linux-can@archiver.kernel.org>; Tue, 27 Jul 2021 01:59:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232876AbhGZWGQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 26 Jul 2021 18:06:16 -0400
-Received: from mail-il1-f176.google.com ([209.85.166.176]:35771 "EHLO
-        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231502AbhGZWGP (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 26 Jul 2021 18:06:15 -0400
-Received: by mail-il1-f176.google.com with SMTP id k3so10492186ilu.2;
-        Mon, 26 Jul 2021 15:46:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3xQehkSUJPoWNPYuDHJm1QnxjcYyWYFk9UbyBzQlc28=;
-        b=fiijZC/uKm17ruX5yeL4b8mkP7HSZWI78K5MdxUImiqNRM+x/JObPWQsZDX6Y95E2t
-         G+M7fNQ71KmFmttjHwUaa5D1rW9aDBhZSAMCiNw0ZKKfbmxhSwaaGPib4TWZa3LkjrjR
-         aN0fmB77OisEHPypC7KFBNLWWtVj5daFldLFfyEmVhO39NDQQsAen/5CtnhhffZ3zVaV
-         AKs68xfBy+AkU4EECUP1y5LRNyGXila3zAqqvtzPPLo1EQyAM/425pvCVfGdDJygrdEs
-         aZIfaZLEPwzrmsBrOqE4+I3rzTp04wiESmLkDi80tnQd6oR+jQGtlG3Ls+jbuAez0tOK
-         yP7A==
-X-Gm-Message-State: AOAM530ObspJxoMW4zGdbvI+JQICx5VSIuCIaaGkK4F2aDO5F6lxa20g
-        dO192m3hN91lRZjVE7rSyg==
-X-Google-Smtp-Source: ABdhPJwDc13JBpgUC2buiYv21chtkxuE8Z5+P9ZXkwf8q5nqGwMPgfEfdyvXy6GjrwD0UXaAVbnaFA==
-X-Received: by 2002:a92:cf42:: with SMTP id c2mr14412234ilr.138.1627339602803;
-        Mon, 26 Jul 2021 15:46:42 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id b8sm605563ilh.74.2021.07.26.15.46.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 15:46:42 -0700 (PDT)
-Received: (nullmailer pid 1016217 invoked by uid 1000);
-        Mon, 26 Jul 2021 22:46:40 -0000
-Date:   Mon, 26 Jul 2021 16:46:40 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        devicetree@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] dt-bindings: net: can: renesas,rcar-canfd:
- Document RZ/G2L SoC
-Message-ID: <20210726224640.GA1016160@robh.at.kernel.org>
-References: <20210721194951.30983-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210721194951.30983-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S233727AbhG0BTU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 26 Jul 2021 21:19:20 -0400
+Received: from h4.fbrelay.privateemail.com ([131.153.2.45]:55794 "EHLO
+        h4.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233249AbhG0BTT (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 26 Jul 2021 21:19:19 -0400
+Received: from MTA-08-3.privateemail.com (mta-08-1.privateemail.com [68.65.122.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by h3.fbrelay.privateemail.com (Postfix) with ESMTPS id 9EE1380090
+        for <linux-can@vger.kernel.org>; Mon, 26 Jul 2021 21:59:46 -0400 (EDT)
+Received: from mta-08.privateemail.com (localhost [127.0.0.1])
+        by mta-08.privateemail.com (Postfix) with ESMTP id 60EB218000A2;
+        Mon, 26 Jul 2021 21:59:45 -0400 (EDT)
+Received: from localhost.localdomain (unknown [10.20.151.244])
+        by mta-08.privateemail.com (Postfix) with ESMTPA id F403B1800183;
+        Mon, 26 Jul 2021 21:59:44 -0400 (EDT)
+From:   Matt Kline <matt@bitbashing.io>
+To:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Matt Kline <matt@bitbashing.io>, linux-can@vger.kernel.org
+Subject: [PATCH v2 0/2] can: m_can: Merge FIFO ops to increase throughput
+Date:   Mon, 26 Jul 2021 18:58:53 -0700
+Message-Id: <20210727015855.17482-1-matt@bitbashing.io>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210721194951.30983-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Wed, 21 Jul 2021 20:49:49 +0100, Lad Prabhakar wrote:
-> Add CANFD binding documentation for Renesas RZ/G2L SoC.
-> 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  .../bindings/net/can/renesas,rcar-canfd.yaml  | 69 +++++++++++++++++--
->  1 file changed, 63 insertions(+), 6 deletions(-)
-> 
+While debugging low throughput on a tcan4x5x chip using a logic
+analyzer, I found that the SPI bus is silent for the *vast* majority of
+time spent sending or receiving a CAN frame.
+Each SPI transfer takes ~5 microseconds, but there's an order of
+magnitude more time (50-60 microseconds) between them. This doesn't seem
+to be caused by any sort of contention - it happens on a SPI bus with a
+single chip select and no other drivers accessing it. Presumably there's
+a (relatively) large fixed cost to request a transfer from the SPI
+controller on the hardware I'm using (an NVIDIA Jetson platform).
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Let's improve throughput by combining FIFO reads and writes into larger
+transfers - one for ID & DLC, one for the frame data - instead of
+handling single words at a time. We could reduce the number of transfers
+further by batching certain control register reads, but this is an easy
+place to start, since FIFO registers are contiguous.
+
+Since TX and RX time is dominated by the fixed, per-transfer delays
+mentioned above, this nets substantial performance improvements - about
+20% faster for small CAN frames and nearly 5x faster for max size
+(64 byte) CAN FD frames.
+
+This is a resend of a previous patch set, updated to use FIELD_PREP()
+and friends - I fear the first one got eaten by a spam filter due to
+some SMTP flub on my end.
+
+Matt Kline (2):
+  can: m_can: Batch FIFO reads during CAN receive
+  can: m_can: Batch FIFO writes during CAN transmit
+
+ drivers/net/can/m_can/m_can.c          | 80 +++++++++++++-------------
+ drivers/net/can/m_can/m_can.h          |  4 +-
+ drivers/net/can/m_can/m_can_pci.c      | 11 ++--
+ drivers/net/can/m_can/m_can_platform.c | 11 ++--
+ drivers/net/can/m_can/tcan4x5x-core.c  | 12 ++--
+ 5 files changed, 61 insertions(+), 57 deletions(-)
+
+-- 
+2.32.0
+
