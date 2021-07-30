@@ -7,47 +7,48 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03E09C4338F
-	for <linux-can@archiver.kernel.org>; Fri, 30 Jul 2021 07:05:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18448C43214
+	for <linux-can@archiver.kernel.org>; Fri, 30 Jul 2021 07:05:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D797660FE7
-	for <linux-can@archiver.kernel.org>; Fri, 30 Jul 2021 07:05:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0476560F48
+	for <linux-can@archiver.kernel.org>; Fri, 30 Jul 2021 07:05:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237773AbhG3HFm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 30 Jul 2021 03:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42738 "EHLO
+        id S237817AbhG3HFn (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 30 Jul 2021 03:05:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237749AbhG3HFl (ORCPT
+        with ESMTP id S237767AbhG3HFl (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Fri, 30 Jul 2021 03:05:41 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA97C0613C1
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E0EC061765
         for <linux-can@vger.kernel.org>; Fri, 30 Jul 2021 00:05:37 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1m9MaN-00064C-Bz
+        id 1m9MaN-00065M-TN
         for linux-can@vger.kernel.org; Fri, 30 Jul 2021 09:05:35 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 03AD265B7B4
+        by bjornoya.blackshift.org (Postfix) with SMTP id 6820265B7BB
         for <linux-can@vger.kernel.org>; Fri, 30 Jul 2021 07:05:31 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 01B3365B792;
-        Fri, 30 Jul 2021 07:05:28 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 42C1C65B797;
+        Fri, 30 Jul 2021 07:05:29 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 57122f2c;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ff6d0469;
         Fri, 30 Jul 2021 07:05:28 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Dan Carpenter <dan.carpenter@oracle.com>,
+        kernel@pengutronix.de, Pavel Skripkin <paskripkin@gmail.com>,
+        linux-stable <stable@vger.kernel.org>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 2/6] can: hi311x: fix a signedness bug in hi3110_cmd()
-Date:   Fri, 30 Jul 2021 09:05:22 +0200
-Message-Id: <20210730070526.1699867-3-mkl@pengutronix.de>
+Subject: [PATCH net 4/6] can: usb_8dev: fix memory leak
+Date:   Fri, 30 Jul 2021 09:05:24 +0200
+Message-Id: <20210730070526.1699867-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210730070526.1699867-1-mkl@pengutronix.de>
 References: <20210730070526.1699867-1-mkl@pengutronix.de>
@@ -61,32 +62,93 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-The hi3110_cmd() is supposed to return zero on success and negative
-error codes on failure, but it was accidentally declared as a u8 when
-it needs to be an int type.
+In usb_8dev_start() MAX_RX_URBS coherent buffers are allocated and
+there is nothing, that frees them:
 
-Fixes: 57e83fb9b746 ("can: hi311x: Add Holt HI-311x CAN driver")
-Link: https://lore.kernel.org/r/20210729141246.GA1267@kili
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+1) In callback function the urb is resubmitted and that's all
+2) In disconnect function urbs are simply killed, but URB_FREE_BUFFER
+   is not set (see usb_8dev_start) and this flag cannot be used with
+   coherent buffers.
+
+So, all allocated buffers should be freed with usb_free_coherent()
+explicitly.
+
+Side note: This code looks like a copy-paste of other can drivers. The
+same patch was applied to mcba_usb driver and it works nice with real
+hardware. There is no change in functionality, only clean-up code for
+coherent buffers.
+
+Fixes: 0024d8ad1639 ("can: usb_8dev: Add support for USB2CAN interface from 8 devices")
+Link: https://lore.kernel.org/r/d39b458cd425a1cf7f512f340224e6e9563b07bd.1627404470.git.paskripkin@gmail.com
+Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/hi311x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/usb/usb_8dev.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
-index dd17b8c53e1c..89d9c986a229 100644
---- a/drivers/net/can/spi/hi311x.c
-+++ b/drivers/net/can/spi/hi311x.c
-@@ -218,7 +218,7 @@ static int hi3110_spi_trans(struct spi_device *spi, int len)
- 	return ret;
- }
+diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
+index b6e7ef0d5bc6..d1b83bd1b3cb 100644
+--- a/drivers/net/can/usb/usb_8dev.c
++++ b/drivers/net/can/usb/usb_8dev.c
+@@ -137,7 +137,8 @@ struct usb_8dev_priv {
+ 	u8 *cmd_msg_buffer;
  
--static u8 hi3110_cmd(struct spi_device *spi, u8 command)
-+static int hi3110_cmd(struct spi_device *spi, u8 command)
- {
- 	struct hi3110_priv *priv = spi_get_drvdata(spi);
+ 	struct mutex usb_8dev_cmd_lock;
+-
++	void *rxbuf[MAX_RX_URBS];
++	dma_addr_t rxbuf_dma[MAX_RX_URBS];
+ };
+ 
+ /* tx frame */
+@@ -733,6 +734,7 @@ static int usb_8dev_start(struct usb_8dev_priv *priv)
+ 	for (i = 0; i < MAX_RX_URBS; i++) {
+ 		struct urb *urb = NULL;
+ 		u8 *buf;
++		dma_addr_t buf_dma;
+ 
+ 		/* create a URB, and a buffer for it */
+ 		urb = usb_alloc_urb(0, GFP_KERNEL);
+@@ -742,7 +744,7 @@ static int usb_8dev_start(struct usb_8dev_priv *priv)
+ 		}
+ 
+ 		buf = usb_alloc_coherent(priv->udev, RX_BUFFER_SIZE, GFP_KERNEL,
+-					 &urb->transfer_dma);
++					 &buf_dma);
+ 		if (!buf) {
+ 			netdev_err(netdev, "No memory left for USB buffer\n");
+ 			usb_free_urb(urb);
+@@ -750,6 +752,8 @@ static int usb_8dev_start(struct usb_8dev_priv *priv)
+ 			break;
+ 		}
+ 
++		urb->transfer_dma = buf_dma;
++
+ 		usb_fill_bulk_urb(urb, priv->udev,
+ 				  usb_rcvbulkpipe(priv->udev,
+ 						  USB_8DEV_ENDP_DATA_RX),
+@@ -767,6 +771,9 @@ static int usb_8dev_start(struct usb_8dev_priv *priv)
+ 			break;
+ 		}
+ 
++		priv->rxbuf[i] = buf;
++		priv->rxbuf_dma[i] = buf_dma;
++
+ 		/* Drop reference, USB core will take care of freeing it */
+ 		usb_free_urb(urb);
+ 	}
+@@ -836,6 +843,10 @@ static void unlink_all_urbs(struct usb_8dev_priv *priv)
+ 
+ 	usb_kill_anchored_urbs(&priv->rx_submitted);
+ 
++	for (i = 0; i < MAX_RX_URBS; ++i)
++		usb_free_coherent(priv->udev, RX_BUFFER_SIZE,
++				  priv->rxbuf[i], priv->rxbuf_dma[i]);
++
+ 	usb_kill_anchored_urbs(&priv->tx_submitted);
+ 	atomic_set(&priv->active_tx_urbs, 0);
  
 -- 
 2.30.2
