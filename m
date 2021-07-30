@@ -7,50 +7,48 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ABD4DC4320E
-	for <linux-can@archiver.kernel.org>; Fri, 30 Jul 2021 07:05:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42453C4320A
+	for <linux-can@archiver.kernel.org>; Fri, 30 Jul 2021 07:05:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8C7C860FE7
-	for <linux-can@archiver.kernel.org>; Fri, 30 Jul 2021 07:05:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2E00E60FED
+	for <linux-can@archiver.kernel.org>; Fri, 30 Jul 2021 07:05:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237775AbhG3HFp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 30 Jul 2021 03:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42758 "EHLO
+        id S237910AbhG3HFu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 30 Jul 2021 03:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237806AbhG3HFm (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 30 Jul 2021 03:05:42 -0400
+        with ESMTP id S237832AbhG3HFn (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 30 Jul 2021 03:05:43 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05C9C061796
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B28C06179B
         for <linux-can@vger.kernel.org>; Fri, 30 Jul 2021 00:05:38 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1m9MaO-00065v-W9
+        id 1m9MaP-00066d-AL
         for linux-can@vger.kernel.org; Fri, 30 Jul 2021 09:05:37 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 5A4FA65B7C2
+        by bjornoya.blackshift.org (Postfix) with SMTP id D39F265B7C6
         for <linux-can@vger.kernel.org>; Fri, 30 Jul 2021 07:05:32 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 18C3165B794;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 908F465B79C;
         Fri, 30 Jul 2021 07:05:29 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f8636b5d;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id a61cec51;
         Fri, 30 Jul 2021 07:05:28 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Pavel Skripkin <paskripkin@gmail.com>,
         linux-stable <stable@vger.kernel.org>,
-        Yasushi SHOJI <yasushi.shoji@gmail.com>,
-        Yasushi SHOJI <yashi@spacecubics.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 3/6] can: mcba_usb_start(): add missing urb->transfer_dma initialization
-Date:   Fri, 30 Jul 2021 09:05:23 +0200
-Message-Id: <20210730070526.1699867-4-mkl@pengutronix.de>
+Subject: [PATCH net 6/6] can: esd_usb2: fix memory leak
+Date:   Fri, 30 Jul 2021 09:05:26 +0200
+Message-Id: <20210730070526.1699867-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210730070526.1699867-1-mkl@pengutronix.de>
 References: <20210730070526.1699867-1-mkl@pengutronix.de>
@@ -66,50 +64,95 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Pavel Skripkin <paskripkin@gmail.com>
 
-Yasushi reported, that his Microchip CAN Analyzer stopped working
-since commit 91c02557174b ("can: mcba_usb: fix memory leak in
-mcba_usb"). The problem was in missing urb->transfer_dma
-initialization.
+In esd_usb2_setup_rx_urbs() MAX_RX_URBS coherent buffers are allocated
+and there is nothing, that frees them:
 
-In my previous patch to this driver I refactored mcba_usb_start() code
-to avoid leaking usb coherent buffers. To archive it, I passed local
-stack variable to usb_alloc_coherent() and then saved it to private
-array to correctly free all coherent buffers on ->close() call. But I
-forgot to initialize urb->transfer_dma with variable passed to
-usb_alloc_coherent().
+1) In callback function the urb is resubmitted and that's all
+2) In disconnect function urbs are simply killed, but URB_FREE_BUFFER
+   is not set (see esd_usb2_setup_rx_urbs) and this flag cannot be used
+   with coherent buffers.
 
-All of this was causing device to not work, since dma addr 0 is not
-valid and following log can be found on bug report page, which points
-exactly to problem described above.
+So, all allocated buffers should be freed with usb_free_coherent()
+explicitly.
 
-| DMAR: [DMA Write] Request device [00:14.0] PASID ffffffff fault addr 0 [fault reason 05] PTE Write access is not set
+Side note: This code looks like a copy-paste of other can drivers. The
+same patch was applied to mcba_usb driver and it works nice with real
+hardware. There is no change in functionality, only clean-up code for
+coherent buffers.
 
-Fixes: 91c02557174b ("can: mcba_usb: fix memory leak in mcba_usb")
-Link: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=990850
-Link: https://lore.kernel.org/r/20210725103630.23864-1-paskripkin@gmail.com
+Fixes: 96d8e90382dc ("can: Add driver for esd CAN-USB/2 device")
+Link: https://lore.kernel.org/r/b31b096926dcb35998ad0271aac4b51770ca7cc8.1627404470.git.paskripkin@gmail.com
 Cc: linux-stable <stable@vger.kernel.org>
-Reported-by: Yasushi SHOJI <yasushi.shoji@gmail.com>
 Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Tested-by: Yasushi SHOJI <yashi@spacecubics.com>
-[mkl: fixed typos in commit message - thanks Yasushi SHOJI]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/mcba_usb.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/can/usb/esd_usb2.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
-index a45865bd7254..a1a154c08b7f 100644
---- a/drivers/net/can/usb/mcba_usb.c
-+++ b/drivers/net/can/usb/mcba_usb.c
-@@ -653,6 +653,8 @@ static int mcba_usb_start(struct mcba_priv *priv)
- 			break;
+diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd_usb2.c
+index 65b58f8fc328..66fa8b07c2e6 100644
+--- a/drivers/net/can/usb/esd_usb2.c
++++ b/drivers/net/can/usb/esd_usb2.c
+@@ -195,6 +195,8 @@ struct esd_usb2 {
+ 	int net_count;
+ 	u32 version;
+ 	int rxinitdone;
++	void *rxbuf[MAX_RX_URBS];
++	dma_addr_t rxbuf_dma[MAX_RX_URBS];
+ };
+ 
+ struct esd_usb2_net_priv {
+@@ -545,6 +547,7 @@ static int esd_usb2_setup_rx_urbs(struct esd_usb2 *dev)
+ 	for (i = 0; i < MAX_RX_URBS; i++) {
+ 		struct urb *urb = NULL;
+ 		u8 *buf = NULL;
++		dma_addr_t buf_dma;
+ 
+ 		/* create a URB, and a buffer for it */
+ 		urb = usb_alloc_urb(0, GFP_KERNEL);
+@@ -554,7 +557,7 @@ static int esd_usb2_setup_rx_urbs(struct esd_usb2 *dev)
+ 		}
+ 
+ 		buf = usb_alloc_coherent(dev->udev, RX_BUFFER_SIZE, GFP_KERNEL,
+-					 &urb->transfer_dma);
++					 &buf_dma);
+ 		if (!buf) {
+ 			dev_warn(dev->udev->dev.parent,
+ 				 "No memory left for USB buffer\n");
+@@ -562,6 +565,8 @@ static int esd_usb2_setup_rx_urbs(struct esd_usb2 *dev)
+ 			goto freeurb;
  		}
  
 +		urb->transfer_dma = buf_dma;
 +
- 		usb_fill_bulk_urb(urb, priv->udev,
- 				  usb_rcvbulkpipe(priv->udev, MCBA_USB_EP_IN),
- 				  buf, MCBA_USB_RX_BUFF_SIZE,
+ 		usb_fill_bulk_urb(urb, dev->udev,
+ 				  usb_rcvbulkpipe(dev->udev, 1),
+ 				  buf, RX_BUFFER_SIZE,
+@@ -574,8 +579,12 @@ static int esd_usb2_setup_rx_urbs(struct esd_usb2 *dev)
+ 			usb_unanchor_urb(urb);
+ 			usb_free_coherent(dev->udev, RX_BUFFER_SIZE, buf,
+ 					  urb->transfer_dma);
++			goto freeurb;
+ 		}
+ 
++		dev->rxbuf[i] = buf;
++		dev->rxbuf_dma[i] = buf_dma;
++
+ freeurb:
+ 		/* Drop reference, USB core will take care of freeing it */
+ 		usb_free_urb(urb);
+@@ -663,6 +672,11 @@ static void unlink_all_urbs(struct esd_usb2 *dev)
+ 	int i, j;
+ 
+ 	usb_kill_anchored_urbs(&dev->rx_submitted);
++
++	for (i = 0; i < MAX_RX_URBS; ++i)
++		usb_free_coherent(dev->udev, RX_BUFFER_SIZE,
++				  dev->rxbuf[i], dev->rxbuf_dma[i]);
++
+ 	for (i = 0; i < dev->net_count; i++) {
+ 		priv = dev->nets[i];
+ 		if (priv) {
 -- 
 2.30.2
 
