@@ -2,36 +2,38 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E06ECC4338F
-	for <linux-can@archiver.kernel.org>; Mon,  2 Aug 2021 10:29:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC425C4338F
+	for <linux-can@archiver.kernel.org>; Mon,  2 Aug 2021 10:41:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C173B60F5A
-	for <linux-can@archiver.kernel.org>; Mon,  2 Aug 2021 10:29:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BDC0860E76
+	for <linux-can@archiver.kernel.org>; Mon,  2 Aug 2021 10:41:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232056AbhHBK3m (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 2 Aug 2021 06:29:42 -0400
-Received: from rspamd-proxy-01.udag.de ([62.146.106.33]:51998 "EHLO
-        smtp02-ext3.udag.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231357AbhHBK3l (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 2 Aug 2021 06:29:41 -0400
+        id S233207AbhHBKlZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 2 Aug 2021 06:41:25 -0400
+Received: from smtp03-ext2.udag.de ([62.146.106.30]:50028 "EHLO
+        smtp03-ext2.udag.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231854AbhHBKlY (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 2 Aug 2021 06:41:24 -0400
 Received: from NBVM2-TW.fritz.box (p54b8ff0e.dip0.t-ipconnect.de [84.184.255.14])
-        by smtp02-ext3.udag.de (Postfix) with ESMTPA id 1DD02E03ED;
-        Mon,  2 Aug 2021 12:29:31 +0200 (CEST)
+        by smtp03-ext2.udag.de (Postfix) with ESMTPA id 5E20DE012C;
+        Mon,  2 Aug 2021 12:41:14 +0200 (CEST)
 From:   Thomas Wagner <thomas@the-wagner.de>
 To:     mkl@pengutronix.de
 Cc:     linux-can@vger.kernel.org, Thomas Wagner <thomas@the-wagner.de>
-Subject: [PATCH] can: Documentation: Sending with canfd_frame on a CAN 2.0 interface
-Date:   Mon,  2 Aug 2021 12:28:53 +0200
-Message-Id: <20210802102853.29308-1-thomas@the-wagner.de>
+Subject: [PATCH v2] can: Documentation: Sending with canfd_frame on a CAN 2.0 interface
+Date:   Mon,  2 Aug 2021 12:40:48 +0200
+Message-Id: <20210802104048.32007-1-thomas@the-wagner.de>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210802102853.29308-1-thomas@the-wagner.de>
+References: <20210802102853.29308-1-thomas@the-wagner.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp02-ext3.udag.de;
+Authentication-Results: smtp03-ext2.udag.de;
         auth=pass smtp.auth=thomas@the-wagner.de smtp.mailfrom=thomas@the-wagner.de
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
@@ -45,14 +47,14 @@ when the interface is configured as CAN 2.0.
 
 Signed-off-by: Thomas Wagner <thomas@the-wagner.de>
 ---
- Documentation/networking/can.rst | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ Documentation/networking/can.rst | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
-index f34cb0e4460e..af94ece79d5e 100644
+index f34cb0e4460e..ac3fe948c888 100644
 --- a/Documentation/networking/can.rst
 +++ b/Documentation/networking/can.rst
-@@ -675,6 +675,20 @@ When sending to CAN devices make sure that the device is capable to handle
+@@ -675,6 +675,17 @@ When sending to CAN devices make sure that the device is capable to handle
  CAN FD frames by checking if the device maximum transfer unit is CANFD_MTU.
  The CAN device MTU can be retrieved e.g. with a SIOCGIFMTU ioctl() syscall.
  
@@ -61,15 +63,12 @@ index f34cb0e4460e..af94ece79d5e 100644
 +this case the canfd_frame struct can still be used, but when writing to
 +the socket write CAN_MTU bytes at most to send a CAN 2.0 frame.
 +
-+In conclusion:
++In conclusion, to handle devices with and without CAN FD and with
++interfaces configured as CAN 2.0 or CAN FD:
 +- Set the CAN_RAW_FD_FRAMES flag and ignore the error on older kernels
 +- Send and receive using the canfd_frame struct
 +- Check the bytes received to know, whether you got an CAN 2.0 or FD frame
-+- Check the devices MTU to know, whether you can send CAN 2.0 or FD frame
-+
-+Building your application using always the canfd_frame, setting the  this enables it to run on devices with and
-+without CAN FD hardware. It also handles the possibility of interfaces that
-+are configured as CAN 2.0 or CAN FD on CAN FD hardware.
++- Check the devices MTU to know, whether you can send CAN 2.0 or FD frames
  
  RAW socket option CAN_RAW_JOIN_FILTERS
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
