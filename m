@@ -2,41 +2,41 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CCB0C432BE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7D33C4320A
 	for <linux-can@archiver.kernel.org>; Thu,  5 Aug 2021 20:19:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 024F161052
-	for <linux-can@archiver.kernel.org>; Thu,  5 Aug 2021 20:19:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C688D61104
+	for <linux-can@archiver.kernel.org>; Thu,  5 Aug 2021 20:19:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240545AbhHEUTf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 5 Aug 2021 16:19:35 -0400
-Received: from smtp-32-i2.italiaonline.it ([213.209.12.32]:41649 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233187AbhHEUTe (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        id S240738AbhHEUTg (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 5 Aug 2021 16:19:36 -0400
+Received: from smtp-32.italiaonline.it ([213.209.10.32]:47044 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231529AbhHEUTe (ORCPT <rfc822;linux-can@vger.kernel.org>);
         Thu, 5 Aug 2021 16:19:34 -0400
 Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
  ([82.60.87.158])
         by smtp-32.iol.local with ESMTPA
-        id BjpbmFmMJPvRTBjplmCR7a; Thu, 05 Aug 2021 22:19:17 +0200
+        id BjpbmFmMJPvRTBjpjmCR6f; Thu, 05 Aug 2021 22:19:15 +0200
 x-libjamoibt: 1601
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1628194757; bh=O1QnmgYuLq0RV5WI5jlMHSosfYkPhTOyibvW1Bj0kS4=;
+        t=1628194755; bh=h42hvfOsVcsxyMi5VYbK7VWGEQ0NFsL2rgTVmpybmxg=;
         h=From;
-        b=ttNtq5jMfL2Gx7rwXoBc3nHieLUDmVjZpntzO1S6SrI/cN7Jw3zLLKj43RgAE/jPq
-         YrOa9sHeh9MxaREdcpWqvq7VGAWDfLUlobGpDmkJBhgGns2X1qG6q6CHTrXobvWEpo
-         yhr6QEp1b30yICI/W00+vgGCRrmV/PxosNl377jc1WCUsH06Fu6hFSmjm7a2GszM/H
-         E97IKLrISlbOx24JW9YC5ILJO0lRFxoUeeqFm9zqkxDVhs/3OfN2bNo8M/Y5JuSudN
-         vDBnqfVO6TREKVigSFOV9CdYiCgBb5IPLwkQBVA4QKDyBjvpdi/uAdi3d1VXfV7Foc
-         uJMsl6m+2tQ9Q==
-X-CNFS-Analysis: v=2.4 cv=NqgUz+RJ c=1 sm=1 tr=0 ts=610c47c5 cx=a_exe
+        b=vsUir8SH70yeB1CULxIG31kcj3kpeUJornMCqxizuthopgAdPDu5b3i6DBverhNyH
+         BeUqXsxjXGX7HTA2tdS96xsBP5EY5FGjnoA6xa+JreO4FeOlhAfHuJr0mzPyF7UcVa
+         uRfQinRFGTk6ksrYYAEiu+Hj4fkczIwgNzRhPaLMr/SQWltGk26DRGJ8y3namTpOKU
+         tp7D+me/1WJ4Nw9ms5otPYffa9uQB/cwwuBUOD7FGOaA40xPOJIBCYnI2ihVbD1tyt
+         a5p32ltT5OzAuWL/xZmvwE26af7zpD0N20wgjVDirZLoj2nyi3jjaeID89l/cerRn7
+         Mxcgo0tvBVxcA==
+X-CNFS-Analysis: v=2.4 cv=NqgUz+RJ c=1 sm=1 tr=0 ts=610c47c3 cx=a_exe
  a=Hc/BMeSBGyun2kpB8NmEvQ==:117 a=Hc/BMeSBGyun2kpB8NmEvQ==:17
- a=ZFJuXQVxYH-b9Oyd0qwA:9 a=tJrzBPmp90lbkl8h:21 a=oRvS3CD4wq6ZzAfR:21
+ a=TSeAaTSCjiJB7GOU1roA:9
 From:   Dario Binacchi <dariobin@libero.it>
 To:     linux-kernel@vger.kernel.org
 Cc:     Gianluca Falavigna <gianluca.falavigna@inwind.it>,
@@ -45,158 +45,59 @@ Cc:     Gianluca Falavigna <gianluca.falavigna@inwind.it>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Tong Zhang <ztong0001@gmail.com>,
         Wolfgang Grandegger <wg@grandegger.com>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH v2 4/4] can: c_can: cache frames to operate as a true FIFO
-Date:   Thu,  5 Aug 2021 22:19:00 +0200
-Message-Id: <20210805201900.23146-5-dariobin@libero.it>
+Subject: [PATCH v2 1/4] can: c_can: remove struct c_can_priv::priv field
+Date:   Thu,  5 Aug 2021 22:18:57 +0200
+Message-Id: <20210805201900.23146-2-dariobin@libero.it>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210805201900.23146-1-dariobin@libero.it>
 References: <20210805201900.23146-1-dariobin@libero.it>
-X-CMAE-Envelope: MS4xfMd/kipo7WS1oFEKqlxgX+Gf8PTTvmgGAO8lLxLhGsW6s/b/XUEoNz2+0lw+zLplb5i5CpGrKTicE0YYMgmahSmnCSnyzLfbp/dGYvMA9lxIx9Ny/geN
- w3OjHfp7ztFD7UsBcW137ADDGznB3gSr2vWfgTtTuPMTwUcg0Ab2HQX4VQIAVGE0SFT0Le9Kflkhy8hbL1CXIvcmkujtXwuAWrdiPTnZzDzgDHidkVahP+Rp
- oDDN/S2oqt6wVjWiz4ZHcOM/dJv8lCqjtyxVj0lCPN9hAo2VgKj01sfsQ0mKxxUxUnMd4H+qP7yIcUrE8ekfwtH/cfcJoPn6XrJfbG3u/PVIjp6Xnd4/pL/8
- TTAQjDm6TiKoPFbG1JU4yTg6KzN5hyeHdP8aLoMRHzYtH5BZG+YqB2Vr2xtPw3ogl/D5YJlGpMRSZ6SJ4zvv3ku5HCnPQIcVrw5e68K0DW3i4Btfkm8LFZ7B
- 8RQOSre1PcYzTpt+UIcipmN6SRXIjw87gIeDvDQS+1yKeGfrEvavdgpz5qdEVZhNUyE8pIwhVN31rCj4gN/CqiWpPdJeUSkbVeNViLf75WM0Klbf6kDg3+mM
- piY=
+X-CMAE-Envelope: MS4xfCg1RXEu0dWcrSBgjc5/KTJJ/xciA6R3hLC+jW98EiEq2B915oF8B7RSauQE0FQbJleLtOObl4uXSbCBcJ6aIB4+E2jEPDbL2M0vc8VoS/Lqp6n1pQG6
+ VJsbBOqDAsVjoGJsnHLI+RJPcM4sI18h88z81cN0UXjwNyU5x1eLrmC2httY5cTRZs/1/QP9lmTx9fidcEybM7UH0gPEIeuEBgKWbs+XyJZq7fjwdy4C8xmS
+ l0ILuG1OoVfsjJOjmfZsEFX96C0Iq3/Vw3gwS70oV+2ZDkRsPrkajlqmqlf1WF+KSqqK5hxFFxS86hMFmpYqVxg4DBCR4tDp1Bd60iIQiV7RlT+PbT/25CPm
+ VFl604m1n6zP7MthNcceRsoZ4BofmJ9E/Mn1z5/5oy52e6ch1CoUMdRCb/5gEakXL9XaPFQMoAzZaN2T24wX/GWk3fDFu4SZa6pZOJaYEvlRwsF2a9j0gblY
+ 31/3aaEeGgjWTg0AOAbfZgf7jX6PPf/qEAiPUPP6mS5bikw4BvYtBesFQI+A+VCuV8z2M85JMR8I2+C9
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-As reported by a comment in the c_can_start_xmit() this was not a FIFO.
-C/D_CAN controller sends out the buffers prioritized so that the lowest
-buffer number wins.
+It references the clock but it is never used. So let's remove it.
 
-What did c_can_start_xmit() do if head was less tail in the tx ring ? It
-waited until all the frames queued in the FIFO was actually transmitted
-by the controller before accepting a new CAN frame to transmit, even if
-the FIFO was not full, to ensure that the messages were transmitted in
-the order in which they were loaded.
-
-By storing the frames in the FIFO without requiring its transmission, we
-will be able to use the full size of the FIFO even in cases such as the
-one described above. The transmission interrupt will trigger their
-transmission only when all the messages previously loaded but stored in
-less priority positions of the buffers have been transmitted.
-
-Suggested-by: Gianluca Falavigna <gianluca.falavigna@inwind.it>
 Signed-off-by: Dario Binacchi <dariobin@libero.it>
-
 ---
 
 (no changes since v1)
 
- drivers/net/can/c_can/c_can.h      | 12 ++----------
- drivers/net/can/c_can/c_can_main.c | 28 ++++++++++++++++++++++++----
- 2 files changed, 26 insertions(+), 14 deletions(-)
+ drivers/net/can/c_can/c_can.h          | 1 -
+ drivers/net/can/c_can/c_can_platform.c | 1 -
+ 2 files changed, 2 deletions(-)
 
 diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-index 9b4e54c950a6..fc499a70b797 100644
+index 4247ff80a29c..8f23e9c83c84 100644
 --- a/drivers/net/can/c_can/c_can.h
 +++ b/drivers/net/can/c_can/c_can.h
-@@ -200,6 +200,7 @@ struct c_can_priv {
- 	atomic_t sie_pending;
- 	unsigned long tx_dir;
- 	int last_status;
-+	spinlock_t tx_lock;
- 	struct c_can_tx_ring tx;
- 	u16 (*read_reg)(const struct c_can_priv *priv, enum reg index);
- 	void (*write_reg)(const struct c_can_priv *priv, enum reg index, u16 val);
-@@ -238,16 +239,7 @@ static inline u8 c_can_get_tx_tail(const struct c_can_tx_ring *ring)
+@@ -200,7 +200,6 @@ struct c_can_priv {
+ 	void (*write_reg32)(const struct c_can_priv *priv, enum reg index, u32 val);
+ 	void __iomem *base;
+ 	const u16 *regs;
+-	void *priv;		/* for board-specific data */
+ 	enum c_can_dev_id type;
+ 	struct c_can_raminit raminit_sys;	/* RAMINIT via syscon regmap */
+ 	void (*raminit)(const struct c_can_priv *priv, bool enable);
+diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+index 36950363682f..86e95e9d6533 100644
+--- a/drivers/net/can/c_can/c_can_platform.c
++++ b/drivers/net/can/c_can/c_can_platform.c
+@@ -385,7 +385,6 @@ static int c_can_plat_probe(struct platform_device *pdev)
+ 	priv->base = addr;
+ 	priv->device = &pdev->dev;
+ 	priv->can.clock.freq = clk_get_rate(clk);
+-	priv->priv = clk;
+ 	priv->type = drvdata->id;
  
- static inline u8 c_can_get_tx_free(const struct c_can_tx_ring *ring)
- {
--	u8 head = c_can_get_tx_head(ring);
--	u8 tail = c_can_get_tx_tail(ring);
--
--	/* This is not a FIFO. C/D_CAN sends out the buffers
--	 * prioritized. The lowest buffer number wins.
--	 */
--	if (head < tail)
--		return 0;
--
--	return ring->obj_num - head;
-+	return ring->obj_num - (ring->head - ring->tail);
- }
- 
- #endif /* C_CAN_H */
-diff --git a/drivers/net/can/c_can/c_can_main.c b/drivers/net/can/c_can/c_can_main.c
-index 80a6196a8d7a..4c061fef002c 100644
---- a/drivers/net/can/c_can/c_can_main.c
-+++ b/drivers/net/can/c_can/c_can_main.c
-@@ -456,7 +456,7 @@ static netdev_tx_t c_can_start_xmit(struct sk_buff *skb,
- 	struct can_frame *frame = (struct can_frame *)skb->data;
- 	struct c_can_priv *priv = netdev_priv(dev);
- 	struct c_can_tx_ring *tx_ring = &priv->tx;
--	u32 idx, obj;
-+	u32 idx, obj, cmd = IF_COMM_TX;
- 
- 	if (can_dropped_invalid_skb(dev, skb))
- 		return NETDEV_TX_OK;
-@@ -469,7 +469,11 @@ static netdev_tx_t c_can_start_xmit(struct sk_buff *skb,
- 	if (c_can_get_tx_free(tx_ring) == 0)
- 		netif_stop_queue(dev);
- 
--	obj = idx + priv->msg_obj_tx_first;
-+	spin_lock_bh(&priv->tx_lock);
-+	if (idx < c_can_get_tx_tail(tx_ring))
-+		cmd &= ~IF_COMM_TXRQST; /* Cache the message */
-+	else
-+		spin_unlock_bh(&priv->tx_lock);
- 
- 	/* Store the message in the interface so we can call
- 	 * can_put_echo_skb(). We must do this before we enable
-@@ -478,9 +482,11 @@ static netdev_tx_t c_can_start_xmit(struct sk_buff *skb,
- 	c_can_setup_tx_object(dev, IF_TX, frame, idx);
- 	priv->dlc[idx] = frame->len;
- 	can_put_echo_skb(skb, dev, idx, 0);
-+	obj = idx + priv->msg_obj_tx_first;
-+	c_can_object_put(dev, IF_TX, obj, cmd);
- 
--	/* Start transmission */
--	c_can_object_put(dev, IF_TX, obj, IF_COMM_TX);
-+	if (spin_is_locked(&priv->tx_lock))
-+		spin_unlock_bh(&priv->tx_lock);
- 
- 	return NETDEV_TX_OK;
- }
-@@ -725,6 +731,7 @@ static void c_can_do_tx(struct net_device *dev)
- 	struct c_can_tx_ring *tx_ring = &priv->tx;
- 	struct net_device_stats *stats = &dev->stats;
- 	u32 idx, obj, pkts = 0, bytes = 0, pend;
-+	u8 tail;
- 
- 	if (priv->msg_obj_tx_last > 32)
- 		pend = priv->read_reg32(priv, C_CAN_INTPND3_REG);
-@@ -761,6 +768,18 @@ static void c_can_do_tx(struct net_device *dev)
- 	stats->tx_bytes += bytes;
- 	stats->tx_packets += pkts;
- 	can_led_event(dev, CAN_LED_EVENT_TX);
-+
-+	tail = c_can_get_tx_tail(tx_ring);
-+
-+	if (tail == 0) {
-+		u8 head = c_can_get_tx_head(tx_ring);
-+
-+		/* Start transmission for all cached messages */
-+		for (idx = tail; idx < head; idx++) {
-+			obj = idx + priv->msg_obj_tx_first;
-+			c_can_object_put(dev, IF_TX, obj, IF_COMM_TXRQST);
-+		}
-+	}
- }
- 
- /* If we have a gap in the pending bits, that means we either
-@@ -1223,6 +1242,7 @@ struct net_device *alloc_c_can_dev(int msg_obj_num)
- 		return NULL;
- 
- 	priv = netdev_priv(dev);
-+	spin_lock_init(&priv->tx_lock);
- 	priv->msg_obj_num = msg_obj_num;
- 	priv->msg_obj_rx_num = msg_obj_num - msg_obj_tx_num;
- 	priv->msg_obj_rx_first = 1;
+ 	platform_set_drvdata(pdev, dev);
 -- 
 2.17.1
 
