@@ -2,99 +2,297 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F1CBC432BE
-	for <linux-can@archiver.kernel.org>; Wed,  4 Aug 2021 15:49:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD7EFC4338F
+	for <linux-can@archiver.kernel.org>; Thu,  5 Aug 2021 19:28:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 27C4161037
-	for <linux-can@archiver.kernel.org>; Wed,  4 Aug 2021 15:49:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B5BC260D07
+	for <linux-can@archiver.kernel.org>; Thu,  5 Aug 2021 19:28:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239206AbhHDPtz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 4 Aug 2021 11:49:55 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:43648 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239442AbhHDPtz (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 4 Aug 2021 11:49:55 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 174FnRuh010232;
-        Wed, 4 Aug 2021 10:49:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1628092167;
-        bh=uGCZbtqEYmK5kLgwupBcfUZCsog7QexvO2Uxics2r+k=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=lRDZ119Vp5RfkrAPbJiFD7zbm8ynrlWp6+fMlaaaryaQxnuKSZdG+TBxRQNow/CLB
-         jvaela/0MA9K+THEyyCqD8+oTFtzWweX8VhEpE8zeUrIskz2RgkNDfiHmXfrFlDgbw
-         KINebrXHFvtbY0rXXbxMACqHSowwM4rhtcj2HSFM=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 174FnR6m121600
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 4 Aug 2021 10:49:27 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 4 Aug
- 2021 10:49:27 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 4 Aug 2021 10:49:26 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 174FnRsq039974;
-        Wed, 4 Aug 2021 10:49:27 -0500
-Date:   Wed, 4 Aug 2021 10:49:27 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-CC:     Aswath Govindraju <a-govindraju@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
+        id S231318AbhHET2X (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 5 Aug 2021 15:28:23 -0400
+Received: from smtp-32.italiaonline.it ([213.209.10.32]:46924 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231286AbhHET2W (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 5 Aug 2021 15:28:22 -0400
+Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
+ ([82.60.87.158])
+        by smtp-32.iol.local with ESMTPA
+        id Bj29mFVCOPvRTBj2DmCFmv; Thu, 05 Aug 2021 21:28:06 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1628191686; bh=ovU+K9dCeH924H7d43lXZI742Ly2v3I9DHb1WZh8TOc=;
+        h=From;
+        b=LPS8IsRgxYc0qFeub/igX7l9u+HcwMfTxUsncvrl1gMxAZzLU+STcKMNVqKa0KO6y
+         vrKg6aZg69qtpll+Sj1tPsVFKT88J9jeO83fD4cVwIlL/VKtfAuB6juehqsrXRcE92
+         hvk2WjA6D5JyIgDHcRCjDJSSkXg0g/pxWGgzZrSMX/DfaTaWiDcweqo2yz4cnkeK6x
+         YbGy0o+FKo0twzaJiTLcmc/FMT2QDf51Sfpjm0crIIheTPZta9eGTG0RsArCRaA56d
+         z1eBQKl8MQnKtgkQWJBNM4+Nfxq0RVIvHCievynX9CchSvOVfhkGjEQG9J4/BHdRGM
+         O7D1aEVmn5h0Q==
+X-CNFS-Analysis: v=2.4 cv=NqgUz+RJ c=1 sm=1 tr=0 ts=610c3bc6 cx=a_exe
+ a=Hc/BMeSBGyun2kpB8NmEvQ==:117 a=Hc/BMeSBGyun2kpB8NmEvQ==:17 a=gEfo2CItAAAA:8
+ a=p_hF36_8n4bHhE57Z5sA:9 a=4Mw1SIdcLJOoZDVX:21 a=uq95oRJrG9BvWHuX:21
+ a=sptkURWiP4Gy88Gu7hUp:22
+From:   Dario Binacchi <dariobin@libero.it>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dario Binacchi <dariobin@libero.it>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Rob Herring <robh+dt@kernel.org>,
-        Sriram Dash <sriram.dash@samsung.com>,
-        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] dt-bindings: net: can: Document power-domains property
-Message-ID: <20210804154927.w5jtppcc6n6qh7mf@never>
-References: <20210802091822.16407-1-a-govindraju@ti.com>
- <20210804072341.l4flosh7rkvma22o@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210804072341.l4flosh7rkvma22o@pengutronix.de>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Wolfgang Grandegger <wg@grandegger.com>,
+        devicetree@vger.kernel.org, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH v5] dt-bindings: net: can: c_can: convert to json-schema
+Date:   Thu,  5 Aug 2021 21:27:50 +0200
+Message-Id: <20210805192750.9051-1-dariobin@libero.it>
+X-Mailer: git-send-email 2.17.1
+X-CMAE-Envelope: MS4xfMJZUreXtdoXwnW6voTjepbJyx7hsY02Q2/poIPhNXunXtjH4cv2vvQcJPankzge42XRVAXFWGsptOhVzlOtwhp65QQWUzy03WAM4SmIQ4NSjpG794bx
+ 068eaY6/CyKqdtY536dlwnSWz030tGjopKRKK6kW9popmrfvVD8hXJdxh8PaDabrDR7ydrsU4VDRi6kXyO53L2xYfVOSjMxfbxGA1BlWsFSfVmT49cbcgKAW
+ zgbvGNcISZGyWRp0oqMCKWYBgpPgJFM9gRzVsi9YEMVXZXylLHrq9UMxTeR84TXRJoyUce7+SOzj71xZPvivPO/rm3wyBRRN3+3GTLNueikfjzzaGXtF0qd6
+ fRX0YxFK/S6DH1pXvQni77P6mo/QArmLkntoL6JtxF1YF3GD8bvBPQCR+MVaqsJXXJxqKaHrDk83wVmMvrnTWkOTf3ZbhrhHDgCCbRt4d0UkCjcKWdaSa/Wx
+ W/nzxEFArW8ZS+faLqrBow+KDjpIEqRVN0v5YKspOeNln24iPWWJpsl7rN4=
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On 09:23-20210804, Marc Kleine-Budde wrote:
-> On 02.08.2021 14:48:22, Aswath Govindraju wrote:
-> > Document power-domains property for adding the Power domain provider.
-> > 
-> > Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-> 
-> Applied to linux-can-next/testing.
-> 
-> BTW: TI's dkim is broken:
-> 
-> |   ✗ [PATCH v2] dt-bindings: net: can: Document power-domains property
-> |     + Link: https://lore.kernel.org/r/20210802091822.16407-1-a-govindraju@ti.com
-> |     + Acked-by: Rob Herring <robh@kernel.org>
-> |     + Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> |   ---
-> |   ✗ BADSIG: DKIM/ti.com
-> 
+Convert the Bosch C_CAN/D_CAN controller device tree binding
+documentation to json-schema.
 
-I have taken this up with TI's IT operations folks, Thanks for the headsup.
+Document missing properties.
+Remove "ti,hwmods" as it is no longer used in TI dts.
+Make "clocks" required as it is used in all dts.
+Update the examples.
 
+Signed-off-by: Dario Binacchi <dariobin@libero.it>
+
+---
+
+Changes in v5:
+ - Complete 'interrupts' property description
+
+Changes in v4:
+ - Fix 'syscon-raminit' property to pass checks.
+ - Drop 'status' property from CAN node of examples.
+ - Replace CAN node of examples (compatible = "bosch,d_can")  with a
+   recent version taken from socfpga.dtsi dts.
+ - Update the 'interrupts' property due to the examples updating.
+ - Add 'resets' property due to the examples updating.
+
+Changes in v3:
+ - Add type (phandle-array) and size (maxItems: 2) to syscon-raminit
+   property.
+
+Changes in v2:
+ - Drop Documentation references.
+
+ .../bindings/net/can/bosch,c_can.yaml         | 119 ++++++++++++++++++
+ .../devicetree/bindings/net/can/c_can.txt     |  65 ----------
+ 2 files changed, 119 insertions(+), 65 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/can/c_can.txt
+
+diff --git a/Documentation/devicetree/bindings/net/can/bosch,c_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
+new file mode 100644
+index 000000000000..2cd145a642f1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
+@@ -0,0 +1,119 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/can/bosch,c_can.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Bosch C_CAN/D_CAN controller Device Tree Bindings
++
++description: Bosch C_CAN/D_CAN controller for CAN bus
++
++maintainers:
++  - Dario Binacchi <dariobin@libero.it>
++
++allOf:
++  - $ref: can-controller.yaml#
++
++properties:
++  compatible:
++    oneOf:
++      - enum:
++          - bosch,c_can
++          - bosch,d_can
++          - ti,dra7-d_can
++          - ti,am3352-d_can
++      - items:
++          - enum:
++              - ti,am4372-d_can
++          - const: ti,am3352-d_can
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    minItems: 1
++    maxItems: 4
++
++  power-domains:
++    description: |
++      Should contain a phandle to a PM domain provider node and an args
++      specifier containing the DCAN device id value. It's mandatory for
++      Keystone 2 66AK2G SoCs only.
++    maxItems: 1
++
++  clocks:
++    description: |
++      CAN functional clock phandle.
++    maxItems: 1
++
++  clock-names:
++    maxItems: 1
++
++  syscon-raminit:
++    description: |
++      Handle to system control region that contains the RAMINIT register,
++      register offset to the RAMINIT register and the CAN instance number (0
++      offset).
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    items:
++      items:
++        - description: The phandle to the system control region.
++        - description: The register offset.
++        - description: The CAN instance number.
++
++  resets:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++
++if:
++  properties:
++    compatible:
++      contains:
++        enum:
++          - bosch,d_can
++
++then:
++  properties:
++    interrupts:
++      minItems: 4
++      maxItems: 4
++      items:
++        - description: Error and status IRQ
++        - description: Message object IRQ
++        - description: RAM ECC correctable error IRQ
++        - description: RAM ECC non-correctable error IRQ
++
++else:
++  properties:
++    interrupts:
++      maxItems: 1
++      items:
++        - description: Error and status IRQ
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/reset/altr,rst-mgr.h>
++
++    can@ffc00000 {
++       compatible = "bosch,d_can";
++       reg = <0xffc00000 0x1000>;
++       interrupts = <0 131 4>, <0 132 4>, <0 133 4>, <0 134 4>;
++       clocks = <&can0_clk>;
++       resets = <&rst CAN0_RESET>;
++    };
++  - |
++    can@0 {
++        compatible = "ti,am3352-d_can";
++        reg = <0x0 0x2000>;
++        clocks = <&dcan1_fck>;
++        clock-names = "fck";
++        syscon-raminit = <&scm_conf 0x644 1>;
++        interrupts = <55>;
++    };
+diff --git a/Documentation/devicetree/bindings/net/can/c_can.txt b/Documentation/devicetree/bindings/net/can/c_can.txt
+deleted file mode 100644
+index 366479806acb..000000000000
+--- a/Documentation/devicetree/bindings/net/can/c_can.txt
++++ /dev/null
+@@ -1,65 +0,0 @@
+-Bosch C_CAN/D_CAN controller Device Tree Bindings
+--------------------------------------------------
+-
+-Required properties:
+-- compatible		: Should be "bosch,c_can" for C_CAN controllers and
+-			  "bosch,d_can" for D_CAN controllers.
+-			  Can be "ti,dra7-d_can", "ti,am3352-d_can" or
+-			  "ti,am4372-d_can".
+-- reg			: physical base address and size of the C_CAN/D_CAN
+-			  registers map
+-- interrupts		: property with a value describing the interrupt
+-			  number
+-
+-The following are mandatory properties for DRA7x, AM33xx and AM43xx SoCs only:
+-- ti,hwmods		: Must be "d_can<n>" or "c_can<n>", n being the
+-			  instance number
+-
+-The following are mandatory properties for Keystone 2 66AK2G SoCs only:
+-- power-domains		: Should contain a phandle to a PM domain provider node
+-			  and an args specifier containing the DCAN device id
+-			  value. This property is as per the binding,
+-			  Documentation/devicetree/bindings/soc/ti/sci-pm-domain.yaml
+-- clocks		: CAN functional clock phandle. This property is as per the
+-			  binding,
+-			  Documentation/devicetree/bindings/clock/ti,sci-clk.yaml
+-
+-Optional properties:
+-- syscon-raminit	: Handle to system control region that contains the
+-			  RAMINIT register, register offset to the RAMINIT
+-			  register and the CAN instance number (0 offset).
+-
+-Note: "ti,hwmods" field is used to fetch the base address and irq
+-resources from TI, omap hwmod data base during device registration.
+-Future plan is to migrate hwmod data base contents into device tree
+-blob so that, all the required data will be used from device tree dts
+-file.
+-
+-Example:
+-
+-Step1: SoC common .dtsi file
+-
+-	dcan1: d_can@481d0000 {
+-		compatible = "bosch,d_can";
+-		reg = <0x481d0000 0x2000>;
+-		interrupts = <55>;
+-		interrupt-parent = <&intc>;
+-		status = "disabled";
+-	};
+-
+-(or)
+-
+-	dcan1: d_can@481d0000 {
+-		compatible = "bosch,d_can";
+-		ti,hwmods = "d_can1";
+-		reg = <0x481d0000 0x2000>;
+-		interrupts = <55>;
+-		interrupt-parent = <&intc>;
+-		status = "disabled";
+-	};
+-
+-Step 2: board specific .dts file
+-
+-	&dcan1 {
+-		status = "okay";
+-	};
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.17.1
+
