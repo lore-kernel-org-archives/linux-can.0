@@ -7,49 +7,48 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FAFCC432BE
-	for <linux-can@archiver.kernel.org>; Fri,  6 Aug 2021 10:48:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9846C4338F
+	for <linux-can@archiver.kernel.org>; Fri,  6 Aug 2021 10:51:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 02D3160E78
-	for <linux-can@archiver.kernel.org>; Fri,  6 Aug 2021 10:48:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7BF8B61184
+	for <linux-can@archiver.kernel.org>; Fri,  6 Aug 2021 10:51:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245252AbhHFKtA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 6 Aug 2021 06:49:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35988 "EHLO
+        id S231808AbhHFKv4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 6 Aug 2021 06:51:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245237AbhHFKs4 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 6 Aug 2021 06:48:56 -0400
+        with ESMTP id S244979AbhHFKvx (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 6 Aug 2021 06:51:53 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2F1C061798
-        for <linux-can@vger.kernel.org>; Fri,  6 Aug 2021 03:48:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 022F8C061798
+        for <linux-can@vger.kernel.org>; Fri,  6 Aug 2021 03:51:32 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1mBxP4-0002HM-F2
-        for linux-can@vger.kernel.org; Fri, 06 Aug 2021 12:48:38 +0200
+        id 1mBxRq-0002gR-Gw
+        for linux-can@vger.kernel.org; Fri, 06 Aug 2021 12:51:30 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 898FE661E33
-        for <linux-can@vger.kernel.org>; Fri,  6 Aug 2021 10:48:37 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id AFB4F661E3F
+        for <linux-can@vger.kernel.org>; Fri,  6 Aug 2021 10:51:29 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id DA57D661E2F;
-        Fri,  6 Aug 2021 10:48:36 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3D571661E3C;
+        Fri,  6 Aug 2021 10:51:29 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e56d02ee;
-        Fri, 6 Aug 2021 10:48:35 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 78ce961e;
+        Fri, 6 Aug 2021 10:51:28 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, socketcan@esd.eu,
-        =?UTF-8?q?Stefan=20M=C3=A4tje?= <Stefan.Maetje@esd.eu>
-Subject: [PATCH] mailmap: update email address of Matthias Fuchs
-Date:   Fri,  6 Aug 2021 12:48:33 +0200
-Message-Id: <20210806104833.102081-1-mkl@pengutronix.de>
+To:     linux-can@vger.kernel.org
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Dario Binacchi <dariobin@libero.it>
+Subject: [PATCH] can: c_can: c_can_do_tx(): fix typo in comment
+Date:   Fri,  6 Aug 2021 12:51:27 +0200
+Message-Id: <20210806105127.103302-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -59,28 +58,28 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Matthias Fuchs's email isn't valid anymore. Use the newly created role
-account instead.
+This patch fixes a typo in the comment in c_can_do_tx().
 
-Cc: socketcan@esd.eu
-Cc: Stefan Mätje <Stefan.Maetje@esd.eu>
+Fixes: eddf67115040 ("can: c_can: add a comment about IF_RX interface's use")
+Cc: Dario Binacchi <dariobin@libero.it>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .mailmap | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/c_can/c_can_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/.mailmap b/.mailmap
-index a35ae244dfda..86a630d26cfb 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -330,6 +330,7 @@ Shuah Khan <shuah@kernel.org> <shuahkh@osg.samsung.com>
- Shuah Khan <shuah@kernel.org> <shuah.kh@samsung.com>
- Simon Arlott <simon@octiron.net> <simon@fire.lp0.eu>
- Simon Kelley <simon@thekelleys.org.uk>
-+<socketcan@esd.eu> <matthias.fuchs@esd.eu>
- Stéphane Witzmann <stephane.witzmann@ubpmes.univ-bpclermont.fr>
- Stephen Hemminger <shemminger@osdl.org>
- Steve Wise <larrystevenwise@gmail.com> <swise@chelsio.com>
+diff --git a/drivers/net/can/c_can/c_can_main.c b/drivers/net/can/c_can/c_can_main.c
+index 7588f70ca0fe..e65bd7a9cf1d 100644
+--- a/drivers/net/can/c_can/c_can_main.c
++++ b/drivers/net/can/c_can/c_can_main.c
+@@ -712,7 +712,7 @@ static void c_can_do_tx(struct net_device *dev)
+ 
+ 		/* We use IF_RX interface instead of IF_TX because we
+ 		 * are called from c_can_poll(), which runs inside
+-		 * NAPI. We are not trasmitting.
++		 * NAPI. We are not transmitting.
+ 		 */
+ 		c_can_inval_tx_object(dev, IF_RX, obj);
+ 		can_get_echo_skb(dev, idx, NULL);
 -- 
 2.30.2
 
