@@ -2,53 +2,55 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DE61C4338F
-	for <linux-can@archiver.kernel.org>; Fri,  6 Aug 2021 10:36:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FAFCC432BE
+	for <linux-can@archiver.kernel.org>; Fri,  6 Aug 2021 10:48:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0D1D5610FF
-	for <linux-can@archiver.kernel.org>; Fri,  6 Aug 2021 10:36:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 02D3160E78
+	for <linux-can@archiver.kernel.org>; Fri,  6 Aug 2021 10:48:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245112AbhHFKhC (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 6 Aug 2021 06:37:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33336 "EHLO
+        id S245252AbhHFKtA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 6 Aug 2021 06:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245103AbhHFKhC (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 6 Aug 2021 06:37:02 -0400
+        with ESMTP id S245237AbhHFKs4 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 6 Aug 2021 06:48:56 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828C3C061798
-        for <linux-can@vger.kernel.org>; Fri,  6 Aug 2021 03:36:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2F1C061798
+        for <linux-can@vger.kernel.org>; Fri,  6 Aug 2021 03:48:40 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1mBxDX-0000xn-9c; Fri, 06 Aug 2021 12:36:43 +0200
-Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:66f0:974b:98ab:a2fd])
+        id 1mBxP4-0002HM-F2
+        for linux-can@vger.kernel.org; Fri, 06 Aug 2021 12:48:38 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id 898FE661E33
+        for <linux-can@vger.kernel.org>; Fri,  6 Aug 2021 10:48:37 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 48280661E12;
-        Fri,  6 Aug 2021 10:36:41 +0000 (UTC)
-Date:   Fri, 6 Aug 2021 12:36:39 +0200
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id DA57D661E2F;
+        Fri,  6 Aug 2021 10:48:36 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e56d02ee;
+        Fri, 6 Aug 2021 10:48:35 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Andrejs Cainikovs <andrejs.cainikovs@gmail.com>
-Cc:     ezequiel@collabora.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
-        Dario Binacchi <dariobin@libero.it>
-Subject: Re: [PATCH 0/2] D_CAN RX buffer size improvements
-Message-ID: <20210806103639.q3xim42zcispv6ak@pengutronix.de>
-References: <20190208132954.28166-1-andrejs.cainikovs@netmodule.com>
- <4da667f3-899a-459c-2cca-6514135a1918@gmail.com>
+To:     linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, socketcan@esd.eu,
+        =?UTF-8?q?Stefan=20M=C3=A4tje?= <Stefan.Maetje@esd.eu>
+Subject: [PATCH] mailmap: update email address of Matthias Fuchs
+Date:   Fri,  6 Aug 2021 12:48:33 +0200
+Message-Id: <20210806104833.102081-1-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ljdw7bteqjpthojv"
-Content-Disposition: inline
-In-Reply-To: <4da667f3-899a-459c-2cca-6514135a1918@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -57,43 +59,29 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+Matthias Fuchs's email isn't valid anymore. Use the newly created role
+account instead.
 
---ljdw7bteqjpthojv
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Cc: socketcan@esd.eu
+Cc: Stefan Mätje <Stefan.Maetje@esd.eu>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ .mailmap | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 06.08.2021 12:16:26, Andrejs Cainikovs wrote:
-> Sorry for a late reply. I'm the author of this patch set, and I will
-> have a look at this after I obtain the hardware. I hope this is still
-> relevant.
+diff --git a/.mailmap b/.mailmap
+index a35ae244dfda..86a630d26cfb 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -330,6 +330,7 @@ Shuah Khan <shuah@kernel.org> <shuahkh@osg.samsung.com>
+ Shuah Khan <shuah@kernel.org> <shuah.kh@samsung.com>
+ Simon Arlott <simon@octiron.net> <simon@fire.lp0.eu>
+ Simon Kelley <simon@thekelleys.org.uk>
++<socketcan@esd.eu> <matthias.fuchs@esd.eu>
+ Stéphane Witzmann <stephane.witzmann@ubpmes.univ-bpclermont.fr>
+ Stephen Hemminger <shemminger@osdl.org>
+ Steve Wise <larrystevenwise@gmail.com> <swise@chelsio.com>
+-- 
+2.30.2
 
-Dario (Cc'ed) created a proper patch series to support 64 message
-objects. The series has been mainlined in:
 
-https://git.kernel.org/linus/132f2d45fb2302a582aef617ea766f3fa52a084c
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---ljdw7bteqjpthojv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmENELUACgkQqclaivrt
-76n1bAf+Jf09YVSpTXhDggE8e/L/5sth+tbUq8M6PRmZmTP/U+ZXCHFhgKCp/09+
-3ua8CL7EwGSsiEsmFmt/QCIdtn9ruIHkgZ8s4uCXhUM45YSKqC7OyPGLEf8n+DZT
-cctJyMFAj5rVDswh7nGET3SyrelJWByKYvRbasK2dT3ivhXt+Fr9AUbrq3BXdazh
-Ib/Yy5SJfLkOMRj7qHZHp9AKn9vmZ39x3uI2klfQv/gHRt1MCAplU4UH4BKQ1v+R
-j1aGme/ITy6QcprlwtXW+Asb6oQ8nV6KGbj9XdfSy1GuM57fK17fFQolizXMAvTC
-ErWUrtA1vRq+vdoTUTYDd+Y9aDPR6Q==
-=O5oe
------END PGP SIGNATURE-----
-
---ljdw7bteqjpthojv--
