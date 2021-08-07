@@ -8,40 +8,39 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E901C4320A
-	for <linux-can@archiver.kernel.org>; Sat,  7 Aug 2021 13:08:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77F3AC4338F
+	for <linux-can@archiver.kernel.org>; Sat,  7 Aug 2021 13:09:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 30DF760C3F
-	for <linux-can@archiver.kernel.org>; Sat,  7 Aug 2021 13:08:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 559D960295
+	for <linux-can@archiver.kernel.org>; Sat,  7 Aug 2021 13:09:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbhHGNI3 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 7 Aug 2021 09:08:29 -0400
-Received: from smtp-32.italiaonline.it ([213.209.10.32]:42629 "EHLO libero.it"
+        id S232335AbhHGNJ0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 7 Aug 2021 09:09:26 -0400
+Received: from smtp-32.italiaonline.it ([213.209.10.32]:39608 "EHLO libero.it"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232259AbhHGNI1 (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Sat, 7 Aug 2021 09:08:27 -0400
+        id S232209AbhHGNJZ (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Sat, 7 Aug 2021 09:09:25 -0400
 Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
  ([82.60.87.158])
         by smtp-32.iol.local with ESMTPA
-        id CM3WmQm3XPvRTCM3dmIfZb; Sat, 07 Aug 2021 15:08:09 +0200
+        id CM3WmQm3XPvRTCM3cmIfZ4; Sat, 07 Aug 2021 15:08:08 +0200
 x-libjamoibt: 1601
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1628341689; bh=AckADGcKabU1CkSpV4t7qzvQ6zrVoNpS9rhgk52TYv0=;
+        t=1628341688; bh=qcQQKkpQcTduRVA/CnmRQITGUWlSeT/brnZTnXQ+50c=;
         h=From;
-        b=smRCHIBK8S6QqS7tkru9LBe/cQwDrZcfQFF6q0cP2i7unpVPIscnkqubkglJCAj+v
-         uayEpMUnjl7ROMw+dIdClFEQRo9nQHmNivzpSJ8piPV7A+m7+mNBTolNcRgcNRKJAm
-         ThjDkiMELzmYlcclMoyc2jCI//UsLps7yOTymwwAThH3mmfcHZjuP1mnebx9lbQimi
-         kb9A48CtSve/IYVpAeKlnUgwohS/ERbKRB8QToy906rTxcNj7IYCxcQRRKnGc8ZFmj
-         onpSCwyDIensMPsXKreJTDbMmnw61/2EJTVoCG/i9QE/aZ9/u41AiLmRKbgPAZyF8k
-         LBUUJiV/K6s0Q==
-X-CNFS-Analysis: v=2.4 cv=NqgUz+RJ c=1 sm=1 tr=0 ts=610e85b9 cx=a_exe
+        b=gNXMP5g8mcUSeTr+UsiRu0FcPlG8lvMhLc0HivVzUtgdjJnMjCu4FdIHqXnSoXjEO
+         /9RPyLU6Pkcpcl8HVre90o9A3yDkjxGYqOdby9OClniPRYvJj2zgFGBi7kHFHgY4SB
+         LTeoRuCdpeNJwsth9cKDAc9JITooyUOoB/huDjK9PRuuRpz2mpfaSz4Iu4Gfo4fKyE
+         RmqMFY0Oy7i+Tc39BmJcBGOCjdEWc1SeKZdFuDKG1782SrW2M0JwQo2NFYFFlzAJOP
+         sTnZXyE07cfEBM16eSkNAs9spuxTB+CMGMDjIM+3o1kV1oySKbb7ZYTCatB+g6wAt+
+         9UcRdy6U70uvw==
+X-CNFS-Analysis: v=2.4 cv=NqgUz+RJ c=1 sm=1 tr=0 ts=610e85b8 cx=a_exe
  a=Hc/BMeSBGyun2kpB8NmEvQ==:117 a=Hc/BMeSBGyun2kpB8NmEvQ==:17
- a=ZFJuXQVxYH-b9Oyd0qwA:9
+ a=0RFnQWo-as75lT-uasUA:9
 From:   Dario Binacchi <dariobin@libero.it>
 To:     linux-kernel@vger.kernel.org
 Cc:     Gianluca Falavigna <gianluca.falavigna@inwind.it>,
         Dario Binacchi <dariobin@libero.it>,
-        Andrew Lunn <andrew@lunn.ch>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -49,132 +48,59 @@ Cc:     Gianluca Falavigna <gianluca.falavigna@inwind.it>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Wolfgang Grandegger <wg@grandegger.com>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH v3 4/4] can: c_can: cache frames to operate as a true FIFO
-Date:   Sat,  7 Aug 2021 15:08:00 +0200
-Message-Id: <20210807130800.5246-5-dariobin@libero.it>
+Subject: [PATCH v3 2/4] can: c_can: exit c_can_do_tx() early if no frames have been sent
+Date:   Sat,  7 Aug 2021 15:07:58 +0200
+Message-Id: <20210807130800.5246-3-dariobin@libero.it>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210807130800.5246-1-dariobin@libero.it>
 References: <20210807130800.5246-1-dariobin@libero.it>
-X-CMAE-Envelope: MS4xfGmoOd6GOqyevjfeI0zB2i24sWp8gcgfOcTme321pSFLb1391FI8sMh2uwQ33GcP7ve3oVNJSCCFK4M3gta3YFF46gmfy8mjPINjb8SgQk0sYSYElZIA
- TUeZZw2dN2t4yilSRcoCASz1cP8wYxJdheHTh2TDubSnu1KMKvrBSjixj/xAQlh0srNHUpZq+fvScR6KjwQAFKlwSshQaoJYwy8a93WutjcdeYo2sPbgEV0V
- 87DlYFJcDo2CZFerCOip/5We7BHD/vePwPMkh+nQPBre0rNu3FoxEFb+8ye/JZ8mDKjJRRmD28T6Kh0UZiWhPI36l6zkOjO8mC4+LwhiACB8DVCHNmuRIIkq
- 9GXLpCW9SfKZl5mbqM2ZXrytcRFlDrHH79dcWSKuL7WfTT6n7xu3r0Ja0L3ooH92rv7rphRPTAyj3gbZvdpaTUM1IOX2qCaqXGY+NgMo3LPxh3BDqUxjZqws
- FRVHuAPNt/+We5kFVbITTHpKerkDPnn+wyi99wh++3AOueuUJeInuCnWZNy7fsxx51VuNzeuHuYyg5fUgocvbcs9VefTESy0jnyFU2zj1GEkVJysMtOff9Gj
- dQo=
+X-CMAE-Envelope: MS4xfFXjyjkSSREEemsSXHD6ghKK6Ear5v3Gm1j9QSAtbp+ZLi0S+dxRbwa1ixcbKnNpPW9G15s+HZxGOUSaQCbbhZ2TQURMi8QBGm6Z54yoHyPdL3QXcVNP
+ BMiNJz8LTXzQtOjmHx2DGyNucM60bl0VQXUxG+aANmgHbpd+u8SoVLDRdxIRLejPEEAuQ6Dvesb6kPHJXQ1G62S0+DikujHvIa9JIBJp/au1CHnHj0GaTiYk
+ u3awC2snpN5WVznLBOIl2MtJsoXQTlWmSO21ILaZAZIG5STGS9UynV5JU2q36XwSkwxDzksuO5lljJSLcZMaKaZbpGCMivkE53WDJv6aWD3LtEyIMHJ0uTHm
+ wm5LnBnqugQ84EiBwQMO+9Orm7GNuv9d9G8t+xFWuDmhvBKlaXnp5oXhBiRrbwbaQrPuIEkVD2+h+DYNdOKsqVSyu7W/w1I2OEdZ8qhlIEvfRHuaqf3eddtR
+ /iVFbBCI4vTJxx4+OERoF/OmDUMV+C+iFNWC0LDzARgSe0gVeQV3VthKNrjPtuP4+d8nDd+r7Jub3F14t/Ep2kD8M6A8Po8oWjNxhg==
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-As reported by a comment in the c_can_start_xmit() this was not a FIFO.
-C/D_CAN controller sends out the buffers prioritized so that the lowest
-buffer number wins.
+The c_can_poll() handles RX/TX events unconditionally. It may therefore
+happen that c_can_do_tx() is called unnecessarily because the interrupt
+was triggered by the reception of a frame. In these cases, we avoid to
+execute unnecessary statements and exit immediately.
 
-What did c_can_start_xmit() do if head was less tail in the tx ring ? It
-waited until all the frames queued in the FIFO was actually transmitted
-by the controller before accepting a new CAN frame to transmit, even if
-the FIFO was not full, to ensure that the messages were transmitted in
-the order in which they were loaded.
-
-By storing the frames in the FIFO without requiring its transmission, we
-will be able to use the full size of the FIFO even in cases such as the
-one described above. The transmission interrupt will trigger their
-transmission only when all the messages previously loaded but stored in
-less priority positions of the buffers have been transmitted.
-
-Suggested-by: Gianluca Falavigna <gianluca.falavigna@inwind.it>
 Signed-off-by: Dario Binacchi <dariobin@libero.it>
-
 ---
 
-Changes in v3:
-- Remove the transmission spin_lock.
-- Use IF_RX in c_can_do_tx().
+(no changes since v1)
 
- drivers/net/can/c_can/c_can.h      | 11 +----------
- drivers/net/can/c_can/c_can_main.c | 23 ++++++++++++++++++-----
- 2 files changed, 19 insertions(+), 15 deletions(-)
+ drivers/net/can/c_can/c_can_main.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-index 9b4e54c950a6..08b6efa7a1a7 100644
---- a/drivers/net/can/c_can/c_can.h
-+++ b/drivers/net/can/c_can/c_can.h
-@@ -238,16 +238,7 @@ static inline u8 c_can_get_tx_tail(const struct c_can_tx_ring *ring)
- 
- static inline u8 c_can_get_tx_free(const struct c_can_tx_ring *ring)
- {
--	u8 head = c_can_get_tx_head(ring);
--	u8 tail = c_can_get_tx_tail(ring);
--
--	/* This is not a FIFO. C/D_CAN sends out the buffers
--	 * prioritized. The lowest buffer number wins.
--	 */
--	if (head < tail)
--		return 0;
--
--	return ring->obj_num - head;
-+	return ring->obj_num - (ring->head - ring->tail);
- }
- 
- #endif /* C_CAN_H */
 diff --git a/drivers/net/can/c_can/c_can_main.c b/drivers/net/can/c_can/c_can_main.c
-index 80a6196a8d7a..e26b097b11ff 100644
+index 7588f70ca0fe..fec0e3416970 100644
 --- a/drivers/net/can/c_can/c_can_main.c
 +++ b/drivers/net/can/c_can/c_can_main.c
-@@ -456,7 +456,7 @@ static netdev_tx_t c_can_start_xmit(struct sk_buff *skb,
- 	struct can_frame *frame = (struct can_frame *)skb->data;
- 	struct c_can_priv *priv = netdev_priv(dev);
- 	struct c_can_tx_ring *tx_ring = &priv->tx;
--	u32 idx, obj;
-+	u32 idx, obj, cmd = IF_COMM_TX;
+@@ -720,17 +720,18 @@ static void c_can_do_tx(struct net_device *dev)
+ 		pkts++;
+ 	}
  
- 	if (can_dropped_invalid_skb(dev, skb))
- 		return NETDEV_TX_OK;
-@@ -469,7 +469,8 @@ static netdev_tx_t c_can_start_xmit(struct sk_buff *skb,
- 	if (c_can_get_tx_free(tx_ring) == 0)
- 		netif_stop_queue(dev);
- 
--	obj = idx + priv->msg_obj_tx_first;
-+	if (idx < c_can_get_tx_tail(tx_ring))
-+		cmd &= ~IF_COMM_TXRQST; /* Cache the message */
- 
- 	/* Store the message in the interface so we can call
- 	 * can_put_echo_skb(). We must do this before we enable
-@@ -478,9 +479,8 @@ static netdev_tx_t c_can_start_xmit(struct sk_buff *skb,
- 	c_can_setup_tx_object(dev, IF_TX, frame, idx);
- 	priv->dlc[idx] = frame->len;
- 	can_put_echo_skb(skb, dev, idx, 0);
--
--	/* Start transmission */
--	c_can_object_put(dev, IF_TX, obj, IF_COMM_TX);
-+	obj = idx + priv->msg_obj_tx_first;
-+	c_can_object_put(dev, IF_TX, obj, cmd);
- 
- 	return NETDEV_TX_OK;
- }
-@@ -725,6 +725,7 @@ static void c_can_do_tx(struct net_device *dev)
- 	struct c_can_tx_ring *tx_ring = &priv->tx;
- 	struct net_device_stats *stats = &dev->stats;
- 	u32 idx, obj, pkts = 0, bytes = 0, pend;
-+	u8 tail;
- 
- 	if (priv->msg_obj_tx_last > 32)
- 		pend = priv->read_reg32(priv, C_CAN_INTPND3_REG);
-@@ -761,6 +762,18 @@ static void c_can_do_tx(struct net_device *dev)
- 	stats->tx_bytes += bytes;
- 	stats->tx_packets += pkts;
- 	can_led_event(dev, CAN_LED_EVENT_TX);
++	if (!pkts)
++		return;
 +
-+	tail = c_can_get_tx_tail(tx_ring);
-+
-+	if (tail == 0) {
-+		u8 head = c_can_get_tx_head(tx_ring);
-+
-+		/* Start transmission for all cached messages */
-+		for (idx = tail; idx < head; idx++) {
-+			obj = idx + priv->msg_obj_tx_first;
-+			c_can_object_put(dev, IF_RX, obj, IF_COMM_TXRQST);
-+		}
-+	}
+ 	/* Clear the bits in the tx_active mask */
+ 	atomic_sub(clr, &priv->tx_active);
+ 
+ 	if (clr & BIT(priv->msg_obj_tx_num - 1))
+ 		netif_wake_queue(dev);
+ 
+-	if (pkts) {
+-		stats->tx_bytes += bytes;
+-		stats->tx_packets += pkts;
+-		can_led_event(dev, CAN_LED_EVENT_TX);
+-	}
++	stats->tx_bytes += bytes;
++	stats->tx_packets += pkts;
++	can_led_event(dev, CAN_LED_EVENT_TX);
  }
  
  /* If we have a gap in the pending bits, that means we either
