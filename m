@@ -2,54 +2,55 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4D28C4338F
-	for <linux-can@archiver.kernel.org>; Thu,  5 Aug 2021 11:46:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 463B6C4338F
+	for <linux-can@archiver.kernel.org>; Fri, 13 Aug 2021 09:10:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7C76D610A8
-	for <linux-can@archiver.kernel.org>; Thu,  5 Aug 2021 11:46:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 24D806103E
+	for <linux-can@archiver.kernel.org>; Fri, 13 Aug 2021 09:10:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239100AbhHELqW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 5 Aug 2021 07:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32838 "EHLO
+        id S238823AbhHMJLD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 13 Aug 2021 05:11:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235877AbhHELqW (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Aug 2021 07:46:22 -0400
+        with ESMTP id S231582AbhHMJLD (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 13 Aug 2021 05:11:03 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74756C061765
-        for <linux-can@vger.kernel.org>; Thu,  5 Aug 2021 04:46:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B465C061756
+        for <linux-can@vger.kernel.org>; Fri, 13 Aug 2021 02:10:37 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1mBbp8-0002P3-T5
-        for linux-can@vger.kernel.org; Thu, 05 Aug 2021 13:46:06 +0200
-Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:68e7:ca3:e3f1:364e])
+        id 1mETD1-0005bw-HP
+        for linux-can@vger.kernel.org; Fri, 13 Aug 2021 11:10:35 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id 903DA6668DC
+        for <linux-can@vger.kernel.org>; Fri, 13 Aug 2021 09:10:34 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 0FC53661366
-        for <linux-can@vger.kernel.org>; Thu,  5 Aug 2021 11:46:05 +0000 (UTC)
-Date:   Thu, 5 Aug 2021 13:45:12 +0200
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id E8E636668D8;
+        Fri, 13 Aug 2021 09:10:33 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3fd3d6fd;
+        Fri, 13 Aug 2021 09:10:32 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     kbuild@lists.01.org, Angelo Dureghello <angelo@kernel-space.org>,
-        lkp@intel.com, kbuild-all@lists.01.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [linux-next:master 2764/5318] drivers/net/can/flexcan.c:666
- flexcan_clks_enable() error: uninitialized symbol 'err'.
-Message-ID: <20210805114509.rjcptwrjscm257cd@pengutronix.de>
-References: <202108050850.IaTFXHsB-lkp@intel.com>
+To:     linux-can@vger.kernel.org
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Thomas Kopp <thomas.kopp@microchip.com>
+Subject: [PATCH] can: mcp251xfd: mark some instances of struct mcp251xfd_priv as const
+Date:   Fri, 13 Aug 2021 11:10:27 +0200
+Message-Id: <20210813091027.159379-1-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wgyx5enqg7gdfhza"
-Content-Disposition: inline
-In-Reply-To: <202108050850.IaTFXHsB-lkp@intel.com>
+Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -58,82 +59,69 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+With the patch 07ff4aed015c ("time/timecounter: Mark 1st argument of
+timecounter_cyc2time() as const") some instances of the struct
+mcp251xfd_priv can be marked as const. This patch marks these as
+const.
 
---wgyx5enqg7gdfhza
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Cc: Manivannan Sadhasivam <mani@kernel.org>
+Cc: Thomas Kopp <thomas.kopp@microchip.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c      | 2 +-
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-timestamp.c | 4 ++--
+ drivers/net/can/spi/mcp251xfd/mcp251xfd.h           | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-On 05.08.2021 14:22:24, Dan Carpenter wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.g=
-it master
-> head:   2f73937c9aa561e2082839bc1a8efaac75d6e244
-> commit: d9cead75b1c66b4660b4f87ff339234042d7c6a5 [2764/5318] can: flexcan=
-: add mcf5441x support
-> config: h8300-randconfig-m031-20210804 (attached as .config)
-> compiler: h8300-linux-gcc (GCC) 10.3.0
->=20
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
->=20
-> smatch warnings:
-> drivers/net/can/flexcan.c:666 flexcan_clks_enable() error: uninitialized =
-symbol 'err'.
->=20
-> vim +/err +666 drivers/net/can/flexcan.c
->=20
-> ca10989632d882 Aisheng Dong             2018-11-30  650  static int flexc=
-an_clks_enable(const struct flexcan_priv *priv)
-> ca10989632d882 Aisheng Dong             2018-11-30  651  {
-> ca10989632d882 Aisheng Dong             2018-11-30  652  	int err;
-> ca10989632d882 Aisheng Dong             2018-11-30  653 =20
-> d9cead75b1c66b Angelo Dureghello        2021-07-02  654  	if (priv->clk_i=
-pg) {
-> ca10989632d882 Aisheng Dong             2018-11-30  655  		err =3D clk_pr=
-epare_enable(priv->clk_ipg);
-> ca10989632d882 Aisheng Dong             2018-11-30  656  		if (err)
-> ca10989632d882 Aisheng Dong             2018-11-30  657  			return err;
-> d9cead75b1c66b Angelo Dureghello        2021-07-02  658  	}
-> ca10989632d882 Aisheng Dong             2018-11-30  659 =20
-> d9cead75b1c66b Angelo Dureghello        2021-07-02  660  	if (priv->clk_p=
-er) {
-> ca10989632d882 Aisheng Dong             2018-11-30  661  		err =3D clk_pr=
-epare_enable(priv->clk_per);
-> ca10989632d882 Aisheng Dong             2018-11-30  662  		if (err)
-> ca10989632d882 Aisheng Dong             2018-11-30  663  			clk_disable_u=
-nprepare(priv->clk_ipg);
-> d9cead75b1c66b Angelo Dureghello        2021-07-02  664  	}
->=20
-> Smatch is complaining that both priv->clk_ipg and priv->clk_per can be
-> false...  Probably impossible in real life.
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index 6c369a399c45..673861ab665a 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -1456,7 +1456,7 @@ mcp251xfd_rx_ring_update(const struct mcp251xfd_priv *priv,
+ }
+ 
+ static void
+-mcp251xfd_hw_rx_obj_to_skb(struct mcp251xfd_priv *priv,
++mcp251xfd_hw_rx_obj_to_skb(const struct mcp251xfd_priv *priv,
+ 			   const struct mcp251xfd_hw_rx_obj_canfd *hw_rx_obj,
+ 			   struct sk_buff *skb)
+ {
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-timestamp.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-timestamp.c
+index ed3169274d24..712e09186987 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-timestamp.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-timestamp.c
+@@ -13,7 +13,7 @@
+ 
+ static u64 mcp251xfd_timestamp_read(const struct cyclecounter *cc)
+ {
+-	struct mcp251xfd_priv *priv;
++	const struct mcp251xfd_priv *priv;
+ 	u32 timestamp = 0;
+ 	int err;
+ 
+@@ -39,7 +39,7 @@ static void mcp251xfd_timestamp_work(struct work_struct *work)
+ 			      MCP251XFD_TIMESTAMP_WORK_DELAY_SEC * HZ);
+ }
+ 
+-void mcp251xfd_skb_set_timestamp(struct mcp251xfd_priv *priv,
++void mcp251xfd_skb_set_timestamp(const struct mcp251xfd_priv *priv,
+ 				 struct sk_buff *skb, u32 timestamp)
+ {
+ 	struct skb_shared_hwtstamps *hwtstamps = skb_hwtstamps(skb);
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+index 1002f3902ad2..0f322dabaf65 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+@@ -853,7 +853,7 @@ int mcp251xfd_regmap_init(struct mcp251xfd_priv *priv);
+ u16 mcp251xfd_crc16_compute2(const void *cmd, size_t cmd_size,
+ 			     const void *data, size_t data_size);
+ u16 mcp251xfd_crc16_compute(const void *data, size_t data_size);
+-void mcp251xfd_skb_set_timestamp(struct mcp251xfd_priv *priv,
++void mcp251xfd_skb_set_timestamp(const struct mcp251xfd_priv *priv,
+ 				 struct sk_buff *skb, u32 timestamp);
+ void mcp251xfd_timestamp_init(struct mcp251xfd_priv *priv);
+ void mcp251xfd_timestamp_stop(struct mcp251xfd_priv *priv);
+-- 
+2.30.2
 
-Fixed in net-next with:
 
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/=
-?id=3D3362666972137724496984b4db2b06071aca4b69
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---wgyx5enqg7gdfhza
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmELz0MACgkQqclaivrt
-76mOvQf+J0GudeKmydLd9RZIl+QyPatfQOWaL6Mtn4vzWkiDRT21htRQYaiiwHrs
-wlzpviaepz5UkXeTFvF0b01EaveK6vcFkEsXXtek8WZEF1uNh/Eh14tbia++DkHN
-Jz0XMbbwnIen7YF96wuD3181Zi5a94pGj/vVLzUcmJSOJs6rnnYXxL8CYQhKhB+q
-c1Bf+7l6avUZLdCEKNTzMXAGHr61TWnGGQcmCqE/Vw2NfOuzY20N3F9WODcm1jjP
-N8wcAL1nkveh8+qgQBsc0fVwBwUqkuc4uheJEdfIBieZB0aHpJLjz9P7WrRKUvSF
-zgRaiRwvhQBpqZSaTPbysvaq4nx40A==
-=tsMf
------END PGP SIGNATURE-----
-
---wgyx5enqg7gdfhza--
