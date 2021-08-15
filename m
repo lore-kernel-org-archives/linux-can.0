@@ -2,95 +2,154 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EE65C4338F
-	for <linux-can@archiver.kernel.org>; Sat, 14 Aug 2021 11:14:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9351C4338F
+	for <linux-can@archiver.kernel.org>; Sun, 15 Aug 2021 03:33:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1617260F11
-	for <linux-can@archiver.kernel.org>; Sat, 14 Aug 2021 11:14:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8FC3561038
+	for <linux-can@archiver.kernel.org>; Sun, 15 Aug 2021 03:33:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238064AbhHNLPD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 14 Aug 2021 07:15:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237914AbhHNLPD (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 14 Aug 2021 07:15:03 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0DC7C061764
-        for <linux-can@vger.kernel.org>; Sat, 14 Aug 2021 04:14:34 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mErcW-0006nt-I0; Sat, 14 Aug 2021 13:14:32 +0200
-Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:9c12:ab28:ecb4:fe2f])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id DCFB56672BB;
-        Sat, 14 Aug 2021 11:14:29 +0000 (UTC)
-Date:   Sat, 14 Aug 2021 13:14:28 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        linux-can@vger.kernel.org,
-        Stefan =?utf-8?B?TcOkdGpl?= <stefan.maetje@esd.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 4/4] iplink_can: add new CAN FD bittiming parameters:
- Transmitter Delay Compensation (TDC)
-Message-ID: <20210814111428.2jivv6rbj5piqrto@pengutronix.de>
-References: <20210814101728.75334-1-mailhol.vincent@wanadoo.fr>
- <20210814101728.75334-5-mailhol.vincent@wanadoo.fr>
+        id S234528AbhHODdu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 14 Aug 2021 23:33:50 -0400
+Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:40536 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235414AbhHODdt (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 14 Aug 2021 23:33:49 -0400
+Received: from tomoyo.flets-east.jp ([114.149.34.46])
+        by mwinf5d21 with ME
+        id hfZ7250050zjR6y03fZEwn; Sun, 15 Aug 2021 05:33:17 +0200
+X-ME-Helo: tomoyo.flets-east.jp
+X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 15 Aug 2021 05:33:17 +0200
+X-ME-IP: 114.149.34.46
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc:     =?UTF-8?q?Stefan=20M=C3=A4tje?= <Stefan.Maetje@esd.eu>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v5 0/7] add the netlink interface for CAN-FD Transmitter Delay Compensation (TDC)
+Date:   Sun, 15 Aug 2021 12:32:41 +0900
+Message-Id: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="73h3dlf3qatldber"
-Content-Disposition: inline
-In-Reply-To: <20210814101728.75334-5-mailhol.vincent@wanadoo.fr>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+The main goal of this series is to add a netlink interface for the TDC
+parameters using netlink nested attributes. The series also contains a
+few fix on the current TDC implementation.
 
---73h3dlf3qatldber
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This series completes the implementation of the Transmitter Delay
+Compensation (TDC) in the kernel which started in March with those two
+patches:
+  - commit 289ea9e4ae59 ("can: add new CAN FD bittiming parameters:
+    Transmitter Delay Compensation (TDC)")
+  - commit c25cc7993243 ("can: bittiming: add calculation for CAN FD
+    Transmitter Delay Compensation (TDC)")
 
-On 14.08.2021 19:17:28, Vincent Mailhol wrote:
->  include/uapi/linux/can/netlink.h |  30 +++++++-
+The netlink interface was missing from this series because the initial
+patch needed rework in order to make it more flexible for future
+changes.
 
-IIRC, changes of the uapi headers will be pull in regularly from the
-mainline kernel.
+At that time, Marc suggested to take inspiration from the recently
+released ethtool-netlink interface (Ref [1]).
 
-Marc
+ethtool uses nested attributes (c.f. NLA_NESTED type in validation
+policy). A bit of trivia: the NLA_NESTED type was introduced in
+version 2.6.15 of the kernel and thus actually predates Socket CAN.
+Ref: commit bfa83a9e03cf ("[NETLINK]: Type-safe netlink messages/attributes interface")
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+Since then, Stephan shared additional remarks for improvement which
+are addressed in revision v4 of this series [2].
 
---73h3dlf3qatldber
-Content-Type: application/pgp-signature; name="signature.asc"
+The first patch allow a user to turn off a feature even if not
+supported (e.g. allow "ip link set can0 type can bitrate 500000 fd
+off" even if fd is not supported). This feature will be used later by
+the fifth patch of the series.
 
------BEGIN PGP SIGNATURE-----
+The second patch allows TDCV and TDCO to be zero (previously, those
+values were assigned a special meaning).
 
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEXpZIACgkQqclaivrt
-76kKYgf+JV/LuzN1hF+gI3ry0V34s2jMRSTFIQByzhHWHzB1Qazs7i0LGyx5hxz0
-gj82ic9FwIsQEjJ+4XaBBhvAw/8j0VC2/6y1buTg28ncM5uBPxm4p9z2nIucDjLx
-dne76fM7Zhk6Ck0Cjp4dxZ5Pvt5/j2PNaYdkendHRpl4/5+XJe2qXMryAYqSA0qS
-p7rto3EjzOlBPOeVJ4BRrtHGyHQKNTmz5CRpxjnZ7AkZXzwbLt7nzShp6Ma5tdo0
-Uf1xiz7Nd2/N+2HEpe1sZDVED2xbvpt3OavcetX7TGamg60LIaS/3S28ut9W6Vzw
-ROV6s7b4Yxmb5K5uGWKZ2t4a3qHu3w==
-=5Uju
------END PGP SIGNATURE-----
+The third patch fixes the unit of the TDC parameters. In fact, those
+should be measured in clock period (a.k.a. minimum time quantum) and
+not in time quantum as it is done in current implementation.
 
---73h3dlf3qatldber--
+The fourth patch addresses the concern of Marc and Stefan concerning
+some devices which use a TDCO value relative to the Sample Point (so
+far, the TDC implementation used the formula SSP = TDCV + TDCO). To do
+so, an helper function to convert TDCO from an absolute value to a
+value relative to the sample point is added.
+
+The fifth patch is the real thing: the TDC netlink interface.
+
+The sixth patch allows to retrieve TDCV from the device through a
+callback function.
+
+The seventh and last patch does a bit of cleanup in the ES58x driver
+to remove some redundant TDC information from the documentation.
+
+[1] https://lore.kernel.org/linux-can/20210407081557.m3sotnepbgasarri@pengutronix.de/
+[2] https://lore.kernel.org/linux-can/75fa87a71a3f5fd7d7407a2c514b71690e56eb4e.camel@esd.eu/
+
+
+** Changelog **
+
+v4 -> v5:
+  - move to can_validate() all of the checks on TDC parameters that do
+    not need access to priv.
+  - in can_tdc_get_size(), field IFLA_CAN_TDCV was not taken in
+    account for size calculation when in automatic mode.
+  - if can_tdc_is_enabled(priv) returns true, we know that one of
+    either CAN_CTRLMODE_TDC_AUTO or CAN_CTRLMODE_TDC_MANUAL is
+    set. After confirming that CAN_CTRLMODE_TDC_MANUAL if off, we then
+    implicitly know that CAN_CTRLMODE_TDC_AUTO is set and do not need
+    to check it again. Remove such redundant check in
+    can_tdc_fill_info().
+
+v3 -> v4:
+  - add a patch to the series to change the unit from time quantum to
+    clock period (a.k.a. minimum time quantum).
+  - add a callback function to retrieve TDCV from the device.
+
+v2 -> v3:
+  - allows both TDCV and TDCO to be zero.
+  - introduce the can_tdc_get_relative_tdco() helper function
+  - other path of the series modified accordingly to above changes.
+
+RFC v1 -> v2:
+  The v2 fixes several issue in can_tdc_get_size() and
+  can_tdc_fill_info(). Namely: can_tdc_get_size() returned an
+  incorrect size if TDC was not implemented and can_tdc_fill_info()
+  did not include a fail path with nla_nest_cancel().
+
+
+Vincent Mailhol (7):
+  can: netlink: allow user to turn off unsupported features
+  can: bittiming: allow TDC{V,O} to be zero and add
+    can_tdc_const::tdc{v,o,f}_min
+  can: bittiming: change unit of TDC parameters to clock periods
+  can: dev: add can_tdc_get_relative_tdco() helper function
+  can: netlink: add interface for CAN-FD Transmitter Delay Compensation
+    (TDC)
+  can: netlink: add can_priv::do_get_auto_tdcv() to retrieve tdcv from
+    device
+  can: etas_es58x: clean-up documentation of struct es58x_fd_tx_conf_msg
+
+ drivers/net/can/dev/bittiming.c           |  19 +-
+ drivers/net/can/dev/netlink.c             | 213 +++++++++++++++++++++-
+ drivers/net/can/usb/etas_es58x/es58x_fd.c |   7 +-
+ drivers/net/can/usb/etas_es58x/es58x_fd.h |  23 +--
+ include/linux/can/bittiming.h             |  80 +++++---
+ include/linux/can/dev.h                   |  34 ++++
+ include/uapi/linux/can/netlink.h          |  31 +++-
+ 7 files changed, 353 insertions(+), 54 deletions(-)
+
+-- 
+2.31.1
+
