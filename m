@@ -2,155 +2,183 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C836C4338F
-	for <linux-can@archiver.kernel.org>; Mon, 16 Aug 2021 11:27:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A831BC4338F
+	for <linux-can@archiver.kernel.org>; Mon, 16 Aug 2021 11:48:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4E84061B49
-	for <linux-can@archiver.kernel.org>; Mon, 16 Aug 2021 11:27:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8C7C46323B
+	for <linux-can@archiver.kernel.org>; Mon, 16 Aug 2021 11:48:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235874AbhHPL1l (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 16 Aug 2021 07:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50412 "EHLO
+        id S236276AbhHPLtY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 16 Aug 2021 07:49:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbhHPL1k (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 16 Aug 2021 07:27:40 -0400
+        with ESMTP id S236254AbhHPLtW (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 16 Aug 2021 07:49:22 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2AFC061764
-        for <linux-can@vger.kernel.org>; Mon, 16 Aug 2021 04:27:09 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D71CC061764
+        for <linux-can@vger.kernel.org>; Mon, 16 Aug 2021 04:48:51 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mFaln-0002ZJ-DT; Mon, 16 Aug 2021 13:27:07 +0200
-Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:3272:cc96:80a9:1a01])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 6F56E668232;
-        Mon, 16 Aug 2021 11:27:05 +0000 (UTC)
-Date:   Mon, 16 Aug 2021 13:27:03 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc:     linux-can@vger.kernel.org,
-        Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 4/7] can: dev: add can_tdc_get_relative_tdco() helper
- function
-Message-ID: <20210816112703.y6olntctn3oaavng@pengutronix.de>
-References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
- <20210815033248.98111-5-mailhol.vincent@wanadoo.fr>
+        (envelope-from <ore@pengutronix.de>)
+        id 1mFb6j-0004bt-L5; Mon, 16 Aug 2021 13:48:45 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mFb6i-0004Zb-SF; Mon, 16 Aug 2021 13:48:44 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, David Jander <david@protonic.nl>
+Subject: [PATCH v1 3/3] can: dev: provide optional GPIO based termination support
+Date:   Mon, 16 Aug 2021 13:48:40 +0200
+Message-Id: <20210816114840.17502-3-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210816114840.17502-1-o.rempel@pengutronix.de>
+References: <20210816114840.17502-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gawe3w234erlrps6"
-Content-Disposition: inline
-In-Reply-To: <20210815033248.98111-5-mailhol.vincent@wanadoo.fr>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+For CAN buses to work, a termination resistor has to be present at both
+ends of the bus. This resistor is usually 120 Ohms, other values may be
+required for special bus topologies.
 
---gawe3w234erlrps6
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch adds support for a generic GPIO based CAN termination. The
+resistor value has to be specified via device tree, and it can only be
+attached to or detached from the bus. By default the termination is not
+active.
 
-On 15.08.2021 12:32:45, Vincent Mailhol wrote:
-> struct can_tdc::tdco represents the absolute offset from TDCV. Some
-> controllers use instead an offset relative to the Sample Point (SP)
-> such that:
-> | SSP =3D TDCV + absolute TDCO
-> |     =3D TDCV + SP + relative TDCO
->=20
-> Consequently:
-> | relative TDCO =3D absolute TDCO - SP
->=20
-> The function can_tdc_get_relative_tdco() allow to retrieve this
-> relative TDCO value.
->=20
-> CC: Stefan M=C3=A4tje <Stefan.Maetje@esd.eu>
-> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> ---
->  include/linux/can/dev.h | 29 +++++++++++++++++++++++++++++
->  1 file changed, 29 insertions(+)
->=20
-> diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-> index 0be982fd22fb..fa75e29182a3 100644
-> --- a/include/linux/can/dev.h
-> +++ b/include/linux/can/dev.h
-> @@ -93,6 +93,35 @@ static inline bool can_tdc_is_enabled(const struct can=
-_priv *priv)
->  	return !!(priv->ctrlmode & CAN_CTRLMODE_TDC_MASK);
->  }
-> =20
-> +/*
-> + * can_get_relative_tdco() - TDCO relative to the sample point
-> + *
-> + * struct can_tdc::tdco represents the absolute offset from TDCV. Some
-> + * controllers use instead an offset relative to the Sample Point (SP)
-> + * such that:
-> + *
-> + * SSP =3D TDCV + absolute TDCO
-> + *     =3D TDCV + SP + relative TDCO
-> + *
-> + * -+----------- one bit ----------+-- TX pin
-> + *  |<--- Sample Point --->|
-> + *
-> + *                         --+----------- one bit ----------+-- RX pin
-> + *  |<-------- TDCV -------->|
-> + *                           |<------------------------>| absolute TDCO
-> + *                           |<--- Sample Point --->|
-> + *                           |                      |<->| relative TDCO
-> + *  |<------------- Secondary Sample Point ------------>|
-> + */
-> +static inline s32 can_get_relative_tdco(const struct can_priv *priv)
-> +{
-> +	const struct can_bittiming *dbt =3D &priv->data_bittiming;
-> +	s32 sample_point_in_tc =3D  (CAN_SYNC_SEG + dbt->prop_seg +
-                                ^^
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ drivers/net/can/dev/dev.c | 54 +++++++++++++++++++++++++++++++++++++++
+ include/linux/can/dev.h   |  7 +++++
+ 2 files changed, 61 insertions(+)
 
-Only one space. I'll fix the while applying.
+diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
+index 311d8564d611..b4a6c7a6fc18 100644
+--- a/drivers/net/can/dev/dev.c
++++ b/drivers/net/can/dev/dev.c
+@@ -15,6 +15,7 @@
+ #include <linux/can/dev.h>
+ #include <linux/can/skb.h>
+ #include <linux/can/led.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/of.h>
+ 
+ #define MOD_DESC "CAN device driver interface"
+@@ -400,10 +401,57 @@ void close_candev(struct net_device *dev)
+ }
+ EXPORT_SYMBOL_GPL(close_candev);
+ 
++static int can_set_termination(struct net_device *ndev, u16 term)
++{
++	struct can_priv *priv = netdev_priv(ndev);
++	int set;
++
++	if (term == priv->termination_gpio_ohms[CAN_TERMINATION_GPIO_ENABLED])
++		set = 1;
++	else
++		set = 0;
++
++	gpiod_set_value(priv->termination_gpio, set);
++
++	return 0;
++}
++
++static int can_get_termination(struct net_device *ndev)
++{
++	struct can_priv *priv = netdev_priv(ndev);
++	struct device *dev = ndev->dev.parent;
++	struct gpio_desc *gpio;
++	u16 term;
++	int ret;
++
++	/* Disabling termination by default is the safe choice: Else if many
++	 * bus participants enable it, no communication is possible at all.
++	 */
++	gpio = devm_gpiod_get_optional(dev, "termination", GPIOD_OUT_LOW);
++	if (IS_ERR(gpio))
++		return dev_err_probe(dev, PTR_ERR(gpio),
++				     "Cannot get termination-gpios\n");
++
++	ret = device_property_read_u16(dev, "termination-ohms", &term);
++	if (ret)
++		return ret;
++
++	priv->termination_const_cnt = ARRAY_SIZE(priv->termination_gpio_ohms);
++	priv->termination_const = priv->termination_gpio_ohms;
++	priv->termination_gpio = gpio;
++	priv->termination_gpio_ohms[CAN_TERMINATION_GPIO_DISABLED] =
++		CAN_TERMINATION_DISABLED;
++	priv->termination_gpio_ohms[CAN_TERMINATION_GPIO_ENABLED] = term;
++	priv->do_set_termination = can_set_termination;
++
++	return 0;
++}
++
+ /* Register the CAN network device */
+ int register_candev(struct net_device *dev)
+ {
+ 	struct can_priv *priv = netdev_priv(dev);
++	int err;
+ 
+ 	/* Ensure termination_const, termination_const_cnt and
+ 	 * do_set_termination consistency. All must be either set or
+@@ -419,6 +467,12 @@ int register_candev(struct net_device *dev)
+ 	if (!priv->data_bitrate_const != !priv->data_bitrate_const_cnt)
+ 		return -EINVAL;
+ 
++	if (!priv->termination_const) {
++		err = can_get_termination(dev);
++		if (err)
++			return err;
++	}
++
+ 	dev->rtnl_link_ops = &can_link_ops;
+ 	netif_carrier_off(dev);
+ 
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 27b275e463da..82bdc5b09a3a 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -32,6 +32,11 @@ enum can_mode {
+ 	CAN_MODE_SLEEP
+ };
+ 
++enum can_termination_gpio {
++	CAN_TERMINATION_GPIO_DISABLED = 0,
++	CAN_TERMINATION_GPIO_ENABLED,
++};
++
+ /*
+  * CAN common private data
+  */
+@@ -55,6 +60,8 @@ struct can_priv {
+ 	unsigned int termination_const_cnt;
+ 	const u16 *termination_const;
+ 	u16 termination;
++	struct gpio_desc *termination_gpio;
++	u16 termination_gpio_ohms[2];
+ 
+ 	enum can_state state;
+ 
+-- 
+2.30.2
 
-> +				   dbt->phase_seg1) * dbt->brp;
-> +
-> +	return (s32)priv->tdc.tdco - sample_point_in_tc;
-> +}
-> +
->  /* helper to define static CAN controller features at device creation ti=
-me */
->  static inline void can_set_static_ctrlmode(struct net_device *dev,
->  					   u32 static_mode)
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---gawe3w234erlrps6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEaS4UACgkQqclaivrt
-76lJJgf+JhTGf4sZoT1vegI0OZIUDYVko7WtcO2FmLg9HtQtENlwUseVVQq74w3O
-aTITmDEOiAqZoCe4L8nHI6nKS5vfCNsadjtkS/As34WDWikS3/pZIYsEse5/sWxL
-rg5QmXKl2iqqrWj5F6Lj8a/3mgnvxbE6LdgLsvmJHRWjOXnaZ9RAw+iXCWrV5zx1
-qFV5CwOle4QeMpIuSgxL4yLvc9YIfGTdKbaHD5JBzDM2hDGeNb/q4gPPKrH4kXF8
-Uts0tafEsosSpfObwlyzBWVuVDp79ph6T3WSc/k6n1eK+Eo6DSQDICuwN4dSlHMT
-GEAFHBzDqJoRwr6TV1QnVCTf6lbciQ==
-=cSs2
------END PGP SIGNATURE-----
-
---gawe3w234erlrps6--
