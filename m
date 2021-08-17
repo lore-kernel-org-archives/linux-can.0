@@ -2,88 +2,72 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 208F9C4338F
-	for <linux-can@archiver.kernel.org>; Tue, 17 Aug 2021 04:13:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BA8CC4338F
+	for <linux-can@archiver.kernel.org>; Tue, 17 Aug 2021 05:09:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0811C60F11
-	for <linux-can@archiver.kernel.org>; Tue, 17 Aug 2021 04:13:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 380EB60F58
+	for <linux-can@archiver.kernel.org>; Tue, 17 Aug 2021 05:09:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233099AbhHQENx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 17 Aug 2021 00:13:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbhHQENw (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 17 Aug 2021 00:13:52 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6ECC0617AF
-        for <linux-can@vger.kernel.org>; Mon, 16 Aug 2021 21:13:18 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mFqTN-0003BZ-S1; Tue, 17 Aug 2021 06:13:09 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mFqTM-0006ZG-6e; Tue, 17 Aug 2021 06:13:08 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
+        id S234165AbhHQFJc (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 17 Aug 2021 01:09:32 -0400
+Received: from h4.fbrelay.privateemail.com ([131.153.2.45]:54562 "EHLO
+        h4.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230272AbhHQFJc (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 17 Aug 2021 01:09:32 -0400
+Received: from MTA-13-3.privateemail.com (mta-13-1.privateemail.com [198.54.122.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by h3.fbrelay.privateemail.com (Postfix) with ESMTPS id C91EB80981
+        for <linux-can@vger.kernel.org>; Tue, 17 Aug 2021 01:08:58 -0400 (EDT)
+Received: from mta-13.privateemail.com (localhost [127.0.0.1])
+        by mta-13.privateemail.com (Postfix) with ESMTP id 906CD18000AF;
+        Tue, 17 Aug 2021 01:08:57 -0400 (EDT)
+Received: from localhost.localdomain (unknown [10.20.151.223])
+        by mta-13.privateemail.com (Postfix) with ESMTPA id 2DD3118000AD;
+        Tue, 17 Aug 2021 01:08:57 -0400 (EDT)
+From:   Matt Kline <matt@bitbashing.io>
 To:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, David Jander <david@protonic.nl>
-Subject: [PATCH v2 1/3] dt-bindings: can-controller: add support for termination-gpios
-Date:   Tue, 17 Aug 2021 06:13:04 +0200
-Message-Id: <20210817041306.25185-2-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210817041306.25185-1-o.rempel@pengutronix.de>
-References: <20210817041306.25185-1-o.rempel@pengutronix.de>
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Matt Kline <matt@bitbashing.io>, linux-can@vger.kernel.org
+Subject: [PATCH v3 0/3] can: m_can: Merge FIFO ops to increase throughput
+Date:   Mon, 16 Aug 2021 22:08:50 -0700
+Message-Id: <20210817050853.14875-1-matt@bitbashing.io>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Some boards provide GPIO controllable termination resistor. Provide
-binding to make use of it.
+As requested, I've propagated FIFO errors up to the m_can driver - on
+failure we now log the error and disable interrupts, similar to
+https://elixir.bootlin.com/linux/v5.13/source/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c#L2298
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- .../devicetree/bindings/net/can/can-controller.yaml      | 9 +++++++++
- 1 file changed, 9 insertions(+)
+I've also folded the ID and DLC fields into a struct (as suggested) so
+that we don't need to copy them to and from arrays for the FIFO transfers.
 
-diff --git a/Documentation/devicetree/bindings/net/can/can-controller.yaml b/Documentation/devicetree/bindings/net/can/can-controller.yaml
-index 9cf2ae097156..298ce69a8208 100644
---- a/Documentation/devicetree/bindings/net/can/can-controller.yaml
-+++ b/Documentation/devicetree/bindings/net/can/can-controller.yaml
-@@ -13,6 +13,15 @@ properties:
-   $nodename:
-     pattern: "^can(@.*)?$"
- 
-+  termination-gpios:
-+    description: GPIO pin to enable CAN bus termination.
-+
-+  termination-ohms:
-+    description: The resistance value of the CAN bus termination resistor.
-+    $ref: /schemas/types.yaml#/definitions/uint16-array
-+    minimum: 1
-+    maximum: 65535
-+
- additionalProperties: true
- 
- ...
+Following-up on
+https://lore.kernel.org/linux-can/20210811063520.aw6hkll2kax22ytr@pengutronix.de/T/#u
+Sorry for the slight delay - last week was busy!
+
+Matt Kline (3):
+  can: m_can: Disable IRQs on FIFO bus errors
+  can: m_can: Batch FIFO reads during CAN receive
+  can: m_can: Batch FIFO writes during CAN transmit
+
+ drivers/net/can/m_can/m_can.c          | 221 ++++++++++++++++---------
+ drivers/net/can/m_can/m_can.h          |   6 +-
+ drivers/net/can/m_can/m_can_pci.c      |  11 +-
+ drivers/net/can/m_can/m_can_platform.c |  15 +-
+ drivers/net/can/m_can/tcan4x5x-core.c  |  16 +-
+ 5 files changed, 172 insertions(+), 97 deletions(-)
+
 -- 
-2.30.2
+2.32.0
 
