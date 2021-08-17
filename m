@@ -4,32 +4,32 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 109C2C43216
-	for <linux-can@archiver.kernel.org>; Tue, 17 Aug 2021 04:13:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 208F9C4338F
+	for <linux-can@archiver.kernel.org>; Tue, 17 Aug 2021 04:13:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EBE9D60F11
-	for <linux-can@archiver.kernel.org>; Tue, 17 Aug 2021 04:13:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0811C60F11
+	for <linux-can@archiver.kernel.org>; Tue, 17 Aug 2021 04:13:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbhHQENx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S233099AbhHQENx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Tue, 17 Aug 2021 00:13:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56400 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhHQENu (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 17 Aug 2021 00:13:50 -0400
+        with ESMTP id S229754AbhHQENw (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 17 Aug 2021 00:13:52 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C7DAC0613CF
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6ECC0617AF
         for <linux-can@vger.kernel.org>; Mon, 16 Aug 2021 21:13:18 -0700 (PDT)
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1mFqTN-0003Ba-S1; Tue, 17 Aug 2021 06:13:09 +0200
+        id 1mFqTN-0003BZ-S1; Tue, 17 Aug 2021 06:13:09 +0200
 Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1mFqTM-0006ZP-7n; Tue, 17 Aug 2021 06:13:08 +0200
+        id 1mFqTM-0006ZG-6e; Tue, 17 Aug 2021 06:13:08 +0200
 From:   Oleksij Rempel <o.rempel@pengutronix.de>
 To:     Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -40,9 +40,9 @@ Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel@pengutronix.de, David Jander <david@protonic.nl>
-Subject: [PATCH v2 2/3] dt-bindings: can: fsl,flexcan: enable termination-* bindings
-Date:   Tue, 17 Aug 2021 06:13:05 +0200
-Message-Id: <20210817041306.25185-3-o.rempel@pengutronix.de>
+Subject: [PATCH v2 1/3] dt-bindings: can-controller: add support for termination-gpios
+Date:   Tue, 17 Aug 2021 06:13:04 +0200
+Message-Id: <20210817041306.25185-2-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210817041306.25185-1-o.rempel@pengutronix.de>
 References: <20210817041306.25185-1-o.rempel@pengutronix.de>
@@ -56,45 +56,34 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Enable termination-* binding and provide validation example for it.
+Some boards provide GPIO controllable termination resistor. Provide
+binding to make use of it.
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- .../bindings/net/can/fsl,flexcan.yaml           | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ .../devicetree/bindings/net/can/can-controller.yaml      | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-index 55bff1586b6f..2ae5443b3ace 100644
---- a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-+++ b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-@@ -119,6 +119,9 @@ properties:
-     minimum: 0
-     maximum: 2
+diff --git a/Documentation/devicetree/bindings/net/can/can-controller.yaml b/Documentation/devicetree/bindings/net/can/can-controller.yaml
+index 9cf2ae097156..298ce69a8208 100644
+--- a/Documentation/devicetree/bindings/net/can/can-controller.yaml
++++ b/Documentation/devicetree/bindings/net/can/can-controller.yaml
+@@ -13,6 +13,15 @@ properties:
+   $nodename:
+     pattern: "^can(@.*)?$"
  
-+  termination-gpios: true
-+  termination-ohms: true
++  termination-gpios:
++    description: GPIO pin to enable CAN bus termination.
 +
- required:
-   - compatible
-   - reg
-@@ -148,3 +151,17 @@ examples:
-         fsl,stop-mode = <&gpr 0x34 28>;
-         fsl,scu-index = /bits/ 8 <1>;
-     };
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/gpio/gpio.h>
++  termination-ohms:
++    description: The resistance value of the CAN bus termination resistor.
++    $ref: /schemas/types.yaml#/definitions/uint16-array
++    minimum: 1
++    maximum: 65535
 +
-+    can@2090000 {
-+        compatible = "fsl,imx6q-flexcan";
-+        reg = <0x02090000 0x4000>;
-+        interrupts = <0 110 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&clks 1>, <&clks 2>;
-+        clock-names = "ipg", "per";
-+        fsl,stop-mode = <&gpr 0x34 28>;
-+        termination-gpios = <&gpio1 0 GPIO_ACTIVE_LOW>;
-+        termination-ohms = /bits/ 16 <150>;
-+    };
+ additionalProperties: true
+ 
+ ...
 -- 
 2.30.2
 
