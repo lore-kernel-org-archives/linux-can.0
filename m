@@ -7,46 +7,47 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7209AC43216
-	for <linux-can@archiver.kernel.org>; Thu, 19 Aug 2021 13:39:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EF2AC432BE
+	for <linux-can@archiver.kernel.org>; Thu, 19 Aug 2021 13:39:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 574F1610FF
-	for <linux-can@archiver.kernel.org>; Thu, 19 Aug 2021 13:39:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 799C0610CF
+	for <linux-can@archiver.kernel.org>; Thu, 19 Aug 2021 13:39:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240257AbhHSNkT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 19 Aug 2021 09:40:19 -0400
+        id S240331AbhHSNkZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 19 Aug 2021 09:40:25 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240260AbhHSNkP (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 19 Aug 2021 09:40:15 -0400
+        with ESMTP id S240287AbhHSNkS (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 19 Aug 2021 09:40:18 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5060FC0612A6
-        for <linux-can@vger.kernel.org>; Thu, 19 Aug 2021 06:39:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F40D9C06179A
+        for <linux-can@vger.kernel.org>; Thu, 19 Aug 2021 06:39:39 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1mGiGW-0004Uk-MA
-        for linux-can@vger.kernel.org; Thu, 19 Aug 2021 15:39:28 +0200
+        id 1mGiGg-0004sK-9B
+        for linux-can@vger.kernel.org; Thu, 19 Aug 2021 15:39:38 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 5DE4766A834
-        for <linux-can@vger.kernel.org>; Thu, 19 Aug 2021 13:39:25 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 863FD66A871
+        for <linux-can@vger.kernel.org>; Thu, 19 Aug 2021 13:39:32 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id C356766A81D;
-        Thu, 19 Aug 2021 13:39:23 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 1FC6666A82F;
+        Thu, 19 Aug 2021 13:39:25 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3556c61d;
-        Thu, 19 Aug 2021 13:39:15 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 5ae2be16;
+        Thu, 19 Aug 2021 13:39:16 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 11/22] can: tcan4x5x: cdev_to_priv(): remove stray empty line
-Date:   Thu, 19 Aug 2021 15:39:02 +0200
-Message-Id: <20210819133913.657715-12-mkl@pengutronix.de>
+        kernel@pengutronix.de, Matt Kline <matt@bitbashing.io>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 15/22] can: m_can: Batch FIFO writes during CAN transmit
+Date:   Thu, 19 Aug 2021 15:39:06 +0200
+Message-Id: <20210819133913.657715-16-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210819133913.657715-1-mkl@pengutronix.de>
 References: <20210819133913.657715-1-mkl@pengutronix.de>
@@ -60,27 +61,144 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch removes a stray empty line in the cdev_to_priv() function.
+From: Matt Kline <matt@bitbashing.io>
 
-Fixes: ac33ffd3e2b0 ("can: m_can: let m_can_class_allocate_dev() allocate driver specific private data")
-Link: https://lore.kernel.org/r/20210819111703.599686-1-mkl@pengutronix.de
+Give FIFO writes the same treatment as reads to avoid fixed costs of
+individual transfers on a slow bus (e.g., tcan4x5x).
+
+Link: https://lore.kernel.org/r/20210817050853.14875-4-matt@bitbashing.io
+Signed-off-by: Matt Kline <matt@bitbashing.io>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/tcan4x5x-core.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/can/m_can/m_can.c | 61 +++++++++++++++--------------------
+ 1 file changed, 26 insertions(+), 35 deletions(-)
 
-diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
-index 4147cecfbbd6..a4cbfedb6621 100644
---- a/drivers/net/can/m_can/tcan4x5x-core.c
-+++ b/drivers/net/can/m_can/tcan4x5x-core.c
-@@ -105,7 +105,6 @@
- static inline struct tcan4x5x_priv *cdev_to_priv(struct m_can_classdev *cdev)
- {
- 	return container_of(cdev, struct tcan4x5x_priv, cdev);
--
- }
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index fbd32b48d265..2470c47b2e31 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -279,7 +279,7 @@ enum m_can_reg {
+ /* Message RAM Elements */
+ #define M_CAN_FIFO_ID		0x0
+ #define M_CAN_FIFO_DLC		0x4
+-#define M_CAN_FIFO_DATA(n)	(0x8 + ((n) << 2))
++#define M_CAN_FIFO_DATA		0x8
  
- static void tcan4x5x_check_wake(struct tcan4x5x_priv *priv)
+ /* Rx Buffer Element */
+ /* R0 */
+@@ -514,7 +514,7 @@ static int m_can_read_fifo(struct net_device *dev, u32 rxfs)
+ 		if (fifo_header.dlc & RX_BUF_BRS)
+ 			cf->flags |= CANFD_BRS;
+ 
+-		err = m_can_fifo_read(cdev, fgi, M_CAN_FIFO_DATA(0),
++		err = m_can_fifo_read(cdev, fgi, M_CAN_FIFO_DATA,
+ 				      cf->data, DIV_ROUND_UP(cf->len, 4));
+ 		if (err)
+ 			goto out_fail;
+@@ -1588,8 +1588,9 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
+ 	struct canfd_frame *cf = (struct canfd_frame *)cdev->tx_skb->data;
+ 	struct net_device *dev = cdev->net;
+ 	struct sk_buff *skb = cdev->tx_skb;
+-	u32 id, dlc, cccr, fdflags;
+-	int i, err;
++	struct id_and_dlc fifo_header;
++	u32 cccr, fdflags;
++	int err;
+ 	int putidx;
+ 
+ 	cdev->tx_skb = NULL;
+@@ -1597,34 +1598,30 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
+ 	/* Generate ID field for TX buffer Element */
+ 	/* Common to all supported M_CAN versions */
+ 	if (cf->can_id & CAN_EFF_FLAG) {
+-		id = cf->can_id & CAN_EFF_MASK;
+-		id |= TX_BUF_XTD;
++		fifo_header.id = cf->can_id & CAN_EFF_MASK;
++		fifo_header.id |= TX_BUF_XTD;
+ 	} else {
+-		id = ((cf->can_id & CAN_SFF_MASK) << 18);
++		fifo_header.id = ((cf->can_id & CAN_SFF_MASK) << 18);
+ 	}
+ 
+ 	if (cf->can_id & CAN_RTR_FLAG)
+-		id |= TX_BUF_RTR;
++		fifo_header.id |= TX_BUF_RTR;
+ 
+ 	if (cdev->version == 30) {
+ 		netif_stop_queue(dev);
+ 
+-		/* message ram configuration */
+-		err = m_can_fifo_write(cdev, 0, M_CAN_FIFO_ID, &id, 1);
++		fifo_header.dlc = can_fd_len2dlc(cf->len) << 16;
++
++		/* Write the frame ID, DLC, and payload to the FIFO element. */
++		err = m_can_fifo_write(cdev, 0, M_CAN_FIFO_ID, &fifo_header, 2);
+ 		if (err)
+ 			goto out_fail;
+ 
+-		dlc = can_fd_len2dlc(cf->len) << 16;
+-		err = m_can_fifo_write(cdev, 0, M_CAN_FIFO_DLC, &dlc, 1);
++		err = m_can_fifo_write(cdev, 0, M_CAN_FIFO_DATA,
++				       cf->data, DIV_ROUND_UP(cf->len, 4));
+ 		if (err)
+ 			goto out_fail;
+ 
+-		for (i = 0; i < cf->len; i += 4) {
+-			err = m_can_fifo_write(cdev, 0, M_CAN_FIFO_DATA(i / 4), cf->data + i, 1);
+-			if (err)
+-				goto out_fail;
+-		}
+-
+ 		can_put_echo_skb(skb, dev, 0, 0);
+ 
+ 		if (cdev->can.ctrlmode & CAN_CTRLMODE_FD) {
+@@ -1667,10 +1664,11 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
+ 		/* get put index for frame */
+ 		putidx = FIELD_GET(TXFQS_TFQPI_MASK,
+ 				   m_can_read(cdev, M_CAN_TXFQS));
+-		/* Write ID Field to FIFO Element */
+-		err = m_can_fifo_write(cdev, putidx, M_CAN_FIFO_ID, &id, 1);
+-		if (err)
+-			goto out_fail;
++
++		/* Construct DLC Field, with CAN-FD configuration.
++		 * Use the put index of the fifo as the message marker,
++		 * used in the TX interrupt for sending the correct echo frame.
++		 */
+ 
+ 		/* get CAN FD configuration of frame */
+ 		fdflags = 0;
+@@ -1680,24 +1678,17 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
+ 				fdflags |= TX_BUF_BRS;
+ 		}
+ 
+-		/* Construct DLC Field. Also contains CAN-FD configuration
+-		 * use put index of fifo as message marker
+-		 * it is used in TX interrupt for
+-		 * sending the correct echo frame
+-		 */
+-		dlc = FIELD_PREP(TX_BUF_MM_MASK, putidx) |
++		fifo_header.dlc = FIELD_PREP(TX_BUF_MM_MASK, putidx) |
+ 			FIELD_PREP(TX_BUF_DLC_MASK, can_fd_len2dlc(cf->len)) |
+ 			fdflags | TX_BUF_EFC;
+-		err = m_can_fifo_write(cdev, putidx, M_CAN_FIFO_DLC, &dlc, 1);
++		err = m_can_fifo_write(cdev, putidx, M_CAN_FIFO_ID, &fifo_header, 2);
+ 		if (err)
+ 			goto out_fail;
+ 
+-		for (i = 0; i < cf->len; i += 4) {
+-			err = m_can_fifo_write(cdev, putidx, M_CAN_FIFO_DATA(i / 4),
+-					       cf->data + i, 1);
+-			if (err)
+-				goto out_fail;
+-		}
++		err = m_can_fifo_write(cdev, putidx, M_CAN_FIFO_DATA,
++				       cf->data, DIV_ROUND_UP(cf->len, 4));
++		if (err)
++			goto out_fail;
+ 
+ 		/* Push loopback echo.
+ 		 * Will be looped back on TX interrupt based on message marker
 -- 
 2.32.0
 
