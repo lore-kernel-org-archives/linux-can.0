@@ -7,47 +7,47 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9859C4320E
-	for <linux-can@archiver.kernel.org>; Thu, 19 Aug 2021 13:39:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E0B5C43214
+	for <linux-can@archiver.kernel.org>; Thu, 19 Aug 2021 13:39:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B73F1610CF
-	for <linux-can@archiver.kernel.org>; Thu, 19 Aug 2021 13:39:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3A70E610A1
+	for <linux-can@archiver.kernel.org>; Thu, 19 Aug 2021 13:39:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240168AbhHSNk0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S240337AbhHSNk0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Thu, 19 Aug 2021 09:40:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59910 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240283AbhHSNkS (ORCPT
+        with ESMTP id S240284AbhHSNkS (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 19 Aug 2021 09:40:18 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9FEC061757
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2773C0613D9
         for <linux-can@vger.kernel.org>; Thu, 19 Aug 2021 06:39:39 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1mGiGg-0004sI-6n
+        id 1mGiGg-0004sO-7G
         for linux-can@vger.kernel.org; Thu, 19 Aug 2021 15:39:38 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 8097D66A86E
-        for <linux-can@vger.kernel.org>; Thu, 19 Aug 2021 13:39:32 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 9054F66A874
+        for <linux-can@vger.kernel.org>; Thu, 19 Aug 2021 13:39:33 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 144D466A821;
-        Thu, 19 Aug 2021 13:39:23 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id ECFF266A82C;
+        Thu, 19 Aug 2021 13:39:24 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 5cdf81dd;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7e1e2a6c;
         Thu, 19 Aug 2021 13:39:15 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>
-Subject: [PATCH net-next 12/22] can: m_can: fix block comment style
-Date:   Thu, 19 Aug 2021 15:39:03 +0200
-Message-Id: <20210819133913.657715-13-mkl@pengutronix.de>
+        kernel@pengutronix.de, Matt Kline <matt@bitbashing.io>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 14/22] can: m_can: Batch FIFO reads during CAN receive
+Date:   Thu, 19 Aug 2021 15:39:05 +0200
+Message-Id: <20210819133913.657715-15-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210819133913.657715-1-mkl@pengutronix.de>
 References: <20210819133913.657715-1-mkl@pengutronix.de>
@@ -61,49 +61,126 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch fixes the commenting style in the m_can driver.
+From: Matt Kline <matt@bitbashing.io>
 
-Fixes: 1be37d3b0414 ("can: m_can: fix periph RX path: use rx-offload to ensure skbs are sent from softirq context")
-Fixes: df06fd678260 ("can: m_can: m_can_chip_config(): enable and configure internal timestamps")
-Link: https://lore.kernel.org/r/20210819111703.599686-2-mkl@pengutronix.de
-Cc: Chandrasekar Ramakrishnan <rcsekar@samsung.com>
+On peripherals communicating over a relatively slow SPI line
+(e.g. tcan4x5x), individual transfers have high fixed costs.
+This causes the driver to spend most of its time waiting between
+transfers and severely limits throughput.
+
+Reduce these overheads by reading more than one word at a time.
+Writing could get a similar treatment in follow-on commits.
+
+Link: https://lore.kernel.org/r/20210817050853.14875-3-matt@bitbashing.io
+Signed-off-by: Matt Kline <matt@bitbashing.io>
+[mkl: remove __packed from struct id_and_dlc]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/net/can/m_can/m_can.c | 51 +++++++++++++++++++----------------
+ 1 file changed, 28 insertions(+), 23 deletions(-)
 
 diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 91351eef6bf8..47ddee80c423 100644
+index 8922ca0f8e94..fbd32b48d265 100644
 --- a/drivers/net/can/m_can/m_can.c
 +++ b/drivers/net/can/m_can/m_can.c
-@@ -437,7 +437,7 @@ static void m_can_clean(struct net_device *net)
-  * napi. For non-peripherals, RX is done in napi already, so push
-  * directly. timestamp is used to ensure good skb ordering in
-  * rx-offload and is ignored for non-peripherals.
--*/
-+ */
- static void m_can_receive_skb(struct m_can_classdev *cdev,
- 			      struct sk_buff *skb,
- 			      u32 timestamp)
-@@ -946,7 +946,7 @@ static int m_can_poll(struct napi_struct *napi, int quota)
- /* Echo tx skb and update net stats. Peripherals use rx-offload for
-  * echo. timestamp is used for peripherals to ensure correct ordering
-  * by rx-offload, and is ignored for non-peripherals.
--*/
-+ */
- static void m_can_tx_update_stats(struct m_can_classdev *cdev,
- 				  unsigned int msg_mark,
- 				  u32 timestamp)
-@@ -1306,7 +1306,8 @@ static void m_can_chip_config(struct net_device *dev)
- 	m_can_set_bittiming(dev);
+@@ -309,6 +309,15 @@ enum m_can_reg {
+ #define TX_EVENT_MM_MASK	GENMASK(31, 24)
+ #define TX_EVENT_TXTS_MASK	GENMASK(15, 0)
  
- 	/* enable internal timestamp generation, with a prescalar of 16. The
--	 * prescalar is applied to the nominal bit timing */
-+	 * prescalar is applied to the nominal bit timing
-+	 */
- 	m_can_write(cdev, M_CAN_TSCC, FIELD_PREP(TSCC_TCP_MASK, 0xf));
++/* The ID and DLC registers are adjacent in M_CAN FIFO memory,
++ * and we can save a (potentially slow) bus round trip by combining
++ * reads and writes to them.
++ */
++struct id_and_dlc {
++	u32 id;
++	u32 dlc;
++};
++
+ static inline u32 m_can_read(struct m_can_classdev *cdev, enum m_can_reg reg)
+ {
+ 	return cdev->ops->read_reg(cdev, reg);
+@@ -464,17 +473,18 @@ static int m_can_read_fifo(struct net_device *dev, u32 rxfs)
+ 	struct m_can_classdev *cdev = netdev_priv(dev);
+ 	struct canfd_frame *cf;
+ 	struct sk_buff *skb;
+-	u32 id, fgi, dlc;
++	struct id_and_dlc fifo_header;
++	u32 fgi;
+ 	u32 timestamp = 0;
+-	int i, err;
++	int err;
  
- 	m_can_config_endisable(cdev, false);
+ 	/* calculate the fifo get index for where to read data */
+ 	fgi = FIELD_GET(RXFS_FGI_MASK, rxfs);
+-	err = m_can_fifo_read(cdev, fgi, M_CAN_FIFO_DLC, &dlc, 1);
++	err = m_can_fifo_read(cdev, fgi, M_CAN_FIFO_ID, &fifo_header, 2);
+ 	if (err)
+ 		goto out_fail;
+ 
+-	if (dlc & RX_BUF_FDF)
++	if (fifo_header.dlc & RX_BUF_FDF)
+ 		skb = alloc_canfd_skb(dev, &cf);
+ 	else
+ 		skb = alloc_can_skb(dev, (struct can_frame **)&cf);
+@@ -483,36 +493,31 @@ static int m_can_read_fifo(struct net_device *dev, u32 rxfs)
+ 		return 0;
+ 	}
+ 
+-	if (dlc & RX_BUF_FDF)
+-		cf->len = can_fd_dlc2len((dlc >> 16) & 0x0F);
++	if (fifo_header.dlc & RX_BUF_FDF)
++		cf->len = can_fd_dlc2len((fifo_header.dlc >> 16) & 0x0F);
+ 	else
+-		cf->len = can_cc_dlc2len((dlc >> 16) & 0x0F);
+-
+-	err = m_can_fifo_read(cdev, fgi, M_CAN_FIFO_ID, &id, 1);
+-	if (err)
+-		goto out_fail;
++		cf->len = can_cc_dlc2len((fifo_header.dlc >> 16) & 0x0F);
+ 
+-	if (id & RX_BUF_XTD)
+-		cf->can_id = (id & CAN_EFF_MASK) | CAN_EFF_FLAG;
++	if (fifo_header.id & RX_BUF_XTD)
++		cf->can_id = (fifo_header.id & CAN_EFF_MASK) | CAN_EFF_FLAG;
+ 	else
+-		cf->can_id = (id >> 18) & CAN_SFF_MASK;
++		cf->can_id = (fifo_header.id >> 18) & CAN_SFF_MASK;
+ 
+-	if (id & RX_BUF_ESI) {
++	if (fifo_header.id & RX_BUF_ESI) {
+ 		cf->flags |= CANFD_ESI;
+ 		netdev_dbg(dev, "ESI Error\n");
+ 	}
+ 
+-	if (!(dlc & RX_BUF_FDF) && (id & RX_BUF_RTR)) {
++	if (!(fifo_header.dlc & RX_BUF_FDF) && (fifo_header.id & RX_BUF_RTR)) {
+ 		cf->can_id |= CAN_RTR_FLAG;
+ 	} else {
+-		if (dlc & RX_BUF_BRS)
++		if (fifo_header.dlc & RX_BUF_BRS)
+ 			cf->flags |= CANFD_BRS;
+ 
+-		for (i = 0; i < cf->len; i += 4) {
+-			err = m_can_fifo_read(cdev, fgi, M_CAN_FIFO_DATA(i / 4), cf->data + i, 1);
+-			if (err)
+-				goto out_fail;
+-		}
++		err = m_can_fifo_read(cdev, fgi, M_CAN_FIFO_DATA(0),
++				      cf->data, DIV_ROUND_UP(cf->len, 4));
++		if (err)
++			goto out_fail;
+ 	}
+ 
+ 	/* acknowledge rx fifo 0 */
+@@ -521,7 +526,7 @@ static int m_can_read_fifo(struct net_device *dev, u32 rxfs)
+ 	stats->rx_packets++;
+ 	stats->rx_bytes += cf->len;
+ 
+-	timestamp = FIELD_GET(RX_BUF_RXTS_MASK, dlc);
++	timestamp = FIELD_GET(RX_BUF_RXTS_MASK, fifo_header.dlc);
+ 
+ 	m_can_receive_skb(cdev, skb, timestamp);
+ 
 -- 
 2.32.0
 
