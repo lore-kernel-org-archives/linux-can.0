@@ -2,341 +2,85 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42FEEC4338F
-	for <linux-can@archiver.kernel.org>; Mon, 23 Aug 2021 02:48:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7368C4338F
+	for <linux-can@archiver.kernel.org>; Mon, 23 Aug 2021 11:33:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 17E3061214
-	for <linux-can@archiver.kernel.org>; Mon, 23 Aug 2021 02:48:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AC6CF61206
+	for <linux-can@archiver.kernel.org>; Mon, 23 Aug 2021 11:33:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbhHWCsz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 22 Aug 2021 22:48:55 -0400
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:38302 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230401AbhHWCsz (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 22 Aug 2021 22:48:55 -0400
-Received: from tomoyo.flets-east.jp ([114.149.34.46])
-        by mwinf5d20 with ME
-        id kqnw250020zjR6y03qo9EU; Mon, 23 Aug 2021 04:48:11 +0200
-X-ME-Helo: tomoyo.flets-east.jp
-X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 23 Aug 2021 04:48:11 +0200
-X-ME-IP: 114.149.34.46
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v2] can: netlink: prevent incoherent can configuration in case of early return
-Date:   Mon, 23 Aug 2021 11:47:50 +0900
-Message-Id: <20210823024750.702542-1-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.31.1
+        id S236447AbhHWLeD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 23 Aug 2021 07:34:03 -0400
+Received: from cmccmta1.chinamobile.com ([221.176.66.79]:44190 "EHLO
+        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236520AbhHWLeB (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 23 Aug 2021 07:34:01 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.3]) by rmmx-syy-dmz-app01-12001 (RichMail) with SMTP id 2ee16123876fd13-04795; Mon, 23 Aug 2021 19:33:05 +0800 (CST)
+X-RM-TRANSID: 2ee16123876fd13-04795
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[223.112.105.130])
+        by rmsmtp-syy-appsvr02-12002 (RichMail) with SMTP id 2ee261238767421-c70da;
+        Mon, 23 Aug 2021 19:33:05 +0800 (CST)
+X-RM-TRANSID: 2ee261238767421-c70da
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     davem@davemloft.net, wg@grandegger.com, mkl@pengutronix.de,
+        kuba@kernel.org, kevinbrace@bracecomputerlab.com,
+        romieu@fr.zoreil.com
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: [PATCH 3/3] can: mscan: mpc5xxx_can: Use of_device_get_match_data to simplify code
+Date:   Mon, 23 Aug 2021 19:33:38 +0800
+Message-Id: <20210823113338.3568-4-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
+In-Reply-To: <20210823113338.3568-1-tangbin@cmss.chinamobile.com>
+References: <20210823113338.3568-1-tangbin@cmss.chinamobile.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-struct can_priv has a set of flags (can_priv::ctrlmode) which are
-correlated with the other fields of the structure. In
-can_changelink(), those flags are set first and copied to can_priv. If
-the function has to return early, for example due to an out of range
-value provided by the user, then the global configuration might become
-incoherent.
+Retrieve OF match data, it's better and cleaner to use
+'of_device_get_match_data' over 'of_match_device'.
 
-Example: the user provides an out of range dbitrate (e.g. 20
-Mbps). The command fails (-EINVAL), however the FD flag was already
-set resulting in a configuration where FD is on but the databittiming
-parameters are empty.
-
-* Illustration of above example *
-
-| $ ip link set can0 type can bitrate 500000 dbitrate 20000000 fd on
-| RTNETLINK answers: Invalid argument
-| $ ip --details link show can0
-| 1: can0: <NOARP,ECHO> mtu 72 qdisc noop state DOWN mode DEFAULT group default qlen 10
-|     link/can  promiscuity 0 minmtu 0 maxmtu 0
-|     can <FD> state STOPPED restart-ms 0
-           ^^ FD flag is set without any of the databittiming parameters...
-| 	  bitrate 500000 sample-point 0.875
-| 	  tq 12 prop-seg 69 phase-seg1 70 phase-seg2 20 sjw 1
-| 	  ES582.1/ES584.1: tseg1 2..256 tseg2 2..128 sjw 1..128 brp 1..512 brp-inc 1
-| 	  ES582.1/ES584.1: dtseg1 2..32 dtseg2 1..16 dsjw 1..8 dbrp 1..32 dbrp-inc 1
-| 	  clock 80000000 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
-
-To prevent this from happening, we do a local copy of can_priv, work
-on it, an copy it at the very end of the function (i.e. only if all
-previous checks succeeded).
-
-Once this done, there is no more need to have a temporary variable for
-a specific parameter. As such, the bittiming and data bittiming (bt
-and dbt) are directly written to the temporary priv variable.
-
-Finally, function can_calc_tdco() was retrieving can_priv from the
-net_device and directly modifying it. We changed the prototype so that
-it instead writes its changes into our temporary priv variable.
-
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 ---
-* Changelog *
+ drivers/net/can/mscan/mpc5xxx_can.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-v1 -> v2:
-  - Change the prototype of can_calc_tdco() so that the changes are
-    applied to the temporary priv instead of netdev_priv(dev).
----
- drivers/net/can/dev/bittiming.c |  8 +--
- drivers/net/can/dev/netlink.c   | 88 +++++++++++++++++----------------
- include/linux/can/bittiming.h   |  7 ++-
- 3 files changed, 53 insertions(+), 50 deletions(-)
-
-diff --git a/drivers/net/can/dev/bittiming.c b/drivers/net/can/dev/bittiming.c
-index f49170eadd54..bddd93e2e439 100644
---- a/drivers/net/can/dev/bittiming.c
-+++ b/drivers/net/can/dev/bittiming.c
-@@ -175,13 +175,9 @@ int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
- 	return 0;
- }
- 
--void can_calc_tdco(struct net_device *dev)
-+void can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
-+		   const struct can_bittiming *dbt)
+diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/mpc5xxx_can.c
+index e254e04ae..3b7465acd 100644
+--- a/drivers/net/can/mscan/mpc5xxx_can.c
++++ b/drivers/net/can/mscan/mpc5xxx_can.c
+@@ -279,7 +279,6 @@ static u32 mpc512x_can_get_clock(struct platform_device *ofdev,
+ static const struct of_device_id mpc5xxx_can_table[];
+ static int mpc5xxx_can_probe(struct platform_device *ofdev)
  {
--	struct can_priv *priv = netdev_priv(dev);
--	const struct can_bittiming *dbt = &priv->data_bittiming;
--	struct can_tdc *tdc = &priv->tdc;
--	const struct can_tdc_const *tdc_const = priv->tdc_const;
--
- 	if (!tdc_const)
- 		return;
+-	const struct of_device_id *match;
+ 	const struct mpc5xxx_can_data *data;
+ 	struct device_node *np = ofdev->dev.of_node;
+ 	struct net_device *dev;
+@@ -289,10 +288,9 @@ static int mpc5xxx_can_probe(struct platform_device *ofdev)
+ 	int irq, mscan_clksrc = 0;
+ 	int err = -ENOMEM;
  
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 80425636049d..50dfed462711 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -58,14 +58,20 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 			  struct nlattr *data[],
- 			  struct netlink_ext_ack *extack)
- {
--	struct can_priv *priv = netdev_priv(dev);
-+	/* Work on a local copy of priv to prevent inconsistent value
-+	 * in case of early return. net/core/rtnetlink.c has a global
-+	 * mutex so using a static declaration is race free
-+	 */
-+	static struct can_priv priv;
- 	int err;
+-	match = of_match_device(mpc5xxx_can_table, &ofdev->dev);
+-	if (!match)
++	data = of_device_get_match_data(&ofdev->dev);
++	if (!data)
+ 		return -EINVAL;
+-	data = match->data;
  
- 	/* We need synchronization with dev->stop() */
- 	ASSERT_RTNL();
- 
-+	memcpy(&priv, netdev_priv(dev), sizeof(priv));
-+
- 	if (data[IFLA_CAN_BITTIMING]) {
--		struct can_bittiming bt;
-+		struct can_bittiming *bt = &priv.bittiming;
- 
- 		/* Do not allow changing bittiming while running */
- 		if (dev->flags & IFF_UP)
-@@ -76,28 +82,26 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 		 * directly via do_set_bitrate(). Bail out if neither
- 		 * is given.
- 		 */
--		if (!priv->bittiming_const && !priv->do_set_bittiming)
-+		if (!priv.bittiming_const && !priv.do_set_bittiming)
- 			return -EOPNOTSUPP;
- 
--		memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
--		err = can_get_bittiming(dev, &bt,
--					priv->bittiming_const,
--					priv->bitrate_const,
--					priv->bitrate_const_cnt);
-+		memcpy(bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(*bt));
-+		err = can_get_bittiming(dev, bt,
-+					priv.bittiming_const,
-+					priv.bitrate_const,
-+					priv.bitrate_const_cnt);
- 		if (err)
- 			return err;
- 
--		if (priv->bitrate_max && bt.bitrate > priv->bitrate_max) {
-+		if (priv.bitrate_max && bt->bitrate > priv.bitrate_max) {
- 			netdev_err(dev, "arbitration bitrate surpasses transceiver capabilities of %d bps\n",
--				   priv->bitrate_max);
-+				   priv.bitrate_max);
- 			return -EINVAL;
- 		}
- 
--		memcpy(&priv->bittiming, &bt, sizeof(bt));
--
--		if (priv->do_set_bittiming) {
-+		if (priv.do_set_bittiming) {
- 			/* Finally, set the bit-timing registers */
--			err = priv->do_set_bittiming(dev);
-+			err = priv.do_set_bittiming(dev);
- 			if (err)
- 				return err;
- 		}
-@@ -112,11 +116,11 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 		if (dev->flags & IFF_UP)
- 			return -EBUSY;
- 		cm = nla_data(data[IFLA_CAN_CTRLMODE]);
--		ctrlstatic = priv->ctrlmode_static;
-+		ctrlstatic = priv.ctrlmode_static;
- 		maskedflags = cm->flags & cm->mask;
- 
- 		/* check whether provided bits are allowed to be passed */
--		if (maskedflags & ~(priv->ctrlmode_supported | ctrlstatic))
-+		if (maskedflags & ~(priv.ctrlmode_supported | ctrlstatic))
- 			return -EOPNOTSUPP;
- 
- 		/* do not check for static fd-non-iso if 'fd' is disabled */
-@@ -128,16 +132,16 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 			return -EOPNOTSUPP;
- 
- 		/* clear bits to be modified and copy the flag values */
--		priv->ctrlmode &= ~cm->mask;
--		priv->ctrlmode |= maskedflags;
-+		priv.ctrlmode &= ~cm->mask;
-+		priv.ctrlmode |= maskedflags;
- 
- 		/* CAN_CTRLMODE_FD can only be set when driver supports FD */
--		if (priv->ctrlmode & CAN_CTRLMODE_FD) {
-+		if (priv.ctrlmode & CAN_CTRLMODE_FD) {
- 			dev->mtu = CANFD_MTU;
- 		} else {
- 			dev->mtu = CAN_MTU;
--			memset(&priv->data_bittiming, 0,
--			       sizeof(priv->data_bittiming));
-+			memset(&priv.data_bittiming, 0,
-+			       sizeof(priv.data_bittiming));
- 		}
- 	}
- 
-@@ -145,7 +149,7 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 		/* Do not allow changing restart delay while running */
- 		if (dev->flags & IFF_UP)
- 			return -EBUSY;
--		priv->restart_ms = nla_get_u32(data[IFLA_CAN_RESTART_MS]);
-+		priv.restart_ms = nla_get_u32(data[IFLA_CAN_RESTART_MS]);
- 	}
- 
- 	if (data[IFLA_CAN_RESTART]) {
-@@ -158,7 +162,7 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 	}
- 
- 	if (data[IFLA_CAN_DATA_BITTIMING]) {
--		struct can_bittiming dbt;
-+		struct can_bittiming *dbt = &priv.data_bittiming;
- 
- 		/* Do not allow changing bittiming while running */
- 		if (dev->flags & IFF_UP)
-@@ -169,31 +173,29 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 		 * directly via do_set_bitrate(). Bail out if neither
- 		 * is given.
- 		 */
--		if (!priv->data_bittiming_const && !priv->do_set_data_bittiming)
-+		if (!priv.data_bittiming_const && !priv.do_set_data_bittiming)
- 			return -EOPNOTSUPP;
- 
--		memcpy(&dbt, nla_data(data[IFLA_CAN_DATA_BITTIMING]),
--		       sizeof(dbt));
--		err = can_get_bittiming(dev, &dbt,
--					priv->data_bittiming_const,
--					priv->data_bitrate_const,
--					priv->data_bitrate_const_cnt);
-+		memcpy(dbt, nla_data(data[IFLA_CAN_DATA_BITTIMING]),
-+		       sizeof(*dbt));
-+		err = can_get_bittiming(dev, dbt,
-+					priv.data_bittiming_const,
-+					priv.data_bitrate_const,
-+					priv.data_bitrate_const_cnt);
- 		if (err)
- 			return err;
- 
--		if (priv->bitrate_max && dbt.bitrate > priv->bitrate_max) {
-+		if (priv.bitrate_max && dbt->bitrate > priv.bitrate_max) {
- 			netdev_err(dev, "canfd data bitrate surpasses transceiver capabilities of %d bps\n",
--				   priv->bitrate_max);
-+				   priv.bitrate_max);
- 			return -EINVAL;
- 		}
- 
--		memcpy(&priv->data_bittiming, &dbt, sizeof(dbt));
--
--		can_calc_tdco(dev);
-+		can_calc_tdco(&priv.tdc, priv.tdc_const, &priv.data_bittiming);
- 
--		if (priv->do_set_data_bittiming) {
-+		if (priv.do_set_data_bittiming) {
- 			/* Finally, set the bit-timing registers */
--			err = priv->do_set_data_bittiming(dev);
-+			err = priv.do_set_data_bittiming(dev);
- 			if (err)
- 				return err;
- 		}
-@@ -201,28 +203,30 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 
- 	if (data[IFLA_CAN_TERMINATION]) {
- 		const u16 termval = nla_get_u16(data[IFLA_CAN_TERMINATION]);
--		const unsigned int num_term = priv->termination_const_cnt;
-+		const unsigned int num_term = priv.termination_const_cnt;
- 		unsigned int i;
- 
--		if (!priv->do_set_termination)
-+		if (!priv.do_set_termination)
- 			return -EOPNOTSUPP;
- 
- 		/* check whether given value is supported by the interface */
- 		for (i = 0; i < num_term; i++) {
--			if (termval == priv->termination_const[i])
-+			if (termval == priv.termination_const[i])
- 				break;
- 		}
- 		if (i >= num_term)
- 			return -EINVAL;
- 
- 		/* Finally, set the termination value */
--		err = priv->do_set_termination(dev, termval);
-+		err = priv.do_set_termination(dev, termval);
- 		if (err)
- 			return err;
- 
--		priv->termination = termval;
-+		priv.termination = termval;
- 	}
- 
-+	memcpy(netdev_priv(dev), &priv, sizeof(priv));
-+
- 	return 0;
- }
- 
-diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
-index 9de6e9053e34..b3c1711ee0f0 100644
---- a/include/linux/can/bittiming.h
-+++ b/include/linux/can/bittiming.h
-@@ -87,7 +87,8 @@ struct can_tdc_const {
- int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
- 		       const struct can_bittiming_const *btc);
- 
--void can_calc_tdco(struct net_device *dev);
-+void can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
-+		   const struct can_bittiming *dbt);
- #else /* !CONFIG_CAN_CALC_BITTIMING */
- static inline int
- can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
-@@ -97,7 +98,9 @@ can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
- 	return -EINVAL;
- }
- 
--static inline void can_calc_tdco(struct net_device *dev)
-+static inline void
-+can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
-+	      const struct can_bittiming *dbt)
- {
- }
- #endif /* CONFIG_CAN_CALC_BITTIMING */
+ 	base = of_iomap(np, 0);
+ 	if (!base) {
 -- 
-2.31.1
+2.20.1.windows.1
+
+
 
