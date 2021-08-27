@@ -2,65 +2,206 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D1ABC4320A
-	for <linux-can@archiver.kernel.org>; Thu, 26 Aug 2021 20:33:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D708CC4320E
+	for <linux-can@archiver.kernel.org>; Fri, 27 Aug 2021 16:08:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 35F926101C
-	for <linux-can@archiver.kernel.org>; Thu, 26 Aug 2021 20:33:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BEEB360FC4
+	for <linux-can@archiver.kernel.org>; Fri, 27 Aug 2021 16:08:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243471AbhHZUep (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 26 Aug 2021 16:34:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229916AbhHZUeo (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 26 Aug 2021 16:34:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id DC9A260F91;
-        Thu, 26 Aug 2021 20:33:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630010036;
-        bh=HcJnSY3xITwzNO2duOVAGRP0zMYM1V/J9YMW/ut7EuE=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=L6jEDJ62hPX8QqgmBTbgddsn/DMCkC3os2G2/Wx1yJ4uzmXZ+TdYY44Q3BJbdn0Z+
-         /sBO7H7WcrM0xAhMmjbTfXJaL/wP4mJwPvl4Cn6TKE2JhIZIktiYTyFUGFf31cx0g9
-         6csU6VVSS+irlqo2fBO8Zu9aZNTQuESJp5bxxloIFVg4ykmMJVdVpzWX9QDLkj1VcR
-         0IjfvWvOUO0bi+m48AGFPC4Jm/II4YoyOhwpHCRDdRBojTEXhUrsQm345maXbbaAE/
-         saG0I75w1fOfiTeB0LPsednG2B8uyAw/Q1NAD5np2M+rqrad7MaynCcRgAU0gZSDxv
-         iWjnX5GSWmAfA==
-Subject: Re: [GIT PULL] Networking for 5.14-rc8
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210826191017.1345100-1-kuba@kernel.org>
-References: <20210826191017.1345100-1-kuba@kernel.org>
-X-PR-Tracked-List-Id: <bpf.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210826191017.1345100-1-kuba@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.14-rc8
-X-PR-Tracked-Commit-Id: 9ebc2758d0bbed951511d1709be0717178ec2660
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8a2cb8bd064ecb089995469076f3055fbfd0a4c9
-Message-Id: <163001003679.31497.10308151113469684476.pr-tracker-bot@kernel.org>
-Date:   Thu, 26 Aug 2021 20:33:56 +0000
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-can@vger.kernel.org, kvalo@codeaurora.org
+        id S245472AbhH0QJM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 27 Aug 2021 12:09:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245346AbhH0QJM (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 27 Aug 2021 12:09:12 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39483C0613D9
+        for <linux-can@vger.kernel.org>; Fri, 27 Aug 2021 09:08:23 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id j1so4847489pjv.3
+        for <linux-can@vger.kernel.org>; Fri, 27 Aug 2021 09:08:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3BOREjcUGdekjt/HzJv8JPNZZV+WRxv1ga5r5CaLfMg=;
+        b=LgSMkv8yRY6NcFjGg/J63Y2GpE2F2TGefzma4o9g5HEhtSAND6DhVddNHYYks45NsN
+         vl/76kMWgkZPlkAHgvJTPVgljvSFRJ7Ui/2QED3sjgSLOAoCwiEAsmgZNMGT/LdlCbMz
+         6XWQqYT5qF5nKBsTivPFzvO7iyOTn/hubgj2U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3BOREjcUGdekjt/HzJv8JPNZZV+WRxv1ga5r5CaLfMg=;
+        b=UWv4vC35rbbZ8jEvoFGv4AZiZFN1pEGmMhj7KWSyL/WQY1z1/gGPygVZcYIXXFGPgz
+         LKhq1X6s8MmG1AfbmEN4QhbJl6yqfXRuWW8XwMYjsSJNOnM71Iz9o+qI+bdGIoTfOXiL
+         5hY3ZaZPKum4ltxNlaOZo3xu6UQhUMpPdQvx5S5l0RuZ4HCTPb91sKclJCtaYAvr/F9x
+         dhgIqbHEhYKCNqQ2v6xUMJveJlIkXo/ggvwKR21EeDAD1Uf1GyJaA5ZxYKxzI+KJyTDF
+         7qff1yK6GSDFjg64CerUolBI1Zfe3Rk8Wp1KKdr1g6o/20Dp6VSo6rmTAZDQ777lDT00
+         8VGw==
+X-Gm-Message-State: AOAM532+DUE5qA4IWExCJDUVdwJsl4wgsyS9DuPf0sljixGd6Ymxk2AU
+        /S3AJNyo7OAT7zcu+tD4u7vDTQ==
+X-Google-Smtp-Source: ABdhPJz9b21uTH+fuc32V76US0q/VM+qkB83+nJU8q4xHvgfI8nk8UEzE23GCJMggnW3rTr9tTvrxA==
+X-Received: by 2002:a17:90b:357:: with SMTP id fh23mr8796487pjb.140.1630080502650;
+        Fri, 27 Aug 2021 09:08:22 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h9sm13930821pjg.9.2021.08.27.09.08.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 09:08:21 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 09:08:19 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Mordechay Goodstein <mordechay.goodstein@intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+        linux-crypto@vger.kernel.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-can@vger.kernel.org,
+        bpf@vger.kernel.org, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Keith Packard <keithp@keithp.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 2/5] treewide: Replace open-coded flex arrays in unions
+Message-ID: <202108270906.7C85982525@keescook>
+References: <20210826050458.1540622-1-keescook@chromium.org>
+ <20210826050458.1540622-3-keescook@chromium.org>
+ <20210826062452.jekmoo43f4xu5jxk@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826062452.jekmoo43f4xu5jxk@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The pull request you sent on Thu, 26 Aug 2021 12:10:17 -0700:
+On Thu, Aug 26, 2021 at 08:24:52AM +0200, Marc Kleine-Budde wrote:
+> On 25.08.2021 22:04:55, Kees Cook wrote:
+> > In support of enabling -Warray-bounds and -Wzero-length-bounds and
+> > correctly handling run-time memcpy() bounds checking, replace all
+> > open-coded flexible arrays (i.e. 0-element arrays) in unions with the
+> > flex_array() helper macro.
+> > 
+> > This fixes warnings such as:
+> > 
+> > fs/hpfs/anode.c: In function 'hpfs_add_sector_to_btree':
+> > fs/hpfs/anode.c:209:27: warning: array subscript 0 is outside the bounds of an interior zero-length array 'struct bplus_internal_node[0]' [-Wzero-length-bounds]
+> >   209 |    anode->btree.u.internal[0].down = cpu_to_le32(a);
+> >       |    ~~~~~~~~~~~~~~~~~~~~~~~^~~
+> > In file included from fs/hpfs/hpfs_fn.h:26,
+> >                  from fs/hpfs/anode.c:10:
+> > fs/hpfs/hpfs.h:412:32: note: while referencing 'internal'
+> >   412 |     struct bplus_internal_node internal[0]; /* (internal) 2-word entries giving
+> >       |                                ^~~~~~~~
+> > 
+> > drivers/net/can/usb/etas_es58x/es58x_fd.c: In function 'es58x_fd_tx_can_msg':
+> > drivers/net/can/usb/etas_es58x/es58x_fd.c:360:35: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[]'} [-Wzero-length-bounds]
+> >   360 |  tx_can_msg = (typeof(tx_can_msg))&es58x_fd_urb_cmd->raw_msg[msg_len];
+> >       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > In file included from drivers/net/can/usb/etas_es58x/es58x_core.h:22,
+> >                  from drivers/net/can/usb/etas_es58x/es58x_fd.c:17:
+> > drivers/net/can/usb/etas_es58x/es58x_fd.h:231:6: note: while referencing 'raw_msg'
+> >   231 |   u8 raw_msg[0];
+> >       |      ^~~~~~~
+> > 
+> > Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > Cc: Ayush Sawal <ayush.sawal@chelsio.com>
+> > Cc: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+> > Cc: Rohit Maheshwari <rohitm@chelsio.com>
+> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: Kalle Valo <kvalo@codeaurora.org>
+> > Cc: Jakub Kicinski <kuba@kernel.org>
+> > Cc: Stanislaw Gruszka <stf_xl@wp.pl>
+> > Cc: Luca Coelho <luciano.coelho@intel.com>
+> > Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+> > Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+> > Cc: Alexei Starovoitov <ast@kernel.org>
+> > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > Cc: Andrii Nakryiko <andrii@kernel.org>
+> > Cc: Martin KaFai Lau <kafai@fb.com>
+> > Cc: Song Liu <songliubraving@fb.com>
+> > Cc: Yonghong Song <yhs@fb.com>
+> > Cc: John Fastabend <john.fastabend@gmail.com>
+> > Cc: KP Singh <kpsingh@kernel.org>
+> > Cc: Johannes Berg <johannes.berg@intel.com>
+> > Cc: Mordechay Goodstein <mordechay.goodstein@intel.com>
+> > Cc: Lee Jones <lee.jones@linaro.org>
+> > Cc: Wolfgang Grandegger <wg@grandegger.com>
+> > Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> > Cc: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
+> > Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> > Cc: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+> > Cc: linux-crypto@vger.kernel.org
+> > Cc: ath10k@lists.infradead.org
+> > Cc: linux-wireless@vger.kernel.org
+> > Cc: netdev@vger.kernel.org
+> > Cc: linux-scsi@vger.kernel.org
+> > Cc: linux-can@vger.kernel.org
+> > Cc: bpf@vger.kernel.org
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  drivers/net/can/usb/etas_es58x/es581_4.h          |  2 +-
+> >  drivers/net/can/usb/etas_es58x/es58x_fd.h         |  2 +-
+> 
+> For the can drivers:
+> 
+> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.14-rc8
+Thanks!
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8a2cb8bd064ecb089995469076f3055fbfd0a4c9
+> BTW: Is there opportunity for conversion, too?
+> 
+> | drivers/net/can/peak_canfd/peak_pciefd_main.c:146:32: warning: array of flexible structures
 
-Thank you!
+Oh, hrmpf. This isn't a sane use of flex arrays:
+
+
+struct __packed pucan_rx_msg {
+	...
+	__le32	can_id;
+	u8	d[];
+};
+
+struct pciefd_rx_dma {
+        __le32 irq_status;
+        __le32 sys_time_low;
+        __le32 sys_time_high;
+        struct pucan_rx_msg msg[];
+} __packed __aligned(4);
+
+I think that needs to be handled separately. How are you building to get
+that warning, by the way? I haven't seen that in my builds...
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Kees Cook
