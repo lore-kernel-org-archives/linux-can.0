@@ -2,101 +2,82 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3EDEC433FE
-	for <linux-can@archiver.kernel.org>; Tue, 14 Sep 2021 12:13:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFBC9C433F5
+	for <linux-can@archiver.kernel.org>; Wed, 15 Sep 2021 15:44:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BAFE66112D
-	for <linux-can@archiver.kernel.org>; Tue, 14 Sep 2021 12:13:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 94D2D61155
+	for <linux-can@archiver.kernel.org>; Wed, 15 Sep 2021 15:44:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232489AbhINMOg (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 14 Sep 2021 08:14:36 -0400
-Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.21]:32311 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232783AbhINMOd (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 14 Sep 2021 08:14:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1631621590;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=GDd1840l+atKp1NAMq0aDohXW4/u0haN9p1jfeN+yKI=;
-    b=GOiKF9ghg+QPoGprP49xbyQgmB9KYf+YyyH5Q21ShQ1yxFYctWjl6oCPdYripE6kWt
-    QhkcZeCFU6J2x1WbjEOKKoQT2Xs2nSjCWPTqpstAFIe7IF20k14wIPqM/3C/kfrjIL4l
-    KbqN+p/FNOT/TXVSWQJU8qoCIolgunFwvUb7ts5ODCoFQE1xmWcGPwlwKxXtpCxx44hQ
-    seudMrchpHhxQ/+DnxpMpcfJbCurpoLno/H005SPdXDRvX51Lfn6PK22514P8h7+rhTM
-    2bOOu+2WKaqOFsQWh5EFm34v1lo9rTSHrF/KankipRGtmjV6tPGf9w4Z0Fd1mNI9jxOa
-    uqJw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GPy/OhvRKit2qa/q71YyZKdnOgIKH7DT4j3cUFRQm0abs="
-X-RZG-CLASS-ID: mo00
-Received: from [IPv6:2a00:20:d055:1d98:a712:39b8:66d3:7a8b]
-    by smtp.strato.de (RZmta 47.33.3 AUTH)
-    with ESMTPSA id 309acbx8ECDABaQ
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 14 Sep 2021 14:13:10 +0200 (CEST)
-Subject: Re: [PATCH v3 1/2] can: netlink: prevent incoherent can configuration
- in case of early return
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can <linux-can@vger.kernel.org>
-References: <20210906160310.54831-1-mailhol.vincent@wanadoo.fr>
- <20210906160310.54831-2-mailhol.vincent@wanadoo.fr>
- <CAMZ6RqJaY_jRv+AZ6oH6rxP=dE9Vs1fBwhBQJq_o3dgMWM1vUg@mail.gmail.com>
- <bccb03f4-5179-895a-f803-5adf543a8c19@hartkopp.net>
- <CAMZ6RqKpiYOLn7=NoN1U4PwnW4fdrJ1N57nGrCJ6FgKnyx5GvQ@mail.gmail.com>
- <CAMZ6RqJa1+nNyoaGE7Phs3YSAMKEpYC8m=Ho7W3_XwcWdxdu5w@mail.gmail.com>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <961e6361-f79e-5fd8-14eb-93768919a43f@hartkopp.net>
-Date:   Tue, 14 Sep 2021 14:13:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S234392AbhIOPpt (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 15 Sep 2021 11:45:49 -0400
+Received: from mx22.baidu.com ([220.181.50.185]:33486 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234391AbhIOPpt (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Wed, 15 Sep 2021 11:45:49 -0400
+X-Greylist: delayed 1858 seconds by postgrey-1.27 at vger.kernel.org; Wed, 15 Sep 2021 11:45:48 EDT
+Received: from BJHW-Mail-Ex03.internal.baidu.com (unknown [10.127.64.13])
+        by Forcepoint Email with ESMTPS id F293D16AD8CBF85EBDEB;
+        Wed, 15 Sep 2021 22:57:31 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BJHW-Mail-Ex03.internal.baidu.com (10.127.64.13) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Wed, 15 Sep 2021 22:57:31 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Wed, 15 Sep 2021 22:57:31 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <linux-can@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] can: mscan: mpc5xxx_can: Make use of the helper function dev_err_probe()
+Date:   Wed, 15 Sep 2021 22:57:25 +0800
+Message-ID: <20210915145726.7092-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <CAMZ6RqJa1+nNyoaGE7Phs3YSAMKEpYC8m=Ho7W3_XwcWdxdu5w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BJHW-Mail-Ex10.internal.baidu.com (10.127.64.33) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+When possible use dev_err_probe help to properly deal with the
+PROBE_DEFER error, the benefit is that DEFER issue will be logged
+in the devices_deferred debugfs file.
+And using dev_err_probe() can reduce code size, and simplify the code.
 
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+ drivers/net/can/mscan/mpc5xxx_can.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-On 14.09.21 13:45, Vincent MAILHOL wrote:
+diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/mpc5xxx_can.c
+index 35892c1efef0..de4ddf79ba9b 100644
+--- a/drivers/net/can/mscan/mpc5xxx_can.c
++++ b/drivers/net/can/mscan/mpc5xxx_can.c
+@@ -293,10 +293,8 @@ static int mpc5xxx_can_probe(struct platform_device *ofdev)
+ 		return -EINVAL;
+ 
+ 	base = of_iomap(np, 0);
+-	if (!base) {
+-		dev_err(&ofdev->dev, "couldn't ioremap\n");
+-		return err;
+-	}
++	if (!base)
++		return dev_err_probe(&ofdev->dev, err, "couldn't ioremap\n");
+ 
+ 	irq = irq_of_parse_and_map(np, 0);
+ 	if (!irq) {
+-- 
+2.25.1
 
->> However, one driver fails to check the return value of open_candev():
->> https://elixir.bootlin.com/linux/v5.11/source/drivers/net/can/softing/softing_fw.c#L636
->>
->> So, for this particular driver, we can send incoherent values to the device.
->>
->>> The code with all the sanity checks is already pretty complex IMO.
->>
->> ACK.
->>
->>> I wonder if this effort is worth it.
->>
->> Well, I was thinking "this is a bug so let's fix it". But your
->> argument is fair. I also did not like how complex the code was
->> getting when trying to fix that. I guess that this bug is
->> acceptable. I will leave it as it is.
->>
->> Now, I am just worried about the softing driver.
-
-IMO this should not be a problem.
-
-The code is only used for a *restart* of the CAN interface. Therefore 
-the bitrates have been checked at the original (first) start.
-
-> Actually, the softing driver is not CAN-FD capable.
-> So there was probably no real needs to worry.
-
-Yes. I luckily checked the other mails in the inbox before answering 
-that ;-)
-
-Best,
-Oliver
