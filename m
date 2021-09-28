@@ -2,103 +2,77 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C36DC433FE
-	for <linux-can@archiver.kernel.org>; Mon, 27 Sep 2021 11:34:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D78DC433FE
+	for <linux-can@archiver.kernel.org>; Tue, 28 Sep 2021 08:47:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3E7F960F0F
-	for <linux-can@archiver.kernel.org>; Mon, 27 Sep 2021 11:34:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0F25F611C3
+	for <linux-can@archiver.kernel.org>; Tue, 28 Sep 2021 08:47:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234009AbhI0LgG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 27 Sep 2021 07:36:06 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:18589 "EHLO
+        id S239622AbhI1ItG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 28 Sep 2021 04:49:06 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.53]:27661 "EHLO
         mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234015AbhI0LgF (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 27 Sep 2021 07:36:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632742333;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
+        with ESMTP id S239563AbhI1ItG (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 28 Sep 2021 04:49:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632818824;
+    s=strato-dkim-0002; d=fpond.eu;
+    h=Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Cc:Date:
     From:Subject:Sender;
-    bh=A7jJT/r6/9Ett/t4hQhIi6ULJqWDgIKTPE7eELyiqA0=;
-    b=gLLYDycb0+GMF9cTOKAhHrpTom96pYzfDa6Smzs+0KzlPUD/fkrkeP5O+NZBhn/YGJ
-    Gj9y3rRzluIEXuEUHLRjHHg3p3mtK0MrMr4VbrFTyJOuCIKQlZD/H/YTcDEOXzjwaIaN
-    ygg5FEnhVdcbvG75lRr1m5SfOt7IXBWmKMk/Lys81wLK0ssAhn1xoebe0UQR2zsk6oGE
-    XR9Y2HWh2mPk5w1SEtbWCo2mjL7DrZ73cANFmITdcTmbFJO1sitJo8M4DoCWVjso8BZi
-    Dq8IAZP4xGibE/oTdoBGnrF7Ua3A6j7zDebmxpaQxc0A6Za4ELHtYSKuF72TmPU+9GOb
-    6pzg==
+    bh=gbQ3IMAvZc7aLDyCplOxZibt9MvPS8SVs44QxppKxOA=;
+    b=gFiugyO1XIpCrAYcg8xIW2AhFwdl2RbtwCdPt4NTRkscDiDegdROOIVST81bAyCka/
+    EUllEQJtKRKVGbJ1teX/P6NLpUZvnmiPjkgTCeyLIVvWwa2QN8shsnqhjrqU2aDN5ecF
+    mxr7NL387Jowb+kxHSo0UrbsepeeegSnaY+kLYKaES6fdXDPSxB0nWRbbdN20gnKshb5
+    6/9SIAvmt4D3mTlHD4snShtF6grlbJqGwSVR9mz76Yr0JXPSoyl/JRV7l9cOBsluRdOv
+    wiRu+ctTA2zabJJ/0KIjE422OGTM2x6HMbraVm4IKBYt/Iiis9ir3waz2v0rKMspAs5P
+    YjlA==
 Authentication-Results: strato.com;
     dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusx3hdd0DIgVvBOfXT2V6Q=="
+X-RZG-AUTH: ":OWANVUa4dPFUgKR/3dpvnYP0Np73amq+g13rqGzvv3qxio1R8fGl/w2B+Io="
 X-RZG-CLASS-ID: mo00
-Received: from [IPv6:2a00:6020:1cfa:f904::b82]
-    by smtp.strato.de (RZmta 47.33.8 AUTH)
-    with ESMTPSA id 900f80x8RBWDHN5
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+Received: from oxapp02-03.back.ox.d0m.de
+    by smtp-ox.front (RZmta 47.33.8 AUTH)
+    with ESMTPSA id c00f85x8S8l3dQz
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
         (Client did not present a certificate);
-    Mon, 27 Sep 2021 13:32:13 +0200 (CEST)
-Subject: Re: [PATCH net] can: isotp: add result check for
- wait_event_interruptible()
-To:     "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
-Cc:     mkl@pengutronix.de, davem@davemloft.net, kuba@kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-References: <20210918092819.156291-1-william.xuanziyang@huawei.com>
- <1fcfeb88-d49d-2a2a-1524-8504eb848123@huawei.com>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <e9607f21-f0d0-7b20-8d55-fad9cee7ee28@hartkopp.net>
-Date:   Mon, 27 Sep 2021 13:32:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+    Tue, 28 Sep 2021 10:47:03 +0200 (CEST)
+Date:   Tue, 28 Sep 2021 10:47:03 +0200 (CEST)
+From:   Ulrich Hecht <uli@fpond.eu>
+To:     Wolfram Sang <wsa@kernel.org>, Ulrich Hecht <uli+renesas@fpond.eu>
+Cc:     linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
+        davem@davemloft.net, linux-can@vger.kernel.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, yoshihiro.shimoda.uh@renesas.com,
+        wg@grandegger.com, mkl@pengutronix.de, kuba@kernel.org,
+        mailhol.vincent@wanadoo.fr, socketcan@hartkopp.net
+Message-ID: <128093803.822456.1632818823845@webmail.strato.com>
+In-Reply-To: <YU3+K5WQkBC2YBBy@ninjato>
+References: <20210924153113.10046-1-uli+renesas@fpond.eu>
+ <20210924153113.10046-2-uli+renesas@fpond.eu> <YU3+K5WQkBC2YBBy@ninjato>
+Subject: Re: [PATCH 1/3] can: rcar_canfd: Add support for r8a779a0 SoC
 MIME-Version: 1.0
-In-Reply-To: <1fcfeb88-d49d-2a2a-1524-8504eb848123@huawei.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.5-Rev24
+X-Originating-Client: open-xchange-appsuite
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 
-
-On 27.09.21 03:39, Ziyang Xuan (William) wrote:
->> Using wait_event_interruptible() to wait for complete transmission,
->> but do not check the result of wait_event_interruptible() which can
->> be interrupted. It will result in tx buffer has multiple accessers
->> and the later process interferes with the previous process.
->>
->> Following is one of the problems reported by syzbot.
->>
->> =============================================================
->> WARNING: CPU: 0 PID: 0 at net/can/isotp.c:840 isotp_tx_timer_handler+0x2e0/0x4c0
->> CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.13.0-rc7+ #68
->> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
->> RIP: 0010:isotp_tx_timer_handler+0x2e0/0x4c0
->> Call Trace:
->>   <IRQ>
->>   ? isotp_setsockopt+0x390/0x390
->>   __hrtimer_run_queues+0xb8/0x610
->>   hrtimer_run_softirq+0x91/0xd0
->>   ? rcu_read_lock_sched_held+0x4d/0x80
->>   __do_softirq+0xe8/0x553
->>   irq_exit_rcu+0xf8/0x100
->>   sysvec_apic_timer_interrupt+0x9e/0xc0
->>   </IRQ>
->>   asm_sysvec_apic_timer_interrupt+0x12/0x20
->>
->> Add result check for wait_event_interruptible() in isotp_sendmsg()
->> to avoid multiple accessers for tx buffer.
->>
->> Reported-by: syzbot+78bab6958a614b0c80b9@syzkaller.appspotmail.com
->> Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
->> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+> On 09/24/2021 6:34 PM Wolfram Sang <wsa@kernel.org> wrote:
 > 
-> Hi Oliver,
-> I send a new patch with this problem, ignore this patch please.
+>  
+> >  1 file changed, 152 insertions(+), 75 deletions(-)
 > 
-> Thank you!
+> Nice work, Ulrich. Compared to the BSP patch which has "422
+> insertions(+), 128 deletions(-)", this is a really good improvement.
 > 
+> Did you test it on D3 to ensure there is no regression? Or are the
+> additions in a way that they don't affect older versions?
 
-I was still pondering on this patch ;-)
+The behavior of the driver on non-V3U systems is unchanged.
 
-But I'll take a look on the update now.
-
-Thanks & best regards,
-Oliver
+CU
+Uli
