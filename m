@@ -2,116 +2,116 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F791C433EF
-	for <linux-can@archiver.kernel.org>; Thu, 30 Sep 2021 09:46:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DE8BC433F5
+	for <linux-can@archiver.kernel.org>; Sun,  3 Oct 2021 04:41:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6AA9461131
-	for <linux-can@archiver.kernel.org>; Thu, 30 Sep 2021 09:46:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E1FA561352
+	for <linux-can@archiver.kernel.org>; Sun,  3 Oct 2021 04:41:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349555AbhI3Jsf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 30 Sep 2021 05:48:35 -0400
-Received: from smtp5-g21.free.fr ([212.27.42.5]:26446 "EHLO smtp5-g21.free.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349498AbhI3Jse (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Thu, 30 Sep 2021 05:48:34 -0400
-Received: from Focal.peak-system.com (unknown [89.158.142.148])
-        (Authenticated sender: stephane.grosjean@free.fr)
-        by smtp5-g21.free.fr (Postfix) with ESMTPSA id DB4D65FFB1;
-        Thu, 30 Sep 2021 11:46:17 +0200 (CEST)
-From:   Stephane Grosjean <s.grosjean@peak-system.com>
-To:     linux-can Mailing List <linux-can@vger.kernel.org>
-Cc:     Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH] can: peak_usb: CANFD: store 64-bits hw timestamps
-Date:   Thu, 30 Sep 2021 11:46:03 +0200
-Message-Id: <20210930094603.23134-1-s.grosjean@peak-system.com>
-X-Mailer: git-send-email 2.25.1
+        id S229652AbhJCEm4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 3 Oct 2021 00:42:56 -0400
+Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:64509 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229642AbhJCEmz (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 3 Oct 2021 00:42:55 -0400
+Received: from tomoyo.flets-east.jp ([114.149.34.46])
+        by smtp.orange.fr with ESMTPA
+        id WtJ1mh6etsoWhWtJAm9O0T; Sun, 03 Oct 2021 06:41:06 +0200
+X-ME-Helo: tomoyo.flets-east.jp
+X-ME-Auth: MDU0YmViZGZmMDIzYiBlMiM2NTczNTRjNWZkZTMwOGRiOGQ4ODf3NWI1ZTMyMzdiODlhOQ==
+X-ME-Date: Sun, 03 Oct 2021 06:41:06 +0200
+X-ME-IP: 114.149.34.46
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v1] can: netlink: report the CAN controller mode supported flags
+Date:   Sun,  3 Oct 2021 13:40:49 +0900
+Message-Id: <20211003044049.568441-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch allows to use the whole 64-bit timestamps received from the
-CAN-FD device (expressed in µs) rather than only its low part, in the
-hwtstamp structure of the skb transferred to the network layer, when a
-CAN/CANFD frame has been received.
+This patch introduces a method for the user to check both the
+supported and the static capabilities.
 
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+Currently, the CAN netlink interface provides no easy ways to check
+the capabilities of a given controller. The only method from the
+command line is to try each CAN_CTRLMODE_ individually to check
+whether the netlink interface returns an -EOPNOTSUPP error or not
+(alternatively, one may find it easier to directly check the source
+code of the driver instead...)
+
+It appears that, currently, the struct can_ctrlmode::mask field is
+only used in one direction: from the userland to the kernel. So we can
+just reuse this field in the other direction (from the kernel to
+userland). But, because the semantic is different, we use a union to
+give this field a proper name: supported.
+
+Below table explains how the two fields can_ctrlmode::supported and
+can_ctrlmode::flags, when masked with any of the CAN_CTRLMODE_* bit
+flags, allow us to identify both the supported and the static
+capabilities:
+
+ supported &	flags &		Controller capabilities
+ CAN_CTRLMODE_*	CAN_CTRLMODE_*
+ ------------------------------------------------------------------------
+ false		false		Feature not supported (always disabled)
+ false		true		Static feature (always enabled)
+ true		false		Feature supported but disabled
+ true		true		Feature supported and enabled
+
+N.B.: This patch relies on the fact that a given CAN_CTRLMODE_*
+feature can not be set for both can_priv::ctrlmode_supported and
+can_priv::ctrlmode_static at the same time. c.f. comments in struct
+can_priv [1]. Else, there would be no way to distinguish which
+features were statically enabled.
+
+[1] https://elixir.bootlin.com/linux/v5.14/source/include/linux/can/dev.h#61
+
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 11 +++++++++++
- drivers/net/can/usb/peak_usb/pcan_usb_core.h |  1 +
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c   |  9 ++++++---
- 3 files changed, 18 insertions(+), 3 deletions(-)
+I will send a iproute2-next patch right after to illustrate the idea.
+---
+ drivers/net/can/dev/netlink.c    | 5 ++++-
+ include/uapi/linux/can/netlink.h | 5 ++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index e8f43ed90b72..4bb6b9d53df4 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -205,6 +205,17 @@ int peak_usb_netif_rx(struct sk_buff *skb,
- 	return netif_rx(skb);
- }
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index 80425636049d..480818edccc1 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -264,7 +264,10 @@ static size_t can_get_size(const struct net_device *dev)
+ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
+ {
+ 	struct can_priv *priv = netdev_priv(dev);
+-	struct can_ctrlmode cm = {.flags = priv->ctrlmode};
++	struct can_ctrlmode cm = {
++		.supported = priv->ctrlmode_supported,
++		.flags = priv->ctrlmode
++	};
+ 	struct can_berr_counter bec = { };
+ 	enum can_state state = priv->state;
  
-+/* post received skb with native 64-bit hw timestamp */
-+int peak_usb_netif_rx_64(struct sk_buff *skb, u32 ts_low, u32 ts_high)
-+{
-+	struct skb_shared_hwtstamps *hwts = skb_hwtstamps(skb);
-+	u64 ns_ts = (((u64)ts_high << 32) + ts_low) * NSEC_PER_USEC;
-+
-+	hwts->hwtstamp = ns_to_ktime(ns_ts);
-+
-+	return netif_rx(skb);
-+}
-+
- /*
-  * callback for bulk Rx urb
+diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
+index f730d443b918..2847ed0dcac3 100644
+--- a/include/uapi/linux/can/netlink.h
++++ b/include/uapi/linux/can/netlink.h
+@@ -88,7 +88,10 @@ struct can_berr_counter {
+  * CAN controller mode
   */
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-index b00a4811bf61..daa19f57e742 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-@@ -143,6 +143,7 @@ void peak_usb_set_ts_now(struct peak_time_ref *time_ref, u32 ts_now);
- void peak_usb_get_ts_time(struct peak_time_ref *time_ref, u32 ts, ktime_t *tv);
- int peak_usb_netif_rx(struct sk_buff *skb,
- 		      struct peak_time_ref *time_ref, u32 ts_low);
-+int peak_usb_netif_rx_64(struct sk_buff *skb, u32 ts_low, u32 ts_high);
- void peak_usb_async_complete(struct urb *urb);
- void peak_usb_restart_complete(struct peak_usb_device *dev);
+ struct can_ctrlmode {
+-	__u32 mask;
++	union {
++		__u32 mask;		/* Userland to kernel */
++		__u32 supported;	/* Kernel to userland */
++	};
+ 	__u32 flags;
+ };
  
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index 09029a3bad1a..6bd12549f101 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -515,7 +515,8 @@ static int pcan_usb_fd_decode_canmsg(struct pcan_usb_fd_if *usb_if,
- 	netdev->stats.rx_packets++;
- 	netdev->stats.rx_bytes += cfd->len;
- 
--	peak_usb_netif_rx(skb, &usb_if->time_ref, le32_to_cpu(rm->ts_low));
-+	peak_usb_netif_rx_64(skb, le32_to_cpu(rm->ts_low),
-+			     le32_to_cpu(rm->ts_high));
- 
- 	return 0;
- }
-@@ -579,7 +580,8 @@ static int pcan_usb_fd_decode_status(struct pcan_usb_fd_if *usb_if,
- 	netdev->stats.rx_packets++;
- 	netdev->stats.rx_bytes += cf->len;
- 
--	peak_usb_netif_rx(skb, &usb_if->time_ref, le32_to_cpu(sm->ts_low));
-+	peak_usb_netif_rx_64(skb, le32_to_cpu(sm->ts_low),
-+			     le32_to_cpu(sm->ts_high));
- 
- 	return 0;
- }
-@@ -629,7 +631,8 @@ static int pcan_usb_fd_decode_overrun(struct pcan_usb_fd_if *usb_if,
- 	cf->can_id |= CAN_ERR_CRTL;
- 	cf->data[1] |= CAN_ERR_CRTL_RX_OVERFLOW;
- 
--	peak_usb_netif_rx(skb, &usb_if->time_ref, le32_to_cpu(ov->ts_low));
-+	peak_usb_netif_rx_64(skb, le32_to_cpu(ov->ts_low),
-+			     le32_to_cpu(ov->ts_high));
- 
- 	netdev->stats.rx_over_errors++;
- 	netdev->stats.rx_errors++;
 -- 
-2.25.1
+2.32.0
 
