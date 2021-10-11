@@ -2,115 +2,147 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1654C433EF
-	for <linux-can@archiver.kernel.org>; Sat,  9 Oct 2021 13:15:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD882C433F5
+	for <linux-can@archiver.kernel.org>; Mon, 11 Oct 2021 06:35:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ABA7D60F5A
-	for <linux-can@archiver.kernel.org>; Sat,  9 Oct 2021 13:15:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 85E2C604D2
+	for <linux-can@archiver.kernel.org>; Mon, 11 Oct 2021 06:35:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233333AbhJINRL (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 9 Oct 2021 09:17:11 -0400
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:55818 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233678AbhJINPf (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 9 Oct 2021 09:15:35 -0400
-Received: from tomoyo.flets-east.jp ([114.149.34.46])
-        by smtp.orange.fr with ESMTPA
-        id ZC9zmoEn4UGqlZCARm2ihC; Sat, 09 Oct 2021 15:13:37 +0200
-X-ME-Helo: tomoyo.flets-east.jp
-X-ME-Auth: MDU0YmViZGZmMDIzYiBlMiM2NTczNTRjNWZkZTMwOGRiOGQ4ODf3NWI1ZTMyMzdiODlhOQ==
-X-ME-Date: Sat, 09 Oct 2021 15:13:37 +0200
-X-ME-IP: 114.149.34.46
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v2 3/3] can: netlink: report the CAN controller mode supported flags
-Date:   Sat,  9 Oct 2021 22:13:04 +0900
-Message-Id: <20211009131304.19729-4-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211009131304.19729-1-mailhol.vincent@wanadoo.fr>
-References: <20211009131304.19729-1-mailhol.vincent@wanadoo.fr>
+        id S234216AbhJKGh2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 11 Oct 2021 02:37:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234224AbhJKGh0 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 11 Oct 2021 02:37:26 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 186B8C061745
+        for <linux-can@vger.kernel.org>; Sun, 10 Oct 2021 23:35:27 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mZou1-0002vp-0J; Mon, 11 Oct 2021 08:35:13 +0200
+Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mZotv-0005WI-NG; Mon, 11 Oct 2021 08:35:07 +0200
+Date:   Mon, 11 Oct 2021 08:35:07 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>
+Cc:     Maxime Jayat <maxime.jayat@mobile-devices.fr>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-kernel@vger.kernel.org,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        netdev@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH net] can: j1939: j1939_xtp_rx_dat_one(): cancel session
+ if receive TP.DT with error length
+Message-ID: <20211011063507.GI29653@pengutronix.de>
+References: <1632972800-45091-1-git-send-email-zhangchangzhong@huawei.com>
+ <20210930074206.GB7502@x1.vandijck-laurijssen.be>
+ <1cab07f2-593a-1d1c-3a29-43ee9df4b29e@huawei.com>
+ <20211008110007.GE29653@pengutronix.de>
+ <556a04ed-c350-7b2b-5bbe-98c03846630b@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <556a04ed-c350-7b2b-5bbe-98c03846630b@huawei.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 08:19:30 up 235 days,  9:43, 116 users,  load average: 0.08, 0.12,
+ 0.17
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch introduces a method for the user to check both the
-supported and the static capabilities. The proposed method reuses the
-existing struct can_ctrlmode and thus do not need a new IFLA_CAN_*
-entry.
+On Sat, Oct 09, 2021 at 04:43:56PM +0800, Zhang Changzhong wrote:
+> On 2021/10/8 19:00, Oleksij Rempel wrote:
+> > On Fri, Oct 08, 2021 at 05:22:12PM +0800, Zhang Changzhong wrote:
+> >> Hi Kurt,
+> >> Sorry for the late reply.
+> >>
+> >> On 2021/9/30 15:42, Kurt Van Dijck wrote:
+> >>> On Thu, 30 Sep 2021 11:33:20 +0800, Zhang Changzhong wrote:
+> >>>> According to SAE-J1939-21, the data length of TP.DT must be 8 bytes, so
+> >>>> cancel session when receive unexpected TP.DT message.
+> >>>
+> >>> SAE-j1939-21 indeed says that all TP.DT must be 8 bytes.
+> >>> However, the last TP.DT may contain up to 6 stuff bytes, which have no meaning.
+> >>> If I remember well, they are even not 'reserved'.
+> >>
+> >> Agree, these bytes are meaningless for last TP.DT.
+> >>
+> >>>
+> >>>>
+> >>>> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+> >>>> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+> >>>> ---
+> >>>>  net/can/j1939/transport.c | 7 +++++--
+> >>>>  1 file changed, 5 insertions(+), 2 deletions(-)
+> >>>>
+> >>>> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> >>>> index bb5c4b8..eedaeaf 100644
+> >>>> --- a/net/can/j1939/transport.c
+> >>>> +++ b/net/can/j1939/transport.c
+> >>>> @@ -1789,6 +1789,7 @@ static void j1939_xtp_rx_dpo(struct j1939_priv *priv, struct sk_buff *skb,
+> >>>>  static void j1939_xtp_rx_dat_one(struct j1939_session *session,
+> >>>>  				 struct sk_buff *skb)
+> >>>>  {
+> >>>> +	enum j1939_xtp_abort abort = J1939_XTP_ABORT_FAULT;
+> >>>>  	struct j1939_priv *priv = session->priv;
+> >>>>  	struct j1939_sk_buff_cb *skcb, *se_skcb;
+> >>>>  	struct sk_buff *se_skb = NULL;
+> >>>> @@ -1803,9 +1804,11 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
+> >>>>  
+> >>>>  	skcb = j1939_skb_to_cb(skb);
+> >>>>  	dat = skb->data;
+> >>>> -	if (skb->len <= 1)
+> >>>> +	if (skb->len != 8) {
+> >>>>  		/* makes no sense */
+> >>>> +		abort = J1939_XTP_ABORT_UNEXPECTED_DATA;
+> >>>>  		goto out_session_cancel;
+> >>>
+> >>> I think this is a situation of
+> >>> "be strict on what you send, be tolerant on what you receive".
+> >>>
+> >>> Did you find a technical reason to abort a session because the last frame didn't
+> >>> bring overhead that you don't use?
+> >>
+> >> No technical reason. The only reason is that SAE-J1939-82 requires responder
+> >> to abort session if any TP.DT less than 8 bytes (section A.3.4, Row 7).
+> > 
+> > Do you mean: "BAM Transport: Ensure DUT discards BAM transport when
+> > TP.DT data packets are not correct size" ... "Verify DUT discards the
+> > BAM transport if any TP.DT data packet has less than 8 bytes"?
+> 
+> Yes.
 
-Currently, the CAN netlink interface provides no easy ways to check
-the capabilities of a given controller. The only method from the
-command line is to try each CAN_CTRLMODE_ individually to check
-whether the netlink interface returns an -EOPNOTSUPP error or not
-(alternatively, one may find it easier to directly check the source
-code of the driver instead...)
+OK, then I have some problems to understand this part:
+- 5.10.2.4 Connection Closure
+  The “connection abort” message is not allowed to be used by responders in the
+  case of a global destination (i.e. BAM).
 
-It appears that, can_ctrlmode::mask is only used in one direction:
-from the userland to the kernel. So we can just reuse this field in
-the other direction (from the kernel to userland). But, because the
-semantic is different, we use a union to give this field a proper
-name: supported.
+My assumption would be: In case of broadcast transfer, multiple MCU are
+receivers. If one of MCU was not able to get complete TP.DT, it should
+not abort BAM for all.
 
-Below table explains how the two fields can_ctrlmode::supported and
-can_ctrlmode::flags, when masked with any of the CAN_CTRLMODE_* bit
-flags, allow us to identify both the supported and the static
-capabilities:
+So, "DUT discards the BAM transport" sounds for me as local action.
+Complete TP would be dropped locally.
 
- supported &	flags &		Controller capabilities
- CAN_CTRLMODE_*	CAN_CTRLMODE_*
- -----------------------------------------------------------------------
- false		false		Feature not supported (always disabled)
- false		true		Static feature (always enabled)
- true		false		Feature supported but disabled
- true		true		Feature supported and enabled
-
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
----
-Please refer to below link for the iproute2-next counterpart of this
-patch:
-
-https://lore.kernel.org/linux-can/20211003050147.569044-1-mailhol.vincent@wanadoo.fr/T/#t
----
- drivers/net/can/dev/netlink.c    | 5 ++++-
- include/uapi/linux/can/netlink.h | 5 ++++-
- 2 files changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 6c9906e8040c..86521836fd6d 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -264,7 +264,10 @@ static size_t can_get_size(const struct net_device *dev)
- static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
- {
- 	struct can_priv *priv = netdev_priv(dev);
--	struct can_ctrlmode cm = {.flags = priv->ctrlmode};
-+	struct can_ctrlmode cm = {
-+		.supported = priv->ctrlmode_supported,
-+		.flags = priv->ctrlmode
-+	};
- 	struct can_berr_counter bec = { };
- 	enum can_state state = priv->state;
- 
-diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
-index f730d443b918..2847ed0dcac3 100644
---- a/include/uapi/linux/can/netlink.h
-+++ b/include/uapi/linux/can/netlink.h
-@@ -88,7 +88,10 @@ struct can_berr_counter {
-  * CAN controller mode
-  */
- struct can_ctrlmode {
--	__u32 mask;
-+	union {
-+		__u32 mask;		/* Userland to kernel */
-+		__u32 supported;	/* Kernel to userland */
-+	};
- 	__u32 flags;
- };
- 
+Regards
+Oleksij
 -- 
-2.32.0
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
