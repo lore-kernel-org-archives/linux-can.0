@@ -2,50 +2,47 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FE81C001B6
-	for <linux-can@archiver.kernel.org>; Sun, 17 Oct 2021 21:01:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D96C3C433F5
+	for <linux-can@archiver.kernel.org>; Sun, 17 Oct 2021 21:02:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5A63160EB9
-	for <linux-can@archiver.kernel.org>; Sun, 17 Oct 2021 21:01:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C16E060E76
+	for <linux-can@archiver.kernel.org>; Sun, 17 Oct 2021 21:02:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344613AbhJQVEH (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 17 Oct 2021 17:04:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39952 "EHLO
+        id S1344639AbhJQVEM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 17 Oct 2021 17:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344621AbhJQVEG (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 17 Oct 2021 17:04:06 -0400
+        with ESMTP id S1344627AbhJQVEJ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 17 Oct 2021 17:04:09 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7932C061765
-        for <linux-can@vger.kernel.org>; Sun, 17 Oct 2021 14:01:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810C8C06161C
+        for <linux-can@vger.kernel.org>; Sun, 17 Oct 2021 14:01:58 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1mcDI2-0000Hd-T1
-        for linux-can@vger.kernel.org; Sun, 17 Oct 2021 23:01:54 +0200
+        id 1mcDI4-0000Jl-OC
+        for linux-can@vger.kernel.org; Sun, 17 Oct 2021 23:01:56 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id BAFA8695EFA
-        for <linux-can@vger.kernel.org>; Sun, 17 Oct 2021 21:01:48 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id D7D79695F0D
+        for <linux-can@vger.kernel.org>; Sun, 17 Oct 2021 21:01:49 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id EB87D695EB3;
-        Sun, 17 Oct 2021 21:01:44 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id A8EE5695EBE;
+        Sun, 17 Oct 2021 21:01:45 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 075233f5;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3150a84b;
         Sun, 17 Oct 2021 21:01:43 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Ziyang Xuan <william.xuanziyang@huawei.com>,
-        stable@vger.kernel.org,
-        syzbot+78bab6958a614b0c80b9@syzkaller.appspotmail.com,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 05/11] can: isotp: isotp_sendmsg(): add result check for wait_event_interruptible()
-Date:   Sun, 17 Oct 2021 23:01:36 +0200
-Message-Id: <20211017210142.2108610-6-mkl@pengutronix.de>
+        kernel@pengutronix.de, Zheyu Ma <zheyuma97@gmail.com>,
+        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 09/11] can: peak_pci: peak_pci_remove(): fix UAF
+Date:   Sun, 17 Oct 2021 23:01:40 +0200
+Message-Id: <20211017210142.2108610-10-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211017210142.2108610-1-mkl@pengutronix.de>
 References: <20211017210142.2108610-1-mkl@pengutronix.de>
@@ -59,61 +56,62 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-Using wait_event_interruptible() to wait for complete transmission,
-but do not check the result of wait_event_interruptible() which can be
-interrupted. It will result in TX buffer has multiple accessors and
-the later process interferes with the previous process.
+When remove the module peek_pci, referencing 'chan' again after
+releasing 'dev' will cause UAF.
 
-Following is one of the problems reported by syzbot.
+Fix this by releasing 'dev' later.
 
-=============================================================
-WARNING: CPU: 0 PID: 0 at net/can/isotp.c:840 isotp_tx_timer_handler+0x2e0/0x4c0
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.13.0-rc7+ #68
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
-RIP: 0010:isotp_tx_timer_handler+0x2e0/0x4c0
-Call Trace:
- <IRQ>
- ? isotp_setsockopt+0x390/0x390
- __hrtimer_run_queues+0xb8/0x610
- hrtimer_run_softirq+0x91/0xd0
- ? rcu_read_lock_sched_held+0x4d/0x80
- __do_softirq+0xe8/0x553
- irq_exit_rcu+0xf8/0x100
- sysvec_apic_timer_interrupt+0x9e/0xc0
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20
+The following log reveals it:
 
-Add result check for wait_event_interruptible() in isotp_sendmsg()
-to avoid multiple accessers for tx buffer.
+[   35.961814 ] BUG: KASAN: use-after-free in peak_pci_remove+0x16f/0x270 [peak_pci]
+[   35.963414 ] Read of size 8 at addr ffff888136998ee8 by task modprobe/5537
+[   35.965513 ] Call Trace:
+[   35.965718 ]  dump_stack_lvl+0xa8/0xd1
+[   35.966028 ]  print_address_description+0x87/0x3b0
+[   35.966420 ]  kasan_report+0x172/0x1c0
+[   35.966725 ]  ? peak_pci_remove+0x16f/0x270 [peak_pci]
+[   35.967137 ]  ? trace_irq_enable_rcuidle+0x10/0x170
+[   35.967529 ]  ? peak_pci_remove+0x16f/0x270 [peak_pci]
+[   35.967945 ]  __asan_report_load8_noabort+0x14/0x20
+[   35.968346 ]  peak_pci_remove+0x16f/0x270 [peak_pci]
+[   35.968752 ]  pci_device_remove+0xa9/0x250
 
-Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
-Link: https://lore.kernel.org/all/10ca695732c9dd267c76a3c30f37aefe1ff7e32f.1633764159.git.william.xuanziyang@huawei.com
+Fixes: e6d9c80b7ca1 ("can: peak_pci: add support of some new PEAK-System PCI cards")
+Link: https://lore.kernel.org/all/1634192913-15639-1-git-send-email-zheyuma97@gmail.com
 Cc: stable@vger.kernel.org
-Reported-by: syzbot+78bab6958a614b0c80b9@syzkaller.appspotmail.com
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/isotp.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/can/sja1000/peak_pci.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index caaa532ece94..2ac29c2b2ca6 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -865,7 +865,9 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 			return -EAGAIN;
+diff --git a/drivers/net/can/sja1000/peak_pci.c b/drivers/net/can/sja1000/peak_pci.c
+index 6db90dc4bc9d..84f34020aafb 100644
+--- a/drivers/net/can/sja1000/peak_pci.c
++++ b/drivers/net/can/sja1000/peak_pci.c
+@@ -752,16 +752,15 @@ static void peak_pci_remove(struct pci_dev *pdev)
+ 		struct net_device *prev_dev = chan->prev_dev;
  
- 		/* wait for complete transmission of current pdu */
--		wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
-+		err = wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
-+		if (err)
-+			return err;
+ 		dev_info(&pdev->dev, "removing device %s\n", dev->name);
++		/* do that only for first channel */
++		if (!prev_dev && chan->pciec_card)
++			peak_pciec_remove(chan->pciec_card);
+ 		unregister_sja1000dev(dev);
+ 		free_sja1000dev(dev);
+ 		dev = prev_dev;
+ 
+-		if (!dev) {
+-			/* do that only for first channel */
+-			if (chan->pciec_card)
+-				peak_pciec_remove(chan->pciec_card);
++		if (!dev)
+ 			break;
+-		}
+ 		priv = netdev_priv(dev);
+ 		chan = priv->priv;
  	}
- 
- 	if (!size || size > MAX_MSG_LENGTH)
 -- 
 2.33.0
 
