@@ -2,48 +2,49 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B300C433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4580AC433FE
 	for <linux-can@archiver.kernel.org>; Sun, 17 Oct 2021 21:01:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 19EBB6103B
+	by mail.kernel.org (Postfix) with ESMTP id 292C561038
 	for <linux-can@archiver.kernel.org>; Sun, 17 Oct 2021 21:01:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238501AbhJQVEE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1344609AbhJQVEE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Sun, 17 Oct 2021 17:04:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39928 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234007AbhJQVED (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 17 Oct 2021 17:04:03 -0400
+        with ESMTP id S234902AbhJQVEE (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 17 Oct 2021 17:04:04 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC73C06161C
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62A1C061765
         for <linux-can@vger.kernel.org>; Sun, 17 Oct 2021 14:01:53 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1mcDHz-0000EB-Sa
-        for linux-can@vger.kernel.org; Sun, 17 Oct 2021 23:01:51 +0200
+        id 1mcDI0-0000EN-2M
+        for linux-can@vger.kernel.org; Sun, 17 Oct 2021 23:01:52 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id DE831695ED7
-        for <linux-can@vger.kernel.org>; Sun, 17 Oct 2021 21:01:46 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 1124F695EDB
+        for <linux-can@vger.kernel.org>; Sun, 17 Oct 2021 21:01:47 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7C9A0695EAE;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id C69D5695EB1;
         Sun, 17 Oct 2021 21:01:44 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e5515fbf;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id bd36f86d;
         Sun, 17 Oct 2021 21:01:43 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Ziyang Xuan <william.xuanziyang@huawei.com>,
+        kernel@pengutronix.de,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
         stable@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 01/11] can: j1939: j1939_tp_rxtimer(): fix errant alert in j1939_tp_rxtimer
-Date:   Sun, 17 Oct 2021 23:01:32 +0200
-Message-Id: <20211017210142.2108610-2-mkl@pengutronix.de>
+Subject: [PATCH net 04/11] can: j1939: j1939_xtp_rx_rts_session_new(): abort TP less than 9 bytes
+Date:   Sun, 17 Oct 2021 23:01:35 +0200
+Message-Id: <20211017210142.2108610-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211017210142.2108610-1-mkl@pengutronix.de>
 References: <20211017210142.2108610-1-mkl@pengutronix.de>
@@ -57,48 +58,57 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-When the session state is J1939_SESSION_DONE, j1939_tp_rxtimer() will
-give an alert "rx timeout, send abort", but do nothing actually. Move
-the alert into session active judgment condition, it is more
-reasonable.
+The receiver should abort TP if 'total message size' in TP.CM_RTS and
+TP.CM_BAM is less than 9 or greater than 1785 [1], but currently the
+j1939 stack only checks the upper bound and the receiver will accept
+the following broadcast message:
 
-One of the scenarios is that j1939_tp_rxtimer() execute followed by
-j1939_xtp_rx_abort_one(). After j1939_xtp_rx_abort_one(), the session
-state is J1939_SESSION_DONE, then j1939_tp_rxtimer() give an alert.
+  vcan1  18ECFF00   [8]  20 08 00 02 FF 00 23 01
+  vcan1  18EBFF00   [8]  01 00 00 00 00 00 00 00
+  vcan1  18EBFF00   [8]  02 00 FF FF FF FF FF FF
+
+This patch adds check for the lower bound and abort illegal TP.
+
+[1] SAE-J1939-82 A.3.4 Row 2 and A.3.6 Row 6.
 
 Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Link: https://lore.kernel.org/all/20210906094219.95924-1-william.xuanziyang@huawei.com
+Link: https://lore.kernel.org/all/1634203601-3460-1-git-send-email-zhangchangzhong@huawei.com
 Cc: stable@vger.kernel.org
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/j1939/transport.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ net/can/j1939/j1939-priv.h | 1 +
+ net/can/j1939/transport.c  | 2 ++
+ 2 files changed, 3 insertions(+)
 
+diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
+index f6df20808f5e..16af1a7f80f6 100644
+--- a/net/can/j1939/j1939-priv.h
++++ b/net/can/j1939/j1939-priv.h
+@@ -330,6 +330,7 @@ int j1939_session_activate(struct j1939_session *session);
+ void j1939_tp_schedule_txtimer(struct j1939_session *session, int msec);
+ void j1939_session_timers_cancel(struct j1939_session *session);
+ 
++#define J1939_MIN_TP_PACKET_SIZE 9
+ #define J1939_MAX_TP_PACKET_SIZE (7 * 0xff)
+ #define J1939_MAX_ETP_PACKET_SIZE (7 * 0x00ffffff)
+ 
 diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index bb5c4b8979be..bfb0718d4587 100644
+index 1ea6fee3d986..6c0a0ebdd024 100644
 --- a/net/can/j1939/transport.c
 +++ b/net/can/j1939/transport.c
-@@ -1237,12 +1237,11 @@ static enum hrtimer_restart j1939_tp_rxtimer(struct hrtimer *hrtimer)
- 		session->err = -ETIME;
- 		j1939_session_deactivate(session);
- 	} else {
--		netdev_alert(priv->ndev, "%s: 0x%p: rx timeout, send abort\n",
--			     __func__, session);
--
- 		j1939_session_list_lock(session->priv);
- 		if (session->state >= J1939_SESSION_ACTIVE &&
- 		    session->state < J1939_SESSION_ACTIVE_MAX) {
-+			netdev_alert(priv->ndev, "%s: 0x%p: rx timeout, send abort\n",
-+				     __func__, session);
- 			j1939_session_get(session);
- 			hrtimer_start(&session->rxtimer,
- 				      ms_to_ktime(J1939_XTP_ABORT_TIMEOUT_MS),
-
-base-commit: fac3cb82a54a4b7c49c932f96ef196cf5774344c
+@@ -1608,6 +1608,8 @@ j1939_session *j1939_xtp_rx_rts_session_new(struct j1939_priv *priv,
+ 			abort = J1939_XTP_ABORT_FAULT;
+ 		else if (len > priv->tp_max_packet_size)
+ 			abort = J1939_XTP_ABORT_RESOURCE;
++		else if (len < J1939_MIN_TP_PACKET_SIZE)
++			abort = J1939_XTP_ABORT_FAULT;
+ 	}
+ 
+ 	if (abort != J1939_XTP_NO_ABORT) {
 -- 
 2.33.0
 
