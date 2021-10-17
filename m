@@ -2,49 +2,48 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E3A2C43219
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F47FC4167D
 	for <linux-can@archiver.kernel.org>; Sun, 17 Oct 2021 21:01:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3DA6261052
+	by mail.kernel.org (Postfix) with ESMTP id 84E4D60EB9
 	for <linux-can@archiver.kernel.org>; Sun, 17 Oct 2021 21:01:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344617AbhJQVEF (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 17 Oct 2021 17:04:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39936 "EHLO
+        id S1344622AbhJQVEH (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 17 Oct 2021 17:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344604AbhJQVEE (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 17 Oct 2021 17:04:04 -0400
+        with ESMTP id S1344620AbhJQVEG (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 17 Oct 2021 17:04:06 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E7FC06176A
-        for <linux-can@vger.kernel.org>; Sun, 17 Oct 2021 14:01:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C809C06161C
+        for <linux-can@vger.kernel.org>; Sun, 17 Oct 2021 14:01:56 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1mcDI0-0000Ep-Ew
-        for linux-can@vger.kernel.org; Sun, 17 Oct 2021 23:01:52 +0200
+        id 1mcDI2-0000HF-LE
+        for linux-can@vger.kernel.org; Sun, 17 Oct 2021 23:01:54 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 462DC695EE0
-        for <linux-can@vger.kernel.org>; Sun, 17 Oct 2021 21:01:47 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id BF30E695EFB
+        for <linux-can@vger.kernel.org>; Sun, 17 Oct 2021 21:01:48 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id A7C5B695EB0;
-        Sun, 17 Oct 2021 21:01:44 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 25310695EB5;
+        Sun, 17 Oct 2021 21:01:45 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c8a2bdca;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 779818b8;
         Sun, 17 Oct 2021 21:01:43 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        stable@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>,
+        kernel@pengutronix.de, Ziyang Xuan <william.xuanziyang@huawei.com>,
+        stable@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 03/11] can: j1939: j1939_xtp_rx_dat_one(): cancel session if receive TP.DT with error length
-Date:   Sun, 17 Oct 2021 23:01:34 +0200
-Message-Id: <20211017210142.2108610-4-mkl@pengutronix.de>
+Subject: [PATCH net 06/11] can: isotp: isotp_sendmsg(): fix TX buffer concurrent access in isotp_sendmsg()
+Date:   Sun, 17 Oct 2021 23:01:37 +0200
+Message-Id: <20211017210142.2108610-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211017210142.2108610-1-mkl@pengutronix.de>
 References: <20211017210142.2108610-1-mkl@pengutronix.de>
@@ -58,55 +57,142 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-According to SAE-J1939-21, the data length of TP.DT must be 8 bytes, so
-cancel session when receive unexpected TP.DT message.
+When isotp_sendmsg() concurrent, tx.state of all TX processes can be
+ISOTP_IDLE. The conditions so->tx.state != ISOTP_IDLE and
+wq_has_sleeper(&so->wait) can not protect TX buffer from being
+accessed by multiple TX processes.
 
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Link: https://lore.kernel.org/all/1632972800-45091-1-git-send-email-zhangchangzhong@huawei.com
+We can use cmpxchg() to try to modify tx.state to ISOTP_SENDING firstly.
+If the modification of the previous process succeed, the later process
+must wait tx.state to ISOTP_IDLE firstly. Thus, we can ensure TX buffer
+is accessed by only one process at the same time. And we should also
+restore the original tx.state at the subsequent error processes.
+
+Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
+Link: https://lore.kernel.org/all/c2517874fbdf4188585cf9ddf67a8fa74d5dbde5.1633764159.git.william.xuanziyang@huawei.com
 Cc: stable@vger.kernel.org
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/j1939/transport.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ net/can/isotp.c | 46 +++++++++++++++++++++++++++++++---------------
+ 1 file changed, 31 insertions(+), 15 deletions(-)
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index bfb0718d4587..1ea6fee3d986 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -1788,6 +1788,7 @@ static void j1939_xtp_rx_dpo(struct j1939_priv *priv, struct sk_buff *skb,
- static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- 				 struct sk_buff *skb)
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index 2ac29c2b2ca6..d1f54273c0bb 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -121,7 +121,7 @@ enum {
+ struct tpcon {
+ 	int idx;
+ 	int len;
+-	u8 state;
++	u32 state;
+ 	u8 bs;
+ 	u8 sn;
+ 	u8 ll_dl;
+@@ -848,6 +848,7 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
  {
-+	enum j1939_xtp_abort abort = J1939_XTP_ABORT_FAULT;
- 	struct j1939_priv *priv = session->priv;
- 	struct j1939_sk_buff_cb *skcb, *se_skcb;
- 	struct sk_buff *se_skb = NULL;
-@@ -1802,9 +1803,11 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
+ 	struct sock *sk = sock->sk;
+ 	struct isotp_sock *so = isotp_sk(sk);
++	u32 old_state = so->tx.state;
+ 	struct sk_buff *skb;
+ 	struct net_device *dev;
+ 	struct canfd_frame *cf;
+@@ -860,47 +861,55 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 		return -EADDRNOTAVAIL;
  
- 	skcb = j1939_skb_to_cb(skb);
- 	dat = skb->data;
--	if (skb->len <= 1)
-+	if (skb->len != 8) {
- 		/* makes no sense */
-+		abort = J1939_XTP_ABORT_UNEXPECTED_DATA;
- 		goto out_session_cancel;
+ 	/* we do not support multiple buffers - for now */
+-	if (so->tx.state != ISOTP_IDLE || wq_has_sleeper(&so->wait)) {
+-		if (msg->msg_flags & MSG_DONTWAIT)
+-			return -EAGAIN;
++	if (cmpxchg(&so->tx.state, ISOTP_IDLE, ISOTP_SENDING) != ISOTP_IDLE ||
++	    wq_has_sleeper(&so->wait)) {
++		if (msg->msg_flags & MSG_DONTWAIT) {
++			err = -EAGAIN;
++			goto err_out;
++		}
+ 
+ 		/* wait for complete transmission of current pdu */
+ 		err = wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
+ 		if (err)
+-			return err;
++			goto err_out;
+ 	}
+ 
+-	if (!size || size > MAX_MSG_LENGTH)
+-		return -EINVAL;
++	if (!size || size > MAX_MSG_LENGTH) {
++		err = -EINVAL;
++		goto err_out;
 +	}
  
- 	switch (session->last_cmd) {
- 	case 0xff:
-@@ -1903,7 +1906,7 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
-  out_session_cancel:
- 	kfree_skb(se_skb);
- 	j1939_session_timers_cancel(session);
--	j1939_session_cancel(session, J1939_XTP_ABORT_FAULT);
-+	j1939_session_cancel(session, abort);
- 	j1939_session_put(session);
+ 	/* take care of a potential SF_DL ESC offset for TX_DL > 8 */
+ 	off = (so->tx.ll_dl > CAN_MAX_DLEN) ? 1 : 0;
+ 
+ 	/* does the given data fit into a single frame for SF_BROADCAST? */
+ 	if ((so->opt.flags & CAN_ISOTP_SF_BROADCAST) &&
+-	    (size > so->tx.ll_dl - SF_PCI_SZ4 - ae - off))
+-		return -EINVAL;
++	    (size > so->tx.ll_dl - SF_PCI_SZ4 - ae - off)) {
++		err = -EINVAL;
++		goto err_out;
++	}
+ 
+ 	err = memcpy_from_msg(so->tx.buf, msg, size);
+ 	if (err < 0)
+-		return err;
++		goto err_out;
+ 
+ 	dev = dev_get_by_index(sock_net(sk), so->ifindex);
+-	if (!dev)
+-		return -ENXIO;
++	if (!dev) {
++		err = -ENXIO;
++		goto err_out;
++	}
+ 
+ 	skb = sock_alloc_send_skb(sk, so->ll.mtu + sizeof(struct can_skb_priv),
+ 				  msg->msg_flags & MSG_DONTWAIT, &err);
+ 	if (!skb) {
+ 		dev_put(dev);
+-		return err;
++		goto err_out;
+ 	}
+ 
+ 	can_skb_reserve(skb);
+ 	can_skb_prv(skb)->ifindex = dev->ifindex;
+ 	can_skb_prv(skb)->skbcnt = 0;
+ 
+-	so->tx.state = ISOTP_SENDING;
+ 	so->tx.len = size;
+ 	so->tx.idx = 0;
+ 
+@@ -956,7 +965,7 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 	if (err) {
+ 		pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
+ 			       __func__, ERR_PTR(err));
+-		return err;
++		goto err_out;
+ 	}
+ 
+ 	if (wait_tx_done) {
+@@ -965,6 +974,13 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 	}
+ 
+ 	return size;
++
++err_out:
++	so->tx.state = old_state;
++	if (so->tx.state == ISOTP_IDLE)
++		wake_up_interruptible(&so->wait);
++
++	return err;
  }
  
+ static int isotp_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
 -- 
 2.33.0
 
