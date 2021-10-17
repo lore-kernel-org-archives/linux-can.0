@@ -2,48 +2,52 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55033C433FE
-	for <linux-can@archiver.kernel.org>; Sun, 17 Oct 2021 21:02:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4E39C4332F
+	for <linux-can@archiver.kernel.org>; Sun, 17 Oct 2021 21:02:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3FC0060E76
-	for <linux-can@archiver.kernel.org>; Sun, 17 Oct 2021 21:02:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C265E60E76
+	for <linux-can@archiver.kernel.org>; Sun, 17 Oct 2021 21:02:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344657AbhJQVES (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 17 Oct 2021 17:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39968 "EHLO
+        id S1344664AbhJQVEU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 17 Oct 2021 17:04:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344621AbhJQVEL (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 17 Oct 2021 17:04:11 -0400
+        with ESMTP id S1344625AbhJQVEM (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 17 Oct 2021 17:04:12 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62593C061770
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A45CC061772
         for <linux-can@vger.kernel.org>; Sun, 17 Oct 2021 14:01:59 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1mcDI5-0000O3-KG
-        for linux-can@vger.kernel.org; Sun, 17 Oct 2021 23:01:57 +0200
+        id 1mcDI6-0000Q6-0z
+        for linux-can@vger.kernel.org; Sun, 17 Oct 2021 23:01:58 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 467DE695F15
+        by bjornoya.blackshift.org (Postfix) with SMTP id AE9AF695F1B
         for <linux-can@vger.kernel.org>; Sun, 17 Oct 2021 21:01:50 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id CD0A0695EC1;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4A14F695EB7;
         Sun, 17 Oct 2021 21:01:45 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 030a089a;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 512d2b15;
         Sun, 17 Oct 2021 21:01:43 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
-        Stephane Grosjean <s.grosjean@peak-system.com>,
-        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 10/11] can: peak_usb: pcan_usb_fd_decode_status(): fix back to ERROR_ACTIVE state notification
-Date:   Sun, 17 Oct 2021 23:01:41 +0200
-Message-Id: <20211017210142.2108610-11-mkl@pengutronix.de>
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        stable@vger.kernel.org,
+        Ayumi Nakamichi <ayumi.nakamichi.kf@renesas.com>,
+        Ulrich Hecht <uli+renesas@fpond.eu>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 07/11] can: rcar_can: fix suspend/resume
+Date:   Sun, 17 Oct 2021 23:01:38 +0200
+Message-Id: <20211017210142.2108610-8-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211017210142.2108610-1-mkl@pengutronix.de>
 References: <20211017210142.2108610-1-mkl@pengutronix.de>
@@ -57,38 +61,68 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Stephane Grosjean <s.grosjean@peak-system.com>
+From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-This corrects the lack of notification of a return to ERROR_ACTIVE
-state for USB - CANFD devices from PEAK-System.
+If the driver was not opened, rcar_can_suspend() should not call
+clk_disable() because the clock was not enabled.
 
-Fixes: 0a25e1f4f185 ("can: peak_usb: add support for PEAK new CANFD USB adapters")
-Link: https://lore.kernel.org/all/20210929142111.55757-1-s.grosjean@peak-system.com
+Fixes: fd1159318e55 ("can: add Renesas R-Car CAN driver")
+Link: https://lore.kernel.org/all/20210924075556.223685-1-yoshihiro.shimoda.uh@renesas.com
 Cc: stable@vger.kernel.org
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Tested-by: Ayumi Nakamichi <ayumi.nakamichi.kf@renesas.com>
+Reviewed-by: Ulrich Hecht <uli+renesas@fpond.eu>
+Tested-by: Biju Das <biju.das.jz@bp.renesas.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/net/can/rcar/rcar_can.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index b11eabad575b..e206959b3d06 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -551,11 +551,10 @@ static int pcan_usb_fd_decode_status(struct pcan_usb_fd_if *usb_if,
- 	} else if (sm->channel_p_w_b & PUCAN_BUS_WARNING) {
- 		new_state = CAN_STATE_ERROR_WARNING;
- 	} else {
--		/* no error bit (so, no error skb, back to active state) */
--		dev->can.state = CAN_STATE_ERROR_ACTIVE;
-+		/* back to (or still in) ERROR_ACTIVE state */
-+		new_state = CAN_STATE_ERROR_ACTIVE;
- 		pdev->bec.txerr = 0;
- 		pdev->bec.rxerr = 0;
--		return 0;
- 	}
+diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
+index 00e4533c8bdd..8999ec9455ec 100644
+--- a/drivers/net/can/rcar/rcar_can.c
++++ b/drivers/net/can/rcar/rcar_can.c
+@@ -846,10 +846,12 @@ static int __maybe_unused rcar_can_suspend(struct device *dev)
+ 	struct rcar_can_priv *priv = netdev_priv(ndev);
+ 	u16 ctlr;
  
- 	/* state hasn't changed */
+-	if (netif_running(ndev)) {
+-		netif_stop_queue(ndev);
+-		netif_device_detach(ndev);
+-	}
++	if (!netif_running(ndev))
++		return 0;
++
++	netif_stop_queue(ndev);
++	netif_device_detach(ndev);
++
+ 	ctlr = readw(&priv->regs->ctlr);
+ 	ctlr |= RCAR_CAN_CTLR_CANM_HALT;
+ 	writew(ctlr, &priv->regs->ctlr);
+@@ -868,6 +870,9 @@ static int __maybe_unused rcar_can_resume(struct device *dev)
+ 	u16 ctlr;
+ 	int err;
+ 
++	if (!netif_running(ndev))
++		return 0;
++
+ 	err = clk_enable(priv->clk);
+ 	if (err) {
+ 		netdev_err(ndev, "clk_enable() failed, error %d\n", err);
+@@ -881,10 +886,9 @@ static int __maybe_unused rcar_can_resume(struct device *dev)
+ 	writew(ctlr, &priv->regs->ctlr);
+ 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+ 
+-	if (netif_running(ndev)) {
+-		netif_device_attach(ndev);
+-		netif_start_queue(ndev);
+-	}
++	netif_device_attach(ndev);
++	netif_start_queue(ndev);
++
+ 	return 0;
+ }
+ 
 -- 
 2.33.0
 
