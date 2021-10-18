@@ -2,128 +2,152 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4E39C4332F
-	for <linux-can@archiver.kernel.org>; Sun, 17 Oct 2021 21:02:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12CD5C433EF
+	for <linux-can@archiver.kernel.org>; Mon, 18 Oct 2021 03:07:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C265E60E76
-	for <linux-can@archiver.kernel.org>; Sun, 17 Oct 2021 21:02:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E427C61050
+	for <linux-can@archiver.kernel.org>; Mon, 18 Oct 2021 03:07:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344664AbhJQVEU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 17 Oct 2021 17:04:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344625AbhJQVEM (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 17 Oct 2021 17:04:12 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A45CC061772
-        for <linux-can@vger.kernel.org>; Sun, 17 Oct 2021 14:01:59 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mcDI6-0000Q6-0z
-        for linux-can@vger.kernel.org; Sun, 17 Oct 2021 23:01:58 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id AE9AF695F1B
-        for <linux-can@vger.kernel.org>; Sun, 17 Oct 2021 21:01:50 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4A14F695EB7;
-        Sun, 17 Oct 2021 21:01:45 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 512d2b15;
-        Sun, 17 Oct 2021 21:01:43 +0000 (UTC)
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        stable@vger.kernel.org,
-        Ayumi Nakamichi <ayumi.nakamichi.kf@renesas.com>,
-        Ulrich Hecht <uli+renesas@fpond.eu>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 07/11] can: rcar_can: fix suspend/resume
-Date:   Sun, 17 Oct 2021 23:01:38 +0200
-Message-Id: <20211017210142.2108610-8-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211017210142.2108610-1-mkl@pengutronix.de>
-References: <20211017210142.2108610-1-mkl@pengutronix.de>
+        id S229942AbhJRDJK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 17 Oct 2021 23:09:10 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:25162 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229445AbhJRDJJ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 17 Oct 2021 23:09:09 -0400
+Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HXhZL5lJJz1DHfP;
+        Mon, 18 Oct 2021 11:05:14 +0800 (CST)
+Received: from [10.174.179.200] (10.174.179.200) by
+ dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Mon, 18 Oct 2021 11:06:57 +0800
+Subject: Re: [PATCH] can: j1939: j1939_session_deactivate(): fix potential UAF
+ access
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, <linux-can@vger.kernel.org>
+CC:     Xiaochen Zou <xzou017@ucr.edu>,
+        Oleksij Rempel <o.rempel@pengutronix.de>
+References: <20211017120158.2024996-1-mkl@pengutronix.de>
+From:   "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
+Message-ID: <6d784d3f-2eae-8569-0266-47142ffe5d1f@huawei.com>
+Date:   Mon, 18 Oct 2021 11:06:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+In-Reply-To: <20211017120158.2024996-1-mkl@pengutronix.de>
+Content-Type: text/plain; charset="gbk"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.200]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeml757-chm.china.huawei.com (10.1.199.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> From: Xiaochen Zou <xzou017@ucr.edu>
+> 
+> Both session and session->priv may be freed in
+> j1939_session_deactivate_locked(). It leads to potential UAF read and
+> write in j1939_session_list_unlock(). The free chain is:
+> 
+> | j1939_session_deactivate_locked() ->
+> | j1939_session_put() ->
+> | __j1939_session_release() ->
+> | j1939_session_destroy()
+> 
+> To fix this bug, move the j1939_session_put() behind
+> j1939_session_deactivate_locked(), and guard it with a check of active
+> since the session would be freed only if active is true.
+> 
+> Link: https://lore.kernel.org/all/CAE1SXrv3Ouwt4Y9NEWGi0WO701w1YP1ruMSxraZr4PZTGsUZgg@mail.gmail.com
+> Link: https://lore.kernel.org/all/aa64ef28-35d8-9deb-2756-8080296b7e3e@ucr.edu
+> Cc: Ziyang Xuan <william.xuanziyang@huawei.com>
+> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+> Signed-off-by: Xiaochen Zou <xzou017@ucr.edu>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+> Hello,
+> 
+> I picked up the patch from Xiaochen Zou. I think it is the proposed
+> fix for:
+> 
+> | https://syzkaller.appspot.com/bug?extid=a47537d3964ef6c874e1
+> 
+> 
+> It turned out that
+> 
+> | 0c71437dd50d can: j1939: j1939_session_deactivate(): clarify lifetime of session object                                                                                                                                                                         
+> 
+> is wrong, and should be removed, as Ziyang Xuan proposed in:
+> 
+> | https://lore.kernel.org/all/20210906094200.95868-1-william.xuanziyang@huawei.com
+> 
+> Ziyang Xuan, Oleksij, can you have a look at Xiaochen Zou's patch and
+> give me an Ack, then I'll take both patches upstream.
+> 
+> regards,
+> Marc
 
-If the driver was not opened, rcar_can_suspend() should not call
-clk_disable() because the clock was not enabled.
+I think the session kref >= 2 when it is active state. The j1939_session_put() in
+j1939_session_deactivate_locked() will not trigger __j1939_session_release() to free
+session.
 
-Fixes: fd1159318e55 ("can: add Renesas R-Car CAN driver")
-Link: https://lore.kernel.org/all/20210924075556.223685-1-yoshihiro.shimoda.uh@renesas.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Tested-by: Ayumi Nakamichi <ayumi.nakamichi.kf@renesas.com>
-Reviewed-by: Ulrich Hecht <uli+renesas@fpond.eu>
-Tested-by: Biju Das <biju.das.jz@bp.renesas.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/rcar/rcar_can.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+0c71437dd50d ("can: j1939: j1939_session_deactivate(): clarify lifetime of session object") just
+only partly wrong. j1939_session_deactivate() is called not only when session is active, it may be
+called when session is not active already.
 
-diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
-index 00e4533c8bdd..8999ec9455ec 100644
---- a/drivers/net/can/rcar/rcar_can.c
-+++ b/drivers/net/can/rcar/rcar_can.c
-@@ -846,10 +846,12 @@ static int __maybe_unused rcar_can_suspend(struct device *dev)
- 	struct rcar_can_priv *priv = netdev_priv(ndev);
- 	u16 ctlr;
- 
--	if (netif_running(ndev)) {
--		netif_stop_queue(ndev);
--		netif_device_detach(ndev);
--	}
-+	if (!netif_running(ndev))
-+		return 0;
-+
-+	netif_stop_queue(ndev);
-+	netif_device_detach(ndev);
-+
- 	ctlr = readw(&priv->regs->ctlr);
- 	ctlr |= RCAR_CAN_CTLR_CANM_HALT;
- 	writew(ctlr, &priv->regs->ctlr);
-@@ -868,6 +870,9 @@ static int __maybe_unused rcar_can_resume(struct device *dev)
- 	u16 ctlr;
- 	int err;
- 
-+	if (!netif_running(ndev))
-+		return 0;
-+
- 	err = clk_enable(priv->clk);
- 	if (err) {
- 		netdev_err(ndev, "clk_enable() failed, error %d\n", err);
-@@ -881,10 +886,9 @@ static int __maybe_unused rcar_can_resume(struct device *dev)
- 	writew(ctlr, &priv->regs->ctlr);
- 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
- 
--	if (netif_running(ndev)) {
--		netif_device_attach(ndev);
--		netif_start_queue(ndev);
--	}
-+	netif_device_attach(ndev);
-+	netif_start_queue(ndev);
-+
- 	return 0;
- }
- 
--- 
-2.33.0
+And I think the 0c71437dd50d may be the real fix for:
+https://syzkaller.appspot.com/bug?extid=a47537d3964ef6c874e1
 
+I can not find an exact scenario as Xiaochen Zou's patch mentioned. So I can not agree.
 
+Or can you give an exact scenario @Xiaochen Zou.
+
+Thank you!
+
+> 
+> net/can/j1939/transport.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> index dc3c30810833..35530b09c84f 100644
+> --- a/net/can/j1939/transport.c
+> +++ b/net/can/j1939/transport.c
+> @@ -1072,7 +1072,6 @@ static bool j1939_session_deactivate_locked(struct j1939_session *session)
+>  
+>  		list_del_init(&session->active_session_list_entry);
+>  		session->state = J1939_SESSION_DONE;
+> -		j1939_session_put(session);
+>  	}
+>  
+>  	return active;
+> @@ -1086,6 +1085,8 @@ static bool j1939_session_deactivate(struct j1939_session *session)
+>  	j1939_session_list_lock(priv);
+>  	active = j1939_session_deactivate_locked(session);
+>  	j1939_session_list_unlock(priv);
+> +	if (active)
+> +		j1939_session_put(session);
+>  
+>  	return active;
+>  }
+> @@ -2152,6 +2153,7 @@ void j1939_simple_recv(struct j1939_priv *priv, struct sk_buff *skb)
+>  int j1939_cancel_active_session(struct j1939_priv *priv, struct sock *sk)
+>  {
+>  	struct j1939_session *session, *saved;
+> +	bool active;
+>  
+>  	netdev_dbg(priv->ndev, "%s, sk: %p\n", __func__, sk);
+>  	j1939_session_list_lock(priv);
+> @@ -2165,7 +2167,9 @@ int j1939_cancel_active_session(struct j1939_priv *priv, struct sock *sk)
+>  				j1939_session_put(session);
+>  
+>  			session->err = ESHUTDOWN;
+> -			j1939_session_deactivate_locked(session);
+> +			active = j1939_session_deactivate_locked(session);
+> +			if (active)
+> +				j1939_session_put(session);
+>  		}
+>  	}
+>  	j1939_session_list_unlock(priv);
+> 
