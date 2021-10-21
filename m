@@ -2,97 +2,51 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE10EC433EF
-	for <linux-can@archiver.kernel.org>; Wed, 20 Oct 2021 11:49:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24D25C433F5
+	for <linux-can@archiver.kernel.org>; Thu, 21 Oct 2021 08:15:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BC53760EE9
-	for <linux-can@archiver.kernel.org>; Wed, 20 Oct 2021 11:49:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EBD1F610D0
+	for <linux-can@archiver.kernel.org>; Thu, 21 Oct 2021 08:15:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbhJTLvZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Oct 2021 07:51:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhJTLvY (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Oct 2021 07:51:24 -0400
-X-Greylist: delayed 1817 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Oct 2021 04:49:09 PDT
-Received: from relay.felk.cvut.cz (relay.felk.cvut.cz [IPv6:2001:718:2:1611:0:1:0:70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 35138C06161C
-        for <linux-can@vger.kernel.org>; Wed, 20 Oct 2021 04:49:09 -0700 (PDT)
-Received: from cmp.felk.cvut.cz (haar.felk.cvut.cz [147.32.84.19])
-        by relay.felk.cvut.cz (8.15.2/8.15.2) with ESMTP id 19K9UqnO088693;
-        Wed, 20 Oct 2021 11:30:52 +0200 (CEST)
-        (envelope-from pisa@cmp.felk.cvut.cz)
-Received: from haar.felk.cvut.cz (localhost [127.0.0.1])
-        by cmp.felk.cvut.cz (8.14.0/8.12.3/SuSE Linux 0.6) with ESMTP id 19KBHtMO030204;
-        Wed, 20 Oct 2021 13:17:55 +0200
-Received: (from pisa@localhost)
-        by haar.felk.cvut.cz (8.14.0/8.13.7/Submit) id 19KBHt4r030201;
-        Wed, 20 Oct 2021 13:17:55 +0200
-X-Authentication-Warning: haar.felk.cvut.cz: pisa set sender to pisa@cmp.felk.cvut.cz using -f
-From:   Pavel Pisa <pisa@cmp.felk.cvut.cz>
-To:     "Marc Kleine-Budde" <mkl@pengutronix.de>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        linux-can@vger.kernel.org
-Subject: Query for status of timestamping for XCAN driver and possible project
-Date:   Wed, 20 Oct 2021 13:17:50 +0200
-User-Agent: KMail/1.9.10
-Cc:     Matej Vasilevski <vasilmat@fel.cvut.cz>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Martin =?iso-8859-2?q?Je=F8=E1bek?= <martin.jerabek01@gmail.com>
+        id S230440AbhJUIRu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 21 Oct 2021 04:17:50 -0400
+Received: from smtp5-g21.free.fr ([212.27.42.5]:45216 "EHLO smtp5-g21.free.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230385AbhJUIRp (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Thu, 21 Oct 2021 04:17:45 -0400
+Received: from localhost.localdomain (unknown [89.158.142.148])
+        (Authenticated sender: stephane.grosjean@free.fr)
+        by smtp5-g21.free.fr (Postfix) with ESMTPSA id D2DFB5FFD3;
+        Thu, 21 Oct 2021 10:15:25 +0200 (CEST)
+From:   Stephane Grosjean <s.grosjean@peak-system.com>
+To:     linux-can Mailing List <linux-can@vger.kernel.org>
+Cc:     Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: [PATCH 0/2 v2] can: peak_usb: PCAN-USB bus state fix and info ordering
+Date:   Thu, 21 Oct 2021 10:15:03 +0200
+Message-Id: <20211021081505.18223-1-s.grosjean@peak-system.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <202110201317.50743.pisa@cmp.felk.cvut.cz>
-X-FELK-MailScanner-Information: 
-X-MailScanner-ID: 19K9UqnO088693
-X-FELK-MailScanner: Found to be clean
-X-FELK-MailScanner-SpamCheck: not spam, SpamAssassin (not cached,
-        score=-0.099, required 6, BAYES_00 -0.50, KHOP_HELO_FCRDNS 0.40,
-        SPF_HELO_NONE 0.00, SPF_NONE 0.00, URIBL_BLOCKED 0.00)
-X-FELK-MailScanner-From: pisa@cmp.felk.cvut.cz
-X-FELK-MailScanner-Watermark: 1635327055.91186@9p01BAUFrSrDNv1WJtqS7A
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Oliver and Marc,
+This bundle of changes:
+- corrects a potential bad transition to ERROR_PASSIVE or ERROR_WARNING
+  state if BERR reporting was not explicitly requested for the can
+  interface associated with the PCAN-USB,
+- reorders the information displayed when the PCAN-USB is detected, when it
+  can benefit from a firmware update.
 
-our student, Matej Vasilevski, has chosen to continue
-on CAN latency tester which we done for Oliver years
-ago.
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 
-We want to continue on the CAN-BENCH project started
-by Martin Jerabek
+Stephane Grosjean (2):
+  can: peak_usb: always ask for BERR reporting for PCAN-USB devices
+  can: peak_usb: exchange the order of information messages
 
-  https://gitlab.fel.cvut.cz/canbus/zynq/zynq-can-sja1000-top/-/wikis/home
+ drivers/net/can/usb/peak_usb/pcan_usb.c | 27 ++++++++++++-------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
 
-  https://gitlab.fel.cvut.cz/canbus/zynq/zynq-can-sja1000-top/-/wikis/uploads/56b4d27d8f81ae390fc98bdce803398f/F3-BP-2016-Jerabek-Martin-Jerabek-thesis-2016.pd
-
-We want to use XCAN on Xilinx Zynq 7010 with timestamping
-in the first iteration, then switch to our CTU CAN FD core
-and add timestamping to its driver.
-
-Is there some more recent attempt to add timestamping
-to XCAN driver than that original work of Martin Jerabek?
-
-Is there some suggestion which driver is the right
-example to implement timestamping now?
-
-Our intention is to implement feature in state ready
-for mainlining and we hope that with your feedback
-we succeed this time.
-
-Best wishes,
-
-                Pavel Pisa
-    phone:      +420 603531357
-    e-mail:     pisa@cmp.felk.cvut.cz
-    Department of Control Engineering FEE CVUT
-    Karlovo namesti 13, 121 35, Prague 2
-    university: http://dce.fel.cvut.cz/
-    personal:   http://cmp.felk.cvut.cz/~pisa
-    projects:   https://www.openhub.net/accounts/ppisa
-    CAN related:http://canbus.pages.fel.cvut.cz/
+-- 
+2.25.1
 
