@@ -2,48 +2,48 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CA72C433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D9F4C433FE
 	for <linux-can@archiver.kernel.org>; Sun, 24 Oct 2021 20:44:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0066560FE8
-	for <linux-can@archiver.kernel.org>; Sun, 24 Oct 2021 20:44:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 653F761039
+	for <linux-can@archiver.kernel.org>; Sun, 24 Oct 2021 20:44:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbhJXUrP (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S232023AbhJXUrP (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Sun, 24 Oct 2021 16:47:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55986 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231891AbhJXUrM (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 24 Oct 2021 16:47:12 -0400
+        with ESMTP id S231992AbhJXUrN (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 24 Oct 2021 16:47:13 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93532C061764
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1614C061745
         for <linux-can@vger.kernel.org>; Sun, 24 Oct 2021 13:44:51 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1mekML-0006Gj-Sq
-        for linux-can@vger.kernel.org; Sun, 24 Oct 2021 22:44:49 +0200
+        id 1mekMM-0006HU-Bq
+        for linux-can@vger.kernel.org; Sun, 24 Oct 2021 22:44:50 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 43D0C69C58D
-        for <linux-can@vger.kernel.org>; Sun, 24 Oct 2021 20:43:31 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 5586869C5B4
+        for <linux-can@vger.kernel.org>; Sun, 24 Oct 2021 20:43:32 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id A128A69C553;
-        Sun, 24 Oct 2021 20:43:28 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id C1CD169C55E;
+        Sun, 24 Oct 2021 20:43:29 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d25583e6;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b13f206f;
         Sun, 24 Oct 2021 20:43:27 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Thomas Gleixner <tglx@linutronix.de>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
+        kernel@pengutronix.de,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 01/15] can: bcm: Use hrtimer_forward_now()
-Date:   Sun, 24 Oct 2021 22:43:11 +0200
-Message-Id: <20211024204325.3293425-2-mkl@pengutronix.de>
+Subject: [PATCH net-next 05/15] can: bittiming: change can_calc_tdco()'s prototype to not directly modify priv
+Date:   Sun, 24 Oct 2021 22:43:15 +0200
+Message-Id: <20211024204325.3293425-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211024204325.3293425-1-mkl@pengutronix.de>
 References: <20211024204325.3293425-1-mkl@pengutronix.de>
@@ -57,40 +57,113 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-hrtimer_forward_now() provides the same functionality as the open coded
-hrimer_forward() invocation. Prepares for removal of hrtimer_forward() from
-the public interfaces.
+The function can_calc_tdco() directly retrieves can_priv from the
+net_device and directly modifies it.
 
-Link: https://lore.kernel.org/all/20210923153339.684546907@linutronix.de
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: netdev@vger.kernel.org
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
+This is annoying for the upcoming patch. In
+drivers/net/can/dev/netlink.c:can_changelink(), the data bittiming are
+written to a temporary structure and memcpyed to can_priv only after
+everything succeeded. In the next patch, where we will introduce the
+netlink interface for TDC parameters, we will add a new TDC block
+which can potentially fail. For this reason, the data bittiming
+temporary structure has to be copied after that to-be-introduced TDC
+block. However, TDC also needs to access data bittiming information.
+
+We change the prototype so that the data bittiming structure is passed
+to can_calc_tdco() as an argument instead of retrieving it from
+priv. This way can_calc_tdco() can access the data bittiming before it
+gets memcpyed to priv.
+
+Link: https://lore.kernel.org/all/20210918095637.20108-4-mailhol.vincent@wanadoo.fr
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/bcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/dev/bittiming.c | 17 +++++++----------
+ drivers/net/can/dev/netlink.c   |  3 ++-
+ include/linux/can/bittiming.h   |  9 +++++++--
+ 3 files changed, 16 insertions(+), 13 deletions(-)
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 508f67de0b80..bc88d901a1c0 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -625,7 +625,7 @@ static enum hrtimer_restart bcm_rx_thr_handler(struct hrtimer *hrtimer)
- 	struct bcm_op *op = container_of(hrtimer, struct bcm_op, thrtimer);
+diff --git a/drivers/net/can/dev/bittiming.c b/drivers/net/can/dev/bittiming.c
+index 0ccf982ca301..0509625c3082 100644
+--- a/drivers/net/can/dev/bittiming.c
++++ b/drivers/net/can/dev/bittiming.c
+@@ -175,18 +175,15 @@ int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
+ 	return 0;
+ }
  
- 	if (bcm_rx_thr_flush(op)) {
--		hrtimer_forward(hrtimer, ktime_get(), op->kt_ival2);
-+		hrtimer_forward_now(hrtimer, op->kt_ival2);
- 		return HRTIMER_RESTART;
- 	} else {
- 		/* rearm throttle handling */
-
-base-commit: 4d98bb0d7ec2d0b417df6207b0bafe1868bad9f8
+-void can_calc_tdco(struct net_device *dev)
+-{
+-	struct can_priv *priv = netdev_priv(dev);
+-	const struct can_bittiming *dbt = &priv->data_bittiming;
+-	struct can_tdc *tdc = &priv->tdc;
+-	const struct can_tdc_const *tdc_const = priv->tdc_const;
++void can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
++		   const struct can_bittiming *dbt,
++		   u32 *ctrlmode, u32 ctrlmode_supported)
+ 
+-	if (!tdc_const ||
+-	    !(priv->ctrlmode_supported & CAN_CTRLMODE_TDC_AUTO))
++{
++	if (!tdc_const || !(ctrlmode_supported & CAN_CTRLMODE_TDC_AUTO))
+ 		return;
+ 
+-	priv->ctrlmode &= ~CAN_CTRLMODE_TDC_MASK;
++	*ctrlmode &= ~CAN_CTRLMODE_TDC_MASK;
+ 
+ 	/* As specified in ISO 11898-1 section 11.3.3 "Transmitter
+ 	 * delay compensation" (TDC) is only applicable if data BRP is
+@@ -200,7 +197,7 @@ void can_calc_tdco(struct net_device *dev)
+ 		if (sample_point_in_tc < tdc_const->tdco_min)
+ 			return;
+ 		tdc->tdco = min(sample_point_in_tc, tdc_const->tdco_max);
+-		priv->ctrlmode |= CAN_CTRLMODE_TDC_AUTO;
++		*ctrlmode |= CAN_CTRLMODE_TDC_AUTO;
+ 	}
+ }
+ #endif /* CONFIG_CAN_CALC_BITTIMING */
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index 80425636049d..e79c9a2ffbfc 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -189,7 +189,8 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+ 
+ 		memcpy(&priv->data_bittiming, &dbt, sizeof(dbt));
+ 
+-		can_calc_tdco(dev);
++		can_calc_tdco(&priv->tdc, priv->tdc_const, &priv->data_bittiming,
++			      &priv->ctrlmode, priv->ctrlmode_supported);
+ 
+ 		if (priv->do_set_data_bittiming) {
+ 			/* Finally, set the bit-timing registers */
+diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
+index aebbe65dab7e..20b50baf3a02 100644
+--- a/include/linux/can/bittiming.h
++++ b/include/linux/can/bittiming.h
+@@ -123,7 +123,9 @@ struct can_tdc_const {
+ int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
+ 		       const struct can_bittiming_const *btc);
+ 
+-void can_calc_tdco(struct net_device *dev);
++void can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
++		   const struct can_bittiming *dbt,
++		   u32 *ctrlmode, u32 ctrlmode_supported);
+ #else /* !CONFIG_CAN_CALC_BITTIMING */
+ static inline int
+ can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
+@@ -133,7 +135,10 @@ can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
+ 	return -EINVAL;
+ }
+ 
+-static inline void can_calc_tdco(struct net_device *dev)
++static inline void
++can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
++	      const struct can_bittiming *dbt,
++	      u32 *ctrlmode, u32 ctrlmode_supported)
+ {
+ }
+ #endif /* CONFIG_CAN_CALC_BITTIMING */
 -- 
 2.33.0
 
