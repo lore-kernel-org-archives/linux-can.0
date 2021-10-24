@@ -2,47 +2,48 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E245CC43219
-	for <linux-can@archiver.kernel.org>; Sun, 24 Oct 2021 20:45:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F05EC4321E
+	for <linux-can@archiver.kernel.org>; Sun, 24 Oct 2021 20:45:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CCB1F61027
-	for <linux-can@archiver.kernel.org>; Sun, 24 Oct 2021 20:45:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1CE9160F6F
+	for <linux-can@archiver.kernel.org>; Sun, 24 Oct 2021 20:45:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbhJXUrX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 24 Oct 2021 16:47:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56054 "EHLO
+        id S232008AbhJXUrY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 24 Oct 2021 16:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232130AbhJXUrW (ORCPT
+        with ESMTP id S232131AbhJXUrW (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Sun, 24 Oct 2021 16:47:22 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 987ADC06122B
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EAEC06122C
         for <linux-can@vger.kernel.org>; Sun, 24 Oct 2021 13:44:58 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1mekMT-0006SH-1h
+        id 1mekMT-0006TU-6i
         for linux-can@vger.kernel.org; Sun, 24 Oct 2021 22:44:57 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id DFF6D69C61D
-        for <linux-can@vger.kernel.org>; Sun, 24 Oct 2021 20:43:34 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id F3FE069C5F1
+        for <linux-can@vger.kernel.org>; Sun, 24 Oct 2021 20:43:33 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 15D4169C5AC;
-        Sun, 24 Oct 2021 20:43:32 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id C1BB769C579;
+        Sun, 24 Oct 2021 20:43:30 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id fc55d58e;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f60d0826;
         Sun, 24 Oct 2021 20:43:28 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Michal Simek <michal.simek@xilinx.com>,
+        kernel@pengutronix.de,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 14/15] can: xilinx_can: remove repeated word from the kernel-doc
-Date:   Sun, 24 Oct 2021 22:43:24 +0200
-Message-Id: <20211024204325.3293425-15-mkl@pengutronix.de>
+Subject: [PATCH net-next 10/15] can: rcar: drop unneeded ARM dependency
+Date:   Sun, 24 Oct 2021 22:43:20 +0200
+Message-Id: <20211024204325.3293425-11-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211024204325.3293425-1-mkl@pengutronix.de>
 References: <20211024204325.3293425-1-mkl@pengutronix.de>
@@ -56,40 +57,41 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Michal Simek <michal.simek@xilinx.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Trivial patch. Issue is reported by checkpatch.
+The dependency on ARM predates the dependency on ARCH_RENESAS. The
+latter was introduced for Renesas arm64 SoCs first, and later extended
+to cover Renesas ARM SoCs, too.
 
-Link: https://lore.kernel.org/all/267c11097c90debbb5b1efebbeabc98161177def.1632306843.git.michal.simek@xilinx.com
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+Link: https://lore.kernel.org/all/362d9ced19f3524ee8917df5681b3880c13cac85.1630416373.git.geert+renesas@glider.be
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/xilinx_can.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/net/can/rcar/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 3b883e607d8b..85c2ed5df4c7 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -516,8 +516,7 @@ static int xcan_chip_start(struct net_device *ndev)
-  * @ndev:	Pointer to net_device structure
-  * @mode:	Tells the mode of the driver
-  *
-- * This check the drivers state and calls the
-- * the corresponding modes to set.
-+ * This check the drivers state and calls the corresponding modes to set.
-  *
-  * Return: 0 on success and failure value on error
-  */
-@@ -982,7 +981,7 @@ static void xcan_update_error_state_after_rxtx(struct net_device *ndev)
-  * @isr:	interrupt status register value
-  *
-  * This is the CAN error interrupt and it will
-- * check the the type of error and forward the error
-+ * check the type of error and forward the error
-  * frame to upper layers.
-  */
- static void xcan_err_interrupt(struct net_device *ndev, u32 isr)
+diff --git a/drivers/net/can/rcar/Kconfig b/drivers/net/can/rcar/Kconfig
+index 56320a7f828b..c66762ef631b 100644
+--- a/drivers/net/can/rcar/Kconfig
++++ b/drivers/net/can/rcar/Kconfig
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ config CAN_RCAR
+ 	tristate "Renesas R-Car and RZ/G CAN controller"
+-	depends on ARCH_RENESAS || ARM || COMPILE_TEST
++	depends on ARCH_RENESAS || COMPILE_TEST
+ 	help
+ 	  Say Y here if you want to use CAN controller found on Renesas R-Car
+ 	  or RZ/G SoCs.
+@@ -11,7 +11,7 @@ config CAN_RCAR
+ 
+ config CAN_RCAR_CANFD
+ 	tristate "Renesas R-Car CAN FD controller"
+-	depends on ARCH_RENESAS || ARM || COMPILE_TEST
++	depends on ARCH_RENESAS || COMPILE_TEST
+ 	help
+ 	  Say Y here if you want to use CAN FD controller found on
+ 	  Renesas R-Car SoCs. The driver puts the controller in CAN FD only
 -- 
 2.33.0
 
