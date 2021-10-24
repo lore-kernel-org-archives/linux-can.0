@@ -2,47 +2,47 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B34CC433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D08CEC433EF
 	for <linux-can@archiver.kernel.org>; Sun, 24 Oct 2021 20:44:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 263136103D
+	by mail.kernel.org (Postfix) with ESMTP id B0DD361039
 	for <linux-can@archiver.kernel.org>; Sun, 24 Oct 2021 20:44:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231937AbhJXUrM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S231928AbhJXUrM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Sun, 24 Oct 2021 16:47:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55980 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231928AbhJXUrL (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 24 Oct 2021 16:47:11 -0400
+        with ESMTP id S231960AbhJXUrM (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 24 Oct 2021 16:47:12 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D76C061745
-        for <linux-can@vger.kernel.org>; Sun, 24 Oct 2021 13:44:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA36C061745
+        for <linux-can@vger.kernel.org>; Sun, 24 Oct 2021 13:44:51 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1mekMK-0006G8-VP
+        id 1mekML-0006GW-Gk
         for linux-can@vger.kernel.org; Sun, 24 Oct 2021 22:44:49 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 38D6569C5F9
-        for <linux-can@vger.kernel.org>; Sun, 24 Oct 2021 20:43:34 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 32D8369C622
+        for <linux-can@vger.kernel.org>; Sun, 24 Oct 2021 20:43:35 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 0BDBD69C583;
-        Sun, 24 Oct 2021 20:43:31 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 62FB469C5B5;
+        Sun, 24 Oct 2021 20:43:32 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f3deae5f;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2a396ce4;
         Sun, 24 Oct 2021 20:43:28 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Cai Huoqing <caihuoqing@baidu.com>,
+        kernel@pengutronix.de, Dongliang Mu <mudongliangabcd@gmail.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 11/15] can: mscan: mpc5xxx_can: Make use of the helper function dev_err_probe()
-Date:   Sun, 24 Oct 2021 22:43:21 +0200
-Message-Id: <20211024204325.3293425-12-mkl@pengutronix.de>
+Subject: [PATCH net-next 15/15] can: xilinx_can: xcan_remove(): remove redundant netif_napi_del()
+Date:   Sun, 24 Oct 2021 22:43:25 +0200
+Message-Id: <20211024204325.3293425-16-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211024204325.3293425-1-mkl@pengutronix.de>
 References: <20211024204325.3293425-1-mkl@pengutronix.de>
@@ -56,37 +56,36 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Cai Huoqing <caihuoqing@baidu.com>
+From: Dongliang Mu <mudongliangabcd@gmail.com>
 
-When possible use dev_err_probe help to properly deal with the
-PROBE_DEFER error, the benefit is that DEFER issue will be logged
-in the devices_deferred debugfs file.
-And using dev_err_probe() can reduce code size, and simplify the code.
+Since netif_napi_del() is already done in the free_candev(), we remove
+this redundant netif_napi_del() invocation. In addition, this patch
+can match the operations in the xcan_probe() and xcan_remove()
+functions.
 
-Link: https://lore.kernel.org/all/20210915145726.7092-1-caihuoqing@baidu.com
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+Link: https://lore.kernel.org/all/20211017125022.3100329-1-mudongliangabcd@gmail.com
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/mscan/mpc5xxx_can.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/net/can/xilinx_can.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/mpc5xxx_can.c
-index 35892c1efef0..de4ddf79ba9b 100644
---- a/drivers/net/can/mscan/mpc5xxx_can.c
-+++ b/drivers/net/can/mscan/mpc5xxx_can.c
-@@ -293,10 +293,8 @@ static int mpc5xxx_can_probe(struct platform_device *ofdev)
- 		return -EINVAL;
+diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+index 85c2ed5df4c7..e2b15d29d15e 100644
+--- a/drivers/net/can/xilinx_can.c
++++ b/drivers/net/can/xilinx_can.c
+@@ -1843,11 +1843,9 @@ static int xcan_probe(struct platform_device *pdev)
+ static int xcan_remove(struct platform_device *pdev)
+ {
+ 	struct net_device *ndev = platform_get_drvdata(pdev);
+-	struct xcan_priv *priv = netdev_priv(ndev);
  
- 	base = of_iomap(np, 0);
--	if (!base) {
--		dev_err(&ofdev->dev, "couldn't ioremap\n");
--		return err;
--	}
-+	if (!base)
-+		return dev_err_probe(&ofdev->dev, err, "couldn't ioremap\n");
+ 	unregister_candev(ndev);
+ 	pm_runtime_disable(&pdev->dev);
+-	netif_napi_del(&priv->napi);
+ 	free_candev(ndev);
  
- 	irq = irq_of_parse_and_map(np, 0);
- 	if (!irq) {
+ 	return 0;
 -- 
 2.33.0
 
