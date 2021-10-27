@@ -2,224 +2,97 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6948C433EF
-	for <linux-can@archiver.kernel.org>; Tue, 26 Oct 2021 18:09:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2B44C433EF
+	for <linux-can@archiver.kernel.org>; Wed, 27 Oct 2021 07:39:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 88D176103C
-	for <linux-can@archiver.kernel.org>; Tue, 26 Oct 2021 18:09:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 836EF6109E
+	for <linux-can@archiver.kernel.org>; Wed, 27 Oct 2021 07:39:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238078AbhJZSLr (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 26 Oct 2021 14:11:47 -0400
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:65068 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233729AbhJZSLr (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 26 Oct 2021 14:11:47 -0400
-Received: from tomoyo.flets-east.jp ([114.149.34.46])
-        by smtp.orange.fr with ESMTPA
-        id fQssm4KE0BazofQsxmL3wM; Tue, 26 Oct 2021 20:09:22 +0200
-X-ME-Helo: tomoyo.flets-east.jp
-X-ME-Auth: MDU0YmViZGZmMDIzYiBlMiM2NTczNTRjNWZkZTMwOGRiOGQ4ODf3NWI1ZTMyMzdiODlhOQ==
-X-ME-Date: Tue, 26 Oct 2021 20:09:22 +0200
-X-ME-IP: 114.149.34.46
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Matt Kline <matt@bitbashing.io>
-Subject: [RFC PATCH v1] can: m_can: m_can_read_fifo: fix memory leak in error branch
-Date:   Wed, 27 Oct 2021 03:09:09 +0900
-Message-Id: <20211026180909.1953355-1-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.32.0
+        id S240537AbhJ0Hle (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 27 Oct 2021 03:41:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240533AbhJ0Hld (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 27 Oct 2021 03:41:33 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB31FC061745
+        for <linux-can@vger.kernel.org>; Wed, 27 Oct 2021 00:39:08 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mfdWd-0006Vw-Cs; Wed, 27 Oct 2021 09:39:07 +0200
+Received: from pengutronix.de (2a03-f580-87bc-d400-7316-ec5d-e57a-90b9.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:7316:ec5d:e57a:90b9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 0F75C69EDB8;
+        Wed, 27 Oct 2021 07:39:06 +0000 (UTC)
+Date:   Wed, 27 Oct 2021 09:39:05 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] can: etas_es58x: es58x_rx_err_msg: fix memory leak in
+ error path
+Message-ID: <20211027073905.aff3mmonp7a3itrn@pengutronix.de>
+References: <20211026180740.1953265-1-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="so4fmimmw6kiun32"
+Content-Disposition: inline
+In-Reply-To: <20211026180740.1953265-1-mailhol.vincent@wanadoo.fr>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-In m_can_read_fifo(), if the second call to m_can_fifo_read() fails,
-the function jump to the out_fail label and returns without calling
-m_can_receive_skb(). This means that the skb previously allocated by
-alloc_can_skb() is not freed. In other terms, this is a memory leak.
 
-This patch adds a new goto statement: out_receive_skb and do some
-small code refactoring to fix the issue.
+--so4fmimmw6kiun32
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-* Appendix: how the issue was found *
+On 27.10.2021 03:07:40, Vincent Mailhol wrote:
+> In es58x_rx_err_msg(), if can->do_set_mode() fails, the function
+> directly returns without calling netif_rx(skb). This means that the
+> skb previously allocated by alloc_can_err_skb() is not freed. In other
+> terms, this is a memory leak.
+>=20
+> This patch simply removes the return statement in the error branch and
+> let the function continue.
+>=20
+> * Appendix: how the issue was found *
 
-This issue was found using GCC's static analysis tool: -fanalyzer:
-https://gcc.gnu.org/onlinedocs/gcc/Static-Analyzer-Options.html
+Thanks for the explanation, but I think I'll remove the appendix while
+applying.
 
-The step to reproduce are:
+Thanks,
+Marc
 
-  1. Install GCC 11.
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-  2. Hack the kernel's Makefile to add the -fanalyzer flag (we leave
-  it as an exercise for the reader to figure out the details of how to
-  do so).
+--so4fmimmw6kiun32
+Content-Type: application/pgp-signature; name="signature.asc"
 
-  3. Decorate the function alloc_can_skb() with
-  __attribute__((__malloc__ (dealloc, netif_rx))). This step helps the
-  static analyzer to figure out the constructor/destructor pairs (not
-  something it can deduce by himself).
+-----BEGIN PGP SIGNATURE-----
 
-  4. Compile.
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmF5AhYACgkQqclaivrt
+76nlNgf+Nst6/jhatMuQ6s55GqXjlZM4LItQalQjTFtFT8heBKLfM3/CypSNlkGe
+T5/1RfrQCGnLMMlnk3bbl/01DR5dG8CqnU1wNahQcQydYSe2ApXYE7hgM2ow6NLn
+wHgtpD8IW30GDyNRDgjv8woi0UUpk52wqz4hsmUE3OhzBhhMHSZ+sydSIIrlwARF
+35VDMgHaW8d8FLOLgHkQ84zAnLsvdhe2gDAHSoKHygUcLG1cOQeUuBD9c9Ugq1xD
+nKIj2fW0i0G8ojCUB1vg45D/SR1oRdgNa+XH08nDOjMR29NM+6ALgQ8zzHza4KF0
+1OPX3s4bxeqz6h3bosAZuSR9JxIzOQ==
+=wcGt
+-----END PGP SIGNATURE-----
 
-The compiler then throws below warning:
-
-| drivers/net/can/m_can/m_can.c: In function 'm_can_read_fifo':
-| drivers/net/can/m_can/m_can.c:537:9: warning: leak of 'skb' [CWE-401] [-Wanalyzer-malloc-leak]
-|   537 |         return err;
-|       |         ^~~~~~
-|   'm_can_rx_handler': events 1-6
-|     |
-|     |  899 | static int m_can_rx_handler(struct net_device *dev, int quota)
-|     |      |            ^~~~~~~~~~~~~~~~
-|     |      |            |
-|     |      |            (1) entry to 'm_can_rx_handler'
-|     |......
-|     |  907 |         if (!irqstatus)
-|     |      |            ~
-|     |      |            |
-|     |      |            (2) following 'false' branch (when 'irqstatus != 0')...
-|     |......
-|     |  920 |         if (cdev->version <= 31 && irqstatus & IR_MRAF &&
-|     |      |         ~~
-|     |      |         |
-|     |      |         (3) ...to here
-|     |......
-|     |  939 |         if (irqstatus & IR_RF0N) {
-|     |      |            ~
-|     |      |            |
-|     |      |            (4) following 'true' branch...
-|     |  940 |                 rx_work_or_err = m_can_do_rx_poll(dev, (quota - work_done));
-|     |      |                 ~~~~~~~~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-|     |      |                 |                |
-|     |      |                 |                (6) calling 'm_can_do_rx_poll' from 'm_can_rx_handler'
-|     |      |                 (5) ...to here
-|     |
-|     +--> 'm_can_do_rx_poll': events 7-8
-|            |
-|            |  540 | static int m_can_do_rx_poll(struct net_device *dev, int quota)
-|            |      |            ^~~~~~~~~~~~~~~~
-|            |      |            |
-|            |      |            (7) entry to 'm_can_do_rx_poll'
-|            |......
-|            |  548 |         if (!(rxfs & RXFS_FFL_MASK)) {
-|            |      |            ~
-|            |      |            |
-|            |      |            (8) following 'false' branch...
-|            |
-|          'm_can_do_rx_poll': event 9
-|            |
-|            |cc1:
-|            | (9): ...to here
-|            |
-|          'm_can_do_rx_poll': events 10-12
-|            |
-|            |  553 |         while ((rxfs & RXFS_FFL_MASK) && (quota > 0)) {
-|            |      |                ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
-|            |      |                                       |
-|            |      |                                       (10) following 'true' branch...
-|            |  554 |                 err = m_can_read_fifo(dev, rxfs);
-|            |      |                 ~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~
-|            |      |                 |     |
-|            |      |                 |     (12) calling 'm_can_read_fifo' from 'm_can_do_rx_poll'
-|            |      |                 (11) ...to here
-|            |
-|            +--> 'm_can_read_fifo': events 13-24
-|                   |
-|                   |  470 | static int m_can_read_fifo(struct net_device *dev, u32 rxfs)
-|                   |      |            ^~~~~~~~~~~~~~~
-|                   |      |            |
-|                   |      |            (13) entry to 'm_can_read_fifo'
-|                   |......
-|                   |  484 |         if (err)
-|                   |      |            ~
-|                   |      |            |
-|                   |      |            (14) following 'false' branch...
-|                   |......
-|                   |  487 |         if (fifo_header.dlc & RX_BUF_FDF)
-|                   |      |         ~~ ~
-|                   |      |         |  |
-|                   |      |         |  (16) following 'true' branch...
-|                   |      |         (15) ...to here
-|                   |  488 |                 skb = alloc_canfd_skb(dev, &cf);
-|                   |      |                 ~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~
-|                   |      |                 |     |
-|                   |      |                 |     (18) allocated here
-|                   |      |                 (17) ...to here
-|                   |......
-|                   |  491 |         if (!skb) {
-|                   |      |            ~
-|                   |      |            |
-|                   |      |            (19) assuming 'skb' is non-NULL
-|                   |      |            (20) following 'false' branch (when 'skb' is non-NULL)...
-|                   |......
-|                   |  496 |         if (fifo_header.dlc & RX_BUF_FDF)
-|                   |      |         ~~
-|                   |      |         |
-|                   |      |         (21) ...to here
-|                   |......
-|                   |  519 |                 if (err)
-|                   |      |                    ~
-|                   |      |                    |
-|                   |      |                    (22) following 'true' branch...
-|                   |  520 |                         goto out_fail;
-|                   |      |                         ~~~~
-|                   |      |                         |
-|                   |      |                         (23) ...to here
-|                   |......
-|                   |  537 |         return err;
-|                   |      |         ~~~~~~
-|                   |      |         |
-|                   |      |         (24) 'skb' leaks here; was allocated at (18)
-|                   |
-
-Fixes: e39381770ec9 ("can: m_can: Disable IRQs on FIFO bus errors")
-CC: Matt Kline <matt@bitbashing.io>
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
----
- drivers/net/can/m_can/m_can.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 2470c47b2e31..4e81ff9dd5c6 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -476,7 +476,7 @@ static int m_can_read_fifo(struct net_device *dev, u32 rxfs)
- 	struct id_and_dlc fifo_header;
- 	u32 fgi;
- 	u32 timestamp = 0;
--	int err;
-+	int err = 0;
- 
- 	/* calculate the fifo get index for where to read data */
- 	fgi = FIELD_GET(RXFS_FGI_MASK, rxfs);
-@@ -517,7 +517,7 @@ static int m_can_read_fifo(struct net_device *dev, u32 rxfs)
- 		err = m_can_fifo_read(cdev, fgi, M_CAN_FIFO_DATA,
- 				      cf->data, DIV_ROUND_UP(cf->len, 4));
- 		if (err)
--			goto out_fail;
-+			goto out_receive_skb;
- 	}
- 
- 	/* acknowledge rx fifo 0 */
-@@ -528,12 +528,12 @@ static int m_can_read_fifo(struct net_device *dev, u32 rxfs)
- 
- 	timestamp = FIELD_GET(RX_BUF_RXTS_MASK, fifo_header.dlc);
- 
-+out_receive_skb:
- 	m_can_receive_skb(cdev, skb, timestamp);
- 
--	return 0;
--
- out_fail:
--	netdev_err(dev, "FIFO read returned %d\n", err);
-+	if (err)
-+		netdev_err(dev, "FIFO read returned %d\n", err);
- 	return err;
- }
- 
--- 
-2.32.0
-
+--so4fmimmw6kiun32--
