@@ -2,47 +2,48 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEB04C001B6
-	for <linux-can@archiver.kernel.org>; Sat,  6 Nov 2021 21:55:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD694C43217
+	for <linux-can@archiver.kernel.org>; Sat,  6 Nov 2021 21:55:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B830661186
-	for <linux-can@archiver.kernel.org>; Sat,  6 Nov 2021 21:55:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A8B7661186
+	for <linux-can@archiver.kernel.org>; Sat,  6 Nov 2021 21:55:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234147AbhKFV5s (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 6 Nov 2021 17:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45300 "EHLO
+        id S234363AbhKFV5t (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 6 Nov 2021 17:57:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234266AbhKFV5p (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 6 Nov 2021 17:57:45 -0400
+        with ESMTP id S234308AbhKFV5q (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 6 Nov 2021 17:57:46 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A2CC06120C
-        for <linux-can@vger.kernel.org>; Sat,  6 Nov 2021 14:55:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D23EC06120B
+        for <linux-can@vger.kernel.org>; Sat,  6 Nov 2021 14:55:05 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1mjTeQ-0000wp-8R
-        for linux-can@vger.kernel.org; Sat, 06 Nov 2021 22:55:02 +0100
+        id 1mjTeR-0000zY-Ka
+        for linux-can@vger.kernel.org; Sat, 06 Nov 2021 22:55:03 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 11AFA6A5F9F
-        for <linux-can@vger.kernel.org>; Sat,  6 Nov 2021 21:55:00 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 112976A5FA9
+        for <linux-can@vger.kernel.org>; Sat,  6 Nov 2021 21:55:02 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id E177A6A5F86;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id EC2856A5F88;
         Sat,  6 Nov 2021 21:54:58 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 5993089c;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 072e02fa;
         Sat, 6 Nov 2021 21:54:50 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        stable@vger.kernel.org
-Subject: [PATCH net 7/8] can: mcp251xfd: mcp251xfd_irq(): add missing can_rx_offload_threaded_irq_finish() in case of bus off
-Date:   Sat,  6 Nov 2021 22:54:48 +0100
-Message-Id: <20211106215449.57946-8-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        Stephane Grosjean <s.grosjean@peak-system.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 6/8] can: peak_usb: exchange the order of information messages
+Date:   Sat,  6 Nov 2021 22:54:47 +0100
+Message-Id: <20211106215449.57946-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211106215449.57946-1-mkl@pengutronix.de>
 References: <20211106215449.57946-1-mkl@pengutronix.de>
@@ -56,37 +57,46 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The function can_rx_offload_threaded_irq_finish() is needed to trigger
-the NAPI thread to deliver read CAN frames to the networking stack.
+From: Stephane Grosjean <s.grosjean@peak-system.com>
 
-This patch adds the missing call to can_rx_offload_threaded_irq_finish()
-in case of a bus off, before leaving the interrupt handler to avoid
-packet starvation.
+Proposes the possible update of the PCAN-USB firmware after indicating its
+name and current version.
 
-Link: https://lore.kernel.org/all/20211106201526.44292-1-mkl@pengutronix.de
-Fixes: 30bfec4fec59 ("can: rx-offload: can_rx_offload_threaded_irq_finish(): add new function to be called from threaded interrupt")
-Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/all/20211021081505.18223-3-s.grosjean@peak-system.com
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/can/usb/peak_usb/pcan_usb.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index 673861ab665a..212fcd1554e4 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -2290,8 +2290,10 @@ static irqreturn_t mcp251xfd_irq(int irq, void *dev_id)
- 			 * check will fail, too. So leave IRQ handler
- 			 * directly.
- 			 */
--			if (priv->can.state == CAN_STATE_BUS_OFF)
-+			if (priv->can.state == CAN_STATE_BUS_OFF) {
-+				can_rx_offload_threaded_irq_finish(&priv->offload);
- 				return IRQ_HANDLED;
-+			}
- 		}
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index af8d3dadbbb8..876218752766 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -883,6 +883,11 @@ static int pcan_usb_init(struct peak_usb_device *dev)
+ 		return err;
+ 	}
  
- 		handled = IRQ_HANDLED;
++	dev_info(dev->netdev->dev.parent,
++		 "PEAK-System %s adapter hwrev %u serial %08X (%u channel)\n",
++		 pcan_usb.name, dev->device_rev, serial_number,
++		 pcan_usb.ctrl_count);
++
+ 	/* Since rev 4.1, PCAN-USB is able to make single-shot as well as
+ 	 * looped back frames.
+ 	 */
+@@ -896,11 +901,6 @@ static int pcan_usb_init(struct peak_usb_device *dev)
+ 			 "Firmware update available. Please contact support@peak-system.com\n");
+ 	}
+ 
+-	dev_info(dev->netdev->dev.parent,
+-		 "PEAK-System %s adapter hwrev %u serial %08X (%u channel)\n",
+-		 pcan_usb.name, dev->device_rev, serial_number,
+-		 pcan_usb.ctrl_count);
+-
+ 	return 0;
+ }
+ 
 -- 
 2.33.0
 
