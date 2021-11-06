@@ -2,53 +2,53 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63B54C433FE
-	for <linux-can@archiver.kernel.org>; Sat,  6 Nov 2021 21:55:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7131CC433EF
+	for <linux-can@archiver.kernel.org>; Sat,  6 Nov 2021 23:18:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 43FD961186
-	for <linux-can@archiver.kernel.org>; Sat,  6 Nov 2021 21:55:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 44EAB60FED
+	for <linux-can@archiver.kernel.org>; Sat,  6 Nov 2021 23:18:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234299AbhKFV5p (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 6 Nov 2021 17:57:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45278 "EHLO
+        id S233099AbhKFXVj (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 6 Nov 2021 19:21:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234308AbhKFV5o (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 6 Nov 2021 17:57:44 -0400
+        with ESMTP id S229843AbhKFXVi (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 6 Nov 2021 19:21:38 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C20C061714
-        for <linux-can@vger.kernel.org>; Sat,  6 Nov 2021 14:55:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C014C061570
+        for <linux-can@vger.kernel.org>; Sat,  6 Nov 2021 16:18:56 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1mjTeP-0000tp-1f
-        for linux-can@vger.kernel.org; Sat, 06 Nov 2021 22:55:01 +0100
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 04A056A5F92
-        for <linux-can@vger.kernel.org>; Sat,  6 Nov 2021 21:55:00 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        id 1mjUxS-00009t-J8; Sun, 07 Nov 2021 00:18:46 +0100
+Received: from pengutronix.de (dialin-80-228-153-084.ewe-ip-backbone.de [80.228.153.84])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9C7876A5F7B;
-        Sat,  6 Nov 2021 21:54:57 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 8c426bbe;
-        Sat, 6 Nov 2021 21:54:50 +0000 (UTC)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id CB31A6A6018;
+        Sat,  6 Nov 2021 23:18:41 +0000 (UTC)
+Date:   Sun, 7 Nov 2021 00:18:39 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Stephane Grosjean <s.grosjean@peak-system.com>,
-        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 5/8] can: peak_usb: always ask for BERR reporting for PCAN-USB devices
-Date:   Sat,  6 Nov 2021 22:54:46 +0100
-Message-Id: <20211106215449.57946-6-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211106215449.57946-1-mkl@pengutronix.de>
-References: <20211106215449.57946-1-mkl@pengutronix.de>
+To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Cc:     linux-can <linux-can@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Matt Kline <matt@bitbashing.io>,
+        Sean Nyekjaer <sean@geanix.com>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>
+Subject: Re: [RFC PATCH v1] can: m_can: m_can_read_fifo: fix memory leak in
+ error branch
+Message-ID: <20211106231839.7zcmtxpidemu4owa@pengutronix.de>
+References: <20211026180909.1953355-1-mailhol.vincent@wanadoo.fr>
+ <20211029113405.hbqcu6chf5e3olrm@pengutronix.de>
+ <CAMZ6RqJ1CtphrUxRDWOKEsJF_uzoPbYD2mPiD56VvJ9qB7oxow@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="34ah5prvwlomu2j5"
+Content-Disposition: inline
+In-Reply-To: <CAMZ6RqJ1CtphrUxRDWOKEsJF_uzoPbYD2mPiD56VvJ9qB7oxow@mail.gmail.com>
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -57,57 +57,69 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Stephane Grosjean <s.grosjean@peak-system.com>
 
-Since for the PCAN-USB, the management of the transition to the
-ERROR_WARNING or ERROR_PASSIVE state is done according to the error
-counters, these must be requested unconditionally.
+--34ah5prvwlomu2j5
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Link: https://lore.kernel.org/all/20211021081505.18223-2-s.grosjean@peak-system.com
-Fixes: c11dcee75830 ("can: peak_usb: pcan_usb_decode_error(): upgrade handling of bus state changes")
-Cc: stable@vger.kernel.org
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/usb/peak_usb/pcan_usb.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+On 30.10.2021 01:35:01, Vincent MAILHOL wrote:
+> On Fri. 29 Oct 2021 at 20:34, Marc Kleine-Budde <mkl@pengutronix.de> wrot=
+e:
+> > On 27.10.2021 03:09:09, Vincent Mailhol wrote:
+> > > In m_can_read_fifo(), if the second call to m_can_fifo_read() fails,
+> > > the function jump to the out_fail label and returns without calling
+> > > m_can_receive_skb(). This means that the skb previously allocated by
+> > > alloc_can_skb() is not freed. In other terms, this is a memory leak.
+> > >
+> > > This patch adds a new goto statement: out_receive_skb and do some
+> > > small code refactoring to fix the issue.
+> >
+> > This means we pass a skb to the user space, which contains wrong data.
+> > Probably 0x0, but if the CAN frame doesn't contain 0x0, it's wrong. That
+> > doesn't look like a good idea. If the CAN frame broke due to a CRC issue
+> > on the wire it is not received. IMHO it's best to discard the skb and
+> > return the error.
+>=20
+> Arg... Guess I made the right choice to tag the patch as RFC...
+>=20
+> Just one question, what is the correct function to discard the
+> skb? The driver uses the napi polling system (which I am not
+> entirely familiar with). Does it mean that the rx is not done in
+> IRQ context and that we can simply use kfree_skb() instead of
+> dev_kfree_skb_irq()?
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index 837b3fecd71e..af8d3dadbbb8 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -841,14 +841,14 @@ static int pcan_usb_start(struct peak_usb_device *dev)
- 	pdev->bec.rxerr = 0;
- 	pdev->bec.txerr = 0;
- 
--	/* be notified on error counter changes (if requested by user) */
--	if (dev->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING) {
--		err = pcan_usb_set_err_frame(dev, PCAN_USB_BERR_MASK);
--		if (err)
--			netdev_warn(dev->netdev,
--				    "Asking for BERR reporting error %u\n",
--				    err);
--	}
-+	/* always ask the device for BERR reporting, to be able to switch from
-+	 * WARNING to PASSIVE state
-+	 */
-+	err = pcan_usb_set_err_frame(dev, PCAN_USB_BERR_MASK);
-+	if (err)
-+		netdev_warn(dev->netdev,
-+			    "Asking for BERR reporting error %u\n",
-+			    err);
- 
- 	/* if revision greater than 3, can put silent mode on/off */
- 	if (dev->device_rev > 3) {
-@@ -986,7 +986,6 @@ const struct peak_usb_adapter pcan_usb = {
- 	.device_id = PCAN_USB_PRODUCT_ID,
- 	.ctrl_count = 1,
- 	.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
--			      CAN_CTRLMODE_BERR_REPORTING |
- 			      CAN_CTRLMODE_CC_LEN8_DLC,
- 	.clock = {
- 		.freq = PCAN_USB_CRYSTAL_HZ / 2,
--- 
-2.33.0
+The m_can driver is a bit more complicated. It uses NAPI for mmio
+devices, but threaded IRQs for SPI devices. Looking at
+dev_kfree_skb_any(), it checks for hard IRQs or IRQs disabled, I think
+this is not the case for both threaded IRQs and NAPI.
 
+https://elixir.bootlin.com/linux/v5.15/source/net/core/dev.c#L3108
 
+So I think kfree_skb() should be OK.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--34ah5prvwlomu2j5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmGHDU0ACgkQqclaivrt
+76nZXwf/a7+FU0/i5iAebuEHJK4kAC72+mXiRsd5KL37AS5zpvzdkwzuHe7UJdGh
+clzOZO6CNhzUlqbzeo1q5kT42cMJEkiKRcUcID6NNwXMlIz0fPv80w3Uh18dHk0A
+QXiQlwi51iQWBE3/YUDH1sTYtsoQxeqtvKaURW509QbKoCVqzn9G7mWqmQwol9v6
+j5S6jRPso/i8bQA9Ye9IcIx5nhUz+mVEaQ2I+NSGL1Kq0cfKgUYJBHQ8XHGkjID8
+MJauoS4vvVqsxarQGfeGCs3O5uPR2OE5utIfvB2d9Ph1oLEgmmUrxH4kG4xwXcJ6
+HWCndadx1//5xbD3pTzSS3a4X3IEjg==
+=3/22
+-----END PGP SIGNATURE-----
+
+--34ah5prvwlomu2j5--
