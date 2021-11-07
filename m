@@ -2,210 +2,82 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92CBAC433F5
-	for <linux-can@archiver.kernel.org>; Sun,  7 Nov 2021 05:08:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8133C433F5
+	for <linux-can@archiver.kernel.org>; Sun,  7 Nov 2021 19:10:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 72D2E61350
-	for <linux-can@archiver.kernel.org>; Sun,  7 Nov 2021 05:08:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A087960F46
+	for <linux-can@archiver.kernel.org>; Sun,  7 Nov 2021 19:10:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234028AbhKGFLJ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 7 Nov 2021 01:11:09 -0400
-Received: from smtp10.smtpout.orange.fr ([80.12.242.132]:59312 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231292AbhKGFLI (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 7 Nov 2021 01:11:08 -0400
-Received: from localhost.localdomain ([114.149.34.46])
-        by smtp.orange.fr with ESMTPA
-        id jaPOmihyw3ptZjaPmm9Zak; Sun, 07 Nov 2021 06:08:25 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: MDU0YmViZGZmMDIzYiBlMiM2NTczNTRjNWZkZTMwOGRiOGQ4ODf3NWI1ZTMyMzdiODlhOQ==
-X-ME-Date: Sun, 07 Nov 2021 06:08:25 +0100
-X-ME-IP: 114.149.34.46
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Matt Kline <matt@bitbashing.io>
-Subject: [PATCH v2] can: m_can: m_can_read_fifo: fix memory leak in error branch
-Date:   Sun,  7 Nov 2021 14:07:55 +0900
-Message-Id: <20211107050755.70655-1-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.32.0
+        id S236251AbhKGTMx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 7 Nov 2021 14:12:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37412 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229990AbhKGTMv (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Sun, 7 Nov 2021 14:12:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id B23F360EBB;
+        Sun,  7 Nov 2021 19:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636312208;
+        bh=wZR7a6HrkbX4Ku9WZ4G4CNA6D5gqWJIXCQMCCZ2A4jk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Mm36nEeOjzhbELI7T36gtDabrEJ7G/qFn8a2LIP95NKnzAoiNixnstuCRnuxxvq1j
+         bPzLpdfzLpOY1MVP3N5gP4Pgso91inve50jNQ6J0JTKFfvCEt/foWA7AFBq+lc4LWg
+         uXv9+zsWP3eJf0V20WAFJ5PIww83Bv0GlVCJGgw70/cn93r3SMOYLpGJpeP8PPhgPk
+         g5LiMPpPrheD/CcY7g3HLun5qAqzxesi4g3i3K0dyLOkXiXr7Hb8fkQCDHt9JSkEam
+         hTHmw2y1GcM7Ytshj4ceBowdmOBa5nbN6LFCiZ6pvwuyJ7qbSc29XmTsL4JYmxTocX
+         71e+4sHaE2UWg==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: pull-request: can 2021-11-06
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163631220867.2857.10166147031340186904.git-patchwork-notify@kernel.org>
+Date:   Sun, 07 Nov 2021 19:10:08 +0000
+References: <20211106215449.57946-1-mkl@pengutronix.de>
+In-Reply-To: <20211106215449.57946-1-mkl@pengutronix.de>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        linux-can@vger.kernel.org, kernel@pengutronix.de
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-In m_can_read_fifo(), if the second call to m_can_fifo_read() fails,
-the function jump to the out_fail label and returns without calling
-m_can_receive_skb(). This means that the skb previously allocated by
-alloc_can_skb() is not freed. In other terms, this is a memory leak.
+Hello:
 
-This patch adds a goto label to destroy the skb if an error occurs.
+This pull request was applied to netdev/net.git (master)
+by Marc Kleine-Budde <mkl@pengutronix.de>:
 
-Issue was found with GCC -fanalyzer, please follow the link below for
-details.
+On Sat,  6 Nov 2021 22:54:41 +0100 you wrote:
+> Hello Jakub, hello David,
+> 
+> this is a pull request of 8 patches for net/master.
+> 
+> The first 3 patches are by Zhang Changzhong and fix 3 standard
+> conformance problems in the j1939 CAN stack.
+> 
+> [...]
 
-Fixes: e39381770ec9 ("can: m_can: Disable IRQs on FIFO bus errors")
-CC: Matt Kline <matt@bitbashing.io>
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
----
-* Appendix: how the issue was found *
+Here is the summary with links:
+  - pull-request: can 2021-11-06
+    https://git.kernel.org/netdev/net/c/f05fb508ec3b
+  - [net,2/8] can: j1939: j1939_can_recv(): ignore messages with invalid source address
+    https://git.kernel.org/netdev/net/c/a79305e156db
+  - [net,3/8] can: j1939: j1939_tp_cmd_recv(): check the dst address of TP.CM_BAM
+    https://git.kernel.org/netdev/net/c/164051a6ab54
+  - [net,4/8] can: etas_es58x: es58x_rx_err_msg(): fix memory leak in error path
+    https://git.kernel.org/netdev/net/c/d9447f768bc8
+  - [net,5/8] can: peak_usb: always ask for BERR reporting for PCAN-USB devices
+    https://git.kernel.org/netdev/net/c/3f1c7aa28498
+  - [net,6/8] can: peak_usb: exchange the order of information messages
+    https://git.kernel.org/netdev/net/c/6b78ba3e51f9
+  - [net,7/8] can: mcp251xfd: mcp251xfd_irq(): add missing can_rx_offload_threaded_irq_finish() in case of bus off
+    https://git.kernel.org/netdev/net/c/691204bd66b3
+  - [net,8/8] can: mcp251xfd: mcp251xfd_chip_start(): fix error handling for mcp251xfd_chip_rx_int_enable()
+    https://git.kernel.org/netdev/net/c/69c55f6e7669
 
-This issue was found using GCC's static analysis tool: -fanalyzer:
-https://gcc.gnu.org/onlinedocs/gcc/Static-Analyzer-Options.html
-
-The step to reproduce are:
-
-  1. Install GCC 11.
-
-  2. Hack the kernel's Makefile to add the -fanalyzer flag (we leave
-  it as an exercise for the reader to figure out the details of how to
-  do so).
-
-  3. Decorate the function alloc_can_skb() with
-  __attribute__((__malloc__ (dealloc, netif_rx))). This step helps the
-  static analyzer to figure out the constructor/destructor pairs (not
-  something it can deduce by himself).
-
-  4. Compile.
-
-The compiler then throws below warning:
-
-| drivers/net/can/m_can/m_can.c: In function 'm_can_read_fifo':
-| drivers/net/can/m_can/m_can.c:537:9: warning: leak of 'skb' [CWE-401] [-Wanalyzer-malloc-leak]
-|   537 |         return err;
-|       |         ^~~~~~
-|   'm_can_rx_handler': events 1-6
-|     |
-|     |  899 | static int m_can_rx_handler(struct net_device *dev, int quota)
-|     |      |            ^~~~~~~~~~~~~~~~
-|     |      |            |
-|     |      |            (1) entry to 'm_can_rx_handler'
-|     |......
-|     |  907 |         if (!irqstatus)
-|     |      |            ~
-|     |      |            |
-|     |      |            (2) following 'false' branch (when 'irqstatus != 0')...
-|     |......
-|     |  920 |         if (cdev->version <= 31 && irqstatus & IR_MRAF &&
-|     |      |         ~~
-|     |      |         |
-|     |      |         (3) ...to here
-|     |......
-|     |  939 |         if (irqstatus & IR_RF0N) {
-|     |      |            ~
-|     |      |            |
-|     |      |            (4) following 'true' branch...
-|     |  940 |                 rx_work_or_err = m_can_do_rx_poll(dev, (quota - work_done));
-|     |      |                 ~~~~~~~~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-|     |      |                 |                |
-|     |      |                 |                (6) calling 'm_can_do_rx_poll' from 'm_can_rx_handler'
-|     |      |                 (5) ...to here
-|     |
-|     +--> 'm_can_do_rx_poll': events 7-8
-|            |
-|            |  540 | static int m_can_do_rx_poll(struct net_device *dev, int quota)
-|            |      |            ^~~~~~~~~~~~~~~~
-|            |      |            |
-|            |      |            (7) entry to 'm_can_do_rx_poll'
-|            |......
-|            |  548 |         if (!(rxfs & RXFS_FFL_MASK)) {
-|            |      |            ~
-|            |      |            |
-|            |      |            (8) following 'false' branch...
-|            |
-|          'm_can_do_rx_poll': event 9
-|            |
-|            |cc1:
-|            | (9): ...to here
-|            |
-|          'm_can_do_rx_poll': events 10-12
-|            |
-|            |  553 |         while ((rxfs & RXFS_FFL_MASK) && (quota > 0)) {
-|            |      |                ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
-|            |      |                                       |
-|            |      |                                       (10) following 'true' branch...
-|            |  554 |                 err = m_can_read_fifo(dev, rxfs);
-|            |      |                 ~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~
-|            |      |                 |     |
-|            |      |                 |     (12) calling 'm_can_read_fifo' from 'm_can_do_rx_poll'
-|            |      |                 (11) ...to here
-|            |
-|            +--> 'm_can_read_fifo': events 13-24
-|                   |
-|                   |  470 | static int m_can_read_fifo(struct net_device *dev, u32 rxfs)
-|                   |      |            ^~~~~~~~~~~~~~~
-|                   |      |            |
-|                   |      |            (13) entry to 'm_can_read_fifo'
-|                   |......
-|                   |  484 |         if (err)
-|                   |      |            ~
-|                   |      |            |
-|                   |      |            (14) following 'false' branch...
-|                   |......
-|                   |  487 |         if (fifo_header.dlc & RX_BUF_FDF)
-|                   |      |         ~~ ~
-|                   |      |         |  |
-|                   |      |         |  (16) following 'true' branch...
-|                   |      |         (15) ...to here
-|                   |  488 |                 skb = alloc_canfd_skb(dev, &cf);
-|                   |      |                 ~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~
-|                   |      |                 |     |
-|                   |      |                 |     (18) allocated here
-|                   |      |                 (17) ...to here
-|                   |......
-|                   |  491 |         if (!skb) {
-|                   |      |            ~
-|                   |      |            |
-|                   |      |            (19) assuming 'skb' is non-NULL
-|                   |      |            (20) following 'false' branch (when 'skb' is non-NULL)...
-|                   |......
-|                   |  496 |         if (fifo_header.dlc & RX_BUF_FDF)
-|                   |      |         ~~
-|                   |      |         |
-|                   |      |         (21) ...to here
-|                   |......
-|                   |  519 |                 if (err)
-|                   |      |                    ~
-|                   |      |                    |
-|                   |      |                    (22) following 'true' branch...
-|                   |  520 |                         goto out_fail;
-|                   |      |                         ~~~~
-|                   |      |                         |
-|                   |      |                         (23) ...to here
-|                   |......
-|                   |  537 |         return err;
-|                   |      |         ~~~~~~
-|                   |      |         |
-|                   |      |         (24) 'skb' leaks here; was allocated at (18)
-|                   |
----
- drivers/net/can/m_can/m_can.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 2470c47b2e31..f4f54012dea7 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -517,7 +517,7 @@ static int m_can_read_fifo(struct net_device *dev, u32 rxfs)
- 		err = m_can_fifo_read(cdev, fgi, M_CAN_FIFO_DATA,
- 				      cf->data, DIV_ROUND_UP(cf->len, 4));
- 		if (err)
--			goto out_fail;
-+			goto out_free_skb;
- 	}
- 
- 	/* acknowledge rx fifo 0 */
-@@ -532,6 +532,8 @@ static int m_can_read_fifo(struct net_device *dev, u32 rxfs)
- 
- 	return 0;
- 
-+out_free_skb:
-+	kfree_skb(skb);
- out_fail:
- 	netdev_err(dev, "FIFO read returned %d\n", err);
- 	return err;
+You are awesome, thank you!
 -- 
-2.32.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
