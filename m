@@ -2,82 +2,132 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8133C433F5
-	for <linux-can@archiver.kernel.org>; Sun,  7 Nov 2021 19:10:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 561D7C433F5
+	for <linux-can@archiver.kernel.org>; Tue,  9 Nov 2021 02:13:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A087960F46
-	for <linux-can@archiver.kernel.org>; Sun,  7 Nov 2021 19:10:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 329BF6117A
+	for <linux-can@archiver.kernel.org>; Tue,  9 Nov 2021 02:13:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236251AbhKGTMx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 7 Nov 2021 14:12:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229990AbhKGTMv (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Sun, 7 Nov 2021 14:12:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id B23F360EBB;
-        Sun,  7 Nov 2021 19:10:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636312208;
-        bh=wZR7a6HrkbX4Ku9WZ4G4CNA6D5gqWJIXCQMCCZ2A4jk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Mm36nEeOjzhbELI7T36gtDabrEJ7G/qFn8a2LIP95NKnzAoiNixnstuCRnuxxvq1j
-         bPzLpdfzLpOY1MVP3N5gP4Pgso91inve50jNQ6J0JTKFfvCEt/foWA7AFBq+lc4LWg
-         uXv9+zsWP3eJf0V20WAFJ5PIww83Bv0GlVCJGgw70/cn93r3SMOYLpGJpeP8PPhgPk
-         g5LiMPpPrheD/CcY7g3HLun5qAqzxesi4g3i3K0dyLOkXiXr7Hb8fkQCDHt9JSkEam
-         hTHmw2y1GcM7Ytshj4ceBowdmOBa5nbN6LFCiZ6pvwuyJ7qbSc29XmTsL4JYmxTocX
-         71e+4sHaE2UWg==
-Content-Type: text/plain; charset="utf-8"
+        id S234897AbhKICP6 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 8 Nov 2021 21:15:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234937AbhKICP6 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 8 Nov 2021 21:15:58 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FFEC061766
+        for <linux-can@vger.kernel.org>; Mon,  8 Nov 2021 18:13:13 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id r5so18127786pls.1
+        for <linux-can@vger.kernel.org>; Mon, 08 Nov 2021 18:13:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bluerivertech.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/KmtMbfeaXHuTAh4g4GRV6pvDUPLEEqbIUrWqrzrkr4=;
+        b=VWNXSJ7c9oewp5zwmjgYyTofl8MWUpyO6jYRfVKQMpradF2g0kPx/a5xHL6KxsQ9wK
+         MXAl9nBCktRejGnb+EpaTJXIlrbc/dLc3sDMzl7c8vOh9q9HJphZbsg/jkzuL5Lz1Fd3
+         Eq8fEQ3T25FrYfXgtaWA5RBiCgHctFnk6ZWeEJoSawDdsHUVsr7MklNomCPrQ9pzQKLS
+         2Or11Fc21Yzl/NwWgPDPxsseqlQkDKkYlnFK6PrBTUYnwE3FZqTfS4zzkANKXzgh1xvz
+         bQ8/1spX5YWKdjvj26yB2zQATsbg4l5hceLCKGGYoAhmlFH/F66eFFK5KGsr3/0xmRcz
+         agDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/KmtMbfeaXHuTAh4g4GRV6pvDUPLEEqbIUrWqrzrkr4=;
+        b=I5JvooYWgRLTOuQxYt0PramS+pT4O74DkubK8Olj2yBWtlB+AhuVYBCHNNpmj3LSxK
+         VIkYNqUbCTVlIFQbM85PBQopV/AZm440i+76eOIUHOgQGIxe8hO8gjhovawgeXuf+Qju
+         xRiGFIyF+JG5VjdDx1t8F1NYRs9QIecthpzEDWQUjdUU6cxeFagxskE6XSCTVReS4EYP
+         KoWtc9yZF1dqV/b8XMa95Zc7CfzGzxHxJYZpmELR3bdChTAskafxosAPlsrk95q1bbTy
+         9ITrG61FsygCOWO1RiHcAWc+V+v9iUjMkhbZfWXL2mhWsODC8GjuZd4w8P/SDX0jSMAV
+         44wA==
+X-Gm-Message-State: AOAM53364FmwlTjklUCXEb7i2v8sqVS3/s21+BWgVbVlrQx7qT/NjwfG
+        3cXid65apEAJuEREVGT4MAbAzMM8WF/Phpkz
+X-Google-Smtp-Source: ABdhPJyC/JZiHHGHtloHvx9nkuJ5gCvVSNoZw24JRS5IbnnnyMuqzg92vMXzIxZE9pBARpLr2NKFRw==
+X-Received: by 2002:a17:902:c412:b0:141:f710:2a94 with SMTP id k18-20020a170902c41200b00141f7102a94mr3465223plk.1.1636423992630;
+        Mon, 08 Nov 2021 18:13:12 -0800 (PST)
+Received: from localhost.localdomain (c-73-231-33-37.hsd1.ca.comcast.net. [73.231.33.37])
+        by smtp.gmail.com with ESMTPSA id 95sm576982pjo.2.2021.11.08.18.13.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 18:13:12 -0800 (PST)
+From:   Brian Silverman <brian.silverman@bluerivertech.com>
+Cc:     Brian Silverman <brian.silverman@bluerivertech.com>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Varka Bhadram <varkabhadram@gmail.com>,
+        Fengguang Wu <fengguang.wu@intel.com>,
+        Dong Aisheng <b29396@freescale.com>,
+        linux-can@vger.kernel.org (open list:MCAN MMIO DEVICE DRIVER),
+        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] can: m_can: Disable and ignore ELO interrupt
+Date:   Mon,  8 Nov 2021 18:12:40 -0800
+Message-Id: <20211109021240.3013-1-brian.silverman@bluerivertech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: can 2021-11-06
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163631220867.2857.10166147031340186904.git-patchwork-notify@kernel.org>
-Date:   Sun, 07 Nov 2021 19:10:08 +0000
-References: <20211106215449.57946-1-mkl@pengutronix.de>
-In-Reply-To: <20211106215449.57946-1-mkl@pengutronix.de>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        linux-can@vger.kernel.org, kernel@pengutronix.de
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello:
+With the design of this driver, this condition is often triggered.
+However, the counter that this interrupt indicates an overflow is never
+read either, so overflowing is harmless.
 
-This pull request was applied to netdev/net.git (master)
-by Marc Kleine-Budde <mkl@pengutronix.de>:
+On my system, when a CAN bus starts flapping up and down, this locks up
+the whole system with lots of interrupts and printks.
 
-On Sat,  6 Nov 2021 22:54:41 +0100 you wrote:
-> Hello Jakub, hello David,
-> 
-> this is a pull request of 8 patches for net/master.
-> 
-> The first 3 patches are by Zhang Changzhong and fix 3 standard
-> conformance problems in the j1939 CAN stack.
-> 
-> [...]
+Specifically, this interrupt indicates the CEL field of ECR has
+overflowed. All reads of ECR mask out CEL.
 
-Here is the summary with links:
-  - pull-request: can 2021-11-06
-    https://git.kernel.org/netdev/net/c/f05fb508ec3b
-  - [net,2/8] can: j1939: j1939_can_recv(): ignore messages with invalid source address
-    https://git.kernel.org/netdev/net/c/a79305e156db
-  - [net,3/8] can: j1939: j1939_tp_cmd_recv(): check the dst address of TP.CM_BAM
-    https://git.kernel.org/netdev/net/c/164051a6ab54
-  - [net,4/8] can: etas_es58x: es58x_rx_err_msg(): fix memory leak in error path
-    https://git.kernel.org/netdev/net/c/d9447f768bc8
-  - [net,5/8] can: peak_usb: always ask for BERR reporting for PCAN-USB devices
-    https://git.kernel.org/netdev/net/c/3f1c7aa28498
-  - [net,6/8] can: peak_usb: exchange the order of information messages
-    https://git.kernel.org/netdev/net/c/6b78ba3e51f9
-  - [net,7/8] can: mcp251xfd: mcp251xfd_irq(): add missing can_rx_offload_threaded_irq_finish() in case of bus off
-    https://git.kernel.org/netdev/net/c/691204bd66b3
-  - [net,8/8] can: mcp251xfd: mcp251xfd_chip_start(): fix error handling for mcp251xfd_chip_rx_int_enable()
-    https://git.kernel.org/netdev/net/c/69c55f6e7669
+Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
+Signed-off-by: Brian Silverman <brian.silverman@bluerivertech.com>
+---
+ drivers/net/can/m_can/m_can.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-You are awesome, thank you!
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 2470c47b2e31..91be87c4f4d3 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -204,16 +204,16 @@ enum m_can_reg {
+ 
+ /* Interrupts for version 3.0.x */
+ #define IR_ERR_LEC_30X	(IR_STE	| IR_FOE | IR_ACKE | IR_BE | IR_CRCE)
+-#define IR_ERR_BUS_30X	(IR_ERR_LEC_30X | IR_WDI | IR_ELO | IR_BEU | \
+-			 IR_BEC | IR_TOO | IR_MRAF | IR_TSW | IR_TEFL | \
+-			 IR_RF1L | IR_RF0L)
++#define IR_ERR_BUS_30X	(IR_ERR_LEC_30X | IR_WDI | IR_BEU | IR_BEC | \
++			 IR_TOO | IR_MRAF | IR_TSW | IR_TEFL | IR_RF1L | \
++			 IR_RF0L)
+ #define IR_ERR_ALL_30X	(IR_ERR_STATE | IR_ERR_BUS_30X)
+ 
+ /* Interrupts for version >= 3.1.x */
+ #define IR_ERR_LEC_31X	(IR_PED | IR_PEA)
+-#define IR_ERR_BUS_31X      (IR_ERR_LEC_31X | IR_WDI | IR_ELO | IR_BEU | \
+-			 IR_BEC | IR_TOO | IR_MRAF | IR_TSW | IR_TEFL | \
+-			 IR_RF1L | IR_RF0L)
++#define IR_ERR_BUS_31X      (IR_ERR_LEC_31X | IR_WDI | IR_BEU | IR_BEC | \
++			 IR_TOO | IR_MRAF | IR_TSW | IR_TEFL | IR_RF1L | \
++			 IR_RF0L)
+ #define IR_ERR_ALL_31X	(IR_ERR_STATE | IR_ERR_BUS_31X)
+ 
+ /* Interrupt Line Select (ILS) */
+@@ -810,8 +810,6 @@ static void m_can_handle_other_err(struct net_device *dev, u32 irqstatus)
+ {
+ 	if (irqstatus & IR_WDI)
+ 		netdev_err(dev, "Message RAM Watchdog event due to missing READY\n");
+-	if (irqstatus & IR_ELO)
+-		netdev_err(dev, "Error Logging Overflow\n");
+ 	if (irqstatus & IR_BEU)
+ 		netdev_err(dev, "Bit Error Uncorrected\n");
+ 	if (irqstatus & IR_BEC)
+
+base-commit: d2f38a3c6507b2520101f9a3807ed98f1bdc545a
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.20.1
 
