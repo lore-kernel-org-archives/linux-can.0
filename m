@@ -2,106 +2,92 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4371CC433EF
-	for <linux-can@archiver.kernel.org>; Mon, 15 Nov 2021 09:21:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73B2BC4332F
+	for <linux-can@archiver.kernel.org>; Mon, 15 Nov 2021 09:24:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 22B4561B2B
-	for <linux-can@archiver.kernel.org>; Mon, 15 Nov 2021 09:21:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 51D0961AD1
+	for <linux-can@archiver.kernel.org>; Mon, 15 Nov 2021 09:24:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237093AbhKOJYM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 15 Nov 2021 04:24:12 -0500
-Received: from mx1.tq-group.com ([93.104.207.81]:12298 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237590AbhKOJXf (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 15 Nov 2021 04:23:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1636968041; x=1668504041;
-  h=from:to:cc:subject:date:message-id;
-  bh=9cFyr0y761pT/zVc4s7vOYwjjT571s07IyHIJLr/+MU=;
-  b=pczY0aIE0g8DKelIfHjTH/kPaNn0xLrhFV+0BxcbtEtqSjy9CmpaUUj8
-   2+GhkWRV9gi7nBXzVXXjWsiLMpWpcw6McZ8ZG9Xv2+wKf55a/9VhQye06
-   QcUSLtpDn2xiRuawltVvqIVGYWP/aZnHfKoxVFZyo/zIFkppdY5r5Vfgt
-   HA9xrbLckz1+qAtYqe1VzZQNckr74i07SqDu6Bg+c4fBNPaKt1FkT5m7M
-   Pf9B4Cc/et2B2Zv5y60W8IiDdp9gIaDTFfRMhXQIVc3i9/sagSdOZpjju
-   3aP9mGsmpVi9+QWHNpwb+0g7KyTM+aIPd2PLImD7xZU6C9Bl+T9lLOwMf
-   w==;
-X-IronPort-AV: E=Sophos;i="5.87,236,1631570400"; 
-   d="scan'208";a="20459392"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 15 Nov 2021 10:20:19 +0100
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Mon, 15 Nov 2021 10:20:19 +0100
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Mon, 15 Nov 2021 10:20:19 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1636968019; x=1668504019;
-  h=from:to:cc:subject:date:message-id;
-  bh=9cFyr0y761pT/zVc4s7vOYwjjT571s07IyHIJLr/+MU=;
-  b=VCWRnF0mHtbUxKzKlOLw/E05vf6qDAQp+V7XFiroaIrrJj/aR6puVzDI
-   +cL62+Hu60axwM9DNH82AZdGHJBf0ilqo8tDrIAFXnTimgIg2d98CqGot
-   SDAEFS4jmFdRL/jCrxea+D148ESf5LpzOMJt9nBhntFoRNlqzgAZLVfA5
-   fwahpJmpnN9L+s+LZTneAkKaUhHXHawwfSJ3SLUkNUKYClnsbPhMSMk+9
-   xl5NGn9NXA8tBluMb/R6P3/lTxnnGyqlBxqwSvderqWEHxFDRqYZ3qh6t
-   Apcg+anj63UH6x2D8AyhzScdOyOBKf9KtyNiPILkrWw42XihUSQn73uyw
-   w==;
-X-IronPort-AV: E=Sophos;i="5.87,236,1631570400"; 
-   d="scan'208";a="20459391"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 15 Nov 2021 10:20:19 +0100
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id E8FA4280075;
-        Mon, 15 Nov 2021 10:20:18 +0100 (CET)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Felipe Balbi (Intel)" <balbi@kernel.org>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        id S236867AbhKOJ1o (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 15 Nov 2021 04:27:44 -0500
+Received: from mail-yb1-f171.google.com ([209.85.219.171]:37423 "EHLO
+        mail-yb1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230316AbhKOJ1g (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 15 Nov 2021 04:27:36 -0500
+Received: by mail-yb1-f171.google.com with SMTP id e136so45071744ybc.4;
+        Mon, 15 Nov 2021 01:24:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tuFbvIjm50IuAszvEEIIi3rMMyoH/wSECdwpOBDhsFs=;
+        b=b+NXBwNb1j5zBhjx8Zf7nOT0tCCnjRhytwHquZmpEZ4y8408nZJy0MdCTXwcEb26B8
+         hFivEacjHLvn5iB0ncugxxxkhsuNPSJ2sJurVIa6Fp1AsSgihVRFhsJVCaaIjIJsMb1E
+         kdIqxLPA86dspj4DCmvIdTF7kjSCvQ7ZsdR08GGGXFAdyRj62n1cr7Gahn8HL91tXN/A
+         ALc/Z/n4IjfAEmi/Dd++l8LnuCea5dAYW/6weCaQDRWoQHDLmA88ITQdp+haLRdLcRtk
+         zBl4H4mJr4R+XsrjTs2i9Zkl4WvfsWZJu8Zt72A/URlJpZvxeMDye4NYjA7fI45Cf+GC
+         0xqQ==
+X-Gm-Message-State: AOAM531XDcgEHXYTyZ9taf96xsuqD1QqxIRCF4CY29uUBFewwMJCXI6D
+        6dk6riO/zgdzkZHCmlW1Jm5Xc1mdG/ytNwynO/k=
+X-Google-Smtp-Source: ABdhPJxVqMz5cYhmIv7Icq3FORFX2T6IyCmv03iiLyKk9lNM2VFpzkKIu4dzHOdIq5jXugNBBFlGrdm/moKUQjK1Pb0=
+X-Received: by 2002:a25:c792:: with SMTP id w140mr37372926ybe.131.1636968273133;
+ Mon, 15 Nov 2021 01:24:33 -0800 (PST)
+MIME-Version: 1.0
+References: <CAMZ6Rq+orfUuUCCgeWyGc7P0vp3t-yjf_g9H=Jhk43f1zXGfDQ@mail.gmail.com>
+ <20211115075124.17713-1-paskripkin@gmail.com> <YZIWT9ATzN611n43@hovoldconsulting.com>
+ <7a98b159-f9bf-c0dd-f244-aec6c9a7dcaa@gmail.com> <YZIXdnFQcDcC2QvE@hovoldconsulting.com>
+ <e91eb5b1-295e-1a21-d153-5e0fa52b2ffe@gmail.com>
+In-Reply-To: <e91eb5b1-295e-1a21-d153-5e0fa52b2ffe@gmail.com>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Mon, 15 Nov 2021 18:24:22 +0900
+Message-ID: <CAMZ6Rq+3uPE31q=HN-BdkXsMYZf53=VfNSn0OD6HcweLO0u-_Q@mail.gmail.com>
+Subject: Re: [PATCH v2] can: etas_es58x: fix error handling
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     Johan Hovold <johan@kernel.org>, wg@grandegger.com,
+        mkl@pengutronix.de, davem@davemloft.net, kuba@kernel.org,
         linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH net 1/4] can: m_can: pci: fix incorrect reference clock rate
-Date:   Mon, 15 Nov 2021 10:18:49 +0100
-Message-Id: <c9cf3995f45c363e432b3ae8eb1275e54f009fc8.1636967198.git.matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1636967198.git.matthias.schiffer@ew.tq-group.com>
-References: <cover.1636967198.git.matthias.schiffer@ew.tq-group.com>
-In-Reply-To: <cover.1636967198.git.matthias.schiffer@ew.tq-group.com>
-References: <cover.1636967198.git.matthias.schiffer@ew.tq-group.com>
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-When testing the CAN controller on our Ekhart Lake hardware, we
-determined that all communication was running with twice the configured
-bitrate. Changing the reference clock rate from 100MHz to 200MHz fixed
-this. Intel's support has confirmed to us that 200MHz is indeed the
-correct clock rate.
+On Mon. 15 Nov 2021 at 17:30, Pavel Skripkin <paskripkin@gmail.com> wrote:
+> On 11/15/21 11:16, Johan Hovold wrote:
+> > On Mon, Nov 15, 2021 at 11:15:07AM +0300, Pavel Skripkin wrote:
+> >> On 11/15/21 11:11, Johan Hovold wrote:
+> >> > Just a drive-by comment:
+> >> >
+> >> > Are you sure about this move of the netdev[channel_idx] initialisation?
+> >> > What happens if the registered can device is opened before you
+> >> > initialise the pointer? NULL-deref in es58x_send_msg()?
+> >> >
+> >> > You generally want the driver data fully initialised before you register
+> >> > the device so this looks broken.
+> >> >
+> >> > And either way it is arguably an unrelated change that should go in a
+> >> > separate patch explaining why it is needed and safe.
+> >> >
+> >>
+> >>
+> >> It was suggested by Vincent who is the maintainer of this driver [1].
+> >
+> > Yeah, I saw that, but that doesn't necessarily mean it is correct.
+> >
+> > You're still responsible for the changes you make and need to be able to
+> > argue why they are correct.
+> >
+>
+> Sure! I should have check it before sending v2 :( My bad, sorry. I see
+> now, that there is possible calltrace which can hit NULL defer.
 
-Fixes: cab7ffc0324f ("can: m_can: add PCI glue driver for Intel Elkhart Lake")
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
- drivers/net/can/m_can/m_can_pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I should be the one apologizing here. Sorry for the confusion.
 
-diff --git a/drivers/net/can/m_can/m_can_pci.c b/drivers/net/can/m_can/m_can_pci.c
-index 89cc3d41e952..d3c030a13cbe 100644
---- a/drivers/net/can/m_can/m_can_pci.c
-+++ b/drivers/net/can/m_can/m_can_pci.c
-@@ -18,7 +18,7 @@
- 
- #define M_CAN_PCI_MMIO_BAR		0
- 
--#define M_CAN_CLOCK_FREQ_EHL		100000000
-+#define M_CAN_CLOCK_FREQ_EHL		200000000
- #define CTL_CSR_INT_CTL_OFFSET		0x508
- 
- struct m_can_pci_priv {
--- 
-2.17.1
+> One thing I am wondering about is why in some code parts there are
+> validation checks for es58x_dev->netdev[i] and in others they are missing.
 
+There is a validation when it is accessed in a for loop.
+It is not guarded in es58x_send_msg() because this function
+expects the channel_idx to be a valid index.
+
+Does this answer your wonders?
