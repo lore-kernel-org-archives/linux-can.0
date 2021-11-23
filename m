@@ -2,123 +2,148 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 102E8C433F5
-	for <linux-can@archiver.kernel.org>; Tue, 23 Nov 2021 07:44:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CBF8C433F5
+	for <linux-can@archiver.kernel.org>; Tue, 23 Nov 2021 08:13:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234359AbhKWHsC (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 23 Nov 2021 02:48:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234323AbhKWHsC (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 23 Nov 2021 02:48:02 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC9A4C061574
-        for <linux-can@vger.kernel.org>; Mon, 22 Nov 2021 23:44:53 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id e11so9208506ljo.13
-        for <linux-can@vger.kernel.org>; Mon, 22 Nov 2021 23:44:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kvaser.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ShB++p14c8j5+vg5qZac1I23gQHD4cxLW7Jx/ndA85Q=;
-        b=BNtYz/BrWPi3cfMHjt2nTFlH06HIIwlbcWBHcaG2MDoXDYQQOc3+YrfRol3y+k6MR3
-         SJF35UFsRkuPTQCTvKOQq3tkTesRdLnBSOOQCHc0xVapk21pcOiy1C/ZfEzWDe+gtYQc
-         GiNBjVL8RXzN7pMC5CqcwArxe2EOm55rQfSQt3vlf76AKZJhKf5RpD5ElUBiLwDQlP77
-         LdLEL7zm0xMOUXzR0eYDJhAsEhjCZzgpy4O1ffcvDMGU8U7l/er7W+0gQLZsanHTGQhc
-         NhI3FotWCRZpnE+LPyAKuz5UF+xQjkyuca6TWBi8DyH8U2bfl4YfpNVklBeSvSB+yXzU
-         Ibbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ShB++p14c8j5+vg5qZac1I23gQHD4cxLW7Jx/ndA85Q=;
-        b=J/OmjWdtsBBmZuOVnPEi2tOZdRn6QGXL4HXwKlOxpoiwcp93rVymxQSYV4GKbI+pwB
-         qWjJDGH2+wGU05ehoB2lUSBbfbvKNRu0yeJ7Cv6NCFatNMJUW4Tdn4698G24vW5a/H3e
-         PQQiyMLou/NMojdKHXZuvMGcDCuW8YwLW8Xi1t8cZVhOov98fLaAwaaPyfx12jFrdK/6
-         EIUaHWPenY+sfKghCAEgNH2036YFBKkt8iOSgnkd9l95q0iQOCYm6XviB5AWjyRZgYgE
-         ohQ4jv2xPzvLNLwQQZsE/NwOHPyrXYalNLul3FqMHMjd8XK6JGRvw/nZHMgN9jdGTKEI
-         w7ag==
-X-Gm-Message-State: AOAM532mfbAioGa4UgcW56EBrvNT/8kSfk5peY11ILaS9D9olUgempqO
-        ROEMweEepaSa6A5NfKhC7gZuGcka30S0FA8x
-X-Google-Smtp-Source: ABdhPJzmPuIz6jJG/Tt5usex62U+4ba2J09gMmnzUhml80/LKhNOTcdb1QrfADwlLwAZzF34MOmaNA==
-X-Received: by 2002:a2e:a785:: with SMTP id c5mr2856285ljf.384.1637653492092;
-        Mon, 22 Nov 2021 23:44:52 -0800 (PST)
-Received: from [10.0.6.3] (rota.kvaser.com. [195.22.86.90])
-        by smtp.gmail.com with ESMTPSA id f22sm1203590lfm.261.2021.11.22.23.44.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Nov 2021 23:44:51 -0800 (PST)
-Subject: Re: [PATCH v1 1/5] can: kvaser_pciefd: Do not increase
- stats->rx_{packets,bytes} for error frames
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        linux-can@vger.kernel.org
-Cc:     jimmyassarsson@gmail.com
-References: <20211119131915.2033234-2-extja@kvaser.com>
- <20211120030604.217665-1-mailhol.vincent@wanadoo.fr>
-From:   Jimmy Assarsson <extja@kvaser.com>
-Message-ID: <e7bc40c3-e372-48ac-5cc3-d2348caa908f@kvaser.com>
-Date:   Tue, 23 Nov 2021 08:44:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S230160AbhKWIQK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 23 Nov 2021 03:16:10 -0500
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:35096 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229601AbhKWIQJ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 23 Nov 2021 03:16:09 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AN8Cm5C095619;
+        Tue, 23 Nov 2021 02:12:48 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1637655168;
+        bh=sTEvQ1er5plxIGdGGZR1lqxkF4CWVe/9/U+j0wI+RZc=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=tVpT6338lr56oldmrxQNN+QotXyK5+oUVXFPTAMHdohoDLeWxybQejxriJXnprPMq
+         tIb/tzZKljaqLdt+CR+LKMIB5Iv3pOBKMvVqTaEN7zETI/+yxp1PgFb29OPQ/Y046Z
+         CWygWUc/eMRGHGzll68PSdvp0GV2G7XNltJeu7Ng=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AN8CmqV010533
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 23 Nov 2021 02:12:48 -0600
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 23
+ Nov 2021 02:12:48 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 23 Nov 2021 02:12:48 -0600
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AN8CNe2101399;
+        Tue, 23 Nov 2021 02:12:44 -0600
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Peter Rosin <peda@axentia.se>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-can@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>
+Subject: [PATCH RFC v3 4/4] phy: phy-can-transceiver: Add support for setting mux
+Date:   Tue, 23 Nov 2021 13:42:21 +0530
+Message-ID: <20211123081222.27979-5-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211123081222.27979-1-a-govindraju@ti.com>
+References: <20211123081222.27979-1-a-govindraju@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20211120030604.217665-1-mailhol.vincent@wanadoo.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On 2021-11-20 04:06, Vincent Mailhol wrote:
-> On Fri. 19 Nov 2021 at 05:20, Jimmy Assarsson <extja@kvaser.com> wrote:
->> Do not increase net_device_stats rx_{packets,bytes} when receiving
->> error frames.
->>
->> Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
->> ---
->>   drivers/net/can/kvaser_pciefd.c | 3 ---
->>   1 file changed, 3 deletions(-)
->>
->> diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
->> index 74d9899fc904..2c98befcf2a0 100644
->> --- a/drivers/net/can/kvaser_pciefd.c
->> +++ b/drivers/net/can/kvaser_pciefd.c
->> @@ -1304,9 +1304,6 @@ static int kvaser_pciefd_rx_error_frame(struct kvaser_pciefd_can *can,
->>   	cf->data[6] = bec.txerr;
->>   	cf->data[7] = bec.rxerr;
->>   
->> -	stats->rx_packets++;
->> -	stats->rx_bytes += cf->len;
->> -
->>   	netif_rx(skb);
->>   	return 0;
->>   }
-> 
-> I think that this patch makes sense because the CAN error frames do
-> not exists on the wire: only an error flag is transmitted.
-> 
-> However, the current consensus is that the rx_packets and rx_bytes
-> statistics should be incremented for CAN error frames. And I think
-> that consistency between the drivers is the first priority.
-> 
-> I inquired here in the past to ask if it made sense to stop increasing
-> the rx stats for CAN error frames:
-> 
-> https://lore.kernel.org/linux-can/CAMZ6Rq+8YSRqXU7CPrT9FKnWZ1G9xkSr3wt185r2CswmxhXPVg@mail.gmail.com/t/#u
-> 
-> But the discussion did not raise interest. I am fine to send a tree
-> wide cleaning patch, but first, I would like to have people agree on
-> this.
+On some boards, for routing CAN signals from controller to transceiver,
+muxes might need to be set. Therefore, add support for setting the mux by
+reading the mux-controls property from the device tree node.
 
-Thanks, I've not seen that discussion.
-I agree, it doesn't make sense for a user to see the rx_packets and
-rx_bytes increase, when in reality they didn't receive any valid frames.
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+---
+ drivers/phy/Kconfig               |  1 +
+ drivers/phy/phy-can-transceiver.c | 22 ++++++++++++++++++++++
+ 2 files changed, 23 insertions(+)
 
-This change started as a request from one of our customers, that got
-confused by the increase of rx_packets, when connected to a bus with
-wrong bitrate.
+diff --git a/drivers/phy/Kconfig b/drivers/phy/Kconfig
+index 82b63e60c5a2..300b0f2b5f84 100644
+--- a/drivers/phy/Kconfig
++++ b/drivers/phy/Kconfig
+@@ -64,6 +64,7 @@ config USB_LGM_PHY
+ config PHY_CAN_TRANSCEIVER
+ 	tristate "CAN transceiver PHY"
+ 	select GENERIC_PHY
++	select MULTIPLEXER
+ 	help
+ 	  This option enables support for CAN transceivers as a PHY. This
+ 	  driver provides function for putting the transceivers in various
+diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
+index 6f3fe37dee0e..6c94e3846410 100644
+--- a/drivers/phy/phy-can-transceiver.c
++++ b/drivers/phy/phy-can-transceiver.c
+@@ -10,6 +10,7 @@
+ #include<linux/module.h>
+ #include<linux/gpio.h>
+ #include<linux/gpio/consumer.h>
++#include <linux/mux/consumer.h>
+ 
+ struct can_transceiver_data {
+ 	u32 flags;
+@@ -21,13 +22,22 @@ struct can_transceiver_phy {
+ 	struct phy *generic_phy;
+ 	struct gpio_desc *standby_gpio;
+ 	struct gpio_desc *enable_gpio;
++	struct mux_state *mux_state;
+ };
+ 
+ /* Power on function */
+ static int can_transceiver_phy_power_on(struct phy *phy)
+ {
++	int ret;
+ 	struct can_transceiver_phy *can_transceiver_phy = phy_get_drvdata(phy);
+ 
++	if (can_transceiver_phy->mux_state) {
++		ret = mux_state_select(can_transceiver_phy->mux_state);
++		if (ret) {
++			dev_err(&phy->dev, "Failed to select CAN mux: %d\n", ret);
++			return ret;
++		}
++	}
+ 	if (can_transceiver_phy->standby_gpio)
+ 		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 0);
+ 	if (can_transceiver_phy->enable_gpio)
+@@ -45,6 +55,8 @@ static int can_transceiver_phy_power_off(struct phy *phy)
+ 		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 1);
+ 	if (can_transceiver_phy->enable_gpio)
+ 		gpiod_set_value_cansleep(can_transceiver_phy->enable_gpio, 0);
++	if (can_transceiver_phy->mux_state)
++		mux_state_deselect(can_transceiver_phy->mux_state);
+ 
+ 	return 0;
+ }
+@@ -95,6 +107,16 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
+ 	match = of_match_node(can_transceiver_phy_ids, pdev->dev.of_node);
+ 	drvdata = match->data;
+ 
++	if (of_property_read_bool(dev->of_node, "mux-controls")) {
++		struct mux_state *mux_state;
++
++		mux_state = devm_mux_state_get(dev, NULL);
++		if (IS_ERR(mux_state))
++			return dev_err_probe(&pdev->dev, PTR_ERR(mux_state),
++					     "failed to get mux\n");
++		can_transceiver_phy->mux_state = mux_state;
++	}
++
+ 	phy = devm_phy_create(dev, dev->of_node,
+ 			      &can_transceiver_phy_ops);
+ 	if (IS_ERR(phy)) {
+-- 
+2.17.1
 
-I'm in favour of a tree wide patch.
-
-Best regards,
-jimmy
