@@ -2,27 +2,27 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B8F8C4332F
-	for <linux-can@archiver.kernel.org>; Mon,  6 Dec 2021 17:05:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4424C43217
+	for <linux-can@archiver.kernel.org>; Mon,  6 Dec 2021 17:05:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241439AbhLFRI3 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 6 Dec 2021 12:08:29 -0500
-Received: from mga02.intel.com ([134.134.136.20]:48272 "EHLO mga02.intel.com"
+        id S232686AbhLFRIc (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 6 Dec 2021 12:08:32 -0500
+Received: from mga12.intel.com ([192.55.52.136]:21821 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242253AbhLFQ7I (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        id S1347476AbhLFQ7I (ORCPT <rfc822;linux-can@vger.kernel.org>);
         Mon, 6 Dec 2021 11:59:08 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10190"; a="224607766"
+X-IronPort-AV: E=McAfee;i="6200,9189,10190"; a="217381108"
 X-IronPort-AV: E=Sophos;i="5.87,292,1631602800"; 
-   d="scan'208";a="224607766"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2021 08:55:39 -0800
+   d="scan'208";a="217381108"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2021 08:55:39 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,292,1631602800"; 
-   d="scan'208";a="611308084"
+   d="scan'208";a="514829909"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 06 Dec 2021 08:55:37 -0800
+  by orsmga008.jf.intel.com with ESMTP; 06 Dec 2021 08:55:37 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 1DCF2B8; Mon,  6 Dec 2021 18:55:43 +0200 (EET)
+        id 3751415C; Mon,  6 Dec 2021 18:55:43 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org,
@@ -31,9 +31,9 @@ Cc:     Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH v2 2/4] can: hi311x: try to get crystal clock rate from property
-Date:   Mon,  6 Dec 2021 18:55:40 +0200
-Message-Id: <20211206165542.69887-2-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 4/4] can: hi311x: Convert to use dev_err_probe()
+Date:   Mon,  6 Dec 2021 18:55:42 +0200
+Message-Id: <20211206165542.69887-4-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211206165542.69887-1-andriy.shevchenko@linux.intel.com>
 References: <20211206165542.69887-1-andriy.shevchenko@linux.intel.com>
@@ -43,50 +43,54 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-In some configurations, mainly ACPI-based, the clock frequency of the
-device is supplied by very well established 'clock-frequency'
-property. Hence, try to get it from the property at last if no other
-providers are available.
+When deferred the reason is saved for further debugging. Besides that,
+it's fine to call dev_err_probe() in ->probe() when error code is known.
+Convert the driver to use dev_err_probe().
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
-v2: fixed rebase issue and hence no compilation error
- drivers/net/can/spi/hi311x.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+v2: no changes
+ drivers/net/can/spi/hi311x.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
-index 13fb979645cf..c9efdd10d0f8 100644
+index 78044ec24575..a17641d36468 100644
 --- a/drivers/net/can/spi/hi311x.c
 +++ b/drivers/net/can/spi/hi311x.c
-@@ -830,17 +830,26 @@ static int hi3110_can_probe(struct spi_device *spi)
- {
- 	const struct of_device_id *of_id = of_match_device(hi3110_of_match,
- 							   &spi->dev);
-+	struct device *dev = &spi->dev;
- 	struct net_device *net;
- 	struct hi3110_priv *priv;
- 	struct clk *clk;
--	int freq, ret;
-+	u32 freq;
-+	int ret;
+@@ -837,10 +837,8 @@ static int hi3110_can_probe(struct spi_device *spi)
+ 	int ret;
  
  	clk = devm_clk_get_optional(&spi->dev, NULL);
- 	if (IS_ERR(clk)) {
- 		dev_err(&spi->dev, "no CAN clock source defined\n");
- 		return PTR_ERR(clk);
- 	}
--	freq = clk_get_rate(clk);
-+
-+	if (clk) {
-+		freq = clk_get_rate(clk);
-+	} else {
-+		ret = device_property_read_u32(dev, "clock-frequency", &freq);
-+		if (ret)
-+			return dev_err_probe(dev, ret, "Failed to get clock-frequency!\n");
-+	}
+-	if (IS_ERR(clk)) {
+-		dev_err(&spi->dev, "no CAN clock source defined\n");
+-		return PTR_ERR(clk);
+-	}
++	if (IS_ERR(clk))
++		return dev_err_probe(dev, PTR_ERR(clk), "no CAN clock source defined\n");
  
- 	/* Sanity check */
- 	if (freq > 40000000)
+ 	if (clk) {
+ 		freq = clk_get_rate(clk);
+@@ -925,9 +923,7 @@ static int hi3110_can_probe(struct spi_device *spi)
+ 
+ 	ret = hi3110_hw_probe(spi);
+ 	if (ret) {
+-		if (ret == -ENODEV)
+-			dev_err(&spi->dev, "Cannot initialize %x. Wrong wiring?\n",
+-				priv->model);
++		dev_err_probe(dev, ret, "Cannot initialize %x. Wrong wiring?\n", priv->model);
+ 		goto error_probe;
+ 	}
+ 	hi3110_hw_sleep(spi);
+@@ -950,8 +946,7 @@ static int hi3110_can_probe(struct spi_device *spi)
+  out_free:
+ 	free_candev(net);
+ 
+-	dev_err(&spi->dev, "Probe failed, err=%d\n", -ret);
+-	return ret;
++	return dev_err_probe(dev, ret, "Probe failed\n");
+ }
+ 
+ static int hi3110_can_remove(struct spi_device *spi)
 -- 
 2.33.0
 
