@@ -2,61 +2,91 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16294C433F5
-	for <linux-can@archiver.kernel.org>; Mon,  6 Dec 2021 16:49:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B8F8C4332F
+	for <linux-can@archiver.kernel.org>; Mon,  6 Dec 2021 17:05:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239157AbhLFQwr (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 6 Dec 2021 11:52:47 -0500
-Received: from mga18.intel.com ([134.134.136.126]:15444 "EHLO mga18.intel.com"
+        id S241439AbhLFRI3 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 6 Dec 2021 12:08:29 -0500
+Received: from mga02.intel.com ([134.134.136.20]:48272 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239044AbhLFQwq (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 6 Dec 2021 11:52:46 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10190"; a="224222787"
+        id S242253AbhLFQ7I (ORCPT <rfc822;linux-can@vger.kernel.org>);
+        Mon, 6 Dec 2021 11:59:08 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10190"; a="224607766"
 X-IronPort-AV: E=Sophos;i="5.87,292,1631602800"; 
-   d="scan'208";a="224222787"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2021 08:49:17 -0800
+   d="scan'208";a="224607766"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2021 08:55:39 -0800
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,292,1631602800"; 
-   d="scan'208";a="461905691"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2021 08:49:15 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1muH9y-002qzn-H6;
-        Mon, 06 Dec 2021 18:48:14 +0200
-Date:   Mon, 6 Dec 2021 18:48:14 +0200
+   d="scan'208";a="611308084"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga004.jf.intel.com with ESMTP; 06 Dec 2021 08:55:37 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 1DCF2B8; Mon,  6 Dec 2021 18:55:43 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH v1 2/4] can: hi311x: try to get crystal clock rate from
- property
-Message-ID: <Ya4+zveKTTtfHNw+@smile.fi.intel.com>
-References: <20211206162323.29281-1-andriy.shevchenko@linux.intel.com>
- <20211206162323.29281-2-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 2/4] can: hi311x: try to get crystal clock rate from property
+Date:   Mon,  6 Dec 2021 18:55:40 +0200
+Message-Id: <20211206165542.69887-2-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211206165542.69887-1-andriy.shevchenko@linux.intel.com>
+References: <20211206165542.69887-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211206162323.29281-2-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Mon, Dec 06, 2021 at 06:23:21PM +0200, Andy Shevchenko wrote:
-> In some configurations, mainly ACPI-based, the clock frequency of the
-> device is supplied by very well established 'clock-frequency'
-> property. Hence, try to get it from the property at last if no other
-> providers are available.
+In some configurations, mainly ACPI-based, the clock frequency of the
+device is supplied by very well established 'clock-frequency'
+property. Hence, try to get it from the property at last if no other
+providers are available.
 
-Sorry, this shouldn't be like this.
-Wrongly rebased version. I will redo v2.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: fixed rebase issue and hence no compilation error
+ drivers/net/can/spi/hi311x.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
+index 13fb979645cf..c9efdd10d0f8 100644
+--- a/drivers/net/can/spi/hi311x.c
++++ b/drivers/net/can/spi/hi311x.c
+@@ -830,17 +830,26 @@ static int hi3110_can_probe(struct spi_device *spi)
+ {
+ 	const struct of_device_id *of_id = of_match_device(hi3110_of_match,
+ 							   &spi->dev);
++	struct device *dev = &spi->dev;
+ 	struct net_device *net;
+ 	struct hi3110_priv *priv;
+ 	struct clk *clk;
+-	int freq, ret;
++	u32 freq;
++	int ret;
+ 
+ 	clk = devm_clk_get_optional(&spi->dev, NULL);
+ 	if (IS_ERR(clk)) {
+ 		dev_err(&spi->dev, "no CAN clock source defined\n");
+ 		return PTR_ERR(clk);
+ 	}
+-	freq = clk_get_rate(clk);
++
++	if (clk) {
++		freq = clk_get_rate(clk);
++	} else {
++		ret = device_property_read_u32(dev, "clock-frequency", &freq);
++		if (ret)
++			return dev_err_probe(dev, ret, "Failed to get clock-frequency!\n");
++	}
+ 
+ 	/* Sanity check */
+ 	if (freq > 40000000)
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.33.0
 
