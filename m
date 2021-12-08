@@ -2,97 +2,146 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A87F2C433FE
-	for <linux-can@archiver.kernel.org>; Wed,  8 Dec 2021 11:56:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EDFAC4332F
+	for <linux-can@archiver.kernel.org>; Wed,  8 Dec 2021 11:56:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbhLHL75 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 8 Dec 2021 06:59:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33662 "EHLO
+        id S232628AbhLHL76 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 8 Dec 2021 06:59:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232714AbhLHL74 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 8 Dec 2021 06:59:56 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEE1FC0617A1
-        for <linux-can@vger.kernel.org>; Wed,  8 Dec 2021 03:56:24 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id d10so5131737lfg.6
-        for <linux-can@vger.kernel.org>; Wed, 08 Dec 2021 03:56:24 -0800 (PST)
+        with ESMTP id S232714AbhLHL76 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 8 Dec 2021 06:59:58 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52542C0617A1
+        for <linux-can@vger.kernel.org>; Wed,  8 Dec 2021 03:56:26 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id z8so3476441ljz.9
+        for <linux-can@vger.kernel.org>; Wed, 08 Dec 2021 03:56:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kvaser.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I2BzRq665P91EoWRliqyqzMJ/ecA8qf+Ptr/iz5xilo=;
-        b=PRioz//B7kFP0/Xrncavl4f/rcHRQDeyUrp/J3EQb47kWD14hbS1DPp3bfCHtC6WdA
-         Wp3rmDV+iH5bTD5wFSRCa+epuksE91awGf7/FKhXh6hdhEh81/tqh/ZMaYe6qVHpFW+r
-         zAZrrKguIHYoQTSnD8Sj0Rx5/x7L+JSKImhywb0uPTIPZi4mmyN+wweEC/SF3dLzNUU7
-         EZOTBMAcg9bvGKAQ8du0zso0/wvbxgzs4Lw0RPc7wvAqXXaiUhfK1+Lb3YelmouI/OA1
-         28s8SGOOpk3HsmgAedvr6TgCVMqbJgum3U/KK4LgAUgwYa4C/vzk5fYy6Zgg74DhjqzD
-         CVng==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=DZfTr4TT36cnojDeIxKkCkI/X32EvecpHr9i3AFkllw=;
+        b=XohR/dYIsXmvaMuRciH0bbZv+MizsCPiozvZXrTPutx9mHo/b2MqCuk2a5CtaCWark
+         gKtq2yoL4n+cHSYEp479TPYyZ/DNCpq3sZd51fLx0wWr3FPJmoyjfZGYtEMrGRe6aYj0
+         tFxjsE414SZCeAC2mJGh0le4ff9OOWTECjX4eUgJgUd+VnVGkNwVaKOmR+wUHK+xsWe8
+         j3pg2YfxxK654tcdWeC7aRo1owHsCHKZZ32GnznR4ayCCgvCXq2Uedgw4tOt1FAnxO/P
+         fru1b9qxiAoRlk3b0CmERvBDqCAAGwN2Bf3izQ7W5kt6FMat1NMnkw85m3AP/HKXFSAJ
+         VfMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I2BzRq665P91EoWRliqyqzMJ/ecA8qf+Ptr/iz5xilo=;
-        b=0tZZeRp2PBjQu25iq5pBDobM6/Ulz7fMUL+YNO5zhRcYJI6eb1KUx76SyzrXdsZKA6
-         tpi/LJGxhw1rK1xX2FcLS/GKSl8vcJ0PDSBNRq5b5BFNrG2GsaaUt5ISKyJEnxRjR+dN
-         BeUQUoLqtz+EwhtZatWqHjmTVoBHmREzIeGJvMYGqpQkrUrYXXN3ILdqLA30UDJ4nW95
-         UkRCuJ5aJ1vppwWpXMrgGrpI2Y+2Bm29HLhkb89Fuq8g1MoEwOaetqPRDHD+kgMKyDXE
-         LHVJ8xx8uZ5WCGci4k3VUOOGeLQheUGf3fzcpY+a8o7edf8UJVfduZcf7fmB+H/X4F1C
-         0Hxg==
-X-Gm-Message-State: AOAM53319Nua/IaKsKM7U3uUAGROicT+0wHasX3kbo8wSdMH+DmqUK69
-        j/G1WUlv3BHHbNwtvIxzdjtr4MbC0NkXOvCc
-X-Google-Smtp-Source: ABdhPJwsJsrJYAhqcNqqxYPXiWLCDPiYP0Tgu7PRkrORW3DzC58Ui3SefH769KJTZ1g+iVnBGLlWYQ==
-X-Received: by 2002:a05:6512:31cd:: with SMTP id j13mr16050754lfe.586.1638964583285;
-        Wed, 08 Dec 2021 03:56:23 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=DZfTr4TT36cnojDeIxKkCkI/X32EvecpHr9i3AFkllw=;
+        b=r98FwJLzkVs2n4T4MD2JCt/dVv7s742JF0sOAZSwrPtPYTZ7kyteqWH8wr47hss2Ef
+         opW9Qzt5QAZQeqwVqfWf3DlXllRgwLYPzKnysjLlt3y7VSa1oEwqaB8XDKKygS068tvZ
+         j6YWERWTxtRdWBdZErr53L7A8EhGMzHrbt4JKL5tvZTZ1ZX0acykJPBADk8g+SMzyu9o
+         64cFImY8t6MeAHr9AtLgmO1LE0jediv/hHoXcfyT0XJ6XDAdEq5gBzi+U+HS4Q84h77T
+         D4LzXSBdTzEPFzPzZCO8jQ3/nRdf0Kj2zi2nWx2jk3EpQr9c7DNNQSCi+xVxonHGE+LK
+         PK4Q==
+X-Gm-Message-State: AOAM533ySeVYRbBk63Xd5wLdHxuQy4zRajGs7hnx+HULy30P81rJYGh2
+        VOQ1xPAcV3yXr4yYGmTJwuopULic9B3d6g1z
+X-Google-Smtp-Source: ABdhPJzhkXZGT+8yBu5YKpkSc2Jko44YLA/vRblWwu1XmZbHvUr9dBZWN1nVjAdg0TIZOKdTApI9ow==
+X-Received: by 2002:a2e:5852:: with SMTP id x18mr47852364ljd.184.1638964584661;
+        Wed, 08 Dec 2021 03:56:24 -0800 (PST)
 Received: from freke.kvaser.se (rota.kvaser.com. [195.22.86.90])
-        by smtp.gmail.com with ESMTPSA id c25sm256977lja.38.2021.12.08.03.56.22
+        by smtp.gmail.com with ESMTPSA id c25sm256977lja.38.2021.12.08.03.56.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Dec 2021 03:56:22 -0800 (PST)
+        Wed, 08 Dec 2021 03:56:24 -0800 (PST)
 From:   Jimmy Assarsson <extja@kvaser.com>
 To:     linux-can@vger.kernel.org
 Cc:     Jimmy Assarsson <jimmyassarsson@gmail.com>,
         Jimmy Assarsson <extja@kvaser.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v3 0/4] kvaser_{pciefd,usb} fixes
-Date:   Wed,  8 Dec 2021 12:56:03 +0100
-Message-Id: <20211208115607.202859-1-extja@kvaser.com>
+Subject: [PATCH v3 2/4] can: kvaser_usb: Use CAN_MHZ define in assignment of frequency
+Date:   Wed,  8 Dec 2021 12:56:05 +0100
+Message-Id: <20211208115607.202859-3-extja@kvaser.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20211208115607.202859-1-extja@kvaser.com>
+References: <20211208115607.202859-1-extja@kvaser.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The first patch fix increase of the correct
-net_device_stats {rx,tx}_errors counter, for kvaser_pciefd.
-The last three patches fix the CAN clock frequency for Kvaser Leaf devices,
-for kvaser_usb.
+Use the CAN_MHZ define when assigning frequencies.
 
-Note that this series contains patches for both kvaser_usb and
-kvaser_pciefd driver.
+Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
+---
+Changes in v3:
+  No changes.
 
-Dropped patches;
-[PATCH v1 1_5] can: kvaser_pciefd: Do not increase
-stats->rx_{packets,bytes} for error frames
-[PATCH v1 3_5] can: kvaser_usb: Do not increase
-stats->rx_{packets,bytes} for error frames
-and rebased on [PATCH v5 0/5] fix statistics and payload issues for
-error [1] series.
+Changes in v2:
+  - Rebased on [PATCH v5 0/5] fix statistics and payload issues for
+    error [1] series.
 
 [1]
 https://lore.kernel.org/all/20211207121531.42941-1-mailhol.vincent@wanadoo.fr
 
-Jimmy Assarsson (4):
-  can: kvaser_pciefd: Increase correct stats->{rx,tx}_errors counter
-  can: kvaser_usb: Use CAN_MHZ define in assignment of frequency
-  can: kvaser_usb: Rearrange kvaser_usb_leaf_dev_cfg to avoid forward
-    declaration
-  can: kvaser_usb: Get CAN clock frequency from device
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 7 ++++---
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 3 ++-
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
- drivers/net/can/kvaser_pciefd.c               |   8 +-
- .../net/can/usb/kvaser_usb/kvaser_usb_hydra.c |   7 +-
- .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 102 +++++++++++++-----
- 3 files changed, 85 insertions(+), 32 deletions(-)
-
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+index 3cbb7f3051f1..48d87758e6d0 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+@@ -25,6 +25,7 @@
+ #include <linux/usb.h>
+ 
+ #include <linux/can.h>
++#include <linux/can/bittiming.h>
+ #include <linux/can/dev.h>
+ #include <linux/can/error.h>
+ #include <linux/can/netlink.h>
+@@ -2039,7 +2040,7 @@ const struct kvaser_usb_dev_ops kvaser_usb_hydra_dev_ops = {
+ 
+ static const struct kvaser_usb_dev_cfg kvaser_usb_hydra_dev_cfg_kcan = {
+ 	.clock = {
+-		.freq = 80000000,
++		.freq = 80 * CAN_MHZ,
+ 	},
+ 	.timestamp_freq = 80,
+ 	.bittiming_const = &kvaser_usb_hydra_kcan_bittiming_c,
+@@ -2048,7 +2049,7 @@ static const struct kvaser_usb_dev_cfg kvaser_usb_hydra_dev_cfg_kcan = {
+ 
+ static const struct kvaser_usb_dev_cfg kvaser_usb_hydra_dev_cfg_flexc = {
+ 	.clock = {
+-		.freq = 24000000,
++		.freq = 24 * CAN_MHZ,
+ 	},
+ 	.timestamp_freq = 1,
+ 	.bittiming_const = &kvaser_usb_hydra_flexc_bittiming_c,
+@@ -2056,7 +2057,7 @@ static const struct kvaser_usb_dev_cfg kvaser_usb_hydra_dev_cfg_flexc = {
+ 
+ static const struct kvaser_usb_dev_cfg kvaser_usb_hydra_dev_cfg_rt = {
+ 	.clock = {
+-		.freq = 80000000,
++		.freq = 80 * CAN_MHZ,
+ 	},
+ 	.timestamp_freq = 24,
+ 	.bittiming_const = &kvaser_usb_hydra_rt_bittiming_c,
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
+index 47fa7f5a11c6..533e25cb4337 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
+@@ -22,6 +22,7 @@
+ #include <linux/usb.h>
+ 
+ #include <linux/can.h>
++#include <linux/can/bittiming.h>
+ #include <linux/can/dev.h>
+ #include <linux/can/error.h>
+ #include <linux/can/netlink.h>
+@@ -31,7 +32,7 @@
+ /* Forward declaration */
+ static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_dev_cfg;
+ 
+-#define CAN_USB_CLOCK			8000000
++#define CAN_USB_CLOCK			(8 * CAN_MHZ)
+ #define MAX_USBCAN_NET_DEVICES		2
+ 
+ /* Command header size */
 -- 
 2.34.1
 
