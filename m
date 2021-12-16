@@ -2,147 +2,70 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFDA4C433EF
-	for <linux-can@archiver.kernel.org>; Thu, 16 Dec 2021 04:10:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03DF9C433F5
+	for <linux-can@archiver.kernel.org>; Thu, 16 Dec 2021 20:33:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233520AbhLPEKj (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 15 Dec 2021 23:10:39 -0500
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:34798 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbhLPEKh (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 15 Dec 2021 23:10:37 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1BG4ATC3068217;
-        Wed, 15 Dec 2021 22:10:29 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1639627829;
-        bh=3nKHdU9Kh7/r0pzRbD51LK3XVndbk0YQCuGV0fG4vOg=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=cNUBzKfbdc7GDwf5SF3HEZxCzShS55iYbPSd+NjQF7fxvkfvu1aC929sumYJMRvwl
-         sU+2kL3h6U2pIqjj9mtWM9rT9Fmzo19oi4P+vQNcfYtDzbkO5czfGm1C3DLeuUyq9U
-         JD/SMPT9ea6OBWYyFIBHqCLfKQMY2kKberEagwmM=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1BG4ATi2121643
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 15 Dec 2021 22:10:29 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 15
- Dec 2021 22:10:29 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 15 Dec 2021 22:10:29 -0600
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1BG4AEOL093350;
-        Wed, 15 Dec 2021 22:10:25 -0600
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Aswath Govindraju <a-govindraju@ti.com>,
+        id S238883AbhLPUdh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 16 Dec 2021 15:33:37 -0500
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:47015 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236123AbhLPUde (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 16 Dec 2021 15:33:34 -0500
+Received: by mail-ot1-f41.google.com with SMTP id x3-20020a05683000c300b0057a5318c517so288066oto.13;
+        Thu, 16 Dec 2021 12:33:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hfg8ACYlikMDDEUu3EXFo+9JtNm0KhnPtElu4BGn4Jw=;
+        b=jGFDubQtTgLbgdk6gzHkhzpvhVTbIbfuaBdqJtUAwUnJYEd5gjLYZhonq8EuRFneng
+         ci1f/jmL4ZgMWUlbTFkAwr5teyPgODGmQT8ZWzSR/pKRSBMzrcNYYNiUwV7ZXNEpEXIr
+         JydPaVGAhMLmDnYtEvQz52NNFLBffAlQYoN/YXUhT9Th6uWLDGoK+uRGDuzXlR8Ms5j1
+         Ra9KLhP88KRHnfKjsgsugJTRqpymFCN0ebLsz/fCV0QN/qEDTR+D5pTgNhoFeXI2K/px
+         7tkTmw2gXF/Rm9Dw3IvFiLKcW9Dj+h7mS1TLbUU5T2CZ1HpWGfgUMKRjO6tfMW/aBMUo
+         OKSw==
+X-Gm-Message-State: AOAM531OEs+oz/ic1DjxlQA1IEC4x8QNbB8+qiTUrsJYAv50wGzz6Br6
+        0u7tdAPVcxR9KDWC3bWc9mwODlb10w==
+X-Google-Smtp-Source: ABdhPJyFHwjvpklpQVesYfYXxrlFzdhuIejqiguu1DyewZF/CSRFpeDC3+bPOv0TWVjolIjQnoArTg==
+X-Received: by 2002:a05:6830:4389:: with SMTP id s9mr14117622otv.97.1639686813783;
+        Thu, 16 Dec 2021 12:33:33 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id t11sm1227217otj.24.2021.12.16.12.33.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Dec 2021 12:33:33 -0800 (PST)
+Received: (nullmailer pid 708667 invoked by uid 1000);
+        Thu, 16 Dec 2021 20:33:32 -0000
+Date:   Thu, 16 Dec 2021 14:33:32 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
         Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, <linux-can@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 2/2] phy: phy-can-transceiver: Add support for setting mux
-Date:   Thu, 16 Dec 2021 09:40:12 +0530
-Message-ID: <20211216041012.16892-3-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211216041012.16892-1-a-govindraju@ti.com>
+        Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v3 1/2] dt-bindings: phy: ti,tcan104x-can: Document
+ mux-states property
+Message-ID: <YbuinMnaJHW/hUVQ@robh.at.kernel.org>
 References: <20211216041012.16892-1-a-govindraju@ti.com>
+ <20211216041012.16892-2-a-govindraju@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211216041012.16892-2-a-govindraju@ti.com>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On some boards, for routing CAN signals from controller to transceiver,
-muxes might need to be set. Therefore, add support for setting the mux by
-reading the mux-states property from the device tree node.
+On Thu, 16 Dec 2021 09:40:11 +0530, Aswath Govindraju wrote:
+> On some boards, for routing CAN signals from controller to transceivers,
+> muxes might need to be set. This can be implemented using mux-states
+> property. Therefore, document the same in the respective bindings.
+> 
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+>  Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
- drivers/phy/Kconfig               |  1 +
- drivers/phy/phy-can-transceiver.c | 24 +++++++++++++++++++++++-
- 2 files changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/phy/Kconfig b/drivers/phy/Kconfig
-index 82b63e60c5a2..300b0f2b5f84 100644
---- a/drivers/phy/Kconfig
-+++ b/drivers/phy/Kconfig
-@@ -64,6 +64,7 @@ config USB_LGM_PHY
- config PHY_CAN_TRANSCEIVER
- 	tristate "CAN transceiver PHY"
- 	select GENERIC_PHY
-+	select MULTIPLEXER
- 	help
- 	  This option enables support for CAN transceivers as a PHY. This
- 	  driver provides function for putting the transceivers in various
-diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
-index 6f3fe37dee0e..95c6dbb52da7 100644
---- a/drivers/phy/phy-can-transceiver.c
-+++ b/drivers/phy/phy-can-transceiver.c
-@@ -10,6 +10,7 @@
- #include<linux/module.h>
- #include<linux/gpio.h>
- #include<linux/gpio/consumer.h>
-+#include <linux/mux/consumer.h>
- 
- struct can_transceiver_data {
- 	u32 flags;
-@@ -21,13 +22,22 @@ struct can_transceiver_phy {
- 	struct phy *generic_phy;
- 	struct gpio_desc *standby_gpio;
- 	struct gpio_desc *enable_gpio;
-+	struct mux_state *mux_state;
- };
- 
- /* Power on function */
- static int can_transceiver_phy_power_on(struct phy *phy)
- {
- 	struct can_transceiver_phy *can_transceiver_phy = phy_get_drvdata(phy);
--
-+	int ret;
-+
-+	if (can_transceiver_phy->mux_state) {
-+		ret = mux_state_select(can_transceiver_phy->mux_state);
-+		if (ret) {
-+			dev_err(&phy->dev, "Failed to select CAN mux: %d\n", ret);
-+			return ret;
-+		}
-+	}
- 	if (can_transceiver_phy->standby_gpio)
- 		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 0);
- 	if (can_transceiver_phy->enable_gpio)
-@@ -45,6 +55,8 @@ static int can_transceiver_phy_power_off(struct phy *phy)
- 		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 1);
- 	if (can_transceiver_phy->enable_gpio)
- 		gpiod_set_value_cansleep(can_transceiver_phy->enable_gpio, 0);
-+	if (can_transceiver_phy->mux_state)
-+		mux_state_deselect(can_transceiver_phy->mux_state);
- 
- 	return 0;
- }
-@@ -95,6 +107,16 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
- 	match = of_match_node(can_transceiver_phy_ids, pdev->dev.of_node);
- 	drvdata = match->data;
- 
-+	if (of_property_read_bool(dev->of_node, "mux-states")) {
-+		struct mux_state *mux_state;
-+
-+		mux_state = devm_mux_state_get(dev, NULL);
-+		if (IS_ERR(mux_state))
-+			return dev_err_probe(&pdev->dev, PTR_ERR(mux_state),
-+					     "failed to get mux\n");
-+		can_transceiver_phy->mux_state = mux_state;
-+	}
-+
- 	phy = devm_phy_create(dev, dev->of_node,
- 			      &can_transceiver_phy_ops);
- 	if (IS_ERR(phy)) {
--- 
-2.17.1
-
+Reviewed-by: Rob Herring <robh@kernel.org>
