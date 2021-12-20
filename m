@@ -2,147 +2,95 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3682C433F5
-	for <linux-can@archiver.kernel.org>; Mon, 20 Dec 2021 09:23:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99585C433F5
+	for <linux-can@archiver.kernel.org>; Mon, 20 Dec 2021 11:02:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231683AbhLTJXR (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 20 Dec 2021 04:23:17 -0500
-Received: from mx1.tq-group.com ([93.104.207.81]:58435 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231234AbhLTJXO (ORCPT <rfc822;linux-can@vger.kernel.org>);
-        Mon, 20 Dec 2021 04:23:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1639992194; x=1671528194;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=x3QrKeifM9r4PzgOTLR5iQlnX3eVXnbOYQ77dU5BH0Y=;
-  b=ovVVEbNxRSFE8ov8o6c6dTLd2n/NP+m2zv1PdVWG++m42uesTG656rGa
-   307Dcn4QlSSxOHo1b/7PItRHWzeCzcaFxB1YVbfP3cXEn6LJSbuhYKUik
-   R3TyMjmKYozS6hKywlY79dJzZMm9POlkOwufcoZOKsPHQavjpgPE60lDu
-   Yd+sP604eZJy70rX1CdbjrAjAsMunocLUiwTGWLwQ3IAER8C+AXPzgZ1G
-   TqZ5s5f9mcMekwVivLPxIeEHEuE+vVSktmtsTLjFngR03mEyb6vgGrqN1
-   ZtKEef3pcmdtRzSltx9GxqIi+/m7CJN0/aUKQbfaQjS3Bk5l7hyvjoqZ8
-   g==;
-X-IronPort-AV: E=Sophos;i="5.88,220,1635199200"; 
-   d="scan'208";a="21148421"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 20 Dec 2021 10:23:11 +0100
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Mon, 20 Dec 2021 10:23:11 +0100
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Mon, 20 Dec 2021 10:23:11 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1639992191; x=1671528191;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=x3QrKeifM9r4PzgOTLR5iQlnX3eVXnbOYQ77dU5BH0Y=;
-  b=JpNCM5Y4EnGOzJVWzLmZLTtDp5ElE4gh29StPdfyS2FSYzoD2ijziHsi
-   ofGWr+NbINs/rsE80XepWSBb+i2PYv9hlfJhqy6kJdpNHtT8cY8v1/xK/
-   lQ+ixUE+1JdJFHz9hqsO1R6NxInVOBLNhjqTlgyvel6UIz1v68HymPIvD
-   9gWkJGzk8TXT+MgN8WcQadusIP4qhLV0SVO1/7HA9nT5ehepLMnBv2d2h
-   opy8hCk7lYc8ZSftaXRT/9t8gEjZDyURgoGJ1DkYdA3SSprhDRLAjO/1Z
-   dB1k9Js2hgwczHxHj5xHWerQFnu8nvEK5QaRi/jPf9vZTnlrKg12lVW5P
-   A==;
-X-IronPort-AV: E=Sophos;i="5.88,220,1635199200"; 
-   d="scan'208";a="21148420"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 20 Dec 2021 10:23:11 +0100
-Received: from localhost.localdomain (SCHIFFERM-M2.tq-net.de [10.121.201.15])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id E3E0B280075;
-        Mon, 20 Dec 2021 10:23:10 +0100 (CET)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        davem@davemloft.net, kuba@kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH 5.15 1/3] Revert "can: m_can: remove support for custom bit timing"
-Date:   Mon, 20 Dec 2021 10:22:15 +0100
-Message-Id: <ff820b1ae98fe0dd30e60bc14e6dfcc082438fab.1639990483.git.matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1639990483.git.matthias.schiffer@ew.tq-group.com>
+        id S231438AbhLTLCn (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 20 Dec 2021 06:02:43 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:57267 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230116AbhLTLCm (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 20 Dec 2021 06:02:42 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 4186F580726;
+        Mon, 20 Dec 2021 06:02:42 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 20 Dec 2021 06:02:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=SYYa6YsTGSR/I0GH13kqb+HYdm9
+        OONiz3cbnv97oGII=; b=pq5JbqII0DG1nlui9KuHHJyFhoHCPhIpvInQXFreib4
+        MowLWD0PiKk1vOiclXL9SZwW132/0PB+0CM4QJEDFfZpJNu9pFb966Dduqkj1Gkm
+        aK4qAyukFOzaJBLaw4v6jSLBJiub/DzpTX6MCIDdgWKc7FxAY+3I3boq/TwyQvZI
+        COvclSMileKI0Lz/6mEELTzxc+nREe6wlgYRvEQvpJ5Mon+vNbeIi/jCvt4XpXDL
+        qT3Rghq6mxFyatdquMzqXODoazHkRzc+hxqpGtUg6UIV9BBPtWbwI1YXF0hQqU+Q
+        y1Zv3LaBSM+nd4BTeOUAJpAgOdEQoBAh+DtEuuKH8rw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=SYYa6Y
+        sTGSR/I0GH13kqb+HYdm9OONiz3cbnv97oGII=; b=m1JtNBB9nemQLbkYlGrcxI
+        OBaGF0rsA1hASxzSN1V10IFbJv/Dx4RMw+KeMMXdSVasFAgSCz1PJxe75PPDP43t
+        KyPqyzQKWDKlWqD6NJAPMrLqhdvHIsEyLYKOITIQ2SAMQmHwC9QTjfoxpIR3pq2z
+        a3/jcLMqeX7BtLOT0emtGRZTqXabX45AMhqQfaV6z4v6f22Zyg9oLx4YmFAJXUi3
+        a4klRtycrA6E+YxyaCwo+RzuwZiYqzU3EYD8/kpwpyMnea9qz+fLg0VOaWk+IcJH
+        94bsDJg4+LUzrGuRCdnTEIDwZqApBixEzz4AcfwEJ9rqT7K6R2+k0swwzT8cuBBA
+        ==
+X-ME-Sender: <xms:0WLAYcfjuXObVl3M3X7Gh9au2Ss-TnBV8AJOVkZQZa1q3_bMxazcOw>
+    <xme:0WLAYePhNB4_KhD9GFLFLLUveoUskTYnk84Qkdmfiwygd6FVWkHYbQiDR_LO9rJvW
+    oTUCYVJU6pe_w>
+X-ME-Received: <xmr:0WLAYdh3Gm5cMGIH4591Lt2biZZY9wozVVka7QKzx5h6BjuhCilFksci0VQdEV9j15uwJXUnnkijpxGisRDONtxlBCt-R8wi>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddruddtvddgvdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:0mLAYR-D9LgAoe7wYKMKaD6mGls2HmgFsVnK5sJG--ENIDPjwN6wHw>
+    <xmx:0mLAYYtywWzCE8pXKBJqi_Qu7K6-WXlZJeZgrRztKz4T2OxY6aX2jQ>
+    <xmx:0mLAYYFDUb5wznYbnnp2iAL7kdy_cuRf1fmhi3Nt35qpSHBgJQw0mQ>
+    <xmx:0mLAYYEBnH74_aiAcNvkSAy5RtvsDJ5hMeZbXAsgKxnUKxwGCFil1A>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 20 Dec 2021 06:02:41 -0500 (EST)
+Date:   Mon, 20 Dec 2021 12:02:39 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-can@vger.kernel.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>, davem@davemloft.net,
+        kuba@kernel.org
+Subject: Re: [PATCH 5.15 0/3] m_can_pci bit timings for Elkhart Lake
+Message-ID: <YcBiz/hxgxktWb2E@kroah.com>
 References: <cover.1639990483.git.matthias.schiffer@ew.tq-group.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1639990483.git.matthias.schiffer@ew.tq-group.com>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-commit ea768b2ffec6cc9c3e17c37ef75d0539b8f89ff5 upstream.
+On Mon, Dec 20, 2021 at 10:22:14AM +0100, Matthias Schiffer wrote:
+> The automated backport of "can: m_can: pci: use custom bit timings for
+> Elkhart Lake" failed because I neglected to add Fixes tags to the other
+> two patches it depends on.
+> 
+> Matthias Schiffer (3):
+>   Revert "can: m_can: remove support for custom bit timing"
+>   can: m_can: make custom bittiming fields const
+>   can: m_can: pci: use custom bit timings for Elkhart Lake
+> 
+>  drivers/net/can/m_can/m_can.c     | 24 ++++++++++++----
+>  drivers/net/can/m_can/m_can.h     |  3 ++
+>  drivers/net/can/m_can/m_can_pci.c | 48 ++++++++++++++++++++++++++++---
+>  3 files changed, 65 insertions(+), 10 deletions(-)
+> 
+> -- 
+> 2.25.1
+> 
 
-The timing limits specified by the Elkhart Lake CPU datasheets do not
-match the defaults. Let's reintroduce the support for custom bit timings.
+All now queued up, thanks.
 
-This reverts commit 0ddd83fbebbc5537f9d180d31f659db3564be708.
-
-Link: https://lore.kernel.org/all/00c9e2596b1a548906921a574d4ef7a03c0dace0.1636967198.git.matthias.schiffer@ew.tq-group.com
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/m_can/m_can.c | 24 ++++++++++++++++++------
- drivers/net/can/m_can/m_can.h |  3 +++
- 2 files changed, 21 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index e330b4c121bf..c2a8421e7845 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1494,20 +1494,32 @@ static int m_can_dev_setup(struct m_can_classdev *cdev)
- 	case 30:
- 		/* CAN_CTRLMODE_FD_NON_ISO is fixed with M_CAN IP v3.0.x */
- 		can_set_static_ctrlmode(dev, CAN_CTRLMODE_FD_NON_ISO);
--		cdev->can.bittiming_const = &m_can_bittiming_const_30X;
--		cdev->can.data_bittiming_const = &m_can_data_bittiming_const_30X;
-+		cdev->can.bittiming_const = cdev->bit_timing ?
-+			cdev->bit_timing : &m_can_bittiming_const_30X;
-+
-+		cdev->can.data_bittiming_const = cdev->data_timing ?
-+			cdev->data_timing :
-+			&m_can_data_bittiming_const_30X;
- 		break;
- 	case 31:
- 		/* CAN_CTRLMODE_FD_NON_ISO is fixed with M_CAN IP v3.1.x */
- 		can_set_static_ctrlmode(dev, CAN_CTRLMODE_FD_NON_ISO);
--		cdev->can.bittiming_const = &m_can_bittiming_const_31X;
--		cdev->can.data_bittiming_const = &m_can_data_bittiming_const_31X;
-+		cdev->can.bittiming_const = cdev->bit_timing ?
-+			cdev->bit_timing : &m_can_bittiming_const_31X;
-+
-+		cdev->can.data_bittiming_const = cdev->data_timing ?
-+			cdev->data_timing :
-+			&m_can_data_bittiming_const_31X;
- 		break;
- 	case 32:
- 	case 33:
- 		/* Support both MCAN version v3.2.x and v3.3.0 */
--		cdev->can.bittiming_const = &m_can_bittiming_const_31X;
--		cdev->can.data_bittiming_const = &m_can_data_bittiming_const_31X;
-+		cdev->can.bittiming_const = cdev->bit_timing ?
-+			cdev->bit_timing : &m_can_bittiming_const_31X;
-+
-+		cdev->can.data_bittiming_const = cdev->data_timing ?
-+			cdev->data_timing :
-+			&m_can_data_bittiming_const_31X;
- 
- 		cdev->can.ctrlmode_supported |=
- 			(m_can_niso_supported(cdev) ?
-diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
-index d18b515e6ccc..ad063b101411 100644
---- a/drivers/net/can/m_can/m_can.h
-+++ b/drivers/net/can/m_can/m_can.h
-@@ -85,6 +85,9 @@ struct m_can_classdev {
- 	struct sk_buff *tx_skb;
- 	struct phy *transceiver;
- 
-+	struct can_bittiming_const *bit_timing;
-+	struct can_bittiming_const *data_timing;
-+
- 	struct m_can_ops *ops;
- 
- 	int version;
--- 
-2.25.1
-
+greg k-h
