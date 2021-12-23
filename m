@@ -2,86 +2,62 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47992C433FE
-	for <linux-can@archiver.kernel.org>; Thu, 23 Dec 2021 11:28:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF187C433EF
+	for <linux-can@archiver.kernel.org>; Thu, 23 Dec 2021 17:11:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbhLWL2b (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 23 Dec 2021 06:28:31 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:35792 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbhLWL2b (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 23 Dec 2021 06:28:31 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0DA6AB81E98;
-        Thu, 23 Dec 2021 11:28:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDAF5C36AE9;
-        Thu, 23 Dec 2021 11:28:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1640258908;
-        bh=htCvpSaVrR8Gu/Gf+sfTWo3rQbsZZ8ATd3vQXhFLWYA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=byI8vGwHlAIcTpT0z9s+YkHj//vmsmN8841AogPROn1/ASF83M7dUR5eb70y19tCo
-         1GRS1QoBIh4fcNd+qnx3RULTNJIH8j/TiLJ36XbVt0OnwQnyWknZ0HtXUPbCrKFzen
-         b71i9fRpUX16/xmSqI8zhfuUSQl0kJjsvxJjBVRvhkazbDgHm9aPnZ0y09EuiwpOIs
-         ci2ckdy3N6UEOOZs8nUScwaldD2qSurNn2mHLTow1yeAThwd22yk7vPaiitXlQztRj
-         EHcp9aqB3deH0OVdNGA9b96LwuD60OiGU/PNPLhhoA7jyGl8ulrDS+pA/sbwfe7SG5
-         sIgd1GgzjUOrw==
-Date:   Thu, 23 Dec 2021 16:58:24 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-can@vger.kernel.org,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] CAN: Add support for setting mux
-Message-ID: <YcRdWJtREHFWXBKM@matsya>
-References: <20211216041012.16892-1-a-govindraju@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211216041012.16892-1-a-govindraju@ti.com>
+        id S1349414AbhLWRLz convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 23 Dec 2021 12:11:55 -0500
+Received: from projects.drlauer-research.com ([88.99.0.140]:40312 "EHLO
+        projects.drlauer-research.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349401AbhLWRLz (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 23 Dec 2021 12:11:55 -0500
+X-Greylist: delayed 394 seconds by postgrey-1.27 at vger.kernel.org; Thu, 23 Dec 2021 12:11:55 EST
+Received: from smtpclient.apple (b2b-109-90-164-198.unitymedia.biz [109.90.164.198])
+        by projects.drlauer-research.com (Postfix) with ESMTPSA id 3E6D24802B1
+        for <linux-can@vger.kernel.org>; Thu, 23 Dec 2021 18:05:19 +0100 (CET)
+From:   "Dr. Michael Lauer" <mickey@vanille.de>
+Content-Type: text/plain;
+        charset=us-ascii
+Content-Transfer-Encoding: 8BIT
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.40.0.1.81\))
+Subject: Dual CAN(FD) board w/ MACP251xfd
+Message-Id: <A271F63C-FA42-4864-A621-C5195A35EC83@vanille.de>
+Date:   Thu, 23 Dec 2021 18:05:18 +0100
+To:     linux-can@vger.kernel.org
+X-Mailer: Apple Mail (2.3693.40.0.1.81)
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On 16-12-21, 09:40, Aswath Govindraju wrote:
-> The following series of patches add support for setting
-> muxes to route signals from CAN controller to transceiver
-> by reading the property mux-states from the device tree
-> node
+Please forgive me, if this is not the proper list for this message,
+but as far as I know the developer of the mcp251xfd driver is also reading here.
 
-These look okay to me
-> 
-> The following series of patches are dependent on,
-> - https://lkml.org/lkml/2021/12/2/423
+I recently acquired a Dual CAN FD HAT (https://www.waveshare.com/wiki/2-CH_CAN_FD_HAT)
+to run on my Raspberry PI 4. Currently, this is using kernel 5.15.11, but for some
+reason, only one of the two ports are recognized. Instead of detecting the 2nd port,
+it seems to just _renames_ the port. Here is the relevant kernel log:
 
-Pls post when these are merged..
+[    5.495409] CAN device driver interface
+[    5.552660] spi_master spi1: will run message pump with realtime priority
+[    5.559885] mcp251xfd spi1.0 (unnamed net_device) (uninitialized): Detected MCP2518FD, but firmware specifies a MCP2517FD. Fixing up.
+[    5.580908] vc4-drm gpu: bound fe400000.hvs (ops vc4_hvs_ops [vc4])
+[    5.585428] Registered IR keymap rc-cec
+[    5.599117] rc rc0: vc4 as /devices/platform/soc/fef00700.hdmi/rc/rc0
+[    5.601698] mcp251xfd spi1.0 can0: MCP2518FD rev0.0 (-RX_INT -MAB_NO_WARN +CRC_REG +CRC_RX +CRC_TX +ECC -HD c:40.00MHz m:20.00MHz r:17.00MHz e:16.66MHz) successfully initialized.
+[    5.633622] input: vc4 as /devices/platform/soc/fef00700.hdmi/rc/rc0/input3
+[    5.677448] vc4-drm gpu: bound fef00700.hdmi (ops vc4_hdmi_ops [vc4])
+[    5.697059] Registered IR keymap rc-cec
+[    5.698682] mcp251xfd spi1.0 can1: renamed from can0
 
-> 
-> Changes since v2:
-> - Fixed the bindings removing the description about
->   the arguments in mux-states property
-> 
-> Changes since v1:
-> - Fixed the description for mux-states property in bindings
->   file
-> - appended declaration of variable ret in the end
-> 
-> Aswath Govindraju (2):
->   dt-bindings: phy: ti,tcan104x-can: Document mux-states property
->   phy: phy-can-transceiver: Add support for setting mux
-> 
->  .../bindings/phy/ti,tcan104x-can.yaml         |  7 ++++++
->  drivers/phy/Kconfig                           |  1 +
->  drivers/phy/phy-can-transceiver.c             | 24 ++++++++++++++++++-
->  3 files changed, 31 insertions(+), 1 deletion(-)
-> 
-> -- 
-> 2.17.1
+The activated overlays in config.txt are
 
--- 
-~Vinod
+dtoverlay=2xMCP2517FD
+dtoverlay=2xMCP2518FD-spi0
+
+Perhaps anyone of you has a similar config and can tell me what could be wrong?
+
+Best,
+
+Mickey.
+
