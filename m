@@ -2,44 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CB36C433EF
-	for <linux-can@archiver.kernel.org>; Wed,  5 Jan 2022 15:43:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 834C2C433F5
+	for <linux-can@archiver.kernel.org>; Wed,  5 Jan 2022 15:43:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241619AbiAEPnc (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 5 Jan 2022 10:43:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59226 "EHLO
+        id S241645AbiAEPne (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 5 Jan 2022 10:43:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241641AbiAEPnI (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Jan 2022 10:43:08 -0500
+        with ESMTP id S241649AbiAEPnT (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Jan 2022 10:43:19 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3904BC0611FD
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1BDC06118C
         for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 07:43:08 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1n58RO-0002vj-Nb
+        id 1n58RO-0002w3-Tj
         for linux-can@vger.kernel.org; Wed, 05 Jan 2022 16:43:06 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 08C3E6D1CAA
-        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 15:43:03 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 3D6F36D1CAE
+        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 15:43:04 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 45FD76D1C8D;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6D0636D1C91;
         Wed,  5 Jan 2022 15:43:02 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1879782f;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 60cca7b4;
         Wed, 5 Jan 2022 15:43:01 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         Thomas Kopp <thomas.kopp@microchip.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 03/13] can: mcp251xfd: add missing newline to printed strings
-Date:   Wed,  5 Jan 2022 16:42:50 +0100
-Message-Id: <20220105154300.1258636-4-mkl@pengutronix.de>
+Subject: [PATCH 05/13] can: mcp251xfd: mcp251xfd_open(): make use of pm_runtime_resume_and_get()
+Date:   Wed,  5 Jan 2022 16:42:52 +0100
+Message-Id: <20220105154300.1258636-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220105154300.1258636-1-mkl@pengutronix.de>
 References: <20220105154300.1258636-1-mkl@pengutronix.de>
@@ -53,36 +53,37 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch adds the missing newline to printed strings.
+With patch
 
-Fixes: 55e5b97f003e ("can: mcp25xxfd: add driver for Microchip MCP25xxFD SPI CAN")
+| dd8088d5a896 PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter
+
+the usual pm_runtime_get_sync() and pm_runtime_put_noidle()
+in-case-of-error dance is no longer needed. Convert the mcp251xfd
+driver to use this function.
+
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index 9d1a8992d8ce..bf2ebd46ff83 100644
+index 161e12cdf8e8..a01a3fc3b13c 100644
 --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
 +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -2624,7 +2624,7 @@ static int mcp251xfd_register_chip_detect(struct mcp251xfd_priv *priv)
- 	if (!mcp251xfd_is_251X(priv) &&
- 	    priv->devtype_data.model != devtype_data->model) {
- 		netdev_info(ndev,
--			    "Detected %s, but firmware specifies a %s. Fixing up.",
-+			    "Detected %s, but firmware specifies a %s. Fixing up.\n",
- 			    __mcp251xfd_get_model_str(devtype_data->model),
- 			    mcp251xfd_get_model_str(priv));
- 	}
-@@ -2661,7 +2661,7 @@ static int mcp251xfd_register_check_rx_int(struct mcp251xfd_priv *priv)
- 		return 0;
+@@ -2507,11 +2507,9 @@ static int mcp251xfd_open(struct net_device *ndev)
+ 	if (err)
+ 		return err;
  
- 	netdev_info(priv->ndev,
--		    "RX_INT active after softreset, disabling RX_INT support.");
-+		    "RX_INT active after softreset, disabling RX_INT support.\n");
- 	devm_gpiod_put(&priv->spi->dev, priv->rx_int);
- 	priv->rx_int = NULL;
+-	err = pm_runtime_get_sync(ndev->dev.parent);
+-	if (err < 0) {
+-		pm_runtime_put_noidle(ndev->dev.parent);
++	err = pm_runtime_resume_and_get(ndev->dev.parent);
++	if (err)
+ 		goto out_close_candev;
+-	}
  
+ 	err = mcp251xfd_ring_alloc(priv);
+ 	if (err)
 -- 
 2.34.1
 
