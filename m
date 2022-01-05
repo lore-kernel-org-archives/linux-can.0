@@ -2,44 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BA21C433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4B58C4332F
 	for <linux-can@archiver.kernel.org>; Wed,  5 Jan 2022 15:43:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241632AbiAEPnf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 5 Jan 2022 10:43:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59268 "EHLO
+        id S241629AbiAEPng (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 5 Jan 2022 10:43:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241650AbiAEPnT (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Jan 2022 10:43:19 -0500
+        with ESMTP id S241627AbiAEPnV (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Jan 2022 10:43:21 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2CFC06118A
-        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 07:43:08 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6902BC034002
+        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 07:43:10 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1n58RO-0002w2-Rf
-        for linux-can@vger.kernel.org; Wed, 05 Jan 2022 16:43:06 +0100
+        id 1n58RQ-0002xi-OY
+        for linux-can@vger.kernel.org; Wed, 05 Jan 2022 16:43:08 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 124CE6D1CAB
-        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 15:43:04 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 8D2936D1CC2
+        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 15:43:05 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 56C9F6D1C8F;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9ABF16D1C95;
         Wed,  5 Jan 2022 15:43:02 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 901892aa;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d5e0d015;
         Wed, 5 Jan 2022 15:43:01 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         Thomas Kopp <thomas.kopp@microchip.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 04/13] can: mcp251xfd: mcp251xfd_open(): open_candev() first
-Date:   Wed,  5 Jan 2022 16:42:51 +0100
-Message-Id: <20220105154300.1258636-5-mkl@pengutronix.de>
+Subject: [PATCH 07/13] can: mcp251xfd: mcp251xfd.h: sort function prototypes
+Date:   Wed,  5 Jan 2022 16:42:54 +0100
+Message-Id: <20220105154300.1258636-8-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220105154300.1258636-1-mkl@pengutronix.de>
 References: <20220105154300.1258636-1-mkl@pengutronix.de>
@@ -53,62 +53,31 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch exchanges the order of open_candev() and
-pm_runtime_get_sync(), so that open_candev() is called first.
-
-A usual reason why open_candev() fails is missing CAN bit rate
-configuration. It makes no sense to resume the device from PM sleep
-first just to put it to sleep if the bit rate is not configured.
+The .c files in the Makefile are ordered alphabetically. This patch
+groups the function prototypes by their corresponding .c file and
+brings the into the same order.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index bf2ebd46ff83..161e12cdf8e8 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -2503,19 +2503,19 @@ static int mcp251xfd_open(struct net_device *ndev)
- 	const struct spi_device *spi = priv->spi;
- 	int err;
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+index 0f322dabaf65..8a6e07ba66d5 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+@@ -849,10 +849,10 @@ mcp251xfd_get_rx_linear_len(const struct mcp251xfd_rx_ring *ring)
+ 	     (n) < (priv)->rx_ring_num; \
+ 	     (n)++, (ring) = *((priv)->rx + (n)))
  
-+	err = open_candev(ndev);
-+	if (err)
-+		return err;
-+
- 	err = pm_runtime_get_sync(ndev->dev.parent);
- 	if (err < 0) {
- 		pm_runtime_put_noidle(ndev->dev.parent);
--		return err;
-+		goto out_close_candev;
- 	}
- 
--	err = open_candev(ndev);
--	if (err)
--		goto out_pm_runtime_put;
--
- 	err = mcp251xfd_ring_alloc(priv);
- 	if (err)
--		goto out_close_candev;
-+		goto out_pm_runtime_put;
- 
- 	err = mcp251xfd_transceiver_enable(priv);
- 	if (err)
-@@ -2551,11 +2551,11 @@ static int mcp251xfd_open(struct net_device *ndev)
- 	mcp251xfd_transceiver_disable(priv);
-  out_mcp251xfd_ring_free:
- 	mcp251xfd_ring_free(priv);
-- out_close_candev:
--	close_candev(ndev);
-  out_pm_runtime_put:
- 	mcp251xfd_chip_stop(priv, CAN_STATE_STOPPED);
- 	pm_runtime_put(ndev->dev.parent);
-+ out_close_candev:
-+	close_candev(ndev);
- 
- 	return err;
- }
+-int mcp251xfd_regmap_init(struct mcp251xfd_priv *priv);
+ u16 mcp251xfd_crc16_compute2(const void *cmd, size_t cmd_size,
+ 			     const void *data, size_t data_size);
+ u16 mcp251xfd_crc16_compute(const void *data, size_t data_size);
++int mcp251xfd_regmap_init(struct mcp251xfd_priv *priv);
+ void mcp251xfd_skb_set_timestamp(const struct mcp251xfd_priv *priv,
+ 				 struct sk_buff *skb, u32 timestamp);
+ void mcp251xfd_timestamp_init(struct mcp251xfd_priv *priv);
 -- 
 2.34.1
 
