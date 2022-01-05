@@ -2,44 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5910BC433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA6ABC43219
 	for <linux-can@archiver.kernel.org>; Wed,  5 Jan 2022 15:43:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241627AbiAEPnh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 5 Jan 2022 10:43:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59316 "EHLO
+        id S241631AbiAEPni (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 5 Jan 2022 10:43:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241637AbiAEPn3 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Jan 2022 10:43:29 -0500
+        with ESMTP id S241640AbiAEPna (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Jan 2022 10:43:30 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF14DC034005
-        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 07:43:10 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0E2C034007
+        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 07:43:11 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1n58RR-0002xz-6V
+        id 1n58RR-0002yN-Nf
         for linux-can@vger.kernel.org; Wed, 05 Jan 2022 16:43:09 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 9B0C36D1CC4
+        by bjornoya.blackshift.org (Postfix) with SMTP id E8AB16D1CC8
         for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 15:43:05 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id CBF226D1C98;
-        Wed,  5 Jan 2022 15:43:02 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 0A7896D1C9B;
+        Wed,  5 Jan 2022 15:43:03 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 817cda74;
-        Wed, 5 Jan 2022 15:43:01 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ff8b0de5;
+        Wed, 5 Jan 2022 15:43:02 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         Thomas Kopp <thomas.kopp@microchip.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 09/13] can: mcp251xfd: move TX handling into separate file
-Date:   Wed,  5 Jan 2022 16:42:56 +0100
-Message-Id: <20220105154300.1258636-10-mkl@pengutronix.de>
+Subject: [PATCH 11/13] can: mcp251xfd: move chip FIFO init into separate file
+Date:   Wed,  5 Jan 2022 16:42:58 +0100
+Message-Id: <20220105154300.1258636-12-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220105154300.1258636-1-mkl@pengutronix.de>
 References: <20220105154300.1258636-1-mkl@pengutronix.de>
@@ -53,233 +53,36 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch moves the TX handling from the mcp251xfd core file into a
-separate one to make the driver a bit more orderly.
+This patch moves the chip FIFO initialization from the mcp251xfd core
+file into a separate one to make the driver a bit more orderly.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
  drivers/net/can/spi/mcp251xfd/Makefile        |   1 +
- .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 187 ----------------
- drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c  | 205 ++++++++++++++++++
- drivers/net/can/spi/mcp251xfd/mcp251xfd.h     |   3 +
- 4 files changed, 209 insertions(+), 187 deletions(-)
- create mode 100644 drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
+ .../can/spi/mcp251xfd/mcp251xfd-chip-fifo.c   | 119 ++++++++++++++++++
+ .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 102 ---------------
+ drivers/net/can/spi/mcp251xfd/mcp251xfd.h     |   1 +
+ 4 files changed, 121 insertions(+), 102 deletions(-)
+ create mode 100644 drivers/net/can/spi/mcp251xfd/mcp251xfd-chip-fifo.c
 
 diff --git a/drivers/net/can/spi/mcp251xfd/Makefile b/drivers/net/can/spi/mcp251xfd/Makefile
-index 8e1146015eeb..397595dd505c 100644
+index 801367e98c54..6de680e7ea50 100644
 --- a/drivers/net/can/spi/mcp251xfd/Makefile
 +++ b/drivers/net/can/spi/mcp251xfd/Makefile
-@@ -8,5 +8,6 @@ mcp251xfd-objs += mcp251xfd-crc16.o
+@@ -3,6 +3,7 @@
+ obj-$(CONFIG_CAN_MCP251XFD) += mcp251xfd.o
+ 
+ mcp251xfd-objs :=
++mcp251xfd-objs += mcp251xfd-chip-fifo.o
+ mcp251xfd-objs += mcp251xfd-core.o
+ mcp251xfd-objs += mcp251xfd-crc16.o
  mcp251xfd-objs += mcp251xfd-regmap.o
- mcp251xfd-objs += mcp251xfd-rx.o
- mcp251xfd-objs += mcp251xfd-timestamp.o
-+mcp251xfd-objs += mcp251xfd-tx.o
- 
- mcp251xfd-$(CONFIG_DEV_COREDUMP) += mcp251xfd-dump.o
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index d6d0d0f34893..4445653e7743 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -2069,193 +2069,6 @@ static irqreturn_t mcp251xfd_irq(int irq, void *dev_id)
- 	return handled;
- }
- 
--static inline struct
--mcp251xfd_tx_obj *mcp251xfd_get_tx_obj_next(struct mcp251xfd_tx_ring *tx_ring)
--{
--	u8 tx_head;
--
--	tx_head = mcp251xfd_get_tx_head(tx_ring);
--
--	return &tx_ring->obj[tx_head];
--}
--
--static void
--mcp251xfd_tx_obj_from_skb(const struct mcp251xfd_priv *priv,
--			  struct mcp251xfd_tx_obj *tx_obj,
--			  const struct sk_buff *skb,
--			  unsigned int seq)
--{
--	const struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
--	struct mcp251xfd_hw_tx_obj_raw *hw_tx_obj;
--	union mcp251xfd_tx_obj_load_buf *load_buf;
--	u8 dlc;
--	u32 id, flags;
--	int len_sanitized = 0, len;
--
--	if (cfd->can_id & CAN_EFF_FLAG) {
--		u32 sid, eid;
--
--		sid = FIELD_GET(MCP251XFD_REG_FRAME_EFF_SID_MASK, cfd->can_id);
--		eid = FIELD_GET(MCP251XFD_REG_FRAME_EFF_EID_MASK, cfd->can_id);
--
--		id = FIELD_PREP(MCP251XFD_OBJ_ID_EID_MASK, eid) |
--			FIELD_PREP(MCP251XFD_OBJ_ID_SID_MASK, sid);
--
--		flags = MCP251XFD_OBJ_FLAGS_IDE;
--	} else {
--		id = FIELD_PREP(MCP251XFD_OBJ_ID_SID_MASK, cfd->can_id);
--		flags = 0;
--	}
--
--	/* Use the MCP2518FD mask even on the MCP2517FD. It doesn't
--	 * harm, only the lower 7 bits will be transferred into the
--	 * TEF object.
--	 */
--	flags |= FIELD_PREP(MCP251XFD_OBJ_FLAGS_SEQ_MCP2518FD_MASK, seq);
--
--	if (cfd->can_id & CAN_RTR_FLAG)
--		flags |= MCP251XFD_OBJ_FLAGS_RTR;
--	else
--		len_sanitized = canfd_sanitize_len(cfd->len);
--
--	/* CANFD */
--	if (can_is_canfd_skb(skb)) {
--		if (cfd->flags & CANFD_ESI)
--			flags |= MCP251XFD_OBJ_FLAGS_ESI;
--
--		flags |= MCP251XFD_OBJ_FLAGS_FDF;
--
--		if (cfd->flags & CANFD_BRS)
--			flags |= MCP251XFD_OBJ_FLAGS_BRS;
--
--		dlc = can_fd_len2dlc(cfd->len);
--	} else {
--		dlc = can_get_cc_dlc((struct can_frame *)cfd,
--				     priv->can.ctrlmode);
--	}
--
--	flags |= FIELD_PREP(MCP251XFD_OBJ_FLAGS_DLC_MASK, dlc);
--
--	load_buf = &tx_obj->buf;
--	if (priv->devtype_data.quirks & MCP251XFD_QUIRK_CRC_TX)
--		hw_tx_obj = &load_buf->crc.hw_tx_obj;
--	else
--		hw_tx_obj = &load_buf->nocrc.hw_tx_obj;
--
--	put_unaligned_le32(id, &hw_tx_obj->id);
--	put_unaligned_le32(flags, &hw_tx_obj->flags);
--
--	/* Copy data */
--	memcpy(hw_tx_obj->data, cfd->data, cfd->len);
--
--	/* Clear unused data at end of CAN frame */
--	if (MCP251XFD_SANITIZE_CAN && len_sanitized) {
--		int pad_len;
--
--		pad_len = len_sanitized - cfd->len;
--		if (pad_len)
--			memset(hw_tx_obj->data + cfd->len, 0x0, pad_len);
--	}
--
--	/* Number of bytes to be written into the RAM of the controller */
--	len = sizeof(hw_tx_obj->id) + sizeof(hw_tx_obj->flags);
--	if (MCP251XFD_SANITIZE_CAN)
--		len += round_up(len_sanitized, sizeof(u32));
--	else
--		len += round_up(cfd->len, sizeof(u32));
--
--	if (priv->devtype_data.quirks & MCP251XFD_QUIRK_CRC_TX) {
--		u16 crc;
--
--		mcp251xfd_spi_cmd_crc_set_len_in_ram(&load_buf->crc.cmd,
--						     len);
--		/* CRC */
--		len += sizeof(load_buf->crc.cmd);
--		crc = mcp251xfd_crc16_compute(&load_buf->crc, len);
--		put_unaligned_be16(crc, (void *)load_buf + len);
--
--		/* Total length */
--		len += sizeof(load_buf->crc.crc);
--	} else {
--		len += sizeof(load_buf->nocrc.cmd);
--	}
--
--	tx_obj->xfer[0].len = len;
--}
--
--static int mcp251xfd_tx_obj_write(const struct mcp251xfd_priv *priv,
--				  struct mcp251xfd_tx_obj *tx_obj)
--{
--	return spi_async(priv->spi, &tx_obj->msg);
--}
--
--static bool mcp251xfd_tx_busy(const struct mcp251xfd_priv *priv,
--			      struct mcp251xfd_tx_ring *tx_ring)
--{
--	if (mcp251xfd_get_tx_free(tx_ring) > 0)
--		return false;
--
--	netif_stop_queue(priv->ndev);
--
--	/* Memory barrier before checking tx_free (head and tail) */
--	smp_mb();
--
--	if (mcp251xfd_get_tx_free(tx_ring) == 0) {
--		netdev_dbg(priv->ndev,
--			   "Stopping tx-queue (tx_head=0x%08x, tx_tail=0x%08x, len=%d).\n",
--			   tx_ring->head, tx_ring->tail,
--			   tx_ring->head - tx_ring->tail);
--
--		return true;
--	}
--
--	netif_start_queue(priv->ndev);
--
--	return false;
--}
--
--static netdev_tx_t mcp251xfd_start_xmit(struct sk_buff *skb,
--					struct net_device *ndev)
--{
--	struct mcp251xfd_priv *priv = netdev_priv(ndev);
--	struct mcp251xfd_tx_ring *tx_ring = priv->tx;
--	struct mcp251xfd_tx_obj *tx_obj;
--	unsigned int frame_len;
--	u8 tx_head;
--	int err;
--
--	if (can_dropped_invalid_skb(ndev, skb))
--		return NETDEV_TX_OK;
--
--	if (mcp251xfd_tx_busy(priv, tx_ring))
--		return NETDEV_TX_BUSY;
--
--	tx_obj = mcp251xfd_get_tx_obj_next(tx_ring);
--	mcp251xfd_tx_obj_from_skb(priv, tx_obj, skb, tx_ring->head);
--
--	/* Stop queue if we occupy the complete TX FIFO */
--	tx_head = mcp251xfd_get_tx_head(tx_ring);
--	tx_ring->head++;
--	if (mcp251xfd_get_tx_free(tx_ring) == 0)
--		netif_stop_queue(ndev);
--
--	frame_len = can_skb_get_frame_len(skb);
--	err = can_put_echo_skb(skb, ndev, tx_head, frame_len);
--	if (!err)
--		netdev_sent_queue(priv->ndev, frame_len);
--
--	err = mcp251xfd_tx_obj_write(priv, tx_obj);
--	if (err)
--		goto out_err;
--
--	return NETDEV_TX_OK;
--
-- out_err:
--	netdev_err(priv->ndev, "ERROR in %s: %d\n", __func__, err);
--
--	return NETDEV_TX_OK;
--}
--
- static int mcp251xfd_open(struct net_device *ndev)
- {
- 	struct mcp251xfd_priv *priv = netdev_priv(ndev);
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-chip-fifo.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-chip-fifo.c
 new file mode 100644
-index 000000000000..ffb6c36b7d9b
+index 000000000000..ce94dd744a93
 --- /dev/null
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
-@@ -0,0 +1,205 @@
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-chip-fifo.c
+@@ -0,0 +1,119 @@
 +// SPDX-License-Identifier: GPL-2.0
 +//
 +// mcp251xfd - Microchip MCP251xFD Family CAN controller driver
@@ -294,211 +97,236 @@ index 000000000000..ffb6c36b7d9b
 +// Copyright (c) 2019 Martin Sperl <kernel@martin.sperl.org>
 +//
 +
-+#include <asm/unaligned.h>
 +#include <linux/bitfield.h>
 +
 +#include "mcp251xfd.h"
 +
-+static inline struct
-+mcp251xfd_tx_obj *mcp251xfd_get_tx_obj_next(struct mcp251xfd_tx_ring *tx_ring)
++static int
++mcp251xfd_chip_rx_fifo_init_one(const struct mcp251xfd_priv *priv,
++				const struct mcp251xfd_rx_ring *ring)
 +{
-+	u8 tx_head;
++	u32 fifo_con;
 +
-+	tx_head = mcp251xfd_get_tx_head(tx_ring);
-+
-+	return &tx_ring->obj[tx_head];
-+}
-+
-+static void
-+mcp251xfd_tx_obj_from_skb(const struct mcp251xfd_priv *priv,
-+			  struct mcp251xfd_tx_obj *tx_obj,
-+			  const struct sk_buff *skb,
-+			  unsigned int seq)
-+{
-+	const struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
-+	struct mcp251xfd_hw_tx_obj_raw *hw_tx_obj;
-+	union mcp251xfd_tx_obj_load_buf *load_buf;
-+	u8 dlc;
-+	u32 id, flags;
-+	int len_sanitized = 0, len;
-+
-+	if (cfd->can_id & CAN_EFF_FLAG) {
-+		u32 sid, eid;
-+
-+		sid = FIELD_GET(MCP251XFD_REG_FRAME_EFF_SID_MASK, cfd->can_id);
-+		eid = FIELD_GET(MCP251XFD_REG_FRAME_EFF_EID_MASK, cfd->can_id);
-+
-+		id = FIELD_PREP(MCP251XFD_OBJ_ID_EID_MASK, eid) |
-+			FIELD_PREP(MCP251XFD_OBJ_ID_SID_MASK, sid);
-+
-+		flags = MCP251XFD_OBJ_FLAGS_IDE;
-+	} else {
-+		id = FIELD_PREP(MCP251XFD_OBJ_ID_SID_MASK, cfd->can_id);
-+		flags = 0;
-+	}
-+
-+	/* Use the MCP2518FD mask even on the MCP2517FD. It doesn't
-+	 * harm, only the lower 7 bits will be transferred into the
-+	 * TEF object.
++	/* Enable RXOVIE on _all_ RX FIFOs, not just the last one.
++	 *
++	 * FIFOs hit by a RX MAB overflow and RXOVIE enabled will
++	 * generate a RXOVIF, use this to properly detect RX MAB
++	 * overflows.
 +	 */
-+	flags |= FIELD_PREP(MCP251XFD_OBJ_FLAGS_SEQ_MCP2518FD_MASK, seq);
++	fifo_con = FIELD_PREP(MCP251XFD_REG_FIFOCON_FSIZE_MASK,
++			      ring->obj_num - 1) |
++		MCP251XFD_REG_FIFOCON_RXTSEN |
++		MCP251XFD_REG_FIFOCON_RXOVIE |
++		MCP251XFD_REG_FIFOCON_TFNRFNIE;
 +
-+	if (cfd->can_id & CAN_RTR_FLAG)
-+		flags |= MCP251XFD_OBJ_FLAGS_RTR;
++	if (priv->can.ctrlmode & (CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_FD))
++		fifo_con |= FIELD_PREP(MCP251XFD_REG_FIFOCON_PLSIZE_MASK,
++				       MCP251XFD_REG_FIFOCON_PLSIZE_64);
 +	else
-+		len_sanitized = canfd_sanitize_len(cfd->len);
++		fifo_con |= FIELD_PREP(MCP251XFD_REG_FIFOCON_PLSIZE_MASK,
++				       MCP251XFD_REG_FIFOCON_PLSIZE_8);
 +
-+	/* CANFD */
-+	if (can_is_canfd_skb(skb)) {
-+		if (cfd->flags & CANFD_ESI)
-+			flags |= MCP251XFD_OBJ_FLAGS_ESI;
-+
-+		flags |= MCP251XFD_OBJ_FLAGS_FDF;
-+
-+		if (cfd->flags & CANFD_BRS)
-+			flags |= MCP251XFD_OBJ_FLAGS_BRS;
-+
-+		dlc = can_fd_len2dlc(cfd->len);
-+	} else {
-+		dlc = can_get_cc_dlc((struct can_frame *)cfd,
-+				     priv->can.ctrlmode);
-+	}
-+
-+	flags |= FIELD_PREP(MCP251XFD_OBJ_FLAGS_DLC_MASK, dlc);
-+
-+	load_buf = &tx_obj->buf;
-+	if (priv->devtype_data.quirks & MCP251XFD_QUIRK_CRC_TX)
-+		hw_tx_obj = &load_buf->crc.hw_tx_obj;
-+	else
-+		hw_tx_obj = &load_buf->nocrc.hw_tx_obj;
-+
-+	put_unaligned_le32(id, &hw_tx_obj->id);
-+	put_unaligned_le32(flags, &hw_tx_obj->flags);
-+
-+	/* Copy data */
-+	memcpy(hw_tx_obj->data, cfd->data, cfd->len);
-+
-+	/* Clear unused data at end of CAN frame */
-+	if (MCP251XFD_SANITIZE_CAN && len_sanitized) {
-+		int pad_len;
-+
-+		pad_len = len_sanitized - cfd->len;
-+		if (pad_len)
-+			memset(hw_tx_obj->data + cfd->len, 0x0, pad_len);
-+	}
-+
-+	/* Number of bytes to be written into the RAM of the controller */
-+	len = sizeof(hw_tx_obj->id) + sizeof(hw_tx_obj->flags);
-+	if (MCP251XFD_SANITIZE_CAN)
-+		len += round_up(len_sanitized, sizeof(u32));
-+	else
-+		len += round_up(cfd->len, sizeof(u32));
-+
-+	if (priv->devtype_data.quirks & MCP251XFD_QUIRK_CRC_TX) {
-+		u16 crc;
-+
-+		mcp251xfd_spi_cmd_crc_set_len_in_ram(&load_buf->crc.cmd,
-+						     len);
-+		/* CRC */
-+		len += sizeof(load_buf->crc.cmd);
-+		crc = mcp251xfd_crc16_compute(&load_buf->crc, len);
-+		put_unaligned_be16(crc, (void *)load_buf + len);
-+
-+		/* Total length */
-+		len += sizeof(load_buf->crc.crc);
-+	} else {
-+		len += sizeof(load_buf->nocrc.cmd);
-+	}
-+
-+	tx_obj->xfer[0].len = len;
++	return regmap_write(priv->map_reg,
++			    MCP251XFD_REG_FIFOCON(ring->fifo_nr), fifo_con);
 +}
 +
-+static int mcp251xfd_tx_obj_write(const struct mcp251xfd_priv *priv,
-+				  struct mcp251xfd_tx_obj *tx_obj)
++static int
++mcp251xfd_chip_rx_filter_init_one(const struct mcp251xfd_priv *priv,
++				  const struct mcp251xfd_rx_ring *ring)
 +{
-+	return spi_async(priv->spi, &tx_obj->msg);
++	u32 fltcon;
++
++	fltcon = MCP251XFD_REG_FLTCON_FLTEN(ring->nr) |
++		MCP251XFD_REG_FLTCON_FBP(ring->nr, ring->fifo_nr);
++
++	return regmap_update_bits(priv->map_reg,
++				  MCP251XFD_REG_FLTCON(ring->nr >> 2),
++				  MCP251XFD_REG_FLTCON_FLT_MASK(ring->nr),
++				  fltcon);
 +}
 +
-+static bool mcp251xfd_tx_busy(const struct mcp251xfd_priv *priv,
-+			      struct mcp251xfd_tx_ring *tx_ring)
++int mcp251xfd_chip_fifo_init(const struct mcp251xfd_priv *priv)
 +{
-+	if (mcp251xfd_get_tx_free(tx_ring) > 0)
-+		return false;
++	const struct mcp251xfd_tx_ring *tx_ring = priv->tx;
++	const struct mcp251xfd_rx_ring *rx_ring;
++	u32 val;
++	int err, n;
 +
-+	netif_stop_queue(priv->ndev);
++	/* TEF */
++	val = FIELD_PREP(MCP251XFD_REG_TEFCON_FSIZE_MASK,
++			 tx_ring->obj_num - 1) |
++		MCP251XFD_REG_TEFCON_TEFTSEN |
++		MCP251XFD_REG_TEFCON_TEFOVIE |
++		MCP251XFD_REG_TEFCON_TEFNEIE;
 +
-+	/* Memory barrier before checking tx_free (head and tail) */
-+	smp_mb();
-+
-+	if (mcp251xfd_get_tx_free(tx_ring) == 0) {
-+		netdev_dbg(priv->ndev,
-+			   "Stopping tx-queue (tx_head=0x%08x, tx_tail=0x%08x, len=%d).\n",
-+			   tx_ring->head, tx_ring->tail,
-+			   tx_ring->head - tx_ring->tail);
-+
-+		return true;
-+	}
-+
-+	netif_start_queue(priv->ndev);
-+
-+	return false;
-+}
-+
-+netdev_tx_t mcp251xfd_start_xmit(struct sk_buff *skb,
-+				 struct net_device *ndev)
-+{
-+	struct mcp251xfd_priv *priv = netdev_priv(ndev);
-+	struct mcp251xfd_tx_ring *tx_ring = priv->tx;
-+	struct mcp251xfd_tx_obj *tx_obj;
-+	unsigned int frame_len;
-+	u8 tx_head;
-+	int err;
-+
-+	if (can_dropped_invalid_skb(ndev, skb))
-+		return NETDEV_TX_OK;
-+
-+	if (mcp251xfd_tx_busy(priv, tx_ring))
-+		return NETDEV_TX_BUSY;
-+
-+	tx_obj = mcp251xfd_get_tx_obj_next(tx_ring);
-+	mcp251xfd_tx_obj_from_skb(priv, tx_obj, skb, tx_ring->head);
-+
-+	/* Stop queue if we occupy the complete TX FIFO */
-+	tx_head = mcp251xfd_get_tx_head(tx_ring);
-+	tx_ring->head++;
-+	if (mcp251xfd_get_tx_free(tx_ring) == 0)
-+		netif_stop_queue(ndev);
-+
-+	frame_len = can_skb_get_frame_len(skb);
-+	err = can_put_echo_skb(skb, ndev, tx_head, frame_len);
-+	if (!err)
-+		netdev_sent_queue(priv->ndev, frame_len);
-+
-+	err = mcp251xfd_tx_obj_write(priv, tx_obj);
++	err = regmap_write(priv->map_reg, MCP251XFD_REG_TEFCON, val);
 +	if (err)
-+		goto out_err;
++		return err;
 +
-+	return NETDEV_TX_OK;
++	/* FIFO 1 - TX */
++	val = FIELD_PREP(MCP251XFD_REG_FIFOCON_FSIZE_MASK,
++			 tx_ring->obj_num - 1) |
++		MCP251XFD_REG_FIFOCON_TXEN |
++		MCP251XFD_REG_FIFOCON_TXATIE;
 +
-+ out_err:
-+	netdev_err(priv->ndev, "ERROR in %s: %d\n", __func__, err);
++	if (priv->can.ctrlmode & (CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_FD))
++		val |= FIELD_PREP(MCP251XFD_REG_FIFOCON_PLSIZE_MASK,
++				  MCP251XFD_REG_FIFOCON_PLSIZE_64);
++	else
++		val |= FIELD_PREP(MCP251XFD_REG_FIFOCON_PLSIZE_MASK,
++				  MCP251XFD_REG_FIFOCON_PLSIZE_8);
 +
-+	return NETDEV_TX_OK;
++	if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
++		val |= FIELD_PREP(MCP251XFD_REG_FIFOCON_TXAT_MASK,
++				  MCP251XFD_REG_FIFOCON_TXAT_ONE_SHOT);
++	else
++		val |= FIELD_PREP(MCP251XFD_REG_FIFOCON_TXAT_MASK,
++				  MCP251XFD_REG_FIFOCON_TXAT_UNLIMITED);
++
++	err = regmap_write(priv->map_reg,
++			   MCP251XFD_REG_FIFOCON(MCP251XFD_TX_FIFO),
++			   val);
++	if (err)
++		return err;
++
++	/* RX FIFOs */
++	mcp251xfd_for_each_rx_ring(priv, rx_ring, n) {
++		err = mcp251xfd_chip_rx_fifo_init_one(priv, rx_ring);
++		if (err)
++			return err;
++
++		err = mcp251xfd_chip_rx_filter_init_one(priv, rx_ring);
++		if (err)
++			return err;
++	}
++
++	return 0;
 +}
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index 65803b9fe2a2..f7326c1b1723 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -767,108 +767,6 @@ static int mcp251xfd_chip_rx_int_disable(const struct mcp251xfd_priv *priv)
+ 	return regmap_write(priv->map_reg, MCP251XFD_REG_IOCON, val);
+ }
+ 
+-static int
+-mcp251xfd_chip_rx_fifo_init_one(const struct mcp251xfd_priv *priv,
+-				const struct mcp251xfd_rx_ring *ring)
+-{
+-	u32 fifo_con;
+-
+-	/* Enable RXOVIE on _all_ RX FIFOs, not just the last one.
+-	 *
+-	 * FIFOs hit by a RX MAB overflow and RXOVIE enabled will
+-	 * generate a RXOVIF, use this to properly detect RX MAB
+-	 * overflows.
+-	 */
+-	fifo_con = FIELD_PREP(MCP251XFD_REG_FIFOCON_FSIZE_MASK,
+-			      ring->obj_num - 1) |
+-		MCP251XFD_REG_FIFOCON_RXTSEN |
+-		MCP251XFD_REG_FIFOCON_RXOVIE |
+-		MCP251XFD_REG_FIFOCON_TFNRFNIE;
+-
+-	if (priv->can.ctrlmode & (CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_FD))
+-		fifo_con |= FIELD_PREP(MCP251XFD_REG_FIFOCON_PLSIZE_MASK,
+-				       MCP251XFD_REG_FIFOCON_PLSIZE_64);
+-	else
+-		fifo_con |= FIELD_PREP(MCP251XFD_REG_FIFOCON_PLSIZE_MASK,
+-				       MCP251XFD_REG_FIFOCON_PLSIZE_8);
+-
+-	return regmap_write(priv->map_reg,
+-			    MCP251XFD_REG_FIFOCON(ring->fifo_nr), fifo_con);
+-}
+-
+-static int
+-mcp251xfd_chip_rx_filter_init_one(const struct mcp251xfd_priv *priv,
+-				  const struct mcp251xfd_rx_ring *ring)
+-{
+-	u32 fltcon;
+-
+-	fltcon = MCP251XFD_REG_FLTCON_FLTEN(ring->nr) |
+-		MCP251XFD_REG_FLTCON_FBP(ring->nr, ring->fifo_nr);
+-
+-	return regmap_update_bits(priv->map_reg,
+-				  MCP251XFD_REG_FLTCON(ring->nr >> 2),
+-				  MCP251XFD_REG_FLTCON_FLT_MASK(ring->nr),
+-				  fltcon);
+-}
+-
+-static int mcp251xfd_chip_fifo_init(const struct mcp251xfd_priv *priv)
+-{
+-	const struct mcp251xfd_tx_ring *tx_ring = priv->tx;
+-	const struct mcp251xfd_rx_ring *rx_ring;
+-	u32 val;
+-	int err, n;
+-
+-	/* TEF */
+-	val = FIELD_PREP(MCP251XFD_REG_TEFCON_FSIZE_MASK,
+-			 tx_ring->obj_num - 1) |
+-		MCP251XFD_REG_TEFCON_TEFTSEN |
+-		MCP251XFD_REG_TEFCON_TEFOVIE |
+-		MCP251XFD_REG_TEFCON_TEFNEIE;
+-
+-	err = regmap_write(priv->map_reg, MCP251XFD_REG_TEFCON, val);
+-	if (err)
+-		return err;
+-
+-	/* FIFO 1 - TX */
+-	val = FIELD_PREP(MCP251XFD_REG_FIFOCON_FSIZE_MASK,
+-			 tx_ring->obj_num - 1) |
+-		MCP251XFD_REG_FIFOCON_TXEN |
+-		MCP251XFD_REG_FIFOCON_TXATIE;
+-
+-	if (priv->can.ctrlmode & (CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_FD))
+-		val |= FIELD_PREP(MCP251XFD_REG_FIFOCON_PLSIZE_MASK,
+-				  MCP251XFD_REG_FIFOCON_PLSIZE_64);
+-	else
+-		val |= FIELD_PREP(MCP251XFD_REG_FIFOCON_PLSIZE_MASK,
+-				  MCP251XFD_REG_FIFOCON_PLSIZE_8);
+-
+-	if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
+-		val |= FIELD_PREP(MCP251XFD_REG_FIFOCON_TXAT_MASK,
+-				  MCP251XFD_REG_FIFOCON_TXAT_ONE_SHOT);
+-	else
+-		val |= FIELD_PREP(MCP251XFD_REG_FIFOCON_TXAT_MASK,
+-				  MCP251XFD_REG_FIFOCON_TXAT_UNLIMITED);
+-
+-	err = regmap_write(priv->map_reg,
+-			   MCP251XFD_REG_FIFOCON(MCP251XFD_TX_FIFO),
+-			   val);
+-	if (err)
+-		return err;
+-
+-	/* RX FIFOs */
+-	mcp251xfd_for_each_rx_ring(priv, rx_ring, n) {
+-		err = mcp251xfd_chip_rx_fifo_init_one(priv, rx_ring);
+-		if (err)
+-			return err;
+-
+-		err = mcp251xfd_chip_rx_filter_init_one(priv, rx_ring);
+-		if (err)
+-			return err;
+-	}
+-
+-	return 0;
+-}
+-
+ static int mcp251xfd_chip_ecc_init(struct mcp251xfd_priv *priv)
+ {
+ 	struct mcp251xfd_ecc *ecc = &priv->ecc;
 diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-index 8b35417316a0..bd1c22815f31 100644
+index 22a18d6fbda4..69220de0e413 100644
 --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
 +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-@@ -859,6 +859,9 @@ void mcp251xfd_skb_set_timestamp(const struct mcp251xfd_priv *priv,
- void mcp251xfd_timestamp_init(struct mcp251xfd_priv *priv);
- void mcp251xfd_timestamp_stop(struct mcp251xfd_priv *priv);
+@@ -868,6 +868,7 @@ mcp251xfd_get_rx_linear_len(const struct mcp251xfd_rx_ring *ring)
+ 	     (n) < (priv)->rx_ring_num; \
+ 	     (n)++, (ring) = *((priv)->rx + (n)))
  
-+netdev_tx_t mcp251xfd_start_xmit(struct sk_buff *skb,
-+				 struct net_device *ndev);
-+
- #if IS_ENABLED(CONFIG_DEV_COREDUMP)
- void mcp251xfd_dump(const struct mcp251xfd_priv *priv);
- #else
++int mcp251xfd_chip_fifo_init(const struct mcp251xfd_priv *priv);
+ u16 mcp251xfd_crc16_compute2(const void *cmd, size_t cmd_size,
+ 			     const void *data, size_t data_size);
+ u16 mcp251xfd_crc16_compute(const void *data, size_t data_size);
 -- 
 2.34.1
 
