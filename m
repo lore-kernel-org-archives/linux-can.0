@@ -2,46 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFE4AC433F5
-	for <linux-can@archiver.kernel.org>; Wed,  5 Jan 2022 14:44:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47DA8C433FE
+	for <linux-can@archiver.kernel.org>; Wed,  5 Jan 2022 14:44:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241026AbiAEOoT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 5 Jan 2022 09:44:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
+        id S241033AbiAEOoV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 5 Jan 2022 09:44:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241001AbiAEOoR (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Jan 2022 09:44:17 -0500
+        with ESMTP id S241023AbiAEOoS (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Jan 2022 09:44:18 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E85C061761
-        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 06:44:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403FAC061792
+        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 06:44:18 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1n57WR-00048b-P6
-        for linux-can@vger.kernel.org; Wed, 05 Jan 2022 15:44:15 +0100
+        id 1n57WS-0004AB-J1
+        for linux-can@vger.kernel.org; Wed, 05 Jan 2022 15:44:16 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id EC6996D1B04
-        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 14:44:08 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 385CE6D1B08
+        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 14:44:09 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 217DB6D1AC0;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8F4836D1AC5;
         Wed,  5 Jan 2022 14:44:05 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ff8955cc;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d952fa11;
         Wed, 5 Jan 2022 14:44:04 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Lukas Magel <lukas.magel@escrypt.com>,
+        Jimmy Assarsson <extja@kvaser.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 06/15] can: etas_es58x: es58x_init_netdev: populate net_device::dev_port
-Date:   Wed,  5 Jan 2022 15:43:53 +0100
-Message-Id: <20220105144402.1174191-7-mkl@pengutronix.de>
+Subject: [PATCH net-next 08/15] can: kvaser_usb: do not increase tx statistics when sending error message frames
+Date:   Wed,  5 Jan 2022 15:43:55 +0100
+Message-Id: <20220105144402.1174191-9-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220105144402.1174191-1-mkl@pengutronix.de>
 References: <20220105144402.1174191-1-mkl@pengutronix.de>
@@ -57,44 +57,67 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-The field dev_port of struct net_device indicates the port number of a
-network device [1]. This patch populates this field.
+The CAN error message frames (i.e. error skb) are an interface
+specific to socket CAN. The payload of the CAN error message frames
+does not correspond to any actual data sent on the wire. Only an error
+flag and a delimiter are transmitted when an error occurs (c.f. ISO
+11898-1 section 10.4.4.2 "Error flag").
 
-This field can be helpful to distinguish between the two network
-interfaces of a dual channel device (i.e. ES581.4 or ES582.1). Indeed,
-at the moment, all the network interfaces of a same device share the
-same static udev attributes c.f. output of:
+For this reason, it makes no sense to increment the tx_packets and
+tx_bytes fields of struct net_device_stats when sending an error
+message frame because no actual payload will be transmitted on the
+wire.
 
-| udevadm info --attribute-walk /sys/class/net/canX
+N.B. Sending error message frames is a very specific feature which, at
+the moment, is only supported by the Kvaser Hydra hardware. Please
+refer to [1] for more details on the topic.
 
-The dev_port attribute can then be used to write some udev rules to,
-for example, assign a permanent name to each network interface based
-on the serial/dev_port pair (which is convenient when you have a test
-bench with several CAN devices connected simultaneously and wish to
-keep consistent interface names upon reboot).
+[1] https://lore.kernel.org/linux-can/CAMZ6RqK0rTNg3u3mBpZOoY51jLZ-et-J01tY6-+mWsM4meVw-A@mail.gmail.com/t/#u
 
-[1] https://www.kernel.org/doc/Documentation/ABI/testing/sysfs-class-net
-
-Link: https://lore.kernel.org/all/20211026180553.1953189-1-mailhol.vincent@wanadoo.fr
-Suggested-by: Lukas Magel <lukas.magel@escrypt.com>
+Link: https://lore.kernel.org/all/20211207121531.42941-3-mailhol.vincent@wanadoo.fr
+Co-developed-by: Jimmy Assarsson <extja@kvaser.com>
+Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/etas_es58x/es58x_core.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
-index 24627ab14626..8508a73d648e 100644
---- a/drivers/net/can/usb/etas_es58x/es58x_core.c
-+++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
-@@ -2094,6 +2094,7 @@ static int es58x_init_netdev(struct es58x_device *es58x_dev, int channel_idx)
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+index 8e2ff08d1083..60e7c5f27a5f 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+@@ -296,6 +296,7 @@ struct kvaser_cmd {
+ #define KVASER_USB_HYDRA_CF_FLAG_OVERRUN	BIT(1)
+ #define KVASER_USB_HYDRA_CF_FLAG_REMOTE_FRAME	BIT(4)
+ #define KVASER_USB_HYDRA_CF_FLAG_EXTENDED_ID	BIT(5)
++#define KVASER_USB_HYDRA_CF_FLAG_TX_ACK		BIT(6)
+ /* CAN frame flags. Used in ext_rx_can and ext_tx_can */
+ #define KVASER_USB_HYDRA_CF_FLAG_OSM_NACK	BIT(12)
+ #define KVASER_USB_HYDRA_CF_FLAG_ABL		BIT(13)
+@@ -1114,6 +1115,7 @@ static void kvaser_usb_hydra_tx_acknowledge(const struct kvaser_usb *dev,
+ 	struct kvaser_usb_net_priv *priv;
+ 	unsigned long irq_flags;
+ 	bool one_shot_fail = false;
++	bool is_err_frame = false;
+ 	u16 transid = kvaser_usb_hydra_get_cmd_transid(cmd);
  
- 	netdev->netdev_ops = &es58x_netdev_ops;
- 	netdev->flags |= IFF_ECHO;	/* We support local echo */
-+	netdev->dev_port = channel_idx;
+ 	priv = kvaser_usb_hydra_net_priv_from_cmd(dev, cmd);
+@@ -1132,10 +1134,13 @@ static void kvaser_usb_hydra_tx_acknowledge(const struct kvaser_usb *dev,
+ 			kvaser_usb_hydra_one_shot_fail(priv, cmd_ext);
+ 			one_shot_fail = true;
+ 		}
++
++		is_err_frame = flags & KVASER_USB_HYDRA_CF_FLAG_TX_ACK &&
++			       flags & KVASER_USB_HYDRA_CF_FLAG_ERROR_FRAME;
+ 	}
  
- 	ret = register_candev(netdev);
- 	if (ret)
+ 	context = &priv->tx_contexts[transid % dev->max_tx_urbs];
+-	if (!one_shot_fail) {
++	if (!one_shot_fail && !is_err_frame) {
+ 		struct net_device_stats *stats = &priv->netdev->stats;
+ 
+ 		stats->tx_packets++;
 -- 
 2.34.1
 
