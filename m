@@ -2,43 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A27C8C433EF
-	for <linux-can@archiver.kernel.org>; Wed,  5 Jan 2022 14:44:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93BAFC433F5
+	for <linux-can@archiver.kernel.org>; Wed,  5 Jan 2022 14:44:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbiAEOoN (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 5 Jan 2022 09:44:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45536 "EHLO
+        id S241009AbiAEOoO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 5 Jan 2022 09:44:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230406AbiAEOoM (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Jan 2022 09:44:12 -0500
+        with ESMTP id S241002AbiAEOoO (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Jan 2022 09:44:14 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9190DC061784
-        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 06:44:12 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D95C061785
+        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 06:44:13 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1n57WN-0003zP-2R
-        for linux-can@vger.kernel.org; Wed, 05 Jan 2022 15:44:11 +0100
+        id 1n57WO-00041S-4G
+        for linux-can@vger.kernel.org; Wed, 05 Jan 2022 15:44:12 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id BDA866D1AD9
-        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 14:44:06 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 957CB6D1AE8
+        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 14:44:07 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id BE5996D1ABB;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id DF6CE6D1ABD;
         Wed,  5 Jan 2022 14:44:04 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c429241a;
-        Wed, 5 Jan 2022 14:44:03 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 37fe350d;
+        Wed, 5 Jan 2022 14:44:04 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 01/15] can: usb_8dev: remove unused member echo_skb from struct usb_8dev_priv
-Date:   Wed,  5 Jan 2022 15:43:48 +0100
-Message-Id: <20220105144402.1174191-2-mkl@pengutronix.de>
+        kernel@pengutronix.de, Jimmy Assarsson <extja@kvaser.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 03/15] can: kvaser_usb: make use of units.h in assignment of frequency
+Date:   Wed,  5 Jan 2022 15:43:50 +0100
+Message-Id: <20220105144402.1174191-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220105144402.1174191-1-mkl@pengutronix.de>
 References: <20220105144402.1174191-1-mkl@pengutronix.de>
@@ -52,31 +53,106 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch removes the unused memberecho_skb from the struct
-usb_8dev_priv.
+From: Jimmy Assarsson <extja@kvaser.com>
 
-Fixes: 0024d8ad1639 ("can: usb_8dev: Add support for USB2CAN interface from 8 devices")
-Link: https://lore.kernel.org/all/20220104230753.956520-1-mkl@pengutronix.de
+Use the MEGA define plus the comment /* Hz */ when assigning
+frequencies.
+
+Link: https://lore.kernel.org/all/20211210075803.343841-1-mkl@pengutronix.de
+Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/usb_8dev.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 7 ++++---
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 9 +++++----
+ 2 files changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
-index d1b83bd1b3cb..1fa02905e7ec 100644
---- a/drivers/net/can/usb/usb_8dev.c
-+++ b/drivers/net/can/usb/usb_8dev.c
-@@ -121,8 +121,6 @@ struct usb_8dev_tx_urb_context {
- struct usb_8dev_priv {
- 	struct can_priv can; /* must be the first member */
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+index dcee8dc828ec..cec36295fdc5 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+@@ -22,6 +22,7 @@
+ #include <linux/spinlock.h>
+ #include <linux/string.h>
+ #include <linux/types.h>
++#include <linux/units.h>
+ #include <linux/usb.h>
  
--	struct sk_buff *echo_skb[MAX_TX_URBS];
--
- 	struct usb_device *udev;
- 	struct net_device *netdev;
+ #include <linux/can.h>
+@@ -2040,7 +2041,7 @@ const struct kvaser_usb_dev_ops kvaser_usb_hydra_dev_ops = {
  
-
-base-commit: ffd32ea6b13c97904cae59bdb13a843d52756578
+ static const struct kvaser_usb_dev_cfg kvaser_usb_hydra_dev_cfg_kcan = {
+ 	.clock = {
+-		.freq = 80000000,
++		.freq = 80 * MEGA /* Hz */,
+ 	},
+ 	.timestamp_freq = 80,
+ 	.bittiming_const = &kvaser_usb_hydra_kcan_bittiming_c,
+@@ -2049,7 +2050,7 @@ static const struct kvaser_usb_dev_cfg kvaser_usb_hydra_dev_cfg_kcan = {
+ 
+ static const struct kvaser_usb_dev_cfg kvaser_usb_hydra_dev_cfg_flexc = {
+ 	.clock = {
+-		.freq = 24000000,
++		.freq = 24 * MEGA /* Hz */,
+ 	},
+ 	.timestamp_freq = 1,
+ 	.bittiming_const = &kvaser_usb_hydra_flexc_bittiming_c,
+@@ -2057,7 +2058,7 @@ static const struct kvaser_usb_dev_cfg kvaser_usb_hydra_dev_cfg_flexc = {
+ 
+ static const struct kvaser_usb_dev_cfg kvaser_usb_hydra_dev_cfg_rt = {
+ 	.clock = {
+-		.freq = 80000000,
++		.freq = 80 * MEGA /* Hz */,
+ 	},
+ 	.timestamp_freq = 24,
+ 	.bittiming_const = &kvaser_usb_hydra_rt_bittiming_c,
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
+index f7af1bf5ab46..aed271d5f3bb 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
+@@ -19,6 +19,7 @@
+ #include <linux/spinlock.h>
+ #include <linux/string.h>
+ #include <linux/types.h>
++#include <linux/units.h>
+ #include <linux/usb.h>
+ 
+ #include <linux/can.h>
+@@ -356,7 +357,7 @@ static const struct can_bittiming_const kvaser_usb_leaf_bittiming_const = {
+ 
+ static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_dev_cfg_8mhz = {
+ 	.clock = {
+-		.freq = 8000000,
++		.freq = 8 * MEGA /* Hz */,
+ 	},
+ 	.timestamp_freq = 1,
+ 	.bittiming_const = &kvaser_usb_leaf_bittiming_const,
+@@ -364,7 +365,7 @@ static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_dev_cfg_8mhz = {
+ 
+ static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_dev_cfg_16mhz = {
+ 	.clock = {
+-		.freq = 16000000,
++		.freq = 16 * MEGA /* Hz */,
+ 	},
+ 	.timestamp_freq = 1,
+ 	.bittiming_const = &kvaser_usb_leaf_bittiming_const,
+@@ -372,7 +373,7 @@ static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_dev_cfg_16mhz = {
+ 
+ static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_dev_cfg_24mhz = {
+ 	.clock = {
+-		.freq = 24000000,
++		.freq = 24 * MEGA /* Hz */,
+ 	},
+ 	.timestamp_freq = 1,
+ 	.bittiming_const = &kvaser_usb_leaf_bittiming_const,
+@@ -380,7 +381,7 @@ static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_dev_cfg_24mhz = {
+ 
+ static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_dev_cfg_32mhz = {
+ 	.clock = {
+-		.freq = 32000000,
++		.freq = 32 * MEGA /* Hz */,
+ 	},
+ 	.timestamp_freq = 1,
+ 	.bittiming_const = &kvaser_usb_leaf_bittiming_const,
 -- 
 2.34.1
 
