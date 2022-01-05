@@ -2,44 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DD06C43217
-	for <linux-can@archiver.kernel.org>; Wed,  5 Jan 2022 15:43:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CB05C433FE
+	for <linux-can@archiver.kernel.org>; Wed,  5 Jan 2022 15:43:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241624AbiAEPng (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 5 Jan 2022 10:43:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59324 "EHLO
+        id S241628AbiAEPnh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 5 Jan 2022 10:43:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241639AbiAEPna (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Jan 2022 10:43:30 -0500
+        with ESMTP id S241636AbiAEPn3 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Jan 2022 10:43:29 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22170C034006
-        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 07:43:11 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA03C034004
+        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 07:43:10 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1n58RR-0002y5-FH
+        id 1n58RR-0002y0-6C
         for linux-can@vger.kernel.org; Wed, 05 Jan 2022 16:43:09 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id C3CAE6D1CC6
+        by bjornoya.blackshift.org (Postfix) with SMTP id ABF9F6D1CC5
         for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 15:43:05 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id AFA286D1C96;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id E5A8E6D1C9A;
         Wed,  5 Jan 2022 15:43:02 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 55503b80;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2f4b8bc8;
         Wed, 5 Jan 2022 15:43:01 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         Thomas Kopp <thomas.kopp@microchip.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 08/13] can: mcp251xfd: move RX handling into separate file
-Date:   Wed,  5 Jan 2022 16:42:55 +0100
-Message-Id: <20220105154300.1258636-9-mkl@pengutronix.de>
+Subject: [PATCH 10/13] can: mcp251xfd: move TEF handling into separate file
+Date:   Wed,  5 Jan 2022 16:42:57 +0100
+Message-Id: <20220105154300.1258636-11-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220105154300.1258636-1-mkl@pengutronix.de>
 References: <20220105154300.1258636-1-mkl@pengutronix.de>
@@ -53,71 +53,68 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch moves the RX handling from the mcp251xfd core file into a
+This patch moves the TEF handling from the mcp251xfd core file into a
 separate one to make the driver a bit more orderly.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
  drivers/net/can/spi/mcp251xfd/Makefile        |   1 +
- .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 244 ----------------
- drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c  | 260 ++++++++++++++++++
- drivers/net/can/spi/mcp251xfd/mcp251xfd.h     |   1 +
- 4 files changed, 262 insertions(+), 244 deletions(-)
- create mode 100644 drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c
+ .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 261 ------------------
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c | 260 +++++++++++++++++
+ drivers/net/can/spi/mcp251xfd/mcp251xfd.h     |  20 ++
+ 4 files changed, 281 insertions(+), 261 deletions(-)
+ create mode 100644 drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c
 
 diff --git a/drivers/net/can/spi/mcp251xfd/Makefile b/drivers/net/can/spi/mcp251xfd/Makefile
-index 3cba3b9447ea..8e1146015eeb 100644
+index 397595dd505c..801367e98c54 100644
 --- a/drivers/net/can/spi/mcp251xfd/Makefile
 +++ b/drivers/net/can/spi/mcp251xfd/Makefile
-@@ -6,6 +6,7 @@ mcp251xfd-objs :=
- mcp251xfd-objs += mcp251xfd-core.o
+@@ -7,6 +7,7 @@ mcp251xfd-objs += mcp251xfd-core.o
  mcp251xfd-objs += mcp251xfd-crc16.o
  mcp251xfd-objs += mcp251xfd-regmap.o
-+mcp251xfd-objs += mcp251xfd-rx.o
+ mcp251xfd-objs += mcp251xfd-rx.o
++mcp251xfd-objs += mcp251xfd-tef.o
  mcp251xfd-objs += mcp251xfd-timestamp.o
+ mcp251xfd-objs += mcp251xfd-tx.o
  
- mcp251xfd-$(CONFIG_DEV_COREDUMP) += mcp251xfd-dump.o
 diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index 105426dcf065..d6d0d0f34893 100644
+index 4445653e7743..65803b9fe2a2 100644
 --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
 +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -250,43 +250,6 @@ mcp251xfd_tx_tail_get_from_chip(const struct mcp251xfd_priv *priv,
- 	return 0;
+@@ -216,40 +216,6 @@ mcp251xfd_cmd_prepare_write_reg(const struct mcp251xfd_priv *priv,
+ 	return len;
  }
  
 -static inline int
--mcp251xfd_rx_head_get_from_chip(const struct mcp251xfd_priv *priv,
--				const struct mcp251xfd_rx_ring *ring,
--				u8 *rx_head)
+-mcp251xfd_tef_tail_get_from_chip(const struct mcp251xfd_priv *priv,
+-				 u8 *tef_tail)
 -{
--	u32 fifo_sta;
+-	u32 tef_ua;
 -	int err;
 -
--	err = regmap_read(priv->map_reg, MCP251XFD_REG_FIFOSTA(ring->fifo_nr),
--			  &fifo_sta);
+-	err = regmap_read(priv->map_reg, MCP251XFD_REG_TEFUA, &tef_ua);
 -	if (err)
 -		return err;
 -
--	*rx_head = FIELD_GET(MCP251XFD_REG_FIFOSTA_FIFOCI_MASK, fifo_sta);
+-	*tef_tail = tef_ua / sizeof(struct mcp251xfd_hw_tef_obj);
 -
 -	return 0;
 -}
 -
 -static inline int
--mcp251xfd_rx_tail_get_from_chip(const struct mcp251xfd_priv *priv,
--				const struct mcp251xfd_rx_ring *ring,
--				u8 *rx_tail)
+-mcp251xfd_tx_tail_get_from_chip(const struct mcp251xfd_priv *priv,
+-				u8 *tx_tail)
 -{
--	u32 fifo_ua;
+-	u32 fifo_sta;
 -	int err;
 -
--	err = regmap_read(priv->map_reg, MCP251XFD_REG_FIFOUA(ring->fifo_nr),
--			  &fifo_ua);
+-	err = regmap_read(priv->map_reg,
+-			  MCP251XFD_REG_FIFOSTA(MCP251XFD_TX_FIFO),
+-			  &fifo_sta);
 -	if (err)
 -		return err;
 -
--	fifo_ua -= ring->base - MCP251XFD_RAM_START;
--	*rx_tail = fifo_ua / ring->obj_size;
+-	*tx_tail = FIELD_GET(MCP251XFD_REG_FIFOSTA_FIFOCI_MASK, fifo_sta);
 -
 -	return 0;
 -}
@@ -125,191 +122,210 @@ index 105426dcf065..d6d0d0f34893 100644
  static void
  mcp251xfd_tx_ring_init_tx_obj(const struct mcp251xfd_priv *priv,
  			      const struct mcp251xfd_tx_ring *ring,
-@@ -1208,31 +1171,6 @@ static int mcp251xfd_check_tef_tail(const struct mcp251xfd_priv *priv)
- 	return 0;
+@@ -931,13 +897,6 @@ static int mcp251xfd_chip_ecc_init(struct mcp251xfd_priv *priv)
+ 	return err;
  }
  
--static int
--mcp251xfd_check_rx_tail(const struct mcp251xfd_priv *priv,
--			const struct mcp251xfd_rx_ring *ring)
+-static inline void mcp251xfd_ecc_tefif_successful(struct mcp251xfd_priv *priv)
 -{
--	u8 rx_tail_chip, rx_tail;
+-	struct mcp251xfd_ecc *ecc = &priv->ecc;
+-
+-	ecc->ecc_stat = 0;
+-}
+-
+ static u8 mcp251xfd_get_normal_mode(const struct mcp251xfd_priv *priv)
+ {
+ 	u8 mode;
+@@ -1148,226 +1107,6 @@ static int mcp251xfd_get_berr_counter(const struct net_device *ndev,
+ 	return __mcp251xfd_get_berr_counter(ndev, bec);
+ }
+ 
+-static int mcp251xfd_check_tef_tail(const struct mcp251xfd_priv *priv)
+-{
+-	u8 tef_tail_chip, tef_tail;
 -	int err;
 -
 -	if (!IS_ENABLED(CONFIG_CAN_MCP251XFD_SANITY))
 -		return 0;
 -
--	err = mcp251xfd_rx_tail_get_from_chip(priv, ring, &rx_tail_chip);
+-	err = mcp251xfd_tef_tail_get_from_chip(priv, &tef_tail_chip);
 -	if (err)
 -		return err;
 -
--	rx_tail = mcp251xfd_get_rx_tail(ring);
--	if (rx_tail_chip != rx_tail) {
+-	tef_tail = mcp251xfd_get_tef_tail(priv);
+-	if (tef_tail_chip != tef_tail) {
 -		netdev_err(priv->ndev,
--			   "RX tail of chip (%d) and ours (%d) inconsistent.\n",
--			   rx_tail_chip, rx_tail);
+-			   "TEF tail of chip (0x%02x) and ours (0x%08x) inconsistent.\n",
+-			   tef_tail_chip, tef_tail);
 -		return -EILSEQ;
 -	}
 -
 -	return 0;
 -}
 -
- static int
- mcp251xfd_handle_tefif_recover(const struct mcp251xfd_priv *priv, const u32 seq)
- {
-@@ -1430,188 +1368,6 @@ static int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
- 	return 0;
- }
- 
 -static int
--mcp251xfd_rx_ring_update(const struct mcp251xfd_priv *priv,
--			 struct mcp251xfd_rx_ring *ring)
+-mcp251xfd_handle_tefif_recover(const struct mcp251xfd_priv *priv, const u32 seq)
 -{
--	u32 new_head;
--	u8 chip_rx_head;
+-	const struct mcp251xfd_tx_ring *tx_ring = priv->tx;
+-	u32 tef_sta;
 -	int err;
 -
--	err = mcp251xfd_rx_head_get_from_chip(priv, ring, &chip_rx_head);
+-	err = regmap_read(priv->map_reg, MCP251XFD_REG_TEFSTA, &tef_sta);
 -	if (err)
 -		return err;
 -
--	/* chip_rx_head, is the next RX-Object filled by the HW.
--	 * The new RX head must be >= the old head.
--	 */
--	new_head = round_down(ring->head, ring->obj_num) + chip_rx_head;
--	if (new_head <= ring->head)
--		new_head += ring->obj_num;
--
--	ring->head = new_head;
--
--	return mcp251xfd_check_rx_tail(priv, ring);
--}
--
--static void
--mcp251xfd_hw_rx_obj_to_skb(const struct mcp251xfd_priv *priv,
--			   const struct mcp251xfd_hw_rx_obj_canfd *hw_rx_obj,
--			   struct sk_buff *skb)
--{
--	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
--	u8 dlc;
--
--	if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_IDE) {
--		u32 sid, eid;
--
--		eid = FIELD_GET(MCP251XFD_OBJ_ID_EID_MASK, hw_rx_obj->id);
--		sid = FIELD_GET(MCP251XFD_OBJ_ID_SID_MASK, hw_rx_obj->id);
--
--		cfd->can_id = CAN_EFF_FLAG |
--			FIELD_PREP(MCP251XFD_REG_FRAME_EFF_EID_MASK, eid) |
--			FIELD_PREP(MCP251XFD_REG_FRAME_EFF_SID_MASK, sid);
--	} else {
--		cfd->can_id = FIELD_GET(MCP251XFD_OBJ_ID_SID_MASK,
--					hw_rx_obj->id);
+-	if (tef_sta & MCP251XFD_REG_TEFSTA_TEFOVIF) {
+-		netdev_err(priv->ndev,
+-			   "Transmit Event FIFO buffer overflow.\n");
+-		return -ENOBUFS;
 -	}
 -
--	dlc = FIELD_GET(MCP251XFD_OBJ_FLAGS_DLC_MASK, hw_rx_obj->flags);
+-	netdev_info(priv->ndev,
+-		    "Transmit Event FIFO buffer %s. (seq=0x%08x, tef_tail=0x%08x, tef_head=0x%08x, tx_head=0x%08x).\n",
+-		    tef_sta & MCP251XFD_REG_TEFSTA_TEFFIF ?
+-		    "full" : tef_sta & MCP251XFD_REG_TEFSTA_TEFNEIF ?
+-		    "not empty" : "empty",
+-		    seq, priv->tef->tail, priv->tef->head, tx_ring->head);
 -
--	/* CANFD */
--	if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_FDF) {
--
--		if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_ESI)
--			cfd->flags |= CANFD_ESI;
--
--		if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_BRS)
--			cfd->flags |= CANFD_BRS;
--
--		cfd->len = can_fd_dlc2len(dlc);
--	} else {
--		if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_RTR)
--			cfd->can_id |= CAN_RTR_FLAG;
--
--		can_frame_set_cc_len((struct can_frame *)cfd, dlc,
--				     priv->can.ctrlmode);
--	}
--
--	if (!(hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_RTR))
--		memcpy(cfd->data, hw_rx_obj->data, cfd->len);
--
--	mcp251xfd_skb_set_timestamp(priv, skb, hw_rx_obj->ts);
+-	/* The Sequence Number in the TEF doesn't match our tef_tail. */
+-	return -EAGAIN;
 -}
 -
 -static int
--mcp251xfd_handle_rxif_one(struct mcp251xfd_priv *priv,
--			  struct mcp251xfd_rx_ring *ring,
--			  const struct mcp251xfd_hw_rx_obj_canfd *hw_rx_obj)
+-mcp251xfd_handle_tefif_one(struct mcp251xfd_priv *priv,
+-			   const struct mcp251xfd_hw_tef_obj *hw_tef_obj,
+-			   unsigned int *frame_len_ptr)
 -{
 -	struct net_device_stats *stats = &priv->ndev->stats;
 -	struct sk_buff *skb;
--	struct canfd_frame *cfd;
--	int err;
+-	u32 seq, seq_masked, tef_tail_masked, tef_tail;
 -
--	if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_FDF)
--		skb = alloc_canfd_skb(priv->ndev, &cfd);
--	else
--		skb = alloc_can_skb(priv->ndev, (struct can_frame **)&cfd);
+-	seq = FIELD_GET(MCP251XFD_OBJ_FLAGS_SEQ_MCP2518FD_MASK,
+-			hw_tef_obj->flags);
 -
--	if (!skb) {
--		stats->rx_dropped++;
--		return 0;
--	}
+-	/* Use the MCP2517FD mask on the MCP2518FD, too. We only
+-	 * compare 7 bits, this should be enough to detect
+-	 * net-yet-completed, i.e. old TEF objects.
+-	 */
+-	seq_masked = seq &
+-		field_mask(MCP251XFD_OBJ_FLAGS_SEQ_MCP2517FD_MASK);
+-	tef_tail_masked = priv->tef->tail &
+-		field_mask(MCP251XFD_OBJ_FLAGS_SEQ_MCP2517FD_MASK);
+-	if (seq_masked != tef_tail_masked)
+-		return mcp251xfd_handle_tefif_recover(priv, seq);
 -
--	mcp251xfd_hw_rx_obj_to_skb(priv, hw_rx_obj, skb);
--	err = can_rx_offload_queue_sorted(&priv->offload, skb, hw_rx_obj->ts);
--	if (err)
--		stats->rx_fifo_errors++;
+-	tef_tail = mcp251xfd_get_tef_tail(priv);
+-	skb = priv->can.echo_skb[tef_tail];
+-	if (skb)
+-		mcp251xfd_skb_set_timestamp(priv, skb, hw_tef_obj->ts);
+-	stats->tx_bytes +=
+-		can_rx_offload_get_echo_skb(&priv->offload,
+-					    tef_tail, hw_tef_obj->ts,
+-					    frame_len_ptr);
+-	stats->tx_packets++;
+-	priv->tef->tail++;
 -
 -	return 0;
 -}
 -
--static inline int
--mcp251xfd_rx_obj_read(const struct mcp251xfd_priv *priv,
--		      const struct mcp251xfd_rx_ring *ring,
--		      struct mcp251xfd_hw_rx_obj_canfd *hw_rx_obj,
--		      const u8 offset, const u8 len)
+-static int mcp251xfd_tef_ring_update(struct mcp251xfd_priv *priv)
 -{
--	const int val_bytes = regmap_get_val_bytes(priv->map_rx);
+-	const struct mcp251xfd_tx_ring *tx_ring = priv->tx;
+-	unsigned int new_head;
+-	u8 chip_tx_tail;
 -	int err;
 -
--	err = regmap_bulk_read(priv->map_rx,
--			       mcp251xfd_get_rx_obj_addr(ring, offset),
--			       hw_rx_obj,
--			       len * ring->obj_size / val_bytes);
--
--	return err;
--}
--
--static int
--mcp251xfd_handle_rxif_ring(struct mcp251xfd_priv *priv,
--			   struct mcp251xfd_rx_ring *ring)
--{
--	struct mcp251xfd_hw_rx_obj_canfd *hw_rx_obj = ring->obj;
--	u8 rx_tail, len;
--	int err, i;
--
--	err = mcp251xfd_rx_ring_update(priv, ring);
+-	err = mcp251xfd_tx_tail_get_from_chip(priv, &chip_tx_tail);
 -	if (err)
 -		return err;
 -
--	while ((len = mcp251xfd_get_rx_linear_len(ring))) {
--		int offset;
+-	/* chip_tx_tail, is the next TX-Object send by the HW.
+-	 * The new TEF head must be >= the old head, ...
+-	 */
+-	new_head = round_down(priv->tef->head, tx_ring->obj_num) + chip_tx_tail;
+-	if (new_head <= priv->tef->head)
+-		new_head += tx_ring->obj_num;
 -
--		rx_tail = mcp251xfd_get_rx_tail(ring);
+-	/* ... but it cannot exceed the TX head. */
+-	priv->tef->head = min(new_head, tx_ring->head);
 -
--		err = mcp251xfd_rx_obj_read(priv, ring, hw_rx_obj,
--					    rx_tail, len);
+-	return mcp251xfd_check_tef_tail(priv);
+-}
+-
+-static inline int
+-mcp251xfd_tef_obj_read(const struct mcp251xfd_priv *priv,
+-		       struct mcp251xfd_hw_tef_obj *hw_tef_obj,
+-		       const u8 offset, const u8 len)
+-{
+-	const struct mcp251xfd_tx_ring *tx_ring = priv->tx;
+-	const int val_bytes = regmap_get_val_bytes(priv->map_rx);
+-
+-	if (IS_ENABLED(CONFIG_CAN_MCP251XFD_SANITY) &&
+-	    (offset > tx_ring->obj_num ||
+-	     len > tx_ring->obj_num ||
+-	     offset + len > tx_ring->obj_num)) {
+-		netdev_err(priv->ndev,
+-			   "Trying to read too many TEF objects (max=%d, offset=%d, len=%d).\n",
+-			   tx_ring->obj_num, offset, len);
+-		return -ERANGE;
+-	}
+-
+-	return regmap_bulk_read(priv->map_rx,
+-				mcp251xfd_get_tef_obj_addr(offset),
+-				hw_tef_obj,
+-				sizeof(*hw_tef_obj) / val_bytes * len);
+-}
+-
+-static int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
+-{
+-	struct mcp251xfd_hw_tef_obj hw_tef_obj[MCP251XFD_TX_OBJ_NUM_MAX];
+-	unsigned int total_frame_len = 0;
+-	u8 tef_tail, len, l;
+-	int err, i;
+-
+-	err = mcp251xfd_tef_ring_update(priv);
+-	if (err)
+-		return err;
+-
+-	tef_tail = mcp251xfd_get_tef_tail(priv);
+-	len = mcp251xfd_get_tef_len(priv);
+-	l = mcp251xfd_get_tef_linear_len(priv);
+-	err = mcp251xfd_tef_obj_read(priv, hw_tef_obj, tef_tail, l);
+-	if (err)
+-		return err;
+-
+-	if (l < len) {
+-		err = mcp251xfd_tef_obj_read(priv, &hw_tef_obj[l], 0, len - l);
+-		if (err)
+-			return err;
+-	}
+-
+-	for (i = 0; i < len; i++) {
+-		unsigned int frame_len = 0;
+-
+-		err = mcp251xfd_handle_tefif_one(priv, &hw_tef_obj[i], &frame_len);
+-		/* -EAGAIN means the Sequence Number in the TEF
+-		 * doesn't match our tef_tail. This can happen if we
+-		 * read the TEF objects too early. Leave loop let the
+-		 * interrupt handler call us again.
+-		 */
+-		if (err == -EAGAIN)
+-			goto out_netif_wake_queue;
 -		if (err)
 -			return err;
 -
--		for (i = 0; i < len; i++) {
--			err = mcp251xfd_handle_rxif_one(priv, ring,
--							(void *)hw_rx_obj +
--							i * ring->obj_size);
--			if (err)
--				return err;
--		}
+-		total_frame_len += frame_len;
+-	}
 -
--		/* Increment the RX FIFO tail pointer 'len' times in a
--		 * single SPI message.
+- out_netif_wake_queue:
+-	len = i;	/* number of handled goods TEFs */
+-	if (len) {
+-		struct mcp251xfd_tef_ring *ring = priv->tef;
+-		struct mcp251xfd_tx_ring *tx_ring = priv->tx;
+-		int offset;
+-
+-		/* Increment the TEF FIFO tail pointer 'len' times in
+-		 * a single SPI message.
 -		 *
 -		 * Note:
 -		 * Calculate offset, so that the SPI transfer ends on
@@ -323,21 +339,22 @@ index 105426dcf065..d6d0d0f34893 100644
 -		if (err)
 -			return err;
 -
--		ring->tail += len;
--	}
+-		tx_ring->tail += len;
+-		netdev_completed_queue(priv->ndev, len, total_frame_len);
 -
--	return 0;
--}
--
--static int mcp251xfd_handle_rxif(struct mcp251xfd_priv *priv)
--{
--	struct mcp251xfd_rx_ring *ring;
--	int err, n;
--
--	mcp251xfd_for_each_rx_ring(priv, ring, n) {
--		err = mcp251xfd_handle_rxif_ring(priv, ring);
+-		err = mcp251xfd_check_tef_tail(priv);
 -		if (err)
 -			return err;
+-	}
+-
+-	mcp251xfd_ecc_tefif_successful(priv);
+-
+-	if (mcp251xfd_get_tx_free(priv->tx)) {
+-		/* Make sure that anybody stopping the queue after
+-		 * this sees the new tx_ring->tail.
+-		 */
+-		smp_mb();
+-		netif_wake_queue(priv->ndev);
 -	}
 -
 -	return 0;
@@ -346,11 +363,11 @@ index 105426dcf065..d6d0d0f34893 100644
  static struct sk_buff *
  mcp251xfd_alloc_can_err_skb(struct mcp251xfd_priv *priv,
  			    struct can_frame **cf, u32 *timestamp)
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c
 new file mode 100644
-index 000000000000..63f2526464b3
+index 000000000000..406166005b99
 --- /dev/null
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c
 @@ -0,0 +1,260 @@
 +// SPDX-License-Identifier: GPL-2.0
 +//
@@ -371,61 +388,38 @@ index 000000000000..63f2526464b3
 +#include "mcp251xfd.h"
 +
 +static inline int
-+mcp251xfd_rx_head_get_from_chip(const struct mcp251xfd_priv *priv,
-+				const struct mcp251xfd_rx_ring *ring,
-+				u8 *rx_head)
++mcp251xfd_tef_tail_get_from_chip(const struct mcp251xfd_priv *priv,
++				 u8 *tef_tail)
 +{
-+	u32 fifo_sta;
++	u32 tef_ua;
 +	int err;
 +
-+	err = regmap_read(priv->map_reg, MCP251XFD_REG_FIFOSTA(ring->fifo_nr),
-+			  &fifo_sta);
++	err = regmap_read(priv->map_reg, MCP251XFD_REG_TEFUA, &tef_ua);
 +	if (err)
 +		return err;
 +
-+	*rx_head = FIELD_GET(MCP251XFD_REG_FIFOSTA_FIFOCI_MASK, fifo_sta);
++	*tef_tail = tef_ua / sizeof(struct mcp251xfd_hw_tef_obj);
 +
 +	return 0;
 +}
 +
-+static inline int
-+mcp251xfd_rx_tail_get_from_chip(const struct mcp251xfd_priv *priv,
-+				const struct mcp251xfd_rx_ring *ring,
-+				u8 *rx_tail)
++static int mcp251xfd_check_tef_tail(const struct mcp251xfd_priv *priv)
 +{
-+	u32 fifo_ua;
-+	int err;
-+
-+	err = regmap_read(priv->map_reg, MCP251XFD_REG_FIFOUA(ring->fifo_nr),
-+			  &fifo_ua);
-+	if (err)
-+		return err;
-+
-+	fifo_ua -= ring->base - MCP251XFD_RAM_START;
-+	*rx_tail = fifo_ua / ring->obj_size;
-+
-+	return 0;
-+}
-+
-+static int
-+mcp251xfd_check_rx_tail(const struct mcp251xfd_priv *priv,
-+			const struct mcp251xfd_rx_ring *ring)
-+{
-+	u8 rx_tail_chip, rx_tail;
++	u8 tef_tail_chip, tef_tail;
 +	int err;
 +
 +	if (!IS_ENABLED(CONFIG_CAN_MCP251XFD_SANITY))
 +		return 0;
 +
-+	err = mcp251xfd_rx_tail_get_from_chip(priv, ring, &rx_tail_chip);
++	err = mcp251xfd_tef_tail_get_from_chip(priv, &tef_tail_chip);
 +	if (err)
 +		return err;
 +
-+	rx_tail = mcp251xfd_get_rx_tail(ring);
-+	if (rx_tail_chip != rx_tail) {
++	tef_tail = mcp251xfd_get_tef_tail(priv);
++	if (tef_tail_chip != tef_tail) {
 +		netdev_err(priv->ndev,
-+			   "RX tail of chip (%d) and ours (%d) inconsistent.\n",
-+			   rx_tail_chip, rx_tail);
++			   "TEF tail of chip (0x%02x) and ours (0x%08x) inconsistent.\n",
++			   tef_tail_chip, tef_tail);
 +		return -EILSEQ;
 +	}
 +
@@ -433,153 +427,175 @@ index 000000000000..63f2526464b3
 +}
 +
 +static int
-+mcp251xfd_rx_ring_update(const struct mcp251xfd_priv *priv,
-+			 struct mcp251xfd_rx_ring *ring)
++mcp251xfd_handle_tefif_recover(const struct mcp251xfd_priv *priv, const u32 seq)
 +{
-+	u32 new_head;
-+	u8 chip_rx_head;
++	const struct mcp251xfd_tx_ring *tx_ring = priv->tx;
++	u32 tef_sta;
 +	int err;
 +
-+	err = mcp251xfd_rx_head_get_from_chip(priv, ring, &chip_rx_head);
++	err = regmap_read(priv->map_reg, MCP251XFD_REG_TEFSTA, &tef_sta);
 +	if (err)
 +		return err;
 +
-+	/* chip_rx_head, is the next RX-Object filled by the HW.
-+	 * The new RX head must be >= the old head.
-+	 */
-+	new_head = round_down(ring->head, ring->obj_num) + chip_rx_head;
-+	if (new_head <= ring->head)
-+		new_head += ring->obj_num;
-+
-+	ring->head = new_head;
-+
-+	return mcp251xfd_check_rx_tail(priv, ring);
-+}
-+
-+static void
-+mcp251xfd_hw_rx_obj_to_skb(const struct mcp251xfd_priv *priv,
-+			   const struct mcp251xfd_hw_rx_obj_canfd *hw_rx_obj,
-+			   struct sk_buff *skb)
-+{
-+	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
-+	u8 dlc;
-+
-+	if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_IDE) {
-+		u32 sid, eid;
-+
-+		eid = FIELD_GET(MCP251XFD_OBJ_ID_EID_MASK, hw_rx_obj->id);
-+		sid = FIELD_GET(MCP251XFD_OBJ_ID_SID_MASK, hw_rx_obj->id);
-+
-+		cfd->can_id = CAN_EFF_FLAG |
-+			FIELD_PREP(MCP251XFD_REG_FRAME_EFF_EID_MASK, eid) |
-+			FIELD_PREP(MCP251XFD_REG_FRAME_EFF_SID_MASK, sid);
-+	} else {
-+		cfd->can_id = FIELD_GET(MCP251XFD_OBJ_ID_SID_MASK,
-+					hw_rx_obj->id);
++	if (tef_sta & MCP251XFD_REG_TEFSTA_TEFOVIF) {
++		netdev_err(priv->ndev,
++			   "Transmit Event FIFO buffer overflow.\n");
++		return -ENOBUFS;
 +	}
 +
-+	dlc = FIELD_GET(MCP251XFD_OBJ_FLAGS_DLC_MASK, hw_rx_obj->flags);
++	netdev_info(priv->ndev,
++		    "Transmit Event FIFO buffer %s. (seq=0x%08x, tef_tail=0x%08x, tef_head=0x%08x, tx_head=0x%08x).\n",
++		    tef_sta & MCP251XFD_REG_TEFSTA_TEFFIF ?
++		    "full" : tef_sta & MCP251XFD_REG_TEFSTA_TEFNEIF ?
++		    "not empty" : "empty",
++		    seq, priv->tef->tail, priv->tef->head, tx_ring->head);
 +
-+	/* CANFD */
-+	if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_FDF) {
-+		if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_ESI)
-+			cfd->flags |= CANFD_ESI;
-+
-+		if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_BRS)
-+			cfd->flags |= CANFD_BRS;
-+
-+		cfd->len = can_fd_dlc2len(dlc);
-+	} else {
-+		if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_RTR)
-+			cfd->can_id |= CAN_RTR_FLAG;
-+
-+		can_frame_set_cc_len((struct can_frame *)cfd, dlc,
-+				     priv->can.ctrlmode);
-+	}
-+
-+	if (!(hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_RTR))
-+		memcpy(cfd->data, hw_rx_obj->data, cfd->len);
-+
-+	mcp251xfd_skb_set_timestamp(priv, skb, hw_rx_obj->ts);
++	/* The Sequence Number in the TEF doesn't match our tef_tail. */
++	return -EAGAIN;
 +}
 +
 +static int
-+mcp251xfd_handle_rxif_one(struct mcp251xfd_priv *priv,
-+			  struct mcp251xfd_rx_ring *ring,
-+			  const struct mcp251xfd_hw_rx_obj_canfd *hw_rx_obj)
++mcp251xfd_handle_tefif_one(struct mcp251xfd_priv *priv,
++			   const struct mcp251xfd_hw_tef_obj *hw_tef_obj,
++			   unsigned int *frame_len_ptr)
 +{
 +	struct net_device_stats *stats = &priv->ndev->stats;
 +	struct sk_buff *skb;
-+	struct canfd_frame *cfd;
-+	int err;
++	u32 seq, seq_masked, tef_tail_masked, tef_tail;
 +
-+	if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_FDF)
-+		skb = alloc_canfd_skb(priv->ndev, &cfd);
-+	else
-+		skb = alloc_can_skb(priv->ndev, (struct can_frame **)&cfd);
++	seq = FIELD_GET(MCP251XFD_OBJ_FLAGS_SEQ_MCP2518FD_MASK,
++			hw_tef_obj->flags);
 +
-+	if (!skb) {
-+		stats->rx_dropped++;
-+		return 0;
-+	}
++	/* Use the MCP2517FD mask on the MCP2518FD, too. We only
++	 * compare 7 bits, this should be enough to detect
++	 * net-yet-completed, i.e. old TEF objects.
++	 */
++	seq_masked = seq &
++		field_mask(MCP251XFD_OBJ_FLAGS_SEQ_MCP2517FD_MASK);
++	tef_tail_masked = priv->tef->tail &
++		field_mask(MCP251XFD_OBJ_FLAGS_SEQ_MCP2517FD_MASK);
++	if (seq_masked != tef_tail_masked)
++		return mcp251xfd_handle_tefif_recover(priv, seq);
 +
-+	mcp251xfd_hw_rx_obj_to_skb(priv, hw_rx_obj, skb);
-+	err = can_rx_offload_queue_sorted(&priv->offload, skb, hw_rx_obj->ts);
-+	if (err)
-+		stats->rx_fifo_errors++;
++	tef_tail = mcp251xfd_get_tef_tail(priv);
++	skb = priv->can.echo_skb[tef_tail];
++	if (skb)
++		mcp251xfd_skb_set_timestamp(priv, skb, hw_tef_obj->ts);
++	stats->tx_bytes +=
++		can_rx_offload_get_echo_skb(&priv->offload,
++					    tef_tail, hw_tef_obj->ts,
++					    frame_len_ptr);
++	stats->tx_packets++;
++	priv->tef->tail++;
 +
 +	return 0;
 +}
 +
-+static inline int
-+mcp251xfd_rx_obj_read(const struct mcp251xfd_priv *priv,
-+		      const struct mcp251xfd_rx_ring *ring,
-+		      struct mcp251xfd_hw_rx_obj_canfd *hw_rx_obj,
-+		      const u8 offset, const u8 len)
++static int mcp251xfd_tef_ring_update(struct mcp251xfd_priv *priv)
 +{
-+	const int val_bytes = regmap_get_val_bytes(priv->map_rx);
++	const struct mcp251xfd_tx_ring *tx_ring = priv->tx;
++	unsigned int new_head;
++	u8 chip_tx_tail;
 +	int err;
 +
-+	err = regmap_bulk_read(priv->map_rx,
-+			       mcp251xfd_get_rx_obj_addr(ring, offset),
-+			       hw_rx_obj,
-+			       len * ring->obj_size / val_bytes);
-+
-+	return err;
-+}
-+
-+static int
-+mcp251xfd_handle_rxif_ring(struct mcp251xfd_priv *priv,
-+			   struct mcp251xfd_rx_ring *ring)
-+{
-+	struct mcp251xfd_hw_rx_obj_canfd *hw_rx_obj = ring->obj;
-+	u8 rx_tail, len;
-+	int err, i;
-+
-+	err = mcp251xfd_rx_ring_update(priv, ring);
++	err = mcp251xfd_tx_tail_get_from_chip(priv, &chip_tx_tail);
 +	if (err)
 +		return err;
 +
-+	while ((len = mcp251xfd_get_rx_linear_len(ring))) {
-+		int offset;
++	/* chip_tx_tail, is the next TX-Object send by the HW.
++	 * The new TEF head must be >= the old head, ...
++	 */
++	new_head = round_down(priv->tef->head, tx_ring->obj_num) + chip_tx_tail;
++	if (new_head <= priv->tef->head)
++		new_head += tx_ring->obj_num;
 +
-+		rx_tail = mcp251xfd_get_rx_tail(ring);
++	/* ... but it cannot exceed the TX head. */
++	priv->tef->head = min(new_head, tx_ring->head);
 +
-+		err = mcp251xfd_rx_obj_read(priv, ring, hw_rx_obj,
-+					    rx_tail, len);
++	return mcp251xfd_check_tef_tail(priv);
++}
++
++static inline int
++mcp251xfd_tef_obj_read(const struct mcp251xfd_priv *priv,
++		       struct mcp251xfd_hw_tef_obj *hw_tef_obj,
++		       const u8 offset, const u8 len)
++{
++	const struct mcp251xfd_tx_ring *tx_ring = priv->tx;
++	const int val_bytes = regmap_get_val_bytes(priv->map_rx);
++
++	if (IS_ENABLED(CONFIG_CAN_MCP251XFD_SANITY) &&
++	    (offset > tx_ring->obj_num ||
++	     len > tx_ring->obj_num ||
++	     offset + len > tx_ring->obj_num)) {
++		netdev_err(priv->ndev,
++			   "Trying to read too many TEF objects (max=%d, offset=%d, len=%d).\n",
++			   tx_ring->obj_num, offset, len);
++		return -ERANGE;
++	}
++
++	return regmap_bulk_read(priv->map_rx,
++				mcp251xfd_get_tef_obj_addr(offset),
++				hw_tef_obj,
++				sizeof(*hw_tef_obj) / val_bytes * len);
++}
++
++static inline void mcp251xfd_ecc_tefif_successful(struct mcp251xfd_priv *priv)
++{
++	struct mcp251xfd_ecc *ecc = &priv->ecc;
++
++	ecc->ecc_stat = 0;
++}
++
++int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
++{
++	struct mcp251xfd_hw_tef_obj hw_tef_obj[MCP251XFD_TX_OBJ_NUM_MAX];
++	unsigned int total_frame_len = 0;
++	u8 tef_tail, len, l;
++	int err, i;
++
++	err = mcp251xfd_tef_ring_update(priv);
++	if (err)
++		return err;
++
++	tef_tail = mcp251xfd_get_tef_tail(priv);
++	len = mcp251xfd_get_tef_len(priv);
++	l = mcp251xfd_get_tef_linear_len(priv);
++	err = mcp251xfd_tef_obj_read(priv, hw_tef_obj, tef_tail, l);
++	if (err)
++		return err;
++
++	if (l < len) {
++		err = mcp251xfd_tef_obj_read(priv, &hw_tef_obj[l], 0, len - l);
++		if (err)
++			return err;
++	}
++
++	for (i = 0; i < len; i++) {
++		unsigned int frame_len = 0;
++
++		err = mcp251xfd_handle_tefif_one(priv, &hw_tef_obj[i], &frame_len);
++		/* -EAGAIN means the Sequence Number in the TEF
++		 * doesn't match our tef_tail. This can happen if we
++		 * read the TEF objects too early. Leave loop let the
++		 * interrupt handler call us again.
++		 */
++		if (err == -EAGAIN)
++			goto out_netif_wake_queue;
 +		if (err)
 +			return err;
 +
-+		for (i = 0; i < len; i++) {
-+			err = mcp251xfd_handle_rxif_one(priv, ring,
-+							(void *)hw_rx_obj +
-+							i * ring->obj_size);
-+			if (err)
-+				return err;
-+		}
++		total_frame_len += frame_len;
++	}
 +
-+		/* Increment the RX FIFO tail pointer 'len' times in a
-+		 * single SPI message.
++ out_netif_wake_queue:
++	len = i;	/* number of handled goods TEFs */
++	if (len) {
++		struct mcp251xfd_tef_ring *ring = priv->tef;
++		struct mcp251xfd_tx_ring *tx_ring = priv->tx;
++		int offset;
++
++		/* Increment the TEF FIFO tail pointer 'len' times in
++		 * a single SPI message.
 +		 *
 +		 * Note:
 +		 * Calculate offset, so that the SPI transfer ends on
@@ -593,34 +609,68 @@ index 000000000000..63f2526464b3
 +		if (err)
 +			return err;
 +
-+		ring->tail += len;
-+	}
++		tx_ring->tail += len;
++		netdev_completed_queue(priv->ndev, len, total_frame_len);
 +
-+	return 0;
-+}
-+
-+int mcp251xfd_handle_rxif(struct mcp251xfd_priv *priv)
-+{
-+	struct mcp251xfd_rx_ring *ring;
-+	int err, n;
-+
-+	mcp251xfd_for_each_rx_ring(priv, ring, n) {
-+		err = mcp251xfd_handle_rxif_ring(priv, ring);
++		err = mcp251xfd_check_tef_tail(priv);
 +		if (err)
 +			return err;
++	}
++
++	mcp251xfd_ecc_tefif_successful(priv);
++
++	if (mcp251xfd_get_tx_free(priv->tx)) {
++		/* Make sure that anybody stopping the queue after
++		 * this sees the new tx_ring->tail.
++		 */
++		smp_mb();
++		netif_wake_queue(priv->ndev);
 +	}
 +
 +	return 0;
 +}
 diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-index 8a6e07ba66d5..8b35417316a0 100644
+index bd1c22815f31..22a18d6fbda4 100644
 --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
 +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-@@ -853,6 +853,7 @@ u16 mcp251xfd_crc16_compute2(const void *cmd, size_t cmd_size,
- 			     const void *data, size_t data_size);
+@@ -10,6 +10,7 @@
+ #ifndef _MCP251XFD_H
+ #define _MCP251XFD_H
+ 
++#include <linux/bitfield.h>
+ #include <linux/can/core.h>
+ #include <linux/can/dev.h>
+ #include <linux/can/rx-offload.h>
+@@ -761,6 +762,24 @@ mcp251xfd_get_rx_obj_addr(const struct mcp251xfd_rx_ring *ring, u8 n)
+ 	return ring->base + ring->obj_size * n;
+ }
+ 
++static inline int
++mcp251xfd_tx_tail_get_from_chip(const struct mcp251xfd_priv *priv,
++				u8 *tx_tail)
++{
++	u32 fifo_sta;
++	int err;
++
++	err = regmap_read(priv->map_reg,
++			  MCP251XFD_REG_FIFOSTA(MCP251XFD_TX_FIFO),
++			  &fifo_sta);
++	if (err)
++		return err;
++
++	*tx_tail = FIELD_GET(MCP251XFD_REG_FIFOSTA_FIFOCI_MASK, fifo_sta);
++
++	return 0;
++}
++
+ static inline u8 mcp251xfd_get_tef_head(const struct mcp251xfd_priv *priv)
+ {
+ 	return priv->tef->head & (priv->tx->obj_num - 1);
+@@ -854,6 +873,7 @@ u16 mcp251xfd_crc16_compute2(const void *cmd, size_t cmd_size,
  u16 mcp251xfd_crc16_compute(const void *data, size_t data_size);
  int mcp251xfd_regmap_init(struct mcp251xfd_priv *priv);
-+int mcp251xfd_handle_rxif(struct mcp251xfd_priv *priv);
+ int mcp251xfd_handle_rxif(struct mcp251xfd_priv *priv);
++int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv);
  void mcp251xfd_skb_set_timestamp(const struct mcp251xfd_priv *priv,
  				 struct sk_buff *skb, u32 timestamp);
  void mcp251xfd_timestamp_init(struct mcp251xfd_priv *priv);
