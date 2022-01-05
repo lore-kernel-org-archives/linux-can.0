@@ -2,45 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0534EC4332F
-	for <linux-can@archiver.kernel.org>; Wed,  5 Jan 2022 14:44:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30D39C43219
+	for <linux-can@archiver.kernel.org>; Wed,  5 Jan 2022 14:44:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbiAEOoO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 5 Jan 2022 09:44:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45538 "EHLO
+        id S241002AbiAEOoP (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 5 Jan 2022 09:44:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236305AbiAEOoN (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Jan 2022 09:44:13 -0500
+        with ESMTP id S241008AbiAEOoO (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Jan 2022 09:44:14 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3477C061761
-        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 06:44:12 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82581C061785
+        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 06:44:14 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1n57WN-0003ze-DY
-        for linux-can@vger.kernel.org; Wed, 05 Jan 2022 15:44:11 +0100
+        id 1n57WO-00042O-Ts
+        for linux-can@vger.kernel.org; Wed, 05 Jan 2022 15:44:12 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 0E9046D1ADF
+        by bjornoya.blackshift.org (Postfix) with SMTP id D81116D1AEC
         for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 14:44:07 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id CF8ED6D1ABC;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id F18136D1ABE;
         Wed,  5 Jan 2022 14:44:04 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 8121ef42;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e01e4862;
         Wed, 5 Jan 2022 14:44:04 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 02/15] can: mcp251x: mcp251x_gpio_setup(): Get rid of duplicate of_node assignment
-Date:   Wed,  5 Jan 2022 15:43:49 +0100
-Message-Id: <20220105144402.1174191-3-mkl@pengutronix.de>
+Subject: [PATCH net-next 04/15] can: ti_hecc: ti_hecc_probe(): use platform_get_irq() to get the interrupt
+Date:   Wed,  5 Jan 2022 15:43:51 +0100
+Message-Id: <20220105144402.1174191-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220105144402.1174191-1-mkl@pengutronix.de>
 References: <20220105144402.1174191-1-mkl@pengutronix.de>
@@ -54,36 +54,57 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-GPIO library does copy the of_node from the parent device of the GPIO
-chip, there is no need to repeat this in the individual drivers.
-Remove assignment here.
+platform_get_resource(pdev, IORESOURCE_IRQ, ..) relies on static
+allocation of IRQ resources in DT core code, this causes an issue when
+using hierarchical interrupt domains using "interrupts" property in
+the node as this bypasses the hierarchical setup and messes up the irq
+chaining.
 
-For the details one may look into the of_gpio_dev_init()
-implementation.
+In preparation for removal of static setup of IRQ resource from DT
+core code use platform_get_irq().
 
-Link: https://lore.kernel.org/all/20211202205855.76946-1-andriy.shevchenko@linux.intel.com
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/all/20211221194508.11737-1-prabhakar.mahadev-lad.rj@bp.renesas.com
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251x.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/net/can/ti_hecc.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index 0579ab74f728..0cec808e8727 100644
---- a/drivers/net/can/spi/mcp251x.c
-+++ b/drivers/net/can/spi/mcp251x.c
-@@ -600,9 +600,6 @@ static int mcp251x_gpio_setup(struct mcp251x_priv *priv)
- 	gpio->ngpio = ARRAY_SIZE(mcp251x_gpio_names);
- 	gpio->names = mcp251x_gpio_names;
- 	gpio->can_sleep = true;
--#ifdef CONFIG_OF_GPIO
--	gpio->of_node = priv->spi->dev.of_node;
--#endif
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index 353062ead98f..ff31b993ab17 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -859,7 +859,6 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	struct net_device *ndev = (struct net_device *)0;
+ 	struct ti_hecc_priv *priv;
+ 	struct device_node *np = pdev->dev.of_node;
+-	struct resource *irq;
+ 	struct regulator *reg_xceiver;
+ 	int err = -ENODEV;
  
- 	return devm_gpiochip_add_data(&priv->spi->dev, gpio, priv);
- }
+@@ -904,9 +903,9 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 		goto probe_exit_candev;
+ 	}
+ 
+-	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+-	if (!irq) {
+-		dev_err(&pdev->dev, "No irq resource\n");
++	ndev->irq = platform_get_irq(pdev, 0);
++	if (ndev->irq < 0) {
++		err = ndev->irq;
+ 		goto probe_exit_candev;
+ 	}
+ 
+@@ -920,7 +919,6 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES;
+ 
+ 	spin_lock_init(&priv->mbx_lock);
+-	ndev->irq = irq->start;
+ 	ndev->flags |= IFF_ECHO;
+ 	platform_set_drvdata(pdev, ndev);
+ 	SET_NETDEV_DEV(ndev, &pdev->dev);
 -- 
 2.34.1
 
