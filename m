@@ -2,46 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D66D6C433F5
-	for <linux-can@archiver.kernel.org>; Wed,  5 Jan 2022 14:44:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D2FCC433EF
+	for <linux-can@archiver.kernel.org>; Wed,  5 Jan 2022 14:44:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241001AbiAEOoX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 5 Jan 2022 09:44:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45596 "EHLO
+        id S241029AbiAEOoY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 5 Jan 2022 09:44:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231934AbiAEOoT (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Jan 2022 09:44:19 -0500
+        with ESMTP id S241036AbiAEOoW (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Jan 2022 09:44:22 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D97EC061792
-        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 06:44:19 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A51C061761
+        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 06:44:21 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1n57WT-0004D7-Rj
-        for linux-can@vger.kernel.org; Wed, 05 Jan 2022 15:44:17 +0100
+        id 1n57WV-0004IV-NS
+        for linux-can@vger.kernel.org; Wed, 05 Jan 2022 15:44:19 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 00A126D1B15
-        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 14:44:09 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 8C1866D1B1F
+        for <linux-can@vger.kernel.org>; Wed,  5 Jan 2022 14:44:10 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id BD6D96D1AC8;
-        Wed,  5 Jan 2022 14:44:05 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id BBC3B6D1AD8;
+        Wed,  5 Jan 2022 14:44:06 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 79ed08d4;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 25a46bd5;
         Wed, 5 Jan 2022 14:44:04 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Yasushi SHOJI <yashi@spacecubics.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 09/15] can: do not copy the payload of RTR frames
-Date:   Wed,  5 Jan 2022 15:43:56 +0100
-Message-Id: <20220105144402.1174191-10-mkl@pengutronix.de>
+Subject: [PATCH net-next 12/15] can: dev: replace can_priv::ctrlmode_static by can_get_static_ctrlmode()
+Date:   Wed,  5 Jan 2022 15:43:59 +0100
+Message-Id: <20220105144402.1174191-13-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220105144402.1174191-1-mkl@pengutronix.de>
 References: <20220105144402.1174191-1-mkl@pengutronix.de>
@@ -57,90 +56,99 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-The actual payload length of the CAN Remote Transmission Request (RTR)
-frames is always 0, i.e. no payload is transmitted on the wire.
-However, those RTR frames still use the DLC to indicate the length of
-the requested frame.
+The statically enabled features of a CAN controller can be retrieved
+using below formula:
 
-For this reason, it is incorrect to copy the payload of RTR frames
-(the payload buffer would only contain garbage data). This patch
-encapsulates the payload copy in a check toward the RTR flag.
+| u32 ctrlmode_static = priv->ctrlmode & ~priv->ctrlmode_supported;
 
-Link: https://lore.kernel.org/all/20211207121531.42941-4-mailhol.vincent@wanadoo.fr
-Cc: Yasushi SHOJI <yashi@spacecubics.com>
-Tested-by: Yasushi SHOJI <yashi@spacecubics.com>
+As such, there is no need to store this information. This patch remove
+the field ctrlmode_static of struct can_priv and provides, in
+replacement, the inline function can_get_static_ctrlmode() which
+returns the same value.
+
+Link: https://lore.kernel.org/all/20211213160226.56219-2-mailhol.vincent@wanadoo.fr
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/pch_can.c      | 15 ++++++++-------
- drivers/net/can/spi/mcp251x.c  |  3 ++-
- drivers/net/can/usb/mcba_usb.c |  8 ++++----
- 3 files changed, 14 insertions(+), 12 deletions(-)
+ drivers/net/can/dev/dev.c     | 5 +++--
+ drivers/net/can/dev/netlink.c | 2 +-
+ include/linux/can/dev.h       | 7 +++++--
+ 3 files changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
-index 6b45840db1f9..4bf9bfc4de72 100644
---- a/drivers/net/can/pch_can.c
-+++ b/drivers/net/can/pch_can.c
-@@ -677,16 +677,17 @@ static int pch_can_rx_normal(struct net_device *ndev, u32 obj_num, int quota)
- 			cf->can_id = id;
- 		}
+diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
+index 4845ae6456e1..c192f25f9695 100644
+--- a/drivers/net/can/dev/dev.c
++++ b/drivers/net/can/dev/dev.c
+@@ -296,6 +296,7 @@ EXPORT_SYMBOL_GPL(free_candev);
+ int can_change_mtu(struct net_device *dev, int new_mtu)
+ {
+ 	struct can_priv *priv = netdev_priv(dev);
++	u32 ctrlmode_static = can_get_static_ctrlmode(priv);
  
--		if (id2 & PCH_ID2_DIR)
--			cf->can_id |= CAN_RTR_FLAG;
--
- 		cf->len = can_cc_dlc2len((ioread32(&priv->regs->
- 						    ifregs[0].mcont)) & 0xF);
+ 	/* Do not allow changing the MTU while running */
+ 	if (dev->flags & IFF_UP)
+@@ -305,7 +306,7 @@ int can_change_mtu(struct net_device *dev, int new_mtu)
+ 	switch (new_mtu) {
+ 	case CAN_MTU:
+ 		/* 'CANFD-only' controllers can not switch to CAN_MTU */
+-		if (priv->ctrlmode_static & CAN_CTRLMODE_FD)
++		if (ctrlmode_static & CAN_CTRLMODE_FD)
+ 			return -EINVAL;
  
--		for (i = 0; i < cf->len; i += 2) {
--			data_reg = ioread16(&priv->regs->ifregs[0].data[i / 2]);
--			cf->data[i] = data_reg;
--			cf->data[i + 1] = data_reg >> 8;
-+		if (id2 & PCH_ID2_DIR) {
-+			cf->can_id |= CAN_RTR_FLAG;
-+		} else {
-+			for (i = 0; i < cf->len; i += 2) {
-+				data_reg = ioread16(&priv->regs->ifregs[0].data[i / 2]);
-+				cf->data[i] = data_reg;
-+				cf->data[i + 1] = data_reg >> 8;
-+			}
- 		}
+ 		priv->ctrlmode &= ~CAN_CTRLMODE_FD;
+@@ -314,7 +315,7 @@ int can_change_mtu(struct net_device *dev, int new_mtu)
+ 	case CANFD_MTU:
+ 		/* check for potential CANFD ability */
+ 		if (!(priv->ctrlmode_supported & CAN_CTRLMODE_FD) &&
+-		    !(priv->ctrlmode_static & CAN_CTRLMODE_FD))
++		    !(ctrlmode_static & CAN_CTRLMODE_FD))
+ 			return -EINVAL;
  
- 		rcv_pkts++;
-diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index 0cec808e8727..2fa1e85fa529 100644
---- a/drivers/net/can/spi/mcp251x.c
-+++ b/drivers/net/can/spi/mcp251x.c
-@@ -730,7 +730,8 @@ static void mcp251x_hw_rx(struct spi_device *spi, int buf_idx)
- 	}
- 	/* Data length */
- 	frame->len = can_cc_dlc2len(buf[RXBDLC_OFF] & RXBDLC_LEN_MASK);
--	memcpy(frame->data, buf + RXBDAT_OFF, frame->len);
-+	if (!(frame->can_id & CAN_RTR_FLAG))
-+		memcpy(frame->data, buf + RXBDAT_OFF, frame->len);
+ 		priv->ctrlmode |= CAN_CTRLMODE_FD;
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index 95cca4e5251f..26c336808be5 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -211,7 +211,7 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+ 		if (dev->flags & IFF_UP)
+ 			return -EBUSY;
+ 		cm = nla_data(data[IFLA_CAN_CTRLMODE]);
+-		ctrlstatic = priv->ctrlmode_static;
++		ctrlstatic = can_get_static_ctrlmode(priv);
+ 		maskedflags = cm->flags & cm->mask;
  
- 	priv->net->stats.rx_packets++;
- 	priv->net->stats.rx_bytes += frame->len;
-diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
-index a1a154c08b7f..162d2e11cadd 100644
---- a/drivers/net/can/usb/mcba_usb.c
-+++ b/drivers/net/can/usb/mcba_usb.c
-@@ -450,12 +450,12 @@ static void mcba_usb_process_can(struct mcba_priv *priv,
- 		cf->can_id = (sid & 0xffe0) >> 5;
- 	}
+ 		/* check whether provided bits are allowed to be passed */
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 45f19d9db5ca..92e2d69462f0 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -69,7 +69,6 @@ struct can_priv {
+ 	/* CAN controller features - see include/uapi/linux/can/netlink.h */
+ 	u32 ctrlmode;		/* current options setting */
+ 	u32 ctrlmode_supported;	/* options that can be modified by netlink */
+-	u32 ctrlmode_static;	/* static enabled options for driver/hardware */
  
--	if (msg->dlc & MCBA_DLC_RTR_MASK)
--		cf->can_id |= CAN_RTR_FLAG;
--
- 	cf->len = can_cc_dlc2len(msg->dlc & MCBA_DLC_MASK);
+ 	int restart_ms;
+ 	struct delayed_work restart_work;
+@@ -139,13 +138,17 @@ static inline void can_set_static_ctrlmode(struct net_device *dev,
  
--	memcpy(cf->data, msg->data, cf->len);
-+	if (msg->dlc & MCBA_DLC_RTR_MASK)
-+		cf->can_id |= CAN_RTR_FLAG;
-+	else
-+		memcpy(cf->data, msg->data, cf->len);
+ 	/* alloc_candev() succeeded => netdev_priv() is valid at this point */
+ 	priv->ctrlmode = static_mode;
+-	priv->ctrlmode_static = static_mode;
  
- 	stats->rx_packets++;
- 	stats->rx_bytes += cf->len;
+ 	/* override MTU which was set by default in can_setup()? */
+ 	if (static_mode & CAN_CTRLMODE_FD)
+ 		dev->mtu = CANFD_MTU;
+ }
+ 
++static inline u32 can_get_static_ctrlmode(struct can_priv *priv)
++{
++	return priv->ctrlmode & ~priv->ctrlmode_supported;
++}
++
+ void can_setup(struct net_device *dev);
+ 
+ struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo_skb_max,
 -- 
 2.34.1
 
