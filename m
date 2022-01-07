@@ -2,43 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B28AC433FE
-	for <linux-can@archiver.kernel.org>; Fri,  7 Jan 2022 19:31:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09726C43217
+	for <linux-can@archiver.kernel.org>; Fri,  7 Jan 2022 19:31:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbiAGTbL (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 7 Jan 2022 14:31:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
+        id S232512AbiAGTbN (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 7 Jan 2022 14:31:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230466AbiAGTbL (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 7 Jan 2022 14:31:11 -0500
+        with ESMTP id S232496AbiAGTbM (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 7 Jan 2022 14:31:12 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABAAC061574
-        for <linux-can@vger.kernel.org>; Fri,  7 Jan 2022 11:31:11 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD66DC061574
+        for <linux-can@vger.kernel.org>; Fri,  7 Jan 2022 11:31:12 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1n5uxB-0004KH-RK
-        for linux-can@vger.kernel.org; Fri, 07 Jan 2022 20:31:09 +0100
+        id 1n5uxD-0004LD-3q
+        for linux-can@vger.kernel.org; Fri, 07 Jan 2022 20:31:11 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 0BA3D6D33C9
+        by bjornoya.blackshift.org (Postfix) with SMTP id B7F9E6D33D7
         for <linux-can@vger.kernel.org>; Fri,  7 Jan 2022 19:31:08 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 226F16D33BB;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7A0FD6D33C1;
         Fri,  7 Jan 2022 19:31:07 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1af65810;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b42ba4be;
         Fri, 7 Jan 2022 19:31:06 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v3 1/7] can: flexcan: move driver into separate sub directory
-Date:   Fri,  7 Jan 2022 20:30:59 +0100
-Message-Id: <20220107193105.1699523-2-mkl@pengutronix.de>
+Subject: [PATCH v3 7/7] docs: networking: device drivers: can: add flexcan
+Date:   Fri,  7 Jan 2022 20:31:05 +0100
+Message-Id: <20220107193105.1699523-8-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220107193105.1699523-1-mkl@pengutronix.de>
 References: <20220107193105.1699523-1-mkl@pengutronix.de>
@@ -52,47 +52,91 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch moves the flexcan driver into a separate directory, a later
-patch will add more files.
+From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
+Add initial documentation for Flexcan driver.
+
+Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/Makefile                              | 2 +-
- drivers/net/can/flexcan/Makefile                      | 6 ++++++
- drivers/net/can/{flexcan.c => flexcan/flexcan-core.c} | 0
- 3 files changed, 7 insertions(+), 1 deletion(-)
- create mode 100644 drivers/net/can/flexcan/Makefile
- rename drivers/net/can/{flexcan.c => flexcan/flexcan-core.c} (100%)
+ .../device_drivers/can/freescale/flexcan.rst  | 54 +++++++++++++++++++
+ .../networking/device_drivers/can/index.rst   |  2 +
+ 2 files changed, 56 insertions(+)
+ create mode 100644 Documentation/networking/device_drivers/can/freescale/flexcan.rst
 
-diff --git a/drivers/net/can/Makefile b/drivers/net/can/Makefile
-index a2b4463d8480..1e660afcb61b 100644
---- a/drivers/net/can/Makefile
-+++ b/drivers/net/can/Makefile
-@@ -16,7 +16,7 @@ obj-y				+= softing/
- obj-$(CONFIG_CAN_AT91)		+= at91_can.o
- obj-$(CONFIG_CAN_CC770)		+= cc770/
- obj-$(CONFIG_CAN_C_CAN)		+= c_can/
--obj-$(CONFIG_CAN_FLEXCAN)	+= flexcan.o
-+obj-$(CONFIG_CAN_FLEXCAN)	+= flexcan/
- obj-$(CONFIG_CAN_GRCAN)		+= grcan.o
- obj-$(CONFIG_CAN_IFI_CANFD)	+= ifi_canfd/
- obj-$(CONFIG_CAN_JANZ_ICAN3)	+= janz-ican3.o
-diff --git a/drivers/net/can/flexcan/Makefile b/drivers/net/can/flexcan/Makefile
+diff --git a/Documentation/networking/device_drivers/can/freescale/flexcan.rst b/Documentation/networking/device_drivers/can/freescale/flexcan.rst
 new file mode 100644
-index 000000000000..25dd1d12b866
+index 000000000000..8cc0359a8588
 --- /dev/null
-+++ b/drivers/net/can/flexcan/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0
++++ b/Documentation/networking/device_drivers/can/freescale/flexcan.rst
+@@ -0,0 +1,54 @@
++.. SPDX-License-Identifier: GPL-2.0+
 +
-+obj-$(CONFIG_CAN_FLEXCAN) += flexcan.o
++=============================
++Flexcan CAN Controller driver
++=============================
 +
-+flexcan-objs :=
-+flexcan-objs += flexcan-core.o
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan/flexcan-core.c
-similarity index 100%
-rename from drivers/net/can/flexcan.c
-rename to drivers/net/can/flexcan/flexcan-core.c
++Authors: Marc Kleine-Budde <mkl@pengutronix.de>,
++Dario Binacchi <dario.binacchi@amarula.solutions.com>
++
++On/off RTR frames reception
++===========================
++
++For most flexcan IP cores the driver supports 2 RX modes:
++
++- FIFO
++- mailbox
++
++The older flexcan cores (integrated into the i.MX25, i.MX28, i.MX35
++and i.MX53 SOCs) only reception of RTR frames if the controller is
++configured for RX-FIFO mode.
++
++The RX FIFO mode uses a hardware FIFO with a depth of 6 CAN frames,
++while the mailbox mode uses a software FIFO with a depth of up to 62
++CAN frames. With the help of the bigger buffer, the mailbox mode
++performs better under high system load situations.
++
++As reception of RTR frames is part of the CAN standard, all flexcan
++core come up in a mode where RTR reception is possible.
++
++With the "rx-rtr" private flag the ability to receive RTR frames can
++be waived at the expense of losing the ability to receive RTR
++messages. This trade off is beneficial in certain use cases.
++
++"rx-rtr" on
++  Receive RTR frames. (default)
++
++  The CAN controller can and will receive RTR frames.
++
++  On some IP cores the controller cannot receive RTR frames in the
++  more performant "RX mailbox" mode and will use "RX FIFO" mode
++  instead.
++
++"rx-rtr" off
++
++  Waive ability to receive RTR frames. (not supported on all IP cores)
++
++  This mode activates the "RX mailbox mode" for better performance, on
++  some IP cores RTR frames cannot be received anymore.
++
++The setting can only be changed if the interface is down::
++
++    ip link set dev can0 down
++    ethtool --set-priv-flags can0 rx-rtr {off|on}
++    ip link set dev can0 up
+diff --git a/Documentation/networking/device_drivers/can/index.rst b/Documentation/networking/device_drivers/can/index.rst
+index 218276818968..58b6e0ad3030 100644
+--- a/Documentation/networking/device_drivers/can/index.rst
++++ b/Documentation/networking/device_drivers/can/index.rst
+@@ -10,6 +10,8 @@ Contents:
+ .. toctree::
+    :maxdepth: 2
+ 
++   freescale/flexcan
++
+ .. only::  subproject and html
+ 
+    Indices
 -- 
 2.34.1
 
