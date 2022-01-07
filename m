@@ -2,139 +2,123 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E97C9C433FE
-	for <linux-can@archiver.kernel.org>; Thu,  6 Jan 2022 17:47:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AAB8BC4332F
+	for <linux-can@archiver.kernel.org>; Fri,  7 Jan 2022 08:13:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242335AbiAFRrP (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 6 Jan 2022 12:47:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45534 "EHLO
+        id S1345645AbiAGINT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 7 Jan 2022 03:13:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242286AbiAFRqw (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 6 Jan 2022 12:46:52 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03788C061212;
-        Thu,  6 Jan 2022 09:46:52 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id e202so9627464ybf.4;
-        Thu, 06 Jan 2022 09:46:51 -0800 (PST)
+        with ESMTP id S1345590AbiAGINS (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 7 Jan 2022 03:13:18 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B86DEC061201
+        for <linux-can@vger.kernel.org>; Fri,  7 Jan 2022 00:13:17 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id l12-20020a7bc34c000000b003467c58cbdfso4489779wmj.2
+        for <linux-can@vger.kernel.org>; Fri, 07 Jan 2022 00:13:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hAigF3aNRm8SXiKNyYPtYfiDgs5b1MpEWjLvBm/tJa8=;
-        b=eGMAPYAgBGaE13rv4QGD/ffg6wh1fb87PE9zAplN+tPmwBmb04djs4hEn1GWPstWBI
-         l4+bewM6CablMRk/oXeBhZdv6rCn/HSPc3i6wRSvPaxkNPQg/dLVL1KFO2zhkVSsUyqD
-         wPI5xjfECRxyUwyOCPcUpDRQim95yRI51dxX90J7SkcXzh54blsKDLODCgos8o5G2Ya5
-         I6tWbcxdq8Te4quWpy/mjcntJPhkEwsDdNuD60OLdIwUCNV9/2KHJ0OecOuuPuuUjLjV
-         9hNbdiC4kZRUoQM12nqgyVGzYlK+4gw3Cb2K5MQVjIien5jHl4I2WBspZjXLc5IQz3VU
-         e6Rw==
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=aNFvFjfPzdhSbUOj3hcvdY5IUVIwY9ysmaaDPH4hqEw=;
+        b=HUJvC2rBCYnYMrPsMuDGh5OBNDPyw9iliDH6ctc4PaORQ0/4CSBi69707k3xI1vEOU
+         DO/gPV3PusSvyCYUT7bwBx20/VWRSsiJJdeKi36YIPRDn4Jbgjo5x8IAH38qndXNOK4M
+         kTUx/TVrhRIkhXWRQ/ZrVd7al9tAT1+PIpX/8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hAigF3aNRm8SXiKNyYPtYfiDgs5b1MpEWjLvBm/tJa8=;
-        b=49YJtWyxLccqalEMKR7lrk6gHGDK4TphZHS3wN2Lls9IWFCpj4Rc8us4Z4rfFNT+wp
-         gATnfpqaycYQ1H+j1+OYaiKiiTIwIWiwbmFL+HTl10GgsxE26Knq/4tkLW12tWXyx/Bn
-         VDpFbSyJchU2K8RcSLaW+AAYa1aykRLDN3CT5zcww2h6fF/Q9MUDBUgG9EBWreaeL9go
-         Lb4i7XE6JH8HuXUXlTLfKb/ITGnqybcRLknrE3Y6CIsZZzh0qByW1xehkk7q92Cz1K6S
-         hrE8Av5o3tqgF+7zu2i+b5FKD/OGvXvnBbsZc1wX9JNL04dVDF5tOWw5g2sqFMx3YXhv
-         8IEA==
-X-Gm-Message-State: AOAM530DgAgb+vE6ZEw6KM9/mFYVSptVTStvRRuS4V3pEdCPt9ZApK6n
-        udKtSj92LkpG2oSe111IG3yyJaCqqOzaJHJyyR5kbvNE7JQ=
-X-Google-Smtp-Source: ABdhPJzPhHvgZ4sBE0eCVW7kQOFDDzs3uxp/E4oHS3gwHBnNDNg4m3c/bbkzxBlV5FM5QR2ZPANL7LaPDXw69W5N7WY=
-X-Received: by 2002:a25:98c4:: with SMTP id m4mr76336835ybo.613.1641491211217;
- Thu, 06 Jan 2022 09:46:51 -0800 (PST)
-MIME-Version: 1.0
-References: <20220106114801.20563-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <164148400405.10801.375398277921411297@Monstersaurus>
-In-Reply-To: <164148400405.10801.375398277921411297@Monstersaurus>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Thu, 6 Jan 2022 17:46:25 +0000
-Message-ID: <CA+V-a8saaXGBJweW9dE6+Vp8k2fpYob2tbVbhxCqK-PU_y1PWg@mail.gmail.com>
-Subject: Re: [PATCH] can: rcar_canfd: Make sure we free CAN network device
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=aNFvFjfPzdhSbUOj3hcvdY5IUVIwY9ysmaaDPH4hqEw=;
+        b=r0nzutb2Tb/44E7uBU4QFwZ7UbF/ort5Mr8rNYOMDwJhRYI9D8lNQQdmmXTymh70Zb
+         cxJ9gDkFS3WtNMi8kefHxDl7etjX18LQlTItic9fCt9xr8ijwr+AD+zSxiWHrU9wQdgl
+         5SeYEFzQPBIaxznol6ZFoFLDQcSHSzn28Z6MvCTYR36WT0vPsq42z9TsGEvHTuwm2V6H
+         3Fx41MlFnKPbDOhPdT56XLEEVaUN+bMCooKmR7KtG1luXZfmo0Jcv0hX5nTO+A8SegeX
+         3SnnuAORtCoYAR6CpHLKU26kPdAnt3n/zEuHSYlI8nWcSbNnIdbyKnRFKUaA452EL+Bn
+         pKeg==
+X-Gm-Message-State: AOAM533FxHp7gNx9vBioeLyDMJLDeFut6GSPQoiBpqOlxIbXZlOKnnY3
+        kTW0uA5iHANb+roYLXl5H5WqoQ==
+X-Google-Smtp-Source: ABdhPJwjkacrYJEH7D3L5LAfAOudyDPO3yGwNl/aaJB4R6tP6IVdM2JWpRn8ogz65SxvbkbCOD2rTA==
+X-Received: by 2002:a05:600c:a0a:: with SMTP id z10mr10025256wmp.126.1641543196271;
+        Fri, 07 Jan 2022 00:13:16 -0800 (PST)
+Received: from dario-ThinkPad-T14s-Gen-2i.amarulasolutions.com (mob-5-90-38-18.net.vodafone.it. [5.90.38.18])
+        by smtp.gmail.com with ESMTPSA id w17sm4280633wmc.14.2022.01.07.00.13.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Jan 2022 00:13:15 -0800 (PST)
+From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Pavel Machek <pavel@denx.de>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [RFC PATCH 2/2] docs: networking: device drivers: can: add flexcan
+Date:   Fri,  7 Jan 2022 09:13:06 +0100
+Message-Id: <20220107081306.3681899-3-dario.binacchi@amarulasolutions.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20220107081306.3681899-1-dario.binacchi@amarulasolutions.com>
+References: <20220107081306.3681899-1-dario.binacchi@amarulasolutions.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi Kieran,
+Add initial documentation for Flexcan driver.
 
-Thank you for the  review.
+Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
-On Thu, Jan 6, 2022 at 3:46 PM Kieran Bingham
-<kieran.bingham@ideasonboard.com> wrote:
->
-> Quoting Lad Prabhakar (2022-01-06 11:48:00)
-> > Make sure we free CAN network device in the error path. There are several
-> > jumps to fail label after allocating the CAN network device successfully.
-> > This patch places the free_candev() under fail label so that in failure
-> > path a jump to fail label frees the CAN network device.
-> >
-> > Fixes: 76e9353a80e9 ("can: rcar_canfd: Add support for RZ/G2L family")
-> > Reported-by: Pavel Machek <pavel@denx.de>
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > ---
-> >  drivers/net/can/rcar/rcar_canfd.c | 5 ++---
-> >  1 file changed, 2 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-> > index ff9d0f5ae0dd..388521e70837 100644
-> > --- a/drivers/net/can/rcar/rcar_canfd.c
-> > +++ b/drivers/net/can/rcar/rcar_canfd.c
-> > @@ -1640,8 +1640,7 @@ static int rcar_canfd_channel_probe(struct rcar_canfd_global *gpriv, u32 ch,
-> >         ndev = alloc_candev(sizeof(*priv), RCANFD_FIFO_DEPTH);
-> >         if (!ndev) {
-> >                 dev_err(&pdev->dev, "alloc_candev() failed\n");
-> > -               err = -ENOMEM;
-> > -               goto fail;
-> > +               return -ENOMEM;
->
-> Aha good - so we don't try to call free_candev() on a null pointer.
-> (which doesn't look null-safe, in free_netdev).
->
-Yep.
+---
 
-> >         }
-> >         priv = netdev_priv(ndev);
-> >
-> > @@ -1735,8 +1734,8 @@ static int rcar_canfd_channel_probe(struct rcar_canfd_global *gpriv, u32 ch,
-> >
-> >  fail_candev:
->
-> Is this label still appropriately named now that the free_candev is
-> moved out of it? I wonder if it should be fail_netif:
->
-I was tempted for this change, but wanted to keep the changes minimal.
-Maybe I'll do it anyway to improve the readability.
+ .../device_drivers/can/freescale/flexcan.rst  | 25 +++++++++++++++++++
+ .../networking/device_drivers/can/index.rst   |  2 ++
+ 2 files changed, 27 insertions(+)
+ create mode 100644 Documentation/networking/device_drivers/can/freescale/flexcan.rst
 
-> So aside from potential naming, the !ndev case is safely handled, so it
-> looks fine to me.
->
->
-> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
->
-> >         netif_napi_del(&priv->napi);
-> > -       free_candev(ndev);
-> >  fail:
-> > +       free_candev(ndev);
->
->
->
-> >         return err;
-> >  }
-> >
-> > --
-> > 2.17.1
-> >
+diff --git a/Documentation/networking/device_drivers/can/freescale/flexcan.rst b/Documentation/networking/device_drivers/can/freescale/flexcan.rst
+new file mode 100644
+index 000000000000..1a5bb2ed08a3
+--- /dev/null
++++ b/Documentation/networking/device_drivers/can/freescale/flexcan.rst
+@@ -0,0 +1,25 @@
++.. SPDX-License-Identifier: GPL-2.0+
++
++=============================
++Flexcan CAN Controller driver
++=============================
++
++Authors: Marc Kleine-Budde <mkl@pengutronix.de>,
++Dario Binacchi <dario.binacchi@amarula.solutions.com>
++
++On/off RTR frames reception
++===========================
++
++ 1. interface down::
++
++      ethtool --set-priv-flags can0 rx-rtr {off|on}
++
++ 2. interface up::
++
++      ip link set dev can0 down
++      ethtool --set-priv-flags can0 rx-rtr {off|on}
++      ip link set dev can0 up
++
++Note. For the Flexcan on i.MX25, i.Mx28, i.MX35 and i.Mx53 SOCs, the reception
++of RTR frames is possible only if the controller is configured in RxFIFO mode.
++In this mode only 6 of the 64 message buffers are used for reception.
+diff --git a/Documentation/networking/device_drivers/can/index.rst b/Documentation/networking/device_drivers/can/index.rst
+index 218276818968..58b6e0ad3030 100644
+--- a/Documentation/networking/device_drivers/can/index.rst
++++ b/Documentation/networking/device_drivers/can/index.rst
+@@ -10,6 +10,8 @@ Contents:
+ .. toctree::
+    :maxdepth: 2
+ 
++   freescale/flexcan
++
+ .. only::  subproject and html
+ 
+    Indices
+-- 
+2.32.0
 
-Cheers,
-Prabhakar
