@@ -2,43 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C44BFC43219
-	for <linux-can@archiver.kernel.org>; Fri,  7 Jan 2022 19:31:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BDF5DC4332F
+	for <linux-can@archiver.kernel.org>; Fri,  7 Jan 2022 19:31:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232517AbiAGTbO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 7 Jan 2022 14:31:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56892 "EHLO
+        id S232603AbiAGTbN (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 7 Jan 2022 14:31:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230466AbiAGTbN (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 7 Jan 2022 14:31:13 -0500
+        with ESMTP id S232512AbiAGTbM (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 7 Jan 2022 14:31:12 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0738C061746
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF2C3C06173F
         for <linux-can@vger.kernel.org>; Fri,  7 Jan 2022 11:31:12 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1n5uxD-0004LO-A4
+        id 1n5uxD-0004LB-4b
         for linux-can@vger.kernel.org; Fri, 07 Jan 2022 20:31:11 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id C93916D33D8
+        by bjornoya.blackshift.org (Postfix) with SMTP id A1AC66D33D5
         for <linux-can@vger.kernel.org>; Fri,  7 Jan 2022 19:31:08 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6E3126D33C0;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4E8D16D33BE;
         Fri,  7 Jan 2022 19:31:07 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f3e23bc9;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 89fff2f9;
         Fri, 7 Jan 2022 19:31:06 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v3 6/7] docs: networking: device drivers: add can sub-folder
-Date:   Fri,  7 Jan 2022 20:31:04 +0100
-Message-Id: <20220107193105.1699523-7-mkl@pengutronix.de>
+Subject: [PATCH v3 4/7] can: flexcan: add more quirks to describe RX path capabilities
+Date:   Fri,  7 Jan 2022 20:31:02 +0100
+Message-Id: <20220107193105.1699523-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220107193105.1699523-1-mkl@pengutronix.de>
 References: <20220107193105.1699523-1-mkl@pengutronix.de>
@@ -52,54 +52,157 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Most flexcan IP cores support 2 RX modes:
+- FIFO
+- mailbox
 
-Add the container for CAN drivers documentation.
+Some IP core versions cannot receive CAN RTR messages via mailboxes.
+This patch adds quirks to document this.
 
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+This information will be used in a later patch to switch from FIFO to
+more performant mailbox mode at the expense of losing the ability to
+receive RTR messages. This trade off is beneficial in certain use
+cases.
+
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../networking/device_drivers/can/index.rst    | 18 ++++++++++++++++++
- .../networking/device_drivers/index.rst        |  1 +
- 2 files changed, 19 insertions(+)
- create mode 100644 Documentation/networking/device_drivers/can/index.rst
+ drivers/net/can/flexcan/flexcan-core.c | 66 +++++++++++++++++++++-----
+ 1 file changed, 54 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/networking/device_drivers/can/index.rst b/Documentation/networking/device_drivers/can/index.rst
-new file mode 100644
-index 000000000000..218276818968
---- /dev/null
-+++ b/Documentation/networking/device_drivers/can/index.rst
-@@ -0,0 +1,18 @@
-+.. SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
+index ba52e70d6a16..57cebc415661 100644
+--- a/drivers/net/can/flexcan/flexcan-core.c
++++ b/drivers/net/can/flexcan/flexcan-core.c
+@@ -252,6 +252,12 @@
+ #define FLEXCAN_QUIRK_NR_IRQ_3 BIT(12)
+ /* Setup 16 mailboxes */
+ #define FLEXCAN_QUIRK_NR_MB_16 BIT(13)
++/* Device supports RX via mailboxes */
++#define FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX BIT(14)
++/* Device supports RTR reception via mailboxes */
++#define FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX_RTR BIT(15)
++/* Device supports RX via FIFO */
++#define FLEXCAN_QUIRK_SUPPPORT_RX_FIFO BIT(16)
+ 
+ /* Structure of the message buffer */
+ struct flexcan_mb {
+@@ -386,59 +392,78 @@ struct flexcan_priv {
+ 
+ static const struct flexcan_devtype_data fsl_mcf5441x_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_BROKEN_PERR_STATE |
+-		FLEXCAN_QUIRK_NR_IRQ_3 | FLEXCAN_QUIRK_NR_MB_16,
++		FLEXCAN_QUIRK_NR_IRQ_3 | FLEXCAN_QUIRK_NR_MB_16 |
++		FLEXCAN_QUIRK_SUPPPORT_RX_FIFO,
+ };
+ 
+ static const struct flexcan_devtype_data fsl_p1010_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_BROKEN_WERR_STATE |
+ 		FLEXCAN_QUIRK_BROKEN_PERR_STATE |
+-		FLEXCAN_QUIRK_DEFAULT_BIG_ENDIAN,
++		FLEXCAN_QUIRK_DEFAULT_BIG_ENDIAN |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX |
++		FLEXCAN_QUIRK_SUPPPORT_RX_FIFO,
+ };
+ 
+ static const struct flexcan_devtype_data fsl_imx25_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_BROKEN_WERR_STATE |
+-		FLEXCAN_QUIRK_BROKEN_PERR_STATE,
++		FLEXCAN_QUIRK_BROKEN_PERR_STATE |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX |
++		FLEXCAN_QUIRK_SUPPPORT_RX_FIFO,
+ };
+ 
+ static const struct flexcan_devtype_data fsl_imx28_devtype_data = {
+-	.quirks = FLEXCAN_QUIRK_BROKEN_PERR_STATE,
++	.quirks = FLEXCAN_QUIRK_BROKEN_PERR_STATE |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX |
++		FLEXCAN_QUIRK_SUPPPORT_RX_FIFO,
+ };
+ 
+ static const struct flexcan_devtype_data fsl_imx6q_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
+ 		FLEXCAN_QUIRK_USE_RX_MAILBOX | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
+-		FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR,
++		FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX_RTR,
+ };
+ 
+ static const struct flexcan_devtype_data fsl_imx8qm_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
+ 		FLEXCAN_QUIRK_USE_RX_MAILBOX | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
+-		FLEXCAN_QUIRK_SUPPORT_FD | FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW,
++		FLEXCAN_QUIRK_SUPPORT_FD | FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX_RTR,
+ };
+ 
+ static struct flexcan_devtype_data fsl_imx8mp_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
+ 		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_RX_MAILBOX |
+ 		FLEXCAN_QUIRK_BROKEN_PERR_STATE | FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR |
+-		FLEXCAN_QUIRK_SUPPORT_FD | FLEXCAN_QUIRK_SUPPORT_ECC,
++		FLEXCAN_QUIRK_SUPPORT_FD | FLEXCAN_QUIRK_SUPPORT_ECC |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX_RTR,
+ };
+ 
+ static const struct flexcan_devtype_data fsl_vf610_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
+ 		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_RX_MAILBOX |
+-		FLEXCAN_QUIRK_BROKEN_PERR_STATE | FLEXCAN_QUIRK_SUPPORT_ECC,
++		FLEXCAN_QUIRK_BROKEN_PERR_STATE | FLEXCAN_QUIRK_SUPPORT_ECC |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX_RTR,
+ };
+ 
+ static const struct flexcan_devtype_data fsl_ls1021a_r2_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
+-		FLEXCAN_QUIRK_BROKEN_PERR_STATE | FLEXCAN_QUIRK_USE_RX_MAILBOX,
++		FLEXCAN_QUIRK_BROKEN_PERR_STATE | FLEXCAN_QUIRK_USE_RX_MAILBOX |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX_RTR,
+ };
+ 
+ static const struct flexcan_devtype_data fsl_lx2160a_r1_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
+ 		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
+ 		FLEXCAN_QUIRK_USE_RX_MAILBOX | FLEXCAN_QUIRK_SUPPORT_FD |
+-		FLEXCAN_QUIRK_SUPPORT_ECC,
++		FLEXCAN_QUIRK_SUPPORT_ECC |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX_RTR,
+ };
+ 
+ static const struct can_bittiming_const flexcan_bittiming_const = {
+@@ -2164,8 +2189,25 @@ static int flexcan_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 
+ 	if ((devtype_data->quirks & FLEXCAN_QUIRK_SUPPORT_FD) &&
+-	    !(devtype_data->quirks & FLEXCAN_QUIRK_USE_RX_MAILBOX)) {
+-		dev_err(&pdev->dev, "CAN-FD mode doesn't work with FIFO mode!\n");
++	    !((devtype_data->quirks &
++	       (FLEXCAN_QUIRK_USE_RX_MAILBOX |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX_RTR |
++		FLEXCAN_QUIRK_SUPPPORT_RX_FIFO)) ==
++	      (FLEXCAN_QUIRK_USE_RX_MAILBOX |
++	       FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX |
++	       FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX_RTR))) {
++		dev_err(&pdev->dev, "CAN-FD mode doesn't work in RX-FIFO mode!\n");
++		return -EINVAL;
++	}
 +
-+Controller Area Network (CAN) Device Drivers
-+============================================
-+
-+Device drivers for CAN devices.
-+
-+Contents:
-+
-+.. toctree::
-+   :maxdepth: 2
-+
-+.. only::  subproject and html
-+
-+   Indices
-+   =======
-+
-+   * :ref:`genindex`
-diff --git a/Documentation/networking/device_drivers/index.rst b/Documentation/networking/device_drivers/index.rst
-index 3a5a1d46e77e..5f5cfdb2a300 100644
---- a/Documentation/networking/device_drivers/index.rst
-+++ b/Documentation/networking/device_drivers/index.rst
-@@ -11,6 +11,7 @@ Contents:
-    appletalk/index
-    atm/index
-    cable/index
-+   can/index
-    cellular/index
-    ethernet/index
-    fddi/index
++	if ((devtype_data->quirks &
++	     (FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX |
++	      FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX_RTR)) ==
++	    FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX_RTR) {
++		dev_err(&pdev->dev,
++			"Quirks (0x%08x) inconsistent: RX_MAILBOX_RX supported but not RX_MAILBOX\n",
++			devtype_data->quirks);
+ 		return -EINVAL;
+ 	}
+ 
 -- 
 2.34.1
 
