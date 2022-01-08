@@ -2,43 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 154F5C433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F61CC4332F
 	for <linux-can@archiver.kernel.org>; Sat,  8 Jan 2022 21:44:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232973AbiAHVoC (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 8 Jan 2022 16:44:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33566 "EHLO
+        id S231728AbiAHVoD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 8 Jan 2022 16:44:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbiAHVoA (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 8 Jan 2022 16:44:00 -0500
+        with ESMTP id S232892AbiAHVoB (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 8 Jan 2022 16:44:01 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A639C06173F
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5DCC061751
         for <linux-can@vger.kernel.org>; Sat,  8 Jan 2022 13:44:00 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1n6JVG-0004MJ-CV
-        for linux-can@vger.kernel.org; Sat, 08 Jan 2022 22:43:58 +0100
+        id 1n6JVH-0004NU-6n
+        for linux-can@vger.kernel.org; Sat, 08 Jan 2022 22:43:59 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 086126D3A52
+        by bjornoya.blackshift.org (Postfix) with SMTP id 6EECA6D3A5C
         for <linux-can@vger.kernel.org>; Sat,  8 Jan 2022 21:43:51 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id B722E6D3A0E;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 82FDF6D3A0B;
         Sat,  8 Jan 2022 21:43:47 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 684339b3;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d5670524;
         Sat, 8 Jan 2022 21:43:46 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 07/22] can: mcp251xfd: mcp251xfd_handle_rxovif(): denote RX overflow message to debug + add rate limiting
-Date:   Sat,  8 Jan 2022 22:43:30 +0100
-Message-Id: <20220108214345.1848470-8-mkl@pengutronix.de>
+Subject: [PATCH net-next 05/22] can: mcp251xfd: mcp251xfd_open(): open_candev() first
+Date:   Sat,  8 Jan 2022 22:43:28 +0100
+Message-Id: <20220108214345.1848470-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220108214345.1848470-1-mkl@pengutronix.de>
 References: <20220108214345.1848470-1-mkl@pengutronix.de>
@@ -52,44 +52,63 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-A RX overflow usually happens during high system load. Printing
-overflow messages to the kernel log, which on embedded systems often
-is outputted on the serial console, even increases the system load.
+This patch exchanges the order of open_candev() and
+pm_runtime_get_sync(), so that open_candev() is called first.
 
-To decrease the system load in these situations, denote the messages
-to debug level and wrap them with net_ratelimit().
+A usual reason why open_candev() fails is missing CAN bit rate
+configuration. It makes no sense to resume the device from PM sleep
+first just to put it to sleep if the bit rate is not configured.
 
-Link: https://lore.kernel.org/all/20220105154300.1258636-7-mkl@pengutronix.de
+Link: https://lore.kernel.org/all/20220105154300.1258636-5-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index a01a3fc3b13c..105426dcf065 100644
+index bf2ebd46ff83..161e12cdf8e8 100644
 --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
 +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -1652,12 +1652,15 @@ static int mcp251xfd_handle_rxovif(struct mcp251xfd_priv *priv)
+@@ -2503,19 +2503,19 @@ static int mcp251xfd_open(struct net_device *ndev)
+ 	const struct spi_device *spi = priv->spi;
+ 	int err;
  
- 		/* If SERRIF is active, there was a RX MAB overflow. */
- 		if (priv->regs_status.intf & MCP251XFD_REG_INT_SERRIF) {
--			netdev_info(priv->ndev,
--				    "RX-%d: MAB overflow detected.\n",
--				    ring->nr);
-+			if (net_ratelimit())
-+				netdev_dbg(priv->ndev,
-+					   "RX-%d: MAB overflow detected.\n",
-+					   ring->nr);
- 		} else {
--			netdev_info(priv->ndev,
--				    "RX-%d: FIFO overflow.\n", ring->nr);
-+			if (net_ratelimit())
-+				netdev_dbg(priv->ndev,
-+					   "RX-%d: FIFO overflow.\n",
-+					   ring->nr);
- 		}
++	err = open_candev(ndev);
++	if (err)
++		return err;
++
+ 	err = pm_runtime_get_sync(ndev->dev.parent);
+ 	if (err < 0) {
+ 		pm_runtime_put_noidle(ndev->dev.parent);
+-		return err;
++		goto out_close_candev;
+ 	}
  
- 		err = regmap_update_bits(priv->map_reg,
+-	err = open_candev(ndev);
+-	if (err)
+-		goto out_pm_runtime_put;
+-
+ 	err = mcp251xfd_ring_alloc(priv);
+ 	if (err)
+-		goto out_close_candev;
++		goto out_pm_runtime_put;
+ 
+ 	err = mcp251xfd_transceiver_enable(priv);
+ 	if (err)
+@@ -2551,11 +2551,11 @@ static int mcp251xfd_open(struct net_device *ndev)
+ 	mcp251xfd_transceiver_disable(priv);
+  out_mcp251xfd_ring_free:
+ 	mcp251xfd_ring_free(priv);
+- out_close_candev:
+-	close_candev(ndev);
+  out_pm_runtime_put:
+ 	mcp251xfd_chip_stop(priv, CAN_STATE_STOPPED);
+ 	pm_runtime_put(ndev->dev.parent);
++ out_close_candev:
++	close_candev(ndev);
+ 
+ 	return err;
+ }
 -- 
 2.34.1
 
