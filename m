@@ -2,44 +2,47 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9857AC433F5
-	for <linux-can@archiver.kernel.org>; Sun,  9 Jan 2022 13:40:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7641AC433F5
+	for <linux-can@archiver.kernel.org>; Sun,  9 Jan 2022 13:40:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233696AbiAINks (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 9 Jan 2022 08:40:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41064 "EHLO
+        id S235679AbiAINkv (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 9 Jan 2022 08:40:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233520AbiAINks (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 9 Jan 2022 08:40:48 -0500
+        with ESMTP id S234123AbiAINkt (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 9 Jan 2022 08:40:49 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84A0C06173F
-        for <linux-can@vger.kernel.org>; Sun,  9 Jan 2022 05:40:47 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 011D1C06173F
+        for <linux-can@vger.kernel.org>; Sun,  9 Jan 2022 05:40:49 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1n6YRC-000456-2r
-        for linux-can@vger.kernel.org; Sun, 09 Jan 2022 14:40:46 +0100
+        id 1n6YRD-00045z-65
+        for linux-can@vger.kernel.org; Sun, 09 Jan 2022 14:40:47 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 2ED816D3EE7
+        by bjornoya.blackshift.org (Postfix) with SMTP id CE79F6D3EF4
         for <linux-can@vger.kernel.org>; Sun,  9 Jan 2022 13:40:43 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id D3BDA6D3ED4;
-        Sun,  9 Jan 2022 13:40:41 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 1F6696D3ED7;
+        Sun,  9 Jan 2022 13:40:42 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f5b05c5f;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f145b6f9;
         Sun, 9 Jan 2022 13:40:41 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net 0/5] pull-request: can 2022-01-09
-Date:   Sun,  9 Jan 2022 14:40:35 +0100
-Message-Id: <20220109134040.1945428-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Jiasheng Jiang <jiasheng@iscas.ac.cn>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 3/5] can: xilinx_can: xcan_probe(): check for error irq
+Date:   Sun,  9 Jan 2022 14:40:38 +0100
+Message-Id: <20220109134040.1945428-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220109134040.1945428-1-mkl@pengutronix.de>
+References: <20220109134040.1945428-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -50,66 +53,44 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+From: Jiasheng Jiang <jiasheng@iscas.ac.cn>
 
-this is a pull request of 5 patches for net/master.
+For the possible failure of the platform_get_irq(), the returned irq
+could be error number and will finally cause the failure of the
+request_irq().
 
-The first patch is by Johan Hovold and fixes a mem leak in the error
-path of the softing_cs driver.
+Consider that platform_get_irq() can now in certain cases return
+-EPROBE_DEFER, and the consequences of letting request_irq()
+effectively convert that into -EINVAL, even at probe time rather than
+later on. So it might be better to check just now.
 
-The next patch is by me and fixes a set but not used variable warning
-in the softing driver.
-
-Jiasheng Jiang's patch for the xilinx_can driver adds the missing
-error checking when getting the IRQ.
-
-Lad Prabhakar contributes a patch for the rcar_canfd driver to fix a
-mem leak in the error path.
-
-The last patch is by Brian Silverman and properly initializes the send
-USB messages to avoid spurious CAN error frames.
-
-regards,
-Marc
-
+Fixes: b1201e44f50b ("can: xilinx CAN controller support")
+Link: https://lore.kernel.org/all/20211224021324.1447494-1-jiasheng@iscas.ac.cn
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/xilinx_can.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-The following changes since commit 6dc9a23e29061e50c36523270de60039ccf536fa:
-
-  octeontx2-af: Fix interrupt name strings (2022-01-07 19:07:06 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.16-20220109
-
-for you to fetch changes up to 89d58aebe14a365c25ba6645414afdbf4e41cea4:
-
-  can: gs_usb: gs_can_start_xmit(): zero-initialize hf->{flags,reserved} (2022-01-09 13:32:28 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-5.16-20220109
-
-----------------------------------------------------------------
-Brian Silverman (1):
-      can: gs_usb: gs_can_start_xmit(): zero-initialize hf->{flags,reserved}
-
-Jiasheng Jiang (1):
-      can: xilinx_can: xcan_probe(): check for error irq
-
-Johan Hovold (1):
-      can: softing_cs: softingcs_probe(): fix memleak on registration failure
-
-Lad Prabhakar (1):
-      can: rcar_canfd: rcar_canfd_channel_probe(): make sure we free CAN network device
-
-Marc Kleine-Budde (1):
-      can: softing: softing_startstop(): fix set but not used variable warning
-
- drivers/net/can/rcar/rcar_canfd.c    |  5 ++---
- drivers/net/can/softing/softing_cs.c |  2 +-
- drivers/net/can/softing/softing_fw.c | 11 ++++++-----
- drivers/net/can/usb/gs_usb.c         |  2 ++
- drivers/net/can/xilinx_can.c         |  7 ++++++-
- 5 files changed, 17 insertions(+), 10 deletions(-)
+diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+index e2b15d29d15e..af4a2adc8598 100644
+--- a/drivers/net/can/xilinx_can.c
++++ b/drivers/net/can/xilinx_can.c
+@@ -1761,7 +1761,12 @@ static int xcan_probe(struct platform_device *pdev)
+ 	spin_lock_init(&priv->tx_lock);
+ 
+ 	/* Get IRQ for the device */
+-	ndev->irq = platform_get_irq(pdev, 0);
++	ret = platform_get_irq(pdev, 0);
++	if (ret < 0)
++		goto err_free;
++
++	ndev->irq = ret;
++
+ 	ndev->flags |= IFF_ECHO;	/* We support local echo */
+ 
+ 	platform_set_drvdata(pdev, ndev);
+-- 
+2.34.1
 
 
