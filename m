@@ -2,76 +2,118 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C192C433F5
-	for <linux-can@archiver.kernel.org>; Sun,  9 Jan 2022 17:00:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47936C433EF
+	for <linux-can@archiver.kernel.org>; Sun,  9 Jan 2022 19:06:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236072AbiAIRAR (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 9 Jan 2022 12:00:17 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:38602 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236070AbiAIRAR (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 9 Jan 2022 12:00:17 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 67BFFB80D5B;
-        Sun,  9 Jan 2022 17:00:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1583AC36AF3;
-        Sun,  9 Jan 2022 17:00:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641747614;
-        bh=nvapR5clnJGT1K4ZAdKqbHki+C7Hqwj5h5H9SlYwaIU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=FIWYwQBbqzCJY+ePFVlJmNwwdZK61eHDx1aeVXk+KatQt8s0PdMHBBGPvryK60Osf
-         3VT7QbWJXINtaCg/O50BhtV+DiUwe1K9lx6aki23PkXp/ZA69aJfWLBELvD136xer3
-         BKJm34+FqOX6mZyzNDxccxYi8urk7RhIXQyqsk0rV2C76esW+dbVdt1tarZK1/o3tw
-         iYTuUfCsPLBChmb9z9k8v9ksB6sWrVIUSQ8rUpNjcSjOIYpc8+AAe50BBUgbCDA2gV
-         r+dO/7vry42QowSSoGVz2HGa0LEKkeqIoGvdPkgaXG83zdrS3lS47CYap/nQ2T0Ypq
-         6Du3tCG0bzDeg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E4E48F7940F;
-        Sun,  9 Jan 2022 17:00:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S234522AbiAITGk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 9 Jan 2022 14:06:40 -0500
+Received: from relay-b02.edpnet.be ([212.71.1.222]:46180 "EHLO
+        relay-b02.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229582AbiAITGk (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 9 Jan 2022 14:06:40 -0500
+X-Greylist: delayed 1188 seconds by postgrey-1.27 at vger.kernel.org; Sun, 09 Jan 2022 14:06:40 EST
+X-ASG-Debug-ID: 1641754009-15c433197229ae3d0001-ZXuqFv
+Received: from zotac.vandijck-laurijssen.be (94.105.123.152.dyn.edpnet.net [94.105.123.152]) by relay-b02.edpnet.be with ESMTP id jG2rPYXUwxK6EDZU; Sun, 09 Jan 2022 19:46:49 +0100 (CET)
+X-Barracuda-Envelope-From: dev.kurt@vandijck-laurijssen.be
+X-Barracuda-Effective-Source-IP: 94.105.123.152.dyn.edpnet.net[94.105.123.152]
+X-Barracuda-Apparent-Source-IP: 94.105.123.152
+Received: from x1.vandijck-laurijssen.be (x1.vandijck-laurijssen.be [IPv6:fd01::1a1d:eaff:fe02:d339])
+        by zotac.vandijck-laurijssen.be (Postfix) with ESMTPSA id 994A01778F89;
+        Sun,  9 Jan 2022 19:46:49 +0100 (CET)
+Date:   Sun, 9 Jan 2022 19:46:48 +0100
+From:   Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can@vger.kernel.org
+Subject: Re: [PATCH] can: softing: softing_startstop(): fix set but not used
+ variable warning
+Message-ID: <YdstmL4KSn70ziqx@x1.vandijck-laurijssen.be>
+X-ASG-Orig-Subj: Re: [PATCH] can: softing: softing_startstop(): fix set but not used
+ variable warning
+Mail-Followup-To: Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can@vger.kernel.org
+References: <20220109103126.1872833-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] can: janz-ican3: initialize dlc variable
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164174761393.1736.14218744531602060041.git-patchwork-notify@kernel.org>
-Date:   Sun, 09 Jan 2022 17:00:13 +0000
-References: <20220108143319.3986923-1-trix@redhat.com>
-In-Reply-To: <20220108143319.3986923-1-trix@redhat.com>
-To:     Tom Rix <trix@redhat.com>
-Cc:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
-        kuba@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
-        mailhol.vincent@wanadoo.fr, stefan.maetje@esd.eu,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20220109103126.1872833-1-mkl@pengutronix.de>
+X-Barracuda-Connect: 94.105.123.152.dyn.edpnet.net[94.105.123.152]
+X-Barracuda-Start-Time: 1641754009
+X-Barracuda-URL: https://212.71.1.222:443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at edpnet.be
+X-Barracuda-Scan-Msg-Size: 2235
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Spam-Score: 0.00
+X-Barracuda-Spam-Status: No, SCORE=0.00 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.95216
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------------------------
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello:
+Acked-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
 
-This patch was applied to netdev/net-next.git (master)
-by Marc Kleine-Budde <mkl@pengutronix.de>:
+> out. Its stated that the functionality is not finally verified.
 
-On Sat,  8 Jan 2022 06:33:19 -0800 you wrote:
-> From: Tom Rix <trix@redhat.com>
+The subsequent call works, but I wasn't able to produce the bus errors,
+so I could not verify that is actually worked.
+
+And by now, I don't have access to the card, nor do I have a PCMCIA slot :-)
+
+Kurt
+
+On zo, 09 jan 2022 11:31:26 +0100, Marc Kleine-Budde wrote:
+> In the function softing_startstop() the variable error_reporting is
+> assigned but not used. The code that uses this variable is commented
+> out. Its stated that the functionality is not finally verified.
 > 
-> Clang static analysis reports this problem
-> janz-ican3.c:1311:2: warning: Undefined or garbage value returned to caller
->         return dlc;
->         ^~~~~~~~~~
+> To fix the warning:
 > 
-> [...]
-
-Here is the summary with links:
-  - can: janz-ican3: initialize dlc variable
-    https://git.kernel.org/netdev/net-next/c/c57979256283
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> | drivers/net/can/softing/softing_fw.c:424:9: error: variable 'error_reporting' set but not used [-Werror,-Wunused-but-set-variable]
+> |         int j, error_reporting;
+> 
+> remove the comment, activate the code, but add a "0 &&" to the if
+> expression and rely on the optimizer rather than the preprocessor to
+> remove the code.
+> 
+> Fixes: 03fd3cf5a179 ("can: add driver for Softing card")
+> Cc: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>  drivers/net/can/softing/softing_fw.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/net/can/softing/softing_fw.c b/drivers/net/can/softing/softing_fw.c
+> index 7e1536877993..32286f861a19 100644
+> --- a/drivers/net/can/softing/softing_fw.c
+> +++ b/drivers/net/can/softing/softing_fw.c
+> @@ -565,18 +565,19 @@ int softing_startstop(struct net_device *dev, int up)
+>  		if (ret < 0)
+>  			goto failed;
+>  	}
+> -	/* enable_error_frame */
+> -	/*
+> +
+> +	/* enable_error_frame
+> +	 *
+>  	 * Error reporting is switched off at the moment since
+>  	 * the receiving of them is not yet 100% verified
+>  	 * This should be enabled sooner or later
+> -	 *
+> -	if (error_reporting) {
+> +	 */
+> +	if (0 && error_reporting) {
+>  		ret = softing_fct_cmd(card, 51, "enable_error_frame");
+>  		if (ret < 0)
+>  			goto failed;
+>  	}
+> -	*/
+> +
+>  	/* initialize interface */
+>  	iowrite16(1, &card->dpram[DPRAM_FCT_PARAM + 2]);
+>  	iowrite16(1, &card->dpram[DPRAM_FCT_PARAM + 4]);
+> -- 
+> 2.34.1
+> 
+> 
