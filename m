@@ -2,46 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09DFBC4321E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 344D3C4167D
 	for <linux-can@archiver.kernel.org>; Sun,  9 Jan 2022 13:40:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235686AbiAINkw (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 9 Jan 2022 08:40:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41076 "EHLO
+        id S235691AbiAINkx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 9 Jan 2022 08:40:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235664AbiAINkt (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 9 Jan 2022 08:40:49 -0500
+        with ESMTP id S235677AbiAINku (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 9 Jan 2022 08:40:50 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D442C061748
-        for <linux-can@vger.kernel.org>; Sun,  9 Jan 2022 05:40:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82113C061757
+        for <linux-can@vger.kernel.org>; Sun,  9 Jan 2022 05:40:50 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1n6YRD-000461-Ks
-        for linux-can@vger.kernel.org; Sun, 09 Jan 2022 14:40:47 +0100
+        id 1n6YRE-00047D-UI
+        for linux-can@vger.kernel.org; Sun, 09 Jan 2022 14:40:48 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id DB66F6D3EF5
-        for <linux-can@vger.kernel.org>; Sun,  9 Jan 2022 13:40:43 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id D327B6D3F04
+        for <linux-can@vger.kernel.org>; Sun,  9 Jan 2022 13:40:44 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id E49576D3ED5;
-        Sun,  9 Jan 2022 13:40:41 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 50B776D3ED9;
+        Sun,  9 Jan 2022 13:40:42 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 63035770;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id cf116496;
         Sun, 9 Jan 2022 13:40:41 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Johan Hovold <johan@kernel.org>,
-        stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 1/5] can: softing_cs: softingcs_probe(): fix memleak on registration failure
-Date:   Sun,  9 Jan 2022 14:40:36 +0100
-Message-Id: <20220109134040.1945428-2-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        Brian Silverman <brian.silverman@bluerivertech.com>,
+        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 5/5] can: gs_usb: gs_can_start_xmit(): zero-initialize hf->{flags,reserved}
+Date:   Sun,  9 Jan 2022 14:40:40 +0100
+Message-Id: <20220109134040.1945428-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220109134040.1945428-1-mkl@pengutronix.de>
 References: <20220109134040.1945428-1-mkl@pengutronix.de>
@@ -55,38 +54,39 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Brian Silverman <brian.silverman@bluerivertech.com>
 
-In case device registration fails during probe, the driver state and
-the embedded platform device structure needs to be freed using
-platform_device_put() to properly free all resources (e.g. the device
-name).
+No information is deliberately sent in hf->flags in host -> device
+communications, but the open-source candleLight firmware echoes it
+back, which can result in the GS_CAN_FLAG_OVERFLOW flag being set and
+generating spurious ERRORFRAMEs.
 
-Fixes: 0a0b7a5f7a04 ("can: add driver for Softing card")
-Link: https://lore.kernel.org/all/20211222104843.6105-1-johan@kernel.org
-Cc: stable@vger.kernel.org # 2.6.38
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+While there also initialize the reserved member with 0.
+
+Fixes: d08e973a77d1 ("can: gs_usb: Added support for the GS_USB CAN devices")
+Link: https://lore.kernel.org/all/20220106002952.25883-1-brian.silverman@bluerivertech.com
+Link: https://github.com/candle-usb/candleLight_fw/issues/87
+Cc: stable@vger.kernel.org
+Signed-off-by: Brian Silverman <brian.silverman@bluerivertech.com>
+[mkl: initialize the reserved member, too]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/softing/softing_cs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/usb/gs_usb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/can/softing/softing_cs.c b/drivers/net/can/softing/softing_cs.c
-index 2e93ee792373..e5c939b63fa6 100644
---- a/drivers/net/can/softing/softing_cs.c
-+++ b/drivers/net/can/softing/softing_cs.c
-@@ -293,7 +293,7 @@ static int softingcs_probe(struct pcmcia_device *pcmcia)
- 	return 0;
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index d7ce2c5956f4..4d43aca2ff56 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -508,6 +508,8 @@ static netdev_tx_t gs_can_start_xmit(struct sk_buff *skb,
  
- platform_failed:
--	kfree(dev);
-+	platform_device_put(pdev);
- mem_failed:
- pcmcia_bad:
- pcmcia_failed:
-
-base-commit: 6dc9a23e29061e50c36523270de60039ccf536fa
+ 	hf->echo_id = idx;
+ 	hf->channel = dev->channel;
++	hf->flags = 0;
++	hf->reserved = 0;
+ 
+ 	cf = (struct can_frame *)skb->data;
+ 
 -- 
 2.34.1
 
