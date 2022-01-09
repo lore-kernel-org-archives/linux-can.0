@@ -2,44 +2,47 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C46E8C43219
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B31EEC433FE
 	for <linux-can@archiver.kernel.org>; Sun,  9 Jan 2022 13:40:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235671AbiAINkv (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S235665AbiAINkv (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Sun, 9 Jan 2022 08:40:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41078 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235665AbiAINkt (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 9 Jan 2022 08:40:49 -0500
+        with ESMTP id S235675AbiAINku (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 9 Jan 2022 08:40:50 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83512C06173F
-        for <linux-can@vger.kernel.org>; Sun,  9 Jan 2022 05:40:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5276AC061756
+        for <linux-can@vger.kernel.org>; Sun,  9 Jan 2022 05:40:50 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1n6YRD-000465-TF
-        for linux-can@vger.kernel.org; Sun, 09 Jan 2022 14:40:47 +0100
+        id 1n6YRE-00046k-PJ
+        for linux-can@vger.kernel.org; Sun, 09 Jan 2022 14:40:48 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id EBCEB6D3EF6
-        for <linux-can@vger.kernel.org>; Sun,  9 Jan 2022 13:40:43 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 69FDF6D3EFF
+        for <linux-can@vger.kernel.org>; Sun,  9 Jan 2022 13:40:44 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 076346D3ED6;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 36FD26D3ED8;
         Sun,  9 Jan 2022 13:40:42 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 563a7311;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0d35ab51;
         Sun, 9 Jan 2022 13:40:41 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-Subject: [PATCH net 2/5] can: softing: softing_startstop(): fix set but not used variable warning
-Date:   Sun,  9 Jan 2022 14:40:37 +0100
-Message-Id: <20220109134040.1945428-3-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Pavel Machek <pavel@denx.de>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 4/5] can: rcar_canfd: rcar_canfd_channel_probe(): make sure we free CAN network device
+Date:   Sun,  9 Jan 2022 14:40:39 +0100
+Message-Id: <20220109134040.1945428-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220109134040.1945428-1-mkl@pengutronix.de>
 References: <20220109134040.1945428-1-mkl@pengutronix.de>
@@ -53,55 +56,48 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-In the function softing_startstop() the variable error_reporting is
-assigned but not used. The code that uses this variable is commented
-out. Its stated that the functionality is not finally verified.
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-To fix the warning:
+Make sure we free CAN network device in the error path. There are
+several jumps to fail label after allocating the CAN network device
+successfully. This patch places the free_candev() under fail label so
+that in failure path a jump to fail label frees the CAN network
+device.
 
-| drivers/net/can/softing/softing_fw.c:424:9: error: variable 'error_reporting' set but not used [-Werror,-Wunused-but-set-variable]
-
-remove the comment, activate the code, but add a "0 &&" to the if
-expression and rely on the optimizer rather than the preprocessor to
-remove the code.
-
-Link: https://lore.kernel.org/all/20220109103126.1872833-1-mkl@pengutronix.de
-Fixes: 03fd3cf5a179 ("can: add driver for Softing card")
-Cc: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Fixes: 76e9353a80e9 ("can: rcar_canfd: Add support for RZ/G2L family")
+Link: https://lore.kernel.org/all/20220106114801.20563-1-prabhakar.mahadev-lad.rj@bp.renesas.com
+Reported-by: Pavel Machek <pavel@denx.de>
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/softing/softing_fw.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/net/can/rcar/rcar_canfd.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/can/softing/softing_fw.c b/drivers/net/can/softing/softing_fw.c
-index 7e1536877993..32286f861a19 100644
---- a/drivers/net/can/softing/softing_fw.c
-+++ b/drivers/net/can/softing/softing_fw.c
-@@ -565,18 +565,19 @@ int softing_startstop(struct net_device *dev, int up)
- 		if (ret < 0)
- 			goto failed;
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index ff9d0f5ae0dd..388521e70837 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -1640,8 +1640,7 @@ static int rcar_canfd_channel_probe(struct rcar_canfd_global *gpriv, u32 ch,
+ 	ndev = alloc_candev(sizeof(*priv), RCANFD_FIFO_DEPTH);
+ 	if (!ndev) {
+ 		dev_err(&pdev->dev, "alloc_candev() failed\n");
+-		err = -ENOMEM;
+-		goto fail;
++		return -ENOMEM;
  	}
--	/* enable_error_frame */
--	/*
-+
-+	/* enable_error_frame
-+	 *
- 	 * Error reporting is switched off at the moment since
- 	 * the receiving of them is not yet 100% verified
- 	 * This should be enabled sooner or later
--	 *
--	if (error_reporting) {
-+	 */
-+	if (0 && error_reporting) {
- 		ret = softing_fct_cmd(card, 51, "enable_error_frame");
- 		if (ret < 0)
- 			goto failed;
- 	}
--	*/
-+
- 	/* initialize interface */
- 	iowrite16(1, &card->dpram[DPRAM_FCT_PARAM + 2]);
- 	iowrite16(1, &card->dpram[DPRAM_FCT_PARAM + 4]);
+ 	priv = netdev_priv(ndev);
+ 
+@@ -1735,8 +1734,8 @@ static int rcar_canfd_channel_probe(struct rcar_canfd_global *gpriv, u32 ch,
+ 
+ fail_candev:
+ 	netif_napi_del(&priv->napi);
+-	free_candev(ndev);
+ fail:
++	free_candev(ndev);
+ 	return err;
+ }
+ 
 -- 
 2.34.1
 
