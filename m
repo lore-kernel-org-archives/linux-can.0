@@ -2,36 +2,36 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CD98C4167B
-	for <linux-can@archiver.kernel.org>; Tue, 11 Jan 2022 16:28:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12DA8C433FE
+	for <linux-can@archiver.kernel.org>; Tue, 11 Jan 2022 16:28:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349973AbiAKQ2k (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 11 Jan 2022 11:28:40 -0500
-Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.103]:33173 "EHLO
-        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349961AbiAKQ2j (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 11 Jan 2022 11:28:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1641918161;
+        id S1349980AbiAKQ2o (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 11 Jan 2022 11:28:44 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.82]:32911 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349977AbiAKQ2n (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 11 Jan 2022 11:28:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1641918159;
     s=strato-dkim-0002; d=fpond.eu;
     h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=DBdydKDJXr4jLmklS5xq83gah+5FYR6KxbNfOtC5n44=;
-    b=TPvvCJuEUfz2PPnZuEmLI6eAA2go14rjhtApmmtcGf2is6v3klu1JixPYeXQhbVlgU
-    /0gmlEAFawhRvlF1Q6f/qtdtRKCqou/QyedTZJeECT2L1Vflt2PPiA/NcHwAusKYUtbD
-    r4KM90hBtGL8nsjukZarXJdLiHDInsnMqOOi1gptaydDs0libtib9NKmoQgMQo6wygEV
-    yxIIgWqqUxuj8dkGWC1Q4OAxIJNc4nr9tU7LJiCX4V0D9gZgLY7DuJluDALmNpi344Ne
-    ptA8r5WsI35nR6ZUpEcWxoeQqzuo0l6eku8A749+l7Zxq1dXKZ/Rh3SCWrbXXU7FqFk5
-    9/Rg==
+    bh=26V/zdrL+JyppG2XyT3B/o+gGDVMKccXxGHmJw1lG6g=;
+    b=nt4rw6dA3Ry4EsJwc0rgizf9tWJcdY0aru2wgSUReQBalCFRIBu21+VgKPmcsBWtrs
+    ueA5THOfwVhWEEjE2Hg7WSTKrXeOm112TFLxKepcbYo38gwlE4TVMI8M3rMkt5Z6jWvj
+    2qrwiYerkxVi+jdI80xQhX/3p9C+G6bc2RDvFcCSxvEI/UOE5idklKFzd2cDQ86Al4JO
+    YuJ8ueS2DDHL3A1TRxoNf/9dsEvy1cGeCbGRCioTwwOG5noAN+JKUycnFqi3+KwL1ul1
+    zyLmwNtR46wEgELFYiPizivYf8JC8Twcj9AS1WaKUi4HReygqKNhxXPyWNKpyteVycBs
+    s0UA==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":OWANVUa4dPFUgKR/3dpvnYP0Np73dmm4I5W0/AvA67Ot4fvR8nxYa0aI"
 X-RZG-CLASS-ID: mo00
 Received: from gummo.fritz.box
     by smtp.strato.de (RZmta 47.37.6 DYNA|AUTH)
-    with ESMTPSA id a48ca5y0BGMfHKt
+    with ESMTPSA id a48ca5y0BGMdHKr
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Tue, 11 Jan 2022 17:22:41 +0100 (CET)
+    Tue, 11 Jan 2022 17:22:39 +0100 (CET)
 From:   Ulrich Hecht <uli+renesas@fpond.eu>
 To:     linux-renesas-soc@vger.kernel.org
 Cc:     netdev@vger.kernel.org, davem@davemloft.net,
@@ -42,9 +42,9 @@ Cc:     netdev@vger.kernel.org, davem@davemloft.net,
         socketcan@hartkopp.net, geert@linux-m68k.org,
         kieran.bingham@ideasonboard.com,
         Ulrich Hecht <uli+renesas@fpond.eu>
-Subject: [PATCH v2 3/5] arm64: dts: renesas: r8a779a0: Add CANFD device node
-Date:   Tue, 11 Jan 2022 17:22:29 +0100
-Message-Id: <20220111162231.10390-4-uli+renesas@fpond.eu>
+Subject: [PATCH v2 1/5] clk: renesas: r8a779a0: add CANFD module clock
+Date:   Tue, 11 Jan 2022 17:22:27 +0100
+Message-Id: <20220111162231.10390-2-uli+renesas@fpond.eu>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20220111162231.10390-1-uli+renesas@fpond.eu>
 References: <20220111162231.10390-1-uli+renesas@fpond.eu>
@@ -54,89 +54,25 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch adds a CANFD device node for r8a779a0.
-
-Based on patch by Kazuya Mizuguchi.
+Adds "canfd0" to mod clocks.
 
 Signed-off-by: Ulrich Hecht <uli+renesas@fpond.eu>
 ---
- arch/arm64/boot/dts/renesas/r8a779a0.dtsi | 56 +++++++++++++++++++++++
- 1 file changed, 56 insertions(+)
+ drivers/clk/renesas/r8a779a0-cpg-mssr.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-index 1e7ed12ebc87..dfde33fa40e3 100644
---- a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-@@ -24,6 +24,13 @@
- 		i2c6 = &i2c6;
- 	};
- 
-+	/* External CAN clock - to be overridden by boards that provide it */
-+	can_clk: can {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <0>;
-+	};
-+
- 	cpus {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
-@@ -581,6 +588,55 @@
- 			status = "disabled";
- 		};
- 
-+		canfd: can@e6660000 {
-+			compatible = "renesas,r8a779a0-canfd";
-+			reg = <0 0xe6660000 0 0x8000>;
-+			interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "ch_int", "g_int";
-+			clocks = <&cpg CPG_MOD 328>,
-+				 <&cpg CPG_CORE R8A779A0_CLK_CANFD>,
-+				 <&can_clk>;
-+			clock-names = "fck", "canfd", "can_clk";
-+			assigned-clocks = <&cpg CPG_CORE R8A779A0_CLK_CANFD>;
-+			assigned-clock-rates = <80000000>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 328>;
-+			status = "disabled";
-+
-+			channel0 {
-+				status = "disabled";
-+			};
-+
-+			channel1 {
-+				status = "disabled";
-+			};
-+
-+			channel2 {
-+				status = "disabled";
-+			};
-+
-+			channel3 {
-+				status = "disabled";
-+			};
-+
-+			channel4 {
-+				status = "disabled";
-+			};
-+
-+			channel5 {
-+				status = "disabled";
-+			};
-+
-+			channel6 {
-+				status = "disabled";
-+			};
-+
-+			channel7 {
-+				status = "disabled";
-+			};
-+		};
-+
- 		avb0: ethernet@e6800000 {
- 			compatible = "renesas,etheravb-r8a779a0",
- 				     "renesas,etheravb-rcar-gen3";
+diff --git a/drivers/clk/renesas/r8a779a0-cpg-mssr.c b/drivers/clk/renesas/r8a779a0-cpg-mssr.c
+index 1c09d4ebe90f..fadd8a1718c6 100644
+--- a/drivers/clk/renesas/r8a779a0-cpg-mssr.c
++++ b/drivers/clk/renesas/r8a779a0-cpg-mssr.c
+@@ -136,6 +136,7 @@ static const struct mssr_mod_clk r8a779a0_mod_clks[] __initconst = {
+ 	DEF_MOD("avb3",		214,	R8A779A0_CLK_S3D2),
+ 	DEF_MOD("avb4",		215,	R8A779A0_CLK_S3D2),
+ 	DEF_MOD("avb5",		216,	R8A779A0_CLK_S3D2),
++	DEF_MOD("canfd0",	328,	R8A779A0_CLK_CANFD),
+ 	DEF_MOD("csi40",	331,	R8A779A0_CLK_CSI0),
+ 	DEF_MOD("csi41",	400,	R8A779A0_CLK_CSI0),
+ 	DEF_MOD("csi42",	401,	R8A779A0_CLK_CSI0),
 -- 
 2.20.1
 
