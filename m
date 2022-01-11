@@ -2,36 +2,36 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDB41C433FE
-	for <linux-can@archiver.kernel.org>; Tue, 11 Jan 2022 16:28:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21712C4321E
+	for <linux-can@archiver.kernel.org>; Tue, 11 Jan 2022 16:28:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349965AbiAKQ2j (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 11 Jan 2022 11:28:39 -0500
-Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.170]:41247 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343701AbiAKQ2i (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 11 Jan 2022 11:28:38 -0500
-X-Greylist: delayed 331 seconds by postgrey-1.27 at vger.kernel.org; Tue, 11 Jan 2022 11:28:37 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1641918155;
+        id S1349969AbiAKQ2k (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 11 Jan 2022 11:28:40 -0500
+Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.101]:33667 "EHLO
+        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343719AbiAKQ2j (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 11 Jan 2022 11:28:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1641918162;
     s=strato-dkim-0002; d=fpond.eu;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=PbqiuTr1T9ZHDxmjmX8wVg3i4weX4mGMaS9RhEoZqWM=;
-    b=JhvK5283qsrM7o/9WaJCKNQtaqUf12RzjGlvVd3aEOMCWdot9pMc3PZBGF7Y/XZDdd
-    GRJjfEKCkv+uDJqcUtRP854a/aIHDaox2cLoLERal1VgArsfLJ4trCHC20s9xVLmloAP
-    GeDl8xnQZCfoHBoUs2T8wGfX79icjmjUPrf4Yaw7U1QF+bzLKBguJbRcmFm8quflQEJf
-    ixnyvhsZkP+WN6KE26qD3NrM+Di/uvApauMhO9pC8LZW62s87gi7UM+k+CLOFjdd6kyd
-    cJXN+haRC7Qz/fuFQ6jRKxjIFMwc6ZwLM1KTXc3VgSYtre9l6+ro2Mf7MaOQfocJrJxA
-    jOBQ==
+    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=vO8GJaNAbF5R3pgLp5BXrfSzQRuLbozBLegd5OaGRrw=;
+    b=gIX4DUK2YX9EIDD9GZsv/xykFlX5w4db4Covn7pSPV++18/YQGTzv+UVB+Gj/PTFp3
+    BPAB21DPTc5n5nDBbgk0h8iJtXwwFaQkwwp+2/m+aEeUqiRspkGW4YVeTvOz74tpQ0tz
+    Nk05GJgTGM/VBmgrax3lA/Q0806SdTlpRj9lSNC2//Li+BsxYD26JrDc+TM6w7DzTAMZ
+    DjEuOKc4/HMrjDUPVKNk0fbOPDlwlv3lVNaYny0HkOKJkvQwPRoEgiIY+ebuzGI2gp6d
+    VX7wCMppXvA+Wi+bSiQD8eJI/v4+CxSbbLCLD3NbJQGy7EPcIGkh1QkFWuJYV7g+yMYm
+    52FQ==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":OWANVUa4dPFUgKR/3dpvnYP0Np73dmm4I5W0/AvA67Ot4fvR8nxYa0aI"
 X-RZG-CLASS-ID: mo00
 Received: from gummo.fritz.box
     by smtp.strato.de (RZmta 47.37.6 DYNA|AUTH)
-    with ESMTPSA id a48ca5y0BGMYHKq
+    with ESMTPSA id a48ca5y0BGMfHKu
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Tue, 11 Jan 2022 17:22:34 +0100 (CET)
+    Tue, 11 Jan 2022 17:22:41 +0100 (CET)
 From:   Ulrich Hecht <uli+renesas@fpond.eu>
 To:     linux-renesas-soc@vger.kernel.org
 Cc:     netdev@vger.kernel.org, davem@davemloft.net,
@@ -42,66 +42,58 @@ Cc:     netdev@vger.kernel.org, davem@davemloft.net,
         socketcan@hartkopp.net, geert@linux-m68k.org,
         kieran.bingham@ideasonboard.com,
         Ulrich Hecht <uli+renesas@fpond.eu>
-Subject: [PATCH v2 0/5] can: rcar_canfd: Add support for V3U flavor
-Date:   Tue, 11 Jan 2022 17:22:26 +0100
-Message-Id: <20220111162231.10390-1-uli+renesas@fpond.eu>
+Subject: [PATCH v2 4/5] arm64: dts: renesas: r8a779a0-falcon: enable CANFD 0 and 1
+Date:   Tue, 11 Jan 2022 17:22:30 +0100
+Message-Id: <20220111162231.10390-5-uli+renesas@fpond.eu>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20220111162231.10390-1-uli+renesas@fpond.eu>
+References: <20220111162231.10390-1-uli+renesas@fpond.eu>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi!
+Enables confirmed-working CAN interfaces 0 and 1 on the Falcon board.
 
-This adds CANFD support for V3U (R8A779A0) SoCs. The V3U's IP supports up to
-eight channels and has some other minor differences to the Gen3 variety:
+Signed-off-by: Ulrich Hecht <uli+renesas@fpond.eu>
+---
+ .../boot/dts/renesas/r8a779a0-falcon.dts      | 24 +++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-- changes to some register offsets and layouts
-- absence of "classic CAN" registers, both modes are handled through the
-  CANFD register set
-
-This patch set tries to accommodate these changes in a minimally intrusive
-way.
-
-This revision attempts to address issues raised by reviewers to the extent
-possible, adds board enablement, a missing clock and some minor fixes. See
-below for details.
-
-It has been sucessfully tested remotely on a V3U Falcon board, but only with
-channels 0 and 1. We were not able to get higher channels to work in both
-directions yet. It is not currently clear if this is an issue with the
-driver, the board or the silicon, but the BSP vendor driver only works with
-channels 0 and 1 as well, so my bet is on one of the latter. For this
-reason, this series only enables known-working channels 0 and 1 on Falcon.
-
-CU
-Uli
-
-
-Changes since v1:
-- clk: added missing CANFD module clock
-- driver: fixed tests for RZ/G2L so they won't break V3U
-- driver: simplified two macros
-- DT: enabled devices 0 and 1 on Falcon board
-- DT: changed assigned-clock-rates to 80000000
-- DT: added interrupt names
-
-
-Ulrich Hecht (5):
-  clk: renesas: r8a779a0: add CANFD module clock
-  can: rcar_canfd: Add support for r8a779a0 SoC
-  arm64: dts: renesas: r8a779a0: Add CANFD device node
-  arm64: dts: renesas: r8a779a0-falcon: enable CANFD 0 and 1
-  dt-bindings: can: renesas,rcar-canfd: Document r8a779a0 support
-
- .../bindings/net/can/renesas,rcar-canfd.yaml  |   2 +
- .../boot/dts/renesas/r8a779a0-falcon.dts      |  24 ++
- arch/arm64/boot/dts/renesas/r8a779a0.dtsi     |  56 +++++
- drivers/clk/renesas/r8a779a0-cpg-mssr.c       |   1 +
- drivers/net/can/rcar/rcar_canfd.c             | 231 ++++++++++++------
- 5 files changed, 236 insertions(+), 78 deletions(-)
-
+diff --git a/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts b/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
+index e46dc9aa0a43..75e27f950ac0 100644
+--- a/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
++++ b/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
+@@ -65,4 +65,28 @@
+ 		};
+ 
+ 	};
++
++	canfd0_pins: canfd0 {
++		groups = "canfd0_data";
++		function = "canfd0";
++	};
++
++	canfd1_pins: canfd1 {
++		groups = "canfd1_data";
++		function = "canfd1";
++	};
++};
++
++&canfd {
++	pinctrl-0 = <&canfd0_pins>, <&canfd1_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	channel0 {
++		status = "okay";
++	};
++
++	channel1 {
++		status = "okay";
++	};
+ };
 -- 
 2.20.1
 
