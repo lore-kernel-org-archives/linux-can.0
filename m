@@ -2,132 +2,131 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25F3AC433F5
-	for <linux-can@archiver.kernel.org>; Thu, 13 Jan 2022 21:10:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E64AFC433F5
+	for <linux-can@archiver.kernel.org>; Fri, 14 Jan 2022 10:16:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234848AbiAMVKX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 13 Jan 2022 16:10:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234890AbiAMVKX (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 13 Jan 2022 16:10:23 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CECC0C061574
-        for <linux-can@vger.kernel.org>; Thu, 13 Jan 2022 13:10:22 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1n87MT-0007dS-9w; Thu, 13 Jan 2022 22:10:21 +0100
-Received: from pengutronix.de (unknown [195.138.59.174])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 62C1018133;
-        Thu, 13 Jan 2022 21:10:19 +0000 (UTC)
-Date:   Thu, 13 Jan 2022 22:10:18 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Srinivas Neeli <sneeli@xilinx.com>
-Cc:     Srinivas Goud <sgoud@xilinx.com>,
+        id S240302AbiANKQQ convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 14 Jan 2022 05:16:16 -0500
+Received: from mail-yb1-f170.google.com ([209.85.219.170]:45612 "EHLO
+        mail-yb1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239524AbiANKQO (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 14 Jan 2022 05:16:14 -0500
+Received: by mail-yb1-f170.google.com with SMTP id h14so22598185ybe.12
+        for <linux-can@vger.kernel.org>; Fri, 14 Jan 2022 02:16:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Oyn741sdaZAozINtzbvz4gTMibv3/l8R4O8IaVjqqS0=;
+        b=hE9FME/+zqk0GfDfYFdPdz+zG2MlU1pxCQ8K71QVl+8dB9CQAGhVG9LaEXAS73jpv4
+         i6wZjHmFPE9x8X1e7MNWYX6hUyllNb2HSZa8e+Kwz2+d/PVeUimZ5ZlU2/qhCnbl+vGH
+         QI4wCoM+Fybp/w6qUWqCJWxYqwPeyCt9NJ+raUj41AhJjCu9809liT5RE1mcJ8Hg5ffq
+         Lh7iZYBhaAAsIV3mrCK9s4RSykNJ1NWJGv1t1aPW3MboPMKjd7ZIhBRmXfly0iUm/If4
+         ORbP98Ocwx572sttko+TVK6OzgYms8A3hAQCuSQ3WCNx/pvZSu64lbnpXLMmB1Ns1Yep
+         0uZQ==
+X-Gm-Message-State: AOAM53059CYp23e7IpTKMykVtaDGm5upc4xdq3j9gKPSNfCwSWjwkKed
+        AYqSy62ZgePXFdpRkZjyoQmPwq/yNCtwohOCUZ4=
+X-Google-Smtp-Source: ABdhPJy0FpN+aysxTI9CdEvaJ/bfp586IxBUBIncICZLTGYdj1nHunVs5fZDQibpUYUUk2eKoxcBbGW0jZ1YWMBw2RA=
+X-Received: by 2002:a25:b15:: with SMTP id 21mr9783844ybl.397.1642155373955;
+ Fri, 14 Jan 2022 02:16:13 -0800 (PST)
+MIME-Version: 1.0
+References: <DM6PR02MB538645C4ECE3BBBD3CE92A17AF539@DM6PR02MB5386.namprd02.prod.outlook.com>
+ <20220113203004.jf2rqj2pirhgx72i@pengutronix.de> <20220113211018.tqddyiix3vy5q3eq@pengutronix.de>
+In-Reply-To: <20220113211018.tqddyiix3vy5q3eq@pengutronix.de>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Fri, 14 Jan 2022 19:16:02 +0900
+Message-ID: <CAMZ6RqJTO8X+YZBb5g0WjObeB=oR1QzguazahsBhJOTz5+1MoQ@mail.gmail.com>
+Subject: Re: Queries on CAN frame work
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Srinivas Neeli <sneeli@xilinx.com>,
+        Srinivas Goud <sgoud@xilinx.com>,
         Naveen Kumar Gaddipati <naveenku@xilinx.com>,
         Prasad Beer Prasad <prasadbe@xilinx.com>,
         linux-can <linux-can@vger.kernel.org>,
-        Stefan =?utf-8?B?TcOkdGpl?= <stefan.maetje@esd.eu>,
-        Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Subject: Re: Queries on CAN frame work
-Message-ID: <20220113211018.tqddyiix3vy5q3eq@pengutronix.de>
-References: <DM6PR02MB538645C4ECE3BBBD3CE92A17AF539@DM6PR02MB5386.namprd02.prod.outlook.com>
- <20220113203004.jf2rqj2pirhgx72i@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wv5znby7ov7f3bvj"
-Content-Disposition: inline
-In-Reply-To: <20220113203004.jf2rqj2pirhgx72i@pengutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+        =?UTF-8?Q?Stefan_M=C3=A4tje?= <Stefan.Maetje@esd.eu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+Le ven. 14 janv. 2022 à 06:10, Marc Kleine-Budde <mkl@pengutronix.de> a écrit :
+>
+> On 13.01.2022 21:30:04, Marc Kleine-Budde wrote:
+> > > Recently we did few experiments with our CANFD network. Stuff error
+> > > observed with different Nominal and Dataphase prescaler configuration
+> > > values, which we get from the frame work.
+> > >
+> > > For lower baud rates separate prescalers are working good, but when we
+> > > switch to high baud rates(like 4Mbps and 5Mbps) observed the BUSOFF
+> > > state(Due to stuff errors) on IP(Xilinx).
+> > >
+> > > With shared prescaler(low prescalers) we are not seeing the issue..
+> > >
+> > > In Iso spec also mentioned to avoid tolerance, we have to maintain
+> > > common TQ for Nominal and Data phase.
+>
+> This is a known problem with the current arbitration and data bit rate
+> calculation. They are done independently of each other, resulting in not
+> common pre-scalers and thus not common TQ.
+>
+> > > Spec: ISO 11898-1:2015(E)  page no :50
+> > >
+> > > " If the same time quantum length is used in the nominal bit time and
+> > > in the data bit time and the positions of the sample points in the
+> > > nominal bit time are the same in all CAN nodes of a network, then
+> > > optimum clock tolerance is accomplished for networks using FD frames."
+> > >
+> > > CIA:
+> > > https://can-newsletter.org/uploads/media/raw/f6a36d1461371a2f86ef0011a513712c.pdf
+> > >
+> > > From above CAN-newsletter also suggested the same in recommendation 2 and 3.
+>
+> I'll have a look at the newsletter and see what changes need to be done
+> to the existing algorithm.
+>
+> > > Recommendation 2: Set the BRPA bit-rate prescaler equal BRPB
+> > > Recommendation 3: Choose BRPA and BRPD as low as possible
+> > >
+> > > Is there any possibility in framework to use shared prescalars for
+> > > Nominal and Dataphase?.
+>
+> Not yet.
 
---wv5znby7ov7f3bvj
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Well, technically, skipping the full calculation and providing all
+bittiming parameters will allow you to use shared prescalers. But
+indeed, there is nothing to automatically calculate it nor to check the
+sanity of manually provided bittiming parameters.
 
-On 13.01.2022 21:30:04, Marc Kleine-Budde wrote:
-> > Recently we did few experiments with our CANFD network. Stuff error
-> > observed with different Nominal and Dataphase prescaler configuration
-> > values, which we get from the frame work.
-> >=20
-> > For lower baud rates separate prescalers are working good, but when we
-> > switch to high baud rates(like 4Mbps and 5Mbps) observed the BUSOFF
-> > state(Due to stuff errors) on IP(Xilinx).
-> >=20
-> > With shared prescaler(low prescalers) we are not seeing the issue..
-> >=20
-> > In Iso spec also mentioned to avoid tolerance, we have to maintain
-> > common TQ for Nominal and Data phase.
+> > > One more question. How to calculate TDCO ?, is there any generic
+> > > formula for this ?.
+>
+> Vincent (Cc'ed) can help you on this.
 
-This is a known problem with the current arbitration and data bit rate
-calculation. They are done independently of each other, resulting in not
-common pre-scalers and thus not common TQ.
+It is implemented in the kernel here:
+https://elixir.bootlin.com/linux/latest/source/drivers/net/can/dev/bittiming.c#L178
 
-> > Spec: ISO 11898-1:2015(E)  page no :50
-> >=20
-> > " If the same time quantum length is used in the nominal bit time and
-> > in the data bit time and the positions of the sample points in the
-> > nominal bit time are the same in all CAN nodes of a network, then
-> > optimum clock tolerance is accomplished for networks using FD frames."
-> >=20
-> > CIA:
-> > https://can-newsletter.org/uploads/media/raw/f6a36d1461371a2f86ef0011a5=
-13712c.pdf
-> >=20
-> > From above CAN-newsletter also suggested the same in recommendation 2 a=
-nd 3.
+You can refer to the patch description for additional info.
+ * Original patch:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c25cc7993243fdc00ab7e608e3764819538015ab
+ * Amended by:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=39f66c9e229797a58a12ea78388cbbad1f81aec9
 
-I'll have a look at the newsletter and see what changes need to be done
-to the existing algorithm.
+N.B.: the comments of the original patch related to iproute2 are outdated.
 
-> > Recommendation 2: Set the BRPA bit-rate prescaler equal BRPB
-> > Recommendation 3: Choose BRPA and BRPD as low as possible
-> >=20
-> > Is there any possibility in framework to use shared prescalars for
-> > Nominal and Dataphase?.
+If you follow the links in the patches you will find even more discussions
+on this topic in the mailing list archives. But I guess that the commit
+description is enough to answer your questions.
 
-Not yet.
+Also, please note that the xilinx driver does not yet implement TDC.
+Actually, TDC netlink framework was introduced recently in the kernel and
+as of today only the etas_es58x does support it.
 
-> > One more question. How to calculate TDCO ?, is there any generic
-> > formula for this ?.
+By the way, Marc, did you get an answer from Microchip on the relative
+TDCO topic for the mcp25xxfd?
+c.f. https://lore.kernel.org/all/20210817094306.iyezzml6m7nlznri@pengutronix.de/
 
-Vincent (Cc'ed) can help you on this.
 
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---wv5znby7ov7f3bvj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmHglTcACgkQqclaivrt
-76mDEAgAk8PATw8kxRwiaSnMttpDpZvtNw0+DZv77W9c1QEMs2QS9M8GwYSEJm5X
-ISGemVa60BhUhi00ayTjF/KtPw5p1nDWV5zbVMonOWoEINxtVDnanag/sFmpL5eW
-6DZSPdM/+eL7gUSdhGodaveqXBPRkpONRI6iZ1xuIT1uodQNKP3OAlPflbvzLVxm
-8wBIkodc9G/JkZLnoQj9GkigxvClI2a/nCAl4+DMsaKlVaaXm3Re49oF1J+ptO0i
-Hzz++QXN4tSvq7LW0oHCwcLI5CeN1ucgv66QFrBDvG5Prgmombh9WBbWfm9ZHCM3
-xY4L2ne9acCJSG+ggVm7iBLQq7A5Gg==
-=u+eM
------END PGP SIGNATURE-----
-
---wv5znby7ov7f3bvj--
+Yours sincerely,
+Vincent Mailhol
