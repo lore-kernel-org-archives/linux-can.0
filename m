@@ -2,202 +2,101 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50DF4C433EF
-	for <linux-can@archiver.kernel.org>; Tue, 18 Jan 2022 07:58:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55F5FC433EF
+	for <linux-can@archiver.kernel.org>; Tue, 18 Jan 2022 10:16:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236498AbiARH6V (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 18 Jan 2022 02:58:21 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.166]:37125 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245003AbiARH6V (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 18 Jan 2022 02:58:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1642492697;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=1qsuYiZ+TnspVh46LBDqSDLAe/AFtcWSs/1s3CE8Rds=;
-    b=cGCPl4dH02cODoYYyb9G2WpxoTYhBpFiTzJv3tnR+NSuHlYpYqcr/F2TETEYwOCp2p
-    CJW3wXN9TcUEOADMF5qcMIoNQFOJ7PDVc8QDkRQvamlWjeYEgXEvsNPgQWHQsGtOMJwe
-    fpUxXjn2+0A6fFhOePergW2U8QNeBMGfRmuc40DSCB3xL/Zow+RJIzJOhjrSIvGznQLq
-    vQ6pVOzWlCUmqwnxiBSF0fWyIcDFERIcYSnaPNp3uFnS+rqRGr39qh5B+gM/VJmmifdN
-    /ii9AxSx+xx/3ijNbFvE80j90DVAmj80SgrhNDK5R557bSVcGV2PSEXMBVN/WC8/PZRG
-    s3Pw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusx3hdd0DIgVuBOfXW6v7w=="
-X-RZG-CLASS-ID: mo00
-Received: from [IPV6:2a00:6020:1cfa:f900::b82]
-    by smtp.strato.de (RZmta 47.37.6 AUTH)
-    with ESMTPSA id Rb080by0I7wHUGe
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 18 Jan 2022 08:58:17 +0100 (CET)
-Message-ID: <53279d6d-298c-5a85-4c16-887c95447825@hartkopp.net>
-Date:   Tue, 18 Jan 2022 08:58:12 +0100
+        id S229594AbiARKQ1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 18 Jan 2022 05:16:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229514AbiARKQZ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 18 Jan 2022 05:16:25 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF174C061574
+        for <linux-can@vger.kernel.org>; Tue, 18 Jan 2022 02:16:24 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1n9lXL-0005te-3K; Tue, 18 Jan 2022 11:16:23 +0100
+Received: from pengutronix.de (unknown [195.138.59.174])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 30EC01C709;
+        Tue, 18 Jan 2022 10:16:22 +0000 (UTC)
+Date:   Tue, 18 Jan 2022 11:16:18 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Markus Mirevik <markus.mirevik@dpsolutions.se>
+Cc:     "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Subject: Re: MCP251xFD runs interrupt handler twice per message.
+Message-ID: <20220118101618.5xhgy7psrfjnjmpn@pengutronix.de>
+References: <HE1PR04MB310066D557C9D77FE357D90AE6549@HE1PR04MB3100.eurprd04.prod.outlook.com>
+ <87o84e1oj1.fsf@hardanger.blackshift.org>
+ <HE1PR04MB3100B7CD240526C06FCA048EE6549@HE1PR04MB3100.eurprd04.prod.outlook.com>
+ <20220116110941.6cqzm3skp57pnvth@pengutronix.de>
+ <HE1PR04MB3100E5991C6FB420821F1F54E6579@HE1PR04MB3100.eurprd04.prod.outlook.com>
+ <20220117132716.y5q3vuayjgqhwpro@pengutronix.de>
+ <HE1PR04MB310040456777CCDE2DF03FEAE6579@HE1PR04MB3100.eurprd04.prod.outlook.com>
+ <20220117150833.d4e4f4dhjvsvmxkt@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH net] can: isotp: isotp_rcv_cf(): fix so->rx race problem
-Content-Language: en-US
-To:     Ziyang Xuan <william.xuanziyang@huawei.com>, mkl@pengutronix.de
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20220117120102.2395157-1-william.xuanziyang@huawei.com>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20220117120102.2395157-1-william.xuanziyang@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3wsd5dff6f4igchy"
+Content-Disposition: inline
+In-Reply-To: <20220117150833.d4e4f4dhjvsvmxkt@pengutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi,
 
-the referenced syzbot issue has already been fixed in upstream here:
+--3wsd5dff6f4igchy
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=5f33a09e769a9da0482f20a6770a342842443776
+On 17.01.2022 16:08:33, Marc Kleine-Budde wrote:
+> On 17.01.2022 14:53:46, Markus Mirevik wrote:
+> > > That scope picture looks good! Can you include both runs of the IRQ
+> > > handler in one scope picture? I'm interested if there is activity or
+> > > a glich on IRQ line.
+> > =20
+> > Both are included. The last (number 7) is the one extra reading of the
+> > register!?
+>=20
+> Doh! Indeed, you'r right, missed that.
 
-("can: isotp: convert struct tpcon::{idx,len} to unsigned int")
+Can you take a scope picture with falling edge triggered IRQ?
 
-Additionally this fix changes some behaviour that is required by the ISO 
-16765-2 specification (see below).
+(Note for the out of context reader: _Always_ use level triggered IRQs
+ with the mcp251xfd in production use.)
 
-On 17.01.22 13:01, Ziyang Xuan wrote:
-> When receive a FF, the current code logic does not consider the real
-> so->rx.state but set so->rx.state to ISOTP_IDLE directly. That will
-> make so->rx accessed by multiple receiving processes concurrently.
+regards,
+Marc
 
-This is intentionally. "multiple receiving processes" are not allowed 
-resp. specified by ISO 15765-2.
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-> The following syz problem is one of the scenarios. so->rx.len is
-> changed by isotp_rcv_ff() during isotp_rcv_cf(), so->rx.len equals
-> 0 before alloc_skb() and equals 4096 after alloc_skb(). That will
-> trigger skb_over_panic() in skb_put().
-> 
-> =======================================================
-> CPU: 1 PID: 19 Comm: ksoftirqd/1 Not tainted 5.16.0-rc8-syzkaller #0
-> RIP: 0010:skb_panic+0x16c/0x16e net/core/skbuff.c:113
-> Call Trace:
->   <TASK>
->   skb_over_panic net/core/skbuff.c:118 [inline]
->   skb_put.cold+0x24/0x24 net/core/skbuff.c:1990
->   isotp_rcv_cf net/can/isotp.c:570 [inline]
->   isotp_rcv+0xa38/0x1e30 net/can/isotp.c:668
->   deliver net/can/af_can.c:574 [inline]
->   can_rcv_filter+0x445/0x8d0 net/can/af_can.c:635
->   can_receive+0x31d/0x580 net/can/af_can.c:665
->   can_rcv+0x120/0x1c0 net/can/af_can.c:696
->   __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5465
->   __netif_receive_skb+0x24/0x1b0 net/core/dev.c:5579
-> 
-> Check so->rx.state equals ISOTP_IDLE firstly in isotp_rcv_ff().
-> Make sure so->rx idle when receive another new packet. And set
-> so->rx.state to ISOTP_IDLE after whole packet being received.
-> 
-> Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
-> Reported-by: syzbot+4c63f36709a642f801c5@syzkaller.appspotmail.com
-> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-> ---
->   net/can/isotp.c | 28 +++++++++++++++++-----------
->   1 file changed, 17 insertions(+), 11 deletions(-)
-> 
-> diff --git a/net/can/isotp.c b/net/can/isotp.c
-> index df6968b28bf4..a4b174f860f3 100644
-> --- a/net/can/isotp.c
-> +++ b/net/can/isotp.c
-> @@ -443,8 +443,10 @@ static int isotp_rcv_ff(struct sock *sk, struct canfd_frame *cf, int ae)
->   	int off;
->   	int ff_pci_sz;
->   
-> +	if (so->rx.state != ISOTP_IDLE)
-> +		return 0;
-> +
->   	hrtimer_cancel(&so->rxtimer);
-> -	so->rx.state = ISOTP_IDLE;
+--3wsd5dff6f4igchy
+Content-Type: application/pgp-signature; name="signature.asc"
 
-No matter in which receiving state we receive a first frame (FF) we are 
-required to start a fresh reception process and/or terminate the current 
-attempt.
+-----BEGIN PGP SIGNATURE-----
 
-Best regards,
-Oliver
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmHmk3AACgkQqclaivrt
+76nQaAf/fQzN7NXN4RCfIxVaVdC7rJHSL7SmoVHXM7QnmLFSf9MjACNNemqlI256
+PAck9R6gg9yI2ZfOtW9VBjv/V+HN5zTpdaCrleWbGP7ys1KhnHXZrxdFj6ePD4nc
+RhzygNFG4uEfeWsv3D6rPNYWi0TpL1yIHWt1Sx0lL40Onk9w3nN1mof1tm39YPkF
+o1o+rfVYKL2wXUZmoWpP5HLACaP1AvlLK3HvMj8JvSnXKCX9tc9g8e6NXSChgMHT
+PzA7ilrox82C7SpJkOFnV0zc2lx7SVwiw4mmfBUm11jYoBb0rm+Njui6JylzJJsP
+pVt1LyC1iUiuMfvqjBaynVCjP5GnIg==
+=4nAW
+-----END PGP SIGNATURE-----
 
->   
->   	/* get the used sender LL_DL from the (first) CAN frame data length */
->   	so->rx.ll_dl = padlen(cf->len);
-> @@ -518,8 +520,6 @@ static int isotp_rcv_cf(struct sock *sk, struct canfd_frame *cf, int ae,
->   		so->lastrxcf_tstamp = skb->tstamp;
->   	}
->   
-> -	hrtimer_cancel(&so->rxtimer);
-> -
->   	/* CFs are never longer than the FF */
->   	if (cf->len > so->rx.ll_dl)
->   		return 1;
-> @@ -531,15 +531,15 @@ static int isotp_rcv_cf(struct sock *sk, struct canfd_frame *cf, int ae,
->   			return 1;
->   	}
->   
-> +	hrtimer_cancel(&so->rxtimer);
-> +
->   	if ((cf->data[ae] & 0x0F) != so->rx.sn) {
->   		/* wrong sn detected - report 'illegal byte sequence' */
->   		sk->sk_err = EILSEQ;
->   		if (!sock_flag(sk, SOCK_DEAD))
->   			sk_error_report(sk);
->   
-> -		/* reset rx state */
-> -		so->rx.state = ISOTP_IDLE;
-> -		return 1;
-> +		goto err_out;
->   	}
->   	so->rx.sn++;
->   	so->rx.sn %= 16;
-> @@ -551,21 +551,18 @@ static int isotp_rcv_cf(struct sock *sk, struct canfd_frame *cf, int ae,
->   	}
->   
->   	if (so->rx.idx >= so->rx.len) {
-> -		/* we are done */
-> -		so->rx.state = ISOTP_IDLE;
-> -
->   		if ((so->opt.flags & ISOTP_CHECK_PADDING) &&
->   		    check_pad(so, cf, i + 1, so->opt.rxpad_content)) {
->   			/* malformed PDU - report 'not a data message' */
->   			sk->sk_err = EBADMSG;
->   			if (!sock_flag(sk, SOCK_DEAD))
->   				sk_error_report(sk);
-> -			return 1;
-> +			goto err_out;
->   		}
->   
->   		nskb = alloc_skb(so->rx.len, gfp_any());
->   		if (!nskb)
-> -			return 1;
-> +			goto err_out;
->   
->   		memcpy(skb_put(nskb, so->rx.len), so->rx.buf,
->   		       so->rx.len);
-> @@ -573,6 +570,10 @@ static int isotp_rcv_cf(struct sock *sk, struct canfd_frame *cf, int ae,
->   		nskb->tstamp = skb->tstamp;
->   		nskb->dev = skb->dev;
->   		isotp_rcv_skb(nskb, sk);
-> +
-> +		/* we are done */
-> +		so->rx.state = ISOTP_IDLE;
-> +
->   		return 0;
->   	}
->   
-> @@ -591,6 +592,11 @@ static int isotp_rcv_cf(struct sock *sk, struct canfd_frame *cf, int ae,
->   	/* we reached the specified blocksize so->rxfc.bs */
->   	isotp_send_fc(sk, ae, ISOTP_FC_CTS);
->   	return 0;
-> +
-> +err_out:
-> +	/* reset rx state */
-> +	so->rx.state = ISOTP_IDLE;
-> +	return 1;
->   }
->   
->   static void isotp_rcv(struct sk_buff *skb, void *data)
+--3wsd5dff6f4igchy--
