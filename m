@@ -2,42 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EED5C433F5
-	for <linux-can@archiver.kernel.org>; Wed, 19 Jan 2022 06:14:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C844C433F5
+	for <linux-can@archiver.kernel.org>; Wed, 19 Jan 2022 06:29:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351681AbiASGOS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 19 Jan 2022 01:14:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44638 "EHLO
+        id S1351778AbiASG3z (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 19 Jan 2022 01:29:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234904AbiASGOR (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 19 Jan 2022 01:14:17 -0500
+        with ESMTP id S1351700AbiASG3z (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 19 Jan 2022 01:29:55 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F09C061574
-        for <linux-can@vger.kernel.org>; Tue, 18 Jan 2022 22:14:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30A1C061574
+        for <linux-can@vger.kernel.org>; Tue, 18 Jan 2022 22:29:54 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nA4Ea-0006V7-14; Wed, 19 Jan 2022 07:14:16 +0100
-Received: from pengutronix.de (unknown [195.138.59.174])
+        id 1nA4Th-0007tj-ES
+        for linux-can@vger.kernel.org; Wed, 19 Jan 2022 07:29:53 +0100
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id E90C31D37D
+        for <linux-can@vger.kernel.org>; Wed, 19 Jan 2022 06:29:52 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 5ABD71D2C0;
-        Wed, 19 Jan 2022 06:14:15 +0000 (UTC)
-Date:   Wed, 19 Jan 2022 07:14:11 +0100
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id CFEEA1D379;
+        Wed, 19 Jan 2022 06:29:52 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3069d397;
+        Wed, 19 Jan 2022 06:29:52 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Fix array schemas encoded as matrices
-Message-ID: <20220119061411.qcfef5jz6ibs327l@pengutronix.de>
-References: <20220119015627.2443334-1-robh@kernel.org>
+To:     linux-can@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH] dt-bindings: can: tcan4x5x: fix mram-cfg RX FIFO config
+Date:   Wed, 19 Jan 2022 07:29:51 +0100
+Message-Id: <20220119062951.2939851-1-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yfm7kxmys4xwysix"
-Content-Disposition: inline
-In-Reply-To: <20220119015627.2443334-1-robh@kernel.org>
+Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -46,48 +50,29 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+This tcan4x5x only comes with 2K of MRAM, a RX FIFO with a dept of 32
+doesn't fit into the MRAM. Use a depth of 16 instead.
 
---yfm7kxmys4xwysix
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 4edd396a1911 ("dt-bindings: can: tcan4x5x: Add DT bindings for TCAN4x5X driver")
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ Documentation/devicetree/bindings/net/can/tcan4x5x.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 18.01.2022 19:56:26, Rob Herring wrote:
-> The YAML DT encoding has leaked into some array properties. Properties
-> which are defined as an array should have a schema that's just an array.
-> That means there should only be a single level of 'minItems',
-> 'maxItems', and/or 'items'.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  .../bindings/net/can/bosch,m_can.yaml         | 52 ++++++++--------
+diff --git a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+index 0968b40aef1e..e3501bfa22e9 100644
+--- a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
++++ b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+@@ -31,7 +31,7 @@ tcan4x5x: tcan4x5x@0 {
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+ 		spi-max-frequency = <10000000>;
+-		bosch,mram-cfg = <0x0 0 0 32 0 0 1 1>;
++		bosch,mram-cfg = <0x0 0 0 16 0 0 1 1>;
+ 		interrupt-parent = <&gpio1>;
+ 		interrupts = <14 IRQ_TYPE_LEVEL_LOW>;
+ 		device-state-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
+-- 
+2.34.1
 
-for net/can/
 
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---yfm7kxmys4xwysix
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmHnrDEACgkQqclaivrt
-76n8HQf/a+g/PdevYZq4o0O2nN2m+skhWixp8n3W2cZBCDbJSy2T89Ey1nHNZoLI
-tV/Kml5GYsZiYYsQY/TckNIMoTRx+aKDDJoxKm9h8lxzwUcai48kauTUJQ7xjAS7
-FSKwvhnpD3PIvY8sGr8tUhNtLT9BShATBpLP/S3ALW4O4vNRSXzbkU3d2+14qQRo
-+B+LVrjNYcFohHpcujjkLey19/0BY87JeMNihK/vt2HwHmQPEb7IHfvriDtKKXFV
-rTsKpamKydHPhioR/MmBPHn+mxZtJAkQv+osW9CH9JpV0l590uiG11C2vqmHH2FU
-Y6gecbPBCrVGDsB9A029tNHV7jABdg==
-=sslO
------END PGP SIGNATURE-----
-
---yfm7kxmys4xwysix--
