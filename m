@@ -2,45 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB0BAC4167E
-	for <linux-can@archiver.kernel.org>; Tue, 25 Jan 2022 02:43:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CE49C4167B
+	for <linux-can@archiver.kernel.org>; Tue, 25 Jan 2022 02:43:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236832AbiAYChY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 24 Jan 2022 21:37:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37746 "EHLO
+        id S232530AbiAYChZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 24 Jan 2022 21:37:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S3409135AbiAYAZF (ORCPT
+        with ESMTP id S3409132AbiAYAZF (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 24 Jan 2022 19:25:05 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57086C0C63CC
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701C6C0C63D0
         for <linux-can@vger.kernel.org>; Mon, 24 Jan 2022 14:06:58 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nC7UG-0004RD-QP
+        id 1nC7UG-0004R4-Tz
         for linux-can@vger.kernel.org; Mon, 24 Jan 2022 23:06:56 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id C7B67213CA
+        by bjornoya.blackshift.org (Postfix) with SMTP id C761F213C9
         for <linux-can@vger.kernel.org>; Mon, 24 Jan 2022 22:06:54 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7BDEA213B0;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8AE26213B4;
         Mon, 24 Jan 2022 22:06:54 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id a17addcb;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 17ba7dc1;
         Mon, 24 Jan 2022 22:06:54 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         Marc Kleine-Budde <mkl@pengutronix.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Thomas Kopp <thomas.kopp@microchip.com>
-Subject: [PATCH net-next 1/4] dt-binding: can: mcp251xfd: include common CAN controller bindings
-Date:   Mon, 24 Jan 2022 23:06:50 +0100
-Message-Id: <20220124220653.3477172-2-mkl@pengutronix.de>
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>
+Subject: [PATCH net-next 3/4] dt-binding: can: m_can: include common CAN controller bindings
+Date:   Mon, 24 Jan 2022 23:06:52 +0100
+Message-Id: <20220124220653.3477172-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220124220653.3477172-1-mkl@pengutronix.de>
 References: <20220124220653.3477172-1-mkl@pengutronix.de>
@@ -58,30 +57,29 @@ Since commit
 
 | 1f9234401ce0 ("dt-bindings: can: add can-controller.yaml")
 
-there is a common CAN controller binding. Add this to the mcp251xfd
+there is a common CAN controller binding. Add this to the m_can
 binding.
 
-Cc: Manivannan Sadhasivam <mani@kernel.org>
-Cc: Thomas Kopp <thomas.kopp@microchip.com>
+Cc: Chandrasekar Ramakrishnan <rcsekar@samsung.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../devicetree/bindings/net/can/microchip,mcp251xfd.yaml       | 3 +++
+ Documentation/devicetree/bindings/net/can/bosch,m_can.yaml | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp251xfd.yaml b/Documentation/devicetree/bindings/net/can/microchip,mcp251xfd.yaml
-index 2a884c1fe0e0..b3826af6bd6e 100644
---- a/Documentation/devicetree/bindings/net/can/microchip,mcp251xfd.yaml
-+++ b/Documentation/devicetree/bindings/net/can/microchip,mcp251xfd.yaml
-@@ -11,6 +11,9 @@ title:
+diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+index fb547e26c676..710880dc7594 100644
+--- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
++++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+@@ -11,6 +11,9 @@ description: Bosch MCAN controller for CAN bus
  maintainers:
-   - Marc Kleine-Budde <mkl@pengutronix.de>
+   - Sriram Dash <sriram.dash@samsung.com>
  
 +allOf:
 +  - $ref: can-controller.yaml#
 +
  properties:
    compatible:
-     oneOf:
+     const: bosch,m_can
 -- 
 2.34.1
 
