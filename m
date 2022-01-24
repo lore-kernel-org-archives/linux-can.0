@@ -2,44 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E58B6C433F5
-	for <linux-can@archiver.kernel.org>; Mon, 24 Jan 2022 18:00:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53EA0C433FE
+	for <linux-can@archiver.kernel.org>; Mon, 24 Jan 2022 18:00:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244827AbiAXSAG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 24 Jan 2022 13:00:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59040 "EHLO
+        id S244834AbiAXSAI (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 24 Jan 2022 13:00:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244806AbiAXSAD (ORCPT
+        with ESMTP id S244815AbiAXSAD (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 24 Jan 2022 13:00:03 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A84C061749
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB30DC061751
         for <linux-can@vger.kernel.org>; Mon, 24 Jan 2022 10:00:01 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nC3dH-0005AL-TR
-        for linux-can@vger.kernel.org; Mon, 24 Jan 2022 18:59:59 +0100
+        id 1nC3dH-0005B1-WB
+        for linux-can@vger.kernel.org; Mon, 24 Jan 2022 19:00:00 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 8D98E210A1
+        by bjornoya.blackshift.org (Postfix) with SMTP id B93B9210AE
         for <linux-can@vger.kernel.org>; Mon, 24 Jan 2022 17:59:56 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 485A521085;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 55E1421089;
         Mon, 24 Jan 2022 17:59:56 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7a0f92b9;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c18f8ac8;
         Mon, 24 Jan 2022 17:59:56 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Brian Silverman <bsilver16384@gmail.com>
-Subject: [PATCH net 1/5] mailmap: update email address of Brian Silverman
-Date:   Mon, 24 Jan 2022 18:59:51 +0100
-Message-Id: <20220124175955.3464134-2-mkl@pengutronix.de>
+        stable@vger.kernel.org, Matt Kline <matt@bitbashing.io>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Michael Anochin <anochin@photo-meter.com>
+Subject: [PATCH net 3/5] can: m_can: m_can_fifo_{read,write}: don't read or write from/to FIFO if length is 0
+Date:   Mon, 24 Jan 2022 18:59:53 +0100
+Message-Id: <20220124175955.3464134-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220124175955.3464134-1-mkl@pengutronix.de>
 References: <20220124175955.3464134-1-mkl@pengutronix.de>
@@ -53,30 +55,58 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Brian Silverman's address at bluerivertech.com is not valid anymore,
-use Brian's private email address instead.
+In order to optimize FIFO access, especially on m_can cores attached
+to slow busses like SPI, in patch
 
-Link: https://lore.kernel.org/all/20220110082359.2019735-1-mkl@pengutronix.de
-Cc: Brian Silverman <bsilver16384@gmail.com>
+| e39381770ec9 ("can: m_can: Disable IRQs on FIFO bus errors")
+
+bulk read/write support has been added to the m_can_fifo_{read,write}
+functions.
+
+That change leads to the tcan driver to call
+regmap_bulk_{read,write}() with a length of 0 (for CAN frames with 0
+data length). regmap treats this as an error:
+
+| tcan4x5x spi1.0 tcan4x5x0: FIFO write returned -22
+
+This patch fixes the problem by not calling the
+cdev->ops->{read,write)_fifo() in case of a 0 length read/write.
+
+Fixes: e39381770ec9 ("can: m_can: Disable IRQs on FIFO bus errors")
+Link: https://lore.kernel.org/all/20220114155751.2651888-1-mkl@pengutronix.de
+Cc: stable@vger.kernel.org
+Cc: Matt Kline <matt@bitbashing.io>
+Cc: Chandrasekar Ramakrishnan <rcsekar@samsung.com>
+Reported-by: Michael Anochin <anochin@photo-meter.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .mailmap | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/m_can/m_can.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/.mailmap b/.mailmap
-index b157f88ce26a..b76e520809d0 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -70,6 +70,7 @@ Boris Brezillon <bbrezillon@kernel.org> <boris.brezillon@bootlin.com>
- Boris Brezillon <bbrezillon@kernel.org> <boris.brezillon@free-electrons.com>
- Brian Avery <b.avery@hp.com>
- Brian King <brking@us.ibm.com>
-+Brian Silverman <bsilver16384@gmail.com> <brian.silverman@bluerivertech.com>
- Changbin Du <changbin.du@intel.com> <changbin.du@gmail.com>
- Changbin Du <changbin.du@intel.com> <changbin.du@intel.com>
- Chao Yu <chao@kernel.org> <chao2.yu@samsung.com>
-
-base-commit: c0bf3d8a943b6f2e912b7c1de03e2ef28e76f760
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 5b47cd867783..1a4b56f6fa8c 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -336,6 +336,9 @@ m_can_fifo_read(struct m_can_classdev *cdev,
+ 	u32 addr_offset = cdev->mcfg[MRAM_RXF0].off + fgi * RXF0_ELEMENT_SIZE +
+ 		offset;
+ 
++	if (val_count == 0)
++		return 0;
++
+ 	return cdev->ops->read_fifo(cdev, addr_offset, val, val_count);
+ }
+ 
+@@ -346,6 +349,9 @@ m_can_fifo_write(struct m_can_classdev *cdev,
+ 	u32 addr_offset = cdev->mcfg[MRAM_TXB].off + fpi * TXB_ELEMENT_SIZE +
+ 		offset;
+ 
++	if (val_count == 0)
++		return 0;
++
+ 	return cdev->ops->write_fifo(cdev, addr_offset, val, val_count);
+ }
+ 
 -- 
 2.34.1
 
