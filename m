@@ -2,44 +2,47 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 194A7C433F5
-	for <linux-can@archiver.kernel.org>; Mon, 24 Jan 2022 18:00:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D0C6C4332F
+	for <linux-can@archiver.kernel.org>; Mon, 24 Jan 2022 18:00:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244781AbiAXSAE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S244826AbiAXSAE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Mon, 24 Jan 2022 13:00:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59022 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244803AbiAXSAB (ORCPT
+        with ESMTP id S244804AbiAXSAB (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 24 Jan 2022 13:00:01 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64834C061401
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C61C061744
         for <linux-can@vger.kernel.org>; Mon, 24 Jan 2022 10:00:01 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nC3dG-00059c-79
-        for linux-can@vger.kernel.org; Mon, 24 Jan 2022 18:59:58 +0100
+        id 1nC3dH-0005B5-Pj
+        for linux-can@vger.kernel.org; Mon, 24 Jan 2022 18:59:59 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 74A7E21094
+        by bjornoya.blackshift.org (Postfix) with SMTP id C062D210AF
         for <linux-can@vger.kernel.org>; Mon, 24 Jan 2022 17:59:56 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4120421084;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6E2B221090;
         Mon, 24 Jan 2022 17:59:56 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d1bae3cb;
-        Mon, 24 Jan 2022 17:59:55 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2c334826;
+        Mon, 24 Jan 2022 17:59:56 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net 0/5] pull-request: can 2022-01-24
-Date:   Mon, 24 Jan 2022 18:59:50 +0100
-Message-Id: <20220124175955.3464134-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Angelo Dureghello <angelo@kernel-space.org>
+Subject: [PATCH net 5/5] can: flexcan: mark RX via mailboxes as supported on MCF5441X
+Date:   Mon, 24 Jan 2022 18:59:55 +0100
+Message-Id: <20220124175955.3464134-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220124175955.3464134-1-mkl@pengutronix.de>
+References: <20220124175955.3464134-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -50,60 +53,56 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+Most flexcan IP cores support 2 RX modes:
+- FIFO
+- mailbox
 
-this is a pull request of 5 patches for net/master. All patches are
-by me.
+The flexcan IP core on the MCF5441X cannot receive CAN RTR messages
+via mailboxes. However the mailbox mode is more performant. The commit
 
-The first patch updates the email address of Brian Silverman from his
-former employer to his private address.
+| 1c45f5778a3b ("can: flexcan: add ethtool support to change rx-rtr setting during runtime")
 
-The next patch fixes DT bindings information for the tcan4x5x SPI CAN
-driver.
+added support to switch from FIFO to mailbox mode on these cores.
 
-The following patch targets the m_can driver and fixes the
-introduction of FIFO bulk read support.
+After testing the mailbox mode on the MCF5441X by Angelo Dureghello,
+this patch marks it (without RTR capability) as supported. Further the
+IP core overview table is updated, that RTR reception via mailboxes is
+not supported.
 
-Another patch for the tcan4x5x driver, which fixes the max register
-value for the regmap config.
-
-The last patch for the flexcan driver marks the RX mailbox support for
-the MCF5441X as support.
-
-regards,
-Marc
-
+Link: https://lore.kernel.org/all/20220121084425.3141218-1-mkl@pengutronix.de
+Tested-by: Angelo Dureghello <angelo@kernel-space.org>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/flexcan/flexcan-core.c | 1 +
+ drivers/net/can/flexcan/flexcan.h      | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-The following changes since commit c0bf3d8a943b6f2e912b7c1de03e2ef28e76f760:
-
-  net/smc: Transitional solution for clcsock race issue (2022-01-24 12:06:08 +0000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.17-20220124
-
-for you to fetch changes up to f04aefd4659b7959e50e6d0d649936c6940f9d34:
-
-  can: flexcan: mark RX via mailboxes as supported on MCF5441X (2022-01-24 18:27:43 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-5.17-20220124
-
-----------------------------------------------------------------
-Marc Kleine-Budde (5):
-      mailmap: update email address of Brian Silverman
-      dt-bindings: can: tcan4x5x: fix mram-cfg RX FIFO config
-      can: m_can: m_can_fifo_{read,write}: don't read or write from/to FIFO if length is 0
-      can: tcan4x5x: regmap: fix max register value
-      can: flexcan: mark RX via mailboxes as supported on MCF5441X
-
- .mailmap                                               | 1 +
- Documentation/devicetree/bindings/net/can/tcan4x5x.txt | 2 +-
- drivers/net/can/flexcan/flexcan-core.c                 | 1 +
- drivers/net/can/flexcan/flexcan.h                      | 2 +-
- drivers/net/can/m_can/m_can.c                          | 6 ++++++
- drivers/net/can/m_can/tcan4x5x-regmap.c                | 2 +-
- 6 files changed, 11 insertions(+), 3 deletions(-)
+diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
+index 0bff1884d5cc..74d7fcbfd065 100644
+--- a/drivers/net/can/flexcan/flexcan-core.c
++++ b/drivers/net/can/flexcan/flexcan-core.c
+@@ -296,6 +296,7 @@ static_assert(sizeof(struct flexcan_regs) ==  0x4 * 18 + 0xfb8);
+ static const struct flexcan_devtype_data fsl_mcf5441x_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_BROKEN_PERR_STATE |
+ 		FLEXCAN_QUIRK_NR_IRQ_3 | FLEXCAN_QUIRK_NR_MB_16 |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX |
+ 		FLEXCAN_QUIRK_SUPPPORT_RX_FIFO,
+ };
+ 
+diff --git a/drivers/net/can/flexcan/flexcan.h b/drivers/net/can/flexcan/flexcan.h
+index fccdff8b1f0f..23fc09a7e10f 100644
+--- a/drivers/net/can/flexcan/flexcan.h
++++ b/drivers/net/can/flexcan/flexcan.h
+@@ -21,7 +21,7 @@
+  * Below is some version info we got:
+  *    SOC   Version   IP-Version  Glitch- [TR]WRN_INT IRQ Err Memory err RTR rece-   FD Mode     MB
+  *                                Filter? connected?  Passive detection  ption in MB Supported?
+- * MCF5441X FlexCAN2  ?               no       yes        no       no       yes           no     16
++ * MCF5441X FlexCAN2  ?               no       yes        no       no        no           no     16
+  *    MX25  FlexCAN2  03.00.00.00     no        no        no       no        no           no     64
+  *    MX28  FlexCAN2  03.00.04.00    yes       yes        no       no        no           no     64
+  *    MX35  FlexCAN2  03.00.00.00     no        no        no       no        no           no     64
+-- 
+2.34.1
 
 
