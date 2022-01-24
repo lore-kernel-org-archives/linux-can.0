@@ -2,46 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B73AC433EF
-	for <linux-can@archiver.kernel.org>; Mon, 24 Jan 2022 18:00:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 194A7C433F5
+	for <linux-can@archiver.kernel.org>; Mon, 24 Jan 2022 18:00:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244822AbiAXSAD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 24 Jan 2022 13:00:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59024 "EHLO
+        id S244781AbiAXSAE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 24 Jan 2022 13:00:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244800AbiAXSAB (ORCPT
+        with ESMTP id S244803AbiAXSAB (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 24 Jan 2022 13:00:01 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BFFC06173D
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64834C061401
         for <linux-can@vger.kernel.org>; Mon, 24 Jan 2022 10:00:01 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nC3dH-0005AW-NO
-        for linux-can@vger.kernel.org; Mon, 24 Jan 2022 18:59:59 +0100
+        id 1nC3dG-00059c-79
+        for linux-can@vger.kernel.org; Mon, 24 Jan 2022 18:59:58 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 9C708210A7
+        by bjornoya.blackshift.org (Postfix) with SMTP id 74A7E21094
         for <linux-can@vger.kernel.org>; Mon, 24 Jan 2022 17:59:56 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 613D32108C;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4120421084;
         Mon, 24 Jan 2022 17:59:56 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3e162d36;
-        Mon, 24 Jan 2022 17:59:56 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d1bae3cb;
+        Mon, 24 Jan 2022 17:59:55 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 4/5] can: tcan4x5x: regmap: fix max register value
-Date:   Mon, 24 Jan 2022 18:59:54 +0100
-Message-Id: <20220124175955.3464134-5-mkl@pengutronix.de>
+        kernel@pengutronix.de
+Subject: [PATCH net 0/5] pull-request: can 2022-01-24
+Date:   Mon, 24 Jan 2022 18:59:50 +0100
+Message-Id: <20220124175955.3464134-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220124175955.3464134-1-mkl@pengutronix.de>
-References: <20220124175955.3464134-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -52,34 +50,60 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The MRAM of the tcan4x5x has a size of 2K and starts at 0x8000. There
-are no further registers in the tcan4x5x making 0x87fc the biggest
-addressable register.
+Hello Jakub, hello David,
 
-This patch fixes the max register value of the regmap config from
-0x8ffc to 0x87fc.
+this is a pull request of 5 patches for net/master. All patches are
+by me.
 
-Fixes: 6e1caaf8ed22 ("can: tcan4x5x: fix max register value")
-Link: https://lore.kernel.org/all/20220119064011.2943292-1-mkl@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+The first patch updates the email address of Brian Silverman from his
+former employer to his private address.
+
+The next patch fixes DT bindings information for the tcan4x5x SPI CAN
+driver.
+
+The following patch targets the m_can driver and fixes the
+introduction of FIFO bulk read support.
+
+Another patch for the tcan4x5x driver, which fixes the max register
+value for the regmap config.
+
+The last patch for the flexcan driver marks the RX mailbox support for
+the MCF5441X as support.
+
+regards,
+Marc
+
 ---
- drivers/net/can/m_can/tcan4x5x-regmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/m_can/tcan4x5x-regmap.c b/drivers/net/can/m_can/tcan4x5x-regmap.c
-index ca80dbaf7a3f..26e212b8ca7a 100644
---- a/drivers/net/can/m_can/tcan4x5x-regmap.c
-+++ b/drivers/net/can/m_can/tcan4x5x-regmap.c
-@@ -12,7 +12,7 @@
- #define TCAN4X5X_SPI_INSTRUCTION_WRITE (0x61 << 24)
- #define TCAN4X5X_SPI_INSTRUCTION_READ (0x41 << 24)
- 
--#define TCAN4X5X_MAX_REGISTER 0x8ffc
-+#define TCAN4X5X_MAX_REGISTER 0x87fc
- 
- static int tcan4x5x_regmap_gather_write(void *context,
- 					const void *reg, size_t reg_len,
--- 
-2.34.1
+The following changes since commit c0bf3d8a943b6f2e912b7c1de03e2ef28e76f760:
+
+  net/smc: Transitional solution for clcsock race issue (2022-01-24 12:06:08 +0000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.17-20220124
+
+for you to fetch changes up to f04aefd4659b7959e50e6d0d649936c6940f9d34:
+
+  can: flexcan: mark RX via mailboxes as supported on MCF5441X (2022-01-24 18:27:43 +0100)
+
+----------------------------------------------------------------
+linux-can-fixes-for-5.17-20220124
+
+----------------------------------------------------------------
+Marc Kleine-Budde (5):
+      mailmap: update email address of Brian Silverman
+      dt-bindings: can: tcan4x5x: fix mram-cfg RX FIFO config
+      can: m_can: m_can_fifo_{read,write}: don't read or write from/to FIFO if length is 0
+      can: tcan4x5x: regmap: fix max register value
+      can: flexcan: mark RX via mailboxes as supported on MCF5441X
+
+ .mailmap                                               | 1 +
+ Documentation/devicetree/bindings/net/can/tcan4x5x.txt | 2 +-
+ drivers/net/can/flexcan/flexcan-core.c                 | 1 +
+ drivers/net/can/flexcan/flexcan.h                      | 2 +-
+ drivers/net/can/m_can/m_can.c                          | 6 ++++++
+ drivers/net/can/m_can/tcan4x5x-regmap.c                | 2 +-
+ 6 files changed, 11 insertions(+), 3 deletions(-)
 
 
