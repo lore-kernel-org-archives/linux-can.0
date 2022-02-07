@@ -2,44 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B5BDC43219
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C1EEC43217
 	for <linux-can@archiver.kernel.org>; Mon,  7 Feb 2022 13:49:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380549AbiBGNrq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 7 Feb 2022 08:47:46 -0500
+        id S1344428AbiBGNrr (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 7 Feb 2022 08:47:47 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1385670AbiBGNL0 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 7 Feb 2022 08:11:26 -0500
+        with ESMTP id S1377717AbiBGNLY (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 7 Feb 2022 08:11:24 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3338C03FEEC
-        for <linux-can@vger.kernel.org>; Mon,  7 Feb 2022 05:10:56 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F50BC0401DC
+        for <linux-can@vger.kernel.org>; Mon,  7 Feb 2022 05:10:54 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nH3nD-0003mL-81
-        for linux-can@vger.kernel.org; Mon, 07 Feb 2022 14:10:55 +0100
+        id 1nH3nA-0003j4-BL
+        for linux-can@vger.kernel.org; Mon, 07 Feb 2022 14:10:52 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id ABA512D7CB
+        by bjornoya.blackshift.org (Postfix) with SMTP id 3916F2D7A0
         for <linux-can@vger.kernel.org>; Mon,  7 Feb 2022 13:10:49 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 796B82D7B9;
-        Mon,  7 Feb 2022 13:10:49 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id F2D6E2D787;
+        Mon,  7 Feb 2022 13:10:48 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b6ee88ba;
-        Mon, 7 Feb 2022 13:10:49 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e48a6fd0;
+        Mon, 7 Feb 2022 13:10:48 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         Thomas Kopp <thomas.kopp@microchip.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 12/15] can: mcp251xfd: __mcp251xfd_chip_set_mode(): prepare for PLL support: improve error handling and diagnostics
-Date:   Mon,  7 Feb 2022 14:10:44 +0100
-Message-Id: <20220207131047.282110-13-mkl@pengutronix.de>
+Subject: [PATCH 03/15] can: mcp251xfd: mcp251xfd_unregister(): simplify runtime PM handling
+Date:   Mon,  7 Feb 2022 14:10:35 +0100
+Message-Id: <20220207131047.282110-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220207131047.282110-1-mkl@pengutronix.de>
 References: <20220207131047.282110-1-mkl@pengutronix.de>
@@ -53,83 +53,38 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch prepares the __mcp251xfd_chip_set_mode() function for PLL
-support by adding more error checks and diagnostics.
+The mcp251xfd driver supports runtime PM enabled kernels, but also
+works on !CONFIG_PM configurations.
+
+This patch simplifies the runtime PM handling in the
+mcp251xfd_unregister(). In the CONFIG_PM case, runtime PM has been
+enabled in the mcp251xfd_probe() function, so we can disable it here.
+For !CONFIG_PM builds call mcp251xfd_clks_and_vdd_disable() directly.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 39 ++++++++++++++-----
- 1 file changed, 30 insertions(+), 9 deletions(-)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index 154e6c376670..d08e0481df35 100644
+index 7e0c4e662381..49ce5ff34903 100644
 --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
 +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -218,34 +218,55 @@ static int
- __mcp251xfd_chip_set_mode(const struct mcp251xfd_priv *priv,
- 			  const u8 mode_req, bool nowait)
- {
--	u32 con, con_reqop;
-+	u32 con = 0, con_reqop, osc = 0;
-+	u8 mode;
- 	int err;
+@@ -1768,10 +1768,10 @@ static inline void mcp251xfd_unregister(struct mcp251xfd_priv *priv)
  
- 	con_reqop = FIELD_PREP(MCP251XFD_REG_CON_REQOP_MASK, mode_req);
- 	err = regmap_update_bits(priv->map_reg, MCP251XFD_REG_CON,
- 				 MCP251XFD_REG_CON_REQOP_MASK, con_reqop);
--	if (err)
-+	if (err == -EBADMSG) {
-+		netdev_err(priv->ndev,
-+			   "Failed to set Requested Operation Mode.\n");
-+
-+		return -ENODEV;
-+	} else if (err) {
- 		return err;
-+	}
+ 	unregister_candev(ndev);
  
- 	if (mode_req == MCP251XFD_REG_CON_MODE_SLEEP || nowait)
- 		return 0;
- 
- 	err = regmap_read_poll_timeout(priv->map_reg, MCP251XFD_REG_CON, con,
-+				       !mcp251xfd_reg_invalid(con) &&
- 				       FIELD_GET(MCP251XFD_REG_CON_OPMOD_MASK,
- 						 con) == mode_req,
- 				       MCP251XFD_POLL_SLEEP_US,
- 				       MCP251XFD_POLL_TIMEOUT_US);
--	if (err) {
--		u8 mode = FIELD_GET(MCP251XFD_REG_CON_OPMOD_MASK, con);
-+	if (err != -ETIMEDOUT && err != -EBADMSG)
-+		return err;
-+
-+	/* Ignore return value.
-+	 * Print below error messages, even if this fails.
-+	 */
-+	regmap_read(priv->map_reg, MCP251XFD_REG_OSC, &osc);
- 
-+	if (mcp251xfd_reg_invalid(con)) {
- 		netdev_err(priv->ndev,
--			   "Controller failed to enter mode %s Mode (%u) and stays in %s Mode (%u).\n",
--			   mcp251xfd_get_mode_str(mode_req), mode_req,
--			   mcp251xfd_get_mode_str(mode), mode);
--		return err;
-+			   "Failed to read CAN Control Register (con=0x%08x, osc=0x%08x).\n",
-+			   con, osc);
-+
-+		return -ENODEV;
- 	}
- 
--	return 0;
-+	mode = FIELD_GET(MCP251XFD_REG_CON_OPMOD_MASK, con);
-+	netdev_err(priv->ndev,
-+		   "Controller failed to enter mode %s Mode (%u) and stays in %s Mode (%u) (con=0x%08x, osc=0x%08x).\n",
-+		   mcp251xfd_get_mode_str(mode_req), mode_req,
-+		   mcp251xfd_get_mode_str(mode), mode,
-+		   con, osc);
-+
-+	return -ETIMEDOUT;
+-	pm_runtime_get_sync(ndev->dev.parent);
+-	pm_runtime_put_noidle(ndev->dev.parent);
+-	mcp251xfd_clks_and_vdd_disable(priv);
+-	pm_runtime_disable(ndev->dev.parent);
++	if (pm_runtime_enabled(ndev->dev.parent))
++		pm_runtime_disable(ndev->dev.parent);
++	else
++		mcp251xfd_clks_and_vdd_disable(priv);
  }
  
- static inline int
+ static const struct of_device_id mcp251xfd_of_match[] = {
 -- 
 2.34.1
 
