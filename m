@@ -2,42 +2,49 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16A0CC433F5
-	for <linux-can@archiver.kernel.org>; Mon,  7 Feb 2022 10:46:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A84BC433F5
+	for <linux-can@archiver.kernel.org>; Mon,  7 Feb 2022 13:47:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232494AbiBGKpE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 7 Feb 2022 05:45:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59594 "EHLO
+        id S229551AbiBGNrY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 7 Feb 2022 08:47:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242268AbiBGKgA (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 7 Feb 2022 05:36:00 -0500
+        with ESMTP id S1385304AbiBGNLZ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 7 Feb 2022 08:11:25 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EBB5C043181
-        for <linux-can@vger.kernel.org>; Mon,  7 Feb 2022 02:35:59 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBBDAC0401EC
+        for <linux-can@vger.kernel.org>; Mon,  7 Feb 2022 05:10:55 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nH1NF-0001tD-F3; Mon, 07 Feb 2022 11:35:57 +0100
-Received: from pengutronix.de (unknown [195.138.59.174])
+        id 1nH3nC-0003kG-6U
+        for linux-can@vger.kernel.org; Mon, 07 Feb 2022 14:10:54 +0100
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id 7662B2D7B7
+        for <linux-can@vger.kernel.org>; Mon,  7 Feb 2022 13:10:49 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id AFA722D66A;
-        Mon,  7 Feb 2022 10:35:55 +0000 (UTC)
-Date:   Mon, 7 Feb 2022 11:35:51 +0100
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 464192D7A6;
+        Mon,  7 Feb 2022 13:10:49 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0f29d61f;
+        Mon, 7 Feb 2022 13:10:48 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Mishak <mishak@eiq.co.za>
-Cc:     kernel@pengutronix.de, linux-can <linux-can@vger.kernel.org>
-Subject: Re: MCP251xfd PLLEN
-Message-ID: <20220207103551.3lf3dzdcm4fguack@pengutronix.de>
-References: <c7787001-40a3-d794-6646-bb6d01313aaf@eiq.co.za>
+To:     linux-can@vger.kernel.org
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Thomas Kopp <thomas.kopp@microchip.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 09/15] can: mcp251xfd: mcp251xfd_chip_softreset_check(): wait for OSC ready before accessing chip
+Date:   Mon,  7 Feb 2022 14:10:41 +0100
+Message-Id: <20220207131047.282110-10-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220207131047.282110-1-mkl@pengutronix.de>
+References: <20220207131047.282110-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bbzp3zzf45kjkex5"
-Content-Disposition: inline
-In-Reply-To: <c7787001-40a3-d794-6646-bb6d01313aaf@eiq.co.za>
+Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -46,55 +53,70 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+This patch changes the order of reading the Mode and Oscillator Ready
+bits.
 
---bbzp3zzf45kjkex5
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Instead of reading the Mode of the chip directly after reset, first
+wait for the oscillator to get ready and the chip to fully start up.
+Read the Mode after this.
 
-Hey Mishak,
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 29 ++++++++-----------
+ 1 file changed, 12 insertions(+), 17 deletions(-)
 
-I've added the linux-can mailing list on Cc. The question is of general
-interest :D
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index f2aac990d285..9b94272da8bc 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -349,34 +349,29 @@ static int mcp251xfd_chip_softreset_do(const struct mcp251xfd_priv *priv)
+ 
+ static int mcp251xfd_chip_softreset_check(const struct mcp251xfd_priv *priv)
+ {
+-	u32 osc, osc_reference;
++	u32 osc_reference, osc_mask;
+ 	u8 mode;
+ 	int err;
+ 
+-	err = mcp251xfd_chip_get_mode(priv, &mode);
+-	if (err)
+-		return err;
+-
+-	if (mode != MCP251XFD_REG_CON_MODE_CONFIG) {
+-		netdev_info(priv->ndev,
+-			    "Controller not in Config Mode after reset, but in %s Mode (%u).\n",
+-			    mcp251xfd_get_mode_str(mode), mode);
+-		return -ETIMEDOUT;
+-	}
+-
++	/* Check for reset defaults of OSC reg.
++	 * This will take care of stabilization period.
++	 */
+ 	osc_reference = MCP251XFD_REG_OSC_OSCRDY |
+ 		FIELD_PREP(MCP251XFD_REG_OSC_CLKODIV_MASK,
+ 			   MCP251XFD_REG_OSC_CLKODIV_10);
++	osc_mask = osc_reference | MCP251XFD_REG_OSC_PLLRDY;
++	err = mcp251xfd_chip_wait_for_osc_ready(priv, osc_reference, osc_mask);
++	if (err)
++		return err;
+ 
+-	/* check reset defaults of OSC reg */
+-	err = regmap_read(priv->map_reg, MCP251XFD_REG_OSC, &osc);
++	err = mcp251xfd_chip_get_mode(priv, &mode);
+ 	if (err)
+ 		return err;
+ 
+-	if (osc != osc_reference) {
++	if (mode != MCP251XFD_REG_CON_MODE_CONFIG) {
+ 		netdev_info(priv->ndev,
+-			    "Controller failed to reset. osc=0x%08x, reference value=0x%08x.\n",
+-			    osc, osc_reference);
++			    "Controller not in Config Mode after reset, but in %s Mode (%u).\n",
++			    mcp251xfd_get_mode_str(mode), mode);
+ 		return -ETIMEDOUT;
+ 	}
+ 
+-- 
+2.34.1
 
-On 04.02.2022 18:01:07, Mishak wrote:
-> I hope you are well. I developed custom hardware for raspberry pi cm4
-> with mcp2518 for CAN support. From what I gather the mcp251xfd driver
-> does not support extclk with frequency of 4Mhz. I am looking for a
-> branch with PLLEN set for use with 4Mhz clock. Does such a branch
-> exist? Is there a plan to mainline a mcp251xfd driver with PLLEN
-> support for 4Mhz clocks?
 
-I have a net properly cleaned up branch that adds PLL support. I've
-pushed it to the linux-can-next git repo:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/log/=
-?h=3Dtesting
-
-Please test and give me feedback.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---bbzp3zzf45kjkex5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmIA9gQACgkQrX5LkNig
-0111jQgAsn9Uvg8seoUsavnHMIEeX2wjABhNfIatGb69gKpyiCqECAzFCFOWgB1J
-8kg0J/DG/kPsip1Gr1jbHDUFodXLWJ55nbmr/wLjpjH+Msbq/LjpBRUDBe1hsjpN
-OR7y8H1d5GUxbWDAMSc2H7QY4A5ugV/7T+PichRYb8d+zANFNBvigxGvwMe+pHPB
-wYYZ0l0aUOTPmB8Aol6DzefQ1Sh7rem5O69BM+4N+tReJAwspph/qZmzuxfGc7zU
-P3a4GwCT4e+vkxvsq9YhDRUutm+9hhxFh77h7ofnTFY/xWWPdnibXU7366aTIH0/
-YjwwcVXTPc47iz3tB4w30tOJVvnJ+A==
-=ps+z
------END PGP SIGNATURE-----
-
---bbzp3zzf45kjkex5--
