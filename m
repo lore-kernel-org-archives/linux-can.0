@@ -2,44 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58321C43217
-	for <linux-can@archiver.kernel.org>; Thu, 17 Feb 2022 10:38:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AEAFC433FE
+	for <linux-can@archiver.kernel.org>; Thu, 17 Feb 2022 10:38:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238900AbiBQKiw (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 17 Feb 2022 05:38:52 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49224 "EHLO
+        id S239126AbiBQKix (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 17 Feb 2022 05:38:53 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239173AbiBQKir (ORCPT
+        with ESMTP id S239159AbiBQKir (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 17 Feb 2022 05:38:47 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E9AB284D1B
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D57A284D1D
         for <linux-can@vger.kernel.org>; Thu, 17 Feb 2022 02:38:33 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nKeBD-0003cA-AY
+        id 1nKeBD-0003cM-DM
         for linux-can@vger.kernel.org; Thu, 17 Feb 2022 11:38:31 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 778AF362BA
+        by bjornoya.blackshift.org (Postfix) with SMTP id 863A4362C1
         for <linux-can@vger.kernel.org>; Thu, 17 Feb 2022 10:38:28 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 33E4E3629F;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4DEA5362A7;
         Thu, 17 Feb 2022 10:38:28 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3f7ae8de;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 144d493d;
         Thu, 17 Feb 2022 10:38:27 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         Thomas Kopp <thomas.kopp@microchip.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 3/8] can: mcp251xfd: ring: prepare to change order of TX and RX FIFOs
-Date:   Thu, 17 Feb 2022 11:38:21 +0100
-Message-Id: <20220217103826.2299157-4-mkl@pengutronix.de>
+Subject: [PATCH net-next 6/8] can: mcp251xfd: ring: update FIFO setup debug info
+Date:   Thu, 17 Feb 2022 11:38:24 +0100
+Message-Id: <20220217103826.2299157-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220217103826.2299157-1-mkl@pengutronix.de>
 References: <20220217103826.2299157-1-mkl@pengutronix.de>
@@ -53,150 +53,89 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch improves the initialization of the TX and RX rings. The
-initialization functions are now called with pointers to the next free
-address (in the on chip RAM) and next free hardware FIFO. The rings
-are initialized using these values and the pointers are modified to
-point to the next free elements.
+The recent change of the order of the TX and RX FIFOs is not reflected
+in the debug info of the FIFO setup. This patch adjust the order and
+additionally prints the base address of each FIFO.
 
-This means the order of the mcp251xfd_ring_init_*() functions
-specifies the order of the rings in the hardware FIFO. This makes it
-possible to change the order of the TX and RX FIFOs, which is done in
-the next patch.
-
-This gives the opportunity to minimize the number of SPI transfers in
-the IRQ handler. The read of the IRQ status register and RX FIFO
-status registers can be combined into single SPI transfer. If the RX
-ring uses FIFO 1, the overall length of the transfer is smaller than
-in the original layout, where the RX FIFO comes after the TX FIFO.
+Since the mcp251xfd_ring_init() may fail due to wrongly configured
+FIFOs, printing of the FIFO setup is moved there. In case of an error
+it would not be printed in mcp251xfd_ring_init().
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../net/can/spi/mcp251xfd/mcp251xfd-ring.c    | 47 ++++++++++---------
- drivers/net/can/spi/mcp251xfd/mcp251xfd.h     |  2 -
- 2 files changed, 25 insertions(+), 24 deletions(-)
+ .../net/can/spi/mcp251xfd/mcp251xfd-ring.c    | 44 ++++++++++++-------
+ 1 file changed, 28 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
-index b9300554543e..39005725c665 100644
+index 8126f88d57d7..9610d262e966 100644
 --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
 +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
-@@ -52,7 +52,8 @@ mcp251xfd_cmd_prepare_write_reg(const struct mcp251xfd_priv *priv,
- 	return len;
- }
+@@ -209,8 +209,10 @@ mcp251xfd_ring_init_rx(struct mcp251xfd_priv *priv, u16 *base, u8 *fifo_nr)
  
--static void mcp251xfd_ring_init_tef(struct mcp251xfd_priv *priv)
-+static void
-+mcp251xfd_ring_init_tef(struct mcp251xfd_priv *priv, u16 *base)
+ int mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
  {
- 	struct mcp251xfd_tef_ring *tef_ring;
- 	struct spi_transfer *xfer;
-@@ -66,6 +67,9 @@ static void mcp251xfd_ring_init_tef(struct mcp251xfd_priv *priv)
- 	tef_ring->head = 0;
- 	tef_ring->tail = 0;
++	const struct mcp251xfd_rx_ring *rx_ring;
+ 	u16 base = 0, ram_used;
+ 	u8 fifo_nr = 1;
++	int i;
  
-+	/* TEF- and TX-FIFO have same number of objects */
-+	*base = mcp251xfd_get_tef_obj_addr(priv->tx->obj_num);
-+
- 	/* FIFO increment TEF tail pointer */
- 	addr = MCP251XFD_REG_TEFCON;
- 	val = MCP251XFD_REG_TEFCON_UINC;
-@@ -127,7 +131,8 @@ mcp251xfd_tx_ring_init_tx_obj(const struct mcp251xfd_priv *priv,
- 					ARRAY_SIZE(tx_obj->xfer));
- }
- 
--static void mcp251xfd_ring_init_tx(struct mcp251xfd_priv *priv)
-+static void
-+mcp251xfd_ring_init_tx(struct mcp251xfd_priv *priv, u16 *base, u8 *fifo_nr)
- {
- 	struct mcp251xfd_tx_ring *tx_ring;
- 	struct mcp251xfd_tx_obj *tx_obj;
-@@ -139,9 +144,12 @@ static void mcp251xfd_ring_init_tx(struct mcp251xfd_priv *priv)
- 	tx_ring = priv->tx;
- 	tx_ring->head = 0;
- 	tx_ring->tail = 0;
--	tx_ring->base = mcp251xfd_get_tef_obj_addr(tx_ring->obj_num);
-+	tx_ring->base = *base;
- 	tx_ring->nr = 0;
--	tx_ring->fifo_nr = MCP251XFD_TX_FIFO;
-+	tx_ring->fifo_nr = *fifo_nr;
-+
-+	*base = mcp251xfd_get_tx_obj_addr(tx_ring, tx_ring->obj_num);
-+	*fifo_nr += 1;
- 
- 	/* FIFO request to send */
- 	addr = MCP251XFD_REG_FIFOCON(tx_ring->fifo_nr);
-@@ -153,33 +161,25 @@ static void mcp251xfd_ring_init_tx(struct mcp251xfd_priv *priv)
- 		mcp251xfd_tx_ring_init_tx_obj(priv, tx_ring, tx_obj, len, i);
- }
- 
--static void mcp251xfd_ring_init_rx(struct mcp251xfd_priv *priv)
-+static void
-+mcp251xfd_ring_init_rx(struct mcp251xfd_priv *priv, u16 *base, u8 *fifo_nr)
- {
--	struct mcp251xfd_rx_ring *rx_ring, *prev_rx_ring = NULL;
--	struct mcp251xfd_tx_ring *tx_ring;
-+	struct mcp251xfd_rx_ring *rx_ring;
- 	struct spi_transfer *xfer;
- 	u32 val;
- 	u16 addr;
- 	u8 len;
- 	int i, j;
- 
--	tx_ring = priv->tx;
- 	mcp251xfd_for_each_rx_ring(priv, rx_ring, i) {
- 		rx_ring->head = 0;
- 		rx_ring->tail = 0;
-+		rx_ring->base = *base;
- 		rx_ring->nr = i;
--		rx_ring->fifo_nr = MCP251XFD_RX_FIFO(i);
-+		rx_ring->fifo_nr = *fifo_nr;
- 
--		if (!prev_rx_ring)
--			rx_ring->base =
--				mcp251xfd_get_tx_obj_addr(tx_ring,
--							  tx_ring->obj_num);
--		else
--			rx_ring->base = prev_rx_ring->base +
--				prev_rx_ring->obj_size *
--				prev_rx_ring->obj_num;
--
--		prev_rx_ring = rx_ring;
-+		*base = mcp251xfd_get_rx_obj_addr(rx_ring, rx_ring->obj_num);
-+		*fifo_nr += 1;
- 
- 		/* FIFO increment RX tail pointer */
- 		addr = MCP251XFD_REG_FIFOCON(rx_ring->fifo_nr);
-@@ -209,11 +209,14 @@ static void mcp251xfd_ring_init_rx(struct mcp251xfd_priv *priv)
- 
- void mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
- {
-+	u16 base = 0;
-+	u8 fifo_nr = 1;
-+
  	netdev_reset_queue(priv->ndev);
  
--	mcp251xfd_ring_init_tef(priv);
--	mcp251xfd_ring_init_tx(priv);
--	mcp251xfd_ring_init_rx(priv);
-+	mcp251xfd_ring_init_tef(priv, &base);
-+	mcp251xfd_ring_init_tx(priv, &base, &fifo_nr);
-+	mcp251xfd_ring_init_rx(priv, &base, &fifo_nr);
+@@ -218,6 +220,32 @@ int mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
+ 	mcp251xfd_ring_init_rx(priv, &base, &fifo_nr);
+ 	mcp251xfd_ring_init_tx(priv, &base, &fifo_nr);
+ 
++	netdev_dbg(priv->ndev,
++		   "FIFO setup: TEF:         0x%03x: %2d*%zu bytes = %4zu bytes\n",
++		   mcp251xfd_get_tef_obj_addr(0),
++		   priv->tx->obj_num, sizeof(struct mcp251xfd_hw_tef_obj),
++		   priv->tx->obj_num * sizeof(struct mcp251xfd_hw_tef_obj));
++
++	mcp251xfd_for_each_rx_ring(priv, rx_ring, i) {
++		netdev_dbg(priv->ndev,
++			   "FIFO setup: RX-%u: FIFO %u/0x%03x: %2u*%u bytes = %4u bytes\n",
++			   rx_ring->nr, rx_ring->fifo_nr,
++			   mcp251xfd_get_rx_obj_addr(rx_ring, 0),
++			   rx_ring->obj_num, rx_ring->obj_size,
++			   rx_ring->obj_num * rx_ring->obj_size);
++	}
++
++	netdev_dbg(priv->ndev,
++		   "FIFO setup: TX:   FIFO %u/0x%03x: %2u*%u bytes = %4u bytes\n",
++		   priv->tx->fifo_nr,
++		   mcp251xfd_get_tx_obj_addr(priv->tx, 0),
++		   priv->tx->obj_num, priv->tx->obj_size,
++		   priv->tx->obj_num * priv->tx->obj_size);
++
++	netdev_dbg(priv->ndev,
++		   "FIFO setup: free:                             %4u bytes\n",
++		   MCP251XFD_RAM_SIZE - (base - MCP251XFD_RAM_START));
++
+ 	ram_used = base - MCP251XFD_RAM_START;
+ 	if (ram_used > MCP251XFD_RAM_SIZE) {
+ 		netdev_err(priv->ndev,
+@@ -288,21 +316,5 @@ int mcp251xfd_ring_alloc(struct mcp251xfd_priv *priv)
+ 	}
+ 	priv->rx_ring_num = i;
+ 
+-	netdev_dbg(priv->ndev,
+-		   "FIFO setup: TEF: %d*%d bytes = %d bytes, TX: %d*%d bytes = %d bytes\n",
+-		   tx_obj_num, tef_obj_size, tef_obj_size * tx_obj_num,
+-		   tx_obj_num, tx_obj_size, tx_obj_size * tx_obj_num);
+-
+-	mcp251xfd_for_each_rx_ring(priv, rx_ring, i) {
+-		netdev_dbg(priv->ndev,
+-			   "FIFO setup: RX-%d: %d*%d bytes = %d bytes\n",
+-			   i, rx_ring->obj_num, rx_ring->obj_size,
+-			   rx_ring->obj_size * rx_ring->obj_num);
+-	}
+-
+-	netdev_dbg(priv->ndev,
+-		   "FIFO setup: free: %d bytes\n",
+-		   ram_free);
+-
+ 	return 0;
  }
- 
- void mcp251xfd_ring_free(struct mcp251xfd_priv *priv)
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-index 12d3f2b84c0a..5c3f7f25caf0 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-@@ -383,8 +383,6 @@
- #endif
- 
- #define MCP251XFD_NAPI_WEIGHT 32
--#define MCP251XFD_TX_FIFO 1
--#define MCP251XFD_RX_FIFO(x) (MCP251XFD_TX_FIFO + 1 + (x))
- 
- /* SPI commands */
- #define MCP251XFD_SPI_INSTRUCTION_RESET 0x0000
 -- 
 2.34.1
 
