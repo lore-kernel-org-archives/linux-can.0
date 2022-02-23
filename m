@@ -2,43 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17A8DC433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82975C433EF
 	for <linux-can@archiver.kernel.org>; Wed, 23 Feb 2022 22:43:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244594AbiBWWoY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 23 Feb 2022 17:44:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50568 "EHLO
+        id S244205AbiBWWoZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 23 Feb 2022 17:44:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244205AbiBWWoU (ORCPT
+        with ESMTP id S244301AbiBWWoU (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 23 Feb 2022 17:44:20 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BC83D1C9
-        for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 14:43:44 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D284D3EAB0
+        for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 14:43:45 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nN0MI-0006Vq-Nl
-        for linux-can@vger.kernel.org; Wed, 23 Feb 2022 23:43:42 +0100
+        id 1nN0MJ-0006X0-IF
+        for linux-can@vger.kernel.org; Wed, 23 Feb 2022 23:43:43 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 391953BBAA
+        by bjornoya.blackshift.org (Postfix) with SMTP id 45CD73BBB6
         for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 22:43:34 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id C0DF63BB69;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id D77A93BB73;
         Wed, 23 Feb 2022 22:43:33 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 49deac1c;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 95f45dfc;
         Wed, 23 Feb 2022 22:43:33 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 08/36] can: bittiming: mark function arguments and local variables as const
-Date:   Wed, 23 Feb 2022 23:43:04 +0100
-Message-Id: <20220223224332.2965690-9-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Dario Binacchi <dariobin@libero.it>
+Subject: [PATCH net-next 10/36] can: c_can: ethtool: use default drvinfo
+Date:   Wed, 23 Feb 2022 23:43:06 +0100
+Message-Id: <20220223224332.2965690-11-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220223224332.2965690-1-mkl@pengutronix.de>
 References: <20220223224332.2965690-1-mkl@pengutronix.de>
@@ -52,100 +53,45 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch marks the arguments of some functions as well as some local
-variables as constant.
+The ethtool core implements a default drvinfo.
 
-Link: https://lore.kernel.org/all/20220124215642.3474154-7-mkl@pengutronix.de
+There's no need to replicate this in the driver, no additional
+information is added, so remove this and rely on the default.
+
+Link: https://lore.kernel.org/all/20220124215642.3474154-10-mkl@pengutronix.de
+Cc: Dario Binacchi <dariobin@libero.it>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/bittiming.c | 12 ++++++------
- include/linux/can/bittiming.h   |  6 +++---
- 2 files changed, 9 insertions(+), 9 deletions(-)
+ drivers/net/can/c_can/c_can_ethtool.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/drivers/net/can/dev/bittiming.c b/drivers/net/can/dev/bittiming.c
-index 1b1d1499e2f1..2103bcca9012 100644
---- a/drivers/net/can/dev/bittiming.c
-+++ b/drivers/net/can/dev/bittiming.c
-@@ -24,7 +24,7 @@
-  */
- static int
- can_update_sample_point(const struct can_bittiming_const *btc,
--			unsigned int sample_point_nominal, unsigned int tseg,
-+			const unsigned int sample_point_nominal, const unsigned int tseg,
- 			unsigned int *tseg1_ptr, unsigned int *tseg2_ptr,
- 			unsigned int *sample_point_error_ptr)
- {
-@@ -63,7 +63,7 @@ can_update_sample_point(const struct can_bittiming_const *btc,
- 	return best_sample_point;
+diff --git a/drivers/net/can/c_can/c_can_ethtool.c b/drivers/net/can/c_can/c_can_ethtool.c
+index 6655146294fc..8a826a6813bd 100644
+--- a/drivers/net/can/c_can/c_can_ethtool.c
++++ b/drivers/net/can/c_can/c_can_ethtool.c
+@@ -11,14 +11,6 @@
+ 
+ #include "c_can.h"
+ 
+-static void c_can_get_drvinfo(struct net_device *netdev,
+-			      struct ethtool_drvinfo *info)
+-{
+-	struct c_can_priv *priv = netdev_priv(netdev);
+-	strscpy(info->driver, "c_can", sizeof(info->driver));
+-	strscpy(info->bus_info, dev_name(priv->device), sizeof(info->bus_info));
+-}
+-
+ static void c_can_get_ringparam(struct net_device *netdev,
+ 				struct ethtool_ringparam *ring,
+ 				struct kernel_ethtool_ringparam *kernel_ring,
+@@ -33,7 +25,6 @@ static void c_can_get_ringparam(struct net_device *netdev,
  }
  
--int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
-+int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 		       const struct can_bittiming_const *btc)
- {
- 	struct can_priv *priv = netdev_priv(dev);
-@@ -208,10 +208,10 @@ void can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
-  * prescaler value brp. You can find more information in the header
-  * file linux/can/netlink.h.
-  */
--static int can_fixup_bittiming(struct net_device *dev, struct can_bittiming *bt,
-+static int can_fixup_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 			       const struct can_bittiming_const *btc)
- {
--	struct can_priv *priv = netdev_priv(dev);
-+	const struct can_priv *priv = netdev_priv(dev);
- 	unsigned int tseg1, alltseg;
- 	u64 brp64;
- 
-@@ -244,7 +244,7 @@ static int can_fixup_bittiming(struct net_device *dev, struct can_bittiming *bt,
- 
- /* Checks the validity of predefined bitrate settings */
- static int
--can_validate_bitrate(struct net_device *dev, struct can_bittiming *bt,
-+can_validate_bitrate(const struct net_device *dev, const struct can_bittiming *bt,
- 		     const u32 *bitrate_const,
- 		     const unsigned int bitrate_const_cnt)
- {
-@@ -258,7 +258,7 @@ can_validate_bitrate(struct net_device *dev, struct can_bittiming *bt,
- 	return -EINVAL;
- }
- 
--int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt,
-+int can_get_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 		      const struct can_bittiming_const *btc,
- 		      const u32 *bitrate_const,
- 		      const unsigned int bitrate_const_cnt)
-diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
-index a81652d1c6f3..7ae21c0f7f23 100644
---- a/include/linux/can/bittiming.h
-+++ b/include/linux/can/bittiming.h
-@@ -113,7 +113,7 @@ struct can_tdc_const {
+ static const struct ethtool_ops c_can_ethtool_ops = {
+-	.get_drvinfo = c_can_get_drvinfo,
+ 	.get_ringparam = c_can_get_ringparam,
  };
  
- #ifdef CONFIG_CAN_CALC_BITTIMING
--int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
-+int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 		       const struct can_bittiming_const *btc);
- 
- void can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
-@@ -121,7 +121,7 @@ void can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
- 		   u32 *ctrlmode, u32 ctrlmode_supported);
- #else /* !CONFIG_CAN_CALC_BITTIMING */
- static inline int
--can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
-+can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 		   const struct can_bittiming_const *btc)
- {
- 	netdev_err(dev, "bit-timing calculation not available\n");
-@@ -136,7 +136,7 @@ can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
- }
- #endif /* CONFIG_CAN_CALC_BITTIMING */
- 
--int can_get_bittiming(struct net_device *dev, struct can_bittiming *bt,
-+int can_get_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 		      const struct can_bittiming_const *btc,
- 		      const u32 *bitrate_const,
- 		      const unsigned int bitrate_const_cnt);
 -- 
 2.34.1
 
