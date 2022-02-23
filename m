@@ -2,44 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9233CC433FE
-	for <linux-can@archiver.kernel.org>; Wed, 23 Feb 2022 22:44:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22F3BC433EF
+	for <linux-can@archiver.kernel.org>; Wed, 23 Feb 2022 22:44:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244431AbiBWWo0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 23 Feb 2022 17:44:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50578 "EHLO
+        id S244356AbiBWWo1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 23 Feb 2022 17:44:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244356AbiBWWoU (ORCPT
+        with ESMTP id S244309AbiBWWoU (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 23 Feb 2022 17:44:20 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14673E0DB
-        for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 14:43:44 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C13043E0D2
+        for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 14:43:45 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nN0MI-0006Vf-Me
-        for linux-can@vger.kernel.org; Wed, 23 Feb 2022 23:43:42 +0100
+        id 1nN0MJ-0006XR-Os
+        for linux-can@vger.kernel.org; Wed, 23 Feb 2022 23:43:43 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 3EA7E3BBAF
+        by bjornoya.blackshift.org (Postfix) with SMTP id 477533BBB8
         for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 22:43:34 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id CBFA43BB6D;
-        Wed, 23 Feb 2022 22:43:33 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 015353BB83;
+        Wed, 23 Feb 2022 22:43:34 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d11057bc;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 614b5b8f;
         Wed, 23 Feb 2022 22:43:33 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Jimmy Assarsson <extja@kvaser.com>
-Subject: [PATCH net-next 09/36] can: kvaser_usb: kvaser_usb_send_cmd(): remove redundant variable actual_len
-Date:   Wed, 23 Feb 2022 23:43:05 +0100
-Message-Id: <20220223224332.2965690-10-mkl@pengutronix.de>
+        kernel@pengutronix.de, Srinivas Neeli <srinivas.neeli@xilinx.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 12/36] can: xilinx_can: Add check for NAPI Poll function
+Date:   Wed, 23 Feb 2022 23:43:08 +0100
+Message-Id: <20220223224332.2965690-13-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220223224332.2965690-1-mkl@pengutronix.de>
 References: <20220223224332.2965690-1-mkl@pengutronix.de>
@@ -53,34 +53,38 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The function usb_bulk_msg() can be called with a NULL pointer as the
-"actual_length" parameter. This patch removes this variable.
+From: Srinivas Neeli <srinivas.neeli@xilinx.com>
 
-Link: https://lore.kernel.org/all/20220124215642.3474154-9-mkl@pengutronix.de
-Cc: Jimmy Assarsson <extja@kvaser.com>
+Add check for NAPI poll function to avoid enabling interrupts
+with out completing the NAPI call.
+
+Link: https://lore.kernel.org/all/20220208162053.39896-1-srinivas.neeli@xilinx.com
+Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/can/xilinx_can.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-index c4b4d3d0a387..e67658b53d02 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-@@ -205,12 +205,10 @@ MODULE_DEVICE_TABLE(usb, kvaser_usb_table);
+diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+index 1674b561c9a2..e562c5ab1149 100644
+--- a/drivers/net/can/xilinx_can.c
++++ b/drivers/net/can/xilinx_can.c
+@@ -1215,10 +1215,11 @@ static int xcan_rx_poll(struct napi_struct *napi, int quota)
+ 	}
  
- int kvaser_usb_send_cmd(const struct kvaser_usb *dev, void *cmd, int len)
- {
--	int actual_len; /* Not used */
--
- 	return usb_bulk_msg(dev->udev,
- 			    usb_sndbulkpipe(dev->udev,
- 					    dev->bulk_out->bEndpointAddress),
--			    cmd, len, &actual_len, KVASER_USB_TIMEOUT);
-+			    cmd, len, NULL, KVASER_USB_TIMEOUT);
+ 	if (work_done < quota) {
+-		napi_complete_done(napi, work_done);
+-		ier = priv->read_reg(priv, XCAN_IER_OFFSET);
+-		ier |= xcan_rx_int_mask(priv);
+-		priv->write_reg(priv, XCAN_IER_OFFSET, ier);
++		if (napi_complete_done(napi, work_done)) {
++			ier = priv->read_reg(priv, XCAN_IER_OFFSET);
++			ier |= xcan_rx_int_mask(priv);
++			priv->write_reg(priv, XCAN_IER_OFFSET, ier);
++		}
+ 	}
+ 	return work_done;
  }
- 
- int kvaser_usb_recv_cmd(const struct kvaser_usb *dev, void *cmd, int len,
 -- 
 2.34.1
 
