@@ -2,43 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10E6AC433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6B40C43217
 	for <linux-can@archiver.kernel.org>; Wed, 23 Feb 2022 22:44:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244661AbiBWWpG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 23 Feb 2022 17:45:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50578 "EHLO
+        id S244643AbiBWWpJ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 23 Feb 2022 17:45:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241951AbiBWWob (ORCPT
+        with ESMTP id S244612AbiBWWob (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 23 Feb 2022 17:44:31 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07AB54DF7E
-        for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 14:43:50 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A948522C9
+        for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 14:43:51 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nN0MO-0006fA-7e
-        for linux-can@vger.kernel.org; Wed, 23 Feb 2022 23:43:48 +0100
+        id 1nN0MP-0006gf-MC
+        for linux-can@vger.kernel.org; Wed, 23 Feb 2022 23:43:49 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id C0C083BBF1
+        by bjornoya.blackshift.org (Postfix) with SMTP id E85C73BC01
         for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 22:43:34 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 96D283BBDE;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id BB8FF3BBF0;
         Wed, 23 Feb 2022 22:43:34 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 6f3d7e17;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id da35ab17;
         Wed, 23 Feb 2022 22:43:33 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 20/36] can: mcp251xfd: mcp251xfd_chip_wait_for_osc_ready(): improve chip detection and error handling
-Date:   Wed, 23 Feb 2022 23:43:16 +0100
-Message-Id: <20220223224332.2965690-21-mkl@pengutronix.de>
+Subject: [PATCH net-next 22/36] can: mcp251xfd: mcp251xfd_chip_softreset_check(): wait for OSC ready before accessing chip
+Date:   Wed, 23 Feb 2022 23:43:18 +0100
+Message-Id: <20220223224332.2965690-23-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220223224332.2965690-1-mkl@pengutronix.de>
 References: <20220223224332.2965690-1-mkl@pengutronix.de>
@@ -52,78 +52,69 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The function mcp251xfd_chip_wait_for_osc_ready() polls the Oscillator
-Control Register for the oscillator to get ready.
+This patch changes the order of reading the Mode and Oscillator Ready
+bits.
 
-This is the first register the driver reads from. Reading implausible
-values (all bits set or unset) can be caused by the chip starting up
-after power on, waking up after sleep, or by the chip not being preset
-at all. Add check for implausible register content
-mcp251xfd_reg_invalid() to the regmap_read_poll_timeout() loop.
+Instead of reading the Mode of the chip directly after reset, first
+wait for the oscillator to get ready and the chip to fully start up.
+Read the Mode after this.
 
-In case of a regmap_read_poll_timeout() returns a fatal error (and not
-a timeout), forward it to the caller.
-
-As mcp251xfd_chip_wait_for_osc_ready() will be called after the probe
-function has finished, (currently during ifup), move error message
-about failed chip detection from there into the probe function.
-
-Link: https://lore.kernel.org/all/20220207131047.282110-8-mkl@pengutronix.de
+Link: https://lore.kernel.org/all/20220207131047.282110-10-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 24 ++++++++++++-------
- 1 file changed, 15 insertions(+), 9 deletions(-)
+ .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 29 ++++++++-----------
+ 1 file changed, 12 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index 6222633ee7d9..68518e8410dd 100644
+index f2aac990d285..9b94272da8bc 100644
 --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
 +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -254,22 +254,25 @@ mcp251xfd_chip_wait_for_osc_ready(const struct mcp251xfd_priv *priv,
+@@ -349,34 +349,29 @@ static int mcp251xfd_chip_softreset_do(const struct mcp251xfd_priv *priv)
+ 
+ static int mcp251xfd_chip_softreset_check(const struct mcp251xfd_priv *priv)
+ {
+-	u32 osc, osc_reference;
++	u32 osc_reference, osc_mask;
+ 	u8 mode;
  	int err;
  
- 	err = regmap_read_poll_timeout(priv->map_reg, MCP251XFD_REG_OSC, osc,
-+				       !mcp251xfd_reg_invalid(osc) &&
- 				       (osc & osc_mask) == osc_reference,
- 				       MCP251XFD_OSC_STAB_SLEEP_US,
- 				       MCP251XFD_OSC_STAB_TIMEOUT_US);
-+	if (err != -ETIMEDOUT)
-+		return err;
-+
- 	if (mcp251xfd_reg_invalid(osc)) {
- 		netdev_err(priv->ndev,
--			   "Failed to detect %s (osc=0x%08x).\n",
--			   mcp251xfd_get_model_str(priv), osc);
-+			   "Failed to read Oscillator Configuration Register (osc=0x%08x).\n",
-+			   osc);
- 		return -ENODEV;
--	} else if (err == -ETIMEDOUT) {
--		netdev_err(priv->ndev,
--			   "Timeout waiting for Oscillator Ready (osc=0x%08x, osc_reference=0x%08x)\n",
--			   osc, osc_reference);
--		return -ETIMEDOUT;
- 	}
- 
--	return 0;
-+	netdev_err(priv->ndev,
-+		   "Timeout waiting for Oscillator Ready (osc=0x%08x, osc_reference=0x%08x)\n",
-+		   osc, osc_reference);
-+
-+	return -ETIMEDOUT;
- }
- 
- static int mcp251xfd_chip_clock_enable(const struct mcp251xfd_priv *priv)
-@@ -1965,8 +1968,11 @@ static int mcp251xfd_probe(struct spi_device *spi)
- 		goto out_free_candev;
- 
- 	err = mcp251xfd_register(priv);
+-	err = mcp251xfd_chip_get_mode(priv, &mode);
 -	if (err)
-+	if (err) {
-+		dev_err_probe(&spi->dev, err, "Failed to detect %s.\n",
-+			      mcp251xfd_get_model_str(priv));
- 		goto out_can_rx_offload_del;
-+	}
+-		return err;
+-
+-	if (mode != MCP251XFD_REG_CON_MODE_CONFIG) {
+-		netdev_info(priv->ndev,
+-			    "Controller not in Config Mode after reset, but in %s Mode (%u).\n",
+-			    mcp251xfd_get_mode_str(mode), mode);
+-		return -ETIMEDOUT;
+-	}
+-
++	/* Check for reset defaults of OSC reg.
++	 * This will take care of stabilization period.
++	 */
+ 	osc_reference = MCP251XFD_REG_OSC_OSCRDY |
+ 		FIELD_PREP(MCP251XFD_REG_OSC_CLKODIV_MASK,
+ 			   MCP251XFD_REG_OSC_CLKODIV_10);
++	osc_mask = osc_reference | MCP251XFD_REG_OSC_PLLRDY;
++	err = mcp251xfd_chip_wait_for_osc_ready(priv, osc_reference, osc_mask);
++	if (err)
++		return err;
  
- 	return 0;
+-	/* check reset defaults of OSC reg */
+-	err = regmap_read(priv->map_reg, MCP251XFD_REG_OSC, &osc);
++	err = mcp251xfd_chip_get_mode(priv, &mode);
+ 	if (err)
+ 		return err;
+ 
+-	if (osc != osc_reference) {
++	if (mode != MCP251XFD_REG_CON_MODE_CONFIG) {
+ 		netdev_info(priv->ndev,
+-			    "Controller failed to reset. osc=0x%08x, reference value=0x%08x.\n",
+-			    osc, osc_reference);
++			    "Controller not in Config Mode after reset, but in %s Mode (%u).\n",
++			    mcp251xfd_get_mode_str(mode), mode);
+ 		return -ETIMEDOUT;
+ 	}
  
 -- 
 2.34.1
