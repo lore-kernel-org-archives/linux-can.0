@@ -2,50 +2,47 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01B9DC43219
-	for <linux-can@archiver.kernel.org>; Wed, 23 Feb 2022 22:44:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65594C433F5
+	for <linux-can@archiver.kernel.org>; Wed, 23 Feb 2022 22:44:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241257AbiBWWpT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 23 Feb 2022 17:45:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50584 "EHLO
+        id S244619AbiBWWpU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 23 Feb 2022 17:45:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244619AbiBWWoy (ORCPT
+        with ESMTP id S244624AbiBWWoy (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 23 Feb 2022 17:44:54 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1044338A1
-        for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 14:43:53 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179B83E0DB
+        for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 14:43:56 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nN0MR-0006ji-WE
-        for linux-can@vger.kernel.org; Wed, 23 Feb 2022 23:43:52 +0100
+        id 1nN0MU-0006nC-94
+        for linux-can@vger.kernel.org; Wed, 23 Feb 2022 23:43:54 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 32A5C3BC1E
+        by bjornoya.blackshift.org (Postfix) with SMTP id 85BA13BC3F
         for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 22:43:35 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id D88F73BBFC;
-        Wed, 23 Feb 2022 22:43:34 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 516BD3BC2B;
+        Wed, 23 Feb 2022 22:43:35 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id db2203bb;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 85559393;
         Wed, 23 Feb 2022 22:43:34 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        =?UTF-8?q?Magnus=20Aagaard=20S=C3=B8rensen?= 
-        <mas@csselectronics.com>
-Subject: [PATCH net-next 24/36] can: mcp251xfd: mcp251xfd_chip_wake(): renamed from mcp251xfd_chip_clock_enable()
-Date:   Wed, 23 Feb 2022 23:43:20 +0100
-Message-Id: <20220223224332.2965690-25-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 32/36] can: mcp251xfd: ring: change order of TX and RX FIFOs
+Date:   Wed, 23 Feb 2022 23:43:28 +0100
+Message-Id: <20220223224332.2965690-33-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220223224332.2965690-1-mkl@pengutronix.de>
 References: <20220223224332.2965690-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -55,65 +52,48 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch renames mcp251xfd_chip_clock_enable() into mcp251xfd_chip_wake() as
-this function actually wakes the chip. Additionally the documentation is
-adopted.
+This patch actually changes the order of the TX and RX FIFOs.
 
-Link: https://lore.kernel.org/all/20220207131047.282110-12-mkl@pengutronix.de
-Co-developed-by: Magnus Aagaard Sørensen <mas@csselectronics.com>
-Signed-off-by: Magnus Aagaard Sørensen <mas@csselectronics.com>
+This gives the opportunity to minimize the number of SPI transfers in
+the IRQ handler. The read of the IRQ status register and RX FIFO
+status registers can be combined into single SPI transfer. If the RX
+ring uses FIFO 1, the overall length of the transfer is smaller than
+in the original layout, where the RX FIFO comes after the TX FIFO.
+
+Link: https://lore.kernel.org/all/20220217103826.2299157-5-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c | 2 +-
+ drivers/net/can/spi/mcp251xfd/mcp251xfd.h      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index bc10ca1e7384..154e6c376670 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -292,22 +292,23 @@ mcp251xfd_chip_wait_for_osc_ready(const struct mcp251xfd_priv *priv,
- 	return -ETIMEDOUT;
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
+index 39005725c665..9657dbf251b0 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
+@@ -215,8 +215,8 @@ void mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
+ 	netdev_reset_queue(priv->ndev);
+ 
+ 	mcp251xfd_ring_init_tef(priv, &base);
+-	mcp251xfd_ring_init_tx(priv, &base, &fifo_nr);
+ 	mcp251xfd_ring_init_rx(priv, &base, &fifo_nr);
++	mcp251xfd_ring_init_tx(priv, &base, &fifo_nr);
  }
  
--static int mcp251xfd_chip_clock_enable(const struct mcp251xfd_priv *priv)
-+static int mcp251xfd_chip_wake(const struct mcp251xfd_priv *priv)
- {
- 	u32 osc, osc_reference, osc_mask;
- 	int err;
+ void mcp251xfd_ring_free(struct mcp251xfd_priv *priv)
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+index 5c3f7f25caf0..8ee959890aea 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+@@ -596,8 +596,8 @@ struct mcp251xfd_priv {
+ 	u32 spi_max_speed_hz_slow;
  
--	/* Set Power On Defaults for "Clock Output Divisor" and remove
--	 * "Oscillator Disable" bit.
-+	/* For normal sleep on MCP2517FD and MCP2518FD, clearing
-+	 * "Oscillator Disable" will wake the chip. For low power mode
-+	 * on MCP2518FD, asserting the chip select will wake the
-+	 * chip. Writing to the Oscillator register will wake it in
-+	 * both cases.
- 	 */
- 	osc = FIELD_PREP(MCP251XFD_REG_OSC_CLKODIV_MASK,
- 			 MCP251XFD_REG_OSC_CLKODIV_10);
- 	osc_reference = MCP251XFD_REG_OSC_OSCRDY;
- 	osc_mask = MCP251XFD_REG_OSC_OSCRDY | MCP251XFD_REG_OSC_PLLRDY;
+ 	struct mcp251xfd_tef_ring tef[1];
+-	struct mcp251xfd_tx_ring tx[1];
+ 	struct mcp251xfd_rx_ring *rx[1];
++	struct mcp251xfd_tx_ring tx[1];
  
--	/* Note:
--	 *
--	 * If the controller is in Sleep Mode the following write only
-+	/* If the controller is in Sleep Mode the following write only
- 	 * removes the "Oscillator Disable" bit and powers it up. All
- 	 * other bits are unaffected.
- 	 */
-@@ -332,10 +333,10 @@ static int mcp251xfd_chip_softreset_do(const struct mcp251xfd_priv *priv)
- 	const __be16 cmd = mcp251xfd_cmd_reset();
- 	int err;
- 
--	/* The Set Mode and SPI Reset command only seems to works if
--	 * the controller is not in Sleep Mode.
-+	/* The Set Mode and SPI Reset command only works if the
-+	 * controller is not in Sleep Mode.
- 	 */
--	err = mcp251xfd_chip_clock_enable(priv);
-+	err = mcp251xfd_chip_wake(priv);
- 	if (err)
- 		return err;
+ 	u8 rx_ring_num;
  
 -- 
 2.34.1
