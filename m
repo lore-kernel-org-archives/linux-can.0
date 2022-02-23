@@ -2,43 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EE02C43217
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E58FC433FE
 	for <linux-can@archiver.kernel.org>; Wed, 23 Feb 2022 22:44:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244601AbiBWWpQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 23 Feb 2022 17:45:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50840 "EHLO
+        id S244638AbiBWWpR (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 23 Feb 2022 17:45:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244640AbiBWWpG (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Feb 2022 17:45:06 -0500
+        with ESMTP id S244242AbiBWWpF (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Feb 2022 17:45:05 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9854E5419C
-        for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 14:44:00 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855FE53E36
+        for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 14:43:59 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nN0MY-0006ve-Nt
-        for linux-can@vger.kernel.org; Wed, 23 Feb 2022 23:43:58 +0100
+        id 1nN0MX-0006sn-MC
+        for linux-can@vger.kernel.org; Wed, 23 Feb 2022 23:43:57 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id D10743BC5D
+        by bjornoya.blackshift.org (Postfix) with SMTP id BED083BC59
         for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 22:43:35 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id A4CC03BC4E;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 78F8D3BC3B;
         Wed, 23 Feb 2022 22:43:35 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 51cd9ecc;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b8455338;
         Wed, 23 Feb 2022 22:43:34 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 36/36] can: mcp251xfd: mcp251xfd_priv: introduce macros specifying the number of supported TEF/RX/TX rings
-Date:   Wed, 23 Feb 2022 23:43:32 +0100
-Message-Id: <20220223224332.2965690-37-mkl@pengutronix.de>
+Subject: [PATCH net-next 34/36] can: mcp251xfd: ring: update FIFO setup debug info
+Date:   Wed, 23 Feb 2022 23:43:30 +0100
+Message-Id: <20220223224332.2965690-35-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220223224332.2965690-1-mkl@pengutronix.de>
 References: <20220223224332.2965690-1-mkl@pengutronix.de>
@@ -52,57 +52,90 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch introduces macros to define the number of supported TEF, RX
-and TX rings. As well as some assertions as sanity checks.
+The recent change of the order of the TX and RX FIFOs is not reflected
+in the debug info of the FIFO setup. This patch adjust the order and
+additionally prints the base address of each FIFO.
 
-Link: https://lore.kernel.org/all/20220217103826.2299157-9-mkl@pengutronix.de
+Since the mcp251xfd_ring_init() may fail due to wrongly configured
+FIFOs, printing of the FIFO setup is moved there. In case of an error
+it would not be printed in mcp251xfd_ring_init().
+
+Link: https://lore.kernel.org/all/20220217103826.2299157-7-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd.h | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ .../net/can/spi/mcp251xfd/mcp251xfd-ring.c    | 44 ++++++++++++-------
+ 1 file changed, 28 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-index f359dd0aa458..87cc13d455c1 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-@@ -2,7 +2,7 @@
-  *
-  * mcp251xfd - Microchip MCP251xFD Family CAN controller driver
-  *
-- * Copyright (c) 2019, 2020 Pengutronix,
-+ * Copyright (c) 2019, 2020, 2021 Pengutronix,
-  *               Marc Kleine-Budde <kernel@pengutronix.de>
-  * Copyright (c) 2019 Martin Sperl <kernel@martin.sperl.org>
-  */
-@@ -410,6 +410,15 @@ static_assert(MCP251XFD_TIMESTAMP_WORK_DELAY_SEC <
- #define MCP251XFD_SANITIZE_SPI 1
- #define MCP251XFD_SANITIZE_CAN 1
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
+index 8126f88d57d7..9610d262e966 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
+@@ -209,8 +209,10 @@ mcp251xfd_ring_init_rx(struct mcp251xfd_priv *priv, u16 *base, u8 *fifo_nr)
  
-+/* FIFO and Ring */
-+#define MCP251XFD_FIFO_TEF_NUM 1U
-+#define MCP251XFD_FIFO_RX_NUM_MAX 1U
-+#define MCP251XFD_FIFO_TX_NUM 1U
+ int mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
+ {
++	const struct mcp251xfd_rx_ring *rx_ring;
+ 	u16 base = 0, ram_used;
+ 	u8 fifo_nr = 1;
++	int i;
+ 
+ 	netdev_reset_queue(priv->ndev);
+ 
+@@ -218,6 +220,32 @@ int mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
+ 	mcp251xfd_ring_init_rx(priv, &base, &fifo_nr);
+ 	mcp251xfd_ring_init_tx(priv, &base, &fifo_nr);
+ 
++	netdev_dbg(priv->ndev,
++		   "FIFO setup: TEF:         0x%03x: %2d*%zu bytes = %4zu bytes\n",
++		   mcp251xfd_get_tef_obj_addr(0),
++		   priv->tx->obj_num, sizeof(struct mcp251xfd_hw_tef_obj),
++		   priv->tx->obj_num * sizeof(struct mcp251xfd_hw_tef_obj));
 +
-+static_assert(MCP251XFD_FIFO_TEF_NUM == 1U);
-+static_assert(MCP251XFD_FIFO_TEF_NUM == MCP251XFD_FIFO_TX_NUM);
-+static_assert(MCP251XFD_FIFO_RX_NUM_MAX <= 4U);
++	mcp251xfd_for_each_rx_ring(priv, rx_ring, i) {
++		netdev_dbg(priv->ndev,
++			   "FIFO setup: RX-%u: FIFO %u/0x%03x: %2u*%u bytes = %4u bytes\n",
++			   rx_ring->nr, rx_ring->fifo_nr,
++			   mcp251xfd_get_rx_obj_addr(rx_ring, 0),
++			   rx_ring->obj_num, rx_ring->obj_size,
++			   rx_ring->obj_num * rx_ring->obj_size);
++	}
 +
- /* Silence TX MAB overflow warnings */
- #define MCP251XFD_QUIRK_MAB_NO_WARN BIT(0)
- /* Use CRC to access registers */
-@@ -596,9 +605,9 @@ struct mcp251xfd_priv {
- 	u32 spi_max_speed_hz_fast;
- 	u32 spi_max_speed_hz_slow;
++	netdev_dbg(priv->ndev,
++		   "FIFO setup: TX:   FIFO %u/0x%03x: %2u*%u bytes = %4u bytes\n",
++		   priv->tx->fifo_nr,
++		   mcp251xfd_get_tx_obj_addr(priv->tx, 0),
++		   priv->tx->obj_num, priv->tx->obj_size,
++		   priv->tx->obj_num * priv->tx->obj_size);
++
++	netdev_dbg(priv->ndev,
++		   "FIFO setup: free:                             %4u bytes\n",
++		   MCP251XFD_RAM_SIZE - (base - MCP251XFD_RAM_START));
++
+ 	ram_used = base - MCP251XFD_RAM_START;
+ 	if (ram_used > MCP251XFD_RAM_SIZE) {
+ 		netdev_err(priv->ndev,
+@@ -288,21 +316,5 @@ int mcp251xfd_ring_alloc(struct mcp251xfd_priv *priv)
+ 	}
+ 	priv->rx_ring_num = i;
  
--	struct mcp251xfd_tef_ring tef[1];
--	struct mcp251xfd_rx_ring *rx[1];
--	struct mcp251xfd_tx_ring tx[1];
-+	struct mcp251xfd_tef_ring tef[MCP251XFD_FIFO_TEF_NUM];
-+	struct mcp251xfd_rx_ring *rx[MCP251XFD_FIFO_RX_NUM_MAX];
-+	struct mcp251xfd_tx_ring tx[MCP251XFD_FIFO_TX_NUM];
- 
- 	u8 rx_ring_num;
- 
+-	netdev_dbg(priv->ndev,
+-		   "FIFO setup: TEF: %d*%d bytes = %d bytes, TX: %d*%d bytes = %d bytes\n",
+-		   tx_obj_num, tef_obj_size, tef_obj_size * tx_obj_num,
+-		   tx_obj_num, tx_obj_size, tx_obj_size * tx_obj_num);
+-
+-	mcp251xfd_for_each_rx_ring(priv, rx_ring, i) {
+-		netdev_dbg(priv->ndev,
+-			   "FIFO setup: RX-%d: %d*%d bytes = %d bytes\n",
+-			   i, rx_ring->obj_num, rx_ring->obj_size,
+-			   rx_ring->obj_size * rx_ring->obj_num);
+-	}
+-
+-	netdev_dbg(priv->ndev,
+-		   "FIFO setup: free: %d bytes\n",
+-		   ram_free);
+-
+ 	return 0;
+ }
 -- 
 2.34.1
 
