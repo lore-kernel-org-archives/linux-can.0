@@ -2,44 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22F3BC433EF
-	for <linux-can@archiver.kernel.org>; Wed, 23 Feb 2022 22:44:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 107C4C433FE
+	for <linux-can@archiver.kernel.org>; Wed, 23 Feb 2022 22:44:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244356AbiBWWo1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 23 Feb 2022 17:44:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50574 "EHLO
+        id S244610AbiBWWob (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 23 Feb 2022 17:44:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244309AbiBWWoU (ORCPT
+        with ESMTP id S244518AbiBWWoU (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 23 Feb 2022 17:44:20 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C13043E0D2
-        for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 14:43:45 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BB73F327
+        for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 14:43:47 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nN0MJ-0006XR-Os
-        for linux-can@vger.kernel.org; Wed, 23 Feb 2022 23:43:43 +0100
+        id 1nN0ML-0006aV-AF
+        for linux-can@vger.kernel.org; Wed, 23 Feb 2022 23:43:45 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 477533BBB8
+        by bjornoya.blackshift.org (Postfix) with SMTP id 71B6A3BBCF
         for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 22:43:34 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 015353BB83;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 34F7C3BBA6;
         Wed, 23 Feb 2022 22:43:34 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 614b5b8f;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 548128e0;
         Wed, 23 Feb 2022 22:43:33 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Srinivas Neeli <srinivas.neeli@xilinx.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 12/36] can: xilinx_can: Add check for NAPI Poll function
-Date:   Wed, 23 Feb 2022 23:43:08 +0100
-Message-Id: <20220223224332.2965690-13-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 15/36] can: mcp251xfd: mcp251xfd_regmap_crc_read(): ignore CRC error only if solely OSC register is read
+Date:   Wed, 23 Feb 2022 23:43:11 +0100
+Message-Id: <20220223224332.2965690-16-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220223224332.2965690-1-mkl@pengutronix.de>
 References: <20220223224332.2965690-1-mkl@pengutronix.de>
@@ -53,38 +52,37 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Srinivas Neeli <srinivas.neeli@xilinx.com>
+MCP251XFD_REG_OSC is the first register the driver reads from. The
+chip may be in deep sleep and the SPI transfer (i.e. the assertion of
+the CS) will wake the chip up. This takes about 3ms. The CRC of this
+transfer is wrong, or there isn't any chip at all, in this case the
+CRC will be wrong, too. The driver ignores the CRC error and returns
+the read data to the caller.
 
-Add check for NAPI poll function to avoid enabling interrupts
-with out completing the NAPI call.
+To avoid any confusion, this patch changes the
+mcp251xfd_regmap_crc_read() function to only ignore the CRC error if
+solely the OSC register is read. So when reading more than the OSC
+registers at once, CRC errors are not ignored.
 
-Link: https://lore.kernel.org/all/20220208162053.39896-1-srinivas.neeli@xilinx.com
-Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
+Link: https://lore.kernel.org/all/20220207131047.282110-3-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/xilinx_can.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 1674b561c9a2..e562c5ab1149 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -1215,10 +1215,11 @@ static int xcan_rx_poll(struct napi_struct *napi, int quota)
- 	}
- 
- 	if (work_done < quota) {
--		napi_complete_done(napi, work_done);
--		ier = priv->read_reg(priv, XCAN_IER_OFFSET);
--		ier |= xcan_rx_int_mask(priv);
--		priv->write_reg(priv, XCAN_IER_OFFSET, ier);
-+		if (napi_complete_done(napi, work_done)) {
-+			ier = priv->read_reg(priv, XCAN_IER_OFFSET);
-+			ier |= xcan_rx_int_mask(priv);
-+			priv->write_reg(priv, XCAN_IER_OFFSET, ier);
-+		}
- 	}
- 	return work_done;
- }
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
+index 7b120c716228..8112f8df22a6 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
+@@ -368,7 +368,7 @@ mcp251xfd_regmap_crc_read(void *context,
+ 		 * to the caller. It will take care of both cases.
+ 		 *
+ 		 */
+-		if (reg == MCP251XFD_REG_OSC) {
++		if (reg == MCP251XFD_REG_OSC && val_len == sizeof(__le32)) {
+ 			err = 0;
+ 			goto out;
+ 		}
 -- 
 2.34.1
 
