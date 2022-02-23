@@ -2,118 +2,90 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA4CDC433EF
-	for <linux-can@archiver.kernel.org>; Wed, 23 Feb 2022 08:55:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BF7CC433FE
+	for <linux-can@archiver.kernel.org>; Wed, 23 Feb 2022 22:43:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234498AbiBWI4H (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 23 Feb 2022 03:56:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34956 "EHLO
+        id S242107AbiBWWoH (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 23 Feb 2022 17:44:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbiBWI4H (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Feb 2022 03:56:07 -0500
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 129DC7C148
-        for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 00:55:38 -0800 (PST)
-Received: from photo-meter.com ([62.157.68.154]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MkYkI-1o6H0I0fXC-00m643; Wed, 23 Feb 2022 09:55:36 +0100
-Received: from [192.168.100.109] (MICHA.fritz.box [192.168.100.109])
-        by photo-meter.com (Postfix) with ESMTP id D6B9B3B08B7;
-        Wed, 23 Feb 2022 09:53:28 +0100 (CET)
-Message-ID: <d2c1fd36-32b1-53d5-1e2c-a1171f738caf@photo-meter.com>
-Date:   Wed, 23 Feb 2022 09:55:34 +0100
+        with ESMTP id S238662AbiBWWoH (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Feb 2022 17:44:07 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1EEE255A9
+        for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 14:43:38 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1nN0MC-0006O2-Ul
+        for linux-can@vger.kernel.org; Wed, 23 Feb 2022 23:43:36 +0100
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id CCE4D3BB6F
+        for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 22:43:33 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7F3F73BB4D;
+        Wed, 23 Feb 2022 22:43:33 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1927b899;
+        Wed, 23 Feb 2022 22:43:33 +0000 (UTC)
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Evgeny Boger <boger@wirenboard.com>,
+        Gerhard Bertelsmann <info@gerhard-bertelsmann.de>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH net-next 02/36] dt-binding: can: sun4i_can: include common CAN controller bindings
+Date:   Wed, 23 Feb 2022 23:42:58 +0100
+Message-Id: <20220223224332.2965690-3-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220223224332.2965690-1-mkl@pengutronix.de>
+References: <20220223224332.2965690-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Reply-To: anochin@photo-meter.com
-Subject: Re: can: m_can: tcan4x5x m_can_isr do not handle tx if rx fails
-Content-Language: en-GB
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-can@vger.kernel.org
-References: <20220222144518.j4swrtcv4rsyagem@pengutronix.de>
- <cde7fa96-adc6-d9ca-72a3-056569623936@photo-meter.com>
- <20220222150619.sqyagvuspbipywxl@pengutronix.de>
- <1c9764e5-dd8b-853a-08e2-547acf7e9e76@photo-meter.com>
- <20220222154314.y4scgsssl4mx5z2n@pengutronix.de>
- <00d47d39-7f93-6151-5e1a-572e75768eec@photo-meter.com>
- <20220222155135.xgzxddoz372zdsv4@pengutronix.de>
- <b946db8c-ac32-afb0-95aa-8658d1176a89@photo-meter.com>
- <874k4qvq77.fsf@hardanger.blackshift.org>
- <65c90e02-e9b9-988c-bd54-235804386a4b@photo-meter.com>
- <20220222201035.ywqnclhregzmkjzq@pengutronix.de>
-From:   Michael Anochin <anochin@photo-meter.com>
-Organization: Czibula und Grundmann GmbH
-In-Reply-To: <20220222201035.ywqnclhregzmkjzq@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:u1vavv790iLZyypu//ZOIIaDEuWHURsyPUnCUzgPvk4uDqdXEn2
- /3tDCvdOucrFhvRl/6YKtFdPm+9pv23GeVvAiStBOnYy9meNz+qv97auFnBXXroB9PtvnNs
- 33sXAXoSwqoaJPjfKt/k3+2mbmeuSRfFUOIILCix3TaV7cmZOuWseAM+22U85UScJwQI6aP
- 8JITHHrYr3WLwGfi8b9aQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+GPLy8Xcy6s=:SS9NLdytp+fOhfcyjOoqZQ
- bU3x3LM9Ua2vz22WAK1Ii62b8yx1sovP4UOGlQMqPMPQ2lvyL0vXUUoxbebUjOmQF4+kbmy1O
- FaSJITPDFexA4xQZQ1qfLwryTGAm01LlqMtFCm+imD2luydzePGMqlIK02DlAzOq6rLWGp0Sq
- AhHJKot95l8xaU41WLI2AceVxrcn/RH0Rr6diyYIzsHlpLdngcNhjJkzjsm2vN63wwbemstz7
- /65tQLkwQ4y6TEtyb60or2Dx5XoYNXMdLFhDrRf9WU2xZPSK9wjRstHA3l20dbhVTMK3Y0R8O
- PxboOKdd5+5x+0BzKRLaYZJ4xafg0QBdpt/JyfIbhQgCyhuVS9Zm/kFJuXqxJ6gYM9AFxQc0R
- U33HIsKMCXmF0F2o1KBKngUCt3gJxgIXQLfNNroEsPiz/I63lo1E3JNAXxmM1NqFwqxMMTyfn
- et6A1uDM/bVouycX66FGmxg8LxJBwKzutxjdzcw0LAw1np+dHHNcTQ9g4LU7Nrlj8RdhAay3E
- sO6cv8QY3dvcuL2dbE8XgIJQHuRhob2ik/hISzMNZOrdSPzA33aFlxPgpdbA12LXQSK6CYKCi
- 9etqagqDkZeU8umlLLjAfB+88wLo95q3TD7pQOhch3GTbbBbkSl4tYxsFeUdGuDbSGr1Y2FLW
- 8NolvZHf86wVhHIJIwJvVuKzAwdXJWMUZW1gNMwD+oC5HAhLvIAVDCVu0EHzILERcYH16mUqV
- C+u5rJvsmUyZl997
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-> 
-> BTW: it's documented as level low in the bindings documentation:
-> 
-> |		interrupts = <14 IRQ_TYPE_LEVEL_LOW>;
-> 
+Since commit
+
+| 1f9234401ce0 ("dt-bindings: can: add can-controller.yaml")
+
+there is a common CAN controller binding. Add this to the sun4i_can
+binding.
+
+Link: https://lore.kernel.org/all/20220124220653.3477172-3-mkl@pengutronix.de
+Cc: Evgeny Boger <boger@wirenboard.com>
+Cc: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ .../devicetree/bindings/net/can/allwinner,sun4i-a10-can.yaml   | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/net/can/allwinner,sun4i-a10-can.yaml b/Documentation/devicetree/bindings/net/can/allwinner,sun4i-a10-can.yaml
+index c93fe9d3ea82..3c51b2d02957 100644
+--- a/Documentation/devicetree/bindings/net/can/allwinner,sun4i-a10-can.yaml
++++ b/Documentation/devicetree/bindings/net/can/allwinner,sun4i-a10-can.yaml
+@@ -10,6 +10,9 @@ maintainers:
+   - Chen-Yu Tsai <wens@csie.org>
+   - Maxime Ripard <mripard@kernel.org>
+ 
++allOf:
++  - $ref: can-controller.yaml#
++
+ properties:
+   compatible:
+     oneOf:
+-- 
+2.34.1
 
 
-Thank you very much. That was my false hope, I change the dt_binding for 
-IRQ_TYPE_LEVEL_LOW=8
-
-interrupts = <25 8>;
-interrupts = <27 8>;
-interrupts = <16 8>;
-
-But without success, failure still occurs, maybe not so fast as with 
-IRQ_TYPE_EDGE_FALLING (subjective). Interestingly, the first run after 
-reboot may last longer than subsequent ones until it breaks. If it 
-breaks, the interface is at random can0 or 1 or 2.
-
-
-Here is an example, can1 brakes.  No more ISR fires after [ 1682.748485].
-I added netdev_dbg before return, and netdev_ERR for out_fail.
-
-
-[ 1682.747310] tcan4x5x spi4.0 can1: m_can_isr: enter ir=0x5800
-[ 1682.747468] tcan4x5x spi4.0 can1: m_can_isr: netif_wake_queue done
-[ 1682.747475] tcan4x5x spi4.0 can1: m_can_isr: return IRQ_HANDLED
-
-[ 1682.747494] tcan4x5x spi4.0 can1: m_can_start_xmit netif_stop_queue done
-
-//Last TX ISR (IR_TEFN was true)
-[ 1682.747912] tcan4x5x spi4.0 can1: m_can_isr: enter ir=0x5800
-//fifo not full and queue is stoppet -> wake queue
-[ 1682.748053] tcan4x5x spi4.0 can1: m_can_isr: netif_wake_queue done
-[ 1682.748061] tcan4x5x spi4.0 can1: m_can_isr: return IRQ_HANDLED
-
-//Last RX-ISR
-[ 1682.748199] tcan4x5x spi4.0 can1: m_can_isr: enter ir=0x1
-done
-[ 1682.748433] tcan4x5x spi4.0 can1: m_can_isr: return IRQ_HANDLED
-
-//In m_can_tx_handler after fifo write an end, m_can_tx_fifo_full -> 
-netif_stop_queue(dev);
-[ 1682.748485] tcan4x5x spi4.0 can1: m_can_tx_handler m_can_tx_fifo_full
-
-After that I expect m_can_isr with IR_TEFN flag in order to wake queue, 
-but nothing follows. Write to socket returns permanently 105,ENOBUFS
-
-Full dmesg output: https://pastebin.com/G0xikf3P
-
-Maybe I should add some printk to skb.c and deb.c?
