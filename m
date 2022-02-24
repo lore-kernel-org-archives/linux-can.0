@@ -2,43 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76277C4332F
-	for <linux-can@archiver.kernel.org>; Thu, 24 Feb 2022 08:29:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05DE6C433EF
+	for <linux-can@archiver.kernel.org>; Thu, 24 Feb 2022 08:29:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232035AbiBXIaY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 24 Feb 2022 03:30:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36872 "EHLO
+        id S231951AbiBXIaZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 24 Feb 2022 03:30:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231895AbiBXI3p (ORCPT
+        with ESMTP id S231902AbiBXI3p (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 24 Feb 2022 03:29:45 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60058279087
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7955127908C
         for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 00:29:01 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nN9Uh-0004dC-Mh
+        id 1nN9Uh-0004ec-Kz
         for linux-can@vger.kernel.org; Thu, 24 Feb 2022 09:28:59 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id B72933C3AD
-        for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 08:27:30 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id C78313C214
+        for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 08:27:28 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 72BEA3C37D;
-        Thu, 24 Feb 2022 08:27:30 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 60DD43C1CE;
+        Thu, 24 Feb 2022 08:27:28 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4e344c70;
-        Thu, 24 Feb 2022 08:27:29 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d2d48553;
+        Thu, 24 Feb 2022 08:27:28 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 33/36] can: mcp251xfd: ring: mcp251xfd_ring_init(): checked RAM usage of ring setup
-Date:   Thu, 24 Feb 2022 09:27:23 +0100
-Message-Id: <20220224082726.3000007-34-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [PATCH net-next 03/36] dt-binding: can: m_can: list Chandrasekar Ramakrishnan as maintainer
+Date:   Thu, 24 Feb 2022 09:26:53 +0100
+Message-Id: <20220224082726.3000007-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220224082726.3000007-1-mkl@pengutronix.de>
 References: <20220224082726.3000007-1-mkl@pengutronix.de>
@@ -52,82 +54,31 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-With this patch the usage of the on-chip RAM is checked. In the
-current driver the FIFO setup is fixed and always fits into the RAM.
+Since Sriram Dash's email bounces, change the maintainer entry to
+Chandrasekar Ramakrishnan. Chandrasekar Ramakrishnan is already listed
+as a maintainer in the MAINTAINERS file.
 
-With an upcoming patch series the ring and FIFO setup will be more
-dynamic. Although using more RAM than available should not happen, but
-add this safety check, just in case.
-
-Link: https://lore.kernel.org/all/20220217103826.2299157-6-mkl@pengutronix.de
+Link: https://lore.kernel.org/all/20220217113839.2311417-1-mkl@pengutronix.de
+Cc: Chandrasekar Ramakrishnan <rcsekar@samsung.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c |  4 +++-
- drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c | 14 ++++++++++++--
- drivers/net/can/spi/mcp251xfd/mcp251xfd.h      |  2 +-
- 3 files changed, 16 insertions(+), 4 deletions(-)
+ Documentation/devicetree/bindings/net/can/bosch,m_can.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index e5641696cdc2..2d033d12cdbb 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -760,7 +760,9 @@ static int mcp251xfd_chip_start(struct mcp251xfd_priv *priv)
- 	if (err)
- 		goto out_chip_stop;
+diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+index 401ab7cdb379..f8f504953e78 100644
+--- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
++++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+@@ -9,7 +9,7 @@ title: Bosch MCAN controller Bindings
+ description: Bosch MCAN controller for CAN bus
  
--	mcp251xfd_ring_init(priv);
-+	err = mcp251xfd_ring_init(priv);
-+	if (err)
-+		goto out_chip_stop;
+ maintainers:
+-  - Sriram Dash <sriram.dash@samsung.com>
++  - Chandrasekar Ramakrishnan <rcsekar@samsung.com>
  
- 	err = mcp251xfd_chip_fifo_init(priv);
- 	if (err)
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
-index 9657dbf251b0..8126f88d57d7 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
-@@ -207,9 +207,9 @@ mcp251xfd_ring_init_rx(struct mcp251xfd_priv *priv, u16 *base, u8 *fifo_nr)
- 	}
- }
- 
--void mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
-+int mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
- {
--	u16 base = 0;
-+	u16 base = 0, ram_used;
- 	u8 fifo_nr = 1;
- 
- 	netdev_reset_queue(priv->ndev);
-@@ -217,6 +217,16 @@ void mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
- 	mcp251xfd_ring_init_tef(priv, &base);
- 	mcp251xfd_ring_init_rx(priv, &base, &fifo_nr);
- 	mcp251xfd_ring_init_tx(priv, &base, &fifo_nr);
-+
-+	ram_used = base - MCP251XFD_RAM_START;
-+	if (ram_used > MCP251XFD_RAM_SIZE) {
-+		netdev_err(priv->ndev,
-+			   "Error during ring configuration, using more RAM (%u bytes) than available (%u bytes).\n",
-+			   ram_used, MCP251XFD_RAM_SIZE);
-+		return -ENOMEM;
-+	}
-+
-+	return 0;
- }
- 
- void mcp251xfd_ring_free(struct mcp251xfd_priv *priv)
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-index 8ee959890aea..58e76064cf9e 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-@@ -882,7 +882,7 @@ u16 mcp251xfd_crc16_compute2(const void *cmd, size_t cmd_size,
- 			     const void *data, size_t data_size);
- u16 mcp251xfd_crc16_compute(const void *data, size_t data_size);
- int mcp251xfd_regmap_init(struct mcp251xfd_priv *priv);
--void mcp251xfd_ring_init(struct mcp251xfd_priv *priv);
-+int mcp251xfd_ring_init(struct mcp251xfd_priv *priv);
- void mcp251xfd_ring_free(struct mcp251xfd_priv *priv);
- int mcp251xfd_ring_alloc(struct mcp251xfd_priv *priv);
- int mcp251xfd_handle_rxif(struct mcp251xfd_priv *priv);
+ properties:
+   compatible:
 -- 
 2.34.1
 
