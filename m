@@ -2,43 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C1EDC433F5
-	for <linux-can@archiver.kernel.org>; Thu, 24 Feb 2022 08:29:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9438C4167D
+	for <linux-can@archiver.kernel.org>; Thu, 24 Feb 2022 08:29:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232071AbiBXI3s (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 24 Feb 2022 03:29:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36986 "EHLO
+        id S231964AbiBXI3u (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 24 Feb 2022 03:29:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232005AbiBXI3o (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 24 Feb 2022 03:29:44 -0500
+        with ESMTP id S231970AbiBXI3W (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 24 Feb 2022 03:29:22 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC357278294
-        for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 00:28:56 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3178277935
+        for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 00:28:52 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nN9Uc-0004L3-O7
-        for linux-can@vger.kernel.org; Thu, 24 Feb 2022 09:28:54 +0100
+        id 1nN9UY-00046T-Lf
+        for linux-can@vger.kernel.org; Thu, 24 Feb 2022 09:28:50 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 892F63C38D
-        for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 08:27:30 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 7A6853C2C3
+        for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 08:27:29 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 40DE33C35C;
-        Thu, 24 Feb 2022 08:27:30 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 76f8de6d;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 14E4A3C253;
         Thu, 24 Feb 2022 08:27:29 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 556e725f;
+        Thu, 24 Feb 2022 08:27:28 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 30/36] can: mcp251xfd: mcp251xfd_ring_init(): split ring_init into separate functions
-Date:   Thu, 24 Feb 2022 09:27:20 +0100
-Message-Id: <20220224082726.3000007-31-mkl@pengutronix.de>
+Subject: [PATCH net-next 14/36] can: mcp251xfd: mcp251xfd_reg_invalid(): rename from mcp251xfd_osc_invalid()
+Date:   Thu, 24 Feb 2022 09:27:04 +0100
+Message-Id: <20220224082726.3000007-15-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220224082726.3000007-1-mkl@pengutronix.de>
 References: <20220224082726.3000007-1-mkl@pengutronix.de>
@@ -52,156 +52,56 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch splits the initialization of the TEF, TX and RX FIFO in the
-mcp251xfd_ring_init() function into separate functions. This is a
-preparation patch to move the RX FIFO in front of the TX FIFO.
+This patch renames mcp251xfd_osc_invalid() to mcp251xfd_reg_invalid(),
+as it will be used for other registers than the "osc" register in a
+later patch.
 
-Link: https://lore.kernel.org/all/20220217103826.2299157-3-mkl@pengutronix.de
+This patch also moves this function to more towards the beginning of
+the file, to be available for other functions, too.
+
+Link: https://lore.kernel.org/all/20220207131047.282110-2-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../net/can/spi/mcp251xfd/mcp251xfd-ring.c    | 100 +++++++++++-------
- 1 file changed, 62 insertions(+), 38 deletions(-)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
-index 6e394ac0bc5e..b9300554543e 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
-@@ -52,6 +52,45 @@ mcp251xfd_cmd_prepare_write_reg(const struct mcp251xfd_priv *priv,
- 	return len;
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index b5986df6eca0..7e0c4e662381 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -178,6 +178,11 @@ static int mcp251xfd_clks_and_vdd_disable(const struct mcp251xfd_priv *priv)
+ 	return 0;
  }
  
-+static void mcp251xfd_ring_init_tef(struct mcp251xfd_priv *priv)
++static inline bool mcp251xfd_reg_invalid(u32 reg)
 +{
-+	struct mcp251xfd_tef_ring *tef_ring;
-+	struct spi_transfer *xfer;
-+	u32 val;
-+	u16 addr;
-+	u8 len;
-+	int i;
-+
-+	/* TEF */
-+	tef_ring = priv->tef;
-+	tef_ring->head = 0;
-+	tef_ring->tail = 0;
-+
-+	/* FIFO increment TEF tail pointer */
-+	addr = MCP251XFD_REG_TEFCON;
-+	val = MCP251XFD_REG_TEFCON_UINC;
-+	len = mcp251xfd_cmd_prepare_write_reg(priv, &tef_ring->uinc_buf,
-+					      addr, val, val);
-+
-+	for (i = 0; i < ARRAY_SIZE(tef_ring->uinc_xfer); i++) {
-+		xfer = &tef_ring->uinc_xfer[i];
-+		xfer->tx_buf = &tef_ring->uinc_buf;
-+		xfer->len = len;
-+		xfer->cs_change = 1;
-+		xfer->cs_change_delay.value = 0;
-+		xfer->cs_change_delay.unit = SPI_DELAY_UNIT_NSECS;
-+	}
-+
-+	/* "cs_change == 1" on the last transfer results in an active
-+	 * chip select after the complete SPI message. This causes the
-+	 * controller to interpret the next register access as
-+	 * data. Set "cs_change" of the last transfer to "0" to
-+	 * properly deactivate the chip select at the end of the
-+	 * message.
-+	 */
-+	xfer->cs_change = 0;
++	return reg == 0x0 || reg == 0xffffffff;
 +}
 +
- static void
- mcp251xfd_tx_ring_init_tx_obj(const struct mcp251xfd_priv *priv,
- 			      const struct mcp251xfd_tx_ring *ring,
-@@ -88,50 +127,15 @@ mcp251xfd_tx_ring_init_tx_obj(const struct mcp251xfd_priv *priv,
- 					ARRAY_SIZE(tx_obj->xfer));
- }
- 
--void mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
-+static void mcp251xfd_ring_init_tx(struct mcp251xfd_priv *priv)
+ static inline int
+ mcp251xfd_chip_get_mode(const struct mcp251xfd_priv *priv, u8 *mode)
  {
--	struct mcp251xfd_tef_ring *tef_ring;
- 	struct mcp251xfd_tx_ring *tx_ring;
--	struct mcp251xfd_rx_ring *rx_ring, *prev_rx_ring = NULL;
- 	struct mcp251xfd_tx_obj *tx_obj;
--	struct spi_transfer *xfer;
- 	u32 val;
- 	u16 addr;
- 	u8 len;
--	int i, j;
--
--	netdev_reset_queue(priv->ndev);
--
--	/* TEF */
--	tef_ring = priv->tef;
--	tef_ring->head = 0;
--	tef_ring->tail = 0;
--
--	/* FIFO increment TEF tail pointer */
--	addr = MCP251XFD_REG_TEFCON;
--	val = MCP251XFD_REG_TEFCON_UINC;
--	len = mcp251xfd_cmd_prepare_write_reg(priv, &tef_ring->uinc_buf,
--					      addr, val, val);
--
--	for (j = 0; j < ARRAY_SIZE(tef_ring->uinc_xfer); j++) {
--		xfer = &tef_ring->uinc_xfer[j];
--		xfer->tx_buf = &tef_ring->uinc_buf;
--		xfer->len = len;
--		xfer->cs_change = 1;
--		xfer->cs_change_delay.value = 0;
--		xfer->cs_change_delay.unit = SPI_DELAY_UNIT_NSECS;
--	}
--
--	/* "cs_change == 1" on the last transfer results in an active
--	 * chip select after the complete SPI message. This causes the
--	 * controller to interpret the next register access as
--	 * data. Set "cs_change" of the last transfer to "0" to
--	 * properly deactivate the chip select at the end of the
--	 * message.
--	 */
--	xfer->cs_change = 0;
-+	int i;
- 
--	/* TX */
- 	tx_ring = priv->tx;
- 	tx_ring->head = 0;
- 	tx_ring->tail = 0;
-@@ -147,8 +151,19 @@ void mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
- 
- 	mcp251xfd_for_each_tx_obj(tx_ring, tx_obj, i)
- 		mcp251xfd_tx_ring_init_tx_obj(priv, tx_ring, tx_obj, len, i);
-+}
-+
-+static void mcp251xfd_ring_init_rx(struct mcp251xfd_priv *priv)
-+{
-+	struct mcp251xfd_rx_ring *rx_ring, *prev_rx_ring = NULL;
-+	struct mcp251xfd_tx_ring *tx_ring;
-+	struct spi_transfer *xfer;
-+	u32 val;
-+	u16 addr;
-+	u8 len;
-+	int i, j;
- 
--	/* RX */
-+	tx_ring = priv->tx;
- 	mcp251xfd_for_each_rx_ring(priv, rx_ring, i) {
- 		rx_ring->head = 0;
- 		rx_ring->tail = 0;
-@@ -192,6 +207,15 @@ void mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
- 	}
+@@ -241,11 +246,6 @@ mcp251xfd_chip_set_mode_nowait(const struct mcp251xfd_priv *priv,
+ 	return __mcp251xfd_chip_set_mode(priv, mode_req, true);
  }
  
-+void mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
-+{
-+	netdev_reset_queue(priv->ndev);
-+
-+	mcp251xfd_ring_init_tef(priv);
-+	mcp251xfd_ring_init_tx(priv);
-+	mcp251xfd_ring_init_rx(priv);
-+}
-+
- void mcp251xfd_ring_free(struct mcp251xfd_priv *priv)
+-static inline bool mcp251xfd_osc_invalid(u32 reg)
+-{
+-	return reg == 0x0 || reg == 0xffffffff;
+-}
+-
+ static int mcp251xfd_chip_clock_enable(const struct mcp251xfd_priv *priv)
  {
- 	int i;
+ 	u32 osc, osc_reference, osc_mask;
+@@ -274,7 +274,7 @@ static int mcp251xfd_chip_clock_enable(const struct mcp251xfd_priv *priv)
+ 				       (osc & osc_mask) == osc_reference,
+ 				       MCP251XFD_OSC_STAB_SLEEP_US,
+ 				       MCP251XFD_OSC_STAB_TIMEOUT_US);
+-	if (mcp251xfd_osc_invalid(osc)) {
++	if (mcp251xfd_reg_invalid(osc)) {
+ 		netdev_err(priv->ndev,
+ 			   "Failed to detect %s (osc=0x%08x).\n",
+ 			   mcp251xfd_get_model_str(priv), osc);
 -- 
 2.34.1
 
