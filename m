@@ -2,96 +2,66 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A85AC433EF
-	for <linux-can@archiver.kernel.org>; Wed, 23 Feb 2022 22:44:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42600C433F5
+	for <linux-can@archiver.kernel.org>; Thu, 24 Feb 2022 04:27:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244674AbiBWWpY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 23 Feb 2022 17:45:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50594 "EHLO
+        id S229966AbiBXE1y (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 23 Feb 2022 23:27:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244615AbiBWWok (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Feb 2022 17:44:40 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4761527CF
-        for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 14:43:51 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1nN0MQ-0006hi-6y
-        for linux-can@vger.kernel.org; Wed, 23 Feb 2022 23:43:50 +0100
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 0A51D3BC0A
-        for <linux-can@vger.kernel.org>; Wed, 23 Feb 2022 22:43:35 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id CA2343BBF7;
-        Wed, 23 Feb 2022 22:43:34 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 06ff87d6;
-        Wed, 23 Feb 2022 22:43:34 +0000 (UTC)
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 23/36] can: mcp251xfd: mcp251xfd_chip_timestamp_init(): factor out into separate function
-Date:   Wed, 23 Feb 2022 23:43:19 +0100
-Message-Id: <20220223224332.2965690-24-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220223224332.2965690-1-mkl@pengutronix.de>
+        with ESMTP id S229971AbiBXE1v (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 23 Feb 2022 23:27:51 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F371EB322;
+        Wed, 23 Feb 2022 20:27:20 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E24D7B823C6;
+        Thu, 24 Feb 2022 04:27:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66F3EC340E9;
+        Thu, 24 Feb 2022 04:27:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1645676837;
+        bh=fbxCxOuFFyMb3y3/VvVkvZ7wvceN2/V5TgO9GkRoc6A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dR2B0aPpPX8lcfae748FZ5gGCAR+7a/7pCaN4F/iE11TLTV+G+ToJUYPbjoHt7IKX
+         Qo0RSuhUaQAT44JymKOpyvW9Yk/xUmC2vBmUCLXQX3ydG/gEJtqEll5zsJgZPx3yDQ
+         87focREy0G7tHCA79DKRATBi8A5dSOJH5+jL8N1A2phNk8ncsoWip248jTDzBQ9hzT
+         wdABF0cy+CIZzaIhcQG1pfWRwrQqLW92HR3fcOWNCU4ehLSqdE9OC2a6ryAZlWc+LN
+         m5ltvWw9pI4HlYOYYixrysyMOVL8hhgrA0NAqiSvS0+lg5pOzbFKOeIazqMNTdd2Jr
+         wyE9xC9CugBIg==
+Date:   Wed, 23 Feb 2022 20:27:16 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net,
+        linux-can@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH net-next 17/36] can: mcp251xfd: mcp251xfd_chip_sleep():
+ introduce function to bring chip into sleep mode
+Message-ID: <20220223202716.3c198594@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20220223224332.2965690-18-mkl@pengutronix.de>
 References: <20220223224332.2965690-1-mkl@pengutronix.de>
+        <20220223224332.2965690-18-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch factors out the timestamp initialization from the clock
-initialization.
+On Wed, 23 Feb 2022 23:43:13 +0100 Marc Kleine-Budde wrote:
+> This patch adds a new function to bring the chip into sleep mode, and
+> replaces several occurrences of open coded variants.
+>=20
+> Link: https://lore.kernel.org/all/20220207131047.282110-5-mkl@pengutronix=
+.de
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-This is a preparation patch for the PLL support, where clock and
-timestamp init must be done separately.
+Build is broken between patch 17 and patch 18 :(
 
-Link: https://lore.kernel.org/all/20220207131047.282110-11-mkl@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index 9b94272da8bc..bc10ca1e7384 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -421,6 +421,11 @@ static int mcp251xfd_chip_clock_init(const struct mcp251xfd_priv *priv)
- 	if (err)
- 		return err;
- 
-+	return 0;
-+}
-+
-+static int mcp251xfd_chip_timestamp_init(const struct mcp251xfd_priv *priv)
-+{
- 	/* Set Time Base Counter Prescaler to 1.
- 	 *
- 	 * This means an overflow of the 32 bit Time Base Counter
-@@ -683,6 +688,10 @@ static int mcp251xfd_chip_start(struct mcp251xfd_priv *priv)
- 	if (err)
- 		goto out_chip_stop;
- 
-+	err = mcp251xfd_chip_timestamp_init(priv);
-+	if (err)
-+		goto out_chip_stop;
-+
- 	err = mcp251xfd_set_bittiming(priv);
- 	if (err)
- 		goto out_chip_stop;
--- 
-2.34.1
-
-
+drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c: In function =E2=80=98mcp251=
+xfd_chip_stop=E2=80=99:
+drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c:644:1: error: no return stat=
+ement in function returning non-void [-Werror=3Dreturn-type]
+  644 | }
+      | ^
