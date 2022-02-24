@@ -2,48 +2,50 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1279BC433FE
-	for <linux-can@archiver.kernel.org>; Thu, 24 Feb 2022 08:28:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04DABC433F5
+	for <linux-can@archiver.kernel.org>; Thu, 24 Feb 2022 08:28:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231878AbiBXI3U (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 24 Feb 2022 03:29:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36876 "EHLO
+        id S231972AbiBXI3X (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 24 Feb 2022 03:29:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231902AbiBXI3R (ORCPT
+        with ESMTP id S231899AbiBXI3R (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 24 Feb 2022 03:29:17 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71FEC277910
-        for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 00:28:46 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFAE227790A
+        for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 00:28:45 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nN9US-0003zP-OG
+        id 1nN9US-0003ya-3K
         for linux-can@vger.kernel.org; Thu, 24 Feb 2022 09:28:44 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 39C1E3C281
-        for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 08:27:29 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 2DAC13C348
+        for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 08:27:30 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id D04CA3C21D;
-        Thu, 24 Feb 2022 08:27:28 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id D5D163C308;
+        Thu, 24 Feb 2022 08:27:29 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7672851e;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 21c3c8d7;
         Thu, 24 Feb 2022 08:27:28 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Dario Binacchi <dariobin@libero.it>
-Subject: [PATCH net-next 10/36] can: c_can: ethtool: use default drvinfo
-Date:   Thu, 24 Feb 2022 09:27:00 +0100
-Message-Id: <20220224082726.3000007-11-mkl@pengutronix.de>
+        =?UTF-8?q?Magnus=20Aagaard=20S=C3=B8rensen?= 
+        <mas@csselectronics.com>
+Subject: [PATCH net-next 24/36] can: mcp251xfd: mcp251xfd_chip_wake(): renamed from mcp251xfd_chip_clock_enable()
+Date:   Thu, 24 Feb 2022 09:27:14 +0100
+Message-Id: <20220224082726.3000007-25-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220224082726.3000007-1-mkl@pengutronix.de>
 References: <20220224082726.3000007-1-mkl@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -53,44 +55,65 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The ethtool core implements a default drvinfo.
+This patch renames mcp251xfd_chip_clock_enable() into mcp251xfd_chip_wake() as
+this function actually wakes the chip. Additionally the documentation is
+adopted.
 
-There's no need to replicate this in the driver, no additional
-information is added, so remove this and rely on the default.
-
-Link: https://lore.kernel.org/all/20220124215642.3474154-10-mkl@pengutronix.de
-Cc: Dario Binacchi <dariobin@libero.it>
+Link: https://lore.kernel.org/all/20220207131047.282110-12-mkl@pengutronix.de
+Co-developed-by: Magnus Aagaard Sørensen <mas@csselectronics.com>
+Signed-off-by: Magnus Aagaard Sørensen <mas@csselectronics.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/c_can/c_can_ethtool.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/can/c_can/c_can_ethtool.c b/drivers/net/can/c_can/c_can_ethtool.c
-index 6655146294fc..8a826a6813bd 100644
---- a/drivers/net/can/c_can/c_can_ethtool.c
-+++ b/drivers/net/can/c_can/c_can_ethtool.c
-@@ -11,14 +11,6 @@
- 
- #include "c_can.h"
- 
--static void c_can_get_drvinfo(struct net_device *netdev,
--			      struct ethtool_drvinfo *info)
--{
--	struct c_can_priv *priv = netdev_priv(netdev);
--	strscpy(info->driver, "c_can", sizeof(info->driver));
--	strscpy(info->bus_info, dev_name(priv->device), sizeof(info->bus_info));
--}
--
- static void c_can_get_ringparam(struct net_device *netdev,
- 				struct ethtool_ringparam *ring,
- 				struct kernel_ethtool_ringparam *kernel_ring,
-@@ -33,7 +25,6 @@ static void c_can_get_ringparam(struct net_device *netdev,
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index bc10ca1e7384..154e6c376670 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -292,22 +292,23 @@ mcp251xfd_chip_wait_for_osc_ready(const struct mcp251xfd_priv *priv,
+ 	return -ETIMEDOUT;
  }
  
- static const struct ethtool_ops c_can_ethtool_ops = {
--	.get_drvinfo = c_can_get_drvinfo,
- 	.get_ringparam = c_can_get_ringparam,
- };
+-static int mcp251xfd_chip_clock_enable(const struct mcp251xfd_priv *priv)
++static int mcp251xfd_chip_wake(const struct mcp251xfd_priv *priv)
+ {
+ 	u32 osc, osc_reference, osc_mask;
+ 	int err;
+ 
+-	/* Set Power On Defaults for "Clock Output Divisor" and remove
+-	 * "Oscillator Disable" bit.
++	/* For normal sleep on MCP2517FD and MCP2518FD, clearing
++	 * "Oscillator Disable" will wake the chip. For low power mode
++	 * on MCP2518FD, asserting the chip select will wake the
++	 * chip. Writing to the Oscillator register will wake it in
++	 * both cases.
+ 	 */
+ 	osc = FIELD_PREP(MCP251XFD_REG_OSC_CLKODIV_MASK,
+ 			 MCP251XFD_REG_OSC_CLKODIV_10);
+ 	osc_reference = MCP251XFD_REG_OSC_OSCRDY;
+ 	osc_mask = MCP251XFD_REG_OSC_OSCRDY | MCP251XFD_REG_OSC_PLLRDY;
+ 
+-	/* Note:
+-	 *
+-	 * If the controller is in Sleep Mode the following write only
++	/* If the controller is in Sleep Mode the following write only
+ 	 * removes the "Oscillator Disable" bit and powers it up. All
+ 	 * other bits are unaffected.
+ 	 */
+@@ -332,10 +333,10 @@ static int mcp251xfd_chip_softreset_do(const struct mcp251xfd_priv *priv)
+ 	const __be16 cmd = mcp251xfd_cmd_reset();
+ 	int err;
+ 
+-	/* The Set Mode and SPI Reset command only seems to works if
+-	 * the controller is not in Sleep Mode.
++	/* The Set Mode and SPI Reset command only works if the
++	 * controller is not in Sleep Mode.
+ 	 */
+-	err = mcp251xfd_chip_clock_enable(priv);
++	err = mcp251xfd_chip_wake(priv);
+ 	if (err)
+ 		return err;
  
 -- 
 2.34.1
