@@ -2,45 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD868C433FE
-	for <linux-can@archiver.kernel.org>; Thu, 24 Feb 2022 08:29:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0579FC43219
+	for <linux-can@archiver.kernel.org>; Thu, 24 Feb 2022 08:29:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232038AbiBXI3p (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S232058AbiBXI3p (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Thu, 24 Feb 2022 03:29:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36964 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231947AbiBXI3S (ORCPT
+        with ESMTP id S231944AbiBXI3S (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 24 Feb 2022 03:29:18 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3BD927790E
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB88277922
         for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 00:28:48 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nN9UU-000420-UI
-        for linux-can@vger.kernel.org; Thu, 24 Feb 2022 09:28:46 +0100
+        id 1nN9UV-00042X-6T
+        for linux-can@vger.kernel.org; Thu, 24 Feb 2022 09:28:47 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 5190F3C292
+        by bjornoya.blackshift.org (Postfix) with SMTP id 59EE63C2A0
         for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 08:27:29 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id DD4EB3C22C;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id F018D3C238;
         Thu, 24 Feb 2022 08:27:28 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id a352f5ec;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f35a4b33;
         Thu, 24 Feb 2022 08:27:28 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Minghao Chi <chi.minghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>, CGEL ZTE <cgel.zte@gmail.com>,
+        kernel@pengutronix.de, Srinivas Neeli <srinivas.neeli@xilinx.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 11/36] can: softing: softing_netdev_open(): remove redundant ret variable
-Date:   Thu, 24 Feb 2022 09:27:01 +0100
-Message-Id: <20220224082726.3000007-12-mkl@pengutronix.de>
+Subject: [PATCH net-next 12/36] can: xilinx_can: Add check for NAPI Poll function
+Date:   Thu, 24 Feb 2022 09:27:02 +0100
+Message-Id: <20220224082726.3000007-13-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220224082726.3000007-1-mkl@pengutronix.de>
 References: <20220224082726.3000007-1-mkl@pengutronix.de>
@@ -54,39 +53,38 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Minghao Chi <chi.minghao@zte.com.cn>
+From: Srinivas Neeli <srinivas.neeli@xilinx.com>
 
-Return value from softing_startstop() directly instead of taking this
-in another redundant variable.
+Add check for NAPI poll function to avoid enabling interrupts
+with out completing the NAPI call.
 
-Link: https://lore.kernel.org/all/20220112080629.667191-1-chi.minghao@zte.com.cn
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Minghao Chi <chi.minghao@zte.com.cn>
-Signed-off-by: CGEL ZTE <cgel.zte@gmail.com>
+Link: https://lore.kernel.org/all/20220208162053.39896-1-srinivas.neeli@xilinx.com
+Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/softing/softing_main.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/net/can/xilinx_can.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
-index d74e895bddf7..8d27ac66ca7f 100644
---- a/drivers/net/can/softing/softing_main.c
-+++ b/drivers/net/can/softing/softing_main.c
-@@ -392,13 +392,10 @@ static int softing_netdev_open(struct net_device *ndev)
+diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+index 1674b561c9a2..e562c5ab1149 100644
+--- a/drivers/net/can/xilinx_can.c
++++ b/drivers/net/can/xilinx_can.c
+@@ -1215,10 +1215,11 @@ static int xcan_rx_poll(struct napi_struct *napi, int quota)
+ 	}
  
- static int softing_netdev_stop(struct net_device *ndev)
- {
--	int ret;
--
- 	netif_stop_queue(ndev);
- 
- 	/* softing cycle does close_candev() */
--	ret = softing_startstop(ndev, 0);
--	return ret;
-+	return softing_startstop(ndev, 0);
+ 	if (work_done < quota) {
+-		napi_complete_done(napi, work_done);
+-		ier = priv->read_reg(priv, XCAN_IER_OFFSET);
+-		ier |= xcan_rx_int_mask(priv);
+-		priv->write_reg(priv, XCAN_IER_OFFSET, ier);
++		if (napi_complete_done(napi, work_done)) {
++			ier = priv->read_reg(priv, XCAN_IER_OFFSET);
++			ier |= xcan_rx_int_mask(priv);
++			priv->write_reg(priv, XCAN_IER_OFFSET, ier);
++		}
+ 	}
+ 	return work_done;
  }
- 
- static int softing_candev_set_mode(struct net_device *ndev, enum can_mode mode)
 -- 
 2.34.1
 
