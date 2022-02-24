@@ -2,43 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 372D3C433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76277C4332F
 	for <linux-can@archiver.kernel.org>; Thu, 24 Feb 2022 08:29:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231954AbiBXIaX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 24 Feb 2022 03:30:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37708 "EHLO
+        id S232035AbiBXIaY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 24 Feb 2022 03:30:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232041AbiBXI3p (ORCPT
+        with ESMTP id S231895AbiBXI3p (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 24 Feb 2022 03:29:45 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E2027909E
-        for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 00:29:02 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60058279087
+        for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 00:29:01 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nN9Ui-0004g4-Oz
-        for linux-can@vger.kernel.org; Thu, 24 Feb 2022 09:29:00 +0100
+        id 1nN9Uh-0004dC-Mh
+        for linux-can@vger.kernel.org; Thu, 24 Feb 2022 09:28:59 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id C0B063C2FD
-        for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 08:27:29 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id B72933C3AD
+        for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 08:27:30 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 79E9B3C2C0;
-        Thu, 24 Feb 2022 08:27:29 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 72BEA3C37D;
+        Thu, 24 Feb 2022 08:27:30 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id acc9affe;
-        Thu, 24 Feb 2022 08:27:28 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4e344c70;
+        Thu, 24 Feb 2022 08:27:29 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 19/36] can: mcp251xfd: mcp251xfd_chip_wait_for_osc_ready(): factor out into separate function
-Date:   Thu, 24 Feb 2022 09:27:09 +0100
-Message-Id: <20220224082726.3000007-20-mkl@pengutronix.de>
+Subject: [PATCH net-next 33/36] can: mcp251xfd: ring: mcp251xfd_ring_init(): checked RAM usage of ring setup
+Date:   Thu, 24 Feb 2022 09:27:23 +0100
+Message-Id: <20220224082726.3000007-34-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220224082726.3000007-1-mkl@pengutronix.de>
 References: <20220224082726.3000007-1-mkl@pengutronix.de>
@@ -52,79 +52,82 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch factors out mcp251xfd_chip_wait_for_osc_ready() into a
-separate function, it will be used in several places in the next
-patches.
+With this patch the usage of the on-chip RAM is checked. In the
+current driver the FIFO setup is fixed and always fits into the RAM.
 
-Link: https://lore.kernel.org/all/20220207131047.282110-7-mkl@pengutronix.de
+With an upcoming patch series the ring and FIFO setup will be more
+dynamic. Although using more RAM than available should not happen, but
+add this safety check, just in case.
+
+Link: https://lore.kernel.org/all/20220217103826.2299157-6-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 45 +++++++++++--------
- 1 file changed, 27 insertions(+), 18 deletions(-)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c |  4 +++-
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c | 14 ++++++++++++--
+ drivers/net/can/spi/mcp251xfd/mcp251xfd.h      |  2 +-
+ 3 files changed, 16 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index e8e736eeb69c..6222633ee7d9 100644
+index e5641696cdc2..2d033d12cdbb 100644
 --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
 +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -246,6 +246,32 @@ mcp251xfd_chip_set_mode_nowait(const struct mcp251xfd_priv *priv,
- 	return __mcp251xfd_chip_set_mode(priv, mode_req, true);
+@@ -760,7 +760,9 @@ static int mcp251xfd_chip_start(struct mcp251xfd_priv *priv)
+ 	if (err)
+ 		goto out_chip_stop;
+ 
+-	mcp251xfd_ring_init(priv);
++	err = mcp251xfd_ring_init(priv);
++	if (err)
++		goto out_chip_stop;
+ 
+ 	err = mcp251xfd_chip_fifo_init(priv);
+ 	if (err)
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
+index 9657dbf251b0..8126f88d57d7 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
+@@ -207,9 +207,9 @@ mcp251xfd_ring_init_rx(struct mcp251xfd_priv *priv, u16 *base, u8 *fifo_nr)
+ 	}
  }
  
-+static int
-+mcp251xfd_chip_wait_for_osc_ready(const struct mcp251xfd_priv *priv,
-+				  u32 osc_reference, u32 osc_mask)
-+{
-+	u32 osc;
-+	int err;
+-void mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
++int mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
+ {
+-	u16 base = 0;
++	u16 base = 0, ram_used;
+ 	u8 fifo_nr = 1;
+ 
+ 	netdev_reset_queue(priv->ndev);
+@@ -217,6 +217,16 @@ void mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
+ 	mcp251xfd_ring_init_tef(priv, &base);
+ 	mcp251xfd_ring_init_rx(priv, &base, &fifo_nr);
+ 	mcp251xfd_ring_init_tx(priv, &base, &fifo_nr);
 +
-+	err = regmap_read_poll_timeout(priv->map_reg, MCP251XFD_REG_OSC, osc,
-+				       (osc & osc_mask) == osc_reference,
-+				       MCP251XFD_OSC_STAB_SLEEP_US,
-+				       MCP251XFD_OSC_STAB_TIMEOUT_US);
-+	if (mcp251xfd_reg_invalid(osc)) {
++	ram_used = base - MCP251XFD_RAM_START;
++	if (ram_used > MCP251XFD_RAM_SIZE) {
 +		netdev_err(priv->ndev,
-+			   "Failed to detect %s (osc=0x%08x).\n",
-+			   mcp251xfd_get_model_str(priv), osc);
-+		return -ENODEV;
-+	} else if (err == -ETIMEDOUT) {
-+		netdev_err(priv->ndev,
-+			   "Timeout waiting for Oscillator Ready (osc=0x%08x, osc_reference=0x%08x)\n",
-+			   osc, osc_reference);
-+		return -ETIMEDOUT;
++			   "Error during ring configuration, using more RAM (%u bytes) than available (%u bytes).\n",
++			   ram_used, MCP251XFD_RAM_SIZE);
++		return -ENOMEM;
 +	}
 +
 +	return 0;
-+}
-+
- static int mcp251xfd_chip_clock_enable(const struct mcp251xfd_priv *priv)
- {
- 	u32 osc, osc_reference, osc_mask;
-@@ -269,24 +295,7 @@ static int mcp251xfd_chip_clock_enable(const struct mcp251xfd_priv *priv)
- 	if (err)
- 		return err;
- 
--	/* Wait for "Oscillator Ready" bit */
--	err = regmap_read_poll_timeout(priv->map_reg, MCP251XFD_REG_OSC, osc,
--				       (osc & osc_mask) == osc_reference,
--				       MCP251XFD_OSC_STAB_SLEEP_US,
--				       MCP251XFD_OSC_STAB_TIMEOUT_US);
--	if (mcp251xfd_reg_invalid(osc)) {
--		netdev_err(priv->ndev,
--			   "Failed to detect %s (osc=0x%08x).\n",
--			   mcp251xfd_get_model_str(priv), osc);
--		return -ENODEV;
--	} else if (err == -ETIMEDOUT) {
--		netdev_err(priv->ndev,
--			   "Timeout waiting for Oscillator Ready (osc=0x%08x, osc_reference=0x%08x)\n",
--			   osc, osc_reference);
--		return -ETIMEDOUT;
--	}
--
--	return err;
-+	return mcp251xfd_chip_wait_for_osc_ready(priv, osc_reference, osc_mask);
  }
  
- static inline int mcp251xfd_chip_sleep(const struct mcp251xfd_priv *priv)
+ void mcp251xfd_ring_free(struct mcp251xfd_priv *priv)
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+index 8ee959890aea..58e76064cf9e 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+@@ -882,7 +882,7 @@ u16 mcp251xfd_crc16_compute2(const void *cmd, size_t cmd_size,
+ 			     const void *data, size_t data_size);
+ u16 mcp251xfd_crc16_compute(const void *data, size_t data_size);
+ int mcp251xfd_regmap_init(struct mcp251xfd_priv *priv);
+-void mcp251xfd_ring_init(struct mcp251xfd_priv *priv);
++int mcp251xfd_ring_init(struct mcp251xfd_priv *priv);
+ void mcp251xfd_ring_free(struct mcp251xfd_priv *priv);
+ int mcp251xfd_ring_alloc(struct mcp251xfd_priv *priv);
+ int mcp251xfd_handle_rxif(struct mcp251xfd_priv *priv);
 -- 
 2.34.1
 
