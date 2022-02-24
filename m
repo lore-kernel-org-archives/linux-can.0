@@ -2,49 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AF5BC4332F
-	for <linux-can@archiver.kernel.org>; Thu, 24 Feb 2022 08:30:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C89AAC433F5
+	for <linux-can@archiver.kernel.org>; Thu, 24 Feb 2022 08:33:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231902AbiBXIa0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 24 Feb 2022 03:30:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37146 "EHLO
+        id S229842AbiBXIdt (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 24 Feb 2022 03:33:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232040AbiBXI3p (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 24 Feb 2022 03:29:45 -0500
+        with ESMTP id S229489AbiBXIdt (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 24 Feb 2022 03:33:49 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465D327909C
-        for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 00:29:02 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA6625A942
+        for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 00:33:19 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nN9Ui-0004fM-Ih
-        for linux-can@vger.kernel.org; Thu, 24 Feb 2022 09:29:00 +0100
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id CF6183C21C
-        for <linux-can@vger.kernel.org>; Thu, 24 Feb 2022 08:27:28 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        id 1nN9Yq-0006xs-EP; Thu, 24 Feb 2022 09:33:16 +0100
+Received: from pengutronix.de (2a03-f580-87bc-d400-ef25-a96a-420c-82a6.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:ef25:a96a:420c:82a6])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 716803C1D3;
-        Thu, 24 Feb 2022 08:27:28 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 123d8d7f;
-        Thu, 24 Feb 2022 08:27:28 +0000 (UTC)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id CA3B83C50D;
+        Thu, 24 Feb 2022 08:33:15 +0000 (UTC)
+Date:   Thu, 24 Feb 2022 09:33:15 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>
-Subject: [PATCH net-next 04/36] dt-binding: can: m_can: fix indention of table in bosch,mram-cfg description
-Date:   Thu, 24 Feb 2022 09:26:54 +0100
-Message-Id: <20220224082726.3000007-5-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220224082726.3000007-1-mkl@pengutronix.de>
-References: <20220224082726.3000007-1-mkl@pengutronix.de>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net,
+        linux-can@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH net-next 17/36] can: mcp251xfd: mcp251xfd_chip_sleep():
+ introduce function to bring chip into sleep mode
+Message-ID: <20220224083315.bpyswlmccq7fqprz@pengutronix.de>
+References: <20220223224332.2965690-1-mkl@pengutronix.de>
+ <20220223224332.2965690-18-mkl@pengutronix.de>
+ <20220223202716.3c198594@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="nqaokufcm7c6hnen"
+Content-Disposition: inline
+In-Reply-To: <20220223202716.3c198594@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -53,32 +50,57 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch fixes the indention of the table in the description of the
-bosch,mram-cfg property.
 
-Link: https://lore.kernel.org/all/20220217101111.2291151-1-mkl@pengutronix.de
-Reviewed-by: Chandrasekar Ramakrishnan <rcsekar@samsung.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- Documentation/devicetree/bindings/net/can/bosch,m_can.yaml | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+--nqaokufcm7c6hnen
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
-index f8f504953e78..fd4d291fe4c1 100644
---- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
-+++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
-@@ -66,8 +66,8 @@ properties:
-       M_CAN includes the following elements according to user manual:
-       11-bit Filter	0-128 elements / 0-128 words
-       29-bit Filter	0-64 elements / 0-128 words
--      Rx FIFO 0	0-64 elements / 0-1152 words
--      Rx FIFO 1	0-64 elements / 0-1152 words
-+      Rx FIFO 0		0-64 elements / 0-1152 words
-+      Rx FIFO 1		0-64 elements / 0-1152 words
-       Rx Buffers	0-64 elements / 0-1152 words
-       Tx Event FIFO	0-32 elements / 0-64 words
-       Tx Buffers	0-32 elements / 0-576 words
--- 
-2.34.1
+On 23.02.2022 20:27:16, Jakub Kicinski wrote:
+> On Wed, 23 Feb 2022 23:43:13 +0100 Marc Kleine-Budde wrote:
+> > This patch adds a new function to bring the chip into sleep mode, and
+> > replaces several occurrences of open coded variants.
+> >=20
+> > Link: https://lore.kernel.org/all/20220207131047.282110-5-mkl@pengutron=
+ix.de
+> > Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+>=20
+> Build is broken between patch 17 and patch 18 :(
+>=20
+> drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c: In function =E2=80=98mcp2=
+51xfd_chip_stop=E2=80=99:
+> drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c:644:1: error: no return st=
+atement in function returning non-void [-Werror=3Dreturn-type]
+>   644 | }
+>       | ^
+>=20
 
+Doh! Sorry for that, fixed and sent a new pull request:
 
+https://lore.kernel.org/all/20220224082726.3000007-1-mkl@pengutronix.de/
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--nqaokufcm7c6hnen
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmIXQskACgkQrX5LkNig
+010g2gf8CooAZ4YcCipx015UxtdU6C4YETuOWhFQrsL3B5DuQmV7qSPLZ5qDG4pP
+hQ4/FxxWs5273GkyEhfPbbZjPYo/0N4sQsFZ1DS81XNRfmRb1v7tZ2ZQwnwGAfs4
+mYg+UVREACOMom8n8CXcYxyfOGNGA1MQclhP9dSZL2rlIl9WjnpVeBylG0qhCoMa
+15ykgB3TVxg0URyXpPcMYDwyB+qK/JV8XuAi1gvM9UUR1qTWthMwQsVcDC/BUHG/
+16LdmvN/VLE79Yp5TXTbGVbZWF4zn6iB7/Re1e1yEvKiqqTgrfVkd0nDW78J9CRQ
+q7A01wzR8kOH4FicRRtJvdXuMSTVoQ==
+=r31Q
+-----END PGP SIGNATURE-----
+
+--nqaokufcm7c6hnen--
