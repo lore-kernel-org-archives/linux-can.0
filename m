@@ -2,44 +2,48 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DBC1C433F5
-	for <linux-can@archiver.kernel.org>; Fri, 25 Feb 2022 16:56:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15555C4332F
+	for <linux-can@archiver.kernel.org>; Fri, 25 Feb 2022 16:56:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243236AbiBYQ47 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 25 Feb 2022 11:56:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47312 "EHLO
+        id S243358AbiBYQ5A (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 25 Feb 2022 11:57:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242748AbiBYQ46 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 25 Feb 2022 11:56:58 -0500
+        with ESMTP id S243292AbiBYQ47 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 25 Feb 2022 11:56:59 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD241D9B5A
-        for <linux-can@vger.kernel.org>; Fri, 25 Feb 2022 08:56:26 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 825CB1EE9D5
+        for <linux-can@vger.kernel.org>; Fri, 25 Feb 2022 08:56:27 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nNdtI-0004DI-JP
-        for linux-can@vger.kernel.org; Fri, 25 Feb 2022 17:56:24 +0100
+        id 1nNdtJ-0004E0-VT
+        for linux-can@vger.kernel.org; Fri, 25 Feb 2022 17:56:26 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 8E47E3D877
+        by bjornoya.blackshift.org (Postfix) with SMTP id B7AA83D883
         for <linux-can@vger.kernel.org>; Fri, 25 Feb 2022 16:56:23 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5CE8D3D86C;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6D1DC3D86F;
         Fri, 25 Feb 2022 16:56:23 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c16792c5;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 81a455f8;
         Fri, 25 Feb 2022 16:56:23 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net 0/3] pull-request: can 2022-02-25
-Date:   Fri, 25 Feb 2022 17:56:19 +0100
-Message-Id: <20220225165622.3231809-1-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 2/3] can: gs_usb: change active_channels's type from atomic_t to u8
+Date:   Fri, 25 Feb 2022 17:56:21 +0100
+Message-Id: <20220225165622.3231809-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220225165622.3231809-1-mkl@pengutronix.de>
+References: <20220225165622.3231809-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -50,49 +54,80 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-this is a pull request of 3 patches for net/master.
+The driver uses an atomic_t variable: gs_usb:active_channels to keep
+track of the number of opened channels in order to only allocate
+memory for the URBs when this count changes from zero to one.
 
-The first 2 patches are by Vincent Mailhol and fix the error handling
-of the ndo_open callbacks of the etas_es58x and the gs_usb CAN USB
-drivers.
+However, the driver does not decrement the counter when an error
+occurs in gs_can_open(). This issue is fixed by changing the type from
+atomic_t to u8 and by simplifying the logic accordingly.
 
-The last patch is by Lad Prabhakar and fixes a small race condition in
-the rcar_canfd's rcar_canfd_channel_probe() function.
+It is safe to use an u8 here because the network stack big kernel lock
+(a.k.a. rtnl_mutex) is being hold. For details, please refer to [1].
 
-regards,
-Marc
+[1] https://lore.kernel.org/linux-can/CAMZ6Rq+sHpiw34ijPsmp7vbUpDtJwvVtdV7CvRZJsLixjAFfrg@mail.gmail.com/T/#t
 
+Fixes: d08e973a77d1 ("can: gs_usb: Added support for the GS_USB CAN devices")
+Link: https://lore.kernel.org/all/20220214234814.1321599-1-mailhol.vincent@wanadoo.fr
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/usb/gs_usb.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-The following changes since commit a6df953f0178c8a11fb2de95327643b622077018:
-
-  Merge branch 'mptcp-fixes-for-5-17' (2022-02-24 21:54:57 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.17-20220225
-
-for you to fetch changes up to c5048a7b2c23ab589f3476a783bd586b663eda5b:
-
-  can: rcar_canfd: rcar_canfd_channel_probe(): register the CAN device when fully ready (2022-02-25 17:46:54 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-5.17-20220225
-
-----------------------------------------------------------------
-Lad Prabhakar (1):
-      can: rcar_canfd: rcar_canfd_channel_probe(): register the CAN device when fully ready
-
-Vincent Mailhol (2):
-      can: etas_es58x: change opened_channel_cnt's type from atomic_t to u8
-      can: gs_usb: change active_channels's type from atomic_t to u8
-
- drivers/net/can/rcar/rcar_canfd.c           |  6 +++---
- drivers/net/can/usb/etas_es58x/es58x_core.c |  9 +++++----
- drivers/net/can/usb/etas_es58x/es58x_core.h |  8 +++++---
- drivers/net/can/usb/gs_usb.c                | 10 +++++-----
- 4 files changed, 18 insertions(+), 15 deletions(-)
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index b487e3fe770a..d35749fad1ef 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -191,8 +191,8 @@ struct gs_can {
+ struct gs_usb {
+ 	struct gs_can *canch[GS_MAX_INTF];
+ 	struct usb_anchor rx_submitted;
+-	atomic_t active_channels;
+ 	struct usb_device *udev;
++	u8 active_channels;
+ };
+ 
+ /* 'allocate' a tx context.
+@@ -589,7 +589,7 @@ static int gs_can_open(struct net_device *netdev)
+ 	if (rc)
+ 		return rc;
+ 
+-	if (atomic_add_return(1, &parent->active_channels) == 1) {
++	if (!parent->active_channels) {
+ 		for (i = 0; i < GS_MAX_RX_URBS; i++) {
+ 			struct urb *urb;
+ 			u8 *buf;
+@@ -690,6 +690,7 @@ static int gs_can_open(struct net_device *netdev)
+ 
+ 	dev->can.state = CAN_STATE_ERROR_ACTIVE;
+ 
++	parent->active_channels++;
+ 	if (!(dev->can.ctrlmode & CAN_CTRLMODE_LISTENONLY))
+ 		netif_start_queue(netdev);
+ 
+@@ -705,7 +706,8 @@ static int gs_can_close(struct net_device *netdev)
+ 	netif_stop_queue(netdev);
+ 
+ 	/* Stop polling */
+-	if (atomic_dec_and_test(&parent->active_channels))
++	parent->active_channels--;
++	if (!parent->active_channels)
+ 		usb_kill_anchored_urbs(&parent->rx_submitted);
+ 
+ 	/* Stop sending URBs */
+@@ -984,8 +986,6 @@ static int gs_usb_probe(struct usb_interface *intf,
+ 
+ 	init_usb_anchor(&dev->rx_submitted);
+ 
+-	atomic_set(&dev->active_channels, 0);
+-
+ 	usb_set_intfdata(intf, dev);
+ 	dev->udev = interface_to_usbdev(intf);
+ 
+-- 
+2.34.1
 
 
