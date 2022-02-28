@@ -2,88 +2,111 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F0E9C433EF
-	for <linux-can@archiver.kernel.org>; Mon, 28 Feb 2022 08:37:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAF39C433F5
+	for <linux-can@archiver.kernel.org>; Mon, 28 Feb 2022 09:46:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233648AbiB1Iho (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 28 Feb 2022 03:37:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55420 "EHLO
+        id S234437AbiB1JrP (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 28 Feb 2022 04:47:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231602AbiB1Ihn (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 28 Feb 2022 03:37:43 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B8366202;
-        Mon, 28 Feb 2022 00:37:05 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id bd1so10051389plb.13;
-        Mon, 28 Feb 2022 00:37:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RdJaANiEHPY4Xp6y7T90xtbRbQ1zCSCWRMALDqz2S1E=;
-        b=O+SiBscvMN4QOyf2WWIJIimqdE2rPKAVCNlbFv93sJTuOvxKetcxl1sM+knwyr3qRN
-         R9vNWvyFnwUgi5JIM+wZ4oy2WTr+Q/nf6IRhpuCytRZbZEBSqRwHEFAstg9wLj+r/W9m
-         pG0Kp7ciljhEHrpjAMZMLt9giHvxIj+ySQCVNNHTbKboORB7bFMuG33zjzB/oGMul0rH
-         5zdrVzRDSSoUtw8dVmYX4HC3bVx/G+KWBe082KLZFEm6orgltFNQWeh6AoRBLs8SH/M2
-         fBNjmSaBjiP8tOGjTMQo5lI2werXGqBfjycnD0wdmMRdGvLcsxFDYv4Q4uiqIDsb7U63
-         9nQw==
+        with ESMTP id S232617AbiB1JrO (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 28 Feb 2022 04:47:14 -0500
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FEC69CF7
+        for <linux-can@vger.kernel.org>; Mon, 28 Feb 2022 01:46:36 -0800 (PST)
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id B2E683F170
+        for <linux-can@vger.kernel.org>; Mon, 28 Feb 2022 09:46:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1646041594;
+        bh=vWRVPVArJCYlog6uyWwSBOO+0zNuAlMQrxtxYFl/jDE=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=TvGdh8PoahWzvpn7b6V3YD2eKGDapLZDyGdE5cHvc6Jw+YyakuAOdzSnsWc3wWgRD
+         /xxcLzkwmFGug+QjvWzk50J+AXbETkGqCP9oTM2kuBek3+cNfvx+ISEw9EdOFBdjg5
+         FLVE4IQA94uXdJRGGAbE/rKw6bFfUdouo/rrIKuM1dzsCr1OL7L3XN+9SNKAJHCYdw
+         uZ+za7i2L6CYTq2a4kQiu2qLUJIvG1/4ZZJLCTQaxn5DpPQQwOzZMw4KICwh6Ml8f0
+         EKtypy9zDu9vpSDwU5gDduxP1aahVPyKqQTvO1VzbAGWga8kSmC9TlyqCoRA9wR2ic
+         gEjsCEKsh42gw==
+Received: by mail-wm1-f72.google.com with SMTP id w3-20020a7bc743000000b0037c5168b3c4so6164993wmk.7
+        for <linux-can@vger.kernel.org>; Mon, 28 Feb 2022 01:46:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=RdJaANiEHPY4Xp6y7T90xtbRbQ1zCSCWRMALDqz2S1E=;
-        b=m9UhO2wagAuw9ictOAfMH1U7V2KKK8nxKo/QuJGdloFT6jinGjev8jqLHxQxh/2Ye7
-         UEeFmtgc7JIIA2TSF2HKrbRXhAkhhwY9j/vgRg2pXymgVBvSK9FDJioge+AhqdQv6ixZ
-         QbOcq0zWj2+1j8rl9uHleqODL8rrvauyT2gFc20PSan1hSkhGgTOVPNtqBeTMdhmO1dY
-         wFjGHWkw6YruJI08PNVCb/LybINVN/WeoUP5s9X+kA+oKnbr/Xidd8uaUzlZuAj7yb8Z
-         cHRl3IobOubZJrtlMWp0mavUXoQIJhamwD0D6aUU3g6/3f1d4jvao3qgi+IlC1fsCN3E
-         i3XA==
-X-Gm-Message-State: AOAM532lG1LNtMSfMsWpJi8HiW8EI8qnBNrM7roKfPaZLCX9K//RZt52
-        U1IP0UBR6BIq4ms8B1Q7CAz4tFpkIK8AsdvG
-X-Google-Smtp-Source: ABdhPJzYDieLjOM8cJWQ0nnleIGse98JBYhW63ed+4WhqGry8DeDpwFdI9CmCOiyzeA+ZSGFfkesCA==
-X-Received: by 2002:a17:90a:2b0d:b0:1b5:8087:4b4e with SMTP id x13-20020a17090a2b0d00b001b580874b4emr15409414pjc.70.1646037425070;
-        Mon, 28 Feb 2022 00:37:05 -0800 (PST)
-Received: from slim.das-security.cn ([103.84.139.53])
-        by smtp.gmail.com with ESMTPSA id nl12-20020a17090b384c00b001bc1bb5449bsm10146280pjb.2.2022.02.28.00.37.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Feb 2022 00:37:04 -0800 (PST)
-From:   Hangyu Hua <hbh25y@gmail.com>
-To:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
-        kuba@kernel.org, stefan.maetje@esd.eu, mailhol.vincent@wanadoo.fr,
-        paskripkin@gmail.com
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hangyu Hua <hbh25y@gmail.com>
-Subject: [PATCH] can: usb: delete a redundant dev_kfree_skb() in ems_usb_start_xmit()
-Date:   Mon, 28 Feb 2022 16:36:39 +0800
-Message-Id: <20220228083639.38183-1-hbh25y@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=vWRVPVArJCYlog6uyWwSBOO+0zNuAlMQrxtxYFl/jDE=;
+        b=sqE/zRb4GCgBhSayVjQwtnLB/gdOZ0Wk2WJtGHF23lR28nftZFGr8gstBYRqXwDVFO
+         lsrEoMQUqBiDQIYqjNxd4153J7NP+roHwkQ97Xr6ViWWT9uzzI5hM1sV7FYZyWlP+VSl
+         Xw40jZeGAGEEwwFeKi/VGZYSD/NvRDAKj8II7hQJZt1wSyN6VYZasHx7WrPD+BxFX07z
+         qEFHJXiDeNtbqBKtTqLNbzY4nrb5x0wDeR4AhJiQ9toB1LIS6yMnLHylId1SGF9bvMSJ
+         ufqjZUOBXghtkC5eX6e9DvnLzqnZoKrvUdSvvkfUnka3FOoI0kBiN2SAQ+/N1gGSkyS0
+         /0CQ==
+X-Gm-Message-State: AOAM533HiXc9AxwANPt7cG/ptyNOef9r98ttGUMhmg0w9v8AJ93mdvXU
+        SvLHO01E5EDGV8nafpFmSz+WGSm3+pLezF6Yb35R+uct1mPr6Uzbp3hnZkuogEvMUqUeh+t1hTI
+        4NygZO0nLuae5gWtLXh7cMbrRu+K+Fbe4qsYcLQ==
+X-Received: by 2002:a05:600c:1c29:b0:381:7667:ab69 with SMTP id j41-20020a05600c1c2900b003817667ab69mr1406260wms.142.1646041594385;
+        Mon, 28 Feb 2022 01:46:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyjgfHayCZ6lM4CIvn6f9h7ICOQlGN4pyToG5DkHnFk0Kst5sueKcEZizJeXImKTwcW83XFsw==
+X-Received: by 2002:a05:600c:1c29:b0:381:7667:ab69 with SMTP id j41-20020a05600c1c2900b003817667ab69mr1406248wms.142.1646041594244;
+        Mon, 28 Feb 2022 01:46:34 -0800 (PST)
+Received: from [192.168.0.133] (xdsl-188-155-181-108.adslplus.ch. [188.155.181.108])
+        by smtp.gmail.com with ESMTPSA id m12-20020adfe0cc000000b001ede2dd604esm9807179wri.106.2022.02.28.01.46.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Feb 2022 01:46:33 -0800 (PST)
+Message-ID: <5e15401e-761f-2135-7f3c-fd78a455e380@canonical.com>
+Date:   Mon, 28 Feb 2022 10:46:32 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH] dt-bindings: net: can: renesas,rcar-canfd: Document
+ RZ/V2L SoC
+Content-Language: en-US
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+References: <20220227213250.23637-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20220227213250.23637-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-There is no need to call dev_kfree_skb when usb_submit_urb fails beacause
-can_put_echo_skb deletes original skb and can_free_echo_skb deletes the cloned
-skb.
+On 27/02/2022 22:32, Lad Prabhakar wrote:
+> Document RZ/V2L CANFD bindings. RZ/V2L CANFD is identical to one found on
+> the RZ/G2L SoC. No driver changes are required as generic compatible
+> string "renesas,rzg2l-canfd" will be used as a fallback.
+> 
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> ---
+> DTSI changes [0] have been posted as part of separate series.
+> 
+> [0] https://patchwork.kernel.org/project/linux-renesas-soc/patch/
+> 20220227203744.18355-4-prabhakar.mahadev-lad.rj@bp.renesas.com/
+> ---
+>  .../devicetree/bindings/net/can/renesas,rcar-canfd.yaml          | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
----
- drivers/net/can/usb/ems_usb.c | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-index 7bedceffdfa3..bbec3311d893 100644
---- a/drivers/net/can/usb/ems_usb.c
-+++ b/drivers/net/can/usb/ems_usb.c
-@@ -819,7 +819,6 @@ static netdev_tx_t ems_usb_start_xmit(struct sk_buff *skb, struct net_device *ne
- 
- 		usb_unanchor_urb(urb);
- 		usb_free_coherent(dev->udev, size, buf, urb->transfer_dma);
--		dev_kfree_skb(skb);
- 
- 		atomic_dec(&dev->active_tx_urbs);
- 
--- 
-2.25.1
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
+
+Best regards,
+Krzysztof
