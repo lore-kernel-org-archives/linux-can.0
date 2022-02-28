@@ -2,101 +2,97 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD49BC433EF
-	for <linux-can@archiver.kernel.org>; Mon, 28 Feb 2022 10:06:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D4C5C433F5
+	for <linux-can@archiver.kernel.org>; Mon, 28 Feb 2022 10:44:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233403AbiB1KHE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 28 Feb 2022 05:07:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37976 "EHLO
+        id S234602AbiB1KpA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 28 Feb 2022 05:45:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231806AbiB1KHD (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 28 Feb 2022 05:07:03 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145262C650
-        for <linux-can@vger.kernel.org>; Mon, 28 Feb 2022 02:06:24 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1nOcv6-0001BA-IF; Mon, 28 Feb 2022 11:06:20 +0100
-Received: from pengutronix.de (unknown [90.153.54.255])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 07E333F02B;
-        Mon, 28 Feb 2022 08:55:36 +0000 (UTC)
-Date:   Mon, 28 Feb 2022 09:55:36 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Hangyu Hua <hbh25y@gmail.com>
+        with ESMTP id S229565AbiB1Ko7 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 28 Feb 2022 05:44:59 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C5763980A;
+        Mon, 28 Feb 2022 02:44:19 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id d17so10822688pfl.0;
+        Mon, 28 Feb 2022 02:44:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=NvX2uqznvmKdZ/4f2xZP0934AoJu1sONoim8jf1dvRA=;
+        b=aF9vgi4tNTCipEUdrKuDsGnZeoKC8hROgeXO0cxHjnwzzfaFuxTc/wG7aoiScBDdKN
+         lJhVTjcrzMjLrAyRF2Nlz9k4uCOUaIpjZmOerCqfDZPltrK7YU/yCq/iPVmdDmFwF5Cr
+         n9CWLvYB5KCvGmIy2/oqcvAXrfgmykB0NiVsp6xTvlyt3vQbguJrH+ScV8i4nl11oemc
+         HntDnN5cuJ0P1VyLvuNYMrkAE8kXDtj2W2MI1IgiINmRQ+be7X/n05o9NHayEQauiISW
+         vMj14p1sKsmoE/4prp2bKj1xPqD1qoV5mh4fKoSaf54U0JBCa4MLr/57rUGePS3vV1l3
+         1JhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=NvX2uqznvmKdZ/4f2xZP0934AoJu1sONoim8jf1dvRA=;
+        b=nDq2TAeMO/GcQKBJCcFl/fEM6dwgmkyVt4cl8DNQntKRb3R/NaZqrw40FF4ZQjNXIp
+         wuM2tv21RsYkq0Y5S8etbL+Tc4LP7eP2vNXzzgqOXghEt1M3EmtzZxAXDEjJ+E+44bTf
+         7/A2WCMHkkSQ88kUY19KeYYDp8Xbk0RmbjVdWY9Q7mL0X7OIKX4DTu6zY5p5WnhenREl
+         ipeC3Pb3f1e0tOIrPiksuQD0c+ggqmub5WCUruBbHP2kLjQguR5AvBjgVJ/tEHkalokY
+         Vz+acD42yZobqT9QTn6EDEn8r0CkrmyWdW7AjK/X6orMBt1268LDB/3JkeE59CorYdL4
+         nCRg==
+X-Gm-Message-State: AOAM532SQo/gtheOFHk+LfGbHANbussgI2AEv8oWKc/uss+MaMIxInO2
+        5DqHD4QjzkLTWVXojrAAPVkBmwEm3DcgXyNy
+X-Google-Smtp-Source: ABdhPJxKRXcVq2xSkSHK4yAO5ohWBGyQl3gXE/ZNA5rTqJtN57KiMrxuyPv5meeUNGwpNhKz5xvoVQ==
+X-Received: by 2002:a63:a66:0:b0:373:c36b:e500 with SMTP id z38-20020a630a66000000b00373c36be500mr16729783pgk.419.1646045058977;
+        Mon, 28 Feb 2022 02:44:18 -0800 (PST)
+Received: from [10.11.37.162] ([103.84.139.53])
+        by smtp.gmail.com with ESMTPSA id h17-20020a056a001a5100b004f0edf683dfsm13014889pfv.168.2022.02.28.02.44.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Feb 2022 02:44:18 -0800 (PST)
+Message-ID: <75c14302-b928-1e09-7cd1-78b8c2695f06@gmail.com>
+Date:   Mon, 28 Feb 2022 18:44:06 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH] can: usb: delete a redundant dev_kfree_skb() in
+ ems_usb_start_xmit()
+Content-Language: en-US
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
 Cc:     wg@grandegger.com, davem@davemloft.net, kuba@kernel.org,
         stefan.maetje@esd.eu, mailhol.vincent@wanadoo.fr,
         paskripkin@gmail.com, linux-can@vger.kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] can: usb: delete a redundant dev_kfree_skb() in
- ems_usb_start_xmit()
-Message-ID: <20220228085536.pa5wdq3w4ul5wqn5@pengutronix.de>
 References: <20220228083639.38183-1-hbh25y@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3b5jwxwlprqckkxj"
-Content-Disposition: inline
-In-Reply-To: <20220228083639.38183-1-hbh25y@gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+ <20220228085536.pa5wdq3w4ul5wqn5@pengutronix.de>
+From:   Hangyu Hua <hbh25y@gmail.com>
+In-Reply-To: <20220228085536.pa5wdq3w4ul5wqn5@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+I get it. I'll remake a patch that matches your suggestions.
 
---3b5jwxwlprqckkxj
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks.
 
-On 28.02.2022 16:36:39, Hangyu Hua wrote:
-> There is no need to call dev_kfree_skb when usb_submit_urb fails beacause
-> can_put_echo_skb deletes original skb and can_free_echo_skb deletes the c=
-loned
-> skb.
->=20
-> Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
-
-Thanks for the patch. Please add a Fixes tag, that points to the commit
-that introduced the problem, here it's:
-
-Fixes: 702171adeed3 ("ems_usb: Added support for EMS CPC-USB/ARM7 CAN/USB i=
-nterface")
-
-I've adjusted the subject a bit ("can: usb: ems_usb_start_xmit(): fix
-double dev_kfree_skb() in error path") and added stable on Cc.
-
-Added patch to can/testing.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---3b5jwxwlprqckkxj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmIcjgUACgkQrX5LkNig
-011JaAgAgazwqrThdzTSMQPN3Jz7o80maSyjAnDnztQyxz7rmwW5gFoEHkXA61Hi
-ih20UirDRgWIFJJOkK+oKuvCEDAvrMMXi2oc5vM5lHdev5dPyNoEhw1c7dGpMA7v
-gbaArI3x0/qEBgwUIc0NUed1zPYHd86J6++4exGaVg5Ht915pFdznq8oHVrepgY/
-dEWiwQh4gjVgZwTHQ9xGouS+VV6egSz/K6GS5FUHHRm59C594vglVwYKbEwSRPSH
-fSM+FGC8c64/Jcmq9DzP8B19BC7czeEmim3cR6+oyZe99fKGAwJf015YbvGxLN1J
-pAmOrdGIsydoKimv4s6Tkf8aekXRXA==
-=HJiM
------END PGP SIGNATURE-----
-
---3b5jwxwlprqckkxj--
+On 2022/2/28 16:55, Marc Kleine-Budde wrote:
+> On 28.02.2022 16:36:39, Hangyu Hua wrote:
+>> There is no need to call dev_kfree_skb when usb_submit_urb fails beacause
+>> can_put_echo_skb deletes original skb and can_free_echo_skb deletes the cloned
+>> skb.
+>>
+>> Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
+> 
+> Thanks for the patch. Please add a Fixes tag, that points to the commit
+> that introduced the problem, here it's:
+> 
+> Fixes: 702171adeed3 ("ems_usb: Added support for EMS CPC-USB/ARM7 CAN/USB interface")
+> 
+> I've adjusted the subject a bit ("can: usb: ems_usb_start_xmit(): fix
+> double dev_kfree_skb() in error path") and added stable on Cc.
+> 
+> Added patch to can/testing.
+> 
+> regards,
+> Marc
+> 
