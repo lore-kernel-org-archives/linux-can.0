@@ -2,156 +2,123 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37DCFC433EF
-	for <linux-can@archiver.kernel.org>; Wed,  2 Mar 2022 12:57:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C196EC433EF
+	for <linux-can@archiver.kernel.org>; Thu,  3 Mar 2022 23:00:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236126AbiCBM5z (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 2 Mar 2022 07:57:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48598 "EHLO
+        id S231184AbiCCXAv (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 3 Mar 2022 18:00:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242013AbiCBM5x (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 2 Mar 2022 07:57:53 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF957C2496
-        for <linux-can@vger.kernel.org>; Wed,  2 Mar 2022 04:57:09 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1nPOXU-0003e2-CL
-        for linux-can@vger.kernel.org; Wed, 02 Mar 2022 13:57:08 +0100
-Received: from [IPv6:2a03:f580:87bc:d400:5c51:3418:45e9:21d0] (2a03-f580-87bc-d400-5c51-3418-45e9-21d0.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:5c51:3418:45e9:21d0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id DDBEC40CA3
-        for <linux-can@vger.kernel.org>; Wed,  2 Mar 2022 12:57:07 +0000 (UTC)
-Date:   Wed, 2 Mar 2022 11:32:19 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     kernel test robot <yujie.liu@intel.com>
-Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
-Subject: Re: drivers/net/can/usb/etas_es58x/es58x_fd.c:174:8: warning:
- Uninitialized variable: rx_event_msg [uninitvar]
-Message-ID: <20220302103219.kvpfhc6qz42t3pvv@pengutronix.de>
-References: <202203021333.mMJpWPzx-lkp@intel.com>
- <5f13b914-e309-49ee-4f98-c81780c478b9@intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="es7shakc2uxqunjk"
-Content-Disposition: inline
-In-Reply-To: <5f13b914-e309-49ee-4f98-c81780c478b9@intel.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+        with ESMTP id S229947AbiCCXAu (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 3 Mar 2022 18:00:50 -0500
+X-Greylist: delayed 170 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 03 Mar 2022 15:00:03 PST
+Received: from smtp-out3.electric.net (smtp-out3.electric.net [208.70.128.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B512A734;
+        Thu,  3 Mar 2022 15:00:03 -0800 (PST)
+Received: from 1nPuNg-0006DD-W9 by out3b.electric.net with emc1-ok (Exim 4.94.2)
+        (envelope-from <kris@embeddedTS.com>)
+        id 1nPuNi-0006M2-Vk; Thu, 03 Mar 2022 14:57:10 -0800
+Received: by emcmailer; Thu, 03 Mar 2022 14:57:10 -0800
+Received: from [66.210.251.27] (helo=mail.embeddedts.com)
+        by out3b.electric.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <kris@embeddedTS.com>)
+        id 1nPuNg-0006DD-W9; Thu, 03 Mar 2022 14:57:09 -0800
+Received: from tsdebian.Massive (unknown [75.164.75.221])
+        by mail.embeddedts.com (Postfix) with ESMTPSA id 28C7038F6C;
+        Thu,  3 Mar 2022 15:57:08 -0700 (MST)
+From:   Kris Bahnsen <kris@embeddedTS.com>
+To:     linus.walleij@linaro.org, brgl@bgdev.pl, wg@grandegger.com,
+        mkl@pengutronix.de, linux-gpio@vger.kernel.org,
+        linux-can@vger.kernel.org
+Cc:     Kris Bahnsen <kris@embeddedTS.com>
+Subject: [PATCH] drivers: Fix Links to Technologic Systems web resources
+Date:   Thu,  3 Mar 2022 14:55:25 -0800
+Message-Id: <20220303225525.29846-1-kris@embeddedTS.com>
+X-Mailer: git-send-email 2.11.0
+X-Outbound-IP: 66.210.251.27
+X-Env-From: kris@embeddedTS.com
+X-Proto: esmtps
+X-Revdns: wsip-66-210-251-27.ph.ph.cox.net
+X-HELO: mail.embeddedts.com
+X-TLS:  TLS1.2:ECDHE-RSA-AES256-GCM-SHA384:256
+X-Authenticated_ID: 
+X-Virus-Status: Scanned by VirusSMART (c)
+X-Virus-Status: Scanned by VirusSMART (b)
+X-FM-Delivery-Delay: 15749372,23518412
+X-PolicySMART: 13164782, 15749372, 26810492
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=embeddedTS.com; s=mailanyone20220121;h=Message-Id:Date:To:From; bh=M0CaPYNbuqqPBKUGMAOYIjz9RulZ3sYoiLMPvbPJyeA=;b=MIH1PKHt993iEs6xkHWBy8zHe1RlleZdE2iFD+3jAb8S10Kvk8htr3xsm2ICl2EiRAV1tAj4Uf+kUL4aHL1O9ufo9hnG6rtZYnnOHyg7IIOLAP2B8vXAJnyXugb2zXO1ryrB0RPExJtuQMSP5wSlq9kwFr5hW5IR9SFubwdVTdR1C2GVVrn8OQBA9xcHYUONZYoqATxTwSaLeG8OSpB6fPaOFbAibHHkyGt19f9NKb8y5wxB9K3VM1hYZOfElP5xSqAKJ0Frp+P8qxx3eQ3lVEDS8u9JOWW6GVHZ9EctfhJL+wMBorZL8LfuV8I5Sr0t/FGlN8tuqjaNQqaRjtiuog==;
+X-FM-Delivery-Delay: 15749372,23518412
+X-PolicySMART: 13164782, 15749372, 26810492
+X-FM-Delivery-Delay: 15749372,23518412
+X-PolicySMART: 13164782, 15749372, 26810492
+X-FM-Delivery-Delay: 15749372,23518412
+X-PolicySMART: 13164782, 15749372, 26810492
+X-FM-Delivery-Delay: 15749372,23518412
+X-PolicySMART: 13164782, 15749372, 26810492
+X-FM-Delivery-Delay: 15749372,23518412
+X-PolicySMART: 13164782, 15749372, 26810492
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+Technologic Systems has rebranded as embeddedTS with the current
+domain eventually going offline. Update web/doc URLs to correct
+resource locations.
 
---es7shakc2uxqunjk
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Kris Bahnsen <kris@embeddedTS.com>
+---
+ drivers/gpio/gpio-ts5500.c       | 4 ++--
+ drivers/net/can/sja1000/Kconfig  | 2 +-
+ drivers/net/can/sja1000/tscan1.c | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-On 02.03.2022 17:47:08, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
-t master
-> head:   575115360652e9920cc56a028a286ebe9bf82694
-> commit: c664e2137a27680922d8aeb64fb10313416b254f can: etas_es58x: add sup=
-port for the ETAS ES58X_FD CAN USB interfaces
-> date:   11 months ago
-> compiler: powerpc64-linux-gcc (GCC) 11.2.0
->=20
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <yujie.liu@intel.com>
->=20
->=20
-> cppcheck possible warnings: (new ones prefixed by >>, may not be real pro=
-blems)
->=20
->    In file included from drivers/net/can/usb/etas_es58x/es58x_fd.c:
-> >> drivers/net/can/usb/etas_es58x/es58x_fd.c:174:8: warning: Uninitialize=
-d variable: rx_event_msg [uninitvar]
->     ret =3D es58x_check_msg_len(es58x_dev->dev, *rx_event_msg, msg_len);
->           ^
->=20
-> vim +174 drivers/net/can/usb/etas_es58x/es58x_fd.c
->=20
-> c664e2137a2768 Vincent Mailhol 2021-04-10  165
-> c664e2137a2768 Vincent Mailhol 2021-04-10  166  static int es58x_fd_rx_ev=
-ent_msg(struct net_device *netdev,
-> c664e2137a2768 Vincent Mailhol 2021-04-10  167  				 const struct es58x_f=
-d_urb_cmd *es58x_fd_urb_cmd)
-> c664e2137a2768 Vincent Mailhol 2021-04-10  168  {
-> c664e2137a2768 Vincent Mailhol 2021-04-10  169  	struct es58x_device *es5=
-8x_dev =3D es58x_priv(netdev)->es58x_dev;
-> c664e2137a2768 Vincent Mailhol 2021-04-10  170  	u16 msg_len =3D get_unal=
-igned_le16(&es58x_fd_urb_cmd->msg_len);
-> c664e2137a2768 Vincent Mailhol 2021-04-10 @171  	const struct es58x_fd_rx=
-_event_msg *rx_event_msg;
-> c664e2137a2768 Vincent Mailhol 2021-04-10  172  	int ret;
-> c664e2137a2768 Vincent Mailhol 2021-04-10  173
-> c664e2137a2768 Vincent Mailhol 2021-04-10 @174  	ret =3D es58x_check_msg_=
-len(es58x_dev->dev, *rx_event_msg, msg_len);
-> c664e2137a2768 Vincent Mailhol 2021-04-10  175  	if (ret)
-> c664e2137a2768 Vincent Mailhol 2021-04-10  176  		return ret;
-> c664e2137a2768 Vincent Mailhol 2021-04-10  177
-> c664e2137a2768 Vincent Mailhol 2021-04-10  178  	rx_event_msg =3D &es58x_=
-fd_urb_cmd->rx_event_msg;
-> c664e2137a2768 Vincent Mailhol 2021-04-10  179
-> c664e2137a2768 Vincent Mailhol 2021-04-10  180  	return es58x_rx_err_msg(=
-netdev, rx_event_msg->error_code,
-> c664e2137a2768 Vincent Mailhol 2021-04-10  181  				rx_event_msg->event_c=
-ode,
-> c664e2137a2768 Vincent Mailhol 2021-04-10  182  				get_unaligned_le64(&r=
-x_event_msg->timestamp));
-> c664e2137a2768 Vincent Mailhol 2021-04-10  183  }
-> c664e2137a2768 Vincent Mailhol 2021-04-10  184
+diff --git a/drivers/gpio/gpio-ts5500.c b/drivers/gpio/gpio-ts5500.c
+index b159e92a3612..8e03614c7a24 100644
+--- a/drivers/gpio/gpio-ts5500.c
++++ b/drivers/gpio/gpio-ts5500.c
+@@ -11,11 +11,11 @@
+  * Actually, the following platforms have DIO support:
+  *
+  * TS-5500:
+- *   Documentation: http://wiki.embeddedarm.com/wiki/TS-5500
++ *   Documentation: https://docs.embeddedts.com/TS-5500
+  *   Blocks: DIO1, DIO2 and LCD port.
+  *
+  * TS-5600:
+- *   Documentation: http://wiki.embeddedarm.com/wiki/TS-5600
++ *   Documentation: https://docs.embeddedts.com/TS-5600
+  *   Blocks: LCD port (identical to TS-5500 LCD).
+  */
+ 
+diff --git a/drivers/net/can/sja1000/Kconfig b/drivers/net/can/sja1000/Kconfig
+index 110071b26921..4b2f9cb17fc3 100644
+--- a/drivers/net/can/sja1000/Kconfig
++++ b/drivers/net/can/sja1000/Kconfig
+@@ -107,7 +107,7 @@ config CAN_TSCAN1
+ 	depends on ISA
+ 	help
+ 	  This driver is for Technologic Systems' TSCAN-1 PC104 boards.
+-	  http://www.embeddedarm.com/products/board-detail.php?product=TS-CAN1
++	  https://www.embeddedts.com/products/TS-CAN1
+ 	  The driver supports multiple boards and automatically configures them:
+ 	  PLD IO base addresses are read from jumpers JP1 and JP2,
+ 	  IRQ numbers are read from jumpers JP4 and JP5,
+diff --git a/drivers/net/can/sja1000/tscan1.c b/drivers/net/can/sja1000/tscan1.c
+index 3dbba8d61afb..749002f21e27 100644
+--- a/drivers/net/can/sja1000/tscan1.c
++++ b/drivers/net/can/sja1000/tscan1.c
+@@ -7,8 +7,8 @@
+ 
+ /*
+  * References:
+- * - Getting started with TS-CAN1, Technologic Systems, Jun 2009
+- *	http://www.embeddedarm.com/documentation/ts-can1-manual.pdf
++ * - Getting started with TS-CAN1, Technologic Systems, Feb 2022
++ *	https://docs.embeddedts.com/TS-CAN1
+  */
+ 
+ #include <linux/init.h>
+-- 
+2.11.0
 
-Thanks for the report.
-
-This looks like a false positive to me, as es58x_check_msg_len() is not
-a function, but a macro:
-
-| #define es58x_check_msg_len(dev, msg, actual_len)			\
-| 	__es58x_check_msg_len(dev, __stringify(msg),			\
-| 			      actual_len, sizeof(msg))
-
-__es58x_check_msg_len() don't use "rx_event_msg" directly, but only a
-string representation of it and a "sizeof()".
-
-I think it's possible to assign rx_event_msg before the
-es58x_check_msg_len(). I think (hope?) the compiler will not optimize
-anything away. :)
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---es7shakc2uxqunjk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmIfR7AACgkQrX5LkNig
-013QCQgAqK9CFYzDpArq0c7Bm8GbARd+F9DP/5Ir6bmH34+nSEvwBXvIB2bqDlLS
-5O6vzlP32gdyQTiUj7wZE9urPrtXkRcxrewMeoezOVuTNVfH32hwWANBYeyfP0g+
-8h1ePZHny0wbhGuGMzR7GRyEwtAfDQMpkfnzwrsY0AA6T5tshvWE/ToMVjtR6iqz
-kIyok2Q01jbLYyqoFjHMYDXhyLIS3kKxt8tUYiUKmxeqvdMW9Azw1eUuBWCRoJ9z
-feAmwJS6+BXnmOAvX9CLIlFo1asRCZKikRgPjDiEkcX8/Kc5OLeItu4+bYZx5cEk
-UdTZSPc0DW5omA7gnaBoOQiufTPk+Q==
-=t9ZQ
------END PGP SIGNATURE-----
-
---es7shakc2uxqunjk--
