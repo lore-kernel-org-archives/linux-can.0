@@ -2,101 +2,125 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E288BC433F5
-	for <linux-can@archiver.kernel.org>; Wed,  9 Mar 2022 16:35:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C42EC433EF
+	for <linux-can@archiver.kernel.org>; Wed,  9 Mar 2022 16:35:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236737AbiCIQgq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 9 Mar 2022 11:36:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48140 "EHLO
+        id S233339AbiCIQgp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 9 Mar 2022 11:36:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236097AbiCIQ2w (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 9 Mar 2022 11:28:52 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445D869CFB;
-        Wed,  9 Mar 2022 08:22:57 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 64344B82222;
-        Wed,  9 Mar 2022 16:22:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34E47C340E8;
-        Wed,  9 Mar 2022 16:22:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646842975;
-        bh=Q4ZFIK2kN1op+eCrum4G5rv72TxTdFA+X7OK6qw/EE8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pGKjYPlvZrGvnic3TbwdNNvaLQCz9v3Pe5nBlhSTZcfn7KAdz6AapNzMuJoTd6cwr
-         k0Njvwgl8/7K85G+1z0ZG3g3ny/tqEvYsgiLOBREveCeoxUewwAck+uCPIblwb7KiX
-         AUo0TQ1CJCx2eG7lj1OwtZrZ3FM276T3TpasV4kCoHS/eBaJm3bvoQMFCEsZ1DYdRF
-         i/wzDNpDajsu4/QP22Cu5+fEOyaoayH7XNFharSjkiTOeZ3vKIwnLv9VXbXQw+oPPH
-         xSslPEEQ120atZnplGmajA5a9Xhy9i9mmoEvQkmWNBSVFvFbboAXigAjTaeahukj5T
-         vsg0UpVckV2Sw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Pavel Machek <pavel@denx.de>,
-        Ulrich Hecht <uli+renesas@fpond.eu>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>, wg@grandegger.com,
-        davem@davemloft.net, kuba@kernel.org, stefan.maetje@esd.eu,
-        mailhol.vincent@wanadoo.fr, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 11/20] can: rcar_canfd: rcar_canfd_channel_probe(): register the CAN device when fully ready
-Date:   Wed,  9 Mar 2022 11:21:49 -0500
-Message-Id: <20220309162158.136467-11-sashal@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220309162158.136467-1-sashal@kernel.org>
-References: <20220309162158.136467-1-sashal@kernel.org>
+        with ESMTP id S234340AbiCIQdw (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 9 Mar 2022 11:33:52 -0500
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A96376E06;
+        Wed,  9 Mar 2022 08:29:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1646843160;
+    s=strato-dkim-0002; d=fpond.eu;
+    h=Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=Uq80fOiGqpSIpwp9BdSSfbQcuCBRb30aYGTDHn4N09c=;
+    b=VgCPa6fg5PmIfnCObiaXGdc1Fq5FiOFuYVHYeJ/Oy8QmxuJl6Qshy5DkeSmSA3Wml8
+    r9sDlGGbFgGs9i+ZP+SuLIbi9Se5D7Ehfjqbo5mPsLt9xk39H+daEhopHQ7KJku2IsPU
+    FMPzEbM900pFBerXxI/vP/0jSnPkjahUWoC2iY3jCHBMyNlRTvQvK9qguaCNEGVngM99
+    myrTZeeFIpZg3Bh0hwCD3RBhls0YsisjZhgrOHbFNE6CZeAIYGPmccGQLkHUEyHvWjuv
+    MKa5TaRTtgidolIWEPAxaO/jUbcG1AIesMcgMqHzMFLoAM8hzFLn9Y6M0N2seeQSmlZR
+    4BcA==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":OWANVUa4dPFUgKR/3dpvnYP0Np73amq+g13rqGzvv3qxio1R8fCs/87J3I0="
+X-RZG-CLASS-ID: mo00
+Received: from oxapp05-03.back.ox.d0m.de
+    by smtp-ox.front (RZmta 47.40.1 AUTH)
+    with ESMTPSA id 646b0ey29GPxJW3
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Wed, 9 Mar 2022 17:25:59 +0100 (CET)
+Date:   Wed, 9 Mar 2022 17:25:59 +0100 (CET)
+From:   Ulrich Hecht <uli@fpond.eu>
+To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
+        Ulrich Hecht <uli+renesas@fpond.eu>
+Cc:     linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
+        davem@davemloft.net, linux-can@vger.kernel.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, wsa@kernel.org,
+        yoshihiro.shimoda.uh@renesas.com, wg@grandegger.com,
+        mkl@pengutronix.de, kuba@kernel.org, socketcan@hartkopp.net,
+        geert@linux-m68k.org, kieran.bingham@ideasonboard.com
+Message-ID: <616372185.25555.1646843159934@webmail.strato.com>
+In-Reply-To: <CAMZ6RqK_39QmvZAjBZhoH2qbbmws9ac4JgrayR=d5m5p+e39XA@mail.gmail.com>
+References: <20220209163806.18618-1-uli+renesas@fpond.eu>
+ <20220209163806.18618-2-uli+renesas@fpond.eu>
+ <CAMZ6RqK_39QmvZAjBZhoH2qbbmws9ac4JgrayR=d5m5p+e39XA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] can: rcar_canfd: Add support for r8a779a0 SoC
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.5-Rev39
+X-Originating-Client: open-xchange-appsuite
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Thanks for your review!
 
-[ Upstream commit c5048a7b2c23ab589f3476a783bd586b663eda5b ]
+> On 02/14/2022 8:10 AM Vincent MAILHOL <mailhol.vincent@wanadoo.fr> wrote:
+> > -#define RCANFD_GERFL_ERR(gpriv, x)     ((x) & (RCANFD_GERFL_EEF1 |\
+> > -                                       RCANFD_GERFL_EEF0 | RCANFD_GERFL_MES |\
+> > -                                       (gpriv->fdmode ?\
+> > -                                        RCANFD_GERFL_CMPOF : 0)))
+> > +#define RCANFD_GERFL_ERR(x)            ((x) & (reg_v3u(gpriv, RCANFD_GERFL_EEF0_7, \
+> > +                                       RCANFD_GERFL_EEF0 | RCANFD_GERFL_EEF1) | \
+> > +                                       RCANFD_GERFL_MES | ((gpriv)->fdmode ? \
+> > +                                       RCANFD_GERFL_CMPOF : 0)))
+> 
+> Instead of packing everything on the right, I suggest putting in a bit more air.
+> Something like that:
+> 
+> #define RCANFD_GERFL_ERR(x)                                             \
+>         ((x) & (reg_v3u(gpriv, RCANFD_GERFL_EEF0_7,                     \
+>                         RCANFD_GERFL_EEF0 | RCANFD_GERFL_EEF1) |        \
+>                 RCANFD_GERFL_MES |                                      \
+>                 ((gpriv)->fdmode ? RCANFD_GERFL_CMPOF : 0)))
+> 
+> Same comment applies to other macros.
 
-Register the CAN device only when all the necessary initialization is
-completed. This patch makes sure all the data structures and locks are
-initialized before registering the CAN device.
+That does indeed look a lot better.
 
-Link: https://lore.kernel.org/all/20220221225935.12300-1-prabhakar.mahadev-lad.rj@bp.renesas.com
-Reported-by: Pavel Machek <pavel@denx.de>
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Pavel Machek <pavel@denx.de>
-Reviewed-by: Ulrich Hecht <uli+renesas@fpond.eu>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/can/rcar/rcar_canfd.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> >  /* Helper functions */
+> > +static inline bool is_v3u(struct rcar_canfd_global *gpriv)
+> > +{
+> > +       return gpriv->chip_id == RENESAS_R8A779A0;
+> > +}
+> > +
+> > +static inline u32 reg_v3u(struct rcar_canfd_global *gpriv,
+> > +                         u32 v3u, u32 not_v3u)
+> > +{
+> > +       return is_v3u(gpriv) ? v3u : not_v3u;
+> > +}
+> 
+> Nitpick but I would personally prefer if is_v3u() and reg_v3u()
+> were declared before the macros in which they are being used.
 
-diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index de59dd6aad29..67f0f14e2bf4 100644
---- a/drivers/net/can/rcar/rcar_canfd.c
-+++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -1598,15 +1598,15 @@ static int rcar_canfd_channel_probe(struct rcar_canfd_global *gpriv, u32 ch,
- 
- 	netif_napi_add(ndev, &priv->napi, rcar_canfd_rx_poll,
- 		       RCANFD_NAPI_WEIGHT);
-+	spin_lock_init(&priv->tx_lock);
-+	devm_can_led_init(ndev);
-+	gpriv->ch[priv->channel] = priv;
- 	err = register_candev(ndev);
- 	if (err) {
- 		dev_err(&pdev->dev,
- 			"register_candev() failed, error %d\n", err);
- 		goto fail_candev;
- 	}
--	spin_lock_init(&priv->tx_lock);
--	devm_can_led_init(ndev);
--	gpriv->ch[priv->channel] = priv;
- 	dev_info(&pdev->dev, "device registered (channel %u)\n", priv->channel);
- 	return 0;
- 
--- 
-2.34.1
+So would I, but that would require extensive reshuffling of the code, which I think is not worth the effort for such a minor issue.
 
+> > +               if (is_v3u(gpriv)) {
+> > +                       cfg = (RCANFD_NCFG_NTSEG1(tseg1) |
+> > +                              RCANFD_NCFG_NBRP(brp) |
+> > +                              RCANFD_NCFG_NSJW(sjw) |
+> > +                              RCANFD_NCFG_NTSEG2(tseg2));
+> > +               } else {
+> > +                       cfg = (RCANFD_CFG_TSEG1(tseg1) |
+> > +                              RCANFD_CFG_BRP(brp) |
+> > +                              RCANFD_CFG_SJW(sjw) |
+> > +                              RCANFD_CFG_TSEG2(tseg2));
+> > +               }
+> 
+> Nitpick: can't you use one of your reg_v3u() functions here?
+> |        cfg = reg_v3u(gpriv, ..., ...)?
+
+Technically yes, but I think of reg_v3u() as choosing between two register layouts, and this is something else.
+
+CU
+Uli
