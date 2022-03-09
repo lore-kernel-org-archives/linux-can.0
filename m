@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3A90C433F5
-	for <linux-can@archiver.kernel.org>; Wed,  9 Mar 2022 16:25:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E75BEC4321E
+	for <linux-can@archiver.kernel.org>; Wed,  9 Mar 2022 16:35:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235888AbiCIQ0U (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 9 Mar 2022 11:26:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39728 "EHLO
+        id S236006AbiCIQg2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 9 Mar 2022 11:36:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238401AbiCIQWF (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 9 Mar 2022 11:22:05 -0500
+        with ESMTP id S239550AbiCIQcm (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 9 Mar 2022 11:32:42 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 948DF3A5;
-        Wed,  9 Mar 2022 08:21:06 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B7A1AAA4D;
+        Wed,  9 Mar 2022 08:28:06 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3085C6194C;
-        Wed,  9 Mar 2022 16:21:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83353C340F6;
-        Wed,  9 Mar 2022 16:21:00 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7988D61973;
+        Wed,  9 Mar 2022 16:27:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12537C340E8;
+        Wed,  9 Mar 2022 16:27:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646842865;
-        bh=xYDt82oztVLPKZHK4RGXMtKudy0jz5x/oNRMn0IWQ5M=;
+        s=k20201202; t=1646843266;
+        bh=fEVgwXk1c1lGMS8hGbRJ0s5ynNwtkHpZ8UedaFiEplo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GSkfG+9WFJbpiObp8Z3W88v9WxgMy3aGrnieGD2iMt9+mqp3Fs9n4OMI+1wl0LhZJ
-         iGlnsbdeaCf52b9G4pmphTxtkCHxWekNWHpVL6p5uRKq6XTAlHN1nrHOy/6/yuPiGj
-         esXhgW/2U2GcDDC5vKXQqzd9TGapNf7N+EuUSlEyc3SPnHXG9yOTp0q+bXaNaGs0TJ
-         hDggtrFhQ+hBFflaHGagU49RhM5mF0ufFxTaBNowRQwDE55odagRk0jwejPgJAohJQ
-         FnbZ7BOboEHrxC2Ofda9R4Y6dfcGD9NFkLiqW0bEGt47qqMPihoei5oIcpu6Sob6Ee
-         NYk35zWcvu3YA==
+        b=OYw0A9MRt6Chfg5hqO8CMiM+iVxhtSTUuNEJOOLan4+OqMSjjj6ougt50F2fd4+jh
+         wR7j28IPmHw9kuXOfeE+lCgDQbTmmk8R4W+S6/npncYEX0UbV2QKOz7/usN+Yd5vKf
+         3LTd15UDK0E1OCsYVBAGP+wMw9QqyRE8+SVbNKpFwAyEZITNwWBYY0lPiyHX/S8wUa
+         uUSsKm2ph+luxhg9RrFXARjgbPVey/CsrgGp3L4srMIrO4cbWJGC4vuK+vUibsZpC4
+         xbLOHy+m2XrTET6vw1CiIiemvAGFs/RALpGC4R0MgqTW1LbO60ozSA904wS3HM8Qbb
+         alwI2bISC5iRw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
@@ -41,12 +41,12 @@ Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
         davem@davemloft.net, kuba@kernel.org, stefan.maetje@esd.eu,
         mailhol.vincent@wanadoo.fr, linux-can@vger.kernel.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 14/24] can: rcar_canfd: rcar_canfd_channel_probe(): register the CAN device when fully ready
-Date:   Wed,  9 Mar 2022 11:19:33 -0500
-Message-Id: <20220309161946.136122-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 05/11] can: rcar_canfd: rcar_canfd_channel_probe(): register the CAN device when fully ready
+Date:   Wed,  9 Mar 2022 11:27:10 -0500
+Message-Id: <20220309162716.137399-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220309161946.136122-1-sashal@kernel.org>
-References: <20220309161946.136122-1-sashal@kernel.org>
+In-Reply-To: <20220309162716.137399-1-sashal@kernel.org>
+References: <20220309162716.137399-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -75,10 +75,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index 388521e70837..2f44c567ebd7 100644
+index 43cdd5544b0c..a127c853a4e9 100644
 --- a/drivers/net/can/rcar/rcar_canfd.c
 +++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -1720,15 +1720,15 @@ static int rcar_canfd_channel_probe(struct rcar_canfd_global *gpriv, u32 ch,
+@@ -1601,15 +1601,15 @@ static int rcar_canfd_channel_probe(struct rcar_canfd_global *gpriv, u32 ch,
  
  	netif_napi_add(ndev, &priv->napi, rcar_canfd_rx_poll,
  		       RCANFD_NAPI_WEIGHT);
