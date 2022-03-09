@@ -2,103 +2,101 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA8F8C43219
-	for <linux-can@archiver.kernel.org>; Wed,  9 Mar 2022 16:35:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E288BC433F5
+	for <linux-can@archiver.kernel.org>; Wed,  9 Mar 2022 16:35:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236729AbiCIQgq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S236737AbiCIQgq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Wed, 9 Mar 2022 11:36:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48616 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234830AbiCIQcr (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 9 Mar 2022 11:32:47 -0500
-Received: from mo4-p03-ob.smtp.rzone.de (mo4-p03-ob.smtp.rzone.de [85.215.255.102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B03DF5403;
-        Wed,  9 Mar 2022 08:28:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1646843176;
-    s=strato-dkim-0002; d=fpond.eu;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=+VSCMatbyH76KC33hEonHOTYQE2t7bjYbaDc7Ro+kQY=;
-    b=Quz1wpa7Nm2lKtSzxsxlI31HbReJxOEeR3CWkgEgLa5w2J1RV9RvrmjA3Lsp9M6VU/
-    BhvzpbHfJ22t0lFfLnTpUIKXEqRmY/fKS4Qahk8qLwJiIkFxx/uO7nGtV4lyruopaFS7
-    KUNzD4MHGzASC2S8g11qmwdQgVt6wt0jKx7bVuDdXXxSLlifHKIFZzm2B/j1LRCeEeo0
-    vP9zAJqhhhzrvXIdJidEZOe+9u+plUYPa96nbhWX2NaATWlsiiFZqjc+B8wk5GgiQt+M
-    VuyotUfmW3qjKev8ChsJ05OtVSdtCJo2YM34A1uT4EeHvan757AW4UPArr6CaDpQ1NQp
-    GYzg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":OWANVUa4dPFUgKR/3dpvnYP0Np73dmm4I5W0/AvA67Ot4fvR82Fcd2Ywjw=="
-X-RZG-CLASS-ID: mo00
-Received: from gummo.fritz.box
-    by smtp.strato.de (RZmta 47.40.1 DYNA|AUTH)
-    with ESMTPSA id 646b0ey29GQFJWE
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Wed, 9 Mar 2022 17:26:15 +0100 (CET)
-From:   Ulrich Hecht <uli+renesas@fpond.eu>
-To:     linux-renesas-soc@vger.kernel.org
-Cc:     netdev@vger.kernel.org, davem@davemloft.net,
-        linux-can@vger.kernel.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, wsa@kernel.org,
-        yoshihiro.shimoda.uh@renesas.com, wg@grandegger.com,
-        mkl@pengutronix.de, kuba@kernel.org, mailhol.vincent@wanadoo.fr,
-        socketcan@hartkopp.net, geert@linux-m68k.org,
-        kieran.bingham@ideasonboard.com, horms@verge.net.au,
+        with ESMTP id S236097AbiCIQ2w (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 9 Mar 2022 11:28:52 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445D869CFB;
+        Wed,  9 Mar 2022 08:22:57 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 64344B82222;
+        Wed,  9 Mar 2022 16:22:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34E47C340E8;
+        Wed,  9 Mar 2022 16:22:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646842975;
+        bh=Q4ZFIK2kN1op+eCrum4G5rv72TxTdFA+X7OK6qw/EE8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=pGKjYPlvZrGvnic3TbwdNNvaLQCz9v3Pe5nBlhSTZcfn7KAdz6AapNzMuJoTd6cwr
+         k0Njvwgl8/7K85G+1z0ZG3g3ny/tqEvYsgiLOBREveCeoxUewwAck+uCPIblwb7KiX
+         AUo0TQ1CJCx2eG7lj1OwtZrZ3FM276T3TpasV4kCoHS/eBaJm3bvoQMFCEsZ1DYdRF
+         i/wzDNpDajsu4/QP22Cu5+fEOyaoayH7XNFharSjkiTOeZ3vKIwnLv9VXbXQw+oPPH
+         xSslPEEQ120atZnplGmajA5a9Xhy9i9mmoEvQkmWNBSVFvFbboAXigAjTaeahukj5T
+         vsg0UpVckV2Sw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Pavel Machek <pavel@denx.de>,
         Ulrich Hecht <uli+renesas@fpond.eu>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v4 3/4] arm64: dts: renesas: r8a779a0-falcon: enable CANFD 0 and 1
-Date:   Wed,  9 Mar 2022 17:26:08 +0100
-Message-Id: <20220309162609.3726306-4-uli+renesas@fpond.eu>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220309162609.3726306-1-uli+renesas@fpond.eu>
-References: <20220309162609.3726306-1-uli+renesas@fpond.eu>
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>, wg@grandegger.com,
+        davem@davemloft.net, kuba@kernel.org, stefan.maetje@esd.eu,
+        mailhol.vincent@wanadoo.fr, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 11/20] can: rcar_canfd: rcar_canfd_channel_probe(): register the CAN device when fully ready
+Date:   Wed,  9 Mar 2022 11:21:49 -0500
+Message-Id: <20220309162158.136467-11-sashal@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220309162158.136467-1-sashal@kernel.org>
+References: <20220309162158.136467-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Enables confirmed-working CAN interfaces 0 and 1 on the Falcon board.
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Signed-off-by: Ulrich Hecht <uli+renesas@fpond.eu>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+[ Upstream commit c5048a7b2c23ab589f3476a783bd586b663eda5b ]
+
+Register the CAN device only when all the necessary initialization is
+completed. This patch makes sure all the data structures and locks are
+initialized before registering the CAN device.
+
+Link: https://lore.kernel.org/all/20220221225935.12300-1-prabhakar.mahadev-lad.rj@bp.renesas.com
+Reported-by: Pavel Machek <pavel@denx.de>
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Pavel Machek <pavel@denx.de>
+Reviewed-by: Ulrich Hecht <uli+renesas@fpond.eu>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../boot/dts/renesas/r8a779a0-falcon.dts      | 24 +++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ drivers/net/can/rcar/rcar_canfd.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts b/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
-index e46dc9aa0a43..75e27f950ac0 100644
---- a/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
-+++ b/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
-@@ -65,4 +65,28 @@ pins_mii {
- 		};
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index de59dd6aad29..67f0f14e2bf4 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -1598,15 +1598,15 @@ static int rcar_canfd_channel_probe(struct rcar_canfd_global *gpriv, u32 ch,
  
- 	};
-+
-+	canfd0_pins: canfd0 {
-+		groups = "canfd0_data";
-+		function = "canfd0";
-+	};
-+
-+	canfd1_pins: canfd1 {
-+		groups = "canfd1_data";
-+		function = "canfd1";
-+	};
-+};
-+
-+&canfd {
-+	pinctrl-0 = <&canfd0_pins>, <&canfd1_pins>;
-+	pinctrl-names = "default";
-+	status = "okay";
-+
-+	channel0 {
-+		status = "okay";
-+	};
-+
-+	channel1 {
-+		status = "okay";
-+	};
- };
+ 	netif_napi_add(ndev, &priv->napi, rcar_canfd_rx_poll,
+ 		       RCANFD_NAPI_WEIGHT);
++	spin_lock_init(&priv->tx_lock);
++	devm_can_led_init(ndev);
++	gpriv->ch[priv->channel] = priv;
+ 	err = register_candev(ndev);
+ 	if (err) {
+ 		dev_err(&pdev->dev,
+ 			"register_candev() failed, error %d\n", err);
+ 		goto fail_candev;
+ 	}
+-	spin_lock_init(&priv->tx_lock);
+-	devm_can_led_init(ndev);
+-	gpriv->ch[priv->channel] = priv;
+ 	dev_info(&pdev->dev, "device registered (channel %u)\n", priv->channel);
+ 	return 0;
+ 
 -- 
-2.30.2
+2.34.1
 
