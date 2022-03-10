@@ -2,43 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 280DFC4332F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46790C4321E
 	for <linux-can@archiver.kernel.org>; Thu, 10 Mar 2022 14:33:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244111AbiCJOcu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 10 Mar 2022 09:32:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49726 "EHLO
+        id S244124AbiCJOcx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 10 Mar 2022 09:32:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344021AbiCJObg (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Mar 2022 09:31:36 -0500
+        with ESMTP id S1344002AbiCJObf (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Mar 2022 09:31:35 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A490EBADF
-        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 06:29:26 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E352EB16E
+        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 06:29:22 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nSJnA-0006L3-Dy
-        for linux-can@vger.kernel.org; Thu, 10 Mar 2022 15:29:24 +0100
+        id 1nSJn6-0006BY-BB
+        for linux-can@vger.kernel.org; Thu, 10 Mar 2022 15:29:20 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 6F0AD47E25
-        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 14:29:13 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id B1D4947DEA
+        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 14:29:11 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id EC99047E10;
-        Thu, 10 Mar 2022 14:29:12 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 44D9947DD8;
+        Thu, 10 Mar 2022 14:29:11 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e28dd7ba;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f4418b4f;
         Thu, 10 Mar 2022 14:29:05 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 25/29] can: gs_usb: add quirk for CANtact Pro overlapping GS_USB_BREQ value
-Date:   Thu, 10 Mar 2022 15:28:59 +0100
-Message-Id: <20220310142903.341658-26-mkl@pengutronix.de>
+Subject: [PATCH net-next 18/29] can: gs_usb: document the USER_ID feature
+Date:   Thu, 10 Mar 2022 15:28:52 +0100
+Message-Id: <20220310142903.341658-19-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220310142903.341658-1-mkl@pengutronix.de>
 References: <20220310142903.341658-1-mkl@pengutronix.de>
@@ -52,70 +52,51 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-For the GS_USB_BREQ_DATA_BITTIMING USB control message the CANtact Pro
-firmware uses a request value, which is already used by the
-candleLight firmware for a different
-purpose (GS_USB_BREQ_GET_USER_ID).
+The widely used open source firmware candleLight has optional support
+for reading/writing of an user defined value into the device's flash.
 
-This patch adds a quirk to use the CANtact Pro's value for the
-GS_USB_BREQ_DATA_BITTIMING USB control message instead of the official
-one.
+This is indicated by the GS_CAN_FEATURE_USER_ID feature. The
+corresponding request are GS_USB_BREQ_GET_USER_ID and
+GS_USB_BREQ_SET_USER_ID.
 
-Link: https://lore.kernel.org/all/20220309124132.291861-18-mkl@pengutronix.de
+This patch documents these values.
+
+Link: https://lore.kernel.org/all/20220309124132.291861-11-mkl@pengutronix.de
+Link: https://github.com/candle-usb/candleLight_fw/commit/1453d70dc9a9d98ac254893ba5114b8e826e0e39
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/gs_usb.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ drivers/net/can/usb/gs_usb.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index b0651789ccd3..1661b91de364 100644
+index ecb57e94993e..e739980589d7 100644
 --- a/drivers/net/can/usb/gs_usb.c
 +++ b/drivers/net/can/usb/gs_usb.c
-@@ -42,6 +42,7 @@ enum gs_usb_breq {
+@@ -40,6 +40,8 @@ enum gs_usb_breq {
+ 	GS_USB_BREQ_DEVICE_CONFIG,
  	GS_USB_BREQ_TIMESTAMP,
  	GS_USB_BREQ_IDENTIFY,
- 	GS_USB_BREQ_GET_USER_ID,
-+	GS_USB_BREQ_QUIRK_CANTACT_PRO_DATA_BITTIMING = GS_USB_BREQ_GET_USER_ID,
- 	GS_USB_BREQ_SET_USER_ID,
- 	GS_USB_BREQ_DATA_BITTIMING,
++	GS_USB_BREQ_GET_USER_ID,
++	GS_USB_BREQ_SET_USER_ID,
  };
-@@ -138,6 +139,13 @@ struct gs_identify_mode {
- #define GS_CAN_FEATURE_REQ_USB_QUIRK_LPC546XX BIT(9)
- #define GS_CAN_FEATURE_MASK GENMASK(9, 0)
  
-+/* internal quirks - keep in GS_CAN_FEATURE space for now */
-+
-+/* CANtact Pro original firmware:
-+ * BREQ DATA_BITTIMING overlaps with GET_USER_ID
-+ */
-+#define GS_CAN_FEATURE_QUIRK_BREQ_CANTACT_PRO BIT(31)
-+
+ enum gs_can_mode {
+@@ -94,6 +96,7 @@ struct gs_device_config {
+ #define GS_CAN_MODE_ONE_SHOT BIT(3)
+ #define GS_CAN_MODE_HW_TIMESTAMP BIT(4)
+ /* GS_CAN_FEATURE_IDENTIFY BIT(5) */
++/* GS_CAN_FEATURE_USER_ID BIT(6) */
+ 
+ struct gs_device_mode {
+ 	__le32 mode;
+@@ -124,6 +127,7 @@ struct gs_identify_mode {
+ #define GS_CAN_FEATURE_ONE_SHOT BIT(3)
+ #define GS_CAN_FEATURE_HW_TIMESTAMP BIT(4)
+ #define GS_CAN_FEATURE_IDENTIFY BIT(5)
++#define GS_CAN_FEATURE_USER_ID BIT(6)
+ 
  struct gs_device_bt_const {
  	__le32 feature;
- 	__le32 fclk_can;
-@@ -506,6 +514,7 @@ static int gs_usb_set_data_bittiming(struct net_device *netdev)
- 	struct can_bittiming *bt = &dev->can.data_bittiming;
- 	struct usb_interface *intf = dev->iface;
- 	struct gs_device_bittiming *dbt;
-+	u8 request = GS_USB_BREQ_DATA_BITTIMING;
- 	int rc;
- 
- 	dbt = kmalloc(sizeof(*dbt), GFP_KERNEL);
-@@ -518,10 +527,13 @@ static int gs_usb_set_data_bittiming(struct net_device *netdev)
- 	dbt->sjw = cpu_to_le32(bt->sjw);
- 	dbt->brp = cpu_to_le32(bt->brp);
- 
-+	if (dev->feature & GS_CAN_FEATURE_QUIRK_BREQ_CANTACT_PRO)
-+		request = GS_USB_BREQ_QUIRK_CANTACT_PRO_DATA_BITTIMING;
-+
- 	/* request bit timings */
- 	rc = usb_control_msg(interface_to_usbdev(intf),
- 			     usb_sndctrlpipe(interface_to_usbdev(intf), 0),
--			     GS_USB_BREQ_DATA_BITTIMING,
-+			     request,
- 			     USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
- 			     dev->channel, 0, dbt, sizeof(*dbt), 1000);
- 
 -- 
 2.35.1
 
