@@ -2,121 +2,72 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C92A8C433EF
-	for <linux-can@archiver.kernel.org>; Wed,  9 Mar 2022 16:43:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 967F6C433FE
+	for <linux-can@archiver.kernel.org>; Thu, 10 Mar 2022 01:14:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229579AbiCIQog (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 9 Mar 2022 11:44:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
+        id S238181AbiCJBP4 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 9 Mar 2022 20:15:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235455AbiCIQhG (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 9 Mar 2022 11:37:06 -0500
-X-Greylist: delayed 208 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 09 Mar 2022 08:32:22 PST
-Received: from mo6-p02-ob.smtp.rzone.de (mo6-p02-ob.smtp.rzone.de [IPv6:2a01:238:400:300::a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C29A9DBD15
-        for <linux-can@vger.kernel.org>; Wed,  9 Mar 2022 08:32:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1646843172;
-    s=strato-dkim-0002; d=fpond.eu;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=cIaGDUEDcJVH2jVl1EofY5w/7KR7hnb4iLd0uJ8GbQ8=;
-    b=NYPKTRfWNIJZKbH5UkuHVexpuT9AuLWwho55mZdMF5jlcMVva+nyEl1Hh+olJwre0r
-    ejiqX6xWpLcp9WUSQSEUJF8WMSXxm13G+zZoA3NpCn2k4gZJdaqoleomx8SGS33pw1IS
-    W1AC2nWFbH31eOxL9sMnCHUQHVgnCAvWWnVKljEwEC/LqV/MCKeRNLnm/uiuTb2aaR7e
-    hrmDOqSNd8ouullMZ3OCvtESGCZ+r4hdutsLxfon491godsmkh/O7Cwe5gQs8tBvmKv0
-    qN7JX+9i8LVwLFV31NcjVwNxc9paF+Gt+D1fieBUB+BE5P/yYi5oZsnozwcCVwzRb61C
-    gjSg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":OWANVUa4dPFUgKR/3dpvnYP0Np73dmm4I5W0/AvA67Ot4fvR82Fcd2Ywjw=="
-X-RZG-CLASS-ID: mo00
-Received: from gummo.fritz.box
-    by smtp.strato.de (RZmta 47.40.1 DYNA|AUTH)
-    with ESMTPSA id 646b0ey29GQCJWA
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Wed, 9 Mar 2022 17:26:12 +0100 (CET)
-From:   Ulrich Hecht <uli+renesas@fpond.eu>
-To:     linux-renesas-soc@vger.kernel.org
-Cc:     netdev@vger.kernel.org, davem@davemloft.net,
-        linux-can@vger.kernel.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        with ESMTP id S233367AbiCJBP4 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 9 Mar 2022 20:15:56 -0500
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 800E71216AF;
+        Wed,  9 Mar 2022 17:14:55 -0800 (PST)
+Received: by mail-yb1-f174.google.com with SMTP id z30so7985947ybi.2;
+        Wed, 09 Mar 2022 17:14:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+InUruY8tQ2+BAFaImHW4QdOeZX6IYvHbk4u3vv089s=;
+        b=Kx2LJ2xM9XepM89x5VhJdml/ZhjSKuhS9A3iUgEAp0MFVQki4WIZSKslR8cbFZ93vJ
+         NALXcA9g0vYvD5dXmzqpKCALzQodHyDEclIalpxaX9b26SrqU1mW41ZuS5tR4giliZwO
+         nRg4bXw+NLWfMS4wwQ1hxQxNRQxWPn5CMp51PizHNENnzrXI39bCjAMgt4OUKeYaimy3
+         +PjjHfcdO8AiK5O4vJmQ6d+vOkxvAUmTnAkDKEOyR7acZw/QXqNvdxSquzUj8LFr/jFY
+         X+gkPClNmKdrfbZ+taUds54F+2j9kDAj4h3LnSQ5vFhVNklJDByjxdMKMXnSpIvMbNXQ
+         N28A==
+X-Gm-Message-State: AOAM532sgDuVy5udbd0YDRmj9tWrH78EwpuaqcGIuaa4aVu7GwLFubq5
+        6JS8iZZUKW9O7Rs0MRLMOd8gz8wBAmYUtyVNeOA=
+X-Google-Smtp-Source: ABdhPJxdzwCvqhe15mU55+WEmQC8lyFUp+DeQqi9+c00ZVfOhM3o/Yy5zp9ZivzeCqX6yGaNBKgDPrzBp9Oi7p72G6g=
+X-Received: by 2002:a25:9f8a:0:b0:628:b9f3:6d2f with SMTP id
+ u10-20020a259f8a000000b00628b9f36d2fmr1981622ybq.151.1646874894636; Wed, 09
+ Mar 2022 17:14:54 -0800 (PST)
+MIME-Version: 1.0
+References: <20220309162609.3726306-1-uli+renesas@fpond.eu> <20220309162609.3726306-2-uli+renesas@fpond.eu>
+In-Reply-To: <20220309162609.3726306-2-uli+renesas@fpond.eu>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Thu, 10 Mar 2022 10:14:43 +0900
+Message-ID: <CAMZ6RqK=PFOWd++cLzua7R8mGRB1hbwLVrn5t_Mpkr0Tat_frg@mail.gmail.com>
+Subject: Re: [PATCH v4 1/4] can: rcar_canfd: Add support for r8a779a0 SoC
+To:     Ulrich Hecht <uli+renesas@fpond.eu>
+Cc:     linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
+        davem@davemloft.net, linux-can@vger.kernel.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
         biju.das.jz@bp.renesas.com, wsa@kernel.org,
         yoshihiro.shimoda.uh@renesas.com, wg@grandegger.com,
-        mkl@pengutronix.de, kuba@kernel.org, mailhol.vincent@wanadoo.fr,
-        socketcan@hartkopp.net, geert@linux-m68k.org,
-        kieran.bingham@ideasonboard.com, horms@verge.net.au,
-        Ulrich Hecht <uli+renesas@fpond.eu>
-Subject: [PATCH v4 0/4] can: rcar_canfd: Add support for V3U flavor
-Date:   Wed,  9 Mar 2022 17:26:05 +0100
-Message-Id: <20220309162609.3726306-1-uli+renesas@fpond.eu>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        mkl@pengutronix.de, kuba@kernel.org, socketcan@hartkopp.net,
+        geert@linux-m68k.org, kieran.bingham@ideasonboard.com,
+        horms@verge.net.au
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi!
+On Thu. 10 mars 2022 à 01:26, Ulrich Hecht <uli+renesas@fpond.eu> wrote:
+> Adds support for the CANFD IP variant in the V3U SoC.
+>
+> Differences to controllers in other SoCs are limited to an increase in
+> the number of channels from two to eight, an absence of dedicated
+> registers for "classic" CAN mode, and a number of differences in magic
+> numbers (register offsets and layouts).
+>
+> Inspired by BSP patch by Kazuya Mizuguchi.
+>
+> Signed-off-by: Ulrich Hecht <uli+renesas@fpond.eu>
 
-This adds CANFD support for V3U (R8A779A0) SoCs. The V3U's IP supports up
-to eight channels and has some other minor differences to the Gen3 variety:
+Thanks for addressing my comments! v4 looks good to me.
 
-- changes to some register offsets and layouts
-- absence of "classic CAN" registers, both modes are handled through the
-  CANFD register set
-
-This patch set tries to accommodate these changes in a minimally intrusive
-way.
-
-This revision tries to address the remaining style issues raised by
-reviewers. Thanks to Vincent, Marc and Simon for their reviews and
-suggestions.
-
-It has been successfully tested remotely on a V3U Falcon board, but only
-with channels 0 and 1. We were not able to get higher channels to work in
-both directions yet. It is not currently clear if this is an issue with the
-driver, the board or the silicon, but the BSP vendor driver only works with
-channels 0 and 1 as well, so my bet is on one of the latter. For this
-reason, this series only enables known-working channels 0 and 1 on Falcon.
-
-CU
-Uli
-
-
-Changes since v3:
-- reformatted large macros for better readability
-- made gpriv parameter explicit in all macros that use it
-- other minor style adjustments
-
-Changes since v2:
-- dropped upstreamed clock patch
-- replaced bracket/ternary maze with inline functions
-- improved indentation to better reflect the logic
-- removed redundant CAN mode check
-- replaced strcpy() with initializer
-- minor refactoring
-- add Reviewed-Bys
-
-Changes since v1:
-- clk: added missing CANFD module clock
-- driver: fixed tests for RZ/G2L so they won't break V3U
-- driver: simplified two macros
-- DT: enabled devices 0 and 1 on Falcon board
-- DT: changed assigned-clock-rates to 80000000
-- DT: added interrupt names
-
-
-Ulrich Hecht (4):
-  can: rcar_canfd: Add support for r8a779a0 SoC
-  arm64: dts: renesas: r8a779a0: Add CANFD device node
-  arm64: dts: renesas: r8a779a0-falcon: enable CANFD 0 and 1
-  dt-bindings: can: renesas,rcar-canfd: Document r8a779a0 support
-
- .../bindings/net/can/renesas,rcar-canfd.yaml  |   2 +
- .../boot/dts/renesas/r8a779a0-falcon.dts      |  24 ++
- arch/arm64/boot/dts/renesas/r8a779a0.dtsi     |  56 +++
- drivers/net/can/rcar/rcar_canfd.c             | 353 +++++++++++-------
- 4 files changed, 299 insertions(+), 136 deletions(-)
-
--- 
-2.30.2
-
+Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
