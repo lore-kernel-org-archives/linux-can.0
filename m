@@ -2,43 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99035C433F5
-	for <linux-can@archiver.kernel.org>; Thu, 10 Mar 2022 14:31:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79F9CC43217
+	for <linux-can@archiver.kernel.org>; Thu, 10 Mar 2022 14:31:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244080AbiCJOcp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 10 Mar 2022 09:32:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49558 "EHLO
+        id S239401AbiCJOcr (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 10 Mar 2022 09:32:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343974AbiCJObe (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Mar 2022 09:31:34 -0500
+        with ESMTP id S1344005AbiCJObf (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Mar 2022 09:31:35 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DCCEAC8E
-        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 06:29:16 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2350DEB170
+        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 06:29:22 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nSJn0-0005w4-51
-        for linux-can@vger.kernel.org; Thu, 10 Mar 2022 15:29:14 +0100
+        id 1nSJn6-0006CW-Fn
+        for linux-can@vger.kernel.org; Thu, 10 Mar 2022 15:29:20 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id F28FD47DAE
-        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 14:29:09 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id EF85E47DF3
+        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 14:29:11 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9055747DA6;
-        Thu, 10 Mar 2022 14:29:09 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8A3A047DE0;
+        Thu, 10 Mar 2022 14:29:11 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3b8b4de6;
-        Thu, 10 Mar 2022 14:29:04 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b2d7fec3;
+        Thu, 10 Mar 2022 14:29:05 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 10/29] can: gs_usb: fix checkpatch warning
-Date:   Thu, 10 Mar 2022 15:28:44 +0100
-Message-Id: <20220310142903.341658-11-mkl@pengutronix.de>
+Subject: [PATCH net-next 19/29] can: gs_usb: document the PAD_PKTS_TO_MAX_PKT_SIZE feature
+Date:   Thu, 10 Mar 2022 15:28:53 +0100
+Message-Id: <20220310142903.341658-20-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220310142903.341658-1-mkl@pengutronix.de>
 References: <20220310142903.341658-1-mkl@pengutronix.de>
@@ -52,30 +52,39 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch fixes a checkpatch warning by converting a "unsigned" into
-an "unsigned int".
+The widely used open source firmware candleLight supports padding the
+USB packets to max packet size to improve performance on Windows
+systems.
 
-Link: https://lore.kernel.org/all/20220309124132.291861-3-mkl@pengutronix.de
+This patch documents the bit.
+
+Link: https://lore.kernel.org/all/20220309124132.291861-12-mkl@pengutronix.de
+Link: https://github.com/candle-usb/candleLight_fw/pull/7
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/gs_usb.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/can/usb/gs_usb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index a63650b17931..894cfc1f7a43 100644
+index e739980589d7..52c84792361e 100644
 --- a/drivers/net/can/usb/gs_usb.c
 +++ b/drivers/net/can/usb/gs_usb.c
-@@ -1015,8 +1015,9 @@ static int gs_usb_probe(struct usb_interface *intf,
+@@ -97,6 +97,7 @@ struct gs_device_config {
+ #define GS_CAN_MODE_HW_TIMESTAMP BIT(4)
+ /* GS_CAN_FEATURE_IDENTIFY BIT(5) */
+ /* GS_CAN_FEATURE_USER_ID BIT(6) */
++#define GS_CAN_MODE_PAD_PKTS_TO_MAX_PKT_SIZE BIT(7)
  
- static void gs_usb_disconnect(struct usb_interface *intf)
- {
--	unsigned i;
- 	struct gs_usb *dev = usb_get_intfdata(intf);
-+	unsigned int i;
-+
- 	usb_set_intfdata(intf, NULL);
+ struct gs_device_mode {
+ 	__le32 mode;
+@@ -128,6 +129,7 @@ struct gs_identify_mode {
+ #define GS_CAN_FEATURE_HW_TIMESTAMP BIT(4)
+ #define GS_CAN_FEATURE_IDENTIFY BIT(5)
+ #define GS_CAN_FEATURE_USER_ID BIT(6)
++#define GS_CAN_FEATURE_PAD_PKTS_TO_MAX_PKT_SIZE BIT(7)
  
- 	if (!dev) {
+ struct gs_device_bt_const {
+ 	__le32 feature;
 -- 
 2.35.1
 
