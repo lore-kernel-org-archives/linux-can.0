@@ -2,44 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37D5BC3527E
-	for <linux-can@archiver.kernel.org>; Thu, 10 Mar 2022 14:33:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14B51C352A8
+	for <linux-can@archiver.kernel.org>; Thu, 10 Mar 2022 14:33:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244193AbiCJOdF (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 10 Mar 2022 09:33:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48196 "EHLO
+        id S244217AbiCJOdK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 10 Mar 2022 09:33:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343967AbiCJObd (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Mar 2022 09:31:33 -0500
+        with ESMTP id S1344009AbiCJObf (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Mar 2022 09:31:35 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F608BECD2
-        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 06:29:13 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF72B0D03
+        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 06:29:23 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nSJmx-0005rL-8M
-        for linux-can@vger.kernel.org; Thu, 10 Mar 2022 15:29:11 +0100
+        id 1nSJn7-0006DU-DB
+        for linux-can@vger.kernel.org; Thu, 10 Mar 2022 15:29:21 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id B436747D85
-        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 14:29:07 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 24F5547DFA
+        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 14:29:12 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3608F47D7A;
-        Thu, 10 Mar 2022 14:29:07 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id A736D47DE8;
+        Thu, 10 Mar 2022 14:29:11 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c2de6301;
-        Thu, 10 Mar 2022 14:29:04 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b5535a2b;
+        Thu, 10 Mar 2022 14:29:05 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 05/29] vxcan: enable local echo for sent CAN frames
-Date:   Thu, 10 Mar 2022 15:28:39 +0100
-Message-Id: <20220310142903.341658-6-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 20/29] can: gs_usb: gs_usb_probe(): introduce udev and make use of it
+Date:   Thu, 10 Mar 2022 15:28:54 +0100
+Message-Id: <20220310142903.341658-21-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220310142903.341658-1-mkl@pengutronix.de>
 References: <20220310142903.341658-1-mkl@pengutronix.de>
@@ -53,41 +52,57 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+Introduce the variable udev in the gs_usb_probe() function to hold a
+pointer to the struct usb_device. This avoids recalculating the value
+several times in this function.
 
-The vxcan driver provides a pair of virtual CAN interfaces to exchange
-CAN traffic between different namespaces - analogue to veth.
-
-In opposite to the vcan driver the local sent CAN traffic on this interface
-is not echo'ed back but only sent to the remote peer. This is unusual and
-can be easily fixed by removing IFF_ECHO from the netdevice flags that
-are set for vxcan interfaces by default at startup.
-
-Without IFF_ECHO set on driver level, the local sent CAN frames are echo'ed
-in af_can.c in can_send(). This patch makes vxcan interfaces adopt the
-same local echo behavior and procedures as known from the vcan interfaces.
-
-Fixes: a8f820a380a2 ("can: add Virtual CAN Tunnel driver (vxcan)")
-Link: https://lore.kernel.org/all/20220309120416.83514-5-socketcan@hartkopp.net
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://lore.kernel.org/all/20220309124132.291861-13-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/vxcan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/usb/gs_usb.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
-index 51501af8d9fc..94a0c9c6a509 100644
---- a/drivers/net/can/vxcan.c
-+++ b/drivers/net/can/vxcan.c
-@@ -153,7 +153,7 @@ static void vxcan_setup(struct net_device *dev)
- 	dev->hard_header_len	= 0;
- 	dev->addr_len		= 0;
- 	dev->tx_queue_len	= 0;
--	dev->flags		= (IFF_NOARP|IFF_ECHO);
-+	dev->flags		= IFF_NOARP;
- 	dev->netdev_ops		= &vxcan_netdev_ops;
- 	dev->needs_free_netdev	= true;
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index 52c84792361e..f56bfbeae3be 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -885,6 +885,7 @@ static void gs_destroy_candev(struct gs_can *dev)
+ static int gs_usb_probe(struct usb_interface *intf,
+ 			const struct usb_device_id *id)
+ {
++	struct usb_device *udev = interface_to_usbdev(intf);
+ 	struct gs_usb *dev;
+ 	int rc = -ENOMEM;
+ 	unsigned int icount, i;
+@@ -898,8 +899,7 @@ static int gs_usb_probe(struct usb_interface *intf,
+ 	hconf->byte_order = cpu_to_le32(0x0000beef);
  
+ 	/* send host config */
+-	rc = usb_control_msg(interface_to_usbdev(intf),
+-			     usb_sndctrlpipe(interface_to_usbdev(intf), 0),
++	rc = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+ 			     GS_USB_BREQ_HOST_FORMAT,
+ 			     USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
+ 			     1, intf->cur_altsetting->desc.bInterfaceNumber,
+@@ -917,8 +917,7 @@ static int gs_usb_probe(struct usb_interface *intf,
+ 		return -ENOMEM;
+ 
+ 	/* read device config */
+-	rc = usb_control_msg(interface_to_usbdev(intf),
+-			     usb_rcvctrlpipe(interface_to_usbdev(intf), 0),
++	rc = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+ 			     GS_USB_BREQ_DEVICE_CONFIG,
+ 			     USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
+ 			     1, intf->cur_altsetting->desc.bInterfaceNumber,
+@@ -950,7 +949,7 @@ static int gs_usb_probe(struct usb_interface *intf,
+ 	init_usb_anchor(&dev->rx_submitted);
+ 
+ 	usb_set_intfdata(intf, dev);
+-	dev->udev = interface_to_usbdev(intf);
++	dev->udev = udev;
+ 
+ 	for (i = 0; i < icount; i++) {
+ 		dev->canch[i] = gs_make_candev(i, intf, dconf);
 -- 
 2.35.1
 
