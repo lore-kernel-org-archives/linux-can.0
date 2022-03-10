@@ -2,43 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00A3BC47081
-	for <linux-can@archiver.kernel.org>; Thu, 10 Mar 2022 14:33:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90BCBC35296
+	for <linux-can@archiver.kernel.org>; Thu, 10 Mar 2022 14:33:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244185AbiCJOdD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 10 Mar 2022 09:33:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
+        id S244211AbiCJOdH (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 10 Mar 2022 09:33:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343995AbiCJObf (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Mar 2022 09:31:35 -0500
+        with ESMTP id S1343957AbiCJObc (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Mar 2022 09:31:32 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E398EB14E
-        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 06:29:20 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59663BD7F7
+        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 06:29:11 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nSJn4-00065e-8x
-        for linux-can@vger.kernel.org; Thu, 10 Mar 2022 15:29:18 +0100
+        id 1nSJmv-0005pc-F6
+        for linux-can@vger.kernel.org; Thu, 10 Mar 2022 15:29:09 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 16DC747DCC
-        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 14:29:11 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 4628A47D7D
+        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 14:29:07 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6DB7647DBA;
-        Thu, 10 Mar 2022 14:29:10 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id B972447D72;
+        Thu, 10 Mar 2022 14:29:06 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7d953a8d;
-        Thu, 10 Mar 2022 14:29:05 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 26e89d59;
+        Thu, 10 Mar 2022 14:29:04 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 14/29] can: gs_usb: rewrap usb_control_msg() and usb_fill_bulk_urb()
-Date:   Thu, 10 Mar 2022 15:28:48 +0100
-Message-Id: <20220310142903.341658-15-mkl@pengutronix.de>
+        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 04/29] vxcan: remove sk reference in peer skb
+Date:   Thu, 10 Mar 2022 15:28:38 +0100
+Message-Id: <20220310142903.341658-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220310142903.341658-1-mkl@pengutronix.de>
 References: <20220310142903.341658-1-mkl@pengutronix.de>
@@ -52,200 +53,67 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch rewraps the arguments of usb_control_msg() and
-usb_fill_bulk_urb() to make full use of the standard line length of 80
-characters.
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Link: https://lore.kernel.org/all/20220309124132.291861-7-mkl@pengutronix.de
+With can_create_echo_skb() the skb which is forwarded to the peer CAN
+interface shares the sk pointer from the originating socket.
+This makes the CAN frame show up in the peer namespace as a TX packet.
+
+With the use of skb_clone() analogue to the handling in gw.c the peer
+skb gets a new start in the peer namespace and correctly appears as
+a RX packet.
+
+Link: https://lore.kernel.org/all/20220309120416.83514-4-socketcan@hartkopp.net
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/gs_usb.c | 87 +++++++++---------------------------
- 1 file changed, 22 insertions(+), 65 deletions(-)
+ drivers/net/can/vxcan.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index b99f526fdfcd..7ba492150cdb 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -258,11 +258,7 @@ static int gs_cmd_reset(struct gs_can *gsdev)
- 			     usb_sndctrlpipe(interface_to_usbdev(intf), 0),
- 			     GS_USB_BREQ_MODE,
- 			     USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
--			     gsdev->channel,
--			     0,
--			     dm,
--			     sizeof(*dm),
--			     1000);
-+			     gsdev->channel, 0, dm, sizeof(*dm), 1000);
+diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
+index 556f1a12ec9a..51501af8d9fc 100644
+--- a/drivers/net/can/vxcan.c
++++ b/drivers/net/can/vxcan.c
+@@ -33,28 +33,33 @@ struct vxcan_priv {
+ 	struct net_device __rcu	*peer;
+ };
  
- 	kfree(dm);
+-static netdev_tx_t vxcan_xmit(struct sk_buff *skb, struct net_device *dev)
++static netdev_tx_t vxcan_xmit(struct sk_buff *oskb, struct net_device *dev)
+ {
+ 	struct vxcan_priv *priv = netdev_priv(dev);
+ 	struct net_device *peer;
+-	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
++	struct canfd_frame *cfd = (struct canfd_frame *)oskb->data;
+ 	struct net_device_stats *peerstats, *srcstats = &dev->stats;
++	struct sk_buff *skb;
+ 	u8 len;
  
-@@ -392,14 +388,10 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
+-	if (can_dropped_invalid_skb(dev, skb))
++	if (can_dropped_invalid_skb(dev, oskb))
+ 		return NETDEV_TX_OK;
+ 
+ 	rcu_read_lock();
+ 	peer = rcu_dereference(priv->peer);
+ 	if (unlikely(!peer)) {
+-		kfree_skb(skb);
++		kfree_skb(oskb);
+ 		dev->stats.tx_dropped++;
+ 		goto out_unlock;
  	}
  
-  resubmit_urb:
--	usb_fill_bulk_urb(urb,
--			  usbcan->udev,
-+	usb_fill_bulk_urb(urb, usbcan->udev,
- 			  usb_rcvbulkpipe(usbcan->udev, GSUSB_ENDPOINT_IN),
--			  hf,
--			  sizeof(struct gs_host_frame),
--			  gs_usb_receive_bulk_callback,
--			  usbcan
--			  );
-+			  hf, sizeof(struct gs_host_frame),
-+			  gs_usb_receive_bulk_callback, usbcan);
+-	skb = can_create_echo_skb(skb);
+-	if (!skb)
++	skb = skb_clone(oskb, GFP_ATOMIC);
++	if (skb) {
++		consume_skb(oskb);
++	} else {
++		kfree(oskb);
+ 		goto out_unlock;
++	}
  
- 	rc = usb_submit_urb(urb, GFP_ATOMIC);
- 
-@@ -436,11 +428,7 @@ static int gs_usb_set_bittiming(struct net_device *netdev)
- 			     usb_sndctrlpipe(interface_to_usbdev(intf), 0),
- 			     GS_USB_BREQ_BITTIMING,
- 			     USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
--			     dev->channel,
--			     0,
--			     dbt,
--			     sizeof(*dbt),
--			     1000);
-+			     dev->channel, 0, dbt, sizeof(*dbt), 1000);
- 
- 	kfree(dbt);
- 
-@@ -460,10 +448,8 @@ static void gs_usb_xmit_callback(struct urb *urb)
- 	if (urb->status)
- 		netdev_info(netdev, "usb xmit fail %u\n", txc->echo_id);
- 
--	usb_free_coherent(urb->dev,
--			  urb->transfer_buffer_length,
--			  urb->transfer_buffer,
--			  urb->transfer_dma);
-+	usb_free_coherent(urb->dev, urb->transfer_buffer_length,
-+			  urb->transfer_buffer, urb->transfer_dma);
- }
- 
- static netdev_tx_t gs_can_start_xmit(struct sk_buff *skb,
-@@ -519,10 +505,8 @@ static netdev_tx_t gs_can_start_xmit(struct sk_buff *skb,
- 
- 	usb_fill_bulk_urb(urb, dev->udev,
- 			  usb_sndbulkpipe(dev->udev, GSUSB_ENDPOINT_OUT),
--			  hf,
--			  sizeof(*hf),
--			  gs_usb_xmit_callback,
--			  txc);
-+			  hf, sizeof(*hf),
-+			  gs_usb_xmit_callback, txc);
- 
- 	urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
- 	usb_anchor_urb(urb, &dev->tx_submitted);
-@@ -540,9 +524,7 @@ static netdev_tx_t gs_can_start_xmit(struct sk_buff *skb,
- 
- 		usb_unanchor_urb(urb);
- 		usb_free_coherent(dev->udev,
--				  sizeof(*hf),
--				  hf,
--				  urb->transfer_dma);
-+				  sizeof(*hf), hf, urb->transfer_dma);
- 
- 		if (rc == -ENODEV) {
- 			netif_device_detach(netdev);
-@@ -562,10 +544,7 @@ static netdev_tx_t gs_can_start_xmit(struct sk_buff *skb,
- 	return NETDEV_TX_OK;
- 
-  badidx:
--	usb_free_coherent(dev->udev,
--			  sizeof(*hf),
--			  hf,
--			  urb->transfer_dma);
-+	usb_free_coherent(dev->udev, sizeof(*hf), hf, urb->transfer_dma);
-  nomem_hf:
- 	usb_free_urb(urb);
- 
-@@ -618,8 +597,7 @@ static int gs_can_open(struct net_device *netdev)
- 							  GSUSB_ENDPOINT_IN),
- 					  buf,
- 					  sizeof(struct gs_host_frame),
--					  gs_usb_receive_bulk_callback,
--					  parent);
-+					  gs_usb_receive_bulk_callback, parent);
- 			urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
- 
- 			usb_anchor_urb(urb, &parent->rx_submitted);
-@@ -671,13 +649,8 @@ static int gs_can_open(struct net_device *netdev)
- 	rc = usb_control_msg(interface_to_usbdev(dev->iface),
- 			     usb_sndctrlpipe(interface_to_usbdev(dev->iface), 0),
- 			     GS_USB_BREQ_MODE,
--			     USB_DIR_OUT | USB_TYPE_VENDOR |
--			     USB_RECIP_INTERFACE,
--			     dev->channel,
--			     0,
--			     dm,
--			     sizeof(*dm),
--			     1000);
-+			     USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
-+			     dev->channel, 0, dm, sizeof(*dm), 1000);
- 
- 	if (rc < 0) {
- 		netdev_err(netdev, "Couldn't start device (err=%d)\n", rc);
-@@ -754,16 +727,10 @@ static int gs_usb_set_identify(struct net_device *netdev, bool do_identify)
- 		imode->mode = cpu_to_le32(GS_CAN_IDENTIFY_OFF);
- 
- 	rc = usb_control_msg(interface_to_usbdev(dev->iface),
--			     usb_sndctrlpipe(interface_to_usbdev(dev->iface),
--					     0),
-+			     usb_sndctrlpipe(interface_to_usbdev(dev->iface), 0),
- 			     GS_USB_BREQ_IDENTIFY,
--			     USB_DIR_OUT | USB_TYPE_VENDOR |
--			     USB_RECIP_INTERFACE,
--			     dev->channel,
--			     0,
--			     imode,
--			     sizeof(*imode),
--			     100);
-+			     USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
-+			     dev->channel, 0, imode, sizeof(*imode), 100);
- 
- 	kfree(imode);
- 
-@@ -813,11 +780,7 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 			     usb_rcvctrlpipe(interface_to_usbdev(intf), 0),
- 			     GS_USB_BREQ_BT_CONST,
- 			     USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
--			     channel,
--			     0,
--			     bt_const,
--			     sizeof(*bt_const),
--			     1000);
-+			     channel, 0, bt_const, sizeof(*bt_const), 1000);
- 
- 	if (rc < 0) {
- 		dev_err(&intf->dev,
-@@ -931,11 +894,8 @@ static int gs_usb_probe(struct usb_interface *intf,
- 			     usb_sndctrlpipe(interface_to_usbdev(intf), 0),
- 			     GS_USB_BREQ_HOST_FORMAT,
- 			     USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
--			     1,
--			     intf->cur_altsetting->desc.bInterfaceNumber,
--			     hconf,
--			     sizeof(*hconf),
--			     1000);
-+			     1, intf->cur_altsetting->desc.bInterfaceNumber,
-+			     hconf, sizeof(*hconf), 1000);
- 
- 	kfree(hconf);
- 
-@@ -953,11 +913,8 @@ static int gs_usb_probe(struct usb_interface *intf,
- 			     usb_rcvctrlpipe(interface_to_usbdev(intf), 0),
- 			     GS_USB_BREQ_DEVICE_CONFIG,
- 			     USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
--			     1,
--			     intf->cur_altsetting->desc.bInterfaceNumber,
--			     dconf,
--			     sizeof(*dconf),
--			     1000);
-+			     1, intf->cur_altsetting->desc.bInterfaceNumber,
-+			     dconf, sizeof(*dconf), 1000);
- 	if (rc < 0) {
- 		dev_err(&intf->dev, "Couldn't get device config: (err=%d)\n",
- 			rc);
+ 	/* reset CAN GW hop counter */
+ 	skb->csum_start = 0;
 -- 
 2.35.1
 
