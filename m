@@ -2,45 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 733EEC4332F
-	for <linux-can@archiver.kernel.org>; Thu, 10 Mar 2022 14:31:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A099C4321E
+	for <linux-can@archiver.kernel.org>; Thu, 10 Mar 2022 14:31:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244010AbiCJOcj (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 10 Mar 2022 09:32:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48192 "EHLO
+        id S244014AbiCJOck (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 10 Mar 2022 09:32:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344042AbiCJObi (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Mar 2022 09:31:38 -0500
+        with ESMTP id S1343956AbiCJObc (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Mar 2022 09:31:32 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE50EBBB8
-        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 06:29:29 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B24B91D3
+        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 06:29:10 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nSJnD-0006PO-MK
-        for linux-can@vger.kernel.org; Thu, 10 Mar 2022 15:29:27 +0100
+        id 1nSJmv-0005pN-44
+        for linux-can@vger.kernel.org; Thu, 10 Mar 2022 15:29:09 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 845C647E4E
-        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 14:29:14 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id C52BB47D75
+        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 14:29:06 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id DE53C47E32;
-        Thu, 10 Mar 2022 14:29:13 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4C27F47D69;
+        Thu, 10 Mar 2022 14:29:06 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 73191783;
-        Thu, 10 Mar 2022 14:29:05 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id fbd767b5;
+        Thu, 10 Mar 2022 14:29:04 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Ben Evans <benny.j.evans92@gmail.com>,
-        Peter Fink <pfink@christ-es.de>,
+        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 29/29] can: gs_usb: add VID/PID for ABE CAN Debugger devices
-Date:   Thu, 10 Mar 2022 15:29:03 +0100
-Message-Id: <20220310142903.341658-30-mkl@pengutronix.de>
+Subject: [PATCH net-next 03/29] can: isotp: set max PDU size to 64 kByte
+Date:   Thu, 10 Mar 2022 15:28:37 +0100
+Message-Id: <20220310142903.341658-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220310142903.341658-1-mkl@pengutronix.de>
 References: <20220310142903.341658-1-mkl@pengutronix.de>
@@ -54,41 +53,42 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Ben Evans <benny.j.evans92@gmail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Add support for ABE CAN Debugger devices using the gs_usb driver.
+The reason to extend the max PDU size from 4095 Byte (12 bit length value)
+to a 32 bit value (up to 4 GByte) was to be able to flash 64 kByte
+bootloaders with a single ISO-TP PDU. The max PDU size in the Linux kernel
+implementation was set to 8200 Bytes to be able to test the length
+information escape sequence.
 
-Link: https://lore.kernel.org/all/20220309124132.291861-22-mkl@pengutronix.de
-Signed-off-by: Ben Evans <benny.j.evans92@gmail.com>
-Signed-off-by: Peter Fink <pfink@christ-es.de>
+It turns out that the demand for 64 kByte PDUs is real so the value for
+MAX_MSG_LENGTH is set to 66000 to be able to potentially add some checksums
+to the 65.536 Byte block.
+
+Link: https://github.com/linux-can/can-utils/issues/347#issuecomment-1056142301
+Link: https://lore.kernel.org/all/20220309120416.83514-3-socketcan@hartkopp.net
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/gs_usb.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ net/can/isotp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index 816b4d8b1182..67408e316062 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -31,6 +31,9 @@
- #define USB_CES_CANEXT_FD_VENDOR_ID 0x1cd2
- #define USB_CES_CANEXT_FD_PRODUCT_ID 0x606f
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index 47404ba59981..d4c0b4704987 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -86,9 +86,9 @@ MODULE_ALIAS("can-proto-6");
+ /* ISO 15765-2:2016 supports more than 4095 byte per ISO PDU as the FF_DL can
+  * take full 32 bit values (4 Gbyte). We would need some good concept to handle
+  * this between user space and kernel space. For now increase the static buffer
+- * to something about 8 kbyte to be able to test this new functionality.
++ * to something about 64 kbyte to be able to test this new functionality.
+  */
+-#define MAX_MSG_LENGTH 8200
++#define MAX_MSG_LENGTH 66000
  
-+#define USB_ABE_CANDEBUGGER_FD_VENDOR_ID 0x16d0
-+#define USB_ABE_CANDEBUGGER_FD_PRODUCT_ID 0x10b8
-+
- #define GSUSB_ENDPOINT_IN 1
- #define GSUSB_ENDPOINT_OUT 2
- 
-@@ -1238,6 +1241,8 @@ static const struct usb_device_id gs_usb_table[] = {
- 				      USB_CANDLELIGHT_PRODUCT_ID, 0) },
- 	{ USB_DEVICE_INTERFACE_NUMBER(USB_CES_CANEXT_FD_VENDOR_ID,
- 				      USB_CES_CANEXT_FD_PRODUCT_ID, 0) },
-+	{ USB_DEVICE_INTERFACE_NUMBER(USB_ABE_CANDEBUGGER_FD_VENDOR_ID,
-+				      USB_ABE_CANDEBUGGER_FD_PRODUCT_ID, 0) },
- 	{} /* Terminating entry */
- };
- 
+ /* N_PCI type values in bits 7-4 of N_PCI bytes */
+ #define N_PCI_SF 0x00	/* single frame */
 -- 
 2.35.1
 
