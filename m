@@ -2,43 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46790C4321E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB537C35274
 	for <linux-can@archiver.kernel.org>; Thu, 10 Mar 2022 14:33:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244124AbiCJOcx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 10 Mar 2022 09:32:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50046 "EHLO
+        id S244135AbiCJOcz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 10 Mar 2022 09:32:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344002AbiCJObf (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Mar 2022 09:31:35 -0500
+        with ESMTP id S1343988AbiCJObe (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Mar 2022 09:31:34 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E352EB16E
-        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 06:29:22 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62460B91C3
+        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 06:29:18 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nSJn6-0006BY-BB
-        for linux-can@vger.kernel.org; Thu, 10 Mar 2022 15:29:20 +0100
+        id 1nSJn2-00060B-Ii
+        for linux-can@vger.kernel.org; Thu, 10 Mar 2022 15:29:16 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id B1D4947DEA
-        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 14:29:11 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id CEF4C47DC6
+        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 14:29:10 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 44D9947DD8;
-        Thu, 10 Mar 2022 14:29:11 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5F3E947DB6;
+        Thu, 10 Mar 2022 14:29:10 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f4418b4f;
-        Thu, 10 Mar 2022 14:29:05 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e4fd2d8e;
+        Thu, 10 Mar 2022 14:29:04 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 18/29] can: gs_usb: document the USER_ID feature
-Date:   Thu, 10 Mar 2022 15:28:52 +0100
-Message-Id: <20220310142903.341658-19-mkl@pengutronix.de>
+Subject: [PATCH net-next 13/29] can: gs_usb: rewrap error messages
+Date:   Thu, 10 Mar 2022 15:28:47 +0100
+Message-Id: <20220310142903.341658-14-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220310142903.341658-1-mkl@pengutronix.de>
 References: <20220310142903.341658-1-mkl@pengutronix.de>
@@ -52,51 +52,39 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The widely used open source firmware candleLight has optional support
-for reading/writing of an user defined value into the device's flash.
+This patch rewraps the arguments of netdev_err() to make full use of
+the standard line length of 80 characters.
 
-This is indicated by the GS_CAN_FEATURE_USER_ID feature. The
-corresponding request are GS_USB_BREQ_GET_USER_ID and
-GS_USB_BREQ_SET_USER_ID.
-
-This patch documents these values.
-
-Link: https://lore.kernel.org/all/20220309124132.291861-11-mkl@pengutronix.de
-Link: https://github.com/candle-usb/candleLight_fw/commit/1453d70dc9a9d98ac254893ba5114b8e826e0e39
+Link: https://lore.kernel.org/all/20220309124132.291861-6-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/gs_usb.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/can/usb/gs_usb.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index ecb57e94993e..e739980589d7 100644
+index 23dba5c162c6..b99f526fdfcd 100644
 --- a/drivers/net/can/usb/gs_usb.c
 +++ b/drivers/net/can/usb/gs_usb.c
-@@ -40,6 +40,8 @@ enum gs_usb_breq {
- 	GS_USB_BREQ_DEVICE_CONFIG,
- 	GS_USB_BREQ_TIMESTAMP,
- 	GS_USB_BREQ_IDENTIFY,
-+	GS_USB_BREQ_GET_USER_ID,
-+	GS_USB_BREQ_SET_USER_ID,
- };
+@@ -630,8 +630,7 @@ static int gs_can_open(struct net_device *netdev)
+ 					netif_device_detach(dev->netdev);
  
- enum gs_can_mode {
-@@ -94,6 +96,7 @@ struct gs_device_config {
- #define GS_CAN_MODE_ONE_SHOT BIT(3)
- #define GS_CAN_MODE_HW_TIMESTAMP BIT(4)
- /* GS_CAN_FEATURE_IDENTIFY BIT(5) */
-+/* GS_CAN_FEATURE_USER_ID BIT(6) */
+ 				netdev_err(netdev,
+-					   "usb_submit failed (err=%d)\n",
+-					   rc);
++					   "usb_submit failed (err=%d)\n", rc);
  
- struct gs_device_mode {
- 	__le32 mode;
-@@ -124,6 +127,7 @@ struct gs_identify_mode {
- #define GS_CAN_FEATURE_ONE_SHOT BIT(3)
- #define GS_CAN_FEATURE_HW_TIMESTAMP BIT(4)
- #define GS_CAN_FEATURE_IDENTIFY BIT(5)
-+#define GS_CAN_FEATURE_USER_ID BIT(6)
+ 				usb_unanchor_urb(urb);
+ 				usb_free_urb(urb);
+@@ -941,8 +940,7 @@ static int gs_usb_probe(struct usb_interface *intf,
+ 	kfree(hconf);
  
- struct gs_device_bt_const {
- 	__le32 feature;
+ 	if (rc < 0) {
+-		dev_err(&intf->dev, "Couldn't send data format (err=%d)\n",
+-			rc);
++		dev_err(&intf->dev, "Couldn't send data format (err=%d)\n", rc);
+ 		return rc;
+ 	}
+ 
 -- 
 2.35.1
 
