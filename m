@@ -2,45 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89673C38161
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACA1CC4332F
 	for <linux-can@archiver.kernel.org>; Thu, 10 Mar 2022 14:33:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244233AbiCJOdL (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 10 Mar 2022 09:33:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50630 "EHLO
+        id S244262AbiCJOdN (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 10 Mar 2022 09:33:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343966AbiCJObd (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Mar 2022 09:31:33 -0500
+        with ESMTP id S1344015AbiCJObg (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Mar 2022 09:31:36 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C56BECDE
-        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 06:29:13 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6671EEB30C
+        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 06:29:24 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nSJmx-0005rv-9P
-        for linux-can@vger.kernel.org; Thu, 10 Mar 2022 15:29:11 +0100
+        id 1nSJn8-0006F4-K2
+        for linux-can@vger.kernel.org; Thu, 10 Mar 2022 15:29:22 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 2CE9E47D8C
-        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 14:29:08 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 83B1E47E05
+        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 14:29:12 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id A5E6347D82;
-        Thu, 10 Mar 2022 14:29:07 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id E5D6147DF1;
+        Thu, 10 Mar 2022 14:29:11 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c157c87d;
-        Thu, 10 Mar 2022 14:29:04 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e64667cf;
+        Thu, 10 Mar 2022 14:29:05 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 06/29] can: etas_es58x: es58x_fd_rx_event_msg(): initialize rx_event_msg before calling es58x_check_msg_len()
-Date:   Thu, 10 Mar 2022 15:28:40 +0100
-Message-Id: <20220310142903.341658-7-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Ryan Edwards <ryan.edwards@gmail.com>
+Subject: [PATCH net-next 21/29] can: gs_usb: support up to 3 channels per device
+Date:   Thu, 10 Mar 2022 15:28:55 +0100
+Message-Id: <20220310142903.341658-22-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220310142903.341658-1-mkl@pengutronix.de>
 References: <20220310142903.341658-1-mkl@pengutronix.de>
@@ -54,58 +53,32 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Some STM32G3 chips support up to 3 CAN-FD channels, increase number of
+supported channels in this driver to 3 accordingly.
 
-Function es58x_fd_rx_event() invokes the es58x_check_msg_len() macro:
-
-| 	ret = es58x_check_msg_len(es58x_dev->dev, *rx_event_msg, msg_len);
-
-While doing so, it dereferences an uninitialized
-variable: *rx_event_msg.
-
-This is actually harmless because es58x_check_msg_len() only uses
-preprocessor macros (sizeof() and __stringify()) on
-*rx_event_msg. c.f. [1].
-
-Nonetheless, this pattern is confusing so the lines are reordered to
-make sure that rx_event_msg is correctly initialized.
-
-This patch also fixes a false positive warning reported by cppcheck:
-
-| cppcheck possible warnings: (new ones prefixed by >>, may not be real problems)
-|
-|    In file included from drivers/net/can/usb/etas_es58x/es58x_fd.c:
-| >> drivers/net/can/usb/etas_es58x/es58x_fd.c:174:8: warning: Uninitialized variable: rx_event_msg [uninitvar]
-|     ret = es58x_check_msg_len(es58x_dev->dev, *rx_event_msg, msg_len);
-|           ^
-
-[1] https://elixir.bootlin.com/linux/v5.16/source/drivers/net/can/usb/etas_es58x/es58x_core.h#L467
-
-Link: https://lore.kernel.org/all/20220306101302.708783-1-mailhol.vincent@wanadoo.fr
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Link: https://lore.kernel.org/all/20220309124132.291861-14-mkl@pengutronix.de
+Suggested-by: Ryan Edwards <ryan.edwards@gmail.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/etas_es58x/es58x_fd.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/can/usb/gs_usb.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.c b/drivers/net/can/usb/etas_es58x/es58x_fd.c
-index 88d2540abbbe..c97ffa71fd75 100644
---- a/drivers/net/can/usb/etas_es58x/es58x_fd.c
-+++ b/drivers/net/can/usb/etas_es58x/es58x_fd.c
-@@ -173,12 +173,11 @@ static int es58x_fd_rx_event_msg(struct net_device *netdev,
- 	const struct es58x_fd_rx_event_msg *rx_event_msg;
- 	int ret;
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index f56bfbeae3be..4bc10264005b 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -166,9 +166,9 @@ struct gs_host_frame {
+ /* Only launch a max of GS_MAX_RX_URBS usb requests at a time. */
+ #define GS_MAX_RX_URBS 30
+ /* Maximum number of interfaces the driver supports per device.
+- * Current hardware only supports 2 interfaces. The future may vary.
++ * Current hardware only supports 3 interfaces. The future may vary.
+  */
+-#define GS_MAX_INTF 2
++#define GS_MAX_INTF 3
  
-+	rx_event_msg = &es58x_fd_urb_cmd->rx_event_msg;
- 	ret = es58x_check_msg_len(es58x_dev->dev, *rx_event_msg, msg_len);
- 	if (ret)
- 		return ret;
- 
--	rx_event_msg = &es58x_fd_urb_cmd->rx_event_msg;
--
- 	return es58x_rx_err_msg(netdev, rx_event_msg->error_code,
- 				rx_event_msg->event_code,
- 				get_unaligned_le64(&rx_event_msg->timestamp));
+ struct gs_tx_context {
+ 	struct gs_can *dev;
 -- 
 2.35.1
 
