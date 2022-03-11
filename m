@@ -2,269 +2,137 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97589C433F5
-	for <linux-can@archiver.kernel.org>; Thu, 10 Mar 2022 16:55:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6968DC433F5
+	for <linux-can@archiver.kernel.org>; Fri, 11 Mar 2022 04:20:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243744AbiCJQ4F (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 10 Mar 2022 11:56:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57336 "EHLO
+        id S1345978AbiCKEVY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 10 Mar 2022 23:21:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242631AbiCJQ4F (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Mar 2022 11:56:05 -0500
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3029ECC46
-        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 08:55:03 -0800 (PST)
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        with ESMTP id S1343705AbiCKEVW (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Mar 2022 23:21:22 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC9BF1A1296;
+        Thu, 10 Mar 2022 20:20:17 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 845A93F323
-        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 16:55:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1646931302;
-        bh=QcVJE48kyfYYnn5CBUnoW5WSJWpsZDFf7PteXVRFUGE=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=l5KES+Vawl3Gkm3yyQXpdKvk0BFdlyyPtursOmtMjNhUA5JBm9chB9uBJ6cgtpUzQ
-         l/OWb9x5Fn1AVkCLsjocL/wqiTwcjgE3OJJwA5joQl/nfEs0Q4T76XZERTQ0kdFHHA
-         31U1EkGQevSFJgFsi+Sj7XxDHb0KIZfaDnSsN86JB10SF0wHa89IjJW9sDVwohZPhp
-         7aSXRgYibutAAcyGDuijPpHuNi+rN0/gowN0z6xfnLLbulFqzaoUlHnhXesw4q8PMp
-         rWdt40N4lUbWup+Cr2P3qwaHU5WminbO+TgabHWcDEqt8MJK/TEflU/FLJtl0aOFMJ
-         4hFL5KlCyGuFQ==
-Received: by mail-ed1-f71.google.com with SMTP id l24-20020a056402231800b00410f19a3103so3445865eda.5
-        for <linux-can@vger.kernel.org>; Thu, 10 Mar 2022 08:55:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=QcVJE48kyfYYnn5CBUnoW5WSJWpsZDFf7PteXVRFUGE=;
-        b=JzTosJAgywBOzGEwGuiVcWCWGlzPnxus+iMO9k6faXqVSdOTSrAPMZ5aQEH0tt1NU2
-         W+dmYjFDyaOqkAjmNVCNd8ADBGRqKuTlC+Xtbp71L0sphlpNrrJXpI4xGhW/rXiipefo
-         gre2uFGcNdj+KoKEEevZFdQ+vquIqdpOwoZJLWMOtPZEzAANos1SK1grpwDhInv3fC3T
-         H7ET0xWwyhSNejdEdhzgxnl79aoWGZjUapRaBLA6X4TAthC/IL9IY+vSHvxPiPYTOkeS
-         NkeQDlbg59B4RWnkt++kfb7V4cbj4LLkXCY2B5Y+9WYFqRK4Mql/nEqiM9FPwzzQGcP2
-         EF/A==
-X-Gm-Message-State: AOAM5316tVYcFACdOO6Djxlvdig2k1ZQSDHgE1IrAP/6W3NKQe5ysvaJ
-        64Xa8Uf00jbrGM0fm7txtq2UozWuY7Rq6634u63qhXFKNxkRSeeUdJ35vdvfN/9Vc7hyL01y3dJ
-        iqa3MleZk01dXnWqVE4OOli/5CL8b1bJb7Lq87w==
-X-Received: by 2002:aa7:d1cc:0:b0:416:60c6:9225 with SMTP id g12-20020aa7d1cc000000b0041660c69225mr5264428edp.71.1646931302029;
-        Thu, 10 Mar 2022 08:55:02 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwtlnrEBO/0kPGLY5xtCd+TgH6kN7BHyUjyhCkxDJiwbHTSElFKzyHh3dJJfSvanmZtZ3PCaA==
-X-Received: by 2002:aa7:d1cc:0:b0:416:60c6:9225 with SMTP id g12-20020aa7d1cc000000b0041660c69225mr5264397edp.71.1646931301780;
-        Thu, 10 Mar 2022 08:55:01 -0800 (PST)
-Received: from [192.168.0.147] (xdsl-188-155-174-239.adslplus.ch. [188.155.174.239])
-        by smtp.gmail.com with ESMTPSA id bn14-20020a170906c0ce00b006c5ef0494besm1948155ejb.86.2022.03.10.08.55.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Mar 2022 08:55:01 -0800 (PST)
-Message-ID: <78c7b777-1527-759f-41f7-bd8422cb4eb0@canonical.com>
-Date:   Thu, 10 Mar 2022 17:55:00 +0100
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 17C866191A;
+        Fri, 11 Mar 2022 04:20:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6813BC340EF;
+        Fri, 11 Mar 2022 04:20:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646972416;
+        bh=3QD11MvBTuDHenIl8JveXTDxEIViUauETihTvCjUkHc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=LUL0m4djdpyXp+spzIRYPFS2kivGoOAH/4WGETWn55+A4oEJPQNYIz1q9Ix62A+Zg
+         h9LwRQyeU0nfLkaHQzClKL0NPsnR9pQrTi99UopgoT60r9MlW9f/n6zf9XLBeVFpay
+         oVBgTSglgEDw2Yw4ieXmc7jIocb6SfCfR7rB075zx0I/vkB9W3jtDLh/9n3Vp1nLFj
+         W9d1TzmtC5Mo5bzTpqpc+kIs6wHsn0Di7dsTRZl9rFMSpUn748VensWAqnJRxR3yJx
+         sn8mlX0QSuExDePZeLgjj0U+usYPkwJzBNkEkcK9Df5hhqgorLght9eMUlD2BFUr+h
+         /Xl3pqmnLpxTg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4D86AF0383F;
+        Fri, 11 Mar 2022 04:20:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v3] dt-bindings: can: xilinx_can: Convert Xilinx CAN
- binding to YAML
-Content-Language: en-US
-To:     Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>,
-        wg@grandegger.com, mkl@pengutronix.de, kuba@kernel.org,
-        robh+dt@kernel.org, appana.durga.rao@xilinx.com
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, michal.simek@xilinx.com,
-        git@xilinx.com, akumarma@xilinx.com
-References: <20220310153909.30933-1-amit.kumar-mahapatra@xilinx.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20220310153909.30933-1-amit.kumar-mahapatra@xilinx.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 01/29] can: isotp: add local echo tx processing for
+ consecutive frames
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164697241631.8307.38445538376038915.git-patchwork-notify@kernel.org>
+Date:   Fri, 11 Mar 2022 04:20:16 +0000
+References: <20220310142903.341658-2-mkl@pengutronix.de>
+In-Reply-To: <20220310142903.341658-2-mkl@pengutronix.de>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        linux-can@vger.kernel.org, kernel@pengutronix.de,
+        socketcan@hartkopp.net
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On 10/03/2022 16:39, Amit Kumar Mahapatra wrote:
-> Convert Xilinx CAN binding documentation to YAML.
+Hello:
+
+This series was applied to netdev/net-next.git (master)
+by Marc Kleine-Budde <mkl@pengutronix.de>:
+
+On Thu, 10 Mar 2022 15:28:35 +0100 you wrote:
+> From: Oliver Hartkopp <socketcan@hartkopp.net>
 > 
-> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
-> ---
-> BRANCH: yaml
+> Instead of dumping the CAN frames into the netdevice queue the process to
+> transmit consecutive frames (CF) now waits for the frame to be transmitted
+> and therefore echo'ed from the CAN interface.
 > 
-> Changes in v2:
->  - Added reference to can-controller.yaml
->  - Added example node for canfd-2.0
+> Link: https://lore.kernel.org/all/20220309120416.83514-1-socketcan@hartkopp.net
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 > 
-> Changes in v3:
->  - Changed yaml file name from xilinx_can.yaml to xilinx,can.yaml
->  - Added "power-domains" to fix dts_check warnings
->  - Grouped "clock-names" and "clocks" together
->  - Added type $ref for all non-standard fields
->  - Defined compatible strings as enum
->  - Used defines,instead of hard-coded values, for GIC interrupts
->  - Droped unused labels in examples
->  - Droped description for standard feilds
-> ---
->  .../bindings/net/can/xilinx,can.yaml          | 161 ++++++++++++++++++
->  .../bindings/net/can/xilinx_can.txt           |  61 -------
->  2 files changed, 161 insertions(+), 61 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/net/can/xilinx,can.yaml
->  delete mode 100644 Documentation/devicetree/bindings/net/can/xilinx_can.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/net/can/xilinx,can.yaml b/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
-> new file mode 100644
-> index 000000000000..78398826677d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
-> @@ -0,0 +1,161 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/can/xilinx,can.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title:
-> +  Xilinx Axi CAN/Zynq CANPS controller
-> +
-> +maintainers:
-> +  - Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - xlnx,zynq-can-1.0
-> +      - xlnx,axi-can-1.00.a
-> +      - xlnx,canfd-1.0
-> +      - xlnx,canfd-2.0
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    minItems: 1
-> +    maxItems: 2
-> +
-> +  clock-names:
-> +    maxItems: 2
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  tx-fifo-depth:
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    description: CAN Tx fifo depth (Zynq, Axi CAN).
-> +
-> +  rx-fifo-depth:
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    description: CAN Rx fifo depth (Zynq, Axi CAN, CAN FD in sequential Rx mode)
-> +
-> +  tx-mailbox-count:
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    description: CAN Tx mailbox buffer count (CAN FD)
+> [...]
 
-I asked about vendor prefix and I think I did not get an answer from you
-about skipping it. Do you think it is not needed?
+Here is the summary with links:
+  - [net-next,01/29] can: isotp: add local echo tx processing for consecutive frames
+    https://git.kernel.org/netdev/net-next/c/4b7fe92c0690
+  - [net-next,02/29] can: isotp: set default value for N_As to 50 micro seconds
+    https://git.kernel.org/netdev/net-next/c/530e0d46c613
+  - [net-next,03/29] can: isotp: set max PDU size to 64 kByte
+    https://git.kernel.org/netdev/net-next/c/9c0c191d82a1
+  - [net-next,04/29] vxcan: remove sk reference in peer skb
+    https://git.kernel.org/netdev/net-next/c/1574481bb3de
+  - [net-next,05/29] vxcan: enable local echo for sent CAN frames
+    https://git.kernel.org/netdev/net-next/c/259bdba27e32
+  - [net-next,06/29] can: etas_es58x: es58x_fd_rx_event_msg(): initialize rx_event_msg before calling es58x_check_msg_len()
+    https://git.kernel.org/netdev/net-next/c/7a8cd7c0ee82
+  - [net-next,07/29] dt-bindings: can: renesas,rcar-canfd: Document r8a779a0 support
+    https://git.kernel.org/netdev/net-next/c/d6254d52d70d
+  - [net-next,08/29] can: rcar_canfd: Add support for r8a779a0 SoC
+    https://git.kernel.org/netdev/net-next/c/45721c406dcf
+  - [net-next,09/29] can: gs_usb: use consistent one space indention
+    https://git.kernel.org/netdev/net-next/c/4c7044f3efc0
+  - [net-next,10/29] can: gs_usb: fix checkpatch warning
+    https://git.kernel.org/netdev/net-next/c/b9d9b030d009
+  - [net-next,11/29] can: gs_usb: sort include files alphabetically
+    https://git.kernel.org/netdev/net-next/c/f6bb251096bf
+  - [net-next,12/29] can: gs_usb: GS_CAN_FLAG_OVERFLOW: make use of BIT()
+    https://git.kernel.org/netdev/net-next/c/4b8f03e33f07
+  - [net-next,13/29] can: gs_usb: rewrap error messages
+    https://git.kernel.org/netdev/net-next/c/d0cd2aa83fbc
+  - [net-next,14/29] can: gs_usb: rewrap usb_control_msg() and usb_fill_bulk_urb()
+    https://git.kernel.org/netdev/net-next/c/c1ee72690cdd
+  - [net-next,15/29] can: gs_usb: gs_make_candev(): call SET_NETDEV_DEV() after handling all bt_const->feature
+    https://git.kernel.org/netdev/net-next/c/e0d25759fa91
+  - [net-next,16/29] can: gs_usb: add HW timestamp mode bit
+    https://git.kernel.org/netdev/net-next/c/d42d21116943
+  - [net-next,17/29] can: gs_usb: update GS_CAN_FEATURE_IDENTIFY documentation
+    https://git.kernel.org/netdev/net-next/c/15564f821c04
+  - [net-next,18/29] can: gs_usb: document the USER_ID feature
+    https://git.kernel.org/netdev/net-next/c/e0902cad4b32
+  - [net-next,19/29] can: gs_usb: document the PAD_PKTS_TO_MAX_PKT_SIZE feature
+    https://git.kernel.org/netdev/net-next/c/4643e34eccfc
+  - [net-next,20/29] can: gs_usb: gs_usb_probe(): introduce udev and make use of it
+    https://git.kernel.org/netdev/net-next/c/5374d083117c
+  - [net-next,21/29] can: gs_usb: support up to 3 channels per device
+    https://git.kernel.org/netdev/net-next/c/e10ab8b39405
+  - [net-next,22/29] can: gs_usb: use union and FLEX_ARRAY for data in struct gs_host_frame
+    https://git.kernel.org/netdev/net-next/c/c359931d2545
+  - [net-next,23/29] can: gs_usb: add CAN-FD support
+    https://git.kernel.org/netdev/net-next/c/26949ac935e3
+  - [net-next,24/29] can: gs_usb: add usb quirk for NXP LPC546xx controllers
+    https://git.kernel.org/netdev/net-next/c/eb9fa77a4211
+  - [net-next,25/29] can: gs_usb: add quirk for CANtact Pro overlapping GS_USB_BREQ value
+    https://git.kernel.org/netdev/net-next/c/32cd9013c207
+  - [net-next,26/29] can: gs_usb: activate quirks for CANtact Pro unconditionally
+    https://git.kernel.org/netdev/net-next/c/b00ca070e022
+  - [net-next,27/29] can: gs_usb: add extended bt_const feature
+    https://git.kernel.org/netdev/net-next/c/6679f4c5e5a6
+  - [net-next,28/29] can: gs_usb: add VID/PID for CES CANext FD devices
+    https://git.kernel.org/netdev/net-next/c/d03bb08e2be1
+  - [net-next,29/29] can: gs_usb: add VID/PID for ABE CAN Debugger devices
+    https://git.kernel.org/netdev/net-next/c/0691a4b55c89
 
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +
-> +additionalProperties: false
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-This should be rather unevaluatedProperties:false, so you could use
-can-controller properties.
 
-> +
-> +allOf:
-> +  - $ref: can-controller.yaml#
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - xlnx,zynq-can-1.0
-> +
-> +    then:
-> +      properties:
-> +        clock-names:
-> +          items:
-> +            - const: can_clk
-> +            - const: pclk
-> +      required:
-> +        - tx-fifo-depth
-> +        - rx-fifo-depth
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - xlnx,axi-can-1.00.a
-> +
-> +    then:
-> +      properties:
-> +        clock-names:
-> +          items:
-> +            - const: can_clk
-> +            - const: s_axi_aclk
-> +      required:
-> +        - tx-fifo-depth
-> +        - rx-fifo-depth
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - xlnx,canfd-1.0
-> +              - xlnx,canfd-2.0
-> +
-> +    then:
-> +      properties:
-> +        clock-names:
-> +          items:
-> +            - const: can_clk
-> +            - const: s_axi_aclk
-> +      required:
-> +        - tx-mailbox-count
-> +        - rx-fifo-depth
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +    can@e0008000 {
-> +        compatible = "xlnx,zynq-can-1.0";
-> +        clocks = <&clkc 19>, <&clkc 36>;
-> +        clock-names = "can_clk", "pclk";
-> +        reg = <0xe0008000 0x1000>;
-
-Put reg just after compatible in all DTS examples.
-
-> +        interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
-> +        interrupt-parent = <&intc>;
-> +        tx-fifo-depth = <0x40>;
-> +        rx-fifo-depth = <0x40>;
-> +    };
-> +
-> +  - |
-> +    can@40000000 {
-> +        compatible = "xlnx,axi-can-1.00.a";
-> +        clocks = <&clkc 0>, <&clkc 1>;
-> +        clock-names = "can_clk","s_axi_aclk" ;
-
-Missing space after ','.
-
-> +        reg = <0x40000000 0x10000>;
-> +        interrupt-parent = <&intc>;
-> +        interrupts = <GIC_SPI 59 IRQ_TYPE_EDGE_RISING>;
-> +        tx-fifo-depth = <0x40>;
-> +        rx-fifo-depth = <0x40>;
-> +    };
-
-Best regards,
-Krzysztof
