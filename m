@@ -2,90 +2,90 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDD99C4332F
-	for <linux-can@archiver.kernel.org>; Fri, 11 Mar 2022 04:20:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4077CC433F5
+	for <linux-can@archiver.kernel.org>; Fri, 11 Mar 2022 08:02:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346128AbiCKEVZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 10 Mar 2022 23:21:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34700 "EHLO
+        id S1347332AbiCKIDd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 11 Mar 2022 03:03:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232117AbiCKEVW (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Mar 2022 23:21:22 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAE41A1295;
-        Thu, 10 Mar 2022 20:20:17 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 235CE6191D;
-        Fri, 11 Mar 2022 04:20:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 70D75C340F3;
-        Fri, 11 Mar 2022 04:20:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646972416;
-        bh=8UMDEKb+dFf1zR9kfW4ts0xq7mHj2Wz9lOo4zGn7Wz0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=IOZDplzCei7DQ0ly1xxQ90GjNMP/aKOAnz+2935fK0uPHEihw3owJItNGaQSZk1Lp
-         mtfTd/7D0eeyHfxUMJXHMvGLYpr6YXAXk+zt0Q+HSsR0ejDyJH0lEmqp3bscwK3VfR
-         FyssxSRiPBjZrLk7QrlDKs+VDpIbhAuYMbTCO27wLjFYZ79CU/sIF+MeZl0Le4Aaor
-         TB6yJh9jhym/Zao/nmtTUk+Z9GZW0Z1iS4eD0p+IrgLQLewdb4XsMVcfzjFl9t6sKN
-         SQIa0+E2T1WMsb8Mebb6GwNMasDlVHooUMDEUBThBfW5FzcSMe+fZcYODTr/TL2E13
-         kJS112Ar270xg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 56343E6D3DD;
-        Fri, 11 Mar 2022 04:20:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S237155AbiCKID0 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 11 Mar 2022 03:03:26 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 880231B84FA;
+        Fri, 11 Mar 2022 00:02:23 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id e6so6863500pgn.2;
+        Fri, 11 Mar 2022 00:02:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FQQzdTx4AXRc0UqtDWCC5ACivflzrCQnePi6OUu3CnY=;
+        b=oXuBGb1ekwEcPik1Skv2Fud4W+/BLF+UgdNx8W3TV0XH00cT/oJnY2jDp4Xo38CwZE
+         RxW1FtQYYKqOr9IXiaEDFEkz6w55QEvrSf27A7ug65Gxn7m7850A+cigFBtZkBg/0vin
+         KdJW71wQbmknr/t5zatXElITjF/xbj+qIwlz+lQhfjQqt9aM2+PlQa2kq0kwwIKEsJSF
+         q2DlzXLdvl7B0VB5rt4UtdCRwsZJvQATmJCXexMG8QNCFuREixR+9jeFYd4Ca86G9iPZ
+         jmYEDFC+1j1F6SexGZinW9BVlV5H60GtrEG9wKxz3a1ubHO9NvCnfezcpjK3LbnesmUV
+         UjWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FQQzdTx4AXRc0UqtDWCC5ACivflzrCQnePi6OUu3CnY=;
+        b=4BkqjcrHxcOo3nvpPRZFr9O36zxHQjI0IFXaSto8K8lU70uJdDlmf9BdppBiWX2r5I
+         HLg60r7IAo4NNl85iMHOvB3EVTVDcHB8TQSFiF7g6jW6OGTnFdJ8JtMpZN8IxDtwg96o
+         Agxo7CG3ynv+d3WjxKXjIbCRFbzovNaMqOxB9mKuBTbEVGWc4a4iBxEF23SpCacSJS1o
+         NJqxncqdfLEqSe3YCIg5hv6umBBOZM+YesA3XZDyf91cKfk2dkZv4SqV2wmsUZjhIcgH
+         Ne7PXHDgn7cBnQNBmUFpGuAuF1WyHMcYrZymQgEMBMtTBROIsX83yfJ6WY4qSaxckHsw
+         tPQg==
+X-Gm-Message-State: AOAM532TCobGjAbBIA9d3vKBxKWenkDSAw0/ozbjJCQ0nV2FrbMDSYkR
+        7m2Aq91nDv/1ZA7yS9aVtcw=
+X-Google-Smtp-Source: ABdhPJxpdkaTnc5mX0kbOkSmB598KHBiETpwSD98+GxI2nb8FzlGSPxE1F+GVG/dsKobhveVBZmwvg==
+X-Received: by 2002:a63:90c7:0:b0:37c:7a8c:c2d3 with SMTP id a190-20020a6390c7000000b0037c7a8cc2d3mr7476395pge.473.1646985743045;
+        Fri, 11 Mar 2022 00:02:23 -0800 (PST)
+Received: from slim.das-security.cn ([103.84.139.54])
+        by smtp.gmail.com with ESMTPSA id b2-20020a056a000a8200b004f1111c66afsm10660741pfl.148.2022.03.11.00.02.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Mar 2022 00:02:22 -0800 (PST)
+From:   Hangyu Hua <hbh25y@gmail.com>
+To:     yashi@spacecubics.com, wg@grandegger.com, mkl@pengutronix.de,
+        davem@davemloft.net, kuba@kernel.org, mailhol.vincent@wanadoo.fr,
+        stefan.maetje@esd.eu, paskripkin@gmail.com,
+        remigiusz.kollataj@mobica.com
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hangyu Hua <hbh25y@gmail.com>
+Subject: [PATCH] can: mcba_usb: fix possible double dev_kfree_skb in mcba_usb_start_xmit
+Date:   Fri, 11 Mar 2022 16:02:08 +0800
+Message-Id: <20220311080208.45047-1-hbh25y@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4 0/4] can: rcar_canfd: Add support for V3U flavor
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164697241634.8307.12005930852651825961.git-patchwork-notify@kernel.org>
-Date:   Fri, 11 Mar 2022 04:20:16 +0000
-References: <20220309162609.3726306-1-uli+renesas@fpond.eu>
-In-Reply-To: <20220309162609.3726306-1-uli+renesas@fpond.eu>
-To:     Ulrich Hecht <uli+renesas@fpond.eu>
-Cc:     linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
-        davem@davemloft.net, linux-can@vger.kernel.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, wsa@kernel.org,
-        yoshihiro.shimoda.uh@renesas.com, wg@grandegger.com,
-        mkl@pengutronix.de, kuba@kernel.org, mailhol.vincent@wanadoo.fr,
-        socketcan@hartkopp.net, geert@linux-m68k.org,
-        kieran.bingham@ideasonboard.com, horms@verge.net.au
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello:
+There is no need to call dev_kfree_skb when usb_submit_urb fails beacause
+can_put_echo_skb deletes original skb and can_free_echo_skb deletes the cloned
+skb.
 
-This series was applied to netdev/net-next.git (master)
-by Marc Kleine-Budde <mkl@pengutronix.de>:
+Fixes: 51f3baad7de9 ("can: mcba_usb: Add support for Microchip CAN BUS Analyzer")
+Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
+---
+ drivers/net/can/usb/mcba_usb.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-On Wed,  9 Mar 2022 17:26:05 +0100 you wrote:
-> Hi!
-> 
-> This adds CANFD support for V3U (R8A779A0) SoCs. The V3U's IP supports up
-> to eight channels and has some other minor differences to the Gen3 variety:
-> 
-> - changes to some register offsets and layouts
-> - absence of "classic CAN" registers, both modes are handled through the
->   CANFD register set
-> 
-> [...]
-
-Here is the summary with links:
-  - [v4,1/4] can: rcar_canfd: Add support for r8a779a0 SoC
-    https://git.kernel.org/netdev/net-next/c/45721c406dcf
-  - [v4,2/4] arm64: dts: renesas: r8a779a0: Add CANFD device node
-    (no matching commit)
-  - [v4,3/4] arm64: dts: renesas: r8a779a0-falcon: enable CANFD 0 and 1
-    (no matching commit)
-  - [v4,4/4] dt-bindings: can: renesas,rcar-canfd: Document r8a779a0 support
-    https://git.kernel.org/netdev/net-next/c/d6254d52d70d
-
-You are awesome, thank you!
+diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
+index 77bddff86252..7c198eb5bc9c 100644
+--- a/drivers/net/can/usb/mcba_usb.c
++++ b/drivers/net/can/usb/mcba_usb.c
+@@ -364,7 +364,6 @@ static netdev_tx_t mcba_usb_start_xmit(struct sk_buff *skb,
+ xmit_failed:
+ 	can_free_echo_skb(priv->netdev, ctx->ndx, NULL);
+ 	mcba_usb_free_ctx(ctx);
+-	dev_kfree_skb(skb);
+ 	stats->tx_dropped++;
+ 
+ 	return NETDEV_TX_OK;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.25.1
 
