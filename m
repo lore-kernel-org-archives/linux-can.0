@@ -2,43 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDD51C433F5
-	for <linux-can@archiver.kernel.org>; Sun, 13 Mar 2022 08:51:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86BB9C4332F
+	for <linux-can@archiver.kernel.org>; Sun, 13 Mar 2022 08:52:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233989AbiCMIxE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 13 Mar 2022 04:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36520 "EHLO
+        id S234121AbiCMIxD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 13 Mar 2022 04:53:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234078AbiCMIxD (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 13 Mar 2022 04:53:03 -0400
+        with ESMTP id S233989AbiCMIwy (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 13 Mar 2022 04:52:54 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3799688B23
-        for <linux-can@vger.kernel.org>; Sun, 13 Mar 2022 00:51:50 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A386C635B
+        for <linux-can@vger.kernel.org>; Sun, 13 Mar 2022 00:51:46 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nTJx6-0000ZF-Ih
-        for linux-can@vger.kernel.org; Sun, 13 Mar 2022 09:51:48 +0100
+        id 1nTJx2-0000T9-96
+        for linux-can@vger.kernel.org; Sun, 13 Mar 2022 09:51:44 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 8D6A649B7E
-        for <linux-can@vger.kernel.org>; Sun, 13 Mar 2022 08:51:40 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id B65D749B4C
+        for <linux-can@vger.kernel.org>; Sun, 13 Mar 2022 08:51:39 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 13AC249B63;
-        Sun, 13 Mar 2022 08:51:40 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7CB4F49B3B;
+        Sun, 13 Mar 2022 08:51:39 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 08d8d4cc;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 18d3d587;
         Sun, 13 Mar 2022 08:51:38 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 12/13] can: mcp251xfd: add TX IRQ coalescing ethtool support
-Date:   Sun, 13 Mar 2022 09:51:37 +0100
-Message-Id: <20220313085138.507062-13-mkl@pengutronix.de>
+Subject: [PATCH net-next 06/13] can: mcp251xfd: ring: prepare support for runtime configurable RX/TX ring parameters
+Date:   Sun, 13 Mar 2022 09:51:31 +0100
+Message-Id: <20220313085138.507062-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220313085138.507062-1-mkl@pengutronix.de>
 References: <20220313085138.507062-1-mkl@pengutronix.de>
@@ -52,108 +52,85 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch adds support ethtool based configuration for the TX IRQ
-coalescing added in the previous patch.
+This patch prepares the driver for runtime configurable RX and TX ring
+parameters. The actual runtime config support will be added in the
+next patch.
 
-Link: https://lore.kernel.org/20220313083640.501791-12-mkl@pengutronix.de
+Link: https://lore.kernel.org/20220313083640.501791-6-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../net/can/spi/mcp251xfd/mcp251xfd-ethtool.c | 23 ++++++++++++++++---
- .../net/can/spi/mcp251xfd/mcp251xfd-ring.c    |  1 +
- drivers/net/can/spi/mcp251xfd/mcp251xfd.h     |  1 +
- 3 files changed, 22 insertions(+), 3 deletions(-)
+ .../net/can/spi/mcp251xfd/mcp251xfd-ring.c    | 26 ++++++++-----------
+ drivers/net/can/spi/mcp251xfd/mcp251xfd.h     |  2 ++
+ 2 files changed, 13 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ethtool.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ethtool.c
-index 6e49cf3411a2..6c7a57f16cc6 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ethtool.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ethtool.c
-@@ -58,7 +58,7 @@ static int mcp251xfd_ring_get_coalesce(struct net_device *ndev,
- 				       struct netlink_ext_ack *ext_ack)
- {
- 	struct mcp251xfd_priv *priv = netdev_priv(ndev);
--	u32 rx_max_frames;
-+	u32 rx_max_frames, tx_max_frames;
- 
- 	/* The ethtool doc says:
- 	 * To disable coalescing, set usecs = 0 and max_frames = 1.
-@@ -71,6 +71,14 @@ static int mcp251xfd_ring_get_coalesce(struct net_device *ndev,
- 	ec->rx_max_coalesced_frames_irq = rx_max_frames;
- 	ec->rx_coalesce_usecs_irq = priv->rx_coalesce_usecs_irq;
- 
-+	if (priv->tx_obj_num_coalesce_irq == 0)
-+		tx_max_frames = 1;
-+	else
-+		tx_max_frames = priv->tx_obj_num_coalesce_irq;
-+
-+	ec->tx_max_coalesced_frames_irq = tx_max_frames;
-+	ec->tx_coalesce_usecs_irq = priv->tx_coalesce_usecs_irq;
-+
- 	return 0;
- }
- 
-@@ -90,21 +98,28 @@ static int mcp251xfd_ring_set_coalesce(struct net_device *ndev,
- 	can_ram_get_layout(&layout, &mcp251xfd_ram_config, &ring, ec, fd_mode);
- 
- 	if ((layout.rx_coalesce != priv->rx_obj_num_coalesce_irq ||
--	     ec->rx_coalesce_usecs_irq != priv->rx_coalesce_usecs_irq) &&
-+	     ec->rx_coalesce_usecs_irq != priv->rx_coalesce_usecs_irq ||
-+	     layout.tx_coalesce != priv->tx_obj_num_coalesce_irq ||
-+	     ec->tx_coalesce_usecs_irq != priv->tx_coalesce_usecs_irq) &&
- 	    netif_running(ndev))
- 		return -EBUSY;
- 
- 	priv->rx_obj_num = layout.cur_rx;
- 	priv->rx_obj_num_coalesce_irq = layout.rx_coalesce;
- 	priv->rx_coalesce_usecs_irq = ec->rx_coalesce_usecs_irq;
-+
- 	priv->tx->obj_num = layout.cur_tx;
-+	priv->tx_obj_num_coalesce_irq = layout.tx_coalesce;
-+	priv->tx_coalesce_usecs_irq = ec->tx_coalesce_usecs_irq;
- 
- 	return 0;
- }
- 
- static const struct ethtool_ops mcp251xfd_ethtool_ops = {
- 	.supported_coalesce_params = ETHTOOL_COALESCE_RX_USECS_IRQ |
--		ETHTOOL_COALESCE_RX_MAX_FRAMES_IRQ,
-+		ETHTOOL_COALESCE_RX_MAX_FRAMES_IRQ |
-+		ETHTOOL_COALESCE_TX_USECS_IRQ |
-+		ETHTOOL_COALESCE_TX_MAX_FRAMES_IRQ,
- 	.get_ringparam = mcp251xfd_ring_get_ringparam,
- 	.set_ringparam = mcp251xfd_ring_set_ringparam,
- 	.get_coalesce = mcp251xfd_ring_get_coalesce,
-@@ -122,5 +137,7 @@ void mcp251xfd_ethtool_init(struct mcp251xfd_priv *priv)
- 	priv->tx->obj_num = layout.default_tx;
- 
- 	priv->rx_obj_num_coalesce_irq = 0;
-+	priv->tx_obj_num_coalesce_irq = 0;
- 	priv->rx_coalesce_usecs_irq = 0;
-+	priv->tx_coalesce_usecs_irq = 0;
- }
 diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
-index 3037ad3dd46b..bf3f0f150199 100644
+index e540c97b4160..0e78941601bf 100644
 --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
 +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
-@@ -442,6 +442,7 @@ const struct can_ram_config mcp251xfd_ram_config = {
- 		.def[CAN_RAM_MODE_CANFD] = MCP251XFD_TX_OBJ_NUM_CANFD_DEFAULT,
- 		.fifo_num = MCP251XFD_FIFO_TX_NUM,
- 		.fifo_depth_min = MCP251XFD_TX_FIFO_DEPTH_MIN,
-+		.fifo_depth_coalesce_min = MCP251XFD_TX_FIFO_DEPTH_COALESCE_MIN,
- 	},
- 	.size = MCP251XFD_RAM_SIZE,
- 	.fifo_depth = MCP251XFD_FIFO_DEPTH,
+@@ -289,9 +289,9 @@ int mcp251xfd_ring_alloc(struct mcp251xfd_priv *priv)
+ {
+ 	struct mcp251xfd_tx_ring *tx_ring;
+ 	struct mcp251xfd_rx_ring *rx_ring;
+-	int tef_obj_size, tx_obj_size, rx_obj_size;
+-	int tx_obj_num;
+-	int ram_free, i;
++	u8 tef_obj_size, tx_obj_size, rx_obj_size;
++	u8 tx_obj_num;
++	u8 rem, i;
+ 
+ 	tef_obj_size = sizeof(struct mcp251xfd_hw_tef_obj);
+ 	if (mcp251xfd_is_fd_mode(priv)) {
+@@ -310,17 +310,14 @@ int mcp251xfd_ring_alloc(struct mcp251xfd_priv *priv)
+ 	tx_ring->obj_num = tx_obj_num;
+ 	tx_ring->obj_size = tx_obj_size;
+ 
+-	ram_free = MCP251XFD_RAM_SIZE - tx_obj_num *
+-		(tef_obj_size + tx_obj_size);
++	rem = (MCP251XFD_RAM_SIZE - tx_obj_num *
++	       (tef_obj_size + tx_obj_size)) / rx_obj_size;
++	for (i = 0; i < ARRAY_SIZE(priv->rx) && rem; i++) {
++		u8 rx_obj_num;
+ 
+-	for (i = 0;
+-	     i < ARRAY_SIZE(priv->rx) && ram_free >= rx_obj_size;
+-	     i++) {
+-		int rx_obj_num;
+-
+-		rx_obj_num = ram_free / rx_obj_size;
+-		rx_obj_num = min(1 << (fls(rx_obj_num) - 1),
+-				 MCP251XFD_RX_OBJ_NUM_MAX);
++		rx_obj_num = min_t(u8, rounddown_pow_of_two(rem),
++				   MCP251XFD_FIFO_DEPTH);
++		rem -= rx_obj_num;
+ 
+ 		priv->rx_obj_num += rx_obj_num;
+ 
+@@ -330,11 +327,10 @@ int mcp251xfd_ring_alloc(struct mcp251xfd_priv *priv)
+ 			mcp251xfd_ring_free(priv);
+ 			return -ENOMEM;
+ 		}
++
+ 		rx_ring->obj_num = rx_obj_num;
+ 		rx_ring->obj_size = rx_obj_size;
+ 		priv->rx[i] = rx_ring;
+-
+-		ram_free -= rx_ring->obj_num * rx_ring->obj_size;
+ 	}
+ 	priv->rx_ring_num = i;
+ 
 diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-index ee2c93ddc5ed..c6cb8c3391b3 100644
+index 5c7a672464b1..bd7a9999b5e3 100644
 --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
 +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-@@ -413,6 +413,7 @@ static_assert(MCP251XFD_TIMESTAMP_WORK_DELAY_SEC <
- #define MCP251XFD_TX_OBJ_NUM_CAN_DEFAULT 8U
- #define MCP251XFD_TX_OBJ_NUM_CANFD_DEFAULT 4U
- #define MCP251XFD_TX_FIFO_DEPTH_MIN 2U
-+#define MCP251XFD_TX_FIFO_DEPTH_COALESCE_MIN 2U
+@@ -415,6 +415,8 @@ static_assert(MCP251XFD_TIMESTAMP_WORK_DELAY_SEC <
+ #define MCP251XFD_FIFO_RX_NUM_MAX 1U
+ #define MCP251XFD_FIFO_TX_NUM 1U
  
++#define MCP251XFD_FIFO_DEPTH 32U
++
  static_assert(MCP251XFD_FIFO_TEF_NUM == 1U);
  static_assert(MCP251XFD_FIFO_TEF_NUM == MCP251XFD_FIFO_TX_NUM);
+ static_assert(MCP251XFD_FIFO_RX_NUM_MAX <= 4U);
 -- 
 2.35.1
 
