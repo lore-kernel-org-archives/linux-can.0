@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44FD9C433EF
-	for <linux-can@archiver.kernel.org>; Sun, 13 Mar 2022 08:36:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AB82C433FE
+	for <linux-can@archiver.kernel.org>; Sun, 13 Mar 2022 08:36:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233927AbiCMIhz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 13 Mar 2022 04:37:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42234 "EHLO
+        id S233970AbiCMIh4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 13 Mar 2022 04:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233771AbiCMIhy (ORCPT
+        with ESMTP id S233898AbiCMIhy (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Sun, 13 Mar 2022 04:37:54 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280371AC2A7
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE061AC2AE
         for <linux-can@vger.kernel.org>; Sun, 13 Mar 2022 00:36:46 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nTJiU-00072X-Ob
-        for linux-can@vger.kernel.org; Sun, 13 Mar 2022 09:36:42 +0100
+        id 1nTJiW-00073j-G7
+        for linux-can@vger.kernel.org; Sun, 13 Mar 2022 09:36:44 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 3EE0149A92
+        by bjornoya.blackshift.org (Postfix) with SMTP id 756BA49AAF
         for <linux-can@vger.kernel.org>; Sun, 13 Mar 2022 08:36:41 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 001F749A7E;
-        Sun, 13 Mar 2022 08:36:40 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2805149A87;
+        Sun, 13 Mar 2022 08:36:41 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 66c657bf;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 73d14c9d;
         Sun, 13 Mar 2022 08:36:40 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     kernel@pengutronix.de,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         Thomas Kopp <thomas.kopp@microchip.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [can-next-rfc 01/12] can: mcp251xfd: mcp251xfd_ring_init(): use %d to print free RAM
-Date:   Sun, 13 Mar 2022 09:36:29 +0100
-Message-Id: <20220313083640.501791-2-mkl@pengutronix.de>
+Subject: [can-next-rfc 05/12] can: mcp251xfd: ring: prepare support for runtime configurable RX/TX ring parameters
+Date:   Sun, 13 Mar 2022 09:36:33 +0100
+Message-Id: <20220313083640.501791-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220313083640.501791-1-mkl@pengutronix.de>
 References: <20220313083640.501791-1-mkl@pengutronix.de>
@@ -54,31 +54,84 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-In case of an erroneous ring configuration more RAM than available
-might be used. Change the printf modifier to a signed int to properly
-print this erroneous value.
+This patch prepares the driver for runtime configurable RX and TX ring
+parameters. The actual runtime config support will be added in the
+next patch.
 
-Fixes: 83daa863f16b ("can: mcp251xfd: ring: update FIFO setup debug info")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../net/can/spi/mcp251xfd/mcp251xfd-ring.c    | 26 ++++++++-----------
+ drivers/net/can/spi/mcp251xfd/mcp251xfd.h     |  2 ++
+ 2 files changed, 13 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
-index 848b8b2ecb5f..b1c4d9b19347 100644
+index e540c97b4160..0e78941601bf 100644
 --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
 +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
-@@ -261,7 +261,7 @@ int mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
- 		   priv->tx->obj_num * priv->tx->obj_size);
+@@ -289,9 +289,9 @@ int mcp251xfd_ring_alloc(struct mcp251xfd_priv *priv)
+ {
+ 	struct mcp251xfd_tx_ring *tx_ring;
+ 	struct mcp251xfd_rx_ring *rx_ring;
+-	int tef_obj_size, tx_obj_size, rx_obj_size;
+-	int tx_obj_num;
+-	int ram_free, i;
++	u8 tef_obj_size, tx_obj_size, rx_obj_size;
++	u8 tx_obj_num;
++	u8 rem, i;
  
- 	netdev_dbg(priv->ndev,
--		   "FIFO setup: free:                             %4u bytes\n",
-+		   "FIFO setup: free:                             %4d bytes\n",
- 		   MCP251XFD_RAM_SIZE - (base - MCP251XFD_RAM_START));
+ 	tef_obj_size = sizeof(struct mcp251xfd_hw_tef_obj);
+ 	if (mcp251xfd_is_fd_mode(priv)) {
+@@ -310,17 +310,14 @@ int mcp251xfd_ring_alloc(struct mcp251xfd_priv *priv)
+ 	tx_ring->obj_num = tx_obj_num;
+ 	tx_ring->obj_size = tx_obj_size;
  
- 	ram_used = base - MCP251XFD_RAM_START;
-
-base-commit: 97aeb877de7f14f819fc2cf8388d7a2d8090489d
+-	ram_free = MCP251XFD_RAM_SIZE - tx_obj_num *
+-		(tef_obj_size + tx_obj_size);
++	rem = (MCP251XFD_RAM_SIZE - tx_obj_num *
++	       (tef_obj_size + tx_obj_size)) / rx_obj_size;
++	for (i = 0; i < ARRAY_SIZE(priv->rx) && rem; i++) {
++		u8 rx_obj_num;
+ 
+-	for (i = 0;
+-	     i < ARRAY_SIZE(priv->rx) && ram_free >= rx_obj_size;
+-	     i++) {
+-		int rx_obj_num;
+-
+-		rx_obj_num = ram_free / rx_obj_size;
+-		rx_obj_num = min(1 << (fls(rx_obj_num) - 1),
+-				 MCP251XFD_RX_OBJ_NUM_MAX);
++		rx_obj_num = min_t(u8, rounddown_pow_of_two(rem),
++				   MCP251XFD_FIFO_DEPTH);
++		rem -= rx_obj_num;
+ 
+ 		priv->rx_obj_num += rx_obj_num;
+ 
+@@ -330,11 +327,10 @@ int mcp251xfd_ring_alloc(struct mcp251xfd_priv *priv)
+ 			mcp251xfd_ring_free(priv);
+ 			return -ENOMEM;
+ 		}
++
+ 		rx_ring->obj_num = rx_obj_num;
+ 		rx_ring->obj_size = rx_obj_size;
+ 		priv->rx[i] = rx_ring;
+-
+-		ram_free -= rx_ring->obj_num * rx_ring->obj_size;
+ 	}
+ 	priv->rx_ring_num = i;
+ 
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+index 5c7a672464b1..bd7a9999b5e3 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+@@ -415,6 +415,8 @@ static_assert(MCP251XFD_TIMESTAMP_WORK_DELAY_SEC <
+ #define MCP251XFD_FIFO_RX_NUM_MAX 1U
+ #define MCP251XFD_FIFO_TX_NUM 1U
+ 
++#define MCP251XFD_FIFO_DEPTH 32U
++
+ static_assert(MCP251XFD_FIFO_TEF_NUM == 1U);
+ static_assert(MCP251XFD_FIFO_TEF_NUM == MCP251XFD_FIFO_TX_NUM);
+ static_assert(MCP251XFD_FIFO_RX_NUM_MAX <= 4U);
 -- 
 2.35.1
 
