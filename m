@@ -2,94 +2,92 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39E1DC433EF
-	for <linux-can@archiver.kernel.org>; Mon, 14 Mar 2022 08:09:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70A7DC433F5
+	for <linux-can@archiver.kernel.org>; Mon, 14 Mar 2022 12:10:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236130AbiCNILA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 14 Mar 2022 04:11:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
+        id S240751AbiCNMLf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 14 Mar 2022 08:11:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233749AbiCNIK7 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 14 Mar 2022 04:10:59 -0400
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 258532BE6;
-        Mon, 14 Mar 2022 01:09:50 -0700 (PDT)
-Received: by mail-qt1-f170.google.com with SMTP id g7so5829553qtg.7;
-        Mon, 14 Mar 2022 01:09:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=08Cq6sAqtL7e5hp/9ndQMfCAbW7RoUh3nfCkJLMngb8=;
-        b=Rpta1+dbExJJYo9L8CHaWcJoaqFkp+NPEzSqTstaO3DtcLJQJLF/z5LXy0+nYdpW4s
-         uho3sadF4eptv8rqiiG1BWjYsgZhgzJIXjyvb2iCtHIxiVQgsgSIJFg5Ly6CAwMAw2Gj
-         fN8eYrIpwIB0n0TmJq+pGl2PKMUe5NGfCx6AIOrJ89yY16rsK9speNwKeng2A5+h38iI
-         iid6tMf45hgNbGkqlBfuwHR0FRuH5naEWggmVRH02+bT9hn5gzp1FvVt5T6o62S2aNFi
-         GlZA7LYrzycKZuQyc5LHZJ3W8R1Z+huLXcpGM1RVysvOf1ZyXKEqS8J7MC4IrfzAqvMj
-         bkzg==
-X-Gm-Message-State: AOAM531BJwm6agjWURWXA5hFd3kcCZ+U36fSMS1i21XLSVJk+UJ+Mixn
-        +PpIIigVM2Rm0HGjGKHs+RF/HNXxwqIVgQ==
-X-Google-Smtp-Source: ABdhPJx7h5gqIcM3e/AHlw5qbiSRk2nqi1/CDkfItl8tOeiJe1XH0dZmXCcQQG7nUl0/BXavn0fozQ==
-X-Received: by 2002:a05:622a:1015:b0:2e0:6cd5:7ee1 with SMTP id d21-20020a05622a101500b002e06cd57ee1mr17033493qte.485.1647245388961;
-        Mon, 14 Mar 2022 01:09:48 -0700 (PDT)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id e12-20020ac8130c000000b002e1d84f118dsm299774qtj.39.2022.03.14.01.09.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Mar 2022 01:09:48 -0700 (PDT)
-Received: by mail-yb1-f174.google.com with SMTP id j2so29249859ybu.0;
-        Mon, 14 Mar 2022 01:09:48 -0700 (PDT)
-X-Received: by 2002:a0d:f1c7:0:b0:2db:d2bc:be11 with SMTP id
- a190-20020a0df1c7000000b002dbd2bcbe11mr17825798ywf.62.1647245083313; Mon, 14
- Mar 2022 01:04:43 -0700 (PDT)
+        with ESMTP id S241666AbiCNMJA (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 14 Mar 2022 08:09:00 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C88004FC69
+        for <linux-can@vger.kernel.org>; Mon, 14 Mar 2022 05:05:47 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1nTjSG-0006MY-0k; Mon, 14 Mar 2022 13:05:40 +0100
+Received: from pengutronix.de (2a03-f580-87bc-d400-cd06-1d72-9fa6-b58a.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:cd06:1d72:9fa6:b58a])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id AA0FD4AE7C;
+        Mon, 14 Mar 2022 12:05:02 +0000 (UTC)
+Date:   Mon, 14 Mar 2022 13:05:02 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Julia Lawall <Julia.Lawall@inria.fr>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        kernel-janitors@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 27/30] can: ucan: fix typos in comments
+Message-ID: <20220314120502.kpc27kzk2dnou2td@pengutronix.de>
+References: <20220314115354.144023-1-Julia.Lawall@inria.fr>
+ <20220314115354.144023-28-Julia.Lawall@inria.fr>
 MIME-Version: 1.0
-References: <20220309162609.3726306-1-uli+renesas@fpond.eu>
- <20220309162609.3726306-4-uli+renesas@fpond.eu> <CAMuHMdW+_5UDRYUQ0aSymgXO1BUryc+AV8SAjSS4F-Lna5B_UQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdW+_5UDRYUQ0aSymgXO1BUryc+AV8SAjSS4F-Lna5B_UQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 14 Mar 2022 09:04:31 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXyb8TddJwOfZOg4g8uxAe6EQNXM2y+fe=EVMydg1CN4Q@mail.gmail.com>
-Message-ID: <CAMuHMdXyb8TddJwOfZOg4g8uxAe6EQNXM2y+fe=EVMydg1CN4Q@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] arm64: dts: renesas: r8a779a0-falcon: enable CANFD
- 0 and 1
-To:     Ulrich Hecht <uli+renesas@fpond.eu>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org,
-        "Lad, Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        socketcan@hartkopp.net,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Simon Horman <horms@verge.net.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="utbqex7kud7q6aoc"
+Content-Disposition: inline
+In-Reply-To: <20220314115354.144023-28-Julia.Lawall@inria.fr>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Fri, Mar 11, 2022 at 6:04 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Wed, Mar 9, 2022 at 5:26 PM Ulrich Hecht <uli+renesas@fpond.eu> wrote:
-> > Enables confirmed-working CAN interfaces 0 and 1 on the Falcon board.
-> >
-> > Signed-off-by: Ulrich Hecht <uli+renesas@fpond.eu>
-> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
->
-> Thanks, will queue in renesas-devel for v5.19.
 
-... with the canfd moved up, to preserve sort order.
+--utbqex7kud7q6aoc
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Gr{oetje,eeting}s,
+On 14.03.2022 12:53:51, Julia Lawall wrote:
+> Various spelling mistakes in comments.
+> Detected with the help of Coccinelle.
+>=20
+> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
-                        Geert
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Should I take this, or are you going to upstream this?
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--utbqex7kud7q6aoc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmIvL2sACgkQrX5LkNig
+013ghgf+OFs60+q+Dd4p/sUmD7ZvtB2QitZ69mbLVzun53kAWpiwm8dMpruvkzVv
+3fJoo1LQf3RatjI3X1VdBhhPiXydxXqsPyPKM+wqGIFx4eBvUVVX2tqkJWa8fCiT
+thYXj2u52KL/ewRCqY2n2P/SV9TZkBh1XCi0VfNJXctig/trq6EI8ggC5WDHPyqS
+F+RLj00w4KXI1qm0cB81jzv9UV0I2yBhkdPhXcNZB6Wc7vgEeTufJwMwyPScrEVB
+NopO4WdprdujxEEXl01ajOknMu6cuI2XCyVLWljYENYCbCfQ1AV19uYrYbTazGP/
+iyaki+mj1/3mHLwV1NfiqnMPC0u8ug==
+=Z0sl
+-----END PGP SIGNATURE-----
+
+--utbqex7kud7q6aoc--
