@@ -2,100 +2,76 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C853C433F5
-	for <linux-can@archiver.kernel.org>; Wed, 16 Mar 2022 07:57:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77ABFC433EF
+	for <linux-can@archiver.kernel.org>; Wed, 16 Mar 2022 18:34:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244875AbiCPH6c (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 16 Mar 2022 03:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50508 "EHLO
+        id S240467AbiCPSfO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 16 Mar 2022 14:35:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244787AbiCPH6b (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Mar 2022 03:58:31 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289DB60D8E
-        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 00:57:18 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1nUOWy-0005sf-IP
-        for linux-can@vger.kernel.org; Wed, 16 Mar 2022 08:57:16 +0100
-Received: from [IPv6:2a03:f580:87bc:d400:58ae:3d0e:218c:eca6] (2a03-f580-87bc-d400-58ae-3d0e-218c-eca6.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:58ae:3d0e:218c:eca6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 106F44C40E
-        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 07:57:16 +0000 (UTC)
-Date:   Wed, 16 Mar 2022 08:45:15 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Oliver Hartkopp <socketcan@hartkopp.net>, netdev@vger.kernel.org,
-        syzbot+2339c27f5c66c652843e@syzkaller.appspotmail.com
+        with ESMTP id S240131AbiCPSfN (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Mar 2022 14:35:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15BD0642D;
+        Wed, 16 Mar 2022 11:33:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8CFC1618C1;
+        Wed, 16 Mar 2022 18:33:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7159C340E9;
+        Wed, 16 Mar 2022 18:33:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647455638;
+        bh=BBntHNa6ogo6orHLVRJgt98BQRdO7DhrSgNocBna7ts=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rkY9FEiSlijPlVVyQYZiouLT9kD19CPgbgai+cyCPG8H9rCoDrbBOTk76sZQD8VQD
+         aMhCB1vSQytu+6MAwFAlEVA7S1+6mgydTXYYqW+e/KBk7D5XfJu+r3JtVpLMhseIGx
+         1QgRUGYN318M/z5FURchqQwx1Si6l/LCQpXkp/GSyQXBgGUi65nKJofD6l2fGm6+Q4
+         8zjJmIiCoaIMmIJmHS0Qe1q0GCH/P04MMr78TWan0dbx/zxvQ0EHckwS7di9751Cem
+         XP26ivUnjPXd/yLQzjxCjwNywjUx3zjgCUphIPK3bGskBuBqrhKHzoCT+EgCrRkKfP
+         ookG3NPK5mmMg==
+Date:   Wed, 16 Mar 2022 11:33:56 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org,
+        syzbot+2339c27f5c66c652843e@syzkaller.appspotmail.com,
+        linux-can <linux-can@vger.kernel.org>
 Subject: Re: [net-next] can: isotp: sanitize CAN ID checks in isotp_bind()
-Message-ID: <20220316074515.jchjdelc722dkug7@pengutronix.de>
+Message-ID: <20220316113356.6bee9428@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <ec2adb66-2199-2f9d-15ce-6641562c54f2@hartkopp.net>
 References: <20220315203748.1892-1-socketcan@hartkopp.net>
- <20220315185134.687fe506@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20220315185134.687fe506@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <3922032f-c829-b609-e408-6dec83a0041a@hartkopp.net>
+        <20220316074802.b3xazftb7axziue3@pengutronix.de>
+        <7445f2f1-4d89-116e-0cf7-fc7338c2901f@hartkopp.net>
+        <20220316080111.s2hlj6krlzcroxh6@pengutronix.de>
+        <ec2adb66-2199-2f9d-15ce-6641562c54f2@hartkopp.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="a7jkxwlyxzf4a2wp"
-Content-Disposition: inline
-In-Reply-To: <20220315185134.687fe506@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+On Wed, 16 Mar 2022 09:42:14 +0100 Oliver Hartkopp wrote:
+> > Another option is to port the patch to net/master with the hope that
+> > back porting is easier.  
+> 
+> I have a patch here for net/master that also properly applies down to 
+> linux-5.10.y
+> If requested I could post it instantly.
+> 
+> > Then talk to Jakub and David about the merge
+> > conflict when net/master is merged to net-next/master.  
+> 
+> Yes. There will be a merge conflict. Therefore I thought bringing that 
+> patch for the released 5.17 and the stable trees later would be less 
+> effort for Jakub and David.
 
---a7jkxwlyxzf4a2wp
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+No strong preference in this particular case, -rc9 is very unlikely 
+so won't be much difference between it getting merge to net or net-next.
 
-On 15.03.2022 18:51:34, Jakub Kicinski wrote:
-> On Tue, 15 Mar 2022 21:37:48 +0100 Oliver Hartkopp wrote:
-> > Syzbot created an environment that lead to a state machine status that
-> > can not be reached with a compliant CAN ID address configuration.
-> > The provided address information consisted of CAN ID 0x6000001 and 0xC2=
-8001
-> > which both boil down to 11 bit CAN IDs 0x001 in sending and receiving.
-> >=20
-> > Sanitize the SFF/EFF CAN ID values before performing the address checks.
-> >=20
-> > Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
-> > Reported-by: syzbot+2339c27f5c66c652843e@syzkaller.appspotmail.com
-> > Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
->=20
-> CC Marc, please make sure you CC maintainers.
-
-Thx. And make sure you have the linux-can ML on Cc :)
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---a7jkxwlyxzf4a2wp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmIxlYgACgkQrX5LkNig
-013J4Af+I/NIkvAMDcLPbEyYurqV1Dv+WHXAZ2vnk8hTDBOnqELRTqTUj/ZRGHtn
-Yeq67ip2InVP5woUfmhikSDWjOaULUsF5tAHEwuXtk0bgF3vqydSRq14U5mWEM74
-lb9sC0KPfTZlcHiafOT5/uiaIv1eD2TMOGPzxkBz6Gl5HHQteiFtkOljlAcvdbTd
-TN52/tO2LA3CUYo9DAcjBAxPiAVMgjsgOAiq70isc/V/XTRcZpqMnn8TUEdZxJC8
-G+W+z+OEa2zMwK61mU7FIO0Wy9B/jwNyDLN6+0NhyKQQsKHzSY5X27BN8URirQeU
-8eaplG6IroTFS9flA9FpPclCH/MCWg==
-=u3B6
------END PGP SIGNATURE-----
-
---a7jkxwlyxzf4a2wp--
+If you don't have a preference either let's got with the usual process
+and send the patch to net, just share the conflict resolution and we
+can deal with it.
