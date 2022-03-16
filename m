@@ -2,120 +2,117 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DE94C43217
-	for <linux-can@archiver.kernel.org>; Wed, 16 Mar 2022 17:24:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE468C433EF
+	for <linux-can@archiver.kernel.org>; Wed, 16 Mar 2022 07:57:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350693AbiCPR0D (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 16 Mar 2022 13:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48018 "EHLO
+        id S1354376AbiCPH6c (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 16 Mar 2022 03:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350704AbiCPR0D (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Mar 2022 13:26:03 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210AABC36
-        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 10:24:48 -0700 (PDT)
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
+        with ESMTP id S244875AbiCPH6b (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Mar 2022 03:58:31 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2879B60D80
+        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 00:57:18 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1nUOWy-0005se-HR
+        for linux-can@vger.kernel.org; Wed, 16 Mar 2022 08:57:16 +0100
+Received: from [IPv6:2a03:f580:87bc:d400:58ae:3d0e:218c:eca6] (2a03-f580-87bc-d400-58ae-3d0e-218c-eca6.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:58ae:3d0e:218c:eca6])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id C95D13F338
-        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 17:24:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1647451486;
-        bh=DFWkk+dD+miD1tAhLV++xP/XlZBQMQ7X6zFsvz7Q3qs=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=rdLd0i7EOiwNv4y+CkRUDFmygq1HZH3twJalOTOytHjUVDhI+W5Nw6XWtSy+8WX+a
-         ycHQdNjZEB6jCVJ/oe91rP0TGDAC05anIJT9EigNou4smDzwcA/cLMq4dqq1DX6q6B
-         aEQNCsRIoKMWA7925bP+Tx2kEyod+VE038BTsU1/98yHKI7YicbD593bvJzGpKxqku
-         8qJdKAgDByfyGJ4ht++5QQD7MoObkkWUDiQsUNI0yBKbAfGEBfBFFli7QJ7s7ZB1Q0
-         vEm1KZ52W2MXz023X04MMSA575Gyngn4HkAgEQpmm2eBAXDsK6xGme8fE9t3nV4KU8
-         rpbpdzYXZabyg==
-Received: by mail-wm1-f72.google.com with SMTP id v184-20020a1cacc1000000b0038a12dbc23bso3041561wme.5
-        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 10:24:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=DFWkk+dD+miD1tAhLV++xP/XlZBQMQ7X6zFsvz7Q3qs=;
-        b=3ho2OedPFbWr4kz/1hCA47VOQbkkQsk6SdOFGpbXA1uHQy7NlZUBCROm+Vsosilhu3
-         6BgWgQ0PSEdUfCf+6UFEcJ3s6JJpRkIc9/iijydqTrj+MbfHLKNKhoY1YT272EpZa82o
-         huOCruR7OGIud39eMRc5WNjnts/t+QDUvzi0+QVzO0k4xZQ7gF8QP41R9JrLcBtxfsIY
-         kRpdWb0XX22hyqp5SdjT1/Tt7DxofOpifF/TwdKhD2bFWXjKOWBYjdSvWRzG6Q9vIZKK
-         hX+KbP5Y+ZmkYmnoZAFC1i9XiNONU+u3zCM0oBhySXBtlqFTUO+5/MnJJKlFwQ5sJhH9
-         GG6w==
-X-Gm-Message-State: AOAM533TOI6h8joMgT3r8KN4IXTzldSfNiituYS1t26ioF1AIkKDlpOC
-        UWBWhfH1OWnccIW/HKfj/jnpGfAY8P2mR+04wMO0VWmrpoxA6JJTgupzR2WCRR+/446Rf+vBB4r
-        pJOTQ8l8fJILQXadEUPzOpV5kwVTti4/kmNRVAQ==
-X-Received: by 2002:a5d:5308:0:b0:1f0:6300:f1d0 with SMTP id e8-20020a5d5308000000b001f06300f1d0mr807663wrv.278.1647451486352;
-        Wed, 16 Mar 2022 10:24:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyKIDxRFk6Y7FutZOGNJm0wMC59ZyrwAOZDtuOajZo3/h8b2cFROj96IpV5T4Wa6hFneoX2Jw==
-X-Received: by 2002:a5d:5308:0:b0:1f0:6300:f1d0 with SMTP id e8-20020a5d5308000000b001f06300f1d0mr807651wrv.278.1647451486124;
-        Wed, 16 Mar 2022 10:24:46 -0700 (PDT)
-Received: from [192.168.0.17] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.googlemail.com with ESMTPSA id p12-20020a5d48cc000000b001e6114938a8sm2111015wrs.56.2022.03.16.10.24.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Mar 2022 10:24:45 -0700 (PDT)
-Message-ID: <6490a3e5-04c8-535a-7c29-de7ca9bc8f1e@canonical.com>
-Date:   Wed, 16 Mar 2022 18:24:43 +0100
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 06B604C40D
+        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 07:57:16 +0000 (UTC)
+Date:   Wed, 16 Mar 2022 08:48:02 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        syzbot+2339c27f5c66c652843e@syzkaller.appspotmail.com
+Subject: Re: [net-next] can: isotp: sanitize CAN ID checks in isotp_bind()
+Message-ID: <20220316074802.b3xazftb7axziue3@pengutronix.de>
+References: <20220315203748.1892-1-socketcan@hartkopp.net>
+ <20220315185134.687fe506@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <3922032f-c829-b609-e408-6dec83a0041a@hartkopp.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v4] dt-bindings: can: xilinx_can: Convert Xilinx CAN
- binding to YAML
-Content-Language: en-US
-To:     Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>,
-        wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
-        kuba@kernel.org, robh+dt@kernel.org, appana.durga.rao@xilinx.com
-Cc:     git@xilinx.com, michal.simek@xilinx.com, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        akumarma@xilinx.com
-References: <20220316171105.17654-1-amit.kumar-mahapatra@xilinx.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20220316171105.17654-1-amit.kumar-mahapatra@xilinx.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="iqmkpn33uytbhv24"
+Content-Disposition: inline
+In-Reply-To: <3922032f-c829-b609-e408-6dec83a0041a@hartkopp.net>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On 16/03/2022 18:11, Amit Kumar Mahapatra wrote:
-> Convert Xilinx CAN binding documentation to YAML.
-> 
-> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
-> ---
-> BRANCH: yaml
-> 
-> Changes in v2:
->  - Added reference to can-controller.yaml
->  - Added example node for canfd-2.0
-> 
-> Changes in v3:
->  - Changed yaml file name from xilinx_can.yaml to xilinx,can.yaml
->  - Added "power-domains" to fix dts_check warnings
->  - Grouped "clock-names" and "clocks" together
->  - Added type $ref for all non-standard fields
->  - Defined compatible strings as enum
->  - Used defines,instead of hard-coded values, for GIC interrupts
->  - Droped unused labels in examples
->  - Droped description for standard fields
-> 
-> Changes in v4:
->  - Replaced additionalProperties with unevaluatedProperties
->  - Moved reg property just after compatible in all examples
-> ---
->  .../bindings/net/can/xilinx,can.yaml          | 161 ++++++++++++++++++
->  .../bindings/net/can/xilinx_can.txt           |  61 -------
->  2 files changed, 161 insertions(+), 61 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/net/can/xilinx,can.yaml
->  delete mode 100644 Documentation/devicetree/bindings/net/can/xilinx_can.txt
-> 
 
+--iqmkpn33uytbhv24
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+On 16.03.2022 08:35:58, Oliver Hartkopp wrote:
+>=20
+>=20
+> On 16.03.22 02:51, Jakub Kicinski wrote:
+> > On Tue, 15 Mar 2022 21:37:48 +0100 Oliver Hartkopp wrote:
+> > > Syzbot created an environment that lead to a state machine status that
+> > > can not be reached with a compliant CAN ID address configuration.
+> > > The provided address information consisted of CAN ID 0x6000001 and 0x=
+C28001
+> > > which both boil down to 11 bit CAN IDs 0x001 in sending and receiving.
+> > >=20
+> > > Sanitize the SFF/EFF CAN ID values before performing the address chec=
+ks.
+> > >=20
+> > > Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
+> > > Reported-by: syzbot+2339c27f5c66c652843e@syzkaller.appspotmail.com
+> > > Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> >=20
+> > CC Marc, please make sure you CC maintainers.
+>=20
+> Oh, that would have been better! I'm maintaining the CAN network layer st=
+uff
+> together with Marc and there was no relevant stuff in can-next to be pull=
+ed
+> in the next days. So I sent it directly to hit the merge window and had a=
+ll
+> of us in the reply to the syzbot report.
+>=20
+> Will CC Marc next time when posting to netdev only!
+>=20
+> Maybe I treated this patch more urgent than it needed to be handled
+> =C2=AF\_(=E3=83=84)_/=C2=AF
 
+Should this go into net/master with stable on Cc or to net-next?
 
-Best regards,
-Krzysztof
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--iqmkpn33uytbhv24
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmIxli8ACgkQrX5LkNig
+0100nwf/f8+i4bn9wteTJ2mBsDGexIY1+unKOqXQBG/i4Ump+FtyBHcEuzDuuLrW
+h95CCwdpRNaNXJTlULY4EfWAYdJ1CywVKtppTc4ItvVFevZswhFEwqEMj6qSruN9
+KYkiavewhJgtNgrR0k9veISLOUcNFM6yBuOdvnYpYvb5ar/tyXbu9XUKVXfHwgv6
+b5qvR48z+Jd18Af0iovh/Z9BjLhXj2hLKOnECV3g6QvGHIUB5lfYMQIKY6gfK/LA
+3vFyOxSDF7sEiW1ZU3JHM5bsDq5Mo0HDTj7I0HQRjvs3rsZkbO27N3F6oxas0slx
+v/xBhqyc0XZZtZErQqQqPQopn5y/eg==
+=Ayxv
+-----END PGP SIGNATURE-----
+
+--iqmkpn33uytbhv24--
