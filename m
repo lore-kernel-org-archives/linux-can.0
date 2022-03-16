@@ -2,50 +2,48 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 398C5C4332F
-	for <linux-can@archiver.kernel.org>; Wed, 16 Mar 2022 20:49:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70A95C433EF
+	for <linux-can@archiver.kernel.org>; Wed, 16 Mar 2022 20:49:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358082AbiCPUuy (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 16 Mar 2022 16:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50230 "EHLO
+        id S239638AbiCPUvF (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 16 Mar 2022 16:51:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358068AbiCPUuv (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Mar 2022 16:50:51 -0400
+        with ESMTP id S239664AbiCPUvE (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Mar 2022 16:51:04 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDB85A5B3
-        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 13:49:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 875756E376
+        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 13:49:42 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nUaaM-0003uq-Ti
-        for linux-can@vger.kernel.org; Wed, 16 Mar 2022 21:49:34 +0100
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id F3F3C4CB9F
-        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 20:47:11 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        id 1nUaaL-0003rM-Hs; Wed, 16 Mar 2022 21:49:33 +0100
+Received: from pengutronix.de (2a03-f580-87bc-d400-0549-f74e-91ef-4d7d.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:549:f74e:91ef:4d7d])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9D1664CB6C;
-        Wed, 16 Mar 2022 20:47:11 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 09d47ba5;
-        Wed, 16 Mar 2022 20:47:11 +0000 (UTC)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id A094A4CBBD;
+        Wed, 16 Mar 2022 20:48:20 +0000 (UTC)
+Date:   Wed, 16 Mar 2022 21:48:20 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
-        Derek Will <derekrobertwill@gmail.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 3/5] can: isotp: support MSG_TRUNC flag when reading from socket
-Date:   Wed, 16 Mar 2022 21:47:08 +0100
-Message-Id: <20220316204710.716341-4-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220316204710.716341-1-mkl@pengutronix.de>
-References: <20220316204710.716341-1-mkl@pengutronix.de>
+To:     Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+Cc:     wg@grandegger.com, davem@davemloft.net, kuba@kernel.org,
+        robh+dt@kernel.org, appana.durga.rao@xilinx.com, git@xilinx.com,
+        michal.simek@xilinx.com, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        akumarma@xilinx.com
+Subject: Re: [PATCH v4] dt-bindings: can: xilinx_can: Convert Xilinx CAN
+ binding to YAML
+Message-ID: <20220316204820.j3l4ltr3wihmlrop@pengutronix.de>
+References: <20220316171105.17654-1-amit.kumar-mahapatra@xilinx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="a5b6yhozna6aet3p"
+Content-Disposition: inline
+In-Reply-To: <20220316171105.17654-1-amit.kumar-mahapatra@xilinx.com>
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -54,82 +52,41 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-When providing the MSG_TRUNC flag via recvmsg() syscall the return value
-provides the real length of the packet or datagram, even when it was longer
-than the passed buffer.
+--a5b6yhozna6aet3p
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
-Link: https://github.com/linux-can/can-utils/issues/347#issuecomment-1065932671
-Link: https://lore.kernel.org/all/20220316164258.54155-3-socketcan@hartkopp.net
-Suggested-by: Derek Will <derekrobertwill@gmail.com>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- net/can/isotp.c | 27 +++++++++++++++------------
- 1 file changed, 15 insertions(+), 12 deletions(-)
+On 16.03.2022 22:41:05, Amit Kumar Mahapatra wrote:
+> Convert Xilinx CAN binding documentation to YAML.
+>=20
+> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 6b6c82206c30..f6f8ba1f816d 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -1047,29 +1047,28 @@ static int isotp_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 	struct sock *sk = sock->sk;
- 	struct sk_buff *skb;
- 	struct isotp_sock *so = isotp_sk(sk);
--	int err = 0;
--	int noblock;
-+	int noblock = flags & MSG_DONTWAIT;
-+	int ret = 0;
- 
--	noblock = flags & MSG_DONTWAIT;
--	flags &= ~MSG_DONTWAIT;
-+	if (flags & ~(MSG_DONTWAIT | MSG_TRUNC))
-+		return -EINVAL;
- 
- 	if (!so->bound)
- 		return -EADDRNOTAVAIL;
- 
--	skb = skb_recv_datagram(sk, flags, noblock, &err);
-+	flags &= ~MSG_DONTWAIT;
-+	skb = skb_recv_datagram(sk, flags, noblock, &ret);
- 	if (!skb)
--		return err;
-+		return ret;
- 
- 	if (size < skb->len)
- 		msg->msg_flags |= MSG_TRUNC;
- 	else
- 		size = skb->len;
- 
--	err = memcpy_to_msg(msg, skb->data, size);
--	if (err < 0) {
--		skb_free_datagram(sk, skb);
--		return err;
--	}
-+	ret = memcpy_to_msg(msg, skb->data, size);
-+	if (ret < 0)
-+		goto out_err;
- 
- 	sock_recv_timestamp(msg, sk, skb);
- 
-@@ -1079,9 +1078,13 @@ static int isotp_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 		memcpy(msg->msg_name, skb->cb, msg->msg_namelen);
- 	}
- 
-+	/* set length of return value */
-+	ret = (flags & MSG_TRUNC) ? skb->len : size;
-+
-+out_err:
- 	skb_free_datagram(sk, skb);
- 
--	return size;
-+	return ret;
- }
- 
- static int isotp_release(struct socket *sock)
--- 
-2.35.1
+Added to linux-can-next/testing
 
+regards,
+Marc
 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--a5b6yhozna6aet3p
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmIyTREACgkQrX5LkNig
+013Piwf/e5VTDTzBS0Dh8q/NqJaCXA3U43tW8E/puSKudGMfRUawcd9s4Rn8yrDU
+F+T953TYsHC4AaZJvCVGs43K9zOi2hsN3vvk0q1gQKCtVifXPqAZlZACTnaN2C3P
+gzYvbVcrDnx95IFWi0/EJa1qpKBa1AtSY41cs2v+yjc4931ZIGWVlCsbwfxZ3ySC
+ENwf5RYqW4EdmwRLUuLQCPY+BaJX+w0BYSB/a6qT0L/N8RLjoIDPpZgHERi44PtP
+YHWg5rlcGAg3xhCHUzTJWzox/Je8IzzdLKrqydm8qlOFRT8trDROGaoMG7lFBh9Q
+KTh5Fs5El+8/8BwFYkp6NE/QipPfJg==
+=rasR
+-----END PGP SIGNATURE-----
+
+--a5b6yhozna6aet3p--
