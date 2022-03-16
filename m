@@ -2,44 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02F1BC433FE
-	for <linux-can@archiver.kernel.org>; Wed, 16 Mar 2022 20:49:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DF51C433EF
+	for <linux-can@archiver.kernel.org>; Wed, 16 Mar 2022 20:49:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353878AbiCPUuv (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 16 Mar 2022 16:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50168 "EHLO
+        id S1358078AbiCPUux (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 16 Mar 2022 16:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345028AbiCPUus (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Mar 2022 16:50:48 -0400
+        with ESMTP id S1358063AbiCPUuv (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Mar 2022 16:50:51 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5226B5A5B5
-        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 13:49:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E85DE3B28D
+        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 13:49:35 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nUaaJ-0003qE-Jc
-        for linux-can@vger.kernel.org; Wed, 16 Mar 2022 21:49:31 +0100
+        id 1nUaaM-0003ta-9o
+        for linux-can@vger.kernel.org; Wed, 16 Mar 2022 21:49:34 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 1E6544CBAF
-        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 20:47:12 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id CF0164CB89
+        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 20:47:11 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id D42864CB90;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8E0BA4CB64;
         Wed, 16 Mar 2022 20:47:11 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e3f46762;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ac314e07;
         Wed, 16 Mar 2022 20:47:11 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Julia Lawall <Julia.Lawall@inria.fr>,
+        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
+        Derek Will <derekrobertwill@gmail.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 5/5] can: ucan: fix typos in comments
-Date:   Wed, 16 Mar 2022 21:47:10 +0100
-Message-Id: <20220316204710.716341-6-mkl@pengutronix.de>
+Subject: [PATCH net-next 2/5] can: isotp: return -EADDRNOTAVAIL when reading from unbound socket
+Date:   Wed, 16 Mar 2022 21:47:07 +0100
+Message-Id: <20220316204710.716341-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220316204710.716341-1-mkl@pengutronix.de>
 References: <20220316204710.716341-1-mkl@pengutronix.de>
@@ -53,41 +54,44 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Julia Lawall <Julia.Lawall@inria.fr>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Various spelling mistakes in comments.
-Detected with the help of Coccinelle.
+When reading from an unbound can-isotp socket the syscall blocked
+indefinitely. As unbound sockets (without given CAN address information)
+do not make sense anyway we directly return -EADDRNOTAVAIL on read()
+analogue to the known behavior from sendmsg().
 
-Link: https://lore.kernel.org/all/20220314115354.144023-28-Julia.Lawall@inria.fr
-Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
+Link: https://github.com/linux-can/can-utils/issues/349
+Link: https://lore.kernel.org/all/20220316164258.54155-2-socketcan@hartkopp.net
+Suggested-by: Derek Will <derekrobertwill@gmail.com>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/ucan.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/can/isotp.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/can/usb/ucan.c b/drivers/net/can/usb/ucan.c
-index c7c41d1fd038..5ae0d7c017cc 100644
---- a/drivers/net/can/usb/ucan.c
-+++ b/drivers/net/can/usb/ucan.c
-@@ -1392,7 +1392,7 @@ static int ucan_probe(struct usb_interface *intf,
- 	 * Stage 3 for the final driver initialisation.
- 	 */
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index 1662103ce125..6b6c82206c30 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -1046,12 +1046,16 @@ static int isotp_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ {
+ 	struct sock *sk = sock->sk;
+ 	struct sk_buff *skb;
++	struct isotp_sock *so = isotp_sk(sk);
+ 	int err = 0;
+ 	int noblock;
  
--	/* Prepare Memory for control transferes */
-+	/* Prepare Memory for control transfers */
- 	ctl_msg_buffer = devm_kzalloc(&udev->dev,
- 				      sizeof(union ucan_ctl_payload),
- 				      GFP_KERNEL);
-@@ -1526,7 +1526,7 @@ static int ucan_probe(struct usb_interface *intf,
- 	ret = ucan_device_request_in(up, UCAN_DEVICE_GET_FW_STRING, 0,
- 				     sizeof(union ucan_ctl_payload));
- 	if (ret > 0) {
--		/* copy string while ensuring zero terminiation */
-+		/* copy string while ensuring zero termination */
- 		strncpy(firmware_str, up->ctl_msg_buffer->raw,
- 			sizeof(union ucan_ctl_payload));
- 		firmware_str[sizeof(union ucan_ctl_payload)] = '\0';
+ 	noblock = flags & MSG_DONTWAIT;
+ 	flags &= ~MSG_DONTWAIT;
+ 
++	if (!so->bound)
++		return -EADDRNOTAVAIL;
++
+ 	skb = skb_recv_datagram(sk, flags, noblock, &err);
+ 	if (!skb)
+ 		return err;
 -- 
 2.35.1
 
