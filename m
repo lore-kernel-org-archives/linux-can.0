@@ -2,136 +2,99 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5B46C433EF
-	for <linux-can@archiver.kernel.org>; Tue, 15 Mar 2022 20:49:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFAC9C433F5
+	for <linux-can@archiver.kernel.org>; Wed, 16 Mar 2022 08:01:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351798AbiCOUuQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 15 Mar 2022 16:50:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41098 "EHLO
+        id S1352914AbiCPICd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 16 Mar 2022 04:02:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351743AbiCOUuO (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 15 Mar 2022 16:50:14 -0400
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B69624F06;
-        Tue, 15 Mar 2022 13:48:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1647377335;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:To:Subject:Date:Message-ID:Cc:Date:From:
-    Subject:Sender;
-    bh=mfqGnB/NorIrBYocK370TVdnZ90hKH4/cEEo32hkWwY=;
-    b=BGDAm1EZRYfYZ4KX1kNZ5aurOwJ7JMSKWmS1K0SMwjlZ5on3oITcZJy9WqgHYP/Es7
-    2Fb6FwO/kXt1K6J0eWpdSnNDf0VHUGbe+58QPyWnluDsVJQLPrOmjINwCJeAk6ff/0mc
-    8yocIlUDGyyVUI263MSiGKA8HqLvMP1qwIHaHqoUOqwhkCrUQeGFa8iQVL0pRNKKl4zz
-    H31elYe2yV4yEgS/Lyly2mvv+uVTSzUISksYPG4yMSiUXigsarTkg1flX92Nlq5PDKh3
-    oDInwP2sO/zigM77E8oc1Iqr55l6bwTIafIBAduGrC7B3LyriTEs79hD/veDgih3BODu
-    LkeQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusx3hdd0DIgVuBOfXW6v7w=="
-X-RZG-CLASS-ID: mo00
-Received: from [IPV6:2a00:6020:1cfa:f900::b82]
-    by smtp.strato.de (RZmta 47.41.0 AUTH)
-    with ESMTPSA id a046a1y2FKms13o
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 15 Mar 2022 21:48:54 +0100 (CET)
-Message-ID: <9bdaf3f2-3edc-5cd5-1184-55387344881d@hartkopp.net>
-Date:   Tue, 15 Mar 2022 21:48:48 +0100
+        with ESMTP id S244787AbiCPICb (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Mar 2022 04:02:31 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D43E5C354
+        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 01:01:18 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1nUOan-0006Fx-Mq; Wed, 16 Mar 2022 09:01:13 +0100
+Received: from pengutronix.de (2a03-f580-87bc-d400-58ae-3d0e-218c-eca6.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:58ae:3d0e:218c:eca6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id BB7244C41D;
+        Wed, 16 Mar 2022 08:01:11 +0000 (UTC)
+Date:   Wed, 16 Mar 2022 09:01:11 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        syzbot+2339c27f5c66c652843e@syzkaller.appspotmail.com,
+        linux-can <linux-can@vger.kernel.org>
+Subject: Re: [net-next] can: isotp: sanitize CAN ID checks in isotp_bind()
+Message-ID: <20220316080111.s2hlj6krlzcroxh6@pengutronix.de>
+References: <20220315203748.1892-1-socketcan@hartkopp.net>
+ <20220315185134.687fe506@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <3922032f-c829-b609-e408-6dec83a0041a@hartkopp.net>
+ <20220316074802.b3xazftb7axziue3@pengutronix.de>
+ <7445f2f1-4d89-116e-0cf7-fc7338c2901f@hartkopp.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.2
-Subject: net-next Re: [syzbot] WARNING in isotp_tx_timer_handler (2)
-Content-Language: en-US
-To:     syzbot <syzbot+2339c27f5c66c652843e@syzkaller.appspotmail.com>,
-        davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mkl@pengutronix.de,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <0000000000004e53a505da08501e@google.com>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <0000000000004e53a505da08501e@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gtrnbsganf6o7yud"
+Content-Disposition: inline
+In-Reply-To: <7445f2f1-4d89-116e-0cf7-fc7338c2901f@hartkopp.net>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi all,
 
-thanks for the report!
+--gtrnbsganf6o7yud
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-A patch to fix the issue has been posted for the "net-next" tree here:
+On 16.03.2022 08:53:54, Oliver Hartkopp wrote:
+> > Should this go into net/master with stable on Cc or to net-next?
+>=20
+> This patch is for net-next as it won't apply to net/master nor the
+> stable trees due to the recent changes in net-next.
+>=20
+> As it contains a Fixes: tag I would send the patch for the stable
+> trees when the patch hits Linus' tree and likely Greg would show up
+> asking for it.
+>=20
+> I hope that's the most elegant process here?!?
 
-https://lore.kernel.org/netdev/20220315203748.1892-1-socketcan@hartkopp.net/T/#u
+Another option is to port the patch to net/master with the hope that
+back porting is easier. Then talk to Jakub and David about the merge
+conflict when net/master is merged to net-next/master.
 
-I sent it to the net-next tree as it fits best to get it into upstream 
-before the merge window opens IMO.
+Marc
 
-Linus' tree (and the stable kernels) need a different patch due to 
-current changes in net-next. A patch for the non net-next kernels is 
-available too.
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-The fix is not critical. So there's no hurry to get it into Linus' tree 
-and the stable trees.
+--gtrnbsganf6o7yud
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Best regards,
-Oliver
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmIxmT8ACgkQrX5LkNig
+01087gf+OX1FlioJmrgiKmTnmPuQaD4rGOqzkxNIHKITJxiZ8PiWhmb7Dotu4FEQ
+f07Vi3WPD4Z/04wOKz/ttrefX4neFBOfU2r6y7BGsrEvECuz24nTC3EVgRbN9JCE
+iQVymE0xnarpitvHJJGv5ZF5KhvhDkx7AVvPi95x3fUBMgtMeIjDl6flsb4H1QQm
+f+qfFewCa52hLiw7qdp2pDy68dLX//LyabCz8HcRO/lB2bDNY0zGEQURTtmlVMy/
+i03wDoUyyahiQuT/9tvv40mygA1i9Sd51nJXr+gglf2scw6pEtgQU/9r+/zuiAHl
+OTGNXJzDap66d/hqoS6Dw2q3vM+kIQ==
+=gGTf
+-----END PGP SIGNATURE-----
 
-On 12.03.22 17:55, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    46b348fd2d81 alx: acquire mutex for alx_reinit in alx_chan..
-> git tree:       net
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15da96e5700000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=442f8ac61e60a75e
-> dashboard link: https://syzkaller.appspot.com/bug?extid=2339c27f5c66c652843e
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=165c76ad700000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=143da461700000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+2339c27f5c66c652843e@syzkaller.appspotmail.com
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 19 at net/can/isotp.c:852 isotp_tx_timer_handler+0x717/0xcd0 net/can/isotp.c:852
-> Modules linked in:
-> CPU: 1 PID: 19 Comm: ksoftirqd/1 Not tainted 5.17.0-rc7-syzkaller-00198-g46b348fd2d81 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:isotp_tx_timer_handler+0x717/0xcd0 net/can/isotp.c:852
-> Code: f9 44 0f b6 25 3b 23 56 05 31 ff 44 89 e6 e8 f0 56 4f f9 45 84 e4 0f 85 9d fa ff ff e9 4e 01 20 01 85 ed 75 52 e8 59 54 4f f9 <0f> 0b 45 31 e4 e8 4f 54 4f f9 48 8b 74 24 40 48 b8 00 00 00 00 00
-> RSP: 0018:ffffc90000d97c40 EFLAGS: 00010246
-> RAX: 0000000000000000 RBX: ffff88806f490568 RCX: 0000000000000100
-> RDX: ffff888011945700 RSI: ffffffff88296bd7 RDI: 0000000000000003
-> RBP: 0000000000000000 R08: ffffffff8ac3c440 R09: ffffffff8829656f
-> R10: 0000000000000003 R11: 0000000000000000 R12: 0000000000000000
-> R13: ffff8880b9d2a880 R14: ffff8880b9d2a600 R15: ffffffff882964c0
-> FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f5c3133d1d8 CR3: 000000006b70d000 CR4: 00000000003506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   <TASK>
->   __run_hrtimer kernel/time/hrtimer.c:1685 [inline]
->   __hrtimer_run_queues+0x609/0xe50 kernel/time/hrtimer.c:1749
->   hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1766
->   __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
->   run_ksoftirqd kernel/softirq.c:921 [inline]
->   run_ksoftirqd+0x2d/0x60 kernel/softirq.c:913
->   smpboot_thread_fn+0x645/0x9c0 kernel/smpboot.c:164
->   kthread+0x2e9/0x3a0 kernel/kthread.c:377
->   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
->   </TASK>
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
+--gtrnbsganf6o7yud--
