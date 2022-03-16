@@ -2,171 +2,108 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACC45C433EF
-	for <linux-can@archiver.kernel.org>; Wed, 16 Mar 2022 16:43:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A36BC433FE
+	for <linux-can@archiver.kernel.org>; Wed, 16 Mar 2022 16:49:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355976AbiCPQol (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 16 Mar 2022 12:44:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53488 "EHLO
+        id S237084AbiCPQvA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 16 Mar 2022 12:51:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357477AbiCPQoj (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Mar 2022 12:44:39 -0400
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B9F21C93B
-        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 09:43:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1647448994;
+        with ESMTP id S240548AbiCPQvA (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Mar 2022 12:51:00 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517613EF0F;
+        Wed, 16 Mar 2022 09:49:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1647449382;
     s=strato-dkim-0002; d=hartkopp.net;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=KMDY+gLoV9k745Yqvlwn4CapRWlH0lMiANSIpNvkV7k=;
-    b=b85hxo0K2qyzXYLq4ol5Msm1EzG6v7V8t4RzNVA7cW+ic/h8AMHLnhTZohg0S23wLb
-    QJ1pnOHcpbfHEJrt3YWoqSgG4/fbgC+z4Tzk6a0+qTl/rx6tlCd3ZfR7Myg9sE6DNRfI
-    tuw5azEBtKf3F0ObWSMGaPBUEbfTViN1WnyXscK1H3dCKIM98p1d/jmTmoSzCEiAweIk
-    TBXPAeAoBodCn3ZskATVzxq6AAei7HRZH213TwVhQr6C2KDRtluRG1NRB2g265lUQTaJ
-    tLchPs8gYToGhTJ+ixGYR2U/oQSQQ/DSi4R+WrdQEm6HQBTgq2WPOxsa+q7lNIPQccek
-    PJbA==
+    h=In-Reply-To:References:Cc:To:From:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=tlwYVjAu/+eh4O7kgvKdEyQUk3/1e0fO6eNpwNQ2H+8=;
+    b=n7oKwq+X668Gn4Cgy6+WzsdZD7z9bj2ATRoll40S0EpuN3Q5WqWbQOEiA9Q/icLuu0
+    yp1z/NuvHBIUVAezJ6ypL9TzMwpDJosSAMx/na4XVC01CHJEa0EtGtAJwLGBwU+4Sv4R
+    ihThzsSb5nfvBSoaoJiG2/sY8U4WkWxV/KXAiJ7ClBynVgG2cfrVS6NpRfaX488MN5aK
+    mGCpYg3jp0yMcnvtxXz4Ois09rDRQhRZqTR+86vjpsSTnzVWogrvBRktKtusNQvJTz8Z
+    y7xuCysqn0DUNNaL+vlg3izYOvUHArb4itYLMBbjTFLUT22CxWYVvhD1+wwlZpEt02Rl
+    dZdg==
 Authentication-Results: strato.com;
     dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS/xvEBL7X5sbo3UIh9IyLecSWJafUv+rx4"
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusx3hdd0DIgVuBOfXTKq7w=="
 X-RZG-CLASS-ID: mo00
-Received: from silver.lan
+Received: from [IPV6:2a00:6020:1cfa:f900::bd7]
     by smtp.strato.de (RZmta 47.41.0 AUTH)
-    with ESMTPSA id a046a1y2GGhE4CH
+    with ESMTPSA id a046a1y2GGng4DH
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Wed, 16 Mar 2022 17:43:14 +0100 (CET)
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-To:     linux-can@vger.kernel.org
-Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        syzbot+2339c27f5c66c652843e@syzkaller.appspotmail.com
-Subject: [PATCH 1/3] can: isotp: sanitize CAN ID checks in isotp_bind()
-Date:   Wed, 16 Mar 2022 17:42:56 +0100
-Message-Id: <20220316164258.54155-1-socketcan@hartkopp.net>
-X-Mailer: git-send-email 2.30.2
+    Wed, 16 Mar 2022 17:49:42 +0100 (CET)
+Message-ID: <3892b065-59e0-3490-50ba-baa56f118859@hartkopp.net>
+Date:   Wed, 16 Mar 2022 17:49:35 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.2
+Subject: Re: [net-next] can: isotp: sanitize CAN ID checks in isotp_bind()
+Content-Language: en-US
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        syzbot+2339c27f5c66c652843e@syzkaller.appspotmail.com,
+        linux-can <linux-can@vger.kernel.org>
+References: <20220315203748.1892-1-socketcan@hartkopp.net>
+ <20220315185134.687fe506@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <3922032f-c829-b609-e408-6dec83a0041a@hartkopp.net>
+ <20220316074802.b3xazftb7axziue3@pengutronix.de>
+ <7445f2f1-4d89-116e-0cf7-fc7338c2901f@hartkopp.net>
+ <20220316080111.s2hlj6krlzcroxh6@pengutronix.de>
+ <ec2adb66-2199-2f9d-15ce-6641562c54f2@hartkopp.net>
+In-Reply-To: <ec2adb66-2199-2f9d-15ce-6641562c54f2@hartkopp.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Syzbot created an environment that lead to a state machine status that
-can not be reached with a compliant CAN ID address configuration.
-The provided address information consisted of CAN ID 0x6000001 and 0xC28001
-which both boil down to 11 bit CAN IDs 0x001 in sending and receiving.
+Hi Marc,
 
-Sanitize the SFF/EFF CAN ID values before performing the address checks.
+I sent a patch set with three patches on the CAN ML.
 
-Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
-Reported-by: syzbot+2339c27f5c66c652843e@syzkaller.appspotmail.com
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- net/can/isotp.c | 41 +++++++++++++++++++++--------------------
- 1 file changed, 21 insertions(+), 20 deletions(-)
+Maybe it is just better when you pick them up for a regular process and 
+send a pull request to Jakub and Dave.
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index d4c0b4704987..1662103ce125 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -1146,19 +1146,30 @@ static int isotp_bind(struct socket *sock, struct sockaddr *uaddr, int len)
- 	struct sock *sk = sock->sk;
- 	struct isotp_sock *so = isotp_sk(sk);
- 	struct net *net = sock_net(sk);
- 	int ifindex;
- 	struct net_device *dev;
-+	canid_t tx_id, rx_id;
- 	int err = 0;
- 	int notify_enetdown = 0;
- 	int do_rx_reg = 1;
- 
- 	if (len < ISOTP_MIN_NAMELEN)
- 		return -EINVAL;
- 
--	if (addr->can_addr.tp.tx_id & (CAN_ERR_FLAG | CAN_RTR_FLAG))
--		return -EADDRNOTAVAIL;
-+	/* sanitize tx/rx CAN identifiers */
-+	tx_id = addr->can_addr.tp.tx_id;
-+	if (tx_id & CAN_EFF_FLAG)
-+		tx_id &= (CAN_EFF_FLAG | CAN_EFF_MASK);
-+	else
-+		tx_id &= CAN_SFF_MASK;
-+
-+	rx_id = addr->can_addr.tp.rx_id;
-+	if (rx_id & CAN_EFF_FLAG)
-+		rx_id &= (CAN_EFF_FLAG | CAN_EFF_MASK);
-+	else
-+		rx_id &= CAN_SFF_MASK;
- 
- 	if (!addr->can_ifindex)
- 		return -ENODEV;
- 
- 	lock_sock(sk);
-@@ -1166,25 +1177,17 @@ static int isotp_bind(struct socket *sock, struct sockaddr *uaddr, int len)
- 	/* do not register frame reception for functional addressing */
- 	if (so->opt.flags & CAN_ISOTP_SF_BROADCAST)
- 		do_rx_reg = 0;
- 
- 	/* do not validate rx address for functional addressing */
--	if (do_rx_reg) {
--		if (addr->can_addr.tp.rx_id == addr->can_addr.tp.tx_id) {
--			err = -EADDRNOTAVAIL;
--			goto out;
--		}
--
--		if (addr->can_addr.tp.rx_id & (CAN_ERR_FLAG | CAN_RTR_FLAG)) {
--			err = -EADDRNOTAVAIL;
--			goto out;
--		}
-+	if (do_rx_reg && rx_id == tx_id) {
-+		err = -EADDRNOTAVAIL;
-+		goto out;
- 	}
- 
- 	if (so->bound && addr->can_ifindex == so->ifindex &&
--	    addr->can_addr.tp.rx_id == so->rxid &&
--	    addr->can_addr.tp.tx_id == so->txid)
-+	    rx_id == so->rxid && tx_id == so->txid)
- 		goto out;
- 
- 	dev = dev_get_by_index(net, addr->can_ifindex);
- 	if (!dev) {
- 		err = -ENODEV;
-@@ -1204,20 +1207,18 @@ static int isotp_bind(struct socket *sock, struct sockaddr *uaddr, int len)
- 		notify_enetdown = 1;
- 
- 	ifindex = dev->ifindex;
- 
- 	if (do_rx_reg) {
--		can_rx_register(net, dev, addr->can_addr.tp.rx_id,
--				SINGLE_MASK(addr->can_addr.tp.rx_id),
-+		can_rx_register(net, dev, rx_id, SINGLE_MASK(rx_id),
- 				isotp_rcv, sk, "isotp", sk);
- 
- 		/* no consecutive frame echo skb in flight */
- 		so->cfecho = 0;
- 
- 		/* register for echo skb's */
--		can_rx_register(net, dev, addr->can_addr.tp.tx_id,
--				SINGLE_MASK(addr->can_addr.tp.tx_id),
-+		can_rx_register(net, dev, tx_id, SINGLE_MASK(tx_id),
- 				isotp_rcv_echo, sk, "isotpe", sk);
- 	}
- 
- 	dev_put(dev);
- 
-@@ -1237,12 +1238,12 @@ static int isotp_bind(struct socket *sock, struct sockaddr *uaddr, int len)
- 		}
- 	}
- 
- 	/* switch to new settings */
- 	so->ifindex = ifindex;
--	so->rxid = addr->can_addr.tp.rx_id;
--	so->txid = addr->can_addr.tp.tx_id;
-+	so->rxid = rx_id;
-+	so->txid = tx_id;
- 	so->bound = 1;
- 
- out:
- 	release_sock(sk);
- 
--- 
-2.30.2
+I still suggest to get these changes in via net-next and send the 
+"sanitize CAN ID" backport for the 'older' kernels, when net-next hits 
+Linus' tree.
 
+Best regards,
+Oliver
+
+On 16.03.22 09:42, Oliver Hartkopp wrote:
+> 
+> 
+> On 16.03.22 09:01, Marc Kleine-Budde wrote:
+>> On 16.03.2022 08:53:54, Oliver Hartkopp wrote:
+>>>> Should this go into net/master with stable on Cc or to net-next?
+>>>
+>>> This patch is for net-next as it won't apply to net/master nor the
+>>> stable trees due to the recent changes in net-next.
+>>>
+>>> As it contains a Fixes: tag I would send the patch for the stable
+>>> trees when the patch hits Linus' tree and likely Greg would show up
+>>> asking for it.
+>>>
+>>> I hope that's the most elegant process here?!?
+>>
+>> Another option is to port the patch to net/master with the hope that
+>> back porting is easier.
+> 
+> I have a patch here for net/master that also properly applies down to 
+> linux-5.10.y
+> If requested I could post it instantly.
+> 
+>> Then talk to Jakub and David about the merge
+>> conflict when net/master is merged to net-next/master.
+> 
+> Yes. There will be a merge conflict. Therefore I thought bringing that 
+> patch for the released 5.17 and the stable trees later would be less 
+> effort for Jakub and David.
+> 
+> Best regards.
+> Oliver
