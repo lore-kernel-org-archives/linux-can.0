@@ -2,44 +2,47 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48305C4332F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02F1BC433FE
 	for <linux-can@archiver.kernel.org>; Wed, 16 Mar 2022 20:49:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358067AbiCPUuv (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1353878AbiCPUuv (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Wed, 16 Mar 2022 16:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50174 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353878AbiCPUut (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Mar 2022 16:50:49 -0400
+        with ESMTP id S1345028AbiCPUus (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Mar 2022 16:50:48 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8016F39141
-        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 13:49:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5226B5A5B5
+        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 13:49:33 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nUaaK-0003qd-OR
-        for linux-can@vger.kernel.org; Wed, 16 Mar 2022 21:49:32 +0100
+        id 1nUaaJ-0003qE-Jc
+        for linux-can@vger.kernel.org; Wed, 16 Mar 2022 21:49:31 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 89B054CB62
-        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 20:47:11 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 1E6544CBAF
+        for <linux-can@vger.kernel.org>; Wed, 16 Mar 2022 20:47:12 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6ACF44CB5D;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id D42864CB90;
         Wed, 16 Mar 2022 20:47:11 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id abd5405b;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e3f46762;
         Wed, 16 Mar 2022 20:47:11 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net-next 0/5] pull-request: can-next 2022-03-16
-Date:   Wed, 16 Mar 2022 21:47:05 +0100
-Message-Id: <20220316204710.716341-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Julia Lawall <Julia.Lawall@inria.fr>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 5/5] can: ucan: fix typos in comments
+Date:   Wed, 16 Mar 2022 21:47:10 +0100
+Message-Id: <20220316204710.716341-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220316204710.716341-1-mkl@pengutronix.de>
+References: <20220316204710.716341-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -50,58 +53,42 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+From: Julia Lawall <Julia.Lawall@inria.fr>
 
-this is a pull request of 5 patches for net-next/master.
+Various spelling mistakes in comments.
+Detected with the help of Coccinelle.
 
-the first 3 patches are by Oliver Hartkopp target the CAN ISOTP
-protocol and fix a problem found by syzbot in isotp_bind(), return
--EADDRNOTAVAIL in unbound sockets in isotp_recvmsg() and add support
-for MSG_TRUNC to isotp_recvmsg().
-
-Amit Kumar Mahapatra converts the xilinx,can device tree bindings to
-yaml.
-
-The last patch is by Julia Lawall and fixes typos in the ucan driver.
-
-regards,
-Marc
-
+Link: https://lore.kernel.org/all/20220314115354.144023-28-Julia.Lawall@inria.fr
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/usb/ucan.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The following changes since commit 231fdac3e58f4e52e387930c73bf535439607563:
-
-  net: phy: Kconfig: micrel_phy: fix dependency issue (2022-03-15 12:28:56 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-5.18-20220316
-
-for you to fetch changes up to c34983c94166689358372d4af8d5def57752860c:
-
-  can: ucan: fix typos in comments (2022-03-16 21:41:40 +0100)
-
-----------------------------------------------------------------
-linux-can-next-for-5.18-20220316
-
-----------------------------------------------------------------
-Amit Kumar Mahapatra (1):
-      dt-bindings: can: xilinx_can: Convert Xilinx CAN binding to YAML
-
-Julia Lawall (1):
-      can: ucan: fix typos in comments
-
-Oliver Hartkopp (3):
-      can: isotp: sanitize CAN ID checks in isotp_bind()
-      can: isotp: return -EADDRNOTAVAIL when reading from unbound socket
-      can: isotp: support MSG_TRUNC flag when reading from socket
-
- .../devicetree/bindings/net/can/xilinx,can.yaml    | 161 +++++++++++++++++++++
- .../devicetree/bindings/net/can/xilinx_can.txt     |  61 --------
- drivers/net/can/usb/ucan.c                         |   4 +-
- net/can/isotp.c                                    |  72 +++++----
- 4 files changed, 203 insertions(+), 95 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/xilinx,can.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/can/xilinx_can.txt
+diff --git a/drivers/net/can/usb/ucan.c b/drivers/net/can/usb/ucan.c
+index c7c41d1fd038..5ae0d7c017cc 100644
+--- a/drivers/net/can/usb/ucan.c
++++ b/drivers/net/can/usb/ucan.c
+@@ -1392,7 +1392,7 @@ static int ucan_probe(struct usb_interface *intf,
+ 	 * Stage 3 for the final driver initialisation.
+ 	 */
+ 
+-	/* Prepare Memory for control transferes */
++	/* Prepare Memory for control transfers */
+ 	ctl_msg_buffer = devm_kzalloc(&udev->dev,
+ 				      sizeof(union ucan_ctl_payload),
+ 				      GFP_KERNEL);
+@@ -1526,7 +1526,7 @@ static int ucan_probe(struct usb_interface *intf,
+ 	ret = ucan_device_request_in(up, UCAN_DEVICE_GET_FW_STRING, 0,
+ 				     sizeof(union ucan_ctl_payload));
+ 	if (ret > 0) {
+-		/* copy string while ensuring zero terminiation */
++		/* copy string while ensuring zero termination */
+ 		strncpy(firmware_str, up->ctl_msg_buffer->raw,
+ 			sizeof(union ucan_ctl_payload));
+ 		firmware_str[sizeof(union ucan_ctl_payload)] = '\0';
+-- 
+2.35.1
 
 
