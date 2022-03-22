@@ -2,30 +2,30 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45D6BC433F5
-	for <linux-can@archiver.kernel.org>; Mon, 21 Mar 2022 23:34:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52D11C433F5
+	for <linux-can@archiver.kernel.org>; Tue, 22 Mar 2022 07:22:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233130AbiCUXf5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 21 Mar 2022 19:35:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55228 "EHLO
+        id S237427AbiCVHX2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 22 Mar 2022 03:23:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233146AbiCUXfj (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 21 Mar 2022 19:35:39 -0400
+        with ESMTP id S237414AbiCVHX0 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 22 Mar 2022 03:23:26 -0400
 Received: from mailgw.felk.cvut.cz (mailgw.felk.cvut.cz [147.32.82.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0191A104A74;
-        Mon, 21 Mar 2022 16:34:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5828E66215;
+        Tue, 22 Mar 2022 00:21:55 -0700 (PDT)
 Received: from mailgw.felk.cvut.cz (localhost.localdomain [127.0.0.1])
-        by mailgw.felk.cvut.cz (Proxmox) with ESMTP id 3046130AE009;
-        Tue, 22 Mar 2022 00:33:59 +0100 (CET)
+        by mailgw.felk.cvut.cz (Proxmox) with ESMTP id D3A0630AE011;
+        Tue, 22 Mar 2022 08:21:22 +0100 (CET)
 Received: from cmp.felk.cvut.cz (haar.felk.cvut.cz [147.32.84.19])
-        by mailgw.felk.cvut.cz (Proxmox) with ESMTPS id 2B15130ADC00;
-        Tue, 22 Mar 2022 00:33:54 +0100 (CET)
+        by mailgw.felk.cvut.cz (Proxmox) with ESMTPS id CB59430AE009;
+        Tue, 22 Mar 2022 08:21:18 +0100 (CET)
 Received: from haar.felk.cvut.cz (localhost [127.0.0.1])
-        by cmp.felk.cvut.cz (8.14.0/8.12.3/SuSE Linux 0.6) with ESMTP id 22LNXrLN014358;
-        Tue, 22 Mar 2022 00:33:53 +0100
+        by cmp.felk.cvut.cz (8.14.0/8.12.3/SuSE Linux 0.6) with ESMTP id 22M7LIgf008505;
+        Tue, 22 Mar 2022 08:21:18 +0100
 Received: (from pisa@localhost)
-        by haar.felk.cvut.cz (8.14.0/8.13.7/Submit) id 22LNXrwm014357;
-        Tue, 22 Mar 2022 00:33:53 +0100
+        by haar.felk.cvut.cz (8.14.0/8.13.7/Submit) id 22M7LIqJ008504;
+        Tue, 22 Mar 2022 08:21:18 +0100
 From:   Pavel Pisa <pisa@cmp.felk.cvut.cz>
 To:     linux-can@vger.kernel.org, devicetree@vger.kernel.org,
         "Marc Kleine-Budde" <mkl@pengutronix.de>,
@@ -42,12 +42,12 @@ Cc:     Wolfgang Grandegger <wg@grandegger.com>,
         Petr Porazil <porazil@pikron.com>, Pavel Machek <pavel@ucw.cz>,
         Drew Fustini <pdp7pdp7@gmail.com>,
         Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Subject: [PATCH v8 6/7] docs: ctucanfd: CTU CAN FD open-source IP core documentation.
-Date:   Tue, 22 Mar 2022 00:32:33 +0100
-Message-Id: <90484652365d54c3076d923130f55bef3bdef142.1647904780.git.pisa@cmp.felk.cvut.cz>
+Subject: [PATCH v8.1 links updated 6/7] docs: ctucanfd: CTU CAN FD open-source IP core documentation.
+Date:   Tue, 22 Mar 2022 08:21:09 +0100
+Message-Id: <692b965999ff6c272239df0fe1c76b68d02b134d.1647932262.git.pisa@cmp.felk.cvut.cz>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1647904780.git.pisa@cmp.felk.cvut.cz>
-References: <cover.1647904780.git.pisa@cmp.felk.cvut.cz>
+In-Reply-To: <cover.1647932262.git.pisa@cmp.felk.cvut.cz>
+References: <cover.1647932262.git.pisa@cmp.felk.cvut.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -64,18 +64,24 @@ Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
 Signed-off-by: Martin Jerabek <martin.jerabek01@gmail.com>
 Signed-off-by: Ondrej Ille <ondrej.ille@gmail.com>
 ---
- .../can/ctu/ctucanfd-driver.rst               | 638 ++++++++++++++++++
+ .../can/ctu/ctucanfd-driver.rst               | 639 ++++++++++++++++++
  .../can/ctu/fsm_txt_buffer_user.svg           | 151 +++++
- 2 files changed, 789 insertions(+)
+ 2 files changed, 790 insertions(+)
  create mode 100644 Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst
  create mode 100644 Documentation/networking/device_drivers/can/ctu/fsm_txt_buffer_user.svg
 
+ Check of the links targets:
+ I have found that more links has been again broken as the targets moves between
+ our submission attempts. I have lost the hope to find reliable way to link official
+ Intel and ARM standards, links to PDFs replaced by text search for appropriate title.
+ May it be link Wikipedia next time. Some other links updated as well.
+
 diff --git a/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst b/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst
 new file mode 100644
-index 0000000000000..9faf1c975cf55
+index 0000000000000..797fb45be187a
 --- /dev/null
 +++ b/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst
-@@ -0,0 +1,638 @@
+@@ -0,0 +1,639 @@
 +.. SPDX-License-Identifier: GPL-2.0-or-later
 +
 +CTU CAN FD Driver
@@ -106,7 +112,7 @@ index 0000000000000..9faf1c975cf55
 +handled by a platform device driver.
 +
 +The basic functional model of the CTU CAN FD peripheral has been
-+accepted into QEMU mainline. See QEMU `CAN emulation support <https://git.qemu.org/?p=qemu.git;a=blob;f=docs/can.txt>`_
++accepted into QEMU mainline. See QEMU `CAN emulation support <https://www.qemu.org/docs/master/system/devices/can.html>`_
 +for CAN FD buses, host connection and CTU CAN FD core emulation. The development
 +version of emulation support can be cloned from ctu-canfd branch of QEMU local
 +development `repository <https://gitlab.fel.cvut.cz/canbus/qemu-canbus>`_.
@@ -314,10 +320,11 @@ index 0000000000000..9faf1c975cf55
 +-----------------------------------
 +
 +The core interfaces a simple subset of the Avalon
-+`Avalon Interface Specifications <https://www.intel.com/content/dam/www/programmable/us/en/pdfs/literature/manual/mnl_avalon_spec.pdf>`_
++(search for Intel **Avalon Interface Specifications**)
 +bus as it was originally used on
 +Alterra FPGA chips, yet Xilinx natively interfaces with AXI
-+`AMBA AXI and ACE Protocol Specification AXI3, AXI4, and AXI4-Lite, ACE and ACE-Lite <https://static.docs.arm.com/ihi0022/d/IHI0022D_amba_axi_protocol_spec.pdf>`_.
++(search for ARM **AMBA AXI and ACE Protocol Specification AXI3,
++AXI4, and AXI4-Lite, ACE and ACE-Lite**).
 +The most obvious solution would be to use
 +an Avalon/AXI bridge or implement some simple conversion entity.
 +However, the core’s interface is half-duplex with no handshake
@@ -326,7 +333,7 @@ index 0000000000000..9faf1c975cf55
 +flexibility and speed of AXI are not required for a CAN core.
 +
 +Thus a much simpler bus was chosen – APB (Advanced Peripheral Bus)
-+`AMBA APB Protocol Specification v2.0 <https://static.docs.arm.com/ihi0024/c/IHI0024C_amba_apb_protocol_spec.pdf>`_.
++(search for ARM **AMBA APB Protocol Specification**).
 +APB-AXI bridge is directly available in
 +Xilinx Vivado, and the interface adaptor entity is just a few simple
 +combinatorial assignments.
@@ -598,7 +605,7 @@ index 0000000000000..9faf1c975cf55
 +CTU CAN FD Driver Sources Reference
 +-----------------------------------
 +
-+.. kernel-doc:: drivers/net/can/ctucanfd/ctucanfd_hw.h
++.. kernel-doc:: drivers/net/can/ctucanfd/ctucanfd.h
 +   :internal:
 +
 +.. kernel-doc:: drivers/net/can/ctucanfd/ctucanfd_base.c
@@ -632,7 +639,7 @@ index 0000000000000..9faf1c975cf55
 +  * negotiated and paid CTU to allow public access to the project
 +  * provided additional funding of the work
 +
-+* `Department of Control Engineering <https://dce.fel.cvut.cz/en>`_,
++* `Department of Control Engineering <https://control.fel.cvut.cz/en>`_,
 +  `Faculty of Electrical Engineering <http://www.fel.cvut.cz/en/>`_,
 +  `Czech Technical University <https://www.cvut.cz/en>`_
 +
@@ -679,7 +686,7 @@ index 0000000000000..9faf1c975cf55
 +
 +* Jan Charvat
 +
-+ * implemented CTU CAN FD functional model for QEMU which has been integrated into QEMU mainline (`docs/can.txt <https://git.qemu.org/?p=qemu.git;a=blob;f=docs/can.txt>`_)
++ * implemented CTU CAN FD functional model for QEMU which has been integrated into QEMU mainline (`docs/system/devices/can.rst <https://www.qemu.org/docs/master/system/devices/can.html>`_)
 + * Bachelor theses Model of CAN FD Communication Controller for QEMU Emulator
 +
 +Notes
