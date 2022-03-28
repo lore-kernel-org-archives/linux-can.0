@@ -2,159 +2,87 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51C90C4332F
-	for <linux-can@archiver.kernel.org>; Thu, 24 Mar 2022 14:18:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F6A1C4332F
+	for <linux-can@archiver.kernel.org>; Mon, 28 Mar 2022 11:39:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350884AbiCXOUG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 24 Mar 2022 10:20:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55570 "EHLO
+        id S241898AbiC1Ll0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 28 Mar 2022 07:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350847AbiCXOTr (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 24 Mar 2022 10:19:47 -0400
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C2F917066;
-        Thu, 24 Mar 2022 07:18:15 -0700 (PDT)
-Received: by mail-oi1-f176.google.com with SMTP id q189so4994135oia.9;
-        Thu, 24 Mar 2022 07:18:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=UX9c1q8lourTfPi9NddD+4IFmspIC15S3XHcsJRKc5c=;
-        b=WjeZDBfZZtgnhLGr7O5Q6UYkHAmeu/2RoY5KvK2ddB2z/ezMP5+en1hAjpGRXrIsuV
-         v1KYz39BKApp/5R55qjLApPTdZXtkXBqlrDAMQXh1YxH16h4845Gp8W65xyhQ31f6C4M
-         FELgnAvs9Py+0AwXenKa9RY1weBmj8J0qoeQYNrTOGVxsirNgBY5HqJxYwDyZBnHMqKh
-         jxJGp1/Oh2br2ZXWB4b/meInJaks3jm1K8DdSaW1gdtwvkTvPsuxb/r+0OrtyLrOFbbp
-         I62dRdj310xJvQPlrbIaanqFm/S7TGaaPo6/9y2dze9NgZEs7debKejt6p81ZKgqLMzP
-         Dz5w==
-X-Gm-Message-State: AOAM530xB3Fc42f21RppP55K1JmL5g9eDcneND3qvkCfLlTWqUc40nsf
-        n3nzMHKwWH/vM5XCOs03og==
-X-Google-Smtp-Source: ABdhPJzZo7f9WriFBFsYJXaB9MNd6tnJ4/pdKBDsEr2xhQidW2RTX47fFs1ytVcAUout4kV+tNNz0g==
-X-Received: by 2002:a05:6808:bc2:b0:2ec:e1c2:bd3f with SMTP id o2-20020a0568080bc200b002ece1c2bd3fmr2800927oik.161.1648131494416;
-        Thu, 24 Mar 2022 07:18:14 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id j145-20020acaeb97000000b002d9f37166c1sm1433368oih.17.2022.03.24.07.18.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Mar 2022 07:18:13 -0700 (PDT)
-Received: (nullmailer pid 1995385 invoked by uid 1000);
-        Thu, 24 Mar 2022 14:18:08 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     davem@davemloft.net, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>,
-        pabeni@redhat.com, krzk+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, s.hauer@pengutronix.de,
-        mkl@pengutronix.de, netdev@vger.kernel.org, robh+dt@kernel.org,
-        kuba@kernel.org, linux-imx@nxp.com, shawnguo@kernel.org,
-        festevam@gmail.com, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, qiangqing.zhang@nxp.com,
-        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        wg@grandegger.com
-In-Reply-To: <20220324042024.26813-3-peng.fan@oss.nxp.com>
-References: <20220324042024.26813-1-peng.fan@oss.nxp.com> <20220324042024.26813-3-peng.fan@oss.nxp.com>
-Subject: Re: [PATCH 2/4] dt-bindings: net: fsl,fec: introduce nvmem property
-Date:   Thu, 24 Mar 2022 09:18:08 -0500
-Message-Id: <1648131488.609060.1995384.nullmailer@robh.at.kernel.org>
+        with ESMTP id S245058AbiC1Lik (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 28 Mar 2022 07:38:40 -0400
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.216])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C2FC3
+        for <linux-can@vger.kernel.org>; Mon, 28 Mar 2022 04:36:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1648467384;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=UUda1Ase6POUEiPeAv8aGAFt0YeYA3hCqadxM5jbnXo=;
+    b=Xyg6rfhrUTkhwbBKVBUN3FhGmxknv9iyVBI3jdggDBgO07KQRse0TTZQDOfRcfJMzI
+    L9LDcszIyT2PxgWrykF9UTVV0REPBruWc7H7hTYet5fPEjIApL4+V9YUXt4l0P4wl6Ee
+    NVT7hnJOMTlt84NMIIkx7IyTXc0NtkwJrKgN+xKN4Dmf9yv39BqO+muiIHpmk6v+Z2uw
+    +xomRm3o1ocBtxzKxC/7QrKgYnZhgZRn5Ofbfk5ZqpInX8o7jBc/zlaSmQaVxPeo6zv+
+    WTEC3e4777UuQGMV48Yt0NcTf4RfJzESGZe6QHDQ6rHBD23GlvBZ93UuZOc+az/0eXNz
+    /+AQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS/xvEBL7X5sbo3UIh9IyLecSWJafUvprl4"
+X-RZG-CLASS-ID: mo00
+Received: from silver.lan
+    by smtp.strato.de (RZmta 47.42.1 AUTH)
+    with ESMTPSA id ed8ce5y2SBaO22p
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 28 Mar 2022 13:36:24 +0200 (CEST)
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+To:     linux-can@vger.kernel.org
+Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
+        Derek Will <derekrobertwill@gmail.com>
+Subject: [PATCH] can: isotp: restore accidentally removed MSG_PEEK feature
+Date:   Mon, 28 Mar 2022 13:36:11 +0200
+Message-Id: <20220328113611.3691-1-socketcan@hartkopp.net>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Thu, 24 Mar 2022 12:20:22 +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> To i.MX8M Family variants, fec maybe fused out. Bootloader could use
-> this property to read out the fuse value and mark the node status
-> at runtime.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  Documentation/devicetree/bindings/net/fsl,fec.yaml | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
+In commit 42bf50a1795a ("can: isotp: support MSG_TRUNC flag when reading
+from socket") a new check for recvmsg flags has been introduced that
+only checked for the flags that are handled in isotp_recvmsg() itself.
 
-Running 'make dtbs_check' with the schema in this patch gives the
-following warnings. Consider if they are expected or the schema is
-incorrect. These may not be new warnings.
+This accidentally removed the MSG_PEEK feature flag which is processed
+later in the call chain in __skb_try_recv_from_queue().
 
-Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-This will change in the future.
+Add MSG_PEEK to the set of valid flags to restore the feature.
 
-Full log is available here: https://patchwork.ozlabs.org/patch/1608877
+Fixes: 42bf50a1795a ("can: isotp: support MSG_TRUNC flag when reading from socket")
+Link: https://github.com/linux-can/can-utils/issues/347#issuecomment-1079554254
+From: Derek Will <derekrobertwill@gmail.com>
+Tested-by: Derek Will <derekrobertwill@gmail.com>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ net/can/isotp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-ethernet@2188000: More than one condition true in oneOf schema:
-	arch/arm/boot/dts/imx6dl-mba6a.dt.yaml
-	arch/arm/boot/dts/imx6dl-nit6xlite.dt.yaml
-	arch/arm/boot/dts/imx6dl-nitrogen6x.dt.yaml
-	arch/arm/boot/dts/imx6dl-riotboard.dt.yaml
-	arch/arm/boot/dts/imx6dl-sabreauto.dt.yaml
-	arch/arm/boot/dts/imx6dl-ts7970.dt.yaml
-	arch/arm/boot/dts/imx6q-arm2.dt.yaml
-	arch/arm/boot/dts/imx6q-evi.dt.yaml
-	arch/arm/boot/dts/imx6q-mba6a.dt.yaml
-	arch/arm/boot/dts/imx6q-mccmon6.dt.yaml
-	arch/arm/boot/dts/imx6q-nitrogen6_max.dt.yaml
-	arch/arm/boot/dts/imx6q-nitrogen6_som2.dt.yaml
-	arch/arm/boot/dts/imx6q-nitrogen6x.dt.yaml
-	arch/arm/boot/dts/imx6qp-nitrogen6_max.dt.yaml
-	arch/arm/boot/dts/imx6qp-nitrogen6_som2.dt.yaml
-	arch/arm/boot/dts/imx6qp-sabreauto.dt.yaml
-	arch/arm/boot/dts/imx6q-sabreauto.dt.yaml
-	arch/arm/boot/dts/imx6q-ts7970.dt.yaml
-
-ethernet@30be0000: nvmem-cell-names:0: 'fused' was expected
-	arch/arm64/boot/dts/freescale/imx8mm-beacon-kit.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mm-ddr4-evk.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-ctouch2.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-edimm2.2.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mm-tqma8mqml-mba8mx.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx-0x.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mm-venice-gw72xx-0x.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx-0x.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mn-beacon-kit.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2pro.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mn-tqma8mqnl-mba8mx.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mp-evk.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mp-phyboard-pollux-rdk.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mq-evk.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mq-hummingboard-pulse.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mq-kontron-pitx-imx8m.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mq-librem5-r4.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mq-mnt-reform2.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mq-nitrogen.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mq-phanbell.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mq-pico-pi.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mq-thor96.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mq-tqma8mq-mba8mx.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mq-zii-ultra-rmb3.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8mq-zii-ultra-zest.dt.yaml
-
-ethernet@30be0000: 'phy-connection-type' does not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dt.yaml
-
-ethernet@5b040000: 'power-domains' does not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm64/boot/dts/freescale/imx8qm-mek.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8qxp-ai_ml.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8qxp-colibri-eval-v3.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8qxp-mek.dt.yaml
-
-ethernet@5b050000: 'power-domains' does not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm64/boot/dts/freescale/imx8qm-mek.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8qxp-ai_ml.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8qxp-colibri-eval-v3.dt.yaml
-	arch/arm64/boot/dts/freescale/imx8qxp-mek.dt.yaml
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index f6f8ba1f816d..bafb0fb5f0e0 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -1048,11 +1048,11 @@ static int isotp_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 	struct sk_buff *skb;
+ 	struct isotp_sock *so = isotp_sk(sk);
+ 	int noblock = flags & MSG_DONTWAIT;
+ 	int ret = 0;
+ 
+-	if (flags & ~(MSG_DONTWAIT | MSG_TRUNC))
++	if (flags & ~(MSG_DONTWAIT | MSG_TRUNC | MSG_PEEK))
+ 		return -EINVAL;
+ 
+ 	if (!so->bound)
+ 		return -EADDRNOTAVAIL;
+ 
+-- 
+2.30.2
 
