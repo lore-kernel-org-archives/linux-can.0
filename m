@@ -2,44 +2,47 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F031BC433F5
-	for <linux-can@archiver.kernel.org>; Thu, 31 Mar 2022 08:46:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F207EC433EF
+	for <linux-can@archiver.kernel.org>; Thu, 31 Mar 2022 08:46:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233218AbiCaIs0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 31 Mar 2022 04:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42374 "EHLO
+        id S233225AbiCaIs2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 31 Mar 2022 04:48:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233183AbiCaIsZ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 31 Mar 2022 04:48:25 -0400
+        with ESMTP id S233219AbiCaIs1 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 31 Mar 2022 04:48:27 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C87F81F89EB
-        for <linux-can@vger.kernel.org>; Thu, 31 Mar 2022 01:46:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C441F89EB
+        for <linux-can@vger.kernel.org>; Thu, 31 Mar 2022 01:46:40 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nZqRx-0000BO-7J
-        for linux-can@vger.kernel.org; Thu, 31 Mar 2022 10:46:37 +0200
+        id 1nZqRy-0000CB-TP
+        for linux-can@vger.kernel.org; Thu, 31 Mar 2022 10:46:38 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 66FE0579D9
+        by bjornoya.blackshift.org (Postfix) with SMTP id 903BB579EC
         for <linux-can@vger.kernel.org>; Thu, 31 Mar 2022 08:46:35 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2D602579C9;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 447F1579CE;
         Thu, 31 Mar 2022 08:46:35 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1c0fb7d7;
-        Thu, 31 Mar 2022 08:46:34 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id bd87bcca;
+        Thu, 31 Mar 2022 08:46:35 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net 0/n] pull-request: can 2022-03-31
-Date:   Thu, 31 Mar 2022 10:46:26 +0200
-Message-Id: <20220331084634.869744-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Hangyu Hua <hbh25y@gmail.com>
+Subject: [PATCH net 3/8] can: m_can: m_can_tx_handler(): fix use after free of skb
+Date:   Thu, 31 Mar 2022 10:46:29 +0200
+Message-Id: <20220331084634.869744-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220331084634.869744-1-mkl@pengutronix.de>
+References: <20220331084634.869744-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -50,75 +53,43 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+can_put_echo_skb() will clone skb then free the skb. Move the
+can_put_echo_skb() for the m_can version 3.0.x directly before the
+start of the xmit in hardware, similar to the 3.1.x branch.
 
-this is a pull request of 8 patches for net/master.
-
-The first patch is by Oliver Hartkopp and fixes MSG_PEEK feature in
-the CAN ISOTP protocol (broken in net-next for v5.18 only).
-
-Tom Rix's patch for the mcp251xfd driver fixes the propagation of an
-error value in case of an error.
-
-A patch by me for the m_can driver fixes a use-after-free in the xmit
-handler for m_can IP cores v3.0.x.
-
-Hangyu Hua contributes 3 patches fixing the same double free in the
-error path of the xmit handler in the ems_usb, usb_8dev and mcba_usb
-USB CAN driver.
-
-Pavel Skripkin contributes a patch for the mcba_usb driver to properly
-check the endpoint type.
-
-The last patch is by me and fixes a mem leak in the gs_usb, which was
-introduced in net-next for v5.18.
-
-regards,
-Marc
-
+Fixes: 80646733f11c ("can: m_can: update to support CAN FD features")
+Link: https://lore.kernel.org/all/20220317081305.739554-1-mkl@pengutronix.de
+Cc: stable@vger.kernel.org
+Reported-by: Hangyu Hua <hbh25y@gmail.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/m_can/m_can.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-The following changes since commit f9512d654f62604664251dedd437a22fe484974a:
-
-  net: sparx5: uses, depends on BRIDGE or !BRIDGE (2022-03-30 19:16:27 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.18-20220331
-
-for you to fetch changes up to 50d34a0d151dc7abbdbec781bd7f09f2b3cbf01a:
-
-  can: gs_usb: gs_make_candev(): fix memory leak for devices with extended bit timing configuration (2022-03-31 09:55:27 +0200)
-
-----------------------------------------------------------------
-linux-can-fixes-for-5.18-20220331
-
-----------------------------------------------------------------
-Hangyu Hua (3):
-      can: ems_usb: ems_usb_start_xmit(): fix double dev_kfree_skb() in error path
-      can: usb_8dev: usb_8dev_start_xmit(): fix double dev_kfree_skb() in error path
-      can: mcba_usb: mcba_usb_start_xmit(): fix double dev_kfree_skb in error path
-
-Marc Kleine-Budde (2):
-      can: m_can: m_can_tx_handler(): fix use after free of skb
-      can: gs_usb: gs_make_candev(): fix memory leak for devices with extended bit timing configuration
-
-Oliver Hartkopp (1):
-      can: isotp: restore accidentally removed MSG_PEEK feature
-
-Pavel Skripkin (1):
-      can: mcba_usb: properly check endpoint type
-
-Tom Rix (1):
-      can: mcp251xfd: mcp251xfd_register_get_dev_id(): fix return of error value
-
- drivers/net/can/m_can/m_can.c                  |  5 +++--
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c |  2 +-
- drivers/net/can/usb/ems_usb.c                  |  1 -
- drivers/net/can/usb/gs_usb.c                   |  2 ++
- drivers/net/can/usb/mcba_usb.c                 | 27 +++++++++++++----------
- drivers/net/can/usb/usb_8dev.c                 | 30 ++++++++++++--------------
- net/can/isotp.c                                |  2 +-
- 7 files changed, 37 insertions(+), 32 deletions(-)
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 1a4b56f6fa8c..b3b5bc1c803b 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1637,8 +1637,6 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
+ 		if (err)
+ 			goto out_fail;
+ 
+-		can_put_echo_skb(skb, dev, 0, 0);
+-
+ 		if (cdev->can.ctrlmode & CAN_CTRLMODE_FD) {
+ 			cccr = m_can_read(cdev, M_CAN_CCCR);
+ 			cccr &= ~CCCR_CMR_MASK;
+@@ -1655,6 +1653,9 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
+ 			m_can_write(cdev, M_CAN_CCCR, cccr);
+ 		}
+ 		m_can_write(cdev, M_CAN_TXBTIE, 0x1);
++
++		can_put_echo_skb(skb, dev, 0, 0);
++
+ 		m_can_write(cdev, M_CAN_TXBAR, 0x1);
+ 		/* End of xmit function for version 3.0.x */
+ 	} else {
+-- 
+2.35.1
 
 
