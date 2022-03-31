@@ -2,44 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F207EC433EF
-	for <linux-can@archiver.kernel.org>; Thu, 31 Mar 2022 08:46:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CD1AC433FE
+	for <linux-can@archiver.kernel.org>; Thu, 31 Mar 2022 08:46:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbiCaIs2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S233231AbiCaIs2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Thu, 31 Mar 2022 04:48:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42422 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233219AbiCaIs1 (ORCPT
+        with ESMTP id S233220AbiCaIs1 (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 31 Mar 2022 04:48:27 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C441F89EB
-        for <linux-can@vger.kernel.org>; Thu, 31 Mar 2022 01:46:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DEB31F89FA
+        for <linux-can@vger.kernel.org>; Thu, 31 Mar 2022 01:46:41 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nZqRy-0000CB-TP
-        for linux-can@vger.kernel.org; Thu, 31 Mar 2022 10:46:38 +0200
+        id 1nZqRz-0000CS-5c
+        for linux-can@vger.kernel.org; Thu, 31 Mar 2022 10:46:39 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 903BB579EC
+        by bjornoya.blackshift.org (Postfix) with SMTP id 94B83579F1
         for <linux-can@vger.kernel.org>; Thu, 31 Mar 2022 08:46:35 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 447F1579CE;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3497F579CA;
         Thu, 31 Mar 2022 08:46:35 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id bd87bcca;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 73a7afcf;
         Thu, 31 Mar 2022 08:46:35 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        stable@vger.kernel.org, Hangyu Hua <hbh25y@gmail.com>
-Subject: [PATCH net 3/8] can: m_can: m_can_tx_handler(): fix use after free of skb
-Date:   Thu, 31 Mar 2022 10:46:29 +0200
-Message-Id: <20220331084634.869744-4-mkl@pengutronix.de>
+        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
+        Derek Will <derekrobertwill@gmail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 1/8] can: isotp: restore accidentally removed MSG_PEEK feature
+Date:   Thu, 31 Mar 2022 10:46:27 +0200
+Message-Id: <20220331084634.869744-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220331084634.869744-1-mkl@pengutronix.de>
 References: <20220331084634.869744-1-mkl@pengutronix.de>
@@ -53,42 +54,45 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-can_put_echo_skb() will clone skb then free the skb. Move the
-can_put_echo_skb() for the m_can version 3.0.x directly before the
-start of the xmit in hardware, similar to the 3.1.x branch.
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Fixes: 80646733f11c ("can: m_can: update to support CAN FD features")
-Link: https://lore.kernel.org/all/20220317081305.739554-1-mkl@pengutronix.de
-Cc: stable@vger.kernel.org
-Reported-by: Hangyu Hua <hbh25y@gmail.com>
+In commit 42bf50a1795a ("can: isotp: support MSG_TRUNC flag when
+reading from socket") a new check for recvmsg flags has been
+introduced that only checked for the flags that are handled in
+isotp_recvmsg() itself.
+
+This accidentally removed the MSG_PEEK feature flag which is processed
+later in the call chain in __skb_try_recv_from_queue().
+
+Add MSG_PEEK to the set of valid flags to restore the feature.
+
+Fixes: 42bf50a1795a ("can: isotp: support MSG_TRUNC flag when reading from socket")
+Link: https://github.com/linux-can/can-utils/issues/347#issuecomment-1079554254
+Link: https://lore.kernel.org/all/20220328113611.3691-1-socketcan@hartkopp.net
+Reported-by: Derek Will <derekrobertwill@gmail.com>
+Suggested-by: Derek Will <derekrobertwill@gmail.com>
+Tested-by: Derek Will <derekrobertwill@gmail.com>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ net/can/isotp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 1a4b56f6fa8c..b3b5bc1c803b 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1637,8 +1637,6 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
- 		if (err)
- 			goto out_fail;
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index f6f8ba1f816d..bafb0fb5f0e0 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -1050,7 +1050,7 @@ static int isotp_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 	int noblock = flags & MSG_DONTWAIT;
+ 	int ret = 0;
  
--		can_put_echo_skb(skb, dev, 0, 0);
--
- 		if (cdev->can.ctrlmode & CAN_CTRLMODE_FD) {
- 			cccr = m_can_read(cdev, M_CAN_CCCR);
- 			cccr &= ~CCCR_CMR_MASK;
-@@ -1655,6 +1653,9 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
- 			m_can_write(cdev, M_CAN_CCCR, cccr);
- 		}
- 		m_can_write(cdev, M_CAN_TXBTIE, 0x1);
-+
-+		can_put_echo_skb(skb, dev, 0, 0);
-+
- 		m_can_write(cdev, M_CAN_TXBAR, 0x1);
- 		/* End of xmit function for version 3.0.x */
- 	} else {
+-	if (flags & ~(MSG_DONTWAIT | MSG_TRUNC))
++	if (flags & ~(MSG_DONTWAIT | MSG_TRUNC | MSG_PEEK))
+ 		return -EINVAL;
+ 
+ 	if (!so->bound)
+
+base-commit: f9512d654f62604664251dedd437a22fe484974a
 -- 
 2.35.1
 
