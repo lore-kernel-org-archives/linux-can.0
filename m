@@ -2,44 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C565FC4167B
-	for <linux-can@archiver.kernel.org>; Thu, 31 Mar 2022 08:46:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 065ABC4167D
+	for <linux-can@archiver.kernel.org>; Thu, 31 Mar 2022 08:46:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbiCaIsl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 31 Mar 2022 04:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42644 "EHLO
+        id S233244AbiCaIsm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 31 Mar 2022 04:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233249AbiCaIse (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 31 Mar 2022 04:48:34 -0400
+        with ESMTP id S233223AbiCaIsd (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 31 Mar 2022 04:48:33 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696C61F9761
-        for <linux-can@vger.kernel.org>; Thu, 31 Mar 2022 01:46:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69AB81F89F7
+        for <linux-can@vger.kernel.org>; Thu, 31 Mar 2022 01:46:42 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nZqS1-0000Ff-NW
-        for linux-can@vger.kernel.org; Thu, 31 Mar 2022 10:46:41 +0200
+        id 1nZqS0-0000EB-KN
+        for linux-can@vger.kernel.org; Thu, 31 Mar 2022 10:46:40 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id DBB0E57A0E
+        by bjornoya.blackshift.org (Postfix) with SMTP id BA97157A02
         for <linux-can@vger.kernel.org>; Thu, 31 Mar 2022 08:46:35 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 901A4579EB;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6AFC4579DA;
         Thu, 31 Mar 2022 08:46:35 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 14faa9bc;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b100ec78;
         Thu, 31 Mar 2022 08:46:35 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        syzbot+4d0ae90a195b269f102d@syzkaller.appspotmail.com
-Subject: [PATCH net 8/8] can: gs_usb: gs_make_candev(): fix memory leak for devices with extended bit timing configuration
-Date:   Thu, 31 Mar 2022 10:46:34 +0200
-Message-Id: <20220331084634.869744-9-mkl@pengutronix.de>
+        kernel@pengutronix.de, Hangyu Hua <hbh25y@gmail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 6/8] can: mcba_usb: mcba_usb_start_xmit(): fix double dev_kfree_skb in error path
+Date:   Thu, 31 Mar 2022 10:46:32 +0200
+Message-Id: <20220331084634.869744-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220331084634.869744-1-mkl@pengutronix.de>
 References: <20220331084634.869744-1-mkl@pengutronix.de>
@@ -53,32 +53,32 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Some CAN-FD capable devices offer extended bit timing information for
-the data bit timing. The information must be read with an USB control
-message. The memory for this message is allocated but not free()ed (in
-the non error case). This patch adds the missing free.
+From: Hangyu Hua <hbh25y@gmail.com>
 
-Fixes: 6679f4c5e5a6 ("can: gs_usb: add extended bt_const feature")
-Link: https://lore.kernel.org/all/20220329193450.659726-1-mkl@pengutronix.de
-Reported-by: syzbot+4d0ae90a195b269f102d@syzkaller.appspotmail.com
+There is no need to call dev_kfree_skb() when usb_submit_urb() fails
+because can_put_echo_skb() deletes original skb and
+can_free_echo_skb() deletes the cloned skb.
+
+Fixes: 51f3baad7de9 ("can: mcba_usb: Add support for Microchip CAN BUS Analyzer")
+Link: https://lore.kernel.org/all/20220311080208.45047-1-hbh25y@gmail.com
+Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/gs_usb.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/can/usb/mcba_usb.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index 67408e316062..b29ba9138866 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -1092,6 +1092,8 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 		dev->data_bt_const.brp_inc = le32_to_cpu(bt_const_extended->dbrp_inc);
+diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
+index 77bddff86252..7c198eb5bc9c 100644
+--- a/drivers/net/can/usb/mcba_usb.c
++++ b/drivers/net/can/usb/mcba_usb.c
+@@ -364,7 +364,6 @@ static netdev_tx_t mcba_usb_start_xmit(struct sk_buff *skb,
+ xmit_failed:
+ 	can_free_echo_skb(priv->netdev, ctx->ndx, NULL);
+ 	mcba_usb_free_ctx(ctx);
+-	dev_kfree_skb(skb);
+ 	stats->tx_dropped++;
  
- 		dev->can.data_bittiming_const = &dev->data_bt_const;
-+
-+		kfree(bt_const_extended);
- 	}
- 
- 	SET_NETDEV_DEV(netdev, &intf->dev);
+ 	return NETDEV_TX_OK;
 -- 
 2.35.1
 
