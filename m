@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF288C433EF
-	for <linux-can@archiver.kernel.org>; Fri,  1 Apr 2022 15:04:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 144E5C43217
+	for <linux-can@archiver.kernel.org>; Fri,  1 Apr 2022 15:04:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349686AbiDAPGW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 1 Apr 2022 11:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60612 "EHLO
+        id S1349913AbiDAPGc (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 1 Apr 2022 11:06:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350028AbiDAOrG (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 1 Apr 2022 10:47:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8805F2A03DE;
-        Fri,  1 Apr 2022 07:36:58 -0700 (PDT)
+        with ESMTP id S1352286AbiDAOuN (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 1 Apr 2022 10:50:13 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90AD2B2077;
+        Fri,  1 Apr 2022 07:41:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 43A9060C8C;
-        Fri,  1 Apr 2022 14:36:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97F75C2BBE4;
-        Fri,  1 Apr 2022 14:36:55 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 667EAB82518;
+        Fri,  1 Apr 2022 14:41:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C059C340EE;
+        Fri,  1 Apr 2022 14:41:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648823816;
+        s=k20201202; t=1648824083;
         bh=hffhfGZggXIZrzhWpnf/mKyIGXVLLu+mdlXrm1Va7YI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qfBPKO8eJ+64lqXXSZFuYZsbyDuBHlKbzBiIOhFIv7X74omSyMiSzy6Rd8u8S1nnn
-         mkOE7CPSi3jPHhhwkhpBS0WKkCe3TzjhFgsLKYjHkOCmwOeOh68T7RMd3leZ62Q9iK
-         72ZDOJ6VNbu8ADnYlJM59qXNj9fhXR7w6/g8EzQdWdC9lcKMyHWS+caQj0RI5YG7wD
-         +mPZsXRf6FTV42oTES5dvhvSk5/Ch9r/1fUQd8QWj3g62msF59JrJAAMLpbZCssEz+
-         C+GSBknWmVUNFu+r0sykq2GCtjoi4tLaikV1nqcqKSeuST+4Cp+/WvjwR4++bD/p8c
-         DD1O1OC2rtU7w==
+        b=Z8GQtQXP8RN1D0yidqnV9s97OLB9+crUXMsmD+ILkt1rqXtdZv04L2W3ejyQOd57R
+         ooV2nsPqB0P0aw6BvXmu/9XD22W2IwPv29tKkY6ODD8YRDfdAeUDirobA5NPb1NbT+
+         XwCOwh0qW13wF5EL4eaRA6Mu7rHGf5/R9d4pd9IJk3KrUkzLpXUFMPY156vIzbErIp
+         EItb886olybFVEwXWRI+kS8do3mxJaIyfhTkJ8wEZC5gEthVtgK7H7DA0unP7BvgNK
+         wgF8Ypg3q8JmUaDKzKVOdN8y6BkNclxOAK5vvMmzwaQNcn0Mkd99qQfAzQFBoSeMhP
+         Cs2zR10DFsETw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
@@ -38,12 +38,12 @@ Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
         Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
         kuba@kernel.org, pabeni@redhat.com, linux-can@vger.kernel.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.16 089/109] can: isotp: set default value for N_As to 50 micro seconds
-Date:   Fri,  1 Apr 2022 10:32:36 -0400
-Message-Id: <20220401143256.1950537-89-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 79/98] can: isotp: set default value for N_As to 50 micro seconds
+Date:   Fri,  1 Apr 2022 10:37:23 -0400
+Message-Id: <20220401143742.1952163-79-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220401143256.1950537-1-sashal@kernel.org>
-References: <20220401143256.1950537-1-sashal@kernel.org>
+In-Reply-To: <20220401143742.1952163-1-sashal@kernel.org>
+References: <20220401143742.1952163-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
