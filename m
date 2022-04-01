@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A026C433EF
-	for <linux-can@archiver.kernel.org>; Fri,  1 Apr 2022 14:35:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9FDFC43217
+	for <linux-can@archiver.kernel.org>; Fri,  1 Apr 2022 15:04:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348144AbiDAOhf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 1 Apr 2022 10:37:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39112 "EHLO
+        id S244986AbiDAPGT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 1 Apr 2022 11:06:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348310AbiDAOdy (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 1 Apr 2022 10:33:54 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D9CA1FA5E;
-        Fri,  1 Apr 2022 07:32:04 -0700 (PDT)
+        with ESMTP id S1350039AbiDAOrH (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 1 Apr 2022 10:47:07 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2DC2A03E7;
+        Fri,  1 Apr 2022 07:36:59 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1D123B8250D;
-        Fri,  1 Apr 2022 14:32:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 880B1C340F2;
-        Fri,  1 Apr 2022 14:32:00 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8FB71B8250B;
+        Fri,  1 Apr 2022 14:36:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30CA8C3410F;
+        Fri,  1 Apr 2022 14:36:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648823521;
-        bh=Txc91Sc7y22n4OIlr5P3dUwdGHeP5PieAR7WokxOg5Y=;
+        s=k20201202; t=1648823818;
+        bh=Ih3fXBC704q44LXi1F9MRfHhMLxY/FZVM3wA3N1yrUU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fxEWPG4JNZhz+VV/gbzmtPWuh6FiQj3s9Jv2rIpJwo2ytYw9DxtF9qVF8tQg4D1CM
-         k/lPnPlNZBxrs+NrXSfMCTLUDioQOAK/qgqd8D6FevKsRd/RM65fzyACX8WEi5EwsN
-         YNYqTn/qwfi7LmNk4M3NPbADp5Ai6VPQZNDbL7TxP24jGUuRxL578s/Thi5/Q6+26u
-         OgzbKzUmO0GtCD1TBt67lb0lF8UYYhn9kze9VcJX1stPyVQBJgiqOPb9rDfoNizBoj
-         qDMt0G64qHhnxEJDP7NP4MvJkLEgwC1+htfCdaUSFcW1EDdcZTrFdRVJWlhHCJqXjx
-         g2nfKqzBHjgDg==
+        b=eIfW6b+nSxkQh3VIAfE/tHHPtmcOAT5xySDc7bhabScL+V8rHng1rvox/CAD/kDfT
+         k7UC+PnytYv0JCsbSfI9ChOTBcoqC62TQDVNAHPocLv1chrmd0HTnCYTTKUI+z3NJn
+         qqwbnksqwk+aXyZzHRsiedXe3qCc7gC2dubT/P3TvTmd0X1idGIIE/kHr6ZmohBczc
+         YznB+RDxGPoHx8RK7HYcicJ01I3tvPoz/xx36xfDCEkawt/7B9MyJwArIMYGVbvlNI
+         S0AllEBrLfWufypzJ3t+OCp9wLjBIti/Y8T7pU9E9x9I5Spnr308x46kOxJ3FHxXqy
+         cI8a7JGb268Gw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
@@ -38,12 +38,12 @@ Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Sasha Levin <sashal@kernel.org>, wg@grandegger.com,
         davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
         linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.17 128/149] can: etas_es58x: es58x_fd_rx_event_msg(): initialize rx_event_msg before calling es58x_check_msg_len()
-Date:   Fri,  1 Apr 2022 10:25:15 -0400
-Message-Id: <20220401142536.1948161-128-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.16 090/109] can: etas_es58x: es58x_fd_rx_event_msg(): initialize rx_event_msg before calling es58x_check_msg_len()
+Date:   Fri,  1 Apr 2022 10:32:37 -0400
+Message-Id: <20220401143256.1950537-90-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220401142536.1948161-1-sashal@kernel.org>
-References: <20220401142536.1948161-1-sashal@kernel.org>
+In-Reply-To: <20220401143256.1950537-1-sashal@kernel.org>
+References: <20220401143256.1950537-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -90,10 +90,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.c b/drivers/net/can/usb/etas_es58x/es58x_fd.c
-index ec87126e1a7d..8ccda748fd08 100644
+index 4f0cae29f4d8..b71d1530638b 100644
 --- a/drivers/net/can/usb/etas_es58x/es58x_fd.c
 +++ b/drivers/net/can/usb/etas_es58x/es58x_fd.c
-@@ -172,12 +172,11 @@ static int es58x_fd_rx_event_msg(struct net_device *netdev,
+@@ -171,12 +171,11 @@ static int es58x_fd_rx_event_msg(struct net_device *netdev,
  	const struct es58x_fd_rx_event_msg *rx_event_msg;
  	int ret;
  
