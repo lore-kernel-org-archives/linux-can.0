@@ -2,78 +2,74 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93413C433F5
-	for <linux-can@archiver.kernel.org>; Fri,  8 Apr 2022 12:42:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C41F0C433F5
+	for <linux-can@archiver.kernel.org>; Fri,  8 Apr 2022 16:35:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235830AbiDHMo0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 8 Apr 2022 08:44:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
+        id S232516AbiDHQhq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 8 Apr 2022 12:37:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235828AbiDHMoX (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 8 Apr 2022 08:44:23 -0400
-X-Greylist: delayed 903 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 08 Apr 2022 05:42:13 PDT
-Received: from mail.prodrive-technologies.com (mail.prodrive-technologies.com [212.61.153.67])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 868FB1C16FC
-        for <linux-can@vger.kernel.org>; Fri,  8 Apr 2022 05:42:10 -0700 (PDT)
-Received: from EXC03.bk.prodrive.nl (10.1.1.212) by EXC03.bk.prodrive.nl
- (10.1.1.212) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2242.12; Fri, 8
- Apr 2022 14:27:06 +0200
-Received: from lnxdevrm02.prodrive.nl (10.1.1.121) by EXC03.bk.prodrive.nl
- (10.1.1.212) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
- Transport; Fri, 8 Apr 2022 14:27:06 +0200
-From:   Wouter van Herpen <wouter.van.herpen@prodrive-technologies.com>
-To:     <mkl@blackshift.org>
-CC:     <linux-can@vger.kernel.org>,
-        Wouter van Herpen <wouter.van.herpen@prodrive-technologies.com>
-Subject: [PATCH] can: m_can: m_can_isr(): disable mcan interrupts during tefn handling
-Date:   Fri, 8 Apr 2022 13:26:50 +0100
-Message-ID: <fe3c7a7ae0f16db0bac87c72faa4e91d0041fda3.1649414934.git.wouter.van.herpen@prodrive-technologies.com>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S232479AbiDHQhp (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 8 Apr 2022 12:37:45 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F20B98F6A;
+        Fri,  8 Apr 2022 09:35:41 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id bq30so3241125lfb.3;
+        Fri, 08 Apr 2022 09:35:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=FFoYpbF863k/pBsPIF5QsC9t58VedUuM7a/RF6igal4=;
+        b=afkUqADE7Kkb8bW0nZw/GaT4xWYr1eKSw6jDRV+nkfdnDVLpid45/8ISvekE6oReop
+         DQSSBWmmk592uGL7Q1pFL8rBYYORE0q7n27a42F7YtjQ/DnwbHrAqFL9YLfGOXM+SPo6
+         LSNLcEqezquXx09qNbMlBMpQ0Nd4hXwaT6BMSskD/L23XgDBHjO90q3zb3F5ACqSyvqp
+         Foh+YyPEHJH7yc1sgByS7IvLspJHH/ngUGEz/Ifg/Pz8ZZaXwMzZEfTk16/CrXHC5STB
+         l/MdQoO8SkIAapZQIGFURyN0ddEg9OBWKOAoWWMbeoyz4Y2u3mqAeAUtdKmPWyf9Dhqg
+         r2KQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=FFoYpbF863k/pBsPIF5QsC9t58VedUuM7a/RF6igal4=;
+        b=24dn2dyfGGG2W+Wczp4MWvI7Eg1KDi2Q4qS4UZ+1kTeS2XaHRCMaHJB5w8uxyLzLsq
+         vXsv+D8k41H3gD9QmrcfPAMQhBvVTJTA+8awK3v6tkWyU1ATbm9yO7I6MCJ+ujC6cvxI
+         p7IIvBGfJ53IL9pv/czc5RJJMoPn+kGcGBmAzunytZcJ2u5vkvZ1fIER94CPKRXTrUpG
+         bG2aF1MnglTp10WFj0H1mCRTW1N2uxfwUfK8CBOlo0Ecr07m+WQ2yJP497csjI2MfO85
+         p6Q9U7XtZ7wDAvMIiOvOCdfJiZMZIwo2HiXNVHKfHUhBSiu7Q5GCISN4dZhjFJpR3c8C
+         lRug==
+X-Gm-Message-State: AOAM530f5psxBqjN8AFXJqL151ho8f2mbNi/cnbZ3/lJZqWtN2+sO0eL
+        oNTnVXbQHnqbH8xKYRJfaTSI4Qxhd64C4+R/IMU=
+X-Google-Smtp-Source: ABdhPJxFP/ouPbvMaJ5QMbtMWcOd1FddPolG7h+MMOx/15H8RobY8xBhjjZPrKUXtXyN769bc4d4N/LA78A8It6N6fg=
+X-Received: by 2002:a05:6512:b12:b0:44a:ba81:f874 with SMTP id
+ w18-20020a0565120b1200b0044aba81f874mr13517769lfu.449.1649435739232; Fri, 08
+ Apr 2022 09:35:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
+From:   Paul Thomas <pthomas8589@gmail.com>
+Date:   Fri, 8 Apr 2022 12:35:27 -0400
+Message-ID: <CAD56B7dMg073f56vfaxp38=dZiAFU0iCn6kmDGiNcNtCijyFoA@mail.gmail.com>
+Subject: peak_usb: urb aborted
+To:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        support@peak-system.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Under high mixed RX/TX interrupt load, the tcan4x5x's nINT signal
-sometimes stays asserted, blocking any further interrupts.
-Register M_CAN_IR is then set to 0x580d and never recovers.
-This is caused by interrupts occurring during interrupt handling.
-Disable MCAN interrupts during TX irq flag processing (from interrupt
-context), as is the case for the RX irq flag processing.
+Folks,
 
-Link: https://lore.kernel.org/linux-can/20220403105730.fnurim5vnnuxb7s5@pengutronix.de
-Signed-off-by: Wouter van Herpen <wouter.van.herpen@prodrive-technologies.com>
----
-Please note this patch was generated and tested with kernel base v5.4.
-In the most recent kernel version, this patch is still required to fix
-the issue described.
+I'm using a PCAN-USB adapter, and it seems to have a lot of trouble
+under medium load. I'm getting these urb aborted messages.
+[125054.082248] peak_usb 3-2.4.4:1.0 can0: Rx urb aborted (-71)
+[125077.886850] peak_usb 3-2.4.4:1.0 can0: Rx urb aborted (-32)
 
- drivers/net/can/m_can/m_can.c | 2 ++
- 1 file changed, 2 insertions(+)
+Is there anything that can be done about this? This is very
+frustrating because it makes the USB adapter very difficult to use as
+a reliable partner of an embedded CAN device.
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 562c8317e3aa..8cea1b946b71 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -949,11 +949,13 @@ static irqreturn_t m_can_isr(int irq, void *dev_id)
- 	} else  {
- 		if (ir & IR_TEFN) {
- 			/* New TX FIFO Element arrived */
-+			m_can_disable_all_interrupts(cdev);
- 			m_can_echo_tx_event(dev);
- 			can_led_event(dev, CAN_LED_EVENT_TX);
- 			if (netif_queue_stopped(dev) &&
- 			    !m_can_tx_fifo_full(cdev))
- 				netif_wake_queue(dev);
-+			m_can_enable_all_interrupts(cdev);
- 		}
- 	}
- 
+I'm using Ubuntu with 5.4.0-107-generic. Any help would be appreciated.
 
-base-commit: 219d54332a09e8d8741c1e1982f5eae56099de85
--- 
-2.30.2
-
+-Paul
