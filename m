@@ -2,95 +2,93 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DFEE9C433F5
-	for <linux-can@archiver.kernel.org>; Fri,  8 Apr 2022 18:48:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FDBDC433F5
+	for <linux-can@archiver.kernel.org>; Fri,  8 Apr 2022 21:10:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbiDHSuX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 8 Apr 2022 14:50:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58192 "EHLO
+        id S234707AbiDHVMn (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 8 Apr 2022 17:12:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230307AbiDHSuW (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 8 Apr 2022 14:50:22 -0400
-X-Greylist: delayed 172 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 08 Apr 2022 11:48:17 PDT
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF7C1C5924;
-        Fri,  8 Apr 2022 11:48:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1649443511;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:Cc:From:References:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=6u1TBR7ukFAvpGgrfPifszB9b72XH9Glp8ZeFJje1tQ=;
-    b=tiF8UtTL9XVow5CXQB6UULRZqP96I1dr/SaIzPAE9XmfnHjsMNZY1hJYMOAaWG+xSl
-    MoD2JEvfgOYrkyZIX2tGJB+HSYVHa5HDJHBdPOpx2PTGWduC6/3tS41JWSt1y4EirMe0
-    duwtax0shBcD4SQL1bnrptWQ4Pwb+dFo8IMjx8TUC0W4I87zSK36cK2L1u73SQpL0k0s
-    8VvVxh8eL5TwqKvlAsqr0wjAuWTyP9h8p0P6rWuiiqlRUvFyUOx1jrcxoOPOy7QGucpe
-    BuwUe1ecLFO7sXibsPDd3ZG9Rdcm2K/9aomU47dYBrkfIw5ROfTqOLcbY7kWmFDa8IwK
-    FaZQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusx3hdd0DIgVuBOfXW6v7w=="
-X-RZG-CLASS-ID: mo00
-Received: from [IPV6:2a00:6020:1cfa:f900::b82]
-    by smtp.strato.de (RZmta 47.42.2 AUTH)
-    with ESMTPSA id 4544c9y38IjAdFD
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Fri, 8 Apr 2022 20:45:10 +0200 (CEST)
-Message-ID: <c2e2c7b0-cdfb-8eb0-9550-0fb59b5cd10c@hartkopp.net>
-Date:   Fri, 8 Apr 2022 20:45:02 +0200
+        with ESMTP id S239816AbiDHVMf (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 8 Apr 2022 17:12:35 -0400
+Received: from smtpcmd01-sp1.aruba.it (smtpcmd01-sp1.aruba.it [62.149.158.218])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6032B181796
+        for <linux-can@vger.kernel.org>; Fri,  8 Apr 2022 14:10:27 -0700 (PDT)
+Received: from localhost.localdomain ([93.35.164.10])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id cvr9nij0B79nYcvrAnFy53; Fri, 08 Apr 2022 23:09:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1649452164; bh=YSzghGkQG9IKiyCgShp4fjbw3t+wnbGnbQfbUoit2jU=;
+        h=From:To:Subject:Date:MIME-Version;
+        b=aMz/5aUKALKOkx/jeMkyvvG6Ok+h2ZAFcMaNBMt5YTpPzLf604vS54VX4Q1aXeRk8
+         TrVbTS3zCMay4v6gM4gGRP1ttXJ8zjoHxq9X09I6MAA+nUo+eoS0/nI7N1bbZGJOs8
+         0F8KbCMO10ejdVsAzX1OOmNP2Sbqh7W9FLxPyZ8MD1L6Atz2z/oh9MIwGbe86utRD/
+         tuqqOdlFK4gk8nPeYSS3pHcEtzr3YmxvZCPOLSlVP9qvxuiVjCXoSo1S+QHHQ82QXa
+         JitWCGZSvHAshaZBq9MMydhgHLsbFgjcdpb+B4wrKP1Wr7H0ldAwR94bb5tWuh+p5G
+         X/1AZ3Xtx91oA==
+From:   Devid Antonio Filoni <devid.filoni@egluetechnologies.com>
+To:     Robin van der Gracht <robin@protonic.nl>,
+        Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     kernel@pengutronix.de, linux-can@vger.kernel.org,
+        Devid Antonio Filoni <devid.filoni@egluetechnologies.com>
+Subject: [PATCH 1/2] can: j1939: make sure that sent DAT frames are marked as TX
+Date:   Fri,  8 Apr 2022 23:09:09 +0200
+Message-Id: <20220408210910.16137-2-devid.filoni@egluetechnologies.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220408210910.16137-1-devid.filoni@egluetechnologies.com>
+References: <20220408210910.16137-1-devid.filoni@egluetechnologies.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: peak_usb: urb aborted
-Content-Language: en-US
-To:     Paul Thomas <pthomas8589@gmail.com>, linux-can@vger.kernel.org,
-        =?UTF-8?Q?St=c3=a9phane_Grosjean?= <s.grosjean@peak-system.com>
-References: <CAD56B7dMg073f56vfaxp38=dZiAFU0iCn6kmDGiNcNtCijyFoA@mail.gmail.com>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        support@peak-system.com
-In-Reply-To: <CAD56B7dMg073f56vfaxp38=dZiAFU0iCn6kmDGiNcNtCijyFoA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfDs1cPSwuRdiCSLtLZyqg37B4TVJbz+ZxjWCtbMZPzJozG1yKobeZbVpzXO0x9SmaEyQtcDImFttjQcqnnnv1TM3NjUCsPZE7tkOZi/JsM1kNMO6IfCb
+ IFFxc4/vAv66/aVNKIOmayo1RBwRlGJOm1JViFkm7PxJH55q5fT5V6Ujg2wvrXOsRGzjXmDUm4Xrt+IOEvkqCny711VJk4svtjAC08PGbq0o4urnbh2i0o7Z
+ pgmC719EQuQsFhZMjb/PLNR7t+kqtueK7+5ghMe5nICdd292A41SY2BprEDK7jVSDb79YwTHkGceCVccT7yGBR2SocN4zQ+K52CLS72/IXvXq8sSFFxI7rTJ
+ 8qAlmjUPegJgTcWd2Ky6Sdmpooc/pA==
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+Fixes: 9d71dd0 ("can: add support of SAE J1939 protocol")
+Signed-off-by: Devid Antonio Filoni <devid.filoni@egluetechnologies.com>
+---
+ net/can/j1939/transport.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index 307ee1174a6e..030f5fe901e1 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -621,18 +621,30 @@ static int j1939_tp_tx_dat(struct j1939_session *session,
+ 			   const u8 *dat, int len)
+ {
+ 	struct j1939_priv *priv = session->priv;
++	struct sk_buff *se_skb;
+ 	struct sk_buff *skb;
++	int ret;
+ 
+ 	skb = j1939_tp_tx_dat_new(priv, &session->skcb,
+ 				  false, false);
+ 	if (IS_ERR(skb))
+ 		return PTR_ERR(skb);
+ 
++	se_skb = j1939_session_skb_get(session);
++	if (se_skb)
++		can_skb_set_owner(skb, se_skb->sk);
++
+ 	skb_put_data(skb, dat, len);
+ 	if (j1939_tp_padding && len < 8)
+ 		memset(skb_put(skb, 8 - len), 0xff, 8 - len);
+ 
+-	return j1939_send_one(priv, skb);
++	ret = j1939_send_one(priv, skb);
++
++	if (ret)
++		kfree_skb(se_skb);
++	else
++		consume_skb(se_skb);
++	return ret;
+ }
+ 
+ static int j1939_xtp_do_tx_ctl(struct j1939_priv *priv,
+-- 
+2.25.1
 
-On 08.04.22 18:35, Paul Thomas wrote:
-> Folks,
-> 
-> I'm using a PCAN-USB adapter, and it seems to have a lot of trouble
-> under medium load. I'm getting these urb aborted messages.
-> [125054.082248] peak_usb 3-2.4.4:1.0 can0: Rx urb aborted (-71)
-> [125077.886850] peak_usb 3-2.4.4:1.0 can0: Rx urb aborted (-32)
-
-As I run the same hardware here it is very likely that you have a faulty 
-CAN bus setup with
-
-- wrong bitrate setting / sample points / etc
-- wrong or no termination
-- missing or wrong configured (other) CAN nodes
-
-I added the maintainer of the PEAK USB adapter (Stephane) to the 
-recipient list.
-
-Having the linux-can mailing list and Stephane in the recipient list is 
-sufficient to answer the above details.
-
-Regards,
-Oliver
-
-> 
-> Is there anything that can be done about this? This is very
-> frustrating because it makes the USB adapter very difficult to use as
-> a reliable partner of an embedded CAN device.
-> 
-> I'm using Ubuntu with 5.4.0-107-generic. Any help would be appreciated.
-> 
-> -Paul
