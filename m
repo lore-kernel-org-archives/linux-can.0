@@ -2,100 +2,168 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FB36C433F5
-	for <linux-can@archiver.kernel.org>; Fri,  8 Apr 2022 10:41:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1572C433F5
+	for <linux-can@archiver.kernel.org>; Fri,  8 Apr 2022 11:14:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232098AbiDHKns (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 8 Apr 2022 06:43:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42096 "EHLO
+        id S231853AbiDHLQS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 8 Apr 2022 07:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234694AbiDHKnq (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 8 Apr 2022 06:43:46 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3EDA31CF34
-        for <linux-can@vger.kernel.org>; Fri,  8 Apr 2022 03:41:41 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1ncm3g-0005YX-EF; Fri, 08 Apr 2022 12:41:40 +0200
-Received: from pengutronix.de (2a03-f580-87bc-d400-9b8b-dab7-394c-98e8.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:9b8b:dab7:394c:98e8])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id CA1ED5E686;
-        Fri,  8 Apr 2022 10:41:39 +0000 (UTC)
-Date:   Fri, 8 Apr 2022 12:41:39 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Wouter van Herpen <wouter.van.herpen@prodrive-technologies.com>
-Cc:     Marc Kleine-Budde <mkl@blackshift.org>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Subject: Re: PROBLEM: tcan4x5x nINT stays asserted under high RX/TX interrupt
- load
-Message-ID: <20220408104139.n4mmqdeidraad2oc@pengutronix.de>
-References: <AM0PR02MB592368F53A7BEA4154D24A87EAE09@AM0PR02MB5923.eurprd02.prod.outlook.com>
- <20220403105730.fnurim5vnnuxb7s5@pengutronix.de>
- <AM0PR02MB59236CF6507DD614F60D078FEAE49@AM0PR02MB5923.eurprd02.prod.outlook.com>
- <20220405120959.qwtmcafby2jjxc26@pengutronix.de>
- <AM0PR02MB59238FFE89994FBA392A33E6EAE99@AM0PR02MB5923.eurprd02.prod.outlook.com>
+        with ESMTP id S229688AbiDHLQR (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 8 Apr 2022 07:16:17 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C58CB3632F;
+        Fri,  8 Apr 2022 04:14:13 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 238BDcR5122754;
+        Fri, 8 Apr 2022 06:13:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1649416418;
+        bh=+SNjO1IUOnRYTs23vqywM5c9gOYSHSLoyH11tDb5yOk=;
+        h=From:To:CC:Subject:Date;
+        b=MgooNM0+tVkvtFTMNkxHRB0uFY9BfyfabOgZebe4K/7PxBZXjjn3q8S7dPLJhN+dd
+         0g/Z/rT+Nsponu1ySqHLn0fxKlOdBjP+3rB4gK35Z/vWTzE8S3hX5PeZKaN4lp2oV6
+         1+p/6UiEXNV4JineYzcTfFc4p2Sqcdg8S7ms9RSo=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 238BDcqZ026182
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 8 Apr 2022 06:13:38 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 8
+ Apr 2022 06:13:37 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Fri, 8 Apr 2022 06:13:37 -0500
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 238BDYJi018497;
+        Fri, 8 Apr 2022 06:13:35 -0500
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Aswath Govindraju <a-govindraju@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        <linux-phy@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-can@vger.kernel.org>
+Subject: [PATCH v5] phy: phy-can-transceiver: Add support for setting mux
+Date:   Fri, 8 Apr 2022 16:43:16 +0530
+Message-ID: <20220408111316.21189-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4tf7jtpvx2sevg4q"
-Content-Disposition: inline
-In-Reply-To: <AM0PR02MB59238FFE89994FBA392A33E6EAE99@AM0PR02MB5923.eurprd02.prod.outlook.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+On some boards, for routing CAN signals from controller to transceiver,
+muxes might need to be set. Therefore, add support for setting the mux by
+reading the mux-states property from the device tree node.
 
---4tf7jtpvx2sevg4q
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+---
 
-On 08.04.2022 10:29:38, Wouter van Herpen wrote:
-> > Feel free to send the patch against v5.4.24, please mention this in the=
- patch itself to avoid confusion.
->=20
-> For completeness, I submitted a patch on 05-04-2022 with subject:
-> [PATCH] can: m_can: m_can_isr(): disable mcan interrupts during tefn hand=
-ling
+Changes since v4:
+- Rebased on top of latest next head.
 
-What's the Message-ID?
+Changes since v3:
+- Rebased on top of the linux-next head
+- Dependencies are now merged in linux next.
+  84564481bc45 (mux: Add support for reading mux state from consumer DT node)
+- Dropped bindings patch from the series since it has been
+  picked up from the earlier version
+  https://lore.kernel.org/all/YieG22mgIzsL7TMn@robh.at.kernel.org/
 
-> (I noticed the patch is not listed on the archive mirror and I'm not
-> sure if this is because it needs processing or if I did not submit
-> correctly)
+Changes since v2:
+- Fixed the bindings removing the description about
+  the arguments in mux-states property
 
-Can you re-send the patch, adding me on Cc?
+Changes since v1:
+- Fixed the description for mux-states property in bindings
+  file
+- appended declaration of variable ret in the end
 
-regards,
-Marc
+ drivers/phy/Kconfig               |  1 +
+ drivers/phy/phy-can-transceiver.c | 24 +++++++++++++++++++++++-
+ 2 files changed, 24 insertions(+), 1 deletion(-)
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+diff --git a/drivers/phy/Kconfig b/drivers/phy/Kconfig
+index 82b63e60c5a2..300b0f2b5f84 100644
+--- a/drivers/phy/Kconfig
++++ b/drivers/phy/Kconfig
+@@ -64,6 +64,7 @@ config USB_LGM_PHY
+ config PHY_CAN_TRANSCEIVER
+ 	tristate "CAN transceiver PHY"
+ 	select GENERIC_PHY
++	select MULTIPLEXER
+ 	help
+ 	  This option enables support for CAN transceivers as a PHY. This
+ 	  driver provides function for putting the transceivers in various
+diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
+index 6f3fe37dee0e..95c6dbb52da7 100644
+--- a/drivers/phy/phy-can-transceiver.c
++++ b/drivers/phy/phy-can-transceiver.c
+@@ -10,6 +10,7 @@
+ #include<linux/module.h>
+ #include<linux/gpio.h>
+ #include<linux/gpio/consumer.h>
++#include <linux/mux/consumer.h>
+ 
+ struct can_transceiver_data {
+ 	u32 flags;
+@@ -21,13 +22,22 @@ struct can_transceiver_phy {
+ 	struct phy *generic_phy;
+ 	struct gpio_desc *standby_gpio;
+ 	struct gpio_desc *enable_gpio;
++	struct mux_state *mux_state;
+ };
+ 
+ /* Power on function */
+ static int can_transceiver_phy_power_on(struct phy *phy)
+ {
+ 	struct can_transceiver_phy *can_transceiver_phy = phy_get_drvdata(phy);
+-
++	int ret;
++
++	if (can_transceiver_phy->mux_state) {
++		ret = mux_state_select(can_transceiver_phy->mux_state);
++		if (ret) {
++			dev_err(&phy->dev, "Failed to select CAN mux: %d\n", ret);
++			return ret;
++		}
++	}
+ 	if (can_transceiver_phy->standby_gpio)
+ 		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 0);
+ 	if (can_transceiver_phy->enable_gpio)
+@@ -45,6 +55,8 @@ static int can_transceiver_phy_power_off(struct phy *phy)
+ 		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 1);
+ 	if (can_transceiver_phy->enable_gpio)
+ 		gpiod_set_value_cansleep(can_transceiver_phy->enable_gpio, 0);
++	if (can_transceiver_phy->mux_state)
++		mux_state_deselect(can_transceiver_phy->mux_state);
+ 
+ 	return 0;
+ }
+@@ -95,6 +107,16 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
+ 	match = of_match_node(can_transceiver_phy_ids, pdev->dev.of_node);
+ 	drvdata = match->data;
+ 
++	if (of_property_read_bool(dev->of_node, "mux-states")) {
++		struct mux_state *mux_state;
++
++		mux_state = devm_mux_state_get(dev, NULL);
++		if (IS_ERR(mux_state))
++			return dev_err_probe(&pdev->dev, PTR_ERR(mux_state),
++					     "failed to get mux\n");
++		can_transceiver_phy->mux_state = mux_state;
++	}
++
+ 	phy = devm_phy_create(dev, dev->of_node,
+ 			      &can_transceiver_phy_ops);
+ 	if (IS_ERR(phy)) {
+-- 
+2.17.1
 
---4tf7jtpvx2sevg4q
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmJQEWAACgkQrX5LkNig
-010PFgf/d/tUKwkI51htGBlnci5sVmJEUSUSNLQyzzuDuyuWGdgc429keGPN6NJW
-GoWYclc7dCHqZtzoQQRHUSLgW9YC3QgBfSM/S6u6ywXWNUSsj5e+Ya7iyfy3bP/n
-moW4i6S2IDjS5CBSHjdjtIbSn6WxFkAC3FIVqDajoL9eamPoZ4RULJG3u17w8ubC
-3EMaKYZQ/lupzl/Gd7duv5YK+c22Gd1E1P/AWGUrpJHWEJknOAtEAOGB1g3lsQqh
-zXlDCTcGcJFZjrhXZvhV/vNgpxxIK3Du1KpFUEa1ifSLPFm2KkqB4jwyBU7mwAJL
-b0imVuilSpncivtvIBX8S0bR4MTXtg==
-=1fiO
------END PGP SIGNATURE-----
-
---4tf7jtpvx2sevg4q--
