@@ -2,26 +2,26 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ED7AC43217
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D548FC433FE
 	for <linux-can@archiver.kernel.org>; Tue, 19 Apr 2022 11:40:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351683AbiDSLn1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 19 Apr 2022 07:43:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44180 "EHLO
+        id S1351573AbiDSLn0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 19 Apr 2022 07:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352319AbiDSLnK (ORCPT
+        with ESMTP id S1352318AbiDSLnK (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 19 Apr 2022 07:43:10 -0400
 Received: from mail1.wrs.com (unknown-3-146.windriver.com [147.11.3.146])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A1211BE96;
-        Tue, 19 Apr 2022 04:40:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE2F167C3;
+        Tue, 19 Apr 2022 04:40:20 -0700 (PDT)
 Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.corp.ad.wrs.com [147.11.82.252])
-        by mail1.wrs.com (8.15.2/8.15.2) with ESMTPS id 23JBbinf005017
+        by mail1.wrs.com (8.15.2/8.15.2) with ESMTPS id 23JBTO9X002576
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 19 Apr 2022 04:37:44 -0700
+        Tue, 19 Apr 2022 04:29:24 -0700
 Received: from otp-dpanait-l2.corp.ad.wrs.com (128.224.125.182) by
  ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 19 Apr 2022 04:37:42 -0700
+ 15.1.2242.12; Tue, 19 Apr 2022 04:29:21 -0700
 From:   Dragos-Marian Panait <dragos.panait@windriver.com>
 To:     <stable@vger.kernel.org>
 CC:     <dragos.panait@windriver.com>, <wg@grandegger.com>,
@@ -29,12 +29,12 @@ CC:     <dragos.panait@windriver.com>, <wg@grandegger.com>,
         <paskripkin@gmail.com>, <gregkh@linuxfoundation.org>,
         <hbh25y@gmail.com>, <linux-can@vger.kernel.org>,
         <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 4.19 1/1] can: usb_8dev: usb_8dev_start_xmit(): fix double dev_kfree_skb() in error path
-Date:   Tue, 19 Apr 2022 14:36:42 +0300
-Message-ID: <20220419113642.3115359-2-dragos.panait@windriver.com>
+Subject: [PATCH 5.4 1/1] can: usb_8dev: usb_8dev_start_xmit(): fix double dev_kfree_skb() in error path
+Date:   Tue, 19 Apr 2022 14:28:21 +0300
+Message-ID: <20220419112821.3112299-2-dragos.panait@windriver.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220419113642.3115359-1-dragos.panait@windriver.com>
-References: <20220419113642.3115359-1-dragos.panait@windriver.com>
+In-Reply-To: <20220419112821.3112299-1-dragos.panait@windriver.com>
+References: <20220419112821.3112299-1-dragos.panait@windriver.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -58,17 +58,17 @@ Link: https://lore.kernel.org/all/20220311080614.45229-1-hbh25y@gmail.com
 Cc: stable@vger.kernel.org
 Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-[DP: adjusted params of can_free_echo_skb() for 4.19 stable]
+[DP: adjusted params of can_free_echo_skb() for 5.4 stable]
 Signed-off-by: Dragos-Marian Panait <dragos.panait@windriver.com>
 ---
  drivers/net/can/usb/usb_8dev.c | 30 ++++++++++++++----------------
  1 file changed, 14 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
-index df99354ec12a..232f45f722f0 100644
+index c43e98bb6e2d..b514b2eaa318 100644
 --- a/drivers/net/can/usb/usb_8dev.c
 +++ b/drivers/net/can/usb/usb_8dev.c
-@@ -681,9 +681,20 @@ static netdev_tx_t usb_8dev_start_xmit(struct sk_buff *skb,
+@@ -670,9 +670,20 @@ static netdev_tx_t usb_8dev_start_xmit(struct sk_buff *skb,
  	atomic_inc(&priv->active_tx_urbs);
  
  	err = usb_submit_urb(urb, GFP_ATOMIC);
@@ -92,7 +92,7 @@ index df99354ec12a..232f45f722f0 100644
  		/* Slow down tx path */
  		netif_stop_queue(netdev);
  
-@@ -702,19 +713,6 @@ static netdev_tx_t usb_8dev_start_xmit(struct sk_buff *skb,
+@@ -691,19 +702,6 @@ static netdev_tx_t usb_8dev_start_xmit(struct sk_buff *skb,
  
  	return NETDEV_TX_BUSY;
  
