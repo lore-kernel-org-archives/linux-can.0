@@ -2,30 +2,30 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23280C433EF
-	for <linux-can@archiver.kernel.org>; Tue, 19 Apr 2022 11:40:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A005AC433EF
+	for <linux-can@archiver.kernel.org>; Tue, 19 Apr 2022 11:40:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242680AbiDSLn0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 19 Apr 2022 07:43:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43526 "EHLO
+        id S1351709AbiDSLn2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 19 Apr 2022 07:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352313AbiDSLnK (ORCPT
+        with ESMTP id S1352314AbiDSLnK (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 19 Apr 2022 07:43:10 -0400
 Received: from mail1.wrs.com (unknown-3-146.windriver.com [147.11.3.146])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0507013F79;
-        Tue, 19 Apr 2022 04:40:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A5713F35;
+        Tue, 19 Apr 2022 04:40:17 -0700 (PDT)
 Received: from mail.windriver.com (mail.wrs.com [147.11.1.11])
-        by mail1.wrs.com (8.15.2/8.15.2) with ESMTPS id 23JBbhPQ005016
+        by mail1.wrs.com (8.15.2/8.15.2) with ESMTPS id 23JBTM1m002573
         (version=TLSv1.1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Tue, 19 Apr 2022 04:37:43 -0700
+        Tue, 19 Apr 2022 04:29:23 -0700
 Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.corp.ad.wrs.com [147.11.82.252])
-        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 23JBbgaa000694
+        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 23JBTLBf028159
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 19 Apr 2022 04:37:42 -0700 (PDT)
+        Tue, 19 Apr 2022 04:29:21 -0700 (PDT)
 Received: from otp-dpanait-l2.corp.ad.wrs.com (128.224.125.182) by
  ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 19 Apr 2022 04:37:39 -0700
+ 15.1.2242.12; Tue, 19 Apr 2022 04:29:18 -0700
 From:   Dragos-Marian Panait <dragos.panait@windriver.com>
 To:     <stable@vger.kernel.org>
 CC:     <dragos.panait@windriver.com>, <wg@grandegger.com>,
@@ -33,9 +33,9 @@ CC:     <dragos.panait@windriver.com>, <wg@grandegger.com>,
         <paskripkin@gmail.com>, <gregkh@linuxfoundation.org>,
         <hbh25y@gmail.com>, <linux-can@vger.kernel.org>,
         <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 4.19 0/1] can: usb_8dev: backport fix for CVE-2022-28388
-Date:   Tue, 19 Apr 2022 14:36:41 +0300
-Message-ID: <20220419113642.3115359-1-dragos.panait@windriver.com>
+Subject: [PATCH 5.4 0/1] can: usb_8dev: backport fix for CVE-2022-28388
+Date:   Tue, 19 Apr 2022 14:28:20 +0300
+Message-ID: <20220419112821.3112299-1-dragos.panait@windriver.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -58,7 +58,7 @@ Hangyu Hua (1):
  1 file changed, 14 insertions(+), 16 deletions(-)
 
 
-base-commit: aaad8e56ca1e56fe34b5a33f30fb6f9279969020
+base-commit: e7f5213d755bc34f366d36f08825c0b446117d96
 -- 
 2.17.1
 
