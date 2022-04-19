@@ -2,45 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE57BC433FE
-	for <linux-can@archiver.kernel.org>; Tue, 19 Apr 2022 15:26:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A79F7C433F5
+	for <linux-can@archiver.kernel.org>; Tue, 19 Apr 2022 15:26:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353895AbiDSP3B (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 19 Apr 2022 11:29:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33114 "EHLO
+        id S1353922AbiDSP3C (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 19 Apr 2022 11:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353904AbiDSP25 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 19 Apr 2022 11:28:57 -0400
+        with ESMTP id S1353913AbiDSP26 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 19 Apr 2022 11:28:58 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD54113FA9
-        for <linux-can@vger.kernel.org>; Tue, 19 Apr 2022 08:26:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F82E167EC
+        for <linux-can@vger.kernel.org>; Tue, 19 Apr 2022 08:26:12 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1ngpjz-0001UE-Up
-        for linux-can@vger.kernel.org; Tue, 19 Apr 2022 17:26:08 +0200
+        id 1ngpk2-0001a9-JS
+        for linux-can@vger.kernel.org; Tue, 19 Apr 2022 17:26:10 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 1C75D66B2D
+        by bjornoya.blackshift.org (Postfix) with SMTP id 4002566B3F
         for <linux-can@vger.kernel.org>; Tue, 19 Apr 2022 15:25:57 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 88C0A66AE1;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id E1CA666B19;
         Tue, 19 Apr 2022 15:25:56 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e23a4353;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 58784e8d;
         Tue, 19 Apr 2022 15:25:56 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Pavel Pisa <pisa@cmp.felk.cvut.cz>,
-        Rob Herring <robh@kernel.org>, Pavel Machek <pavel@ucw.cz>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 12/17] dt-bindings: net: can: binding for CTU CAN FD open-source IP core.
-Date:   Tue, 19 Apr 2022 17:25:49 +0200
-Message-Id: <20220419152554.2925353-13-mkl@pengutronix.de>
+Subject: [PATCH net-next 17/17] MAINTAINERS: Add maintainers for CTU CAN FD IP core driver
+Date:   Tue, 19 Apr 2022 17:25:54 +0200
+Message-Id: <20220419152554.2925353-18-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220419152554.2925353-1-mkl@pengutronix.de>
 References: <20220419152554.2925353-1-mkl@pengutronix.de>
@@ -56,93 +55,35 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
 
-The device-tree bindings for open-source/open-hardware CAN FD IP core
-designed at the Czech Technical University in Prague.
+This patch adds an entry for the CTU CAN FD IP to the maintainers
+file.
 
-CTU CAN FD IP core and other CTU CAN bus related projects
-listing and documentation page
-
-   http://canbus.pages.fel.cvut.cz/
-
-Link: https://lore.kernel.org/all/c5a37fc470ae065b21e79caa65863539393c0d7c.1647904780.git.pisa@cmp.felk.cvut.cz
+Link: https://lore.kernel.org/all/2cc77e2999d9688bed155e4c7f7807e46d1bf9e3.1647904780.git.pisa@cmp.felk.cvut.cz
 Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Acked-by: Pavel Machek <pavel@ucw.cz>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../bindings/net/can/ctu,ctucanfd.yaml        | 63 +++++++++++++++++++
- 1 file changed, 63 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
+ MAINTAINERS | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
-new file mode 100644
-index 000000000000..fb34d971dcb3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
-@@ -0,0 +1,63 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/can/ctu,ctucanfd.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/MAINTAINERS b/MAINTAINERS
+index eaa1a074bf16..25d2a5d417bc 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5234,6 +5234,14 @@ T:	git git://linuxtv.org/media_tree.git
+ F:	Documentation/devicetree/bindings/media/allwinner,sun6i-a31-csi.yaml
+ F:	drivers/media/platform/sunxi/sun6i-csi/
+ 
++CTU CAN FD DRIVER
++M:	Pavel Pisa <pisa@cmp.felk.cvut.cz>
++M:	Ondrej Ille <ondrej.ille@gmail.com>
++L:	linux-can@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
++F:	drivers/net/can/ctucanfd/
 +
-+title: CTU CAN FD Open-source IP Core Device Tree Bindings
-+
-+description: |
-+  Open-source CAN FD IP core developed at the Czech Technical University in Prague
-+
-+  The core sources and documentation on project page
-+    [1] sources : https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core
-+    [2] datasheet : https://canbus.pages.fel.cvut.cz/ctucanfd_ip_core/doc/Datasheet.pdf
-+
-+  Integration in Xilinx Zynq SoC based system together with
-+  OpenCores SJA1000 compatible controllers
-+    [3] project : https://gitlab.fel.cvut.cz/canbus/zynq/zynq-can-sja1000-top
-+  Martin Jerabek dimploma thesis with integration and testing
-+  framework description
-+    [4] PDF : https://dspace.cvut.cz/bitstream/handle/10467/80366/F3-DP-2019-Jerabek-Martin-Jerabek-thesis-2019-canfd.pdf
-+
-+maintainers:
-+  - Pavel Pisa <pisa@cmp.felk.cvut.cz>
-+  - Ondrej Ille <ondrej.ille@gmail.com>
-+  - Martin Jerabek <martin.jerabek01@gmail.com>
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - const: ctu,ctucanfd-2
-+          - const: ctu,ctucanfd
-+      - const: ctu,ctucanfd
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    description: |
-+      phandle of reference clock (100 MHz is appropriate
-+      for FPGA implementation on Zynq-7000 system).
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    ctu_can_fd_0: can@43c30000 {
-+      compatible = "ctu,ctucanfd";
-+      interrupts = <0 30 4>;
-+      clocks = <&clkc 15>;
-+      reg = <0x43c30000 0x10000>;
-+    };
+ CW1200 WLAN driver
+ M:	Solomon Peachy <pizza@shaftnet.org>
+ S:	Maintained
 -- 
 2.35.1
 
