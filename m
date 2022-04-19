@@ -2,106 +2,111 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAD6CC4332F
-	for <linux-can@archiver.kernel.org>; Tue, 19 Apr 2022 07:28:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD812C433EF
+	for <linux-can@archiver.kernel.org>; Tue, 19 Apr 2022 08:15:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241889AbiDSHax (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 19 Apr 2022 03:30:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52612 "EHLO
+        id S234247AbiDSISX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 19 Apr 2022 04:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238899AbiDSHav (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 19 Apr 2022 03:30:51 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9472A2E6B7
-        for <linux-can@vger.kernel.org>; Tue, 19 Apr 2022 00:28:09 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1ngiHQ-0004uq-45
-        for linux-can@vger.kernel.org; Tue, 19 Apr 2022 09:28:08 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 05E4765BB1
-        for <linux-can@vger.kernel.org>; Tue, 19 Apr 2022 07:28:07 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id CD8AA65BA6;
-        Tue, 19 Apr 2022 07:28:06 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 975cceb9;
-        Tue, 19 Apr 2022 07:28:06 +0000 (UTC)
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     linux-can@vger.kernel.org
-Cc:     Manivannan Sadhasivam <mani@kernel.org>, kernel@pengutronix.de,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        devicetree@vger.kernel.org, Thomas Kopp <thomas.kopp@microchip.com>
-Subject: [PATCH 1/2] dt-binding: can: mcp251xfd: add binding information for mcp251863
-Date:   Tue, 19 Apr 2022 09:28:04 +0200
-Message-Id: <20220419072805.2840340-2-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220419072805.2840340-1-mkl@pengutronix.de>
-References: <20220419072805.2840340-1-mkl@pengutronix.de>
+        with ESMTP id S1349947AbiDSISN (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 19 Apr 2022 04:18:13 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0169632C;
+        Tue, 19 Apr 2022 01:14:56 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id x24so3235388qtq.11;
+        Tue, 19 Apr 2022 01:14:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Mj8GBm7fHLra8a9Wmaa9qaJw0tz/2aEtzPHOqJEgUyw=;
+        b=VZj+g5TEqFwrOt3e8foNXSoqon431CGXfIpFC2WjAx05e6oe8RlRGadnEsb0PWHPx8
+         MExUVIDkXpJueV34Xf1xPNG04WaULeWZOhIRE7V4+qlpGLxLdX5wMA+qx6vluFhlXlhL
+         2Od7e732KvQev7rInDsV6I5rw/cOFchzCqAGcfMmUlPPZDa1W/mimfN6Pe+8URTj25ws
+         sLZBDQoSx3AIYLtDamiAB5RolOjud+Gv7wDgw7DeozCnXMJKbSzpI+c861CIsxreMApc
+         gMb/CsOni2dy0F6OVYLTJpoex/nMDly2mseAFFpuJxj/Kftfr3l9HC3k6J2ShjMYDZyJ
+         Ov6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Mj8GBm7fHLra8a9Wmaa9qaJw0tz/2aEtzPHOqJEgUyw=;
+        b=3Q/43VgmhOMzKl0baMqF2EB+x1HCveFKCHeOo8DoR0ilaIxS7lB3KCZMKGFVCuMg6k
+         aKcUCGqXl0YNNXiWJz+w8/+dlygUaNIi711KgNgYjYXkvL5BpY+cwD9O6ZVQeO0X36IX
+         5JCH74JEy8P8NA0qDiqVGgEPuqJ4fPFiDrWGIHM4bWsfu0Zn0dGpjmlhcXHKtldgoxRS
+         aOBJhWFeyM7vpLiisIno5MlMYuTN23juaqqc1RPO33+cwJFzYwu535WbxQjb6CwkI/0Q
+         IO56rvkmNVrUCiMAqaSb0R/Zn5H7sa6NFtuMOam9PIaqATPvSVpXaYKpALhILzP4XcGn
+         VUKA==
+X-Gm-Message-State: AOAM532tCQqxkcm8c7iCtwPSLhazwZjKn9J55umGIWJfOajc4HAn5dyc
+        5/zAmnmw9+jgHYXfmPY420M=
+X-Google-Smtp-Source: ABdhPJx+JlotR1kfZlhHiYV5w5lFiOs6ai3kGB9qZ/ssBH8h1S8SzII4+Qjcat7pYOKsIVSbMUO/Yw==
+X-Received: by 2002:ac8:7c46:0:b0:2e1:d6c2:2b15 with SMTP id o6-20020ac87c46000000b002e1d6c22b15mr9491744qtv.405.1650356095930;
+        Tue, 19 Apr 2022 01:14:55 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id p5-20020a378d05000000b0069beaffd5b3sm8061423qkd.4.2022.04.19.01.14.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Apr 2022 01:14:55 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: chi.minghao@zte.com.cn
+To:     wg@grandegger.com
+Cc:     mkl@pengutronix.de, davem@davemloft.net, kuba@kernel.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Minghao Chi <chi.minghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] can: flexcan: using pm_runtime_resume_and_get instead of pm_runtime_get_sync
+Date:   Tue, 19 Apr 2022 08:14:49 +0000
+Message-Id: <20220419081449.2574026-1-chi.minghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The MCP251863 device is a CAN-FD controller (MCP2518FD) with an
-integrated Transceiver (ATA6563). Add the microchip,mcp251863 as a new
-compatible to the binding.
+From: Minghao Chi <chi.minghao@zte.com.cn>
 
-Cc: devicetree@vger.kernel.org
-Cc: Thomas Kopp <thomas.kopp@microchip.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Using pm_runtime_resume_and_get is more appropriate
+for simplifing code
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Minghao Chi <chi.minghao@zte.com.cn>
 ---
- .../bindings/net/can/microchip,mcp251xfd.yaml | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ drivers/net/can/flexcan/flexcan-core.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp251xfd.yaml b/Documentation/devicetree/bindings/net/can/microchip,mcp251xfd.yaml
-index b3826af6bd6e..7a73057707b4 100644
---- a/Documentation/devicetree/bindings/net/can/microchip,mcp251xfd.yaml
-+++ b/Documentation/devicetree/bindings/net/can/microchip,mcp251xfd.yaml
-@@ -5,8 +5,8 @@ $id: http://devicetree.org/schemas/net/can/microchip,mcp251xfd.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
+index 74d7fcbfd065..459e8aecabd5 100644
+--- a/drivers/net/can/flexcan/flexcan-core.c
++++ b/drivers/net/can/flexcan/flexcan-core.c
+@@ -723,11 +723,9 @@ static int flexcan_get_berr_counter(const struct net_device *dev,
+ 	const struct flexcan_priv *priv = netdev_priv(dev);
+ 	int err;
  
- title:
--  Microchip MCP2517FD and MCP2518FD stand-alone CAN controller device tree
--  bindings
-+  Microchip MCP2517FD, MCP2518FD and MCP251863 stand-alone CAN
-+  controller device tree bindings
+-	err = pm_runtime_get_sync(priv->dev);
+-	if (err < 0) {
+-		pm_runtime_put_noidle(priv->dev);
++	err = pm_runtime_resume_and_get(priv->dev);
++	if (err < 0)
+ 		return err;
+-	}
  
- maintainers:
-   - Marc Kleine-Budde <mkl@pengutronix.de>
-@@ -17,13 +17,14 @@ allOf:
- properties:
-   compatible:
-     oneOf:
--      - const: microchip,mcp2517fd
--        description: for MCP2517FD
--      - const: microchip,mcp2518fd
--        description: for MCP2518FD
--      - const: microchip,mcp251xfd
--        description: to autodetect chip variant
--
-+      - enum:
-+          - microchip,mcp2517fd
-+          - microchip,mcp2518fd
-+          - microchip,mcp251xfd
-+      - items:
-+          - enum:
-+              - microchip,mcp251863
-+          - const: microchip,mcp2518fd
-   reg:
-     maxItems: 1
+ 	err = __flexcan_get_berr_counter(dev, bec);
  
+@@ -1700,11 +1698,9 @@ static int flexcan_open(struct net_device *dev)
+ 		return -EINVAL;
+ 	}
+ 
+-	err = pm_runtime_get_sync(priv->dev);
+-	if (err < 0) {
+-		pm_runtime_put_noidle(priv->dev);
++	err = pm_runtime_resume_and_get(priv->dev);
++	if (err < 0)
+ 		return err;
+-	}
+ 
+ 	err = open_candev(dev);
+ 	if (err)
 -- 
-2.35.1
-
+2.25.1
 
