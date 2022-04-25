@@ -2,99 +2,92 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69E41C433EF
-	for <linux-can@archiver.kernel.org>; Sun, 24 Apr 2022 16:30:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98720C433F5
+	for <linux-can@archiver.kernel.org>; Mon, 25 Apr 2022 04:24:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235528AbiDXQdl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 24 Apr 2022 12:33:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43084 "EHLO
+        id S240951AbiDYE13 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 25 Apr 2022 00:27:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235716AbiDXQdf (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 24 Apr 2022 12:33:35 -0400
-Received: from mailgw.felk.cvut.cz (mailgw.felk.cvut.cz [147.32.82.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACEFBE0E;
-        Sun, 24 Apr 2022 09:30:14 -0700 (PDT)
-Received: from mailgw.felk.cvut.cz (localhost.localdomain [127.0.0.1])
-        by mailgw.felk.cvut.cz (Proxmox) with ESMTP id A53BA30B2949;
-        Sun, 24 Apr 2022 18:29:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        cmp.felk.cvut.cz; h=cc:cc:content-transfer-encoding:date:from
-        :from:in-reply-to:message-id:mime-version:references:reply-to
-        :subject:subject:to:to; s=felkmail; bh=+q6VIyeIbn04VjS0fK6OMIyMc
-        +DxAivUYEWcD1hAWvk=; b=gVyx0VHZ7LXGVhv6lS5VBbPbjxBh6EDwfZLTFewcW
-        QQSW8DIdVKwlo9ybhtS6I7ZOKnTjubjaY71R1K/DyNtlLtZCw16G25N47sBoMMD7
-        AUEbFGuhV15CoMYUEXVvQNbUZFNSOsbJ+lGq8UnKMSm6vsOb9/k6SHudAxhWpzZl
-        xGxdk3Bm0+ijHMQZc+LG1QzF/5SPgA39Wd+ErrE3Z7mpYzDMqx696z9mc+0suo6B
-        lwLPUsT3IwH8qMueEEwbzfZmm0RyBAkE8H5RABvK69e8GRram40lq5bvCZlvYhlP
-        4Xlxj1Sq3Gxju0XspXrMcyROgL/jRAVWzo5C3CmPot+lQ==
-Received: from cmp.felk.cvut.cz (haar.felk.cvut.cz [147.32.84.19])
-        by mailgw.felk.cvut.cz (Proxmox) with ESMTPS id 4711630ADC00;
-        Sun, 24 Apr 2022 18:29:42 +0200 (CEST)
-Received: from haar.felk.cvut.cz (localhost [127.0.0.1])
-        by cmp.felk.cvut.cz (8.14.0/8.12.3/SuSE Linux 0.6) with ESMTP id 23OGTfrx030956;
-        Sun, 24 Apr 2022 18:29:41 +0200
-Received: (from pisa@localhost)
-        by haar.felk.cvut.cz (8.14.0/8.13.7/Submit) id 23OGTfbR030955;
-        Sun, 24 Apr 2022 18:29:41 +0200
-From:   Pavel Pisa <pisa@cmp.felk.cvut.cz>
-To:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Marin Jerabek <martin.jerabek01@gmail.com>,
-        Ondrej Ille <ondrej.ille@gmail.com>,
-        Jiri Novak <jnovak@fel.cvut.cz>,
-        Jaroslav Beran <jara.beran@gmail.com>,
-        Petr Porazil <porazil@pikron.com>, Pavel Machek <pavel@ucw.cz>,
-        Carsten Emde <c.emde@osadl.org>,
-        Drew Fustini <pdp7pdp7@gmail.com>,
-        Matej Vasilevski <matej.vasilevski@gmail.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>,
-        Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Subject: [PATCH v1 2/4] can: ctucanfd: Remove unnecessary print function dev_err()
-Date:   Sun, 24 Apr 2022 18:28:09 +0200
-Message-Id: <901775368f2d34c83a5ebad4ad51c4554355c130.1650816929.git.pisa@cmp.felk.cvut.cz>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1650816929.git.pisa@cmp.felk.cvut.cz>
-References: <cover.1650816929.git.pisa@cmp.felk.cvut.cz>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        with ESMTP id S240876AbiDYE1Z (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 25 Apr 2022 00:27:25 -0400
+Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 31B56DF;
+        Sun, 24 Apr 2022 21:24:16 -0700 (PDT)
+Received: from ubuntu.localdomain (unknown [10.15.192.164])
+        by mail-app3 (Coremail) with SMTP id cC_KCgDHz3thImZikSbvAg--.24521S2;
+        Mon, 25 Apr 2022 12:24:05 +0800 (CST)
+From:   Duoming Zhou <duoming@zju.edu.cn>
+To:     linux-kernel@vger.kernel.org
+Cc:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, Duoming Zhou <duoming@zju.edu.cn>
+Subject: [PATCH net] drivers: net: can: Fix deadlock in grcan_close()
+Date:   Mon, 25 Apr 2022 12:24:00 +0800
+Message-Id: <20220425042400.66517-1-duoming@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgDHz3thImZikSbvAg--.24521S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr4kXF45Xw1xWr4kWr4kJFb_yoW8Gw4xpw
+        47KFyfAFWvvr4UK3Z7Xw4kZF1rZ3WDWFWUJFy5Wws5Zwn3ZF15JF1rKa4UuF47KFyDKFsx
+        uF1rXrZ3CFs8GrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUka1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
+        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
+        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
+        6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
+        vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v
+        1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAgkLAVZdtZYwoQAFs9
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+There are deadlocks caused by del_timer_sync(&priv->hang_timer)
+and del_timer_sync(&priv->rr_timer) in grcan_close(), one of
+the deadlocks are shown below:
 
-The print function dev_err() is redundant because platform_get_irq()
-already prints an error.
+   (Thread 1)              |      (Thread 2)
+                           | grcan_reset_timer()
+grcan_close()              |  mod_timer()
+ spin_lock_irqsave() //(1) |  (wait a time)
+ ...                       | grcan_initiate_running_reset()
+ del_timer_sync()          |  spin_lock_irqsave() //(2)
+ (wait timer to stop)      |  ...
 
-Eliminate the follow coccicheck warnings:
+We hold priv->lock in position (1) of thread 1 and use
+del_timer_sync() to wait timer to stop, but timer handler
+also need priv->lock in position (2) of thread 2.
+As a result, grcan_close() will block forever.
 
-./drivers/net/can/ctucanfd/ctucanfd_platform.c:67:2-9: line 67 is
-redundant because platform_get_irq() already prints an error.
+This patch extracts del_timer_sync() from the protection of
+spin_lock_irqsave(), which could let timer handler to obtain
+the needed lock.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
 ---
- drivers/net/can/ctucanfd/ctucanfd_platform.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/can/grcan.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/can/ctucanfd/ctucanfd_platform.c b/drivers/net/can/ctucanfd/ctucanfd_platform.c
-index 5e4806068662..89d54c2151e1 100644
---- a/drivers/net/can/ctucanfd/ctucanfd_platform.c
-+++ b/drivers/net/can/ctucanfd/ctucanfd_platform.c
-@@ -64,7 +64,6 @@ static int ctucan_platform_probe(struct platform_device *pdev)
+diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
+index d0c5a7a60da..1189057b5d6 100644
+--- a/drivers/net/can/grcan.c
++++ b/drivers/net/can/grcan.c
+@@ -1102,8 +1102,10 @@ static int grcan_close(struct net_device *dev)
+ 
+ 	priv->closing = true;
+ 	if (priv->need_txbug_workaround) {
++		spin_unlock_irqrestore(&priv->lock, flags);
+ 		del_timer_sync(&priv->hang_timer);
+ 		del_timer_sync(&priv->rr_timer);
++		spin_lock_irqsave(&priv->lock, flags);
  	}
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0) {
--		dev_err(dev, "Cannot find interrupt.\n");
- 		ret = irq;
- 		goto err;
- 	}
+ 	netif_stop_queue(dev);
+ 	grcan_stop_hardware(dev);
 -- 
-2.20.1
-
+2.17.1
 
