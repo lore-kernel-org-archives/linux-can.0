@@ -2,113 +2,103 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6538C4332F
-	for <linux-can@archiver.kernel.org>; Fri, 29 Apr 2022 14:33:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8ECFC433F5
+	for <linux-can@archiver.kernel.org>; Fri, 29 Apr 2022 17:44:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377425AbiD2Ogn (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 29 Apr 2022 10:36:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48080 "EHLO
+        id S1355320AbiD2RsM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 29 Apr 2022 13:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377428AbiD2Ogm (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 29 Apr 2022 10:36:42 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1758A76FC;
-        Fri, 29 Apr 2022 07:33:23 -0700 (PDT)
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 23TDsVF2030909;
-        Fri, 29 Apr 2022 14:33:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=+Pd3boeYYOqUdToIy6lpJJ2YBcwWkKSMUxL2UvbDusM=;
- b=DW8OrKWIYN0gznzlpUzPhlH9MI9rAz3ycRT/mpV7DmMGhcOAYAgSjQFlLjj/CStItUTo
- wiZVDIU7cTuL+EKXJYyoTj3X52JDYzAehmD2jrq3da/BR8zAEshGvP8cV9RIGX9aC4yV
- qJ6iafbRbKJpGabIBz6+ryHpW3+wMlJht8On8Xx0pupOB0MydyC3wwgmPSvAWJflAMa0
- pDJep9P98Zw0u41qziRZARt5YEGu1oy4sHEKN7IqVawZbPEb3nqdQDlSGhZH7fnGBELN
- RNpyMp51aAtg9MC9o+l00COi4F9VO8eprx+eUzTVVfCY7n9jvc/Wtj7T7b80j/qWrJT8 ag== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3fqtqvxpkk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Apr 2022 14:33:10 +0000
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 23TDsgjf032246;
-        Fri, 29 Apr 2022 14:33:10 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3fqtqvxpjp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Apr 2022 14:33:10 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 23TEKro9032650;
-        Fri, 29 Apr 2022 14:33:08 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 3fm93918ha-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Apr 2022 14:33:08 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 23TEX58n50069836
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 Apr 2022 14:33:05 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9BF0B11C04A;
-        Fri, 29 Apr 2022 14:33:05 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B6DB311C052;
-        Fri, 29 Apr 2022 14:33:04 +0000 (GMT)
-Received: from sig-9-145-61-57.uk.ibm.com (unknown [9.145.61.57])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 29 Apr 2022 14:33:04 +0000 (GMT)
-Message-ID: <1f45625f8648c112cf0ed28c6841ba32eda2fa70.camel@linux.ibm.com>
-Subject: Re: [PATCH 20/37] net: add HAS_IOPORT dependencies
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-pci@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        "open list:CAN NETWORK DRIVERS" <linux-can@vger.kernel.org>,
-        "moderated list:INTEL ETHERNET DRIVERS" 
-        <intel-wired-lan@lists.osuosl.org>
-Date:   Fri, 29 Apr 2022 16:33:04 +0200
-In-Reply-To: <20220429135108.2781579-35-schnelle@linux.ibm.com>
-References: <20220429135108.2781579-1-schnelle@linux.ibm.com>
-         <20220429135108.2781579-35-schnelle@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: sQREHQ8qdLBo4StQb6LsgeEW29ZiI4KJ
-X-Proofpoint-ORIG-GUID: tFijnxu_0b1vHoqftZ68sNgykwqn057-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-04-29_07,2022-04-28_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0 suspectscore=0
- mlxlogscore=613 phishscore=0 malwarescore=0 adultscore=0 impostorscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2204290080
+        with ESMTP id S1344488AbiD2RsM (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 29 Apr 2022 13:48:12 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D51AD3993
+        for <linux-can@vger.kernel.org>; Fri, 29 Apr 2022 10:44:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E8FCCB8371C
+        for <linux-can@vger.kernel.org>; Fri, 29 Apr 2022 17:44:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A560C385A4;
+        Fri, 29 Apr 2022 17:44:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651254290;
+        bh=rTFkiDLCDMkzZNbUbrV+azXCpNL6cSTjONKpwpvdSJ8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lqszfDbSJcID9uKWrUp+dOTjJoKIfLKV7z1CdKLz9rL2Ybokx49rRssjYVamN0CnA
+         SxYgknSKJFoQKBn3RVqQak7TeTqB+EKbWxWvETCUf2CTPgd9KmKdVpZ6BTF2Zo6LsE
+         C2k6gENYK1A5i6lrmMl9Do4vO/sRN67LnwENosL/qLDNCZ9TLveljw6dxmsouzSjIM
+         c/slOj9VSum1D9QzfvyWSexDulO2EmgVqKkdUVDP9RWvl2qB+H8/Hobf8hK+EDJLEl
+         P5BsGb1wXBMV3Z4HqajzQCfNKhz/1qzl+6HXNaw3L/2w94BfgW1tAsSltzRydGfBy/
+         HgGtyVhr0HfgA==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     mkl@pengutronix.de
+Cc:     Jakub Kicinski <kuba@kernel.org>, rcsekar@samsung.com,
+        wg@grandegger.com, linux-can@vger.kernel.org
+Subject: [PATCH can-next] m_can: remove a copy of the NAPI_POLL_WEIGHT define
+Date:   Fri, 29 Apr 2022 10:44:46 -0700
+Message-Id: <20220429174446.196655-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Fri, 2022-04-29 at 15:50 +0200, Niklas Schnelle wrote:
-> In a future patch HAS_IOPORT=n will result in inb()/outb() and friends
-> not being declared. We thus need to add HAS_IOPORT as dependency for
-> those drivers using them.
-> 
-> Co-developed-by: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> ---
+Defining local versions of NAPI_POLL_WEIGHT with the same
+values in the drivers just makes refactoring harder.
 
-Sorry everyone. I sent this as PATCH in error while preparing to sent
-the same series as RFC. Since e-mail has no remote delete and I lack a
-time machine let's just all pretend you only got the RFC.
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+---
+CC: rcsekar@samsung.com
+CC: wg@grandegger.com
+CC: mkl@pengutronix.de
+CC: linux-can@vger.kernel.org
+---
+ drivers/net/can/m_can/m_can.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 2779bba390f2..e6d2da4a9f41 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -77,9 +77,6 @@ enum m_can_reg {
+ 	M_CAN_TXEFA	= 0xf8,
+ };
+ 
+-/* napi related */
+-#define M_CAN_NAPI_WEIGHT	64
+-
+ /* message ram configuration data length */
+ #define MRAM_CFG_LEN	8
+ 
+@@ -951,7 +948,7 @@ static int m_can_rx_peripheral(struct net_device *dev)
+ 	struct m_can_classdev *cdev = netdev_priv(dev);
+ 	int work_done;
+ 
+-	work_done = m_can_rx_handler(dev, M_CAN_NAPI_WEIGHT);
++	work_done = m_can_rx_handler(dev, NAPI_POLL_WEIGHT);
+ 
+ 	/* Don't re-enable interrupts if the driver had a fatal error
+ 	 * (e.g., FIFO read failure).
+@@ -1474,7 +1471,7 @@ static int m_can_dev_setup(struct m_can_classdev *cdev)
+ 
+ 	if (!cdev->is_peripheral)
+ 		netif_napi_add(dev, &cdev->napi,
+-			       m_can_poll, M_CAN_NAPI_WEIGHT);
++			       m_can_poll, NAPI_POLL_WEIGHT);
+ 
+ 	/* Shared properties of all M_CAN versions */
+ 	cdev->version = m_can_version;
+@@ -1994,7 +1991,7 @@ int m_can_class_register(struct m_can_classdev *cdev)
+ 
+ 	if (cdev->is_peripheral) {
+ 		ret = can_rx_offload_add_manual(cdev->net, &cdev->offload,
+-						M_CAN_NAPI_WEIGHT);
++						NAPI_POLL_WEIGHT);
+ 		if (ret)
+ 			goto clk_disable;
+ 	}
+-- 
+2.34.1
 
