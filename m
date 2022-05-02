@@ -2,47 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EE99C433F5
-	for <linux-can@archiver.kernel.org>; Mon,  2 May 2022 07:59:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75FCDC433EF
+	for <linux-can@archiver.kernel.org>; Mon,  2 May 2022 09:19:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383641AbiEBIDE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 2 May 2022 04:03:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38044 "EHLO
+        id S1384156AbiEBJXY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 2 May 2022 05:23:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383640AbiEBIC5 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 2 May 2022 04:02:57 -0400
+        with ESMTP id S1384166AbiEBJXU (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 2 May 2022 05:23:20 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 746522CCAA
-        for <linux-can@vger.kernel.org>; Mon,  2 May 2022 00:59:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 420633BBDB
+        for <linux-can@vger.kernel.org>; Mon,  2 May 2022 02:19:51 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nlQxn-0002XU-IM
-        for linux-can@vger.kernel.org; Mon, 02 May 2022 09:59:23 +0200
+        id 1nlSDd-00062c-Jr
+        for linux-can@vger.kernel.org; Mon, 02 May 2022 11:19:49 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 3D12C72E4B
-        for <linux-can@vger.kernel.org>; Mon,  2 May 2022 07:59:17 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 7739D72FE1
+        for <linux-can@vger.kernel.org>; Mon,  2 May 2022 09:19:48 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id DEE6472E1F;
-        Mon,  2 May 2022 07:59:16 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 512D772FD8;
+        Mon,  2 May 2022 09:19:48 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 448f3b2e;
-        Mon, 2 May 2022 07:59:16 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 44edb325;
+        Mon, 2 May 2022 09:19:48 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Pavel Pisa <pisa@cmp.felk.cvut.cz>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 8/9] can: ctucanfd: remove debug statements
-Date:   Mon,  2 May 2022 09:59:13 +0200
-Message-Id: <20220502075914.1905039-9-mkl@pengutronix.de>
+To:     linux-can@vger.kernel.org
+Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [can-next-rfc 2/2] can: raw: add support for SO_TXTIME/SCM_TXTIME
+Date:   Mon,  2 May 2022 11:19:46 +0200
+Message-Id: <20220502091946.1916211-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220502075914.1905039-1-mkl@pengutronix.de>
-References: <20220502075914.1905039-1-mkl@pengutronix.de>
+In-Reply-To: <20220502091946.1916211-1-mkl@pengutronix.de>
+References: <20220502091946.1916211-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -53,140 +52,53 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+This patch calls into sock_cmsg_send() to parse the user supplied
+control information into a struct sockcm_cookie. Then assign the
+requested transmit time to the skb.
 
-This patch removes the debug statements from the driver to make
-checkpatch.pl and patchwork happy.
+This makes it possible to use the Earliest TXTIME First (ETF) packet
+scheduler with the CAN_RAW protocol. The user can send a CAN_RAW frame
+with a TXTIME and the kernel (with the ETF scheduler) will take care
+of sending it to the network interface.
 
-Link: https://lore.kernel.org/all/1fd684bcf5ddb0346aad234072f54e976a5210fb.1650816929.git.pisa@cmp.felk.cvut.cz
-Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-[mkl: split into separate patches]
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/ctucanfd/ctucanfd_base.c | 26 ------------------------
- 1 file changed, 26 deletions(-)
+ net/can/raw.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/ctucanfd/ctucanfd_base.c b/drivers/net/can/ctucanfd/ctucanfd_base.c
-index 10c2517a395b..2ada097d1ede 100644
---- a/drivers/net/can/ctucanfd/ctucanfd_base.c
-+++ b/drivers/net/can/ctucanfd/ctucanfd_base.c
-@@ -177,8 +177,6 @@ static int ctucan_reset(struct net_device *ndev)
- 	struct ctucan_priv *priv = netdev_priv(ndev);
- 	int i = 100;
- 
--	ctucan_netdev_dbg(ndev, "%s\n", __func__);
--
- 	ctucan_write32(priv, CTUCANFD_MODE, REG_MODE_RST);
- 	clear_bit(CTUCANFD_FLAG_RX_FFW_BUFFERED, &priv->drv_flags);
- 
-@@ -264,8 +262,6 @@ static int ctucan_set_bittiming(struct net_device *ndev)
- 	struct ctucan_priv *priv = netdev_priv(ndev);
- 	struct can_bittiming *bt = &priv->can.bittiming;
- 
--	ctucan_netdev_dbg(ndev, "%s\n", __func__);
--
- 	/* Note that bt may be modified here */
- 	return ctucan_set_btr(ndev, bt, true);
- }
-@@ -281,8 +277,6 @@ static int ctucan_set_data_bittiming(struct net_device *ndev)
- 	struct ctucan_priv *priv = netdev_priv(ndev);
- 	struct can_bittiming *dbt = &priv->can.data_bittiming;
- 
--	ctucan_netdev_dbg(ndev, "%s\n", __func__);
--
- 	/* Note that dbt may be modified here */
- 	return ctucan_set_btr(ndev, dbt, false);
- }
-@@ -300,8 +294,6 @@ static int ctucan_set_secondary_sample_point(struct net_device *ndev)
- 	int ssp_offset = 0;
- 	u32 ssp_cfg = 0; /* No SSP by default */
- 
--	ctucan_netdev_dbg(ndev, "%s\n", __func__);
--
- 	if (CTU_CAN_FD_ENABLED(priv)) {
- 		netdev_err(ndev, "BUG! Cannot set SSP - CAN is enabled\n");
- 		return -EPERM;
-@@ -388,8 +380,6 @@ static int ctucan_chip_start(struct net_device *ndev)
- 	int err;
- 	struct can_ctrlmode mode;
- 
--	ctucan_netdev_dbg(ndev, "%s\n", __func__);
--
- 	priv->txb_prio = 0x01234567;
- 	priv->txb_head = 0;
- 	priv->txb_tail = 0;
-@@ -455,8 +445,6 @@ static int ctucan_do_set_mode(struct net_device *ndev, enum can_mode mode)
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 1a68efae43c2..d1bd9cc51ebe 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -772,6 +772,7 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
  {
- 	int ret;
+ 	struct sock *sk = sock->sk;
+ 	struct raw_sock *ro = raw_sk(sk);
++	struct sockcm_cookie sockc;
+ 	struct sk_buff *skb;
+ 	struct net_device *dev;
+ 	int ifindex;
+@@ -817,10 +818,18 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 	if (err < 0)
+ 		goto free_skb;
  
--	ctucan_netdev_dbg(ndev, "%s\n", __func__);
--
- 	switch (mode) {
- 	case CAN_MODE_START:
- 		ret = ctucan_reset(ndev);
-@@ -1121,8 +1109,6 @@ static irqreturn_t ctucan_interrupt(int irq, void *dev_id)
- 	u32 imask;
- 	int irq_loops;
+-	skb_setup_tx_timestamp(skb, sk->sk_tsflags);
++	sockcm_init(&sockc, sk);
++	if (msg->msg_controllen) {
++		err = sock_cmsg_send(sk, msg, &sockc);
++		if (unlikely(err))
++			goto free_skb;
++	}
  
--	ctucan_netdev_dbg(ndev, "%s\n", __func__);
--
- 	for (irq_loops = 0; irq_loops < 10000; irq_loops++) {
- 		/* Get the interrupt status */
- 		isr = ctucan_read32(priv, CTUCANFD_INT_STAT);
-@@ -1196,8 +1182,6 @@ static void ctucan_chip_stop(struct net_device *ndev)
- 	u32 mask = 0xffffffff;
- 	u32 mode;
+ 	skb->dev = dev;
+ 	skb->priority = sk->sk_priority;
++	skb->tstamp = sockc.transmit_time;
++
++	skb_setup_tx_timestamp(skb, sockc.tsflags);
  
--	ctucan_netdev_dbg(ndev, "%s\n", __func__);
--
- 	/* Disable interrupts and disable CAN */
- 	ctucan_write32(priv, CTUCANFD_INT_ENA_CLR, mask);
- 	ctucan_write32(priv, CTUCANFD_INT_MASK_SET, mask);
-@@ -1220,8 +1204,6 @@ static int ctucan_open(struct net_device *ndev)
- 	struct ctucan_priv *priv = netdev_priv(ndev);
- 	int ret;
+ 	err = can_send(skb, ro->loopback);
  
--	ctucan_netdev_dbg(ndev, "%s\n", __func__);
--
- 	ret = pm_runtime_get_sync(priv->dev);
- 	if (ret < 0) {
- 		netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n",
-@@ -1281,8 +1263,6 @@ static int ctucan_close(struct net_device *ndev)
- {
- 	struct ctucan_priv *priv = netdev_priv(ndev);
- 
--	ctucan_netdev_dbg(ndev, "%s\n", __func__);
--
- 	netif_stop_queue(ndev);
- 	napi_disable(&priv->napi);
- 	ctucan_chip_stop(ndev);
-@@ -1308,8 +1288,6 @@ static int ctucan_get_berr_counter(const struct net_device *ndev, struct can_ber
- 	struct ctucan_priv *priv = netdev_priv(ndev);
- 	int ret;
- 
--	ctucan_netdev_dbg(ndev, "%s\n", __func__);
--
- 	ret = pm_runtime_get_sync(priv->dev);
- 	if (ret < 0) {
- 		netdev_err(ndev, "%s: pm_runtime_get failed(%d)\n", __func__, ret);
-@@ -1335,8 +1313,6 @@ int ctucan_suspend(struct device *dev)
- 	struct net_device *ndev = dev_get_drvdata(dev);
- 	struct ctucan_priv *priv = netdev_priv(ndev);
- 
--	ctucan_netdev_dbg(ndev, "%s\n", __func__);
--
- 	if (netif_running(ndev)) {
- 		netif_stop_queue(ndev);
- 		netif_device_detach(ndev);
-@@ -1353,8 +1329,6 @@ int ctucan_resume(struct device *dev)
- 	struct net_device *ndev = dev_get_drvdata(dev);
- 	struct ctucan_priv *priv = netdev_priv(ndev);
- 
--	ctucan_netdev_dbg(ndev, "%s\n", __func__);
--
- 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
- 
- 	if (netif_running(ndev)) {
 -- 
 2.35.1
 
