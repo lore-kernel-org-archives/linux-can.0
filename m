@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F002EC433FE
-	for <linux-can@archiver.kernel.org>; Mon,  2 May 2022 07:59:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B42AC4332F
+	for <linux-can@archiver.kernel.org>; Mon,  2 May 2022 07:59:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383663AbiEBIC7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 2 May 2022 04:02:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38212 "EHLO
+        id S1381273AbiEBIDA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 2 May 2022 04:03:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383629AbiEBIC5 (ORCPT
+        with ESMTP id S1383631AbiEBIC5 (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 2 May 2022 04:02:57 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738AF2CCA6
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FED2CCAB
         for <linux-can@vger.kernel.org>; Mon,  2 May 2022 00:59:25 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nlQxn-0002Xn-Kf
+        id 1nlQxn-0002XZ-L5
         for linux-can@vger.kernel.org; Mon, 02 May 2022 09:59:23 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 48B1272E50
+        by bjornoya.blackshift.org (Postfix) with SMTP id 3D97E72E4D
         for <linux-can@vger.kernel.org>; Mon,  2 May 2022 07:59:17 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id C6A4672E15;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id B4BC672E0D;
         Mon,  2 May 2022 07:59:16 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7d172e7d;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f40d6624;
         Mon, 2 May 2022 07:59:16 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
@@ -40,9 +40,9 @@ Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         Abaci Robot <abaci@linux.alibaba.com>,
         Pave Pisa <pisa@cmp.felk.cvut.cz>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 6/9] can: ctucanfd: ctucan_platform_probe(): remove unnecessary print function dev_err()
-Date:   Mon,  2 May 2022 09:59:11 +0200
-Message-Id: <20220502075914.1905039-7-mkl@pengutronix.de>
+Subject: [PATCH net-next 5/9] can: ctucanfd: remove unused including <linux/version.h>
+Date:   Mon,  2 May 2022 09:59:10 +0200
+Message-Id: <20220502075914.1905039-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220502075914.1905039-1-mkl@pengutronix.de>
 References: <20220502075914.1905039-1-mkl@pengutronix.de>
@@ -58,35 +58,31 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-The print function dev_err() is redundant because platform_get_irq()
-already prints an error.
+Eliminate the follow versioncheck warning:
 
-Eliminate the follow coccicheck warnings:
+| drivers/net/can/ctucanfd/ctucanfd_base.c: 34 linux/version.h not needed.
 
-| drivers/net/can/ctucanfd/ctucanfd_platform.c:67:2-9:
-| line 67 is redundant because platform_get_irq() already prints an error.
-
-Link: https://lore.kernel.org/all/20220421203242.7335-1-jiapeng.chong@linux.alibaba.com
+Link: https://lore.kernel.org/all/20220421202852.2693-1-jiapeng.chong@linux.alibaba.com
 Reported-by: Abaci Robot <abaci@linux.alibaba.com>
 Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 Acked-by: Pave Pisa <pisa@cmp.felk.cvut.cz>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/ctucanfd/ctucanfd_platform.c | 1 -
+ drivers/net/can/ctucanfd/ctucanfd_base.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/can/ctucanfd/ctucanfd_platform.c b/drivers/net/can/ctucanfd/ctucanfd_platform.c
-index 5e4806068662..89d54c2151e1 100644
---- a/drivers/net/can/ctucanfd/ctucanfd_platform.c
-+++ b/drivers/net/can/ctucanfd/ctucanfd_platform.c
-@@ -64,7 +64,6 @@ static int ctucan_platform_probe(struct platform_device *pdev)
- 	}
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0) {
--		dev_err(dev, "Cannot find interrupt.\n");
- 		ret = irq;
- 		goto err;
- 	}
+diff --git a/drivers/net/can/ctucanfd/ctucanfd_base.c b/drivers/net/can/ctucanfd/ctucanfd_base.c
+index 7a4550f60abb..be90136be442 100644
+--- a/drivers/net/can/ctucanfd/ctucanfd_base.c
++++ b/drivers/net/can/ctucanfd/ctucanfd_base.c
+@@ -31,7 +31,6 @@
+ #include <linux/can/error.h>
+ #include <linux/can/led.h>
+ #include <linux/pm_runtime.h>
+-#include <linux/version.h>
+ 
+ #include "ctucanfd.h"
+ #include "ctucanfd_kregs.h"
 -- 
 2.35.1
 
