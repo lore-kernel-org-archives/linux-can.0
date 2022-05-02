@@ -2,46 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15521C433EF
-	for <linux-can@archiver.kernel.org>; Mon,  2 May 2022 07:59:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D0CBC433F5
+	for <linux-can@archiver.kernel.org>; Mon,  2 May 2022 07:59:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383637AbiEBICx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 2 May 2022 04:02:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37940 "EHLO
+        id S1383655AbiEBIC6 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 2 May 2022 04:02:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383631AbiEBICu (ORCPT
+        with ESMTP id S1377200AbiEBICu (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 2 May 2022 04:02:50 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974C92A242
-        for <linux-can@vger.kernel.org>; Mon,  2 May 2022 00:59:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDF619C0B
+        for <linux-can@vger.kernel.org>; Mon,  2 May 2022 00:59:23 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nlQxk-0002SV-T9
-        for linux-can@vger.kernel.org; Mon, 02 May 2022 09:59:20 +0200
+        id 1nlQxl-0002Sg-CQ
+        for linux-can@vger.kernel.org; Mon, 02 May 2022 09:59:21 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 07F6472E31
+        by bjornoya.blackshift.org (Postfix) with SMTP id 0AF7472E33
         for <linux-can@vger.kernel.org>; Mon,  2 May 2022 07:59:17 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 889F072E02;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id A724372E08;
         Mon,  2 May 2022 07:59:16 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0ef5e712;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4611b67a;
         Mon, 2 May 2022 07:59:16 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Biju Das <biju.das.jz@bp.renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        kernel@pengutronix.de, Pavel Pisa <pisa@cmp.felk.cvut.cz>,
+        Odrej Ille <ondrej.ille@gmail.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 1/9] dt-bindings: can: renesas,rcar-canfd: Document RZ/G2UL support
-Date:   Mon,  2 May 2022 09:59:06 +0200
-Message-Id: <20220502075914.1905039-2-mkl@pengutronix.de>
+Subject: [PATCH net-next 4/9] docs: networking: device drivers: can: ctucanfd: update author e-mail
+Date:   Mon,  2 May 2022 09:59:09 +0200
+Message-Id: <20220502075914.1905039-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220502075914.1905039-1-mkl@pengutronix.de>
 References: <20220502075914.1905039-1-mkl@pengutronix.de>
@@ -55,33 +54,32 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Biju Das <biju.das.jz@bp.renesas.com>
+From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
 
-Add CANFD binding documentation for Renesas R9A07G043 (RZ/G2UL) SoC.
+This patch updates the author's email address.
 
-Link: https://lore.kernel.org/all/20220423130743.123198-1-biju.das.jz@bp.renesas.com
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/all/e4396244da6b008c671def9f50bb983a10389863.1650816929.git.pisa@cmp.felk.cvut.cz
+Cc: Odrej Ille <ondrej.ille@gmail.com>
+Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+[mkl: split into separate patches]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../devicetree/bindings/net/can/renesas,rcar-canfd.yaml          | 1 +
- 1 file changed, 1 insertion(+)
+ .../networking/device_drivers/can/ctu/ctucanfd-driver.rst       | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-index 648740270731..9fc137fafed9 100644
---- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-+++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-@@ -33,6 +33,7 @@ properties:
+diff --git a/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst b/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst
+index 797fb45be187..2fde5551e756 100644
+--- a/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst
++++ b/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst
+@@ -536,7 +536,7 @@ CTU CAN FD Driver Sources Reference
+ CTU CAN FD IP Core and Driver Development Acknowledgment
+ ---------------------------------------------------------
  
-       - items:
-           - enum:
-+              - renesas,r9a07g043-canfd    # RZ/G2UL
-               - renesas,r9a07g044-canfd    # RZ/G2{L,LC}
-               - renesas,r9a07g054-canfd    # RZ/V2L
-           - const: renesas,rzg2l-canfd     # RZ/G2L family
-
-base-commit: 6e28f56c0d1d976a4940d13d7f27e446ce65cd0a
+-* Odrej Ille <illeondr@fel.cvut.cz>
++* Odrej Ille <ondrej.ille@gmail.com>
+ 
+   * started the project as student at Department of Measurement, FEE, CTU
+   * invested great amount of personal time and enthusiasm to the project over years
 -- 
 2.35.1
 
