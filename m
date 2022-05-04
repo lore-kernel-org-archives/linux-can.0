@@ -2,43 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB4C4C4332F
-	for <linux-can@archiver.kernel.org>; Wed,  4 May 2022 13:55:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE642C43219
+	for <linux-can@archiver.kernel.org>; Wed,  4 May 2022 13:55:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238240AbiEDN7W (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 4 May 2022 09:59:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46566 "EHLO
+        id S1350901AbiEDN7X (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 4 May 2022 09:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350924AbiEDN7C (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 4 May 2022 09:59:02 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B126B1F610;
-        Wed,  4 May 2022 06:55:26 -0700 (PDT)
+        with ESMTP id S1350942AbiEDN7L (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 4 May 2022 09:59:11 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 948471F615;
+        Wed,  4 May 2022 06:55:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1651672526; x=1683208526;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=gTnQ3OGhw6j4Yt119Dk2zJnUnlRlTT7JIPHFO5zJ7Fw=;
-  b=TlV5cGDa/a54RMhc+0csFm68XEUKqIF9QXKCp07qo3q+pfRY/LFk/xOu
-   XkQ4xYS2sE0athTlTusuuj3vvaGDtgkBQhecdTwps8Me+0DNIR9TDfu9m
-   4L5XKui82RonqnEBc8mXXjmv+tVsdb2/tGujK2piukkjk7ff4qb69DuZ0
-   nRaXvSQ96yJHRvO5d5T+CtKe+10W2WeKl2u4i2pIAhErLEREsQJ+71/V6
-   Jk0fIJZrMHEcaTrh9JlNBYLhXtsIkCREza7DGeH6ypjTUxGAE/1vRuJyv
-   vWp5VJUq4xC7wi3PXuPSyEHq1HIYDALxOWVpy4dJ2sAlyfFl8tTs/45qr
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10337"; a="266614327"
+  t=1651672535; x=1683208535;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=hziUNVmt++nnYBmzUV09YMbcy639ADbCMZfzePTO9CI=;
+  b=c0V//KqhGytQpO0yQch1VkVmLHU51alGYZFYTHuOlHjq3tLfmM/ZmavZ
+   CPFdLsIo8v3uIg1IGcef15aW5frjHhmeAsTdT6UiPfJ+CMDvzBeZEUelm
+   vlXDK5+u8w5aOx/VM89igzjqaZ7s5FdEVFhnTTKBeTH+8FQ/Twn0MZkSx
+   nyQvImgpHdPhn2E7AG1oNXStY86pY2p9vsaVpb2ANNDl+Ni7n/wbGKSXp
+   wfCtXNiFM3X7hR5Ydeznxq4aIZBrI1EpCBFKh+i/wVi2qH8pATkYtaquo
+   M5i+z3UQFmxzvbEKTQQEhBpWoBRVKe4AUAy1FX4Z3KL/uaQzrtbX9SwCf
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10337"; a="247682196"
 X-IronPort-AV: E=Sophos;i="5.91,198,1647327600"; 
-   d="scan'208";a="266614327"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2022 06:55:26 -0700
+   d="scan'208";a="247682196"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2022 06:55:35 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.91,198,1647327600"; 
-   d="scan'208";a="620814074"
+   d="scan'208";a="568113838"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 04 May 2022 06:55:20 -0700
+  by fmsmga007.fm.intel.com with ESMTP; 04 May 2022 06:55:28 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 19FDAD1; Wed,  4 May 2022 16:55:20 +0300 (EEST)
+        id DE9801A5; Wed,  4 May 2022 16:55:29 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sergey Shtylyov <s.shtylyov@omp.ru>,
@@ -63,84 +63,149 @@ Cc:     Michael Ellerman <mpe@ellerman.id.au>,
         Paolo Abeni <pabeni@redhat.com>,
         Pantelis Antoniou <pantelis.antoniou@gmail.com>,
         Mark Brown <broonie@kernel.org>
-Subject: [PATCH v1 1/4] powerpc/52xx: Remove dead code, i.e. mpc52xx_get_xtal_freq()
-Date:   Wed,  4 May 2022 16:44:46 +0300
-Message-Id: <20220504134449.64473-1-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 4/4] powerpc/52xx: Convert to use fwnode API
+Date:   Wed,  4 May 2022 16:44:49 +0300
+Message-Id: <20220504134449.64473-4-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220504134449.64473-1-andriy.shevchenko@linux.intel.com>
+References: <20220504134449.64473-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-It seems mpc52xx_get_xtal_freq() is not used anywhere. Remove dead code.
+We may convert the GPT driver to use fwnode API for the sake
+of consistency of the used APIs inside the driver.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- arch/powerpc/include/asm/mpc52xx.h           |  1 -
- arch/powerpc/platforms/52xx/mpc52xx_common.c | 37 --------------------
- 2 files changed, 38 deletions(-)
+ arch/powerpc/platforms/52xx/mpc52xx_gpt.c | 47 +++++++++++------------
+ 1 file changed, 22 insertions(+), 25 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/mpc52xx.h b/arch/powerpc/include/asm/mpc52xx.h
-index ce1e0aabaa64..ddd80aae1e32 100644
---- a/arch/powerpc/include/asm/mpc52xx.h
-+++ b/arch/powerpc/include/asm/mpc52xx.h
-@@ -274,7 +274,6 @@ extern void mpc52xx_declare_of_platform_devices(void);
- extern int mpc5200_psc_ac97_gpio_reset(int psc_number);
- extern void mpc52xx_map_common_devices(void);
- extern int mpc52xx_set_psc_clkdiv(int psc_id, int clkdiv);
--extern unsigned int mpc52xx_get_xtal_freq(struct device_node *node);
- extern void __noreturn mpc52xx_restart(char *cmd);
+diff --git a/arch/powerpc/platforms/52xx/mpc52xx_gpt.c b/arch/powerpc/platforms/52xx/mpc52xx_gpt.c
+index 0831f28345af..7006700aeaab 100644
+--- a/arch/powerpc/platforms/52xx/mpc52xx_gpt.c
++++ b/arch/powerpc/platforms/52xx/mpc52xx_gpt.c
+@@ -53,10 +53,9 @@
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
+ #include <linux/list.h>
++#include <linux/mod_devicetable.h>
++#include <linux/module.h>
+ #include <linux/mutex.h>
+-#include <linux/of.h>
+-#include <linux/of_platform.h>
+-#include <linux/of_gpio.h>
+ #include <linux/kernel.h>
+ #include <linux/property.h>
+ #include <linux/slab.h>
+@@ -64,7 +63,7 @@
+ #include <linux/watchdog.h>
+ #include <linux/miscdevice.h>
+ #include <linux/uaccess.h>
+-#include <linux/module.h>
++
+ #include <asm/div64.h>
+ #include <asm/mpc52xx.h>
  
- /* mpc52xx_gpt.c */
-diff --git a/arch/powerpc/platforms/52xx/mpc52xx_common.c b/arch/powerpc/platforms/52xx/mpc52xx_common.c
-index 565e3a83dc9e..4a39e1cb2263 100644
---- a/arch/powerpc/platforms/52xx/mpc52xx_common.c
-+++ b/arch/powerpc/platforms/52xx/mpc52xx_common.c
-@@ -203,43 +203,6 @@ int mpc52xx_set_psc_clkdiv(int psc_id, int clkdiv)
+@@ -235,18 +234,17 @@ static const struct irq_domain_ops mpc52xx_gpt_irq_ops = {
+ 	.xlate = mpc52xx_gpt_irq_xlate,
+ };
+ 
+-static void
+-mpc52xx_gpt_irq_setup(struct mpc52xx_gpt_priv *gpt, struct device_node *node)
++static void mpc52xx_gpt_irq_setup(struct mpc52xx_gpt_priv *gpt)
+ {
+ 	int cascade_virq;
+ 	unsigned long flags;
+ 	u32 mode;
+ 
+-	cascade_virq = irq_of_parse_and_map(node, 0);
+-	if (!cascade_virq)
++	cascade_virq = platform_get_irq(to_platform_device(gpt->dev), 0);
++	if (cascade_virq < 0)
+ 		return;
+ 
+-	gpt->irqhost = irq_domain_add_linear(node, 1, &mpc52xx_gpt_irq_ops, gpt);
++	gpt->irqhost = irq_domain_create_linear(dev_fwnode(gpt->dev), 1, &mpc52xx_gpt_irq_ops, gpt);
+ 	if (!gpt->irqhost) {
+ 		dev_err(gpt->dev, "irq_domain_add_linear() failed\n");
+ 		return;
+@@ -670,8 +668,7 @@ static int mpc52xx_gpt_wdt_init(void)
+ 	return err;
  }
- EXPORT_SYMBOL(mpc52xx_set_psc_clkdiv);
  
--/**
-- * mpc52xx_get_xtal_freq - Get SYS_XTAL_IN frequency for a device
-- *
-- * @node: device node
-- *
-- * Returns the frequency of the external oscillator clock connected
-- * to the SYS_XTAL_IN pin, or 0 if it cannot be determined.
-- */
--unsigned int mpc52xx_get_xtal_freq(struct device_node *node)
--{
--	u32 val;
--	unsigned int freq;
--
--	if (!mpc52xx_cdm)
--		return 0;
--
--	freq = mpc5xxx_get_bus_frequency(node);
--	if (!freq)
--		return 0;
--
--	if (in_8(&mpc52xx_cdm->ipb_clk_sel) & 0x1)
--		freq *= 2;
--
--	val  = in_be32(&mpc52xx_cdm->rstcfg);
--	if (val & (1 << 5))
--		freq *= 8;
--	else
--		freq *= 4;
--	if (val & (1 << 6))
--		freq /= 12;
--	else
--		freq /= 16;
--
--	return freq;
--}
--EXPORT_SYMBOL(mpc52xx_get_xtal_freq);
--
- /**
-  * mpc52xx_restart: ppc_md->restart hook for mpc5200 using the watchdog timer
-  */
+-static int mpc52xx_gpt_wdt_setup(struct mpc52xx_gpt_priv *gpt,
+-				 const u32 *period)
++static int mpc52xx_gpt_wdt_setup(struct mpc52xx_gpt_priv *gpt, const u32 period)
+ {
+ 	u64 real_timeout;
+ 
+@@ -679,14 +676,14 @@ static int mpc52xx_gpt_wdt_setup(struct mpc52xx_gpt_priv *gpt,
+ 	mpc52xx_gpt_wdt = gpt;
+ 
+ 	/* configure the wdt if the device tree contained a timeout */
+-	if (!period || *period == 0)
++	if (period == 0)
+ 		return 0;
+ 
+-	real_timeout = (u64) *period * 1000000000ULL;
++	real_timeout = (u64)period * 1000000000ULL;
+ 	if (mpc52xx_gpt_do_start(gpt, real_timeout, 0, 1))
+ 		dev_warn(gpt->dev, "starting as wdt failed\n");
+ 	else
+-		dev_info(gpt->dev, "watchdog set to %us timeout\n", *period);
++		dev_info(gpt->dev, "watchdog set to %us timeout\n", period);
+ 	return 0;
+ }
+ 
+@@ -697,8 +694,7 @@ static int mpc52xx_gpt_wdt_init(void)
+ 	return 0;
+ }
+ 
+-static inline int mpc52xx_gpt_wdt_setup(struct mpc52xx_gpt_priv *gpt,
+-					const u32 *period)
++static inline int mpc52xx_gpt_wdt_setup(struct mpc52xx_gpt_priv *gpt, const u32 period)
+ {
+ 	return 0;
+ }
+@@ -726,25 +722,26 @@ static int mpc52xx_gpt_probe(struct platform_device *ofdev)
+ 	dev_set_drvdata(&ofdev->dev, gpt);
+ 
+ 	mpc52xx_gpt_gpio_setup(gpt);
+-	mpc52xx_gpt_irq_setup(gpt, ofdev->dev.of_node);
++	mpc52xx_gpt_irq_setup(gpt);
+ 
+ 	mutex_lock(&mpc52xx_gpt_list_mutex);
+ 	list_add(&gpt->list, &mpc52xx_gpt_list);
+ 	mutex_unlock(&mpc52xx_gpt_list_mutex);
+ 
+ 	/* check if this device could be a watchdog */
+-	if (of_get_property(ofdev->dev.of_node, "fsl,has-wdt", NULL) ||
+-	    of_get_property(ofdev->dev.of_node, "has-wdt", NULL)) {
+-		const u32 *on_boot_wdt;
++	if (device_property_present(gpt->dev, "fsl,has-wdt") ||
++	    device_property_present(gpt->dev, "has-wdt")) {
++		u32 on_boot_wdt = 0;
++		int ret;
+ 
+ 		gpt->wdt_mode = MPC52xx_GPT_CAN_WDT;
+-		on_boot_wdt = of_get_property(ofdev->dev.of_node,
+-					      "fsl,wdt-on-boot", NULL);
+-		if (on_boot_wdt) {
++		ret = device_property_read_u32(gpt->dev, "fsl,wdt-on-boot", &on_boot_wdt);
++		if (ret) {
++			dev_info(gpt->dev, "can function as watchdog\n");
++		} else {
+ 			dev_info(gpt->dev, "used as watchdog\n");
+ 			gpt->wdt_mode |= MPC52xx_GPT_IS_WDT;
+-		} else
+-			dev_info(gpt->dev, "can function as watchdog\n");
++		}
+ 		mpc52xx_gpt_wdt_setup(gpt, on_boot_wdt);
+ 	}
+ 
 -- 
 2.35.1
 
