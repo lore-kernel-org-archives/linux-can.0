@@ -2,142 +2,93 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57F9BC433F5
-	for <linux-can@archiver.kernel.org>; Tue, 10 May 2022 19:28:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5426C433F5
+	for <linux-can@archiver.kernel.org>; Wed, 11 May 2022 06:45:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbiEJT2p (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 10 May 2022 15:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38308 "EHLO
+        id S238952AbiEKGpK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 11 May 2022 02:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243829AbiEJT2a (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 10 May 2022 15:28:30 -0400
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21FC37BDD
-        for <linux-can@vger.kernel.org>; Tue, 10 May 2022 12:28:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1652210890;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:Cc:References:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=7jBRppHDCwNxpXHEvHO0zb9bzCtnU7DthXPDhOFN4/4=;
-    b=lpyvG9bXPgjV9UhwH1jMrBdPeJQKH5c5I1xF5/DU12138wDPMM1ZMEJCupC4+Ezz6J
-    P8HDJT8uEF8n2qHqH/dhW4nDpyo4R+27aqhDeYVGphZc6Ad6gmh1VnCc8/ZeZxjo1dTx
-    4pnwKe1hZO+7sgJ8XX1zKZ0A0OiG/osLG7JDC77SIui70eLS+UpH0tpV/O56RCfBfsmF
-    PVcbH+GCJxBlBgg7c+/sgg1PawasVhFOMOSf+M/cOhyiFZ/KOKs6oSg1vYvylkBDt0u8
-    O8nSj5A6/+43vh9mnGYmoYoaK3YCzzu2Ds40vT87U5qKRYoYZloixJsqYdsWfouHadF8
-    CvUw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusx3hdBqPeOug2krLFRKxw=="
-X-RZG-CLASS-ID: mo00
-Received: from [IPV6:2a00:6020:1cff:5b04::b82]
-    by smtp.strato.de (RZmta 47.42.2 AUTH)
-    with ESMTPSA id 4544c9y4AJSAvX2
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 10 May 2022 21:28:10 +0200 (CEST)
-Message-ID: <03ac64dd-2332-3eb1-bd81-0f29244d774b@hartkopp.net>
-Date:   Tue, 10 May 2022 21:28:09 +0200
+        with ESMTP id S237570AbiEKGpK (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 11 May 2022 02:45:10 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520E616ABF5
+        for <linux-can@vger.kernel.org>; Tue, 10 May 2022 23:45:08 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1nog5d-0005UM-PD; Wed, 11 May 2022 08:44:53 +0200
+Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 13FD27B124;
+        Wed, 11 May 2022 06:44:51 +0000 (UTC)
+Date:   Wed, 11 May 2022 08:44:50 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Bernard Zhao <zhaojunkui2008@126.com>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Stefan =?utf-8?B?TcOkdGpl?= <stefan.maetje@esd.eu>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bernard@vivo.com
+Subject: Re: [PATCH] usb/peak_usb: cleanup code
+Message-ID: <20220511064450.phisxc7ztcc3qkpj@pengutronix.de>
+References: <20220511063850.649012-1-zhaojunkui2008@126.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: Can someone point me in the right direction
-Content-Language: en-US
-To:     Marcel Akkermans <akkermans.m@brabofox.nl>
-References: <d8571fc8-e020-841f-f20b-088c2ad440c3@brabofox.nl>
- <59e12840-befd-912f-0265-295c4fb51958@hartkopp.net>
- <11745085-d9a6-c658-ab8a-f1e3dc91b175@brabofox.nl>
-Cc:     linux-can <linux-can@vger.kernel.org>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <11745085-d9a6-c658-ab8a-f1e3dc91b175@brabofox.nl>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dq7m2atvmyrifx54"
+Content-Disposition: inline
+In-Reply-To: <20220511063850.649012-1-zhaojunkui2008@126.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 
+--dq7m2atvmyrifx54
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 10.05.22 20:29, Marcel Akkermans wrote:
-> Hello Oliver,
-> 
-> Here are the output of the commands
-> 
-> rock@rockpi4b:~$  uname -a
-> Linux rockpi4b 4.4.154-116-rockchip-g86a614bc15b3 #1 SMP Mon Jan 10 
- > 12:03:08 UTC 2022 aarch64 aarch64 aarch64 GNU/Linux
+On 10.05.2022 23:38:38, Bernard Zhao wrote:
+> The variable fi and bi only used in branch if (!dev->prev_siblings)
+> , fi & bi not kmalloc in else branch, so move kfree into branch
+> if (!dev->prev_siblings),this change is to cleanup the code a bit.
 
-Well ... Linux 4.4.154 as expected.
+Please move the variable declaration into that scope, too. Adjust the
+error handling accordingly.
 
-You probably should give this a try:
+regards,
+Marc
 
-https://github.com/camarel/rockpi4
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-to finally upgrade to Linux 5.10
+--dq7m2atvmyrifx54
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Best,
-Oliver
+-----BEGIN PGP SIGNATURE-----
 
-> rock@rockpi4b:~$ sudo ip link set can0 up type can bitrate 250000
-> [sudo] password for rock:
-> rock@rockpi4b:~$ ip -details link show
-> 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode 
-> DEFAULT group default qlen 1
->      link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 promiscuity 0 
-> addrgenmode eui64 numtxqueues 1 numrxqueues 1
-> 2: eth0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc fq_codel 
-> state DOWN mode DEFAULT group default qlen 1000
->      link/ether 8a:46:ca:10:55:d9 brd ff:ff:ff:ff:ff:ff promiscuity 0 
-> addrgenmode none numtxqueues 1 numrxqueues 1
-> 3: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc fq_codel state UNKNOWN 
-> mode DEFAULT group default qlen 10
->      link/can  promiscuity 0
->      can state ERROR-ACTIVE restart-ms 0
->            bitrate 250000 sample-point 0.833
->            tq 333 prop-seg 4 phase-seg1 5 phase-seg2 2 sjw 1
->            mcp251x: tseg1 3..16 tseg2 2..8 sjw 1..4 brp 1..64 brp-inc 1
->            clock 6000000 numtxqueues 1 numrxqueues 1
-> 4: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel 
-> state UP mode DORMANT group default qlen 1000
->      link/ether 20:50:e7:d5:2a:2a brd ff:ff:ff:ff:ff:ff promiscuity 0 
-> addrgenmode none numtxqueues 1 numrxqueues 1
-> rock@rockpi4b:~$
-> 
-> Greeting Marcel
-> 
-> Op 10-May-22 om 6:52 PM schreef Oliver Hartkopp:
->> Hi Marcel,
->>
->> On 10.05.22 18:12, Marcel Akkermans wrote:
->>> I have a Raxda rockpi with waveshare 485 can Hat.
->>> there are strange issues with the can-bus.
->>> I need it to get it going (it's an HMI of a machine I am building)
->>>
->>> I have posted my test result at Raxda forum
->>>
->>> https://forum.radxa.com/t/rockpi-4b-canbus-fault/9784
->>
->> Can you please post the output of
->>
->>     ip -details link show
->>
->> and
->>
->>     uname -a
->>
->> ?
->>
->> I searched a bit on rockpi 4b and found these images:
->>
->> https://github.com/radxa/rock-pi-images-released/releases
->>
->> That's pretty old stuff and the mcp251x/SPI combo was not really 
->> reliable in those old kernels IIRC ...
->>
->>> all hardware runs fine on raspberry 3b
->>
->> Where you likely used a more recent kernel too ;-)
->>
->> Best regards,
->> Oliver
-> 
-> 
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmJ7W18ACgkQrX5LkNig
+013BNgf+P67Oin0cXNemqeEdYw4/XZiAPTSqYELYFmJ+aSFuL+/0bT98LwE+3Age
+wuaDlSZrLAYnB8FiOyISV6Hgmqubw46mukSn7KRZUrEyug4ca2U4SbKXU8IyZP9z
+c07Ufpyk3lDSMOunJoyaNt37gF/JiCz7+adtnh3ipvGUy2/VwRdmmundl9U6cC02
+3YawFRwA3Qju7VTYB0oEdA4EnxJ2y5OpnZvnBD1oOu8btEHW1pvptR324KW+NNlm
+hO4/wFzPH37GICxmgUm9kHbBdqA3bZA3PnmbaZHaSSq8jEsgkb2pc9I5+FF8r6cb
+OD0zhBSE5km2+JCEtKQNFBYoFtfOhw==
+=tSaC
+-----END PGP SIGNATURE-----
+
+--dq7m2atvmyrifx54--
