@@ -2,82 +2,223 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 786F5C433F5
-	for <linux-can@archiver.kernel.org>; Wed, 11 May 2022 08:48:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE8FEC433F5
+	for <linux-can@archiver.kernel.org>; Wed, 11 May 2022 09:23:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244050AbiEKIsY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 11 May 2022 04:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58190 "EHLO
+        id S237629AbiEKJXE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 11 May 2022 05:23:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243938AbiEKIsL (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 11 May 2022 04:48:11 -0400
-Received: from m1522.mail.126.com (m1522.mail.126.com [220.181.15.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 27C74166440;
-        Wed, 11 May 2022 01:48:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=VZ+03
-        3rjL5WXbFMVjEGjHKVe/trY65VZ5/Yvfg3b3Sc=; b=HoGhgh4SdNTfJk8WFgS0E
-        tMWY/Iz74e0uNnGiWuJYxhToAsS0QYZ1b5OYVpAP8UU+XrDcKUlTMDXoS97nO3uP
-        0MRDS/qlHnAiWuQ1AX1eaRDsXNW8EIAeDRiG6X3NMBoTsuqGA56ShbT+CtVNjxPI
-        qo1AbvKUTLN4om3fBU4LvQ=
-Received: from zhaojunkui2008$126.com ( [112.80.34.205] ) by
- ajax-webmail-wmsvr22 (Coremail) ; Wed, 11 May 2022 16:46:37 +0800 (CST)
-X-Originating-IP: [112.80.34.205]
-Date:   Wed, 11 May 2022 16:46:37 +0800 (CST)
-From:   z <zhaojunkui2008@126.com>
-To:     "Vincent MAILHOL" <mailhol.vincent@wanadoo.fr>
-Cc:     "Marc Kleine-Budde" <mkl@pengutronix.de>,
-        "Wolfgang Grandegger" <wg@grandegger.com>,
+        with ESMTP id S237355AbiEKJXD (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 11 May 2022 05:23:03 -0400
+X-Greylist: delayed 965 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 11 May 2022 02:23:00 PDT
+Received: from smtp16.bhosted.nl (smtp16.bhosted.nl [IPv6:2a02:9e0:8000::27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911EE7A803
+        for <linux-can@vger.kernel.org>; Wed, 11 May 2022 02:22:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=protonic.nl; s=202111;
+        h=content-transfer-encoding:content-type:mime-version:references:in-reply-to:
+         message-id:subject:cc:to:from:date:from;
+        bh=n2xPqgvtWv5KMPWGWD4jNRZDCTudAr2aEHyO5J86aqQ=;
+        b=qYrSZo1cxYNIL8va3yr4DdJVks7DrzkR67viN5/7E68OKxujiGfglvzwgL5LFf0d3TNVUduU4IARg
+         phaMrIfqIkGEY+JkctXPWopo52PVZosqpf7b5LQlE2mGE8MVhBcDY8DOYTOFo8unC93HD7iK5hiwO4
+         cqlo2J/gdIPjL0fzeGx2EXQ+OjpacdlRsAVY9wl3h6xRZQDRDVZGaNNbc5QMbh38BdDJdgV5sMlf0x
+         cvJfBqHqZckdnPiCuQNr+zhmQSIVuimPN6UBNJIsSlu/hJMXCbnqNlY7ycptwzFAKRaBUxyTqAevxx
+         S9aWyHqFV4Q5tQ27FdgUAuzN9uaf5gw==
+X-MSG-ID: b1117358-d109-11ec-9896-0050569d2c73
+Date:   Wed, 11 May 2022 11:06:49 +0200
+From:   David Jander <david@protonic.nl>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Devid Antonio Filoni <devid.filoni@egluetechnologies.com>,
+        Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>,
+        Robin van der Gracht <robin@protonic.nl>,
+        kernel@pengutronix.de, linux-can@vger.kernel.org,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Paolo Abeni" <pabeni@redhat.com>,
-        =?UTF-8?Q?Stefan_M=C3=A4tje?= <stefan.maetje@esd.eu>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bernard@vivo.com
-Subject: Re:Re: Re: [PATCH] usb/peak_usb: cleanup code
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20220113(9671e152)
- Copyright (c) 2002-2022 www.mailtech.cn 126com
-In-Reply-To: <CAMZ6RqKHs4gdcNjVONfOTsHh6ZFEt0qpbEaKqDM7c1Cbc1OLdQ@mail.gmail.com>
-References: <20220511063850.649012-1-zhaojunkui2008@126.com>
- <20220511064450.phisxc7ztcc3qkpj@pengutronix.de>
- <4986975d.3de3.180b1f57189.Coremail.zhaojunkui2008@126.com>
- <CAMZ6RqKHs4gdcNjVONfOTsHh6ZFEt0qpbEaKqDM7c1Cbc1OLdQ@mail.gmail.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Jayat <maxime.jayat@mobile-devices.fr>,
+        kbuild test robot <lkp@intel.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] can: j1939: do not wait 250ms if the same addr
+ was already claimed
+Message-ID: <20220511110649.21cc1f65@erd992>
+In-Reply-To: <20220511084728.GD10669@pengutronix.de>
+References: <20220509170303.29370-1-devid.filoni@egluetechnologies.com>
+        <YnllpntZ8V5CD07v@x1.vandijck-laurijssen.be>
+        <20220510042609.GA10669@pengutronix.de>
+        <ce7da10389fe448efee86d788dd5282b8022f92e.camel@egluetechnologies.com>
+        <20220511084728.GD10669@pengutronix.de>
+Organization: Protonic Holland
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Message-ID: <1c7b223e.51b2.180b24c78b6.Coremail.zhaojunkui2008@126.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: FsqowABHVmLud3ti92ApAA--.2017W
-X-CM-SenderInfo: p2kd0y5xqn3xasqqmqqrswhudrp/1tbiLRn9qlpD93ryPwACs4
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-CkF0IDIwMjItMDUtMTEgMTY6Mjg6MjYsICJWaW5jZW50IE1BSUxIT0wiIDxtYWlsaG9sLnZpbmNl
-bnRAd2FuYWRvby5mcj4gd3JvdGU6Cj5PbiBXZWQuIDExIE1heSAyMDIyIGF0IDE2OjExLCB6IDx6
-aGFvanVua3VpMjAwOEAxMjYuY29tPiB3cm90ZToKPj4gQXQgMjAyMi0wNS0xMSAxNDo0NDo1MCwg
-Ik1hcmMgS2xlaW5lLUJ1ZGRlIiA8bWtsQHBlbmd1dHJvbml4LmRlPiB3cm90ZToKPj4gPk9uIDEw
-LjA1LjIwMjIgMjM6Mzg6MzgsIEJlcm5hcmQgWmhhbyB3cm90ZToKPj4gPj4gVGhlIHZhcmlhYmxl
-IGZpIGFuZCBiaSBvbmx5IHVzZWQgaW4gYnJhbmNoIGlmICghZGV2LT5wcmV2X3NpYmxpbmdzKQo+
-PiA+PiAsIGZpICYgYmkgbm90IGttYWxsb2MgaW4gZWxzZSBicmFuY2gsIHNvIG1vdmUga2ZyZWUg
-aW50byBicmFuY2gKPj4gPj4gaWYgKCFkZXYtPnByZXZfc2libGluZ3MpLHRoaXMgY2hhbmdlIGlz
-IHRvIGNsZWFudXAgdGhlIGNvZGUgYSBiaXQuCj4+ID4KPj4gPlBsZWFzZSBtb3ZlIHRoZSB2YXJp
-YWJsZSBkZWNsYXJhdGlvbiBpbnRvIHRoYXQgc2NvcGUsIHRvby4gQWRqdXN0IHRoZQo+PiA+ZXJy
-b3IgaGFuZGxpbmcgYWNjb3JkaW5nbHkuCj4+Cj4+IEhpIE1hcmM6Cj4+Cj4+IEkgYW0gbm90IHN1
-cmUgaWYgdGhlcmUgaXMgc29tZSBnYXAuCj4+IElmIHdlIG1vdmUgdGhlIHZhcmlhYmxlIGRlY2xh
-cmF0aW9uIGludG8gdGhhdCBzY29wZSwgdGhlbiBlYWNoIGVycm9yIGJyYW5jaCBoYXMgdG8gZG8g
-dGhlIGtmcmVlIGpvYiwgbGlrZToKPj4gaWYgKGVycikgewo+PiAgICAgICAgICAgICAgICAgICAg
-ICAgICBkZXZfZXJyKGRldi0+bmV0ZGV2LT5kZXYucGFyZW50LAo+PiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICJ1bmFibGUgdG8gcmVhZCAlcyBmaXJtd2FyZSBpbmZvIChlcnIgJWQp
-XG4iLAo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBjYW5fdXNiX3Byby5uYW1l
-LCBlcnIpOwo+PiAgICAgICAgICAgICAgICAgICAgICAgICBrZnJlZShiaSk7Cj4+ICAgICAgICAg
-ICAgICAgICAgICAgICAgIGtmcmVlKGZpKTsKPj4gICAgICAgICAgICAgICAgICAgICAgICAga2Zy
-ZWUodXNiX2lmKTsKPj4KPj4gICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gZXJyOwo+PiAg
-ICAgICAgICAgICAgICAgfQo+PiBJIGFtIG5vdCBzdXJlIGlmIHRoaXMgbG9va3MgYSBsaXR0bGUg
-bGVzcyBjbGVhcj8KPj4gVGhhbmtzIQo+Cj5BIGNsZWFuZXIgd2F5IHdvdWxkIGJlIHRvIG1vdmUg
-YWxsIHRoZSBjb250ZW50IG9mIHRoZSBpZgo+KCFkZXYtPnByZXZfc2libGluZ3MpIHRvIGEgbmV3
-IGZ1bmN0aW9uLgoKSGkgVmluY2VudCBNYWlsaG9sOgoKR290IGl0LgpUaGlzIHNlZW1zIHRvIGJl
-IGEgZ29vZCBpZGVhLCBpIHdvdWxkIHJlc3VibWl0IG9uZSBwYXRjaCBWMi4KVGhhbmtzIQoKQlIv
-L0Jlcm5hcmQKPgo+WW91cnMgc2luY2VyZWx5LAo+VmluY2VudCBNYWlsaG9sCg==
+
+Hi,
+
+On Wed, 11 May 2022 10:47:28 +0200
+Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+
+> Hi,
+>=20
+> i'll CC more J1939 users to the discussion.
+
+Thanks for the CC.
+
+> On Tue, May 10, 2022 at 01:00:41PM +0200, Devid Antonio Filoni wrote:
+> > Hi,
+> >=20
+> > On Tue, 2022-05-10 at 06:26 +0200, Oleksij Rempel wrote: =20
+> > > Hi,
+> > >=20
+> > > On Mon, May 09, 2022 at 09:04:06PM +0200, Kurt Van Dijck wrote: =20
+> > > > On ma, 09 mei 2022 19:03:03 +0200, Devid Antonio Filoni wrote: =20
+> > > > > This is not explicitly stated in SAE J1939-21 and some tools used=
+ for
+> > > > > ISO-11783 certification do not expect this wait. =20
+> > >=20
+> > > It will be interesting to know which certification tool do not expect=
+ it and
+> > > what explanation is used if it fails?
+> > >  =20
+> > > > IMHO, the current behaviour is not explicitely stated, but nor is t=
+he opposite.
+> > > > And if I'm not mistaken, this introduces a 250msec delay.
+> > > >=20
+> > > > 1. If you want to avoid the 250msec gap, you should avoid to contes=
+t the same address.
+> > > >=20
+> > > > 2. It's a balance between predictability and flexibility, but if yo=
+u try to accomplish both,
+> > > > as your patch suggests, there is slight time-window until the curre=
+nt owner responds,
+> > > > in which it may be confusing which node has the address. It depends=
+ on how much history
+> > > > you have collected on the bus.
+> > > >=20
+> > > > I'm sure that this problem decreases with increasing processing pow=
+er on the nodes,
+> > > > but bigger internal queues also increase this window.
+> > > >=20
+> > > > It would certainly help if you describe how the current implementat=
+ion fails.
+> > > >=20
+> > > > Would decreasing the dead time to 50msec help in such case.
+> > > >=20
+> > > > Kind regards,
+> > > > Kurt
+> > > >  =20
+> > >  =20
+> >=20
+> > The test that is being executed during the ISOBUS compliance is the
+> > following: after an address has been claimed by a CF (#1), another CF
+> > (#2) sends a  message (other than address-claim) using the same address
+> > claimed by CF #1.
+> >=20
+> > As per ISO11783-5 standard, if a CF receives a message, other than the
+> > address-claimed message, which uses the CF's own SA, then the CF (#1):
+> > - shall send the address-claim message to the Global address;
+> > - shall activate a diagnostic trouble code with SPN =3D 2000+SA and FMI=
+ =3D
+> > 31
+> >=20
+> > After the address-claim message is sent by CF #1, as per ISO11783-5
+> > standard:
+> > - If the name of the CF #1 has a lower priority then the one of the CF
+> > #2, the the CF #2 shall send its address-claim message and thus the CF
+> > #1 shall send the cannot-claim-address message or shall execute again
+> > the claim procedure with a new address
+> > - If the name of the CF #1 has higher priority then the of the CF #2,
+> > then the CF #2 shall send the cannot-claim-address message or shall
+> > execute the claim procedure with a new address
+> >=20
+> > Above conflict management is OK with current J1939 driver
+> > implementation, however, since the driver always waits 250ms after
+> > sending an address-claim message, the CF #1 cannot set the DTC. The DM1
+> > message which is expected to be sent each second (as per J1939-73
+> > standard) may not be sent.
+> >=20
+> > Honestly, I don't know which company is doing the ISOBUS compliance
+> > tests on our products and which tool they use as it was choosen by our
+> > customer, however they did send us some CAN traces of previously
+> > performed tests and we noticed that the DM1 message is sent 160ms after
+> > the address-claim message (but it may also be lower then that), and this
+> > is something that we cannot do because the driver blocks the application
+> > from sending it.
+> >=20
+> > 28401.127146 1  18E6FFF0x    Tx   d 8 FE 26 FF FF FF FF FF FF  //Message
+> > with other CF's address
+> > 28401.167414 1  18EEFFF0x    Rx   d 8 15 76 D1 0B 00 86 00 A0  //Address
+> > Claim - SA =3D F0
+> > 28401.349214 1  18FECAF0x    Rx   d 8 FF FF C0 08 1F 01 FF FF  //DM1
+> > 28402.155774 1  18E6FFF0x    Tx   d 8 FE 26 FF FF FF FF FF FF  //Message
+> > with other CF's address
+> > 28402.169455 1  18EEFFF0x    Rx   d 8 15 76 D1 0B 00 86 00 A0  //Address
+> > Claim - SA =3D F0
+> > 28402.348226 1  18FECAF0x    Rx   d 8 FF FF C0 08 1F 02 FF FF  //DM1
+> > 28403.182753 1  18E6FFF0x    Tx   d 8 FE 26 FF FF FF FF FF FF  //Message
+> > with other CF's address
+> > 28403.188648 1  18EEFFF0x    Rx   d 8 15 76 D1 0B 00 86 00 A0  //Address
+> > Claim - SA =3D F0
+> > 28403.349328 1  18FECAF0x    Rx   d 8 FF FF C0 08 1F 03 FF FF  //DM1
+> > 28404.349406 1  18FECAF0x    Rx   d 8 FF FF C0 08 1F 03 FF FF  //DM1
+> > 28405.349740 1  18FECAF0x    Rx   d 8 FF FF C0 08 1F 03 FF FF  //DM1
+> >=20
+> > Since the 250ms wait is not explicitly stated, IMHO it should be up to
+> > the user-space implementation to decide how to manage it.
+
+I think this is not entirely correct. AFAICS the 250ms wait is indeed
+explicitly stated.
+The following is taken from ISO 11783-5:
+
+In "4.4.4.3 Address violation" it states that "If a CF receives a message,
+other than the address-claimed message, which uses the CF=E2=80=99s own SA,=
+ then the
+CF [...] shall send the address-claim message to the Global address."
+
+So the CF shall claim its address again. But further down, in "4.5.2 Address
+claim requirements" it is stated that "...No CF shall begin, or resume,
+transmission on the network until 250 ms after it has successfully claimed =
+an
+address".
+
+At this moment, the address is in dispute. The affected CFs are not allowed=
+ to
+send any other messages until this dispute is resolved, and the standard
+requires a waiting time of 250ms which is minimally deemed necessary to give
+all participants time to respond and eventually dispute the address claim.
+
+If the offending CF ignores this dispute and keeps sending incorrect messag=
+es
+faster than every 250ms, then effectively the other CF has no chance to ever
+resume normal operation because its address is still disputed.
+
+According to 4.4.4.3 it is also required to set a DTC, but it will not be
+allowed to send the DM1 message unless the address dispute is resolved.
+
+This effectively leads to the offending CF to DoS the affected CF if it kee=
+ps
+sending offending messages. Unfortunately neither J1939 nor ISObus takes in=
+to
+account adversarial behavior on the CAN network, so we cannot do anything
+about this.
+
+As for the ISObus compliance tool that is mentioned by Devid, IMHO this
+compliance tool should be challenged and fixed, since it is broken.
+
+The networking layer is prohibiting the DM1 message to be sent, and the
+networking layer has precedence above all superior protocol layers, so the
+diagnostics layer is not able to operate at this moment.
+
+Best regards,
+
+--=20
+David Jander
+Protonic Holland.
