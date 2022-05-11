@@ -2,88 +2,122 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCFC3C433F5
-	for <linux-can@archiver.kernel.org>; Wed, 11 May 2022 08:28:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97DC9C433EF
+	for <linux-can@archiver.kernel.org>; Wed, 11 May 2022 08:47:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235128AbiEKI2n (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 11 May 2022 04:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46040 "EHLO
+        id S240856AbiEKIrY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 11 May 2022 04:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235054AbiEKI2l (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 11 May 2022 04:28:41 -0400
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F35170F2A;
-        Wed, 11 May 2022 01:28:38 -0700 (PDT)
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-2f7ca2ce255so12175137b3.7;
-        Wed, 11 May 2022 01:28:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cr6Do/TDm+VJ0R4NXV674tpi+dJjugQTOmccea4yw04=;
-        b=0U9xaAHMfrhiGbDAOKbD7r+IHTHlrWC1tAWZEJoHZ1F8/Oky8j1HjhN387eB2vqYKe
-         0gY1bqLoYkqtAgYf1SU4uOQygHUwQlTlBWOFA12bP3OdEKlLKZXlN1IcacuADY8UkR0G
-         /Nc/uJVJlmn8W47FC7uo07p+IkofYZy1d1x0O4GXpvj1leXAgHE5NL+cvUS4HlLzLKGk
-         3eqBScZESOCDXi6FtHnzfczDIXx6WiwCHcTZtP1oGrwLv7XAOblXha+i2+rucSFB7abo
-         dSsmQUdbDgeVJ2F4XCKbh0UEaKS+X92w+rXgSdK+e529AMVosJiKtAlezNzFtkfQO477
-         KvZg==
-X-Gm-Message-State: AOAM532TfL8Kb/ES+77rlJNC7iD9KvuMxYy60DLNkAVEtWsQWgMGQ7g+
-        ew4EGVpgF5jOisjzi8AdDwmF+bR5aoMSDlrZUKQ=
-X-Google-Smtp-Source: ABdhPJzeYQGMvBhE1nU1RquNSVPuKz41BjQqSGfswleYfqAENsfPxVjWWp0KdTJcrd2vNXmaSco53vBAFa247cMhopI=
-X-Received: by 2002:a81:3d43:0:b0:2f9:7d:f320 with SMTP id k64-20020a813d43000000b002f9007df320mr24659563ywa.191.1652257717437;
- Wed, 11 May 2022 01:28:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220511063850.649012-1-zhaojunkui2008@126.com>
- <20220511064450.phisxc7ztcc3qkpj@pengutronix.de> <4986975d.3de3.180b1f57189.Coremail.zhaojunkui2008@126.com>
-In-Reply-To: <4986975d.3de3.180b1f57189.Coremail.zhaojunkui2008@126.com>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Wed, 11 May 2022 17:28:26 +0900
-Message-ID: <CAMZ6RqKHs4gdcNjVONfOTsHh6ZFEt0qpbEaKqDM7c1Cbc1OLdQ@mail.gmail.com>
-Subject: Re: Re: [PATCH] usb/peak_usb: cleanup code
-To:     z <zhaojunkui2008@126.com>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        with ESMTP id S229461AbiEKIrX (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 11 May 2022 04:47:23 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A28674C6
+        for <linux-can@vger.kernel.org>; Wed, 11 May 2022 01:47:21 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1nohzx-000642-LL; Wed, 11 May 2022 10:47:09 +0200
+Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 4AF667B9AC;
+        Wed, 11 May 2022 08:47:06 +0000 (UTC)
+Date:   Wed, 11 May 2022 10:47:05 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Cc:     z <zhaojunkui2008@126.com>,
         Wolfgang Grandegger <wg@grandegger.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        =?UTF-8?Q?Stefan_M=C3=A4tje?= <stefan.maetje@esd.eu>,
+        Stefan =?utf-8?B?TcOkdGpl?= <stefan.maetje@esd.eu>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, bernard@vivo.com
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] usb/peak_usb: cleanup code
+Message-ID: <20220511084705.zh5fdetggullt75i@pengutronix.de>
+References: <20220511063850.649012-1-zhaojunkui2008@126.com>
+ <20220511064450.phisxc7ztcc3qkpj@pengutronix.de>
+ <4986975d.3de3.180b1f57189.Coremail.zhaojunkui2008@126.com>
+ <CAMZ6RqKHs4gdcNjVONfOTsHh6ZFEt0qpbEaKqDM7c1Cbc1OLdQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kn225256pnovgin4"
+Content-Disposition: inline
+In-Reply-To: <CAMZ6RqKHs4gdcNjVONfOTsHh6ZFEt0qpbEaKqDM7c1Cbc1OLdQ@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Wed. 11 May 2022 at 16:11, z <zhaojunkui2008@126.com> wrote:
-> At 2022-05-11 14:44:50, "Marc Kleine-Budde" <mkl@pengutronix.de> wrote:
-> >On 10.05.2022 23:38:38, Bernard Zhao wrote:
-> >> The variable fi and bi only used in branch if (!dev->prev_siblings)
-> >> , fi & bi not kmalloc in else branch, so move kfree into branch
-> >> if (!dev->prev_siblings),this change is to cleanup the code a bit.
+
+--kn225256pnovgin4
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On 11.05.2022 17:28:26, Vincent MAILHOL wrote:
+> On Wed. 11 May 2022 at 16:11, z <zhaojunkui2008@126.com> wrote:
+> > At 2022-05-11 14:44:50, "Marc Kleine-Budde" <mkl@pengutronix.de> wrote:
+> > >On 10.05.2022 23:38:38, Bernard Zhao wrote:
+> > >> The variable fi and bi only used in branch if (!dev->prev_siblings)
+> > >> , fi & bi not kmalloc in else branch, so move kfree into branch
+> > >> if (!dev->prev_siblings),this change is to cleanup the code a bit.
+> > >
+> > >Please move the variable declaration into that scope, too. Adjust the
+> > >error handling accordingly.
 > >
-> >Please move the variable declaration into that scope, too. Adjust the
-> >error handling accordingly.
->
-> Hi Marc:
->
-> I am not sure if there is some gap.
-> If we move the variable declaration into that scope, then each error branch has to do the kfree job, like:
-> if (err) {
->                         dev_err(dev->netdev->dev.parent,
->                                 "unable to read %s firmware info (err %d)\n",
->                                 pcan_usb_pro.name, err);
->                         kfree(bi);
->                         kfree(fi);
->                         kfree(usb_if);
->
->                        return err;
->                 }
-> I am not sure if this looks a little less clear?
-> Thanks!
+> > Hi Marc:
+> >
+> > I am not sure if there is some gap.
+> > If we move the variable declaration into that scope, then each error br=
+anch has to do the kfree job, like:
+> > if (err) {
+> >                         dev_err(dev->netdev->dev.parent,
+> >                                 "unable to read %s firmware info (err %=
+d)\n",
+> >                                 pcan_usb_pro.name, err);
+> >                         kfree(bi);
+> >                         kfree(fi);
+> >                         kfree(usb_if);
+> >
+> >                        return err;
+> >                 }
+> > I am not sure if this looks a little less clear?
+> > Thanks!
+>=20
+> A cleaner way would be to move all the content of the if
+> (!dev->prev_siblings) to a new function.
 
-A cleaner way would be to move all the content of the if
-(!dev->prev_siblings) to a new function.
+Good idea.
 
+Marc
 
-Yours sincerely,
-Vincent Mailhol
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--kn225256pnovgin4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmJ7eAcACgkQrX5LkNig
+010O0Qf8CEz2CHRSRsSKBUb5rg8XhWgg+Z/1qLnQ+fnIwut2NRazLzJxfxhU7+vo
+5xIA+7lc4K/N7TQXGKDHtgCt/o4znlfnHYAaUWEJE/B0O0XLq/bxu/feg1///eZz
+rJqWtUCCDHDyIVENF8QNQ66ZKAjmqtxZio4xtrO2EmOihktlokp/2fmt0kd+Jh03
+0vRz9mRJrKVj3Nb2n4MXerCSDuEK5Ne9Kco8UhGkuqY0+nlc/p7ZQv7aYCMxAj5g
+p/W7tVcDXNOqis6ywRUiI4YTTdXG26Hj9GcnSx1COmXzSdolYcmU0MOpQjsH/iYU
+y4EWtwp6ixPf389CUGsqTkrMXx63gQ==
+=UVby
+-----END PGP SIGNATURE-----
+
+--kn225256pnovgin4--
