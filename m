@@ -2,90 +2,75 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AAD5C433F5
-	for <linux-can@archiver.kernel.org>; Wed, 11 May 2022 07:11:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2767BC433F5
+	for <linux-can@archiver.kernel.org>; Wed, 11 May 2022 07:12:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbiEKHLt (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 11 May 2022 03:11:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55280 "EHLO
+        id S242664AbiEKHMT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 11 May 2022 03:12:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242726AbiEKHLP (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 11 May 2022 03:11:15 -0400
-X-Greylist: delayed 1866 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 11 May 2022 00:11:10 PDT
-Received: from m15111.mail.126.com (m15111.mail.126.com [220.181.15.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EB02C35DE0
-        for <linux-can@vger.kernel.org>; Wed, 11 May 2022 00:11:09 -0700 (PDT)
+        with ESMTP id S240092AbiEKHMS (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 11 May 2022 03:12:18 -0400
+Received: from m1522.mail.126.com (m1522.mail.126.com [220.181.15.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AAD8A35DE0;
+        Wed, 11 May 2022 00:12:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=RtS24
-        7RW6ZxcuKLxbipUrhShdpX0VWnQy9+bo9nU/z0=; b=MtRl5z1q/6cIOBNpfGv+r
-        d+HK7xlcGhnOB1NZz5JT3W5KP4euDRBauSrk4vaAOpt5albmVCDnmSajEf/SC1PR
-        UpmtuSWazeyp5UUjAwiycAmy9zM6Jf5hicMy5+yiIv1h3XegS83EvDW951zrgfyL
-        o7xWVdkvcAJbYDBU8hwWL8=
-Received: from ubuntu.localdomain (unknown [58.213.83.157])
-        by smtp1 (Coremail) with SMTP id C8mowAAXj9_8WXtiubKBBw--.33626S4;
-        Wed, 11 May 2022 14:38:54 +0800 (CST)
-From:   Bernard Zhao <zhaojunkui2008@126.com>
-To:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        =?UTF-8?q?Stefan=20M=C3=A4tje?= <stefan.maetje@esd.eu>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Bernard Zhao <zhaojunkui2008@126.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     bernard@vivo.com
-Subject: [PATCH] usb/peak_usb: cleanup code
-Date:   Tue, 10 May 2022 23:38:38 -0700
-Message-Id: <20220511063850.649012-1-zhaojunkui2008@126.com>
-X-Mailer: git-send-email 2.33.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: C8mowAAXj9_8WXtiubKBBw--.33626S4
-X-Coremail-Antispam: 1Uf129KBjvdXoWrurWktF4fWF1fAryrWFyxGrg_yoWktrXEkr
-        W7Zr4kJF1UCrWjqF4DJw4Svry2y3WkuFs7XwnrKFs3G34YyF4UXrWxCFZ3Gw43WF1ayF9I
-        kr1UJr4xAr18tjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRAR6w3UUUUU==
+        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=Y8zV7
+        PXORuA9nN9QPcuaH/lRC0O+rCPtTltbZG+YlqA=; b=BCpc8HuV6usJKMz0mN4Pl
+        54/AeMXrkp9f98AxOuFAHEt2dPTeYUdfrQyn0L2ivzDRSN/bocdVO2d2n/ffKQIJ
+        4mOqn/tZGjdBtVXRtEikwerDaUUPQS8BGGsLDXApAvKdiWxsqvf45HMFEpoXmSzG
+        mCFL3zoycXdNRQdvqwqVA0=
+Received: from zhaojunkui2008$126.com ( [58.213.83.157] ) by
+ ajax-webmail-wmsvr22 (Coremail) ; Wed, 11 May 2022 15:11:34 +0800 (CST)
 X-Originating-IP: [58.213.83.157]
-X-CM-SenderInfo: p2kd0y5xqn3xasqqmqqrswhudrp/1tbiuR79qlpD854fggAAsZ
+Date:   Wed, 11 May 2022 15:11:34 +0800 (CST)
+From:   z <zhaojunkui2008@126.com>
+To:     "Marc Kleine-Budde" <mkl@pengutronix.de>
+Cc:     "Wolfgang Grandegger" <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "Paolo Abeni" <pabeni@redhat.com>,
+        =?UTF-8?Q?Stefan_M=C3=A4tje?= <stefan.maetje@esd.eu>,
+        "Vincent Mailhol" <mailhol.vincent@wanadoo.fr>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bernard@vivo.com
+Subject: Re:Re: [PATCH] usb/peak_usb: cleanup code
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20220113(9671e152)
+ Copyright (c) 2002-2022 www.mailtech.cn 126com
+In-Reply-To: <20220511064450.phisxc7ztcc3qkpj@pengutronix.de>
+References: <20220511063850.649012-1-zhaojunkui2008@126.com>
+ <20220511064450.phisxc7ztcc3qkpj@pengutronix.de>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
+Message-ID: <4986975d.3de3.180b1f57189.Coremail.zhaojunkui2008@126.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: FsqowABHVmKnYXtinUMpAA--.1492W
+X-CM-SenderInfo: p2kd0y5xqn3xasqqmqqrswhudrp/1tbiYAP9qlpEHUayngACsf
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The variable fi and bi only used in branch if (!dev->prev_siblings)
-, fi & bi not kmalloc in else branch, so move kfree into branch
-if (!dev->prev_siblings),this change is to cleanup the code a bit.
-
-Signed-off-by: Bernard Zhao <zhaojunkui2008@126.com>
----
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index ebe087f258e3..70c5aef57247 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -903,6 +903,9 @@ static int pcan_usb_pro_init(struct peak_usb_device *dev)
- 		     pcan_usb_pro.name,
- 		     bi->hw_rev, bi->serial_num_hi, bi->serial_num_lo,
- 		     pcan_usb_pro.ctrl_count);
-+
-+		kfree(bi);
-+		kfree(fi);
- 	} else {
- 		usb_if = pcan_usb_pro_dev_if(dev->prev_siblings);
- 	}
-@@ -913,9 +916,6 @@ static int pcan_usb_pro_init(struct peak_usb_device *dev)
- 	/* set LED in default state (end of init phase) */
- 	pcan_usb_pro_set_led(dev, PCAN_USBPRO_LED_DEVICE, 1);
- 
--	kfree(bi);
--	kfree(fi);
--
- 	return 0;
- 
-  err_out:
--- 
-2.33.1
-
+CkF0IDIwMjItMDUtMTEgMTQ6NDQ6NTAsICJNYXJjIEtsZWluZS1CdWRkZSIgPG1rbEBwZW5ndXRy
+b25peC5kZT4gd3JvdGU6Cj5PbiAxMC4wNS4yMDIyIDIzOjM4OjM4LCBCZXJuYXJkIFpoYW8gd3Jv
+dGU6Cj4+IFRoZSB2YXJpYWJsZSBmaSBhbmQgYmkgb25seSB1c2VkIGluIGJyYW5jaCBpZiAoIWRl
+di0+cHJldl9zaWJsaW5ncykKPj4gLCBmaSAmIGJpIG5vdCBrbWFsbG9jIGluIGVsc2UgYnJhbmNo
+LCBzbyBtb3ZlIGtmcmVlIGludG8gYnJhbmNoCj4+IGlmICghZGV2LT5wcmV2X3NpYmxpbmdzKSx0
+aGlzIGNoYW5nZSBpcyB0byBjbGVhbnVwIHRoZSBjb2RlIGEgYml0Lgo+Cj5QbGVhc2UgbW92ZSB0
+aGUgdmFyaWFibGUgZGVjbGFyYXRpb24gaW50byB0aGF0IHNjb3BlLCB0b28uIEFkanVzdCB0aGUK
+PmVycm9yIGhhbmRsaW5nIGFjY29yZGluZ2x5LgoKSGkgTWFyYzoKCkkgYW0gbm90IHN1cmUgaWYg
+dGhlcmUgaXMgc29tZSBnYXAuCklmIHdlIG1vdmUgdGhlIHZhcmlhYmxlIGRlY2xhcmF0aW9uIGlu
+dG8gdGhhdCBzY29wZSwgdGhlbiBlYWNoIGVycm9yIGJyYW5jaCBoYXMgdG8gZG8gdGhlIGtmcmVl
+IGpvYiwgbGlrZToKaWYgKGVycikgewoJCQlkZXZfZXJyKGRldi0+bmV0ZGV2LT5kZXYucGFyZW50
+LAoJCQkJInVuYWJsZSB0byByZWFkICVzIGZpcm13YXJlIGluZm8gKGVyciAlZClcbiIsCgkJCQlw
+Y2FuX3VzYl9wcm8ubmFtZSwgZXJyKTsKCSAgICAgICAgICAgICAgICBrZnJlZShiaSk7CgkgICAg
+ICAgICAgICAgICAga2ZyZWUoZmkpOwoJICAgICAgICAgICAgICAgIGtmcmVlKHVzYl9pZik7CgoJ
+ICAgICAgICAgICAgICAgcmV0dXJuIGVycjsKCQl9CkkgYW0gbm90IHN1cmUgaWYgdGhpcyBsb29r
+cyBhIGxpdHRsZSBsZXNzIGNsZWFyPwpUaGFua3MhCgpCUi8vQmVybmFyZAo+Cj5yZWdhcmRzLAo+
+TWFyYwo+Cj4tLSAKPlBlbmd1dHJvbml4IGUuSy4gICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVp
+bmUtQnVkZGUgICAgICAgICAgIHwKPkVtYmVkZGVkIExpbnV4ICAgICAgICAgICAgICAgICAgIHwg
+aHR0cHM6Ly93d3cucGVuZ3V0cm9uaXguZGUgIHwKPlZlcnRyZXR1bmcgV2VzdC9Eb3J0bXVuZCAg
+ICAgICAgIHwgUGhvbmU6ICs0OS0yMzEtMjgyNi05MjQgICAgIHwKPkFtdHNnZXJpY2h0IEhpbGRl
+c2hlaW0sIEhSQSAyNjg2IHwgRmF4OiAgICs0OS01MTIxLTIwNjkxNy01NTU1IHwK
