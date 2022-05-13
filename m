@@ -2,231 +2,93 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23D03C433F5
-	for <linux-can@archiver.kernel.org>; Fri, 13 May 2022 15:36:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BEB7C433EF
+	for <linux-can@archiver.kernel.org>; Fri, 13 May 2022 17:21:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382145AbiEMPgh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 13 May 2022 11:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46458 "EHLO
+        id S1378007AbiEMRVv (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 13 May 2022 13:21:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382219AbiEMPg2 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 13 May 2022 11:36:28 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5184F2DC6;
-        Fri, 13 May 2022 08:36:27 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d22so8284913plr.9;
-        Fri, 13 May 2022 08:36:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=I7l1Xm9qehIrYZIkT6lmz4zbqDX5vJCIeT/thGsyl/E=;
-        b=VRWAuALO2Af7o/62+j66JdKdxL0rMt2KMj/NaWp9Si4SMu++SSGKzBG6uOls+/wRn1
-         JZGr8eVqcmg1+ljceUfzl5iIP7Q/7kuOahMYEkyJ/bWL6Fl3W8Uq4wcgxWvNcjmkKlr1
-         o3NaZGaOjYBJsrOORMuHHyxKFGc/1wMak/oQTnE8BppGXSO4oknfp42KdB+ZaQnIFTU3
-         h94hPlAC5pv/AF0rSwQ2lb6kDlznKYmeslyr1h6ciLcQKCF33GEUz2n2g32P1ooJPLaU
-         CoQjiM3r1Zfa7pN4eKe21DpcQDJWM1+/nnWKOiqnmhgrR+8nHofh/LaRP+JtqarmQOhL
-         Mg7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=I7l1Xm9qehIrYZIkT6lmz4zbqDX5vJCIeT/thGsyl/E=;
-        b=a5UguZMxtKkDYWtEibbdpUm802ZvHiZVcp6GqI5FH2m49rKlXWTpipsPYmVYa++SMj
-         Tl0SqnO0PN+1c39WuX434ZGS+CBG5noDYwTogDXPCIbguSJXRcu/zvTWNQst+TIjQ2dz
-         N7nzxeq7BtKcj8gy8TLpCdvJZNA/FMtzf2mTTXjQun1I+WHky+F0ZSJzPjS5Is9xuizs
-         BsotAEWglqSC1x1H1DRrdCWYF3ZF+lbUV6+dKEJbAVnqLcifjeQp4uN/DBDsk8tKGgYb
-         dp5E611sS3qHSuvHkp6C1oGEvbZwDyhFRdy9stmoyHr6rEof67pIhKGw8WomPomI+r4q
-         maMA==
-X-Gm-Message-State: AOAM533gg6Q1RIfApGfDZhNS0AwsLANlUOHGGUo2a07DqtP7DmWSRwte
-        iNd8y+gboBdjl+XzfBs1BGIqz8HexyVt7int
-X-Google-Smtp-Source: ABdhPJxgmirE5WiHq4PtXYEBZb9gW1HP4FSI3hKRiYplfUiVttocN/cB6TB1YADyvfFONKAVP4+YvA==
-X-Received: by 2002:a17:902:cec9:b0:15e:cbf4:c246 with SMTP id d9-20020a170902cec900b0015ecbf4c246mr5132972plg.1.1652456186689;
-        Fri, 13 May 2022 08:36:26 -0700 (PDT)
-Received: from localhost.localdomain (124x33x176x97.ap124.ftth.ucom.ne.jp. [124.33.176.97])
-        by smtp.gmail.com with ESMTPSA id b10-20020a62a10a000000b0050dc762817dsm1942137pff.87.2022.05.13.08.36.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 May 2022 08:36:26 -0700 (PDT)
-Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+        with ESMTP id S1348016AbiEMRVu (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 13 May 2022 13:21:50 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C6A952B0B;
+        Fri, 13 May 2022 10:21:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D10A9B82E1E;
+        Fri, 13 May 2022 17:21:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F88AC34100;
+        Fri, 13 May 2022 17:21:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652462507;
+        bh=0Z+7A9FB8DvG9yJt2Qo5SF8MJS2WO1YD33FgZbNZGno=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QvuV4CdZFIrIYLgtATdayymaKKNgXmGt9t6aFvX0wkXyo3/Oaqjbht1IMBE6zxR59
+         YRSHsnjuwRCA50SiCGDm+IvWnNZFLVIam7rLoUEOgpugh0tMu7h6IFxHvIzWZDvNWm
+         6X1Ai75tH+RN4WsqU5ilgj4goxEGR7luzInCKwNqpgSq0Kd31hh4S7LWC1gcpRNBup
+         Cog6etw5C+nWop6GuiVE6SK/FOBhtbm2xuLwDH8R+2xennsDP7l7VBwpjrgchOJBGg
+         8Uz3xWLmWHX1cfqIb7ePqDmDc1fz1pZTJZPoZ6kymv2st4QtzonE4nv+shDSloiFJq
+         Kof+V2RMb3eYg==
+Date:   Fri, 13 May 2022 10:21:45 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
 To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Max Staudt <max@enpas.org>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v2 1/2] can: skb:: move can_dropped_invalid_skb and can_skb_headroom_valid to skb.c
-Date:   Sat, 14 May 2022 00:36:05 +0900
-Message-Id: <20220513153606.302464-2-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220513153606.302464-1-mailhol.vincent@wanadoo.fr>
-References: <20220513142355.250389-1-mailhol.vincent@wanadoo.fr>
- <20220513153606.302464-1-mailhol.vincent@wanadoo.fr>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net,
+        linux-can@vger.kernel.org, kernel@pengutronix.de,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Chee Hou Ong <chee.houx.ong@intel.com>,
+        Aman Kumar <aman.kumar@intel.com>,
+        Pallavi Kumari <kumari.pallavi@intel.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH net 1/2] Revert "can: m_can: pci: use custom bit timings
+ for Elkhart Lake"
+Message-ID: <20220513102145.748db22c@kernel.org>
+In-Reply-To: <20220513130819.386012-2-mkl@pengutronix.de>
+References: <20220513130819.386012-1-mkl@pengutronix.de>
+        <20220513130819.386012-2-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The functions can_dropped_invalid_skb() and can_skb_headroom_valid()
-grew a lot over the years to a point which it does make much sense to
-have them defined as static inline in header files. Move those two
-functions to the .c counterpart of skb.h.
+On Fri, 13 May 2022 15:08:18 +0200 Marc Kleine-Budde wrote:
+> From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> 
+> This reverts commit 0e8ffdf3b86dfd44b651f91b12fcae76c25c453b.
+> 
+> Commit 0e8ffdf3b86d ("can: m_can: pci: use custom bit timings for
+> Elkhart Lake") broke the test case using bitrate switching.
+> 
+> | ip link set can0 up type can bitrate 500000 dbitrate 4000000 fd on
+> | ip link set can1 up type can bitrate 500000 dbitrate 4000000 fd on
+> | candump can0 &
+> | cangen can1 -I 0x800 -L 64 -e -fb \
+> |     -D 11223344deadbeef55667788feedf00daabbccdd44332211 -n 1 -v -v
+> 
+> Above commit does everything correctly according to the datasheet.
+> However datasheet wasn't correct.
+> 
+> I got confirmation from hardware engineers that the actual CAN
+> hardware on Intel Elkhart Lake is based on M_CAN version v3.2.0.
+> Datasheet was mirroring values from an another specification which was
+> based on earlier M_CAN version leading to wrong bit timings.
+> 
+> Therefore revert the commit and switch back to common bit timings.
+> 
+> Fixes: 0e8ffdf3b86d ("can: m_can: pci: use custom bit timings for Elkhart Lake")
+> Link: https://lore.kernel.org/all/20220512124144.536850-1-jarkko.nikula@linux.intel.com
+> Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> Reported-by: Chee Hou Ong <chee.houx.ong@intel.com>
+> Reported-by: Aman Kumar <aman.kumar@intel.com>
+> Reported-by: Pallavi Kumari <kumari.pallavi@intel.com>
+> Cc: <stable@vger.kernel.org> # v5.16+
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-can_skb_headroom_valid() only caller being can_dropped_invalid_skb(),
-the declaration is removed from the header. Only
-can_dropped_invalid_skb() gets its symbol exported.
+nit: the hash in the fixes tag should be:
 
-While doing so, do a small cleanup: add brackets around the else block
-in can_dropped_invalid_skb().
+Fixes: ea4c1787685d ("can: m_can: pci: use custom bit timings for Elkhart Lake")
 
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
----
- drivers/net/can/dev/skb.c | 58 ++++++++++++++++++++++++++++++++++++++
- include/linux/can/skb.h   | 59 +--------------------------------------
- 2 files changed, 59 insertions(+), 58 deletions(-)
-
-diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-index 61660248c69e..8b1991130de5 100644
---- a/drivers/net/can/dev/skb.c
-+++ b/drivers/net/can/dev/skb.c
-@@ -252,3 +252,61 @@ struct sk_buff *alloc_can_err_skb(struct net_device *dev, struct can_frame **cf)
- 	return skb;
- }
- EXPORT_SYMBOL_GPL(alloc_can_err_skb);
-+
-+/* Check for outgoing skbs that have not been created by the CAN subsystem */
-+static bool can_skb_headroom_valid(struct net_device *dev, struct sk_buff *skb)
-+{
-+	/* af_packet creates a headroom of HH_DATA_MOD bytes which is fine */
-+	if (WARN_ON_ONCE(skb_headroom(skb) < sizeof(struct can_skb_priv)))
-+		return false;
-+
-+	/* af_packet does not apply CAN skb specific settings */
-+	if (skb->ip_summed == CHECKSUM_NONE) {
-+		/* init headroom */
-+		can_skb_prv(skb)->ifindex = dev->ifindex;
-+		can_skb_prv(skb)->skbcnt = 0;
-+
-+		skb->ip_summed = CHECKSUM_UNNECESSARY;
-+
-+		/* perform proper loopback on capable devices */
-+		if (dev->flags & IFF_ECHO)
-+			skb->pkt_type = PACKET_LOOPBACK;
-+		else
-+			skb->pkt_type = PACKET_HOST;
-+
-+		skb_reset_mac_header(skb);
-+		skb_reset_network_header(skb);
-+		skb_reset_transport_header(skb);
-+	}
-+
-+	return true;
-+}
-+
-+/* Drop a given socketbuffer if it does not contain a valid CAN frame. */
-+bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb)
-+{
-+	const struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
-+
-+	if (skb->protocol == htons(ETH_P_CAN)) {
-+		if (unlikely(skb->len != CAN_MTU ||
-+			     cfd->len > CAN_MAX_DLEN))
-+			goto inval_skb;
-+	} else if (skb->protocol == htons(ETH_P_CANFD)) {
-+		if (unlikely(skb->len != CANFD_MTU ||
-+			     cfd->len > CANFD_MAX_DLEN))
-+			goto inval_skb;
-+	} else {
-+		goto inval_skb;
-+	}
-+
-+	if (!can_skb_headroom_valid(dev, skb))
-+		goto inval_skb;
-+
-+	return false;
-+
-+inval_skb:
-+	kfree_skb(skb);
-+	dev->stats.tx_dropped++;
-+	return true;
-+}
-+EXPORT_SYMBOL_GPL(can_dropped_invalid_skb);
-diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
-index fdb22b00674a..182749e858b3 100644
---- a/include/linux/can/skb.h
-+++ b/include/linux/can/skb.h
-@@ -31,6 +31,7 @@ struct sk_buff *alloc_canfd_skb(struct net_device *dev,
- 				struct canfd_frame **cfd);
- struct sk_buff *alloc_can_err_skb(struct net_device *dev,
- 				  struct can_frame **cf);
-+bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb);
- 
- /*
-  * The struct can_skb_priv is used to transport additional information along
-@@ -96,64 +97,6 @@ static inline struct sk_buff *can_create_echo_skb(struct sk_buff *skb)
- 	return nskb;
- }
- 
--/* Check for outgoing skbs that have not been created by the CAN subsystem */
--static inline bool can_skb_headroom_valid(struct net_device *dev,
--					  struct sk_buff *skb)
--{
--	/* af_packet creates a headroom of HH_DATA_MOD bytes which is fine */
--	if (WARN_ON_ONCE(skb_headroom(skb) < sizeof(struct can_skb_priv)))
--		return false;
--
--	/* af_packet does not apply CAN skb specific settings */
--	if (skb->ip_summed == CHECKSUM_NONE) {
--		/* init headroom */
--		can_skb_prv(skb)->ifindex = dev->ifindex;
--		can_skb_prv(skb)->skbcnt = 0;
--
--		skb->ip_summed = CHECKSUM_UNNECESSARY;
--
--		/* perform proper loopback on capable devices */
--		if (dev->flags & IFF_ECHO)
--			skb->pkt_type = PACKET_LOOPBACK;
--		else
--			skb->pkt_type = PACKET_HOST;
--
--		skb_reset_mac_header(skb);
--		skb_reset_network_header(skb);
--		skb_reset_transport_header(skb);
--	}
--
--	return true;
--}
--
--/* Drop a given socketbuffer if it does not contain a valid CAN frame. */
--static inline bool can_dropped_invalid_skb(struct net_device *dev,
--					  struct sk_buff *skb)
--{
--	const struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
--
--	if (skb->protocol == htons(ETH_P_CAN)) {
--		if (unlikely(skb->len != CAN_MTU ||
--			     cfd->len > CAN_MAX_DLEN))
--			goto inval_skb;
--	} else if (skb->protocol == htons(ETH_P_CANFD)) {
--		if (unlikely(skb->len != CANFD_MTU ||
--			     cfd->len > CANFD_MAX_DLEN))
--			goto inval_skb;
--	} else
--		goto inval_skb;
--
--	if (!can_skb_headroom_valid(dev, skb))
--		goto inval_skb;
--
--	return false;
--
--inval_skb:
--	kfree_skb(skb);
--	dev->stats.tx_dropped++;
--	return true;
--}
--
- static inline bool can_is_canfd_skb(const struct sk_buff *skb)
- {
- 	/* the CAN specific type of skb is identified by its data length */
--- 
-2.35.1
-
+Do you want to respin or is the can tree non-rebasable?
