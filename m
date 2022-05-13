@@ -2,44 +2,48 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 538F2C433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93F8AC4332F
 	for <linux-can@archiver.kernel.org>; Fri, 13 May 2022 13:08:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380581AbiEMNI1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1354913AbiEMNI1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Fri, 13 May 2022 09:08:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380241AbiEMNIZ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 13 May 2022 09:08:25 -0400
+        with ESMTP id S1380579AbiEMNI0 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 13 May 2022 09:08:26 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302512A73F
-        for <linux-can@vger.kernel.org>; Fri, 13 May 2022 06:08:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9787036314
+        for <linux-can@vger.kernel.org>; Fri, 13 May 2022 06:08:25 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1npV1q-00025o-LP
-        for linux-can@vger.kernel.org; Fri, 13 May 2022 15:08:22 +0200
+        id 1npV1s-00026g-0I
+        for linux-can@vger.kernel.org; Fri, 13 May 2022 15:08:24 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 2BA397DA3F
-        for <linux-can@vger.kernel.org>; Fri, 13 May 2022 13:08:22 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 236287DA50
+        for <linux-can@vger.kernel.org>; Fri, 13 May 2022 13:08:23 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id C025A7DA3A;
-        Fri, 13 May 2022 13:08:21 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id A035B7DA42;
+        Fri, 13 May 2022 13:08:22 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id a96644ba;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3fd30572;
         Fri, 13 May 2022 13:08:21 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net 0/2] pull-request: can 2022-05-13
-Date:   Fri, 13 May 2022 15:08:17 +0200
-Message-Id: <20220513130819.386012-1-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 2/2] can: m_can: remove support for custom bit timing, take #2
+Date:   Fri, 13 May 2022 15:08:19 +0200
+Message-Id: <20220513130819.386012-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220513130819.386012-1-mkl@pengutronix.de>
+References: <20220513130819.386012-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -50,42 +54,87 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 
-this is a pull request of 2 patches for net/master.
+Now when Intel Elkhart Lake uses again common bit timing and there are
+no other users for custom bit timing, we can bring back the changes
+done by the commit 0ddd83fbebbc ("can: m_can: remove support for
+custom bit timing").
 
-Both patches are by Jarkko Nikula, target the m_can PCI driver
-bindings, and fix usage of wrong bit timing constants for the Elkhart
-Lake platform.
+This effectively reverts commit ea768b2ffec6 ("Revert "can: m_can:
+remove support for custom bit timing"") while taking into account
+commit ea22ba40debe ("can: m_can: make custom bittiming fields const")
+and commit 7d4a101c0bd3 ("can: dev: add sanity check in
+can_set_static_ctrlmode()").
 
-regards,
-Marc
-
+Link: https://lore.kernel.org/all/20220512124144.536850-2-jarkko.nikula@linux.intel.com
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/m_can/m_can.c | 24 ++++++------------------
+ drivers/net/can/m_can/m_can.h |  3 ---
+ 2 files changed, 6 insertions(+), 21 deletions(-)
 
-The following changes since commit f3f19f939c11925dadd3f4776f99f8c278a7017b:
-
-  Merge tag 'net-5.18-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2022-05-12 11:51:45 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.18-20220513
-
-for you to fetch changes up to 3ddd9ed84d8954afcdf7afacf8e142198c3803c3:
-
-  can: m_can: remove support for custom bit timing, take #2 (2022-05-13 14:41:40 +0200)
-
-----------------------------------------------------------------
-linux-can-fixes-for-5.18-20220513
-
-----------------------------------------------------------------
-Jarkko Nikula (2):
-      Revert "can: m_can: pci: use custom bit timings for Elkhart Lake"
-      can: m_can: remove support for custom bit timing, take #2
-
- drivers/net/can/m_can/m_can.c     | 24 +++++---------------
- drivers/net/can/m_can/m_can.h     |  3 ---
- drivers/net/can/m_can/m_can_pci.c | 48 ++++-----------------------------------
- 3 files changed, 10 insertions(+), 65 deletions(-)
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index b3b5bc1c803b..088bb1bcf1ef 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1495,34 +1495,22 @@ static int m_can_dev_setup(struct m_can_classdev *cdev)
+ 		err = can_set_static_ctrlmode(dev, CAN_CTRLMODE_FD_NON_ISO);
+ 		if (err)
+ 			return err;
+-		cdev->can.bittiming_const = cdev->bit_timing ?
+-			cdev->bit_timing : &m_can_bittiming_const_30X;
+-
+-		cdev->can.data_bittiming_const = cdev->data_timing ?
+-			cdev->data_timing :
+-			&m_can_data_bittiming_const_30X;
++		cdev->can.bittiming_const = &m_can_bittiming_const_30X;
++		cdev->can.data_bittiming_const = &m_can_data_bittiming_const_30X;
+ 		break;
+ 	case 31:
+ 		/* CAN_CTRLMODE_FD_NON_ISO is fixed with M_CAN IP v3.1.x */
+ 		err = can_set_static_ctrlmode(dev, CAN_CTRLMODE_FD_NON_ISO);
+ 		if (err)
+ 			return err;
+-		cdev->can.bittiming_const = cdev->bit_timing ?
+-			cdev->bit_timing : &m_can_bittiming_const_31X;
+-
+-		cdev->can.data_bittiming_const = cdev->data_timing ?
+-			cdev->data_timing :
+-			&m_can_data_bittiming_const_31X;
++		cdev->can.bittiming_const = &m_can_bittiming_const_31X;
++		cdev->can.data_bittiming_const = &m_can_data_bittiming_const_31X;
+ 		break;
+ 	case 32:
+ 	case 33:
+ 		/* Support both MCAN version v3.2.x and v3.3.0 */
+-		cdev->can.bittiming_const = cdev->bit_timing ?
+-			cdev->bit_timing : &m_can_bittiming_const_31X;
+-
+-		cdev->can.data_bittiming_const = cdev->data_timing ?
+-			cdev->data_timing :
+-			&m_can_data_bittiming_const_31X;
++		cdev->can.bittiming_const = &m_can_bittiming_const_31X;
++		cdev->can.data_bittiming_const = &m_can_data_bittiming_const_31X;
+ 
+ 		cdev->can.ctrlmode_supported |=
+ 			(m_can_niso_supported(cdev) ?
+diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
+index 2c5d40997168..d18b515e6ccc 100644
+--- a/drivers/net/can/m_can/m_can.h
++++ b/drivers/net/can/m_can/m_can.h
+@@ -85,9 +85,6 @@ struct m_can_classdev {
+ 	struct sk_buff *tx_skb;
+ 	struct phy *transceiver;
+ 
+-	const struct can_bittiming_const *bit_timing;
+-	const struct can_bittiming_const *data_timing;
+-
+ 	struct m_can_ops *ops;
+ 
+ 	int version;
+-- 
+2.35.1
 
 
