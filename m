@@ -2,40 +2,39 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AE16C433F5
-	for <linux-can@archiver.kernel.org>; Mon, 16 May 2022 13:55:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7964C433EF
+	for <linux-can@archiver.kernel.org>; Mon, 16 May 2022 13:55:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243906AbiEPNy5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 16 May 2022 09:54:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50804 "EHLO
+        id S237069AbiEPNzA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 16 May 2022 09:55:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240151AbiEPNyi (ORCPT
+        with ESMTP id S240567AbiEPNyi (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 16 May 2022 09:54:38 -0400
-X-Greylist: delayed 332 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 16 May 2022 06:54:35 PDT
 Received: from mail.bitwise.fi (mail.bitwise.fi [109.204.228.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31065BE27;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C74377CE;
         Mon, 16 May 2022 06:54:35 -0700 (PDT)
 Received: from localhost (localhost [127.0.0.1])
-        by mail.bitwise.fi (Postfix) with ESMTP id 73FA7460008;
-        Mon, 16 May 2022 16:48:59 +0300 (EEST)
+        by mail.bitwise.fi (Postfix) with ESMTP id 8FCA846002A;
+        Mon, 16 May 2022 16:49:01 +0300 (EEST)
 X-Virus-Scanned: Debian amavisd-new at 
 Received: from mail.bitwise.fi ([127.0.0.1])
         by localhost (mustetatti.dmz.bitwise.fi [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id s0_L6yP0QX6T; Mon, 16 May 2022 16:48:57 +0300 (EEST)
+        with ESMTP id mtDHU4i6qgiO; Mon, 16 May 2022 16:48:59 +0300 (EEST)
 Received: from localhost.net (fw1.dmz.bitwise.fi [192.168.69.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: anssiha)
-        by mail.bitwise.fi (Postfix) with ESMTPSA id 042AE460028;
+        by mail.bitwise.fi (Postfix) with ESMTPSA id 2605A46002B;
         Mon, 16 May 2022 16:48:57 +0300 (EEST)
 From:   Anssi Hannula <anssi.hannula@bitwise.fi>
 To:     Jimmy Assarsson <extja@kvaser.com>
 Cc:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 02/12] can: kvaser_usb: Fix use of uninitialized completion
-Date:   Mon, 16 May 2022 16:47:38 +0300
-Message-Id: <20220516134748.3724796-3-anssi.hannula@bitwise.fi>
+Subject: [PATCH 04/12] can: kvaser_usb: Mark Mini PCIe 2xHS as supporting error counters
+Date:   Mon, 16 May 2022 16:47:40 +0300
+Message-Id: <20220516134748.3724796-5-anssi.hannula@bitwise.fi>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220516134748.3724796-1-anssi.hannula@bitwise.fi>
 References: <20220516134748.3724796-1-anssi.hannula@bitwise.fi>
@@ -45,52 +44,40 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-flush_comp is initialized when CMD_FLUSH_QUEUE is sent to the device and
-completed when the device sends CMD_FLUSH_QUEUE_RESP.
+The 0bfd:0124 Kvaser Mini PCI Express 2xHS (FW 4.18.778) seems to support
+TX/RX error counters in exactly the same way (via unsolicited cmd 106 on
+bus errors and via cmd 20 when queried with cmd 19) as 0bfd:0017 Kvaser
+Memorator Professional HS/HS (FW 2.0.50), but only the latter has
+KVASER_USB_HAS_TXRX_ERRORS set to enable do_get_berr_counter().
 
-This causes completion of uninitialized completion if the device sends
-CMD_FLUSH_QUEUE_RESP before CMD_FLUSH_QUEUE is ever sent (e.g. as a
-response to a flush by a previously bound driver, or a misbehaving
-device).
+Enable error counter retrieval for Kvaser Mini PCI Express 2xHS, too.
 
-Fix that by initializing flush_comp in kvaser_usb_init_one() like the
-other completions.
-
-This issue is only triggerable after RX URBs have been set up, i.e. the
-interface has been opened at least once.
-
-Fixes: aec5fb2268b7 ("can: kvaser_usb: Add support for Kvaser USB hydra family")
+Fixes: 71873a9b38d1 ("can: kvaser_usb: Add support for more Kvaser Leaf v2 devices")
 Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
+
 ---
- drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c  | 1 +
- drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+
+I'm not really sure what KVASER_USB_HAS_TXRX_ERRORS means, exactly,
+w.r.t. device behavior, though, i.e. how does a device without it behave.
+
+
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-index e67658b53d02..47bff40c36b6 100644
+index 47bff40c36b6..7388fdca9079 100644
 --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
 +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-@@ -673,6 +673,7 @@ static int kvaser_usb_init_one(struct kvaser_usb *dev,
- 	init_usb_anchor(&priv->tx_submitted);
- 	init_completion(&priv->start_comp);
- 	init_completion(&priv->stop_comp);
-+	init_completion(&priv->flush_comp);
- 	priv->can.ctrlmode_supported = 0;
- 
- 	priv->dev = dev;
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-index a26823c5b62a..4e90a4b7f95a 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-@@ -1910,7 +1910,7 @@ static int kvaser_usb_hydra_flush_queue(struct kvaser_usb_net_priv *priv)
- {
- 	int err;
- 
--	init_completion(&priv->flush_comp);
-+	reinit_completion(&priv->flush_comp);
- 
- 	err = kvaser_usb_hydra_send_simple_cmd(priv->dev, CMD_FLUSH_QUEUE,
- 					       priv->channel);
+@@ -165,7 +165,8 @@ static const struct usb_device_id kvaser_usb_table[] = {
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_MINI_PCIE_HS_PRODUCT_ID) },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_LIGHT_HS_V2_OEM_PRODUCT_ID) },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_USBCAN_LIGHT_2HS_PRODUCT_ID) },
+-	{ USB_DEVICE(KVASER_VENDOR_ID, USB_MINI_PCIE_2HS_PRODUCT_ID) },
++	{ USB_DEVICE(KVASER_VENDOR_ID, USB_MINI_PCIE_2HS_PRODUCT_ID),
++		.driver_info = KVASER_USB_HAS_TXRX_ERRORS },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_USBCAN_R_V2_PRODUCT_ID) },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_LIGHT_R_V2_PRODUCT_ID) },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_LIGHT_HS_V2_OEM2_PRODUCT_ID) },
 -- 
 2.34.1
 
