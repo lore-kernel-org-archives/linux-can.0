@@ -2,45 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D832AC433F5
-	for <linux-can@archiver.kernel.org>; Mon, 16 May 2022 20:52:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F722C4321E
+	for <linux-can@archiver.kernel.org>; Mon, 16 May 2022 20:52:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347862AbiEPUwB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 16 May 2022 16:52:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49522 "EHLO
+        id S1347894AbiEPUwD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 16 May 2022 16:52:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348567AbiEPUvQ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 16 May 2022 16:51:16 -0400
+        with ESMTP id S1348634AbiEPUvW (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 16 May 2022 16:51:22 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0F22AE12
-        for <linux-can@vger.kernel.org>; Mon, 16 May 2022 13:26:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48ED38D9D
+        for <linux-can@vger.kernel.org>; Mon, 16 May 2022 13:26:44 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nqhIe-00068r-9r
-        for linux-can@vger.kernel.org; Mon, 16 May 2022 22:26:40 +0200
+        id 1nqhIg-0006Bq-RF
+        for linux-can@vger.kernel.org; Mon, 16 May 2022 22:26:42 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 481897FB49
-        for <linux-can@vger.kernel.org>; Mon, 16 May 2022 20:26:37 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id A6C337FB6C
+        for <linux-can@vger.kernel.org>; Mon, 16 May 2022 20:26:38 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id BEC417FB3B;
-        Mon, 16 May 2022 20:26:36 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 227A07FB5E;
+        Mon, 16 May 2022 20:26:38 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 23900fff;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0a85ec5f;
         Mon, 16 May 2022 20:26:35 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
-        Derek Will <derekrobertwill@gmail.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 4/9] can: isotp: isotp_bind(): return -EINVAL on incorrect CAN ID formatting
-Date:   Mon, 16 May 2022 22:26:20 +0200
-Message-Id: <20220516202625.1129281-5-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Ondrej Ille <ondrej.ille@gmail.com>,
+        Pavel Pisa <pisa@cmp.felk.cvut.cz>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH net-next 8/9] dt-bindings: can: ctucanfd: include common CAN controller bindings
+Date:   Mon, 16 May 2022 22:26:24 +0200
+Message-Id: <20220516202625.1129281-9-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220516202625.1129281-1-mkl@pengutronix.de>
 References: <20220516202625.1129281-1-mkl@pengutronix.de>
@@ -54,44 +55,35 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+Since commit
 
-Commit 3ea566422cbd ("can: isotp: sanitize CAN ID checks in
-isotp_bind()") checks the given CAN ID address information by
-sanitizing the input values.
+| 1f9234401ce0 ("dt-bindings: can: add can-controller.yaml")
 
-This check (silently) removes obsolete bits by masking the given CAN
-IDs.
+there is a common CAN controller binding. Add this to the ctucanfd
+binding.
 
-Derek Will suggested to give a feedback to the application programmer
-when the 'sanitizing' was actually needed which means the programmer
-provided CAN ID content in a wrong format (e.g. SFF CAN IDs with a CAN
-ID > 0x7FF).
-
-Link: https://lore.kernel.org/all/20220515181633.76671-1-socketcan@hartkopp.net
-Suggested-by: Derek Will <derekrobertwill@gmail.com>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Ondrej Ille <ondrej.ille@gmail.com>
+Acked-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/isotp.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 2caeeae8ec16..4a4007f10970 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -1232,6 +1232,11 @@ static int isotp_bind(struct socket *sock, struct sockaddr *uaddr, int len)
- 	else
- 		rx_id &= CAN_SFF_MASK;
+diff --git a/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
+index fb34d971dcb3..4635cb96fc64 100644
+--- a/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
++++ b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
+@@ -25,6 +25,9 @@ maintainers:
+   - Ondrej Ille <ondrej.ille@gmail.com>
+   - Martin Jerabek <martin.jerabek01@gmail.com>
  
-+	/* give feedback on wrong CAN-ID values */
-+	if (tx_id != addr->can_addr.tp.tx_id ||
-+	    rx_id != addr->can_addr.tp.rx_id)
-+		return -EINVAL;
++allOf:
++  - $ref: can-controller.yaml#
 +
- 	if (!addr->can_ifindex)
- 		return -ENODEV;
- 
+ properties:
+   compatible:
+     oneOf:
 -- 
 2.35.1
 
