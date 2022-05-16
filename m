@@ -2,49 +2,48 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B816AC433EF
-	for <linux-can@archiver.kernel.org>; Mon, 16 May 2022 20:52:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF5B5C433F5
+	for <linux-can@archiver.kernel.org>; Mon, 16 May 2022 21:05:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348199AbiEPUwK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 16 May 2022 16:52:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48716 "EHLO
+        id S1348421AbiEPVFB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 16 May 2022 17:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348537AbiEPUvQ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 16 May 2022 16:51:16 -0400
+        with ESMTP id S1348691AbiEPVEW (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 16 May 2022 17:04:22 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF102A728
-        for <linux-can@vger.kernel.org>; Mon, 16 May 2022 13:26:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23365C65B
+        for <linux-can@vger.kernel.org>; Mon, 16 May 2022 13:40:04 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nqhIc-00067I-GB
-        for linux-can@vger.kernel.org; Mon, 16 May 2022 22:26:38 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 862B17FB38
-        for <linux-can@vger.kernel.org>; Mon, 16 May 2022 20:26:36 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        id 1nqhVa-0007jS-Ks; Mon, 16 May 2022 22:40:02 +0200
+Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 299A17FB2D;
-        Mon, 16 May 2022 20:26:36 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4d249410;
-        Mon, 16 May 2022 20:26:35 +0000 (UTC)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 860AB7FBBC;
+        Mon, 16 May 2022 20:40:01 +0000 (UTC)
+Date:   Mon, 16 May 2022 22:40:00 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH net-next 2/9] can: raw: add support for SO_TXTIME/SCM_TXTIME
-Date:   Mon, 16 May 2022 22:26:18 +0200
-Message-Id: <20220516202625.1129281-3-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220516202625.1129281-1-mkl@pengutronix.de>
-References: <20220516202625.1129281-1-mkl@pengutronix.de>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Max Staudt <max@enpas.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] can: slcan: use can_dropped_invalid_skb() instead
+ of manual check
+Message-ID: <20220516204000.t7yhhtp3jtekg7ar@pengutronix.de>
+References: <20220513142355.250389-1-mailhol.vincent@wanadoo.fr>
+ <20220514141650.1109542-1-mailhol.vincent@wanadoo.fr>
+ <20220514141650.1109542-2-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qi7wwt46b6orgwpu"
+Content-Disposition: inline
+In-Reply-To: <20220514141650.1109542-2-mailhol.vincent@wanadoo.fr>
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -53,55 +52,43 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch calls into sock_cmsg_send() to parse the user supplied
-control information into a struct sockcm_cookie. Then assign the
-requested transmit time to the skb.
 
-This makes it possible to use the Earliest TXTIME First (ETF) packet
-scheduler with the CAN_RAW protocol. The user can send a CAN_RAW frame
-with a TXTIME and the kernel (with the ETF scheduler) will take care
-of sending it to the network interface.
+--qi7wwt46b6orgwpu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Link: https://lore.kernel.org/all/20220502091946.1916211-3-mkl@pengutronix.de
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- net/can/raw.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+On 14.05.2022 23:16:47, Vincent Mailhol wrote:
+> slcan does a manual check in slc_xmit() to verify if the skb is
+> valid. This check is incomplete, use instead
+> can_dropped_invalid_skb().
+>=20
+> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 1a68efae43c2..d1bd9cc51ebe 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -772,6 +772,7 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- {
- 	struct sock *sk = sock->sk;
- 	struct raw_sock *ro = raw_sk(sk);
-+	struct sockcm_cookie sockc;
- 	struct sk_buff *skb;
- 	struct net_device *dev;
- 	int ifindex;
-@@ -817,10 +818,18 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	if (err < 0)
- 		goto free_skb;
- 
--	skb_setup_tx_timestamp(skb, sk->sk_tsflags);
-+	sockcm_init(&sockc, sk);
-+	if (msg->msg_controllen) {
-+		err = sock_cmsg_send(sk, msg, &sockc);
-+		if (unlikely(err))
-+			goto free_skb;
-+	}
- 
- 	skb->dev = dev;
- 	skb->priority = sk->sk_priority;
-+	skb->tstamp = sockc.transmit_time;
-+
-+	skb_setup_tx_timestamp(skb, sockc.tsflags);
- 
- 	err = can_send(skb, ro->loopback);
- 
--- 
-2.35.1
+I've taken this patch into the latest pull request to net-next.
 
+regards,
+Marc
 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--qi7wwt46b6orgwpu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmKCtp4ACgkQrX5LkNig
+0112AAf9EDMHiYNZoWtjw22NJonJySrZp/LhwR3Zxjqt8dzAScwqNu7By00++gid
+y2c/5koi0tRHl3dEfYwT+JqmaS2ywuHCIaovOFR9/8XW6gz3risdRyWisdKL1QaV
+ICgGVgWr0PdlmkKzacM2VAZjLfFQTrE4pjuTexPGNv+NGwdcoPQbvnlNVkFWFaCf
+EcDZT4X7I140UPwlA+59MPQkOp0WphjudRS6PeYprC6Io3m4fvQ/LCCCt33q4b1n
+JrkRLvNA5u0do0+4rq0ygbAYZUPLeJ8i6TWTDEagLQ8EFicGrOV57DifMrxGBHJu
+0Ejnhezuqw8XE0FgkIFmfCI2cjLAWg==
+=gWnZ
+-----END PGP SIGNATURE-----
+
+--qi7wwt46b6orgwpu--
