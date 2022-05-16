@@ -2,39 +2,39 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45E4BC433EF
-	for <linux-can@archiver.kernel.org>; Mon, 16 May 2022 13:55:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DB33C433F5
+	for <linux-can@archiver.kernel.org>; Mon, 16 May 2022 13:55:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240068AbiEPNzF (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 16 May 2022 09:55:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51116 "EHLO
+        id S244099AbiEPNzE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 16 May 2022 09:55:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243935AbiEPNzA (ORCPT
+        with ESMTP id S243945AbiEPNzA (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 16 May 2022 09:55:00 -0400
 Received: from mail.bitwise.fi (mail.bitwise.fi [109.204.228.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F9042ACC;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B833739171;
         Mon, 16 May 2022 06:54:40 -0700 (PDT)
 Received: from localhost (localhost [127.0.0.1])
-        by mail.bitwise.fi (Postfix) with ESMTP id 3DFF646002E;
-        Mon, 16 May 2022 16:49:04 +0300 (EEST)
+        by mail.bitwise.fi (Postfix) with ESMTP id 35A2F460032;
+        Mon, 16 May 2022 16:49:06 +0300 (EEST)
 X-Virus-Scanned: Debian amavisd-new at 
 Received: from mail.bitwise.fi ([127.0.0.1])
         by localhost (mustetatti.dmz.bitwise.fi [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 1tcgcijmrJA4; Mon, 16 May 2022 16:49:02 +0300 (EEST)
+        with ESMTP id 7GrzYXufvKsM; Mon, 16 May 2022 16:49:04 +0300 (EEST)
 Received: from localhost.net (fw1.dmz.bitwise.fi [192.168.69.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: anssiha)
-        by mail.bitwise.fi (Postfix) with ESMTPSA id 58193460031;
+        by mail.bitwise.fi (Postfix) with ESMTPSA id 6BEF0460033;
         Mon, 16 May 2022 16:48:57 +0300 (EEST)
 From:   Anssi Hannula <anssi.hannula@bitwise.fi>
 To:     Jimmy Assarsson <extja@kvaser.com>
 Cc:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 10/12] can: kvaser_usb_leaf: Fix wrong CAN state after stopping
-Date:   Mon, 16 May 2022 16:47:46 +0300
-Message-Id: <20220516134748.3724796-11-anssi.hannula@bitwise.fi>
+Subject: [PATCH 12/12] can: kvaser_usb_leaf: Fix bogus restart events
+Date:   Mon, 16 May 2022 16:47:48 +0300
+Message-Id: <20220516134748.3724796-13-anssi.hannula@bitwise.fi>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220516134748.3724796-1-anssi.hannula@bitwise.fi>
 References: <20220516134748.3724796-1-anssi.hannula@bitwise.fi>
@@ -44,34 +44,55 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-0bfd:0124 Kvaser Mini PCI Express 2xHS FW 4.18.778 sends a
-CMD_CHIP_STATE_EVENT indicating bus-off after stopping the device,
-causing a stopped device to appear as CAN_STATE_BUS_OFF instead of
-CAN_STATE_STOPPED.
+When auto-restart is enabled, the kvaser_usb_leaf driver considers
+transition from any state >= CAN_STATE_BUS_OFF as a bus-off recovery
+event (restart).
 
-Fix that by not handling error events on stopped devices.
+However, these events may occur at interface startup time before
+kvaser_usb_open() has set the state to CAN_STATE_ERROR_ACTIVE, causing
+restarts counter to increase and CAN_ERR_RESTARTED to be sent despite no
+actual restart having occurred.
+
+Fix that by making the auto-restart condition checks more strict so that
+they only trigger when the interface was actually in the BUS_OFF state.
 
 Fixes: 080f40a6fa28 ("can: kvaser_usb: Add support for Kvaser CAN/USB devices")
 Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
 ---
- drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-index 7ed2ced8ba08..742626e69dd8 100644
+index 4125074c7066..b280d315673f 100644
 --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
 +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-@@ -879,6 +879,10 @@ static void kvaser_usb_leaf_rx_error(const struct kvaser_usb *dev,
- 	leaf = priv->sub_priv;
- 	stats = &priv->netdev->stats;
+@@ -735,7 +735,7 @@ static void kvaser_usb_leaf_tx_acknowledge(const struct kvaser_usb *dev,
+ 	context = &priv->tx_contexts[tid % dev->max_tx_urbs];
  
-+	/* Ignore e.g. state change to bus-off reported just after stopping */
-+	if (!netif_running(priv->netdev))
-+		return;
-+
- 	/* Update all of the CAN interface's state and error counters before
- 	 * trying any memory allocation that can actually fail with -ENOMEM.
- 	 *
+ 	/* Sometimes the state change doesn't come after a bus-off event */
+-	if (priv->can.restart_ms && priv->can.state >= CAN_STATE_BUS_OFF) {
++	if (priv->can.restart_ms && priv->can.state == CAN_STATE_BUS_OFF) {
+ 		struct sk_buff *skb;
+ 		struct can_frame *cf;
+ 
+@@ -852,7 +852,7 @@ kvaser_usb_leaf_rx_error_update_can_state(struct kvaser_usb_net_priv *priv,
+ 	}
+ 
+ 	if (priv->can.restart_ms &&
+-	    cur_state >= CAN_STATE_BUS_OFF &&
++	    cur_state == CAN_STATE_BUS_OFF &&
+ 	    new_state < CAN_STATE_BUS_OFF)
+ 		priv->can.can_stats.restarts++;
+ 
+@@ -945,7 +945,7 @@ static void kvaser_usb_leaf_rx_error(const struct kvaser_usb *dev,
+ 		}
+ 
+ 		if (priv->can.restart_ms &&
+-		    old_state >= CAN_STATE_BUS_OFF &&
++		    old_state == CAN_STATE_BUS_OFF &&
+ 		    new_state < CAN_STATE_BUS_OFF) {
+ 			cf->can_id |= CAN_ERR_RESTARTED;
+ 			netif_carrier_on(priv->netdev);
 -- 
 2.34.1
 
