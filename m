@@ -2,49 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9AF0C433F5
-	for <linux-can@archiver.kernel.org>; Mon, 16 May 2022 20:52:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C745C4332F
+	for <linux-can@archiver.kernel.org>; Mon, 16 May 2022 20:52:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348145AbiEPUwF (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 16 May 2022 16:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39282 "EHLO
+        id S1348152AbiEPUwI (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 16 May 2022 16:52:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348557AbiEPUvQ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 16 May 2022 16:51:16 -0400
+        with ESMTP id S1348480AbiEPUvO (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 16 May 2022 16:51:14 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCFF12AE11
-        for <linux-can@vger.kernel.org>; Mon, 16 May 2022 13:26:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6BEF2A701
+        for <linux-can@vger.kernel.org>; Mon, 16 May 2022 13:26:37 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nqhIe-00069F-A8
-        for linux-can@vger.kernel.org; Mon, 16 May 2022 22:26:40 +0200
+        id 1nqhIa-00066U-FC
+        for linux-can@vger.kernel.org; Mon, 16 May 2022 22:26:36 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 9779E7FB52
-        for <linux-can@vger.kernel.org>; Mon, 16 May 2022 20:26:37 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id EEA577FB28
+        for <linux-can@vger.kernel.org>; Mon, 16 May 2022 20:26:35 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 257F97FB43;
-        Mon, 16 May 2022 20:26:37 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8C31A7FB23;
+        Mon, 16 May 2022 20:26:35 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4f9a73d5;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id a16a4d1f;
         Mon, 16 May 2022 20:26:35 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Pavel Pisa <pisa@cmp.felk.cvut.cz>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 5/9] can: ctucanfd: Let users select instead of depend on CAN_CTUCANFD
-Date:   Mon, 16 May 2022 22:26:21 +0200
-Message-Id: <20220516202625.1129281-6-mkl@pengutronix.de>
+        kernel@pengutronix.de
+Subject: [PATCH net-next 0/9] pull-request: can-next 2022-05-16
+Date:   Mon, 16 May 2022 22:26:16 +0200
+Message-Id: <20220516202625.1129281-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220516202625.1129281-1-mkl@pengutronix.de>
-References: <20220516202625.1129281-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -55,56 +50,81 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+Hello Jakub, hello David,
 
-The CTU CAN-FD IP core is only useful when used with one of the
-corresponding PCI/PCIe or platform (FPGA, SoC) drivers, which depend on
-PCI resp. OF.
+this is a pull request of 9 patches for net-next/master.
 
-Hence make the users select the core driver code, instead of letting
-then depend on it.  Keep the core code config option visible when
-compile-testing, to maintain compile-coverage.
+the first 2 patches are by me and target the CAN raw protocol. The 1st
+removes an unneeded assignment, the other one adds support for
+SO_TXTIME/SCM_TXTIME.
 
-Link: https://lore.kernel.org/all/887b7440446b6244a20a503cc6e8dc9258846706.1652104941.git.geert+renesas@glider.be
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Oliver Hartkopp contributes 2 patches for the ISOTP protocol. The 1st
+adds support for transmission without flow control, the other let's
+bind() return an error on incorrect CAN ID formatting.
+
+Geert Uytterhoeven contributes a patch to clean up ctucanfd's Kconfig
+file.
+
+Vincent Mailhol's patch for the slcan driver uses the proper function
+to check for invalid CAN frames in the xmit callback.
+
+The next patch is by Geert Uytterhoeven and makes the interrupt-names
+of the renesas,rcar-canfd dt bindings mandatory.
+
+A patch by my update the ctucanfd dt bindings to include the common
+CAN controller bindings.
+
+The last patch is by Akira Yokosawa and fixes a breakage the
+ctucanfd's documentation.
+
+regards,
+Marc
+
 ---
- drivers/net/can/ctucanfd/Kconfig | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/can/ctucanfd/Kconfig b/drivers/net/can/ctucanfd/Kconfig
-index 48963efc7f19..3c383612eb17 100644
---- a/drivers/net/can/ctucanfd/Kconfig
-+++ b/drivers/net/can/ctucanfd/Kconfig
-@@ -1,5 +1,5 @@
- config CAN_CTUCANFD
--	tristate "CTU CAN-FD IP core"
-+	tristate "CTU CAN-FD IP core" if COMPILE_TEST
- 	help
- 	  This driver adds support for the CTU CAN FD open-source IP core.
- 	  More documentation and core sources at project page
-@@ -13,8 +13,8 @@ config CAN_CTUCANFD
- 
- config CAN_CTUCANFD_PCI
- 	tristate "CTU CAN-FD IP core PCI/PCIe driver"
--	depends on CAN_CTUCANFD
- 	depends on PCI
-+	select CAN_CTUCANFD
- 	help
- 	  This driver adds PCI/PCIe support for CTU CAN-FD IP core.
- 	  The project providing FPGA design for Intel EP4CGX15 based DB4CGX15
-@@ -23,8 +23,8 @@ config CAN_CTUCANFD_PCI
- 
- config CAN_CTUCANFD_PLATFORM
- 	tristate "CTU CAN-FD IP core platform (FPGA, SoC) driver"
--	depends on CAN_CTUCANFD
- 	depends on OF || COMPILE_TEST
-+	select CAN_CTUCANFD
- 	help
- 	  The core has been tested together with OpenCores SJA1000
- 	  modified to be CAN FD frames tolerant on MicroZed Zynq based
--- 
-2.35.1
+The following changes since commit d887ae3247e022183f244cb325dca1dfbd0a9ed0:
+
+  octeontx2-pf: Remove unnecessary synchronize_irq() before free_irq() (2022-05-16 11:47:22 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-5.19-20220516
+
+for you to fetch changes up to ba3e2eaef1ae5019775989aeec3be8e9df83baa5:
+
+  docs: ctucanfd: Use 'kernel-figure' directive instead of 'figure' (2022-05-16 22:11:11 +0200)
+
+----------------------------------------------------------------
+linux-can-next-for-5.19-20220516
+
+----------------------------------------------------------------
+Akira Yokosawa (1):
+      docs: ctucanfd: Use 'kernel-figure' directive instead of 'figure'
+
+Geert Uytterhoeven (2):
+      can: ctucanfd: Let users select instead of depend on CAN_CTUCANFD
+      dt-bindings: can: renesas,rcar-canfd: Make interrupt-names required
+
+Marc Kleine-Budde (3):
+      can: raw: raw_sendmsg(): remove not needed setting of skb->sk
+      can: raw: add support for SO_TXTIME/SCM_TXTIME
+      dt-bindings: can: ctucanfd: include common CAN controller bindings
+
+Oliver Hartkopp (2):
+      can: isotp: add support for transmission without flow control
+      can: isotp: isotp_bind(): return -EINVAL on incorrect CAN ID formatting
+
+Vincent Mailhol (1):
+      can: slcan: slc_xmit(): use can_dropped_invalid_skb() instead of manual check
+
+ .../devicetree/bindings/net/can/ctu,ctucanfd.yaml  |   3 +
+ .../bindings/net/can/renesas,rcar-canfd.yaml       |   3 +-
+ .../device_drivers/can/ctu/ctucanfd-driver.rst     |   4 +-
+ drivers/net/can/ctucanfd/Kconfig                   |   6 +-
+ drivers/net/can/slcan.c                            |   4 +-
+ include/uapi/linux/can/isotp.h                     |  25 ++---
+ net/can/isotp.c                                    | 105 ++++++++++++++++-----
+ net/can/raw.c                                      |  12 ++-
+ 8 files changed, 119 insertions(+), 43 deletions(-)
 
 
