@@ -2,44 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EABD7C433EF
-	for <linux-can@archiver.kernel.org>; Mon, 16 May 2022 20:52:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9AF0C433F5
+	for <linux-can@archiver.kernel.org>; Mon, 16 May 2022 20:52:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348129AbiEPUwE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 16 May 2022 16:52:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49512 "EHLO
+        id S1348145AbiEPUwF (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 16 May 2022 16:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348512AbiEPUvO (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 16 May 2022 16:51:14 -0400
+        with ESMTP id S1348557AbiEPUvQ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 16 May 2022 16:51:16 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D70992A704
-        for <linux-can@vger.kernel.org>; Mon, 16 May 2022 13:26:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCFF12AE11
+        for <linux-can@vger.kernel.org>; Mon, 16 May 2022 13:26:42 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nqhIb-00066r-5f
-        for linux-can@vger.kernel.org; Mon, 16 May 2022 22:26:37 +0200
+        id 1nqhIe-00069F-A8
+        for linux-can@vger.kernel.org; Mon, 16 May 2022 22:26:40 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 309D37FB30
-        for <linux-can@vger.kernel.org>; Mon, 16 May 2022 20:26:36 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 9779E7FB52
+        for <linux-can@vger.kernel.org>; Mon, 16 May 2022 20:26:37 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id D19807FB24;
-        Mon, 16 May 2022 20:26:35 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 257F97FB43;
+        Mon, 16 May 2022 20:26:37 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 5058d906;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4f9a73d5;
         Mon, 16 May 2022 20:26:35 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH net-next 1/9] can: raw: raw_sendmsg(): remove not needed setting of skb->sk
-Date:   Mon, 16 May 2022 22:26:17 +0200
-Message-Id: <20220516202625.1129281-2-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Pavel Pisa <pisa@cmp.felk.cvut.cz>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 5/9] can: ctucanfd: Let users select instead of depend on CAN_CTUCANFD
+Date:   Mon, 16 May 2022 22:26:21 +0200
+Message-Id: <20220516202625.1129281-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220516202625.1129281-1-mkl@pengutronix.de>
 References: <20220516202625.1129281-1-mkl@pengutronix.de>
@@ -53,33 +55,55 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The skb in raw_sendmsg() is allocated with sock_alloc_send_skb(),
-which subsequently calls sock_alloc_send_pskb() -> skb_set_owner_w(),
-which assigns "skb->sk = sk".
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-This patch removes the not needed setting of skb->sk.
+The CTU CAN-FD IP core is only useful when used with one of the
+corresponding PCI/PCIe or platform (FPGA, SoC) drivers, which depend on
+PCI resp. OF.
 
-Link: https://lore.kernel.org/all/20220502091946.1916211-2-mkl@pengutronix.de
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Hence make the users select the core driver code, instead of letting
+then depend on it.  Keep the core code config option visible when
+compile-testing, to maintain compile-coverage.
+
+Link: https://lore.kernel.org/all/887b7440446b6244a20a503cc6e8dc9258846706.1652104941.git.geert+renesas@glider.be
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/raw.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/can/ctucanfd/Kconfig | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/can/raw.c b/net/can/raw.c
-index b7dbb57557f3..1a68efae43c2 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -820,7 +820,6 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	skb_setup_tx_timestamp(skb, sk->sk_tsflags);
+diff --git a/drivers/net/can/ctucanfd/Kconfig b/drivers/net/can/ctucanfd/Kconfig
+index 48963efc7f19..3c383612eb17 100644
+--- a/drivers/net/can/ctucanfd/Kconfig
++++ b/drivers/net/can/ctucanfd/Kconfig
+@@ -1,5 +1,5 @@
+ config CAN_CTUCANFD
+-	tristate "CTU CAN-FD IP core"
++	tristate "CTU CAN-FD IP core" if COMPILE_TEST
+ 	help
+ 	  This driver adds support for the CTU CAN FD open-source IP core.
+ 	  More documentation and core sources at project page
+@@ -13,8 +13,8 @@ config CAN_CTUCANFD
  
- 	skb->dev = dev;
--	skb->sk = sk;
- 	skb->priority = sk->sk_priority;
+ config CAN_CTUCANFD_PCI
+ 	tristate "CTU CAN-FD IP core PCI/PCIe driver"
+-	depends on CAN_CTUCANFD
+ 	depends on PCI
++	select CAN_CTUCANFD
+ 	help
+ 	  This driver adds PCI/PCIe support for CTU CAN-FD IP core.
+ 	  The project providing FPGA design for Intel EP4CGX15 based DB4CGX15
+@@ -23,8 +23,8 @@ config CAN_CTUCANFD_PCI
  
- 	err = can_send(skb, ro->loopback);
-
-base-commit: d887ae3247e022183f244cb325dca1dfbd0a9ed0
+ config CAN_CTUCANFD_PLATFORM
+ 	tristate "CTU CAN-FD IP core platform (FPGA, SoC) driver"
+-	depends on CAN_CTUCANFD
+ 	depends on OF || COMPILE_TEST
++	select CAN_CTUCANFD
+ 	help
+ 	  The core has been tested together with OpenCores SJA1000
+ 	  modified to be CAN FD frames tolerant on MicroZed Zynq based
 -- 
 2.35.1
 
