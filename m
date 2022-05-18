@@ -2,77 +2,175 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 378B4C433F5
-	for <linux-can@archiver.kernel.org>; Tue, 17 May 2022 17:53:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 649DAC433F5
+	for <linux-can@archiver.kernel.org>; Wed, 18 May 2022 07:05:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351548AbiEQRxV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 17 May 2022 13:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42598 "EHLO
+        id S231830AbiERHFd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 18 May 2022 03:05:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234949AbiEQRxU (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 17 May 2022 13:53:20 -0400
-Received: from mail.enpas.org (zhong.enpas.org [IPv6:2a03:4000:2:537::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 84DE33F88A;
-        Tue, 17 May 2022 10:53:18 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        by mail.enpas.org (Postfix) with ESMTPSA id ECB4AFF9D7;
-        Tue, 17 May 2022 17:52:41 +0000 (UTC)
-Date:   Tue, 17 May 2022 19:52:28 +0200
-From:   Max Staudt <max@enpas.org>
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
-        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH v3 3/4] can: skb:: move can_dropped_invalid_skb and
- can_skb_headroom_valid to skb.c
-Message-ID: <20220517195228.1cb6ca16.max@enpas.org>
-In-Reply-To: <e51a64cd-1130-9c65-2bde-483c63f6aa10@hartkopp.net>
-References: <20220513142355.250389-1-mailhol.vincent@wanadoo.fr>
-        <20220514141650.1109542-1-mailhol.vincent@wanadoo.fr>
-        <20220514141650.1109542-4-mailhol.vincent@wanadoo.fr>
-        <7b1644ad-c117-881e-a64f-35b8d8b40ef7@hartkopp.net>
-        <CAMZ6RqKZMHXB7rQ70GrXcVE7x7kytAAGfE+MOpSgWgWgp0gD2g@mail.gmail.com>
-        <20220517060821.akuqbqxro34tj7x6@pengutronix.de>
-        <CAMZ6RqJ3sXYUOpw7hEfDzj14H-vXK_i+eYojBk2Lq=h=7cm7Jg@mail.gmail.com>
-        <20220517104545.eslountqjppvcnz2@pengutronix.de>
-        <e054f6d4-7ed1-98ac-8364-425f4ef0f760@hartkopp.net>
-        <20220517141404.578d188a.max@enpas.org>
-        <20220517122153.4r6n6kkbdslsa2hv@pengutronix.de>
-        <20220517143921.08458f2c.max@enpas.org>
-        <0b505b1f-1ee4-5a2c-3bbf-6e9822f78817@hartkopp.net>
-        <20220517154301.5bf99ba9.max@enpas.org>
-        <22590a57-c7c6-39c6-06d5-11c6e4e1534b@hartkopp.net>
-        <20220517173821.445c5e90.max@enpas.org>
-        <e51a64cd-1130-9c65-2bde-483c63f6aa10@hartkopp.net>
+        with ESMTP id S231805AbiERHFb (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 18 May 2022 03:05:31 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91061A205F
+        for <linux-can@vger.kernel.org>; Wed, 18 May 2022 00:05:28 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1nrDkF-0000CF-AS; Wed, 18 May 2022 09:05:19 +0200
+Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 1EB3B80F3A;
+        Wed, 18 May 2022 07:05:18 +0000 (UTC)
+Date:   Wed, 18 May 2022 09:05:17 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     kernel test robot <lkp@intel.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
+Subject: Re: drivers/net/can/spi/mcp251xfd/mcp251xfd.h:481:34: warning: field
+ hw_tx_obj within 'struct mcp251xfd_tx_obj_load_buf::(unnamed at
+ drivers/net/can/spi/mcp251xfd/mcp251xfd.h:479:2)' is less aligned than
+ 'struct mcp251xfd_hw_tx_obj_raw' and is usually due to ...
+Message-ID: <20220518070517.q53bjzo6lbnq3f2i@pengutronix.de>
+References: <202205181414.n8QRDe8k-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cujgf6c2mizwls7v"
+Content-Disposition: inline
+In-Reply-To: <202205181414.n8QRDe8k-lkp@intel.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Tue, 17 May 2022 17:50:03 +0200
-Oliver Hartkopp <socketcan@hartkopp.net> wrote:
 
-> On 17.05.22 17:38, Max Staudt wrote:
-> > I'm a bit lost - what would CAN_DEV_SW do?  
-> 
-> It should be just *one* enabler of building can-dev-ko
-> 
-> > If it enables can_dropped_invalid_skb(), then the HW drivers would
-> > also need to depend on CAN_DEV_SW directly or indirectly, or am I
-> > missing something?  
-> 
-> And CAN_DEV is another enabler that would build the skb stuff from 
-> CAN_DEV_SW too (but also the netlink stuff).
-> 
-> That's what I meant with "some Makefile magic" which is then building 
-> the can-dev.ko with the required features depending on CAN_DEV_SW, 
-> CAN_DEV, CAN_DEV_RX_OFFLOAD, CAN_CALC_BITTIMING, etc
+--cujgf6c2mizwls7v
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ah, I see!
-Sounds good :)
+On 18.05.2022 14:45:33, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t master
+> head:   210e04ff768142b96452030c4c2627512b30ad95
+> commit: eb79a267c9b3e608e7762a1b221428f37ace3aa3 can: mcp251xfd: rename a=
+ll remaining occurrence to mcp251xfd
+> date:   1 year, 8 months ago
+> config: arm-randconfig-c002-20220518 (https://download.01.org/0day-ci/arc=
+hive/20220518/202205181414.n8QRDe8k-lkp@intel.com/config)
+> compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project 853f=
+a8ee225edf2d0de94b0dcbd31bea916e825e)
+> reproduce (this is a W=3D1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbi=
+n/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install arm cross compiling tool for clang build
+>         # apt-get install binutils-arm-linux-gnueabi
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.=
+git/commit/?id=3Deb79a267c9b3e608e7762a1b221428f37ace3aa3
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/=
+git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout eb79a267c9b3e608e7762a1b221428f37ace3aa3
+>         # save the config file
+>         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross=20
+>=20
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>=20
+> All warnings (new ones prefixed by >>):
+>=20
+> >> drivers/net/can/spi/mcp251xfd/mcp251xfd.h:481:34: warning: field hw_tx=
+_obj within 'struct mcp251xfd_tx_obj_load_buf::(unnamed at drivers/net/can/=
+spi/mcp251xfd/mcp251xfd.h:479:2)' is less aligned than 'struct mcp251xfd_hw=
+_tx_obj_raw' and is usually due to 'struct mcp251xfd_tx_obj_load_buf::(unna=
+med at drivers/net/can/spi/mcp251xfd/mcp251xfd.h:479:2)' being packed, whic=
+h can lead to unaligned accesses [-Wunaligned-access]
+>                    struct mcp251xfd_hw_tx_obj_raw hw_tx_obj;
+>                                                   ^
+>    drivers/net/can/spi/mcp251xfd/mcp251xfd.h:485:34: warning: field hw_tx=
+_obj within 'struct mcp251xfd_tx_obj_load_buf::(unnamed at drivers/net/can/=
+spi/mcp251xfd/mcp251xfd.h:483:2)' is less aligned than 'struct mcp251xfd_hw=
+_tx_obj_raw' and is usually due to 'struct mcp251xfd_tx_obj_load_buf::(unna=
+med at drivers/net/can/spi/mcp251xfd/mcp251xfd.h:483:2)' being packed, whic=
+h can lead to unaligned accesses [-Wunaligned-access]
+>                    struct mcp251xfd_hw_tx_obj_raw hw_tx_obj;
+>                                                   ^
+>    drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c:511:1: warning: unused =
+function 'mcp251xfd_chip_set_mode_nowait' [-Wunused-function]
+>    mcp251xfd_chip_set_mode_nowait(const struct mcp251xfd_priv *priv,
+>    ^
+>    3 warnings generated.
+> --
+> >> drivers/net/can/spi/mcp251xfd/mcp251xfd.h:481:34: warning: field hw_tx=
+_obj within 'struct mcp251xfd_tx_obj_load_buf::(unnamed at drivers/net/can/=
+spi/mcp251xfd/mcp251xfd.h:479:2)' is less aligned than 'struct mcp251xfd_hw=
+_tx_obj_raw' and is usually due to 'struct mcp251xfd_tx_obj_load_buf::(unna=
+med at drivers/net/can/spi/mcp251xfd/mcp251xfd.h:479:2)' being packed, whic=
+h can lead to unaligned accesses [-Wunaligned-access]
+>                    struct mcp251xfd_hw_tx_obj_raw hw_tx_obj;
+>                                                   ^
+>    drivers/net/can/spi/mcp251xfd/mcp251xfd.h:485:34: warning: field hw_tx=
+_obj within 'struct mcp251xfd_tx_obj_load_buf::(unnamed at drivers/net/can/=
+spi/mcp251xfd/mcp251xfd.h:483:2)' is less aligned than 'struct mcp251xfd_hw=
+_tx_obj_raw' and is usually due to 'struct mcp251xfd_tx_obj_load_buf::(unna=
+med at drivers/net/can/spi/mcp251xfd/mcp251xfd.h:483:2)' being packed, whic=
+h can lead to unaligned accesses [-Wunaligned-access]
+>                    struct mcp251xfd_hw_tx_obj_raw hw_tx_obj;
+>                                                   ^
+>    2 warnings generated.
+>=20
+>=20
+> vim +481 drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+>=20
+>    477=09
+>    478	union mcp251xfd_tx_obj_load_buf {
+>    479		struct __packed {
+>    480			struct mcp251xfd_buf_cmd cmd;
+>  > 481			struct mcp251xfd_hw_tx_obj_raw hw_tx_obj;
+>    482		} nocrc;
+>    483		struct __packed {
+>    484			struct mcp251xfd_buf_cmd_crc cmd;
+>    485			struct mcp251xfd_hw_tx_obj_raw hw_tx_obj;
+>    486			__be16 crc;
+>    487		} crc;
+>    488	} ____cacheline_aligned;
+>    489
 
+The structure layout is intentional as it describes the hardware
+messages on the SPI bus. The functions accessing these structs use
+appropriate put_unaligned_*() functions.
 
-Max
+How to properly annotate these structs to silence the warnings?
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--cujgf6c2mizwls7v
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmKEmqsACgkQrX5LkNig
+010wJAf/chPXIiNCGy6KFLiLZz5cZUSKN6WyTQN1q4bmbJppDkFfg+dEjoMedGWL
+KPH0TdZ9AtWFRFDZzmGrPgBVcnoXD0Hi7Hb1ISIJFZjf7XBDXvePoFY0+6JikS6w
+AwbMsLZMHBByU9kMOz5NobPyBDaWKcc78dLZARD+vrHhwzQ5C8mITuHHGeQU995N
+Q83dbx/7dqK6DIfM4draFFYetB4UWmaUS3aBDs0SB7+hX4+8ts9KHdlCm0k/7FXU
+607UgLU7Lukwxprd3lGf54HEDAt2fazhseZri8rIaXKOznpjLSOvt0PNUvsQrAEh
+5HqZC4V3MqeqIurSCde5uCv2B9sgww==
+=THh8
+-----END PGP SIGNATURE-----
+
+--cujgf6c2mizwls7v--
