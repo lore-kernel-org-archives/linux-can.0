@@ -2,110 +2,79 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC3DBC43217
-	for <linux-can@archiver.kernel.org>; Thu, 19 May 2022 07:29:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 367ABC433EF
+	for <linux-can@archiver.kernel.org>; Thu, 19 May 2022 15:52:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbiESH3J (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 19 May 2022 03:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50648 "EHLO
+        id S232317AbiESPwo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 19 May 2022 11:52:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231694AbiESH24 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 19 May 2022 03:28:56 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCA78AE5F
-        for <linux-can@vger.kernel.org>; Thu, 19 May 2022 00:28:53 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1nraaa-0006dc-6D; Thu, 19 May 2022 09:28:52 +0200
-Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 3B05081CFC;
-        Thu, 19 May 2022 07:03:13 +0000 (UTC)
-Date:   Thu, 19 May 2022 09:03:11 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     linux-can@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: Re: [PATCH can-next] can: can-dev: remove obsolete CAN LED support
-Message-ID: <20220519070311.3im3ptomr7x5iobi@pengutronix.de>
-References: <20220518154527.29046-1-socketcan@hartkopp.net>
- <20220518202134.77ir3bohv2tl6vi6@pengutronix.de>
- <4113f480-ab6a-3c1e-ff20-8778468e15c5@hartkopp.net>
+        with ESMTP id S240010AbiESPwk (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 19 May 2022 11:52:40 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D427CB09
+        for <linux-can@vger.kernel.org>; Thu, 19 May 2022 08:52:39 -0700 (PDT)
+Received: from photo-meter.com ([62.157.79.106]) by mrelayeu.kundenserver.de
+ (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MFslN-1o5ixe12Y3-00HRJf for <linux-can@vger.kernel.org>; Thu, 19 May 2022
+ 17:52:37 +0200
+Received: from [192.168.100.109] (MICHA.fritz.box [192.168.100.109])
+        by photo-meter.com (Postfix) with ESMTP id 29EEE3B08B7
+        for <linux-can@vger.kernel.org>; Thu, 19 May 2022 17:51:16 +0200 (CEST)
+Message-ID: <9e431f19-897e-7bff-68bb-7ac7bb9fd757@photo-meter.com>
+Date:   Thu, 19 May 2022 17:52:36 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="723dqu5yzomrln2n"
-Content-Disposition: inline
-In-Reply-To: <4113f480-ab6a-3c1e-ff20-8778468e15c5@hartkopp.net>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Reply-To: anochin@photo-meter.com
+Content-Language: en-US
+To:     linux-can@vger.kernel.org
+From:   Michael Anochin <anochin@photo-meter.com>
+Subject: can, m_can, tcan4x5x : big jitter between the packets by sending
+Organization: Czibula und Grundmann GmbH
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:HGE2BWAZpX2MpwXf/zZk1mdHLMR3h74+lhNamsw2QazNPiWUR57
+ 1dc9uRkMRFptoCler5saSY2MephtcmSZv6q3UkN8eaJ779zWYkzLo9guQjr04mSesSEz4zy
+ RMw0Jf8n+Z7BJRn1IOf8Of5Yfd0Jll9NTBNiD+ihfDTM/KXOj4+9/Wk/cZ3en2Pn+rTPatl
+ Jzhfda2BiDYTvC2cDXINw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:tWRoVzU7b2o=:WCs9XWx9oH6o2Bbkm3qpX/
+ 97Jc66F6e3Nsse4hCpM1yp3hazb2LsTk6Tz1qlqWYv7Q5vDoNNOY7sxVwc5rgGghhLyfZ6Ii2
+ MLo0nxS5bizvDNcMshbrqUUDlfnAbxSNpZLIHQ5j+SEIOBpp6uRUZS4EfVdpHyXgQy88twZQK
+ 2AaUiokrXF+Qrbto10MXrYCfmXbWN5tbVFjpDfdexYo5Yk/AGGBqFwTQiQ+IVCCqlWPa6Sh4B
+ Vio3UqjCFJfYFkqT7oMvVzb1ysgDDtECMqVzZg9+TttNmmfkO2uzNRmIq9tRNhqB4v4rHJ46t
+ UbioxL157jpGHR4Zfq2iJjvly14Ktxjzv07AFwsHcb8nKdOxjZu6+5PtHZMhyUXgmOTsZGT7n
+ 7oG0MT/WbF7yhJk4AnuY423Sbg1bZ9jLEOzzdlxdEu8izUIKxj2J3aCT+wdSPn1s7DzqaH0o8
+ QsPK51C0ZDU453PsdsaVxbzHZjQ2fRsbXqHDPSZR56Ey0QQTFmqPF93zFqq2mJUA5U4OQam1d
+ bRKdCfUacL674HZ5QPc79KSAwZEVfDMk+RsSaXG9iDSqAJC0n8ryVyHUhwbrRudYgcl4kY+Sr
+ djw5I3ypMNzGCCSsqmA1r3V+DuW3EgE3LeQesJrTGNbg/M6+oNM7kx5LqIbauXpmE7NdgJzU+
+ tpBeOT9R4AxT4NOLc74+4dfJyixvYYGLeVpPq978BLu7U1UC0mnTq4qFjzS/jtBv0i7YCrtev
+ hUElIg5LlcPELfPlNwJTwOgYwhJUfnPzA1wUPVNM3hDl+1VLa4m8uXdvDJQ=
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+Hello,
 
---723dqu5yzomrln2n
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+my application continuously sends 64 bytes CANFD packets with 1MBit/s at 
+the 10ms interval. I use tcan4450 on the RPI4 with 5.10.103 Kernel and 
+raspbian. No other significant processes load the CPU.
 
-On 19.05.2022 08:18:30, Oliver Hartkopp wrote:
-> Hi Marc,
->=20
-> found a typo while reading your answer ...
->=20
-> On 18.05.22 22:21, Marc Kleine-Budde wrote:
-> > On 18.05.2022 17:45:27, Oliver Hartkopp wrote:
-> > > Since commit 30f3b42147ba6f ("can: mark led trigger as broken") the
-> > > CAN specific LED support was disabled and marked as BROKEN. As the co=
-mmon
-> > > LED support with CONFIG_LEDS_TRIGGER_NETDEV should to this work now t=
-he
->                                                       ^^
->=20
-> to -> do
+When I monitor the traffic with a PCAN adapter on a Windows PC, I notice 
+that the packets sometimes arrive with a delay of 5-9ms. But the next 
+following packet arrive faster as 10ms. My desired interval of 10ms is 
+kept at the jitter of +/- 9ms.
 
-fixed
+Running the App on only one CPU core using tasksel improve the jitter 
+somewhat.
 
-> m(
->=20
-> Btw. did you see this patch for can-next?
->=20
-> https://lore.kernel.org/linux-can/20220517145653.2556-1-socketcan@hartkop=
-p.net/T/#u
->=20
-> That was very short after the patch from Jakub so you probably missed
-> it.
+Am I the only one who observes such large jitter or is the m_can 
+implementation at Perepherie (spi) not so fast from the throughput and 
+is completely normal.
 
-Indeed. Added to linux-can-next/testing.
+Maybe I should switch to 5.17 kernel? On 5.17 there are bulk read/write 
+function for spi regmap.
 
-Marc
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---723dqu5yzomrln2n
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmKF660ACgkQrX5LkNig
-012syAgAjlpds4nX8cqbdnLMwX7WLvqixNZSwUIYdLG/cGJjhToxhwK6cOFtecft
-nnlSCzf6YEOGX0hlpgDUvKPV+a8TVUTm/S2iMZk3H6Rwt9bnp9igYcA6oiohTVbu
-A1g/qHKpEp2l9XDf0u0ngA4/h/j8aPtTXS96UkihOYZy6I7X0unZ69kDzzJ1tae8
-oAI3xjpeuCnzb6tmZi07Zew8Fwf7ikIZXh4UwCDUzvF8GUFqfL5hVrWCS3uHkXxU
-TXdhvNyb/ngNG0EpjSdgLkrrCPx1LT77ydn9mXGNu4x9zzBIXlsdRaPwzkS+wzAs
-9DvKIvqRgBYCyli8m/HL+GSfDses7g==
-=rEj0
------END PGP SIGNATURE-----
-
---723dqu5yzomrln2n--
+Thanks and Best Regards,
+Michael Anochin
