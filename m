@@ -2,118 +2,119 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38D2DC433EF
-	for <linux-can@archiver.kernel.org>; Wed, 18 May 2022 20:21:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8744C433EF
+	for <linux-can@archiver.kernel.org>; Thu, 19 May 2022 06:18:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242431AbiERUVl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 18 May 2022 16:21:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34160 "EHLO
+        id S233393AbiESGSm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 19 May 2022 02:18:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242492AbiERUVk (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 18 May 2022 16:21:40 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F3D192D31
-        for <linux-can@vger.kernel.org>; Wed, 18 May 2022 13:21:39 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1nrQAr-0007rn-Hx; Wed, 18 May 2022 22:21:37 +0200
-Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 886E7818A7;
-        Wed, 18 May 2022 20:21:36 +0000 (UTC)
-Date:   Wed, 18 May 2022 22:21:34 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
+        with ESMTP id S229654AbiESGSm (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 19 May 2022 02:18:42 -0400
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.220])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 350F6BD8
+        for <linux-can@vger.kernel.org>; Wed, 18 May 2022 23:18:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1652941116;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=p/qZmB+QfDjd4wT2Da2noadIX1zNsVJwZnekUvErlRI=;
+    b=I2rKOfd6YO+SHfXoEHCTMdCoqKbmC6P3XP7GHdbk2I3r0lOfbDWgEQEeELxzuYPePb
+    PSh5sbMnT3dFwsKq9scz2LYCDa2YLqlb7p0KaowkFOyT0DQZw9VEiyRPYEdcE8jmSk0A
+    wEL7Am8JFxugnjl+MWVxDY31/v6Q04RW31BAw6Tdtpy3iQ8UrAI/AvkmxGejfUQMxaXo
+    Dv+VYl6Ld6qMMb+p+8xq7Se8Vlv1B3jBYxgXEdj7oxMqTHSN8qif5Goz9Nw57DAllAhl
+    MckxgIn9Qo2U2a3RvLNP4lGD+VWX71fS2WfySjBTZ3EeRFEtaHz2SIFxOmQwwRZRIjx0
+    KqQQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusx3hdBqPeOuh2krLEWFUg=="
+X-RZG-CLASS-ID: mo00
+Received: from [IPV6:2a00:6020:1cff:5b00::b82]
+    by smtp.strato.de (RZmta 47.45.0 AUTH)
+    with ESMTPSA id R0691fy4J6IaJ8v
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Thu, 19 May 2022 08:18:36 +0200 (CEST)
+Message-ID: <4113f480-ab6a-3c1e-ff20-8778468e15c5@hartkopp.net>
+Date:   Thu, 19 May 2022 08:18:30 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH can-next] can: can-dev: remove obsolete CAN LED support
+Content-Language: en-US
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
 Cc:     linux-can@vger.kernel.org,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: Re: [PATCH can-next] can: can-dev: remove obsolete CAN LED support
-Message-ID: <20220518202134.77ir3bohv2tl6vi6@pengutronix.de>
 References: <20220518154527.29046-1-socketcan@hartkopp.net>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wncxtr4w2aex3s3l"
-Content-Disposition: inline
-In-Reply-To: <20220518154527.29046-1-socketcan@hartkopp.net>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+ <20220518202134.77ir3bohv2tl6vi6@pengutronix.de>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <20220518202134.77ir3bohv2tl6vi6@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+Hi Marc,
 
---wncxtr4w2aex3s3l
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+found a typo while reading your answer ...
 
-On 18.05.2022 17:45:27, Oliver Hartkopp wrote:
-> Since commit 30f3b42147ba6f ("can: mark led trigger as broken") the
-> CAN specific LED support was disabled and marked as BROKEN. As the common
-> LED support with CONFIG_LEDS_TRIGGER_NETDEV should to this work now the
-> code can be removed as preparation for a CAN netdevice Kconfig rework.
->=20
-> Suggested-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> ---
->  drivers/net/can/Kconfig                  |  17 ---
->  drivers/net/can/at91_can.c               |  10 --
->  drivers/net/can/c_can/c_can_main.c       |  12 +-
->  drivers/net/can/ctucanfd/ctucanfd_base.c |  10 --
->  drivers/net/can/dev/Makefile             |   2 -
->  drivers/net/can/dev/dev.c                |   5 -
->  drivers/net/can/dev/rx-offload.c         |   2 -
->  drivers/net/can/flexcan/flexcan-core.c   |   7 --
->  drivers/net/can/ifi_canfd/ifi_canfd.c    |   9 --
->  drivers/net/can/led.c                    | 140 -----------------------
->  drivers/net/can/m_can/m_can.c            |  11 --
->  drivers/net/can/m_can/m_can.h            |   1 -
->  drivers/net/can/rcar/rcar_can.c          |   8 --
->  drivers/net/can/rcar/rcar_canfd.c        |   7 --
->  drivers/net/can/sja1000/sja1000.c        |  11 --
->  drivers/net/can/spi/hi311x.c             |   8 --
->  drivers/net/can/spi/mcp251x.c            |  10 --
->  drivers/net/can/sun4i_can.c              |   7 --
->  drivers/net/can/ti_hecc.c                |   8 --
->  drivers/net/can/usb/mcba_usb.c           |   8 --
->  drivers/net/can/usb/usb_8dev.c           |  11 --
->  drivers/net/can/xilinx_can.c             |  10 +-
->  include/linux/can/dev.h                  |  10 --
->  include/linux/can/led.h                  |  51 ---------
->  24 files changed, 2 insertions(+), 373 deletions(-)
->  delete mode 100644 drivers/net/can/led.c
->  delete mode 100644 include/linux/can/led.h
+On 18.05.22 22:21, Marc Kleine-Budde wrote:
+> On 18.05.2022 17:45:27, Oliver Hartkopp wrote:
+>> Since commit 30f3b42147ba6f ("can: mark led trigger as broken") the
+>> CAN specific LED support was disabled and marked as BROKEN. As the common
+>> LED support with CONFIG_LEDS_TRIGGER_NETDEV should to this work now the
+                                                       ^^
 
-Applied to linux-can-next/testing.
+to -> do
 
-regards,
-Marc
+m(
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
---wncxtr4w2aex3s3l
-Content-Type: application/pgp-signature; name="signature.asc"
+Btw. did you see this patch for can-next?
 
------BEGIN PGP SIGNATURE-----
+https://lore.kernel.org/linux-can/20220517145653.2556-1-socketcan@hartkopp.net/T/#u
 
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmKFVUsACgkQrX5LkNig
-013F8Af9HBQYHZwym0Aanf/AFHqbin3C+buubyxl1u3cKF9WSDmBoKTk29OneByd
-7k7GYpULHLR6ZhlFOjDM5OpwUloKK+h/tXzUKgcL4juuEs8uImN2aNVvy0IvmA/b
-+xgPBg9+IkXke+c0WqibKM0edks/C22UUWjy8NTffSZQSqNnW8MALpnUnRWkQ6rL
-RqzubyCuvPMYC9q/NMKyOqkgVVtni38itXA733DvkZPXtZOK6cFQovdFNrI+re4i
-oc0XfmFG2yZ7o8wxNNx8j/EDo92yadwDEjk1/RL2gARJfHUhENphB2tM7AfrR/rr
-cCsE5y308xED7gkrhyOnj3D51KrReA==
-=QInh
------END PGP SIGNATURE-----
+That was very short after the patch from Jakub so you probably missed it.
 
---wncxtr4w2aex3s3l--
+Thanks & BR,
+Oliver
+
+>> code can be removed as preparation for a CAN netdevice Kconfig rework.
+>>
+>> Suggested-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+>> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+>> ---
+>>   drivers/net/can/Kconfig                  |  17 ---
+>>   drivers/net/can/at91_can.c               |  10 --
+>>   drivers/net/can/c_can/c_can_main.c       |  12 +-
+>>   drivers/net/can/ctucanfd/ctucanfd_base.c |  10 --
+>>   drivers/net/can/dev/Makefile             |   2 -
+>>   drivers/net/can/dev/dev.c                |   5 -
+>>   drivers/net/can/dev/rx-offload.c         |   2 -
+>>   drivers/net/can/flexcan/flexcan-core.c   |   7 --
+>>   drivers/net/can/ifi_canfd/ifi_canfd.c    |   9 --
+>>   drivers/net/can/led.c                    | 140 -----------------------
+>>   drivers/net/can/m_can/m_can.c            |  11 --
+>>   drivers/net/can/m_can/m_can.h            |   1 -
+>>   drivers/net/can/rcar/rcar_can.c          |   8 --
+>>   drivers/net/can/rcar/rcar_canfd.c        |   7 --
+>>   drivers/net/can/sja1000/sja1000.c        |  11 --
+>>   drivers/net/can/spi/hi311x.c             |   8 --
+>>   drivers/net/can/spi/mcp251x.c            |  10 --
+>>   drivers/net/can/sun4i_can.c              |   7 --
+>>   drivers/net/can/ti_hecc.c                |   8 --
+>>   drivers/net/can/usb/mcba_usb.c           |   8 --
+>>   drivers/net/can/usb/usb_8dev.c           |  11 --
+>>   drivers/net/can/xilinx_can.c             |  10 +-
+>>   include/linux/can/dev.h                  |  10 --
+>>   include/linux/can/led.h                  |  51 ---------
+>>   24 files changed, 2 insertions(+), 373 deletions(-)
+>>   delete mode 100644 drivers/net/can/led.c
+>>   delete mode 100644 include/linux/can/led.h
+> 
+> Applied to linux-can-next/testing.
+> 
+> regards,
+> Marc
+> 
