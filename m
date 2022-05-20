@@ -2,85 +2,83 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F696C433F5
-	for <linux-can@archiver.kernel.org>; Fri, 20 May 2022 00:30:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8CF2C433EF
+	for <linux-can@archiver.kernel.org>; Fri, 20 May 2022 12:48:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343999AbiETAaU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 19 May 2022 20:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45694 "EHLO
+        id S1349506AbiETMsx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 20 May 2022 08:48:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232460AbiETAaT (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 19 May 2022 20:30:19 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B3B5CEBBF;
-        Thu, 19 May 2022 17:30:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 87421CE28C5;
-        Fri, 20 May 2022 00:30:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DE0B0C385B8;
-        Fri, 20 May 2022 00:30:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653006612;
-        bh=zrBLfoi6ZefDnvO/uCOFCwqiPT1EkKDL+CQeAwqyjZw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=dwlfzx29f+vGz60f6WMdXVgL3BW1CWdo5Ai24Bv0GW6ju7N5ZLS4ffiXAgWQpp68s
-         Vsc+hjMlWoEzCD5KJoUjAgaXze+s+wDbbNHPb4isvzMQESJahbGKGbxQo2mjMei1Kk
-         QYn+qBz++iMr3R27zdHSQ1fVBxPqNjmlCMF6YkqWeOPzw7fRNzAaYJC/V7C+VrlHzw
-         ARKLNkW/hcOiTJh8dulT6FTDtGb75ProBDTt/eYA7nPx7U89pr3axKPxlq5I0Rdj6i
-         H6FdXDSXkk2Ms9dK6RWjuGbkGQ4Zznu8ZXvmVJ3S/9dh/IPpV5rQYCF0HKk8Ww/Qze
-         VsOa+u6EFBM3Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A551AF0389D;
-        Fri, 20 May 2022 00:30:12 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S1349498AbiETMsv (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 20 May 2022 08:48:51 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE1E1668B0
+        for <linux-can@vger.kernel.org>; Fri, 20 May 2022 05:48:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1653050931; x=1684586931;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=oe71NWIN9DqmtuqfAkiqaC3nWpVt0Kj1k2yHsngEmxY=;
+  b=Ueey2+cTJ0qPlBEIQVogYFpEpR31dMNIYaPIDG3M0thdFFxvHwGmIhkQ
+   L6CrydxA6TmpASGPXW3PHSnccvkOAp5ryr8zR2Rxa6pwIFfCEjWRaa2v+
+   +CWMlCFAxE3VnMqUXttybL+aTbuOlO3u0BSO973i0GxaRiVOB+7wM5ch8
+   hj5Rjah5tcrd4yj0cnL/MD9zjocRPlH1IFnDstNIN3y78XTaUIoiNkCXL
+   ArT2OHVYWb3KKFMsjhqchYQGw0a+WJCkMVykgVYng7VIe6/I+zmJ+0FN0
+   ICAcEfYN2k8ghUMx9T8v0Phuj8LfurSJ1V/+51aVl/grZljIJiIsFPsTo
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10352"; a="335653350"
+X-IronPort-AV: E=Sophos;i="5.91,239,1647327600"; 
+   d="scan'208";a="335653350"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2022 05:48:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,239,1647327600"; 
+   d="scan'208";a="546666455"
+Received: from mylly.fi.intel.com (HELO [10.237.72.164]) ([10.237.72.164])
+  by orsmga006.jf.intel.com with ESMTP; 20 May 2022 05:48:48 -0700
+Message-ID: <29930b66-d02e-411a-d6f5-4f09119f3f1e@linux.intel.com>
+Date:   Fri, 20 May 2022 15:48:47 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 1/4] can: isotp: isotp_bind(): do not validate unused
- address information
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165300661267.32488.11022480105388538234.git-patchwork-notify@kernel.org>
-Date:   Fri, 20 May 2022 00:30:12 +0000
-References: <20220519202308.1435903-2-mkl@pengutronix.de>
-In-Reply-To: <20220519202308.1435903-2-mkl@pengutronix.de>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        linux-can@vger.kernel.org, kernel@pengutronix.de,
-        socketcan@hartkopp.net
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.8.1
+Subject: Re: PCH_CAN removal?
+Content-Language: en-US
+To:     Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     linux-can@vger.kernel.org, Chee Hou Ong <chee.houx.ong@intel.com>,
+        Aman Kumar <aman.kumar@intel.com>,
+        Pallavi Kumari <kumari.pallavi@intel.com>,
+        Tomoya MORINAGA <tomoya-linux@dsn.okisemi.com>,
+        Masayuki Ohtake <masa-korg@dsn.okisemi.com>
+References: <20220513130819.386012-1-mkl@pengutronix.de>
+ <20220513130819.386012-2-mkl@pengutronix.de>
+ <20220513102145.748db22c@kernel.org>
+ <2637cf42-b7da-a862-c599-ce418645629b@linux.intel.com>
+ <03e3db49-1e56-1e34-ba8d-72ca06019287@hartkopp.net>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+In-Reply-To: <03e3db49-1e56-1e34-ba8d-72ca06019287@hartkopp.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello:
+Hi
 
-This series was applied to netdev/net-next.git (master)
-by Marc Kleine-Budde <mkl@pengutronix.de>:
-
-On Thu, 19 May 2022 22:23:05 +0200 you wrote:
-> From: Oliver Hartkopp <socketcan@hartkopp.net>
+On 5/19/22 22:15, Oliver Hartkopp wrote:
+> In fact there is a pch_can (PCI) driver which was used in an Intel 
+> embedded setup "Topcliff PCH" ~11 years ago. The driver was originally 
+> contributed by OKI.
 > 
-> With commit 2aa39889c463 ("can: isotp: isotp_bind(): return -EINVAL on
-> incorrect CAN ID formatting") the bind() syscall returns -EINVAL when
-> the given CAN ID needed to be sanitized. But in the case of an unconfirmed
-> broadcast mode the rx CAN ID is not needed and may be uninitialized from
-> the caller - which is ok.
+> And I was pretty sure that this driver implements a C_CAN IP core with a 
+> PCI binding which is now implemented in the C_CAN_PCI driver.
 > 
-> [...]
+> As I do not have that hardware anymore it would be interesting to see if 
+> you could bring the PCH board to life with the C_CAN_PCI driver?!?
+> 
+> That would allow us to remove the (then definitely) obsolete pch_can 
+> driver.
+> 
+I'm afraid we don't have that HW either here locally :-(
 
-Here is the summary with links:
-  - [net-next,1/4] can: isotp: isotp_bind(): do not validate unused address information
-    https://git.kernel.org/netdev/net-next/c/b76b163f46b6
-  - [net-next,2/4] can: can-dev: move to netif_napi_add_weight()
-    https://git.kernel.org/netdev/net-next/c/caf6b7f81e05
-  - [net-next,3/4] can: can-dev: remove obsolete CAN LED support
-    https://git.kernel.org/netdev/net-next/c/6c1e423a3c84
-  - [net-next,4/4] can: mcp251xfd: silence clang's -Wunaligned-access warning
-    https://git.kernel.org/netdev/net-next/c/1a6dd9996699
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Jarkko
