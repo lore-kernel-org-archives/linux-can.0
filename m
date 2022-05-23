@@ -2,50 +2,48 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF360C433EF
-	for <linux-can@archiver.kernel.org>; Mon, 23 May 2022 20:11:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F60DC433F5
+	for <linux-can@archiver.kernel.org>; Mon, 23 May 2022 20:12:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232756AbiEWULZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 23 May 2022 16:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40298 "EHLO
+        id S232489AbiEWUL5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 23 May 2022 16:11:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232489AbiEWUKx (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 23 May 2022 16:10:53 -0400
+        with ESMTP id S232480AbiEWUKw (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 23 May 2022 16:10:52 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19EAE980BB
-        for <linux-can@vger.kernel.org>; Mon, 23 May 2022 13:10:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4CA985A7
+        for <linux-can@vger.kernel.org>; Mon, 23 May 2022 13:10:51 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1ntEOA-0002zh-Cj
+        id 1ntEOA-0002zI-2s
         for linux-can@vger.kernel.org; Mon, 23 May 2022 22:10:50 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id E839E848E1
+        by bjornoya.blackshift.org (Postfix) with SMTP id 5F5A3848D8
         for <linux-can@vger.kernel.org>; Mon, 23 May 2022 20:10:48 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 51CD4848D6;
-        Mon, 23 May 2022 20:10:48 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id EAEDA848CE;
+        Mon, 23 May 2022 20:10:47 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 6dc26c57;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 6cb8f245;
         Mon, 23 May 2022 20:10:46 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        kernel test robot <lkp@intel.com>,
-        Pavel Pisa <pisa@cmp.felk.cvut.cz>,
-        Ondrej Ille <ondrej.ille@gmail.com>
-Subject: [PATCH net-next 3/3] can: ctucanfd: platform: add missing dependency to HAS_IOMEM
-Date:   Mon, 23 May 2022 22:10:45 +0200
-Message-Id: <20220523201045.1708855-4-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 2/3] can: kvaser_usb: silence a GCC 12 -Warray-bounds warning
+Date:   Mon, 23 May 2022 22:10:44 +0200
+Message-Id: <20220523201045.1708855-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220523201045.1708855-1-mkl@pengutronix.de>
 References: <20220523201045.1708855-1-mkl@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -55,36 +53,39 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The kernel test robot noticed that the ctucanfd platform driver fails
-during modpost on platforms that don't support IOMEM.
+From: Jakub Kicinski <kuba@kernel.org>
 
-| ERROR: modpost: "devm_ioremap_resource" [drivers/net/can/ctucanfd/ctucanfd_platform.ko] undefined!
+This driver does a lot of casting of smaller buffers to
+struct kvaser_cmd_ext, GCC 12 does not like that:
 
-This patch adds the missing HAS_IOMEM dependency.
+| drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c:489:65: warning: array subscript ‘struct kvaser_cmd_ext[0]’ is partly outside array bounds of ‘unsigned char[32]’ [-Warray-bounds]
+| drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c:489:23: note: in expansion of macro ‘le16_to_cpu’
+|   489 |                 ret = le16_to_cpu(((struct kvaser_cmd_ext *)cmd)->len);
+|       |                       ^~~~~~~~~~~
 
-Link: https://lore.kernel.org/all/20220523123720.1656611-1-mkl@pengutronix.de
-Fixes: e8f0c23a2415 ("can: ctucanfd: CTU CAN FD open-source IP core - platform/SoC support.")
-Reported-by: kernel test robot <lkp@intel.com>
-Acked-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Cc: Ondrej Ille <ondrej.ille@gmail.com>
+Temporarily silence this warning (move it to W=1 builds).
+
+Link: https://lore.kernel.org/all/20220520194659.2356903-1-kuba@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Tested-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/ctucanfd/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/usb/kvaser_usb/Makefile | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/can/ctucanfd/Kconfig b/drivers/net/can/ctucanfd/Kconfig
-index 3c383612eb17..6e2073351a8f 100644
---- a/drivers/net/can/ctucanfd/Kconfig
-+++ b/drivers/net/can/ctucanfd/Kconfig
-@@ -23,7 +23,7 @@ config CAN_CTUCANFD_PCI
- 
- config CAN_CTUCANFD_PLATFORM
- 	tristate "CTU CAN-FD IP core platform (FPGA, SoC) driver"
--	depends on OF || COMPILE_TEST
-+	depends on HAS_IOMEM && (OF || COMPILE_TEST)
- 	select CAN_CTUCANFD
- 	help
- 	  The core has been tested together with OpenCores SJA1000
+diff --git a/drivers/net/can/usb/kvaser_usb/Makefile b/drivers/net/can/usb/kvaser_usb/Makefile
+index cf260044f0b9..b20d951a0790 100644
+--- a/drivers/net/can/usb/kvaser_usb/Makefile
++++ b/drivers/net/can/usb/kvaser_usb/Makefile
+@@ -1,3 +1,8 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-$(CONFIG_CAN_KVASER_USB) += kvaser_usb.o
+ kvaser_usb-y = kvaser_usb_core.o kvaser_usb_leaf.o kvaser_usb_hydra.o
++
++# FIXME: temporarily silence -Warray-bounds on non W=1+ builds
++ifndef KBUILD_EXTRA_WARN
++CFLAGS_kvaser_usb_hydra.o += -Wno-array-bounds
++endif
 -- 
 2.35.1
 
