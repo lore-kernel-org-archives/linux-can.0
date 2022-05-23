@@ -2,71 +2,101 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF460C433F5
-	for <linux-can@archiver.kernel.org>; Sat, 21 May 2022 11:13:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53FA9C433F5
+	for <linux-can@archiver.kernel.org>; Mon, 23 May 2022 12:14:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354895AbiEULNr (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 21 May 2022 07:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47424 "EHLO
+        id S235282AbiEWMOj (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 23 May 2022 08:14:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242689AbiEULMG (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 21 May 2022 07:12:06 -0400
-Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3730F2980B;
-        Sat, 21 May 2022 04:12:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ysSCHxYUYI2fnvbvjl19r0L14v2vd2rA12vVrwVzVi0=;
-  b=UqK5kh2EBbAGZipXfNg9E2KfKuDxjrFxb0oz0Ho0tGLgmOEKYhG4lkwD
-   3M3Zc7SdrIYY8eKOLYmjLyUQp1i6YDnmV8YgSIZfqGlCdSIYPZAlxuq2k
-   6Kun0ZXJw0CRqeGDpOM8Qhe3U+AsddizZOk4z1RJIQQfo4i2UoVO6GwGj
-   4=;
-Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=Julia.Lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="5.91,242,1647298800"; 
-   d="scan'208";a="14727919"
-Received: from i80.paris.inria.fr (HELO i80.paris.inria.fr.) ([128.93.90.48])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2022 13:11:56 +0200
-From:   Julia Lawall <Julia.Lawall@inria.fr>
-To:     Wolfgang Grandegger <wg@grandegger.com>
-Cc:     kernel-janitors@vger.kernel.org,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] can: peak_usb: fix typo in comment
-Date:   Sat, 21 May 2022 13:10:34 +0200
-Message-Id: <20220521111145.81697-24-Julia.Lawall@inria.fr>
-X-Mailer: git-send-email 2.20.1
+        with ESMTP id S235279AbiEWMOj (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 23 May 2022 08:14:39 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABEC11C11
+        for <linux-can@vger.kernel.org>; Mon, 23 May 2022 05:14:36 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1nt6xB-0002hh-0Z; Mon, 23 May 2022 14:14:29 +0200
+Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 6A03884497;
+        Mon, 23 May 2022 12:14:26 +0000 (UTC)
+Date:   Mon, 23 May 2022 14:14:25 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
+        pabeni@redhat.com, wg@grandegger.com, linux-can@vger.kernel.org
+Subject: Re: [PATCH net-next] can: kvaser_usb: silence a GCC 12
+ -Warray-bounds warning
+Message-ID: <20220523121425.y5ca3ok5r2hxgh7j@pengutronix.de>
+References: <20220520194659.2356903-1-kuba@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kmgd733igwkgx65w"
+Content-Disposition: inline
+In-Reply-To: <20220520194659.2356903-1-kuba@kernel.org>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Spelling mistake (triple letters) in comment.
-Detected with the help of Coccinelle.
 
-Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+--kmgd733igwkgx65w
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
----
- drivers/net/can/usb/peak_usb/pcan_usb.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 20.05.2022 12:46:59, Jakub Kicinski wrote:
+> This driver does a lot of casting of smaller buffers to
+> struct kvaser_cmd_ext, GCC 12 does not like that:
+>=20
+> drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c:489:65: warning: array =
+subscript =E2=80=98struct kvaser_cmd_ext[0]=E2=80=99 is partly outside arra=
+y bounds of =E2=80=98unsigned char[32]=E2=80=99 [-Warray-bounds]
+> drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c:489:23: note: in expans=
+ion of macro =E2=80=98le16_to_cpu=E2=80=99
+>   489 |                 ret =3D le16_to_cpu(((struct kvaser_cmd_ext *)cmd=
+)->len);
+>       |                       ^~~~~~~~~~~
+>=20
+> Temporarily silence this warning (move it to W=3D1 builds).
+>=20
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> ---
+> Hi Marc, are you planning another -next PR? Can we take this
+> directly?
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index 17dc178f555b..091c631ebe23 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -533,7 +533,7 @@ static int pcan_usb_handle_bus_evt(struct pcan_usb_msg_context *mc, u8 ir)
- {
- 	struct pcan_usb *pdev = mc->pdev;
- 
--	/* acccording to the content of the packet */
-+	/* according to the content of the packet */
- 	switch (ir) {
- 	case PCAN_USB_ERR_CNT_DEC:
- 	case PCAN_USB_ERR_CNT_INC:
+Thanks, applied and I'll send a -next PR soonish.
 
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--kmgd733igwkgx65w
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmKLep8ACgkQrX5LkNig
+011Wlgf/Wx1cUM/b0Wp3/0QhMHtmJFlh33azNUappyjm7omoKcc83zMJzqajYs7g
+O11kguUOvQUyGKNyPEyPto86uTKzQm2sxSJzp3SKyZhzmWHEzGAZhM+PlWrER7ul
+iDT6ihVruNJEl0Wuo1D+WmdHr9wp58lzLYQYY+2PkJvKGPAdhH2+abz5sNsolneq
+ocfeQETd8hZODrREaBI2embC3YM96gy4lDgIMMAaX4uLn2guXZjHiizNvC9xBoD1
+wOTj4KmlTz1v0dJhkvgJ+bX4bqhkeE18hakhL65zh6OG+lPLCodtdt87vhQGdhT6
+XcO4jz1DalWKVKSixrRcIGiO6oKgWg==
+=ni//
+-----END PGP SIGNATURE-----
+
+--kmgd733igwkgx65w--
