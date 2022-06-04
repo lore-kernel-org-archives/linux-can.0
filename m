@@ -2,114 +2,86 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD29FC43334
-	for <linux-can@archiver.kernel.org>; Sat,  4 Jun 2022 15:19:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08FCDC43334
+	for <linux-can@archiver.kernel.org>; Sat,  4 Jun 2022 16:32:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237613AbiFDPTG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 4 Jun 2022 11:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50600 "EHLO
+        id S232413AbiFDQc3 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 4 Jun 2022 12:32:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232805AbiFDPTF (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 4 Jun 2022 11:19:05 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 417DA369F9
-        for <linux-can@vger.kernel.org>; Sat,  4 Jun 2022 08:19:04 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1nxVYM-0005PH-1N; Sat, 04 Jun 2022 17:19:02 +0200
-Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id A557A8C3D6;
-        Sat,  4 Jun 2022 15:19:00 +0000 (UTC)
-Date:   Sat, 4 Jun 2022 17:18:59 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+        with ESMTP id S231208AbiFDQc3 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 4 Jun 2022 12:32:29 -0400
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 937D22CCAB;
+        Sat,  4 Jun 2022 09:32:27 -0700 (PDT)
+Received: by mail-yb1-f171.google.com with SMTP id w2so18731814ybi.7;
+        Sat, 04 Jun 2022 09:32:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u1iTXsUBZY4rOPgodw6cyeMHMVRQnYdLbaVth9Uz2Lo=;
+        b=iOj1PnYlQN2hXYJfmyGMmKvMG8fR82WSZe3IY5ezDeASW4nc5L1hGJNR19RJbD5Xzz
+         qaPDJM707ytD5jLJJT+jK5Ivst9ZRkaX0KRu9u9Q3y7OOGy0AjW30QGUm2xGiRq00vFB
+         5EKVuk7lL8DhEzDD/nkzu6isUi2CYmNKH43IEek78SFEMmgs/4VLhaeY/MUPD2G/cH8U
+         Q2zCFXhShteTroyxgaEvqoRaDmVlqRQvKzWXeAbRiOhnnsOz13bDOs5gilJMMtd+gouq
+         /e7r7ei0DPzZSh5sJ6gUUIkqZkOXdCR8fcYzZjLZ4soYHVuw+duk2eXY2z7irDeyrZPR
+         B1EA==
+X-Gm-Message-State: AOAM533gdlE6XFlHsbx0T/xVG8BsnEiF/kEhRQqFyegHOaPLAEAbbvCA
+        fqxFcny6BuXrK7K4ns+0T2+cytewLVyEhTOtrFI=
+X-Google-Smtp-Source: ABdhPJyNmKTDde0VcHd04GhxlN3kUsWv1n9QPvSxGy7iPiUvCW0/iO6JQhDFpJIAy7Cx7lfgbJ7xwo/EYrHv+XaBmIw=
+X-Received: by 2002:a25:ad58:0:b0:65c:e3e5:e813 with SMTP id
+ l24-20020a25ad58000000b0065ce3e5e813mr16127790ybe.151.1654360346868; Sat, 04
+ Jun 2022 09:32:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220513142355.250389-1-mailhol.vincent@wanadoo.fr>
+ <20220603102848.17907-1-mailhol.vincent@wanadoo.fr> <20220604114603.hi4klmu2hwrvf75x@pengutronix.de>
+ <CAMZ6RqJpJCAudv89YqFFQH80ei7WiAshyk1RtbEv=aXSyxo3hQ@mail.gmail.com>
+ <20220604135541.2ki2eskyc7gsmrlu@pengutronix.de> <CAMZ6RqJ7qvXyxNVUK-=oJnK_oq7N94WABOb3pqeYf9Fw3G6J9A@mail.gmail.com>
+ <20220604151859.hyywffrni4vo6gdl@pengutronix.de>
+In-Reply-To: <20220604151859.hyywffrni4vo6gdl@pengutronix.de>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Sun, 5 Jun 2022 01:32:15 +0900
+Message-ID: <CAMZ6RqK45r-cqXvorUzRV-LA_C+mk6hNSA1b+0kLs7C-oTcDCA@mail.gmail.com>
+Subject: Re: [PATCH v4 0/7] can: refactoring of can-dev module and of Kbuild
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
 Cc:     linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
         Max Staudt <max@enpas.org>,
         Oliver Hartkopp <socketcan@hartkopp.net>,
         netdev@vger.kernel.org
-Subject: Re: [PATCH v4 0/7] can: refactoring of can-dev module and of Kbuild
-Message-ID: <20220604151859.hyywffrni4vo6gdl@pengutronix.de>
-References: <20220513142355.250389-1-mailhol.vincent@wanadoo.fr>
- <20220603102848.17907-1-mailhol.vincent@wanadoo.fr>
- <20220604114603.hi4klmu2hwrvf75x@pengutronix.de>
- <CAMZ6RqJpJCAudv89YqFFQH80ei7WiAshyk1RtbEv=aXSyxo3hQ@mail.gmail.com>
- <20220604135541.2ki2eskyc7gsmrlu@pengutronix.de>
- <CAMZ6RqJ7qvXyxNVUK-=oJnK_oq7N94WABOb3pqeYf9Fw3G6J9A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yvdsjjm7x6ounrj4"
-Content-Disposition: inline
-In-Reply-To: <CAMZ6RqJ7qvXyxNVUK-=oJnK_oq7N94WABOb3pqeYf9Fw3G6J9A@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-
---yvdsjjm7x6ounrj4
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 04.06.2022 23:59:48, Vincent MAILHOL wrote:
-> > > Fine, but I need a bit of guidance here. To provide a tag, I need to
-> > > have my own git repository hosted online, right?
+On Sun. 5 juin 2022 at 00:18, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 04.06.2022 23:59:48, Vincent MAILHOL wrote:
+> > > > Fine, but I need a bit of guidance here. To provide a tag, I need to
+> > > > have my own git repository hosted online, right?
+> > >
+> > > That is one option.
 > >
-> > That is one option.
->=20
-> This suggests that there are other options? What would be those other
-> options?
-
-2. git.kernel.org (most preferred)
-3. github.com (have to ask Davem/Jakub)
-
-> > > Is GitHub OK or should I create one on https://git.kernel.org/?
+> > This suggests that there are other options? What would be those other
+> > options?
+>
+> 2. git.kernel.org (most preferred)
+> 3. github.com (have to ask Davem/Jakub)
+>
+> > > > Is GitHub OK or should I create one on https://git.kernel.org/?
+> > >
+> > > Some maintainers don't like github, let's wait what Davem and Jakub say.
+> > > I think for git.kernel.org you need a GPG key with signatures of 3 users
+> > > of git.kernel.org.
 > >
-> > Some maintainers don't like github, let's wait what Davem and Jakub say.
-> > I think for git.kernel.org you need a GPG key with signatures of 3 users
-> > of git.kernel.org.
->=20
-> Personally, I would also prefer getting my own git.kernel.org account.
+> > Personally, I would also prefer getting my own git.kernel.org account.
+>
+> See https://korg.docs.kernel.org/accounts.html
 
-See https://korg.docs.kernel.org/accounts.html
+Thanks for the link. I will have a look at it tomorrow (or the day
+after tomorrow in the worst case).
 
-> It has infinitely more swag than GitHub.
+Meanwhile, I will send the v5 which should address all your comments.
 
-Definitively!
 
-> But my religion does not forbid me from using GitHub :)
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---yvdsjjm7x6ounrj4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmKbd+EACgkQrX5LkNig
-0109qggAk9nG3MlGY5XBeC/p+q1J00klbo5dWJ+lsLjiXMB6jjhS7x30hMg3PZ3b
-9P/ozQI1bgVM5l/tWLRJ4FWnZRubJn16lhdLtj1X1nswhEH+sxFtZYi+vY/qsWtm
-sMHmqZYdQIdMbW8uCmHWYzBgD3S+2cdoETwprx8uWZcGOSb61qRDDIZrvyVL8Do3
-PBv5Dmrp5E5KA9QJGJ+LKQ02obWf3CZQNAdcrAAkrB9J3XVl1SZhnXmo2b+J1Jl/
-hEHYJJ6eVQVJwhIa3yyJ/+KKNFHPs7iaXFlj7JE9qZvcVn3HA9uWOGdClUn17HnW
-+UEvpaL+XTRKJ171OrDBDaZmCnh6BQ==
-=SktK
------END PGP SIGNATURE-----
-
---yvdsjjm7x6ounrj4--
+Yours sincerely,
+Vincent Mailhol
