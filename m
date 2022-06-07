@@ -2,31 +2,31 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93605C43334
-	for <linux-can@archiver.kernel.org>; Tue,  7 Jun 2022 11:01:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34836C43334
+	for <linux-can@archiver.kernel.org>; Tue,  7 Jun 2022 11:13:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241280AbiFGLB1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 7 Jun 2022 07:01:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
+        id S234886AbiFGLNz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 7 Jun 2022 07:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242468AbiFGLAJ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 7 Jun 2022 07:00:09 -0400
+        with ESMTP id S242735AbiFGLNn (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 7 Jun 2022 07:13:43 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477D052E70
-        for <linux-can@vger.kernel.org>; Tue,  7 Jun 2022 03:56:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2984319D
+        for <linux-can@vger.kernel.org>; Tue,  7 Jun 2022 04:13:41 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nyWt5-00072I-Dw; Tue, 07 Jun 2022 12:56:39 +0200
+        id 1nyX9R-0001PF-6N; Tue, 07 Jun 2022 13:13:33 +0200
 Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
         (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 99EDB8DBC5;
-        Tue,  7 Jun 2022 10:56:37 +0000 (UTC)
-Date:   Tue, 7 Jun 2022 12:56:37 +0200
+        by smtp.blackshift.org (Postfix) with ESMTPSA id A60198DC16;
+        Tue,  7 Jun 2022 11:13:30 +0000 (UTC)
+Date:   Tue, 7 Jun 2022 13:13:30 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     Dario Binacchi <dario.binacchi@amarulasolutions.com>
 Cc:     linux-kernel@vger.kernel.org,
@@ -34,23 +34,19 @@ Cc:     linux-kernel@vger.kernel.org,
         michael@amarulasolutions.com,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jakub Kicinski <kuba@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Wolfgang Grandegger <wg@grandegger.com>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [RFC PATCH 12/13] can: slcan: extend the protocol with error info
-Message-ID: <20220607105637.4vnqtv4vbnczva73@pengutronix.de>
+Subject: Re: [RFC PATCH 04/13] can: slcan: use CAN network device driver API
+Message-ID: <20220607111330.tkpaplzeupfq3peh@pengutronix.de>
 References: <20220607094752.1029295-1-dario.binacchi@amarulasolutions.com>
- <20220607094752.1029295-13-dario.binacchi@amarulasolutions.com>
+ <20220607094752.1029295-5-dario.binacchi@amarulasolutions.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ssxfwmq3jxhh5und"
+        protocol="application/pgp-signature"; boundary="77gvozq5fr2tyjf2"
 Content-Disposition: inline
-In-Reply-To: <20220607094752.1029295-13-dario.binacchi@amarulasolutions.com>
+In-Reply-To: <20220607094752.1029295-5-dario.binacchi@amarulasolutions.com>
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -60,123 +56,48 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 
---ssxfwmq3jxhh5und
+--77gvozq5fr2tyjf2
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On 07.06.2022 11:47:51, Dario Binacchi wrote:
-> It extends the protocol to receive the adapter CAN communication errors
-> and forward them to the netdev upper levels.
+On 07.06.2022 11:47:43, Dario Binacchi wrote:
+> As suggested by commit [1], now the driver uses the functions and the
+> data structures provided by the CAN network device driver interface.
 >=20
-> Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-> ---
+> There is no way to set bitrate for SLCAN based devices via ip tool, so
+  ^^^^^^^^^^^^^^^
+Currently the driver doesn't implement a way
+
+> you'll have to do this by slcand/slcan_attach invocation through the
+> -sX parameter:
 >=20
->  drivers/net/can/slcan/slcan-core.c | 104 ++++++++++++++++++++++++++++-
->  1 file changed, 103 insertions(+), 1 deletion(-)
+> - slcan_attach -f -s6 -o /dev/ttyACM0
+> - slcand -f -s8 -o /dev/ttyUSB0
 >=20
-> diff --git a/drivers/net/can/slcan/slcan-core.c b/drivers/net/can/slcan/s=
-lcan-core.c
-> index b813a59534a3..02e7c14de45c 100644
-> --- a/drivers/net/can/slcan/slcan-core.c
-> +++ b/drivers/net/can/slcan/slcan-core.c
-> @@ -182,8 +182,92 @@ int slcan_enable_err_rst_on_open(struct net_device *=
-ndev, bool on)
->    *			STANDARD SLCAN DECAPSULATION			 *
->    **********************************************************************=
-**/
-> =20
-> +static void slc_bump_err(struct slcan *sl)
-> +{
-> +	struct net_device *dev =3D sl->dev;
-> +	struct sk_buff *skb;
-> +	struct can_frame *cf;
-> +	char *cmd =3D sl->rbuff;
-> +	bool rx_errors =3D false, tx_errors =3D false;
-> +	int i, len;
-> +
-> +	if (*cmd !=3D 'e')
-> +		return;
-> +
-> +	cmd +=3D SLC_CMD_LEN;
-> +	/* get len from sanitized ASCII value */
+> where -s6 in will set adapter's bitrate to 500 Kbit/s and -s8 to
+> 1Mbit/s.
+> See the table below for further CAN bitrates:
+> - s0 ->   10 Kbit/s
+> - s1 ->   20 Kbit/s
+> - s2 ->   50 Kbit/s
+> - s3 ->  100 Kbit/s
+> - s4 ->  125 Kbit/s
+> - s5 ->  250 Kbit/s
+> - s6 ->  500 Kbit/s
+> - s7 ->  800 Kbit/s
+> - s8 -> 1000 Kbit/s
+>=20
+> In doing so, the struct can_priv::bittiming.bitrate of the driver is not
+> set and since the open_candev() checks that the bitrate has been set, it
+> must be a non-zero value, the bitrate is set to a fake value (-1) before
+> it is called.
 
-What happens is a malicious device sends a wrong len value, that's
-longer than the RX'ed data?
+What does
 
-> +	len =3D *cmd++;
-> +	if (len >=3D '0' && len < '9')
-> +		len -=3D '0';
-> +	else
-> +		return;
-> +
-> +	skb =3D alloc_can_err_skb(dev, &cf);
+| ip --details -s -s link show
 
-Please continue error handling, even if no skb can be allocated.
-
-> +	if (unlikely(!skb))
-> +		return;
-> +
-> +	cf->can_id |=3D CAN_ERR_PROT | CAN_ERR_BUSERROR;
-> +	for (i =3D 0; i < len; i++, cmd++) {
-> +		switch (*cmd) {
-> +		case 'a':
-> +			netdev_dbg(dev, "ACK error\n");
-> +			cf->can_id |=3D CAN_ERR_ACK;
-> +			cf->data[3] =3D CAN_ERR_PROT_LOC_ACK;
-> +			tx_errors =3D true;
-> +			break;
-> +		case 'b':
-> +			netdev_dbg(dev, "Bit0 error\n");
-> +			cf->data[2] |=3D CAN_ERR_PROT_BIT0;
-> +			tx_errors =3D true;
-> +			break;
-> +		case 'B':
-> +			netdev_dbg(dev, "Bit1 error\n");
-> +			cf->data[2] |=3D CAN_ERR_PROT_BIT1;
-> +			tx_errors =3D true;
-> +			break;
-> +		case 'c':
-> +			netdev_dbg(dev, "CRC error\n");
-> +			cf->data[2] |=3D CAN_ERR_PROT_BIT;
-> +			cf->data[3] =3D CAN_ERR_PROT_LOC_CRC_SEQ;
-> +			rx_errors =3D true;
-> +			break;
-> +		case 'f':
-> +			netdev_dbg(dev, "Form Error\n");
-> +			cf->data[2] |=3D CAN_ERR_PROT_FORM;
-> +			rx_errors =3D true;
-> +			break;
-> +		case 'o':
-> +			netdev_dbg(dev, "Rx overrun error\n");
-> +			cf->can_id |=3D CAN_ERR_CRTL;
-> +			cf->data[1] =3D CAN_ERR_CRTL_RX_OVERFLOW;
-> +			dev->stats.rx_over_errors++;
-> +			dev->stats.rx_errors++;
-> +			break;
-> +		case 'O':
-> +			netdev_dbg(dev, "Tx overrun error\n");
-> +			cf->can_id |=3D CAN_ERR_CRTL;
-> +			cf->data[1] =3D CAN_ERR_CRTL_TX_OVERFLOW;
-> +			dev->stats.tx_errors++;
-> +			break;
-> +		case 's':
-> +			netdev_dbg(dev, "Stuff error\n");
-> +			cf->data[2] |=3D CAN_ERR_PROT_STUFF;
-> +			rx_errors =3D true;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (rx_errors)
-> +		dev->stats.rx_errors++;
-> +
-> +	if (tx_errors)
-> +		dev->stats.tx_errors++;
-> +
-> +	netif_rx(skb);
-> +}
-> +
+show as the bit rate?
 
 Marc
 
@@ -186,19 +107,19 @@ Embedded Linux                   | https://www.pengutronix.de  |
 Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
---ssxfwmq3jxhh5und
+--77gvozq5fr2tyjf2
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmKfLuIACgkQrX5LkNig
-013hsQgAghzB45G5T/d9COtfEWCcub/p6KFBW8Pt5SQfvSlUfEh7yuScPV/B8tum
-Uek/ORPZAes9xoBuNo3UMPsHPCZvaOvbYfY1oNJJuw+rGDYL4v40UismcGr9M9nr
-mqEGUj03KjJDPlf1RPNxDsuH2irS05TOKjpXq90ZaN5zB5f6SZlNvfFDHkGMn+Zm
-1z0ZZCpWNO9+VS/ZfoUJoY6OgXQxMm3Pw3pdwJqGMelFaD9BAw1f6RK2ceRcvGLi
-tY06Tf3mzhzFLAlY856+yPKw8eh7bP2PBLDfa+CVCraCcicUNzEz0a7h8Nf0TaWx
-ZaZdTg/teBjBCYq/cnW2z1NOqD86aA==
-=emqs
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmKfMtQACgkQrX5LkNig
+013bFAgAtwB15XQxo+UXu+6eKstSkXk5DhOcbTE9ySUMLb/8KMePa+t06IKsQCdl
+tULZjuegPUb4ID4a8UXF0Ny3YllLYyu+P3owsmTuKJvzecvJck3y6N2Oe9QlrT29
+u9QAjVwKdq6pjrT7uomYOS/9h7LwZqi7CToIhlfwvvQOMkiPgJPw2vfir5TrYwLw
+hsWdweeaGH2gZP07S9jpZtO6d4UCzjg5updigH7FQsO73Q+jEvhmDbeO7jpzaFI0
++bITgbgqqdx/dHJIAmROQnXNu7nA/iZd8jUiKiWDjMWmsSCVqfvokpiiHI13aAhy
+/H6XQyIvwXHArhYkaV6+RTBruDasOw==
+=CCSY
 -----END PGP SIGNATURE-----
 
---ssxfwmq3jxhh5und--
+--77gvozq5fr2tyjf2--
