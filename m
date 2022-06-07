@@ -2,117 +2,80 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5AD3CCA47C
-	for <linux-can@archiver.kernel.org>; Wed,  8 Jun 2022 00:48:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 057D9C43334
+	for <linux-can@archiver.kernel.org>; Wed,  8 Jun 2022 00:48:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240462AbiFHArp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 7 Jun 2022 20:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40338 "EHLO
+        id S242481AbiFHAr4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 7 Jun 2022 20:47:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842260AbiFHAJB (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 7 Jun 2022 20:09:01 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680C9149DBB
-        for <linux-can@vger.kernel.org>; Tue,  7 Jun 2022 13:27:12 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1nyfnA-0004V9-Bf; Tue, 07 Jun 2022 22:27:08 +0200
-Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 07BAC8E60C;
-        Tue,  7 Jun 2022 20:27:06 +0000 (UTC)
-Date:   Tue, 7 Jun 2022 22:27:06 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
+        with ESMTP id S1583049AbiFGXqD (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 7 Jun 2022 19:46:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4DEB195941;
+        Tue,  7 Jun 2022 15:06:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3C06861944;
+        Tue,  7 Jun 2022 22:06:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68697C385A2;
+        Tue,  7 Jun 2022 22:06:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654639575;
+        bh=YH+P3LYLx7Tm2PJ2F4edHaCG/gLgDOCPlgGr94QeaIg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JR+ziHpeN4WpMxBhyffqFam49asBgk7MouOL1vukNrcH+Jc0y9z6zNGDlNBV/qt5S
+         jNyi0Ic2txl+7f7lNUx3qpsm2rMq1NXeRlBxUCdHSdQDjJ+9yZq/QeZLJFGvs+Q4RW
+         Vx+L6IvhdxQ9h92F+5f+h7mpeaC05c9h3mVtSjt+VLn9ZLzaVRAekmsl+RJA7NPxV8
+         8ud99o86zF6OTm5nMLqM6vEttoqCRX5rHaYPm7GOSCpf50glg4DECmvIAeWzWRs5VJ
+         K6eY2Can6ndeT9AP8RqhnLtauzSAlIAfEzEL6OKnped28nkV7Wxq9TvLPd9ZceKEjZ
+         A8FWQ57Gss5fQ==
+Date:   Tue, 7 Jun 2022 15:06:14 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Max Staudt <max@enpas.org>
 Cc:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
-        linux-can <linux-can@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Max Staudt <max@enpas.org>, netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH v5 0/7] can: refactoring of can-dev module and of Kbuild
-Message-ID: <20220607202706.7fbongzs3ixzpydm@pengutronix.de>
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH v5 4/7] can: Kconfig: add CONFIG_CAN_RX_OFFLOAD
+Message-ID: <20220607150614.6248c504@kernel.org>
+In-Reply-To: <20220607182216.5fb1084e.max@enpas.org>
 References: <20220513142355.250389-1-mailhol.vincent@wanadoo.fr>
- <20220604163000.211077-1-mailhol.vincent@wanadoo.fr>
- <2e8666f3-1bd9-8610-6b72-e56e669d3484@hartkopp.net>
- <CAMZ6RqKWUyf6dZmxG809-yvjg5wbLwPSLtEfv-MgPpJ5ra=iGQ@mail.gmail.com>
- <f161fdd0-415a-8ea1-0aad-3a3a19f1bfa8@hartkopp.net>
+        <20220604163000.211077-1-mailhol.vincent@wanadoo.fr>
+        <20220604163000.211077-5-mailhol.vincent@wanadoo.fr>
+        <CAMuHMdXkq7+yvD=ju-LY14yOPkiiHwL6H+9G-4KgX=GJjX=h9g@mail.gmail.com>
+        <CAMZ6RqLEEHOZjrMH+-GLC--jjfOaWYOPLf+PpefHwy=cLpWTYg@mail.gmail.com>
+        <20220607182216.5fb1084e.max@enpas.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="be3gaq45kmwca64p"
-Content-Disposition: inline
-In-Reply-To: <f161fdd0-415a-8ea1-0aad-3a3a19f1bfa8@hartkopp.net>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+On Tue, 7 Jun 2022 18:22:16 +0200 Max Staudt wrote:
+> > Honestly, I am totally happy to have the "default y" tag, the "if
+> > unsure, say Y" comment and the "select CAN_RX_OFFLOAD" all together.
+> > 
+> > Unless I am violating some kind of best practices, I prefer to keep it
+> > as-is. Hope this makes sense.  
 
---be3gaq45kmwca64p
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+AFAIU Linus likes for everything that results in code being added to
+the kernel to default to n. If the drivers hard-select that Kconfig
+why bother user with the question at all? My understanding is that
+Linus also likes to keep Kconfig as simple as possible.
 
-On 07.06.2022 22:12:46, Oliver Hartkopp wrote:
-> So what about:
->=20
->   symbol: CONFIG_NETDEVICES
->   |
->   +-> CAN Device Drivers
->       symbol: CONFIG_CAN_DEV
->       |
->       +-> software/virtual CAN device drivers
->       |   (at time of writing: slcan, vcan, vxcan)
->       |
->       +-> hardware CAN device drivers with Netlink support
->           symbol: CONFIG_CAN_NETLINK (matches previous CONFIG_CAN_DEV)
->           |
->           +-> CAN bit-timing calculation (optional for all drivers)
->           |   symbol: CONFIG_CAN_BITTIMING
->           |
->           +-> CAN rx offload (optional but selected by some drivers)
->           |   symbol: CONFIG_CAN_RX_OFFLOAD
->           |
->           +-> CAN devices drivers
->               (some may select CONFIG_CAN_RX_OFFLOAD)
->=20
-> (I also added 'hardware' to CAN device drivers with Netlink support) to h=
-ave
-> a distinction to 'software/virtual' CAN device drivers)
+> I wholeheartedly agree with Vincent's decision.
+> 
+> One example case would be users of my can327 driver, as long as it is
+> not upstream yet. They need to have RX_OFFLOAD built into their
+> distribution's can_dev.ko, otherwise they will have no choice but to
+> build their own kernel.
 
-The line between hardware and software/virtual devices ist blurry, the
-new can327 driver uses netlink and the slcan is currently being
-converted....
-
-> At least this would help me to understand the new configuration setup.
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---be3gaq45kmwca64p
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmKftJcACgkQrX5LkNig
-010rdwf5AUPYBTdJwcRgNV7YEssM6aMUpKhLxP4yEIJIYnySSUNhKOtPk4M4EUbr
-Kotj3KZDHtuwOQWG/IVr+1Amf3D3U1D0O5uJI7MzrUevZB1SJLmLJZINNETlg6OB
-Qkc0PTP2QApy8WSp/p5v50p3/JXKI87dnw3voHZaMR3GtWRdV5oLvY6PMXAFonjg
-i9jtJebTbTddPujmvBMXW6SglL1f+0Xm52JLC+aMQ4uCnBFMG9f4WxAblZ5JNGJI
-PrT74Nh6w9jwOyG46IMUe446DLEAu/v2zvt8nbbknsyM0Pt59+bZYWlrVFU025Dz
-6NvUd0zOM47E/CCmCCfb7wIEWIC/Gg==
-=XKVp
------END PGP SIGNATURE-----
-
---be3gaq45kmwca64p--
+Upstream mentioning out-of-tree modules may have the opposite effect 
+to what you intend :( Forgive my ignorance, what's the reason to keep
+the driver out of tree?
