@@ -2,48 +2,55 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31798C43334
-	for <linux-can@archiver.kernel.org>; Tue,  7 Jun 2022 07:13:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C78EEC43334
+	for <linux-can@archiver.kernel.org>; Tue,  7 Jun 2022 07:15:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237533AbiFGHNQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 7 Jun 2022 03:13:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40438 "EHLO
+        id S233789AbiFGHPs (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 7 Jun 2022 03:15:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237543AbiFGHNM (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 7 Jun 2022 03:13:12 -0400
+        with ESMTP id S229903AbiFGHPp (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 7 Jun 2022 03:15:45 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB95A18B2E
-        for <linux-can@vger.kernel.org>; Tue,  7 Jun 2022 00:13:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B98DEC8
+        for <linux-can@vger.kernel.org>; Tue,  7 Jun 2022 00:15:43 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1nyTOm-0002mw-8X; Tue, 07 Jun 2022 09:13:08 +0200
+        id 1nyTQy-0002zY-S2; Tue, 07 Jun 2022 09:15:24 +0200
 Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
         (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 30BC38D77E;
-        Tue,  7 Jun 2022 07:13:06 +0000 (UTC)
-Date:   Tue, 7 Jun 2022 09:13:05 +0200
+        by smtp.blackshift.org (Postfix) with ESMTPSA id C17DC8D788;
+        Tue,  7 Jun 2022 07:15:20 +0000 (UTC)
+Date:   Tue, 7 Jun 2022 09:15:19 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        linux-can <linux-can@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Max Staudt <max@enpas.org>, netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH v5 0/7] can: refactoring of can-dev module and of Kbuild
-Message-ID: <20220607071305.olsrshjqtmkrp5et@pengutronix.de>
-References: <20220513142355.250389-1-mailhol.vincent@wanadoo.fr>
- <20220604163000.211077-1-mailhol.vincent@wanadoo.fr>
- <2e8666f3-1bd9-8610-6b72-e56e669d3484@hartkopp.net>
- <CAMZ6RqKWUyf6dZmxG809-yvjg5wbLwPSLtEfv-MgPpJ5ra=iGQ@mail.gmail.com>
+To:     Conor Dooley <conor.dooley@microchip.com>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH net-next 0/2] Document PolarFire SoC can controller
+Message-ID: <20220607071519.6m6swnl55na3vgwm@pengutronix.de>
+References: <20220607065459.2035746-1-conor.dooley@microchip.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mgsbpo4n6776e7lh"
+        protocol="application/pgp-signature"; boundary="wmxu3eossejojdgn"
 Content-Disposition: inline
-In-Reply-To: <CAMZ6RqKWUyf6dZmxG809-yvjg5wbLwPSLtEfv-MgPpJ5ra=iGQ@mail.gmail.com>
+In-Reply-To: <20220607065459.2035746-1-conor.dooley@microchip.com>
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -53,23 +60,23 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 
---mgsbpo4n6776e7lh
+--wmxu3eossejojdgn
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On 07.06.2022 11:49:30, Vincent MAILHOL wrote:
-[...]
-> So I think that the diagram is correct. Maybe rephrasing the cover
-> letter as below would address your concerns?
+On 07.06.2022 07:54:58, Conor Dooley wrote:
+> When adding the dts for PolarFire SoC, the can controllers were
+                                             ^^^
+> omitted, so here they are...
 
-BTW: I got the OK from Jakub to send PR with merges.
+Nitpick:
+Consider writing "CAN" in capital letters to avoid confusion for the not
+informed reader.
 
-If you think the cover letter needs rephrasing, send a new series and
-I'm going to force push that over can-next/master. After that let's
-consider can-next/master as fast-forward only.
+Is the documentation for the CAN controller openly available? Is there a
+driver somewhere?
 
-regards,
 Marc
 
 --=20
@@ -78,19 +85,19 @@ Embedded Linux                   | https://www.pengutronix.de  |
 Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
---mgsbpo4n6776e7lh
+--wmxu3eossejojdgn
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmKe+nwACgkQrX5LkNig
-013wTwgAlcP3nZHN7Z1ztiCpNOZJjCinvwJafPOpjxyax+kE//w5nTQrKruBY+bh
-h/J6u+8MQrmuPI+RunwoSIp5MDS7BjosH5PVmyE4KbjzPTzJk8Xm2u5rSTdrvGBo
-oVt8y3DcjZuzpby4bpdV0YyjP0m7QyWMRXpPTZiumERcUGAT2rDDHP0Vi5c0D4MH
-xF1K6C2OXnmJHCQk9ryDG7SEipCpXJbLMNug5mvNp936BR+SKh4j4JnbiuzT/WaG
-sAt9mH0bxkKm2KwJm4KyD+o4tNEH/3B2grfAIXE5yDSS5pUk2uFmAo5NBZ1khM0H
-jQuM1MwW/RNtcg97qjfJmvjluqlVWw==
-=Bqqn
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmKe+wUACgkQrX5LkNig
+010mGwgAsk4h1zagYu60b6rZjltdh82vMaUZuWWlhOtLWxaZXbgHboLYurlj7gq3
+dXxVDkrAByE6WcaAkKCRdUSGV66X+amInYdrRsvG9wfESbX001Lj3XdwyL97XI8g
+WGs4T0e0dhR/EjU0Ap8YZh3KyIs9vyfLzACRVWyRJhLQXz2KLtWMTa/QGzAd9hQJ
+j4vT0fIesQFuh1qxqZw2eYUxpYN5o6aysm4/qfXJTIVIn9Y03jwPcRVWFWt+GiQl
+xirOrt/V5cw72EE02V0IWnmKT7fylD3HgTrwgyAInguTharRV9WZYhXttUwQc+Kc
+SFIA5n4bQb3DdGldoJGkkCUDJPAT9A==
+=epBJ
 -----END PGP SIGNATURE-----
 
---mgsbpo4n6776e7lh--
+--wmxu3eossejojdgn--
