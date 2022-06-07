@@ -2,48 +2,48 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEBB0CCA482
-	for <linux-can@archiver.kernel.org>; Tue,  7 Jun 2022 09:48:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B966AC433EF
+	for <linux-can@archiver.kernel.org>; Tue,  7 Jun 2022 09:49:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240126AbiFGJsl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 7 Jun 2022 05:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38316 "EHLO
+        id S240011AbiFGJtI (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 7 Jun 2022 05:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240054AbiFGJsX (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 7 Jun 2022 05:48:23 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BDE8E529B
-        for <linux-can@vger.kernel.org>; Tue,  7 Jun 2022 02:48:22 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id h5so23399400wrb.0
-        for <linux-can@vger.kernel.org>; Tue, 07 Jun 2022 02:48:21 -0700 (PDT)
+        with ESMTP id S240105AbiFGJsd (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 7 Jun 2022 05:48:33 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DDEEE733F
+        for <linux-can@vger.kernel.org>; Tue,  7 Jun 2022 02:48:29 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id u3so23363352wrg.3
+        for <linux-can@vger.kernel.org>; Tue, 07 Jun 2022 02:48:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=amarulasolutions.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4002ZoQbfZgD0XX9YDZ6wPiQ9rsbL1Ku9Z7hWp9EhXQ=;
-        b=jnJyM9v/kBy9PKMgM/nNI5Iy1Hw1MRy8KxtNeBQYHruTG9NV6j4BsTckaQZJI9/sYz
-         app9i/gkaIzMR/+yp3eoYX5eNeQ+e1r1yoZkzbPrdHgvIaHPZ/UUcIjdy1LjjSyR6Qkg
-         XHUzjidNt5YCE5O730FZmHE/IXwd+j10Abs7k=
+        bh=rU6AiPibH9nPjTI2YMHiF2ibJt+OjRoO+BIERVnAwAU=;
+        b=XBJoJxny7hKfatnte2GxHsKCTr5HmbSa2HX7z2Oon+3tp6gqSpMNrsozStQxyX+/i8
+         6ZBuiMvGaFnPKR7uDYIf+GZ9VlEqid4N/lJaYDl7QIzgLlD+9KO8++3nYsVmHuFgb5Dr
+         yxyYAy5XHqhFLRgEfLXwEqRD4AddRRa2jY4Ig=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4002ZoQbfZgD0XX9YDZ6wPiQ9rsbL1Ku9Z7hWp9EhXQ=;
-        b=OPiWYsYhdGFLW1ENRtAL2xrr9SdtDLtdV8rl9PK2N4sODvrr/EYovK06ryBykHw2Ow
-         jVBEbsIUdY86OscJd9zv+xLAtTqmqFFQaV2w/R5YQy1neXljouxLMwJmwEPmC6bJ87y8
-         Ytef9aL+avhIuQjwYa7MocPJ6XHL+hAcxHwQhaS9aUoRDX9JDBnRhIHr5q0Jus4C74Em
-         1hV06OHsfzSB7VFa66C7hQQnRZ9jWFAFZRaQNGLjQSWq3VXkizGHNDXoGrcJz8hGXbRR
-         kEYD1UMNVhq2GaiOvw923CnxMKDP/fFiCKsKR2ibmjs60rtM8iaN5k4qRzdomZNQfF/c
-         jq0w==
-X-Gm-Message-State: AOAM532yIowFujZiw/Ep3xnUAZYpf8el1ab/O7tBz5N2iPPnJgQTlbqz
-        5U3/LLlC15g40kcRoCpB/Iuggg==
-X-Google-Smtp-Source: ABdhPJxrekr/N5P6wTl3Ss+fkTLqQsal1yzqC0Pc/+8+qJqOyrLpDkLlYGQ6Nh2Eij06l3kc2DkrKw==
-X-Received: by 2002:adf:fb05:0:b0:20a:e113:8f3f with SMTP id c5-20020adffb05000000b0020ae1138f3fmr26424039wrr.534.1654595301578;
-        Tue, 07 Jun 2022 02:48:21 -0700 (PDT)
+        bh=rU6AiPibH9nPjTI2YMHiF2ibJt+OjRoO+BIERVnAwAU=;
+        b=LEX1EL0XHS6LsjaipstiO3+TwV+n0K/t2rba5X6jLfzwJCi4ErP3YD1aI/Ha9O9gx0
+         qzHnc2bDj0fRoxpikjXUt1nHs3vjaiIZ/Bmqqt4SFiuE4M3rvdpcbYM9s7lrnDRMnRUu
+         MILs9kJG6t7ObkiTdbb0prFZu8U2nrkWApP2osmC/evAUjt43taEb91ByV9yICXMBKNR
+         0IO1wNkVo9Lf3pRpJveu7m+lTGM/yNoNPkKZKGJ54pPv9UC4m5GgpPP2NefvPpF/M2C+
+         IOFs4P4RS0fRlG4zzyIvrowBUcgWBN2KZ9aCjHpBVZNZuOsPS/f2TymWb+5YT/I8d+kk
+         wq4w==
+X-Gm-Message-State: AOAM5329GymeJavw4ScEVh5cST0qy8/N02cerx3UlAn0aNMwVhf0TWcs
+        ojlpFrveFG7HWTMO7jB2AH1eCQ==
+X-Google-Smtp-Source: ABdhPJxWpSQZMMlLoNuWN1W3nkSA26lOK6DFhDAfwDjaK3p3poJehcnXzGH/UYToEGi2OU6/PPSoEA==
+X-Received: by 2002:a5d:4572:0:b0:213:bb00:86e6 with SMTP id a18-20020a5d4572000000b00213bb0086e6mr21860193wrc.284.1654595307649;
+        Tue, 07 Jun 2022 02:48:27 -0700 (PDT)
 Received: from dario-ThinkPad-T14s-Gen-2i.pdxnet.pdxeng.ch (mob-5-90-137-51.net.vodafone.it. [5.90.137.51])
-        by smtp.gmail.com with ESMTPSA id o4-20020a05600c510400b0039748be12dbsm23200547wms.47.2022.06.07.02.48.19
+        by smtp.gmail.com with ESMTPSA id o4-20020a05600c510400b0039748be12dbsm23200547wms.47.2022.06.07.02.48.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jun 2022 02:48:20 -0700 (PDT)
+        Tue, 07 Jun 2022 02:48:27 -0700 (PDT)
 From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Amarula patchwork <linux-amarula@amarulasolutions.com>,
@@ -56,9 +56,9 @@ Cc:     Amarula patchwork <linux-amarula@amarulasolutions.com>,
         Paolo Abeni <pabeni@redhat.com>,
         Wolfgang Grandegger <wg@grandegger.com>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: [RFC PATCH 06/13] can: slcan: allow to send commands to the adapter
-Date:   Tue,  7 Jun 2022 11:47:45 +0200
-Message-Id: <20220607094752.1029295-7-dario.binacchi@amarulasolutions.com>
+Subject: [RFC PATCH 09/13] can: slcan: send the close command to the adapter
+Date:   Tue,  7 Jun 2022 11:47:48 +0200
+Message-Id: <20220607094752.1029295-10-dario.binacchi@amarulasolutions.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220607094752.1029295-1-dario.binacchi@amarulasolutions.com>
 References: <20220607094752.1029295-1-dario.binacchi@amarulasolutions.com>
@@ -68,103 +68,40 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This is a preparation patch for the upcoming support to change the
-bitrate via ip tool, reset the adapter error states via the ethtool API
-and, more generally, send commands to the adapter.
-
-Since some commands (e. g. setting the bitrate) will be sent before
-calling the open_candev(), the netif_running() will return false and so
-a new flag bit (i. e. SLF_XCMD) for serial transmission has to be added.
+In case the bitrate has been set via ip tool, it sends the close command
+("C\r") to the adapter.
 
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 ---
 
- drivers/net/can/slcan.c | 46 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 45 insertions(+), 1 deletion(-)
+ drivers/net/can/slcan.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index 4df0455e11a2..dbd4ebdfa024 100644
+index f18097c62222..d63d270d21da 100644
 --- a/drivers/net/can/slcan.c
 +++ b/drivers/net/can/slcan.c
-@@ -97,6 +97,9 @@ struct slcan {
- 	unsigned long		flags;		/* Flag values/ mode etc     */
- #define SLF_INUSE		0		/* Channel in use            */
- #define SLF_ERROR		1               /* Parity, etc. error        */
-+#define SLF_XCMD		2               /* Command transmission      */
-+	wait_queue_head_t       xcmd_wait;      /* Wait queue for commands   */
-+						/* transmission              */
- };
- 
- static struct net_device **slcan_devs;
-@@ -310,12 +313,22 @@ static void slcan_transmit(struct work_struct *work)
- 
- 	spin_lock_bh(&sl->lock);
- 	/* First make sure we're connected. */
--	if (!sl->tty || sl->magic != SLCAN_MAGIC || !netif_running(sl->dev)) {
-+	if (!sl->tty || sl->magic != SLCAN_MAGIC ||
-+	    (unlikely(!netif_running(sl->dev)) &&
-+	     likely(!test_bit(SLF_XCMD, &sl->flags)))) {
- 		spin_unlock_bh(&sl->lock);
- 		return;
- 	}
- 
- 	if (sl->xleft <= 0)  {
-+		if (unlikely(test_bit(SLF_XCMD, &sl->flags))) {
-+			clear_bit(SLF_XCMD, &sl->flags);
-+			clear_bit(TTY_DO_WRITE_WAKEUP, &sl->tty->flags);
-+			spin_unlock_bh(&sl->lock);
-+			wake_up(&sl->xcmd_wait);
-+			return;
-+		}
-+
- 		/* Now serial buffer is almost free & we can start
- 		 * transmission of another packet */
- 		sl->dev->stats.tx_packets++;
-@@ -379,6 +392,36 @@ static netdev_tx_t slc_xmit(struct sk_buff *skb, struct net_device *dev)
-  *   Routines looking at netdevice side.
-  ******************************************/
- 
-+static int slcan_transmit_cmd(struct slcan *sl, const unsigned char *cmd)
-+{
-+	int ret, actual, n;
-+
-+	spin_lock(&sl->lock);
-+	if (sl->tty == NULL) {
-+		spin_unlock(&sl->lock);
-+		return -ENODEV;
-+	}
-+
-+	n = snprintf(sl->xbuff, sizeof(sl->xbuff), "%s", cmd);
-+	set_bit(TTY_DO_WRITE_WAKEUP, &sl->tty->flags);
-+	actual = sl->tty->ops->write(sl->tty, sl->xbuff, n);
-+	sl->xleft = n - actual;
-+	sl->xhead = sl->xbuff + actual;
-+	set_bit(SLF_XCMD, &sl->flags);
-+	spin_unlock(&sl->lock);
-+	ret = wait_event_interruptible_timeout(sl->xcmd_wait,
-+					       !test_bit(SLF_XCMD, &sl->flags),
-+					       HZ);
-+	clear_bit(SLF_XCMD, &sl->flags);
-+	if (ret == -ERESTARTSYS)
-+		return ret;
-+
-+	if (ret == 0)
-+		return -ETIMEDOUT;
-+
-+	return 0;
-+}
-+
- /* Netdevice UP -> DOWN routine */
+@@ -438,9 +438,20 @@ static int slcan_transmit_cmd(struct slcan *sl, const unsigned char *cmd)
  static int slc_close(struct net_device *dev)
  {
-@@ -542,6 +585,7 @@ static struct slcan *slc_alloc(void)
- 	sl->dev	= dev;
- 	spin_lock_init(&sl->lock);
- 	INIT_WORK(&sl->tx_work, slcan_transmit);
-+	init_waitqueue_head(&sl->xcmd_wait);
- 	slcan_devs[i] = dev;
+ 	struct slcan *sl = netdev_priv(dev);
++	int err;
  
- 	return sl;
+ 	spin_lock_bh(&sl->lock);
+ 	if (sl->tty) {
++		if (sl->can.bittiming.bitrate &&
++		    sl->can.bittiming.bitrate != -1) {
++			spin_unlock_bh(&sl->lock);
++			err = slcan_transmit_cmd(sl, "C\r");
++			spin_lock_bh(&sl->lock);
++			if (err)
++				netdev_warn(dev,
++					    "failed to send close command 'C\\r'\n");
++		}
++
+ 		/* TTY discipline is running. */
+ 		clear_bit(TTY_DO_WRITE_WAKEUP, &sl->tty->flags);
+ 	}
 -- 
 2.32.0
 
