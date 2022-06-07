@@ -2,118 +2,103 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE647C43334
-	for <linux-can@archiver.kernel.org>; Wed,  8 Jun 2022 01:48:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21FC4CCA499
+	for <linux-can@archiver.kernel.org>; Wed,  8 Jun 2022 02:03:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241684AbiFHBs3 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 7 Jun 2022 21:48:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39578 "EHLO
+        id S1443807AbiFHCDQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 7 Jun 2022 22:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234726AbiFHBrM (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 7 Jun 2022 21:47:12 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A385F89;
-        Tue,  7 Jun 2022 17:07:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6B4D7B82464;
-        Wed,  8 Jun 2022 00:07:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E73D1C34114;
-        Wed,  8 Jun 2022 00:07:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654646863;
-        bh=CrcbDSIMUGUy9BjrLMTLkVHJ9psx3y4Wlntj3nvGas8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LOKNhmAcCbw2DyoNFmC8yOted5y6dRFfpppHX0nlrIAYPztLgqpDh/HOnucUWb1R3
-         EuE96CqG9M/p4zQxhgkwP3jwJLoxP7FKHkKS98g5JeYYqBpAvgmvnaXUL7WN8KydpM
-         gy1j/bnBosk7wk/z1Fa6tlAApLwasoov/VlSCIWr09Zyngys4B5SzUSh0e31/SKluo
-         l5M2KrUKROwRUt8f8QgUDOof2RZRc9VmbekOwjqsP5uQxLg1Jd+PhxPwR5mkLhnKMw
-         qzorHcJbex7ncdUOkHOLDxSDhMamdau2ayN3/25FXxp2WlBQ8IVN+F+5gjLWSsqign
-         UvTMJNsbOV9Xg==
-Date:   Tue, 7 Jun 2022 17:07:41 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     Max Staudt <max@enpas.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH v5 4/7] can: Kconfig: add CONFIG_CAN_RX_OFFLOAD
-Message-ID: <20220607170741.05bea62d@kernel.org>
-In-Reply-To: <CAMZ6Rq+vYNvrTcToqVqqKSPJXAdjs3RkUY_SNuwB7n9FMuqQiQ@mail.gmail.com>
+        with ESMTP id S243368AbiFHBzQ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 7 Jun 2022 21:55:16 -0400
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B41531F7DAA;
+        Tue,  7 Jun 2022 13:52:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1654635116;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=JXSiYxgFZZ2tjAxBcyTrI4C3XZX0DeCU5mEV+jv6R6k=;
+    b=tTIXRIwQyepuLXyRIEgr8laM1lqaJ/fmrXqiArmaPMoqiCXCC9HO6/UVS7VAqP3tyf
+    Vvfg+spfS8Cm5h5lUdih2JmXw5jluDL4lUFeB1qpQp3K2x5isOTq+wYHGfHQYo5gLxwA
+    OU/VijO4lXs8jPIFuQB4aGnGyrcuHQ0Zj2qZ3JGOISSO7aSY7GXlI0tQFZ/UpOoPulPm
+    mIQ4fC8b1hbuyCmvdX1MTezHbP+PUoRwMz3VZx6jFc3Y51OUltbeZkk/p1RGCaHV4zpk
+    aYB3UdEu1zQMZMoJ4SaU17Zv9/Eal9EHj+jLOJSaN0mY78t3tCexZXA3TrRj2qs2yNbc
+    JmpA==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1q3DbdV+Ofo7wY7W6Qxgy"
+X-RZG-CLASS-ID: mo00
+Received: from [172.20.10.8]
+    by smtp.strato.de (RZmta 47.45.0 DYNA|AUTH)
+    with ESMTPSA id R0691fy57Kpt8dN
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 7 Jun 2022 22:51:55 +0200 (CEST)
+Subject: Re: [PATCH v5 0/7] can: refactoring of can-dev module and of Kbuild
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
+        linux-can <linux-can@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Max Staudt <max@enpas.org>, netdev <netdev@vger.kernel.org>
 References: <20220513142355.250389-1-mailhol.vincent@wanadoo.fr>
-        <20220604163000.211077-1-mailhol.vincent@wanadoo.fr>
-        <20220604163000.211077-5-mailhol.vincent@wanadoo.fr>
-        <CAMuHMdXkq7+yvD=ju-LY14yOPkiiHwL6H+9G-4KgX=GJjX=h9g@mail.gmail.com>
-        <CAMZ6RqLEEHOZjrMH+-GLC--jjfOaWYOPLf+PpefHwy=cLpWTYg@mail.gmail.com>
-        <20220607182216.5fb1084e.max@enpas.org>
-        <20220607150614.6248c504@kernel.org>
-        <CAMZ6Rq+vYNvrTcToqVqqKSPJXAdjs3RkUY_SNuwB7n9FMuqQiQ@mail.gmail.com>
+ <20220604163000.211077-1-mailhol.vincent@wanadoo.fr>
+ <2e8666f3-1bd9-8610-6b72-e56e669d3484@hartkopp.net>
+ <CAMZ6RqKWUyf6dZmxG809-yvjg5wbLwPSLtEfv-MgPpJ5ra=iGQ@mail.gmail.com>
+ <f161fdd0-415a-8ea1-0aad-3a3a19f1bfa8@hartkopp.net>
+ <20220607202706.7fbongzs3ixzpydm@pengutronix.de>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+Message-ID: <44670e69-6d67-c6c7-160c-1ae6e740aabb@hartkopp.net>
+Date:   Tue, 7 Jun 2022 22:51:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20220607202706.7fbongzs3ixzpydm@pengutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Wed, 8 Jun 2022 08:40:19 +0900 Vincent MAILHOL wrote:
-> On Wed. 8 Jun 2022 =C3=A0 07:06, Jakub Kicinski <kuba@kernel.org> wrote:
-> > AFAIU Linus likes for everything that results in code being added to
-> > the kernel to default to n. =20
->=20
-> A "make defconfig" would not select CONFIG_CAN (on which
-> CAN_RX_OFFLOAD indirectly depends) and so by default this code is not
-> added to the kernel.
->=20
-> > If the drivers hard-select that Kconfig
-> > why bother user with the question at all? My understanding is that
-> > Linus also likes to keep Kconfig as simple as possible. =20
->=20
-> I do not think that this is so convoluted. What would bother me is
-> that RX offload is not a new feature. Before this series, RX offload
-> is built-in the can-dev.o by default. If this new CAN_RX_OFFLOAD does
-> not default to yes, then the default features built-in can-dev.o would
-> change before and after this series.
->=20
-> But you being one of the maintainers, if you insist I will go in your
-> direction. So will removing the "default yes" and the comment "If
-> unsure, say yes" from the CAN_RX_OFFLOAD satisfy you?
 
-I'm mostly trying to make sure Linus won't complain and block the entire
-net-next PR. Unfortunately I don't think the rules are written down
-anywhere.
 
-I could well be missing some CAN-specific context here but I see no
-practical benefit to exposing a knob for enabling driver framework and
-then selecting that framework in drivers as well. The only beneficiary
-I can think of is out-of-tree code.
+On 07.06.22 22:27, Marc Kleine-Budde wrote:
+> On 07.06.2022 22:12:46, Oliver Hartkopp wrote:
+>> So what about:
+>>
+>>    symbol: CONFIG_NETDEVICES
+>>    |
+>>    +-> CAN Device Drivers
+>>        symbol: CONFIG_CAN_DEV
+>>        |
+>>        +-> software/virtual CAN device drivers
+>>        |   (at time of writing: slcan, vcan, vxcan)
+>>        |
+>>        +-> hardware CAN device drivers with Netlink support
+>>            symbol: CONFIG_CAN_NETLINK (matches previous CONFIG_CAN_DEV)
+>>            |
+>>            +-> CAN bit-timing calculation (optional for all drivers)
+>>            |   symbol: CONFIG_CAN_BITTIMING
+>>            |
+>>            +-> CAN rx offload (optional but selected by some drivers)
+>>            |   symbol: CONFIG_CAN_RX_OFFLOAD
+>>            |
+>>            +-> CAN devices drivers
+>>                (some may select CONFIG_CAN_RX_OFFLOAD)
+>>
+>> (I also added 'hardware' to CAN device drivers with Netlink support) to have
+>> a distinction to 'software/virtual' CAN device drivers)
+> 
+> The line between hardware and software/virtual devices ist blurry, the
+> new can327 driver uses netlink and the slcan is currently being
+> converted....
 
-If the framework is optional (covers only parts of the driver's
-functionality) we make the knob configurable and drivers should work
-with or without it (e.g. PTP).
+Right, which could mean that slcan and can327 should be located in the 
+'usual' CAN device driver section and not in the sw/virtual device section.
 
-If the framework is important / fundamental - hide it completely from=20
-the user / Kconfig and have the drivers 'select' it as a dependency
-(e.g. DEVLINK, PAGE_POOL).
+The slcan and can327 need some kind of hardware - while vcan and vxcan 
+don't.
 
-I'm not familiar with examples of the middle ground where we'd both
-expose the Kconfig, _and_ select in the drivers. Are there any?
-
-I don't want you to rage-quit over this tho, so we can merge as is and
-deal with the consequences.
-
-> > Upstream mentioning out-of-tree modules may have the opposite effect
-> > to what you intend :( Forgive my ignorance, what's the reason to keep
-> > the driver out of tree? =20
->=20
-> I can answer for Max. The can327 patch is under review with the clear
-> intent to have it upstream. c.f.:
-> https://lore.kernel.org/linux-can/20220602213544.68273-1-max@enpas.org/
->=20
-> But until the patch gets accepted, it is defacto an out of tree module.
-
-Good to hear, then it will get upstream in due course, and the problem
-will disappear, no?
+Best regards,
+Oliver
