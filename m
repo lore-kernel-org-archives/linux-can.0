@@ -2,103 +2,91 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21FC4CCA499
-	for <linux-can@archiver.kernel.org>; Wed,  8 Jun 2022 02:03:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8BE0CCA47C
+	for <linux-can@archiver.kernel.org>; Wed,  8 Jun 2022 02:23:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443807AbiFHCDQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 7 Jun 2022 22:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53492 "EHLO
+        id S1350407AbiFHCXm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 7 Jun 2022 22:23:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243368AbiFHBzQ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 7 Jun 2022 21:55:16 -0400
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B41531F7DAA;
-        Tue,  7 Jun 2022 13:52:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1654635116;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=JXSiYxgFZZ2tjAxBcyTrI4C3XZX0DeCU5mEV+jv6R6k=;
-    b=tTIXRIwQyepuLXyRIEgr8laM1lqaJ/fmrXqiArmaPMoqiCXCC9HO6/UVS7VAqP3tyf
-    Vvfg+spfS8Cm5h5lUdih2JmXw5jluDL4lUFeB1qpQp3K2x5isOTq+wYHGfHQYo5gLxwA
-    OU/VijO4lXs8jPIFuQB4aGnGyrcuHQ0Zj2qZ3JGOISSO7aSY7GXlI0tQFZ/UpOoPulPm
-    mIQ4fC8b1hbuyCmvdX1MTezHbP+PUoRwMz3VZx6jFc3Y51OUltbeZkk/p1RGCaHV4zpk
-    aYB3UdEu1zQMZMoJ4SaU17Zv9/Eal9EHj+jLOJSaN0mY78t3tCexZXA3TrRj2qs2yNbc
-    JmpA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1q3DbdV+Ofo7wY7W6Qxgy"
-X-RZG-CLASS-ID: mo00
-Received: from [172.20.10.8]
-    by smtp.strato.de (RZmta 47.45.0 DYNA|AUTH)
-    with ESMTPSA id R0691fy57Kpt8dN
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 7 Jun 2022 22:51:55 +0200 (CEST)
-Subject: Re: [PATCH v5 0/7] can: refactoring of can-dev module and of Kbuild
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
+        with ESMTP id S1446703AbiFHCVh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 7 Jun 2022 22:21:37 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49BB010D5FA;
+        Tue,  7 Jun 2022 17:14:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DD90CB82474;
+        Wed,  8 Jun 2022 00:14:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6543CC34114;
+        Wed,  8 Jun 2022 00:14:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654647296;
+        bh=NXXoRp3O0lf2L8bwbUT1SM463oYDoMSvjZr5C8vGoKI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NRdbU3ay3EiyLv2foPiwz+TygNsWU7MyKzHKlESvJxuAb7eR63u681318bdo/MAXq
+         FfjMqnCKgC6Ff50dOEsigEc6ZoyaRWfSYIpIwNZM6Fdo/dyrEvguprqmZgcXZAK3cb
+         I7TZVDZxfHxjPR02m5i60tesHyvlqrPCTHr8jnJBG0e8lcMB6Z756AGB48/GfkpidO
+         2vbw8fevrDY2WVHgsIDrup82xjHl7nAnDu6HFmBIHdQPBPrVV7UGdMJQIESxOTbJ/M
+         sJWGckCAEi5HSFl34k0Db1SqRUb3K9PgViCcOAbyzPgTcyUjHnqiZmmi9kNzp7I4yM
+         6EM1z0/POLoKw==
+Date:   Tue, 7 Jun 2022 17:14:55 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Max Staudt <max@enpas.org>
 Cc:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
-        linux-can <linux-can@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Max Staudt <max@enpas.org>, netdev <netdev@vger.kernel.org>
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH v5 4/7] can: Kconfig: add CONFIG_CAN_RX_OFFLOAD
+Message-ID: <20220607171455.0a75020c@kernel.org>
+In-Reply-To: <20220608014248.6e0045ae.max@enpas.org>
 References: <20220513142355.250389-1-mailhol.vincent@wanadoo.fr>
- <20220604163000.211077-1-mailhol.vincent@wanadoo.fr>
- <2e8666f3-1bd9-8610-6b72-e56e669d3484@hartkopp.net>
- <CAMZ6RqKWUyf6dZmxG809-yvjg5wbLwPSLtEfv-MgPpJ5ra=iGQ@mail.gmail.com>
- <f161fdd0-415a-8ea1-0aad-3a3a19f1bfa8@hartkopp.net>
- <20220607202706.7fbongzs3ixzpydm@pengutronix.de>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <44670e69-6d67-c6c7-160c-1ae6e740aabb@hartkopp.net>
-Date:   Tue, 7 Jun 2022 22:51:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        <20220604163000.211077-1-mailhol.vincent@wanadoo.fr>
+        <20220604163000.211077-5-mailhol.vincent@wanadoo.fr>
+        <CAMuHMdXkq7+yvD=ju-LY14yOPkiiHwL6H+9G-4KgX=GJjX=h9g@mail.gmail.com>
+        <CAMZ6RqLEEHOZjrMH+-GLC--jjfOaWYOPLf+PpefHwy=cLpWTYg@mail.gmail.com>
+        <20220607182216.5fb1084e.max@enpas.org>
+        <20220607150614.6248c504@kernel.org>
+        <20220608014248.6e0045ae.max@enpas.org>
 MIME-Version: 1.0
-In-Reply-To: <20220607202706.7fbongzs3ixzpydm@pengutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+On Wed, 8 Jun 2022 01:43:54 +0200 Max Staudt wrote:
+> It seems strange to me to magically build some extra features into
+> can_dev.ko, depending on whether some other .ko files are built in that
+> very same moment, or not. By "magically", I mean an invisible Kconfig
+> option. This is why I think Vincent's approach is best here, by making
+> the drivers a clearly visible subset of the RX_OFFLOAD option in
+> Kconfig, and RX_OFFLOAD user-selectable.
 
+Sorry for a chunked response, vger becoming unresponsive the week after
+the merge window seems to become a tradition :/
 
-On 07.06.22 22:27, Marc Kleine-Budde wrote:
-> On 07.06.2022 22:12:46, Oliver Hartkopp wrote:
->> So what about:
->>
->>    symbol: CONFIG_NETDEVICES
->>    |
->>    +-> CAN Device Drivers
->>        symbol: CONFIG_CAN_DEV
->>        |
->>        +-> software/virtual CAN device drivers
->>        |   (at time of writing: slcan, vcan, vxcan)
->>        |
->>        +-> hardware CAN device drivers with Netlink support
->>            symbol: CONFIG_CAN_NETLINK (matches previous CONFIG_CAN_DEV)
->>            |
->>            +-> CAN bit-timing calculation (optional for all drivers)
->>            |   symbol: CONFIG_CAN_BITTIMING
->>            |
->>            +-> CAN rx offload (optional but selected by some drivers)
->>            |   symbol: CONFIG_CAN_RX_OFFLOAD
->>            |
->>            +-> CAN devices drivers
->>                (some may select CONFIG_CAN_RX_OFFLOAD)
->>
->> (I also added 'hardware' to CAN device drivers with Netlink support) to have
->> a distinction to 'software/virtual' CAN device drivers)
+We have a ton of "magical" / hidden Kconfigs in networking, take a look
+at net/Kconfig. Quick grep, likely not very accurate but FWIW:
+
+# not-hidden
+$ git grep -c -E '(bool|tristate)..' net/Kconfig
+net/Kconfig:23
+
+# hidden
+$ git grep -c -E '(bool|tristate)$' net/Kconfig
+net/Kconfig:20
+
+> How about making RX_OFFLOAD a separate .ko file, so we don't have
+> various possible versions of can_dev.ko?
 > 
-> The line between hardware and software/virtual devices ist blurry, the
-> new can327 driver uses netlink and the slcan is currently being
-> converted....
+> @Vincent, I think you suggested that some time ago, IIRC?
+> 
+> (I know, I was against a ton of little modules, but I'm changing my
+> ways here now since it seems to help...)
 
-Right, which could mean that slcan and can327 should be located in the 
-'usual' CAN device driver section and not in the sw/virtual device section.
-
-The slcan and can327 need some kind of hardware - while vcan and vxcan 
-don't.
-
-Best regards,
-Oliver
+A separate module wouldn't help with my objections, I don't think.
