@@ -2,80 +2,118 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 813BDC43334
-	for <linux-can@archiver.kernel.org>; Wed,  8 Jun 2022 00:48:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE647C43334
+	for <linux-can@archiver.kernel.org>; Wed,  8 Jun 2022 01:48:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235519AbiFHAsd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 7 Jun 2022 20:48:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47932 "EHLO
+        id S241684AbiFHBs3 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 7 Jun 2022 21:48:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1840875AbiFHAGQ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 7 Jun 2022 20:06:16 -0400
-Received: from mail.enpas.org (zhong.enpas.org [46.38.239.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 15A37C0380;
-        Tue,  7 Jun 2022 16:55:25 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        by mail.enpas.org (Postfix) with ESMTPSA id BD8D1FFB6C;
-        Tue,  7 Jun 2022 23:55:24 +0000 (UTC)
-Date:   Wed, 8 Jun 2022 01:55:21 +0200
-From:   Max Staudt <max@enpas.org>
+        with ESMTP id S234726AbiFHBrM (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 7 Jun 2022 21:47:12 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A385F89;
+        Tue,  7 Jun 2022 17:07:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6B4D7B82464;
+        Wed,  8 Jun 2022 00:07:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E73D1C34114;
+        Wed,  8 Jun 2022 00:07:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654646863;
+        bh=CrcbDSIMUGUy9BjrLMTLkVHJ9psx3y4Wlntj3nvGas8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LOKNhmAcCbw2DyoNFmC8yOted5y6dRFfpppHX0nlrIAYPztLgqpDh/HOnucUWb1R3
+         EuE96CqG9M/p4zQxhgkwP3jwJLoxP7FKHkKS98g5JeYYqBpAvgmvnaXUL7WN8KydpM
+         gy1j/bnBosk7wk/z1Fa6tlAApLwasoov/VlSCIWr09Zyngys4B5SzUSh0e31/SKluo
+         l5M2KrUKROwRUt8f8QgUDOof2RZRc9VmbekOwjqsP5uQxLg1Jd+PhxPwR5mkLhnKMw
+         qzorHcJbex7ncdUOkHOLDxSDhMamdau2ayN3/25FXxp2WlBQ8IVN+F+5gjLWSsqign
+         UvTMJNsbOV9Xg==
+Date:   Tue, 7 Jun 2022 17:07:41 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
 To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-        linux-kernel@vger.kernel.org,
-        Amarula patchwork <linux-amarula@amarulasolutions.com>,
-        michael@amarulasolutions.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
+Cc:     Max Staudt <max@enpas.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [RFC PATCH 00/13] can: slcan: extend supported features
-Message-ID: <20220608015521.1ad4853c.max@enpas.org>
-In-Reply-To: <CAMZ6Rq+QpY23bmB4n1DfqaGgxU=i8sKm1Ee9R18xGSv9H5yMVQ@mail.gmail.com>
-References: <20220607094752.1029295-1-dario.binacchi@amarulasolutions.com>
-        <CAMZ6Rq+QpY23bmB4n1DfqaGgxU=i8sKm1Ee9R18xGSv9H5yMVQ@mail.gmail.com>
+        linux-can@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH v5 4/7] can: Kconfig: add CONFIG_CAN_RX_OFFLOAD
+Message-ID: <20220607170741.05bea62d@kernel.org>
+In-Reply-To: <CAMZ6Rq+vYNvrTcToqVqqKSPJXAdjs3RkUY_SNuwB7n9FMuqQiQ@mail.gmail.com>
+References: <20220513142355.250389-1-mailhol.vincent@wanadoo.fr>
+        <20220604163000.211077-1-mailhol.vincent@wanadoo.fr>
+        <20220604163000.211077-5-mailhol.vincent@wanadoo.fr>
+        <CAMuHMdXkq7+yvD=ju-LY14yOPkiiHwL6H+9G-4KgX=GJjX=h9g@mail.gmail.com>
+        <CAMZ6RqLEEHOZjrMH+-GLC--jjfOaWYOPLf+PpefHwy=cLpWTYg@mail.gmail.com>
+        <20220607182216.5fb1084e.max@enpas.org>
+        <20220607150614.6248c504@kernel.org>
+        <CAMZ6Rq+vYNvrTcToqVqqKSPJXAdjs3RkUY_SNuwB7n9FMuqQiQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Tue, 7 Jun 2022 21:19:54 +0900
-Vincent MAILHOL <mailhol.vincent@wanadoo.fr> wrote:
+On Wed, 8 Jun 2022 08:40:19 +0900 Vincent MAILHOL wrote:
+> On Wed. 8 Jun 2022 =C3=A0 07:06, Jakub Kicinski <kuba@kernel.org> wrote:
+> > AFAIU Linus likes for everything that results in code being added to
+> > the kernel to default to n. =20
+>=20
+> A "make defconfig" would not select CONFIG_CAN (on which
+> CAN_RX_OFFLOAD indirectly depends) and so by default this code is not
+> added to the kernel.
+>=20
+> > If the drivers hard-select that Kconfig
+> > why bother user with the question at all? My understanding is that
+> > Linus also likes to keep Kconfig as simple as possible. =20
+>=20
+> I do not think that this is so convoluted. What would bother me is
+> that RX offload is not a new feature. Before this series, RX offload
+> is built-in the can-dev.o by default. If this new CAN_RX_OFFLOAD does
+> not default to yes, then the default features built-in can-dev.o would
+> change before and after this series.
+>=20
+> But you being one of the maintainers, if you insist I will go in your
+> direction. So will removing the "default yes" and the comment "If
+> unsure, say yes" from the CAN_RX_OFFLOAD satisfy you?
 
-> In his CAN327 driver, Max manages to bring the can0 device without the
-> need of dedicated user space daemon by using line discipline
-> (ldattach):
+I'm mostly trying to make sure Linus won't complain and block the entire
+net-next PR. Unfortunately I don't think the rules are written down
+anywhere.
+
+I could well be missing some CAN-specific context here but I see no
+practical benefit to exposing a knob for enabling driver framework and
+then selecting that framework in drivers as well. The only beneficiary
+I can think of is out-of-tree code.
+
+If the framework is optional (covers only parts of the driver's
+functionality) we make the knob configurable and drivers should work
+with or without it (e.g. PTP).
+
+If the framework is important / fundamental - hide it completely from=20
+the user / Kconfig and have the drivers 'select' it as a dependency
+(e.g. DEVLINK, PAGE_POOL).
+
+I'm not familiar with examples of the middle ground where we'd both
+expose the Kconfig, _and_ select in the drivers. Are there any?
+
+I don't want you to rage-quit over this tho, so we can merge as is and
+deal with the consequences.
+
+> > Upstream mentioning out-of-tree modules may have the opposite effect
+> > to what you intend :( Forgive my ignorance, what's the reason to keep
+> > the driver out of tree? =20
+>=20
+> I can answer for Max. The can327 patch is under review with the clear
+> intent to have it upstream. c.f.:
 > https://lore.kernel.org/linux-can/20220602213544.68273-1-max@enpas.org/
-> 
-> Isn't the same feasible with slcan so that we completely remove the
-> dependency toward slcand?
-> Max what do you think of this?
+>=20
+> But until the patch gets accepted, it is defacto an out of tree module.
 
-I think it is a good idea to move this into the kernel driver. I don't
-have a slcan device, but a quick peek at its protocol suggests that
-it can be done much easier and cleaner than in can327.
-
-
-Fun fact: The use of a userspace "ignition" tool is a possible use case
-baked into can327's design ;)
-
-There is only one use case I can see for it though: Probing the
-ELM327's baud rate, and/or setting it before attaching the ldisc. This
-is the single thing that the kernel driver cannot do, since it is
-attached to an already running TTY, with a fixed speed. Everything else
-is configurable via "ip link".
-
-slcand could be used to auto-probe and set the baud rate as well.
-
-Then again, these stripped-down tools could likely be implemented as
-shell scripts calling stty and ldattach...
-
-
-Max
+Good to hear, then it will get upstream in due course, and the problem
+will disappear, no?
