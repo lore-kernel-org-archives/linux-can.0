@@ -2,51 +2,51 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6361FC43334
-	for <linux-can@archiver.kernel.org>; Fri, 10 Jun 2022 14:30:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0F5DC43334
+	for <linux-can@archiver.kernel.org>; Fri, 10 Jun 2022 14:30:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344905AbiFJOay (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 10 Jun 2022 10:30:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60760 "EHLO
+        id S244854AbiFJOa4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 10 Jun 2022 10:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344927AbiFJOav (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 10 Jun 2022 10:30:51 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4727613CA2F;
-        Fri, 10 Jun 2022 07:30:44 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id gc3-20020a17090b310300b001e33092c737so2233581pjb.3;
-        Fri, 10 Jun 2022 07:30:44 -0700 (PDT)
+        with ESMTP id S1348048AbiFJOax (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 10 Jun 2022 10:30:53 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D1313FBCD;
+        Fri, 10 Jun 2022 07:30:49 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id j7so24159301pjn.4;
+        Fri, 10 Jun 2022 07:30:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=yv2ujViesI7iZ5pUTL94PJt7L5AXnXGvqy5kLDepAhw=;
-        b=LB/Nr6LWiTuqLaJOUn2jiZMtJSRQK2oTZdwP5U2M2aWMEowlCn/xUFAFeFF23vt47Y
-         V7ztAJbnSzoMkLBDsdnVf2XJz2VTBTRDxMB3FkkbonD/2kEE1tcX4lEBvmqujWp8BGC5
-         zyT7+pGaOViI/28FZzelnmuhZGqlXc4GByUfBCt7lCJWSe+nCwxOnzyYLx0ArwzsXZ8L
-         ycLtq+5c/hwS+dzSBn7G1NiUlm384ieK1g/vyD7mDjvh4uNrOvQWgsgL5i+qPI6gD4i8
-         vo5PTDdpYTpuPUF2XG9PqVZX9XGR0T0k966/1qSpgPKZQa+GBr6UZwBG1D18zGpL7lLd
-         DCzQ==
+        bh=zHNXk/AgfFNmsI+UqDPsm2MXpI0i6kU7CMuDASj79/U=;
+        b=nl04t7gokzMU7UUQfYRfxhtSFJFKqdVyWc9KiocJWk8qg68IOFxin4gKzdOuUIpXWl
+         g8IafnhsqvmI/MlEvV3SsE5sVILnTOT0Gz7YCUlpXWkhFg5xDSQw96knLCp6WQZe5xw/
+         vWvmNNpLima3oihrsa5HQYsWSXYs1Xt/iCVT1+HdHrzb7WgCZgvuBAzDb+INAP9N6bhn
+         b3m5GSSNQDexRR+CyhEHdsktMiE0K6IqSBUhmc3a+WA7jX2SCkhDQ2B9wcSkT4DcS6Ns
+         b+hFfSJeUyqXo/kQ6/rXGNwfIrX1wXVNrF5KzmFCerdbhGEUnk4QMTLCugWPyORr0kqj
+         6ThA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=yv2ujViesI7iZ5pUTL94PJt7L5AXnXGvqy5kLDepAhw=;
-        b=Jdoo0KX1pI1zqMRZO9oMS0/eHvEQcetGPSWiOiCd8jGifC/CqzTBNLd+wHSj8zs7bO
-         lGaAduWYzk0kmKzX9yY6boCFk/86EdOB4DVnpMzJC4ZF9XzsnMyjJILwTcjXZZf3Gn9w
-         IOGc0TftYfBLHrAWQZDzKqA/muc/pSgAe6a8D+IuKdHvgJ9tlR4re9FDDxKLoIUSYLla
-         cQmhnRjWw0errmnADKUyf3dYeYDPIyk8HSv5GESytI2M4R3dUt4YprLoX/9rWajwSjyQ
-         BL2TkFuSDGskONyZNyvGB7HbG6+y1goycQZZFstIvdtsurLtVesCZssP7hGVj/V6ijed
-         lB8w==
-X-Gm-Message-State: AOAM5326+HA8wQSmb6/ktfOj/YRSpGOHXtfSqe2d01wSq66vf9PoSIsu
-        +hjAc8vNExPeJDhe1I2AW5Q7wtHWMeYpAA==
-X-Google-Smtp-Source: ABdhPJwfhhkfUEUmxIkX1fsRI4mH/9vFupfe+vU7uvGD9Rb0dqChG+Ia665LHwJqDzutB4zVBFuZ6g==
-X-Received: by 2002:a17:90b:3506:b0:1e8:8449:6acb with SMTP id ls6-20020a17090b350600b001e884496acbmr46125pjb.27.1654871443711;
-        Fri, 10 Jun 2022 07:30:43 -0700 (PDT)
+        bh=zHNXk/AgfFNmsI+UqDPsm2MXpI0i6kU7CMuDASj79/U=;
+        b=HcNIu2YOyN/ISA8LpyI0ZRaV9pJjdfxGJzdbtTxs+QAmbfr49rYHRyP8oYhkx6LyGT
+         CLFbT2WC/QfsH+B1aPY6DrWQLfBq4wFtLovaMtteqxJPshESMdihISpXOTbYgsdcGD+T
+         LOWjFAuGIa/JmwYtO5wBcCyfuDCK/3dJMhmgDL3nXTpH0mBLLUbaLzUwlMfODyaBqSzq
+         P6zxvYMOkuCdFY1M1ncmfBWvLyCcUMZg6+df8wXa92YkyZgWosJ90aQrzkCIfheqpa2J
+         P49GZlh8qxCZAFKSm0W59TbBcG98sDd2hGsbdOiN+d0YDn7wDn4PC47R3sucnJlactMO
+         88kw==
+X-Gm-Message-State: AOAM5322Q+F17H1uAIYYFQWXvj97XUcwqAB8oIuyk274bWrXZj6BdEos
+        iIT7hXOhaMm9gDH0p5ayiKM=
+X-Google-Smtp-Source: ABdhPJyJrbUTsIZRSz08469GFWX/pT0YdkxUMnkZBnQ/wqbZ8VLU7cS9cDO2fMogrQUNYsQJEu3iOw==
+X-Received: by 2002:a17:90b:4acd:b0:1e3:4dab:a14c with SMTP id mh13-20020a17090b4acd00b001e34daba14cmr50130pjb.5.1654871448775;
+        Fri, 10 Jun 2022 07:30:48 -0700 (PDT)
 Received: from localhost.localdomain (124x33x176x97.ap124.ftth.ucom.ne.jp. [124.33.176.97])
-        by smtp.gmail.com with ESMTPSA id s6-20020a170902ea0600b0016232dbd01fsm18851339plg.292.2022.06.10.07.30.41
+        by smtp.gmail.com with ESMTPSA id s6-20020a170902ea0600b0016232dbd01fsm18851339plg.292.2022.06.10.07.30.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jun 2022 07:30:43 -0700 (PDT)
+        Fri, 10 Jun 2022 07:30:48 -0700 (PDT)
 Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
 From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 To:     Marc Kleine-Budde <mkl@pengutronix.de>
@@ -56,9 +56,9 @@ Cc:     linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
         Jakub Kicinski <kuba@kernel.org>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v6 2/7] can: Kconfig: turn menu "CAN Device Drivers" into a menuconfig using CAN_DEV
-Date:   Fri, 10 Jun 2022 23:30:04 +0900
-Message-Id: <20220610143009.323579-3-mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v6 4/7] can: Kconfig: add CONFIG_CAN_RX_OFFLOAD
+Date:   Fri, 10 Jun 2022 23:30:06 +0900
+Message-Id: <20220610143009.323579-5-mailhol.vincent@wanadoo.fr>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220610143009.323579-1-mailhol.vincent@wanadoo.fr>
 References: <20220513142355.250389-1-mailhol.vincent@wanadoo.fr>
@@ -69,163 +69,91 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-In the next patches, the software/virtual drivers (slcan, v(x)can)
-will depend on drivers/net/can/dev/skb.o.
+Only a few drivers rely on the CAN rx offload framework (as of the
+writing of this patch, only four: flexcan, m_can, mcp251xfd and
+ti_hecc). Split it out of can-dev and add a new config symbol:
+CAN_RX_OFFLOAD.
 
-This patch changes the scope of the can-dev module to include the
-above mentioned drivers.
+The drivers relying on CAN rx offload are in different sub
+folders. Make CAN_RX_OFFLOAD an hidden option and tag all the drivers
+depending on that feature with "select CAN_RX_OFFLOAD" so that the
+option gets automatically enabled if and only if one of those drivers
+is chosen.
 
-To do so, we reuse the menu "CAN Device Drivers" and turn it into a
-configmenu using the config symbol CAN_DEV (which we released in
-previous patch). Also, add a description to this new CAN_DEV
-menuconfig.
-
-The symbol CAN_DEV now only triggers the build of skb.o. For this
-reasons, all the macros from linux/module.h are deported from
-drivers/net/can/dev/dev.c to drivers/net/can/dev/skb.c.
-
-Finally, drivers/net/can/dev/Makefile is adjusted accordingly.
-
-Suggested-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 ---
- drivers/net/can/Kconfig      | 29 ++++++++++++++++++++++++++---
- drivers/net/can/dev/Makefile | 16 +++++++++-------
- drivers/net/can/dev/dev.c    |  9 +--------
- drivers/net/can/dev/skb.c    |  7 +++++++
- 4 files changed, 43 insertions(+), 18 deletions(-)
+ drivers/net/can/Kconfig               | 5 +++++
+ drivers/net/can/dev/Makefile          | 2 +-
+ drivers/net/can/m_can/Kconfig         | 1 +
+ drivers/net/can/spi/mcp251xfd/Kconfig | 1 +
+ 4 files changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-index 99f189ad35ad..3c692af16676 100644
+index 87470feae6b1..5335f3afc0a5 100644
 --- a/drivers/net/can/Kconfig
 +++ b/drivers/net/can/Kconfig
-@@ -1,5 +1,25 @@
- # SPDX-License-Identifier: GPL-2.0-only
--menu "CAN Device Drivers"
-+
-+menuconfig CAN_DEV
-+	tristate "CAN Device Drivers"
-+	default y
-+	help
-+	  Controller Area Network (CAN) is serial communications protocol up to
-+	  1Mbit/s for its original release (now known as Classical CAN) and up
-+	  to 8Mbit/s for the more recent CAN with Flexible Data-Rate
-+	  (CAN-FD). The CAN bus was originally mainly for automotive, but is now
-+	  widely used in marine (NMEA2000), industrial, and medical
-+	  applications. More information on the CAN network protocol family
-+	  PF_CAN is contained in <Documentation/networking/can.rst>.
-+
-+	  This section contains all the CAN(-FD) device drivers including the
-+	  virtual ones. If you own such devices or plan to use the virtual CAN
-+	  interfaces to develop applications, say Y here.
-+
-+	  To compile as a module, choose M here: the module will be called
-+	  can-dev.
-+
-+if CAN_DEV
+@@ -102,6 +102,9 @@ config CAN_CALC_BITTIMING
  
- config CAN_VCAN
- 	tristate "Virtual Local CAN Interface (vcan)"
-@@ -49,7 +69,7 @@ config CAN_SLCAN
- 	  also be built as a module. If so, the module will be called slcan.
+ 	  If unsure, say Y.
  
- config CAN_NETLINK
--	tristate "CAN device drivers with Netlink support"
-+	bool "CAN device drivers with Netlink support"
- 	default y
++config CAN_RX_OFFLOAD
++	bool
++
+ config CAN_AT91
+ 	tristate "Atmel AT91 onchip CAN controller"
+ 	depends on (ARCH_AT91 || COMPILE_TEST) && HAS_IOMEM
+@@ -113,6 +116,7 @@ config CAN_FLEXCAN
+ 	tristate "Support for Freescale FLEXCAN based chips"
+ 	depends on OF || COLDFIRE || COMPILE_TEST
+ 	depends on HAS_IOMEM
++	select CAN_RX_OFFLOAD
  	help
- 	  Enables the common framework for CAN device drivers. This is the
-@@ -57,6 +77,9 @@ config CAN_NETLINK
- 	  as bittiming validation, support of CAN error states, device restart
- 	  and others.
+ 	  Say Y here if you want to support for Freescale FlexCAN.
  
-+	  The additional features selected by this option will be added to the
-+	  can-dev module.
-+
- 	  This is required by all platform and hardware CAN drivers. If you
- 	  plan to use such devices or if unsure, say Y.
- 
-@@ -178,4 +201,4 @@ config CAN_DEBUG_DEVICES
- 	  a problem with CAN support and want to see more of what is going
- 	  on.
- 
--endmenu
-+endif #CAN_DEV
+@@ -162,6 +166,7 @@ config CAN_SUN4I
+ config CAN_TI_HECC
+ 	depends on ARM
+ 	tristate "TI High End CAN Controller"
++	select CAN_RX_OFFLOAD
+ 	help
+ 	  Driver for TI HECC (High End CAN Controller) module found on many
+ 	  TI devices. The device specifications are available from www.ti.com
 diff --git a/drivers/net/can/dev/Makefile b/drivers/net/can/dev/Makefile
-index 5b4c813c6222..1baaf7020f7c 100644
+index 791e6b297ea3..633687d6b6c0 100644
 --- a/drivers/net/can/dev/Makefile
 +++ b/drivers/net/can/dev/Makefile
-@@ -1,9 +1,11 @@
- # SPDX-License-Identifier: GPL-2.0
+@@ -9,4 +9,4 @@ can-dev-$(CONFIG_CAN_NETLINK) += bittiming.o
+ can-dev-$(CONFIG_CAN_NETLINK) += dev.o
+ can-dev-$(CONFIG_CAN_NETLINK) += length.o
+ can-dev-$(CONFIG_CAN_NETLINK) += netlink.o
+-can-dev-$(CONFIG_CAN_NETLINK) += rx-offload.o
++can-dev-$(CONFIG_CAN_RX_OFFLOAD) += rx-offload.o
+diff --git a/drivers/net/can/m_can/Kconfig b/drivers/net/can/m_can/Kconfig
+index 45ad1b3f0cd0..fc2afab36279 100644
+--- a/drivers/net/can/m_can/Kconfig
++++ b/drivers/net/can/m_can/Kconfig
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ menuconfig CAN_M_CAN
+ 	tristate "Bosch M_CAN support"
++	select CAN_RX_OFFLOAD
+ 	help
+ 	  Say Y here if you want support for Bosch M_CAN controller framework.
+ 	  This is common support for devices that embed the Bosch M_CAN IP.
+diff --git a/drivers/net/can/spi/mcp251xfd/Kconfig b/drivers/net/can/spi/mcp251xfd/Kconfig
+index dd0fc0a54be1..877e4356010d 100644
+--- a/drivers/net/can/spi/mcp251xfd/Kconfig
++++ b/drivers/net/can/spi/mcp251xfd/Kconfig
+@@ -2,6 +2,7 @@
  
--obj-$(CONFIG_CAN_NETLINK) += can-dev.o
--can-dev-y			+= bittiming.o
--can-dev-y			+= dev.o
--can-dev-y			+= length.o
--can-dev-y			+= netlink.o
--can-dev-y			+= rx-offload.o
--can-dev-y                       += skb.o
-+obj-$(CONFIG_CAN_DEV) += can-dev.o
-+
-+can-dev-y += skb.o
-+
-+can-dev-$(CONFIG_CAN_NETLINK) += bittiming.o
-+can-dev-$(CONFIG_CAN_NETLINK) += dev.o
-+can-dev-$(CONFIG_CAN_NETLINK) += length.o
-+can-dev-$(CONFIG_CAN_NETLINK) += netlink.o
-+can-dev-$(CONFIG_CAN_NETLINK) += rx-offload.o
-diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
-index 96c9d9db00cf..523eaacfe29e 100644
---- a/drivers/net/can/dev/dev.c
-+++ b/drivers/net/can/dev/dev.c
-@@ -4,7 +4,6 @@
-  * Copyright (C) 2008-2009 Wolfgang Grandegger <wg@grandegger.com>
-  */
- 
--#include <linux/module.h>
- #include <linux/kernel.h>
- #include <linux/slab.h>
- #include <linux/netdevice.h>
-@@ -17,12 +16,6 @@
- #include <linux/gpio/consumer.h>
- #include <linux/of.h>
- 
--#define MOD_DESC "CAN device driver interface"
--
--MODULE_DESCRIPTION(MOD_DESC);
--MODULE_LICENSE("GPL v2");
--MODULE_AUTHOR("Wolfgang Grandegger <wg@grandegger.com>");
--
- static void can_update_state_error_stats(struct net_device *dev,
- 					 enum can_state new_state)
- {
-@@ -513,7 +506,7 @@ static __init int can_dev_init(void)
- 
- 	err = can_netlink_register();
- 	if (!err)
--		pr_info(MOD_DESC "\n");
-+		pr_info("CAN device driver interface\n");
- 
- 	return err;
- }
-diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-index 61660248c69e..a4208f125b76 100644
---- a/drivers/net/can/dev/skb.c
-+++ b/drivers/net/can/dev/skb.c
-@@ -5,6 +5,13 @@
-  */
- 
- #include <linux/can/dev.h>
-+#include <linux/module.h>
-+
-+#define MOD_DESC "CAN device driver interface"
-+
-+MODULE_DESCRIPTION(MOD_DESC);
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Wolfgang Grandegger <wg@grandegger.com>");
- 
- /* Local echo of CAN messages
-  *
+ config CAN_MCP251XFD
+ 	tristate "Microchip MCP251xFD SPI CAN controllers"
++	select CAN_RX_OFFLOAD
+ 	select REGMAP
+ 	select WANT_DEV_COREDUMP
+ 	help
 -- 
 2.35.1
 
