@@ -2,139 +2,159 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 748E7C43334
-	for <linux-can@archiver.kernel.org>; Sun, 12 Jun 2022 10:39:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04F97C43334
+	for <linux-can@archiver.kernel.org>; Sun, 12 Jun 2022 12:03:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233719AbiFLKjx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 12 Jun 2022 06:39:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41870 "EHLO
+        id S236484AbiFLMD3 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 12 Jun 2022 08:03:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234824AbiFLKjw (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 12 Jun 2022 06:39:52 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBE465438
-        for <linux-can@vger.kernel.org>; Sun, 12 Jun 2022 03:39:46 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1o0L0J-000760-Co; Sun, 12 Jun 2022 12:39:35 +0200
-Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 84B4D932DE;
-        Sun, 12 Jun 2022 10:39:32 +0000 (UTC)
-Date:   Sun, 12 Jun 2022 12:39:31 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Amarula patchwork <linux-amarula@amarulasolutions.com>,
-        michael@amarulasolutions.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [RFC PATCH 06/13] can: slcan: allow to send commands to the
- adapter
-Message-ID: <20220612103931.3dugmcyn23udmve7@pengutronix.de>
-References: <20220607094752.1029295-1-dario.binacchi@amarulasolutions.com>
- <20220607094752.1029295-7-dario.binacchi@amarulasolutions.com>
- <20220609071636.6tbspftu3yclip55@pengutronix.de>
- <CABGWkvp1=DF1uok4ZoCRt1EqpdrgdcytG==Ex6zuWgT5mrvdwQ@mail.gmail.com>
+        with ESMTP id S231336AbiFLMD1 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 12 Jun 2022 08:03:27 -0400
+Received: from mail.enpas.org (zhong.enpas.org [IPv6:2a03:4000:2:537::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 74F3F27B0A;
+        Sun, 12 Jun 2022 05:03:24 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        by mail.enpas.org (Postfix) with ESMTPSA id D783BFF9E2;
+        Sun, 12 Jun 2022 12:03:22 +0000 (UTC)
+Date:   Sun, 12 Jun 2022 14:03:20 +0200
+From:   Max Staudt <max@enpas.org>
+To:     Vincent Mailhol <vincent.mailhol@gmail.com>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Oliver Neukum <oneukum@suse.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7] can, tty: can327 CAN/ldisc driver for ELM327 based
+ OBD-II adapters
+Message-ID: <20220612140217.6ad6d2f9.max@enpas.org>
+In-Reply-To: <CAMZ6RqKzO7ya3Z-fx+FZ5vAsOy0B9Ec8TRagjysJEK0i4Z3asw@mail.gmail.com>
+References: <20220602213544.68273-1-max@enpas.org>
+ <CAMZ6RqLLn3tE6kPd+yyHURsbBU_jVKN=u4=YvhZVyAf_NyRqCQ@mail.gmail.com>
+ <20220611151551.5024f51e.max@enpas.org>
+ <CAMZ6RqLb3irjBrpiOv23Hg6vVpzK4d31Pvat2AOS3EC0+e_=3A@mail.gmail.com>
+ <20220611184157.06271432.max@enpas.org>
+ <CAMZ6RqKzO7ya3Z-fx+FZ5vAsOy0B9Ec8TRagjysJEK0i4Z3asw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rklhevn5ngclcgjp"
-Content-Disposition: inline
-In-Reply-To: <CABGWkvp1=DF1uok4ZoCRt1EqpdrgdcytG==Ex6zuWgT5mrvdwQ@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+On Sun, 12 Jun 2022 10:33:51 +0900
+Vincent Mailhol <vincent.mailhol@gmail.com> wrote:
 
---rklhevn5ngclcgjp
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 11.06.2022 23:43:47, Dario Binacchi wrote:
-> Hi Marc,
->=20
-> On Thu, Jun 9, 2022 at 9:16 AM Marc Kleine-Budde <mkl@pengutronix.de> wro=
-te:
+> > I agree, hence the original name. I don't want to pick a fight with
+> > anyone though, and a good alternative does exist (can327), so I
+> > prefer to play it safe, at least this time.
 > >
-> > On 07.06.2022 11:47:45, Dario Binacchi wrote:
-> > > This is a preparation patch for the upcoming support to change the
-> > > bitrate via ip tool, reset the adapter error states via the ethtool A=
-PI
-> > > and, more generally, send commands to the adapter.
-> > >
-> > > Since some commands (e. g. setting the bitrate) will be sent before
-> > > calling the open_candev(), the netif_running() will return false and =
-so
-> > > a new flag bit (i. e. SLF_XCMD) for serial transmission has to be add=
-ed.
-> > >
-> > > Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+> > IMHO, to anyone who knows what an ELM327 is and who is looking for
+> > this driver, the "327" in the name is very likely to hint at what
+> > it is. Not many CAN devices are called 327 ;)
 > >
-> > I think this patch can be dropped, let me explain:
+> > There are also several compatible parts with extended features, so
+> > locking in on the original chip's name may be counter productive
+> > anyway.  
+> 
+> Generally speaking, I would be worried if everyone started to rename
+> the drivers. What if I named my driver can58x instead of es58x and
+> what if Marc named his driver can251xfd instead of mcp251xfd? Things
+> will start to be really confusing.
+
+Agreed. FWIW, I suggested can-* in the same vein as hid-*, which would
+group CAN drivers together. It would then be can-mcp251xfd rather than
+can251xfd. Anyway, no, I don't suggest renaming existing drivers, as
+that'd be a hassle.
+
+
+> But I did a quick search. Several clones also use the name can327. So
+> in your particular case, I think this renaming is kind of acceptable.
+
+Okay, thanks!
+
+Since you deem can327 acceptable, let's leave it as it is.
+
+
+As for this particular driver, I got unlucky with my device because it
+can do more than CAN, yet I wanted the driver name to show that the
+driver implements *only* CAN. Had I called it "elm327", it would have
+been confusing to the casual user as to what the driver is really for:
+CAN? K-Line? OBD? All of them? Hence why I always squeezed "can" into
+the name somehow. It's an edge case, really.
+
+For non-edge cases, thanks for alleviating my concerns about company
+names etc. in driver names.
+
+
+> > > Do as you prefer. If you do not want the mainstream release to be
+> > > further delayed, I think it is fully acceptable to go with the
+> > > lazy direct loopback as I suggested and then later on provide a
+> > > new patch.  
 > >
-> > You don't have to implement the do_set_bittiming callback. It's
-> > perfectly OK to set the bitrate during the ndo_open callback after
-> > open_candev().
->=20
-> I developed what you suggested (i. e. remove the SLF_XCMD bit and set the
-> bitrate, as well as send the "F\r" and "O\r" commands, after calling
-> the open_candev(),
+> > I agree, I'd rather leave the code as-is now, and fix it
+> > incrementally. Especially since you've reviewed it so thoroughly,
+> > and I don't want to unravel this again, and it works well enough
+> > as-is. After all, the documentation does start by saying that there
+> > are no guarantees ;)
+> >
+> > Do you see any problem with leaving it as-is, i.e. not setting
+> > IFF_ECHO, and thus having the CAN stack do the the for us? As far
+> > as I  
+>                                                  ^^^
+> do the what?
+> > can see, it is equivalent...  
+> 
+> It seems a part of your answer is missing. I do not get what
+> alternative solution you are considering instead of using IFF_ECHO.
+> 
+> What I propose should be a three line fix: add the IFF_ECHO, use the
+> can_put_echo_skb() and the can_get_echo_skb().
 
-Note:
-Max Staudt noticed that you need a do_set_bittiming() callback if you
-have only fixed bitrates. I've create a patch that you can have fixed
-bit rate only an no do_set_bittiming() callback.
+The alternative solution is to leave it as-is: Iff IFF_ECHO is unset,
+then in net/can/af_can.c - can_send() the CAN stack generates echo
+frames for us.
 
-| https://lore.kernel.org/all/20220611144248.3924903-1-mkl@pengutronix.de/
+It seems you weren't aware of this functionality, hence the
+misunderstanding.
 
-Or use the can-next/master branch as your base.
+(except that I missed the RTR detail, see below)
 
-> but now I can't send the close command ("C\r") during the ndo_stop() since
-> netif_running() returns false. The CAN framework clears netif_running() b=
-efore
-> calling the ndo_stop(). IMHO the SLF_XCMD bit then becomes necessary to
-> transmit the commands to the adapter from the ndo_open() and
-> ndo_stop() routines.
-> Any suggestions ?
 
-I see. Keep the setting of the bit rate in the ndo_open(), add the
-SLF_XCMD so that you can send messages in ndo_close().
+> If leaving it as-is, can327 will behave differently than the other
+> drivers. For example, candump will only record the RX frames when
+> users expect to see both TX and RX. So that's my real concern.
 
-Marc
+Nope, it's not at all like this - candump shows the own sent packets
+just fine!
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+This is one of the first things I ensured when I started the driver. I
+wouldn't release a driver like that as it would drive me crazy as a
+user.
 
---rklhevn5ngclcgjp
-Content-Type: application/pgp-signature; name="signature.asc"
+Several other drivers don't provice IFF_ECHO - slcan, vxcan. And vcan
+has it configurable. An interesting one is found in usb/ucan.c which
+provides echo, but doesn't set IFF_ECHO. I suppose candump will show
+sent packets twice when using ucan?
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmKlwmEACgkQrX5LkNig
-013Eowf+KfCAs9Z0OKq+LFT5uWbL1qh9/1/auUskU/+EdODZkaDrh3bVZWFxQ0ZV
-6UuRs7QhWOdxz2kJ7Q87dKDtEiRIqhZPkeiByyd5mR3WbluTICxOoMUfjEE50p2T
-QQDTh+cfd5dSEy88SMxTt9aBKLasx90rkrSC30sPcdCvVKIXjWuyLbI2XdIKqygl
-Vga1xqQXZAKtAJNeMcNhdlfiXtYKp8/fjhhX0qdOxcuIomqrD5mv7wplk4Omq4IU
-F5p+PTHMaI26hvMQQtqhjM+5T/TCHfGCkYuw3X8jwRZV++mxNOd439YcCyLIw3Im
-+gO8YIp3CoKam9k2szJKMC/z6+bZMw==
-=xvcS
------END PGP SIGNATURE-----
+> The other thing is that the can_put_echo_skb() and can_get_echo_skb()
+> do some other operations. For example, can_get_echo_skb() returns a
+> length of zero for the RTR frames. If you do not use those helper
+> functions, you have to do the check by hand and only increment
+> stats->tx_bytes if the frame is not an RTR one.
+> 
+> If you leave it as is, then just fix the RTR length e.g. like that:
+> https://elixir.bootlin.com/linux/v5.18/source/drivers/net/can/vcan.c#L95
 
---rklhevn5ngclcgjp--
+Oh, I missed this detail. Very good point, thanks!
+
+I'll apply the vcan RTR fix for now (ugly, but minimal code change), and
+it can be removed once "proper" echo support is implemented in can327.
+
+
+Okay, I think all my questions are handled now.
+
+Thanks again!
+
+Max
