@@ -2,48 +2,48 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41402C433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 329F0C43334
 	for <linux-can@archiver.kernel.org>; Tue, 14 Jun 2022 12:32:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235874AbiFNMbR (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 14 Jun 2022 08:31:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58584 "EHLO
+        id S1357176AbiFNMbQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 14 Jun 2022 08:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243230AbiFNM2h (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 14 Jun 2022 08:28:37 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3647938199
-        for <linux-can@vger.kernel.org>; Tue, 14 Jun 2022 05:28:29 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id kq6so16809541ejb.11
-        for <linux-can@vger.kernel.org>; Tue, 14 Jun 2022 05:28:28 -0700 (PDT)
+        with ESMTP id S243863AbiFNM2j (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 14 Jun 2022 08:28:39 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC0D20F45
+        for <linux-can@vger.kernel.org>; Tue, 14 Jun 2022 05:28:38 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id bg6so16963515ejb.0
+        for <linux-can@vger.kernel.org>; Tue, 14 Jun 2022 05:28:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=amarulasolutions.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bs1pDxoqSwxHo6PhPuLte63s3qeUlbVxYb0CgUg+DU4=;
-        b=c010hK3+ahAHRLBDp/YkH7ue/xhQVFHLKxwyUX7pT4nvITXGSPVRQWGtNe4e8BJlHw
-         ShM/jdfA3dXz598QFtXn7PbLhrOdrk2wdQNOIpY9KXOhlDj4q93DryPdDogflmTdjgcy
-         m2S75F2hujDTdCnjubcb0QdWgXbpIRBVFb6Cc=
+        bh=4Ikx/I3Y696YQQvJOfJvkR+b8+rk3mrxAawgjIDEUZ0=;
+        b=fcozqSg6IKoKg9kPzNk4vgpeYJBfA6sRK6QUNqlE5NGhEPGgKBho033KaqjRspCizB
+         SqJWccoggeLwKFyCo25eeFXDvXO1lQoxQGi/uhEkA0etpMW/1iDdWvYlaWea8rr6SYjB
+         ASpWjX2+Vw4TGE6xjCOUb4HdAumC/gkcubYVs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bs1pDxoqSwxHo6PhPuLte63s3qeUlbVxYb0CgUg+DU4=;
-        b=4jX7Gmsc+8DSixYj/wPOUSJ/EGqvEaMg9zzPjBVFrfo2zunMYQh/tadx9yalxjTI8Y
-         qOUpBn0wSKH/6iPad8tq4Y11Lgu6q8XqPgepcZ+l+PWWJcr7BX6UevJ0wSlOO0UW7Y/x
-         gGRyEOJZV5UabukZhmdxZrQSzNDNog3ikcwcrNqhTA5I9nInl9BtY7iu+PYbYgVHOTeA
-         J30BywCfYlxxqsqPsYoheZUkL8hM//lfjwBv588voNUqlGqqqELqOSp8kSaq2rRAoS3V
-         hHt0464SF46hTwDBAa/smWZ97u02gBsqlI1ZnyHfvvICMrFTwsnMTB13r+mm6vkYdJ+U
-         QoaQ==
-X-Gm-Message-State: AOAM531CR/HmSMGposamvOcOcuIZPjs7aq7FnxXG6D/kXJJ/hzs9NPff
-        1M+1CEmV+uFAWd2Ldp2VxxH9fw==
-X-Google-Smtp-Source: ABdhPJyxoOzRWB1wnGAo214wBBP18qanXSZdV8l0hMrYApMdvZlin/orDEjVUZjgRmC43b03fTLNHg==
-X-Received: by 2002:a17:907:1c07:b0:711:c966:f02e with SMTP id nc7-20020a1709071c0700b00711c966f02emr4194683ejc.221.1655209707627;
-        Tue, 14 Jun 2022 05:28:27 -0700 (PDT)
+        bh=4Ikx/I3Y696YQQvJOfJvkR+b8+rk3mrxAawgjIDEUZ0=;
+        b=jvO6zMJXYYrAfo63731OeJOPoAkVMc0EaKiey+ySSbrXgOvifvXsBzmRLCgi8/nWml
+         urmdrl/TjJ/bEf0SpYluJ4qG6ED4YwjXmf6+Ip3fEHf5jQW9iwlqqA00YxW6bPneE3dY
+         ShEBdwD0oBRuwiKTUlfbFOQQKBp/HVhRS+njY+eVNstnMlN/Fs6T+AeOtUafqimTC3qA
+         A1AMpXse1F1AFksTOzS/HJos45PHZtHeprvwqVMeuqw5bew0w7gjMx8CfcnAAkgYfB9L
+         0X6hf8oo2Q9QVxT6JLIjOijIcWXI7/zyWutznbfyR7YFPkwkStI/MHTV2aFt/agL8MX+
+         htcg==
+X-Gm-Message-State: AOAM531vpQERIDFeVLYJll/j/kga8/3lsrxftwPIk+LxQd3jgLbJftWv
+        /u/xuWa6LP+IWXbNzp9g6ZG8hQ==
+X-Google-Smtp-Source: AGRyM1uelCB/Qv4o1YlAs/EirN062K8SD18mCxEGk2AXw8TotOBNzQGInbqvWk0FaZZYTQfuTN2XLA==
+X-Received: by 2002:a17:906:73d4:b0:715:701c:ae96 with SMTP id n20-20020a17090673d400b00715701cae96mr4033479ejl.50.1655209716999;
+        Tue, 14 Jun 2022 05:28:36 -0700 (PDT)
 Received: from dario-ThinkPad-T14s-Gen-2i.amarulasolutions.com (host-80-116-90-174.pool80116.interbusiness.it. [80.116.90.174])
-        by smtp.gmail.com with ESMTPSA id z22-20020a17090655d600b006f3ef214e2csm5087043ejp.146.2022.06.14.05.28.25
+        by smtp.gmail.com with ESMTPSA id z22-20020a17090655d600b006f3ef214e2csm5087043ejp.146.2022.06.14.05.28.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jun 2022 05:28:27 -0700 (PDT)
+        Tue, 14 Jun 2022 05:28:36 -0700 (PDT)
 From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Amarula patchwork <linux-amarula@amarulasolutions.com>,
@@ -57,9 +57,9 @@ Cc:     Amarula patchwork <linux-amarula@amarulasolutions.com>,
         Paolo Abeni <pabeni@redhat.com>,
         Wolfgang Grandegger <wg@grandegger.com>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH v4 01/12] can: slcan: use the BIT() helper
-Date:   Tue, 14 Jun 2022 14:28:10 +0200
-Message-Id: <20220614122821.3646071-2-dario.binacchi@amarulasolutions.com>
+Subject: [PATCH v4 08/12] can: slcan: send the open/close commands to the adapter
+Date:   Tue, 14 Jun 2022 14:28:17 +0200
+Message-Id: <20220614122821.3646071-9-dario.binacchi@amarulasolutions.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220614122821.3646071-1-dario.binacchi@amarulasolutions.com>
 References: <20220614122821.3646071-1-dario.binacchi@amarulasolutions.com>
@@ -69,29 +69,75 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Use the BIT() helper instead of an explicit shift.
+In case the bitrate has been set via ip tool, this patch changes the
+driver to send the open ("O\r") and close ("C\r) commands to the
+adapter.
 
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+
 ---
 
-(no changes since v1)
+Changes in v4:
+- Squashed to the patch [v3,09/13] can: slcan: send the close command to the adapter.
+- Use the CAN_BITRATE_UNKNOWN macro.
 
- drivers/net/can/slcan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes in v2:
+- Improve the commit message.
+
+ drivers/net/can/slcan.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index 64a3aee8a7da..b37d35c2a23a 100644
+index bd3cf53246c7..b08e63f59b8e 100644
 --- a/drivers/net/can/slcan.c
 +++ b/drivers/net/can/slcan.c
-@@ -413,7 +413,7 @@ static int slc_open(struct net_device *dev)
- 	if (sl->tty == NULL)
- 		return -ENODEV;
+@@ -436,9 +436,20 @@ static int slcan_transmit_cmd(struct slcan *sl, const unsigned char *cmd)
+ static int slc_close(struct net_device *dev)
+ {
+ 	struct slcan *sl = netdev_priv(dev);
++	int err;
  
--	sl->flags &= (1 << SLF_INUSE);
-+	sl->flags &= BIT(SLF_INUSE);
+ 	spin_lock_bh(&sl->lock);
+ 	if (sl->tty) {
++		if (sl->can.bittiming.bitrate &&
++		    sl->can.bittiming.bitrate != CAN_BITRATE_UNKNOWN) {
++			spin_unlock_bh(&sl->lock);
++			err = slcan_transmit_cmd(sl, "C\r");
++			spin_lock_bh(&sl->lock);
++			if (err)
++				netdev_warn(dev,
++					    "failed to send close command 'C\\r'\n");
++		}
++
+ 		/* TTY discipline is running. */
+ 		clear_bit(TTY_DO_WRITE_WAKEUP, &sl->tty->flags);
+ 	}
+@@ -497,14 +508,23 @@ static int slc_open(struct net_device *dev)
+ 			netdev_err(dev,
+ 				   "failed to send bitrate command 'C\\rS%d\\r'\n",
+ 				   s);
+-			close_candev(dev);
+-			return err;
++			goto cmd_transmit_failed;
++		}
++
++		err = slcan_transmit_cmd(sl, "O\r");
++		if (err) {
++			netdev_err(dev, "failed to send open command 'O\\r'\n");
++			goto cmd_transmit_failed;
+ 		}
+ 	}
+ 
+ 	sl->can.state = CAN_STATE_ERROR_ACTIVE;
  	netif_start_queue(dev);
  	return 0;
++
++cmd_transmit_failed:
++	close_candev(dev);
++	return err;
  }
+ 
+ static void slc_dealloc(struct slcan *sl)
 -- 
 2.32.0
 
