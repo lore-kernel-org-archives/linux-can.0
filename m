@@ -2,222 +2,151 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BA6CCCA47A
-	for <linux-can@archiver.kernel.org>; Tue, 14 Jun 2022 12:32:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C65FC433EF
+	for <linux-can@archiver.kernel.org>; Tue, 14 Jun 2022 15:27:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237644AbiFNMbU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 14 Jun 2022 08:31:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58660 "EHLO
+        id S236776AbiFNP1i (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 14 Jun 2022 11:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243407AbiFNM2i (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 14 Jun 2022 08:28:38 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE5037BC9
-        for <linux-can@vger.kernel.org>; Tue, 14 Jun 2022 05:28:31 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id v19so11411697edd.4
-        for <linux-can@vger.kernel.org>; Tue, 14 Jun 2022 05:28:31 -0700 (PDT)
+        with ESMTP id S1356438AbiFNP1Z (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 14 Jun 2022 11:27:25 -0400
+Received: from mx0a-0054a801.pphosted.com (mx0a-0054a801.pphosted.com [205.220.160.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B78443EC
+        for <linux-can@vger.kernel.org>; Tue, 14 Jun 2022 08:26:46 -0700 (PDT)
+Received: from pps.filterd (m0208801.ppops.net [127.0.0.1])
+        by mx0b-0054a801.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25EDVN4G015641
+        for <linux-can@vger.kernel.org>; Tue, 14 Jun 2022 08:26:46 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsara.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=samsaracom06092020;
+ bh=N+ZpyJXTqFmXs7zEr5L34q80gYS+Io3SRLH79QvG/T4=;
+ b=JOETpbuzaToD11dCop3crtcExIrhiJ9fnOajiZqdjm4oUbdDZohzFTBzhFCdueOQHXJT
+ fMKKbRvFqtiqm4bVKp8K+I1SsRtzfpiz6h6785Wk1XLJPZrcNlM/hrljBSqmiSBLi9lL
+ EYjl6+BHmiir1dxxFDZpgcsi3GyQ6ckIqkUQPXykvgbleKrHpTGAOB1jLjrnQazQtRtF
+ x/cHCnHWp3xGq/MJGfbQ0Pxi4kZsgixGq/8AMY4XNgWKS6G+z1VANv1IS6nkwVOdpi6c
+ JZH4LpVWyPfgQwIZdT5BWMH4vRCSxK3bvcwUW4sRyqLS3vtOMTmer8WwHQggOttMFMLo ng== 
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com [209.85.222.198])
+        by mx0b-0054a801.pphosted.com (PPS) with ESMTPS id 3gms9v28j7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-can@vger.kernel.org>; Tue, 14 Jun 2022 08:26:45 -0700
+Received: by mail-qk1-f198.google.com with SMTP id bj2-20020a05620a190200b005084968bb24so7679594qkb.23
+        for <linux-can@vger.kernel.org>; Tue, 14 Jun 2022 08:26:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
+        d=samsara.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=lfqn0geMWlo2m+epnZ6MFo0Gce8D/c5YwbUMrCOB20U=;
-        b=lA8lImzum331TJJHsTJ65jBz5jhNkv8tw3ezsIi7YzTZ4BvI2AM5rhz+aOgWERPVL8
-         wf6IQ/SDWFEwFigWABBsxv8ZrP5t/FPjJTo8+VozEf4XwRH8ChY7HINrKepv9pKwMjZZ
-         2tLBe1IhgdW/M3DVZLQDHV1wWR1udzWI6jLZQ=
+        bh=N+ZpyJXTqFmXs7zEr5L34q80gYS+Io3SRLH79QvG/T4=;
+        b=Jbh7GnVirn2vLrSzHWjLAwTOwvH1YpDqx34WB9r67zUQhFgzAFgoCoNarOkrILg7+Y
+         +hVrjpB40YhRqtqyJzeLk9Tx7Tr3bb/Thi/DDdMoBpXNs7whHZzYR8tgYt45oEDXuRov
+         XTthQriwl8QqiI0baRCxqKHhBRO073n27f3RyvAlAl4yDV6s7VkjxbCKgv4oEO1XeIi8
+         f7QlzLXfgBeI9n+/ODZvcuyd71g+4zefb/gnIliCQbHaU9wsJ6uW6wfin/pmENhNL5El
+         ZEDyTYIRJsJbcjOxuvDq0ohxDXu3B8HhQYCGv4YoMQ9jntdGSwC2KMt9LAFLmGC5rL0w
+         GvGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lfqn0geMWlo2m+epnZ6MFo0Gce8D/c5YwbUMrCOB20U=;
-        b=w4sxk9ybw5ggNDQHwjkky/gfqQJXcZVGLvwAiE2nZ2kKRYsENtUofccLHkoYF85vty
-         gf9pDvA0goyYNLUoGyCxbuHOEa5ivvC31F0TurZc3cUTXPk9OU7jZoaOWQWoettE1qLm
-         EJz7VTz+dhXqk9RiCwTVcchyRQiUOmAxLKfC94WTXPFXhGEA0HCkawHMDR8G29k9F9qQ
-         NYj5c3w+/n5XfKRhV1OG6v4eLfgPZ8Qp5SxBnIj81nNgQqmW4/2wvnn2+yDiveJ4B59v
-         XQ61aVHok3kBj+6EuV23hIlzks9Cy0wY/wG3KGgX/1CFZqUiooYTy03FybOMrP1fqRQD
-         6vQA==
-X-Gm-Message-State: AOAM530PdR9Bl01o/hj+lxaUOfpdsa4HXGAQIShyN/tLr0aNDCRT17yq
-        QkrOcXSRMm5b5KBveLHGDgdNyQ==
-X-Google-Smtp-Source: ABdhPJzeyedu9lwFUMlzw7cFqiFQ1EtabbKKn8JVnjLWT5ry77nZm6Z0w1GeuZFjBuJt99IQJ8zumw==
-X-Received: by 2002:a05:6402:21a:b0:431:5c52:82bb with SMTP id t26-20020a056402021a00b004315c5282bbmr5877909edv.70.1655209710212;
-        Tue, 14 Jun 2022 05:28:30 -0700 (PDT)
-Received: from dario-ThinkPad-T14s-Gen-2i.amarulasolutions.com (host-80-116-90-174.pool80116.interbusiness.it. [80.116.90.174])
-        by smtp.gmail.com with ESMTPSA id z22-20020a17090655d600b006f3ef214e2csm5087043ejp.146.2022.06.14.05.28.29
+        bh=N+ZpyJXTqFmXs7zEr5L34q80gYS+Io3SRLH79QvG/T4=;
+        b=1sgunE7gpew2WliIG91i3D8H9WYb2ofTspM6UpK9Xdmm12AWpH7mSGoRJzx5qXOuVW
+         cKRAJg10qDNUid+XVi3zFI/jYClKOj3EsaQSYOHL4VsyNhZf7kwb1oYSBKsPR8D02i3i
+         cDoLO6rTN5eoqY5/VaPMl0e6Zh6+xYltTLm9XQxYwM+2LPeofMxUj63AREbc5g7N0St3
+         YeOYfyYjx9as0TY8XtyAxVRfHmwm2SXbq2R9jkxRAiJUzmlOKmC+FBfqKx+ovdtRgj2Q
+         9v0vg5c5bAatkU7b84Uo6hfZDYX0zsD23MwA2DWV9Fkklgmxx0Zb0CrbG4yH9qn3qRYj
+         bJIQ==
+X-Gm-Message-State: AOAM5331QZC38YNWUO5SdS07EJsPTKkOirkVq1BCqD/BKo4ApND6jrri
+        pnz8rWJZVg4kItAVXcjVGy5nNkwqTX+8ysr8JUlOlT/KQEoUbvhFfrlZXoRIcYss96gOSF+alI3
+        J2zHA+CvhL0cflYPr9q3L
+X-Received: by 2002:ac8:7c4f:0:b0:304:e122:be6 with SMTP id o15-20020ac87c4f000000b00304e1220be6mr4658610qtv.275.1655220404377;
+        Tue, 14 Jun 2022 08:26:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyFJSw37P2wpprIvfzqSWpPx49wJIDgr5w7QSL40oye9iORgjeIN2KbSM/km6DS4jNGeOvPMg==
+X-Received: by 2002:ac8:7c4f:0:b0:304:e122:be6 with SMTP id o15-20020ac87c4f000000b00304e1220be6mr4658590qtv.275.1655220404063;
+        Tue, 14 Jun 2022 08:26:44 -0700 (PDT)
+Received: from downhome.. (ec2-3-215-55-7.compute-1.amazonaws.com. [3.215.55.7])
+        by smtp.gmail.com with ESMTPSA id k4-20020a05620a414400b006a743b360bcsm10199259qko.136.2022.06.14.08.26.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jun 2022 05:28:29 -0700 (PDT)
-From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Amarula patchwork <linux-amarula@amarulasolutions.com>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        michael@amarulasolutions.com,
-        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH v4 03/12] can: slcan: use the alloc_can_skb() helper
-Date:   Tue, 14 Jun 2022 14:28:12 +0200
-Message-Id: <20220614122821.3646071-4-dario.binacchi@amarulasolutions.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220614122821.3646071-1-dario.binacchi@amarulasolutions.com>
-References: <20220614122821.3646071-1-dario.binacchi@amarulasolutions.com>
+        Tue, 14 Jun 2022 08:26:43 -0700 (PDT)
+From:   Rhett Aultman <rhett.aultman@samsara.com>
+To:     linux-can <linux-can@vger.kernel.org>
+Cc:     --cc=Marc Kleine-Budde <mkl@pengutronix.de>,
+        Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
+        Rhett Aultman <rhett.aultman@samsara.com>
+Subject: [PATCH v4 0/1] URB_FREE_COHERENT gs_usb memory leak fix
+Date:   Tue, 14 Jun 2022 11:26:29 -0400
+Message-Id: <20220614152630.2255641-1-rhett.aultman@samsara.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220610213335.3077375-1-rhett.aultman@samsara.com>
+References: <20220610213335.3077375-1-rhett.aultman@samsara.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-ORIG-GUID: -yQ91AAvMwpyg2Zq5871be6MyW2UoRiz
+X-Proofpoint-GUID: -yQ91AAvMwpyg2Zq5871be6MyW2UoRiz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
+ definitions=2022-06-14_05,2022-06-13_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1015 suspectscore=0 mlxscore=0 malwarescore=0
+ bulkscore=0 impostorscore=0 phishscore=0 spamscore=0 adultscore=0
+ mlxlogscore=984 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2204290000 definitions=main-2206140060
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-It is used successfully by most (if not all) CAN device drivers. It
-allows to remove replicated code.
+This patchset resolves a memory leak which can occur with successive
+iterations of calling gs_can_open() and gs_can_close().  The central
+cause of this memory leak, which is an issue common to many of the USB
+CAN drivers, is that memory allocated for RX buffers using
+usb_alloc_coherent() and then kept in the URB will be properly freed
+when the URB is killed.  This assumption is incorrect, as memory
+allocated with usb_alloc_coherent() must be freed with
+usb_free_coherent(), and there is no provision for this in the existing
+URB code.
 
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+The common solution to this, found in v1 of my patches as well as in
+already merged patches for other CAN USB drivers is for the driver
+itself to maintain an array of addresses of the buffers allocated with
+usb_alloc_coherent() and to then iteratively call usb_free_coherent() on
+them in their close function.  This solution requires a driver developer
+to understand this unclear nuance, and it has historically been solved
+in a piecemeal way one driver at a time (note: the gs_usb driver has had
+this issue since the 3.x.x kernel series).
 
----
+Rather than continue to place the burden of complexity on the drivers,
+this patchset adds a new URB flag which allows the DMA buffer to be
+correctly freed with the URB is killed.  This results in a much simpler
+solution at the driver level and with minimal additional code in the USB
+core.
 
-(no changes since v3)
+This v4 patch only updates the commit message for one of the patches in
+the v3 patchset.  No code has changed.
 
-Changes in v3:
-- Increment the error counter in case of decoding failure.
+This patch depends on:
+https://lore.kernel.org/all/20220610213335.3077375-2-rhett.aultman@samsara.com
 
-Changes in v2:
-- Put the data into the allocated skb directly instead of first
-  filling the "cf" on the stack and then doing a memcpy().
+** Changelog **
 
- drivers/net/can/slcan.c | 70 +++++++++++++++++++----------------------
- 1 file changed, 33 insertions(+), 37 deletions(-)
+v3 -> v4:
 
-diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index 6162a9c21672..c39580b142e0 100644
---- a/drivers/net/can/slcan.c
-+++ b/drivers/net/can/slcan.c
-@@ -54,6 +54,7 @@
- #include <linux/kernel.h>
- #include <linux/workqueue.h>
- #include <linux/can.h>
-+#include <linux/can/dev.h>
- #include <linux/can/skb.h>
- #include <linux/can/can-ml.h>
- 
-@@ -143,85 +144,80 @@ static struct net_device **slcan_devs;
- static void slc_bump(struct slcan *sl)
- {
- 	struct sk_buff *skb;
--	struct can_frame cf;
-+	struct can_frame *cf;
- 	int i, tmp;
- 	u32 tmpid;
- 	char *cmd = sl->rbuff;
- 
--	memset(&cf, 0, sizeof(cf));
-+	skb = alloc_can_skb(sl->dev, &cf);
-+	if (unlikely(!skb)) {
-+		sl->dev->stats.rx_dropped++;
-+		return;
-+	}
- 
- 	switch (*cmd) {
- 	case 'r':
--		cf.can_id = CAN_RTR_FLAG;
-+		cf->can_id = CAN_RTR_FLAG;
- 		fallthrough;
- 	case 't':
- 		/* store dlc ASCII value and terminate SFF CAN ID string */
--		cf.len = sl->rbuff[SLC_CMD_LEN + SLC_SFF_ID_LEN];
-+		cf->len = sl->rbuff[SLC_CMD_LEN + SLC_SFF_ID_LEN];
- 		sl->rbuff[SLC_CMD_LEN + SLC_SFF_ID_LEN] = 0;
- 		/* point to payload data behind the dlc */
- 		cmd += SLC_CMD_LEN + SLC_SFF_ID_LEN + 1;
- 		break;
- 	case 'R':
--		cf.can_id = CAN_RTR_FLAG;
-+		cf->can_id = CAN_RTR_FLAG;
- 		fallthrough;
- 	case 'T':
--		cf.can_id |= CAN_EFF_FLAG;
-+		cf->can_id |= CAN_EFF_FLAG;
- 		/* store dlc ASCII value and terminate EFF CAN ID string */
--		cf.len = sl->rbuff[SLC_CMD_LEN + SLC_EFF_ID_LEN];
-+		cf->len = sl->rbuff[SLC_CMD_LEN + SLC_EFF_ID_LEN];
- 		sl->rbuff[SLC_CMD_LEN + SLC_EFF_ID_LEN] = 0;
- 		/* point to payload data behind the dlc */
- 		cmd += SLC_CMD_LEN + SLC_EFF_ID_LEN + 1;
- 		break;
- 	default:
--		return;
-+		goto decode_failed;
- 	}
- 
- 	if (kstrtou32(sl->rbuff + SLC_CMD_LEN, 16, &tmpid))
--		return;
-+		goto decode_failed;
- 
--	cf.can_id |= tmpid;
-+	cf->can_id |= tmpid;
- 
- 	/* get len from sanitized ASCII value */
--	if (cf.len >= '0' && cf.len < '9')
--		cf.len -= '0';
-+	if (cf->len >= '0' && cf->len < '9')
-+		cf->len -= '0';
- 	else
--		return;
-+		goto decode_failed;
- 
- 	/* RTR frames may have a dlc > 0 but they never have any data bytes */
--	if (!(cf.can_id & CAN_RTR_FLAG)) {
--		for (i = 0; i < cf.len; i++) {
-+	if (!(cf->can_id & CAN_RTR_FLAG)) {
-+		for (i = 0; i < cf->len; i++) {
- 			tmp = hex_to_bin(*cmd++);
- 			if (tmp < 0)
--				return;
--			cf.data[i] = (tmp << 4);
-+				goto decode_failed;
-+
-+			cf->data[i] = (tmp << 4);
- 			tmp = hex_to_bin(*cmd++);
- 			if (tmp < 0)
--				return;
--			cf.data[i] |= tmp;
-+				goto decode_failed;
-+
-+			cf->data[i] |= tmp;
- 		}
- 	}
- 
--	skb = dev_alloc_skb(sizeof(struct can_frame) +
--			    sizeof(struct can_skb_priv));
--	if (!skb)
--		return;
--
--	skb->dev = sl->dev;
--	skb->protocol = htons(ETH_P_CAN);
--	skb->pkt_type = PACKET_BROADCAST;
--	skb->ip_summed = CHECKSUM_UNNECESSARY;
--
--	can_skb_reserve(skb);
--	can_skb_prv(skb)->ifindex = sl->dev->ifindex;
--	can_skb_prv(skb)->skbcnt = 0;
--
--	skb_put_data(skb, &cf, sizeof(struct can_frame));
--
- 	sl->dev->stats.rx_packets++;
--	if (!(cf.can_id & CAN_RTR_FLAG))
--		sl->dev->stats.rx_bytes += cf.len;
-+	if (!(cf->can_id & CAN_RTR_FLAG))
-+		sl->dev->stats.rx_bytes += cf->len;
- 
- 	netif_rx(skb);
-+	return;
-+
-+decode_failed:
-+	sl->dev->stats.rx_errors++;
-+	dev_kfree_skb(skb);
- }
- 
- /* parse tty input stream */
+  * Add Fixes tag and correct formatting for reference to prior commit
+
+v2 -> v3:
+
+  * Resolve style nits in gs_usb.c
+  * Squash commits in urb.c and correct authorship
+
+v1 -> v2:
+
+  * Add URB_FREE_COHERENT flag to urb.c
+  * Use URB_FREE_COHERENT flag rather than arrays of buffers in gs_usb.c
+
+
+Rhett Aultman (1):
+  can: gs_usb: fix DMA memory leak on close
+
+ drivers/net/can/usb/gs_usb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
 -- 
-2.32.0
+2.30.2
 
