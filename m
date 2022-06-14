@@ -2,36 +2,55 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4178C43334
-	for <linux-can@archiver.kernel.org>; Tue, 14 Jun 2022 07:24:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94989C43334
+	for <linux-can@archiver.kernel.org>; Tue, 14 Jun 2022 12:31:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353996AbiFNHY0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 14 Jun 2022 03:24:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40464 "EHLO
+        id S242909AbiFNMaz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 14 Jun 2022 08:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351511AbiFNHY0 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 14 Jun 2022 03:24:26 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA49D36E34
-        for <linux-can@vger.kernel.org>; Tue, 14 Jun 2022 00:24:25 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1o10uO-00034J-F5; Tue, 14 Jun 2022 09:24:16 +0200
-Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 3A8EB94613;
-        Tue, 14 Jun 2022 07:24:15 +0000 (UTC)
-Date:   Tue, 14 Jun 2022 09:24:14 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Cc:     linux-kernel@vger.kernel.org, michael@amarulasolutions.com,
-        Amarula patchwork <linux-amarula@amarulasolutions.com>,
+        with ESMTP id S243456AbiFNM2i (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 14 Jun 2022 08:28:38 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B123E0D8
+        for <linux-can@vger.kernel.org>; Tue, 14 Jun 2022 05:28:33 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id b8so11367849edj.11
+        for <linux-can@vger.kernel.org>; Tue, 14 Jun 2022 05:28:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=R7Zmyhhovdg7jA4sbkGr15373g5fZzWXwn/PzaeWDng=;
+        b=oyKoCpe6Et5htQdcXy2fQRoA8XFpBI1ozrSVuX76KcLzpkF/2kSXD3WdLcabVUE7eK
+         wz/QavsFVQPt0Z6e7JZF7qAuYQsULzhq2vmd84BnIiU215InQijl3uzf/UOXyQu3Sxbd
+         qq2G8TGd56pKCf91XdJ6RN+wQRHq+oxfb60To=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=R7Zmyhhovdg7jA4sbkGr15373g5fZzWXwn/PzaeWDng=;
+        b=afQxtk4icfFE9xbYaB7bSWbJkbAPJ+YzjQ3NIHxsWXDqSIeZubVhHiE3Ke1f11r/vN
+         Tbomg6F2edbD4v5Sd6+tzZ/bbLAGDOOcDwoNYdguY+Tt9HMURDjNa/cKMAwmqK1F5WQ6
+         X5FbOoj0bbsgZPQjStVzA+b7YNtSV50kYGwa8QiOruvNEDPqksIWUjXrh61AI54MknKP
+         HYt1fNlAyVOHVSM4aY8OAq7VeRA4MZ+vUbJbu59ZCqVXWnB9WbthPIDPcX7R1V3wrZgD
+         cPa0hnwTjOQBKgHPlVIVs/3K4yzGthGi3ZMpuJaiQL5Sw4m+kxcC6todrihYSkOp+XUV
+         wjmg==
+X-Gm-Message-State: AJIora+ct+2s9ruhHaOf3nOyh4CJk8Xe5r9pkSERDWeraiBdO/8ggicU
+        B+TYTPalF7MaPG50VfOJXdP5gA==
+X-Google-Smtp-Source: AGRyM1t+BFdrqvcBq6yfsdEGiIsmtskF8SSI6ppRrG78PCWZDjRV1IbsiR7l22djA+NvUN8mBOynNA==
+X-Received: by 2002:a05:6402:25c3:b0:434:dfbd:913e with SMTP id x3-20020a05640225c300b00434dfbd913emr5808884edb.27.1655209711597;
+        Tue, 14 Jun 2022 05:28:31 -0700 (PDT)
+Received: from dario-ThinkPad-T14s-Gen-2i.amarulasolutions.com (host-80-116-90-174.pool80116.interbusiness.it. [80.116.90.174])
+        by smtp.gmail.com with ESMTPSA id z22-20020a17090655d600b006f3ef214e2csm5087043ejp.146.2022.06.14.05.28.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jun 2022 05:28:31 -0700 (PDT)
+From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Amarula patchwork <linux-amarula@amarulasolutions.com>,
         Oliver Hartkopp <socketcan@hartkopp.net>,
+        michael@amarulasolutions.com,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -39,69 +58,66 @@ Cc:     linux-kernel@vger.kernel.org, michael@amarulasolutions.com,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Wolfgang Grandegger <wg@grandegger.com>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v3 05/13] can: netlink: dump bitrate 0 if
- can_priv::bittiming.bitrate is -1U
-Message-ID: <20220614072414.dxdrzrcokusunf3v@pengutronix.de>
-References: <20220612213927.3004444-1-dario.binacchi@amarulasolutions.com>
- <20220612213927.3004444-6-dario.binacchi@amarulasolutions.com>
- <20220613071058.h6bmy6emswh76q5s@pengutronix.de>
- <CABGWkvoNJYfK6bcjYtUi9qKvRfEfHUyrCWDBhOL4EjurW5YJ8Q@mail.gmail.com>
+Subject: [PATCH v4 04/12] can: netlink: dump bitrate 0 if can_priv::bittiming.bitrate is -1U
+Date:   Tue, 14 Jun 2022 14:28:13 +0200
+Message-Id: <20220614122821.3646071-5-dario.binacchi@amarulasolutions.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20220614122821.3646071-1-dario.binacchi@amarulasolutions.com>
+References: <20220614122821.3646071-1-dario.binacchi@amarulasolutions.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ziwxdbyycswus75l"
-Content-Disposition: inline
-In-Reply-To: <CABGWkvoNJYfK6bcjYtUi9qKvRfEfHUyrCWDBhOL4EjurW5YJ8Q@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+Upcoming changes on slcan driver will require you to specify a bitrate
+of value -1 to prevent the open_candev() from failing but at the same
+time highlighting that it is a fake value. In this case the command
+`ip --details -s -s link show' would print 4294967295 as the bitrate
+value. The patch change this value in 0.
 
---ziwxdbyycswus75l
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
-On 13.06.2022 22:44:12, Dario Binacchi wrote:
-> On Mon, Jun 13, 2022 at 9:11 AM Marc Kleine-Budde <mkl@pengutronix.de> wr=
-ote:
-> > This would make the code a lot cleaner. Can you think of a nice macro
-> > name for the -1?
-> >
-> > 0 could be CAN_BITRATE_UNCONFIGURED or _UNSET. For -1 I cannot find a
-> > catchy name, something like CAN_BITRATE_CONFIGURED_UNKOWN or
-> > SET_UNKNOWN.
-> >
->=20
-> Personally I would use CAN_BITRATE_UNSET (0) and CAN_BITRATE_UNKNOWN (-1).
-> Let me know what your ultimate preference is.
+---
 
-Looks good.
+Changes in v4:
+- Move the patch in front of the patch "[v3,04/13] can: slcan: use CAN network device driver API".
+- Add the CAN_BITRATE_UNSET (0) and CAN_BITRATE_UNKNOWN (-1U) macros.
+- Simplify the bitrate check to dump it.
+- Update the commit description.
 
-Marc
+ drivers/net/can/dev/netlink.c | 3 ++-
+ include/linux/can/bittiming.h | 2 ++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index 7633d98e3912..5427712fcf80 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -509,7 +509,8 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
+ 	if (priv->do_get_state)
+ 		priv->do_get_state(dev, &state);
+ 
+-	if ((priv->bittiming.bitrate &&
++	if ((priv->bittiming.bitrate != CAN_BITRATE_UNSET &&
++	     priv->bittiming.bitrate != CAN_BITRATE_UNKNOWN &&
+ 	     nla_put(skb, IFLA_CAN_BITTIMING,
+ 		     sizeof(priv->bittiming), &priv->bittiming)) ||
+ 
+diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
+index 7ae21c0f7f23..ef0a77173e3c 100644
+--- a/include/linux/can/bittiming.h
++++ b/include/linux/can/bittiming.h
+@@ -11,6 +11,8 @@
+ 
+ #define CAN_SYNC_SEG 1
+ 
++#define CAN_BITRATE_UNSET 0
++#define CAN_BITRATE_UNKNOWN (-1U)
+ 
+ #define CAN_CTRLMODE_TDC_MASK					\
+ 	(CAN_CTRLMODE_TDC_AUTO | CAN_CTRLMODE_TDC_MANUAL)
+-- 
+2.32.0
 
---ziwxdbyycswus75l
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmKoN5wACgkQrX5LkNig
-012SQQf+MCc/KN4pvlFpJLP2EPpCUYG70n+5XaUEvz9ZZ+hDCfpEvX69pVFhGg/8
-58BYsbjIo4lh8XeZ9gzAIkeXjWsoHmBX2XHzcjLPM70sc8RN9VMr+uC32Wgn/VKo
-0e+S3Tvjd4EmSr0D7ulIjssYDatwdxTY+LgJUk47njL+x5PaoDFqub+MScRcNFt1
-cNk+2+B9H0klY6GCMpQiGGSHkNmOB+QVBo5tpBRaSJH9oLTIT3W5KO65U6FPz57H
-xm7kChVAUgHEx9vHRS92v2XyapmpTZwsMU2GJZRvNaoy+blRgsACrR0MbuGPnb6o
-PaGXdriKS8wM/WKuTKky0cuPYR7WLg==
-=OWqG
------END PGP SIGNATURE-----
-
---ziwxdbyycswus75l--
