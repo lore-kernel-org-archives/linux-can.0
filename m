@@ -2,45 +2,48 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E28EC43334
-	for <linux-can@archiver.kernel.org>; Sat, 25 Jun 2022 12:06:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C8AEC433EF
+	for <linux-can@archiver.kernel.org>; Sat, 25 Jun 2022 12:06:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232795AbiFYMGl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S232802AbiFYMGl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Sat, 25 Jun 2022 08:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232772AbiFYMG0 (ORCPT
+        with ESMTP id S232773AbiFYMG0 (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Sat, 25 Jun 2022 08:06:26 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B472817050
-        for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 05:06:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6795F1706E
+        for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 05:06:20 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1o54YL-0002WL-Uf
-        for linux-can@vger.kernel.org; Sat, 25 Jun 2022 14:06:17 +0200
+        id 1o54YM-0002Wt-H0
+        for linux-can@vger.kernel.org; Sat, 25 Jun 2022 14:06:18 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 6517B9F129
-        for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 12:03:51 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 68D619F1E7
+        for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 12:04:41 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5AA619F11A;
-        Sat, 25 Jun 2022 12:03:49 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 54FF99F19D;
+        Sat, 25 Jun 2022 12:04:02 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 26e0e725;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id fc963770;
         Sat, 25 Jun 2022 12:03:36 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Srinivas Neeli <srinivas.neeli@xilinx.com>,
+        kernel@pengutronix.de,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        kernel test robot <lkp@intel.com>,
+        Max Staudt <max@enpas.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 01/22] can: xilinx_can: add Transmitter Delay Compensation (TDC) feature support
-Date:   Sat, 25 Jun 2022 14:03:14 +0200
-Message-Id: <20220625120335.324697-2-mkl@pengutronix.de>
+Subject: [PATCH net-next 10/22] can: skb: move can_dropped_invalid_skb() and can_skb_headroom_valid() to skb.c
+Date:   Sat, 25 Jun 2022 14:03:23 +0200
+Message-Id: <20220625120335.324697-11-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220625120335.324697-1-mkl@pengutronix.de>
 References: <20220625120335.324697-1-mkl@pengutronix.de>
@@ -54,166 +57,174 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Srinivas Neeli <srinivas.neeli@xilinx.com>
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-This patch adds Transmitter Delay Compensation (TDC) feature support.
+The functions can_dropped_invalid_skb() and can_skb_headroom_valid()
+grew a lot over the years to a point which it does not make much sense
+to have them defined as static inline in header files. Move those two
+functions to the .c counterpart of skb.h.
 
-In the case of higher measured loop delay with higher bit rates, bit
-stuff errors are observed. Enabling the TDC feature in CAN-FD
-controllers will compensate for the measured loop delay in the receive
-path.
+can_skb_headroom_valid()'s only caller being
+can_dropped_invalid_skb(), the declaration is removed from the
+header. Only can_dropped_invalid_skb() gets its symbol exported.
 
-Link: https://lore.kernel.org/all/20220609103157.1425730-1-srinivas.neeli@xilinx.com
-Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
-Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-[mkl: fix indention]
+While doing so, do a small cleanup: add brackets around the else block
+in can_dropped_invalid_skb().
+
+Link: https://lore.kernel.org/all/20220610143009.323579-7-mailhol.vincent@wanadoo.fr
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Reported-by: kernel test robot <lkp@intel.com>
+Acked-by: Max Staudt <max@enpas.org>
+Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/xilinx_can.c | 66 +++++++++++++++++++++++++++++++++---
- 1 file changed, 61 insertions(+), 5 deletions(-)
+ drivers/net/can/dev/skb.c | 58 ++++++++++++++++++++++++++++++++++++++
+ include/linux/can/skb.h   | 59 +--------------------------------------
+ 2 files changed, 59 insertions(+), 58 deletions(-)
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 8a3b7b103ca4..70dcb45078bf 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /* Xilinx CAN device driver
-  *
-- * Copyright (C) 2012 - 2014 Xilinx, Inc.
-+ * Copyright (C) 2012 - 2022 Xilinx, Inc.
-  * Copyright (C) 2009 PetaLogix. All rights reserved.
-  * Copyright (C) 2017 - 2018 Sandvik Mining and Construction Oy
-  *
-@@ -9,6 +9,7 @@
-  * This driver is developed for Axi CAN IP and for Zynq CANPS Controller.
-  */
- 
-+#include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/errno.h>
- #include <linux/init.h>
-@@ -86,6 +87,8 @@ enum xcan_reg {
- #define XCAN_MSR_LBACK_MASK		0x00000002 /* Loop back mode select */
- #define XCAN_MSR_SLEEP_MASK		0x00000001 /* Sleep mode select */
- #define XCAN_BRPR_BRP_MASK		0x000000FF /* Baud rate prescaler */
-+#define XCAN_BRPR_TDCO_MASK		GENMASK(12, 8)  /* TDCO */
-+#define XCAN_2_BRPR_TDCO_MASK		GENMASK(13, 8)  /* TDCO for CANFD 2.0 */
- #define XCAN_BTR_SJW_MASK		0x00000180 /* Synchronous jump width */
- #define XCAN_BTR_TS2_MASK		0x00000070 /* Time segment 2 */
- #define XCAN_BTR_TS1_MASK		0x0000000F /* Time segment 1 */
-@@ -99,6 +102,7 @@ enum xcan_reg {
- #define XCAN_ESR_STER_MASK		0x00000004 /* Stuff error */
- #define XCAN_ESR_FMER_MASK		0x00000002 /* Form error */
- #define XCAN_ESR_CRCER_MASK		0x00000001 /* CRC error */
-+#define XCAN_SR_TDCV_MASK		GENMASK(22, 16) /* TDCV Value */
- #define XCAN_SR_TXFLL_MASK		0x00000400 /* TX FIFO is full */
- #define XCAN_SR_ESTAT_MASK		0x00000180 /* Error status */
- #define XCAN_SR_ERRWRN_MASK		0x00000040 /* Error warning */
-@@ -132,6 +136,7 @@ enum xcan_reg {
- #define XCAN_DLCR_BRS_MASK		0x04000000 /* BRS Mask in DLC */
- 
- /* CAN register bit shift - XCAN_<REG>_<BIT>_SHIFT */
-+#define XCAN_BRPR_TDC_ENABLE		BIT(16) /* Transmitter Delay Compensation (TDC) Enable */
- #define XCAN_BTR_SJW_SHIFT		7  /* Synchronous jump width */
- #define XCAN_BTR_TS2_SHIFT		4  /* Time segment 2 */
- #define XCAN_BTR_SJW_SHIFT_CANFD	16 /* Synchronous jump width */
-@@ -276,6 +281,26 @@ static const struct can_bittiming_const xcan_data_bittiming_const_canfd2 = {
- 	.brp_inc = 1,
- };
- 
-+/* Transmission Delay Compensation constants for CANFD 1.0 */
-+static const struct can_tdc_const xcan_tdc_const_canfd = {
-+	.tdcv_min = 0,
-+	.tdcv_max = 0, /* Manual mode not supported. */
-+	.tdco_min = 0,
-+	.tdco_max = 32,
-+	.tdcf_min = 0, /* Filter window not supported */
-+	.tdcf_max = 0,
-+};
-+
-+/* Transmission Delay Compensation constants for CANFD 2.0 */
-+static const struct can_tdc_const xcan_tdc_const_canfd2 = {
-+	.tdcv_min = 0,
-+	.tdcv_max = 0, /* Manual mode not supported. */
-+	.tdco_min = 0,
-+	.tdco_max = 64,
-+	.tdcf_min = 0, /* Filter window not supported */
-+	.tdcf_max = 0,
-+};
-+
- /**
-  * xcan_write_reg_le - Write a value to the device register little endian
-  * @priv:	Driver private data structure
-@@ -424,6 +449,14 @@ static int xcan_set_bittiming(struct net_device *ndev)
- 	    priv->devtype.cantype == XAXI_CANFD_2_0) {
- 		/* Setting Baud Rate prescalar value in F_BRPR Register */
- 		btr0 = dbt->brp - 1;
-+		if (can_tdc_is_enabled(&priv->can)) {
-+			if (priv->devtype.cantype == XAXI_CANFD)
-+				btr0 |= FIELD_PREP(XCAN_BRPR_TDCO_MASK, priv->can.tdc.tdco) |
-+					XCAN_BRPR_TDC_ENABLE;
-+			else
-+				btr0 |= FIELD_PREP(XCAN_2_BRPR_TDCO_MASK, priv->can.tdc.tdco) |
-+					XCAN_BRPR_TDC_ENABLE;
-+		}
- 
- 		/* Setting Time Segment 1 in BTR Register */
- 		btr1 = dbt->prop_seg + dbt->phase_seg1 - 1;
-@@ -1483,6 +1516,22 @@ static int xcan_get_berr_counter(const struct net_device *ndev,
- 	return 0;
+diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
+index a4208f125b76..dc9da76c0470 100644
+--- a/drivers/net/can/dev/skb.c
++++ b/drivers/net/can/dev/skb.c
+@@ -259,3 +259,61 @@ struct sk_buff *alloc_can_err_skb(struct net_device *dev, struct can_frame **cf)
+ 	return skb;
  }
- 
-+/**
-+ * xcan_get_auto_tdcv - Get Transmitter Delay Compensation Value
-+ * @ndev:	Pointer to net_device structure
-+ * @tdcv:	Pointer to TDCV value
-+ *
-+ * Return: 0 on success
-+ */
-+static int xcan_get_auto_tdcv(const struct net_device *ndev, u32 *tdcv)
+ EXPORT_SYMBOL_GPL(alloc_can_err_skb);
++
++/* Check for outgoing skbs that have not been created by the CAN subsystem */
++static bool can_skb_headroom_valid(struct net_device *dev, struct sk_buff *skb)
 +{
-+	struct xcan_priv *priv = netdev_priv(ndev);
++	/* af_packet creates a headroom of HH_DATA_MOD bytes which is fine */
++	if (WARN_ON_ONCE(skb_headroom(skb) < sizeof(struct can_skb_priv)))
++		return false;
 +
-+	*tdcv = FIELD_GET(XCAN_SR_TDCV_MASK, priv->read_reg(priv, XCAN_SR_OFFSET));
++	/* af_packet does not apply CAN skb specific settings */
++	if (skb->ip_summed == CHECKSUM_NONE) {
++		/* init headroom */
++		can_skb_prv(skb)->ifindex = dev->ifindex;
++		can_skb_prv(skb)->skbcnt = 0;
 +
-+	return 0;
++		skb->ip_summed = CHECKSUM_UNNECESSARY;
++
++		/* perform proper loopback on capable devices */
++		if (dev->flags & IFF_ECHO)
++			skb->pkt_type = PACKET_LOOPBACK;
++		else
++			skb->pkt_type = PACKET_HOST;
++
++		skb_reset_mac_header(skb);
++		skb_reset_network_header(skb);
++		skb_reset_transport_header(skb);
++	}
++
++	return true;
 +}
 +
- static const struct net_device_ops xcan_netdev_ops = {
- 	.ndo_open	= xcan_open,
- 	.ndo_stop	= xcan_close,
-@@ -1735,17 +1784,24 @@ static int xcan_probe(struct platform_device *pdev)
- 	priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
- 					CAN_CTRLMODE_BERR_REPORTING;
- 
--	if (devtype->cantype == XAXI_CANFD)
-+	if (devtype->cantype == XAXI_CANFD) {
- 		priv->can.data_bittiming_const =
- 			&xcan_data_bittiming_const_canfd;
-+		priv->can.tdc_const = &xcan_tdc_const_canfd;
++/* Drop a given socketbuffer if it does not contain a valid CAN frame. */
++bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb)
++{
++	const struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
++
++	if (skb->protocol == htons(ETH_P_CAN)) {
++		if (unlikely(skb->len != CAN_MTU ||
++			     cfd->len > CAN_MAX_DLEN))
++			goto inval_skb;
++	} else if (skb->protocol == htons(ETH_P_CANFD)) {
++		if (unlikely(skb->len != CANFD_MTU ||
++			     cfd->len > CANFD_MAX_DLEN))
++			goto inval_skb;
++	} else {
++		goto inval_skb;
 +	}
++
++	if (!can_skb_headroom_valid(dev, skb))
++		goto inval_skb;
++
++	return false;
++
++inval_skb:
++	kfree_skb(skb);
++	dev->stats.tx_dropped++;
++	return true;
++}
++EXPORT_SYMBOL_GPL(can_dropped_invalid_skb);
+diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
+index fdb22b00674a..182749e858b3 100644
+--- a/include/linux/can/skb.h
++++ b/include/linux/can/skb.h
+@@ -31,6 +31,7 @@ struct sk_buff *alloc_canfd_skb(struct net_device *dev,
+ 				struct canfd_frame **cfd);
+ struct sk_buff *alloc_can_err_skb(struct net_device *dev,
+ 				  struct can_frame **cf);
++bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb);
  
--	if (devtype->cantype == XAXI_CANFD_2_0)
-+	if (devtype->cantype == XAXI_CANFD_2_0) {
- 		priv->can.data_bittiming_const =
- 			&xcan_data_bittiming_const_canfd2;
-+		priv->can.tdc_const = &xcan_tdc_const_canfd2;
-+	}
+ /*
+  * The struct can_skb_priv is used to transport additional information along
+@@ -96,64 +97,6 @@ static inline struct sk_buff *can_create_echo_skb(struct sk_buff *skb)
+ 	return nskb;
+ }
  
- 	if (devtype->cantype == XAXI_CANFD ||
--	    devtype->cantype == XAXI_CANFD_2_0)
--		priv->can.ctrlmode_supported |= CAN_CTRLMODE_FD;
-+	    devtype->cantype == XAXI_CANFD_2_0) {
-+		priv->can.ctrlmode_supported |= CAN_CTRLMODE_FD |
-+						CAN_CTRLMODE_TDC_AUTO;
-+		priv->can.do_get_auto_tdcv = xcan_get_auto_tdcv;
-+	}
- 
- 	priv->reg_base = addr;
- 	priv->tx_max = tx_max;
-
-base-commit: 27f2533bcc6e909b85d3c1b738fa1f203ed8a835
+-/* Check for outgoing skbs that have not been created by the CAN subsystem */
+-static inline bool can_skb_headroom_valid(struct net_device *dev,
+-					  struct sk_buff *skb)
+-{
+-	/* af_packet creates a headroom of HH_DATA_MOD bytes which is fine */
+-	if (WARN_ON_ONCE(skb_headroom(skb) < sizeof(struct can_skb_priv)))
+-		return false;
+-
+-	/* af_packet does not apply CAN skb specific settings */
+-	if (skb->ip_summed == CHECKSUM_NONE) {
+-		/* init headroom */
+-		can_skb_prv(skb)->ifindex = dev->ifindex;
+-		can_skb_prv(skb)->skbcnt = 0;
+-
+-		skb->ip_summed = CHECKSUM_UNNECESSARY;
+-
+-		/* perform proper loopback on capable devices */
+-		if (dev->flags & IFF_ECHO)
+-			skb->pkt_type = PACKET_LOOPBACK;
+-		else
+-			skb->pkt_type = PACKET_HOST;
+-
+-		skb_reset_mac_header(skb);
+-		skb_reset_network_header(skb);
+-		skb_reset_transport_header(skb);
+-	}
+-
+-	return true;
+-}
+-
+-/* Drop a given socketbuffer if it does not contain a valid CAN frame. */
+-static inline bool can_dropped_invalid_skb(struct net_device *dev,
+-					  struct sk_buff *skb)
+-{
+-	const struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+-
+-	if (skb->protocol == htons(ETH_P_CAN)) {
+-		if (unlikely(skb->len != CAN_MTU ||
+-			     cfd->len > CAN_MAX_DLEN))
+-			goto inval_skb;
+-	} else if (skb->protocol == htons(ETH_P_CANFD)) {
+-		if (unlikely(skb->len != CANFD_MTU ||
+-			     cfd->len > CANFD_MAX_DLEN))
+-			goto inval_skb;
+-	} else
+-		goto inval_skb;
+-
+-	if (!can_skb_headroom_valid(dev, skb))
+-		goto inval_skb;
+-
+-	return false;
+-
+-inval_skb:
+-	kfree_skb(skb);
+-	dev->stats.tx_dropped++;
+-	return true;
+-}
+-
+ static inline bool can_is_canfd_skb(const struct sk_buff *skb)
+ {
+ 	/* the CAN specific type of skb is identified by its data length */
 -- 
 2.35.1
 
