@@ -2,48 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19AC3CCA479
-	for <linux-can@archiver.kernel.org>; Sat, 25 Jun 2022 12:06:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58760C43334
+	for <linux-can@archiver.kernel.org>; Sat, 25 Jun 2022 12:06:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232858AbiFYMGz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 25 Jun 2022 08:06:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44020 "EHLO
+        id S232782AbiFYMG4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 25 Jun 2022 08:06:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232775AbiFYMGn (ORCPT
+        with ESMTP id S232777AbiFYMGn (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Sat, 25 Jun 2022 08:06:43 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C43F2BB0D
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5559D2BB13
         for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 05:06:27 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1o54YT-0002f6-5W
+        id 1o54YT-0002fA-B3
         for linux-can@vger.kernel.org; Sat, 25 Jun 2022 14:06:25 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id CEF4C9F1BD
-        for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 12:04:29 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id C70139F1FF
+        for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 12:04:54 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4750D9F185;
-        Sat, 25 Jun 2022 12:04:01 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id CEB509F1D8;
+        Sat, 25 Jun 2022 12:04:35 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 69e16054;
-        Sat, 25 Jun 2022 12:03:36 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 331330ee;
+        Sat, 25 Jun 2022 12:03:37 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Max Staudt <max@enpas.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 08/22] can: Kconfig: add CONFIG_CAN_RX_OFFLOAD
-Date:   Sat, 25 Jun 2022 14:03:21 +0200
-Message-Id: <20220625120335.324697-9-mkl@pengutronix.de>
+Subject: [PATCH net-next 13/22] can: etas_es58x: replace es58x_device::rx_max_packet_size by usb_maxpacket()
+Date:   Sat, 25 Jun 2022 14:03:26 +0200
+Message-Id: <20220625120335.324697-14-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220625120335.324697-1-mkl@pengutronix.de>
 References: <20220625120335.324697-1-mkl@pengutronix.de>
@@ -59,95 +56,72 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-Only a few drivers rely on the CAN rx offload framework (as of the
-writing of this patch, only four: flexcan, m_can, mcp251xfd and
-ti_hecc). Split it out of can-dev and add a new config symbol:
-CAN_RX_OFFLOAD.
+The field rx_max_packet_size of struct es58x_device in nothing else
+than usb_endpoint_descriptor::wMaxPacketSize and can be easily
+retrieved using usb_maxpacket(). Also, rx_max_packet_size being used a
+single time, there is no merit to cache it locally.
 
-The drivers relying on CAN rx offload are in different sub
-folders. Make CAN_RX_OFFLOAD an hidden option and tag all the drivers
-depending on that feature with "select CAN_RX_OFFLOAD" so that the
-option gets automatically enabled if and only if one of those drivers
-is chosen.
+Remove es58x_device::rx_max_packet_size and rely on usb_maxpacket()
+instead.
 
-Link: https://lore.kernel.org/all/20220610143009.323579-5-mailhol.vincent@wanadoo.fr
-Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
+Link: https://lore.kernel.org/all/20220611162037.1507-2-mailhol.vincent@wanadoo.fr
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Acked-by: Max Staudt <max@enpas.org>
-Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/Kconfig               | 5 +++++
- drivers/net/can/dev/Makefile          | 2 +-
- drivers/net/can/m_can/Kconfig         | 1 +
- drivers/net/can/spi/mcp251xfd/Kconfig | 1 +
- 4 files changed, 8 insertions(+), 1 deletion(-)
+ drivers/net/can/usb/etas_es58x/es58x_core.c | 5 ++---
+ drivers/net/can/usb/etas_es58x/es58x_core.h | 2 --
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-index 87470feae6b1..5335f3afc0a5 100644
---- a/drivers/net/can/Kconfig
-+++ b/drivers/net/can/Kconfig
-@@ -102,6 +102,9 @@ config CAN_CALC_BITTIMING
+diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
+index 2d73ebbf3836..7353745f92d7 100644
+--- a/drivers/net/can/usb/etas_es58x/es58x_core.c
++++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
+@@ -1707,7 +1707,7 @@ static int es58x_alloc_rx_urbs(struct es58x_device *es58x_dev)
+ {
+ 	const struct device *dev = es58x_dev->dev;
+ 	const struct es58x_parameters *param = es58x_dev->param;
+-	size_t rx_buf_len = es58x_dev->rx_max_packet_size;
++	u16 rx_buf_len = usb_maxpacket(es58x_dev->udev, es58x_dev->rx_pipe);
+ 	struct urb *urb;
+ 	u8 *buf;
+ 	int i;
+@@ -1739,7 +1739,7 @@ static int es58x_alloc_rx_urbs(struct es58x_device *es58x_dev)
+ 		dev_err(dev, "%s: Could not setup any rx URBs\n", __func__);
+ 		return ret;
+ 	}
+-	dev_dbg(dev, "%s: Allocated %d rx URBs each of size %zu\n",
++	dev_dbg(dev, "%s: Allocated %d rx URBs each of size %u\n",
+ 		__func__, i, rx_buf_len);
  
- 	  If unsure, say Y.
+ 	return ret;
+@@ -2223,7 +2223,6 @@ static struct es58x_device *es58x_init_es58x_dev(struct usb_interface *intf,
+ 					     ep_in->bEndpointAddress);
+ 	es58x_dev->tx_pipe = usb_sndbulkpipe(es58x_dev->udev,
+ 					     ep_out->bEndpointAddress);
+-	es58x_dev->rx_max_packet_size = le16_to_cpu(ep_in->wMaxPacketSize);
  
-+config CAN_RX_OFFLOAD
-+	bool
-+
- config CAN_AT91
- 	tristate "Atmel AT91 onchip CAN controller"
- 	depends on (ARCH_AT91 || COMPILE_TEST) && HAS_IOMEM
-@@ -113,6 +116,7 @@ config CAN_FLEXCAN
- 	tristate "Support for Freescale FLEXCAN based chips"
- 	depends on OF || COLDFIRE || COMPILE_TEST
- 	depends on HAS_IOMEM
-+	select CAN_RX_OFFLOAD
- 	help
- 	  Say Y here if you want to support for Freescale FlexCAN.
+ 	return es58x_dev;
+ }
+diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.h b/drivers/net/can/usb/etas_es58x/es58x_core.h
+index e5033cb5e695..512c5b7a1cfa 100644
+--- a/drivers/net/can/usb/etas_es58x/es58x_core.h
++++ b/drivers/net/can/usb/etas_es58x/es58x_core.h
+@@ -380,7 +380,6 @@ struct es58x_operators {
+  * @timestamps: a temporary buffer to store the time stamps before
+  *	feeding them to es58x_can_get_echo_skb(). Can only be used
+  *	in RX branches.
+- * @rx_max_packet_size: Maximum length of bulk-in URB.
+  * @num_can_ch: Number of CAN channel (i.e. number of elements of @netdev).
+  * @opened_channel_cnt: number of channels opened. Free of race
+  *	conditions because its two users (net_device_ops:ndo_open()
+@@ -414,7 +413,6 @@ struct es58x_device {
  
-@@ -162,6 +166,7 @@ config CAN_SUN4I
- config CAN_TI_HECC
- 	depends on ARM
- 	tristate "TI High End CAN Controller"
-+	select CAN_RX_OFFLOAD
- 	help
- 	  Driver for TI HECC (High End CAN Controller) module found on many
- 	  TI devices. The device specifications are available from www.ti.com
-diff --git a/drivers/net/can/dev/Makefile b/drivers/net/can/dev/Makefile
-index 791e6b297ea3..633687d6b6c0 100644
---- a/drivers/net/can/dev/Makefile
-+++ b/drivers/net/can/dev/Makefile
-@@ -9,4 +9,4 @@ can-dev-$(CONFIG_CAN_NETLINK) += bittiming.o
- can-dev-$(CONFIG_CAN_NETLINK) += dev.o
- can-dev-$(CONFIG_CAN_NETLINK) += length.o
- can-dev-$(CONFIG_CAN_NETLINK) += netlink.o
--can-dev-$(CONFIG_CAN_NETLINK) += rx-offload.o
-+can-dev-$(CONFIG_CAN_RX_OFFLOAD) += rx-offload.o
-diff --git a/drivers/net/can/m_can/Kconfig b/drivers/net/can/m_can/Kconfig
-index 45ad1b3f0cd0..fc2afab36279 100644
---- a/drivers/net/can/m_can/Kconfig
-+++ b/drivers/net/can/m_can/Kconfig
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- menuconfig CAN_M_CAN
- 	tristate "Bosch M_CAN support"
-+	select CAN_RX_OFFLOAD
- 	help
- 	  Say Y here if you want support for Bosch M_CAN controller framework.
- 	  This is common support for devices that embed the Bosch M_CAN IP.
-diff --git a/drivers/net/can/spi/mcp251xfd/Kconfig b/drivers/net/can/spi/mcp251xfd/Kconfig
-index dd0fc0a54be1..877e4356010d 100644
---- a/drivers/net/can/spi/mcp251xfd/Kconfig
-+++ b/drivers/net/can/spi/mcp251xfd/Kconfig
-@@ -2,6 +2,7 @@
+ 	u64 timestamps[ES58X_ECHO_BULK_MAX];
  
- config CAN_MCP251XFD
- 	tristate "Microchip MCP251xFD SPI CAN controllers"
-+	select CAN_RX_OFFLOAD
- 	select REGMAP
- 	select WANT_DEV_COREDUMP
- 	help
+-	u16 rx_max_packet_size;
+ 	u8 num_can_ch;
+ 	u8 opened_channel_cnt;
+ 
 -- 
 2.35.1
 
