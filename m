@@ -2,44 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E21DCCA480
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C49BBCCA481
 	for <linux-can@archiver.kernel.org>; Sat, 25 Jun 2022 12:06:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232787AbiFYMG0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 25 Jun 2022 08:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
+        id S232745AbiFYMG1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 25 Jun 2022 08:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232761AbiFYMGT (ORCPT
+        with ESMTP id S232754AbiFYMGT (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Sat, 25 Jun 2022 08:06:19 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9547F1402D
-        for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 05:06:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9DC614092
+        for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 05:06:17 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1o54YK-0002UE-R5
+        id 1o54YK-0002U2-5T
         for linux-can@vger.kernel.org; Sat, 25 Jun 2022 14:06:16 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 373639F281
-        for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 12:05:16 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 377F49F256
+        for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 12:05:06 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id B527F9F25A;
-        Sat, 25 Jun 2022 12:05:06 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9F5DC9F22B;
+        Sat, 25 Jun 2022 12:04:57 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1c513997;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ce4a6173;
         Sat, 25 Jun 2022 12:03:37 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Frank Jungclaus <frank.jungclaus@esd.eu>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 22/22] can/esd_usb: Update to copyright, M_AUTHOR and M_DESCRIPTION
-Date:   Sat, 25 Jun 2022 14:03:35 +0200
-Message-Id: <20220625120335.324697-23-mkl@pengutronix.de>
+Subject: [PATCH net-next 18/22] can/esd_usb2: Rename esd_usb2.c to esd_usb.c
+Date:   Sat, 25 Jun 2022 14:03:31 +0200
+Message-Id: <20220625120335.324697-19-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220625120335.324697-1-mkl@pengutronix.de>
 References: <20220625120335.324697-1-mkl@pengutronix.de>
@@ -55,48 +55,63 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Frank Jungclaus <frank.jungclaus@esd.eu>
 
-- Brought the copyright notice up to date
-- Also regarding the changed company name from
-esd electronic system design gmbh to esd electronics gmbh
-- Using socketcan@esd.eu as a generic mail address for matthias who
-left esd 6 years before
-- Added a second MODULE_AUTHOR() for Frank Jungclaus
+As suggested by Vincent, renaming of esd_usb2.c to esd_usb.c
+and according to that, adaption of Kconfig and Makfile, too.
 
-Link: https://lore.kernel.org/all/20220624190517.2299701-6-frank.jungclaus@esd.eu
+Link: https://lore.kernel.org/all/20220624190517.2299701-2-frank.jungclaus@esd.eu
 Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/esd_usb.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/net/can/usb/Kconfig                   | 15 +++++++++++----
+ drivers/net/can/usb/Makefile                  |  2 +-
+ drivers/net/can/usb/{esd_usb2.c => esd_usb.c} |  0
+ 3 files changed, 12 insertions(+), 5 deletions(-)
+ rename drivers/net/can/usb/{esd_usb2.c => esd_usb.c} (100%)
 
-diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
-index e23dce3db55a..8a4bf2961f3d 100644
---- a/drivers/net/can/usb/esd_usb.c
-+++ b/drivers/net/can/usb/esd_usb.c
-@@ -1,8 +1,9 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * CAN driver for esd CAN-USB/2 and CAN-USB/Micro
-+ * CAN driver for esd electronics gmbh CAN-USB/2 and CAN-USB/Micro
-  *
-- * Copyright (C) 2010-2012 Matthias Fuchs <matthias.fuchs@esd.eu>, esd gmbh
-+ * Copyright (C) 2010-2012 esd electronic system design gmbh, Matthias Fuchs <socketcan@esd.eu>
-+ * Copyright (C) 2022 esd electronics gmbh, Frank Jungclaus <frank.jungclaus@esd.eu>
-  */
- #include <linux/signal.h>
- #include <linux/slab.h>
-@@ -14,8 +15,9 @@
- #include <linux/can/dev.h>
- #include <linux/can/error.h>
+diff --git a/drivers/net/can/usb/Kconfig b/drivers/net/can/usb/Kconfig
+index f959215c9d53..1218f9642f33 100644
+--- a/drivers/net/can/usb/Kconfig
++++ b/drivers/net/can/usb/Kconfig
+@@ -14,11 +14,18 @@ config CAN_EMS_USB
+ 	  This driver is for the one channel CPC-USB/ARM7 CAN/USB interface
+ 	  from EMS Dr. Thomas Wuensche (http://www.ems-wuensche.de).
  
--MODULE_AUTHOR("Matthias Fuchs <matthias.fuchs@esd.eu>");
--MODULE_DESCRIPTION("CAN driver for esd CAN-USB/2 and CAN-USB/Micro interfaces");
-+MODULE_AUTHOR("Matthias Fuchs <socketcan@esd.eu>");
-+MODULE_AUTHOR("Frank Jungclaus <frank.jungclaus@esd.eu>");
-+MODULE_DESCRIPTION("CAN driver for esd electronics gmbh CAN-USB/2 and CAN-USB/Micro interfaces");
- MODULE_LICENSE("GPL v2");
+-config CAN_ESD_USB2
+-	tristate "ESD USB/2 CAN/USB interface"
++config CAN_ESD_USB
++	tristate "esd electronics gmbh CAN/USB interfaces"
+ 	help
+-	  This driver supports the CAN-USB/2 interface
+-	  from esd electronic system design gmbh (http://www.esd.eu).
++	  This driver adds supports for several CAN/USB interfaces
++	  from esd electronics gmbh (https://www.esd.eu).
++
++	  The drivers supports the following devices:
++	    - esd CAN-USB/2
++	    - esd CAN-USB/Micro
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called esd_usb.
  
- /* USB vendor and product ID */
+ config CAN_ETAS_ES58X
+ 	tristate "ETAS ES58X CAN/USB interfaces"
+diff --git a/drivers/net/can/usb/Makefile b/drivers/net/can/usb/Makefile
+index 748cf31a0d53..1ea16be5743b 100644
+--- a/drivers/net/can/usb/Makefile
++++ b/drivers/net/can/usb/Makefile
+@@ -5,7 +5,7 @@
+ 
+ obj-$(CONFIG_CAN_8DEV_USB) += usb_8dev.o
+ obj-$(CONFIG_CAN_EMS_USB) += ems_usb.o
+-obj-$(CONFIG_CAN_ESD_USB2) += esd_usb2.o
++obj-$(CONFIG_CAN_ESD_USB) += esd_usb.o
+ obj-$(CONFIG_CAN_ETAS_ES58X) += etas_es58x/
+ obj-$(CONFIG_CAN_GS_USB) += gs_usb.o
+ obj-$(CONFIG_CAN_KVASER_USB) += kvaser_usb/
+diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd_usb.c
+similarity index 100%
+rename from drivers/net/can/usb/esd_usb2.c
+rename to drivers/net/can/usb/esd_usb.c
 -- 
 2.35.1
 
