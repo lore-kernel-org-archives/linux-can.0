@@ -2,47 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED489C433EF
-	for <linux-can@archiver.kernel.org>; Sat, 25 Jun 2022 12:06:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51E21CCA480
+	for <linux-can@archiver.kernel.org>; Sat, 25 Jun 2022 12:06:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232851AbiFYMGq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 25 Jun 2022 08:06:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44300 "EHLO
+        id S232762AbiFYMGr (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 25 Jun 2022 08:06:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232762AbiFYMGl (ORCPT
+        with ESMTP id S232625AbiFYMGl (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Sat, 25 Jun 2022 08:06:41 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE9B2AE10
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E562B193
         for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 05:06:24 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1o54YQ-0002cL-Ky
+        id 1o54YQ-0002d5-Lj
         for linux-can@vger.kernel.org; Sat, 25 Jun 2022 14:06:22 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id A2C929F1D0
-        for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 12:04:40 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id AE8B99F28F
+        for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 12:05:16 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id E37399F19E;
-        Sat, 25 Jun 2022 12:04:03 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id E7C389F24B;
+        Sat, 25 Jun 2022 12:05:04 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d0164d32;
-        Sat, 25 Jun 2022 12:03:36 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 40fe1258;
+        Sat, 25 Jun 2022 12:03:37 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Max Staudt <max@enpas.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
+        kernel@pengutronix.de, Frank Jungclaus <frank.jungclaus@esd.eu>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 11/22] can: skb: drop tx skb if in listen only mode
-Date:   Sat, 25 Jun 2022 14:03:24 +0200
-Message-Id: <20220625120335.324697-12-mkl@pengutronix.de>
+Subject: [PATCH net-next 21/22] can/esd_usb: Fixed some checkpatch.pl warnings
+Date:   Sat, 25 Jun 2022 14:03:34 +0200
+Message-Id: <20220625120335.324697-22-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220625120335.324697-1-mkl@pengutronix.de>
 References: <20220625120335.324697-1-mkl@pengutronix.de>
@@ -56,60 +53,115 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+From: Frank Jungclaus <frank.jungclaus@esd.eu>
 
-Frames can be directly injected to a can driver via the packet
-socket. By doing so, it is possible to reach the
-net_device_ops::ndo_start_xmit function even if the driver is
-configured in listen only mode.
-
-Add a check in can_dropped_invalid_skb() to discard the skb if
-CAN_CTRLMODE_LISTENONLY is set.
-
-Link: https://lore.kernel.org/all/20220610143009.323579-8-mailhol.vincent@wanadoo.fr
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Acked-by: Max Staudt <max@enpas.org>
-Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://lore.kernel.org/all/20220624190517.2299701-5-frank.jungclaus@esd.eu
+Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/skb.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/net/can/usb/esd_usb.c | 31 ++++++++-----------------------
+ 1 file changed, 8 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-index dc9da76c0470..8bb62dd864c8 100644
---- a/drivers/net/can/dev/skb.c
-+++ b/drivers/net/can/dev/skb.c
-@@ -5,6 +5,7 @@
-  */
+diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
+index befd570018d7..e23dce3db55a 100644
+--- a/drivers/net/can/usb/esd_usb.c
++++ b/drivers/net/can/usb/esd_usb.c
+@@ -163,7 +163,7 @@ struct set_baudrate_msg {
+ };
  
- #include <linux/can/dev.h>
-+#include <linux/can/netlink.h>
- #include <linux/module.h>
+ /* Main message type used between library and application */
+-struct __attribute__ ((packed)) esd_usb_msg {
++struct __packed esd_usb_msg {
+ 	union {
+ 		struct header_msg hdr;
+ 		struct version_msg version;
+@@ -343,8 +343,6 @@ static void esd_usb_rx_can_msg(struct esd_usb_net_priv *priv,
  
- #define MOD_DESC "CAN device driver interface"
-@@ -293,6 +294,7 @@ static bool can_skb_headroom_valid(struct net_device *dev, struct sk_buff *skb)
- bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb)
+ 		netif_rx(skb);
+ 	}
+-
+-	return;
+ }
+ 
+ static void esd_usb_tx_done_msg(struct esd_usb_net_priv *priv,
+@@ -447,13 +445,9 @@ static void esd_usb_read_bulk_callback(struct urb *urb)
+ 		dev_err(dev->udev->dev.parent,
+ 			"failed resubmitting read bulk urb: %d\n", retval);
+ 	}
+-
+-	return;
+ }
+ 
+-/*
+- * callback for bulk IN urb
+- */
++/* callback for bulk IN urb */
+ static void esd_usb_write_bulk_callback(struct urb *urb)
  {
- 	const struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
-+	struct can_priv *priv = netdev_priv(dev);
+ 	struct esd_tx_urb_context *context = urb->context;
+@@ -611,9 +605,7 @@ static int esd_usb_setup_rx_urbs(struct esd_usb *dev)
+ 	return 0;
+ }
  
- 	if (skb->protocol == htons(ETH_P_CAN)) {
- 		if (unlikely(skb->len != CAN_MTU ||
-@@ -306,8 +308,13 @@ bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb)
- 		goto inval_skb;
+-/*
+- * Start interface
+- */
++/* Start interface */
+ static int esd_usb_start(struct esd_usb_net_priv *priv)
+ {
+ 	struct esd_usb *dev = priv->usb;
+@@ -627,8 +619,7 @@ static int esd_usb_start(struct esd_usb_net_priv *priv)
+ 		goto out;
  	}
  
--	if (!can_skb_headroom_valid(dev, skb))
-+	if (!can_skb_headroom_valid(dev, skb)) {
-+		goto inval_skb;
-+	} else if (priv->ctrlmode & CAN_CTRLMODE_LISTENONLY) {
-+		netdev_info_once(dev,
-+				 "interface in listen only mode, dropping skb\n");
- 		goto inval_skb;
-+	}
+-	/*
+-	 * Enable all IDs
++	/* Enable all IDs
+ 	 * The IDADD message takes up to 64 32 bit bitmasks (2048 bits).
+ 	 * Each bit represents one 11 bit CAN identifier. A set bit
+ 	 * enables reception of the corresponding CAN identifier. A cleared
+@@ -776,9 +767,7 @@ static netdev_tx_t esd_usb_start_xmit(struct sk_buff *skb,
+ 		}
+ 	}
  
- 	return false;
+-	/*
+-	 * This may never happen.
+-	 */
++	/* This may never happen */
+ 	if (!context) {
+ 		netdev_warn(netdev, "couldn't find free context\n");
+ 		ret = NETDEV_TX_BUSY;
+@@ -826,8 +815,7 @@ static netdev_tx_t esd_usb_start_xmit(struct sk_buff *skb,
  
+ 	netif_trans_update(netdev);
+ 
+-	/*
+-	 * Release our reference to this URB, the USB core will eventually free
++	/* Release our reference to this URB, the USB core will eventually free
+ 	 * it entirely.
+ 	 */
+ 	usb_free_urb(urb);
+@@ -1043,8 +1031,7 @@ static int esd_usb_probe_one_net(struct usb_interface *intf, int index)
+ 	return err;
+ }
+ 
+-/*
+- * probe function for new USB devices
++/* probe function for new USB devices
+  *
+  * check version information and number of available
+  * CAN interfaces
+@@ -1120,9 +1107,7 @@ static int esd_usb_probe(struct usb_interface *intf,
+ 	return err;
+ }
+ 
+-/*
+- * called by the usb core when the device is removed from the system
+- */
++/* called by the usb core when the device is removed from the system */
+ static void esd_usb_disconnect(struct usb_interface *intf)
+ {
+ 	struct esd_usb *dev = usb_get_intfdata(intf);
 -- 
 2.35.1
 
