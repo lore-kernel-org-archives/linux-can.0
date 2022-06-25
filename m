@@ -2,45 +2,47 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DD72C43334
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED489C433EF
 	for <linux-can@archiver.kernel.org>; Sat, 25 Jun 2022 12:06:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232842AbiFYMGp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 25 Jun 2022 08:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43996 "EHLO
+        id S232851AbiFYMGq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 25 Jun 2022 08:06:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232616AbiFYMGl (ORCPT
+        with ESMTP id S232762AbiFYMGl (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Sat, 25 Jun 2022 08:06:41 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E3D72AE1A
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE9B2AE10
         for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 05:06:24 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1o54YQ-0002co-Ng
+        id 1o54YQ-0002cL-Ky
         for linux-can@vger.kernel.org; Sat, 25 Jun 2022 14:06:22 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id A5A019F215
-        for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 12:04:56 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id A2C929F1D0
+        for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 12:04:40 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 65CC09F1ED;
-        Sat, 25 Jun 2022 12:04:44 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id E37399F19E;
+        Sat, 25 Jun 2022 12:04:03 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2c904cdf;
-        Sat, 25 Jun 2022 12:03:37 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d0164d32;
+        Sat, 25 Jun 2022 12:03:36 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Max Staudt <max@enpas.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 14/22] can: etas_es58x: fix signedness of USB RX and TX pipes
-Date:   Sat, 25 Jun 2022 14:03:27 +0200
-Message-Id: <20220625120335.324697-15-mkl@pengutronix.de>
+Subject: [PATCH net-next 11/22] can: skb: drop tx skb if in listen only mode
+Date:   Sat, 25 Jun 2022 14:03:24 +0200
+Message-Id: <20220625120335.324697-12-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220625120335.324697-1-mkl@pengutronix.de>
 References: <20220625120335.324697-1-mkl@pengutronix.de>
@@ -56,35 +58,58 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-USB pipes are meant to be unsigned int (c.f. [1]). However, fields
-rx_pipe and tx_pipe of struct es58x_device are both signed
-integers. Change the type of those two fields from int to unsigned
-int.
+Frames can be directly injected to a can driver via the packet
+socket. By doing so, it is possible to reach the
+net_device_ops::ndo_start_xmit function even if the driver is
+configured in listen only mode.
 
-[1] https://elixir.bootlin.com/linux/v5.18/source/include/linux/usb.h#L1571
+Add a check in can_dropped_invalid_skb() to discard the skb if
+CAN_CTRLMODE_LISTENONLY is set.
 
-Link: https://lore.kernel.org/all/20220611162037.1507-3-mailhol.vincent@wanadoo.fr
+Link: https://lore.kernel.org/all/20220610143009.323579-8-mailhol.vincent@wanadoo.fr
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Acked-by: Max Staudt <max@enpas.org>
+Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/etas_es58x/es58x_core.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/dev/skb.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.h b/drivers/net/can/usb/etas_es58x/es58x_core.h
-index 512c5b7a1cfa..d769bdf740b7 100644
---- a/drivers/net/can/usb/etas_es58x/es58x_core.h
-+++ b/drivers/net/can/usb/etas_es58x/es58x_core.h
-@@ -400,8 +400,8 @@ struct es58x_device {
- 	const struct es58x_parameters *param;
- 	const struct es58x_operators *ops;
+diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
+index dc9da76c0470..8bb62dd864c8 100644
+--- a/drivers/net/can/dev/skb.c
++++ b/drivers/net/can/dev/skb.c
+@@ -5,6 +5,7 @@
+  */
  
--	int rx_pipe;
--	int tx_pipe;
-+	unsigned int rx_pipe;
-+	unsigned int tx_pipe;
+ #include <linux/can/dev.h>
++#include <linux/can/netlink.h>
+ #include <linux/module.h>
  
- 	struct usb_anchor rx_urbs;
- 	struct usb_anchor tx_urbs_busy;
+ #define MOD_DESC "CAN device driver interface"
+@@ -293,6 +294,7 @@ static bool can_skb_headroom_valid(struct net_device *dev, struct sk_buff *skb)
+ bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb)
+ {
+ 	const struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
++	struct can_priv *priv = netdev_priv(dev);
+ 
+ 	if (skb->protocol == htons(ETH_P_CAN)) {
+ 		if (unlikely(skb->len != CAN_MTU ||
+@@ -306,8 +308,13 @@ bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb)
+ 		goto inval_skb;
+ 	}
+ 
+-	if (!can_skb_headroom_valid(dev, skb))
++	if (!can_skb_headroom_valid(dev, skb)) {
++		goto inval_skb;
++	} else if (priv->ctrlmode & CAN_CTRLMODE_LISTENONLY) {
++		netdev_info_once(dev,
++				 "interface in listen only mode, dropping skb\n");
+ 		goto inval_skb;
++	}
+ 
+ 	return false;
+ 
 -- 
 2.35.1
 
