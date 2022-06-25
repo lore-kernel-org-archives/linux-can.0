@@ -2,44 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64AC0CCA481
-	for <linux-can@archiver.kernel.org>; Sat, 25 Jun 2022 12:06:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E21DCCA480
+	for <linux-can@archiver.kernel.org>; Sat, 25 Jun 2022 12:06:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232749AbiFYMGU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 25 Jun 2022 08:06:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43746 "EHLO
+        id S232787AbiFYMG0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 25 Jun 2022 08:06:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232747AbiFYMGR (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 25 Jun 2022 08:06:17 -0400
+        with ESMTP id S232761AbiFYMGT (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 25 Jun 2022 08:06:19 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F9214021
-        for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 05:06:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9547F1402D
+        for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 05:06:18 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1o54YJ-0002Sp-9N
-        for linux-can@vger.kernel.org; Sat, 25 Jun 2022 14:06:15 +0200
+        id 1o54YK-0002UE-R5
+        for linux-can@vger.kernel.org; Sat, 25 Jun 2022 14:06:16 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 2B1D19F246
-        for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 12:05:04 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 373639F281
+        for <linux-can@vger.kernel.org>; Sat, 25 Jun 2022 12:05:16 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 885ED9F20F;
-        Sat, 25 Jun 2022 12:04:55 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id B527F9F25A;
+        Sat, 25 Jun 2022 12:05:06 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 9919699e;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1c513997;
         Sat, 25 Jun 2022 12:03:37 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Max Staudt <max@enpas.org>
-Subject: [PATCH net-next 17/22] can: netlink: allow configuring of fixed data bit rates without need for do_set_data_bittiming callback
-Date:   Sat, 25 Jun 2022 14:03:30 +0200
-Message-Id: <20220625120335.324697-18-mkl@pengutronix.de>
+        kernel@pengutronix.de, Frank Jungclaus <frank.jungclaus@esd.eu>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 22/22] can/esd_usb: Update to copyright, M_AUTHOR and M_DESCRIPTION
+Date:   Sat, 25 Jun 2022 14:03:35 +0200
+Message-Id: <20220625120335.324697-23-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220625120335.324697-1-mkl@pengutronix.de>
 References: <20220625120335.324697-1-mkl@pengutronix.de>
@@ -53,52 +53,50 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch is similar to 7e193a42c37c ("can: netlink: allow
-configuring of fixed bit rates without need for do_set_bittiming
-callback") but for data bit rates instead of bit rates.
+From: Frank Jungclaus <frank.jungclaus@esd.eu>
 
-Usually CAN devices support configurable data bit rates. The limits
-are defined by struct can_priv::data_bittiming_const. Another way is
-to implement the struct can_priv::do_set_data_bittiming callback.
+- Brought the copyright notice up to date
+- Also regarding the changed company name from
+esd electronic system design gmbh to esd electronics gmbh
+- Using socketcan@esd.eu as a generic mail address for matthias who
+left esd 6 years before
+- Added a second MODULE_AUTHOR() for Frank Jungclaus
 
-If the bit rate is configured via netlink, the can_changelink()
-function checks that either can_priv::data_bittiming_const or struct
-can_priv::do_set_data_bittiming is implemented.
-
-In commit 431af779256c ("can: dev: add CAN interface API for fixed
-bitrates") an API for configuring bit rates on CAN interfaces that
-only support fixed bit rates was added. The supported bit rates are
-defined by struct can_priv::bitrate_const.
-
-However the above mentioned commit forgot to add the struct
-can_priv::data_bitrate_const to the check in can_changelink().
-
-In order to avoid to implement a no-op can_priv::do_set_data_bittiming
-callback on devices with fixed data bit rates, extend the check in
-can_changelink() accordingly.
-
-Link: https://lore.kernel.org/all/20220613143633.4151884-1-mkl@pengutronix.de
-Fixes: 431af779256c ("can: dev: add CAN interface API for fixed bitrates")
-Acked-by: Max Staudt <max@enpas.org>
+Link: https://lore.kernel.org/all/20220624190517.2299701-6-frank.jungclaus@esd.eu
+Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/netlink.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/can/usb/esd_usb.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 667ddd28fcdc..037824011266 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -279,7 +279,8 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 		 * directly via do_set_bitrate(). Bail out if neither
- 		 * is given.
- 		 */
--		if (!priv->data_bittiming_const && !priv->do_set_data_bittiming)
-+		if (!priv->data_bittiming_const && !priv->do_set_data_bittiming &&
-+		    !priv->data_bitrate_const)
- 			return -EOPNOTSUPP;
+diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
+index e23dce3db55a..8a4bf2961f3d 100644
+--- a/drivers/net/can/usb/esd_usb.c
++++ b/drivers/net/can/usb/esd_usb.c
+@@ -1,8 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * CAN driver for esd CAN-USB/2 and CAN-USB/Micro
++ * CAN driver for esd electronics gmbh CAN-USB/2 and CAN-USB/Micro
+  *
+- * Copyright (C) 2010-2012 Matthias Fuchs <matthias.fuchs@esd.eu>, esd gmbh
++ * Copyright (C) 2010-2012 esd electronic system design gmbh, Matthias Fuchs <socketcan@esd.eu>
++ * Copyright (C) 2022 esd electronics gmbh, Frank Jungclaus <frank.jungclaus@esd.eu>
+  */
+ #include <linux/signal.h>
+ #include <linux/slab.h>
+@@ -14,8 +15,9 @@
+ #include <linux/can/dev.h>
+ #include <linux/can/error.h>
  
- 		memcpy(&dbt, nla_data(data[IFLA_CAN_DATA_BITTIMING]),
+-MODULE_AUTHOR("Matthias Fuchs <matthias.fuchs@esd.eu>");
+-MODULE_DESCRIPTION("CAN driver for esd CAN-USB/2 and CAN-USB/Micro interfaces");
++MODULE_AUTHOR("Matthias Fuchs <socketcan@esd.eu>");
++MODULE_AUTHOR("Frank Jungclaus <frank.jungclaus@esd.eu>");
++MODULE_DESCRIPTION("CAN driver for esd electronics gmbh CAN-USB/2 and CAN-USB/Micro interfaces");
+ MODULE_LICENSE("GPL v2");
+ 
+ /* USB vendor and product ID */
 -- 
 2.35.1
 
