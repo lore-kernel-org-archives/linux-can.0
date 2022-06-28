@@ -2,64 +2,65 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4D75CCA479
-	for <linux-can@archiver.kernel.org>; Tue, 28 Jun 2022 16:35:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07441C433EF
+	for <linux-can@archiver.kernel.org>; Tue, 28 Jun 2022 16:35:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236263AbiF1Qfd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 28 Jun 2022 12:35:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50736 "EHLO
+        id S238615AbiF1Qfm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 28 Jun 2022 12:35:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236722AbiF1Qeq (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 28 Jun 2022 12:34:46 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F21B59
-        for <linux-can@vger.kernel.org>; Tue, 28 Jun 2022 09:31:52 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id u15so26878340ejc.10
-        for <linux-can@vger.kernel.org>; Tue, 28 Jun 2022 09:31:52 -0700 (PDT)
+        with ESMTP id S238081AbiF1Qer (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 28 Jun 2022 12:34:47 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86476326D7
+        for <linux-can@vger.kernel.org>; Tue, 28 Jun 2022 09:31:55 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id fd6so18370268edb.5
+        for <linux-can@vger.kernel.org>; Tue, 28 Jun 2022 09:31:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=amarulasolutions.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=El3W9x0OB1VE70B0Lt3SBVyO+pC/HDeoL5aPqYtLRdg=;
-        b=npVyrA+/Jxlq6fQfSTCBYtF6RmczZxbWUN+tD+OAYyplLmUOvHpooBMDuJlKKO4PZJ
-         yCZoY4jC/PAH7YPpacPIeDx58jw6tAJqfpGJC8HRQ+q5j8M0r5LiiQuEpXcF8XKwWMq+
-         JsMRX/RrrOZLybaPcnDecKT1rm1MJeKuhH3vY=
+        bh=GV071olECEu2/Ezmqg7bgOsDRoG54OcMsrjIhEz/HxY=;
+        b=Qa1Xsd/SAEcqOFctzhZ2ITrvHpAKlBNkgsWdWrlhWBDVG+phXclxnB3toeB+QEo1vx
+         VGUq1VhpB/tqonLXMxOfbw2V5f+cUR5Iyi5u3Khqj3aDMwBL3FAydA+wz6At1EKQmIX4
+         zlj1nvDLFne26VH3rZUpS4UoTWBzFL2VKgsI0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=El3W9x0OB1VE70B0Lt3SBVyO+pC/HDeoL5aPqYtLRdg=;
-        b=CzYofluzgduOT9Js+VwYS9QWSd5g+oA52kbnkW9iOA5JFmRdIuHXjF1yCTcztC3o3N
-         nGPr9Gngx/+r+oB/gyoXBTUraCgwWEKCWZd81UwBxTrNg14g1RufcfodvrSX5Bk6D7/H
-         QqDVeTSRsDu9s9tlikkzh2ukPw697icPAvcuHPV1ljudDeGXEGwOUQx8CvkPNGXfAEBx
-         J/P8IDhwofU5D+TguuniRTnsrkrkFIB0HoPKyXbH2Q89no8MxwcffWZZ46qCTF7U1XUn
-         RRwaJaAVo6MpldQ19SdwurE58aIwPnL5OqsXLqX83443X93l+HnhXcPHfW0VNJWSSkMX
-         2iZA==
-X-Gm-Message-State: AJIora+wgT4kwXeWfXab6zm2KSIEQcc9g6hCriRV9TUdtHOPh0ugt1jd
-        eQ1Ot+zW8Xf+H0kXEX2PQBoqyQ==
-X-Google-Smtp-Source: AGRyM1ug5KAKVeOz1cwMowwc8MY9LikfKxR5xcB86gl7L4gplcpPsJB7grN/of4FQuYTMReB9hEP3g==
-X-Received: by 2002:a17:907:7e90:b0:704:b67d:623e with SMTP id qb16-20020a1709077e9000b00704b67d623emr19098655ejc.634.1656433910961;
-        Tue, 28 Jun 2022 09:31:50 -0700 (PDT)
+        bh=GV071olECEu2/Ezmqg7bgOsDRoG54OcMsrjIhEz/HxY=;
+        b=3Yb14LUH5QWvVtZ4f5MZ8EGNHiUBJLOEAC54VZ3zpYJthp57l8ORPdfzORe5Ywt4hb
+         qHUZisB2m8LlCYaqEXsYkYiP8IfYAGmYYXeauDvOjX8i+m/Ku+RUKhLZlJzFyQ+5i2J9
+         5y7SDHrmbQ8wor/KoQf0L2MRaAj54cL1r6vkRixlgg95OdmgwRtp04e4kD0mmBk+RFP8
+         B/QlS8WSFZiPm0of3/2l6sG3iBHsyJovMVt0nj3HsdO3zKPaT/q1/CRMthh2wQM7vorz
+         ONOjOm6aagtC5RDdcXUB01gaV4xSHOXnZKUi9+OdW4yWU+GuWHI3GMEMvF7jR+BXE5c+
+         +07Q==
+X-Gm-Message-State: AJIora9NctV6Jp8b3UYj8r2kJBqbOLNH9BkFhlb9AwIB88pd+CcqOHLF
+        Z+voDDvCwpGMNDzlqPOK7+XShw==
+X-Google-Smtp-Source: AGRyM1sBYiHVqvAao7ebFu6YzOjM0r/hZUSSLLp/29zzE6hCI/AyZi8PN6ZVXgdWM+yasPoaI9ooCA==
+X-Received: by 2002:a05:6402:4244:b0:437:726c:e1a with SMTP id g4-20020a056402424400b00437726c0e1amr22041449edb.107.1656433914004;
+        Tue, 28 Jun 2022 09:31:54 -0700 (PDT)
 Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-80-116-90-174.pool80116.interbusiness.it. [80.116.90.174])
-        by smtp.gmail.com with ESMTPSA id b20-20020a0564021f1400b0042e15364d14sm9916952edb.8.2022.06.28.09.31.49
+        by smtp.gmail.com with ESMTPSA id b20-20020a0564021f1400b0042e15364d14sm9916952edb.8.2022.06.28.09.31.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jun 2022 09:31:50 -0700 (PDT)
+        Tue, 28 Jun 2022 09:31:53 -0700 (PDT)
 From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     michael@amarulasolutions.com,
         Amarula patchwork <linux-amarula@amarulasolutions.com>,
         Oliver Hartkopp <socketcan@hartkopp.net>,
         Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
         Paolo Abeni <pabeni@redhat.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Wolfgang Grandegger <wg@grandegger.com>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH v5 02/12] can: slcan: use netdev helpers to print out messages
-Date:   Tue, 28 Jun 2022 18:31:26 +0200
-Message-Id: <20220628163137.413025-3-dario.binacchi@amarulasolutions.com>
+Subject: [PATCH v5 04/12] can: netlink: dump bitrate 0 if can_priv::bittiming.bitrate is -1U
+Date:   Tue, 28 Jun 2022 18:31:28 +0200
+Message-Id: <20220628163137.413025-5-dario.binacchi@amarulasolutions.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220628163137.413025-1-dario.binacchi@amarulasolutions.com>
 References: <20220628163137.413025-1-dario.binacchi@amarulasolutions.com>
@@ -69,39 +70,56 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Replace printk() calls with corresponding netdev helpers.
+Upcoming changes on slcan driver will require you to specify a bitrate
+of value -1 to prevent the open_candev() from failing but at the same
+time highlighting that it is a fake value. In this case the command
+`ip --details -s -s link show' would print 4294967295 as the bitrate
+value. The patch change this value in 0.
 
+Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+
 ---
 
-(no changes since v1)
+(no changes since v4)
 
- drivers/net/can/slcan.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Changes in v4:
+- Move the patch in front of the patch "[v3,04/13] can: slcan: use CAN network device driver API".
+- Add the CAN_BITRATE_UNSET (0) and CAN_BITRATE_UNKNOWN (-1U) macros.
+- Simplify the bitrate check to dump it.
+- Update the commit description.
 
-diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index b37d35c2a23a..6162a9c21672 100644
---- a/drivers/net/can/slcan.c
-+++ b/drivers/net/can/slcan.c
-@@ -365,7 +365,7 @@ static netdev_tx_t slc_xmit(struct sk_buff *skb, struct net_device *dev)
- 	spin_lock(&sl->lock);
- 	if (!netif_running(dev))  {
- 		spin_unlock(&sl->lock);
--		printk(KERN_WARNING "%s: xmit: iface is down\n", dev->name);
-+		netdev_warn(dev, "xmit: iface is down\n");
- 		goto out;
- 	}
- 	if (sl->tty == NULL) {
-@@ -776,8 +776,7 @@ static void __exit slcan_exit(void)
+ drivers/net/can/dev/netlink.c | 3 ++-
+ include/linux/can/bittiming.h | 2 ++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index 7633d98e3912..5427712fcf80 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -509,7 +509,8 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
+ 	if (priv->do_get_state)
+ 		priv->do_get_state(dev, &state);
  
- 		sl = netdev_priv(dev);
- 		if (sl->tty) {
--			printk(KERN_ERR "%s: tty discipline still running\n",
--			       dev->name);
-+			netdev_err(dev, "tty discipline still running\n");
- 		}
+-	if ((priv->bittiming.bitrate &&
++	if ((priv->bittiming.bitrate != CAN_BITRATE_UNSET &&
++	     priv->bittiming.bitrate != CAN_BITRATE_UNKNOWN &&
+ 	     nla_put(skb, IFLA_CAN_BITTIMING,
+ 		     sizeof(priv->bittiming), &priv->bittiming)) ||
  
- 		unregister_netdev(dev);
+diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
+index 7ae21c0f7f23..ef0a77173e3c 100644
+--- a/include/linux/can/bittiming.h
++++ b/include/linux/can/bittiming.h
+@@ -11,6 +11,8 @@
+ 
+ #define CAN_SYNC_SEG 1
+ 
++#define CAN_BITRATE_UNSET 0
++#define CAN_BITRATE_UNKNOWN (-1U)
+ 
+ #define CAN_CTRLMODE_TDC_MASK					\
+ 	(CAN_CTRLMODE_TDC_AUTO | CAN_CTRLMODE_TDC_MANUAL)
 -- 
 2.32.0
 
