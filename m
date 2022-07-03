@@ -2,45 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9458ACCA481
-	for <linux-can@archiver.kernel.org>; Sun,  3 Jul 2022 10:26:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2499ACCA483
+	for <linux-can@archiver.kernel.org>; Sun,  3 Jul 2022 10:26:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231889AbiGCK0T (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S231875AbiGCK0T (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Sun, 3 Jul 2022 06:26:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232122AbiGCK0O (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 3 Jul 2022 06:26:14 -0400
+        with ESMTP id S232127AbiGCK0Q (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 3 Jul 2022 06:26:16 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5350631A
-        for <linux-can@vger.kernel.org>; Sun,  3 Jul 2022 03:26:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846866333
+        for <linux-can@vger.kernel.org>; Sun,  3 Jul 2022 03:26:14 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1o7wnr-0006FT-UZ
-        for linux-can@vger.kernel.org; Sun, 03 Jul 2022 12:26:11 +0200
+        id 1o7wns-0006Hn-Kk
+        for linux-can@vger.kernel.org; Sun, 03 Jul 2022 12:26:12 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 95A05A6A0A
-        for <linux-can@vger.kernel.org>; Sun,  3 Jul 2022 10:14:38 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id BEEA6A6989
+        for <linux-can@vger.kernel.org>; Sun,  3 Jul 2022 10:14:35 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id C72D0A69DF;
-        Sun,  3 Jul 2022 10:14:37 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id E91B0A6972;
+        Sun,  3 Jul 2022 10:14:34 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id a9ef0832;
-        Sun, 3 Jul 2022 10:14:32 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b70888b9;
+        Sun, 3 Jul 2022 10:14:31 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Jeroen Hofstee <jhofstee@victronenergy.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 14/15] can: slcan: extend the protocol with error info
-Date:   Sun,  3 Jul 2022 12:14:28 +0200
-Message-Id: <20220703101430.1306048-15-mkl@pengutronix.de>
+Subject: [PATCH net-next 06/15] can: slcan: use the alloc_can_skb() helper
+Date:   Sun,  3 Jul 2022 12:14:20 +0200
+Message-Id: <20220703101430.1306048-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220703101430.1306048-1-mkl@pengutronix.de>
 References: <20220703101430.1306048-1-mkl@pengutronix.de>
@@ -56,174 +57,147 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
-It extends the protocol to receive the adapter CAN communication errors
-and forward them to the netdev upper levels.
+It is used successfully by most (if not all) CAN device drivers. It
+allows to remove replicated code.
 
-Link: https://lore.kernel.org/all/20220628163137.413025-12-dario.binacchi@amarulasolutions.com
+Link: https://lore.kernel.org/all/20220628163137.413025-4-dario.binacchi@amarulasolutions.com
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Tested-by: Jeroen Hofstee <jhofstee@victronenergy.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/slcan/slcan-core.c | 140 ++++++++++++++++++++++++++++-
- 1 file changed, 139 insertions(+), 1 deletion(-)
+ drivers/net/can/slcan.c | 70 +++++++++++++++++++----------------------
+ 1 file changed, 33 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/net/can/slcan/slcan-core.c b/drivers/net/can/slcan/slcan-core.c
-index c1fd1e934d93..4269b2267be2 100644
---- a/drivers/net/can/slcan/slcan-core.c
-+++ b/drivers/net/can/slcan/slcan-core.c
-@@ -175,7 +175,7 @@ int slcan_enable_err_rst_on_open(struct net_device *ndev, bool on)
-   ************************************************************************/
+diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
+index 6162a9c21672..c39580b142e0 100644
+--- a/drivers/net/can/slcan.c
++++ b/drivers/net/can/slcan.c
+@@ -54,6 +54,7 @@
+ #include <linux/kernel.h>
+ #include <linux/workqueue.h>
+ #include <linux/can.h>
++#include <linux/can/dev.h>
+ #include <linux/can/skb.h>
+ #include <linux/can/can-ml.h>
  
- /* Send one completely decapsulated can_frame to the network layer */
--static void slc_bump(struct slcan *sl)
-+static void slc_bump_frame(struct slcan *sl)
+@@ -143,85 +144,80 @@ static struct net_device **slcan_devs;
+ static void slc_bump(struct slcan *sl)
  {
  	struct sk_buff *skb;
- 	struct can_frame *cf;
-@@ -254,6 +254,144 @@ static void slc_bump(struct slcan *sl)
- 	dev_kfree_skb(skb);
+-	struct can_frame cf;
++	struct can_frame *cf;
+ 	int i, tmp;
+ 	u32 tmpid;
+ 	char *cmd = sl->rbuff;
+ 
+-	memset(&cf, 0, sizeof(cf));
++	skb = alloc_can_skb(sl->dev, &cf);
++	if (unlikely(!skb)) {
++		sl->dev->stats.rx_dropped++;
++		return;
++	}
+ 
+ 	switch (*cmd) {
+ 	case 'r':
+-		cf.can_id = CAN_RTR_FLAG;
++		cf->can_id = CAN_RTR_FLAG;
+ 		fallthrough;
+ 	case 't':
+ 		/* store dlc ASCII value and terminate SFF CAN ID string */
+-		cf.len = sl->rbuff[SLC_CMD_LEN + SLC_SFF_ID_LEN];
++		cf->len = sl->rbuff[SLC_CMD_LEN + SLC_SFF_ID_LEN];
+ 		sl->rbuff[SLC_CMD_LEN + SLC_SFF_ID_LEN] = 0;
+ 		/* point to payload data behind the dlc */
+ 		cmd += SLC_CMD_LEN + SLC_SFF_ID_LEN + 1;
+ 		break;
+ 	case 'R':
+-		cf.can_id = CAN_RTR_FLAG;
++		cf->can_id = CAN_RTR_FLAG;
+ 		fallthrough;
+ 	case 'T':
+-		cf.can_id |= CAN_EFF_FLAG;
++		cf->can_id |= CAN_EFF_FLAG;
+ 		/* store dlc ASCII value and terminate EFF CAN ID string */
+-		cf.len = sl->rbuff[SLC_CMD_LEN + SLC_EFF_ID_LEN];
++		cf->len = sl->rbuff[SLC_CMD_LEN + SLC_EFF_ID_LEN];
+ 		sl->rbuff[SLC_CMD_LEN + SLC_EFF_ID_LEN] = 0;
+ 		/* point to payload data behind the dlc */
+ 		cmd += SLC_CMD_LEN + SLC_EFF_ID_LEN + 1;
+ 		break;
+ 	default:
+-		return;
++		goto decode_failed;
+ 	}
+ 
+ 	if (kstrtou32(sl->rbuff + SLC_CMD_LEN, 16, &tmpid))
+-		return;
++		goto decode_failed;
+ 
+-	cf.can_id |= tmpid;
++	cf->can_id |= tmpid;
+ 
+ 	/* get len from sanitized ASCII value */
+-	if (cf.len >= '0' && cf.len < '9')
+-		cf.len -= '0';
++	if (cf->len >= '0' && cf->len < '9')
++		cf->len -= '0';
+ 	else
+-		return;
++		goto decode_failed;
+ 
+ 	/* RTR frames may have a dlc > 0 but they never have any data bytes */
+-	if (!(cf.can_id & CAN_RTR_FLAG)) {
+-		for (i = 0; i < cf.len; i++) {
++	if (!(cf->can_id & CAN_RTR_FLAG)) {
++		for (i = 0; i < cf->len; i++) {
+ 			tmp = hex_to_bin(*cmd++);
+ 			if (tmp < 0)
+-				return;
+-			cf.data[i] = (tmp << 4);
++				goto decode_failed;
++
++			cf->data[i] = (tmp << 4);
+ 			tmp = hex_to_bin(*cmd++);
+ 			if (tmp < 0)
+-				return;
+-			cf.data[i] |= tmp;
++				goto decode_failed;
++
++			cf->data[i] |= tmp;
+ 		}
+ 	}
+ 
+-	skb = dev_alloc_skb(sizeof(struct can_frame) +
+-			    sizeof(struct can_skb_priv));
+-	if (!skb)
+-		return;
+-
+-	skb->dev = sl->dev;
+-	skb->protocol = htons(ETH_P_CAN);
+-	skb->pkt_type = PACKET_BROADCAST;
+-	skb->ip_summed = CHECKSUM_UNNECESSARY;
+-
+-	can_skb_reserve(skb);
+-	can_skb_prv(skb)->ifindex = sl->dev->ifindex;
+-	can_skb_prv(skb)->skbcnt = 0;
+-
+-	skb_put_data(skb, &cf, sizeof(struct can_frame));
+-
+ 	sl->dev->stats.rx_packets++;
+-	if (!(cf.can_id & CAN_RTR_FLAG))
+-		sl->dev->stats.rx_bytes += cf.len;
++	if (!(cf->can_id & CAN_RTR_FLAG))
++		sl->dev->stats.rx_bytes += cf->len;
+ 
+ 	netif_rx(skb);
++	return;
++
++decode_failed:
++	sl->dev->stats.rx_errors++;
++	dev_kfree_skb(skb);
  }
  
-+/* An error frame can contain more than one type of error.
-+ *
-+ * Examples:
-+ *
-+ * e1a : len 1, errors: ACK error
-+ * e3bcO: len 3, errors: Bit0 error, CRC error, Tx overrun error
-+ */
-+static void slc_bump_err(struct slcan *sl)
-+{
-+	struct net_device *dev = sl->dev;
-+	struct sk_buff *skb;
-+	struct can_frame *cf;
-+	char *cmd = sl->rbuff;
-+	bool rx_errors = false, tx_errors = false, rx_over_errors = false;
-+	int i, len;
-+
-+	/* get len from sanitized ASCII value */
-+	len = cmd[1];
-+	if (len >= '0' && len < '9')
-+		len -= '0';
-+	else
-+		return;
-+
-+	if ((len + SLC_CMD_LEN + 1) > sl->rcount)
-+		return;
-+
-+	skb = alloc_can_err_skb(dev, &cf);
-+
-+	if (skb)
-+		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
-+
-+	cmd += SLC_CMD_LEN + 1;
-+	for (i = 0; i < len; i++, cmd++) {
-+		switch (*cmd) {
-+		case 'a':
-+			netdev_dbg(dev, "ACK error\n");
-+			tx_errors = true;
-+			if (skb) {
-+				cf->can_id |= CAN_ERR_ACK;
-+				cf->data[3] = CAN_ERR_PROT_LOC_ACK;
-+			}
-+
-+			break;
-+		case 'b':
-+			netdev_dbg(dev, "Bit0 error\n");
-+			tx_errors = true;
-+			if (skb)
-+				cf->data[2] |= CAN_ERR_PROT_BIT0;
-+
-+			break;
-+		case 'B':
-+			netdev_dbg(dev, "Bit1 error\n");
-+			tx_errors = true;
-+			if (skb)
-+				cf->data[2] |= CAN_ERR_PROT_BIT1;
-+
-+			break;
-+		case 'c':
-+			netdev_dbg(dev, "CRC error\n");
-+			rx_errors = true;
-+			if (skb) {
-+				cf->data[2] |= CAN_ERR_PROT_BIT;
-+				cf->data[3] = CAN_ERR_PROT_LOC_CRC_SEQ;
-+			}
-+
-+			break;
-+		case 'f':
-+			netdev_dbg(dev, "Form Error\n");
-+			rx_errors = true;
-+			if (skb)
-+				cf->data[2] |= CAN_ERR_PROT_FORM;
-+
-+			break;
-+		case 'o':
-+			netdev_dbg(dev, "Rx overrun error\n");
-+			rx_over_errors = true;
-+			rx_errors = true;
-+			if (skb) {
-+				cf->can_id |= CAN_ERR_CRTL;
-+				cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
-+			}
-+
-+			break;
-+		case 'O':
-+			netdev_dbg(dev, "Tx overrun error\n");
-+			tx_errors = true;
-+			if (skb) {
-+				cf->can_id |= CAN_ERR_CRTL;
-+				cf->data[1] = CAN_ERR_CRTL_TX_OVERFLOW;
-+			}
-+
-+			break;
-+		case 's':
-+			netdev_dbg(dev, "Stuff error\n");
-+			rx_errors = true;
-+			if (skb)
-+				cf->data[2] |= CAN_ERR_PROT_STUFF;
-+
-+			break;
-+		default:
-+			if (skb)
-+				dev_kfree_skb(skb);
-+
-+			return;
-+		}
-+	}
-+
-+	if (rx_errors)
-+		dev->stats.rx_errors++;
-+
-+	if (rx_over_errors)
-+		dev->stats.rx_over_errors++;
-+
-+	if (tx_errors)
-+		dev->stats.tx_errors++;
-+
-+	if (skb)
-+		netif_rx(skb);
-+}
-+
-+static void slc_bump(struct slcan *sl)
-+{
-+	switch (sl->rbuff[0]) {
-+	case 'r':
-+		fallthrough;
-+	case 't':
-+		fallthrough;
-+	case 'R':
-+		fallthrough;
-+	case 'T':
-+		return slc_bump_frame(sl);
-+	case 'e':
-+		return slc_bump_err(sl);
-+	default:
-+		return;
-+	}
-+}
-+
  /* parse tty input stream */
- static void slcan_unesc(struct slcan *sl, unsigned char s)
- {
 -- 
 2.35.1
 
