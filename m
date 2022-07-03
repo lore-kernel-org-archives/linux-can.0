@@ -2,46 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6F7DCCA482
-	for <linux-can@archiver.kernel.org>; Sun,  3 Jul 2022 10:26:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFAF5CCA47C
+	for <linux-can@archiver.kernel.org>; Sun,  3 Jul 2022 10:26:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbiGCK0L (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 3 Jul 2022 06:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42238 "EHLO
+        id S231640AbiGCK0O (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 3 Jul 2022 06:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231739AbiGCK0K (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 3 Jul 2022 06:26:10 -0400
+        with ESMTP id S229503AbiGCK0L (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 3 Jul 2022 06:26:11 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27ADE6345
-        for <linux-can@vger.kernel.org>; Sun,  3 Jul 2022 03:26:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 955026307
+        for <linux-can@vger.kernel.org>; Sun,  3 Jul 2022 03:26:10 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1o7wnn-00068m-Di
-        for linux-can@vger.kernel.org; Sun, 03 Jul 2022 12:26:07 +0200
+        id 1o7wno-0006BR-Pt
+        for linux-can@vger.kernel.org; Sun, 03 Jul 2022 12:26:08 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 41AA0A699A
-        for <linux-can@vger.kernel.org>; Sun,  3 Jul 2022 10:14:36 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 65D1DA69CC
+        for <linux-can@vger.kernel.org>; Sun,  3 Jul 2022 10:14:37 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7D1D3A6981;
-        Sun,  3 Jul 2022 10:14:35 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id B92A6A69A4;
+        Sun,  3 Jul 2022 10:14:36 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b8ab5017;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 99863f2f;
         Sun, 3 Jul 2022 10:14:31 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Jeroen Hofstee <jhofstee@victronenergy.com>
-Subject: [PATCH net-next 07/15] can: netlink: dump bitrate 0 if can_priv::bittiming.bitrate is -1U
-Date:   Sun,  3 Jul 2022 12:14:21 +0200
-Message-Id: <20220703101430.1306048-8-mkl@pengutronix.de>
+        Jeroen Hofstee <jhofstee@victronenergy.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 10/15] can: slcan: set bitrate by CAN device driver API
+Date:   Sun,  3 Jul 2022 12:14:24 +0200
+Message-Id: <20220703101430.1306048-11-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220703101430.1306048-1-mkl@pengutronix.de>
 References: <20220703101430.1306048-1-mkl@pengutronix.de>
@@ -57,49 +57,106 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
-Upcoming changes on slcan driver will require you to specify a bitrate
-of value -1 to prevent the open_candev() from failing but at the same
-time highlighting that it is a fake value. In this case the command
-`ip --details -s -s link show' would print 4294967295 as the bitrate
-value. The patch change this value in 0.
+It allows to set the bitrate via ip tool, as it happens for the other
+CAN device drivers. It still remains possible to set the bitrate via
+slcand or slcan_attach utilities. In case the ip tool is used, the
+driver will send the serial command to the adapter.
 
-Link: https://lore.kernel.org/all/20220628163137.413025-5-dario.binacchi@amarulasolutions.com
-Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Link: https://lore.kernel.org/all/20220628163137.413025-8-dario.binacchi@amarulasolutions.com
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 Tested-by: Jeroen Hofstee <jhofstee@victronenergy.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/netlink.c | 3 ++-
- include/linux/can/bittiming.h | 2 ++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/can/slcan.c | 41 ++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 38 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 037824011266..8efa22d9f214 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -511,7 +511,8 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
- 	if (priv->do_get_state)
- 		priv->do_get_state(dev, &state);
+diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
+index dfccf8d6c9a5..74033e2d7097 100644
+--- a/drivers/net/can/slcan.c
++++ b/drivers/net/can/slcan.c
+@@ -104,6 +104,11 @@ struct slcan {
  
--	if ((priv->bittiming.bitrate &&
-+	if ((priv->bittiming.bitrate != CAN_BITRATE_UNSET &&
-+	     priv->bittiming.bitrate != CAN_BITRATE_UNKNOWN &&
- 	     nla_put(skb, IFLA_CAN_BITTIMING,
- 		     sizeof(priv->bittiming), &priv->bittiming)) ||
+ static struct net_device **slcan_devs;
  
-diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
-index 7ae21c0f7f23..ef0a77173e3c 100644
---- a/include/linux/can/bittiming.h
-+++ b/include/linux/can/bittiming.h
-@@ -11,6 +11,8 @@
++static const u32 slcan_bitrate_const[] = {
++	10000, 20000, 50000, 100000, 125000,
++	250000, 500000, 800000, 1000000
++};
++
+  /************************************************************************
+   *			SLCAN ENCAPSULATION FORMAT			 *
+   ************************************************************************/
+@@ -439,6 +444,9 @@ static int slc_close(struct net_device *dev)
+ 	netif_stop_queue(dev);
+ 	close_candev(dev);
+ 	sl->can.state = CAN_STATE_STOPPED;
++	if (sl->can.bittiming.bitrate == CAN_BITRATE_UNKNOWN)
++		sl->can.bittiming.bitrate = CAN_BITRATE_UNSET;
++
+ 	sl->rcount   = 0;
+ 	sl->xleft    = 0;
+ 	spin_unlock_bh(&sl->lock);
+@@ -450,7 +458,8 @@ static int slc_close(struct net_device *dev)
+ static int slc_open(struct net_device *dev)
+ {
+ 	struct slcan *sl = netdev_priv(dev);
+-	int err;
++	unsigned char cmd[SLC_MTU];
++	int err, s;
  
- #define CAN_SYNC_SEG 1
+ 	if (sl->tty == NULL)
+ 		return -ENODEV;
+@@ -460,15 +469,39 @@ static int slc_open(struct net_device *dev)
+ 	 * can.bittiming.bitrate is CAN_BITRATE_UNSET (0), causing
+ 	 * open_candev() to fail. So let's set to a fake value.
+ 	 */
+-	sl->can.bittiming.bitrate = CAN_BITRATE_UNKNOWN;
++	if (sl->can.bittiming.bitrate == CAN_BITRATE_UNSET)
++		sl->can.bittiming.bitrate = CAN_BITRATE_UNKNOWN;
++
+ 	err = open_candev(dev);
+ 	if (err) {
+ 		netdev_err(dev, "failed to open can device\n");
+ 		return err;
+ 	}
  
-+#define CAN_BITRATE_UNSET 0
-+#define CAN_BITRATE_UNKNOWN (-1U)
- 
- #define CAN_CTRLMODE_TDC_MASK					\
- 	(CAN_CTRLMODE_TDC_AUTO | CAN_CTRLMODE_TDC_MANUAL)
+-	sl->can.state = CAN_STATE_ERROR_ACTIVE;
+ 	sl->flags &= BIT(SLF_INUSE);
++
++	if (sl->can.bittiming.bitrate != CAN_BITRATE_UNKNOWN) {
++		for (s = 0; s < ARRAY_SIZE(slcan_bitrate_const); s++) {
++			if (sl->can.bittiming.bitrate == slcan_bitrate_const[s])
++				break;
++		}
++
++		/* The CAN framework has already validate the bitrate value,
++		 * so we can avoid to check if `s' has been properly set.
++		 */
++
++		snprintf(cmd, sizeof(cmd), "C\rS%d\r", s);
++		err = slcan_transmit_cmd(sl, cmd);
++		if (err) {
++			netdev_err(dev,
++				   "failed to send bitrate command 'C\\rS%d\\r'\n",
++				   s);
++			close_candev(dev);
++			return err;
++		}
++	}
++
++	sl->can.state = CAN_STATE_ERROR_ACTIVE;
+ 	netif_start_queue(dev);
+ 	return 0;
+ }
+@@ -581,6 +614,8 @@ static struct slcan *slc_alloc(void)
+ 	/* Initialize channel control data */
+ 	sl->magic = SLCAN_MAGIC;
+ 	sl->dev	= dev;
++	sl->can.bitrate_const = slcan_bitrate_const;
++	sl->can.bitrate_const_cnt = ARRAY_SIZE(slcan_bitrate_const);
+ 	spin_lock_init(&sl->lock);
+ 	INIT_WORK(&sl->tx_work, slcan_transmit);
+ 	init_waitqueue_head(&sl->xcmd_wait);
 -- 
 2.35.1
 
