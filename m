@@ -2,46 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2499ACCA483
-	for <linux-can@archiver.kernel.org>; Sun,  3 Jul 2022 10:26:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5307DCCA473
+	for <linux-can@archiver.kernel.org>; Sun,  3 Jul 2022 10:26:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231875AbiGCK0T (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 3 Jul 2022 06:26:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42348 "EHLO
+        id S232126AbiGCK0W (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 3 Jul 2022 06:26:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232127AbiGCK0Q (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 3 Jul 2022 06:26:16 -0400
+        with ESMTP id S232179AbiGCK0R (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 3 Jul 2022 06:26:17 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846866333
-        for <linux-can@vger.kernel.org>; Sun,  3 Jul 2022 03:26:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71CD263DF
+        for <linux-can@vger.kernel.org>; Sun,  3 Jul 2022 03:26:16 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1o7wns-0006Hn-Kk
-        for linux-can@vger.kernel.org; Sun, 03 Jul 2022 12:26:12 +0200
+        id 1o7wnu-0006KN-KF
+        for linux-can@vger.kernel.org; Sun, 03 Jul 2022 12:26:14 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id BEEA6A6989
-        for <linux-can@vger.kernel.org>; Sun,  3 Jul 2022 10:14:35 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id D906CA6934
+        for <linux-can@vger.kernel.org>; Sun,  3 Jul 2022 10:14:32 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id E91B0A6972;
-        Sun,  3 Jul 2022 10:14:34 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4687CA691D;
+        Sun,  3 Jul 2022 10:14:32 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b70888b9;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ef79ca7a;
         Sun, 3 Jul 2022 10:14:31 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-        Jeroen Hofstee <jhofstee@victronenergy.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 06/15] can: slcan: use the alloc_can_skb() helper
-Date:   Sun,  3 Jul 2022 12:14:20 +0200
-Message-Id: <20220703101430.1306048-7-mkl@pengutronix.de>
+        kernel@pengutronix.de, Max Staudt <max@enpas.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH net-next 01/15] tty: Add N_CAN327 line discipline ID for ELM327 based CAN driver
+Date:   Sun,  3 Jul 2022 12:14:15 +0200
+Message-Id: <20220703101430.1306048-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220703101430.1306048-1-mkl@pengutronix.de>
 References: <20220703101430.1306048-1-mkl@pengutronix.de>
@@ -55,149 +54,37 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+From: Max Staudt <max@enpas.org>
 
-It is used successfully by most (if not all) CAN device drivers. It
-allows to remove replicated code.
+The actual driver will be added via the CAN tree.
 
-Link: https://lore.kernel.org/all/20220628163137.413025-4-dario.binacchi@amarulasolutions.com
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Tested-by: Jeroen Hofstee <jhofstee@victronenergy.com>
+Link: https://lore.kernel.org/all/20220618180134.9890-1-max@enpas.org
+Link: https://lore.kernel.org/all/Yrm9Ezlw1dLmIxyS@kroah.com
+Signed-off-by: Max Staudt <max@enpas.org>
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/slcan.c | 70 +++++++++++++++++++----------------------
- 1 file changed, 33 insertions(+), 37 deletions(-)
+ include/uapi/linux/tty.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index 6162a9c21672..c39580b142e0 100644
---- a/drivers/net/can/slcan.c
-+++ b/drivers/net/can/slcan.c
-@@ -54,6 +54,7 @@
- #include <linux/kernel.h>
- #include <linux/workqueue.h>
- #include <linux/can.h>
-+#include <linux/can/dev.h>
- #include <linux/can/skb.h>
- #include <linux/can/can-ml.h>
+diff --git a/include/uapi/linux/tty.h b/include/uapi/linux/tty.h
+index 9d0f06bfbac3..68aeae2addec 100644
+--- a/include/uapi/linux/tty.h
++++ b/include/uapi/linux/tty.h
+@@ -38,8 +38,9 @@
+ #define N_NULL		27	/* Null ldisc used for error handling */
+ #define N_MCTP		28	/* MCTP-over-serial */
+ #define N_DEVELOPMENT	29	/* Manual out-of-tree testing */
++#define N_CAN327	30	/* ELM327 based OBD-II interfaces */
  
-@@ -143,85 +144,80 @@ static struct net_device **slcan_devs;
- static void slc_bump(struct slcan *sl)
- {
- 	struct sk_buff *skb;
--	struct can_frame cf;
-+	struct can_frame *cf;
- 	int i, tmp;
- 	u32 tmpid;
- 	char *cmd = sl->rbuff;
+ /* Always the newest line discipline + 1 */
+-#define NR_LDISCS	30
++#define NR_LDISCS	31
  
--	memset(&cf, 0, sizeof(cf));
-+	skb = alloc_can_skb(sl->dev, &cf);
-+	if (unlikely(!skb)) {
-+		sl->dev->stats.rx_dropped++;
-+		return;
-+	}
- 
- 	switch (*cmd) {
- 	case 'r':
--		cf.can_id = CAN_RTR_FLAG;
-+		cf->can_id = CAN_RTR_FLAG;
- 		fallthrough;
- 	case 't':
- 		/* store dlc ASCII value and terminate SFF CAN ID string */
--		cf.len = sl->rbuff[SLC_CMD_LEN + SLC_SFF_ID_LEN];
-+		cf->len = sl->rbuff[SLC_CMD_LEN + SLC_SFF_ID_LEN];
- 		sl->rbuff[SLC_CMD_LEN + SLC_SFF_ID_LEN] = 0;
- 		/* point to payload data behind the dlc */
- 		cmd += SLC_CMD_LEN + SLC_SFF_ID_LEN + 1;
- 		break;
- 	case 'R':
--		cf.can_id = CAN_RTR_FLAG;
-+		cf->can_id = CAN_RTR_FLAG;
- 		fallthrough;
- 	case 'T':
--		cf.can_id |= CAN_EFF_FLAG;
-+		cf->can_id |= CAN_EFF_FLAG;
- 		/* store dlc ASCII value and terminate EFF CAN ID string */
--		cf.len = sl->rbuff[SLC_CMD_LEN + SLC_EFF_ID_LEN];
-+		cf->len = sl->rbuff[SLC_CMD_LEN + SLC_EFF_ID_LEN];
- 		sl->rbuff[SLC_CMD_LEN + SLC_EFF_ID_LEN] = 0;
- 		/* point to payload data behind the dlc */
- 		cmd += SLC_CMD_LEN + SLC_EFF_ID_LEN + 1;
- 		break;
- 	default:
--		return;
-+		goto decode_failed;
- 	}
- 
- 	if (kstrtou32(sl->rbuff + SLC_CMD_LEN, 16, &tmpid))
--		return;
-+		goto decode_failed;
- 
--	cf.can_id |= tmpid;
-+	cf->can_id |= tmpid;
- 
- 	/* get len from sanitized ASCII value */
--	if (cf.len >= '0' && cf.len < '9')
--		cf.len -= '0';
-+	if (cf->len >= '0' && cf->len < '9')
-+		cf->len -= '0';
- 	else
--		return;
-+		goto decode_failed;
- 
- 	/* RTR frames may have a dlc > 0 but they never have any data bytes */
--	if (!(cf.can_id & CAN_RTR_FLAG)) {
--		for (i = 0; i < cf.len; i++) {
-+	if (!(cf->can_id & CAN_RTR_FLAG)) {
-+		for (i = 0; i < cf->len; i++) {
- 			tmp = hex_to_bin(*cmd++);
- 			if (tmp < 0)
--				return;
--			cf.data[i] = (tmp << 4);
-+				goto decode_failed;
-+
-+			cf->data[i] = (tmp << 4);
- 			tmp = hex_to_bin(*cmd++);
- 			if (tmp < 0)
--				return;
--			cf.data[i] |= tmp;
-+				goto decode_failed;
-+
-+			cf->data[i] |= tmp;
- 		}
- 	}
- 
--	skb = dev_alloc_skb(sizeof(struct can_frame) +
--			    sizeof(struct can_skb_priv));
--	if (!skb)
--		return;
--
--	skb->dev = sl->dev;
--	skb->protocol = htons(ETH_P_CAN);
--	skb->pkt_type = PACKET_BROADCAST;
--	skb->ip_summed = CHECKSUM_UNNECESSARY;
--
--	can_skb_reserve(skb);
--	can_skb_prv(skb)->ifindex = sl->dev->ifindex;
--	can_skb_prv(skb)->skbcnt = 0;
--
--	skb_put_data(skb, &cf, sizeof(struct can_frame));
--
- 	sl->dev->stats.rx_packets++;
--	if (!(cf.can_id & CAN_RTR_FLAG))
--		sl->dev->stats.rx_bytes += cf.len;
-+	if (!(cf->can_id & CAN_RTR_FLAG))
-+		sl->dev->stats.rx_bytes += cf->len;
- 
- 	netif_rx(skb);
-+	return;
-+
-+decode_failed:
-+	sl->dev->stats.rx_errors++;
-+	dev_kfree_skb(skb);
- }
- 
- /* parse tty input stream */
+ #endif /* _UAPI_LINUX_TTY_H */
+
+base-commit: 0fcae3c8b1b32d79cb4bbf841023757358fb0413
 -- 
 2.35.1
 
