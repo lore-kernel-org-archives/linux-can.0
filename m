@@ -2,46 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17665CCA483
-	for <linux-can@archiver.kernel.org>; Sun,  3 Jul 2022 10:26:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6F7DCCA482
+	for <linux-can@archiver.kernel.org>; Sun,  3 Jul 2022 10:26:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232045AbiGCK0M (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 3 Jul 2022 06:26:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42248 "EHLO
+        id S231162AbiGCK0L (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 3 Jul 2022 06:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231890AbiGCK0K (ORCPT
+        with ESMTP id S231739AbiGCK0K (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Sun, 3 Jul 2022 06:26:10 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B94A86353
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27ADE6345
         for <linux-can@vger.kernel.org>; Sun,  3 Jul 2022 03:26:09 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1o7wno-0006AT-3S
-        for linux-can@vger.kernel.org; Sun, 03 Jul 2022 12:26:08 +0200
+        id 1o7wnn-00068m-Di
+        for linux-can@vger.kernel.org; Sun, 03 Jul 2022 12:26:07 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 54465A69C6
-        for <linux-can@vger.kernel.org>; Sun,  3 Jul 2022 10:14:37 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 41AA0A699A
+        for <linux-can@vger.kernel.org>; Sun,  3 Jul 2022 10:14:36 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id AA9B9A69A3;
-        Sun,  3 Jul 2022 10:14:36 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7D1D3A6981;
+        Sun,  3 Jul 2022 10:14:35 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 9dcfd5a2;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b8ab5017;
         Sun, 3 Jul 2022 10:14:31 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-        Jeroen Hofstee <jhofstee@victronenergy.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 09/15] can: slcan: allow to send commands to the adapter
-Date:   Sun,  3 Jul 2022 12:14:23 +0200
-Message-Id: <20220703101430.1306048-10-mkl@pengutronix.de>
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Jeroen Hofstee <jhofstee@victronenergy.com>
+Subject: [PATCH net-next 07/15] can: netlink: dump bitrate 0 if can_priv::bittiming.bitrate is -1U
+Date:   Sun,  3 Jul 2022 12:14:21 +0200
+Message-Id: <20220703101430.1306048-8-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220703101430.1306048-1-mkl@pengutronix.de>
 References: <20220703101430.1306048-1-mkl@pengutronix.de>
@@ -57,105 +57,49 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
-This is a preparation patch for the upcoming support to change the
-bitrate via ip tool, reset the adapter error states via the ethtool API
-and, more generally, send commands to the adapter.
+Upcoming changes on slcan driver will require you to specify a bitrate
+of value -1 to prevent the open_candev() from failing but at the same
+time highlighting that it is a fake value. In this case the command
+`ip --details -s -s link show' would print 4294967295 as the bitrate
+value. The patch change this value in 0.
 
-Since the close command (i. e. "C\r") will be sent in the ndo_stop()
-where netif_running() returns false, a new flag bit (i. e. SLF_XCMD) for
-serial transmission has to be added.
-
-Link: https://lore.kernel.org/all/20220628163137.413025-7-dario.binacchi@amarulasolutions.com
+Link: https://lore.kernel.org/all/20220628163137.413025-5-dario.binacchi@amarulasolutions.com
+Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 Tested-by: Jeroen Hofstee <jhofstee@victronenergy.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/slcan.c | 46 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 45 insertions(+), 1 deletion(-)
+ drivers/net/can/dev/netlink.c | 3 ++-
+ include/linux/can/bittiming.h | 2 ++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index bf84698f1a81..dfccf8d6c9a5 100644
---- a/drivers/net/can/slcan.c
-+++ b/drivers/net/can/slcan.c
-@@ -97,6 +97,9 @@ struct slcan {
- 	unsigned long		flags;		/* Flag values/ mode etc     */
- #define SLF_INUSE		0		/* Channel in use            */
- #define SLF_ERROR		1               /* Parity, etc. error        */
-+#define SLF_XCMD		2               /* Command transmission      */
-+	wait_queue_head_t       xcmd_wait;      /* Wait queue for commands   */
-+						/* transmission              */
- };
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index 037824011266..8efa22d9f214 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -511,7 +511,8 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
+ 	if (priv->do_get_state)
+ 		priv->do_get_state(dev, &state);
  
- static struct net_device **slcan_devs;
-@@ -314,12 +317,22 @@ static void slcan_transmit(struct work_struct *work)
+-	if ((priv->bittiming.bitrate &&
++	if ((priv->bittiming.bitrate != CAN_BITRATE_UNSET &&
++	     priv->bittiming.bitrate != CAN_BITRATE_UNKNOWN &&
+ 	     nla_put(skb, IFLA_CAN_BITTIMING,
+ 		     sizeof(priv->bittiming), &priv->bittiming)) ||
  
- 	spin_lock_bh(&sl->lock);
- 	/* First make sure we're connected. */
--	if (!sl->tty || sl->magic != SLCAN_MAGIC || !netif_running(sl->dev)) {
-+	if (!sl->tty || sl->magic != SLCAN_MAGIC ||
-+	    (unlikely(!netif_running(sl->dev)) &&
-+	     likely(!test_bit(SLF_XCMD, &sl->flags)))) {
- 		spin_unlock_bh(&sl->lock);
- 		return;
- 	}
+diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
+index 7ae21c0f7f23..ef0a77173e3c 100644
+--- a/include/linux/can/bittiming.h
++++ b/include/linux/can/bittiming.h
+@@ -11,6 +11,8 @@
  
- 	if (sl->xleft <= 0)  {
-+		if (unlikely(test_bit(SLF_XCMD, &sl->flags))) {
-+			clear_bit(SLF_XCMD, &sl->flags);
-+			clear_bit(TTY_DO_WRITE_WAKEUP, &sl->tty->flags);
-+			spin_unlock_bh(&sl->lock);
-+			wake_up(&sl->xcmd_wait);
-+			return;
-+		}
-+
- 		/* Now serial buffer is almost free & we can start
- 		 * transmission of another packet */
- 		sl->dev->stats.tx_packets++;
-@@ -383,6 +396,36 @@ static netdev_tx_t slc_xmit(struct sk_buff *skb, struct net_device *dev)
-  *   Routines looking at netdevice side.
-  ******************************************/
+ #define CAN_SYNC_SEG 1
  
-+static int slcan_transmit_cmd(struct slcan *sl, const unsigned char *cmd)
-+{
-+	int ret, actual, n;
-+
-+	spin_lock(&sl->lock);
-+	if (!sl->tty) {
-+		spin_unlock(&sl->lock);
-+		return -ENODEV;
-+	}
-+
-+	n = snprintf(sl->xbuff, sizeof(sl->xbuff), "%s", cmd);
-+	set_bit(TTY_DO_WRITE_WAKEUP, &sl->tty->flags);
-+	actual = sl->tty->ops->write(sl->tty, sl->xbuff, n);
-+	sl->xleft = n - actual;
-+	sl->xhead = sl->xbuff + actual;
-+	set_bit(SLF_XCMD, &sl->flags);
-+	spin_unlock(&sl->lock);
-+	ret = wait_event_interruptible_timeout(sl->xcmd_wait,
-+					       !test_bit(SLF_XCMD, &sl->flags),
-+					       HZ);
-+	clear_bit(SLF_XCMD, &sl->flags);
-+	if (ret == -ERESTARTSYS)
-+		return ret;
-+
-+	if (ret == 0)
-+		return -ETIMEDOUT;
-+
-+	return 0;
-+}
-+
- /* Netdevice UP -> DOWN routine */
- static int slc_close(struct net_device *dev)
- {
-@@ -540,6 +583,7 @@ static struct slcan *slc_alloc(void)
- 	sl->dev	= dev;
- 	spin_lock_init(&sl->lock);
- 	INIT_WORK(&sl->tx_work, slcan_transmit);
-+	init_waitqueue_head(&sl->xcmd_wait);
- 	slcan_devs[i] = dev;
++#define CAN_BITRATE_UNSET 0
++#define CAN_BITRATE_UNKNOWN (-1U)
  
- 	return sl;
+ #define CAN_CTRLMODE_TDC_MASK					\
+ 	(CAN_CTRLMODE_TDC_AUTO | CAN_CTRLMODE_TDC_MANUAL)
 -- 
 2.35.1
 
