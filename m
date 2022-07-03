@@ -2,45 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27E1BC433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A710BC43334
 	for <linux-can@archiver.kernel.org>; Sun,  3 Jul 2022 10:26:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232122AbiGCK0e (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 3 Jul 2022 06:26:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
+        id S232160AbiGCK0g (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 3 Jul 2022 06:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232267AbiGCK0T (ORCPT
+        with ESMTP id S232280AbiGCK0T (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Sun, 3 Jul 2022 06:26:19 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59157A1A3
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C607A1A9
         for <linux-can@vger.kernel.org>; Sun,  3 Jul 2022 03:26:18 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1o7wnw-0006Me-8w
+        id 1o7wnw-0006Mt-IY
         for linux-can@vger.kernel.org; Sun, 03 Jul 2022 12:26:16 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id EDE28A69EB
+        by bjornoya.blackshift.org (Postfix) with SMTP id ED46DA69E8
         for <linux-can@vger.kernel.org>; Sun,  3 Jul 2022 10:14:37 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 45E51A69BE;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3635FA69B6;
         Sun,  3 Jul 2022 10:14:37 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3f990cea;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f0500cdd;
         Sun, 3 Jul 2022 10:14:32 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Jeroen Hofstee <jhofstee@victronenergy.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 12/15] can: slcan: move driver into separate sub directory
-Date:   Sun,  3 Jul 2022 12:14:26 +0200
-Message-Id: <20220703101430.1306048-13-mkl@pengutronix.de>
+Subject: [PATCH net-next 11/15] can: slcan: send the open/close commands to the adapter
+Date:   Sun,  3 Jul 2022 12:14:25 +0200
+Message-Id: <20220703101430.1306048-12-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220703101430.1306048-1-mkl@pengutronix.de>
 References: <20220703101430.1306048-1-mkl@pengutronix.de>
@@ -56,49 +57,69 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
-This patch moves the slcan driver into a separate directory, a later
-patch will add more files.
+In case the bitrate has been set via ip tool, this patch changes the
+driver to send the open ("O\r") and close ("C\r) commands to the
+adapter.
 
-Link: https://lore.kernel.org/all/20220628163137.413025-10-dario.binacchi@amarulasolutions.com
+Link: https://lore.kernel.org/all/20220628163137.413025-9-dario.binacchi@amarulasolutions.com
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Tested-by: Jeroen Hofstee <jhofstee@victronenergy.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/Makefile                        | 2 +-
- drivers/net/can/slcan/Makefile                  | 6 ++++++
- drivers/net/can/{slcan.c => slcan/slcan-core.c} | 0
- 3 files changed, 7 insertions(+), 1 deletion(-)
- create mode 100644 drivers/net/can/slcan/Makefile
- rename drivers/net/can/{slcan.c => slcan/slcan-core.c} (100%)
+ drivers/net/can/slcan.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/Makefile b/drivers/net/can/Makefile
-index cafa0e0a3dfe..61c75ce9d500 100644
---- a/drivers/net/can/Makefile
-+++ b/drivers/net/can/Makefile
-@@ -5,7 +5,7 @@
+diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
+index 74033e2d7097..249b5ade06fc 100644
+--- a/drivers/net/can/slcan.c
++++ b/drivers/net/can/slcan.c
+@@ -435,9 +435,20 @@ static int slcan_transmit_cmd(struct slcan *sl, const unsigned char *cmd)
+ static int slc_close(struct net_device *dev)
+ {
+ 	struct slcan *sl = netdev_priv(dev);
++	int err;
  
- obj-$(CONFIG_CAN_VCAN)		+= vcan.o
- obj-$(CONFIG_CAN_VXCAN)		+= vxcan.o
--obj-$(CONFIG_CAN_SLCAN)		+= slcan.o
-+obj-$(CONFIG_CAN_SLCAN)		+= slcan/
+ 	spin_lock_bh(&sl->lock);
+ 	if (sl->tty) {
++		if (sl->can.bittiming.bitrate &&
++		    sl->can.bittiming.bitrate != CAN_BITRATE_UNKNOWN) {
++			spin_unlock_bh(&sl->lock);
++			err = slcan_transmit_cmd(sl, "C\r");
++			spin_lock_bh(&sl->lock);
++			if (err)
++				netdev_warn(dev,
++					    "failed to send close command 'C\\r'\n");
++		}
++
+ 		/* TTY discipline is running. */
+ 		clear_bit(TTY_DO_WRITE_WAKEUP, &sl->tty->flags);
+ 	}
+@@ -496,14 +507,23 @@ static int slc_open(struct net_device *dev)
+ 			netdev_err(dev,
+ 				   "failed to send bitrate command 'C\\rS%d\\r'\n",
+ 				   s);
+-			close_candev(dev);
+-			return err;
++			goto cmd_transmit_failed;
++		}
++
++		err = slcan_transmit_cmd(sl, "O\r");
++		if (err) {
++			netdev_err(dev, "failed to send open command 'O\\r'\n");
++			goto cmd_transmit_failed;
+ 		}
+ 	}
  
- obj-y				+= dev/
- obj-y				+= rcar/
-diff --git a/drivers/net/can/slcan/Makefile b/drivers/net/can/slcan/Makefile
-new file mode 100644
-index 000000000000..2e84f7bf7617
---- /dev/null
-+++ b/drivers/net/can/slcan/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0
+ 	sl->can.state = CAN_STATE_ERROR_ACTIVE;
+ 	netif_start_queue(dev);
+ 	return 0;
 +
-+obj-$(CONFIG_CAN_SLCAN) += slcan.o
-+
-+slcan-objs :=
-+slcan-objs += slcan-core.o
-diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan/slcan-core.c
-similarity index 100%
-rename from drivers/net/can/slcan.c
-rename to drivers/net/can/slcan/slcan-core.c
++cmd_transmit_failed:
++	close_candev(dev);
++	return err;
+ }
+ 
+ static void slc_dealloc(struct slcan *sl)
 -- 
 2.35.1
 
