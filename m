@@ -2,49 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B936FCCA493
-	for <linux-can@archiver.kernel.org>; Mon,  4 Jul 2022 12:52:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 927B9CCA488
+	for <linux-can@archiver.kernel.org>; Mon,  4 Jul 2022 12:52:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234624AbiGDMw5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S234629AbiGDMw5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Mon, 4 Jul 2022 08:52:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59618 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234683AbiGDMwm (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 4 Jul 2022 08:52:42 -0400
+        with ESMTP id S234740AbiGDMwp (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 4 Jul 2022 08:52:45 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7263011824
-        for <linux-can@vger.kernel.org>; Mon,  4 Jul 2022 05:52:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5279511A30
+        for <linux-can@vger.kernel.org>; Mon,  4 Jul 2022 05:52:42 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1o8LYx-00014x-Oi
-        for linux-can@vger.kernel.org; Mon, 04 Jul 2022 14:52:27 +0200
+        id 1o8LZ3-0001H1-Ri
+        for linux-can@vger.kernel.org; Mon, 04 Jul 2022 14:52:33 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 685EAA799A
-        for <linux-can@vger.kernel.org>; Mon,  4 Jul 2022 12:26:15 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id CEC5AA792C
+        for <linux-can@vger.kernel.org>; Mon,  4 Jul 2022 12:26:14 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id E7085A7936;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 88E45A7921;
         Mon,  4 Jul 2022 12:26:14 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d0fb4380;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 62a2908a;
         Mon, 4 Jul 2022 12:26:14 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        stable@vger.kernel.org,
-        Torin Cooper-Bennun <torin@maxiluxsystems.com>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>
-Subject: [PATCH net 06/15] can: m_can: m_can_chip_config(): actually enable internal timestamping
-Date:   Mon,  4 Jul 2022 14:26:04 +0200
-Message-Id: <20220704122613.1551119-7-mkl@pengutronix.de>
+        kernel@pengutronix.de
+Subject: [PATCH net 0/15] pull-request: can 2022-07-04
+Date:   Mon,  4 Jul 2022 14:25:58 +0200
+Message-Id: <20220704122613.1551119-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220704122613.1551119-1-mkl@pengutronix.de>
-References: <20220704122613.1551119-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -55,41 +50,101 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-In commit df06fd678260 ("can: m_can: m_can_chip_config(): enable and
-configure internal timestamps") the timestamping in the m_can core
-should be enabled. In peripheral mode, the RX'ed CAN frames, TX
-compete frames and error events are sorted by the timestamp.
+Hello Jakub, hello David,
 
-The above mentioned commit however forgot to enable the timestamping.
-Add the missing bits to enable the timestamp counter to the write of
-the Timestamp Counter Configuration register.
+this is a pull request of 15 patches for net/master.
 
-Link: https://lore.kernel.org/all/20220612212708.4081756-1-mkl@pengutronix.de
-Fixes: df06fd678260 ("can: m_can: m_can_chip_config(): enable and configure internal timestamps")
-Cc: <stable@vger.kernel.org> # 5.13
-Cc: Torin Cooper-Bennun <torin@maxiluxsystems.com>
-Reviewed-by: Chandrasekar Ramakrishnan <rcsekar@samsung.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+The 1st patch is by Oliver Hartkopp, targets the BCM CAN protocol and
+converts a costly synchronize_rcu() to call_rcu() to fix a performance
+regression.
+
+Srinivas Neeli's patch for the xilinx_can driver drops the brp limit
+down to 1, as only the pre-production silicon have an issue with a brp
+of 1.
+
+The next patch is by Duy Nguyen and fixes the data transmission on
+R-Car V3U SoCs in the rcar_canfd driver.
+
+Rhett Aultman's patch fixes a DMA memory leak in the gs_usb driver.
+
+Liang He's patch removes an extra of_node_get() in the grcan driver.
+
+The next 2 patches are by me, target the m_can driver and fix the
+timestamp handling used for peripheral devices like the tcan4x5x.
+
+Jimmy Assarsson contributes 3 patches for the kvaser_usb driver and
+fixes CAN clock and bit timing related issues.
+
+The remaining 5 patches target the mcp251xfd driver. Thomas Kopp
+contributes 2 patches to improve the workaround for broken CRC when
+reading the TBC register. 3 patches by me add a missing
+hrtimer_cancel() during the ndo_stop() callback, and fix the reading
+of the Device ID register.
+
+regards,
+Marc
+
 ---
- drivers/net/can/m_can/m_can.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 5d0c82d8b9a9..03a22d493cf6 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1351,7 +1351,9 @@ static void m_can_chip_config(struct net_device *dev)
- 	/* enable internal timestamp generation, with a prescalar of 16. The
- 	 * prescalar is applied to the nominal bit timing
- 	 */
--	m_can_write(cdev, M_CAN_TSCC, FIELD_PREP(TSCC_TCP_MASK, 0xf));
-+	m_can_write(cdev, M_CAN_TSCC,
-+		    FIELD_PREP(TSCC_TCP_MASK, 0xf) |
-+		    FIELD_PREP(TSCC_TSS_MASK, TSCC_TSS_INTERNAL));
- 
- 	m_can_config_endisable(cdev, false);
- 
--- 
-2.35.1
+The following changes since commit 280e3a857d96f9ca8e24632788e1e7a0fec4e9f7:
+
+  Merge git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf (2022-07-03 12:29:18 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.19-20220704
+
+for you to fetch changes up to 1c0e78a287e3493e22bde8553d02f3b89177eaf7:
+
+  can: mcp251xfd: mcp251xfd_register_get_dev_id(): fix endianness conversion (2022-07-04 12:51:43 +0200)
+
+----------------------------------------------------------------
+linux-can-fixes-for-5.19-20220704
+
+----------------------------------------------------------------
+Duy Nguyen (1):
+      can: rcar_canfd: Fix data transmission failed on R-Car V3U
+
+Jimmy Assarsson (3):
+      can: kvaser_usb: replace run-time checks with struct kvaser_usb_driver_info
+      can: kvaser_usb: kvaser_usb_leaf: fix CAN clock frequency regression
+      can: kvaser_usb: kvaser_usb_leaf: fix bittiming limits
+
+Liang He (1):
+      can: grcan: grcan_probe(): remove extra of_node_get()
+
+Marc Kleine-Budde (5):
+      can: m_can: m_can_chip_config(): actually enable internal timestamping
+      can: m_can: m_can_{read_fifo,echo_tx_event}(): shift timestamp to full 32 bits
+      can: mcp251xfd: mcp251xfd_stop(): add missing hrtimer_cancel()
+      can: mcp251xfd: mcp251xfd_register_get_dev_id(): use correct length to read dev_id
+      can: mcp251xfd: mcp251xfd_register_get_dev_id(): fix endianness conversion
+
+Oliver Hartkopp (1):
+      can: bcm: use call_rcu() instead of costly synchronize_rcu()
+
+Rhett Aultman (1):
+      can: gs_usb: gs_usb_open/close(): fix memory leak
+
+Srinivas Neeli (1):
+      Revert "can: xilinx_can: Limit CANFD brp to 2"
+
+Thomas Kopp (2):
+      can: mcp251xfd: mcp251xfd_regmap_crc_read(): improve workaround handling for mcp2517fd
+      can: mcp251xfd: mcp251xfd_regmap_crc_read(): update workaround broken CRC on TBC register
+
+ drivers/net/can/grcan.c                           |   1 -
+ drivers/net/can/m_can/m_can.c                     |   8 +-
+ drivers/net/can/rcar/rcar_canfd.c                 |   5 +-
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c    |   6 +-
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c  |  22 +-
+ drivers/net/can/usb/gs_usb.c                      |  23 +-
+ drivers/net/can/usb/kvaser_usb/kvaser_usb.h       |  25 +-
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c  | 285 ++++++++++++----------
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c |   4 +-
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 119 +++++----
+ drivers/net/can/xilinx_can.c                      |   4 +-
+ net/can/bcm.c                                     |  18 +-
+ 12 files changed, 304 insertions(+), 216 deletions(-)
 
 
