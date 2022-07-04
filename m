@@ -2,42 +2,42 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD17ACCA479
-	for <linux-can@archiver.kernel.org>; Mon,  4 Jul 2022 13:00:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5825C43334
+	for <linux-can@archiver.kernel.org>; Mon,  4 Jul 2022 13:00:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234233AbiGDNAD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S234500AbiGDNAD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Mon, 4 Jul 2022 09:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40750 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232937AbiGDNAB (ORCPT
+        with ESMTP id S234529AbiGDNAB (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 4 Jul 2022 09:00:01 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F7999596
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8699EA1BF
         for <linux-can@vger.kernel.org>; Mon,  4 Jul 2022 06:00:00 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1o8LgE-0003Bp-RI
-        for linux-can@vger.kernel.org; Mon, 04 Jul 2022 14:59:58 +0200
+        id 1o8LgE-0003Bd-WF
+        for linux-can@vger.kernel.org; Mon, 04 Jul 2022 14:59:59 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id B420DA7C18
+        by bjornoya.blackshift.org (Postfix) with SMTP id 97D55A7C15
         for <linux-can@vger.kernel.org>; Mon,  4 Jul 2022 12:59:57 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9446EA7C14;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7E600A7C0D;
         Mon,  4 Jul 2022 12:59:57 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1746e7e6;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 07c76312;
         Mon, 4 Jul 2022 12:59:57 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5/5] can: slcan: clean up if/else
-Date:   Mon,  4 Jul 2022 14:59:54 +0200
-Message-Id: <20220704125954.1587880-6-mkl@pengutronix.de>
+Subject: [PATCH 3/5] can: slcan: fix whitespace issues
+Date:   Mon,  4 Jul 2022 14:59:52 +0200
+Message-Id: <20220704125954.1587880-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220704125954.1587880-1-mkl@pengutronix.de>
 References: <20220704125954.1587880-1-mkl@pengutronix.de>
@@ -51,54 +51,62 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Remove braces after if() for single statement blocks, also remove else
-after return() in if() block.
+Add and remove whitespace to make checkpatch happy.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/slcan/slcan-core.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/net/can/slcan/slcan-core.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/can/slcan/slcan-core.c b/drivers/net/can/slcan/slcan-core.c
-index 09f76a62c7f1..ac2c60f330fe 100644
+index b81681f8094f..8b3aa6215420 100644
 --- a/drivers/net/can/slcan/slcan-core.c
 +++ b/drivers/net/can/slcan/slcan-core.c
-@@ -469,19 +469,19 @@ static void slcan_unesc(struct slcan *sl, unsigned char s)
- {
- 	if ((s == '\r') || (s == '\a')) { /* CR or BEL ends the pdu */
- 		if (!test_and_clear_bit(SLF_ERROR, &sl->flags) &&
--		    (sl->rcount > 4))  {
-+		    sl->rcount > 4)
- 			slc_bump(sl);
--		}
-+
- 		sl->rcount = 0;
- 	} else {
- 		if (!test_bit(SLF_ERROR, &sl->flags))  {
- 			if (sl->rcount < SLC_MTU)  {
- 				sl->rbuff[sl->rcount++] = s;
- 				return;
--			} else {
--				sl->dev->stats.rx_over_errors++;
--				set_bit(SLF_ERROR, &sl->flags);
- 			}
-+
-+			sl->dev->stats.rx_over_errors++;
-+			set_bit(SLF_ERROR, &sl->flags);
- 		}
+@@ -74,7 +74,7 @@ module_param(maxdev, int, 0);
+ MODULE_PARM_DESC(maxdev, "Maximum number of slcan interfaces");
+ 
+ /* maximum rx buffer len: extended CAN frame with timestamp */
+-#define SLC_MTU (sizeof("T1111222281122334455667788EA5F\r")+1)
++#define SLC_MTU (sizeof("T1111222281122334455667788EA5F\r") + 1)
+ 
+ #define SLC_CMD_LEN 1
+ #define SLC_SFF_ID_LEN 3
+@@ -624,7 +624,7 @@ static netdev_tx_t slc_xmit(struct sk_buff *skb, struct net_device *dev)
  	}
- }
-@@ -1104,9 +1104,8 @@ static void __exit slcan_exit(void)
- 			continue;
  
- 		sl = netdev_priv(dev);
--		if (sl->tty) {
-+		if (sl->tty)
- 			netdev_err(dev, "tty discipline still running\n");
--		}
+ 	netif_stop_queue(sl->dev);
+-	slc_encaps(sl, (struct can_frame *) skb->data); /* encaps & send */
++	slc_encaps(sl, (struct can_frame *)skb->data); /* encaps & send */
+ 	spin_unlock(&sl->lock);
  
- 		slc_close(dev);
- 		unregister_candev(dev);
+ out:
+@@ -804,7 +804,7 @@ static void slcan_receive_buf(struct tty_struct *tty,
+ 			      const unsigned char *cp, const char *fp,
+ 			      int count)
+ {
+-	struct slcan *sl = (struct slcan *) tty->disc_data;
++	struct slcan *sl = (struct slcan *)tty->disc_data;
+ 
+ 	if (!sl || sl->magic != SLCAN_MAGIC || !netif_running(sl->dev))
+ 		return;
+@@ -976,7 +976,7 @@ static int slcan_open(struct tty_struct *tty)
+  */
+ static void slcan_close(struct tty_struct *tty)
+ {
+-	struct slcan *sl = (struct slcan *) tty->disc_data;
++	struct slcan *sl = (struct slcan *)tty->disc_data;
+ 
+ 	/* First make sure we're connected. */
+ 	if (!sl || sl->magic != SLCAN_MAGIC || sl->tty != tty)
+@@ -1006,7 +1006,7 @@ static void slcan_hangup(struct tty_struct *tty)
+ static int slcan_ioctl(struct tty_struct *tty, unsigned int cmd,
+ 		       unsigned long arg)
+ {
+-	struct slcan *sl = (struct slcan *) tty->disc_data;
++	struct slcan *sl = (struct slcan *)tty->disc_data;
+ 	unsigned int tmp;
+ 
+ 	/* First make sure we're connected. */
 -- 
 2.35.1
 
