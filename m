@@ -2,44 +2,49 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 927B9CCA488
-	for <linux-can@archiver.kernel.org>; Mon,  4 Jul 2022 12:52:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60460CCA489
+	for <linux-can@archiver.kernel.org>; Mon,  4 Jul 2022 12:53:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234629AbiGDMw5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 4 Jul 2022 08:52:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59508 "EHLO
+        id S234637AbiGDMw6 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 4 Jul 2022 08:52:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234740AbiGDMwp (ORCPT
+        with ESMTP id S234741AbiGDMwp (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 4 Jul 2022 08:52:45 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5279511A30
-        for <linux-can@vger.kernel.org>; Mon,  4 Jul 2022 05:52:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C7911A25
+        for <linux-can@vger.kernel.org>; Mon,  4 Jul 2022 05:52:41 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1o8LZ3-0001H1-Ri
-        for linux-can@vger.kernel.org; Mon, 04 Jul 2022 14:52:33 +0200
+        id 1o8LZ2-0001Ez-Hl
+        for linux-can@vger.kernel.org; Mon, 04 Jul 2022 14:52:32 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id CEC5AA792C
-        for <linux-can@vger.kernel.org>; Mon,  4 Jul 2022 12:26:14 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id BBEFBA79F3
+        for <linux-can@vger.kernel.org>; Mon,  4 Jul 2022 12:26:15 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 88E45A7921;
-        Mon,  4 Jul 2022 12:26:14 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 562A2A7981;
+        Mon,  4 Jul 2022 12:26:15 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 62a2908a;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 22c3fc5d;
         Mon, 4 Jul 2022 12:26:14 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net 0/15] pull-request: can 2022-07-04
-Date:   Mon,  4 Jul 2022 14:25:58 +0200
-Message-Id: <20220704122613.1551119-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Thomas Kopp <thomas.kopp@microchip.com>,
+        stable@vger.kernel.org,
+        Pavel Modilaynen <pavel.modilaynen@volvocars.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 11/15] can: mcp251xfd: mcp251xfd_regmap_crc_read(): improve workaround handling for mcp2517fd
+Date:   Mon,  4 Jul 2022 14:26:09 +0200
+Message-Id: <20220704122613.1551119-12-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220704122613.1551119-1-mkl@pengutronix.de>
+References: <20220704122613.1551119-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -50,101 +55,72 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+From: Thomas Kopp <thomas.kopp@microchip.com>
 
-this is a pull request of 15 patches for net/master.
+The mcp251xfd compatible chips have an erratum ([1], [2]), where the
+received CRC doesn't match the calculated CRC. In commit
+c7eb923c3caf ("can: mcp251xfd: mcp251xfd_regmap_crc_read(): work
+around broken CRC on TBC register") the following workaround was
+implementierend.
 
-The 1st patch is by Oliver Hartkopp, targets the BCM CAN protocol and
-converts a costly synchronize_rcu() to call_rcu() to fix a performance
-regression.
+- If a CRC read error on the TBC register is detected and the first
+  byte is 0x00 or 0x80, the most significant bit of the first byte is
+  flipped and the CRC is calculated again.
+- If the CRC now matches, the _original_ data is passed to the reader.
+  For now we assume transferred data was OK.
 
-Srinivas Neeli's patch for the xilinx_can driver drops the brp limit
-down to 1, as only the pre-production silicon have an issue with a brp
-of 1.
+Measurements on the mcp2517fd show that the workaround is applicable
+not only of the lowest byte is 0x00 or 0x80, but also if 3 least
+significant bits are set.
 
-The next patch is by Duy Nguyen and fixes the data transmission on
-R-Car V3U SoCs in the rcar_canfd driver.
+Update check on 1st data byte and workaround description accordingly.
 
-Rhett Aultman's patch fixes a DMA memory leak in the gs_usb driver.
+[1] mcp2517fd: DS80000792C: "Incorrect CRC for certain READ_CRC commands"
+[2] mcp2518fd: DS80000789C: "Incorrect CRC for certain READ_CRC commands"
 
-Liang He's patch removes an extra of_node_get() in the grcan driver.
-
-The next 2 patches are by me, target the m_can driver and fix the
-timestamp handling used for peripheral devices like the tcan4x5x.
-
-Jimmy Assarsson contributes 3 patches for the kvaser_usb driver and
-fixes CAN clock and bit timing related issues.
-
-The remaining 5 patches target the mcp251xfd driver. Thomas Kopp
-contributes 2 patches to improve the workaround for broken CRC when
-reading the TBC register. 3 patches by me add a missing
-hrtimer_cancel() during the ndo_stop() callback, and fix the reading
-of the Device ID register.
-
-regards,
-Marc
-
+Link: https://lore.kernel.org/all/DM4PR11MB53901D49578FE265B239E55AFB7C9@DM4PR11MB5390.namprd11.prod.outlook.com
+Fixes: c7eb923c3caf ("can: mcp251xfd: mcp251xfd_regmap_crc_read(): work around broken CRC on TBC register")
+Cc: stable@vger.kernel.org
+Reported-by: Pavel Modilaynen <pavel.modilaynen@volvocars.com>
+Signed-off-by: Thomas Kopp <thomas.kopp@microchip.com>
+[mkl: split into 2 patches, update patch description and documentation]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-The following changes since commit 280e3a857d96f9ca8e24632788e1e7a0fec4e9f7:
-
-  Merge git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf (2022-07-03 12:29:18 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.19-20220704
-
-for you to fetch changes up to 1c0e78a287e3493e22bde8553d02f3b89177eaf7:
-
-  can: mcp251xfd: mcp251xfd_register_get_dev_id(): fix endianness conversion (2022-07-04 12:51:43 +0200)
-
-----------------------------------------------------------------
-linux-can-fixes-for-5.19-20220704
-
-----------------------------------------------------------------
-Duy Nguyen (1):
-      can: rcar_canfd: Fix data transmission failed on R-Car V3U
-
-Jimmy Assarsson (3):
-      can: kvaser_usb: replace run-time checks with struct kvaser_usb_driver_info
-      can: kvaser_usb: kvaser_usb_leaf: fix CAN clock frequency regression
-      can: kvaser_usb: kvaser_usb_leaf: fix bittiming limits
-
-Liang He (1):
-      can: grcan: grcan_probe(): remove extra of_node_get()
-
-Marc Kleine-Budde (5):
-      can: m_can: m_can_chip_config(): actually enable internal timestamping
-      can: m_can: m_can_{read_fifo,echo_tx_event}(): shift timestamp to full 32 bits
-      can: mcp251xfd: mcp251xfd_stop(): add missing hrtimer_cancel()
-      can: mcp251xfd: mcp251xfd_register_get_dev_id(): use correct length to read dev_id
-      can: mcp251xfd: mcp251xfd_register_get_dev_id(): fix endianness conversion
-
-Oliver Hartkopp (1):
-      can: bcm: use call_rcu() instead of costly synchronize_rcu()
-
-Rhett Aultman (1):
-      can: gs_usb: gs_usb_open/close(): fix memory leak
-
-Srinivas Neeli (1):
-      Revert "can: xilinx_can: Limit CANFD brp to 2"
-
-Thomas Kopp (2):
-      can: mcp251xfd: mcp251xfd_regmap_crc_read(): improve workaround handling for mcp2517fd
-      can: mcp251xfd: mcp251xfd_regmap_crc_read(): update workaround broken CRC on TBC register
-
- drivers/net/can/grcan.c                           |   1 -
- drivers/net/can/m_can/m_can.c                     |   8 +-
- drivers/net/can/rcar/rcar_canfd.c                 |   5 +-
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c    |   6 +-
- drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c  |  22 +-
- drivers/net/can/usb/gs_usb.c                      |  23 +-
- drivers/net/can/usb/kvaser_usb/kvaser_usb.h       |  25 +-
- drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c  | 285 ++++++++++++----------
- drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c |   4 +-
- drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 119 +++++----
- drivers/net/can/xilinx_can.c                      |   4 +-
- net/can/bcm.c                                     |  18 +-
- 12 files changed, 304 insertions(+), 216 deletions(-)
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
+index 217510c12af5..211edd9ef0c9 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
+@@ -334,10 +334,12 @@ mcp251xfd_regmap_crc_read(void *context,
+ 		 * register. It increments once per SYS clock tick,
+ 		 * which is 20 or 40 MHz.
+ 		 *
+-		 * Observation shows that if the lowest byte (which is
+-		 * transferred first on the SPI bus) of that register
+-		 * is 0x00 or 0x80 the calculated CRC doesn't always
+-		 * match the transferred one.
++		 * Observation on the mcp2518fd shows that if the
++		 * lowest byte (which is transferred first on the SPI
++		 * bus) of that register is 0x00 or 0x80 the
++		 * calculated CRC doesn't always match the transferred
++		 * one. On the mcp2517fd this problem is not limited
++		 * to the first byte being 0x00 or 0x80.
+ 		 *
+ 		 * If the highest bit in the lowest byte is flipped
+ 		 * the transferred CRC matches the calculated one. We
+@@ -346,7 +348,8 @@ mcp251xfd_regmap_crc_read(void *context,
+ 		 * correct.
+ 		 */
+ 		if (reg == MCP251XFD_REG_TBC &&
+-		    (buf_rx->data[0] == 0x0 || buf_rx->data[0] == 0x80)) {
++		    ((buf_rx->data[0] & 0xf8) == 0x0 ||
++		     (buf_rx->data[0] & 0xf8) == 0x80)) {
+ 			/* Flip highest bit in lowest byte of le32 */
+ 			buf_rx->data[0] ^= 0x80;
+ 
+-- 
+2.35.1
 
 
