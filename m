@@ -2,46 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60460CCA489
-	for <linux-can@archiver.kernel.org>; Mon,  4 Jul 2022 12:53:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55DA1C433EF
+	for <linux-can@archiver.kernel.org>; Mon,  4 Jul 2022 12:53:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234637AbiGDMw6 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 4 Jul 2022 08:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60190 "EHLO
+        id S234636AbiGDMw7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 4 Jul 2022 08:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234741AbiGDMwp (ORCPT
+        with ESMTP id S234742AbiGDMwp (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 4 Jul 2022 08:52:45 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C7911A25
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34BD11A3E
         for <linux-can@vger.kernel.org>; Mon,  4 Jul 2022 05:52:41 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1o8LZ2-0001Ez-Hl
-        for linux-can@vger.kernel.org; Mon, 04 Jul 2022 14:52:32 +0200
+        id 1o8LZ3-0001Gu-Ny
+        for linux-can@vger.kernel.org; Mon, 04 Jul 2022 14:52:33 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id BBEFBA79F3
+        by bjornoya.blackshift.org (Postfix) with SMTP id C307BA79F9
         for <linux-can@vger.kernel.org>; Mon,  4 Jul 2022 12:26:15 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 562A2A7981;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 27D7DA7954;
         Mon,  4 Jul 2022 12:26:15 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 22c3fc5d;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4db23f35;
         Mon, 4 Jul 2022 12:26:14 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Thomas Kopp <thomas.kopp@microchip.com>,
-        stable@vger.kernel.org,
-        Pavel Modilaynen <pavel.modilaynen@volvocars.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 11/15] can: mcp251xfd: mcp251xfd_regmap_crc_read(): improve workaround handling for mcp2517fd
-Date:   Mon,  4 Jul 2022 14:26:09 +0200
-Message-Id: <20220704122613.1551119-12-mkl@pengutronix.de>
+        kernel@pengutronix.de, Jimmy Assarsson <extja@kvaser.com>,
+        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 09/15] can: kvaser_usb: kvaser_usb_leaf: fix CAN clock frequency regression
+Date:   Mon,  4 Jul 2022 14:26:07 +0200
+Message-Id: <20220704122613.1551119-10-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220704122613.1551119-1-mkl@pengutronix.de>
 References: <20220704122613.1551119-1-mkl@pengutronix.de>
@@ -55,70 +53,149 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Thomas Kopp <thomas.kopp@microchip.com>
+From: Jimmy Assarsson <extja@kvaser.com>
 
-The mcp251xfd compatible chips have an erratum ([1], [2]), where the
-received CRC doesn't match the calculated CRC. In commit
-c7eb923c3caf ("can: mcp251xfd: mcp251xfd_regmap_crc_read(): work
-around broken CRC on TBC register") the following workaround was
-implementierend.
+The firmware of M32C based Leaf devices expects bittiming parameters
+calculated for 16MHz clock. Since we use the actual clock frequency of
+the device, the device may end up with wrong bittiming parameters,
+depending on user requested parameters.
 
-- If a CRC read error on the TBC register is detected and the first
-  byte is 0x00 or 0x80, the most significant bit of the first byte is
-  flipped and the CRC is calculated again.
-- If the CRC now matches, the _original_ data is passed to the reader.
-  For now we assume transferred data was OK.
+This regression affects M32C based Leaf devices with non-16MHz clock.
 
-Measurements on the mcp2517fd show that the workaround is applicable
-not only of the lowest byte is 0x00 or 0x80, but also if 3 least
-significant bits are set.
-
-Update check on 1st data byte and workaround description accordingly.
-
-[1] mcp2517fd: DS80000792C: "Incorrect CRC for certain READ_CRC commands"
-[2] mcp2518fd: DS80000789C: "Incorrect CRC for certain READ_CRC commands"
-
-Link: https://lore.kernel.org/all/DM4PR11MB53901D49578FE265B239E55AFB7C9@DM4PR11MB5390.namprd11.prod.outlook.com
-Fixes: c7eb923c3caf ("can: mcp251xfd: mcp251xfd_regmap_crc_read(): work around broken CRC on TBC register")
+Fixes: fb12797ab1fe ("can: kvaser_usb: get CAN clock frequency from device")
+Link: https://lore.kernel.org/all/20220603083820.800246-3-extja@kvaser.com
 Cc: stable@vger.kernel.org
-Reported-by: Pavel Modilaynen <pavel.modilaynen@volvocars.com>
-Signed-off-by: Thomas Kopp <thomas.kopp@microchip.com>
-[mkl: split into 2 patches, update patch description and documentation]
+Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb.h   |  1 +
+ .../net/can/usb/kvaser_usb/kvaser_usb_core.c  | 33 ++++++++++++-------
+ .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 25 +++++++++-----
+ 3 files changed, 38 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
-index 217510c12af5..211edd9ef0c9 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
-@@ -334,10 +334,12 @@ mcp251xfd_regmap_crc_read(void *context,
- 		 * register. It increments once per SYS clock tick,
- 		 * which is 20 or 40 MHz.
- 		 *
--		 * Observation shows that if the lowest byte (which is
--		 * transferred first on the SPI bus) of that register
--		 * is 0x00 or 0x80 the calculated CRC doesn't always
--		 * match the transferred one.
-+		 * Observation on the mcp2518fd shows that if the
-+		 * lowest byte (which is transferred first on the SPI
-+		 * bus) of that register is 0x00 or 0x80 the
-+		 * calculated CRC doesn't always match the transferred
-+		 * one. On the mcp2517fd this problem is not limited
-+		 * to the first byte being 0x00 or 0x80.
- 		 *
- 		 * If the highest bit in the lowest byte is flipped
- 		 * the transferred CRC matches the calculated one. We
-@@ -346,7 +348,8 @@ mcp251xfd_regmap_crc_read(void *context,
- 		 * correct.
- 		 */
- 		if (reg == MCP251XFD_REG_TBC &&
--		    (buf_rx->data[0] == 0x0 || buf_rx->data[0] == 0x80)) {
-+		    ((buf_rx->data[0] & 0xf8) == 0x0 ||
-+		     (buf_rx->data[0] & 0xf8) == 0x80)) {
- 			/* Flip highest bit in lowest byte of le32 */
- 			buf_rx->data[0] ^= 0x80;
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
+index 39d5bfd70ff4..c1f66cef2c3f 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
+@@ -38,6 +38,7 @@
+ /* Kvaser USB device quirks */
+ #define KVASER_USB_QUIRK_HAS_SILENT_MODE	BIT(0)
+ #define KVASER_USB_QUIRK_HAS_TXRX_ERRORS	BIT(1)
++#define KVASER_USB_QUIRK_IGNORE_CLK_FREQ	BIT(2)
+ 
+ /* Device capabilities */
+ #define KVASER_USB_CAP_BERR_CAP			0x01
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+index d5b293e673d8..f211bfcb1d97 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+@@ -101,26 +101,33 @@ static const struct kvaser_usb_driver_info kvaser_usb_driver_info_usbcan = {
+ };
+ 
+ static const struct kvaser_usb_driver_info kvaser_usb_driver_info_leaf = {
+-	.quirks = 0,
++	.quirks = KVASER_USB_QUIRK_IGNORE_CLK_FREQ,
+ 	.family = KVASER_LEAF,
+ 	.ops = &kvaser_usb_leaf_dev_ops,
+ };
+ 
+ static const struct kvaser_usb_driver_info kvaser_usb_driver_info_leaf_err = {
+-	.quirks = KVASER_USB_QUIRK_HAS_TXRX_ERRORS,
++	.quirks = KVASER_USB_QUIRK_HAS_TXRX_ERRORS |
++		  KVASER_USB_QUIRK_IGNORE_CLK_FREQ,
+ 	.family = KVASER_LEAF,
+ 	.ops = &kvaser_usb_leaf_dev_ops,
+ };
+ 
+ static const struct kvaser_usb_driver_info kvaser_usb_driver_info_leaf_err_listen = {
+ 	.quirks = KVASER_USB_QUIRK_HAS_TXRX_ERRORS |
+-		  KVASER_USB_QUIRK_HAS_SILENT_MODE,
++		  KVASER_USB_QUIRK_HAS_SILENT_MODE |
++		  KVASER_USB_QUIRK_IGNORE_CLK_FREQ,
+ 	.family = KVASER_LEAF,
+ 	.ops = &kvaser_usb_leaf_dev_ops,
+ };
+ 
++static const struct kvaser_usb_driver_info kvaser_usb_driver_info_leafimx = {
++	.quirks = 0,
++	.ops = &kvaser_usb_leaf_dev_ops,
++};
++
+ static const struct usb_device_id kvaser_usb_table[] = {
+-	/* Leaf USB product IDs */
++	/* Leaf M32C USB product IDs */
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_DEVEL_PRODUCT_ID),
+ 		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_leaf },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_LITE_PRODUCT_ID),
+@@ -161,22 +168,24 @@ static const struct usb_device_id kvaser_usb_table[] = {
+ 		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_leaf_err },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_CAN_R_PRODUCT_ID),
+ 		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_leaf_err },
++
++	/* Leaf i.MX28 USB product IDs */
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_LITE_V2_PRODUCT_ID),
+-		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_leaf },
++		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_leafimx },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_MINI_PCIE_HS_PRODUCT_ID),
+-		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_leaf },
++		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_leafimx },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_LIGHT_HS_V2_OEM_PRODUCT_ID),
+-		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_leaf },
++		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_leafimx },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_USBCAN_LIGHT_2HS_PRODUCT_ID),
+-		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_leaf },
++		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_leafimx },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_MINI_PCIE_2HS_PRODUCT_ID),
+-		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_leaf },
++		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_leafimx },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_USBCAN_R_V2_PRODUCT_ID),
+-		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_leaf },
++		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_leafimx },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_LIGHT_R_V2_PRODUCT_ID),
+-		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_leaf },
++		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_leafimx },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_LIGHT_HS_V2_OEM2_PRODUCT_ID),
+-		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_leaf },
++		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_leafimx },
+ 
+ 	/* USBCANII USB product IDs */
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_USBCAN2_PRODUCT_ID),
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
+index 5cf940ba3f7f..957144cee414 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
+@@ -524,16 +524,23 @@ static void kvaser_usb_leaf_get_software_info_leaf(struct kvaser_usb *dev,
+ 	dev->fw_version = le32_to_cpu(softinfo->fw_version);
+ 	dev->max_tx_urbs = le16_to_cpu(softinfo->max_outstanding_tx);
+ 
+-	switch (sw_options & KVASER_USB_LEAF_SWOPTION_FREQ_MASK) {
+-	case KVASER_USB_LEAF_SWOPTION_FREQ_16_MHZ_CLK:
++	if (dev->driver_info->quirks & KVASER_USB_QUIRK_IGNORE_CLK_FREQ) {
++		/* Firmware expects bittiming parameters calculated for 16MHz
++		 * clock, regardless of the actual clock
++		 */
+ 		dev->cfg = &kvaser_usb_leaf_dev_cfg_16mhz;
+-		break;
+-	case KVASER_USB_LEAF_SWOPTION_FREQ_24_MHZ_CLK:
+-		dev->cfg = &kvaser_usb_leaf_dev_cfg_24mhz;
+-		break;
+-	case KVASER_USB_LEAF_SWOPTION_FREQ_32_MHZ_CLK:
+-		dev->cfg = &kvaser_usb_leaf_dev_cfg_32mhz;
+-		break;
++	} else {
++		switch (sw_options & KVASER_USB_LEAF_SWOPTION_FREQ_MASK) {
++		case KVASER_USB_LEAF_SWOPTION_FREQ_16_MHZ_CLK:
++			dev->cfg = &kvaser_usb_leaf_dev_cfg_16mhz;
++			break;
++		case KVASER_USB_LEAF_SWOPTION_FREQ_24_MHZ_CLK:
++			dev->cfg = &kvaser_usb_leaf_dev_cfg_24mhz;
++			break;
++		case KVASER_USB_LEAF_SWOPTION_FREQ_32_MHZ_CLK:
++			dev->cfg = &kvaser_usb_leaf_dev_cfg_32mhz;
++			break;
++		}
+ 	}
+ }
  
 -- 
 2.35.1
