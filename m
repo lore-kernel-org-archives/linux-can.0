@@ -2,25 +2,25 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BC1DCCA47F
-	for <linux-can@archiver.kernel.org>; Fri,  8 Jul 2022 18:14:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 926E6C433EF
+	for <linux-can@archiver.kernel.org>; Fri,  8 Jul 2022 18:14:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239011AbiGHSOB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 8 Jul 2022 14:14:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35292 "EHLO
+        id S238977AbiGHSOA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 8 Jul 2022 14:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238770AbiGHSN6 (ORCPT
+        with ESMTP id S238544AbiGHSN6 (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Fri, 8 Jul 2022 14:13:58 -0400
-Received: from EUR02-VE1-obe.outbound.protection.outlook.com (mail-eopbgr20112.outbound.protection.outlook.com [40.107.2.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E672F38B;
-        Fri,  8 Jul 2022 11:13:58 -0700 (PDT)
+Received: from EUR03-AM5-obe.outbound.protection.outlook.com (mail-eopbgr30117.outbound.protection.outlook.com [40.107.3.117])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CBCC5F9E;
+        Fri,  8 Jul 2022 11:13:57 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jS0j1puwOm6CWBAXptdRFluqAEr6gnqh8ivy69Ie+4OOSvO8K+JXM4DH72bNqtbOHR7sfybhB71kdJhyRdkkNH7z/dYkD3PHFZr7D5OUk4B7gQK6WiQXId91ZkuFHXMcoRgqmLtaShCkCsLT8k8jEyBNp6mydFh2pgI9kLKc4o8kxYyyU96HP6l9R9jCBYeVQUxrRNMiOplJChZOaCRfdELWN1ulWuVp7ppEr4OaLN7Uo7qnxA2sGd/o/2rLcwojzi0uNqJIuel+H8Nk8YBmmi7iLTzFjFNVFUTii4+RaqAMjBgXkUCIEC5JKvGU0mjn2nrN5KP6nBgyhKEO09AiLQ==
+ b=g3Zf4GHd86PcC3u/zvMsKVDRxzglbMtgpl/ZhC9HyxQRoN7Ja1bacG0bofyEmf4Cb4P1z/7u0Jns53uwFm3di+ffF9ounH+NBFr3mVI88e04mKC7B8jZvhB/uIwi4AsIIVLSmfH4cgB41YIuqEyHbIUg+TwkzgWp7/xsWgWHopXii/ltdiThftCNAA0cGFt6LKqgJfNagvVB7Co0GlsvNjL7Y1cPsIdW30OFRZCz6BnwirL4djwi4gQASoz7XgaqmOpBBpkh9zZ/9czgHZ4Xdzkxwt36yWWZDPXRG0wAjkeeP/kAhJglHBSju+L566GoEUpFb94k5Ti3z5km1c0TFQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KyfcjNMaO074Z9iej/qtxIghLMYz7YYj0PTbLR1XhhI=;
- b=Im9OEfE1OSPpLqv9iFGuv0ExVe9S9guBiD+wvtSQdGdxQ5kTMfZCidATj2ddRukkw4pPbvKu8Tea+iWFsoS38CAwmeTgNUnbTgO0Iz9P+gEfQvbVSEjx9mrcMBhwy48BIcplqTrr6OuAfKT2rPDG1bIDFEtQm3TPmk3HfW4wowV5Os0xTLN4yeO94ce/zO8c9nLkPJqbwV0/8u/bQdqQEMaEDQ5hhz9TwDP5lv9CMTimo3QLtkHoHepXF1VhczvDuSR+SZCfPdO1FmytkHwvBOt/6CTbmZ6yagA7qGRLWT9BJau/AqclWrNUcJLhFyhg5kYQIP0f1R3pt/MaiIJewA==
+ bh=49S1Kkf0CYngJdNekyjy20D/G1UCSrwpzPLPvtp+OQ4=;
+ b=N9TEJLVFeb6uQUavazJVaWIfcONXXjkfOp0qgoFndGMAAXHq4SHyAj3fS7YcmC28gXy9zTrREsxqoYQOc7g14rBwu95eSg/8oPDNozuUPJyEKBCRnnFrZXdgO+l1S9eqYfKmpGM3/7v4HuFaWaHlR+/jXosV7QqvSBLBsnUicGXCaazCDdWE7FvHrYncX2/cjkokcquonEjYepIEHdv4y2hIU9xr8GzOfnDP//OTuryIqmQD28bURoVS+2ifITHelYLOcSKL+YTRKK6DvSfABfYtij4krLqOWY/X5MFensipG1qbH1CXE/2WitV3pEUpazL/AA5OT0wVw203atTxrQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  217.86.141.140) smtp.rcpttodomain=esd.eu smtp.mailfrom=esd.eu;
  dmarc=bestguesspass action=none header.from=esd.eu; dkim=none (message not
@@ -28,17 +28,17 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=esdhannover.onmicrosoft.com; s=selector1-esdhannover-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KyfcjNMaO074Z9iej/qtxIghLMYz7YYj0PTbLR1XhhI=;
- b=RpfAdL51nD7Vkb/7GJIGEL1NBEgCBUuwGerb8k+nT0AAmP7vIlluy0OgDZ4OUv2lW34+6BSkjHBhS2GZL97cJQlRqwxF04I0JG8yih+gwK85ubrYcb+1wquGiEimdMOv0IN+y7Qces5iA3PtXRUI4tRu6NikbnAhXQ7vi9hmgD4=
-Received: from DB6PR0601CA0024.eurprd06.prod.outlook.com (2603:10a6:4:7b::34)
- by AS8PR03MB6805.eurprd03.prod.outlook.com (2603:10a6:20b:29b::7) with
+ bh=49S1Kkf0CYngJdNekyjy20D/G1UCSrwpzPLPvtp+OQ4=;
+ b=BArh7nez5ldwVBut+90M3mX3nu8pidpAC3CtmHhOXMD9/A7BAvig249l612klCW0WhXHN+oE0LEOygS1DgDyks9NvZ7D9eTukjDu/tu/DFr+E4uvn8eaK7cfk+V3fa/qYgJ5D2sOtgzDaTT36B2CxeyQ1yhDjDYoaRNR4TfDoAw=
+Received: from AS9PR06CA0094.eurprd06.prod.outlook.com (2603:10a6:20b:465::7)
+ by AM6PR03MB3992.eurprd03.prod.outlook.com (2603:10a6:20b:20::23) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.16; Fri, 8 Jul
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.20; Fri, 8 Jul
  2022 18:13:55 +0000
-Received: from DB8EUR06FT020.eop-eur06.prod.protection.outlook.com
- (2603:10a6:4:7b:cafe::84) by DB6PR0601CA0024.outlook.office365.com
- (2603:10a6:4:7b::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.16 via Frontend
+Received: from VI1EUR06FT034.eop-eur06.prod.protection.outlook.com
+ (2603:10a6:20b:465:cafe::98) by AS9PR06CA0094.outlook.office365.com
+ (2603:10a6:20b:465::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.17 via Frontend
  Transport; Fri, 8 Jul 2022 18:13:55 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 217.86.141.140)
  smtp.mailfrom=esd.eu; dkim=none (message not signed)
@@ -47,14 +47,14 @@ Received-SPF: Pass (protection.outlook.com: domain of esd.eu designates
  217.86.141.140 as permitted sender) receiver=protection.outlook.com;
  client-ip=217.86.141.140; helo=esd-s7.esd; pr=C
 Received: from esd-s7.esd (217.86.141.140) by
- DB8EUR06FT020.mail.protection.outlook.com (10.233.253.6) with Microsoft SMTP
- Server id 15.20.5417.15 via Frontend Transport; Fri, 8 Jul 2022 18:13:54
+ VI1EUR06FT034.mail.protection.outlook.com (10.13.6.148) with Microsoft SMTP
+ Server id 15.20.5417.15 via Frontend Transport; Fri, 8 Jul 2022 18:13:55
  +0000
 Received: from esd-s20.esd.local (debby [10.0.0.190])
-        by esd-s7.esd (Postfix) with ESMTPS id BCBB47C162F;
+        by esd-s7.esd (Postfix) with ESMTPS id C05057C16C9;
         Fri,  8 Jul 2022 20:13:54 +0200 (CEST)
 Received: by esd-s20.esd.local (Postfix, from userid 2046)
-        id 7014C2E01E3; Fri,  8 Jul 2022 20:13:54 +0200 (CEST)
+        id 771E62E4AF7; Fri,  8 Jul 2022 20:13:54 +0200 (CEST)
 From:   Frank Jungclaus <frank.jungclaus@esd.eu>
 To:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
         Wolfgang Grandegger <wg@grandegger.com>,
@@ -62,9 +62,9 @@ To:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
 Cc:     =?UTF-8?q?Stefan=20M=C3=A4tje?= <stefan.maetje@esd.eu>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         Frank Jungclaus <frank.jungclaus@esd.eu>
-Subject: [PATCH 2/6] can: esd_usb: Improved behavior on esd CAN_ERROR_EXT event (1)
-Date:   Fri,  8 Jul 2022 20:12:33 +0200
-Message-Id: <20220708181235.4104943-3-frank.jungclaus@esd.eu>
+Subject: [PATCH 5/6] can: esd_usb: Improved support for CAN_CTRLMODE_BERR_REPORTING
+Date:   Fri,  8 Jul 2022 20:12:36 +0200
+Message-Id: <20220708181235.4104943-6-frank.jungclaus@esd.eu>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220708181235.4104943-1-frank.jungclaus@esd.eu>
 References: <20220708181235.4104943-1-frank.jungclaus@esd.eu>
@@ -73,57 +73,139 @@ Content-Transfer-Encoding: 8bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
 Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 4a758cd8-76eb-4bfc-4640-08da610d9eab
-X-MS-TrafficTypeDiagnostic: AS8PR03MB6805:EE_
+X-MS-Office365-Filtering-Correlation-Id: cd9c6883-5385-44df-a7d3-08da610d9eb3
+X-MS-TrafficTypeDiagnostic: AM6PR03MB3992:EE_
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 11x27+snP6htArvFo6W6nxbyvZxpGHTWFxpka03/A4vVE0PBaT1dUBmfNoK1fYf6KXnxDZxysFU1enW8vOuex+B4ZPpJOAzM35TyMrz2IQm21936mpefVrdINtkAelduAS/4tMrZquHFvn/1AwXfaXgfSxXjkPkv+TeRoUoKUxumefS0uu+oN2C72QKq8QklfbvQ8hZez/WLtxA9X/MTOVF7I07CR4mZVm701OY75h6Ll4yv5WrexkE+ba32VreA+r75TVyD67+vWx2Tvfb2Zg2SEUs+as+wVfZ+K5TQmlXe1hOWIMCxxJn4FsZKENoJKkT4F/fOBBpM2j6nGrC7TVdHONw+gLvdi5BdZinCtLS4LPUHLocYy26UxkvA59xD1A0TSovjjWKybt4jafD56Bcdv4MgW/eukY9aTGtPzu4kZG2NZxNee2Iqj0BinI8fBl2C8PrX0nSdIvtNkJjc/zz/psiQCKRUmqFNaLnMwUF0d17CNJxsV/ZUpqr6+UThOYyhSO+b8uApfuUyE3mpK9TWLo7PjEFEpr2J+/5TRzekKd5KedFEhHcsvj6Z3mJLRwadZ8rzVUMkAvn89WSxwfBM2xfg8M8qccTV6nokXPW4BIReT9GZOlXJ+iqeExfe1sNKbDgo//Gs8MlcsUA1WbMMKiUuspMnMDcqM0q1Fp3WEhE8W+/DUjhIBedhVoLoueEOxjtqvIn+6qz4Ujt1ipic+nqKFodRhGtcGVG5Ffjh1+R480kJKCMVgmGrzxfC8/PA0dGUxz4oPShi5Xw9y2LnmpXDYjw5mMjhzdQk4X0=
-X-Forefront-Antispam-Report: CIP:217.86.141.140;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:esd-s7.esd;PTR:pd9568d8c.dip0.t-ipconnect.de;CAT:NONE;SFS:(13230016)(4636009)(396003)(136003)(346002)(376002)(39830400003)(36840700001)(46966006)(83380400001)(1076003)(186003)(5660300002)(2616005)(356005)(2906002)(47076005)(4744005)(36860700001)(44832011)(8936002)(40480700001)(36756003)(336012)(42186006)(54906003)(478600001)(41300700001)(6666004)(4326008)(26005)(86362001)(82310400005)(81166007)(8676002)(70586007)(6266002)(316002)(110136005)(70206006);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: Siqpsmome+svwPutO9puNb/gKKdYbDGikL5crd4LIM7N7MiF+mVaz9VG0RrrD4r1HzDFLOqiQTzYtVk5VE+1dpo42EgXrGi0Z+9u6zubyF6fIAJ8S29om9UnNiJGRwP7/VzcFcRyQUcvHDTYHSWZ8hftaqdGgVlf20U0AOB5YD9h4CsP3scUp+VknTvFkEfa9bDYpk5AXHwpJ5T7BHB8oOaf/1UmxwqBevL8Qt2QcgkcomMejK6bRyvSPLygfSmBsBzKsYH7WFAWRECSEDwmBS8UAXq1h/CtuTkxSV5Qz2yo4z9wSkLWdSjKn7CXVV8QCEQvCkQTMQSCTd1JP8gpL/jJdgoBy4XJr4QahDnJy/j8F3AYaY0nr9E+CgYBwtiQ8X5t4sfoKxn9L+DNaCGFIfsEH3EKACcbegGWPTPubvZQp7ZPzmpM9lNu0Ok3DRCMEGgJnjC/9A1WBJly6nesgbaYuvnebD4ag9TzJUShAfX37uFm9DZN+G92TrKCZeLxEje/wzqvu2AevIb7/xqu9wmM47uH90+YFmIZNe56cxyZSAoGNsEDYxz8W1FNeJmJj/hCIJIekHc775EpnSziKFiOBGyWhD6vpWr9ydMlBL97Z7LUBtkVZ2KwShK2ir8H5owOnaiodDKmBfZubmNZOzdq279LuV/cFhIHbah56P5Chtx7hWvgvgvOTsLxTHfGvOp0gYAIzhCbzu0512nREPM5jI9iiYrYO1NVTtRzXlqz3rV3FCjkMXPbsG32ILqSwuh5tvSjpvXt0ujh9W3X7O4DTHxj7oTcz3ccN4NPA9E=
+X-Forefront-Antispam-Report: CIP:217.86.141.140;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:esd-s7.esd;PTR:pd9568d8c.dip0.t-ipconnect.de;CAT:NONE;SFS:(13230016)(4636009)(376002)(346002)(136003)(396003)(39830400003)(36840700001)(46966006)(356005)(83380400001)(44832011)(186003)(47076005)(336012)(8676002)(1076003)(81166007)(5660300002)(36860700001)(8936002)(40480700001)(82310400005)(2906002)(2616005)(478600001)(70586007)(4326008)(70206006)(41300700001)(6666004)(6266002)(316002)(110136005)(26005)(54906003)(42186006)(36756003)(86362001);DIR:OUT;SFP:1102;
 X-OriginatorOrg: esd.eu
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2022 18:13:54.9746
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2022 18:13:55.0452
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a758cd8-76eb-4bfc-4640-08da610d9eab
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd9c6883-5385-44df-a7d3-08da610d9eb3
 X-MS-Exchange-CrossTenant-Id: 5a9c3a1d-52db-4235-b74c-9fd851db2e6b
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5a9c3a1d-52db-4235-b74c-9fd851db2e6b;Ip=[217.86.141.140];Helo=[esd-s7.esd]
-X-MS-Exchange-CrossTenant-AuthSource: DB8EUR06FT020.eop-eur06.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: VI1EUR06FT034.eop-eur06.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR03MB6805
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR03MB3992
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Always report CAN_ERR_PROT | CAN_ERR_BUSERROR if ESD_EV_CAN_ERROR_EXT
-and ecc != 0. Before we missed those EVENTs when state was unequal to
-priv->old_state
+Bus error reporting has already been implemented for a long time, but
+before it was always active! Now it's user controllable by means off the
+"berr-reporting" parameter given to "ip link set ... ", which sets
+CAN_CTRLMODE_BERR_REPORTING within priv->can.ctrlmode.
+
+In case of an ESD_EV_CAN_ERROR_EXT now unconditionally supply
+priv->bec.rxerr and priv->bec.txerr with REC and TEC.
 
 Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
 ---
- drivers/net/can/usb/esd_usb.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/can/usb/esd_usb.c | 47 ++++++++++++++++++++---------------
+ 1 file changed, 27 insertions(+), 20 deletions(-)
 
 diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
-index 0b907bc54b70..e14f08d30b0b 100644
+index 588caba1453b..09649a45d6ff 100644
 --- a/drivers/net/can/usb/esd_usb.c
 +++ b/drivers/net/can/usb/esd_usb.c
-@@ -274,12 +274,15 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
- 				rxerr = 0;
- 				break;
- 			}
--		} else {
-+		}
+@@ -230,12 +230,23 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
+ 	if (id == ESD_EV_CAN_ERROR_EXT) {
+ 		u8 state = msg->msg.rx.data[0];
+ 		u8 ecc   = msg->msg.rx.data[1];
+-		u8 rxerr = msg->msg.rx.data[2];
+-		u8 txerr = msg->msg.rx.data[3];
++
++		priv->bec.rxerr = msg->msg.rx.data[2];
++		priv->bec.txerr = msg->msg.rx.data[3];
+ 
+ 		netdev_dbg(priv->netdev,
+ 			   "CAN_ERR_EV_EXT: dlc=%#02x state=%02x ecc=%02x rec=%02x tec=%02x\n",
+-			   msg->msg.rx.dlc, state, ecc, rxerr, txerr);
++			   msg->msg.rx.dlc, state, ecc, priv->bec.rxerr, priv->bec.txerr);
 +
 +		if (ecc) {
- 			priv->can.can_stats.bus_error++;
- 			stats->rx_errors++;
++			priv->can.can_stats.bus_error++;
++			stats->rx_errors++;
++		}
++
++		if (state == priv->old_state &&
++		    !(priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
++			/* Neither a state change nor active bus error reporting */
++			return;
  
+ 		skb = alloc_can_err_skb(priv->netdev, &cf);
+ 		if (skb == NULL) {
+@@ -270,16 +281,14 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
+ 				 * berr-counters might stay on values like
+ 				 * 95 forever ...
+ 				 */
+-				txerr = 0;
+-				rxerr = 0;
++				priv->bec.txerr = 0;
++				priv->bec.rxerr = 0;
+ 				break;
+ 			}
+ 		}
+ 
+-		if (ecc) {
+-			priv->can.can_stats.bus_error++;
+-			stats->rx_errors++;
+-
++		if (ecc && (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)) {
++			/* Only if bus error reporting is active ... */
  			cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
  
-+			/* Store error in CAN protocol (type) in data[2] */
- 			switch (ecc & SJA1000_ECC_MASK) {
- 			case SJA1000_ECC_BIT:
- 				cf->data[2] |= CAN_ERR_PROT_BIT;
+ 			/* Store error in CAN protocol (type) in data[2] */
+@@ -301,29 +310,26 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
+ 			if (!(ecc & SJA1000_ECC_DIR))
+ 				cf->data[2] |= CAN_ERR_PROT_TX;
+ 
+-			/* Store error in CAN protocol (location) in data[3] */
++			/* Store error position in the bit stream of the CAN frame in data[3] */
+ 			cf->data[3] = ecc & SJA1000_ECC_SEG;
+ 
+ 			/* Store error status of CAN-controller in data[1] */
+ 			if (priv->can.state == CAN_STATE_ERROR_WARNING) {
+-				if (txerr >= 96)
++				if (priv->bec.txerr >= 96)
+ 					cf->data[1] |= CAN_ERR_CRTL_TX_WARNING;
+-				if (rxerr >= 96)
++				if (priv->bec.rxerr >= 96)
+ 					cf->data[1] |= CAN_ERR_CRTL_RX_WARNING;
+ 			} else if (priv->can.state == CAN_STATE_ERROR_PASSIVE) {
+-				if (txerr >= 128)
++				if (priv->bec.txerr >= 128)
+ 					cf->data[1] |= CAN_ERR_CRTL_TX_PASSIVE;
+-				if (rxerr >= 128)
++				if (priv->bec.rxerr >= 128)
+ 					cf->data[1] |= CAN_ERR_CRTL_RX_PASSIVE;
+ 			}
+ 
+-			cf->data[6] = txerr;
+-			cf->data[7] = rxerr;
++			cf->data[6] = priv->bec.txerr;
++			cf->data[7] = priv->bec.rxerr;
+ 		}
+ 
+-		priv->bec.txerr = txerr;
+-		priv->bec.rxerr = rxerr;
+-
+ 		netif_rx(skb);
+ 	}
+ }
+@@ -1021,7 +1027,8 @@ static int esd_usb_probe_one_net(struct usb_interface *intf, int index)
+ 
+ 	priv->can.state = CAN_STATE_STOPPED;
+ 	priv->can.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
+-		CAN_CTRLMODE_CC_LEN8_DLC;
++				       CAN_CTRLMODE_CC_LEN8_DLC |
++				       CAN_CTRLMODE_BERR_REPORTING;
+ 
+ 	if (le16_to_cpu(dev->udev->descriptor.idProduct) ==
+ 	    USB_CANUSBM_PRODUCT_ID)
 -- 
 2.25.1
 
