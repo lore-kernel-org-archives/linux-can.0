@@ -2,128 +2,96 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD760C433EF
-	for <linux-can@archiver.kernel.org>; Fri,  8 Jul 2022 18:14:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19BD5C43334
+	for <linux-can@archiver.kernel.org>; Fri,  8 Jul 2022 18:46:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239038AbiGHSOI (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 8 Jul 2022 14:14:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35386 "EHLO
+        id S239656AbiGHSqc (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 8 Jul 2022 14:46:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239057AbiGHSOG (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 8 Jul 2022 14:14:06 -0400
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2091.outbound.protection.outlook.com [40.107.22.91])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DC233E09;
-        Fri,  8 Jul 2022 11:14:06 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c36j7nF5MfZ0EZIoCTgCIJISnGdQl9e/lDna6FPJwS/71+Cdkjwwt0wnpQmHaVGneXK8DREl6afOAgyMv/a0M3U11REp0f+RnmUoxn9DXQCzZmW8QkIy59G2PjJXRdr08MAMkxfCQK3j+o/e2bOtKci4RQjtEhPA6ZLW6ssHBc1Txd6TOCmmJztKeD14jbdKN40zv6OMaiR1IhsbRDjfzyDLLz5d01oFHdRP+BmsHZKSElecKbMol0ekeaPqgJ9paxVF0Ufx5x9WdHgmvOYctdbnZIT1hz31ruVHcPSitMF0YHVR3hqIzTtB9vpZGWRJkkJP/zWwlKDoHYInT07iTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dvuM3aNdc9VgHm1I1aWvm9euqEbRSIgw7Pvti2VEZdc=;
- b=D01WJFGq8Dyd4ybNnXk/pO/FBQviecgbQOPYcycai/qzzfsF3209mtGBxL/ZPC0vcdRTdDjD5g60jSmRfE/8hdypRkPydQyyPA/Wy+Aqcdm3Mk0sSrEmSxDH6Vuh8HNkVEpdHBoyEH/SdUZKMGzZNfEJMVBkMrHC9ZAbxsLis6AgSdULWRC4AUYAmuB1nzRpZ+4ZHNnm6QO0bs7D+YoPquG659aoMBw+MuNPGQDOJtt4kLuRfhKMXPzmxZKSNNLnatcm1tjoGRmTH74oXSKABEoDxz0vd+7j+LvahKqnegI8Vdo4mjN46Oj89tPvZrX67pVua2yYr6R3TbgCmCM5SQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 217.86.141.140) smtp.rcpttodomain=esd.eu smtp.mailfrom=esd.eu;
- dmarc=bestguesspass action=none header.from=esd.eu; dkim=none (message not
- signed); arc=none
+        with ESMTP id S237887AbiGHSq1 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 8 Jul 2022 14:46:27 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A627C196
+        for <linux-can@vger.kernel.org>; Fri,  8 Jul 2022 11:46:25 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id s14so26944975ljs.3
+        for <linux-can@vger.kernel.org>; Fri, 08 Jul 2022 11:46:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=esdhannover.onmicrosoft.com; s=selector1-esdhannover-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dvuM3aNdc9VgHm1I1aWvm9euqEbRSIgw7Pvti2VEZdc=;
- b=NJIxuAfJtqu5GbhT2oQtV/jbKqjE/LI0RnY4Cf71CJ5t/99ZMvnNlG66M8ODUSiUxa0OyRdM5uvUcz9vRfbHlJLhnXA39NGmD7Dcvfz4uj96XQpEnqwLjXSI3ubBaCb1ZJQFmokH+Jgz13e2joAz8UBTP1EHhZmvUUHONdoqrWg=
-Received: from DU2PR04CA0025.eurprd04.prod.outlook.com (2603:10a6:10:3b::30)
- by VI1PR03MB4510.eurprd03.prod.outlook.com (2603:10a6:803:5c::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.15; Fri, 8 Jul
- 2022 18:13:55 +0000
-Received: from DB8EUR06FT035.eop-eur06.prod.protection.outlook.com
- (2603:10a6:10:3b:cafe::3c) by DU2PR04CA0025.outlook.office365.com
- (2603:10a6:10:3b::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.20 via Frontend
- Transport; Fri, 8 Jul 2022 18:13:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 217.86.141.140)
- smtp.mailfrom=esd.eu; dkim=none (message not signed)
- header.d=none;dmarc=bestguesspass action=none header.from=esd.eu;
-Received-SPF: Pass (protection.outlook.com: domain of esd.eu designates
- 217.86.141.140 as permitted sender) receiver=protection.outlook.com;
- client-ip=217.86.141.140; helo=esd-s7.esd; pr=C
-Received: from esd-s7.esd (217.86.141.140) by
- DB8EUR06FT035.mail.protection.outlook.com (10.233.253.35) with Microsoft SMTP
- Server id 15.20.5417.15 via Frontend Transport; Fri, 8 Jul 2022 18:13:54
- +0000
-Received: from esd-s20.esd.local (debby [10.0.0.190])
-        by esd-s7.esd (Postfix) with ESMTPS id BF0317C16C8;
-        Fri,  8 Jul 2022 20:13:54 +0200 (CEST)
-Received: by esd-s20.esd.local (Postfix, from userid 2046)
-        id 727782E01E4; Fri,  8 Jul 2022 20:13:54 +0200 (CEST)
-From:   Frank Jungclaus <frank.jungclaus@esd.eu>
-To:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc:     =?UTF-8?q?Stefan=20M=C3=A4tje?= <stefan.maetje@esd.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Frank Jungclaus <frank.jungclaus@esd.eu>
-Subject: [PATCH 3/6] can: esd_usb: Improved behavior on esd CAN_ERROR_EXT event (2)
-Date:   Fri,  8 Jul 2022 20:12:34 +0200
-Message-Id: <20220708181235.4104943-4-frank.jungclaus@esd.eu>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220708181235.4104943-1-frank.jungclaus@esd.eu>
-References: <20220708181235.4104943-1-frank.jungclaus@esd.eu>
+        d=kvaser.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y3gPXAEkv18xbXKqUBZx3ebsYNTyie97iCVskpJUSUA=;
+        b=qRrDqp/pAbYlShyDBhh1V0jlAiv42A8ea4bAzGqlaow+34AdwboicBl8XvlQ4j5tKl
+         bB9BPhc5COd0G7R1dxZv6Eirzx2lPQmPcZXGC4xqrro58FuIoTJ0up3bv1YMj6AN9Y4/
+         W0VpkI/tZ/nerRSmKIT+0SaLbIjMYttvY8CjJ1CFYbhpPgEej6m+gTXK49XO64ZfgCKN
+         YQZb6GeT1cijKdzDtGKcZy742M5pdyz+PEUNlVZ9pcFq745QnDpAQ0HWbFsnj7qFupHF
+         BMuML1cgr3F1pDvlLa2b9O+IlTxD9L7wyELa3vtw9lEefeSnvsSkKOtdz+kb8lY8kIBP
+         xI7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y3gPXAEkv18xbXKqUBZx3ebsYNTyie97iCVskpJUSUA=;
+        b=paBMVWl1h7cqXezFLq3szogu7I3m0vELNT/JQkvWUlNCymKikl9D7OciG08IyZq8AE
+         IqDuzyydMkeYXuX4rt9taq3ewrI3Acyf552Ts/GNrTT6ZrpYF7i4d3bY9dvlwmH+b/CC
+         CEHK18wE1X+Rq/Ggc8u5/r/oMwvx/bZIkyAjEcAjPKtHYJ0eNKnl8jNgIau2qxiXHMxp
+         FdOfNNOjPY6qn/EUPZzuxK5lqQwl5QqBpc7AV846yhyx/Y6+yUQaFrClRxSoj4Ns1gF+
+         77vXZJOPtIJ8rI3JkECZM5IYZaDFksRKosUySpZQuaAVzAiouME3xfg7bSO+NwotSL8Z
+         ZzZA==
+X-Gm-Message-State: AJIora88ddDrZsAku2F4doXe4gl9L4lyznudD4yzgN2RDQZfuTa0EtT7
+        dfPHRmtx5KUaOC3KAG+rXwyyGA==
+X-Google-Smtp-Source: AGRyM1smPgtVmmvQJY0zs950fbNLF2zTnIjE+k4suN9Ev8Mb/Hvjym1i64+pzo60/QpDUBqqtIiIpQ==
+X-Received: by 2002:a2e:91d9:0:b0:25a:6fe6:cc15 with SMTP id u25-20020a2e91d9000000b0025a6fe6cc15mr2660534ljg.187.1657305983763;
+        Fri, 08 Jul 2022 11:46:23 -0700 (PDT)
+Received: from freke.kvaser.se (rota.kvaser.com. [195.22.86.90])
+        by smtp.gmail.com with ESMTPSA id 23-20020a2e1557000000b0025d4d4b4edbsm1159917ljv.34.2022.07.08.11.46.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jul 2022 11:46:23 -0700 (PDT)
+From:   Jimmy Assarsson <extja@kvaser.com>
+To:     stable@vger.kernel.org, linux-can@vger.kernel.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Jimmy Assarsson <jimmyassarsson@gmail.com>,
+        Jimmy Assarsson <extja@kvaser.com>
+Subject: [PATCH 4.9 0/4] can: kvaser_usb: CAN clock frequency regression
+Date:   Fri,  8 Jul 2022 20:45:52 +0200
+Message-Id: <20220708184556.280751-1-extja@kvaser.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 78e0b1ab-898f-4281-6704-08da610d9ead
-X-MS-TrafficTypeDiagnostic: VI1PR03MB4510:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VmKuCegfX41I/A8A04JaxO2xnhxP5JqUiqTjd1CHQ5+u+c1mqr5fqV2FGWNZJZojeYXwLDJ7bGhIM7GFRRBo7mS0iNIsyX3bqWwOz1DmyJ0C7vNfzQEreXXXPH2aIv8bdksIbJNY9vWcPqTyFuiTdBnrIvWjGdIGTvu0Joc70/6TzvJiHa9aiNHXBlIwOoYMg5qRPGM8dbsVznDGKDNT/iALkA3XQt/OCIWsUf9dqEv2WSJk9OEoejgypIlovySkR7T2RiUDL2NLI70E8Fg5fTohQIs0raKGIs7UzA2y/7vI7suk5SeIsR+egAjm0fed8Y9pu9UL73NxsDJvFWtyrM668J0ICnz4nIJdJGMVWUqogFN7hVPvocysiih3Ujq38tQXKlirctaSTPrxRfZO80v+0f4YEE2uNCOdvRc4Z/3n22ql5eYOEBETGNbOmwSMALL3DRFperpR5iwaQ7bN2XAUt4MBe7QXGboVl1bGhMb9kFpeMoDD6nKSyahfatzOXDhiP8NAyJazoKS86GAIydpF/uwkCwlVHb8nItWV9bUEL0GwIJLSzJFPF2BjnWrBg8Fd+Fwg+hg2VzPKF7Q9wh4UTjSexOmuVyQqkc2ffuUmADdE5OVfC+yeGzAPRxsGEFUuEil8vtADVlc68PhhTawJGXP/yH+XIVVIcik3EudqvTW0CCJObJo0p3KD8oV97IREeAQnNSGHKQDPahWIl1ZT6T4uFmKGPVkleLvahOvHjHhf4Qnnj86avWztZeB4ToPMC2lDyjIkFlnn+DoMRxL45Vx8+qdfaOpnmZVKxT0=
-X-Forefront-Antispam-Report: CIP:217.86.141.140;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:esd-s7.esd;PTR:pd9568d8c.dip0.t-ipconnect.de;CAT:NONE;SFS:(13230016)(4636009)(346002)(396003)(39830400003)(136003)(376002)(36840700001)(46966006)(42186006)(110136005)(316002)(36860700001)(82310400005)(54906003)(186003)(26005)(47076005)(36756003)(6266002)(83380400001)(336012)(70206006)(4326008)(2906002)(8676002)(5660300002)(478600001)(86362001)(1076003)(70586007)(81166007)(44832011)(41300700001)(6666004)(356005)(2616005)(8936002)(40480700001);DIR:OUT;SFP:1102;
-X-OriginatorOrg: esd.eu
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2022 18:13:54.9886
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 78e0b1ab-898f-4281-6704-08da610d9ead
-X-MS-Exchange-CrossTenant-Id: 5a9c3a1d-52db-4235-b74c-9fd851db2e6b
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5a9c3a1d-52db-4235-b74c-9fd851db2e6b;Ip=[217.86.141.140];Helo=[esd-s7.esd]
-X-MS-Exchange-CrossTenant-AuthSource: DB8EUR06FT035.eop-eur06.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR03MB4510
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Moved mislocated supply for cf->data[3] (location of CAN error)
-outside of the "switch (ecc & SJA1000_ECC_MASK){}"-statement
+Backport of upstream patch series [1].
 
-Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
----
- drivers/net/can/usb/esd_usb.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Note: The patch "[PATCH 4.9 1/4] can: kvaser_usb: Add struct kvaser_usb_dev_cfg"
+      is added for this backport, and was not part of the original series.
 
-diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
-index e14f08d30b0b..0a402a23d7ac 100644
---- a/drivers/net/can/usb/esd_usb.c
-+++ b/drivers/net/can/usb/esd_usb.c
-@@ -294,7 +294,6 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
- 				cf->data[2] |= CAN_ERR_PROT_STUFF;
- 				break;
- 			default:
--				cf->data[3] = ecc & SJA1000_ECC_SEG;
- 				break;
- 			}
- 
-@@ -302,6 +301,9 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
- 			if (!(ecc & SJA1000_ECC_DIR))
- 				cf->data[2] |= CAN_ERR_PROT_TX;
- 
-+			/* Store error in CAN protocol (location) in data[3] */
-+			cf->data[3] = ecc & SJA1000_ECC_SEG;
-+
- 			if (priv->can.state == CAN_STATE_ERROR_WARNING ||
- 			    priv->can.state == CAN_STATE_ERROR_PASSIVE) {
- 				cf->data[1] = (txerr > rxerr) ?
+When fixing the CAN clock frequency,
+fb12797ab1fe ("can: kvaser_usb: get CAN clock frequency from device"),
+I introduced a regression.
+
+For Leaf devices based on M32C, the firmware expects bittiming parameters
+calculated for 16MHz clock. Regardless of the actual clock frequency.
+
+This regression affects M32C based Leaf devices with non-16MHz clock.
+
+Also correct the bittiming constants in kvaser_usb_leaf.c, where the
+limits are different depending on which firmware/device being used.
+
+[1]
+https://lore.kernel.org/linux-can/20220603083820.800246-1-extja@kvaser.com/
+
+Jimmy Assarsson (4):
+  can: kvaser_usb: Add struct kvaser_usb_dev_cfg
+  can: kvaser_usb: replace run-time checks with struct
+    kvaser_usb_driver_info
+  can: kvaser_usb: fix CAN clock frequency regression
+  can: kvaser_usb: fix bittiming limits
+
+ drivers/net/can/usb/kvaser_usb.c | 325 +++++++++++++++++++------------
+ 1 file changed, 201 insertions(+), 124 deletions(-)
+
 -- 
-2.25.1
+2.36.1
 
