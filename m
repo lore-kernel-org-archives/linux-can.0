@@ -2,95 +2,260 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F617C43334
-	for <linux-can@archiver.kernel.org>; Fri,  8 Jul 2022 18:49:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DCEF4CCA483
+	for <linux-can@archiver.kernel.org>; Fri,  8 Jul 2022 18:49:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239739AbiGHStB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 8 Jul 2022 14:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41864 "EHLO
+        id S239437AbiGHStK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 8 Jul 2022 14:49:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239741AbiGHStA (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 8 Jul 2022 14:49:00 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C9F6374
-        for <linux-can@vger.kernel.org>; Fri,  8 Jul 2022 11:48:58 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id a9so276925lfk.11
-        for <linux-can@vger.kernel.org>; Fri, 08 Jul 2022 11:48:58 -0700 (PDT)
+        with ESMTP id S239754AbiGHStI (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 8 Jul 2022 14:49:08 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC6B1F622
+        for <linux-can@vger.kernel.org>; Fri,  8 Jul 2022 11:49:05 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id t19so37102922lfl.5
+        for <linux-can@vger.kernel.org>; Fri, 08 Jul 2022 11:49:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kvaser.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8rAPQYweY/Yvbw9cJYhSKZPzz+mvOad6dri/BRhoHXA=;
-        b=BqHjNfgwPJm2QA7jEcDZq1HyQ0oS5nYrL5rwglcwu7JYu70/jEnqMBH46KPmNC3vg8
-         kbY+U9AzC2Vpd4xUpJdxPBXTPpEN2co4lY5tyHjL4PDCDutOJjf5lT2/kC+pVllgzvD4
-         QxjBwa4+yXUg7yvUqjAVwcOEGMd9AJrCQktXq0Uac+eElPv7OFSgqtGiw/+H51ZZm/0T
-         fK1/OVCZc+S17y6pcoKiFFgcJEHk8NyCBj69DwpL5fYj81j4/U4qWsUkkfGrhCLwJANr
-         yQy2AXVR5vXoVWEpNhjRkfm5fA84bepjrayCgMDsERwq/bGwsiZ5utjefII5G9hjiKMG
-         tYXA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=qWNx/q9XpNCx9/Y/tfsZ/q8IwlhfSr5MDCuqvjZpFcc=;
+        b=johKV8gKIYlM70NAC3xjMcEHoCYSe2WdZMl1rVPENYVjoUNgeFuGw9dSzJwl6bqCld
+         vW+m5PeF+RgoVBdcuo36Mxyodqp7casXtKJjrt+uVzgBXtBUNVhzumHMVr4XuOXP0Ioc
+         WvnGoK3sTx+/7qnwkRi/OOd22ev+x58pJ4gwqWevMKMmUwlwF8kf9zJuFd73GCJneB0l
+         Jj3OF0zZ05sXNQyY3XBAj/rLCPF8VCuEsMb1qcJmGiBTeoYtxQzSSIlrzAWBZolm9loD
+         TS+PwYkexk2BrgZEJnk1V69dBk3TAdQ2Sf8mXFFPnNdBY5J8XctoPD+OeaWkq+fiCXQc
+         fiFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8rAPQYweY/Yvbw9cJYhSKZPzz+mvOad6dri/BRhoHXA=;
-        b=ZB5+E5Cq6MImeI+W+JDUAyktLj62lriHAwQ4rkzepBOj7EYu1MmUFPKeNevzIlPLYP
-         3pEYolu4oQ5k1FSX72sY+8vUvpRtC7LYfIWR9Pzn7Fdwk9QfPap3PBTckuF7wN16egyp
-         cXXFYVjcrQgf2ZjDXRRhSbzQkEiJdDIiw6qWw31a9Q+yJiWnmW3vypxCLFT7ur3DFYaj
-         TAXxPVfM7XyHdtFY/d/wAnvZss6iauokXl+BKf/iG0oYGMFLXSxR/8XPl0joUb4zZsaV
-         Y0epCsEpxC7NAb+HxzMx5CklI1lQT3XaVoUtgU4E0Mcyy3xgTcr++jkiHhIKD1ZvtXfn
-         CQPA==
-X-Gm-Message-State: AJIora8QdnP9gkmiJYn1XG5odEnPxVlTmVe0kUxhgnfjZS83Un+17h9r
-        EbM4826A91ahl4wUleQLekC/mkps+vHmIA==
-X-Google-Smtp-Source: AGRyM1sgIINPFWOoSQkBWkclVFGLDXGwzry5ixJ4F9snj7t7jJAox0XEMWhAd1rUTam5FLydWp6cOQ==
-X-Received: by 2002:a05:6512:3b91:b0:47f:769d:4ddc with SMTP id g17-20020a0565123b9100b0047f769d4ddcmr3019155lfv.624.1657306137854;
-        Fri, 08 Jul 2022 11:48:57 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qWNx/q9XpNCx9/Y/tfsZ/q8IwlhfSr5MDCuqvjZpFcc=;
+        b=2IRXskiCT9c1pmul1ppNNaRemEYEcxKOvIRhaeTwKfu/8U5R1KNswuYUbCpPzFugQJ
+         RCgc9B5CkYkb5BCmg25qbG7FWOkqZfCZV4Bs2vP/nOYaEdzwotJciashKwVa5s/RwGz1
+         thP3WZ3+Fg4/jJ4bQ1DF9958dxiUxdRPCAkn5Xd5kqpIBEoQ+OOdWCNfk6a9ijJuwUD/
+         qhGi+EFBU7HigrPEURZ6RgGEofpXLFxodPZ/4oQPMvoQ3DWunOgBdf0OmiJEC5Bh6ean
+         E2nMYWhTv+qUIvoIA0MH5s4CwwGgtk8jKyI1g1HqgMhHyniewHTzT0EjrqIlpemejeZy
+         NJPQ==
+X-Gm-Message-State: AJIora+s68wLmrxDiLUHoW0Mgl4ccl7nBjXQdjL+zfH5tW2EkiTaZfqv
+        TDeo7XXejXa0V3QWz7t4J4awTw==
+X-Google-Smtp-Source: AGRyM1vTSUyGnt1X9gx4UOz1msYoqijMP3We5KpBASuzm6O692+4miMH28JlRCSTiwDW5YJ4p097+Q==
+X-Received: by 2002:a05:6512:3194:b0:487:5879:3b84 with SMTP id i20-20020a056512319400b0048758793b84mr3271666lfe.336.1657306144706;
+        Fri, 08 Jul 2022 11:49:04 -0700 (PDT)
 Received: from freke.kvaser.se (rota.kvaser.com. [195.22.86.90])
-        by smtp.gmail.com with ESMTPSA id b8-20020a056512218800b0047f7c897b61sm7541684lft.129.2022.07.08.11.48.57
+        by smtp.gmail.com with ESMTPSA id b8-20020a056512218800b0047f7c897b61sm7541684lft.129.2022.07.08.11.49.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jul 2022 11:48:57 -0700 (PDT)
+        Fri, 08 Jul 2022 11:49:04 -0700 (PDT)
 From:   Jimmy Assarsson <extja@kvaser.com>
 To:     stable@vger.kernel.org, linux-can@vger.kernel.org,
         Marc Kleine-Budde <mkl@pengutronix.de>
 Cc:     Jimmy Assarsson <jimmyassarsson@gmail.com>,
         Jimmy Assarsson <extja@kvaser.com>
-Subject: [PATCH 5.15 0/3] can: kvaser_usb: CAN clock frequency regression
-Date:   Fri,  8 Jul 2022 20:48:43 +0200
-Message-Id: <20220708184846.281174-1-extja@kvaser.com>
+Subject: [PATCH 5.15 3/3] can: kvaser_usb: kvaser_usb_leaf: fix bittiming limits
+Date:   Fri,  8 Jul 2022 20:48:46 +0200
+Message-Id: <20220708184846.281174-4-extja@kvaser.com>
 X-Mailer: git-send-email 2.36.1
+In-Reply-To: <20220708184846.281174-1-extja@kvaser.com>
+References: <20220708184846.281174-1-extja@kvaser.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Backport of upstream patch series [1].
+commit b3b6df2c56d80b8c6740433cff5f016668b8de70 upstream.
 
-When fixing the CAN clock frequency,
-fb12797ab1fe ("can: kvaser_usb: get CAN clock frequency from device"),
-I introduced a regression.
+Use correct bittiming limits depending on device. For devices based on
+USBcanII, Leaf M32C or Leaf i.MX28.
 
-For Leaf devices based on M32C, the firmware expects bittiming parameters
-calculated for 16MHz clock. Regardless of the actual clock frequency.
+Fixes: 080f40a6fa28 ("can: kvaser_usb: Add support for Kvaser CAN/USB devices")
+Fixes: b4f20130af23 ("can: kvaser_usb: add support for Kvaser Leaf v2 and usb mini PCIe")
+Fixes: f5d4abea3ce0 ("can: kvaser_usb: Add support for the USBcan-II family")
+Link: https://lore.kernel.org/all/20220603083820.800246-4-extja@kvaser.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
+[mkl: remove stray netlink.h include]
+[mkl: keep struct can_bittiming_const kvaser_usb_flexc_bittiming_const in kvaser_usb_hydra.c]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/usb/kvaser_usb/kvaser_usb.h   |  2 +
+ .../net/can/usb/kvaser_usb/kvaser_usb_hydra.c |  4 +-
+ .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 76 +++++++++++--------
+ 3 files changed, 47 insertions(+), 35 deletions(-)
 
-This regression affects M32C based Leaf devices with non-16MHz clock.
-
-Also correct the bittiming constants in kvaser_usb_leaf.c, where the
-limits are different depending on which firmware/device being used.
-
-[1]
-https://lore.kernel.org/linux-can/20220603083820.800246-1-extja@kvaser.com/
-
-Jimmy Assarsson (3):
-  can: kvaser_usb: replace run-time checks with struct
-    kvaser_usb_driver_info
-  can: kvaser_usb: kvaser_usb_leaf: fix CAN clock frequency regression
-  can: kvaser_usb: kvaser_usb_leaf: fix bittiming limits
-
- drivers/net/can/usb/kvaser_usb/kvaser_usb.h   |  25 +-
- .../net/can/usb/kvaser_usb/kvaser_usb_core.c  | 286 ++++++++++--------
- .../net/can/usb/kvaser_usb/kvaser_usb_hydra.c |   4 +-
- .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 119 ++++----
- 4 files changed, 244 insertions(+), 190 deletions(-)
-
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
+index 478e2eeec136..61e67986b625 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
+@@ -188,4 +188,6 @@ int kvaser_usb_send_cmd_async(struct kvaser_usb_net_priv *priv, void *cmd,
+ 
+ int kvaser_usb_can_rx_over_error(struct net_device *netdev);
+ 
++extern const struct can_bittiming_const kvaser_usb_flexc_bittiming_const;
++
+ #endif /* KVASER_USB_H */
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+index dcee8dc828ec..fce3f069cdbc 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+@@ -373,7 +373,7 @@ static const struct can_bittiming_const kvaser_usb_hydra_kcan_bittiming_c = {
+ 	.brp_inc = 1,
+ };
+ 
+-static const struct can_bittiming_const kvaser_usb_hydra_flexc_bittiming_c = {
++const struct can_bittiming_const kvaser_usb_flexc_bittiming_const = {
+ 	.name = "kvaser_usb_flex",
+ 	.tseg1_min = 4,
+ 	.tseg1_max = 16,
+@@ -2052,7 +2052,7 @@ static const struct kvaser_usb_dev_cfg kvaser_usb_hydra_dev_cfg_flexc = {
+ 		.freq = 24000000,
+ 	},
+ 	.timestamp_freq = 1,
+-	.bittiming_const = &kvaser_usb_hydra_flexc_bittiming_c,
++	.bittiming_const = &kvaser_usb_flexc_bittiming_const,
+ };
+ 
+ static const struct kvaser_usb_dev_cfg kvaser_usb_hydra_dev_cfg_rt = {
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
+index d94101c46508..b9c2231e4b43 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
+@@ -100,16 +100,6 @@
+ #define USBCAN_ERROR_STATE_RX_ERROR	BIT(1)
+ #define USBCAN_ERROR_STATE_BUSERROR	BIT(2)
+ 
+-/* bittiming parameters */
+-#define KVASER_USB_TSEG1_MIN		1
+-#define KVASER_USB_TSEG1_MAX		16
+-#define KVASER_USB_TSEG2_MIN		1
+-#define KVASER_USB_TSEG2_MAX		8
+-#define KVASER_USB_SJW_MAX		4
+-#define KVASER_USB_BRP_MIN		1
+-#define KVASER_USB_BRP_MAX		64
+-#define KVASER_USB_BRP_INC		1
+-
+ /* ctrl modes */
+ #define KVASER_CTRL_MODE_NORMAL		1
+ #define KVASER_CTRL_MODE_SILENT		2
+@@ -342,48 +332,68 @@ struct kvaser_usb_err_summary {
+ 	};
+ };
+ 
+-static const struct can_bittiming_const kvaser_usb_leaf_bittiming_const = {
+-	.name = "kvaser_usb",
+-	.tseg1_min = KVASER_USB_TSEG1_MIN,
+-	.tseg1_max = KVASER_USB_TSEG1_MAX,
+-	.tseg2_min = KVASER_USB_TSEG2_MIN,
+-	.tseg2_max = KVASER_USB_TSEG2_MAX,
+-	.sjw_max = KVASER_USB_SJW_MAX,
+-	.brp_min = KVASER_USB_BRP_MIN,
+-	.brp_max = KVASER_USB_BRP_MAX,
+-	.brp_inc = KVASER_USB_BRP_INC,
++static const struct can_bittiming_const kvaser_usb_leaf_m16c_bittiming_const = {
++	.name = "kvaser_usb_ucii",
++	.tseg1_min = 4,
++	.tseg1_max = 16,
++	.tseg2_min = 2,
++	.tseg2_max = 8,
++	.sjw_max = 4,
++	.brp_min = 1,
++	.brp_max = 16,
++	.brp_inc = 1,
++};
++
++static const struct can_bittiming_const kvaser_usb_leaf_m32c_bittiming_const = {
++	.name = "kvaser_usb_leaf",
++	.tseg1_min = 3,
++	.tseg1_max = 16,
++	.tseg2_min = 2,
++	.tseg2_max = 8,
++	.sjw_max = 4,
++	.brp_min = 2,
++	.brp_max = 128,
++	.brp_inc = 2,
+ };
+ 
+-static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_dev_cfg_8mhz = {
++static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_usbcan_dev_cfg = {
+ 	.clock = {
+ 		.freq = 8000000,
+ 	},
+ 	.timestamp_freq = 1,
+-	.bittiming_const = &kvaser_usb_leaf_bittiming_const,
++	.bittiming_const = &kvaser_usb_leaf_m16c_bittiming_const,
++};
++
++static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_m32c_dev_cfg = {
++	.clock = {
++		.freq = 16000000,
++	},
++	.timestamp_freq = 1,
++	.bittiming_const = &kvaser_usb_leaf_m32c_bittiming_const,
+ };
+ 
+-static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_dev_cfg_16mhz = {
++static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_imx_dev_cfg_16mhz = {
+ 	.clock = {
+ 		.freq = 16000000,
+ 	},
+ 	.timestamp_freq = 1,
+-	.bittiming_const = &kvaser_usb_leaf_bittiming_const,
++	.bittiming_const = &kvaser_usb_flexc_bittiming_const,
+ };
+ 
+-static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_dev_cfg_24mhz = {
++static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_imx_dev_cfg_24mhz = {
+ 	.clock = {
+ 		.freq = 24000000,
+ 	},
+ 	.timestamp_freq = 1,
+-	.bittiming_const = &kvaser_usb_leaf_bittiming_const,
++	.bittiming_const = &kvaser_usb_flexc_bittiming_const,
+ };
+ 
+-static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_dev_cfg_32mhz = {
++static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_imx_dev_cfg_32mhz = {
+ 	.clock = {
+ 		.freq = 32000000,
+ 	},
+ 	.timestamp_freq = 1,
+-	.bittiming_const = &kvaser_usb_leaf_bittiming_const,
++	.bittiming_const = &kvaser_usb_flexc_bittiming_const,
+ };
+ 
+ static void *
+@@ -529,17 +539,17 @@ static void kvaser_usb_leaf_get_software_info_leaf(struct kvaser_usb *dev,
+ 		/* Firmware expects bittiming parameters calculated for 16MHz
+ 		 * clock, regardless of the actual clock
+ 		 */
+-		dev->cfg = &kvaser_usb_leaf_dev_cfg_16mhz;
++		dev->cfg = &kvaser_usb_leaf_m32c_dev_cfg;
+ 	} else {
+ 		switch (sw_options & KVASER_USB_LEAF_SWOPTION_FREQ_MASK) {
+ 		case KVASER_USB_LEAF_SWOPTION_FREQ_16_MHZ_CLK:
+-			dev->cfg = &kvaser_usb_leaf_dev_cfg_16mhz;
++			dev->cfg = &kvaser_usb_leaf_imx_dev_cfg_16mhz;
+ 			break;
+ 		case KVASER_USB_LEAF_SWOPTION_FREQ_24_MHZ_CLK:
+-			dev->cfg = &kvaser_usb_leaf_dev_cfg_24mhz;
++			dev->cfg = &kvaser_usb_leaf_imx_dev_cfg_24mhz;
+ 			break;
+ 		case KVASER_USB_LEAF_SWOPTION_FREQ_32_MHZ_CLK:
+-			dev->cfg = &kvaser_usb_leaf_dev_cfg_32mhz;
++			dev->cfg = &kvaser_usb_leaf_imx_dev_cfg_32mhz;
+ 			break;
+ 		}
+ 	}
+@@ -566,7 +576,7 @@ static int kvaser_usb_leaf_get_software_info_inner(struct kvaser_usb *dev)
+ 		dev->fw_version = le32_to_cpu(cmd.u.usbcan.softinfo.fw_version);
+ 		dev->max_tx_urbs =
+ 			le16_to_cpu(cmd.u.usbcan.softinfo.max_outstanding_tx);
+-		dev->cfg = &kvaser_usb_leaf_dev_cfg_8mhz;
++		dev->cfg = &kvaser_usb_leaf_usbcan_dev_cfg;
+ 		break;
+ 	}
+ 
 -- 
 2.36.1
 
