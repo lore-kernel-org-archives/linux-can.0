@@ -2,78 +2,170 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D69BC43334
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB9CBC433EF
 	for <linux-can@archiver.kernel.org>; Mon, 11 Jul 2022 18:34:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbiGKSet (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S229737AbiGKSet (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Mon, 11 Jul 2022 14:34:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55914 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbiGKSes (ORCPT
+        with ESMTP id S229602AbiGKSes (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 11 Jul 2022 14:34:48 -0400
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889462250B
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.216])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4B8DFB0
         for <linux-can@vger.kernel.org>; Mon, 11 Jul 2022 11:34:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1657564480;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1657564481;
     s=strato-dkim-0002; d=hartkopp.net;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=GZOko4aqLkiMFBVpuu9TjRpZl7O6SzJppsdMNi4G7Nk=;
-    b=Gc+4yR3mXn2y5jegkxcWEq2xRvkpwpDT4peXNWO2SvJAvZAPsyuRJjoq1/tul8tbBJ
-    axgWt6bmRwioE1IIL8mUiIISNoq9m1fazbOFELq3qn+53FTxkGi1vhOY84sfQzc0pi04
-    ARzig3wH5mRcCLSWf5qJj38DWQ7Rk2qUk0SDnnQfmlAOh3B3o9EuHO1+iRdbpQCeN1qo
-    PWMlesBMPnNIRnV/GTJI86hkPW1ODVNFKzoxRCj7YNhtvkB19+/WUAwsGY7y2Dz/bawE
-    OYf4NMxYel3dMRAzNlWwPC91ACHr/MX8cjVjL0eKFQTSqgfpUiFQ1Z6o8PntF5QEQqO7
-    1oNA==
+    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=NDgco5RYdDcJV1LfdfGi1QhL4NgTbUq2Mx33c4Z84lg=;
+    b=rQDLq/B/Ri9EzYF1kdtDxm6uUxLyuYCo41NjfT/mz6njbYXTJLElvFFMEWC9+k4fhY
+    KL8Vtasgc6OI96ovSTQXZIp0CKGGQXQvV52wx9n0XmIZXg9htF28K7oZJYGdGkE2ynee
+    XxV2oNI9mn2VP909oKT6gUv+cU61mfuwzOR7fVcvBBwIi2hEZgbXTSPQKYG/5Xp8Obk3
+    O1fzCjlrRasd2gD3zMzWky3v/EOvoihxyRH5Aw3DQbSrtZSUbp4YedB1+Sjf9PBw48Fs
+    Em1TJP++k4KL9GjxvxDKB0TgW1PKjr9iMXi8qc8kZpwm9sROi6OlMCP47q+sBipXx1bY
+    GV2g==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS/xvEBL7X5sbo3UIh9JiLceSWJaYwXUKbZ"
 X-RZG-CLASS-ID: mo00
 Received: from silver.lan
     by smtp.strato.de (RZmta 47.46.1 AUTH)
-    with ESMTPSA id 398cccy6BIYeReK
+    with ESMTPSA id 398cccy6BIYfReP
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Mon, 11 Jul 2022 20:34:40 +0200 (CEST)
+    Mon, 11 Jul 2022 20:34:41 +0200 (CEST)
 From:   Oliver Hartkopp <socketcan@hartkopp.net>
 To:     linux-can@vger.kernel.org
 Cc:     Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [RFC PATCH 0/5] can: support CAN XL
-Date:   Mon, 11 Jul 2022 20:34:21 +0200
-Message-Id: <20220711183426.96446-1-socketcan@hartkopp.net>
+Subject: [RFC PATCH 5/5] can: raw: add CAN XL support
+Date:   Mon, 11 Jul 2022 20:34:26 +0200
+Message-Id: <20220711183426.96446-6-socketcan@hartkopp.net>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220711183426.96446-1-socketcan@hartkopp.net>
+References: <20220711183426.96446-1-socketcan@hartkopp.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The CAN with eXtended data Length (CAN XL) is a new CAN protocol with a
-10Mbit/s data transfer with a new physical layer transceiver (for this
-data section). CAN XL allows up to 2048 byte of payload and shares the
-arbitration principle (11 bit priority) known from Classical CAN and
-CAN FD. RTR and 29 bit identifiers are not implemented in CAN XL.
+Enable CAN_RAW sockets to read and write CAN XL frames analogue to the
+CAN FD extension (new CAN_RAW_XL_FRAMES sockopt).
 
-A short introdution to CAN XL can be found here:
-https://www.bosch-semiconductors.com/media/ip_modules/pdf_2/can_xl_1/canxl_intro_20210225.pdf
+A CAN XL network interface is capable to handle Classical CAN, CAN FD and
+CAN XL frames. When CAN_RAW_XL_FRAMES is enabled, the CAN_RAW socket checks
+whether the addressed CAN network interface is capable to handle the
+provided CAN frame.
 
-Oliver Hartkopp (5):
-  can: canxl: introduce CAN XL data structure
-  can: canxl: introduce ETH_P_CANXL ethernet protocol handling
-  can: dev: add CAN XL support
-  can: vcan: add CAN XL support
-  can: raw: add CAN XL support
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ include/uapi/linux/can/raw.h |  1 +
+ net/can/raw.c                | 26 +++++++++++++++++++++++++-
+ 2 files changed, 26 insertions(+), 1 deletion(-)
 
- drivers/net/can/dev/rx-offload.c |  2 +-
- drivers/net/can/dev/skb.c        | 53 +++++++++++++++++++++++++++-----
- drivers/net/can/vcan.c           | 11 ++++---
- include/linux/can/skb.h          | 17 +++++++++-
- include/uapi/linux/can.h         | 38 +++++++++++++++++++++++
- include/uapi/linux/can/raw.h     |  1 +
- include/uapi/linux/if_ether.h    |  1 +
- net/can/af_can.c                 | 49 ++++++++++++++++++++++++-----
- net/can/raw.c                    | 26 +++++++++++++++-
- 9 files changed, 174 insertions(+), 24 deletions(-)
-
+diff --git a/include/uapi/linux/can/raw.h b/include/uapi/linux/can/raw.h
+index 3386aa81fdf2..ff12f525c37c 100644
+--- a/include/uapi/linux/can/raw.h
++++ b/include/uapi/linux/can/raw.h
+@@ -60,8 +60,9 @@ enum {
+ 	CAN_RAW_ERR_FILTER,	/* set filter for error frames       */
+ 	CAN_RAW_LOOPBACK,	/* local loopback (default:on)       */
+ 	CAN_RAW_RECV_OWN_MSGS,	/* receive my own msgs (default:off) */
+ 	CAN_RAW_FD_FRAMES,	/* allow CAN FD frames (default:off) */
+ 	CAN_RAW_JOIN_FILTERS,	/* all filters must match to trigger */
++	CAN_RAW_XL_FRAMES,	/* allow CAN XL frames (default:off) */
+ };
+ 
+ #endif /* !_UAPI_CAN_RAW_H */
+diff --git a/net/can/raw.c b/net/can/raw.c
+index d1bd9cc51ebe..c036de63fcfa 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -85,10 +85,11 @@ struct raw_sock {
+ 	int ifindex;
+ 	struct list_head notifier;
+ 	int loopback;
+ 	int recv_own_msgs;
+ 	int fd_frames;
++	int xl_frames;
+ 	int join_filters;
+ 	int count;                 /* number of active filters */
+ 	struct can_filter dfilter; /* default/single filter */
+ 	struct can_filter *filter; /* pointer to filter(s) */
+ 	can_err_mask_t err_mask;
+@@ -344,10 +345,11 @@ static int raw_init(struct sock *sk)
+ 
+ 	/* set default loopback behaviour */
+ 	ro->loopback         = 1;
+ 	ro->recv_own_msgs    = 0;
+ 	ro->fd_frames        = 0;
++	ro->xl_frames        = 0;
+ 	ro->join_filters     = 0;
+ 
+ 	/* alloc_percpu provides zero'ed memory */
+ 	ro->uniq = alloc_percpu(struct uniqframe);
+ 	if (unlikely(!ro->uniq))
+@@ -667,10 +669,19 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+ 		if (copy_from_sockptr(&ro->fd_frames, optval, optlen))
+ 			return -EFAULT;
+ 
+ 		break;
+ 
++	case CAN_RAW_XL_FRAMES:
++		if (optlen != sizeof(ro->xl_frames))
++			return -EINVAL;
++
++		if (copy_from_sockptr(&ro->xl_frames, optval, optlen))
++			return -EFAULT;
++
++		break;
++
+ 	case CAN_RAW_JOIN_FILTERS:
+ 		if (optlen != sizeof(ro->join_filters))
+ 			return -EINVAL;
+ 
+ 		if (copy_from_sockptr(&ro->join_filters, optval, optlen))
+@@ -749,10 +760,16 @@ static int raw_getsockopt(struct socket *sock, int level, int optname,
+ 		if (len > sizeof(int))
+ 			len = sizeof(int);
+ 		val = &ro->fd_frames;
+ 		break;
+ 
++	case CAN_RAW_XL_FRAMES:
++		if (len > sizeof(int))
++			len = sizeof(int);
++		val = &ro->xl_frames;
++		break;
++
+ 	case CAN_RAW_JOIN_FILTERS:
+ 		if (len > sizeof(int))
+ 			len = sizeof(int);
+ 		val = &ro->join_filters;
+ 		break;
+@@ -795,14 +812,21 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 	dev = dev_get_by_index(sock_net(sk), ifindex);
+ 	if (!dev)
+ 		return -ENXIO;
+ 
+ 	err = -EINVAL;
+-	if (ro->fd_frames && dev->mtu == CANFD_MTU) {
++	if (ro->xl_frames && dev->mtu == CANXL_MTU) {
++		/* CAN XL, CAN FD and Classical CAN */
++		if (unlikely(size != CANXL_MTU && size != CANFD_MTU &&
++			     size != CAN_MTU))
++			goto put_dev;
++	} else if (ro->fd_frames && dev->mtu == CANFD_MTU) {
++		/* CAN FD and Classical CAN */
+ 		if (unlikely(size != CANFD_MTU && size != CAN_MTU))
+ 			goto put_dev;
+ 	} else {
++		/* Classical CAN */
+ 		if (unlikely(size != CAN_MTU))
+ 			goto put_dev;
+ 	}
+ 
+ 	skb = sock_alloc_send_skb(sk, size + sizeof(struct can_skb_priv),
 -- 
 2.30.2
 
