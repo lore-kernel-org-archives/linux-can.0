@@ -2,112 +2,80 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2178BC43334
-	for <linux-can@archiver.kernel.org>; Tue, 12 Jul 2022 13:03:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41AE8CCA483
+	for <linux-can@archiver.kernel.org>; Tue, 12 Jul 2022 19:41:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbiGLNDi (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 12 Jul 2022 09:03:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48698 "EHLO
+        id S234570AbiGLTlk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 12 Jul 2022 15:41:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbiGLNDh (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 12 Jul 2022 09:03:37 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EA82BD0
-        for <linux-can@vger.kernel.org>; Tue, 12 Jul 2022 06:03:35 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1oBFY6-0001ba-Cr
-        for linux-can@vger.kernel.org; Tue, 12 Jul 2022 15:03:34 +0200
-Received: from pengutronix.de (2a03-f580-87bc-d400-2099-0011-e8c0-354d.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:2099:11:e8c0:354d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id DF4A8AF0F1
-        for <linux-can@vger.kernel.org>; Tue, 12 Jul 2022 13:03:33 +0000 (UTC)
-Received: from bjornoya.blackshift.org
-        by bjornoya with LMTP
-        id yLMbLG9FzWJY2wMAs6a69A
-        (envelope-from <windhl@126.com>)
-        for <mkl-all@blackshift.org>; Tue, 12 Jul 2022 09:57:03 +0000
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id AE902AE7F3
-        for <mkl-all@blackshift.org>; Tue, 12 Jul 2022 09:57:03 +0000 (UTC)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id A6197AE7F2
-        for <ptx@kleine-budde.de>; Tue, 12 Jul 2022 09:57:03 +0000 (UTC)
-Received: from mail-m964.mail.126.com ([123.126.96.4])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <windhl@126.com>)
-        id 1oBCdZ-0006mt-Rl; Tue, 12 Jul 2022 11:57:02 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Qz6FM
-        8MFTtvFI+oOsD9UB3a5chgKL38YyF+czNRoOew=; b=dDh9DH+4vzbC1cErfMRHx
-        ljNVigrjMjyAwl1Qdtr/q/bd60mGfgZxOY7BgACnmgc+Zl4hlGdk1DqSzC2Dumpp
-        0lWVvLtCKatnjW0p3tu0j9zHUf0FGhRwYDKu+R2RXJZlpDgXFB9VCv1SKn9vnBRw
-        PVHs0044O+Zh1q8TbCMDww=
-Received: from localhost.localdomain (unknown [124.16.139.61])
-        by smtp9 (Coremail) with SMTP id NeRpCgB3nt5HRc1ivtQ9Gg--.62421S2;
-        Tue, 12 Jul 2022 17:56:25 +0800 (CST)
-From:   Liang He <windhl@126.com>
-To:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        p.zabel@pengutronix.de, windhl@126.com
-Date:   Tue, 12 Jul 2022 17:56:23 +0800
-Message-Id: <20220712095623.364287-1-windhl@126.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S233654AbiGLTlY (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 12 Jul 2022 15:41:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DF0DB2EC;
+        Tue, 12 Jul 2022 12:18:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B9C1A617D6;
+        Tue, 12 Jul 2022 19:18:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0F06C3411C;
+        Tue, 12 Jul 2022 19:18:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1657653508;
+        bh=2RIfHjzzeaQQhj9uzJXlcOnQBgDgLiWKmEU5gvafjvo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j90g64rUwySgLQcT0orHNtAHzvFnFtFE6pp8FersZsVoxYeAjFpRTW5qc8RgIviM1
+         WqQN1mOSZWoDFl844y3L3krP+V9M/b/hKSzJ0KCD0tYaKBz9l0SkmSFthCDp3vUq6z
+         yeEYHBsorNoBvvSiVhxj0eSSJVayidu2D8Zdd6rE=
+Date:   Tue, 12 Jul 2022 21:18:25 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jimmy Assarsson <jimmyassarsson@gmail.com>
+Cc:     stable@vger.kernel.org, linux-can@vger.kernel.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Jimmy Assarsson <extja@kvaser.com>
+Subject: Re: [PATCH 4.14 1/4] can: kvaser_usb: Add struct kvaser_usb_dev_cfg
+Message-ID: <Ys3JAReeZCbv+vbt@kroah.com>
+References: <20220708184653.280882-1-extja@kvaser.com>
+ <20220708184653.280882-2-extja@kvaser.com>
+ <YsrgbqIFfcxXesWw@kroah.com>
+ <5059cce9-76b4-b19c-2d97-c1e54c7dd87d@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: NeRpCgB3nt5HRc1ivtQ9Gg--.62421S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKFy8tw4rKF4kWr43Ar43Jrb_yoWDurb_Gr
-        nrWF17Kw47Kr1qkwsrtr13Z3yvyr18XFy0qFZ2qr1Svw17ZFWUJr18Z3srX3ykur4xArWf
-        CayqyasrC3yYvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRpHqrUUUUUU==
-X-Originating-IP: [124.16.139.61]
-X-CM-SenderInfo: hzlqvxbo6rjloofrz/xtbBGgE8F1-HZfANZAAAsU
-Subject: [PATCH] can: rcar_canfd: Add missing of_node_put() in rcar_canfd_probe()
-X-PTX-Original-Recipient: mkl@pengutronix.de
-X-PTX-Original-Recipient: ptx@kleine-budde.de
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5059cce9-76b4-b19c-2d97-c1e54c7dd87d@gmail.com>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-We should use of_node_put() for the reference returned by
-of_get_child_by_name() which has increased the refcount.
+On Sun, Jul 10, 2022 at 08:40:30PM +0200, Jimmy Assarsson wrote:
+> On 7/10/22 16:21, Greg KH wrote:
+> > On Fri, Jul 08, 2022 at 08:46:50PM +0200, Jimmy Assarsson wrote:
+> > > Add struct kvaser_usb_dev_cfg to ease backporting of upstream commits:
+> > > 49f274c72357 (can: kvaser_usb: replace run-time checks with struct kvaser_usb_driver_info)
+> > > e6c80e601053 (can: kvaser_usb: kvaser_usb_leaf: fix CAN clock frequency regression)
+> > > b3b6df2c56d8 (can: kvaser_usb: kvaser_usb_leaf: fix bittiming limits)
+> > 
+> > What upstream commit is this from?
+> 
+> Hi Greg,
+> 
+> The original upstream commit introducing struct kvaser_usb_dev_cfg is
+> 7259124eac7d1b76b41c7a9cb2511a30556deebe
+> can: kvaser_usb: Split driver into kvaser_usb_core.c and kvaser_usb_leaf.c
+> And was first merged to 4.19.
+> 
+> This was part of a major restructure of the driver to add support for new type of devices.
 
-Fixes: 45721c406dcf ("can: rcar_canfd: Add support for r8a779a0 SoC")
-Signed-off-by: Liang He <windhl@126.com>
----
+Then why not just take thos commits, _OR_ rework the bugfixes to handle
+the old style of drivers?
 
-45721c406dcf-commit only changed the original multi-times 'of_child'
-assignments with 'for' loop. As the original code also forgot to
-add of_node_put(), I do not know if this fix tag is right.
+Doing this type of major change that is not directly upstream is almost
+always a big mistake as it's not tested well and diverges from what is
+in Linus's tree.
 
- drivers/net/can/rcar/rcar_canfd.c | 1 +
- 1 file changed, 1 insertion(+)
+Please try to rework these two series and resubmit.
 
-diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index 40a11445d021..5a49dc243372 100644
---- a/drivers/net/can/rcar/rcar_canfd.c
-+++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -1840,6 +1840,7 @@ static int rcar_canfd_probe(struct platform_device *pdev)
- 		of_child = of_get_child_by_name(pdev->dev.of_node, name);
- 		if (of_child && of_device_is_available(of_child))
- 			channels_mask |= BIT(i);
-+		of_node_put(of_child);
- 	}
- 
- 	if (chip_id != RENESAS_RZG2L) {
--- 
-2.25.1
+thanks,
 
-
+greg k-h
