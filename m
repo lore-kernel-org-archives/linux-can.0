@@ -2,99 +2,167 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77655CCA482
-	for <linux-can@archiver.kernel.org>; Tue, 12 Jul 2022 10:20:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06A2DC433EF
+	for <linux-can@archiver.kernel.org>; Tue, 12 Jul 2022 12:30:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbiGLKUd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 12 Jul 2022 06:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44114 "EHLO
+        id S232324AbiGLMag (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 12 Jul 2022 08:30:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbiGLKUW (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 12 Jul 2022 06:20:22 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B0CACF78
-        for <linux-can@vger.kernel.org>; Tue, 12 Jul 2022 03:20:19 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id o7so13136733lfq.9
-        for <linux-can@vger.kernel.org>; Tue, 12 Jul 2022 03:20:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=t7/ucNQCCiiuq1lYv5Z+Jjy2njk0BrGXCMsPnOpnEsI=;
-        b=DGmPDi3ayHIU8BQ7IKVXKYteM5mjUPkbfi3lzehrtWp40ZH3GqyPK2XuKA1PruIoNs
-         nJhKS/HMmhjC0IbCvtF3Jemw5wNHSXMHBcp9i5MQ0AAAvtf//7XrH7IFs7vuHLl7MKJY
-         b44FO3qRt1Z6G4dQrM2Vra0pFn2A8Q7wW6N8pRbgTtUWsR5lH+aMTVRJKuUfFiprAsNJ
-         7yy8MTKKobNOlGDwKOb6zIhEpRrqiicsQUCZ6J1DyKc3F+dJpplcA3mZXK+boL0/ih8V
-         NGudIRcHBtsgOFGy4xoUQMQFzdcAdugd8jC3/0Etzh7p/U++LL1bmJWjan0g/NSVLbI2
-         NBrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=t7/ucNQCCiiuq1lYv5Z+Jjy2njk0BrGXCMsPnOpnEsI=;
-        b=0Dd3xd2ctdspjcpgGwA16PLez/NWktBxpLzN92sd8ktY5qYquqTStrMUCeHsr0N8RI
-         Qt/1Ke8LtbtE4lkz0ttNXnuTMJvaaVu3IHlgVZbPtkTQwiVB5kCukoBwAfWp1QCn9ABD
-         jptoUzIwmm+ooCfK/ua1JhtK4hvlceqC1boeI4vL9ovB+VUi6UzKnIdPms6GbjHC5Dm0
-         x7q5cDpNBBsUPaecaMuq8eIcuqPLIdhtH3eveq7NNBfclmnYQcYffmqcX8h2ZUdzQg/H
-         zMKbWKgzmI4257Q+LQkTEbR0V+Bx5XCd7kmclMQEmyy6Y5bIHfHk5Fno/yKuNNG4G0y7
-         7abg==
-X-Gm-Message-State: AJIora8Ih4utYO2a31D1oMz5welnfytY+0rBLfIS0esbxk4lDZsyC65h
-        LKoi5KKm6dKseHXIhWGVqOxRvw==
-X-Google-Smtp-Source: AGRyM1tM3Xyno5SjCdck0sIgXGeRuglfN7S9zBkB+eG2ozjVAtqbU+rY+0T3cPyD1quc3uFKvvhBMA==
-X-Received: by 2002:a05:6512:280d:b0:489:d766:5e3 with SMTP id cf13-20020a056512280d00b00489d76605e3mr7973832lfb.499.1657621217465;
-        Tue, 12 Jul 2022 03:20:17 -0700 (PDT)
-Received: from [10.0.0.8] (fwa5da9-171.bb.online.no. [88.93.169.171])
-        by smtp.gmail.com with ESMTPSA id v1-20020a05651203a100b0047f7419de4asm2098315lfp.180.2022.07.12.03.20.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jul 2022 03:20:17 -0700 (PDT)
-Message-ID: <9f9acf66-a9a0-c055-2113-ba40dbfbae69@linaro.org>
-Date:   Tue, 12 Jul 2022 12:20:14 +0200
+        with ESMTP id S229729AbiGLMaf (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 12 Jul 2022 08:30:35 -0400
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD17A30F64
+        for <linux-can@vger.kernel.org>; Tue, 12 Jul 2022 05:30:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1657629032;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=ltfxOaewhVxDjRWRZ5eMdDe1hjXL1SpeVIMDGZf4PD8=;
+    b=GIl8DCVfQjDuFHWaiqRS01idKRq3G04zTQw+Ocl2gLv3vk325N6EYmdP7E2C/9YSr4
+    qps1Ro4QUw288QdGNjSP7N3eg+NDpChvpVH936dCYTB8CAnoPB+uTnqTM/yZxL3ViCm5
+    aSz8cRItbvwWxc0qzwoOa/bmPW8moc2dJCyQJIe3rnM9G1oKBwTWvKbRA/sgQkF2sd3C
+    Uy62RGa5TJawB1aN20AJf4/tzOqm0pXn5xC7oL1y4+Fp2nZDaNXE9sW6dOdwBGEoni+9
+    83Cn5JWeK1Ajdt+PgLG7v0pgYxh6Jq64CG5wAO5OTkowcSwc2ewW+RUDM26mbdZA4zeB
+    1c3g==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusx3hdIrpKytJSr63tDxrw=="
+X-RZG-CLASS-ID: mo00
+Received: from [IPV6:2a00:6020:1cfd:d100::b82]
+    by smtp.strato.de (RZmta 47.46.1 AUTH)
+    with ESMTPSA id 398cccy6CCUVTqN
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 12 Jul 2022 14:30:31 +0200 (CEST)
+Message-ID: <89f90d61-35a4-59a2-231b-4372d4dca25c@hartkopp.net>
+Date:   Tue, 12 Jul 2022 14:30:26 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
-Subject: Re: [PATCH v4 2/6] dt-bindings: can: nxp,sja1000: Document RZ/N1{D,S}
- support
+Subject: Re: [RFC PATCH 1/5] can: canxl: introduce CAN XL data structure
 Content-Language: en-US
-To:     Biju Das <biju.das.jz@bp.renesas.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        Biju Das <biju.das@bp.renesas.com>,
-        linux-renesas-soc@vger.kernel.org
-References: <20220710115248.190280-1-biju.das.jz@bp.renesas.com>
- <20220710115248.190280-3-biju.das.jz@bp.renesas.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20220710115248.190280-3-biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Vincent Mailhol <vincent.mailhol@gmail.com>
+Cc:     linux-can@vger.kernel.org
+References: <20220711183426.96446-1-socketcan@hartkopp.net>
+ <20220711183426.96446-2-socketcan@hartkopp.net>
+ <CAMZ6RqLqDFqdtKsp6jGhnTtWRrf6HC5HiLuJUSCRNkDXqVfCzA@mail.gmail.com>
+ <f00a4c5d-c4e6-06a2-76c0-53105d3465f2@hartkopp.net>
+ <CAMZ6RqLVvYCoBF67VtqUSJHAxBHvEmK2-o8NCD7REZj1ywXf7w@mail.gmail.com>
+ <521fe0a3-a9ad-60ac-3ec6-30f0da228032@hartkopp.net>
+ <CAMZ6RqJhjkVgZgmfk7btYK+bLtqnbvGBYTnssy28ZWqyfyqppw@mail.gmail.com>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <CAMZ6RqJhjkVgZgmfk7btYK+bLtqnbvGBYTnssy28ZWqyfyqppw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On 10/07/2022 13:52, Biju Das wrote:
-> Add CAN binding documentation for Renesas RZ/N1 SoC.
+
+
+On 12.07.22 12:19, Vincent Mailhol wrote:
+> On Tue. 12 Jul. 2022 at 18:31, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
+
+>>>> +/* truncated CAN XL structs must contain at least 64 data bytes */
+>>>> +#define CANXL_MINTU    (CANXL_MTU - CANXL_MAX_DLEN + CANFD_MAX_DLEN)
+>>>
+>>> I did not get the concept of the "truncated CAN XL structs". The valid
+>>> data field lengths are 1 to 2048, right? I did not get where this 64
+>>> comes from.
+>>> Your formula is equivalent to
+>>> #define CANXL_MINTU    (sizeof(struct canxl_frame) + CANFD_MAX_DLEN)
+>>
+>> No. CANXL_MINTU becomes sizeof(struct canfd_frame) + sizeof(af)
+>>
+>> So I wanted some size value that is 'more than' CANFD_MTU so that you
+>> know that you have read a CANXL frame.
+>>
+>> Even if the cxf->len would be 14 you would at least copy a struct
+>> canxl_frame with data[64].
 > 
-> The SJA1000 CAN controller on RZ/N1 SoC has some differences compared
-> to others like it has no clock divider register (CDR) support and it has
-> no HW loopback (HW doesn't see tx messages on rx), so introduced a new
-> compatible 'renesas,rzn1-sja1000' to handle these differences.
+> OK, I finally got your point. Your concern is that if skb->len could
+> be equal or less than CANFD_MTU, then there would be a collision.
 > 
-> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+> My approach here would be to stop using the MTU correlation to
+> differentiate between CAN(-FD) and CANXL. Instead, I suggest using
+> can{fd,xl}_frame::flags. If can{fd,xl}_frame has a CANXL flag set,
+> then it is a CANXL frame regardless of the value of skb->len. If the
+> CANXL flag is not set, then skb->len is used to differentiate between
+> Classic CAN and CAN FD (so that we remain compatible with the
+> existing). That way, no need to impose a minimum length of
+> CANFD_MAX_DLEN.
+
+Hm, that sounds interesting! I like that as it looks clear and simple.
+
+Need to pick a coffee to think about potential (security) effects ... ;-)
+
+E.g. we would need to keep skb->len and canxl_frame::len in sync now.
+
+> 
+>>>
+>>> I would have just expected:
+>>> #define CANXL_MINTU    (sizeof(struct canxl_frame))
+>>
+>> That is CANXL_MTU (max transfer unit).
+> 
+> I was writing while thinking that canxl_frame::data was a flexible
+> array member as suggested in this thread.
+> In that case canxl_frame::data counts as zero when doing sizeof(struct
+> canxl_frame). And so sizeof(struct canxl_frame) == sizeof(struct
+> canfd_frame) + sizeof(af).
+> 
+> Actually, thinking twice, the Minimum transfer unit would be:
+> #define CANXL_MINLEN 1
+> #define CANXL_MINTU    (sizeof(struct canxl_frame) + CANXL_MINLEN)
+> 
+> (I forgot that the length can not be zero anymore in CANXL...)
+
+I still would suggest to have the struct canxl_frame contain the 2048 
+byte of data (data[CANXL_MAXDLEN]) - as the entire CAN XL frame is 
+defined like this in the CAN XL spec. This would be also in common with 
+CAN/CANFD.
+
+E.g. when reading into the struct canxl_frame you always have a defined 
+data structure which can contain a complete CAN XL frame.
+
+But if you get or send less than that size (when reading/writing) this 
+would be ok now (with your idea with CANXL_XLF set).
 
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+E.g.
 
+#define CANXL_MINDLEN 1
+#define CANXL_MAXDLEN 2048
+
+#define CANXL_MTU sizeof(struct canxl_frame)
+#define CANXL_HEAD_SZ (CANXL_MTU - CANXL_MAXDLEN)
+#define CANXL_MINTU (CANXL_HEAD_SZ + CANXL_MINDLEN)
+
+(..)
+
+>>> Here, you lost me. The only reference document I have is the Bosch
+>>> presentation you linked in the cover letter. I would need to get a
+>>> copy of the specification first to follow up on this level of details.
+>>
+>> There is a Special Interest Group for CAN XL at CAN in Automation
+>> (can-cia.org) and these doscuments are currently under development.
+> 
+> I wonder how hard it is to join the group. Right now, I was thinking
+> of waiting for the ISO Final Draft International Standard (FDIS) to
+> deep dive in CANXL.
+
+I'm not sure if the SDT definitions will be part of an ISO draft as 
+defining the content inside a CAN XL frame is probably not ISO standard 
+relevant.
+
+The content definitions are industrial recommendations to increase 
+interoperability. You are always free to put into the CAN XL frame 
+whatever you want.
+
+E.g. CAN-CiA defined the pinout of the SUB-D9 connectors for CAN (Pin 
+2/7) which is not defines in ISO too.
 
 Best regards,
-Krzysztof
+Oliver
+
