@@ -2,60 +2,60 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 352D4CCA482
-	for <linux-can@archiver.kernel.org>; Tue, 12 Jul 2022 15:32:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64E47C433EF
+	for <linux-can@archiver.kernel.org>; Tue, 12 Jul 2022 15:32:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233761AbiGLPcn (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 12 Jul 2022 11:32:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40234 "EHLO
+        id S233959AbiGLPcz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 12 Jul 2022 11:32:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233940AbiGLPcl (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 12 Jul 2022 11:32:41 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 964A0A2ED5
-        for <linux-can@vger.kernel.org>; Tue, 12 Jul 2022 08:32:40 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id o3-20020a17090a744300b001ef8f7f3dddso8420445pjk.3
-        for <linux-can@vger.kernel.org>; Tue, 12 Jul 2022 08:32:40 -0700 (PDT)
+        with ESMTP id S234014AbiGLPcp (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 12 Jul 2022 11:32:45 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7744A238C
+        for <linux-can@vger.kernel.org>; Tue, 12 Jul 2022 08:32:43 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id g16-20020a17090a7d1000b001ea9f820449so11783207pjl.5
+        for <linux-can@vger.kernel.org>; Tue, 12 Jul 2022 08:32:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ssHG4Vaz7n8X7oMmpB21PsGGhfBPihrbDDQ7KUl9GNE=;
-        b=VOa8OaluDkV9z4U/sruWoiKKBspObyv4r4ajWfpGhCaAyt4eJ+EYLHj/btpYbHOuWK
-         OkZlUfk+aUDI/miXCGDqmAX8iK3kgGsjHgQZSHC9iy0RQZcvLShkO+cvEs9ydXXfr9FZ
-         buRwQLGPGwGJ2diAWliF5gKZiBTf4P8I5DagE835rbZKA5K/Gs8GF9dCuWPbGhLItkNI
-         hW55aGFDTsRRXX0EbCBFXhRZu4UJLZfZRUdc/1CNI6P5C4UtH3buMOF2hPb5DxNiHXir
-         lHfePAPLnnZn4K0fmhPrcrsbN3nh/eKXMHM5t/E7z628P0gv8kK8OYQcPK2FlzZ0jmnt
-         HVxg==
+        bh=C7zTWBwZDdKmlAo6fiKt0hrUk5sp3FSMNgJXmhSYlvE=;
+        b=iV+zLmDItjE/kOqRcDz/vFsNtct8zHEP7NbMOnmOpiY7J6O/GDXd0tFsCyO/cm1GTa
+         l1+hrstMJELaaYt8uh9y25eWPnkSYS3xkmBlHwGuMaeth3I2oByIk4ETNNMTKoxntjfK
+         FyxxMZG67wIg/5R8CuH8WiqTqVwJB0KsVrtzdPTfk7J5Cr4OMlcS1UMl3NyI9GxBpVIF
+         4RMZUW0GN8E54jCG/eEssRx/5cDaHaZSylj1D7zjbveXA+EdVc4R4IVZRo5VBow+4YfN
+         T0TZl5vg9cLq4zuFGTrKwp41oXfBkCQ60IVjTsGU6n2xBHqrDxHcvvVVCG4do0a2KOcO
+         4xfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=ssHG4Vaz7n8X7oMmpB21PsGGhfBPihrbDDQ7KUl9GNE=;
-        b=a74RDUHGGT1G+cHwRYds8alf7twCuqWld037AbNNUmbYWU1/r1YJ6u/zu0p2WDk4e3
-         ahaeWgfbsNPXKf5EidYziTenr32Eo8Hd+kNvM6crEtImasdsi0nSmpxDeUbzf2FE228V
-         XPPnXLpcRUhEH9jofC505ua01eReNnoFmquVwv4Ds97lx788/ljC5CyE/kyLhCgKTI0e
-         aMsUx2ShBbqVQJZxxMPJyjDdkiLDpqpCYpFmctsrZ3vvNez8rEFwyC/11zymVj5YEl3L
-         eQA3ERijIjFd7S0eTfICbhOiCV41kQmd2cRUM5eXgN5EMmvIYVDuqil9zpiS3tZYC9+K
-         o/6A==
-X-Gm-Message-State: AJIora+B53oTOySsqwDC6besBr7wH1Q8DP2l4p/sPnBuU88u3BRGghUP
-        E37ztJ7UGrW+498ai1jH5nw0DxAh+3OI5A==
-X-Google-Smtp-Source: AGRyM1vPhQsFv1IXlRM7ZV/9Dr/oa1mxr44VsQkeNM5ZUsF5vLcQLoovbTVX4HR7z2En/px7biIzEw==
-X-Received: by 2002:a17:90a:d50d:b0:1ef:9130:f96b with SMTP id t13-20020a17090ad50d00b001ef9130f96bmr4906771pju.235.1657639959886;
-        Tue, 12 Jul 2022 08:32:39 -0700 (PDT)
+        bh=C7zTWBwZDdKmlAo6fiKt0hrUk5sp3FSMNgJXmhSYlvE=;
+        b=BXVcSqjcvdeYvrmTpuiOD+gPLQa3l6RY08LxQJ1u5iRFHDOUW5B8pHwhf4TBXGCfCz
+         bBA56aDInWMQ4scC2CTB9iD1Eb0SRBds7zzdisZtBD0pFabpW17pHg0GED91leVliNON
+         jmywwMg4zAXAKQHAUw0BwT3NCk2I5DAEXtGgagIiAuMn8PMeRm1e5kU7n14Av2Ln/0GC
+         h4j0dW37ZZ74KqOvn8NQw7Lmdy7SkCNXjvQfBE9exj/gqxnwAG8grXLeWsRicz4zjnuY
+         gbIIFWKEv2sd8F4bsXoJzZpvu7DMIWzOEHAhLgA4JzgpEVW2xgVJkEQkBtW/GhaDhkjB
+         FXkg==
+X-Gm-Message-State: AJIora/gKPPkc7NrpYwUYZ0u6FT2PW2EDfWujL8YIFhHKTfENeufO8VR
+        +Hx3KXjvtv4gIYrTf8xT42B54GUedzl0Hw==
+X-Google-Smtp-Source: AGRyM1v+HWfWXiaD2C5In5oSnrbeWclQHuxz++HG8uU1mAmY54ZGrhsJFFlpzh939T8nN7MgM01AAw==
+X-Received: by 2002:a17:902:eb89:b0:16c:6337:b9b4 with SMTP id q9-20020a170902eb8900b0016c6337b9b4mr2702840plg.27.1657639963017;
+        Tue, 12 Jul 2022 08:32:43 -0700 (PDT)
 Received: from localhost.localdomain (124x33x176x97.ap124.ftth.ucom.ne.jp. [124.33.176.97])
-        by smtp.gmail.com with ESMTPSA id c131-20020a621c89000000b005252defb016sm6891483pfc.122.2022.07.12.08.32.38
+        by smtp.gmail.com with ESMTPSA id c131-20020a621c89000000b005252defb016sm6891483pfc.122.2022.07.12.08.32.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jul 2022 08:32:39 -0700 (PDT)
+        Tue, 12 Jul 2022 08:32:42 -0700 (PDT)
 Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
 From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 To:     linux-can@vger.kernel.org
 Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
         Frank Jungclaus <frank.jungclaus@esd.eu>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v1 10/12] can: error: specify the values of data[5..7] of CAN error frames
-Date:   Wed, 13 Jul 2022 00:31:55 +0900
-Message-Id: <20220712153157.83847-11-mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v1 12/12] can: error: add definitions for the different CAN error thresholds
+Date:   Wed, 13 Jul 2022 00:31:57 +0900
+Message-Id: <20220712153157.83847-13-mailhol.vincent@wanadoo.fr>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220712153157.83847-1-mailhol.vincent@wanadoo.fr>
 References: <20220712153157.83847-1-mailhol.vincent@wanadoo.fr>
@@ -65,39 +65,49 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Currently, data[5..7] of struct can_frame, when used as a CAN error
-frame, are defined as being "controller specific". Device specific
-behaviours are problematic because it prevents someone from writing
-code which is portable between devices.
+Currently, drivers are using magic numbers to derive the CAN error
+states from the error counter. Add three macro declarations to
+remediate this.
 
-As a matter of fact, data[5] is never used, data[6] is always used to
-report TX error counter and data[7] is always used to report RX error
-counter. can-utils also relies on this.
+For reference, the error-active, error-passive and bus-off are defined
+in ISO 11898, section 12.1.4.2 "Error counting". Although ISO 11898
+does not define error-warning state, this extra value is also commonly
+used and is thus also added.
 
-This patch updates the comment in the uapi header to specify that
-data[5] is reserved (and thus should not be used) and that data[6..7]
-are used for error counters.
-
-Fixes: 0d66548a10cb ("[CAN]: Add PF_CAN core module")
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 ---
- include/uapi/linux/can/error.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+
+Strictly speaking, this does not need to be part of the uapi but I
+still think it is beneficial to have it here. Thank you for your
+comments.
+
+Also, if anyone knows which standard originally defined the
+error-warning, let me know.
+---
+ include/uapi/linux/can/error.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/include/uapi/linux/can/error.h b/include/uapi/linux/can/error.h
-index 34633283de64..4eb7da568dde 100644
+index a17ad25a01f9..5c0639134f96 100644
 --- a/include/uapi/linux/can/error.h
 +++ b/include/uapi/linux/can/error.h
-@@ -120,6 +120,9 @@
- #define CAN_ERR_TRX_CANL_SHORT_TO_GND  0x70 /* 0111 0000 */
- #define CAN_ERR_TRX_CANL_SHORT_TO_CANH 0x80 /* 1000 0000 */
+@@ -127,4 +127,17 @@
+ /* TX error counter / data[6] */
+ /* TX error counter / data[7] */
  
--/* controller specific additional information / data[5..7] */
-+/* data[5] is reserved (do not use) */
++/* CAN state thresholds
++ *
++ * Error counter	Error state
++ * -----------------------------------
++ * 0 -  95		Error-active
++ * 96 - 127		Error-warning
++ * 128 - 255		Error-passive
++ * 256 and greater	Bus-off
++ */
++#define CAN_ERROR_WARNING_THRESHOLD 96
++#define CAN_ERROR_PASSIVE_THRESHOLD 128
++#define CAN_BUS_OFF_THRESHOLD 256
 +
-+/* TX error counter / data[6] */
-+/* TX error counter / data[7] */
- 
  #endif /* _UAPI_CAN_ERROR_H */
 -- 
 2.35.1
