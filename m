@@ -2,511 +2,202 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3E3FC43334
-	for <linux-can@archiver.kernel.org>; Tue, 12 Jul 2022 15:32:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6336C43334
+	for <linux-can@archiver.kernel.org>; Tue, 12 Jul 2022 15:38:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233553AbiGLPc4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 12 Jul 2022 11:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40414 "EHLO
+        id S233651AbiGLPiZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 12 Jul 2022 11:38:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233859AbiGLPcp (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 12 Jul 2022 11:32:45 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3CA7B31F7
-        for <linux-can@vger.kernel.org>; Tue, 12 Jul 2022 08:32:42 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id g4so7924018pgc.1
-        for <linux-can@vger.kernel.org>; Tue, 12 Jul 2022 08:32:42 -0700 (PDT)
+        with ESMTP id S229749AbiGLPiX (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 12 Jul 2022 11:38:23 -0400
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2109.outbound.protection.outlook.com [40.107.21.109])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0CCC08FC;
+        Tue, 12 Jul 2022 08:38:22 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PJkw7Q4nLBibB54dB7gOBcHQI6a6N1nSWj6t6gYVwmnfSJUbIfV2TBAi2hNRe53J60toBiiLJOqJlgvehkxeexLZD3/9/gmu2FGyryjOh0sXYGr2mSkHz0aPyEx2qfZOz9x/U2LcPbMwOldlsEIQ1Nbq+odZUHb9tDn5YD//QXQbLRA/9K7znygJuPsHWr4XHgAnJBYpGJsTZfGU38ZUgTYPMpMNAeGc/FkZHPVoNl5vXkoYfLbyk/vCODTw6Jil5SvM8sMB5HS9+vEPGV7RAcXbkrOGSkaeRi7HsIK+q3cyUfAzIJzHhKooxnoxiqgGKBVmCmvxBM70a4SwN0vzyg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Akm8k/FTr+MdnylAVaAjtPBkziV7G8pw+So6/jz8vI0=;
+ b=kNbxiOPjmUXSxv6UZp/CIFHmAA00HanY1hVmSjsAFZY/RPlYhkHxYYG48/Ko25OAXZOmSdnILIznm5sE9s8U4lgT1jFseDUFz4pezvfx7P6sc+G2jwHf86TJRRUitVTyk5f6W6k+rliZWm83urAsV8gRBw8vXEUM+rPgyfFxlqcO1uxVhEpgYEKAupYU1zRigklnidcvpjXxd4QljjMeOQosBEf9R73kZgCVQ5VWaot2I1c5CLWcLYIYnrUBsMOVZbLtD9ndvTDKbRsdN7EMdHVvfv6xC+xuF9KHRus1ASFXD4Q8Ml51biEd0UiMgha63hCGAS/ngu1e3MVFid/eQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=esd.eu; dmarc=pass action=none header.from=esd.eu; dkim=pass
+ header.d=esd.eu; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Cbe5r17Qr1Fi9psGEWZQvYF8XA4F/4TpxePpAGyYFLI=;
-        b=UhsX6J4w0r9uz2+PaPDe6fq7dzhKeKvpjban2juo/vQAlN6BfZriYssFPY1vD3XP6f
-         w+wDssT0qX7htP0Nb8RFj5lfmfDITGewUQsMvAo0A5B5FYKeQ1UZBxTzaWEzgKA0+7WU
-         y4En9IQy6rIAKj/W5HTaF8EhDJMguxhJlVM+D3CMURN/rkbld3ead7LUiWlA3cX8edo6
-         bU3UDl+lCbXMD36oETVsvoBq2w4VDcaaDxYAOc53L5KzEY6EpGdrqfyKBAxDNEEvWU7b
-         3s+hP9pKjvCJ9KX9MbfJP/0+0SkcZ5zsGl0l7gJhmDmaB4pQOVgNX30IWYFs5f6eINkn
-         544A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=Cbe5r17Qr1Fi9psGEWZQvYF8XA4F/4TpxePpAGyYFLI=;
-        b=kEvUxkZoqy6qbgfJNF62O0sY6sFBU6BvB0pDQv2YkkzjdqRs9itG3PL5RFNyUAm9QJ
-         zrIVrZHPIqOtba5YTyDtoKdEfbLaAAu9JtCRdiQTo/Z99hV7q9Vv9zuJJpTjacLCuIPZ
-         pIBY1XyNZ3jydzyp0h1BaACVLtTKj3Ys+Kro90Vg7OU0HQCjf/fUATL6bwUsVosZ5ecO
-         aGs2eJlf3LhZBYT5TYc65l8m8RacoNEK02QLZS/OF2Rl/1F9wPqhBCRVH3qwdl52JzFR
-         n0PvDSrDlxS4X/O9tRp3Japn07gsmRqkjn7rfzXVLoEAFukdso3cEbGoa/jgfghLFFqI
-         jdDQ==
-X-Gm-Message-State: AJIora8BmNgK152ScMdDQNazDcoTRF2GvSkkBao/m1PtBQORZyHJiYYe
-        7JNSxxANQQ+OSIF4f7rPvkl0QOUm3KPRpQ==
-X-Google-Smtp-Source: AGRyM1u9EGmr2K4YZQcBqHRdGJ6tlsWrjT/085pobYHUwL04Ng+LijLvB0cAORfLTv8iBLkCb6q51w==
-X-Received: by 2002:a63:2785:0:b0:413:655d:fb0 with SMTP id n127-20020a632785000000b00413655d0fb0mr21296176pgn.297.1657639961485;
-        Tue, 12 Jul 2022 08:32:41 -0700 (PDT)
-Received: from localhost.localdomain (124x33x176x97.ap124.ftth.ucom.ne.jp. [124.33.176.97])
-        by smtp.gmail.com with ESMTPSA id c131-20020a621c89000000b005252defb016sm6891483pfc.122.2022.07.12.08.32.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jul 2022 08:32:41 -0700 (PDT)
-Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     linux-can@vger.kernel.org
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Frank Jungclaus <frank.jungclaus@esd.eu>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v1 11/12] can: add CAN_ERR_CNT flag to notify availability of error counter
-Date:   Wed, 13 Jul 2022 00:31:56 +0900
-Message-Id: <20220712153157.83847-12-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220712153157.83847-1-mailhol.vincent@wanadoo.fr>
-References: <20220712153157.83847-1-mailhol.vincent@wanadoo.fr>
+ d=esdhannover.onmicrosoft.com; s=selector1-esdhannover-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Akm8k/FTr+MdnylAVaAjtPBkziV7G8pw+So6/jz8vI0=;
+ b=VTUU6ERbIT4QcmUzT7mvn/3cfzj6E9NhIvnyzKja4DfV78wmAnH/JegTxKIHPCVuKoXcC+ZOXfsa8lVkDAKb+GX2H061kj2JIdjPwK7JxCN//g7X+Ac0axUYvgxJVufGc1kXHpzsQg/ZRNE2Si+mzhjig8SNqtAy0Rz/xIxKivI=
+Received: from GVXPR03MB8426.eurprd03.prod.outlook.com (2603:10a6:150:4::9) by
+ PR3PR03MB6619.eurprd03.prod.outlook.com (2603:10a6:102:7a::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5417.26; Tue, 12 Jul 2022 15:38:19 +0000
+Received: from GVXPR03MB8426.eurprd03.prod.outlook.com
+ ([fe80::d57a:7f6b:776b:481a]) by GVXPR03MB8426.eurprd03.prod.outlook.com
+ ([fe80::d57a:7f6b:776b:481a%3]) with mapi id 15.20.5417.026; Tue, 12 Jul 2022
+ 15:38:19 +0000
+From:   Frank Jungclaus <Frank.Jungclaus@esd.eu>
+To:     "mailhol.vincent@wanadoo.fr" <mailhol.vincent@wanadoo.fr>
+CC:     =?iso-8859-15?Q?Stefan_M=E4tje?= <Stefan.Maetje@esd.eu>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        "mkl@pengutronix.de" <mkl@pengutronix.de>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "wg@grandegger.com" <wg@grandegger.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 6/6] can: esd_usb: Improved decoding for
+ ESD_EV_CAN_ERROR_EXT messages
+Thread-Topic: [PATCH 6/6] can: esd_usb: Improved decoding for
+ ESD_EV_CAN_ERROR_EXT messages
+Thread-Index: AQHYkvZ+J6KAwatI2U+kMqczZwhhVa15+MmAgADsGYA=
+Date:   Tue, 12 Jul 2022 15:38:18 +0000
+Message-ID: <f8f6df9c613d29058b135af0fa24554225bd23bc.camel@esd.eu>
+References: <20220708181235.4104943-1-frank.jungclaus@esd.eu>
+         <20220708181235.4104943-7-frank.jungclaus@esd.eu>
+         <CAMZ6RqLC9a50mbyeaUSE4zqOfwPEVvOeYXcCVefC5EMD5dN6PA@mail.gmail.com>
+In-Reply-To: <CAMZ6RqLC9a50mbyeaUSE4zqOfwPEVvOeYXcCVefC5EMD5dN6PA@mail.gmail.com>
+Accept-Language: en-001, de-DE, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.36.5-0ubuntu1 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=esd.eu;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 759a0e80-f91f-49b5-116f-08da641c8bbc
+x-ms-traffictypediagnostic: PR3PR03MB6619:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: uWpk2I9aIozgTqjITgWdjzOwqORfD8ExGNaDU9lWRtH+UXJDaW9Rehm0BtHbAlHFGRhXs66YQHi++abhC77C9LFgSfPwsHfPhBIW7DNTljDABSeFzmNoQbR2qQW7pSm1Hmbcf0kLCL+ynwMY60FHZu9ldZBewE/7nIEKkPB+VddG9/q6WzmacceqGu3mkwk5OMAxYfobS7ZU/mdLTPKPOL+qNppEBZSyadbWYqXdCiNYqAODX8ozt1RUsxPYZa1toVS51LDfe6JoOmeeokQAwc3szFerKVyQNIB6fpAQwVbL2Jkag2r9MwEiqgshcZeQPDowhTWnyesiDhJSQU1unLFyOaYIsl+7/3igQ4C9D4xIdVzcvkl5SsijVim0KO3WgEkyyST/dH1OJ1p/ukPTkrAdca2MI8bAiLDrORp8LFDpDMXP5kFTensv4dP7KEXtJygk0UEdkeNlgv07XoEozeJmLDomHwedrFF1QoOT7WaPbIDh/6OW/VjPtjTPBQiOxZ2rxfnyiQf6cuyvBdQi7n2BQhgUq/IsQaGodGEAmV+VsHY8+TeSFPFueYYhQGOX42csvpFzw8EZgrcE2QZc2HSXClaMhcYn8cQk92bYPKvWkGG9x8olxqjpmSllCB+L0Hp6GHykpyDr/ics594NG4H9yWnakp84KKrx3AcXe5dAf1Lw0NCOKFBCSu/bBlVI86D622PKLGfikSGpvNxlP5fojGlWuh3Xq6OTSiP95U7UKxly0pEFdeJSakg7H1igHVJ0jJILj5Y6x2FD+mpJJPb4UHV12pcyEpZaKfQ47EG8x1yWe9LjVQ9+eZl954u80FImwa/iiNefy2YMqmVFWA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GVXPR03MB8426.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(346002)(376002)(366004)(396003)(39840400004)(136003)(26005)(41300700001)(186003)(2906002)(122000001)(2616005)(6506007)(86362001)(38100700002)(6512007)(38070700005)(66476007)(316002)(66946007)(8676002)(83380400001)(54906003)(64756008)(6916009)(71200400001)(66446008)(91956017)(4326008)(36756003)(66556008)(6486002)(8936002)(15650500001)(76116006)(966005)(478600001)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-15?Q?XlJ9NRoCh/ObgWp87enXzDZpYsKTrNxaojXxqcQnLrwC9/eiKrv0eK2lw?=
+ =?iso-8859-15?Q?I5wqxoQkUl3FkakGE71FXlwpQvmz04v0HNJeY+Ma82GKnpSepTg2K3YtF?=
+ =?iso-8859-15?Q?uL6UMqCr1uBvQY9vPw51iCt6BGybSwutWEpxuYKkdViv59SUyPFn8EuPI?=
+ =?iso-8859-15?Q?xUHJepqwouH6vMCSmgPAstIcMzqRdyD8PrLUJmZnch8lAVwtok2hMgdCq?=
+ =?iso-8859-15?Q?0dgWgLOHqrN2jktBiNqUZpNogaW110bfz2IpORdEvGkMeFELHk6dPTDK1?=
+ =?iso-8859-15?Q?eIEOBHGms3IRxIdJQ1UZMKuFY3J/Dhw7vAFv+Fm04laTn7S0D158zpcpH?=
+ =?iso-8859-15?Q?Zv0a33NTc/Hr2r4Cz5AWBTjA6kHeFP0xdH6ssGyD3d4KSxN9NnteCMGof?=
+ =?iso-8859-15?Q?PWYqkUBFGD5NPb49smKOgZJMGfXyfeNDYFjR6Dv2O/7psfBDTkx3gGFl1?=
+ =?iso-8859-15?Q?yAgpcZ6XlWcVgoTxCPRCTu0PcsI9TFnB77padQ9XNM/3q8rjcqS2/6Gsq?=
+ =?iso-8859-15?Q?Wz9qSZQdYsz/0+3q8I5OdkgEiaSE0TVnHrHcfvIUUlZGHLljJENWBIcBB?=
+ =?iso-8859-15?Q?TcGCOTQGIBADT3YRlGrVoLEDx01m7LtpjfDNe8KM99Bs2gbCgigz5I4ZL?=
+ =?iso-8859-15?Q?sFpES7jiEJn4seqbtMKLU3NSwVF0YMW3YX7AsgLU7WZCxsEcOnm1NGXut?=
+ =?iso-8859-15?Q?DnoZ1uJ/q+gL0WufXDqeLsMHbIOBYqMBarPGDh7wmvzPrqBgxMbbNWQJU?=
+ =?iso-8859-15?Q?niijNP8gY9AZZSSFretPgg64KbRcpgl7e9AehtSXFEMqHYB/IKDac1B2o?=
+ =?iso-8859-15?Q?crkPeEE90Syy0yowWm5TyXnbVLu/RUQpEz2zPhZjsNZJEZmCX+PHCi4yg?=
+ =?iso-8859-15?Q?pDCFX92pHFSJ4p2rt9/UCho73Gbl5TpUrFoqLHX4K3Wdf74/pC/yqzykJ?=
+ =?iso-8859-15?Q?gL+vMqS+r8l0QVaPUGBDULnWHNufvmpRdKF+AdESeiz2NSjrOqLiMFWlW?=
+ =?iso-8859-15?Q?AU+od1B+IhKoka2ESjZjc0d/rt8Cbe79dxWywUv/G4eY1X0vc3AXGIR9P?=
+ =?iso-8859-15?Q?yerVVUeNHLib4IHr2NxJXI67N38XrWKqczrYgsdsgV5YdoaFrHHZp4aW3?=
+ =?iso-8859-15?Q?FvUWmbJ84LpkFoX9eLIvI7/mlBd1AN0htXD3pUO5KU9Iu8VIQXTGVu9EU?=
+ =?iso-8859-15?Q?ZTnTqz0L7JEBOx0w3V1obhrt0glHcWNPkz3EU0MqvTSl3cWoH2R5tZwr1?=
+ =?iso-8859-15?Q?51N7UR14ILtTYX3N5M1vD0sAuTvQt/xH6+f/r3tDZEfvrZH996MFZ+ta9?=
+ =?iso-8859-15?Q?+PrBPdXvZ1PQSDLtrhPVmDymul9yblmpbElTHv+HXBM+LkgBYZbpw1l/4?=
+ =?iso-8859-15?Q?UKarTc6uioGrAZvVFgcUAm7CwkSv5qteiGn06SphrzHATTAJk6bvOJ6E4?=
+ =?iso-8859-15?Q?TXvCUrvibCAHJiL9DyOOfqhmq08esu94QsUrpXsTiNYLRE+IWuBX/agQJ?=
+ =?iso-8859-15?Q?EMlN3tracwVbQHCfo6tzUWWmivnEAs5TlJzG0MjD0IJ3MIjN39A0AOz0x?=
+ =?iso-8859-15?Q?r6O61/pnHPFHUrxHhIYmwJdzx0IWrmzDxE+AvBz9iq0pyoLLD+lgOnOhA?=
+ =?iso-8859-15?Q?Oz3x3YTSFecO7A/M19qyNLJ8ubfKa7yOeAWKepHfatG0QQLhaRfgjYHtr?=
+ =?iso-8859-15?Q?2yBZ3QzOpi51tFB8Dae43fQbvg=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-15"
+Content-ID: <35C827E844FA0D4E87E6E299E3514C10@eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: esd.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: GVXPR03MB8426.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 759a0e80-f91f-49b5-116f-08da641c8bbc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jul 2022 15:38:19.1941
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5a9c3a1d-52db-4235-b74c-9fd851db2e6b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9c1nrFGFZoPPbftLsssL1+MpStwhAX63ZIyz8A9K+yN1bT3CKqVkcihqUQO09UGJY0+Hv+E889CKCWq4O3BAag==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR03MB6619
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Add a dedicated flag in uapi/linux/can/error.h to notify the userland
-that fields data[6] and data[7] of the CAN error frame were
-respectively populated with the tx and rx error counters.
+On Tue, 2022-07-12 at 10:33 +0900, Vincent MAILHOL wrote:
+> On Sat. 9 Jul. 2022 at 03:14, Frank Jungclaus <frank.jungclaus@esd.eu> wr=
+ote:
+> > As suggested by Vincent I spend a union plus a struct ev_can_err_ext
+>=20
+> The canonical way to declare that something was suggested by someone
+> else is to use the Suggested-by tag.
+>=20
+> Also, this particular change was suggested by Marc, not by me ;)
+> https://lore.kernel.org/linux-can/20220621071152.ggyhrr5sbzvwpkpx@pengutr=
+onix.de/
 
-For all driver tree-wide, set up this flags whenever needed.
+Ops, sorry for mixing up your names. So the kudos goes to Marc ;)
+I'll spend a Suggested-by tag and resend patch 6/6.
 
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
----
- drivers/net/can/c_can/c_can_main.c                | 6 +++---
- drivers/net/can/cc770/cc770.c                     | 1 +
- drivers/net/can/ctucanfd/ctucanfd_base.c          | 5 +++--
- drivers/net/can/grcan.c                           | 1 +
- drivers/net/can/ifi_canfd/ifi_canfd.c             | 4 ++--
- drivers/net/can/janz-ican3.c                      | 4 ++--
- drivers/net/can/kvaser_pciefd.c                   | 2 +-
- drivers/net/can/m_can/m_can.c                     | 4 ++--
- drivers/net/can/pch_can.c                         | 1 +
- drivers/net/can/peak_canfd/peak_canfd.c           | 6 +++---
- drivers/net/can/rcar/rcar_can.c                   | 1 +
- drivers/net/can/rcar/rcar_canfd.c                 | 4 ++--
- drivers/net/can/sja1000/sja1000.c                 | 1 +
- drivers/net/can/slcan/slcan-core.c                | 1 +
- drivers/net/can/spi/hi311x.c                      | 1 +
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c    | 1 +
- drivers/net/can/sun4i_can.c                       | 1 +
- drivers/net/can/ti_hecc.c                         | 1 +
- drivers/net/can/usb/esd_usb.c                     | 3 ++-
- drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 2 ++
- drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 1 +
- drivers/net/can/usb/peak_usb/pcan_usb.c           | 1 +
- drivers/net/can/usb/usb_8dev.c                    | 1 +
- drivers/net/can/xilinx_can.c                      | 1 +
- include/uapi/linux/can/error.h                    | 2 ++
- 25 files changed, 38 insertions(+), 18 deletions(-)
+Best regards,
+Frank
 
-diff --git a/drivers/net/can/c_can/c_can_main.c b/drivers/net/can/c_can/c_can_main.c
-index a7362af0babb..0387626eb054 100644
---- a/drivers/net/can/c_can/c_can_main.c
-+++ b/drivers/net/can/c_can/c_can_main.c
-@@ -953,14 +953,14 @@ static int c_can_handle_state_change(struct net_device *dev,
- 	switch (error_type) {
- 	case C_CAN_NO_ERROR:
- 		/* error warning state */
--		cf->can_id |= CAN_ERR_CRTL;
-+		cf->can_id |= CAN_ERR_CRTL | CAN_ERR_CNT;
- 		cf->data[1] = CAN_ERR_CRTL_ACTIVE;
- 		cf->data[6] = bec.txerr;
- 		cf->data[7] = bec.rxerr;
- 		break;
- 	case C_CAN_ERROR_WARNING:
- 		/* error warning state */
--		cf->can_id |= CAN_ERR_CRTL;
-+		cf->can_id |= CAN_ERR_CRTL | CAN_ERR_CNT;
- 		cf->data[1] = (bec.txerr > bec.rxerr) ?
- 			CAN_ERR_CRTL_TX_WARNING :
- 			CAN_ERR_CRTL_RX_WARNING;
-@@ -970,7 +970,7 @@ static int c_can_handle_state_change(struct net_device *dev,
- 		break;
- 	case C_CAN_ERROR_PASSIVE:
- 		/* error passive state */
--		cf->can_id |= CAN_ERR_CRTL;
-+		cf->can_id |= CAN_ERR_CRTL | CAN_ERR_CNT;
- 		if (rx_err_passive)
- 			cf->data[1] |= CAN_ERR_CRTL_RX_PASSIVE;
- 		if (bec.txerr > 127)
-diff --git a/drivers/net/can/cc770/cc770.c b/drivers/net/can/cc770/cc770.c
-index bb7224cfc6ab..797a954bb1a0 100644
---- a/drivers/net/can/cc770/cc770.c
-+++ b/drivers/net/can/cc770/cc770.c
-@@ -512,6 +512,7 @@ static int cc770_err(struct net_device *dev, u8 status)
- 
- 	/* Use extended functions of the CC770 */
- 	if (priv->control_normal_mode & CTRL_EAF) {
-+		cf->can_id |= CAN_ERR_CNT;
- 		cf->data[6] = cc770_read_reg(priv, tx_error_counter);
- 		cf->data[7] = cc770_read_reg(priv, rx_error_counter);
- 	}
-diff --git a/drivers/net/can/ctucanfd/ctucanfd_base.c b/drivers/net/can/ctucanfd/ctucanfd_base.c
-index 14ac7c0ee04c..6b281f6eb9b4 100644
---- a/drivers/net/can/ctucanfd/ctucanfd_base.c
-+++ b/drivers/net/can/ctucanfd/ctucanfd_base.c
-@@ -847,7 +847,7 @@ static void ctucan_err_interrupt(struct net_device *ndev, u32 isr)
- 		case CAN_STATE_ERROR_PASSIVE:
- 			priv->can.can_stats.error_passive++;
- 			if (skb) {
--				cf->can_id |= CAN_ERR_CRTL;
-+				cf->can_id |= CAN_ERR_CRTL | CAN_ERR_CNT;
- 				cf->data[1] = (bec.rxerr > 127) ?
- 						CAN_ERR_CRTL_RX_PASSIVE :
- 						CAN_ERR_CRTL_TX_PASSIVE;
-@@ -858,7 +858,7 @@ static void ctucan_err_interrupt(struct net_device *ndev, u32 isr)
- 		case CAN_STATE_ERROR_WARNING:
- 			priv->can.can_stats.error_warning++;
- 			if (skb) {
--				cf->can_id |= CAN_ERR_CRTL;
-+				cf->can_id |= CAN_ERR_CRTL | CAN_ERR_CNT;
- 				cf->data[1] |= (bec.txerr > bec.rxerr) ?
- 					CAN_ERR_CRTL_TX_WARNING :
- 					CAN_ERR_CRTL_RX_WARNING;
-@@ -867,6 +867,7 @@ static void ctucan_err_interrupt(struct net_device *ndev, u32 isr)
- 			}
- 			break;
- 		case CAN_STATE_ERROR_ACTIVE:
-+			cf->can_id |= CAN_ERR_CNT;
- 			cf->data[1] = CAN_ERR_CRTL_ACTIVE;
- 			cf->data[6] = bec.txerr;
- 			cf->data[7] = bec.rxerr;
-diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
-index 76df4807d366..8229ca2ee389 100644
---- a/drivers/net/can/grcan.c
-+++ b/drivers/net/can/grcan.c
-@@ -671,6 +671,7 @@ static void grcan_err(struct net_device *dev, u32 sources, u32 status)
- 				/* There are no others at this point */
- 				break;
- 			}
-+			cf.can_id |= CAN_ERR_CNT;
- 			cf.data[6] = txerr;
- 			cf.data[7] = rxerr;
- 			priv->can.state = state;
-diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
-index 968ed6d7316b..64e3be8b73af 100644
---- a/drivers/net/can/ifi_canfd/ifi_canfd.c
-+++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
-@@ -492,7 +492,7 @@ static int ifi_canfd_handle_state_change(struct net_device *ndev,
- 	switch (new_state) {
- 	case CAN_STATE_ERROR_WARNING:
- 		/* error warning state */
--		cf->can_id |= CAN_ERR_CRTL;
-+		cf->can_id |= CAN_ERR_CRTL | CAN_ERR_CNT;
- 		cf->data[1] = (bec.txerr > bec.rxerr) ?
- 			CAN_ERR_CRTL_TX_WARNING :
- 			CAN_ERR_CRTL_RX_WARNING;
-@@ -501,7 +501,7 @@ static int ifi_canfd_handle_state_change(struct net_device *ndev,
- 		break;
- 	case CAN_STATE_ERROR_PASSIVE:
- 		/* error passive state */
--		cf->can_id |= CAN_ERR_CRTL;
-+		cf->can_id |= CAN_ERR_CRTL | CAN_ERR_CNT;
- 		cf->data[1] |= CAN_ERR_CRTL_RX_PASSIVE;
- 		if (bec.txerr > 127)
- 			cf->data[1] |= CAN_ERR_CRTL_TX_PASSIVE;
-diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
-index 35bfb82d6929..ccb5c5405224 100644
---- a/drivers/net/can/janz-ican3.c
-+++ b/drivers/net/can/janz-ican3.c
-@@ -1127,7 +1127,7 @@ static int ican3_handle_cevtind(struct ican3_dev *mod, struct ican3_msg *msg)
- 	/* bus error interrupt */
- 	if (isrc == CEVTIND_BEI) {
- 		mod->can.can_stats.bus_error++;
--		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
-+		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR | CAN_ERR_CNT;
- 
- 		switch (ecc & ECC_MASK) {
- 		case ECC_BIT:
-@@ -1153,7 +1153,7 @@ static int ican3_handle_cevtind(struct ican3_dev *mod, struct ican3_msg *msg)
- 
- 	if (state != mod->can.state && (state == CAN_STATE_ERROR_WARNING ||
- 					state == CAN_STATE_ERROR_PASSIVE)) {
--		cf->can_id |= CAN_ERR_CRTL;
-+		cf->can_id |= CAN_ERR_CRTL | CAN_ERR_CNT;
- 		if (state == CAN_STATE_ERROR_WARNING) {
- 			mod->can.can_stats.error_warning++;
- 			cf->data[1] = (txerr > rxerr) ?
-diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
-index 017f2d36ffc3..dcd2c9d50d5e 100644
---- a/drivers/net/can/kvaser_pciefd.c
-+++ b/drivers/net/can/kvaser_pciefd.c
-@@ -1306,7 +1306,7 @@ static int kvaser_pciefd_rx_error_frame(struct kvaser_pciefd_can *can,
- 	shhwtstamps->hwtstamp =
- 		ns_to_ktime(div_u64(p->timestamp * 1000,
- 				    can->kv_pcie->freq_to_ticks_div));
--	cf->can_id |= CAN_ERR_BUSERROR;
-+	cf->can_id |= CAN_ERR_BUSERROR | CAN_ERR_CNT;
- 
- 	cf->data[6] = bec.txerr;
- 	cf->data[7] = bec.rxerr;
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 4f90e17354f2..74efcde54c83 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -741,7 +741,7 @@ static int m_can_handle_state_change(struct net_device *dev,
- 	switch (new_state) {
- 	case CAN_STATE_ERROR_WARNING:
- 		/* error warning state */
--		cf->can_id |= CAN_ERR_CRTL;
-+		cf->can_id |= CAN_ERR_CRTL | CAN_ERR_CNT;
- 		cf->data[1] = (bec.txerr > bec.rxerr) ?
- 			CAN_ERR_CRTL_TX_WARNING :
- 			CAN_ERR_CRTL_RX_WARNING;
-@@ -750,7 +750,7 @@ static int m_can_handle_state_change(struct net_device *dev,
- 		break;
- 	case CAN_STATE_ERROR_PASSIVE:
- 		/* error passive state */
--		cf->can_id |= CAN_ERR_CRTL;
-+		cf->can_id |= CAN_ERR_CRTL | CAN_ERR_CNT;
- 		ecr = m_can_read(cdev, M_CAN_ECR);
- 		if (ecr & ECR_RP)
- 			cf->data[1] |= CAN_ERR_CRTL_RX_PASSIVE;
-diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
-index 497ef77340ea..50f6719b3aa4 100644
---- a/drivers/net/can/pch_can.c
-+++ b/drivers/net/can/pch_can.c
-@@ -497,6 +497,7 @@ static void pch_can_error(struct net_device *ndev, u32 status)
- 		priv->can.can_stats.bus_off++;
- 		can_bus_off(ndev);
- 	} else {
-+		cf->can_id |= CAN_ERR_CNT;
- 		cf->data[6] = errc & PCH_TEC;
- 		cf->data[7] = (errc & PCH_REC) >> 8;
- 	}
-diff --git a/drivers/net/can/peak_canfd/peak_canfd.c b/drivers/net/can/peak_canfd/peak_canfd.c
-index b2dea360813d..afb9adb3d5c2 100644
---- a/drivers/net/can/peak_canfd/peak_canfd.c
-+++ b/drivers/net/can/peak_canfd/peak_canfd.c
-@@ -373,7 +373,7 @@ static int pucan_handle_status(struct peak_canfd_priv *priv,
- 		priv->can.state = CAN_STATE_ERROR_PASSIVE;
- 		priv->can.can_stats.error_passive++;
- 		if (skb) {
--			cf->can_id |= CAN_ERR_CRTL;
-+			cf->can_id |= CAN_ERR_CRTL | CAN_ERR_CNT;
- 			cf->data[1] = (priv->bec.txerr > priv->bec.rxerr) ?
- 					CAN_ERR_CRTL_TX_PASSIVE :
- 					CAN_ERR_CRTL_RX_PASSIVE;
-@@ -386,7 +386,7 @@ static int pucan_handle_status(struct peak_canfd_priv *priv,
- 		priv->can.state = CAN_STATE_ERROR_WARNING;
- 		priv->can.can_stats.error_warning++;
- 		if (skb) {
--			cf->can_id |= CAN_ERR_CRTL;
-+			cf->can_id |= CAN_ERR_CRTL | CAN_ERR_CNT;
- 			cf->data[1] = (priv->bec.txerr > priv->bec.rxerr) ?
- 					CAN_ERR_CRTL_TX_WARNING :
- 					CAN_ERR_CRTL_RX_WARNING;
-@@ -430,7 +430,7 @@ static int pucan_handle_cache_critical(struct peak_canfd_priv *priv)
- 		return -ENOMEM;
- 	}
- 
--	cf->can_id |= CAN_ERR_CRTL;
-+	cf->can_id |= CAN_ERR_CRTL | CAN_ERR_CNT;
- 	cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
- 
- 	cf->data[6] = priv->bec.txerr;
-diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
-index 24d7a71def6a..d11db2112a4a 100644
---- a/drivers/net/can/rcar/rcar_can.c
-+++ b/drivers/net/can/rcar/rcar_can.c
-@@ -334,6 +334,7 @@ static void rcar_can_error(struct net_device *ndev)
- 		if (skb)
- 			cf->can_id |= CAN_ERR_BUSOFF;
- 	} else if (skb) {
-+		cf->can_id |= CAN_ERR_CNT;
- 		cf->data[6] = txerr;
- 		cf->data[7] = rxerr;
- 	}
-diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index 40a11445d021..a53804a9483a 100644
---- a/drivers/net/can/rcar/rcar_canfd.c
-+++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -1052,7 +1052,7 @@ static void rcar_canfd_error(struct net_device *ndev, u32 cerfl,
- 		netdev_dbg(ndev, "Error warning interrupt\n");
- 		priv->can.state = CAN_STATE_ERROR_WARNING;
- 		priv->can.can_stats.error_warning++;
--		cf->can_id |= CAN_ERR_CRTL;
-+		cf->can_id |= CAN_ERR_CRTL | CAN_ERR_CNT;
- 		cf->data[1] = txerr > rxerr ? CAN_ERR_CRTL_TX_WARNING :
- 			CAN_ERR_CRTL_RX_WARNING;
- 		cf->data[6] = txerr;
-@@ -1062,7 +1062,7 @@ static void rcar_canfd_error(struct net_device *ndev, u32 cerfl,
- 		netdev_dbg(ndev, "Error passive interrupt\n");
- 		priv->can.state = CAN_STATE_ERROR_PASSIVE;
- 		priv->can.can_stats.error_passive++;
--		cf->can_id |= CAN_ERR_CRTL;
-+		cf->can_id |= CAN_ERR_CRTL | CAN_ERR_CNT;
- 		cf->data[1] = txerr > rxerr ? CAN_ERR_CRTL_TX_PASSIVE :
- 			CAN_ERR_CRTL_RX_PASSIVE;
- 		cf->data[6] = txerr;
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index 84adf8b5945e..bbfd5323fffb 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -424,6 +424,7 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
- 			state = CAN_STATE_ERROR_ACTIVE;
- 	}
- 	if (state != CAN_STATE_BUS_OFF) {
-+		cf->can_id |= CAN_ERR_CNT;
- 		cf->data[6] = txerr;
- 		cf->data[7] = rxerr;
- 	}
-diff --git a/drivers/net/can/slcan/slcan-core.c b/drivers/net/can/slcan/slcan-core.c
-index d4137cd9cd97..fcbf6faa4eea 100644
---- a/drivers/net/can/slcan/slcan-core.c
-+++ b/drivers/net/can/slcan/slcan-core.c
-@@ -314,6 +314,7 @@ static void slc_bump_state(struct slcan *sl)
- 	if (state == CAN_STATE_BUS_OFF) {
- 		can_bus_off(dev);
- 	} else if (skb) {
-+		cf->can_id |= CAN_ERR_CNT;
- 		cf->data[6] = txerr;
- 		cf->data[7] = rxerr;
- 	}
-diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
-index bfb7c4bb5bc3..167114aae6dd 100644
---- a/drivers/net/can/spi/hi311x.c
-+++ b/drivers/net/can/spi/hi311x.c
-@@ -680,6 +680,7 @@ static irqreturn_t hi3110_can_ist(int irq, void *dev_id)
- 					break;
- 				}
- 			} else {
-+				cf->can_id |= CAN_ERR_CNT;
- 				cf->data[6] = txerr;
- 				cf->data[7] = rxerr;
- 			}
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index b21252390216..57c7282bc069 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -1098,6 +1098,7 @@ static int mcp251xfd_handle_cerrif(struct mcp251xfd_priv *priv)
- 		err = mcp251xfd_get_berr_counter(priv->ndev, &bec);
- 		if (err)
- 			return err;
-+		cf->can_id |= CAN_ERR_CNT;
- 		cf->data[6] = bec.txerr;
- 		cf->data[7] = bec.rxerr;
- 	}
-diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
-index afe9b541f037..b90dfb429ccd 100644
---- a/drivers/net/can/sun4i_can.c
-+++ b/drivers/net/can/sun4i_can.c
-@@ -566,6 +566,7 @@ static int sun4i_can_err(struct net_device *dev, u8 isrc, u8 status)
- 			state = CAN_STATE_ERROR_ACTIVE;
- 	}
- 	if (skb && state != CAN_STATE_BUS_OFF) {
-+		cf->can_id |= CAN_ERR_CNT;
- 		cf->data[6] = txerr;
- 		cf->data[7] = rxerr;
- 	}
-diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index debe17bfd0f0..afa38771520e 100644
---- a/drivers/net/can/ti_hecc.c
-+++ b/drivers/net/can/ti_hecc.c
-@@ -662,6 +662,7 @@ static void ti_hecc_change_state(struct net_device *ndev,
- 	can_change_state(priv->ndev, cf, tx_state, rx_state);
- 
- 	if (max(tx_state, rx_state) != CAN_STATE_BUS_OFF) {
-+		cf->can_id |= CAN_ERR_CNT;
- 		cf->data[6] = hecc_read(priv, HECC_CANTEC);
- 		cf->data[7] = hecc_read(priv, HECC_CANREC);
- 	}
-diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
-index 8a4bf2961f3d..177ed33e08d9 100644
---- a/drivers/net/can/usb/esd_usb.c
-+++ b/drivers/net/can/usb/esd_usb.c
-@@ -265,7 +265,8 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
- 			priv->can.can_stats.bus_error++;
- 			stats->rx_errors++;
- 
--			cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
-+			cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR |
-+				      CAN_ERR_CNT;
- 
- 			switch (ecc & SJA1000_ECC_MASK) {
- 			case SJA1000_ECC_BIT:
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-index af27f0f9aca2..49be859cd742 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-@@ -918,6 +918,7 @@ static void kvaser_usb_hydra_update_state(struct kvaser_usb_net_priv *priv,
- 		priv->can.can_stats.restarts++;
- 
- 	if (new_state != CAN_STATE_BUS_OFF) {
-+		cf->can_id |= CAN_ERR_CNT;
- 		cf->data[6] = bec->txerr;
- 		cf->data[7] = bec->rxerr;
- 	}
-@@ -1072,6 +1073,7 @@ kvaser_usb_hydra_error_frame(struct kvaser_usb_net_priv *priv,
- 
- 	cf->can_id |= CAN_ERR_BUSERROR;
- 	if (new_state != CAN_STATE_BUS_OFF) {
-+		cf->can_id |= CAN_ERR_CNT;
- 		cf->data[6] = bec.txerr;
- 		cf->data[7] = bec.rxerr;
- 	}
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-index 088abeae30ad..91d3e8b4bccd 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-@@ -837,6 +837,7 @@ static void kvaser_usb_leaf_rx_error(const struct kvaser_usb *dev,
- 	}
- 
- 	if (new_state != CAN_STATE_BUS_OFF) {
-+		cf->can_id |= CAN_ERR_CNT;
- 		cf->data[6] = es->txerr;
- 		cf->data[7] = es->rxerr;
- 	}
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index 091c631ebe23..d07b7ee79e3e 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -506,6 +506,7 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
- 			/* Supply TX/RX error counters in case of
- 			 * controller error.
- 			 */
-+			cf->can_id = CAN_ERR_CNT;
- 			cf->data[6] = mc->pdev->bec.txerr;
- 			cf->data[7] = mc->pdev->bec.rxerr;
- 		}
-diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
-index 4d38dc90472a..8b7cd69e20b0 100644
---- a/drivers/net/can/usb/usb_8dev.c
-+++ b/drivers/net/can/usb/usb_8dev.c
-@@ -439,6 +439,7 @@ static void usb_8dev_rx_err_msg(struct usb_8dev_priv *priv,
- 	if (rx_errors)
- 		stats->rx_errors++;
- 	if (priv->can.state != CAN_STATE_BUS_OFF) {
-+		cf->can_id |= CAN_ERR_CNT;
- 		cf->data[6] = txerr;
- 		cf->data[7] = rxerr;
- 	}
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 393b2d9f9d2a..2c4a2975c338 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -965,6 +965,7 @@ static void xcan_set_error_state(struct net_device *ndev,
- 	can_change_state(ndev, cf, tx_state, rx_state);
- 
- 	if (cf) {
-+		cf->can_id |= CAN_ERR_CNT;
- 		cf->data[6] = txerr;
- 		cf->data[7] = rxerr;
- 	}
-diff --git a/include/uapi/linux/can/error.h b/include/uapi/linux/can/error.h
-index 4eb7da568dde..a17ad25a01f9 100644
---- a/include/uapi/linux/can/error.h
-+++ b/include/uapi/linux/can/error.h
-@@ -57,6 +57,8 @@
- #define CAN_ERR_BUSOFF       0x00000040U /* bus off */
- #define CAN_ERR_BUSERROR     0x00000080U /* bus error (may flood!) */
- #define CAN_ERR_RESTARTED    0x00000100U /* controller restarted */
-+#define CAN_ERR_CNT          0x00000200U /* TX error counter / data[6] */
-+					 /* RX error counter / data[7] */
- 
- /* arbitration lost in bit ... / data[0] */
- #define CAN_ERR_LOSTARB_UNSPEC   0x00 /* unspecified */
--- 
-2.35.1
-
+>=20
+> > for easier decoding of an ESD_EV_CAN_ERROR_EXT event message (which
+> > simply is a rx_msg with some dedicated data).
+>=20
+> Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
+>=20
+> > Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
+> > ---
+> >  drivers/net/can/usb/esd_usb.c | 20 ++++++++++++++------
+> >  1 file changed, 14 insertions(+), 6 deletions(-)
+> >=20
+> > diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_us=
+b.c
+> > index 09649a45d6ff..2b149590720c 100644
+> > --- a/drivers/net/can/usb/esd_usb.c
+> > +++ b/drivers/net/can/usb/esd_usb.c
+> > @@ -126,7 +126,15 @@ struct rx_msg {
+> >         u8 dlc;
+> >         __le32 ts;
+> >         __le32 id; /* upper 3 bits contain flags */
+> > -       u8 data[8];
+> > +       union {
+> > +               u8 data[8];
+> > +               struct {
+> > +                       u8 status; /* CAN Controller Status */
+> > +                       u8 ecc;    /* Error Capture Register */
+> > +                       u8 rec;    /* RX Error Counter */
+> > +                       u8 tec;    /* TX Error Counter */
+> > +               } ev_can_err_ext;  /* For ESD_EV_CAN_ERROR_EXT */
+> > +       };
+> >  };
+> >=20
+> >  struct tx_msg {
+> > @@ -134,7 +142,7 @@ struct tx_msg {
+> >         u8 cmd;
+> >         u8 net;
+> >         u8 dlc;
+> > -       u32 hnd;        /* opaque handle, not used by device */
+> > +       u32 hnd;   /* opaque handle, not used by device */
+> >         __le32 id; /* upper 3 bits contain flags */
+> >         u8 data[8];
+> >  };
+> > @@ -228,11 +236,11 @@ static void esd_usb_rx_event(struct esd_usb_net_p=
+riv *priv,
+> >         u32 id =3D le32_to_cpu(msg->msg.rx.id) & ESD_IDMASK;
+> >=20
+> >         if (id =3D=3D ESD_EV_CAN_ERROR_EXT) {
+> > -               u8 state =3D msg->msg.rx.data[0];
+> > -               u8 ecc   =3D msg->msg.rx.data[1];
+> > +               u8 state =3D msg->msg.rx.ev_can_err_ext.status;
+> > +               u8 ecc   =3D msg->msg.rx.ev_can_err_ext.ecc;
+> >=20
+> > -               priv->bec.rxerr =3D msg->msg.rx.data[2];
+> > -               priv->bec.txerr =3D msg->msg.rx.data[3];
+> > +               priv->bec.rxerr =3D msg->msg.rx.ev_can_err_ext.rec;
+> > +               priv->bec.txerr =3D msg->msg.rx.ev_can_err_ext.tec;
+> >=20
+> >                 netdev_dbg(priv->netdev,
+> >                            "CAN_ERR_EV_EXT: dlc=3D%#02x state=3D%02x ec=
+c=3D%02x rec=3D%02x tec=3D%02x\n",
+>=20
+> Yours sincerely,
+> Vincent Mailhol
