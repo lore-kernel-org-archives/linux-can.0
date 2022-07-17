@@ -2,107 +2,219 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17963C43334
-	for <linux-can@archiver.kernel.org>; Sun, 17 Jul 2022 13:23:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 394BEC433EF
+	for <linux-can@archiver.kernel.org>; Sun, 17 Jul 2022 13:27:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232361AbiGQNXP (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 17 Jul 2022 09:23:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
+        id S232775AbiGQN1j (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 17 Jul 2022 09:27:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbiGQNXO (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 17 Jul 2022 09:23:14 -0400
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C7AF15FC6
-        for <linux-can@vger.kernel.org>; Sun, 17 Jul 2022 06:23:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1658064190;
+        with ESMTP id S229508AbiGQN1j (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 17 Jul 2022 09:27:39 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74989DED1
+        for <linux-can@vger.kernel.org>; Sun, 17 Jul 2022 06:27:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1658064455;
     s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=YSaKjuiwMsKnnnHTkaBoQG70b2a7SuBsOQN9IExLmC8=;
-    b=Auh2kebVgztD/PL6X5s5WslH41tI7ndcJc7ZNgvQhgwQszFsdHeo1OeADBkp9ajkOE
-    1ZFy/wBjTB3KZWPVvrpmDLsnPfvakTnvSZ4IdAzns7HAqI9hpEUkfKvB4tRhEHbclW9P
-    LwXOEfzAeLnGGxmPbibD/hWU9uJInyi4YEZ15eYM65H5Lm2Fr3p7NNrQUyK691F6E4K6
-    jy20EfFAtut4fB6/YZow4hxi9g0YiFwc5JjcsLt1V8kzJ8/Fn8JhpSsgB9ShhQmeIODJ
-    TuZANFrloZPST52hpa5H0iU5qK7WW8RGSL0m4fQAVNl5nbSSkuDPfwNV0ZmiZHmi3bfA
-    J7Zw==
+    bh=JjN/DGsdpavp1kb81Ij+8OcP+L5zG5fFcwrS8XLVLf4=;
+    b=bARYyFt1nPKhoF8/TXRdrcjmMBy3S8ARjNYDuEH94ILnCQHeDvrmoxP/c6NqqwfcYz
+    CAQZDcW5sZ4uZTT8Pks2bNlLk2mIMjgGyEHiW008uzd5+Wqt7u9wzg5gTO0QjIZAc8g/
+    iHlJT/2NKHVYG4QJb0wfh/pNyDffSkDN0SJxkcSRD8Lb8i3OmJ6pnkgxhe8C+YTkZGZ7
+    66zeYiS8GuoaajOnibjdg/UIBVhnDOAnd4lW7xawkLN5V0SzJnd9BYJCyjUgLdrMxz56
+    daTB+o10xUFnw58+2ay9qr4KYhM3vj4n30/GenNCwOwuJJ7UMwjgFKTsIdJG3qX1Off2
+    aGVw==
 Authentication-Results: strato.com;
     dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusx3hdIrpKytJSr63tDxrw=="
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS/xvEBL7X5sbo3UIh9JiLceSWJaYwXUKbZ"
 X-RZG-CLASS-ID: mo00
-Received: from [IPV6:2a00:6020:1cfd:d100::b82]
+Received: from silver.lan
     by smtp.strato.de (RZmta 47.47.0 AUTH)
-    with ESMTPSA id t870d5y6HDNAB7g
+    with ESMTPSA id t870d5y6HDRZB7r
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Sun, 17 Jul 2022 15:23:10 +0200 (CEST)
-Message-ID: <4c79233f-1301-d5c7-7698-38d39d8702aa@hartkopp.net>
-Date:   Sun, 17 Jul 2022 15:23:10 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [RFC PATCH v2 3/5] can: dev: add CAN XL support
-Content-Language: en-US
-To:     Vincent Mailhol <vincent.mailhol@gmail.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-can@vger.kernel.org
-References: <20220714160541.2071-1-socketcan@hartkopp.net>
- <20220714160541.2071-4-socketcan@hartkopp.net>
- <20220714200601.mklari3b6uvb7b2e@pengutronix.de>
- <c731143e-f476-b2f8-c08c-df66339d98f8@hartkopp.net>
- <CAMZ6RqJ0=PhrJUHaZR6QNWkv2vx690AiwPF2RLv1ou_JGX1qxg@mail.gmail.com>
- <20220715073728.csp4hgbrgr2q62zu@pengutronix.de>
- <CAMZ6RqLxPHc3fW3711ExZxtmWmp7b7O8QhqY34R=9A8v-v8s9Q@mail.gmail.com>
+    Sun, 17 Jul 2022 15:27:35 +0200 (CEST)
 From:   Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <CAMZ6RqLxPHc3fW3711ExZxtmWmp7b7O8QhqY34R=9A8v-v8s9Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To:     linux-can@vger.kernel.org
+Cc:     Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [RFC PATCH v3 2/5] can: canxl: introduce ETH_P_CANXL ethernet protocol handling
+Date:   Sun, 17 Jul 2022 15:27:27 +0200
+Message-Id: <20220717132730.30295-3-socketcan@hartkopp.net>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220717132730.30295-1-socketcan@hartkopp.net>
+References: <20220717132730.30295-1-socketcan@hartkopp.net>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On 15.07.22 10:47, Vincent Mailhol wrote:
-> On Fri. 15 Jul. 2022 at 16:37, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+Enable the PF_CAN infrastructure to handle CAN XL frames. A new ethernet
+protocol type ETH_P_CANXL is defined to tag skbuffs containing the CAN XL
+frame data structure.
 
->>> But that example is a bit convoluted. That's why I wrote in my
->>> previous message that I saw no killer arguments against it.
->>
->> It just feels wrong to have a pointer to a struct canxl_frame that's
->> only backed half by memory.
-> 
-> I follow you on this feeling. But have no concrete bad examples of how
-> the data[CANXL_MAX_DLEN] could be misused.
-> 
->> I haven't followed the flex array discussion
->> in great detail, but it opens a whole class of errors if arbitrary
->> kernel memory can be accessed with struct canxl_frame::data using
->> seemingly valid array indices.
-> 
-> The point in the previous discussion is that the kernel should always
-> crop the returned frames. If implemented correctly, such memory leaks
-> should not occur.
+As the length information is now a uint16 value for CAN XL three new
+helper functions have been introduced to retrieve the data length from
+all types of CAN frames.
 
-I prepared a V3 patch set for that discussion.
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ include/linux/can/skb.h       | 39 +++++++++++++++++++++++++++++++++++
+ include/uapi/linux/if_ether.h |  1 +
+ net/can/af_can.c              | 32 +++++++++++++++++++++++-----
+ 3 files changed, 67 insertions(+), 5 deletions(-)
 
-It ended up with the fixed struct canxl_frame analogue to the 
-CAN[fd]_frame's.
+diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
+index 182749e858b3..51481f5afe62 100644
+--- a/include/linux/can/skb.h
++++ b/include/linux/can/skb.h
+@@ -101,6 +101,45 @@ static inline bool can_is_canfd_skb(const struct sk_buff *skb)
+ {
+ 	/* the CAN specific type of skb is identified by its data length */
+ 	return skb->len == CANFD_MTU;
+ }
+ 
++static inline bool can_is_canxl_skb(const struct sk_buff *skb)
++{
++	const struct canxl_frame *cfx = (struct canxl_frame *)skb->data;
++
++	if (skb->len != CANXL_MTU)
++		return false;
++
++	/* check valid CAN XL data length boundaries */
++	if (cfx->len < CANXL_MIN_DLEN || cfx->len > CANXL_MAX_DLEN)
++		return false;
++
++	return cfx->flags & CANXL_XLF;
++}
++
++/* get length element value from can[|fd|xl]_frame structure */
++static inline unsigned int can_skb_get_len_val(struct sk_buff *skb)
++{
++	const struct canxl_frame *cfx = (struct canxl_frame *)skb->data;
++	const struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
++
++	if (can_is_canxl_skb(skb))
++		return cfx->len;
++
++	return cfd->len;
++}
++
++/* get needed data length inside of CAN frame for all frame types (RTR aware) */
++static inline unsigned int can_skb_get_data_len(struct sk_buff *skb)
++{
++	unsigned int len = can_skb_get_len_val(skb);
++	const struct can_frame *cf = (struct can_frame *)skb->data;
++
++	/* RTR frames have an actual length of zero */
++	if (skb->len == CAN_MTU && cf->can_id & CAN_RTR_FLAG)
++		return 0;
++
++	return len;
++}
++
+ #endif /* !_CAN_SKB_H */
+diff --git a/include/uapi/linux/if_ether.h b/include/uapi/linux/if_ether.h
+index d370165bc621..69e0457eb200 100644
+--- a/include/uapi/linux/if_ether.h
++++ b/include/uapi/linux/if_ether.h
+@@ -136,10 +136,11 @@
+ #define ETH_P_WAN_PPP   0x0007          /* Dummy type for WAN PPP frames*/
+ #define ETH_P_PPP_MP    0x0008          /* Dummy type for PPP MP frames */
+ #define ETH_P_LOCALTALK 0x0009		/* Localtalk pseudo type 	*/
+ #define ETH_P_CAN	0x000C		/* CAN: Controller Area Network */
+ #define ETH_P_CANFD	0x000D		/* CANFD: CAN flexible data rate*/
++#define ETH_P_CANXL	0x000E		/* CANXL: eXtended frame Length */
+ #define ETH_P_PPPTALK	0x0010		/* Dummy type for Atalk over PPP*/
+ #define ETH_P_TR_802_2	0x0011		/* 802.2 frames 		*/
+ #define ETH_P_MOBITEX	0x0015		/* Mobitex (kaz@cafe.net)	*/
+ #define ETH_P_CONTROL	0x0016		/* Card specific control frames */
+ #define ETH_P_IRDA	0x0017		/* Linux-IrDA			*/
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index 1fb49d51b25d..23e56e4e2457 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -209,19 +209,20 @@ int can_send(struct sk_buff *skb, int loop)
+ 			goto inval_skb;
+ 	} else if (skb->len == CANFD_MTU) {
+ 		skb->protocol = htons(ETH_P_CANFD);
+ 		if (unlikely(cfd->len > CANFD_MAX_DLEN))
+ 			goto inval_skb;
++	} else if (skb->len == CANXL_MTU) {
++		skb->protocol = htons(ETH_P_CANXL);
++		if (unlikely(!can_is_canxl_skb(skb)))
++			goto inval_skb;
+ 	} else {
+ 		goto inval_skb;
+ 	}
+ 
+-	/* Make sure the CAN frame can pass the selected CAN netdevice.
+-	 * As structs can_frame and canfd_frame are similar, we can provide
+-	 * CAN FD frames to legacy CAN drivers as long as the length is <= 8
+-	 */
+-	if (unlikely(skb->len > skb->dev->mtu && cfd->len > CAN_MAX_DLEN)) {
++	/* Make sure the CAN frame can pass the selected CAN netdevice */
++	if (unlikely(skb->len > skb->dev->mtu)) {
+ 		err = -EMSGSIZE;
+ 		goto inval_skb;
+ 	}
+ 
+ 	if (unlikely(skb->dev->type != ARPHRD_CAN)) {
+@@ -725,10 +726,25 @@ static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
+ free_skb:
+ 	kfree_skb(skb);
+ 	return NET_RX_DROP;
+ }
+ 
++static int canxl_rcv(struct sk_buff *skb, struct net_device *dev,
++		     struct packet_type *pt, struct net_device *orig_dev)
++{
++	if (unlikely(dev->type != ARPHRD_CAN || (!can_is_canxl_skb(skb)))) {
++		pr_warn_once("PF_CAN: dropped non conform CAN XL skbuff: dev type %d, len %d\n",
++			     dev->type, skb->len);
++
++		kfree_skb(skb);
++		return NET_RX_DROP;
++	}
++
++	can_receive(skb, dev);
++	return NET_RX_SUCCESS;
++}
++
+ /* af_can protocol functions */
+ 
+ /**
+  * can_proto_register - register CAN transport protocol
+  * @cp: pointer to CAN protocol structure
+@@ -849,10 +865,15 @@ static struct packet_type can_packet __read_mostly = {
+ static struct packet_type canfd_packet __read_mostly = {
+ 	.type = cpu_to_be16(ETH_P_CANFD),
+ 	.func = canfd_rcv,
+ };
+ 
++static struct packet_type canxl_packet __read_mostly = {
++	.type = cpu_to_be16(ETH_P_CANXL),
++	.func = canxl_rcv,
++};
++
+ static const struct net_proto_family can_family_ops = {
+ 	.family = PF_CAN,
+ 	.create = can_create,
+ 	.owner  = THIS_MODULE,
+ };
+@@ -888,10 +909,11 @@ static __init int can_init(void)
+ 	if (err)
+ 		goto out_sock;
+ 
+ 	dev_add_pack(&can_packet);
+ 	dev_add_pack(&canfd_packet);
++	dev_add_pack(&canxl_packet);
+ 
+ 	return 0;
+ 
+ out_sock:
+ 	unregister_pernet_subsys(&can_pernet_ops);
+-- 
+2.30.2
 
-So whenever we have an enabled CAN XL netdevice we create a sk_buff in 
-raw.c which can potentially hold a struct canxl_frame.
-
-Even when we send a CAN/CANFD frame to that CAN XL interface.
-
-The distinction inside the kernel remains with skb->len being 
-CAN[|FD|XL]_MTU.
-
-But the CAN_RAW socket read/write operations can be switched to a 
-dynamic (cropped) size or to a complete sizeof(struct canxl_frame) via 
-enhanced sockopt().
-
-As the sk_buffs are only allocated once and are not copied inside the 
-kernel there should be no remarkable drawbacks whether we allocate 
-CAN_MTU skbs or CANXL_MTU skbs.
-
-AFAICS both skbs will fit into a single page.
-
-Best regards,
-Oliver
