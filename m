@@ -2,137 +2,102 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C96C7C433EF
-	for <linux-can@archiver.kernel.org>; Mon, 18 Jul 2022 07:18:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3952C433EF
+	for <linux-can@archiver.kernel.org>; Mon, 18 Jul 2022 09:55:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232195AbiGRHSv (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 18 Jul 2022 03:18:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49308 "EHLO
+        id S232792AbiGRJzk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 18 Jul 2022 05:55:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233771AbiGRHSu (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 18 Jul 2022 03:18:50 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3CBFF31
-        for <linux-can@vger.kernel.org>; Mon, 18 Jul 2022 00:18:49 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id d12so17807150lfq.12
-        for <linux-can@vger.kernel.org>; Mon, 18 Jul 2022 00:18:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PyRXBleb1QpB4fKxelY4Fyd23fs+FV7dQ0emB1l5pSs=;
-        b=nJNtLHqOy2pMkzxMYFZ7yPppaJCLu+2xQxX810kBBcLldCzjw5A5bgcXpyd2E/Vso+
-         r58HSISLXELZ+9EhWEWCDeNc72YPVP6ccifkY/FRlERB4HumoWMg0GmAEWMMT+hEpuVQ
-         daVWOsv7mBT1o5sbym3CZ5nOWJD3Og5WNyI5s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PyRXBleb1QpB4fKxelY4Fyd23fs+FV7dQ0emB1l5pSs=;
-        b=l64Mkaf0b88XbXiQIABdS4HXS2zyeO2N6UVTm9sy1fMFHMR62SmadbbH1S51Z4GxTx
-         Ubz55fgkuidKevnANWT81hnA27L4+Fsjz0kCZFME6nkCb2iAmYJ0UrcJIw5TsVE8h8mi
-         K9/vdwlsBTXIiY3dK4mzaUYht+mVo7hP/pusMs0V3XwMEA4OiM2ArZVjb//aQsOEmK37
-         Hp7Uk+spCr4ziLQJzMMuHIr3cqqWZn4nv438YPKfp887jbJYtIi18bQh8vJpiPLN+ANF
-         fJvgp7IrfaqdfTsG3ytpfEczu3RyYSeGoX6Dxh4TTvQyC3XJNBzZVYRTJfcu3IH0Xn5+
-         madA==
-X-Gm-Message-State: AJIora/kkbpp9bJCu9NTxPskbzKHpMMxiGKTtgImOSx4ySvey1o1hUrQ
-        obGFXDDJMUu28R3pWs1a3DH/vh6aoqZI5bOMQq5Gw6wjW1Hj7w==
-X-Google-Smtp-Source: AGRyM1uU27azdskip3dlgvLt74wyrnMbqEFBJQA/5XIeGmOG0T7mNyvF4bufdGwtDc+pgO4qXKoMvYE+/rSUQDev4eU=
-X-Received: by 2002:a05:6512:2610:b0:47f:74dc:3205 with SMTP id
- bt16-20020a056512261000b0047f74dc3205mr13322511lfb.429.1658128728309; Mon, 18
- Jul 2022 00:18:48 -0700 (PDT)
+        with ESMTP id S229826AbiGRJzj (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 18 Jul 2022 05:55:39 -0400
+Received: from mailgw.felk.cvut.cz (mailgw.felk.cvut.cz [147.32.82.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F1E19C29
+        for <linux-can@vger.kernel.org>; Mon, 18 Jul 2022 02:55:36 -0700 (PDT)
+Received: from mailgw.felk.cvut.cz (localhost.localdomain [127.0.0.1])
+        by mailgw.felk.cvut.cz (Proxmox) with ESMTP id 6725630B2951;
+        Mon, 18 Jul 2022 11:55:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        cmp.felk.cvut.cz; h=cc:cc:content-transfer-encoding:date:from
+        :from:message-id:mime-version:reply-to:subject:subject:to:to; s=
+        felkmail; bh=0BPMuy4HATSP5/81x7ShLGQZp1u2U/wdMtfgQFgT7wY=; b=IMK
+        7PtMUhcWWF4sZ20I1Eb8AHUNAa5nZ1s4lPdnKRQ3yS80624j7x5TOwMz1FJbQzXM
+        V1GAsyWrwSwtVr/caFNIcMWZ8I05zPUeumdIrjCwu9ANCwD8ll8WwnVscmaOejDo
+        UUxz21c9pPQT9ojFKkpjS+/+pHX5LnQfDAYRdZzkWIO3Yz2SpWN/qTFyk89go0vS
+        8SYn4qmNwEbE3LR3B6ltFyJrf8RCqLNdWqvKQOdUGHuPCUl/79z0a1fkob+M8eS/
+        vLbNjK4aonYN+GAGQK8VevBqGBmKkOwDTCd+bcuDSed2d+HoXWiQLma6x3vGNTlO
+        Y4Zwb1H+izveQ3rfKGA==
+Received: from cmp.felk.cvut.cz (haar.felk.cvut.cz [147.32.84.19])
+        by mailgw.felk.cvut.cz (Proxmox) with ESMTPS id E5F1130B294D;
+        Mon, 18 Jul 2022 11:55:33 +0200 (CEST)
+Received: from haar.felk.cvut.cz (localhost [127.0.0.1])
+        by cmp.felk.cvut.cz (8.14.0/8.12.3/SuSE Linux 0.6) with ESMTP id 26I9tXaB027923;
+        Mon, 18 Jul 2022 11:55:33 +0200
+Received: (from pisa@localhost)
+        by haar.felk.cvut.cz (8.14.0/8.13.7/Submit) id 26I9tWFJ027920;
+        Mon, 18 Jul 2022 11:55:32 +0200
+From:   Pavel Pisa <pisa@cmp.felk.cvut.cz>
+To:     linux-can@vger.kernel.org,
+        "Marc Kleine-Budde" <mkl@pengutronix.de>,
+        Matej Vasilevski <matej.vasilevski@seznam.cz>
+Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
+        David Miller <davem@davemloft.net>,
+        Carsten Emde <c.emde@osadl.org>,
+        Marin Jerabek <martin.jerabek01@gmail.com>,
+        Ondrej Ille <ondrej.ille@gmail.com>,
+        Jiri Novak <jnovak@fel.cvut.cz>,
+        Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Subject: [PATCH v1 0/1] can: ctucanfd: Update CTU CAN FD IP core registers to match version 3.x.
+Date:   Mon, 18 Jul 2022 11:55:17 +0200
+Message-Id: <cover.1658136506.git.pisa@cmp.felk.cvut.cz>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20220716170201.2020510-1-dario.binacchi@amarulasolutions.com> <20220717235000.247bfa42.max@enpas.org>
-In-Reply-To: <20220717235000.247bfa42.max@enpas.org>
-From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Date:   Mon, 18 Jul 2022 09:18:37 +0200
-Message-ID: <CABGWkvpK25WGjp76_=Jfd9sMk5Dvj84VnVuc3iuroKR0tJEv+Q@mail.gmail.com>
-Subject: Re: [RFC PATCH] can: can327: remove useless header inclusions
-To:     Max Staudt <max@enpas.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi Max,
+The 3.x CTU CAN FD IP core version provides informative fields
+with number of Tx registers count and most significant active
+(toggling) timestamp base bit.
 
-On Sun, Jul 17, 2022 at 11:50 PM Max Staudt <max@enpas.org> wrote:
->
-> On Sat, 16 Jul 2022 19:02:01 +0200
-> Dario Binacchi <dario.binacchi@amarulasolutions.com> wrote:
->
-> > -#include <linux/init.h>
-> >  #include <linux/module.h>
-> > -
-> > -#include <linux/bitops.h>
-> > -#include <linux/ctype.h>
-> > -#include <linux/errno.h>
-> > -#include <linux/kernel.h>
-> > -#include <linux/list.h>
-> > -#include <linux/lockdep.h>
-> > -#include <linux/netdevice.h>
-> > -#include <linux/skbuff.h>
-> > -#include <linux/spinlock.h>
-> > -#include <linux/string.h>
-> >  #include <linux/tty.h>
-> > -#include <linux/tty_ldisc.h>
-> > -#include <linux/workqueue.h>
-> > -
-> > -#include <uapi/linux/tty.h>
-> > -
-> > -#include <linux/can.h>
-> >  #include <linux/can/dev.h>
-> > -#include <linux/can/error.h>
-> >  #include <linux/can/rx-offload.h>
->
-> AFAIK, the coding style is to not rely on headers including other
-> headers. Instead, the appropriate header for every symbol used should
-> be included.
+The fields are read as zero for older 2.x IP core version.
+The 4 Tx buffers and bit 63 MSB can be considered in such
+case and compatibility with 2.x core version is preserved.
 
-Thanks for the explanation.
+This change allows to update Matej Vasilevski's patch series
 
->
-> This is also valid for the similar patch you submitted for slcan.
+  [RFC] can: ctucanfd: RX timestamping implementation
 
-Probably something can be removed (if_arp.h, if_ether.h, ...).
-I will take can327.c as a reference.
+to work with the platform bus and PCIe core integration
+without need of additional mandatory parameters.
 
-Thanks and regards,
-Dario
+Only optional one for timestamp clock frequency can be
+used when bitrate base clock and timestamp clocks differ.
 
->
->
-> Unless something has changed, this is a NAK from me, sorry.
->
->
-> Max
+  ts-frequency:
+    description: |
+      Frequency of the timestamping counter. Set this if you want to get
+      timestamps, but you didn't set the timestamping clock in clocks property.
 
+The information about clocks frequencies on PCIe integration
+has to be provided by other means but we expect that it can
+be directly deduced from Vendor and Device IDs and corresponding
+device table.
 
+Pavel Pisa (1):
+  can: ctucanfd: Update CTU CAN FD IP core registers to match version
+    3.x.
+
+This patch is intended for 5.20 kernel version but possible postpone
+to 5.21 is not big problem.
+
+It would be ideal to include even ctucanfd timestamping in 5.20
+but timing for updates and reviews is probably quite tight.
+
+ drivers/net/can/ctucanfd/ctucanfd_kregs.h | 32 ++++++++++++++++++++---
+ 1 file changed, 28 insertions(+), 4 deletions(-)
 
 -- 
+2.20.1
 
-Dario Binacchi
-
-Embedded Linux Developer
-
-dario.binacchi@amarulasolutions.com
-
-__________________________________
-
-
-Amarula Solutions SRL
-
-Via Le Canevare 30, 31100 Treviso, Veneto, IT
-
-T. +39 042 243 5310
-info@amarulasolutions.com
-
-www.amarulasolutions.com
