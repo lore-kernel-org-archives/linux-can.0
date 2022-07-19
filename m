@@ -2,89 +2,114 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8210BC43334
-	for <linux-can@archiver.kernel.org>; Tue, 19 Jul 2022 01:03:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89C4DC433EF
+	for <linux-can@archiver.kernel.org>; Tue, 19 Jul 2022 05:42:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233906AbiGSBDb (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 18 Jul 2022 21:03:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53832 "EHLO
+        id S234036AbiGSFmT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 19 Jul 2022 01:42:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbiGSBDb (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 18 Jul 2022 21:03:31 -0400
-Received: from mail.enpas.org (zhong.enpas.org [46.38.239.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 78C6E29CB9;
-        Mon, 18 Jul 2022 18:03:30 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        by mail.enpas.org (Postfix) with ESMTPSA id D8D70FFA1A;
-        Tue, 19 Jul 2022 01:03:28 +0000 (UTC)
-Date:   Tue, 19 Jul 2022 03:03:26 +0200
-From:   Max Staudt <max@enpas.org>
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-        linux-kernel@vger.kernel.org,
-        Jeroen Hofstee <jhofstee@victronenergy.com>,
-        michael@amarulasolutions.com,
-        Amarula patchwork <linux-amarula@amarulasolutions.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [RFC PATCH 2/5] can: slcan: remove legacy infrastructure
-Message-ID: <20220719030326.49f204f6.max@enpas.org>
-In-Reply-To: <1dbd95e8-e6d7-a611-32d0-ea974787ff5a@hartkopp.net>
-References: <20220716170007.2020037-1-dario.binacchi@amarulasolutions.com>
-        <20220716170007.2020037-3-dario.binacchi@amarulasolutions.com>
-        <20220717233842.1451e349.max@enpas.org>
-        <6faf29c7-3e9d-bc21-9eac-710f901085d8@hartkopp.net>
-        <20220718101507.eioy2bdcmjkgtacz@pengutronix.de>
-        <1dbd95e8-e6d7-a611-32d0-ea974787ff5a@hartkopp.net>
+        with ESMTP id S236713AbiGSFmR (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 19 Jul 2022 01:42:17 -0400
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A98412FFFF
+        for <linux-can@vger.kernel.org>; Mon, 18 Jul 2022 22:42:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1658209334;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=LAT/HAbljz4cDvISFLQZZfFzkNMrdlMgJCtJ632HkBY=;
+    b=V7zZRAsx8OOPLM6ncCi0lUSxrrE4+n5//Sg0zQQ2I9QvB+9uwUyHz9dgWU2P6yyO/T
+    z9u5xkN9TrKuAHcCBsctS56i3n1nf4iYugaCtGVuJ0kV7gUMS06vWnY1d9TKIo2t/dYZ
+    Xf4US3zK8BPl8qPAz65w+cvHlUmmYB2ZX5Xinm3ygWDoZxXgXVR3hmkC1kPtpnfqsYuJ
+    Smoq3CbV5Ddg1EBWvUJ+GXNXbGyiLCkgNrQyOkHdCMCL5ZO+TY18NfAUQmhwt3+bn06s
+    sguNI6wCA8DarcQwVgLqHQCOOwDD7Eysyoi8H5jmXuWITppRHjPNtcpw17PytmcWFrYV
+    jSIQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS/xvEBL7X5sbo3UIh9JiLceSWJaYwXUKbZ"
+X-RZG-CLASS-ID: mo00
+Received: from silver.lan
+    by smtp.strato.de (RZmta 47.47.0 AUTH)
+    with ESMTPSA id t870d5y6J5gEF5m
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 19 Jul 2022 07:42:14 +0200 (CEST)
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+To:     linux-can@vger.kernel.org
+Cc:     Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [RFC PATCH v4 4/5] can: vcan: add CAN XL support
+Date:   Tue, 19 Jul 2022 07:42:03 +0200
+Message-Id: <20220719054204.29061-5-socketcan@hartkopp.net>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220719054204.29061-1-socketcan@hartkopp.net>
+References: <20220719054204.29061-1-socketcan@hartkopp.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Mon, 18 Jul 2022 12:23:05 +0200
-Oliver Hartkopp <socketcan@hartkopp.net> wrote:
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ drivers/net/can/vcan.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-> IMO it does not break user space when slcan gets the common naming 
-> schema for CAN interface names.
+diff --git a/drivers/net/can/vcan.c b/drivers/net/can/vcan.c
+index a15619d883ec..d72c0727b440 100644
+--- a/drivers/net/can/vcan.c
++++ b/drivers/net/can/vcan.c
+@@ -68,33 +68,32 @@ static bool echo; /* echo testing. Default: 0 (Off) */
+ module_param(echo, bool, 0444);
+ MODULE_PARM_DESC(echo, "Echo sent frames (for testing). Default: 0 (Off)");
+ 
+ static void vcan_rx(struct sk_buff *skb, struct net_device *dev)
+ {
+-	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+ 	struct net_device_stats *stats = &dev->stats;
+ 
+ 	stats->rx_packets++;
+-	stats->rx_bytes += cfd->len;
++	stats->rx_bytes += can_skb_get_data_len(skb);
+ 
+ 	skb->pkt_type  = PACKET_BROADCAST;
+ 	skb->dev       = dev;
+ 	skb->ip_summed = CHECKSUM_UNNECESSARY;
+ 
+ 	netif_rx(skb);
+ }
+ 
+ static netdev_tx_t vcan_tx(struct sk_buff *skb, struct net_device *dev)
+ {
+-	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+ 	struct net_device_stats *stats = &dev->stats;
+-	int loop, len;
++	unsigned int len;
++	int loop;
+ 
+ 	if (can_dropped_invalid_skb(dev, skb))
+ 		return NETDEV_TX_OK;
+ 
+-	len = cfd->can_id & CAN_RTR_FLAG ? 0 : cfd->len;
++	len = can_skb_get_data_len(skb);
+ 	stats->tx_packets++;
+ 	stats->tx_bytes += len;
+ 
+ 	/* set flag whether this packet has to be looped back */
+ 	loop = skb->pkt_type == PACKET_LOOPBACK;
+@@ -132,11 +131,11 @@ static int vcan_change_mtu(struct net_device *dev, int new_mtu)
+ {
+ 	/* Do not allow changing the MTU while running */
+ 	if (dev->flags & IFF_UP)
+ 		return -EBUSY;
+ 
+-	if (new_mtu != CAN_MTU && new_mtu != CANFD_MTU)
++	if (new_mtu != CAN_MTU && new_mtu != CANFD_MTU && new_mtu != CANXL_MTU)
+ 		return -EINVAL;
+ 
+ 	dev->mtu = new_mtu;
+ 	return 0;
+ }
+-- 
+2.30.2
 
-For what it's worth, slcan provides a specific ioctl to resolve from
-(tty fd) to (netdev name). As far as I can see, any sane program should
-use this API to find whatever device it has created, irrespective of
-the netdev name.
-
-
-@ Marc: slcand and slcan_attach in can-utils do not depend on the
-slcanX name, as far as I can see. They are the main interfaces to
-slcan, and apart from that I can only think of scripts doing netlink
-stuff and scanning for slcanX. Does this change your opinion, or is
-breaking such scripts already a step too far?
-
-I'm thinking that in other circumstances, I've had cases where devices
-were numbered differently just because they enumerated faster or slower
-at different boots, or with other kernel versions, or because of media
-inserted, etc. - though renumbering is of course one step less than
-changing the prefix.
-
-
-> We had the same thing with 'eth0' which is now named enblablabla or 
-> 'wlan0' now named wlp2s0.
-
-Actually, the kernel still calls them ethX and wlanX. It's systemd+udev
-that renames them to the "unique" names afterwards. It's an extra step
-that happens in userspace.
-
-udev is immensely useful, but also great stuff for race conditions :)
-
-
-
-Max
