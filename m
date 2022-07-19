@@ -2,183 +2,225 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12A19C43334
-	for <linux-can@archiver.kernel.org>; Tue, 19 Jul 2022 11:28:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E84FC433EF
+	for <linux-can@archiver.kernel.org>; Tue, 19 Jul 2022 12:20:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237078AbiGSL2H (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 19 Jul 2022 07:28:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
+        id S234493AbiGSMU1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 19 Jul 2022 08:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236906AbiGSL2F (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 19 Jul 2022 07:28:05 -0400
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D2E240BEB
-        for <linux-can@vger.kernel.org>; Tue, 19 Jul 2022 04:27:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1658230074;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=0bl3M9ut1SqmK3va0tKL4Yo5ozCchVhINz63pNw8GtE=;
-    b=jLX1dI78FGxU2oC3OzxvpyoTdrBPJtQBfcsawBaheN5JGHCxYd+zKfTa0MtMGeyrX8
-    Jc7/Eobt1C1RZu177BvJvuSvdci7xg2yesh/N4r2yT1Igj/zhrqE99ohSGlkCGl7rIdw
-    OQK1z8PZeLW9ct5bt4/QGmzCj2KDo0AF7qFKoeEGTvW0nujVhXTZfryKEk44hk5HCy/4
-    xjzlNQ5teSFF2FRQFu0tnSlUtx8GPCF9YMUPKbGVoHh2xlioeYOuMAllXVaLkgPwMbM7
-    KHJ8eMKgflyyDVWLoOE8mof8PWr9TCnUL8qG/Z6dV/LAc71mlc/FCmwApikgfVHsoN3m
-    ZPEQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS/xvEBL7X5sbo3UIh9JiLceSWJaYwXUKbZ"
-X-RZG-CLASS-ID: mo00
-Received: from silver.lan
-    by smtp.strato.de (RZmta 47.47.0 AUTH)
-    with ESMTPSA id t870d5y6JBRsGeN
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 19 Jul 2022 13:27:54 +0200 (CEST)
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-To:     linux-can@vger.kernel.org
-Cc:     Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [RFC PATCH v5 1/5] can: canxl: introduce CAN XL data structure
-Date:   Tue, 19 Jul 2022 13:27:44 +0200
-Message-Id: <20220719112748.3281-2-socketcan@hartkopp.net>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220719112748.3281-1-socketcan@hartkopp.net>
-References: <20220719112748.3281-1-socketcan@hartkopp.net>
+        with ESMTP id S239622AbiGSMTh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 19 Jul 2022 08:19:37 -0400
+Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [IPv6:2a01:e0c:1:1599::11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195495887B
+        for <linux-can@vger.kernel.org>; Tue, 19 Jul 2022 05:07:02 -0700 (PDT)
+Received: from stf-laptop.peak-system.com (unknown [89.158.146.116])
+        (Authenticated sender: stephane.grosjean@free.fr)
+        by smtp2-g21.free.fr (Postfix) with ESMTPSA id 8E469200594;
+        Tue, 19 Jul 2022 14:06:56 +0200 (CEST)
+From:   Stephane Grosjean <s.grosjean@peak-system.com>
+To:     linux-can Mailing List <linux-can@vger.kernel.org>
+Cc:     Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: [PATCH 3/3] can: peak_usb: Includes support for a new MCU
+Date:   Tue, 19 Jul 2022 14:06:32 +0200
+Message-Id: <20220719120632.26774-3-s.grosjean@peak-system.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220719120632.26774-1-s.grosjean@peak-system.com>
+References: <20220719120632.26774-1-s.grosjean@peak-system.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This patch adds defines for data structures and length information for
-CAN XL (CAN with eXtended data Length) which can transfer up to 2048
-byte insinde a single frame.
+The CANFD-USB PCAN-USB FD interface undergoes an internal component change
+that requires a slight modification of its drivers, which leads them to
+dynamically use endpoint numbers provided by the interface itself.
+In addition to a change in the calls to the USB functions exported by the
+kernel, the detection of the USB interface dedicated to CAN must also be
+modified, as some PEAK-System devices support other interfaces than CAN.
 
-Notable changes from CAN FD:
-
-- the 11 bit arbitration field is now named 'priority' instead of 'can_id'
-  (there are no 29 bit identifiers nor RTR frames anymore)
-- the data length needs a uint16 value to cover up to 2048 byte
-  (the length element position is different to struct can[fd]_frame)
-- new fields (SDT, AF) and a SEC bit have been introduced
-- the virtual CAN interface identifier is not part if the CAN XL frame
-  struct as this VCID value is stored in struct skbuff (analog to vlan id)
-
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 ---
- include/uapi/linux/can.h | 49 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 70 ++++++++++++++++++----
+ 1 file changed, 60 insertions(+), 10 deletions(-)
 
-diff --git a/include/uapi/linux/can.h b/include/uapi/linux/can.h
-index 90801ada2bbe..c91988402f25 100644
---- a/include/uapi/linux/can.h
-+++ b/include/uapi/linux/can.h
-@@ -46,10 +46,11 @@
- #ifndef _UAPI_CAN_H
- #define _UAPI_CAN_H
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+index 65487ec33566..267a70d3a5d1 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+@@ -33,6 +33,10 @@
+ #define PCAN_UFD_RX_BUFFER_SIZE		2048
+ #define PCAN_UFD_TX_BUFFER_SIZE		512
  
- #include <linux/types.h>
- #include <linux/socket.h>
-+#include <linux/stddef.h> /* for offsetof */
- 
- /* controller area network (CAN) kernel definitions */
- 
- /* special address description flags for the CAN_ID */
- #define CAN_EFF_FLAG 0x80000000U /* EFF/SFF is set in the MSB */
-@@ -58,10 +59,11 @@
- 
- /* valid bits in CAN ID for frame formats */
- #define CAN_SFF_MASK 0x000007FFU /* standard frame format (SFF) */
- #define CAN_EFF_MASK 0x1FFFFFFFU /* extended frame format (EFF) */
- #define CAN_ERR_MASK 0x1FFFFFFFU /* omit EFF, RTR, ERR flags */
-+#define CANXL_PRIO_MASK CAN_SFF_MASK /* 11 bit priority mask */
- 
- /*
-  * Controller Area Network Identifier structure
-  *
-  * bit 0-28	: CAN identifier (11/29 bit)
-@@ -71,10 +73,11 @@
-  */
- typedef __u32 canid_t;
- 
- #define CAN_SFF_ID_BITS		11
- #define CAN_EFF_ID_BITS		29
-+#define CANXL_PRIO_BITS		CAN_SFF_ID_BITS
- 
- /*
-  * Controller Area Network Error Message Frame Mask structure
-  *
-  * bit 0-28	: error class mask (see include/uapi/linux/can/error.h)
-@@ -89,10 +92,20 @@ typedef __u32 can_err_mask_t;
- 
- /* CAN FD payload length and DLC definitions according to ISO 11898-7 */
- #define CANFD_MAX_DLC 15
- #define CANFD_MAX_DLEN 64
- 
-+/*
-+ * CAN XL payload length and DLC definitions according to ISO 11898-1
-+ * CAN XL DLC ranges from 0 .. 2047 => data length from 1 .. 2048 byte
-+ */
-+#define CANXL_MIN_DLC 0
-+#define CANXL_MAX_DLC 2047
-+#define CANXL_MAX_DLC_MASK 0x07FF
-+#define CANXL_MIN_DLEN 1
-+#define CANXL_MAX_DLEN 2048
++/* struct pcan_ufd_fw_info::type */
++#define PCAN_USBFD_TYPE_STD		1
++#define PCAN_USBFD_TYPE_EXT		2	/* includes EP numbers */
 +
- /**
-  * struct can_frame - Classical CAN frame structure (aka CAN 2.0B)
-  * @can_id:   CAN ID of the frame and CAN_*_FLAG flags, see canid_t definition
-  * @len:      CAN frame payload length in byte (0 .. 8)
-  * @can_dlc:  deprecated name for CAN frame payload length in byte (0 .. 8)
-@@ -164,12 +177,48 @@ struct canfd_frame {
- 	__u8    __res0;  /* reserved / padding */
- 	__u8    __res1;  /* reserved / padding */
- 	__u8    data[CANFD_MAX_DLEN] __attribute__((aligned(8)));
+ /* read some versions info from the hw device */
+ struct __packed pcan_ufd_fw_info {
+ 	__le16	size_of;	/* sizeof this */
+@@ -44,6 +48,13 @@ struct __packed pcan_ufd_fw_info {
+ 	__le32	dev_id[2];	/* "device id" per CAN */
+ 	__le32	ser_no;		/* S/N */
+ 	__le32	flags;		/* special functions */
++
++	/* extended data when type == PCAN_USBFD_TYPE_EXT */
++	u8	cmd_out_ep;	/* ep for cmd */
++	u8	cmd_in_ep;	/* ep for replies */
++	u8	data_out_ep[2];	/* ep for CANx TX */
++	u8	data_in_ep;	/* ep for CAN RX */
++	u8	dummy[3];
  };
  
-+/*
-+ * defined bits for canxl_frame.flags
-+ *
-+ * The canxl_frame.flags element contains two bits CANXL_XLF and CANXL_SEC
-+ * and shares the relative position of the struct can[fd]_frame.len element.
-+ * The CANXL_XLF bit ALWAYS needs to be set to indicate a valid CAN XL frame.
-+ * As a side effect setting this bit intentionally breaks the length checks
-+ * for Classical CAN and CAN FD frames.
-+ *
-+ * Undefined bits in canxl_frame.flags are reserved and shall be set to zero.
-+ */
-+#define CANXL_XLF 0x80 /* mandatory CAN XL frame flag (must always be set!) */
-+#define CANXL_SEC 0x01 /* Simple Extended Content (security/segmentation) */
-+
-+/**
-+ * struct canxl_frame - CAN with e'X'tended frame 'L'ength frame structure
-+ * @prio:  11 bit arbitration priority with zero'ed CAN_*_FLAG flags
-+ * @flags: additional flags for CAN XL
-+ * @sdt:   SDU (service data unit) type
-+ * @len:   frame payload length in byte (CANXL_MIN_DLEN .. CANXL_MAX_DLEN)
-+ * @af:    acceptance field
-+ * @data:  CAN XL frame payload (CANXL_MIN_DLEN .. CANXL_MAX_DLEN byte)
-+ *
-+ * @prio shares the same position as @can_id from struct can[fd]_frame.
-+ */
-+struct canxl_frame {
-+	canid_t prio;  /* 11 bit priority for arbitration (canid_t) */
-+	__u8    flags; /* additional flags for CAN XL */
-+	__u8    sdt;   /* SDU (service data unit) type */
-+	__u16   len;   /* frame payload length in byte */
-+	__u32   af;    /* acceptance field */
-+	__u8    data[CANXL_MAX_DLEN];
-+};
-+
- #define CAN_MTU		(sizeof(struct can_frame))
- #define CANFD_MTU	(sizeof(struct canfd_frame))
-+#define CANXL_MTU	(sizeof(struct canxl_frame))
-+#define CANXL_HDR_SZ	(offsetof(struct canxl_frame, data))
+ /* handle device specific info used by the netdevices */
+@@ -171,6 +182,9 @@ static inline void *pcan_usb_fd_cmd_buffer(struct peak_usb_device *dev)
+ /* send PCAN-USB Pro FD commands synchronously */
+ static int pcan_usb_fd_send_cmd(struct peak_usb_device *dev, void *cmd_tail)
+ {
++	struct pcan_usb_fd_device *pdev =
++		container_of(dev, struct pcan_usb_fd_device, dev);
++	struct pcan_ufd_fw_info *fw_info = &pdev->usb_if->fw_info;
+ 	void *cmd_head = pcan_usb_fd_cmd_buffer(dev);
+ 	int err = 0;
+ 	u8 *packet_ptr;
+@@ -200,7 +214,7 @@ static int pcan_usb_fd_send_cmd(struct peak_usb_device *dev, void *cmd_tail)
+ 	do {
+ 		err = usb_bulk_msg(dev->udev,
+ 				   usb_sndbulkpipe(dev->udev,
+-						   PCAN_USBPRO_EP_CMDOUT),
++						   fw_info->cmd_out_ep),
+ 				   packet_ptr, packet_len,
+ 				   NULL, PCAN_UFD_CMD_TIMEOUT_MS);
+ 		if (err) {
+@@ -426,6 +440,9 @@ static int pcan_usb_fd_set_bittiming_fast(struct peak_usb_device *dev,
+ static int pcan_usb_fd_restart_async(struct peak_usb_device *dev,
+ 				     struct urb *urb, u8 *buf)
+ {
++	struct pcan_usb_fd_device *pdev =
++		container_of(dev, struct pcan_usb_fd_device, dev);
++	struct pcan_ufd_fw_info *fw_info = &pdev->usb_if->fw_info;
+ 	u8 *pc = buf;
  
- /* particular protocols of the protocol family PF_CAN */
- #define CAN_RAW		1 /* RAW sockets */
- #define CAN_BCM		2 /* Broadcast Manager */
- #define CAN_TP16	3 /* VAG Transport Protocol v1.6 */
+ 	/* build the entire cmds list in the provided buffer, to go back into
+@@ -439,7 +456,7 @@ static int pcan_usb_fd_restart_async(struct peak_usb_device *dev,
+ 
+ 	/* complete the URB */
+ 	usb_fill_bulk_urb(urb, dev->udev,
+-			  usb_sndbulkpipe(dev->udev, PCAN_USBPRO_EP_CMDOUT),
++			  usb_sndbulkpipe(dev->udev, fw_info->cmd_out_ep),
+ 			  buf, pc - buf,
+ 			  pcan_usb_pro_restart_complete, dev);
+ 
+@@ -839,6 +856,17 @@ static int pcan_usb_fd_get_berr_counter(const struct net_device *netdev,
+ 	return 0;
+ }
+ 
++/*
++ * probe function for all PCAN-USB FD family usb interfaces.
++ */
++static int pcan_usb_fd_probe(struct usb_interface *intf)
++{
++	struct usb_host_interface *iface_desc = &intf->altsetting[0];
++
++	/* CAN interface is always interface #0 */
++	return iface_desc->desc.bInterfaceNumber;
++}
++
+ /* stop interface (last chance before set bus off) */
+ static int pcan_usb_fd_stop(struct peak_usb_device *dev)
+ {
+@@ -860,6 +888,7 @@ static int pcan_usb_fd_init(struct peak_usb_device *dev)
+ {
+ 	struct pcan_usb_fd_device *pdev =
+ 			container_of(dev, struct pcan_usb_fd_device, dev);
++	struct pcan_ufd_fw_info *fw_info;
+ 	int i, err = -ENOMEM;
+ 
+ 	/* do this for 1st channel only */
+@@ -878,10 +907,12 @@ static int pcan_usb_fd_init(struct peak_usb_device *dev)
+ 		/* number of ts msgs to ignore before taking one into account */
+ 		pdev->usb_if->cm_ignore_count = 5;
+ 
++		fw_info = &pdev->usb_if->fw_info;
++
+ 		err = pcan_usb_pro_send_req(dev, PCAN_USBPRO_REQ_INFO,
+ 					    PCAN_USBPRO_INFO_FW,
+-					    &pdev->usb_if->fw_info,
+-					    sizeof(pdev->usb_if->fw_info));
++					    fw_info,
++					    sizeof(*fw_info));
+ 		if (err) {
+ 			dev_err(dev->netdev->dev.parent,
+ 				"unable to read %s firmware info (err %d)\n",
+@@ -895,14 +926,14 @@ static int pcan_usb_fd_init(struct peak_usb_device *dev)
+ 		 */
+ 		dev_info(dev->netdev->dev.parent,
+ 			 "PEAK-System %s v%u fw v%u.%u.%u (%u channels)\n",
+-			 dev->adapter->name, pdev->usb_if->fw_info.hw_version,
+-			 pdev->usb_if->fw_info.fw_version[0],
+-			 pdev->usb_if->fw_info.fw_version[1],
+-			 pdev->usb_if->fw_info.fw_version[2],
++			 dev->adapter->name, fw_info->hw_version,
++			 fw_info->fw_version[0],
++			 fw_info->fw_version[1],
++			 fw_info->fw_version[2],
+ 			 dev->adapter->ctrl_count);
+ 
+ 		/* check for ability to switch between ISO/non-ISO modes */
+-		if (pdev->usb_if->fw_info.fw_version[0] >= 2) {
++		if (fw_info->fw_version[0] >= 2) {
+ 			/* firmware >= 2.x supports ISO/non-ISO switching */
+ 			dev->can.ctrlmode_supported |= CAN_CTRLMODE_FD_NON_ISO;
+ 		} else {
+@@ -910,6 +941,14 @@ static int pcan_usb_fd_init(struct peak_usb_device *dev)
+ 			dev->can.ctrlmode |= CAN_CTRLMODE_FD_NON_ISO;
+ 		}
+ 
++		/* if vendor rsp is of type 2, then it contains EP numbers to
++		 * use for cmds pipes. If not, then default EP should be used.
++		 */
++		if (fw_info->type != PCAN_USBFD_TYPE_EXT) {
++			fw_info->cmd_out_ep = PCAN_USBPRO_EP_CMDOUT;
++			fw_info->cmd_in_ep = PCAN_USBPRO_EP_CMDIN;
++		}
++
+ 		/* tell the hardware the can driver is running */
+ 		err = pcan_usb_fd_drv_loaded(dev, 1);
+ 		if (err) {
+@@ -930,12 +969,23 @@ static int pcan_usb_fd_init(struct peak_usb_device *dev)
+ 		/* do a copy of the ctrlmode[_supported] too */
+ 		dev->can.ctrlmode = ppdev->dev.can.ctrlmode;
+ 		dev->can.ctrlmode_supported = ppdev->dev.can.ctrlmode_supported;
++
++		fw_info = &pdev->usb_if->fw_info;
+ 	}
+ 
+ 	pdev->usb_if->dev[dev->ctrl_idx] = dev;
+ 	dev->device_number =
+ 		le32_to_cpu(pdev->usb_if->fw_info.dev_id[dev->ctrl_idx]);
+ 
++	/* if vendor rsp is of type 2, then it contains EP numbers to
++	 * use for data pipes. If not, then statically defined EP are used
++	 * (see peak_usb_create_dev()).
++	 */
++	if (fw_info->type == PCAN_USBFD_TYPE_EXT) {
++		dev->ep_msg_in = fw_info->data_in_ep;
++		dev->ep_msg_out = fw_info->data_out_ep[dev->ctrl_idx];
++	}
++
+ 	/* set clock domain */
+ 	for (i = 0; i < ARRAY_SIZE(pcan_usb_fd_clk_freq); i++)
+ 		if (dev->adapter->clock.freq == pcan_usb_fd_clk_freq[i])
+@@ -1091,7 +1141,7 @@ const struct peak_usb_adapter pcan_usb_fd = {
+ 	.tx_buffer_size = PCAN_UFD_TX_BUFFER_SIZE,
+ 
+ 	/* device callbacks */
+-	.intf_probe = pcan_usb_pro_probe,	/* same as PCAN-USB Pro */
++	.intf_probe = pcan_usb_fd_probe,
+ 	.dev_init = pcan_usb_fd_init,
+ 
+ 	.dev_exit = pcan_usb_fd_exit,
 -- 
-2.30.2
+2.34.1
 
