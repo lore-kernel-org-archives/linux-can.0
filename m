@@ -2,51 +2,51 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20BB7C43334
-	for <linux-can@archiver.kernel.org>; Tue, 19 Jul 2022 14:40:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9606FCCA483
+	for <linux-can@archiver.kernel.org>; Tue, 19 Jul 2022 14:40:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239574AbiGSOk2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 19 Jul 2022 10:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58744 "EHLO
+        id S238124AbiGSOkb (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 19 Jul 2022 10:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239425AbiGSOkG (ORCPT
+        with ESMTP id S239431AbiGSOkG (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 19 Jul 2022 10:40:06 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED8E354AEB
-        for <linux-can@vger.kernel.org>; Tue, 19 Jul 2022 07:36:03 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id y15so7403643plp.10
-        for <linux-can@vger.kernel.org>; Tue, 19 Jul 2022 07:36:03 -0700 (PDT)
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 596DD3AD
+        for <linux-can@vger.kernel.org>; Tue, 19 Jul 2022 07:36:09 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id bh13so13660579pgb.4
+        for <linux-can@vger.kernel.org>; Tue, 19 Jul 2022 07:36:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+VLeoY0ShOgFSoBE8/x9DLMqL8kgDuqTRFcWSNcy7Xo=;
-        b=QEA8cnNaXq93MZ+RDorFE1DXisytLuNt9lyw13d2REut8njTDw8O3D2ZohCp9hxgr4
-         8NsvJ/hLnFI3Gdf3xPWDgl/51v+NuzJro2ia+Bo4W/J5o6PgfYAaY012EhR4dcuLqZQA
-         cSipg5ZllNwz4OJEU7IWXzTJ52WV7hq4o8fLkEK3x1eStfFadRDghnfvRm95HRHnN47l
-         Ejp00/UJy8JK0llTGKmwm2TPs5BWmb43BS0zxp73MqHOMlHNa7a7hkn196em8beX54AI
-         fsbcPiqqk9wCzDqF7wU1M3WKaKFgDkNJ9LhmJoIyULKv0XckERUesfEuSP6FgjfmOaYX
-         4Ijg==
+        bh=QQPY0V/qlPRYSc71/C3QyqsaJHrCXDE5XW8cNsLL7VA=;
+        b=kE4uJ2fy1ja6/Q9EbH7IKALQskpp9BDKK7U0IYpyS7mur72VdR1w3YG93wOU4Ut97H
+         ugpfYSbM8r2zvbJCDxMg7whPlhR6Sn3qf6TzoSKCetFrSF4Q7ZhewnEYhMF90loANE5i
+         PKbLLIbguNpLAFYZY+FU/nglq7CI2n9dbfIjk0OnXlC5zLQtin5t9GBRswTzMXnny6UM
+         j7JdJ+uH10pVzwifvP8m4N06A0jrMt23Wqelg4tp0JTRCTp6CkJexjUxi2mwAUmsWYwH
+         A2z3uvzxk/Fi1m8XXmz6qVZdrYPazZMz1fv1EBxbSuTC+XXfLEQbrgGDf/O/2jji7Nok
+         qI6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=+VLeoY0ShOgFSoBE8/x9DLMqL8kgDuqTRFcWSNcy7Xo=;
-        b=W+BaOmroHHlBFinP1/LujH+ZzZjQF4y1zJ+32QO/TvNwF4gsHOe5LpIkCV8E96NXw3
-         ov5KJehXk6ELk+QBSefHLOddSGzVQoMAj2z4hRiZiduj7IHokMgmELM0GdZwOJ8+TxmQ
-         BopXtN11CdzzTVeWHwbXYFFcCbZ56Gphc4xZPlSX2XXpayRIu0K45f6GcAW6+nIJySZF
-         YWChgpuGxDU6oWe1HNPXApjJl3pceHvcMXi6Dv0f4I47gSF9GP4ajkJUfWnv9bjJU+wO
-         oQtbIPebAD22yqjvFS1SENv9V6s9VvQImVYlrt5emTe/LyrdSpIrcAswqBz93t5Jq0j7
-         nl3Q==
-X-Gm-Message-State: AJIora9zbX8hXLvNdnhOJ5zJHmyFoEGfgRGsmnLe/7m0OQhMBo+N3138
-        tNmnOIE+AaZTAhfc6cmQHXYjPoX7L40=
-X-Google-Smtp-Source: AGRyM1ujC56J3G23LOVioXCOg/sTx2pSir2FtPjV20lG9nMXhXnbMteYAmx6qYJUy47dkUcrxWd7fQ==
-X-Received: by 2002:a17:902:ce81:b0:16c:4be6:2537 with SMTP id f1-20020a170902ce8100b0016c4be62537mr33522956plg.167.1658241363062;
-        Tue, 19 Jul 2022 07:36:03 -0700 (PDT)
+        bh=QQPY0V/qlPRYSc71/C3QyqsaJHrCXDE5XW8cNsLL7VA=;
+        b=Ag0HKCBaK8hM8TxWm98cLbKjdQRnpwvbSPCZ4/4ojroPngJxGHm09HtsFtBVoXBmXt
+         I0lK+NZZ3+QE/tDwG9E0PCoDKz0PDPMcyU2rX2vhLCNQdnz09NjFSE0T3B6ASwEbJehV
+         Qb8o7/QuJvpXt5u6QQlo9dEtdyfuPnIkrZyXO+g1mzXmsnUFkhY4PkaU+4BRpOn8zdKY
+         TptJFHqn7lgtO+wVSlQO8k9YCsg6p6DR21XVFAiPmcz7mfBlwdbJsYDQS6iSNy+bh3xf
+         +7ov0YE9F7J7XK43NJq/Qa0fFgZ1nlhXtO2ItzDMbwG1OEbZOhc81qUo8HmLN/hct3IA
+         Is0w==
+X-Gm-Message-State: AJIora/Vuw3rNUMVtUWxL4eNZmTK3xVxe5gWBGfw9vrrYr2ia+pDdogz
+        CjW483qqmiIp0ALDnmQygQE2EQQCgho=
+X-Google-Smtp-Source: AGRyM1tZyLPwOXbslLyfXyvGd9eyjIUKt4vKT7DFiUmRye7vm/yL+6XjctGgXckvPV+4TkTfBsMgOA==
+X-Received: by 2002:a63:6a45:0:b0:419:cb1b:891b with SMTP id f66-20020a636a45000000b00419cb1b891bmr22869281pgc.135.1658241368411;
+        Tue, 19 Jul 2022 07:36:08 -0700 (PDT)
 Received: from localhost.localdomain (124x33x176x97.ap124.ftth.ucom.ne.jp. [124.33.176.97])
-        by smtp.gmail.com with ESMTPSA id d75-20020a621d4e000000b0052896629f66sm11562516pfd.208.2022.07.19.07.36.01
+        by smtp.gmail.com with ESMTPSA id d75-20020a621d4e000000b0052896629f66sm11562516pfd.208.2022.07.19.07.36.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jul 2022 07:36:02 -0700 (PDT)
+        Tue, 19 Jul 2022 07:36:08 -0700 (PDT)
 Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
 From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 To:     linux-can@vger.kernel.org
@@ -54,94 +54,53 @@ Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
         Frank Jungclaus <frank.jungclaus@esd.eu>,
         =?UTF-8?q?Stefan=20M=C3=A4tje?= <Stefan.Maetje@esd.eu>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v2 00/12] can: error: set of fixes and improvement on txerr and rxerr reporting
-Date:   Tue, 19 Jul 2022 23:35:38 +0900
-Message-Id: <20220719143550.3681-1-mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v2 03/12] can: sja1000: do not report txerr and rxerr during bus-off
+Date:   Tue, 19 Jul 2022 23:35:41 +0900
+Message-Id: <20220719143550.3681-4-mailhol.vincent@wanadoo.fr>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220712153157.83847-1-mailhol.vincent@wanadoo.fr>
+In-Reply-To: <20220719143550.3681-1-mailhol.vincent@wanadoo.fr>
 References: <20220712153157.83847-1-mailhol.vincent@wanadoo.fr>
+ <20220719143550.3681-1-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This series is a collection of patches targeting the CAN error
-counter. The series is split in three blocks (with small relation to
-each other).
+During bus off, the error count is greater than 255 and can not fit in
+a u8.
 
-Several drivers uses the data[6] and data[7] fields (both of type u8)
-of the CAN error frame to report those values. However, the maximum
-size an u8 can hold is 255 and the error counter can exceed this value
-if bus-off status occurs. As such, the first nine patches of this
-series make sure that no drivers try to report txerr or rxerr through
-the CAN error frame when bus-off status is reached.
+Fixes: 215db1856e83 ("can: sja1000: Consolidate and unify state change handling")
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+---
+ drivers/net/can/sja1000/sja1000.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-can_frame::data[5..7] are defined as being "controller
-specific". Controller specific behaviors are not something desirable
-(portability issue...) The tenth patch of this series specifies how
-can_frame::data[5..7] should be use and remove any "controller
-specific" freedom. The eleventh patch adds a flag to notify though
-can_frame::can_id that data[6..7] were populated (in order to be
-consistent with other fields).
-
-Finally, the twelfth and last patch add three macro values to specify
-the different error counter threshold with so far was hard-coded as
-magic numbers in the drivers.
-
-N.B.:
-  * patches 1 to 10 are for net (stable).
-  * patches 11 and 12 are for net-next (but depends on patches 1 to 10).
-
-
-** Changelog **
-
-v1 -> v2:
-  * Fix typo in patch #10: data[7] of CAN error frames is for the RX
-    error counter, not the TX one (this is litteraly a one byte
-    change).
-
-Vincent Mailhol (12):
-  can: pch_can: do not report txerr and rxerr during bus-off
-  can: rcar_can: do not report txerr and rxerr during bus-off
-  can: sja1000: do not report txerr and rxerr during bus-off
-  can: slcan: do not report txerr and rxerr during bus-off
-  can: hi311x: do not report txerr and rxerr during bus-off
-  can: sun4i_can: do not report txerr and rxerr during bus-off
-  can: kvaser_usb_hydra: do not report txerr and rxerr during bus-off
-  can: kvaser_usb_leaf: do not report txerr and rxerr during bus-off
-  can: usb_8dev: do not report txerr and rxerr during bus-off
-  can: error: specify the values of data[5..7] of CAN error frames
-  can: add CAN_ERR_CNT flag to notify availability of error counter
-  can: error: add definitions for the different CAN error thresholds
-
- drivers/net/can/c_can/c_can_main.c            |  6 +++---
- drivers/net/can/cc770/cc770.c                 |  1 +
- drivers/net/can/ctucanfd/ctucanfd_base.c      |  5 +++--
- drivers/net/can/grcan.c                       |  1 +
- drivers/net/can/ifi_canfd/ifi_canfd.c         |  4 ++--
- drivers/net/can/janz-ican3.c                  |  4 ++--
- drivers/net/can/kvaser_pciefd.c               |  2 +-
- drivers/net/can/m_can/m_can.c                 |  4 ++--
- drivers/net/can/pch_can.c                     |  7 ++++---
- drivers/net/can/peak_canfd/peak_canfd.c       |  6 +++---
- drivers/net/can/rcar/rcar_can.c               |  9 +++++----
- drivers/net/can/rcar/rcar_canfd.c             |  4 ++--
- drivers/net/can/sja1000/sja1000.c             |  8 +++++---
- drivers/net/can/slcan/slcan-core.c            | 13 ++++++------
- drivers/net/can/spi/hi311x.c                  |  6 ++++--
- .../net/can/spi/mcp251xfd/mcp251xfd-core.c    |  1 +
- drivers/net/can/sun4i_can.c                   | 10 +++++-----
- drivers/net/can/ti_hecc.c                     |  1 +
- drivers/net/can/usb/esd_usb.c                 |  3 ++-
- .../net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 14 +++++++++----
- .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c  |  7 +++++--
- drivers/net/can/usb/peak_usb/pcan_usb.c       |  1 +
- drivers/net/can/usb/usb_8dev.c                |  8 +++++---
- drivers/net/can/xilinx_can.c                  |  1 +
- include/uapi/linux/can/error.h                | 20 ++++++++++++++++++-
- 25 files changed, 94 insertions(+), 52 deletions(-)
-
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index 2e7638f98cf1..84adf8b5945e 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -402,9 +402,6 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+ 	txerr = priv->read_reg(priv, SJA1000_TXERR);
+ 	rxerr = priv->read_reg(priv, SJA1000_RXERR);
+ 
+-	cf->data[6] = txerr;
+-	cf->data[7] = rxerr;
+-
+ 	if (isrc & IRQ_DOI) {
+ 		/* data overrun interrupt */
+ 		netdev_dbg(dev, "data overrun interrupt\n");
+@@ -426,6 +423,10 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+ 		else
+ 			state = CAN_STATE_ERROR_ACTIVE;
+ 	}
++	if (state != CAN_STATE_BUS_OFF) {
++		cf->data[6] = txerr;
++		cf->data[7] = rxerr;
++	}
+ 	if (isrc & IRQ_BEI) {
+ 		/* bus error interrupt */
+ 		priv->can.can_stats.bus_error++;
 -- 
 2.35.1
 
