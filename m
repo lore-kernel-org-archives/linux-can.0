@@ -2,45 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55438CCA482
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:12:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4A34C433EF
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:12:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240561AbiGTIMk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jul 2022 04:12:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
+        id S237777AbiGTIMo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jul 2022 04:12:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240294AbiGTIL5 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:57 -0400
+        with ESMTP id S240332AbiGTIMR (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:12:17 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 076406B740
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2A36B748
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:39 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oE4nw-0000fm-SK
-        for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:36 +0200
+        id 1oE4ny-0000nZ-60
+        for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:38 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id C17DEB59BE
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:43 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id E5896B58E9
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:39 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3C907B5998;
-        Wed, 20 Jul 2022 08:10:43 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4AECFB58CC;
+        Wed, 20 Jul 2022 08:10:39 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id a57945fc;
-        Wed, 20 Jul 2022 08:10:36 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 37a186b8;
+        Wed, 20 Jul 2022 08:10:35 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        kernel@pengutronix.de, Biju Das <biju.das.jz@bp.renesas.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 22/29] can: hi311x: do not report txerr and rxerr during bus-off
-Date:   Wed, 20 Jul 2022 10:10:27 +0200
-Message-Id: <20220720081034.3277385-23-mkl@pengutronix.de>
+Subject: [PATCH net-next 08/29] dt-bindings: can: nxp,sja1000: Document RZ/N1{D,S} support
+Date:   Wed, 20 Jul 2022 10:10:13 +0200
+Message-Id: <20220720081034.3277385-9-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220720081034.3277385-1-mkl@pengutronix.de>
 References: <20220720081034.3277385-1-mkl@pengutronix.de>
@@ -54,42 +54,94 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+From: Biju Das <biju.das.jz@bp.renesas.com>
 
-During bus off, the error count is greater than 255 and can not fit in
-a u8.
+Add CAN binding documentation for Renesas RZ/N1 SoC.
 
-Fixes: 57e83fb9b746 ("can: hi311x: Add Holt HI-311x CAN driver")
-Link: https://lore.kernel.org/all/20220719143550.3681-6-mailhol.vincent@wanadoo.fr
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+The SJA1000 CAN controller on RZ/N1 SoC has some differences compared
+to others like it has no clock divider register (CDR) support and it has
+no HW loopback (HW doesn't see tx messages on rx), so introduced a new
+compatible 'renesas,rzn1-sja1000' to handle these differences.
+
+Link: https://lore.kernel.org/all/20220710115248.190280-3-biju.das.jz@bp.renesas.com
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/hi311x.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ .../bindings/net/can/nxp,sja1000.yaml         | 39 +++++++++++++++++--
+ 1 file changed, 35 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
-index ebc4ebb44c98..bfb7c4bb5bc3 100644
---- a/drivers/net/can/spi/hi311x.c
-+++ b/drivers/net/can/spi/hi311x.c
-@@ -667,8 +667,6 @@ static irqreturn_t hi3110_can_ist(int irq, void *dev_id)
+diff --git a/Documentation/devicetree/bindings/net/can/nxp,sja1000.yaml b/Documentation/devicetree/bindings/net/can/nxp,sja1000.yaml
+index ca9bfdfa50ab..b1327c5b86cf 100644
+--- a/Documentation/devicetree/bindings/net/can/nxp,sja1000.yaml
++++ b/Documentation/devicetree/bindings/net/can/nxp,sja1000.yaml
+@@ -11,9 +11,15 @@ maintainers:
  
- 			txerr = hi3110_read(spi, HI3110_READ_TEC);
- 			rxerr = hi3110_read(spi, HI3110_READ_REC);
--			cf->data[6] = txerr;
--			cf->data[7] = rxerr;
- 			tx_state = txerr >= rxerr ? new_state : 0;
- 			rx_state = txerr <= rxerr ? new_state : 0;
- 			can_change_state(net, cf, tx_state, rx_state);
-@@ -681,6 +679,9 @@ static irqreturn_t hi3110_can_ist(int irq, void *dev_id)
- 					hi3110_hw_sleep(spi);
- 					break;
- 				}
-+			} else {
-+				cf->data[6] = txerr;
-+				cf->data[7] = rxerr;
- 			}
- 		}
+ properties:
+   compatible:
+-    enum:
+-      - nxp,sja1000
+-      - technologic,sja1000
++    oneOf:
++      - enum:
++          - nxp,sja1000
++          - technologic,sja1000
++      - items:
++          - enum:
++              - renesas,r9a06g032-sja1000 # RZ/N1D
++              - renesas,r9a06g033-sja1000 # RZ/N1S
++          - const: renesas,rzn1-sja1000 # RZ/N1
  
+   reg:
+     maxItems: 1
+@@ -21,6 +27,9 @@ properties:
+   interrupts:
+     maxItems: 1
+ 
++  clocks:
++    maxItems: 1
++
+   reg-io-width:
+     $ref: /schemas/types.yaml#/definitions/uint32
+     description: I/O register width (in bytes) implemented by this device
+@@ -82,10 +91,20 @@ allOf:
+       properties:
+         compatible:
+           contains:
+-            const: technologic,sja1000
++            enum:
++              - technologic,sja1000
++              - renesas,rzn1-sja1000
+     then:
+       required:
+         - reg-io-width
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: renesas,rzn1-sja1000
++    then:
++      required:
++        - clocks
+ 
+ unevaluatedProperties: false
+ 
+@@ -99,3 +118,15 @@ examples:
+         nxp,tx-output-config = <0x06>;
+         nxp,external-clock-frequency = <24000000>;
+     };
++
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/clock/r9a06g032-sysctrl.h>
++
++    can@52104000 {
++        compatible = "renesas,r9a06g032-sja1000", "renesas,rzn1-sja1000";
++        reg = <0x52104000 0x800>;
++        reg-io-width = <4>;
++        interrupts = <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&sysctrl R9A06G032_HCLK_CAN0>;
++    };
 -- 
 2.35.1
 
