@@ -2,43 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44D0CC43334
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:11:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA547CCA480
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:11:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239995AbiGTILc (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jul 2022 04:11:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51592 "EHLO
+        id S238843AbiGTILd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jul 2022 04:11:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239092AbiGTILX (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:23 -0400
+        with ESMTP id S236335AbiGTILY (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:24 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E23E5474FB
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E2FF4AD71
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:23 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oE4nh-0008Qe-5d
+        id 1oE4nh-0008Qk-Gi
         for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:21 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 57BE3B58BA
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:38 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 516C0B5917
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:41 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id CE658B58A7;
-        Wed, 20 Jul 2022 08:10:37 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id A8C06B58FF;
+        Wed, 20 Jul 2022 08:10:40 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 169b1810;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ec850fba;
         Wed, 20 Jul 2022 08:10:35 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 05/29] can: slcan: convert comparison to NULL into !val
-Date:   Wed, 20 Jul 2022 10:10:10 +0200
-Message-Id: <20220720081034.3277385-6-mkl@pengutronix.de>
+        kernel@pengutronix.de, Biju Das <biju.das.jz@bp.renesas.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 11/29] can: sja1000: Change the return type as void for SoC specific init
+Date:   Wed, 20 Jul 2022 10:10:16 +0200
+Message-Id: <20220720081034.3277385-12-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220720081034.3277385-1-mkl@pengutronix.de>
 References: <20220720081034.3277385-1-mkl@pengutronix.de>
@@ -52,84 +53,62 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-All comparison to NULL could be written "!val", convert them to make
-checkpatch happy.
+From: Biju Das <biju.das.jz@bp.renesas.com>
 
-Link: https://lore.kernel.org/all/20220704125954.1587880-5-mkl@pengutronix.de
+Change the return type as void for SoC specific init function as it
+always return 0.
+
+Link: https://lore.kernel.org/all/20220710115248.190280-6-biju.das.jz@bp.renesas.com
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/slcan/slcan-core.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ drivers/net/can/sja1000/sja1000_platform.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/can/slcan/slcan-core.c b/drivers/net/can/slcan/slcan-core.c
-index aa15c06dc198..70a6d1ba46eb 100644
---- a/drivers/net/can/slcan/slcan-core.c
-+++ b/drivers/net/can/slcan/slcan-core.c
-@@ -618,7 +618,7 @@ static netdev_tx_t slc_xmit(struct sk_buff *skb, struct net_device *dev)
- 		netdev_warn(dev, "xmit: iface is down\n");
- 		goto out;
- 	}
--	if (sl->tty == NULL) {
-+	if (!sl->tty) {
- 		spin_unlock(&sl->lock);
- 		goto out;
- 	}
-@@ -707,7 +707,7 @@ static int slc_open(struct net_device *dev)
- 	unsigned char cmd[SLC_MTU];
- 	int err, s;
+diff --git a/drivers/net/can/sja1000/sja1000_platform.c b/drivers/net/can/sja1000/sja1000_platform.c
+index 0b78568f5286..81bc741905fd 100644
+--- a/drivers/net/can/sja1000/sja1000_platform.c
++++ b/drivers/net/can/sja1000/sja1000_platform.c
+@@ -31,7 +31,7 @@ MODULE_LICENSE("GPL v2");
  
--	if (sl->tty == NULL)
-+	if (!sl->tty)
- 		return -ENODEV;
+ struct sja1000_of_data {
+ 	size_t  priv_sz;
+-	int     (*init)(struct sja1000_priv *priv, struct device_node *of);
++	void    (*init)(struct sja1000_priv *priv, struct device_node *of);
+ };
  
- 	/* The baud rate is not set with the command
-@@ -834,7 +834,7 @@ static void slc_sync(void)
+ struct technologic_priv {
+@@ -94,15 +94,13 @@ static void sp_technologic_write_reg16(const struct sja1000_priv *priv,
+ 	spin_unlock_irqrestore(&tp->io_lock, flags);
+ }
  
- 	for (i = 0; i < maxdev; i++) {
- 		dev = slcan_devs[i];
--		if (dev == NULL)
-+		if (!dev)
- 			break;
+-static int sp_technologic_init(struct sja1000_priv *priv, struct device_node *of)
++static void sp_technologic_init(struct sja1000_priv *priv, struct device_node *of)
+ {
+ 	struct technologic_priv *tp = priv->priv;
  
- 		sl = netdev_priv(dev);
-@@ -854,9 +854,8 @@ static struct slcan *slc_alloc(void)
- 
- 	for (i = 0; i < maxdev; i++) {
- 		dev = slcan_devs[i];
--		if (dev == NULL)
-+		if (!dev)
- 			break;
+ 	priv->read_reg = sp_technologic_read_reg16;
+ 	priv->write_reg = sp_technologic_write_reg16;
+ 	spin_lock_init(&tp->io_lock);
 -
+-	return 0;
+ }
+ 
+ static void sp_populate(struct sja1000_priv *priv,
+@@ -266,11 +264,8 @@ static int sp_probe(struct platform_device *pdev)
+ 	if (of) {
+ 		sp_populate_of(priv, of);
+ 
+-		if (of_data && of_data->init) {
+-			err = of_data->init(priv, of);
+-			if (err)
+-				goto exit_free;
+-		}
++		if (of_data && of_data->init)
++			of_data->init(priv, of);
+ 	} else {
+ 		sp_populate(priv, pdata, res_mem->flags);
  	}
- 
- 	/* Sorry, too many, all slots in use */
-@@ -902,7 +901,7 @@ static int slcan_open(struct tty_struct *tty)
- 	if (!capable(CAP_NET_ADMIN))
- 		return -EPERM;
- 
--	if (tty->ops->write == NULL)
-+	if (!tty->ops->write)
- 		return -EOPNOTSUPP;
- 
- 	/* RTnetlink lock is misused here to serialize concurrent
-@@ -924,7 +923,7 @@ static int slcan_open(struct tty_struct *tty)
- 	/* OK.  Find a free SLCAN channel to use. */
- 	err = -ENFILE;
- 	sl = slc_alloc();
--	if (sl == NULL)
-+	if (!sl)
- 		goto err_exit;
- 
- 	sl->tty = tty;
-@@ -1071,7 +1070,7 @@ static void __exit slcan_exit(void)
- 	unsigned long timeout = jiffies + HZ;
- 	int busy = 0;
- 
--	if (slcan_devs == NULL)
-+	if (!slcan_devs)
- 		return;
- 
- 	/* First of all: check for active disciplines and hangup them.
 -- 
 2.35.1
 
