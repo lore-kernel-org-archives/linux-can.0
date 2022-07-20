@@ -2,43 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11247C433EF
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:11:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16E94CCA480
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:11:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240385AbiGTILx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jul 2022 04:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
+        id S240306AbiGTILz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jul 2022 04:11:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240230AbiGTILd (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:33 -0400
+        with ESMTP id S240291AbiGTILe (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:34 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CF369F0E
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8F069F1C
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:28 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oE4nl-00005P-Vx
+        id 1oE4nm-00006d-N2
         for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:26 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 80C52B589E
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:37 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 8FCEFB59AF
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:43 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 1042CB588B;
-        Wed, 20 Jul 2022 08:10:37 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id E8212B5981;
+        Wed, 20 Jul 2022 08:10:42 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 443cb2c0;
-        Wed, 20 Jul 2022 08:10:35 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 539dfdd8;
+        Wed, 20 Jul 2022 08:10:36 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 03/29] can: slcan: slcan_init() convert printk(LEVEL ...) to pr_level()
-Date:   Wed, 20 Jul 2022 10:10:08 +0200
-Message-Id: <20220720081034.3277385-4-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 21/29] can: slcan: do not report txerr and rxerr during bus-off
+Date:   Wed, 20 Jul 2022 10:10:26 +0200
+Message-Id: <20220720081034.3277385-22-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220720081034.3277385-1-mkl@pengutronix.de>
 References: <20220720081034.3277385-1-mkl@pengutronix.de>
@@ -52,27 +55,54 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Convert the last printk(LEVEL ...) to pr_level().
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-Link: https://lore.kernel.org/all/20220704125954.1587880-3-mkl@pengutronix.de
+During bus off, the error count is greater than 255 and can not fit in
+a u8.
+
+alloc_can_err_skb() already sets cf to NULL if the allocation fails [1],
+so the redundant cf = NULL assignment gets removed.
+
+[1] https://elixir.bootlin.com/linux/latest/source/drivers/net/can/dev/skb.c#L187
+
+Fixes: 0a9cdcf098a4 ("can: slcan: extend the protocol with CAN state info")
+Link: https://lore.kernel.org/all/20220719143550.3681-5-mailhol.vincent@wanadoo.fr
+CC: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/slcan/slcan-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/slcan/slcan-core.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/net/can/slcan/slcan-core.c b/drivers/net/can/slcan/slcan-core.c
-index 2d3bf15061a7..ead3afefcf19 100644
+index 057b211f3e7f..dfd1baba4130 100644
 --- a/drivers/net/can/slcan/slcan-core.c
 +++ b/drivers/net/can/slcan/slcan-core.c
-@@ -1057,7 +1057,7 @@ static int __init slcan_init(void)
- 	/* Fill in our line protocol discipline, and register it */
- 	status = tty_register_ldisc(&slc_ldisc);
- 	if (status)  {
--		printk(KERN_ERR "slcan: can't register line discipline\n");
-+		pr_err("slcan: can't register line discipline\n");
- 		kfree(slcan_devs);
- 	}
- 	return status;
+@@ -306,19 +306,17 @@ static void slc_bump_state(struct slcan *sl)
+ 		return;
+ 
+ 	skb = alloc_can_err_skb(dev, &cf);
+-	if (skb) {
+-		cf->data[6] = txerr;
+-		cf->data[7] = rxerr;
+-	} else {
+-		cf = NULL;
+-	}
+ 
+ 	tx_state = txerr >= rxerr ? state : 0;
+ 	rx_state = txerr <= rxerr ? state : 0;
+ 	can_change_state(dev, cf, tx_state, rx_state);
+ 
+-	if (state == CAN_STATE_BUS_OFF)
++	if (state == CAN_STATE_BUS_OFF) {
+ 		can_bus_off(dev);
++	} else if (skb) {
++		cf->data[6] = txerr;
++		cf->data[7] = rxerr;
++	}
+ 
+ 	if (skb)
+ 		netif_rx(skb);
 -- 
 2.35.1
 
