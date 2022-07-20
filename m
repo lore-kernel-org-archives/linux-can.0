@@ -2,44 +2,47 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D48D6C433EF
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:36:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B09CCCA482
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:36:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbiGTIg1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jul 2022 04:36:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47456 "EHLO
+        id S231245AbiGTIg3 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jul 2022 04:36:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbiGTIg1 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:36:27 -0400
+        with ESMTP id S239223AbiGTIg2 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:36:28 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60CF24E621
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:36:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08C44E621
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:36:27 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oE5Bw-0005lw-Sq
-        for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:36:24 +0200
+        id 1oE5By-0005nE-BL
+        for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:36:26 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 4E4C8B5B7F
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:36:24 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 67425B5B8E
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:36:25 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id EE03EB5B7B;
-        Wed, 20 Jul 2022 08:36:23 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id BEDFDB5B86;
+        Wed, 20 Jul 2022 08:36:24 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id beddd37d;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4e2314fe;
         Wed, 20 Jul 2022 08:36:23 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net 0/2] pull-request: can 2022-07-20
-Date:   Wed, 20 Jul 2022 10:36:19 +0200
-Message-Id: <20220720083621.3294548-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Liang He <windhl@126.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 2/2] can: rcar_canfd: Add missing of_node_put() in rcar_canfd_probe()
+Date:   Wed, 20 Jul 2022 10:36:21 +0200
+Message-Id: <20220720083621.3294548-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220720083621.3294548-1-mkl@pengutronix.de>
+References: <20220720083621.3294548-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -50,45 +53,32 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+From: Liang He <windhl@126.com>
 
-this is a pull request of 2 patches for net/master.
+We should use of_node_put() for the reference returned by
+of_get_child_by_name() which has increased the refcount.
 
-The first patch is by me and fixes the detection of the mcp251863 in
-the mcp251xfd driver.
-
-The last patch is by Liang He and adds a missing of_node_put() in the
-rcar_canfd driver.
-
-regards,
-Marc
-
+Fixes: 45721c406dcf ("can: rcar_canfd: Add support for r8a779a0 SoC")
+Link: https://lore.kernel.org/all/20220712095623.364287-1-windhl@126.com
+Signed-off-by: Liang He <windhl@126.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/rcar/rcar_canfd.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-The following changes since commit 48ea8ea32dbf3231882e9bc0b297fe1400785219:
-
-  Merge branch '40GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue (2022-07-19 17:43:02 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-5.19-20220720
-
-for you to fetch changes up to 7b66dfcc6e1e1f018492619c3d0fc432b6b54272:
-
-  can: rcar_canfd: Add missing of_node_put() in rcar_canfd_probe() (2022-07-20 10:20:19 +0200)
-
-----------------------------------------------------------------
-linux-can-fixes-for-5.19-20220720
-
-----------------------------------------------------------------
-Liang He (1):
-      can: rcar_canfd: Add missing of_node_put() in rcar_canfd_probe()
-
-Marc Kleine-Budde (1):
-      can: mcp251xfd: fix detection of mcp251863
-
- drivers/net/can/rcar/rcar_canfd.c              |  1 +
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 18 +++++++++++++-----
- 2 files changed, 14 insertions(+), 5 deletions(-)
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index ba42cef10a53..cb0321ea853c 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -1843,6 +1843,7 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 		of_child = of_get_child_by_name(pdev->dev.of_node, name);
+ 		if (of_child && of_device_is_available(of_child))
+ 			channels_mask |= BIT(i);
++		of_node_put(of_child);
+ 	}
+ 
+ 	if (chip_id != RENESAS_RZG2L) {
+-- 
+2.35.1
 
 
