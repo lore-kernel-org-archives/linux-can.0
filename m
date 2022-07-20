@@ -2,45 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4A34C433EF
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:12:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F9C4C433EF
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:12:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237777AbiGTIMo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jul 2022 04:12:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51616 "EHLO
+        id S240332AbiGTIMv (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jul 2022 04:12:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240332AbiGTIMR (ORCPT
+        with ESMTP id S240337AbiGTIMR (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:12:17 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2A36B748
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8B666B760
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:40 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oE4ny-0000nZ-60
+        id 1oE4ny-0000lK-AH
         for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:38 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id E5896B58E9
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:39 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id D5631B597A
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:42 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4AECFB58CC;
-        Wed, 20 Jul 2022 08:10:39 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5C509B595B;
+        Wed, 20 Jul 2022 08:10:42 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 37a186b8;
-        Wed, 20 Jul 2022 08:10:35 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 94cd15db;
+        Wed, 20 Jul 2022 08:10:36 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Biju Das <biju.das.jz@bp.renesas.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        kernel@pengutronix.de,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 08/29] dt-bindings: can: nxp,sja1000: Document RZ/N1{D,S} support
-Date:   Wed, 20 Jul 2022 10:10:13 +0200
-Message-Id: <20220720081034.3277385-9-mkl@pengutronix.de>
+Subject: [PATCH net-next 18/29] can: pch_can: do not report txerr and rxerr during bus-off
+Date:   Wed, 20 Jul 2022 10:10:23 +0200
+Message-Id: <20220720081034.3277385-19-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220720081034.3277385-1-mkl@pengutronix.de>
 References: <20220720081034.3277385-1-mkl@pengutronix.de>
@@ -54,94 +54,43 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Biju Das <biju.das.jz@bp.renesas.com>
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-Add CAN binding documentation for Renesas RZ/N1 SoC.
+During bus off, the error count is greater than 255 and can not fit in
+a u8.
 
-The SJA1000 CAN controller on RZ/N1 SoC has some differences compared
-to others like it has no clock divider register (CDR) support and it has
-no HW loopback (HW doesn't see tx messages on rx), so introduced a new
-compatible 'renesas,rzn1-sja1000' to handle these differences.
-
-Link: https://lore.kernel.org/all/20220710115248.190280-3-biju.das.jz@bp.renesas.com
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Fixes: 0c78ab76a05c ("pch_can: Add setting TEC/REC statistics processing")
+Link: https://lore.kernel.org/all/20220719143550.3681-2-mailhol.vincent@wanadoo.fr
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../bindings/net/can/nxp,sja1000.yaml         | 39 +++++++++++++++++--
- 1 file changed, 35 insertions(+), 4 deletions(-)
+ drivers/net/can/pch_can.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/nxp,sja1000.yaml b/Documentation/devicetree/bindings/net/can/nxp,sja1000.yaml
-index ca9bfdfa50ab..b1327c5b86cf 100644
---- a/Documentation/devicetree/bindings/net/can/nxp,sja1000.yaml
-+++ b/Documentation/devicetree/bindings/net/can/nxp,sja1000.yaml
-@@ -11,9 +11,15 @@ maintainers:
+diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
+index fde3ac516d26..497ef77340ea 100644
+--- a/drivers/net/can/pch_can.c
++++ b/drivers/net/can/pch_can.c
+@@ -496,6 +496,9 @@ static void pch_can_error(struct net_device *ndev, u32 status)
+ 		cf->can_id |= CAN_ERR_BUSOFF;
+ 		priv->can.can_stats.bus_off++;
+ 		can_bus_off(ndev);
++	} else {
++		cf->data[6] = errc & PCH_TEC;
++		cf->data[7] = (errc & PCH_REC) >> 8;
+ 	}
  
- properties:
-   compatible:
--    enum:
--      - nxp,sja1000
--      - technologic,sja1000
-+    oneOf:
-+      - enum:
-+          - nxp,sja1000
-+          - technologic,sja1000
-+      - items:
-+          - enum:
-+              - renesas,r9a06g032-sja1000 # RZ/N1D
-+              - renesas,r9a06g033-sja1000 # RZ/N1S
-+          - const: renesas,rzn1-sja1000 # RZ/N1
+ 	errc = ioread32(&priv->regs->errc);
+@@ -556,9 +559,6 @@ static void pch_can_error(struct net_device *ndev, u32 status)
+ 		break;
+ 	}
  
-   reg:
-     maxItems: 1
-@@ -21,6 +27,9 @@ properties:
-   interrupts:
-     maxItems: 1
- 
-+  clocks:
-+    maxItems: 1
-+
-   reg-io-width:
-     $ref: /schemas/types.yaml#/definitions/uint32
-     description: I/O register width (in bytes) implemented by this device
-@@ -82,10 +91,20 @@ allOf:
-       properties:
-         compatible:
-           contains:
--            const: technologic,sja1000
-+            enum:
-+              - technologic,sja1000
-+              - renesas,rzn1-sja1000
-     then:
-       required:
-         - reg-io-width
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: renesas,rzn1-sja1000
-+    then:
-+      required:
-+        - clocks
- 
- unevaluatedProperties: false
- 
-@@ -99,3 +118,15 @@ examples:
-         nxp,tx-output-config = <0x06>;
-         nxp,external-clock-frequency = <24000000>;
-     };
-+
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/r9a06g032-sysctrl.h>
-+
-+    can@52104000 {
-+        compatible = "renesas,r9a06g032-sja1000", "renesas,rzn1-sja1000";
-+        reg = <0x52104000 0x800>;
-+        reg-io-width = <4>;
-+        interrupts = <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&sysctrl R9A06G032_HCLK_CAN0>;
-+    };
+-	cf->data[6] = errc & PCH_TEC;
+-	cf->data[7] = (errc & PCH_REC) >> 8;
+-
+ 	priv->can.state = state;
+ 	netif_receive_skb(skb);
+ }
 -- 
 2.35.1
 
