@@ -2,45 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8812FCCA480
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:12:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1F7AC43334
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:12:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240386AbiGTIM1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jul 2022 04:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51650 "EHLO
+        id S240413AbiGTIMi (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jul 2022 04:12:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240401AbiGTILy (ORCPT
+        with ESMTP id S240408AbiGTILy (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:54 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879916B263
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D90BA6B267
         for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:36 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oE4nu-0000TF-B9
+        id 1oE4nu-0000Xm-Lg
         for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:34 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id B0CB9B59FC
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:44 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id C09C4B5886
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:36 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2DD01B59D3;
-        Wed, 20 Jul 2022 08:10:44 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 59d65e90;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4BC2DB5871;
         Wed, 20 Jul 2022 08:10:36 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0d2be8c7;
+        Wed, 20 Jul 2022 08:10:35 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        kernel@pengutronix.de, Dan Carpenter <dan.carpenter@oracle.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 26/29] can: usb_8dev: do not report txerr and rxerr during bus-off
-Date:   Wed, 20 Jul 2022 10:10:31 +0200
-Message-Id: <20220720081034.3277385-27-mkl@pengutronix.de>
+Subject: [PATCH net-next 01/29] can: slcan: use scnprintf() as a hardening measure
+Date:   Wed, 20 Jul 2022 10:10:06 +0200
+Message-Id: <20220720081034.3277385-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220720081034.3277385-1-mkl@pengutronix.de>
 References: <20220720081034.3277385-1-mkl@pengutronix.de>
@@ -54,37 +53,41 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-During bus off, the error count is greater than 255 and can not fit in
-a u8.
+The snprintf() function returns the number of bytes which *would* have
+been copied if there were no space. So, since this code does not check
+the return value, there if the buffer was not large enough then there
+would be a buffer overflow two lines later when it does:
 
-Fixes: 0024d8ad1639 ("can: usb_8dev: Add support for USB2CAN interface from 8 devices")
-Link: https://lore.kernel.org/all/20220719143550.3681-10-mailhol.vincent@wanadoo.fr
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+	actual = sl->tty->ops->write(sl->tty, sl->xbuff, n);
+
+Use scnprintf() instead because that returns the number of bytes which
+were actually copied.
+
+Fixes: 52f9ac85b876 ("can: slcan: allow to send commands to the adapter")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/all/YsVA9KoY/ZSvNGYk@kili
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/usb_8dev.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/net/can/slcan/slcan-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
-index f3363575bf32..4d38dc90472a 100644
---- a/drivers/net/can/usb/usb_8dev.c
-+++ b/drivers/net/can/usb/usb_8dev.c
-@@ -438,9 +438,10 @@ static void usb_8dev_rx_err_msg(struct usb_8dev_priv *priv,
+diff --git a/drivers/net/can/slcan/slcan-core.c b/drivers/net/can/slcan/slcan-core.c
+index 54d29a410ad5..92bdd49996d1 100644
+--- a/drivers/net/can/slcan/slcan-core.c
++++ b/drivers/net/can/slcan/slcan-core.c
+@@ -647,7 +647,7 @@ static int slcan_transmit_cmd(struct slcan *sl, const unsigned char *cmd)
+ 		return -ENODEV;
+ 	}
  
- 	if (rx_errors)
- 		stats->rx_errors++;
--
--	cf->data[6] = txerr;
--	cf->data[7] = rxerr;
-+	if (priv->can.state != CAN_STATE_BUS_OFF) {
-+		cf->data[6] = txerr;
-+		cf->data[7] = rxerr;
-+	}
- 
- 	priv->bec.txerr = txerr;
- 	priv->bec.rxerr = rxerr;
+-	n = snprintf(sl->xbuff, sizeof(sl->xbuff), "%s", cmd);
++	n = scnprintf(sl->xbuff, sizeof(sl->xbuff), "%s", cmd);
+ 	set_bit(TTY_DO_WRITE_WAKEUP, &sl->tty->flags);
+ 	actual = sl->tty->ops->write(sl->tty, sl->xbuff, n);
+ 	sl->xleft = n - actual;
+
+base-commit: e22c88799f2629088504e1357384f2ec3798da46
 -- 
 2.35.1
 
