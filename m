@@ -2,46 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86F60C433EF
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:11:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A0F7C43334
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:11:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239345AbiGTILW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jul 2022 04:11:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51462 "EHLO
+        id S239501AbiGTILY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jul 2022 04:11:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238843AbiGTILT (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:19 -0400
+        with ESMTP id S237312AbiGTILU (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:20 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBD8474FB
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A06034AD71
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:19 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oE4nc-0008Lw-Me
-        for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:16 +0200
+        id 1oE4nd-0008MT-RX
+        for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:17 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 286EEB59D2
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:44 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 30FB6B5950
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:42 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 75D3CB59A9;
-        Wed, 20 Jul 2022 08:10:43 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 935E4B5929;
+        Wed, 20 Jul 2022 08:10:41 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 594bb77e;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ce673e61;
         Wed, 20 Jul 2022 08:10:36 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Chen-Yu Tsai <wens@csie.org>,
+        Stephane Grosjean <s.grosjean@peak-system.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 23/29] can: sun4i_can: do not report txerr and rxerr during bus-off
-Date:   Wed, 20 Jul 2022 10:10:28 +0200
-Message-Id: <20220720081034.3277385-24-mkl@pengutronix.de>
+Subject: [PATCH net-next 15/29] can: peak_usb: pcan_dump_mem(): mark input prompt and data pointer as const
+Date:   Wed, 20 Jul 2022 10:10:20 +0200
+Message-Id: <20220720081034.3277385-16-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220720081034.3277385-1-mkl@pengutronix.de>
 References: <20220720081034.3277385-1-mkl@pengutronix.de>
@@ -55,47 +54,45 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+From: Stephane Grosjean <s.grosjean@peak-system.com>
 
-During bus off, the error count is greater than 255 and can not fit in
-a u8.
+Mark the input prompt and data pointer as const.
 
-Fixes: 0738eff14d81 ("can: Allwinner A10/A20 CAN Controller support - Kernel module")
-Link: https://lore.kernel.org/all/20220719143550.3681-7-mailhol.vincent@wanadoo.fr
-CC: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Link: https://lore.kernel.org/all/20220719120632.26774-1-s.grosjean@peak-system.com
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+[mkl: mark data pointer as const, too; update commit message]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/sun4i_can.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c | 2 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
-index 155b90f6c767..afe9b541f037 100644
---- a/drivers/net/can/sun4i_can.c
-+++ b/drivers/net/can/sun4i_can.c
-@@ -535,11 +535,6 @@ static int sun4i_can_err(struct net_device *dev, u8 isrc, u8 status)
- 	rxerr = (errc >> 16) & 0xFF;
- 	txerr = errc & 0xFF;
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+index b850ff8fe4bd..27b0a72fd885 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -57,7 +57,7 @@ MODULE_DEVICE_TABLE(usb, peak_usb_table);
+  * dump memory
+  */
+ #define DUMP_WIDTH	16
+-void pcan_dump_mem(char *prompt, void *p, int l)
++void pcan_dump_mem(const char *prompt, const void *p, int l)
+ {
+ 	pr_info("%s dumping %s (%d bytes):\n",
+ 		PCAN_USB_DRIVER_NAME, prompt ? prompt : "memory", l);
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+index f60af573a2e0..9c90487b9c92 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+@@ -132,7 +132,7 @@ struct peak_usb_device {
+ 	struct peak_usb_device *next_siblings;
+ };
  
--	if (skb) {
--		cf->data[6] = txerr;
--		cf->data[7] = rxerr;
--	}
--
- 	if (isrc & SUN4I_INT_DATA_OR) {
- 		/* data overrun interrupt */
- 		netdev_dbg(dev, "data overrun interrupt\n");
-@@ -570,6 +565,10 @@ static int sun4i_can_err(struct net_device *dev, u8 isrc, u8 status)
- 		else
- 			state = CAN_STATE_ERROR_ACTIVE;
- 	}
-+	if (skb && state != CAN_STATE_BUS_OFF) {
-+		cf->data[6] = txerr;
-+		cf->data[7] = rxerr;
-+	}
- 	if (isrc & SUN4I_INT_BUS_ERR) {
- 		/* bus error interrupt */
- 		netdev_dbg(dev, "bus error interrupt\n");
+-void pcan_dump_mem(char *prompt, void *p, int l);
++void pcan_dump_mem(const char *prompt, const void *p, int l);
+ 
+ /* common timestamp management */
+ void peak_usb_init_time_ref(struct peak_time_ref *time_ref,
 -- 
 2.35.1
 
