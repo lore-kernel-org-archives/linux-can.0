@@ -2,44 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28D90C433EF
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:11:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36FF7CCA486
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:11:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240341AbiGTILe (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jul 2022 04:11:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
+        id S239836AbiGTILf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jul 2022 04:11:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239401AbiGTILX (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:23 -0400
+        with ESMTP id S239194AbiGTILY (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:24 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71004474FA
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A0B60500
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:23 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oE4ng-0008Qj-O4
-        for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:20 +0200
+        id 1oE4nh-0008Rh-KU
+        for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:21 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 596DBB58F8
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:40 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 58F53B59E0
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:44 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id BDF43B58E0;
-        Wed, 20 Jul 2022 08:10:39 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id ACDA9B59BA;
+        Wed, 20 Jul 2022 08:10:43 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id bcf3fd4e;
-        Wed, 20 Jul 2022 08:10:35 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 64266b5a;
+        Wed, 20 Jul 2022 08:10:36 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Biju Das <biju.das.jz@bp.renesas.com>,
+        kernel@pengutronix.de,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Jimmy Assarsson <extja@kvaser.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 09/29] can: sja1000: Add Quirk for RZ/N1 SJA1000 CAN controller
-Date:   Wed, 20 Jul 2022 10:10:14 +0200
-Message-Id: <20220720081034.3277385-10-mkl@pengutronix.de>
+Subject: [PATCH net-next 24/29] can: kvaser_usb_hydra: do not report txerr and rxerr during bus-off
+Date:   Wed, 20 Jul 2022 10:10:29 +0200
+Message-Id: <20220720081034.3277385-25-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220720081034.3277385-1-mkl@pengutronix.de>
 References: <20220720081034.3277385-1-mkl@pengutronix.de>
@@ -53,62 +55,50 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Biju Das <biju.das.jz@bp.renesas.com>
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-As per Chapter 6.5.16 of the RZ/N1 Peripheral Manual, The SJA1000
-CAN controller does not support Clock Divider Register compared to
-the reference Philips SJA1000 device.
+During bus off, the error count is greater than 255 and can not fit in
+a u8.
 
-This patch adds a device quirk to handle this difference.
-
-Link: https://lore.kernel.org/all/20220710115248.190280-4-biju.das.jz@bp.renesas.com
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Fixes: aec5fb2268b7 ("can: kvaser_usb: Add support for Kvaser USB hydra family")
+Link: https://lore.kernel.org/all/20220719143550.3681-8-mailhol.vincent@wanadoo.fr
+CC: Jimmy Assarsson <extja@kvaser.com>
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/sja1000/sja1000.c | 8 +++++---
- drivers/net/can/sja1000/sja1000.h | 3 ++-
- 2 files changed, 7 insertions(+), 4 deletions(-)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index 2e7638f98cf1..d9da471f1bb9 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -183,8 +183,9 @@ static void chipset_init(struct net_device *dev)
- {
- 	struct sja1000_priv *priv = netdev_priv(dev);
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+index 5d70844ac030..404093468b2f 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+@@ -917,8 +917,10 @@ static void kvaser_usb_hydra_update_state(struct kvaser_usb_net_priv *priv,
+ 	    new_state < CAN_STATE_BUS_OFF)
+ 		priv->can.can_stats.restarts++;
  
--	/* set clock divider and output control register */
--	priv->write_reg(priv, SJA1000_CDR, priv->cdr | CDR_PELICAN);
-+	if (!(priv->flags & SJA1000_QUIRK_NO_CDR_REG))
-+		/* set clock divider and output control register */
-+		priv->write_reg(priv, SJA1000_CDR, priv->cdr | CDR_PELICAN);
+-	cf->data[6] = bec->txerr;
+-	cf->data[7] = bec->rxerr;
++	if (new_state != CAN_STATE_BUS_OFF) {
++		cf->data[6] = bec->txerr;
++		cf->data[7] = bec->rxerr;
++	}
  
- 	/* set acceptance filter (accept all) */
- 	priv->write_reg(priv, SJA1000_ACCC0, 0x00);
-@@ -209,7 +210,8 @@ static void sja1000_start(struct net_device *dev)
- 		set_reset_mode(dev);
+ 	netif_rx(skb);
+ }
+@@ -1069,8 +1071,10 @@ kvaser_usb_hydra_error_frame(struct kvaser_usb_net_priv *priv,
+ 	shhwtstamps->hwtstamp = hwtstamp;
  
- 	/* Initialize chip if uninitialized at this stage */
--	if (!(priv->read_reg(priv, SJA1000_CDR) & CDR_PELICAN))
-+	if (!(priv->flags & SJA1000_QUIRK_NO_CDR_REG ||
-+	      priv->read_reg(priv, SJA1000_CDR) & CDR_PELICAN))
- 		chipset_init(dev);
+ 	cf->can_id |= CAN_ERR_BUSERROR;
+-	cf->data[6] = bec.txerr;
+-	cf->data[7] = bec.rxerr;
++	if (new_state != CAN_STATE_BUS_OFF) {
++		cf->data[6] = bec.txerr;
++		cf->data[7] = bec.rxerr;
++	}
  
- 	/* Clear error counters and error code capture */
-diff --git a/drivers/net/can/sja1000/sja1000.h b/drivers/net/can/sja1000/sja1000.h
-index 9d46398f8154..7f736f1df547 100644
---- a/drivers/net/can/sja1000/sja1000.h
-+++ b/drivers/net/can/sja1000/sja1000.h
-@@ -145,7 +145,8 @@
- /*
-  * Flags for sja1000priv.flags
-  */
--#define SJA1000_CUSTOM_IRQ_HANDLER 0x1
-+#define SJA1000_CUSTOM_IRQ_HANDLER	BIT(0)
-+#define SJA1000_QUIRK_NO_CDR_REG	BIT(1)
+ 	netif_rx(skb);
  
- /*
-  * SJA1000 private data structure
 -- 
 2.35.1
 
