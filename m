@@ -2,44 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC897CCA482
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:11:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E35A1CCA480
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:11:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239036AbiGTILZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jul 2022 04:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51554 "EHLO
+        id S239732AbiGTIL2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jul 2022 04:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239244AbiGTILW (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:22 -0400
+        with ESMTP id S239365AbiGTILX (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:23 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD19C61D75
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C010675BE
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:21 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oE4ne-0008Mu-Nl
-        for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:18 +0200
+        id 1oE4nf-0008Nm-5Z
+        for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:19 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 3C2B6B5954
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:42 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 48AE2B5893
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:37 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 73B20B591E;
-        Wed, 20 Jul 2022 08:10:41 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1e02cd0a;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id A6A5DB5880;
         Wed, 20 Jul 2022 08:10:36 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e9d2c480;
+        Wed, 20 Jul 2022 08:10:35 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Pavel Pisa <pisa@cmp.felk.cvut.cz>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 14/29] can: ctucanfd: Update CTU CAN FD IP core registers to match version 3.x.
-Date:   Wed, 20 Jul 2022 10:10:19 +0200
-Message-Id: <20220720081034.3277385-15-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 02/29] can: slcan: convert comments to network style comments
+Date:   Wed, 20 Jul 2022 10:10:07 +0200
+Message-Id: <20220720081034.3277385-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220720081034.3277385-1-mkl@pengutronix.de>
 References: <20220720081034.3277385-1-mkl@pengutronix.de>
@@ -53,142 +52,185 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Convert all comments to network subsystem style comments.
 
-The update is compatible/pure extension of 2.x IP core version
-
- - new option for 2, 4, or 8 Tx buffers option during synthesis.
-   The 2.x version has fixed 4 Tx buffers. 3.x version default
-   is 4 as well
- - new REG_TX_COMMAND_TXT_BUFFER_COUNT provides synthesis
-   choice. When read as 0 assume 2.x core with fixed 4 Tx buffers.
- - new REG_ERR_CAPT_TS_BITS field to provide most significant
-   active/implemented timestamp bit. For 2.x read as zero,
-   assume value 63 is such case for 64 bit counter.
- - new REG_MODE_RXBAM bit which controls automatic advance
-   to next word after Rx FIFO register read. Bit is set
-   to 1 by default after the core reset (REG_MODE_RST)
-   and value 1 has to be preserved for the normal ctucanfd
-   Linux driver operation. Even preceding driver version
-   resets core and then modifies only known/required MODE
-   register bits so backward and forward compatibility is
-   ensured.
-
-See complete datasheet for time-triggered and other
-updated capabilities
-
-  http://canbus.pages.fel.cvut.cz/ctucanfd_ip_core/doc/Datasheet.pdf
-
-The fields related to ongoing Ondrej Ille's work
-on fault tolerant version with parity protected buffers
-and FIFOs are not included for now. Their inclusion will
-be considered when design is settled and tested.
-
-Link: https://lore.kernel.org/all/14a98ed1829121f0f3bde784f1aa533bc3cc7fe0.1658139843.git.pisa@cmp.felk.cvut.cz
-Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Link: https://lore.kernel.org/all/20220704125954.1587880-2-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/ctucanfd/ctucanfd_kregs.h | 32 ++++++++++++++++++++---
- 1 file changed, 28 insertions(+), 4 deletions(-)
+ drivers/net/can/slcan/slcan-core.c | 55 +++++++++++++-----------------
+ 1 file changed, 24 insertions(+), 31 deletions(-)
 
-diff --git a/drivers/net/can/ctucanfd/ctucanfd_kregs.h b/drivers/net/can/ctucanfd/ctucanfd_kregs.h
-index edc1c1a24348..0c181ab51bf8 100644
---- a/drivers/net/can/ctucanfd/ctucanfd_kregs.h
-+++ b/drivers/net/can/ctucanfd/ctucanfd_kregs.h
-@@ -4,9 +4,9 @@
-  * CTU CAN FD IP Core
+diff --git a/drivers/net/can/slcan/slcan-core.c b/drivers/net/can/slcan/slcan-core.c
+index 92bdd49996d1..2d3bf15061a7 100644
+--- a/drivers/net/can/slcan/slcan-core.c
++++ b/drivers/net/can/slcan/slcan-core.c
+@@ -67,8 +67,9 @@ MODULE_AUTHOR("Oliver Hartkopp <socketcan@hartkopp.net>");
+ #define SLCAN_MAGIC 0x53CA
+ 
+ static int maxdev = 10;		/* MAX number of SLCAN channels;
+-				   This can be overridden with
+-				   insmod slcan.ko maxdev=nnn	*/
++				 * This can be overridden with
++				 * insmod slcan.ko maxdev=nnn
++				 */
+ module_param(maxdev, int, 0);
+ MODULE_PARM_DESC(maxdev, "Maximum number of slcan interfaces");
+ 
+@@ -139,12 +140,11 @@ int slcan_enable_err_rst_on_open(struct net_device *ndev, bool on)
+ 	return 0;
+ }
+ 
+- /************************************************************************
+-  *			SLCAN ENCAPSULATION FORMAT			 *
+-  ************************************************************************/
++/*************************************************************************
++ *			SLCAN ENCAPSULATION FORMAT			 *
++ *************************************************************************/
+ 
+-/*
+- * A CAN frame has a can_id (11 bit standard frame format OR 29 bit extended
++/* A CAN frame has a can_id (11 bit standard frame format OR 29 bit extended
+  * frame format) a data length code (len) which can be from 0 to 8
+  * and up to <len> data bytes as payload.
+  * Additionally a CAN frame may become a remote transmission frame if the
+@@ -174,9 +174,9 @@ int slcan_enable_err_rst_on_open(struct net_device *ndev, bool on)
   *
-  * Copyright (C) 2015-2018 Ondrej Ille <ondrej.ille@gmail.com> FEE CTU
-- * Copyright (C) 2018-2021 Ondrej Ille <ondrej.ille@gmail.com> self-funded
-+ * Copyright (C) 2018-2022 Ondrej Ille <ondrej.ille@gmail.com> self-funded
-  * Copyright (C) 2018-2019 Martin Jerabek <martin.jerabek01@gmail.com> FEE CTU
-- * Copyright (C) 2018-2021 Pavel Pisa <pisa@cmp.felk.cvut.cz> FEE CTU/self-funded
-+ * Copyright (C) 2018-2022 Pavel Pisa <pisa@cmp.felk.cvut.cz> FEE CTU/self-funded
+  */
+ 
+- /************************************************************************
+-  *			STANDARD SLCAN DECAPSULATION			 *
+-  ************************************************************************/
++/*************************************************************************
++ *			STANDARD SLCAN DECAPSULATION			 *
++ *************************************************************************/
+ 
+ /* Send one completely decapsulated can_frame to the network layer */
+ static void slc_bump_frame(struct slcan *sl)
+@@ -486,9 +486,9 @@ static void slcan_unesc(struct slcan *sl, unsigned char s)
+ 	}
+ }
+ 
+- /************************************************************************
+-  *			STANDARD SLCAN ENCAPSULATION			 *
+-  ************************************************************************/
++/*************************************************************************
++ *			STANDARD SLCAN ENCAPSULATION			 *
++ *************************************************************************/
+ 
+ /* Encapsulate one can_frame and stuff into a TTY queue. */
+ static void slc_encaps(struct slcan *sl, struct can_frame *cf)
+@@ -575,7 +575,8 @@ static void slcan_transmit(struct work_struct *work)
+ 		}
+ 
+ 		/* Now serial buffer is almost free & we can start
+-		 * transmission of another packet */
++		 * transmission of another packet
++		 */
+ 		sl->dev->stats.tx_packets++;
+ 		clear_bit(TTY_DO_WRITE_WAKEUP, &sl->tty->flags);
+ 		spin_unlock_bh(&sl->lock);
+@@ -589,8 +590,7 @@ static void slcan_transmit(struct work_struct *work)
+ 	spin_unlock_bh(&sl->lock);
+ }
+ 
+-/*
+- * Called by the driver when there's room for more data.
++/* Called by the driver when there's room for more data.
+  * Schedule the transmit.
+  */
+ static void slcan_write_wakeup(struct tty_struct *tty)
+@@ -632,7 +632,6 @@ static netdev_tx_t slc_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	return NETDEV_TX_OK;
+ }
+ 
+-
+ /******************************************
+  *   Routines looking at netdevice side.
+  ******************************************/
+@@ -736,7 +735,6 @@ static int slc_open(struct net_device *dev)
+ 		/* The CAN framework has already validate the bitrate value,
+ 		 * so we can avoid to check if `s' has been properly set.
+ 		 */
+-
+ 		snprintf(cmd, sizeof(cmd), "C\rS%d\r", s);
+ 		err = slcan_transmit_cmd(sl, cmd);
+ 		if (err) {
+@@ -792,18 +790,16 @@ static const struct net_device_ops slc_netdev_ops = {
+ };
+ 
+ /******************************************
+-  Routines looking at TTY side.
++ *  Routines looking at TTY side.
+  ******************************************/
+ 
+-/*
+- * Handle the 'receiver data ready' interrupt.
++/* Handle the 'receiver data ready' interrupt.
+  * This function is called by the 'tty_io' module in the kernel when
+  * a block of SLCAN data has been received, which can now be decapsulated
+  * and sent on to some IP layer for further processing. This will not
+  * be re-entered while running but other ldisc functions may be called
+  * in parallel
+  */
+-
+ static void slcan_receive_buf(struct tty_struct *tty,
+ 			      const unsigned char *cp, const char *fp,
+ 			      int count)
+@@ -890,8 +886,7 @@ static struct slcan *slc_alloc(void)
+ 	return sl;
+ }
+ 
+-/*
+- * Open the high-level part of the SLCAN channel.
++/* Open the high-level part of the SLCAN channel.
+  * This function is called by the TTY module when the
+  * SLCAN line discipline is called for.  Because we are
+  * sure the tty line exists, we only have to link it to
+@@ -899,7 +894,6 @@ static struct slcan *slc_alloc(void)
   *
-  * Project advisors:
-  *     Jiri Novak <jnovak@fel.cvut.cz>
-@@ -64,9 +64,12 @@ enum ctu_can_fd_can_registers {
- 	CTUCANFD_RX_DATA              = 0x6c,
- 	CTUCANFD_TX_STATUS            = 0x70,
- 	CTUCANFD_TX_COMMAND           = 0x74,
-+	CTUCANFD_TXTB_INFO            = 0x76,
- 	CTUCANFD_TX_PRIORITY          = 0x78,
- 	CTUCANFD_ERR_CAPT             = 0x7c,
-+	CTUCANFD_RETR_CTR             = 0x7d,
- 	CTUCANFD_ALC                  = 0x7e,
-+	CTUCANFD_TS_INFO              = 0x7f,
- 	CTUCANFD_TRV_DELAY            = 0x80,
- 	CTUCANFD_SSP_CFG              = 0x82,
- 	CTUCANFD_RX_FR_CTR            = 0x84,
-@@ -102,8 +105,12 @@ enum ctu_can_fd_can_registers {
- #define REG_MODE_STM BIT(2)
- #define REG_MODE_AFM BIT(3)
- #define REG_MODE_FDE BIT(4)
-+#define REG_MODE_TTTM BIT(5)
-+#define REG_MODE_ROM BIT(6)
- #define REG_MODE_ACF BIT(7)
- #define REG_MODE_TSTM BIT(8)
-+#define REG_MODE_RXBAM BIT(9)
-+#define REG_MODE_SAM BIT(11)
- #define REG_MODE_RTRLE BIT(16)
- #define REG_MODE_RTRTH GENMASK(20, 17)
- #define REG_MODE_ILBP BIT(21)
-@@ -123,8 +130,10 @@ enum ctu_can_fd_can_registers {
- #define REG_STATUS_EWL BIT(6)
- #define REG_STATUS_IDLE BIT(7)
- #define REG_STATUS_PEXS BIT(8)
-+#define REG_STATUS_STCNT BIT(16)
+  * Called in process context serialized from other ldisc calls.
+  */
+-
+ static int slcan_open(struct tty_struct *tty)
+ {
+ 	struct slcan *sl;
+@@ -912,8 +906,8 @@ static int slcan_open(struct tty_struct *tty)
+ 		return -EOPNOTSUPP;
  
- /*  COMMAND registers */
-+#define REG_COMMAND_RXRPMV BIT(1)
- #define REG_COMMAND_RRB BIT(2)
- #define REG_COMMAND_CDO BIT(3)
- #define REG_COMMAND_ERCRST BIT(4)
-@@ -263,8 +272,12 @@ enum ctu_can_fd_can_registers {
- #define REG_TX_STATUS_TX2S GENMASK(7, 4)
- #define REG_TX_STATUS_TX3S GENMASK(11, 8)
- #define REG_TX_STATUS_TX4S GENMASK(15, 12)
-+#define REG_TX_STATUS_TX5S GENMASK(19, 16)
-+#define REG_TX_STATUS_TX6S GENMASK(23, 20)
-+#define REG_TX_STATUS_TX7S GENMASK(27, 24)
-+#define REG_TX_STATUS_TX8S GENMASK(31, 28)
+ 	/* RTnetlink lock is misused here to serialize concurrent
+-	   opens of slcan channels. There are better ways, but it is
+-	   the simplest one.
++	 * opens of slcan channels. There are better ways, but it is
++	 * the simplest one.
+ 	 */
+ 	rtnl_lock();
  
--/*  TX_COMMAND registers */
-+/*  TX_COMMAND TXTB_INFO registers */
- #define REG_TX_COMMAND_TXCE BIT(0)
- #define REG_TX_COMMAND_TXCR BIT(1)
- #define REG_TX_COMMAND_TXCA BIT(2)
-@@ -272,18 +285,29 @@ enum ctu_can_fd_can_registers {
- #define REG_TX_COMMAND_TXB2 BIT(9)
- #define REG_TX_COMMAND_TXB3 BIT(10)
- #define REG_TX_COMMAND_TXB4 BIT(11)
-+#define REG_TX_COMMAND_TXB5 BIT(12)
-+#define REG_TX_COMMAND_TXB6 BIT(13)
-+#define REG_TX_COMMAND_TXB7 BIT(14)
-+#define REG_TX_COMMAND_TXB8 BIT(15)
-+#define REG_TX_COMMAND_TXT_BUFFER_COUNT GENMASK(19, 16)
+@@ -974,14 +968,12 @@ static int slcan_open(struct tty_struct *tty)
+ 	return err;
+ }
  
- /*  TX_PRIORITY registers */
- #define REG_TX_PRIORITY_TXT1P GENMASK(2, 0)
- #define REG_TX_PRIORITY_TXT2P GENMASK(6, 4)
- #define REG_TX_PRIORITY_TXT3P GENMASK(10, 8)
- #define REG_TX_PRIORITY_TXT4P GENMASK(14, 12)
-+#define REG_TX_PRIORITY_TXT5P GENMASK(18, 16)
-+#define REG_TX_PRIORITY_TXT6P GENMASK(22, 20)
-+#define REG_TX_PRIORITY_TXT7P GENMASK(26, 24)
-+#define REG_TX_PRIORITY_TXT8P GENMASK(30, 28)
+-/*
+- * Close down a SLCAN channel.
++/* Close down a SLCAN channel.
+  * This means flushing out any pending queues, and then returning. This
+  * call is serialized against other ldisc functions.
+  *
+  * We also use this method for a hangup event.
+  */
+-
+ static void slcan_close(struct tty_struct *tty)
+ {
+ 	struct slcan *sl = (struct slcan *) tty->disc_data;
+@@ -1104,7 +1096,8 @@ static void __exit slcan_exit(void)
+ 	} while (busy && time_before(jiffies, timeout));
  
--/*  ERR_CAPT ALC registers */
-+/*  ERR_CAPT RETR_CTR ALC TS_INFO registers */
- #define REG_ERR_CAPT_ERR_POS GENMASK(4, 0)
- #define REG_ERR_CAPT_ERR_TYPE GENMASK(7, 5)
-+#define REG_ERR_CAPT_RETR_CTR_VAL GENMASK(11, 8)
- #define REG_ERR_CAPT_ALC_BIT GENMASK(20, 16)
- #define REG_ERR_CAPT_ALC_ID_FIELD GENMASK(23, 21)
-+#define REG_ERR_CAPT_TS_BITS GENMASK(29, 24)
+ 	/* FIXME: hangup is async so we should wait when doing this second
+-	   phase */
++	 * phase
++	 */
  
- /*  TRV_DELAY SSP_CFG registers */
- #define REG_TRV_DELAY_TRV_DELAY_VALUE GENMASK(6, 0)
+ 	for (i = 0; i < maxdev; i++) {
+ 		dev = slcan_devs[i];
 -- 
 2.35.1
 
