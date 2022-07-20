@@ -2,44 +2,48 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06D02C433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 749F3CCA487
 	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:11:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238045AbiGTILg (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jul 2022 04:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51638 "EHLO
+        id S239588AbiGTILh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jul 2022 04:11:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239565AbiGTILZ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:25 -0400
+        with ESMTP id S237691AbiGTILY (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:24 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B9B366AE1
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 703044D4EB
         for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:23 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oE4nh-0008S9-LX
+        id 1oE4nh-0008RK-K9
         for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:21 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 6F63FB5877
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:36 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 572F0B599E
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:43 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id F00E2B586F;
-        Wed, 20 Jul 2022 08:10:35 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id C4FE0B5977;
+        Wed, 20 Jul 2022 08:10:42 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 74ce5f34;
-        Wed, 20 Jul 2022 08:10:35 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e3c14cfa;
+        Wed, 20 Jul 2022 08:10:36 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net-next 0/29] pull-request: can-next 2022-07-20
-Date:   Wed, 20 Jul 2022 10:10:05 +0200
-Message-Id: <20220720081034.3277385-1-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 20/29] can: sja1000: do not report txerr and rxerr during bus-off
+Date:   Wed, 20 Jul 2022 10:10:25 +0200
+Message-Id: <20220720081034.3277385-21-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220720081034.3277385-1-mkl@pengutronix.de>
+References: <20220720081034.3277385-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -50,135 +54,45 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-this is a pull request of 29 patches for net-next/master.
+During bus off, the error count is greater than 255 and can not fit in
+a u8.
 
-The first 6 patches target the slcan driver. Dan Carpenter contributes
-a hardening patch, followed by 5 cleanup patches.
-
-Biju Das contributes 5 patches to prepare the sja1000 driver to
-support the Renesas RZ/N1 SJA1000 CAN controller.
-
-Dario Binacchi's patch for the slcan driver fixes a sleep with held
-spin lock.
-
-Another patch by Dario Binacchi fixes a wrong comment in the c_can
-driver.
-
-Pavel Pisa updates the CTU CAN FD IP core registers.
-
-Stephane Grosjean contributes 3 patches to the peak_usb driver for
-cleanups and support of a new MCU.
-
-The last 12 patches are by Vincent Mailhol, they fix and improve the
-txerr and rxerr reporting in all CAN drivers.
-
-regards,
-Marc
-
+Fixes: 215db1856e83 ("can: sja1000: Consolidate and unify state change handling")
+Link: https://lore.kernel.org/all/20220719143550.3681-4-mailhol.vincent@wanadoo.fr
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/sja1000/sja1000.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-The following changes since commit e22c88799f2629088504e1357384f2ec3798da46:
-
-  Merge branch '100GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue (2022-07-18 20:39:54 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-5.20-20220720
-
-for you to fetch changes up to 1dbd8748a147c971747c8460e0cd1828cf2745d7:
-
-  Merge branch 'can-error-set-of-fixes-and-improvement-on-txerr-and-rxerr-reporting' (2022-07-20 09:28:43 +0200)
-
-----------------------------------------------------------------
-linux-can-next-for-5.20-20220720
-
-----------------------------------------------------------------
-Biju Das (5):
-      dt-bindings: can: sja1000: Convert to json-schema
-      dt-bindings: can: nxp,sja1000: Document RZ/N1{D,S} support
-      can: sja1000: Add Quirk for RZ/N1 SJA1000 CAN controller
-      can: sja1000: Use device_get_match_data to get device data
-      can: sja1000: Change the return type as void for SoC specific init
-
-Dan Carpenter (1):
-      can: slcan: use scnprintf() as a hardening measure
-
-Dario Binacchi (2):
-      can: slcan: do not sleep with a spin lock held
-      can: c_can: remove wrong comment
-
-Marc Kleine-Budde (9):
-      can: slcan: convert comments to network style comments
-      can: slcan: slcan_init() convert printk(LEVEL ...) to pr_level()
-      can: slcan: fix whitespace issues
-      can: slcan: convert comparison to NULL into !val
-      can: slcan: clean up if/else
-      Merge branch 'can-slcan-checkpatch-cleanups'
-      Merge branch 'can-add-support-for-rz-n1-sja1000-can-controller'
-      Merge branch 'can-peak_usb-cleanups-and-updates'
-      Merge branch 'can-error-set-of-fixes-and-improvement-on-txerr-and-rxerr-reporting'
-
-Pavel Pisa (1):
-      can: ctucanfd: Update CTU CAN FD IP core registers to match version 3.x.
-
-Stephane Grosjean (3):
-      can: peak_usb: pcan_dump_mem(): mark input prompt and data pointer as const
-      can: peak_usb: correction of an initially misnamed field name
-      can: peak_usb: include support for a new MCU
-
-Vincent Mailhol (12):
-      can: pch_can: do not report txerr and rxerr during bus-off
-      can: rcar_can: do not report txerr and rxerr during bus-off
-      can: sja1000: do not report txerr and rxerr during bus-off
-      can: slcan: do not report txerr and rxerr during bus-off
-      can: hi311x: do not report txerr and rxerr during bus-off
-      can: sun4i_can: do not report txerr and rxerr during bus-off
-      can: kvaser_usb_hydra: do not report txerr and rxerr during bus-off
-      can: kvaser_usb_leaf: do not report txerr and rxerr during bus-off
-      can: usb_8dev: do not report txerr and rxerr during bus-off
-      can: error: specify the values of data[5..7] of CAN error frames
-      can: add CAN_ERR_CNT flag to notify availability of error counter
-      can: error: add definitions for the different CAN error thresholds
-
- .../devicetree/bindings/net/can/nxp,sja1000.yaml   | 132 +++++++++++++++++++++
- .../devicetree/bindings/net/can/sja1000.txt        |  58 ---------
- drivers/net/can/c_can/c_can_main.c                 |   7 +-
- drivers/net/can/cc770/cc770.c                      |   1 +
- drivers/net/can/ctucanfd/ctucanfd_base.c           |   5 +-
- drivers/net/can/ctucanfd/ctucanfd_kregs.h          |  32 ++++-
- drivers/net/can/grcan.c                            |   1 +
- drivers/net/can/ifi_canfd/ifi_canfd.c              |   4 +-
- drivers/net/can/janz-ican3.c                       |   4 +-
- drivers/net/can/kvaser_pciefd.c                    |   2 +-
- drivers/net/can/m_can/m_can.c                      |   4 +-
- drivers/net/can/pch_can.c                          |   7 +-
- drivers/net/can/peak_canfd/peak_canfd.c            |   6 +-
- drivers/net/can/rcar/rcar_can.c                    |   9 +-
- drivers/net/can/rcar/rcar_canfd.c                  |   4 +-
- drivers/net/can/sja1000/sja1000.c                  |  16 ++-
- drivers/net/can/sja1000/sja1000.h                  |   3 +-
- drivers/net/can/sja1000/sja1000_platform.c         |  20 +---
- drivers/net/can/slcan/slcan-core.c                 | 117 +++++++++---------
- drivers/net/can/spi/hi311x.c                       |   6 +-
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c     |   1 +
- drivers/net/can/sun4i_can.c                        |  10 +-
- drivers/net/can/ti_hecc.c                          |   1 +
- drivers/net/can/usb/esd_usb.c                      |   3 +-
- drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c  |  14 ++-
- drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c   |   7 +-
- drivers/net/can/usb/peak_usb/pcan_usb.c            |   1 +
- drivers/net/can/usb/peak_usb/pcan_usb_core.c       |   2 +-
- drivers/net/can/usb/peak_usb/pcan_usb_core.h       |   2 +-
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c         |  68 +++++++++--
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c        |   2 +-
- drivers/net/can/usb/peak_usb/pcan_usb_pro.h        |   2 +-
- drivers/net/can/usb/usb_8dev.c                     |   8 +-
- drivers/net/can/xilinx_can.c                       |   1 +
- include/uapi/linux/can/error.h                     |  20 +++-
- 35 files changed, 376 insertions(+), 204 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/nxp,sja1000.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/can/sja1000.txt
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index d9da471f1bb9..74bff5092b47 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -404,9 +404,6 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+ 	txerr = priv->read_reg(priv, SJA1000_TXERR);
+ 	rxerr = priv->read_reg(priv, SJA1000_RXERR);
+ 
+-	cf->data[6] = txerr;
+-	cf->data[7] = rxerr;
+-
+ 	if (isrc & IRQ_DOI) {
+ 		/* data overrun interrupt */
+ 		netdev_dbg(dev, "data overrun interrupt\n");
+@@ -428,6 +425,10 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+ 		else
+ 			state = CAN_STATE_ERROR_ACTIVE;
+ 	}
++	if (state != CAN_STATE_BUS_OFF) {
++		cf->data[6] = txerr;
++		cf->data[7] = rxerr;
++	}
+ 	if (isrc & IRQ_BEI) {
+ 		/* bus error interrupt */
+ 		priv->can.can_stats.bus_error++;
+-- 
+2.35.1
 
 
