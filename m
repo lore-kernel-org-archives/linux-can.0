@@ -2,44 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C23B8C43334
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:12:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55438CCA482
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:12:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238439AbiGTIMj (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jul 2022 04:12:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52786 "EHLO
+        id S240561AbiGTIMk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jul 2022 04:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240289AbiGTILy (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:54 -0400
+        with ESMTP id S240294AbiGTIL5 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:57 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289506B278
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 076406B740
         for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:38 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oE4nw-0000eO-Ay
+        id 1oE4nw-0000fm-SK
         for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:36 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id CC6ACB5907
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:40 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id C17DEB59BE
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:43 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3D0BDB58F0;
-        Wed, 20 Jul 2022 08:10:40 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3C907B5998;
+        Wed, 20 Jul 2022 08:10:43 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2464fd71;
-        Wed, 20 Jul 2022 08:10:35 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id a57945fc;
+        Wed, 20 Jul 2022 08:10:36 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Biju Das <biju.das.jz@bp.renesas.com>,
+        kernel@pengutronix.de,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 10/29] can: sja1000: Use device_get_match_data to get device data
-Date:   Wed, 20 Jul 2022 10:10:15 +0200
-Message-Id: <20220720081034.3277385-11-mkl@pengutronix.de>
+Subject: [PATCH net-next 22/29] can: hi311x: do not report txerr and rxerr during bus-off
+Date:   Wed, 20 Jul 2022 10:10:27 +0200
+Message-Id: <20220720081034.3277385-23-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220720081034.3277385-1-mkl@pengutronix.de>
 References: <20220720081034.3277385-1-mkl@pengutronix.de>
@@ -53,44 +54,42 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Biju Das <biju.das.jz@bp.renesas.com>
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-This patch replaces of_match_device->device_get_match_data
-to get pointer to device data.
+During bus off, the error count is greater than 255 and can not fit in
+a u8.
 
-Link: https://lore.kernel.org/all/20220710115248.190280-5-biju.das.jz@bp.renesas.com
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Fixes: 57e83fb9b746 ("can: hi311x: Add Holt HI-311x CAN driver")
+Link: https://lore.kernel.org/all/20220719143550.3681-6-mailhol.vincent@wanadoo.fr
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/sja1000/sja1000_platform.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/net/can/spi/hi311x.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/sja1000/sja1000_platform.c b/drivers/net/can/sja1000/sja1000_platform.c
-index f9ec7bd8dfac..0b78568f5286 100644
---- a/drivers/net/can/sja1000/sja1000_platform.c
-+++ b/drivers/net/can/sja1000/sja1000_platform.c
-@@ -210,7 +210,6 @@ static int sp_probe(struct platform_device *pdev)
- 	struct resource *res_mem, *res_irq = NULL;
- 	struct sja1000_platform_data *pdata;
- 	struct device_node *of = pdev->dev.of_node;
--	const struct of_device_id *of_id;
- 	const struct sja1000_of_data *of_data = NULL;
- 	size_t priv_sz = 0;
+diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
+index ebc4ebb44c98..bfb7c4bb5bc3 100644
+--- a/drivers/net/can/spi/hi311x.c
++++ b/drivers/net/can/spi/hi311x.c
+@@ -667,8 +667,6 @@ static irqreturn_t hi3110_can_ist(int irq, void *dev_id)
  
-@@ -243,11 +242,9 @@ static int sp_probe(struct platform_device *pdev)
- 			return -ENODEV;
- 	}
+ 			txerr = hi3110_read(spi, HI3110_READ_TEC);
+ 			rxerr = hi3110_read(spi, HI3110_READ_REC);
+-			cf->data[6] = txerr;
+-			cf->data[7] = rxerr;
+ 			tx_state = txerr >= rxerr ? new_state : 0;
+ 			rx_state = txerr <= rxerr ? new_state : 0;
+ 			can_change_state(net, cf, tx_state, rx_state);
+@@ -681,6 +679,9 @@ static irqreturn_t hi3110_can_ist(int irq, void *dev_id)
+ 					hi3110_hw_sleep(spi);
+ 					break;
+ 				}
++			} else {
++				cf->data[6] = txerr;
++				cf->data[7] = rxerr;
+ 			}
+ 		}
  
--	of_id = of_match_device(sp_of_table, &pdev->dev);
--	if (of_id && of_id->data) {
--		of_data = of_id->data;
-+	of_data = device_get_match_data(&pdev->dev);
-+	if (of_data)
- 		priv_sz = of_data->priv_sz;
--	}
- 
- 	dev = alloc_sja1000dev(priv_sz);
- 	if (!dev)
 -- 
 2.35.1
 
