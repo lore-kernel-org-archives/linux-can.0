@@ -2,46 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16E94CCA480
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBAA3CCA486
 	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:11:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240306AbiGTILz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jul 2022 04:11:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51650 "EHLO
+        id S240291AbiGTIL4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jul 2022 04:11:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240291AbiGTILe (ORCPT
+        with ESMTP id S240294AbiGTILe (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:34 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8F069F1C
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E179669F21
         for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:28 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oE4nm-00006d-N2
+        id 1oE4nm-00007J-UM
         for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:26 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 8FCEFB59AF
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:43 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 87A96B5A2A
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:45 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id E8212B5981;
-        Wed, 20 Jul 2022 08:10:42 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id D3B71B5A0A;
+        Wed, 20 Jul 2022 08:10:44 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 539dfdd8;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id fefabd1a;
         Wed, 20 Jul 2022 08:10:36 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 21/29] can: slcan: do not report txerr and rxerr during bus-off
-Date:   Wed, 20 Jul 2022 10:10:26 +0200
-Message-Id: <20220720081034.3277385-22-mkl@pengutronix.de>
+Subject: [PATCH net-next 29/29] can: error: add definitions for the different CAN error thresholds
+Date:   Wed, 20 Jul 2022 10:10:34 +0200
+Message-Id: <20220720081034.3277385-30-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220720081034.3277385-1-mkl@pengutronix.de>
 References: <20220720081034.3277385-1-mkl@pengutronix.de>
@@ -57,52 +56,44 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-During bus off, the error count is greater than 255 and can not fit in
-a u8.
+Currently, drivers are using magic numbers to derive the CAN error
+states from the error counter. Add three macro declarations to
+remediate this.
 
-alloc_can_err_skb() already sets cf to NULL if the allocation fails [1],
-so the redundant cf = NULL assignment gets removed.
+For reference, the error-active, error-passive and bus-off are defined
+in ISO 11898, section 12.1.4.2 "Error counting". Although ISO 11898
+does not define error-warning state, this extra value is also commonly
+used and is thus also added.
 
-[1] https://elixir.bootlin.com/linux/latest/source/drivers/net/can/dev/skb.c#L187
-
-Fixes: 0a9cdcf098a4 ("can: slcan: extend the protocol with CAN state info")
-Link: https://lore.kernel.org/all/20220719143550.3681-5-mailhol.vincent@wanadoo.fr
-CC: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Link: https://lore.kernel.org/all/20220719143550.3681-13-mailhol.vincent@wanadoo.fr
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/slcan/slcan-core.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ include/uapi/linux/can/error.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/net/can/slcan/slcan-core.c b/drivers/net/can/slcan/slcan-core.c
-index 057b211f3e7f..dfd1baba4130 100644
---- a/drivers/net/can/slcan/slcan-core.c
-+++ b/drivers/net/can/slcan/slcan-core.c
-@@ -306,19 +306,17 @@ static void slc_bump_state(struct slcan *sl)
- 		return;
+diff --git a/include/uapi/linux/can/error.h b/include/uapi/linux/can/error.h
+index b7c3efd9ff99..acc1ac393d2a 100644
+--- a/include/uapi/linux/can/error.h
++++ b/include/uapi/linux/can/error.h
+@@ -127,4 +127,17 @@
+ /* TX error counter / data[6] */
+ /* RX error counter / data[7] */
  
- 	skb = alloc_can_err_skb(dev, &cf);
--	if (skb) {
--		cf->data[6] = txerr;
--		cf->data[7] = rxerr;
--	} else {
--		cf = NULL;
--	}
- 
- 	tx_state = txerr >= rxerr ? state : 0;
- 	rx_state = txerr <= rxerr ? state : 0;
- 	can_change_state(dev, cf, tx_state, rx_state);
- 
--	if (state == CAN_STATE_BUS_OFF)
-+	if (state == CAN_STATE_BUS_OFF) {
- 		can_bus_off(dev);
-+	} else if (skb) {
-+		cf->data[6] = txerr;
-+		cf->data[7] = rxerr;
-+	}
- 
- 	if (skb)
- 		netif_rx(skb);
++/* CAN state thresholds
++ *
++ * Error counter	Error state
++ * -----------------------------------
++ * 0 -  95		Error-active
++ * 96 - 127		Error-warning
++ * 128 - 255		Error-passive
++ * 256 and greater	Bus-off
++ */
++#define CAN_ERROR_WARNING_THRESHOLD 96
++#define CAN_ERROR_PASSIVE_THRESHOLD 128
++#define CAN_BUS_OFF_THRESHOLD 256
++
+ #endif /* _UAPI_CAN_ERROR_H */
 -- 
 2.35.1
 
