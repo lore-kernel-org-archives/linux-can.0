@@ -2,45 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACB75C433EF
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:12:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24748CCA487
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:12:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240436AbiGTIMy (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jul 2022 04:12:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53428 "EHLO
+        id S240110AbiGTIMz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jul 2022 04:12:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240343AbiGTIMS (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:12:18 -0400
+        with ESMTP id S239535AbiGTIMR (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:12:17 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3C66B775
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C88E06B75E
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:40 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oE4nz-0000pD-GV
-        for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:39 +0200
+        id 1oE4ny-0000nG-PL
+        for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:38 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id E7A54B5A0F
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:44 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id E5161B58AD
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:37 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 68C41B59E6;
-        Wed, 20 Jul 2022 08:10:44 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 69123B5898;
+        Wed, 20 Jul 2022 08:10:37 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 78fc761f;
-        Wed, 20 Jul 2022 08:10:36 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id df22f7b9;
+        Wed, 20 Jul 2022 08:10:35 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 27/29] can: error: specify the values of data[5..7] of CAN error frames
-Date:   Wed, 20 Jul 2022 10:10:32 +0200
-Message-Id: <20220720081034.3277385-28-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 04/29] can: slcan: fix whitespace issues
+Date:   Wed, 20 Jul 2022 10:10:09 +0200
+Message-Id: <20220720081034.3277385-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220720081034.3277385-1-mkl@pengutronix.de>
 References: <20220720081034.3277385-1-mkl@pengutronix.de>
@@ -54,44 +52,63 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Add and remove whitespace to make checkpatch happy.
 
-Currently, data[5..7] of struct can_frame, when used as a CAN error
-frame, are defined as being "controller specific". Device specific
-behaviours are problematic because it prevents someone from writing
-code which is portable between devices.
-
-As a matter of fact, data[5] is never used, data[6] is always used to
-report TX error counter and data[7] is always used to report RX error
-counter. can-utils also relies on this.
-
-This patch updates the comment in the uapi header to specify that
-data[5] is reserved (and thus should not be used) and that data[6..7]
-are used for error counters.
-
-Fixes: 0d66548a10cb ("[CAN]: Add PF_CAN core module")
-Link: https://lore.kernel.org/all/20220719143550.3681-11-mailhol.vincent@wanadoo.fr
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Link: https://lore.kernel.org/all/20220704125954.1587880-4-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- include/uapi/linux/can/error.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/can/slcan/slcan-core.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/include/uapi/linux/can/error.h b/include/uapi/linux/can/error.h
-index 34633283de64..a1000cb63063 100644
---- a/include/uapi/linux/can/error.h
-+++ b/include/uapi/linux/can/error.h
-@@ -120,6 +120,9 @@
- #define CAN_ERR_TRX_CANL_SHORT_TO_GND  0x70 /* 0111 0000 */
- #define CAN_ERR_TRX_CANL_SHORT_TO_CANH 0x80 /* 1000 0000 */
+diff --git a/drivers/net/can/slcan/slcan-core.c b/drivers/net/can/slcan/slcan-core.c
+index ead3afefcf19..aa15c06dc198 100644
+--- a/drivers/net/can/slcan/slcan-core.c
++++ b/drivers/net/can/slcan/slcan-core.c
+@@ -74,7 +74,7 @@ module_param(maxdev, int, 0);
+ MODULE_PARM_DESC(maxdev, "Maximum number of slcan interfaces");
  
--/* controller specific additional information / data[5..7] */
-+/* data[5] is reserved (do not use) */
-+
-+/* TX error counter / data[6] */
-+/* RX error counter / data[7] */
+ /* maximum rx buffer len: extended CAN frame with timestamp */
+-#define SLC_MTU (sizeof("T1111222281122334455667788EA5F\r")+1)
++#define SLC_MTU (sizeof("T1111222281122334455667788EA5F\r") + 1)
  
- #endif /* _UAPI_CAN_ERROR_H */
+ #define SLC_CMD_LEN 1
+ #define SLC_SFF_ID_LEN 3
+@@ -624,7 +624,7 @@ static netdev_tx_t slc_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	}
+ 
+ 	netif_stop_queue(sl->dev);
+-	slc_encaps(sl, (struct can_frame *) skb->data); /* encaps & send */
++	slc_encaps(sl, (struct can_frame *)skb->data); /* encaps & send */
+ 	spin_unlock(&sl->lock);
+ 
+ out:
+@@ -804,7 +804,7 @@ static void slcan_receive_buf(struct tty_struct *tty,
+ 			      const unsigned char *cp, const char *fp,
+ 			      int count)
+ {
+-	struct slcan *sl = (struct slcan *) tty->disc_data;
++	struct slcan *sl = (struct slcan *)tty->disc_data;
+ 
+ 	if (!sl || sl->magic != SLCAN_MAGIC || !netif_running(sl->dev))
+ 		return;
+@@ -976,7 +976,7 @@ static int slcan_open(struct tty_struct *tty)
+  */
+ static void slcan_close(struct tty_struct *tty)
+ {
+-	struct slcan *sl = (struct slcan *) tty->disc_data;
++	struct slcan *sl = (struct slcan *)tty->disc_data;
+ 
+ 	/* First make sure we're connected. */
+ 	if (!sl || sl->magic != SLCAN_MAGIC || sl->tty != tty)
+@@ -1006,7 +1006,7 @@ static void slcan_hangup(struct tty_struct *tty)
+ static int slcan_ioctl(struct tty_struct *tty, unsigned int cmd,
+ 		       unsigned long arg)
+ {
+-	struct slcan *sl = (struct slcan *) tty->disc_data;
++	struct slcan *sl = (struct slcan *)tty->disc_data;
+ 	unsigned int tmp;
+ 
+ 	/* First make sure we're connected. */
 -- 
 2.35.1
 
