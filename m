@@ -2,45 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D0A6C433EF
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:12:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8812FCCA480
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:12:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240523AbiGTIMV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jul 2022 04:12:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51972 "EHLO
+        id S240386AbiGTIM1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jul 2022 04:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240382AbiGTILx (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:53 -0400
+        with ESMTP id S240401AbiGTILy (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:54 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E3B6A9ED
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879916B263
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:36 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oE4nt-0000Q3-KX
-        for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:33 +0200
+        id 1oE4nu-0000TF-B9
+        for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:34 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id B6A6BB5937
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:41 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id B0CB9B59FC
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:44 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2BA1CB590F;
-        Wed, 20 Jul 2022 08:10:41 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2DD01B59D3;
+        Wed, 20 Jul 2022 08:10:44 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7ab25c10;
-        Wed, 20 Jul 2022 08:10:35 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 59d65e90;
+        Wed, 20 Jul 2022 08:10:36 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
-        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 13/29] can: c_can: remove wrong comment
-Date:   Wed, 20 Jul 2022 10:10:18 +0200
-Message-Id: <20220720081034.3277385-14-mkl@pengutronix.de>
+Subject: [PATCH net-next 26/29] can: usb_8dev: do not report txerr and rxerr during bus-off
+Date:   Wed, 20 Jul 2022 10:10:31 +0200
+Message-Id: <20220720081034.3277385-27-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220720081034.3277385-1-mkl@pengutronix.de>
 References: <20220720081034.3277385-1-mkl@pengutronix.de>
@@ -54,30 +54,37 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-The comment referred to a status (warning) other than the one that was
-being managed (active error).
+During bus off, the error count is greater than 255 and can not fit in
+a u8.
 
-Link: https://lore.kernel.org/all/20220716170112.2020291-1-dario.binacchi@amarulasolutions.com
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Fixes: 0024d8ad1639 ("can: usb_8dev: Add support for USB2CAN interface from 8 devices")
+Link: https://lore.kernel.org/all/20220719143550.3681-10-mailhol.vincent@wanadoo.fr
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/c_can/c_can_main.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/can/usb/usb_8dev.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/can/c_can/c_can_main.c b/drivers/net/can/c_can/c_can_main.c
-index a7362af0babb..ed4db4cf8716 100644
---- a/drivers/net/can/c_can/c_can_main.c
-+++ b/drivers/net/can/c_can/c_can_main.c
-@@ -952,7 +952,6 @@ static int c_can_handle_state_change(struct net_device *dev,
+diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
+index f3363575bf32..4d38dc90472a 100644
+--- a/drivers/net/can/usb/usb_8dev.c
++++ b/drivers/net/can/usb/usb_8dev.c
+@@ -438,9 +438,10 @@ static void usb_8dev_rx_err_msg(struct usb_8dev_priv *priv,
  
- 	switch (error_type) {
- 	case C_CAN_NO_ERROR:
--		/* error warning state */
- 		cf->can_id |= CAN_ERR_CRTL;
- 		cf->data[1] = CAN_ERR_CRTL_ACTIVE;
- 		cf->data[6] = bec.txerr;
+ 	if (rx_errors)
+ 		stats->rx_errors++;
+-
+-	cf->data[6] = txerr;
+-	cf->data[7] = rxerr;
++	if (priv->can.state != CAN_STATE_BUS_OFF) {
++		cf->data[6] = txerr;
++		cf->data[7] = rxerr;
++	}
+ 
+ 	priv->bec.txerr = txerr;
+ 	priv->bec.rxerr = rxerr;
 -- 
 2.35.1
 
