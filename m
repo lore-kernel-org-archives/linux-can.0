@@ -2,85 +2,99 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 453BBC43334
-	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 07:24:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 047F0C43334
+	for <linux-can@archiver.kernel.org>; Wed, 20 Jul 2022 08:11:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbiGTHYv (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Jul 2022 03:24:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43730 "EHLO
+        id S234459AbiGTILT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 20 Jul 2022 04:11:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239087AbiGTHYr (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 03:24:47 -0400
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4A867C89
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 00:24:47 -0700 (PDT)
-Received: by mail-yb1-f182.google.com with SMTP id r3so30704794ybr.6
-        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 00:24:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e11+fe8Z8ESHsJuUn0fkECgkggAo1cSJFgG5j15LV7o=;
-        b=MURAn5IFG1unHBbu6LcNSnF7xIZA7Jq+UJPx2oZb2k1Ks7l+pEr48xQdE/UEFl2SYD
-         +lOQ5uIZMty/dOftDrQoBlnG8GTQSRVj0Grb+r8fcIzImiyikYow6KC+Z2skBhqF+qK2
-         yzvX+/0aG5PZuMLv5CwunoHdILLpq9pj7aM89W7d66IaP9giLSnvuYFu/W83HeyZ9fLv
-         H6RgL7Fsp2RSMRtjZhEkOE9fSh3r1wUoT08aEN24mASIav35O67TZVacEXePXU2QlN6m
-         aDJjB6yiM8r19FeGNyTi+HEBl2vHPc8mggPhElDgNsfbt+bbvM9I9efN2tK2MhEUljVJ
-         pJ8A==
-X-Gm-Message-State: AJIora9yZHS34KHhCtfZGa7WL768lV1GIyVmm9ER6AtSwCMrepXUL0qj
-        vW/apiYcWRbH6vGSLDLlS+brw/24OOvforxA68l2MWVX
-X-Google-Smtp-Source: AGRyM1tSzrbZvVkF4DJP1e0rGDMfeEFmX6tRbgVPNtt+mFOSgLXHHy/8Pheu5ZKtmz4sinfxCy1U7jKQb3nhRXoTAeA=
-X-Received: by 2002:a25:a0cf:0:b0:66f:f075:51cb with SMTP id
- i15-20020a25a0cf000000b0066ff07551cbmr23222728ybm.142.1658301886333; Wed, 20
- Jul 2022 00:24:46 -0700 (PDT)
+        with ESMTP id S237312AbiGTILS (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Jul 2022 04:11:18 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE71474F0
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 01:11:17 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1oE4nb-0008LE-GO
+        for linux-can@vger.kernel.org; Wed, 20 Jul 2022 10:11:15 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id 15265B598F
+        for <linux-can@vger.kernel.org>; Wed, 20 Jul 2022 08:10:43 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 798C8B5964;
+        Wed, 20 Jul 2022 08:10:42 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 22629d37;
+        Wed, 20 Jul 2022 08:10:36 +0000 (UTC)
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 19/29] can: rcar_can: do not report txerr and rxerr during bus-off
+Date:   Wed, 20 Jul 2022 10:10:24 +0200
+Message-Id: <20220720081034.3277385-20-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220720081034.3277385-1-mkl@pengutronix.de>
+References: <20220720081034.3277385-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-References: <20220719143550.3681-1-mailhol.vincent@wanadoo.fr> <20220720071717.q7egrzu2fjc2c64i@pengutronix.de>
-In-Reply-To: <20220720071717.q7egrzu2fjc2c64i@pengutronix.de>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Wed, 20 Jul 2022 16:24:32 +0900
-Message-ID: <CAMZ6RqJ+HnkzLxLkgZMqKmFGtXJR9udD6ak+JnFs4AYD1HCyKw@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] can: error: set of fixes and improvement on
- txerr and rxerr reporting
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-can@vger.kernel.org,
-        Frank Jungclaus <frank.jungclaus@esd.eu>,
-        =?UTF-8?Q?Stefan_M=C3=A4tje?= <Stefan.Maetje@esd.eu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Wed. 20 Jul. 2022 at 16:20, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> On 19.07.2022 23:35:38, Vincent Mailhol wrote:
-> > This series is a collection of patches targeting the CAN error
-> > counter. The series is split in three blocks (with small relation to
-> > each other).
-> >
-> > Several drivers uses the data[6] and data[7] fields (both of type u8)
-> > of the CAN error frame to report those values. However, the maximum
-> > size an u8 can hold is 255 and the error counter can exceed this value
-> > if bus-off status occurs. As such, the first nine patches of this
-> > series make sure that no drivers try to report txerr or rxerr through
-> > the CAN error frame when bus-off status is reached.
-> >
-> > can_frame::data[5..7] are defined as being "controller
-> > specific". Controller specific behaviors are not something desirable
-> > (portability issue...) The tenth patch of this series specifies how
-> > can_frame::data[5..7] should be use and remove any "controller
-> > specific" freedom. The eleventh patch adds a flag to notify though
-> > can_frame::can_id that data[6..7] were populated (in order to be
-> > consistent with other fields).
-> >
-> > Finally, the twelfth and last patch add three macro values to specify
-> > the different error counter threshold with so far was hard-coded as
-> > magic numbers in the drivers.
-> >
-> > N.B.:
-> >   * patches 1 to 10 are for net (stable).
-> >   * patches 11 and 12 are for net-next (but depends on patches 1 to 10).
->
-> IMHO the patches 1..10 are not so critical that they need to go upstream
-> via net. Especially that we're already at -rc7. I'll take all via
-> can-next, OK?
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-Absolutely OK. Nothing critical here.
+During bus off, the error count is greater than 255 and can not fit in
+a u8.
+
+Fixes: fd1159318e55 ("can: add Renesas R-Car CAN driver")
+Link: https://lore.kernel.org/all/20220719143550.3681-3-mailhol.vincent@wanadoo.fr
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/rcar/rcar_can.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
+index d45762f1cf6b..24d7a71def6a 100644
+--- a/drivers/net/can/rcar/rcar_can.c
++++ b/drivers/net/can/rcar/rcar_can.c
+@@ -232,11 +232,8 @@ static void rcar_can_error(struct net_device *ndev)
+ 	if (eifr & (RCAR_CAN_EIFR_EWIF | RCAR_CAN_EIFR_EPIF)) {
+ 		txerr = readb(&priv->regs->tecr);
+ 		rxerr = readb(&priv->regs->recr);
+-		if (skb) {
++		if (skb)
+ 			cf->can_id |= CAN_ERR_CRTL;
+-			cf->data[6] = txerr;
+-			cf->data[7] = rxerr;
+-		}
+ 	}
+ 	if (eifr & RCAR_CAN_EIFR_BEIF) {
+ 		int rx_errors = 0, tx_errors = 0;
+@@ -336,6 +333,9 @@ static void rcar_can_error(struct net_device *ndev)
+ 		can_bus_off(ndev);
+ 		if (skb)
+ 			cf->can_id |= CAN_ERR_BUSOFF;
++	} else if (skb) {
++		cf->data[6] = txerr;
++		cf->data[7] = rxerr;
+ 	}
+ 	if (eifr & RCAR_CAN_EIFR_ORIF) {
+ 		netdev_dbg(priv->ndev, "Receive overrun error interrupt\n");
+-- 
+2.35.1
+
+
