@@ -2,327 +2,266 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A05DCCA48D
-	for <linux-can@archiver.kernel.org>; Sun, 24 Jul 2022 07:44:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A68BC433EF
+	for <linux-can@archiver.kernel.org>; Mon, 25 Jul 2022 06:40:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234464AbiGXHoR (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 24 Jul 2022 03:44:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
+        id S230190AbiGYGkk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 25 Jul 2022 02:40:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239286AbiGXHoR (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 24 Jul 2022 03:44:17 -0400
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3ABC19C0D
-        for <linux-can@vger.kernel.org>; Sun, 24 Jul 2022 00:44:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1658648649;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=gQX3ZPkwLbYylef+qv3HgeBeYCGqQdUVa5q8Y3wsxUE=;
-    b=UUPn7LxoRx2i22XACmwOH5CBREy026OOmXBcv1wvChXC7H7uszcBFLh3s4DfYg/QeW
-    3m1ifVs35FHGmLGABkraD33CCaAiby19x+mrO9JcqQB2cTwUw6dtzNo5F2w1ltPJ+Bud
-    cEFppWU3ajSr4aIMTdUWJnztSr/KbfQd0AExdGEDbYyNSilxYpqQHKUPfyCliXzlrPal
-    8VgwQK8lBroog1rOpIkhLWyWGykh6Y+Y6tQ48AYSi3sQG6rJPlOgvHwK0GHsY2nAyAxK
-    zZbEHVLB/GoifkWDbdZfO9kUmiNNsbQPLCPpMGz+aZEZJGb63qplHlA79Wakh9AEcLdN
-    T4OQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS/xvEBL7X5sbo3UIh9JiLceSWJaYwXUKbZ"
-X-RZG-CLASS-ID: mo00
-Received: from silver.lan
-    by smtp.strato.de (RZmta 47.47.0 AUTH)
-    with ESMTPSA id jdcffay6O7i986T
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Sun, 24 Jul 2022 09:44:09 +0200 (CEST)
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-To:     linux-can@vger.kernel.org
-Cc:     Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [RFC PATCH v6 1/7] can: skb: unify skb CAN frame identification helpers
-Date:   Sun, 24 Jul 2022 09:43:56 +0200
-Message-Id: <20220724074402.117394-2-socketcan@hartkopp.net>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220724074402.117394-1-socketcan@hartkopp.net>
-References: <20220724074402.117394-1-socketcan@hartkopp.net>
+        with ESMTP id S229864AbiGYGkk (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 25 Jul 2022 02:40:40 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B89872AC3
+        for <linux-can@vger.kernel.org>; Sun, 24 Jul 2022 23:40:37 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id p22so2171759lji.10
+        for <linux-can@vger.kernel.org>; Sun, 24 Jul 2022 23:40:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3n2kEuwuuK7IkJ0ff/d4b/av1Jc3vPr0Y+VbQ9saI84=;
+        b=LMFj5ZuaBlD5A8dOVY5use5OPng2TabtOQeQh3sj1+jQuFlqkgAZUEmCK8tSwYgexa
+         o2MsvhXhVrSMXTC9diMSKAfs4wAZuvHIqEhL/GdOURDxkZOeJ7e/fIS5RBAjIuiKWfcA
+         gqtQq0NLk4mZWY2TGmOQJx/c1R0bJUVAsjrac=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3n2kEuwuuK7IkJ0ff/d4b/av1Jc3vPr0Y+VbQ9saI84=;
+        b=KIv2pJjNaLARdHpiMQvPfcAZ5e+sUZZGL1EHqIHFP+D0MFzcrwuFaeS3gF52cd0k4a
+         b+pWSXq6hOBA8YvsVQRYQs0kQ5EUiemzwCQn3MFpX3BIIub0w3qv9vU2pcfz/F/oy/NP
+         2ZwCtRgo1EXb1HviOq80WYwLI1356MALI1PdAXIuz4pPtFP9SxHstvoiaO5YMOZ1CB3Y
+         a4tM9p6hriOyqwHPnx+MNhcj1wkRnXzUUQKncco7Kas3dQ0ZovrXX5MufvnDpf0nXsv5
+         7UmdTPbPA7oadPj4le0lMyCiljkrHFW9T1gvekOOGec+f8F7b+LEPE2Dt9Gad3AESAOT
+         gnQg==
+X-Gm-Message-State: AJIora/+hjrQabqXT3NZzI7P7LAta7wkfVJgx73wctOCf/e2U1XV3JGK
+        oAoWSF4dzOAZGZVoefGHIWTpowIIMVZZUxFV7ktW/w==
+X-Google-Smtp-Source: AGRyM1sn3iWkEiLU6hMHnvyasmekyibSLlJDbi1WCJvYwpGTp4FtZLeav7l27mv0g0B0s3BIzRQHP86NWkxqKLRXK1k=
+X-Received: by 2002:a2e:bf0e:0:b0:258:e99e:998c with SMTP id
+ c14-20020a2ebf0e000000b00258e99e998cmr3841212ljr.365.1658731236073; Sun, 24
+ Jul 2022 23:40:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20220716170007.2020037-1-dario.binacchi@amarulasolutions.com>
+ <20220716170007.2020037-3-dario.binacchi@amarulasolutions.com> <20220717233842.1451e349.max@enpas.org>
+In-Reply-To: <20220717233842.1451e349.max@enpas.org>
+From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Date:   Mon, 25 Jul 2022 08:40:24 +0200
+Message-ID: <CABGWkvrgX+9J-rOb-EO1wXVAZQ5phwKKpbc-iD491rD9zn5UpQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/5] can: slcan: remove legacy infrastructure
+To:     Max Staudt <max@enpas.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Jeroen Hofstee <jhofstee@victronenergy.com>,
+        michael@amarulasolutions.com,
+        Amarula patchwork <linux-amarula@amarulasolutions.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Replace open coded checks for sk_buffs containing Classical CAN and
-CAN FD frame structures as a preparation for CAN XL support.
+Hi Max,
 
-With the added length check the unintended processing of CAN XL frames
-having the CANXL_XLF bit set can be suppressed even when the skb->len
-fits to non CAN XL frames.
+First of all thank you for your review, it took me a while to get back
+to you because I wanted to
+do some analysis and tests regarding the code you suggested I change
+and also last week
+was very busy.
 
-The CAN_RAW socket needs a rework to use these helpers. Therefore the
-use of these helpers is postponed to the CAN_RAW CAN XL integration.
+On Sun, Jul 17, 2022 at 11:38 PM Max Staudt <max@enpas.org> wrote:
+>
+> Hi Dario,
+>
+> This looks good, thank you for continuing to look after slcan!
+>
+> A few comments below.
+>
+>
+>
+> On Sat, 16 Jul 2022 19:00:04 +0200
+> Dario Binacchi <dario.binacchi@amarulasolutions.com> wrote:
+>
+> [...]
+>
+>
+> > @@ -68,7 +62,6 @@ MODULE_PARM_DESC(maxdev, "Maximum number of slcan interfaces");
+> >                                  SLC_STATE_BE_TXCNT_LEN)
+> >  struct slcan {
+> >       struct can_priv         can;
+> > -     int                     magic;
+> >
+> >       /* Various fields. */
+> >       struct tty_struct       *tty;           /* ptr to TTY structure      */
+> > @@ -84,17 +77,14 @@ struct slcan {
+> >       int                     xleft;          /* bytes left in XMIT queue  */
+> >
+> >       unsigned long           flags;          /* Flag values/ mode etc     */
+> > -#define SLF_INUSE            0               /* Channel in use            */
+> > -#define SLF_ERROR            1               /* Parity, etc. error        */
+> > -#define SLF_XCMD             2               /* Command transmission      */
+> > +#define SLF_ERROR            0               /* Parity, etc. error        */
+> > +#define SLF_XCMD             1               /* Command transmission      */
+> >       unsigned long           cmd_flags;      /* Command flags             */
+> >  #define CF_ERR_RST           0               /* Reset errors on open      */
+> >       wait_queue_head_t       xcmd_wait;      /* Wait queue for commands   */
+>
+> I assume xcmd_wait() came in as part of the previous patch series?
+>
 
-The J1939 protocol gets a check for Classical CAN frames too.
+Yes, correct.
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- drivers/net/can/dev/skb.c | 18 +++++++-------
- include/linux/can/skb.h   | 12 +++++++++-
- net/can/af_can.c          | 50 ++++++++-------------------------------
- net/can/bcm.c             |  9 +++++--
- net/can/gw.c              |  4 ++--
- net/can/isotp.c           |  2 +-
- net/can/j1939/main.c      |  4 ++++
- 7 files changed, 45 insertions(+), 54 deletions(-)
+>
+> [...]
+>
+>
+> >  /* Send a can_frame to a TTY queue. */
+> > @@ -652,25 +637,21 @@ static int slc_close(struct net_device *dev)
+> >       struct slcan *sl = netdev_priv(dev);
+> >       int err;
+> >
+> > -     spin_lock_bh(&sl->lock);
+> > -     if (sl->tty) {
+> > -             if (sl->can.bittiming.bitrate &&
+> > -                 sl->can.bittiming.bitrate != CAN_BITRATE_UNKNOWN) {
+> > -                     spin_unlock_bh(&sl->lock);
+> > -                     err = slcan_transmit_cmd(sl, "C\r");
+> > -                     spin_lock_bh(&sl->lock);
+> > -                     if (err)
+> > -                             netdev_warn(dev,
+> > -                                         "failed to send close command 'C\\r'\n");
+> > -             }
+> > -
+> > -             /* TTY discipline is running. */
+> > -             clear_bit(TTY_DO_WRITE_WAKEUP, &sl->tty->flags);
+> > +     if (sl->can.bittiming.bitrate &&
+> > +         sl->can.bittiming.bitrate != CAN_BITRATE_UNKNOWN) {
+> > +             err = slcan_transmit_cmd(sl, "C\r");
+> > +             if (err)
+> > +                     netdev_warn(dev,
+> > +                                 "failed to send close command 'C\\r'\n");
+> >       }
+> > +
+> > +     /* TTY discipline is running. */
+> > +     clear_bit(TTY_DO_WRITE_WAKEUP, &sl->tty->flags);
+> > +     flush_work(&sl->tx_work);
+> > +
+> >       netif_stop_queue(dev);
+> >       sl->rcount   = 0;
+> >       sl->xleft    = 0;
+>
+> I suggest moving these two assignments to slc_open() - see below.
+>
+>
+> [...]
+>
+>
+> > @@ -883,72 +786,50 @@ static int slcan_open(struct tty_struct *tty)
+> >       if (!tty->ops->write)
+> >               return -EOPNOTSUPP;
+> >
+> > -     /* RTnetlink lock is misused here to serialize concurrent
+> > -      * opens of slcan channels. There are better ways, but it is
+> > -      * the simplest one.
+> > -      */
+> > -     rtnl_lock();
+> > +     dev = alloc_candev(sizeof(*sl), 1);
+> > +     if (!dev)
+> > +             return -ENFILE;
+> >
+> > -     /* Collect hanged up channels. */
+> > -     slc_sync();
+> > +     sl = netdev_priv(dev);
+> >
+> > -     sl = tty->disc_data;
+> > +     /* Configure TTY interface */
+> > +     tty->receive_room = 65536; /* We don't flow control */
+> > +     sl->rcount   = 0;
+> > +     sl->xleft    = 0;
+>
+> I suggest moving the zeroing to slc_open() - i.e. to the netdev open
+> function. As a bonus, you can then remove the same two assignments from
+> slc_close() (see above). They are only used when netif_running(), with
+> appropiate guards already in place as far as I can see.
 
-diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-index 8bb62dd864c8..45313b90005c 100644
---- a/drivers/net/can/dev/skb.c
-+++ b/drivers/net/can/dev/skb.c
-@@ -291,22 +291,24 @@ static bool can_skb_headroom_valid(struct net_device *dev, struct sk_buff *skb)
- }
- 
- /* Drop a given socketbuffer if it does not contain a valid CAN frame. */
- bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb)
- {
--	const struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
- 	struct can_priv *priv = netdev_priv(dev);
- 
--	if (skb->protocol == htons(ETH_P_CAN)) {
--		if (unlikely(skb->len != CAN_MTU ||
--			     cfd->len > CAN_MAX_DLEN))
-+	switch (ntohs(skb->protocol)) {
-+	case ETH_P_CAN:
-+		if (!can_is_can_skb(skb))
- 			goto inval_skb;
--	} else if (skb->protocol == htons(ETH_P_CANFD)) {
--		if (unlikely(skb->len != CANFD_MTU ||
--			     cfd->len > CANFD_MAX_DLEN))
-+		break;
-+
-+	case ETH_P_CANFD:
-+		if (!can_is_canfd_skb(skb))
- 			goto inval_skb;
--	} else {
-+		break;
-+
-+	default:
- 		goto inval_skb;
- 	}
- 
- 	if (!can_skb_headroom_valid(dev, skb)) {
- 		goto inval_skb;
-diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
-index 182749e858b3..27ebfc28510f 100644
---- a/include/linux/can/skb.h
-+++ b/include/linux/can/skb.h
-@@ -95,12 +95,22 @@ static inline struct sk_buff *can_create_echo_skb(struct sk_buff *skb)
- 	can_skb_set_owner(nskb, skb->sk);
- 	consume_skb(skb);
- 	return nskb;
- }
- 
-+static inline bool can_is_can_skb(const struct sk_buff *skb)
-+{
-+	struct can_frame *cf = (struct can_frame *)skb->data;
-+
-+	/* the CAN specific type of skb is identified by its data length */
-+	return (skb->len == CAN_MTU && cf->len <= CAN_MAX_DLEN);
-+}
-+
- static inline bool can_is_canfd_skb(const struct sk_buff *skb)
- {
-+	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
-+
- 	/* the CAN specific type of skb is identified by its data length */
--	return skb->len == CANFD_MTU;
-+	return (skb->len == CANFD_MTU && cfd->len <= CANFD_MAX_DLEN);
- }
- 
- #endif /* !_CAN_SKB_H */
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index 1fb49d51b25d..afa6c2151bc4 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -197,31 +197,23 @@ static int can_create(struct net *net, struct socket *sock, int protocol,
-  *  -EINVAL when the skb->data does not contain a valid CAN frame
-  */
- int can_send(struct sk_buff *skb, int loop)
- {
- 	struct sk_buff *newskb = NULL;
--	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
- 	struct can_pkg_stats *pkg_stats = dev_net(skb->dev)->can.pkg_stats;
- 	int err = -EINVAL;
- 
--	if (skb->len == CAN_MTU) {
-+	if (can_is_can_skb(skb)) {
- 		skb->protocol = htons(ETH_P_CAN);
--		if (unlikely(cfd->len > CAN_MAX_DLEN))
--			goto inval_skb;
--	} else if (skb->len == CANFD_MTU) {
-+	} else if (can_is_canfd_skb(skb)) {
- 		skb->protocol = htons(ETH_P_CANFD);
--		if (unlikely(cfd->len > CANFD_MAX_DLEN))
--			goto inval_skb;
- 	} else {
- 		goto inval_skb;
- 	}
- 
--	/* Make sure the CAN frame can pass the selected CAN netdevice.
--	 * As structs can_frame and canfd_frame are similar, we can provide
--	 * CAN FD frames to legacy CAN drivers as long as the length is <= 8
--	 */
--	if (unlikely(skb->len > skb->dev->mtu && cfd->len > CAN_MAX_DLEN)) {
-+	/* Make sure the CAN frame can pass the selected CAN netdevice. */
-+	if (unlikely(skb->len > skb->dev->mtu)) {
- 		err = -EMSGSIZE;
- 		goto inval_skb;
- 	}
- 
- 	if (unlikely(skb->dev->type != ARPHRD_CAN)) {
-@@ -676,57 +668,35 @@ static void can_receive(struct sk_buff *skb, struct net_device *dev)
- }
- 
- static int can_rcv(struct sk_buff *skb, struct net_device *dev,
- 		   struct packet_type *pt, struct net_device *orig_dev)
- {
--	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
--
--	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CAN_MTU)) {
-+	if (unlikely(dev->type != ARPHRD_CAN || (!can_is_can_skb(skb)))) {
- 		pr_warn_once("PF_CAN: dropped non conform CAN skbuff: dev type %d, len %d\n",
- 			     dev->type, skb->len);
--		goto free_skb;
--	}
- 
--	/* This check is made separately since cfd->len would be uninitialized if skb->len = 0. */
--	if (unlikely(cfd->len > CAN_MAX_DLEN)) {
--		pr_warn_once("PF_CAN: dropped non conform CAN skbuff: dev type %d, len %d, datalen %d\n",
--			     dev->type, skb->len, cfd->len);
--		goto free_skb;
-+		kfree_skb(skb);
-+		return NET_RX_DROP;
- 	}
- 
- 	can_receive(skb, dev);
- 	return NET_RX_SUCCESS;
--
--free_skb:
--	kfree_skb(skb);
--	return NET_RX_DROP;
- }
- 
- static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
- 		     struct packet_type *pt, struct net_device *orig_dev)
- {
--	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
--
--	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CANFD_MTU)) {
-+	if (unlikely(dev->type != ARPHRD_CAN || (!can_is_canfd_skb(skb)))) {
- 		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d, len %d\n",
- 			     dev->type, skb->len);
--		goto free_skb;
--	}
- 
--	/* This check is made separately since cfd->len would be uninitialized if skb->len = 0. */
--	if (unlikely(cfd->len > CANFD_MAX_DLEN)) {
--		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d, len %d, datalen %d\n",
--			     dev->type, skb->len, cfd->len);
--		goto free_skb;
-+		kfree_skb(skb);
-+		return NET_RX_DROP;
- 	}
- 
- 	can_receive(skb, dev);
- 	return NET_RX_SUCCESS;
--
--free_skb:
--	kfree_skb(skb);
--	return NET_RX_DROP;
- }
- 
- /* af_can protocol functions */
- 
- /**
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index e60161bec850..e5d179ba6f7d 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -646,12 +646,17 @@ static void bcm_rx_handler(struct sk_buff *skb, void *data)
- 
- 	if (op->can_id != rxframe->can_id)
- 		return;
- 
- 	/* make sure to handle the correct frame type (CAN / CAN FD) */
--	if (skb->len != op->cfsiz)
--		return;
-+	if (op->flags & CAN_FD_FRAME) {
-+		if (!can_is_canfd_skb(skb))
-+			return;
-+	} else {
-+		if (!can_is_can_skb(skb))
-+			return;
-+	}
- 
- 	/* disable timeout */
- 	hrtimer_cancel(&op->timer);
- 
- 	/* save rx timestamp */
-diff --git a/net/can/gw.c b/net/can/gw.c
-index 1ea4cc527db3..23a3d89cad81 100644
---- a/net/can/gw.c
-+++ b/net/can/gw.c
-@@ -461,14 +461,14 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
- 	struct sk_buff *nskb;
- 	int modidx = 0;
- 
- 	/* process strictly Classic CAN or CAN FD frames */
- 	if (gwj->flags & CGW_FLAGS_CAN_FD) {
--		if (skb->len != CANFD_MTU)
-+		if (!can_is_canfd_skb(skb))
- 			return;
- 	} else {
--		if (skb->len != CAN_MTU)
-+		if (!can_is_can_skb(skb))
- 			return;
- 	}
- 
- 	/* Do not handle CAN frames routed more than 'max_hops' times.
- 	 * In general we should never catch this delimiter which is intended
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 43a27d19cdac..a9d1357f8489 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -667,11 +667,11 @@ static void isotp_rcv(struct sk_buff *skb, void *data)
- 		sf_dl = cf->data[ae] & 0x0F;
- 
- 		if (cf->len <= CAN_MAX_DLEN) {
- 			isotp_rcv_sf(sk, cf, SF_PCI_SZ4 + ae, skb, sf_dl);
- 		} else {
--			if (skb->len == CANFD_MTU) {
-+			if (can_is_canfd_skb(skb)) {
- 				/* We have a CAN FD frame and CAN_DL is greater than 8:
- 				 * Only frames with the SF_DL == 0 ESC value are valid.
- 				 *
- 				 * If so take care of the increased SF PCI size
- 				 * (SF_PCI_SZ8) to point to the message content behind
-diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
-index 8452b0fbb78c..ce09626038a1 100644
---- a/net/can/j1939/main.c
-+++ b/net/can/j1939/main.c
-@@ -40,10 +40,14 @@ static void j1939_can_recv(struct sk_buff *iskb, void *data)
- 	struct j1939_priv *priv = data;
- 	struct sk_buff *skb;
- 	struct j1939_sk_buff_cb *skcb, *iskcb;
- 	struct can_frame *cf;
- 
-+	/* make sure we only get Classical CAN frames */
-+	if (!can_is_can_skb(iskb))
-+		return;
-+
- 	/* create a copy of the skb
- 	 * j1939 only delivers the real data bytes,
- 	 * the header goes into sockaddr.
- 	 * j1939 may not touch the incoming skb in such way
- 	 */
+I think it is better to keep the code as it is, since at the entry of
+the netdev
+open function, netif_running already returns true (it is set to true by the
+calling function) and therefore it would be less safe to reset the
+rcount and xleft
+fields.
+
+Thanks and regards,
+Dario
+
+>
+>
+> > +     spin_lock_init(&sl->lock);
+> > +     INIT_WORK(&sl->tx_work, slcan_transmit);
+> > +     init_waitqueue_head(&sl->xcmd_wait);
+> >
+> > -     err = -EEXIST;
+> > -     /* First make sure we're not already connected. */
+> > -     if (sl && sl->magic == SLCAN_MAGIC)
+> > -             goto err_exit;
+> > +     /* Configure CAN metadata */
+> > +     sl->can.bitrate_const = slcan_bitrate_const;
+> > +     sl->can.bitrate_const_cnt = ARRAY_SIZE(slcan_bitrate_const);
+> >
+> > -     /* OK.  Find a free SLCAN channel to use. */
+> > -     err = -ENFILE;
+> > -     sl = slc_alloc();
+> > -     if (!sl)
+> > -             goto err_exit;
+> > +     /* Configure netdev interface */
+> > +     sl->dev = dev;
+> > +     strscpy(dev->name, "slcan%d", sizeof(dev->name));
+>
+> The third parameter looks... unintentional :)
+>
+> What do the maintainers think of dropping the old "slcan" name, and
+> just allowing this to be a normal canX device? These patches do bring
+> it closer to that, after all. In this case, this name string magic
+> could be dropped altogether.
+>
+>
+> [...]
+>
+>
+>
+> This looks good to me overall.
+>
+> Thanks Dario!
+>
+>
+> Max
+
+
+
 -- 
-2.30.2
 
+Dario Binacchi
+
+Embedded Linux Developer
+
+dario.binacchi@amarulasolutions.com
+
+__________________________________
+
+
+Amarula Solutions SRL
+
+Via Le Canevare 30, 31100 Treviso, Veneto, IT
+
+T. +39 042 243 5310
+info@amarulasolutions.com
+
+www.amarulasolutions.com
