@@ -2,51 +2,51 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8212BC433EF
-	for <linux-can@archiver.kernel.org>; Mon, 25 Jul 2022 13:33:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A4A3C43334
+	for <linux-can@archiver.kernel.org>; Mon, 25 Jul 2022 13:33:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235390AbiGYNd3 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 25 Jul 2022 09:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
+        id S235608AbiGYNdk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 25 Jul 2022 09:33:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235559AbiGYNdY (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 25 Jul 2022 09:33:24 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5680E0BB
-        for <linux-can@vger.kernel.org>; Mon, 25 Jul 2022 06:33:15 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id n10-20020a17090a670a00b001f22ebae50aso10295326pjj.3
-        for <linux-can@vger.kernel.org>; Mon, 25 Jul 2022 06:33:15 -0700 (PDT)
+        with ESMTP id S235587AbiGYNdZ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 25 Jul 2022 09:33:25 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4EC13DCF
+        for <linux-can@vger.kernel.org>; Mon, 25 Jul 2022 06:33:20 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 23so10354508pgc.8
+        for <linux-can@vger.kernel.org>; Mon, 25 Jul 2022 06:33:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/Rj1+qLgX9PKJlGGql5VxIx3n29BZXPRUS2TXJB5cxU=;
-        b=O1Mxob14yRwQ2vGDZJECSHuCb+z6kuBp/2v3uQh42inMlwVpY/Vj+5Vtm0nIyavWRj
-         4dOrapJ28hj268MBAUqOHoiL8hExl6Io/tDr/4yHoErk6v+1eH1KPc2/mSpqkVUB/acn
-         n2LiDUaKLq9WnG5NFmxPQvGd5bSUeQftrIve75ZV0WSGYdiElB+FbgHIk+aVi0J5p/3r
-         DJbmzTL/ua2iHIAQkGH0Lu+s3rFPYSj/vcLjfG0hcKNy9AkCCqwWQV4UZm1GmFm+Jbof
-         sFGkzi+uGAZhcDqHAtJ4XzFgtaRdXYvs1hR4Mfq8sGcIRfabHQQkoqY33Vlzdd0L3SIX
-         vlDA==
+        bh=jjKb6TirPKLhfcVq5PbTY6uNTrlTo2aZTAUnFsk8e9o=;
+        b=MgJ7YL7YSwwiqNFh4wox2ESEzjBkFDOE7bsWlZdEHbUwhikNFFz6m1PbDFHHD2z+dj
+         /5i864rTS6bhVvy3k2TKJjyZTcjf6nIHbYH3UZsuxs+hhW45KfsGjCvkG62h+1t0BcQP
+         eR7mV1f9aB4YyaNI/cXif1iyCvsi0oefl5GLkVeJa+1HfKDMJvRnuFE13bO6Nn2cLIqu
+         q8BiaT69e6ml/Jf4GQUdB53qaB42OGQWfIbJu3c27Jrqc7I4gb1OqlQ9TLNBWVDQVJEX
+         pYifekl7N9ycsHzXzLvKp7BpQBQilAP6en943SELLM3RN1fYVHPmdTYdBUxcRICsAQSS
+         U6+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=/Rj1+qLgX9PKJlGGql5VxIx3n29BZXPRUS2TXJB5cxU=;
-        b=u/77m6uQ+i8byNpOEgVTfXemTUdqKB3Rl37FMZOMCWBmahacb3Vvz1ohCkbXpieCzI
-         v5VsQNlyzu4d/N1EtCkztR1+oxvNln1BreI9OPvMRIRzNVL0vKy7tqIGrLmoiJweJ4JQ
-         YmMdDBERU+Fb/PRpGqnAHmQjkqIQr9qqnSyRBaLEGAis0zxRhgEF2A8qRNg4eqAB3yhM
-         v9MecCZ3UthN+6tneUMlsFFKzayKZhermRDa66HXAShHq3ppSQMrAzC4vxmPrrwLFJi3
-         5UaRxHeXY7vnU5Tgy0Ob89c5oOg0oSw+eiTBAY+FvxYymfGSdt7DZvd5ix98BPTW6Vvg
-         k1JQ==
-X-Gm-Message-State: AJIora+YS/imzTTW8Uvy/+dQj5J23GEqDjrcMMb2pccHXoH2TVNje60q
-        36TJO/lfWYzGeuPwNSJsw2IwMXrvYVSyfg==
-X-Google-Smtp-Source: AGRyM1vK0OXq0YzgsE/TVfx1rV+A+7NVPKjh5parrUebNY9TJR9X5iFEFdr7GnDhpxx1ZGF4oQ2uDA==
-X-Received: by 2002:a17:90b:380c:b0:1f2:460a:2b30 with SMTP id mq12-20020a17090b380c00b001f2460a2b30mr19772233pjb.103.1658755994978;
-        Mon, 25 Jul 2022 06:33:14 -0700 (PDT)
+        bh=jjKb6TirPKLhfcVq5PbTY6uNTrlTo2aZTAUnFsk8e9o=;
+        b=txl8efgiJJOPMluW6+bXoUys5LOxy5GjHp7yZXQ9mlEhUwqyknfIWbS3ZhuTW2OasT
+         pWz9sKdmYSVnAs3UTYky1rRvvEJ8E4AQoa4qZQz67PDKnDm9t4DhvK7XNw7BZ/eJFGl7
+         kcmLRG6Zb6nwSZNMotxh4ok9FBsAafFE3vb4Yv+Sn4SPP36thxuhqRQsvvbhpM9jEZiv
+         KNNqb/atWp0FJmV7O9vKj33//2IQFqGRIXz2spU7Gxcqg7ZzXzZ05CSQh5Q0APmkDZyD
+         C4CYBNdlh5jFHatwlFHZc+9WzLdDwicPLEIVEE5OSYN9uIDaWAIiPAago1j4sc/R0ogT
+         Aj1w==
+X-Gm-Message-State: AJIora8xUSVXNFqGI2Ko+QRDNFHpUWAcmoxos8u3pVp0pCetWhth6iZr
+        VSl0OyVUPkhXQZ7y+WkSwiNKWsbL8kEo2g==
+X-Google-Smtp-Source: AGRyM1vHIs+Q5jtJBeSb2uKD7SbdHQP7NnozekPkq7oLaAk3LCP7dkuOK6pDebC/ykSt4QS2YlhkgQ==
+X-Received: by 2002:a63:6984:0:b0:40d:9ebe:5733 with SMTP id e126-20020a636984000000b0040d9ebe5733mr11132265pgc.170.1658755999384;
+        Mon, 25 Jul 2022 06:33:19 -0700 (PDT)
 Received: from localhost.localdomain (124x33x176x97.ap124.ftth.ucom.ne.jp. [124.33.176.97])
-        by smtp.gmail.com with ESMTPSA id i12-20020a170902c94c00b0016c16648213sm9406133pla.20.2022.07.25.06.33.13
+        by smtp.gmail.com with ESMTPSA id i12-20020a170902c94c00b0016c16648213sm9406133pla.20.2022.07.25.06.33.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jul 2022 06:33:14 -0700 (PDT)
+        Mon, 25 Jul 2022 06:33:19 -0700 (PDT)
 Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
 From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 To:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
@@ -56,9 +56,9 @@ Cc:     Stephane Grosjean <s.grosjean@peak-system.com>,
         Dario Binacchi <dario.binacchi@amarulasolutions.com>,
         Max Staudt <max@enpas.org>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v1 21/24] can: kvaser_pciefd: advertise timestamping capabilities and add ioctl support
-Date:   Mon, 25 Jul 2022 22:32:05 +0900
-Message-Id: <20220725133208.432176-22-mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v1 23/24] can: peak_canfd: advertise timestamping capabilities and add ioctl support
+Date:   Mon, 25 Jul 2022 22:32:07 +0900
+Message-Id: <20220725133208.432176-24-mailhol.vincent@wanadoo.fr>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220725133208.432176-1-mailhol.vincent@wanadoo.fr>
 References: <20220725133208.432176-1-mailhol.vincent@wanadoo.fr>
@@ -69,7 +69,7 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 Currently, userland has no method to query which timestamping features
-are supported by the kvaser_pciefd driver (aside maybe of getting RX
+are supported by the peak_canfd driver (aside maybe of getting RX
 messages and obseverse whever or not hardware timestamps stay at
 zero).
 
@@ -88,32 +88,32 @@ function can_eth_ioctl_hwts().
 Implementation: Device Drivers"
 Link: https://docs.kernel.org/networking/timestamping.html#hardware-timestamping-implementation-device-drivers
 
-CC: Jimmy Assarsson <extja@kvaser.com>
+CC: Stephane Grosjean <s.grosjean@peak-system.com>
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 ---
- drivers/net/can/kvaser_pciefd.c | 2 ++
+ drivers/net/can/peak_canfd/peak_canfd.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
-index f7f7a0287a8d..2109f904b052 100644
---- a/drivers/net/can/kvaser_pciefd.c
-+++ b/drivers/net/can/kvaser_pciefd.c
-@@ -920,6 +920,7 @@ static void kvaser_pciefd_bec_poll_timer(struct timer_list *data)
- static const struct net_device_ops kvaser_pciefd_netdev_ops = {
- 	.ndo_open = kvaser_pciefd_open,
- 	.ndo_stop = kvaser_pciefd_stop,
+diff --git a/drivers/net/can/peak_canfd/peak_canfd.c b/drivers/net/can/peak_canfd/peak_canfd.c
+index 9b94d5b4be2d..b0915cc80cc8 100644
+--- a/drivers/net/can/peak_canfd/peak_canfd.c
++++ b/drivers/net/can/peak_canfd/peak_canfd.c
+@@ -746,6 +746,7 @@ static netdev_tx_t peak_canfd_start_xmit(struct sk_buff *skb,
+ static const struct net_device_ops peak_canfd_netdev_ops = {
+ 	.ndo_open = peak_canfd_open,
+ 	.ndo_stop = peak_canfd_close,
 +	.ndo_eth_ioctl = can_eth_ioctl_hwts,
- 	.ndo_start_xmit = kvaser_pciefd_start_xmit,
+ 	.ndo_start_xmit = peak_canfd_start_xmit,
  	.ndo_change_mtu = can_change_mtu,
  };
-@@ -932,6 +933,7 @@ static void kvaser_pciefd_get_drvinfo(struct net_device *netdev,
+@@ -758,6 +759,7 @@ static void peak_canfd_get_drvinfo(struct net_device *netdev,
  
- static const struct ethtool_ops kvaser_pciefd_ethtool_ops = {
- 	.get_drvinfo = kvaser_pciefd_get_drvinfo,
+ static const struct ethtool_ops peak_canfd_ethtool_ops = {
+ 	.get_drvinfo = peak_canfd_get_drvinfo,
 +	.get_ts_info = can_ethtool_op_get_ts_info_hwts,
  };
  
- static int kvaser_pciefd_setup_can_ctrls(struct kvaser_pciefd *pcie)
+ struct net_device *alloc_peak_canfd_dev(int sizeof_priv, int index,
 -- 
 2.35.1
 
