@@ -2,51 +2,51 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A670C43334
-	for <linux-can@archiver.kernel.org>; Mon, 25 Jul 2022 15:54:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F408C43334
+	for <linux-can@archiver.kernel.org>; Mon, 25 Jul 2022 15:54:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235238AbiGYPyW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 25 Jul 2022 11:54:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36760 "EHLO
+        id S231165AbiGYPyZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 25 Jul 2022 11:54:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235730AbiGYPyV (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 25 Jul 2022 11:54:21 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7381DF66
-        for <linux-can@vger.kernel.org>; Mon, 25 Jul 2022 08:54:17 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id w7so10757911ply.12
-        for <linux-can@vger.kernel.org>; Mon, 25 Jul 2022 08:54:17 -0700 (PDT)
+        with ESMTP id S235730AbiGYPyX (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 25 Jul 2022 11:54:23 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 054B112638
+        for <linux-can@vger.kernel.org>; Mon, 25 Jul 2022 08:54:23 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id s206so10745835pgs.3
+        for <linux-can@vger.kernel.org>; Mon, 25 Jul 2022 08:54:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=3OAyAclI8gDeKRzlzTjGfCuF1/4VXKJq5MDqz3fHHbI=;
-        b=JZjcxMSPrKRwFIGWFNuiswBbPYPeRLk6WieCQMM0sR3Kkzei6AG5w5Yn3QjjUUca9Z
-         v08sj3KiTaeax0UuFA1AAum/cPhhHLpf68mRzlunoM+eGYxsKG1P70q6ZgmQ5Wpi5QJw
-         GPS5z1qL61flEjZlWmD+tBfD0ZFkdd+UlZFDjvtd4swxy53pbyBSrC5c0at092usj9HK
-         R6HovnzebKNVBVodymhuppHxv0Oc84OpHOrkNM58RWIu01QVgYnPMVAPvrfOPzG8XzXh
-         y6vqrBW866claRY3CvtZE3ve0LGbrcv9tQ17r+d09fLaxcC2sHkz2qWOvC7LNf32BRYD
-         J21w==
+        bh=AxjWx6wqgIco2TQFNPCVmq77ltivpPoWUErAafGdsR0=;
+        b=kIbX0RE3RXEjraeg0bpmrGO+e05aey7JSmknIni7hX+gDXVcvo3SL0Vi77IF9LDTre
+         94tCUihbpBzI8DdoUcNxIiTg054go6nsn8uR50TolD22V8nuRZttee/3FRrdOkoDxDBS
+         aRhvZ09koKp1yub9NSZn0qgJ/VqeyhUVSpavkhODbl+0eEHYXaXusrflYmM3+N5gqYCw
+         nQuGU2aW/W+RdwYoo5yF34x+xZrsocigo/0Ez8NQMABaANxzUQSFx65tCYvf/GOEHHLJ
+         IvP+hT7wfUNqBEW1xjlC9ec7xMeJY/GU4d9OYpSar/E3gazkecPqAeOYKPvvGfaKD3EK
+         YhCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=3OAyAclI8gDeKRzlzTjGfCuF1/4VXKJq5MDqz3fHHbI=;
-        b=aLbcIjPeKgRLPsBoTVqFxKCLyPabaSt9UAQZwcVpQABxAmEKE8Le3kxK+s0IyyR6Ln
-         hhLYQWlz2JVrZsKbGE1Y2yGo5fB5rbZK6en64k56T3vNcK7iKUgKdew5Behu6p+MrMpk
-         SQtVU+p3Mv+pN0mm636bi0wwGMtfbQP6vmzDjBC0eUYZqq/qMJfv71p9194pRBlwc1un
-         hFKAmWhUP/VJpk/oHUc/3YhhiiAdFxc0dIavJNE1/EswsgEWC0FTFrlifzz1ddAU4eb3
-         D9UNgbxHNBqTENCoT4POeTZmeWydfadKfGFYyytWijqCIgUyvg9HqxZ66JfRmF1/bztx
-         0HIA==
-X-Gm-Message-State: AJIora/REhHAJQFIqwyT+8Dw6+6b5UVScEhQDSHXZrKQh07bAWWPP3CM
-        X66n+xtbkU2RXaHI8Sithnu8uIzSHxlWLQ==
-X-Google-Smtp-Source: AGRyM1uXiJPBw+8m257Urt5LVBTJDn/kJAOdKAH3Qm1gtlIv/HR3QQ1yyyEmyIr0eMgYJSVzY6dO6g==
-X-Received: by 2002:a17:902:bd47:b0:16a:71a4:9bfd with SMTP id b7-20020a170902bd4700b0016a71a49bfdmr13130936plx.109.1658764457247;
-        Mon, 25 Jul 2022 08:54:17 -0700 (PDT)
+        bh=AxjWx6wqgIco2TQFNPCVmq77ltivpPoWUErAafGdsR0=;
+        b=w9zmAln6zwXtj/jUrDmVOlo1sHIbz76KIfIX/0FOYOc0YmNpa+rSfaIgrpxvE17mCK
+         u0gVXMNZ1O2nXZOmcAvVkqomdefI5HyYzdKxAwjw0JTp7yhGTKQnE1NC8kBguoMThZjf
+         OxHCfGvc+Glz1qz0aq0P8AqI12rzUzd0A1x8W/DgoSKhaBdy28yh7BLtKfbBat3jiVP6
+         RJC5hgc8xU2rIgTyCnpnV6Nz4wF+gUwbXD6Mz4h08kODF8at04xSa1aAO+SGs/0gqGpM
+         HY3pjRAkw1Regn1XvUBDQxkzw2XTDUsayFSZBOMpfyoDUBd3c07LuTEa5A8nmAiwpeLT
+         F8QQ==
+X-Gm-Message-State: AJIora8gnPpASKiB6eRUTlMiJTeuLQqOMf+R/41YR4/nPs1ywH7rD++5
+        ROi7Eh6HMpBFStBwYJmaf86LeZ4iIgh6uA==
+X-Google-Smtp-Source: AGRyM1tu1/1CigPwqJXqU8YnuVxzkzzCpoNGohlbCBYR2/VJbQ1UnQ1sraNbjhBmRsispcbBGjjmXQ==
+X-Received: by 2002:a05:6a00:2495:b0:52b:7a9:9c72 with SMTP id c21-20020a056a00249500b0052b07a99c72mr13295317pfv.46.1658764461808;
+        Mon, 25 Jul 2022 08:54:21 -0700 (PDT)
 Received: from localhost.localdomain (124x33x176x97.ap124.ftth.ucom.ne.jp. [124.33.176.97])
-        by smtp.gmail.com with ESMTPSA id j4-20020a170903028400b0016d692ff95esm3511296plr.133.2022.07.25.08.54.15
+        by smtp.gmail.com with ESMTPSA id j4-20020a170903028400b0016d692ff95esm3511296plr.133.2022.07.25.08.54.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jul 2022 08:54:17 -0700 (PDT)
+        Mon, 25 Jul 2022 08:54:21 -0700 (PDT)
 Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
 From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 To:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
@@ -56,9 +56,9 @@ Cc:     Stephane Grosjean <s.grosjean@peak-system.com>,
         Dario Binacchi <dario.binacchi@amarulasolutions.com>,
         Max Staudt <max@enpas.org>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v2 04/14] can: v(x)can: add software tx timestamps
-Date:   Tue, 26 Jul 2022 00:53:44 +0900
-Message-Id: <20220725155354.482986-5-mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v2 06/14] can: dev: add hardware TX timestamp
+Date:   Tue, 26 Jul 2022 00:53:46 +0900
+Message-Id: <20220725155354.482986-7-mailhol.vincent@wanadoo.fr>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220725155354.482986-1-mailhol.vincent@wanadoo.fr>
 References: <20220725133208.432176-1-mailhol.vincent@wanadoo.fr>
@@ -69,53 +69,44 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-TX timestamps were added to the can_put_echo_skb() function of can_dev
-modules in [1]. However, vcan and vxcan do not rely on that function
-and as such do not offer TX timestamping.
+Because of the loopback feature of socket CAN, hardware TX timestamps
+are nothing else than the hardware RX timespamp of the corresponding
+loopback packet. This patch simply reuses the hardware RX timestamp.
 
-While it could be arguable whether TX timestamps are really needed for
-virtual interfaces, we prefer to still add it so that all CAN dirvers,
-without exception supports the TX software timestamps.
-
-Add a call to skb_tx_timestamp() in the vcan_tx() and vxcan_xmit()
-functions so that the modules now support TX software timestamps.
-
-[1] commit 741b91f1b0ea ("can: dev: can_put_echo_skb(): add software
-tx timestamps")
-Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=741b91f1b0ea34f00f6a7d4539b767c409291fcf
+The rationale to clone this timestamp value is that existing tools
+which rely of libpcap (such as tcpdump) expect support for both TX and
+RX hardware timestamps in order to activate the feature (i.e. no
+granular control to activate either of TX or RX hardware timestamps).
 
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 ---
- drivers/net/can/vcan.c  | 2 ++
- drivers/net/can/vxcan.c | 2 ++
- 2 files changed, 4 insertions(+)
+ drivers/net/can/dev/skb.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/can/vcan.c b/drivers/net/can/vcan.c
-index a15619d883ec..4a363cfcf97c 100644
---- a/drivers/net/can/vcan.c
-+++ b/drivers/net/can/vcan.c
-@@ -99,6 +99,8 @@ static netdev_tx_t vcan_tx(struct sk_buff *skb, struct net_device *dev)
- 	/* set flag whether this packet has to be looped back */
- 	loop = skb->pkt_type == PACKET_LOOPBACK;
+diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
+index 8bb62dd864c8..07e0feac8629 100644
+--- a/drivers/net/can/dev/skb.c
++++ b/drivers/net/can/dev/skb.c
+@@ -72,6 +72,9 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 		/* save frame_len to reuse it when transmission is completed */
+ 		can_skb_prv(skb)->frame_len = frame_len;
  
-+	skb_tx_timestamp(skb);
++		if (skb_shinfo(skb)->tx_flags & SKBTX_HW_TSTAMP)
++			skb_shinfo(skb)->tx_flags |= SKBTX_IN_PROGRESS;
 +
- 	if (!echo) {
- 		/* no echo handling available inside this driver */
- 		if (loop) {
-diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
-index 577a80300514..61b6eca383f8 100644
---- a/drivers/net/can/vxcan.c
-+++ b/drivers/net/can/vxcan.c
-@@ -53,6 +53,8 @@ static netdev_tx_t vxcan_xmit(struct sk_buff *oskb, struct net_device *dev)
- 		goto out_unlock;
- 	}
+ 		skb_tx_timestamp(skb);
  
-+	skb_tx_timestamp(oskb);
+ 		/* save this skb for tx interrupt echo handling */
+@@ -107,6 +110,9 @@ __can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr,
+ 		struct can_skb_priv *can_skb_priv = can_skb_prv(skb);
+ 		struct canfd_frame *cf = (struct canfd_frame *)skb->data;
+ 
++		if (skb_shinfo(skb)->tx_flags & SKBTX_IN_PROGRESS)
++			skb_tstamp_tx(skb, skb_hwtstamps(skb));
 +
- 	skb = skb_clone(oskb, GFP_ATOMIC);
- 	if (skb) {
- 		consume_skb(oskb);
+ 		/* get the real payload length for netdev statistics */
+ 		if (cf->can_id & CAN_RTR_FLAG)
+ 			*len_ptr = 0;
 -- 
 2.35.1
 
