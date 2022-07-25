@@ -2,51 +2,51 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8873DCCA473
-	for <linux-can@archiver.kernel.org>; Mon, 25 Jul 2022 13:32:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7531C43334
+	for <linux-can@archiver.kernel.org>; Mon, 25 Jul 2022 13:32:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235486AbiGYNct (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 25 Jul 2022 09:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53578 "EHLO
+        id S234785AbiGYNcw (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 25 Jul 2022 09:32:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235267AbiGYNcq (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 25 Jul 2022 09:32:46 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B5CF13EBF
-        for <linux-can@vger.kernel.org>; Mon, 25 Jul 2022 06:32:42 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id p8so10372106plq.13
-        for <linux-can@vger.kernel.org>; Mon, 25 Jul 2022 06:32:42 -0700 (PDT)
+        with ESMTP id S235570AbiGYNct (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 25 Jul 2022 09:32:49 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C28713DFF
+        for <linux-can@vger.kernel.org>; Mon, 25 Jul 2022 06:32:47 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d7so10390155plr.9
+        for <linux-can@vger.kernel.org>; Mon, 25 Jul 2022 06:32:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rxh8NIn7rEkySjE7yYsznT2BkKzwISLwPSxvkW2bKk4=;
-        b=WsorcXJC5t/ZkMcwpGKF1+84X8JOcVT76+7VsX/XzTR4lVRDUmFGvdIlklpc6qQddb
-         rviSUS3CyM1xlHKoTnIJbZRvXc3pP5s4YBKsFc1tYTCVnrNL612txZEyYUP+DAkVuSya
-         lfZCb0Q8gH6I5lOL24qD6pzgjfX8dV7he/Sia51kLMag7OWvYgEAjK7jyiFzhoG3tFeO
-         LOryKGD5R6+zh1CbWLRM5XLN3FFlb7ipUomOuFSlactZUxRcevh0WUNbGk6lQ1lpzhfA
-         RBVdesNTAew5lN9eBpDsvVjUi/TEnQJcpUft3LaWD/MJRRNHby/OcZk6O7PprgkRLK3e
-         93IQ==
+        bh=md0tQsL1ZNHQ4M3Zn4NDjT9DmJPbncdatH5dXgV1S4Q=;
+        b=ecw/xyDTzwF4bTp52Tpyjg/rCIXF26YdiTQ3aO1qL58mLQ2QSooT0yE0xucBZmiBAx
+         55YPyBvGQliR9g8CqftPLpMng+b/9voKUDRm6HzbQELYnnj7TkrW832aK3s/zXCPSR4d
+         reZxcB8tu/BIh9l42sQm1v8APDGma6xEwSlus/UZJhLv450PYbPwLsTc6TqRLY+YF+YN
+         a1t4KXiwZNlb6d4coVd9tz10N4xfau+3+JiuJ5OM6ZyaHLhDUEHeBm9b7m8VJBZ4ipNc
+         Hpsx7xl4719ntduJumvi4WpZBpI6n5ZK8hCKNO3pi4p8gCB8L9P5e2lDotXCqdPhx/UP
+         YpzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=rxh8NIn7rEkySjE7yYsznT2BkKzwISLwPSxvkW2bKk4=;
-        b=GFXeWmbq6EGDFEbB+YlyXzme94J23DWw5WLApyEOA3GZ0ieHNE6LW/O7YWCp173Hpo
-         OhIBrN66M0GxXnjveiH4hWcOQzNDD0KsgX5dwkxyW1pZ+hmkh8yzhtABdCZu1XCDdtQQ
-         siFQByy5WVtZ+nfSDB/RGaZsPLO9us1przL6WWB4fzO8WX6MStvfGoaLVNa1L6HPuI6A
-         YpNjws+6JVc0M/y/Rf0r0C7+3/GTHT45t/7iHYkiUIwgvQz1rTXxDqIJqIM+wDjuV8sl
-         peG1g+jp/4tSy5pWTfUxvOKNlA+oZCqu8/CEwL9BgUGjGQ4cfls2tEuYZyiFyXlmHwBo
-         ru9A==
-X-Gm-Message-State: AJIora/24GBwlYk/eiCGxT+1DG/Fnjdh3aP7yhkVGvLmvPsMn9q0cHMV
-        d07eJLwbofb27/9GdHvnVWN3xKoNERZg6A==
-X-Google-Smtp-Source: AGRyM1sgeQcYCJmKyDYzgRXVbBq0dZU1jyJKzbE2w5qAJyL6FJUavjTrg8u7rgeZCfyQfD3KD3L8og==
-X-Received: by 2002:a17:902:d491:b0:16c:509a:ac3b with SMTP id c17-20020a170902d49100b0016c509aac3bmr12758719plg.103.1658755961577;
-        Mon, 25 Jul 2022 06:32:41 -0700 (PDT)
+        bh=md0tQsL1ZNHQ4M3Zn4NDjT9DmJPbncdatH5dXgV1S4Q=;
+        b=dc7IiiRoGBN/FlTTfJ/7yb2seRnCrbQxYB6Xbl6NO8+uLYuUfYiaO06vHsuhhrmoWc
+         401ACZFvNky0vcVuikfH8ngUU3cnjG2myjLtLpPTJChvLXVmp779qcL8jE8T80zE23uV
+         Tu43RuRUGgKPhpJDYg/02BZ8RNnSSypt5Qn7E7kV5/zYX3ZN3rMLNEQuHxo6Rnhb0FXD
+         FKbo8fRa6MX4IySA7l9o2amCQuCXJNleIV56TMxestMhWeBNirP/gazEPXtRFeJD6i01
+         +CpmSNdaqtGjhBT/VkWSHCCJuiKbdAyPqbjRGCGm3ZRFBxkhTeQ8sx5b00MO5qI4WLo7
+         rPVw==
+X-Gm-Message-State: AJIora8FpSU0cMJuQQI1SbLCJPvIUnwrV8UcadxYCGaMu0Lm8sjHH8OA
+        KCaKk0uGBg8ubSdDQW1c0mdiYuT7eNgw7A==
+X-Google-Smtp-Source: AGRyM1s+r8vMlGjGrnZdJJqD5GCtWxnrMPky7DNa8QYV6znaUXdbRYrtXmwzfsV0RH412FW69OJ6Dg==
+X-Received: by 2002:a17:90b:1d81:b0:1f0:c03a:6500 with SMTP id pf1-20020a17090b1d8100b001f0c03a6500mr32748737pjb.50.1658755966048;
+        Mon, 25 Jul 2022 06:32:46 -0700 (PDT)
 Received: from localhost.localdomain (124x33x176x97.ap124.ftth.ucom.ne.jp. [124.33.176.97])
-        by smtp.gmail.com with ESMTPSA id i12-20020a170902c94c00b0016c16648213sm9406133pla.20.2022.07.25.06.32.39
+        by smtp.gmail.com with ESMTPSA id i12-20020a170902c94c00b0016c16648213sm9406133pla.20.2022.07.25.06.32.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jul 2022 06:32:41 -0700 (PDT)
+        Mon, 25 Jul 2022 06:32:45 -0700 (PDT)
 Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
 From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 To:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
@@ -56,9 +56,9 @@ Cc:     Stephane Grosjean <s.grosjean@peak-system.com>,
         Dario Binacchi <dario.binacchi@amarulasolutions.com>,
         Max Staudt <max@enpas.org>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v1 06/24] can: gs_ubs: use KBUILD_MODNAME instead of hard coded name
-Date:   Mon, 25 Jul 2022 22:31:50 +0900
-Message-Id: <20220725133208.432176-7-mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v1 08/24] can: ubs_8dev: use KBUILD_MODNAME instead of hard coded name
+Date:   Mon, 25 Jul 2022 22:31:52 +0900
+Message-Id: <20220725133208.432176-9-mailhol.vincent@wanadoo.fr>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220725133208.432176-1-mailhol.vincent@wanadoo.fr>
 References: <20220725133208.432176-1-mailhol.vincent@wanadoo.fr>
@@ -68,48 +68,38 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The driver uses the string "gs_usb" to populate usb_driver::name,
-can_bittiming_const::name and
-can_data_bittiming_const::name. KBUILD_MODNAME evaluates to
-"gs_ubs". Use KBUILD_MODNAME and get rid on the hardcoded string
+The driver uses the string "usb_8dev" to populate usb_driver::name and
+can_bittiming_const::name. KBUILD_MODNAME also evaluates to
+"ubs_8dev". Use KBUILD_MODNAME and get rid on the hardcoded string
 names.
 
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 ---
- drivers/net/can/usb/gs_usb.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/can/usb/usb_8dev.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index d3a658b444b5..fd239b523c42 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -993,7 +993,7 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 	netdev->flags |= IFF_ECHO; /* we support full roundtrip echo */
+diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
+index 8b7cd69e20b0..6665a66745a7 100644
+--- a/drivers/net/can/usb/usb_8dev.c
++++ b/drivers/net/can/usb/usb_8dev.c
+@@ -871,7 +871,7 @@ static const struct net_device_ops usb_8dev_netdev_ops = {
+ };
  
- 	/* dev setup */
--	strcpy(dev->bt_const.name, "gs_usb");
-+	strcpy(dev->bt_const.name, KBUILD_MODNAME);
- 	dev->bt_const.tseg1_min = le32_to_cpu(bt_const->tseg1_min);
- 	dev->bt_const.tseg1_max = le32_to_cpu(bt_const->tseg1_max);
- 	dev->bt_const.tseg2_min = le32_to_cpu(bt_const->tseg2_min);
-@@ -1100,7 +1100,7 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 			return ERR_PTR(rc);
- 		}
- 
--		strcpy(dev->data_bt_const.name, "gs_usb");
-+		strcpy(dev->data_bt_const.name, KBUILD_MODNAME);
- 		dev->data_bt_const.tseg1_min = le32_to_cpu(bt_const_extended->dtseg1_min);
- 		dev->data_bt_const.tseg1_max = le32_to_cpu(bt_const_extended->dtseg1_max);
- 		dev->data_bt_const.tseg2_min = le32_to_cpu(bt_const_extended->dtseg2_min);
-@@ -1270,7 +1270,7 @@ static const struct usb_device_id gs_usb_table[] = {
- MODULE_DEVICE_TABLE(usb, gs_usb_table);
- 
- static struct usb_driver gs_usb_driver = {
--	.name = "gs_usb",
+ static const struct can_bittiming_const usb_8dev_bittiming_const = {
+-	.name = "usb_8dev",
 +	.name = KBUILD_MODNAME,
- 	.probe = gs_usb_probe,
- 	.disconnect = gs_usb_disconnect,
- 	.id_table = gs_usb_table,
+ 	.tseg1_min = 1,
+ 	.tseg1_max = 16,
+ 	.tseg2_min = 1,
+@@ -997,7 +997,7 @@ static void usb_8dev_disconnect(struct usb_interface *intf)
+ }
+ 
+ static struct usb_driver usb_8dev_driver = {
+-	.name =		"usb_8dev",
++	.name =		KBUILD_MODNAME,
+ 	.probe =	usb_8dev_probe,
+ 	.disconnect =	usb_8dev_disconnect,
+ 	.id_table =	usb_8dev_table,
 -- 
 2.35.1
 
