@@ -2,48 +2,48 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5488DC00144
-	for <linux-can@archiver.kernel.org>; Tue, 26 Jul 2022 21:03:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7411C04A68
+	for <linux-can@archiver.kernel.org>; Tue, 26 Jul 2022 21:03:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233029AbiGZVDb (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 26 Jul 2022 17:03:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52564 "EHLO
+        id S239920AbiGZVDh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 26 Jul 2022 17:03:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233369AbiGZVD2 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 26 Jul 2022 17:03:28 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4AF32CE2D
-        for <linux-can@vger.kernel.org>; Tue, 26 Jul 2022 14:03:27 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id ss3so28167175ejc.11
-        for <linux-can@vger.kernel.org>; Tue, 26 Jul 2022 14:03:27 -0700 (PDT)
+        with ESMTP id S239841AbiGZVDd (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 26 Jul 2022 17:03:33 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D3E3246F
+        for <linux-can@vger.kernel.org>; Tue, 26 Jul 2022 14:03:30 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id bp15so28288938ejb.6
+        for <linux-can@vger.kernel.org>; Tue, 26 Jul 2022 14:03:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=amarulasolutions.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OqbFbN5WONXbXcraJR8YQy0FCGLdvzQc4+bJ+5uxeJs=;
-        b=AJArippnnVJrNNxwpF9RaBN43OT3PN+mHEjLLObIgaepbCEBvdxMJY2KrqohbHA/RT
-         rd2r/ZSqWHgd8Dke+ek273q6Onfu1aCFOXPQPO+2ut7akHvr8NVQRIQgrKceqE7slxL9
-         c3Jfy3tV5rVFPQe5jU5zM0qRLukKXP44YsTso=
+        bh=aNGQLRTnPxlP6A96D7J1ivHff8xTlXOO4TAacZru318=;
+        b=KECnBmgqIAt05NhVOP7rOcoZ3GX1Rgo9FMzMDQUFPRBWamVIalBGJXkBxMF1ljKl/x
+         VfTmGxVlppiIeRodycyrkpksqUK1EtDqYzeWmrZy1C3E8PK6qf2gXxLwVNB3BUvXyYrV
+         EInTtznQ8iYeLZk7/yagV2umvWf2ZWXSX6q00=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OqbFbN5WONXbXcraJR8YQy0FCGLdvzQc4+bJ+5uxeJs=;
-        b=RRVzlT8uBd5rmm5evXo7yV3+wQv3kQ2nEV5BvuquVZEo7wxTshj72glLK2OdsSkPde
-         spouj3u+IIfXO4Sj4YkE17ZaMilI0dQiFr1SnBNTLnr/s94EPHS4LuLQAQWBjM8k/ngT
-         6xOGXSShFP2yrhBIcIOYhHzhtXNd4HW5mdJPXIkViEsyZCJWYkWoP8BGXFUNaPM/Oh/C
-         D5bt3N3zHn/ha6PAlRqUHgwCP7mdkVILb84EKloSvLFFc2E+EatgpX8V5WSMhyRdDmLr
-         UklWur0bWuRBHphFTJRTJh5Ct5PnJkS4QnGQWXHav12GMWtw2orjhepIjojhahjeyXY0
-         S1WA==
-X-Gm-Message-State: AJIora+a3HnwuDwjDxnswfQ+kMCuv+J6c+JVJbUF8GXnrXoJUBszOxX7
-        WKme6h9GVKKcAkVGnq61hrT7eg==
-X-Google-Smtp-Source: AGRyM1uy1q7I3r4J2g2pa1PWt8OWZXDqFWlZmqoSzL0nmUf8z+mbe7/4D0zGVZT/tQPP86frqwslmw==
-X-Received: by 2002:a17:907:1dde:b0:72b:11ae:700b with SMTP id og30-20020a1709071dde00b0072b11ae700bmr15003401ejc.520.1658869406249;
-        Tue, 26 Jul 2022 14:03:26 -0700 (PDT)
+        bh=aNGQLRTnPxlP6A96D7J1ivHff8xTlXOO4TAacZru318=;
+        b=AXKdYTRGWtdzTQ9iknShKG6D0Fqs4ARmdumuV0asuGSXfhZ9TGUnrc428rqkiWKlbE
+         4QSZ1e3CZs324c/rA5qoMADroRSz4p0HeaDcFd+Is+QXoZN/HI1oifhncJaCVvcKoAt3
+         xT2DKMGs3tg0wZAODSRLCu+GVhwqVMJIZa4UcQkACHs0pYub70a2G1Kx9fUoWBoBQjht
+         yno+ebdqTsQ/j0vqA88aOecj2sia67FPp0dOWpgZ5DNKf2/S64RIkGoFlSzZnByyvP/l
+         OqhdQF3cOj5k2s4VXbPQN57AmBVVmAPmuo+OZE6vDQoK3BNFPF/acPQsICiUDJ6T4Btb
+         uKJw==
+X-Gm-Message-State: AJIora+AQ3HgqjxoY9b7QXwLzwLOg+e/+iNqu61yBJXUyLHEG374HePh
+        TK3LcuquhfZjIELxakefFQ2nqQ==
+X-Google-Smtp-Source: AGRyM1t+InpFB1jgLKc7ZMEi3BQwy6b/qxSpP+DL9S00Ravpayp4aI7dQnTnjinto4kAzFne6jGuAw==
+X-Received: by 2002:a17:906:ef8b:b0:72b:4a67:8ae5 with SMTP id ze11-20020a170906ef8b00b0072b4a678ae5mr15506155ejb.763.1658869410261;
+        Tue, 26 Jul 2022 14:03:30 -0700 (PDT)
 Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-87-14-98-67.retail.telecomitalia.it. [87.14.98.67])
-        by smtp.gmail.com with ESMTPSA id y19-20020aa7d513000000b0043a7293a03dsm9092849edq.7.2022.07.26.14.03.25
+        by smtp.gmail.com with ESMTPSA id y19-20020aa7d513000000b0043a7293a03dsm9092849edq.7.2022.07.26.14.03.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jul 2022 14:03:25 -0700 (PDT)
+        Tue, 26 Jul 2022 14:03:29 -0700 (PDT)
 From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -57,9 +57,9 @@ Cc:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
         Wolfgang Grandegger <wg@grandegger.com>, netdev@vger.kernel.org
-Subject: [RFC PATCH v3 2/9] can: slcan: remove useless header inclusions
-Date:   Tue, 26 Jul 2022 23:02:10 +0200
-Message-Id: <20220726210217.3368497-3-dario.binacchi@amarulasolutions.com>
+Subject: [RFC PATCH v3 5/9] can: slcan: use the generic can_change_mtu()
+Date:   Tue, 26 Jul 2022 23:02:13 +0200
+Message-Id: <20220726210217.3368497-6-dario.binacchi@amarulasolutions.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220726210217.3368497-1-dario.binacchi@amarulasolutions.com>
 References: <20220726210217.3368497-1-dario.binacchi@amarulasolutions.com>
@@ -69,34 +69,40 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Include only the necessary headers.
+It is useless to define a custom function that does nothing but always
+return the same error code. Better to use the generic can_change_mtu()
+function.
 
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-
 ---
 
-(no changes since v2)
+(no changes since v1)
 
-Changes in v2:
-- Re-add headers that export at least one symbol used by the module.
-
- drivers/net/can/slcan/slcan-core.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/net/can/slcan/slcan-core.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
 diff --git a/drivers/net/can/slcan/slcan-core.c b/drivers/net/can/slcan/slcan-core.c
-index 2c9d9fc19ea9..ca383c43167d 100644
+index bd8e84ded051..d12d98426f37 100644
 --- a/drivers/net/can/slcan/slcan-core.c
 +++ b/drivers/net/can/slcan/slcan-core.c
-@@ -48,9 +48,6 @@
- #include <linux/netdevice.h>
- #include <linux/skbuff.h>
- #include <linux/rtnetlink.h>
--#include <linux/if_arp.h>
--#include <linux/if_ether.h>
--#include <linux/sched.h>
- #include <linux/delay.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
+@@ -742,16 +742,11 @@ static int slcan_netdev_open(struct net_device *dev)
+ 	return err;
+ }
+ 
+-static int slcan_netdev_change_mtu(struct net_device *dev, int new_mtu)
+-{
+-	return -EINVAL;
+-}
+-
+ static const struct net_device_ops slcan_netdev_ops = {
+ 	.ndo_open               = slcan_netdev_open,
+ 	.ndo_stop               = slcan_netdev_close,
+ 	.ndo_start_xmit         = slcan_netdev_xmit,
+-	.ndo_change_mtu         = slcan_netdev_change_mtu,
++	.ndo_change_mtu         = can_change_mtu,
+ };
+ 
+ /******************************************
 -- 
 2.32.0
 
