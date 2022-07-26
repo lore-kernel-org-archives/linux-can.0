@@ -2,60 +2,61 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EBB0AC43334
-	for <linux-can@archiver.kernel.org>; Tue, 26 Jul 2022 08:27:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6951CCCA489
+	for <linux-can@archiver.kernel.org>; Tue, 26 Jul 2022 08:27:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238139AbiGZI1a (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 26 Jul 2022 04:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43952 "EHLO
+        id S238359AbiGZI1c (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 26 Jul 2022 04:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238096AbiGZI12 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 26 Jul 2022 04:27:28 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66F62FFE2
-        for <linux-can@vger.kernel.org>; Tue, 26 Jul 2022 01:27:25 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id w7so12653936ply.12
-        for <linux-can@vger.kernel.org>; Tue, 26 Jul 2022 01:27:25 -0700 (PDT)
+        with ESMTP id S238312AbiGZI13 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 26 Jul 2022 04:27:29 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBFD32FFED
+        for <linux-can@vger.kernel.org>; Tue, 26 Jul 2022 01:27:28 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d7so12667340plr.9
+        for <linux-can@vger.kernel.org>; Tue, 26 Jul 2022 01:27:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=05C+NVlRWa5zB2fjz5qao6wSzIHQrGgL0UUJqtTYaDg=;
-        b=ZP/EOKt+qL1q5J5haZmYFAXjxf2v47Nc1HM0UdYZc9UfOC91gX1Pef6Oxepk7ZiAbu
-         wdop43DNi+DJRwIumj2dDHoUYYuxe9POMKVSSukwYvkL9rTdjd84h9Mws+3DjuyNucnR
-         hqFFf63a2Mt5+g0F3ueB7tYdgwK7A+jnOl0SnYbCnQhdIMicZhMwdvZy+8qvTy7IReIz
-         ay+z2/2uxOfwVkbJSVgsVRV6YvDR8ktjfvVSnjlHwKTZyK34eoey0x3arbjpfW1MMIlc
-         qr2ZrloPxJUb5ih5jXjxk2KWeAwBYCb77yzLCUMzkp3ElM+2Ek8BFPpt3wKLAHHnl/Km
-         WfxA==
+        bh=NjkZySW62O7GBDAAjF2VPjQ6sD39lmfWQbVtFB1ykZU=;
+        b=OW5xsH0zEtntpTicFkdLPZpM4xc7b748BXrVaLIAHKZApOsiYEvpgLhue2nYrxjP8h
+         f5VuIsJNUNEXDC9D3TpNd/2X1O6tfaO7Qb45RjrHTRWaxR0BaeaHb5qUi1R5XqftRjdf
+         DZsL7zJ7MpfjaI6PgUiW32q0zaQiE6v31QyBnWJWk22SXyjI+mgmK3mTt9LkT1x+0IUC
+         2V3WqLn2r3Kp6UXm4EF7szKe6vbeBVGgKEkT9VOb/yDRg7dOGfuG88cYGvOf5i4TyZ2H
+         yN8kh8FZvIiXbvF0ty0QD9PQ8OcJiXEC2EgzUdXXaXToBq1RA1GrdFpOwjg/jYnQD+yA
+         dhhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=05C+NVlRWa5zB2fjz5qao6wSzIHQrGgL0UUJqtTYaDg=;
-        b=pT9euSoRe/R9hk/Qu0/UaSrdkvMDTZql/yGu4D3s2ntI/UM0qN9gbj3ArSne8H9VIT
-         CMGZAzP4xzNRxJsG1yCIwhW8eflvb6avLf/WmkziKXIgMdUdJCQpCaJyITphoWn6gx3L
-         rMid08Y3eZyg8YTxcBRVSI7qZeQjpuNLFV4WNFhFilgEiLhYwoJswSHnq11HAJvHIsQK
-         jIi5Vz9MTs/aFTTPgWI9DtMtZuvgDCyMLA5ii6YinxjamPHyG+1Wp67Hlng71I4jt3Zm
-         Eq5+W92UUqs9WoqEPN/UqZV3gYe+6WUHhZc6t7Osa55CL/vtc4jfub4T1BKXxjgcDOE1
-         WNHw==
-X-Gm-Message-State: AJIora+8KqpqV127OgWKV4WLfkFHUMhqaGUwqjscvA4+1c4BYH/sYNvd
-        A3b48SJ7a6BPnJ704cD/v9ztEll8t83mUA==
-X-Google-Smtp-Source: AGRyM1svmxbZOLEEK18TKdMxL8pPf7tRvSOZkPNqvkCNo6a92D+DJVmvLDbmG28r1bNgMUdz8Yae3w==
-X-Received: by 2002:a17:90b:3907:b0:1f0:386e:c0ee with SMTP id ob7-20020a17090b390700b001f0386ec0eemr18097106pjb.141.1658824044825;
-        Tue, 26 Jul 2022 01:27:24 -0700 (PDT)
+        bh=NjkZySW62O7GBDAAjF2VPjQ6sD39lmfWQbVtFB1ykZU=;
+        b=LZ1+3AbJqQaRN8H4iWznti00kCdyg/hMInzs1R/WnEKKdM03PrhKiuSPrAb8enBfBr
+         XuEpQMz/8LLa3QGsmW/cHNOgo3HgwoFyb/NAJZ/a8H6EL840Cs92xMB3Nzob74w7sEGg
+         oa3CHijKHJto32W9mULI+rILvxsiNWDxPKu246bKDbrBK1nIpfs/LmDOV3qATymDNjys
+         AjiEmhYxEn8rgp9l6z7gPhBuRZQIX/UnJy/fcXHU9lZQVLYBe+atT11wvRbCkSNgIUed
+         Opx+O+NYn2DvJsHhkiCTI64cvQc/MI2zsvU/IzYu79R+Zk+PwKRIg44ddi2kBSy3lkEg
+         kS5w==
+X-Gm-Message-State: AJIora83NMSCuw/fX1ASvZAVHZyEdFGHw8bZtDyhcQUUbjPbElfJ2duE
+        aAMQi4gSCf+oiqjQvhiwEiclPvghwv7JBg==
+X-Google-Smtp-Source: AGRyM1uDIhkhYSOTAiCmZIvIJ9czc5Lnui7GZlkYP3oBk1q1rjgD4XBArTSFUctayajp9B4i9gqNAQ==
+X-Received: by 2002:a17:90b:180f:b0:1f2:b472:b8d0 with SMTP id lw15-20020a17090b180f00b001f2b472b8d0mr9609073pjb.170.1658824048387;
+        Tue, 26 Jul 2022 01:27:28 -0700 (PDT)
 Received: from localhost.localdomain (124x33x176x97.ap124.ftth.ucom.ne.jp. [124.33.176.97])
-        by smtp.gmail.com with ESMTPSA id t17-20020a170902e1d100b0016bf10203d9sm10689751pla.144.2022.07.26.01.27.23
+        by smtp.gmail.com with ESMTPSA id t17-20020a170902e1d100b0016bf10203d9sm10689751pla.144.2022.07.26.01.27.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jul 2022 01:27:24 -0700 (PDT)
+        Tue, 26 Jul 2022 01:27:28 -0700 (PDT)
 Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
 From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 To:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 Cc:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
         Max Staudt <max@enpas.org>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v2 03/10] can: slcan: use KBUILD_MODNAME and define pr_fmt to replace hardcoded names
-Date:   Tue, 26 Jul 2022 17:27:00 +0900
-Message-Id: <20220726082707.58758-4-mailhol.vincent@wanadoo.fr>
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Frank Jungclaus <frank.jungclaus@esd.eu>
+Subject: [PATCH v2 05/10] can: esd_usb: use KBUILD_MODNAME instead of hard coded names
+Date:   Tue, 26 Jul 2022 17:27:02 +0900
+Message-Id: <20220726082707.58758-6-mailhol.vincent@wanadoo.fr>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220726082707.58758-1-mailhol.vincent@wanadoo.fr>
 References: <20220725153124.467061-1-mailhol.vincent@wanadoo.fr>
@@ -66,92 +67,29 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The driver uses the string "slcan" to populate
-tty_ldisc_ops::name. KBUILD_MODNAME also evaluates to "slcan". Use
-KBUILD_MODNAME to get rid on the hardcoded string names.
+The driver uses the string "ems_usb" to populate
+usb_driver::name. KBUILD_MODNAME also evaluates to "esd_ubs". Use
+KBUILD_MODNAME and get rid on the hardcoded string names.
 
-Similarly, the pr_info() and pr_err() hardcoded the "slcan"
-prefix. Define pr_fmt so that the "slcan" prefix gets automatically
-added.
-
-can: ems_ubs: use KBUILD_MODNAME instead of hard coded name
-
-    The driver uses the string "ems_usb" to populate usb_driver::name and
-    can_bittiming_const::name. KBUILD_MODNAME also evaluates to
-    "ems_ubs". Use KBUILD_MODNAME and get rid on the hardcoded string
-    names.
-
-CC: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+CC: Frank Jungclaus <frank.jungclaus@esd.eu>
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 ---
+ drivers/net/can/usb/esd_usb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-@Dario, because you are also doing a lot of changes on slcan, our
-patches might conflict. Do not hesitate to take this one and add it to
-your series to simplify the merge.
----
- drivers/net/can/slcan/slcan-core.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/can/slcan/slcan-core.c b/drivers/net/can/slcan/slcan-core.c
-index dc28e715bbe1..3039ce37c8f1 100644
---- a/drivers/net/can/slcan/slcan-core.c
-+++ b/drivers/net/can/slcan/slcan-core.c
-@@ -35,6 +35,8 @@
-  *
-  */
+diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
+index 177ed33e08d9..7b849bd3cc9c 100644
+--- a/drivers/net/can/usb/esd_usb.c
++++ b/drivers/net/can/usb/esd_usb.c
+@@ -1138,7 +1138,7 @@ static void esd_usb_disconnect(struct usb_interface *intf)
  
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- 
-@@ -864,7 +866,7 @@ static struct slcan *slc_alloc(void)
- 	if (!dev)
- 		return NULL;
- 
--	snprintf(dev->name, sizeof(dev->name), "slcan%d", i);
-+	snprintf(dev->name, sizeof(dev->name), KBUILD_MODNAME "%d", i);
- 	dev->netdev_ops = &slc_netdev_ops;
- 	dev->base_addr  = i;
- 	slcan_set_ethtool_ops(dev);
-@@ -937,7 +939,7 @@ static int slcan_open(struct tty_struct *tty)
- 		rtnl_unlock();
- 		err = register_candev(sl->dev);
- 		if (err) {
--			pr_err("slcan: can't register candev\n");
-+			pr_err("can't register candev\n");
- 			goto err_free_chan;
- 		}
- 	} else {
-@@ -1028,7 +1030,7 @@ static int slcan_ioctl(struct tty_struct *tty, unsigned int cmd,
- static struct tty_ldisc_ops slc_ldisc = {
- 	.owner		= THIS_MODULE,
- 	.num		= N_SLCAN,
--	.name		= "slcan",
-+	.name		= KBUILD_MODNAME,
- 	.open		= slcan_open,
- 	.close		= slcan_close,
- 	.hangup		= slcan_hangup,
-@@ -1044,8 +1046,8 @@ static int __init slcan_init(void)
- 	if (maxdev < 4)
- 		maxdev = 4; /* Sanity */
- 
--	pr_info("slcan: serial line CAN interface driver\n");
--	pr_info("slcan: %d dynamic interface channels.\n", maxdev);
-+	pr_info("serial line CAN interface driver\n");
-+	pr_info("%d dynamic interface channels.\n", maxdev);
- 
- 	slcan_devs = kcalloc(maxdev, sizeof(struct net_device *), GFP_KERNEL);
- 	if (!slcan_devs)
-@@ -1054,7 +1056,7 @@ static int __init slcan_init(void)
- 	/* Fill in our line protocol discipline, and register it */
- 	status = tty_register_ldisc(&slc_ldisc);
- 	if (status)  {
--		pr_err("slcan: can't register line discipline\n");
-+		pr_err("can't register line discipline\n");
- 		kfree(slcan_devs);
- 	}
- 	return status;
+ /* usb specific object needed to register this driver with the usb subsystem */
+ static struct usb_driver esd_usb_driver = {
+-	.name = "esd_usb",
++	.name = KBUILD_MODNAME,
+ 	.probe = esd_usb_probe,
+ 	.disconnect = esd_usb_disconnect,
+ 	.id_table = esd_usb_table,
 -- 
 2.35.1
 
