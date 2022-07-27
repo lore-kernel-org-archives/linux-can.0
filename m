@@ -2,132 +2,142 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B1F7C04A68
-	for <linux-can@archiver.kernel.org>; Wed, 27 Jul 2022 14:04:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3927EC04A68
+	for <linux-can@archiver.kernel.org>; Wed, 27 Jul 2022 15:55:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232740AbiG0OEh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 27 Jul 2022 10:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34230 "EHLO
+        id S234030AbiG0PzZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 27 Jul 2022 11:55:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231266AbiG0OEg (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 27 Jul 2022 10:04:36 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E26B03
-        for <linux-can@vger.kernel.org>; Wed, 27 Jul 2022 07:04:36 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1oGheM-00068f-Hh; Wed, 27 Jul 2022 16:04:34 +0200
-Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id AD077BC300;
-        Wed, 27 Jul 2022 14:04:33 +0000 (UTC)
-Date:   Wed, 27 Jul 2022 16:04:31 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     linux-can@vger.kernel.org
-Subject: Re: [RFC PATCH v6 5/7] can: canxl: update CAN infrastructure for CAN
- XL frames
-Message-ID: <20220727140431.55g5aa35rko3vt5q@pengutronix.de>
-References: <20220724074402.117394-1-socketcan@hartkopp.net>
- <20220724074402.117394-6-socketcan@hartkopp.net>
+        with ESMTP id S232427AbiG0PzY (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 27 Jul 2022 11:55:24 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F5BA2BE8
+        for <linux-can@vger.kernel.org>; Wed, 27 Jul 2022 08:55:23 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id a13so20119295ljr.11
+        for <linux-can@vger.kernel.org>; Wed, 27 Jul 2022 08:55:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PDTQ/RetiQxlbrzdC/imK9gPXTNVvINSs59kGAbwqGA=;
+        b=hty/Yt/Hyu+c6keBAAiJoeEScAVrdl5lEZUVOyAcZs3U05jftsT/6KIrtVxTBoheWd
+         Vp0uy3qOoIjFeXi/OXvpiHtJ6gjOq7f9Sx2ELlFrvgXjc8XtFm5COtYpTqCQEA6SJlRw
+         8Aqjx3X/X9FVm0cF1QeCzGAa1wan2VdtjUTGw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PDTQ/RetiQxlbrzdC/imK9gPXTNVvINSs59kGAbwqGA=;
+        b=505Eo8ozEcwof4TYMYWCEEx6Gln7AnA182qzDW3+5CC22RoTi+gjOe5dh60Gx8hHKt
+         vMv89EW/EemysYqKmM2AT6EwTBu3rH4nuzmJPuWnrQdKasKitWRyfbpgorFnegbIbbwj
+         RC5L5zlzN8b/pP+CKCtxIK5RABODGVKNMht3gAKxkffAma1+MUtLhyibdWprtiVtaHsc
+         LhhZjCEa6mCZQ2l7fCfN0BUnszWiA6wnw7wy0TapuNVZxxC1gc7rWlps/uPb469+I29R
+         nG3vzhcH9e4W5Rs8l+stG+ogsxQ+gymKtOsg7wn9YS/fjxM+Ax0K5At2V41CSN0hnRjI
+         W1zQ==
+X-Gm-Message-State: AJIora95ijaz7i1WdTfkoZK3OA0G20l2gW460RwKF/FzDFKEXuNQ8xKd
+        lByyqePBFv+y6jzk4WAWMeCt9diLxA7g/289+RrBbA==
+X-Google-Smtp-Source: AGRyM1ucm+uRRXzwVzVwdaFYHGcn8TvNPfNzyYXzc6R+fFlfR+szaSzVATcLy/6WiziVDqVKxpAFa44tdcg1HxtF1X0=
+X-Received: by 2002:a05:651c:907:b0:25e:1db5:fc5d with SMTP id
+ e7-20020a05651c090700b0025e1db5fc5dmr2577617ljq.237.1658937321931; Wed, 27
+ Jul 2022 08:55:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6ylvi2dbkkmnlawo"
-Content-Disposition: inline
-In-Reply-To: <20220724074402.117394-6-socketcan@hartkopp.net>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+References: <20220726210217.3368497-1-dario.binacchi@amarulasolutions.com>
+ <20220726210217.3368497-9-dario.binacchi@amarulasolutions.com> <20220727113054.ffcckzlcipcxer2c@pengutronix.de>
+In-Reply-To: <20220727113054.ffcckzlcipcxer2c@pengutronix.de>
+From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Date:   Wed, 27 Jul 2022 17:55:10 +0200
+Message-ID: <CABGWkvrmbQcCHdZ_ANb+_196d9HsAxAHc4QS94R19v5STHcbiA@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 8/9] can: slcan: add support to set bit time
+ register (btr)
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        michael@amarulasolutions.com,
+        Amarula patchwork <linux-amarula@amarulasolutions.com>,
+        Jeroen Hofstee <jhofstee@victronenergy.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        netdev@vger.kernel.org,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Max Staudt <max@enpas.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+Hello Marc,
 
---6ylvi2dbkkmnlawo
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jul 27, 2022 at 1:31 PM Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+>
+> On 26.07.2022 23:02:16, Dario Binacchi wrote:
+> > It allows to set the bit time register with tunable values.
+> > The setting can only be changed if the interface is down:
+> >
+> > ip link set dev can0 down
+> > ethtool --set-tunable can0 can-btr 0x31c
+> > ip link set dev can0 up
+>
+> As far as I understand, setting the btr is an alternative way to set the
+> bitrate, right?
 
-On 24.07.2022 09:44:00, Oliver Hartkopp wrote:
-> - add new ETH_P_CANXL ethernet protocol type
-> - update skb checks for CAN XL
-> - add alloc_canxl_skb() which now needs a data length parameter
-> - introduce init_can_skb_reserve() to reduce code duplication
->=20
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> ---
->  drivers/net/can/dev/skb.c     | 72 ++++++++++++++++++++++++++---------
->  include/linux/can/skb.h       | 23 ++++++++++-
->  include/uapi/linux/if_ether.h |  1 +
->  net/can/af_can.c              | 25 +++++++++++-
->  4 files changed, 101 insertions(+), 20 deletions(-)
->=20
-> diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-> index ea9ea0128c48..e9e8fcbaa7be 100644
-> --- a/drivers/net/can/dev/skb.c
-> +++ b/drivers/net/can/dev/skb.c
-[...]
-> +struct sk_buff *alloc_canxl_skb(struct net_device *dev,
-> +				struct canxl_frame **cfx,
-> +				unsigned int data_len)
-> +{
-> +	struct sk_buff *skb;
-> +
-> +	if (data_len < CANXL_MIN_DLEN || data_len > CANXL_MAX_DLEN)
-> +		goto out_error;
-> +
-> +	skb =3D netdev_alloc_skb(dev, sizeof(struct can_skb_priv) +
-> +			       CANXL_HDR_SIZE + data_len);
-> +	if (unlikely(!skb))
-> +		goto out_error;
-> +
-> +	skb->protocol =3D htons(ETH_P_CANXL);
-> +	init_can_skb_reserve(skb);
-> +	can_skb_prv(skb)->ifindex =3D dev->ifindex;
-> +
-> +	*cfx =3D skb_put_zero(skb, CANXL_HDR_SIZE + data_len);
-> +
-> +	/* set CAN XL flag and length information by default */
-> +	(*cfx)->flags =3D CANXL_XLF;
-> +	(*cfx)->len =3D data_len;
-> +
-> +	return skb;
-> +
-> +out_error:
-> +		*cfx =3D NULL;
-> +
-> +		return NULL;
+I thought of a non-standard bitrate or, in addition to the bitrate, the
+possibility of enabling some specific CAN controller options. Maybe Oliver
+could help us come up with the right answer.
 
-Nitpick:
-Indent with one tab only here.
+This is the the slcan source code:
+https://github.com/linux-can/can-utils/blob/cad1cecf1ca19277b5f5db39f8ef6f8ae426191d/slcand.c#L331
+btr case cames after speed but they don't seem to be considered alternative.
 
-Marc
+> I don't like the idea of poking arbitrary values into a
+> hardware from user space.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+However this is already possible through the slcand and slcan_attach
+applications.
+Furthermore, the driver implements the LAWICEL ASCII protocol for CAN
+frame transport over serial lines,
+and this is one of the supported commands.
 
---6ylvi2dbkkmnlawo
-Content-Type: application/pgp-signature; name="signature.asc"
+>
+> Do you have a use case for this?
 
------BEGIN PGP SIGNATURE-----
+I use the applications slcand and slcan_attach as a reference, I try to make the
+driver independent from them for what concerns the CAN setup. And the bit time
+register setting is the last dependency.
 
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmLhRewACgkQrX5LkNig
-013M3Qf+K+LSlvXN4EZgNAxrokYRWRIqoiqNsuMK/XXUGrJGV3thxROh57Xx88Bv
-i9qhAhPRx5oD0Mkz/KjNt36447Dek+M5YmakWLiphLU5EAgkpB6TR+MnsPptrr1r
-w784tYY+Kcj9M4u3HzVBxnBqTP4VWoqUeZAOfjLQgvpLuS1J4zQSEzxV8toJDwYs
-jH5dV78iOchJe1opr867pYuWSVVfXtCHRVzLZ22xpNj9VEThIHAeqPWJb+ZLyBBi
-ZXEfPwlpEJN55C4YooxGO1YezGHTRpC1SzTRi4xDyrOnpg+X6e9cvt9zZC1l6D/n
-BSCGYtpBSds9+KVd5qXLIN1ggqIyoA==
-=AaGH
------END PGP SIGNATURE-----
+Thanks and regards,
+Dario
 
---6ylvi2dbkkmnlawo--
+>
+> Marc
+>
+> --
+> Pengutronix e.K.                 | Marc Kleine-Budde           |
+> Embedded Linux                   | https://www.pengutronix.de  |
+> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+
+-- 
+
+Dario Binacchi
+
+Embedded Linux Developer
+
+dario.binacchi@amarulasolutions.com
+
+__________________________________
+
+
+Amarula Solutions SRL
+
+Via Le Canevare 30, 31100 Treviso, Veneto, IT
+
+T. +39 042 243 5310
+info@amarulasolutions.com
+
+www.amarulasolutions.com
