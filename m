@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 233CBC00140
-	for <linux-can@archiver.kernel.org>; Sun, 31 Jul 2022 19:20:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D580C19F2B
+	for <linux-can@archiver.kernel.org>; Sun, 31 Jul 2022 19:20:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238013AbiGaTUx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S238260AbiGaTUx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Sun, 31 Jul 2022 15:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33064 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238030AbiGaTUp (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 31 Jul 2022 15:20:45 -0400
+        with ESMTP id S237850AbiGaTUq (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 31 Jul 2022 15:20:46 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B99E095
-        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 12:20:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC1CE0E5
+        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 12:20:41 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oIEUQ-0007Cp-Ga
-        for linux-can@vger.kernel.org; Sun, 31 Jul 2022 21:20:38 +0200
+        id 1oIEUR-0007FM-OR
+        for linux-can@vger.kernel.org; Sun, 31 Jul 2022 21:20:39 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 0EC84BEC40
+        by bjornoya.blackshift.org (Postfix) with SMTP id F0F90BEC51
         for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 19:20:35 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7B423BEC33;
-        Sun, 31 Jul 2022 19:20:34 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 73827BEC45;
+        Sun, 31 Jul 2022 19:20:35 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 73ed314b;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id bf9a4a73;
         Sun, 31 Jul 2022 19:20:30 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 09/36] can: etas_es58x: replace ES58X_MODULE_NAME with KBUILD_MODNAME
-Date:   Sun, 31 Jul 2022 21:20:02 +0200
-Message-Id: <20220731192029.746751-10-mkl@pengutronix.de>
+Subject: [PATCH net-next 11/36] can: slcan: export slcan_ethtool_ops and remove slcan_set_ethtool_ops()
+Date:   Sun, 31 Jul 2022 21:20:04 +0200
+Message-Id: <20220731192029.746751-12-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220731192029.746751-1-mkl@pengutronix.de>
 References: <20220731192029.746751-1-mkl@pengutronix.de>
@@ -56,52 +56,78 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-ES58X_MODULE_NAME is set to "etas_es58x". KBUILD_MODNAME also
-evaluates to "etas_es58x". Get rid of ES58X_MODULE_NAME and rely on
-KBUILD_MODNAME instead.
+The function slcan_set_ethtool_ops() does one thing: populate
+net_device::ethtool_ops. Instead, it is possible to directly assign
+this field and remove one function call and slightly reduce the object
+size. To do so, export slcan_ethtool_ops so it becomes visible to
+sclan-core.c.
+
+This patch reduces the footprint by 14 bytes:
+
+| $ ./scripts/bloat-o-meter drivers/net/can/slcan/slcan.{old,new}.o
+| drivers/net/can/slcan/slcan.o
+| add/remove: 0/1 grow/shrink: 1/0 up/down: 15/-29 (-14)
+| Function                                     old     new   delta
+| slcan_open                                  1010    1025     +15
+| slcan_set_ethtool_ops                         29       -     -29
+| Total: Before=11115, After=11101, chg -0.13%
 
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/all/20220726082707.58758-10-mailhol.vincent@wanadoo.fr
+Link: https://lore.kernel.org/all/20220727104939.279022-2-mailhol.vincent@wanadoo.fr
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/etas_es58x/es58x_core.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/net/can/slcan/slcan-core.c    | 2 +-
+ drivers/net/can/slcan/slcan-ethtool.c | 7 +------
+ drivers/net/can/slcan/slcan.h         | 3 ++-
+ 3 files changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
-index 7353745f92d7..ade0a650e0ed 100644
---- a/drivers/net/can/usb/etas_es58x/es58x_core.c
-+++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
-@@ -25,7 +25,6 @@ MODULE_DESCRIPTION("Socket CAN driver for ETAS ES58X USB adapters");
- MODULE_VERSION(DRV_VERSION);
- MODULE_LICENSE("GPL v2");
+diff --git a/drivers/net/can/slcan/slcan-core.c b/drivers/net/can/slcan/slcan-core.c
+index dc28e715bbe1..6162e6132ea4 100644
+--- a/drivers/net/can/slcan/slcan-core.c
++++ b/drivers/net/can/slcan/slcan-core.c
+@@ -866,8 +866,8 @@ static struct slcan *slc_alloc(void)
  
--#define ES58X_MODULE_NAME "etas_es58x"
- #define ES58X_VENDOR_ID 0x108C
- #define ES581_4_PRODUCT_ID 0x0159
- #define ES582_1_PRODUCT_ID 0x0168
-@@ -59,11 +58,11 @@ MODULE_DEVICE_TABLE(usb, es58x_id_table);
+ 	snprintf(dev->name, sizeof(dev->name), "slcan%d", i);
+ 	dev->netdev_ops = &slc_netdev_ops;
++	dev->ethtool_ops = &slcan_ethtool_ops;
+ 	dev->base_addr  = i;
+-	slcan_set_ethtool_ops(dev);
+ 	sl = netdev_priv(dev);
  
- #define es58x_print_hex_dump(buf, len)					\
- 	print_hex_dump(KERN_DEBUG,					\
--		       ES58X_MODULE_NAME " " __stringify(buf) ": ",	\
-+		       KBUILD_MODNAME " " __stringify(buf) ": ",	\
- 		       DUMP_PREFIX_NONE, 16, 1, buf, len, false)
- 
- #define es58x_print_hex_dump_debug(buf, len)				 \
--	print_hex_dump_debug(ES58X_MODULE_NAME " " __stringify(buf) ": ",\
-+	print_hex_dump_debug(KBUILD_MODNAME " " __stringify(buf) ": ",\
- 			     DUMP_PREFIX_NONE, 16, 1, buf, len, false)
- 
- /* The last two bytes of an ES58X command is a CRC16. The first two
-@@ -2280,7 +2279,7 @@ static void es58x_disconnect(struct usb_interface *intf)
+ 	/* Initialize channel control data */
+diff --git a/drivers/net/can/slcan/slcan-ethtool.c b/drivers/net/can/slcan/slcan-ethtool.c
+index bf0afdc4e49d..328ae1fb065b 100644
+--- a/drivers/net/can/slcan/slcan-ethtool.c
++++ b/drivers/net/can/slcan/slcan-ethtool.c
+@@ -52,14 +52,9 @@ static int slcan_get_sset_count(struct net_device *netdev, int sset)
+ 	}
  }
  
- static struct usb_driver es58x_driver = {
--	.name = ES58X_MODULE_NAME,
-+	.name = KBUILD_MODNAME,
- 	.probe = es58x_probe,
- 	.disconnect = es58x_disconnect,
- 	.id_table = es58x_id_table
+-static const struct ethtool_ops slcan_ethtool_ops = {
++const struct ethtool_ops slcan_ethtool_ops = {
+ 	.get_strings = slcan_get_strings,
+ 	.get_priv_flags = slcan_get_priv_flags,
+ 	.set_priv_flags = slcan_set_priv_flags,
+ 	.get_sset_count = slcan_get_sset_count,
+ };
+-
+-void slcan_set_ethtool_ops(struct net_device *netdev)
+-{
+-	netdev->ethtool_ops = &slcan_ethtool_ops;
+-}
+diff --git a/drivers/net/can/slcan/slcan.h b/drivers/net/can/slcan/slcan.h
+index d463c8d99e22..85cedf856db3 100644
+--- a/drivers/net/can/slcan/slcan.h
++++ b/drivers/net/can/slcan/slcan.h
+@@ -13,6 +13,7 @@
+ 
+ bool slcan_err_rst_on_open(struct net_device *ndev);
+ int slcan_enable_err_rst_on_open(struct net_device *ndev, bool on);
+-void slcan_set_ethtool_ops(struct net_device *ndev);
++
++extern const struct ethtool_ops slcan_ethtool_ops;
+ 
+ #endif /* _SLCAN_H */
 -- 
 2.35.1
 
