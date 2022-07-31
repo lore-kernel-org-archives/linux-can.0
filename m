@@ -2,46 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CDF60C19F2C
-	for <linux-can@archiver.kernel.org>; Sun, 31 Jul 2022 19:22:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E4F2C00140
+	for <linux-can@archiver.kernel.org>; Sun, 31 Jul 2022 19:22:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238467AbiGaTWg (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 31 Jul 2022 15:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33726 "EHLO
+        id S238280AbiGaTWh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 31 Jul 2022 15:22:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238472AbiGaTV0 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 31 Jul 2022 15:21:26 -0400
+        with ESMTP id S238133AbiGaTVf (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 31 Jul 2022 15:21:35 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C871180B
-        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 12:21:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB8811810
+        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 12:21:03 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oIEUk-0008Cz-9E
+        id 1oIEUk-0008Do-Oi
         for linux-can@vger.kernel.org; Sun, 31 Jul 2022 21:20:58 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 20B94BED18
+        by bjornoya.blackshift.org (Postfix) with SMTP id 30DF3BED1B
         for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 19:20:41 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 89171BED04;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5D05ABECFD;
         Sun, 31 Jul 2022 19:20:40 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0823160a;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1c2ad0d5;
         Sun, 31 Jul 2022 19:20:31 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Stephane Grosjean <s.grosjean@peak-system.com>,
+        Jimmy Assarsson <extja@kvaser.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 33/36] can: peak_canfd: advertise timestamping capabilities and add ioctl support
-Date:   Sun, 31 Jul 2022 21:20:26 +0200
-Message-Id: <20220731192029.746751-34-mkl@pengutronix.de>
+Subject: [PATCH net-next 32/36] can: kvaser_usb: advertise timestamping capabilities and add ioctl support
+Date:   Sun, 31 Jul 2022 21:20:25 +0200
+Message-Id: <20220731192029.746751-33-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220731192029.746751-1-mkl@pengutronix.de>
 References: <20220731192029.746751-1-mkl@pengutronix.de>
@@ -58,112 +58,104 @@ X-Mailing-List: linux-can@vger.kernel.org
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
 Currently, userland has no method to query which timestamping features
-are supported by the peak_canfd driver (aside maybe of getting RX
+are supported by the kvaser_usb driver (aside maybe of getting RX
 messages and observe whether or not hardware timestamps stay at zero).
 
-The canonical way to add hardware timestamp support is to implement
-ethtool_ops::get_ts_info() in order to advertise the timestamping
-capabilities and to implement net_device_ops::ndo_eth_ioctl() as
-requested in [1]. Currently, the driver only supports hardware RX
-timestamps [2] but not hardware TX. For this reason, the generic
-function can_ethtool_op_get_ts_info_hwts() and can_eth_ioctl_hwts()
-can not be reused and instead this patch adds peak_get_ts_info() and
-peak_eth_ioctl().
+The canonical way for a network driver to advertise what kind of
+timestamping it supports is to implement
+ethtool_ops::get_ts_info(). Here, we use the CAN specific
+can_ethtool_op_get_ts_info_hwts() function to achieve this.
+
+In addition, the driver currently does not support the hardware
+timestamps ioctls. According to [1], SIOCSHWTSTAMP is "must" and
+SIOCGHWTSTAMP is "should". This patch fills up that gap by
+implementing net_device_ops::ndo_eth_ioctl() using the CAN specific
+function can_eth_ioctl_hwts().
 
 [1] kernel doc Timestamping, section 3.1: "Hardware Timestamping
 Implementation: Device Drivers"
 Link: https://docs.kernel.org/networking/timestamping.html#hardware-timestamping-implementation-device-drivers
 
-[2] https://lore.kernel.org/linux-can/20220727084257.brcbbf7lksoeekbr@pengutronix.de/
-
-CC: Stephane Grosjean <s.grosjean@peak-system.com>
+CC: Jimmy Assarsson <extja@kvaser.com>
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/all/20220727101641.198847-14-mailhol.vincent@wanadoo.fr
+Link: https://lore.kernel.org/all/20220727101641.198847-13-mailhol.vincent@wanadoo.fr
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/peak_canfd/peak_canfd.c | 48 +++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb.h   |  1 +
+ .../net/can/usb/kvaser_usb/kvaser_usb_core.c  | 27 +++++++++++++++++--
+ 2 files changed, 26 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/peak_canfd/peak_canfd.c b/drivers/net/can/peak_canfd/peak_canfd.c
-index afb9adb3d5c2..f8420cc1d907 100644
---- a/drivers/net/can/peak_canfd/peak_canfd.c
-+++ b/drivers/net/can/peak_canfd/peak_canfd.c
-@@ -7,6 +7,7 @@
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
+index eefcbe3aadce..841da29cef93 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
+@@ -39,6 +39,7 @@
+ #define KVASER_USB_QUIRK_HAS_SILENT_MODE	BIT(0)
+ #define KVASER_USB_QUIRK_HAS_TXRX_ERRORS	BIT(1)
+ #define KVASER_USB_QUIRK_IGNORE_CLK_FREQ	BIT(2)
++#define KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP	BIT(3)
  
- #include <linux/can.h>
- #include <linux/can/dev.h>
+ /* Device capabilities */
+ #define KVASER_USB_CAP_BERR_CAP			0x01
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+index ce60b16ac8ee..824cab80aa02 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+@@ -13,6 +13,7 @@
+ 
+ #include <linux/completion.h>
+ #include <linux/device.h>
 +#include <linux/ethtool.h>
+ #include <linux/gfp.h>
+ #include <linux/if.h>
+ #include <linux/kernel.h>
+@@ -89,7 +90,7 @@
+ #define USB_HYBRID_PRO_CANLIN_PRODUCT_ID	278
  
- #include "peak_canfd_user.h"
+ static const struct kvaser_usb_driver_info kvaser_usb_driver_info_hydra = {
+-	.quirks = 0,
++	.quirks = KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP,
+ 	.ops = &kvaser_usb_hydra_dev_ops,
+ };
  
-@@ -742,13 +743,59 @@ static netdev_tx_t peak_canfd_start_xmit(struct sk_buff *skb,
- 	return NETDEV_TX_OK;
- }
- 
-+static int peak_eth_ioctl(struct net_device *netdev, struct ifreq *ifr, int cmd)
-+{
-+	struct hwtstamp_config hwts_cfg = { 0 };
-+
-+	switch (cmd) {
-+	case SIOCSHWTSTAMP: /* set */
-+		if (copy_from_user(&hwts_cfg, ifr->ifr_data, sizeof(hwts_cfg)))
-+			return -EFAULT;
-+		if (hwts_cfg.tx_type == HWTSTAMP_TX_OFF &&
-+		    hwts_cfg.rx_filter == HWTSTAMP_FILTER_ALL)
-+			return 0;
-+		return -ERANGE;
-+
-+	case SIOCGHWTSTAMP: /* get */
-+		hwts_cfg.tx_type = HWTSTAMP_TX_OFF;
-+		hwts_cfg.rx_filter = HWTSTAMP_FILTER_ALL;
-+		if (copy_to_user(ifr->ifr_data, &hwts_cfg, sizeof(hwts_cfg)))
-+			return -EFAULT;
-+		return 0;
-+
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
- static const struct net_device_ops peak_canfd_netdev_ops = {
- 	.ndo_open = peak_canfd_open,
- 	.ndo_stop = peak_canfd_close,
-+	.ndo_eth_ioctl = peak_eth_ioctl,
- 	.ndo_start_xmit = peak_canfd_start_xmit,
+@@ -665,6 +666,22 @@ static const struct net_device_ops kvaser_usb_netdev_ops = {
  	.ndo_change_mtu = can_change_mtu,
  };
  
-+static int peak_get_ts_info(struct net_device *dev,
-+			    struct ethtool_ts_info *info)
-+{
-+	info->so_timestamping =
-+		SOF_TIMESTAMPING_TX_SOFTWARE |
-+		SOF_TIMESTAMPING_RX_SOFTWARE |
-+		SOF_TIMESTAMPING_SOFTWARE |
-+		SOF_TIMESTAMPING_RX_HARDWARE |
-+		SOF_TIMESTAMPING_RAW_HARDWARE;
-+	info->phc_index = -1;
-+	info->tx_types = BIT(HWTSTAMP_TX_OFF);
-+	info->rx_filters = BIT(HWTSTAMP_FILTER_ALL);
-+
-+	return 0;
-+}
-+
-+static const struct ethtool_ops peak_canfd_ethtool_ops = {
-+	.get_ts_info = peak_get_ts_info,
++static const struct net_device_ops kvaser_usb_netdev_ops_hwts = {
++	.ndo_open = kvaser_usb_open,
++	.ndo_stop = kvaser_usb_close,
++	.ndo_eth_ioctl = can_eth_ioctl_hwts,
++	.ndo_start_xmit = kvaser_usb_start_xmit,
++	.ndo_change_mtu = can_change_mtu,
 +};
 +
- struct net_device *alloc_peak_canfd_dev(int sizeof_priv, int index,
- 					int echo_skb_max)
++static const struct ethtool_ops kvaser_usb_ethtool_ops = {
++	.get_ts_info = ethtool_op_get_ts_info,
++};
++
++static const struct ethtool_ops kvaser_usb_ethtool_ops_hwts = {
++	.get_ts_info = can_ethtool_op_get_ts_info_hwts,
++};
++
+ static void kvaser_usb_remove_interfaces(struct kvaser_usb *dev)
  {
-@@ -789,6 +836,7 @@ struct net_device *alloc_peak_canfd_dev(int sizeof_priv, int index,
+ 	int i;
+@@ -742,7 +759,13 @@ static int kvaser_usb_init_one(struct kvaser_usb *dev, int channel)
+ 	netdev->flags |= IFF_ECHO;
  
- 	ndev->flags |= IFF_ECHO;
- 	ndev->netdev_ops = &peak_canfd_netdev_ops;
-+	ndev->ethtool_ops = &peak_canfd_ethtool_ops;
- 	ndev->dev_id = index;
+ 	netdev->netdev_ops = &kvaser_usb_netdev_ops;
+-
++	if (driver_info->quirks & KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP) {
++		netdev->netdev_ops = &kvaser_usb_netdev_ops_hwts;
++		netdev->ethtool_ops = &kvaser_usb_ethtool_ops_hwts;
++	} else {
++		netdev->netdev_ops = &kvaser_usb_netdev_ops;
++		netdev->ethtool_ops = &kvaser_usb_ethtool_ops;
++	}
+ 	SET_NETDEV_DEV(netdev, &dev->intf->dev);
+ 	netdev->dev_id = channel;
  
- 	return ndev;
 -- 
 2.35.1
 
