@@ -2,45 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B828C3F6B0
-	for <linux-can@archiver.kernel.org>; Sun, 31 Jul 2022 19:21:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61A7EC19F2B
+	for <linux-can@archiver.kernel.org>; Sun, 31 Jul 2022 19:21:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238304AbiGaTU7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 31 Jul 2022 15:20:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33100 "EHLO
+        id S238321AbiGaTVA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 31 Jul 2022 15:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237663AbiGaTUs (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 31 Jul 2022 15:20:48 -0400
+        with ESMTP id S237920AbiGaTUt (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 31 Jul 2022 15:20:49 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD63E0B0
-        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 12:20:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F158C9FEE
+        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 12:20:45 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oIEUU-0007Iv-Ed
-        for linux-can@vger.kernel.org; Sun, 31 Jul 2022 21:20:42 +0200
+        id 1oIEUW-0007M4-6I
+        for linux-can@vger.kernel.org; Sun, 31 Jul 2022 21:20:44 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id E7066BEC76
-        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 19:20:36 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id B8B75BEC97
+        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 19:20:37 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 58D2ABEC5D;
-        Sun, 31 Jul 2022 19:20:36 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3932EBEC7D;
+        Sun, 31 Jul 2022 19:20:37 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4842db1c;
-        Sun, 31 Jul 2022 19:20:30 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0b39b1f1;
+        Sun, 31 Jul 2022 19:20:31 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         Dario Binacchi <dario.binacchi@amarulasolutions.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 15/36] can: slcan: remove useless header inclusions
-Date:   Sun, 31 Jul 2022 21:20:08 +0200
-Message-Id: <20220731192029.746751-16-mkl@pengutronix.de>
+Subject: [PATCH net-next 18/36] can: slcan: use the generic can_change_mtu()
+Date:   Sun, 31 Jul 2022 21:20:11 +0200
+Message-Id: <20220731192029.746751-19-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220731192029.746751-1-mkl@pengutronix.de>
 References: <20220731192029.746751-1-mkl@pengutronix.de>
@@ -56,29 +56,39 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
-Include only the necessary headers.
+It is useless to define a custom function that does nothing but always
+return the same error code. Better to use the generic can_change_mtu()
+function.
 
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Link: https://lore.kernel.org/all/20220728070254.267974-3-dario.binacchi@amarulasolutions.com
+Link: https://lore.kernel.org/all/20220728070254.267974-6-dario.binacchi@amarulasolutions.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/slcan/slcan-core.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/net/can/slcan/slcan-core.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
 diff --git a/drivers/net/can/slcan/slcan-core.c b/drivers/net/can/slcan/slcan-core.c
-index 3b1f39d69e6e..509053ea1742 100644
+index 3a4701d8e081..740d82d68ca4 100644
 --- a/drivers/net/can/slcan/slcan-core.c
 +++ b/drivers/net/can/slcan/slcan-core.c
-@@ -48,9 +48,6 @@
- #include <linux/netdevice.h>
- #include <linux/skbuff.h>
- #include <linux/rtnetlink.h>
--#include <linux/if_arp.h>
--#include <linux/if_ether.h>
--#include <linux/sched.h>
- #include <linux/delay.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
+@@ -743,16 +743,11 @@ static int slcan_netdev_open(struct net_device *dev)
+ 	return err;
+ }
+ 
+-static int slcan_netdev_change_mtu(struct net_device *dev, int new_mtu)
+-{
+-	return -EINVAL;
+-}
+-
+ static const struct net_device_ops slcan_netdev_ops = {
+ 	.ndo_open               = slcan_netdev_open,
+ 	.ndo_stop               = slcan_netdev_close,
+ 	.ndo_start_xmit         = slcan_netdev_xmit,
+-	.ndo_change_mtu         = slcan_netdev_change_mtu,
++	.ndo_change_mtu         = can_change_mtu,
+ };
+ 
+ /******************************************
 -- 
 2.35.1
 
