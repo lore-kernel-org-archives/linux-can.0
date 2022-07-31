@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B5EBC00140
-	for <linux-can@archiver.kernel.org>; Sun, 31 Jul 2022 19:21:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A0B5C00140
+	for <linux-can@archiver.kernel.org>; Sun, 31 Jul 2022 19:22:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238145AbiGaTVg (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 31 Jul 2022 15:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33214 "EHLO
+        id S238305AbiGaTWM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 31 Jul 2022 15:22:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238305AbiGaTU7 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 31 Jul 2022 15:20:59 -0400
+        with ESMTP id S238177AbiGaTVQ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 31 Jul 2022 15:21:16 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665ECEE13
-        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 12:20:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E56D1116D
+        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 12:20:56 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oIEUc-0007Xd-SM
-        for linux-can@vger.kernel.org; Sun, 31 Jul 2022 21:20:51 +0200
+        id 1oIEUg-0007nF-7C
+        for linux-can@vger.kernel.org; Sun, 31 Jul 2022 21:20:54 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 241B6BECCC
+        by bjornoya.blackshift.org (Postfix) with SMTP id 99274BECE2
         for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 19:20:39 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7E122BECB6;
-        Sun, 31 Jul 2022 19:20:38 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 172FDBECC9;
+        Sun, 31 Jul 2022 19:20:39 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 54cdf849;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c6dd8396;
         Sun, 31 Jul 2022 19:20:31 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 24/36] can: v(x)can: add software tx timestamps
-Date:   Sun, 31 Jul 2022 21:20:17 +0200
-Message-Id: <20220731192029.746751-25-mkl@pengutronix.de>
+Subject: [PATCH net-next 27/36] can: dev: add generic function can_ethtool_op_get_ts_info_hwts()
+Date:   Sun, 31 Jul 2022 21:20:20 +0200
+Message-Id: <20220731192029.746751-28-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220731192029.746751-1-mkl@pengutronix.de>
 References: <20220731192029.746751-1-mkl@pengutronix.de>
@@ -56,55 +56,84 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-TX timestamps were added to the can_put_echo_skb() function of can_dev
-modules in [1]. However, vcan and vxcan do not rely on that function
-and as such do not offer TX timestamping.
+Add function can_ethtool_op_get_ts_info_hwts(). This function will be
+used by CAN devices with hardware TX/RX timestamping support to
+implement ethtool_ops::get_ts_info. This function does not offer
+support to activate/deactivate hardware timestamps at device level nor
+support the filter options (which is currently the case for all CAN
+devices with hardware timestamping support).
 
-While it could be arguable whether TX timestamps are really needed for
-virtual interfaces, we prefer to still add it so that all CAN drivers,
-without exception, support the software TX timestamps.
+The fact that hardware timestamp can not be deactivated at hardware
+level does not impact the userland. As long as the user do not set
+SO_TIMESTAMPING using a setsockopt() or ioctl(), the kernel will not
+emit TX timestamps (RX timestamps will still be reproted as it is the
+case currently).
 
-Add a call to skb_tx_timestamp() in the vcan_tx() and vxcan_xmit()
-functions so that the modules now support TX software timestamps.
-
-[1] commit 741b91f1b0ea ("can: dev: can_put_echo_skb(): add software
-tx timestamps")
-Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=741b91f1b0ea34f00f6a7d4539b767c409291fcf
+Drivers which need more fine grained control remains free to implement
+their own function, but we foresee that the generic function
+introduced here will be sufficient for the majority.
 
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/all/20220727101641.198847-5-mailhol.vincent@wanadoo.fr
+Link: https://lore.kernel.org/all/20220727101641.198847-8-mailhol.vincent@wanadoo.fr
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/vcan.c  | 2 ++
- drivers/net/can/vxcan.c | 2 ++
- 2 files changed, 4 insertions(+)
+ drivers/net/can/dev/dev.c | 21 +++++++++++++++++++++
+ include/linux/can/dev.h   |  3 +++
+ 2 files changed, 24 insertions(+)
 
-diff --git a/drivers/net/can/vcan.c b/drivers/net/can/vcan.c
-index a15619d883ec..4a363cfcf97c 100644
---- a/drivers/net/can/vcan.c
-+++ b/drivers/net/can/vcan.c
-@@ -99,6 +99,8 @@ static netdev_tx_t vcan_tx(struct sk_buff *skb, struct net_device *dev)
- 	/* set flag whether this packet has to be looped back */
- 	loop = skb->pkt_type == PACKET_LOOPBACK;
+diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
+index 523eaacfe29e..f307034ff4fd 100644
+--- a/drivers/net/can/dev/dev.c
++++ b/drivers/net/can/dev/dev.c
+@@ -322,6 +322,27 @@ int can_change_mtu(struct net_device *dev, int new_mtu)
+ }
+ EXPORT_SYMBOL_GPL(can_change_mtu);
  
-+	skb_tx_timestamp(skb);
++/* generic implementation of ethtool_ops::get_ts_info for CAN devices
++ * supporting hardware timestamps
++ */
++int can_ethtool_op_get_ts_info_hwts(struct net_device *dev,
++				    struct ethtool_ts_info *info)
++{
++	info->so_timestamping =
++		SOF_TIMESTAMPING_TX_SOFTWARE |
++		SOF_TIMESTAMPING_RX_SOFTWARE |
++		SOF_TIMESTAMPING_SOFTWARE |
++		SOF_TIMESTAMPING_TX_HARDWARE |
++		SOF_TIMESTAMPING_RX_HARDWARE |
++		SOF_TIMESTAMPING_RAW_HARDWARE;
++	info->phc_index = -1;
++	info->tx_types = BIT(HWTSTAMP_TX_ON);
++	info->rx_filters = BIT(HWTSTAMP_FILTER_ALL);
 +
- 	if (!echo) {
- 		/* no echo handling available inside this driver */
- 		if (loop) {
-diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
-index 577a80300514..61b6eca383f8 100644
---- a/drivers/net/can/vxcan.c
-+++ b/drivers/net/can/vxcan.c
-@@ -53,6 +53,8 @@ static netdev_tx_t vxcan_xmit(struct sk_buff *oskb, struct net_device *dev)
- 		goto out_unlock;
- 	}
++	return 0;
++}
++EXPORT_SYMBOL(can_ethtool_op_get_ts_info_hwts);
++
+ /* Common open function when the device gets opened.
+  *
+  * This function should be called in the open function of the device
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index e22dc03c850e..752bd45d8ebf 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -20,6 +20,7 @@
+ #include <linux/can/length.h>
+ #include <linux/can/netlink.h>
+ #include <linux/can/skb.h>
++#include <linux/ethtool.h>
+ #include <linux/netdevice.h>
  
-+	skb_tx_timestamp(oskb);
-+
- 	skb = skb_clone(oskb, GFP_ATOMIC);
- 	if (skb) {
- 		consume_skb(oskb);
+ /*
+@@ -162,6 +163,8 @@ struct can_priv *safe_candev_priv(struct net_device *dev);
+ int open_candev(struct net_device *dev);
+ void close_candev(struct net_device *dev);
+ int can_change_mtu(struct net_device *dev, int new_mtu);
++int can_ethtool_op_get_ts_info_hwts(struct net_device *dev,
++				    struct ethtool_ts_info *info);
+ 
+ int register_candev(struct net_device *dev);
+ void unregister_candev(struct net_device *dev);
 -- 
 2.35.1
 
