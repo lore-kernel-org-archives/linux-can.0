@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 253E9C00140
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF1F6C3F6B0
 	for <linux-can@archiver.kernel.org>; Sun, 31 Jul 2022 19:20:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237900AbiGaTUq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 31 Jul 2022 15:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
+        id S238140AbiGaTUs (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 31 Jul 2022 15:20:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237898AbiGaTUi (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 31 Jul 2022 15:20:38 -0400
+        with ESMTP id S237920AbiGaTUp (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 31 Jul 2022 15:20:45 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 805E3DF72
-        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 12:20:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754C79FEE
+        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 12:20:38 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oIEUM-00077b-Lw
-        for linux-can@vger.kernel.org; Sun, 31 Jul 2022 21:20:34 +0200
+        id 1oIEUO-0007AP-Nd
+        for linux-can@vger.kernel.org; Sun, 31 Jul 2022 21:20:36 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id C3127BEC13
-        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 19:20:32 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 277D1BEC2C
+        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 19:20:34 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 56734BEC09;
-        Sun, 31 Jul 2022 19:20:32 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id B1FD9BEC22;
+        Sun, 31 Jul 2022 19:20:33 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ff10d158;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0fe2b58e;
         Sun, 31 Jul 2022 19:20:30 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 04/36] can: softing: use KBUILD_MODNAME instead of hard coded names
-Date:   Sun, 31 Jul 2022 21:19:57 +0200
-Message-Id: <20220731192029.746751-5-mkl@pengutronix.de>
+Subject: [PATCH net-next 07/36] can: kvaser_usb: use KBUILD_MODNAME instead of hard coded names
+Date:   Sun, 31 Jul 2022 21:20:00 +0200
+Message-Id: <20220731192029.746751-8-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220731192029.746751-1-mkl@pengutronix.de>
 References: <20220731192029.746751-1-mkl@pengutronix.de>
@@ -56,40 +56,30 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-The driver uses the string "softing" to populate platform_driver::name
-and can_bittiming_const::name. KBUILD_MODNAME also evaluates to
-"softing". Use KBUILD_MODNAME and get rid on the hardcoded string
-names.
+The driver uses the string "kvaser_usb" to populate
+usb_driver::name. KBUILD_MODNAME also evaluates to "kvaser_ubs". Use
+KBUILD_MODNAME and get rid on the hardcoded string names.
 
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/all/20220726082707.58758-5-mailhol.vincent@wanadoo.fr
+Link: https://lore.kernel.org/all/20220726082707.58758-8-mailhol.vincent@wanadoo.fr
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/softing/softing_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
-index 8d27ac66ca7f..8cca6f07e7c3 100644
---- a/drivers/net/can/softing/softing_main.c
-+++ b/drivers/net/can/softing/softing_main.c
-@@ -612,7 +612,7 @@ static const struct net_device_ops softing_netdev_ops = {
- };
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+index f211bfcb1d97..ce60b16ac8ee 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+@@ -869,7 +869,7 @@ static void kvaser_usb_disconnect(struct usb_interface *intf)
+ }
  
- static const struct can_bittiming_const softing_btr_const = {
--	.name = "softing",
+ static struct usb_driver kvaser_usb_driver = {
+-	.name = "kvaser_usb",
 +	.name = KBUILD_MODNAME,
- 	.tseg1_min = 1,
- 	.tseg1_max = 16,
- 	.tseg2_min = 1,
-@@ -846,7 +846,7 @@ static int softing_pdev_probe(struct platform_device *pdev)
- 
- static struct platform_driver softing_driver = {
- 	.driver = {
--		.name = "softing",
-+		.name = KBUILD_MODNAME,
- 	},
- 	.probe = softing_pdev_probe,
- 	.remove = softing_pdev_remove,
+ 	.probe = kvaser_usb_probe,
+ 	.disconnect = kvaser_usb_disconnect,
+ 	.id_table = kvaser_usb_table,
 -- 
 2.35.1
 
