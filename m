@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59AADC19F2B
-	for <linux-can@archiver.kernel.org>; Sun, 31 Jul 2022 19:20:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 233CBC00140
+	for <linux-can@archiver.kernel.org>; Sun, 31 Jul 2022 19:20:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237532AbiGaTUw (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 31 Jul 2022 15:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33100 "EHLO
+        id S238013AbiGaTUx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 31 Jul 2022 15:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238013AbiGaTUp (ORCPT
+        with ESMTP id S238030AbiGaTUp (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Sun, 31 Jul 2022 15:20:45 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C9DE030
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B99E095
         for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 12:20:40 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oIEUQ-0007Dn-Cr
+        id 1oIEUQ-0007Cp-Ga
         for linux-can@vger.kernel.org; Sun, 31 Jul 2022 21:20:38 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 80227BEC48
+        by bjornoya.blackshift.org (Postfix) with SMTP id 0EC84BEC40
         for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 19:20:35 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 0230ABEC3E;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7B423BEC33;
         Sun, 31 Jul 2022 19:20:34 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id bc354921;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 73ed314b;
         Sun, 31 Jul 2022 19:20:30 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 10/36] can: etas_es58x: remove DRV_VERSION
-Date:   Sun, 31 Jul 2022 21:20:03 +0200
-Message-Id: <20220731192029.746751-11-mkl@pengutronix.de>
+Subject: [PATCH net-next 09/36] can: etas_es58x: replace ES58X_MODULE_NAME with KBUILD_MODNAME
+Date:   Sun, 31 Jul 2022 21:20:02 +0200
+Message-Id: <20220731192029.746751-10-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220731192029.746751-1-mkl@pengutronix.de>
 References: <20220731192029.746751-1-mkl@pengutronix.de>
@@ -56,47 +56,52 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-DRV_VERSION is a leftover from when the driver was an out of tree
-module. The driver version was never incremented despite of the
-numerous changes made since it was mainstreamed. Keeping an
-unmaintained driver version number makes no sense. Remove it and rely
-on the kernel version instead.
+ES58X_MODULE_NAME is set to "etas_es58x". KBUILD_MODNAME also
+evaluates to "etas_es58x". Get rid of ES58X_MODULE_NAME and rely on
+KBUILD_MODNAME instead.
 
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/all/20220726082707.58758-11-mailhol.vincent@wanadoo.fr
+Link: https://lore.kernel.org/all/20220726082707.58758-10-mailhol.vincent@wanadoo.fr
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/etas_es58x/es58x_core.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/net/can/usb/etas_es58x/es58x_core.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
-index ade0a650e0ed..c22e989d42ff 100644
+index 7353745f92d7..ade0a650e0ed 100644
 --- a/drivers/net/can/usb/etas_es58x/es58x_core.c
 +++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
-@@ -18,11 +18,9 @@
- 
- #include "es58x_core.h"
- 
--#define DRV_VERSION "1.00"
- MODULE_AUTHOR("Vincent Mailhol <mailhol.vincent@wanadoo.fr>");
- MODULE_AUTHOR("Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>");
- MODULE_DESCRIPTION("Socket CAN driver for ETAS ES58X USB adapters");
--MODULE_VERSION(DRV_VERSION);
+@@ -25,7 +25,6 @@ MODULE_DESCRIPTION("Socket CAN driver for ETAS ES58X USB adapters");
+ MODULE_VERSION(DRV_VERSION);
  MODULE_LICENSE("GPL v2");
  
+-#define ES58X_MODULE_NAME "etas_es58x"
  #define ES58X_VENDOR_ID 0x108C
-@@ -2180,9 +2178,8 @@ static struct es58x_device *es58x_init_es58x_dev(struct usb_interface *intf,
- 	struct usb_endpoint_descriptor *ep_in, *ep_out;
- 	int ret;
+ #define ES581_4_PRODUCT_ID 0x0159
+ #define ES582_1_PRODUCT_ID 0x0168
+@@ -59,11 +58,11 @@ MODULE_DEVICE_TABLE(usb, es58x_id_table);
  
--	dev_info(dev,
--		 "Starting %s %s (Serial Number %s) driver version %s\n",
--		 udev->manufacturer, udev->product, udev->serial, DRV_VERSION);
-+	dev_info(dev, "Starting %s %s (Serial Number %s)\n",
-+		 udev->manufacturer, udev->product, udev->serial);
+ #define es58x_print_hex_dump(buf, len)					\
+ 	print_hex_dump(KERN_DEBUG,					\
+-		       ES58X_MODULE_NAME " " __stringify(buf) ": ",	\
++		       KBUILD_MODNAME " " __stringify(buf) ": ",	\
+ 		       DUMP_PREFIX_NONE, 16, 1, buf, len, false)
  
- 	ret = usb_find_common_endpoints(intf->cur_altsetting, &ep_in, &ep_out,
- 					NULL, NULL);
+ #define es58x_print_hex_dump_debug(buf, len)				 \
+-	print_hex_dump_debug(ES58X_MODULE_NAME " " __stringify(buf) ": ",\
++	print_hex_dump_debug(KBUILD_MODNAME " " __stringify(buf) ": ",\
+ 			     DUMP_PREFIX_NONE, 16, 1, buf, len, false)
+ 
+ /* The last two bytes of an ES58X command is a CRC16. The first two
+@@ -2280,7 +2279,7 @@ static void es58x_disconnect(struct usb_interface *intf)
+ }
+ 
+ static struct usb_driver es58x_driver = {
+-	.name = ES58X_MODULE_NAME,
++	.name = KBUILD_MODNAME,
+ 	.probe = es58x_probe,
+ 	.disconnect = es58x_disconnect,
+ 	.id_table = es58x_id_table
 -- 
 2.35.1
 
