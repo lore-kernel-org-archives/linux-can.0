@@ -2,43 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CDE75C19F2B
-	for <linux-can@archiver.kernel.org>; Sun, 31 Jul 2022 19:20:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93F5FC00140
+	for <linux-can@archiver.kernel.org>; Sun, 31 Jul 2022 19:20:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbiGaTUg (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 31 Jul 2022 15:20:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60916 "EHLO
+        id S237933AbiGaTUp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 31 Jul 2022 15:20:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237850AbiGaTUf (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 31 Jul 2022 15:20:35 -0400
+        with ESMTP id S237546AbiGaTUh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 31 Jul 2022 15:20:37 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5543CBC0B
-        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 12:20:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 590C8A1B7
+        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 12:20:36 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oIEUK-00076b-P5
-        for linux-can@vger.kernel.org; Sun, 31 Jul 2022 21:20:32 +0200
+        id 1oIEUM-00077K-H4
+        for linux-can@vger.kernel.org; Sun, 31 Jul 2022 21:20:34 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 8F7C1BEBFC
-        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 19:20:31 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 608EFBEC0B
+        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 19:20:32 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2D9B7BEBF1;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id E4FB4BEC02;
         Sun, 31 Jul 2022 19:20:31 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 363d4f2a;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 798070e4;
         Sun, 31 Jul 2022 19:20:30 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 01/36] can: mcp251xfd: mcp251xfd_dump(): fix comment
-Date:   Sun, 31 Jul 2022 21:19:54 +0200
-Message-Id: <20220731192029.746751-2-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 03/36] can: ems_usb: use KBUILD_MODNAME instead of hard coded names
+Date:   Sun, 31 Jul 2022 21:19:56 +0200
+Message-Id: <20220731192029.746751-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220731192029.746751-1-mkl@pengutronix.de>
 References: <20220731192029.746751-1-mkl@pengutronix.de>
@@ -52,31 +54,42 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The driver uses only 1 TEF and 1 TX ring, but a variable number of RX
-rings. Fix comment accordingly.
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-Fixes: e0ab3dd5f98f ("can: mcp251xfd: add dev coredump support")
-Link: https://lore.kernel.org/all/20220726084328.4042678-1-mkl@pengutronix.de
+The driver uses the string "ems_usb" to populate usb_driver::name and
+can_bittiming_const::name. KBUILD_MODNAME also evaluates to
+"ems_ubs". Use KBUILD_MODNAME and get rid on the hardcoded string
+names.
+
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Link: https://lore.kernel.org/all/20220726082707.58758-3-mailhol.vincent@wanadoo.fr
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-dump.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/usb/ems_usb.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-dump.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-dump.c
-index c991b30bc9f0..004eaf96262b 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-dump.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-dump.c
-@@ -253,7 +253,7 @@ void mcp251xfd_dump(const struct mcp251xfd_priv *priv)
- 		file_size += mcp251xfd_dump_reg_space[i].size / sizeof(u32) *
- 			sizeof(struct mcp251xfd_dump_object_reg);
+diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
+index bbec3311d893..e86a2033db60 100644
+--- a/drivers/net/can/usb/ems_usb.c
++++ b/drivers/net/can/usb/ems_usb.c
+@@ -880,7 +880,7 @@ static const struct net_device_ops ems_usb_netdev_ops = {
+ };
  
--	/* TEF ring, RX ring, TX rings */
-+	/* TEF ring, RX rings, TX ring */
- 	rings_num = 1 + priv->rx_ring_num + 1;
- 	obj_num += rings_num;
- 	file_size += rings_num * __MCP251XFD_DUMP_OBJECT_RING_KEY_MAX  *
-
-base-commit: 8e4372e617854a16d4ec549ba821aad78fd748a6
+ static const struct can_bittiming_const ems_usb_bittiming_const = {
+-	.name = "ems_usb",
++	.name = KBUILD_MODNAME,
+ 	.tseg1_min = 1,
+ 	.tseg1_max = 16,
+ 	.tseg2_min = 1,
+@@ -1074,7 +1074,7 @@ static void ems_usb_disconnect(struct usb_interface *intf)
+ 
+ /* usb specific object needed to register this driver with the usb subsystem */
+ static struct usb_driver ems_usb_driver = {
+-	.name = "ems_usb",
++	.name = KBUILD_MODNAME,
+ 	.probe = ems_usb_probe,
+ 	.disconnect = ems_usb_disconnect,
+ 	.id_table = ems_usb_table,
 -- 
 2.35.1
 
