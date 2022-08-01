@@ -2,327 +2,81 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC83DC19F2D
-	for <linux-can@archiver.kernel.org>; Mon,  1 Aug 2022 19:00:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4C74C19F2C
+	for <linux-can@archiver.kernel.org>; Mon,  1 Aug 2022 19:21:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229901AbiHATAe (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 1 Aug 2022 15:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49882 "EHLO
+        id S232194AbiHATVl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 1 Aug 2022 15:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230258AbiHATAa (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 1 Aug 2022 15:00:30 -0400
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76862D10C
-        for <linux-can@vger.kernel.org>; Mon,  1 Aug 2022 12:00:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1659380421;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=vULZSBYjuffBei341oKYOmfOHnbwww8SYE0/fu1M/NI=;
-    b=S3/pkircfA2t39sZW4a07SPUo6n0nOSg0YIhoI7mBH+Idvnf4OBmkgN33xpGm17LYG
-    OYzTlg06UaLx4QTAAigZ/PNSiwqkDDLgnyYUoMj3BR+DcWW41NskNhx/KLiu5dithDbp
-    OO6GrHOY+U8ctQUJjFNSQd2NoT2f5kP8dCghu8Rh4g5Wks/m4MvAOZaW5mt9KWwIvYA8
-    AQ3u5hwRHcZqSs1/eJ1uzeDn4jF6OTen9I90BtfDtXjSXV+lGp/dGkAQoqgfowR8UPG9
-    2SfxJf+oltU6PB9nZUp3WcD7s4Y4YzVd9VQs7Jbga/POZwzC6iiQ0DO1+XVXqdOei1ds
-    IkhQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS/xvEBL7X5sbo3UIh9JiLceSWJaYwXUKbZ"
-X-RZG-CLASS-ID: mo00
-Received: from silver.lan
-    by smtp.strato.de (RZmta 47.47.0 AUTH)
-    with ESMTPSA id Icb1b0y71J0KHvu
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 1 Aug 2022 21:00:20 +0200 (CEST)
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-To:     linux-can@vger.kernel.org
-Cc:     Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v8 1/7] can: skb: unify skb CAN frame identification helpers
-Date:   Mon,  1 Aug 2022 21:00:04 +0200
-Message-Id: <20220801190010.3344-2-socketcan@hartkopp.net>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220801190010.3344-1-socketcan@hartkopp.net>
-References: <20220801190010.3344-1-socketcan@hartkopp.net>
+        with ESMTP id S231549AbiHATVl (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 1 Aug 2022 15:21:41 -0400
+Received: from mailgw.felk.cvut.cz (mailgw.felk.cvut.cz [147.32.82.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3D4025C4C;
+        Mon,  1 Aug 2022 12:21:39 -0700 (PDT)
+Received: from mailgw.felk.cvut.cz (localhost.localdomain [127.0.0.1])
+        by mailgw.felk.cvut.cz (Proxmox) with ESMTP id 4562930B294D;
+        Mon,  1 Aug 2022 21:12:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        cmp.felk.cvut.cz; h=cc:cc:content-transfer-encoding:content-type
+        :content-type:date:from:from:in-reply-to:message-id:mime-version
+        :references:reply-to:subject:subject:to:to; s=felkmail; bh=2pWBh
+        Ea9wyWcJUpGmxJYnmLEbr1TDmkAtzMF2Dliqj8=; b=Djbj4fH1O1BxeIvyGEjgt
+        s0uMOIEKn1QbIAbfHOBZ1FaXdr3LLnhkhYvzm+nUfT881jxTMyleqx2/oxjYOowJ
+        TYubXNoyY2WgICGBZb8lR9EBK8Wtomh5Qu6EzCkhHUC/lBrFYlEMpQaPdQhhi/G1
+        AfBdS70lv7Pjw8Jt37Xsqnyb6bgsULYXkLNs/k/wnYnc+rtOz3A4W3YqPJO7g7N0
+        hc+e1srw2aO/xA4Gw+byX1sohuS5CWXpXroMDQGW68M2QiBrxvWQzlTJavyrCxb5
+        yesLsSIGq9HkZU0pMrc+ZeBMiuY+k5X5qN9CAci/ZCAx8E8UNVEX+8OFd3lFNUzW
+        g==
+Received: from cmp.felk.cvut.cz (haar.felk.cvut.cz [147.32.84.19])
+        by mailgw.felk.cvut.cz (Proxmox) with ESMTPS id D880330AE002;
+        Mon,  1 Aug 2022 21:12:43 +0200 (CEST)
+Received: from haar.felk.cvut.cz (localhost [127.0.0.1])
+        by cmp.felk.cvut.cz (8.14.0/8.12.3/SuSE Linux 0.6) with ESMTP id 271JCh8K007722;
+        Mon, 1 Aug 2022 21:12:43 +0200
+Received: (from pisa@localhost)
+        by haar.felk.cvut.cz (8.14.0/8.13.7/Submit) id 271JCh2Q007721;
+        Mon, 1 Aug 2022 21:12:43 +0200
+X-Authentication-Warning: haar.felk.cvut.cz: pisa set sender to pisa@cmp.felk.cvut.cz using -f
+From:   Pavel Pisa <pisa@cmp.felk.cvut.cz>
+To:     Matej Vasilevski <matej.vasilevski@seznam.cz>
+Subject: Re: [PATCH v2 2/3] dt-bindings: can: ctucanfd: add another clock for HW timestamping
+Date:   Mon, 1 Aug 2022 21:12:11 +0200
+User-Agent: KMail/1.9.10
+Cc:     Ondrej Ille <ondrej.ille@gmail.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "Marc Kleine-Budde" <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20220801184656.702930-1-matej.vasilevski@seznam.cz> <20220801184656.702930-3-matej.vasilevski@seznam.cz>
+In-Reply-To: <20220801184656.702930-3-matej.vasilevski@seznam.cz>
+X-KMail-QuotePrefix: > 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <202208012112.11333.pisa@cmp.felk.cvut.cz>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Replace open coded checks for sk_buffs containing Classical CAN and
-CAN FD frame structures as a preparation for CAN XL support.
+Dear Matej Vasilevski,
 
-With the added length check the unintended processing of CAN XL frames
-having the CANXL_XLF bit set can be suppressed even when the skb->len
-fits to non CAN XL frames.
+thanks much for the work
 
-The CAN_RAW socket needs a rework to use these helpers. Therefore the
-use of these helpers is postponed to the CAN_RAW CAN XL integration.
+On Monday 01 of August 2022 20:46:55 Matej Vasilevski wrote:
+> Add second clock phandle to specify the timestamping clock.
+> You can even use the same clock as the core, or define a fixed-clock
+> if you need something custom.
+>
+> Signed-off-by: Matej Vasilevski <matej.vasilevski@seznam.cz>
+Acked-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
 
-The J1939 protocol gets a check for Classical CAN frames too.
-
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- drivers/net/can/dev/skb.c | 18 +++++++-------
- include/linux/can/skb.h   | 12 +++++++++-
- net/can/af_can.c          | 50 ++++++++-------------------------------
- net/can/bcm.c             |  9 +++++--
- net/can/gw.c              |  4 ++--
- net/can/isotp.c           |  2 +-
- net/can/j1939/main.c      |  4 ++++
- 7 files changed, 45 insertions(+), 54 deletions(-)
-
-diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-index 07e0feac8629..f457c94ba82f 100644
---- a/drivers/net/can/dev/skb.c
-+++ b/drivers/net/can/dev/skb.c
-@@ -297,22 +297,24 @@ static bool can_skb_headroom_valid(struct net_device *dev, struct sk_buff *skb)
- }
- 
- /* Drop a given socketbuffer if it does not contain a valid CAN frame. */
- bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb)
- {
--	const struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
- 	struct can_priv *priv = netdev_priv(dev);
- 
--	if (skb->protocol == htons(ETH_P_CAN)) {
--		if (unlikely(skb->len != CAN_MTU ||
--			     cfd->len > CAN_MAX_DLEN))
-+	switch (ntohs(skb->protocol)) {
-+	case ETH_P_CAN:
-+		if (!can_is_can_skb(skb))
- 			goto inval_skb;
--	} else if (skb->protocol == htons(ETH_P_CANFD)) {
--		if (unlikely(skb->len != CANFD_MTU ||
--			     cfd->len > CANFD_MAX_DLEN))
-+		break;
-+
-+	case ETH_P_CANFD:
-+		if (!can_is_canfd_skb(skb))
- 			goto inval_skb;
--	} else {
-+		break;
-+
-+	default:
- 		goto inval_skb;
- 	}
- 
- 	if (!can_skb_headroom_valid(dev, skb)) {
- 		goto inval_skb;
-diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
-index 182749e858b3..27ebfc28510f 100644
---- a/include/linux/can/skb.h
-+++ b/include/linux/can/skb.h
-@@ -95,12 +95,22 @@ static inline struct sk_buff *can_create_echo_skb(struct sk_buff *skb)
- 	can_skb_set_owner(nskb, skb->sk);
- 	consume_skb(skb);
- 	return nskb;
- }
- 
-+static inline bool can_is_can_skb(const struct sk_buff *skb)
-+{
-+	struct can_frame *cf = (struct can_frame *)skb->data;
-+
-+	/* the CAN specific type of skb is identified by its data length */
-+	return (skb->len == CAN_MTU && cf->len <= CAN_MAX_DLEN);
-+}
-+
- static inline bool can_is_canfd_skb(const struct sk_buff *skb)
- {
-+	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
-+
- 	/* the CAN specific type of skb is identified by its data length */
--	return skb->len == CANFD_MTU;
-+	return (skb->len == CANFD_MTU && cfd->len <= CANFD_MAX_DLEN);
- }
- 
- #endif /* !_CAN_SKB_H */
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index 1fb49d51b25d..afa6c2151bc4 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -197,31 +197,23 @@ static int can_create(struct net *net, struct socket *sock, int protocol,
-  *  -EINVAL when the skb->data does not contain a valid CAN frame
-  */
- int can_send(struct sk_buff *skb, int loop)
- {
- 	struct sk_buff *newskb = NULL;
--	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
- 	struct can_pkg_stats *pkg_stats = dev_net(skb->dev)->can.pkg_stats;
- 	int err = -EINVAL;
- 
--	if (skb->len == CAN_MTU) {
-+	if (can_is_can_skb(skb)) {
- 		skb->protocol = htons(ETH_P_CAN);
--		if (unlikely(cfd->len > CAN_MAX_DLEN))
--			goto inval_skb;
--	} else if (skb->len == CANFD_MTU) {
-+	} else if (can_is_canfd_skb(skb)) {
- 		skb->protocol = htons(ETH_P_CANFD);
--		if (unlikely(cfd->len > CANFD_MAX_DLEN))
--			goto inval_skb;
- 	} else {
- 		goto inval_skb;
- 	}
- 
--	/* Make sure the CAN frame can pass the selected CAN netdevice.
--	 * As structs can_frame and canfd_frame are similar, we can provide
--	 * CAN FD frames to legacy CAN drivers as long as the length is <= 8
--	 */
--	if (unlikely(skb->len > skb->dev->mtu && cfd->len > CAN_MAX_DLEN)) {
-+	/* Make sure the CAN frame can pass the selected CAN netdevice. */
-+	if (unlikely(skb->len > skb->dev->mtu)) {
- 		err = -EMSGSIZE;
- 		goto inval_skb;
- 	}
- 
- 	if (unlikely(skb->dev->type != ARPHRD_CAN)) {
-@@ -676,57 +668,35 @@ static void can_receive(struct sk_buff *skb, struct net_device *dev)
- }
- 
- static int can_rcv(struct sk_buff *skb, struct net_device *dev,
- 		   struct packet_type *pt, struct net_device *orig_dev)
- {
--	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
--
--	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CAN_MTU)) {
-+	if (unlikely(dev->type != ARPHRD_CAN || (!can_is_can_skb(skb)))) {
- 		pr_warn_once("PF_CAN: dropped non conform CAN skbuff: dev type %d, len %d\n",
- 			     dev->type, skb->len);
--		goto free_skb;
--	}
- 
--	/* This check is made separately since cfd->len would be uninitialized if skb->len = 0. */
--	if (unlikely(cfd->len > CAN_MAX_DLEN)) {
--		pr_warn_once("PF_CAN: dropped non conform CAN skbuff: dev type %d, len %d, datalen %d\n",
--			     dev->type, skb->len, cfd->len);
--		goto free_skb;
-+		kfree_skb(skb);
-+		return NET_RX_DROP;
- 	}
- 
- 	can_receive(skb, dev);
- 	return NET_RX_SUCCESS;
--
--free_skb:
--	kfree_skb(skb);
--	return NET_RX_DROP;
- }
- 
- static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
- 		     struct packet_type *pt, struct net_device *orig_dev)
- {
--	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
--
--	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CANFD_MTU)) {
-+	if (unlikely(dev->type != ARPHRD_CAN || (!can_is_canfd_skb(skb)))) {
- 		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d, len %d\n",
- 			     dev->type, skb->len);
--		goto free_skb;
--	}
- 
--	/* This check is made separately since cfd->len would be uninitialized if skb->len = 0. */
--	if (unlikely(cfd->len > CANFD_MAX_DLEN)) {
--		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d, len %d, datalen %d\n",
--			     dev->type, skb->len, cfd->len);
--		goto free_skb;
-+		kfree_skb(skb);
-+		return NET_RX_DROP;
- 	}
- 
- 	can_receive(skb, dev);
- 	return NET_RX_SUCCESS;
--
--free_skb:
--	kfree_skb(skb);
--	return NET_RX_DROP;
- }
- 
- /* af_can protocol functions */
- 
- /**
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index e60161bec850..e5d179ba6f7d 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -646,12 +646,17 @@ static void bcm_rx_handler(struct sk_buff *skb, void *data)
- 
- 	if (op->can_id != rxframe->can_id)
- 		return;
- 
- 	/* make sure to handle the correct frame type (CAN / CAN FD) */
--	if (skb->len != op->cfsiz)
--		return;
-+	if (op->flags & CAN_FD_FRAME) {
-+		if (!can_is_canfd_skb(skb))
-+			return;
-+	} else {
-+		if (!can_is_can_skb(skb))
-+			return;
-+	}
- 
- 	/* disable timeout */
- 	hrtimer_cancel(&op->timer);
- 
- 	/* save rx timestamp */
-diff --git a/net/can/gw.c b/net/can/gw.c
-index 1ea4cc527db3..23a3d89cad81 100644
---- a/net/can/gw.c
-+++ b/net/can/gw.c
-@@ -461,14 +461,14 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
- 	struct sk_buff *nskb;
- 	int modidx = 0;
- 
- 	/* process strictly Classic CAN or CAN FD frames */
- 	if (gwj->flags & CGW_FLAGS_CAN_FD) {
--		if (skb->len != CANFD_MTU)
-+		if (!can_is_canfd_skb(skb))
- 			return;
- 	} else {
--		if (skb->len != CAN_MTU)
-+		if (!can_is_can_skb(skb))
- 			return;
- 	}
- 
- 	/* Do not handle CAN frames routed more than 'max_hops' times.
- 	 * In general we should never catch this delimiter which is intended
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 43a27d19cdac..a9d1357f8489 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -667,11 +667,11 @@ static void isotp_rcv(struct sk_buff *skb, void *data)
- 		sf_dl = cf->data[ae] & 0x0F;
- 
- 		if (cf->len <= CAN_MAX_DLEN) {
- 			isotp_rcv_sf(sk, cf, SF_PCI_SZ4 + ae, skb, sf_dl);
- 		} else {
--			if (skb->len == CANFD_MTU) {
-+			if (can_is_canfd_skb(skb)) {
- 				/* We have a CAN FD frame and CAN_DL is greater than 8:
- 				 * Only frames with the SF_DL == 0 ESC value are valid.
- 				 *
- 				 * If so take care of the increased SF PCI size
- 				 * (SF_PCI_SZ8) to point to the message content behind
-diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
-index 8452b0fbb78c..144c86b0e3ff 100644
---- a/net/can/j1939/main.c
-+++ b/net/can/j1939/main.c
-@@ -40,10 +40,14 @@ static void j1939_can_recv(struct sk_buff *iskb, void *data)
- 	struct j1939_priv *priv = data;
- 	struct sk_buff *skb;
- 	struct j1939_sk_buff_cb *skcb, *iskcb;
- 	struct can_frame *cf;
- 
-+	/* make sure we only get Classical CAN frames */
-+	if (!can_is_can_skb(iskb))
-+		return;
-+
- 	/* create a copy of the skb
- 	 * j1939 only delivers the real data bytes,
- 	 * the header goes into sockaddr.
- 	 * j1939 may not touch the incoming skb in such way
- 	 */
--- 
-2.30.2
 
