@@ -2,199 +2,120 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90D64C19F2C
-	for <linux-can@archiver.kernel.org>; Sun, 31 Jul 2022 19:22:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31AB1C00144
+	for <linux-can@archiver.kernel.org>; Mon,  1 Aug 2022 08:05:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237614AbiGaTWx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 31 Jul 2022 15:22:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
+        id S229760AbiHAIFf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 1 Aug 2022 04:05:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238336AbiGaTWR (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 31 Jul 2022 15:22:17 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A5E1183A
-        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 12:21:05 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1oIEUm-0008Gf-IL
-        for linux-can@vger.kernel.org; Sun, 31 Jul 2022 21:21:00 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 914A1BED32
-        for <linux-can@vger.kernel.org>; Sun, 31 Jul 2022 19:20:41 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id CF0ACBED0D;
-        Sun, 31 Jul 2022 19:20:40 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 5718df3d;
-        Sun, 31 Jul 2022 19:20:31 +0000 (UTC)
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Stephane Grosjean <s.grosjean@peak-system.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 34/36] can: peak_usb: advertise timestamping capabilities and add ioctl support
-Date:   Sun, 31 Jul 2022 21:20:27 +0200
-Message-Id: <20220731192029.746751-35-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220731192029.746751-1-mkl@pengutronix.de>
-References: <20220731192029.746751-1-mkl@pengutronix.de>
+        with ESMTP id S229555AbiHAIFd (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 1 Aug 2022 04:05:33 -0400
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47B08DE1
+        for <linux-can@vger.kernel.org>; Mon,  1 Aug 2022 01:05:32 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 7730E240104
+        for <linux-can@vger.kernel.org>; Mon,  1 Aug 2022 10:05:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1659341129; bh=VcN7O1YaJMbD7d9hK3A+3wrI3Lxi8b3nHGG7rFoEss0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=m7w9JiUNet76AHNqTB0HskifLR3o3EmivwNkGMHeB5ynAF8zhGvW59YYSqkjWKqi0
+         ar1ne7WfXftHcR/q8+cV81CoAMvlrCGYZaSfxpMEt9pfEi4f9XqMZa3ROXx/rK9Vln
+         y8rbrg7Bmzsk7pfjswrryxwkZiEAnStsmWqDlJvXlQyfjbP3q4VK+eb3nl7bewzOmf
+         UMGtIWkMzY1urfYxBU+rGpSigo7TIfBJv9DKBUoC/Kzi2PJV3v6yDmpt6oizT+mZze
+         RJbhQ5W8K+5mJapf9SPLvQJePwXIgWqSI7ouiJ2xeO3E/kX4qy+6lH5IFRwyVyA3j7
+         JZSiDuhJzYNsw==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4Lx9fJ3sXRz9rxP;
+        Mon,  1 Aug 2022 10:05:28 +0200 (CEST)
+From:   Lukas Magel <lukas.magel@posteo.net>
+To:     linux-can@vger.kernel.org
+Cc:     Lukas Magel <lukas.magel@posteo.net>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v1] can: peak_usb: export PCAN device ID as sysfs device attribute
+Date:   Mon,  1 Aug 2022 08:04:46 +0000
+Message-Id: <20220801080446.36374-1-lukas.magel@posteo.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Peak USB devices support a configurable u8 / u32 device ID. In
+multi-device setups, this device ID can be configured and used to
+identify individual CAN interfaces independent of the order in which
+they are plugged into the system. At the current time, the device ID
+is already queried from the device and stored in the peak_usb_device
+struct.
 
-Currently, userland has no method to query which timestamping features
-are supported by the peak_usb driver (aside maybe of getting RX
-messages and observe whether or not hardware timestamps stay at zero).
+This patch exports the device ID (called device_number in the struct)
+as a sysfs attribute. The attribute name was chosen to be device_id
+instead of device_number because the latter has been deprecated by Peak
+in their API.
 
-The canonical way to add hardware timestamp support is to implement
-ethtool_ops::get_ts_info() in order to advertise the timestamping
-capabilities and to implement net_device_ops::ndo_eth_ioctl() as
-requested in [1]. Currently, the driver only supports hardware RX
-timestamps [2] but not hardware TX. For this reason, the generic
-function can_ethtool_op_get_ts_info_hwts() and can_eth_ioctl_hwts()
-can not be reused and instead this patch adds pcan_get_ts_info() and
-peak_eth_ioctl().
-
-[1] kernel doc Timestamping, section 3.1: "Hardware Timestamping
-Implementation: Device Drivers"
-Link: https://docs.kernel.org/networking/timestamping.html#hardware-timestamping-implementation-device-drivers
-
-[2] https://lore.kernel.org/linux-can/20220727080634.l6uttnbrmwbabh3o@pengutronix.de/
-
-CC: Stephane Grosjean <s.grosjean@peak-system.com>
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/all/20220727101641.198847-15-mailhol.vincent@wanadoo.fr
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Lukas Magel <lukas.magel@posteo.net>
+Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb.c      |  1 +
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 41 ++++++++++++++++++++
- drivers/net/can/usb/peak_usb/pcan_usb_core.h |  1 +
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c   |  1 +
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c  |  1 +
- 5 files changed, 45 insertions(+)
+For the moment, the patch only implements read support for the device
+ID. My next goal is to also implement write access. However, this
+will require a more significant modification of the driver since the
+corresponding commands for ID retrieval and configuration are not
+implemented for all device types.
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index d07b7ee79e3e..687dd542f7f6 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -965,6 +965,7 @@ static int pcan_usb_set_phys_id(struct net_device *netdev,
- 
- static const struct ethtool_ops pcan_usb_ethtool_ops = {
- 	.set_phys_id = pcan_usb_set_phys_id,
-+	.get_ts_info = pcan_get_ts_info,
- };
- 
- /*
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
 diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index 27b0a72fd885..8c9d53f6e24c 100644
+index 27b0a72fd885..43df178e9473 100644
 --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
 +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -775,13 +775,54 @@ static int peak_usb_set_data_bittiming(struct net_device *netdev)
+@@ -15,6 +15,8 @@
+ #include <linux/netdevice.h>
+ #include <linux/usb.h>
+ #include <linux/ethtool.h>
++#include <linux/device.h>
++#include <linux/sysfs.h>
+ 
+ #include <linux/can.h>
+ #include <linux/can/dev.h>
+@@ -53,6 +55,15 @@ static const struct usb_device_id peak_usb_table[] = {
+ 
+ MODULE_DEVICE_TABLE(usb, peak_usb_table);
+ 
++static ssize_t device_id_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct net_device *netdev = to_net_dev(dev);
++	struct peak_usb_device *peak_dev = netdev_priv(netdev);
++
++	return sysfs_emit(buf, "%08X\n", peak_dev->device_number);
++}
++static DEVICE_ATTR_RO(device_id);
++
+ /*
+  * dump memory
+  */
+@@ -887,6 +898,11 @@ static int peak_usb_create_dev(const struct peak_usb_adapter *peak_usb_adapter,
+ 	netdev_info(netdev, "attached to %s channel %u (device %u)\n",
+ 			peak_usb_adapter->name, ctrl_idx, dev->device_number);
+ 
++	err = device_create_file(&netdev->dev, &dev_attr_device_id);
++	/* Do not error out since device was configured successfully */
++	if (err)
++		netdev_warn(netdev, "unable to expose device_id via sysfs %d\n", err);
++
  	return 0;
- }
  
-+static int peak_eth_ioctl(struct net_device *netdev, struct ifreq *ifr, int cmd)
-+{
-+	struct hwtstamp_config hwts_cfg = { 0 };
+ adap_dev_free:
+@@ -923,6 +939,8 @@ static void peak_usb_disconnect(struct usb_interface *intf)
+ 		dev->state &= ~PCAN_USB_STATE_CONNECTED;
+ 		strlcpy(name, netdev->name, IFNAMSIZ);
+ 
++		device_remove_file(&netdev->dev, &dev_attr_device_id);
 +
-+	switch (cmd) {
-+	case SIOCSHWTSTAMP: /* set */
-+		if (copy_from_user(&hwts_cfg, ifr->ifr_data, sizeof(hwts_cfg)))
-+			return -EFAULT;
-+		if (hwts_cfg.tx_type == HWTSTAMP_TX_OFF &&
-+		    hwts_cfg.rx_filter == HWTSTAMP_FILTER_ALL)
-+			return 0;
-+		return -ERANGE;
-+
-+	case SIOCGHWTSTAMP: /* get */
-+		hwts_cfg.tx_type = HWTSTAMP_TX_OFF;
-+		hwts_cfg.rx_filter = HWTSTAMP_FILTER_ALL;
-+		if (copy_to_user(ifr->ifr_data, &hwts_cfg, sizeof(hwts_cfg)))
-+			return -EFAULT;
-+		return 0;
-+
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
- static const struct net_device_ops peak_usb_netdev_ops = {
- 	.ndo_open = peak_usb_ndo_open,
- 	.ndo_stop = peak_usb_ndo_stop,
-+	.ndo_eth_ioctl = peak_eth_ioctl,
- 	.ndo_start_xmit = peak_usb_ndo_start_xmit,
- 	.ndo_change_mtu = can_change_mtu,
- };
+ 		unregister_netdev(netdev);
  
-+int pcan_get_ts_info(struct net_device *dev, struct ethtool_ts_info *info)
-+{
-+	info->so_timestamping =
-+		SOF_TIMESTAMPING_TX_SOFTWARE |
-+		SOF_TIMESTAMPING_RX_SOFTWARE |
-+		SOF_TIMESTAMPING_SOFTWARE |
-+		SOF_TIMESTAMPING_RX_HARDWARE |
-+		SOF_TIMESTAMPING_RAW_HARDWARE;
-+	info->phc_index = -1;
-+	info->tx_types = BIT(HWTSTAMP_TX_OFF);
-+	info->rx_filters = BIT(HWTSTAMP_FILTER_ALL);
-+
-+	return 0;
-+}
-+
- /*
-  * create one device which is attached to CAN controller #ctrl_idx of the
-  * usb adapter.
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-index 9c90487b9c92..f6bdd8b3f290 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-@@ -145,5 +145,6 @@ int peak_usb_netif_rx(struct sk_buff *skb,
- int peak_usb_netif_rx_64(struct sk_buff *skb, u32 ts_low, u32 ts_high);
- void peak_usb_async_complete(struct urb *urb);
- void peak_usb_restart_complete(struct peak_usb_device *dev);
-+int pcan_get_ts_info(struct net_device *dev, struct ethtool_ts_info *info);
- 
- #endif
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index 3d7e0e370505..2ea1500df393 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -1080,6 +1080,7 @@ static int pcan_usb_fd_set_phys_id(struct net_device *netdev,
- 
- static const struct ethtool_ops pcan_usb_fd_ethtool_ops = {
- 	.set_phys_id = pcan_usb_fd_set_phys_id,
-+	.get_ts_info = pcan_get_ts_info,
- };
- 
- /* describes the PCAN-USB FD adapter */
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index 457887113e75..5d8f6a40bb2c 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -1022,6 +1022,7 @@ static int pcan_usb_pro_set_phys_id(struct net_device *netdev,
- 
- static const struct ethtool_ops pcan_usb_pro_ethtool_ops = {
- 	.set_phys_id = pcan_usb_pro_set_phys_id,
-+	.get_ts_info = pcan_get_ts_info,
- };
- 
- /*
+ 		kfree(dev->cmd_buf);
 -- 
-2.35.1
-
+2.37.1
 
