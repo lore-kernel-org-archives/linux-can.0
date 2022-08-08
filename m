@@ -2,111 +2,92 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD0BAC19F2A
-	for <linux-can@archiver.kernel.org>; Sun,  7 Aug 2022 07:59:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA96EC00140
+	for <linux-can@archiver.kernel.org>; Mon,  8 Aug 2022 07:57:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233544AbiHGH7u (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 7 Aug 2022 03:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55352 "EHLO
+        id S242005AbiHHH5M (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 8 Aug 2022 03:57:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231962AbiHGH7u (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 7 Aug 2022 03:59:50 -0400
-X-Greylist: delayed 450 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 07 Aug 2022 00:59:47 PDT
-Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D8D85657A
-        for <linux-can@vger.kernel.org>; Sun,  7 Aug 2022 00:59:47 -0700 (PDT)
-Received: from pop-os.home ([90.11.190.129])
-        by smtp.orange.fr with ESMTPA
-        id Kb52oyREZ5V1hKb53o3EZs; Sun, 07 Aug 2022 09:52:15 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Sun, 07 Aug 2022 09:52:15 +0200
-X-ME-IP: 90.11.190.129
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH] can: rcar_canfd: Use dev_err_probe() to simplify code and better handle -EPROBE_DEFER
-Date:   Sun,  7 Aug 2022 09:52:11 +0200
-Message-Id: <f5bf0b8f757bd3bc9b391094ece3548cc2f96456.1659858686.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S237465AbiHHH5L (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 8 Aug 2022 03:57:11 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3862513CFD
+        for <linux-can@vger.kernel.org>; Mon,  8 Aug 2022 00:57:11 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1oKxdM-0008Uj-QL; Mon, 08 Aug 2022 09:57:08 +0200
+Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 4338EC45AD;
+        Mon,  8 Aug 2022 07:57:07 +0000 (UTC)
+Date:   Mon, 8 Aug 2022 09:57:06 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Kenneth Lee <klee33@uw.edu>
+Cc:     wg@grandegger.com, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH] can: kvaser_usb: kvaser_usb_hydra: Use kzalloc for
+ allocating only one element
+Message-ID: <20220808075706.jeriooy5k2dxd5zc@pengutronix.de>
+References: <20220807051656.1991446-1-klee33@uw.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="d4cuir6qgpvn5yd7"
+Content-Disposition: inline
+In-Reply-To: <20220807051656.1991446-1-klee33@uw.edu>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-devm_clk_get() can return -EPROBE_DEFER, so use dev_err_probe() instead of
-dev_err() in order to be less verbose in the log.
 
-This also saves a few LoC.
+--d4cuir6qgpvn5yd7
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-While at it, turn a "goto fail_dev;" at the beginning of the function into
-a direct return in order to avoid mixing goto and return, which looks
-spurious.
+On 06.08.2022 22:16:56, Kenneth Lee wrote:
+> Use kzalloc(...) rather than kcalloc(1, ...) since because the number of
+> elements we are specifying in this case is 1, kzalloc would accomplish the
+> same thing and we can simplify. Also refactor how we calculate the sizeof=
+()
+> as checkstyle for kzalloc() prefers using the variable we are assigning
+> to versus the type of that variable for calculating the size to allocate.
+>=20
+> Signed-off-by: Kenneth Lee <klee33@uw.edu>
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/net/can/rcar/rcar_canfd.c | 26 ++++++++++----------------
- 1 file changed, 10 insertions(+), 16 deletions(-)
+Added to can-next/testing.
 
-diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index 27085b796e75..567620d215f8 100644
---- a/drivers/net/can/rcar/rcar_canfd.c
-+++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -1880,10 +1880,9 @@ static int rcar_canfd_probe(struct platform_device *pdev)
- 
- 	/* Global controller context */
- 	gpriv = devm_kzalloc(&pdev->dev, sizeof(*gpriv), GFP_KERNEL);
--	if (!gpriv) {
--		err = -ENOMEM;
--		goto fail_dev;
--	}
-+	if (!gpriv)
-+		return -ENOMEM;
-+
- 	gpriv->pdev = pdev;
- 	gpriv->channels_mask = channels_mask;
- 	gpriv->fdmode = fdmode;
-@@ -1904,12 +1903,9 @@ static int rcar_canfd_probe(struct platform_device *pdev)
- 
- 	/* Peripheral clock */
- 	gpriv->clkp = devm_clk_get(&pdev->dev, "fck");
--	if (IS_ERR(gpriv->clkp)) {
--		err = PTR_ERR(gpriv->clkp);
--		dev_err(&pdev->dev, "cannot get peripheral clock, error %d\n",
--			err);
--		goto fail_dev;
--	}
-+	if (IS_ERR(gpriv->clkp))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(gpriv->clkp),
-+				     "cannot get peripheral clock\n");
- 
- 	/* fCAN clock: Pick External clock. If not available fallback to
- 	 * CANFD clock
-@@ -1917,12 +1913,10 @@ static int rcar_canfd_probe(struct platform_device *pdev)
- 	gpriv->can_clk = devm_clk_get(&pdev->dev, "can_clk");
- 	if (IS_ERR(gpriv->can_clk) || (clk_get_rate(gpriv->can_clk) == 0)) {
- 		gpriv->can_clk = devm_clk_get(&pdev->dev, "canfd");
--		if (IS_ERR(gpriv->can_clk)) {
--			err = PTR_ERR(gpriv->can_clk);
--			dev_err(&pdev->dev,
--				"cannot get canfd clock, error %d\n", err);
--			goto fail_dev;
--		}
-+		if (IS_ERR(gpriv->can_clk))
-+			return dev_err_probe(&pdev->dev, PTR_ERR(gpriv->can_clk),
-+					     "cannot get canfd clock\n");
-+
- 		gpriv->fcan = RCANFD_CANFDCLK;
- 
- 	} else {
--- 
-2.34.1
+Thanks,
+Marc
 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--d4cuir6qgpvn5yd7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmLwwdAACgkQrX5LkNig
+011KEAf9GxmG87wtSGyR7GCh3+q0+3uNCOFIu5/aap/gZViTz79dh7s0QTqJAjdz
+znRi73PESMFq/9sYUHiPat4u4ucJZhXh0MHa3zr7gBXEtVwlSvJ6p3mZn8W1NZQB
+s4becUovf416pbmlRe0mEanBwhIVr5seiWcV4GntgY+HFftnQ8XfmhF9psy/bzT2
+mUlWQ5DyIgFFL1Dl8k95y4/e8J3xAdLlC+rQgh8tlkRJe7jOvpKednuPosK4200t
+GJTerBrZoTT/QwDixhOycWgiYJz66IUDPRZwyMFoTyJX1Tqf0i2i9AuSpSUi79tv
+YOHkhrFR+vKQEK/CWb4jrRqtIvYvKA==
+=9YlQ
+-----END PGP SIGNATURE-----
+
+--d4cuir6qgpvn5yd7--
