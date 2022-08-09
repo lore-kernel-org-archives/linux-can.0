@@ -2,50 +2,50 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD312C25B06
-	for <linux-can@archiver.kernel.org>; Tue,  9 Aug 2022 07:54:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF742C25B0D
+	for <linux-can@archiver.kernel.org>; Tue,  9 Aug 2022 07:54:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240117AbiHIHys (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 9 Aug 2022 03:54:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41204 "EHLO
+        id S240163AbiHIHyu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 9 Aug 2022 03:54:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240068AbiHIHyr (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 9 Aug 2022 03:54:47 -0400
+        with ESMTP id S240125AbiHIHys (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 9 Aug 2022 03:54:48 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33832127D
-        for <linux-can@vger.kernel.org>; Tue,  9 Aug 2022 00:54:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9410A2127B
+        for <linux-can@vger.kernel.org>; Tue,  9 Aug 2022 00:54:47 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oLK4a-0000T2-Dp
-        for linux-can@vger.kernel.org; Tue, 09 Aug 2022 09:54:44 +0200
+        id 1oLK4b-0000Th-SQ
+        for linux-can@vger.kernel.org; Tue, 09 Aug 2022 09:54:45 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 2D637C5577
-        for <linux-can@vger.kernel.org>; Tue,  9 Aug 2022 07:53:21 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 60527C55A9
+        for <linux-can@vger.kernel.org>; Tue,  9 Aug 2022 07:53:22 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 81236C5560;
-        Tue,  9 Aug 2022 07:53:20 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id DC510C5591;
+        Tue,  9 Aug 2022 07:53:21 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 6832606f;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 5f58a177;
         Tue, 9 Aug 2022 07:53:19 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Fedor Pchelkin <pchelkin@ispras.ru>,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
+        kernel@pengutronix.de,
+        =?UTF-8?q?Sebastian=20W=C3=BCrl?= <sebastian.wuerl@ororatech.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 1/4] can: j1939: j1939_sk_queue_activate_next_locked(): replace WARN_ON_ONCE with netdev_warn_once()
-Date:   Tue,  9 Aug 2022 09:53:14 +0200
-Message-Id: <20220809075317.1549323-2-mkl@pengutronix.de>
+Subject: [PATCH net 4/4] can: mcp251x: Fix race condition on receive interrupt
+Date:   Tue,  9 Aug 2022 09:53:17 +0200
+Message-Id: <20220809075317.1549323-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220809075317.1549323-1-mkl@pengutronix.de>
 References: <20220809075317.1549323-1-mkl@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -55,45 +55,85 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Fedor Pchelkin <pchelkin@ispras.ru>
+From: Sebastian Würl <sebastian.wuerl@ororatech.com>
 
-We should warn user-space that it is doing something wrong when trying
-to activate sessions with identical parameters but WARN_ON_ONCE macro
-can not be used here as it serves a different purpose.
+The mcp251x driver uses both receiving mailboxes of the CAN controller
+chips. For retrieving the CAN frames from the controller via SPI, it checks
+once per interrupt which mailboxes have been filled and will retrieve the
+messages accordingly.
 
-So it would be good to replace it with netdev_warn_once() message.
+This introduces a race condition, as another CAN frame can enter mailbox 1
+while mailbox 0 is emptied. If now another CAN frame enters mailbox 0 until
+the interrupt handler is called next, mailbox 0 is emptied before
+mailbox 1, leading to out-of-order CAN frames in the network device.
 
-Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
+This is fixed by checking the interrupt flags once again after freeing
+mailbox 0, to correctly also empty mailbox 1 before leaving the handler.
 
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
-Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/all/20220729143655.1108297-1-pchelkin@ispras.ru
-[mkl: fix indention]
+For reproducing the bug I created the following setup:
+ - Two CAN devices, one Raspberry Pi with MCP2515, the other can be any.
+ - Setup CAN to 1 MHz
+ - Spam bursts of 5 CAN-messages with increasing CAN-ids
+ - Continue sending the bursts while sleeping a second between the bursts
+ - Check on the RPi whether the received messages have increasing CAN-ids
+ - Without this patch, every burst of messages will contain a flipped pair
+
+v3: https://lore.kernel.org/all/20220804075914.67569-1-sebastian.wuerl@ororatech.com
+v2: https://lore.kernel.org/all/20220804064803.63157-1-sebastian.wuerl@ororatech.com
+v1: https://lore.kernel.org/all/20220803153300.58732-1-sebastian.wuerl@ororatech.com
+
+Fixes: bf66f3736a94 ("can: mcp251x: Move to threaded interrupts instead of workqueues.")
+Signed-off-by: Sebastian Würl <sebastian.wuerl@ororatech.com>
+Link: https://lore.kernel.org/all/20220804081411.68567-1-sebastian.wuerl@ororatech.com
+[mkl: reduce scope of intf1, eflag1]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/j1939/socket.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/can/spi/mcp251x.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index f5ecfdcf57b2..b670ba03a675 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -178,7 +178,10 @@ static void j1939_sk_queue_activate_next_locked(struct j1939_session *session)
- 	if (!first)
- 		return;
+diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
+index e750d13c8841..e4d0bdd8981a 100644
+--- a/drivers/net/can/spi/mcp251x.c
++++ b/drivers/net/can/spi/mcp251x.c
+@@ -1070,9 +1070,6 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
  
--	if (WARN_ON_ONCE(j1939_session_activate(first))) {
-+	if (j1939_session_activate(first)) {
-+		netdev_warn_once(first->priv->ndev,
-+				 "%s: 0x%p: Identical session is already activated.\n",
-+				 __func__, first);
- 		first->err = -EBUSY;
- 		goto activate_next;
- 	} else {
-
-base-commit: b8c3bf0ed2edf2deaedba5f0bf0bb54c76dee71d
+ 		mcp251x_read_2regs(spi, CANINTF, &intf, &eflag);
+ 
+-		/* mask out flags we don't care about */
+-		intf &= CANINTF_RX | CANINTF_TX | CANINTF_ERR;
+-
+ 		/* receive buffer 0 */
+ 		if (intf & CANINTF_RX0IF) {
+ 			mcp251x_hw_rx(spi, 0);
+@@ -1082,6 +1079,18 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
+ 			if (mcp251x_is_2510(spi))
+ 				mcp251x_write_bits(spi, CANINTF,
+ 						   CANINTF_RX0IF, 0x00);
++
++			/* check if buffer 1 is already known to be full, no need to re-read */
++			if (!(intf & CANINTF_RX1IF)) {
++				u8 intf1, eflag1;
++				
++				/* intf needs to be read again to avoid a race condition */
++				mcp251x_read_2regs(spi, CANINTF, &intf1, &eflag1);
++
++				/* combine flags from both operations for error handling */
++				intf |= intf1;
++				eflag |= eflag1;
++			}
+ 		}
+ 
+ 		/* receive buffer 1 */
+@@ -1092,6 +1101,9 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
+ 				clear_intf |= CANINTF_RX1IF;
+ 		}
+ 
++		/* mask out flags we don't care about */
++		intf &= CANINTF_RX | CANINTF_TX | CANINTF_ERR;
++
+ 		/* any error or tx interrupt we need to clear? */
+ 		if (intf & (CANINTF_ERR | CANINTF_TX))
+ 			clear_intf |= intf & (CANINTF_ERR | CANINTF_TX);
 -- 
 2.35.1
 
