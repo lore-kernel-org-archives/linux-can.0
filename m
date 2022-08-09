@@ -2,109 +2,77 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25254C3F6B0
-	for <linux-can@archiver.kernel.org>; Tue,  9 Aug 2022 07:54:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E51D6C19F2D
+	for <linux-can@archiver.kernel.org>; Tue,  9 Aug 2022 12:31:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236154AbiHIHyx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 9 Aug 2022 03:54:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41250 "EHLO
+        id S242262AbiHIMbv (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 9 Aug 2022 08:31:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240154AbiHIHyt (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 9 Aug 2022 03:54:49 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1452621804
-        for <linux-can@vger.kernel.org>; Tue,  9 Aug 2022 00:54:47 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1oLK4c-0000UN-8s
-        for linux-can@vger.kernel.org; Tue, 09 Aug 2022 09:54:46 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id A298CC558A
-        for <linux-can@vger.kernel.org>; Tue,  9 Aug 2022 07:53:21 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id E7E73C556B;
-        Tue,  9 Aug 2022 07:53:20 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 24fe071f;
-        Tue, 9 Aug 2022 07:53:19 +0000 (UTC)
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Fedor Pchelkin <pchelkin@ispras.ru>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 2/4] can: j1939: j1939_session_destroy(): fix memory leak of skbs
-Date:   Tue,  9 Aug 2022 09:53:15 +0200
-Message-Id: <20220809075317.1549323-3-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220809075317.1549323-1-mkl@pengutronix.de>
-References: <20220809075317.1549323-1-mkl@pengutronix.de>
+        with ESMTP id S242036AbiHIMbu (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 9 Aug 2022 08:31:50 -0400
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 09 Aug 2022 05:31:48 PDT
+Received: from mailrelay1-2.pub.mailoutpod1-cph3.one.com (mailrelay1-2.pub.mailoutpod1-cph3.one.com [46.30.212.0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD45F18B08
+        for <linux-can@vger.kernel.org>; Tue,  9 Aug 2022 05:31:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=csselectronics.com; s=rsa1;
+        h=content-transfer-encoding:content-type:to:subject:from:mime-version:date:
+         message-id:from;
+        bh=IHxKrbx0I4qpTf/8bCVdowqsph57xG4wHJ5zAlaYt6A=;
+        b=YlzAjNtHRyPCVHqAsnJFfFefVZXT1x9CRHgpkA+gQp2i+rh1LCBTr3TAlhywKgncZxHiwiRMuQCI5
+         4uHgffDB2xBE6uuyezc35sTXiM0bv963Q/7vAsm/cSAQ6KVh31fOVIJll4dH0ukH7pyVExqbYhuHwg
+         BBW64l0S7ArKHKtlEPWF2TOzjTTcN7PgRowWOo5+MjXJKZrS7b5YZg0SW+a3ok0qj0eqzaDYzYjVtS
+         43loUJOd8ZDCZe9wLmWDv8Dsz5sJed3TBiW9Ec6j1+Kg3kaxG+iIEo+kjPGb2x8tAxGRI0uVUIwUaN
+         YZhZke8CsCGNOTMGfFjIABBxq3cDNTw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+        d=csselectronics.com; s=ed1;
+        h=content-transfer-encoding:content-type:to:subject:from:mime-version:date:
+         message-id:from;
+        bh=IHxKrbx0I4qpTf/8bCVdowqsph57xG4wHJ5zAlaYt6A=;
+        b=89itezlSCOb0BM7UlMjKbXWDs5UTagwcGN8m/kXhw9mOhIg7SMVmW8j8cd+RhBGtIm1VlGo9yU3uz
+         f8hxC/ODw==
+X-HalOne-Cookie: 3296973920fbe09509c93b8b6d9ae47ed3b20861
+X-HalOne-ID: 16223d92-17df-11ed-a6cc-d0431ea8a283
+Received: from [192.168.1.155] (unknown [5.103.118.41])
+        by mailrelay1.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
+        id 16223d92-17df-11ed-a6cc-d0431ea8a283;
+        Tue, 09 Aug 2022 12:30:43 +0000 (UTC)
+Message-ID: <e396bfcd-aca2-fef8-a25d-e6e4b61e7d70@csselectronics.com>
+Date:   Tue, 9 Aug 2022 14:30:43 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.12.0
+Content-Language: en-US
+From:   =?UTF-8?Q?Magnus_Aagaard_S=c3=b8rensen?= <mas@csselectronics.com>
+Subject: Debugging dropped/missing frames in the network layer
+To:     linux-can@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Fedor Pchelkin <pchelkin@ispras.ru>
+I am working with an out-of-tree kernel driver which maps LIN messages 
+via a UART onto the CAN networking stack, to allow for using the regular 
+CAN tools to also work with LIN messages (The driver in question is 
+sllin, https://github.com/lin-bus/linux-lin/, based on slcan from what I 
+understand).
 
-We need to drop skb references taken in j1939_session_skb_queue() when
-destroying a session in j1939_session_destroy(). Otherwise those skbs
-would be lost.
+During use, I see a lot of frames missing from the output. From 
+debugging the module, I can see that the kernel module receive the 
+messages as expected, but they never show up in user space using 
+candump. I can trace the messages in the module to the hand-off to the 
+networking stack via a netif_rx call.
 
-Link to Syzkaller info and repro: https://forge.ispras.ru/issues/11743.
+Are there any additional handles in the networking/CAN stack to show me 
+where the missing frames are being discarded before reaching user space, 
+or which could otherwise help me narrow down the origin of this issue? 
+The frames are transmitted from a custom/third party device at 19200 
+kbps and with 100 ms spacing.
 
-Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
+Hardware on the Linux side is a Raspberry Pi 4 running kernel 5.15.56 in 
+64 bit mode.
 
-V1: https://lore.kernel.org/all/20220708175949.539064-1-pchelkin@ispras.ru
-
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Suggested-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
-Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/all/20220805150216.66313-1-pchelkin@ispras.ru
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- net/can/j1939/transport.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 307ee1174a6e..d7d86c944d76 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -260,6 +260,8 @@ static void __j1939_session_drop(struct j1939_session *session)
- 
- static void j1939_session_destroy(struct j1939_session *session)
- {
-+	struct sk_buff *skb;
-+
- 	if (session->transmission) {
- 		if (session->err)
- 			j1939_sk_errqueue(session, J1939_ERRQUEUE_TX_ABORT);
-@@ -274,7 +276,11 @@ static void j1939_session_destroy(struct j1939_session *session)
- 	WARN_ON_ONCE(!list_empty(&session->sk_session_queue_entry));
- 	WARN_ON_ONCE(!list_empty(&session->active_session_list_entry));
- 
--	skb_queue_purge(&session->skb_queue);
-+	while ((skb = skb_dequeue(&session->skb_queue)) != NULL) {
-+		/* drop ref taken in j1939_session_skb_queue() */
-+		skb_unref(skb);
-+		kfree_skb(skb);
-+	}
- 	__j1939_session_drop(session);
- 	j1939_priv_put(session->priv);
- 	kfree(session);
--- 
-2.35.1
-
+Regards, Magnus.
 
