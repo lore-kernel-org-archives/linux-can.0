@@ -2,46 +2,49 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0097BC25B08
-	for <linux-can@archiver.kernel.org>; Wed, 10 Aug 2022 07:14:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2C1DC3F6B0
+	for <linux-can@archiver.kernel.org>; Wed, 10 Aug 2022 07:15:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbiHJHO4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 10 Aug 2022 03:14:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36870 "EHLO
+        id S231487AbiHJHPE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 10 Aug 2022 03:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbiHJHOy (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 10 Aug 2022 03:14:54 -0400
+        with ESMTP id S231194AbiHJHPD (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 10 Aug 2022 03:15:03 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC8747B93
-        for <linux-can@vger.kernel.org>; Wed, 10 Aug 2022 00:14:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC7CB81B37
+        for <linux-can@vger.kernel.org>; Wed, 10 Aug 2022 00:14:55 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oLfvX-0003RH-Ib
-        for linux-can@vger.kernel.org; Wed, 10 Aug 2022 09:14:51 +0200
+        id 1oLfva-0003Sq-2l
+        for linux-can@vger.kernel.org; Wed, 10 Aug 2022 09:14:54 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id F2355C654F
-        for <linux-can@vger.kernel.org>; Wed, 10 Aug 2022 07:14:50 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 8F7D2C656E
+        for <linux-can@vger.kernel.org>; Wed, 10 Aug 2022 07:14:52 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9F507C654A;
-        Wed, 10 Aug 2022 07:14:50 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id F3893C6560;
+        Wed, 10 Aug 2022 07:14:51 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d60cb1da;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 78714bb8;
         Wed, 10 Aug 2022 07:14:50 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net 0/n] pull-request: can 2022-08-10
-Date:   Wed, 10 Aug 2022 09:14:44 +0200
-Message-Id: <20220810071448.1627857-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>,
+        Sebastian Haas <haas@ems-wuensche.com>
+Subject: [PATCH net 3/4] can: ems_usb: fix clang's -Wunaligned-access warning
+Date:   Wed, 10 Aug 2022 09:14:47 +0200
+Message-Id: <20220810071448.1627857-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220810071448.1627857-1-mkl@pengutronix.de>
+References: <20220810071448.1627857-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -51,54 +54,64 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+clang emits a -Wunaligned-access warning on struct __packed
+ems_cpc_msg.
 
-this is a pull request of 4 patches for net/master, with the
-whitespace issue fixed.
+The reason is that the anonymous union msg (not declared as packed) is
+being packed right after some non naturally aligned variables (3*8
+bits + 2*32) inside a packed struct:
 
-Fedor Pchelkin contributes 2 fixes for the j1939 CAN protocol.
+| struct __packed ems_cpc_msg {
+| 	u8 type;	/* type of message */
+| 	u8 length;	/* length of data within union 'msg' */
+| 	u8 msgid;	/* confirmation handle */
+| 	__le32 ts_sec;	/* timestamp in seconds */
+| 	__le32 ts_nsec;	/* timestamp in nano seconds */
+|	/* ^ not naturally aligned */
+|
+| 	union {
+| 	/* ^ not declared as packed */
+| 		u8 generic[64];
+| 		struct cpc_can_msg can_msg;
+| 		struct cpc_can_params can_params;
+| 		struct cpc_confirm confirmation;
+| 		struct cpc_overrun overrun;
+| 		struct cpc_can_error error;
+| 		struct cpc_can_err_counter err_counter;
+| 		u8 can_state;
+| 	} msg;
+| };
 
-A patch by me for the ems_usb driver fixes an unaligned access
-warning.
+Starting from LLVM 14, having an unpacked struct nested in a packed
+struct triggers a warning. c.f. [1].
 
-Sebastian Würl's patch for the mcp251x driver fixes a race condition
-in the receive interrupt.
+Fix the warning by marking the anonymous union as packed.
 
-regards,
-Marc
+[1] https://github.com/llvm/llvm-project/issues/55520
 
+Fixes: 702171adeed3 ("ems_usb: Added support for EMS CPC-USB/ARM7 CAN/USB interface")
+Link: https://lore.kernel.org/all/20220802094021.959858-1-mkl@pengutronix.de
+Cc: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
+Cc: Sebastian Haas <haas@ems-wuensche.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/usb/ems_usb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The following changes since commit b8c3bf0ed2edf2deaedba5f0bf0bb54c76dee71d:
-
-  Merge tag 'for-net-2022-08-08' of git://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth (2022-08-08 20:59:07 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-6.0-20220810
-
-for you to fetch changes up to d80d60b0db6ff3dd2e29247cc2a5166d7e9ae37e:
-
-  can: mcp251x: Fix race condition on receive interrupt (2022-08-09 21:40:22 +0200)
-
-----------------------------------------------------------------
-linux-can-fixes-for-6.0-20220810
-
-----------------------------------------------------------------
-Fedor Pchelkin (2):
-      can: j1939: j1939_sk_queue_activate_next_locked(): replace WARN_ON_ONCE with netdev_warn_once()
-      can: j1939: j1939_session_destroy(): fix memory leak of skbs
-
-Marc Kleine-Budde (1):
-      can: ems_usb: fix clang's -Wunaligned-access warning
-
-Sebastian Würl (1):
-      can: mcp251x: Fix race condition on receive interrupt
-
- drivers/net/can/spi/mcp251x.c | 18 +++++++++++++++---
- drivers/net/can/usb/ems_usb.c |  2 +-
- net/can/j1939/socket.c        |  5 ++++-
- net/can/j1939/transport.c     |  8 +++++++-
- 4 files changed, 27 insertions(+), 6 deletions(-)
+diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
+index d1e1a459c045..d31191686a54 100644
+--- a/drivers/net/can/usb/ems_usb.c
++++ b/drivers/net/can/usb/ems_usb.c
+@@ -195,7 +195,7 @@ struct __packed ems_cpc_msg {
+ 	__le32 ts_sec;	/* timestamp in seconds */
+ 	__le32 ts_nsec;	/* timestamp in nano seconds */
+ 
+-	union {
++	union __packed {
+ 		u8 generic[64];
+ 		struct cpc_can_msg can_msg;
+ 		struct cpc_can_params can_params;
+-- 
+2.35.1
 
 
