@@ -2,64 +2,88 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83EC1C25B0E
-	for <linux-can@archiver.kernel.org>; Tue,  9 Aug 2022 19:07:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B04D9C19F2D
+	for <linux-can@archiver.kernel.org>; Wed, 10 Aug 2022 02:35:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345435AbiHITHl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 9 Aug 2022 15:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38660 "EHLO
+        id S229828AbiHJCf2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 9 Aug 2022 22:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348318AbiHITGm (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 9 Aug 2022 15:06:42 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50773C50;
-        Tue,  9 Aug 2022 11:50:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id ECAC1B8171E;
-        Tue,  9 Aug 2022 18:50:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 223B3C433D6;
-        Tue,  9 Aug 2022 18:50:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660071017;
-        bh=iWdOy7xi9yi/F6gSl2aQiz4W6SyS8CyFp0Dq/r4vpBg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mpWvB3UOPu14vXhzcpaMukMtZwo+uT7+iz3zv5o24LdGaDRO1SvZFW4+2kuEkKfyt
-         OB1XpZUGnsvFBQ8NEEivIsm3s5mAUW010CMSzYSYUmOczpy9UnhY4EeCVBiM1XVsR3
-         nSPu9HzjiUA/BrQvjbJrKNzCraepIC2MBbvSX7htVB7/xQiBFxgi0UXUJVMmngDbDb
-         LqpdfAMQo5T5XeqLV+M8YtjEj5R/ez7M6JB3l2ZcmOk6Hbz2PwpuXnBm88Z03fI5gP
-         APHwlnUvzt0YJoKnatr+N/sfrOBYSiTgGtxbGvoM0WWqHZe3Dt/TGL42r/naCR8ASB
-         3w/3jjP4tRELQ==
-Date:   Tue, 9 Aug 2022 11:50:16 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net,
-        linux-can@vger.kernel.org, kernel@pengutronix.de,
-        Sebastian =?UTF-8?B?V8O8cmw=?= <sebastian.wuerl@ororatech.com>
-Subject: Re: [PATCH net 4/4] can: mcp251x: Fix race condition on receive
- interrupt
-Message-ID: <20220809115016.1db564b3@kernel.org>
-In-Reply-To: <20220809075317.1549323-5-mkl@pengutronix.de>
-References: <20220809075317.1549323-1-mkl@pengutronix.de>
-        <20220809075317.1549323-5-mkl@pengutronix.de>
+        with ESMTP id S230117AbiHJCfV (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 9 Aug 2022 22:35:21 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6EF19029
+        for <linux-can@vger.kernel.org>; Tue,  9 Aug 2022 19:35:20 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-32868f43dd6so129234427b3.8
+        for <linux-can@vger.kernel.org>; Tue, 09 Aug 2022 19:35:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=davidbol-es.20210112.gappssmtp.com; s=20210112;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc;
+        bh=xfIkgKrMM5KJeCfvh9EFbUf2BK2JXXYkKgemhBLMZbY=;
+        b=xCAC8No8H8IDrKRAHzh1zWHG6/eKLWNrEHxX8J5mV/9R8ZsJcSNbuEBgdSI7WEQTG6
+         ANAHQOKuAHf+wXbFBEMO7Pc8yrKlplz9nYMfRKMCH+sZpNehZ9KJKfeDDnc9bM2wAy6b
+         wm5FqfdcLiKuCsgvjKrW45XCxMHIPWvSAdjQht1xD60xSMedq+Ys1+WJZLFb+Kf0c5n/
+         0pNWqm3EcD00jTcO1idAtT7/tvAGP0aD8nRxkrHTwt3vWHJdtkRVIpqbh5vmuSdtAK4D
+         ARy/cz7+LRgRVQMHfrc6Q/KIoWtcpTBKIHv/YXrjPVFSMMujxBmaMiXPGPdojhQ2mbvu
+         HvDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc;
+        bh=xfIkgKrMM5KJeCfvh9EFbUf2BK2JXXYkKgemhBLMZbY=;
+        b=RVN5ogqqsMncpNToQNf2C/K7K8QtxQ9ZtnzSx/3G1pgo/yGFv2cJX23iW++wkm07pA
+         24OpFVqmH7KZRgako7pkZa8/sQ21mv+aJP4rx6KRilHgPN2Xose+HsxBibLyqBUTGRK7
+         MTf3Mvu6yHCBSi6C9lBi4uVhsRR7TE3xjeoWfDXOFrDT2189KLPrVeocv+J/4kWqQIkZ
+         HjjZ1X9+Sw58A3SByGBN0HbX8d0rM4AnyjRbBsmV3GJmJzEe2HovNNNCJk4h6HzSZzHv
+         FnbxuFzit6g9XJIgOaY+tdybYjsodCd4b9aht1NyVEhPktvJT+WtEdtGBN0w+6nW9+S5
+         SjKg==
+X-Gm-Message-State: ACgBeo1d9fgu/KIRq4Z9tS7Ix6vNjLLMgHbrULTCvGMXH0YGUAFLxE1O
+        hGU3rCGlaZFb3x0At98Ry85Otv5px3HqbQWBj/6/OugFnOUirQ==
+X-Google-Smtp-Source: AA6agR5aoCBbVsO1nF3bbbdb2x4DZpDlKbGYlFJL4bT7Rd4TdhmbFe/woKDXX0Ytt89TBlC77CouorjlQzj8uBGDb38=
+X-Received: by 2002:a81:9904:0:b0:31f:496d:a6c with SMTP id
+ q4-20020a819904000000b0031f496d0a6cmr28138782ywg.133.1660098919752; Tue, 09
+ Aug 2022 19:35:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From:   David Boles <me@davidbol.es>
+Date:   Tue, 9 Aug 2022 19:35:09 -0700
+Message-ID: <CAMgOUGpGEUQgLgAQmYbn-UdWXCkC7kRqdhW-mfg=e2gq9QfqRQ@mail.gmail.com>
+Subject: PCAN and SocketCAN Questions
+To:     linux-can@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Tue,  9 Aug 2022 09:53:17 +0200 Marc Kleine-Budde wrote:
-> @@ -1082,6 +1079,18 @@ static irqreturn_t mcp251x_can_ist(int irq, void *dev_id)
->  			if (mcp251x_is_2510(spi))
->  				mcp251x_write_bits(spi, CANINTF,
->  						   CANINTF_RX0IF, 0x00);
-> +
-> +			/* check if buffer 1 is already known to be full, no need to re-read */
-> +			if (!(intf & CANINTF_RX1IF)) {
-> +				u8 intf1, eflag1;
-> +				
+Hello everyone, I'm new to both SocketCAN and mailing lists so please
+let me know if I'm making any faux pas or haven't correctly RTFMed! I
+heard this was the correct place to ask questions and I have a few
+that I haven't been able to find answers to.
 
-This line is full of trailing whitespace, could you add a fix on top to
-remove it and resend?
+All my testing so far has been done on Ubuntu 20.04 with
+5.15.0-43-generic and PCAN-USB( Pro) dongles and PCAN-PCI Express
+cards.
+
+Question 1: I've noticed that frames can get silently lost if my
+application doesn't read from the socket frequently enough. This also
+happens if I'm simultaneously dumping frames with candump (the "lost"
+frames do show up in candump's output). Increasing the socket receive
+buffer size with SO_RCVBUF allows more frames to be stored before new
+ones start getting lost. Is there a recommended way to detect this
+happening so that my program can fail noisily?
+
+Question 2: I'd like to be able to send frames without other receivers
+on the bus to acknowledge them. The one-shot option seems to allow me
+to do this with my USB dongles. What's the difference between the
+one-shot and presume-ack options?
+
+Question 3: I'd like to have as little latency as possible and I'm
+assuming using PCIe cards would be beneficial over USB. Unfortunately
+my PCAN-PCI Express card doesn't seem to support either one-shot or
+presume-ack; is that a hardware limitation or a driver limitation? If
+it's a hardware limitation, would anyone be able to recommend a
+low-latency, full-featured option for CAN on traditional x86/64
+desktops?
+
+Thank you in advance!
+
+David
