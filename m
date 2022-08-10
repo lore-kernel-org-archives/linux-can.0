@@ -2,88 +2,99 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B04D9C19F2D
-	for <linux-can@archiver.kernel.org>; Wed, 10 Aug 2022 02:35:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2B52C00140
+	for <linux-can@archiver.kernel.org>; Wed, 10 Aug 2022 07:14:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbiHJCf2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 9 Aug 2022 22:35:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42494 "EHLO
+        id S231405AbiHJHOz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 10 Aug 2022 03:14:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbiHJCfV (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 9 Aug 2022 22:35:21 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6EF19029
-        for <linux-can@vger.kernel.org>; Tue,  9 Aug 2022 19:35:20 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-32868f43dd6so129234427b3.8
-        for <linux-can@vger.kernel.org>; Tue, 09 Aug 2022 19:35:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=davidbol-es.20210112.gappssmtp.com; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc;
-        bh=xfIkgKrMM5KJeCfvh9EFbUf2BK2JXXYkKgemhBLMZbY=;
-        b=xCAC8No8H8IDrKRAHzh1zWHG6/eKLWNrEHxX8J5mV/9R8ZsJcSNbuEBgdSI7WEQTG6
-         ANAHQOKuAHf+wXbFBEMO7Pc8yrKlplz9nYMfRKMCH+sZpNehZ9KJKfeDDnc9bM2wAy6b
-         wm5FqfdcLiKuCsgvjKrW45XCxMHIPWvSAdjQht1xD60xSMedq+Ys1+WJZLFb+Kf0c5n/
-         0pNWqm3EcD00jTcO1idAtT7/tvAGP0aD8nRxkrHTwt3vWHJdtkRVIpqbh5vmuSdtAK4D
-         ARy/cz7+LRgRVQMHfrc6Q/KIoWtcpTBKIHv/YXrjPVFSMMujxBmaMiXPGPdojhQ2mbvu
-         HvDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc;
-        bh=xfIkgKrMM5KJeCfvh9EFbUf2BK2JXXYkKgemhBLMZbY=;
-        b=RVN5ogqqsMncpNToQNf2C/K7K8QtxQ9ZtnzSx/3G1pgo/yGFv2cJX23iW++wkm07pA
-         24OpFVqmH7KZRgako7pkZa8/sQ21mv+aJP4rx6KRilHgPN2Xose+HsxBibLyqBUTGRK7
-         MTf3Mvu6yHCBSi6C9lBi4uVhsRR7TE3xjeoWfDXOFrDT2189KLPrVeocv+J/4kWqQIkZ
-         HjjZ1X9+Sw58A3SByGBN0HbX8d0rM4AnyjRbBsmV3GJmJzEe2HovNNNCJk4h6HzSZzHv
-         FnbxuFzit6g9XJIgOaY+tdybYjsodCd4b9aht1NyVEhPktvJT+WtEdtGBN0w+6nW9+S5
-         SjKg==
-X-Gm-Message-State: ACgBeo1d9fgu/KIRq4Z9tS7Ix6vNjLLMgHbrULTCvGMXH0YGUAFLxE1O
-        hGU3rCGlaZFb3x0At98Ry85Otv5px3HqbQWBj/6/OugFnOUirQ==
-X-Google-Smtp-Source: AA6agR5aoCBbVsO1nF3bbbdb2x4DZpDlKbGYlFJL4bT7Rd4TdhmbFe/woKDXX0Ytt89TBlC77CouorjlQzj8uBGDb38=
-X-Received: by 2002:a81:9904:0:b0:31f:496d:a6c with SMTP id
- q4-20020a819904000000b0031f496d0a6cmr28138782ywg.133.1660098919752; Tue, 09
- Aug 2022 19:35:19 -0700 (PDT)
+        with ESMTP id S231217AbiHJHOy (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 10 Aug 2022 03:14:54 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31DA81B35
+        for <linux-can@vger.kernel.org>; Wed, 10 Aug 2022 00:14:53 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1oLfvY-0003Rk-C7
+        for linux-can@vger.kernel.org; Wed, 10 Aug 2022 09:14:52 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id 97681C655B
+        for <linux-can@vger.kernel.org>; Wed, 10 Aug 2022 07:14:51 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id EFCECC654E;
+        Wed, 10 Aug 2022 07:14:50 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 59dd56a1;
+        Wed, 10 Aug 2022 07:14:50 +0000 (UTC)
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de, Fedor Pchelkin <pchelkin@ispras.ru>,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 1/4] can: j1939: j1939_sk_queue_activate_next_locked(): replace WARN_ON_ONCE with netdev_warn_once()
+Date:   Wed, 10 Aug 2022 09:14:45 +0200
+Message-Id: <20220810071448.1627857-2-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220810071448.1627857-1-mkl@pengutronix.de>
+References: <20220810071448.1627857-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-From:   David Boles <me@davidbol.es>
-Date:   Tue, 9 Aug 2022 19:35:09 -0700
-Message-ID: <CAMgOUGpGEUQgLgAQmYbn-UdWXCkC7kRqdhW-mfg=e2gq9QfqRQ@mail.gmail.com>
-Subject: PCAN and SocketCAN Questions
-To:     linux-can@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello everyone, I'm new to both SocketCAN and mailing lists so please
-let me know if I'm making any faux pas or haven't correctly RTFMed! I
-heard this was the correct place to ask questions and I have a few
-that I haven't been able to find answers to.
+From: Fedor Pchelkin <pchelkin@ispras.ru>
 
-All my testing so far has been done on Ubuntu 20.04 with
-5.15.0-43-generic and PCAN-USB( Pro) dongles and PCAN-PCI Express
-cards.
+We should warn user-space that it is doing something wrong when trying
+to activate sessions with identical parameters but WARN_ON_ONCE macro
+can not be used here as it serves a different purpose.
 
-Question 1: I've noticed that frames can get silently lost if my
-application doesn't read from the socket frequently enough. This also
-happens if I'm simultaneously dumping frames with candump (the "lost"
-frames do show up in candump's output). Increasing the socket receive
-buffer size with SO_RCVBUF allows more frames to be stored before new
-ones start getting lost. Is there a recommended way to detect this
-happening so that my program can fail noisily?
+So it would be good to replace it with netdev_warn_once() message.
 
-Question 2: I'd like to be able to send frames without other receivers
-on the bus to acknowledge them. The one-shot option seems to allow me
-to do this with my USB dongles. What's the difference between the
-one-shot and presume-ack options?
+Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
 
-Question 3: I'd like to have as little latency as possible and I'm
-assuming using PCIe cards would be beneficial over USB. Unfortunately
-my PCAN-PCI Express card doesn't seem to support either one-shot or
-presume-ack; is that a hardware limitation or a driver limitation? If
-it's a hardware limitation, would anyone be able to recommend a
-low-latency, full-featured option for CAN on traditional x86/64
-desktops?
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Link: https://lore.kernel.org/all/20220729143655.1108297-1-pchelkin@ispras.ru
+[mkl: fix indention]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ net/can/j1939/socket.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Thank you in advance!
+diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+index f5ecfdcf57b2..b670ba03a675 100644
+--- a/net/can/j1939/socket.c
++++ b/net/can/j1939/socket.c
+@@ -178,7 +178,10 @@ static void j1939_sk_queue_activate_next_locked(struct j1939_session *session)
+ 	if (!first)
+ 		return;
+ 
+-	if (WARN_ON_ONCE(j1939_session_activate(first))) {
++	if (j1939_session_activate(first)) {
++		netdev_warn_once(first->priv->ndev,
++				 "%s: 0x%p: Identical session is already activated.\n",
++				 __func__, first);
+ 		first->err = -EBUSY;
+ 		goto activate_next;
+ 	} else {
 
-David
+base-commit: b8c3bf0ed2edf2deaedba5f0bf0bb54c76dee71d
+-- 
+2.35.1
+
+
