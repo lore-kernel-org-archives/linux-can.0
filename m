@@ -2,76 +2,97 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCC6DC25B0F
-	for <linux-can@archiver.kernel.org>; Sat, 13 Aug 2022 13:44:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4407EC25B0E
+	for <linux-can@archiver.kernel.org>; Tue, 16 Aug 2022 14:50:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239503AbiHMNoL (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 13 Aug 2022 09:44:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
+        id S229919AbiHPOu5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 16 Aug 2022 10:50:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239466AbiHMNoJ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 13 Aug 2022 09:44:09 -0400
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2D4DED8;
-        Sat, 13 Aug 2022 06:44:08 -0700 (PDT)
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id C2CF11C000F; Sat, 13 Aug 2022 15:44:06 +0200 (CEST)
-Date:   Sat, 13 Aug 2022 15:44:03 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>, wg@grandegger.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, mailhol.vincent@wanadoo.fr,
-        stefan.maetje@esd.eu, socketcan@hartkopp.net,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 4.9 08/12] can: sja1000: Add Quirk for RZ/N1
- SJA1000 CAN controller
-Message-ID: <20220813134403.GC24517@duo.ucw.cz>
-References: <20220811161144.1543598-1-sashal@kernel.org>
- <20220811161144.1543598-8-sashal@kernel.org>
+        with ESMTP id S229607AbiHPOuz (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 16 Aug 2022 10:50:55 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE93A459A2
+        for <linux-can@vger.kernel.org>; Tue, 16 Aug 2022 07:50:54 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1oNxu7-0007RG-Oh; Tue, 16 Aug 2022 16:50:51 +0200
+Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 3999ECC0B9;
+        Tue, 16 Aug 2022 14:50:50 +0000 (UTC)
+Date:   Tue, 16 Aug 2022 16:50:48 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Jimmy Assarsson <extja@kvaser.com>
+Cc:     linux-can@vger.kernel.org,
+        Anssi Hannula <anssi.hannula@bitwise.fi>,
+        Jimmy Assarsson <jimmyassarsson@gmail.com>
+Subject: Re: [PATCH v2 00/15] can: kvaser_usb: Various fixes
+Message-ID: <20220816145048.leptfnx2wlk6vbdd@pengutronix.de>
+References: <20220708115709.232815-1-extja@kvaser.com>
+ <20220719184059.pzqgxsgl7hw3cdne@pengutronix.de>
+ <48197e64-6dda-12d0-26ce-34054b23f7b4@kvaser.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="H8ygTp4AXg6deix2"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="brfbl2sv64tkqiby"
 Content-Disposition: inline
-In-Reply-To: <20220811161144.1543598-8-sashal@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <48197e64-6dda-12d0-26ce-34054b23f7b4@kvaser.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 
---H8ygTp4AXg6deix2
-Content-Type: text/plain; charset=us-ascii
+--brfbl2sv64tkqiby
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi!
+On 19.07.2022 20:59:01, Jimmy Assarsson wrote:
+> On 7/19/22 20:40, Marc Kleine-Budde wrote:
+> > On 08.07.2022 13:56:54, Jimmy Assarsson wrote:
+> > > This patch series was originally posted by Anssi Hannula [1].
+> > > Since v1 I've rebased the patches on top of commit
+> > > b3b6df2c56d8 ("can: kvaser_usb: kvaser_usb_leaf: fix bittiming limits=
+")
+> > > and replaced a couple of patches with new ones.
+> >=20
+> > Jimmy, as all of these patches went through your hands, they need your
+> > S-o-b. Can I add it while applying?
 
-> As per Chapter 6.5.16 of the RZ/N1 Peripheral Manual, The SJA1000
-> CAN controller does not support Clock Divider Register compared to
-> the reference Philips SJA1000 device.
->=20
-> This patch adds a device quirk to handle this difference.
+Jimmy, can you resend this series rebased again current net/main. Please
+add your S-o-b and take care of Anssi Hannula's issue in patch 04/15.
 
-I don't think this is suitable for stable (at least 5.10.X and older)
-as we don't have user of the quirk queued up.
+regards,
+Marc
 
-Best regards,
-								Pavel
 --=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
---H8ygTp4AXg6deix2
+--brfbl2sv64tkqiby
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYveqowAKCRAw5/Bqldv6
-8r8YAJ9Y7BnSBOz+McET0wttzNzYXrskHwCfY9PL8bFQVQIEjgCOwKuQARsWwpA=
-=twIP
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmL7rsUACgkQrX5LkNig
+013EnwgAnxD0lhftERiL2IDbgLEvZ30umXFyk2R8jdh0cPax2u/jP0fIbF1wNSXr
+cQHg2uP7p7/7AiFFlB4OJJNwHQUV15ziiUebCGYBQaASOuSWfnqTI0SehcuLQHVY
+kHrSSjZtwUWbpFb9nbBtlv9peaz8KGl5ro4l1DWo5hoYwf6UOwrHvS7qV7WrpUaQ
+VytGa1y8iWpZkCwxMBXP3vttHpAsmBjU1FeTvjGIe+hDPVjpaMYIzfX8nUgFb5t3
+JyBtBP8h+2ui+n2xPLd9LzpwSecNTMW46FzEp27PqW6ZLwtdyDOUxkXExAWRuqhM
+G4QaYjSi7xsoCrAokkV77hSMRTir9A==
+=Zmi+
 -----END PGP SIGNATURE-----
 
---H8ygTp4AXg6deix2--
+--brfbl2sv64tkqiby--
