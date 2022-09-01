@@ -2,60 +2,60 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E52FDECAAD3
-	for <linux-can@archiver.kernel.org>; Thu,  1 Sep 2022 12:29:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4448FC64991
+	for <linux-can@archiver.kernel.org>; Thu,  1 Sep 2022 12:29:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233724AbiIAM3m (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 1 Sep 2022 08:29:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46396 "EHLO
+        id S233580AbiIAM3o (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 1 Sep 2022 08:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233578AbiIAM3X (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 1 Sep 2022 08:29:23 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FF3512DA2B
-        for <linux-can@vger.kernel.org>; Thu,  1 Sep 2022 05:28:35 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id w8so15101896lft.12
-        for <linux-can@vger.kernel.org>; Thu, 01 Sep 2022 05:28:35 -0700 (PDT)
+        with ESMTP id S233591AbiIAM30 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 1 Sep 2022 08:29:26 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2EA612D52F
+        for <linux-can@vger.kernel.org>; Thu,  1 Sep 2022 05:28:31 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id br21so18392037lfb.0
+        for <linux-can@vger.kernel.org>; Thu, 01 Sep 2022 05:28:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kvaser.com; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=2a1S+95FHS8mRAU4MvYuSiOKUqVx4FNDPIrKSxIuA0U=;
-        b=pGxCeNZD6uMiMmZ8JBNyyok2Y67jLnAXIJEOlhiyXY5/P1GFbpMOPfcAliYKo0JM+/
-         5msHsodeQfdvOsnRg8mgD9p7eD88XN2AjiLM3+iXVPzPzidzMpJry+vdU0IZ5gEP58RQ
-         gF3gwrAFcDFPE+LWv218LD4b40iuPXeipPDHasP0tbRB5fCydWWREtQ1YjUgLlF46H91
-         Wcwn7yuXaXRUrNqWp4JBM2954zJpyFqzVBTkdAiHIEkGlcz+xg3u7YLltRdfSABX8gau
-         FBqmw+ZbKS9+tXjZ3YUl/nv40KRX9JG79KwIZfxlIGi0aTZY750kIroAxcNuN7vavxNw
-         VM1A==
+        bh=k4NBR6s9gWn7dVHGD+znnsmpwT2y4F68Ss9fdXBxSN0=;
+        b=JXbvSYm6hW7OclPyOCC6Lvv74gd97mzKXVEIVnr7I8fbeT3u23yVe9exIUvfPaSY34
+         dbrJb80O2ZT1KJ5Z+akKS6ID9MqLkYMzUCFDYkPHy8q7CDPE6TOYvwVaKFxJJR1xIHug
+         MWOjeHLp20jtq8q4JswdZVye9+jD7w0rpRM+tW9e5g9s/hT02F+VbfCckZPi/k5QgF6o
+         7ws+EfQYkJ1ydvpzr4OL0kOJXjB8n8koRIjrmqG4cGfpb5fq9Xud8AVVbyUEoKnTPGkK
+         l1KDMAzCtAFMq9K8pQNxHif/+qOrZtubQ9vm+3ke/1kACjmfGwXfcyz3w/KMhHdsn9IE
+         oFkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=2a1S+95FHS8mRAU4MvYuSiOKUqVx4FNDPIrKSxIuA0U=;
-        b=cuwrQDajBVaIMxXE41WsaT23BPJ/L+3ZNgmrlJ14VCws4hyf1iIO9A/1EKbVf95Zim
-         nZ9hUW7Dm8Rfe/bBTtFCdQkgtXNPPTAYzTyFPJXrVPWBNheQu51kD+Bu+HtwQQ/Y3Khy
-         KpJR0V5QrxBMXNQN7wercxwzqIZc2X/YLRdY2Pww85srwqrlp9As2lzqCkzwu3jxKtIX
-         xaZbcgVXUWsoddE/WaFjNDEjXfk9Bslb3osXoaMRmwSyWgZ/VTMdUGsgUH4RP0wuP3lg
-         2WJmaXvDjBVpzX4iky3QdkcDAwLr2FYonaMEJKZnvg85mmAzfXgbSbVSJdchpt5cI/c5
-         OtKA==
-X-Gm-Message-State: ACgBeo3HG3hYbQYl2itoaTeniFTaX7qv/4PfmmjDDRU0RtaiCIIdt+39
-        B/gJsK4bVkbQbTkWVN+Vk4r2uqBfox85OA==
-X-Google-Smtp-Source: AA6agR4mCx4BAoG0KFX/iphq5Kq3/WEUKL0L89ZIIZ5euVoK61aOqsUFhve6niXg/JIf1Zz9//od+A==
-X-Received: by 2002:a05:6512:4022:b0:494:76d1:c7a4 with SMTP id br34-20020a056512402200b0049476d1c7a4mr4787561lfb.290.1662035312131;
-        Thu, 01 Sep 2022 05:28:32 -0700 (PDT)
+        bh=k4NBR6s9gWn7dVHGD+znnsmpwT2y4F68Ss9fdXBxSN0=;
+        b=PGvZ17o32QVxajZ/3fNiTdLo/48k1scM4VVirZQTrRnm+4WEiOPIL8RSwtDx3hrNCs
+         cjpw3i+xUrhZXItckQQGjjOwzkWjYG7deVTfrvwLESR6tYYToSaN9L2o+y8a8Jzt4nUZ
+         VngshDSDgMmF8mCXI4X82P659gjs9OCerrsHL2TZzuD3mVrU+nol3ZzSWlMgYb4s71ay
+         x2Qipb14unqtxgqQH/j4Kl6aVgGE7kEQMa9sKHTkNL5rnDzWWrxdJOdClfPpGmw8kqAr
+         +wr/k/ELouZMSAICts//jx0QtkH64/d4LfCpFBNzYSh7qQBE2a8JuLy7aTPmMReqtjRX
+         d7Dw==
+X-Gm-Message-State: ACgBeo1g1czTTPi4E/dk+LX9n3uJefRpvExrvMVc9KlpCfMemjK4YKn9
+        A/4rb7uiVgukAM1UiFE9Mesq9siu027DQg==
+X-Google-Smtp-Source: AA6agR6spPoMcyADvCfHmkwpyymiB0LdSx2oKeqwb9peYsAI3Jf38KXKiXzVqZkqqg+79VaMU7sxPw==
+X-Received: by 2002:a05:6512:3b2a:b0:494:72a8:bbeb with SMTP id f42-20020a0565123b2a00b0049472a8bbebmr5553381lfv.372.1662035308062;
+        Thu, 01 Sep 2022 05:28:28 -0700 (PDT)
 Received: from fb10a0c5d590.. (h-155-4-68-234.A785.priv.bahnhof.se. [155.4.68.234])
-        by smtp.gmail.com with ESMTPSA id s12-20020a056512202c00b00492c2394ea5sm125935lfs.165.2022.09.01.05.28.31
+        by smtp.gmail.com with ESMTPSA id s12-20020a056512202c00b00492c2394ea5sm125935lfs.165.2022.09.01.05.28.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Sep 2022 05:28:31 -0700 (PDT)
+        Thu, 01 Sep 2022 05:28:27 -0700 (PDT)
 From:   Jimmy Assarsson <extja@kvaser.com>
 To:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
         Anssi Hannula <anssi.hannula@bitwise.fi>
 Cc:     Jimmy Assarsson <jimmyassarsson@gmail.com>, stable@vger.kernel.org,
         Jimmy Assarsson <extja@kvaser.com>
-Subject: [PATCH v3 14/15] can: kvaser_usb: Add struct kvaser_usb_busparams
-Date:   Thu,  1 Sep 2022 14:27:28 +0200
-Message-Id: <20220901122729.271-15-extja@kvaser.com>
+Subject: [PATCH v3 09/15] can: kvaser_usb_leaf: Fix CAN state after restart
+Date:   Thu,  1 Sep 2022 14:27:23 +0200
+Message-Id: <20220901122729.271-10-extja@kvaser.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20220901122729.271-1-extja@kvaser.com>
 References: <20220901122729.271-1-extja@kvaser.com>
@@ -65,142 +65,46 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Add struct kvaser_usb_busparams containing the busparameters used in
-CMD_{SET,GET}_BUSPARAMS* commands.
+From: Anssi Hannula <anssi.hannula@bitwise.fi>
+
+can_restart() expects CMD_START_CHIP to set the error state to
+ERROR_ACTIVE as it calls netif_carrier_on() immediately afterwards.
+
+Otherwise the user may immediately trigger restart again and hit a
+BUG_ON() in can_restart().
+
+Fix kvaser_usb_leaf set_mode(CMD_START_CHIP) to set the expected state.
 
 Cc: stable@vger.kernel.org
-Tested-by: Anssi Hannula <anssi.hannula@bitwise.fi>
+Fixes: 080f40a6fa28 ("can: kvaser_usb: Add support for Kvaser CAN/USB devices")
+Tested-by: Jimmy Assarsson <extja@kvaser.com>
+Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
 Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
 ---
 Changes in v3:
  - Rebased on 1d5eeda23f36 ("can: kvaser_usb: advertise timestamping capabilities and add ioctl support")
  - Add stable to CC
- - Add Tested-by Anssi Hannula
+ - Add S-o-b
 
 Changes in v2:
-  - New in v2.
+  - Rebased on b3b6df2c56d8 ("can: kvaser_usb: kvaser_usb_leaf: fix bittiming limits")
 
- drivers/net/can/usb/kvaser_usb/kvaser_usb.h   |  8 +++++
- .../net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 32 +++++++------------
- .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 18 ++++-------
- 3 files changed, 27 insertions(+), 31 deletions(-)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
-index d9c5dd5da908..040885c7d0c4 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
-@@ -76,6 +76,14 @@ struct kvaser_usb_tx_urb_context {
- 	u32 echo_index;
- };
- 
-+struct kvaser_usb_busparams {
-+	__le32 bitrate;
-+	u8 tseg1;
-+	u8 tseg2;
-+	u8 sjw;
-+	u8 nsamples;
-+};
-+
- struct kvaser_usb {
- 	struct usb_device *udev;
- 	struct usb_interface *intf;
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-index 3abfaa77e893..b8ae29872217 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-@@ -196,17 +196,9 @@ struct kvaser_cmd_chip_state_event {
- #define KVASER_USB_HYDRA_BUS_MODE_CANFD_ISO	0x01
- #define KVASER_USB_HYDRA_BUS_MODE_NONISO	0x02
- struct kvaser_cmd_set_busparams {
--	__le32 bitrate;
--	u8 tseg1;
--	u8 tseg2;
--	u8 sjw;
--	u8 nsamples;
-+	struct kvaser_usb_busparams busparams_arb;
- 	u8 reserved0[4];
--	__le32 bitrate_d;
--	u8 tseg1_d;
--	u8 tseg2_d;
--	u8 sjw_d;
--	u8 nsamples_d;
-+	struct kvaser_usb_busparams busparams_data;
- 	u8 canfd_mode;
- 	u8 reserved1[7];
- } __packed;
-@@ -1538,11 +1530,11 @@ static int kvaser_usb_hydra_set_bittiming(struct net_device *netdev)
- 		return -ENOMEM;
- 
- 	cmd->header.cmd_no = CMD_SET_BUSPARAMS_REQ;
--	cmd->set_busparams_req.bitrate = cpu_to_le32(bt->bitrate);
--	cmd->set_busparams_req.sjw = (u8)sjw;
--	cmd->set_busparams_req.tseg1 = (u8)tseg1;
--	cmd->set_busparams_req.tseg2 = (u8)tseg2;
--	cmd->set_busparams_req.nsamples = 1;
-+	cmd->set_busparams_req.busparams_arb.bitrate = cpu_to_le32(bt->bitrate);
-+	cmd->set_busparams_req.busparams_arb.sjw = (u8)sjw;
-+	cmd->set_busparams_req.busparams_arb.tseg1 = (u8)tseg1;
-+	cmd->set_busparams_req.busparams_arb.tseg2 = (u8)tseg2;
-+	cmd->set_busparams_req.busparams_arb.nsamples = 1;
- 
- 	kvaser_usb_hydra_set_cmd_dest_he
- 		(cmd, dev->card_data.hydra.channel_to_he[priv->channel]);
-@@ -1572,11 +1564,11 @@ static int kvaser_usb_hydra_set_data_bittiming(struct net_device *netdev)
- 		return -ENOMEM;
- 
- 	cmd->header.cmd_no = CMD_SET_BUSPARAMS_FD_REQ;
--	cmd->set_busparams_req.bitrate_d = cpu_to_le32(dbt->bitrate);
--	cmd->set_busparams_req.sjw_d = (u8)sjw;
--	cmd->set_busparams_req.tseg1_d = (u8)tseg1;
--	cmd->set_busparams_req.tseg2_d = (u8)tseg2;
--	cmd->set_busparams_req.nsamples_d = 1;
-+	cmd->set_busparams_req.busparams_data.bitrate = cpu_to_le32(dbt->bitrate);
-+	cmd->set_busparams_req.busparams_data.sjw = (u8)sjw;
-+	cmd->set_busparams_req.busparams_data.tseg1 = (u8)tseg1;
-+	cmd->set_busparams_req.busparams_data.tseg2 = (u8)tseg2;
-+	cmd->set_busparams_req.busparams_data.nsamples = 1;
- 
- 	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
- 		if (priv->can.ctrlmode & CAN_CTRLMODE_FD_NON_ISO)
 diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-index 3e31a9ebea88..bb59ee01a093 100644
+index 48b8a0f0b362..a6a26085bc15 100644
 --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
 +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-@@ -164,11 +164,7 @@ struct usbcan_cmd_softinfo {
- struct kvaser_cmd_busparams {
- 	u8 tid;
- 	u8 channel;
--	__le32 bitrate;
--	u8 tseg1;
--	u8 tseg2;
--	u8 sjw;
--	u8 no_samp;
-+	struct kvaser_usb_busparams busparams;
- } __packed;
- 
- struct kvaser_cmd_tx_can {
-@@ -1725,15 +1721,15 @@ static int kvaser_usb_leaf_set_bittiming(struct net_device *netdev)
- 	cmd->len = CMD_HEADER_LEN + sizeof(struct kvaser_cmd_busparams);
- 	cmd->u.busparams.channel = priv->channel;
- 	cmd->u.busparams.tid = 0xff;
--	cmd->u.busparams.bitrate = cpu_to_le32(bt->bitrate);
--	cmd->u.busparams.sjw = bt->sjw;
--	cmd->u.busparams.tseg1 = bt->prop_seg + bt->phase_seg1;
--	cmd->u.busparams.tseg2 = bt->phase_seg2;
-+	cmd->u.busparams.busparams.bitrate = cpu_to_le32(bt->bitrate);
-+	cmd->u.busparams.busparams.sjw = bt->sjw;
-+	cmd->u.busparams.busparams.tseg1 = bt->prop_seg + bt->phase_seg1;
-+	cmd->u.busparams.busparams.tseg2 = bt->phase_seg2;
- 
- 	if (priv->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES)
--		cmd->u.busparams.no_samp = 3;
-+		cmd->u.busparams.busparams.nsamples = 3;
- 	else
--		cmd->u.busparams.no_samp = 1;
-+		cmd->u.busparams.busparams.nsamples = 1;
- 
- 	rc = kvaser_usb_send_cmd(dev, cmd, cmd->len);
- 
+@@ -1668,6 +1668,8 @@ static int kvaser_usb_leaf_set_mode(struct net_device *netdev,
+ 		err = kvaser_usb_leaf_simple_cmd_async(priv, CMD_START_CHIP);
+ 		if (err)
+ 			return err;
++
++		priv->can.state = CAN_STATE_ERROR_ACTIVE;
+ 		break;
+ 	default:
+ 		return -EOPNOTSUPP;
 -- 
 2.37.3
 
