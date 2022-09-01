@@ -2,60 +2,60 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62C18C67868
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2868ECAAD1
 	for <linux-can@archiver.kernel.org>; Thu,  1 Sep 2022 12:29:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233632AbiIAM3r (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 1 Sep 2022 08:29:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46802 "EHLO
+        id S233642AbiIAM3s (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 1 Sep 2022 08:29:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233654AbiIAM3a (ORCPT
+        with ESMTP id S233669AbiIAM3a (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 1 Sep 2022 08:29:30 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F191F12DA26
-        for <linux-can@vger.kernel.org>; Thu,  1 Sep 2022 05:28:33 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id bt10so24174051lfb.1
-        for <linux-can@vger.kernel.org>; Thu, 01 Sep 2022 05:28:33 -0700 (PDT)
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E3A3134D62
+        for <linux-can@vger.kernel.org>; Thu,  1 Sep 2022 05:28:24 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id p18so14379623ljc.9
+        for <linux-can@vger.kernel.org>; Thu, 01 Sep 2022 05:28:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kvaser.com; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=3DIbIh68o/anmm+/aJkEjWEUUfosSo9p7dyutkWjemo=;
-        b=J5W+KcYb/nFZpqT+9mqKMzgrJw1CLoowBipMs3gRbfRlVdW5TtHKuTA6CcJDJeBn0V
-         cFvmpE+Yk4mpdk6BdEnN5Ou69PEn23Uj5UpLMXN2nSqQVAG+nh0oB09pcwh4kBtG3+Ab
-         vS3//oKq7X2gNIZkAPvt4zBennGy/O+3vUIOBVnm3fQwOyRHh+IotdtToIRUZSHWu44r
-         6hs398LcDOJw8VkYwXtOqW7qikKT1Ap5wnAfXM2b0aFY6KVzjTTbAF3MjJkD2/2G8Wf5
-         qV742DGrPlu01gbj9eHm/4gdRtrBTMzYrCzPrHQQI6CPwyRd/Ljfyaq3/H8R+b+AvFkZ
-         5ksg==
+        bh=JEoN1tJznbwSLj5X41YbOg96ajBu/6l48HoDPAWt4/w=;
+        b=C6R372tgA6Wj77P2zG4Y37vXDYL0ee8K4vn5AsUdLoP7hL+mnJOt7/L9rQ9lG2AVlf
+         ejjwMo535/o/Hui+j6KY54yWxHqk0rwT/wj/ctXClDvbiBWal+K4MP1YAxFY7L8L181Y
+         Lt7bZNtunTqAZYSNpezUUDid2Wgk5mp51geBf0WaVvG/oCNAlIkRqrTnd2nIJga/pP0i
+         yVHmWTDYZepBhdqCmgaNMWdN9/QXPi3CiuHc5zcFCBJhT9hHD9tX6ima1+ulZjxnaU1R
+         3P6tJjLlYtAAbH9UnhsxaWmGW+/e/h6HGEL4ejz3FhUWzO4uNqcxCGEV4/uEi7WGZJWR
+         RgLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=3DIbIh68o/anmm+/aJkEjWEUUfosSo9p7dyutkWjemo=;
-        b=ZCpTKRBERDaQYACdO25ODxog17Uvaq4ySOHgJTjFktc3H4obsJjonwZHWE3gd/hfdX
-         jgbmwvYUEo1/j56hvN22vz5zcPrCV5BLUdAbZfRMaabsrYZSReeUm8t2cPAGB27Hwmlk
-         6Eu+CAwn14BrV3pL55iIylPaRm0sSEC4V01hf0X/Nk464XI+fQrMNdI6GpCWnTTwk5BU
-         kflwFsz4sV7kn1FDUsDkwalU8Ob5Kv/CkoEOLohsNf4eJ1Ji5/syJrx8dUa+IX1YBq1O
-         FRHBGXiF3nZsu9k2XjLOwbXxB+E3uzOhp/7RepwR8Ak7n+6Sp1isXI4XXlECNsCsLJOF
-         sx+Q==
-X-Gm-Message-State: ACgBeo1kyw8aZGqRdqGz6m8BuI/FXr19Jfxf23cYFRKpUysKTK158aBl
-        jUdYJG/dheix4kqdkOS1g5WwkICkg71u8g==
-X-Google-Smtp-Source: AA6agR6Rn1CEmv1EzOz+FT2eP+uAXCTG9xGBe9luQSsqOg16Tlkp+akKg5b+sSofruStgdxxeWH2Cg==
-X-Received: by 2002:a05:6512:1329:b0:492:e050:b0dc with SMTP id x41-20020a056512132900b00492e050b0dcmr11487756lfu.136.1662035309755;
-        Thu, 01 Sep 2022 05:28:29 -0700 (PDT)
+        bh=JEoN1tJznbwSLj5X41YbOg96ajBu/6l48HoDPAWt4/w=;
+        b=gS1919tJs/R6fdX/JqAcsSyoDsdLm8Gj8qlrfnUZeVDhgDL9wp/wiYAzNgDcht5bKl
+         68OLuWSoCFRB1j8uugeN0BUPQSFm5UywagdCc0mVbPMEFXe9U1uu/vNPnqU61M/nEHV4
+         5mbg4WMwON0/LTF3WefYrL/KaXXxv5CMTB7aHSbhsGDjoFZ+pbjbGLQV8LzU8ouqQP80
+         49jgrSaEn0h5PVzMJoRK8ddZ7I24+vcfM/KP/CEZO6Gp1gx/4pOSFyqAAcxx/Z8EkHr1
+         nj3HJl83bWd7zJh/OwWbfbgJ0cLdUaOwLRiFtqEp7sUy9ZKuGQUQKRpHj7YDscXg1x6j
+         D8MQ==
+X-Gm-Message-State: ACgBeo30+yxcgBfQTyVQayUcnB7hszlpaDraYwaEZdof9QW5upe8Ng40
+        c+WBf/PYafYrsip9DnAjff4G7WJP7A7q3SmB
+X-Google-Smtp-Source: AA6agR6fj9Yh7LIBSdgZI6I0amXZLrjrQfpw6OHgz3sCuQZZHghBYzUbuhVF9YY3JsBvWWq1a6nQHw==
+X-Received: by 2002:a2e:b5a2:0:b0:263:3745:a554 with SMTP id f2-20020a2eb5a2000000b002633745a554mr7075086ljn.190.1662035302336;
+        Thu, 01 Sep 2022 05:28:22 -0700 (PDT)
 Received: from fb10a0c5d590.. (h-155-4-68-234.A785.priv.bahnhof.se. [155.4.68.234])
-        by smtp.gmail.com with ESMTPSA id s12-20020a056512202c00b00492c2394ea5sm125935lfs.165.2022.09.01.05.28.29
+        by smtp.gmail.com with ESMTPSA id s12-20020a056512202c00b00492c2394ea5sm125935lfs.165.2022.09.01.05.28.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Sep 2022 05:28:29 -0700 (PDT)
+        Thu, 01 Sep 2022 05:28:21 -0700 (PDT)
 From:   Jimmy Assarsson <extja@kvaser.com>
 To:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
         Anssi Hannula <anssi.hannula@bitwise.fi>
 Cc:     Jimmy Assarsson <jimmyassarsson@gmail.com>, stable@vger.kernel.org,
         Jimmy Assarsson <extja@kvaser.com>
-Subject: [PATCH v3 11/15] can: kvaser_usb_leaf: Fix wrong CAN state after stopping
-Date:   Thu,  1 Sep 2022 14:27:25 +0200
-Message-Id: <20220901122729.271-12-extja@kvaser.com>
+Subject: [PATCH v3 02/15] can: kvaser_usb: Fix use of uninitialized completion
+Date:   Thu,  1 Sep 2022 14:27:16 +0200
+Message-Id: <20220901122729.271-3-extja@kvaser.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20220901122729.271-1-extja@kvaser.com>
 References: <20220901122729.271-1-extja@kvaser.com>
@@ -67,15 +67,22 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Anssi Hannula <anssi.hannula@bitwise.fi>
 
-0bfd:0124 Kvaser Mini PCI Express 2xHS FW 4.18.778 sends a
-CMD_CHIP_STATE_EVENT indicating bus-off after stopping the device,
-causing a stopped device to appear as CAN_STATE_BUS_OFF instead of
-CAN_STATE_STOPPED.
+flush_comp is initialized when CMD_FLUSH_QUEUE is sent to the device and
+completed when the device sends CMD_FLUSH_QUEUE_RESP.
 
-Fix that by not handling error events on stopped devices.
+This causes completion of uninitialized completion if the device sends
+CMD_FLUSH_QUEUE_RESP before CMD_FLUSH_QUEUE is ever sent (e.g. as a
+response to a flush by a previously bound driver, or a misbehaving
+device).
+
+Fix that by initializing flush_comp in kvaser_usb_init_one() like the
+other completions.
+
+This issue is only triggerable after RX URBs have been set up, i.e. the
+interface has been opened at least once.
 
 Cc: stable@vger.kernel.org
-Fixes: 080f40a6fa28 ("can: kvaser_usb: Add support for Kvaser CAN/USB devices")
+Fixes: aec5fb2268b7 ("can: kvaser_usb: Add support for Kvaser USB hydra family")
 Tested-by: Jimmy Assarsson <extja@kvaser.com>
 Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
 Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
@@ -88,24 +95,35 @@ Changes in v3:
 Changes in v2:
   - Rebased on b3b6df2c56d8 ("can: kvaser_usb: kvaser_usb_leaf: fix bittiming limits")
 
- drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c  | 1 +
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-index 993fcc19637d..4f9c76f4d0da 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-@@ -1045,6 +1045,10 @@ static void kvaser_usb_leaf_rx_error(const struct kvaser_usb *dev,
- 	leaf = priv->sub_priv;
- 	stats = &priv->netdev->stats;
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+index 824cab80aa02..c2bce6773adc 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+@@ -729,6 +729,7 @@ static int kvaser_usb_init_one(struct kvaser_usb *dev, int channel)
+ 	init_usb_anchor(&priv->tx_submitted);
+ 	init_completion(&priv->start_comp);
+ 	init_completion(&priv->stop_comp);
++	init_completion(&priv->flush_comp);
+ 	priv->can.ctrlmode_supported = 0;
  
-+	/* Ignore e.g. state change to bus-off reported just after stopping */
-+	if (!netif_running(priv->netdev))
-+		return;
-+
- 	/* Update all of the CAN interface's state and error counters before
- 	 * trying any memory allocation that can actually fail with -ENOMEM.
- 	 *
+ 	priv->dev = dev;
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+index dd65c101bfb8..3dcd35979e6f 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+@@ -1916,7 +1916,7 @@ static int kvaser_usb_hydra_flush_queue(struct kvaser_usb_net_priv *priv)
+ {
+ 	int err;
+ 
+-	init_completion(&priv->flush_comp);
++	reinit_completion(&priv->flush_comp);
+ 
+ 	err = kvaser_usb_hydra_send_simple_cmd(priv->dev, CMD_FLUSH_QUEUE,
+ 					       priv->channel);
 -- 
 2.37.3
 
