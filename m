@@ -2,60 +2,60 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 996ACC38145
-	for <linux-can@archiver.kernel.org>; Sat,  3 Sep 2022 18:25:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02C9EC6FA83
+	for <linux-can@archiver.kernel.org>; Sat,  3 Sep 2022 18:25:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbiICSZt (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S233213AbiICSZt (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Sat, 3 Sep 2022 14:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35658 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233125AbiICSZq (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 3 Sep 2022 14:25:46 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBBC041988
-        for <linux-can@vger.kernel.org>; Sat,  3 Sep 2022 11:25:43 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id p7so7706879lfu.3
-        for <linux-can@vger.kernel.org>; Sat, 03 Sep 2022 11:25:43 -0700 (PDT)
+        with ESMTP id S233224AbiICSZr (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 3 Sep 2022 14:25:47 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F45341D3A
+        for <linux-can@vger.kernel.org>; Sat,  3 Sep 2022 11:25:45 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id z25so7714086lfr.2
+        for <linux-can@vger.kernel.org>; Sat, 03 Sep 2022 11:25:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kvaser.com; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=ARLkFNoCOf+5ZIGqKT+Roe8Am7StOcGTfdiHoMaBW4c=;
-        b=xUrjDBQDd8kx8wbSjOAtK/dsvQUfSjHz6dQLQZewqck18d/G7CZmyGu3Xfg7A/C7/2
-         Xy4GqhspFF/mP2q6NfaHP2cK41af2WNP1lnYUgn4IXSEi52WkMA0Q9JYHBSaGpLeW8HJ
-         x8H/MAAMiMTzCGeJiU93EvG6InJvacWCW7hMubaNzBJ18yjBSkt0Fkgd+14B4+VKRj1M
-         Xemnn7xqLXAT6/rkZHVtQijt+YDmaYwG0NxIK7Csth6CxrVrGoX8m9mzTHfrXaFxTdaF
-         d5iBP+glDMJ/ueAMSt/9p/uuaqwWyI/O1ga4HR/EPfx4Jwxg6/qsdBuqVCdXN0VR3t7X
-         WdAw==
+        bh=FtYEyGAJaRB0x8ImnvWnEBF8IOBBq297Mde/T1RSt3w=;
+        b=aB9FmxIK6o2ysewr84GWl+pyPyYCLkDYNpXn5eziKPtCHd5N8bBLNqVuOZ4VcPevnP
+         PKGphpfSXF45SYTuPz6AJ/c6AjR4IwQEv2JIueKfnu+lTK4FBqP1AMFR1GT6E7lUU1ad
+         7lhPIEUHut2umww4d3sqBGELjV/tu+8R8zmDlS8WUcF15jiElgBRcGC3gG44aj7dBIMi
+         byd5rk2JZUswMBFfbt3A0j3WbWgJDXR10MV+PVw9RIflntGD/s5e2vuKuJyqql5P4IZ2
+         pElCkFE99+sYV8NzlDGc+n8zriCQWrwybUfqP8/wfwNNU28lRknqxYA4OPtub6Lq/UCl
+         l5TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=ARLkFNoCOf+5ZIGqKT+Roe8Am7StOcGTfdiHoMaBW4c=;
-        b=L6CN8iepucAMV+cD+Avf/pjyNkdKjrcKc7Y3XCACFKZcVBoz3HblYAz9uMjyETErOL
-         y7kft6xCfxB5wVq3yPjxRYOub7L6nmiAEx/t6bExA8a3b1CP/wlgfMojSc9JWsG8eCWd
-         sxrmzzO5halJeMKwSrA/RHLBbhBbQdNsiqxg+Q3CUrLqmKIQmYE3RxsRxNKnuISBPrmT
-         2KuazFSsVy+K3qhhtQxWlpdL3wcbU0fMXwpggvxKtW8k7YnRv9hWj9rbxWtfZsNbB5jX
-         LHacGw1+caayux+4h2DrTKdW6QNqeJBGhR9WgKb/PuQx0jlWwGCBm6ztQ26r8CvTiiXi
-         1z4w==
-X-Gm-Message-State: ACgBeo2I9CLbGu2I65gHZ4ZcJXZ0o0efK31BKNl+Jsa8aATbe3sSHbQ6
-        nK1VkI6xtcLF6cC+BjHaSTxkFfB2CaTQJVXQ
-X-Google-Smtp-Source: AA6agR44+BUvkaiNpTUYcq1ofVuRtx7iCUi8CAFQqicK/UqxoJjIuO4XhObZmggizW5iuXK6AQHWdw==
-X-Received: by 2002:a05:6512:3ed:b0:494:69f2:14a5 with SMTP id n13-20020a05651203ed00b0049469f214a5mr10152274lfq.550.1662229542347;
-        Sat, 03 Sep 2022 11:25:42 -0700 (PDT)
+        bh=FtYEyGAJaRB0x8ImnvWnEBF8IOBBq297Mde/T1RSt3w=;
+        b=dhKSjIRcEicqw0iX/4N1zSZItaUYYzO2EnbRcB2V3BmKjDapa3b9XuHX/BjmQ0GpbW
+         4iBUaJ1hJhtjl1znpEUj1luFJmm/08UAc50D9XCsTiKDNRXGNFiXb7Ab3IRmeJAuDBmt
+         i9XxQ14cIxlTAPk0xsbmFPLMltmLc2Ka93K9KEx82UeIdVtGn2YBkB4mNDE194B0QNTg
+         LD3zRhN4fMetGkTcie90Fz28SB/kIOyNP2/Bz+GnAqzRPunK+kqqZ58X8bkQ+lKhemb1
+         xxIGLbH5kq3WUJZEaUb+zttVR4r6hgw6qbKNE8e7PCV7PcLhazqVt/X7CoZFKOL6mWvu
+         ys0Q==
+X-Gm-Message-State: ACgBeo3UwXYWd/L5qOmvnXc9gegQstvOvPKnbcWqbD8RKuJmi1xos54P
+        QcRnmT2n9tENx8yjvTfeoc7frTz/vt4DFj5f
+X-Google-Smtp-Source: AA6agR4gK/BdhHrVmt67eijB8NQ51Jvr/jmZtRXHXl7oWNnaua/CjOD8BvjP/6WFuGWn63EMSk0uWQ==
+X-Received: by 2002:a05:6512:3f02:b0:494:5c72:6a8b with SMTP id y2-20020a0565123f0200b004945c726a8bmr12091837lfa.313.1662229544892;
+        Sat, 03 Sep 2022 11:25:44 -0700 (PDT)
 Received: from f6a14fef6d45.. (h-155-4-68-234.A785.priv.bahnhof.se. [155.4.68.234])
-        by smtp.gmail.com with ESMTPSA id u18-20020ac24c32000000b00492f6ddba59sm658330lfq.75.2022.09.03.11.25.41
+        by smtp.gmail.com with ESMTPSA id u18-20020ac24c32000000b00492f6ddba59sm658330lfq.75.2022.09.03.11.25.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Sep 2022 11:25:41 -0700 (PDT)
+        Sat, 03 Sep 2022 11:25:44 -0700 (PDT)
 From:   Jimmy Assarsson <extja@kvaser.com>
 To:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
         Anssi Hannula <anssi.hannula@bitwise.fi>
 Cc:     Jimmy Assarsson <jimmyassarsson@gmail.com>, stable@vger.kernel.org,
         Jimmy Assarsson <extja@kvaser.com>
-Subject: [PATCH v4 05/15] can: kvaser_usb: kvaser_usb_leaf: Rename {leaf,usbcan}_cmd_error_event to {leaf,usbcan}_cmd_can_error_event
-Date:   Sat,  3 Sep 2022 20:25:49 +0200
-Message-Id: <20220903182559.189-5-extja@kvaser.com>
+Subject: [PATCH v4 08/15] can: kvaser_usb_leaf: Fix TX queue out of sync after restart
+Date:   Sat,  3 Sep 2022 20:25:52 +0200
+Message-Id: <20220903182559.189-8-extja@kvaser.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20220903182559.189-1-extja@kvaser.com>
 References: <20220903182559.189-1-extja@kvaser.com>
@@ -65,13 +65,24 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Prepare for handling CMD_ERROR_EVENT. Rename struct
-{leaf,usbcan}_cmd_error_event to {leaf,usbcan}_cmd_can_error_event.
+From: Anssi Hannula <anssi.hannula@bitwise.fi>
+
+The TX queue seems to be implicitly flushed by the hardware during
+bus-off or bus-off recovery, but the driver does not reset the TX
+bookkeeping.
+
+Despite not resetting TX bookkeeping the driver still re-enables TX
+queue unconditionally, leading to "cannot find free context" /
+NETDEV_TX_BUSY errors if the TX queue was full at bus-off time.
+
+Fix that by resetting TX bookkeeping on CAN restart.
+
+Tested with 0bfd:0124 Kvaser Mini PCI Express 2xHS FW 4.18.778.
 
 Cc: stable@vger.kernel.org
 Fixes: 080f40a6fa28 ("can: kvaser_usb: Add support for Kvaser CAN/USB devices")
-Reported-by: Anssi Hannula <anssi.hannula@bitwise.fi>
-Tested-by: Anssi Hannula <anssi.hannula@bitwise.fi>
+Tested-by: Jimmy Assarsson <extja@kvaser.com>
+Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
 Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
 ---
 Changes in v4:
@@ -80,123 +91,56 @@ Changes in v4:
 Changes in v3:
  - Rebased on 1d5eeda23f36 ("can: kvaser_usb: advertise timestamping capabilities and add ioctl support")
  - Add stable to CC
- - Add Tested-by Anssi Hannula
+ - Add S-o-b
 
 Changes in v2:
-  - New in v2.
+  - Rebased on b3b6df2c56d8 ("can: kvaser_usb: kvaser_usb_leaf: fix bittiming limits")
+  - Removed explicit queue flush.
 
- .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 38 +++++++++----------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb.h      | 2 ++
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c | 2 +-
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c | 2 ++
+ 3 files changed, 5 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
+index 841da29cef93..f6c0938027ec 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
+@@ -178,6 +178,8 @@ struct kvaser_usb_dev_cfg {
+ extern const struct kvaser_usb_dev_ops kvaser_usb_hydra_dev_ops;
+ extern const struct kvaser_usb_dev_ops kvaser_usb_leaf_dev_ops;
+ 
++void kvaser_usb_unlink_tx_urbs(struct kvaser_usb_net_priv *priv);
++
+ int kvaser_usb_recv_cmd(const struct kvaser_usb *dev, void *cmd, int len,
+ 			int *actual_len);
+ 
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+index c2bce6773adc..e91648ed7386 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+@@ -477,7 +477,7 @@ static void kvaser_usb_reset_tx_urb_contexts(struct kvaser_usb_net_priv *priv)
+ /* This method might sleep. Do not call it in the atomic context
+  * of URB completions.
+  */
+-static void kvaser_usb_unlink_tx_urbs(struct kvaser_usb_net_priv *priv)
++void kvaser_usb_unlink_tx_urbs(struct kvaser_usb_net_priv *priv)
+ {
+ 	usb_kill_anchored_urbs(&priv->tx_submitted);
+ 	kvaser_usb_reset_tx_urb_contexts(priv);
 diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-index 9b688fc0b167..24c474e9d579 100644
+index b4acd9427967..48b8a0f0b362 100644
 --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
 +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-@@ -234,7 +234,7 @@ struct kvaser_cmd_tx_acknowledge_header {
- 	u8 tid;
- } __packed;
+@@ -1663,6 +1663,8 @@ static int kvaser_usb_leaf_set_mode(struct net_device *netdev,
  
--struct leaf_cmd_error_event {
-+struct leaf_cmd_can_error_event {
- 	u8 tid;
- 	u8 flags;
- 	__le16 time[3];
-@@ -246,7 +246,7 @@ struct leaf_cmd_error_event {
- 	u8 error_factor;
- } __packed;
- 
--struct usbcan_cmd_error_event {
-+struct usbcan_cmd_can_error_event {
- 	u8 tid;
- 	u8 padding;
- 	u8 tx_errors_count_ch0;
-@@ -319,7 +319,7 @@ struct kvaser_cmd {
- 			struct leaf_cmd_softinfo softinfo;
- 			struct leaf_cmd_rx_can rx_can;
- 			struct leaf_cmd_chip_state_event chip_state_event;
--			struct leaf_cmd_error_event error_event;
-+			struct leaf_cmd_can_error_event can_error_event;
- 			struct leaf_cmd_log_message log_message;
- 			struct kvaser_cmd_cap_req cap_req;
- 			struct kvaser_cmd_cap_res cap_res;
-@@ -329,7 +329,7 @@ struct kvaser_cmd {
- 			struct usbcan_cmd_softinfo softinfo;
- 			struct usbcan_cmd_rx_can rx_can;
- 			struct usbcan_cmd_chip_state_event chip_state_event;
--			struct usbcan_cmd_error_event error_event;
-+			struct usbcan_cmd_can_error_event can_error_event;
- 		} __packed usbcan;
- 
- 		struct kvaser_cmd_tx_can tx_can;
-@@ -351,7 +351,7 @@ static const u8 kvaser_usb_leaf_cmd_sizes_leaf[] = {
- 	[CMD_RX_EXT_MESSAGE]		= kvaser_fsize(u.leaf.rx_can),
- 	[CMD_LEAF_LOG_MESSAGE]		= kvaser_fsize(u.leaf.log_message),
- 	[CMD_CHIP_STATE_EVENT]		= kvaser_fsize(u.leaf.chip_state_event),
--	[CMD_CAN_ERROR_EVENT]		= kvaser_fsize(u.leaf.error_event),
-+	[CMD_CAN_ERROR_EVENT]		= kvaser_fsize(u.leaf.can_error_event),
- 	[CMD_GET_CAPABILITIES_RESP]	= kvaser_fsize(u.leaf.cap_res),
- 	/* ignored events: */
- 	[CMD_FLUSH_QUEUE_REPLY]		= CMD_SIZE_ANY,
-@@ -366,7 +366,7 @@ static const u8 kvaser_usb_leaf_cmd_sizes_usbcan[] = {
- 	[CMD_RX_STD_MESSAGE]		= kvaser_fsize(u.usbcan.rx_can),
- 	[CMD_RX_EXT_MESSAGE]		= kvaser_fsize(u.usbcan.rx_can),
- 	[CMD_CHIP_STATE_EVENT]		= kvaser_fsize(u.usbcan.chip_state_event),
--	[CMD_CAN_ERROR_EVENT]		= kvaser_fsize(u.usbcan.error_event),
-+	[CMD_CAN_ERROR_EVENT]		= kvaser_fsize(u.usbcan.can_error_event),
- 	/* ignored events: */
- 	[CMD_USBCAN_CLOCK_OVERFLOW_EVENT] = CMD_SIZE_ANY,
- };
-@@ -1132,11 +1132,11 @@ static void kvaser_usb_leaf_usbcan_rx_error(const struct kvaser_usb *dev,
- 
- 	case CMD_CAN_ERROR_EVENT:
- 		es.channel = 0;
--		es.status = cmd->u.usbcan.error_event.status_ch0;
--		es.txerr = cmd->u.usbcan.error_event.tx_errors_count_ch0;
--		es.rxerr = cmd->u.usbcan.error_event.rx_errors_count_ch0;
-+		es.status = cmd->u.usbcan.can_error_event.status_ch0;
-+		es.txerr = cmd->u.usbcan.can_error_event.tx_errors_count_ch0;
-+		es.rxerr = cmd->u.usbcan.can_error_event.rx_errors_count_ch0;
- 		es.usbcan.other_ch_status =
--			cmd->u.usbcan.error_event.status_ch1;
-+			cmd->u.usbcan.can_error_event.status_ch1;
- 		kvaser_usb_leaf_usbcan_conditionally_rx_error(dev, &es);
- 
- 		/* The USBCAN firmware supports up to 2 channels.
-@@ -1144,13 +1144,13 @@ static void kvaser_usb_leaf_usbcan_rx_error(const struct kvaser_usb *dev,
- 		 */
- 		if (dev->nchannels == MAX_USBCAN_NET_DEVICES) {
- 			es.channel = 1;
--			es.status = cmd->u.usbcan.error_event.status_ch1;
-+			es.status = cmd->u.usbcan.can_error_event.status_ch1;
- 			es.txerr =
--				cmd->u.usbcan.error_event.tx_errors_count_ch1;
-+				cmd->u.usbcan.can_error_event.tx_errors_count_ch1;
- 			es.rxerr =
--				cmd->u.usbcan.error_event.rx_errors_count_ch1;
-+				cmd->u.usbcan.can_error_event.rx_errors_count_ch1;
- 			es.usbcan.other_ch_status =
--				cmd->u.usbcan.error_event.status_ch0;
-+				cmd->u.usbcan.can_error_event.status_ch0;
- 			kvaser_usb_leaf_usbcan_conditionally_rx_error(dev, &es);
- 		}
- 		break;
-@@ -1167,11 +1167,11 @@ static void kvaser_usb_leaf_leaf_rx_error(const struct kvaser_usb *dev,
- 
- 	switch (cmd->id) {
- 	case CMD_CAN_ERROR_EVENT:
--		es.channel = cmd->u.leaf.error_event.channel;
--		es.status = cmd->u.leaf.error_event.status;
--		es.txerr = cmd->u.leaf.error_event.tx_errors_count;
--		es.rxerr = cmd->u.leaf.error_event.rx_errors_count;
--		es.leaf.error_factor = cmd->u.leaf.error_event.error_factor;
-+		es.channel = cmd->u.leaf.can_error_event.channel;
-+		es.status = cmd->u.leaf.can_error_event.status;
-+		es.txerr = cmd->u.leaf.can_error_event.tx_errors_count;
-+		es.rxerr = cmd->u.leaf.can_error_event.rx_errors_count;
-+		es.leaf.error_factor = cmd->u.leaf.can_error_event.error_factor;
- 		break;
- 	case CMD_LEAF_LOG_MESSAGE:
- 		es.channel = cmd->u.leaf.log_message.channel;
+ 	switch (mode) {
+ 	case CAN_MODE_START:
++		kvaser_usb_unlink_tx_urbs(priv);
++
+ 		err = kvaser_usb_leaf_simple_cmd_async(priv, CMD_START_CHIP);
+ 		if (err)
+ 			return err;
 -- 
 2.37.3
 
