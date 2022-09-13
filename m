@@ -2,119 +2,244 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AA08ECAAD5
-	for <linux-can@archiver.kernel.org>; Mon, 12 Sep 2022 17:09:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FBF3C54EE9
+	for <linux-can@archiver.kernel.org>; Tue, 13 Sep 2022 20:51:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbiILRJf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 12 Sep 2022 13:09:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37086 "EHLO
+        id S229478AbiIMUvq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 13 Sep 2022 16:51:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbiILRJd (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 12 Sep 2022 13:09:33 -0400
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA45EF55
-        for <linux-can@vger.kernel.org>; Mon, 12 Sep 2022 10:09:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1663002570;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=jhOOzUZwSabmkr6NIVS/DSyiEz351OnftRMqY/ob1gc=;
-    b=bkWulolhYXBUEUh9PBmeroP/zSRvh7IRCwbZexzsNavBBp9nRskUhbJv7Py+0FtSP4
-    UsxBIMCVbqZn7m5i8r5Vj95Xzlei8aBNM7rEe6z+qXm6dOeQAdmBIoCOrp1qNJvR6ByG
-    mXi7MCwMjtvNcnttNFPWh3TRRlOGvZ+cuuBDFN+rHir8a4TPNdXwgYh/CsRkXxYoORIi
-    /nj/jvKHAfYb6RHlb75E9gdCgZQHadWOTfssjtvVheLTHqtoG5gfo0nHmHFXCouJf9D5
-    Y8eyoju8ZefHTs3DTgeA60kMlG+BlX/A5+qP+qp9DCMC1O+EcJXhCVdTYg44hsoBbU9s
-    Bo7g==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusx3hdIrpKytJSr6hfz3Vg=="
-X-RZG-CLASS-ID: mo00
-Received: from [IPV6:2a00:6020:1cfd:d100::923]
-    by smtp.strato.de (RZmta 48.1.0 AUTH)
-    with ESMTPSA id d25a93y8CH9U1OO
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 12 Sep 2022 19:09:30 +0200 (CEST)
-Message-ID: <f7e46377-c00a-445f-f000-da22e1ff4545@hartkopp.net>
-Date:   Mon, 12 Sep 2022 19:09:29 +0200
+        with ESMTP id S229457AbiIMUvo (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 13 Sep 2022 16:51:44 -0400
+X-Greylist: delayed 591 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 13 Sep 2022 13:51:43 PDT
+Received: from mx0a-0054a801.pphosted.com (mx0a-0054a801.pphosted.com [205.220.160.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF6A726A9
+        for <linux-can@vger.kernel.org>; Tue, 13 Sep 2022 13:51:43 -0700 (PDT)
+Received: from pps.filterd (m0208803.ppops.net [127.0.0.1])
+        by mx0b-0054a801.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28DIFkbr016210
+        for <linux-can@vger.kernel.org>; Tue, 13 Sep 2022 13:41:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsara.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=samsaracom06092020;
+ bh=EFPBhk+SCQxDJXmQo7DXJCthPXBU2EeA1DXwZj6FiGI=;
+ b=LluQIsN1huzZtiBHUofSjktEBQhyZIgzxSDa6HqJfxzpDaiiTCb9Mx/Ps3a42IjiE/wg
+ mYypNp6x3g1xfUQI+ZYe+Pgp6zwof3FQqpDVhj6VPzQt7t4WWQW58OwZF+LhFVnEv8/t
+ OA4TWLHuSKKJnPbnd4Ex/i1wMiTMn93dUQmQGRS+3y1srNAwDKv85Qfs3O0zwKbs5ItQ
+ Af/oJbdKo51ubVhJ1OOEhOrPU+wQhpX+YHZnxqrW9pov8bdl+/Ty/WB/r0aIhZupIXZ6
+ xk6BdLpEf46spn+jOJZH/f6QTrQ7g95kHJ7wSEe8edcES8UZrGj6jF2UPIzRouO901SH EA== 
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com [209.85.222.198])
+        by mx0b-0054a801.pphosted.com (PPS) with ESMTPS id 3jjy00g6dn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-can@vger.kernel.org>; Tue, 13 Sep 2022 13:41:52 -0700
+Received: by mail-qk1-f198.google.com with SMTP id m19-20020a05620a24d300b006bb85a44e96so11325811qkn.23
+        for <linux-can@vger.kernel.org>; Tue, 13 Sep 2022 13:41:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=samsara.com; s=google;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
+        bh=EFPBhk+SCQxDJXmQo7DXJCthPXBU2EeA1DXwZj6FiGI=;
+        b=Yy2twMmvJTxw33VE+J+U7Bo2jFqPkcZ5ikejcZg5hGmDJFBuw8c+3jCj95V9QnSi4Y
+         YwXRa401BJwH1GWLjgTlqSx7URSb7gch7RcJe/GXD4QbNJHDtD4+8loTgvDAs/Ce6KtQ
+         cGI8RWkZne1IISZHtjUfwAyHFRrO8JtLWoDCZZHuz7POSWLiLcl8wIfvvOLUXpVD93/u
+         4473hq/cHVCwZgbtnAH9t4UnXZ1NNOFykjcm5+SCO8zRKGsrmufyYGk6PrAcVyK9sXxX
+         aSe12AC7BxnL/SG5r3Fo6nf2HUq1dReMWLuR1rmhU9pCp88ZuJ77xnJXyffkHmkc8QkL
+         e9lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=EFPBhk+SCQxDJXmQo7DXJCthPXBU2EeA1DXwZj6FiGI=;
+        b=1F1IacGZGYqFr/8n8FDHh36DvQFjAPNJncWqtAf1e8V1wS0CazgMxSMDatTJd7H9g3
+         v6ReH+os/0WnwKZNegj9NUs6FZdINA/K1cVedJazdl751wDArbCoaNPqxn2k+kC0Jf6I
+         kdEJgqXMz0BfftNMEsG/67eY35FFrbBzlDLWcdWUmjDtF8YpRU2T9lEtp2n4u/kYxkLK
+         049M/aq58tZwY1MQ7K4qzp13EU2nlWthv0wDM9cMAVzbbqTJG2VUt+hQSu4uQxmD9fJK
+         GysklGLHlqs+8qzWeXPiB/KRBJgYM3p6TT7RiUxIJMsDvkbfHUx/sHTp0gnS/90A3Ge+
+         euUA==
+X-Gm-Message-State: ACgBeo0U2pEXMVtiACkPFEYMkkPp5CzkZWtCdWJNmYS+UuwL2NrYAjVn
+        2/xm8lNM54Jo1rgdj6LMvsrzp2xKRHwHWS02H8eXCKtxCt1O7mkBymFD5CMf4+LILpwtvW7+tIg
+        rorhjSManmijJMMSceSNV
+X-Received: by 2002:a0c:9062:0:b0:498:fc0e:1fc9 with SMTP id o89-20020a0c9062000000b00498fc0e1fc9mr29506912qvo.10.1663101710773;
+        Tue, 13 Sep 2022 13:41:50 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR72GqZC3vvq9ppVfLK03M9aXWchOJol6Wrm++20mzYJv3C3QpvzsqOqDaK/lQdRyd9FTCLRLg==
+X-Received: by 2002:a0c:9062:0:b0:498:fc0e:1fc9 with SMTP id o89-20020a0c9062000000b00498fc0e1fc9mr29506899qvo.10.1663101710490;
+        Tue, 13 Sep 2022 13:41:50 -0700 (PDT)
+Received: from downhome.. (ec2-184-72-5-93.us-west-1.compute.amazonaws.com. [184.72.5.93])
+        by smtp.gmail.com with ESMTPSA id x5-20020ac81205000000b00344f7cf05b4sm249236qti.14.2022.09.13.13.41.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Sep 2022 13:41:47 -0700 (PDT)
+From:   Rhett Aultman <rhett.aultman@samsara.com>
+To:     linux-can@vger.kernel.org
+Cc:     Rhett Aultman <rhett.aultman@samsara.com>,
+        Vasanth Sadhasivan <vasanth.sadhasivan@samsara.com>
+Subject: [PATCH 1/1] can: gs_usb: remove dma allocations
+Date:   Tue, 13 Sep 2022 16:41:10 -0400
+Message-Id: <20220913204110.89730-2-rhett.aultman@samsara.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220913204110.89730-1-rhett.aultman@samsara.com>
+References: <20220913204110.89730-1-rhett.aultman@samsara.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.0
-Subject: Re: [PATCH v8 5/7] can: canxl: update CAN infrastructure for CAN XL
- frames
-Content-Language: en-US
-To:     Vincent Mailhol <vincent.mailhol@gmail.com>
-Cc:     linux-can@vger.kernel.org
-References: <20220801190010.3344-1-socketcan@hartkopp.net>
- <20220801190010.3344-6-socketcan@hartkopp.net>
- <CAMZ6RqJMTP8mO5LOgfdFHNAkrn+3bCP9_JcGb4Q86TtHiS100A@mail.gmail.com>
- <5867dc1e-36d7-d0ea-7d1d-56ea31ac19b8@hartkopp.net>
- <CAMZ6RqK_hPty_=8Jrmp+mHksm99UKeXs=Wo3LC2NSd4v_HsUNQ@mail.gmail.com>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <CAMZ6RqK_hPty_=8Jrmp+mHksm99UKeXs=Wo3LC2NSd4v_HsUNQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: BteUgMe4-kGW9L9h7RFoOB1JphHn5yJ0
+X-Proofpoint-ORIG-GUID: BteUgMe4-kGW9L9h7RFoOB1JphHn5yJ0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
+ definitions=2022-09-13_10,2022-09-13_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ mlxlogscore=724 impostorscore=0 priorityscore=1501 spamscore=0
+ clxscore=1015 suspectscore=0 adultscore=0 malwarescore=0 mlxscore=0
+ bulkscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2208220000 definitions=main-2209130095
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+From: Vasanth Sadhasivan <vasanth.sadhasivan@samsara.com>
 
+DMA allocated buffers are a precious resource. If there is no need for DMA
+allocations, then it might be worth to use non-dma allocated buffers.
+After testing the gs_usb driver with and without DMA allocation, there
+does not seem to be a significant change in latency or cpu utilization
+either way. Therefore, DMA allocation is not necessary and removed.
 
-On 11.09.22 16:10, Vincent Mailhol wrote:
-> On Sun. 11 Sept. 2022 at 21:35, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
->> On 11.09.22 09:53, Vincent Mailhol wrote:
->>> On Tue. 2 Aug. 2022 at 04:02, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
->>
->> (..)
->>
->>>> +/* get length element value from can[|fd|xl]_frame structure */
->>>>    static inline unsigned int can_skb_get_len_val(struct sk_buff *skb)
->>>>    {
->>>> +       const struct canxl_frame *cfx = (struct canxl_frame *)skb->data;
->>>>           const struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
->>>
->>> Nitpick: what would be the acronyms for cfx and cfd? I thought that
->>> cfd was for *C*AN-*FD* frame, and thus I would expect cxl instead of
->>> cfx for *C*AN-*XL* frame.
->>> On the contrary, if cfx stands for *C*AN *F*rame *X*L, then for
->>> CAN-FD, the acronym should be cff (*C*AN *f*rame *F*D).
->>
->> You need to start from the original
->>
->> struct can_frame cf; *C*AN *F*RAME
->>
->> Then CAN FD showed up and the naming moved from 'cf' to 'cfd' for *C*AN
->> *FD* FRAME where is was not forseable that there ever would be CAN XL.
->>
->> For me it is more intuitive to generally name CAN frames 'cf<whatever>'.
->>
->> cf -> cfd -> cfx
->>
->> So it is about 'cf' with an extra attribute and not an abbreviation of
->> CAN variants.
-> 
-> I still disagree on that one. For me:
->    * Classical CAN frames: ccf (or the legacy cf before introduction of CAN-FD)
->    * CAN FD frames: cfd
->    * CAN XL frames: cxl
-> is the most consistent.
-> 
-> cfx is not consistent with the cfd acronym and it is out of order: the
-> structure name is canxl_frame, not can_frame_xl.
-> At least, that should be cxf for struct *c*an*x*l_*f*rame. CAN frame
-> XL just sounds odd to me.
+Co-developed-by: Rhett Aultman <rhett.aultman@samsara.com>
+Signed-off-by: Rhett Aultman <rhett.aultman@samsara.com>
+Signed-off-by: Vasanth Sadhasivan <vasanth.sadhasivan@samsara.com>
+---
+ drivers/net/can/usb/gs_usb.c | 38 ++++++++++--------------------------
+ 1 file changed, 10 insertions(+), 28 deletions(-)
 
-It's ok for me. Therefore changed in v9.
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index baf749c8cda3..1bfc775c62c5 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -269,7 +269,6 @@ struct gs_can {
+ 	struct usb_anchor tx_submitted;
+ 	atomic_t active_tx_urbs;
+ 	void *rxbuf[GS_MAX_RX_URBS];
+-	dma_addr_t rxbuf_dma[GS_MAX_RX_URBS];
+ };
+ 
+ /* usb interface struct */
+@@ -587,9 +586,7 @@ static void gs_usb_xmit_callback(struct urb *urb)
+ 
+ 	if (urb->status)
+ 		netdev_info(netdev, "usb xmit fail %u\n", txc->echo_id);
+-
+-	usb_free_coherent(urb->dev, urb->transfer_buffer_length,
+-			  urb->transfer_buffer, urb->transfer_dma);
++	devm_kfree(&urb->dev->dev, urb->transfer_buffer);
+ }
+ 
+ static netdev_tx_t gs_can_start_xmit(struct sk_buff *skb,
+@@ -618,8 +615,7 @@ static netdev_tx_t gs_can_start_xmit(struct sk_buff *skb,
+ 	if (!urb)
+ 		goto nomem_urb;
+ 
+-	hf = usb_alloc_coherent(dev->udev, dev->hf_size_tx, GFP_ATOMIC,
+-				&urb->transfer_dma);
++	hf = devm_kmalloc(&dev->udev->dev, dev->hf_size_tx, GFP_ATOMIC);
+ 	if (!hf) {
+ 		netdev_err(netdev, "No memory left for USB buffer\n");
+ 		goto nomem_hf;
+@@ -663,7 +659,6 @@ static netdev_tx_t gs_can_start_xmit(struct sk_buff *skb,
+ 			  hf, dev->hf_size_tx,
+ 			  gs_usb_xmit_callback, txc);
+ 
+-	urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
+ 	usb_anchor_urb(urb, &dev->tx_submitted);
+ 
+ 	can_put_echo_skb(skb, netdev, idx, 0);
+@@ -678,8 +673,7 @@ static netdev_tx_t gs_can_start_xmit(struct sk_buff *skb,
+ 		gs_free_tx_context(txc);
+ 
+ 		usb_unanchor_urb(urb);
+-		usb_free_coherent(dev->udev, urb->transfer_buffer_length,
+-				  urb->transfer_buffer, urb->transfer_dma);
++		devm_kfree(&dev->udev->dev, hf);
+ 
+ 		if (rc == -ENODEV) {
+ 			netif_device_detach(netdev);
+@@ -699,8 +693,7 @@ static netdev_tx_t gs_can_start_xmit(struct sk_buff *skb,
+ 	return NETDEV_TX_OK;
+ 
+  badidx:
+-	usb_free_coherent(dev->udev, urb->transfer_buffer_length,
+-			  urb->transfer_buffer, urb->transfer_dma);
++	devm_kfree(&dev->udev->dev, hf);
+  nomem_hf:
+ 	usb_free_urb(urb);
+ 
+@@ -744,7 +737,6 @@ static int gs_can_open(struct net_device *netdev)
+ 		for (i = 0; i < GS_MAX_RX_URBS; i++) {
+ 			struct urb *urb;
+ 			u8 *buf;
+-			dma_addr_t buf_dma;
+ 
+ 			/* alloc rx urb */
+ 			urb = usb_alloc_urb(0, GFP_KERNEL);
+@@ -752,10 +744,9 @@ static int gs_can_open(struct net_device *netdev)
+ 				return -ENOMEM;
+ 
+ 			/* alloc rx buffer */
+-			buf = usb_alloc_coherent(dev->udev,
+-						 dev->parent->hf_size_rx,
+-						 GFP_KERNEL,
+-						 &buf_dma);
++			buf = devm_kmalloc(&dev->udev->dev,
++					   dev->parent->hf_size_rx,
++					   GFP_KERNEL);
+ 			if (!buf) {
+ 				netdev_err(netdev,
+ 					   "No memory left for USB buffer\n");
+@@ -763,8 +754,6 @@ static int gs_can_open(struct net_device *netdev)
+ 				return -ENOMEM;
+ 			}
+ 
+-			urb->transfer_dma = buf_dma;
+-
+ 			/* fill, anchor, and submit rx urb */
+ 			usb_fill_bulk_urb(urb,
+ 					  dev->udev,
+@@ -773,7 +762,6 @@ static int gs_can_open(struct net_device *netdev)
+ 					  buf,
+ 					  dev->parent->hf_size_rx,
+ 					  gs_usb_receive_bulk_callback, parent);
+-			urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
+ 
+ 			usb_anchor_urb(urb, &parent->rx_submitted);
+ 
+@@ -786,16 +774,12 @@ static int gs_can_open(struct net_device *netdev)
+ 					   "usb_submit failed (err=%d)\n", rc);
+ 
+ 				usb_unanchor_urb(urb);
+-				usb_free_coherent(dev->udev,
+-						  sizeof(struct gs_host_frame),
+-						  buf,
+-						  buf_dma);
++				devm_kfree(&dev->udev->dev, buf);
+ 				usb_free_urb(urb);
+ 				break;
+ 			}
+ 
+ 			dev->rxbuf[i] = buf;
+-			dev->rxbuf_dma[i] = buf_dma;
+ 
+ 			/* Drop reference,
+ 			 * USB core will take care of freeing it
+@@ -863,10 +847,8 @@ static int gs_can_close(struct net_device *netdev)
+ 	if (!parent->active_channels) {
+ 		usb_kill_anchored_urbs(&parent->rx_submitted);
+ 		for (i = 0; i < GS_MAX_RX_URBS; i++)
+-			usb_free_coherent(dev->udev,
+-					  sizeof(struct gs_host_frame),
+-					  dev->rxbuf[i],
+-					  dev->rxbuf_dma[i]);
++			devm_kfree(&dev->udev->dev,
++				   dev->rxbuf[i]);
+ 	}
+ 
+ 	/* Stop sending URBs */
+-- 
+2.25.1
 
-Thanks!
-
-Oliver
-
-
-> 
-> Regardless, this remains a nitpick and I will not NACK the series for
-> that. So do as you prefer in the v9, my Acked-by remains valid.
-> 
-> 
-> Yours sincerely,
-> Vincent Mailhol
