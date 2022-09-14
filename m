@@ -2,32 +2,32 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3544C6FA82
-	for <linux-can@archiver.kernel.org>; Wed, 14 Sep 2022 23:14:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BC58C6FA8E
+	for <linux-can@archiver.kernel.org>; Wed, 14 Sep 2022 23:14:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbiINXOJ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 14 Sep 2022 19:14:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58718 "EHLO
+        id S229832AbiINXOK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 14 Sep 2022 19:14:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbiINXOI (ORCPT
+        with ESMTP id S229629AbiINXOI (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 14 Sep 2022 19:14:08 -0400
 Received: from mxd1.seznam.cz (mxd1.seznam.cz [IPv6:2a02:598:a::78:210])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A96F895C3;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC492895D0;
         Wed, 14 Sep 2022 16:14:05 -0700 (PDT)
 Received: from email.seznam.cz
-        by email-smtpc22b.ko.seznam.cz (email-smtpc22b.ko.seznam.cz [10.53.18.29])
-        id 7d69c81899c51b267cb46976;
-        Thu, 15 Sep 2022 01:13:20 +0200 (CEST)
+        by email-smtpc25a.ko.seznam.cz (email-smtpc25a.ko.seznam.cz [10.53.18.34])
+        id 5e651455bac9c76b5fb8b53b;
+        Thu, 15 Sep 2022 01:13:19 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seznam.cz; s=beta;
-        t=1663197200; bh=DZl/zpDC4daeyZK5+yAdaWiaFpHk14LLzJ5mzlIQIT0=;
+        t=1663197199; bh=KfzDDufQO0EmyWPeN8vROr7WTX1Av+h27clBNarB/G0=;
         h=Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
          References:MIME-Version:Content-Transfer-Encoding;
-        b=aZUf5jpqLPwK6GOkq971fp44K/zEHLgbmu460bF9xOZE0epCFY9UaWulGo7K71OYk
-         NXbuTvfVX9foefQTMuBs79xrjhKKsA/P+xUl1bq64dmi9k0ekJqD8xhe96foSm08Po
-         dZrvA7Zkc3HXNV/elVqZFkPB0+FRJM/XSCRsiswg=
+        b=bumWD9bZYR6ZznmdEYs95TRJ8vSBbhVxa7X+DOAU1vsNXyARV0U1ERC2p3mfhPBeB
+         rYwltjHo6uYSuFKdmcx36wq7nTRHCSduFCrW02+hkfuZGwrXjVJvqd4aomNvhwnWKr
+         08Fx4DQdjFIEZVl2JLaHUacWIEzckteE1/pEvq20=
 Received: from localhost.localdomain (2a02:8308:900d:2400:4bcc:f22e:1266:5194 [2a02:8308:900d:2400:4bcc:f22e:1266:5194])
         by email-relay23.ko.seznam.cz (Seznam SMTPD 1.3.137) with ESMTP;
-        Thu, 15 Sep 2022 01:13:19 +0200 (CEST)  
+        Thu, 15 Sep 2022 01:13:18 +0200 (CEST)  
 From:   Matej Vasilevski <matej.vasilevski@seznam.cz>
 To:     Pavel Pisa <pisa@cmp.felk.cvut.cz>,
         Ondrej Ille <ondrej.ille@gmail.com>,
@@ -42,9 +42,9 @@ To:     Pavel Pisa <pisa@cmp.felk.cvut.cz>,
 Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
         devicetree@vger.kernel.org,
         Matej Vasilevski <matej.vasilevski@seznam.cz>
-Subject: [PATCH v3 3/3] doc: ctucanfd: RX frames timestamping for platform devices
-Date:   Thu, 15 Sep 2022 01:12:49 +0200
-Message-Id: <20220914231249.593643-4-matej.vasilevski@seznam.cz>
+Subject: [PATCH v3 1/3] dt-bindings: can: ctucanfd: add another clock for HW timestamping
+Date:   Thu, 15 Sep 2022 01:12:47 +0200
+Message-Id: <20220914231249.593643-2-matej.vasilevski@seznam.cz>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220914231249.593643-1-matej.vasilevski@seznam.cz>
 References: <20220914231249.593643-1-matej.vasilevski@seznam.cz>
@@ -54,38 +54,49 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Update the section about timestamping RX frames with instructions
-how to enable it.
+Add second clock phandle to specify the timestamping clock.
 
 Signed-off-by: Matej Vasilevski <matej.vasilevski@seznam.cz>
 ---
- .../device_drivers/can/ctu/ctucanfd-driver.rst      | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ .../bindings/net/can/ctu,ctucanfd.yaml        | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst b/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst
-index 40c92ea272af..05a7ce0c3d9e 100644
---- a/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst
-+++ b/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst
-@@ -386,8 +386,17 @@ The CTU CAN FD core reports the exact timestamp when the frame has been
- received. The timestamp is by default captured at the sample point of
- the last bit of EOF but is configurable to be captured at the SOF bit.
- The timestamp source is external to the core and may be up to 64 bits
--wide. At the time of writing, passing the timestamp from kernel to
--userspace is not yet implemented, but is planned in the future.
-+wide.
-+
-+Both platform and PCI devices can report the timestamp.
-+For platform devices, add another clock phandle for timestamping clock
-+in device tree bindings. If you don't add another clock, the driver
-+will assume the primary clock's frequency for timestamping.
-+For PCI devices, the timestamping frequency is assumed to be equal to
-+the bus frequency.
-+
-+Timestamp reporting is disabled by default, you have to enable it with
-+SIOCSHWTSTAMP ioctl call first.
+diff --git a/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
+index 4635cb96fc64..432f0e3ed828 100644
+--- a/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
++++ b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
+@@ -44,9 +44,19 @@ properties:
  
- Handling TX
- ~~~~~~~~~~~
+   clocks:
+     description: |
+-      phandle of reference clock (100 MHz is appropriate
+-      for FPGA implementation on Zynq-7000 system).
+-    maxItems: 1
++      Phandle of reference clock (100 MHz is appropriate for FPGA
++      implementation on Zynq-7000 system). Optionally add a phandle to
++      the timestamping clock connected to timestamping counter, if used.
++    minItems: 1
++    items:
++      - description: core clock
++      - description: timestamping clock
++
++  clock-names:
++    minItems: 1
++    items:
++      - const: core-clk
++      - const: ts-clk
+ 
+ required:
+   - compatible
+@@ -61,6 +71,7 @@ examples:
+     ctu_can_fd_0: can@43c30000 {
+       compatible = "ctu,ctucanfd";
+       interrupts = <0 30 4>;
+-      clocks = <&clkc 15>;
++      clocks = <&clkc 15>, <&clkc 16>;
++      clock-names = "core-clk", "ts-clk";
+       reg = <0x43c30000 0x10000>;
+     };
 -- 
 2.25.1
 
