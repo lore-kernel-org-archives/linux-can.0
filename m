@@ -2,87 +2,90 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BAB6C6FA82
-	for <linux-can@archiver.kernel.org>; Wed, 14 Sep 2022 13:38:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3544C6FA82
+	for <linux-can@archiver.kernel.org>; Wed, 14 Sep 2022 23:14:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229456AbiINNi2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 14 Sep 2022 09:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51734 "EHLO
+        id S229845AbiINXOJ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 14 Sep 2022 19:14:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbiINNi1 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 14 Sep 2022 09:38:27 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D65395282F
-        for <linux-can@vger.kernel.org>; Wed, 14 Sep 2022 06:38:24 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1oYSas-0007RQ-Qk; Wed, 14 Sep 2022 15:38:22 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:956:4247:55d:c7ae])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id DF4AFE2F18;
-        Wed, 14 Sep 2022 13:38:21 +0000 (UTC)
-Date:   Wed, 14 Sep 2022 15:38:13 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Yang Yingliang <yangyingliang@huawei.com>
+        with ESMTP id S229832AbiINXOI (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 14 Sep 2022 19:14:08 -0400
+Received: from mxd1.seznam.cz (mxd1.seznam.cz [IPv6:2a02:598:a::78:210])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A96F895C3;
+        Wed, 14 Sep 2022 16:14:05 -0700 (PDT)
+Received: from email.seznam.cz
+        by email-smtpc22b.ko.seznam.cz (email-smtpc22b.ko.seznam.cz [10.53.18.29])
+        id 7d69c81899c51b267cb46976;
+        Thu, 15 Sep 2022 01:13:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seznam.cz; s=beta;
+        t=1663197200; bh=DZl/zpDC4daeyZK5+yAdaWiaFpHk14LLzJ5mzlIQIT0=;
+        h=Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
+         References:MIME-Version:Content-Transfer-Encoding;
+        b=aZUf5jpqLPwK6GOkq971fp44K/zEHLgbmu460bF9xOZE0epCFY9UaWulGo7K71OYk
+         NXbuTvfVX9foefQTMuBs79xrjhKKsA/P+xUl1bq64dmi9k0ekJqD8xhe96foSm08Po
+         dZrvA7Zkc3HXNV/elVqZFkPB0+FRJM/XSCRsiswg=
+Received: from localhost.localdomain (2a02:8308:900d:2400:4bcc:f22e:1266:5194 [2a02:8308:900d:2400:4bcc:f22e:1266:5194])
+        by email-relay23.ko.seznam.cz (Seznam SMTPD 1.3.137) with ESMTP;
+        Thu, 15 Sep 2022 01:13:19 +0200 (CEST)  
+From:   Matej Vasilevski <matej.vasilevski@seznam.cz>
+To:     Pavel Pisa <pisa@cmp.felk.cvut.cz>,
+        Ondrej Ille <ondrej.ille@gmail.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
 Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        wg@grandegger.com
-Subject: Re: [PATCH -next] can: flexcan: Switch to use dev_err_probe() helper
-Message-ID: <20220914133813.h7hmrithtavzuxum@pengutronix.de>
-References: <20220914134030.3782754-1-yangyingliang@huawei.com>
+        devicetree@vger.kernel.org,
+        Matej Vasilevski <matej.vasilevski@seznam.cz>
+Subject: [PATCH v3 3/3] doc: ctucanfd: RX frames timestamping for platform devices
+Date:   Thu, 15 Sep 2022 01:12:49 +0200
+Message-Id: <20220914231249.593643-4-matej.vasilevski@seznam.cz>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220914231249.593643-1-matej.vasilevski@seznam.cz>
+References: <20220914231249.593643-1-matej.vasilevski@seznam.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fe3p4i3bvieo4hmd"
-Content-Disposition: inline
-In-Reply-To: <20220914134030.3782754-1-yangyingliang@huawei.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+Update the section about timestamping RX frames with instructions
+how to enable it.
 
---fe3p4i3bvieo4hmd
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Matej Vasilevski <matej.vasilevski@seznam.cz>
+---
+ .../device_drivers/can/ctu/ctucanfd-driver.rst      | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-On 14.09.2022 21:40:30, Yang Yingliang wrote:
-> dev_err() can be replace with dev_err_probe() which will check if error
-> code is -EPROBE_DEFER.
->=20
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+diff --git a/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst b/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst
+index 40c92ea272af..05a7ce0c3d9e 100644
+--- a/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst
++++ b/Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst
+@@ -386,8 +386,17 @@ The CTU CAN FD core reports the exact timestamp when the frame has been
+ received. The timestamp is by default captured at the sample point of
+ the last bit of EOF but is configurable to be captured at the SOF bit.
+ The timestamp source is external to the core and may be up to 64 bits
+-wide. At the time of writing, passing the timestamp from kernel to
+-userspace is not yet implemented, but is planned in the future.
++wide.
++
++Both platform and PCI devices can report the timestamp.
++For platform devices, add another clock phandle for timestamping clock
++in device tree bindings. If you don't add another clock, the driver
++will assume the primary clock's frequency for timestamping.
++For PCI devices, the timestamping frequency is assumed to be equal to
++the bus frequency.
++
++Timestamp reporting is disabled by default, you have to enable it with
++SIOCSHWTSTAMP ioctl call first.
+ 
+ Handling TX
+ ~~~~~~~~~~~
+-- 
+2.25.1
 
-added to linux-can-next
-
-Thanks,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---fe3p4i3bvieo4hmd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmMh2UIACgkQrX5LkNig
-012wBggAoTxd886BIviOOOJhOve8Jv+O7vZADm5twM5s+NmsWM6OmZ0+iZJFvTks
-ZUL8WKYW2773xHCdCVIe0euTchgqF0GwlCAnysBBYSKm3gtXCIPRJRBQ6aodgyRA
-Ld4hK0veZgnjBQqSUJHfKCBh8LStwgBB7cAIoMqHUm25J66mWf+XWN/TzL70DAoX
-GDzWKIJ5fhpquhnu8CS8/QMIWCT2tNI5ZVZ22q+/I6Z2oblolTMt9C6Z9OtSC5Qn
-wWo5l3TOij98dc4EziT1bqN+AB9feI0kBKi/gH5rlgjMjDJpnHVSRBzhy6tl4ltk
-bZVi0arNOvQeO7hpcgiEJ7z9LOw1Nw==
-=xCxj
------END PGP SIGNATURE-----
-
---fe3p4i3bvieo4hmd--
