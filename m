@@ -2,119 +2,158 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D40F1C54EE9
-	for <linux-can@archiver.kernel.org>; Tue, 13 Sep 2022 20:52:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BAF55ECAAD3
+	for <linux-can@archiver.kernel.org>; Wed, 14 Sep 2022 06:42:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229457AbiIMUwm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 13 Sep 2022 16:52:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35126 "EHLO
+        id S229463AbiINGmo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 14 Sep 2022 02:42:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbiIMUwl (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 13 Sep 2022 16:52:41 -0400
-X-Greylist: delayed 666 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 13 Sep 2022 13:52:38 PDT
-Received: from mx0b-0054a801.pphosted.com (mx0b-0054a801.pphosted.com [205.220.172.231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FDA7539F
-        for <linux-can@vger.kernel.org>; Tue, 13 Sep 2022 13:52:38 -0700 (PDT)
-Received: from pps.filterd (m0208804.ppops.net [127.0.0.1])
-        by mx0b-0054a801.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28DIGFKx026927
-        for <linux-can@vger.kernel.org>; Tue, 13 Sep 2022 20:41:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsara.com; h=from : to : subject
- : date : message-id : mime-version : content-transfer-encoding;
- s=samsaracom06092020; bh=N9iNtUQYOSdffVpFuO7zf+ssrxKADR28E6hLJ8S3SJ8=;
- b=a5wENn/5bxKrI4O806srPwE3nMkdIEi9ManXKC9jPFWkEBAMu+TqtGPVc2IIorA8TcM8
- vch9ynSL1mQYAXcm1rd8zK6oOD9aC/yOnQDWq4ZbXFGyxfKM9jt7dFd2Sx0ARXsuGwZJ
- hyPWj5YTLo90Ge3uXY4qhDTYrZBcrVXVdyWuX798m73wq/7OERPoSCw0DnRVhde2WOvh
- iPX7UNQrOY0DMqg3vVwG2SJ6AsXG5KN48Ev3NXbGNnpGx+vLoQ22Q701T7OPY4Aj7s8p
- 13YQB3Btj1TPxd6JZj59ZgdBbsjwfs/ZYeDAMealOeIWqKQV2o1KSUKiCFg3U2w3F4ls dA== 
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com [209.85.219.70])
-        by mx0b-0054a801.pphosted.com (PPS) with ESMTPS id 3jjy07r6ab-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-can@vger.kernel.org>; Tue, 13 Sep 2022 20:41:31 +0000
-Received: by mail-qv1-f70.google.com with SMTP id ec8-20020ad44e68000000b004aab01f3eaaso8858107qvb.4
-        for <linux-can@vger.kernel.org>; Tue, 13 Sep 2022 13:41:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=samsara.com; s=google;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date;
-        bh=N9iNtUQYOSdffVpFuO7zf+ssrxKADR28E6hLJ8S3SJ8=;
-        b=cZ3e3x5YWnXnOFVtNkeVfOdHTO+pv10FlLr1pKb0VGpp0gH/ylPO3nWTmlnyMMKNEM
-         w2BlJ8ifZKHsiG1DJKGnFFCOIddXTjNiJp4OkNFJakW1B9ssFf9mJ9vQrQCPSHIlTcsy
-         e7bhGwRO7V3hrPdOYsEjZpUB+hVsaNskswp5gYtZBgqGDyCnZDnn48ujfPZdC6QYfUDs
-         Z34/to3VD+OTjiKUd/+fj87aeza+kcQz0mXNPCv7wP7lR5jmJ/m1ycAOzJZdBbYXS4qk
-         dCAUsGTyn1vG55yuQJMPOqPgb86Pukux8QiE8JaG7/QaNGbCWxZdD20sgu3zPUkICMOB
-         9sMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date;
-        bh=N9iNtUQYOSdffVpFuO7zf+ssrxKADR28E6hLJ8S3SJ8=;
-        b=fqETl30phQfKXmj0v4LkHfdZd07JvYfpNL+Gfg+aGb1oe5DAF1qiEosn8qJv774fkH
-         qgA1Bv/Q+s7Hls7PiylDYJHM3V/wJMSCHV5mac1GuN+GCe0zvHZlklk4xMO7L+7pDFVV
-         iC6dU0QOs+mkWcXulIMPduas8hQbfMMw/q9amgUBzw1CmA0oi6Lk9y8QJhnu76GlJ4Qz
-         JL/RHF3+kuYJoybu2BKYqFImtwSWVrtSyiPAU0jlRDyp/Uw0nAEhn2fBrgNlzy3KlhxS
-         /9LbTqXOg9mGiIazFb6xDzf/kku/CDkJxOusHo7vxTzCPmkMoscmEa8c/k4uNVxKSG5C
-         5ALw==
-X-Gm-Message-State: ACgBeo2+GhCy5QXUiOqxZvm+jiq5piK8P6EB5syyXpciz/OhXafJX9lS
-        mOYCqhTNH1DTfe0MlhwKNBUiKBvmFIJ1ohU7T3lRxY82y3TRVtvxN8zwhwUFsSEti9eX1404X8T
-        JdA3TG5nIeHHwX/HAm4IQ
-X-Received: by 2002:a05:620a:895:b0:6cb:e24c:992d with SMTP id b21-20020a05620a089500b006cbe24c992dmr18116251qka.221.1663101690336;
-        Tue, 13 Sep 2022 13:41:30 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR5Olxrm+SqC3Swx6qvp9rhMwvwvOiSD2yhU8RtVdwXyzZrrpFp0fGAHqrCdm1gS3hN+1v39wQ==
-X-Received: by 2002:a05:620a:895:b0:6cb:e24c:992d with SMTP id b21-20020a05620a089500b006cbe24c992dmr18116242qka.221.1663101690080;
-        Tue, 13 Sep 2022 13:41:30 -0700 (PDT)
-Received: from downhome.. (ec2-184-72-5-93.us-west-1.compute.amazonaws.com. [184.72.5.93])
-        by smtp.gmail.com with ESMTPSA id x5-20020ac81205000000b00344f7cf05b4sm249236qti.14.2022.09.13.13.41.17
-        for <linux-can@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Sep 2022 13:41:22 -0700 (PDT)
-From:   Rhett Aultman <rhett.aultman@samsara.com>
-To:     linux-can@vger.kernel.org
-Subject: [PATCH 0/1] can: gs_usb: remove dma allocations
-Date:   Tue, 13 Sep 2022 16:41:09 -0400
-Message-Id: <20220913204110.89730-1-rhett.aultman@samsara.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S229528AbiINGmn (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 14 Sep 2022 02:42:43 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE9C425EB8;
+        Tue, 13 Sep 2022 23:42:41 -0700 (PDT)
+Received: from canpemm500006.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MS9f70n03zmV94;
+        Wed, 14 Sep 2022 14:38:55 +0800 (CST)
+Received: from [10.174.179.200] (10.174.179.200) by
+ canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 14 Sep 2022 14:42:39 +0800
+Subject: Re: [PATCH 1/2] can: bcm: registration process optimization in
+ bcm_module_init()
+To:     Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+CC:     <edumazet@google.com>, <kuba@kernel.org>,
+        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <cover.1662606045.git.william.xuanziyang@huawei.com>
+ <823cff0ebec33fa9389eeaf8b8ded3217c32cb38.1662606045.git.william.xuanziyang@huawei.com>
+ <381dd961-f786-2400-0977-9639c3f7006e@hartkopp.net>
+ <c480bdd7-e35e-fbf9-6767-801e04703780@hartkopp.net>
+ <7b063d38-311c-76d6-4e31-02f9cccc9bcb@huawei.com>
+ <053c7de3-c76c-82fd-2d44-2e7c1673ae98@hartkopp.net>
+ <9228b20a-3baa-32ad-6059-5cf0ffdb97a3@huawei.com>
+ <d392c1f4-7ad3-59a4-1358-2c216c498402@hartkopp.net>
+ <20220912120020.dlxuryltw4sii635@pengutronix.de>
+ <4791cc31-db17-7720-4a86-f83e7bf0918d@hartkopp.net>
+From:   "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
+Message-ID: <dbf68897-c719-db79-b856-792bf8fbf533@huawei.com>
+Date:   Wed, 14 Sep 2022 14:42:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <4791cc31-db17-7720-4a86-f83e7bf0918d@hartkopp.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: ygtKZuV6Nl4mRugPrCsVIK6O-mpk2PHN
-X-Proofpoint-ORIG-GUID: ygtKZuV6Nl4mRugPrCsVIK6O-mpk2PHN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-09-13_10,2022-09-13_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
- adultscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0 phishscore=0
- priorityscore=1501 mlxlogscore=999 suspectscore=0 mlxscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2208220000
- definitions=main-2209130095
+X-Originating-IP: [10.174.179.200]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500006.china.huawei.com (7.192.105.130)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Dear USB CAN mailing list members,
+> 
+> 
+> On 12.09.22 14:00, Marc Kleine-Budde wrote:
+>> On 09.09.2022 17:04:06, Oliver Hartkopp wrote:
+>>>
+>>>
+>>> On 09.09.22 05:58, Ziyang Xuan (William) wrote:
+>>>>>
+>>>>>
+>>>>> On 9/8/22 13:14, Ziyang Xuan (William) wrote:
+>>>>>>> Just another reference which make it clear that the reordering of function calls in your patch is likely not correct:
+>>>>>>>
+>>>>>>> https://elixir.bootlin.com/linux/v5.19.7/source/net/packet/af_packet.c#L4734
+>>>>>>>
+>>>>>>> static int __init packet_init(void)
+>>>>>>> {
+>>>>>>>            int rc;
+>>>>>>>
+>>>>>>>            rc = proto_register(&packet_proto, 0);
+>>>>>>>            if (rc)
+>>>>>>>                    goto out;
+>>>>>>>            rc = sock_register(&packet_family_ops);
+>>>>>>>            if (rc)
+>>>>>>>                    goto out_proto;
+>>>>>>>            rc = register_pernet_subsys(&packet_net_ops);
+>>>>>>>            if (rc)
+>>>>>>>                    goto out_sock;
+>>>>>>>            rc = register_netdevice_notifier(&packet_netdev_notifier);
+>>>>>>>            if (rc)
+>>>>>>>                    goto out_pernet;
+>>>>>>>
+>>>>>>>            return 0;
+>>>>>>>
+>>>>>>> out_pernet:
+>>>>>>>            unregister_pernet_subsys(&packet_net_ops);
+>>>>>>> out_sock:
+>>>>>>>            sock_unregister(PF_PACKET);
+>>>>>>> out_proto:
+>>>>>>>            proto_unregister(&packet_proto);
+>>>>>>> out:
+>>>>>>>            return rc;
+>>>>>>> }
+>>>>>>>
+>>>
+>>>> Yes，all these socket operations need time, most likely, register_netdevice_notifier() and register_pernet_subsys() had been done.
+>>>> But it maybe not for some reasons, for example, cpu# that runs {raw,bcm}_module_init() is stuck temporary,
+>>>> or pernet_ops_rwsem lock competition in register_netdevice_notifier() and register_pernet_subsys().
+>>>>
+>>>> If the condition which I pointed happens, I think my solution can solve.
+>>>>
+>>>
+>>> No, I don't think so.
+>>>
+>>> We need to maintain the exact order which is depicted in the af_packet.c
+>>> code from above as the notifier call references the sock pointer.
+>>
+>> The notifier calls bcm_notifier() first, which will loop over the
+>> bcm_notifier_list. The list is empty if there are no sockets open, yet.
+>> So from my point of view this change looks fine.
+>>
+>> IMHO it's better to make a series where all these notifiers are moved in
+>> front of the respective socket proto_register().
+> 
+> Notifiers and/or pernet_subsys ?
+> 
+> But yes, that would be better to have a clean consistent sequence in all these cases.
+> 
+> Would this affect af_packet.c then too?
+Yes.
 
-In a previous thread reviewing my changes to stop a DMA memory leak in the
-gs_usb driver, a discussion ensued about why it (and other USB CAN drivers
-were using DMA in the first place.  At the time, it was suggested that we
-perform an exploration to determine if there is any performance benefit to DMA
-or if the DMA allocations could be replaced with normal kmalloc( )s instead.
+When we create a sock by packet_create() after proto_register() and sock_register().
+It will use net->packet.sklist_lock and net->packet.sklist directly in packet_create().
+net->packet.sklist_lock and net->packet.sklist are initialized in packet_net_init().
 
-A method for gathering this information was proposed here:
-https://lore.kernel.org/linux-can/CAMZ6Rq+FSzy5ijQZhYyVJrbe86U9faD5aPFO4cezNkN9G-USzQ@mail.gmail.com/
+The code snippet is as follows:
 
-A member of my team found some time and resources to work on it, and so I'm
-communicating his work to the list as an RFC on his behalf.  We are seeking
-input from the mailing list regarding his testing methods as well as his patch.
+static int packet_create(struct net *net, struct socket *sock, int protocol,
+			 int kern)
+{
+	...
+	mutex_lock(&net->packet.sklist_lock);
+	sk_add_node_tail_rcu(sk, &net->packet.sklist);
+	mutex_unlock(&net->packet.sklist_lock);
+	...
+}
 
-The short summary is that he couldn't identify any meaningful change in
-performance on his x86-64 hardware.  We should be able to also repeat these
-tests on our ARM products under and older kernel and perhaps also on more
-modern ARM hardware such as a Raspberry Pi.  This might give us the confidence
-we need to consider removing DMA allocations from the gs_usb driver and
-perhaps others.
 
-His detailed notes may be found here:
-https://www.dropbox.com/s/c3gm3oomihdze1n/USB%20CAN%20Driver%20DMA%20Removal%20Testing%20Doc.pdf?dl=0
+static int __net_init packet_net_init(struct net *net)
+{
+	mutex_init(&net->packet.sklist_lock);
+	INIT_HLIST_HEAD(&net->packet.sklist);
+	...
+}
 
-Feedback is very much welcome.
+So, if the sock is created firstly, we will get illegal access bug.
 
-Best,
-Rhett Aultman
+> 
+> Regards,
+> Oliver
+> 
+> .
