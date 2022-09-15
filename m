@@ -2,102 +2,98 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E528C6FA8A
-	for <linux-can@archiver.kernel.org>; Wed, 14 Sep 2022 23:40:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9346AECAAD3
+	for <linux-can@archiver.kernel.org>; Thu, 15 Sep 2022 01:56:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbiINXkw (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 14 Sep 2022 19:40:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55936 "EHLO
+        id S229959AbiIOB4F (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 14 Sep 2022 21:56:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbiINXkt (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 14 Sep 2022 19:40:49 -0400
-X-Greylist: delayed 1585 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 14 Sep 2022 16:40:48 PDT
-Received: from mxd2.seznam.cz (mxd2.seznam.cz [IPv6:2a02:598:2::210])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 188AD402E5;
-        Wed, 14 Sep 2022 16:40:47 -0700 (PDT)
-Received: from email.seznam.cz
-        by email-smtpc1a.ng.seznam.cz (email-smtpc1a.ng.seznam.cz [10.23.10.15])
-        id 77ea57b49346848a7637f6da;
-        Thu, 15 Sep 2022 01:40:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seznam.cz; s=beta;
-        t=1663198812; bh=KfzDDufQO0EmyWPeN8vROr7WTX1Av+h27clBNarB/G0=;
-        h=Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Transfer-Encoding;
-        b=HebwmnAmfNwyXXrU0O1OpA1luvqCT5y7zJOKbFL4VXy1DplhKqvUj/vT5LqPbxMO6
-         KHax8sGxyMusmS8d0iVxb6LgbfxIJZVSrEgOLKJqa3xpml2buYKJcvERtb9g0bwNQs
-         HfgeWbFx/Yl81qjynyhnSG/sL8C0GSzrh9xw5bvM=
-Received: from localhost.localdomain (2a02:8308:900d:2400:4bcc:f22e:1266:5194 [2a02:8308:900d:2400:4bcc:f22e:1266:5194])
-        by email-relay10.ng.seznam.cz (Seznam SMTPD 1.3.137) with ESMTP;
-        Thu, 15 Sep 2022 01:40:11 +0200 (CEST)  
-From:   Matej Vasilevski <matej.vasilevski@seznam.cz>
-To:     Pavel Pisa <pisa@cmp.felk.cvut.cz>,
-        Ondrej Ille <ondrej.ille@gmail.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Matej Vasilevski <matej.vasilevski@seznam.cz>
-Subject: [PATCH v4 1/3] dt-bindings: can: ctucanfd: add another clock for HW timestamping
-Date:   Thu, 15 Sep 2022 01:39:42 +0200
-Message-Id: <20220914233944.598298-2-matej.vasilevski@seznam.cz>
+        with ESMTP id S229463AbiIOB4E (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 14 Sep 2022 21:56:04 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF228E4F2;
+        Wed, 14 Sep 2022 18:56:03 -0700 (PDT)
+Received: from canpemm500006.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MSgDg2wbdz14QZp;
+        Thu, 15 Sep 2022 09:52:03 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 15 Sep 2022 09:56:01 +0800
+From:   Ziyang Xuan <william.xuanziyang@huawei.com>
+To:     <socketcan@hartkopp.net>, <mkl@pengutronix.de>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 1/2] can: bcm: registration process optimization in bcm_module_init()
+Date:   Thu, 15 Sep 2022 09:55:55 +0800
+Message-ID: <823cff0ebec33fa9389eeaf8b8ded3217c32cb38.1663206163.git.william.xuanziyang@huawei.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220914233944.598298-1-matej.vasilevski@seznam.cz>
-References: <20220914233944.598298-1-matej.vasilevski@seznam.cz>
+In-Reply-To: <cover.1663206163.git.william.xuanziyang@huawei.com>
+References: <cover.1663206163.git.william.xuanziyang@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500006.china.huawei.com (7.192.105.130)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Add second clock phandle to specify the timestamping clock.
+Now, register_netdevice_notifier() and register_pernet_subsys() are both
+after can_proto_register(). It can create CAN_BCM socket and process socket
+once can_proto_register() successfully, so it is possible missing notifier
+event or proc node creation because notifier or bcm proc directory is not
+registered or created yet. Although this is a low probability scenario, it
+is not impossible.
 
-Signed-off-by: Matej Vasilevski <matej.vasilevski@seznam.cz>
+Move register_pernet_subsys() and register_netdevice_notifier() to the
+front of can_proto_register(). In addition, register_pernet_subsys() and
+register_netdevice_notifier() may fail, check their results are necessary.
+
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
 ---
- .../bindings/net/can/ctu,ctucanfd.yaml        | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ net/can/bcm.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
-index 4635cb96fc64..432f0e3ed828 100644
---- a/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
-+++ b/Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
-@@ -44,9 +44,19 @@ properties:
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index e60161bec850..e2783156bfd1 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -1744,15 +1744,27 @@ static int __init bcm_module_init(void)
  
-   clocks:
-     description: |
--      phandle of reference clock (100 MHz is appropriate
--      for FPGA implementation on Zynq-7000 system).
--    maxItems: 1
-+      Phandle of reference clock (100 MHz is appropriate for FPGA
-+      implementation on Zynq-7000 system). Optionally add a phandle to
-+      the timestamping clock connected to timestamping counter, if used.
-+    minItems: 1
-+    items:
-+      - description: core clock
-+      - description: timestamping clock
+ 	pr_info("can: broadcast manager protocol\n");
+ 
++	err = register_pernet_subsys(&canbcm_pernet_ops);
++	if (err)
++		return err;
 +
-+  clock-names:
-+    minItems: 1
-+    items:
-+      - const: core-clk
-+      - const: ts-clk
++	err = register_netdevice_notifier(&canbcm_notifier);
++	if (err)
++		goto register_notifier_failed;
++
+ 	err = can_proto_register(&bcm_can_proto);
+ 	if (err < 0) {
+ 		printk(KERN_ERR "can: registration of bcm protocol failed\n");
+-		return err;
++		goto register_proto_failed;
+ 	}
  
- required:
-   - compatible
-@@ -61,6 +71,7 @@ examples:
-     ctu_can_fd_0: can@43c30000 {
-       compatible = "ctu,ctucanfd";
-       interrupts = <0 30 4>;
--      clocks = <&clkc 15>;
-+      clocks = <&clkc 15>, <&clkc 16>;
-+      clock-names = "core-clk", "ts-clk";
-       reg = <0x43c30000 0x10000>;
-     };
+-	register_pernet_subsys(&canbcm_pernet_ops);
+-	register_netdevice_notifier(&canbcm_notifier);
+ 	return 0;
++
++register_proto_failed:
++	unregister_netdevice_notifier(&canbcm_notifier);
++register_notifier_failed:
++	unregister_pernet_subsys(&canbcm_pernet_ops);
++	return err;
+ }
+ 
+ static void __exit bcm_module_exit(void)
 -- 
 2.25.1
 
