@@ -2,44 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CF17ECAAD3
-	for <linux-can@archiver.kernel.org>; Thu, 15 Sep 2022 08:20:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5B79ECAAA1
+	for <linux-can@archiver.kernel.org>; Thu, 15 Sep 2022 08:20:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbiIOIUa (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 15 Sep 2022 04:20:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57252 "EHLO
+        id S230241AbiIOIUk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 15 Sep 2022 04:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230207AbiIOIUZ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 15 Sep 2022 04:20:25 -0400
+        with ESMTP id S230215AbiIOIU3 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 15 Sep 2022 04:20:29 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D003979DF
-        for <linux-can@vger.kernel.org>; Thu, 15 Sep 2022 01:20:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E8F89CF2
+        for <linux-can@vger.kernel.org>; Thu, 15 Sep 2022 01:20:27 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oYk6d-0004At-D5
-        for linux-can@vger.kernel.org; Thu, 15 Sep 2022 10:20:19 +0200
+        id 1oYk6j-0004Ja-4m
+        for linux-can@vger.kernel.org; Thu, 15 Sep 2022 10:20:25 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id F0364E395E
-        for <linux-can@vger.kernel.org>; Thu, 15 Sep 2022 08:20:16 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 127A8E3988
+        for <linux-can@vger.kernel.org>; Thu, 15 Sep 2022 08:20:18 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 88897E392E;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id B65E2E3933;
         Thu, 15 Sep 2022 08:20:15 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 97fd6411;
-        Thu, 15 Sep 2022 08:20:14 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id df359b21;
+        Thu, 15 Sep 2022 08:20:15 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Kenneth Lee <klee33@uw.edu>,
+        kernel@pengutronix.de, Jinpeng Cui <cui.jinpeng2@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 04/23] can: kvaser_usb: kvaser_usb_hydra: Use kzalloc for allocating only one element
-Date:   Thu, 15 Sep 2022 10:19:54 +0200
-Message-Id: <20220915082013.369072-5-mkl@pengutronix.de>
+Subject: [PATCH net-next 07/23] can: sja1000: remove redundant variable ret
+Date:   Thu, 15 Sep 2022 10:19:57 +0200
+Message-Id: <20220915082013.369072-8-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220915082013.369072-1-mkl@pengutronix.de>
 References: <20220915082013.369072-1-mkl@pengutronix.de>
@@ -53,114 +54,42 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Kenneth Lee <klee33@uw.edu>
+From: Jinpeng Cui <cui.jinpeng2@zte.com.cn>
 
-Use kzalloc(...) rather than kcalloc(1, ...) since because the number of
-elements we are specifying in this case is 1, kzalloc would accomplish the
-same thing and we can simplify. Also refactor how we calculate the sizeof()
-as checkstyle for kzalloc() prefers using the variable we are assigning
-to versus the type of that variable for calculating the size to allocate.
+Return value directly from register_candev() instead of
+getting value from redundant variable ret.
 
-Signed-off-by: Kenneth Lee <klee33@uw.edu>
-Link: https://lore.kernel.org/all/20220807051656.1991446-1-klee33@uw.edu
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jinpeng Cui <cui.jinpeng2@zte.com.cn>
+Link: https://lore.kernel.org/all/20220831161835.306079-1-cui.jinpeng2@zte.com.cn
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 20 +++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ drivers/net/can/sja1000/sja1000.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-index dd65c101bfb8..6871d474dabf 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-@@ -534,7 +534,7 @@ static int kvaser_usb_hydra_send_simple_cmd(struct kvaser_usb *dev,
- 	struct kvaser_cmd *cmd;
- 	int err;
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index 98dfd5f295a7..1bb1129b0450 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -661,8 +661,6 @@ static const struct ethtool_ops sja1000_ethtool_ops = {
  
--	cmd = kcalloc(1, sizeof(struct kvaser_cmd), GFP_KERNEL);
-+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
- 	if (!cmd)
- 		return -ENOMEM;
+ int register_sja1000dev(struct net_device *dev)
+ {
+-	int ret;
+-
+ 	if (!sja1000_probe_chip(dev))
+ 		return -ENODEV;
  
-@@ -573,7 +573,7 @@ kvaser_usb_hydra_send_simple_cmd_async(struct kvaser_usb_net_priv *priv,
- 	struct kvaser_usb *dev = priv->dev;
- 	int err;
+@@ -673,9 +671,7 @@ int register_sja1000dev(struct net_device *dev)
+ 	set_reset_mode(dev);
+ 	chipset_init(dev);
  
--	cmd = kcalloc(1, sizeof(struct kvaser_cmd), GFP_ATOMIC);
-+	cmd = kzalloc(sizeof(*cmd), GFP_ATOMIC);
- 	if (!cmd)
- 		return -ENOMEM;
- 
-@@ -694,7 +694,7 @@ static int kvaser_usb_hydra_map_channel(struct kvaser_usb *dev, u16 transid,
- 	struct kvaser_cmd *cmd;
- 	int err;
- 
--	cmd = kcalloc(1, sizeof(struct kvaser_cmd), GFP_KERNEL);
-+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
- 	if (!cmd)
- 		return -ENOMEM;
- 
-@@ -735,7 +735,7 @@ static int kvaser_usb_hydra_get_single_capability(struct kvaser_usb *dev,
- 	int err;
- 	int i;
- 
--	cmd = kcalloc(1, sizeof(struct kvaser_cmd), GFP_KERNEL);
-+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
- 	if (!cmd)
- 		return -ENOMEM;
- 
-@@ -1394,7 +1394,7 @@ kvaser_usb_hydra_frame_to_cmd_ext(const struct kvaser_usb_net_priv *priv,
- 	u32 kcan_id;
- 	u32 kcan_header;
- 
--	cmd = kcalloc(1, sizeof(struct kvaser_cmd_ext), GFP_ATOMIC);
-+	cmd = kzalloc(sizeof(*cmd), GFP_ATOMIC);
- 	if (!cmd)
- 		return NULL;
- 
-@@ -1468,7 +1468,7 @@ kvaser_usb_hydra_frame_to_cmd_std(const struct kvaser_usb_net_priv *priv,
- 	u32 flags;
- 	u32 id;
- 
--	cmd = kcalloc(1, sizeof(struct kvaser_cmd), GFP_ATOMIC);
-+	cmd = kzalloc(sizeof(*cmd), GFP_ATOMIC);
- 	if (!cmd)
- 		return NULL;
- 
-@@ -1533,7 +1533,7 @@ static int kvaser_usb_hydra_set_bittiming(struct net_device *netdev)
- 	int sjw = bt->sjw;
- 	int err;
- 
--	cmd = kcalloc(1, sizeof(struct kvaser_cmd), GFP_KERNEL);
-+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
- 	if (!cmd)
- 		return -ENOMEM;
- 
-@@ -1567,7 +1567,7 @@ static int kvaser_usb_hydra_set_data_bittiming(struct net_device *netdev)
- 	int sjw = dbt->sjw;
- 	int err;
- 
--	cmd = kcalloc(1, sizeof(struct kvaser_cmd), GFP_KERNEL);
-+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
- 	if (!cmd)
- 		return -ENOMEM;
- 
-@@ -1711,7 +1711,7 @@ static int kvaser_usb_hydra_get_software_details(struct kvaser_usb *dev)
- 	u32 flags;
- 	struct kvaser_usb_dev_card_data *card_data = &dev->card_data;
- 
--	cmd = kcalloc(1, sizeof(struct kvaser_cmd), GFP_KERNEL);
-+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
- 	if (!cmd)
- 		return -ENOMEM;
- 
-@@ -1851,7 +1851,7 @@ static int kvaser_usb_hydra_set_opt_mode(const struct kvaser_usb_net_priv *priv)
- 		return -EINVAL;
- 	}
- 
--	cmd = kcalloc(1, sizeof(struct kvaser_cmd), GFP_KERNEL);
-+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
- 	if (!cmd)
- 		return -ENOMEM;
+-	ret =  register_candev(dev);
+-
+-	return ret;
++	return register_candev(dev);
+ }
+ EXPORT_SYMBOL_GPL(register_sja1000dev);
  
 -- 
 2.35.1
