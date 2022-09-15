@@ -2,45 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 275BBC6FA86
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CCB0ECAAA1
 	for <linux-can@archiver.kernel.org>; Thu, 15 Sep 2022 08:20:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbiIOIUl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 15 Sep 2022 04:20:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57390 "EHLO
+        id S230250AbiIOIUm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 15 Sep 2022 04:20:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230232AbiIOIUa (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 15 Sep 2022 04:20:30 -0400
+        with ESMTP id S230197AbiIOIUb (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 15 Sep 2022 04:20:31 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DE689CF4
-        for <linux-can@vger.kernel.org>; Thu, 15 Sep 2022 01:20:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C42DA89CF5
+        for <linux-can@vger.kernel.org>; Thu, 15 Sep 2022 01:20:28 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oYk6j-0004Je-LR
-        for linux-can@vger.kernel.org; Thu, 15 Sep 2022 10:20:25 +0200
+        id 1oYk6k-0004KO-RX
+        for linux-can@vger.kernel.org; Thu, 15 Sep 2022 10:20:26 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 21151E3989
+        by bjornoya.blackshift.org (Postfix) with SMTP id 435ACE398D
         for <linux-can@vger.kernel.org>; Thu, 15 Sep 2022 08:20:18 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id C5792E3937;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9AB7CE3930;
         Thu, 15 Sep 2022 08:20:15 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 428201c5;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 61901395;
         Thu, 15 Sep 2022 08:20:15 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Jinpeng Cui <cui.jinpeng2@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>,
+        kernel@pengutronix.de, Biju Das <biju.das.jz@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 08/23] can: kvaser_pciefd: remove redundant variable ret
-Date:   Thu, 15 Sep 2022 10:19:58 +0200
-Message-Id: <20220915082013.369072-9-mkl@pengutronix.de>
+Subject: [PATCH net-next 05/23] dt-bindings: can: nxp,sja1000: Document RZ/N1 power-domains support
+Date:   Thu, 15 Sep 2022 10:19:55 +0200
+Message-Id: <20220915082013.369072-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220915082013.369072-1-mkl@pengutronix.de>
 References: <20220915082013.369072-1-mkl@pengutronix.de>
@@ -54,38 +54,47 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Jinpeng Cui <cui.jinpeng2@zte.com.cn>
+From: Biju Das <biju.das.jz@bp.renesas.com>
 
-Return value directly from readl_poll_timeout() instead of
-getting value from redundant variable ret.
+Document RZ/N1 power-domains support. Also update the example with
+power-domains property.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jinpeng Cui <cui.jinpeng2@zte.com.cn>
-Link: https://lore.kernel.org/all/20220831150805.305106-1-cui.jinpeng2@zte.com.cn
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/all/20220830164518.1381632-2-biju.das.jz@bp.renesas.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/kvaser_pciefd.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ Documentation/devicetree/bindings/net/can/nxp,sja1000.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
-index ed54c0b3c7d4..4e9680c8eb34 100644
---- a/drivers/net/can/kvaser_pciefd.c
-+++ b/drivers/net/can/kvaser_pciefd.c
-@@ -329,12 +329,9 @@ MODULE_DEVICE_TABLE(pci, kvaser_pciefd_id_table);
- static int kvaser_pciefd_spi_wait_loop(struct kvaser_pciefd *pcie, int msk)
- {
- 	u32 res;
--	int ret;
--
--	ret = readl_poll_timeout(pcie->reg_base + KVASER_PCIEFD_SPI_STATUS_REG,
--				 res, res & msk, 0, 10);
+diff --git a/Documentation/devicetree/bindings/net/can/nxp,sja1000.yaml b/Documentation/devicetree/bindings/net/can/nxp,sja1000.yaml
+index b1327c5b86cf..5b588726853f 100644
+--- a/Documentation/devicetree/bindings/net/can/nxp,sja1000.yaml
++++ b/Documentation/devicetree/bindings/net/can/nxp,sja1000.yaml
+@@ -30,6 +30,9 @@ properties:
+   clocks:
+     maxItems: 1
  
--	return ret;
-+	return readl_poll_timeout(pcie->reg_base + KVASER_PCIEFD_SPI_STATUS_REG,
-+			res, res & msk, 0, 10);
- }
++  power-domains:
++    maxItems: 1
++
+   reg-io-width:
+     $ref: /schemas/types.yaml#/definitions/uint32
+     description: I/O register width (in bytes) implemented by this device
+@@ -105,6 +108,7 @@ allOf:
+     then:
+       required:
+         - clocks
++        - power-domains
  
- static int kvaser_pciefd_spi_cmd(struct kvaser_pciefd *pcie, const u8 *tx,
+ unevaluatedProperties: false
+ 
+@@ -129,4 +133,5 @@ examples:
+         reg-io-width = <4>;
+         interrupts = <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
+         clocks = <&sysctrl R9A06G032_HCLK_CAN0>;
++        power-domains = <&sysctrl>;
+     };
 -- 
 2.35.1
 
