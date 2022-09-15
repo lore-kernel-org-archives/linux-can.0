@@ -2,70 +2,116 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F18EECAAD3
-	for <linux-can@archiver.kernel.org>; Thu, 15 Sep 2022 12:26:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2403FECAAA1
+	for <linux-can@archiver.kernel.org>; Thu, 15 Sep 2022 12:27:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbiIOM0m (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 15 Sep 2022 08:26:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40180 "EHLO
+        id S229503AbiIOM1u (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 15 Sep 2022 08:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230092AbiIOM0i (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 15 Sep 2022 08:26:38 -0400
-X-Greylist: delayed 504 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 15 Sep 2022 05:26:36 PDT
-Received: from sypressi2.dnainternet.net (sypressi2.dnainternet.net [83.102.40.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C87F279624
-        for <linux-can@vger.kernel.org>; Thu, 15 Sep 2022 05:26:36 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by sypressi2.dnainternet.net (Postfix) with ESMTP id CDC6215635;
-        Thu, 15 Sep 2022 15:18:09 +0300 (EEST)
-X-Virus-Scanned: DNA Internet at dnainternet.net
-Received: from sypressi2.dnainternet.net ([83.102.40.154])
-        by localhost (sypressi2.dnainternet.net [127.0.0.1]) (DNA Internet, port 10041)
-        with ESMTP id 0Fqk9xF3XJgj; Thu, 15 Sep 2022 15:18:09 +0300 (EEST)
-Received: from kirsikkapuu2.dnainternet.net (kirsikkapuu2.dnainternet.net [83.102.40.52])
-        by sypressi2.dnainternet.net (Postfix) with ESMTP id A5D25155A3;
-        Thu, 15 Sep 2022 15:18:09 +0300 (EEST)
-Received: from localhost (87-95-101-152.bb.dnainternet.fi [87.95.101.152])
-        by kirsikkapuu2.dnainternet.net (Postfix) with ESMTP id 1F3427E;
-        Thu, 15 Sep 2022 15:18:04 +0300 (EEST)
-From:   andy.shevchenko@gmail.com
-Date:   Thu, 15 Sep 2022 15:18:02 +0300
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-        Max Staudt <max@enpas.org>
+        with ESMTP id S229539AbiIOM1t (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 15 Sep 2022 08:27:49 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED6F6E2F3
+        for <linux-can@vger.kernel.org>; Thu, 15 Sep 2022 05:27:48 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id v15so14007078qvi.11
+        for <linux-can@vger.kernel.org>; Thu, 15 Sep 2022 05:27:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=R4GXUR0A2GjLJhlVCZ766lOHuqhTaf6ukPgKB5lalII=;
+        b=KaW3J2rML8GNWXiq6ZuwNsO4sPWPU0pU0jo3CfqsNdBZT4EcCVkO4aIeUY0qQUjdc+
+         HN3gkNHgrntFDNIPMlnCRJ02xze8UORXZTKT2G1Amuk+Ukr3I9paKuP6cM6FVdI2tsfZ
+         mKtDINXkjfiUvoHyVLNvHsGw/G6phGT4AJHWe2h4XfrgJp37Pjp1SeYz+mzI81OUZI6J
+         cgdteXyid4TICWKIqfo8yxyueIS8eOx28lrIK0ZvlZySXrxbF2Wimw9quevJDDBrm1Zy
+         dfbiRfWNLEF66cJ47+JZueAL9IxeNhdGZDb0L8qmWOfUjlvIk+KWndEMX4fLUMsaRDKb
+         j/8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=R4GXUR0A2GjLJhlVCZ766lOHuqhTaf6ukPgKB5lalII=;
+        b=jiYKZNfUrDGMhb1geBg0EmVLdmR9tyaPxMBV9WxhhFcmqCcA084k3B6o34Nt/qHM8b
+         MuyaiYBQI+mRY+oonY+LzPfaIw0gnxgCHMR4UiJ06MuHHiA56OgZ6tVuE2uneHfjbem3
+         tsN2A+gCAgsQ99S14GygR2FDEcKUNh3Iwn3NSNmk9yI8r6y1ay5XH2adz3wWwBeZGXRh
+         uT17QKZa7wzKP/82AqkzSNaCGKJJVpQebZiUz7FSVv3arE8zs338nc1xgeIOY9fjYyEN
+         90cY+8bf4bt1R5pzr0UB6xNbrnIfZrVVvDDRZmcbXCIsrUgpORfJmvSQfB0tYDJY4eKO
+         AAtg==
+X-Gm-Message-State: ACrzQf1OvKzK5NbXBg6iakdiPdfGVXYCl/oXqrKjymSK57dMi0DDUY37
+        4GGedMELE7u4nf16Vxj0rDKjC+DMTKdnlCCT+7M4GkpXCFQ=
+X-Google-Smtp-Source: AMsMyM6UeyReE+9ROIzuAJPtPD0zaY/S5ppuN0isg8forKo2sXkjsp8zrrI16pVCzYNUVj7xVIsmSOEhRmPxJ54oU6U=
+X-Received: by 2002:a05:6214:e86:b0:4ad:8c9:a397 with SMTP id
+ hf6-20020a0562140e8600b004ad08c9a397mr141301qvb.82.1663244867868; Thu, 15 Sep
+ 2022 05:27:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220725153124.467061-1-mailhol.vincent@wanadoo.fr>
+ <20220726082707.58758-1-mailhol.vincent@wanadoo.fr> <YyLkrj5v2EiBIXk+@surfacebook>
+ <20220915122454.xsczmhz4e62musse@pengutronix.de>
+In-Reply-To: <20220915122454.xsczmhz4e62musse@pengutronix.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 15 Sep 2022 15:27:11 +0300
+Message-ID: <CAHp75VeXbs4AQ-yQvv2kgpwhCF4fkOL83J=1YcfhV+SeRmai=w@mail.gmail.com>
 Subject: Re: [PATCH v2 00/10] can: remove litteral strings used for driver
  names and remove DRV_VERSION
-Message-ID: <YyLkrj5v2EiBIXk+@surfacebook>
-References: <20220725153124.467061-1-mailhol.vincent@wanadoo.fr>
- <20220726082707.58758-1-mailhol.vincent@wanadoo.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220726082707.58758-1-mailhol.vincent@wanadoo.fr>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        linux-can@vger.kernel.org,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Max Staudt <max@enpas.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Tue, Jul 26, 2022 at 05:26:57PM +0900, Vincent Mailhol kirjoitti:
-> This is a cleanup series.
-> 
-> The patches 1 to 8 get rid of any hardcoded strings and instead relies
-> on the KBUILD_MODNAME macros to get the device name. Patch 9 replaces
-> the ES58X_MODULE_NAME macro with KBUILD_MODNAME in
-> etas_es58x. Finally, also in etas_es58x, patch 10 removes the
-> DRV_VERSION so that the module uses the default behavior and advertise
-> the kernel version instead of a custom version.
+On Thu, Sep 15, 2022 at 3:25 PM Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 15.09.2022 15:18:02, andy.shevchenko@gmail.com wrote:
+> > Tue, Jul 26, 2022 at 05:26:57PM +0900, Vincent Mailhol kirjoitti:
+> > > This is a cleanup series.
+> > >
+> > > The patches 1 to 8 get rid of any hardcoded strings and instead relies
+> > > on the KBUILD_MODNAME macros to get the device name. Patch 9 replaces
+> > > the ES58X_MODULE_NAME macro with KBUILD_MODNAME in
+> > > etas_es58x. Finally, also in etas_es58x, patch 10 removes the
+> > > DRV_VERSION so that the module uses the default behavior and advertise
+> > > the kernel version instead of a custom version.
+> >
+> > I guess you all understand that this is potential ABI breakage.
+>
+> Good point.
+>
+> > The driver can be instantiated by its name (for matching purposes) from board
+> > files or MFD cell.
+>
+> Hope we don't have board files anymore....
+>
+> > If you change the name of the file, the module will be
+> > changed and hence the breakage.
+> >
+> > That said, NAK from me (as I do usually the opposite change).
+>
+> Let's look at the diffstat:
+>
+> These are serial line disciplines, they have their own ID:
+>  drivers/net/can/can327.c                         |  4 ++--
+>  drivers/net/can/slcan/slcan-core.c               | 14 ++++++++------
+>
+> This might be a problem, it's a platform driver:
+>  drivers/net/can/softing/softing_main.c           |  4 ++--
+>
+> It should be no problem for USB devices, right?
+>  drivers/net/can/usb/ems_usb.c                    |  4 ++--
+>  drivers/net/can/usb/esd_usb.c                    |  2 +-
+>  drivers/net/can/usb/etas_es58x/es58x_core.c      | 14 +++++---------
+>  drivers/net/can/usb/gs_usb.c                     |  6 +++---
+>  drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c |  2 +-
+>  drivers/net/can/usb/usb_8dev.c                   |  4 ++--
 
-I guess you all understand that this is potential ABI breakage.
-The driver can be instantiated by its name (for matching purposes) from board
-files or MFD cell. If you change the name of the file, the module will be
-changed and hence the breakage.
+I agree with your grouping and analysis. This is minor anyway, but
+better to have it more robust. So, yes, with USB I don't believe it
+would be an issue, but for platform driver it might be.
 
-That said, NAK from me (as I do usually the opposite change).
 
 -- 
 With Best Regards,
 Andy Shevchenko
-
-
