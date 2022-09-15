@@ -2,43 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3B58C6FA8A
-	for <linux-can@archiver.kernel.org>; Thu, 15 Sep 2022 08:20:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5619ECAAD3
+	for <linux-can@archiver.kernel.org>; Thu, 15 Sep 2022 08:20:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbiIOIUn (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S230211AbiIOIUn (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Thu, 15 Sep 2022 04:20:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57396 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230235AbiIOIUb (ORCPT
+        with ESMTP id S230234AbiIOIUb (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 15 Sep 2022 04:20:31 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D1195ACA
-        for <linux-can@vger.kernel.org>; Thu, 15 Sep 2022 01:20:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78EAE8A1EE
+        for <linux-can@vger.kernel.org>; Thu, 15 Sep 2022 01:20:27 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oYk6k-0004Kh-U3
-        for linux-can@vger.kernel.org; Thu, 15 Sep 2022 10:20:26 +0200
+        id 1oYk6j-0004JW-Nk
+        for linux-can@vger.kernel.org; Thu, 15 Sep 2022 10:20:25 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 43DBCE398E
+        by bjornoya.blackshift.org (Postfix) with SMTP id 0D7ABE3987
         for <linux-can@vger.kernel.org>; Thu, 15 Sep 2022 08:20:18 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id CCA8BE3938;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id A3F21E3931;
         Thu, 15 Sep 2022 08:20:15 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 24e02e19;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 88027817;
         Thu, 15 Sep 2022 08:20:15 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 09/23] can: gs_usb: use common spelling of GS_USB in macros
-Date:   Thu, 15 Sep 2022 10:19:59 +0200
-Message-Id: <20220915082013.369072-10-mkl@pengutronix.de>
+        kernel@pengutronix.de, Biju Das <biju.das.jz@bp.renesas.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 06/23] can: sja1000: Add support for RZ/N1 SJA1000 CAN Controller
+Date:   Thu, 15 Sep 2022 10:19:56 +0200
+Message-Id: <20220915082013.369072-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220915082013.369072-1-mkl@pengutronix.de>
 References: <20220915082013.369072-1-mkl@pengutronix.de>
@@ -52,93 +53,115 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-There are a few macros in the driver which use GSUSB in the name of
-the macro, while the majority uses GS_USB. Convert all macros to
-GS_USB.
+From: Biju Das <biju.das.jz@bp.renesas.com>
 
-Fixes: d08e973a77d1 ("can: gs_usb: Added support for the GS_USB CAN devices")
-Fixes: b00ca070e022 ("can: gs_usb: activate quirks for CANtact Pro unconditionally")
-Link: https://lore.kernel.org/all/20220827221548.3291393-2-mkl@pengutronix.de
+The SJA1000 CAN controller on RZ/N1 SoC has no clock divider register
+(CDR) support compared to others.
+
+This patch adds support for RZ/N1 SJA1000 CAN Controller, by adding
+SoC specific compatible to handle this difference as well as using
+clk framework to retrieve the CAN clock frequency.
+
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Link: https://lore.kernel.org/all/20220710115248.190280-7-biju.das.jz@bp.renesas.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/gs_usb.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ drivers/net/can/sja1000/sja1000_platform.c | 38 +++++++++++++++++++---
+ 1 file changed, 33 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index baf749c8cda3..532510902f60 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -22,8 +22,8 @@
- #include <linux/can/error.h>
- 
- /* Device specific constants */
--#define USB_GSUSB_1_VENDOR_ID 0x1d50
--#define USB_GSUSB_1_PRODUCT_ID 0x606f
-+#define USB_GS_USB_1_VENDOR_ID 0x1d50
-+#define USB_GS_USB_1_PRODUCT_ID 0x606f
- 
- #define USB_CANDLELIGHT_VENDOR_ID 0x1209
- #define USB_CANDLELIGHT_PRODUCT_ID 0x2323
-@@ -34,8 +34,8 @@
- #define USB_ABE_CANDEBUGGER_FD_VENDOR_ID 0x16d0
- #define USB_ABE_CANDEBUGGER_FD_PRODUCT_ID 0x10b8
- 
--#define GSUSB_ENDPOINT_IN 1
--#define GSUSB_ENDPOINT_OUT 2
-+#define GS_USB_ENDPOINT_IN 1
-+#define GS_USB_ENDPOINT_OUT 2
- 
- /* Device specific constants */
- enum gs_usb_breq {
-@@ -491,7 +491,7 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
- 
-  resubmit_urb:
- 	usb_fill_bulk_urb(urb, usbcan->udev,
--			  usb_rcvbulkpipe(usbcan->udev, GSUSB_ENDPOINT_IN),
-+			  usb_rcvbulkpipe(usbcan->udev, GS_USB_ENDPOINT_IN),
- 			  hf, dev->parent->hf_size_rx,
- 			  gs_usb_receive_bulk_callback, usbcan);
- 
-@@ -659,7 +659,7 @@ static netdev_tx_t gs_can_start_xmit(struct sk_buff *skb,
- 	}
- 
- 	usb_fill_bulk_urb(urb, dev->udev,
--			  usb_sndbulkpipe(dev->udev, GSUSB_ENDPOINT_OUT),
-+			  usb_sndbulkpipe(dev->udev, GS_USB_ENDPOINT_OUT),
- 			  hf, dev->hf_size_tx,
- 			  gs_usb_xmit_callback, txc);
- 
-@@ -769,7 +769,7 @@ static int gs_can_open(struct net_device *netdev)
- 			usb_fill_bulk_urb(urb,
- 					  dev->udev,
- 					  usb_rcvbulkpipe(dev->udev,
--							  GSUSB_ENDPOINT_IN),
-+							  GS_USB_ENDPOINT_IN),
- 					  buf,
- 					  dev->parent->hf_size_rx,
- 					  gs_usb_receive_bulk_callback, parent);
-@@ -1063,8 +1063,8 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 	 * GS_CAN_FEATURE_QUIRK_BREQ_CANTACT_PRO to workaround this
- 	 * issue.
- 	 */
--	if (dev->udev->descriptor.idVendor == cpu_to_le16(USB_GSUSB_1_VENDOR_ID) &&
--	    dev->udev->descriptor.idProduct == cpu_to_le16(USB_GSUSB_1_PRODUCT_ID) &&
-+	if (dev->udev->descriptor.idVendor == cpu_to_le16(USB_GS_USB_1_VENDOR_ID) &&
-+	    dev->udev->descriptor.idProduct == cpu_to_le16(USB_GS_USB_1_PRODUCT_ID) &&
- 	    dev->udev->manufacturer && dev->udev->product &&
- 	    !strcmp(dev->udev->manufacturer, "LinkLayer Labs") &&
- 	    !strcmp(dev->udev->product, "CANtact Pro") &&
-@@ -1258,8 +1258,8 @@ static void gs_usb_disconnect(struct usb_interface *intf)
+diff --git a/drivers/net/can/sja1000/sja1000_platform.c b/drivers/net/can/sja1000/sja1000_platform.c
+index 81bc741905fd..6779d5357069 100644
+--- a/drivers/net/can/sja1000/sja1000_platform.c
++++ b/drivers/net/can/sja1000/sja1000_platform.c
+@@ -14,6 +14,7 @@
+ #include <linux/irq.h>
+ #include <linux/can/dev.h>
+ #include <linux/can/platform/sja1000.h>
++#include <linux/clk.h>
+ #include <linux/io.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+@@ -103,6 +104,11 @@ static void sp_technologic_init(struct sja1000_priv *priv, struct device_node *o
+ 	spin_lock_init(&tp->io_lock);
  }
  
- static const struct usb_device_id gs_usb_table[] = {
--	{ USB_DEVICE_INTERFACE_NUMBER(USB_GSUSB_1_VENDOR_ID,
--				      USB_GSUSB_1_PRODUCT_ID, 0) },
-+	{ USB_DEVICE_INTERFACE_NUMBER(USB_GS_USB_1_VENDOR_ID,
-+				      USB_GS_USB_1_PRODUCT_ID, 0) },
- 	{ USB_DEVICE_INTERFACE_NUMBER(USB_CANDLELIGHT_VENDOR_ID,
- 				      USB_CANDLELIGHT_PRODUCT_ID, 0) },
- 	{ USB_DEVICE_INTERFACE_NUMBER(USB_CES_CANEXT_FD_VENDOR_ID,
++static void sp_rzn1_init(struct sja1000_priv *priv, struct device_node *of)
++{
++	priv->flags = SJA1000_QUIRK_NO_CDR_REG;
++}
++
+ static void sp_populate(struct sja1000_priv *priv,
+ 			struct sja1000_platform_data *pdata,
+ 			unsigned long resource_mem_flags)
+@@ -153,11 +159,13 @@ static void sp_populate_of(struct sja1000_priv *priv, struct device_node *of)
+ 		priv->write_reg = sp_write_reg8;
+ 	}
+ 
+-	err = of_property_read_u32(of, "nxp,external-clock-frequency", &prop);
+-	if (!err)
+-		priv->can.clock.freq = prop / 2;
+-	else
+-		priv->can.clock.freq = SP_CAN_CLOCK; /* default */
++	if (!priv->can.clock.freq) {
++		err = of_property_read_u32(of, "nxp,external-clock-frequency", &prop);
++		if (!err)
++			priv->can.clock.freq = prop / 2;
++		else
++			priv->can.clock.freq = SP_CAN_CLOCK; /* default */
++	}
+ 
+ 	err = of_property_read_u32(of, "nxp,tx-output-mode", &prop);
+ 	if (!err)
+@@ -192,8 +200,13 @@ static struct sja1000_of_data technologic_data = {
+ 	.init = sp_technologic_init,
+ };
+ 
++static struct sja1000_of_data renesas_data = {
++	.init = sp_rzn1_init,
++};
++
+ static const struct of_device_id sp_of_table[] = {
+ 	{ .compatible = "nxp,sja1000", .data = NULL, },
++	{ .compatible = "renesas,rzn1-sja1000", .data = &renesas_data, },
+ 	{ .compatible = "technologic,sja1000", .data = &technologic_data, },
+ 	{ /* sentinel */ },
+ };
+@@ -210,6 +223,7 @@ static int sp_probe(struct platform_device *pdev)
+ 	struct device_node *of = pdev->dev.of_node;
+ 	const struct sja1000_of_data *of_data = NULL;
+ 	size_t priv_sz = 0;
++	struct clk *clk;
+ 
+ 	pdata = dev_get_platdata(&pdev->dev);
+ 	if (!pdata && !of) {
+@@ -234,6 +248,11 @@ static int sp_probe(struct platform_device *pdev)
+ 		irq = platform_get_irq(pdev, 0);
+ 		if (irq < 0)
+ 			return irq;
++
++		clk = devm_clk_get_optional_enabled(&pdev->dev, NULL);
++		if (IS_ERR(clk))
++			return dev_err_probe(&pdev->dev, PTR_ERR(clk),
++					     "CAN clk operation failed");
+ 	} else {
+ 		res_irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+ 		if (!res_irq)
+@@ -262,6 +281,15 @@ static int sp_probe(struct platform_device *pdev)
+ 	priv->reg_base = addr;
+ 
+ 	if (of) {
++		if (clk) {
++			priv->can.clock.freq  = clk_get_rate(clk) / 2;
++			if (!priv->can.clock.freq) {
++				err = -EINVAL;
++				dev_err(&pdev->dev, "Zero CAN clk rate");
++				goto exit_free;
++			}
++		}
++
+ 		sp_populate_of(priv, of);
+ 
+ 		if (of_data && of_data->init)
 -- 
 2.35.1
 
