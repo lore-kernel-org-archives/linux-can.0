@@ -2,44 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 573F7ECAAA1
-	for <linux-can@archiver.kernel.org>; Thu, 15 Sep 2022 08:21:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81C62ECAAD3
+	for <linux-can@archiver.kernel.org>; Thu, 15 Sep 2022 08:22:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230287AbiIOIVn (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 15 Sep 2022 04:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58502 "EHLO
+        id S230363AbiIOIV7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 15 Sep 2022 04:21:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbiIOIU7 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 15 Sep 2022 04:20:59 -0400
+        with ESMTP id S230307AbiIOIVS (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 15 Sep 2022 04:21:18 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D760397EE4
-        for <linux-can@vger.kernel.org>; Thu, 15 Sep 2022 01:20:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D765F97EF8
+        for <linux-can@vger.kernel.org>; Thu, 15 Sep 2022 01:20:37 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oYk6s-0004Wu-L0
-        for linux-can@vger.kernel.org; Thu, 15 Sep 2022 10:20:34 +0200
+        id 1oYk6t-0004YY-96
+        for linux-can@vger.kernel.org; Thu, 15 Sep 2022 10:20:35 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id D9AE9E39CD
-        for <linux-can@vger.kernel.org>; Thu, 15 Sep 2022 08:20:19 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 2768BE39D7
+        for <linux-can@vger.kernel.org>; Thu, 15 Sep 2022 08:20:20 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 37838E3946;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 50D99E394B;
         Thu, 15 Sep 2022 08:20:16 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 224944ae;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f01f521e;
         Thu, 15 Sep 2022 08:20:15 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Yang Yingliang <yangyingliang@huawei.com>,
+        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 16/23] can: flexcan: Switch to use dev_err_probe() helper
-Date:   Thu, 15 Sep 2022 10:20:06 +0200
-Message-Id: <20220915082013.369072-17-mkl@pengutronix.de>
+Subject: [PATCH net-next 18/23] can: skb: add skb CAN frame data length helpers
+Date:   Thu, 15 Sep 2022 10:20:08 +0200
+Message-Id: <20220915082013.369072-19-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220915082013.369072-1-mkl@pengutronix.de>
 References: <20220915082013.369072-1-mkl@pengutronix.de>
@@ -53,32 +54,116 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-dev_err() can be replace with dev_err_probe() which will check if error
-code is -EPROBE_DEFER.
+Add two helpers to retrieve the data length from CAN sk_buffs and prepare
+the length information to be a uint16 value for the CAN XL support.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/all/20220914134030.3782754-1-yangyingliang@huawei.com
+Acked-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://lore.kernel.org/all/20220912170725.120748-3-socketcan@hartkopp.net
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan/flexcan-core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/can/dev/rx-offload.c |  2 +-
+ drivers/net/can/dev/skb.c        | 12 ++++--------
+ include/linux/can/skb.h          | 24 +++++++++++++++++++++++-
+ 3 files changed, 28 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index bbe5b0c997f8..5e27944b8a21 100644
---- a/drivers/net/can/flexcan/flexcan-core.c
-+++ b/drivers/net/can/flexcan/flexcan-core.c
-@@ -2177,8 +2177,7 @@ static int flexcan_probe(struct platform_device *pdev)
+diff --git a/drivers/net/can/dev/rx-offload.c b/drivers/net/can/dev/rx-offload.c
+index ad8eb243fe78..81ebf0562c89 100644
+--- a/drivers/net/can/dev/rx-offload.c
++++ b/drivers/net/can/dev/rx-offload.c
+@@ -247,7 +247,7 @@ unsigned int can_rx_offload_get_echo_skb(struct can_rx_offload *offload,
+ 	struct net_device *dev = offload->dev;
+ 	struct net_device_stats *stats = &dev->stats;
+ 	struct sk_buff *skb;
+-	u8 len;
++	unsigned int len;
+ 	int err;
  
- 	err = flexcan_setup_stop_mode(pdev);
- 	if (err < 0) {
--		if (err != -EPROBE_DEFER)
--			dev_err(&pdev->dev, "setup stop mode failed\n");
-+		dev_err_probe(&pdev->dev, err, "setup stop mode failed\n");
- 		goto failed_setup_stop_mode;
- 	}
+ 	skb = __can_get_echo_skb(dev, idx, &len, frame_len_ptr);
+diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
+index f457c94ba82f..b896e1ce3b47 100644
+--- a/drivers/net/can/dev/skb.c
++++ b/drivers/net/can/dev/skb.c
+@@ -91,8 +91,8 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ EXPORT_SYMBOL_GPL(can_put_echo_skb);
  
+ struct sk_buff *
+-__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr,
+-		   unsigned int *frame_len_ptr)
++__can_get_echo_skb(struct net_device *dev, unsigned int idx,
++		   unsigned int *len_ptr, unsigned int *frame_len_ptr)
+ {
+ 	struct can_priv *priv = netdev_priv(dev);
+ 
+@@ -108,16 +108,12 @@ __can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr,
+ 		 */
+ 		struct sk_buff *skb = priv->echo_skb[idx];
+ 		struct can_skb_priv *can_skb_priv = can_skb_prv(skb);
+-		struct canfd_frame *cf = (struct canfd_frame *)skb->data;
+ 
+ 		if (skb_shinfo(skb)->tx_flags & SKBTX_IN_PROGRESS)
+ 			skb_tstamp_tx(skb, skb_hwtstamps(skb));
+ 
+ 		/* get the real payload length for netdev statistics */
+-		if (cf->can_id & CAN_RTR_FLAG)
+-			*len_ptr = 0;
+-		else
+-			*len_ptr = cf->len;
++		*len_ptr = can_skb_get_data_len(skb);
+ 
+ 		if (frame_len_ptr)
+ 			*frame_len_ptr = can_skb_priv->frame_len;
+@@ -147,7 +143,7 @@ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx,
+ 			      unsigned int *frame_len_ptr)
+ {
+ 	struct sk_buff *skb;
+-	u8 len;
++	unsigned int len;
+ 
+ 	skb = __can_get_echo_skb(dev, idx, &len, frame_len_ptr);
+ 	if (!skb)
+diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
+index 27ebfc28510f..ddffc2fc008c 100644
+--- a/include/linux/can/skb.h
++++ b/include/linux/can/skb.h
+@@ -20,7 +20,8 @@ void can_flush_echo_skb(struct net_device *dev);
+ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 		     unsigned int idx, unsigned int frame_len);
+ struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx,
+-				   u8 *len_ptr, unsigned int *frame_len_ptr);
++				   unsigned int *len_ptr,
++				   unsigned int *frame_len_ptr);
+ unsigned int __must_check can_get_echo_skb(struct net_device *dev,
+ 					   unsigned int idx,
+ 					   unsigned int *frame_len_ptr);
+@@ -113,4 +114,25 @@ static inline bool can_is_canfd_skb(const struct sk_buff *skb)
+ 	return (skb->len == CANFD_MTU && cfd->len <= CANFD_MAX_DLEN);
+ }
+ 
++/* get length element value from can[fd]_frame structure */
++static inline unsigned int can_skb_get_len_val(struct sk_buff *skb)
++{
++	const struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
++
++	return cfd->len;
++}
++
++/* get needed data length inside CAN frame for all frame types (RTR aware) */
++static inline unsigned int can_skb_get_data_len(struct sk_buff *skb)
++{
++	unsigned int len = can_skb_get_len_val(skb);
++	const struct can_frame *cf = (struct can_frame *)skb->data;
++
++	/* RTR frames have an actual length of zero */
++	if (can_is_can_skb(skb) && cf->can_id & CAN_RTR_FLAG)
++		return 0;
++
++	return len;
++}
++
+ #endif /* !_CAN_SKB_H */
 -- 
 2.35.1
 
