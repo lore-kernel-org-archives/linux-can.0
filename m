@@ -2,39 +2,37 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9346AECAAD3
-	for <linux-can@archiver.kernel.org>; Thu, 15 Sep 2022 01:56:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C13EFC6FA82
+	for <linux-can@archiver.kernel.org>; Thu, 15 Sep 2022 01:56:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbiIOB4F (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 14 Sep 2022 21:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47494 "EHLO
+        id S230019AbiIOB4G (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 14 Sep 2022 21:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbiIOB4E (ORCPT
+        with ESMTP id S229709AbiIOB4E (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 14 Sep 2022 21:56:04 -0400
 Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF228E4F2;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD9C8E472;
         Wed, 14 Sep 2022 18:56:03 -0700 (PDT)
-Received: from canpemm500006.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MSgDg2wbdz14QZp;
-        Thu, 15 Sep 2022 09:52:03 +0800 (CST)
+Received: from canpemm500006.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MSgDf6Qdvz14QZV;
+        Thu, 15 Sep 2022 09:52:02 +0800 (CST)
 Received: from localhost.localdomain (10.175.104.82) by
  canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 15 Sep 2022 09:56:01 +0800
+ 15.1.2375.31; Thu, 15 Sep 2022 09:56:00 +0800
 From:   Ziyang Xuan <william.xuanziyang@huawei.com>
 To:     <socketcan@hartkopp.net>, <mkl@pengutronix.de>,
         <davem@davemloft.net>, <kuba@kernel.org>,
         <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>
 CC:     <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 1/2] can: bcm: registration process optimization in bcm_module_init()
-Date:   Thu, 15 Sep 2022 09:55:55 +0800
-Message-ID: <823cff0ebec33fa9389eeaf8b8ded3217c32cb38.1663206163.git.william.xuanziyang@huawei.com>
+Subject: [PATCH v2 0/2] can: bcm: can: bcm: random optimizations
+Date:   Thu, 15 Sep 2022 09:55:54 +0800
+Message-ID: <cover.1663206163.git.william.xuanziyang@huawei.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1663206163.git.william.xuanziyang@huawei.com>
-References: <cover.1663206163.git.william.xuanziyang@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Originating-IP: [10.175.104.82]
 X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  canpemm500006.china.huawei.com (7.192.105.130)
@@ -43,57 +41,20 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Now, register_netdevice_notifier() and register_pernet_subsys() are both
-after can_proto_register(). It can create CAN_BCM socket and process socket
-once can_proto_register() successfully, so it is possible missing notifier
-event or proc node creation because notifier or bcm proc directory is not
-registered or created yet. Although this is a low probability scenario, it
-is not impossible.
+Do some small optimization for can_bcm.
 
-Move register_pernet_subsys() and register_netdevice_notifier() to the
-front of can_proto_register(). In addition, register_pernet_subsys() and
-register_netdevice_notifier() may fail, check their results are necessary.
-
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
 ---
- net/can/bcm.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+v2:
+  - Continue to update currframe when can_send() failed in patch 2.
+  - Remove ‘Fixes’ tag in patch 2.
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index e60161bec850..e2783156bfd1 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -1744,15 +1744,27 @@ static int __init bcm_module_init(void)
- 
- 	pr_info("can: broadcast manager protocol\n");
- 
-+	err = register_pernet_subsys(&canbcm_pernet_ops);
-+	if (err)
-+		return err;
-+
-+	err = register_netdevice_notifier(&canbcm_notifier);
-+	if (err)
-+		goto register_notifier_failed;
-+
- 	err = can_proto_register(&bcm_can_proto);
- 	if (err < 0) {
- 		printk(KERN_ERR "can: registration of bcm protocol failed\n");
--		return err;
-+		goto register_proto_failed;
- 	}
- 
--	register_pernet_subsys(&canbcm_pernet_ops);
--	register_netdevice_notifier(&canbcm_notifier);
- 	return 0;
-+
-+register_proto_failed:
-+	unregister_netdevice_notifier(&canbcm_notifier);
-+register_notifier_failed:
-+	unregister_pernet_subsys(&canbcm_pernet_ops);
-+	return err;
- }
- 
- static void __exit bcm_module_exit(void)
+Ziyang Xuan (2):
+  can: bcm: registration process optimization in bcm_module_init()
+  can: bcm: check the result of can_send() in bcm_can_tx()
+
+ net/can/bcm.c | 25 +++++++++++++++++++------
+ 1 file changed, 19 insertions(+), 6 deletions(-)
+
 -- 
 2.25.1
 
