@@ -2,44 +2,47 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AB5CECAAD3
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B17FECAAA1
 	for <linux-can@archiver.kernel.org>; Thu, 15 Sep 2022 08:21:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230243AbiIOIVA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 15 Sep 2022 04:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
+        id S230215AbiIOIVB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 15 Sep 2022 04:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230235AbiIOIUo (ORCPT
+        with ESMTP id S230252AbiIOIUo (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 15 Sep 2022 04:20:44 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0BA697D47
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0BE797D49
         for <linux-can@vger.kernel.org>; Thu, 15 Sep 2022 01:20:31 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oYk6n-0004Os-KW
+        id 1oYk6n-0004Pi-T0
         for linux-can@vger.kernel.org; Thu, 15 Sep 2022 10:20:29 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id BE401E39A4
+        by bjornoya.blackshift.org (Postfix) with SMTP id E7F05E39AC
         for <linux-can@vger.kernel.org>; Thu, 15 Sep 2022 08:20:18 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 1E7D0E3943;
-        Thu, 15 Sep 2022 08:20:16 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id F3692E393D;
+        Thu, 15 Sep 2022 08:20:15 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7092be0d;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 44e4da40;
         Thu, 15 Sep 2022 08:20:15 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Ziyang Xuan <william.xuanziyang@huawei.com>,
+        kernel@pengutronix.de,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Kees Cook <keescook@chromium.org>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 14/23] can: raw: process optimization in raw_init()
-Date:   Thu, 15 Sep 2022 10:20:04 +0200
-Message-Id: <20220915082013.369072-15-mkl@pengutronix.de>
+Subject: [PATCH net-next 11/23] can: etas_es58x: Replace zero-length array with DECLARE_FLEX_ARRAY() helper
+Date:   Thu, 15 Sep 2022 10:20:01 +0200
+Message-Id: <20220915082013.369072-12-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220915082013.369072-1-mkl@pengutronix.de>
 References: <20220915082013.369072-1-mkl@pengutronix.de>
@@ -53,52 +56,39 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
 
-Now, register notifier after register proto successfully. It can create
-raw socket and set socket options once register proto successfully, so it
-is possible missing notifier event before register notifier successfully
-although this is a low probability scenario.
+Zero-length arrays are deprecated and we are moving towards adopting
+C99 flexible-array members, instead. So, replace zero-length array
+declaration in union es58x_urb_cmd with the new DECLARE_FLEX_ARRAY()
+helper macro.
 
-Move notifier registration to the front of proto registration like done
-in j1939. In addition, register_netdevice_notifier() may fail, check its
-result is necessary.
+This helper allows for a flexible-array member in a union.
 
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-Link: https://lore.kernel.org/all/7af9401f0d2d9fed36c1667b5ac9b8df8f8b87ee.1661584485.git.william.xuanziyang@huawei.com
+Link: https://github.com/KSPP/linux/issues/193
+Link: https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Acked-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/all/Yw00w6XRcq7B6ub6@work
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/raw.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/net/can/usb/etas_es58x/es58x_core.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/can/raw.c b/net/can/raw.c
-index d1bd9cc51ebe..9ae7c4206b9a 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -942,12 +942,20 @@ static __init int raw_module_init(void)
+diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.h b/drivers/net/can/usb/etas_es58x/es58x_core.h
+index d769bdf740b7..640fe0a1df63 100644
+--- a/drivers/net/can/usb/etas_es58x/es58x_core.h
++++ b/drivers/net/can/usb/etas_es58x/es58x_core.h
+@@ -222,7 +222,7 @@ union es58x_urb_cmd {
+ 		u8 cmd_type;
+ 		u8 cmd_id;
+ 	} __packed;
+-	u8 raw_cmd[0];
++	DECLARE_FLEX_ARRAY(u8, raw_cmd);
+ };
  
- 	pr_info("can: raw protocol\n");
- 
-+	err = register_netdevice_notifier(&canraw_notifier);
-+	if (err)
-+		return err;
-+
- 	err = can_proto_register(&raw_can_proto);
--	if (err < 0)
-+	if (err < 0) {
- 		pr_err("can: registration of raw protocol failed\n");
--	else
--		register_netdevice_notifier(&canraw_notifier);
-+		goto register_proto_failed;
-+	}
- 
-+	return 0;
-+
-+register_proto_failed:
-+	unregister_netdevice_notifier(&canraw_notifier);
- 	return err;
- }
- 
+ /**
 -- 
 2.35.1
 
