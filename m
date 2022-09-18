@@ -2,49 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18E78ECAAD8
-	for <linux-can@archiver.kernel.org>; Sun, 18 Sep 2022 21:18:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DD14C6FA82
+	for <linux-can@archiver.kernel.org>; Sun, 18 Sep 2022 21:31:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbiIRVSO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 18 Sep 2022 17:18:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56218 "EHLO
+        id S229483AbiIRVbp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 18 Sep 2022 17:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbiIRVSK (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 18 Sep 2022 17:18:10 -0400
+        with ESMTP id S229458AbiIRVbo (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 18 Sep 2022 17:31:44 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C9312757
-        for <linux-can@vger.kernel.org>; Sun, 18 Sep 2022 14:18:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D742D13E2E
+        for <linux-can@vger.kernel.org>; Sun, 18 Sep 2022 14:31:42 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oa1fy-0002Mo-OH
-        for linux-can@vger.kernel.org; Sun, 18 Sep 2022 23:18:06 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id D2D0CE570B
-        for <linux-can@vger.kernel.org>; Sun, 18 Sep 2022 21:18:05 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        id 1oa1t4-0003aH-Br; Sun, 18 Sep 2022 23:31:38 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:9e88:da4f:2587:9741])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 325B4E56FF;
-        Sun, 18 Sep 2022 21:18:05 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 98799521;
-        Sun, 18 Sep 2022 21:18:04 +0000 (UTC)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 5F947E572D;
+        Sun, 18 Sep 2022 21:31:34 +0000 (UTC)
+Date:   Sun, 18 Sep 2022 23:31:26 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     linux-can@vger.kernel.org
-Cc:     Daniel Trevitz <daniel.trevitz@wika.com>,
-        Ryan Edwards <ryan.edwards@gmail.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v2 1/3] can: gs_usb: gs_make_candev(): convert from usb_control_msg() to usb_control_msg_recv()
-Date:   Sun, 18 Sep 2022 23:18:00 +0200
-Message-Id: <20220918211802.692405-2-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220918211802.692405-1-mkl@pengutronix.de>
-References: <20220918211802.692405-1-mkl@pengutronix.de>
+To:     Rhett Aultman <rhett.aultman@samsara.com>
+Cc:     linux-can@vger.kernel.org,
+        Vasanth Sadhasivan <vasanth.sadhasivan@samsara.com>
+Subject: Re: [PATCH 1/1] can: gs_usb: remove dma allocations
+Message-ID: <20220918213126.jl3vqvn6yjwrltj7@pengutronix.de>
+References: <20220913204110.89730-1-rhett.aultman@samsara.com>
+ <20220913204110.89730-2-rhett.aultman@samsara.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="h7ikseqjnxdguhub"
+Content-Disposition: inline
+In-Reply-To: <20220913204110.89730-2-rhett.aultman@samsara.com>
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -53,166 +48,78 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Convert the gs_make_candev() function to use usb_control_msg_recv()
-instead of usb_control_msg(). Which allows the received data to be
-placed on the stack.
 
-This makes error handling a lot easier as we don't have to deal with
-freeing the allocated memory.
+--h7ikseqjnxdguhub
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/usb/gs_usb.c | 82 +++++++++++++++---------------------
- 1 file changed, 33 insertions(+), 49 deletions(-)
+On 13.09.2022 16:41:10, Rhett Aultman wrote:
+> From: Vasanth Sadhasivan <vasanth.sadhasivan@samsara.com>
+>=20
+> DMA allocated buffers are a precious resource. If there is no need for DMA
+> allocations, then it might be worth to use non-dma allocated buffers.
+> After testing the gs_usb driver with and without DMA allocation, there
+> does not seem to be a significant change in latency or cpu utilization
+> either way. Therefore, DMA allocation is not necessary and removed.
+>=20
+> Co-developed-by: Rhett Aultman <rhett.aultman@samsara.com>
+> Signed-off-by: Rhett Aultman <rhett.aultman@samsara.com>
+> Signed-off-by: Vasanth Sadhasivan <vasanth.sadhasivan@samsara.com>
+> ---
+>  drivers/net/can/usb/gs_usb.c | 38 ++++++++++--------------------------
+>  1 file changed, 10 insertions(+), 28 deletions(-)
+>=20
+> diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+> index baf749c8cda3..1bfc775c62c5 100644
+> --- a/drivers/net/can/usb/gs_usb.c
+> +++ b/drivers/net/can/usb/gs_usb.c
+> @@ -269,7 +269,6 @@ struct gs_can {
+>  	struct usb_anchor tx_submitted;
+>  	atomic_t active_tx_urbs;
+>  	void *rxbuf[GS_MAX_RX_URBS];
+> -	dma_addr_t rxbuf_dma[GS_MAX_RX_URBS];
+>  };
+> =20
+>  /* usb interface struct */
+> @@ -587,9 +586,7 @@ static void gs_usb_xmit_callback(struct urb *urb)
+> =20
+>  	if (urb->status)
+>  		netdev_info(netdev, "usb xmit fail %u\n", txc->echo_id);
+> -
+> -	usb_free_coherent(urb->dev, urb->transfer_buffer_length,
+> -			  urb->transfer_buffer, urb->transfer_dma);
+> +	devm_kfree(&urb->dev->dev, urb->transfer_buffer);
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index cc363f1935ce..16e56394ef9b 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -1124,26 +1124,21 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 	struct gs_can *dev;
- 	struct net_device *netdev;
- 	int rc;
--	struct gs_device_bt_const *bt_const;
--	struct gs_device_bt_const_extended *bt_const_extended;
-+	struct gs_device_bt_const_extended bt_const_extended;
-+	struct gs_device_bt_const bt_const;
- 	u32 feature;
- 
--	bt_const = kmalloc(sizeof(*bt_const), GFP_KERNEL);
--	if (!bt_const)
--		return ERR_PTR(-ENOMEM);
--
- 	/* fetch bit timing constants */
--	rc = usb_control_msg(interface_to_usbdev(intf),
--			     usb_rcvctrlpipe(interface_to_usbdev(intf), 0),
--			     GS_USB_BREQ_BT_CONST,
--			     USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
--			     channel, 0, bt_const, sizeof(*bt_const), 1000);
-+	rc = usb_control_msg_recv(interface_to_usbdev(intf), 0,
-+				  GS_USB_BREQ_BT_CONST,
-+				  USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
-+				  channel, 0, &bt_const, sizeof(bt_const), 1000,
-+				  GFP_KERNEL);
- 
--	if (rc < 0) {
-+	if (rc) {
- 		dev_err(&intf->dev,
- 			"Couldn't get bit timing const for channel (err=%d)\n",
- 			rc);
--		kfree(bt_const);
- 		return ERR_PTR(rc);
- 	}
- 
-@@ -1151,7 +1146,6 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 	netdev = alloc_candev(sizeof(struct gs_can), GS_MAX_TX_URBS);
- 	if (!netdev) {
- 		dev_err(&intf->dev, "Couldn't allocate candev\n");
--		kfree(bt_const);
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
-@@ -1164,14 +1158,14 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 
- 	/* dev setup */
- 	strcpy(dev->bt_const.name, KBUILD_MODNAME);
--	dev->bt_const.tseg1_min = le32_to_cpu(bt_const->tseg1_min);
--	dev->bt_const.tseg1_max = le32_to_cpu(bt_const->tseg1_max);
--	dev->bt_const.tseg2_min = le32_to_cpu(bt_const->tseg2_min);
--	dev->bt_const.tseg2_max = le32_to_cpu(bt_const->tseg2_max);
--	dev->bt_const.sjw_max = le32_to_cpu(bt_const->sjw_max);
--	dev->bt_const.brp_min = le32_to_cpu(bt_const->brp_min);
--	dev->bt_const.brp_max = le32_to_cpu(bt_const->brp_max);
--	dev->bt_const.brp_inc = le32_to_cpu(bt_const->brp_inc);
-+	dev->bt_const.tseg1_min = le32_to_cpu(bt_const.tseg1_min);
-+	dev->bt_const.tseg1_max = le32_to_cpu(bt_const.tseg1_max);
-+	dev->bt_const.tseg2_min = le32_to_cpu(bt_const.tseg2_min);
-+	dev->bt_const.tseg2_max = le32_to_cpu(bt_const.tseg2_max);
-+	dev->bt_const.sjw_max = le32_to_cpu(bt_const.sjw_max);
-+	dev->bt_const.brp_min = le32_to_cpu(bt_const.brp_min);
-+	dev->bt_const.brp_max = le32_to_cpu(bt_const.brp_max);
-+	dev->bt_const.brp_inc = le32_to_cpu(bt_const.brp_inc);
- 
- 	dev->udev = interface_to_usbdev(intf);
- 	dev->iface = intf;
-@@ -1188,13 +1182,13 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 
- 	/* can setup */
- 	dev->can.state = CAN_STATE_STOPPED;
--	dev->can.clock.freq = le32_to_cpu(bt_const->fclk_can);
-+	dev->can.clock.freq = le32_to_cpu(bt_const.fclk_can);
- 	dev->can.bittiming_const = &dev->bt_const;
- 	dev->can.do_set_bittiming = gs_usb_set_bittiming;
- 
- 	dev->can.ctrlmode_supported = CAN_CTRLMODE_CC_LEN8_DLC;
- 
--	feature = le32_to_cpu(bt_const->feature);
-+	feature = le32_to_cpu(bt_const.feature);
- 	dev->feature = FIELD_GET(GS_CAN_FEATURE_MASK, feature);
- 	if (feature & GS_CAN_FEATURE_LISTEN_ONLY)
- 		dev->can.ctrlmode_supported |= CAN_CTRLMODE_LISTENONLY;
-@@ -1244,45 +1238,35 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 		if (feature & GS_CAN_FEATURE_IDENTIFY)
- 			netdev->ethtool_ops = &gs_usb_ethtool_ops;
- 
--	kfree(bt_const);
--
- 	/* fetch extended bit timing constants if device has feature
- 	 * GS_CAN_FEATURE_FD and GS_CAN_FEATURE_BT_CONST_EXT
- 	 */
- 	if (feature & GS_CAN_FEATURE_FD &&
- 	    feature & GS_CAN_FEATURE_BT_CONST_EXT) {
--		bt_const_extended = kmalloc(sizeof(*bt_const_extended), GFP_KERNEL);
--		if (!bt_const_extended)
--			return ERR_PTR(-ENOMEM);
--
--		rc = usb_control_msg(interface_to_usbdev(intf),
--				     usb_rcvctrlpipe(interface_to_usbdev(intf), 0),
--				     GS_USB_BREQ_BT_CONST_EXT,
--				     USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
--				     channel, 0, bt_const_extended,
--				     sizeof(*bt_const_extended),
--				     1000);
--		if (rc < 0) {
-+		rc = usb_control_msg_recv(interface_to_usbdev(intf), 0,
-+					  GS_USB_BREQ_BT_CONST_EXT,
-+					  USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
-+					  channel, 0, &bt_const_extended,
-+					  sizeof(bt_const_extended),
-+					  1000, GFP_KERNEL);
-+		if (rc) {
- 			dev_err(&intf->dev,
- 				"Couldn't get extended bit timing const for channel (err=%d)\n",
- 				rc);
--			kfree(bt_const_extended);
- 			return ERR_PTR(rc);
- 		}
- 
- 		strcpy(dev->data_bt_const.name, KBUILD_MODNAME);
--		dev->data_bt_const.tseg1_min = le32_to_cpu(bt_const_extended->dtseg1_min);
--		dev->data_bt_const.tseg1_max = le32_to_cpu(bt_const_extended->dtseg1_max);
--		dev->data_bt_const.tseg2_min = le32_to_cpu(bt_const_extended->dtseg2_min);
--		dev->data_bt_const.tseg2_max = le32_to_cpu(bt_const_extended->dtseg2_max);
--		dev->data_bt_const.sjw_max = le32_to_cpu(bt_const_extended->dsjw_max);
--		dev->data_bt_const.brp_min = le32_to_cpu(bt_const_extended->dbrp_min);
--		dev->data_bt_const.brp_max = le32_to_cpu(bt_const_extended->dbrp_max);
--		dev->data_bt_const.brp_inc = le32_to_cpu(bt_const_extended->dbrp_inc);
-+		dev->data_bt_const.tseg1_min = le32_to_cpu(bt_const_extended.dtseg1_min);
-+		dev->data_bt_const.tseg1_max = le32_to_cpu(bt_const_extended.dtseg1_max);
-+		dev->data_bt_const.tseg2_min = le32_to_cpu(bt_const_extended.dtseg2_min);
-+		dev->data_bt_const.tseg2_max = le32_to_cpu(bt_const_extended.dtseg2_max);
-+		dev->data_bt_const.sjw_max = le32_to_cpu(bt_const_extended.dsjw_max);
-+		dev->data_bt_const.brp_min = le32_to_cpu(bt_const_extended.dbrp_min);
-+		dev->data_bt_const.brp_max = le32_to_cpu(bt_const_extended.dbrp_max);
-+		dev->data_bt_const.brp_inc = le32_to_cpu(bt_const_extended.dbrp_inc);
- 
- 		dev->can.data_bittiming_const = &dev->data_bt_const;
--
--		kfree(bt_const_extended);
- 	}
- 
- 	SET_NETDEV_DEV(netdev, &intf->dev);
--- 
-2.35.1
+Consider using the URB_FREE_BUFFER flag:
 
+| https://elixir.bootlin.com/linux/v5.19/source/include/linux/usb.h#L1330
 
+and standard kmalloc() (i.e. not devm_kmalloc()). The USB stack will
+take care of kfree()ing the buffer associated with each URB.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--h7ikseqjnxdguhub
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmMnjisACgkQrX5LkNig
+012o2Af7BV8xNLmDJszUyclJ8V3EraunjPIzKUqxyD8c9BRe/gswq+/vGb0Wj1K5
+8WudGhXuEwbW3UMudigKIKTPlBc4YXpItGch0ZKv6K2MncWOsmSGQIWAlMx97bmk
+DPvzHV8txDEZcKk6LAjW5QP5/yTbxT2qe4842uooAznvHovamsa/1s9+k3j8jd4F
+Ruib6mpR2/mehkXc9ET2Y1nBV0LGNWzJsAhrcf/dIOm5LXG4sFsOfX6spL2suq1y
+7iYnsve4EcuiUCMn1t3ZQ5cp934HbfYYzR64cyiGsJyv22KNvwAalm+qDyYeMKu5
+BnOvfR0OhICc3EVk8Kih8ElW9IPu7g==
+=eu0n
+-----END PGP SIGNATURE-----
+
+--h7ikseqjnxdguhub--
