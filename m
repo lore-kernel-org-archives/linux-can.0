@@ -2,47 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DB92ECAAD8
-	for <linux-can@archiver.kernel.org>; Sun, 18 Sep 2022 21:18:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A8B9C6FA82
+	for <linux-can@archiver.kernel.org>; Sun, 18 Sep 2022 21:18:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbiIRVSK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 18 Sep 2022 17:18:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56214 "EHLO
+        id S229541AbiIRVSL (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 18 Sep 2022 17:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbiIRVSJ (ORCPT
+        with ESMTP id S229566AbiIRVSJ (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Sun, 18 Sep 2022 17:18:09 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4007C11828
-        for <linux-can@vger.kernel.org>; Sun, 18 Sep 2022 14:18:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D0B120A6
+        for <linux-can@vger.kernel.org>; Sun, 18 Sep 2022 14:18:07 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oa1fy-0002Mp-OF
+        id 1oa1fy-0002MY-5L
         for linux-can@vger.kernel.org; Sun, 18 Sep 2022 23:18:06 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id E6C25E570C
+        by bjornoya.blackshift.org (Postfix) with SMTP id 865F3E5706
         for <linux-can@vger.kernel.org>; Sun, 18 Sep 2022 21:18:05 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 385A7E5700;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 21227E56FE;
         Sun, 18 Sep 2022 21:18:05 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 691a34c9;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 9fd7984a;
         Sun, 18 Sep 2022 21:18:04 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     Daniel Trevitz <daniel.trevitz@wika.com>,
-        Ryan Edwards <ryan.edwards@gmail.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v2 2/3] can: gs_usb: gs_make_candev(): clean up error handling
-Date:   Sun, 18 Sep 2022 23:18:01 +0200
-Message-Id: <20220918211802.692405-3-mkl@pengutronix.de>
+        Ryan Edwards <ryan.edwards@gmail.com>
+Subject: [PATCH v2 0/3] can: gs_usb: cleanups and termination support
+Date:   Sun, 18 Sep 2022 23:17:59 +0200
+Message-Id: <20220918211802.692405-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220918211802.692405-1-mkl@pengutronix.de>
-References: <20220918211802.692405-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -53,66 +50,23 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Introduce a label to free the allocated candev in case of a error and
-make use of if. Fix a memory leak if the extended bit timing cannot be
-read. Extend the error messages to print the number of the failing
-channel and the symbolic error name.
+Hello,
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/usb/gs_usb.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+this series first cleans up the driver a bit and then adds switchable
+termination support.
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index 16e56394ef9b..bfa061687d13 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -1137,8 +1137,8 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 
- 	if (rc) {
- 		dev_err(&intf->dev,
--			"Couldn't get bit timing const for channel (err=%d)\n",
--			rc);
-+			"Couldn't get bit timing const for channel %d (%pe)\n",
-+			channel, ERR_PTR(rc));
- 		return ERR_PTR(rc);
- 	}
- 
-@@ -1251,9 +1251,9 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 					  1000, GFP_KERNEL);
- 		if (rc) {
- 			dev_err(&intf->dev,
--				"Couldn't get extended bit timing const for channel (err=%d)\n",
--				rc);
--			return ERR_PTR(rc);
-+				"Couldn't get extended bit timing const for channel %d (%pe)\n",
-+				channel, ERR_PTR(rc));
-+			goto out_free_candev;
- 		}
- 
- 		strcpy(dev->data_bt_const.name, KBUILD_MODNAME);
-@@ -1273,12 +1273,17 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 
- 	rc = register_candev(dev->netdev);
- 	if (rc) {
--		free_candev(dev->netdev);
--		dev_err(&intf->dev, "Couldn't register candev (err=%d)\n", rc);
--		return ERR_PTR(rc);
-+		dev_err(&intf->dev,
-+			"Couldn't register candev for channel %d (%pe)\n",
-+			channel, ERR_PTR(rc));
-+		goto out_free_candev;
- 	}
- 
- 	return dev;
-+
-+ out_free_candev:
-+	free_candev(dev->netdev);
-+	return ERR_PTR(rc);
- }
- 
- static void gs_destroy_candev(struct gs_can *dev)
--- 
-2.35.1
+regards,
+Marc
+
+changes since v1 https://lore.kernel.org/all/20220918202348.675850-1-mkl@pengutronix.de:
+- add 1/3: "can: gs_usb: gs_make_candev(): convert from usb_control_msg() to usb_control_msg_recv()"
+  to make error handling easier
+- add 2/3: "can: gs_usb: gs_make_candev(): clean up error handling"
+  which introduces a cleanup label
+- move 1/3 to 3/3:
+  - fix gs_usb_get_termination(), set term value
+  - remove check of termination value from gs_usb_set_termination()
+  - check for initial termination in gs_make_candev()
+
 
 
