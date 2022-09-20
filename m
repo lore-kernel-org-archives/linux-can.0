@@ -2,45 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D214C54EE9
-	for <linux-can@archiver.kernel.org>; Tue, 20 Sep 2022 09:29:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A02A8ECAAD8
+	for <linux-can@archiver.kernel.org>; Tue, 20 Sep 2022 09:30:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbiITJ3w (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 20 Sep 2022 05:29:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59016 "EHLO
+        id S231252AbiITJaR (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 20 Sep 2022 05:30:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230500AbiITJ3g (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 20 Sep 2022 05:29:36 -0400
+        with ESMTP id S229775AbiITJ3r (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 20 Sep 2022 05:29:47 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7FC55BD
-        for <linux-can@vger.kernel.org>; Tue, 20 Sep 2022 02:29:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A60A10B6
+        for <linux-can@vger.kernel.org>; Tue, 20 Sep 2022 02:29:31 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oaZZM-0005li-CO
-        for linux-can@vger.kernel.org; Tue, 20 Sep 2022 11:29:32 +0200
+        id 1oaZZJ-0005hA-ON
+        for linux-can@vger.kernel.org; Tue, 20 Sep 2022 11:29:29 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id A8090E7325
+        by bjornoya.blackshift.org (Postfix) with SMTP id 10CB1E730D
         for <linux-can@vger.kernel.org>; Tue, 20 Sep 2022 09:29:21 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 40529E72B0;
-        Tue, 20 Sep 2022 09:29:18 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id EEFE4E72A6;
+        Tue, 20 Sep 2022 09:29:17 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3d3fec61;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 093e4517;
         Tue, 20 Sep 2022 09:29:17 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Anssi Hannula <anssi.hannula@bitwise.fi>,
-        stable@vger.kernel.org, Jimmy Assarsson <extja@kvaser.com>,
+        kernel@pengutronix.de, Jimmy Assarsson <extja@kvaser.com>,
+        stable@vger.kernel.org, Anssi Hannula <anssi.hannula@bitwise.fi>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 13/17] can: kvaser_usb_leaf: Fix wrong CAN state after stopping
-Date:   Tue, 20 Sep 2022 11:29:11 +0200
-Message-Id: <20220920092915.921613-14-mkl@pengutronix.de>
+Subject: [PATCH net 08/17] can: kvaser_usb: kvaser_usb_leaf: Handle CMD_ERROR_EVENT
+Date:   Tue, 20 Sep 2022 11:29:06 +0200
+Message-Id: <20220920092915.921613-9-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220920092915.921613-1-mkl@pengutronix.de>
 References: <20220920092915.921613-1-mkl@pengutronix.de>
@@ -54,41 +54,182 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Anssi Hannula <anssi.hannula@bitwise.fi>
+From: Jimmy Assarsson <extja@kvaser.com>
 
-0bfd:0124 Kvaser Mini PCI Express 2xHS FW 4.18.778 sends a
-CMD_CHIP_STATE_EVENT indicating bus-off after stopping the device,
-causing a stopped device to appear as CAN_STATE_BUS_OFF instead of
-CAN_STATE_STOPPED.
-
-Fix that by not handling error events on stopped devices.
+The device will send an error event command, to indicate certain errors.
+This indicates a misbehaving driver, and should never occur.
 
 Cc: stable@vger.kernel.org
 Fixes: 080f40a6fa28 ("can: kvaser_usb: Add support for Kvaser CAN/USB devices")
-Tested-by: Jimmy Assarsson <extja@kvaser.com>
+Tested-by: Anssi Hannula <anssi.hannula@bitwise.fi>
+Co-developed-by: Anssi Hannula <anssi.hannula@bitwise.fi>
 Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
 Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
-Link: https://lore.kernel.org/all/20220903182559.189-11-extja@kvaser.com
+Link: https://lore.kernel.org/all/20220903182559.189-6-extja@kvaser.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 99 +++++++++++++++++++
+ 1 file changed, 99 insertions(+)
 
 diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-index 993fcc19637d..4f9c76f4d0da 100644
+index 24c474e9d579..cd5b67f48534 100644
 --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
 +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-@@ -1045,6 +1045,10 @@ static void kvaser_usb_leaf_rx_error(const struct kvaser_usb *dev,
- 	leaf = priv->sub_priv;
- 	stats = &priv->netdev->stats;
+@@ -70,6 +70,7 @@
+ #define CMD_GET_CARD_INFO_REPLY		35
+ #define CMD_GET_SOFTWARE_INFO		38
+ #define CMD_GET_SOFTWARE_INFO_REPLY	39
++#define CMD_ERROR_EVENT			45
+ #define CMD_FLUSH_QUEUE			48
+ #define CMD_TX_ACKNOWLEDGE		50
+ #define CMD_CAN_ERROR_EVENT		51
+@@ -258,6 +259,28 @@ struct usbcan_cmd_can_error_event {
+ 	__le16 time;
+ } __packed;
  
-+	/* Ignore e.g. state change to bus-off reported just after stopping */
-+	if (!netif_running(priv->netdev))
-+		return;
++/* CMD_ERROR_EVENT error codes */
++#define KVASER_USB_LEAF_ERROR_EVENT_TX_QUEUE_FULL 0x8
++#define KVASER_USB_LEAF_ERROR_EVENT_PARAM 0x9
 +
- 	/* Update all of the CAN interface's state and error counters before
- 	 * trying any memory allocation that can actually fail with -ENOMEM.
- 	 *
++struct leaf_cmd_error_event {
++	u8 tid;
++	u8 error_code;
++	__le16 timestamp[3];
++	__le16 padding;
++	__le16 info1;
++	__le16 info2;
++} __packed;
++
++struct usbcan_cmd_error_event {
++	u8 tid;
++	u8 error_code;
++	__le16 info1;
++	__le16 info2;
++	__le16 timestamp;
++	__le16 padding;
++} __packed;
++
+ struct kvaser_cmd_ctrl_mode {
+ 	u8 tid;
+ 	u8 channel;
+@@ -321,6 +344,7 @@ struct kvaser_cmd {
+ 			struct leaf_cmd_chip_state_event chip_state_event;
+ 			struct leaf_cmd_can_error_event can_error_event;
+ 			struct leaf_cmd_log_message log_message;
++			struct leaf_cmd_error_event error_event;
+ 			struct kvaser_cmd_cap_req cap_req;
+ 			struct kvaser_cmd_cap_res cap_res;
+ 		} __packed leaf;
+@@ -330,6 +354,7 @@ struct kvaser_cmd {
+ 			struct usbcan_cmd_rx_can rx_can;
+ 			struct usbcan_cmd_chip_state_event chip_state_event;
+ 			struct usbcan_cmd_can_error_event can_error_event;
++			struct usbcan_cmd_error_event error_event;
+ 		} __packed usbcan;
+ 
+ 		struct kvaser_cmd_tx_can tx_can;
+@@ -353,6 +378,7 @@ static const u8 kvaser_usb_leaf_cmd_sizes_leaf[] = {
+ 	[CMD_CHIP_STATE_EVENT]		= kvaser_fsize(u.leaf.chip_state_event),
+ 	[CMD_CAN_ERROR_EVENT]		= kvaser_fsize(u.leaf.can_error_event),
+ 	[CMD_GET_CAPABILITIES_RESP]	= kvaser_fsize(u.leaf.cap_res),
++	[CMD_ERROR_EVENT]		= kvaser_fsize(u.leaf.error_event),
+ 	/* ignored events: */
+ 	[CMD_FLUSH_QUEUE_REPLY]		= CMD_SIZE_ANY,
+ };
+@@ -367,6 +393,7 @@ static const u8 kvaser_usb_leaf_cmd_sizes_usbcan[] = {
+ 	[CMD_RX_EXT_MESSAGE]		= kvaser_fsize(u.usbcan.rx_can),
+ 	[CMD_CHIP_STATE_EVENT]		= kvaser_fsize(u.usbcan.chip_state_event),
+ 	[CMD_CAN_ERROR_EVENT]		= kvaser_fsize(u.usbcan.can_error_event),
++	[CMD_ERROR_EVENT]		= kvaser_fsize(u.usbcan.error_event),
+ 	/* ignored events: */
+ 	[CMD_USBCAN_CLOCK_OVERFLOW_EVENT] = CMD_SIZE_ANY,
+ };
+@@ -1304,6 +1331,74 @@ static void kvaser_usb_leaf_rx_can_msg(const struct kvaser_usb *dev,
+ 	netif_rx(skb);
+ }
+ 
++static void kvaser_usb_leaf_error_event_parameter(const struct kvaser_usb *dev,
++						  const struct kvaser_cmd *cmd)
++{
++	u16 info1 = 0;
++
++	switch (dev->driver_info->family) {
++	case KVASER_LEAF:
++		info1 = le16_to_cpu(cmd->u.leaf.error_event.info1);
++		break;
++	case KVASER_USBCAN:
++		info1 = le16_to_cpu(cmd->u.usbcan.error_event.info1);
++		break;
++	}
++
++	/* info1 will contain the offending cmd_no */
++	switch (info1) {
++	case CMD_SET_CTRL_MODE:
++		dev_warn(&dev->intf->dev,
++			 "CMD_SET_CTRL_MODE error in parameter\n");
++		break;
++
++	case CMD_SET_BUS_PARAMS:
++		dev_warn(&dev->intf->dev,
++			 "CMD_SET_BUS_PARAMS error in parameter\n");
++		break;
++
++	default:
++		dev_warn(&dev->intf->dev,
++			 "Unhandled parameter error event cmd_no (%u)\n",
++			 info1);
++		break;
++	}
++}
++
++static void kvaser_usb_leaf_error_event(const struct kvaser_usb *dev,
++					const struct kvaser_cmd *cmd)
++{
++	u8 error_code = 0;
++
++	switch (dev->driver_info->family) {
++	case KVASER_LEAF:
++		error_code = cmd->u.leaf.error_event.error_code;
++		break;
++	case KVASER_USBCAN:
++		error_code = cmd->u.usbcan.error_event.error_code;
++		break;
++	}
++
++	switch (error_code) {
++	case KVASER_USB_LEAF_ERROR_EVENT_TX_QUEUE_FULL:
++		/* Received additional CAN message, when firmware TX queue is
++		 * already full. Something is wrong with the driver.
++		 * This should never happen!
++		 */
++		dev_err(&dev->intf->dev,
++			"Received error event TX_QUEUE_FULL\n");
++		break;
++	case KVASER_USB_LEAF_ERROR_EVENT_PARAM:
++		kvaser_usb_leaf_error_event_parameter(dev, cmd);
++		break;
++
++	default:
++		dev_warn(&dev->intf->dev,
++			 "Unhandled error event (%d)\n", error_code);
++		break;
++	}
++}
++
+ static void kvaser_usb_leaf_start_chip_reply(const struct kvaser_usb *dev,
+ 					     const struct kvaser_cmd *cmd)
+ {
+@@ -1382,6 +1477,10 @@ static void kvaser_usb_leaf_handle_command(const struct kvaser_usb *dev,
+ 		kvaser_usb_leaf_tx_acknowledge(dev, cmd);
+ 		break;
+ 
++	case CMD_ERROR_EVENT:
++		kvaser_usb_leaf_error_event(dev, cmd);
++		break;
++
+ 	/* Ignored commands */
+ 	case CMD_USBCAN_CLOCK_OVERFLOW_EVENT:
+ 		if (dev->driver_info->family != KVASER_USBCAN)
 -- 
 2.35.1
 
