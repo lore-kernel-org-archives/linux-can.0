@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02D94C6FA8E
-	for <linux-can@archiver.kernel.org>; Tue, 20 Sep 2022 09:29:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D214C54EE9
+	for <linux-can@archiver.kernel.org>; Tue, 20 Sep 2022 09:29:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbiITJ3v (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 20 Sep 2022 05:29:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59012 "EHLO
+        id S230452AbiITJ3w (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 20 Sep 2022 05:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230459AbiITJ3g (ORCPT
+        with ESMTP id S230500AbiITJ3g (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 20 Sep 2022 05:29:36 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64AC05594
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7FC55BD
         for <linux-can@vger.kernel.org>; Tue, 20 Sep 2022 02:29:34 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oaZZM-0005lV-Cd
+        id 1oaZZM-0005li-CO
         for linux-can@vger.kernel.org; Tue, 20 Sep 2022 11:29:32 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 978F9E7322
+        by bjornoya.blackshift.org (Postfix) with SMTP id A8090E7325
         for <linux-can@vger.kernel.org>; Tue, 20 Sep 2022 09:29:21 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2E7C5E72AE;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 40529E72B0;
         Tue, 20 Sep 2022 09:29:18 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 9a96d006;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3d3fec61;
         Tue, 20 Sep 2022 09:29:17 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Anssi Hannula <anssi.hannula@bitwise.fi>,
         stable@vger.kernel.org, Jimmy Assarsson <extja@kvaser.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 11/17] can: kvaser_usb_leaf: Fix CAN state after restart
-Date:   Tue, 20 Sep 2022 11:29:09 +0200
-Message-Id: <20220920092915.921613-12-mkl@pengutronix.de>
+Subject: [PATCH net 13/17] can: kvaser_usb_leaf: Fix wrong CAN state after stopping
+Date:   Tue, 20 Sep 2022 11:29:11 +0200
+Message-Id: <20220920092915.921613-14-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220920092915.921613-1-mkl@pengutronix.de>
 References: <20220920092915.921613-1-mkl@pengutronix.de>
@@ -56,38 +56,39 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Anssi Hannula <anssi.hannula@bitwise.fi>
 
-can_restart() expects CMD_START_CHIP to set the error state to
-ERROR_ACTIVE as it calls netif_carrier_on() immediately afterwards.
+0bfd:0124 Kvaser Mini PCI Express 2xHS FW 4.18.778 sends a
+CMD_CHIP_STATE_EVENT indicating bus-off after stopping the device,
+causing a stopped device to appear as CAN_STATE_BUS_OFF instead of
+CAN_STATE_STOPPED.
 
-Otherwise the user may immediately trigger restart again and hit a
-BUG_ON() in can_restart().
-
-Fix kvaser_usb_leaf set_mode(CMD_START_CHIP) to set the expected state.
+Fix that by not handling error events on stopped devices.
 
 Cc: stable@vger.kernel.org
 Fixes: 080f40a6fa28 ("can: kvaser_usb: Add support for Kvaser CAN/USB devices")
 Tested-by: Jimmy Assarsson <extja@kvaser.com>
 Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
 Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
-Link: https://lore.kernel.org/all/20220903182559.189-9-extja@kvaser.com
+Link: https://lore.kernel.org/all/20220903182559.189-11-extja@kvaser.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-index 48b8a0f0b362..a6a26085bc15 100644
+index 993fcc19637d..4f9c76f4d0da 100644
 --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
 +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-@@ -1668,6 +1668,8 @@ static int kvaser_usb_leaf_set_mode(struct net_device *netdev,
- 		err = kvaser_usb_leaf_simple_cmd_async(priv, CMD_START_CHIP);
- 		if (err)
- 			return err;
+@@ -1045,6 +1045,10 @@ static void kvaser_usb_leaf_rx_error(const struct kvaser_usb *dev,
+ 	leaf = priv->sub_priv;
+ 	stats = &priv->netdev->stats;
+ 
++	/* Ignore e.g. state change to bus-off reported just after stopping */
++	if (!netif_running(priv->netdev))
++		return;
 +
-+		priv->can.state = CAN_STATE_ERROR_ACTIVE;
- 		break;
- 	default:
- 		return -EOPNOTSUPP;
+ 	/* Update all of the CAN interface's state and error counters before
+ 	 * trying any memory allocation that can actually fail with -ENOMEM.
+ 	 *
 -- 
 2.35.1
 
