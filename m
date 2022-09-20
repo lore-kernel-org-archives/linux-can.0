@@ -2,44 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15103C6FA91
-	for <linux-can@archiver.kernel.org>; Tue, 20 Sep 2022 09:29:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64C0DECAAD8
+	for <linux-can@archiver.kernel.org>; Tue, 20 Sep 2022 09:29:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbiITJ31 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 20 Sep 2022 05:29:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58416 "EHLO
+        id S230389AbiITJ32 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 20 Sep 2022 05:29:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230389AbiITJ3Z (ORCPT
+        with ESMTP id S230365AbiITJ3Z (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 20 Sep 2022 05:29:25 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42AA16CF45
-        for <linux-can@vger.kernel.org>; Tue, 20 Sep 2022 02:29:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F0F6C762
+        for <linux-can@vger.kernel.org>; Tue, 20 Sep 2022 02:29:24 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oaZZB-0005Wp-5Q
-        for linux-can@vger.kernel.org; Tue, 20 Sep 2022 11:29:21 +0200
+        id 1oaZZD-0005Y0-12
+        for linux-can@vger.kernel.org; Tue, 20 Sep 2022 11:29:23 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id CA143E72C0
-        for <linux-can@vger.kernel.org>; Tue, 20 Sep 2022 09:29:18 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 64829E72D0
+        for <linux-can@vger.kernel.org>; Tue, 20 Sep 2022 09:29:19 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8BD0EE7299;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id A831EE729C;
         Tue, 20 Sep 2022 09:29:17 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ec70362d;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 8a5a8dc1;
         Tue, 20 Sep 2022 09:29:17 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH net 02/17] can: gs_usb: gs_usb_set_phys_id(): return with error if identify is not supported
-Date:   Tue, 20 Sep 2022 11:29:00 +0200
-Message-Id: <20220920092915.921613-3-mkl@pengutronix.de>
+        kernel@pengutronix.de, Anssi Hannula <anssi.hannula@bitwise.fi>,
+        stable@vger.kernel.org, Jimmy Assarsson <extja@kvaser.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 04/17] can: kvaser_usb: Fix use of uninitialized completion
+Date:   Tue, 20 Sep 2022 11:29:02 +0200
+Message-Id: <20220920092915.921613-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220920092915.921613-1-mkl@pengutronix.de>
 References: <20220920092915.921613-1-mkl@pengutronix.de>
@@ -53,78 +54,59 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Until commit 409c188c57cd ("can: tree-wide: advertise software
-timestamping capabilities") the ethtool_ops was only assigned for
-devices which support the GS_CAN_FEATURE_IDENTIFY feature. That commit
-assigns ethtool_ops unconditionally.
+From: Anssi Hannula <anssi.hannula@bitwise.fi>
 
-This results on controllers without GS_CAN_FEATURE_IDENTIFY support
-for the following ethtool error:
+flush_comp is initialized when CMD_FLUSH_QUEUE is sent to the device and
+completed when the device sends CMD_FLUSH_QUEUE_RESP.
 
-| $ ethtool -p can0 1
-| Cannot identify NIC: Broken pipe
+This causes completion of uninitialized completion if the device sends
+CMD_FLUSH_QUEUE_RESP before CMD_FLUSH_QUEUE is ever sent (e.g. as a
+response to a flush by a previously bound driver, or a misbehaving
+device).
 
-Restore the correct error value by checking for
-GS_CAN_FEATURE_IDENTIFY in the gs_usb_set_phys_id() function.
+Fix that by initializing flush_comp in kvaser_usb_init_one() like the
+other completions.
 
-| $ ethtool -p can0 1
-| Cannot identify NIC: Operation not supported
+This issue is only triggerable after RX URBs have been set up, i.e. the
+interface has been opened at least once.
 
-While there use the variable "netdev" for the "struct net_device"
-pointer and "dev" for the "struct gs_can" pointer as in the rest of
-the driver.
-
-Fixes: 409c188c57cd ("can: tree-wide: advertise software timestamping capabilities")
-Link: http://lore.kernel.org/all/20220818143853.2671854-1-mkl@pengutronix.de
-Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc: stable@vger.kernel.org
+Fixes: aec5fb2268b7 ("can: kvaser_usb: Add support for Kvaser USB hydra family")
+Tested-by: Jimmy Assarsson <extja@kvaser.com>
+Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
+Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
+Link: https://lore.kernel.org/all/20220903182559.189-2-extja@kvaser.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/gs_usb.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c  | 1 +
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index baf749c8cda3..e69226470b13 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -925,17 +925,21 @@ static int gs_usb_set_identify(struct net_device *netdev, bool do_identify)
- }
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+index 824cab80aa02..c2bce6773adc 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+@@ -729,6 +729,7 @@ static int kvaser_usb_init_one(struct kvaser_usb *dev, int channel)
+ 	init_usb_anchor(&priv->tx_submitted);
+ 	init_completion(&priv->start_comp);
+ 	init_completion(&priv->stop_comp);
++	init_completion(&priv->flush_comp);
+ 	priv->can.ctrlmode_supported = 0;
  
- /* blink LED's for finding the this interface */
--static int gs_usb_set_phys_id(struct net_device *dev,
-+static int gs_usb_set_phys_id(struct net_device *netdev,
- 			      enum ethtool_phys_id_state state)
+ 	priv->dev = dev;
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+index dd65c101bfb8..3dcd35979e6f 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+@@ -1916,7 +1916,7 @@ static int kvaser_usb_hydra_flush_queue(struct kvaser_usb_net_priv *priv)
  {
-+	const struct gs_can *dev = netdev_priv(netdev);
- 	int rc = 0;
+ 	int err;
  
-+	if (!(dev->feature & GS_CAN_FEATURE_IDENTIFY))
-+		return -EOPNOTSUPP;
-+
- 	switch (state) {
- 	case ETHTOOL_ID_ACTIVE:
--		rc = gs_usb_set_identify(dev, GS_CAN_IDENTIFY_ON);
-+		rc = gs_usb_set_identify(netdev, GS_CAN_IDENTIFY_ON);
- 		break;
- 	case ETHTOOL_ID_INACTIVE:
--		rc = gs_usb_set_identify(dev, GS_CAN_IDENTIFY_OFF);
-+		rc = gs_usb_set_identify(netdev, GS_CAN_IDENTIFY_OFF);
- 		break;
- 	default:
- 		break;
-@@ -1072,9 +1076,10 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 		dev->feature |= GS_CAN_FEATURE_REQ_USB_QUIRK_LPC546XX |
- 			GS_CAN_FEATURE_QUIRK_BREQ_CANTACT_PRO;
+-	init_completion(&priv->flush_comp);
++	reinit_completion(&priv->flush_comp);
  
--	if (le32_to_cpu(dconf->sw_version) > 1)
--		if (feature & GS_CAN_FEATURE_IDENTIFY)
--			netdev->ethtool_ops = &gs_usb_ethtool_ops;
-+	/* GS_CAN_FEATURE_IDENTIFY is only supported for sw_version > 1 */
-+	if (!(le32_to_cpu(dconf->sw_version) > 1 &&
-+	      feature & GS_CAN_FEATURE_IDENTIFY))
-+		dev->feature &= ~GS_CAN_FEATURE_IDENTIFY;
- 
- 	kfree(bt_const);
- 
+ 	err = kvaser_usb_hydra_send_simple_cmd(priv->dev, CMD_FLUSH_QUEUE,
+ 					       priv->channel);
 -- 
 2.35.1
 
