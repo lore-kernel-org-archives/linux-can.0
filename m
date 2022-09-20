@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F802C6FA95
-	for <linux-can@archiver.kernel.org>; Tue, 20 Sep 2022 09:30:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B10FDC6FA8B
+	for <linux-can@archiver.kernel.org>; Tue, 20 Sep 2022 09:30:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbiITJaV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 20 Sep 2022 05:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59622 "EHLO
+        id S230218AbiITJaX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 20 Sep 2022 05:30:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231192AbiITJ3s (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 20 Sep 2022 05:29:48 -0400
+        with ESMTP id S229998AbiITJaQ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 20 Sep 2022 05:30:16 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4072723
-        for <linux-can@vger.kernel.org>; Tue, 20 Sep 2022 02:29:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E640616C
+        for <linux-can@vger.kernel.org>; Tue, 20 Sep 2022 02:29:35 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oaZZL-0005kC-Nk
-        for linux-can@vger.kernel.org; Tue, 20 Sep 2022 11:29:31 +0200
+        id 1oaZZO-0005nu-1n
+        for linux-can@vger.kernel.org; Tue, 20 Sep 2022 11:29:34 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 80E56E731F
-        for <linux-can@vger.kernel.org>; Tue, 20 Sep 2022 09:29:21 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 7DD98E7335
+        for <linux-can@vger.kernel.org>; Tue, 20 Sep 2022 09:29:22 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 38580E72AF;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 54AF1E72B5;
         Tue, 20 Sep 2022 09:29:18 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0382818a;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2a13597e;
         Tue, 20 Sep 2022 09:29:17 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Anssi Hannula <anssi.hannula@bitwise.fi>,
         stable@vger.kernel.org, Jimmy Assarsson <extja@kvaser.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 12/17] can: kvaser_usb_leaf: Fix improved state not being reported
-Date:   Tue, 20 Sep 2022 11:29:10 +0200
-Message-Id: <20220920092915.921613-13-mkl@pengutronix.de>
+Subject: [PATCH net 15/17] can: kvaser_usb_leaf: Fix bogus restart events
+Date:   Tue, 20 Sep 2022 11:29:13 +0200
+Message-Id: <20220920092915.921613-16-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220920092915.921613-1-mkl@pengutronix.de>
 References: <20220920092915.921613-1-mkl@pengutronix.de>
@@ -56,253 +56,60 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Anssi Hannula <anssi.hannula@bitwise.fi>
 
-The tested 0bfd:0017 Kvaser Memorator Professional HS/HS FW 2.0.50 and
-0bfd:0124 Kvaser Mini PCI Express 2xHS FW 4.18.778 do not seem to send
-any unsolicited events when error counters decrease or when the device
-transitions from ERROR_PASSIVE to ERROR_ACTIVE (or WARNING).
+When auto-restart is enabled, the kvaser_usb_leaf driver considers
+transition from any state >= CAN_STATE_BUS_OFF as a bus-off recovery
+event (restart).
 
-This causes the interface to e.g. indefinitely stay in the ERROR_PASSIVE
-state.
+However, these events may occur at interface startup time before
+kvaser_usb_open() has set the state to CAN_STATE_ERROR_ACTIVE, causing
+restarts counter to increase and CAN_ERR_RESTARTED to be sent despite no
+actual restart having occurred.
 
-Fix that by asking for chip state (inc. counters) event every 0.5 secs
-when error counters are non-zero.
-
-Since there are non-error-counter devices, also always poll in
-ERROR_PASSIVE even if the counters show zero.
+Fix that by making the auto-restart condition checks more strict so that
+they only trigger when the interface was actually in the BUS_OFF state.
 
 Cc: stable@vger.kernel.org
 Fixes: 080f40a6fa28 ("can: kvaser_usb: Add support for Kvaser CAN/USB devices")
 Tested-by: Jimmy Assarsson <extja@kvaser.com>
 Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
 Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
-Link: https://lore.kernel.org/all/20220903182559.189-10-extja@kvaser.com
+Link: https://lore.kernel.org/all/20220903182559.189-13-extja@kvaser.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/kvaser_usb/kvaser_usb.h   |  7 +++
- .../net/can/usb/kvaser_usb/kvaser_usb_core.c  | 19 +++++-
- .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 58 +++++++++++++++++++
- 3 files changed, 81 insertions(+), 3 deletions(-)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
-index f6c0938027ec..d9c5dd5da908 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
-@@ -104,6 +104,9 @@ struct kvaser_usb_net_priv {
- 	struct can_priv can;
- 	struct can_berr_counter bec;
- 
-+	/* subdriver-specific data */
-+	void *sub_priv;
-+
- 	struct kvaser_usb *dev;
- 	struct net_device *netdev;
- 	int channel;
-@@ -125,6 +128,8 @@ struct kvaser_usb_net_priv {
-  *
-  * @dev_setup_endpoints:	setup USB in and out endpoints
-  * @dev_init_card:		initialize card
-+ * @dev_init_channel:		initialize channel
-+ * @dev_remove_channel:		uninitialize channel
-  * @dev_get_software_info:	get software info
-  * @dev_get_software_details:	get software details
-  * @dev_get_card_info:		get card info
-@@ -146,6 +151,8 @@ struct kvaser_usb_dev_ops {
- 				    struct can_berr_counter *bec);
- 	int (*dev_setup_endpoints)(struct kvaser_usb *dev);
- 	int (*dev_init_card)(struct kvaser_usb *dev);
-+	int (*dev_init_channel)(struct kvaser_usb_net_priv *priv);
-+	void (*dev_remove_channel)(struct kvaser_usb_net_priv *priv);
- 	int (*dev_get_software_info)(struct kvaser_usb *dev);
- 	int (*dev_get_software_details)(struct kvaser_usb *dev);
- 	int (*dev_get_card_info)(struct kvaser_usb *dev);
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-index e91648ed7386..19df05887166 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-@@ -684,6 +684,7 @@ static const struct ethtool_ops kvaser_usb_ethtool_ops_hwts = {
- 
- static void kvaser_usb_remove_interfaces(struct kvaser_usb *dev)
- {
-+	const struct kvaser_usb_dev_ops *ops = dev->driver_info->ops;
- 	int i;
- 
- 	for (i = 0; i < dev->nchannels; i++) {
-@@ -699,6 +700,9 @@ static void kvaser_usb_remove_interfaces(struct kvaser_usb *dev)
- 		if (!dev->nets[i])
- 			continue;
- 
-+		if (ops->dev_remove_channel)
-+			ops->dev_remove_channel(dev->nets[i]);
-+
- 		free_candev(dev->nets[i]->netdev);
- 	}
- }
-@@ -772,17 +776,26 @@ static int kvaser_usb_init_one(struct kvaser_usb *dev, int channel)
- 
- 	dev->nets[channel] = priv;
- 
-+	if (ops->dev_init_channel) {
-+		err = ops->dev_init_channel(priv);
-+		if (err)
-+			goto err;
-+	}
-+
- 	err = register_candev(netdev);
- 	if (err) {
- 		dev_err(&dev->intf->dev, "Failed to register CAN device\n");
--		free_candev(netdev);
--		dev->nets[channel] = NULL;
--		return err;
-+		goto err;
- 	}
- 
- 	netdev_dbg(netdev, "device registered\n");
- 
- 	return 0;
-+
-+err:
-+	free_candev(netdev);
-+	dev->nets[channel] = NULL;
-+	return err;
- }
- 
- static int kvaser_usb_probe(struct usb_interface *intf,
 diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-index a6a26085bc15..993fcc19637d 100644
+index f8a12a285050..3e31a9ebea88 100644
 --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
 +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-@@ -21,6 +21,7 @@
- #include <linux/types.h>
- #include <linux/units.h>
- #include <linux/usb.h>
-+#include <linux/workqueue.h>
+@@ -901,7 +901,7 @@ static void kvaser_usb_leaf_tx_acknowledge(const struct kvaser_usb *dev,
+ 	context = &priv->tx_contexts[tid % dev->max_tx_urbs];
  
- #include <linux/can.h>
- #include <linux/can/dev.h>
-@@ -56,6 +57,7 @@
- #define CMD_RX_EXT_MESSAGE		14
- #define CMD_TX_EXT_MESSAGE		15
- #define CMD_SET_BUS_PARAMS		16
-+#define CMD_GET_CHIP_STATE		19
- #define CMD_CHIP_STATE_EVENT		20
- #define CMD_SET_CTRL_MODE		21
- #define CMD_RESET_CHIP			24
-@@ -421,6 +423,12 @@ struct kvaser_usb_err_summary {
- 	};
- };
+ 	/* Sometimes the state change doesn't come after a bus-off event */
+-	if (priv->can.restart_ms && priv->can.state >= CAN_STATE_BUS_OFF) {
++	if (priv->can.restart_ms && priv->can.state == CAN_STATE_BUS_OFF) {
+ 		struct sk_buff *skb;
+ 		struct can_frame *cf;
  
-+struct kvaser_usb_net_leaf_priv {
-+	struct kvaser_usb_net_priv *net;
-+
-+	struct delayed_work chip_state_req_work;
-+};
-+
- static const struct can_bittiming_const kvaser_usb_leaf_m16c_bittiming_const = {
- 	.name = "kvaser_usb_ucii",
- 	.tseg1_min = 4,
-@@ -943,6 +951,16 @@ static int kvaser_usb_leaf_simple_cmd_async(struct kvaser_usb_net_priv *priv,
- 	return err;
- }
- 
-+static void kvaser_usb_leaf_chip_state_req_work(struct work_struct *work)
-+{
-+	struct kvaser_usb_net_leaf_priv *leaf =
-+		container_of(work, struct kvaser_usb_net_leaf_priv,
-+			     chip_state_req_work.work);
-+	struct kvaser_usb_net_priv *priv = leaf->net;
-+
-+	kvaser_usb_leaf_simple_cmd_async(priv, CMD_GET_CHIP_STATE);
-+}
-+
- static void
- kvaser_usb_leaf_rx_error_update_can_state(struct kvaser_usb_net_priv *priv,
- 					const struct kvaser_usb_err_summary *es,
-@@ -1014,6 +1032,7 @@ static void kvaser_usb_leaf_rx_error(const struct kvaser_usb *dev,
- 	struct sk_buff *skb;
- 	struct net_device_stats *stats;
- 	struct kvaser_usb_net_priv *priv;
-+	struct kvaser_usb_net_leaf_priv *leaf;
- 	enum can_state old_state, new_state;
- 
- 	if (es->channel >= dev->nchannels) {
-@@ -1023,6 +1042,7 @@ static void kvaser_usb_leaf_rx_error(const struct kvaser_usb *dev,
+@@ -1018,7 +1018,7 @@ kvaser_usb_leaf_rx_error_update_can_state(struct kvaser_usb_net_priv *priv,
  	}
  
- 	priv = dev->nets[es->channel];
-+	leaf = priv->sub_priv;
- 	stats = &priv->netdev->stats;
+ 	if (priv->can.restart_ms &&
+-	    cur_state >= CAN_STATE_BUS_OFF &&
++	    cur_state == CAN_STATE_BUS_OFF &&
+ 	    new_state < CAN_STATE_BUS_OFF)
+ 		priv->can.can_stats.restarts++;
  
- 	/* Update all of the CAN interface's state and error counters before
-@@ -1039,6 +1059,14 @@ static void kvaser_usb_leaf_rx_error(const struct kvaser_usb *dev,
- 	kvaser_usb_leaf_rx_error_update_can_state(priv, es, &tmp_cf);
- 	new_state = priv->can.state;
+@@ -1111,7 +1111,7 @@ static void kvaser_usb_leaf_rx_error(const struct kvaser_usb *dev,
+ 		}
  
-+	/* If there are errors, request status updates periodically as we do
-+	 * not get automatic notifications of improved state.
-+	 */
-+	if (new_state < CAN_STATE_BUS_OFF &&
-+	    (es->rxerr || es->txerr || new_state == CAN_STATE_ERROR_PASSIVE))
-+		schedule_delayed_work(&leaf->chip_state_req_work,
-+				      msecs_to_jiffies(500));
-+
- 	skb = alloc_can_err_skb(priv->netdev, &cf);
- 	if (!skb) {
- 		stats->rx_dropped++;
-@@ -1573,10 +1601,13 @@ static int kvaser_usb_leaf_start_chip(struct kvaser_usb_net_priv *priv)
- 
- static int kvaser_usb_leaf_stop_chip(struct kvaser_usb_net_priv *priv)
- {
-+	struct kvaser_usb_net_leaf_priv *leaf = priv->sub_priv;
- 	int err;
- 
- 	reinit_completion(&priv->stop_comp);
- 
-+	cancel_delayed_work(&leaf->chip_state_req_work);
-+
- 	err = kvaser_usb_leaf_send_simple_cmd(priv->dev, CMD_STOP_CHIP,
- 					      priv->channel);
- 	if (err)
-@@ -1623,6 +1654,31 @@ static int kvaser_usb_leaf_init_card(struct kvaser_usb *dev)
- 	return 0;
- }
- 
-+static int kvaser_usb_leaf_init_channel(struct kvaser_usb_net_priv *priv)
-+{
-+	struct kvaser_usb_net_leaf_priv *leaf;
-+
-+	leaf = devm_kzalloc(&priv->dev->intf->dev, sizeof(*leaf), GFP_KERNEL);
-+	if (!leaf)
-+		return -ENOMEM;
-+
-+	leaf->net = priv;
-+	INIT_DELAYED_WORK(&leaf->chip_state_req_work,
-+			  kvaser_usb_leaf_chip_state_req_work);
-+
-+	priv->sub_priv = leaf;
-+
-+	return 0;
-+}
-+
-+static void kvaser_usb_leaf_remove_channel(struct kvaser_usb_net_priv *priv)
-+{
-+	struct kvaser_usb_net_leaf_priv *leaf = priv->sub_priv;
-+
-+	if (leaf)
-+		cancel_delayed_work_sync(&leaf->chip_state_req_work);
-+}
-+
- static int kvaser_usb_leaf_set_bittiming(struct net_device *netdev)
- {
- 	struct kvaser_usb_net_priv *priv = netdev_priv(netdev);
-@@ -1720,6 +1776,8 @@ const struct kvaser_usb_dev_ops kvaser_usb_leaf_dev_ops = {
- 	.dev_get_berr_counter = kvaser_usb_leaf_get_berr_counter,
- 	.dev_setup_endpoints = kvaser_usb_leaf_setup_endpoints,
- 	.dev_init_card = kvaser_usb_leaf_init_card,
-+	.dev_init_channel = kvaser_usb_leaf_init_channel,
-+	.dev_remove_channel = kvaser_usb_leaf_remove_channel,
- 	.dev_get_software_info = kvaser_usb_leaf_get_software_info,
- 	.dev_get_software_details = NULL,
- 	.dev_get_card_info = kvaser_usb_leaf_get_card_info,
+ 		if (priv->can.restart_ms &&
+-		    old_state >= CAN_STATE_BUS_OFF &&
++		    old_state == CAN_STATE_BUS_OFF &&
+ 		    new_state < CAN_STATE_BUS_OFF) {
+ 			cf->can_id |= CAN_ERR_RESTARTED;
+ 			netif_carrier_on(priv->netdev);
 -- 
 2.35.1
 
