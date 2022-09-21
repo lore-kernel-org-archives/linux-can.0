@@ -2,99 +2,167 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6160AC32771
-	for <linux-can@archiver.kernel.org>; Wed, 21 Sep 2022 08:36:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1185C32771
+	for <linux-can@archiver.kernel.org>; Wed, 21 Sep 2022 09:56:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbiIUIgV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 21 Sep 2022 04:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42474 "EHLO
+        id S229709AbiIUJ4N (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 21 Sep 2022 05:56:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231178AbiIUIgS (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 21 Sep 2022 04:36:18 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0278B844D0
-        for <linux-can@vger.kernel.org>; Wed, 21 Sep 2022 01:36:16 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1oavDK-0000TC-Bm
-        for linux-can@vger.kernel.org; Wed, 21 Sep 2022 10:36:14 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id E8704E8587
-        for <linux-can@vger.kernel.org>; Wed, 21 Sep 2022 08:36:11 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id C6AC5E8573;
-        Wed, 21 Sep 2022 08:36:10 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 75a2ae6c;
-        Wed, 21 Sep 2022 08:36:10 +0000 (UTC)
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 2/3] can: gs_usb: gs_can_open(): fix race dev->can.state condition
-Date:   Wed, 21 Sep 2022 10:36:08 +0200
-Message-Id: <20220921083609.419768-3-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220921083609.419768-1-mkl@pengutronix.de>
-References: <20220921083609.419768-1-mkl@pengutronix.de>
+        with ESMTP id S229906AbiIUJ4J (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 21 Sep 2022 05:56:09 -0400
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3949395
+        for <linux-can@vger.kernel.org>; Wed, 21 Sep 2022 02:56:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1663754165;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=4Uqo9SmVDBD8qvDuwEu3XBEc/XfNnFQSSauhzLG6szo=;
+    b=DrMp62hj6dCyolwLLs2fnhjPIoUMTHhKOr8cqqF4OJ1ubo9tL8ZumTKfbtFyzpjVSW
+    4ZbbWN1EAgxysrTbT/PYVJJ2b+thxNpy+XDUoAr5HepVU0nHBpIfCCl957jo+X8bjECu
+    Zr8iFsgoZHBpqlXek+/qcy09MwxqSQCd/z4QJMPI7NRZEoB/QLNvdMPb+U/0d8cdKF7w
+    g7c67HAyhskZxuwFrgwPmbK6iYwew7twouu0/UUZDWNQSCy2lpgo6Eh9Au5s9OBRbeHW
+    nILVyzNEo93Rc2UyZT08ukR90JoHSxzOQR9vwCpJCTShY/LpyzJMcWvQkPMd6rVvpb4y
+    cbAA==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusx3hdIrpKytJSr6hfz3Vg=="
+X-RZG-CLASS-ID: mo00
+Received: from [IPV6:2a00:6020:1cfd:d100::923]
+    by smtp.strato.de (RZmta 48.1.1 AUTH)
+    with ESMTPSA id 0e791ay8L9u53Q7
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Wed, 21 Sep 2022 11:56:05 +0200 (CEST)
+Message-ID: <fb1f38e6-c95c-5847-2ebf-16fd8bc2db94@hartkopp.net>
+Date:   Wed, 21 Sep 2022 11:55:59 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.0
+Subject: Re: CM-ITC, pch_can/c_can_pci, sendto() returning ENOBUFS
+Content-Language: en-US
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, dariobin@libero.it
+Cc:     Jacob Kroon <jacob.kroon@gmail.com>, linux-can@vger.kernel.org,
+        wg@grandegger.com
+References: <36d0419b-297f-8e39-8843-051b55b8a2bb@gmail.com>
+ <986401a8-5f5a-0705-82c4-4df339509e07@gmail.com>
+ <556866e2-a3aa-9077-8db7-edc4ced69491@hartkopp.net>
+ <f8a95bfb-b1c2-cd41-1106-ca739c438fb9@gmail.com>
+ <df1d220e-bf99-1051-ca90-5bd52e6c64e7@hartkopp.net>
+ <0eb1dd1b-427a-92c5-22ef-97c557cfec6e@gmail.com>
+ <20220905155416.pgvseb6uggc67ua4@pengutronix.de>
+ <8c481a4e-9493-25ae-f4d7-c12dc98bc83e@gmail.com>
+ <02aeeca7-5958-60f1-3011-fa3aae4ef6b5@gmail.com>
+ <541998938.482927.1663745141832@mail1.libero.it>
+ <20220921074741.admuodnlv4yexfwr@pengutronix.de>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <20220921074741.admuodnlv4yexfwr@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The dev->can.state is set to CAN_STATE_ERROR_ACTIVE, after the device
-has been started. On busy networks the CAN controller might receive
-CAN frame between and go into an error state before the dev->can.state
-is assigned.
-
-Assign dev->can.state before starting the controller to close the race
-window.
-
-Fixes: d08e973a77d1 ("can: gs_usb: Added support for the GS_USB CAN devices")
-Link: https://lore.kernel.org/all/20220920195216.232481-1-mkl@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/usb/gs_usb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index baf749c8cda3..553e2c7b0b12 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -824,6 +824,7 @@ static int gs_can_open(struct net_device *netdev)
- 		flags |= GS_CAN_MODE_TRIPLE_SAMPLE;
- 
- 	/* finally start device */
-+	dev->can.state = CAN_STATE_ERROR_ACTIVE;
- 	dm->mode = cpu_to_le32(GS_CAN_MODE_START);
- 	dm->flags = cpu_to_le32(flags);
- 	rc = usb_control_msg(interface_to_usbdev(dev->iface),
-@@ -835,13 +836,12 @@ static int gs_can_open(struct net_device *netdev)
- 	if (rc < 0) {
- 		netdev_err(netdev, "Couldn't start device (err=%d)\n", rc);
- 		kfree(dm);
-+		dev->can.state = CAN_STATE_STOPPED;
- 		return rc;
- 	}
- 
- 	kfree(dm);
- 
--	dev->can.state = CAN_STATE_ERROR_ACTIVE;
--
- 	parent->active_channels++;
- 	if (!(dev->can.ctrlmode & CAN_CTRLMODE_LISTENONLY))
- 		netif_start_queue(netdev);
--- 
-2.35.1
 
 
+On 21.09.22 09:47, Marc Kleine-Budde wrote:
+> On 21.09.2022 09:25:41, dariobin@libero.it wrote:
+>>> On 9/16/22 06:14, Jacob Kroon wrote:
+>>> ...> What I do know is that if I revert commit:
+>>>>
+>>>> "can: c_can: cache frames to operate as a true FIFO"
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=387da6bc7a826cc6d532b1c0002b7c7513238d5f
+>>>>
+>>>> then everything looks good. I don't get any BUG messages, and the host
+>>>> has been running overnight without problems, so it seems to have fixed
+>>>> the network interface lockup as well.
+>>
+>> Here's what I think:
+>> If one or more messages are cached, the controller has to transmit more frames
+>> in the unit of time when they can be transmitted (IF_COMM_TXRQST), different from
+>> when the transmission occurs directly on request from the user space. In the case
+>> of cached data transmission I therefore think that the controller is more heavily
+>> loaded. Can this shift the balance ?
+>>
+>>>
+>>> I ran the kernel *with* the commit above, and also with the following patch:
+>>>
+>>>> diff --git a/drivers/net/can/c_can/c_can_main.c b/drivers/net/can/c_can/c_can_main.c
+>>>> index 52671d1ea17d..4375dc70e21f 100644
+>>>> --- a/drivers/net/can/c_can/c_can_main.c
+>>>> +++ b/drivers/net/can/c_can/c_can_main.c
+>>>> @@ -1,3 +1,4 @@
+>>>> +#define DEBUG
+>>>>   /*
+>>>>    * CAN bus driver for Bosch C_CAN controller
+>>>>    *
+>>>> @@ -469,8 +470,15 @@ static netdev_tx_t c_can_start_xmit(struct sk_buff *skb,
+>>>>   	if (c_can_get_tx_free(tx_ring) == 0)
+>>>>   		netif_stop_queue(dev);
+>>>>   
+>>>> -	if (idx < c_can_get_tx_tail(tx_ring))
+>>>> +	netdev_dbg(dev, "JAKR:%d:%d:%d:%d\n", idx,
+>>>> +	                                      c_can_get_tx_head(tx_ring),
+>>>> +	                                      c_can_get_tx_tail(tx_ring),
+>>>> +	                                      c_can_get_tx_free(tx_ring));
+>>>> +
+>>>> +	if (idx < c_can_get_tx_tail(tx_ring)) {
+>>>>   		cmd &= ~IF_COMM_TXRQST; /* Cache the message */
+>>>> +		netdev_dbg(dev, "JAKR:Caching messages\n");
+>>>> +	}
+>>>>   
+>>>>   	/* Store the message in the interface so we can call
+>>>>   	 * can_put_echo_skb(). We must do this before we enable
+>>>
+>>> and I've uploaded the entire log I could capture from /dev/kmsg, right
+>>> up to the hang, here:
+>>>
+>>> https://pastebin.com/6hvAcPc9
+>>>
+>>> What looks odd to me right from the start is that sometimes when idx
+>>> rolls over to 0, and *only* when it rolls over to 0, the CAN frame gets
+>>> cached because "idx < c_can_get_tx_tail(tx_ring)".
+>>
+>> If the message were not stored but transmitted, the order of transmission
+>> would not be respected.
+>>
+>>>
+>>> Is it possible there is some difference between c_can and d_can in how
+>>> the HW buffers are working, which breaks the driver on my particular HW
+>>> setup ?
+>>>
+>>
+>> I tested the patch on a beaglebone board without encountering any problems.
+>> There is also a version of the driver I submitted to Xenomai running on a custom
+>> board without problems. But surely the setup and context is different from yours.
+>>
+>> What compatible are you using in your device tree?
+>> I used "ti,am3352-d_can".
+> 
+> I think Jacob's board has a c_can core, while the beagle bone uses a
+> d_can. Maybe there's a subtle difference between these cores?
+> 
+> Dario, do you have access to a real c_can core to test?
+> 
+> As reverting 387da6bc7a82 ("can: c_can: cache frames to operate as a
+> true FIFO") helps to fix Jacob's problem, a temporary solution might be
+> to only cache frames on d_can cores.
+
+Btw. I uploaded the 'latest' C_CAN manuals on
+
+https://github.com/linux-can/can-doc
+
+... as it could only be found on archive.org :-/
+
+Unfortunately I was not able to find any (latest?) D_CAN manual anymore, 
+which was originally hosted at 
+http://www.semiconductors.bosch.de/media/en/pdf/ipmodules_1/can/d_can_users_manual_111.pdf
+
+Archive.org did not crawl this PDF ;-(
+
+If someone still has this D_CAN PDF please send a URL or the PDF itself 
+to me, so that I can put it there too.
+
+Thanks,
+Oliver
