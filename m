@@ -2,47 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A863EC6FA8B
-	for <linux-can@archiver.kernel.org>; Wed, 21 Sep 2022 19:39:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92E36C6FA82
+	for <linux-can@archiver.kernel.org>; Wed, 21 Sep 2022 19:58:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbiIUTjf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 21 Sep 2022 15:39:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49132 "EHLO
+        id S230100AbiIUT6O (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 21 Sep 2022 15:58:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbiIUTjX (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 21 Sep 2022 15:39:23 -0400
+        with ESMTP id S229551AbiIUT6N (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 21 Sep 2022 15:58:13 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C9D0A1D7A
-        for <linux-can@vger.kernel.org>; Wed, 21 Sep 2022 12:39:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CFABA2635
+        for <linux-can@vger.kernel.org>; Wed, 21 Sep 2022 12:58:13 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1ob5Z3-000204-Js
-        for linux-can@vger.kernel.org; Wed, 21 Sep 2022 21:39:21 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 07A84E8DC5
-        for <linux-can@vger.kernel.org>; Wed, 21 Sep 2022 19:39:20 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        id 1ob5rF-0003mj-LL; Wed, 21 Sep 2022 21:58:09 +0200
+Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id D4FD9E8DBF;
-        Wed, 21 Sep 2022 19:39:12 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 9a478666;
-        Wed, 21 Sep 2022 19:39:02 +0000 (UTC)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 6E428E8DFD;
+        Wed, 21 Sep 2022 19:58:07 +0000 (UTC)
+Date:   Wed, 21 Sep 2022 21:58:04 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     linux-can@vger.kernel.org
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 1/3] can: gs_usb: gs_cmd_reset(): rename variable holding struct gs_can pointer to dev
-Date:   Wed, 21 Sep 2022 21:39:00 +0200
-Message-Id: <20220921193902.575416-2-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220921193902.575416-1-mkl@pengutronix.de>
-References: <20220921193902.575416-1-mkl@pengutronix.de>
+To:     john@jbrengineering.co.uk
+Cc:     linux-can@vger.kernel.org,
+        John Whittington <git@jbrengineering.co.uk>
+Subject: Re: (No Subject)
+Message-ID: <20220921195804.iqiorhtcbehmpolb@pengutronix.de>
+References: <20220920100416.959226-1-mkl@pengutronix.de>
+ <wRg__4HuO0FuJrZu5M_JEbOd6MvCtxHq_aV86X_Bj-Dgb0YTRaoVO_sr6DpPcvwrhWtnNYwSCCWf0hJ8bCsFEYfon_iTkyctFDZOxOyO3x8=@jbrengineering.co.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wpsya37h3yh3excq"
+Content-Disposition: inline
+In-Reply-To: <wRg__4HuO0FuJrZu5M_JEbOd6MvCtxHq_aV86X_Bj-Dgb0YTRaoVO_sr6DpPcvwrhWtnNYwSCCWf0hJ8bCsFEYfon_iTkyctFDZOxOyO3x8=@jbrengineering.co.uk>
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -51,42 +48,52 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Most of the driver uses the variable "dev" to point to the struct
-gs_can. Use the same name in gs_cmd_reset(), too. Rename gsdev to dev.
 
-Fixes: d08e973a77d1 ("can: gs_usb: Added support for the GS_USB CAN devices")
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/usb/gs_usb.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+--wpsya37h3yh3excq
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index 6b7ced4bff3d..bf0a1da27f76 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -358,10 +358,10 @@ static struct gs_tx_context *gs_get_tx_context(struct gs_can *dev,
- 	return NULL;
- }
- 
--static int gs_cmd_reset(struct gs_can *gsdev)
-+static int gs_cmd_reset(struct gs_can *dev)
- {
- 	struct gs_device_mode *dm;
--	struct usb_interface *intf = gsdev->iface;
-+	struct usb_interface *intf = dev->iface;
- 	int rc;
- 
- 	dm = kzalloc(sizeof(*dm), GFP_KERNEL);
-@@ -374,7 +374,7 @@ static int gs_cmd_reset(struct gs_can *gsdev)
- 			     usb_sndctrlpipe(interface_to_usbdev(intf), 0),
- 			     GS_USB_BREQ_MODE,
- 			     USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
--			     gsdev->channel, 0, dm, sizeof(*dm), 1000);
-+			     dev->channel, 0, dm, sizeof(*dm), 1000);
- 
- 	kfree(dm);
- 
--- 
-2.35.1
+On 21.09.2022 07:07:26, john@jbrengineering.co.uk wrote:
+> > while playing around with the hardware timestamping code, I found some
+> > issues, which are fixed in this series.
+> >=20
+> > John, can you test if timestamping still works on your hardware.
+>=20
+> I've just tested the 3 patches and yes it still works. Thanks for
+> picking up on those.
 
+Thanks, can I add your Tested-by?
 
+> I see a potential issue with 3/3: the timer not being stopped if the
+> USB start errors but I've replied in that thread.
+
+Fixed, see:
+
+| https://lore.kernel.org/all/20220921081329.385509-1-mkl@pengutronix.de
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--wpsya37h3yh3excq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmMrbMoACgkQrX5LkNig
+011o1Qf/UldGKPfzPE0sVJT2UJBDbFqFWC9mgi/ghVnDL4PkP0v5q1g26a53Jdaj
+zT+6ZCr+NnyYwt4nnRPsUPSSvxE53AvUZ4xsA7tkpC6m8QBRlnifsi+0AJpgAR5e
+sVnUxft1Ia+6GSh+BQkk/QkoTG16vh98ji3ueaB5gMeiUZ4zjiN9hli92tKcLebx
+3bYum4EIjm47bqb8QPxdEGQTV4a5OmtkUy/sFFZgva67xZiFgdV46Dnp01ui9qS4
+bLnNxNP7Apu0qh78IdNuN5vt3TM2udtwEdbSy+wrwGM8Cg/0MNP75P5i1gDynfZi
+VN9JFVh5tcMIq5YSrehW7eG1efh6Mw==
+=Zohm
+-----END PGP SIGNATURE-----
+
+--wpsya37h3yh3excq--
