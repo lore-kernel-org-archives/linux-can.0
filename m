@@ -2,44 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43270ECAAD8
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED7B7C6FA82
 	for <linux-can@archiver.kernel.org>; Fri, 23 Sep 2022 12:18:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231129AbiIWMSV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S232076AbiIWMSV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Fri, 23 Sep 2022 08:18:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37446 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230363AbiIWMQS (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 23 Sep 2022 08:16:18 -0400
+        with ESMTP id S232010AbiIWMQT (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 23 Sep 2022 08:16:19 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7268713C86B
-        for <linux-can@vger.kernel.org>; Fri, 23 Sep 2022 05:09:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9C813C875
+        for <linux-can@vger.kernel.org>; Fri, 23 Sep 2022 05:09:10 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1obhUN-0007El-Uh
-        for linux-can@vger.kernel.org; Fri, 23 Sep 2022 14:09:03 +0200
+        id 1obhUS-0007Iu-NN
+        for linux-can@vger.kernel.org; Fri, 23 Sep 2022 14:09:08 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 1E385EB10D
-        for <linux-can@vger.kernel.org>; Fri, 23 Sep 2022 12:09:03 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 26E45EB141
+        for <linux-can@vger.kernel.org>; Fri, 23 Sep 2022 12:09:06 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id D703DEB104;
-        Fri, 23 Sep 2022 12:09:01 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id A3351EB126;
+        Fri, 23 Sep 2022 12:09:04 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c8f4d511;
-        Fri, 23 Sep 2022 12:09:00 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4caba8b3;
+        Fri, 23 Sep 2022 12:09:01 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net-next 0/11] pull-request: can-next 2022-09-23
-Date:   Fri, 23 Sep 2022 14:08:48 +0200
-Message-Id: <20220923120859.740577-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 06/11] can: gs_usb: gs_cmd_reset(): rename variable holding struct gs_can pointer to dev
+Date:   Fri, 23 Sep 2022 14:08:54 +0200
+Message-Id: <20220923120859.740577-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220923120859.740577-1-mkl@pengutronix.de>
+References: <20220923120859.740577-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -50,68 +52,43 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+Most of the driver uses the variable "dev" to point to the struct
+gs_can. Use the same name in gs_cmd_reset(), too. Rename gsdev to dev.
 
-this is a pull request of 11 patches for net-next/main.
-
-The first 2 patches are by Ziyang Xuan and optimize registration and
-the sending in the CAN BCM protocol a bit.
-
-The next 8 patches target the gs_usb driver. 7 are by me and first fix
-the time hardware stamping support (added during this net-next cycle),
-rename a variable, convert the usb_control_msg + manual
-kmalloc()/kfree() to usb_control_msg_{send,rev}(), clean up the error
-handling and add switchable termination support. The patch by Rhett
-Aultman and Vasanth Sadhasivan convert the driver from
-usb_alloc_coherent()/usb_free_coherent() to kmalloc()/URB_FREE_BUFFER.
-
-The last patch is by Shang XiaoJing and removes an unneeded call to
-dev_err() from the ctucanfd driver.
-
-regards,
-Marc
-
+Fixes: d08e973a77d1 ("can: gs_usb: Added support for the GS_USB CAN devices")
+Link: https://lore.kernel.org/all/20220921193902.575416-2-mkl@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/usb/gs_usb.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-The following changes since commit d05d9eb79d0cd0f7a978621b4a56a1f2db444f86:
-
-  Merge branch 'net-dsa-remove-unnecessary-set_drvdata' (2022-09-22 19:31:39 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-6.1-20220923
-
-for you to fetch changes up to 6eed756408c69687613a83fd221431c8790cf0bb:
-
-  can: ctucanfd: Remove redundant dev_err call (2022-09-23 13:55:01 +0200)
-
-----------------------------------------------------------------
-linux-can-next-for-6.1-20220923
-
-----------------------------------------------------------------
-Marc Kleine-Budde (8):
-      Merge patch series "can: bcm: can: bcm: random optimizations"
-      can: gs_usb: gs_usb_get_timestamp(): fix endpoint parameter for usb_control_msg_recv()
-      can: gs_usb: add missing lock to protect struct timecounter::cycle_last
-      can: gs_usb: gs_can_open(): initialize time counter before starting device
-      can: gs_usb: gs_cmd_reset(): rename variable holding struct gs_can pointer to dev
-      can: gs_usb: convert from usb_control_msg() to usb_control_msg_{send,recv}()
-      can: gs_usb: gs_make_candev(): clean up error handling
-      can: gs_usb: add switchable termination support
-
-Shang XiaoJing (1):
-      can: ctucanfd: Remove redundant dev_err call
-
-Vasanth Sadhasivan (1):
-      can: gs_usb: remove dma allocations
-
-Ziyang Xuan (2):
-      can: bcm: registration process optimization in bcm_module_init()
-      can: bcm: check the result of can_send() in bcm_can_tx()
-
- drivers/net/can/ctucanfd/ctucanfd_platform.c |   1 -
- drivers/net/can/usb/gs_usb.c                 | 478 +++++++++++++--------------
- net/can/bcm.c                                |  25 +-
- 3 files changed, 249 insertions(+), 255 deletions(-)
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index aa619dfc3ff2..629ab664ca3f 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -358,10 +358,10 @@ static struct gs_tx_context *gs_get_tx_context(struct gs_can *dev,
+ 	return NULL;
+ }
+ 
+-static int gs_cmd_reset(struct gs_can *gsdev)
++static int gs_cmd_reset(struct gs_can *dev)
+ {
+ 	struct gs_device_mode *dm;
+-	struct usb_interface *intf = gsdev->iface;
++	struct usb_interface *intf = dev->iface;
+ 	int rc;
+ 
+ 	dm = kzalloc(sizeof(*dm), GFP_KERNEL);
+@@ -374,7 +374,7 @@ static int gs_cmd_reset(struct gs_can *gsdev)
+ 			     usb_sndctrlpipe(interface_to_usbdev(intf), 0),
+ 			     GS_USB_BREQ_MODE,
+ 			     USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
+-			     gsdev->channel, 0, dm, sizeof(*dm), 1000);
++			     dev->channel, 0, dm, sizeof(*dm), 1000);
+ 
+ 	kfree(dm);
+ 
+-- 
+2.35.1
 
 
