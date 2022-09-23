@@ -2,48 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9108DC6FA8E
-	for <linux-can@archiver.kernel.org>; Fri, 23 Sep 2022 12:18:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43270ECAAD8
+	for <linux-can@archiver.kernel.org>; Fri, 23 Sep 2022 12:18:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbiIWMSU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 23 Sep 2022 08:18:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37444 "EHLO
+        id S231129AbiIWMSV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 23 Sep 2022 08:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231129AbiIWMQS (ORCPT
+        with ESMTP id S230363AbiIWMQS (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Fri, 23 Sep 2022 08:16:18 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3332C13C868
-        for <linux-can@vger.kernel.org>; Fri, 23 Sep 2022 05:09:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7268713C86B
+        for <linux-can@vger.kernel.org>; Fri, 23 Sep 2022 05:09:05 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1obhUQ-0007GE-FT
-        for linux-can@vger.kernel.org; Fri, 23 Sep 2022 14:09:06 +0200
+        id 1obhUN-0007El-Uh
+        for linux-can@vger.kernel.org; Fri, 23 Sep 2022 14:09:03 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id C71D7EB129
-        for <linux-can@vger.kernel.org>; Fri, 23 Sep 2022 12:09:04 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 1E385EB10D
+        for <linux-can@vger.kernel.org>; Fri, 23 Sep 2022 12:09:03 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id BE7A4EB108;
-        Fri, 23 Sep 2022 12:09:02 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id D703DEB104;
+        Fri, 23 Sep 2022 12:09:01 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e3c0825c;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c8f4d511;
         Fri, 23 Sep 2022 12:09:00 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Ziyang Xuan <william.xuanziyang@huawei.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH net-next 02/11] can: bcm: check the result of can_send() in bcm_can_tx()
-Date:   Fri, 23 Sep 2022 14:08:50 +0200
-Message-Id: <20220923120859.740577-3-mkl@pengutronix.de>
+        kernel@pengutronix.de
+Subject: [PATCH net-next 0/11] pull-request: can-next 2022-09-23
+Date:   Fri, 23 Sep 2022 14:08:48 +0200
+Message-Id: <20220923120859.740577-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220923120859.740577-1-mkl@pengutronix.de>
-References: <20220923120859.740577-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -54,49 +50,68 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+Hello Jakub, hello David,
 
-If can_send() fail, it should not update frames_abs counter
-in bcm_can_tx(). Add the result check for can_send() in bcm_can_tx().
+this is a pull request of 11 patches for net-next/main.
 
-Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Suggested-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-Link: https://lore.kernel.org/all/9851878e74d6d37aee2f1ee76d68361a46f89458.1663206163.git.william.xuanziyang@huawei.com
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+The first 2 patches are by Ziyang Xuan and optimize registration and
+the sending in the CAN BCM protocol a bit.
+
+The next 8 patches target the gs_usb driver. 7 are by me and first fix
+the time hardware stamping support (added during this net-next cycle),
+rename a variable, convert the usb_control_msg + manual
+kmalloc()/kfree() to usb_control_msg_{send,rev}(), clean up the error
+handling and add switchable termination support. The patch by Rhett
+Aultman and Vasanth Sadhasivan convert the driver from
+usb_alloc_coherent()/usb_free_coherent() to kmalloc()/URB_FREE_BUFFER.
+
+The last patch is by Shang XiaoJing and removes an unneeded call to
+dev_err() from the ctucanfd driver.
+
+regards,
+Marc
+
 ---
- net/can/bcm.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 0a2adb844280..27706f6ace34 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -274,6 +274,7 @@ static void bcm_can_tx(struct bcm_op *op)
- 	struct sk_buff *skb;
- 	struct net_device *dev;
- 	struct canfd_frame *cf = op->frames + op->cfsiz * op->currframe;
-+	int err;
- 
- 	/* no target device? => exit */
- 	if (!op->ifindex)
-@@ -298,11 +299,11 @@ static void bcm_can_tx(struct bcm_op *op)
- 	/* send with loopback */
- 	skb->dev = dev;
- 	can_skb_set_owner(skb, op->sk);
--	can_send(skb, 1);
-+	err = can_send(skb, 1);
-+	if (!err)
-+		op->frames_abs++;
- 
--	/* update statistics */
- 	op->currframe++;
--	op->frames_abs++;
- 
- 	/* reached last frame? */
- 	if (op->currframe >= op->nframes)
--- 
-2.35.1
+The following changes since commit d05d9eb79d0cd0f7a978621b4a56a1f2db444f86:
+
+  Merge branch 'net-dsa-remove-unnecessary-set_drvdata' (2022-09-22 19:31:39 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-6.1-20220923
+
+for you to fetch changes up to 6eed756408c69687613a83fd221431c8790cf0bb:
+
+  can: ctucanfd: Remove redundant dev_err call (2022-09-23 13:55:01 +0200)
+
+----------------------------------------------------------------
+linux-can-next-for-6.1-20220923
+
+----------------------------------------------------------------
+Marc Kleine-Budde (8):
+      Merge patch series "can: bcm: can: bcm: random optimizations"
+      can: gs_usb: gs_usb_get_timestamp(): fix endpoint parameter for usb_control_msg_recv()
+      can: gs_usb: add missing lock to protect struct timecounter::cycle_last
+      can: gs_usb: gs_can_open(): initialize time counter before starting device
+      can: gs_usb: gs_cmd_reset(): rename variable holding struct gs_can pointer to dev
+      can: gs_usb: convert from usb_control_msg() to usb_control_msg_{send,recv}()
+      can: gs_usb: gs_make_candev(): clean up error handling
+      can: gs_usb: add switchable termination support
+
+Shang XiaoJing (1):
+      can: ctucanfd: Remove redundant dev_err call
+
+Vasanth Sadhasivan (1):
+      can: gs_usb: remove dma allocations
+
+Ziyang Xuan (2):
+      can: bcm: registration process optimization in bcm_module_init()
+      can: bcm: check the result of can_send() in bcm_can_tx()
+
+ drivers/net/can/ctucanfd/ctucanfd_platform.c |   1 -
+ drivers/net/can/usb/gs_usb.c                 | 478 +++++++++++++--------------
+ net/can/bcm.c                                |  25 +-
+ 3 files changed, 249 insertions(+), 255 deletions(-)
 
 
