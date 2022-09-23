@@ -2,44 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8023C6FA96
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 916E9C6FA91
 	for <linux-can@archiver.kernel.org>; Fri, 23 Sep 2022 12:18:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232078AbiIWMSY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 23 Sep 2022 08:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37150 "EHLO
+        id S230520AbiIWMSw (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 23 Sep 2022 08:18:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230327AbiIWMQU (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 23 Sep 2022 08:16:20 -0400
+        with ESMTP id S232004AbiIWMQT (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 23 Sep 2022 08:16:19 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2762413E7C4
-        for <linux-can@vger.kernel.org>; Fri, 23 Sep 2022 05:09:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67DF313C874
+        for <linux-can@vger.kernel.org>; Fri, 23 Sep 2022 05:09:10 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1obhUV-0007MJ-DA
-        for linux-can@vger.kernel.org; Fri, 23 Sep 2022 14:09:11 +0200
+        id 1obhUS-0007Ie-L1
+        for linux-can@vger.kernel.org; Fri, 23 Sep 2022 14:09:08 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 491EDEB160
-        for <linux-can@vger.kernel.org>; Fri, 23 Sep 2022 12:09:08 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id E97DEEB13D
+        for <linux-can@vger.kernel.org>; Fri, 23 Sep 2022 12:09:05 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9A32EEB14A;
-        Fri, 23 Sep 2022 12:09:06 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 283E8EB11C;
+        Fri, 23 Sep 2022 12:09:04 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 35c4742b;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3fac96ba;
         Fri, 23 Sep 2022 12:09:01 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Shang XiaoJing <shangxiaojing@huawei.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 11/11] can: ctucanfd: Remove redundant dev_err call
-Date:   Fri, 23 Sep 2022 14:08:59 +0200
-Message-Id: <20220923120859.740577-12-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        John Whittington <git@jbrengineering.co.uk>
+Subject: [PATCH net-next 05/11] can: gs_usb: gs_can_open(): initialize time counter before starting device
+Date:   Fri, 23 Sep 2022 14:08:53 +0200
+Message-Id: <20220923120859.740577-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220923120859.740577-1-mkl@pengutronix.de>
 References: <20220923120859.740577-1-mkl@pengutronix.de>
@@ -53,30 +53,57 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Shang XiaoJing <shangxiaojing@huawei.com>
+On busy networks the CAN controller might receive CAN frames directly
+after starting it but before the timecounter is setup. This will lead
+to NULL pointer deref while converting the converting the CAN frame's
+timestamp with the timecounter.
 
-devm_ioremap_resource() prints error message in itself. Remove the
-dev_err call to avoid redundant error message.
+Close the race window by setting up the timecounter before starting
+the CAN controller.
 
-Signed-off-by: Shang XiaoJing <shangxiaojing@huawei.com>
-Link: https://lore.kernel.org/all/20220923095835.14647-1-shangxiaojing@huawei.com
+Fixes: 45dfa45f52e6 ("can: gs_usb: add RX and TX hardware timestamp support")
+Link: https://lore.kernel.org/all/20220921081329.385509-1-mkl@pengutronix.de
+Cc: John Whittington <git@jbrengineering.co.uk
+Tested-by: John Whittington <git@jbrengineering.co.uk>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/ctucanfd/ctucanfd_platform.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/can/usb/gs_usb.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/ctucanfd/ctucanfd_platform.c b/drivers/net/can/ctucanfd/ctucanfd_platform.c
-index 89d54c2151e1..f83684f006ea 100644
---- a/drivers/net/can/ctucanfd/ctucanfd_platform.c
-+++ b/drivers/net/can/ctucanfd/ctucanfd_platform.c
-@@ -58,7 +58,6 @@ static int ctucan_platform_probe(struct platform_device *pdev)
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	addr = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(addr)) {
--		dev_err(dev, "Cannot remap address.\n");
- 		ret = PTR_ERR(addr);
- 		goto err;
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index 9a8a7f1b2002..aa619dfc3ff2 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -972,6 +972,10 @@ static int gs_can_open(struct net_device *netdev)
+ 	if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
+ 		flags |= GS_CAN_MODE_HW_TIMESTAMP;
+ 
++	/* start polling timestamp */
++	if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
++		gs_usb_timestamp_init(dev);
++
+ 	/* finally start device */
+ 	dev->can.state = CAN_STATE_ERROR_ACTIVE;
+ 	dm->mode = cpu_to_le32(GS_CAN_MODE_START);
+@@ -985,16 +989,14 @@ static int gs_can_open(struct net_device *netdev)
+ 	if (rc < 0) {
+ 		netdev_err(netdev, "Couldn't start device (err=%d)\n", rc);
+ 		kfree(dm);
++		if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
++			gs_usb_timestamp_stop(dev);
+ 		dev->can.state = CAN_STATE_STOPPED;
+ 		return rc;
  	}
+ 
+ 	kfree(dm);
+ 
+-	/* start polling timestamp */
+-	if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
+-		gs_usb_timestamp_init(dev);
+-
+ 	parent->active_channels++;
+ 	if (!(dev->can.ctrlmode & CAN_CTRLMODE_LISTENONLY))
+ 		netif_start_queue(netdev);
 -- 
 2.35.1
 
