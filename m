@@ -2,85 +2,125 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 947F0C6FA82
-	for <linux-can@archiver.kernel.org>; Fri, 23 Sep 2022 12:22:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 386A3C6FA82
+	for <linux-can@archiver.kernel.org>; Fri, 23 Sep 2022 13:30:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230488AbiIWMWU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 23 Sep 2022 08:22:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45820 "EHLO
+        id S232014AbiIWNaM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 23 Sep 2022 09:30:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbiIWMUv (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 23 Sep 2022 08:20:51 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA92138F33
-        for <linux-can@vger.kernel.org>; Fri, 23 Sep 2022 05:12:38 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1obhXk-0008VJ-2y; Fri, 23 Sep 2022 14:12:32 +0200
-Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 32A1CEB1A1;
-        Fri, 23 Sep 2022 12:12:31 +0000 (UTC)
-Date:   Fri, 23 Sep 2022 14:12:30 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Ziyang Xuan <william.xuanziyang@huawei.com>
-Cc:     socketcan@hartkopp.net, davem@davemloft.net, kuba@kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] can: bcm: can: bcm: random optimizations
-Message-ID: <20220923121230.hxfngsq7ngy442ya@pengutronix.de>
-References: <cover.1663206163.git.william.xuanziyang@huawei.com>
+        with ESMTP id S232042AbiIWN3q (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 23 Sep 2022 09:29:46 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C151E3C2
+        for <linux-can@vger.kernel.org>; Fri, 23 Sep 2022 06:29:44 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id j16so320977lfg.1
+        for <linux-can@vger.kernel.org>; Fri, 23 Sep 2022 06:29:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date;
+        bh=IWljh+63OYTrsua26Qq5c4L/fhQ8/rw3TWM3S4kRPAg=;
+        b=cWEG5VOkx/7Rh+fSf6t1Rhdn6HOZP0hDG5YinEh4SI5j2LP6Mmegk0V1JpelFyV+7n
+         301lHMdw56CIdbvjStj3mjPW+hxBMhUzlOXzxzSIG90g01tMWai/OJB3skhPneGCPlOB
+         nunt9fiEK7ZMSazc/fEo8cXA1ZAaP6XE/cmnPPr44oWquIwfgQdZbvdI7SEcibxVFIDe
+         +DPB/1nr99Am3z/dauPKqGaHdnp3xR3ZYlcT2ME05Cztmpiga3kATnDkSkD0bDrXcAuU
+         T7+p5vxaaQ0eQLERRirQOu7ap095mpcOiauuiq9UJnipStYYawfIPZW20aQutXxBzdmD
+         WLzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=IWljh+63OYTrsua26Qq5c4L/fhQ8/rw3TWM3S4kRPAg=;
+        b=6AxFX5PHBeCQI69KQ8zqDwo8JR6aTJUT6PkxxkaW10iJcaxlKAQF9/k9+T9QleK/IL
+         P2C8ZL9uzGXWa71SUs7tSuueTltfjMl5oabxPn5NnozXScgYvduDOfkKAXCRx7+5516c
+         xLF1yMUDSnRiSvJ6wGgpB9ckojo68gsxgsYdRzhfh9g7k37Qq/0BOSYuGYPXOOuHZqhc
+         atYdVk+UYv7xfOQtyF0vnK3B9UjsFCt0/n7Twm/TJSpsSu70x+Hcf32r4bLrKvTqNgkZ
+         5S+Yx6+dw5BXaY/iA1HzdyQY0YP1DFMRN4tmTDUwIlhLJWtmWSoCrSm65Xl8sbQYReFq
+         PugA==
+X-Gm-Message-State: ACrzQf2bb8ifOz/s1NPI1ZGfvNxe1djpJcaWeEffLZzRCyBttu5e5Gs+
+        CQ4aKjXPCeHeV66NGnmSSJW4iQDhEACspQ==
+X-Google-Smtp-Source: AMsMyM42t5kqZnIoNgksq2je4YQB/hRRP2pBEg9i92vdevXjLw/FZV8ZK4DpcXxZU7kh+qoKM3F1Kw==
+X-Received: by 2002:a05:6512:2308:b0:497:a290:cef6 with SMTP id o8-20020a056512230800b00497a290cef6mr3383604lfu.488.1663939782190;
+        Fri, 23 Sep 2022 06:29:42 -0700 (PDT)
+Received: from [192.168.10.102] (89-253-118-72.customers.ownit.se. [89.253.118.72])
+        by smtp.gmail.com with ESMTPSA id s7-20020a056512314700b0048b0696d0b1sm1458020lfi.90.2022.09.23.06.29.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Sep 2022 06:29:41 -0700 (PDT)
+Message-ID: <2bfef6e8-f684-7e67-59f6-0c3a429abae4@gmail.com>
+Date:   Fri, 23 Sep 2022 15:29:38 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2saqxs33poxjr5yu"
-Content-Disposition: inline
-In-Reply-To: <cover.1663206163.git.william.xuanziyang@huawei.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.1
+Subject: Re: [PATCH RFC] can: c_can: wake TX queue after kicking TX of cached
+ CAN frames
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+References: <20220923113821.718486-1-mkl@pengutronix.de>
+Content-Language: en-US
+From:   Jacob Kroon <jacob.kroon@gmail.com>
+In-Reply-To: <20220923113821.718486-1-mkl@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+Hi Marc,
 
---2saqxs33poxjr5yu
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 9/23/22 13:38, Marc Kleine-Budde wrote:
+> Link: https://lore.kernel.org/all/15a8084b-9617-2da1-6704-d7e39d60643b@gmail.com
+> Reported-by: Jacob Kroon <jacob.kroon@gmail.com>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>   drivers/net/can/c_can/c_can_main.c | 22 +++++++++++-----------
+>   1 file changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/net/can/c_can/c_can_main.c b/drivers/net/can/c_can/c_can_main.c
+> index dc8132862f33..fcf71c1f3b72 100644
+> --- a/drivers/net/can/c_can/c_can_main.c
+> +++ b/drivers/net/can/c_can/c_can_main.c
+> @@ -748,19 +748,8 @@ static void c_can_do_tx(struct net_device *dev)
+>   		return;
+>   
+>   	tx_ring->tail += pkts;
+> -	if (c_can_get_tx_free(tx_ring)) {
+> -		/* Make sure that anybody stopping the queue after
+> -		 * this sees the new tx_ring->tail.
+> -		 */
+> -		smp_mb();
+> -		netif_wake_queue(priv->dev);
+> -	}
+> -
+> -	stats->tx_bytes += bytes;
+> -	stats->tx_packets += pkts;
+>   
+>   	tail = c_can_get_tx_tail(tx_ring);
+> -
+>   	if (tail == 0) {
+>   		u8 head = c_can_get_tx_head(tx_ring);
+>   
+> @@ -770,6 +759,17 @@ static void c_can_do_tx(struct net_device *dev)
+>   			c_can_object_put(dev, IF_NAPI, obj, IF_COMM_TXRQST);
+>   		}
+>   	}
+> +
+> +	if (c_can_get_tx_free(tx_ring)) {
+> +		/* Make sure that anybody stopping the queue after
+> +		 * this sees the new tx_ring->tail.
+> +		 */
+> +		smp_mb();
+> +		netif_wake_queue(priv->dev);
+> +	}
+> +
+> +	stats->tx_bytes += bytes;
+> +	stats->tx_packets += pkts;
+>   }
+>   
+>   /* If we have a gap in the pending bits, that means we either
 
-On 15.09.2022 09:55:54, Ziyang Xuan wrote:
-> Do some small optimization for can_bcm.
+I tested this patch but unfortunately I got the network lockup after a 
+couple of minutes.
 
-Applied to linux-can-next.
-
-Thanks,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---2saqxs33poxjr5yu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmMtoqwACgkQrX5LkNig
-013jWwgAnfCO4+T4DhyqD9Sx7DyFZpEZp+FBRFI5H3zWvo7uDlZSm5ZCbH5Enc4I
-a/PTo/5eKZhY5t9eRj6zFFlzqnCdg0sxLxLceHF1ykJjQW2YiG9VKcM+3gSvTbsS
-K9zl7R1ZoqZpGI7DgTAgHXYX/4sG/6DCuLIaE9A2Mdn6RlWTqQaesOuuJT0WQG9z
-cl1RAaGbooYWGeI/I9yfymiyiLu83+TavR70w6aFHXUfbNx2X6QcaluFssRi12Fs
-ye1A/Eu006E2/ZWcARCJEXPnIDaISXq9GUCn608Bba9M/5oxlvDckcBN7zDA9I8B
-YUwSSm3aVVhHd2e5R6LR4lbSPY/kqA==
-=CW5D
------END PGP SIGNATURE-----
-
---2saqxs33poxjr5yu--
+Jacob
