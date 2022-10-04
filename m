@@ -2,118 +2,109 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D95E1C433FE
-	for <linux-can@archiver.kernel.org>; Sun,  2 Oct 2022 23:09:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8BAFC433FE
+	for <linux-can@archiver.kernel.org>; Tue,  4 Oct 2022 18:44:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229446AbiJBXJC (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 2 Oct 2022 19:09:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53978 "EHLO
+        id S229565AbiJDSoR (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 4 Oct 2022 14:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbiJBXIc (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 2 Oct 2022 19:08:32 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C563F1C5;
-        Sun,  2 Oct 2022 16:03:44 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id s206so8362217pgs.3;
-        Sun, 02 Oct 2022 16:03:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date;
-        bh=n1ZKaRc7L1J2HOhRbYn9RSi5qC1K6qbvvzoJx4l1wPI=;
-        b=NQrtagJuL/eU9k+3dIZTrXanbh7ZCwRBOsXt30plUPXwV9cnJ5aUSC/Z/7kSPGjNPB
-         w06BVt6WuYLmgiepoGqsH4FUQvhXQOJ1hM0pn5zytkEM25lS2pveUfUPwRrJSRqr3R3c
-         VYL053MeF4TwZ7V3h1ekY+e122fqkv2WnxFMb1C8qyGpAEfjkxTOtvmrCyQmp8M8BjrE
-         IZQh/6AGpIbaGxSdA5GIdlD6P+9QARM9ZKt3JKmWJ/uD45XbMqBBsnI30ziAtN1K78Gq
-         LtIWqfiuX2oRgIAZpxj+hZXFjvsK2/YgrFjpiTW9OCoEVOpL5xer2dx4Vh9J4ZOnbLHc
-         IVmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date;
-        bh=n1ZKaRc7L1J2HOhRbYn9RSi5qC1K6qbvvzoJx4l1wPI=;
-        b=nYdSl1woxhZTc2cDFhFO4JvYPrO2zRhQdGVQ5a5cu+Vc4p6oyySakA7y4z3SgLRrTE
-         SXcGiQXnqpIMAakafTYoQhB5xfs8yR2BeQ6eBOH0aMAlhv9dB3fOqT9RPbF4kTp1DNKE
-         h9dvJU9Ufz1IdYXZ4KH5YchEcpCoTBRowWJo7KFow7nK5O1P7w9QSPJPlqiuV8Z4/zyZ
-         ihyEOm6bM0U6qOHvV+Qk4vMTaAiOV9hh533E0OqoH/l+WMuxywuLqMbLKz5c2u3+k3Pw
-         Ik1k7msJlL4JyWOoSoow1whlzO1l0cjqcopybSoNlU3lpg0Vqn4fueJWCkItFaNq8t2w
-         TV6A==
-X-Gm-Message-State: ACrzQf181/sugW454P0XLvzpCxYYcUhwfx6JZ6rw64QGjOmFu0yBQqco
-        TL8GCz/8ZqOGIuF++0zm9JA=
-X-Google-Smtp-Source: AMsMyM4/g+UHH4GSV1/seyANUGimsPVf59o9/jOSn/Qy82po5YDBirhhImKDBvffmo1Iyrliw2/BQA==
-X-Received: by 2002:a05:6a00:1503:b0:540:e2c7:2387 with SMTP id q3-20020a056a00150300b00540e2c72387mr19857714pfu.48.1664751774537;
-        Sun, 02 Oct 2022 16:02:54 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s17-20020aa78bd1000000b0056160437e88sm1117103pfd.20.2022.10.02.16.02.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 02 Oct 2022 16:02:53 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <035bb415-283f-e540-7c85-ae21103158de@roeck-us.net>
-Date:   Sun, 2 Oct 2022 16:02:52 -0700
+        with ESMTP id S229472AbiJDSoR (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Oct 2022 14:44:17 -0400
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC9B65646
+        for <linux-can@vger.kernel.org>; Tue,  4 Oct 2022 11:44:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1664909052;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=TffA7LRMSJocpLbpD+OJYRx12+JiX7ekejUVblMhYmw=;
+    b=AUWu8Ir2wyNo4t/Vwaw+rTp/BX+xkq4tjjbvRtX4UPXqmz9/sTwxFlJPBKZQgXYAak
+    fhmrceZA8M9yzhqii+R2sIhmOLgDZJNUAX59ddcG0fw39SH095gM0M2LG6CIg6PJMi2G
+    FxokXb0tuD8u+gK0MkXSGy3mpY77y8E2uvnyVQmyg6HyhaOErccrypziIsk6GTplJB9x
+    oDRqf56Aa5ISy95Rye+wkTflFkcw67xluZ++0+P0POxdZZTv9+MGXXn/oT9of78eVgV6
+    5qhabVRLv6J9P482ijl9c28fFX1f7wB+FdcL5Knod2edIYZurCl+d366fYAxHCOcPpa/
+    I4KQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusx3hdIrpKytJSr6hfz3Vg=="
+X-RZG-CLASS-ID: mo00
+Received: from [IPV6:2a00:6020:1cfd:d100::923]
+    by smtp.strato.de (RZmta 48.1.3 AUTH)
+    with ESMTPSA id Y52aa0y94IiCDWu
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 4 Oct 2022 20:44:12 +0200 (CEST)
+Message-ID: <23216e28-49be-6461-9525-1faad3d439a7@hartkopp.net>
+Date:   Tue, 4 Oct 2022 20:44:07 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH net-next] net: drop the weight argument from
- netif_napi_add
+ Thunderbird/91.13.0
+Subject: Re: [RFC can-next] can: remove obsolete PCH CAN driver
 Content-Language: en-US
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
-        pabeni@redhat.com, kvalo@kernel.org, johannes@sipsolutions.net,
-        linux-wireless@vger.kernel.org, mkl@pengutronix.de,
-        linux-can@vger.kernel.org
-References: <20220927132753.750069-1-kuba@kernel.org>
- <20221002172427.GA3027039@roeck-us.net> <20221002105938.684fec1f@kernel.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <20221002105938.684fec1f@kernel.org>
+To:     Jacob Kroon <jacob.kroon@gmail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can@vger.kernel.org, Dario Binacchi <dariobin@libero.it>,
+        Wolfgang Grandegger <wg@grandegger.com>
+References: <20220924174424.86541-1-socketcan@hartkopp.net>
+ <f9b37775-edd5-2a5b-18bc-b34bb69b8324@gmail.com>
+ <20220926082526.ofoderi7wrpyolff@pengutronix.de>
+ <1653bdae-2ed0-7cc4-993e-cae922f1c524@gmail.com>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <1653bdae-2ed0-7cc4-993e-cae922f1c524@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On 10/2/22 10:59, Jakub Kicinski wrote:
-> On Sun, 2 Oct 2022 10:24:27 -0700 Guenter Roeck wrote:
->> On Tue, Sep 27, 2022 at 06:27:53AM -0700, Jakub Kicinski wrote:
->>> We tell driver developers to always pass NAPI_POLL_WEIGHT
->>> as the weight to netif_napi_add(). This may be confusing
->>> to newcomers, drop the weight argument, those who really
->>> need to tweak the weight can use netif_napi_add_weight().
+Hi Marc,
+
+now that net-next is closed for the merge window would you consider this 
+removal for the next can-next phase or is this something that can be 
+still applied after the merge window to 6.1-rc1?
+
+Best regards,
+Oliver
+
+On 26.09.22 10:55, Jacob Kroon wrote:
+> On 9/26/22 10:25, Marc Kleine-Budde wrote:
+>> On 24.09.2022 22:24:07, Jacob Kroon wrote:
+>>> On 9/24/22 19:44, Oliver Hartkopp wrote:
+>>>> The PCH CAN driver is a driver for a Bosch C_CAN controller IP core 
+>>>> which
+>>>> is attached to the system via PCI. This code has been introduced in 
+>>>> 2011
+>>>> by Oki Semiconductors developers to support the Intel Atom E6xx series
+>>>> I/O Hub (aka EG20T IOH PCH CAN). Since 2012 the driver only has been
+>>>> maintained by the kernel community.
+>>>>
+>>>> As there is a well maintained and continously tested C_CAN/D_CAN driver
+>>>> which also supports the PCI configuration from the PCH CAN EG20T setup
+>>>> this driver became obsolete.
+>>>>
+>>>> Cc: Jacob Kroon <jacob.kroon@gmail.com>
+>>>> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+>>>> Cc: Dario Binacchi <dariobin@libero.it>
+>>>> Cc: Wolfgang Grandegger <wg@grandegger.com>
+>>>> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+>>>> ---
+>>>>    drivers/net/can/Kconfig       |    8 -
+>>>>    drivers/net/can/Makefile      |    1 -
+>>>>    drivers/net/can/c_can/Kconfig |    3 +-
+>>>>    drivers/net/can/pch_can.c     | 1249 
+>>>> ---------------------------------
+>>>>    4 files changed, 2 insertions(+), 1259 deletions(-)
+>>>>    delete mode 100644 drivers/net/can/pch_can.c
+>>>>
 >>>
->>> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+>>> Given that the current PCH driver will lockup on my system I'm all for
+>>> removing it.
 >>
->> That seems to have missed some (or at least one) file(s).
+>> Should I add your Acked-by?
 >>
->> Building mips:cavium_octeon_defconfig ... failed
->> --------------
->> Error log:
->> drivers/net/ethernet/cavium/octeon/octeon_mgmt.c: In function 'octeon_mgmt_probe':
->> drivers/net/ethernet/cavium/octeon/octeon_mgmt.c:1399:9: error: too many arguments to function 'netif_napi_add'
->>   1399 |         netif_napi_add(netdev, &p->napi, octeon_mgmt_napi_poll,
->>        |         ^~~~~~~~~~~~~~
->> In file included from include/linux/etherdevice.h:21,
->>                   from drivers/net/ethernet/cavium/octeon/octeon_mgmt.c:11:
->> include/linux/netdevice.h:2562:1: note: declared here
->>   2562 | netif_napi_add(struct net_device *dev, struct napi_struct *napi,
 > 
-> Fix sent, sorry. I don't see any more problems grepping again now..
-
-I think that was the only one. The following coccinelle script helps.
-
-Guenter
-
----
-virtual report
-
-@s@
-expression a, b, c, d;
-position p;
-@@
-
-   netif_napi_add@p(a, b, c, d);
-
-@script:python depends on report@
-p << s.p;
-@@
-print "Bad netif_napi_add() call at %s:%s" % (p[0].file, p[0].line)
+> Although I doubt my name carries any weight in this context, yes feel 
+> free to do so.
+> 
+> Jacob
