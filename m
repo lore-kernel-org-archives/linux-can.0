@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 907ADC4332F
-	for <linux-can@archiver.kernel.org>; Sun,  9 Oct 2022 22:56:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 078CEC4321E
+	for <linux-can@archiver.kernel.org>; Sun,  9 Oct 2022 22:56:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233764AbiJIWzz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 9 Oct 2022 18:55:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58162 "EHLO
+        id S233773AbiJIWz6 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 9 Oct 2022 18:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233770AbiJIWwp (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 9 Oct 2022 18:52:45 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83EF43E759;
-        Sun,  9 Oct 2022 15:28:44 -0700 (PDT)
+        with ESMTP id S233904AbiJIWyQ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 9 Oct 2022 18:54:16 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5183A142;
+        Sun,  9 Oct 2022 15:29:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BA53EB80DFA;
-        Sun,  9 Oct 2022 22:27:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5ED2DC43470;
-        Sun,  9 Oct 2022 22:27:51 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CCEB3B80DE4;
+        Sun,  9 Oct 2022 22:25:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BDF9C433B5;
+        Sun,  9 Oct 2022 22:25:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665354472;
-        bh=ZM8KwLzQMU6Z+0eJcv/Gy/7anpAdhPECPWXhIWxPZPQ=;
+        s=k20201202; t=1665354331;
+        bh=Kzis1vLhezwehNxVB+MAMkeHuzcWMxACM/LeTgmHF4I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hGlrVp9clVGE0O0BCcgY5tzCjrgeB3TrlniAU9GP6WRZV2wzPilTfjrjx5lUe23XK
-         51Rb4AuiyK4bRE+WU6MxkV7DGICspyyakgMs1KuNXQGO8mandMKMf8dVRn4q0fFSix
-         xW98l3RcTcqu8X27yjSTUzvG3nI3EbcvIglP9hqE1tyITsxbVKbVVe+hBtvgeDyiAe
-         YMHyu5TGabN6DJo3sydjnmhq0ihnBFcO15Giql8hdrewgsEWnQvmiAXNPg9W10I6Ht
-         Ze3+DbVnD2WpMkubUT3u1X2S4uLXVrWIv17rwu30o8lxzzQJH2O2dITt8QVlOse9Uj
-         LWXergz8dOA6w==
+        b=Ko5vkSK+EwoljOPwOFLOuB8Kak7l/bkHSpVshsKrYHVa/OPr+/r0Kce/xctsRo2e5
+         HbJ4qK1h9ENhAkZCZerLieAzDeg4jXnOE8e50Dkp6003ipSbROApGpm6K6GqecvHLa
+         Y3bNcGUn2aGZwgTIkR7JAIAhkUW+ZaFENYSDUgSTWk5c9spMBm52cswUFH4ukH3HfR
+         qIE7BSgO590xadjjcei/poMnDpZB2h6uCIiSUNjiZcfrxm1ABF2GHmttWTkUAoEOSo
+         h2GzdhSIoxxYM9Xx4OaEclhTEV5VS6IhbC125mvbKJh4eZhEFWZ9O8gfGowYlUZG15
+         Xa0l5skfIW7GQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Ziyang Xuan <william.xuanziyang@huawei.com>,
@@ -39,12 +39,12 @@ Cc:     Ziyang Xuan <william.xuanziyang@huawei.com>,
         Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
         edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
         linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 13/16] can: bcm: check the result of can_send() in bcm_can_tx()
-Date:   Sun,  9 Oct 2022 18:27:09 -0400
-Message-Id: <20221009222713.1220394-13-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 17/25] can: bcm: check the result of can_send() in bcm_can_tx()
+Date:   Sun,  9 Oct 2022 18:24:22 -0400
+Message-Id: <20221009222436.1219411-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221009222713.1220394-1-sashal@kernel.org>
-References: <20221009222713.1220394-1-sashal@kernel.org>
+In-Reply-To: <20221009222436.1219411-1-sashal@kernel.org>
+References: <20221009222436.1219411-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -72,10 +72,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/net/can/bcm.c b/net/can/bcm.c
-index bfb507223468..ece04ad50348 100644
+index 3c825b158fb5..74e555a22de7 100644
 --- a/net/can/bcm.c
 +++ b/net/can/bcm.c
-@@ -285,6 +285,7 @@ static void bcm_can_tx(struct bcm_op *op)
+@@ -273,6 +273,7 @@ static void bcm_can_tx(struct bcm_op *op)
  	struct sk_buff *skb;
  	struct net_device *dev;
  	struct canfd_frame *cf = op->frames + op->cfsiz * op->currframe;
@@ -83,7 +83,7 @@ index bfb507223468..ece04ad50348 100644
  
  	/* no target device? => exit */
  	if (!op->ifindex)
-@@ -309,11 +310,11 @@ static void bcm_can_tx(struct bcm_op *op)
+@@ -297,11 +298,11 @@ static void bcm_can_tx(struct bcm_op *op)
  	/* send with loopback */
  	skb->dev = dev;
  	can_skb_set_owner(skb, op->sk);
