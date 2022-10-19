@@ -2,46 +2,48 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA803C4332F
-	for <linux-can@archiver.kernel.org>; Wed, 19 Oct 2022 22:10:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3583CC43219
+	for <linux-can@archiver.kernel.org>; Wed, 19 Oct 2022 22:10:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbiJSWKe (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 19 Oct 2022 18:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37188 "EHLO
+        id S230344AbiJSWKg (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 19 Oct 2022 18:10:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230287AbiJSWK1 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 19 Oct 2022 18:10:27 -0400
+        with ESMTP id S230120AbiJSWKc (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 19 Oct 2022 18:10:32 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B100F150FBD
-        for <linux-can@vger.kernel.org>; Wed, 19 Oct 2022 15:10:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF46F155D8A
+        for <linux-can@vger.kernel.org>; Wed, 19 Oct 2022 15:10:26 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1olHGZ-0001kI-Pn
-        for linux-can@vger.kernel.org; Thu, 20 Oct 2022 00:10:23 +0200
+        id 1olHGb-0001l6-DH
+        for linux-can@vger.kernel.org; Thu, 20 Oct 2022 00:10:25 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 329A5104201
-        for <linux-can@vger.kernel.org>; Wed, 19 Oct 2022 22:10:23 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id C716A10420C
+        for <linux-can@vger.kernel.org>; Wed, 19 Oct 2022 22:10:24 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 511B11041FC;
-        Wed, 19 Oct 2022 22:10:22 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id DD68B104204;
+        Wed, 19 Oct 2022 22:10:23 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2065837c;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2b392976;
         Wed, 19 Oct 2022 22:10:18 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v3 3/7] can: gs_usb: gs_can_open(): merge setting of timestamp flags and init
-Date:   Thu, 20 Oct 2022 00:10:12 +0200
-Message-Id: <20221019221016.1659260-4-mkl@pengutronix.de>
+Cc:     Jeroen Hofstee <jhofstee@victronenergy.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH v3 5/7] can: gs_usb: add ability to enable / disable berr reporting
+Date:   Thu, 20 Oct 2022 00:10:14 +0200
+Message-Id: <20221019221016.1659260-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221019221016.1659260-1-mkl@pengutronix.de>
 References: <20221019221016.1659260-1-mkl@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -51,35 +53,43 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Merge the bodies of 2 consecutive "if (dev->feature &
-GS_CAN_FEATURE_HW_TIMESTAMP)" statements.
+From: Jeroen Hofstee <jhofstee@victronenergy.com>
 
-Link: https://lore.kernel.org/all/20221019213035.1607752-4-mkl@pengutronix.de
+The open source firmware candleLight report bus errors
+unconditionally. This adds support to enable / disable bus error
+reporting with the standard netlink property.
+
+Signed-off-by: Jeroen Hofstee <jhofstee@victronenergy.com>
+Link: https://lore.kernel.org/all/20221019213035.1607752-6-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/gs_usb.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/can/usb/gs_usb.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index 5dad0ebb3d3e..f9e2b394c71e 100644
+index 68e474a762c5..e2e23467caf2 100644
 --- a/drivers/net/can/usb/gs_usb.c
 +++ b/drivers/net/can/usb/gs_usb.c
-@@ -923,12 +923,12 @@ static int gs_can_open(struct net_device *netdev)
+@@ -921,6 +921,9 @@ static int gs_can_open(struct net_device *netdev)
+ 	if (ctrlmode & CAN_CTRLMODE_ONE_SHOT)
+ 		flags |= GS_CAN_MODE_ONE_SHOT;
+ 
++	if (ctrlmode & CAN_CTRLMODE_BERR_REPORTING)
++		flags |= GS_CAN_MODE_BERR_REPORTING;
++
+ 	if (ctrlmode & CAN_CTRLMODE_FD)
  		flags |= GS_CAN_MODE_FD;
  
- 	/* if hardware supports timestamps, enable it */
--	if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
-+	if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP) {
- 		flags |= GS_CAN_MODE_HW_TIMESTAMP;
+@@ -1226,6 +1229,9 @@ static struct gs_can *gs_make_candev(unsigned int channel,
+ 		}
+ 	}
  
--	/* start polling timestamp */
--	if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
-+		/* start polling timestamp */
- 		gs_usb_timestamp_init(dev);
-+	}
- 
- 	/* finally start device */
- 	dev->can.state = CAN_STATE_ERROR_ACTIVE;
++	if (feature & GS_CAN_FEATURE_BERR_REPORTING)
++		dev->can.ctrlmode_supported |= CAN_CTRLMODE_BERR_REPORTING;
++
+ 	/* The CANtact Pro from LinkLayer Labs is based on the
+ 	 * LPC54616 µC, which is affected by the NXP LPC USB transfer
+ 	 * erratum. However, the current firmware (version 2) doesn't
 -- 
 2.35.1
 
