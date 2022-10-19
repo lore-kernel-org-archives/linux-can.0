@@ -2,48 +2,47 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61B6FC4332F
-	for <linux-can@archiver.kernel.org>; Wed, 19 Oct 2022 22:10:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC7D6C43217
+	for <linux-can@archiver.kernel.org>; Wed, 19 Oct 2022 22:10:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbiJSWKg (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 19 Oct 2022 18:10:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37846 "EHLO
+        id S231378AbiJSWKh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 19 Oct 2022 18:10:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbiJSWKd (ORCPT
+        with ESMTP id S231394AbiJSWKd (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 19 Oct 2022 18:10:33 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F46748F6
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13016157451
         for <linux-can@vger.kernel.org>; Wed, 19 Oct 2022 15:10:27 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1olHGc-0001lh-6e
+        id 1olHGc-0001lf-41
         for linux-can@vger.kernel.org; Thu, 20 Oct 2022 00:10:26 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 9630E104215
+        by bjornoya.blackshift.org (Postfix) with SMTP id 878AD104213
         for <linux-can@vger.kernel.org>; Wed, 19 Oct 2022 22:10:25 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id C45B710420B;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id A879110420A;
         Wed, 19 Oct 2022 22:10:24 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 6b414d5a;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id aaed2549;
         Wed, 19 Oct 2022 22:10:18 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     Jeroen Hofstee <jhofstee@victronenergy.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v3 7/7] can: gs_usb: add support for reading error counters
-Date:   Thu, 20 Oct 2022 00:10:16 +0200
-Message-Id: <20221019221016.1659260-8-mkl@pengutronix.de>
+Subject: [PATCH v3 6/7] can: gs_usb: document GS_CAN_FEATURE_GET_STATE
+Date:   Thu, 20 Oct 2022 00:10:15 +0200
+Message-Id: <20221019221016.1659260-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221019221016.1659260-1-mkl@pengutronix.de>
 References: <20221019221016.1659260-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -55,73 +54,47 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Jeroen Hofstee <jhofstee@victronenergy.com>
 
-Add support for reading the device state and CAN error counters, using
-the GS_USB_BREQ_GET_STATE control message, if supported by the device,
-indicated by the GS_CAN_FEATURE_GET_STATE feature flag.
+Document the new feature ("GS_CAN_FEATURE_GET_STATE") that indicates
+that the state of the CAN controller can be queried with the new
+GS_USB_BREQ_GET_STATE control message.
 
 Signed-off-by: Jeroen Hofstee <jhofstee@victronenergy.com>
+Link: https://lore.kernel.org/all/20221019213035.1607752-7-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/gs_usb.c | 39 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ drivers/net/can/usb/gs_usb.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index 3f00e8d79b75..ccb1a29835a2 100644
+index e2e23467caf2..3f00e8d79b75 100644
 --- a/drivers/net/can/usb/gs_usb.c
 +++ b/drivers/net/can/usb/gs_usb.c
-@@ -961,6 +961,42 @@ static int gs_can_open(struct net_device *netdev)
- 	return 0;
- }
+@@ -66,6 +66,7 @@ enum gs_usb_breq {
+ 	GS_USB_BREQ_BT_CONST_EXT,
+ 	GS_USB_BREQ_SET_TERMINATION,
+ 	GS_USB_BREQ_GET_TERMINATION,
++	GS_USB_BREQ_GET_STATE,
+ };
  
-+static int gs_usb_get_state(const struct net_device *netdev,
-+			    struct can_berr_counter *bec,
-+			    enum can_state *state)
-+{
-+	struct gs_can *dev = netdev_priv(netdev);
-+	struct gs_device_state ds;
-+	int rc;
-+
-+	rc = usb_control_msg_recv(interface_to_usbdev(dev->iface), 0,
-+				  GS_USB_BREQ_GET_STATE,
-+				  USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
-+				  dev->channel, 0,
-+				  &ds, sizeof(ds),
-+				  USB_CTRL_GET_TIMEOUT,
-+				  GFP_KERNEL);
-+	if (rc)
-+		return rc;
-+
-+	if (le32_to_cpu(ds.state) >= CAN_STATE_MAX)
-+		return -EOPNOTSUPP;
-+
-+	*state = le32_to_cpu(ds.state);
-+	bec->txerr = le32_to_cpu(ds.txerr);
-+	bec->rxerr = le32_to_cpu(ds.rxerr);
-+
-+	return 0;
-+}
-+
-+static int gs_usb_can_get_berr_counter(const struct net_device *netdev,
-+				       struct can_berr_counter *bec)
-+{
-+	enum can_state state;
-+
-+	return gs_usb_get_state(netdev, bec, &state);
-+}
-+
- static int gs_can_close(struct net_device *netdev)
- {
- 	int rc;
-@@ -1235,6 +1271,9 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 	if (feature & GS_CAN_FEATURE_BERR_REPORTING)
- 		dev->can.ctrlmode_supported |= CAN_CTRLMODE_BERR_REPORTING;
+ enum gs_can_mode {
+@@ -135,6 +136,7 @@ struct gs_device_config {
+ /* GS_CAN_FEATURE_BT_CONST_EXT BIT(10) */
+ /* GS_CAN_FEATURE_TERMINATION BIT(11) */
+ #define GS_CAN_MODE_BERR_REPORTING BIT(12)
++/* GS_CAN_FEATURE_GET_STATE BIT(13) */
  
-+	if (feature & GS_CAN_FEATURE_GET_STATE)
-+		dev->can.do_get_berr_counter = gs_usb_can_get_berr_counter;
-+
- 	/* The CANtact Pro from LinkLayer Labs is based on the
- 	 * LPC54616 µC, which is affected by the NXP LPC USB transfer
- 	 * erratum. However, the current firmware (version 2) doesn't
+ struct gs_device_mode {
+ 	__le32 mode;
+@@ -176,7 +178,8 @@ struct gs_device_termination_state {
+ #define GS_CAN_FEATURE_BT_CONST_EXT BIT(10)
+ #define GS_CAN_FEATURE_TERMINATION BIT(11)
+ #define GS_CAN_FEATURE_BERR_REPORTING BIT(12)
+-#define GS_CAN_FEATURE_MASK GENMASK(12, 0)
++#define GS_CAN_FEATURE_GET_STATE BIT(13)
++#define GS_CAN_FEATURE_MASK GENMASK(13, 0)
+ 
+ /* internal quirks - keep in GS_CAN_FEATURE space for now */
+ 
 -- 
 2.35.1
 
