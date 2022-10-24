@@ -2,124 +2,158 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A46DECAAA1
-	for <linux-can@archiver.kernel.org>; Mon, 24 Oct 2022 18:10:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4030AECAAA1
+	for <linux-can@archiver.kernel.org>; Mon, 24 Oct 2022 18:44:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229939AbiJXSKC (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 24 Oct 2022 14:10:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56174 "EHLO
+        id S232248AbiJXSom (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 24 Oct 2022 14:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233701AbiJXSJc (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 24 Oct 2022 14:09:32 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E0926394C;
-        Mon, 24 Oct 2022 09:51:04 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id l22-20020a17090a3f1600b00212fbbcfb78so3945150pjc.3;
-        Mon, 24 Oct 2022 09:51:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5iddcD8kUmmW6hP3Cs10FvwozsOGIT1nNRTjAFjTwXw=;
-        b=SZ3UPPsrkR17O+CgdG3A4mRrcZqEPZeVKGP/AMcZ+xKzd9HGVC6tl6iGr6XgknVnsd
-         qiaUodjhH6hljFOSFvIuQnJAM9A+Og8feh94+ql+mGJ4ZjrD1JyOiWmL6F1yd84uceBc
-         TMuqJmELdT9TPvU3W34mKZrKvfpYD6wyg76z7BSbV0wov10tAoOfNDvZ6CeKFU+WYDhj
-         kAH5ITNINpH2Z1XXoDUdWahw2KM+2gONscIaZWx+KZUMfqJ8Y3pOHAR5kXdMmrUqG0sZ
-         U30L0f7cokYfeWh7AZzzAO7h+HjgWxk12iZ/PFSJq9zYJbfP6B3ZxrMmDqt7rfF16zZr
-         7WSQ==
-X-Gm-Message-State: ACrzQf3HdoNHnl9pIZto5gU8snKdPWW0Y+w4yfO5IHDrAufw1pWvvWc9
-        CTd28XKhY8pMhBD2MrmKlhnYFeAcSMmuzQ==
-X-Google-Smtp-Source: AMsMyM5XiBavUdZuW7ixAZ3lm5DubiSyHSbYRDqiY4C77zk2euJ5VVKktvWbVKMekvkAB2hLe/jYFA==
-X-Received: by 2002:a67:ca10:0:b0:398:a567:1070 with SMTP id z16-20020a67ca10000000b00398a5671070mr17791771vsk.47.1666623300624;
-        Mon, 24 Oct 2022 07:55:00 -0700 (PDT)
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com. [209.85.222.54])
-        by smtp.gmail.com with ESMTPSA id b129-20020a1fcb87000000b003b3b3ba0010sm1528152vkg.45.2022.10.24.07.55.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Oct 2022 07:55:00 -0700 (PDT)
-Received: by mail-ua1-f54.google.com with SMTP id f12so4834800uae.3;
-        Mon, 24 Oct 2022 07:55:00 -0700 (PDT)
-X-Received: by 2002:a25:2:0:b0:6c4:dc1:d37c with SMTP id 2-20020a250002000000b006c40dc1d37cmr27671969yba.380.1666622879071;
- Mon, 24 Oct 2022 07:47:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20221022104357.1276740-1-biju.das.jz@bp.renesas.com> <20221022104357.1276740-5-biju.das.jz@bp.renesas.com>
-In-Reply-To: <20221022104357.1276740-5-biju.das.jz@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 24 Oct 2022 16:47:47 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdV-uG5Q6OQd+=HHTzOUuw_T4_2i6cNh5fcZCBWACcoptg@mail.gmail.com>
-Message-ID: <CAMuHMdV-uG5Q6OQd+=HHTzOUuw_T4_2i6cNh5fcZCBWACcoptg@mail.gmail.com>
-Subject: Re: [PATCH 4/6] can: rcar_canfd: Add clk_postdiv to struct rcar_canfd_hw_info
-To:     biju.das.jz@bp.renesas.com
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        with ESMTP id S232523AbiJXSoH (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 24 Oct 2022 14:44:07 -0400
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on20727.outbound.protection.outlook.com [IPv6:2a01:111:f403:7010::727])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F1912339A9;
+        Mon, 24 Oct 2022 10:26:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cRF6vhwYNfM2uyK7UYbqN44B229+s+lvn4crTbqAde9lXkjwx2GUSME3z7fEEH2dsNou8NLm8xpp7qK2h30tjixU8KHzlc2BE49mhs5Sqxfi78Jj85NzbODI/86YcENSg2wtnJooq8tIQuPGa0WThYwghVMmEsB2Y9X3G7NOUIWAxn/CujgdjaRFlzEiTlyn0VFwhbrtL+PKJxgGvLfuBHtOVCuO6Bu+hjuCINLPM7/lhikl9RnO3tVPxpWd/V+2g5wZqdFYhmJeBwzm+8csJ5eT7AqQIt5eUgMJGLdAnebHYaqpyPbbmSiGXh6gihbqdGiLbB4Ent4RMomfNy+mMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9jfC8N+nhSZ4fY7Xuwh5JTkQ46ki3EAvuOSVsfCczUc=;
+ b=VaVRaBXTB+/JbVyQtb4XpsfFJ2DZwEbDLeV5XGGjKePET/LqSz8h+jZb6d/1L8IyKWXIcPCdiMvlFPUw4fu9Dk0CL6//EjbEFx3tftXY6G0tFCKZcMdy7MNTmA+nb+q4e3yR42cYl6lC8gp6dLRaCg8sp7ABY4rAJ2WKvVN+MtEXAPla21eGMJOrL2qAWH+xsbKlVsLY9ta76hJ9u1jywX62sSTyCL9Gq/kOsYExoTxHdJn3wTiVkXhlLr7hhSK/yRh8BYTwadZUpEwrFotpuNdz4yVY5NpVji4kev0Z6fPW0P0cJhw5sUIGYluXLzPtz9GQgmBpjEQVPSJ/3F5/FQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
+ header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9jfC8N+nhSZ4fY7Xuwh5JTkQ46ki3EAvuOSVsfCczUc=;
+ b=UB2REBl3v6r1+MKk+TtVuYk+mI36/jbPenZpwUGEqcaDLoHn912xSmpinTOfYXlBjWDowWy6UWNxSdCCyqz7OFw8sLZXgENuSnrJkez7/QS9j9foDO+FS4RKWTCJsYU7FZ7sLJ0s3p3hhmCCQwsgpXW2Lg7Ucp4pOj+4sRQg7Y4=
+Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
+ by OS3PR01MB5670.jpnprd01.prod.outlook.com (2603:1096:604:c7::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5723.32; Mon, 24 Oct
+ 2022 17:17:15 +0000
+Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
+ ([fe80::fea0:9039:b0b3:968f]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
+ ([fe80::fea0:9039:b0b3:968f%7]) with mapi id 15.20.5746.028; Mon, 24 Oct 2022
+ 17:17:14 +0000
+From:   Biju Das <biju.das.jz@bp.renesas.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+CC:     Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        =?UTF-8?Q?Stefan_M=C3=A4tje?= <stefan.maetje@esd.eu>,
+        =?utf-8?B?U3RlZmFuIE3DpHRqZQ==?= <stefan.maetje@esd.eu>,
         Ulrich Hecht <uli+renesas@fpond.eu>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
         Chris Paterson <Chris.Paterson2@renesas.com>,
         Biju Das <biju.das@bp.renesas.com>,
-        linux-renesas-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>
+Subject: RE: [PATCH 2/6] can: rcar_canfd: Add max_channels to struct
+ rcar_canfd_hw_info
+Thread-Topic: [PATCH 2/6] can: rcar_canfd: Add max_channels to struct
+ rcar_canfd_hw_info
+Thread-Index: AQHY5gXXPE+jciOF2kmDRUgjP8N/lK4doVMAgAArIbA=
+Date:   Mon, 24 Oct 2022 17:17:14 +0000
+Message-ID: <OS0PR01MB5922EB78C4AB41CEBF082C29862E9@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+References: <20221022104357.1276740-1-biju.das.jz@bp.renesas.com>
+ <20221022104357.1276740-3-biju.das.jz@bp.renesas.com>
+ <CAMuHMdWczrC=WsDF6SchD=GwtG_OA+gAC4frF5i+qX5mpXEUfQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdWczrC=WsDF6SchD=GwtG_OA+gAC4frF5i+qX5mpXEUfQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=bp.renesas.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|OS3PR01MB5670:EE_
+x-ms-office365-filtering-correlation-id: 0d417a22-3162-4707-9fce-08dab5e398a4
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pGGeXMFMBRIOUZRfLlmelmkUlcUV8WjJ9Hq42aRcwPmMWOybuhdtjsuaGdpzC0gictYmSXP/f+yImhoZmu8fBnOB3IiAr+5S5RBcACNV2rCsJPgV150dwinBNdYxzNRI5FcipS2y9pHr045leES9rb+ZroaJxfIzk4wSwLHcqEhPV3Rjx99C5pXRi+u22zLRzDVeQBzwWom5CoIi8vyRs5otX4eup42WWvZGK6SrVMpJ6SJqTs1KDsklrnGLgAUZbZiyZJ+DqFriy5pc2CDu590+ZexbrtEek9dE62Ii3/Uae/cAFBSZF9WV6O4c4rEOkZMicj1EBYh1oUZsdFvX7hZqelugT/UoH+qDDT3+0bdLot+Ci3GGfkqt57bNWyBMiNBNvyYyNlQijoieYZjt0d4GPpZxv/XBGGFkJoZDjbWOWfTfh4X/jdE/kyS8T1VXMFyXbZJyyxP3PRZro0gIPKD840LxkxIAhndgtFA84Wg0FFGTryFp9qSX2iriW5Y1CGxD0s8hj0ta+qDkRHsaQvoObnp4plMBdNkHW1S03feGasWdAu4s6bqW3IjsqWW/qhOC4JsIJIkz7NWp+0f4V8vbWAiwuaAF/LGO0tZiHLdB6DJdxX5IizW2uDHPH9k9w7UyE69brMbexpLZkolNcIp5DJJeMF6IBfeeCDH3gBJOEcCxPIajRXIg5B4NzLe258mRHKeCXcU/LNE5v/QHzQuQbK0MBmvNd/yXuWr447HqW8R8s8Ok0pM/Z1Yi1tN4qCASwk9WZBM+m/nqWYmdxA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(376002)(346002)(366004)(396003)(39860400002)(451199015)(7416002)(86362001)(71200400001)(38070700005)(122000001)(4744005)(54906003)(26005)(186003)(5660300002)(38100700002)(6916009)(2906002)(52536014)(41300700001)(55016003)(8936002)(8676002)(64756008)(7696005)(53546011)(316002)(76116006)(66476007)(9686003)(478600001)(66946007)(66446008)(4326008)(66556008)(6506007)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UXR1WVZFd0FSZTBPaGZUUXhGU1VDSnQvVWNtODdUSFN4WFh4bXRhY05aQklL?=
+ =?utf-8?B?U1BIOHhTYnJUUWZldFZZS1F4L1M3MDRYWVc2cXRmaWxCblhoelJBdmxsT3h6?=
+ =?utf-8?B?SzZTM1NDYVcxNndRTUF6L0NPUXZuSkVDbFl6SEQ5dkRTSUpMWHhxUDlvb3Zw?=
+ =?utf-8?B?WU84Tk5BaVNuUEpsS3JnZmtWQm03RUxFKzlKTTJZVkFWQmc0ZnZueWVzY2p6?=
+ =?utf-8?B?Tnh3N3VqejBKWWR3a2J2SlZvU2o0QU53NWpTMnVxR01Od0E4eVpEa2lSYXBG?=
+ =?utf-8?B?VG9ZRkRqOExBUTBZQmxsTS9LSHpJY3FlQTliTy9HSU5jcit4dExTclJtOWZz?=
+ =?utf-8?B?ajVySHFydi8reElVckNnNEJCOFBaWWs4em5mN2xiU0EyUTk2a3dMU2JJdTRm?=
+ =?utf-8?B?Sm5iL1NFaDhNa1hLWkdHeVEvNGlMaXZ0YmlSVG9vVXMyRlFJWEN0bThNM1hp?=
+ =?utf-8?B?c0Q5RWJxb3Z4clZQR1hjVEJYdVRKb3lsMzh4OWd3Y0tXRFE0M2tjVDJtMnVq?=
+ =?utf-8?B?NzB6RDdCRjJQQ0Fua1czSVdackhoTkVza3AwSms3cjF6bkVKL2JNcWFWd1pY?=
+ =?utf-8?B?eTd5SUs4M0R6ZWU5MVBBcExmRldEcTIwaUhGSFY4aTg1TG5CZm10YUd4V1du?=
+ =?utf-8?B?VVdhSjZUdlN3ZkNSUkN3Y1JPdUpnRE05bVlUL1NjVDlZbnhHVUhRUFAycW5m?=
+ =?utf-8?B?cmxHMXNwazg4bythRHNCZDJiRWRiMDR3Y2NtNXdUc0NmSVR2eW5SNDd5YWJ1?=
+ =?utf-8?B?NC81RzVTUU01VFFBQ3A4YkoxclhMeTFGOEFVbFlBdUdBT0g4aTIraFRPZ0kw?=
+ =?utf-8?B?cFBxWWY2ZVB5VVZoc1NEaHN4ckRtQ3NoUUVsWVNWY3E5aFlidU53SGM3THF2?=
+ =?utf-8?B?MkhXdnZWM3RYWlg0dTYxK01kMlBKK1BpbEcrWTR0dUIyazdsODZmdG9lRlJS?=
+ =?utf-8?B?OGVnWFc2NlJhSHN1Y29KOTEvTlZqSTgxaHprTTZPeDVIUWtxVUJDVWgzbEd6?=
+ =?utf-8?B?YllTYmhxWlNWTUdodWxoZ2ZVWTY4NUdHalUyRGtKYUZBa0FCa3ZvZE80NHlS?=
+ =?utf-8?B?LzdKbmhuUnMyYjkwTnNRbjVmZjR4bi9Vc00zTUIzeU5NMG1QVzR6TUwvcVZu?=
+ =?utf-8?B?RXFJTEh6alRpbFFwVEtGbjhBMG4vd25HTFdPVnUvNUpBbWFPd0lPVVphQmhK?=
+ =?utf-8?B?aWJBWXpxKzZWQ0lEV3Uwd1VubitScVZlMWMvdEpBbUtHNHB4cTRRV1JSR1Vm?=
+ =?utf-8?B?eUdYVlRnejRnM05aaGd6NmhyUUpydlVzRXdXUWxmWkV6Mm1CVzJNK08xbDM3?=
+ =?utf-8?B?RXFYVmlSSG9ZdlpjQ0NLbHBRc0MxaW1BZlozQ2FlVUpvdlBoYkwwVDhsU0g1?=
+ =?utf-8?B?blFOM1I0LzNlNGlwUUljUlQ4VUsxOXkrTXBkWHZOalI3YWNEVmZNeWNIcGl3?=
+ =?utf-8?B?QUp5SHlRV2tTUkdrS0FXWCs5RTBxVnZRYUZkTkV4Z2VPeVM0WUVrWjFwVGJD?=
+ =?utf-8?B?U3ZxNThISEt1NE1DRitGTEsrM050QlF2bVU3VWNZelRtRlpkK09LdEQvQ243?=
+ =?utf-8?B?QXVRRHhBakc2OWx0THl2bHFjUXBSdHRMc1NGWERqaG11aVc0K3dySjU0bTNr?=
+ =?utf-8?B?L01iNWZiV1VqMkhxdDNoUExxWi9DZXlGT0plYytZN2cxNUpJTEVDaEFJWUF2?=
+ =?utf-8?B?TmIwT2pCTXU3VGs5akRMZVF4MmZrKzZpelRHaERVdXlUcnA5OVA4NVlmeWdE?=
+ =?utf-8?B?eTNIRTlaWVBJUFVHbys5LzBHOUE0eUdZckRKQ2Z1bERlZjZuTkllZTdkaklo?=
+ =?utf-8?B?YStDRG4vUGhnSWxjNzBVd1g4eGR3TDdsRDdXRGNqRk9DSGtWMXBGd0ZjbDQ5?=
+ =?utf-8?B?TmRyS2RKNFRhYjBWa1pIekViYnhBZjEyRUhrY1FLVHp4MGZ2WGFnQnVBeEZY?=
+ =?utf-8?B?bWtmdVMyaGxSbnQ5SzZKOEl3MUxOWmFhY1hobkVaUFBvWUZVU0pKNSt1TDZ4?=
+ =?utf-8?B?K2Q3bVZrb1B5TjRSSFNRRWFySWF2WHl5dEE4Y1hiZjBlb2RSQldtMjN1TUt0?=
+ =?utf-8?B?UmdGeDNKaEwyVzdYVjdmVktGemRGZXJMSGQrbTUzSGllTVZhbks0RjZhMCtC?=
+ =?utf-8?B?QVdpREFybFVsUFNJdy9DTFJENGFzYzF0bDBxR2xzNkJ1MDNrK2xsNHo1U3Fj?=
+ =?utf-8?B?RVE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: bp.renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0d417a22-3162-4707-9fce-08dab5e398a4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Oct 2022 17:17:14.9007
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: h5Tt0E8UTquLLemApOqJbg5d5c+r3gplWUBPtoNxY7aoj0LZ4W6cevATJAbGcAXBE6Y0rhoYUnv3Acqpxx5Z/BTpxpFAo9v4EbNIMX3FCrs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB5670
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi Biju,
-
-On Sat, Oct 22, 2022 at 1:03 PM Biju Das <biju.das.jz@bp.renesas.com> wrote:
-> R-Car has a clock divider for CAN FD clock within the IP, whereas
-> it is not available on RZ/G2L.
->
-> Add clk_postdiv to struct rcar_canfd_hw_info to take care of this
-> difference.
->
-> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-
-Thanks for your patch!
-
-> --- a/drivers/net/can/rcar/rcar_canfd.c
-> +++ b/drivers/net/can/rcar/rcar_canfd.c
-> @@ -528,6 +528,7 @@ struct rcar_canfd_hw_info {
->         u32 max_channels;
->         /* hardware features */
->         unsigned multi_global_irqs:1;   /* Has multiple global irqs  */
-> +       unsigned clk_postdiv:1;         /* Has CAN clk post divider  */
-
-As this is not the actual post divider, I think this should be called
-has_clk_postdiv. But see below...
-
->  };
->
->  /* Channel priv data */
-
-> @@ -1948,7 +1951,7 @@ static int rcar_canfd_probe(struct platform_device *pdev)
->         }
->         fcan_freq = clk_get_rate(gpriv->can_clk);
->
-> -       if (gpriv->fcan == RCANFD_CANFDCLK && info->chip_id != RENESAS_RZG2L)
-> +       if (gpriv->fcan == RCANFD_CANFDCLK && info->clk_postdiv)
->                 /* CANFD clock is further divided by (1/2) within the IP */
->                 fcan_freq /= 2;
-
-If info->clk_postdiv would be the actual post divider, you could simplify to:
-
-    if (gpriv->fcan == RCANFD_CANFDCLK)
-            fcan_freq /= info->postdiv;
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+SGkgR2VlcnQsDQoNClRoYW5rcyBmb3IgdGhlIGZlZWRiYWNrLg0KDQo+IDxiaWp1LmRhc0BicC5y
+ZW5lc2FzLmNvbT47IGxpbnV4LXJlbmVzYXMtc29jQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0
+OiBSZTogW1BBVENIIDIvNl0gY2FuOiByY2FyX2NhbmZkOiBBZGQgbWF4X2NoYW5uZWxzIHRvIHN0
+cnVjdA0KPiByY2FyX2NhbmZkX2h3X2luZm8NCj4gDQo+IE9uIFNhdCwgT2N0IDIyLCAyMDIyIGF0
+IDE6MTMgUE0gQmlqdSBEYXMgPGJpanUuZGFzLmp6QGJwLnJlbmVzYXMuY29tPg0KPiB3cm90ZToN
+Cj4gPiBSLUNhciBWM1Ugc3VwcG9ydHMgYSBtYXhpbXVtIG9mIDggY2hhbm5lbHMgd2hlcmVhcyBy
+ZXN0IG9mIHRoZSBTb0NzDQo+ID4gc3VwcG9ydCAyIGNoYW5uZWxzLg0KPiA+DQo+ID4gQWRkIG1h
+eF9jaGFubmVscyB2YXJpYWJsZSB0byBzdHJ1Y3QgcmNhcl9jYW5mZF9od19pbmZvIHRvIGhhbmRs
+ZQ0KPiB0aGlzDQo+ID4gZGlmZmVyZW5jZS4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEJpanUg
+RGFzIDxiaWp1LmRhcy5qekBicC5yZW5lc2FzLmNvbT4NCj4gDQo+IFJldmlld2VkLWJ5OiBHZWVy
+dCBVeXR0ZXJob2V2ZW4gPGdlZXJ0K3JlbmVzYXNAZ2xpZGVyLmJlPg0KPiANCj4gPiAtLS0gYS9k
+cml2ZXJzL25ldC9jYW4vcmNhci9yY2FyX2NhbmZkLmMNCj4gPiArKysgYi9kcml2ZXJzL25ldC9j
+YW4vcmNhci9yY2FyX2NhbmZkLmMNCj4gPiBAQCAtNTI1LDYgKzUyNSw3IEBAIHN0cnVjdCByY2Fy
+X2NhbmZkX2dsb2JhbDsNCj4gPg0KPiA+ICBzdHJ1Y3QgcmNhcl9jYW5mZF9od19pbmZvIHsNCj4g
+PiAgICAgICAgIGVudW0gcmNhbmZkX2NoaXBfaWQgY2hpcF9pZDsNCj4gPiArICAgICAgIHUzMiBt
+YXhfY2hhbm5lbHM7DQo+IA0KPiBBbHRob3VnaCBJIHdvdWxkbid0IG1pbmQgInVuc2lnbmVkIGlu
+dCIgaW5zdGVhZC4uLg0KDQpPSy4gQWdyZWVkIHdpbGwgY2hhbmdlIGl0IHRvIHVuc2lnbmVkIGlu
+dC4NCg0KQ2hlZXJzLA0KQmlqdQ0K
