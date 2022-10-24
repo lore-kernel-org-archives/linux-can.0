@@ -2,118 +2,108 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94BE1FA373F
-	for <linux-can@archiver.kernel.org>; Mon, 24 Oct 2022 17:05:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C5E8C38A2D
+	for <linux-can@archiver.kernel.org>; Mon, 24 Oct 2022 17:23:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbiJXRFW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 24 Oct 2022 13:05:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47228 "EHLO
+        id S229907AbiJXRXr (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 24 Oct 2022 13:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234503AbiJXRD6 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 24 Oct 2022 13:03:58 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF75873C3E
-        for <linux-can@vger.kernel.org>; Mon, 24 Oct 2022 08:40:00 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1omzWE-0007KN-4k; Mon, 24 Oct 2022 17:37:38 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:1bbf:91f6:fcf3:6f78])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id DEF08108A71;
-        Mon, 24 Oct 2022 15:37:34 +0000 (UTC)
-Date:   Mon, 24 Oct 2022 17:37:26 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Biju Das <biju.das.jz@bp.renesas.com>
+        with ESMTP id S231801AbiJXRXP (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 24 Oct 2022 13:23:15 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEECB3137F;
+        Mon, 24 Oct 2022 08:58:24 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id b25so6313442qkk.7;
+        Mon, 24 Oct 2022 08:58:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rBAhu8NoGXuB555vSSAG6ujvGRVSYY8Ax/kYBoDzfrc=;
+        b=RgfhSQOdRoPwH8uQ9Sqev3VRD/QPcGtEwrQ8wOGXJ23uWrVjwWXprsN2K1jb5jPaVB
+         9U8FAv8lOnJfM+fADmH/J30hrJKq3qxg1yN4+p/yijJTTBjXObthNh9/GOIGFJQCm4p3
+         TwwZQlaWktcICIWiI+WV4c5wJS0uMDLCBC99Q80b2pbH1NClWQs3DnpeKihfVy19lN34
+         t4xs4EfcKFtW5rUdbvEj5XQifW8XfGzAY188Uvr375YPeW4e69WeRsUF5Rm/6CqadVnq
+         x4KkN93GjrdvWQPJRWXTtY7vCRAj3s0mkdPGPGa6ff7tUtLoTn76Gvv1ClqDlYzHLXjv
+         gr9w==
+X-Gm-Message-State: ACrzQf1z+ODL1axlhMeT2cVOelapf83cIGXrHeBqHL23oTxIOcIf02Xc
+        eOHrXG/aL3/TIi++aIqYYQ6JvXB7AOqH3Q==
+X-Google-Smtp-Source: AMsMyM5HGSVCOB4uXsgihjAyOtr3nDTUXLaAa2l+l8t3ygQCwqtHG+bjN/MjZokHFsvRUaPqQPWftA==
+X-Received: by 2002:a05:622a:15d1:b0:39c:f1da:fe0e with SMTP id d17-20020a05622a15d100b0039cf1dafe0emr27502191qty.662.1666622494858;
+        Mon, 24 Oct 2022 07:41:34 -0700 (PDT)
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
+        by smtp.gmail.com with ESMTPSA id cm21-20020a05622a251500b0039c72bb51f3sm13314qtb.86.2022.10.24.07.41.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Oct 2022 07:41:34 -0700 (PDT)
+Received: by mail-yb1-f180.google.com with SMTP id e62so11256143yba.6;
+        Mon, 24 Oct 2022 07:41:33 -0700 (PDT)
+X-Received: by 2002:a25:4fc2:0:b0:6be:afb4:d392 with SMTP id
+ d185-20020a254fc2000000b006beafb4d392mr27409858ybb.604.1666622493666; Mon, 24
+ Oct 2022 07:41:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <20221022104357.1276740-1-biju.das.jz@bp.renesas.com> <20221022104357.1276740-3-biju.das.jz@bp.renesas.com>
+In-Reply-To: <20221022104357.1276740-3-biju.das.jz@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 24 Oct 2022 16:41:22 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWczrC=WsDF6SchD=GwtG_OA+gAC4frF5i+qX5mpXEUfQ@mail.gmail.com>
+Message-ID: <CAMuHMdWczrC=WsDF6SchD=GwtG_OA+gAC4frF5i+qX5mpXEUfQ@mail.gmail.com>
+Subject: Re: [PATCH 2/6] can: rcar_canfd: Add max_channels to struct rcar_canfd_hw_info
+To:     biju.das.jz@bp.renesas.com
 Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Stefan =?utf-8?B?TcOkdGpl?= <stefan.maetje@esd.eu>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        =?UTF-8?Q?Stefan_M=C3=A4tje?= <stefan.maetje@esd.eu>,
         Ulrich Hecht <uli+renesas@fpond.eu>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Rob Herring <robh@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>,
         Chris Paterson <Chris.Paterson2@renesas.com>,
+        Biju Das <biju.das@bp.renesas.com>,
         linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH 1/3] can: rcar_canfd: Fix IRQ storm on global fifo receive
-Message-ID: <20221024153726.72avg6xbgzwyboms@pengutronix.de>
-References: <20221022081503.1051257-1-biju.das.jz@bp.renesas.com>
- <20221022081503.1051257-2-biju.das.jz@bp.renesas.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pp2dauigdnxmzpha"
-Content-Disposition: inline
-In-Reply-To: <20221022081503.1051257-2-biju.das.jz@bp.renesas.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+On Sat, Oct 22, 2022 at 1:13 PM Biju Das <biju.das.jz@bp.renesas.com> wrote:
+> R-Car V3U supports a maximum of 8 channels whereas rest of the SoCs
+> support 2 channels.
+>
+> Add max_channels variable to struct rcar_canfd_hw_info to handle this
+> difference.
+>
+> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
 
---pp2dauigdnxmzpha
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-On 22.10.2022 09:15:01, Biju Das wrote:
-> We are seeing IRQ storm on global receive IRQ line under heavy CAN
-> bus load conditions with both CAN channels are enabled.
->=20
-> Conditions:
->   The global receive IRQ line is shared between can0 and can1, either
->   of the channels can trigger interrupt while the other channel irq
->   line is disabled(rfie).
->   When global receive IRQ interrupt occurs, we mask the interrupt in
->   irqhandler. Clearing and unmasking of the interrupt is happening in
->   rx_poll(). There is a race condition where rx_poll unmask the
->   interrupt, but the next irq handler does not mask the irq due to
->   NAPIF_STATE_MISSED flag.
+> --- a/drivers/net/can/rcar/rcar_canfd.c
+> +++ b/drivers/net/can/rcar/rcar_canfd.c
+> @@ -525,6 +525,7 @@ struct rcar_canfd_global;
+>
+>  struct rcar_canfd_hw_info {
+>         enum rcanfd_chip_id chip_id;
+> +       u32 max_channels;
 
-Why does this happen? Is it a problem that you call
-rcar_canfd_handle_global_receive() for a channel that has the IRQs
-actually disabled in hardware?
+Although I wouldn't mind "unsigned int" instead...
 
->   (for eg: can0 rx fifo interrupt enable is
->   disabled and can1 is triggering rx interrupt, the delay in rx_poll()
->   processing results in setting NAPIF_STATE_MISSED flag) leading to IRQ
->   storm.
->=20
-> This patch fixes the issue by checking irq is masked or not in
-> irq handler and it masks the interrupt if it is unmasked.
+>  };
+>
+>  /* Channel priv data */
 
-Marc
+Gr{oetje,eeting}s,
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+                        Geert
 
---pp2dauigdnxmzpha
-Content-Type: application/pgp-signature; name="signature.asc"
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmNWsTMACgkQrX5LkNig
-012EJgf/TJuBlGVYoPZqvkLueDAZ6s8nJzeI8sB5zxTsvDBoWpHaFk+gHd2PO9ai
-X4yfVczOEQfJBcT1yho2dWMoADFmAVWFTizWsblTTxYQd7cwhN/Y/itcXf6+rAqv
-1ej8FTyWI0gyguG1/IaN6LHpCzkHpxhzZaV1kkMpWPuutYsLPCYGSt1NH7j0d0ih
-GDcUVfprkzyNmUJb/SjYLsi23e5kLe+y7B+T6RZLc83+1tTZujjkn/tOkGjBGEQ2
-aZd6QviFmC7I/BmOVcVDWs7IIi/nDDSqsJx+57DgrjCVaPRHuJDoQZ23102H6izP
-HcXRZw9IKKbUqhIpqFNboYy8f32C7g==
-=3yl4
------END PGP SIGNATURE-----
-
---pp2dauigdnxmzpha--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
