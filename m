@@ -2,44 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A268C433FE
-	for <linux-can@archiver.kernel.org>; Wed, 26 Oct 2022 08:40:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 404D8FA373D
+	for <linux-can@archiver.kernel.org>; Wed, 26 Oct 2022 08:40:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233335AbiJZIki (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 26 Oct 2022 04:40:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57012 "EHLO
+        id S233131AbiJZIkj (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 26 Oct 2022 04:40:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233343AbiJZIkR (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 26 Oct 2022 04:40:17 -0400
+        with ESMTP id S232866AbiJZIkS (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 26 Oct 2022 04:40:18 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 297EA3206C
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296D632062
         for <linux-can@vger.kernel.org>; Wed, 26 Oct 2022 01:40:15 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1onbxO-0006ej-4w
+        id 1onbxO-0006eI-1S
         for linux-can@vger.kernel.org; Wed, 26 Oct 2022 10:40:14 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id ADB5810A09E
+        by bjornoya.blackshift.org (Postfix) with SMTP id 701E310A097
         for <linux-can@vger.kernel.org>; Wed, 26 Oct 2022 08:40:12 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id EFFFC10A078;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8D9F610A072;
         Wed, 26 Oct 2022 08:40:10 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c098a538;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0605dd73;
         Wed, 26 Oct 2022 08:40:08 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Kees Cook <keescook@chromium.org>,
+        kernel@pengutronix.de,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 05/29] can: kvaser_usb: Remove -Warray-bounds exception
-Date:   Wed, 26 Oct 2022 10:39:43 +0200
-Message-Id: <20221026084007.1583333-6-mkl@pengutronix.de>
+Subject: [PATCH net-next 04/29] can: ucan: Replace zero-length array with DECLARE_FLEX_ARRAY() helper
+Date:   Wed, 26 Oct 2022 10:39:42 +0200
+Message-Id: <20221026084007.1583333-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221026084007.1583333-1-mkl@pengutronix.de>
 References: <20221026084007.1583333-1-mkl@pengutronix.de>
@@ -53,38 +55,40 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
 
-GCC-12 emits false positive -Warray-bounds warnings with
-CONFIG_UBSAN_SHIFT (-fsanitize=shift). This is fixed in GCC 13[1],
-and there is top-level Makefile logic to remove -Warray-bounds for
-known-bad GCC versions staring with commit f0be87c42cbd ("gcc-12: disable
-'-Warray-bounds' universally for now").
+Zero-length arrays are deprecated and we are moving towards adopting
+C99 flexible-array members, instead. So, replace zero-length arrays
+declarations in anonymous union with the new DECLARE_FLEX_ARRAY()
+helper macro.
 
-Remove the local work-around.
+This helper allows for flexible-array members in unions.
 
-[1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105679
-
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/all/20221006192035.1742912-1-keescook@chromium.org
+Link: https://github.com/KSPP/linux/issues/193
+Link: https://github.com/KSPP/linux/issues/214
+Link: https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/all/YzIdHDdz30BH4SAv@work
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/kvaser_usb/Makefile | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/net/can/usb/ucan.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/kvaser_usb/Makefile b/drivers/net/can/usb/kvaser_usb/Makefile
-index b20d951a0790..cf260044f0b9 100644
---- a/drivers/net/can/usb/kvaser_usb/Makefile
-+++ b/drivers/net/can/usb/kvaser_usb/Makefile
-@@ -1,8 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
- obj-$(CONFIG_CAN_KVASER_USB) += kvaser_usb.o
- kvaser_usb-y = kvaser_usb_core.o kvaser_usb_leaf.o kvaser_usb_hydra.o
--
--# FIXME: temporarily silence -Warray-bounds on non W=1+ builds
--ifndef KBUILD_EXTRA_WARN
--CFLAGS_kvaser_usb_hydra.o += -Wno-array-bounds
--endif
+diff --git a/drivers/net/can/usb/ucan.c b/drivers/net/can/usb/ucan.c
+index 7c35f50fda4e..b53e709943bc 100644
+--- a/drivers/net/can/usb/ucan.c
++++ b/drivers/net/can/usb/ucan.c
+@@ -245,7 +245,8 @@ struct ucan_message_in {
+ 		/* CAN transmission complete
+ 		 * (type == UCAN_IN_TX_COMPLETE)
+ 		 */
+-		struct ucan_tx_complete_entry_t can_tx_complete_msg[0];
++		DECLARE_FLEX_ARRAY(struct ucan_tx_complete_entry_t,
++				   can_tx_complete_msg);
+ 	} __aligned(0x4) msg;
+ } __packed __aligned(0x4);
+ 
 -- 
 2.35.1
 
