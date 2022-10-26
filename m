@@ -2,45 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0B36C38A2D
-	for <linux-can@archiver.kernel.org>; Wed, 26 Oct 2022 08:42:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C11CC433FE
+	for <linux-can@archiver.kernel.org>; Wed, 26 Oct 2022 08:42:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233267AbiJZImN (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 26 Oct 2022 04:42:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33180 "EHLO
+        id S233490AbiJZImO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 26 Oct 2022 04:42:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233437AbiJZIlR (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 26 Oct 2022 04:41:17 -0400
+        with ESMTP id S233318AbiJZIl1 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 26 Oct 2022 04:41:27 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2634F197
-        for <linux-can@vger.kernel.org>; Wed, 26 Oct 2022 01:40:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9EBE4F6B9
+        for <linux-can@vger.kernel.org>; Wed, 26 Oct 2022 01:40:29 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1onbxb-0006zZ-9T
+        id 1onbxb-000702-Mm
         for linux-can@vger.kernel.org; Wed, 26 Oct 2022 10:40:27 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 201E510A147
+        by bjornoya.blackshift.org (Postfix) with SMTP id 4348010A14B
         for <linux-can@vger.kernel.org>; Wed, 26 Oct 2022 08:40:18 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2859810A0FE;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id D9ADC10A118;
         Wed, 26 Oct 2022 08:40:16 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 8ec764cb;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 31c30de7;
         Wed, 26 Oct 2022 08:40:09 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Anssi Hannula <anssi.hannula@bitwise.fi>,
-        Jimmy Assarsson <extja@kvaser.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 24/29] can: kvaser_usb_leaf: Fix bogus restart events
-Date:   Wed, 26 Oct 2022 10:40:02 +0200
-Message-Id: <20221026084007.1583333-25-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 27/29] can: m_can: use consistent indention
+Date:   Wed, 26 Oct 2022 10:40:05 +0200
+Message-Id: <20221026084007.1583333-28-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221026084007.1583333-1-mkl@pengutronix.de>
 References: <20221026084007.1583333-1-mkl@pengutronix.de>
@@ -54,61 +52,28 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Anssi Hannula <anssi.hannula@bitwise.fi>
+The driver uses indent-with-tab for defines. Replace spaces after
+IR_ERR_BUS_31X with tab for consistent indention.
 
-When auto-restart is enabled, the kvaser_usb_leaf driver considers
-transition from any state >= CAN_STATE_BUS_OFF as a bus-off recovery
-event (restart).
-
-However, these events may occur at interface startup time before
-kvaser_usb_open() has set the state to CAN_STATE_ERROR_ACTIVE, causing
-restarts counter to increase and CAN_ERR_RESTARTED to be sent despite no
-actual restart having occurred.
-
-Fix that by making the auto-restart condition checks more strict so that
-they only trigger when the interface was actually in the BUS_OFF state.
-
-Fixes: 080f40a6fa28 ("can: kvaser_usb: Add support for Kvaser CAN/USB devices")
-Tested-by: Jimmy Assarsson <extja@kvaser.com>
-Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
-Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
-Link: https://lore.kernel.org/all/20221010185237.319219-10-extja@kvaser.com
+Link: https://lore.kernel.org/all/20221024185544.68240-1-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/can/m_can/m_can.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-index 6df7b2eb7b6c..2250c8707ccc 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-@@ -901,7 +901,7 @@ static void kvaser_usb_leaf_tx_acknowledge(const struct kvaser_usb *dev,
- 	context = &priv->tx_contexts[tid % dev->max_tx_urbs];
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 34c76ee87c6e..59deb185fd6b 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -210,7 +210,7 @@ enum m_can_reg {
  
- 	/* Sometimes the state change doesn't come after a bus-off event */
--	if (priv->can.restart_ms && priv->can.state >= CAN_STATE_BUS_OFF) {
-+	if (priv->can.restart_ms && priv->can.state == CAN_STATE_BUS_OFF) {
- 		struct sk_buff *skb;
- 		struct can_frame *cf;
- 
-@@ -1018,7 +1018,7 @@ kvaser_usb_leaf_rx_error_update_can_state(struct kvaser_usb_net_priv *priv,
- 	}
- 
- 	if (priv->can.restart_ms &&
--	    cur_state >= CAN_STATE_BUS_OFF &&
-+	    cur_state == CAN_STATE_BUS_OFF &&
- 	    new_state < CAN_STATE_BUS_OFF)
- 		priv->can.can_stats.restarts++;
- 
-@@ -1111,7 +1111,7 @@ static void kvaser_usb_leaf_rx_error(const struct kvaser_usb *dev,
- 		}
- 
- 		if (priv->can.restart_ms &&
--		    old_state >= CAN_STATE_BUS_OFF &&
-+		    old_state == CAN_STATE_BUS_OFF &&
- 		    new_state < CAN_STATE_BUS_OFF) {
- 			cf->can_id |= CAN_ERR_RESTARTED;
- 			netif_carrier_on(priv->netdev);
+ /* Interrupts for version >= 3.1.x */
+ #define IR_ERR_LEC_31X	(IR_PED | IR_PEA)
+-#define IR_ERR_BUS_31X      (IR_ERR_LEC_31X | IR_WDI | IR_BEU | IR_BEC | \
++#define IR_ERR_BUS_31X	(IR_ERR_LEC_31X | IR_WDI | IR_BEU | IR_BEC | \
+ 			 IR_TOO | IR_MRAF | IR_TSW | IR_TEFL | IR_RF1L | \
+ 			 IR_RF0L)
+ #define IR_ERR_ALL_31X	(IR_ERR_STATE | IR_ERR_BUS_31X)
 -- 
 2.35.1
 
