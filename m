@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD9A5C433FE
-	for <linux-can@archiver.kernel.org>; Wed, 26 Oct 2022 08:41:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34D9AFA373D
+	for <linux-can@archiver.kernel.org>; Wed, 26 Oct 2022 08:42:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233468AbiJZIly (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 26 Oct 2022 04:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56952 "EHLO
+        id S233424AbiJZIl7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 26 Oct 2022 04:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232846AbiJZIlI (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 26 Oct 2022 04:41:08 -0400
+        with ESMTP id S233426AbiJZIlM (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 26 Oct 2022 04:41:12 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A20944556
-        for <linux-can@vger.kernel.org>; Wed, 26 Oct 2022 01:40:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EECBD491C6
+        for <linux-can@vger.kernel.org>; Wed, 26 Oct 2022 01:40:27 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1onbxY-0006v9-JG
-        for linux-can@vger.kernel.org; Wed, 26 Oct 2022 10:40:24 +0200
+        id 1onbxa-0006xc-5d
+        for linux-can@vger.kernel.org; Wed, 26 Oct 2022 10:40:26 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 5806810A129
+        by bjornoya.blackshift.org (Postfix) with SMTP id A2F8D10A138
         for <linux-can@vger.kernel.org>; Wed, 26 Oct 2022 08:40:17 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 454BF10A0DF;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id BB0DC10A0ED;
         Wed, 26 Oct 2022 08:40:15 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id aa78f2f6;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d47b8fdf;
         Wed, 26 Oct 2022 08:40:09 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Anssi Hannula <anssi.hannula@bitwise.fi>,
         Jimmy Assarsson <extja@kvaser.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 20/29] can: kvaser_usb_leaf: Set Warning state even without bus errors
-Date:   Wed, 26 Oct 2022 10:39:58 +0200
-Message-Id: <20221026084007.1583333-21-mkl@pengutronix.de>
+Subject: [PATCH net-next 22/29] can: kvaser_usb_leaf: Fix wrong CAN state after stopping
+Date:   Wed, 26 Oct 2022 10:40:00 +0200
+Message-Id: <20221026084007.1583333-23-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221026084007.1583333-1-mkl@pengutronix.de>
 References: <20221026084007.1583333-1-mkl@pengutronix.de>
@@ -56,69 +56,38 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Anssi Hannula <anssi.hannula@bitwise.fi>
 
-kvaser_usb_leaf_rx_error_update_can_state() sets error state according
-to error counters when the hardware does not indicate a specific state
-directly.
+0bfd:0124 Kvaser Mini PCI Express 2xHS FW 4.18.778 sends a
+CMD_CHIP_STATE_EVENT indicating bus-off after stopping the device,
+causing a stopped device to appear as CAN_STATE_BUS_OFF instead of
+CAN_STATE_STOPPED.
 
-However, this is currently gated behind a check for
-M16C_STATE_BUS_ERROR which does not always seem to be set when error
-counters are increasing, and may not be set when error counters are
-decreasing.
-
-This causes the CAN_STATE_ERROR_WARNING state to not be set in some
-cases even when appropriate.
-
-Change the code to set error state from counters even without
-M16C_STATE_BUS_ERROR.
-
-The Error-Passive case seems superfluous as it is already set via
-M16C_STATE_BUS_PASSIVE flag above, but it is kept for now.
-
-Tested with 0bfd:0124 Kvaser Mini PCI Express 2xHS FW 4.18.778.
+Fix that by not handling error events on stopped devices.
 
 Fixes: 080f40a6fa28 ("can: kvaser_usb: Add support for Kvaser CAN/USB devices")
 Tested-by: Jimmy Assarsson <extja@kvaser.com>
 Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
 Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
-Link: https://lore.kernel.org/all/20221010185237.319219-6-extja@kvaser.com
+Link: https://lore.kernel.org/all/20221010185237.319219-8-extja@kvaser.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 20 ++++++++-----------
- 1 file changed, 8 insertions(+), 12 deletions(-)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-index e391ec247f54..a9d565463559 100644
+index 12f3d023b72b..d6ca2ac8626c 100644
 --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
 +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-@@ -961,20 +961,16 @@ kvaser_usb_leaf_rx_error_update_can_state(struct kvaser_usb_net_priv *priv,
- 		new_state = CAN_STATE_BUS_OFF;
- 	} else if (es->status & M16C_STATE_BUS_PASSIVE) {
- 		new_state = CAN_STATE_ERROR_PASSIVE;
--	} else if (es->status & M16C_STATE_BUS_ERROR) {
-+	} else if ((es->status & M16C_STATE_BUS_ERROR) &&
-+		   cur_state >= CAN_STATE_BUS_OFF) {
- 		/* Guard against spurious error events after a busoff */
--		if (cur_state < CAN_STATE_BUS_OFF) {
--			if (es->txerr >= 128 || es->rxerr >= 128)
--				new_state = CAN_STATE_ERROR_PASSIVE;
--			else if (es->txerr >= 96 || es->rxerr >= 96)
--				new_state = CAN_STATE_ERROR_WARNING;
--			else if (cur_state > CAN_STATE_ERROR_ACTIVE)
--				new_state = CAN_STATE_ERROR_ACTIVE;
--		}
--	}
--
--	if (!es->status)
-+	} else if (es->txerr >= 128 || es->rxerr >= 128) {
-+		new_state = CAN_STATE_ERROR_PASSIVE;
-+	} else if (es->txerr >= 96 || es->rxerr >= 96) {
-+		new_state = CAN_STATE_ERROR_WARNING;
-+	} else {
- 		new_state = CAN_STATE_ERROR_ACTIVE;
-+	}
+@@ -1045,6 +1045,10 @@ static void kvaser_usb_leaf_rx_error(const struct kvaser_usb *dev,
+ 	leaf = priv->sub_priv;
+ 	stats = &priv->netdev->stats;
  
- 	if (new_state != cur_state) {
- 		tx_state = (es->txerr >= es->rxerr) ? new_state : 0;
++	/* Ignore e.g. state change to bus-off reported just after stopping */
++	if (!netif_running(priv->netdev))
++		return;
++
+ 	/* Update all of the CAN interface's state and error counters before
+ 	 * trying any memory allocation that can actually fail with -ENOMEM.
+ 	 *
 -- 
 2.35.1
 
