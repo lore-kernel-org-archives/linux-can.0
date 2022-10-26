@@ -2,44 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 230D7FA3742
-	for <linux-can@archiver.kernel.org>; Wed, 26 Oct 2022 08:41:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E41FFA3740
+	for <linux-can@archiver.kernel.org>; Wed, 26 Oct 2022 08:41:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233436AbiJZIlP (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 26 Oct 2022 04:41:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57212 "EHLO
+        id S233109AbiJZIlO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 26 Oct 2022 04:41:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233228AbiJZIkk (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 26 Oct 2022 04:40:40 -0400
+        with ESMTP id S233390AbiJZIkj (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 26 Oct 2022 04:40:39 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 824493D590
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1363C167
         for <linux-can@vger.kernel.org>; Wed, 26 Oct 2022 01:40:21 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1onbxT-0006lj-Gx
-        for linux-can@vger.kernel.org; Wed, 26 Oct 2022 10:40:19 +0200
+        id 1onbxS-0006kA-Fn
+        for linux-can@vger.kernel.org; Wed, 26 Oct 2022 10:40:18 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id BA58610A0EC
-        for <linux-can@vger.kernel.org>; Wed, 26 Oct 2022 08:40:15 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 040C510A0D7
+        for <linux-can@vger.kernel.org>; Wed, 26 Oct 2022 08:40:14 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5DC6310A0C4;
-        Wed, 26 Oct 2022 08:40:14 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9D67510A0B3;
+        Wed, 26 Oct 2022 08:40:13 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 07d68ac5;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 29742447;
         Wed, 26 Oct 2022 08:40:09 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Jeroen Hofstee <jhofstee@victronenergy.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 15/29] can: gs_usb: document GS_CAN_FEATURE_GET_STATE
-Date:   Wed, 26 Oct 2022 10:39:53 +0200
-Message-Id: <20221026084007.1583333-16-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 12/29] can: gs_usb: gs_can_open(): merge setting of timestamp flags and init
+Date:   Wed, 26 Oct 2022 10:39:50 +0200
+Message-Id: <20221026084007.1583333-13-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221026084007.1583333-1-mkl@pengutronix.de>
 References: <20221026084007.1583333-1-mkl@pengutronix.de>
@@ -53,49 +52,35 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Jeroen Hofstee <jhofstee@victronenergy.com>
+Merge the bodies of 2 consecutive "if (dev->feature &
+GS_CAN_FEATURE_HW_TIMESTAMP)" statements.
 
-Document the new feature ("GS_CAN_FEATURE_GET_STATE") that indicates
-that the state of the CAN controller can be queried with the new
-GS_USB_BREQ_GET_STATE control message.
-
-Signed-off-by: Jeroen Hofstee <jhofstee@victronenergy.com>
-Link: https://lore.kernel.org/all/20221019221016.1659260-7-mkl@pengutronix.de
+Link: https://lore.kernel.org/all/20221019221016.1659260-4-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/gs_usb.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/can/usb/gs_usb.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index e2e23467caf2..3f00e8d79b75 100644
+index 5dad0ebb3d3e..f9e2b394c71e 100644
 --- a/drivers/net/can/usb/gs_usb.c
 +++ b/drivers/net/can/usb/gs_usb.c
-@@ -66,6 +66,7 @@ enum gs_usb_breq {
- 	GS_USB_BREQ_BT_CONST_EXT,
- 	GS_USB_BREQ_SET_TERMINATION,
- 	GS_USB_BREQ_GET_TERMINATION,
-+	GS_USB_BREQ_GET_STATE,
- };
+@@ -923,12 +923,12 @@ static int gs_can_open(struct net_device *netdev)
+ 		flags |= GS_CAN_MODE_FD;
  
- enum gs_can_mode {
-@@ -135,6 +136,7 @@ struct gs_device_config {
- /* GS_CAN_FEATURE_BT_CONST_EXT BIT(10) */
- /* GS_CAN_FEATURE_TERMINATION BIT(11) */
- #define GS_CAN_MODE_BERR_REPORTING BIT(12)
-+/* GS_CAN_FEATURE_GET_STATE BIT(13) */
+ 	/* if hardware supports timestamps, enable it */
+-	if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
++	if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP) {
+ 		flags |= GS_CAN_MODE_HW_TIMESTAMP;
  
- struct gs_device_mode {
- 	__le32 mode;
-@@ -176,7 +178,8 @@ struct gs_device_termination_state {
- #define GS_CAN_FEATURE_BT_CONST_EXT BIT(10)
- #define GS_CAN_FEATURE_TERMINATION BIT(11)
- #define GS_CAN_FEATURE_BERR_REPORTING BIT(12)
--#define GS_CAN_FEATURE_MASK GENMASK(12, 0)
-+#define GS_CAN_FEATURE_GET_STATE BIT(13)
-+#define GS_CAN_FEATURE_MASK GENMASK(13, 0)
+-	/* start polling timestamp */
+-	if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
++		/* start polling timestamp */
+ 		gs_usb_timestamp_init(dev);
++	}
  
- /* internal quirks - keep in GS_CAN_FEATURE space for now */
- 
+ 	/* finally start device */
+ 	dev->can.state = CAN_STATE_ERROR_ACTIVE;
 -- 
 2.35.1
 
