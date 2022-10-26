@@ -2,47 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19833C433FE
-	for <linux-can@archiver.kernel.org>; Wed, 26 Oct 2022 08:40:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DFC1C38A2D
+	for <linux-can@archiver.kernel.org>; Wed, 26 Oct 2022 08:40:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233301AbiJZIkQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 26 Oct 2022 04:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56952 "EHLO
+        id S233280AbiJZIkR (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 26 Oct 2022 04:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233267AbiJZIkP (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 26 Oct 2022 04:40:15 -0400
+        with ESMTP id S233094AbiJZIkQ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 26 Oct 2022 04:40:16 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5CA2ED55
-        for <linux-can@vger.kernel.org>; Wed, 26 Oct 2022 01:40:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB3A22ED42
+        for <linux-can@vger.kernel.org>; Wed, 26 Oct 2022 01:40:12 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1onbxL-0006aO-MH
+        id 1onbxL-0006Zl-1Y
         for linux-can@vger.kernel.org; Wed, 26 Oct 2022 10:40:11 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 03E6A10A07A
+        by bjornoya.blackshift.org (Postfix) with SMTP id 31EC510A06D
         for <linux-can@vger.kernel.org>; Wed, 26 Oct 2022 08:40:10 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5ECFF10A064;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 168A910A063;
         Wed, 26 Oct 2022 08:40:09 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 97b34878;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 311bc9bd;
         Wed, 26 Oct 2022 08:40:08 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, "Daniel S. Trevitz" <dan@sstrev.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 01/29] can: add termination resistor documentation
-Date:   Wed, 26 Oct 2022 10:39:39 +0200
-Message-Id: <20221026084007.1583333-2-mkl@pengutronix.de>
+        kernel@pengutronix.de
+Subject: [PATCH net-next 0/29] pull-request: can-next 2022-10-26
+Date:   Wed, 26 Oct 2022 10:39:38 +0200
+Message-Id: <20221026084007.1583333-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221026084007.1583333-1-mkl@pengutronix.de>
-References: <20221026084007.1583333-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -53,65 +50,140 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: "Daniel S. Trevitz" <dan@sstrev.com>
+Hello Jakub, hello David,
 
-Add documentation for how to use and setup the switchable termination
-resistor support for CAN controllers.
+this is a pull request of 29 patches for net-next/master.
 
-Signed-off-by: Daniel Trevitz <dan@sstrev.com>
-Link: https://lore.kernel.org/all/3441354.44csPzL39Z@daniel6430
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+The first patch is by Daniel S. Trevitz and adds documentation for
+switchable termination resistors.
+
+Zhang Changzhong's patch fixes a debug output in the j13939 stack.
+
+Oliver Hartkopp finally removes the pch_can driver, which is
+superseded by the generic c_can driver.
+
+Gustavo A. R. Silva replaces a zero-length array with
+DECLARE_FLEX_ARRAY() in the ucan driver.
+
+Kees Cook's patch removes a no longer needed silencing of
+"-Warray-bounds" warnings for the kvaser_usb driver.
+
+The next 2 patches target the m_can driver. The first is by me cleans
+up the LEC error handling, the second is by Vivek Yadav and extends
+the LEC error handling to the data phase of CAN-FD frames.
+
+The next 9 patches all target the gs_usb driver. The first 5 patches
+are by me and improve the Kconfig prompt and help text, set
+netdev->dev_id to distinguish multi CAN channel devices, allow
+loopback and listen only at the same time, and clean up the
+gs_can_open() function a bit. The remaining 4 patches are by Jeroen
+Hofstee and add support for 2 new features: Bus Error Reporting and
+Get State.
+
+Jimmy Assarsson and Anssi Hannula contribute 10 patches for the
+kvaser_usb driver. They first add Listen Only and Bus Error Reporting
+support, handle CMD_ERROR_EVENT errors, improve CAN state handling,
+restart events, and configuration of the bit timing parameters.
+
+Another patch by me which fixes the indention in the m_can driver.
+
+A patch by Dongliang Mu cleans up the ucan_disconnect() function in
+the ucan driver.
+
+The last patch by Biju Das is for the rcan_canfd driver and cleans up
+the reset handling.
+
+regards,
+Marc
+
 ---
- Documentation/networking/can.rst | 33 ++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
 
-diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
-index ebc822e605f5..90121deef217 100644
---- a/Documentation/networking/can.rst
-+++ b/Documentation/networking/can.rst
-@@ -1148,6 +1148,39 @@ tuning on deep embedded systems'. The author is running a MPC603e
- load without any problems ...
- 
- 
-+Switchable Termination Resistors
-+--------------------------------
-+
-+CAN bus requires a specific impedance across the differential pair,
-+typically provided by two 120Ohm resistors on the farthest nodes of
-+the bus. Some CAN controllers support activating / deactivating a
-+termination resistor(s) to provide the correct impedance.
-+
-+Query the available resistances::
-+
-+    $ ip -details link show can0
-+    ...
-+    termination 120 [ 0, 120 ]
-+
-+Activate the terminating resistor::
-+
-+    $ ip link set dev can0 type can termination 120
-+
-+Deactivate the terminating resistor::
-+
-+    $ ip link set dev can0 type can termination 0
-+
-+To enable termination resistor support to a can-controller, either
-+implement in the controller's struct can-priv::
-+
-+    termination_const
-+    termination_const_cnt
-+    do_set_termination
-+
-+or add gpio control with the device tree entries from
-+Documentation/devicetree/bindings/net/can/can-controller.yaml
-+
-+
- The Virtual CAN Driver (vcan)
- -----------------------------
- 
+The following changes since commit a526a3cc9c8d426713f8bebc18ebbe39a8495d82:
 
-base-commit: a526a3cc9c8d426713f8bebc18ebbe39a8495d82
--- 
-2.35.1
+  net: ethernet: adi: adin1110: Fix SPI transfers (2022-10-19 14:20:37 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git 
+
+for you to fetch changes up to 68399ff574e4faf42b8d85da9339ca3ee2892cc7:
+
+  can: rcar_canfd: Use devm_reset_control_get_optional_exclusive (2022-10-26 10:24:08 +0200)
+
+----------------------------------------------------------------
+Anssi Hannula (5):
+      can: kvaser_usb_leaf: Set Warning state even without bus errors
+      can: kvaser_usb_leaf: Fix improved state not being reported
+      can: kvaser_usb_leaf: Fix wrong CAN state after stopping
+      can: kvaser_usb_leaf: Ignore stale bus-off after start
+      can: kvaser_usb_leaf: Fix bogus restart events
+
+Biju Das (1):
+      can: rcar_canfd: Use devm_reset_control_get_optional_exclusive
+
+Daniel S. Trevitz (1):
+      can: add termination resistor documentation
+
+Dongliang Mu (1):
+      can: ucan: ucan_disconnect(): change unregister_netdev() to unregister_candev()
+
+Gustavo A. R. Silva (1):
+      can: ucan: Replace zero-length array with DECLARE_FLEX_ARRAY() helper
+
+Jeroen Hofstee (4):
+      can: gs_usb: document GS_CAN_FEATURE_BERR_REPORTING
+      can: gs_usb: add ability to enable / disable berr reporting
+      can: gs_usb: document GS_CAN_FEATURE_GET_STATE
+      can: gs_usb: add support for reading error counters
+
+Jimmy Assarsson (5):
+      can: kvaser_usb: kvaser_usb_leaf: Get capabilities from device
+      can: kvaser_usb: kvaser_usb_leaf: Rename {leaf,usbcan}_cmd_error_event to {leaf,usbcan}_cmd_can_error_event
+      can: kvaser_usb: kvaser_usb_leaf: Handle CMD_ERROR_EVENT
+      can: kvaser_usb: Add struct kvaser_usb_busparams
+      can: kvaser_usb: Compare requested bittiming parameters with actual parameters in do_set_{,data}_bittiming
+
+Kees Cook (1):
+      can: kvaser_usb: Remove -Warray-bounds exception
+
+Marc Kleine-Budde (9):
+      can: m_can: is_lec_err(): clean up LEC error handling
+      can: gs_usb: mention candleLight as supported device
+      can: gs_usb: gs_make_candev(): set netdev->dev_id
+      can: gs_usb: gs_can_open(): allow loopback and listen only at the same time
+      can: gs_usb: gs_can_open(): sort checks for ctrlmode
+      can: gs_usb: gs_can_open(): merge setting of timestamp flags and init
+      Merge patch series "can: gs_usb: new features: GS_CAN_FEATURE_GET_STATE, GS_CAN_FEATURE_BERR_REPORTING"
+      Merge patch series "can: kvaser_usb: Fixes and improvements"
+      can: m_can: use consistent indention
+
+Oliver Hartkopp (1):
+      can: remove obsolete PCH CAN driver
+
+Vivek Yadav (1):
+      can: m_can: m_can_handle_bus_errors(): add support for handling DLEC error on CAN-FD frames
+
+Zhang Changzhong (1):
+      can: j1939: j1939_session_tx_eoma(): fix debug info
+
+ Documentation/networking/can.rst                  |   33 +
+ drivers/net/can/Kconfig                           |    8 -
+ drivers/net/can/Makefile                          |    1 -
+ drivers/net/can/c_can/Kconfig                     |    3 +-
+ drivers/net/can/m_can/m_can.c                     |   26 +-
+ drivers/net/can/m_can/m_can.h                     |    2 +-
+ drivers/net/can/pch_can.c                         | 1249 ---------------------
+ drivers/net/can/rcar/rcar_canfd.c                 |   22 +-
+ drivers/net/can/usb/Kconfig                       |    9 +-
+ drivers/net/can/usb/gs_usb.c                      |   74 +-
+ drivers/net/can/usb/kvaser_usb/Makefile           |    5 -
+ drivers/net/can/usb/kvaser_usb/kvaser_usb.h       |   30 +-
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c  |  115 +-
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c |  160 ++-
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c  |  464 +++++++-
+ drivers/net/can/usb/ucan.c                        |    5 +-
+ net/can/j1939/transport.c                         |    2 +-
+ 17 files changed, 815 insertions(+), 1393 deletions(-)
+ delete mode 100644 drivers/net/can/pch_can.c
 
 
