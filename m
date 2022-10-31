@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 553B6FA3747
-	for <linux-can@archiver.kernel.org>; Mon, 31 Oct 2022 15:44:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00541ECAAA1
+	for <linux-can@archiver.kernel.org>; Mon, 31 Oct 2022 15:44:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231998AbiJaPon (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 31 Oct 2022 11:44:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50968 "EHLO
+        id S232067AbiJaPou (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 31 Oct 2022 11:44:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232030AbiJaPoX (ORCPT
+        with ESMTP id S232031AbiJaPoX (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 31 Oct 2022 11:44:23 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 125BB11C2E
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1E611C2A
         for <linux-can@vger.kernel.org>; Mon, 31 Oct 2022 08:44:17 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1opWxU-0002vs-Cd
+        id 1opWxU-0002vd-7R
         for linux-can@vger.kernel.org; Mon, 31 Oct 2022 16:44:16 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 3B71A10F48B
+        by bjornoya.blackshift.org (Postfix) with SMTP id 178CA10F488
         for <linux-can@vger.kernel.org>; Mon, 31 Oct 2022 15:44:12 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id AEB1C10F422;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9DC2010F41F;
         Mon, 31 Oct 2022 15:44:08 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f38720a7;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 815ebd2e;
         Mon, 31 Oct 2022 15:44:08 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Biju Das <biju.das.jz@bp.renesas.com>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 13/14] can: rcar_canfd: Add postdiv to struct rcar_canfd_hw_info
-Date:   Mon, 31 Oct 2022 16:44:05 +0100
-Message-Id: <20221031154406.259857-14-mkl@pengutronix.de>
+Subject: [PATCH net-next 12/14] can: rcar_canfd: Add shared_global_irqs to struct rcar_canfd_hw_info
+Date:   Mon, 31 Oct 2022 16:44:04 +0100
+Message-Id: <20221031154406.259857-13-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221031154406.259857-1-mkl@pengutronix.de>
 References: <20221031154406.259857-1-mkl@pengutronix.de>
@@ -56,65 +56,68 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Biju Das <biju.das.jz@bp.renesas.com>
 
-R-Car has a clock divider for CAN FD clock within the IP, whereas
-it is not available on RZ/G2L.
+RZ/G2L has separate IRQ lines for receive FIFO and global error interrupt
+whereas R-Car has shared IRQ line.
 
-Add postdiv variable to struct rcar_canfd_hw_info to take care of this
-difference.
+Add shared_global_irqs to struct rcar_canfd_hw_info to select the driver to
+choose between shared and separate irq registration for global
+interrupts.
 
 Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
 Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/all/20221027082158.95895-5-biju.das.jz@bp.renesas.com
+Link: https://lore.kernel.org/all/20221027082158.95895-4-biju.das.jz@bp.renesas.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
  drivers/net/can/rcar/rcar_canfd.c | 8 ++++++--
  1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index c8d44dc36515..bc5df7a39f91 100644
+index 255cb0825f13..c8d44dc36515 100644
 --- a/drivers/net/can/rcar/rcar_canfd.c
 +++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -526,6 +526,7 @@ struct rcar_canfd_global;
+@@ -526,6 +526,8 @@ struct rcar_canfd_global;
  struct rcar_canfd_hw_info {
  	enum rcanfd_chip_id chip_id;
  	u8 max_channels;
-+	u8 postdiv;
- 	/* hardware features */
- 	unsigned shared_global_irqs:1;	/* Has shared global irqs */
++	/* hardware features */
++	unsigned shared_global_irqs:1;	/* Has shared global irqs */
  };
-@@ -600,17 +601,20 @@ static const struct can_bittiming_const rcar_canfd_bittiming_const = {
+ 
+ /* Channel priv data */
+@@ -598,6 +600,7 @@ static const struct can_bittiming_const rcar_canfd_bittiming_const = {
  static const struct rcar_canfd_hw_info rcar_gen3_hw_info = {
  	.chip_id = RENESAS_RCAR_GEN3,
  	.max_channels = 2,
-+	.postdiv = 2,
- 	.shared_global_irqs = 1,
++	.shared_global_irqs = 1,
  };
  
  static const struct rcar_canfd_hw_info rzg2l_hw_info = {
- 	.chip_id = RENESAS_RZG2L,
-+	.postdiv = 1,
- 	.max_channels = 2,
- };
- 
+@@ -608,6 +611,7 @@ static const struct rcar_canfd_hw_info rzg2l_hw_info = {
  static const struct rcar_canfd_hw_info r8a779a0_hw_info = {
  	.chip_id = RENESAS_R8A779A0,
  	.max_channels = 8,
-+	.postdiv = 2,
- 	.shared_global_irqs = 1,
++	.shared_global_irqs = 1,
  };
  
-@@ -1943,9 +1947,9 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ /* Helper functions */
+@@ -1868,7 +1872,7 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 		of_node_put(of_child);
  	}
- 	fcan_freq = clk_get_rate(gpriv->can_clk);
  
--	if (gpriv->fcan == RCANFD_CANFDCLK && info->chip_id != RENESAS_RZG2L)
-+	if (gpriv->fcan == RCANFD_CANFDCLK)
- 		/* CANFD clock is further divided by (1/2) within the IP */
--		fcan_freq /= 2;
-+		fcan_freq /= info->postdiv;
+-	if (info->chip_id != RENESAS_RZG2L) {
++	if (info->shared_global_irqs) {
+ 		ch_irq = platform_get_irq_byname_optional(pdev, "ch_int");
+ 		if (ch_irq < 0) {
+ 			/* For backward compatibility get irq by index */
+@@ -1951,7 +1955,7 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 	gpriv->base = addr;
  
- 	addr = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(addr)) {
+ 	/* Request IRQ that's common for both channels */
+-	if (info->chip_id != RENESAS_RZG2L) {
++	if (info->shared_global_irqs) {
+ 		err = devm_request_irq(&pdev->dev, ch_irq,
+ 				       rcar_canfd_channel_interrupt, 0,
+ 				       "canfd.ch_int", gpriv);
 -- 
 2.35.1
 
