@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F72EFA3741
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8CDEECAAA1
 	for <linux-can@archiver.kernel.org>; Mon, 31 Oct 2022 15:44:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232025AbiJaPoX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S232021AbiJaPoX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Mon, 31 Oct 2022 11:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50962 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232062AbiJaPoO (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 31 Oct 2022 11:44:14 -0400
+        with ESMTP id S232059AbiJaPoN (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 31 Oct 2022 11:44:13 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED50011A31
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E58A911A2F
         for <linux-can@vger.kernel.org>; Mon, 31 Oct 2022 08:44:12 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1opWxP-0002nc-9A
+        id 1opWxP-0002nV-8K
         for linux-can@vger.kernel.org; Mon, 31 Oct 2022 16:44:11 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id E475210F43F
+        by bjornoya.blackshift.org (Postfix) with SMTP id DE9EE10F43E
         for <linux-can@vger.kernel.org>; Mon, 31 Oct 2022 15:44:09 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 43D9C10F40E;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3D47B10F40D;
         Mon, 31 Oct 2022 15:44:08 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 430d5cdf;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 363dbedc;
         Mon, 31 Oct 2022 15:44:07 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
@@ -39,9 +39,9 @@ Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         Stephane Grosjean <s.grosjean@peak-system.com>,
         Lukas Magel <lukas.magel@posteo.net>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 03/14] can: peak_usb: allow flashing of the user device id
-Date:   Mon, 31 Oct 2022 16:43:55 +0100
-Message-Id: <20221031154406.259857-4-mkl@pengutronix.de>
+Subject: [PATCH net-next 02/14] can: peak_usb: add callback to read user value of CANFD devices
+Date:   Mon, 31 Oct 2022 16:43:54 +0100
+Message-Id: <20221031154406.259857-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221031154406.259857-1-mkl@pengutronix.de>
 References: <20221031154406.259857-1-mkl@pengutronix.de>
@@ -57,224 +57,119 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Stephane Grosjean <s.grosjean@peak-system.com>
 
-This series of patches adds a callback that allows the user to flash a
-self-defined device id to all USB - CAN/CANFD interfaces of PEAK-System
-managed by this driver, namely:
-- PCAN-USB
-- PCAN-USB FD
-- PCAN-USB Pro FD
-- PCAN-USB X6
-- PCAN-Chip USB
-- PCAN-USB Pro
+This patch adds the specific function that allows to read a user defined
+value from the non volatile memory of the USB CANFD interfaces of
+PEAK-System.
 
 Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 Signed-off-by: Lukas Magel <lukas.magel@posteo.net>
-Link: https://lore.kernel.org/all/20221030105939.87658-4-lukas.magel@posteo.net
+Link: https://lore.kernel.org/all/20221030105939.87658-3-lukas.magel@posteo.net
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb.c      | 26 ++++++++++++++++++--
- drivers/net/can/usb/peak_usb/pcan_usb_core.h |  1 +
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c   | 26 ++++++++++++++++++++
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c  | 15 +++++++++++
- drivers/net/can/usb/peak_usb/pcan_usb_pro.h  |  1 +
- 5 files changed, 67 insertions(+), 2 deletions(-)
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c |  3 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c   | 33 +++++++++++++++++---
+ 2 files changed, 30 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index 11fd033b57f3..6c01b2c6212b 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -9,10 +9,12 @@
-  * Many thanks to Klaus Hitschler <klaus.hitschler@gmx.de>
-  */
- #include <asm/unaligned.h>
-+
-+#include <linux/ethtool.h>
-+#include <linux/limits.h>
-+#include <linux/module.h>
- #include <linux/netdevice.h>
- #include <linux/usb.h>
--#include <linux/module.h>
--#include <linux/ethtool.h>
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+index 8e1b3c19f92f..ca282b0aa9a5 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -922,8 +922,7 @@ static int peak_usb_create_dev(const struct peak_usb_adapter *peak_usb_adapter,
+ 	}
  
- #include <linux/can.h>
- #include <linux/can/dev.h>
-@@ -398,6 +400,25 @@ static int pcan_usb_get_user_devid(struct peak_usb_device *dev, u32 *user_devid)
- 	return err;
- }
+ 	/* get device number early */
+-	if (dev->adapter->dev_get_user_devid)
+-		dev->adapter->dev_get_user_devid(dev, &dev->user_devid);
++	dev->adapter->dev_get_user_devid(dev, &dev->user_devid);
  
-+/* set a new user device id in the flash memory of the device */
-+static int pcan_usb_set_user_devid(struct peak_usb_device *dev, u32 user_devid)
-+{
-+	u8 args[PCAN_USB_CMD_ARGS_LEN];
-+
-+	/* this kind of device supports 8-bit values only */
-+	if (user_devid > U8_MAX)
-+		return -EINVAL;
-+
-+	/* during the flash process the device disconnects during ~1.25 s.:
-+	 * prohibit access when interface is UP
-+	 */
-+	if (dev->netdev->flags & IFF_UP)
-+		return -EBUSY;
-+
-+	args[0] = user_devid;
-+	return pcan_usb_send_cmd(dev, PCAN_USB_CMD_DEVID, PCAN_USB_SET, args);
-+}
-+
- /*
-  * update current time ref with received timestamp
-  */
-@@ -1018,6 +1039,7 @@ const struct peak_usb_adapter pcan_usb = {
- 	.dev_set_bus = pcan_usb_write_mode,
- 	.dev_set_bittiming = pcan_usb_set_bittiming,
- 	.dev_get_user_devid = pcan_usb_get_user_devid,
-+	.dev_set_user_devid = pcan_usb_set_user_devid,
- 	.dev_decode_buf = pcan_usb_decode_buf,
- 	.dev_encode_msg = pcan_usb_encode_msg,
- 	.dev_start = pcan_usb_start,
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-index 6ff32673a256..d9c9e333c47a 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-@@ -61,6 +61,7 @@ struct peak_usb_adapter {
- 				      struct can_bittiming *bt);
- 	int (*dev_set_bus)(struct peak_usb_device *dev, u8 onoff);
- 	int (*dev_get_user_devid)(struct peak_usb_device *dev, u32 *user_devid);
-+	int (*dev_set_user_devid)(struct peak_usb_device *dev, u32 user_devid);
- 	int (*dev_decode_buf)(struct peak_usb_device *dev, struct urb *urb);
- 	int (*dev_encode_msg)(struct peak_usb_device *dev, struct sk_buff *skb,
- 					u8 *obuf, size_t *size);
+ 	netdev_info(netdev, "attached to %s channel %u (device %u)\n",
+ 			peak_usb_adapter->name, ctrl_idx, dev->user_devid);
 diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index 2db358d0295e..1f5ad0dc2b1c 100644
+index b8053e697261..2db358d0295e 100644
 --- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
 +++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -147,6 +147,15 @@ struct __packed pcan_ufd_ovr_msg {
- 	u8	unused[3];
- };
- 
-+#define PCAN_UFD_CMD_DEVID_SET		0x81
-+
-+struct __packed pcan_ufd_device_id {
-+	__le16	opcode_channel;
-+
-+	u16	unused;
-+	__le32	device_id;
-+};
-+
- static inline int pufd_omsg_get_channel(struct pcan_ufd_ovr_msg *om)
- {
- 	return om->channel & 0xf;
-@@ -458,6 +467,19 @@ static int pcan_usb_fd_get_user_devid(struct peak_usb_device *dev,
+@@ -234,6 +234,15 @@ static int pcan_usb_fd_send_cmd(struct peak_usb_device *dev, void *cmd_tail)
  	return err;
  }
  
-+/* set a new user device id in the flash memory of the device */
-+static int pcan_usb_fd_set_user_devid(struct peak_usb_device *dev, u32 devid)
++static int pcan_usb_fd_read_fwinfo(struct peak_usb_device *dev,
++				   struct pcan_ufd_fw_info *fw_info)
 +{
-+	struct pcan_ufd_device_id *cmd = pcan_usb_fd_cmd_buffer(dev);
++	return pcan_usb_pro_send_req(dev, PCAN_USBPRO_REQ_INFO,
++				     PCAN_USBPRO_INFO_FW,
++				     fw_info,
++				     sizeof(*fw_info));
++}
 +
-+	cmd->opcode_channel = pucan_cmd_opcode_channel(dev->ctrl_idx,
-+						       PCAN_UFD_CMD_DEVID_SET);
-+	cmd->device_id = cpu_to_le32(devid);
+ /* build the commands list in the given buffer, to enter operational mode */
+ static int pcan_usb_fd_build_restart_cmd(struct peak_usb_device *dev, u8 *buf)
+ {
+@@ -434,6 +443,21 @@ static int pcan_usb_fd_set_bittiming_fast(struct peak_usb_device *dev,
+ 	return pcan_usb_fd_send_cmd(dev, ++cmd);
+ }
+ 
++/* read user device id from device */
++static int pcan_usb_fd_get_user_devid(struct peak_usb_device *dev,
++				      u32 *user_devid)
++{
++	int err;
++	struct pcan_usb_fd_if *usb_if = pcan_usb_fd_dev_if(dev);
 +
-+	/* send the command */
-+	return pcan_usb_fd_send_cmd(dev, ++cmd);
++	err = pcan_usb_fd_read_fwinfo(dev, &usb_if->fw_info);
++	if (err)
++		return err;
++
++	*user_devid = le32_to_cpu(usb_if->fw_info.dev_id[dev->ctrl_idx]);
++	return err;
 +}
 +
  /* handle restart but in asynchronously way
   * (uses PCAN-USB Pro code to complete asynchronous request)
   */
-@@ -1170,6 +1192,7 @@ const struct peak_usb_adapter pcan_usb_fd = {
- 	.dev_set_bittiming = pcan_usb_fd_set_bittiming_slow,
- 	.dev_set_data_bittiming = pcan_usb_fd_set_bittiming_fast,
- 	.dev_get_user_devid = pcan_usb_fd_get_user_devid,
-+	.dev_set_user_devid = pcan_usb_fd_set_user_devid,
- 	.dev_decode_buf = pcan_usb_fd_decode_buf,
- 	.dev_start = pcan_usb_fd_start,
- 	.dev_stop = pcan_usb_fd_stop,
-@@ -1245,6 +1268,7 @@ const struct peak_usb_adapter pcan_usb_chip = {
- 	.dev_set_bittiming = pcan_usb_fd_set_bittiming_slow,
- 	.dev_set_data_bittiming = pcan_usb_fd_set_bittiming_fast,
- 	.dev_get_user_devid = pcan_usb_fd_get_user_devid,
-+	.dev_set_user_devid = pcan_usb_fd_set_user_devid,
- 	.dev_decode_buf = pcan_usb_fd_decode_buf,
- 	.dev_start = pcan_usb_fd_start,
- 	.dev_stop = pcan_usb_fd_stop,
-@@ -1320,6 +1344,7 @@ const struct peak_usb_adapter pcan_usb_pro_fd = {
- 	.dev_set_bittiming = pcan_usb_fd_set_bittiming_slow,
- 	.dev_set_data_bittiming = pcan_usb_fd_set_bittiming_fast,
- 	.dev_get_user_devid = pcan_usb_fd_get_user_devid,
-+	.dev_set_user_devid = pcan_usb_fd_set_user_devid,
- 	.dev_decode_buf = pcan_usb_fd_decode_buf,
- 	.dev_start = pcan_usb_fd_start,
- 	.dev_stop = pcan_usb_fd_stop,
-@@ -1395,6 +1420,7 @@ const struct peak_usb_adapter pcan_usb_x6 = {
- 	.dev_set_bittiming = pcan_usb_fd_set_bittiming_slow,
- 	.dev_set_data_bittiming = pcan_usb_fd_set_bittiming_fast,
- 	.dev_get_user_devid = pcan_usb_fd_get_user_devid,
-+	.dev_set_user_devid = pcan_usb_fd_set_user_devid,
- 	.dev_decode_buf = pcan_usb_fd_decode_buf,
- 	.dev_start = pcan_usb_fd_start,
- 	.dev_stop = pcan_usb_fd_stop,
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index 15410d60cdf7..d3731c5aa4ed 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -76,6 +76,7 @@ static u16 pcan_usb_pro_sizeof_rec[256] = {
- 	[PCAN_USBPRO_SETFILTR] = sizeof(struct pcan_usb_pro_filter),
- 	[PCAN_USBPRO_SETTS] = sizeof(struct pcan_usb_pro_setts),
- 	[PCAN_USBPRO_GETDEVID] = sizeof(struct pcan_usb_pro_devid),
-+	[PCAN_USBPRO_SETDEVID] = sizeof(struct pcan_usb_pro_devid),
- 	[PCAN_USBPRO_SETLED] = sizeof(struct pcan_usb_pro_setled),
- 	[PCAN_USBPRO_RXMSG8] = sizeof(struct pcan_usb_pro_rxmsg),
- 	[PCAN_USBPRO_RXMSG4] = sizeof(struct pcan_usb_pro_rxmsg) - 4,
-@@ -149,6 +150,7 @@ static int pcan_msg_add_rec(struct pcan_usb_pro_msg *pm, int id, ...)
+@@ -907,10 +931,7 @@ static int pcan_usb_fd_init(struct peak_usb_device *dev)
  
- 	case PCAN_USBPRO_SETBTR:
- 	case PCAN_USBPRO_GETDEVID:
-+	case PCAN_USBPRO_SETDEVID:
- 		*pc++ = va_arg(ap, int);
- 		pc += 2;
- 		*(__le32 *)pc = cpu_to_le32(va_arg(ap, u32));
-@@ -444,6 +446,18 @@ static int pcan_usb_pro_get_user_devid(struct peak_usb_device *dev,
- 	return err;
- }
+ 		fw_info = &pdev->usb_if->fw_info;
  
-+static int pcan_usb_pro_set_user_devid(struct peak_usb_device *dev,
-+				       u32 user_devid)
-+{
-+	struct pcan_usb_pro_msg um;
-+
-+	pcan_msg_init_empty(&um, dev->cmd_buf, PCAN_USB_MAX_CMD_LEN);
-+	pcan_msg_add_rec(&um, PCAN_USBPRO_SETDEVID, dev->ctrl_idx,
-+			 user_devid);
-+
-+	return pcan_usb_pro_send_cmd(dev, &um);
-+}
-+
- static int pcan_usb_pro_set_bittiming(struct peak_usb_device *dev,
- 				      struct can_bittiming *bt)
- {
-@@ -1077,6 +1091,7 @@ const struct peak_usb_adapter pcan_usb_pro = {
- 	.dev_set_bus = pcan_usb_pro_set_bus,
- 	.dev_set_bittiming = pcan_usb_pro_set_bittiming,
- 	.dev_get_user_devid = pcan_usb_pro_get_user_devid,
-+	.dev_set_user_devid = pcan_usb_pro_set_user_devid,
- 	.dev_decode_buf = pcan_usb_pro_decode_buf,
- 	.dev_encode_msg = pcan_usb_pro_encode_msg,
- 	.dev_start = pcan_usb_pro_start,
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.h b/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
-index a34e0fc021c9..28e740af905d 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
-@@ -62,6 +62,7 @@ struct __packed pcan_usb_pro_fwinfo {
- #define PCAN_USBPRO_SETBTR	0x02
- #define PCAN_USBPRO_SETBUSACT	0x04
- #define PCAN_USBPRO_SETSILENT	0x05
-+#define PCAN_USBPRO_SETDEVID	0x06
- #define PCAN_USBPRO_SETFILTR	0x0a
- #define PCAN_USBPRO_SETTS	0x10
- #define PCAN_USBPRO_GETDEVID	0x12
+-		err = pcan_usb_pro_send_req(dev, PCAN_USBPRO_REQ_INFO,
+-					    PCAN_USBPRO_INFO_FW,
+-					    fw_info,
+-					    sizeof(*fw_info));
++		err = pcan_usb_fd_read_fwinfo(dev, fw_info);
+ 		if (err) {
+ 			dev_err(dev->netdev->dev.parent,
+ 				"unable to read %s firmware info (err %d)\n",
+@@ -1148,6 +1169,7 @@ const struct peak_usb_adapter pcan_usb_fd = {
+ 	.dev_set_bus = pcan_usb_fd_set_bus,
+ 	.dev_set_bittiming = pcan_usb_fd_set_bittiming_slow,
+ 	.dev_set_data_bittiming = pcan_usb_fd_set_bittiming_fast,
++	.dev_get_user_devid = pcan_usb_fd_get_user_devid,
+ 	.dev_decode_buf = pcan_usb_fd_decode_buf,
+ 	.dev_start = pcan_usb_fd_start,
+ 	.dev_stop = pcan_usb_fd_stop,
+@@ -1222,6 +1244,7 @@ const struct peak_usb_adapter pcan_usb_chip = {
+ 	.dev_set_bus = pcan_usb_fd_set_bus,
+ 	.dev_set_bittiming = pcan_usb_fd_set_bittiming_slow,
+ 	.dev_set_data_bittiming = pcan_usb_fd_set_bittiming_fast,
++	.dev_get_user_devid = pcan_usb_fd_get_user_devid,
+ 	.dev_decode_buf = pcan_usb_fd_decode_buf,
+ 	.dev_start = pcan_usb_fd_start,
+ 	.dev_stop = pcan_usb_fd_stop,
+@@ -1296,6 +1319,7 @@ const struct peak_usb_adapter pcan_usb_pro_fd = {
+ 	.dev_set_bus = pcan_usb_fd_set_bus,
+ 	.dev_set_bittiming = pcan_usb_fd_set_bittiming_slow,
+ 	.dev_set_data_bittiming = pcan_usb_fd_set_bittiming_fast,
++	.dev_get_user_devid = pcan_usb_fd_get_user_devid,
+ 	.dev_decode_buf = pcan_usb_fd_decode_buf,
+ 	.dev_start = pcan_usb_fd_start,
+ 	.dev_stop = pcan_usb_fd_stop,
+@@ -1370,6 +1394,7 @@ const struct peak_usb_adapter pcan_usb_x6 = {
+ 	.dev_set_bus = pcan_usb_fd_set_bus,
+ 	.dev_set_bittiming = pcan_usb_fd_set_bittiming_slow,
+ 	.dev_set_data_bittiming = pcan_usb_fd_set_bittiming_fast,
++	.dev_get_user_devid = pcan_usb_fd_get_user_devid,
+ 	.dev_decode_buf = pcan_usb_fd_decode_buf,
+ 	.dev_start = pcan_usb_fd_start,
+ 	.dev_stop = pcan_usb_fd_stop,
 -- 
 2.35.1
 
