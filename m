@@ -2,44 +2,49 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98C52FA3741
-	for <linux-can@archiver.kernel.org>; Mon, 31 Oct 2022 15:44:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F72EFA3741
+	for <linux-can@archiver.kernel.org>; Mon, 31 Oct 2022 15:44:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231974AbiJaPoT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 31 Oct 2022 11:44:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50896 "EHLO
+        id S232025AbiJaPoX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 31 Oct 2022 11:44:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232056AbiJaPoN (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 31 Oct 2022 11:44:13 -0400
+        with ESMTP id S232062AbiJaPoO (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 31 Oct 2022 11:44:14 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2346F11A14
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED50011A31
         for <linux-can@vger.kernel.org>; Mon, 31 Oct 2022 08:44:12 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1opWxO-0002mR-H1
-        for linux-can@vger.kernel.org; Mon, 31 Oct 2022 16:44:10 +0100
+        id 1opWxP-0002nc-9A
+        for linux-can@vger.kernel.org; Mon, 31 Oct 2022 16:44:11 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 09DDD10F42B
-        for <linux-can@vger.kernel.org>; Mon, 31 Oct 2022 15:44:08 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id E475210F43F
+        for <linux-can@vger.kernel.org>; Mon, 31 Oct 2022 15:44:09 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2641C10F40B;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 43D9C10F40E;
         Mon, 31 Oct 2022 15:44:08 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7c444614;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 430d5cdf;
         Mon, 31 Oct 2022 15:44:07 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net-next 0/14] pull-request: can-next 2022-10-31
-Date:   Mon, 31 Oct 2022 16:43:52 +0100
-Message-Id: <20221031154406.259857-1-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        Stephane Grosjean <s.grosjean@peak-system.com>,
+        Lukas Magel <lukas.magel@posteo.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 03/14] can: peak_usb: allow flashing of the user device id
+Date:   Mon, 31 Oct 2022 16:43:55 +0100
+Message-Id: <20221031154406.259857-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20221031154406.259857-1-mkl@pengutronix.de>
+References: <20221031154406.259857-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -50,77 +55,227 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+From: Stephane Grosjean <s.grosjean@peak-system.com>
 
-this is a pull request of 14 patches for net-next/master.
+This series of patches adds a callback that allows the user to flash a
+self-defined device id to all USB - CAN/CANFD interfaces of PEAK-System
+managed by this driver, namely:
+- PCAN-USB
+- PCAN-USB FD
+- PCAN-USB Pro FD
+- PCAN-USB X6
+- PCAN-Chip USB
+- PCAN-USB Pro
 
-The first 7 patches are by Stephane Grosjean and Lukas Magel and
-target the peak_usb driver. Support for flashing a user defined device
-ID via the ethtool flash interface is added. A read only sysfs
-attribute for that value is added to distinguish between devices via
-udev.
-
-The next 2 patches are by me an fix minor coding style issues in the
-kvaser_usb driver.
-
-The last 5 patches are by Biju Das, target the rcar_canfd driver and
-clean up the support for different IP cores.
-
-regards,
-Marc
-
+Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
+Signed-off-by: Lukas Magel <lukas.magel@posteo.net>
+Link: https://lore.kernel.org/all/20221030105939.87658-4-lukas.magel@posteo.net
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/usb/peak_usb/pcan_usb.c      | 26 ++++++++++++++++++--
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h |  1 +
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c   | 26 ++++++++++++++++++++
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c  | 15 +++++++++++
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.h  |  1 +
+ 5 files changed, 67 insertions(+), 2 deletions(-)
 
-The following changes since commit 02a97e02c64fb3245b84835cbbed1c3a3222e2f1:
-
-  Merge tag 'mlx5-updates-2022-10-24' of git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux (2022-10-28 22:07:48 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-6.2-20221031
-
-for you to fetch changes up to 3755b56a9b8ff8f1a6a21a979cc215c220401278:
-
-  Merge patch series "R-Car CAN FD driver enhancements" (2022-10-31 16:15:25 +0100)
-
-----------------------------------------------------------------
-linux-can-next-for-6.2-20221031
-
-----------------------------------------------------------------
-Biju Das (5):
-      can: rcar_canfd: rcar_canfd_probe: Add struct rcar_canfd_hw_info to driver data
-      can: rcar_canfd: Add max_channels to struct rcar_canfd_hw_info
-      can: rcar_canfd: Add shared_global_irqs to struct rcar_canfd_hw_info
-      can: rcar_canfd: Add postdiv to struct rcar_canfd_hw_info
-      can: rcar_canfd: Add multi_channel_irqs to struct rcar_canfd_hw_info
-
-Lukas Magel (2):
-      can: peak_usb: export PCAN user device ID as sysfs device attribute
-      can: peak_usb: align user device id format in log with sysfs attribute
-
-Marc Kleine-Budde (4):
-      Merge patch series "can: peak_usb: Introduce configurable user dev id"
-      can: kvaser_usb: kvaser_usb_set_bittiming(): fix redundant initialization warning for err
-      can: kvaser_usb: kvaser_usb_set_{,data}bittiming(): remove empty lines in variable declaration
-      Merge patch series "R-Car CAN FD driver enhancements"
-
-Stephane Grosjean (5):
-      can: peak_usb: rename device_id to a more explicit name
-      can: peak_usb: add callback to read user value of CANFD devices
-      can: peak_usb: allow flashing of the user device id
-      can: peak_usb: replace unregister_netdev() with unregister_candev()
-      can: peak_usb: add ethtool interface to user defined flashed device number
-
- Documentation/ABI/testing/sysfs-class-net-peak_usb |  15 +++
- drivers/net/can/rcar/rcar_canfd.c                  |  85 +++++++++------
- drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c   |   4 +-
- drivers/net/can/usb/peak_usb/pcan_usb.c            |  43 ++++++--
- drivers/net/can/usb/peak_usb/pcan_usb_core.c       | 119 +++++++++++++++++++--
- drivers/net/can/usb/peak_usb/pcan_usb_core.h       |  11 +-
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c         |  64 ++++++++++-
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c        |  26 ++++-
- drivers/net/can/usb/peak_usb/pcan_usb_pro.h        |   1 +
- 9 files changed, 306 insertions(+), 62 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-class-net-peak_usb
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index 11fd033b57f3..6c01b2c6212b 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -9,10 +9,12 @@
+  * Many thanks to Klaus Hitschler <klaus.hitschler@gmx.de>
+  */
+ #include <asm/unaligned.h>
++
++#include <linux/ethtool.h>
++#include <linux/limits.h>
++#include <linux/module.h>
+ #include <linux/netdevice.h>
+ #include <linux/usb.h>
+-#include <linux/module.h>
+-#include <linux/ethtool.h>
+ 
+ #include <linux/can.h>
+ #include <linux/can/dev.h>
+@@ -398,6 +400,25 @@ static int pcan_usb_get_user_devid(struct peak_usb_device *dev, u32 *user_devid)
+ 	return err;
+ }
+ 
++/* set a new user device id in the flash memory of the device */
++static int pcan_usb_set_user_devid(struct peak_usb_device *dev, u32 user_devid)
++{
++	u8 args[PCAN_USB_CMD_ARGS_LEN];
++
++	/* this kind of device supports 8-bit values only */
++	if (user_devid > U8_MAX)
++		return -EINVAL;
++
++	/* during the flash process the device disconnects during ~1.25 s.:
++	 * prohibit access when interface is UP
++	 */
++	if (dev->netdev->flags & IFF_UP)
++		return -EBUSY;
++
++	args[0] = user_devid;
++	return pcan_usb_send_cmd(dev, PCAN_USB_CMD_DEVID, PCAN_USB_SET, args);
++}
++
+ /*
+  * update current time ref with received timestamp
+  */
+@@ -1018,6 +1039,7 @@ const struct peak_usb_adapter pcan_usb = {
+ 	.dev_set_bus = pcan_usb_write_mode,
+ 	.dev_set_bittiming = pcan_usb_set_bittiming,
+ 	.dev_get_user_devid = pcan_usb_get_user_devid,
++	.dev_set_user_devid = pcan_usb_set_user_devid,
+ 	.dev_decode_buf = pcan_usb_decode_buf,
+ 	.dev_encode_msg = pcan_usb_encode_msg,
+ 	.dev_start = pcan_usb_start,
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+index 6ff32673a256..d9c9e333c47a 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+@@ -61,6 +61,7 @@ struct peak_usb_adapter {
+ 				      struct can_bittiming *bt);
+ 	int (*dev_set_bus)(struct peak_usb_device *dev, u8 onoff);
+ 	int (*dev_get_user_devid)(struct peak_usb_device *dev, u32 *user_devid);
++	int (*dev_set_user_devid)(struct peak_usb_device *dev, u32 user_devid);
+ 	int (*dev_decode_buf)(struct peak_usb_device *dev, struct urb *urb);
+ 	int (*dev_encode_msg)(struct peak_usb_device *dev, struct sk_buff *skb,
+ 					u8 *obuf, size_t *size);
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+index 2db358d0295e..1f5ad0dc2b1c 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+@@ -147,6 +147,15 @@ struct __packed pcan_ufd_ovr_msg {
+ 	u8	unused[3];
+ };
+ 
++#define PCAN_UFD_CMD_DEVID_SET		0x81
++
++struct __packed pcan_ufd_device_id {
++	__le16	opcode_channel;
++
++	u16	unused;
++	__le32	device_id;
++};
++
+ static inline int pufd_omsg_get_channel(struct pcan_ufd_ovr_msg *om)
+ {
+ 	return om->channel & 0xf;
+@@ -458,6 +467,19 @@ static int pcan_usb_fd_get_user_devid(struct peak_usb_device *dev,
+ 	return err;
+ }
+ 
++/* set a new user device id in the flash memory of the device */
++static int pcan_usb_fd_set_user_devid(struct peak_usb_device *dev, u32 devid)
++{
++	struct pcan_ufd_device_id *cmd = pcan_usb_fd_cmd_buffer(dev);
++
++	cmd->opcode_channel = pucan_cmd_opcode_channel(dev->ctrl_idx,
++						       PCAN_UFD_CMD_DEVID_SET);
++	cmd->device_id = cpu_to_le32(devid);
++
++	/* send the command */
++	return pcan_usb_fd_send_cmd(dev, ++cmd);
++}
++
+ /* handle restart but in asynchronously way
+  * (uses PCAN-USB Pro code to complete asynchronous request)
+  */
+@@ -1170,6 +1192,7 @@ const struct peak_usb_adapter pcan_usb_fd = {
+ 	.dev_set_bittiming = pcan_usb_fd_set_bittiming_slow,
+ 	.dev_set_data_bittiming = pcan_usb_fd_set_bittiming_fast,
+ 	.dev_get_user_devid = pcan_usb_fd_get_user_devid,
++	.dev_set_user_devid = pcan_usb_fd_set_user_devid,
+ 	.dev_decode_buf = pcan_usb_fd_decode_buf,
+ 	.dev_start = pcan_usb_fd_start,
+ 	.dev_stop = pcan_usb_fd_stop,
+@@ -1245,6 +1268,7 @@ const struct peak_usb_adapter pcan_usb_chip = {
+ 	.dev_set_bittiming = pcan_usb_fd_set_bittiming_slow,
+ 	.dev_set_data_bittiming = pcan_usb_fd_set_bittiming_fast,
+ 	.dev_get_user_devid = pcan_usb_fd_get_user_devid,
++	.dev_set_user_devid = pcan_usb_fd_set_user_devid,
+ 	.dev_decode_buf = pcan_usb_fd_decode_buf,
+ 	.dev_start = pcan_usb_fd_start,
+ 	.dev_stop = pcan_usb_fd_stop,
+@@ -1320,6 +1344,7 @@ const struct peak_usb_adapter pcan_usb_pro_fd = {
+ 	.dev_set_bittiming = pcan_usb_fd_set_bittiming_slow,
+ 	.dev_set_data_bittiming = pcan_usb_fd_set_bittiming_fast,
+ 	.dev_get_user_devid = pcan_usb_fd_get_user_devid,
++	.dev_set_user_devid = pcan_usb_fd_set_user_devid,
+ 	.dev_decode_buf = pcan_usb_fd_decode_buf,
+ 	.dev_start = pcan_usb_fd_start,
+ 	.dev_stop = pcan_usb_fd_stop,
+@@ -1395,6 +1420,7 @@ const struct peak_usb_adapter pcan_usb_x6 = {
+ 	.dev_set_bittiming = pcan_usb_fd_set_bittiming_slow,
+ 	.dev_set_data_bittiming = pcan_usb_fd_set_bittiming_fast,
+ 	.dev_get_user_devid = pcan_usb_fd_get_user_devid,
++	.dev_set_user_devid = pcan_usb_fd_set_user_devid,
+ 	.dev_decode_buf = pcan_usb_fd_decode_buf,
+ 	.dev_start = pcan_usb_fd_start,
+ 	.dev_stop = pcan_usb_fd_stop,
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+index 15410d60cdf7..d3731c5aa4ed 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+@@ -76,6 +76,7 @@ static u16 pcan_usb_pro_sizeof_rec[256] = {
+ 	[PCAN_USBPRO_SETFILTR] = sizeof(struct pcan_usb_pro_filter),
+ 	[PCAN_USBPRO_SETTS] = sizeof(struct pcan_usb_pro_setts),
+ 	[PCAN_USBPRO_GETDEVID] = sizeof(struct pcan_usb_pro_devid),
++	[PCAN_USBPRO_SETDEVID] = sizeof(struct pcan_usb_pro_devid),
+ 	[PCAN_USBPRO_SETLED] = sizeof(struct pcan_usb_pro_setled),
+ 	[PCAN_USBPRO_RXMSG8] = sizeof(struct pcan_usb_pro_rxmsg),
+ 	[PCAN_USBPRO_RXMSG4] = sizeof(struct pcan_usb_pro_rxmsg) - 4,
+@@ -149,6 +150,7 @@ static int pcan_msg_add_rec(struct pcan_usb_pro_msg *pm, int id, ...)
+ 
+ 	case PCAN_USBPRO_SETBTR:
+ 	case PCAN_USBPRO_GETDEVID:
++	case PCAN_USBPRO_SETDEVID:
+ 		*pc++ = va_arg(ap, int);
+ 		pc += 2;
+ 		*(__le32 *)pc = cpu_to_le32(va_arg(ap, u32));
+@@ -444,6 +446,18 @@ static int pcan_usb_pro_get_user_devid(struct peak_usb_device *dev,
+ 	return err;
+ }
+ 
++static int pcan_usb_pro_set_user_devid(struct peak_usb_device *dev,
++				       u32 user_devid)
++{
++	struct pcan_usb_pro_msg um;
++
++	pcan_msg_init_empty(&um, dev->cmd_buf, PCAN_USB_MAX_CMD_LEN);
++	pcan_msg_add_rec(&um, PCAN_USBPRO_SETDEVID, dev->ctrl_idx,
++			 user_devid);
++
++	return pcan_usb_pro_send_cmd(dev, &um);
++}
++
+ static int pcan_usb_pro_set_bittiming(struct peak_usb_device *dev,
+ 				      struct can_bittiming *bt)
+ {
+@@ -1077,6 +1091,7 @@ const struct peak_usb_adapter pcan_usb_pro = {
+ 	.dev_set_bus = pcan_usb_pro_set_bus,
+ 	.dev_set_bittiming = pcan_usb_pro_set_bittiming,
+ 	.dev_get_user_devid = pcan_usb_pro_get_user_devid,
++	.dev_set_user_devid = pcan_usb_pro_set_user_devid,
+ 	.dev_decode_buf = pcan_usb_pro_decode_buf,
+ 	.dev_encode_msg = pcan_usb_pro_encode_msg,
+ 	.dev_start = pcan_usb_pro_start,
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.h b/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
+index a34e0fc021c9..28e740af905d 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
+@@ -62,6 +62,7 @@ struct __packed pcan_usb_pro_fwinfo {
+ #define PCAN_USBPRO_SETBTR	0x02
+ #define PCAN_USBPRO_SETBUSACT	0x04
+ #define PCAN_USBPRO_SETSILENT	0x05
++#define PCAN_USBPRO_SETDEVID	0x06
+ #define PCAN_USBPRO_SETFILTR	0x0a
+ #define PCAN_USBPRO_SETTS	0x10
+ #define PCAN_USBPRO_GETDEVID	0x12
+-- 
+2.35.1
 
 
