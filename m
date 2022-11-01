@@ -2,90 +2,101 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1993DFA3745
-	for <linux-can@archiver.kernel.org>; Tue,  1 Nov 2022 13:31:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DF06C4332F
+	for <linux-can@archiver.kernel.org>; Tue,  1 Nov 2022 19:43:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229556AbiKANbQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 1 Nov 2022 09:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58494 "EHLO
+        id S229695AbiKATnE (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 1 Nov 2022 15:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbiKANbM (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 1 Nov 2022 09:31:12 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF97D15823;
-        Tue,  1 Nov 2022 06:31:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 955B1B81D90;
-        Tue,  1 Nov 2022 13:31:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E585DC433D6;
-        Tue,  1 Nov 2022 13:31:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1667309469;
-        bh=3mnC+ohPX5eM5kabMfqS4VLYbl3w+VHP+O9hIGhQWPA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2RPpq2L0tufs3QfJAzzsU11zpwK88plYUKNLqNLLPAiPFkhc2TzAUAGYVFZ0r83da
-         yeK4H+Zzry0i9QdMHMiaUtQ3JvemxyKDjHj8cBTpEDRUpBksI41pT/JEOELPKfg0MR
-         gL6A4INBEPxoGShGyaFGY9+6VbohijR6nPW9Al5w=
-Date:   Tue, 1 Nov 2022 14:32:02 +0100
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
-        Pavel Machek <pavel@denx.de>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Sasha Levin <sashal@kernel.org>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH] can: rcar_canfd: rcar_canfd_handle_global_receive(): fix
- IRQ storm on global FIFO receive
-Message-ID: <Y2Ef0hK4rTmAoEUs@kroah.com>
-References: <20221031143317.938785-1-biju.das.jz@bp.renesas.com>
- <20221101074351.GA8310@amd>
- <OS0PR01MB59222BA2B1CAA6CDA9B4137486369@OS0PR01MB5922.jpnprd01.prod.outlook.com>
- <83d70f8f-419c-2eb9-5130-782750772868@gmail.com>
+        with ESMTP id S229553AbiKATnE (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 1 Nov 2022 15:43:04 -0400
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6261E186D6
+        for <linux-can@vger.kernel.org>; Tue,  1 Nov 2022 12:43:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1667331780;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:Cc:References:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=/dktYNbGqtriANHdnsoZjMD1RBzpVAqP3UvJjnzeupQ=;
+    b=YY4ZOGv3Ws4IOOuw9lj6eAnbiFbscVCdOe9HAtSoEoYPAWN1OaOTdhVke1ak7eRfpj
+    lvm8jFkDjEpKnxClDHlz9JCEbyRUklWbNyuIghGpF+G5RiNW9l4Qr7L0lHZdZb8TAUZq
+    kIiQKgIwIv2Wxfd7fB8FVjVI9BrHisXa7WpCWBjCQeUd8bbIwlDXU5DSluJUtqS0GoMx
+    Rwag5kGTW94ZPQx9ScK4b0gHb0Lfoc7qZNHTPMxtcMUpD+6B+3ABiWYLuxx5X27TE60C
+    R+kwpYYwde/RyumqNI/9kFItWyKwLk14f8D6v7FE2ZR6kIBO6er1jcV/Ac3t+YOnI/V9
+    H7jA==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusx3hdIrpKytISr6hZqJAw=="
+X-RZG-CLASS-ID: mo00
+Received: from [IPV6:2a00:6020:1cfd:d104::923]
+    by smtp.strato.de (RZmta 48.2.1 AUTH)
+    with ESMTPSA id Dde783yA1Jh0HKl
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 1 Nov 2022 20:43:00 +0100 (CET)
+Message-ID: <7fa7a113-2047-0ef5-a2d7-262e2518556a@hartkopp.net>
+Date:   Tue, 1 Nov 2022 20:42:53 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <83d70f8f-419c-2eb9-5130-782750772868@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: Undefined behavior in Linux Virtual CAN Tunnel
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+References: <VE1PR04MB72623D6E81DB815700E0C475E8369@VE1PR04MB7262.eurprd04.prod.outlook.com>
+Content-Language: en-US
+Cc:     Dariusz Stojaczyk <Dariusz.Stojaczyk@opensynergy.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Max Staudt <max@enpas.org>,
+        linux-can <linux-can@vger.kernel.org>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <VE1PR04MB72623D6E81DB815700E0C475E8369@VE1PR04MB7262.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Tue, Nov 01, 2022 at 07:36:20PM +0700, Bagas Sanjaya wrote:
-> On 11/1/22 14:59, Biju Das wrote:
-> >> I got 7 or so copies of this, with slightly different Cc: lines.
-> > 
-> > I followed option 1 mentioned in [1]
-> > > [1] https://www.kernel.org/doc/html/v5.10/process/stable-kernel-rules.html
-> > 
-> > 
-> >>
-> >> AFAICT this is supposed to be stable kernel submission. In such case,
-> >> I'd expect [PATCH 4.14, 4.19, 5.10] in the subject line, and original
-> >> sign-off block from the mainline patch.
-> > 
-> > OK. Maybe [1] needs updating.
-> 
-> The documentation says (in this case the third option applies):
-> 
-> > Send the patch, after verifying that it follows the above rules, to> stable@vger.kernel.org. You must note the upstream commit ID in the
-> > changelog of your submission, as well as the kernel version you wish
-> > it to be applied to.
-> 
-> It doesn't specify how to mark desired target branch, unfortunately.
+Hi Vincent,
 
-And that's fine, the submitter did the right thing here and gave me all
-of the information that I need.  Please do not confuse people, there is
-nothing wrong with the submission as-is.
+Dariusz thankfully reported an issue with this patch
+"can: skb: drop tx skb if in listen only mode"
 
-thanks,
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a6d190f8c7670
 
-greg k-h
+as it accesses priv->ctrlmode even on virtual CAN interfaces like vcan 
+and vxcan which are not created with alloc_candev() and 
+register_candev() and therefore do not have the can_priv data structures.
+It is just an OOB read and does not crash anything but it may 
+potentially lead to frame losses (especially on vxcan's).
+
+I wonder if this check for (priv->ctrlmode & CAN_CTRLMODE_LISTENONLY) 
+should be moved to another separate helper function 
+can_dropped_invalid_tx_skb()? which can then be called by every 'real' 
+CAN driver.
+
+This function could perform can_dropped_invalid_skb() *and* the check 
+for CAN_CTRLMODE_LISTENONLY then.
+
+The check for CAN_CTRLMODE_LISTENONLY has not really something to do 
+with a correct skb and for that reason can_dropped_invalid_skb() is 
+probably not the  best place for it.
+
+Best regards,
+Oliver
+
+On 01.11.22 12:04, Dariusz Stojaczyk wrote:
+> Hi Oliver, I noticed a bug in vxcan.c but I'm not a kernel developer and I'm not sure where to report it - please point me to any mailing list if required.
+> 
+> In vxcan_xmit() you can see
+>      struct vxcan_priv *priv = netdev_priv(dev);
+> followed by:
+>      can_dropped_invalid_skb(dev, oskb)
+> 
+> and can_dropped_invalid_skb() internally also uses netdev_priv, but casts it to a completely different structure:
+>      struct can_priv *priv = netdev_priv(dev);
+> This gets accessed later on and does an OOB read (probably something from can_ml data)
+> 
+> I guess most of these can_* APIs shouldn't be used with net devices other than those registered with register_candev(). Perhaps can_dropped_invalid_skb() should be copied to vxcan.c (and vcan.c too!) and modified not to use struct can_priv.
+> 
+> Regards,
+> Darek
