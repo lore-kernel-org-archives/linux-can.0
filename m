@@ -2,53 +2,53 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A668C43217
-	for <linux-can@archiver.kernel.org>; Fri,  4 Nov 2022 17:16:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73C66C433FE
+	for <linux-can@archiver.kernel.org>; Fri,  4 Nov 2022 17:16:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231522AbiKDRQq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 4 Nov 2022 13:16:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57582 "EHLO
+        id S231623AbiKDRQt (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 4 Nov 2022 13:16:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231580AbiKDRQm (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 4 Nov 2022 13:16:42 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D253E0AF;
-        Fri,  4 Nov 2022 10:16:39 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id v3so4910785pgh.4;
-        Fri, 04 Nov 2022 10:16:39 -0700 (PDT)
+        with ESMTP id S231621AbiKDRQq (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 4 Nov 2022 13:16:46 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC883E09D;
+        Fri,  4 Nov 2022 10:16:45 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id v17so5500464plo.1;
+        Fri, 04 Nov 2022 10:16:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=c6xstQC+oWBeL9AwJF0jL3DBXjH1eGPpeBG49uXCkMc=;
-        b=Ghil2qaj38t6smkETB1K9BXz0DmrVNVi9yXIXDoDSKDnadi3OpTbUWhA7SK69bzEwI
-         DR13bjWvIrDDunwYvpDndcJqX7us7Kr1TeZeh1zQZ5aZgturlor6ik/JoKO21iKmjMCe
-         xlUXwuCJwGXHUdW7ZiGS+Xtc9pjxejTiHp7Lhc7aarG4zyDLcgnzR3OO7WN6pn3H8O1s
-         a9sVNJnXL7zLxoQUf72YMUa+TzZUF6KiE/UcuNuB0Kn7mRZ8taOImBLNBrDYCj53epsn
-         hLuD39Mn1iMLo1eucyN7gX9AgKga2QLoLYEag4Pk7i24p3MglepXq9Dis1lmh5DxFRCb
-         Y/vA==
+        bh=e0ErP+orkk4G4ShNSRoAumyTCOdV2yHLSVRR3eTBZqY=;
+        b=pnM3I45GlSkO+51EPfO/sMnc4irB4Km6/IANDutMalaLXhM0IbxCwbXK1vNBWmD4Cx
+         IaEbe+6qSuyiP+ff+zgSY7A2g6unUQt2J3/kHEciXxbQvFNkLY7qKNeBSfS42DU/Gzm8
+         4/hOoI/3YQwf2XbCC5lPNk65PRLQESclwUb5kQeFA2K0dIUhLRQeeAl4oExZrO5jwfSo
+         fJd73x2t2uAjgAT0X88cufrQbA+2qnKVn1SqECkojZfFmMtqn3tEc843RIY8b8WgK00r
+         BuY+JKPIaY09w6d4/iMfLl99dklAQ4QKx7a6htaodAdv8DjWmfSxoCErE4l28o1XN0sU
+         ZtEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=c6xstQC+oWBeL9AwJF0jL3DBXjH1eGPpeBG49uXCkMc=;
-        b=FcdbP5DPviT+OcczJwUUiClLh8vz9FkZW+GRNCjzlDjo1rSfY/aF16oDDM8mDzhzUU
-         OWhidvy+MjlYIXGASluGrLUjhe5sokJ+gJscPukd0M+5nR2aMVX0oUS3yOVjmyx2bKDF
-         kHEzXz166j+ZfVHvOoNUPpoqH+7dWIXBe4lruSuVJ83OsXfPF7COVUpVEHzoPyVKN6RY
-         FQUxqqtClcWXaxm4WGnEzvj/NpwcgBw3tSelpeFhp0afaPh3khZDAejQ6TiZM/mLrXO8
-         wxswWdY1T4O17h4GwM2GikWgpdo0a7LMd8QAIa5IwLDLn/JF4ZtoKh8spzSNigHCheQp
-         ES2A==
-X-Gm-Message-State: ACrzQf310acscScZ/DOIQOvh7dGDv8eMq+W7jz+TG0KzVEgEBUqX6fRp
-        Z4RxZausvr+ea0BN5mhAvvWPo1m5ISY=
-X-Google-Smtp-Source: AMsMyM5sTalN9uMJUZEgasHiM/dXo/Fo6ANaOopl9ap2qtuUp9Yc6AD73GpyzPRE5DF5UvOKz1YyKQ==
-X-Received: by 2002:a63:1303:0:b0:46f:b44b:3519 with SMTP id i3-20020a631303000000b0046fb44b3519mr25169879pgl.278.1667582199111;
-        Fri, 04 Nov 2022 10:16:39 -0700 (PDT)
+        bh=e0ErP+orkk4G4ShNSRoAumyTCOdV2yHLSVRR3eTBZqY=;
+        b=pjbhcPRfoak/KUVrwcC6pJp9HzxEFQeZqxbKDGGtzrUryzsHRNFvIANjU3xsBxH4ez
+         X5s+4sDCJF/eCrnrTxYf+mE2Ncrbp+IP40EvhMnU803ePfeE+rcsloAiocsGUi4Pnxpd
+         8gJyCcL4s6rOr1eBopcDuJVVB45AK4Zs1sffvAWTISer0L80iQP5A86QOiwnCxxt6FFy
+         odbmL7Ft1V7R+LlAZBLYEir+IuqK08MFNxQV4RB/GvC4GL1SM9TrkPNLa1MKRsqOPliB
+         NNFrl0wcgdDfIXt93YaaOvxSq/incJStLPV9AfSQ+zmjwA15xYF/GzhJd806eBpuX26S
+         kKJQ==
+X-Gm-Message-State: ACrzQf04cyEkWTMVqy5BXZ7VAZ3CpKomwLfSvBuxiF/Z/zMnhjaVEuKG
+        IGlVUsapz73mM/BvMTVwodpDvZR8No4=
+X-Google-Smtp-Source: AMsMyM7hdEM7xNTxTC+b/SLA3tmCuWd+pXY/ru1M14fvtoxF7YucqgvNa7u/+yapLO6Ua1M7ev1b+w==
+X-Received: by 2002:a17:903:2308:b0:186:f608:c509 with SMTP id d8-20020a170903230800b00186f608c509mr36996999plh.154.1667582204511;
+        Fri, 04 Nov 2022 10:16:44 -0700 (PDT)
 Received: from localhost.localdomain (124x33x176x97.ap124.ftth.ucom.ne.jp. [124.33.176.97])
-        by smtp.gmail.com with ESMTPSA id u15-20020a17090a450f00b00212c27abcaesm1917655pjg.17.2022.11.04.10.16.37
+        by smtp.gmail.com with ESMTPSA id u15-20020a17090a450f00b00212c27abcaesm1917655pjg.17.2022.11.04.10.16.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Nov 2022 10:16:38 -0700 (PDT)
+        Fri, 04 Nov 2022 10:16:44 -0700 (PDT)
 Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
 From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 To:     linux-can@vger.kernel.org
@@ -56,9 +56,9 @@ Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v2 1/3] USB: core: export usb_cache_string()
-Date:   Sat,  5 Nov 2022 02:16:02 +0900
-Message-Id: <20221104171604.24052-2-mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v2 3/3] can: etas_es58x: report the firmware version through ethtool
+Date:   Sat,  5 Nov 2022 02:16:04 +0900
+Message-Id: <20221104171604.24052-4-mailhol.vincent@wanadoo.fr>
 X-Mailer: git-send-email 2.37.4
 In-Reply-To: <20221104171604.24052-1-mailhol.vincent@wanadoo.fr>
 References: <20221104073659.414147-1-mailhol.vincent@wanadoo.fr>
@@ -69,51 +69,165 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-usb_cache_string() can also be useful for the drivers so export it.
+ES58x devices report below information in their usb product info
+string:
+
+  * the firmware version
+  * the bootloader version
+  * the hardware revision
+
+Report the firmware version through ethtool_drvinfo::fw_version.
+Because struct ethtool_drvinfo has no fields to report the boatloader
+version nor the hardware revision, continue to print these in the
+kernel log (c.f. es58x_get_product_info()).
+
+While doing so, bump up copyright year of each modified files.
 
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 ---
- drivers/usb/core/message.c | 1 +
- drivers/usb/core/usb.h     | 1 -
- include/linux/usb.h        | 1 +
- 3 files changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/can/usb/etas_es58x/es581_4.c    |  5 ++-
+ drivers/net/can/usb/etas_es58x/es58x_core.c | 42 ++++++++++++++++++++-
+ drivers/net/can/usb/etas_es58x/es58x_core.h |  5 ++-
+ drivers/net/can/usb/etas_es58x/es58x_fd.c   |  5 ++-
+ 4 files changed, 51 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/usb/core/message.c b/drivers/usb/core/message.c
-index 4d59d927ae3e..127fac1af676 100644
---- a/drivers/usb/core/message.c
-+++ b/drivers/usb/core/message.c
-@@ -1037,6 +1037,7 @@ char *usb_cache_string(struct usb_device *udev, int index)
- 	}
- 	return smallbuf;
- }
-+EXPORT_SYMBOL_GPL(usb_cache_string);
+diff --git a/drivers/net/can/usb/etas_es58x/es581_4.c b/drivers/net/can/usb/etas_es58x/es581_4.c
+index 1bcdcece5ec7..29c03c8b3f07 100644
+--- a/drivers/net/can/usb/etas_es58x/es581_4.c
++++ b/drivers/net/can/usb/etas_es58x/es581_4.c
+@@ -6,7 +6,7 @@
+  *
+  * Copyright (c) 2019 Robert Bosch Engineering and Business Solutions. All rights reserved.
+  * Copyright (c) 2020 ETAS K.K.. All rights reserved.
+- * Copyright (c) 2020, 2021 Vincent Mailhol <mailhol.vincent@wanadoo.fr>
++ * Copyright (c) 2020-2022 Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+  */
  
- /*
-  * usb_get_device_descriptor - (re)reads the device descriptor (usbcore)
-diff --git a/drivers/usb/core/usb.h b/drivers/usb/core/usb.h
-index 82538daac8b8..0eac7d4285d1 100644
---- a/drivers/usb/core/usb.h
-+++ b/drivers/usb/core/usb.h
-@@ -47,7 +47,6 @@ extern int usb_get_device_descriptor(struct usb_device *dev,
- extern int usb_set_isoch_delay(struct usb_device *dev);
- extern int usb_get_bos_descriptor(struct usb_device *dev);
- extern void usb_release_bos_descriptor(struct usb_device *dev);
--extern char *usb_cache_string(struct usb_device *udev, int index);
- extern int usb_set_configuration(struct usb_device *dev, int configuration);
- extern int usb_choose_configuration(struct usb_device *udev);
- extern int usb_generic_driver_probe(struct usb_device *udev);
-diff --git a/include/linux/usb.h b/include/linux/usb.h
-index 9ff1ad4dfad1..d2d2f41052c0 100644
---- a/include/linux/usb.h
-+++ b/include/linux/usb.h
-@@ -1829,6 +1829,7 @@ static inline int usb_get_ptm_status(struct usb_device *dev, void *data)
+ #include <linux/kernel.h>
+@@ -492,7 +492,8 @@ const struct es58x_parameters es581_4_param = {
+ 	.tx_bulk_max = ES581_4_TX_BULK_MAX,
+ 	.urb_cmd_header_len = ES581_4_URB_CMD_HEADER_LEN,
+ 	.rx_urb_max = ES58X_RX_URBS_MAX,
+-	.tx_urb_max = ES58X_TX_URBS_MAX
++	.tx_urb_max = ES58X_TX_URBS_MAX,
++	.prod_info_delim = ',',
+ };
  
- extern int usb_string(struct usb_device *dev, int index,
- 	char *buf, size_t size);
-+extern char *usb_cache_string(struct usb_device *udev, int index);
+ const struct es58x_operators es581_4_ops = {
+diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
+index 1a17aadfc1dc..72a60f5f92c8 100644
+--- a/drivers/net/can/usb/etas_es58x/es58x_core.c
++++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
+@@ -7,7 +7,7 @@
+  *
+  * Copyright (c) 2019 Robert Bosch Engineering and Business Solutions. All rights reserved.
+  * Copyright (c) 2020 ETAS K.K.. All rights reserved.
+- * Copyright (c) 2020, 2021 Vincent Mailhol <mailhol.vincent@wanadoo.fr>
++ * Copyright (c) 2020-2022 Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+  */
  
- /* wrappers that also update important state inside usbcore */
- extern int usb_clear_halt(struct usb_device *dev, int pipe);
+ #include <linux/ethtool.h>
+@@ -1978,7 +1978,47 @@ static const struct net_device_ops es58x_netdev_ops = {
+ 	.ndo_eth_ioctl = can_eth_ioctl_hwts,
+ };
+ 
++/**
++ * es58x_get_drvinfo() - Get the driver name and firmware version.
++ * @netdev: CAN network device.
++ * @drvinfo: Driver information.
++ *
++ * Populate @drvinfo with the driver name and the firmware version.
++ */
++static void es58x_get_drvinfo(struct net_device *netdev,
++			      struct ethtool_drvinfo *drvinfo)
++{
++	struct es58x_device *es58x_dev = es58x_priv(netdev)->es58x_dev;
++	char *prod_info, *start, *end;
++
++	strscpy(drvinfo->driver, KBUILD_MODNAME, sizeof(drvinfo->driver));
++
++	prod_info = usb_cache_string(es58x_dev->udev, ES58X_PROD_INFO_IDX);
++	if (!prod_info)
++		return;
++
++	/* The firmware prefix is either "FW_V" or "FW:" */
++	start = strstr(prod_info, "FW");
++	if (!start)
++		goto free_prod_info;
++	/* Go to first digit */
++	while (!isdigit(*start)) {
++		start++;
++		if (!*start)
++			goto free_prod_info;
++	}
++	end = strchr(start, es58x_dev->param->prod_info_delim);
++	if (!end || end - start >= sizeof(drvinfo->fw_version))
++		goto free_prod_info;
++
++	strncpy(drvinfo->fw_version, start, end - start);
++
++ free_prod_info:
++	kfree(prod_info);
++}
++
+ static const struct ethtool_ops es58x_ethtool_ops = {
++	.get_drvinfo = es58x_get_drvinfo,
+ 	.get_ts_info = can_ethtool_op_get_ts_info_hwts,
+ };
+ 
+diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.h b/drivers/net/can/usb/etas_es58x/es58x_core.h
+index 9a5a616df783..9c2cdb57f34a 100644
+--- a/drivers/net/can/usb/etas_es58x/es58x_core.h
++++ b/drivers/net/can/usb/etas_es58x/es58x_core.h
+@@ -6,7 +6,7 @@
+  *
+  * Copyright (c) 2019 Robert Bosch Engineering and Business Solutions. All rights reserved.
+  * Copyright (c) 2020 ETAS K.K.. All rights reserved.
+- * Copyright (c) 2020, 2021 Vincent Mailhol <mailhol.vincent@wanadoo.fr>
++ * Copyright (c) 2020-2022 Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+  */
+ 
+ #ifndef __ES58X_COMMON_H__
+@@ -309,6 +309,8 @@ struct es58x_priv {
+  * @urb_cmd_header_len: Length of the URB command header.
+  * @rx_urb_max: Number of RX URB to be allocated during device probe.
+  * @tx_urb_max: Number of TX URB to be allocated during device probe.
++ * @prod_info_delim: delimiter of the different fields in the USB
++ *	product information string.
+  */
+ struct es58x_parameters {
+ 	const struct can_bittiming_const *bittiming_const;
+@@ -327,6 +329,7 @@ struct es58x_parameters {
+ 	u8 urb_cmd_header_len;
+ 	u8 rx_urb_max;
+ 	u8 tx_urb_max;
++	char prod_info_delim;
+ };
+ 
+ /**
+diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.c b/drivers/net/can/usb/etas_es58x/es58x_fd.c
+index c97ffa71fd75..aa7a4866f870 100644
+--- a/drivers/net/can/usb/etas_es58x/es58x_fd.c
++++ b/drivers/net/can/usb/etas_es58x/es58x_fd.c
+@@ -8,7 +8,7 @@
+  *
+  * Copyright (c) 2019 Robert Bosch Engineering and Business Solutions. All rights reserved.
+  * Copyright (c) 2020 ETAS K.K.. All rights reserved.
+- * Copyright (c) 2020, 2021 Vincent Mailhol <mailhol.vincent@wanadoo.fr>
++ * Copyright (c) 2020-2022 Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+  */
+ 
+ #include <linux/kernel.h>
+@@ -550,7 +550,8 @@ const struct es58x_parameters es58x_fd_param = {
+ 	.tx_bulk_max = ES58X_FD_TX_BULK_MAX,
+ 	.urb_cmd_header_len = ES58X_FD_URB_CMD_HEADER_LEN,
+ 	.rx_urb_max = ES58X_RX_URBS_MAX,
+-	.tx_urb_max = ES58X_TX_URBS_MAX
++	.tx_urb_max = ES58X_TX_URBS_MAX,
++	.prod_info_delim = '-',
+ };
+ 
+ const struct es58x_operators es58x_fd_ops = {
 -- 
 2.37.4
 
