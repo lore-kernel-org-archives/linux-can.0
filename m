@@ -2,46 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE18FC43219
-	for <linux-can@archiver.kernel.org>; Fri,  4 Nov 2022 13:05:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C81BCC433FE
+	for <linux-can@archiver.kernel.org>; Fri,  4 Nov 2022 13:05:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231601AbiKDNFw (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 4 Nov 2022 09:05:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
+        id S231607AbiKDNFy (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 4 Nov 2022 09:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231587AbiKDNFq (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 4 Nov 2022 09:05:46 -0400
+        with ESMTP id S231431AbiKDNFt (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 4 Nov 2022 09:05:49 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BDFB2E9E0
-        for <linux-can@vger.kernel.org>; Fri,  4 Nov 2022 06:05:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44BF2E9C8
+        for <linux-can@vger.kernel.org>; Fri,  4 Nov 2022 06:05:44 -0700 (PDT)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oqwOD-000844-Ra
-        for linux-can@vger.kernel.org; Fri, 04 Nov 2022 14:05:41 +0100
+        id 1oqwOF-000864-53
+        for linux-can@vger.kernel.org; Fri, 04 Nov 2022 14:05:43 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 37B44112F15
-        for <linux-can@vger.kernel.org>; Fri,  4 Nov 2022 13:05:41 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 2BDAC112F22
+        for <linux-can@vger.kernel.org>; Fri,  4 Nov 2022 13:05:42 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id C42B8112EF6;
-        Fri,  4 Nov 2022 13:05:38 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 0E0D6112F06;
+        Fri,  4 Nov 2022 13:05:40 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b71e46cc;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 86e97196;
         Fri, 4 Nov 2022 13:05:36 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        syzbot+d168ec0caca4697e03b1@syzkaller.appspotmail.com,
-        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 3/5] can: j1939: j1939_send_one(): fix missing CAN header initialization
-Date:   Fri,  4 Nov 2022 14:05:33 +0100
-Message-Id: <20221104130535.732382-4-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.jz@bp.renesas.com>, stable@vger.kernel.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 5/5] can: rcar_canfd: Add missing ECC error checks for channels 2-7
+Date:   Fri,  4 Nov 2022 14:05:35 +0100
+Message-Id: <20221104130535.732382-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221104130535.732382-1-mkl@pengutronix.de>
 References: <20221104130535.732382-1-mkl@pengutronix.de>
@@ -55,40 +55,64 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-The read access to struct canxl_frame::len inside of a j1939 created
-skbuff revealed a missing initialization of reserved and later filled
-elements in struct can_frame.
+When introducing support for R-Car V3U, which has 8 instead of 2
+channels, the ECC error bitmask was extended to take into account the
+extra channels, but rcar_canfd_global_error() was not updated to act
+upon the extra bits.
 
-This patch initializes the 8 byte CAN header with zero.
+Replace the RCANFD_GERFL_EEF[01] macros by a new macro that takes the
+channel number, fixing R-Car V3U while simplifying the code.
 
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/linux-can/20221104052235.GA6474@pengutronix.de
-Reported-by: syzbot+d168ec0caca4697e03b1@syzkaller.appspotmail.com
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://lore.kernel.org/all/20221104075000.105414-1-socketcan@hartkopp.net
+Fixes: 45721c406dcf50d4 ("can: rcar_canfd: Add support for r8a779a0 SoC")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+Link: https://lore.kernel.org/all/4edb2ea46cc64d0532a08a924179827481e14b4f.1666951503.git.geert+renesas@glider.be
 Cc: stable@vger.kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/j1939/main.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/can/rcar/rcar_canfd.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
-index 144c86b0e3ff..821d4ff303b3 100644
---- a/net/can/j1939/main.c
-+++ b/net/can/j1939/main.c
-@@ -336,6 +336,9 @@ int j1939_send_one(struct j1939_priv *priv, struct sk_buff *skb)
- 	/* re-claim the CAN_HDR from the SKB */
- 	cf = skb_push(skb, J1939_CAN_HDR);
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index d530e986f7fa..b306cf554634 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -81,8 +81,7 @@ enum rcanfd_chip_id {
  
-+	/* initialize header structure */
-+	memset(cf, 0, J1939_CAN_HDR);
-+
- 	/* make it a full can frame again */
- 	skb_put(skb, J1939_CAN_FTR + (8 - dlc));
+ /* RSCFDnCFDGERFL / RSCFDnGERFL */
+ #define RCANFD_GERFL_EEF0_7		GENMASK(23, 16)
+-#define RCANFD_GERFL_EEF1		BIT(17)
+-#define RCANFD_GERFL_EEF0		BIT(16)
++#define RCANFD_GERFL_EEF(ch)		BIT(16 + (ch))
+ #define RCANFD_GERFL_CMPOF		BIT(3)	/* CAN FD only */
+ #define RCANFD_GERFL_THLES		BIT(2)
+ #define RCANFD_GERFL_MES		BIT(1)
+@@ -90,7 +89,7 @@ enum rcanfd_chip_id {
  
+ #define RCANFD_GERFL_ERR(gpriv, x) \
+ 	((x) & (reg_v3u(gpriv, RCANFD_GERFL_EEF0_7, \
+-			RCANFD_GERFL_EEF0 | RCANFD_GERFL_EEF1) | \
++			RCANFD_GERFL_EEF(0) | RCANFD_GERFL_EEF(1)) | \
+ 		RCANFD_GERFL_MES | \
+ 		((gpriv)->fdmode ? RCANFD_GERFL_CMPOF : 0)))
+ 
+@@ -936,12 +935,8 @@ static void rcar_canfd_global_error(struct net_device *ndev)
+ 	u32 ridx = ch + RCANFD_RFFIFO_IDX;
+ 
+ 	gerfl = rcar_canfd_read(priv->base, RCANFD_GERFL);
+-	if ((gerfl & RCANFD_GERFL_EEF0) && (ch == 0)) {
+-		netdev_dbg(ndev, "Ch0: ECC Error flag\n");
+-		stats->tx_dropped++;
+-	}
+-	if ((gerfl & RCANFD_GERFL_EEF1) && (ch == 1)) {
+-		netdev_dbg(ndev, "Ch1: ECC Error flag\n");
++	if (gerfl & RCANFD_GERFL_EEF(ch)) {
++		netdev_dbg(ndev, "Ch%u: ECC Error flag\n", ch);
+ 		stats->tx_dropped++;
+ 	}
+ 	if (gerfl & RCANFD_GERFL_MES) {
 -- 
 2.35.1
 
