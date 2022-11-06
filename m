@@ -2,154 +2,121 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CDF64C433FE
-	for <linux-can@archiver.kernel.org>; Sun,  6 Nov 2022 16:02:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EFB03C433FE
+	for <linux-can@archiver.kernel.org>; Sun,  6 Nov 2022 22:42:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbiKFQCO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 6 Nov 2022 11:02:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52010 "EHLO
+        id S230134AbiKFWmC (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 6 Nov 2022 17:42:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbiKFQCN (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 6 Nov 2022 11:02:13 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5E2230;
-        Sun,  6 Nov 2022 08:02:12 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BA1D160C88;
-        Sun,  6 Nov 2022 16:02:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97D59C433D6;
-        Sun,  6 Nov 2022 16:02:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1667750531;
-        bh=l8k/9vGfjM85JG5CuAFRMdoK53+DhUwGpfzR5U8Rdjo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FA9mYDaqSnHWG1KGRGyKs6XD1JUR0D/Be4jGh6VxBnjK7tdWtE2fgwAlsO/IfrE1k
-         a2SW9BrEydOKNgNzZHpySNs7LLzrBet/yOAHWScfkxXD01zMBbeeXUJiqiP7CFFGxK
-         Q72xAQxZKLf6sikkg6jjFnyuoQw7WUmiethk24Zs=
-Date:   Sun, 6 Nov 2022 17:02:07 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     Alan Stern <stern@rowland.harvard.edu>, linux-can@vger.kernel.org,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] can: etas_es58x: report the firmware version
- through ethtool
-Message-ID: <Y2faf++qaSq92qmZ@kroah.com>
-References: <20221104171604.24052-4-mailhol.vincent@wanadoo.fr>
- <Y2Ydf6UxVvTe8Zmz@kroah.com>
- <CAMZ6RqJkzag-PGuzHcDQkSXjqH6d8=uAe-UN8VXUoNWX2x+qbw@mail.gmail.com>
- <CAMZ6RqLMGfW0QcNdBKhfwayV=+FNHhvM_-ob0UvL=o6=zN0J7A@mail.gmail.com>
- <Y2afm9xFIvJnwXh/@kroah.com>
- <Y2cDlrNjL5YSAPm2@rowland.harvard.edu>
- <Y2eYw9Kna712mzR8@kroah.com>
- <CAMZ6RqJVFwhCjxghmDBt2kYeT_KhqE-4h=UGtKaSA1bwke1CaA@mail.gmail.com>
- <Y2fDG9AsuFZh0Dkr@kroah.com>
- <CAMZ6RqLwebh6VuwXdyyxpcdyJjYg3fUt9Opx+dPQRzqZ-2976w@mail.gmail.com>
+        with ESMTP id S229946AbiKFWmB (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 6 Nov 2022 17:42:01 -0500
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2105.outbound.protection.outlook.com [40.107.104.105])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A117DFCEF;
+        Sun,  6 Nov 2022 14:41:59 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QOSduaVGEO/ynGbMJkgAZbfi2NMjHH/QLUtDULYV5KcIjAyZHn6NtYWD1z66oCue5Z8QuhrELZGOAby9c1UORr079ai7inwgSKCeaQ+6/QAGo1ZPxG+m6IEJJbuOZTyIhxu3GSp7jNE5N1BiUcDYo0TX8EJqERUh1bfIdy87ZyoqsezZH47Fae6BPiBBwrd6lYTOaUne7XMBhHnO5klEeG4AT4dXkxat/P1SrR4F7LSGjvbcpa9v5+w/AHSPzXZUGpm+Ln0aVxhc7bvq7hvgrpyWJ92jBqW7iMRnUqbfu0f11Dt79zLCSHykmb9oQPvCFZ99MCafEw5UGWyicK4b2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gcZJIgz5T7DOqyb2aAmDbJW7zQWQJKJ/igShZg2QuVo=;
+ b=D0T0lM6WUr60y9qy6fIiyJxnFyxoCUHfLZJOLUtWhIB2K7Nfh8ilziDde056HcNK1SxvmDkA+voDWs7/KG/iczJy10Q8X6ZqEwMn0mhHo6aYcw0wfHOTm2j/6/Yc3Cka1u5cug2l8aTjsfDNqb2+nShh2lVAI3L4HpFINFV9gle3t6OtCxHInP/xuRY9+uXEUMVZTInOX/XLIXdjZW/dUmqI91BrOMNNwUYZt0hjmaV8PC+Pd1XqLeTEMHFSqEh7/1q56wKbawc78SwHsi3r8yxx08+BwH8918ZEJw8PiWeR6tFWirxWhdr6N4uan0UG7okHh/dkSPMYAFYQp6ZnBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 81.14.233.218) smtp.rcpttodomain=grandegger.com smtp.mailfrom=esd.eu;
+ dmarc=bestguesspass action=none header.from=esd.eu; dkim=none (message not
+ signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=esdhannover.onmicrosoft.com; s=selector1-esdhannover-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gcZJIgz5T7DOqyb2aAmDbJW7zQWQJKJ/igShZg2QuVo=;
+ b=co9PG9DVWtvec7E9P3D8oC5OnUsZbuhLBp/WdFsuBToY7a+rOXVL3x/W400BJzE3E89l/3i37vn9qNPZK5ffs6ArQ3/Lupxxy+CTN4rIG5lwzNhoHHHiulxgwkmqOqzDWcRGP1OPdiPaScRIf3ih+TzzFbRr/6n/BVx/YpSgOrc=
+Received: from AS9PR06CA0671.eurprd06.prod.outlook.com (2603:10a6:20b:49c::15)
+ by AM7PR03MB6309.eurprd03.prod.outlook.com (2603:10a6:20b:131::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.24; Sun, 6 Nov
+ 2022 22:41:57 +0000
+Received: from VI1EUR06FT048.eop-eur06.prod.protection.outlook.com
+ (2603:10a6:20b:49c:cafe::3c) by AS9PR06CA0671.outlook.office365.com
+ (2603:10a6:20b:49c::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.25 via Frontend
+ Transport; Sun, 6 Nov 2022 22:41:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 81.14.233.218)
+ smtp.mailfrom=esd.eu; dkim=none (message not signed)
+ header.d=none;dmarc=bestguesspass action=none header.from=esd.eu;
+Received-SPF: Pass (protection.outlook.com: domain of esd.eu designates
+ 81.14.233.218 as permitted sender) receiver=protection.outlook.com;
+ client-ip=81.14.233.218; helo=esd-s7.esd; pr=C
+Received: from esd-s7.esd (81.14.233.218) by
+ VI1EUR06FT048.mail.protection.outlook.com (10.13.6.110) with Microsoft SMTP
+ Server id 15.20.5791.20 via Frontend Transport; Sun, 6 Nov 2022 22:41:56
+ +0000
+Received: from esd-s20.esd.local (debby [10.0.0.190])
+        by esd-s7.esd (Postfix) with ESMTPS id 6C7257C16C9;
+        Sun,  6 Nov 2022 23:41:56 +0100 (CET)
+Received: by esd-s20.esd.local (Postfix, from userid 2044)
+        id 543ED2F00DA; Sun,  6 Nov 2022 23:41:56 +0100 (CET)
+From:   =?UTF-8?q?Stefan=20M=C3=A4tje?= <stefan.maetje@esd.eu>
+To:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Wolfgang Grandegger <wg@grandegger.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v7 1/2] =?UTF-8?q?MAINTAINERS:=20add=20Stefan=20M=C3=A4tje?= =?UTF-8?q?=20as=20maintainer=20for=20the=20esd=20electronics=20GmbH=20PCI?= =?UTF-8?q?e/402=20CAN=20drivers?=
+Date:   Sun,  6 Nov 2022 23:41:55 +0100
+Message-Id: <20221106224156.3619334-2-stefan.maetje@esd.eu>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20221106224156.3619334-1-stefan.maetje@esd.eu>
+References: <20221106224156.3619334-1-stefan.maetje@esd.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMZ6RqLwebh6VuwXdyyxpcdyJjYg3fUt9Opx+dPQRzqZ-2976w@mail.gmail.com>
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1EUR06FT048:EE_|AM7PR03MB6309:EE_
+X-MS-Office365-Filtering-Correlation-Id: 80b7990c-e2c9-45f9-e7e2-08dac0481c2e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nEPSHCMP9I8rwd4mHZxKjSpdxNouwo3qE7hjpIFJ9lbBWVwaPceS/taPinB9Rm1pRqchOF/9G9KsxvtuUEILJC5s59JEfXtXHc1Zkq6yUfyCLibCMJGNcs1LFHgFBSMpBpTjFzuz5Fgth//cK4DUZiF5HhrdDWbemD/Lz3lp1naQpzJKi9HdiC6SfN7GYaua4u76xnxfypLptRbDk/TmaNCUMpHwES3wwhyJjv0d1K2lrIJRc/zqegyJ0K59yXz+sumDGq4JkjiGIKOzG7k7N/k00PPYQKbmBLw8Fnbp562+er+DcRzP3u7/malU8q1Is4gHgcNz8B2elr6mcW0wCytY8sMPYNbFJQPW5ET2Rjc6CpiZgcsh04jHxymVIF0KXyy0V0PAla2Izm8ru9FlFpXwLYno2k1CFrb11j7169QfLZN5EmtHV2bcpfi+y3xtON+wr7JZni9tUpwz98SQbowudBQ1Do0hvVP8LT1w5xU1311WZcJmMkG5qy5hUgAUlZCjf4zU3RxUat2GGlYMslBJC6dORUFNGC+Fk5rct8J3VuZsLGqySSx9eJ7HkCS044pGrczphdVwOjNfRVoX0l0FDagUZE8MALd1Szxyk8ssEeIJTuUPfbLqSuKZgnRwykOl5jpDPoFO7eveRkxDx/5vbCTuPFqfUIRQeWzk8IKRVbta+U+SDH3OLYjgpM9Xn4R9nBXeVObpuXbApJmAouSUG8exezKAW+YkSCRcyy3kfPqVPBGSH1C9KOl4sDsZ
+X-Forefront-Antispam-Report: CIP:81.14.233.218;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:esd-s7.esd;PTR:a81-14-233-218.net-htp.de;CAT:NONE;SFS:(13230022)(4636009)(396003)(376002)(346002)(136003)(39830400003)(451199015)(36840700001)(46966006)(82310400005)(36756003)(224303003)(4326008)(70206006)(70586007)(316002)(356005)(81166007)(5660300002)(40480700001)(41300700001)(8936002)(478600001)(110136005)(2906002)(42186006)(4744005)(26005)(6266002)(47076005)(2616005)(186003)(1076003)(336012)(36860700001)(86362001);DIR:OUT;SFP:1102;
+X-OriginatorOrg: esd.eu
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2022 22:41:56.8423
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 80b7990c-e2c9-45f9-e7e2-08dac0481c2e
+X-MS-Exchange-CrossTenant-Id: 5a9c3a1d-52db-4235-b74c-9fd851db2e6b
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5a9c3a1d-52db-4235-b74c-9fd851db2e6b;Ip=[81.14.233.218];Helo=[esd-s7.esd]
+X-MS-Exchange-CrossTenant-AuthSource: VI1EUR06FT048.eop-eur06.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR03MB6309
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Sun, Nov 06, 2022 at 11:44:52PM +0900, Vincent MAILHOL wrote:
-> Le dim. 6 nov. 2022 à 23:22, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> a écrit :
-> >
-> > On Sun, Nov 06, 2022 at 09:47:05PM +0900, Vincent MAILHOL wrote:
-> > > On Sun. 6 Nov. 2022 at 20:25, Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > > On Sat, Nov 05, 2022 at 08:45:10PM -0400, Alan Stern wrote:
-> > > > > On Sat, Nov 05, 2022 at 06:38:35PM +0100, Greg Kroah-Hartman wrote:
-> > > > > > On Sun, Nov 06, 2022 at 02:21:11AM +0900, Vincent MAILHOL wrote:
-> > > > > > > On Sat. 5 Nov. 2022 at 18:27, Vincent MAILHOL
-> > > > > > > <mailhol.vincent@wanadoo.fr> wrote:
-> > > > > > > > On Sat. 5 Nov. 2022 at 17:36, Greg Kroah-Hartman
-> > > > > > > > <gregkh@linuxfoundation.org> wrote:
-> > > > > > It's late right now, and I can't remember the whole USB spec, but I
-> > > > > > think the device provides a list of the string ids that are valid for
-> > > > > > it.  If so, we can add that to sysfs for any USB device out there, no
-> > > > > > matter the string descriptor number.
-> > > > >
-> > > > > No, there is no such list.
-> > > >
-> > > > Yeah, my fault, nevermind about that, sorry.
-> > > >
-> > > > > > If not, maybe we can just iterate the 255 values and populate sysfs
-> > > > > > files if they are present?  I'll dig up the USB spec tomorrow...
-> > > > >
-> > > > > Yes, we could do that.  But the filename would have to be the string
-> > > > > id, which is not meaningful.  We wouldn't be able to have labels like
-> > > > > "product-info" unless somehow a driver could provide the label.
-> > > >
-> > > > We could have a directory of strings/ with the individual descriptors in
-> > > > there as files with the name being the string id.
-> > > >
-> > > > But that might take a long time to populate, as it can take a few tries
-> > > > to get the string from a device, and to do that 256 times might be
-> > > > noticable at device insertion time.
-> > > >
-> > > > > Also, there's the matter of language.  Devices can have string
-> > > > > descriptors in multiple languages; which one should we show in sysfs?
-> > > > > All of them?  Right now we use just the default language for the strings
-> > > > > that we put in sysfs.
-> > > > >
-> > > > > > I say do this at the USB core level, that way it works for any USB
-> > > > > > device, and you don't have a device-specific sysfs file and custom
-> > > > > > userspace code just for this.
-> > > > >
-> > > > > This is unavoidable to some extent.  Without device-specific information
-> > > > > or userspace code, there is no way to know which string descriptor
-> > > > > contains the data you want.
-> > > >
-> > > > Agreed.
-> > > >
-> > > > Ok, for this specific instance, adding the "we know this string id
-> > > > should be here" as a device-specific sysfs file seems to be the easiest
-> > > > way forward.
-> > > >
-> > > > Vincent, want to try that instead?
-> > >
-> > > OK for me. Will do that and remove the kernel log spam and replace it
-> > > by a sysfs entry.
-> > >
-> > > I have two questions:
-> > >
-> > > 1/ Can I still export and use usb_cache_string()? In other terms, does
-> > > the first patch of this series still apply? This looks like the most
-> > > convenient function to retrieve that custom string to me.
-> >
-> > Everyone seems to just use the usb_string() function, will that not work
-> > for you?
-> 
-> It is just that I would have to write two or three lines of code less.
+Adding myself (Stefan MÃ¤tje) as a maintainer for the upcoming driver of
+the PCIe/402 interface card family.
 
-Odd, should it be used instead where others are calling usb_string()?
+Signed-off-by: Stefan MÃ¤tje <stefan.maetje@esd.eu>
+---
+ MAINTAINERS | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-> But if you prefer I can use usb_string(), no problem on that.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 95fc5e1b4548..30128ded914a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7677,6 +7677,13 @@ L:	linux-can@vger.kernel.org
+ S:	Maintained
+ F:	drivers/net/can/usb/esd_usb.c
+ 
++ESD CAN NETWORK DRIVERS
++M:	Stefan MÃ¤tje <stefan.maetje@esd.eu>
++R:	socketcan@esd.eu
++L:	linux-can@vger.kernel.org
++S:	Maintained
++F:	drivers/net/can/esd/
++
+ ET131X NETWORK DRIVER
+ M:	Mark Einon <mark.einon@gmail.com>
+ S:	Odd Fixes
+-- 
+2.25.1
 
-Try it both ways.  If it's easier with usb_cache_string(), then we can
-export it.  It's just odd that it hasn't been exported yet.
-
-> > > 2/ Is it a no-go to also populate ethtool_drvinfo::fw_version? Some
-> > > users might look for the value in sysfs, while some might use ethtool.
-> > > If the info is not available in ethtool, people might simply assume it
-> > > is not available at all. So, I would like to provide both.
-> >
-> > That's up to the network developers/maintainers.  I don't know if that's
-> > a required or common api for network devices to have.
-> 
-> My question was more to know if you had any objection if I did so.
-> From the documentation, there is no indication that this is required.
-> But I don't like to leave a field empty when I have the information to
-> fill it.
-
-No objection from me.
-
-thanks,
-
-greg k-h
