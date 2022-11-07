@@ -2,49 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6398C4321E
-	for <linux-can@archiver.kernel.org>; Tue,  8 Nov 2022 10:19:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 811B2C4167E
+	for <linux-can@archiver.kernel.org>; Tue,  8 Nov 2022 10:19:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233923AbiKHKTW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 8 Nov 2022 05:19:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
+        id S233924AbiKHKTX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 8 Nov 2022 05:19:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233858AbiKHKTR (ORCPT
+        with ESMTP id S233860AbiKHKTR (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 8 Nov 2022 05:19:17 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D52971401D
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C68A917420
         for <linux-can@vger.kernel.org>; Tue,  8 Nov 2022 02:19:16 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1osLhL-0006Po-4Y
+        id 1osLhL-0006Pd-1K
         for linux-can@vger.kernel.org; Tue, 08 Nov 2022 11:19:15 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id D3C62115C90
-        for <linux-can@vger.kernel.org>; Mon,  7 Nov 2022 13:32:34 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id C2631115C2D
+        for <linux-can@vger.kernel.org>; Mon,  7 Nov 2022 13:32:23 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 170AE115C74;
-        Mon,  7 Nov 2022 13:32:30 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 28EBC115C25;
+        Mon,  7 Nov 2022 13:32:22 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 555be2db;
-        Mon, 7 Nov 2022 13:32:20 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c3932869;
+        Mon, 7 Nov 2022 13:32:19 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Biju Das <biju.das.jz@bp.renesas.com>, stable@vger.kernel.org,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 6/6] can: rcar_canfd: Add missing ECC error checks for channels 2-7
-Date:   Mon,  7 Nov 2022 14:32:17 +0100
-Message-Id: <20221107133217.59861-7-mkl@pengutronix.de>
+        kernel@pengutronix.de
+Subject: [PATCH net 0/6] pull-request: can 2022-11-07
+Date:   Mon,  7 Nov 2022 14:32:11 +0100
+Message-Id: <20221107133217.59861-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221107133217.59861-1-mkl@pengutronix.de>
-References: <20221107133217.59861-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -55,65 +50,108 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+Hello Jakub, hello David,
 
-When introducing support for R-Car V3U, which has 8 instead of 2
-channels, the ECC error bitmask was extended to take into account the
-extra channels, but rcar_canfd_global_error() was not updated to act
-upon the extra bits.
+this is a pull request of 6 patches for net/master.
 
-Replace the RCANFD_GERFL_EEF[01] macros by a new macro that takes the
-channel number, fixing R-Car V3U while simplifying the code.
+The first patch is by Chen Zhongjin and adds a missing
+dev_remove_pack() to the AF_CAN protocol.
 
-Fixes: 45721c406dcf50d4 ("can: rcar_canfd: Add support for r8a779a0 SoC")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-Link: https://lore.kernel.org/all/4edb2ea46cc64d0532a08a924179827481e14b4f.1666951503.git.geert+renesas@glider.be
-Cc: stable@vger.kernel.org
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Zhengchao Shao's patch fixes a potential NULL pointer deref in
+AF_CAN's can_rx_register().
+
+The next patch is by Oliver Hartkopp and targets the CAN ISO-TP
+protocol, and fixes the state handling for echo TX processing.
+
+
+Oliver Hartkopp's patch for the j1939 protocol adds a missing
+initialization of the CAN headers inside outgoing skbs.
+
+Another patch by Oliver Hartkopp fixes an out of bounds read in the
+check for invalid CAN frames in the xmit callback of virtual CAN
+devices. This touches all non virtual device drivers as we decided to
+rename the function requiring that netdev_priv points to a struct
+can_priv.
+(Note: This patch will create a merge conflict with net-next where the
+ pch_can driver has removed.)
+
+The last patch is by Geert Uytterhoeven and adds the missing ECC error
+checks for the channels 2-7 in the rcar_canfd driver.
+
+regards,
+Marc
+
 ---
- drivers/net/can/rcar/rcar_canfd.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index d530e986f7fa..b306cf554634 100644
---- a/drivers/net/can/rcar/rcar_canfd.c
-+++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -81,8 +81,7 @@ enum rcanfd_chip_id {
- 
- /* RSCFDnCFDGERFL / RSCFDnGERFL */
- #define RCANFD_GERFL_EEF0_7		GENMASK(23, 16)
--#define RCANFD_GERFL_EEF1		BIT(17)
--#define RCANFD_GERFL_EEF0		BIT(16)
-+#define RCANFD_GERFL_EEF(ch)		BIT(16 + (ch))
- #define RCANFD_GERFL_CMPOF		BIT(3)	/* CAN FD only */
- #define RCANFD_GERFL_THLES		BIT(2)
- #define RCANFD_GERFL_MES		BIT(1)
-@@ -90,7 +89,7 @@ enum rcanfd_chip_id {
- 
- #define RCANFD_GERFL_ERR(gpriv, x) \
- 	((x) & (reg_v3u(gpriv, RCANFD_GERFL_EEF0_7, \
--			RCANFD_GERFL_EEF0 | RCANFD_GERFL_EEF1) | \
-+			RCANFD_GERFL_EEF(0) | RCANFD_GERFL_EEF(1)) | \
- 		RCANFD_GERFL_MES | \
- 		((gpriv)->fdmode ? RCANFD_GERFL_CMPOF : 0)))
- 
-@@ -936,12 +935,8 @@ static void rcar_canfd_global_error(struct net_device *ndev)
- 	u32 ridx = ch + RCANFD_RFFIFO_IDX;
- 
- 	gerfl = rcar_canfd_read(priv->base, RCANFD_GERFL);
--	if ((gerfl & RCANFD_GERFL_EEF0) && (ch == 0)) {
--		netdev_dbg(ndev, "Ch0: ECC Error flag\n");
--		stats->tx_dropped++;
--	}
--	if ((gerfl & RCANFD_GERFL_EEF1) && (ch == 1)) {
--		netdev_dbg(ndev, "Ch1: ECC Error flag\n");
-+	if (gerfl & RCANFD_GERFL_EEF(ch)) {
-+		netdev_dbg(ndev, "Ch%u: ECC Error flag\n", ch);
- 		stats->tx_dropped++;
- 	}
- 	if (gerfl & RCANFD_GERFL_MES) {
--- 
-2.35.1
+The following changes since commit c23fb2c82267638f9d206cb96bb93e1f93ad7828:
+
+  ipv6: addrlabel: fix infoleak when sending struct ifaddrlblmsg to network (2022-11-07 12:26:15 +0000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-6.1-20221107
+
+for you to fetch changes up to 8b043dfb3dc7c32f9c2c0c93e3c2de346ee5e358:
+
+  can: rcar_canfd: Add missing ECC error checks for channels 2-7 (2022-11-07 14:00:27 +0100)
+
+----------------------------------------------------------------
+linux-can-fixes-for-6.1-20221107
+
+----------------------------------------------------------------
+Chen Zhongjin (1):
+      can: af_can: can_exit(): add missing dev_remove_pack() of canxl_packet
+
+Geert Uytterhoeven (1):
+      can: rcar_canfd: Add missing ECC error checks for channels 2-7
+
+Oliver Hartkopp (3):
+      can: isotp: fix tx state handling for echo tx processing
+      can: j1939: j1939_send_one(): fix missing CAN header initialization
+      can: dev: fix skb drop check
+
+Zhengchao Shao (1):
+      can: af_can: fix NULL pointer dereference in can_rx_register()
+
+ drivers/net/can/at91_can.c                       |  2 +-
+ drivers/net/can/c_can/c_can_main.c               |  2 +-
+ drivers/net/can/can327.c                         |  2 +-
+ drivers/net/can/cc770/cc770.c                    |  2 +-
+ drivers/net/can/ctucanfd/ctucanfd_base.c         |  2 +-
+ drivers/net/can/dev/skb.c                        | 10 +---
+ drivers/net/can/flexcan/flexcan-core.c           |  2 +-
+ drivers/net/can/grcan.c                          |  2 +-
+ drivers/net/can/ifi_canfd/ifi_canfd.c            |  2 +-
+ drivers/net/can/janz-ican3.c                     |  2 +-
+ drivers/net/can/kvaser_pciefd.c                  |  2 +-
+ drivers/net/can/m_can/m_can.c                    |  2 +-
+ drivers/net/can/mscan/mscan.c                    |  2 +-
+ drivers/net/can/pch_can.c                        |  2 +-
+ drivers/net/can/peak_canfd/peak_canfd.c          |  2 +-
+ drivers/net/can/rcar/rcar_can.c                  |  2 +-
+ drivers/net/can/rcar/rcar_canfd.c                | 15 ++---
+ drivers/net/can/sja1000/sja1000.c                |  2 +-
+ drivers/net/can/slcan/slcan-core.c               |  2 +-
+ drivers/net/can/softing/softing_main.c           |  2 +-
+ drivers/net/can/spi/hi311x.c                     |  2 +-
+ drivers/net/can/spi/mcp251x.c                    |  2 +-
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c     |  2 +-
+ drivers/net/can/sun4i_can.c                      |  2 +-
+ drivers/net/can/ti_hecc.c                        |  2 +-
+ drivers/net/can/usb/ems_usb.c                    |  2 +-
+ drivers/net/can/usb/esd_usb.c                    |  2 +-
+ drivers/net/can/usb/etas_es58x/es58x_core.c      |  2 +-
+ drivers/net/can/usb/gs_usb.c                     |  2 +-
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c |  2 +-
+ drivers/net/can/usb/mcba_usb.c                   |  2 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c     |  2 +-
+ drivers/net/can/usb/ucan.c                       |  2 +-
+ drivers/net/can/usb/usb_8dev.c                   |  2 +-
+ drivers/net/can/xilinx_can.c                     |  2 +-
+ include/linux/can/dev.h                          | 16 ++++++
+ net/can/af_can.c                                 |  3 +-
+ net/can/isotp.c                                  | 71 +++++++++++++-----------
+ net/can/j1939/main.c                             |  3 +
+ 39 files changed, 98 insertions(+), 86 deletions(-)
 
 
