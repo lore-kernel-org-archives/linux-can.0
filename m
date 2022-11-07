@@ -2,44 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8077EC43217
-	for <linux-can@archiver.kernel.org>; Tue,  8 Nov 2022 10:19:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6398C4321E
+	for <linux-can@archiver.kernel.org>; Tue,  8 Nov 2022 10:19:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233872AbiKHKTU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 8 Nov 2022 05:19:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46414 "EHLO
+        id S233923AbiKHKTW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 8 Nov 2022 05:19:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233876AbiKHKTO (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 8 Nov 2022 05:19:14 -0500
+        with ESMTP id S233858AbiKHKTR (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 8 Nov 2022 05:19:17 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 459E5140A3
-        for <linux-can@vger.kernel.org>; Tue,  8 Nov 2022 02:19:14 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D52971401D
+        for <linux-can@vger.kernel.org>; Tue,  8 Nov 2022 02:19:16 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1osLhI-0006Lt-IZ
-        for linux-can@vger.kernel.org; Tue, 08 Nov 2022 11:19:12 +0100
+        id 1osLhL-0006Po-4Y
+        for linux-can@vger.kernel.org; Tue, 08 Nov 2022 11:19:15 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 111F2115C4E
-        for <linux-can@vger.kernel.org>; Mon,  7 Nov 2022 13:32:28 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id D3C62115C90
+        for <linux-can@vger.kernel.org>; Mon,  7 Nov 2022 13:32:34 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 44871115C32;
-        Mon,  7 Nov 2022 13:32:24 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 170AE115C74;
+        Mon,  7 Nov 2022 13:32:30 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e13e5f9e;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 555be2db;
         Mon, 7 Nov 2022 13:32:20 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Zhengchao Shao <shaozhengchao@huawei.com>,
+        kernel@pengutronix.de,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.jz@bp.renesas.com>, stable@vger.kernel.org,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 2/6] can: af_can: fix NULL pointer dereference in can_rx_register()
-Date:   Mon,  7 Nov 2022 14:32:13 +0100
-Message-Id: <20221107133217.59861-3-mkl@pengutronix.de>
+Subject: [PATCH net 6/6] can: rcar_canfd: Add missing ECC error checks for channels 2-7
+Date:   Mon,  7 Nov 2022 14:32:17 +0100
+Message-Id: <20221107133217.59861-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221107133217.59861-1-mkl@pengutronix.de>
 References: <20221107133217.59861-1-mkl@pengutronix.de>
@@ -53,59 +55,64 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Zhengchao Shao <shaozhengchao@huawei.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-It causes NULL pointer dereference when testing as following:
-(a) use syscall(__NR_socket, 0x10ul, 3ul, 0) to create netlink socket.
-(b) use syscall(__NR_sendmsg, ...) to create bond link device and vxcan
-    link device, and bind vxcan device to bond device (can also use
-    ifenslave command to bind vxcan device to bond device).
-(c) use syscall(__NR_socket, 0x1dul, 3ul, 1) to create CAN socket.
-(d) use syscall(__NR_bind, ...) to bind the bond device to CAN socket.
+When introducing support for R-Car V3U, which has 8 instead of 2
+channels, the ECC error bitmask was extended to take into account the
+extra channels, but rcar_canfd_global_error() was not updated to act
+upon the extra bits.
 
-The bond device invokes the can-raw protocol registration interface to
-receive CAN packets. However, ml_priv is not allocated to the dev,
-dev_rcv_lists is assigned to NULL in can_rx_register(). In this case,
-it will occur the NULL pointer dereference issue.
+Replace the RCANFD_GERFL_EEF[01] macros by a new macro that takes the
+channel number, fixing R-Car V3U while simplifying the code.
 
-The following is the stack information:
-BUG: kernel NULL pointer dereference, address: 0000000000000008
-PGD 122a4067 P4D 122a4067 PUD 1223c067 PMD 0
-Oops: 0000 [#1] PREEMPT SMP
-RIP: 0010:can_rx_register+0x12d/0x1e0
-Call Trace:
-<TASK>
-raw_enable_filters+0x8d/0x120
-raw_enable_allfilters+0x3b/0x130
-raw_bind+0x118/0x4f0
-__sys_bind+0x163/0x1a0
-__x64_sys_bind+0x1e/0x30
-do_syscall_64+0x35/0x80
-entry_SYSCALL_64_after_hwframe+0x63/0xcd
-</TASK>
-
-Fixes: 4e096a18867a ("net: introduce CAN specific pointer in the struct net_device")
-Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
-Reviewed-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Link: https://lore.kernel.org/all/20221028085650.170470-1-shaozhengchao@huawei.com
+Fixes: 45721c406dcf50d4 ("can: rcar_canfd: Add support for r8a779a0 SoC")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+Link: https://lore.kernel.org/all/4edb2ea46cc64d0532a08a924179827481e14b4f.1666951503.git.geert+renesas@glider.be
+Cc: stable@vger.kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/af_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/rcar/rcar_canfd.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index 5e9e3e1e9825..27dcdcc0b808 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -450,7 +450,7 @@ int can_rx_register(struct net *net, struct net_device *dev, canid_t can_id,
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index d530e986f7fa..b306cf554634 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -81,8 +81,7 @@ enum rcanfd_chip_id {
  
- 	/* insert new receiver  (dev,canid,mask) -> (func,data) */
+ /* RSCFDnCFDGERFL / RSCFDnGERFL */
+ #define RCANFD_GERFL_EEF0_7		GENMASK(23, 16)
+-#define RCANFD_GERFL_EEF1		BIT(17)
+-#define RCANFD_GERFL_EEF0		BIT(16)
++#define RCANFD_GERFL_EEF(ch)		BIT(16 + (ch))
+ #define RCANFD_GERFL_CMPOF		BIT(3)	/* CAN FD only */
+ #define RCANFD_GERFL_THLES		BIT(2)
+ #define RCANFD_GERFL_MES		BIT(1)
+@@ -90,7 +89,7 @@ enum rcanfd_chip_id {
  
--	if (dev && dev->type != ARPHRD_CAN)
-+	if (dev && (dev->type != ARPHRD_CAN || !can_get_ml_priv(dev)))
- 		return -ENODEV;
+ #define RCANFD_GERFL_ERR(gpriv, x) \
+ 	((x) & (reg_v3u(gpriv, RCANFD_GERFL_EEF0_7, \
+-			RCANFD_GERFL_EEF0 | RCANFD_GERFL_EEF1) | \
++			RCANFD_GERFL_EEF(0) | RCANFD_GERFL_EEF(1)) | \
+ 		RCANFD_GERFL_MES | \
+ 		((gpriv)->fdmode ? RCANFD_GERFL_CMPOF : 0)))
  
- 	if (dev && !net_eq(net, dev_net(dev)))
+@@ -936,12 +935,8 @@ static void rcar_canfd_global_error(struct net_device *ndev)
+ 	u32 ridx = ch + RCANFD_RFFIFO_IDX;
+ 
+ 	gerfl = rcar_canfd_read(priv->base, RCANFD_GERFL);
+-	if ((gerfl & RCANFD_GERFL_EEF0) && (ch == 0)) {
+-		netdev_dbg(ndev, "Ch0: ECC Error flag\n");
+-		stats->tx_dropped++;
+-	}
+-	if ((gerfl & RCANFD_GERFL_EEF1) && (ch == 1)) {
+-		netdev_dbg(ndev, "Ch1: ECC Error flag\n");
++	if (gerfl & RCANFD_GERFL_EEF(ch)) {
++		netdev_dbg(ndev, "Ch%u: ECC Error flag\n", ch);
+ 		stats->tx_dropped++;
+ 	}
+ 	if (gerfl & RCANFD_GERFL_MES) {
 -- 
 2.35.1
 
