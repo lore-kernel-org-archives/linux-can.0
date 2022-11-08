@@ -2,94 +2,117 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F587C433FE
-	for <linux-can@archiver.kernel.org>; Tue,  8 Nov 2022 10:19:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DC31C4332F
+	for <linux-can@archiver.kernel.org>; Tue,  8 Nov 2022 19:08:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233950AbiKHKTz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 8 Nov 2022 05:19:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46780 "EHLO
+        id S229524AbiKHTIL (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 8 Nov 2022 14:08:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233918AbiKHKTW (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 8 Nov 2022 05:19:22 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03948140E4
-        for <linux-can@vger.kernel.org>; Tue,  8 Nov 2022 02:19:18 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1osLhJ-0006MP-Vs; Tue, 08 Nov 2022 11:19:14 +0100
-Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 3A9C2115BB4;
-        Mon,  7 Nov 2022 13:01:36 +0000 (UTC)
-Date:   Mon, 7 Nov 2022 14:01:33 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net,
-        linux-can@vger.kernel.org, kernel@pengutronix.de,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Dariusz Stojaczyk <Dariusz.Stojaczyk@opensynergy.com>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Max Staudt <max@enpas.org>, stable@vger.kernel.org
-Subject: Re: [PATCH net 4/5] can: dev: fix skb drop check
-Message-ID: <20221107130133.pfgfp4ymna2ogr5s@pengutronix.de>
-References: <20221104130535.732382-1-mkl@pengutronix.de>
- <20221104130535.732382-5-mkl@pengutronix.de>
- <20221104115059.429412fb@kernel.org>
+        with ESMTP id S229470AbiKHTIK (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 8 Nov 2022 14:08:10 -0500
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98AD8CE5F
+        for <linux-can@vger.kernel.org>; Tue,  8 Nov 2022 11:08:08 -0800 (PST)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 2239B240107
+        for <linux-can@vger.kernel.org>; Tue,  8 Nov 2022 20:08:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1667934487; bh=AesJj0aCIMx2MWDCrj3cOaIGPv8nxtJuQkyvGc0O42Y=;
+        h=Date:From:Subject:To:Cc:From;
+        b=OiGMjQ2V9GFTUEnE06Zd+6HxP8M9+yLOARoPLwBN7j0pYwdggUHalYlIzDAbTwQbr
+         TGHV2ClF5tbIrprmfSGgQwyZK4dJzcNYutQZ+YhLcZ/JeeGs44f/PVBQaS2XGLOSsF
+         +87l/MtOn7RBAwkKoRcvG+yA7276DFouqMzcCoxnes/lzd903zqaGLIt/SeiBbq8D8
+         QU9i9c33wVnbEbb1OKI4bZaaYfbqAVpOr7EeRTe2yKARjmK7QjNCY0fP1occEfAhc0
+         bfez5i7UWZ8K4JIRpBVYJhepi5bQSME0941jzsPX1Ll7Dp6pQoaHaSUTBASX0QgbTn
+         6bPGIT9bnp+aw==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4N6Hg905gbz6tnC;
+        Tue,  8 Nov 2022 20:08:04 +0100 (CET)
+Message-ID: <ea8f2b55-3871-8ba6-b545-d3c73a7508cc@posteo.net>
+Date:   Tue,  8 Nov 2022 19:07:25 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bcuckfzhnjyvck7g"
-Content-Disposition: inline
-In-Reply-To: <20221104115059.429412fb@kernel.org>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+From:   Lukas Magel <lukas.magel@posteo.net>
+Subject: Re: [PATCH net-next 0/14] pull-request: can-next 2022-10-31
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org,
+        davem@davemloft.net, linux-can@vger.kernel.org,
+        kernel@pengutronix.de
+References: <20221031154406.259857-1-mkl@pengutronix.de>
+ <20221031202714.1eada551@kernel.org> <Y2CpRfuto8wFrXX+@kroah.com>
+Content-Language: en-US
+In-Reply-To: <Y2CpRfuto8wFrXX+@kroah.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+On 01.11.22 06:06, Greg Kroah-Hartman wrote:
+> On Mon, Oct 31, 2022 at 08:27:14PM -0700, Jakub Kicinski wrote:
+>> On Mon, 31 Oct 2022 16:43:52 +0100 Marc Kleine-Budde wrote:
+>>> The first 7 patches are by Stephane Grosjean and Lukas Magel and
+>>> target the peak_usb driver. Support for flashing a user defined device
+>>> ID via the ethtool flash interface is added. A read only sysfs
+>> nit: ethtool eeprom set != ethtool flash
+>>
+>>> attribute for that value is added to distinguish between devices via
+>>> udev.
+>> So the user can write an arbitrary u32 value into flash which then
+>> persistently pops up in sysfs across reboots (as a custom attribute
+>> called "user_devid")?
+>>
+>> I don't know.. the whole thing strikes me as odd. Greg do you have any
+>> feelings about such.. solutions?
+>>
+>> patches 5 and 6 here:
+>> https://lore.kernel.org/all/20221031154406.259857-1-mkl@pengutronix.de/
+I now realize that I didn't do a sufficient job at describing the purpose of the
+device ID in the patches (which I am working on improving at the moment). In
+contrast to other devices (such as the ones from ETAS), at least the PCAN USB-FD
+devices do not export an iSerial attribute at USB level, which makes it hard to
+distinguish them if you are using multiple with the same product ID. The user
+device ID is a freely configurable identifier (basically an arbitrary u8 / u32
+value like you said) that can be set individually for each CAN channel of any
+PEAK device and can serve as a replacement for the missing serial number. This
+use case is also explicitly stated in the Windows API manual for the PEAK
+devices (see page 11 in [1]). The patch series implements write support for the
+value via ethtool and exports it readonly as a sysfs attribute for udev matching.
+> Device-specific attributes should be in the device-specific directory,
+> not burried in a class directory somewhere that is generic like this one
+> is.
+>
+> Why isn't this an attribute of the usb device instead?
 
---bcuckfzhnjyvck7g
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Each CAN channel of a PEAK device can have its own device ID, meaning that there
+is a potential one-to-n mapping between USB device and device IDs. I can see how
+the name might appear confusing in that regard, we chose it to be consistent
+with the API description put out by PEAK (also see [1]).
 
-On 04.11.2022 11:50:59, Jakub Kicinski wrote:
-> On Fri,  4 Nov 2022 14:05:34 +0100 Marc Kleine-Budde wrote:
-> > -	if (can_dropped_invalid_skb(ndev, skb))
-> > +	if (can_dev_dropped_skb(dev, skb))
->=20
-> Compiler says "Did you mean ndev"?
+> And there's no need to reorder the .h file includes in patch 06 while
+> you are adding a sysfs entry, that should be a separate commit, right?
+I have split this into a separate commit.
+> Also, the line:
+>
+> +	.attrs	= (struct attribute **)peak_usb_sysfs_attrs,
+>
+> Is odd, there should never be a need to cast anything like this if you
+> are doing things properly.
+I have removed the const modifier from the struct as well as the cast.
+> So this still needs work, sorry.
+>
+> thanks,
+>
+> greg k-h
+>
+Please let me know if you require further changes to the patch series or want
+the attribute to be renamed.
 
-Sorry for the mess, in my config files the driver in question was
-already disabled. :(
+Regards,
 
-Marc
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+Lukas
 
---bcuckfzhnjyvck7g
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmNpAaoACgkQrX5LkNig
-012Ytwf9EsPA+j9+kcubAdNYsXT2nvxukuE/5CjMprQNt+M4XkULFzjbZCKxfUXS
-RZL7p1vbESTEdce1/40yUnOozaGKm/3NCp21kG2Y2cRUGWcMVl8jvQzMz3YdN3Gx
-EwSehNmbaD0fZ9R8CrowHcfL96uOfbO1cCOlF/+tD7OetysTgly0loPmnrPKQJ44
-8WtEVmRDKfZkVCDQnbRGZcvFcycJ91e+NUocWyjr8pibmpNAGqGYNPJWfJeyglb0
-ZRPntwn6X55zQjthnaKmidbOj7fq0uHeA48IpgX+b6zs7EEasoJKs4SHm2RKM5i4
-pfTJt859ckH3qxRU6g7A1vnGSr6VMw==
-=9Rva
------END PGP SIGNATURE-----
-
---bcuckfzhnjyvck7g--
+[1] See PCAN-Parameter_Documentation.pdf in
+https://www.peak-system.com/fileadmin/media/files/pcan-basic.zip
