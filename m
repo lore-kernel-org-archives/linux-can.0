@@ -2,53 +2,53 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCC40C4332F
-	for <linux-can@archiver.kernel.org>; Wed, 16 Nov 2022 20:57:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56D6BC43217
+	for <linux-can@archiver.kernel.org>; Wed, 16 Nov 2022 20:57:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239326AbiKPU5P (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 16 Nov 2022 15:57:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35212 "EHLO
+        id S231261AbiKPU5R (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 16 Nov 2022 15:57:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234935AbiKPUyB (ORCPT
+        with ESMTP id S238684AbiKPUyB (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 16 Nov 2022 15:54:01 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F8D9FFE
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB3865FD
         for <linux-can@vger.kernel.org>; Wed, 16 Nov 2022 12:53:35 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id f27so14282eje.1
-        for <linux-can@vger.kernel.org>; Wed, 16 Nov 2022 12:53:35 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id ud5so47210755ejc.4
+        for <linux-can@vger.kernel.org>; Wed, 16 Nov 2022 12:53:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YM61plGO68WaURjQUGMFYN3EyOhHGwttCZUHVzMzSmk=;
-        b=Ai+PNsCF8RUwtUbnUOAUElOEHQCIBtfvFr4FFEPhc4TBV1LylFALavmdFCQF1QzYq/
-         qDLB9z/9yjs+tm0zJDPFsIHbvWfXxkuKo96Mw4ScW7PN57/EQlnKCQF3ks2yEEWGQS4M
-         fOkPJMw5pzIgSHSJxAAN/m0vsKCwGMVMEeXP40tQCc2n8qnsGB+hhZa1DA4jL5zut82i
-         7bC2rKxw1gYmVP6CvdtAOEt2IjHSFaOJPPC4uXz5zk7Yf+apbdDgU6asT4dd1JJgsrsU
-         hgu+opVs9duZiov5egbrN5iBHXVuLoqZhPNnLyLFx6oOgUWVE2t7GU+wFAKEtKmsFXq3
-         kPfA==
+        bh=ah82tTOOObOFB3MDfuIM4J36KFmptfShWyxBMhuP5Xo=;
+        b=FuFd7KEQ6d41KZBOZhhpBhnMjYXdxKD3gEK+faGWa/XfhW2EFx9CCnj4pbSYMac2Rg
+         VIuXojA8qB/pnTAwSH/PmZxKpCmL2eAkLQyhE5BR42zG3IEDpWTJHKhUoMPbBlM0cwsa
+         aoDXSsa8MbXs5ScTvpr0crbR+Zr5r66T3BoltNI3RObZ5w0EZWcatVi6Jt5ZsATEp/Dw
+         jt8b+Zt2tr8/FhtYKWD6X46XX4b1PFmxtCddxq2uisW6m40miJnZawPupYuP4ofRL7OM
+         qqYATmJca9f9feYgFHce3A/dYWupesj+8yaW4A7p+R4+b/3M0R4QMymOG5zlpIyc1L2s
+         gTUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YM61plGO68WaURjQUGMFYN3EyOhHGwttCZUHVzMzSmk=;
-        b=l3A7yYnuBDxBOdLwiuO+m63mzbd76fL+HI3ply2nEVe8gAaA8yBK3zTry3kBRji6HI
-         AI3haC8aB+GLM36CKHVn9m2NxCmh8Renwh+JcvQLX3S+SRbZgKacidP/qoRKILfwxD1K
-         jgoa5t1D+/E9S8wvdPPCvULWwXRT5WzXWGyTXZGl6BkpA2uxmUsJJyZsPnSKKNzeT3YC
-         2rPAxbODD2DhxnG5g7nG23JA1qVQ4frJ52dDPS/dWexGLTJ3FbtPZ2z85ff2CLrENHzT
-         8YTyinHYrNJbmNaBx2NGGtj7znMgDdufX8kOyJwqEAn41hcQXI3BNLmmmn3tN0JKbL/a
-         Hc1Q==
-X-Gm-Message-State: ANoB5pnomMhZGWVK1R3IIn/2XoEDsSqur05+EC5R0wRjLEqf2d9dZfBu
-        3uINRe8lpczOLuhWz67kz46HwA==
-X-Google-Smtp-Source: AA0mqf7VeG4VcKKp/7grTNCCfy6yeZuKVFMgRgRP2joVmv0aloO7Kuyi4aEcATQ/8m/x/shIVVm6OQ==
-X-Received: by 2002:a17:907:c78d:b0:7af:113a:7416 with SMTP id tz13-20020a170907c78d00b007af113a7416mr10052021ejc.16.1668632015148;
-        Wed, 16 Nov 2022 12:53:35 -0800 (PST)
+        bh=ah82tTOOObOFB3MDfuIM4J36KFmptfShWyxBMhuP5Xo=;
+        b=1K4wX4c3NIi867foQSquAhEy7qk3dgcyVIHnAWRgGA+Enk1AROHXv5qtXG/tLWhUiT
+         YhvBdNqYWvmrI80msi7k0I1/2xYcSBKW/kEZ/JS1uT1D1AQ2RXKRXMJ8hC+COqEv/Dv1
+         fMlPMluDw5v2Td/yfo5AtMH4VnLA+BoMv7rPff5gmaggYtWG/yaPL2h/kvsX57pMDCte
+         z0srdRIdZNkoEjCk6D4JIzuihvsPu5eOTDX6877n297RRyrvCvlipFBBHojKxIHsg2a3
+         NeVg8RqDs7vOgx3kcQirKTh804Wdk8fQmMbLW5uDoKzIkXo7YI/9ThOqPPDV6awUcuBC
+         k56Q==
+X-Gm-Message-State: ANoB5pmsCjYUatmkzIfq1xEj2GBFOzdBl7IQ725/RAapl/ZviIT0Me90
+        3AQeDdjxWPsSSqMNHB+tpzB82g==
+X-Google-Smtp-Source: AA0mqf6TsBpIXovEdmEucl/l73gbKjxzP+VkiJgvsdH0sgJf+BVmPrCsGlJrR9tyIjg9pqj+KeInIA==
+X-Received: by 2002:a17:906:53cd:b0:78c:1f2f:233e with SMTP id p13-20020a17090653cd00b0078c1f2f233emr19534963ejo.307.1668632013651;
+        Wed, 16 Nov 2022 12:53:33 -0800 (PST)
 Received: from blmsp.fritz.box ([2001:4090:a244:804b:353b:565:addf:3aa7])
-        by smtp.gmail.com with ESMTPSA id kv17-20020a17090778d100b007aece68483csm6782828ejc.193.2022.11.16.12.53.34
+        by smtp.gmail.com with ESMTPSA id kv17-20020a17090778d100b007aece68483csm6782828ejc.193.2022.11.16.12.53.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Nov 2022 12:53:34 -0800 (PST)
+        Wed, 16 Nov 2022 12:53:33 -0800 (PST)
 From:   Markus Schneider-Pargmann <msp@baylibre.com>
 To:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -56,9 +56,9 @@ To:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
 Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH 14/15] can: tcan4x5x: Fix register range of first block
-Date:   Wed, 16 Nov 2022 21:53:07 +0100
-Message-Id: <20221116205308.2996556-15-msp@baylibre.com>
+Subject: [PATCH 12/15] can: tcan4x5x: Remove invalid write in clear_interrupts
+Date:   Wed, 16 Nov 2022 21:53:05 +0100
+Message-Id: <20221116205308.2996556-13-msp@baylibre.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221116205308.2996556-1-msp@baylibre.com>
 References: <20221116205308.2996556-1-msp@baylibre.com>
@@ -68,27 +68,34 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-According to the datasheet 0x1c is the last register in the first block,
-not register 0x2c.
+Register 0x824 TCAN4X5X_MCAN_INT_REG is a read-only register. Any writes
+to this register do not have any effect.
+
+Remove this write. The m_can driver aldready clears the interrupts in
+m_can_isr() by writing to M_CAN_IR which is translated to register
+0x1050 which is a writable version of this register.
 
 Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
 ---
- drivers/net/can/m_can/tcan4x5x-regmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/m_can/tcan4x5x-core.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/net/can/m_can/tcan4x5x-regmap.c b/drivers/net/can/m_can/tcan4x5x-regmap.c
-index 26e212b8ca7a..d4b79d2d4598 100644
---- a/drivers/net/can/m_can/tcan4x5x-regmap.c
-+++ b/drivers/net/can/m_can/tcan4x5x-regmap.c
-@@ -91,7 +91,7 @@ static int tcan4x5x_regmap_read(void *context,
- }
+diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
+index 41645a24384c..1fec394b3517 100644
+--- a/drivers/net/can/m_can/tcan4x5x-core.c
++++ b/drivers/net/can/m_can/tcan4x5x-core.c
+@@ -204,11 +204,6 @@ static int tcan4x5x_clear_interrupts(struct m_can_classdev *cdev)
+ 	if (ret)
+ 		return ret;
  
- static const struct regmap_range tcan4x5x_reg_table_yes_range[] = {
--	regmap_reg_range(0x0000, 0x002c),	/* Device ID and SPI Registers */
-+	regmap_reg_range(0x0000, 0x001c),	/* Device ID and SPI Registers */
- 	regmap_reg_range(0x0800, 0x083c),	/* Device configuration registers and Interrupt Flags*/
- 	regmap_reg_range(0x1000, 0x10fc),	/* M_CAN */
- 	regmap_reg_range(0x8000, 0x87fc),	/* MRAM */
+-	ret = tcan4x5x_write_tcan_reg(cdev, TCAN4X5X_MCAN_INT_REG,
+-				      TCAN4X5X_ENABLE_MCAN_INT);
+-	if (ret)
+-		return ret;
+-
+ 	ret = tcan4x5x_write_tcan_reg(cdev, TCAN4X5X_INT_FLAGS,
+ 				      TCAN4X5X_CLEAR_ALL_INT);
+ 	if (ret)
 -- 
 2.38.1
 
