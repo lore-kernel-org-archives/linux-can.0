@@ -2,53 +2,53 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E97EBC433FE
-	for <linux-can@archiver.kernel.org>; Wed, 16 Nov 2022 20:54:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9CECC4321E
+	for <linux-can@archiver.kernel.org>; Wed, 16 Nov 2022 20:54:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238910AbiKPUyS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 16 Nov 2022 15:54:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36440 "EHLO
+        id S234270AbiKPUyT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 16 Nov 2022 15:54:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234634AbiKPUxu (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Nov 2022 15:53:50 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCEF6115F
-        for <linux-can@vger.kernel.org>; Wed, 16 Nov 2022 12:53:30 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id ft34so47068705ejc.12
-        for <linux-can@vger.kernel.org>; Wed, 16 Nov 2022 12:53:30 -0800 (PST)
+        with ESMTP id S237493AbiKPUxw (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 16 Nov 2022 15:53:52 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1CD627B
+        for <linux-can@vger.kernel.org>; Wed, 16 Nov 2022 12:53:31 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id bj12so47076826ejb.13
+        for <linux-can@vger.kernel.org>; Wed, 16 Nov 2022 12:53:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bbjKmVvFBDrESxHm1md/sljGuNuz1laUujygzg6feGk=;
-        b=B/KjXbxQuT9Gao+aqZROklxkKnU1p+JXxNuxzuhCtYHY1qTn69DbzDH9lQBT/eNtGu
-         4cvQiebMBzu2VeLwimrApbHF9QayhwvoyCWlOCRBn8/pI5cMT9/jVYr9FdPjS78n3BFG
-         L1pif1BFc5E4V2kPh8B84h3XUMsGCRsYm5dOaNMhyLQo4J0WKRh/DlSE7T/JBJrD1n0z
-         vvHzwckjHAiqraXNKoeG3vhOgwbAclMQU49UtaQb6AJAR6UYGVjv7SWDu6CwlttxVwQi
-         VRcCrCalM2c6S0NuQeiqn9hJGg01DtEbjpSdHH1RqkJRZOnR6GXu/3esQC8fI16aIqDe
-         Z6pg==
+        bh=b1NW4yffam7J6Z66UeY98X/Lxzuu+uqNj1++GX3J7z0=;
+        b=Fn+pjOi7VxZlwBiOMmabPiR+6IHaFVnPkFKbMENKhdrwfdApvpUQBK2DrzSm8UZ3l+
+         LBgLnkruBLVK5H9Tz3LtB/DxxziqVAKGYdy+2KAVIJ3tPxXMTLxirF7JOIUcPu3bk1s5
+         Ah2GESoKw9t04qJclb9ZKouemoIya66kpstWZwAR76Ni2A6BXsyOjIau71qtKm2twGCH
+         OZewz/IsWr1KR9xbm3owiIWYvu9j4qJ6AWvx6bzdTD0OK/RnbkqCeFRwpg88Birnm2FI
+         IBOaNk32rlVnzjgJDp+VA4edjSpYwHv/Iw52HlvRGfnLV14A4FTa8v7sbR1UtkAAbsVg
+         JDqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bbjKmVvFBDrESxHm1md/sljGuNuz1laUujygzg6feGk=;
-        b=R9+MOh1kl8CLrglco9wTe5t20jut6oPeKyJKt2FiLx1Pp02Q74TEBSyIP2iQj/Jjr9
-         JoG4EmuIv3cn9AbOcdrH59TtnbtVRC4k6/4Fcnbf0in3YscbiTm6Hf6kS7VKTcKNCyW6
-         DmKCBxy3w1pIgz67yHffaDLppvonUwGaQMicBwYQ0x1dv6WsOKn75XCJx/sRckc50lXE
-         l/RDfAGFBSgwe0k3eyc2o94SGfglmonzIsBd+1r3dImFo8wFginuhK2jcQdwL0GKF+9Y
-         WEZGvXDkKUUz0CYFd0lbVPjXhTnlQ+GnAnwpeBn+d15yRQADvTb97PBUoFU8MuM9HXDD
-         nRrg==
-X-Gm-Message-State: ANoB5pmfdGxEXrrPgKrTQwnTJ6Ih/hLIpBnDbUV5EzRXgMagi72r9fV3
-        aGxKl3O+yFD/lobRCiFcygVCWQ==
-X-Google-Smtp-Source: AA0mqf5Nm+7E+pI2+mVyMKOZ+hhoiLffdy2qs4ZnZpOiqCStipKLy7DN1WH8OXWV5oL0hqD/qSZTuA==
-X-Received: by 2002:a17:906:141b:b0:78d:5176:c4d2 with SMTP id p27-20020a170906141b00b0078d5176c4d2mr18738240ejc.532.1668632008850;
-        Wed, 16 Nov 2022 12:53:28 -0800 (PST)
+        bh=b1NW4yffam7J6Z66UeY98X/Lxzuu+uqNj1++GX3J7z0=;
+        b=AOn487BOMyfVE9PacaZtE9NaXwvhwpPCkEGoW7fr4R4fEU3KPPU8yZeObpk3Fo1DwG
+         s23cYhcSXl4D5UpE45rTJ7ZsIYdyiZXYTM/kDyT+ILDGzpHpwlkuRenM8V6BCSHgVEMM
+         fmm3CIR0ZiBBWY+XY6rSEsezN2wFkDKktljiKjO4uPypGwuzoEWokZmJwZIFo/8eIPD5
+         4bvLXadj/tGUI5oINLczdxd529v1deb23l5RhoaW/0WL3N6sk4pTWjuoI2qM+Hldktfg
+         fQd0zTrx9FOlXGQRx6nj+bVcpBpsclz9ykezChyitBN68C9mbmxOTMrDGa88uERfMJhq
+         +hVA==
+X-Gm-Message-State: ANoB5pmoq+BgdHO8h8QhrpGwAmIhyI9k6VPjks3ijetP7vY30k3o77IL
+        rpEQ7u5Oqb7Mo8l0hlxpb4qMFg==
+X-Google-Smtp-Source: AA0mqf5INbSS61YudtGvV7KRJAO/74+RHCAHzS3vYu3sIf8dRl8BpsQJ4HaUspFyOyKl/Ph09ENVdw==
+X-Received: by 2002:a17:906:489a:b0:7b2:73d0:4b9c with SMTP id v26-20020a170906489a00b007b273d04b9cmr6681647ejq.746.1668632010464;
+        Wed, 16 Nov 2022 12:53:30 -0800 (PST)
 Received: from blmsp.fritz.box ([2001:4090:a244:804b:353b:565:addf:3aa7])
-        by smtp.gmail.com with ESMTPSA id kv17-20020a17090778d100b007aece68483csm6782828ejc.193.2022.11.16.12.53.28
+        by smtp.gmail.com with ESMTPSA id kv17-20020a17090778d100b007aece68483csm6782828ejc.193.2022.11.16.12.53.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Nov 2022 12:53:28 -0800 (PST)
+        Wed, 16 Nov 2022 12:53:30 -0800 (PST)
 From:   Markus Schneider-Pargmann <msp@baylibre.com>
 To:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -56,9 +56,9 @@ To:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
 Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH 06/15] can: m_can: Avoid reading irqstatus twice
-Date:   Wed, 16 Nov 2022 21:52:59 +0100
-Message-Id: <20221116205308.2996556-7-msp@baylibre.com>
+Subject: [PATCH 08/15] can: m_can: Count TXE FIFO getidx in the driver
+Date:   Wed, 16 Nov 2022 21:53:01 +0100
+Message-Id: <20221116205308.2996556-9-msp@baylibre.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221116205308.2996556-1-msp@baylibre.com>
 References: <20221116205308.2996556-1-msp@baylibre.com>
@@ -68,74 +68,44 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-For peripheral devices the m_can_rx_handler is called directly after
-setting cdev->irqstatus. This means we don't have to read the irqstatus
-again in m_can_rx_handler. Avoid this by adding a parameter that is
-false for direct calls.
+The getindex simply increases by one for every iteration. There is no
+need to get the current getidx every time from a register. Instead we
+can just count and wrap if necessary.
 
 Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
 ---
- drivers/net/can/m_can/m_can.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ drivers/net/can/m_can/m_can.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 5c00c6162058..0efa6dee0617 100644
+index 1d15beaea920..27095a7254dd 100644
 --- a/drivers/net/can/m_can/m_can.c
 +++ b/drivers/net/can/m_can/m_can.c
-@@ -896,14 +896,13 @@ static int m_can_handle_bus_errors(struct net_device *dev, u32 irqstatus,
- 	return work_done;
- }
+@@ -1021,15 +1021,13 @@ static int m_can_echo_tx_event(struct net_device *dev)
  
--static int m_can_rx_handler(struct net_device *dev, int quota)
-+static int m_can_rx_handler(struct net_device *dev, int quota, u32 irqstatus)
- {
- 	struct m_can_classdev *cdev = netdev_priv(dev);
- 	int rx_work_or_err;
- 	int work_done = 0;
--	u32 irqstatus, psr;
-+	u32 psr;
+ 	/* Get Tx Event fifo element count */
+ 	txe_count = FIELD_GET(TXEFS_EFFL_MASK, m_can_txefs);
++	fgi = FIELD_GET(TXEFS_EFGI_MASK, m_can_txefs);
  
--	irqstatus = cdev->irqstatus | m_can_read(cdev, M_CAN_IR);
- 	if (!irqstatus)
- 		goto end;
+ 	/* Get and process all sent elements */
+ 	for (i = 0; i < txe_count; i++) {
+ 		u32 txe, timestamp = 0;
+ 		int err;
  
-@@ -947,12 +946,12 @@ static int m_can_rx_handler(struct net_device *dev, int quota)
- 	return work_done;
- }
+-		/* retrieve get index */
+-		fgi = FIELD_GET(TXEFS_EFGI_MASK, m_can_read(cdev, M_CAN_TXEFS));
+-
+ 		/* get message marker, timestamp */
+ 		err = m_can_txe_fifo_read(cdev, fgi, 4, &txe);
+ 		if (err) {
+@@ -1043,6 +1041,7 @@ static int m_can_echo_tx_event(struct net_device *dev)
+ 		/* ack txe element */
+ 		m_can_write(cdev, M_CAN_TXEFA, FIELD_PREP(TXEFA_EFAI_MASK,
+ 							  fgi));
++		fgi = (++fgi >= cdev->mcfg[MRAM_TXE].num ? 0 : fgi);
+ 		--cdev->tx_fifo_in_flight;
  
--static int m_can_rx_peripheral(struct net_device *dev)
-+static int m_can_rx_peripheral(struct net_device *dev, u32 irqstatus)
- {
- 	struct m_can_classdev *cdev = netdev_priv(dev);
- 	int work_done;
- 
--	work_done = m_can_rx_handler(dev, NAPI_POLL_WEIGHT);
-+	work_done = m_can_rx_handler(dev, NAPI_POLL_WEIGHT, irqstatus);
- 
- 	/* Don't re-enable interrupts if the driver had a fatal error
- 	 * (e.g., FIFO read failure).
-@@ -968,8 +967,11 @@ static int m_can_poll(struct napi_struct *napi, int quota)
- 	struct net_device *dev = napi->dev;
- 	struct m_can_classdev *cdev = netdev_priv(dev);
- 	int work_done;
-+	u32 irqstatus;
-+
-+	irqstatus = cdev->irqstatus | m_can_read(cdev, M_CAN_IR);
- 
--	work_done = m_can_rx_handler(dev, quota);
-+	work_done = m_can_rx_handler(dev, quota, irqstatus);
- 
- 	/* Don't re-enable interrupts if the driver had a fatal error
- 	 * (e.g., FIFO read failure).
-@@ -1080,7 +1082,7 @@ static irqreturn_t m_can_isr(int irq, void *dev_id)
- 		m_can_disable_all_interrupts(cdev);
- 		if (!cdev->is_peripheral)
- 			napi_schedule(&cdev->napi);
--		else if (m_can_rx_peripheral(dev) < 0)
-+		else if (m_can_rx_peripheral(dev, ir) < 0)
- 			goto out_fail;
- 	}
- 
+ 		/* update stats */
 -- 
 2.38.1
 
