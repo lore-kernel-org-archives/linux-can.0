@@ -2,44 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46D11C43219
-	for <linux-can@archiver.kernel.org>; Thu, 24 Nov 2022 19:57:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90A94C47089
+	for <linux-can@archiver.kernel.org>; Thu, 24 Nov 2022 19:57:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbiKXT5V (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 24 Nov 2022 14:57:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54960 "EHLO
+        id S229678AbiKXT5U (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 24 Nov 2022 14:57:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbiKXT5S (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 24 Nov 2022 14:57:18 -0500
+        with ESMTP id S229564AbiKXT5Q (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 24 Nov 2022 14:57:16 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D8EC91C04
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F50B91512
         for <linux-can@vger.kernel.org>; Thu, 24 Nov 2022 11:57:15 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1oyILR-0004cY-Gx
+        id 1oyILR-0004ch-Me
         for linux-can@vger.kernel.org; Thu, 24 Nov 2022 20:57:13 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 725CC128967
+        by bjornoya.blackshift.org (Postfix) with SMTP id 85D03128969
         for <linux-can@vger.kernel.org>; Thu, 24 Nov 2022 19:57:11 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 0DD82128944;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 228FB128947;
         Thu, 24 Nov 2022 19:57:10 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 8c706559;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b0a8a6c1;
         Thu, 24 Nov 2022 19:57:09 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Heiko Schocher <hs@denx.de>,
+        kernel@pengutronix.de,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 2/8] can: sja1000: fix size of OCR_MODE_MASK define
-Date:   Thu, 24 Nov 2022 20:57:02 +0100
-Message-Id: <20221124195708.1473369-3-mkl@pengutronix.de>
+Subject: [PATCH net 4/8] can: cc770: cc770_isa_probe(): add missing free_cc770dev()
+Date:   Thu, 24 Nov 2022 20:57:04 +0100
+Message-Id: <20221124195708.1473369-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221124195708.1473369-1-mkl@pengutronix.de>
 References: <20221124195708.1473369-1-mkl@pengutronix.de>
@@ -53,31 +54,54 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Heiko Schocher <hs@denx.de>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-bitfield mode in ocr register has only 2 bits not 3, so correct
-the OCR_MODE_MASK define.
+Add the missing free_cc770dev() before return from cc770_isa_probe()
+in the register_cc770dev() error handling case.
 
-Signed-off-by: Heiko Schocher <hs@denx.de>
-Link: https://lore.kernel.org/all/20221123071636.2407823-1-hs@denx.de
+In addition, remove blanks before goto labels.
+
+Fixes: 7e02e5433e00 ("can: cc770: legacy CC770 ISA bus driver")
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Link: https://lore.kernel.org/all/1668168557-6024-1-git-send-email-zhangchangzhong@huawei.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- include/linux/can/platform/sja1000.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/cc770/cc770_isa.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/can/platform/sja1000.h b/include/linux/can/platform/sja1000.h
-index 5755ae5a4712..6a869682c120 100644
---- a/include/linux/can/platform/sja1000.h
-+++ b/include/linux/can/platform/sja1000.h
-@@ -14,7 +14,7 @@
- #define OCR_MODE_TEST     0x01
- #define OCR_MODE_NORMAL   0x02
- #define OCR_MODE_CLOCK    0x03
--#define OCR_MODE_MASK     0x07
-+#define OCR_MODE_MASK     0x03
- #define OCR_TX0_INVERT    0x04
- #define OCR_TX0_PULLDOWN  0x08
- #define OCR_TX0_PULLUP    0x10
+diff --git a/drivers/net/can/cc770/cc770_isa.c b/drivers/net/can/cc770/cc770_isa.c
+index 194c86e0f340..8f6dccd5a587 100644
+--- a/drivers/net/can/cc770/cc770_isa.c
++++ b/drivers/net/can/cc770/cc770_isa.c
+@@ -264,22 +264,24 @@ static int cc770_isa_probe(struct platform_device *pdev)
+ 	if (err) {
+ 		dev_err(&pdev->dev,
+ 			"couldn't register device (err=%d)\n", err);
+-		goto exit_unmap;
++		goto exit_free;
+ 	}
+ 
+ 	dev_info(&pdev->dev, "device registered (reg_base=0x%p, irq=%d)\n",
+ 		 priv->reg_base, dev->irq);
+ 	return 0;
+ 
+- exit_unmap:
++exit_free:
++	free_cc770dev(dev);
++exit_unmap:
+ 	if (mem[idx])
+ 		iounmap(base);
+- exit_release:
++exit_release:
+ 	if (mem[idx])
+ 		release_mem_region(mem[idx], iosize);
+ 	else
+ 		release_region(port[idx], iosize);
+- exit:
++exit:
+ 	return err;
+ }
+ 
 -- 
 2.35.1
 
