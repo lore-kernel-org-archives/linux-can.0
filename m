@@ -2,98 +2,95 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 894BFC433FE
-	for <linux-can@archiver.kernel.org>; Thu, 24 Nov 2022 15:06:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8FBDC43217
+	for <linux-can@archiver.kernel.org>; Thu, 24 Nov 2022 15:09:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbiKXPGo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 24 Nov 2022 10:06:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49082 "EHLO
+        id S229918AbiKXPJF (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 24 Nov 2022 10:09:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbiKXPGn (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 24 Nov 2022 10:06:43 -0500
-X-Greylist: delayed 563 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 24 Nov 2022 07:06:41 PST
-Received: from mailgw.felk.cvut.cz (mailgw.felk.cvut.cz [147.32.82.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B487A113FD9;
-        Thu, 24 Nov 2022 07:06:41 -0800 (PST)
-Received: from mailgw.felk.cvut.cz (localhost.localdomain [127.0.0.1])
-        by mailgw.felk.cvut.cz (Proxmox) with ESMTP id 6E6FC30B2963;
-        Thu, 24 Nov 2022 15:56:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        cmp.felk.cvut.cz; h=cc:cc:content-transfer-encoding:content-type
-        :content-type:date:from:from:in-reply-to:message-id:mime-version
-        :references:reply-to:subject:subject:to:to; s=felkmail; bh=eoslv
-        1J/gv0WX26skGW/QE6lz0LkFm1+EhNv+jR/TnI=; b=qjwfEai8YDdrymDXSFsJZ
-        yJk2J6OY5AX7yZKxm6/tWfDpnvFtixZb1WhpEWm3kYwXZzOYIwts9fSIOu+VsQ/N
-        jNgkwyoE5+teR/sbfLK4jkLWnaX2iKwcADQfkKue6Sa/pD5M6ypv31zQgZv+K3RT
-        kmk4lRMAjVySNOrIVq2B+WhqYOMmAe2rDpqw7Eqznyv3h7YUxLmg7dMRIcWgIiWC
-        IsHgBK4gdyGfn6H2rAji0rqF7TNaxudeiPlEzRuBsc66fHNjS5NHhh0ZeobYfBa5
-        ZjdwvoFGyi6/1VQMZulq5BhYamvDOzdSVtJ85Ll1EIGYVywmISEgeMpUpAUsLud+
-        Q==
-Received: from cmp.felk.cvut.cz (haar.felk.cvut.cz [147.32.84.19])
-        by mailgw.felk.cvut.cz (Proxmox) with ESMTPS id A2B9130B2960;
-        Thu, 24 Nov 2022 15:56:45 +0100 (CET)
-Received: from haar.felk.cvut.cz (localhost [127.0.0.1])
-        by cmp.felk.cvut.cz (8.14.0/8.12.3/SuSE Linux 0.6) with ESMTP id 2AOEujLW018131;
-        Thu, 24 Nov 2022 15:56:45 +0100
-Received: (from pisa@localhost)
-        by haar.felk.cvut.cz (8.14.0/8.13.7/Submit) id 2AOEujZS018130;
-        Thu, 24 Nov 2022 15:56:45 +0100
-X-Authentication-Warning: haar.felk.cvut.cz: pisa set sender to pisa@cmp.felk.cvut.cz using -f
-From:   Pavel Pisa <pisa@cmp.felk.cvut.cz>
-To:     Jean Delvare <jdelvare@suse.de>
-Subject: Re: [PATCH] can: ctucanfd: Drop obsolete dependency on COMPILE_TEST
-Date:   Thu, 24 Nov 2022 15:56:38 +0100
-User-Agent: KMail/1.9.10
-Cc:     linux-can@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Ondrej Ille <ondrej.ille@gmail.com>
-References: <20221124141604.4265225f@endymion.delvare>
-In-Reply-To: <20221124141604.4265225f@endymion.delvare>
-X-KMail-QuotePrefix: > 
+        with ESMTP id S229910AbiKXPJD (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 24 Nov 2022 10:09:03 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3480715B4D7
+        for <linux-can@vger.kernel.org>; Thu, 24 Nov 2022 07:09:00 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1oyDqL-0007Hq-Lx; Thu, 24 Nov 2022 16:08:49 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:5507:4aba:5e0a:4c27])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id D6762128715;
+        Thu, 24 Nov 2022 15:08:48 +0000 (UTC)
+Date:   Thu, 24 Nov 2022 16:08:47 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] can: cc770: add missing free_cc770dev() in
+ cc770_isa_probe()
+Message-ID: <20221124150847.5mzafztlb6qr6wzo@pengutronix.de>
+References: <1668168557-6024-1-git-send-email-zhangchangzhong@huawei.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xyr6puzvnva3rugy"
 Content-Disposition: inline
-Message-Id: <202211241556.38957.pisa@cmp.felk.cvut.cz>
+In-Reply-To: <1668168557-6024-1-git-send-email-zhangchangzhong@huawei.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Thanks for the care. I cannot judge change on my personal opinion.
-But if that is general direction even for other drivers
-then I confirm the change.
 
-On Thursday 24 of November 2022 14:16:04 Jean Delvare wrote:
-> Since commit 0166dc11be91 ("of: make CONFIG_OF user selectable"), it
-> is possible to test-build any driver which depends on OF on any
-> architecture by explicitly selecting OF. Therefore depending on
-> COMPILE_TEST as an alternative is no longer needed.
->
-> It is actually better to always build such drivers with OF enabled,
-> so that the test builds are closer to how each driver will actually be
-> built on its intended target. Building them without OF may not test
-> much as the compiler will optimize out potentially large parts of the
-> code. In the worst case, this could even pop false positive warnings.
-> Dropping COMPILE_TEST here improves the quality of our testing and
-> avoids wasting time on non-existent issues.
->
-> Signed-off-by: Jean Delvare <jdelvare@suse.de>
-> Cc: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-> Cc: Ondrej Ille <ondrej.ille@gmail.com>
-> ---
->  drivers/net/can/ctucanfd/Kconfig |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> --- linux-6.0.orig/drivers/net/can/ctucanfd/Kconfig
-> +++ linux-6.0/drivers/net/can/ctucanfd/Kconfig
-> @@ -23,7 +23,7 @@ config CAN_CTUCANFD_PCI
->
->  config CAN_CTUCANFD_PLATFORM
->  	tristate "CTU CAN-FD IP core platform (FPGA, SoC) driver"
-> -	depends on HAS_IOMEM && (OF || COMPILE_TEST)
-> +	depends on HAS_IOMEM && OF
->  	select CAN_CTUCANFD
->  	help
->  	  The core has been tested together with OpenCores SJA1000
+--xyr6puzvnva3rugy
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On 11.11.2022 20:09:16, Zhang Changzhong wrote:
+> Add the missing free_cc770dev() before return from cc770_isa_probe() in
+> the register_cc770dev() error handling case.
+>=20
+> In addition, remove blanks before goto labels.
+>=20
+> Fixes: 7e02e5433e00 ("can: cc770: legacy CC770 ISA bus driver")
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 
+Applied to linux-can.
+
+Thanks,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--xyr6puzvnva3rugy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmN/iPwACgkQrX5LkNig
+010AHAgAgcTbWF4nsjKqCHvZgWivk46qroxzomBCVo34/xmM6um5TUs+Xeqf9KIA
+3ONf8IX+HkhZxypT67VyCICWjVzdhItWzvuOu+hSqYSo78E/R1IqroDUAupI4UEY
+6UyP+p1SJwY/uK7A5NK8W/GeHJhqpb8HJLwVKNoKYKhCJ6ILkcs3IewVkI1ukUJq
+hva2VnBjBtUkKGia9sNKRHQanGCD+ZkXtRyor0kTRmsKd8c268BXO3DVSZrQLKCJ
+FT1nj0fu15QfSJVY7QJ2SLuUtK3jSDfCtGD+G7KgDeq73d/E+1OmU5ZpLXiB7ZCq
+aAyAammdlhEXxqdY+h8b4EklrjcNKQ==
+=qmtl
+-----END PGP SIGNATURE-----
+
+--xyr6puzvnva3rugy--
