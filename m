@@ -2,80 +2,114 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D01AC433FE
-	for <linux-can@archiver.kernel.org>; Fri, 25 Nov 2022 08:00:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6521C43219
+	for <linux-can@archiver.kernel.org>; Fri, 25 Nov 2022 13:28:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbiKYIA2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 25 Nov 2022 03:00:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51680 "EHLO
+        id S229610AbiKYN2n (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 25 Nov 2022 08:28:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbiKYIAX (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 25 Nov 2022 03:00:23 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 290762FFF9;
-        Fri, 25 Nov 2022 00:00:20 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BDD6BB82974;
-        Fri, 25 Nov 2022 08:00:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6D4FEC433D6;
-        Fri, 25 Nov 2022 08:00:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669363217;
-        bh=0HvTLDVz0F+F3ENKXrYiYaMjdbfw6Al5nW8NPscnaRc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=P40z/GZM7AGjL6AHDIRqg1VTrTsFpOH6QI9zt6eWUBuUHpO1Wcp7kAzalsqMgafZ5
-         heJ30oEvNVBnLFKDuma2P98VDA/4vO/I1SS0es5mzi0q+z972FXmkJ5/JDbLMqTmx8
-         RRfZWUvIwQ6Z66Bhenp8kgBiOU7goKlC18WPN9CqqtKfQyKgHrEqfOjVfpa995X/Hm
-         rssyYUYgZNh/2EaKQZCOHauchVk+8stLkH3Qx+sWhg2m0bbABvv/ZWvPp0CKmalYZl
-         TS60kOybSCNHFgyh6JEGsH5Mcn/grpixf9p1zVAYrERKZkIup3UZpCQK5a5ueUbuOu
-         KwBH8Hr8lT+Cw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 54675E270C7;
-        Fri, 25 Nov 2022 08:00:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229526AbiKYN2n (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 25 Nov 2022 08:28:43 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5005222B3;
+        Fri, 25 Nov 2022 05:28:40 -0800 (PST)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NJbK00KBfzmWCs;
+        Fri, 25 Nov 2022 21:28:04 +0800 (CST)
+Received: from dggpeml500006.china.huawei.com (7.185.36.76) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 25 Nov 2022 21:28:38 +0800
+Received: from localhost.localdomain (10.175.112.70) by
+ dggpeml500006.china.huawei.com (7.185.36.76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 25 Nov 2022 21:28:37 +0800
+From:   Zhang Changzhong <zhangchangzhong@huawei.com>
+To:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Julia Lawall <julia@diku.dk>,
+        Pavel Cheblakov <P.B.Cheblakov@inp.nsk.su>
+CC:     Zhang Changzhong <zhangchangzhong@huawei.com>,
+        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] can: sja1000: plx_pci: fix error handling path in plx_pci_add_card()
+Date:   Fri, 25 Nov 2022 21:46:14 +0800
+Message-ID: <1669383975-17332-1-git-send-email-zhangchangzhong@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] can: mcba_usb: Fix termination command argument
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166936321734.29613.11890827238652314469.git-patchwork-notify@kernel.org>
-Date:   Fri, 25 Nov 2022 08:00:17 +0000
-References: <20221124152504.125994-1-yashi@spacecubics.com>
-In-Reply-To: <20221124152504.125994-1-yashi@spacecubics.com>
-To:     Yasushi SHOJI <yasushi.shoji@gmail.com>
-Cc:     yashi@spacecubics.com, wg@grandegger.com, mkl@pengutronix.de,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, remigiusz.kollataj@mobica.com,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.70]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500006.china.huawei.com (7.185.36.76)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello:
+If pci_iomap() or register_sja1000dev() fails, netdev will not be
+registered, but plx_pci_del_card() still deregisters the netdev.
 
-This patch was applied to netdev/net.git (master)
-by Marc Kleine-Budde <mkl@pengutronix.de>:
+To avoid this, let's free the netdev and clear card->net_dev[i] before
+calling plx_pci_del_card(). In addition, add the missing pci_iounmap()
+when the channel does not exist.
 
-On Fri, 25 Nov 2022 00:25:03 +0900 you wrote:
-> Microchip USB Analyzer can activate the internal termination resistors
-> by setting the "termination" option ON, or OFF to to deactivate them.
-> As I've observed, both with my oscilloscope and captured USB packets
-> below, you must send "0" to turn it ON, and "1" to turn it OFF.
-> 
-> >From the schematics in the user's guide, I can confirm that you must
-> drive the CAN_RES signal LOW "0" to activate the resistors.
-> 
-> [...]
+Compile tested only.
 
-Here is the summary with links:
-  - [v2] can: mcba_usb: Fix termination command argument
-    https://git.kernel.org/netdev/net/c/1a8e3bd25f1e
+Fixes: 951f2f960e5b ("drivers/net/can/sja1000/plx_pci.c: eliminate double free")
+Fixes: 24c4a3b29255 ("can: add support for CAN interface cards based on the PLX90xx PCI bridge")
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+---
+v1->v2: switch to goto style fix.
 
-You are awesome, thank you!
+ drivers/net/can/sja1000/plx_pci.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/plx_pci.c
+index 5de1ebb..134a8cb 100644
+--- a/drivers/net/can/sja1000/plx_pci.c
++++ b/drivers/net/can/sja1000/plx_pci.c
+@@ -678,7 +678,7 @@ static int plx_pci_add_card(struct pci_dev *pdev,
+ 		if (!addr) {
+ 			err = -ENOMEM;
+ 			dev_err(&pdev->dev, "Failed to remap BAR%d\n", cm->bar);
+-			goto failure_cleanup;
++			goto failure_free_dev;
+ 		}
+ 
+ 		priv->reg_base = addr + cm->offset;
+@@ -699,7 +699,7 @@ static int plx_pci_add_card(struct pci_dev *pdev,
+ 			if (err) {
+ 				dev_err(&pdev->dev, "Registering device failed "
+ 					"(err=%d)\n", err);
+-				goto failure_cleanup;
++				goto failure_iounmap;
+ 			}
+ 
+ 			card->channels++;
+@@ -710,6 +710,7 @@ static int plx_pci_add_card(struct pci_dev *pdev,
+ 		} else {
+ 			dev_err(&pdev->dev, "Channel #%d not detected\n",
+ 				i + 1);
++			pci_iounmap(pdev, priv->reg_base);
+ 			free_sja1000dev(dev);
+ 			card->net_dev[i] = NULL;
+ 		}
+@@ -738,6 +739,11 @@ static int plx_pci_add_card(struct pci_dev *pdev,
+ 	}
+ 	return 0;
+ 
++failure_iounmap:
++	pci_iounmap(pdev, priv->reg_base);
++failure_free_dev:
++	free_sja1000dev(dev);
++	card->net_dev[i] = NULL;
+ failure_cleanup:
+ 	dev_err(&pdev->dev, "Error: %d. Cleaning Up.\n", err);
+ 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.9.5
 
