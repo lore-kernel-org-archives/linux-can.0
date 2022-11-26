@@ -2,159 +2,161 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EDD47C4332F
-	for <linux-can@archiver.kernel.org>; Fri, 25 Nov 2022 20:33:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A126C4332F
+	for <linux-can@archiver.kernel.org>; Sat, 26 Nov 2022 10:28:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229495AbiKYUdA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 25 Nov 2022 15:33:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
+        id S229580AbiKZK26 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 26 Nov 2022 05:28:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbiKYUcm (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 25 Nov 2022 15:32:42 -0500
+        with ESMTP id S229513AbiKZK25 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 26 Nov 2022 05:28:57 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE7856EC7
-        for <linux-can@vger.kernel.org>; Fri, 25 Nov 2022 12:32:23 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A8C2655D
+        for <linux-can@vger.kernel.org>; Sat, 26 Nov 2022 02:28:55 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1oyfMz-0003CL-4C; Fri, 25 Nov 2022 21:32:21 +0100
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:7110:a7cf:cd17:d31a])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id BB1BB129EC6;
-        Fri, 25 Nov 2022 20:32:19 +0000 (UTC)
-Date:   Fri, 25 Nov 2022 21:32:17 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     linux-can@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Peter Fink <pfink@christ-es.de>, stable@vger.kernel.org,
-        Ryan Edwards <ryan.edwards@gmail.com>
-Subject: Re: [PATCH] can: gs_usb: fix size parameter to usb_free_coherent()
- calls
-Message-ID: <20221125203217.cuv63t4ijxwmqun7@pengutronix.de>
-References: <20221125201727.1558965-1-mkl@pengutronix.de>
+        (envelope-from <ore@pengutronix.de>)
+        id 1oysQM-0000DK-Lc; Sat, 26 Nov 2022 11:28:42 +0100
+Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1oysQK-0004kT-5j; Sat, 26 Nov 2022 11:28:40 +0100
+Date:   Sat, 26 Nov 2022 11:28:40 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Devid Antonio Filoni <devid.filoni@egluetechnologies.com>
+Cc:     Robin van der Gracht <robin@protonic.nl>,
+        Oleksij Rempel <linux@rempel-privat.de>, kernel@pengutronix.de,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] can: j1939: do not wait 250 ms if the same addr was
+ already claimed
+Message-ID: <20221126102840.GA21761@pengutronix.de>
+References: <20221124051611.GA7870@pengutronix.de>
+ <20221125170418.34575-1-devid.filoni@egluetechnologies.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dsuqs6rbhixbi7gv"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20221125201727.1558965-1-mkl@pengutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
+In-Reply-To: <20221125170418.34575-1-devid.filoni@egluetechnologies.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ore@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+On Fri, Nov 25, 2022 at 06:04:18PM +0100, Devid Antonio Filoni wrote:
+> The ISO 11783-5 standard, in "4.5.2 - Address claim requirements", states:
+>   d) No CF shall begin, or resume, transmission on the network until 250
+>      ms after it has successfully claimed an address except when
+>      responding to a request for address-claimed.
+> 
+> But "Figure 6" and "Figure 7" in "4.5.4.2 - Address-claim
+> prioritization" show that the CF begins the transmission after 250 ms
+> from the first AC (address-claimed) message even if it sends another AC
+> message during that time window to resolve the address contention with
+> another CF.
+> 
+> As stated in "4.4.2.3 - Address-claimed message":
+>   In order to successfully claim an address, the CF sending an address
+>   claimed message shall not receive a contending claim from another CF
+>   for at least 250 ms.
+> 
+> As stated in "4.4.3.2 - NAME management (NM) message":
+>   1) A commanding CF can
+>      d) request that a CF with a specified NAME transmit the address-
+>         claimed message with its current NAME.
+>   2) A target CF shall
+>      d) send an address-claimed message in response to a request for a
+>         matching NAME
+> 
+> Taking the above arguments into account, the 250 ms wait is requested
+> only during network initialization.
+> 
+> Do not restart the timer on AC message if both the NAME and the address
+> match and so if the address has already been claimed (timer has expired)
+> or the AC message has been sent to resolve the contention with another
+> CF (timer is still running).
+> 
+> Signed-off-by: Devid Antonio Filoni <devid.filoni@egluetechnologies.com>
 
---dsuqs6rbhixbi7gv
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-Hello Greg,
-
-with v5.18-rc1 in commit
-
-| c359931d2545 ("can: gs_usb: use union and FLEX_ARRAY for data in struct g=
-s_host_frame")
-
-a bug in the gs_usb driver in the usage of usb_free_coherent() was
-introduced. With v6.1-rc1
-
-| 62f102c0d156 ("can: gs_usb: remove dma allocations")
-
-the DMA allocation was removed altogether from the driver, fixing the
-bug unintentionally.
-
-We can either cherry-pick 62f102c0d156 ("can: gs_usb: remove dma
-allocations") on v6.0, v5.19, and v5.18 or apply this patch, which fixes
-the usage of usb_free_coherent() only.
-
-regards,
-Marc
-
-On 25.11.2022 21:17:27, Marc Kleine-Budde wrote:
-> In commit c359931d2545 ("can: gs_usb: use union and FLEX_ARRAY for
-> data in struct gs_host_frame") the driver was extended from a compile
-> time constant USB transfer size to a transfer size depending on
-> attached USB device and configured CAN mode.
->=20
-> During this conversion the size parameter of some usb_free_coherent()
-> calls were not converted. To fix this issue replace the compile time
-> constant sizeof(struct gs_host_frame) by hf_size_{rx,tx} for RX
-> respectively TX USB transfers.
->=20
-> Fixes: c359931d2545 ("can: gs_usb: use union and FLEX_ARRAY for data in s=
-truct gs_host_frame")
-> Cc: Peter Fink <pfink@christ-es.de>
-> Cc: stable@vger.kernel.org
-> Reported-by: Ryan Edwards <ryan.edwards@gmail.com>
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 > ---
->  drivers/net/can/usb/gs_usb.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-> index cd4115a1b81c..57917955b8e4 100644
-> --- a/drivers/net/can/usb/gs_usb.c
-> +++ b/drivers/net/can/usb/gs_usb.c
-> @@ -699,7 +699,7 @@ static netdev_tx_t gs_can_start_xmit(struct sk_buff *=
-skb,
->  	return NETDEV_TX_OK;
-> =20
->   badidx:
-> -	usb_free_coherent(dev->udev, urb->transfer_buffer_length,
-> +	usb_free_coherent(dev->udev, dev->hf_size_tx,
->  			  urb->transfer_buffer, urb->transfer_dma);
->   nomem_hf:
->  	usb_free_urb(urb);
-> @@ -787,7 +787,7 @@ static int gs_can_open(struct net_device *netdev)
-> =20
->  				usb_unanchor_urb(urb);
->  				usb_free_coherent(dev->udev,
-> -						  sizeof(struct gs_host_frame),
-> +						  dev->parent->hf_size_rx,
->  						  buf,
->  						  buf_dma);
->  				usb_free_urb(urb);
-> @@ -864,7 +864,7 @@ static int gs_can_close(struct net_device *netdev)
->  		usb_kill_anchored_urbs(&parent->rx_submitted);
->  		for (i =3D 0; i < GS_MAX_RX_URBS; i++)
->  			usb_free_coherent(dev->udev,
-> -					  sizeof(struct gs_host_frame),
-> +					  dev->parent->hf_size_rx,
->  					  dev->rxbuf[i],
->  					  dev->rxbuf_dma[i]);
->  	}
-> --=20
-> 2.35.1
->=20
->=20
->=20
+>  v1 -> v2: Added ISO 11783-5 standard references
+> 
+>  net/can/j1939/address-claim.c | 40 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 40 insertions(+)
+> 
+> diff --git a/net/can/j1939/address-claim.c b/net/can/j1939/address-claim.c
+> index f33c47327927..ca4ad6cdd5cb 100644
+> --- a/net/can/j1939/address-claim.c
+> +++ b/net/can/j1939/address-claim.c
+> @@ -165,6 +165,46 @@ static void j1939_ac_process(struct j1939_priv *priv, struct sk_buff *skb)
+>  	 * leaving this function.
+>  	 */
+>  	ecu = j1939_ecu_get_by_name_locked(priv, name);
+> +
+> +	if (ecu && ecu->addr == skcb->addr.sa) {
+> +		/* The ISO 11783-5 standard, in "4.5.2 - Address claim
+> +		 * requirements", states:
+> +		 *   d) No CF shall begin, or resume, transmission on the
+> +		 *      network until 250 ms after it has successfully claimed
+> +		 *      an address except when responding to a request for
+> +		 *      address-claimed.
+> +		 *
+> +		 * But "Figure 6" and "Figure 7" in "4.5.4.2 - Address-claim
+> +		 * prioritization" show that the CF begins the transmission
+> +		 * after 250 ms from the first AC (address-claimed) message
+> +		 * even if it sends another AC message during that time window
+> +		 * to resolve the address contention with another CF.
+> +		 *
+> +		 * As stated in "4.4.2.3 - Address-claimed message":
+> +		 *   In order to successfully claim an address, the CF sending
+> +		 *   an address claimed message shall not receive a contending
+> +		 *   claim from another CF for at least 250 ms.
+> +		 *
+> +		 * As stated in "4.4.3.2 - NAME management (NM) message":
+> +		 *   1) A commanding CF can
+> +		 *      d) request that a CF with a specified NAME transmit
+> +		 *         the address-claimed message with its current NAME.
+> +		 *   2) A target CF shall
+> +		 *      d) send an address-claimed message in response to a
+> +		 *         request for a matching NAME
+> +		 *
+> +		 * Taking the above arguments into account, the 250 ms wait is
+> +		 * requested only during network initialization.
+> +		 *
+> +		 * Do not restart the timer on AC message if both the NAME and
+> +		 * the address match and so if the address has already been
+> +		 * claimed (timer has expired) or the AC message has been sent
+> +		 * to resolve the contention with another CF (timer is still
+> +		 * running).
+> +		 */
+> +		goto out_ecu_put;
+> +	}
+> +
+>  	if (!ecu && j1939_address_is_unicast(skcb->addr.sa))
+>  		ecu = j1939_ecu_create_locked(priv, name);
+>  
+> -- 
+> 2.34.1
+> 
+> 
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---dsuqs6rbhixbi7gv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmOBJk4ACgkQrX5LkNig
-013cIwf7BJDWe2z9XRyRnN9BfJMEdgmgZFMGr9lYR+m4LxjS/RrZWY8vGGO0cwGk
-XibRaww1mjIRX3kyastgcdbemDM3MuFNjmAejDxOHw+QztvJjb2zG6QqFUJz5C9u
-8IcyTP0tdIJlY5Qd897FUzutX8ryYvJUkWpHqjO4uVGZkgLpthO23KhAmfEgOY6a
-B5TinPIb0aD8xzuqJoXDzW9Y0neHjF1OCGCTOQGBxrjnH40Yyqprhi/R+GqMz2JT
-sHVUaZROjF98TqtN3wYwmVkG7Mh0tdZPOItz+TvIRhSKJ0Ek27kzKOaJsfAhWrNH
-/Kaaiux2NNI141w3JFcWE8AsXxPAwA==
-=pfV0
------END PGP SIGNATURE-----
-
---dsuqs6rbhixbi7gv--
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
