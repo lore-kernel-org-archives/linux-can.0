@@ -2,73 +2,66 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CDD66C43217
-	for <linux-can@archiver.kernel.org>; Sun, 27 Nov 2022 08:10:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 951D0C43217
+	for <linux-can@archiver.kernel.org>; Sun, 27 Nov 2022 15:07:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229496AbiK0IKl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 27 Nov 2022 03:10:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46322 "EHLO
+        id S229535AbiK0PHy (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 27 Nov 2022 10:07:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbiK0IKk (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 27 Nov 2022 03:10:40 -0500
-Received: from mailgw.felk.cvut.cz (mailgw.felk.cvut.cz [147.32.82.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB45E0D6;
-        Sun, 27 Nov 2022 00:10:38 -0800 (PST)
-Received: from mailgw.felk.cvut.cz (localhost.localdomain [127.0.0.1])
-        by mailgw.felk.cvut.cz (Proxmox) with ESMTP id 0021330B294A;
-        Sun, 27 Nov 2022 09:10:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        cmp.felk.cvut.cz; h=cc:cc:content-transfer-encoding:content-type
-        :content-type:date:from:from:in-reply-to:message-id:mime-version
-        :references:reply-to:subject:subject:to:to; s=felkmail; bh=GGyL/
-        C4H6vtTsrrNEWsfehnYpF8amxqPutxzbZGcttQ=; b=aNK6bSUHyYC0fKV//4P50
-        8iC488EVv3oOeIeB/P0hp6Q5BUVjiJsG2KoBRdqMesQHs0CH/3MTt2pT2HjEOAmq
-        FrW3KqCVYpMOY38rNMMXcnllpqD1OdyhlRxcvYW4eSa50vmVrXZHz33TVBwQeCd5
-        ff5Q/n3aAsArvNHEVVZFGm++feNVcvm5Ih3tdwSoBP09q6pgecUccr670dHPl+vk
-        9ArL1E1kQD0cS3MMciFila9785HvItTcyhfVP3YWXmZ8RHiTlqOMO7rx9Jm3mzS6
-        s4ztCn1+7MsS5KrwuTmR4ZNjl8ppRNRnEtswbd8XV/eDq4Z2rb0ueOBytj5UpuPD
-        Q==
-Received: from cmp.felk.cvut.cz (haar.felk.cvut.cz [147.32.84.19])
-        by mailgw.felk.cvut.cz (Proxmox) with ESMTPS id 72DED30AE001;
-        Sun, 27 Nov 2022 09:10:05 +0100 (CET)
-Received: from haar.felk.cvut.cz (localhost [127.0.0.1])
-        by cmp.felk.cvut.cz (8.14.0/8.12.3/SuSE Linux 0.6) with ESMTP id 2AR8A5lQ000718;
-        Sun, 27 Nov 2022 09:10:05 +0100
-Received: (from pisa@localhost)
-        by haar.felk.cvut.cz (8.14.0/8.13.7/Submit) id 2AR8A5nY000717;
-        Sun, 27 Nov 2022 09:10:05 +0100
-X-Authentication-Warning: haar.felk.cvut.cz: pisa set sender to pisa@cmp.felk.cvut.cz using -f
-From:   Pavel Pisa <pisa@cmp.felk.cvut.cz>
-To:     "Marc Kleine-Budde" <mkl@pengutronix.de>
-Subject: Re: [PATCH] can: ctucanfd: Drop obsolete dependency on COMPILE_TEST
-Date:   Sun, 27 Nov 2022 09:09:57 +0100
-User-Agent: KMail/1.9.10
-Cc:     Jean Delvare <jdelvare@suse.de>, linux-can@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ondrej Ille <ondrej.ille@gmail.com>,
-        =?utf-8?q?Mat=C4=9Bj_Vasilevski?= <matej.vasilevski@gmail.com>
-References: <20221124141604.4265225f@endymion.delvare> <202211241556.38957.pisa@cmp.felk.cvut.cz> <20221125155758.ji5djevvycduuykt@pengutronix.de>
-In-Reply-To: <20221125155758.ji5djevvycduuykt@pengutronix.de>
-X-KMail-QuotePrefix: > 
+        with ESMTP id S229495AbiK0PHx (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 27 Nov 2022 10:07:53 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899AFA193;
+        Sun, 27 Nov 2022 07:07:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=9NdXCH+5Yf+i6OJS1Ny95eYqibE3km5noeNhlOnIk7Q=; b=nKSi8xbJob0n0p+HFPFPoMHK0m
+        aZRJcUDQwwszF7J1P1Z1FnoblDx/lzqYiWcFRODSxWYHc47gdwKQo8bVjjh9YkPWpRPMJn1FlxLHN
+        WvzM6w8Qgjt9LNKmpbo2+NSJQu0F18DrjI7jsyPtlmepi26hMeIoQP1VAqSgiixx/qSw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1ozJFQ-003ZU2-4c; Sun, 27 Nov 2022 16:07:12 +0100
+Date:   Sun, 27 Nov 2022 16:07:12 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Cc:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        Saeed Mahameed <saeed@kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Lukas Magel <lukas.magel@posteo.net>
+Subject: Re: [PATCH v4 3/6] can: etas_es58x: export product information
+ through devlink_ops::info_get()
+Message-ID: <Y4N9IAlQVsdyIJ9Q@lunn.ch>
+References: <20221104073659.414147-1-mailhol.vincent@wanadoo.fr>
+ <20221126162211.93322-1-mailhol.vincent@wanadoo.fr>
+ <20221126162211.93322-4-mailhol.vincent@wanadoo.fr>
+ <Y4JJ8Dyz7urLz/IM@lunn.ch>
+ <CAMZ6Rq+K+6gbaZ35SOJcR9qQaTJ7KR0jW=XoDKFkobjhj8CHhw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <202211270909.57804.pisa@cmp.felk.cvut.cz>
+In-Reply-To: <CAMZ6Rq+K+6gbaZ35SOJcR9qQaTJ7KR0jW=XoDKFkobjhj8CHhw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Friday 25 of November 2022 16:57:58 Marc Kleine-Budde wrote:
-> On 24.11.2022 15:56:38, Pavel Pisa wrote:
-> > Thanks for the care. I cannot judge change on my personal opinion.
-> > But if that is general direction even for other drivers
-> > then I confirm the change.
->
-> Should I convert this into a formal Acked-by: :)
+> I checked, none of gcc and clang would trigger a warning even for a
+> 'make W=12'. More generally speaking, I made sure that my driver is
+> free of any W=12.
 
-I you prefer formal one and agree with the change then yes.
+That is good enough for me.
 
-Acked-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+> I do not care any more as long as it does not result in
+> undefined behaviour.
 
+Agreed. Hopefully sscanf cannot go completely wrong and go off the end
+of the buffer. That i would care about. Bit i guess the USB fuzzers
+would of hit such problems already.
+
+	Andrew
