@@ -2,112 +2,71 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19599C43217
-	for <linux-can@archiver.kernel.org>; Mon, 28 Nov 2022 10:16:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3BCEC433FE
+	for <linux-can@archiver.kernel.org>; Mon, 28 Nov 2022 13:43:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbiK1KQb (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 28 Nov 2022 05:16:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52670 "EHLO
+        id S231841AbiK1NnK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 28 Nov 2022 08:43:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229869AbiK1KQ2 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 28 Nov 2022 05:16:28 -0500
-Received: from fritzc.com (mail.fritzc.com [IPv6:2a00:17d8:100::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E4A13E35;
-        Mon, 28 Nov 2022 02:16:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fritzc.com;
-        s=dkim; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject
-        :Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=JGFyuaNpearh4I2bkKpI3Yx2+bxxpkCL2JVRRmilW+M=; b=IEmONJxAPPyIdo+IxEmTA2iS8t
-        FNntZqbM6YxPJtgwAFsuhkxNjZsfCEoDiwYyXLkng/f+jLhWFk2wEUhc90F2uXeGLOOnkoFQUSrzi
-        qunS5i5HnqySi9KjBws1E3bIY8ahh/z7UlT51WccrgBb3jYlidt8rxs+SyrFDSjZFsyY=;
-Received: from 127.0.0.1
-        by fritzc.com with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim latest)
-        (envelope-from <christoph.fritz@hexdev.de>)
-        id 1ozbBH-000ZNN-IW; Mon, 28 Nov 2022 11:16:11 +0100
-Date:   Mon, 28 Nov 2022 11:16:05 +0100
-From:   Christoph Fritz <christoph.fritz@hexdev.de>
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     Pavel Pisa <pisa@cmp.felk.cvut.cz>,
-        Richard Weinberger <richard@nod.at>,
-        Andreas Lauser <andreas.lauser@mbition.io>,
-        Wolfgang Grandegger <wg@grandegger.com>,
+        with ESMTP id S232013AbiK1Nm6 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 28 Nov 2022 08:42:58 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6B61131;
+        Mon, 28 Nov 2022 05:42:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=sMuw+r8XztM/y1RLcfVFDrwbd0bUxp2HwDoeUHaaJ4I=; b=lHZ+um/dRDTPKX/QYmMSYhCILO
+        +GZexIJXLRc2Pr3g4cE8ujWFp4NxKn/r9Y7SgCSO83epSVKZ+ZZWHROK+QcolC1ktkUAtH/d/oqOQ
+        SUsNwiP3KhKEUd/4s0YH6i1eA3hYmXW3anOJ6anakRqdk6WhZuIymun513EEeBd30e6g=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1ozeOw-003emo-2x; Mon, 28 Nov 2022 14:42:26 +0100
+Date:   Mon, 28 Nov 2022 14:42:26 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Cc:     Alan Stern <stern@rowland.harvard.edu>, linux-can@vger.kernel.org,
         Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH 0/2] LIN support for Linux
-Message-ID: <Y4SKZb9woV5XE1bU@mars>
-References: <20221127190244.888414-1-christoph.fritz@hexdev.de>
- <58a773bd-0db4-bade-f8a2-46e850df9b0b@hartkopp.net>
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        Saeed Mahameed <saeed@kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Lukas Magel <lukas.magel@posteo.net>
+Subject: Re: [PATCH v4 2/6] can: etas_es58x: add devlink support
+Message-ID: <Y4S6wnM33Vs56vr5@lunn.ch>
+References: <20221104073659.414147-1-mailhol.vincent@wanadoo.fr>
+ <20221126162211.93322-1-mailhol.vincent@wanadoo.fr>
+ <20221126162211.93322-3-mailhol.vincent@wanadoo.fr>
+ <Y4JEGYMtIWX9clxo@lunn.ch>
+ <CAMZ6RqK6AQVsRufw5Jr5aKpPQcy+05jq3TjrKqbaqk7NVgK+_Q@mail.gmail.com>
+ <Y4OD70GD4KnoRk0k@rowland.harvard.edu>
+ <CAMZ6Rq+Gi+rcLqSj2-kug7c1G_nNuj6peh5nH1DNoo8B3aSxzw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <58a773bd-0db4-bade-f8a2-46e850df9b0b@hartkopp.net>
-X-Spam_score: -1.0
-X-Spam_bar: -
+In-Reply-To: <CAMZ6Rq+Gi+rcLqSj2-kug7c1G_nNuj6peh5nH1DNoo8B3aSxzw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Oliver
-
-> are you already aware of this LIN project that uses the Linux SocketCAN
-> infrastructure and implements the LIN protocol based on a serial tty
-> adaption (which the serial LIN protocol mainly is)?
+> > But if a driver does make the call, it should be careful to ensure that
+> > the call happens _after_ the driver is finished using the interface-data
+> > pointer.  For example, after all outstanding URBs have completed, if the
+> > completion handlers will need to call usb_get_intfdata().
 > 
-> https://github.com/lin-bus
+> ACK. I understand that it should be called *after* the completion of
+> any ongoing task.
 
-Sure, that's why I initially added Pavel Pisa to the recipients of this
-RFC patch series. When there is an internal kernel API for LIN, his
-sllin (tty-line-discipline driver for LIN) could be adjusted and finally
-go mainline.
+What sometimes gets people is /sys, /proc. etc. A process can have
+such a file open when the device is unplugged. If the read needs to
+make use of your private data structure, you need to guarantee it
+still exists.  Ideally the core needs to wait and not call the
+disconnect until all such files are closed. Probably the USB core
+does, it is such an obvious issue, but i have no knowledge of USB.
 
-Adding LIN only as a tty-line-discipline does not fit all the currently
-available hardware. Another argument against a tty-line-discipline only
-approach as a LIN-API is, that there is no off the shelf standard
-computer UART with LIN-break-detection (necessary to meet timing
-constraints), so it always needs specially crafted hardware like USB
-adapters or PCIe-cards.
+	Andrew
 
-For the handful of specialized embedded UARTs with LIN-break-detection I
-guess it could make more sense to go the RS485-kind-of-path and
-integrate LIN support into the tty-driver while not using a
-tty-line-discipline there at all.
-
-> IIRC the implementation of the master/slave timings was the biggest
-
-Currently sllin only supports master mode, I guess because of the tight
-timing constraints.
-
-> challenge and your approach seems to offload this problem to your
-> USB-attached hardware right?
-
-The hexLIN USB adapter processes slave mode answer table on its own,
-just to meet timing constraints.  For master mode, it is currently not
-offloaded (but could be if really necessary).
-
-The amount of offloading (if any at all) is totally up to the device and
-its device-driver (the entity actually processing data). So sllin does
-not do offloading but can only work in relaxed timing constrained
-environments.
-An UART with built in LIN-break-detection (there are a few) might be
-able to fully meet timing constraints without offloading (as well as
-e.g. a PCIe card).
-
-> Can I assume there will be a similar CAN-controlled programming interface to
-> create real time master/slave protocol frames like in a usual CAN/LIN
-> adapter (e.g. https://www.peak-system.com/PCAN-LIN.213.0.html) ??
-
-I already did some tests letting hexLIN and PCAN talk to each other in a
-real time manner. Please see my preliminary PDF docu at
-https://hexdev.de/hexlin/
-
-Thanks
- -- Christoph
