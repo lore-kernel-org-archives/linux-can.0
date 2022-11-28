@@ -2,111 +2,91 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97994C43217
-	for <linux-can@archiver.kernel.org>; Sun, 27 Nov 2022 19:18:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76860C4332F
+	for <linux-can@archiver.kernel.org>; Mon, 28 Nov 2022 01:21:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbiK0TSx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sun, 27 Nov 2022 14:18:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51966 "EHLO
+        id S229618AbiK1BVl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 27 Nov 2022 20:21:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbiK0TSs (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sun, 27 Nov 2022 14:18:48 -0500
-Received: from fritzc.com (mail.fritzc.com [IPv6:2a00:17d8:100::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E53F3A4;
-        Sun, 27 Nov 2022 11:18:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fritzc.com;
-        s=dkim; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:
-        To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=C+mZx1Eg6bo4mfX+DFliuwOi9n3vRN8QYXoOJN3XKzg=; b=jWzEMUkiw2c8kHimMLq5YPfDMl
-        8zx4jM3k6D+Xz0eHpryqHe8swrxyjuF7KWjH7U2bmjfjsIsHm47K8DRbjiHmZrb9Kok/yNnrJlDxJ
-        H6NhXquUI/+PJ+mOlS82Qp+x7QxxDMs9Aru7mrg+GyOSz1Qn/esHMtGdAF32cSRo5O9o=;
-Received: from 127.0.0.1
-        by fritzc.com with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim latest)
-        (envelope-from <christoph.fritz@hexdev.de>)
-        id 1ozMvf-000XD6-0c; Sun, 27 Nov 2022 20:03:03 +0100
-From:   Christoph Fritz <christoph.fritz@hexdev.de>
-To:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        Pavel Pisa <pisa@cmp.felk.cvut.cz>,
-        Richard Weinberger <richard@nod.at>,
-        Andreas Lauser <andreas.lauser@mbition.io>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC][PATCH 0/2] LIN support for Linux
-Date:   Sun, 27 Nov 2022 20:02:42 +0100
-Message-Id: <20221127190244.888414-1-christoph.fritz@hexdev.de>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S229504AbiK1BVk (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 27 Nov 2022 20:21:40 -0500
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DEB1215;
+        Sun, 27 Nov 2022 17:21:39 -0800 (PST)
+Received: by mail-pl1-f170.google.com with SMTP id j12so8745297plj.5;
+        Sun, 27 Nov 2022 17:21:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gJyNVXZ0Nag03x8wF+5JRQFWFO/c5LE8KY9nLBrkk88=;
+        b=bLMyj4V5AWVB0OeRG/09OtV3gMmpTuJLlGhu6nz7ssByxfqschyx0S/n3XnkS1gFHu
+         XBhI25l1OTaVevG8WDxxQ2dXXGLC/GT+WbI7bsNMDIhp/wG5F0ILl5LQHK8i6b9mhtnV
+         vy8Fvv78MAU0eQXUUARcKM+ZgI+54eazUdTw3g0pUh89o7xFg4w+5OpBqz2a7Y5cb8T3
+         jRmVVAYdRvwbjifbvjmw70BIMsEOoGGg17xmpHTSrEDaHwvYz6FJLlf2CFynyl3F9M+Q
+         gH00e42S+H5AMWMe6cnfjtJ1i/bOe2dUG32lMRkQeomRhwPtcrnKeY+Q78WgkjH7ReDb
+         eLNA==
+X-Gm-Message-State: ANoB5pk3XxOjnKyJ3wPBIPCH1x5Kiad3zHT65tyJSy/sIuVepfgHV3r9
+        r9CQ8jw9kJ35dsc6/5dmODpMs1uqKzsQlzkD/is=
+X-Google-Smtp-Source: AA0mqf7lEZw8GreOflw9skrfxDXGuWTHslnxVt2egNsAVVjovt9K+mRepQD3N6d/JgviTgcqpE/ngSCFrCHerqBYZtc=
+X-Received: by 2002:a17:902:b608:b0:189:7a8b:537d with SMTP id
+ b8-20020a170902b60800b001897a8b537dmr7566610pls.95.1669598498489; Sun, 27 Nov
+ 2022 17:21:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam_score: -1.0
-X-Spam_bar: -
+References: <20221104073659.414147-1-mailhol.vincent@wanadoo.fr>
+ <20221126162211.93322-1-mailhol.vincent@wanadoo.fr> <20221126162211.93322-4-mailhol.vincent@wanadoo.fr>
+ <Y4JJ8Dyz7urLz/IM@lunn.ch> <CAMZ6Rq+K+6gbaZ35SOJcR9qQaTJ7KR0jW=XoDKFkobjhj8CHhw@mail.gmail.com>
+ <Y4N9IAlQVsdyIJ9Q@lunn.ch>
+In-Reply-To: <Y4N9IAlQVsdyIJ9Q@lunn.ch>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Mon, 28 Nov 2022 10:21:27 +0900
+Message-ID: <CAMZ6RqJHFyeG0ZMaAAfJ_30t-oucJVm05Et-H9DEgzbWj-K6vA@mail.gmail.com>
+Subject: Re: [PATCH v4 3/6] can: etas_es58x: export product information
+ through devlink_ops::info_get()
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        Saeed Mahameed <saeed@kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Lukas Magel <lukas.magel@posteo.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The intention of this series is to kick off a discussion about how to
-support LIN (ISO 17987) [0] in Linux.
+On Mon. 28 Nov. 2022 at 00:08, Andrew Lunn <andrew@lunn.ch> wrote:
+> > I checked, none of gcc and clang would trigger a warning even for a
+> > 'make W=12'. More generally speaking, I made sure that my driver is
+> > free of any W=12.
+>
+> That is good enough for me.
+>
+> > I do not care any more as long as it does not result in
+> > undefined behaviour.
+>
+> Agreed. Hopefully sscanf cannot go completely wrong and go off the end
+> of the buffer. That i would care about. Bit i guess the USB fuzzers
+> would of hit such problems already.
 
-This series consist of two patches which are two individual proposals
-for adding LIN abstraction into the kernel.
+On the surface, the sscanf() seems OK. It will break the while loop
+when reaching the end of the format:
+  https://elixir.bootlin.com/linux/v6.1-rc6/source/lib/vsprintf.c#L3429
+or the end of the string:
+  https://elixir.bootlin.com/linux/v6.1-rc6/source/lib/vsprintf.c#L3501
+(I am skipping details here, there are other branches that will break
+the while loop and all of them look good).
 
-One approach is to add LIN ontop of CANFD:
-  [RFC] can: introduce LIN abstraction
+And me not being the first person using sscanf(), I hope that if a bug
+existed, it would have already been spotted by some static
+analysis/fuzzing/code review :)
 
-The other approach is adding a new type of CAN-socket:
-  [RFC] can: Add LIN proto skeleton
+That said, I think I answered all your comments. Can I get your
+reviewed-by or ack tag? Thank you!
 
-These patches are abstracting LIN so that actual device drivers can
-make use of it.
 
-For reference, the LIN-ontop-of-CANFD variant already has a device
-driver using it (not part of this series). It is a specially built USB
-LIN-BUS adapter hardware called hexLIN [1].  Its purpose is mainly to
-test, adapt and discuss different LIN APIs for mainline Linux kernel.
-But it can already be used productively as a Linux LIN node in
-controller (master) and responder (slave) mode. By sysfs, hexLIN
-supports different checksum calculations and setting up a
-responder-table.
-
-For more info about hexLIN, see link below [1].
-
-We are looking for partners with Linux based LIN projects for funding. 
-
-[0]: https://en.wikipedia.org/wiki/Local_Interconnect_Network
-[1]: https://hexdev.de/hexlin/
-
-Christoph Fritz (1):
-  [RFC] can: Introduce LIN bus as CANFD abstraction
-
-Richard Weinberger (1):
-  [RFC] can: Add LIN proto skeleton
-
- drivers/net/can/Kconfig          |  10 ++
- drivers/net/can/Makefile         |   1 +
- drivers/net/can/lin.c            | 181 +++++++++++++++++++++++++++
- include/net/lin.h                |  30 +++++
- include/uapi/linux/can.h         |   8 +-
- include/uapi/linux/can/lin.h     |  15 +++
- include/uapi/linux/can/netlink.h |   1 +
- net/can/Kconfig                  |   5 +
- net/can/Makefile                 |   3 +
- net/can/lin.c                    | 207 +++++++++++++++++++++++++++++++
- 10 files changed, 460 insertions(+), 1 deletion(-)
- create mode 100644 drivers/net/can/lin.c
- create mode 100644 include/net/lin.h
- create mode 100644 include/uapi/linux/can/lin.h
- create mode 100644 net/can/lin.c
-
--- 
-2.30.2
-
+Yours sincerely,
+Vincent Mailhol
