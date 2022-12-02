@@ -2,123 +2,142 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B87FBC4332F
-	for <linux-can@archiver.kernel.org>; Fri,  2 Dec 2022 09:25:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55149C4332F
+	for <linux-can@archiver.kernel.org>; Fri,  2 Dec 2022 09:33:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232458AbiLBJZu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 2 Dec 2022 04:25:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48090 "EHLO
+        id S232705AbiLBJdm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 2 Dec 2022 04:33:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232574AbiLBJZc (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 2 Dec 2022 04:25:32 -0500
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B87E13FB9;
-        Fri,  2 Dec 2022 01:25:30 -0800 (PST)
-Received: by mail-qv1-f42.google.com with SMTP id s14so3037202qvo.11;
-        Fri, 02 Dec 2022 01:25:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DMI5tS8skVho4WVNvy+4Y+948fh/Zr6JgQS25XTwcPs=;
-        b=E6Td5z4+sBBv8XEmqsAa3NCICkkW/jrz2KPKiXznzbYXbJQrq1lb5yQNI1e8CCxYvS
-         +coijIVG45tCciGAlBLVWMoGIyKTGlS79TAmiw0/ff40uIqYHElZBlcOY/e1bnYy1FUG
-         Wu8RaLQmBXr6lc5K8Zl+NYOI5TSmcg7CvY5AX7TsfdVvjwEiwiIASj1mDv8QbzADwC88
-         qes6jGvpiy1xEDUmzaYzyKFr93vETGRVL1JmyjYtHsPMogRNte418riDeepgP3jHOyUY
-         Y6MpNugsEhpONP1iNx6OciDOKUxVLwVqGcW+gL3Tho73G3TwpUnllTC0LQCqZPZhugRw
-         uc0w==
-X-Gm-Message-State: ANoB5pk5K5iMBibIdM1u6f6HK3/pQ+ufw58zrE1zf52os645h4uSEKLo
-        MwqgsiinO7tqgdHaWZw/86tSJVAgrEOe5g==
-X-Google-Smtp-Source: AA0mqf4W1aYsjPPJuo59f/91LwDQISaFzO7nj6BWZmJTZO5GevuI6cZE7UmfEpVBMjBh2C1pR6zSJg==
-X-Received: by 2002:ad4:52ca:0:b0:4bb:cb21:df19 with SMTP id p10-20020ad452ca000000b004bbcb21df19mr51987650qvs.85.1669973129457;
-        Fri, 02 Dec 2022 01:25:29 -0800 (PST)
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
-        by smtp.gmail.com with ESMTPSA id bj9-20020a05620a190900b006b95b0a714esm5076536qkb.17.2022.12.02.01.25.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Dec 2022 01:25:28 -0800 (PST)
-Received: by mail-yb1-f179.google.com with SMTP id 7so5311118ybp.13;
-        Fri, 02 Dec 2022 01:25:28 -0800 (PST)
-X-Received: by 2002:a25:7408:0:b0:6f2:49a7:38ef with SMTP id
- p8-20020a257408000000b006f249a738efmr34049752ybc.365.1669973127972; Fri, 02
- Dec 2022 01:25:27 -0800 (PST)
+        with ESMTP id S232946AbiLBJdU (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 2 Dec 2022 04:33:20 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284A12CE
+        for <linux-can@vger.kernel.org>; Fri,  2 Dec 2022 01:33:01 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1p12Pi-0001p9-OC; Fri, 02 Dec 2022 10:32:58 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:63a6:d4c5:22e2:f72a])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 1CC8B1312BF;
+        Fri,  2 Dec 2022 09:16:36 +0000 (UTC)
+Date:   Fri, 2 Dec 2022 10:16:30 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Markus Schneider-Pargmann <msp@baylibre.com>
+Cc:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/15] can: m_can: Wakeup net queue once tx was issued
+Message-ID: <20221202091630.253elxu66i3nur4n@pengutronix.de>
+References: <20221116205308.2996556-1-msp@baylibre.com>
+ <20221116205308.2996556-3-msp@baylibre.com>
+ <20221130172100.ef4xn6j6kzrymdyn@pengutronix.de>
+ <20221201084302.oodh22xgvwsjmoc3@blmsp>
+ <20221201091605.jgd7dlswcbxapdy3@pengutronix.de>
+ <20221201164902.ipd3ctrtne47jtmv@blmsp>
 MIME-Version: 1.0
-References: <021037bf7e422fcc23700dd62d1174c8e46ac85d.1669969283.git.geert+renesas@glider.be>
- <8af1d8b0-8b59-6d2f-ef1c-a24ef49e5d77@linaro.org>
-In-Reply-To: <8af1d8b0-8b59-6d2f-ef1c-a24ef49e5d77@linaro.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 2 Dec 2022 10:25:16 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWd3KikD=HKFTorQvD_yGRvP3zCBF=FMJQvrLnF6VX5eA@mail.gmail.com>
-Message-ID: <CAMuHMdWd3KikD=HKFTorQvD_yGRvP3zCBF=FMJQvrLnF6VX5eA@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: can: renesas,rcar-canfd: Fix number of
- channels for R-Car V3U
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Ulrich Hecht <uli+renesas@fpond.eu>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-can@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gkatmsqg2kawq7yc"
+Content-Disposition: inline
+In-Reply-To: <20221201164902.ipd3ctrtne47jtmv@blmsp>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi Krzysztof,
 
-On Fri, Dec 2, 2022 at 10:01 AM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
-> On 02/12/2022 09:22, Geert Uytterhoeven wrote:
-> > According to the bindings, only two channels are supported.
-> > However, R-Car V3U supports eight, leading to "make dtbs" failures:
-> >
-> >         arch/arm64/boot/dts/renesas/r8a779a0-falcon.dtb: can@e6660000: Unevaluated properties are not allowed ('channel2', 'channel3', 'channel4', 'channel5', 'channel6', 'channel7' were unexpected)
-> >
-> > Update the number of channels to 8 on R-Car V3U.
-> > While at it, prevent adding more properties to the channel nodes, as
-> > they must contain no other properties than a status property.
-> >
-> > Fixes: d6254d52d70de530 ("dt-bindings: can: renesas,rcar-canfd: Document r8a779a0 support")
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+--gkatmsqg2kawq7yc
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > --- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-> > +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+On 01.12.2022 17:49:02, Markus Schneider-Pargmann wrote:
+> Hi Marc,
+>=20
+> On Thu, Dec 01, 2022 at 10:16:05AM +0100, Marc Kleine-Budde wrote:
+> > On 01.12.2022 09:43:02, Markus Schneider-Pargmann wrote:
+> > > Hi Marc,
+> > >=20
+> > > On Wed, Nov 30, 2022 at 06:21:00PM +0100, Marc Kleine-Budde wrote:
+> > > > On 16.11.2022 21:52:55, Markus Schneider-Pargmann wrote:
+> > > > > Currently the driver waits to wakeup the queue until the interrup=
+t for
+> > > > > the transmit event is received and acknowledged. If we want to us=
+e the
+> > > > > hardware FIFO, this is too late.
+> > > > >=20
+> > > > > Instead release the queue as soon as the transmit was transferred=
+ into
+> > > > > the hardware FIFO. We are then ready for the next transmit to be
+> > > > > transferred.
+> > > >=20
+> > > > If you want to really speed up the TX path, remove the worker and u=
+se
+> > > > the spi_async() API from the xmit callback, see mcp251xfd_start_xmi=
+t().
+> > >=20
+> > > Good idea. I will check how regmap's async_write works and if it is
+> > > suitable to do the job. I don't want to drop the regmap usage for this
+> > > right now.
+> >=20
+> > IIRC regmap async write still uses mutexes, but sleeping is not allowed
+> > in the xmit handler. The mcp251xfd driver does the endianness conversion
+> > (and the optional CRC) manually for the TX path.
+>=20
+> I just saw, you can force regmap to use spinlocks as well. But it uses
+> the same operation for sync operations as well.
 
-> >      description: Maximum frequency of the CANFD clock.
-> >
-> >  patternProperties:
-> > -  "^channel[01]$":
-> > +  "^channel[0-7]$":
-> >      type: object
-> >      description:
-> > -      The controller supports two channels and each is represented as a child
-> > -      node.  Each child node supports the "status" property only, which
-> > +      The controller supports multiple channels and each is represented as a
-> > +      child node.  Each child node supports the "status" property only, which
-> >        is used to enable/disable the respective channel.
-> >
-> > +    unevaluatedProperties: false
->
-> There are no other properties within a channel, so this should be rather
-> additionalProperties: false.
+But you cannot use sync SPI api under a spinlock.
 
-Are you sure? Then I also have to add:
+> > Sending directly from the xmit handler basically eliminates the queuing
+> > between the network stack and the worker. Getting rid of the worker
+> > makes life easier and it's faster anyways.
+>=20
+> The current implementation of the driver doesn't really queue anything
+> between the network stack and the worker. It is a queue of size 1 ;).
 
-        properties:
-          status: true
+Ok
 
-Thanks!
+> To be honest I would rather focus on the other things than on getting
+> rid of the worker completely as this can be done in a separate patch
+> later as well. Yes I agree it would be nice to get rid of the worker but
+> it is also probably not a major bottleneck for the performance and in
+> its current state it works. If I have time left at the end I will be
+> more than happy to do that. But for the moment I would just keep the
+> worker as it is. Is that OK for you?
 
-Gr{oetje,eeting}s,
+Sure.
 
-                        Geert
+Marc
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--gkatmsqg2kawq7yc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmOJwmsACgkQrX5LkNig
+0126Egf6AoFzKXBy4GROos9DBeL7yECpyQlkoQoOfHsO/WumBEad76Zty8iRt3nI
+3G4YxYoBInpvkA2z6hDSkAxGNg7U98GNwME8EwXMClGrCToXyyV0Z4xaFCs00nsy
+nJUpS3C/dL29eH1NNhuDhZu0UANYCRkCQwVwCr2I4+AQCQ1FVf+WNfuJfC7IkijE
+ISeV6c+hYU/L5pNNsRWRaHmz08p8gAQot2DoFp2miBK3e0hJ9CdgBg82cpvsGh6+
+StKjpr1MPnbD6AE34uVKkwFPreCoGRnPSsOlXFcWIXqQHRLm5n4LNg9x6lO5Yqql
+kpHTw7s4SCDU0IAAYwa0aoVc7X4NOw==
+=RMCq
+-----END PGP SIGNATURE-----
+
+--gkatmsqg2kawq7yc--
