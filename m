@@ -2,135 +2,123 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F61BC47088
-	for <linux-can@archiver.kernel.org>; Fri,  2 Dec 2022 09:03:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B87FBC4332F
+	for <linux-can@archiver.kernel.org>; Fri,  2 Dec 2022 09:25:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233059AbiLBJDF (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 2 Dec 2022 04:03:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50252 "EHLO
+        id S232458AbiLBJZu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 2 Dec 2022 04:25:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232865AbiLBJCg (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 2 Dec 2022 04:02:36 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F0DB0A2A
-        for <linux-can@vger.kernel.org>; Fri,  2 Dec 2022 01:01:35 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id bp15so6397723lfb.13
-        for <linux-can@vger.kernel.org>; Fri, 02 Dec 2022 01:01:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5D0Oi8pnnqHGWQe+pRPVpXa8Ph86jMzrpUcwFO77+PA=;
-        b=KS3HqPHHrgw2nF3z6xCU/tB3IatlylyE7MSDzQxtUK13PhZct23EoswdmUN+lwUPAC
-         wGZ3RTXPu8cCZSuZPwVEPRF/mCVtaZ/+KIa6n9l7GE93mm5qS481YSV9rvpVmnmoj7lt
-         veM7kihXB3EVM/Xd+n4Qk40ym6zmSpY8L2r6lsxYv3bV2vOXfs24U5pU98RTrzeT76Qy
-         k85V6tL3oXVQKHRVGB1AfkdNBXwzDVAs3XrP9XZElqD4WNG3SN2gD7V+Lwhw+u+99Dep
-         XN0QX6bGqjjjIM7S6bqAEvtjXS0vglv+BZV8GsQL84PfRUnqRVrLVlgvcX4wZhK1CySB
-         WDmQ==
+        with ESMTP id S232574AbiLBJZc (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 2 Dec 2022 04:25:32 -0500
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B87E13FB9;
+        Fri,  2 Dec 2022 01:25:30 -0800 (PST)
+Received: by mail-qv1-f42.google.com with SMTP id s14so3037202qvo.11;
+        Fri, 02 Dec 2022 01:25:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5D0Oi8pnnqHGWQe+pRPVpXa8Ph86jMzrpUcwFO77+PA=;
-        b=wQl4D1dPaWZWJZdjnbM0afKe38RPTkD8Wou58c+oodUaAkLaUykOIvVT2F0WlUxY7o
-         f6DrPSMCX6elxlmVi3uf1DT8vO8F20H1unUokeAl2/aAi3riiPYXEYoWrJjNEaCOD0li
-         Jg5fxxCtHbr2bm+u2who9/rfAWIJI/2ab1+RWu8Tqls1RB05Tpby4Li0MZbbgYWNGmSP
-         bAcFX9FxACST97jOWkKtplsdpWF8AQiJDtsUM1pCef2YCe3qxO20Kdk0qVJ296hg/T4v
-         7fb4lie4jftNo46m3maSK/GYoAuD42rptIxH0xtb46VG/piHBKps2x+Xn1IgN8ofNOAC
-         lEgQ==
-X-Gm-Message-State: ANoB5plDBiS71n5In0Jd4j2xc6THfj4QgcWjv8tbTbTr5VXtsYyg4R7L
-        0K6tamx2rAuqXumhWkg0RnA1Nw==
-X-Google-Smtp-Source: AA0mqf6mq2WNHsxflBKrJkNA7LIyq31snYN9EFZvGZVXaH48gkKbWivM/4nhFls1aeCFoZjXkbFFig==
-X-Received: by 2002:ac2:41d9:0:b0:4b1:4d9f:2204 with SMTP id d25-20020ac241d9000000b004b14d9f2204mr22473433lfi.22.1669971693753;
-        Fri, 02 Dec 2022 01:01:33 -0800 (PST)
-Received: from [192.168.0.20] (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
-        by smtp.gmail.com with ESMTPSA id f27-20020a19381b000000b004a25468d86asm958339lfa.68.2022.12.02.01.01.31
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DMI5tS8skVho4WVNvy+4Y+948fh/Zr6JgQS25XTwcPs=;
+        b=E6Td5z4+sBBv8XEmqsAa3NCICkkW/jrz2KPKiXznzbYXbJQrq1lb5yQNI1e8CCxYvS
+         +coijIVG45tCciGAlBLVWMoGIyKTGlS79TAmiw0/ff40uIqYHElZBlcOY/e1bnYy1FUG
+         Wu8RaLQmBXr6lc5K8Zl+NYOI5TSmcg7CvY5AX7TsfdVvjwEiwiIASj1mDv8QbzADwC88
+         qes6jGvpiy1xEDUmzaYzyKFr93vETGRVL1JmyjYtHsPMogRNte418riDeepgP3jHOyUY
+         Y6MpNugsEhpONP1iNx6OciDOKUxVLwVqGcW+gL3Tho73G3TwpUnllTC0LQCqZPZhugRw
+         uc0w==
+X-Gm-Message-State: ANoB5pk5K5iMBibIdM1u6f6HK3/pQ+ufw58zrE1zf52os645h4uSEKLo
+        MwqgsiinO7tqgdHaWZw/86tSJVAgrEOe5g==
+X-Google-Smtp-Source: AA0mqf4W1aYsjPPJuo59f/91LwDQISaFzO7nj6BWZmJTZO5GevuI6cZE7UmfEpVBMjBh2C1pR6zSJg==
+X-Received: by 2002:ad4:52ca:0:b0:4bb:cb21:df19 with SMTP id p10-20020ad452ca000000b004bbcb21df19mr51987650qvs.85.1669973129457;
+        Fri, 02 Dec 2022 01:25:29 -0800 (PST)
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
+        by smtp.gmail.com with ESMTPSA id bj9-20020a05620a190900b006b95b0a714esm5076536qkb.17.2022.12.02.01.25.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Dec 2022 01:01:32 -0800 (PST)
-Message-ID: <8af1d8b0-8b59-6d2f-ef1c-a24ef49e5d77@linaro.org>
-Date:   Fri, 2 Dec 2022 10:01:30 +0100
+        Fri, 02 Dec 2022 01:25:28 -0800 (PST)
+Received: by mail-yb1-f179.google.com with SMTP id 7so5311118ybp.13;
+        Fri, 02 Dec 2022 01:25:28 -0800 (PST)
+X-Received: by 2002:a25:7408:0:b0:6f2:49a7:38ef with SMTP id
+ p8-20020a257408000000b006f249a738efmr34049752ybc.365.1669973127972; Fri, 02
+ Dec 2022 01:25:27 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
+References: <021037bf7e422fcc23700dd62d1174c8e46ac85d.1669969283.git.geert+renesas@glider.be>
+ <8af1d8b0-8b59-6d2f-ef1c-a24ef49e5d77@linaro.org>
+In-Reply-To: <8af1d8b0-8b59-6d2f-ef1c-a24ef49e5d77@linaro.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 2 Dec 2022 10:25:16 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWd3KikD=HKFTorQvD_yGRvP3zCBF=FMJQvrLnF6VX5eA@mail.gmail.com>
+Message-ID: <CAMuHMdWd3KikD=HKFTorQvD_yGRvP3zCBF=FMJQvrLnF6VX5eA@mail.gmail.com>
 Subject: Re: [PATCH] dt-bindings: can: renesas,rcar-canfd: Fix number of
  channels for R-Car V3U
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfgang Grandegger <wg@grandegger.com>,
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-Cc:     Ulrich Hecht <uli+renesas@fpond.eu>,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Ulrich Hecht <uli+renesas@fpond.eu>,
         Wolfram Sang <wsa+renesas@sang-engineering.com>,
         linux-can@vger.kernel.org, devicetree@vger.kernel.org,
         linux-renesas-soc@vger.kernel.org
-References: <021037bf7e422fcc23700dd62d1174c8e46ac85d.1669969283.git.geert+renesas@glider.be>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <021037bf7e422fcc23700dd62d1174c8e46ac85d.1669969283.git.geert+renesas@glider.be>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On 02/12/2022 09:22, Geert Uytterhoeven wrote:
-> According to the bindings, only two channels are supported.
-> However, R-Car V3U supports eight, leading to "make dtbs" failures:
-> 
->         arch/arm64/boot/dts/renesas/r8a779a0-falcon.dtb: can@e6660000: Unevaluated properties are not allowed ('channel2', 'channel3', 'channel4', 'channel5', 'channel6', 'channel7' were unexpected)
-> 
-> Update the number of channels to 8 on R-Car V3U.
-> While at it, prevent adding more properties to the channel nodes, as
-> they must contain no other properties than a status property.
-> 
-> Fixes: d6254d52d70de530 ("dt-bindings: can: renesas,rcar-canfd: Document r8a779a0 support")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> Is there a way to express this using positive logic (i.e. default to 2
-> channels, extend to more where needed)? R-Car V3H_2 (which is not yet
-> supported) has 3 channels.
-> Or perhaps the check should be dropped completely?
-> ---
->  .../bindings/net/can/renesas,rcar-canfd.yaml  | 132 ++++++++++--------
->  1 file changed, 72 insertions(+), 60 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-> index 6f71fc96bc4e3156..6a4fb26cfd7b8979 100644
-> --- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-> +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-> @@ -9,9 +9,6 @@ title: Renesas R-Car CAN FD Controller
->  maintainers:
->    - Fabrizio Castro <fabrizio.castro.jz@renesas.com>
->  
-> -allOf:
-> -  - $ref: can-controller.yaml#
-> -
->  properties:
->    compatible:
->      oneOf:
-> @@ -77,13 +74,15 @@ properties:
->      description: Maximum frequency of the CANFD clock.
->  
->  patternProperties:
-> -  "^channel[01]$":
-> +  "^channel[0-7]$":
->      type: object
->      description:
-> -      The controller supports two channels and each is represented as a child
-> -      node.  Each child node supports the "status" property only, which
-> +      The controller supports multiple channels and each is represented as a
-> +      child node.  Each child node supports the "status" property only, which
->        is used to enable/disable the respective channel.
->  
-> +    unevaluatedProperties: false
+Hi Krzysztof,
 
-There are no other properties within a channel, so this should be rather
-additionalProperties: false.
+On Fri, Dec 2, 2022 at 10:01 AM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+> On 02/12/2022 09:22, Geert Uytterhoeven wrote:
+> > According to the bindings, only two channels are supported.
+> > However, R-Car V3U supports eight, leading to "make dtbs" failures:
+> >
+> >         arch/arm64/boot/dts/renesas/r8a779a0-falcon.dtb: can@e6660000: Unevaluated properties are not allowed ('channel2', 'channel3', 'channel4', 'channel5', 'channel6', 'channel7' were unexpected)
+> >
+> > Update the number of channels to 8 on R-Car V3U.
+> > While at it, prevent adding more properties to the channel nodes, as
+> > they must contain no other properties than a status property.
+> >
+> > Fixes: d6254d52d70de530 ("dt-bindings: can: renesas,rcar-canfd: Document r8a779a0 support")
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
+> > --- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> > +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
 
-Best regards,
-Krzysztof
+> >      description: Maximum frequency of the CANFD clock.
+> >
+> >  patternProperties:
+> > -  "^channel[01]$":
+> > +  "^channel[0-7]$":
+> >      type: object
+> >      description:
+> > -      The controller supports two channels and each is represented as a child
+> > -      node.  Each child node supports the "status" property only, which
+> > +      The controller supports multiple channels and each is represented as a
+> > +      child node.  Each child node supports the "status" property only, which
+> >        is used to enable/disable the respective channel.
+> >
+> > +    unevaluatedProperties: false
+>
+> There are no other properties within a channel, so this should be rather
+> additionalProperties: false.
 
+Are you sure? Then I also have to add:
+
+        properties:
+          status: true
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
