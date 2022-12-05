@@ -2,127 +2,129 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ADAA6C4321E
-	for <linux-can@archiver.kernel.org>; Mon,  5 Dec 2022 09:55:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA340C4332F
+	for <linux-can@archiver.kernel.org>; Mon,  5 Dec 2022 20:25:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230243AbiLEJz3 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 5 Dec 2022 04:55:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38228 "EHLO
+        id S232776AbiLEUZN (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 5 Dec 2022 15:25:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230405AbiLEJz2 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 5 Dec 2022 04:55:28 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326D517426
-        for <linux-can@vger.kernel.org>; Mon,  5 Dec 2022 01:55:26 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id a16so14946996edb.9
-        for <linux-can@vger.kernel.org>; Mon, 05 Dec 2022 01:55:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=5t8Zxcrb+H4S05AQ/AraVBApneGFb/IHc/5E++wpWSU=;
-        b=WiqRSkcWL+Sj7ba2AZFBTP5DcCJeqY9WedM96JIxUrFKuF5kiFaV7lxTwhppkhGO6k
-         6KPbo3SwEoDafrCAIwTuN9DNuznXsDnp3NmJMVWiXKDZOYYABg5xY7sP5AHBAy1LpSvO
-         vYXMnlrKcqDFBcKJ+TiaTEib0whUIy0Odr5FBXuOFEQCtZyzOzPEid34L1SF6P3NDxHJ
-         xK/LaJqP6BaYski375Xfb/D1gV3wIy/Fje+sVfa/XawH+j9dGuaKSWXHHzUzNgLTopm/
-         sJHn52sRE5ULE7Yn3ED8M6IVkv4iNeGGZPE8zaQyMnDzTJuqfk1Axaq18Ww8u6NVcdp1
-         pkeQ==
+        with ESMTP id S229891AbiLEUZM (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 5 Dec 2022 15:25:12 -0500
+Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F3F27CC0;
+        Mon,  5 Dec 2022 12:25:12 -0800 (PST)
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-14449b7814bso9890125fac.3;
+        Mon, 05 Dec 2022 12:25:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5t8Zxcrb+H4S05AQ/AraVBApneGFb/IHc/5E++wpWSU=;
-        b=gyFTrSKdKk4d56cWoksUNfsEdU4xW5elWMtC2K6avN3qru8yyQdZ4jpKZQvtibqxVM
-         M+XF+Q0DGdyBLr91xDUTq4UTLOD9HMNvdQsTL3MKBCGLyaN3LW7vFzyaegrJdrFF6CiJ
-         4KmK+IQBY67ADXM0EvGBn132XNJ9KPOTqRo8pADH7BwzLPd1bYTgQXZYDvhT1k5zd0s5
-         g/YZF8P1ScTzJUXpTw2Y/dKJHjjW541Ajjp21Cl0m2MJQHtcvOWQUNJzWee3rIxrjPyV
-         qmrmmO8C0fZNyLM+BRJQMqTfMfEjglF7gEUfO+2V+2liNkJF3Vks/m1lGtsj6bcgTo4P
-         u7+Q==
-X-Gm-Message-State: ANoB5pmIfgCulIbG7WZxvqsJlWQD/6wX59qL3eN4qPrE0iHDHo4KkN/o
-        DV45LBkM6SD5LBtjOHb4wFD64g==
-X-Google-Smtp-Source: AA0mqf4+Vr8oNX+baEGQRy7Gf9y/wATbL4bIBvFJ4WJaG+PANkrG5kyQRbVd/BXSJpsV5lR6P9oyyQ==
-X-Received: by 2002:aa7:c042:0:b0:462:2f5a:8618 with SMTP id k2-20020aa7c042000000b004622f5a8618mr73787160edo.42.1670234124657;
-        Mon, 05 Dec 2022 01:55:24 -0800 (PST)
-Received: from blmsp ([185.238.219.8])
-        by smtp.gmail.com with ESMTPSA id c7-20020a056402120700b0046b94e67b4bsm6050822edw.86.2022.12.05.01.55.23
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P054ussJ/RdkrcHDPcUoxHTe6TuWEX4I2BKRN4ty+wY=;
+        b=BU4ETCXJCfdtnd6twbypU25JBQye0kkVBXw48PP15ZEpmKp2wTK6qoqS7TdccRr2cH
+         sS/Exv4/ZQYcQTJYM71lZykiFaLTSYbckHVW72R3VfE5odY9/OOOQUrbCQoiY4PdqBxO
+         jJAwHNNPUxd7txp0DD9/P5cxnPjPxaNOKAD3MrWWeuTJrT/rnLbuxo0CNry6nye39K/Y
+         FlcD5lay0xgGn31+l+3IC+/Rt05KrQrbvjtTpgX1OGN2a2dq3uneC8aJS2KXKZ/YBh4y
+         yu6GKZo2S2Q0Z676gyhg11H/rG6c49v+K9rWSGGL74aKkYkbLYuiqWrqZyQdP7K8jj3H
+         B0wg==
+X-Gm-Message-State: ANoB5pn7ND41I66SaZ4aCJUe9LrngRamVjwiHdDKVM+vKUAjUzef4r2y
+        fj0WP0Qbx0Jiy8tFhyjgcg==
+X-Google-Smtp-Source: AA0mqf5YLolm7RBXnIcgwg3A6/dqWELfE1936HKE1Qc86vamM++nt9HuUf2h4xJuavcVG+mapkGhyg==
+X-Received: by 2002:a05:6870:4788:b0:132:341e:e01a with SMTP id c8-20020a056870478800b00132341ee01amr34560090oaq.191.1670271911327;
+        Mon, 05 Dec 2022 12:25:11 -0800 (PST)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id s22-20020a4a2d56000000b004982f2d3c03sm7152298oof.25.2022.12.05.12.25.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Dec 2022 01:55:24 -0800 (PST)
-Date:   Mon, 5 Dec 2022 10:55:23 +0100
-From:   Markus Schneider-Pargmann <msp@baylibre.com>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Mon, 05 Dec 2022 12:25:11 -0800 (PST)
+Received: (nullmailer pid 2566218 invoked by uid 1000);
+        Mon, 05 Dec 2022 20:25:10 -0000
+Date:   Mon, 5 Dec 2022 14:25:10 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Wolfgang Grandegger <wg@grandegger.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 14/15] can: tcan4x5x: Fix register range of first block
-Message-ID: <20221205095523.sy3piugsrvik2zz3@blmsp>
-References: <20221116205308.2996556-1-msp@baylibre.com>
- <20221116205308.2996556-15-msp@baylibre.com>
- <20221202142810.kmd5m26fnm6lw2jh@pengutronix.de>
- <20221205093013.kpsqyb3fhd5njubm@blmsp>
- <20221205094458.xkvlvp7fnygf23fq@pengutronix.de>
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Ulrich Hecht <uli+renesas@fpond.eu>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-can@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: can: renesas,rcar-canfd: Fix number of
+ channels for R-Car V3U
+Message-ID: <20221205202510.GA2513520-robh@kernel.org>
+References: <021037bf7e422fcc23700dd62d1174c8e46ac85d.1669969283.git.geert+renesas@glider.be>
+ <8af1d8b0-8b59-6d2f-ef1c-a24ef49e5d77@linaro.org>
+ <CAMuHMdWd3KikD=HKFTorQvD_yGRvP3zCBF=FMJQvrLnF6VX5eA@mail.gmail.com>
+ <433b5f09-e14f-b29a-782b-2eef4ae3eada@linaro.org>
+ <CAMuHMdXLgU1x87J_suMWWYXe=T_h1iLxp8iDmmOqYjVyXqrtag@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20221205094458.xkvlvp7fnygf23fq@pengutronix.de>
+In-Reply-To: <CAMuHMdXLgU1x87J_suMWWYXe=T_h1iLxp8iDmmOqYjVyXqrtag@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Mon, Dec 05, 2022 at 10:44:58AM +0100, Marc Kleine-Budde wrote:
-> On 05.12.2022 10:30:13, Markus Schneider-Pargmann wrote:
-> > Hi Marc,
-> > 
-> > On Fri, Dec 02, 2022 at 03:28:10PM +0100, Marc Kleine-Budde wrote:
-> > > On 16.11.2022 21:53:07, Markus Schneider-Pargmann wrote:
-> > > > According to the datasheet 0x1c is the last register in the first block,
-> > > > not register 0x2c.
-> > > 
-> > > The datasheet "SLLSF91A – DECEMBER 2018 – REVISED JANUARY 2020" says:
-> > > 
-> > > | 8.6.1 Device ID and Interrupt/Diagnostic Flag Registers: 16'h0000 to
-> > > | 16'h002F
-> > > 
-> > > While the last described register is at 0xc.
-> > 
-> > Sorry, not sure what I looked up here. The last described register is
-> > 0x10 SPI Error status mask in my datasheet:
-> > 'SLLSEZ5D – JANUARY 2018 – REVISED JUNE 2022'
+On Fri, Dec 02, 2022 at 11:58:23AM +0100, Geert Uytterhoeven wrote:
+> Hi Krzysztof,
 > 
-> The TCAN4550-Q1 variant has the 0x10 register documented, while the
-> TCAN4550 (w/o -Q1) doesn't have.
-
-Ah haven't noticed, thank you.
-
+> On Fri, Dec 2, 2022 at 11:49 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+> > On 02/12/2022 10:25, Geert Uytterhoeven wrote:
+> > > On Fri, Dec 2, 2022 at 10:01 AM Krzysztof Kozlowski
+> > > <krzysztof.kozlowski@linaro.org> wrote:
+> > >> On 02/12/2022 09:22, Geert Uytterhoeven wrote:
+> > >>> According to the bindings, only two channels are supported.
+> > >>> However, R-Car V3U supports eight, leading to "make dtbs" failures:
+> > >>>
+> > >>>         arch/arm64/boot/dts/renesas/r8a779a0-falcon.dtb: can@e6660000: Unevaluated properties are not allowed ('channel2', 'channel3', 'channel4', 'channel5', 'channel6', 'channel7' were unexpected)
+> > >>>
+> > >>> Update the number of channels to 8 on R-Car V3U.
+> > >>> While at it, prevent adding more properties to the channel nodes, as
+> > >>> they must contain no other properties than a status property.
+> > >>>
+> > >>> Fixes: d6254d52d70de530 ("dt-bindings: can: renesas,rcar-canfd: Document r8a779a0 support")
+> > >>> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > >
+> > >>> --- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> > >>> +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> > >
+> > >>>      description: Maximum frequency of the CANFD clock.
+> > >>>
+> > >>>  patternProperties:
+> > >>> -  "^channel[01]$":
+> > >>> +  "^channel[0-7]$":
+> > >>>      type: object
+> > >>>      description:
+> > >>> -      The controller supports two channels and each is represented as a child
+> > >>> -      node.  Each child node supports the "status" property only, which
+> > >>> +      The controller supports multiple channels and each is represented as a
+> > >>> +      child node.  Each child node supports the "status" property only, which
+> > >>>        is used to enable/disable the respective channel.
+> > >>>
+> > >>> +    unevaluatedProperties: false
+> > >>
+> > >> There are no other properties within a channel, so this should be rather
+> > >> additionalProperties: false.
+> > >
+> > > Are you sure? Then I also have to add:
+> > >
+> > >         properties:
+> > >           status: true
+> >
+> > Do you? I think it would be first schema needing it, so maybe that would
+> > be a problem for dtschema...
 > 
-> > I would prefer using the actual registers if that is ok with you, so
-> > 0x10 here because I assume the remaining registers have internal use or
-> > maybe don't exist at all?! If there is an undocumented register that
-> > needs to be used at some point we can still modify the ranges.
+> You think I haven't tried? ;-)
 > 
-> I'm fine with using 0x10 as the last register.
-> 
-> > Also it seems the existing ranges are following the same logic and don't
-> > list the whole range, just the documented registers.
-> > 
-> > The second range is wrong as well. The last register is 0x830, will
-> > fix.
-> 
-> IIRC I used the register ranges from the section titles ("8.6.1 Device
-> ID and Interrupt/Diagnostic Flag Registers: 16'h0000 to 16'h002F") when
-> I added the {wr,rd}_table.
+>     arch/arm64/boot/dts/renesas/r8a774a1-beacon-rzg2m-kit.dtb:
+> can@e66c0000: channel0: Additional properties are not allowed
+> ('status' was unexpected)
 
-The second range in the driver was specified as 0x800-0x83c in the
-driver. The last documented register is 0x830 in both normal and Q1
-versions while the range in the title is 0x800-0x8ff. That's why I
-thought it was using the last register, just because it is closer.
+I guess nodes with no properties aren't too common.
 
-Anyways not really important.
+Now fixed in dtschema.
 
-I can put in whatever you feel comfortable with or keep as it is.
-
-Thanks,
-Markus
+Rob
