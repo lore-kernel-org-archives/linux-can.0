@@ -2,53 +2,53 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CBF88C352A1
-	for <linux-can@archiver.kernel.org>; Tue,  6 Dec 2022 11:57:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 650F5C4708E
+	for <linux-can@archiver.kernel.org>; Tue,  6 Dec 2022 11:58:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235257AbiLFL55 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 6 Dec 2022 06:57:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51038 "EHLO
+        id S234606AbiLFL56 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 6 Dec 2022 06:57:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234606AbiLFL5o (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 6 Dec 2022 06:57:44 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C50D95B3
-        for <linux-can@vger.kernel.org>; Tue,  6 Dec 2022 03:57:41 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id kw15so2151566ejc.10
-        for <linux-can@vger.kernel.org>; Tue, 06 Dec 2022 03:57:41 -0800 (PST)
+        with ESMTP id S235170AbiLFL5s (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 6 Dec 2022 06:57:48 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063A7B7CB
+        for <linux-can@vger.kernel.org>; Tue,  6 Dec 2022 03:57:45 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id v8so19948041edi.3
+        for <linux-can@vger.kernel.org>; Tue, 06 Dec 2022 03:57:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LBqwKcCdNszQ4mwUTsccWY77ZqBMhKPDh+uspgjRsrc=;
-        b=DPqqNGeJB+CLzaOy8DcBdvQ4jz5mShTjsBsQBiKtpJutZ9pt4futlXIv7BoIoLxKe1
-         ikRhLz4m7cQ7T/l7BPYX0zBg6Cp/hp+OmXJU5HpZpP3uN7z10J7635BmX25nND0MK2Tt
-         ETAsPvi5kdq5jXRVH1OfPi+3HJHP6RfuZU3hqfrKBWZyC4zngg96khNNLz2iKp+fWlPu
-         /DW905aQp3qfroPlS0pWoDMY+fczDnQXUTEJmd18IHZ1e5ByrTF/YqizF7kWto6RKrSo
-         U5Nxdv5WjyxypVZbti2mw4Eofk4Y/wAOxrrqLim6nMpKVEWYndu5AuE4fI/Xrfx7MCrq
-         yhbQ==
+        bh=kMpVZlkR98KLQohjfLGaqieOVI5mlDmYYzLpVIJ3+Co=;
+        b=CNSjIQxzqCV1Ed/RyG27x1c8mgM8Tm7zw0uvRKceaLzWH646iHNwQ1x8wRdEfDtUKH
+         ISwpGpz79jBDwK3kHgqoi86GP80S170WIaoqWbZnWFfYDEaxNk96RkF0B+BPF7bVeDFB
+         BBb4e7yL2DQV9/Q8b/epz5m5Y1T809jO/LZaivf8pWfqikakzWK8Xe2cAI2VxdSzXjNO
+         gi9b5c3kbfHAei05cGAPV2I3nf3kObO+BpnsMPHeYAdIbRHjtu1XYgvjn8CnWCJ2yGa5
+         YefpFp13s+Epzc+uZOF+SIZ4PFV3shbKfwkDIbyju4KHUwLDawcfT7zf6kGFpCXy1r7y
+         IwdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LBqwKcCdNszQ4mwUTsccWY77ZqBMhKPDh+uspgjRsrc=;
-        b=NUpvW/mxZY1tVcyzcxPpuAUNUrX92UCBJbOFr4B3j1ppbZP1d1tOE6Vp9fV0ize9pU
-         9gNnlCfgFHfOKh//auU0DrfDvvt9anKdT2xoIn8AyZEaVHAWb4dYO4u8RfmA4ImIX5ws
-         6QKfnG6V3P0y2F4BSugeUC7w99P6i7X6+gFmdmB7iRwD5RCROx5a5hoh/SwfShLnOra8
-         Uc5D4WwQhsFkzISnIoYPt6X+N60s1+PWmQL8WBgOLW7rW21QRz9Tjnc4bUKCyJM4tKcO
-         Uw0DPNLnqynj40DYFs63MzKBrr5AdY7n3KKlcSkZ0V0J0o8J3GL8jjDopE33qZ/sINu5
-         TtuA==
-X-Gm-Message-State: ANoB5pmFO3bfaZ3e7uVB3C/99BY9JwFf+dhprXVdV4JxKUch4JWHPgXH
-        rMwVBL1XPwBF5eQarQNCbVbNQA==
-X-Google-Smtp-Source: AA0mqf47x0bv/bx0CdJ4booRAhJIul6kiSx0Wgt7a/P3vRxUPTwsqwUNqSNrfwYI9fJ+L1nGhmitIw==
-X-Received: by 2002:a17:906:ad86:b0:7c0:7e90:ec98 with SMTP id la6-20020a170906ad8600b007c07e90ec98mr3823617ejb.537.1670327860065;
-        Tue, 06 Dec 2022 03:57:40 -0800 (PST)
+        bh=kMpVZlkR98KLQohjfLGaqieOVI5mlDmYYzLpVIJ3+Co=;
+        b=7sN1DrIboxw8nA2/s4+of5ntUXQ57cJXW7l970Y0tkLJBYBMODN0573IgnRSKBUjbI
+         GAyDDssR+VhyzaieEL+y3V6p4laYHmLyCYEqIDHoJeosye37L2wMUMGE4KUQ7ctfQxUP
+         5R1kg3p2JUmMK6uQSbI7orPhK+8wslgo/wPzgQPwwJlN6Egnh5Lb+8MOj21BgDbuHkft
+         gEYwMX2LDkxtR9UAFPAGpRKOhfM5JpkzY7iI1Bxp5HTK7RbQNH5GrRzD9s700w9i9C/s
+         FzuFYQ8XKuOD/4fx8kpNM1rPA9oBa3FLEDYXK0JoBMROVvXHk3XX+h8MOcGSOg9qhRJ2
+         zSHA==
+X-Gm-Message-State: ANoB5pneb/IVul0EnkxISbw6rJ1IsoeJrq3xWgb2IGGakC5bUu7GtGwZ
+        5WrAW6fPWMQ/7zDJYo459ywYIw==
+X-Google-Smtp-Source: AA0mqf61HAelMEyMCoEKHZ1S+ZPOwlygRrC4yfJN6dnK1EOKnRU7bKQ8CmWUh0UFuoxIt90m6JQRNw==
+X-Received: by 2002:a05:6402:78e:b0:46c:6f53:bf19 with SMTP id d14-20020a056402078e00b0046c6f53bf19mr11625077edy.299.1670327864545;
+        Tue, 06 Dec 2022 03:57:44 -0800 (PST)
 Received: from blmsp.fritz.box ([2001:4091:a245:805c:8713:84e4:2a9e:cbe8])
-        by smtp.gmail.com with ESMTPSA id ky20-20020a170907779400b007c0ac4e6b6esm6472076ejc.143.2022.12.06.03.57.39
+        by smtp.gmail.com with ESMTPSA id ky20-20020a170907779400b007c0ac4e6b6esm6472076ejc.143.2022.12.06.03.57.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Dec 2022 03:57:39 -0800 (PST)
+        Tue, 06 Dec 2022 03:57:44 -0800 (PST)
 From:   Markus Schneider-Pargmann <msp@baylibre.com>
 To:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -56,9 +56,9 @@ To:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
 Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH v2 05/11] can: m_can: Count read getindex in the driver
-Date:   Tue,  6 Dec 2022 12:57:22 +0100
-Message-Id: <20221206115728.1056014-6-msp@baylibre.com>
+Subject: [PATCH v2 10/11] can: tcan4x5x: Fix register range of first two blocks
+Date:   Tue,  6 Dec 2022 12:57:27 +0100
+Message-Id: <20221206115728.1056014-11-msp@baylibre.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221206115728.1056014-1-msp@baylibre.com>
 References: <20221206115728.1056014-1-msp@baylibre.com>
@@ -68,70 +68,38 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The getindex gets increased by one every time. We can calculate the
-correct getindex in the driver and avoid the additional reads of rxfs.
+According to the datasheet 0x10 is the last register in the first block,
+not register 0x2c.
+
+The datasheet lists the last register of the second block as 0x830, not
+0x83c.
 
 Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
 ---
- drivers/net/can/m_can/m_can.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index a133f15fb90a..a0ae543d418c 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -476,19 +476,16 @@ static void m_can_receive_skb(struct m_can_classdev *cdev,
- 	}
+Notes:
+    v2:
+     - Fix end of first range, was 0x1c, is now 0x10
+     - Add fix for the end of the second range, was 0x3c, is now 0x30.
+
+ drivers/net/can/m_can/tcan4x5x-regmap.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/can/m_can/tcan4x5x-regmap.c b/drivers/net/can/m_can/tcan4x5x-regmap.c
+index 26e212b8ca7a..33aed989e42a 100644
+--- a/drivers/net/can/m_can/tcan4x5x-regmap.c
++++ b/drivers/net/can/m_can/tcan4x5x-regmap.c
+@@ -91,8 +91,8 @@ static int tcan4x5x_regmap_read(void *context,
  }
  
--static int m_can_read_fifo(struct net_device *dev, u32 rxfs)
-+static int m_can_read_fifo(struct net_device *dev, u32 fgi)
- {
- 	struct net_device_stats *stats = &dev->stats;
- 	struct m_can_classdev *cdev = netdev_priv(dev);
- 	struct canfd_frame *cf;
- 	struct sk_buff *skb;
- 	struct id_and_dlc fifo_header;
--	u32 fgi;
- 	u32 timestamp = 0;
- 	int err;
- 
--	/* calculate the fifo get index for where to read data */
--	fgi = FIELD_GET(RXFS_FGI_MASK, rxfs);
- 	err = m_can_fifo_read(cdev, fgi, M_CAN_FIFO_ID, &fifo_header, 2);
- 	if (err)
- 		goto out_fail;
-@@ -553,6 +550,9 @@ static int m_can_do_rx_poll(struct net_device *dev, int quota)
- 	struct m_can_classdev *cdev = netdev_priv(dev);
- 	u32 pkts = 0;
- 	u32 rxfs;
-+	u32 rx_count;
-+	u32 fgi;
-+	int i;
- 	int err;
- 
- 	rxfs = m_can_read(cdev, M_CAN_RXF0S);
-@@ -561,14 +561,17 @@ static int m_can_do_rx_poll(struct net_device *dev, int quota)
- 		return 0;
- 	}
- 
--	while ((rxfs & RXFS_FFL_MASK) && (quota > 0)) {
--		err = m_can_read_fifo(dev, rxfs);
-+	rx_count = FIELD_GET(RXFS_FFL_MASK, rxfs);
-+	fgi = FIELD_GET(RXFS_FGI_MASK, rxfs);
-+
-+	for (i = 0; i < rx_count && quota > 0; ++i) {
-+		err = m_can_read_fifo(dev, fgi);
- 		if (err)
- 			return err;
- 
- 		quota--;
- 		pkts++;
--		rxfs = m_can_read(cdev, M_CAN_RXF0S);
-+		fgi = (++fgi >= cdev->mcfg[MRAM_RXF0].num ? 0 : fgi);
- 	}
- 
- 	return pkts;
+ static const struct regmap_range tcan4x5x_reg_table_yes_range[] = {
+-	regmap_reg_range(0x0000, 0x002c),	/* Device ID and SPI Registers */
+-	regmap_reg_range(0x0800, 0x083c),	/* Device configuration registers and Interrupt Flags*/
++	regmap_reg_range(0x0000, 0x0010),	/* Device ID and SPI Registers */
++	regmap_reg_range(0x0800, 0x0830),	/* Device configuration registers and Interrupt Flags*/
+ 	regmap_reg_range(0x1000, 0x10fc),	/* M_CAN */
+ 	regmap_reg_range(0x8000, 0x87fc),	/* MRAM */
+ };
 -- 
 2.38.1
 
