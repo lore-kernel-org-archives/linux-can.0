@@ -2,276 +2,154 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1010C4708D
-	for <linux-can@archiver.kernel.org>; Wed,  7 Dec 2022 10:36:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FC75C4708D
+	for <linux-can@archiver.kernel.org>; Wed,  7 Dec 2022 10:53:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbiLGKgW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 7 Dec 2022 05:36:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33088 "EHLO
+        id S229479AbiLGKxP (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 7 Dec 2022 05:53:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229760AbiLGKgJ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 7 Dec 2022 05:36:09 -0500
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856FB2EF62
-        for <linux-can@vger.kernel.org>; Wed,  7 Dec 2022 02:36:07 -0800 (PST)
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20221207103606epoutp043108cc39b424fac2202934d5920ec90c~ufHfafz982844728447epoutp04c
-        for <linux-can@vger.kernel.org>; Wed,  7 Dec 2022 10:36:06 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20221207103606epoutp043108cc39b424fac2202934d5920ec90c~ufHfafz982844728447epoutp04c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1670409366;
-        bh=zxEW4aRMNY+I/kBJaywdBjCo9sOxx8Km7j9aqHAo5dA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NP5oCXm9d4Rg8XsxXuAA2Ph3hzvezKN3sJqiI/uh8UFkh4ZMA/CX+O847EAYZE3WX
-         EaqwHl5u3qOMklsfGQ5ew93jxcKTVUx9rcdk3Zr+AY2YSfN40kVhj4dVhukXqT2vIT
-         lb2OVM6VWF8Qse5X8nnwcijM3r7773kmYFxePNYc=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
-        20221207103604epcas5p46ed071591a8b7c3a61aeda1c5a48b667~ufHd6SGaR3205632056epcas5p4H;
-        Wed,  7 Dec 2022 10:36:04 +0000 (GMT)
-Received: from epsmges5p2new.samsung.com (unknown [182.195.38.183]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4NRtwy4dX8z4x9Pw; Wed,  7 Dec
-        2022 10:36:02 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        E4.25.39477.29C60936; Wed,  7 Dec 2022 19:36:02 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20221207100700epcas5p408c436aaaf0edd215b54f36f500cd02c~ueuFbrcTq2723727237epcas5p4F;
-        Wed,  7 Dec 2022 10:07:00 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20221207100700epsmtrp29aab399730057e716faf8a2cf6acba50~ueuFZKJUG0757407574epsmtrp25;
-        Wed,  7 Dec 2022 10:07:00 +0000 (GMT)
-X-AuditID: b6c32a4a-007ff70000019a35-fb-63906c9259a3
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        FB.FD.14392.3C560936; Wed,  7 Dec 2022 19:06:59 +0900 (KST)
-Received: from cheetah.sa.corp.samsungelectronics.net (unknown
-        [107.109.115.53]) by epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20221207100657epsmtip2cef9b724734c821be031ee8ed03931c2~ueuClidVI0667806678epsmtip2f;
-        Wed,  7 Dec 2022 10:06:56 +0000 (GMT)
-From:   Vivek Yadav <vivek.2311@samsung.com>
-To:     rcsekar@samsung.com, krzysztof.kozlowski+dt@linaro.org,
-        wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        pankaj.dubey@samsung.com, ravi.patel@samsung.com,
-        alim.akhtar@samsung.com, linux-fsd@tesla.com, robh+dt@kernel.org
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        aswani.reddy@samsung.com, sriranjani.p@samsung.com,
-        Vivek Yadav <vivek.2311@samsung.com>
-Subject: [Patch v4 2/2] arm64: dts: fsd: Add MCAN device node
-Date:   Wed,  7 Dec 2022 15:36:32 +0530
-Message-Id: <20221207100632.96200-3-vivek.2311@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20221207100632.96200-1-vivek.2311@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA0VTe1BUVRyec+/dB8TqDVAOFLhzR1JogF3bpUNC6OTInWiKgZweY8Kdy20X
-        WXa3fZBEo2RRwAzPtBAXWIhtYiFAXiGwPsDQrFGSRwHagGARISIrYA+wXRbqv+98v++b7/f7
-        nXOEuGcv30+YojZwOjWjovjuRHtvUFBIiaqIlfx8nkLjFe181NPSJkCm6x8RqPLSNR6603db
-        gAqmJ3DU317AQ82TwzxkXT6Jo4mZ19BAp4mPSq+fw1Bj9QkC9Zm3oqXvZwGqbnsgQBPz3QJU
-        1t/BQ9m2SwI0NtvAQ39V9RLI8stZ3p6tdGvtCEabm430/RtjgG625vLpm8PdfLql5hhduCKh
-        750b4tMFrVZArx4vF9D25oC4x95MjVRyTDKnE3NqVpOcolZEUbEJiS8kysMl0hBpBHqWEquZ
-        NC6K2vdSXMj+FJVjVEqczqiMDiqO0eupsOcjdRqjgRMrNXpDFMVpk1VamTZUz6TpjWpFqJoz
-        PCeVSHbJHcKkVOVqXjGmLd1xZOjOKSILdG3LA25CSMrg7EIbngfchZ5kF4DZo8uYs+BJLgBY
-        uxjvKiwB2JlbIthwVE63810FG4APbGeBy5GNwdm5TCfmk8FwMtdMOEXeZB0GW+0TwHnAyTIM
-        1nw4SjhVXmQUvH1xzJEnFBJkIJxret9Ji8jdsPXLOsKVtg3WNV3AndiNjIQLtwrXeoXkuBCO
-        LNWui/ZBy+rwOvaCM5db11v1g/Y5G9+FWdixmstzYSU0F3cDF46GFwZNhLMHnAyCjZ1hLtof
-        nrzasLYKnNwE8/+ewly8CHZUbODtcNpexHNanVH517xcNA07LDUC14IKASyurMCLQEDZ/wlm
-        AKzAl9Pq0xScXq7dpebe/e/SWE1aM1h7zcEvdoCJ8fnQHoAJQQ+AQpzyFk2fyWc9RclMxnuc
-        TpOoM6o4fQ+QO9ZXjPttYTWO76A2JEplERJZeHi4LOKZcCnlI7KcyGE9SQVj4FI5TsvpNnyY
-        0M0vC4Npo4Y/DiQ8pcmtvuXjEbNi+jUk8ElbY0YSpT9y8dEbv0e/+rhNnhIdZpxZeFt8d/P5
-        5fIIot90l/WfnR7d/vUNt8i44EmPgys+AzHx4qwx83evbKp/S6DzbR+x3Hs4cjjp0QfeO56O
-        /fanU2xJZuCnl0tNe/3Zbjltz+eP2E0HF31HFUU5LbIz8i9+6Mt5OaGpcHj1sDuJW1p8/Tqb
-        Yit+PH3/ECOqXqx655NMZcKBo17uMVduCsoGJVXs/NwT8d9kDO4t23LF2hU29M9x0nT1qz0e
-        5fFM7DHrUnrb1Mf16aaZ14nTRxcyd/8W0LC5lBc05bNz5yGPLvZzxUBC/Gd5f7bUpz6kCL2S
-        kQbjOj3zL6CbkghWBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNLMWRmVeSWpSXmKPExsWy7bCSvO7h1AnJBmtO21g8mLeNzeLQ5q3s
-        FnPOt7BYzD9yjtXi6bFH7BZ9Lx4yW1zY1sdqsenxNVaLVd+nMls8fBVucXnXHDaLGef3MVms
-        XzSFxeLYAjGLb6ffMFos2vqF3eLhhz3sFrMu7GC1aN17hN3i9pt1rBa/Fh5msVh6byerg5jH
-        lpU3mTwWbCr1+HjpNqPHplWdbB53ru1h89i8pN6j/6+Bx/t9V9k8+rasYvT41zSX3ePzJrkA
-        7igum5TUnMyy1CJ9uwSujH9dE5kKZqhXXH06k6WBcbd8FyMnh4SAicT8F9vYQGwhgd2MElfm
-        lELEpSSmnHnJAmELS6z895y9i5ELqKaZSWJm9wdmkASbgJbE484FLCAJEYHdTBJvu+eCVTEL
-        LGKSeHmlF6xKWMBW4tHB20xdjBwcLAKqEu821ICEeQWsJbYsWw21QV5i9YYDYOWcAjYSn+72
-        M0NcZC3x79czxgmMfAsYGVYxSqYWFOem5xYbFhjmpZbrFSfmFpfmpesl5+duYgTHj5bmDsbt
-        qz7oHWJk4mA8xCjBwawkwvtiY2+yEG9KYmVValF+fFFpTmrxIUZpDhYlcd4LXSfjhQTSE0tS
-        s1NTC1KLYLJMHJxSDUwHYh7w9q0WvFrTXXZT4zPDo+U/3tQHfOoSnvk50VrSlW2vYdyUDj6u
-        pbPyFnYVfpgeeDfDXPbxLt37s4Q+nipQ1bcLziw3uC+csjHuxvnzDr2MKaEfrsuc2ViowebP
-        OH+rQ4FhSNWbe8tC/K//ig3nnedtW5sy75WoVavXiWky3fMXiyRpZV674OZUuIazZMaf10bu
-        rur7rr1r/9puf1l71sd/J0/K7/ZgOjbh1HJTcb9iXvnkW3eapsxTmrVr1YPlxS+NGwIXK58R
-        4+r65nBWuGmW8bebC58GJad+P9r81fPcSznG44msZzNezDibz7Jshslc8RW2Fmed/i719lO1
-        cU1dtEa2oL7KrpJ9qr8SS3FGoqEWc1FxIgAnLSt5DgMAAA==
-X-CMS-MailID: 20221207100700epcas5p408c436aaaf0edd215b54f36f500cd02c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20221207100700epcas5p408c436aaaf0edd215b54f36f500cd02c
-References: <20221207100632.96200-1-vivek.2311@samsung.com>
-        <CGME20221207100700epcas5p408c436aaaf0edd215b54f36f500cd02c@epcas5p4.samsung.com>
+        with ESMTP id S229853AbiLGKwz (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 7 Dec 2022 05:52:55 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE93120B6
+        for <linux-can@vger.kernel.org>; Wed,  7 Dec 2022 02:52:51 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1p2s2j-00076b-RD
+        for linux-can@vger.kernel.org; Wed, 07 Dec 2022 11:52:49 +0100
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id CA5F91387FE
+        for <linux-can@vger.kernel.org>; Wed,  7 Dec 2022 10:52:48 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9B69B1387CC;
+        Wed,  7 Dec 2022 10:52:45 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id a55d57ee;
+        Wed, 7 Dec 2022 10:52:44 +0000 (UTC)
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de, "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+        Richard Palethorpe <richard.palethorpe@suse.com>,
+        Petr Vorel <petr.vorel@suse.com>,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, stable@vger.kernel.org,
+        Max Staudt <max@enpas.org>
+Subject: [PATCH net 2/4] can: slcan: fix freed work crash
+Date:   Wed,  7 Dec 2022 11:52:41 +0100
+Message-Id: <20221207105243.2483884-3-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20221207105243.2483884-1-mkl@pengutronix.de>
+References: <20221207105243.2483884-1-mkl@pengutronix.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Add MCAN device node and enable the same for FSD platform.
-This also adds the required pin configuration for the same.
+From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 
-Signed-off-by: Sriranjani P <sriranjani.p@samsung.com>
-Signed-off-by: Vivek Yadav <vivek.2311@samsung.com>
+The LTP test pty03 is causing a crash in slcan:
+  BUG: kernel NULL pointer dereference, address: 0000000000000008
+  #PF: supervisor read access in kernel mode
+  #PF: error_code(0x0000) - not-present page
+  PGD 0 P4D 0
+  Oops: 0000 [#1] PREEMPT SMP NOPTI
+  CPU: 0 PID: 348 Comm: kworker/0:3 Not tainted 6.0.8-1-default #1 openSUSE Tumbleweed 9d20364b934f5aab0a9bdf84e8f45cfdfae39dab
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.15.0-0-g2dd4b9b-rebuilt.opensuse.org 04/01/2014
+  Workqueue:  0x0 (events)
+  RIP: 0010:process_one_work (/home/rich/kernel/linux/kernel/workqueue.c:706 /home/rich/kernel/linux/kernel/workqueue.c:2185)
+  Code: 49 89 ff 41 56 41 55 41 54 55 53 48 89 f3 48 83 ec 10 48 8b 06 48 8b 6f 48 49 89 c4 45 30 e4 a8 04 b8 00 00 00 00 4c 0f 44 e0 <49> 8b 44 24 08 44 8b a8 00 01 00 00 41 83 e5 20 f6 45 10 04 75 0e
+  RSP: 0018:ffffaf7b40f47e98 EFLAGS: 00010046
+  RAX: 0000000000000000 RBX: ffff9d644e1b8b48 RCX: ffff9d649e439968
+  RDX: 00000000ffff8455 RSI: ffff9d644e1b8b48 RDI: ffff9d64764aa6c0
+  RBP: ffff9d649e4335c0 R08: 0000000000000c00 R09: ffff9d64764aa734
+  R10: 0000000000000007 R11: 0000000000000001 R12: 0000000000000000
+  R13: ffff9d649e4335e8 R14: ffff9d64490da780 R15: ffff9d64764aa6c0
+  FS:  0000000000000000(0000) GS:ffff9d649e400000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 0000000000000008 CR3: 0000000036424000 CR4: 00000000000006f0
+  Call Trace:
+   <TASK>
+  worker_thread (/home/rich/kernel/linux/kernel/workqueue.c:2436)
+  kthread (/home/rich/kernel/linux/kernel/kthread.c:376)
+  ret_from_fork (/home/rich/kernel/linux/arch/x86/entry/entry_64.S:312)
+
+Apparently, the slcan's tx_work is freed while being scheduled. While
+slcan_netdev_close() (netdev side) calls flush_work(&sl->tx_work),
+slcan_close() (tty side) does not. So when the netdev is never set UP,
+but the tty is stuffed with bytes and forced to wakeup write, the work
+is scheduled, but never flushed.
+
+So add an additional flush_work() to slcan_close() to be sure the work
+is flushed under all circumstances.
+
+The Fixes commit below moved flush_work() from slcan_close() to
+slcan_netdev_close(). What was the rationale behind it? Maybe we can
+drop the one in slcan_netdev_close()?
+
+I see the same pattern in can327. So it perhaps needs the very same fix.
+
+Fixes: cfcb4465e992 ("can: slcan: remove legacy infrastructure")
+Link: https://bugzilla.suse.com/show_bug.cgi?id=1205597
+Reported-by: Richard Palethorpe <richard.palethorpe@suse.com>
+Tested-by: Petr Vorel <petr.vorel@suse.com>
+Cc: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: linux-can@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: stable@vger.kernel.org
+Cc: Max Staudt <max@enpas.org>
+Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+Reviewed-by: Max Staudt <max@enpas.org>
+Link: https://lore.kernel.org/all/20221201073426.17328-1-jirislaby@kernel.org
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- arch/arm64/boot/dts/tesla/fsd-evb.dts      | 16 +++++
- arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi | 28 +++++++++
- arch/arm64/boot/dts/tesla/fsd.dtsi         | 68 ++++++++++++++++++++++
- 3 files changed, 112 insertions(+)
+ drivers/net/can/slcan/slcan-core.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/tesla/fsd-evb.dts b/arch/arm64/boot/dts/tesla/fsd-evb.dts
-index 1db6ddf03f01..af3862e9fe3b 100644
---- a/arch/arm64/boot/dts/tesla/fsd-evb.dts
-+++ b/arch/arm64/boot/dts/tesla/fsd-evb.dts
-@@ -34,6 +34,22 @@
- 	clock-frequency = <24000000>;
- };
+diff --git a/drivers/net/can/slcan/slcan-core.c b/drivers/net/can/slcan/slcan-core.c
+index fbb34139daa1..f4db77007c13 100644
+--- a/drivers/net/can/slcan/slcan-core.c
++++ b/drivers/net/can/slcan/slcan-core.c
+@@ -864,12 +864,14 @@ static void slcan_close(struct tty_struct *tty)
+ {
+ 	struct slcan *sl = (struct slcan *)tty->disc_data;
  
-+&m_can0 {
-+	status = "okay";
-+};
-+
-+&m_can1 {
-+	status = "okay";
-+};
-+
-+&m_can2 {
-+	status = "okay";
-+};
-+
-+&m_can3 {
-+	status = "okay";
-+};
-+
- &serial_0 {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi b/arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi
-index d0abb9aa0e9e..bb5289ebfef3 100644
---- a/arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi
-+++ b/arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi
-@@ -339,6 +339,34 @@
- 		samsung,pin-pud = <FSD_PIN_PULL_UP>;
- 		samsung,pin-drv = <FSD_PIN_DRV_LV1>;
- 	};
-+
-+	m_can0_bus: m-can0-bus-pins {
-+		samsung,pins = "gpd0-0", "gpd0-1";
-+		samsung,pin-function = <FSD_PIN_FUNC_2>;
-+		samsung,pin-pud = <FSD_PIN_PULL_UP>;
-+		samsung,pin-drv = <FSD_PIN_DRV_LV4>;
-+	};
-+
-+	m_can1_bus: m-can1-bus-pins {
-+		samsung,pins = "gpd0-2", "gpd0-3";
-+		samsung,pin-function = <FSD_PIN_FUNC_2>;
-+		samsung,pin-pud = <FSD_PIN_PULL_UP>;
-+		samsung,pin-drv = <FSD_PIN_DRV_LV4>;
-+	};
-+
-+	m_can2_bus: m-can2-bus-pins {
-+		samsung,pins = "gpd0-4", "gpd0-5";
-+		samsung,pin-function = <FSD_PIN_FUNC_2>;
-+		samsung,pin-pud = <FSD_PIN_PULL_UP>;
-+		samsung,pin-drv = <FSD_PIN_DRV_LV4>;
-+	};
-+
-+	m_can3_bus: m-can3-bus-pins {
-+		samsung,pins = "gpd0-6", "gpd0-7";
-+		samsung,pin-function = <FSD_PIN_FUNC_2>;
-+		samsung,pin-pud = <FSD_PIN_PULL_UP>;
-+		samsung,pin-drv = <FSD_PIN_DRV_LV4>;
-+	};
- };
+-	/* unregister_netdev() calls .ndo_stop() so we don't have to.
+-	 * Our .ndo_stop() also flushes the TTY write wakeup handler,
+-	 * so we can safely set sl->tty = NULL after this.
+-	 */
+ 	unregister_candev(sl->dev);
  
- &pinctrl_pmu {
-diff --git a/arch/arm64/boot/dts/tesla/fsd.dtsi b/arch/arm64/boot/dts/tesla/fsd.dtsi
-index f35bc5a288c2..dfdb32514887 100644
---- a/arch/arm64/boot/dts/tesla/fsd.dtsi
-+++ b/arch/arm64/boot/dts/tesla/fsd.dtsi
-@@ -755,6 +755,74 @@
- 			interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
- 		};
- 
-+		m_can0: can@14088000 {
-+			compatible = "bosch,m_can";
-+			reg = <0x0 0x14088000 0x0 0x0200>,
-+			      <0x0 0x14080000 0x0 0x8000>;
-+			reg-names = "m_can", "message_ram";
-+			interrupts = <GIC_SPI 159 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 160 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "int0", "int1";
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&m_can0_bus>;
-+			clocks = <&clock_peric PERIC_MCAN0_IPCLKPORT_PCLK>,
-+				 <&clock_peric PERIC_MCAN0_IPCLKPORT_CCLK>;
-+			clock-names = "hclk", "cclk";
-+			bosch,mram-cfg = <0x0 128 64 64 64 64 32 32>;
-+			status = "disabled";
-+		};
++	/*
++	 * The netdev needn't be UP (so .ndo_stop() is not called). Hence make
++	 * sure this is not running before freeing it up.
++	 */
++	flush_work(&sl->tx_work);
 +
-+		m_can1: can@14098000 {
-+			compatible = "bosch,m_can";
-+			reg = <0x0 0x14098000 0x0 0x0200>,
-+			      <0x0 0x14090000 0x0 0x8000>;
-+			reg-names = "m_can", "message_ram";
-+			interrupts = <GIC_SPI 162 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 163 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "int0", "int1";
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&m_can1_bus>;
-+			clocks = <&clock_peric PERIC_MCAN1_IPCLKPORT_PCLK>,
-+				 <&clock_peric PERIC_MCAN1_IPCLKPORT_CCLK>;
-+			clock-names = "hclk", "cclk";
-+			bosch,mram-cfg = <0x0 128 64 64 64 64 32 32>;
-+			status = "disabled";
-+		};
-+
-+		m_can2: can@140a8000 {
-+			compatible = "bosch,m_can";
-+			reg = <0x0 0x140a8000 0x0 0x0200>,
-+			      <0x0 0x140a0000 0x0 0x8000>;
-+			reg-names = "m_can", "message_ram";
-+			interrupts = <GIC_SPI 165 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 166 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "int0", "int1";
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&m_can2_bus>;
-+			clocks = <&clock_peric PERIC_MCAN2_IPCLKPORT_PCLK>,
-+				 <&clock_peric PERIC_MCAN2_IPCLKPORT_CCLK>;
-+			clock-names = "hclk", "cclk";
-+			bosch,mram-cfg = <0x0 128 64 64 64 64 32 32>;
-+			status = "disabled";
-+		};
-+
-+		m_can3: can@140b8000 {
-+			compatible = "bosch,m_can";
-+			reg = <0x0 0x140b8000 0x0 0x0200>,
-+			      <0x0 0x140b0000 0x0 0x8000>;
-+			reg-names = "m_can", "message_ram";
-+			interrupts = <GIC_SPI 168 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 169 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "int0", "int1";
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&m_can3_bus>;
-+			clocks = <&clock_peric PERIC_MCAN3_IPCLKPORT_PCLK>,
-+				 <&clock_peric PERIC_MCAN3_IPCLKPORT_CCLK>;
-+			clock-names = "hclk", "cclk";
-+			bosch,mram-cfg = <0x0 128 64 64 64 64 32 32>;
-+			status = "disabled";
-+		};
-+
- 		spi_0: spi@14140000 {
- 			compatible = "tesla,fsd-spi";
- 			reg = <0x0 0x14140000 0x0 0x100>;
+ 	/* Mark channel as dead */
+ 	spin_lock_bh(&sl->lock);
+ 	tty->disc_data = NULL;
 -- 
-2.17.1
+2.35.1
+
 
