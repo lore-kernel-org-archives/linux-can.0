@@ -2,105 +2,105 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30C43C4708D
-	for <linux-can@archiver.kernel.org>; Wed,  7 Dec 2022 10:53:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A219DC4708E
+	for <linux-can@archiver.kernel.org>; Wed,  7 Dec 2022 11:12:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229814AbiLGKxS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 7 Dec 2022 05:53:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43106 "EHLO
+        id S230095AbiLGLLz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 7 Dec 2022 06:11:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbiLGKwx (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 7 Dec 2022 05:52:53 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 180E82E9FD
-        for <linux-can@vger.kernel.org>; Wed,  7 Dec 2022 02:52:49 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1p2s2h-00073F-Qp
-        for linux-can@vger.kernel.org; Wed, 07 Dec 2022 11:52:47 +0100
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 5CEF91387DC
-        for <linux-can@vger.kernel.org>; Wed,  7 Dec 2022 10:52:46 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 829AC1387CA;
-        Wed,  7 Dec 2022 10:52:45 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id bacd9f37;
-        Wed, 7 Dec 2022 10:52:44 +0000 (UTC)
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net 0/4] pull-request: can 2022-12-07
-Date:   Wed,  7 Dec 2022 11:52:39 +0100
-Message-Id: <20221207105243.2483884-1-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S229562AbiLGLLM (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 7 Dec 2022 06:11:12 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7AEE4E42A
+        for <linux-can@vger.kernel.org>; Wed,  7 Dec 2022 03:10:48 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id z4so20497083ljq.6
+        for <linux-can@vger.kernel.org>; Wed, 07 Dec 2022 03:10:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=I/R5XEHqvCv/dBJza85IzDRA+R2OE43AsS1vbZaQBr0=;
+        b=MFZC1oy5osqOw+1EcI33RRoMIrqyMvVdz9q1tlc8qEYjRXYLFL0ElS1kzbNBPCEmvq
+         hH3ubXPSURQsejaawIOjYBWA8SkQgo2PWeeh+2OdmmXunDnnSKNqIm3Zgq5H+mhqNKFo
+         2BYO334lgakhlywxAJokep+bQ9dq90AkgJ8D+v5H950Jyk4uTCMPFX8h8LzzucaGdQ1e
+         IveDyC7Xwf/QpPxtifO7GV+IY2J9tz8dFShJdiHyT9em1eLDn2I11oM/xAZb6FTnwcKH
+         tkfzMlVQQyAga+IdD+cRX+tZgSsUR2J41sJclHSggdk4bkYFCblwDrMytVs4REXp4Ix6
+         W7BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=I/R5XEHqvCv/dBJza85IzDRA+R2OE43AsS1vbZaQBr0=;
+        b=OrLKkHu6xjXZtKqF3MKEyGoF9rEGcU1Nr+sIFnZZSahWhD77w9BlWxF15DUjfAiznM
+         JjTb7ZEtF2jIxpJh7k/scaPJp4nQhfhbSIEoR6sTM09XXdjL4f9ltAoGyNRQVUSk5syZ
+         n76pXEySXfWhja29+a9uJvfa1LoVCqlxJUbTde8KNdgu+gBPcr0fo7mmtjLAOlVj0RUw
+         0KSdrfrwXoDjI/7Ehy96sKDQOVMczx3KaSv687lbk5eVHVugTMj/oqjzCs6IVq1IWoDY
+         DGQGUI1aTFoePoG7Q1IJGaazVfLU7Ag116DjVcv6ilVOYTXHC2i7rhHFLN96rAnfAYGD
+         wisw==
+X-Gm-Message-State: ANoB5plbhso90p79W6POgmR2Wx24lXqLZmSR1okDCTwfeVejl0zetRAf
+        E6/938pr3L956UXPfmXn/t5+DA==
+X-Google-Smtp-Source: AA0mqf5p3BNj3uFb2TP1cT3jHeb6hwLnSTS2eYcwieYUGt8yyC0uxli65OWvuygEPrZf2y0huoo+dQ==
+X-Received: by 2002:a2e:808e:0:b0:27a:1e62:6fb5 with SMTP id i14-20020a2e808e000000b0027a1e626fb5mr323775ljg.58.1670411447010;
+        Wed, 07 Dec 2022 03:10:47 -0800 (PST)
+Received: from [192.168.0.20] (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
+        by smtp.gmail.com with ESMTPSA id m4-20020a056512114400b00492e3c8a986sm2792625lfg.264.2022.12.07.03.10.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Dec 2022 03:10:46 -0800 (PST)
+Message-ID: <ee0d323c-cd55-c486-500e-93dc693ade3f@linaro.org>
+Date:   Wed, 7 Dec 2022 12:10:44 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [Patch v4 2/2] arm64: dts: fsd: Add MCAN device node
+Content-Language: en-US
+To:     Vivek Yadav <vivek.2311@samsung.com>, rcsekar@samsung.com,
+        krzysztof.kozlowski+dt@linaro.org, wg@grandegger.com,
+        mkl@pengutronix.de, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, pankaj.dubey@samsung.com,
+        ravi.patel@samsung.com, alim.akhtar@samsung.com,
+        linux-fsd@tesla.com, robh+dt@kernel.org
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        aswani.reddy@samsung.com, sriranjani.p@samsung.com
+References: <20221207100632.96200-1-vivek.2311@samsung.com>
+ <CGME20221207100700epcas5p408c436aaaf0edd215b54f36f500cd02c@epcas5p4.samsung.com>
+ <20221207100632.96200-3-vivek.2311@samsung.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20221207100632.96200-3-vivek.2311@samsung.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+On 07/12/2022 11:06, Vivek Yadav wrote:
+> Add MCAN device node and enable the same for FSD platform.
+> This also adds the required pin configuration for the same.
+> 
+> Signed-off-by: Sriranjani P <sriranjani.p@samsung.com>
+> Signed-off-by: Vivek Yadav <vivek.2311@samsung.com>
 
-this is a pull request of 4 patches for net/master.
+This is a friendly reminder during the review process.
 
-The 1st patch is by Oliver Hartkopp and fixes a potential NULL pointer
-deref found by syzbot in the AF_CAN protocol.
+It looks like you received a tag and forgot to add it.
 
-The next 2 patches are by Jiri Slaby and Max Staudt and add the
-missing flush_work() before freeing the underlying memory in the slcan
-and can327 driver.
+If you do not know the process, here is a short explanation:
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions. However, there's no need to repost patches *only* to add the
+tags. The upstream maintainer will do that for acks received on the
+version they apply.
 
-The last patch is by Frank Jungclaus and target the esd_usb driver and
-fixes the CAN error counters, allowing them to return to zero.
+https://elixir.bootlin.com/linux/v5.17/source/Documentation/process/submitting-patches.rst#L540
 
-regards,
-Marc
+If a tag was not added on purpose, please state why and what changed.
 
----
 
-The following changes since commit 1799c1b85e292fbfad99892bbea0beee925149e8:
+Applied for v6.3.
 
-  Merge branch '40GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue (2022-12-06 20:46:33 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-6.1-20221207
-
-for you to fetch changes up to 918ee4911f7a41fb4505dff877c1d7f9f64eb43e:
-
-  can: esd_usb: Allow REC and TEC to return to zero (2022-12-07 10:32:48 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-6.1-20221207
-
-----------------------------------------------------------------
-Frank Jungclaus (1):
-      can: esd_usb: Allow REC and TEC to return to zero
-
-Jiri Slaby (SUSE) (1):
-      can: slcan: fix freed work crash
-
-Max Staudt (1):
-      can: can327: flush TX_work on ldisc .close()
-
-Oliver Hartkopp (1):
-      can: af_can: fix NULL pointer dereference in can_rcv_filter
-
- drivers/net/can/can327.c           | 17 ++++++++++-------
- drivers/net/can/slcan/slcan-core.c | 10 ++++++----
- drivers/net/can/usb/esd_usb.c      |  6 ++++++
- net/can/af_can.c                   |  6 +++---
- 4 files changed, 25 insertions(+), 14 deletions(-)
-
+Best regards,
+Krzysztof
 
