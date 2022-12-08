@@ -2,199 +2,91 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF607C4332F
-	for <linux-can@archiver.kernel.org>; Thu,  8 Dec 2022 09:01:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D273C63705
+	for <linux-can@archiver.kernel.org>; Thu,  8 Dec 2022 09:07:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229785AbiLHJBA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 8 Dec 2022 04:01:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60782 "EHLO
+        id S230241AbiLHJH4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 8 Dec 2022 04:07:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbiLHJA6 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 8 Dec 2022 04:00:58 -0500
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 141134874C;
-        Thu,  8 Dec 2022 01:00:58 -0800 (PST)
-Received: by mail-pj1-f47.google.com with SMTP id w4-20020a17090ac98400b002186f5d7a4cso4020636pjt.0;
-        Thu, 08 Dec 2022 01:00:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gnfeenGHSX8pxGcDHDGsgu5jtWy1vtL2VR1fK04qMGU=;
-        b=0+3NAgORvJfV2qMO3lsVn+H3Lqjdoqrb7AmM3DiJFy0jS58oKrf/zhFiC7/uc03CGI
-         xOeY5msMsMNqGSx8gVsg5SvpQtVbCetLzkae8X3t7L2Uxa3FKuBrBapLmglCSbF8rlrI
-         Rrh2v30VjcGLAdspYJLhKZ6A3ND0O5d1ODWut35u9qAFtqXbJeXT4qCBY5Q4Nr+ZYmZ/
-         4sdrte7qg5W7/SL2wjLbJGWI1y5t6m/MpM0uUhpkFy5q/k0VqLaO6eMHQerB++ybv+dp
-         HJkNevC6AVrIlAbtdPonQbAmaPaAhZxOFMDjhjV+EdU1fuwdWF2A2BcxuoSxq0hOZXA/
-         1tOQ==
-X-Gm-Message-State: ANoB5pn98sgA59AO+uIwrrWojjlYBwc8y551g0piXsOFHAVo90tQZHUF
-        zEpjjrssnLtppy+FMc/HGSXkYAULG5HVumNakKY=
-X-Google-Smtp-Source: AA0mqf659+OdeqLrf+FQ+LZZtgdCdNVN8yytNzkVh+PKns/Z4xwYuquj032CQR+ovzq7ynBjBRLwhOyGjC4yQm2+kIg=
-X-Received: by 2002:a17:903:452:b0:189:6574:7ac2 with SMTP id
- iw18-20020a170903045200b0018965747ac2mr64198640plb.65.1670490057258; Thu, 08
- Dec 2022 01:00:57 -0800 (PST)
+        with ESMTP id S230244AbiLHJHV (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 8 Dec 2022 04:07:21 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB43249B70
+        for <linux-can@vger.kernel.org>; Thu,  8 Dec 2022 01:06:52 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1p3CrR-0005XE-14; Thu, 08 Dec 2022 10:06:33 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:92e:b9fb:f0e7:2adf])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 786E713948F;
+        Thu,  8 Dec 2022 09:06:30 +0000 (UTC)
+Date:   Thu, 8 Dec 2022 10:06:22 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Ye Bin <yebin@huaweicloud.com>
+Cc:     socketcan@hartkopp.net, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, yebin10@huawei.com
+Subject: Re: [PATCH net-next] net: af_can: remove useless parameter 'err' in
+ 'can_rx_register()'
+Message-ID: <20221208090622.7vp6xjkyh26jzvpz@pengutronix.de>
+References: <20221208090940.3695670-1-yebin@huaweicloud.com>
 MIME-Version: 1.0
-References: <20221203133159.94414-1-mailhol.vincent@wanadoo.fr> <9493232b-c8fa-5612-fb13-fccf58b01942@suse.com>
-In-Reply-To: <9493232b-c8fa-5612-fb13-fccf58b01942@suse.com>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Thu, 8 Dec 2022 18:00:46 +0900
-Message-ID: <CAMZ6RqJejJCOUk+MSvxjw9Us0gYhTuoOB4MUTk9jji6Bk=ix3A@mail.gmail.com>
-Subject: Re: [PATCH 0/8] can: usb: remove all usb_set_intfdata(intf, NULL) in
- drivers' disconnect()
-To:     Oliver Neukum <oneukum@suse.com>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Frank Jungclaus <frank.jungclaus@esd.eu>, socketcan@esd.eu,
-        Yasushi SHOJI <yashi@spacecubics.com>,
-        =?UTF-8?Q?Stefan_M=C3=A4tje?= <stefan.maetje@esd.eu>,
-        Hangyu Hua <hbh25y@gmail.com>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Peter Fink <pfink@christ-es.de>,
-        Jeroen Hofstee <jhofstee@victronenergy.com>,
-        =?UTF-8?Q?Christoph_M=C3=B6hring?= <cmoehring@christ-es.de>,
-        John Whittington <git@jbrengineering.co.uk>,
-        Vasanth Sadhasivan <vasanth.sadhasivan@samsara.com>,
-        Jimmy Assarsson <extja@kvaser.com>,
-        Anssi Hannula <anssi.hannula@bitwise.fi>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Stephane Grosjean <s.grosjean@peak-system.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Julia Lawall <Julia.Lawall@inria.fr>,
-        Dongliang Mu <dzm91@hust.edu.cn>,
-        Sebastian Haas <haas@ems-wuensche.com>,
-        Maximilian Schneider <max@schneidersoft.net>,
-        Daniel Berglund <db@kvaser.com>,
-        Olivier Sobrie <olivier@sobrie.be>,
-        =?UTF-8?B?UmVtaWdpdXN6IEtvxYLFgsSFdGFq?= 
-        <remigiusz.kollataj@mobica.com>,
-        Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>,
-        Martin Elshuber <martin.elshuber@theobroma-systems.com>,
-        Philipp Tomsich <philipp.tomsich@theobroma-systems.com>,
-        Bernd Krumboeck <b.krumboeck@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-usb@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="nqaj6drbuy6wf66i"
+Content-Disposition: inline
+In-Reply-To: <20221208090940.3695670-1-yebin@huaweicloud.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Mon. 5 Dec. 2022 at 17:39, Oliver Neukum <oneukum@suse.com> wrote:
-> On 03.12.22 14:31, Vincent Mailhol wrote:
-> > The core sets the usb_interface to NULL in [1]. Also setting it to
-> > NULL in usb_driver::disconnects() is at best useless, at worse risky.
->
-> Hi,
->
-> I am afraid there is a major issue with your series of patches.
-> The drivers you are removing this from often have a subsequent check
-> for the data they got from usb_get_intfdata() being NULL.
 
-ACK, but I do not see the connection.
+--nqaj6drbuy6wf66i
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> That pattern is taken from drivers like btusb or CDC-ACM
+On 08.12.2022 17:09:40, Ye Bin wrote:
+> From: Ye Bin <yebin10@huawei.com>
+>=20
+> Since commit bdfb5765e45b remove NULL-ptr checks from users of
+> can_dev_rcv_lists_find(). 'err' parameter is useless, so remove it.
+>=20
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 
-Where does CDC-ACM set *his* interface to NULL? Looking at:
+Applied to linux-can-next.
 
-  https://elixir.bootlin.com/linux/v6.0/source/drivers/usb/class/cdc-acm.c#L1531
+Thanks,
+Marc
 
-I can see that cdc-acm sets acm->control and acm->data to NULL in his
-disconnect(), but it doesn't set its own usb_interface to NULL.
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-> which claim secondary interfaces disconnect() will be called a second time
-> for.
+--nqaj6drbuy6wf66i
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Are you saying that the disconnect() of those CAN USB drivers is being
-called twice? I do not see this in the source code. The only caller of
-usb_driver::disconnect() I can see is:
+-----BEGIN PGP SIGNATURE-----
 
-  https://elixir.bootlin.com/linux/v6.0/source/drivers/usb/core/driver.c#L458
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmORqQsACgkQrX5LkNig
+010ZUwf+MGBRuJnw3cRwCfUcjhjmK4LSK4B4C9xyb6aeorVds6iQ9kunEeZp/kUP
+c1JLeGBu48d+ruONAUgBfH0THAfYiiTJSjp6jfwsCM5N/nr2Z+Yex5TL2kTORVBU
+BFuT+POvP0HhCGgEHgrzKhCLmmAJYaCBc4y24pHuwqezEfJtnKX873OSOLIDLiQa
+Q+/EKlvmbHNNGOXjNFXn8itsSjNgntsdXulDc23d9lJQnw82FvQfORgjTOAf76HI
+FH8IB2C9CWrr0V3dQYzZ2IsdUZrVXVMDmZlJTG8/wHM3KVaT7tkV81uTnnlaOrC1
+g2Wnd7gsq6/tg7rg4A49mImf3AkT+A==
+=xiRa
+-----END PGP SIGNATURE-----
 
-> In addition, a driver can use setting intfdata to NULL as a flag
-> for disconnect() having proceeded to a point where certain things
-> can no longer be safely done.
-
-Any reference that a driver can do that? This pattern seems racy.
-
-By the way, I did check all the drivers:
-
-  * ems_usb: intf is only used in ems_usb_probe() and
-ems_usb_disconnect() functions.
-
-  * esd_usb: intf is only used in the esd_usb_probe(),
-    esd_usb_probe_one_net() (which is part of probing),
-    esd_usb_disconnect() and a couple of sysfs functions (which only
-    use intf to get a pointer to struct esd_usb).
-
-  * gs_usb: intf is used several time but only to retrive struct
-    usb_device. This seems useless, I will sent this patch to remove
-    it:
-    https://lore.kernel.org/linux-can/20221208081142.16936-3-mailhol.vincent@wanadoo.fr/
-    Aside of that, intf is only used in gs_usb_probe(),
-    gs_make_candev() (which is part of probing) and
-    gs_usb_disconnect() functions.
-
-  * kvaser_usb: intf is only used in kvaser_usb_probe() and
-    kvaser_usb_disconnect() functions.
-
-  * mcba_usb: intf is only used in mcba_usb_probe() and
-    mcba_usb_disconnect() functions.
-
-  * ucan: intf is only used in ucan_probe() and
-    ucan_disconnect(). struct ucan_priv also has a pointer to intf but
-    it is never used. I sent this patch to remove it:
-    https://lore.kernel.org/linux-can/20221208081142.16936-2-mailhol.vincent@wanadoo.fr/
-
-  * usb_8dev: intf is only used in usb_8dev_probe() and
-    usb_8dev_disconnect().
-
-With no significant use of intf outside of the probe() and
-disconnect(), there is definitely no such "use intf as a flag" in any
-of these drivers.
-
-> You need to check for that in every driver
-> you remove this code from and if you decide that it can safely be removed,
-
-What makes you assume that I didn't check this in the first place? Or
-do you see something I missed?
-
-> which is likely, then please also remove checks like this:
->
->         struct ems_usb *dev = usb_get_intfdata(intf);
->
->         usb_set_intfdata(intf, NULL);
->
->         if (dev) {
->                 unregister_netdev(dev->netdev);
-
-How is the if (dev) check related? There is no correlation between
-setting intf to NULL and dev not being NULL.
-
-I think dev is never NULL, but I did not assess that dev could not be NULL.
-
-> Either it can be called a second time, then you need to leave it
-> as is,
-
-Really?! The first thing disconnect() does is calling
-usb_get_intfdata(intf) which dereferences intf without checking if it
-is NULL, c.f.:
-
-  https://elixir.bootlin.com/linux/v6.0/source/include/linux/usb.h#L265
-
-Then it sets intf to NULL.
-
-The second time you call disconnect(), the usb_get_intfdata(intf)
-would be a NULL pointer dereference.
-
-> or the check for NULL is superfluous. But only removing setting
-> the pointer to NULL never makes sense.
-
-
-Yours sincerely,
-Vincent Mailhol
+--nqaj6drbuy6wf66i--
