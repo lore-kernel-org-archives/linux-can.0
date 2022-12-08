@@ -2,199 +2,88 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA0DAC3A5A7
-	for <linux-can@archiver.kernel.org>; Thu,  8 Dec 2022 08:12:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E76F8C63709
+	for <linux-can@archiver.kernel.org>; Thu,  8 Dec 2022 08:49:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbiLHIMD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 8 Dec 2022 03:12:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53094 "EHLO
+        id S229901AbiLHItT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 8 Dec 2022 03:49:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbiLHIMB (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 8 Dec 2022 03:12:01 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABA05654F;
-        Thu,  8 Dec 2022 00:12:00 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id jn7so797190plb.13;
-        Thu, 08 Dec 2022 00:12:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0GbBuAv7YkpRPrYej1n/dTHTQXaEfO/DfSmjGAaefU4=;
-        b=TzzNFzXhmb+jTb3KAIgvWhqVZneiIiWuEMcLzlPWqT0WtktgVQQcdHgTlyWu+L3L4/
-         +p9GJ1jUpEW9UnxiKFlBvOCMkSB/0cEyxhECBjuofAcc0wPFmrHvlGNNqA2e4swjLEut
-         iA6p5+HTaVtjBVUS+5H8jpmYlm4O6oMT0MpNlbDw2IaFaJ9NQ+A7HIo83J9+SKOt1Dfy
-         ah6GpCO/NfOMyaSB+rJkOgaP49NfaExW5C9sStHQ3nimdViVktIBlFRzesqrg/PGyxCe
-         KRWSNZKqGbJABNQQL8VHcKAx4AZ+9oKUO+RBLxbQhdTYbIKPvAWPhZo7wbag8sTxrvZH
-         lbRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=0GbBuAv7YkpRPrYej1n/dTHTQXaEfO/DfSmjGAaefU4=;
-        b=c/PPcSdkyYO7SjAiAUqIQl8DVGc6k6pt9rKWkHc/oZUYoaY7ilLd1G8+kzkRIwGPCq
-         uBEmLbseSYIXf3c0KlecVZneQL6RUNBYDAOYDtAVj6B/yDLKMuaGfoqg3PDSCp6rGaLG
-         He27VW/Q+W/z951L4ILV55/JFrJQdbQf7NmI/BzVTCHG1KziMTAYNGe8X88YThdEE3yM
-         OdgMmhhi6UpSYrzDINwc14RzAxkCkYtzcoq9WPutDGWgqF6lJkjl9y9fJvuKwnRTyn3t
-         lmbPcaznPQR3eICmw9N7zFyc63O/8OsVmZdr7wcv0lJDyJtZaELlyW9EGq2XkHLInBzA
-         DDSw==
-X-Gm-Message-State: ANoB5pk0oOVyhwwfN/8Gz8HQ9qd4wNMmUpNGaPfjUUvwTYjQRmUeGYZr
-        CLBe647VF2lONTwmRPacnjg=
-X-Google-Smtp-Source: AA0mqf4v+10yeuc5ZehzvAJqNEdeHWLFcCVk502K4ZANGUAFPLLWAQM9Z2JqVAZcjJkq30PbOhkuPg==
-X-Received: by 2002:a17:902:ce07:b0:180:f32c:7501 with SMTP id k7-20020a170902ce0700b00180f32c7501mr2005292plg.0.1670487120063;
-        Thu, 08 Dec 2022 00:12:00 -0800 (PST)
-Received: from XH22050090-L.ad.ts.tri-ad.global ([103.175.111.222])
-        by smtp.gmail.com with ESMTPSA id b12-20020a1709027e0c00b00188f07c9eedsm15735729plm.176.2022.12.08.00.11.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Dec 2022 00:11:59 -0800 (PST)
-Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc:     Martin Elshuber <martin.elshuber@theobroma-systems.com>,
-        Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>,
-        Maximilian Schneider <mws@schneidersoft.net>,
-        Peter Fink <pfink@christ-es.de>,
-        Jeroen Hofstee <jhofstee@victronenergy.com>,
-        =?UTF-8?q?Christoph=20M=C3=B6hring?= <cmoehring@christ-es.de>,
-        John Whittington <git@jbrengineering.co.uk>,
-        Vasanth Sadhasivan <vasanth.sadhasivan@samsara.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH 2/2] can: gs_usb: remove gs_can::iface
-Date:   Thu,  8 Dec 2022 17:11:42 +0900
-Message-Id: <20221208081142.16936-3-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221208081142.16936-1-mailhol.vincent@wanadoo.fr>
-References: <20221208081142.16936-1-mailhol.vincent@wanadoo.fr>
+        with ESMTP id S230003AbiLHItF (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 8 Dec 2022 03:49:05 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84C24EC;
+        Thu,  8 Dec 2022 00:48:51 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NSSVj4cnnz4f3r6C;
+        Thu,  8 Dec 2022 16:48:45 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.127.227])
+        by APP1 (Coremail) with SMTP id cCh0CgAnG6rupJFj_X4FBw--.10136S4;
+        Thu, 08 Dec 2022 16:48:48 +0800 (CST)
+From:   Ye Bin <yebin@huaweicloud.com>
+To:     socketcan@hartkopp.net, mkl@pengutronix.de, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc:     yebin10@huawei.com
+Subject: [PATCH net-next] net: af_can: remove useless parameter 'err' in 'can_rx_register()'
+Date:   Thu,  8 Dec 2022 17:09:40 +0800
+Message-Id: <20221208090940.3695670-1-yebin@huaweicloud.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgAnG6rupJFj_X4FBw--.10136S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrtw4rtry8Jw4xWr1UKFW3ZFb_yoWDZrbE9r
+        yI9r18WF17tr43Kr15Cw4fXF1vk3yrGF4xXFySy34vv3WagFZ5Gw1kGF9xXr98Gryxtr15
+        Wwn8Xr92gr1fujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUboAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Y
+        z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
+        AF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4l
+        IxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s
+        0DMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBI
+        daVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: p1hex046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The iface field of struct gs_can is only used to retrieve the
-usb_device which is already available in gs_can::udev.
+From: Ye Bin <yebin10@huawei.com>
 
-Replace each occurrence of interface_to_usbdev(dev->iface) with
-dev->udev. This done, remove gs_can::iface.
+Since commit bdfb5765e45b remove NULL-ptr checks from users of
+can_dev_rcv_lists_find(). 'err' parameter is useless, so remove it.
 
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Signed-off-by: Ye Bin <yebin10@huawei.com>
 ---
- drivers/net/can/usb/gs_usb.c | 29 +++++++++--------------------
- 1 file changed, 9 insertions(+), 20 deletions(-)
+ net/can/af_can.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index 838744d2ce34..d476c2884008 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -299,7 +299,6 @@ struct gs_can {
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index 27dcdcc0b808..ec3f7e658295 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -446,7 +446,6 @@ int can_rx_register(struct net *net, struct net_device *dev, canid_t can_id,
+ 	struct hlist_head *rcv_list;
+ 	struct can_dev_rcv_lists *dev_rcv_lists;
+ 	struct can_rcv_lists_stats *rcv_lists_stats = net->can.rcv_lists_stats;
+-	int err = 0;
  
- 	struct net_device *netdev;
- 	struct usb_device *udev;
--	struct usb_interface *iface;
+ 	/* insert new receiver  (dev,canid,mask) -> (func,data) */
  
- 	struct can_bittiming_const bt_const, data_bt_const;
- 	unsigned int channel;	/* channel number */
-@@ -383,8 +382,7 @@ static int gs_cmd_reset(struct gs_can *dev)
- 		.mode = GS_CAN_MODE_RESET,
- 	};
+@@ -481,7 +480,7 @@ int can_rx_register(struct net *net, struct net_device *dev, canid_t can_id,
+ 					       rcv_lists_stats->rcv_entries);
+ 	spin_unlock_bh(&net->can.rcvlists_lock);
  
--	return usb_control_msg_send(interface_to_usbdev(dev->iface), 0,
--				    GS_USB_BREQ_MODE,
-+	return usb_control_msg_send(dev->udev, 0, GS_USB_BREQ_MODE,
- 				    USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
- 				    dev->channel, 0, &dm, sizeof(dm), 1000,
- 				    GFP_KERNEL);
-@@ -396,8 +394,7 @@ static inline int gs_usb_get_timestamp(const struct gs_can *dev,
- 	__le32 timestamp;
- 	int rc;
- 
--	rc = usb_control_msg_recv(interface_to_usbdev(dev->iface), 0,
--				  GS_USB_BREQ_TIMESTAMP,
-+	rc = usb_control_msg_recv(dev->udev, 0, GS_USB_BREQ_TIMESTAMP,
- 				  USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
- 				  dev->channel, 0,
- 				  &timestamp, sizeof(timestamp),
-@@ -674,8 +671,7 @@ static int gs_usb_set_bittiming(struct net_device *netdev)
- 	};
- 
- 	/* request bit timings */
--	return usb_control_msg_send(interface_to_usbdev(dev->iface), 0,
--				    GS_USB_BREQ_BITTIMING,
-+	return usb_control_msg_send(dev->udev, 0, GS_USB_BREQ_BITTIMING,
- 				    USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
- 				    dev->channel, 0, &dbt, sizeof(dbt), 1000,
- 				    GFP_KERNEL);
-@@ -698,8 +694,7 @@ static int gs_usb_set_data_bittiming(struct net_device *netdev)
- 		request = GS_USB_BREQ_QUIRK_CANTACT_PRO_DATA_BITTIMING;
- 
- 	/* request data bit timings */
--	return usb_control_msg_send(interface_to_usbdev(dev->iface), 0,
--				    request,
-+	return usb_control_msg_send(dev->udev, 0, request,
- 				    USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
- 				    dev->channel, 0, &dbt, sizeof(dbt), 1000,
- 				    GFP_KERNEL);
-@@ -941,8 +936,7 @@ static int gs_can_open(struct net_device *netdev)
- 	/* finally start device */
- 	dev->can.state = CAN_STATE_ERROR_ACTIVE;
- 	dm.flags = cpu_to_le32(flags);
--	rc = usb_control_msg_send(interface_to_usbdev(dev->iface), 0,
--				  GS_USB_BREQ_MODE,
-+	rc = usb_control_msg_send(dev->udev, 0, GS_USB_BREQ_MODE,
- 				  USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
- 				  dev->channel, 0, &dm, sizeof(dm), 1000,
- 				  GFP_KERNEL);
-@@ -969,8 +963,7 @@ static int gs_usb_get_state(const struct net_device *netdev,
- 	struct gs_device_state ds;
- 	int rc;
- 
--	rc = usb_control_msg_recv(interface_to_usbdev(dev->iface), 0,
--				  GS_USB_BREQ_GET_STATE,
-+	rc = usb_control_msg_recv(dev->udev, 0, GS_USB_BREQ_GET_STATE,
- 				  USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
- 				  dev->channel, 0,
- 				  &ds, sizeof(ds),
-@@ -1064,8 +1057,7 @@ static int gs_usb_set_identify(struct net_device *netdev, bool do_identify)
- 	else
- 		imode.mode = cpu_to_le32(GS_CAN_IDENTIFY_OFF);
- 
--	return usb_control_msg_send(interface_to_usbdev(dev->iface), 0,
--				    GS_USB_BREQ_IDENTIFY,
-+	return usb_control_msg_send(dev->udev, 0, GS_USB_BREQ_IDENTIFY,
- 				    USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
- 				    dev->channel, 0, &imode, sizeof(imode), 100,
- 				    GFP_KERNEL);
-@@ -1118,8 +1110,7 @@ static int gs_usb_get_termination(struct net_device *netdev, u16 *term)
- 	struct gs_device_termination_state term_state;
- 	int rc;
- 
--	rc = usb_control_msg_recv(interface_to_usbdev(dev->iface), 0,
--				  GS_USB_BREQ_GET_TERMINATION,
-+	rc = usb_control_msg_recv(dev->udev, 0, GS_USB_BREQ_GET_TERMINATION,
- 				  USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
- 				  dev->channel, 0,
- 				  &term_state, sizeof(term_state), 1000,
-@@ -1145,8 +1136,7 @@ static int gs_usb_set_termination(struct net_device *netdev, u16 term)
- 	else
- 		term_state.state = cpu_to_le32(GS_CAN_TERMINATION_STATE_OFF);
- 
--	return usb_control_msg_send(interface_to_usbdev(dev->iface), 0,
--				    GS_USB_BREQ_SET_TERMINATION,
-+	return usb_control_msg_send(dev->udev, 0, GS_USB_BREQ_SET_TERMINATION,
- 				    USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
- 				    dev->channel, 0,
- 				    &term_state, sizeof(term_state), 1000,
-@@ -1210,7 +1200,6 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 	dev->bt_const.brp_inc = le32_to_cpu(bt_const.brp_inc);
- 
- 	dev->udev = interface_to_usbdev(intf);
--	dev->iface = intf;
- 	dev->netdev = netdev;
- 	dev->channel = channel;
+-	return err;
++	return 0;
+ }
+ EXPORT_SYMBOL(can_rx_register);
  
 -- 
-2.25.1
+2.31.1
 
