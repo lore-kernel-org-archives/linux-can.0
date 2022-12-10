@@ -2,123 +2,94 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91506C4332F
-	for <linux-can@archiver.kernel.org>; Fri,  9 Dec 2022 18:35:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D425BC10F1B
+	for <linux-can@archiver.kernel.org>; Sat, 10 Dec 2022 09:02:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229738AbiLISfq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 9 Dec 2022 13:35:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57584 "EHLO
+        id S229678AbiLJJC3 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 10 Dec 2022 04:02:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbiLISfp (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 9 Dec 2022 13:35:45 -0500
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 165715F6E9;
-        Fri,  9 Dec 2022 10:35:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1670610940;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=EDWwRjKB927nNLSfG8my1y5rwjZ9GPC4JIWFtDJN42k=;
-    b=E54Q+RrR7j530IZg2mDxQnYVohqX6AN+Cl2CF+kaKw8AF+nGO6vPFWl7xbjCfQ3Nmo
-    MPVFrMfYeDmYPwxF37GKaKrI1cUdwlTf8rpy+V77zdhz4xdTbxJqrCUCJPaCPBA+MDMG
-    4vXoehbq+gay5Vtmjj7iwJtCGP2a/yD09EPRkBOJ5p6LqgVStS7IJlVCYWZj8mmkfCTZ
-    Kp1AzGum5sQnujBbI8zpA1V1TQGruFWcxePf7Cc+vU7jQqLmaxIYDIDyjWL/ajE5fVCA
-    9DmZzUSnM88OM0JyQ2tC24E1nPqWjICBXxz9XMITrioiTOmTNc/h3NKBWyKQRiGeJX8e
-    hJtg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3TMaFqTEVR5J8xpzl0="
-X-RZG-CLASS-ID: mo00
-Received: from [192.168.60.87]
-    by smtp.strato.de (RZmta 48.2.1 DYNA|AUTH)
-    with ESMTPSA id Dde783yB9IZe76h
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Fri, 9 Dec 2022 19:35:40 +0100 (CET)
-Message-ID: <49f3bce6-dc9a-60c7-0772-010edb8d0363@hartkopp.net>
-Date:   Fri, 9 Dec 2022 19:35:34 +0100
+        with ESMTP id S229637AbiLJJC1 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 10 Dec 2022 04:02:27 -0500
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE5526F9;
+        Sat, 10 Dec 2022 01:02:24 -0800 (PST)
+Received: by mail-pj1-f45.google.com with SMTP id w4-20020a17090ac98400b002186f5d7a4cso10679501pjt.0;
+        Sat, 10 Dec 2022 01:02:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mECpz9PO560rZEtmlTIIyNmHohjFDYglNrHTBIHy5Mk=;
+        b=bnWMSY42zrmurVmUXgTIz11OP6tZViFo9gF79h6m1ynb1eiQD2XUFVdaB4p/p+Ks1s
+         LzuFwNxyUxhdZfuKLXd3HRG9ZsGgAk3MQlCXkc3sCD2RNI2I73ZSnIEiMmZ95hfvdRXy
+         7JfWVaPHRoG4AgIAF8jwEaCZ5jDKYLwfj+Kqh3itelfIkKvcPn+TboTJwv0DicpZt9qG
+         RrP1/9hSiUs1ftqbfmp69veeMZnmTdIMd9trjG6DofpCYCX1d44yQuwMfKIcBaBjefah
+         9kO7HWHjx2BAKliLGIUgqmtmvx2zs9nJzAeSxERvVjXnc/KggCoPAhLtrO0rLQQ4Ysto
+         OldQ==
+X-Gm-Message-State: ANoB5plMH4YZ2hLy0K8DyyUcwuiaRoTI7ZjOTLGsmzIE/qE7wWvUAdF4
+        bvCEr6ToZ8BVzYJ1TYC0VJGcVRJIoc/ee7aAyD8=
+X-Google-Smtp-Source: AA0mqf5XfADBHlEewgMAO0oHreDg7KDhD3vofPsPaEMatJptU1XF4MljYrUhZIoRRaAEdgM7zROcqGxM2JQKP5t9/k4=
+X-Received: by 2002:a17:90b:1293:b0:21c:bc8b:b080 with SMTP id
+ fw19-20020a17090b129300b0021cbc8bb080mr1821276pjb.19.1670662943811; Sat, 10
+ Dec 2022 01:02:23 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH stable] can: af_can: fix NULL pointer dereference in
- can_rcv_filter
-To:     stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     netdev@vger.kernel.org, linux-can@vger.kernel.org,
-        syzbot+2d7f58292cb5b29eb5ad@syzkaller.appspotmail.com,
-        Wei Chen <harperchen1110@gmail.com>
-References: <20221209180745.2977-1-socketcan@hartkopp.net>
-Content-Language: en-US
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20221209180745.2977-1-socketcan@hartkopp.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20221203133159.94414-1-mailhol.vincent@wanadoo.fr>
+ <9493232b-c8fa-5612-fb13-fccf58b01942@suse.com> <CAMZ6RqJejJCOUk+MSvxjw9Us0gYhTuoOB4MUTk9jji6Bk=ix3A@mail.gmail.com>
+ <b5df2262-7a4f-0dcf-6460-793dad02401d@suse.com> <CAMZ6RqL9eKco+fAMZoQ6X9PNE7dDK3KnFZoMCXrjgvx_ZU8=Ew@mail.gmail.com>
+ <9d1fac95-d7e0-69a5-c6c1-9df5bd90bcb0@suse.com>
+In-Reply-To: <9d1fac95-d7e0-69a5-c6c1-9df5bd90bcb0@suse.com>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Sat, 10 Dec 2022 18:02:10 +0900
+Message-ID: <CAMZ6RqKvJWBWOdCEve9cE9xGuVxTicZjn-5PROHsMdHn=eMqng@mail.gmail.com>
+Subject: Re: [PATCH 0/8] can: usb: remove all usb_set_intfdata(intf, NULL) in
+ drivers' disconnect()
+To:     Oliver Neukum <oneukum@suse.com>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Frank Jungclaus <frank.jungclaus@esd.eu>, socketcan@esd.eu,
+        Yasushi SHOJI <yashi@spacecubics.com>,
+        =?UTF-8?Q?Stefan_M=C3=A4tje?= <stefan.maetje@esd.eu>,
+        Hangyu Hua <hbh25y@gmail.com>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Peter Fink <pfink@christ-es.de>,
+        Jeroen Hofstee <jhofstee@victronenergy.com>,
+        =?UTF-8?Q?Christoph_M=C3=B6hring?= <cmoehring@christ-es.de>,
+        John Whittington <git@jbrengineering.co.uk>,
+        Vasanth Sadhasivan <vasanth.sadhasivan@samsara.com>,
+        Jimmy Assarsson <extja@kvaser.com>,
+        Anssi Hannula <anssi.hannula@bitwise.fi>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Stephane Grosjean <s.grosjean@peak-system.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Julia Lawall <Julia.Lawall@inria.fr>,
+        Dongliang Mu <dzm91@hust.edu.cn>,
+        Sebastian Haas <haas@ems-wuensche.com>,
+        Maximilian Schneider <max@schneidersoft.net>,
+        Daniel Berglund <db@kvaser.com>,
+        Olivier Sobrie <olivier@sobrie.be>,
+        =?UTF-8?B?UmVtaWdpdXN6IEtvxYLFgsSFdGFq?= 
+        <remigiusz.kollataj@mobica.com>,
+        Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>,
+        Martin Elshuber <martin.elshuber@theobroma-systems.com>,
+        Bernd Krumboeck <b.krumboeck@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Just checked that the stable patch for 8aa59e355949 ("can: af_can: fix 
-NULL pointer dereference in can_rx_register()") has been applied down to 
-linux-5.4.y
+Hi,
 
-Same works with this patch.
+Thanks Alan and Oliver for your patience, really appreciated. And
+sorry that it took me four messages to realize my mistake.
 
-Just the current 6.1-rc has some changes in this section which makes 
-this backport stable patch necessary.
-
-Best,
-Oliver
-
-
-On 09.12.22 19:07, Oliver Hartkopp wrote:
-> Analogue to commit 8aa59e355949 ("can: af_can: fix NULL pointer
-> dereference in can_rx_register()") we need to check for a missing
-> initialization of ml_priv in the receive path of CAN frames.
-> 
-> Since commit 4e096a18867a ("net: introduce CAN specific pointer in the
-> struct net_device") the check for dev->type to be ARPHRD_CAN is not
-> sufficient anymore since bonding or tun netdevices claim to be CAN
-> devices but do not initialize ml_priv accordingly.
-> 
-> Upstream commit 0acc442309a0 ("can: af_can: fix NULL pointer
-> dereference in can_rcv_filter")
-> 
-> Fixes: 4e096a18867a ("net: introduce CAN specific pointer in the struct net_device")
-> Reported-by: syzbot+2d7f58292cb5b29eb5ad@syzkaller.appspotmail.com
-> Reported-by: Wei Chen <harperchen1110@gmail.com>
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> Cc: stable@vger.kernel.org # 5.12 .. 6.0
-> ---
->   net/can/af_can.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/can/af_can.c b/net/can/af_can.c
-> index 1fb49d51b25d..4392f1d9c027 100644
-> --- a/net/can/af_can.c
-> +++ b/net/can/af_can.c
-> @@ -678,11 +678,11 @@ static void can_receive(struct sk_buff *skb, struct net_device *dev)
->   static int can_rcv(struct sk_buff *skb, struct net_device *dev,
->   		   struct packet_type *pt, struct net_device *orig_dev)
->   {
->   	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
->   
-> -	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CAN_MTU)) {
-> +	if (unlikely(dev->type != ARPHRD_CAN || !can_get_ml_priv(dev) || skb->len != CAN_MTU)) {
->   		pr_warn_once("PF_CAN: dropped non conform CAN skbuff: dev type %d, len %d\n",
->   			     dev->type, skb->len);
->   		goto free_skb;
->   	}
->   
-> @@ -704,11 +704,11 @@ static int can_rcv(struct sk_buff *skb, struct net_device *dev,
->   static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
->   		     struct packet_type *pt, struct net_device *orig_dev)
->   {
->   	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
->   
-> -	if (unlikely(dev->type != ARPHRD_CAN || skb->len != CANFD_MTU)) {
-> +	if (unlikely(dev->type != ARPHRD_CAN || !can_get_ml_priv(dev) || skb->len != CANFD_MTU)) {
->   		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d, len %d\n",
->   			     dev->type, skb->len);
->   		goto free_skb;
->   	}
->   
+I will send a v2 right now.
