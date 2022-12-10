@@ -2,57 +2,43 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BF7DC4332F
-	for <linux-can@archiver.kernel.org>; Sat, 10 Dec 2022 09:06:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0958CC4332F
+	for <linux-can@archiver.kernel.org>; Sat, 10 Dec 2022 10:59:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbiLJJGu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 10 Dec 2022 04:06:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45708 "EHLO
+        id S229804AbiLJK7g (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 10 Dec 2022 05:59:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbiLJJFY (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 10 Dec 2022 04:05:24 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A1B227FCC;
-        Sat, 10 Dec 2022 01:03:53 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id q17-20020a17090aa01100b002194cba32e9so10662153pjp.1;
-        Sat, 10 Dec 2022 01:03:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BAIDUqCFCbste3E2fgCqiNLLF34YAvsqIts/qVZT5VE=;
-        b=KMX9ZOUf4MOtPI3r5RMOVeguRIHaPIyxTnjBz3h5KoXtV0Mi4dAhXXID6SvrMZuL0F
-         wB1cVuDX5UJgsOCnTM0W1RpO2RQc527nxUWn5/cKwb9Oy30pguJqK/ApNxMtraAdDNK9
-         Q0/R3CfADH4p6YRGoY6dRiKxAehFTZaoRIh5+cpQJdU0kQNGjKL4u1332qT5ZebH+AGe
-         Sn2Obg7ltato8+uWw6CJ962vqH46u7EkVZ06bb9asTkrl2LOCXnZt6HkxUg6rnaAE1Q1
-         JiGQ2iZZlhMei2Ama4LM0PO8yv4M7QC8Ve/dsg00R9OJvptaFnD4T3LM2hCWYGK0XwmQ
-         cmlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=BAIDUqCFCbste3E2fgCqiNLLF34YAvsqIts/qVZT5VE=;
-        b=c0KB1LFFEZoj2AuLpcPdNywJnCdzWOi+Xc78FEyoi2tEYTbV4jERRlzddjp5DJEYFP
-         0W2pZAzcJcf1q0p76bH2prZcrvCRYuAAQe1UiB0oOL/E/Qcu/3Y5jb+EeuvOUwO3Yq0b
-         OJ1184cLNAFJlJ8jemiu+Je1Ss1+SONBEpMo5yD3A6OMwSOwzaL3YmAkapDcs+oTvAZ9
-         MTnrO/YSaG1br81lhxXivldIWEFL9B2kafDgl5lh6mEdo+3Q3fpt6HcJjLLoitZPC75H
-         dMwvS5+HoEOmIp3hX3hrLl3ZnZvrbEnDvVpgZO2MwbXamaq3HwHeJXYu9z2KgNac2Ggt
-         YSqA==
-X-Gm-Message-State: ANoB5pmWJkcKciilxaBAr9+jMgUyu+u5zSipO+HoWZG6IoRlL/8CquxN
-        SgDRGEnEjBxNoQQhbOryQhc=
-X-Google-Smtp-Source: AA0mqf75zMExLL9eNxNluj/yWIbD7LwbEOwAKajUBM3OPlZXX+Jn0XU9ey/Y1CqgCKIJgHGJkinT6w==
-X-Received: by 2002:a17:902:be05:b0:186:59e9:a261 with SMTP id r5-20020a170902be0500b0018659e9a261mr8546405pls.43.1670663033101;
-        Sat, 10 Dec 2022 01:03:53 -0800 (PST)
-Received: from localhost.localdomain (124x33x176x97.ap124.ftth.ucom.ne.jp. [124.33.176.97])
-        by smtp.gmail.com with ESMTPSA id u7-20020a17090282c700b00186a2444a43sm2549481plz.27.2022.12.10.01.03.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Dec 2022 01:03:52 -0800 (PST)
-Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc:     Oliver Neukum <oneukum@suse.com>,
+        with ESMTP id S229680AbiLJK7g (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 10 Dec 2022 05:59:36 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B49DBCA4;
+        Sat, 10 Dec 2022 02:59:35 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0F84460B2B;
+        Sat, 10 Dec 2022 10:59:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A1BDC433EF;
+        Sat, 10 Dec 2022 10:59:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670669974;
+        bh=9Ba55FamUQD94n7+bqRFC7LNfipEY1H++sF1ApKOw4c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HldOCBwKAo1ZvYfSMLipFcFrb6nAK5WqavEa4FPhS3b0iQa5y3I7D0af7P5C3v3rd
+         /Zgk8XLopjlqjBaM2Dp9l84a/1a1+azpRSBry9EcMxLaKwjJSN/r4ilmjIaaxxwnVR
+         z0L0wFTLNiy8vwesv673SaCpBH6Zmc3kBVN2hx77Frw7J9lP2yXX3jbI+SSi0EM1rX
+         6CpIFoLkvRN9dQ79EEXnNjZyhR/N1HVxh7bPbwFdGdLdFEf0oq7I5cQpME+4v2042u
+         Hzxg+xNfJVc2Xss/kU6AwkvuVe0LvXW0oZ/wwhqtP/DlT+I+KKVODbszwNT3YbN60i
+         5zKJ03RmH3sdw==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1p3xaB-0005xq-OH; Sat, 10 Dec 2022 11:59:52 +0100
+Date:   Sat, 10 Dec 2022 11:59:51 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
+        Oliver Neukum <oneukum@suse.com>,
         Wolfgang Grandegger <wg@grandegger.com>,
         "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -60,12 +46,12 @@ Cc:     Oliver Neukum <oneukum@suse.com>,
         Paolo Abeni <pabeni@redhat.com>,
         Frank Jungclaus <frank.jungclaus@esd.eu>, socketcan@esd.eu,
         Yasushi SHOJI <yashi@spacecubics.com>,
-        =?UTF-8?q?Stefan=20M=C3=A4tje?= <stefan.maetje@esd.eu>,
+        Stefan =?utf-8?B?TcOkdGpl?= <stefan.maetje@esd.eu>,
         Hangyu Hua <hbh25y@gmail.com>,
         Oliver Hartkopp <socketcan@hartkopp.net>,
         Peter Fink <pfink@christ-es.de>,
         Jeroen Hofstee <jhofstee@victronenergy.com>,
-        =?UTF-8?q?Christoph=20M=C3=B6hring?= <cmoehring@christ-es.de>,
+        Christoph =?utf-8?Q?M=C3=B6hring?= <cmoehring@christ-es.de>,
         John Whittington <git@jbrengineering.co.uk>,
         Vasanth Sadhasivan <vasanth.sadhasivan@samsara.com>,
         Jimmy Assarsson <extja@kvaser.com>,
@@ -80,68 +66,74 @@ Cc:     Oliver Neukum <oneukum@suse.com>,
         Maximilian Schneider <max@schneidersoft.net>,
         Daniel Berglund <db@kvaser.com>,
         Olivier Sobrie <olivier@sobrie.be>,
-        =?UTF-8?q?Remigiusz=20Ko=C5=82=C5=82=C4=85taj?= 
+        Remigiusz =?utf-8?B?S2/FgsWCxIV0YWo=?= 
         <remigiusz.kollataj@mobica.com>,
         Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>,
         Martin Elshuber <martin.elshuber@theobroma-systems.com>,
         Bernd Krumboeck <b.krumboeck@gmail.com>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         Alan Stern <stern@rowland.harvard.edu>,
-        linux-usb@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v2 9/9] can: etas_es58x and peak_usb: remove useless call to usb_set_intfdata()
-Date:   Sat, 10 Dec 2022 18:01:57 +0900
-Message-Id: <20221210090157.793547-10-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.37.4
-In-Reply-To: <20221210090157.793547-1-mailhol.vincent@wanadoo.fr>
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2 1/9] can: ems_usb: ems_usb_disconnect(): fix NULL
+ pointer dereference
+Message-ID: <Y5Rmp66zvlwykRLq@hovoldconsulting.com>
 References: <20221203133159.94414-1-mailhol.vincent@wanadoo.fr>
  <20221210090157.793547-1-mailhol.vincent@wanadoo.fr>
+ <20221210090157.793547-2-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221210090157.793547-2-mailhol.vincent@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The core sets the usb_interface to NULL in [1]. Also setting it to
-NULL in usb_driver::disconnect() is useless.
+On Sat, Dec 10, 2022 at 06:01:49PM +0900, Vincent Mailhol wrote:
+> ems_usb sets the driver's priv data to NULL before waiting for the
+> completion of outsdanding urbs. This can results in NULL pointer
+> dereference, c.f. [1] and [2].
 
-Remove the call to usb_set_intfdata(intf, NULL) in the disconnect
-function of all drivers under drivers/net/can/usb.
+Please stop making hand-wavy claims like this. There is no risk for a
+NULL-pointer deference here, and if you think otherwise you need to
+explain how that can happen in detail for each driver.
 
-[1] function usb_unbind_interface() from drivers/usb/core/driver.c
-Link: https://elixir.bootlin.com/linux/v6.0/source/drivers/usb/core/driver.c#L497
+> Remove the call to usb_set_intfdata(intf, NULL). The core will take
+> care of setting it to NULL after ems_usb_disconnect() at [3].
+> 
+> [1] c/27ef17849779 ("usb: add usb_set_intfdata() documentation")
+> Link: https://git.kernel.org/gregkh/usb/c/27ef17849779
 
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
----
- drivers/net/can/usb/etas_es58x/es58x_core.c  | 1 -
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 2 --
- 2 files changed, 3 deletions(-)
+The claim in this commit is not correct either.
 
-diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
-index 0c7f7505632c..4924f0be3510 100644
---- a/drivers/net/can/usb/etas_es58x/es58x_core.c
-+++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
-@@ -2257,7 +2257,6 @@ static void es58x_disconnect(struct usb_interface *intf)
- 	es58x_free_netdevs(es58x_dev);
- 	es58x_free_urbs(es58x_dev);
- 	devlink_free(priv_to_devlink(es58x_dev));
--	usb_set_intfdata(intf, NULL);
- }
- 
- static struct usb_driver es58x_driver = {
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index 1d996d3320fe..c15200aebfb6 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -974,8 +974,6 @@ static void peak_usb_disconnect(struct usb_interface *intf)
- 		free_candev(netdev);
- 		dev_info(&intf->dev, "%s removed\n", name);
- 	}
--
--	usb_set_intfdata(intf, NULL);
- }
- 
- /*
--- 
-2.37.4
+> [2] thread about usb_set_intfdata() on linux-usb mailing.
+> Link: https://lore.kernel.org/linux-usb/Y4OD70GD4KnoRk0k@rowland.harvard.edu/
+> 
+> [3] function usb_unbind_interface() from drivers/usb/core/driver.c
+> Link: https://elixir.bootlin.com/linux/v6.0/source/drivers/usb/core/driver.c#L497
+> 
+> Fixes: 702171adeed3 ("ems_usb: Added support for EMS CPC-USB/ARM7 CAN/USB interface")
+> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> ---
+>  drivers/net/can/usb/ems_usb.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
+> index 050c0b49938a..c64cb40ac8de 100644
+> --- a/drivers/net/can/usb/ems_usb.c
+> +++ b/drivers/net/can/usb/ems_usb.c
+> @@ -1062,8 +1062,6 @@ static void ems_usb_disconnect(struct usb_interface *intf)
+>  {
+>  	struct ems_usb *dev = usb_get_intfdata(intf);
 
+The interface data pointer is only used in this function so there is no
+risk for any NULL pointer dereference here. I only checked one of the
+other drivers you patch, but I'm pretty sure all of your claims about
+fixing NULL-pointer dereferences in this series are equally bogus.
+
+>  
+> -	usb_set_intfdata(intf, NULL);
+> -
+>  	if (dev) {
+>  		unregister_netdev(dev->netdev);
+
+Johan
