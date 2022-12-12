@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E37EC54EBD
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92BF3C54EBC
 	for <linux-can@archiver.kernel.org>; Mon, 12 Dec 2022 11:32:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232149AbiLLLcX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S232151AbiLLLcX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Mon, 12 Dec 2022 06:32:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43086 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232193AbiLLLbR (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 12 Dec 2022 06:31:17 -0500
+        with ESMTP id S232208AbiLLLbT (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 12 Dec 2022 06:31:19 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42CA89FC0
-        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 03:31:13 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5963B65F5
+        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 03:31:14 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1p4h1b-0000mL-9u
-        for linux-can@vger.kernel.org; Mon, 12 Dec 2022 12:31:11 +0100
+        id 1p4h1c-0000qe-BA
+        for linux-can@vger.kernel.org; Mon, 12 Dec 2022 12:31:12 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 0D8EB13CC7E
+        by bjornoya.blackshift.org (Postfix) with SMTP id 934EC13CC88
         for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 11:30:59 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6371513CC45;
-        Mon, 12 Dec 2022 11:30:57 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7F9AA13CC21;
+        Mon, 12 Dec 2022 11:30:56 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 567fd8d7;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 474f95a7;
         Mon, 12 Dec 2022 11:30:48 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         Markus Schneider-Pargmann <msp@baylibre.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 38/39] can: tcan4x5x: Fix register range of first two blocks
-Date:   Mon, 12 Dec 2022 12:30:44 +0100
-Message-Id: <20221212113045.222493-39-mkl@pengutronix.de>
+Subject: [PATCH net-next 33/39] can: m_can: Count read getindex in the driver
+Date:   Mon, 12 Dec 2022 12:30:39 +0100
+Message-Id: <20221212113045.222493-34-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221212113045.222493-1-mkl@pengutronix.de>
 References: <20221212113045.222493-1-mkl@pengutronix.de>
@@ -56,34 +56,72 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Markus Schneider-Pargmann <msp@baylibre.com>
 
-According to the datasheet 0x10 is the last register in the first block,
-not register 0x2c.
-
-The datasheet lists the last register of the second block as 0x830, not
-0x83c.
+The getindex gets increased by one every time. We can calculate the
+correct getindex in the driver and avoid the additional reads of rxfs.
 
 Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-Link: https://lore.kernel.org/all/20221206115728.1056014-11-msp@baylibre.com
+Link: https://lore.kernel.org/all/20221206115728.1056014-6-msp@baylibre.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/tcan4x5x-regmap.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/m_can/m_can.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/can/m_can/tcan4x5x-regmap.c b/drivers/net/can/m_can/tcan4x5x-regmap.c
-index 26e212b8ca7a..33aed989e42a 100644
---- a/drivers/net/can/m_can/tcan4x5x-regmap.c
-+++ b/drivers/net/can/m_can/tcan4x5x-regmap.c
-@@ -91,8 +91,8 @@ static int tcan4x5x_regmap_read(void *context,
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 83d3a7f191bf..9476d96013fa 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -477,19 +477,16 @@ static void m_can_receive_skb(struct m_can_classdev *cdev,
+ 	}
  }
  
- static const struct regmap_range tcan4x5x_reg_table_yes_range[] = {
--	regmap_reg_range(0x0000, 0x002c),	/* Device ID and SPI Registers */
--	regmap_reg_range(0x0800, 0x083c),	/* Device configuration registers and Interrupt Flags*/
-+	regmap_reg_range(0x0000, 0x0010),	/* Device ID and SPI Registers */
-+	regmap_reg_range(0x0800, 0x0830),	/* Device configuration registers and Interrupt Flags*/
- 	regmap_reg_range(0x1000, 0x10fc),	/* M_CAN */
- 	regmap_reg_range(0x8000, 0x87fc),	/* MRAM */
- };
+-static int m_can_read_fifo(struct net_device *dev, u32 rxfs)
++static int m_can_read_fifo(struct net_device *dev, u32 fgi)
+ {
+ 	struct net_device_stats *stats = &dev->stats;
+ 	struct m_can_classdev *cdev = netdev_priv(dev);
+ 	struct canfd_frame *cf;
+ 	struct sk_buff *skb;
+ 	struct id_and_dlc fifo_header;
+-	u32 fgi;
+ 	u32 timestamp = 0;
+ 	int err;
+ 
+-	/* calculate the fifo get index for where to read data */
+-	fgi = FIELD_GET(RXFS_FGI_MASK, rxfs);
+ 	err = m_can_fifo_read(cdev, fgi, M_CAN_FIFO_ID, &fifo_header, 2);
+ 	if (err)
+ 		goto out_fail;
+@@ -554,6 +551,9 @@ static int m_can_do_rx_poll(struct net_device *dev, int quota)
+ 	struct m_can_classdev *cdev = netdev_priv(dev);
+ 	u32 pkts = 0;
+ 	u32 rxfs;
++	u32 rx_count;
++	u32 fgi;
++	int i;
+ 	int err;
+ 
+ 	rxfs = m_can_read(cdev, M_CAN_RXF0S);
+@@ -562,14 +562,17 @@ static int m_can_do_rx_poll(struct net_device *dev, int quota)
+ 		return 0;
+ 	}
+ 
+-	while ((rxfs & RXFS_FFL_MASK) && (quota > 0)) {
+-		err = m_can_read_fifo(dev, rxfs);
++	rx_count = FIELD_GET(RXFS_FFL_MASK, rxfs);
++	fgi = FIELD_GET(RXFS_FGI_MASK, rxfs);
++
++	for (i = 0; i < rx_count && quota > 0; ++i) {
++		err = m_can_read_fifo(dev, fgi);
+ 		if (err)
+ 			return err;
+ 
+ 		quota--;
+ 		pkts++;
+-		rxfs = m_can_read(cdev, M_CAN_RXF0S);
++		fgi = (++fgi >= cdev->mcfg[MRAM_RXF0].num ? 0 : fgi);
+ 	}
+ 
+ 	return pkts;
 -- 
 2.35.1
 
