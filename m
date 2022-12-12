@@ -2,44 +2,44 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A813AC4708D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5423C10F1E
 	for <linux-can@archiver.kernel.org>; Mon, 12 Dec 2022 11:32:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231779AbiLLLcK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S231830AbiLLLcK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Mon, 12 Dec 2022 06:32:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42914 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232125AbiLLLbM (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 12 Dec 2022 06:31:12 -0500
+        with ESMTP id S232141AbiLLLbN (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 12 Dec 2022 06:31:13 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 961889FC4
-        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 03:31:05 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD1C642F
+        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 03:31:07 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1p4h1T-0000Tc-SU
-        for linux-can@vger.kernel.org; Mon, 12 Dec 2022 12:31:03 +0100
+        id 1p4h1W-0000aI-5f
+        for linux-can@vger.kernel.org; Mon, 12 Dec 2022 12:31:06 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 0AC2313CC0B
-        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 11:30:55 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id E18BB13CC30
+        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 11:30:56 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6256113CBC9;
-        Mon, 12 Dec 2022 11:30:54 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 1907913CBE7;
+        Mon, 12 Dec 2022 11:30:55 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b8e2edd3;
-        Mon, 12 Dec 2022 11:30:47 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ed81f713;
+        Mon, 12 Dec 2022 11:30:48 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Ye Bin <yebin10@huawei.com>,
+        kernel@pengutronix.de, Vivek Yadav <vivek.2311@samsung.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 23/39] net: af_can: remove useless parameter 'err' in 'can_rx_register()'
-Date:   Mon, 12 Dec 2022 12:30:29 +0100
-Message-Id: <20221212113045.222493-24-mkl@pengutronix.de>
+Subject: [PATCH net-next 26/39] can: m_can: Call the RAM init directly from m_can_chip_config
+Date:   Mon, 12 Dec 2022 12:30:32 +0100
+Message-Id: <20221212113045.222493-27-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221212113045.222493-1-mkl@pengutronix.de>
 References: <20221212113045.222493-1-mkl@pengutronix.de>
@@ -53,39 +53,135 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Ye Bin <yebin10@huawei.com>
+From: Vivek Yadav <vivek.2311@samsung.com>
 
-Since commit bdfb5765e45b remove NULL-ptr checks from users of
-can_dev_rcv_lists_find(). 'err' parameter is useless, so remove it.
+When we try to access the mcan message ram addresses during the probe,
+hclk is gated by any other drivers or disabled, because of that probe
+gets failed.
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
-Link: https://lore.kernel.org/all/20221208090940.3695670-1-yebin@huaweicloud.com
+Move the mram init functionality to mcan chip config called by
+m_can_start from mcan open function, by that time clocks are
+enabled.
+
+Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Vivek Yadav <vivek.2311@samsung.com>
+Link: https://lore.kernel.org/all/20221207100632.96200-2-vivek.2311@samsung.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/af_can.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/can/m_can/m_can.c          | 32 +++++++++++++++++++++-----
+ drivers/net/can/m_can/m_can_platform.c |  4 ----
+ drivers/net/can/m_can/tcan4x5x-core.c  |  5 ----
+ 3 files changed, 26 insertions(+), 15 deletions(-)
 
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index c69168f11e44..7343fd487dbe 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -446,7 +446,6 @@ int can_rx_register(struct net *net, struct net_device *dev, canid_t can_id,
- 	struct hlist_head *rcv_list;
- 	struct can_dev_rcv_lists *dev_rcv_lists;
- 	struct can_rcv_lists_stats *rcv_lists_stats = net->can.rcv_lists_stats;
--	int err = 0;
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index b1893bb27d59..be8f4b662f95 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1243,10 +1243,17 @@ static int m_can_set_bittiming(struct net_device *dev)
+  * - setup bittiming
+  * - configure timestamp generation
+  */
+-static void m_can_chip_config(struct net_device *dev)
++static int m_can_chip_config(struct net_device *dev)
+ {
+ 	struct m_can_classdev *cdev = netdev_priv(dev);
+ 	u32 cccr, test;
++	int err;
++
++	err = m_can_init_ram(cdev);
++	if (err) {
++		dev_err(cdev->dev, "Message RAM configuration failed\n");
++		return err;
++	}
  
- 	/* insert new receiver  (dev,canid,mask) -> (func,data) */
+ 	m_can_config_endisable(cdev, true);
  
-@@ -481,7 +480,7 @@ int can_rx_register(struct net *net, struct net_device *dev, canid_t can_id,
- 					       rcv_lists_stats->rcv_entries);
- 	spin_unlock_bh(&net->can.rcvlists_lock);
+@@ -1370,18 +1377,25 @@ static void m_can_chip_config(struct net_device *dev)
  
--	return err;
+ 	if (cdev->ops->init)
+ 		cdev->ops->init(cdev);
++
 +	return 0;
  }
- EXPORT_SYMBOL(can_rx_register);
  
+-static void m_can_start(struct net_device *dev)
++static int m_can_start(struct net_device *dev)
+ {
+ 	struct m_can_classdev *cdev = netdev_priv(dev);
++	int ret;
+ 
+ 	/* basic m_can configuration */
+-	m_can_chip_config(dev);
++	ret = m_can_chip_config(dev);
++	if (ret)
++		return ret;
+ 
+ 	cdev->can.state = CAN_STATE_ERROR_ACTIVE;
+ 
+ 	m_can_enable_all_interrupts(cdev);
++
++	return 0;
+ }
+ 
+ static int m_can_set_mode(struct net_device *dev, enum can_mode mode)
+@@ -1809,7 +1823,9 @@ static int m_can_open(struct net_device *dev)
+ 	}
+ 
+ 	/* start the m_can controller */
+-	m_can_start(dev);
++	err = m_can_start(dev);
++	if (err)
++		goto exit_irq_fail;
+ 
+ 	if (!cdev->is_peripheral)
+ 		napi_enable(&cdev->napi);
+@@ -2068,9 +2084,13 @@ int m_can_class_resume(struct device *dev)
+ 		ret = m_can_clk_start(cdev);
+ 		if (ret)
+ 			return ret;
++		ret  = m_can_start(ndev);
++		if (ret) {
++			m_can_clk_stop(cdev);
++
++			return ret;
++		}
+ 
+-		m_can_init_ram(cdev);
+-		m_can_start(ndev);
+ 		netif_device_attach(ndev);
+ 		netif_start_queue(ndev);
+ 	}
+diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
+index b5a5bedb3116..9c1dcf838006 100644
+--- a/drivers/net/can/m_can/m_can_platform.c
++++ b/drivers/net/can/m_can/m_can_platform.c
+@@ -140,10 +140,6 @@ static int m_can_plat_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, mcan_class);
+ 
+-	ret = m_can_init_ram(mcan_class);
+-	if (ret)
+-		goto probe_fail;
+-
+ 	pm_runtime_enable(mcan_class->dev);
+ 	ret = m_can_class_register(mcan_class);
+ 	if (ret)
+diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
+index 41645a24384c..a3aeb83de152 100644
+--- a/drivers/net/can/m_can/tcan4x5x-core.c
++++ b/drivers/net/can/m_can/tcan4x5x-core.c
+@@ -234,11 +234,6 @@ static int tcan4x5x_init(struct m_can_classdev *cdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	/* Zero out the MCAN buffers */
+-	ret = m_can_init_ram(cdev);
+-	if (ret)
+-		return ret;
+-
+ 	ret = regmap_update_bits(tcan4x5x->regmap, TCAN4X5X_CONFIG,
+ 				 TCAN4X5X_MODE_SEL_MASK, TCAN4X5X_MODE_NORMAL);
+ 	if (ret)
 -- 
 2.35.1
 
