@@ -2,46 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 474E4C3DA6E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 686FEC3DA78
 	for <linux-can@archiver.kernel.org>; Mon, 12 Dec 2022 11:32:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231777AbiLLLbe (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 12 Dec 2022 06:31:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42484 "EHLO
+        id S231922AbiLLLbg (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 12 Dec 2022 06:31:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231966AbiLLLbI (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 12 Dec 2022 06:31:08 -0500
+        with ESMTP id S232095AbiLLLbL (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 12 Dec 2022 06:31:11 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF8DE65FF
-        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 03:31:01 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E676C626C
+        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 03:31:03 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1p4h1Q-0000Ja-6D
-        for linux-can@vger.kernel.org; Mon, 12 Dec 2022 12:31:00 +0100
+        id 1p4h1S-0000Ob-3z
+        for linux-can@vger.kernel.org; Mon, 12 Dec 2022 12:31:02 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id AA6BA13CBD5
-        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 11:30:54 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 6687E13CBF4
+        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 11:30:55 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 0128313CB95;
-        Mon, 12 Dec 2022 11:30:52 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id E7B1613CBB7;
+        Mon, 12 Dec 2022 11:30:53 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 61a9a8d1;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id cbc7e61b;
         Mon, 12 Dec 2022 11:30:47 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 16/39] USB: core: export usb_cache_string()
-Date:   Mon, 12 Dec 2022 12:30:22 +0100
-Message-Id: <20221212113045.222493-17-mkl@pengutronix.de>
+Subject: [PATCH net-next 21/39] Documentation: devlink: add devlink documentation for the etas_es58x driver
+Date:   Mon, 12 Dec 2022 12:30:27 +0100
+Message-Id: <20221212113045.222493-22-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221212113045.222493-1-mkl@pengutronix.de>
 References: <20221212113045.222493-1-mkl@pengutronix.de>
@@ -57,54 +56,73 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-usb_cache_string() can also be useful for the drivers so export it.
+List all the version information reported by the etas_es58x driver
+through devlink. Also, update MAINTAINERS with the newly created file.
 
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Link: https://lore.kernel.org/all/20221130174658.29282-4-mailhol.vincent@wanadoo.fr
+Link: https://lore.kernel.org/all/20221130174658.29282-8-mailhol.vincent@wanadoo.fr
+[mkl: fixed version information table: "bl" -> "fw.bootloader"
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/usb/core/message.c | 1 +
- drivers/usb/core/usb.h     | 1 -
- include/linux/usb.h        | 1 +
- 3 files changed, 2 insertions(+), 1 deletion(-)
+ .../networking/devlink/etas_es58x.rst         | 36 +++++++++++++++++++
+ MAINTAINERS                                   |  1 +
+ 2 files changed, 37 insertions(+)
+ create mode 100644 Documentation/networking/devlink/etas_es58x.rst
 
-diff --git a/drivers/usb/core/message.c b/drivers/usb/core/message.c
-index 4d59d927ae3e..127fac1af676 100644
---- a/drivers/usb/core/message.c
-+++ b/drivers/usb/core/message.c
-@@ -1037,6 +1037,7 @@ char *usb_cache_string(struct usb_device *udev, int index)
- 	}
- 	return smallbuf;
- }
-+EXPORT_SYMBOL_GPL(usb_cache_string);
+diff --git a/Documentation/networking/devlink/etas_es58x.rst b/Documentation/networking/devlink/etas_es58x.rst
+new file mode 100644
+index 000000000000..3b857d82a44c
+--- /dev/null
++++ b/Documentation/networking/devlink/etas_es58x.rst
+@@ -0,0 +1,36 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++==========================
++etas_es58x devlink support
++==========================
++
++This document describes the devlink features implemented by the
++``etas_es58x`` device driver.
++
++Info versions
++=============
++
++The ``etas_es58x`` driver reports the following versions
++
++.. list-table:: devlink info versions implemented
++   :widths: 5 5 90
++
++   * - Name
++     - Type
++     - Description
++   * - ``fw``
++     - running
++     - Version of the firmware running on the device. Also available
++       through ``ethtool -i`` as the first member of the
++       ``firmware-version``.
++   * - ``fw.bootloader``
++     - running
++     - Version of the bootloader running on the device. Also available
++       through ``ethtool -i`` as the second member of the
++       ``firmware-version``.
++   * - ``board.rev``
++     - fixed
++     - The hardware revision of the device.
++   * - ``serial_number``
++     - fixed
++     - The USB serial number. Also available through ``lsusb -v``.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 955c1be1efb2..71f4f8776779 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7682,6 +7682,7 @@ ETAS ES58X CAN/USB DRIVER
+ M:	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+ L:	linux-can@vger.kernel.org
+ S:	Maintained
++F:	Documentation/networking/devlink/etas_es58x.rst
+ F:	drivers/net/can/usb/etas_es58x/
  
- /*
-  * usb_get_device_descriptor - (re)reads the device descriptor (usbcore)
-diff --git a/drivers/usb/core/usb.h b/drivers/usb/core/usb.h
-index 82538daac8b8..0eac7d4285d1 100644
---- a/drivers/usb/core/usb.h
-+++ b/drivers/usb/core/usb.h
-@@ -47,7 +47,6 @@ extern int usb_get_device_descriptor(struct usb_device *dev,
- extern int usb_set_isoch_delay(struct usb_device *dev);
- extern int usb_get_bos_descriptor(struct usb_device *dev);
- extern void usb_release_bos_descriptor(struct usb_device *dev);
--extern char *usb_cache_string(struct usb_device *udev, int index);
- extern int usb_set_configuration(struct usb_device *dev, int configuration);
- extern int usb_choose_configuration(struct usb_device *udev);
- extern int usb_generic_driver_probe(struct usb_device *udev);
-diff --git a/include/linux/usb.h b/include/linux/usb.h
-index 9ff1ad4dfad1..d2d2f41052c0 100644
---- a/include/linux/usb.h
-+++ b/include/linux/usb.h
-@@ -1829,6 +1829,7 @@ static inline int usb_get_ptm_status(struct usb_device *dev, void *data)
- 
- extern int usb_string(struct usb_device *dev, int index,
- 	char *buf, size_t size);
-+extern char *usb_cache_string(struct usb_device *udev, int index);
- 
- /* wrappers that also update important state inside usbcore */
- extern int usb_clear_halt(struct usb_device *dev, int pipe);
+ ETHERNET BRIDGE
 -- 
 2.35.1
 
