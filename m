@@ -2,46 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E6CAC3DA6E
-	for <linux-can@archiver.kernel.org>; Mon, 12 Dec 2022 11:32:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E51EC3DA7D
+	for <linux-can@archiver.kernel.org>; Mon, 12 Dec 2022 11:32:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232014AbiLLLcO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 12 Dec 2022 06:32:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42758 "EHLO
+        id S232138AbiLLLcT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 12 Dec 2022 06:32:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232157AbiLLLbO (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 12 Dec 2022 06:31:14 -0500
+        with ESMTP id S232187AbiLLLbR (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 12 Dec 2022 06:31:17 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D9D64EE
-        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 03:31:09 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C764B6161
+        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 03:31:12 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1p4h1X-0000cn-DE
-        for linux-can@vger.kernel.org; Mon, 12 Dec 2022 12:31:07 +0100
+        id 1p4h1b-0000m0-0m
+        for linux-can@vger.kernel.org; Mon, 12 Dec 2022 12:31:11 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 9E2B913CC48
-        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 11:30:57 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id E949513CC7D
+        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 11:30:58 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8B98813CBFA;
-        Mon, 12 Dec 2022 11:30:55 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3C47613CC3C;
+        Mon, 12 Dec 2022 11:30:57 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 47c134c5;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 77881e3f;
         Mon, 12 Dec 2022 11:30:48 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Markus Schneider-Pargmann <msp@baylibre.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 28/39] dt-bindings: can: renesas,rcar-canfd: Fix number of channels for R-Car V3U
-Date:   Mon, 12 Dec 2022 12:30:34 +0100
-Message-Id: <20221212113045.222493-29-mkl@pengutronix.de>
+Subject: [PATCH net-next 37/39] can: tcan4x5x: Fix use of register error status mask
+Date:   Mon, 12 Dec 2022 12:30:43 +0100
+Message-Id: <20221212113045.222493-38-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221212113045.222493-1-mkl@pengutronix.de>
 References: <20221212113045.222493-1-mkl@pengutronix.de>
@@ -55,186 +54,63 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Markus Schneider-Pargmann <msp@baylibre.com>
 
-According to the bindings, only two channels are supported.
-However, R-Car V3U supports eight, leading to "make dtbs" failures:
+TCAN4X5X_ERROR_STATUS is not a status register that needs clearing
+during interrupt handling. Instead this is a masking register that masks
+error interrupts. Writing TCAN4X5X_CLEAR_ALL_INT to this register
+effectively masks everything.
 
-        arch/arm64/boot/dts/renesas/r8a779a0-falcon.dtb: can@e6660000: Unevaluated properties are not allowed ('channel2', 'channel3', 'channel4', 'channel5', 'channel6', 'channel7' were unexpected)
+Rename the register and mask all error interrupts only once by writing
+to the register in tcan4x5x_init.
 
-Update the number of channels to 8 on R-Car V3U.
-While at it, prevent adding more properties to the channel nodes, as
-they must contain no other properties than a status property.
-
-Fixes: d6254d52d70de530 ("dt-bindings: can: renesas,rcar-canfd: Document r8a779a0 support")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Link: https://lore.kernel.org/all/7d41d72cd7db2e90bae069ce57dbb672f17500ae.1670431681.git.geert+renesas@glider.be
+Fixes: 5443c226ba91 ("can: tcan4x5x: Add tcan4x5x driver to the kernel")
+Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
+Link: https://lore.kernel.org/all/20221206115728.1056014-10-msp@baylibre.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../bindings/net/can/renesas,rcar-canfd.yaml  | 133 ++++++++++--------
- 1 file changed, 72 insertions(+), 61 deletions(-)
+ drivers/net/can/m_can/tcan4x5x-core.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-index 8347053a96dc..1eb98c9a1a26 100644
---- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-+++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-@@ -9,9 +9,6 @@ title: Renesas R-Car CAN FD Controller
- maintainers:
-   - Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
+index a77f4d4f6299..2342aa011647 100644
+--- a/drivers/net/can/m_can/tcan4x5x-core.c
++++ b/drivers/net/can/m_can/tcan4x5x-core.c
+@@ -10,7 +10,7 @@
+ #define TCAN4X5X_DEV_ID1 0x04
+ #define TCAN4X5X_REV 0x08
+ #define TCAN4X5X_STATUS 0x0C
+-#define TCAN4X5X_ERROR_STATUS 0x10
++#define TCAN4X5X_ERROR_STATUS_MASK 0x10
+ #define TCAN4X5X_CONTROL 0x14
  
--allOf:
--  - $ref: can-controller.yaml#
--
- properties:
-   compatible:
-     oneOf:
-@@ -77,12 +74,13 @@ properties:
-     description: Maximum frequency of the CANFD clock.
+ #define TCAN4X5X_CONFIG 0x800
+@@ -204,12 +204,7 @@ static int tcan4x5x_clear_interrupts(struct m_can_classdev *cdev)
+ 	if (ret)
+ 		return ret;
  
- patternProperties:
--  "^channel[01]$":
-+  "^channel[0-7]$":
-     type: object
-     description:
--      The controller supports two channels and each is represented as a child
--      node.  Each child node supports the "status" property only, which
--      is used to enable/disable the respective channel.
-+      The controller supports multiple channels and each is represented as a
-+      child node.  Each channel can be enabled/disabled individually.
-+
-+    additionalProperties: false
+-	ret = tcan4x5x_write_tcan_reg(cdev, TCAN4X5X_INT_FLAGS,
+-				      TCAN4X5X_CLEAR_ALL_INT);
+-	if (ret)
+-		return ret;
+-
+-	return tcan4x5x_write_tcan_reg(cdev, TCAN4X5X_ERROR_STATUS,
++	return tcan4x5x_write_tcan_reg(cdev, TCAN4X5X_INT_FLAGS,
+ 				       TCAN4X5X_CLEAR_ALL_INT);
+ }
  
- required:
-   - compatible
-@@ -98,60 +96,73 @@ required:
-   - channel0
-   - channel1
+@@ -229,6 +224,11 @@ static int tcan4x5x_init(struct m_can_classdev *cdev)
+ 	if (ret)
+ 		return ret;
  
--if:
--  properties:
--    compatible:
--      contains:
--        enum:
--          - renesas,rzg2l-canfd
--then:
--  properties:
--    interrupts:
--      items:
--        - description: CAN global error interrupt
--        - description: CAN receive FIFO interrupt
--        - description: CAN0 error interrupt
--        - description: CAN0 transmit interrupt
--        - description: CAN0 transmit/receive FIFO receive completion interrupt
--        - description: CAN1 error interrupt
--        - description: CAN1 transmit interrupt
--        - description: CAN1 transmit/receive FIFO receive completion interrupt
--
--    interrupt-names:
--      items:
--        - const: g_err
--        - const: g_recc
--        - const: ch0_err
--        - const: ch0_rec
--        - const: ch0_trx
--        - const: ch1_err
--        - const: ch1_rec
--        - const: ch1_trx
--
--    resets:
--      maxItems: 2
--
--    reset-names:
--      items:
--        - const: rstp_n
--        - const: rstc_n
--
--  required:
--    - reset-names
--else:
--  properties:
--    interrupts:
--      items:
--        - description: Channel interrupt
--        - description: Global interrupt
--
--    interrupt-names:
--      items:
--        - const: ch_int
--        - const: g_int
--
--    resets:
--      maxItems: 1
-+allOf:
-+  - $ref: can-controller.yaml#
++	ret = tcan4x5x_write_tcan_reg(cdev, TCAN4X5X_ERROR_STATUS_MASK,
++				      TCAN4X5X_CLEAR_ALL_INT);
++	if (ret)
++		return ret;
 +
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - renesas,rzg2l-canfd
-+    then:
-+      properties:
-+        interrupts:
-+          items:
-+            - description: CAN global error interrupt
-+            - description: CAN receive FIFO interrupt
-+            - description: CAN0 error interrupt
-+            - description: CAN0 transmit interrupt
-+            - description: CAN0 transmit/receive FIFO receive completion interrupt
-+            - description: CAN1 error interrupt
-+            - description: CAN1 transmit interrupt
-+            - description: CAN1 transmit/receive FIFO receive completion interrupt
-+
-+        interrupt-names:
-+          items:
-+            - const: g_err
-+            - const: g_recc
-+            - const: ch0_err
-+            - const: ch0_rec
-+            - const: ch0_trx
-+            - const: ch1_err
-+            - const: ch1_rec
-+            - const: ch1_trx
-+
-+        resets:
-+          maxItems: 2
-+
-+        reset-names:
-+          items:
-+            - const: rstp_n
-+            - const: rstc_n
-+
-+      required:
-+        - reset-names
-+    else:
-+      properties:
-+        interrupts:
-+          items:
-+            - description: Channel interrupt
-+            - description: Global interrupt
-+
-+        interrupt-names:
-+          items:
-+            - const: ch_int
-+            - const: g_int
-+
-+        resets:
-+          maxItems: 1
-+
-+  - if:
-+      not:
-+        properties:
-+          compatible:
-+            contains:
-+              const: renesas,r8a779a0-canfd
-+    then:
-+      patternProperties:
-+        "^channel[2-7]$": false
- 
- unevaluatedProperties: false
- 
+ 	ret = regmap_update_bits(tcan4x5x->regmap, TCAN4X5X_CONFIG,
+ 				 TCAN4X5X_MODE_SEL_MASK, TCAN4X5X_MODE_NORMAL);
+ 	if (ret)
 -- 
 2.35.1
 
