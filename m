@@ -2,45 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00CF6C4708E
-	for <linux-can@archiver.kernel.org>; Mon, 12 Dec 2022 11:32:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69FE6C2D0CB
+	for <linux-can@archiver.kernel.org>; Mon, 12 Dec 2022 11:32:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231931AbiLLLcM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S231971AbiLLLcM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Mon, 12 Dec 2022 06:32:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42766 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232155AbiLLLbO (ORCPT
+        with ESMTP id S232151AbiLLLbO (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 12 Dec 2022 06:31:14 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B288B63A6
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435726437
         for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 03:31:08 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1p4h1W-0000bo-W1
-        for linux-can@vger.kernel.org; Mon, 12 Dec 2022 12:31:07 +0100
+        id 1p4h1W-0000bF-Gd
+        for linux-can@vger.kernel.org; Mon, 12 Dec 2022 12:31:06 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 5EB8113CC42
+        by bjornoya.blackshift.org (Postfix) with SMTP id 2412A13CC39
         for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 11:30:57 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9364413CBFC;
-        Mon, 12 Dec 2022 11:30:55 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id C8DB513CBDB;
+        Mon, 12 Dec 2022 11:30:54 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 361f1078;
-        Mon, 12 Dec 2022 11:30:48 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 069c0a86;
+        Mon, 12 Dec 2022 11:30:47 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
-        Markus Schneider-Pargmann <msp@baylibre.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 29/39] can: m_can: Eliminate double read of TXFQS in tx_handler
-Date:   Mon, 12 Dec 2022 12:30:35 +0100
-Message-Id: <20221212113045.222493-30-mkl@pengutronix.de>
+Subject: [PATCH net-next 25/39] can: gs_usb: remove gs_can::iface
+Date:   Mon, 12 Dec 2022 12:30:31 +0100
+Message-Id: <20221212113045.222493-26-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221212113045.222493-1-mkl@pengutronix.de>
 References: <20221212113045.222493-1-mkl@pengutronix.de>
@@ -54,74 +54,131 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Markus Schneider-Pargmann <msp@baylibre.com>
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-The TXFQS register is read first to check if the fifo is full and then
-immediately again to get the putidx. This is unnecessary and adds
-significant overhead if read requests are done over a slow bus, for
-example SPI with tcan4x5x.
+The iface field of struct gs_can is only used to retrieve the
+usb_device which is already available in gs_can::udev.
 
-Add a variable to store the value of the register. Split the
-m_can_tx_fifo_full function into two to avoid the hidden m_can_read call
-if not needed.
+Replace each occurrence of interface_to_usbdev(dev->iface) with
+dev->udev. This done, remove gs_can::iface.
 
-Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-Link: https://lore.kernel.org/all/20221206115728.1056014-2-msp@baylibre.com
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Link: https://lore.kernel.org/all/20221208081142.16936-3-mailhol.vincent@wanadoo.fr
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/net/can/usb/gs_usb.c | 29 +++++++++--------------------
+ 1 file changed, 9 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index be8f4b662f95..61531daf66b8 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -369,9 +369,14 @@ m_can_txe_fifo_read(struct m_can_classdev *cdev, u32 fgi, u32 offset, u32 *val)
- 	return cdev->ops->read_fifo(cdev, addr_offset, val, 1);
- }
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index 838744d2ce34..d476c2884008 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -299,7 +299,6 @@ struct gs_can {
  
-+static inline bool _m_can_tx_fifo_full(u32 txfqs)
-+{
-+	return !!(txfqs & TXFQS_TFQF);
-+}
-+
- static inline bool m_can_tx_fifo_full(struct m_can_classdev *cdev)
- {
--	return !!(m_can_read(cdev, M_CAN_TXFQS) & TXFQS_TFQF);
-+	return _m_can_tx_fifo_full(m_can_read(cdev, M_CAN_TXFQS));
- }
+ 	struct net_device *netdev;
+ 	struct usb_device *udev;
+-	struct usb_interface *iface;
  
- static void m_can_config_endisable(struct m_can_classdev *cdev, bool enable)
-@@ -1609,6 +1614,7 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
- 	struct sk_buff *skb = cdev->tx_skb;
- 	struct id_and_dlc fifo_header;
- 	u32 cccr, fdflags;
-+	u32 txfqs;
- 	int err;
- 	int putidx;
+ 	struct can_bittiming_const bt_const, data_bt_const;
+ 	unsigned int channel;	/* channel number */
+@@ -383,8 +382,7 @@ static int gs_cmd_reset(struct gs_can *dev)
+ 		.mode = GS_CAN_MODE_RESET,
+ 	};
  
-@@ -1665,8 +1671,10 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
- 	} else {
- 		/* Transmit routine for version >= v3.1.x */
+-	return usb_control_msg_send(interface_to_usbdev(dev->iface), 0,
+-				    GS_USB_BREQ_MODE,
++	return usb_control_msg_send(dev->udev, 0, GS_USB_BREQ_MODE,
+ 				    USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
+ 				    dev->channel, 0, &dm, sizeof(dm), 1000,
+ 				    GFP_KERNEL);
+@@ -396,8 +394,7 @@ static inline int gs_usb_get_timestamp(const struct gs_can *dev,
+ 	__le32 timestamp;
+ 	int rc;
  
-+		txfqs = m_can_read(cdev, M_CAN_TXFQS);
-+
- 		/* Check if FIFO full */
--		if (m_can_tx_fifo_full(cdev)) {
-+		if (_m_can_tx_fifo_full(txfqs)) {
- 			/* This shouldn't happen */
- 			netif_stop_queue(dev);
- 			netdev_warn(dev,
-@@ -1682,8 +1690,7 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
- 		}
+-	rc = usb_control_msg_recv(interface_to_usbdev(dev->iface), 0,
+-				  GS_USB_BREQ_TIMESTAMP,
++	rc = usb_control_msg_recv(dev->udev, 0, GS_USB_BREQ_TIMESTAMP,
+ 				  USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
+ 				  dev->channel, 0,
+ 				  &timestamp, sizeof(timestamp),
+@@ -674,8 +671,7 @@ static int gs_usb_set_bittiming(struct net_device *netdev)
+ 	};
  
- 		/* get put index for frame */
--		putidx = FIELD_GET(TXFQS_TFQPI_MASK,
--				   m_can_read(cdev, M_CAN_TXFQS));
-+		putidx = FIELD_GET(TXFQS_TFQPI_MASK, txfqs);
+ 	/* request bit timings */
+-	return usb_control_msg_send(interface_to_usbdev(dev->iface), 0,
+-				    GS_USB_BREQ_BITTIMING,
++	return usb_control_msg_send(dev->udev, 0, GS_USB_BREQ_BITTIMING,
+ 				    USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
+ 				    dev->channel, 0, &dbt, sizeof(dbt), 1000,
+ 				    GFP_KERNEL);
+@@ -698,8 +694,7 @@ static int gs_usb_set_data_bittiming(struct net_device *netdev)
+ 		request = GS_USB_BREQ_QUIRK_CANTACT_PRO_DATA_BITTIMING;
  
- 		/* Construct DLC Field, with CAN-FD configuration.
- 		 * Use the put index of the fifo as the message marker,
+ 	/* request data bit timings */
+-	return usb_control_msg_send(interface_to_usbdev(dev->iface), 0,
+-				    request,
++	return usb_control_msg_send(dev->udev, 0, request,
+ 				    USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
+ 				    dev->channel, 0, &dbt, sizeof(dbt), 1000,
+ 				    GFP_KERNEL);
+@@ -941,8 +936,7 @@ static int gs_can_open(struct net_device *netdev)
+ 	/* finally start device */
+ 	dev->can.state = CAN_STATE_ERROR_ACTIVE;
+ 	dm.flags = cpu_to_le32(flags);
+-	rc = usb_control_msg_send(interface_to_usbdev(dev->iface), 0,
+-				  GS_USB_BREQ_MODE,
++	rc = usb_control_msg_send(dev->udev, 0, GS_USB_BREQ_MODE,
+ 				  USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
+ 				  dev->channel, 0, &dm, sizeof(dm), 1000,
+ 				  GFP_KERNEL);
+@@ -969,8 +963,7 @@ static int gs_usb_get_state(const struct net_device *netdev,
+ 	struct gs_device_state ds;
+ 	int rc;
+ 
+-	rc = usb_control_msg_recv(interface_to_usbdev(dev->iface), 0,
+-				  GS_USB_BREQ_GET_STATE,
++	rc = usb_control_msg_recv(dev->udev, 0, GS_USB_BREQ_GET_STATE,
+ 				  USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
+ 				  dev->channel, 0,
+ 				  &ds, sizeof(ds),
+@@ -1064,8 +1057,7 @@ static int gs_usb_set_identify(struct net_device *netdev, bool do_identify)
+ 	else
+ 		imode.mode = cpu_to_le32(GS_CAN_IDENTIFY_OFF);
+ 
+-	return usb_control_msg_send(interface_to_usbdev(dev->iface), 0,
+-				    GS_USB_BREQ_IDENTIFY,
++	return usb_control_msg_send(dev->udev, 0, GS_USB_BREQ_IDENTIFY,
+ 				    USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
+ 				    dev->channel, 0, &imode, sizeof(imode), 100,
+ 				    GFP_KERNEL);
+@@ -1118,8 +1110,7 @@ static int gs_usb_get_termination(struct net_device *netdev, u16 *term)
+ 	struct gs_device_termination_state term_state;
+ 	int rc;
+ 
+-	rc = usb_control_msg_recv(interface_to_usbdev(dev->iface), 0,
+-				  GS_USB_BREQ_GET_TERMINATION,
++	rc = usb_control_msg_recv(dev->udev, 0, GS_USB_BREQ_GET_TERMINATION,
+ 				  USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
+ 				  dev->channel, 0,
+ 				  &term_state, sizeof(term_state), 1000,
+@@ -1145,8 +1136,7 @@ static int gs_usb_set_termination(struct net_device *netdev, u16 term)
+ 	else
+ 		term_state.state = cpu_to_le32(GS_CAN_TERMINATION_STATE_OFF);
+ 
+-	return usb_control_msg_send(interface_to_usbdev(dev->iface), 0,
+-				    GS_USB_BREQ_SET_TERMINATION,
++	return usb_control_msg_send(dev->udev, 0, GS_USB_BREQ_SET_TERMINATION,
+ 				    USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
+ 				    dev->channel, 0,
+ 				    &term_state, sizeof(term_state), 1000,
+@@ -1210,7 +1200,6 @@ static struct gs_can *gs_make_candev(unsigned int channel,
+ 	dev->bt_const.brp_inc = le32_to_cpu(bt_const.brp_inc);
+ 
+ 	dev->udev = interface_to_usbdev(intf);
+-	dev->iface = intf;
+ 	dev->netdev = netdev;
+ 	dev->channel = channel;
+ 
 -- 
 2.35.1
 
