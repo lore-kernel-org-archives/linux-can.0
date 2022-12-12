@@ -2,45 +2,45 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA8D6C25B04
-	for <linux-can@archiver.kernel.org>; Mon, 12 Dec 2022 11:32:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31FEEC3DA71
+	for <linux-can@archiver.kernel.org>; Mon, 12 Dec 2022 11:32:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231847AbiLLLbc (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 12 Dec 2022 06:31:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42322 "EHLO
+        id S231812AbiLLLbd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 12 Dec 2022 06:31:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231867AbiLLLbG (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 12 Dec 2022 06:31:06 -0500
+        with ESMTP id S231969AbiLLLbI (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 12 Dec 2022 06:31:08 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A4E0645E
-        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 03:31:00 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2223F764C
+        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 03:31:02 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1p4h1O-0000EI-E9
-        for linux-can@vger.kernel.org; Mon, 12 Dec 2022 12:30:58 +0100
+        id 1p4h1Q-0000K6-B5
+        for linux-can@vger.kernel.org; Mon, 12 Dec 2022 12:31:00 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 2B30513CBBF
+        by bjornoya.blackshift.org (Postfix) with SMTP id C580913CBDA
         for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 11:30:54 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 381BB13CB80;
-        Mon, 12 Dec 2022 11:30:52 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 67A3713CBA3;
+        Mon, 12 Dec 2022 11:30:53 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 6900e0c5;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c50556f0;
         Mon, 12 Dec 2022 11:30:47 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Haibo Chen <haibo.chen@nxp.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        kernel@pengutronix.de,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 13/39] dt-bindings: can: fsl,flexcan: add imx93 compatible
-Date:   Mon, 12 Dec 2022 12:30:19 +0100
-Message-Id: <20221212113045.222493-14-mkl@pengutronix.de>
+Subject: [PATCH net-next 18/39] net: devlink: add DEVLINK_INFO_VERSION_GENERIC_FW_BOOTLOADER
+Date:   Mon, 12 Dec 2022 12:30:24 +0100
+Message-Id: <20221212113045.222493-19-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221212113045.222493-1-mkl@pengutronix.de>
 References: <20221212113045.222493-1-mkl@pengutronix.de>
@@ -54,30 +54,55 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Haibo Chen <haibo.chen@nxp.com>
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-Add a new compatible string for imx93.
+As discussed in [1], abbreviating the bootloader to "bl" might not be
+well understood. Instead, a bootloader technically being a firmware,
+name it "fw.bootloader".
 
-Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Link: https://lore.kernel.org/all/1669116752-4260-2-git-send-email-haibo.chen@nxp.com
+Add a new macro to devlink.h to formalize this new info attribute name
+and update the documentation.
+
+[1] https://lore.kernel.org/netdev/20221128142723.2f826d20@kernel.org/
+
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Link: https://lore.kernel.org/all/20221130174658.29282-5-mailhol.vincent@wanadoo.fr
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/networking/devlink/devlink-info.rst | 5 +++++
+ include/net/devlink.h                             | 2 ++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-index e52db841bb8c..6e59bd2a6094 100644
---- a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-+++ b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-@@ -17,6 +17,7 @@ properties:
-   compatible:
-     oneOf:
-       - enum:
-+          - fsl,imx93-flexcan
-           - fsl,imx8qm-flexcan
-           - fsl,imx8mp-flexcan
-           - fsl,imx6q-flexcan
+diff --git a/Documentation/networking/devlink/devlink-info.rst b/Documentation/networking/devlink/devlink-info.rst
+index 7572bf6de5c1..1242b0e6826b 100644
+--- a/Documentation/networking/devlink/devlink-info.rst
++++ b/Documentation/networking/devlink/devlink-info.rst
+@@ -198,6 +198,11 @@ fw.bundle_id
+ 
+ Unique identifier of the entire firmware bundle.
+ 
++fw.bootloader
++-------------
++
++Version of the bootloader.
++
+ Future work
+ ===========
+ 
+diff --git a/include/net/devlink.h b/include/net/devlink.h
+index 0f376a28b9c4..6a2e4f21779f 100644
+--- a/include/net/devlink.h
++++ b/include/net/devlink.h
+@@ -621,6 +621,8 @@ enum devlink_param_generic_id {
+ #define DEVLINK_INFO_VERSION_GENERIC_FW_ROCE	"fw.roce"
+ /* Firmware bundle identifier */
+ #define DEVLINK_INFO_VERSION_GENERIC_FW_BUNDLE_ID	"fw.bundle_id"
++/* Bootloader */
++#define DEVLINK_INFO_VERSION_GENERIC_FW_BOOTLOADER	"fw.bootloader"
+ 
+ /**
+  * struct devlink_flash_update_params - Flash Update parameters
 -- 
 2.35.1
 
