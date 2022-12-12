@@ -2,46 +2,47 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87C30C3DA7D
-	for <linux-can@archiver.kernel.org>; Mon, 12 Dec 2022 11:32:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 093BDC53210
+	for <linux-can@archiver.kernel.org>; Mon, 12 Dec 2022 11:32:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231964AbiLLLbh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S231932AbiLLLbh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Mon, 12 Dec 2022 06:31:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42678 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232103AbiLLLbL (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 12 Dec 2022 06:31:11 -0500
+        with ESMTP id S232073AbiLLLbJ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 12 Dec 2022 06:31:09 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 851A395AA
-        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 03:31:04 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A954767D
+        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 03:31:02 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1p4h1S-0000Px-Oq
-        for linux-can@vger.kernel.org; Mon, 12 Dec 2022 12:31:02 +0100
+        id 1p4h1Q-0000L0-Jv
+        for linux-can@vger.kernel.org; Mon, 12 Dec 2022 12:31:00 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 9087A13CBFB
-        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 11:30:55 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id DAA4C13CBDF
+        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 11:30:54 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id C2F1713CBB2;
-        Mon, 12 Dec 2022 11:30:53 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id A241F13CB8B;
+        Mon, 12 Dec 2022 11:30:52 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id a5588975;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 596996e4;
         Mon, 12 Dec 2022 11:30:47 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Andrew Lunn <andrew@lunn.ch>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Rob Herring <robh@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 20/39] can: etas_es58x: remove es58x_get_product_info()
-Date:   Mon, 12 Dec 2022 12:30:26 +0100
-Message-Id: <20221212113045.222493-21-mkl@pengutronix.de>
+Subject: [PATCH net-next 15/39] dt-bindings: can: renesas,rcar-canfd: Document RZ/Five SoC
+Date:   Mon, 12 Dec 2022 12:30:21 +0100
+Message-Id: <20221212113045.222493-16-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221212113045.222493-1-mkl@pengutronix.de>
 References: <20221212113045.222493-1-mkl@pengutronix.de>
@@ -55,104 +56,38 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Now that the product information are available under devlink, no more
-need to print them in the kernel log. Remove es58x_get_product_info().
+The CANFD block on the RZ/Five SoC is identical to one found on the
+RZ/G2UL SoC. "renesas,r9a07g043-canfd" compatible string will be used
+on the RZ/Five SoC so to make this clear, update the comment to include
+RZ/Five SoC.
 
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Link: https://lore.kernel.org/all/20221130174658.29282-7-mailhol.vincent@wanadoo.fr
+No driver changes are required as generic compatible string
+"renesas,rzg2l-canfd" will be used as a fallback on RZ/Five SoC.
+
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/all/20221115123811.1182922-1-prabhakar.mahadev-lad.rj@bp.renesas.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/etas_es58x/es58x_core.c | 52 ++-------------------
- 1 file changed, 3 insertions(+), 49 deletions(-)
+ .../devicetree/bindings/net/can/renesas,rcar-canfd.yaml         | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
-index 4d6d5a4ac06e..0c7f7505632c 100644
---- a/drivers/net/can/usb/etas_es58x/es58x_core.c
-+++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
-@@ -2141,48 +2141,6 @@ static void es58x_free_netdevs(struct es58x_device *es58x_dev)
- 	}
- }
+diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+index 6f71fc96bc4e..8347053a96dc 100644
+--- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
++++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+@@ -33,7 +33,7 @@ properties:
  
--/**
-- * es58x_get_product_info() - Get the product information and print them.
-- * @es58x_dev: ES58X device.
-- *
-- * Do a synchronous call to get the product information.
-- *
-- * Return: zero on success, errno when any error occurs.
-- */
--static int es58x_get_product_info(struct es58x_device *es58x_dev)
--{
--	struct usb_device *udev = es58x_dev->udev;
--	const int es58x_prod_info_idx = 6;
--	/* Empirical tests show a prod_info length of maximum 83,
--	 * below should be more than enough.
--	 */
--	const size_t prod_info_len = 127;
--	char *prod_info;
--	int ret;
--
--	prod_info = kmalloc(prod_info_len, GFP_KERNEL);
--	if (!prod_info)
--		return -ENOMEM;
--
--	ret = usb_string(udev, es58x_prod_info_idx, prod_info, prod_info_len);
--	if (ret < 0) {
--		dev_err(es58x_dev->dev,
--			"%s: Could not read the product info: %pe\n",
--			__func__, ERR_PTR(ret));
--		goto out_free;
--	}
--	if (ret >= prod_info_len - 1) {
--		dev_warn(es58x_dev->dev,
--			 "%s: Buffer is too small, result might be truncated\n",
--			 __func__);
--	}
--	dev_info(es58x_dev->dev, "Product info: %s\n", prod_info);
--
-- out_free:
--	kfree(prod_info);
--	return ret < 0 ? ret : 0;
--}
--
- /**
-  * es58x_init_es58x_dev() - Initialize the ES58X device.
-  * @intf: USB interface.
-@@ -2261,28 +2219,24 @@ static int es58x_probe(struct usb_interface *intf,
- 		       const struct usb_device_id *id)
- {
- 	struct es58x_device *es58x_dev;
--	int ch_idx, ret;
-+	int ch_idx;
- 
- 	es58x_dev = es58x_init_es58x_dev(intf, id->driver_info);
- 	if (IS_ERR(es58x_dev))
- 		return PTR_ERR(es58x_dev);
- 
--	ret = es58x_get_product_info(es58x_dev);
--	if (ret)
--		return ret;
--
- 	es58x_parse_product_info(es58x_dev);
- 	devlink_register(priv_to_devlink(es58x_dev));
- 
- 	for (ch_idx = 0; ch_idx < es58x_dev->num_can_ch; ch_idx++) {
--		ret = es58x_init_netdev(es58x_dev, ch_idx);
-+		int ret = es58x_init_netdev(es58x_dev, ch_idx);
- 		if (ret) {
- 			es58x_free_netdevs(es58x_dev);
- 			return ret;
- 		}
- 	}
- 
--	return ret;
-+	return 0;
- }
- 
- /**
+       - items:
+           - enum:
+-              - renesas,r9a07g043-canfd    # RZ/G2UL
++              - renesas,r9a07g043-canfd    # RZ/G2UL and RZ/Five
+               - renesas,r9a07g044-canfd    # RZ/G2{L,LC}
+               - renesas,r9a07g054-canfd    # RZ/V2L
+           - const: renesas,rzg2l-canfd     # RZ/G2L family
 -- 
 2.35.1
 
