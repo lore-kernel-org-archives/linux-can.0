@@ -2,44 +2,46 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CB3DC4167B
-	for <linux-can@archiver.kernel.org>; Mon, 12 Dec 2022 11:31:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C74AC04FDE
+	for <linux-can@archiver.kernel.org>; Mon, 12 Dec 2022 11:32:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231716AbiLLLb1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 12 Dec 2022 06:31:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42622 "EHLO
+        id S231752AbiLLLb3 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 12 Dec 2022 06:31:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231802AbiLLLbE (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 12 Dec 2022 06:31:04 -0500
+        with ESMTP id S231799AbiLLLbD (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 12 Dec 2022 06:31:03 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B0364EE
-        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 03:30:58 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC936437
+        for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 03:30:57 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1p4h1M-00007d-Fz
-        for linux-can@vger.kernel.org; Mon, 12 Dec 2022 12:30:56 +0100
+        id 1p4h1L-00006P-OI
+        for linux-can@vger.kernel.org; Mon, 12 Dec 2022 12:30:55 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 7846513CBA7
+        by bjornoya.blackshift.org (Postfix) with SMTP id 368EE13CB9C
         for <linux-can@vger.kernel.org>; Mon, 12 Dec 2022 11:30:53 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id D1AE613CB77;
-        Mon, 12 Dec 2022 11:30:51 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id F07D813CB66;
+        Mon, 12 Dec 2022 11:30:50 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1d0d6f07;
-        Mon, 12 Dec 2022 11:30:47 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 36f80ff5;
+        Mon, 12 Dec 2022 11:30:46 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Haibo Chen <haibo.chen@nxp.com>,
+        kernel@pengutronix.de, Jean Delvare <jdelvare@suse.de>,
+        Pavel Pisa <pisa@cmp.felk.cvut.cz>,
+        Ondrej Ille <ondrej.ille@gmail.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 11/39] can: flexcan: add auto stop mode for IMX93 to support wakeup
-Date:   Mon, 12 Dec 2022 12:30:17 +0100
-Message-Id: <20221212113045.222493-12-mkl@pengutronix.de>
+Subject: [PATCH net-next 09/39] can: ctucanfd: Drop obsolete dependency on COMPILE_TEST
+Date:   Mon, 12 Dec 2022 12:30:15 +0100
+Message-Id: <20221212113045.222493-10-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221212113045.222493-1-mkl@pengutronix.de>
 References: <20221212113045.222493-1-mkl@pengutronix.de>
@@ -53,132 +55,44 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Haibo Chen <haibo.chen@nxp.com>
+From: Jean Delvare <jdelvare@suse.de>
 
-IMX93 do not contain a GPR to config the stop mode, it will set
-the flexcan into stop mode automatically once the ARM core go
-into low power mode (WFI instruct) and gate off the flexcan
-related clock automatically. But to let these logic work as
-expect, before ARM core go into low power mode, need to make
-sure the flexcan related clock keep on.
+Since commit 0166dc11be91 ("of: make CONFIG_OF user selectable"), it
+is possible to test-build any driver which depends on OF on any
+architecture by explicitly selecting OF. Therefore depending on
+COMPILE_TEST as an alternative is no longer needed.
 
-To support stop mode and wakeup feature on imx93, this patch
-add a new fsl_imx93_devtype_data to separate from imx8mp.
+It is actually better to always build such drivers with OF enabled,
+so that the test builds are closer to how each driver will actually be
+built on its intended target. Building them without OF may not test
+much as the compiler will optimize out potentially large parts of the
+code. In the worst case, this could even pop false positive warnings.
+Dropping COMPILE_TEST here improves the quality of our testing and
+avoids wasting time on non-existent issues.
 
-Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
-Link: https://lore.kernel.org/all/1669116752-4260-1-git-send-email-haibo.chen@nxp.com
+Signed-off-by: Jean Delvare <jdelvare@suse.de>
+Cc: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Cc: Ondrej Ille <ondrej.ille@gmail.com>
+Acked-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Link: https://lore.kernel.org/all/20221124141604.4265225f@endymion.delvare
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan/flexcan-core.c | 37 +++++++++++++++++++++++---
- drivers/net/can/flexcan/flexcan.h      |  2 ++
- 2 files changed, 36 insertions(+), 3 deletions(-)
+ drivers/net/can/ctucanfd/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index 9bdadd716f4e..0aeff34e5ae1 100644
---- a/drivers/net/can/flexcan/flexcan-core.c
-+++ b/drivers/net/can/flexcan/flexcan-core.c
-@@ -345,6 +345,15 @@ static struct flexcan_devtype_data fsl_imx8mp_devtype_data = {
- 		FLEXCAN_QUIRK_SUPPORT_RX_MAILBOX_RTR,
- };
+diff --git a/drivers/net/can/ctucanfd/Kconfig b/drivers/net/can/ctucanfd/Kconfig
+index 6e2073351a8f..f52407f5c5d8 100644
+--- a/drivers/net/can/ctucanfd/Kconfig
++++ b/drivers/net/can/ctucanfd/Kconfig
+@@ -23,7 +23,7 @@ config CAN_CTUCANFD_PCI
  
-+static struct flexcan_devtype_data fsl_imx93_devtype_data = {
-+	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
-+		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_RX_MAILBOX |
-+		FLEXCAN_QUIRK_BROKEN_PERR_STATE | FLEXCAN_QUIRK_AUTO_STOP_MODE |
-+		FLEXCAN_QUIRK_SUPPORT_FD | FLEXCAN_QUIRK_SUPPORT_ECC |
-+		FLEXCAN_QUIRK_SUPPORT_RX_MAILBOX |
-+		FLEXCAN_QUIRK_SUPPORT_RX_MAILBOX_RTR,
-+};
-+
- static const struct flexcan_devtype_data fsl_vf610_devtype_data = {
- 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
- 		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_RX_MAILBOX |
-@@ -532,9 +541,14 @@ static inline int flexcan_enter_stop_mode(struct flexcan_priv *priv)
- 		ret = flexcan_stop_mode_enable_scfw(priv, true);
- 		if (ret < 0)
- 			return ret;
--	} else {
-+	} else if (priv->devtype_data.quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR) {
- 		regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
- 				   1 << priv->stm.req_bit, 1 << priv->stm.req_bit);
-+	} else if (priv->devtype_data.quirks & FLEXCAN_QUIRK_AUTO_STOP_MODE) {
-+		/* For the auto stop mode, software do nothing, hardware will cover
-+		 * all the operation automatically after system go into low power mode.
-+		 */
-+		return 0;
- 	}
- 
- 	return flexcan_low_power_enter_ack(priv);
-@@ -551,7 +565,7 @@ static inline int flexcan_exit_stop_mode(struct flexcan_priv *priv)
- 		ret = flexcan_stop_mode_enable_scfw(priv, false);
- 		if (ret < 0)
- 			return ret;
--	} else {
-+	} else if (priv->devtype_data.quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR) {
- 		regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
- 				   1 << priv->stm.req_bit, 0);
- 	}
-@@ -560,6 +574,12 @@ static inline int flexcan_exit_stop_mode(struct flexcan_priv *priv)
- 	reg_mcr &= ~FLEXCAN_MCR_SLF_WAK;
- 	priv->write(reg_mcr, &regs->mcr);
- 
-+	/* For the auto stop mode, hardware will exist stop mode
-+	 * automatically after system go out of low power mode.
-+	 */
-+	if (priv->devtype_data.quirks & FLEXCAN_QUIRK_AUTO_STOP_MODE)
-+		return 0;
-+
- 	return flexcan_low_power_exit_ack(priv);
- }
- 
-@@ -1974,6 +1994,8 @@ static int flexcan_setup_stop_mode(struct platform_device *pdev)
- 		ret = flexcan_setup_stop_mode_scfw(pdev);
- 	else if (priv->devtype_data.quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR)
- 		ret = flexcan_setup_stop_mode_gpr(pdev);
-+	else if (priv->devtype_data.quirks & FLEXCAN_QUIRK_AUTO_STOP_MODE)
-+		ret = 0;
- 	else
- 		/* return 0 directly if doesn't support stop mode feature */
- 		return 0;
-@@ -1992,6 +2014,7 @@ static int flexcan_setup_stop_mode(struct platform_device *pdev)
- static const struct of_device_id flexcan_of_match[] = {
- 	{ .compatible = "fsl,imx8qm-flexcan", .data = &fsl_imx8qm_devtype_data, },
- 	{ .compatible = "fsl,imx8mp-flexcan", .data = &fsl_imx8mp_devtype_data, },
-+	{ .compatible = "fsl,imx93-flexcan", .data = &fsl_imx93_devtype_data, },
- 	{ .compatible = "fsl,imx6q-flexcan", .data = &fsl_imx6q_devtype_data, },
- 	{ .compatible = "fsl,imx28-flexcan", .data = &fsl_imx28_devtype_data, },
- 	{ .compatible = "fsl,imx53-flexcan", .data = &fsl_imx25_devtype_data, },
-@@ -2299,8 +2322,16 @@ static int __maybe_unused flexcan_noirq_suspend(struct device *device)
- 	if (netif_running(dev)) {
- 		int err;
- 
--		if (device_may_wakeup(device))
-+		if (device_may_wakeup(device)) {
- 			flexcan_enable_wakeup_irq(priv, true);
-+			/* For auto stop mode, need to keep the clock on before
-+			 * system go into low power mode. After system go into
-+			 * low power mode, hardware will config the flexcan into
-+			 * stop mode, and gate off the clock automatically.
-+			 */
-+			if (priv->devtype_data.quirks & FLEXCAN_QUIRK_AUTO_STOP_MODE)
-+				return 0;
-+		}
- 
- 		err = pm_runtime_force_suspend(device);
- 		if (err)
-diff --git a/drivers/net/can/flexcan/flexcan.h b/drivers/net/can/flexcan/flexcan.h
-index 025c3417031f..91402977780b 100644
---- a/drivers/net/can/flexcan/flexcan.h
-+++ b/drivers/net/can/flexcan/flexcan.h
-@@ -68,6 +68,8 @@
- #define FLEXCAN_QUIRK_SUPPORT_RX_MAILBOX_RTR BIT(15)
- /* Device supports RX via FIFO */
- #define FLEXCAN_QUIRK_SUPPORT_RX_FIFO BIT(16)
-+/* auto enter stop mode to support wakeup */
-+#define FLEXCAN_QUIRK_AUTO_STOP_MODE BIT(17)
- 
- struct flexcan_devtype_data {
- 	u32 quirks;		/* quirks needed for different IP cores */
+ config CAN_CTUCANFD_PLATFORM
+ 	tristate "CTU CAN-FD IP core platform (FPGA, SoC) driver"
+-	depends on HAS_IOMEM && (OF || COMPILE_TEST)
++	depends on HAS_IOMEM && OF
+ 	select CAN_CTUCANFD
+ 	help
+ 	  The core has been tested together with OpenCores SJA1000
 -- 
 2.35.1
 
