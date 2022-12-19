@@ -2,44 +2,47 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F20F2C4332F
-	for <linux-can@archiver.kernel.org>; Mon, 19 Dec 2022 15:54:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A15BAC3DA71
+	for <linux-can@archiver.kernel.org>; Mon, 19 Dec 2022 15:54:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232694AbiLSPyM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 19 Dec 2022 10:54:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37376 "EHLO
+        id S232709AbiLSPyN (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 19 Dec 2022 10:54:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232709AbiLSPxf (ORCPT
+        with ESMTP id S232713AbiLSPxf (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 19 Dec 2022 10:53:35 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6184C13E2E
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C521513E3C
         for <linux-can@vger.kernel.org>; Mon, 19 Dec 2022 07:52:15 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1p7IR3-0001vU-P9
-        for linux-can@vger.kernel.org; Mon, 19 Dec 2022 16:52:13 +0100
+        id 1p7IR4-0001vy-8X
+        for linux-can@vger.kernel.org; Mon, 19 Dec 2022 16:52:14 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id D1770143219
-        for <linux-can@vger.kernel.org>; Mon, 19 Dec 2022 15:52:12 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 7479A143222
+        for <linux-can@vger.kernel.org>; Mon, 19 Dec 2022 15:52:13 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 09481143209;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 15C8514320B;
         Mon, 19 Dec 2022 15:52:12 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id aee6a442;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id fdbba17d;
         Mon, 19 Dec 2022 15:52:11 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net 0/3] pull-request: can 2022-12-19
-Date:   Mon, 19 Dec 2022 16:52:07 +0100
-Message-Id: <20221219155210.1143439-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Haibo Chen <haibo.chen@nxp.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 2/3] can: flexcan: avoid unbalanced pm_runtime_enable warning
+Date:   Mon, 19 Dec 2022 16:52:09 +0100
+Message-Id: <20221219155210.1143439-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20221219155210.1143439-1-mkl@pengutronix.de>
+References: <20221219155210.1143439-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -50,52 +53,45 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+From: Haibo Chen <haibo.chen@nxp.com>
 
-this is a pull request of 3 patches for net/master.
+When do suspend/resume, meet the following warning message:
+[   30.028336] flexcan 425b0000.can: Unbalanced pm_runtime_enable!
 
-The first patch is by Vincent Mailhol and adds the etas_es58x devlink
-documentation to the index.
+Balance the pm_runtime_force_suspend() and pm_runtime_force_resume().
 
-Haibo Chen's patch for the flexcan driver fixes a unbalanced
-pm_runtime_enable warning.
-
-The last patch is by me, targets the kvaser_usb driver and fixes an
-error occurring with gcc-13.
-
-regards,
-Marc
-
+Fixes: 8cb53b485f18 ("can: flexcan: add auto stop mode for IMX93 to support wakeup")
+Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
+Link: https://lore.kernel.org/all/20221213094351.3023858-1-haibo.chen@nxp.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/flexcan/flexcan-core.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-The following changes since commit 2856a62762c8409e360d4fd452194c8e57ba1058:
-
-  mctp: serial: Fix starting value for frame check sequence (2022-12-19 12:38:45 +0000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-6.2-20221219
-
-for you to fetch changes up to f006229135b7debf4037adb1eb93e358559593db:
-
-  can: kvaser_usb: hydra: help gcc-13 to figure out cmd_len (2022-12-19 16:08:27 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-6.2-20221219
-
-----------------------------------------------------------------
-Haibo Chen (1):
-      can: flexcan: avoid unbalanced pm_runtime_enable warning
-
-Marc Kleine-Budde (1):
-      can: kvaser_usb: hydra: help gcc-13 to figure out cmd_len
-
-Vincent Mailhol (1):
-      Documentation: devlink: add missing toc entry for etas_es58x devlink doc
-
- Documentation/networking/devlink/index.rst        |  1 +
- drivers/net/can/flexcan/flexcan-core.c            | 12 ++++++---
- drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 33 ++++++++++++++++-------
- 3 files changed, 34 insertions(+), 12 deletions(-)
+diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
+index 0aeff34e5ae1..6d638c93977b 100644
+--- a/drivers/net/can/flexcan/flexcan-core.c
++++ b/drivers/net/can/flexcan/flexcan-core.c
+@@ -2349,9 +2349,15 @@ static int __maybe_unused flexcan_noirq_resume(struct device *device)
+ 	if (netif_running(dev)) {
+ 		int err;
+ 
+-		err = pm_runtime_force_resume(device);
+-		if (err)
+-			return err;
++		/* For the wakeup in auto stop mode, no need to gate on the
++		 * clock here, hardware will do this automatically.
++		 */
++		if (!(device_may_wakeup(device) &&
++		      priv->devtype_data.quirks & FLEXCAN_QUIRK_AUTO_STOP_MODE)) {
++			err = pm_runtime_force_resume(device);
++			if (err)
++				return err;
++		}
+ 
+ 		if (device_may_wakeup(device))
+ 			flexcan_enable_wakeup_irq(priv, false);
+-- 
+2.35.1
 
 
