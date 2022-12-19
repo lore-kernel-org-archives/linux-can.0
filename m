@@ -2,57 +2,57 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26DC2C001B2
-	for <linux-can@archiver.kernel.org>; Mon, 19 Dec 2022 21:21:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EC2BC4332F
+	for <linux-can@archiver.kernel.org>; Mon, 19 Dec 2022 21:27:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232628AbiLSVU5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 19 Dec 2022 16:20:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44418 "EHLO
+        id S232824AbiLSV1r (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 19 Dec 2022 16:27:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232552AbiLSVUz (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 19 Dec 2022 16:20:55 -0500
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2118.outbound.protection.outlook.com [40.107.22.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F20D764D1;
-        Mon, 19 Dec 2022 13:20:53 -0800 (PST)
+        with ESMTP id S232772AbiLSV1g (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 19 Dec 2022 16:27:36 -0500
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2098.outbound.protection.outlook.com [40.107.7.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68BDF646A;
+        Mon, 19 Dec 2022 13:27:33 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Lnas/Ei5LpXYNSAGuaR60BOH0sdBPciffqdJcSi1REfxWVp7eRhSqhbBSKsBxPYkIMWAxszZJ4lCC+fvUR05HxqCnEiHwrAhiXrJujKvqINhmITCMxwPisHkIi6GORMEQKt4GsQ3z5eFMDJa8/EW2G+rwjfaXS72cAgM/Iq06LejoWm4ACBNV72dK4RnsrfpnzbldnLsQnqPuHLdlk0h1BnIX7E/Wi0FDjLiT4vezAOAuAmYmcgVQljCriij80PxwS7DuiQDpXMIO20SGzovURZARXGIreQNlD4YDCm1VtDgTkY/RTI4guXhuOfpfxIMnCs0I3i1OY3IisZnftMtZw==
+ b=dFAUZGYVG46C8RhHEWX0IeFCT5fZcfMwZZdVx8VgUKelBUv23NzwiKKtnrlbNRTXDjLG/SvECkIr1WkLw17JEyB2FMPhABc/alVtMuxXbH+1rFCd2tBYcjzCzRaEX/4s4az24NMG5xJilB/Y7WADB1Ruy0ct1T7Bh2oHLLmq65Lh3UINlYf3gfhysx43GIsdDJe7McnuzeCFXiEK1zpFHk/Zzfa/sCTStUh+aKl96vg532n/XuN+MvZWZ4af+FQ8BXsvXW9uRJUUM9OSun/ZPDOTQGLHF0W4hwEyCABjO8VtUhP+gc0tbnMHEwRRlbcx5pk+2O9eXL11IvEBC2i/ZA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ySpz1nlgcq/mVnqqCPG7zzsJF94xzgLeBnibFVWUUbs=;
- b=X9W5k/52LPPUx48eAnTXCbjnXBTHUQGvHNmGSyIGyYlE9aZG1tPr8iryMv3FLRYg//1CrKlZLeALo02QBVG801xaOoLlTNnW+xLViKj2nndL3RYAUQcRX2AtaQNZqPRtvD7bTP3r6P7uWS6PMA201uTf2pe6Lkf2UhHJUgnoOyyE+bgUxLg4738ltdW0rgnJ3UiAz8pcuvpH/3hCtxC7VzFohFr84aL6ciz6DRkkHztWxbzRO0I12aP2buXAUj1IcugAfQpAxmge1FYc9y2OCo1AKHWVsDILDacEKnz65I5jj7FMO9iVxKPGuiv70tikURoh1daGmA4ep33xSEqpSQ==
+ bh=PH4Epp4GyGuEC6gorfLFdD6vqnNWemsv/uQaT6+AYik=;
+ b=Oiq6VM3xcn+4BpYYbv6HQgOjFtKc5TknN02f4fB1Vij2JsD6hRvCGkYP3YjETVpXRLmI6LakGGA2z+ujBoC6Zb1KG3cZFuoDMc7TUbNo6FVAgfWCKIDfMC7FCjkhTeFpoZSc9e+4QGRmURrYIX4PyD/vqHrhMGtDQNRNJ8IhAX/hflVFivAMXCWmGeDJLnqrFI2xFI1PSS6h8OI5VFY544yCXv/c+Rhx7pZVwbjPXvdjN2Jgwi4Nb/00p0fAFrodD2i65e4TcAik5aG9t/4X2kU7PUnhduEdlS0jx98Y98KwbdzPGzzxxIj+Wyzggwm3RvU12ATKrlt5WlQs2KxYrg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
  is 80.151.164.27) smtp.rcpttodomain=esd.eu smtp.mailfrom=esd.eu; dmarc=none
  action=none header.from=esd.eu; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=esdhannover.onmicrosoft.com; s=selector1-esdhannover-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ySpz1nlgcq/mVnqqCPG7zzsJF94xzgLeBnibFVWUUbs=;
- b=ferSbRDnt7pMME2ZMLo995J3V3C+cuFqXe2mhv+A3kPBzV3bTOzEUiJYOeaWPrQT3w6dD2oBNzy50FVLcjEFn6VkyYQbtmAIJEp3xVZqe6EyHI3DBjsZuMnBUfoIOJuu8swj3ccqfKpX0YnE6ZVekMIdd7+uqo7if3qn/bXudsE=
-Received: from ZR0P278CA0053.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:1d::22)
- by AM7PR03MB6232.eurprd03.prod.outlook.com (2603:10a6:20b:13b::24) with
- Microsoft SMTP Server (version=TLS1_2,
+ bh=PH4Epp4GyGuEC6gorfLFdD6vqnNWemsv/uQaT6+AYik=;
+ b=CA3IFhpBTrIr1v0GnQD9G1dr3PwWNYe29FbJn86cdctrwGbSMHM9WNudxpXT3rP7jQwrM/D7eWZweZo5edJNzdLmTkFdynu0tFz2tLOpeDZfhCzcHCXXn3yTiSWEciidtj77pymvKFIUckHOlK5wBlnuDHmJ69lxzlP5o6lJs1M=
+Received: from AM5PR0402CA0018.eurprd04.prod.outlook.com
+ (2603:10a6:203:90::28) by PAWPR03MB10089.eurprd03.prod.outlook.com
+ (2603:10a6:102:360::13) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5924.16; Mon, 19 Dec
- 2022 21:20:50 +0000
-Received: from VI1EUR06FT067.eop-eur06.prod.protection.outlook.com
- (2603:10a6:910:1d:cafe::99) by ZR0P278CA0053.outlook.office365.com
- (2603:10a6:910:1d::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5924.20 via Frontend
- Transport; Mon, 19 Dec 2022 21:20:50 +0000
+ 2022 21:27:30 +0000
+Received: from AM7EUR06FT021.eop-eur06.prod.protection.outlook.com
+ (2603:10a6:203:90:cafe::28) by AM5PR0402CA0018.outlook.office365.com
+ (2603:10a6:203:90::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5924.18 via Frontend
+ Transport; Mon, 19 Dec 2022 21:27:30 +0000
 X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
  80.151.164.27) smtp.mailfrom=esd.eu; dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=esd.eu;
 Received-SPF: SoftFail (protection.outlook.com: domain of transitioning esd.eu
  discourages use of 80.151.164.27 as permitted sender)
 Received: from esd-s7.esd (80.151.164.27) by
- VI1EUR06FT067.mail.protection.outlook.com (10.13.6.78) with Microsoft SMTP
- Server id 15.20.5924.16 via Frontend Transport; Mon, 19 Dec 2022 21:20:49
- +0000
+ AM7EUR06FT021.mail.protection.outlook.com (10.233.255.227) with Microsoft
+ SMTP Server id 15.20.5924.16 via Frontend Transport; Mon, 19 Dec 2022
+ 21:27:29 +0000
 Received: from esd-s20.esd.local (debby [10.0.0.190])
-        by esd-s7.esd (Postfix) with ESMTPS id 4AD3C7C16C8;
-        Mon, 19 Dec 2022 22:20:49 +0100 (CET)
+        by esd-s7.esd (Postfix) with ESMTPS id 522427C16C9;
+        Mon, 19 Dec 2022 22:27:29 +0100 (CET)
 Received: by esd-s20.esd.local (Postfix, from userid 2046)
-        id 3F9E72E1DC1; Mon, 19 Dec 2022 22:20:49 +0100 (CET)
+        id 482F62E1DC1; Mon, 19 Dec 2022 22:27:29 +0100 (CET)
 From:   Frank Jungclaus <frank.jungclaus@esd.eu>
 To:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
         Wolfgang Grandegger <wg@grandegger.com>,
@@ -60,70 +60,85 @@ To:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
 Cc:     =?UTF-8?q?Stefan=20M=C3=A4tje?= <stefan.maetje@esd.eu>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         Frank Jungclaus <frank.jungclaus@esd.eu>
-Subject: [PATCH 1/3] can: esd_usb: Improved behavior on esd CAN_ERROR_EXT event (1)
-Date:   Mon, 19 Dec 2022 22:20:12 +0100
-Message-Id: <20221219212013.1294820-2-frank.jungclaus@esd.eu>
+Subject: [PATCH 3/3] can: esd_usb: Improved decoding for ESD_EV_CAN_ERROR_EXT messages
+Date:   Mon, 19 Dec 2022 22:27:17 +0100
+Message-Id: <20221219212717.1298282-2-frank.jungclaus@esd.eu>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221219212013.1294820-1-frank.jungclaus@esd.eu>
-References: <20221219212013.1294820-1-frank.jungclaus@esd.eu>
+In-Reply-To: <20221219212717.1298282-1-frank.jungclaus@esd.eu>
+References: <20221219212717.1298282-1-frank.jungclaus@esd.eu>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1EUR06FT067:EE_|AM7PR03MB6232:EE_
+X-MS-TrafficTypeDiagnostic: AM7EUR06FT021:EE_|PAWPR03MB10089:EE_
 Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: cd797964-2040-4923-17d0-08dae206e6f4
+X-MS-Office365-Filtering-Correlation-Id: adeb51a5-21de-4151-4296-08dae207d570
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /x5HfrvrFergW/ATbm2GhQfYnetiOiJTOpURBDZQBh9Jml4ApOLUy2Jw7KW1tOIfO9RHuRdSE3h0oit+bRZ159PXmaXTYxL35aASUDwaCh87ravkDsT7Jmn3oBO0FC1INT+KWeNy+2UvTD3NQGqv5FMpZLv8mqtyEcG7q3EcX23lXbYWS1hV41wTfmnCLDvYHjKXizThFQfojPhFuSMnmclKMsFFU2nft+N5APXVQ4E3xK1kx6s5FRpvzMl/mDE3d+WhxwsUrtZ94UQlIcZ/TYdi5O5hN0UyjkINr54pDJHL9z722ket2+CtXmmA0GUTkjy9rW7dnviGj8SM0hqLwj7rO4MPuvNep4LqXV9gCuhzSKaOBY1hziPYA294Nxda0cTYaXTthfISNswNi3wqhtVR88/ZUGB/rL8kED1QdikCQesMAy3et2i4ZEFaSKFypF2ps76T6WjIRiGvE6CqeW7wD7uB5LoUQxzw/eYyHZuirQ1hscMUXJkFqpiE8+B0tYIwqJBzFCidoGlp7hR72ZF5DvesDohgkwoaYx+Yzxmr02BGTSU4LKYskOWjDVo0gMtw++RYAPy2Z2AxCDng3IiKdJ9YyA6wgYQsIpH0GdTxLaoSz6Uyux3DwOGoMwQwW5/MQORFsKLcZJgewbNuM8Sy6xgWnaSYIgr8UiM8TP0=
-X-Forefront-Antispam-Report: CIP:80.151.164.27;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:esd-s7.esd;PTR:p5097a41b.dip0.t-ipconnect.de;CAT:NONE;SFS:(13230022)(4636009)(136003)(396003)(346002)(39830400003)(376002)(451199015)(36840700001)(46966006)(8936002)(8676002)(70586007)(70206006)(5660300002)(4326008)(44832011)(36860700001)(41300700001)(42186006)(316002)(40480700001)(2906002)(54906003)(110136005)(86362001)(2616005)(1076003)(356005)(83380400001)(26005)(186003)(6266002)(82310400005)(336012)(47076005)(81166007)(478600001)(36756003)(6666004);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: xRlsG70RyeU1m0paW1nmLq597/n1aNfmNJAe0NrLOfXm8xaLaU8HEvb5FAMfiQY5f6854fSHDzp8IfMwF4FbUqMGY/LM5vXsZdacVlGjvL3v5xE6mt1oCSjqOhA2+YIxIM+Vf6mSRb7Z4OJh4MQYE+SRqc4TGh7r7/HrE7+dS1z0x7uXPy9YK/9mIHvRRyWXEC6WjGjhq7WOvyPnHlrkmZBTlkhDdyHbZ8kqUjGGt/01ygvOjgNd8XjSs7kfVWwQZueIwxx4d79UIn9yZStax9JZfaJBtfF8Gn3a6Lyi/PZE1jyLuLWwLJd10CGotpXmEg2kHT8KXR0H94wD3We7leyckvGdkGS8jC7KKljfcxdrRMGPn7Wifn+F2DUmoplsT7Wxq3GFJc3qlUnfBMGC5DeBnosiFwEh4L+KKm64snrzGBqAbZtQ3p1SGiSoNvOgeg4uxFp7bYkhjH0TjgI229d0wdRh56xvbhVW3cYmFO3Mmck9KQxTd8Cp/Jpu5VCyZCy6fk798E6E1UwQ9zzOHYf+U/JR3/ku/1eaLtKQkMcnoQIviboZ49i+RJWLZOdBvsmFgS1WwCUeWmVMa+/PXDal0tNx14w8Ighr6RlTNf3BLk6skvPJYBQBv/GlICRCLqjMM/gMaruMOq0Dw01h0QlAVIKTU5ZoAZRrZ0gIwUXDQgbcxS1gAZKc6j15Uu7gbOzcUvVYp6zwGGK2Ei2hFw==
+X-Forefront-Antispam-Report: CIP:80.151.164.27;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:esd-s7.esd;PTR:p5097a41b.dip0.t-ipconnect.de;CAT:NONE;SFS:(13230022)(4636009)(39840400004)(396003)(346002)(136003)(376002)(451199015)(46966006)(36840700001)(36860700001)(86362001)(6666004)(2616005)(26005)(6266002)(2906002)(336012)(81166007)(186003)(966005)(36756003)(478600001)(110136005)(316002)(8936002)(44832011)(15650500001)(356005)(54906003)(40480700001)(70206006)(8676002)(82310400005)(41300700001)(1076003)(42186006)(83380400001)(5660300002)(47076005)(4326008)(70586007);DIR:OUT;SFP:1102;
 X-OriginatorOrg: esd.eu
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2022 21:20:49.7846
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2022 21:27:29.9117
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd797964-2040-4923-17d0-08dae206e6f4
+X-MS-Exchange-CrossTenant-Network-Message-Id: adeb51a5-21de-4151-4296-08dae207d570
 X-MS-Exchange-CrossTenant-Id: 5a9c3a1d-52db-4235-b74c-9fd851db2e6b
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5a9c3a1d-52db-4235-b74c-9fd851db2e6b;Ip=[80.151.164.27];Helo=[esd-s7.esd]
-X-MS-Exchange-CrossTenant-AuthSource: VI1EUR06FT067.eop-eur06.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: AM7EUR06FT021.eop-eur06.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR03MB6232
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR03MB10089
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Moved the supply for cf->data[3] (bit stream position of CAN error)
-outside of the "switch (ecc & SJA1000_ECC_MASK){}"-statement, because
-this position is independent of the error type.
+As suggested by Marc there now is a union plus a struct ev_can_err_ext
+for easier decoding of an ESD_EV_CAN_ERROR_EXT event message (which
+simply is a rx_msg with some dedicated data).
 
-Fixes: 96d8e90382dc ("can: Add driver for esd CAN-USB/2 device")
+Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Link: https://lore.kernel.org/linux-can/20220621071152.ggyhrr5sbzvwpkpx@pengutronix.de/
 Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
 ---
- drivers/net/can/usb/esd_usb.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/can/usb/esd_usb.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
-index 42323f5e6f3a..5e182fadd875 100644
+index 09745751f168..f90bb2c0ba15 100644
 --- a/drivers/net/can/usb/esd_usb.c
 +++ b/drivers/net/can/usb/esd_usb.c
-@@ -286,7 +286,6 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
- 				cf->data[2] |= CAN_ERR_PROT_STUFF;
- 				break;
- 			default:
--				cf->data[3] = ecc & SJA1000_ECC_SEG;
- 				break;
- 			}
+@@ -127,7 +127,15 @@ struct rx_msg {
+ 	u8 dlc;
+ 	__le32 ts;
+ 	__le32 id; /* upper 3 bits contain flags */
+-	u8 data[8];
++	union {
++		u8 data[8];
++		struct {
++			u8 status; /* CAN Controller Status */
++			u8 ecc;    /* Error Capture Register */
++			u8 rec;    /* RX Error Counter */
++			u8 tec;    /* TX Error Counter */
++		} ev_can_err_ext;  /* For ESD_EV_CAN_ERROR_EXT */
++	};
+ };
  
-@@ -294,6 +293,9 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
- 			if (!(ecc & SJA1000_ECC_DIR))
- 				cf->data[2] |= CAN_ERR_PROT_TX;
+ struct tx_msg {
+@@ -229,10 +237,10 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
+ 	u32 id = le32_to_cpu(msg->msg.rx.id) & ESD_IDMASK;
  
-+			/* Bit stream position in CAN frame as the error was detected */
-+			cf->data[3] = ecc & SJA1000_ECC_SEG;
-+
- 			if (priv->can.state == CAN_STATE_ERROR_WARNING ||
- 			    priv->can.state == CAN_STATE_ERROR_PASSIVE) {
- 				cf->data[1] = (txerr > rxerr) ?
+ 	if (id == ESD_EV_CAN_ERROR_EXT) {
+-		u8 state = msg->msg.rx.data[0];
+-		u8 ecc = msg->msg.rx.data[1];
+-		u8 rxerr = msg->msg.rx.data[2];
+-		u8 txerr = msg->msg.rx.data[3];
++		u8 state = msg->msg.rx.ev_can_err_ext.status;
++		u8 ecc = msg->msg.rx.ev_can_err_ext.ecc;
++		u8 rxerr = msg->msg.rx.ev_can_err_ext.rec;
++		u8 txerr = msg->msg.rx.ev_can_err_ext.tec;
+ 
+ 		netdev_dbg(priv->netdev,
+ 			   "CAN_ERR_EV_EXT: dlc=%#02x state=%02x ecc=%02x rec=%02x tec=%02x\n",
 -- 
 2.25.1
 
