@@ -2,146 +2,83 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FCE8C4167B
-	for <linux-can@archiver.kernel.org>; Mon, 19 Dec 2022 21:27:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2791BC4332F
+	for <linux-can@archiver.kernel.org>; Tue, 20 Dec 2022 02:00:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232750AbiLSV1u (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 19 Dec 2022 16:27:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49224 "EHLO
+        id S232801AbiLTCAV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 19 Dec 2022 21:00:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232777AbiLSV1i (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 19 Dec 2022 16:27:38 -0500
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2121.outbound.protection.outlook.com [40.107.6.121])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 538BD13F09;
-        Mon, 19 Dec 2022 13:27:35 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Na5J3SSkgqF1zrDNToJiSUQb8jusCRIniW2SVDT54vTIWgwimZ0RQJsp4nZHBSjp9k8IqeZ93YYTvikfyXP7/6LisryH2zRU0m7X/pLOCCCpSuccj9Wb4GiKrbKKVSQnSusykvFNkMMx8sW9iF0Psg7YcJyk/26Wa4rLiEN95Il9B8C5Kx2q26UVMwYJZK0KLwMWsJfShdjxmIJGEXEzWS5Gj/2RtgeztY43KQanc+ZmkHl4UnMH2EUeBA+5CO/imrfoAfMi1643JN0Cff8M+/snc7XdG5eOPV/3G+6qPp241LnuFIwbuNxjnVudbjXnfGQQgLuZDyP8jQjFgfs2RA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CLCrW5mNwfs26NWA4N8ao2qXw+YqsWSEuJb20hNJhys=;
- b=G00eFTZVIABnoR9jLYtA//K7D9S/VIuQ66+/0tdZykaEAP0x3+Okka2eS6SDhBjAo7tY76Vc+uj3Bkl7+wdJ6vX2AlProh6bMlAHM4AeIUCyrhv3AxgQEdkA1Iu3vhEblOnn8iSJIUPjK+Cio3A5u7jgKbtNXdEeLCvCm+OkI1HNFmwPi1S4r80xnW3r+m6H6c4zSUQzH1fcb/LBR2gfGrgGD3OJDks8iBcbXh+S0C2harl8Qbc8+eTqKPn3vhUlYbDPJ0C9d/bCIerTBxJVnVBljG+0IuQA3j+LFpWpuR4K/P8FJEEGYFov5bTz1DK6v1QemB/e85zkrypqj8EPGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
- is 80.151.164.27) smtp.rcpttodomain=esd.eu smtp.mailfrom=esd.eu; dmarc=none
- action=none header.from=esd.eu; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=esdhannover.onmicrosoft.com; s=selector1-esdhannover-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CLCrW5mNwfs26NWA4N8ao2qXw+YqsWSEuJb20hNJhys=;
- b=C5RMAIC4AjU4X0huCwI9A4TS7XGYzZqekXwCVOOyRo3bH9nOhGwYPdtGJcKlGh+8uE6Z5Mw6ZucOjKPZApLgVqHDLpv+pZgOIG2cM7oB9KlVqg2+1jqLPJoEbNCmISqLxYs/KoKRW++d8SXHyTrOSxQssgVnIl771IIUtZvRBY0=
-Received: from DB6PR07CA0187.eurprd07.prod.outlook.com (2603:10a6:6:42::17) by
- GV1PR03MB8710.eurprd03.prod.outlook.com (2603:10a6:150:92::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5924.16; Mon, 19 Dec 2022 21:27:30 +0000
-Received: from DB8EUR06FT007.eop-eur06.prod.protection.outlook.com
- (2603:10a6:6:42:cafe::ec) by DB6PR07CA0187.outlook.office365.com
- (2603:10a6:6:42::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5944.9 via Frontend
- Transport; Mon, 19 Dec 2022 21:27:29 +0000
-X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
- 80.151.164.27) smtp.mailfrom=esd.eu; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=esd.eu;
-Received-SPF: SoftFail (protection.outlook.com: domain of transitioning esd.eu
- discourages use of 80.151.164.27 as permitted sender)
-Received: from esd-s7.esd (80.151.164.27) by
- DB8EUR06FT007.mail.protection.outlook.com (10.233.252.171) with Microsoft
- SMTP Server id 15.20.5924.16 via Frontend Transport; Mon, 19 Dec 2022
- 21:27:28 +0000
-Received: from esd-s20.esd.local (debby [10.0.0.190])
-        by esd-s7.esd (Postfix) with ESMTPS id 64E347C16C8;
-        Mon, 19 Dec 2022 22:27:28 +0100 (CET)
-Received: by esd-s20.esd.local (Postfix, from userid 2046)
-        id 5564B2E1DC1; Mon, 19 Dec 2022 22:27:28 +0100 (CET)
-From:   Frank Jungclaus <frank.jungclaus@esd.eu>
-To:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc:     =?UTF-8?q?Stefan=20M=C3=A4tje?= <stefan.maetje@esd.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Frank Jungclaus <frank.jungclaus@esd.eu>
-Subject: [PATCH 2/3] can: esd_usb: Improved behavior on esd CAN_ERROR_EXT event (2)
-Date:   Mon, 19 Dec 2022 22:27:16 +0100
-Message-Id: <20221219212717.1298282-1-frank.jungclaus@esd.eu>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S231987AbiLTCAU (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 19 Dec 2022 21:00:20 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A2D12BDE;
+        Mon, 19 Dec 2022 18:00:19 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E37EC611CA;
+        Tue, 20 Dec 2022 02:00:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 41844C433D2;
+        Tue, 20 Dec 2022 02:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671501618;
+        bh=FB92SJH8/78WpyjWYz65ANUM0x4mULE8VcFQ1X0GBkI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=AI7u4FFslaHCgeswT1cpOrWcZQJoZGWmeFrQyZ0oYBRePxYSq9bbytrB/A+WvdsuT
+         undNu2nwMMgse5dvuJC4MPU2EmAqiawXNmKobrKVV2Ewp/FHB7bSrde8TBQqwrGPlR
+         9rlrnweqpuG7rvxxsjvYPfK4+O4fhZ3EI2EIGxh9pntSx7K8ffNgi79arqTG9Af5dn
+         U2AOcEgmQXGYCcT7dpy/LO8+emcQgPpS0q+894uNimbwSieB1BYpwjlu955xLTeyEG
+         tn8KQpA8TXGm/lJGWPBzKCdHNaYY/3Du33m7SnGWe3c5RgElbOWzQnhig7YD2hrRhf
+         X9vdd/ZmGTNOg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1E57BC41622;
+        Tue, 20 Dec 2022 02:00:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB8EUR06FT007:EE_|GV1PR03MB8710:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: a0c61598-c893-4a4d-59fa-08dae207d4e6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XpH2NmUmxbnpq67w3jmJUI5hKE3/OBt+8V5iROGekzJbq0krA6t8NFVQ//S8nzFa+QSYnnh+liz/n4TcDA76ySFEugRtJcLH8NoIulubrJuzCufoVbKUlqwC6rPBTB4ui+yeTs180eHJqHpkdyWXeJ8kujFQqnZ6PtlSqGbEv4KYmXPGPqF9tJMLzgXQZ37O9L6u9lSJuTGFMcaPyOh4AV4Kjv4qKQq/AZiWhUw86a7Rte+Gvj0tFORN2BkZmDH7Z1WLrjm/mosCj5TGLSw41HibUZKjuUzjMWtZFjLXFB9R1oI7KGJ+MhmzSw8ZFkbHZtuIJxlECKG5vHXjkIJts28G2Cw2NnVr7b0ckJpV5DwyDLZPydRQJxR03zKqZd0avEi52AhzM6WpC+BwPEDvcakIWery9q/s5ZjMONr5jWLusgntXlIlhvnSamfjgMlFy1z771PpmYVeQEA0Mk3vYjYOZsyj0dyuA7Up6Lt+06hRgtlby856fzvYD8WqCnmXa7H6ghO+Pf1wX5+peJfsdCFDNL63gPb8diO9BjTEUdvRg+Lwplzm79UNxojVmaWwzwarefWi+WOrhAObFPvDoEiZugL2PJMk2l8k50DuuR3ZnC7I1XMzIeePanmXsrOIz/QUBoU/2wAAqTF6v+k9dDXUu+ZRrqNfcibfHmm13cbzhed0exF4frZPOSVmXdBVohymZdDH9aO68qaAXOJnrg==
-X-Forefront-Antispam-Report: CIP:80.151.164.27;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:esd-s7.esd;PTR:p5097a41b.dip0.t-ipconnect.de;CAT:NONE;SFS:(13230022)(4636009)(396003)(346002)(39840400004)(376002)(136003)(451199015)(46966006)(36840700001)(70586007)(70206006)(86362001)(4326008)(8676002)(42186006)(316002)(36756003)(8936002)(5660300002)(2616005)(41300700001)(1076003)(82310400005)(6666004)(186003)(36860700001)(26005)(336012)(6266002)(47076005)(356005)(83380400001)(54906003)(40480700001)(81166007)(110136005)(478600001)(966005)(44832011)(2906002);DIR:OUT;SFP:1102;
-X-OriginatorOrg: esd.eu
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2022 21:27:28.9767
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a0c61598-c893-4a4d-59fa-08dae207d4e6
-X-MS-Exchange-CrossTenant-Id: 5a9c3a1d-52db-4235-b74c-9fd851db2e6b
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5a9c3a1d-52db-4235-b74c-9fd851db2e6b;Ip=[80.151.164.27];Helo=[esd-s7.esd]
-X-MS-Exchange-CrossTenant-AuthSource: DB8EUR06FT007.eop-eur06.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR03MB8710
+Subject: Re: [PATCH net 1/3] Documentation: devlink: add missing toc entry for
+ etas_es58x devlink doc
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167150161811.12144.14366546302831051201.git-patchwork-notify@kernel.org>
+Date:   Tue, 20 Dec 2022 02:00:18 +0000
+References: <20221219155210.1143439-2-mkl@pengutronix.de>
+In-Reply-To: <20221219155210.1143439-2-mkl@pengutronix.de>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        linux-can@vger.kernel.org, kernel@pengutronix.de,
+        mailhol.vincent@wanadoo.fr, sfr@canb.auug.org.au, lkp@intel.com
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Started a rework initiated by Vincents remarks "You should not report
-the greatest of txerr and rxerr but the one which actually increased."
-[1] and "As far as I understand, those flags should be set only when
-the threshold is *reached*" [2] .
+Hello:
 
-Now setting the flags for CAN_ERR_CRTL_[RT]X_WARNING and
-CAN_ERR_CRTL_[RT]X_PASSIVE regarding REC and TEC, when the
-appropriate threshold is reached.
+This series was applied to netdev/net.git (master)
+by Marc Kleine-Budde <mkl@pengutronix.de>:
 
-Fixes: 96d8e90382dc ("can: Add driver for esd CAN-USB/2 device")
-Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
-Link: [1] https://lore.kernel.org/all/CAMZ6RqKGBWe15aMkf8-QLf-cOQg99GQBebSm+1wEzTqHgvmNuw@mail.gmail.com/
-Link: [2] https://lore.kernel.org/all/CAMZ6Rq+QBO1yTX_o6GV0yhdBj-RzZSRGWDZBS0fs7zbSTy4hmA@mail.gmail.com/
----
- drivers/net/can/usb/esd_usb.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+On Mon, 19 Dec 2022 16:52:08 +0100 you wrote:
+> From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> 
+> toc entry is missing for etas_es58x devlink doc and triggers this warning:
+> 
+>   Documentation/networking/devlink/etas_es58x.rst: WARNING: document isn't included in any toctree
+> 
+> Add the missing toc entry.
+> 
+> [...]
 
-diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
-index 5e182fadd875..09745751f168 100644
---- a/drivers/net/can/usb/esd_usb.c
-+++ b/drivers/net/can/usb/esd_usb.c
-@@ -255,10 +255,18 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
- 				can_bus_off(priv->netdev);
- 				break;
- 			case ESD_BUSSTATE_WARN:
-+				cf->can_id |= CAN_ERR_CRTL;
-+				cf->data[1] = (txerr > rxerr) ?
-+						CAN_ERR_CRTL_TX_WARNING :
-+						CAN_ERR_CRTL_RX_WARNING;
- 				priv->can.state = CAN_STATE_ERROR_WARNING;
- 				priv->can.can_stats.error_warning++;
- 				break;
- 			case ESD_BUSSTATE_ERRPASSIVE:
-+				cf->can_id |= CAN_ERR_CRTL;
-+				cf->data[1] = (txerr > rxerr) ?
-+						CAN_ERR_CRTL_TX_PASSIVE :
-+						CAN_ERR_CRTL_RX_PASSIVE;
- 				priv->can.state = CAN_STATE_ERROR_PASSIVE;
- 				priv->can.can_stats.error_passive++;
- 				break;
-@@ -296,12 +304,6 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
- 			/* Bit stream position in CAN frame as the error was detected */
- 			cf->data[3] = ecc & SJA1000_ECC_SEG;
- 
--			if (priv->can.state == CAN_STATE_ERROR_WARNING ||
--			    priv->can.state == CAN_STATE_ERROR_PASSIVE) {
--				cf->data[1] = (txerr > rxerr) ?
--					CAN_ERR_CRTL_TX_PASSIVE :
--					CAN_ERR_CRTL_RX_PASSIVE;
--			}
- 			cf->data[6] = txerr;
- 			cf->data[7] = rxerr;
- 		}
+Here is the summary with links:
+  - [net,1/3] Documentation: devlink: add missing toc entry for etas_es58x devlink doc
+    https://git.kernel.org/netdev/net/c/115dd5469019
+  - [net,2/3] can: flexcan: avoid unbalanced pm_runtime_enable warning
+    https://git.kernel.org/netdev/net/c/3bc2afcba812
+  - [net,3/3] can: kvaser_usb: hydra: help gcc-13 to figure out cmd_len
+    https://git.kernel.org/netdev/net/c/f006229135b7
+
+You are awesome, thank you!
 -- 
-2.25.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
