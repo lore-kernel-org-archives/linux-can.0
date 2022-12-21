@@ -2,53 +2,53 @@ Return-Path: <linux-can-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82379C41535
-	for <linux-can@archiver.kernel.org>; Wed, 21 Dec 2022 15:25:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3766C4167B
+	for <linux-can@archiver.kernel.org>; Wed, 21 Dec 2022 15:26:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231702AbiLUPZ4 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 21 Dec 2022 10:25:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57152 "EHLO
+        id S234698AbiLUP0E (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 21 Dec 2022 10:26:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234629AbiLUPZs (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 21 Dec 2022 10:25:48 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A028A38AA
-        for <linux-can@vger.kernel.org>; Wed, 21 Dec 2022 07:25:46 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id a1so7451849edf.5
-        for <linux-can@vger.kernel.org>; Wed, 21 Dec 2022 07:25:46 -0800 (PST)
+        with ESMTP id S234649AbiLUPZu (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 21 Dec 2022 10:25:50 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D90A766F
+        for <linux-can@vger.kernel.org>; Wed, 21 Dec 2022 07:25:48 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id c17so22426359edj.13
+        for <linux-can@vger.kernel.org>; Wed, 21 Dec 2022 07:25:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2pvhSkDS7sLr/yCRVBMsqsSsDc7feD385RgSjpw/bFA=;
-        b=bkhs3owSb5fFeZ5stolKBxsxgzclcE1S6E6LBQZCMMFan2MMBBTMhTgMJUAPZD/lHs
-         8zqKLzUb8t/KkUwk6kcY7mvlHggwNujTO8JAW/Sj5JPBPpXM2NejknROiCRGlZ1psfkn
-         chNdR1RBvED/ZEUXNPHj1exrPPZ65rAmKx7ZiJnGG45IxFGHGDw3pPPLixHA5r2Q6YwE
-         fo9hcMBeVEYGtOYkwOTHk7VVPeHO5//KrN+zTGAGkHlLm27VLrFK0Ky40PM9F+Oy9krI
-         tySiUeRj+TiJUjxzIMyCBWQaOnUzBY3U1F1n5N0j4fu5+I9Lwh8yjbtByzj/lIaIJL4O
-         Ugug==
+        bh=25T5buiJct4F2Qt5zVUUN9CA8mwo1WMtnKkPLLIV3kA=;
+        b=1c8AfhC3Ur9TqK1Z7HDC/dZOmCzNppS0f7O/CcrgO2/LQ/+vijBcIdwQfQ6Qo45kYG
+         5WE7kHQv6QsDd0Uq0NQ4ahbqz9iG88Gc5xlruJpSdUIq3kPIzqWFa3o6hqpr/KbLUlf5
+         /mgOQqbdxjH9H8BWr7Npz4LwNubw98FKQoLFciUVupsc1REtrExj9Jv3Zv6A/sLghqkI
+         KopXHmPu1VX+N8H3uL3Ay6OUJyZOJgyZrD8mfx7+lTVS7qUtbsqu97nj09sxa1Ellv+x
+         l4ysG8Gb2MYN7xwxly0O6bLfiI71HSGh9FY0s2xPfA8B2sTbhZ2C3LTaeLkdBI/NLd9b
+         SxfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2pvhSkDS7sLr/yCRVBMsqsSsDc7feD385RgSjpw/bFA=;
-        b=VwuTdR0d1y1VrU5aqF2mIt0t3bdzD9efJwpQ9ZqXpUo0mMgMfEo9VBbqUsYweV59gf
-         ftrvbK49zV3cjVRve6hb0WTIRzFEZG+Zc862CGEehMG7hjKKyzpB5UQiEEBKQVLnt4WV
-         pq9E8WIWEr3LwStR+ByK+1YIUg2hAo9ALqyooe0EPs7RCZIxzBOovZpkJdlNmEG9KlCe
-         zUOsrBq7+hbBd1ry7ratp2n7YLnzzKSXVr4CazVIk/j7uEU38soQwYcNTI1OeyWBCGKF
-         MhZmjVRJvlacchFrfpYwaRBw6Ec7no9xzWHLGjokuA/DK0+92sMByDRLPhq20eXvRUzH
-         i4kw==
-X-Gm-Message-State: AFqh2krVpwH3j8GPTu+Lsu+1WD8kJPKlR5szNVbQDbYacLJ8bC6kmq1H
-        Ow5zLi0eEFRtIsnQp5DQfwrCSw==
-X-Google-Smtp-Source: AMrXdXvSCD11RIqk7ZVmORgmKZv80u9uhoq8DSE5lMteZzY4IpDmwnoF1hXmhkCaM4eI1G4KirHGsA==
-X-Received: by 2002:a05:6402:f05:b0:46f:9a53:fdcc with SMTP id i5-20020a0564020f0500b0046f9a53fdccmr2470351eda.12.1671636346275;
-        Wed, 21 Dec 2022 07:25:46 -0800 (PST)
+        bh=25T5buiJct4F2Qt5zVUUN9CA8mwo1WMtnKkPLLIV3kA=;
+        b=oYmUozRR0r88JnkFZO8szZz7Q1Yuu+haLwL4ZwysDLlN1KEqMB3bZ2mprMwCgJJ39B
+         ZwTHXnQn3ywiJtYXTl1qkmewpadKUvA+ETmoA8sDiTLCN1tNK1b1sLRspdMJ9MwnpxVi
+         7NeFD697xVfntF0ddGMHPZq2R5uDr+tXAKJigEZQD33WF5sT4J08PYl7PUgm8VnDXtA6
+         +QnmIRZqGqA2QtrM18ps84urAbfcoOqCZ8gY3yDkneZR0HOTtzKEJP99iWfkFLH3sL4t
+         8bQk0kWE+8SOAX6Nbg4OTFBegGPKiXKsOgqnSiO6LTMQGVznz1p8jYdtheJm0KClYNpO
+         qQVA==
+X-Gm-Message-State: AFqh2kolo82MoCN5SZXk3IKW8cKzxPlkxTWAC0mYu+bfUM0PifAc5VVJ
+        UNU3I8AcTVUT/GFXX+VF8zVq3w==
+X-Google-Smtp-Source: AMrXdXvpSUCVFTU6qxbEQy/CnU78qP0eUBwT3evnk/1igmMGRb7z8ZJJq250w8kXpFy1Fbw+QHr8Uw==
+X-Received: by 2002:a05:6402:790:b0:470:1e5a:a333 with SMTP id d16-20020a056402079000b004701e5aa333mr1648304edy.34.1671636348039;
+        Wed, 21 Dec 2022 07:25:48 -0800 (PST)
 Received: from blmsp.fritz.box ([2001:4091:a245:805c:8713:84e4:2a9e:cbe8])
-        by smtp.gmail.com with ESMTPSA id n19-20020aa7c793000000b0045cf4f72b04sm7105428eds.94.2022.12.21.07.25.45
+        by smtp.gmail.com with ESMTPSA id n19-20020aa7c793000000b0045cf4f72b04sm7105428eds.94.2022.12.21.07.25.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Dec 2022 07:25:45 -0800 (PST)
+        Wed, 21 Dec 2022 07:25:47 -0800 (PST)
 From:   Markus Schneider-Pargmann <msp@baylibre.com>
 To:     Marc Kleine-Budde <mkl@pengutronix.de>,
         Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
@@ -57,9 +57,9 @@ Cc:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH 06/18] can: m_can: Disable unused interrupts
-Date:   Wed, 21 Dec 2022 16:25:25 +0100
-Message-Id: <20221221152537.751564-7-msp@baylibre.com>
+Subject: [PATCH 08/18] can: m_can: Write transmit header and data in one transaction
+Date:   Wed, 21 Dec 2022 16:25:27 +0100
+Message-Id: <20221221152537.751564-9-msp@baylibre.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221221152537.751564-1-msp@baylibre.com>
 References: <20221221152537.751564-1-msp@baylibre.com>
@@ -69,52 +69,43 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-There are a number of interrupts that are not used by the driver at the
-moment. Disable all of these.
+Combine header and data before writing to the transmit fifo to reduce
+the overhead for peripheral chips.
 
 Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
 ---
- drivers/net/can/m_can/m_can.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ drivers/net/can/m_can/m_can.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index a76465016e17..9749a3248517 100644
+index bcd3bcdc5123..9b5ad222aef7 100644
 --- a/drivers/net/can/m_can/m_can.c
 +++ b/drivers/net/can/m_can/m_can.c
-@@ -1252,6 +1252,12 @@ static void m_can_chip_config(struct net_device *dev)
- {
- 	struct m_can_classdev *cdev = netdev_priv(dev);
- 	u32 cccr, test;
-+	u32 interrupts = IR_ALL_INT;
-+
-+	/* Disable unused interrupts */
-+	interrupts &= ~(IR_ARA | IR_ELO | IR_DRX | IR_TEFF | IR_TEFW | IR_TFE |
-+			IR_TCF | IR_HPM | IR_RF1F | IR_RF1W | IR_RF1N |
-+			IR_RF0F | IR_RF0W);
+@@ -1657,6 +1657,7 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
+ 		m_can_write(cdev, M_CAN_TXBAR, 0x1);
+ 		/* End of xmit function for version 3.0.x */
+ 	} else {
++		char buf[TXB_ELEMENT_SIZE];
+ 		/* Transmit routine for version >= v3.1.x */
  
- 	m_can_config_endisable(cdev, true);
+ 		txfqs = m_can_read(cdev, M_CAN_TXFQS);
+@@ -1696,12 +1697,11 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
+ 		fifo_header.dlc = FIELD_PREP(TX_BUF_MM_MASK, putidx) |
+ 			FIELD_PREP(TX_BUF_DLC_MASK, can_fd_len2dlc(cf->len)) |
+ 			fdflags | TX_BUF_EFC;
+-		err = m_can_fifo_write(cdev, putidx, M_CAN_FIFO_ID, &fifo_header, 2);
+-		if (err)
+-			goto out_fail;
++		memcpy(buf, &fifo_header, 8);
++		memcpy(&buf[8], &cf->data, cf->len);
  
-@@ -1347,15 +1353,13 @@ static void m_can_chip_config(struct net_device *dev)
- 	m_can_write(cdev, M_CAN_TEST, test);
+-		err = m_can_fifo_write(cdev, putidx, M_CAN_FIFO_DATA,
+-				       cf->data, DIV_ROUND_UP(cf->len, 4));
++		err = m_can_fifo_write(cdev, putidx, M_CAN_FIFO_ID,
++				       buf, 8 + DIV_ROUND_UP(cf->len, 4));
+ 		if (err)
+ 			goto out_fail;
  
- 	/* Enable interrupts */
--	if (!(cdev->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
-+	if (!(cdev->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)) {
- 		if (cdev->version == 30)
--			m_can_write(cdev, M_CAN_IE, IR_ALL_INT &
--				    ~(IR_ERR_LEC_30X));
-+			interrupts &= ~(IR_ERR_LEC_30X);
- 		else
--			m_can_write(cdev, M_CAN_IE, IR_ALL_INT &
--				    ~(IR_ERR_LEC_31X));
--	else
--		m_can_write(cdev, M_CAN_IE, IR_ALL_INT);
-+			interrupts &= ~(IR_ERR_LEC_31X);
-+	}
-+	m_can_write(cdev, M_CAN_IE, interrupts);
- 
- 	/* route all interrupts to INT0 */
- 	m_can_write(cdev, M_CAN_ILS, ILS_ALL_INT0);
 -- 
 2.38.1
 
