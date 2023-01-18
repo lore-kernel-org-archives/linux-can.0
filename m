@@ -2,29 +2,29 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FBD9C38147
-	for <linux-can@archiver.kernel.org>; Wed, 18 Jan 2023 11:24:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51B4BC678DC
+	for <linux-can@archiver.kernel.org>; Wed, 18 Jan 2023 11:24:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbjARLYl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 18 Jan 2023 06:24:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42552 "EHLO
+        id S229778AbjARLYm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 18 Jan 2023 06:24:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbjARLY3 (ORCPT
+        with ESMTP id S230051AbjARLY3 (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 18 Jan 2023 06:24:29 -0500
 Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B438F4A1EA
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B479A4A1F0
         for <linux-can@vger.kernel.org>; Wed, 18 Jan 2023 02:39:37 -0800 (PST)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed50:4745:2e6d:e3a6:3327])
         by andre.telenet-ops.be with bizsmtp
-        id AAfX2900R2zf9gW01AfXTr; Wed, 18 Jan 2023 11:39:35 +0100
+        id AAfX2900N2zf9gW01AfXTq; Wed, 18 Jan 2023 11:39:35 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1pI5qo-005aKN-8S;
+        id 1pI5qo-005aKI-7W;
         Wed, 18 Jan 2023 11:39:31 +0100
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1pI5qt-001Jt7-Iv;
+        id 1pI5qt-001Jt1-HX;
         Wed, 18 Jan 2023 11:39:31 +0100
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
 To:     Wolfgang Grandegger <wg@grandegger.com>,
@@ -38,41 +38,45 @@ Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
         linux-can@vger.kernel.org, linux-phy@lists.infradead.org,
         devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 2/2] phy: phy-can-transceiver: Add support for NXP TJR1443
-Date:   Wed, 18 Jan 2023 11:39:24 +0100
-Message-Id: <0bfa1e4c43632e49c9512b4e7daa970545545dcf.1674037830.git.geert+renesas@glider.be>
+Subject: [PATCH 0/2] phy: Add support for NXP TJR1443 CAN Transceiver
+Date:   Wed, 18 Jan 2023 11:39:22 +0100
+Message-Id: <cover.1674037830.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1674037830.git.geert+renesas@glider.be>
-References: <cover.1674037830.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+	Hi all,
+
 The NXP TJR1443 High-speed CAN transceiver with Sleep mode is a
-pin-compatible alternative for the TI TCAN1043.
+pin-compatible alternative for the TI TCAN1043.  Hence this patch series
+adds support for it to the existing TI TCAN1043 DT bindings and to the
+generic CAN Transceiver PHY driver.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/phy/phy-can-transceiver.c | 4 ++++
- 1 file changed, 4 insertions(+)
+This has been tested on the Renesas White-Hawk development board.
 
-diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
-index ce511ad5d3690763..5487b9dd1ead1aca 100644
---- a/drivers/phy/phy-can-transceiver.c
-+++ b/drivers/phy/phy-can-transceiver.c
-@@ -84,6 +84,10 @@ static const struct of_device_id can_transceiver_phy_ids[] = {
- 		.compatible = "ti,tcan1043",
- 		.data = &tcan1043_drvdata
- 	},
-+	{
-+		.compatible = "nxp,tjr1443",
-+		.data = &tcan1043_drvdata
-+	},
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, can_transceiver_phy_ids);
+Thanks for your comments!
+
+Geert Uytterhoeven (2):
+  dt-bindings: phy: ti,tcan104x-can: Document NXP TJR1443
+  phy: phy-can-transceiver: Add support for NXP TJR1443
+
+ Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml | 1 +
+ drivers/phy/phy-can-transceiver.c                          | 4 ++++
+ 2 files changed, 5 insertions(+)
+
 -- 
 2.34.1
 
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
