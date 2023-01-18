@@ -2,80 +2,73 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C89CC38147
-	for <linux-can@archiver.kernel.org>; Wed, 18 Jan 2023 11:16:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A941C38159
+	for <linux-can@archiver.kernel.org>; Wed, 18 Jan 2023 11:24:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229510AbjARLQy (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 18 Jan 2023 06:16:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36704 "EHLO
+        id S230037AbjARLYk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 18 Jan 2023 06:24:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229942AbjARLQP (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 18 Jan 2023 06:16:15 -0500
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8607F9B5
-        for <linux-can@vger.kernel.org>; Wed, 18 Jan 2023 02:30:13 -0800 (PST)
+        with ESMTP id S229683AbjARLY3 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 18 Jan 2023 06:24:29 -0500
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B4E4955E
+        for <linux-can@vger.kernel.org>; Wed, 18 Jan 2023 02:39:36 -0800 (PST)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed50:4745:2e6d:e3a6:3327])
-        by albert.telenet-ops.be with bizsmtp
-        id AAWB2900J2zf9gW06AWBzF; Wed, 18 Jan 2023 11:30:12 +0100
+        by laurent.telenet-ops.be with bizsmtp
+        id AAfX2900C2zf9gW01AfXES; Wed, 18 Jan 2023 11:39:34 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1pI5hm-005aJQ-Ff;
-        Wed, 18 Jan 2023 11:30:11 +0100
+        id 1pI5qo-005aKJ-7Z;
+        Wed, 18 Jan 2023 11:39:31 +0100
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1pI5hr-001Jmq-PD;
-        Wed, 18 Jan 2023 11:30:11 +0100
+        id 1pI5qt-001Jt4-ID;
+        Wed, 18 Jan 2023 11:39:31 +0100
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
 To:     Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         Vinod Koul <vkoul@kernel.org>,
         Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Aswath Govindraju <a-govindraju@ti.com>
-Cc:     linux-can@vger.kernel.org, linux-phy@lists.infradead.org,
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-can@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] phy: phy-can-transceiver: Skip warning if no "max-bitrate"
-Date:   Wed, 18 Jan 2023 11:29:58 +0100
-Message-Id: <88e158f97dd52ebaa7126cd9631f34764b9c0795.1674037334.git.geert+renesas@glider.be>
+Subject: [PATCH 1/2] dt-bindings: phy: ti,tcan104x-can: Document NXP TJR1443
+Date:   Wed, 18 Jan 2023 11:39:23 +0100
+Message-Id: <6ee5e2ce00019bd3f77d6a702b38bab1a45f3bb0.1674037830.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1674037830.git.geert+renesas@glider.be>
+References: <cover.1674037830.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-According to the DT bindings, the "max-bitrate" property is optional.
-However, when it is not present, a warning is printed.
-Fix this by adding a missing check for -EINVAL.
+The NXP TJR1443 High-speed CAN transceiver with Sleep mode is a
+pin-compatible alternative for the TI TCAN1043.
 
-Fixes: a4a86d273ff1b6f7 ("phy: phy-can-transceiver: Add support for generic CAN transceiver driver")
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- drivers/phy/phy-can-transceiver.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
-index 95c6dbb52da720bf..ce511ad5d3690763 100644
---- a/drivers/phy/phy-can-transceiver.c
-+++ b/drivers/phy/phy-can-transceiver.c
-@@ -99,6 +99,7 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
- 	struct gpio_desc *standby_gpio;
- 	struct gpio_desc *enable_gpio;
- 	u32 max_bitrate = 0;
-+	int err;
+diff --git a/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+index 02b76f15e7170231..237295b2b5a86a21 100644
+--- a/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
++++ b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+@@ -15,6 +15,7 @@ properties:
  
- 	can_transceiver_phy = devm_kzalloc(dev, sizeof(struct can_transceiver_phy), GFP_KERNEL);
- 	if (!can_transceiver_phy)
-@@ -124,8 +125,8 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
- 		return PTR_ERR(phy);
- 	}
- 
--	device_property_read_u32(dev, "max-bitrate", &max_bitrate);
--	if (!max_bitrate)
-+	err = device_property_read_u32(dev, "max-bitrate", &max_bitrate);
-+	if ((err != -EINVAL) && !max_bitrate)
- 		dev_warn(dev, "Invalid value for transceiver max bitrate. Ignoring bitrate limit\n");
- 	phy->attrs.max_link_rate = max_bitrate;
+   compatible:
+     enum:
++      - nxp,tjr1443
+       - ti,tcan1042
+       - ti,tcan1043
  
 -- 
 2.34.1
