@@ -2,51 +2,47 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08DA3C678DC
-	for <linux-can@archiver.kernel.org>; Thu, 19 Jan 2023 11:28:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDE4DC00A5A
+	for <linux-can@archiver.kernel.org>; Thu, 19 Jan 2023 12:03:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbjASL24 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 19 Jan 2023 06:28:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37408 "EHLO
+        id S229688AbjASMDY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 19 Jan 2023 07:03:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230083AbjASL2w (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 19 Jan 2023 06:28:52 -0500
+        with ESMTP id S231185AbjASMCh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 19 Jan 2023 07:02:37 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A199F6F8AA
-        for <linux-can@vger.kernel.org>; Thu, 19 Jan 2023 03:28:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 277D06F32B
+        for <linux-can@vger.kernel.org>; Thu, 19 Jan 2023 04:02:30 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pIT68-0003tD-2T
-        for linux-can@vger.kernel.org; Thu, 19 Jan 2023 12:28:48 +0100
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id ED2B915D1AE
-        for <linux-can@vger.kernel.org>; Thu, 19 Jan 2023 11:28:45 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        id 1pITce-00011N-Fb; Thu, 19 Jan 2023 13:02:24 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:7961:17f5:9ae5:1a41])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7E95315D18F;
-        Thu, 19 Jan 2023 11:28:44 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ec391b21;
-        Thu, 19 Jan 2023 11:28:43 +0000 (UTC)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id C03BA15D277;
+        Thu, 19 Jan 2023 12:02:23 +0000 (UTC)
+Date:   Thu, 19 Jan 2023 13:02:15 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     linux-can@vger.kernel.org
-Cc:     Manivannan Sadhasivam <mani@kernel.org>,
-        Thomas Kopp <thomas.kopp@microchip.com>,
-        =?UTF-8?q?Stefan=20Alth=C3=B6fer?= <Stefan.Althoefer@janztec.com>,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v2 4/5] can: mcp251xfd: rx: prepare to workaround broken RX FIFO head index erratum
-Date:   Thu, 19 Jan 2023 12:28:41 +0100
-Message-Id: <20230119112842.500709-5-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230119112842.500709-1-mkl@pengutronix.de>
-References: <20230119112842.500709-1-mkl@pengutronix.de>
+To:     Stefan =?utf-8?B?QWx0aMO2ZmVy?= <Stefan.Althoefer@janztec.com>
+Cc:     "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Thomas Kopp <thomas.kopp@microchip.com>, kernel@pengutronix.de
+Subject: Re: AW: AW: [PATCH 0/5] can: mcp251xfd: workaround double-RX erratum
+Message-ID: <20230119120215.lizvewk5326332qy@pengutronix.de>
+References: <20230111222042.1139027-1-mkl@pengutronix.de>
+ <FR0P281MB1966455B1F0ED61EBCE5702097C19@FR0P281MB1966.DEUP281.PROD.OUTLOOK.COM>
+ <20230116221559.nx6syqwnjmumwily@pengutronix.de>
+ <FR0P281MB1966DE37CB113260C5EF1F8C97C49@FR0P281MB1966.DEUP281.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="oqk7qpz7awniinrq"
+Content-Disposition: inline
+In-Reply-To: <FR0P281MB1966DE37CB113260C5EF1F8C97C49@FR0P281MB1966.DEUP281.PROD.OUTLOOK.COM>
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -55,224 +51,151 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This is a preparation patch to work around an erratum.
 
-When handling the RX interrupt, the driver iterates over all pending
-FIFOs (which are implemented as ring buffers in hardware) and reads
-the FIFO header index from the RX FIFO STA register of the chip.
+--oqk7qpz7awniinrq
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-With the help of Thomas, we found out that the chip has a time window
-after receiving a CAN frame where the content of the RX FIFO STA
-register is not read correctly. In the bad case, we observed too large
-head indices. In the original code, the driver always trusted the read
-value, which caused old CAN frames that were already processed to be
-reprocessed.
+On 19.01.2023 07:47:44, Stefan Alth=C3=B6fer wrote:
+> > Before this change the driver used to read the RX FIFO head from the ch=
+ip
+> > (it points to the index that is **written** to next by the driver).
+>
+> Read?
 
-Instead of reading and trusting the head index, read the head index
-and calculate the number of CAN frames that were supposedly received -
-replace mcp251xfd_rx_ring_update() with mcp251xfd_get_rx_len().
+Doh, it should read:
 
-The mcp251xfd_handle_rxif_ring() function reads the received CAN
-frames from the chip, iterates over them and pushes them into the
-network stack. Prepare that the iteration can be stopped if an old CAN
-frame is detected. The actual code to detect old frames and abort will
-be added in the next patch.
+it points to the index that is written to next by the *chip*.
 
-Link: https://lore.kernel.org/all/FR0P281MB1966273C216630B120ABB6E197E89@FR0P281MB1966.DEUP281.PROD.OUTLOOK.COM
-Reported-by: Stefan Althöfer <Stefan.Althoefer@janztec.com>
-Tested-by: Stefan Althöfer <Stefan.Althoefer@janztec.com>
-Tested-by: Thomas Kopp <thomas.kopp@microchip.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- .../net/can/spi/mcp251xfd/mcp251xfd-ring.c    |  1 +
- drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c  | 77 +++++++++++++------
- drivers/net/can/spi/mcp251xfd/mcp251xfd.h     | 12 +--
- 3 files changed, 57 insertions(+), 33 deletions(-)
+> My concern was about such a situation
+>
+>       3     1   2
+> --------------------
+> N|N|O|O|O|0|N|N|N|N|
+> --------------------
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
-index bf3f0f150199..591ca0686df4 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
-@@ -497,6 +497,7 @@ int mcp251xfd_ring_alloc(struct mcp251xfd_priv *priv)
- 		}
- 
- 		rx_ring->obj_num = rx_obj_num;
-+		rx_ring->obj_num_shift_to_u8 = BITS_PER_BYTE - ilog2(rx_obj_num);
- 		rx_ring->obj_size = rx_obj_size;
- 		priv->rx[i] = rx_ring;
- 	}
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c
-index 2c2b057b7ac7..5c6cf2a3e2c2 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c
-@@ -2,7 +2,7 @@
- //
- // mcp251xfd - Microchip MCP251xFD Family CAN controller driver
- //
--// Copyright (c) 2019, 2020, 2021 Pengutronix,
-+// Copyright (c) 2019, 2020, 2021, 2023 Pengutronix,
- //               Marc Kleine-Budde <kernel@pengutronix.de>
- //
- // Based on:
-@@ -79,32 +79,59 @@ mcp251xfd_check_rx_tail(const struct mcp251xfd_priv *priv,
- 	return 0;
- }
- 
-+static inline bool mcp251xfd_rx_fifo_sta_empty(u32 fifo_sta)
-+{
-+	return !(fifo_sta & MCP251XFD_REG_FIFOSTA_TFNRFNIF);
-+}
-+
-+static inline bool mcp251xfd_rx_fifo_sta_full(u32 fifo_sta)
-+{
-+	return fifo_sta & MCP251XFD_REG_FIFOSTA_TFERFFIF;
-+}
-+
- static int
--mcp251xfd_rx_ring_update(const struct mcp251xfd_priv *priv,
--			 struct mcp251xfd_rx_ring *ring)
-+mcp251xfd_get_rx_len(struct mcp251xfd_priv *priv,
-+		     struct mcp251xfd_rx_ring *ring,
-+		     u8 *len_p)
- {
--	u32 new_head;
--	u8 chip_rx_head;
--	bool fifo_empty;
-+	u8 head, tail, shift, len;
-+	u32 fifo_sta;
- 	int err;
- 
--	err = mcp251xfd_rx_head_get_from_chip(priv, ring, &chip_rx_head,
--					      &fifo_empty);
--	if (err || fifo_empty)
-+	err = regmap_read(priv->map_reg, MCP251XFD_REG_FIFOSTA(ring->fifo_nr),
-+			  &fifo_sta);
-+	if (err)
- 		return err;
- 
--	/* chip_rx_head, is the next RX-Object filled by the HW.
--	 * The new RX head must be >= the old head.
--	 */
--	new_head = round_down(ring->head, ring->obj_num) + chip_rx_head;
--	if (new_head <= ring->head)
--		new_head += ring->obj_num;
-+	if (mcp251xfd_rx_fifo_sta_empty(fifo_sta)) {
-+		*len_p = 0;
-+		return 0;
-+	}
- 
--	ring->head = new_head;
-+	if (mcp251xfd_rx_fifo_sta_full(fifo_sta)) {
-+		*len_p = ring->obj_num;
-+		return 0;
-+	}
-+
-+	head = FIELD_GET(MCP251XFD_REG_FIFOSTA_FIFOCI_MASK, fifo_sta);
-+
-+	err =  mcp251xfd_check_rx_tail(priv, ring);
-+	if (err)
-+		return err;
-+	tail = mcp251xfd_get_rx_tail(ring);
- 
--	return mcp251xfd_check_rx_tail(priv, ring);
-+	/* First shift to full u8. The subtraction works on singed
-+	 * values, that keeps the difference steady around the u8
-+	 * overflow. The right shift acts on len, which is an u8.
-+	 */
-+	shift = ring->obj_num_shift_to_u8;
-+	len = (head << shift) - (tail << shift);
-+	*len_p = len >> shift;
-+
-+	return 0;
- }
- 
-+
- static void
- mcp251xfd_hw_rx_obj_to_skb(const struct mcp251xfd_priv *priv,
- 			   const struct mcp251xfd_hw_rx_obj_canfd *hw_rx_obj,
-@@ -208,6 +235,8 @@ mcp251xfd_handle_rxif_ring_uinc(const struct mcp251xfd_priv *priv,
- 	if (!len)
- 		return 0;
- 
-+	ring->head += len;
-+
- 	/* Increment the RX FIFO tail pointer 'len' times in a
- 	 * single SPI message.
- 	 *
-@@ -233,22 +262,22 @@ mcp251xfd_handle_rxif_ring(struct mcp251xfd_priv *priv,
- 			   struct mcp251xfd_rx_ring *ring)
- {
- 	struct mcp251xfd_hw_rx_obj_canfd *hw_rx_obj = ring->obj;
--	u8 rx_tail, len;
-+	u8 rx_tail, len, l;
- 	int err, i;
- 
--	err = mcp251xfd_rx_ring_update(priv, ring);
-+	err = mcp251xfd_get_rx_len(priv, ring, &len);
- 	if (err)
- 		return err;
- 
--	while ((len = mcp251xfd_get_rx_linear_len(ring))) {
-+	while ((l = mcp251xfd_get_rx_linear_len(ring, len))) {
- 		rx_tail = mcp251xfd_get_rx_tail(ring);
- 
- 		err = mcp251xfd_rx_obj_read(priv, ring, hw_rx_obj,
--					    rx_tail, len);
-+					    rx_tail, l);
- 		if (err)
- 			return err;
- 
--		for (i = 0; i < len; i++) {
-+		for (i = 0; i < l; i++) {
- 			err = mcp251xfd_handle_rxif_one(priv, ring,
- 							(void *)hw_rx_obj +
- 							i * ring->obj_size);
-@@ -256,9 +285,11 @@ mcp251xfd_handle_rxif_ring(struct mcp251xfd_priv *priv,
- 				return err;
- 		}
- 
--		err = mcp251xfd_handle_rxif_ring_uinc(priv, ring, len);
-+		err = mcp251xfd_handle_rxif_ring_uinc(priv, ring, l);
- 		if (err)
- 			return err;
-+
-+		len -= l;
- 	}
- 
- 	return 0;
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-index 3c410c543dc8..91cbc2451c8b 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-@@ -550,6 +550,7 @@ struct mcp251xfd_rx_ring {
- 	u8 nr;
- 	u8 fifo_nr;
- 	u8 obj_num;
-+	u8 obj_num_shift_to_u8;
- 	u8 obj_size;
- 
- 	union mcp251xfd_write_reg_buf irq_enable_buf;
-@@ -908,18 +909,9 @@ static inline u8 mcp251xfd_get_rx_tail(const struct mcp251xfd_rx_ring *ring)
- 	return ring->tail & (ring->obj_num - 1);
- }
- 
--static inline u8 mcp251xfd_get_rx_len(const struct mcp251xfd_rx_ring *ring)
--{
--	return ring->head - ring->tail;
--}
--
- static inline u8
--mcp251xfd_get_rx_linear_len(const struct mcp251xfd_rx_ring *ring)
-+mcp251xfd_get_rx_linear_len(const struct mcp251xfd_rx_ring *ring, u8 len)
- {
--	u8 len;
--
--	len = mcp251xfd_get_rx_len(ring);
--
- 	return min_t(u8, len, ring->obj_num - mcp251xfd_get_rx_tail(ring));
- }
- 
--- 
-2.39.0
+What's the meaning of 'N', 'O' and '0' (zero)?
 
+> Correct fifo head is [1]. What are the potential false reads?
+> Is it possible that a false read of fifo head will point to [2].
+>
+> In cases that I have seen it had pointed to older messages always
+> e.g. [3].
 
+|     4 3     1   2
+| --------------------
+| N|N|O|O|O|O|N|N|N|N|
+| --------------------
+
+If N means new, and O means old (I've replaced the 0 by O), then the
+correct head would be [4]. That's the index the chip will write the next
+RX'ed CAN frame. The chip's tail index would point to [1]. That means
+all CAN frames between [1] (including) and [4] (excluding) are new and
+must be read.
+
+If the driver reads a wrong FIFO head, there are 2 possibilities:
+a) driver reads FIFO head [2]
+   - all frames between [1] (including) and [2] excluding are read and
+     pushed into the networking stack (denoted by [R]):
+
+|     4 3     1   2
+| --------------------
+| N|N|O|O|O|O|N|N|N|N|
+| --------------------
+|             R R
+
+   - 2 frames are marked as read, the chip's tail pointer will advance
+     from [1] to [2].
+
+|     4 3     1   2
+| --------------------
+| N|N|O|O|O|O|O|O|N|N|
+| --------------------
+|
+
+   - the RX interrupt stays active, as the RX FIFO is not empty
+   - the usual RX IRQ handling takes place and the rest of the CAN
+     frames are read.
+
+|     4 3     1   2
+| --------------------
+| O|O|O|O|O|O|O|O|O|O|
+| --------------------
+|
+
+   - the chip's tail index is correct [4]
+   - the erratum results in a higher latency, as the driver could
+     have handled 4 RX CAN frames in one burst instead of 2.
+
+b) driver reads FIFO head [3]
+
+   - all frames between [1] (including) end of FIFO are read and
+     pushed into the networking stack (denoted by [R]):
+
+|     4 3     1   2
+| --------------------
+| N|N|O|O|O|O|N|N|N|N|
+| --------------------
+|             R R R R
+
+   - 4 frames are marked as read, the chip's tail pointer will advance
+     from [1] to [5].
+
+| 5   4 3     1   2
+| --------------------
+| N|N|O|O|O|O|O|O|O|O|
+| --------------------
+|
+
+   - all frames between [5] (including) end [3] (excluding) are read
+
+| 5   4 3     1   2
+| --------------------
+| N|N|O|O|O|O|O|O|O|O|
+| --------------------
+| R R R
+
+   - during the iteration the driver sees an old timestamp for the 3rd
+     CAN frame and stops processing there
+   - although 3 CAN frames have been read from the FIFO, only 2 have
+     been processes and pushed to the networking stack
+   - 2 frames are marked as read, the chip's tail index will advance
+     from [5] to [4].
+
+| 5   4 3     1   2
+| --------------------
+| O|O|O|O|O|O|O|O|O|O|
+| --------------------
+|
+
+   - the chip's tail index is correct [4]
+   - the overhead due to the erratum was the longer SPI read of the last
+     CAN RX frame and the additional processing time (which is probably
+     neglectable compared to the SPI overhead).
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--oqk7qpz7awniinrq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmPJMUQACgkQrX5LkNig
+010sSggAhjrsp8tu7VYZXJa4zi7mHl+6ZoGNig/VuCCMMpe9tbZC27gE/a1+1qie
+9vJkaXqfhLk/o8Vn8xXRvlwi5hpaaH0tbA9LW9dLUOYpDPm6OianUcwkNoyuuDaM
+5hA+mgVnMUk1QnqKGJhmjb8CS5XIFpEin/PDrf7GeOhiA0uBE1/TUK+iNTkdaTT1
+BN0byxjCUQ8dB306lh9E9DNH/gbIgvnxxJlXeoLSFNJ2PbRFLfVUsWuSI4BGF+42
+K3VxYbyeyEZWo6bkdgXCXIePU1HCO9OIUdVWSSNXbtP0QMUdFcs8f/Bba0Ig1Xnu
+jvr+qnM/EvL3LdgTV1rYYIs1N5CAkg==
+=oPzB
+-----END PGP SIGNATURE-----
+
+--oqk7qpz7awniinrq--
