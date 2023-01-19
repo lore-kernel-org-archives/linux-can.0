@@ -2,46 +2,48 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15A87C46467
-	for <linux-can@archiver.kernel.org>; Thu, 19 Jan 2023 11:28:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C5ECC6379F
+	for <linux-can@archiver.kernel.org>; Thu, 19 Jan 2023 11:28:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbjASL2y (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 19 Jan 2023 06:28:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37398 "EHLO
+        id S229995AbjASL24 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 19 Jan 2023 06:28:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229724AbjASL2w (ORCPT
+        with ESMTP id S230038AbjASL2w (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 19 Jan 2023 06:28:52 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C395084B
-        for <linux-can@vger.kernel.org>; Thu, 19 Jan 2023 03:28:48 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96C776E832
+        for <linux-can@vger.kernel.org>; Thu, 19 Jan 2023 03:28:49 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pIT67-0003sZ-6L
-        for linux-can@vger.kernel.org; Thu, 19 Jan 2023 12:28:47 +0100
+        id 1pIT68-0003tS-0Q
+        for linux-can@vger.kernel.org; Thu, 19 Jan 2023 12:28:48 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 5BF2815D1A2
-        for <linux-can@vger.kernel.org>; Thu, 19 Jan 2023 11:28:45 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id CD03F15D1B2
+        for <linux-can@vger.kernel.org>; Thu, 19 Jan 2023 11:28:46 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 45FDD15D18A;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 88CD015D191;
         Thu, 19 Jan 2023 11:28:44 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 04bdb290;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id df370211;
         Thu, 19 Jan 2023 11:28:43 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     Manivannan Sadhasivam <mani@kernel.org>,
         Thomas Kopp <thomas.kopp@microchip.com>,
         =?UTF-8?q?Stefan=20Alth=C3=B6fer?= <Stefan.Althoefer@janztec.com>,
-        kernel@pengutronix.de
-Subject: [PATCH v2 0/5] can: mcp251xfd: workaround broken RX FIFO STA register read
-Date:   Thu, 19 Jan 2023 12:28:37 +0100
-Message-Id: <20230119112842.500709-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH v2 5/5] can: mcp251xfd: rx: workaround broken RX FIFO head index erratum
+Date:   Thu, 19 Jan 2023 12:28:42 +0100
+Message-Id: <20230119112842.500709-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20230119112842.500709-1-mkl@pengutronix.de>
+References: <20230119112842.500709-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -53,42 +55,123 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello,
+With the help of Thomas, we found out that the chip has a time window
+after receiving a CAN frame where the content of the RX FIFO STA
+register (containing the RX FIFO head index) is not read correctly. In
+the bad case, we observed too large head indices.
 
-this is a to workaround for the broken RX FIFO STA register read
-erratum found by Stefan Althöfer.
+As the FIFO is implemented as a ring buffer, a too large head index
+results in handling old CAN frames. To work around this issue, keep a
+per FIFO timestamp [1] of the last valid received CAN frame and
+compare against the timestamp of every received CAN frame. If an old
+CAN frame is detected abort the iteration and mark the number of valid
+CAN frames are processed in the chip by incrementing the FIFO's tail
+index.
 
-With the help of Thomas we found out that the chip has a time window
-after receiving a CAN frame where the RX FIFO STA register content is
-not read correctly.
-
-From the driver's point of view, everything looks consistent at first,
-but the head index of the chip is too large. This causes the driver to
-rehandle old CAN frames that have already been processed.
-
-The workaround uses the RX timestamp to distinguish between new and
-old data. As soon as old data is found, processing is stopped.
-
-The series applies against current net/main.
-
-Happy testing,
-Marc
+[1] As the raw timestamp overflows every 107 seconds (at the usual
+    clock rate of 40 MHz) convert it to nanoseconds with the
+    timecounter framework and use this to detect stale CAN frames.
 
 Link: https://lore.kernel.org/all/FR0P281MB1966273C216630B120ABB6E197E89@FR0P281MB1966.DEUP281.PROD.OUTLOOK.COM
+Reported-by: Stefan Althöfer <Stefan.Althoefer@janztec.com>
+Tested-by: Stefan Althöfer <Stefan.Althoefer@janztec.com>
+Tested-by: Thomas Kopp <thomas.kopp@microchip.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ .../net/can/spi/mcp251xfd/mcp251xfd-ring.c    |  1 +
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c  | 28 +++++++++++++++++--
+ drivers/net/can/spi/mcp251xfd/mcp251xfd.h     |  3 ++
+ 3 files changed, 29 insertions(+), 3 deletions(-)
 
-Changes since v1: https://lore.kernel.org/all/20230111222042.1139027-1-mkl@pengutronix.de
-all:
-  - add proper patch description
-  - added Tested-by
-2/5 can: mcp251xfd: clarify the meaning of timestamp:
-  - revisited new naming of variables and functions
-    now we use ts_raw instead of tbc
-4/5 can: mcp251xfd: rx: prepare to workaround broken RX:
-  - precalculate shift width needed for full u8 instead of calculating
-    it every time
-5/5 can: mcp251xfd: rx: workaround broken RX FIFO head:
-  - remove dumping of old CAN frame in error case
-  - add erratum comments
-
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
+index 591ca0686df4..f69d5fc8c9af 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
+@@ -196,6 +196,7 @@ mcp251xfd_ring_init_rx(struct mcp251xfd_priv *priv, u16 *base, u8 *fifo_nr)
+ 	int i, j;
+ 
+ 	mcp251xfd_for_each_rx_ring(priv, rx_ring, i) {
++		rx_ring->last_valid = timecounter_read(&priv->tc);
+ 		rx_ring->head = 0;
+ 		rx_ring->tail = 0;
+ 		rx_ring->base = *base;
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c
+index 5c6cf2a3e2c2..9ccca8d7b58d 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c
+@@ -175,8 +175,6 @@ mcp251xfd_hw_rx_obj_to_skb(const struct mcp251xfd_priv *priv,
+ 
+ 	if (!(hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_RTR))
+ 		memcpy(cfd->data, hw_rx_obj->data, cfd->len);
+-
+-	mcp251xfd_skb_set_timestamp_raw(priv, skb, hw_rx_obj->ts);
+ }
+ 
+ static int
+@@ -187,8 +185,23 @@ mcp251xfd_handle_rxif_one(struct mcp251xfd_priv *priv,
+ 	struct net_device_stats *stats = &priv->ndev->stats;
+ 	struct sk_buff *skb;
+ 	struct canfd_frame *cfd;
++	u64 timestamp;
+ 	int err;
+ 
++	/* Due to an erratum the RX FIFO head index might too big and
++	 * we're processing past the FIFO's head into old CAN frames.
++	 * Compared timestamp of current handled CAN frame against
++	 * last valid received one. Abort with -EBADMSG in case we
++	 * encounter an old CAN frame.
++	 */
++	timestamp = timecounter_cyc2time(&priv->tc, hw_rx_obj->ts);
++	if (timestamp <= ring->last_valid ) {
++		stats->rx_fifo_errors++;
++
++		return -EBADMSG;
++	}
++	ring->last_valid = timestamp;
++
+ 	if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_FDF)
+ 		skb = alloc_canfd_skb(priv->ndev, &cfd);
+ 	else
+@@ -199,6 +212,7 @@ mcp251xfd_handle_rxif_one(struct mcp251xfd_priv *priv,
+ 		return 0;
+ 	}
+ 
++	mcp251xfd_skb_set_timestamp(skb, timestamp);
+ 	mcp251xfd_hw_rx_obj_to_skb(priv, hw_rx_obj, skb);
+ 	err = can_rx_offload_queue_timestamp(&priv->offload, skb, hw_rx_obj->ts);
+ 	if (err)
+@@ -281,7 +295,15 @@ mcp251xfd_handle_rxif_ring(struct mcp251xfd_priv *priv,
+ 			err = mcp251xfd_handle_rxif_one(priv, ring,
+ 							(void *)hw_rx_obj +
+ 							i * ring->obj_size);
+-			if (err)
++			/* -EBADMSG means we're affected by an
++			 * erratum, i.e. the timestamp in the RX
++			 * object is older that the last valid
++			 * received CAN frame. Don't process any
++			 * further.
++			 */
++			if (err == -EBADMSG)
++				return mcp251xfd_handle_rxif_ring_uinc(priv, ring, i);
++			else if (err)
+ 				return err;
+ 		}
+ 
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+index 91cbc2451c8b..6008d38810e9 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+@@ -546,6 +546,9 @@ struct mcp251xfd_rx_ring {
+ 	unsigned int head;
+ 	unsigned int tail;
+ 
++	/* timestamp of the last valid received CAN frame */
++	u64 last_valid;
++
+ 	u16 base;
+ 	u8 nr;
+ 	u8 fifo_nr;
+-- 
+2.39.0
 
 
