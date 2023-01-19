@@ -2,48 +2,46 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BEA10C38142
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15A87C46467
 	for <linux-can@archiver.kernel.org>; Thu, 19 Jan 2023 11:28:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229724AbjASL2z (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 19 Jan 2023 06:28:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
+        id S229929AbjASL2y (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 19 Jan 2023 06:28:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbjASL2w (ORCPT
+        with ESMTP id S229724AbjASL2w (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 19 Jan 2023 06:28:52 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0856F8A7
-        for <linux-can@vger.kernel.org>; Thu, 19 Jan 2023 03:28:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C395084B
+        for <linux-can@vger.kernel.org>; Thu, 19 Jan 2023 03:28:48 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pIT68-0003t9-2m
-        for linux-can@vger.kernel.org; Thu, 19 Jan 2023 12:28:48 +0100
+        id 1pIT67-0003sZ-6L
+        for linux-can@vger.kernel.org; Thu, 19 Jan 2023 12:28:47 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id E1E3815D1AD
+        by bjornoya.blackshift.org (Postfix) with SMTP id 5BF2815D1A2
         for <linux-can@vger.kernel.org>; Thu, 19 Jan 2023 11:28:45 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6ABF615D18E;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 45FDD15D18A;
         Thu, 19 Jan 2023 11:28:44 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7413c9d3;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 04bdb290;
         Thu, 19 Jan 2023 11:28:43 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     Manivannan Sadhasivam <mani@kernel.org>,
         Thomas Kopp <thomas.kopp@microchip.com>,
         =?UTF-8?q?Stefan=20Alth=C3=B6fer?= <Stefan.Althoefer@janztec.com>,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v2 3/5] can: mcp251xfd: mcp251xfd_handle_rxif_ring_uinc(): factor out in separate function
-Date:   Thu, 19 Jan 2023 12:28:40 +0100
-Message-Id: <20230119112842.500709-4-mkl@pengutronix.de>
+        kernel@pengutronix.de
+Subject: [PATCH v2 0/5] can: mcp251xfd: workaround broken RX FIFO STA register read
+Date:   Thu, 19 Jan 2023 12:28:37 +0100
+Message-Id: <20230119112842.500709-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230119112842.500709-1-mkl@pengutronix.de>
-References: <20230119112842.500709-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -55,98 +53,42 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This is a preparation patch.
+Hello,
 
-Sending the UINC messages followed by incrementing the tail pointer
-will be called in more than one place in upcoming patches, so factor
-this out into a separate function.
+this is a to workaround for the broken RX FIFO STA register read
+erratum found by Stefan Althöfer.
 
-Also make mcp251xfd_handle_rxif_ring_uinc() safe to be called with a
-"len" of 0.
+With the help of Thomas we found out that the chip has a time window
+after receiving a CAN frame where the RX FIFO STA register content is
+not read correctly.
 
-Tested-by: Stefan Althöfer <Stefan.Althoefer@janztec.com>
-Tested-by: Thomas Kopp <thomas.kopp@microchip.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c | 48 +++++++++++++-------
- 1 file changed, 32 insertions(+), 16 deletions(-)
+From the driver's point of view, everything looks consistent at first,
+but the head index of the chip is too large. This causes the driver to
+rehandle old CAN frames that have already been processed.
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c
-index 6d66b97709b8..2c2b057b7ac7 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c
-@@ -197,6 +197,37 @@ mcp251xfd_rx_obj_read(const struct mcp251xfd_priv *priv,
- 	return err;
- }
- 
-+static int
-+mcp251xfd_handle_rxif_ring_uinc(const struct mcp251xfd_priv *priv,
-+				struct mcp251xfd_rx_ring *ring,
-+				u8 len)
-+{
-+	int offset;
-+	int err;
-+
-+	if (!len)
-+		return 0;
-+
-+	/* Increment the RX FIFO tail pointer 'len' times in a
-+	 * single SPI message.
-+	 *
-+	 * Note:
-+	 * Calculate offset, so that the SPI transfer ends on
-+	 * the last message of the uinc_xfer array, which has
-+	 * "cs_change == 0", to properly deactivate the chip
-+	 * select.
-+	 */
-+	offset = ARRAY_SIZE(ring->uinc_xfer) - len;
-+	err = spi_sync_transfer(priv->spi,
-+				ring->uinc_xfer + offset, len);
-+	if (err)
-+		return err;
-+
-+	ring->tail += len;
-+
-+	return 0;
-+}
-+
- static int
- mcp251xfd_handle_rxif_ring(struct mcp251xfd_priv *priv,
- 			   struct mcp251xfd_rx_ring *ring)
-@@ -210,8 +241,6 @@ mcp251xfd_handle_rxif_ring(struct mcp251xfd_priv *priv,
- 		return err;
- 
- 	while ((len = mcp251xfd_get_rx_linear_len(ring))) {
--		int offset;
--
- 		rx_tail = mcp251xfd_get_rx_tail(ring);
- 
- 		err = mcp251xfd_rx_obj_read(priv, ring, hw_rx_obj,
-@@ -227,22 +256,9 @@ mcp251xfd_handle_rxif_ring(struct mcp251xfd_priv *priv,
- 				return err;
- 		}
- 
--		/* Increment the RX FIFO tail pointer 'len' times in a
--		 * single SPI message.
--		 *
--		 * Note:
--		 * Calculate offset, so that the SPI transfer ends on
--		 * the last message of the uinc_xfer array, which has
--		 * "cs_change == 0", to properly deactivate the chip
--		 * select.
--		 */
--		offset = ARRAY_SIZE(ring->uinc_xfer) - len;
--		err = spi_sync_transfer(priv->spi,
--					ring->uinc_xfer + offset, len);
-+		err = mcp251xfd_handle_rxif_ring_uinc(priv, ring, len);
- 		if (err)
- 			return err;
--
--		ring->tail += len;
- 	}
- 
- 	return 0;
--- 
-2.39.0
+The workaround uses the RX timestamp to distinguish between new and
+old data. As soon as old data is found, processing is stopped.
+
+The series applies against current net/main.
+
+Happy testing,
+Marc
+
+Link: https://lore.kernel.org/all/FR0P281MB1966273C216630B120ABB6E197E89@FR0P281MB1966.DEUP281.PROD.OUTLOOK.COM
+
+Changes since v1: https://lore.kernel.org/all/20230111222042.1139027-1-mkl@pengutronix.de
+all:
+  - add proper patch description
+  - added Tested-by
+2/5 can: mcp251xfd: clarify the meaning of timestamp:
+  - revisited new naming of variables and functions
+    now we use ts_raw instead of tbc
+4/5 can: mcp251xfd: rx: prepare to workaround broken RX:
+  - precalculate shift width needed for full u8 instead of calculating
+    it every time
+5/5 can: mcp251xfd: rx: workaround broken RX FIFO head:
+  - remove dumping of old CAN frame in error case
+  - add erratum comments
+
 
 
