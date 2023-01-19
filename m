@@ -2,106 +2,73 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2A9BC00A5A
-	for <linux-can@archiver.kernel.org>; Thu, 19 Jan 2023 16:08:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3112C004D4
+	for <linux-can@archiver.kernel.org>; Thu, 19 Jan 2023 16:30:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbjASQIb (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 19 Jan 2023 11:08:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59608 "EHLO
+        id S229515AbjASQa1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 19 Jan 2023 11:30:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbjASQIJ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 19 Jan 2023 11:08:09 -0500
+        with ESMTP id S229880AbjASQaG (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 19 Jan 2023 11:30:06 -0500
 Received: from mail3.ems-wuensche.com (mail3.ems-wuensche.com [81.169.186.156])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 558271CAE3
-        for <linux-can@vger.kernel.org>; Thu, 19 Jan 2023 08:07:48 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5E8EE8CE6D
+        for <linux-can@vger.kernel.org>; Thu, 19 Jan 2023 08:29:33 -0800 (PST)
 Received: from localhost (unknown [127.0.0.1])
-        by h2257714.serverkompetenz.net (Postfix) with ESMTP id C249AFF9D3
-        for <linux-can@vger.kernel.org>; Thu, 19 Jan 2023 15:46:29 +0000 (UTC)
+        by h2257714.serverkompetenz.net (Postfix) with ESMTP id AD44DFF24E
+        for <linux-can@vger.kernel.org>; Thu, 19 Jan 2023 16:29:31 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at h2257714.serverkompetenz.net
 Received: from mail3.ems-wuensche.com ([81.169.186.156])
         by localhost (h2257714.serverkompetenz.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 7Iw0j-I5zBsX for <linux-can@vger.kernel.org>;
-        Thu, 19 Jan 2023 16:46:26 +0100 (CET)
-From:   Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
-To:     mkl@pengutronix.de, linux-can@vger.kernel.org
-Cc:     wg@grandegger.com,
-        Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
-Subject: [PATCH 4/8] can: ems_pci: Added read/write register and post irq functions
-Date:   Thu, 19 Jan 2023 16:45:24 +0100
-Message-Id: <20230119154528.28425-5-uttenthaler@ems-wuensche.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230119154528.28425-1-uttenthaler@ems-wuensche.com>
-References: <20230119154528.28425-1-uttenthaler@ems-wuensche.com>
+        with ESMTP id c14GKkXB5H_F for <linux-can@vger.kernel.org>;
+        Thu, 19 Jan 2023 17:29:30 +0100 (CET)
+Message-ID: <a75f4e0f-0e1d-058a-2a25-5581d930f603@ems-wuensche.com>
+Date:   Thu, 19 Jan 2023 17:29:26 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Content-Language: en-US
+To:     mkl@pengutronix.de, linux-can@vger.kernel.org
+Cc:     wg@grandegger.com
+References: <20230119154528.28425-1-uttenthaler@ems-wuensche.com>
+From:   Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
+Subject: Re: [PATCH 0/8] can: ems_pci: Add support for CPC-PCIe v3
+In-Reply-To: <20230119154528.28425-1-uttenthaler@ems-wuensche.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Added functions to read and write SJA1000 registers and also the
-post irq routine
+Urgh, I missed a "{" and the patched driver does not compile. Be sure I 
+successfully tested it yesterday with all three versions of the card. 
+But when creating the patch series today I somehow introduced that bug. 
+I will send the correct patches tomorrow.
 
-Signed-off-by: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
----
- drivers/net/can/sja1000/ems_pci.c | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+BTW: scripts/checkpatch.pl -f 
+/usr/src/linux/drivers/net/can/sja1000/ems_pci.c did not complain
 
-diff --git a/drivers/net/can/sja1000/ems_pci.c b/drivers/net/can/sja1000/ems_pci.c
-index be61d39149c4..338233a5d337 100644
---- a/drivers/net/can/sja1000/ems_pci.c
-+++ b/drivers/net/can/sja1000/ems_pci.c
-@@ -172,6 +172,24 @@ static void ems_pci_v2_post_irq(const struct sja1000_priv *priv)
- 	writel(PLX_ICSR_ENA_CLR, card->conf_addr + PLX_ICSR);
- }
- 
-+static u8 ems_pci_v3_read_reg(const struct sja1000_priv *priv, int port)
-+{
-+	return readb(priv->reg_base + port);
-+}
-+
-+static void ems_pci_v3_write_reg(const struct sja1000_priv *priv,
-+				 int port, u8 val)
-+{
-+	writeb(val, priv->reg_base + port);
-+}
-+
-+static void ems_pci_v3_post_irq(const struct sja1000_priv *priv)
-+{
-+	struct ems_pci_card *card = (struct ems_pci_card *)priv->priv;
-+
-+	writel(ASIX_LINTSR_INT0AC, card->conf_addr + ASIX_LINTSR);
-+}
-+
- /* Check if a CAN controller is present at the specified location
-  * by trying to set 'em into the PeliCAN mode
-  */
-@@ -265,6 +283,7 @@ static int ems_pci_add_card(struct pci_dev *pdev,
- 		conf_bar = EMS_PCI_V3_CONF_BAR;
- 		conf_size = EMS_PCI_V3_CONF_SIZE;
- 	} else if (pdev->vendor == PCI_VENDOR_ID_PLX) {
-+
- 		card->version = 2; /* CPC-PCI v2 */
- 		max_chan = EMS_PCI_V2_MAX_CHAN;
- 		base_bar = EMS_PCI_V2_BASE_BAR;
-@@ -330,10 +349,14 @@ static int ems_pci_add_card(struct pci_dev *pdev,
- 			priv->read_reg  = ems_pci_v1_read_reg;
- 			priv->write_reg = ems_pci_v1_write_reg;
- 			priv->post_irq  = ems_pci_v1_post_irq;
--		} else {
-+		} else if (card->version == 2) {
- 			priv->read_reg  = ems_pci_v2_read_reg;
- 			priv->write_reg = ems_pci_v2_write_reg;
- 			priv->post_irq  = ems_pci_v2_post_irq;
-+		} else {
-+			priv->read_reg  = ems_pci_v3_read_reg;
-+			priv->write_reg = ems_pci_v3_write_reg;
-+			priv->post_irq  = ems_pci_v3_post_irq;
- 		}
- 
- 		/* Check if channel is present */
--- 
-2.35.3
+Sorry for the noise
+Gerhard
 
+Am 19.01.23 um 16:45 schrieb Gerhard Uttenthaler:
+> The CPC-PCIe v3 uses a Asix AX99100 instead of the discontinued
+> PLX PCI9030 bridge chip. This patch series adds support for this
+> card version and cleaned some code styling issues.
+> 
+> Gerhard Uttenthaler (8):
+>    Fixed code style, copyright and email address
+>    Added Asix AX99100 definitions
+>    Initialize BAR registers
+>    Added read/write register and post irq functions
+>    Initialize CAN controller base addresses
+>    Added IRQ enable
+>    Deassert hardware reset
+>    Added MODULE_AUTHOR
+> 
+>   drivers/net/can/sja1000/ems_pci.c | 152 ++++++++++++++++++++++--------
+>   1 file changed, 113 insertions(+), 39 deletions(-)
+> 
 --
 EMS Dr. Thomas Wuensche e.K.
 Sonnenhang 3
