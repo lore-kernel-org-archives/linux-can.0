@@ -2,33 +2,33 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 197E0C46467
-	for <linux-can@archiver.kernel.org>; Thu, 19 Jan 2023 16:08:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECA62C004D4
+	for <linux-can@archiver.kernel.org>; Thu, 19 Jan 2023 16:08:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbjASQID (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S230460AbjASQID (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Thu, 19 Jan 2023 11:08:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59766 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbjASQHs (ORCPT
+        with ESMTP id S231169AbjASQHs (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 19 Jan 2023 11:07:48 -0500
 Received: from mail3.ems-wuensche.com (mail3.ems-wuensche.com [81.169.186.156])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ECB2F8A0F6
-        for <linux-can@vger.kernel.org>; Thu, 19 Jan 2023 08:06:55 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8ADDE8B30D
+        for <linux-can@vger.kernel.org>; Thu, 19 Jan 2023 08:06:56 -0800 (PST)
 Received: from localhost (unknown [127.0.0.1])
-        by h2257714.serverkompetenz.net (Postfix) with ESMTP id D477FFF9E8
-        for <linux-can@vger.kernel.org>; Thu, 19 Jan 2023 15:46:25 +0000 (UTC)
+        by h2257714.serverkompetenz.net (Postfix) with ESMTP id 0D01CFF24E
+        for <linux-can@vger.kernel.org>; Thu, 19 Jan 2023 15:46:31 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at h2257714.serverkompetenz.net
 Received: from mail3.ems-wuensche.com ([81.169.186.156])
         by localhost (h2257714.serverkompetenz.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 17do_SW-1BGi for <linux-can@vger.kernel.org>;
-        Thu, 19 Jan 2023 16:46:24 +0100 (CET)
+        with ESMTP id LEWtJUxRKj_V for <linux-can@vger.kernel.org>;
+        Thu, 19 Jan 2023 16:46:29 +0100 (CET)
 From:   Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
 To:     mkl@pengutronix.de, linux-can@vger.kernel.org
 Cc:     wg@grandegger.com,
         Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
-Subject: [PATCH 3/8] can: ems_pci: Initialize BAR registers
-Date:   Thu, 19 Jan 2023 16:45:23 +0100
-Message-Id: <20230119154528.28425-4-uttenthaler@ems-wuensche.com>
+Subject: [PATCH 5/8] can: ems_pci: Initialize CAN controller base addresses
+Date:   Thu, 19 Jan 2023 16:45:25 +0100
+Message-Id: <20230119154528.28425-6-uttenthaler@ems-wuensche.com>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230119154528.28425-1-uttenthaler@ems-wuensche.com>
 References: <20230119154528.28425-1-uttenthaler@ems-wuensche.com>
@@ -38,87 +38,45 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Fix the base register defines and their usage for all three card versions
+Added CAN controller base registers
 
 Signed-off-by: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
 ---
- drivers/net/can/sja1000/ems_pci.c | 37 +++++++++++++++++++++++--------
- 1 file changed, 28 insertions(+), 9 deletions(-)
+ drivers/net/can/sja1000/ems_pci.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/can/sja1000/ems_pci.c b/drivers/net/can/sja1000/ems_pci.c
-index 216ebc14f243..be61d39149c4 100644
+index 338233a5d337..c32f4c7e8844 100644
 --- a/drivers/net/can/sja1000/ems_pci.c
 +++ b/drivers/net/can/sja1000/ems_pci.c
-@@ -87,12 +87,23 @@ struct ems_pci_card {
-  */
- #define EMS_PCI_CDR             (CDR_CBP | CDR_CLKOUT_MASK)
+@@ -343,20 +343,25 @@ static int ems_pci_add_card(struct pci_dev *pdev,
+ 		priv->irq_flags = IRQF_SHARED;
  
--#define EMS_PCI_V1_BASE_BAR     1
--#define EMS_PCI_V1_CONF_SIZE    4096 /* size of PITA control area */
--#define EMS_PCI_V2_BASE_BAR     2
--#define EMS_PCI_V2_CONF_SIZE    128 /* size of PLX control area */
--#define EMS_PCI_CAN_BASE_OFFSET 0x400 /* offset where the controllers starts */
--#define EMS_PCI_CAN_CTRL_SIZE   0x200 /* memory size for each controller */
-+#define EMS_PCI_V1_BASE_BAR 1
-+#define EMS_PCI_V1_CONF_BAR 0
-+#define EMS_PCI_V1_CONF_SIZE 4096 /* size of PITA control area */
-+#define EMS_PCI_V1_CAN_BASE_OFFSET 0x400 /* offset where the controllers start */
-+#define EMS_PCI_V1_CAN_CTRL_SIZE 0x200 /* memory size for each controller */
+ 		dev->irq = pdev->irq;
+-		priv->reg_base = card->base_addr + EMS_PCI_CAN_BASE_OFFSET
+-					+ (i * EMS_PCI_CAN_CTRL_SIZE);
 +
-+#define EMS_PCI_V2_BASE_BAR 2
-+#define EMS_PCI_V2_CONF_BAR 0
-+#define EMS_PCI_V2_CONF_SIZE 128 /* size of PLX control area */
-+#define EMS_PCI_V2_CAN_BASE_OFFSET 0x400 /* offset where the controllers start */
-+#define EMS_PCI_V2_CAN_CTRL_SIZE 0x200 /* memory size for each controller */
-+
-+#define EMS_PCI_V3_BASE_BAR 0
-+#define EMS_PCI_V3_CONF_BAR 5
-+#define EMS_PCI_V3_CONF_SIZE 128 /* size of ASIX control area */
-+#define EMS_PCI_V3_CAN_BASE_OFFSET 0x00 /* offset where the controllers starts */
-+#define EMS_PCI_V3_CAN_CTRL_SIZE 0x100 /* memory size for each controller */
+ 		if (card->version == 1) {
+ 			priv->read_reg  = ems_pci_v1_read_reg;
+ 			priv->write_reg = ems_pci_v1_write_reg;
+ 			priv->post_irq  = ems_pci_v1_post_irq;
++			priv->reg_base = card->base_addr + EMS_PCI_V1_CAN_BASE_OFFSET
++					+ (i * EMS_PCI_V1_CAN_CTRL_SIZE);
+ 		} else if (card->version == 2) {
+ 			priv->read_reg  = ems_pci_v2_read_reg;
+ 			priv->write_reg = ems_pci_v2_write_reg;
+ 			priv->post_irq  = ems_pci_v2_post_irq;
++			priv->reg_base = card->base_addr + EMS_PCI_V2_CAN_BASE_OFFSET
++					+ (i * EMS_PCI_V2_CAN_CTRL_SIZE);
+ 		} else {
+ 			priv->read_reg  = ems_pci_v3_read_reg;
+ 			priv->write_reg = ems_pci_v3_write_reg;
+ 			priv->post_irq  = ems_pci_v3_post_irq;
++			priv->reg_base = card->base_addr + EMS_PCI_V3_CAN_BASE_OFFSET
++					+ (i * EMS_PCI_V3_CAN_CTRL_SIZE);
+ 		}
  
- #define EMS_PCI_BASE_SIZE  4096 /* size of controller area */
- 
-@@ -225,7 +236,7 @@ static int ems_pci_add_card(struct pci_dev *pdev,
- 	struct sja1000_priv *priv;
- 	struct net_device *dev;
- 	struct ems_pci_card *card;
--	int max_chan, conf_size, base_bar;
-+	int max_chan, conf_size, base_bar, conf_bar;
- 	int err, i;
- 
- 	/* Enabling PCI device */
-@@ -247,20 +258,28 @@ static int ems_pci_add_card(struct pci_dev *pdev,
- 
- 	card->channels = 0;
- 
--	if (pdev->vendor == PCI_VENDOR_ID_PLX) {
-+	if (pdev->vendor == PCI_VENDOR_ID_ASIX) {
-+		card->version = 3; /* CPC-PCI v3 */
-+		max_chan = EMS_PCI_V3_MAX_CHAN;
-+		base_bar = EMS_PCI_V3_BASE_BAR;
-+		conf_bar = EMS_PCI_V3_CONF_BAR;
-+		conf_size = EMS_PCI_V3_CONF_SIZE;
-+	} else if (pdev->vendor == PCI_VENDOR_ID_PLX) {
- 		card->version = 2; /* CPC-PCI v2 */
- 		max_chan = EMS_PCI_V2_MAX_CHAN;
- 		base_bar = EMS_PCI_V2_BASE_BAR;
-+		conf_bar = EMS_PCI_V2_CONF_BAR;
- 		conf_size = EMS_PCI_V2_CONF_SIZE;
- 	} else {
- 		card->version = 1; /* CPC-PCI v1 */
- 		max_chan = EMS_PCI_V1_MAX_CHAN;
- 		base_bar = EMS_PCI_V1_BASE_BAR;
-+		conf_bar = EMS_PCI_V1_CONF_BAR;
- 		conf_size = EMS_PCI_V1_CONF_SIZE;
- 	}
- 
- 	/* Remap configuration space and controller memory area */
--	card->conf_addr = pci_iomap(pdev, 0, conf_size);
-+	card->conf_addr = pci_iomap(pdev, conf_bar, conf_size);
- 	if (!card->conf_addr) {
- 		err = -ENOMEM;
- 		goto failure_cleanup;
+ 		/* Check if channel is present */
 -- 
 2.35.3
 
