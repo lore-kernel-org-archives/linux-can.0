@@ -2,70 +2,109 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EBDDBC05027
-	for <linux-can@archiver.kernel.org>; Fri, 20 Jan 2023 11:27:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1504AC05027
+	for <linux-can@archiver.kernel.org>; Fri, 20 Jan 2023 21:55:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbjATL1X (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 20 Jan 2023 06:27:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47120 "EHLO
+        id S229487AbjATVz6 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 20 Jan 2023 16:55:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229678AbjATL1W (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 20 Jan 2023 06:27:22 -0500
-Received: from mail3.ems-wuensche.com (mail3.ems-wuensche.com [81.169.186.156])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 154C24E53A
-        for <linux-can@vger.kernel.org>; Fri, 20 Jan 2023 03:27:18 -0800 (PST)
-Received: from localhost (unknown [127.0.0.1])
-        by h2257714.serverkompetenz.net (Postfix) with ESMTP id 3B86EFF4E9
-        for <linux-can@vger.kernel.org>; Fri, 20 Jan 2023 11:27:18 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at h2257714.serverkompetenz.net
-Received: from mail3.ems-wuensche.com ([81.169.186.156])
-        by localhost (h2257714.serverkompetenz.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 3_7Q0uAmG5p7 for <linux-can@vger.kernel.org>;
-        Fri, 20 Jan 2023 12:27:16 +0100 (CET)
-From:   Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
-To:     linux-can@vger.kernel.org, mkl@pengutronix.de
-Cc:     vincent.mailhol@gmail.com, wg@grandegger.com,
-        Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
-Subject: [PATCH v2 8/8] can: ems_pci: Add myself as module author
-Date:   Fri, 20 Jan 2023 12:26:16 +0100
-Message-Id: <20230120112616.6071-9-uttenthaler@ems-wuensche.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230120112616.6071-1-uttenthaler@ems-wuensche.com>
-References: <20230120112616.6071-1-uttenthaler@ems-wuensche.com>
+        with ESMTP id S229456AbjATVz5 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 20 Jan 2023 16:55:57 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BEB72112
+        for <linux-can@vger.kernel.org>; Fri, 20 Jan 2023 13:55:56 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1pIzMX-0002m5-Na; Fri, 20 Jan 2023 22:55:53 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:2ea4:b8b6:f5b:5340])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 8ACF915F01E;
+        Fri, 20 Jan 2023 21:55:52 +0000 (UTC)
+Date:   Fri, 20 Jan 2023 22:55:47 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Stefan =?utf-8?B?QWx0aMO2ZmVy?= <Stefan.Althoefer@janztec.com>
+Cc:     "Thomas.Kopp@microchip.com" <Thomas.Kopp@microchip.com>,
+        linux-can@vger.kernel.org
+Subject: Re: AW: RE: mcp251xfd: rx frame truncation (1/2)
+Message-ID: <20230120215547.ewa5npqsxf5jxjcr@pengutronix.de>
+References: <FR0P281MB1966C774C1ED0752CCD6B80497C79@FR0P281MB1966.DEUP281.PROD.OUTLOOK.COM>
+ <FR0P281MB1966F32AD422DDD867F8C53A97C79@FR0P281MB1966.DEUP281.PROD.OUTLOOK.COM>
+ <BL3PR11MB6484911640CCC738ED799E6FFBC79@BL3PR11MB6484.namprd11.prod.outlook.com>
+ <FR0P281MB19663A60B0F7CE7F684A7A6297C79@FR0P281MB1966.DEUP281.PROD.OUTLOOK.COM>
+ <BL3PR11MB64842584529FAEF279F7B137FBC49@BL3PR11MB6484.namprd11.prod.outlook.com>
+ <FR0P281MB19669083201C1B9C2DFB9E5497C49@FR0P281MB1966.DEUP281.PROD.OUTLOOK.COM>
+ <FR0P281MB196633E4F8E1195086E2402B97C49@FR0P281MB1966.DEUP281.PROD.OUTLOOK.COM>
+ <BL3PR11MB648434F2B7DE7F75E291E159FBC49@BL3PR11MB6484.namprd11.prod.outlook.com>
+ <20230119133214.ofapvfc2rzi3gvn4@pengutronix.de>
+ <FR0P281MB1966B0AD5BD74FA1AE550F2797C59@FR0P281MB1966.DEUP281.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="x6oql7wfjlvlqdlo"
+Content-Disposition: inline
+In-Reply-To: <FR0P281MB1966B0AD5BD74FA1AE550F2797C59@FR0P281MB1966.DEUP281.PROD.OUTLOOK.COM>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Added myself as module author
 
-Signed-off-by: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
----
- drivers/net/can/sja1000/ems_pci.c | 1 +
- 1 file changed, 1 insertion(+)
+--x6oql7wfjlvlqdlo
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/net/can/sja1000/ems_pci.c b/drivers/net/can/sja1000/ems_pci.c
-index e720b7f3db34..6c6baaeb06f9 100644
---- a/drivers/net/can/sja1000/ems_pci.c
-+++ b/drivers/net/can/sja1000/ems_pci.c
-@@ -21,6 +21,7 @@
- #define DRV_NAME  "ems_pci"
- 
- MODULE_AUTHOR("Sebastian Haas <support@ems-wuensche.com>");
-+MODULE_AUTHOR("Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>");
- MODULE_DESCRIPTION("Socket-CAN driver for EMS CPC-PCI/PCIe/104P CAN cards");
- MODULE_LICENSE("GPL v2");
- 
--- 
-2.35.3
+On 20.01.2023 20:24:13, Stefan Alth=C3=B6fer wrote:
+> Damn shit. The error triggered right soon after you last email. It took=
+=20
+> two more errors until I learned that is a good idea to save in native for=
+mat
+> first, and then attempt to export to vcd (which tends to hang).
 
---
-EMS Dr. Thomas Wuensche e.K.
-Sonnenhang 3
-85304 Ilmmuenster
-HR Ingolstadt, HRA 170106
+doh!
 
-Phone: +49-8441-490260
-Fax  : +49-8441-81860
-http://www.ems-wuensche.com
+> This time the frame in question was truncated to 4 bytes. The other cases=
+ it was=20
+> always truncated to 20 bytes.
+>=20
+> The regdumps were taken quite a while after the error.
+
+I managed to load the VCD into pulseview, decode the SPI and even my old
+mcp251xfd decoder shows something.
+
+Keep the mailing list on Cc. As you cannot send the big dumps via the
+list, you can send them to Thomas and me directly, but send the text
+only mail to the list.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--x6oql7wfjlvlqdlo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmPLDeAACgkQrX5LkNig
+011VCggAl0V3l3Q9Zb5raQiMqggC+mD4X2tzSg5Vq6F0oiNp79/G6MtO01pOP4Iq
+gi7U3uyH0l9Q/5PWULDWLmo5u6ymYXrwzby1oBPHhjOjEuPY7jVOJnj6ZhnlqwYX
+I5iAcY0NsdJ1YRf4wOs1Ij2oydzkBPmLRyTCDPeGxgZZaEqnIiWAoLi0LFTjr+uk
+9zmGwb8bBA0PO7IBWq+Pnq6ZJcMw56DgzIebIfTlqeibiSqrOQYQbhfYWkXiwAkk
+O5yT/m5WUhoS5JdZL+dAHWzhIA75TIknRXYOBwUZX0ydaeLrwKE/1txpbwsXikNm
+0zZq/AZRJ49iji/1dkXWDf+LpUYRKw==
+=fOaW
+-----END PGP SIGNATURE-----
+
+--x6oql7wfjlvlqdlo--
