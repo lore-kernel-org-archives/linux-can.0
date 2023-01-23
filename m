@@ -2,30 +2,33 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A32C3C38142
-	for <linux-can@archiver.kernel.org>; Mon, 23 Jan 2023 19:01:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 070B2C05027
+	for <linux-can@archiver.kernel.org>; Mon, 23 Jan 2023 19:04:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231863AbjAWTB1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 23 Jan 2023 14:01:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41224 "EHLO
+        id S231664AbjAWTEj (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 23 Jan 2023 14:04:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231650AbjAWTB0 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 23 Jan 2023 14:01:26 -0500
-X-Greylist: delayed 302 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 23 Jan 2023 11:01:25 PST
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E87735AA
-        for <linux-can@vger.kernel.org>; Mon, 23 Jan 2023 11:01:25 -0800 (PST)
+        with ESMTP id S229551AbjAWTEh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 23 Jan 2023 14:04:37 -0500
+X-Greylist: delayed 467 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 23 Jan 2023 11:04:12 PST
+Received: from weierstrass.telenet-ops.be (weierstrass.telenet-ops.be [IPv6:2a02:1800:110:4::f00:11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C75130190
+        for <linux-can@vger.kernel.org>; Mon, 23 Jan 2023 11:04:12 -0800 (PST)
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by weierstrass.telenet-ops.be (Postfix) with ESMTPS id 4P0zpY4TgWz4x1b0
+        for <linux-can@vger.kernel.org>; Mon, 23 Jan 2023 19:56:21 +0100 (CET)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed50:6083:1fd7:ba05:ea8d])
-        by xavier.telenet-ops.be with bizsmtp
-        id CJwJ2900D4604Ck01JwJmt; Mon, 23 Jan 2023 19:56:21 +0100
+        by baptiste.telenet-ops.be with bizsmtp
+        id CJwJ2900F4604Ck01JwJ30; Mon, 23 Jan 2023 19:56:21 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1pK1zG-0076KK-IZ;
+        id 1pK1zG-0076Kn-NF;
         Mon, 23 Jan 2023 19:56:18 +0100
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1pK1zO-00EkhF-Fa;
+        id 1pK1zO-00Ekhn-KP;
         Mon, 23 Jan 2023 19:56:18 +0100
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
 To:     Wolfgang Grandegger <wg@grandegger.com>,
@@ -38,9 +41,9 @@ Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
         netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-renesas-soc@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 04/12] can: rcar_canfd: Fix R-Car V3U CAN mode selection
-Date:   Mon, 23 Jan 2023 19:56:06 +0100
-Message-Id: <388ddf312917eb9f6cc460a481f68402a876f9b5.1674499048.git.geert+renesas@glider.be>
+Subject: [PATCH 11/12] can: rcar_canfd: Add helper variable dev
+Date:   Mon, 23 Jan 2023 19:56:13 +0100
+Message-Id: <2965edc7992ab54dc6c862910775f3466fca6b29.1674499048.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1674499048.git.geert+renesas@glider.be>
 References: <cover.1674499048.git.geert+renesas@glider.be>
@@ -50,72 +53,268 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-When adding support for R-Car V3U, the Global FD Configuration register
-(CFDGFDCFG) and the Channel-specific CAN-FD Configuration Registers
-(CFDCmFDCFG) were mixed up.  Use the correct register, and apply the
-selected CAN mode to all available channels.
+rcar_canfd_channel_probe() and rcar_canfd_probe() have many users of
+"pdev->dev".  Introduce shorthands to simplify the code.
 
-Annotate the corresponding register bits, to make it clear they do
-not exist on older variants.
-
-Fixes: 45721c406dcf50d4 ("can: rcar_canfd: Add support for r8a779a0 SoC")
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
-Currently the selected CAN mode is a global setting (controlled through
-the "renesas,no-can-fd" DT property), but the variant on R-Car V3U and
-later seems to support configuring this per-channel.  Whether
-"renesas,no-can-fd" can be made channel-specific is still to be seen, as
-the driver performs some global configuration based on the selected CAN
-mode.
----
- drivers/net/can/rcar/rcar_canfd.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ drivers/net/can/rcar/rcar_canfd.c | 86 +++++++++++++++----------------
+ 1 file changed, 42 insertions(+), 44 deletions(-)
 
 diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index f6fa7157b99b07da..88de17d0bd79d627 100644
+index cfcf1a93fb58c36f..ef4e1b9a9e1ee280 100644
 --- a/drivers/net/can/rcar/rcar_canfd.c
 +++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -197,8 +197,8 @@
- #define RCANFD_DCFG_DBRP(x)		(((x) & 0xff) << 0)
- 
- /* RSCFDnCFDCmFDCFG */
--#define RCANFD_FDCFG_CLOE		BIT(30)
--#define RCANFD_FDCFG_FDOE		BIT(28)
-+#define RCANFD_V3U_FDCFG_CLOE		BIT(30)
-+#define RCANFD_V3U_FDCFG_FDOE		BIT(28)
- #define RCANFD_FDCFG_TDCE		BIT(9)
- #define RCANFD_FDCFG_TDCOC		BIT(8)
- #define RCANFD_FDCFG_TDCO(x)		(((x) & 0x7f) >> 16)
-@@ -429,8 +429,8 @@
- #define RCANFD_C_RPGACC(r)		(0x1900 + (0x04 * (r)))
- 
- /* R-Car V3U Classical and CAN FD mode specific register map */
--#define RCANFD_V3U_CFDCFG		(0x1314)
- #define RCANFD_V3U_DCFG(m)		(0x1400 + (0x20 * (m)))
-+#define RCANFD_V3U_FDCFG(m)		(0x1404 + (0x20 * (m)))
- 
- #define RCANFD_V3U_GAFL_OFFSET		(0x1800)
- 
-@@ -689,12 +689,13 @@ static void rcar_canfd_tx_failure_cleanup(struct net_device *ndev)
- static void rcar_canfd_set_mode(struct rcar_canfd_global *gpriv)
+@@ -1715,13 +1715,14 @@ static int rcar_canfd_channel_probe(struct rcar_canfd_global *gpriv, u32 ch,
  {
- 	if (is_v3u(gpriv)) {
--		if (gpriv->fdmode)
--			rcar_canfd_set_bit(gpriv->base, RCANFD_V3U_CFDCFG,
--					   RCANFD_FDCFG_FDOE);
--		else
--			rcar_canfd_set_bit(gpriv->base, RCANFD_V3U_CFDCFG,
--					   RCANFD_FDCFG_CLOE);
-+		u32 ch, val = gpriv->fdmode ? RCANFD_V3U_FDCFG_FDOE
-+					    : RCANFD_V3U_FDCFG_CLOE;
-+
-+		for_each_set_bit(ch, &gpriv->channels_mask,
-+				 gpriv->info->max_channels)
-+			rcar_canfd_set_bit(gpriv->base, RCANFD_V3U_FDCFG(ch),
-+					   val);
+ 	const struct rcar_canfd_hw_info *info = gpriv->info;
+ 	struct platform_device *pdev = gpriv->pdev;
++	struct device *dev = &pdev->dev;
+ 	struct rcar_canfd_channel *priv;
+ 	struct net_device *ndev;
+ 	int err = -ENODEV;
+ 
+ 	ndev = alloc_candev(sizeof(*priv), RCANFD_FIFO_DEPTH);
+ 	if (!ndev) {
+-		dev_err(&pdev->dev, "alloc_candev() failed\n");
++		dev_err(dev, "alloc_candev() failed\n");
+ 		return -ENOMEM;
+ 	}
+ 	priv = netdev_priv(ndev);
+@@ -1734,7 +1735,7 @@ static int rcar_canfd_channel_probe(struct rcar_canfd_global *gpriv, u32 ch,
+ 	priv->channel = ch;
+ 	priv->gpriv = gpriv;
+ 	priv->can.clock.freq = fcan_freq;
+-	dev_info(&pdev->dev, "can_clk rate is %u\n", priv->can.clock.freq);
++	dev_info(dev, "can_clk rate is %u\n", priv->can.clock.freq);
+ 
+ 	if (info->multi_channel_irqs) {
+ 		char *irq_name;
+@@ -1753,31 +1754,31 @@ static int rcar_canfd_channel_probe(struct rcar_canfd_global *gpriv, u32 ch,
+ 			goto fail;
+ 		}
+ 
+-		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
+-					  "canfd.ch%d_err", ch);
++		irq_name = devm_kasprintf(dev, GFP_KERNEL, "canfd.ch%d_err",
++					  ch);
+ 		if (!irq_name) {
+ 			err = -ENOMEM;
+ 			goto fail;
+ 		}
+-		err = devm_request_irq(&pdev->dev, err_irq,
++		err = devm_request_irq(dev, err_irq,
+ 				       rcar_canfd_channel_err_interrupt, 0,
+ 				       irq_name, priv);
+ 		if (err) {
+-			dev_err(&pdev->dev, "devm_request_irq CH Err(%d) failed, error %d\n",
++			dev_err(dev, "devm_request_irq CH Err(%d) failed, error %d\n",
+ 				err_irq, err);
+ 			goto fail;
+ 		}
+-		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
+-					  "canfd.ch%d_trx", ch);
++		irq_name = devm_kasprintf(dev, GFP_KERNEL, "canfd.ch%d_trx",
++					  ch);
+ 		if (!irq_name) {
+ 			err = -ENOMEM;
+ 			goto fail;
+ 		}
+-		err = devm_request_irq(&pdev->dev, tx_irq,
++		err = devm_request_irq(dev, tx_irq,
+ 				       rcar_canfd_channel_tx_interrupt, 0,
+ 				       irq_name, priv);
+ 		if (err) {
+-			dev_err(&pdev->dev, "devm_request_irq Tx (%d) failed, error %d\n",
++			dev_err(dev, "devm_request_irq Tx (%d) failed, error %d\n",
+ 				tx_irq, err);
+ 			goto fail;
+ 		}
+@@ -1801,7 +1802,7 @@ static int rcar_canfd_channel_probe(struct rcar_canfd_global *gpriv, u32 ch,
+ 
+ 	priv->can.do_set_mode = rcar_canfd_do_set_mode;
+ 	priv->can.do_get_berr_counter = rcar_canfd_get_berr_counter;
+-	SET_NETDEV_DEV(ndev, &pdev->dev);
++	SET_NETDEV_DEV(ndev, dev);
+ 
+ 	netif_napi_add_weight(ndev, &priv->napi, rcar_canfd_rx_poll,
+ 			      RCANFD_NAPI_WEIGHT);
+@@ -1809,11 +1810,10 @@ static int rcar_canfd_channel_probe(struct rcar_canfd_global *gpriv, u32 ch,
+ 	gpriv->ch[priv->channel] = priv;
+ 	err = register_candev(ndev);
+ 	if (err) {
+-		dev_err(&pdev->dev,
+-			"register_candev() failed, error %d\n", err);
++		dev_err(dev, "register_candev() failed, error %d\n", err);
+ 		goto fail_candev;
+ 	}
+-	dev_info(&pdev->dev, "device registered (channel %u)\n", priv->channel);
++	dev_info(dev, "device registered (channel %u)\n", priv->channel);
+ 	return 0;
+ 
+ fail_candev:
+@@ -1837,6 +1837,7 @@ static void rcar_canfd_channel_remove(struct rcar_canfd_global *gpriv, u32 ch)
+ static int rcar_canfd_probe(struct platform_device *pdev)
+ {
+ 	const struct rcar_canfd_hw_info *info;
++	struct device *dev = &pdev->dev;
+ 	void __iomem *addr;
+ 	u32 sts, ch, fcan_freq;
+ 	struct rcar_canfd_global *gpriv;
+@@ -1848,14 +1849,14 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 	char name[9] = "channelX";
+ 	int i;
+ 
+-	info = of_device_get_match_data(&pdev->dev);
++	info = of_device_get_match_data(dev);
+ 
+-	if (of_property_read_bool(pdev->dev.of_node, "renesas,no-can-fd"))
++	if (of_property_read_bool(dev->of_node, "renesas,no-can-fd"))
+ 		fdmode = false;			/* Classical CAN only mode */
+ 
+ 	for (i = 0; i < info->max_channels; ++i) {
+ 		name[7] = '0' + i;
+-		of_child = of_get_child_by_name(pdev->dev.of_node, name);
++		of_child = of_get_child_by_name(dev->of_node, name);
+ 		if (of_child && of_device_is_available(of_child))
+ 			channels_mask |= BIT(i);
+ 		of_node_put(of_child);
+@@ -1888,7 +1889,7 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* Global controller context */
+-	gpriv = devm_kzalloc(&pdev->dev, sizeof(*gpriv), GFP_KERNEL);
++	gpriv = devm_kzalloc(dev, sizeof(*gpriv), GFP_KERNEL);
+ 	if (!gpriv)
+ 		return -ENOMEM;
+ 
+@@ -1897,32 +1898,30 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 	gpriv->fdmode = fdmode;
+ 	gpriv->info = info;
+ 
+-	gpriv->rstc1 = devm_reset_control_get_optional_exclusive(&pdev->dev,
+-								 "rstp_n");
++	gpriv->rstc1 = devm_reset_control_get_optional_exclusive(dev, "rstp_n");
+ 	if (IS_ERR(gpriv->rstc1))
+-		return dev_err_probe(&pdev->dev, PTR_ERR(gpriv->rstc1),
++		return dev_err_probe(dev, PTR_ERR(gpriv->rstc1),
+ 				     "failed to get rstp_n\n");
+ 
+-	gpriv->rstc2 = devm_reset_control_get_optional_exclusive(&pdev->dev,
+-								 "rstc_n");
++	gpriv->rstc2 = devm_reset_control_get_optional_exclusive(dev, "rstc_n");
+ 	if (IS_ERR(gpriv->rstc2))
+-		return dev_err_probe(&pdev->dev, PTR_ERR(gpriv->rstc2),
++		return dev_err_probe(dev, PTR_ERR(gpriv->rstc2),
+ 				     "failed to get rstc_n\n");
+ 
+ 	/* Peripheral clock */
+-	gpriv->clkp = devm_clk_get(&pdev->dev, "fck");
++	gpriv->clkp = devm_clk_get(dev, "fck");
+ 	if (IS_ERR(gpriv->clkp))
+-		return dev_err_probe(&pdev->dev, PTR_ERR(gpriv->clkp),
++		return dev_err_probe(dev, PTR_ERR(gpriv->clkp),
+ 				     "cannot get peripheral clock\n");
+ 
+ 	/* fCAN clock: Pick External clock. If not available fallback to
+ 	 * CANFD clock
+ 	 */
+-	gpriv->can_clk = devm_clk_get(&pdev->dev, "can_clk");
++	gpriv->can_clk = devm_clk_get(dev, "can_clk");
+ 	if (IS_ERR(gpriv->can_clk) || (clk_get_rate(gpriv->can_clk) == 0)) {
+-		gpriv->can_clk = devm_clk_get(&pdev->dev, "canfd");
++		gpriv->can_clk = devm_clk_get(dev, "canfd");
+ 		if (IS_ERR(gpriv->can_clk))
+-			return dev_err_probe(&pdev->dev, PTR_ERR(gpriv->can_clk),
++			return dev_err_probe(dev, PTR_ERR(gpriv->can_clk),
+ 					     "cannot get canfd clock\n");
+ 
+ 		gpriv->fcan = RCANFD_CANFDCLK;
+@@ -1945,39 +1944,38 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 
+ 	/* Request IRQ that's common for both channels */
+ 	if (info->shared_global_irqs) {
+-		err = devm_request_irq(&pdev->dev, ch_irq,
++		err = devm_request_irq(dev, ch_irq,
+ 				       rcar_canfd_channel_interrupt, 0,
+ 				       "canfd.ch_int", gpriv);
+ 		if (err) {
+-			dev_err(&pdev->dev, "devm_request_irq(%d) failed, error %d\n",
++			dev_err(dev, "devm_request_irq(%d) failed, error %d\n",
+ 				ch_irq, err);
+ 			goto fail_dev;
+ 		}
+ 
+-		err = devm_request_irq(&pdev->dev, g_irq,
+-				       rcar_canfd_global_interrupt, 0,
+-				       "canfd.g_int", gpriv);
++		err = devm_request_irq(dev, g_irq, rcar_canfd_global_interrupt,
++				       0, "canfd.g_int", gpriv);
+ 		if (err) {
+-			dev_err(&pdev->dev, "devm_request_irq(%d) failed, error %d\n",
++			dev_err(dev, "devm_request_irq(%d) failed, error %d\n",
+ 				g_irq, err);
+ 			goto fail_dev;
+ 		}
  	} else {
- 		if (gpriv->fdmode)
- 			rcar_canfd_set_bit(gpriv->base, RCANFD_GRMCFG,
+-		err = devm_request_irq(&pdev->dev, g_recc_irq,
++		err = devm_request_irq(dev, g_recc_irq,
+ 				       rcar_canfd_global_receive_fifo_interrupt, 0,
+ 				       "canfd.g_recc", gpriv);
+ 
+ 		if (err) {
+-			dev_err(&pdev->dev, "devm_request_irq(%d) failed, error %d\n",
++			dev_err(dev, "devm_request_irq(%d) failed, error %d\n",
+ 				g_recc_irq, err);
+ 			goto fail_dev;
+ 		}
+ 
+-		err = devm_request_irq(&pdev->dev, g_err_irq,
++		err = devm_request_irq(dev, g_err_irq,
+ 				       rcar_canfd_global_err_interrupt, 0,
+ 				       "canfd.g_err", gpriv);
+ 		if (err) {
+-			dev_err(&pdev->dev, "devm_request_irq(%d) failed, error %d\n",
++			dev_err(dev, "devm_request_irq(%d) failed, error %d\n",
+ 				g_err_irq, err);
+ 			goto fail_dev;
+ 		}
+@@ -1995,14 +1993,14 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 	/* Enable peripheral clock for register access */
+ 	err = clk_prepare_enable(gpriv->clkp);
+ 	if (err) {
+-		dev_err(&pdev->dev,
+-			"failed to enable peripheral clock, error %d\n", err);
++		dev_err(dev, "failed to enable peripheral clock, error %d\n",
++			err);
+ 		goto fail_reset;
+ 	}
+ 
+ 	err = rcar_canfd_reset_controller(gpriv);
+ 	if (err) {
+-		dev_err(&pdev->dev, "reset controller failed\n");
++		dev_err(dev, "reset controller failed\n");
+ 		goto fail_clk;
+ 	}
+ 
+@@ -2032,7 +2030,7 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 	err = readl_poll_timeout((gpriv->base + RCANFD_GSTS), sts,
+ 				 !(sts & RCANFD_GSTS_GNOPM), 2, 500000);
+ 	if (err) {
+-		dev_err(&pdev->dev, "global operational mode failed\n");
++		dev_err(dev, "global operational mode failed\n");
+ 		goto fail_mode;
+ 	}
+ 
+@@ -2043,7 +2041,7 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	platform_set_drvdata(pdev, gpriv);
+-	dev_info(&pdev->dev, "global operational state (clk %d, fdmode %d)\n",
++	dev_info(dev, "global operational state (clk %d, fdmode %d)\n",
+ 		 gpriv->fcan, gpriv->fdmode);
+ 	return 0;
+ 
 -- 
 2.34.1
 
