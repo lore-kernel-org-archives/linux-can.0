@@ -2,29 +2,30 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5E69C64EC3
-	for <linux-can@archiver.kernel.org>; Mon, 23 Jan 2023 18:57:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A32C3C38142
+	for <linux-can@archiver.kernel.org>; Mon, 23 Jan 2023 19:01:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232563AbjAWS5D (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 23 Jan 2023 13:57:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36410 "EHLO
+        id S231863AbjAWTB1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 23 Jan 2023 14:01:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232642AbjAWS4f (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 23 Jan 2023 13:56:35 -0500
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6638032E78
-        for <linux-can@vger.kernel.org>; Mon, 23 Jan 2023 10:56:29 -0800 (PST)
+        with ESMTP id S231650AbjAWTB0 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 23 Jan 2023 14:01:26 -0500
+X-Greylist: delayed 302 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 23 Jan 2023 11:01:25 PST
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E87735AA
+        for <linux-can@vger.kernel.org>; Mon, 23 Jan 2023 11:01:25 -0800 (PST)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed50:6083:1fd7:ba05:ea8d])
-        by albert.telenet-ops.be with bizsmtp
-        id CJwJ2900g4604Ck06JwJts; Mon, 23 Jan 2023 19:56:21 +0100
+        by xavier.telenet-ops.be with bizsmtp
+        id CJwJ2900D4604Ck01JwJmt; Mon, 23 Jan 2023 19:56:21 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1pK1zG-0076Kq-Nt;
+        id 1pK1zG-0076KK-IZ;
         Mon, 23 Jan 2023 19:56:18 +0100
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1pK1zO-00Ekhs-L8;
+        id 1pK1zO-00EkhF-Fa;
         Mon, 23 Jan 2023 19:56:18 +0100
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
 To:     Wolfgang Grandegger <wg@grandegger.com>,
@@ -37,9 +38,9 @@ Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
         netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-renesas-soc@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 12/12] can: rcar_canfd: Add transceiver support
-Date:   Mon, 23 Jan 2023 19:56:14 +0100
-Message-Id: <e825b50a843ffe40e33f34e4d858c07c1b2ff259.1674499048.git.geert+renesas@glider.be>
+Subject: [PATCH 04/12] can: rcar_canfd: Fix R-Car V3U CAN mode selection
+Date:   Mon, 23 Jan 2023 19:56:06 +0100
+Message-Id: <388ddf312917eb9f6cc460a481f68402a876f9b5.1674499048.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1674499048.git.geert+renesas@glider.be>
 References: <cover.1674499048.git.geert+renesas@glider.be>
@@ -49,132 +50,72 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Add support for CAN transceivers described as PHYs.
+When adding support for R-Car V3U, the Global FD Configuration register
+(CFDGFDCFG) and the Channel-specific CAN-FD Configuration Registers
+(CFDCmFDCFG) were mixed up.  Use the correct register, and apply the
+selected CAN mode to all available channels.
 
-While simple CAN transceivers can do without, this is needed for CAN
-transceivers like NXP TJR1443 that need a configuration step (like
-pulling standby or enable lines), and/or impose a bitrate limit.
+Annotate the corresponding register bits, to make it clear they do
+not exist on older variants.
 
+Fixes: 45721c406dcf50d4 ("can: rcar_canfd: Add support for r8a779a0 SoC")
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
-This depends on "[PATCH 1/7] phy: Add devm_of_phy_optional_get() helper".
-https://lore.kernel.org/all/f53a1bcca637ceeafb04ce3540a605532d3bc34a.1674036164.git.geert+renesas@glider.be
+Currently the selected CAN mode is a global setting (controlled through
+the "renesas,no-can-fd" DT property), but the variant on R-Car V3U and
+later seems to support configuring this per-channel.  Whether
+"renesas,no-can-fd" can be made channel-specific is still to be seen, as
+the driver performs some global configuration based on the selected CAN
+mode.
 ---
- drivers/net/can/rcar/rcar_canfd.c | 30 +++++++++++++++++++++++++-----
- 1 file changed, 25 insertions(+), 5 deletions(-)
+ drivers/net/can/rcar/rcar_canfd.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index ef4e1b9a9e1ee280..6df9a259e5e4f92c 100644
+index f6fa7157b99b07da..88de17d0bd79d627 100644
 --- a/drivers/net/can/rcar/rcar_canfd.c
 +++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -35,6 +35,7 @@
- #include <linux/netdevice.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-+#include <linux/phy/phy.h>
- #include <linux/platform_device.h>
- #include <linux/reset.h>
- #include <linux/types.h>
-@@ -530,6 +531,7 @@ struct rcar_canfd_channel {
- 	struct net_device *ndev;
- 	struct rcar_canfd_global *gpriv;	/* Controller reference */
- 	void __iomem *base;			/* Register base address */
-+	struct phy *transceiver;		/* Optional transceiver */
- 	struct napi_struct napi;
- 	u32 tx_head;				/* Incremented on xmit */
- 	u32 tx_tail;				/* Incremented on xmit done */
-@@ -1413,11 +1415,17 @@ static int rcar_canfd_open(struct net_device *ndev)
- 	struct rcar_canfd_global *gpriv = priv->gpriv;
- 	int err;
+@@ -197,8 +197,8 @@
+ #define RCANFD_DCFG_DBRP(x)		(((x) & 0xff) << 0)
  
-+	err = phy_power_on(priv->transceiver);
-+	if (err) {
-+		netdev_err(ndev, "failed to power on PHY, error %d\n", err);
-+		return err;
-+	}
+ /* RSCFDnCFDCmFDCFG */
+-#define RCANFD_FDCFG_CLOE		BIT(30)
+-#define RCANFD_FDCFG_FDOE		BIT(28)
++#define RCANFD_V3U_FDCFG_CLOE		BIT(30)
++#define RCANFD_V3U_FDCFG_FDOE		BIT(28)
+ #define RCANFD_FDCFG_TDCE		BIT(9)
+ #define RCANFD_FDCFG_TDCOC		BIT(8)
+ #define RCANFD_FDCFG_TDCO(x)		(((x) & 0x7f) >> 16)
+@@ -429,8 +429,8 @@
+ #define RCANFD_C_RPGACC(r)		(0x1900 + (0x04 * (r)))
+ 
+ /* R-Car V3U Classical and CAN FD mode specific register map */
+-#define RCANFD_V3U_CFDCFG		(0x1314)
+ #define RCANFD_V3U_DCFG(m)		(0x1400 + (0x20 * (m)))
++#define RCANFD_V3U_FDCFG(m)		(0x1404 + (0x20 * (m)))
+ 
+ #define RCANFD_V3U_GAFL_OFFSET		(0x1800)
+ 
+@@ -689,12 +689,13 @@ static void rcar_canfd_tx_failure_cleanup(struct net_device *ndev)
+ static void rcar_canfd_set_mode(struct rcar_canfd_global *gpriv)
+ {
+ 	if (is_v3u(gpriv)) {
+-		if (gpriv->fdmode)
+-			rcar_canfd_set_bit(gpriv->base, RCANFD_V3U_CFDCFG,
+-					   RCANFD_FDCFG_FDOE);
+-		else
+-			rcar_canfd_set_bit(gpriv->base, RCANFD_V3U_CFDCFG,
+-					   RCANFD_FDCFG_CLOE);
++		u32 ch, val = gpriv->fdmode ? RCANFD_V3U_FDCFG_FDOE
++					    : RCANFD_V3U_FDCFG_CLOE;
 +
- 	/* Peripheral clock is already enabled in probe */
- 	err = clk_prepare_enable(gpriv->can_clk);
- 	if (err) {
- 		netdev_err(ndev, "failed to enable CAN clock, error %d\n", err);
--		goto out_clock;
-+		goto out_phy;
- 	}
- 
- 	err = open_candev(ndev);
-@@ -1437,7 +1445,8 @@ static int rcar_canfd_open(struct net_device *ndev)
- 	close_candev(ndev);
- out_can_clock:
- 	clk_disable_unprepare(gpriv->can_clk);
--out_clock:
-+out_phy:
-+	phy_power_off(priv->transceiver);
- 	return err;
- }
- 
-@@ -1480,6 +1489,7 @@ static int rcar_canfd_close(struct net_device *ndev)
- 	napi_disable(&priv->napi);
- 	clk_disable_unprepare(gpriv->can_clk);
- 	close_candev(ndev);
-+	phy_power_off(priv->transceiver);
- 	return 0;
- }
- 
-@@ -1711,7 +1721,7 @@ static const struct ethtool_ops rcar_canfd_ethtool_ops = {
- };
- 
- static int rcar_canfd_channel_probe(struct rcar_canfd_global *gpriv, u32 ch,
--				    u32 fcan_freq)
-+				    u32 fcan_freq, struct phy *transceiver)
- {
- 	const struct rcar_canfd_hw_info *info = gpriv->info;
- 	struct platform_device *pdev = gpriv->pdev;
-@@ -1732,8 +1742,11 @@ static int rcar_canfd_channel_probe(struct rcar_canfd_global *gpriv, u32 ch,
- 	ndev->flags |= IFF_ECHO;
- 	priv->ndev = ndev;
- 	priv->base = gpriv->base;
-+	priv->transceiver = transceiver;
- 	priv->channel = ch;
- 	priv->gpriv = gpriv;
-+	if (transceiver)
-+		priv->can.bitrate_max = transceiver->attrs.max_link_rate;
- 	priv->can.clock.freq = fcan_freq;
- 	dev_info(dev, "can_clk rate is %u\n", priv->can.clock.freq);
- 
-@@ -1836,6 +1849,7 @@ static void rcar_canfd_channel_remove(struct rcar_canfd_global *gpriv, u32 ch)
- 
- static int rcar_canfd_probe(struct platform_device *pdev)
- {
-+	struct phy *transceivers[RCANFD_NUM_CHANNELS] = { 0, };
- 	const struct rcar_canfd_hw_info *info;
- 	struct device *dev = &pdev->dev;
- 	void __iomem *addr;
-@@ -1857,9 +1871,14 @@ static int rcar_canfd_probe(struct platform_device *pdev)
- 	for (i = 0; i < info->max_channels; ++i) {
- 		name[7] = '0' + i;
- 		of_child = of_get_child_by_name(dev->of_node, name);
--		if (of_child && of_device_is_available(of_child))
-+		if (of_child && of_device_is_available(of_child)) {
- 			channels_mask |= BIT(i);
-+			transceivers[i] = devm_of_phy_optional_get(dev,
-+							of_child, NULL);
-+		}
- 		of_node_put(of_child);
-+		if (IS_ERR(transceivers[i]))
-+			return PTR_ERR(transceivers[i]);
- 	}
- 
- 	if (info->shared_global_irqs) {
-@@ -2035,7 +2054,8 @@ static int rcar_canfd_probe(struct platform_device *pdev)
- 	}
- 
- 	for_each_set_bit(ch, &gpriv->channels_mask, info->max_channels) {
--		err = rcar_canfd_channel_probe(gpriv, ch, fcan_freq);
-+		err = rcar_canfd_channel_probe(gpriv, ch, fcan_freq,
-+					       transceivers[ch]);
- 		if (err)
- 			goto fail_channel;
- 	}
++		for_each_set_bit(ch, &gpriv->channels_mask,
++				 gpriv->info->max_channels)
++			rcar_canfd_set_bit(gpriv->base, RCANFD_V3U_FDCFG(ch),
++					   val);
+ 	} else {
+ 		if (gpriv->fdmode)
+ 			rcar_canfd_set_bit(gpriv->base, RCANFD_GRMCFG,
 -- 
 2.34.1
 
