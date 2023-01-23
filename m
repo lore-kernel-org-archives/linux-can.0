@@ -2,29 +2,29 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76823C25B50
-	for <linux-can@archiver.kernel.org>; Mon, 23 Jan 2023 18:56:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52060C61D97
+	for <linux-can@archiver.kernel.org>; Mon, 23 Jan 2023 18:57:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbjAWS4Z (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 23 Jan 2023 13:56:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35878 "EHLO
+        id S233228AbjAWS45 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 23 Jan 2023 13:56:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231664AbjAWS4Y (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 23 Jan 2023 13:56:24 -0500
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE5AA2F782
-        for <linux-can@vger.kernel.org>; Mon, 23 Jan 2023 10:56:22 -0800 (PST)
+        with ESMTP id S232413AbjAWS41 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 23 Jan 2023 13:56:27 -0500
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 256613252D
+        for <linux-can@vger.kernel.org>; Mon, 23 Jan 2023 10:56:23 -0800 (PST)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed50:6083:1fd7:ba05:ea8d])
-        by laurent.telenet-ops.be with bizsmtp
-        id CJwJ2900C4604Ck01JwJ5g; Mon, 23 Jan 2023 19:56:21 +0100
+        by baptiste.telenet-ops.be with bizsmtp
+        id CJwJ2900C4604Ck01JwJ2y; Mon, 23 Jan 2023 19:56:21 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1pK1zG-0076K7-G3;
+        id 1pK1zG-0076KH-Hi;
         Mon, 23 Jan 2023 19:56:18 +0100
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1pK1zO-00Ekh3-D7;
+        id 1pK1zO-00EkhB-Eg;
         Mon, 23 Jan 2023 19:56:18 +0100
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
 To:     Wolfgang Grandegger <wg@grandegger.com>,
@@ -37,9 +37,9 @@ Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
         netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-renesas-soc@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 01/12] dt-bindings: can: renesas,rcar-canfd: R-Car V3U is R-Car Gen4
-Date:   Mon, 23 Jan 2023 19:56:03 +0100
-Message-Id: <4dea4b7dd76d4f859ada85f97094b7adeef5169f.1674499048.git.geert+renesas@glider.be>
+Subject: [PATCH 03/12] dt-bindings: can: renesas,rcar-canfd: Add transceiver support
+Date:   Mon, 23 Jan 2023 19:56:05 +0100
+Message-Id: <1bd328b5c9c6cfa633b42af87550f4c7358a05c1.1674499048.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1674499048.git.geert+renesas@glider.be>
 References: <cover.1674499048.git.geert+renesas@glider.be>
@@ -49,61 +49,32 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Despite the name, R-Car V3U is the first member of the R-Car Gen4
-family.  Hence generalize this by introducing a family-specific
-compatible value for R-Car Gen4.
+Add support for describing CAN transceivers as PHYs.
 
-While at it, replace "both channels" by "all channels", as the numbers
-of channels may differ from two.
+While simple CAN transceivers can do without, this is needed for CAN
+transceivers like NXP TJR1443 that need a configuration step (like
+pulling standby or enable lines), and/or impose a bitrate limit.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- .../bindings/net/can/renesas,rcar-canfd.yaml          | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ .../devicetree/bindings/net/can/renesas,rcar-canfd.yaml       | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-index 1eb98c9a1a2602bc..899efa8a0614e229 100644
+index 04b7f0afdce1e3c6..d3f45d29fa0a550a 100644
 --- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
 +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-@@ -28,6 +28,11 @@ properties:
-               - renesas,r8a77995-canfd     # R-Car D3
-           - const: renesas,rcar-gen3-canfd # R-Car Gen3 and RZ/G2
+@@ -84,6 +84,10 @@ patternProperties:
+       The controller supports multiple channels and each is represented as a
+       child node.  Each channel can be enabled/disabled individually.
  
-+      - items:
-+          - enum:
-+              - renesas,r8a779a0-canfd     # R-Car V3U
-+          - const: renesas,rcar-gen4-canfd # R-Car Gen4
++    properties:
++      phys:
++        maxItems: 1
 +
-       - items:
-           - enum:
-               - renesas,r9a07g043-canfd    # RZ/G2UL and RZ/Five
-@@ -35,8 +40,6 @@ properties:
-               - renesas,r9a07g054-canfd    # RZ/V2L
-           - const: renesas,rzg2l-canfd     # RZ/G2L family
+     additionalProperties: false
  
--      - const: renesas,r8a779a0-canfd      # R-Car V3U
--
-   reg:
-     maxItems: 1
- 
-@@ -60,7 +63,7 @@ properties:
-     $ref: /schemas/types.yaml#/definitions/flag
-     description:
-       The controller can operate in either CAN FD only mode (default) or
--      Classical CAN only mode.  The mode is global to both the channels.
-+      Classical CAN only mode.  The mode is global to all channels.
-       Specify this property to put the controller in Classical CAN only mode.
- 
-   assigned-clocks:
-@@ -159,7 +162,7 @@ allOf:
-         properties:
-           compatible:
-             contains:
--              const: renesas,r8a779a0-canfd
-+              const: renesas,rcar-gen4-canfd
-     then:
-       patternProperties:
-         "^channel[2-7]$": false
+ required:
 -- 
 2.34.1
 
