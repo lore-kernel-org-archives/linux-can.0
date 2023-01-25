@@ -2,53 +2,53 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4C7FC54E94
-	for <linux-can@archiver.kernel.org>; Wed, 25 Jan 2023 19:51:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D475C54EED
+	for <linux-can@archiver.kernel.org>; Wed, 25 Jan 2023 19:51:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235842AbjAYTv2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 25 Jan 2023 14:51:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48580 "EHLO
+        id S235541AbjAYTvf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 25 Jan 2023 14:51:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235629AbjAYTvM (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 25 Jan 2023 14:51:12 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5120E45229
+        with ESMTP id S235818AbjAYTv1 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 25 Jan 2023 14:51:27 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D5C359748
         for <linux-can@vger.kernel.org>; Wed, 25 Jan 2023 11:51:11 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id qx13so50517696ejb.13
+Received: by mail-ej1-x631.google.com with SMTP id ud5so50647798ejc.4
         for <linux-can@vger.kernel.org>; Wed, 25 Jan 2023 11:51:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=j0FrFNu+fbId+cNGgF92T8X+IGYNGZVy8euZggQ4zwE=;
-        b=DaZ+wzH+2Q3D+0BuJOX48IXhzvKiRQR1S83MMuxEZvJ4b7dw9tTD4fC96gpNbj3ihi
-         btCoEOgY+LXjwaGffue1LP6BmeM7yMMNpolZ+1rPnmaJU09AjLxfSy/1uZsavutP/2GO
-         8FfFX5JIoKW1uN26KIrUOWloMB+KjElisT4eqkSHGXL+LYnGVvNcQpSQQDGJqsuKjnII
-         rWMMUSAccNeWGtdK6MkDrVWQZS84dmeZLHImUH1Yzde0Q7fPYxcnSDNnl7eFgGNEJBYg
-         VTWEounuOr9d0Bk7HpcFWcCODFf5GhGe7/ILoknpLkW64/pEvYOMHFlI0MIfnMtWzK6L
-         4Sow==
+        bh=gfSXrRwfX7neDYk1hRvs3xyY0TSXIO6TaVWNzYTFpJg=;
+        b=scmdglR0kK6ToTgqQkU66fxS6xXrLK/8Z7gJfs3aCCx5gPWsq8u+p0MvW28eWc+aXq
+         MJltcF7XaZBxK5C3wJ6SFp9gehas5nOhwaBIKXbUeE8u+3t7RkwpPO/YW9BY27ETA6D7
+         WycJ84fgNAy+8iKl0z3rRm/9dfBkZV0VZCFO9uhn5wpguZc8IYV/InkMWwG0070ipcPZ
+         lCZSWQsFS6vbEdgcNOs+ostp36ajh0pFB2SqR207lb8G7CjzrP9QgItNXdQWFaDJ0bwY
+         7ssoeGE5MqD9EhcepVfA2k1lbeLCqSxaDO8P4n0mVBq8wsDluKTznWPsdoSM5Z2J7R7B
+         QWHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=j0FrFNu+fbId+cNGgF92T8X+IGYNGZVy8euZggQ4zwE=;
-        b=SczojfhuJLvni/qfkuvboagmb2J+cSdxLCZGVxrGTsv/141yt/1qFCDATWNd7fNXG9
-         gjc8w+KbKWkWjftUamEA+9dRL468pDyHxsWnPRRGkM3LJojB1uwN4yGF+jHJ+tQKziWC
-         fg52HrGD3WMQsJlcUd63Q2E7yxpAPYL2vT1CKKzIsoTeO0q8vW66RPZPVwZ5HFbGIujm
-         LJOslNYJKB7BP0vKrS7AuEByRgtnE/ZkMDxMl/CHW4UTpdf87sE1JM/3QBBxML6Y7KkF
-         rvkhZQFL0MaxElUI2XNuF0JyU2fYwhko8QXE37V72BUPEwdGdiqTkTRtZwzwvgvEjNEG
-         8gPQ==
-X-Gm-Message-State: AFqh2krhdOas5KqXbMq6O0G0cLE2nJT4eRrZbZe0e3yQRFDgsWSyNBXd
-        Gi2ugdaLFJzVSD4STiQZFEYa5w==
-X-Google-Smtp-Source: AMrXdXuCoiOoQssQCdlBDqBVW8pGFeb8MnT5kMUsB6EJVjnplPh+QYEcayQyf+RarPdevAXLyfpa4Q==
-X-Received: by 2002:a17:907:6746:b0:84d:1c67:97d7 with SMTP id qm6-20020a170907674600b0084d1c6797d7mr41138473ejc.30.1674676269778;
-        Wed, 25 Jan 2023 11:51:09 -0800 (PST)
+        bh=gfSXrRwfX7neDYk1hRvs3xyY0TSXIO6TaVWNzYTFpJg=;
+        b=Z2+V/HGiTnBbaoYJOQV5gDC6139PTqvvPZEPFcA8634NCJjPDbuMRln0vi7bEriR0X
+         4Dn/K6HNGfWkxY8SNrGksBMDNg1WdPFULOQ/Fs+PwygQIB+prW7Os2jNcP0qMIHqW7YX
+         lA2wtgCo+lcc1rUlChu8rqfbRWmAZdJWpGmVsfCpOZbPo5icDllcUOD8gz1h5YBro2s/
+         hgkymM9fP1BJfIlu/yCxQVYd6H5QRUYHKH6Q7OcYIDK4eh+jwmiC6qPLQ101iMPTyB/H
+         j5WgGegn1m+MQPeFsTs7GIs9ayWSP6Xpu+fEYu1fLorV+rijrgEHjNAT1pT8Cn7Rcfmr
+         sRgg==
+X-Gm-Message-State: AFqh2koQ0LIhAU69UvZ7XE+L3V7fHQCgSSWiGjIpQX0R1Wh+pu8qLhY6
+        96+aDEXAPytXiZoVtn4LffJtbg==
+X-Google-Smtp-Source: AMrXdXsVjTwOtJbo/huQ6lAbLqA66TVtdPhpFDTs0OYNMu5SyZgc9C+5z/qkt+30gzW8Ug7qi2kILA==
+X-Received: by 2002:a17:907:6a98:b0:855:2c8e:ad52 with SMTP id ri24-20020a1709076a9800b008552c8ead52mr27221046ejc.29.1674676271506;
+        Wed, 25 Jan 2023 11:51:11 -0800 (PST)
 Received: from blmsp.fritz.box ([2001:4091:a247:815f:ef74:e427:628a:752c])
-        by smtp.gmail.com with ESMTPSA id s15-20020a170906454f00b00872c0bccab2sm2778830ejq.35.2023.01.25.11.51.09
+        by smtp.gmail.com with ESMTPSA id s15-20020a170906454f00b00872c0bccab2sm2778830ejq.35.2023.01.25.11.51.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Jan 2023 11:51:09 -0800 (PST)
+        Wed, 25 Jan 2023 11:51:11 -0800 (PST)
 From:   Markus Schneider-Pargmann <msp@baylibre.com>
 To:     Marc Kleine-Budde <mkl@pengutronix.de>,
         Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
@@ -57,9 +57,9 @@ Cc:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH v2 06/18] can: m_can: Disable unused interrupts
-Date:   Wed, 25 Jan 2023 20:50:47 +0100
-Message-Id: <20230125195059.630377-7-msp@baylibre.com>
+Subject: [PATCH v2 08/18] can: m_can: Write transmit header and data in one transaction
+Date:   Wed, 25 Jan 2023 20:50:49 +0100
+Message-Id: <20230125195059.630377-9-msp@baylibre.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230125195059.630377-1-msp@baylibre.com>
 References: <20230125195059.630377-1-msp@baylibre.com>
@@ -69,59 +69,43 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-There are a number of interrupts that are not used by the driver at the
-moment. Disable all of these.
+Combine header and data before writing to the transmit fifo to reduce
+the overhead for peripheral chips.
 
 Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
 ---
- drivers/net/can/m_can/m_can.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ drivers/net/can/m_can/m_can.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index a668a5836cf8..ef5ca5d37b0d 100644
+index 78f6ed744c36..440bc0536951 100644
 --- a/drivers/net/can/m_can/m_can.c
 +++ b/drivers/net/can/m_can/m_can.c
-@@ -1262,6 +1262,7 @@ static int m_can_chip_config(struct net_device *dev)
- {
- 	struct m_can_classdev *cdev = netdev_priv(dev);
- 	u32 cccr, test;
-+	u32 interrupts = IR_ALL_INT;
- 	int err;
+@@ -1681,6 +1681,7 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
+ 		m_can_write(cdev, M_CAN_TXBAR, 0x1);
+ 		/* End of xmit function for version 3.0.x */
+ 	} else {
++		char buf[TXB_ELEMENT_SIZE];
+ 		/* Transmit routine for version >= v3.1.x */
  
- 	err = m_can_init_ram(cdev);
-@@ -1270,6 +1271,11 @@ static int m_can_chip_config(struct net_device *dev)
- 		return err;
- 	}
+ 		txfqs = m_can_read(cdev, M_CAN_TXFQS);
+@@ -1720,12 +1721,11 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
+ 		fifo_header.dlc = FIELD_PREP(TX_BUF_MM_MASK, putidx) |
+ 			FIELD_PREP(TX_BUF_DLC_MASK, can_fd_len2dlc(cf->len)) |
+ 			fdflags | TX_BUF_EFC;
+-		err = m_can_fifo_write(cdev, putidx, M_CAN_FIFO_ID, &fifo_header, 2);
+-		if (err)
+-			goto out_fail;
++		memcpy(buf, &fifo_header, 8);
++		memcpy(&buf[8], &cf->data, cf->len);
  
-+	/* Disable unused interrupts */
-+	interrupts &= ~(IR_ARA | IR_ELO | IR_DRX | IR_TEFF | IR_TEFW | IR_TFE |
-+			IR_TCF | IR_HPM | IR_RF1F | IR_RF1W | IR_RF1N |
-+			IR_RF0F | IR_RF0W);
-+
- 	m_can_config_endisable(cdev, true);
+-		err = m_can_fifo_write(cdev, putidx, M_CAN_FIFO_DATA,
+-				       cf->data, DIV_ROUND_UP(cf->len, 4));
++		err = m_can_fifo_write(cdev, putidx, M_CAN_FIFO_ID,
++				       buf, 8 + DIV_ROUND_UP(cf->len, 4));
+ 		if (err)
+ 			goto out_fail;
  
- 	/* RX Buffer/FIFO Element Size 64 bytes data field */
-@@ -1364,15 +1370,13 @@ static int m_can_chip_config(struct net_device *dev)
- 	m_can_write(cdev, M_CAN_TEST, test);
- 
- 	/* Enable interrupts */
--	if (!(cdev->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
-+	if (!(cdev->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)) {
- 		if (cdev->version == 30)
--			m_can_write(cdev, M_CAN_IE, IR_ALL_INT &
--				    ~(IR_ERR_LEC_30X));
-+			interrupts &= ~(IR_ERR_LEC_30X);
- 		else
--			m_can_write(cdev, M_CAN_IE, IR_ALL_INT &
--				    ~(IR_ERR_LEC_31X));
--	else
--		m_can_write(cdev, M_CAN_IE, IR_ALL_INT);
-+			interrupts &= ~(IR_ERR_LEC_31X);
-+	}
-+	m_can_write(cdev, M_CAN_IE, interrupts);
- 
- 	/* route all interrupts to INT0 */
- 	m_can_write(cdev, M_CAN_ILS, ILS_ALL_INT0);
 -- 
 2.39.0
 
