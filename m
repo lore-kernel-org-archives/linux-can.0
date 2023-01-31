@@ -2,44 +2,44 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83C15C636CD
-	for <linux-can@archiver.kernel.org>; Tue, 31 Jan 2023 17:20:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49F17C636D4
+	for <linux-can@archiver.kernel.org>; Tue, 31 Jan 2023 17:20:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbjAaRTm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 31 Jan 2023 12:19:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52322 "EHLO
+        id S231809AbjAaRUK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 31 Jan 2023 12:20:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232038AbjAaRTV (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2023 12:19:21 -0500
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F00D5899A;
-        Tue, 31 Jan 2023 09:18:37 -0800 (PST)
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-142b72a728fso20191944fac.9;
-        Tue, 31 Jan 2023 09:18:37 -0800 (PST)
+        with ESMTP id S232038AbjAaRTn (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 31 Jan 2023 12:19:43 -0500
+Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938AB59E72;
+        Tue, 31 Jan 2023 09:19:00 -0800 (PST)
+Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-15eec491b40so20185387fac.12;
+        Tue, 31 Jan 2023 09:19:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PHY1g9NcVmkrFDgyWaXSOXdRDZtffcuruHidQnxspPI=;
-        b=UxLmbalpGqC+CoYv/9cmx6ZF8twsyvHi+SM21Zv0X3H6opUJEiXliC0+f7vrt7Iv1v
-         R681VBrt/bptZwYhI31zx0jAY0n6lq9a7AIvjfnHcGtpErhELepVednzSfSDPMJKZSRz
-         CISIcCV2RB6Uo4kMAPQmXt6DxhV1mUE09qzx4nax1etN2jo/tTECKHHKL/E8WdscrNrs
-         HZCG36gvJ8JDGRH+64GE6Ml5lB84wsViXnKelqW0Oes020rS1G4k3uCGJjKhRxVN8yiI
-         OiTySb2dBL8n4WiuDFeDvT0pkYUxn/t81fqJBObmaVe7FM5d5Z1BVTXOC9J2bSwy9hmf
-         q18w==
-X-Gm-Message-State: AO0yUKWXhf4ZwOSP3HR0v4J40T2UVpXNHg7Ety5bVkbLs14teU+DPchO
-        9kln6PPymdgDviYh6YRJhw==
-X-Google-Smtp-Source: AK7set9xG7wcz/LKEykzN3Ati9ZFLui3U5bLitdphySR+m21ouhWTU+akFctqtbJe1IQh0Gg9apl7Q==
-X-Received: by 2002:a05:6870:3321:b0:15e:ff37:6fda with SMTP id x33-20020a056870332100b0015eff376fdamr7038257oae.14.1675185475058;
-        Tue, 31 Jan 2023 09:17:55 -0800 (PST)
+        bh=pk8cezPfRHW5nrnM5BvYmp5Qtbp4OfnuvFAfscsBAGc=;
+        b=cWZjd3ORTVdXCb19dBdE3RCw7h79G61uyO+1SvOHTQVkHpVYgnMBzmdfd6trBYwKDo
+         mXOb8/tIK/Yx6s2sy53JYyWY8J3PHhVDaUbEdoPfDy2/V9bxkq4r+Y0Gjl7qr9uNhc/e
+         3WOIPA+vnFYKkcBou4cBRC63PP0dzpI5W9jpemADGUn56MAG0uo5c5rTXHew1V38HT7+
+         r6H/z0KLtiWsSfz0MS/rCbxtqP1GRsCfw4k0imQBWlD0JXKBMea/MN3Kpy8q7+nvnEm3
+         HCMjJEtcdCOTntiai5uQyDk11TQ6lz9UlZIUh+epLk6vj905DkC5SlYwb49aYmooz2uv
+         meVQ==
+X-Gm-Message-State: AO0yUKVbVhaBQHDXAiPU0EmeAKG1DqgAK7bmVxyVetefPUoNlJm02gFt
+        th0n7srs1Kvk1LDoub6VwzYuLv0IKw==
+X-Google-Smtp-Source: AK7set+3+bFrGnznFH/c20n29tXmVTtE8gdwm6azaE89h4nSrCxUfCTfsj/stLhV6Vfsfb53hubjcA==
+X-Received: by 2002:a05:6871:798:b0:163:d07f:4aea with SMTP id o24-20020a056871079800b00163d07f4aeamr3570806oap.30.1675185511723;
+        Tue, 31 Jan 2023 09:18:31 -0800 (PST)
 Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id u2-20020a056870304200b0015b64f8ff2bsm6714568oau.52.2023.01.31.09.17.54
+        by smtp.gmail.com with ESMTPSA id v9-20020a05687105c900b00163c90c1513sm2130733oan.28.2023.01.31.09.18.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Jan 2023 09:17:54 -0800 (PST)
-Received: (nullmailer pid 1549220 invoked by uid 1000);
-        Tue, 31 Jan 2023 17:17:53 -0000
-Date:   Tue, 31 Jan 2023 11:17:53 -0600
+        Tue, 31 Jan 2023 09:18:30 -0800 (PST)
+Received: (nullmailer pid 1557289 invoked by uid 1000);
+        Tue, 31 Jan 2023 17:18:30 -0000
+Date:   Tue, 31 Jan 2023 11:18:30 -0600
 From:   Rob Herring <robh@kernel.org>
 To:     Geert Uytterhoeven <geert+renesas@glider.be>
 Cc:     Wolfgang Grandegger <wg@grandegger.com>,
@@ -50,31 +50,30 @@ Cc:     Wolfgang Grandegger <wg@grandegger.com>,
         Ulrich Hecht <uli+renesas@fpond.eu>, linux-can@vger.kernel.org,
         netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH 01/12] dt-bindings: can: renesas,rcar-canfd: R-Car V3U is
- R-Car Gen4
-Message-ID: <20230131171753.GA1531174-robh@kernel.org>
+Subject: Re: [PATCH 03/12] dt-bindings: can: renesas,rcar-canfd: Add
+ transceiver support
+Message-ID: <20230131171830.GC1531174-robh@kernel.org>
 References: <cover.1674499048.git.geert+renesas@glider.be>
- <4dea4b7dd76d4f859ada85f97094b7adeef5169f.1674499048.git.geert+renesas@glider.be>
+ <1bd328b5c9c6cfa633b42af87550f4c7358a05c1.1674499048.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4dea4b7dd76d4f859ada85f97094b7adeef5169f.1674499048.git.geert+renesas@glider.be>
+In-Reply-To: <1bd328b5c9c6cfa633b42af87550f4c7358a05c1.1674499048.git.geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Mon, Jan 23, 2023 at 07:56:03PM +0100, Geert Uytterhoeven wrote:
-> Despite the name, R-Car V3U is the first member of the R-Car Gen4
-> family.  Hence generalize this by introducing a family-specific
-> compatible value for R-Car Gen4.
+On Mon, Jan 23, 2023 at 07:56:05PM +0100, Geert Uytterhoeven wrote:
+> Add support for describing CAN transceivers as PHYs.
 > 
-> While at it, replace "both channels" by "all channels", as the numbers
-> of channels may differ from two.
+> While simple CAN transceivers can do without, this is needed for CAN
+> transceivers like NXP TJR1443 that need a configuration step (like
+> pulling standby or enable lines), and/or impose a bitrate limit.
 > 
 > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
->  .../bindings/net/can/renesas,rcar-canfd.yaml          | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
+>  .../devicetree/bindings/net/can/renesas,rcar-canfd.yaml       | 4 ++++
+>  1 file changed, 4 insertions(+)
 
 Properly threaded resend due to header corruption.
 
