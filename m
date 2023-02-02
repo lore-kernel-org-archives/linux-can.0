@@ -2,47 +2,44 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 229D8C61DA4
-	for <linux-can@archiver.kernel.org>; Thu,  2 Feb 2023 09:41:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34EAAC05027
+	for <linux-can@archiver.kernel.org>; Thu,  2 Feb 2023 09:41:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232112AbjBBJlo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 2 Feb 2023 04:41:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50138 "EHLO
+        id S232168AbjBBJlp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 2 Feb 2023 04:41:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231934AbjBBJln (ORCPT
+        with ESMTP id S232011AbjBBJln (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 2 Feb 2023 04:41:43 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1AF8324F
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE498306C
         for <linux-can@vger.kernel.org>; Thu,  2 Feb 2023 01:41:41 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pNW68-0000da-7r
-        for linux-can@vger.kernel.org; Thu, 02 Feb 2023 10:41:40 +0100
+        id 1pNW67-0000cq-UK
+        for linux-can@vger.kernel.org; Thu, 02 Feb 2023 10:41:39 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 4932C16D0C8
-        for <linux-can@vger.kernel.org>; Thu,  2 Feb 2023 09:41:39 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 9536616D0BB
+        for <linux-can@vger.kernel.org>; Thu,  2 Feb 2023 09:41:38 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id D208B16D0AA;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id A8D0016D0A6;
         Thu,  2 Feb 2023 09:41:37 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 30911233;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7757cbcd;
         Thu, 2 Feb 2023 09:41:36 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
-        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 3/5] can: isotp: handle wait_event_interruptible() return values
-Date:   Thu,  2 Feb 2023 10:41:33 +0100
-Message-Id: <20230202094135.2293939-4-mkl@pengutronix.de>
+        kernel@pengutronix.de
+Subject: [PATCH net 0/5] pull-request: can 2023-02-02
+Date:   Thu,  2 Feb 2023 10:41:30 +0100
+Message-Id: <20230202094135.2293939-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230202094135.2293939-1-mkl@pengutronix.de>
-References: <20230202094135.2293939-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -53,37 +50,56 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+Hello Jakub, hello David,
 
-When wait_event_interruptible() has been interrupted by a signal the
-tx.state value might not be ISOTP_IDLE. Force the state machines
-into idle state to inhibit the timer handlers to continue working.
+this is a pull request of 5 patches for net/master.
 
-Fixes: 866337865f37 ("can: isotp: fix tx state handling for echo tx processing")
-Cc: stable@vger.kernel.org
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://lore.kernel.org/all/20230112192347.1944-1-socketcan@hartkopp.net
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+The first patch is by Ziyang Xuan and removes a errant WARN_ON_ONCE()
+in the CAN J1939 protocol.
+
+The next 3 patches are by Oliver Hartkopp. The first 2 target the CAN
+ISO-TP protocol and fix the state machine with respect to signals and
+a regression found by the syzbot.
+
+The last patch is by me an missing assignment during the ethtool ring
+configuration callback.
+
+regards,
+Marc
+
 ---
- net/can/isotp.c | 4 ++++
- 1 file changed, 4 insertions(+)
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 608f8c24ae46..dae421f6c901 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -1162,6 +1162,10 @@ static int isotp_release(struct socket *sock)
- 	/* wait for complete transmission of current pdu */
- 	wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
- 
-+	/* force state machines to be idle also when a signal occurred */
-+	so->tx.state = ISOTP_IDLE;
-+	so->rx.state = ISOTP_IDLE;
-+
- 	spin_lock(&isotp_notifier_lock);
- 	while (isotp_busy_notifier == so) {
- 		spin_unlock(&isotp_notifier_lock);
--- 
-2.39.1
+The following changes since commit 917d5e04d4dd2bbbf36fc6976ba442e284ccc42d:
+
+  octeontx2-af: Fix devlink unregister (2023-02-01 21:22:41 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-6.2-20230202
+
+for you to fetch changes up to 1613fff7a32e1d9e2ac09db73feba0e71a188445:
+
+  can: mcp251xfd: mcp251xfd_ring_set_ringparam(): assign missing tx_obj_num_coalesce_irq (2023-02-02 10:33:27 +0100)
+
+----------------------------------------------------------------
+linux-can-fixes-for-6.2-20230202
+
+----------------------------------------------------------------
+Marc Kleine-Budde (1):
+      can: mcp251xfd: mcp251xfd_ring_set_ringparam(): assign missing tx_obj_num_coalesce_irq
+
+Oliver Hartkopp (3):
+      can: raw: fix CAN FD frame transmissions over CAN XL devices
+      can: isotp: handle wait_event_interruptible() return values
+      can: isotp: split tx timer into transmission and timeout
+
+Ziyang Xuan (1):
+      can: j1939: fix errant WARN_ON_ONCE in j1939_session_deactivate
+
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-ethtool.c |  1 +
+ net/can/isotp.c                                   | 69 +++++++++++------------
+ net/can/j1939/transport.c                         |  4 --
+ net/can/raw.c                                     | 47 +++++++++------
+ 4 files changed, 65 insertions(+), 56 deletions(-)
 
 
