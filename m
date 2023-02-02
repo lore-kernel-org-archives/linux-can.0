@@ -2,146 +2,88 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F98AC05027
-	for <linux-can@archiver.kernel.org>; Wed,  1 Feb 2023 09:38:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 229D8C61DA4
+	for <linux-can@archiver.kernel.org>; Thu,  2 Feb 2023 09:41:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232088AbjBAJib (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 1 Feb 2023 04:38:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55636 "EHLO
+        id S232112AbjBBJlo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 2 Feb 2023 04:41:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231491AbjBAJia (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 1 Feb 2023 04:38:30 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00CEC41B61
-        for <linux-can@vger.kernel.org>; Wed,  1 Feb 2023 01:38:28 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id z3so12194441pfb.2
-        for <linux-can@vger.kernel.org>; Wed, 01 Feb 2023 01:38:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cqf0fkzBNEuqah8+afkVosf0fgLNN1iUoH0i0WeOt5Q=;
-        b=kUTxy7F2pZfk1cbrmHf/+d/oMsNS7hxqe6J7FV0c/8fUp7sqDJrApeSy4fUGzeR/NR
-         5HWzAq5dh7kANA5iwBLGjCNxtbqrcbmqurkB9EGFNRuQAQMVMTYtb71rmbaXuSeP7tcF
-         fVwjLXOdlkcqsiJX9niINlRcdElsodcs7cin+eu7eRiJucm+4QNqxzswT+0z9sJ63d2T
-         OkpTM4z0iu8mDNVP4MTdK/rBDYrJZXosJ1KFEA+lt8Szj0Jf3yYnN6BRm9xW0rGyrgcl
-         xK3LD9BHAKMKZQhnnlAGGmAmdcozxPbu6n6lztQjDohu3duvB8UPc95b9vHS0LuuLtLu
-         HZTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cqf0fkzBNEuqah8+afkVosf0fgLNN1iUoH0i0WeOt5Q=;
-        b=tQE4zrlBeS2lRAnVCGsV3paEY0NWVUso6cF9uVS8fRLuFASZRh3nl0GCCRNjjUA1MY
-         /v9NsLqOQg1kqhTOPysi6NIvUgGJyKmt2WSwSzOHSSxhkZVwXHuMhitU07zw+2c/3uat
-         x87+9eo/KvnnRxISIgcx+OsM8nNT7W69+LLyMvo/upaJlNzVxkv80vOvlNNEpvYc/iqe
-         Xbb05FvO+usfFfkCsaQOuhv2q+mtTjd98f3zV5fqOmOnYg2EO/82ROvnRJIwpVNAKI5N
-         4qhfsVhF2dwDyE++bQhG8PSMnxmKuAKs7vyvhpGOWupkH88F9oxcswFWKO1RTzxEtzMZ
-         3Vdw==
-X-Gm-Message-State: AO0yUKXnkQlkjLPn2FHd8yzoddDF2qugrD62ONJ6x834m9vDaYlhoEeY
-        JRp+jdoPVe2YPUOae4825FJhjv6Di80+5OVZQ1IV1P+FahY=
-X-Google-Smtp-Source: AK7set/0uzka2DxFFvoj/098zsja1OtsF0xCrhT7/Dgtyu8xagS4eD+fvOwqcGMPKi+PHoRaaCF923oeMWg9GEnrXn4=
-X-Received: by 2002:a63:1b56:0:b0:497:3785:812e with SMTP id
- b22-20020a631b56000000b004973785812emr265751pgm.13.1675244308154; Wed, 01 Feb
- 2023 01:38:28 -0800 (PST)
+        with ESMTP id S231934AbjBBJln (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 2 Feb 2023 04:41:43 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1AF8324F
+        for <linux-can@vger.kernel.org>; Thu,  2 Feb 2023 01:41:41 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1pNW68-0000da-7r
+        for linux-can@vger.kernel.org; Thu, 02 Feb 2023 10:41:40 +0100
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id 4932C16D0C8
+        for <linux-can@vger.kernel.org>; Thu,  2 Feb 2023 09:41:39 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id D208B16D0AA;
+        Thu,  2 Feb 2023 09:41:37 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 30911233;
+        Thu, 2 Feb 2023 09:41:36 +0000 (UTC)
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
+        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 3/5] can: isotp: handle wait_event_interruptible() return values
+Date:   Thu,  2 Feb 2023 10:41:33 +0100
+Message-Id: <20230202094135.2293939-4-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230202094135.2293939-1-mkl@pengutronix.de>
+References: <20230202094135.2293939-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-References: <20220907103845.3929288-1-mkl@pengutronix.de> <20220907103845.3929288-3-mkl@pengutronix.de>
- <CAMZ6RqKqhmTgUZiwe5uqUjBDnhhC2iOjZ791+Y845btJYwVDKg@mail.gmail.com>
- <BL3PR11MB64844E3FC13C55433CDD0B3DFB449@BL3PR11MB6484.namprd11.prod.outlook.com>
- <CAMZ6RqJ8rhSVwnNHaxyRBg24PoH4EU8prEGsZO56wU6ozfMdAA@mail.gmail.com>
- <20230131160436.2vfszb3qqsyx3ea7@pengutronix.de> <CAMZ6RqJDARUjhDF5k1DydZMr=YWU9QSXDshTwznV4oh79a7niQ@mail.gmail.com>
- <20230201085810.aoqjbqqojzy65xbz@pengutronix.de>
-In-Reply-To: <20230201085810.aoqjbqqojzy65xbz@pengutronix.de>
-From:   Vincent Mailhol <vincent.mailhol@gmail.com>
-Date:   Wed, 1 Feb 2023 18:38:17 +0900
-Message-ID: <CAMZ6Rq+Jf6BUfrmZ3_biW-XigYO4-8BfPezjwhd68DfbhjCSnA@mail.gmail.com>
-Subject: Re: [PATCH 2/5] can: bittiming: can_calc_bittiming(): make use of min3()
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Thomas.Kopp@microchip.com, linux-can@vger.kernel.org,
-        mark@baggywrinkle.co.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Wed. 1 Feb 2023 at 17:58, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> On 01.02.2023 14:49:23, Vincent Mailhol wrote:
-> > > I've converted the existing netdev_err() NL_SET_ERR_MSG_FMT(). This
-> > > means the error message is transported via netlink to user space and
-> > > printed by the "ip" tool.
-> >
-> > I was not aware of this NL_SET_ERR_MSG_FMT() thing, and let me say
-> > that I really like that solution!
-> >
-> > > | # ip link set flexcan0 txqueuelen 10 type can bitrate 2200000
-> > > | Warning: bitrate error 2.5%.
-> >
-> > The Linux coding style says:
-> >
-> >   Kernel messages do not have to be terminated with a period.
-> >
-> > Ref: https://www.kernel.org/doc/html/latest/process/coding-style.html#printing-kernel-messages
-> >
-> > However, I am not sure if this also applies to the ip tool.
->
-> I think the period is added by "ip".
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Ack. All good then!
+When wait_event_interruptible() has been interrupted by a signal the
+tx.state value might not be ISOTP_IDLE. Force the state machines
+into idle state to inhibit the timer handlers to continue working.
 
-> > > |
-> > > | # ip link set flexcan0 txqueuelen 10 type can bitrate 22000000
-> > > | Error: bitrate error 80.5% too high.
-> > >
-> > > This is the error message for the SJW check:
-> > >
-> > > | # ip link set flexcan0 txqueuelen 10 type can bitrate 500000 sjw 3
-> > > | Error: SJW 3 bigger than phase_seg1 6 and/or phase_seg2 2.
-> >
-> > At that point in the code, I assume that sjw was already validated
-> > against sjw_max. While not impossible, I think that having sjw bigger
-> > than both phase_seg1 and phase_seg2 at the same time is uncommon. I
-> > suggest to split the error message in two and only print the relevant
-> > one:
-> >
-> >   Error: SJW 3 bigger than phase_seg1 x
-> >   Error: SJW 3 bigger than phase_seg2 x
-> >
-> > If the user still manages to violate both, only the phase_seg1 error
-> > message is displayed.
->
-> Makes sense.
->
-> > > Maybe add a '=' between the phase_seg and the actual number:
-> > >
-> > > | Error: SJW 3 bigger than phase_seg1=6 and/or phase_seg2=2.
-> >
-> > If you ask me my preferences, I will go with column:
-> >
-> >   Error: SJW: 3 bigger than phase_seg1: 6 and/or phase_seg2: 2.
-> >
-> > But I will not complain if you pick anything else.
->
-> Period looks good.
->
-> What about the error value? Always return -EINVAL instead of a mix of
-> -EINVAL and -ERANGE?
+Fixes: 866337865f37 ("can: isotp: fix tx state handling for echo tx processing")
+Cc: stable@vger.kernel.org
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://lore.kernel.org/all/20230112192347.1944-1-socketcan@hartkopp.net
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ net/can/isotp.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Looking at the comments from uapi/asm-generic/errno-base.h:
-
-  #define EINVAL 22 /* Invalid argument */
-  #define ERANGE 34 /* Math result not representable */
-
-We are not dealing with some non-representable math results, so
--ERANGE is technically incorrect. I did suggest -ERANGE in the past
-because it looks natural to me: we define a min and a max, i.e. its a
-range. But the doc tells me I am wrong. Naming the error -ENAN (Error
-Not A Number) would have been more explicit, but we are not going to
-rewrite UAPI error definitions.
-
-Go with -EINVAL This answer also applies to your next message and to
-everywhere else in netlink, I guess.
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index 608f8c24ae46..dae421f6c901 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -1162,6 +1162,10 @@ static int isotp_release(struct socket *sock)
+ 	/* wait for complete transmission of current pdu */
+ 	wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
+ 
++	/* force state machines to be idle also when a signal occurred */
++	so->tx.state = ISOTP_IDLE;
++	so->rx.state = ISOTP_IDLE;
++
+ 	spin_lock(&isotp_notifier_lock);
+ 	while (isotp_busy_notifier == so) {
+ 		spin_unlock(&isotp_notifier_lock);
+-- 
+2.39.1
 
 
-Yours sincerely,
-Vincent Mailhol
