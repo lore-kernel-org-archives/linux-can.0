@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B961C6379F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE14DC05027
 	for <linux-can@archiver.kernel.org>; Thu,  2 Feb 2023 11:09:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231764AbjBBLJQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 2 Feb 2023 06:09:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38906 "EHLO
+        id S231773AbjBBLJR (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 2 Feb 2023 06:09:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231760AbjBBLJJ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 2 Feb 2023 06:09:09 -0500
+        with ESMTP id S231695AbjBBLJK (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 2 Feb 2023 06:09:10 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91221C15C
-        for <linux-can@vger.kernel.org>; Thu,  2 Feb 2023 03:09:05 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FAFC9EEB
+        for <linux-can@vger.kernel.org>; Thu,  2 Feb 2023 03:09:06 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pNXSh-0006wp-Ng
-        for linux-can@vger.kernel.org; Thu, 02 Feb 2023 12:09:03 +0100
+        id 1pNXSi-0006yc-QJ
+        for linux-can@vger.kernel.org; Thu, 02 Feb 2023 12:09:04 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id D88FE16D2EA
-        for <linux-can@vger.kernel.org>; Thu,  2 Feb 2023 11:08:59 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id F0D4E16D2F7
+        for <linux-can@vger.kernel.org>; Thu,  2 Feb 2023 11:09:00 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 37FBE16D292;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id A314316D2A1;
         Thu,  2 Feb 2023 11:08:57 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 6ccfe1c8;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4619dc7d;
         Thu, 2 Feb 2023 11:08:56 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     Thomas Kopp <thomas.kopp@microchip.com>, kernel@pengutronix.de,
         Vincent Mailhol <vincent.mailhol@gmail.com>,
         Mark Bath <mark@baggywrinkle.co.uk>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v2 10/17] can: bittiming: factor out can_sjw_set_default() and can_sjw_check()
-Date:   Thu,  2 Feb 2023 12:08:47 +0100
-Message-Id: <20230202110854.2318594-11-mkl@pengutronix.de>
+Subject: [PATCH v2 16/17] can: bittiming: can_calc_bittiming(): convert from netdev_err() to NL_SET_ERR_MSG_FMT()
+Date:   Thu,  2 Feb 2023 12:08:53 +0100
+Message-Id: <20230202110854.2318594-17-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230202110854.2318594-1-mkl@pengutronix.de>
 References: <20230202110854.2318594-1-mkl@pengutronix.de>
@@ -54,85 +54,43 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Factor out the functionality of assigning a SJW default value into
-can_sjw_set_default() and the checking the SJW limits into
-can_sjw_check().
+Replace the netdev_err() by NL_SET_ERR_MSG_FMT() to better inform the
+user about the problem. While there, use %u to print unsigned values
+and improve error message a bit.
 
-This functions will be improved and called from a different function
-in the following patches.
+In case of an error, return -EINVAL instead of -EDOM, this corresponds
+better to the actual meaning of the error value.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/bittiming.c | 30 ++++++++++++++++++++++++++----
- include/linux/can/bittiming.h   |  5 +++++
- 2 files changed, 31 insertions(+), 4 deletions(-)
+ drivers/net/can/dev/calc_bittiming.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/can/dev/bittiming.c b/drivers/net/can/dev/bittiming.c
-index 0b0b8c767c5b..101de1b3bf30 100644
---- a/drivers/net/can/dev/bittiming.c
-+++ b/drivers/net/can/dev/bittiming.c
-@@ -6,6 +6,24 @@
+diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/calc_bittiming.c
+index 4c9e9c0ceff3..3809c148fb88 100644
+--- a/drivers/net/can/dev/calc_bittiming.c
++++ b/drivers/net/can/dev/calc_bittiming.c
+@@ -134,13 +134,14 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
+ 		do_div(v64, bt->bitrate);
+ 		bitrate_error = (u32)v64;
+ 		if (bitrate_error > CAN_CALC_MAX_ERROR) {
+-			netdev_err(dev,
+-				   "bitrate error %d.%d%% too high\n",
+-				   bitrate_error / 10, bitrate_error % 10);
+-			return -EDOM;
++			NL_SET_ERR_MSG_FMT(extack,
++					   "bitrate error: %u.%u%% too high",
++					   bitrate_error / 10, bitrate_error % 10);
++			return -EINVAL;
+ 		}
+-		netdev_warn(dev, "bitrate error %d.%d%%\n",
+-			    bitrate_error / 10, bitrate_error % 10);
++		NL_SET_ERR_MSG_FMT(extack,
++				   "bitrate error: %u.%u%%",
++				   bitrate_error / 10, bitrate_error % 10);
+ 	}
  
- #include <linux/can/dev.h>
- 
-+void can_sjw_set_default(struct can_bittiming *bt)
-+{
-+	if (bt->sjw)
-+		return;
-+
-+	/* If user space provides no sjw, use 1 as default */
-+	bt->sjw = 1;
-+}
-+
-+int can_sjw_check(const struct net_device *dev, const struct can_bittiming *bt,
-+		  const struct can_bittiming_const *btc, struct netlink_ext_ack *extack)
-+{
-+	if (bt->sjw > btc->sjw_max)
-+		return -ERANGE;
-+
-+	return 0;
-+}
-+
- /* Checks the validity of the specified bit-timing parameters prop_seg,
-  * phase_seg1, phase_seg2 and sjw and tries to determine the bitrate
-  * prescaler value brp. You can find more information in the header
-@@ -18,12 +36,16 @@ static int can_fixup_bittiming(const struct net_device *dev, struct can_bittimin
- 	const struct can_priv *priv = netdev_priv(dev);
- 	unsigned int tseg1;
- 	u64 brp64;
-+	int err;
-+
-+	can_sjw_set_default(bt);
-+
-+	err = can_sjw_check(dev, bt, btc, extack);
-+	if (err)
-+		return err;
- 
- 	tseg1 = bt->prop_seg + bt->phase_seg1;
--	if (!bt->sjw)
--		bt->sjw = 1;
--	if (bt->sjw > btc->sjw_max ||
--	    tseg1 < btc->tseg1_min || tseg1 > btc->tseg1_max ||
-+	if (tseg1 < btc->tseg1_min || tseg1 > btc->tseg1_max ||
- 	    bt->phase_seg2 < btc->tseg2_min || bt->phase_seg2 > btc->tseg2_max)
- 		return -ERANGE;
- 
-diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
-index 53d693ae5397..6cb2ae308e3f 100644
---- a/include/linux/can/bittiming.h
-+++ b/include/linux/can/bittiming.h
-@@ -138,6 +138,11 @@ can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
- }
- #endif /* CONFIG_CAN_CALC_BITTIMING */
- 
-+void can_sjw_set_default(struct can_bittiming *bt);
-+
-+int can_sjw_check(const struct net_device *dev, const struct can_bittiming *bt,
-+		  const struct can_bittiming_const *btc, struct netlink_ext_ack *extack);
-+
- int can_get_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 		      const struct can_bittiming_const *btc,
- 		      const u32 *bitrate_const,
+ 	/* real sample point */
 -- 
 2.39.1
 
