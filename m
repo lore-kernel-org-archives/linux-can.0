@@ -2,44 +2,47 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34EAAC05027
-	for <linux-can@archiver.kernel.org>; Thu,  2 Feb 2023 09:41:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B4D3C63797
+	for <linux-can@archiver.kernel.org>; Thu,  2 Feb 2023 09:41:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232168AbjBBJlp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S232011AbjBBJlp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Thu, 2 Feb 2023 04:41:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50142 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232011AbjBBJln (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 2 Feb 2023 04:41:43 -0500
+        with ESMTP id S230347AbjBBJlo (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 2 Feb 2023 04:41:44 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE498306C
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF05283079
         for <linux-can@vger.kernel.org>; Thu,  2 Feb 2023 01:41:41 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pNW67-0000cq-UK
-        for linux-can@vger.kernel.org; Thu, 02 Feb 2023 10:41:39 +0100
+        id 1pNW68-0000dZ-8X
+        for linux-can@vger.kernel.org; Thu, 02 Feb 2023 10:41:40 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 9536616D0BB
-        for <linux-can@vger.kernel.org>; Thu,  2 Feb 2023 09:41:38 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 3453416D0C7
+        for <linux-can@vger.kernel.org>; Thu,  2 Feb 2023 09:41:39 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id A8D0016D0A6;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id C1E2916D0A8;
         Thu,  2 Feb 2023 09:41:37 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7757cbcd;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 769e57da;
         Thu, 2 Feb 2023 09:41:36 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net 0/5] pull-request: can 2023-02-02
-Date:   Thu,  2 Feb 2023 10:41:30 +0100
-Message-Id: <20230202094135.2293939-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 2/5] can: raw: fix CAN FD frame transmissions over CAN XL devices
+Date:   Thu,  2 Feb 2023 10:41:32 +0100
+Message-Id: <20230202094135.2293939-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230202094135.2293939-1-mkl@pengutronix.de>
+References: <20230202094135.2293939-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -50,56 +53,121 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Jakub, hello David,
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-this is a pull request of 5 patches for net/master.
+A CAN XL device is always capable to process CAN FD frames. The former
+check when sending CAN FD frames relied on the existence of a CAN FD
+device and did not check for a CAN XL device that would be correct
+too.
 
-The first patch is by Ziyang Xuan and removes a errant WARN_ON_ONCE()
-in the CAN J1939 protocol.
+With this patch the CAN FD feature is enabled automatically when CAN
+XL is switched on - and CAN FD cannot be switch off while CAN XL is
+enabled.
 
-The next 3 patches are by Oliver Hartkopp. The first 2 target the CAN
-ISO-TP protocol and fix the state machine with respect to signals and
-a regression found by the syzbot.
+This precondition also leads to a clean up and reduction of checks in
+the hot path in raw_rcv() and raw_sendmsg(). Some conditions are
+reordered to handle simple checks first.
 
-The last patch is by me an missing assignment during the ethtool ring
-configuration callback.
+changes since v1: https://lore.kernel.org/all/20230131091012.50553-1-socketcan@hartkopp.net
+- fixed typo: devive -> device
+changes since v2: https://lore.kernel.org/all/20230131091824.51026-1-socketcan@hartkopp.net/
+- reorder checks in if statements to handle simple checks first
 
-regards,
-Marc
-
+Fixes: 626332696d75 ("can: raw: add CAN XL support")
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://lore.kernel.org/all/20230131105613.55228-1-socketcan@hartkopp.net
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ net/can/raw.c | 47 +++++++++++++++++++++++++++++++----------------
+ 1 file changed, 31 insertions(+), 16 deletions(-)
 
-The following changes since commit 917d5e04d4dd2bbbf36fc6976ba442e284ccc42d:
-
-  octeontx2-af: Fix devlink unregister (2023-02-01 21:22:41 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-6.2-20230202
-
-for you to fetch changes up to 1613fff7a32e1d9e2ac09db73feba0e71a188445:
-
-  can: mcp251xfd: mcp251xfd_ring_set_ringparam(): assign missing tx_obj_num_coalesce_irq (2023-02-02 10:33:27 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-6.2-20230202
-
-----------------------------------------------------------------
-Marc Kleine-Budde (1):
-      can: mcp251xfd: mcp251xfd_ring_set_ringparam(): assign missing tx_obj_num_coalesce_irq
-
-Oliver Hartkopp (3):
-      can: raw: fix CAN FD frame transmissions over CAN XL devices
-      can: isotp: handle wait_event_interruptible() return values
-      can: isotp: split tx timer into transmission and timeout
-
-Ziyang Xuan (1):
-      can: j1939: fix errant WARN_ON_ONCE in j1939_session_deactivate
-
- drivers/net/can/spi/mcp251xfd/mcp251xfd-ethtool.c |  1 +
- net/can/isotp.c                                   | 69 +++++++++++------------
- net/can/j1939/transport.c                         |  4 --
- net/can/raw.c                                     | 47 +++++++++------
- 4 files changed, 65 insertions(+), 56 deletions(-)
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 81071cdb0301..ba86782ba8bb 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -132,8 +132,8 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
+ 		return;
+ 
+ 	/* make sure to not pass oversized frames to the socket */
+-	if ((can_is_canfd_skb(oskb) && !ro->fd_frames && !ro->xl_frames) ||
+-	    (can_is_canxl_skb(oskb) && !ro->xl_frames))
++	if ((!ro->fd_frames && can_is_canfd_skb(oskb)) ||
++	    (!ro->xl_frames && can_is_canxl_skb(oskb)))
+ 		return;
+ 
+ 	/* eliminate multiple filter matches for the same skb */
+@@ -670,6 +670,11 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+ 		if (copy_from_sockptr(&ro->fd_frames, optval, optlen))
+ 			return -EFAULT;
+ 
++		/* Enabling CAN XL includes CAN FD */
++		if (ro->xl_frames && !ro->fd_frames) {
++			ro->fd_frames = ro->xl_frames;
++			return -EINVAL;
++		}
+ 		break;
+ 
+ 	case CAN_RAW_XL_FRAMES:
+@@ -679,6 +684,9 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+ 		if (copy_from_sockptr(&ro->xl_frames, optval, optlen))
+ 			return -EFAULT;
+ 
++		/* Enabling CAN XL includes CAN FD */
++		if (ro->xl_frames)
++			ro->fd_frames = ro->xl_frames;
+ 		break;
+ 
+ 	case CAN_RAW_JOIN_FILTERS:
+@@ -786,6 +794,25 @@ static int raw_getsockopt(struct socket *sock, int level, int optname,
+ 	return 0;
+ }
+ 
++static bool raw_bad_txframe(struct raw_sock *ro, struct sk_buff *skb, int mtu)
++{
++	/* Classical CAN -> no checks for flags and device capabilities */
++	if (can_is_can_skb(skb))
++		return false;
++
++	/* CAN FD -> needs to be enabled and a CAN FD or CAN XL device */
++	if (ro->fd_frames && can_is_canfd_skb(skb) &&
++	    (mtu == CANFD_MTU || can_is_canxl_dev_mtu(mtu)))
++		return false;
++
++	/* CAN XL -> needs to be enabled and a CAN XL device */
++	if (ro->xl_frames && can_is_canxl_skb(skb) &&
++	    can_is_canxl_dev_mtu(mtu))
++		return false;
++
++	return true;
++}
++
+ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ {
+ 	struct sock *sk = sock->sk;
+@@ -833,20 +860,8 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 		goto free_skb;
+ 
+ 	err = -EINVAL;
+-	if (ro->xl_frames && can_is_canxl_dev_mtu(dev->mtu)) {
+-		/* CAN XL, CAN FD and Classical CAN */
+-		if (!can_is_canxl_skb(skb) && !can_is_canfd_skb(skb) &&
+-		    !can_is_can_skb(skb))
+-			goto free_skb;
+-	} else if (ro->fd_frames && dev->mtu == CANFD_MTU) {
+-		/* CAN FD and Classical CAN */
+-		if (!can_is_canfd_skb(skb) && !can_is_can_skb(skb))
+-			goto free_skb;
+-	} else {
+-		/* Classical CAN */
+-		if (!can_is_can_skb(skb))
+-			goto free_skb;
+-	}
++	if (raw_bad_txframe(ro, skb, dev->mtu))
++		goto free_skb;
+ 
+ 	sockcm_init(&sockc, sk);
+ 	if (msg->msg_controllen) {
+-- 
+2.39.1
 
 
