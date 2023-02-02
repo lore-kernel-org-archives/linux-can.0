@@ -2,130 +2,145 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2052C05027
-	for <linux-can@archiver.kernel.org>; Thu,  2 Feb 2023 11:09:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3EF7C61DA4
+	for <linux-can@archiver.kernel.org>; Thu,  2 Feb 2023 11:51:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231836AbjBBLJS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 2 Feb 2023 06:09:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38978 "EHLO
+        id S230213AbjBBLvS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 2 Feb 2023 06:51:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231770AbjBBLJK (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 2 Feb 2023 06:09:10 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFF0F763
-        for <linux-can@vger.kernel.org>; Thu,  2 Feb 2023 03:09:06 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1pNXSi-0006yk-To
-        for linux-can@vger.kernel.org; Thu, 02 Feb 2023 12:09:04 +0100
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 009C216D2F8
-        for <linux-can@vger.kernel.org>; Thu,  2 Feb 2023 11:09:00 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8E89716D29D;
-        Thu,  2 Feb 2023 11:08:57 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c9cce0c8;
-        Thu, 2 Feb 2023 11:08:56 +0000 (UTC)
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     linux-can@vger.kernel.org
-Cc:     Thomas Kopp <thomas.kopp@microchip.com>, kernel@pengutronix.de,
-        Vincent Mailhol <vincent.mailhol@gmail.com>,
-        Mark Bath <mark@baggywrinkle.co.uk>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Thomas Kopp <Thomas.Kopp@microchip.com>
-Subject: [PATCH v2 15/17] can: bittiming: can_calc_bittiming(): clean up SJW handling
-Date:   Thu,  2 Feb 2023 12:08:52 +0100
-Message-Id: <20230202110854.2318594-16-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230202110854.2318594-1-mkl@pengutronix.de>
-References: <20230202110854.2318594-1-mkl@pengutronix.de>
+        with ESMTP id S229929AbjBBLvR (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 2 Feb 2023 06:51:17 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F816A33B
+        for <linux-can@vger.kernel.org>; Thu,  2 Feb 2023 03:51:16 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id 203so993567pfx.6
+        for <linux-can@vger.kernel.org>; Thu, 02 Feb 2023 03:51:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ao4DHa7dWexR005zTKPEVfkHggp+0CqHAD3ghfxR3KQ=;
+        b=dW++iO84uhn9ZeOGiqMyB2hF/82CIerlv6VYyaZWDHIIjCm0IDDBPPgw+7sHRR1a/Y
+         usuf2qIneQOSz5qWuSP+la6bjsDDpC/IpFym/FiRVSYxEcegzGeyx31X5hu6KMidLT3g
+         XvvIBKR+1qE4XCRAOp0hlQmBluhfuRa5IlAiw8kyk1Hmbrfwd9Yexvjqqcu01EmNhfQw
+         vSbzls5ealiw6wSOUwjzK2PF+gyQ34+P4/skq/mm5LABwUYvHGHXs+L23d5WVBu3xDzh
+         xM+wSsU/8eU4ArwOVPMwlKEjChzIYEFE5bFpLBr8syBM+5xR890rPwIwL3IJvlYwSFQs
+         xagQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ao4DHa7dWexR005zTKPEVfkHggp+0CqHAD3ghfxR3KQ=;
+        b=ccaw+D+0Cs2NnpVlbcF+HAzeYglR6veILII2fxT74ueWeU2ycb0jO1lOHb6rOywxnZ
+         esgqYGtQ1SS7tY9q89JmaXMOMfQezxzzI1sYFdisCoCrsNBY0bMGyV5u3kOhdb8/sCot
+         6LIBfJsFagjCkLOq2UWP46r2hMjsL653gsTwC41pD6WgROSzH7Q+T+Z2BznP9r1RklXD
+         1SWHsmzbIlH7MY/Qyh9xdEKuad13u0fNBGk/eVRFvTP/q+LVy1WAS3E23nwMcfdknAyc
+         oWcaJI+bcr88XqWRpecmJAFl/+pCB0qwWq2NwJnnUg8Q4YwBQq1EohctBT1Wr60gjj2V
+         ScYw==
+X-Gm-Message-State: AO0yUKUUJgrhxpdtWnkKi32J/ktbHdBJK5Tlq+ZuY2Lb12RtM4/C0Sba
+        wt1XRXJ6q1tHqt7RrOEbZoaPdLMRIE0gBbK0b7E=
+X-Google-Smtp-Source: AK7set+y8vmrp6OAcplRtqRKoJ5YI5Sw9lCXEIV3/6JJqJ1pjUFXQ87N/yJkv1jFDWjT7XwrGMekQjmBQre6pwG7UAQ=
+X-Received: by 2002:aa7:938e:0:b0:593:d7d7:17cb with SMTP id
+ t14-20020aa7938e000000b00593d7d717cbmr1225853pfe.5.1675338675590; Thu, 02 Feb
+ 2023 03:51:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+References: <20230202110854.2318594-1-mkl@pengutronix.de> <20230202110854.2318594-11-mkl@pengutronix.de>
+In-Reply-To: <20230202110854.2318594-11-mkl@pengutronix.de>
+From:   Vincent Mailhol <vincent.mailhol@gmail.com>
+Date:   Thu, 2 Feb 2023 20:51:04 +0900
+Message-ID: <CAMZ6RqJuUvTo=LAYdHQryjcr+FD+o=-_TJmrwjpgiixN6dTyFw@mail.gmail.com>
+Subject: Re: [PATCH v2 10/17] can: bittiming: factor out can_sjw_set_default()
+ and can_sjw_check()
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can@vger.kernel.org, Thomas Kopp <thomas.kopp@microchip.com>,
+        kernel@pengutronix.de, Mark Bath <mark@baggywrinkle.co.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-In the current code, if the user configures a bitrate, a default SJW
-value of 1 is used. If the user configures both a bitrate and a SJW
-value, can_calc_bittiming() silently limits the SJW value to SJW max
-and TSEG2.
+On Thu. 2 Feb. 2023 at 20:09, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> Factor out the functionality of assigning a SJW default value into
+> can_sjw_set_default() and the checking the SJW limits into
+> can_sjw_check().
+>
+> This functions will be improved and called from a different function
+> in the following patches.
+>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>  drivers/net/can/dev/bittiming.c | 30 ++++++++++++++++++++++++++----
+>  include/linux/can/bittiming.h   |  5 +++++
+>  2 files changed, 31 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/net/can/dev/bittiming.c b/drivers/net/can/dev/bittiming.c
+> index 0b0b8c767c5b..101de1b3bf30 100644
+> --- a/drivers/net/can/dev/bittiming.c
+> +++ b/drivers/net/can/dev/bittiming.c
+> @@ -6,6 +6,24 @@
+>
+>  #include <linux/can/dev.h>
+>
+> +void can_sjw_set_default(struct can_bittiming *bt)
+> +{
+> +       if (bt->sjw)
+> +               return;
+> +
+> +       /* If user space provides no sjw, use 1 as default */
+> +       bt->sjw = 1;
+> +}
+> +
+> +int can_sjw_check(const struct net_device *dev, const struct can_bittiming *bt,
+> +                 const struct can_bittiming_const *btc, struct netlink_ext_ack *extack)
+> +{
+> +       if (bt->sjw > btc->sjw_max)
+> +               return -ERANGE;
 
-We came to the conclusion that if the user provided an invalid SJW
-value, it's best to bail out and inform the user [1].
+You return -ERANGE here but then replace it by -EINVAL in patch #12.
+Better to directly return -EINVAL here.
 
-[1] https://lore.kernel.org/all/CAMZ6RqKqhmTgUZiwe5uqUjBDnhhC2iOjZ791+Y845btJYwVDKg@mail.gmail.com
-
-Further the ISO 11898-1:2015 standard mandates that "SJW shall be less
-than or equal to the minimum of these two items: Phase_Seg1 and
-Phase_Seg2." [2] The current code is missing that check.
-
-[2] https://lore.kernel.org/all/BL3PR11MB64844E3FC13C55433CDD0B3DFB449@BL3PR11MB6484.namprd11.prod.outlook.com
-
-The previous patches introduced
-1) can_sjw_set_default() - sets a default value for SJW if unset
-2) can_sjw_check() - implements a SJW check against SJW max, Phase
-   Seg1 and Phase Seg2. In the error case this function reports the error
-   to user space via netlink.
-
-Replace both the open-coded SJW default setting and the open-coded and
-insufficient checks of SJW with the helper functions
-can_sjw_set_default() and can_sjw_check().
-
-Link: https://lore.kernel.org/all/CAMZ6RqKqhmTgUZiwe5uqUjBDnhhC2iOjZ791+Y845btJYwVDKg@mail.gmail.com
-Link: https://lore.kernel.org/all/BL3PR11MB64844E3FC13C55433CDD0B3DFB449@BL3PR11MB6484.namprd11.prod.outlook.com
-Suggested-by: Thomas Kopp <Thomas.Kopp@microchip.com>
-Suggested-by: Vincent Mailhol <vincent.mailhol@gmail.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/dev/calc_bittiming.c | 17 ++++++-----------
- 1 file changed, 6 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/calc_bittiming.c
-index 46d28f377186..4c9e9c0ceff3 100644
---- a/drivers/net/can/dev/calc_bittiming.c
-+++ b/drivers/net/can/dev/calc_bittiming.c
-@@ -76,6 +76,7 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 	unsigned int best_brp = 0;		/* current best value for brp */
- 	unsigned int brp, tsegall, tseg, tseg1 = 0, tseg2 = 0;
- 	u64 v64;
-+	int err;
- 
- 	/* Use CiA recommended sample points */
- 	if (bt->sample_point) {
-@@ -154,17 +155,11 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 	bt->phase_seg1 = tseg1 - bt->prop_seg;
- 	bt->phase_seg2 = tseg2;
- 
--	/* check for sjw user settings */
--	if (!bt->sjw || !btc->sjw_max) {
--		bt->sjw = 1;
--	} else {
--		/* bt->sjw is at least 1 -> sanitize upper bound to sjw_max */
--		if (bt->sjw > btc->sjw_max)
--			bt->sjw = btc->sjw_max;
--		/* bt->sjw must not be higher than tseg2 */
--		if (tseg2 < bt->sjw)
--			bt->sjw = tseg2;
--	}
-+	can_sjw_set_default(bt);
-+
-+	err = can_sjw_check(dev, bt, btc, extack);
-+	if (err)
-+		return err;
- 
- 	bt->brp = best_brp;
- 
--- 
-2.39.1
-
-
+> +       return 0;
+> +}
+> +
+>  /* Checks the validity of the specified bit-timing parameters prop_seg,
+>   * phase_seg1, phase_seg2 and sjw and tries to determine the bitrate
+>   * prescaler value brp. You can find more information in the header
+> @@ -18,12 +36,16 @@ static int can_fixup_bittiming(const struct net_device *dev, struct can_bittimin
+>         const struct can_priv *priv = netdev_priv(dev);
+>         unsigned int tseg1;
+>         u64 brp64;
+> +       int err;
+> +
+> +       can_sjw_set_default(bt);
+> +
+> +       err = can_sjw_check(dev, bt, btc, extack);
+> +       if (err)
+> +               return err;
+>
+>         tseg1 = bt->prop_seg + bt->phase_seg1;
+> -       if (!bt->sjw)
+> -               bt->sjw = 1;
+> -       if (bt->sjw > btc->sjw_max ||
+> -           tseg1 < btc->tseg1_min || tseg1 > btc->tseg1_max ||
+> +       if (tseg1 < btc->tseg1_min || tseg1 > btc->tseg1_max ||
+>             bt->phase_seg2 < btc->tseg2_min || bt->phase_seg2 > btc->tseg2_max)
+>                 return -ERANGE;
+>
+> diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
+> index 53d693ae5397..6cb2ae308e3f 100644
+> --- a/include/linux/can/bittiming.h
+> +++ b/include/linux/can/bittiming.h
+> @@ -138,6 +138,11 @@ can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
+>  }
+>  #endif /* CONFIG_CAN_CALC_BITTIMING */
+>
+> +void can_sjw_set_default(struct can_bittiming *bt);
+> +
+> +int can_sjw_check(const struct net_device *dev, const struct can_bittiming *bt,
+> +                 const struct can_bittiming_const *btc, struct netlink_ext_ack *extack);
+> +
+>  int can_get_bittiming(const struct net_device *dev, struct can_bittiming *bt,
+>                       const struct can_bittiming_const *btc,
+>                       const u32 *bitrate_const,
