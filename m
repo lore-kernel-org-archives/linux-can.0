@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A7B4C6379F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42723C636D3
 	for <linux-can@archiver.kernel.org>; Thu,  2 Feb 2023 11:09:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231479AbjBBLJJ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 2 Feb 2023 06:09:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38908 "EHLO
+        id S230048AbjBBLJH (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 2 Feb 2023 06:09:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231575AbjBBLJH (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 2 Feb 2023 06:09:07 -0500
+        with ESMTP id S229761AbjBBLJG (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 2 Feb 2023 06:09:06 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5C9A24A
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AACEF90
         for <linux-can@vger.kernel.org>; Thu,  2 Feb 2023 03:09:00 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pNXSd-0006mg-3L
+        id 1pNXSd-0006mW-0E
         for linux-can@vger.kernel.org; Thu, 02 Feb 2023 12:08:59 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 54C6116D2B0
+        by bjornoya.blackshift.org (Postfix) with SMTP id 3F87016D2AF
         for <linux-can@vger.kernel.org>; Thu,  2 Feb 2023 11:08:58 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id E145316D284;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id D0A5116D283;
         Thu,  2 Feb 2023 11:08:56 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 077fdb50;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 32a398e9;
         Thu, 2 Feb 2023 11:08:56 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     Thomas Kopp <thomas.kopp@microchip.com>, kernel@pengutronix.de,
         Vincent Mailhol <vincent.mailhol@gmail.com>,
         Mark Bath <mark@baggywrinkle.co.uk>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v2 02/17] can: bittiming: can_fixup_bittiming(): use CAN_SYNC_SEG instead of 1
-Date:   Thu,  2 Feb 2023 12:08:39 +0100
-Message-Id: <20230202110854.2318594-3-mkl@pengutronix.de>
+Subject: [PATCH v2 01/17] can: bittiming(): replace open coded variants of can_bit_time()
+Date:   Thu,  2 Feb 2023 12:08:38 +0100
+Message-Id: <20230202110854.2318594-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230202110854.2318594-1-mkl@pengutronix.de>
 References: <20230202110854.2318594-1-mkl@pengutronix.de>
@@ -55,31 +55,56 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 Commit 1c47fa6b31c2 ("can: dev: add a helper function to calculate the
-duration of one bit") made the constant CAN_SYNC_SEG available in a
-header file.
+duration of one bit") added the helper function can_bit_time().
 
-The magic number 1 in can_fixup_bittiming() represents the width of
-the sync segment, replace it by CAN_SYNC_SEG to make the code more
-readable.
+Replace open coded variants of can_bit_time() by the helper function.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/bittiming.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/dev/bittiming.c      | 7 +++----
+ drivers/net/can/dev/calc_bittiming.c | 2 +-
+ 2 files changed, 4 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/can/dev/bittiming.c b/drivers/net/can/dev/bittiming.c
-index 32af609eee50..5e111dbbe090 100644
+index 7ae80763c960..32af609eee50 100644
 --- a/drivers/net/can/dev/bittiming.c
 +++ b/drivers/net/can/dev/bittiming.c
-@@ -39,7 +39,7 @@ static int can_fixup_bittiming(const struct net_device *dev, struct can_bittimin
+@@ -15,7 +15,7 @@ static int can_fixup_bittiming(const struct net_device *dev, struct can_bittimin
+ 			       const struct can_bittiming_const *btc)
+ {
+ 	const struct can_priv *priv = netdev_priv(dev);
+-	unsigned int tseg1, alltseg;
++	unsigned int tseg1;
+ 	u64 brp64;
+ 
+ 	tseg1 = bt->prop_seg + bt->phase_seg1;
+@@ -38,9 +38,8 @@ static int can_fixup_bittiming(const struct net_device *dev, struct can_bittimin
+ 	if (bt->brp < btc->brp_min || bt->brp > btc->brp_max)
  		return -EINVAL;
  
- 	bt->bitrate = priv->clock.freq / (bt->brp * can_bit_time(bt));
--	bt->sample_point = ((tseg1 + 1) * 1000) / can_bit_time(bt);
-+	bt->sample_point = ((CAN_SYNC_SEG + tseg1) * 1000) / can_bit_time(bt);
+-	alltseg = bt->prop_seg + bt->phase_seg1 + bt->phase_seg2 + 1;
+-	bt->bitrate = priv->clock.freq / (bt->brp * alltseg);
+-	bt->sample_point = ((tseg1 + 1) * 1000) / alltseg;
++	bt->bitrate = priv->clock.freq / (bt->brp * can_bit_time(bt));
++	bt->sample_point = ((tseg1 + 1) * 1000) / can_bit_time(bt);
  
  	return 0;
  }
+diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/calc_bittiming.c
+index d3caa040614d..28dbb6cbfd5d 100644
+--- a/drivers/net/can/dev/calc_bittiming.c
++++ b/drivers/net/can/dev/calc_bittiming.c
+@@ -170,7 +170,7 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
+ 
+ 	/* real bitrate */
+ 	bt->bitrate = priv->clock.freq /
+-		(bt->brp * (CAN_SYNC_SEG + tseg1 + tseg2));
++		(bt->brp * can_bit_time(bt));
+ 
+ 	return 0;
+ }
+
+base-commit: 609aa68d60965f70485655def733d533f99b341b
 -- 
 2.39.1
 
