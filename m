@@ -2,43 +2,44 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 153F4C05027
-	for <linux-can@archiver.kernel.org>; Thu,  2 Feb 2023 15:59:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 276C2C05027
+	for <linux-can@archiver.kernel.org>; Thu,  2 Feb 2023 16:45:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233504AbjBBP7R (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 2 Feb 2023 10:59:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57066 "EHLO
+        id S229881AbjBBQpu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 2 Feb 2023 11:45:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233525AbjBBP7D (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 2 Feb 2023 10:59:03 -0500
+        with ESMTP id S232166AbjBBQpt (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 2 Feb 2023 11:45:49 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17BE125E1F
-        for <linux-can@vger.kernel.org>; Thu,  2 Feb 2023 07:58:04 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609EC6B378
+        for <linux-can@vger.kernel.org>; Thu,  2 Feb 2023 08:45:48 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pNbXp-0004O6-6U; Thu, 02 Feb 2023 16:30:37 +0100
+        id 1pNciW-0006oc-Ea; Thu, 02 Feb 2023 17:45:44 +0100
 Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:fff9:bfd9:c514:9ad9])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
         (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 7FC9316D765;
-        Thu,  2 Feb 2023 15:30:36 +0000 (UTC)
-Date:   Thu, 2 Feb 2023 16:30:28 +0100
+        by smtp.blackshift.org (Postfix) with ESMTPSA id BEDBF16D885;
+        Thu,  2 Feb 2023 16:45:42 +0000 (UTC)
+Date:   Thu, 2 Feb 2023 17:45:34 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
-Cc:     linux-can@vger.kernel.org, vincent.mailhol@gmail.com,
-        wg@grandegger.com
-Subject: Re: [PATCH v2 0/8] can: ems_pci: Add support for CPC-PCIe v3
-Message-ID: <20230202153028.kqcbisgyjic2abif@pengutronix.de>
-References: <20230120112616.6071-1-uttenthaler@ems-wuensche.com>
+To:     Lukas Magel <lukas.magel@posteo.net>
+Cc:     linux-can@vger.kernel.org,
+        Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: [RESEND PATCH v3 0/8] can: peak_usb: Introduce configurable CAN
+ channel ID
+Message-ID: <20230202164534.736my4ckllpm6f5f@pengutronix.de>
+References: <20230116200932.157769-1-lukas.magel@posteo.net>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="voptpjanv76hqbtm"
+        protocol="application/pgp-signature"; boundary="tm47popglchxdgmt"
 Content-Disposition: inline
-In-Reply-To: <20230120112616.6071-1-uttenthaler@ems-wuensche.com>
+In-Reply-To: <20230116200932.157769-1-lukas.magel@posteo.net>
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -48,19 +49,42 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 
---voptpjanv76hqbtm
+--tm47popglchxdgmt
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On 20.01.2023 12:26:08, Gerhard Uttenthaler wrote:
-> The CPC-PCIe v3 uses an Asix AX99100 instead of the discontinued=20
-> PLX PCI9030 bridge chip. This patch series adds support for this=20
-> card version and cleans some code styling issues.
+On 16.01.2023 20:09:24, Lukas Magel wrote:
+> This series of patches introduces the CAN channel ID for the PEAK USB
+> CAN interfaces. The id can be read/written via ethtool and is exposed as
+> a read-only attribute via sysfs. This allows users to set the id via
+> ethtool and write udev rules to match against the sysfs attribute.
+>=20
+> Part of the patches were originally introduced by St=C3=A9phane Grosjean =
+and
+> were modified. See the following threads for the original patches:
+>=20
+> * https://lore.kernel.org/linux-can/20220128150157.1222850-1-s.grosjean@p=
+eak-system.com/T/#mad8014c9f1c89a50d5944a50ae0a585edec79eab
+> * https://lore.kernel.org/linux-can/20211117150132.37056-1-s.grosjean@pea=
+k-system.com/T/#mbf1d7db8433734a1fe08868d79f9927a04fe7ffe
 
-Applied to linux-can-next.
+[...]
 
-Thanks,
+> Hi Marc,
+>=20
+> a happy late new year!
+
+Even later happy new year! :)
+
+> I noticed that the patch order in my first v3
+> submission got messed up, so I'm sending it again. I hope that with the
+> v3 changes the patch series now finds the approval of you and the netdev
+> list.
+
+Applied to linux-can-next. It will be included in my next pull request,
+let's see what the netdev people say.
+
 Marc
 
 --=20
@@ -69,19 +93,19 @@ Embedded Linux                   | https://www.pengutronix.de  |
 Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
---voptpjanv76hqbtm
+--tm47popglchxdgmt
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmPb1xAACgkQvlAcSiqK
-BOjpOAf/QIKKNb3ZyPwNH1dWddZIjFXEDMuR/BZm/WegYmky4iOv5b7ZPrkUjXgV
-zEFgfw6pvaOr557CVu5mKini9l00J56OUtEIxho9V7pFQ5U/5qKfWZ4LBJWi6mW0
-ChWad8P1JaGjU1NwTzwBoGvg406VShkqiy+gmsIX/zeJEPXKn+tPxWLhwSn5hNiU
-O2SQgNymyaHCjXJlB8R2PwfukjHr6dDO2Kenev1kFt/oup+ug+7GBwaUNvBS/YD6
-XMHM0lHfLohM4pP/ufm7C3VYwSZnfZZAFPQf8X/CUKKzH1Z5kW6xARx8D+9bgcrM
-mrXa9MItl9c8E0iYvo38bDrLFOrAgA==
-=VVWn
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmPb6KsACgkQvlAcSiqK
+BOh7bwgAqu1CvakLXc1Pf7fmjZ/PUjDo2lICGFJbTTWkljrmaK6nXFFOHwhngXxP
+nxoi1P7IdegI+WjbuMVwsMOR6PgqqHqXMABULLsQfSvRAvi5AYW5xy0lMIeQI2BE
+kWxEB08atnLVHR93naGyt6Als/MzHBMAKFjoZeEKQ/zg2fUFqgQczGW76EQcz1sI
+iwf6J+1yqWnWl80nysZ3aM0PimOAvJmRrjXUXZ2+BNyrrMZIBu0F98Ti0AAPXtns
+lEqAHVbY0zWRhtIk43dyBTZY54I6cbqP1o8sZVae2/F8V3WX2KaFAxgCuE2ov7Hk
+oC9lytmxJ/1mF5n8IdXkHTxdc8C5og==
+=/V+8
 -----END PGP SIGNATURE-----
 
---voptpjanv76hqbtm--
+--tm47popglchxdgmt--
