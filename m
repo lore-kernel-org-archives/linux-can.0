@@ -2,44 +2,43 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F456C05027
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 878F1C61DA4
 	for <linux-can@archiver.kernel.org>; Mon,  6 Feb 2023 13:18:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbjBFNSN (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 6 Feb 2023 08:18:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52016 "EHLO
+        id S230319AbjBFNSO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 6 Feb 2023 08:18:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230364AbjBFNRp (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 6 Feb 2023 08:17:45 -0500
+        with ESMTP id S230367AbjBFNRq (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 6 Feb 2023 08:17:46 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB0723DB2
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D627124108
         for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 05:17:26 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pP1N6-0007bz-Ld
+        id 1pP1N6-0007dO-R9
         for linux-can@vger.kernel.org; Mon, 06 Feb 2023 14:17:24 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 54949171525
+        by bjornoya.blackshift.org (Postfix) with SMTP id 55E01171528
         for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 13:16:29 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id D3BE417132B;
-        Mon,  6 Feb 2023 13:16:24 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 47CD1171352;
+        Mon,  6 Feb 2023 13:16:25 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b49eb283;
-        Mon, 6 Feb 2023 13:16:23 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id a4e99dca;
+        Mon, 6 Feb 2023 13:16:24 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Vincent Mailhol <vincent.mailhol@gmail.com>
-Subject: [PATCH net-next 41/47] can: bittiming: can_fixup_bittiming(): report error via netlink and harmonize error value
-Date:   Mon,  6 Feb 2023 14:16:14 +0100
-Message-Id: <20230206131620.2758724-42-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 46/47] can: bittiming: can_calc_bittiming(): convert from netdev_err() to NL_SET_ERR_MSG_FMT()
+Date:   Mon,  6 Feb 2023 14:16:19 +0100
+Message-Id: <20230206131620.2758724-47-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230206131620.2758724-1-mkl@pengutronix.de>
 References: <20230206131620.2758724-1-mkl@pengutronix.de>
@@ -53,87 +52,44 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Check each bit timing parameter first individually against their
-limits and report a meaningful error message via netlink to the user
-space.
+Replace the netdev_err() by NL_SET_ERR_MSG_FMT() to better inform the
+user about the problem. While there, use %u to print unsigned values
+and improve error message a bit.
 
-In case of an error, return -EINVAL instead of -ERANGE, this
-corresponds better to the actual meaning of the error value.
+In case of an error, return -EINVAL instead of -EDOM, this corresponds
+better to the actual meaning of the error value.
 
-Link: https://lore.kernel.org/all/20230202110854.2318594-12-mkl@pengutronix.de
-Suggested-by: Vincent Mailhol <vincent.mailhol@gmail.com>
+Link: https://lore.kernel.org/all/20230202110854.2318594-17-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/bittiming.c | 38 +++++++++++++++++++++++++++------
- 1 file changed, 31 insertions(+), 7 deletions(-)
+ drivers/net/can/dev/calc_bittiming.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/can/dev/bittiming.c b/drivers/net/can/dev/bittiming.c
-index 101de1b3bf30..727dcd52cc2c 100644
---- a/drivers/net/can/dev/bittiming.c
-+++ b/drivers/net/can/dev/bittiming.c
-@@ -33,22 +33,38 @@ static int can_fixup_bittiming(const struct net_device *dev, struct can_bittimin
- 			       const struct can_bittiming_const *btc,
- 			       struct netlink_ext_ack *extack)
- {
-+	const unsigned int tseg1 = bt->prop_seg + bt->phase_seg1;
- 	const struct can_priv *priv = netdev_priv(dev);
--	unsigned int tseg1;
- 	u64 brp64;
- 	int err;
+diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/calc_bittiming.c
+index 4c9e9c0ceff3..3809c148fb88 100644
+--- a/drivers/net/can/dev/calc_bittiming.c
++++ b/drivers/net/can/dev/calc_bittiming.c
+@@ -134,13 +134,14 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
+ 		do_div(v64, bt->bitrate);
+ 		bitrate_error = (u32)v64;
+ 		if (bitrate_error > CAN_CALC_MAX_ERROR) {
+-			netdev_err(dev,
+-				   "bitrate error %d.%d%% too high\n",
+-				   bitrate_error / 10, bitrate_error % 10);
+-			return -EDOM;
++			NL_SET_ERR_MSG_FMT(extack,
++					   "bitrate error: %u.%u%% too high",
++					   bitrate_error / 10, bitrate_error % 10);
++			return -EINVAL;
+ 		}
+-		netdev_warn(dev, "bitrate error %d.%d%%\n",
+-			    bitrate_error / 10, bitrate_error % 10);
++		NL_SET_ERR_MSG_FMT(extack,
++				   "bitrate error: %u.%u%%",
++				   bitrate_error / 10, bitrate_error % 10);
+ 	}
  
-+	if (tseg1 < btc->tseg1_min) {
-+		NL_SET_ERR_MSG_FMT(extack, "prop-seg + phase-seg1: %u less than tseg1-min: %u",
-+				   tseg1, btc->tseg1_min);
-+		return -EINVAL;
-+	}
-+	if (tseg1 > btc->tseg1_max) {
-+		NL_SET_ERR_MSG_FMT(extack, "prop-seg + phase-seg1: %u greater than tseg1-max: %u",
-+				   tseg1, btc->tseg1_max);
-+		return -EINVAL;
-+	}
-+	if (bt->phase_seg2 < btc->tseg2_min) {
-+		NL_SET_ERR_MSG_FMT(extack, "phase-seg2: %u less than tseg2-min: %u",
-+				   bt->phase_seg2, btc->tseg2_min);
-+		return -EINVAL;
-+	}
-+	if (bt->phase_seg2 > btc->tseg2_max) {
-+		NL_SET_ERR_MSG_FMT(extack, "phase-seg2: %u greater than tseg2-max: %u",
-+				   bt->phase_seg2, btc->tseg2_max);
-+		return -EINVAL;
-+	}
-+
- 	can_sjw_set_default(bt);
- 
- 	err = can_sjw_check(dev, bt, btc, extack);
- 	if (err)
- 		return err;
- 
--	tseg1 = bt->prop_seg + bt->phase_seg1;
--	if (tseg1 < btc->tseg1_min || tseg1 > btc->tseg1_max ||
--	    bt->phase_seg2 < btc->tseg2_min || bt->phase_seg2 > btc->tseg2_max)
--		return -ERANGE;
--
- 	brp64 = (u64)priv->clock.freq * (u64)bt->tq;
- 	if (btc->brp_inc > 1)
- 		do_div(brp64, btc->brp_inc);
-@@ -58,8 +74,16 @@ static int can_fixup_bittiming(const struct net_device *dev, struct can_bittimin
- 		brp64 *= btc->brp_inc;
- 	bt->brp = (u32)brp64;
- 
--	if (bt->brp < btc->brp_min || bt->brp > btc->brp_max)
-+	if (bt->brp < btc->brp_min) {
-+		NL_SET_ERR_MSG_FMT(extack, "resulting brp: %u less than brp-min: %u",
-+				   bt->brp, btc->brp_min);
- 		return -EINVAL;
-+	}
-+	if (bt->brp > btc->brp_max) {
-+		NL_SET_ERR_MSG_FMT(extack, "resulting brp: %u greater than brp-max: %u",
-+				   bt->brp, btc->brp_max);
-+		return -EINVAL;
-+	}
- 
- 	bt->bitrate = priv->clock.freq / (bt->brp * can_bit_time(bt));
- 	bt->sample_point = ((CAN_SYNC_SEG + tseg1) * 1000) / can_bit_time(bt);
+ 	/* real sample point */
 -- 
 2.39.1
 
