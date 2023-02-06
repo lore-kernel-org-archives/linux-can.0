@@ -2,45 +2,43 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 434D3C61DA4
-	for <linux-can@archiver.kernel.org>; Mon,  6 Feb 2023 13:18:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F8B0C6379F
+	for <linux-can@archiver.kernel.org>; Mon,  6 Feb 2023 13:18:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbjBFNSK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 6 Feb 2023 08:18:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51780 "EHLO
+        id S230408AbjBFNSL (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 6 Feb 2023 08:18:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229874AbjBFNRm (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 6 Feb 2023 08:17:42 -0500
+        with ESMTP id S230355AbjBFNRn (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 6 Feb 2023 08:17:43 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35FA423D9C
-        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 05:17:25 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C2A23DA7
+        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 05:17:26 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pP1N5-0007a4-CC
-        for linux-can@vger.kernel.org; Mon, 06 Feb 2023 14:17:23 +0100
+        id 1pP1N6-0007c7-CL
+        for linux-can@vger.kernel.org; Mon, 06 Feb 2023 14:17:24 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 57CA7171438
-        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 13:16:27 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 51E02171522
+        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 13:16:29 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8FA1F1712D1;
-        Mon,  6 Feb 2023 13:16:23 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 52CB1171356;
+        Mon,  6 Feb 2023 13:16:25 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id cb881da8;
-        Mon, 6 Feb 2023 13:16:22 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7e969d8a;
+        Mon, 6 Feb 2023 13:16:24 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 20/47] can: ems_pci: Add IRQ enable
-Date:   Mon,  6 Feb 2023 14:15:53 +0100
-Message-Id: <20230206131620.2758724-21-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 47/47] can: bittiming: can_validate_bitrate(): report error via netlink
+Date:   Mon,  6 Feb 2023 14:16:20 +0100
+Message-Id: <20230206131620.2758724-48-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230206131620.2758724-1-mkl@pengutronix.de>
 References: <20230206131620.2758724-1-mkl@pengutronix.de>
@@ -54,45 +52,29 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
+Report an error to user space via netlink if the requested bit rate is
+not supported by the device.
 
-Add IRQ enable
-
-Signed-off-by: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
-Link: https://lore.kernel.org/all/20230120112616.6071-7-uttenthaler@ems-wuensche.com
+Link: https://lore.kernel.org/all/20230202110854.2318594-18-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/sja1000/ems_pci.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/net/can/dev/bittiming.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/can/sja1000/ems_pci.c b/drivers/net/can/sja1000/ems_pci.c
-index d1e8758d8043..1f237acd7bd1 100644
---- a/drivers/net/can/sja1000/ems_pci.c
-+++ b/drivers/net/can/sja1000/ems_pci.c
-@@ -372,14 +372,21 @@ static int ems_pci_add_card(struct pci_dev *pdev,
- 			SET_NETDEV_DEV(dev, &pdev->dev);
- 			dev->dev_id = i;
+diff --git a/drivers/net/can/dev/bittiming.c b/drivers/net/can/dev/bittiming.c
+index 55714e08ca3a..0b93900b1dfa 100644
+--- a/drivers/net/can/dev/bittiming.c
++++ b/drivers/net/can/dev/bittiming.c
+@@ -124,6 +124,9 @@ can_validate_bitrate(const struct net_device *dev, const struct can_bittiming *b
+ 			return 0;
+ 	}
  
--			if (card->version == 1)
-+			if (card->version == 1) {
- 				/* reset int flag of pita */
- 				writel(PITA2_ICR_INT0_EN | PITA2_ICR_INT0,
- 				       card->conf_addr + PITA2_ICR);
--			else
-+			} else if (card->version == 2) {
- 				/* enable IRQ in PLX 9030 */
- 				writel(PLX_ICSR_ENA_CLR,
- 				       card->conf_addr + PLX_ICSR);
-+			} else {
-+				/* Enable IRQ in AX99100 */
-+				writel(ASIX_LINTSR_INT0AC, card->conf_addr + ASIX_LINTSR);
-+				/* Enable local INT0 input enable */
-+				writel(readl(card->conf_addr + ASIX_LIEMR) | ASIX_LIEMR_L0EINTEN,
-+				       card->conf_addr + ASIX_LIEMR);
-+			}
++	NL_SET_ERR_MSG_FMT(extack, "bitrate %u bps not supported",
++			   bt->brp);
++
+ 	return -EINVAL;
+ }
  
- 			/* Register SJA1000 device */
- 			err = register_sja1000dev(dev);
 -- 
 2.39.1
 
