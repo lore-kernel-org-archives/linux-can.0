@@ -2,43 +2,45 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A281C05027
-	for <linux-can@archiver.kernel.org>; Mon,  6 Feb 2023 13:19:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A000C63797
+	for <linux-can@archiver.kernel.org>; Mon,  6 Feb 2023 13:19:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbjBFNTd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 6 Feb 2023 08:19:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52276 "EHLO
+        id S230482AbjBFNTf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 6 Feb 2023 08:19:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjBFNS4 (ORCPT
+        with ESMTP id S230328AbjBFNS4 (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 6 Feb 2023 08:18:56 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE7A3CA
-        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 05:17:52 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AD56E93
+        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 05:17:54 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pP1NP-0000B2-Fn
-        for linux-can@vger.kernel.org; Mon, 06 Feb 2023 14:17:43 +0100
+        id 1pP1NQ-0000DJ-It
+        for linux-can@vger.kernel.org; Mon, 06 Feb 2023 14:17:44 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id D58231714F8
-        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 13:16:28 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id EA28F171388
+        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 13:16:25 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id B13C417131D;
-        Mon,  6 Feb 2023 13:16:24 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id EB0E21712B0;
+        Mon,  6 Feb 2023 13:16:22 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 8af2555a;
-        Mon, 6 Feb 2023 13:16:23 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c823a68f;
+        Mon, 6 Feb 2023 13:16:22 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 39/47] can: bittiming: can_changelink() pass extack down callstack
-Date:   Mon,  6 Feb 2023 14:16:12 +0100
-Message-Id: <20230206131620.2758724-40-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 12/47] can: rcar_canfd: Fix R-Car Gen4 CFCC.CFTML field width
+Date:   Mon,  6 Feb 2023 14:15:45 +0100
+Message-Id: <20230206131620.2758724-13-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230206131620.2758724-1-mkl@pengutronix.de>
 References: <20230206131620.2758724-1-mkl@pengutronix.de>
@@ -52,132 +54,33 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This is a preparation patch.
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-In order to pass warning/error messages during netlink calls back to
-user space, pass the extack struct down the callstack of
-can_changelink(), the actual error messages will be added in the
-following ptaches.
+On R-Car Gen4 CAN_FD variants, the Common FIFO TX Message Buffer Link
+(CFTML) field in the Common FIFO Configuration / Control Register (CCFC)
+register is one bit wider than on older variants.
 
-Link: https://lore.kernel.org/all/20230202110854.2318594-10-mkl@pengutronix.de
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/all/9c37aaa799a2391be272dbaa474379cf9a7af147.1674499048.git.geert+renesas@glider.be
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/bittiming.c      | 15 +++++++++------
- drivers/net/can/dev/calc_bittiming.c |  2 +-
- drivers/net/can/dev/netlink.c        |  6 ++++--
- include/linux/can/bittiming.h        |  5 +++--
- 4 files changed, 17 insertions(+), 11 deletions(-)
+ drivers/net/can/rcar/rcar_canfd.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/dev/bittiming.c b/drivers/net/can/dev/bittiming.c
-index 263e46a1f648..0b0b8c767c5b 100644
---- a/drivers/net/can/dev/bittiming.c
-+++ b/drivers/net/can/dev/bittiming.c
-@@ -12,7 +12,8 @@
-  * file linux/can/netlink.h.
-  */
- static int can_fixup_bittiming(const struct net_device *dev, struct can_bittiming *bt,
--			       const struct can_bittiming_const *btc)
-+			       const struct can_bittiming_const *btc,
-+			       struct netlink_ext_ack *extack)
- {
- 	const struct can_priv *priv = netdev_priv(dev);
- 	unsigned int tseg1;
-@@ -50,7 +51,8 @@ static int can_fixup_bittiming(const struct net_device *dev, struct can_bittimin
- static int
- can_validate_bitrate(const struct net_device *dev, const struct can_bittiming *bt,
- 		     const u32 *bitrate_const,
--		     const unsigned int bitrate_const_cnt)
-+		     const unsigned int bitrate_const_cnt,
-+		     struct netlink_ext_ack *extack)
- {
- 	unsigned int i;
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index ee7bbd9d1151..376a5d606acc 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -233,7 +233,8 @@
+ /* Common FIFO bits */
  
-@@ -65,7 +67,8 @@ can_validate_bitrate(const struct net_device *dev, const struct can_bittiming *b
- int can_get_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 		      const struct can_bittiming_const *btc,
- 		      const u32 *bitrate_const,
--		      const unsigned int bitrate_const_cnt)
-+		      const unsigned int bitrate_const_cnt,
-+		      struct netlink_ext_ack *extack)
- {
- 	/* Depending on the given can_bittiming parameter structure the CAN
- 	 * timing parameters are calculated based on the provided bitrate OR
-@@ -73,12 +76,12 @@ int can_get_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 	 * provided directly which are then checked and fixed up.
- 	 */
- 	if (!bt->tq && bt->bitrate && btc)
--		return can_calc_bittiming(dev, bt, btc);
-+		return can_calc_bittiming(dev, bt, btc, extack);
- 	if (bt->tq && !bt->bitrate && btc)
--		return can_fixup_bittiming(dev, bt, btc);
-+		return can_fixup_bittiming(dev, bt, btc, extack);
- 	if (!bt->tq && bt->bitrate && bitrate_const)
- 		return can_validate_bitrate(dev, bt, bitrate_const,
--					    bitrate_const_cnt);
-+					    bitrate_const_cnt, extack);
- 
- 	return -EINVAL;
- }
-diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/calc_bittiming.c
-index 28dbb6cbfd5d..46d28f377186 100644
---- a/drivers/net/can/dev/calc_bittiming.c
-+++ b/drivers/net/can/dev/calc_bittiming.c
-@@ -63,7 +63,7 @@ can_update_sample_point(const struct can_bittiming_const *btc,
- }
- 
- int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
--		       const struct can_bittiming_const *btc)
-+		       const struct can_bittiming_const *btc, struct netlink_ext_ack *extack)
- {
- 	struct can_priv *priv = netdev_priv(dev);
- 	unsigned int bitrate;			/* current bitrate */
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index a03b45a020b9..036d85ef07f5 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -215,7 +215,8 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 		err = can_get_bittiming(dev, &bt,
- 					priv->bittiming_const,
- 					priv->bitrate_const,
--					priv->bitrate_const_cnt);
-+					priv->bitrate_const_cnt,
-+					extack);
- 		if (err)
- 			return err;
- 
-@@ -320,7 +321,8 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 		err = can_get_bittiming(dev, &dbt,
- 					priv->data_bittiming_const,
- 					priv->data_bitrate_const,
--					priv->data_bitrate_const_cnt);
-+					priv->data_bitrate_const_cnt,
-+					extack);
- 		if (err)
- 			return err;
- 
-diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
-index ef0a77173e3c..53d693ae5397 100644
---- a/include/linux/can/bittiming.h
-+++ b/include/linux/can/bittiming.h
-@@ -116,7 +116,7 @@ struct can_tdc_const {
- 
- #ifdef CONFIG_CAN_CALC_BITTIMING
- int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
--		       const struct can_bittiming_const *btc);
-+		       const struct can_bittiming_const *btc, struct netlink_ext_ack *extack);
- 
- void can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
- 		   const struct can_bittiming *dbt,
-@@ -141,7 +141,8 @@ can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
- int can_get_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 		      const struct can_bittiming_const *btc,
- 		      const u32 *bitrate_const,
--		      const unsigned int bitrate_const_cnt);
-+		      const unsigned int bitrate_const_cnt,
-+		      struct netlink_ext_ack *extack);
- 
- /*
-  * can_bit_time() - Duration of one bit
+ /* RSCFDnCFDCFCCk */
+-#define RCANFD_CFCC_CFTML(gpriv, x)	(((x) & 0xf) << reg_gen4(gpriv, 16, 20))
++#define RCANFD_CFCC_CFTML(gpriv, x)	\
++	(((x) & reg_gen4(gpriv, 0x1f, 0xf)) << reg_gen4(gpriv, 16, 20))
+ #define RCANFD_CFCC_CFM(gpriv, x)	(((x) & 0x3) << reg_gen4(gpriv,  8, 16))
+ #define RCANFD_CFCC_CFIM		BIT(12)
+ #define RCANFD_CFCC_CFDC(gpriv, x)	(((x) & 0x7) << reg_gen4(gpriv, 21,  8))
 -- 
 2.39.1
 
