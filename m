@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B53FBC636D6
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 488D9C61DA4
 	for <linux-can@archiver.kernel.org>; Mon,  6 Feb 2023 13:17:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbjBFNRT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 6 Feb 2023 08:17:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50850 "EHLO
+        id S229909AbjBFNRS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 6 Feb 2023 08:17:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229762AbjBFNRR (ORCPT
+        with ESMTP id S229720AbjBFNRR (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 6 Feb 2023 08:17:17 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F6315C8A
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA6815CB7
         for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 05:17:16 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pP1Mw-0007M8-Ka
-        for linux-can@vger.kernel.org; Mon, 06 Feb 2023 14:17:14 +0100
+        id 1pP1Mx-0007MJ-1r
+        for linux-can@vger.kernel.org; Mon, 06 Feb 2023 14:17:15 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 08558171409
+        by bjornoya.blackshift.org (Postfix) with SMTP id 097E617140C
         for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 13:16:26 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 24CF61712BE;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4A0C11712C5;
         Mon,  6 Feb 2023 13:16:23 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 00ae310b;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d32106ea;
         Mon, 6 Feb 2023 13:16:22 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 16/47] can: ems_pci: Add Asix AX99100 definitions
-Date:   Mon,  6 Feb 2023 14:15:49 +0100
-Message-Id: <20230206131620.2758724-17-mkl@pengutronix.de>
+Subject: [PATCH net-next 18/47] can: ems_pci: Add read/write register and post irq functions
+Date:   Mon,  6 Feb 2023 14:15:51 +0100
+Message-Id: <20230206131620.2758724-19-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230206131620.2758724-1-mkl@pengutronix.de>
 References: <20230206131620.2758724-1-mkl@pengutronix.de>
@@ -56,67 +56,61 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
 
-Add Asix AX99100 PCI IDs and add the v3 to the ems_pci_tbl.
-Add define for maximum CAN channel count
+Add functions to read and write SJA1000 registers and also the
+post irq routine
 
 Signed-off-by: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
-Link: https://lore.kernel.org/all/20230120112616.6071-3-uttenthaler@ems-wuensche.com
+Link: https://lore.kernel.org/all/20230120112616.6071-5-uttenthaler@ems-wuensche.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/sja1000/ems_pci.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ drivers/net/can/sja1000/ems_pci.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/sja1000/ems_pci.c b/drivers/net/can/sja1000/ems_pci.c
-index c34788b9a6d5..80fa5e4c5eac 100644
+index 5748c24dd137..0d6289fda447 100644
 --- a/drivers/net/can/sja1000/ems_pci.c
 +++ b/drivers/net/can/sja1000/ems_pci.c
-@@ -26,6 +26,7 @@ MODULE_LICENSE("GPL v2");
+@@ -172,6 +172,24 @@ static void ems_pci_v2_post_irq(const struct sja1000_priv *priv)
+ 	writel(PLX_ICSR_ENA_CLR, card->conf_addr + PLX_ICSR);
+ }
  
- #define EMS_PCI_V1_MAX_CHAN 2
- #define EMS_PCI_V2_MAX_CHAN 4
-+#define EMS_PCI_V3_MAX_CHAN 4
- #define EMS_PCI_MAX_CHAN    EMS_PCI_V2_MAX_CHAN
- 
- struct ems_pci_card {
-@@ -61,6 +62,15 @@ struct ems_pci_card {
- #define PLX_ICSR_ENA_CLR    (PLX_ICSR_LINTI1_ENA | PLX_ICSR_PCIINT_ENA | \
- 			     PLX_ICSR_LINTI1_CLR)
- 
-+/* Register definitions for the ASIX99100
-+ */
-+#define ASIX_LINTSR 0x28 /* Interrupt Control/Status register */
-+#define ASIX_LINTSR_INT0AC BIT(0) /* Writing 1 enables or clears interrupt */
++static u8 ems_pci_v3_read_reg(const struct sja1000_priv *priv, int port)
++{
++	return readb(priv->reg_base + port);
++}
 +
-+#define ASIX_LIEMR 0x24 /* Local Interrupt Enable / Miscellaneous Register */
-+#define ASIX_LIEMR_L0EINTEN BIT(16) /* Local INT0 input assertion enable */
-+#define ASIX_LIEMR_LRST BIT(14) /* Local Reset assert */
++static void ems_pci_v3_write_reg(const struct sja1000_priv *priv,
++				 int port, u8 val)
++{
++	writeb(val, priv->reg_base + port);
++}
 +
- /* The board configuration is probably following:
-  * RX1 is connected to ground.
-  * TX1 is not connected.
-@@ -86,6 +96,13 @@ struct ems_pci_card {
- 
- #define EMS_PCI_BASE_SIZE  4096 /* size of controller area */
- 
-+#ifndef PCI_VENDOR_ID_ASIX
-+#define PCI_VENDOR_ID_ASIX 0x125b
-+#define PCI_DEVICE_ID_ASIX_9110 0x9110
-+#define PCI_SUBVENDOR_ID_ASIX 0xa000
-+#endif
-+#define PCI_SUBDEVICE_ID_EMS 0x4010
++static void ems_pci_v3_post_irq(const struct sja1000_priv *priv)
++{
++	struct ems_pci_card *card = (struct ems_pci_card *)priv->priv;
 +
- static const struct pci_device_id ems_pci_tbl[] = {
- 	/* CPC-PCI v1 */
- 	{PCI_VENDOR_ID_SIEMENS, 0x2104, PCI_ANY_ID, PCI_ANY_ID,},
-@@ -93,6 +110,8 @@ static const struct pci_device_id ems_pci_tbl[] = {
- 	{PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9030, PCI_VENDOR_ID_PLX, 0x4000},
- 	/* CPC-104P v2 */
- 	{PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9030, PCI_VENDOR_ID_PLX, 0x4002},
-+	/* CPC-PCIe v3 */
-+	{PCI_VENDOR_ID_ASIX, PCI_DEVICE_ID_ASIX_9110, PCI_SUBVENDOR_ID_ASIX, PCI_SUBDEVICE_ID_EMS},
- 	{0,}
- };
- MODULE_DEVICE_TABLE(pci, ems_pci_tbl);
++	writel(ASIX_LINTSR_INT0AC, card->conf_addr + ASIX_LINTSR);
++}
++
+ /* Check if a CAN controller is present at the specified location
+  * by trying to set 'em into the PeliCAN mode
+  */
+@@ -330,10 +348,14 @@ static int ems_pci_add_card(struct pci_dev *pdev,
+ 			priv->read_reg  = ems_pci_v1_read_reg;
+ 			priv->write_reg = ems_pci_v1_write_reg;
+ 			priv->post_irq  = ems_pci_v1_post_irq;
+-		} else {
++		} else if (card->version == 2) {
+ 			priv->read_reg  = ems_pci_v2_read_reg;
+ 			priv->write_reg = ems_pci_v2_write_reg;
+ 			priv->post_irq  = ems_pci_v2_post_irq;
++		} else {
++			priv->read_reg  = ems_pci_v3_read_reg;
++			priv->write_reg = ems_pci_v3_write_reg;
++			priv->post_irq  = ems_pci_v3_post_irq;
+ 		}
+ 
+ 		/* Check if channel is present */
 -- 
 2.39.1
 
