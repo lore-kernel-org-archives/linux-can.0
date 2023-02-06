@@ -2,43 +2,46 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E088DC61DA4
-	for <linux-can@archiver.kernel.org>; Mon,  6 Feb 2023 13:17:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E5C0C61DA4
+	for <linux-can@archiver.kernel.org>; Mon,  6 Feb 2023 13:17:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbjBFNRr (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 6 Feb 2023 08:17:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51800 "EHLO
+        id S230379AbjBFNRx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 6 Feb 2023 08:17:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbjBFNRl (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 6 Feb 2023 08:17:41 -0500
+        with ESMTP id S230317AbjBFNRm (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 6 Feb 2023 08:17:42 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F35623C73
-        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 05:17:23 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A6323C7A
+        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 05:17:24 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pP1N3-0007Xd-RJ
-        for linux-can@vger.kernel.org; Mon, 06 Feb 2023 14:17:21 +0100
+        id 1pP1N4-0007Yb-96
+        for linux-can@vger.kernel.org; Mon, 06 Feb 2023 14:17:22 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 4CF01171559
-        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 13:16:30 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 5CD9617135B
+        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 13:16:25 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7360D17130B;
-        Mon,  6 Feb 2023 13:16:24 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 858F217129B;
+        Mon,  6 Feb 2023 13:16:22 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 55b15952;
-        Mon, 6 Feb 2023 13:16:23 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d0a095c0;
+        Mon, 6 Feb 2023 13:16:21 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 35/47] can: dev: register_candev(): ensure that bittiming const are valid
-Date:   Mon,  6 Feb 2023 14:16:08 +0100
-Message-Id: <20230206131620.2758724-36-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 05/47] dt-bindings: can: renesas,rcar-canfd: Document R-Car V4H support
+Date:   Mon,  6 Feb 2023 14:15:38 +0100
+Message-Id: <20230206131620.2758724-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230206131620.2758724-1-mkl@pengutronix.de>
 References: <20230206131620.2758724-1-mkl@pengutronix.de>
@@ -52,51 +55,31 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Implement the function can_bittiming_const_valid() to check the
-validity of the specified bit timing constant. Call this function from
-register_candev() to check the bit timing constants during the
-registration of the CAN interface.
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Link: https://lore.kernel.org/all/20230202110854.2318594-6-mkl@pengutronix.de
+Document support for the CAN-FD Interface on the Renesas R-Car V4H
+(R8A779G0) SoC.
+
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/all/d8158c78cc786c432df5a5e5bbad848b717aca71.1674499048.git.geert+renesas@glider.be
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/dev.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ .../devicetree/bindings/net/can/renesas,rcar-canfd.yaml          | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
-index c1956b1e9faf..3b51055be40e 100644
---- a/drivers/net/can/dev/dev.c
-+++ b/drivers/net/can/dev/dev.c
-@@ -498,6 +498,18 @@ static int can_get_termination(struct net_device *ndev)
- 	return 0;
- }
+diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+index 899efa8a0614..04b7f0afdce1 100644
+--- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
++++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+@@ -31,6 +31,7 @@ properties:
+       - items:
+           - enum:
+               - renesas,r8a779a0-canfd     # R-Car V3U
++              - renesas,r8a779g0-canfd     # R-Car V4H
+           - const: renesas,rcar-gen4-canfd # R-Car Gen4
  
-+static bool
-+can_bittiming_const_valid(const struct can_bittiming_const *btc)
-+{
-+	if (!btc)
-+		return true;
-+
-+	if (!btc->sjw_max)
-+		return false;
-+
-+	return true;
-+}
-+
- /* Register the CAN network device */
- int register_candev(struct net_device *dev)
- {
-@@ -518,6 +530,10 @@ int register_candev(struct net_device *dev)
- 	if (!priv->data_bitrate_const != !priv->data_bitrate_const_cnt)
- 		return -EINVAL;
- 
-+	if (!can_bittiming_const_valid(priv->bittiming_const) ||
-+	    !can_bittiming_const_valid(priv->data_bittiming_const))
-+		return -EINVAL;
-+
- 	if (!priv->termination_const) {
- 		err = can_get_termination(dev);
- 		if (err)
+       - items:
 -- 
 2.39.1
 
