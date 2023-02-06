@@ -2,45 +2,44 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A000C63797
-	for <linux-can@archiver.kernel.org>; Mon,  6 Feb 2023 13:19:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8EEBC05027
+	for <linux-can@archiver.kernel.org>; Mon,  6 Feb 2023 13:19:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbjBFNTf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 6 Feb 2023 08:19:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52766 "EHLO
+        id S229557AbjBFNTh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 6 Feb 2023 08:19:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230328AbjBFNS4 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 6 Feb 2023 08:18:56 -0500
+        with ESMTP id S229740AbjBFNTC (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 6 Feb 2023 08:19:02 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AD56E93
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0EFB464
         for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 05:17:54 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pP1NQ-0000DJ-It
+        id 1pP1NQ-0000C2-56
         for linux-can@vger.kernel.org; Mon, 06 Feb 2023 14:17:44 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id EA28F171388
-        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 13:16:25 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id E7F571712E9
+        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 13:16:23 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id EB0E21712B0;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6C449171299;
         Mon,  6 Feb 2023 13:16:22 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c823a68f;
-        Mon, 6 Feb 2023 13:16:22 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2f1cbd01;
+        Mon, 6 Feb 2023 13:16:21 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        kernel@pengutronix.de, Thomas Kopp <thomas.kopp@microchip.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 12/47] can: rcar_canfd: Fix R-Car Gen4 CFCC.CFTML field width
-Date:   Mon,  6 Feb 2023 14:15:45 +0100
-Message-Id: <20230206131620.2758724-13-mkl@pengutronix.de>
+Subject: [PATCH net-next 03/47] can: mcp251xfd: regmap: optimizing transfer size for CRC transfers size 1
+Date:   Mon,  6 Feb 2023 14:15:36 +0100
+Message-Id: <20230206131620.2758724-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230206131620.2758724-1-mkl@pengutronix.de>
 References: <20230206131620.2758724-1-mkl@pengutronix.de>
@@ -54,33 +53,117 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Thomas Kopp <thomas.kopp@microchip.com>
 
-On R-Car Gen4 CAN_FD variants, the Common FIFO TX Message Buffer Link
-(CFTML) field in the Common FIFO Configuration / Control Register (CCFC)
-register is one bit wider than on older variants.
+For CRC transfers with size 1 it is more efficient to use the
+write_safe command instead of the write_crc command. This saves the
+length byte on the SPI transfer.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/all/9c37aaa799a2391be272dbaa474379cf9a7af147.1674499048.git.geert+renesas@glider.be
+changes since v1: https://lore.kernel.org/all/20230127124258.2764-1-thomas.kopp@microchip.com
+- change logic to remove 1 level of indention
+
+Link: https://lore.kernel.org/all/20230202141811.2581795-1-mkl@pengutronix.de
+Signed-off-by: Thomas Kopp <thomas.kopp@microchip.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rcar/rcar_canfd.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ .../net/can/spi/mcp251xfd/mcp251xfd-ring.c    | 18 ++++++++++---
+ drivers/net/can/spi/mcp251xfd/mcp251xfd.h     | 26 ++++++++++++++++---
+ 2 files changed, 36 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index ee7bbd9d1151..376a5d606acc 100644
---- a/drivers/net/can/rcar/rcar_canfd.c
-+++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -233,7 +233,8 @@
- /* Common FIFO bits */
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
+index bf3f0f150199..bfe4caa0c99d 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
+@@ -30,11 +30,23 @@ mcp251xfd_cmd_prepare_write_reg(const struct mcp251xfd_priv *priv,
+ 	last_byte = mcp251xfd_last_byte_set(mask);
+ 	len = last_byte - first_byte + 1;
  
- /* RSCFDnCFDCFCCk */
--#define RCANFD_CFCC_CFTML(gpriv, x)	(((x) & 0xf) << reg_gen4(gpriv, 16, 20))
-+#define RCANFD_CFCC_CFTML(gpriv, x)	\
-+	(((x) & reg_gen4(gpriv, 0x1f, 0xf)) << reg_gen4(gpriv, 16, 20))
- #define RCANFD_CFCC_CFM(gpriv, x)	(((x) & 0x3) << reg_gen4(gpriv,  8, 16))
- #define RCANFD_CFCC_CFIM		BIT(12)
- #define RCANFD_CFCC_CFDC(gpriv, x)	(((x) & 0x7) << reg_gen4(gpriv, 21,  8))
+-	data = mcp251xfd_spi_cmd_write(priv, write_reg_buf, reg + first_byte);
++	data = mcp251xfd_spi_cmd_write(priv, write_reg_buf, reg + first_byte, len);
+ 	val_le32 = cpu_to_le32(val >> BITS_PER_BYTE * first_byte);
+ 	memcpy(data, &val_le32, len);
+ 
+-	if (priv->devtype_data.quirks & MCP251XFD_QUIRK_CRC_REG) {
++	if (!(priv->devtype_data.quirks & MCP251XFD_QUIRK_CRC_REG)) {
++		len += sizeof(write_reg_buf->nocrc.cmd);
++	} else if (len == 1) {
++		u16 crc;
++
++		/* CRC */
++		len += sizeof(write_reg_buf->safe.cmd);
++		crc = mcp251xfd_crc16_compute(&write_reg_buf->safe, len);
++		put_unaligned_be16(crc, (void *)write_reg_buf + len);
++
++		/* Total length */
++		len += sizeof(write_reg_buf->safe.crc);
++	} else {
+ 		u16 crc;
+ 
+ 		mcp251xfd_spi_cmd_crc_set_len_in_reg(&write_reg_buf->crc.cmd,
+@@ -46,8 +58,6 @@ mcp251xfd_cmd_prepare_write_reg(const struct mcp251xfd_priv *priv,
+ 
+ 		/* Total length */
+ 		len += sizeof(write_reg_buf->crc.crc);
+-	} else {
+-		len += sizeof(write_reg_buf->nocrc.cmd);
+ 	}
+ 
+ 	return len;
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+index 2b0309fedfac..7024ff0cc2c0 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+@@ -504,6 +504,11 @@ union mcp251xfd_write_reg_buf {
+ 		u8 data[4];
+ 		__be16 crc;
+ 	} crc;
++	struct __packed {
++		struct mcp251xfd_buf_cmd cmd;
++		u8 data[1];
++		__be16 crc;
++	} safe;
+ } ____cacheline_aligned;
+ 
+ struct mcp251xfd_tx_obj {
+@@ -758,6 +763,13 @@ mcp251xfd_spi_cmd_write_crc_set_addr(struct mcp251xfd_buf_cmd_crc *cmd,
+ 	cmd->cmd = cpu_to_be16(MCP251XFD_SPI_INSTRUCTION_WRITE_CRC | addr);
+ }
+ 
++static inline void
++mcp251xfd_spi_cmd_write_safe_set_addr(struct mcp251xfd_buf_cmd *cmd,
++				     u16 addr)
++{
++	cmd->cmd = cpu_to_be16(MCP251XFD_SPI_INSTRUCTION_WRITE_CRC_SAFE | addr);
++}
++
+ static inline void
+ mcp251xfd_spi_cmd_write_crc(struct mcp251xfd_buf_cmd_crc *cmd,
+ 			    u16 addr, u16 len)
+@@ -769,14 +781,20 @@ mcp251xfd_spi_cmd_write_crc(struct mcp251xfd_buf_cmd_crc *cmd,
+ static inline u8 *
+ mcp251xfd_spi_cmd_write(const struct mcp251xfd_priv *priv,
+ 			union mcp251xfd_write_reg_buf *write_reg_buf,
+-			u16 addr)
++			u16 addr, u8 len)
+ {
+ 	u8 *data;
+ 
+ 	if (priv->devtype_data.quirks & MCP251XFD_QUIRK_CRC_REG) {
+-		mcp251xfd_spi_cmd_write_crc_set_addr(&write_reg_buf->crc.cmd,
+-						     addr);
+-		data = write_reg_buf->crc.data;
++		if (len == 1) {
++			mcp251xfd_spi_cmd_write_safe_set_addr(&write_reg_buf->safe.cmd,
++							     addr);
++			data = write_reg_buf->safe.data;
++		} else {
++			mcp251xfd_spi_cmd_write_crc_set_addr(&write_reg_buf->crc.cmd,
++							     addr);
++			data = write_reg_buf->crc.data;
++		}
+ 	} else {
+ 		mcp251xfd_spi_cmd_write_nocrc(&write_reg_buf->nocrc.cmd,
+ 					      addr);
 -- 
 2.39.1
 
