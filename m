@@ -2,44 +2,45 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28613C05027
-	for <linux-can@archiver.kernel.org>; Mon,  6 Feb 2023 13:19:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A145C64EC4
+	for <linux-can@archiver.kernel.org>; Mon,  6 Feb 2023 13:19:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbjBFNTT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 6 Feb 2023 08:19:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52656 "EHLO
+        id S230402AbjBFNTV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 6 Feb 2023 08:19:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbjBFNSd (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 6 Feb 2023 08:18:33 -0500
+        with ESMTP id S230351AbjBFNSi (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 6 Feb 2023 08:18:38 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2298A244A5
-        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 05:17:40 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A1D823869
+        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 05:17:44 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pP1NJ-0008IM-UF
-        for linux-can@vger.kernel.org; Mon, 06 Feb 2023 14:17:37 +0100
+        id 1pP1NL-0008Of-Ho
+        for linux-can@vger.kernel.org; Mon, 06 Feb 2023 14:17:39 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id B15D4171468
-        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 13:16:27 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id C8D0C171380
+        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 13:16:25 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 0FD6B1712F1;
-        Mon,  6 Feb 2023 13:16:24 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id B0CC21712A3;
+        Mon,  6 Feb 2023 13:16:22 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b88ebbb5;
-        Mon, 6 Feb 2023 13:16:23 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c1412781;
+        Mon, 6 Feb 2023 13:16:21 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Lukas Magel <lukas.magel@posteo.net>,
+        kernel@pengutronix.de,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 29/47] can: peak_usb: align CAN channel ID format in log with sysfs attribute
-Date:   Mon,  6 Feb 2023 14:16:02 +0100
-Message-Id: <20230206131620.2758724-30-mkl@pengutronix.de>
+Subject: [PATCH net-next 08/47] can: rcar_canfd: Fix R-Car V3U GAFLCFG field accesses
+Date:   Mon,  6 Feb 2023 14:15:41 +0100
+Message-Id: <20230206131620.2758724-9-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230206131620.2758724-1-mkl@pengutronix.de>
 References: <20230206131620.2758724-1-mkl@pengutronix.de>
@@ -53,35 +54,41 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Lukas Magel <lukas.magel@posteo.net>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Previously, the CAN channel ID was printed to the kernel log in decimal
-upon connecting a new PEAK device. This behavior is inconsistent with
-the hexadecimal format of the CAN channel ID sysfs attribute. This patch
-updates the log message to output the id in hexadecimal.
+Each Global Acceptance Filter List Configuration Register (GAFLCFG)
+contains two fields, and stores the number of channel rules for one
+channel pair.
 
-Signed-off-by: Lukas Magel <lukas.magel@posteo.net>
-Link: https://lore.kernel.org/all/20230116200932.157769-8-lukas.magel@posteo.net
+As R-Car V3U and later can have more than 2 channels, the field
+selection should be based on the LSB (even or odd) of the channel
+number, instead of on the full channel number.
+
+Fixes: 45721c406dcf50d4 ("can: rcar_canfd: Add support for r8a779a0 SoC")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/all/36bcf0ffb96d6aaed970751f9546b901af638bcf.1674499048.git.geert+renesas@glider.be
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 4 ++--
+ drivers/net/can/rcar/rcar_canfd.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index 676923bd4213..2bd62c8f2b25 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -1029,8 +1029,8 @@ static int peak_usb_create_dev(const struct peak_usb_adapter *peak_usb_adapter,
- 	/* get CAN channel id early */
- 	dev->adapter->dev_get_can_channel_id(dev, &dev->can_channel_id);
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index 88de17d0bd79..77b21c82faf3 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -92,10 +92,10 @@
+ /* RSCFDnCFDGAFLCFG0 / RSCFDnGAFLCFG0 */
+ #define RCANFD_GAFLCFG_SETRNC(gpriv, n, x) \
+ 	(((x) & reg_v3u(gpriv, 0x1ff, 0xff)) << \
+-	 (reg_v3u(gpriv, 16, 24) - (n) * reg_v3u(gpriv, 16, 8)))
++	 (reg_v3u(gpriv, 16, 24) - ((n) & 1) * reg_v3u(gpriv, 16, 8)))
  
--	netdev_info(netdev, "attached to %s channel %u (device %u)\n",
--			peak_usb_adapter->name, ctrl_idx, dev->can_channel_id);
-+	netdev_info(netdev, "attached to %s channel %u (device 0x%08X)\n",
-+		    peak_usb_adapter->name, ctrl_idx, dev->can_channel_id);
+ #define RCANFD_GAFLCFG_GETRNC(gpriv, n, x) \
+-	(((x) >> (reg_v3u(gpriv, 16, 24) - (n) * reg_v3u(gpriv, 16, 8))) & \
++	(((x) >> (reg_v3u(gpriv, 16, 24) - ((n) & 1) * reg_v3u(gpriv, 16, 8))) & \
+ 	 reg_v3u(gpriv, 0x1ff, 0xff))
  
- 	return 0;
- 
+ /* RSCFDnCFDGAFLECTR / RSCFDnGAFLECTR */
 -- 
 2.39.1
 
