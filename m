@@ -2,43 +2,45 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDEC5C636D6
-	for <linux-can@archiver.kernel.org>; Mon,  6 Feb 2023 13:17:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C68DC63797
+	for <linux-can@archiver.kernel.org>; Mon,  6 Feb 2023 13:17:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230336AbjBFNRl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 6 Feb 2023 08:17:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51478 "EHLO
+        id S230354AbjBFNRm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 6 Feb 2023 08:17:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbjBFNRb (ORCPT
+        with ESMTP id S230012AbjBFNRb (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 6 Feb 2023 08:17:31 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 955A42364B
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953BC23649
         for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 05:17:20 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pP1N0-0007Qn-HU
+        id 1pP1N0-0007Rm-MB
         for linux-can@vger.kernel.org; Mon, 06 Feb 2023 14:17:18 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 170C617150D
-        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 13:16:29 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 2E82F1712F6
+        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 13:16:24 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id EA114171333;
-        Mon,  6 Feb 2023 13:16:24 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5E888171297;
+        Mon,  6 Feb 2023 13:16:22 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 27008104;
-        Mon, 6 Feb 2023 13:16:23 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c028949a;
+        Mon, 6 Feb 2023 13:16:21 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 42/47] can: bittiming: can_sjw_check(): report error via netlink and harmonize error value
-Date:   Mon,  6 Feb 2023 14:16:15 +0100
-Message-Id: <20230206131620.2758724-43-mkl@pengutronix.de>
+        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
+        Jannik Hartung <jannik.hartung@tu-bs.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 01/47] can: gw: give feedback on missing CGW_FLAGS_CAN_IIF_TX_OK flag
+Date:   Mon,  6 Feb 2023 14:15:34 +0100
+Message-Id: <20230206131620.2758724-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230206131620.2758724-1-mkl@pengutronix.de>
 References: <20230206131620.2758724-1-mkl@pengutronix.de>
@@ -52,36 +54,43 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-If the user space has supplied an invalid SJW value (greater than the
-maximum SJW value), report -EINVAL instead of -ERANGE, this better
-matches the actual meaning of the error value.
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Additionally report an error message via netlink to the user space.
+To send CAN traffic back to the incoming interface a special flag has to
+be set. When creating a routing job for identical interfaces without this
+flag the rule is created but has no effect.
 
-Link: https://lore.kernel.org/all/20230202110854.2318594-13-mkl@pengutronix.de
+This patch adds an error return value in the case that the CAN interfaces
+are identical but the CGW_FLAGS_CAN_IIF_TX_OK flag was not set.
+
+Reported-by: Jannik Hartung <jannik.hartung@tu-bs.de>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://lore.kernel.org/all/20230125055407.2053-1-socketcan@hartkopp.net
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/bittiming.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ net/can/gw.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/net/can/dev/bittiming.c b/drivers/net/can/dev/bittiming.c
-index 727dcd52cc2c..0a2a9b12565f 100644
---- a/drivers/net/can/dev/bittiming.c
-+++ b/drivers/net/can/dev/bittiming.c
-@@ -18,8 +18,11 @@ void can_sjw_set_default(struct can_bittiming *bt)
- int can_sjw_check(const struct net_device *dev, const struct can_bittiming *bt,
- 		  const struct can_bittiming_const *btc, struct netlink_ext_ack *extack)
- {
--	if (bt->sjw > btc->sjw_max)
--		return -ERANGE;
-+	if (bt->sjw > btc->sjw_max) {
-+		NL_SET_ERR_MSG_FMT(extack, "sjw: %u greater than max sjw: %u",
-+				   bt->sjw, btc->sjw_max);
-+		return -EINVAL;
-+	}
+diff --git a/net/can/gw.c b/net/can/gw.c
+index 23a3d89cad81..37528826935e 100644
+--- a/net/can/gw.c
++++ b/net/can/gw.c
+@@ -1139,6 +1139,13 @@ static int cgw_create_job(struct sk_buff *skb,  struct nlmsghdr *nlh,
+ 	if (gwj->dst.dev->type != ARPHRD_CAN)
+ 		goto out;
  
- 	return 0;
- }
++	/* is sending the skb back to the incoming interface intended? */
++	if (gwj->src.dev == gwj->dst.dev &&
++	    !(gwj->flags & CGW_FLAGS_CAN_IIF_TX_OK)) {
++		err = -EINVAL;
++		goto out;
++	}
++
+ 	ASSERT_RTNL();
+ 
+ 	err = cgw_register_filter(net, gwj);
+
+base-commit: 609aa68d60965f70485655def733d533f99b341b
 -- 
 2.39.1
 
