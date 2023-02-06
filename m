@@ -2,46 +2,45 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DFFAC61DA4
-	for <linux-can@archiver.kernel.org>; Mon,  6 Feb 2023 13:17:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65E47C64EC4
+	for <linux-can@archiver.kernel.org>; Mon,  6 Feb 2023 13:17:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbjBFNRm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 6 Feb 2023 08:17:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51486 "EHLO
+        id S229615AbjBFNRo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 6 Feb 2023 08:17:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229874AbjBFNRb (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 6 Feb 2023 08:17:31 -0500
+        with ESMTP id S230334AbjBFNRl (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 6 Feb 2023 08:17:41 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9589E23652
-        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 05:17:20 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDEC23C70
+        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 05:17:23 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pP1N0-0007SE-Op
-        for linux-can@vger.kernel.org; Mon, 06 Feb 2023 14:17:18 +0100
+        id 1pP1N3-0007Xb-Oj
+        for linux-can@vger.kernel.org; Mon, 06 Feb 2023 14:17:21 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 2EDBA1712F7
-        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 13:16:24 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 45E7E171431
+        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 13:16:27 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 734C517129A;
-        Mon,  6 Feb 2023 13:16:22 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 64C711712CB;
+        Mon,  6 Feb 2023 13:16:23 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 517a73d2;
-        Mon, 6 Feb 2023 13:16:21 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 5cdf3883;
+        Mon, 6 Feb 2023 13:16:22 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh@kernel.org>,
+        Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 04/47] dt-bindings: can: renesas,rcar-canfd: R-Car V3U is R-Car Gen4
-Date:   Mon,  6 Feb 2023 14:15:37 +0100
-Message-Id: <20230206131620.2758724-5-mkl@pengutronix.de>
+Subject: [PATCH net-next 19/47] can: ems_pci: Initialize CAN controller base addresses
+Date:   Mon,  6 Feb 2023 14:15:52 +0100
+Message-Id: <20230206131620.2758724-20-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230206131620.2758724-1-mkl@pengutronix.de>
 References: <20230206131620.2758724-1-mkl@pengutronix.de>
@@ -55,66 +54,49 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
 
-Despite the name, R-Car V3U is the first member of the R-Car Gen4
-family.  Hence generalize this by introducing a family-specific
-compatible value for R-Car Gen4.
+Add CAN controller base registers
 
-While at it, replace "both channels" by "all channels", as the numbers
-of channels may differ from two.
-
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/all/4dea4b7dd76d4f859ada85f97094b7adeef5169f.1674499048.git.geert+renesas@glider.be
+Signed-off-by: Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>
+Link: https://lore.kernel.org/all/20230120112616.6071-6-uttenthaler@ems-wuensche.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../bindings/net/can/renesas,rcar-canfd.yaml          | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/net/can/sja1000/ems_pci.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-index 1eb98c9a1a26..899efa8a0614 100644
---- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-+++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-@@ -28,6 +28,11 @@ properties:
-               - renesas,r8a77995-canfd     # R-Car D3
-           - const: renesas,rcar-gen3-canfd # R-Car Gen3 and RZ/G2
+diff --git a/drivers/net/can/sja1000/ems_pci.c b/drivers/net/can/sja1000/ems_pci.c
+index 0d6289fda447..d1e8758d8043 100644
+--- a/drivers/net/can/sja1000/ems_pci.c
++++ b/drivers/net/can/sja1000/ems_pci.c
+@@ -342,20 +342,25 @@ static int ems_pci_add_card(struct pci_dev *pdev,
+ 		priv->irq_flags = IRQF_SHARED;
  
-+      - items:
-+          - enum:
-+              - renesas,r8a779a0-canfd     # R-Car V3U
-+          - const: renesas,rcar-gen4-canfd # R-Car Gen4
+ 		dev->irq = pdev->irq;
+-		priv->reg_base = card->base_addr + EMS_PCI_CAN_BASE_OFFSET
+-					+ (i * EMS_PCI_CAN_CTRL_SIZE);
 +
-       - items:
-           - enum:
-               - renesas,r9a07g043-canfd    # RZ/G2UL and RZ/Five
-@@ -35,8 +40,6 @@ properties:
-               - renesas,r9a07g054-canfd    # RZ/V2L
-           - const: renesas,rzg2l-canfd     # RZ/G2L family
+ 		if (card->version == 1) {
+ 			priv->read_reg  = ems_pci_v1_read_reg;
+ 			priv->write_reg = ems_pci_v1_write_reg;
+ 			priv->post_irq  = ems_pci_v1_post_irq;
++			priv->reg_base = card->base_addr + EMS_PCI_V1_CAN_BASE_OFFSET
++					+ (i * EMS_PCI_V1_CAN_CTRL_SIZE);
+ 		} else if (card->version == 2) {
+ 			priv->read_reg  = ems_pci_v2_read_reg;
+ 			priv->write_reg = ems_pci_v2_write_reg;
+ 			priv->post_irq  = ems_pci_v2_post_irq;
++			priv->reg_base = card->base_addr + EMS_PCI_V2_CAN_BASE_OFFSET
++					+ (i * EMS_PCI_V2_CAN_CTRL_SIZE);
+ 		} else {
+ 			priv->read_reg  = ems_pci_v3_read_reg;
+ 			priv->write_reg = ems_pci_v3_write_reg;
+ 			priv->post_irq  = ems_pci_v3_post_irq;
++			priv->reg_base = card->base_addr + EMS_PCI_V3_CAN_BASE_OFFSET
++					+ (i * EMS_PCI_V3_CAN_CTRL_SIZE);
+ 		}
  
--      - const: renesas,r8a779a0-canfd      # R-Car V3U
--
-   reg:
-     maxItems: 1
- 
-@@ -60,7 +63,7 @@ properties:
-     $ref: /schemas/types.yaml#/definitions/flag
-     description:
-       The controller can operate in either CAN FD only mode (default) or
--      Classical CAN only mode.  The mode is global to both the channels.
-+      Classical CAN only mode.  The mode is global to all channels.
-       Specify this property to put the controller in Classical CAN only mode.
- 
-   assigned-clocks:
-@@ -159,7 +162,7 @@ allOf:
-         properties:
-           compatible:
-             contains:
--              const: renesas,r8a779a0-canfd
-+              const: renesas,rcar-gen4-canfd
-     then:
-       patternProperties:
-         "^channel[2-7]$": false
+ 		/* Check if channel is present */
 -- 
 2.39.1
 
