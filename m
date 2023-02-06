@@ -2,48 +2,47 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2365BC05027
-	for <linux-can@archiver.kernel.org>; Mon,  6 Feb 2023 13:18:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BB8EC61DA4
+	for <linux-can@archiver.kernel.org>; Mon,  6 Feb 2023 13:19:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbjBFNS5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 6 Feb 2023 08:18:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52766 "EHLO
+        id S229961AbjBFNTC (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 6 Feb 2023 08:19:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230367AbjBFNSS (ORCPT
+        with ESMTP id S230370AbjBFNSS (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 6 Feb 2023 08:18:18 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F3324486
-        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 05:17:34 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E8D241FB
+        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 05:17:35 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pP1NE-00080i-T2
-        for linux-can@vger.kernel.org; Mon, 06 Feb 2023 14:17:32 +0100
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 9685517145E
-        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 13:16:27 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        id 1pP1NC-0007s2-JX; Mon, 06 Feb 2023 14:17:30 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:ed53:8ea4:3645:4bd2])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 64D18171306;
-        Mon,  6 Feb 2023 13:16:24 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f71e85bc;
-        Mon, 6 Feb 2023 13:16:23 +0000 (UTC)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 9C5FA171270;
+        Mon,  6 Feb 2023 13:01:51 +0000 (UTC)
+Date:   Mon, 6 Feb 2023 14:01:46 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 34/47] can: bittiming: can_get_bittiming(): use direct return and remove unneeded else
-Date:   Mon,  6 Feb 2023 14:16:07 +0100
-Message-Id: <20230206131620.2758724-35-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230206131620.2758724-1-mkl@pengutronix.de>
-References: <20230206131620.2758724-1-mkl@pengutronix.de>
+To:     Vincent Mailhol <vincent.mailhol@gmail.com>
+Cc:     linux-can@vger.kernel.org, Thomas Kopp <thomas.kopp@microchip.com>,
+        kernel@pengutronix.de, Mark Bath <mark@baggywrinkle.co.uk>
+Subject: Re: [PATCH v2 14/17] can: bittiming: can_sjw_set_default(): use
+ Phase Seg2 / 2 as default for SJW
+Message-ID: <20230206130146.pkrlmcimeph5urpd@pengutronix.de>
+References: <20230202110854.2318594-1-mkl@pengutronix.de>
+ <20230202110854.2318594-15-mkl@pengutronix.de>
+ <CAMZ6Rq+5AKC2X+vNwbs0wvTGbx1zssF8tTS4TdhxnOH0=6nhrw@mail.gmail.com>
+ <20230202120738.3f3amaj5bdntjmhc@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="odybovf2cpbdamtm"
+Content-Disposition: inline
+In-Reply-To: <20230202120738.3f3amaj5bdntjmhc@pengutronix.de>
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -52,50 +51,78 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Clean up the code flow a bit, don't assign err variable but directly
-return. Remove the unneeded else, too.
 
-Link: https://lore.kernel.org/all/20230202110854.2318594-5-mkl@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/dev/bittiming.c | 18 +++++++-----------
- 1 file changed, 7 insertions(+), 11 deletions(-)
+--odybovf2cpbdamtm
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/net/can/dev/bittiming.c b/drivers/net/can/dev/bittiming.c
-index e4917c2f34d3..263e46a1f648 100644
---- a/drivers/net/can/dev/bittiming.c
-+++ b/drivers/net/can/dev/bittiming.c
-@@ -67,22 +67,18 @@ int can_get_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 		      const u32 *bitrate_const,
- 		      const unsigned int bitrate_const_cnt)
- {
--	int err;
--
- 	/* Depending on the given can_bittiming parameter structure the CAN
- 	 * timing parameters are calculated based on the provided bitrate OR
- 	 * alternatively the CAN timing parameters (tq, prop_seg, etc.) are
- 	 * provided directly which are then checked and fixed up.
- 	 */
- 	if (!bt->tq && bt->bitrate && btc)
--		err = can_calc_bittiming(dev, bt, btc);
--	else if (bt->tq && !bt->bitrate && btc)
--		err = can_fixup_bittiming(dev, bt, btc);
--	else if (!bt->tq && bt->bitrate && bitrate_const)
--		err = can_validate_bitrate(dev, bt, bitrate_const,
--					   bitrate_const_cnt);
--	else
--		err = -EINVAL;
-+		return can_calc_bittiming(dev, bt, btc);
-+	if (bt->tq && !bt->bitrate && btc)
-+		return can_fixup_bittiming(dev, bt, btc);
-+	if (!bt->tq && bt->bitrate && bitrate_const)
-+		return can_validate_bitrate(dev, bt, bitrate_const,
-+					    bitrate_const_cnt);
- 
--	return err;
-+	return -EINVAL;
- }
--- 
-2.39.1
+On 02.02.2023 13:07:38, Marc Kleine-Budde wrote:
+> On 02.02.2023 20:57:42, Vincent Mailhol wrote:
+> > On Thu. 2 Feb 2023 at 20:09, Marc Kleine-Budde <mkl@pengutronix.de> wro=
+te:
+> > > "The (Re-)Synchronization Jump Width (SJW) defines how far a
+> > >  resynchronization may move the Sample Point inside the limits defined
+> > >  by the Phase Buffer Segments to compensate for edge phase errors." [=
+1]
+> > >
+> > > In other words, this means that the SJW parameter controls the CAN
+> > > controller's tolerance to frequency errors compared to other CAN
+> > > controllers.
+> > >
+> > > If the user space doesn't provide a SJW parameter, the
+> > > kernel chooses a default value of 1. This has proven to be a good
+> > > default value for CAN controllers, but no longer for modern
+> >                     ^^^^^^^^^^^^^^^
+> > > controllers.
+> >=20
+> > Are you missing a word here? You oppose CAN controllers to modern
+> > ones.
+> >=20
+> > I think the point is Classical CAN only controllers vs. CAN-FD
+> > controllers. A CAN-FD controller is able to sample at bitrates up to 5
+> > or 8 Mbits and have maximum bitimming values five or eight times the
+> > ones of a Classical CAN only controller (which is only capable of
+> > sampling 1 Mbits).
+> >=20
+> > I propose this instead:
+> >=20
+> >   This has proven to be a good default value for Classical CAN
+> >   controllers, but no longer for modern CAN-FD ones.
+>=20
+> The difference that matters here is not that the controllers support
+> CAN-FD, but that they have a much greater max tseg{1,2} compared to the
+> sja1000. But that's only the case on CAN-FD controller.
+>=20
+> Will change the description as you proposed!
 
+There are no other changes on this series, I've fixed the patch
+description as suggested. I'll take this series without resending it.
 
+Thanks again for the review!
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--odybovf2cpbdamtm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmPg+jcACgkQvlAcSiqK
+BOigrAf/Rd6/uxUcAu67UgLnhnhKSG5i1pYVe+oW++oBJtPaGtQ/zUgw03RqmQPr
+CE1HYkv2Sp1ObmScKwKf3X+CoAt5B+2q6Kvks2kn/Xzit84ZeE6cVQ/m51ZC1QQ1
+6udhKjv1oG+RxcaFPk1YIWcZQWfwxIFJatU+ZDZbZOG0h4hev4RnYjwsCWQTgpMB
+lJ3dUJvbbJJ1+4TRUVnB9V+/k2aW7ubyc3BnkXz52COukDaQBuk9NWWstNc0fL+n
+uwGNGW36SRKM5+7dQATUhLKlDYYgnQNqbm6owa5/rf4wgMFjhDuuoOfK9NVAhDll
+khKs31iGuuWzoJGUrVqJbJQlQ3bDPg==
+=8vLs
+-----END PGP SIGNATURE-----
+
+--odybovf2cpbdamtm--
