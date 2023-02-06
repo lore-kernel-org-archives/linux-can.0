@@ -2,45 +2,43 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77F44C64EC3
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22497C63797
 	for <linux-can@archiver.kernel.org>; Mon,  6 Feb 2023 13:18:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbjBFNSl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S230355AbjBFNSl (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Mon, 6 Feb 2023 08:18:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51500 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230327AbjBFNSL (ORCPT
+        with ESMTP id S230405AbjBFNSL (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 6 Feb 2023 08:18:11 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F94C241E1
-        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 05:17:33 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9695C234C1
+        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 05:17:31 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pP1ND-0007tF-4b
-        for linux-can@vger.kernel.org; Mon, 06 Feb 2023 14:17:31 +0100
+        id 1pP1NB-0007pC-KE
+        for linux-can@vger.kernel.org; Mon, 06 Feb 2023 14:17:29 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 9BD25171370
-        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 13:16:25 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 864E3171454
+        for <linux-can@vger.kernel.org>; Mon,  6 Feb 2023 13:16:27 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9E3261712A0;
-        Mon,  6 Feb 2023 13:16:22 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3016A1712FA;
+        Mon,  6 Feb 2023 13:16:24 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0807b2ae;
-        Mon, 6 Feb 2023 13:16:21 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ce11d549;
+        Mon, 6 Feb 2023 13:16:23 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 07/47] can: rcar_canfd: Fix R-Car V3U CAN mode selection
-Date:   Mon,  6 Feb 2023 14:15:40 +0100
-Message-Id: <20230206131620.2758724-8-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 31/47] can: bittiming(): replace open coded variants of can_bit_time()
+Date:   Mon,  6 Feb 2023 14:16:04 +0100
+Message-Id: <20230206131620.2758724-32-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230206131620.2758724-1-mkl@pengutronix.de>
 References: <20230206131620.2758724-1-mkl@pengutronix.de>
@@ -54,69 +52,56 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+Commit 1c47fa6b31c2 ("can: dev: add a helper function to calculate the
+duration of one bit") added the helper function can_bit_time().
 
-When adding support for R-Car V3U, the Global FD Configuration register
-(CFDGFDCFG) and the Channel-specific CAN-FD Configuration Registers
-(CFDCmFDCFG) were mixed up.  Use the correct register, and apply the
-selected CAN mode to all available channels.
+Replace open coded variants of can_bit_time() by the helper function.
 
-Annotate the corresponding register bits, to make it clear they do
-not exist on older variants.
-
-Fixes: 45721c406dcf50d4 ("can: rcar_canfd: Add support for r8a779a0 SoC")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/all/388ddf312917eb9f6cc460a481f68402a876f9b5.1674499048.git.geert+renesas@glider.be
+Link: https://lore.kernel.org/all/20230202110854.2318594-2-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rcar/rcar_canfd.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ drivers/net/can/dev/bittiming.c      | 7 +++----
+ drivers/net/can/dev/calc_bittiming.c | 2 +-
+ 2 files changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index f6fa7157b99b..88de17d0bd79 100644
---- a/drivers/net/can/rcar/rcar_canfd.c
-+++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -197,8 +197,8 @@
- #define RCANFD_DCFG_DBRP(x)		(((x) & 0xff) << 0)
- 
- /* RSCFDnCFDCmFDCFG */
--#define RCANFD_FDCFG_CLOE		BIT(30)
--#define RCANFD_FDCFG_FDOE		BIT(28)
-+#define RCANFD_V3U_FDCFG_CLOE		BIT(30)
-+#define RCANFD_V3U_FDCFG_FDOE		BIT(28)
- #define RCANFD_FDCFG_TDCE		BIT(9)
- #define RCANFD_FDCFG_TDCOC		BIT(8)
- #define RCANFD_FDCFG_TDCO(x)		(((x) & 0x7f) >> 16)
-@@ -429,8 +429,8 @@
- #define RCANFD_C_RPGACC(r)		(0x1900 + (0x04 * (r)))
- 
- /* R-Car V3U Classical and CAN FD mode specific register map */
--#define RCANFD_V3U_CFDCFG		(0x1314)
- #define RCANFD_V3U_DCFG(m)		(0x1400 + (0x20 * (m)))
-+#define RCANFD_V3U_FDCFG(m)		(0x1404 + (0x20 * (m)))
- 
- #define RCANFD_V3U_GAFL_OFFSET		(0x1800)
- 
-@@ -689,12 +689,13 @@ static void rcar_canfd_tx_failure_cleanup(struct net_device *ndev)
- static void rcar_canfd_set_mode(struct rcar_canfd_global *gpriv)
+diff --git a/drivers/net/can/dev/bittiming.c b/drivers/net/can/dev/bittiming.c
+index 7ae80763c960..32af609eee50 100644
+--- a/drivers/net/can/dev/bittiming.c
++++ b/drivers/net/can/dev/bittiming.c
+@@ -15,7 +15,7 @@ static int can_fixup_bittiming(const struct net_device *dev, struct can_bittimin
+ 			       const struct can_bittiming_const *btc)
  {
- 	if (is_v3u(gpriv)) {
--		if (gpriv->fdmode)
--			rcar_canfd_set_bit(gpriv->base, RCANFD_V3U_CFDCFG,
--					   RCANFD_FDCFG_FDOE);
--		else
--			rcar_canfd_set_bit(gpriv->base, RCANFD_V3U_CFDCFG,
--					   RCANFD_FDCFG_CLOE);
-+		u32 ch, val = gpriv->fdmode ? RCANFD_V3U_FDCFG_FDOE
-+					    : RCANFD_V3U_FDCFG_CLOE;
-+
-+		for_each_set_bit(ch, &gpriv->channels_mask,
-+				 gpriv->info->max_channels)
-+			rcar_canfd_set_bit(gpriv->base, RCANFD_V3U_FDCFG(ch),
-+					   val);
- 	} else {
- 		if (gpriv->fdmode)
- 			rcar_canfd_set_bit(gpriv->base, RCANFD_GRMCFG,
+ 	const struct can_priv *priv = netdev_priv(dev);
+-	unsigned int tseg1, alltseg;
++	unsigned int tseg1;
+ 	u64 brp64;
+ 
+ 	tseg1 = bt->prop_seg + bt->phase_seg1;
+@@ -38,9 +38,8 @@ static int can_fixup_bittiming(const struct net_device *dev, struct can_bittimin
+ 	if (bt->brp < btc->brp_min || bt->brp > btc->brp_max)
+ 		return -EINVAL;
+ 
+-	alltseg = bt->prop_seg + bt->phase_seg1 + bt->phase_seg2 + 1;
+-	bt->bitrate = priv->clock.freq / (bt->brp * alltseg);
+-	bt->sample_point = ((tseg1 + 1) * 1000) / alltseg;
++	bt->bitrate = priv->clock.freq / (bt->brp * can_bit_time(bt));
++	bt->sample_point = ((tseg1 + 1) * 1000) / can_bit_time(bt);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/calc_bittiming.c
+index d3caa040614d..28dbb6cbfd5d 100644
+--- a/drivers/net/can/dev/calc_bittiming.c
++++ b/drivers/net/can/dev/calc_bittiming.c
+@@ -170,7 +170,7 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
+ 
+ 	/* real bitrate */
+ 	bt->bitrate = priv->clock.freq /
+-		(bt->brp * (CAN_SYNC_SEG + tseg1 + tseg2));
++		(bt->brp * can_bit_time(bt));
+ 
+ 	return 0;
+ }
 -- 
 2.39.1
 
