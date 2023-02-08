@@ -2,44 +2,47 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3CDCC05027
-	for <linux-can@archiver.kernel.org>; Wed,  8 Feb 2023 21:01:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E70E9C636D3
+	for <linux-can@archiver.kernel.org>; Wed,  8 Feb 2023 21:01:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbjBHVB1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 8 Feb 2023 16:01:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35808 "EHLO
+        id S231134AbjBHVBa (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 8 Feb 2023 16:01:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjBHVB1 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 8 Feb 2023 16:01:27 -0500
+        with ESMTP id S229632AbjBHVB3 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 8 Feb 2023 16:01:29 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F604C6E7
-        for <linux-can@vger.kernel.org>; Wed,  8 Feb 2023 13:00:37 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1774E49429
+        for <linux-can@vger.kernel.org>; Wed,  8 Feb 2023 13:00:41 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pPrYA-000075-33
+        id 1pPrYA-00007U-8y
         for linux-can@vger.kernel.org; Wed, 08 Feb 2023 22:00:18 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id E33D4173CDD
-        for <linux-can@vger.kernel.org>; Wed,  8 Feb 2023 21:00:16 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 8959B173CE4
+        for <linux-can@vger.kernel.org>; Wed,  8 Feb 2023 21:00:17 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 18BBA173CD1;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 273C6173CD3;
         Wed,  8 Feb 2023 21:00:16 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 498bdd38;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ce03e731;
         Wed, 8 Feb 2023 21:00:15 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net-next 0/2] pull-request: can-next 2023-02-08
-Date:   Wed,  8 Feb 2023 22:00:12 +0100
-Message-Id: <20230208210014.3169347-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH net-next 2/2] can: bittiming: can_calc_bittiming(): add missing parameter to no-op function
+Date:   Wed,  8 Feb 2023 22:00:14 +0100
+Message-Id: <20230208210014.3169347-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230208210014.3169347-1-mkl@pengutronix.de>
+References: <20230208210014.3169347-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -50,45 +53,36 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello netdev-team,
+In commit 286c0e09e8e0 ("can: bittiming: can_changelink() pass extack
+down callstack") a new parameter was added to can_calc_bittiming(),
+however the static inline no-op (which is used if
+CONFIG_CAN_CALC_BITTIMING is disabled) wasn't converted.
 
-this is a pull request of 2 patches for net-next/master.
+Add the new parameter to the static inline no-op of
+can_calc_bittiming().
 
-The 1st patch is by Oliver Hartkopp and cleans up the CAN_RAW's
-raw_setsockopt() for CAN_RAW_FD_FRAMES.
-
-The 2nd patch is by me and fixes the compilation if
-CONFIG_CAN_CALC_BITTIMING is disabled. (Problem introduced in last
-pull request to next-next.)
-
-regards,
-Marc
-
+Fixes: 286c0e09e8e0 ("can: bittiming: can_changelink() pass extack down callstack")
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/20230207201734.2905618-1-mkl@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
-The following changes since commit e6ebe6c12355538e9238e2051bd6757b12dbfe9c:
+ include/linux/can/bittiming.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  Merge branch 'taprio-auto-qmaxsdu-new-tx' (2023-02-08 09:48:53 +0000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-6.3-20230208
-
-for you to fetch changes up to 65db3d8b5231bd430c12150258125aca155aea97:
-
-  can: bittiming: can_calc_bittiming(): add missing parameter to no-op function (2023-02-08 21:53:24 +0100)
-
-----------------------------------------------------------------
-linux-can-next-for-6.3-20230208
-
-----------------------------------------------------------------
-Marc Kleine-Budde (1):
-      can: bittiming: can_calc_bittiming(): add missing parameter to no-op function
-
-Oliver Hartkopp (1):
-      can: raw: use temp variable instead of rolling back config
-
- include/linux/can/bittiming.h |  2 +-
- net/can/raw.c                 | 11 ++++++-----
- 2 files changed, 7 insertions(+), 6 deletions(-)
+diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
+index 6cb2ae308e3f..9b8a9c39614b 100644
+--- a/include/linux/can/bittiming.h
++++ b/include/linux/can/bittiming.h
+@@ -124,7 +124,7 @@ void can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
+ #else /* !CONFIG_CAN_CALC_BITTIMING */
+ static inline int
+ can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
+-		   const struct can_bittiming_const *btc)
++		   const struct can_bittiming_const *btc, struct netlink_ext_ack *extack)
+ {
+ 	netdev_err(dev, "bit-timing calculation not available\n");
+ 	return -EINVAL;
+-- 
+2.39.1
 
 
