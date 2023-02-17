@@ -2,44 +2,46 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 875EBC64ED8
-	for <linux-can@archiver.kernel.org>; Fri, 17 Feb 2023 14:10:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4884C64ED9
+	for <linux-can@archiver.kernel.org>; Fri, 17 Feb 2023 14:10:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbjBQOKj (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 17 Feb 2023 09:10:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34436 "EHLO
+        id S230020AbjBQOKk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 17 Feb 2023 09:10:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbjBQOKh (ORCPT
+        with ESMTP id S230021AbjBQOKh (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Fri, 17 Feb 2023 09:10:37 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19436ABF0
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA1BD6B315
         for <linux-can@vger.kernel.org>; Fri, 17 Feb 2023 06:10:35 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pT1Ra-0002yA-A9
+        id 1pT1Ra-0002yM-BV
         for linux-can@vger.kernel.org; Fri, 17 Feb 2023 15:10:34 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id E073517C15E
-        for <linux-can@vger.kernel.org>; Fri, 17 Feb 2023 14:10:32 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 2D80117C163
+        for <linux-can@vger.kernel.org>; Fri, 17 Feb 2023 14:10:33 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6EA4317C141;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 594AC17C13E;
         Fri, 17 Feb 2023 14:10:31 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 99c69299;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e7d5ae8f;
         Fri, 17 Feb 2023 14:10:30 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Frank Jungclaus <frank.jungclaus@esd.eu>,
+        kernel@pengutronix.de, Yang Li <yang.lee@linux.alibaba.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Pavel Pisa <pisa@cmp.felk.cvut.cz>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 4/4] can: esd_usb: Improve readability on decoding ESD_EV_CAN_ERROR_EXT messages
-Date:   Fri, 17 Feb 2023 15:10:29 +0100
-Message-Id: <20230217141029.3734802-5-mkl@pengutronix.de>
+Subject: [PATCH net-next 1/4] can: ctucanfd: ctucan_platform_probe(): use devm_platform_ioremap_resource()
+Date:   Fri, 17 Feb 2023 15:10:26 +0100
+Message-Id: <20230217141029.3734802-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230217141029.3734802-1-mkl@pengutronix.de>
 References: <20230217141029.3734802-1-mkl@pengutronix.de>
@@ -53,57 +55,45 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Frank Jungclaus <frank.jungclaus@esd.eu>
+From: Yang Li <yang.lee@linux.alibaba.com>
 
-As suggested by Marc introduce a union plus a struct ev_can_err_ext
-for easier decoding of an ESD_EV_CAN_ERROR_EXT event message (which
-simply is a rx_msg with some dedicated data).
+Convert platform_get_resource(), devm_ioremap_resource() to a single
+call to Use devm_platform_ioremap_resource(), as this is exactly what
+this function does.
 
-Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Link: https://lore.kernel.org/linux-can/20220621071152.ggyhrr5sbzvwpkpx@pengutronix.de/
-Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
-Link: https://lore.kernel.org/all/20230216190450.3901254-4-frank.jungclaus@esd.eu
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Reviewed-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+Acked-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Link: https://lore.kernel.org/all/20230216090610.130860-1-yang.lee@linux.alibaba.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/esd_usb.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ drivers/net/can/ctucanfd/ctucanfd_platform.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
-index 578b25f873e5..55b36973952d 100644
---- a/drivers/net/can/usb/esd_usb.c
-+++ b/drivers/net/can/usb/esd_usb.c
-@@ -127,7 +127,15 @@ struct rx_msg {
- 	u8 dlc;
- 	__le32 ts;
- 	__le32 id; /* upper 3 bits contain flags */
--	u8 data[8];
-+	union {
-+		u8 data[8];
-+		struct {
-+			u8 status; /* CAN Controller Status */
-+			u8 ecc;    /* Error Capture Register */
-+			u8 rec;    /* RX Error Counter */
-+			u8 tec;    /* TX Error Counter */
-+		} ev_can_err_ext;  /* For ESD_EV_CAN_ERROR_EXT */
-+	};
- };
+diff --git a/drivers/net/can/ctucanfd/ctucanfd_platform.c b/drivers/net/can/ctucanfd/ctucanfd_platform.c
+index f83684f006ea..a17561d97192 100644
+--- a/drivers/net/can/ctucanfd/ctucanfd_platform.c
++++ b/drivers/net/can/ctucanfd/ctucanfd_platform.c
+@@ -47,7 +47,6 @@ static void ctucan_platform_set_drvdata(struct device *dev,
+  */
+ static int ctucan_platform_probe(struct platform_device *pdev)
+ {
+-	struct resource *res; /* IO mem resources */
+ 	struct device	*dev = &pdev->dev;
+ 	void __iomem *addr;
+ 	int ret;
+@@ -55,8 +54,7 @@ static int ctucan_platform_probe(struct platform_device *pdev)
+ 	int irq;
  
- struct tx_msg {
-@@ -229,10 +237,10 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
- 	u32 id = le32_to_cpu(msg->msg.rx.id) & ESD_IDMASK;
- 
- 	if (id == ESD_EV_CAN_ERROR_EXT) {
--		u8 state = msg->msg.rx.data[0];
--		u8 ecc = msg->msg.rx.data[1];
--		u8 rxerr = msg->msg.rx.data[2];
--		u8 txerr = msg->msg.rx.data[3];
-+		u8 state = msg->msg.rx.ev_can_err_ext.status;
-+		u8 ecc = msg->msg.rx.ev_can_err_ext.ecc;
-+		u8 rxerr = msg->msg.rx.ev_can_err_ext.rec;
-+		u8 txerr = msg->msg.rx.ev_can_err_ext.tec;
- 
- 		netdev_dbg(priv->netdev,
- 			   "CAN_ERR_EV_EXT: dlc=%#02x state=%02x ecc=%02x rec=%02x tec=%02x\n",
+ 	/* Get the virtual base address for the device */
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	addr = devm_ioremap_resource(dev, res);
++	addr = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(addr)) {
+ 		ret = PTR_ERR(addr);
+ 		goto err;
+
+base-commit: 40967f77dfa9fa728b7f36a5d2eb432f39de185c
 -- 
 2.39.1
 
