@@ -2,44 +2,47 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B29A1C05027
-	for <linux-can@archiver.kernel.org>; Fri, 17 Feb 2023 14:10:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48B64C6379F
+	for <linux-can@archiver.kernel.org>; Fri, 17 Feb 2023 14:10:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbjBQOKh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 17 Feb 2023 09:10:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34422 "EHLO
+        id S229948AbjBQOKi (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 17 Feb 2023 09:10:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230011AbjBQOKg (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 17 Feb 2023 09:10:36 -0500
+        with ESMTP id S230014AbjBQOKh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 17 Feb 2023 09:10:37 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C2B6747B
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9DC69292
         for <linux-can@vger.kernel.org>; Fri, 17 Feb 2023 06:10:35 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pT1RZ-0002xA-Fx
-        for linux-can@vger.kernel.org; Fri, 17 Feb 2023 15:10:33 +0100
+        id 1pT1Ra-0002y6-9p
+        for linux-can@vger.kernel.org; Fri, 17 Feb 2023 15:10:34 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 2FB2D17C151
+        by bjornoya.blackshift.org (Postfix) with SMTP id D17ED17C15D
         for <linux-can@vger.kernel.org>; Fri, 17 Feb 2023 14:10:32 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5300217C13D;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 67F3717C140;
         Fri, 17 Feb 2023 14:10:31 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d2fd3040;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id fbb29ba6;
         Fri, 17 Feb 2023 14:10:30 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net-next 0/4] pull-request: can-next 2023-02-17 - fixed
-Date:   Fri, 17 Feb 2023 15:10:25 +0100
-Message-Id: <20230217141029.3734802-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Frank Jungclaus <frank.jungclaus@esd.eu>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 3/4] can: esd_usb: Make use of can_change_state() and relocate checking skb for NULL
+Date:   Fri, 17 Feb 2023 15:10:28 +0100
+Message-Id: <20230217141029.3734802-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230217141029.3734802-1-mkl@pengutronix.de>
+References: <20230217141029.3734802-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
@@ -50,51 +53,126 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello netdev-team,
+From: Frank Jungclaus <frank.jungclaus@esd.eu>
 
-this is a pull request of 4 patches for net-next/master.
+Start a rework initiated by Vincents remarks "You should not report
+the greatest of txerr and rxerr but the one which actually increased."
+[1] and "As far as I understand, those flags should be set only when
+the threshold is reached" [2] .
 
-The first patch is by Yang Li and converts the ctucanfd driver to
-devm_platform_ioremap_resource().
+Therefore make use of can_change_state() to (among others) set the
+flags CAN_ERR_CRTL_[RT]X_WARNING and CAN_ERR_CRTL_[RT]X_PASSIVE,
+maintain CAN statistic counters for error_warning, error_passive and
+bus_off.
 
-The last 3 patches are by Frank Jungclaus, target the esd_usb driver
-and contains preparations for the upcoming support of the esd
-CAN-USB/3 hardware.
+Relocate testing alloc_can_err_skb() for NULL to the end of
+esd_usb_rx_event(), to have things like can_bus_off(),
+can_change_state() working even in out of memory conditions.
 
-regards,
-Marc
-
+Fixes: 96d8e90382dc ("can: Add driver for esd CAN-USB/2 device")
+Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
+Link: [1] https://lore.kernel.org/all/CAMZ6RqKGBWe15aMkf8-QLf-cOQg99GQBebSm+1wEzTqHgvmNuw@mail.gmail.com/
+Link: [2] https://lore.kernel.org/all/CAMZ6Rq+QBO1yTX_o6GV0yhdBj-RzZSRGWDZBS0fs7zbSTy4hmA@mail.gmail.com/
+Link: https://lore.kernel.org/all/20230216190450.3901254-3-frank.jungclaus@esd.eu
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/usb/esd_usb.c | 50 +++++++++++++++++------------------
+ 1 file changed, 25 insertions(+), 25 deletions(-)
 
-The following changes since commit 40967f77dfa9fa728b7f36a5d2eb432f39de185c:
-
-  Merge branch 'seg6-add-psp-flavor-support-for-srv6-end-behavior' (2023-02-16 13:30:06 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-6.3-20230217
-
-for you to fetch changes up to 6ad172748db49deef0da9038d29019aedf991a7e:
-
-  Merge patch series "can: esd_usb: Some more preparation for supporting esd CAN-USB/3" (2023-02-16 20:59:53 +0100)
-
-----------------------------------------------------------------
-linux-can-next-for-6.3-20230217
-
-----------------------------------------------------------------
-Frank Jungclaus (3):
-      can: esd_usb: Move mislocated storage of SJA1000_ECC_SEG bits in case of a bus error
-      can: esd_usb: Make use of can_change_state() and relocate checking skb for NULL
-      can: esd_usb: Improve readability on decoding ESD_EV_CAN_ERROR_EXT messages
-
-Marc Kleine-Budde (1):
-      Merge patch series "can: esd_usb: Some more preparation for supporting esd CAN-USB/3"
-
-Yang Li (1):
-      can: ctucanfd: ctucan_platform_probe(): use devm_platform_ioremap_resource()
-
- drivers/net/can/ctucanfd/ctucanfd_platform.c |  4 +-
- drivers/net/can/usb/esd_usb.c                | 70 ++++++++++++++++------------
- 2 files changed, 41 insertions(+), 33 deletions(-)
+diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
+index 5e182fadd875..578b25f873e5 100644
+--- a/drivers/net/can/usb/esd_usb.c
++++ b/drivers/net/can/usb/esd_usb.c
+@@ -239,41 +239,42 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
+ 			   msg->msg.rx.dlc, state, ecc, rxerr, txerr);
+ 
+ 		skb = alloc_can_err_skb(priv->netdev, &cf);
+-		if (skb == NULL) {
+-			stats->rx_dropped++;
+-			return;
+-		}
+ 
+ 		if (state != priv->old_state) {
++			enum can_state tx_state, rx_state;
++			enum can_state new_state = CAN_STATE_ERROR_ACTIVE;
++
+ 			priv->old_state = state;
+ 
+ 			switch (state & ESD_BUSSTATE_MASK) {
+ 			case ESD_BUSSTATE_BUSOFF:
+-				priv->can.state = CAN_STATE_BUS_OFF;
+-				cf->can_id |= CAN_ERR_BUSOFF;
+-				priv->can.can_stats.bus_off++;
++				new_state = CAN_STATE_BUS_OFF;
+ 				can_bus_off(priv->netdev);
+ 				break;
+ 			case ESD_BUSSTATE_WARN:
+-				priv->can.state = CAN_STATE_ERROR_WARNING;
+-				priv->can.can_stats.error_warning++;
++				new_state = CAN_STATE_ERROR_WARNING;
+ 				break;
+ 			case ESD_BUSSTATE_ERRPASSIVE:
+-				priv->can.state = CAN_STATE_ERROR_PASSIVE;
+-				priv->can.can_stats.error_passive++;
++				new_state = CAN_STATE_ERROR_PASSIVE;
+ 				break;
+ 			default:
+-				priv->can.state = CAN_STATE_ERROR_ACTIVE;
++				new_state = CAN_STATE_ERROR_ACTIVE;
+ 				txerr = 0;
+ 				rxerr = 0;
+ 				break;
+ 			}
+-		} else {
++
++			if (new_state != priv->can.state) {
++				tx_state = (txerr >= rxerr) ? new_state : 0;
++				rx_state = (txerr <= rxerr) ? new_state : 0;
++				can_change_state(priv->netdev, cf,
++						 tx_state, rx_state);
++			}
++		} else if (skb) {
+ 			priv->can.can_stats.bus_error++;
+ 			stats->rx_errors++;
+ 
+-			cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR |
+-				      CAN_ERR_CNT;
++			cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+ 
+ 			switch (ecc & SJA1000_ECC_MASK) {
+ 			case SJA1000_ECC_BIT:
+@@ -295,21 +296,20 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
+ 
+ 			/* Bit stream position in CAN frame as the error was detected */
+ 			cf->data[3] = ecc & SJA1000_ECC_SEG;
+-
+-			if (priv->can.state == CAN_STATE_ERROR_WARNING ||
+-			    priv->can.state == CAN_STATE_ERROR_PASSIVE) {
+-				cf->data[1] = (txerr > rxerr) ?
+-					CAN_ERR_CRTL_TX_PASSIVE :
+-					CAN_ERR_CRTL_RX_PASSIVE;
+-			}
+-			cf->data[6] = txerr;
+-			cf->data[7] = rxerr;
+ 		}
+ 
+ 		priv->bec.txerr = txerr;
+ 		priv->bec.rxerr = rxerr;
+ 
+-		netif_rx(skb);
++		if (skb) {
++			cf->can_id |= CAN_ERR_CNT;
++			cf->data[6] = txerr;
++			cf->data[7] = rxerr;
++
++			netif_rx(skb);
++		} else {
++			stats->rx_dropped++;
++		}
+ 	}
+ }
+ 
+-- 
+2.39.1
 
 
