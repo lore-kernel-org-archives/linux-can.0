@@ -2,49 +2,45 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50883C677F1
-	for <linux-can@archiver.kernel.org>; Fri, 17 Feb 2023 14:10:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8E18C6379F
+	for <linux-can@archiver.kernel.org>; Fri, 17 Feb 2023 15:32:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbjBQOKj (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 17 Feb 2023 09:10:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34432 "EHLO
+        id S230334AbjBQPcn (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 17 Feb 2023 10:32:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230020AbjBQOKh (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 17 Feb 2023 09:10:37 -0500
+        with ESMTP id S230337AbjBQPck (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 17 Feb 2023 10:32:40 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29EC6ABFE
-        for <linux-can@vger.kernel.org>; Fri, 17 Feb 2023 06:10:35 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FB070973
+        for <linux-can@vger.kernel.org>; Fri, 17 Feb 2023 07:32:39 -0800 (PST)
 Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pT1Ra-0002y4-A9
-        for linux-can@vger.kernel.org; Fri, 17 Feb 2023 15:10:34 +0100
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id BB30317C15C
-        for <linux-can@vger.kernel.org>; Fri, 17 Feb 2023 14:10:32 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        id 1pT2iy-0000kx-Eq; Fri, 17 Feb 2023 16:32:36 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:f841:9dc3:753d:4a94])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5FABB17C13F;
-        Fri, 17 Feb 2023 14:10:31 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 092a6338;
-        Fri, 17 Feb 2023 14:10:30 +0000 (UTC)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 09F5E17C2FF;
+        Fri, 17 Feb 2023 15:32:35 +0000 (UTC)
+Date:   Fri, 17 Feb 2023 16:32:33 +0100
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Frank Jungclaus <frank.jungclaus@esd.eu>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 2/4] can: esd_usb: Move mislocated storage of SJA1000_ECC_SEG bits in case of a bus error
-Date:   Fri, 17 Feb 2023 15:10:27 +0100
-Message-Id: <20230217141029.3734802-3-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230217141029.3734802-1-mkl@pengutronix.de>
-References: <20230217141029.3734802-1-mkl@pengutronix.de>
+To:     linux-can <linux-can@vger.kernel.org>
+Cc:     Peter Fink <pfink@christ-es.de>,
+        Ben Evans <benny.j.evans92@gmail.com>,
+        Christoph =?utf-8?Q?M=C3=B6hring?= <cmoehring@christ-es.de>,
+        Alexander Schartner <aschartner@christ-es.de>,
+        Eric Evenchick <eric@evenchick.com>,
+        Venelin Efremov <ghent360@iqury.us>
+Subject: candlelight CAN-FD TX echo
+Message-ID: <20230217153233.m2k4qcecux2up22k@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7qfk7sjrkrpd6wx3"
+Content-Disposition: inline
 X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -53,44 +49,48 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Frank Jungclaus <frank.jungclaus@esd.eu>
 
-Move the supply for cf->data[3] (bit stream position of CAN error), in
-case of a bus- or protocol-error, outside of the "switch (ecc &
-SJA1000_ECC_MASK){}"-statement, because this bit stream position is
-independent of the error type.
+--7qfk7sjrkrpd6wx3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 96d8e90382dc ("can: Add driver for esd CAN-USB/2 device")
-Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
-Link: https://lore.kernel.org/all/20230216190450.3901254-2-frank.jungclaus@esd.eu
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/usb/esd_usb.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Hello,
 
-diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
-index 42323f5e6f3a..5e182fadd875 100644
---- a/drivers/net/can/usb/esd_usb.c
-+++ b/drivers/net/can/usb/esd_usb.c
-@@ -286,7 +286,6 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
- 				cf->data[2] |= CAN_ERR_PROT_STUFF;
- 				break;
- 			default:
--				cf->data[3] = ecc & SJA1000_ECC_SEG;
- 				break;
- 			}
- 
-@@ -294,6 +293,9 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
- 			if (!(ecc & SJA1000_ECC_DIR))
- 				cf->data[2] |= CAN_ERR_PROT_TX;
- 
-+			/* Bit stream position in CAN frame as the error was detected */
-+			cf->data[3] = ecc & SJA1000_ECC_SEG;
-+
- 			if (priv->can.state == CAN_STATE_ERROR_WARNING ||
- 			    priv->can.state == CAN_STATE_ERROR_PASSIVE) {
- 				cf->data[1] = (txerr > rxerr) ?
--- 
-2.39.1
+I'm currently addinf CAN-FD support to the Candlelight firmware and
+looking at the TX echo message from the CAN device to Linux. In your
+firmware for CAN-FD frames, are you echoing the whole CAN FD structure
+gs_host_frame with 64 byte data, or the classic CAN gs_host_frame with 8
+byte data?
 
+The Candlelight I use only works in full-speed USB (12 Mbit/s) max,
+which means that the maximum transmission size is 64, which results in a
+TX echo consisting of 2 USB transmissions. The Linux driver makes no use
+of the data in the TX echo frame, so a classic CAN TX echo would
+suffice.
 
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--7qfk7sjrkrpd6wx3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmPvng0ACgkQvlAcSiqK
+BOh4owf/YvkeObVNpEz4Sv6xUovheV/4NAgMxdCfbZ6gxL6wbilm6GkvJHL9zR3i
+KsMCvoFvPJRRrqmdGqz/QzGfn38mhRY3vEX/OvSi5j7fiHkE7kAe3Gfv6fAHkG9O
+TLUX89AFpSB1RtW0Lz0P1co9o7sa2ctnjW4CmupxiRl0eDpHPS68ZZGYexC9+TZX
+Wld2Ffyf8Sg7j+mUkath5uwSmr22JUyooHKDOLnydKXTQvSVgWLhLNQDAW/WMlGv
+IKckpr0C6Nb/NeMnxWD8C7U+ePYAHmO38F4nQlRcDmmVB/6sesJOnt5AejHjAWpD
+t5hRMmUIRoXCMRNtRoPPFJPS0MyMgw==
+=WxDj
+-----END PGP SIGNATURE-----
+
+--7qfk7sjrkrpd6wx3--
