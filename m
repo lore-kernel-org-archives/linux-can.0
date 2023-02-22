@@ -2,99 +2,58 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3ECB8C6379F
-	for <linux-can@archiver.kernel.org>; Tue, 21 Feb 2023 10:54:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CE68C6379F
+	for <linux-can@archiver.kernel.org>; Wed, 22 Feb 2023 08:37:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233093AbjBUKyO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 21 Feb 2023 05:54:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54534 "EHLO
+        id S229887AbjBVIh0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 22 Feb 2023 03:37:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233085AbjBUKyN (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 21 Feb 2023 05:54:13 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A29522A1C
-        for <linux-can@vger.kernel.org>; Tue, 21 Feb 2023 02:54:12 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1pUQHi-00057x-KU; Tue, 21 Feb 2023 11:54:10 +0100
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:27e2:f49:4c60:b961])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 77FF817E712;
-        Tue, 21 Feb 2023 10:54:09 +0000 (UTC)
-Date:   Tue, 21 Feb 2023 11:53:59 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Hartley Sweeten <HartleyS@visionengravers.com>
-Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        Michal Simek <michal.simek@amd.com>,
-        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
-        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
-        linux-can <linux-can@vger.kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>
-Subject: Re: RE: xlinix_can: bug when sending two RTR frames
-Message-ID: <20230221105359.qswmhdnwp5wcsopb@pengutronix.de>
-References: <94e3c5bc-6af9-f240-86fa-2b780a58533f@hartkopp.net>
- <a2256c85-4253-dff5-fa8e-00fc02916095@hartkopp.net>
- <ea15524a-1ed9-0dbb-9511-c333a66a2555@amd.com>
- <BY3PR01MB6515CC4390A51A5564C69634D0A09@BY3PR01MB6515.prod.exchangelabs.com>
- <5b5acff7-30ee-433c-ab59-59da4b371a49@hartkopp.net>
- <BY3PR01MB6515AB04C38C68ECD442961BD0A19@BY3PR01MB6515.prod.exchangelabs.com>
+        with ESMTP id S231384AbjBVIhW (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 22 Feb 2023 03:37:22 -0500
+Received: from mail.crawnon.pl (mail.crawnon.pl [51.68.198.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D484F37729
+        for <linux-can@vger.kernel.org>; Wed, 22 Feb 2023 00:37:10 -0800 (PST)
+Received: by mail.crawnon.pl (Postfix, from userid 1002)
+        id 0F7D3A465A; Wed, 22 Feb 2023 08:35:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=crawnon.pl; s=mail;
+        t=1677054982; bh=C5hX24svv/9/TME4wPCHfYjl17BCtmuxEd1i9B4zdYs=;
+        h=Date:From:To:Subject:From;
+        b=JzQp06L8mgIUdsOU+HrKR5dbVAQPABa/jad3mXePDxxiTcAkJAwLypLam73iv/wHn
+         z5y30SbABMTVY82BraFXa+ZeXmOTdbDuV/+h+6ThXRpH2RucFXfTdxdVMlPTWslOqT
+         YwnoNkfH9cUqMl1cDFH1qABSM4AYR3DPT6vV4E5O4W+HQPzCdIzf8Uw93YchzaLEJ3
+         G1rrCxVIYrsQhJxMFV5r3/VpBi3994XAaCsjaU+lJkgxvTcck+o/udsXFzC3BjrWL4
+         X6+L7vP8tzO/O0K8E4ENSABfXjITdLLi5TMochvJKLWASR2O21MRj3Llqnhmvw7IAY
+         7iBQVRbNylztQ==
+Received: by mail.crawnon.pl for <linux-can@vger.kernel.org>; Wed, 22 Feb 2023 08:34:35 GMT
+Message-ID: <20230222073001-0.1.9b.lvky.0.kgjk5fp10e@crawnon.pl>
+Date:   Wed, 22 Feb 2023 08:34:35 GMT
+From:   =?UTF-8?Q? "Miko=C5=82aj_Fiodorczyk" ?= 
+        <mikolaj.fiodorczyk@crawnon.pl>
+To:     <linux-can@vger.kernel.org>
+Subject: Fotowoltaika - nowe warunki
+X-Mailer: mail.crawnon.pl
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="w2c43vv6m4kag6l2"
-Content-Disposition: inline
-In-Reply-To: <BY3PR01MB6515AB04C38C68ECD442961BD0A19@BY3PR01MB6515.prod.exchangelabs.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+Dzie=C5=84 dobry,
 
---w2c43vv6m4kag6l2
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+chcia=C5=82bym poinformowa=C4=87, i=C5=BC mog=C4=85 Pa=C5=84stwo uzyska=C4=
+=87 dofinansowanie na systemy fotowoltaiczne w ramach nowej edycji progra=
+mu M=C3=B3j Pr=C4=85d.
 
-On 17.02.2023 15:52:33, Hartley Sweeten wrote:
-> But non RTR messages are always sent immediately.
+Program zapewnia 6000 z=C5=82 dofinansowania na instalacj=C4=99 paneli i =
+16 000 z=C5=82 na magazyn energii, ni=C5=BCsze cen pr=C4=85du i mo=C5=BCl=
+iwo=C5=9B=C4=87 odliczenia koszt=C3=B3w zwi=C4=85zanych z instalacj=C4=85=
+ fotowoltaiki w ramach rozliczenia PIT (tzw. ulga termomodernizacyjna).
 
-| https://github.com/linux-can/can-utils/issues/405#issuecomment-1438257809
+Czy s=C4=85 Pa=C5=84stwo otwarci na wst=C4=99pn=C4=85 rozmow=C4=99 w tym =
+temacie?
 
-Neeli Srinivas says:
 
-| Thanks for letting us know,
-| We are able to reproduce the issue on our end.
-| we are looking into it. Will get back to you.
-
-Thanks,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---w2c43vv6m4kag6l2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmP0or8ACgkQvlAcSiqK
-BOhBNgf8Cq0iELnC1+icNqZGL5sLHlhdClZnL3U00JRh7DN3NHS8eqo3cui87/TP
-vxpVS+lrNBqZoGlThEejfci/+ghn3L8rbg0yM8dV4jhxnj9XX1LiiA0y1+AAixfx
-2mir+Z95s0WtLcLc9RhTl5ch1LutlSOa4BO54Wjfec/yatdbtb8fyiTDthhK/LbI
-245OP8AClMoEMlE/FQdbnNdU6jW1MChwd5jZGx77YR1gAol+jhpD/GM2+G0/GxSo
-53ukYKjnhK1XWmpZsb7FtBjjBM1CNSiEEXSy/uuLaOmcWclTSrjqaCSSNRhO+wSd
-J2WGb4S19GIg6MVJ+hAYLbHBprMVAw==
-=aE7/
------END PGP SIGNATURE-----
-
---w2c43vv6m4kag6l2--
+Pozdrawiam,
+Miko=C5=82aj Fiodorczyk
