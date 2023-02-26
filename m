@@ -2,66 +2,98 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A870AC64EC7
-	for <linux-can@archiver.kernel.org>; Sat, 25 Feb 2023 08:34:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4934CC7EE31
+	for <linux-can@archiver.kernel.org>; Sun, 26 Feb 2023 14:50:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229520AbjBYIev (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 25 Feb 2023 03:34:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41026 "EHLO
+        id S230157AbjBZOuX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sun, 26 Feb 2023 09:50:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjBYIeu (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 25 Feb 2023 03:34:50 -0500
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D40612F0A;
-        Sat, 25 Feb 2023 00:34:49 -0800 (PST)
-Received: by mail-pf1-f181.google.com with SMTP id g12so858121pfi.0;
-        Sat, 25 Feb 2023 00:34:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tgdlhpL67h2C5/Vx2oHavtV4QOTDeiwV5fIx5a2BvQI=;
-        b=FSRTIhl/hUIXtxDLGdLArexGYAzXUCdAAewokG/ZoEy+VPXTUws19p0en9BpzG72I3
-         b6/JrilVDv+eYhzLETi2Z3LdJxQJAGe8JwVHE5Z/x6AuXzILmWnukilzIP+yI18T4rk6
-         T4xa9Jxr58zlJ9QnPSFOVfXKI6p38zenPQaMGT2X2FMLXJ0fpdV6gypC1lZrgdfl0VhR
-         8h6WTU7lCW9b4/uIzTLRpi2vrQ30pUwD1QGTzAWJxVDPGBYjpS/h8y5aeaZsL2OoIa5+
-         41axWY9C99oQ3QyjuVDx3sx2/pLW5m7yPMs9KLzxuTIBUpzOXVOgJAX/uShiK+2Yj9iH
-         hYAQ==
-X-Gm-Message-State: AO0yUKXQZsSX6CzbXEw5iw6JLfDYuePe+QUxGYcjHkVxqHWPNu8TZHuo
-        H0zIFVh7TfX0PV3OQLPbazdMu+G2JyIchF7capMID2SIW9k=
-X-Google-Smtp-Source: AK7set/rSsk9JATGK69ZfTt4pxEx7Lr/OtJW7W+5zkvAsvEy9cx0/Krpl200gXh/mjn8k2Xdq1LxWnIeKuGu/DLDk9M=
-X-Received: by 2002:a62:1993:0:b0:5a8:bdd2:f99c with SMTP id
- 141-20020a621993000000b005a8bdd2f99cmr3757105pfz.1.1677314088667; Sat, 25 Feb
- 2023 00:34:48 -0800 (PST)
+        with ESMTP id S229919AbjBZOtU (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sun, 26 Feb 2023 09:49:20 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B75612BC1;
+        Sun, 26 Feb 2023 06:48:07 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 27E2EB80BA7;
+        Sun, 26 Feb 2023 14:47:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56DBDC4339E;
+        Sun, 26 Feb 2023 14:47:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1677422877;
+        bh=SsLC3DuoRr7IIjgp4V6ByD7OU4nl/phwXVPN1WE/Y/s=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=vCgClJJQdELzNqJDQ9RShub5gwdJXUvsvfCUXIvUV7/SNzVhev3C//PBs3+Tgcofh
+         0ZJTHLLvimVl/ozge9Skg4k+Lg71oY74E2tf4WWqn2rfqz/Qy+AhVsblYMiCwo/f/r
+         z2XOlFbW5yjA5YoxwofrZ2/drHhi0/qLN6eBU4dAfSUB7L7dNoCMfh9AHSDjXDfctI
+         e6FVsFoLqMDQPZpkXSBlQ3rvmFsCG8pTHdgyht3N7Jr01YLQqXJPTyXuMmCMMEyxTW
+         U/uNGdr0X/uMpadYWlPoANtLZUpBgQnjlp8rHuKGvZG4+QStjr/OwK1SNJKiPgAPdL
+         GvuSwB5sXXRpg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
+        syzbot+5aed6c3aaba661f5b917@syzkaller.appspotmail.com,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 29/49] can: isotp: check CAN address family in isotp_bind()
+Date:   Sun, 26 Feb 2023 09:46:29 -0500
+Message-Id: <20230226144650.826470-29-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20230226144650.826470-1-sashal@kernel.org>
+References: <20230226144650.826470-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20230222163754.3711766-1-frank.jungclaus@esd.eu>
-In-Reply-To: <20230222163754.3711766-1-frank.jungclaus@esd.eu>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Sat, 25 Feb 2023 17:34:37 +0900
-Message-ID: <CAMZ6RqJwJNxn5nm-PW2yY3BobTNB+vVmeDGi=M80YavN8Ui-OQ@mail.gmail.com>
-Subject: Re: [PATCH] can: esd_usb: Improve code readability by means of
- replacing struct esd_usb_msg with a union
-To:     Frank Jungclaus <frank.jungclaus@esd.eu>
-Cc:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        =?UTF-8?Q?Stefan_M=C3=A4tje?= <stefan.maetje@esd.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Thu. 23 Feb. 2023 at 01:56, Frank Jungclaus <frank.jungclaus@esd.eu> wrote:
-> As suggested by Vincent Mailhol, declare struct esd_usb_msg as a union
-> instead of a struct. Then replace all msg->msg.something constructs,
-> that make use of esd_usb_msg, with simpler and prettier looking
-> msg->something variants.
->
-> Link: https://lore.kernel.org/all/CAMZ6RqKRzJwmMShVT9QKwiQ5LJaQupYqkPkKjhRBsP=12QYpfA@mail.gmail.com/
-> Suggested-by: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-> Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Thank you for your follow up on this and on all my other comments.
+[ Upstream commit c6adf659a8ba85913e16a571d5a9bcd17d3d1234 ]
 
-Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Add missing check to block non-AF_CAN binds.
+
+Syzbot created some code which matched the right sockaddr struct size
+but used AF_XDP (0x2C) instead of AF_CAN (0x1D) in the address family
+field:
+
+bind$xdp(r2, &(0x7f0000000540)={0x2c, 0x0, r4, 0x0, r2}, 0x10)
+                                ^^^^
+This has no funtional impact but the userspace should be notified about
+the wrong address family field content.
+
+Link: https://syzkaller.appspot.com/text?tag=CrashLog&x=11ff9d8c480000
+Reported-by: syzbot+5aed6c3aaba661f5b917@syzkaller.appspotmail.com
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://lore.kernel.org/all/20230104201844.13168-1-socketcan@hartkopp.net
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/can/isotp.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index fc81d77724a13..9bc344851704e 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -1220,6 +1220,9 @@ static int isotp_bind(struct socket *sock, struct sockaddr *uaddr, int len)
+ 	if (len < ISOTP_MIN_NAMELEN)
+ 		return -EINVAL;
+ 
++	if (addr->can_family != AF_CAN)
++		return -EINVAL;
++
+ 	/* sanitize tx CAN identifier */
+ 	if (tx_id & CAN_EFF_FLAG)
+ 		tx_id &= (CAN_EFF_FLAG | CAN_EFF_MASK);
+-- 
+2.39.0
+
