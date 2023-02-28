@@ -2,85 +2,255 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C62FC64EC4
-	for <linux-can@archiver.kernel.org>; Tue, 28 Feb 2023 20:42:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82E4EC64EC7
+	for <linux-can@archiver.kernel.org>; Tue, 28 Feb 2023 20:50:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbjB1Um6 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 28 Feb 2023 15:42:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32916 "EHLO
+        id S229560AbjB1Uuo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 28 Feb 2023 15:50:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbjB1Um5 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 28 Feb 2023 15:42:57 -0500
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA6D34F52
-        for <linux-can@vger.kernel.org>; Tue, 28 Feb 2023 12:42:48 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1677616966; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=GeCP424wrm7ImZzpp0+iM4tV3ge4ZWmR9mYGYGDnG9KnFB91gjFBr8ItBQ2XmmY030
-    s4IHb8SK7sstDa2F0dNh7iYemf4rAvIP8KOgR8O09bxd7leDu1HHTQPVe+RmHhR5RGSq
-    HRZ73yVR0LwmJjDLt5nA1ukuM7WSCJ3yJoOVjTabl/rAeePw+vmlidvszrUOjbBcGC8B
-    4pqtx/+jEFZGFJFbEeo0GOSy5FnyOPHBJOD+cEhQ79eeNnpA92WDz2rwtlFsEpxkela2
-    NyMkNwdm9bNPu5f1DINhlSUSo8ZB6EiF1OzCo3f5FQXv0N+6kG6aUQFqUxB468Qtd9Nr
-    N48g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1677616966;
-    s=strato-dkim-0002; d=strato.com;
-    h=Subject:From:Cc:To:Date:Message-ID:Cc:Date:From:Subject:Sender;
-    bh=Cp9AkkC/o9drd+cHOkHXHDX7CE5e8ylHz/mj4kwk8vw=;
-    b=M15duxqHn13//E2X1JPeKMFBXTb14UrPJWoyZMESAakRWN4lNKKhvCd3RqE+MJ1OBy
-    8SwH04WeMwNr3ev8uRbmXd7GEJtYHMJKJRadU0txsYcMKvhdyGcbvjCvvgciwTEcJunJ
-    6NoVj/2k3C9uQM7hgM7+oQ5hzv/jaf3ouOT15Vi8SjtcVwUzOj4o/tZF4mUE8e6OHMJz
-    CbEkORdICbHplaanuzyMi9pWiPjt1mAxUThic77AclMmtcpJAUqZfx0utQjkZUOt0UON
-    COebU8IoAvynhSPBUUtjEo/Gt7vCaHZgQ7l0YH7aHF7IyuzwMagboSpqs2QTmXZM2Rc5
-    ru2A==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1677616966;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=Subject:From:Cc:To:Date:Message-ID:Cc:Date:From:Subject:Sender;
-    bh=Cp9AkkC/o9drd+cHOkHXHDX7CE5e8ylHz/mj4kwk8vw=;
-    b=alheTWr6TQFuyIs1g6VwNJs1b33INN6P9yU+5tMy3W+Htdaxfy1IzJRPrA1Mcr5sMS
-    vKQNgNzyX4xsnFnxi25rUpL16I2MOQGDJMCp4jNO9l60xfj7CBXc8aOG2xnVP8n5btWz
-    fXaCZOQMGU2XLJMLOrfoAxf0/2EqfZpodPqeVfUT0vJRVM8z7mxhA2P9Pep13kwL5xz+
-    fviVCNnTrJsJlVzXDuarC2GDqDrO5muHBAS2eOUbVgiVwv8QKOtNzCNRe4QcGuraPjbY
-    znSwJumsjkM4naHaSaibVeNfZ/rJ1Z2A7o6kkDGbeRI7TR9Nt6XglXBcseGJCL1xj9ew
-    zsaA==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusl129OHEdFq0USEbDUQnQ=="
-Received: from [IPV6:2a00:6020:4a8e:5000::923]
-    by smtp.strato.de (RZmta 49.3.0 AUTH)
-    with ESMTPSA id c675b3z1SKgk1CO
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 28 Feb 2023 21:42:46 +0100 (CET)
-Message-ID: <b53a04a2-ba1f-3858-84c1-d3eb3301ae15@hartkopp.net>
-Date:   Tue, 28 Feb 2023 21:42:37 +0100
+        with ESMTP id S229524AbjB1Uun (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 28 Feb 2023 15:50:43 -0500
+Received: from smtpx.fel.cvut.cz (smtpx.feld.cvut.cz [147.32.210.153])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F9C84680
+        for <linux-can@vger.kernel.org>; Tue, 28 Feb 2023 12:50:40 -0800 (PST)
+Received: from localhost (styx2022 [192.168.200.17])
+        by smtpx.fel.cvut.cz (Postfix) with ESMTP id 853033BD29;
+        Tue, 28 Feb 2023 21:50:39 +0100 (CET)
+X-Virus-Scanned: IMAP STYX AMAVIS
+Received: from smtpx.fel.cvut.cz ([192.168.200.2])
+        by localhost (styx2.feld.cvut.cz [192.168.200.17]) (amavisd-new, port 10060)
+        with ESMTP id nFGWMevT9_tx; Tue, 28 Feb 2023 21:50:37 +0100 (CET)
+Received: from steelpick.2x.cz (ip-94-112-196-33.bb.vodafone.cz [94.112.196.33])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sojkam1)
+        by smtpx.fel.cvut.cz (Postfix) with ESMTPSA id 564303BD28;
+        Tue, 28 Feb 2023 21:50:37 +0100 (CET)
+Received: (nullmailer pid 323005 invoked by uid 1000);
+        Tue, 28 Feb 2023 20:50:36 -0000
+From:   Michal Sojka <michal.sojka@cvut.cz>
+To:     Oliver Hartkopp <socketcan@hartkopp.net>,
+        Michal Sojka <michal.sojka@cvut.cz>
+Cc:     linux-can <linux-can@vger.kernel.org>,
+        Jakub Jira <jirajak2@fel.cvut.cz>
+Subject: [PATCH] can: isotp: fix poll() to not report false positive EPOLLOUT events
+Date:   Tue, 28 Feb 2023 21:50:14 +0100
+Message-Id: <20230228205014.322988-1-michal.sojka@cvut.cz>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <b53a04a2-ba1f-3858-84c1-d3eb3301ae15@hartkopp.net>
+References: <b53a04a2-ba1f-3858-84c1-d3eb3301ae15@hartkopp.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Content-Language: en-US
-To:     Michal Sojka <michal.sojka@cvut.cz>
-Cc:     linux-can <linux-can@vger.kernel.org>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: please re-send [RFC PATCH] can: isotp: fix poll() to not report false
- positive EPOLLOUT events
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi Michal,
+When using select/poll/epoll() with a non-blocking ISOTP socket to
+wait for when non-blocking write is possible, false EPOLLOUT event is
+sometimes returned. This can happen at least after sending a message
+which must be split to multiple CAN frames.
 
-I'm currently testing some isotp traffic with your 'poll' patch but 
-unfortunately I did not see this mail in my in-box:
+The reason is that isotp_sendmsg() returns -EAGAIN when tx.state is
+not equal to ISOTP_IDLE and this behavior is not reflected in
+datagram_poll(), which is used in isotp_ops.
 
-https://lore.kernel.org/linux-can/20230224010659.48420-1-michal.sojka@cvut.cz/T/#u
+This is fixed by introducing ISOTP-specific poll function, which
+suppresses the EPOLLOUT events in that case.
 
-It is visible on the mail archive but obviously something went wrong on 
-my mail server side ¯\_(ツ)_/¯
+Below is a program that can trigger the problem on a vcan interface.
+When running the program as:
 
-Can you please re-send your patch, so that I can comment inside?
+    ./isotp-poll-test -s 123 -d 321 -o
 
-Many thanks,
-Oliver
+it starts sending ISOTP messages that include increasing ASCII
+numbers. poll() is used to wait before next transmission.
+
+With current mainline Linux, once the message length is greater than 7
+bytes, write() returns -EAGAIN and the program terminates. This should
+not happen, because the previous poll() reported that the write()
+would not block.
+
+After applying this patch, the above command doesn't fail - if one
+runs some ISOTP reader such as:
+
+    isotprecv -l -s 321 -d 123 vcan0
+
+This test program can also show another problem. When running:
+
+    ./isotp-poll-test -s 321 -d 123 -i -a
+
+and then in another terminal:
+
+    ./isotp-poll-test -s 123 -d 321 -o
+
+The first program receives the messages and uses the counter values to
+check for lost messages. After a random number of iterations a lost
+message is always detected. I believe that ISOTP should be reliable
+protocol, at least on vcan, shouldn't it?
+
+Anyway, this patch doesn't try to address this problem.
+
+ --8<---------------cut here---------------start------------->8---
+ #include <net/if.h>
+ #include <sys/socket.h>
+ #include <sys/types.h>
+
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
+ #include <poll.h>
+ #include <stdbool.h>
+ #include <err.h>
+
+ #include <net/if.h>
+ #include <sys/ioctl.h>
+ #include <sys/socket.h>
+ #include <sys/types.h>
+
+ #include <linux/can.h>
+ #include <linux/can/isotp.h>
+
+ #define CHECK(expr) ({ int ret = (expr); if (ret == -1) err(EXIT_FAILURE, "%s", #expr); ret; })
+
+ int main(int argc, char *argv[])
+ {
+     int sock;
+     struct sockaddr_can addr;
+     char opt;
+     bool in = false, out = false;
+     bool validate_seq = false;
+     int buf_size = 0;
+     unsigned cnt = 1, max_msgs = 0;
+
+     /* These default can be overridden with -s and -d */
+     addr.can_addr.tp.tx_id = 0x123;
+     addr.can_addr.tp.rx_id = 0x321;
+
+     while ((opt = getopt(argc, argv, "ac:d:ios:")) != -1) {
+         switch (opt) {
+         case 'a':
+             validate_seq = true;
+             break;
+         case 'c':
+             max_msgs = atol(optarg);
+             break;
+         case 'i':
+             in = true;
+             break;
+         case 'o':
+             out = true;
+             break;
+         case 's':
+             addr.can_addr.tp.tx_id = strtoul(optarg, NULL, 16);
+             if (strlen(optarg) > 7)
+                 addr.can_addr.tp.tx_id |= CAN_EFF_FLAG;
+             break;
+         case 'd':
+             addr.can_addr.tp.rx_id = strtoul(optarg, NULL, 16);
+             if (strlen(optarg) > 7)
+                 addr.can_addr.tp.rx_id |= CAN_EFF_FLAG;
+             break;
+         default: /* '?' */
+             err(EXIT_FAILURE, "Usage: %s [-i] [-o]", argv[0]);
+         }
+     }
+
+     sock = CHECK(socket(PF_CAN, SOCK_DGRAM, CAN_ISOTP));
+
+     const char *ifname = "vcan0";
+     addr.can_family = AF_CAN;
+     addr.can_ifindex = if_nametoindex(ifname);
+     if (!addr.can_ifindex)
+         err(EXIT_FAILURE, "%s", ifname);
+
+     CHECK(bind(sock, (struct sockaddr *)&addr, sizeof(addr)));
+
+     int flags = CHECK(fcntl(sock, F_GETFL, 0));
+     CHECK(fcntl(sock, F_SETFL, flags | O_NONBLOCK));
+
+     struct pollfd pollfd = {
+         .fd = sock,
+         .events = ((in ? POLLIN : 0) | ((out & !in) ? POLLOUT : 0))
+     };
+
+     do {
+         char buf[100];
+         int ret;
+
+         CHECK(poll(&pollfd, 1, -1)); /* Wait with infinite timeout */
+
+         if (pollfd.revents & POLLIN) {
+             buf_size = CHECK(read(sock, buf, sizeof(buf) - 1));
+             printf("#%u: Read %d bytes\n", cnt, buf_size);
+             if (validate_seq) {
+                 unsigned cnt_rcvd = 0;
+                 buf[buf_size] = 0;
+                 sscanf(buf, "Hello%u", &cnt_rcvd);
+                 if (cnt != cnt_rcvd)
+                     errx(EXIT_FAILURE, "Lost messages. Expected: #%u, received #%u", cnt, cnt_rcvd);
+             }
+             if (out)
+                 pollfd.events |= POLLOUT; /* Start writing only after reception of data */
+         }
+         if (pollfd.revents & POLLOUT) {
+             if (!in) {
+                 char str[200];
+                 sprintf(str, "Hello%u", cnt);
+                 ret = CHECK(write(sock, str, strlen(str)));
+             } else {
+                 ret = CHECK(write(sock, buf, buf_size));
+             }
+             printf("#%u: Wrote %d bytes\n", cnt, ret);
+         }
+     } while (cnt++ < max_msgs || max_msgs == 0);
+
+     return 0;
+ }
+ --8<---------------cut here---------------end--------------->8---
+
+Signed-off-by: Michal Sojka <michal.sojka@cvut.cz>
+Reported-by: Jakub Jira <jirajak2@fel.cvut.cz>
+---
+ net/can/isotp.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index 9bc344851704..d205359eaabd 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -1608,6 +1608,19 @@ static int isotp_init(struct sock *sk)
+ 	return 0;
+ }
+ 
++static __poll_t isotp_poll(struct file *file, struct socket *sock, poll_table *wait)
++{
++	__poll_t mask = datagram_poll(file, sock, wait);
++	struct sock *sk = sock->sk;
++	struct isotp_sock *so = isotp_sk(sk);
++
++	/* Check for false positives due to TX state */
++	if ((mask & EPOLLWRNORM) && (so->tx.state != ISOTP_IDLE))
++		mask &= ~(EPOLLOUT | EPOLLWRNORM);
++
++	return mask;
++}
++
+ static int isotp_sock_no_ioctlcmd(struct socket *sock, unsigned int cmd,
+ 				  unsigned long arg)
+ {
+@@ -1623,7 +1636,7 @@ static const struct proto_ops isotp_ops = {
+ 	.socketpair = sock_no_socketpair,
+ 	.accept = sock_no_accept,
+ 	.getname = isotp_getname,
+-	.poll = datagram_poll,
++	.poll = isotp_poll,
+ 	.ioctl = isotp_sock_no_ioctlcmd,
+ 	.gettstamp = sock_gettstamp,
+ 	.listen = sock_no_listen,
+-- 
+2.39.2
+
