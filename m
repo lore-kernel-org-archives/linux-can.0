@@ -2,86 +2,67 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5012C64EC4
-	for <linux-can@archiver.kernel.org>; Tue, 28 Feb 2023 20:52:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A182C64EC7
+	for <linux-can@archiver.kernel.org>; Tue, 28 Feb 2023 20:59:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbjB1UwA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 28 Feb 2023 15:52:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41248 "EHLO
+        id S229667AbjB1U7K convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 28 Feb 2023 15:59:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbjB1Uv7 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 28 Feb 2023 15:51:59 -0500
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5DBC4680
-        for <linux-can@vger.kernel.org>; Tue, 28 Feb 2023 12:51:57 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1677617516; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=CB9EgKqNOL0FrAgMILwWl/8CGxjQWwWN4GcugFZnmXkdTAsihCWUFw77Ygl4umXely
-    7W8PqsG0xsGxH+ep/uknBhbRRC/Sc0iWbP83oMH9LeYyRMaRdbUdk27l353AYsWjCWOy
-    v16DnZW/lbWqrwb9k6pkT0KjewJEzOJ/xiqr9ogoSG5fnGzxk4dEsK/jARUxs1MjKVmk
-    zJ5WnqI8IQeDudbkGsWtiBvd9QiGw1ar2mfPfd9PLplcM5zYlNlIxn0dNJlQx6EpC58N
-    7YvKSr8z/ApbZHUkXz71jCxQnG1sDPIVSpUulJACEjzLE10Ff2kLV8FzpxZrSe4yVjhj
-    En+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1677617516;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=oz4kY5q/g3qcm+X43NvknJeXnZXMWW1IWtdNSGAt7y8=;
-    b=FltbC9E1B71dWwlQLDBfthuHXLK8L6Tvco/nHFcv7OLSdkfHGhgzY0du6aqWyn4e/E
-    dBIuiWflwrBerA6zrl9OVaJpztE0dVcyYIvXkidzjYBFuSUYA8TwB2kELOlvXQl+9iEA
-    9Uld9wBIhtkuK3MI6emCPyFETpqK3oG8vmnYKB8E52L2lp9tfxdqI5WlUg8DRlsGatcZ
-    FpemrrHUINeHGt5x7opkBdDOkX9vzONP74UXJYIN4dkE6ZpzBKhS9OTVsKLAkmUHylDw
-    TOeWRKWinDH0T/wBY09+eaocEz3vNrc7URiM4PCTWP0ssrucLyFAlDVc75/4tNoN3sYV
-    D9Sg==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1677617516;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=oz4kY5q/g3qcm+X43NvknJeXnZXMWW1IWtdNSGAt7y8=;
-    b=Ho/C3YmgKifhEyC/zILTRWiNS+bV/gtMCrxnpBY1N5KpYTzOFbNBFfjflsl/yiPU8N
-    mmd2J5d647Ers6WEx90WxyvanmA+WuygoSe16Qmx0tQegl4VexXLEFjjpb4xr/P+3JTR
-    5O6PdkypgbQ+ZTku/YQ43sNs9xhlhqQdLSSiGh/QvzCL3gfb6CzHf5qF+q37CjCuqF3d
-    FokQGn71F9ZpAl1IN8dN1vYbPRzZS2jicbQEB4rWeq5mqYMcHBYC2qjHrK2GxKGsCJyU
-    I0ks3EAXZSjjqdddUZRnA5KGXE1muF0Wt+zeDsaV3iZVNzTI4lQALUFXOFSzqBufi+no
-    ksJQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusl129OHEdFq0USEbDUQnQ=="
-Received: from [IPV6:2a00:6020:4a8e:5000::923]
-    by smtp.strato.de (RZmta 49.3.0 AUTH)
-    with ESMTPSA id c675b3z1SKpu1Cs
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 28 Feb 2023 21:51:56 +0100 (CET)
-Message-ID: <bde22911-b7ef-56b0-8f33-07f33fa4884e@hartkopp.net>
-Date:   Tue, 28 Feb 2023 21:51:55 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
+        with ESMTP id S229679AbjB1U7J (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 28 Feb 2023 15:59:09 -0500
+X-Greylist: delayed 576 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 28 Feb 2023 12:59:07 PST
+Received: from smtpx.fel.cvut.cz (smtpx.feld.cvut.cz [147.32.210.153])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8700AA24E
+        for <linux-can@vger.kernel.org>; Tue, 28 Feb 2023 12:59:07 -0800 (PST)
+Received: from localhost (styx2022 [192.168.200.17])
+        by smtpx.fel.cvut.cz (Postfix) with ESMTP id 7B3B13BDA7;
+        Tue, 28 Feb 2023 21:49:29 +0100 (CET)
+X-Virus-Scanned: IMAP STYX AMAVIS
+Received: from smtpx.fel.cvut.cz ([192.168.200.2])
+        by localhost (styx2.feld.cvut.cz [192.168.200.17]) (amavisd-new, port 10060)
+        with ESMTP id JPyBSbYdKayc; Tue, 28 Feb 2023 21:49:27 +0100 (CET)
+Received: from steelpick.2x.cz (ip-94-112-196-33.bb.vodafone.cz [94.112.196.33])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sojkam1)
+        by smtpx.fel.cvut.cz (Postfix) with ESMTPSA id 7339A3BE99;
+        Tue, 28 Feb 2023 21:49:27 +0100 (CET)
+Received: (nullmailer pid 322816 invoked by uid 1000);
+        Tue, 28 Feb 2023 20:49:26 -0000
+From:   Michal Sojka <michal.sojka@cvut.cz>
+To:     Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     linux-can <linux-can@vger.kernel.org>
 Subject: Re: please re-send [RFC PATCH] can: isotp: fix poll() to not report
  false positive EPOLLOUT events
-Content-Language: en-US
-To:     Michal Sojka <michal.sojka@cvut.cz>
-Cc:     linux-can <linux-can@vger.kernel.org>
+In-Reply-To: <b53a04a2-ba1f-3858-84c1-d3eb3301ae15@hartkopp.net>
 References: <b53a04a2-ba1f-3858-84c1-d3eb3301ae15@hartkopp.net>
- <878rghtt0p.fsf@steelpick.2x.cz>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <878rghtt0p.fsf@steelpick.2x.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Date:   Tue, 28 Feb 2023 21:49:26 +0100
+Message-ID: <878rghtt0p.fsf@steelpick.2x.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On 28.02.23 21:49, Michal Sojka wrote:
+Hi Oliver,
 
->> Can you please re-send your patch, so that I can comment inside?
-> 
-> resending in a minute.
+On Tue, Feb 28 2023, Oliver Hartkopp wrote:
+> Hi Michal,
+>
+> I'm currently testing some isotp traffic with your 'poll' patch but 
+> unfortunately I did not see this mail in my in-box:
+>
+> https://lore.kernel.org/linux-can/20230224010659.48420-1-michal.sojka@cvut.cz/T/#u
+>
+> It is visible on the mail archive but obviously something went wrong on 
+> my mail server side ¯\_(ツ)_/¯
+>
+> Can you please re-send your patch, so that I can comment inside?
 
-No hurry! I think I'm done for today anyway :-D
+resending in a minute.
 
-Best regards,
-Oliver
+-Michal
