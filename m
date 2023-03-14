@@ -2,53 +2,53 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D079C6FD1C
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0367BC7618D
 	for <linux-can@archiver.kernel.org>; Tue, 14 Mar 2023 15:12:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231603AbjCNPMY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 14 Mar 2023 11:12:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54978 "EHLO
+        id S231590AbjCNPM0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 14 Mar 2023 11:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231588AbjCNPMX (ORCPT
+        with ESMTP id S231578AbjCNPMX (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 14 Mar 2023 11:12:23 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 001F78682
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 132E0769B
         for <linux-can@vger.kernel.org>; Tue, 14 Mar 2023 08:12:21 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id p4so8485014wre.11
-        for <linux-can@vger.kernel.org>; Tue, 14 Mar 2023 08:12:21 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id l12so6397848wrm.10
+        for <linux-can@vger.kernel.org>; Tue, 14 Mar 2023 08:12:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112; t=1678806741;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112; t=1678806739;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PSrec+nBwM+c2dQQeNVjKvZ5AfVGgxg/yYXQBrWPGyQ=;
-        b=0PbFTDbB3iqQ+6B6JXcc9N2aOoYFez/WZp8jLJ+U14nAeRdstbXlrz5nCLrsmu+8vg
-         zrZc9+pn9FlyY7AbhfO6DZ6ZAtMa2BBofJjYjfT3YAZOBfjaLLaSM3GJ82Pr5ypWNVa2
-         kI+8U7OK7Et9uwE9s1EVsBIEPxuFbcPFhRnyDzXaDmrgTWTUmh7UjHFQz52GNzg04HYT
-         MbwN/mByHaj0BkQK3LrzzXMTKzoDMJCH4fLt/x2TjJowl5N2M8JjUbGj0ZNHLPvGQQ3W
-         kekv73o6UPUG78wFrDRTMQp5yMitEW0p+8uIsMjTwsdPcHPVDe8ldRNV8by6kxRcrdGR
-         uY4w==
+        bh=nf0FCRqxe9mUuT8bqQbLPIB9gEtjE7LcZZoSf7lbVA4=;
+        b=yaRKA4uN2v5L9uIAwLPb7NpQeJAFI+g0ykjKF9UkFJbLBqz86FR0mBmQtDoIrQJgaE
+         bqnQzKdC0NX48PPGZmgMacf+0c5ZDjkep2cAUmGSyoo90vbk5ylJqUfSv8PQQ1ICa1+l
+         reUBCuaGDebC2aM8f4Lrj9KRacn4vBxcDnusK0ah6+L5IlFR3kD74+Zh/upF2yXB3tJc
+         MwYgwYzPfYRDEP9+A+256LOFj99hDhj2Dg75gEYwwRjy2MP7P/mxeuvwG88lugGp1KlC
+         XCm/UaOb+66IiN5yNAj2pMwAypnc4RFfbgOO+vTF7UU/dO4oE4io7wXRcBHHc7D11mYr
+         6RTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678806741;
+        d=1e100.net; s=20210112; t=1678806739;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PSrec+nBwM+c2dQQeNVjKvZ5AfVGgxg/yYXQBrWPGyQ=;
-        b=isqcTjbW0NzuCnUOX6oaTaz0yvaf+Q9xQXh6ftggHZ0SelenmPWluafqiLoq6XZK2W
-         ewzWKDZy3ypyVvfGzxKCW9yrTlM6eDfavI0Y1Y5l2k6kHlIBmdA8LwMmBxM8gS9i4IIJ
-         Y6Vlc6JXCyMigpeP6T6IOBTm0xbY9EZSxPklCeewL41K47Uv/RSaISohC42n3jHFm/DK
-         Oi0gBodKBS77BvXWlQGn1lVyFQzI8m96JS1d+bYdG7A1HBlY7Otaq80eXvz6dzwSo2/Y
-         HBJRTz4oxaA4C96Tk6j3D4GYxoKblyDfsw49AMvXkPOi+CRAGImN7UTUGHxbiE+F7ZRL
-         1wbw==
-X-Gm-Message-State: AO0yUKUkvGwrT9SbjHfx+wYwrGnUP/g+KNZhocOGNCtQLrwjIGFG2gEM
-        5ELa6clRwCzsbI040jnYW50wpA==
-X-Google-Smtp-Source: AK7set8nWY958Ivm09aRAnCvmEiM0RkXJPN4MN+X/TFRi4qWMFOg1Wj9FrzzG9fsSrjBWEySGL132g==
-X-Received: by 2002:a5d:6289:0:b0:2ce:a944:2c6a with SMTP id k9-20020a5d6289000000b002cea9442c6amr6058726wru.70.1678806741490;
-        Tue, 14 Mar 2023 08:12:21 -0700 (PDT)
+        bh=nf0FCRqxe9mUuT8bqQbLPIB9gEtjE7LcZZoSf7lbVA4=;
+        b=PNaXICuxzc5I6tGiQFXEVIBSg17VuZGjohaBh8DasrJIZUUVa7FHSILQzc/xqjco8r
+         bT9GJ4plgk8C8FuNddzhBq2FH7q0sSx/XXgMFAVXuTdYeg58Sdp4EKeGXj6r7Kp9s4VB
+         8yc9GP6I8XPRAqI8GSkcbkZ/UxNq212h8rV+LldSsy7gqDA8SgZBfPFKrGBGcirQF2NZ
+         uJNEX8ohmz05cBCIjtYznYxGpw9ZvdLZ3lWJraSBZdVZyBOzyS7B66hWlSXAQdaIkuND
+         SVevuwNg/AaaEC/Y1rHl7AgbwBppPOsunnDOJAtqZKOzN2RSzj0bgA15gZoGUQ9/2MKQ
+         nJIg==
+X-Gm-Message-State: AO0yUKXzmvDMzFFBtbV5QDm+cDueKGsctI6AFR7IVTncQsBn/oMxVyZn
+        H0pjKbNUPYq/O+YbFyZ73s9GBg==
+X-Google-Smtp-Source: AK7set/uSd3//AYqqhhCFEfH0Ok5m+lVZ7EXWmn1DGbTtAc6GBfZFFIssch2KDF07MNh+t+ot+3RdA==
+X-Received: by 2002:adf:da44:0:b0:2ce:6f5a:c3b8 with SMTP id r4-20020adfda44000000b002ce6f5ac3b8mr18530977wrl.31.1678806739558;
+        Tue, 14 Mar 2023 08:12:19 -0700 (PDT)
 Received: from blmsp.fritz.box ([2001:4090:a247:8056:be7d:83e:a6a5:4659])
-        by smtp.gmail.com with ESMTPSA id d9-20020a5d4f89000000b002c707b336c9sm2320158wru.36.2023.03.14.08.12.20
+        by smtp.gmail.com with ESMTPSA id d9-20020a5d4f89000000b002c707b336c9sm2320158wru.36.2023.03.14.08.12.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Mar 2023 08:12:21 -0700 (PDT)
+        Tue, 14 Mar 2023 08:12:19 -0700 (PDT)
 From:   Markus Schneider-Pargmann <msp@baylibre.com>
 To:     Marc Kleine-Budde <mkl@pengutronix.de>,
         Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
@@ -60,9 +60,9 @@ Cc:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH 5/5] can: tcan4x5x: Add support for tcan4552/4553
-Date:   Tue, 14 Mar 2023 16:12:01 +0100
-Message-Id: <20230314151201.2317134-6-msp@baylibre.com>
+Subject: [PATCH 3/5] can: tcan4x5x: Check size of mram configuration
+Date:   Tue, 14 Mar 2023 16:11:59 +0100
+Message-Id: <20230314151201.2317134-4-msp@baylibre.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230314151201.2317134-1-msp@baylibre.com>
 References: <20230314151201.2317134-1-msp@baylibre.com>
@@ -72,198 +72,80 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-tcan4552 and tcan4553 do not have wake or state pins, so they are
-currently not compatible with the generic driver. The generic driver
-uses tcan4x5x_disable_state() and tcan4x5x_disable_wake() if the gpios
-are not defined. These functions use register bits that are not
-available in tcan4552/4553.
+To reduce debugging effort in case the mram is misconfigured, add this
+size check of the DT configuration. Currently if the mram configuration
+doesn't fit into the available MRAM it just overwrites other areas of
+the MRAM.
 
-This patch adds support by introducing version information to reflect if
-the chip has wake and state pins. Also the version is now checked.
-
-Signed-off-by: Markus Schneider-Pargmann
+Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
 ---
- drivers/net/can/m_can/tcan4x5x-core.c | 113 ++++++++++++++++++++------
- 1 file changed, 89 insertions(+), 24 deletions(-)
+ drivers/net/can/m_can/m_can.c         | 16 ++++++++++++++++
+ drivers/net/can/m_can/m_can.h         |  1 +
+ drivers/net/can/m_can/tcan4x5x-core.c |  5 +++++
+ 3 files changed, 22 insertions(+)
 
-diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
-index fb9375fa20ec..e7fa509dacc9 100644
---- a/drivers/net/can/m_can/tcan4x5x-core.c
-+++ b/drivers/net/can/m_can/tcan4x5x-core.c
-@@ -7,6 +7,7 @@
- #define TCAN4X5X_EXT_CLK_DEF 40000000
- 
- #define TCAN4X5X_DEV_ID1 0x00
-+#define TCAN4X5X_DEV_ID1_TCAN 0x4e414354 /* ASCII TCAN */
- #define TCAN4X5X_DEV_ID2 0x04
- #define TCAN4X5X_REV 0x08
- #define TCAN4X5X_STATUS 0x0C
-@@ -103,6 +104,13 @@
- #define TCAN4X5X_WD_3_S_TIMER BIT(29)
- #define TCAN4X5X_WD_6_S_TIMER (BIT(28) | BIT(29))
- 
-+struct tcan4x5x_version_info {
-+	u32 id2_register;
-+
-+	bool has_wake_pin;
-+	bool has_state_pin;
-+};
-+
- static inline struct tcan4x5x_priv *cdev_to_priv(struct m_can_classdev *cdev)
- {
- 	return container_of(cdev, struct tcan4x5x_priv, cdev);
-@@ -254,18 +262,53 @@ static int tcan4x5x_disable_state(struct m_can_classdev *cdev)
- 				  TCAN4X5X_DISABLE_INH_MSK, 0x01);
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 8e83d6963d85..8ccf20f093f8 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1886,6 +1886,22 @@ static int register_m_can_dev(struct net_device *dev)
+ 	return register_candev(dev);
  }
  
--static int tcan4x5x_get_gpios(struct m_can_classdev *cdev)
-+static int tcan4x5x_verify_version(
-+		struct tcan4x5x_priv *priv,
-+		const struct tcan4x5x_version_info *version_info)
++int m_can_check_mram_cfg(struct m_can_classdev *cdev, u32 mram_max_size)
 +{
-+	u32 val;
-+	int ret;
++	u32 total_size;
 +
-+	ret = regmap_read(priv->regmap, TCAN4X5X_DEV_ID1, &val);
-+	if (ret)
-+		return ret;
-+
-+	if (val != TCAN4X5X_DEV_ID1_TCAN) {
-+		dev_err(&priv->spi->dev, "Not a tcan device %x\n", val);
-+		return -ENODEV;
-+	}
-+
-+	if (!version_info->id2_register)
-+		return 0;
-+
-+	ret = regmap_read(priv->regmap, TCAN4X5X_DEV_ID2, &val);
-+	if (ret)
-+		return ret;
-+
-+	if (version_info->id2_register != val) {
-+		dev_err(&priv->spi->dev, "Not the specified TCAN device, id2: %x != %x\n",
-+			version_info->id2_register, val);
-+		return -ENODEV;
++	total_size = cdev->mcfg[MRAM_TXB].off - cdev->mcfg[MRAM_SIDF].off +
++			cdev->mcfg[MRAM_TXB].num * TXB_ELEMENT_SIZE;
++	if (total_size > mram_max_size) {
++		dev_err(cdev->dev, "Total size of mram config(%u) exceeds mram(%u)\n",
++			total_size, mram_max_size);
++		return -EINVAL;
 +	}
 +
 +	return 0;
 +}
++EXPORT_SYMBOL_GPL(m_can_check_mram_cfg);
 +
-+static int tcan4x5x_get_gpios(struct m_can_classdev *cdev,
-+			      const struct tcan4x5x_version_info *version_info)
+ static void m_can_of_parse_mram(struct m_can_classdev *cdev,
+ 				const u32 *mram_config_vals)
  {
- 	struct tcan4x5x_priv *tcan4x5x = cdev_to_priv(cdev);
- 	int ret;
+diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
+index a839dc71dc9b..d8150d8128e7 100644
+--- a/drivers/net/can/m_can/m_can.h
++++ b/drivers/net/can/m_can/m_can.h
+@@ -101,6 +101,7 @@ int m_can_class_register(struct m_can_classdev *cdev);
+ void m_can_class_unregister(struct m_can_classdev *cdev);
+ int m_can_class_get_clocks(struct m_can_classdev *cdev);
+ int m_can_init_ram(struct m_can_classdev *priv);
++int m_can_check_mram_cfg(struct m_can_classdev *cdev, u32 mram_max_size);
  
--	tcan4x5x->device_wake_gpio = devm_gpiod_get(cdev->dev, "device-wake",
--						    GPIOD_OUT_HIGH);
--	if (IS_ERR(tcan4x5x->device_wake_gpio)) {
--		if (PTR_ERR(tcan4x5x->device_wake_gpio) == -EPROBE_DEFER)
--			return -EPROBE_DEFER;
-+	if (version_info->has_wake_pin) {
-+		tcan4x5x->device_wake_gpio = devm_gpiod_get(cdev->dev, "device-wake",
-+							    GPIOD_OUT_HIGH);
-+		if (IS_ERR(tcan4x5x->device_wake_gpio)) {
-+			if (PTR_ERR(tcan4x5x->device_wake_gpio) == -EPROBE_DEFER)
-+				return -EPROBE_DEFER;
+ int m_can_class_suspend(struct device *dev);
+ int m_can_class_resume(struct device *dev);
+diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
+index 2342aa011647..e706518176e4 100644
+--- a/drivers/net/can/m_can/tcan4x5x-core.c
++++ b/drivers/net/can/m_can/tcan4x5x-core.c
+@@ -80,6 +80,7 @@
+ 	 TCAN4X5X_MCAN_IR_RF1F)
  
--		tcan4x5x_disable_wake(cdev);
-+			tcan4x5x_disable_wake(cdev);
-+		}
- 	}
+ #define TCAN4X5X_MRAM_START 0x8000
++#define TCAN4X5X_MRAM_SIZE 0x800
+ #define TCAN4X5X_MCAN_OFFSET 0x1000
  
- 	tcan4x5x->reset_gpio = devm_gpiod_get_optional(cdev->dev, "reset",
-@@ -277,12 +320,14 @@ static int tcan4x5x_get_gpios(struct m_can_classdev *cdev)
- 	if (ret)
- 		return ret;
- 
--	tcan4x5x->device_state_gpio = devm_gpiod_get_optional(cdev->dev,
--							      "device-state",
--							      GPIOD_IN);
--	if (IS_ERR(tcan4x5x->device_state_gpio)) {
--		tcan4x5x->device_state_gpio = NULL;
--		tcan4x5x_disable_state(cdev);
-+	if (version_info->has_state_pin) {
-+		tcan4x5x->device_state_gpio = devm_gpiod_get_optional(cdev->dev,
-+								      "device-state",
-+								      GPIOD_IN);
-+		if (IS_ERR(tcan4x5x->device_state_gpio)) {
-+			tcan4x5x->device_state_gpio = NULL;
-+			tcan4x5x_disable_state(cdev);
-+		}
- 	}
- 
- 	return 0;
-@@ -301,8 +346,13 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
- {
- 	struct tcan4x5x_priv *priv;
- 	struct m_can_classdev *mcan_class;
-+	const struct tcan4x5x_version_info *version_info;
- 	int freq, ret;
- 
-+	version_info = of_device_get_match_data(&spi->dev);
-+	if (!version_info)
-+		version_info = (void *)spi_get_device_id(spi)->driver_data;
-+
- 	mcan_class = m_can_class_allocate_dev(&spi->dev,
- 					      sizeof(struct tcan4x5x_priv));
+ #define TCAN4X5X_CLEAR_ALL_INT 0xffffffff
+@@ -307,6 +308,10 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
  	if (!mcan_class)
-@@ -361,7 +411,11 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
- 	if (ret)
- 		goto out_m_can_class_free_dev;
+ 		return -ENOMEM;
  
--	ret = tcan4x5x_get_gpios(mcan_class);
-+	ret = tcan4x5x_verify_version(priv, version_info);
++	ret = m_can_check_mram_cfg(mcan_class, TCAN4X5X_MRAM_SIZE);
 +	if (ret)
-+		goto out_power;
++		goto out_m_can_class_free_dev;
 +
-+	ret = tcan4x5x_get_gpios(mcan_class, version_info);
- 	if (ret)
- 		goto out_power;
+ 	priv = cdev_to_priv(mcan_class);
  
-@@ -394,21 +448,32 @@ static void tcan4x5x_can_remove(struct spi_device *spi)
- 	m_can_class_free_dev(priv->cdev.net);
- }
- 
-+static const struct tcan4x5x_version_info tcan4x5x_generic = {
-+	.has_state_pin = true,
-+	.has_wake_pin = true,
-+};
-+
-+static const struct tcan4x5x_version_info tcan4x5x_tcan4552 = {
-+	.id2_register = 0x32353534, /* ASCII = 4552 */
-+};
-+
-+static const struct tcan4x5x_version_info tcan4x5x_tcan4553 = {
-+	.id2_register = 0x33353534, /* ASCII = 4553 */
-+};
-+
- static const struct of_device_id tcan4x5x_of_match[] = {
--	{
--		.compatible = "ti,tcan4x5x",
--	}, {
--		/* sentinel */
--	},
-+	{ .compatible = "ti,tcan4x5x", .data = &tcan4x5x_generic },
-+	{ .compatible = "ti,tcan4552", .data = &tcan4x5x_tcan4552 },
-+	{ .compatible = "ti,tcan4553", .data = &tcan4x5x_tcan4553 },
-+	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, tcan4x5x_of_match);
- 
- static const struct spi_device_id tcan4x5x_id_table[] = {
--	{
--		.name = "tcan4x5x",
--	}, {
--		/* sentinel */
--	},
-+	{ .name = "tcan4x5x", .driver_data = (unsigned long) &tcan4x5x_generic, },
-+	{ .name = "tcan4552", .driver_data = (unsigned long) &tcan4x5x_tcan4552, },
-+	{ .name = "tcan4553", .driver_data = (unsigned long) &tcan4x5x_tcan4553, },
-+	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(spi, tcan4x5x_id_table);
- 
+ 	priv->power = devm_regulator_get_optional(&spi->dev, "vsup");
 -- 
 2.39.2
 
