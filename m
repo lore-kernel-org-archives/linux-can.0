@@ -2,150 +2,153 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0367BC7618D
-	for <linux-can@archiver.kernel.org>; Tue, 14 Mar 2023 15:12:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D177C74A4B
+	for <linux-can@archiver.kernel.org>; Tue, 14 Mar 2023 15:38:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231590AbjCNPM0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 14 Mar 2023 11:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54952 "EHLO
+        id S230469AbjCNPim (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 14 Mar 2023 11:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231578AbjCNPMX (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 14 Mar 2023 11:12:23 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 132E0769B
-        for <linux-can@vger.kernel.org>; Tue, 14 Mar 2023 08:12:21 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id l12so6397848wrm.10
-        for <linux-can@vger.kernel.org>; Tue, 14 Mar 2023 08:12:20 -0700 (PDT)
+        with ESMTP id S230300AbjCNPi2 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 14 Mar 2023 11:38:28 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5033A8E9B;
+        Tue, 14 Mar 2023 08:37:39 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id ek18so32546076edb.6;
+        Tue, 14 Mar 2023 08:37:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112; t=1678806739;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nf0FCRqxe9mUuT8bqQbLPIB9gEtjE7LcZZoSf7lbVA4=;
-        b=yaRKA4uN2v5L9uIAwLPb7NpQeJAFI+g0ykjKF9UkFJbLBqz86FR0mBmQtDoIrQJgaE
-         bqnQzKdC0NX48PPGZmgMacf+0c5ZDjkep2cAUmGSyoo90vbk5ylJqUfSv8PQQ1ICa1+l
-         reUBCuaGDebC2aM8f4Lrj9KRacn4vBxcDnusK0ah6+L5IlFR3kD74+Zh/upF2yXB3tJc
-         MwYgwYzPfYRDEP9+A+256LOFj99hDhj2Dg75gEYwwRjy2MP7P/mxeuvwG88lugGp1KlC
-         XCm/UaOb+66IiN5yNAj2pMwAypnc4RFfbgOO+vTF7UU/dO4oE4io7wXRcBHHc7D11mYr
-         6RTg==
+        d=gmail.com; s=20210112; t=1678808224;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fH2THU53sotkebWz3onCTMHoVnM+8nCWx/+krcQxvjk=;
+        b=RsnpsCoFMPh1YTPijCu44lvveoc9nA1YR6pmXmE8hg8nPWksyfJ81uEIUyCB5sR7/n
+         KVsnqTNeDUz9t4MQZyGJ1YrtjN8RzqcYZFT3mVgQmvbiPEi78fIcJPbwiWnlNXN2kRS4
+         C8miA9SvGWcOWywf2Q3SKJeoMkq1TWZ+X5YzhvSfsgFdmsGpAPWo09vDOjED04DpOboy
+         AMwN6tRLgH0YNsvBstWejD90waW0PByraJSegCZpRBC2k6Qx1Tdaf39gou36Bgenljx3
+         Bd1y0vfiZXcTbzoj1SJepVRbB88+oAHemivdm+VkcOYhBmQ5/QlQFHyiz7jPyHGONLiz
+         8O2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678806739;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nf0FCRqxe9mUuT8bqQbLPIB9gEtjE7LcZZoSf7lbVA4=;
-        b=PNaXICuxzc5I6tGiQFXEVIBSg17VuZGjohaBh8DasrJIZUUVa7FHSILQzc/xqjco8r
-         bT9GJ4plgk8C8FuNddzhBq2FH7q0sSx/XXgMFAVXuTdYeg58Sdp4EKeGXj6r7Kp9s4VB
-         8yc9GP6I8XPRAqI8GSkcbkZ/UxNq212h8rV+LldSsy7gqDA8SgZBfPFKrGBGcirQF2NZ
-         uJNEX8ohmz05cBCIjtYznYxGpw9ZvdLZ3lWJraSBZdVZyBOzyS7B66hWlSXAQdaIkuND
-         SVevuwNg/AaaEC/Y1rHl7AgbwBppPOsunnDOJAtqZKOzN2RSzj0bgA15gZoGUQ9/2MKQ
-         nJIg==
-X-Gm-Message-State: AO0yUKXzmvDMzFFBtbV5QDm+cDueKGsctI6AFR7IVTncQsBn/oMxVyZn
-        H0pjKbNUPYq/O+YbFyZ73s9GBg==
-X-Google-Smtp-Source: AK7set/uSd3//AYqqhhCFEfH0Ok5m+lVZ7EXWmn1DGbTtAc6GBfZFFIssch2KDF07MNh+t+ot+3RdA==
-X-Received: by 2002:adf:da44:0:b0:2ce:6f5a:c3b8 with SMTP id r4-20020adfda44000000b002ce6f5ac3b8mr18530977wrl.31.1678806739558;
-        Tue, 14 Mar 2023 08:12:19 -0700 (PDT)
-Received: from blmsp.fritz.box ([2001:4090:a247:8056:be7d:83e:a6a5:4659])
-        by smtp.gmail.com with ESMTPSA id d9-20020a5d4f89000000b002c707b336c9sm2320158wru.36.2023.03.14.08.12.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Mar 2023 08:12:19 -0700 (PDT)
-From:   Markus Schneider-Pargmann <msp@baylibre.com>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
-        Simon Horman <simon.horman@corigine.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH 3/5] can: tcan4x5x: Check size of mram configuration
-Date:   Tue, 14 Mar 2023 16:11:59 +0100
-Message-Id: <20230314151201.2317134-4-msp@baylibre.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230314151201.2317134-1-msp@baylibre.com>
-References: <20230314151201.2317134-1-msp@baylibre.com>
+        d=1e100.net; s=20210112; t=1678808224;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fH2THU53sotkebWz3onCTMHoVnM+8nCWx/+krcQxvjk=;
+        b=2QLaMo4gwavvN8el72XDwwtw2AxTod7J56AnlOPm/TS0mUPahF4ATSHtHzfZS3p5T+
+         bnW643t7dkRiGI/t+BQtyBJvB/pHUvOk19J2+x9rj233LG92kLtn2qwbA4Ec4nFxx//C
+         4hjFfB2kbEWayuuwyO2gSyubbRlLK2euA7NJ4pc+DkiU3wJyEjWjvZo+oYI+IqU8p9E5
+         XR9abj7tUaNF6Xa5uIievXqqly/gClQIDmGRbrKIQnZTC4q/CdjgAQTCdmlsB7CN1ehB
+         NwyutAfovTRNJvoNVSf6wCQF2vo2gdRztR3yCYGNO7/MiylOV8l+GxmFtB92kJZckJBn
+         xeqw==
+X-Gm-Message-State: AO0yUKV58EilhR9TfDWBme25IHLXLYFbk6FX23R5L9SndbFBlX6DpvkE
+        2LZf1LFk563Urusosl40lOY=
+X-Google-Smtp-Source: AK7set8aeRn7CY+Pcz5X+2L8BiG05KWwa0mB1GI59XeSgqhgmxdNw9sXiLGj4qhNYOziVigGbUeEDA==
+X-Received: by 2002:a17:906:73c9:b0:8f0:ba09:4abe with SMTP id n9-20020a17090673c900b008f0ba094abemr14851280ejl.2.1678808223705;
+        Tue, 14 Mar 2023 08:37:03 -0700 (PDT)
+Received: from [192.168.10.15] ([37.252.81.68])
+        by smtp.gmail.com with ESMTPSA id ss10-20020a170907038a00b008e36f9b2308sm1328145ejb.43.2023.03.14.08.37.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Mar 2023 08:37:03 -0700 (PDT)
+Message-ID: <ff0a4ed4-9fde-7a9f-da39-d799dfb946f1@gmail.com>
+Date:   Tue, 14 Mar 2023 19:37:00 +0400
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH] FS, NET: Fix KMSAN uninit-value in vfs_write
+Content-Language: en-US
+To:     Oliver Hartkopp <socketcan@hartkopp.net>, mkl@pengutronix.de,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, himadrispandya@gmail.com,
+        skhan@linuxfoundation.org,
+        syzbot+c9bfd85eca611ebf5db1@syzkaller.appspotmail.com
+References: <20230314120445.12407-1-ivan.orlov0322@gmail.com>
+ <0e7090c4-ca9b-156f-5922-fd7ddb55fee4@hartkopp.net>
+From:   Ivan Orlov <ivan.orlov0322@gmail.com>
+In-Reply-To: <0e7090c4-ca9b-156f-5922-fd7ddb55fee4@hartkopp.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-To reduce debugging effort in case the mram is misconfigured, add this
-size check of the DT configuration. Currently if the mram configuration
-doesn't fit into the available MRAM it just overwrites other areas of
-the MRAM.
+On 3/14/23 18:38, Oliver Hartkopp wrote:
+> Hello Ivan,
+> 
+> besides the fact that we would read some uninitialized value the outcome 
+> of the original implementation would have been an error and a 
+> termination of the copy process too. Maybe throwing a different error 
+> number.
+> 
+> But it is really interesting to see what KMSAN is able to detect these 
+> days! Many thanks for the finding and your effort to contribute this fix!
+> 
+> Best regards,
+> Oliver
+> 
+> 
+> On 14.03.23 13:04, Ivan Orlov wrote:
+>> Syzkaller reported the following issue:
+> 
+> (..)
+> 
+>>
+>> Reported-by: syzbot+c9bfd85eca611ebf5db1@syzkaller.appspotmail.com
+>> Link: 
+>> https://syzkaller.appspot.com/bug?id=47f897f8ad958bbde5790ebf389b5e7e0a345089
+>> Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
+> 
+> Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> 
+> 
+>> ---
+>>   net/can/bcm.c | 16 ++++++++++------
+>>   1 file changed, 10 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/net/can/bcm.c b/net/can/bcm.c
+>> index 27706f6ace34..a962ec2b8ba5 100644
+>> --- a/net/can/bcm.c
+>> +++ b/net/can/bcm.c
+>> @@ -941,6 +941,8 @@ static int bcm_tx_setup(struct bcm_msg_head 
+>> *msg_head, struct msghdr *msg,
+>>               cf = op->frames + op->cfsiz * i;
+>>               err = memcpy_from_msg((u8 *)cf, msg, op->cfsiz);
+>> +            if (err < 0)
+>> +                goto free_op;
+>>               if (op->flags & CAN_FD_FRAME) {
+>>                   if (cf->len > 64)
+>> @@ -950,12 +952,8 @@ static int bcm_tx_setup(struct bcm_msg_head 
+>> *msg_head, struct msghdr *msg,
+>>                       err = -EINVAL;
+>>               }
+>> -            if (err < 0) {
+>> -                if (op->frames != &op->sframe)
+>> -                    kfree(op->frames);
+>> -                kfree(op);
+>> -                return err;
+>> -            }
+>> +            if (err < 0)
+>> +                goto free_op;
+>>               if (msg_head->flags & TX_CP_CAN_ID) {
+>>                   /* copy can_id into frame */
+>> @@ -1026,6 +1024,12 @@ static int bcm_tx_setup(struct bcm_msg_head 
+>> *msg_head, struct msghdr *msg,
+>>           bcm_tx_start_timer(op);
+>>       return msg_head->nframes * op->cfsiz + MHSIZ;
+>> +
+>> +free_op:
+>> +    if (op->frames != &op->sframe)
+>> +        kfree(op->frames);
+>> +    kfree(op);
+>> +    return err;
+>>   }
+>>   /*
 
-Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
----
- drivers/net/can/m_can/m_can.c         | 16 ++++++++++++++++
- drivers/net/can/m_can/m_can.h         |  1 +
- drivers/net/can/m_can/tcan4x5x-core.c |  5 +++++
- 3 files changed, 22 insertions(+)
-
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 8e83d6963d85..8ccf20f093f8 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1886,6 +1886,22 @@ static int register_m_can_dev(struct net_device *dev)
- 	return register_candev(dev);
- }
- 
-+int m_can_check_mram_cfg(struct m_can_classdev *cdev, u32 mram_max_size)
-+{
-+	u32 total_size;
-+
-+	total_size = cdev->mcfg[MRAM_TXB].off - cdev->mcfg[MRAM_SIDF].off +
-+			cdev->mcfg[MRAM_TXB].num * TXB_ELEMENT_SIZE;
-+	if (total_size > mram_max_size) {
-+		dev_err(cdev->dev, "Total size of mram config(%u) exceeds mram(%u)\n",
-+			total_size, mram_max_size);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(m_can_check_mram_cfg);
-+
- static void m_can_of_parse_mram(struct m_can_classdev *cdev,
- 				const u32 *mram_config_vals)
- {
-diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
-index a839dc71dc9b..d8150d8128e7 100644
---- a/drivers/net/can/m_can/m_can.h
-+++ b/drivers/net/can/m_can/m_can.h
-@@ -101,6 +101,7 @@ int m_can_class_register(struct m_can_classdev *cdev);
- void m_can_class_unregister(struct m_can_classdev *cdev);
- int m_can_class_get_clocks(struct m_can_classdev *cdev);
- int m_can_init_ram(struct m_can_classdev *priv);
-+int m_can_check_mram_cfg(struct m_can_classdev *cdev, u32 mram_max_size);
- 
- int m_can_class_suspend(struct device *dev);
- int m_can_class_resume(struct device *dev);
-diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
-index 2342aa011647..e706518176e4 100644
---- a/drivers/net/can/m_can/tcan4x5x-core.c
-+++ b/drivers/net/can/m_can/tcan4x5x-core.c
-@@ -80,6 +80,7 @@
- 	 TCAN4X5X_MCAN_IR_RF1F)
- 
- #define TCAN4X5X_MRAM_START 0x8000
-+#define TCAN4X5X_MRAM_SIZE 0x800
- #define TCAN4X5X_MCAN_OFFSET 0x1000
- 
- #define TCAN4X5X_CLEAR_ALL_INT 0xffffffff
-@@ -307,6 +308,10 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
- 	if (!mcan_class)
- 		return -ENOMEM;
- 
-+	ret = m_can_check_mram_cfg(mcan_class, TCAN4X5X_MRAM_SIZE);
-+	if (ret)
-+		goto out_m_can_class_free_dev;
-+
- 	priv = cdev_to_priv(mcan_class);
- 
- 	priv->power = devm_regulator_get_optional(&spi->dev, "vsup");
--- 
-2.39.2
-
+Thank you for the quick answer! I totally agree that this patch will not 
+change the behavior a lot. However, I think a little bit more error 
+processing will not be bad (considering this will not bring any 
+performance overhead). If someone in the future tries to use the "cf" 
+object right after "memcpy_from_msg" call without proper error 
+processing it will lead to a bug (which will be hard to trigger). Maybe 
+fixing it now to avoid possible future mistakes in the future makes sense?
