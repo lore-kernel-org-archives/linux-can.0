@@ -2,113 +2,97 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C900FC61DA4
-	for <linux-can@archiver.kernel.org>; Wed, 15 Mar 2023 10:49:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5B46C61DA4
+	for <linux-can@archiver.kernel.org>; Wed, 15 Mar 2023 11:06:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbjCOKtd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 15 Mar 2023 06:49:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44086 "EHLO
+        id S231566AbjCOLGk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 15 Mar 2023 07:06:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230155AbjCOKtS (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 15 Mar 2023 06:49:18 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B674D1910B
-        for <linux-can@vger.kernel.org>; Wed, 15 Mar 2023 03:49:16 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id ay8so6983837wmb.1
-        for <linux-can@vger.kernel.org>; Wed, 15 Mar 2023 03:49:16 -0700 (PDT)
+        with ESMTP id S231386AbjCOLGg (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 15 Mar 2023 07:06:36 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F6584F4C
+        for <linux-can@vger.kernel.org>; Wed, 15 Mar 2023 04:06:27 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id bh21-20020a05600c3d1500b003ed1ff06fb0so903974wmb.3
+        for <linux-can@vger.kernel.org>; Wed, 15 Mar 2023 04:06:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112; t=1678877355;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QYG17Rtnr8gV5ite7dBtbf6hPodDL0JdcdTme5+CyEc=;
-        b=MJqL2GnDVXWXFvpn7VMrPfcwsisiOF3OZo800KVL86dwZRBIwb/Kb3aien/UIgIZde
-         PVpaZ0ywKqFkAaWMlqVdUCnr12gLOnAN32ZM5Uel6OawzxivpfzHS9BOj38sAkPTc/yw
-         7jxyVPXIO5+jkILOhUqHPAWGdS658nf/Nl48Nb4Vkbw5beA9LpCrA30WZQr3a8xP/waO
-         MrkK3Kf+eIvJd335SSg7huLJyjT3KOZSPp1S0eLcqe3KxamUrjpuEwEohzt8E6EvFPCv
-         4eB6pPx6ukkt3+wr3u3Vi+4G16KHBcwTtzXtdzJYzbuxpQ2A4CFlLKAMWX0WiutFi1Id
-         y8RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678877355;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112; t=1678878386;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QYG17Rtnr8gV5ite7dBtbf6hPodDL0JdcdTme5+CyEc=;
-        b=x0YrvlrvLPLwwGbVXNZsdiOg73mDU6aeMlS7sb8hlmIa/NedNB98BuKHi88ND8rscW
-         QX41mC4oKk/U0A03F/n8yckf3Ehr0ZG9AaZJOTSfdGtPIQaIxRD7DRN7QrtSOFuHHXhD
-         7akYF1r1KirfLSaZqnpJfPDypdFfHIezd5KiKctUjADGNNpdv/QhiJo5Ka3gCP1hXNev
-         5UqOaUyW275rSkX38zQMwcbbWhS9N5k/3D5KKlLFbI7b/3xAya2wiV3JzijxeLF73SXw
-         /5o8XyOGoTJ92qoZPTSnneoDaFJJZFFoRC5YPc39zcqAJXwjojyqoehrvErc02EOqPhw
-         GFEw==
-X-Gm-Message-State: AO0yUKW1lTeaP+KfYy96FFemRG1YZ17xJsnnOkw5nmHYDN2qy4w6hSly
-        hhdE5byh+m6IlKwsqA/FsiXbOg==
-X-Google-Smtp-Source: AK7set8dmHieNmdKBE2rH1Q6AmnkOphaKK/4pB7QrHicckfg4LljS4YCfVZfgeiVycLrPh7CFK3z8Q==
-X-Received: by 2002:a05:600c:1c96:b0:3eb:3300:1d13 with SMTP id k22-20020a05600c1c9600b003eb33001d13mr17265670wms.14.1678877355250;
-        Wed, 15 Mar 2023 03:49:15 -0700 (PDT)
-Received: from blmsp ([2001:4090:a247:8056:be7d:83e:a6a5:4659])
-        by smtp.gmail.com with ESMTPSA id m16-20020a05600c3b1000b003dc4a47605fsm1516883wms.8.2023.03.15.03.49.14
+        bh=vPa68xqtezsL6sMRTVQ0tfny5rcXKUsYatwd7qGowxE=;
+        b=6WZgOzyygg0zRDnl3x/YHL5WQkORuaTJ3lR0M74jAepA1G3LCh5lIi/ACzhN23kh6t
+         DB+ETgEBdCDGDFCnDfn3UJVs6avbYkgcoKaSccEQ81OtapN79fKP0F/WPpFDUiKQyG6P
+         /c7z4V6opxq/IodaPmKHbrA60YSsQE60iMQsV53eOC6rlGVvK3B2WN1l3p0OfLA4eVzN
+         Qy2mNmBD7eYw4lPY/dAFHwoGRdr9CKiguskEkiqoCIbi1FgJJ/1dp/DI2M3z81VxhVbN
+         Gb7VqWDnGcd/ZDQ0JxaYqBEDLrWJkiOMyhGj+zpULJC8v1D/R3D8WIboM9nepXMVC8dg
+         rrEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678878386;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vPa68xqtezsL6sMRTVQ0tfny5rcXKUsYatwd7qGowxE=;
+        b=Xct8UDdtSduIjKhBp5Udfi68cgusBI7Hzan0a/PaNTMsLxsOKUupysfnh2MLL7biww
+         yGeZKs/7R1bWKRq1XamuwyhxGM3ZHm4UqW5FuKD54QcVVpFOEzvz3F5G5c7DcvuH1veB
+         d5FHUpVj8qX9t0+Zt2j78srA6nb1KBEUPTwZizkgN47nDx0xbdDuts/s3utQxPrv3BLv
+         rgJNSKTiWT5cEgKKOmiwCLymjwzMes0tfBriy6uOODAyOIyXNyITLK9DtYPdrICZuJ5Z
+         KnI0KbG3MxoLhANZfXJ/TaZiqrjVJJLRFoBCWXBjxzqTHiPGJRUzYLa9mUsHkeq8j9Ze
+         7eXg==
+X-Gm-Message-State: AO0yUKUFNFOthNk8CnNGZ4OU/RTczw9DdANqrFOE4KFIJtLWyKdt5rsj
+        OaFLcrH0k6+G8sScz+XaPqr1+Q==
+X-Google-Smtp-Source: AK7set9JUe0wMzSCJXqHUAnQUw+QhcZC4zYsaYFMqvPaJrHOvwKZCKTlaUMmFjuxjePf2A3cWgzEog==
+X-Received: by 2002:a05:600c:548b:b0:3e2:6ec:61ea with SMTP id iv11-20020a05600c548b00b003e206ec61eamr17703012wmb.28.1678878385936;
+        Wed, 15 Mar 2023 04:06:25 -0700 (PDT)
+Received: from blmsp.fritz.box ([2001:4090:a247:8056:be7d:83e:a6a5:4659])
+        by smtp.gmail.com with ESMTPSA id l4-20020a7bc444000000b003eafc47eb09sm1460563wmi.43.2023.03.15.04.06.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Mar 2023 03:49:14 -0700 (PDT)
-Date:   Wed, 15 Mar 2023 11:49:14 +0100
+        Wed, 15 Mar 2023 04:06:25 -0700 (PDT)
 From:   Markus Schneider-Pargmann <msp@baylibre.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
         Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>
+Cc:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
         Simon Horman <simon.horman@corigine.com>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] dt-bindings: can: tcan4x5x: Add tcan4552 and
- tcan4553 variants
-Message-ID: <20230315104914.qpwhnv6drjwau5jr@blmsp>
-References: <20230314151201.2317134-1-msp@baylibre.com>
- <20230314151201.2317134-2-msp@baylibre.com>
- <680053bc-66fb-729f-ecdc-2f5fe511cecd@linaro.org>
+        linux-kernel@vger.kernel.org,
+        Markus Schneider-Pargmann <msp@baylibre.com>
+Subject: [PATCH v3 01/16] can: m_can: Remove repeated check for is_peripheral
+Date:   Wed, 15 Mar 2023 12:05:31 +0100
+Message-Id: <20230315110546.2518305-2-msp@baylibre.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230315110546.2518305-1-msp@baylibre.com>
+References: <20230315110546.2518305-1-msp@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <680053bc-66fb-729f-ecdc-2f5fe511cecd@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi Krzysztof,
+Merge both if-blocks to fix this.
 
-On Tue, Mar 14, 2023 at 09:01:10PM +0100, Krzysztof Kozlowski wrote:
-> On 14/03/2023 16:11, Markus Schneider-Pargmann wrote:
-> > These two new chips do not have state or wake pins.
-> > 
-> > Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-> > ---
-> >  .../devicetree/bindings/net/can/tcan4x5x.txt          | 11 ++++++++---
-> >  1 file changed, 8 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
-> > index e3501bfa22e9..38a2b5369b44 100644
-> > --- a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
-> > +++ b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
-> > @@ -4,7 +4,10 @@ Texas Instruments TCAN4x5x CAN Controller
-> >  This file provides device node information for the TCAN4x5x interface contains.
-> >  
-> >  Required properties:
-> > -	- compatible: "ti,tcan4x5x"
-> > +	- compatible:
-> > +		"ti,tcan4x5x" or
-> > +		"ti,tcan4552" or
-> > +		"ti,tcan4553"
-> 
-> Awesome, they nicely fit into wildcard... Would be useful to deprecate
-> the wildcard at some point and switch to proper compatibles in such
-> case, because now they became confusing.
-> 
-> Anyway:
-> 
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
+---
+ drivers/net/can/m_can/m_can.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Thank you. Indeed the old generic name could be replaced, unfortunately
-I don't have a list of devices that this generic wildcard matches.
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 8e83d6963d85..563625a701fc 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1592,10 +1592,8 @@ static int m_can_close(struct net_device *dev)
+ 		cdev->tx_skb = NULL;
+ 		destroy_workqueue(cdev->tx_wq);
+ 		cdev->tx_wq = NULL;
+-	}
+-
+-	if (cdev->is_peripheral)
+ 		can_rx_offload_disable(&cdev->offload);
++	}
+ 
+ 	close_candev(dev);
+ 
+-- 
+2.39.2
 
-Best,
-Markus
