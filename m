@@ -2,53 +2,53 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAB60C76195
-	for <linux-can@archiver.kernel.org>; Wed, 15 Mar 2023 11:07:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93EF0C6FD1D
+	for <linux-can@archiver.kernel.org>; Wed, 15 Mar 2023 11:07:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231895AbjCOLG7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 15 Mar 2023 07:06:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43920 "EHLO
+        id S231370AbjCOLHA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 15 Mar 2023 07:07:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231503AbjCOLGk (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 15 Mar 2023 07:06:40 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826DE8537D
-        for <linux-can@vger.kernel.org>; Wed, 15 Mar 2023 04:06:32 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id m18-20020a05600c3b1200b003ed2a3d635eso901988wms.4
-        for <linux-can@vger.kernel.org>; Wed, 15 Mar 2023 04:06:32 -0700 (PDT)
+        with ESMTP id S231367AbjCOLGi (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 15 Mar 2023 07:06:38 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE0283177
+        for <linux-can@vger.kernel.org>; Wed, 15 Mar 2023 04:06:30 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id r19-20020a05600c459300b003eb3e2a5e7bso919258wmo.0
+        for <linux-can@vger.kernel.org>; Wed, 15 Mar 2023 04:06:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112; t=1678878391;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112; t=1678878389;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4G51EsWXQSEVtcp1NG3mD14IHUOx70eoIPFV54V3mcs=;
-        b=72BvkdADVNjAa//Jme41vk/2ZmgkszfBpEMKZ60sdwjtfF6qTaHNZzJmsTkwx88AqO
-         sYYYbSDb+bDMGj0ThqGzZRhJDpBwtCA41s4V5c4SO3cLj75hEGAHmLiLsS1C8ZAAOdKZ
-         BnDbuRc0Xd+0ZMz2OJF5QdH/IWXb/0M6cyWg4d2BMB3+52sarKFCxFrhDm2PecL+bDwe
-         debh6WkcdC5yTFublpG7Bi/i+kj6SKVAM7IHtOgNOnAanQVGyKYtqkaJm4OSDoz5lHeW
-         JYBxrt22Tp9gfXeSc8zOQt5dyyuTZs35OH/3K3RMy3889Axt4i0ZFuk1KaBmcqqckUfr
-         PJRA==
+        bh=YFt4bxPMCgWg0M7+jSOYYgnyoXJC6PqUm+WV19TP9H4=;
+        b=osaePjHp3RUs+eN/4I1mDejB79EY61Itw7Y16r9hbWxfv60LpNsBSXMxYcff1nEF1c
+         H8D8bgR4ayHvgrZI3fTPQ2JyhzgVCW4VnvK3AgPtvJwaay44H7tBzD6tFtb7YkgaAKWk
+         hsZRE+xijpqBCm7nXKZOhdL241g749MaTKmbjyWkKm2waIJ9+JK8KYDSzWbbgHdQ1xqQ
+         YftE5KtMuine9O4ukfkBRPqc18/jrD7DcDn8gkLMYw5oc8QZz5DY/xiCYDVyUmAlHUx3
+         5KYJzKnbbrDptDcsUgpq920v8ulCVVxnhqLaULtjbge8DyJ9u/pYL4e0/v2HdJTlLR/b
+         rqeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678878391;
+        d=1e100.net; s=20210112; t=1678878389;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4G51EsWXQSEVtcp1NG3mD14IHUOx70eoIPFV54V3mcs=;
-        b=p7uIwlo8XbA8qvzVnWqEZWuU3kX+8zefjqCc3vhhHtj+J8I7Q6gEoSo7XOj8HsMqsX
-         YNZH9aiZzEcH8wZQAF+06WvGIEFbYPrxA66LG2wgWb4u7DVQsw2ftT5k+lHP/ppsoP2m
-         hm/995TcAS9it5V7igCMjzri70wS5eaVNGthuL81mYS68wbe48EyfMRsWZLyBNvj6DVU
-         LGxiUfy5zsGnRV5nLjAsSVSruZBWUJROQDI6o7lIC2YAadzDu1JJmQCiXqrKkSggqwdm
-         SEojo+KFSoo7CvlyMJ7nN7Bq9Po3osL3DhuoSW36hexL4Tyl4O4ea3MM6YeGR4CBUUv1
-         A+Ig==
-X-Gm-Message-State: AO0yUKUNDODpL1ZNExOllkTRHV+V/XR33NUmK88pSfcUCun6XdcePp1d
-        2ug87iWw7CX8tetdtE8WSa385A==
-X-Google-Smtp-Source: AK7set8w1hmTzg92IG0jHG+mf8hEnjjY0U67BwBBI9PGNrCoNUG1+/olZ8NThQ0LZWw0eP1kwTIRkA==
-X-Received: by 2002:a05:600c:4fd1:b0:3ed:377b:19d4 with SMTP id o17-20020a05600c4fd100b003ed377b19d4mr551186wmq.0.1678878391024;
-        Wed, 15 Mar 2023 04:06:31 -0700 (PDT)
+        bh=YFt4bxPMCgWg0M7+jSOYYgnyoXJC6PqUm+WV19TP9H4=;
+        b=WTjfQm9AHs251qZsfNA8EQzdxEqcqkrtksSQ0aYfLOCYmWZWyqM3c8jvHIwgRnbllL
+         WG4r9M7UwStZLSChwqKXykgjZ9SPDd2KzU3vmLJiovts7meiln7dGc8f20L5UeDdtRg/
+         m6UaljnKZwvbPUin0xSisaYcntIV6WJoMY3krTHdTUmK7tWJmdKd93D53DJmbMFBJ83y
+         XRJXlfS6JsSdl8mkYds6gqiATZXZoSMCjma/8pfL96lOIUetChmb4z1r0+tLUv+UhGKu
+         7TmDIpp/Kk7aldmJwB1pV4PnNTGaRTBM16tFmU/r45bs5v7WmUJHWEJJo5sY2aOkizn3
+         xduQ==
+X-Gm-Message-State: AO0yUKUa0CpQLBQTIdlxIsupjA9xuYR6DF50WSC9l89c+i7AMhQZ9ChL
+        FVsMMh+ih1/Znt32dL1QL8i/hw==
+X-Google-Smtp-Source: AK7set9SrrVIO5Tr5u+pitVvtYokI1zVZagd2UZW/FYEt80ZOdbt76dQ6LjaMH2+a6Vdbv1k+akbow==
+X-Received: by 2002:a05:600c:3595:b0:3ed:2a91:3bc9 with SMTP id p21-20020a05600c359500b003ed2a913bc9mr6268192wmq.15.1678878389346;
+        Wed, 15 Mar 2023 04:06:29 -0700 (PDT)
 Received: from blmsp.fritz.box ([2001:4090:a247:8056:be7d:83e:a6a5:4659])
-        by smtp.gmail.com with ESMTPSA id l4-20020a7bc444000000b003eafc47eb09sm1460563wmi.43.2023.03.15.04.06.30
+        by smtp.gmail.com with ESMTPSA id l4-20020a7bc444000000b003eafc47eb09sm1460563wmi.43.2023.03.15.04.06.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Mar 2023 04:06:30 -0700 (PDT)
+        Wed, 15 Mar 2023 04:06:28 -0700 (PDT)
 From:   Markus Schneider-Pargmann <msp@baylibre.com>
 To:     Marc Kleine-Budde <mkl@pengutronix.de>,
         Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
@@ -58,9 +58,9 @@ Cc:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH v3 07/16] can: m_can: Implement receive coalescing
-Date:   Wed, 15 Mar 2023 12:05:37 +0100
-Message-Id: <20230315110546.2518305-8-msp@baylibre.com>
+Subject: [PATCH v3 05/16] can: m_can: Keep interrupts enabled during peripheral read
+Date:   Wed, 15 Mar 2023 12:05:35 +0100
+Message-Id: <20230315110546.2518305-6-msp@baylibre.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230315110546.2518305-1-msp@baylibre.com>
 References: <20230315110546.2518305-1-msp@baylibre.com>
@@ -70,187 +70,48 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-m_can offers the possibility to set an interrupt on reaching a watermark
-level in the receive FIFO. This can be used to implement coalescing.
-Unfortunately there is no hardware timeout available to trigger an
-interrupt if only a few messages were received within a given time. To
-solve this I am using a hrtimer to wake up the irq thread after x
-microseconds.
-
-The timer is always started if receive coalescing is enabled and new
-received frames were available during an interrupt. The timer is stopped
-if during a interrupt handling no new data was available.
-
-If the timer is started the new item interrupt is disabled and the
-watermark interrupt takes over. If the timer is not started again, the
-new item interrupt is enabled again, notifying the handler about every
-new item received.
+Interrupts currently get disabled if the interrupt status shows new
+received data. Non-peripheral chips handle receiving in a worker thread,
+but peripheral chips are handling the receive process in the threaded
+interrupt routine itself without scheduling it for a different worker.
+So there is no need to disable interrupts for peripheral chips.
 
 Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
 ---
- drivers/net/can/m_can/m_can.c | 69 ++++++++++++++++++++++++++++++++---
- drivers/net/can/m_can/m_can.h |  7 ++++
- 2 files changed, 70 insertions(+), 6 deletions(-)
+ drivers/net/can/m_can/m_can.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 35a2332464e5..e7dc083e32e4 100644
+index e7aceeba3759..a5003435802b 100644
 --- a/drivers/net/can/m_can/m_can.c
 +++ b/drivers/net/can/m_can/m_can.c
-@@ -1070,15 +1070,55 @@ static int m_can_echo_tx_event(struct net_device *dev)
- 	return err;
- }
- 
-+static void m_can_interrupt_enable(struct m_can_classdev *cdev, u32 interrupts)
-+{
-+	if (cdev->active_interrupts == interrupts)
-+		return;
-+	cdev->ops->write_reg(cdev, M_CAN_IE, interrupts);
-+	cdev->active_interrupts = interrupts;
-+}
-+
-+static void m_can_coalescing_disable(struct m_can_classdev *cdev)
-+{
-+	u32 new_interrupts = cdev->active_interrupts | IR_RF0N;
-+
-+	hrtimer_cancel(&cdev->irq_timer);
-+	m_can_interrupt_enable(cdev, new_interrupts);
-+}
-+
-+static void m_can_coalescing_update(struct m_can_classdev *cdev, u32 ir)
-+{
-+	u32 new_interrupts = cdev->active_interrupts;
-+	bool enable_timer = false;
-+
-+	if (cdev->rx_coalesce_usecs_irq > 0 && (ir & (IR_RF0N | IR_RF0W))) {
-+		enable_timer = true;
-+		new_interrupts &= ~IR_RF0N;
-+	} else if (!hrtimer_active(&cdev->irq_timer)) {
-+		new_interrupts |= IR_RF0N;
-+	}
-+
-+	m_can_interrupt_enable(cdev, new_interrupts);
-+	if (enable_timer) {
-+		hrtimer_start(&cdev->irq_timer,
-+			      ns_to_ktime(cdev->rx_coalesce_usecs_irq * NSEC_PER_USEC),
-+			      HRTIMER_MODE_REL);
-+	}
-+}
-+
- static irqreturn_t m_can_isr(int irq, void *dev_id)
- {
- 	struct net_device *dev = (struct net_device *)dev_id;
- 	struct m_can_classdev *cdev = netdev_priv(dev);
- 	u32 ir;
- 
--	if (pm_runtime_suspended(cdev->dev))
-+	if (pm_runtime_suspended(cdev->dev)) {
-+		m_can_coalescing_disable(cdev);
- 		return IRQ_NONE;
-+	}
-+
- 	ir = m_can_read(cdev, M_CAN_IR);
-+	m_can_coalescing_update(cdev, ir);
- 	if (!ir)
- 		return IRQ_NONE;
- 
-@@ -1093,13 +1133,17 @@ static irqreturn_t m_can_isr(int irq, void *dev_id)
- 	 * - state change IRQ
- 	 * - bus error IRQ and bus error reporting
+@@ -972,8 +972,8 @@ static int m_can_rx_peripheral(struct net_device *dev, u32 irqstatus)
+ 	/* Don't re-enable interrupts if the driver had a fatal error
+ 	 * (e.g., FIFO read failure).
  	 */
--	if ((ir & IR_RF0N) || (ir & IR_ERR_ALL_30X)) {
-+	if (ir & (IR_RF0N | IR_RF0W | IR_ERR_ALL_30X)) {
- 		cdev->irqstatus = ir;
- 		if (!cdev->is_peripheral) {
- 			m_can_disable_all_interrupts(cdev);
- 			napi_schedule(&cdev->napi);
--		} else if (m_can_rx_peripheral(dev, ir) < 0) {
--			goto out_fail;
-+		} else {
-+			int pkts;
-+
-+			pkts = m_can_rx_peripheral(dev, ir);
-+			if (pkts < 0)
-+				goto out_fail;
- 		}
- 	}
+-	if (work_done >= 0)
+-		m_can_enable_all_interrupts(cdev);
++	if (work_done < 0)
++		m_can_disable_all_interrupts(cdev);
  
-@@ -1135,6 +1179,15 @@ static irqreturn_t m_can_isr(int irq, void *dev_id)
- 	return IRQ_HANDLED;
+ 	return work_done;
  }
- 
-+static enum hrtimer_restart m_can_irq_timer(struct hrtimer *timer)
-+{
-+	struct m_can_classdev *cdev = container_of(timer, struct m_can_classdev, irq_timer);
-+
-+	irq_wake_thread(cdev->net->irq, cdev->net);
-+
-+	return HRTIMER_NORESTART;
-+}
-+
- static const struct can_bittiming_const m_can_bittiming_const_30X = {
- 	.name = KBUILD_MODNAME,
- 	.tseg1_min = 2,		/* Time segment 1 = prop_seg + phase_seg1 */
-@@ -1275,7 +1328,7 @@ static int m_can_chip_config(struct net_device *dev)
- 	/* Disable unused interrupts */
- 	interrupts &= ~(IR_ARA | IR_ELO | IR_DRX | IR_TEFF | IR_TEFW | IR_TFE |
- 			IR_TCF | IR_HPM | IR_RF1F | IR_RF1W | IR_RF1N |
--			IR_RF0F | IR_RF0W);
-+			IR_RF0F);
- 
- 	m_can_config_endisable(cdev, true);
- 
-@@ -1319,6 +1372,7 @@ static int m_can_chip_config(struct net_device *dev)
- 
- 	/* rx fifo configuration, blocking mode, fifo size 1 */
- 	m_can_write(cdev, M_CAN_RXF0C,
-+		    FIELD_PREP(RXFC_FWM_MASK, cdev->rx_max_coalesced_frames_irq) |
- 		    FIELD_PREP(RXFC_FS_MASK, cdev->mcfg[MRAM_RXF0].num) |
- 		    cdev->mcfg[MRAM_RXF0].off);
- 
-@@ -1377,7 +1431,7 @@ static int m_can_chip_config(struct net_device *dev)
- 		else
- 			interrupts &= ~(IR_ERR_LEC_31X);
+@@ -1095,11 +1095,12 @@ static irqreturn_t m_can_isr(int irq, void *dev_id)
+ 	 */
+ 	if ((ir & IR_RF0N) || (ir & IR_ERR_ALL_30X)) {
+ 		cdev->irqstatus = ir;
+-		m_can_disable_all_interrupts(cdev);
+-		if (!cdev->is_peripheral)
++		if (!cdev->is_peripheral) {
++			m_can_disable_all_interrupts(cdev);
+ 			napi_schedule(&cdev->napi);
+-		else if (m_can_rx_peripheral(dev, ir) < 0)
++		} else if (m_can_rx_peripheral(dev, ir) < 0) {
+ 			goto out_fail;
++		}
  	}
--	m_can_write(cdev, M_CAN_IE, interrupts);
-+	m_can_interrupt_enable(cdev, interrupts);
  
- 	/* route all interrupts to INT0 */
- 	m_can_write(cdev, M_CAN_ILS, ILS_ALL_INT0);
-@@ -2041,6 +2095,9 @@ int m_can_class_register(struct m_can_classdev *cdev)
- 
- 	of_can_transceiver(cdev->net);
- 
-+	hrtimer_init(&cdev->irq_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+	cdev->irq_timer.function = m_can_irq_timer;
-+
- 	dev_info(cdev->dev, "%s device registered (irq=%d, version=%d)\n",
- 		 KBUILD_MODNAME, cdev->net->irq, cdev->version);
- 
-diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
-index a839dc71dc9b..c59099d3f5b9 100644
---- a/drivers/net/can/m_can/m_can.h
-+++ b/drivers/net/can/m_can/m_can.h
-@@ -84,6 +84,8 @@ struct m_can_classdev {
- 	struct sk_buff *tx_skb;
- 	struct phy *transceiver;
- 
-+	struct hrtimer irq_timer;
-+
- 	struct m_can_ops *ops;
- 
- 	int version;
-@@ -92,6 +94,11 @@ struct m_can_classdev {
- 	int pm_clock_support;
- 	int is_peripheral;
- 
-+	// Cached M_CAN_IE register content
-+	u32 active_interrupts;
-+	u32 rx_max_coalesced_frames_irq;
-+	u32 rx_coalesce_usecs_irq;
-+
- 	struct mram_cfg mcfg[MRAM_CFG_NUM];
- };
- 
+ 	if (cdev->version == 30) {
 -- 
 2.39.2
 
