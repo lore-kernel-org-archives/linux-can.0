@@ -2,93 +2,53 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 693C3C6FD1F
-	for <linux-can@archiver.kernel.org>; Fri, 17 Mar 2023 00:07:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DDE1C6FD1D
+	for <linux-can@archiver.kernel.org>; Fri, 17 Mar 2023 09:19:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbjCQAHb (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 16 Mar 2023 20:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44426 "EHLO
+        id S229648AbjCQJTS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 17 Mar 2023 05:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230011AbjCQAH2 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 16 Mar 2023 20:07:28 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B3C738B0;
-        Thu, 16 Mar 2023 17:07:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C6F36B822EC;
-        Fri, 17 Mar 2023 00:07:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12907C433EF;
-        Fri, 17 Mar 2023 00:07:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679011638;
-        bh=qfqozMAegKijY8JNbuj9EKz7MePhaVeyD54LoSNyvDA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZhWPY3/M3Sqi+evrt88Clwt3B9SMEDaX2TLOVy+k7nLqDt057pQc0Pbxk02rspClR
-         626vz/UV35x2vMwvvCF9Qtn6hli5foqzEvZXwtxFkb91PPN2Zkq81L95WTOgddmw7H
-         iHcIfXk+406ouIkKWI9q/pfGjJg0MdTGUOD7rU9YzQfV7NaIg8MBs8iWayNU6qUX+q
-         wKc9kko5zNaRoPQAw9578Em3wT39m1Iw3qu1xGG2XRFx+UwskZWBKZQYNkS2KuJ2F+
-         EZYT/CuLzjp6JhmwRvJuhjJqMYLNomtdp66H/StV9XEWgx+3Eoz9R+1rtUQbZHOCM/
-         t1CoZWi1wh6oA==
-Date:   Thu, 16 Mar 2023 17:07:16 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Francois Romieu <romieu@fr.zoreil.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Zhao Qiang <qiang.zhao@nxp.com>, Kalle Valo <kvalo@kernel.org>,
-        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-omap@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-wireless@vger.kernel.org
-Subject: Re: [PATCH v2] net: Use of_property_read_bool() for boolean
- properties
-Message-ID: <20230316170716.7039161d@kernel.org>
-In-Reply-To: <20230314191828.914124-1-robh@kernel.org>
-References: <20230314191828.914124-1-robh@kernel.org>
+        with ESMTP id S231290AbjCQJTQ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 17 Mar 2023 05:19:16 -0400
+X-Greylist: delayed 1126 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 17 Mar 2023 02:19:15 PDT
+Received: from mail.edsonnith.pl (mail.edsonnith.pl [195.231.83.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B03D5C107
+        for <linux-can@vger.kernel.org>; Fri, 17 Mar 2023 02:19:15 -0700 (PDT)
+Received: by mail.edsonnith.pl (Postfix, from userid 1002)
+        id E57CA829F9; Fri, 17 Mar 2023 09:45:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=edsonnith.pl; s=mail;
+        t=1679042782; bh=R834O9ZKPsOqL7TcrHze/mUM6BZ0xyR+u5GqXjK8tTo=;
+        h=Date:From:To:Subject:From;
+        b=lx6ALYalOo7iKit3pKpr0DI5RUOQNYBXSuc6Q/PgbeyOlMWG/zkxn84zJy5d5hL8w
+         zjDydVx36K5gA6jp1p/a7dfSzRFqEZHB9uQhnyrVae/Rov7A+O+l5QMhHb/apyR940
+         djCsAbx7cQwmXBHpCSJKNilxQSU0XM8XIbJ+VUWnJ3q5i0cgDoZmvfirWsceKRwFBc
+         kL9lXU8ckz5D0crPywK4glPkQCYUx+lVo1iOhzUajloxgZDiabqDooFTr2k5aZDTIq
+         A8Fo3sJs5lPvR8BAfqein3FMdC7SOyaQbtIhjLItFMsiWxz4DYLXCGaMraPNm77o9J
+         jBQD6lqaD4dZQ==
+Received: by mail.edsonnith.pl for <linux-can@vger.kernel.org>; Fri, 17 Mar 2023 08:45:43 GMT
+Message-ID: <20230317084500-0.1.7.7t0.0.26316abd4m@edsonnith.pl>
+Date:   Fri, 17 Mar 2023 08:45:43 GMT
+From:   "Maciej Przybylski" <maciej.przybylski@edsonnith.pl>
+To:     <linux-can@vger.kernel.org>
+Subject: =?UTF-8?Q?Pytanie_o_wycen=C4=99_?=
+X-Mailer: mail.edsonnith.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Tue, 14 Mar 2023 14:18:27 -0500 Rob Herring wrote:
-> It is preferred to use typed property access functions (i.e.
-> of_property_read_<type> functions) rather than low-level
-> of_get_property/of_find_property functions for reading properties.
-> Convert reading boolean properties to of_property_read_bool().
-> 
-> Reviewed-by: Simon Horman <simon.horman@corigine.com>
-> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # for net/can
-> Acked-by: Kalle Valo <kvalo@kernel.org>
-> Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-> Acked-by: Francois Romieu <romieu@fr.zoreil.com>
-> Reviewed-by: Wei Fang <wei.fang@nxp.com>
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Dzie=C5=84 dobry,
 
-Applied, to net(?), thanks!
+Czy poszukuj=C4=85 Pa=C5=84stwo aktualnie nowych klient=C3=B3w z segmentu=
+ B2B?
+
+Wspieramy firmy w nawi=C4=85zywaniu relacji biznesowych.
+
+Czy mo=C5=BCemy porozmawia=C4=87?
+
+
+Pozdrawiam
+Maciej Przybylski
