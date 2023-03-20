@@ -2,130 +2,186 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 261F8C76195
-	for <linux-can@archiver.kernel.org>; Mon, 20 Mar 2023 18:16:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33D2CC6FD1C
+	for <linux-can@archiver.kernel.org>; Mon, 20 Mar 2023 20:23:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231230AbjCTSQV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 20 Mar 2023 14:16:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50370 "EHLO
+        id S230479AbjCTUWs (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 20 Mar 2023 16:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbjCTSPy (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 20 Mar 2023 14:15:54 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D27649F3;
-        Mon, 20 Mar 2023 11:09:58 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id n2so14211254qtp.0;
-        Mon, 20 Mar 2023 11:09:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679335763;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9Ym0Aa6IJr35fCbX8wJyITkzyONp9K1eXcn9gLrMKEM=;
-        b=jV+wT9G9dMq++VXoHOITcaMwSKfT7Ne8l6voVfiCeH20VK0uzRJIf9CA2v8jn1mE42
-         9De/qJTXiN3NlwKDdk7NArH7WT5H+4m7s71wZTV+2BygDTiQuwk+mRLMpRhBukxFua9x
-         67hE9fL+3OgJ1dTRBMXtTwDXEznGIlnqEuoH6BXNz+DtDWm5LZSaKbCnlxFhePXKvQQw
-         biWPqZK1eoCZ6HeXFY1w+DmsNHS4W090fENE/el13ZE/cuRLHNVC7Li/p30/Ai1N8xhv
-         3ejM9NTyAoTh9dtKbufIgtWOwd6srKtNAzDZ9KiKE0PTE7Lb1wYokPUbe9HLqHLVnTp7
-         mdLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679335763;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9Ym0Aa6IJr35fCbX8wJyITkzyONp9K1eXcn9gLrMKEM=;
-        b=NHVzLYtMKdmsPkDgLcR0Hyt1XcwdYrZ7B7LtiPC1O0eiQeXLJE5a8q32RtCpnnmmcY
-         YDaKHsVM/VhH+pG+zQiieMGHhVbRjsaKATzEHtRTJ4gKGW06JAGUfSN6rIZLaYqi7tqh
-         t+gFFGmvcfDeZ0qH+ezUoIlCOCTBWgzCB5dP27sPitDx4P+NVwho/KiD+X6rUDZbjHQs
-         f6RknlOTBlTlNKxTHaUhHQ9+pMx8c8Qs1tiz5Y0XvTMy4uxsPG3ldAP8FmILHFuc+8Pv
-         z3T9KNERiVevWE4bZoEtZ5RYteukkWoO03Wg8R5it6IFxHrf3Y6Xz+r+YAa7IrQy+3MI
-         hYVQ==
-X-Gm-Message-State: AO0yUKV2sbjaC3xcTteESAd6/v2KVSJxbC5aao3XsB06ipmsbiP85cIq
-        nHlxVfLjV7/9+hgRoh/YVuY=
-X-Google-Smtp-Source: AK7set/rOHA8qVlayMALPx0FGjCcSWh/Kq1WvV8aodxfR3XsSBymHa1dS0evHblRHeVucdEeSCUF5g==
-X-Received: by 2002:a05:622a:190e:b0:3d7:1979:829e with SMTP id w14-20020a05622a190e00b003d71979829emr125230qtc.27.1679335763440;
-        Mon, 20 Mar 2023 11:09:23 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id l16-20020ac84a90000000b003d4ee7879d0sm2042741qtq.56.2023.03.20.11.09.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Mar 2023 11:09:22 -0700 (PDT)
-Message-ID: <82ae9fd5-a4f9-89a6-8040-c64d22a85ebb@gmail.com>
-Date:   Mon, 20 Mar 2023 11:08:56 -0700
+        with ESMTP id S231213AbjCTUWp (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 20 Mar 2023 16:22:45 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5E834018;
+        Mon, 20 Mar 2023 13:22:38 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1679343755; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=WabEYtxg0GhcVUg+ZQ8OJStGRt0hW2LMwdx6Skk7zlnlAQjEcxjcc4bgZ/nGpafDTX
+    XiHVeG0SyM2RM8oW9VGrvRW3AFYw7TwQoVPexHGz9k1X/iLaudUkhfS26A6d4kj3PQcA
+    GBvd2V0wtqHe5UMT6Dc4TeFpKTC8L2WzN4Tf2UQ5U9wxN/5O6bjhwLnqA2OWsCS5avqo
+    XocDEu3jjRPMe6Oq6+/CnWG+ICiYmGg4aZ18WdvfLhsF1inaqKR2o/vaeb6uZXsB4cur
+    nWkqu2R43SPws1k4lTwsgh64/cz7enDnxU9O1prymZdulGahQ36AGSJ3b6+q75usGDVt
+    NM7Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1679343755;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=fFqiOgGa9vKnUU9LvZri6TcGJQy+wwvmK0goIayR468=;
+    b=PcnN/Cp5vWZ4b/DVn8q6l1z+oIA+i5Q+Mh+rmN/stP7STEAUcI4iR9Dgqdf+eUFmP+
+    Hjj6BdbrdrqdBaaWHi8gB6iLYVTH5fRpa1oAeCaYj2Izs2qXOvKIfzMlN9B/d78H7+Rp
+    2Ebzyg3Tjv3fExAXDacAEsOc1DY1ZEN3HCLwHVmwblG3NgV2BRGYa8QhjnsPjyhw6Mjl
+    brfs1Wl8VXmVen4Ca+6OWOLUUYEBEDI3foGM4F/m8d/oK+jyFXeFQecKmSJ916FTnU00
+    uOY2AalXo1owzQsjSx0654Cvzk28qoIiYG2rZMe8BVcdB2cFZW/onGKwwxT/uNDi/zeo
+    ffPw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1679343755;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=fFqiOgGa9vKnUU9LvZri6TcGJQy+wwvmK0goIayR468=;
+    b=EI3g7CY+vUOBK4IP8WknJBVa2sn4Q/wRwtY4dhbgG/doliFJqxzM8ZIF8Zh39RXV5m
+    fFlPHTN7l7MW4jRY84+cLXOV/boM4XljJhiNfO6CCvqty99/Np4dtFsXtX6shvZ0sO0r
+    fDNsIsn9DrSk2h1t5o+K/NmjPNZ6vE13VYzdlckD+OaRW0QmQJCQ28ZJ7xecvz//ce9o
+    mi1GqzPHxarVRevQUhazHRba1biOeS3VvjtZ5V2Qd9Ys/+DP/436k2DIQanqfegvwBg4
+    TyAwAMqg0GwmLcHa8YrPTZpEW7Z070AXaSh6uVFAAVxXRdjIQImPJTzsFNj+S9iBd7fG
+    pT0w==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusl129OHEdFq0USEbDUQnQ=="
+Received: from [IPV6:2a00:6020:4a8e:5000::923]
+    by smtp.strato.de (RZmta 49.3.1 AUTH)
+    with ESMTPSA id n9397fz2KKMYBmb
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 20 Mar 2023 21:22:34 +0100 (CET)
+Message-ID: <b5c30cb9-f35f-01b1-21b8-4658d46a5c1d@hartkopp.net>
+Date:   Mon, 20 Mar 2023 21:22:29 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH] dt-bindings: net: Drop unneeded quotes
+ Thunderbird/102.9.0
+Subject: Re: [PATCH] FS, NET: Fix KMSAN uninit-value in vfs_write
 Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
-        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Daniel Machon <daniel.machon@microchip.com>,
-        UNGLinuxDriver@microchip.com, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-aspeed@lists.ozlabs.org,
-        linux-can@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-mediatek@lists.infradead.org
-References: <20230317233605.3967621-1-robh@kernel.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20230317233605.3967621-1-robh@kernel.org>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Ivan Orlov <ivan.orlov0322@gmail.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, himadrispandya@gmail.com,
+        skhan@linuxfoundation.org,
+        syzbot+c9bfd85eca611ebf5db1@syzkaller.appspotmail.com
+References: <20230314120445.12407-1-ivan.orlov0322@gmail.com>
+ <0e7090c4-ca9b-156f-5922-fd7ddb55fee4@hartkopp.net>
+ <ff0a4ed4-9fde-7a9f-da39-d799dfb946f1@gmail.com>
+ <b4abefa2-16d0-a18c-4614-1786eb94ffab@hartkopp.net>
+ <20230320154053.x3h54b2s3r7iclby@pengutronix.de>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <20230320154053.x3h54b2s3r7iclby@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On 3/17/23 16:36, Rob Herring wrote:
-> Cleanup bindings dropping unneeded quotes. Once all these are fixed,
-> checking for this can be enabled in yamllint.
+
+
+On 20.03.23 16:40, Marc Kleine-Budde wrote:
+> On 14.03.2023 20:23:47, Oliver Hartkopp wrote:
+>>
+>>
+>> On 14.03.23 16:37, Ivan Orlov wrote:
+>>> On 3/14/23 18:38, Oliver Hartkopp wrote:
+>>>> Hello Ivan,
+>>>>
+>>>> besides the fact that we would read some uninitialized value the
+>>>> outcome of the original implementation would have been an error and
+>>>> a termination of the copy process too. Maybe throwing a different
+>>>> error number.
+>>>>
+>>>> But it is really interesting to see what KMSAN is able to detect
+>>>> these days! Many thanks for the finding and your effort to
+>>>> contribute this fix!
+>>>>
+>>>> Best regards,
+>>>> Oliver
+>>>>
+>>>>
+>>>> On 14.03.23 13:04, Ivan Orlov wrote:
+>>>>> Syzkaller reported the following issue:
+>>>>
+>>>> (..)
+>>>>
+>>>>>
+>>>>> Reported-by: syzbot+c9bfd85eca611ebf5db1@syzkaller.appspotmail.com
+>>>>> Link: https://syzkaller.appspot.com/bug?id=47f897f8ad958bbde5790ebf389b5e7e0a345089
+>>>>> Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
+>>>>
+>>>> Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+>>>>
+>>>>
+>>>>> ---
+>>>>>    net/can/bcm.c | 16 ++++++++++------
+>>>>>    1 file changed, 10 insertions(+), 6 deletions(-)
+>>>>>
+>>>>> diff --git a/net/can/bcm.c b/net/can/bcm.c
+>>>>> index 27706f6ace34..a962ec2b8ba5 100644
+>>>>> --- a/net/can/bcm.c
+>>>>> +++ b/net/can/bcm.c
+>>>>> @@ -941,6 +941,8 @@ static int bcm_tx_setup(struct bcm_msg_head
+>>>>> *msg_head, struct msghdr *msg,
+>>>>>                cf = op->frames + op->cfsiz * i;
+>>>>>                err = memcpy_from_msg((u8 *)cf, msg, op->cfsiz);
+>>>>> +            if (err < 0)
+>>>>> +                goto free_op;
+>>>>>                if (op->flags & CAN_FD_FRAME) {
+>>>>>                    if (cf->len > 64)
+>>>>> @@ -950,12 +952,8 @@ static int bcm_tx_setup(struct bcm_msg_head
+>>>>> *msg_head, struct msghdr *msg,
+>>>>>                        err = -EINVAL;
+>>>>>                }
+>>>>> -            if (err < 0) {
+>>>>> -                if (op->frames != &op->sframe)
+>>>>> -                    kfree(op->frames);
+>>>>> -                kfree(op);
+>>>>> -                return err;
+>>>>> -            }
+>>>>> +            if (err < 0)
+>>>>> +                goto free_op;
+>>>>>                if (msg_head->flags & TX_CP_CAN_ID) {
+>>>>>                    /* copy can_id into frame */
+>>>>> @@ -1026,6 +1024,12 @@ static int bcm_tx_setup(struct
+>>>>> bcm_msg_head *msg_head, struct msghdr *msg,
+>>>>>            bcm_tx_start_timer(op);
+>>>>>        return msg_head->nframes * op->cfsiz + MHSIZ;
+>>>>> +
+>>>>> +free_op:
+>>>>> +    if (op->frames != &op->sframe)
+>>>>> +        kfree(op->frames);
+>>>>> +    kfree(op);
+>>>>> +    return err;
+>>>>>    }
+>>>>>    /*
+>>>
+>>> Thank you for the quick answer! I totally agree that this patch will not
+>>> change the behavior a lot. However, I think a little bit more error
+>>> processing will not be bad (considering this will not bring any
+>>> performance overhead). If someone in the future tries to use the "cf"
+>>> object right after "memcpy_from_msg" call without proper error
+>>> processing it will lead to a bug (which will be hard to trigger). Maybe
+>>> fixing it now to avoid possible future mistakes in the future makes
+>>> sense?
+>>
+>> Yes! Definitely!
+>>
+>> Therefore I added my Acked-by: tag. Marc will likely pick this patch for
+>> upstream.
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->   .../devicetree/bindings/net/actions,owl-emac.yaml  |  2 +-
->   .../bindings/net/allwinner,sun4i-a10-emac.yaml     |  2 +-
->   .../bindings/net/allwinner,sun4i-a10-mdio.yaml     |  2 +-
->   .../devicetree/bindings/net/altr,tse.yaml          |  2 +-
->   .../bindings/net/aspeed,ast2600-mdio.yaml          |  2 +-
->   .../devicetree/bindings/net/brcm,amac.yaml         |  2 +-
->   .../devicetree/bindings/net/brcm,systemport.yaml   |  2 +-
+> Can you create a proper Fixes tag?
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Fixes: 6f3b911d5f29b ("can: bcm: add support for CAN FD frames")
 
+Btw. do you really think this is a candidate for stable?
+
+IMHO it is just a KMSAN hit that should be fixed for future releases ...
+
+Best regards,
+Oliver
