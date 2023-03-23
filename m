@@ -2,29 +2,30 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8C55C77B60
-	for <linux-can@archiver.kernel.org>; Thu, 23 Mar 2023 11:42:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1E2FC6FD1D
+	for <linux-can@archiver.kernel.org>; Thu, 23 Mar 2023 11:42:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbjCWLm2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 23 Mar 2023 07:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37434 "EHLO
+        id S229451AbjCWLm1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 23 Mar 2023 07:42:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231579AbjCWLm0 (ORCPT
+        with ESMTP id S230491AbjCWLm0 (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 23 Mar 2023 07:42:26 -0400
-X-Greylist: delayed 533 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 23 Mar 2023 04:42:18 PDT
-Received: from out-21.mta0.migadu.com (out-21.mta0.migadu.com [IPv6:2001:41d0:1004:224b::15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3102B9D8
+X-Greylist: delayed 526 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 23 Mar 2023 04:42:18 PDT
+Received: from out-12.mta1.migadu.com (out-12.mta1.migadu.com [95.215.58.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0BE1A978
         for <linux-can@vger.kernel.org>; Thu, 23 Mar 2023 04:42:18 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1679571203;
+        t=1679571214;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=QapdO998ju5K1h6JiZaLNUdVyFQrk/GIUE/NUv0juwU=;
-        b=h1ZCc6s1nZLIVwSUcH9w4+hK6WrZLdx5mTbAlgOreyGNwfVuQg/PiOCwS8FDzUUph4U+md
-        /8YlhihBWY6Wrz7qu13MfwHhurQxa0Efwa6x/UiDiSssbTlWJ/dOFlE1GY5ZmCgzsT/fPT
-        BaRi9CvAMs+/oq6V7FgWRAvLB9LEgnk=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sPZcqQ6jZu5o2Ndux434TvzXwFz3PedsAkujCq96hR8=;
+        b=ecVPWu74WuL7+2PFUH7Yggg/nVH9pne8RIE1QVe5CJ+8Xq4ZFdLn1V0HqFE3lvuurDQtZj
+        /9G2oowpgCtB9bnA1OZtIzXZ/mEtIi6N/0cFs0iop49hOy/BVtJe0XEfC2c1yomRzxucxt
+        uUZZMapq1zx2JabFkDwGGQpqmfGYxL4=
 From:   Cai Huoqing <cai.huoqing@linux.dev>
 To:     cai.huoqing@linux.dev
 Cc:     Wolfgang Grandegger <wg@grandegger.com>,
@@ -36,9 +37,11 @@ Cc:     Wolfgang Grandegger <wg@grandegger.com>,
         Pavel Pisa <pisa@cmp.felk.cvut.cz>,
         Ondrej Ille <ondrej.ille@gmail.com>, linux-can@vger.kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] can: c_can: Remove redundant pci_clear_master
-Date:   Thu, 23 Mar 2023 19:33:15 +0800
-Message-Id: <20230323113318.9473-1-cai.huoqing@linux.dev>
+Subject: [PATCH 3/3] can: kvaser_pciefd: Remove redundant pci_clear_master
+Date:   Thu, 23 Mar 2023 19:33:17 +0800
+Message-Id: <20230323113318.9473-3-cai.huoqing@linux.dev>
+In-Reply-To: <20230323113318.9473-1-cai.huoqing@linux.dev>
+References: <20230323113318.9473-1-cai.huoqing@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
@@ -66,29 +69,21 @@ And dev->is_busmaster is set to 0 in pci_disable_device.
 
 Signed-off-by: Cai Huoqing <cai.huoqing@linux.dev>
 ---
- drivers/net/can/c_can/c_can_pci.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/can/kvaser_pciefd.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
-index bf2f8c3da1c1..093bea597f4e 100644
---- a/drivers/net/can/c_can/c_can_pci.c
-+++ b/drivers/net/can/c_can/c_can_pci.c
-@@ -227,7 +227,6 @@ static int c_can_pci_probe(struct pci_dev *pdev,
- 	pci_iounmap(pdev, addr);
- out_release_regions:
- 	pci_disable_msi(pdev);
--	pci_clear_master(pdev);
- 	pci_release_regions(pdev);
- out_disable_device:
- 	pci_disable_device(pdev);
-@@ -247,7 +246,6 @@ static void c_can_pci_remove(struct pci_dev *pdev)
+diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
+index bcad11709bc9..53e8a914c88b 100644
+--- a/drivers/net/can/kvaser_pciefd.c
++++ b/drivers/net/can/kvaser_pciefd.c
+@@ -1907,7 +1907,6 @@ static void kvaser_pciefd_remove(struct pci_dev *pdev)
  
- 	pci_iounmap(pdev, addr);
- 	pci_disable_msi(pdev);
+ 	free_irq(pcie->pci->irq, pcie);
+ 
 -	pci_clear_master(pdev);
+ 	pci_iounmap(pdev, pcie->reg_base);
  	pci_release_regions(pdev);
  	pci_disable_device(pdev);
- }
 -- 
 2.34.1
 
