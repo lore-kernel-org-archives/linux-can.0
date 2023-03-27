@@ -2,44 +2,46 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C17AC76195
-	for <linux-can@archiver.kernel.org>; Mon, 27 Mar 2023 07:34:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6342C77B6E
+	for <linux-can@archiver.kernel.org>; Mon, 27 Mar 2023 07:34:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232557AbjC0HeU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 27 Mar 2023 03:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36340 "EHLO
+        id S232561AbjC0HeV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 27 Mar 2023 03:34:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232563AbjC0HeK (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 27 Mar 2023 03:34:10 -0400
+        with ESMTP id S232553AbjC0HeR (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 27 Mar 2023 03:34:17 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205D640E3
-        for <linux-can@vger.kernel.org>; Mon, 27 Mar 2023 00:34:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D8240D6
+        for <linux-can@vger.kernel.org>; Mon, 27 Mar 2023 00:34:06 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pghMh-0000MD-CC
-        for linux-can@vger.kernel.org; Mon, 27 Mar 2023 09:34:03 +0200
+        id 1pghMi-0000Nq-KS
+        for linux-can@vger.kernel.org; Mon, 27 Mar 2023 09:34:04 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 8747219CDF5
-        for <linux-can@vger.kernel.org>; Mon, 27 Mar 2023 07:34:02 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id C10C419CE12
+        for <linux-can@vger.kernel.org>; Mon, 27 Mar 2023 07:34:03 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7514719CDDC;
-        Mon, 27 Mar 2023 07:34:00 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id A80E719CDEC;
+        Mon, 27 Mar 2023 07:34:01 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id dc9a10b5;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 485b36d5;
         Mon, 27 Mar 2023 07:33:56 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Cai Huoqing <cai.huoqing@linux.dev>,
+        kernel@pengutronix.de,
+        Markus Schneider-Pargmann <msp@baylibre.com>,
+        Simon Horman <simon.horman@corigine.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 05/11] can: kvaser_pciefd: Remove redundant pci_clear_master
-Date:   Mon, 27 Mar 2023 09:33:48 +0200
-Message-Id: <20230327073354.1003134-6-mkl@pengutronix.de>
+Subject: [PATCH net-next 07/11] can: m_can: Remove repeated check for is_peripheral
+Date:   Mon, 27 Mar 2023 09:33:50 +0200
+Message-Id: <20230327073354.1003134-8-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230327073354.1003134-1-mkl@pengutronix.de>
 References: <20230327073354.1003134-1-mkl@pengutronix.de>
@@ -53,45 +55,34 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Cai Huoqing <cai.huoqing@linux.dev>
+From: Markus Schneider-Pargmann <msp@baylibre.com>
 
-Remove pci_clear_master to simplify the code,
-the bus-mastering is also cleared in do_pci_disable_device,
-like this:
-./drivers/pci/pci.c:2197
-static void do_pci_disable_device(struct pci_dev *dev)
-{
-	u16 pci_command;
+Merge both if-blocks to fix this.
 
-	pci_read_config_word(dev, PCI_COMMAND, &pci_command);
-	if (pci_command & PCI_COMMAND_MASTER) {
-		pci_command &= ~PCI_COMMAND_MASTER;
-		pci_write_config_word(dev, PCI_COMMAND, pci_command);
-	}
-
-	pcibios_disable_device(dev);
-}.
-And dev->is_busmaster is set to 0 in pci_disable_device.
-
-Signed-off-by: Cai Huoqing <cai.huoqing@linux.dev>
-Link: https://lore.kernel.org/all/20230323113318.9473-3-cai.huoqing@linux.dev
+Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
+Link: https://lore.kernel.org/all/20230315110546.2518305-2-msp@baylibre.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/kvaser_pciefd.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/can/m_can/m_can.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
-index bcad11709bc9..53e8a914c88b 100644
---- a/drivers/net/can/kvaser_pciefd.c
-+++ b/drivers/net/can/kvaser_pciefd.c
-@@ -1907,7 +1907,6 @@ static void kvaser_pciefd_remove(struct pci_dev *pdev)
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 8e83d6963d85..563625a701fc 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1592,10 +1592,8 @@ static int m_can_close(struct net_device *dev)
+ 		cdev->tx_skb = NULL;
+ 		destroy_workqueue(cdev->tx_wq);
+ 		cdev->tx_wq = NULL;
+-	}
+-
+-	if (cdev->is_peripheral)
+ 		can_rx_offload_disable(&cdev->offload);
++	}
  
- 	free_irq(pcie->pci->irq, pcie);
+ 	close_candev(dev);
  
--	pci_clear_master(pdev);
- 	pci_iounmap(pdev, pcie->reg_base);
- 	pci_release_regions(pdev);
- 	pci_disable_device(pdev);
 -- 
 2.39.2
 
