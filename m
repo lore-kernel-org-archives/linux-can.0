@@ -2,44 +2,44 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DEB6C77B60
-	for <linux-can@archiver.kernel.org>; Tue,  4 Apr 2023 15:00:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86D9CC77B6C
+	for <linux-can@archiver.kernel.org>; Tue,  4 Apr 2023 15:00:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232498AbjDDPAP (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 4 Apr 2023 11:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59580 "EHLO
+        id S234757AbjDDPAR (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 4 Apr 2023 11:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232340AbjDDO7v (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Apr 2023 10:59:51 -0400
+        with ESMTP id S234916AbjDDO7c (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Apr 2023 10:59:32 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36CD646A5
-        for <linux-can@vger.kernel.org>; Tue,  4 Apr 2023 07:59:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F224EFD
+        for <linux-can@vger.kernel.org>; Tue,  4 Apr 2023 07:59:15 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pji7z-0001n5-Ve
-        for linux-can@vger.kernel.org; Tue, 04 Apr 2023 16:59:20 +0200
+        id 1pji7t-0001aM-Lq
+        for linux-can@vger.kernel.org; Tue, 04 Apr 2023 16:59:13 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 464B01A6894
-        for <linux-can@vger.kernel.org>; Tue,  4 Apr 2023 14:59:18 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id D392B1A6848
+        for <linux-can@vger.kernel.org>; Tue,  4 Apr 2023 14:59:12 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3D33E1A6871;
-        Tue,  4 Apr 2023 14:59:16 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 0215F1A683A;
+        Tue,  4 Apr 2023 14:59:10 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 638c4327;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 9a4d36d8;
         Tue, 4 Apr 2023 14:59:09 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Frank Jungclaus <frank.jungclaus@esd.eu>,
+        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 09/10] can: esd_usb: Add support for CAN_CTRLMODE_BERR_REPORTING
-Date:   Tue,  4 Apr 2023 16:59:07 +0200
-Message-Id: <20230404145908.1714400-10-mkl@pengutronix.de>
+Subject: [PATCH net-next 01/10] can: isotp: add module parameter for maximum pdu size
+Date:   Tue,  4 Apr 2023 16:58:59 +0200
+Message-Id: <20230404145908.1714400-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230404145908.1714400-1-mkl@pengutronix.de>
 References: <20230404145908.1714400-1-mkl@pengutronix.de>
@@ -53,111 +53,167 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Frank Jungclaus <frank.jungclaus@esd.eu>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Announce that the driver supports CAN_CTRLMODE_BERR_REPORTING by means
-of priv->can.ctrlmode_supported. Until now berr reporting always has
-been active without taking care of the berr-reporting parameter given
-to an "ip link set ..." command.
+With ISO 15765-2:2016 the PDU size is not limited to 2^12 - 1 (4095)
+bytes but can be represented as a 32 bit unsigned integer value which
+allows 2^32 - 1 bytes (~4GB). The use-cases like automotive unified
+diagnostic services (UDS) and flashing of ECUs still use the small
+static buffers which are provided at socket creation time.
 
-Additionally apply some changes to function esd_usb_rx_event():
-- If berr reporting is off and it is also no state change, then
-immediately return.
-- Unconditionally (even in case of the above "immediate return") store
-tx- and rx-error counters, so directly use priv->bec.txerr and
-priv->bec.rxerr instead of intermediate variables.
-- Not directly related, but to better point out the linkage between a
-failed alloc_can_err_skb() and stats->rx_dropped++:
-Move the increment of the rx_dropped statistic counter (back) to
-directly behind the err_skb allocation.
+When a use-case requires to transfer PDUs up to 1025 kByte the maximum
+PDU size can now be extended by setting the module parameter
+max_pdu_size. The extended size buffers are only allocated on a
+per-socket/connection base when needed at run-time.
 
-Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
-Link: https://lore.kernel.org/all/20230330184446.2802135-1-frank.jungclaus@esd.eu
+changes since v2: https://lore.kernel.org/all/20230313172510.3851-1-socketcan@hartkopp.net
+- use ARRAY_SIZE() to reference DEFAULT_MAX_PDU_SIZE only at one place
+
+changes since v1: https://lore.kernel.org/all/20230311143446.3183-1-socketcan@hartkopp.net
+- limit the minimum 'max_pdu_size' to 4095 to maintain the classic
+  behavior before ISO 15765-2:2016
+
+Link: https://github.com/raspberrypi/linux/issues/5371
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://lore.kernel.org/all/20230326115911.15094-1-socketcan@hartkopp.net
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/esd_usb.c | 35 ++++++++++++++++++++---------------
- 1 file changed, 20 insertions(+), 15 deletions(-)
+ net/can/isotp.c | 65 ++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 56 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
-index e78bb468115a..d33bac3a6c10 100644
---- a/drivers/net/can/usb/esd_usb.c
-+++ b/drivers/net/can/usb/esd_usb.c
-@@ -237,14 +237,23 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
- 	if (id == ESD_EV_CAN_ERROR_EXT) {
- 		u8 state = msg->rx.ev_can_err_ext.status;
- 		u8 ecc = msg->rx.ev_can_err_ext.ecc;
--		u8 rxerr = msg->rx.ev_can_err_ext.rec;
--		u8 txerr = msg->rx.ev_can_err_ext.tec;
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index 9bc344851704..f1ea91772ae7 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -85,10 +85,21 @@ MODULE_ALIAS("can-proto-6");
+ 
+ /* ISO 15765-2:2016 supports more than 4095 byte per ISO PDU as the FF_DL can
+  * take full 32 bit values (4 Gbyte). We would need some good concept to handle
+- * this between user space and kernel space. For now increase the static buffer
+- * to something about 64 kbyte to be able to test this new functionality.
++ * this between user space and kernel space. For now set the static buffer to
++ * something about 8 kbyte to be able to test this new functionality.
+  */
+-#define MAX_MSG_LENGTH 66000
++#define DEFAULT_MAX_PDU_SIZE 8300
 +
-+		priv->bec.rxerr = msg->rx.ev_can_err_ext.rec;
-+		priv->bec.txerr = msg->rx.ev_can_err_ext.tec;
- 
- 		netdev_dbg(priv->netdev,
- 			   "CAN_ERR_EV_EXT: dlc=%#02x state=%02x ecc=%02x rec=%02x tec=%02x\n",
--			   msg->rx.dlc, state, ecc, rxerr, txerr);
-+			   msg->rx.dlc, state, ecc,
-+			   priv->bec.rxerr, priv->bec.txerr);
++/* maximum PDU size before ISO 15765-2:2016 extension was 4095 */
++#define MAX_12BIT_PDU_SIZE 4095
 +
-+		/* if berr-reporting is off, only pass through on state change ... */
-+		if (!(priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING) &&
-+		    state == priv->old_state)
-+			return;
++/* limit the isotp pdu size from the optional module parameter to 1MByte */
++#define MAX_PDU_SIZE (1025 * 1024U)
++
++static unsigned int max_pdu_size __read_mostly = DEFAULT_MAX_PDU_SIZE;
++module_param(max_pdu_size, uint, 0444);
++MODULE_PARM_DESC(max_pdu_size, "maximum isotp pdu size (default "
++		 __stringify(DEFAULT_MAX_PDU_SIZE) ")");
  
- 		skb = alloc_can_err_skb(priv->netdev, &cf);
-+		if (!skb)
-+			stats->rx_dropped++;
+ /* N_PCI type values in bits 7-4 of N_PCI bytes */
+ #define N_PCI_SF 0x00	/* single frame */
+@@ -123,13 +134,15 @@ enum {
+ };
  
- 		if (state != priv->old_state) {
- 			enum can_state tx_state, rx_state;
-@@ -265,14 +274,14 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
- 				break;
- 			default:
- 				new_state = CAN_STATE_ERROR_ACTIVE;
--				txerr = 0;
--				rxerr = 0;
-+				priv->bec.txerr = 0;
-+				priv->bec.rxerr = 0;
- 				break;
- 			}
+ struct tpcon {
+-	unsigned int idx;
++	u8 *buf;
++	unsigned int buflen;
+ 	unsigned int len;
++	unsigned int idx;
+ 	u32 state;
+ 	u8 bs;
+ 	u8 sn;
+ 	u8 ll_dl;
+-	u8 buf[MAX_MSG_LENGTH + 1];
++	u8 sbuf[DEFAULT_MAX_PDU_SIZE];
+ };
  
- 			if (new_state != priv->can.state) {
--				tx_state = (txerr >= rxerr) ? new_state : 0;
--				rx_state = (txerr <= rxerr) ? new_state : 0;
-+				tx_state = (priv->bec.txerr >= priv->bec.rxerr) ? new_state : 0;
-+				rx_state = (priv->bec.txerr <= priv->bec.rxerr) ? new_state : 0;
- 				can_change_state(priv->netdev, cf,
- 						 tx_state, rx_state);
- 			}
-@@ -304,17 +313,12 @@ static void esd_usb_rx_event(struct esd_usb_net_priv *priv,
- 			cf->data[3] = ecc & SJA1000_ECC_SEG;
- 		}
+ struct isotp_sock {
+@@ -503,7 +516,17 @@ static int isotp_rcv_ff(struct sock *sk, struct canfd_frame *cf, int ae)
+ 	if (so->rx.len + ae + off + ff_pci_sz < so->rx.ll_dl)
+ 		return 1;
  
--		priv->bec.txerr = txerr;
--		priv->bec.rxerr = rxerr;
--
- 		if (skb) {
- 			cf->can_id |= CAN_ERR_CNT;
--			cf->data[6] = txerr;
--			cf->data[7] = rxerr;
-+			cf->data[6] = priv->bec.txerr;
-+			cf->data[7] = priv->bec.rxerr;
+-	if (so->rx.len > MAX_MSG_LENGTH) {
++	/* PDU size > default => try max_pdu_size */
++	if (so->rx.len > so->rx.buflen && so->rx.buflen < max_pdu_size) {
++		u8 *newbuf = kmalloc(max_pdu_size, GFP_ATOMIC);
++
++		if (newbuf) {
++			so->rx.buf = newbuf;
++			so->rx.buflen = max_pdu_size;
++		}
++	}
++
++	if (so->rx.len > so->rx.buflen) {
+ 		/* send FC frame with overflow status */
+ 		isotp_send_fc(sk, ae, ISOTP_FC_OVFLW);
+ 		return 1;
+@@ -807,7 +830,7 @@ static void isotp_create_fframe(struct canfd_frame *cf, struct isotp_sock *so,
+ 		cf->data[0] = so->opt.ext_address;
  
- 			netif_rx(skb);
--		} else {
--			stats->rx_dropped++;
- 		}
+ 	/* create N_PCI bytes with 12/32 bit FF_DL data length */
+-	if (so->tx.len > 4095) {
++	if (so->tx.len > MAX_12BIT_PDU_SIZE) {
+ 		/* use 32 bit FF_DL notation */
+ 		cf->data[ae] = N_PCI_FF;
+ 		cf->data[ae + 1] = 0;
+@@ -947,7 +970,17 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 		so->tx.state = ISOTP_SENDING;
  	}
- }
-@@ -1016,7 +1020,8 @@ static int esd_usb_probe_one_net(struct usb_interface *intf, int index)
  
- 	priv->can.state = CAN_STATE_STOPPED;
- 	priv->can.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
--		CAN_CTRLMODE_CC_LEN8_DLC;
-+		CAN_CTRLMODE_CC_LEN8_DLC |
-+		CAN_CTRLMODE_BERR_REPORTING;
+-	if (!size || size > MAX_MSG_LENGTH) {
++	/* PDU size > default => try max_pdu_size */
++	if (size > so->tx.buflen && so->tx.buflen < max_pdu_size) {
++		u8 *newbuf = kmalloc(max_pdu_size, GFP_KERNEL);
++
++		if (newbuf) {
++			so->tx.buf = newbuf;
++			so->tx.buflen = max_pdu_size;
++		}
++	}
++
++	if (!size || size > so->tx.buflen) {
+ 		err = -EINVAL;
+ 		goto err_out_drop;
+ 	}
+@@ -1195,6 +1228,12 @@ static int isotp_release(struct socket *sock)
+ 	so->ifindex = 0;
+ 	so->bound = 0;
  
- 	if (le16_to_cpu(dev->udev->descriptor.idProduct) ==
- 	    USB_CANUSBM_PRODUCT_ID)
++	if (so->rx.buf != so->rx.sbuf)
++		kfree(so->rx.buf);
++
++	if (so->tx.buf != so->tx.sbuf)
++		kfree(so->tx.buf);
++
+ 	sock_orphan(sk);
+ 	sock->sk = NULL;
+ 
+@@ -1591,6 +1630,11 @@ static int isotp_init(struct sock *sk)
+ 	so->rx.state = ISOTP_IDLE;
+ 	so->tx.state = ISOTP_IDLE;
+ 
++	so->rx.buf = so->rx.sbuf;
++	so->tx.buf = so->tx.sbuf;
++	so->rx.buflen = ARRAY_SIZE(so->rx.sbuf);
++	so->tx.buflen = ARRAY_SIZE(so->tx.sbuf);
++
+ 	hrtimer_init(&so->rxtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_SOFT);
+ 	so->rxtimer.function = isotp_rx_timer_handler;
+ 	hrtimer_init(&so->txtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_SOFT);
+@@ -1658,7 +1702,10 @@ static __init int isotp_module_init(void)
+ {
+ 	int err;
+ 
+-	pr_info("can: isotp protocol\n");
++	max_pdu_size = max_t(unsigned int, max_pdu_size, MAX_12BIT_PDU_SIZE);
++	max_pdu_size = min_t(unsigned int, max_pdu_size, MAX_PDU_SIZE);
++
++	pr_info("can: isotp protocol (max_pdu_size %d)\n", max_pdu_size);
+ 
+ 	err = can_proto_register(&isotp_can_proto);
+ 	if (err < 0)
+
+base-commit: 4cee0fb9cc4b5477637fdeb2e965f5fc7d624622
 -- 
 2.39.2
 
