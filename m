@@ -2,44 +2,49 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0326CC77B6C
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0F2FC6FD1D
 	for <linux-can@archiver.kernel.org>; Tue,  4 Apr 2023 15:00:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235228AbjDDPAM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 4 Apr 2023 11:00:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60354 "EHLO
+        id S235247AbjDDPAN (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 4 Apr 2023 11:00:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234428AbjDDO7a (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Apr 2023 10:59:30 -0400
+        with ESMTP id S233583AbjDDO7d (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Apr 2023 10:59:33 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EE5846A3
-        for <linux-can@vger.kernel.org>; Tue,  4 Apr 2023 07:59:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376034C0C
+        for <linux-can@vger.kernel.org>; Tue,  4 Apr 2023 07:59:17 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pji7s-0001ZN-Ij
-        for linux-can@vger.kernel.org; Tue, 04 Apr 2023 16:59:12 +0200
+        id 1pji7v-0001dG-GI
+        for linux-can@vger.kernel.org; Tue, 04 Apr 2023 16:59:15 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id AD99C1A683F
-        for <linux-can@vger.kernel.org>; Tue,  4 Apr 2023 14:59:11 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id A1FC81A685B
+        for <linux-can@vger.kernel.org>; Tue,  4 Apr 2023 14:59:14 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5A2D91A6838;
-        Tue,  4 Apr 2023 14:59:10 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7045E1A6845;
+        Tue,  4 Apr 2023 14:59:12 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 6a348886;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 32992fd5;
         Tue, 4 Apr 2023 14:59:09 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net-next 0/10] pull-request: can-next 2023-04-04-2
-Date:   Tue,  4 Apr 2023 16:58:58 +0200
-Message-Id: <20230404145908.1714400-1-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Rob Herring <robh@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 03/10] dt-bindings: net: can: add STM32 bxcan DT bindings
+Date:   Tue,  4 Apr 2023 16:59:01 +0200
+Message-Id: <20230404145908.1714400-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230404145908.1714400-1-mkl@pengutronix.de>
+References: <20230404145908.1714400-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
@@ -50,87 +55,113 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello netdev-team,
+From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
-this is the corrected pull request of 10 patches for net-next/master.
+Add documentation of device tree bindings for the STM32 basic extended
+CAN (bxcan) controller.
 
-The first patch is by Oliver Hartkopp and makes the maximum pdu size
-of the CAN ISOTP protocol configurable.
-
-The following 5 patches are by Dario Binacchi and add support for the
-bxCAN controller by ST.
-
-Geert Uytterhoeven's patch for the rcar_canfd driver fixes a sparse
-warning.
-
-Peng Fan's patch adds an optional power-domains property to the
-flexcan device tree binding.
-
-Frank Jungclaus adds support for CAN_CTRLMODE_BERR_REPORTING to the
-esd_usb driver.
-
-The last patch is by Oliver Hartkopp and converts the USB IDs of the
-kvaser_usb driver to hexadecimal values.
-
-regards,
-Marc
-
+Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/all/20230328073328.3949796-3-dario.binacchi@amarulasolutions.com
+[mkl: drop unneeded quotes]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
-
-The following changes since commit 4cee0fb9cc4b5477637fdeb2e965f5fc7d624622:
-
-  Merge tag 'linux-can-next-for-6.4-20230327' of git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next (2023-03-27 19:55:10 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-6.4-20230404-2
-
-for you to fetch changes up to 1afae605e0b2da606d5fff4a8a5849da207128b3:
-
-  kvaser_usb: convert USB IDs to hexadecimal values (2023-04-04 16:48:45 +0200)
-
-----------------------------------------------------------------
-linux-can-next-for-6.4-20230404-2
-
-----------------------------------------------------------------
-Dario Binacchi (5):
-      dt-bindings: arm: stm32: add compatible for syscon gcan node
-      dt-bindings: net: can: add STM32 bxcan DT bindings
-      ARM: dts: stm32: add CAN support on stm32f429
-      ARM: dts: stm32: add pin map for CAN controller on stm32f4
-      can: bxcan: add support for ST bxCAN controller
-
-Frank Jungclaus (1):
-      can: esd_usb: Add support for CAN_CTRLMODE_BERR_REPORTING
-
-Geert Uytterhoeven (1):
-      can: rcar_canfd: rcar_canfd_probe(): fix plain integer in transceivers[] init
-
-Marc Kleine-Budde (1):
-      Merge patch series "can: bxcan: add support for ST bxCAN controller"
-
-Oliver Hartkopp (2):
-      can: isotp: add module parameter for maximum pdu size
-      kvaser_usb: convert USB IDs to hexadecimal values
-
-Peng Fan (1):
-      dt-bindings: can: fsl,flexcan: add optional power-domains property
-
- .../bindings/arm/stm32/st,stm32-syscon.yaml        |    2 +
- .../devicetree/bindings/net/can/fsl,flexcan.yaml   |    3 +
- .../bindings/net/can/st,stm32-bxcan.yaml           |   85 ++
- MAINTAINERS                                        |    7 +
- arch/arm/boot/dts/stm32f4-pinctrl.dtsi             |   30 +
- arch/arm/boot/dts/stm32f429.dtsi                   |   29 +
- drivers/net/can/Kconfig                            |   12 +
- drivers/net/can/Makefile                           |    1 +
- drivers/net/can/bxcan.c                            | 1098 ++++++++++++++++++++
- drivers/net/can/rcar/rcar_canfd.c                  |    2 +-
- drivers/net/can/usb/esd_usb.c                      |   35 +-
- drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c   |  102 +-
- net/can/isotp.c                                    |   65 +-
- 13 files changed, 1395 insertions(+), 76 deletions(-)
+ .../bindings/net/can/st,stm32-bxcan.yaml      | 85 +++++++++++++++++++
+ 1 file changed, 85 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/net/can/st,stm32-bxcan.yaml
- create mode 100644 drivers/net/can/bxcan.c
+
+diff --git a/Documentation/devicetree/bindings/net/can/st,stm32-bxcan.yaml b/Documentation/devicetree/bindings/net/can/st,stm32-bxcan.yaml
+new file mode 100644
+index 000000000000..769fa5c27b76
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/st,stm32-bxcan.yaml
+@@ -0,0 +1,85 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/can/st,stm32-bxcan.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: STMicroelectronics bxCAN controller
++
++description: STMicroelectronics BxCAN controller for CAN bus
++
++maintainers:
++  - Dario Binacchi <dario.binacchi@amarulasolutions.com>
++
++allOf:
++  - $ref: can-controller.yaml#
++
++properties:
++  compatible:
++    enum:
++      - st,stm32f4-bxcan
++
++  st,can-primary:
++    description:
++      Primary and secondary mode of the bxCAN peripheral is only relevant
++      if the chip has two CAN peripherals. In that case they share some
++      of the required logic.
++      To avoid misunderstandings, it should be noted that ST documentation
++      uses the terms master/slave instead of primary/secondary.
++    type: boolean
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    items:
++      - description: transmit interrupt
++      - description: FIFO 0 receive interrupt
++      - description: FIFO 1 receive interrupt
++      - description: status change error interrupt
++
++  interrupt-names:
++    items:
++      - const: tx
++      - const: rx0
++      - const: rx1
++      - const: sce
++
++  resets:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  st,gcan:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description:
++      The phandle to the gcan node which allows to access the 512-bytes
++      SRAM memory shared by the two bxCAN cells (CAN1 primary and CAN2
++      secondary) in dual CAN peripheral configuration.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - resets
++  - clocks
++  - st,gcan
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/stm32fx-clock.h>
++    #include <dt-bindings/mfd/stm32f4-rcc.h>
++
++    can1: can@40006400 {
++        compatible = "st,stm32f4-bxcan";
++        reg = <0x40006400 0x200>;
++        interrupts = <19>, <20>, <21>, <22>;
++        interrupt-names = "tx", "rx0", "rx1", "sce";
++        resets = <&rcc STM32F4_APB1_RESET(CAN1)>;
++        clocks = <&rcc 0 STM32F4_APB1_CLOCK(CAN1)>;
++        st,can-primary;
++        st,gcan = <&gcan>;
++    };
+-- 
+2.39.2
 
 
