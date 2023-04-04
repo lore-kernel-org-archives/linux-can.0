@@ -2,46 +2,45 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC139C77B6E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19800C77B60
 	for <linux-can@archiver.kernel.org>; Tue,  4 Apr 2023 15:00:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234470AbjDDPAH (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 4 Apr 2023 11:00:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60126 "EHLO
+        id S233701AbjDDPAG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 4 Apr 2023 11:00:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235250AbjDDO7g (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Apr 2023 10:59:36 -0400
+        with ESMTP id S235228AbjDDO7e (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Apr 2023 10:59:34 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249284EDA
-        for <linux-can@vger.kernel.org>; Tue,  4 Apr 2023 07:59:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4CD5580
+        for <linux-can@vger.kernel.org>; Tue,  4 Apr 2023 07:59:18 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pji7z-0001lB-CY
-        for linux-can@vger.kernel.org; Tue, 04 Apr 2023 16:59:19 +0200
+        id 1pji7w-0001es-B1
+        for linux-can@vger.kernel.org; Tue, 04 Apr 2023 16:59:16 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id ACCB01A6889
-        for <linux-can@vger.kernel.org>; Tue,  4 Apr 2023 14:59:17 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 2D8BD1A6863
+        for <linux-can@vger.kernel.org>; Tue,  4 Apr 2023 14:59:15 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5D39C1A6864;
-        Tue,  4 Apr 2023 14:59:15 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 396B01A684D;
+        Tue,  4 Apr 2023 14:59:13 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1b5960c6;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2a988189;
         Tue, 4 Apr 2023 14:59:09 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 07/10] can: rcar_canfd: rcar_canfd_probe(): fix plain integer in transceivers[] init
-Date:   Tue,  4 Apr 2023 16:59:05 +0200
-Message-Id: <20230404145908.1714400-8-mkl@pengutronix.de>
+Subject: [PATCH net-next 04/10] ARM: dts: stm32: add CAN support on stm32f429
+Date:   Tue,  4 Apr 2023 16:59:02 +0200
+Message-Id: <20230404145908.1714400-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230404145908.1714400-1-mkl@pengutronix.de>
 References: <20230404145908.1714400-1-mkl@pengutronix.de>
@@ -55,36 +54,60 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
-Fix the following compile warning with C=1:
+Add support for bxcan (Basic eXtended CAN controller) to STM32F429. The
+chip contains two CAN peripherals, CAN1 the primary and CAN2 the secondary,
+that share some of the required logic like clock and filters. This means
+that the secondary CAN can't be used without the primary CAN.
 
-| drivers/net/can/rcar/rcar_canfd.c:1852:59: warning: Using plain integer as NULL pointer
-
-Fixes: a0340df7eca4f28e ("can: rcar_canfd: Add transceiver support")
-Reported-by: Jakub Kicinski <kuba@kernel.org>
-Link: https://lore.kernel.org/r/20230328145658.7fdbc394@kernel.org
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Steen Hegelund <Steen.Hegelund@microchip.com>
-Link: https://lore.kernel.org/all/7f7b0dde0caa2d2977b4fb5b65b63036e75f5022.1680071972.git.geert+renesas@glider.be
+Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Link: https://lore.kernel.org/all/20230328073328.3949796-4-dario.binacchi@amarulasolutions.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rcar/rcar_canfd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/stm32f429.dtsi | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index 701311dabab3..963c42f43755 100644
---- a/drivers/net/can/rcar/rcar_canfd.c
-+++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -1848,7 +1848,7 @@ static void rcar_canfd_channel_remove(struct rcar_canfd_global *gpriv, u32 ch)
+diff --git a/arch/arm/boot/dts/stm32f429.dtsi b/arch/arm/boot/dts/stm32f429.dtsi
+index c31ceb821231..c9e05e3540d6 100644
+--- a/arch/arm/boot/dts/stm32f429.dtsi
++++ b/arch/arm/boot/dts/stm32f429.dtsi
+@@ -362,6 +362,35 @@ i2c3: i2c@40005c00 {
+ 			status = "disabled";
+ 		};
  
- static int rcar_canfd_probe(struct platform_device *pdev)
- {
--	struct phy *transceivers[RCANFD_NUM_CHANNELS] = { 0, };
-+	struct phy *transceivers[RCANFD_NUM_CHANNELS] = { NULL, };
- 	const struct rcar_canfd_hw_info *info;
- 	struct device *dev = &pdev->dev;
- 	void __iomem *addr;
++		can1: can@40006400 {
++			compatible = "st,stm32f4-bxcan";
++			reg = <0x40006400 0x200>;
++			interrupts = <19>, <20>, <21>, <22>;
++			interrupt-names = "tx", "rx0", "rx1", "sce";
++			resets = <&rcc STM32F4_APB1_RESET(CAN1)>;
++			clocks = <&rcc 0 STM32F4_APB1_CLOCK(CAN1)>;
++			st,can-primary;
++			st,gcan = <&gcan>;
++			status = "disabled";
++		};
++
++		gcan: gcan@40006600 {
++			compatible = "st,stm32f4-gcan", "syscon";
++			reg = <0x40006600 0x200>;
++			clocks = <&rcc 0 STM32F4_APB1_CLOCK(CAN1)>;
++		};
++
++		can2: can@40006800 {
++			compatible = "st,stm32f4-bxcan";
++			reg = <0x40006800 0x200>;
++			interrupts = <63>, <64>, <65>, <66>;
++			interrupt-names = "tx", "rx0", "rx1", "sce";
++			resets = <&rcc STM32F4_APB1_RESET(CAN2)>;
++			clocks = <&rcc 0 STM32F4_APB1_CLOCK(CAN2)>;
++			st,gcan = <&gcan>;
++			status = "disabled";
++		};
++
+ 		dac: dac@40007400 {
+ 			compatible = "st,stm32f4-dac-core";
+ 			reg = <0x40007400 0x400>;
 -- 
 2.39.2
 
