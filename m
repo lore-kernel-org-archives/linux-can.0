@@ -2,48 +2,44 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D749FC77B6E
-	for <linux-can@archiver.kernel.org>; Tue,  4 Apr 2023 15:00:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0326CC77B6C
+	for <linux-can@archiver.kernel.org>; Tue,  4 Apr 2023 15:00:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235208AbjDDPAL (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 4 Apr 2023 11:00:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59372 "EHLO
+        id S235228AbjDDPAM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 4 Apr 2023 11:00:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235247AbjDDO7g (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Apr 2023 10:59:36 -0400
+        with ESMTP id S234428AbjDDO7a (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 4 Apr 2023 10:59:30 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E4025592
-        for <linux-can@vger.kernel.org>; Tue,  4 Apr 2023 07:59:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EE5846A3
+        for <linux-can@vger.kernel.org>; Tue,  4 Apr 2023 07:59:14 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pji7z-0001m3-JQ
-        for linux-can@vger.kernel.org; Tue, 04 Apr 2023 16:59:19 +0200
+        id 1pji7s-0001ZN-Ij
+        for linux-can@vger.kernel.org; Tue, 04 Apr 2023 16:59:12 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id DC6DF1A688D
-        for <linux-can@vger.kernel.org>; Tue,  4 Apr 2023 14:59:17 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id AD99C1A683F
+        for <linux-can@vger.kernel.org>; Tue,  4 Apr 2023 14:59:11 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id A0DF91A6869;
-        Tue,  4 Apr 2023 14:59:15 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5A2D91A6838;
+        Tue,  4 Apr 2023 14:59:10 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 82079856;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 6a348886;
         Tue, 4 Apr 2023 14:59:09 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Peng Fan <peng.fan@nxp.com>,
-        Rob Herring <robh@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 08/10] dt-bindings: can: fsl,flexcan: add optional power-domains property
-Date:   Tue,  4 Apr 2023 16:59:06 +0200
-Message-Id: <20230404145908.1714400-9-mkl@pengutronix.de>
+        kernel@pengutronix.de
+Subject: [PATCH net-next 0/10] pull-request: can-next 2023-04-04-2
+Date:   Tue,  4 Apr 2023 16:58:58 +0200
+Message-Id: <20230404145908.1714400-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230404145908.1714400-1-mkl@pengutronix.de>
-References: <20230404145908.1714400-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
@@ -54,33 +50,87 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+Hello netdev-team,
 
-Add optional power-domains property for i.MX8 usage.
+this is the corrected pull request of 10 patches for net-next/master.
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
-Acked-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/all/20230328054602.1974255-1-peng.fan@oss.nxp.com
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+The first patch is by Oliver Hartkopp and makes the maximum pdu size
+of the CAN ISOTP protocol configurable.
+
+The following 5 patches are by Dario Binacchi and add support for the
+bxCAN controller by ST.
+
+Geert Uytterhoeven's patch for the rcar_canfd driver fixes a sparse
+warning.
+
+Peng Fan's patch adds an optional power-domains property to the
+flexcan device tree binding.
+
+Frank Jungclaus adds support for CAN_CTRLMODE_BERR_REPORTING to the
+esd_usb driver.
+
+The last patch is by Oliver Hartkopp and converts the USB IDs of the
+kvaser_usb driver to hexadecimal values.
+
+regards,
+Marc
+
 ---
- Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-index 6e59bd2a6094..4162469c3c08 100644
---- a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-+++ b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-@@ -63,6 +63,9 @@ properties:
-       boot loader. This property should only be used the used operating system
-       doesn't support the clocks and clock-names property.
- 
-+  power-domains:
-+    maxItems: 1
-+
-   xceiver-supply:
-     description: Regulator that powers the CAN transceiver.
- 
--- 
-2.39.2
+The following changes since commit 4cee0fb9cc4b5477637fdeb2e965f5fc7d624622:
+
+  Merge tag 'linux-can-next-for-6.4-20230327' of git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next (2023-03-27 19:55:10 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-6.4-20230404-2
+
+for you to fetch changes up to 1afae605e0b2da606d5fff4a8a5849da207128b3:
+
+  kvaser_usb: convert USB IDs to hexadecimal values (2023-04-04 16:48:45 +0200)
+
+----------------------------------------------------------------
+linux-can-next-for-6.4-20230404-2
+
+----------------------------------------------------------------
+Dario Binacchi (5):
+      dt-bindings: arm: stm32: add compatible for syscon gcan node
+      dt-bindings: net: can: add STM32 bxcan DT bindings
+      ARM: dts: stm32: add CAN support on stm32f429
+      ARM: dts: stm32: add pin map for CAN controller on stm32f4
+      can: bxcan: add support for ST bxCAN controller
+
+Frank Jungclaus (1):
+      can: esd_usb: Add support for CAN_CTRLMODE_BERR_REPORTING
+
+Geert Uytterhoeven (1):
+      can: rcar_canfd: rcar_canfd_probe(): fix plain integer in transceivers[] init
+
+Marc Kleine-Budde (1):
+      Merge patch series "can: bxcan: add support for ST bxCAN controller"
+
+Oliver Hartkopp (2):
+      can: isotp: add module parameter for maximum pdu size
+      kvaser_usb: convert USB IDs to hexadecimal values
+
+Peng Fan (1):
+      dt-bindings: can: fsl,flexcan: add optional power-domains property
+
+ .../bindings/arm/stm32/st,stm32-syscon.yaml        |    2 +
+ .../devicetree/bindings/net/can/fsl,flexcan.yaml   |    3 +
+ .../bindings/net/can/st,stm32-bxcan.yaml           |   85 ++
+ MAINTAINERS                                        |    7 +
+ arch/arm/boot/dts/stm32f4-pinctrl.dtsi             |   30 +
+ arch/arm/boot/dts/stm32f429.dtsi                   |   29 +
+ drivers/net/can/Kconfig                            |   12 +
+ drivers/net/can/Makefile                           |    1 +
+ drivers/net/can/bxcan.c                            | 1098 ++++++++++++++++++++
+ drivers/net/can/rcar/rcar_canfd.c                  |    2 +-
+ drivers/net/can/usb/esd_usb.c                      |   35 +-
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c   |  102 +-
+ net/can/isotp.c                                    |   65 +-
+ 13 files changed, 1395 insertions(+), 76 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/st,stm32-bxcan.yaml
+ create mode 100644 drivers/net/can/bxcan.c
 
 
