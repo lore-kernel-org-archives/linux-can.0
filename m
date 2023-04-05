@@ -2,46 +2,46 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67F1DC7619A
-	for <linux-can@archiver.kernel.org>; Wed,  5 Apr 2023 08:24:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DC54C76188
+	for <linux-can@archiver.kernel.org>; Wed,  5 Apr 2023 09:25:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237125AbjDEIYP (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 5 Apr 2023 04:24:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46346 "EHLO
+        id S237148AbjDEJZB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 5 Apr 2023 05:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237483AbjDEIYO (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Apr 2023 04:24:14 -0400
+        with ESMTP id S237242AbjDEJZA (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 5 Apr 2023 05:25:00 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F651FEC
-        for <linux-can@vger.kernel.org>; Wed,  5 Apr 2023 01:24:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD904200
+        for <linux-can@vger.kernel.org>; Wed,  5 Apr 2023 02:24:58 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pjyR6-0004QA-P7; Wed, 05 Apr 2023 10:24:08 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
+        id 1pjzNx-00046S-A4
+        for linux-can@vger.kernel.org; Wed, 05 Apr 2023 11:24:57 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id 79EC91A7126
+        for <linux-can@vger.kernel.org>; Wed,  5 Apr 2023 09:24:56 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 3E3E81A7068;
-        Wed,  5 Apr 2023 08:24:04 +0000 (UTC)
-Date:   Wed, 5 Apr 2023 10:24:03 +0200
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 347D71A7121;
+        Wed,  5 Apr 2023 09:24:55 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3e90eda6;
+        Wed, 5 Apr 2023 09:24:54 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Robin van der Gracht <robin@protonic.nl>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Shuangpeng Bai <sjb7183@psu.edu>, kernel@pengutronix.de,
-        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] net: can: j1939: Fix out-of-bounds memory access in
- j1939_tp_tx_dat_new
-Message-ID: <20230405-backlit-unscathed-fab6044bdc4c@pengutronix.de>
-References: <20230404073128.3173900-1-o.rempel@pengutronix.de>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: [PATCH net 0/4] pull-request: can 2023-04-05
+Date:   Wed,  5 Apr 2023 11:24:40 +0200
+Message-Id: <20230405092444.1802340-1-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4l7fptulstbh7cod"
-Content-Disposition: inline
-In-Reply-To: <20230404073128.3173900-1-o.rempel@pengutronix.de>
+Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -50,59 +50,52 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+Hello netdev-team,
 
---4l7fptulstbh7cod
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+this is a pull request of 4 patches for net/master.
 
-On 04.04.2023 09:31:28, Oleksij Rempel wrote:
-> In the j1939_tp_tx_dat_new function, an out-of-bounds memory access
-> could occur during the memcpy operation if the size of skb->cb is
-> larger than the size of struct j1939_sk_buff_cb. This is because the
-> memcpy operation uses the size of skb->cb, leading to a read beyond
-> the struct j1939_sk_buff_cb.
->=20
-> To address this issue, we have updated the memcpy operation to use the
-> size of struct j1939_sk_buff_cb instead of the size of skb->cb. This
-> ensures that the memcpy operation only reads the memory within the
-> bounds of struct j1939_sk_buff_cb, preventing out-of-bounds memory
-> access.
->=20
-> Additionally, a static_assert has been added to check that the size of
-> skb->cb is greater than or equal to the size of struct j1939_sk_buff_cb.
-> This ensures that the skb->cb buffer is large enough to hold the
-> j1939_sk_buff_cb structure.
->=20
-> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-> Reported-by: Shuangpeng Bai <sjb7183@psu.edu>
-> Tested-by: Shuangpeng Bai <sjb7183@psu.edu>
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+The first patch is by Oleksij Rempel and fixes a out-of-bounds memory
+access in the j1939 protocol.
 
-Applied.
+The remaining 3 patches target the ISOTP protocol. Oliver Hartkopp
+fixes the ISOTP protocol to pass information about dropped PDUs to the
+user space via control messages. Michal Sojka's patch fixes poll() to
+not forward false EPOLLOUT events. And Oliver Hartkopp fixes a race
+condition between isotp_sendsmg() and isotp_release().
 
 regards,
 Marc
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+---
 
---4l7fptulstbh7cod
-Content-Type: application/pgp-signature; name="signature.asc"
+The following changes since commit 3ce9345580974863c060fa32971537996a7b2d57:
 
------BEGIN PGP SIGNATURE-----
+  gve: Secure enough bytes in the first TX desc for all TCP pkts (2023-04-04 18:58:12 -0700)
 
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmQtMCAACgkQvlAcSiqK
-BOjssAf+O9dv5x401qELD8L9Ah8/YlghfKAAA3rx9N8lJHSPIH97AjLbklcPLzTc
-Jmxi/SMQm0/RfKMkyFqHNxuv0xM0N41xFNNmjHR22PmS39TFIe5xtOdEEBccMZ2X
-22tUOXM7fXGLBQmeTlepA8JJxnoBUXQ2UQlsCAlAQboyQ1HIvAJHd/68jS96jz47
-zGVs8clal7jvE5kPVjxckgTotvOePCh/RB/AznSpq5Z1Fhc1sKVnG2InfJbI5QpQ
-BMBGU4HbRtQBuV50B5X8HiT2fJzwR05zQJHSQ/2OM+uoFts/yQOwceckWh4qGgjg
-cz73S0O0SfIWB/CSNUMWpsD/1j8sIw==
-=3uI+
------END PGP SIGNATURE-----
+are available in the Git repository at:
 
---4l7fptulstbh7cod--
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-6.3-20230405
+
+for you to fetch changes up to 051737439eaee5bdd03d3c2ef5510d54a478fd05:
+
+  can: isotp: fix race between isotp_sendsmg() and isotp_release() (2023-04-05 11:16:37 +0200)
+
+----------------------------------------------------------------
+linux-can-fixes-for-6.3-20230405
+
+----------------------------------------------------------------
+Michal Sojka (1):
+      can: isotp: isotp_ops: fix poll() to not report false EPOLLOUT events
+
+Oleksij Rempel (1):
+      can: j1939: j1939_tp_tx_dat_new(): fix out-of-bounds memory access
+
+Oliver Hartkopp (2):
+      can: isotp: isotp_recvmsg(): use sock_recv_cmsgs() to get SOCK_RXQ_OVFL infos
+      can: isotp: fix race between isotp_sendsmg() and isotp_release()
+
+ net/can/isotp.c           | 74 ++++++++++++++++++++++++++++++-----------------
+ net/can/j1939/transport.c |  5 +++-
+ 2 files changed, 52 insertions(+), 27 deletions(-)
+
+
