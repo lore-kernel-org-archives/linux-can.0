@@ -2,93 +2,62 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6AF3C76196
-	for <linux-can@archiver.kernel.org>; Thu,  6 Apr 2023 09:36:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3593EC7618D
+	for <linux-can@archiver.kernel.org>; Thu,  6 Apr 2023 09:42:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236516AbjDFJgK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 6 Apr 2023 05:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47558 "EHLO
+        id S235749AbjDFJmZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 6 Apr 2023 05:42:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236471AbjDFJgI (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 6 Apr 2023 05:36:08 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE3649D1
-        for <linux-can@vger.kernel.org>; Thu,  6 Apr 2023 02:36:07 -0700 (PDT)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1pkM2G-0008Q3-QX; Thu, 06 Apr 2023 11:36:04 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 90AFD1A7FD8;
-        Thu,  6 Apr 2023 07:44:24 +0000 (UTC)
-Date:   Thu, 6 Apr 2023 09:44:23 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH] can: CAN_BXCAN should depend on ARCH_STM32
-Message-ID: <20230406-choice-tremble-e49e7967747b@pengutronix.de>
-References: <40095112efd1b2214e4223109fd9f0c6d0158a2d.1680609318.git.geert+renesas@glider.be>
+        with ESMTP id S236180AbjDFJmY (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 6 Apr 2023 05:42:24 -0400
+X-Greylist: delayed 90248 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 06 Apr 2023 02:42:11 PDT
+Received: from mail.feshiecree.pl (mail.feshiecree.pl [89.40.114.103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3143E7AA6
+        for <linux-can@vger.kernel.org>; Thu,  6 Apr 2023 02:42:11 -0700 (PDT)
+Received: by mail.feshiecree.pl (Postfix, from userid 1001)
+        id 36F3182DEC; Wed,  5 Apr 2023 09:27:49 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=feshiecree.pl;
+        s=mail; t=1680683276;
+        bh=hFxZwVw4rIL+JwfEOGI47p+fdoVOAeqVswP6NWoHSHQ=;
+        h=Date:From:To:Subject:From;
+        b=W3XWdq4Av6vxy34AkxNj2h1qikRImQVIV1Gw6/Z1Gu6oxBrpQH78peOxT8cZBC3nI
+         XbU5tSrCY3nk8LzXk1mDdkxK+vQk4kM8gvn/t+BWy2qCWGbKRiFJWfbNPy8tfJAbuR
+         b50IZzsAvHa7eRZlugsZROCB5Dfo6pCU2I+q7VlQaaEHr9j4MOnZFxccajdUaxvUJ3
+         WwraUFnPwDSS0g2ium8YmXKcf/hGGq9M87BUXuvtjFopw57n7TOrBuNubr1goEMWod
+         S14m4f19+jFYCGskqKXt3mQM9NAl/YmWHsy8FQh6IljbjDjYo8W2taNwDaG2YXw8TL
+         vDW5dDXUh9Xug==
+Received: by feshiecree.pl for <linux-can@vger.kernel.org>; Wed,  5 Apr 2023 08:27:41 GMT
+Message-ID: <20230405084211-0.1.1u.6hja.0.9kk4a0twxb@feshiecree.pl>
+Date:   Wed,  5 Apr 2023 08:27:41 GMT
+From:   "Krystian Wieczorek" <krystian.wieczorek@feshiecree.pl>
+To:     <linux-can@vger.kernel.org>
+Subject: W sprawie samochodu
+X-Mailer: mail.feshiecree.pl
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wbtaudnlognaudah"
-Content-Disposition: inline
-In-Reply-To: <40095112efd1b2214e4223109fd9f0c6d0158a2d.1680609318.git.geert+renesas@glider.be>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+Dzie=C5=84 dobry,
 
---wbtaudnlognaudah
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+chcieliby=C5=9Bmy zapewni=C4=87 Pa=C5=84stwu kompleksowe rozwi=C4=85zania=
+, je=C5=9Bli chodzi o system monitoringu GPS.
 
-On 04.04.2023 13:59:00, Geert Uytterhoeven wrote:
-> The STMicroelectronics STM32 basic extended CAN Controller (bxCAN) is
-> only present on STM32 SoCs.  Hence drop the "|| OF" part from its
-> dependency rule, to prevent asking the user about this driver when
-> configuring a kernel without STM32 SoC support.
->=20
-> Fixes: f00647d8127be4d3 ("can: bxcan: add support for ST bxCAN controller=
-")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Precyzyjne monitorowanie pojazd=C3=B3w na mapach cyfrowych, =C5=9Bledzeni=
+e ich parametr=C3=B3w eksploatacyjnych w czasie rzeczywistym oraz kontrol=
+a paliwa to kluczowe funkcjonalno=C5=9Bci naszego systemu.=20
 
-Applied to linux-can-next.
+Organizowanie pracy pracownik=C3=B3w jest dzi=C4=99ki temu prostsze i bar=
+dziej efektywne, a oszcz=C4=99dno=C5=9Bci i optymalizacja w zakresie pono=
+szonych koszt=C3=B3w, maj=C4=85 dla ka=C5=BCdego przedsi=C4=99biorcy ogro=
+mne znaczenie.
 
-Thanks,
-Marc
+Dopasujemy nasz=C4=85 ofert=C4=99 do Pa=C5=84stwa oczekiwa=C5=84 i potrze=
+b organizacji. Czy mogliby=C5=9Bmy porozmawia=C4=87 o naszej propozycji?
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
---wbtaudnlognaudah
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmQueFQACgkQvlAcSiqK
-BOj7lwf+OyVXNEtWVL+T3SDIVOBN3QUjzyyETldw5+Ww9EymokAB47Xo4Dn3VEZy
-Eo2qIsHunlRIK9Bn9LQQTWLVPtAxJAlMaFOaGo3KjQP5D9E54wpCzKfoPOLeROUN
-tuQKlkiwRD6FxOWl3IXsDRKGeTSaYEfoFMux9755/aL7kML0M7FDLDut1CwvWEmb
-rvOXamsvQSXabKGMqy80QN/HUle9e/XTmzbbZMDmoagEA8/TO/MfLvQjFjpMU7Gk
-OGZx3Qfq+3eTTiHFtzPfBkBG65rR/V37Oqt3vMq/LeNNhtWe2ucm2WxhtHWpZ4ys
-1qzxcu42oOg6v6lEUQE5KYR5AxI7jw==
-=sgpy
------END PGP SIGNATURE-----
-
---wbtaudnlognaudah--
+Pozdrawiam
+Krystian Wieczorek
