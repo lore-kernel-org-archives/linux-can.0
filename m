@@ -2,62 +2,126 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3593EC7618D
-	for <linux-can@archiver.kernel.org>; Thu,  6 Apr 2023 09:42:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A714C7618D
+	for <linux-can@archiver.kernel.org>; Thu,  6 Apr 2023 11:09:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235749AbjDFJmZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 6 Apr 2023 05:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51260 "EHLO
+        id S237205AbjDFLJA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 6 Apr 2023 07:09:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236180AbjDFJmY (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 6 Apr 2023 05:42:24 -0400
-X-Greylist: delayed 90248 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 06 Apr 2023 02:42:11 PDT
-Received: from mail.feshiecree.pl (mail.feshiecree.pl [89.40.114.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3143E7AA6
-        for <linux-can@vger.kernel.org>; Thu,  6 Apr 2023 02:42:11 -0700 (PDT)
-Received: by mail.feshiecree.pl (Postfix, from userid 1001)
-        id 36F3182DEC; Wed,  5 Apr 2023 09:27:49 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=feshiecree.pl;
-        s=mail; t=1680683276;
-        bh=hFxZwVw4rIL+JwfEOGI47p+fdoVOAeqVswP6NWoHSHQ=;
-        h=Date:From:To:Subject:From;
-        b=W3XWdq4Av6vxy34AkxNj2h1qikRImQVIV1Gw6/Z1Gu6oxBrpQH78peOxT8cZBC3nI
-         XbU5tSrCY3nk8LzXk1mDdkxK+vQk4kM8gvn/t+BWy2qCWGbKRiFJWfbNPy8tfJAbuR
-         b50IZzsAvHa7eRZlugsZROCB5Dfo6pCU2I+q7VlQaaEHr9j4MOnZFxccajdUaxvUJ3
-         WwraUFnPwDSS0g2ium8YmXKcf/hGGq9M87BUXuvtjFopw57n7TOrBuNubr1goEMWod
-         S14m4f19+jFYCGskqKXt3mQM9NAl/YmWHsy8FQh6IljbjDjYo8W2taNwDaG2YXw8TL
-         vDW5dDXUh9Xug==
-Received: by feshiecree.pl for <linux-can@vger.kernel.org>; Wed,  5 Apr 2023 08:27:41 GMT
-Message-ID: <20230405084211-0.1.1u.6hja.0.9kk4a0twxb@feshiecree.pl>
-Date:   Wed,  5 Apr 2023 08:27:41 GMT
-From:   "Krystian Wieczorek" <krystian.wieczorek@feshiecree.pl>
-To:     <linux-can@vger.kernel.org>
-Subject: W sprawie samochodu
-X-Mailer: mail.feshiecree.pl
+        with ESMTP id S229697AbjDFLI7 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 6 Apr 2023 07:08:59 -0400
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.220])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E56D61BF
+        for <linux-can@vger.kernel.org>; Thu,  6 Apr 2023 04:08:57 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1680779332; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=ZQAj+doKt9uClHiiT4X0tky2HW54SqgOjS/kPw5AgMm8ZZBpwA3vjdMs9SY2v//Tp/
+    Bhg/pPCYz7k512trv0v9IxKTgEVvWktNSdbUW5BSUYyUQx8eYeqAjrD2Eh3Abh1CNby1
+    sQaddUbNvHHRpywizEpUTx3EjgSN8C9K+TgF2Z6aDSR/bWrBe4rl7+j49u8coZYX1lhU
+    OKSICbuERL+x4hPT6JX5Z+MjCVsmo8VLs8vE4yXHNyGb/3tczfHIdggEpEg5/Eo9oTFv
+    0xf+M3iN+nIk7pLmOnJ33YUDg0fE7+XbLQ7LefeEjEbxs4+GRDeVw0Q/qxWpRGN41/jR
+    /tGg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1680779332;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=0yjOcZjBPLPnDhJTc/mfwSN5ZD3461T7JrDYboL1LlY=;
+    b=S2ZVqhvrOJqt6vy6RKo5WzCyiKVS4dy/5Pp2vQF0yFly2b4TlDsettMvYYRN/WEl8x
+    Nt72OgELy71sUnPP0pS9+y2Xe6inxZA5pUlO3ZdJ4V5iT8kDfPTViwhpwbFvU2dknlBf
+    Bn9wsDArxAYX8wsxOyJnbGxPsF5PKhwAn7rsscxCaZIT2bNru/cWIEHvRjjg70RglDji
+    yRoaWoUfvPBgTcE3IGOrU4Q3D13M8xRt7TNxbFTGUQbNz4Swo4VDwzjYIogfK3YBBXGq
+    L9+0PJZ6PR0x85LEk54KmAeJzoEo+07av9CckXK515ZOZhP0ZglAjm+TWIaDbHSg8vdJ
+    blEQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1680779332;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=0yjOcZjBPLPnDhJTc/mfwSN5ZD3461T7JrDYboL1LlY=;
+    b=dw7paH1JhhBsTAPHdxjxYq2nIoJkvqzzCq+TJvwj52lbGs83coU+DEvjocQ5exQOkf
+    sroFNGjASlChp5lKlGrkb+4lz60XeJmXC/5Am8bCUDYbT9nvSo/9q2H7aq5xjOQ+EfP0
+    f1JinTZkbkaTpXGxtqolMUCGaDQYvJAey8HB5pWyJ+JpXwE1YOn5FQ53BjCXO7FQXJ5R
+    rgT6OIJXyagZomGfZ8XXfnjVl14zcK5sIhhAC8F5tM1V2OsVwYjUwfXgpqUvOWu9jBz3
+    bGeBznSJDJy1Mr49NtzeRFJiZauvvYyqK2JB/vwaPQfd9nsMjH/Kx0V95JrQLarw8jeX
+    unug==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1680779332;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=0yjOcZjBPLPnDhJTc/mfwSN5ZD3461T7JrDYboL1LlY=;
+    b=ZTM9rg0A9+FDATSJLZdlf9o3H6WsbMO30+banRJ4B/HjK9N+CIONcIPoY1QjaLD69p
+    EYWWI4XeQ+32cswQ+/Bw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS/xvEBL7X5sbo3VYpXsQi7qV3YmVcfh+rd"
+Received: from silver.lan
+    by smtp.strato.de (RZmta 49.4.0 AUTH)
+    with ESMTPSA id x06214z36B8q8ne
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Thu, 6 Apr 2023 13:08:52 +0200 (CEST)
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+To:     linux-can@vger.kernel.org
+Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH] can: allow MSG_CMSG_COMPAT flag in recvmsg() syscalls
+Date:   Thu,  6 Apr 2023 13:08:45 +0200
+Message-Id: <20230406110845.5180-1-socketcan@hartkopp.net>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Dzie=C5=84 dobry,
+The control messages provided by j1939 and isotp support MSG_CMSG_COMPAT
+but blocked recvmsg() syscalls that have set this flag, e.g. on 32bit
+ARM systems.
 
-chcieliby=C5=9Bmy zapewni=C4=87 Pa=C5=84stwu kompleksowe rozwi=C4=85zania=
-, je=C5=9Bli chodzi o system monitoringu GPS.
+Link: https://github.com/hartkopp/can-isotp/issues/59
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ net/can/isotp.c        | 2 +-
+ net/can/j1939/socket.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Precyzyjne monitorowanie pojazd=C3=B3w na mapach cyfrowych, =C5=9Bledzeni=
-e ich parametr=C3=B3w eksploatacyjnych w czasie rzeczywistym oraz kontrol=
-a paliwa to kluczowe funkcjonalno=C5=9Bci naszego systemu.=20
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index 9bc344851704..fd0e297a8584 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -1099,11 +1099,11 @@ static int isotp_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 	struct sock *sk = sock->sk;
+ 	struct sk_buff *skb;
+ 	struct isotp_sock *so = isotp_sk(sk);
+ 	int ret = 0;
+ 
+-	if (flags & ~(MSG_DONTWAIT | MSG_TRUNC | MSG_PEEK))
++	if (flags & ~(MSG_DONTWAIT | MSG_TRUNC | MSG_PEEK | MSG_CMSG_COMPAT))
+ 		return -EINVAL;
+ 
+ 	if (!so->bound)
+ 		return -EADDRNOTAVAIL;
+ 
+diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+index 7e90f9e61d9b..1790469b2580 100644
+--- a/net/can/j1939/socket.c
++++ b/net/can/j1939/socket.c
+@@ -796,11 +796,11 @@ static int j1939_sk_recvmsg(struct socket *sock, struct msghdr *msg,
+ 	struct sock *sk = sock->sk;
+ 	struct sk_buff *skb;
+ 	struct j1939_sk_buff_cb *skcb;
+ 	int ret = 0;
+ 
+-	if (flags & ~(MSG_DONTWAIT | MSG_ERRQUEUE))
++	if (flags & ~(MSG_DONTWAIT | MSG_ERRQUEUE | MSG_CMSG_COMPAT))
+ 		return -EINVAL;
+ 
+ 	if (flags & MSG_ERRQUEUE)
+ 		return sock_recv_errqueue(sock->sk, msg, size, SOL_CAN_J1939,
+ 					  SCM_J1939_ERRQUEUE);
+-- 
+2.30.2
 
-Organizowanie pracy pracownik=C3=B3w jest dzi=C4=99ki temu prostsze i bar=
-dziej efektywne, a oszcz=C4=99dno=C5=9Bci i optymalizacja w zakresie pono=
-szonych koszt=C3=B3w, maj=C4=85 dla ka=C5=BCdego przedsi=C4=99biorcy ogro=
-mne znaczenie.
-
-Dopasujemy nasz=C4=85 ofert=C4=99 do Pa=C5=84stwa oczekiwa=C5=84 i potrze=
-b organizacji. Czy mogliby=C5=9Bmy porozmawia=C4=87 o naszej propozycji?
-
-
-Pozdrawiam
-Krystian Wieczorek
