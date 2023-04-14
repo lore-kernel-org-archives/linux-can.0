@@ -2,47 +2,53 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96403C77B6F
-	for <linux-can@archiver.kernel.org>; Thu, 13 Apr 2023 22:36:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A51CEC77B70
+	for <linux-can@archiver.kernel.org>; Fri, 14 Apr 2023 06:13:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbjDMWg2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 13 Apr 2023 18:36:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53230 "EHLO
+        id S229774AbjDNGNP (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 14 Apr 2023 02:13:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbjDMWg0 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 13 Apr 2023 18:36:26 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36542110;
-        Thu, 13 Apr 2023 15:36:24 -0700 (PDT)
+        with ESMTP id S229476AbjDNGNO (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 14 Apr 2023 02:13:14 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8314C2D;
+        Thu, 13 Apr 2023 23:13:12 -0700 (PDT)
 Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 33DMUq1T071320;
-        Thu, 13 Apr 2023 17:30:52 -0500
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 33E6CvUM121911;
+        Fri, 14 Apr 2023 01:12:57 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1681425052;
-        bh=kCdEb/NvZkw25bQuwMNRo9ZrE7qZwdwyaq0NV1d1GTQ=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Y5pYGYIbbQOiUHjlM802gY36neCbyKeHZFBTClAdjN3XeaEP8NM7tp3Z5Qk2IazM2
-         p052IWDJEbc36ByZ7VnaosCn1zLGLjanCUf1pq1WUPEW5RTCWO5ZCeLFVJzNEHB1Co
-         wFU2/MJ8BFsR8SeAD7+5vpvT+TDKXOsehOkFpi8E=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 33DMUqUv019444
+        s=ti-com-17Q1; t=1681452777;
+        bh=5fzgEE5rhEgibICZ0O25CWXhfNZmGZDqlt0vq4RXvyM=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=URVsDq7rIRMqNYXlhoOuQJmyn0xTjbHWqn4Juvnls0SIrvnYAYRllnFPrDu4Dfc3S
+         yiiWHAEWiLDp0Ad9P77YDV7rBeWPdsTR6xVd1nHgBSocBpBDY7SysXraIGnRnNMWvu
+         qooD9ng3eJxu0rTDOE686cgGhxfV085TkyWawdPg=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 33E6CvA9027034
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 13 Apr 2023 17:30:52 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.16; Thu, 13
- Apr 2023 17:30:52 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+        Fri, 14 Apr 2023 01:12:57 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.16; Fri, 14
+ Apr 2023 01:12:57 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.16 via
- Frontend Transport; Thu, 13 Apr 2023 17:30:51 -0500
-Received: from a0498204.dal.design.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 33DMUpa5063427;
-        Thu, 13 Apr 2023 17:30:51 -0500
-From:   Judith Mendez <jm@ti.com>
-To:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>
-CC:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Andrew Davis <afd@ti.com>,
+ Frontend Transport; Fri, 14 Apr 2023 01:12:57 -0500
+Received: from [172.24.145.182] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 33E6CrH8054033;
+        Fri, 14 Apr 2023 01:12:53 -0500
+Message-ID: <8552c377-b2e9-749a-9f0c-7c444fe012c6@ti.com>
+Date:   Fri, 14 Apr 2023 11:42:52 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [RFC PATCH 0/5] Enable multiple MCAN on AM62x
+Content-Language: en-US
+To:     Judith Mendez <jm@ti.com>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>
+CC:     Nishanth Menon <nm@ti.com>, Andrew Davis <afd@ti.com>,
         Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         Rob Herring <robh+dt@kernel.org>,
@@ -50,40 +56,30 @@ CC:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
         <linux-can@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
         Schuyler Patton <spatton@ti.com>
-Subject: [RFC PATCH 2/5] arm64: defconfig: Enable MCAN driver
-Date:   Thu, 13 Apr 2023 17:30:48 -0500
-Message-ID: <20230413223051.24455-3-jm@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230413223051.24455-1-jm@ti.com>
 References: <20230413223051.24455-1-jm@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+In-Reply-To: <20230413223051.24455-1-jm@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Enable CAN_M_CAN and CAN_M_CAN_PLATFORM to be built
-as modules by default for TI boards.
+Hi Judith,
 
-Signed-off-by: Judith Mendez <jm@ti.com>
----
- arch/arm64/configs/defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+On 14/04/23 04:00, Judith Mendez wrote:
+> Judith Mendez (5):
+>   arm64: dts: ti: Add AM62x MCAN MAIN domain transceiver overlay
+>   arm64: defconfig: Enable MCAN driver
+>   dt-binding: can: m_can: Remove required interrupt attributes
+>   arm64: dts: ti: Enable multiple MCAN for AM62x in MCU MCAN overlay
+>   can: m_can: Add hrtimer to generate software interrupt
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 7790ee42c68a..172a2523051f 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -176,6 +176,8 @@ CONFIG_NET_ACT_GATE=m
- CONFIG_QRTR_SMD=m
- CONFIG_QRTR_TUN=m
- CONFIG_CAN=m
-+CONFIG_CAN_M_CAN=m
-+CONFIG_CAN_M_CAN_PLATFORM=m
- CONFIG_BT=m
- CONFIG_BT_HIDP=m
- # CONFIG_BT_LE is not set
+This is fine for RFC, but next time, please split DT and defconfig
+changes (1/5,2/5, and 4/5) to separate series as they have to go via
+arm64 tree.
+
 -- 
-2.17.1
-
+Regards
+Vignesh
