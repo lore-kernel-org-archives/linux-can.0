@@ -2,144 +2,63 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23CD4C77B72
-	for <linux-can@archiver.kernel.org>; Mon, 17 Apr 2023 19:26:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 771B5C77B75
+	for <linux-can@archiver.kernel.org>; Tue, 18 Apr 2023 08:32:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbjDQT00 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 17 Apr 2023 15:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42582 "EHLO
+        id S231467AbjDRIcM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 18 Apr 2023 04:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbjDQT0W (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 17 Apr 2023 15:26:22 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 434E16E97
-        for <linux-can@vger.kernel.org>; Mon, 17 Apr 2023 12:26:20 -0700 (PDT)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1poUUJ-0004Fg-PX; Mon, 17 Apr 2023 21:26:07 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id BC3631B175F;
-        Mon, 17 Apr 2023 19:26:04 +0000 (UTC)
-Date:   Mon, 17 Apr 2023 21:26:04 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     Judith Mendez <jm@ti.com>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Andrew Davis <afd@ti.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, netdev@vger.kernel.org,
-        Schuyler Patton <spatton@ti.com>
-Subject: Re: [RFC PATCH 5/5] can: m_can: Add hrtimer to generate software
- interrupt
-Message-ID: <20230417-unsafe-porridge-0b712d137530-mkl@pengutronix.de>
-References: <20230413223051.24455-1-jm@ti.com>
- <20230413223051.24455-6-jm@ti.com>
- <20230414-bounding-guidance-262dffacd05c-mkl@pengutronix.de>
- <4a6c66eb-2ccf-fc42-a6fc-9f411861fcef@hartkopp.net>
- <20230416-failing-washbasin-e4fa5caea267-mkl@pengutronix.de>
- <f58e8dce-898c-8797-5293-1001c9a75381@hartkopp.net>
- <20230417-taking-relieving-f2c8532864c0-mkl@pengutronix.de>
- <25806ec7-64c5-3421-aea1-c0d431e3f27f@hartkopp.net>
+        with ESMTP id S231216AbjDRIbw (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 18 Apr 2023 04:31:52 -0400
+X-Greylist: delayed 895 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 18 Apr 2023 01:31:33 PDT
+Received: from mail.tipvortexbiz.com (mail.tipvortexbiz.com [51.254.102.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E517A97
+        for <linux-can@vger.kernel.org>; Tue, 18 Apr 2023 01:31:32 -0700 (PDT)
+Received: by mail.tipvortexbiz.com (Postfix, from userid 1002)
+        id 42F384518C; Tue, 18 Apr 2023 08:05:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tipvortexbiz.com;
+        s=mail; t=1681805143;
+        bh=P1Han34balTJAB06sltOuaQxWoVYtmotA0/1aw855g4=;
+        h=Date:From:To:Subject:From;
+        b=cCSw0f+dBLklc2w/NRsPo2zuBlvPxUzJVxayK1rvqiM2+gt9Bf+oYOsw4xokvQ6P5
+         hmiJIqDJf8GreFoGxvIcoI3t4WqBBNxTzuq/lxKllTQ6dbV7pO0O2RKawuHZum3lp4
+         HlJ+wIjAzEOlQmiv4SiLVmLB+xHUWLNPjFbd55drU3tTHtXoCoc5c88NELzEZ2a0lD
+         Ufu2PPpHw7o9JhwYgwxt8Vhhibt1AobaPDeeaxrrKA1Kbz7rHSkfZrJibKoS1US9HC
+         PKME5T+6ZvQsHfaBM9MkMv3TRdOks706oZqUdGERtTVycFmBp50Wspz13hhgx4r6cA
+         EH4zTlEewfu4Q==
+Received: by mail.tipvortexbiz.com for <linux-can@vger.kernel.org>; Tue, 18 Apr 2023 08:05:41 GMT
+Message-ID: <20230418064500-0.1.18.23xb.0.42dkimyglv@tipvortexbiz.com>
+Date:   Tue, 18 Apr 2023 08:05:41 GMT
+From:   "Victor Pollard" <victor.pollard@tipvortexbiz.com>
+To:     <linux-can@vger.kernel.org>
+Subject: Wake up - Audit time
+X-Mailer: mail.tipvortexbiz.com
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="clk4ct7erfqsly7j"
-Content-Disposition: inline
-In-Reply-To: <25806ec7-64c5-3421-aea1-c0d431e3f27f@hartkopp.net>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+Good morning,
 
---clk4ct7erfqsly7j
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+we provide a solution that significantly shortens the audit time, enables=
+ standards control and non-compliance reporting:
 
-On 17.04.2023 19:34:03, Oliver Hartkopp wrote:
-> On 17.04.23 09:26, Marc Kleine-Budde wrote:
-> > On 16.04.2023 21:46:40, Oliver Hartkopp wrote:
-> > > > I had the 5ms that are actually used in the code in mind. But this =
-is a
-> > > > good calculation.
-> > >=20
-> > > @Judith: Can you acknowledge the value calculation?
-> > >=20
-> > > > > The "shortest" 11 bit CAN ID CAN frame is a Classical CAN frame w=
-ith DLC =3D 0
-> > > > > and 1 Mbit/s (arbitration) bitrate. This should be 48 bits @1Mbit=
- =3D> ~50
-> > > > > usecs
-> > > > >=20
-> > > > > So it should be something about
-> > > > >=20
-> > > > >       50 usecs * (FIFO queue len - 2)
-> > > >=20
-> > > > Where does the "2" come from?
-> > >=20
-> > > I thought about handling the FIFO earlier than it gets completely "fu=
-ll".
-> > >=20
-> > > The fetching routine would need some time too and the hrtimer could a=
-lso
-> > > jitter to some extend.
-> >=20
-> > I was assuming something like this.
-> >=20
-> > I would argue that the polling time should be:
-> >=20
-> >      50 =C2=B5s * FIFO length - IRQ overhead.
-> >=20
-> > The max IRQ overhead depends on your SoC and kernel configuration.
->=20
-> I just tried an educated guess to prevent the FIFO to be filled up
-> completely. How can you estimate the "IRQ overhead"? And how do you catch
-> the CAN frames that are received while the IRQ is handled?
+=E2=97=8F Audits - to check quality or process standards (ISO, 5S, LPA)
+=E2=97=8F Scheduler - all work can be scheduled and linked to the notific=
+ation system
+=E2=97=8F Checklists - for carrying out work "point by point" with a desc=
+ription illustrated with a photo or video
+=E2=97=8F Non-conformances - immediately report non-conformances and send=
+ them to responsible persons
+=E2=97=8F Tests - to check knowledge after training or (customer's) expec=
+tations
+=E2=97=8F Summary of Results and Reports - presented on dashboards
 
-We're talking about polling, better call it "overhead" or "latency from
-timer expiration until FIFO has at least one frame room". This value
-depends on your system.
+Are you open to a conversation about using such a tool in your company?
 
-It depends on many, many factors, SoC, Kernel configuration (preempt RT,
-powersaving, frequency scaling, system load. In your example it's 100
-=C2=B5s. I wanted to say there's an overhead (or latency) and we need enough
-space in the FIFO, to cover it.
 
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---clk4ct7erfqsly7j
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmQ9nUkACgkQvlAcSiqK
-BOixwwf/S6gpZAbZI0gDLqq59QAhT0OVgjq9E8jQRb6b3SM430nhVX/oOlfIXRCJ
-mz76H1v+b1fURaOi+VZC5zoVb5MF8WhJtBEAWa2IbLNGA1A/6UMtQ466nbNCXPYP
-dFBo+MfWZrkcSayCEYuWdwiPPHJSkOtNeZnjRDwMm2uPF1CeSrQlS5Fbi0GNJy//
-7hVBMN7Jm4qlCQxCC3jHRm0Gtc8qWz5n1v2DyxokjtT4jMo9Iwni6wnPB9ni5JHT
-SldeHxtqHDcc4i83eUxhZzsYD6WDV+J7VAkARfnJBcDnFX8qCznvU5eOjBMU3qgr
-IIraJi0ns1cH/zWAc/yyMoaL+/vn9A==
-=PGh8
------END PGP SIGNATURE-----
-
---clk4ct7erfqsly7j--
+Regards
+Victor Pollard
