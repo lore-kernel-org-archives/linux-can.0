@@ -2,42 +2,42 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2C3EC77B73
-	for <linux-can@archiver.kernel.org>; Wed, 19 Apr 2023 22:47:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F435C6FD18
+	for <linux-can@archiver.kernel.org>; Wed, 19 Apr 2023 22:52:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231263AbjDSWrO (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 19 Apr 2023 18:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48022 "EHLO
+        id S229499AbjDSWwG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 19 Apr 2023 18:52:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjDSWrO (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 19 Apr 2023 18:47:14 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F79AB;
-        Wed, 19 Apr 2023 15:47:09 -0700 (PDT)
+        with ESMTP id S232157AbjDSWwE (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 19 Apr 2023 18:52:04 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1663130DD;
+        Wed, 19 Apr 2023 15:52:02 -0700 (PDT)
 Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 33JMXOTX088934;
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 33JMXOS0078076;
         Wed, 19 Apr 2023 17:33:24 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
         s=ti-com-17Q1; t=1681943604;
-        bh=qSHxA2JuD9iVuHUIsjmZUVoAD15PhbOU9uLN9c3n25g=;
-        h=From:To:CC:Subject:Date;
-        b=ng6lnJQqlOjY+0biJJDivbVoW2wOfHYT26DJcfg/sbVkwss1AhUTmpuZeQ/i1bqJV
-         3RslBeMDaY2fu+ZDgKtF4j3fFwvsvgocK54/dEP10NUBOM+afMoWBhoPgGISYj+4zg
-         4Gws3A1rawdVHqtXXQI0S+mIKcAqbZSHgOuMHYAI=
-Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 33JMXOlh059400
+        bh=jizcdNC77GvXvWzncEmB120DNSJSaKOeMe67Df/6+1M=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=c5TZhOReMiMkxMEcDaiH0P49R6BAhXFSBxbKe0b/1qGSgRZSQtQbpSzGk1QiotxY0
+         kbRn5pRvLzlhBRXhedhuWeUl2n1bRGNzwuXVGA4UBPG4XOsSxfNgq3AJVmgT7toQCe
+         SjGtyMTYjgRLgdgm5+oPrKP1Uv4wyCNoorvTmz9I=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 33JMXO9p059406
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
         Wed, 19 Apr 2023 17:33:24 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.16; Wed, 19
- Apr 2023 17:33:24 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2023 17:33:23 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.16 via
- Frontend Transport; Wed, 19 Apr 2023 17:33:23 -0500
+ Frontend Transport; Wed, 19 Apr 2023 17:33:24 -0500
 Received: from a0498204.dal.design.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 33JMXNLV015736;
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 33JMXNLX015736;
         Wed, 19 Apr 2023 17:33:23 -0500
 From:   Judith Mendez <jm@ti.com>
 To:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
@@ -57,10 +57,12 @@ CC:     "David S . Miller" <davem@davemloft.net>,
         <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: [PATCH 0/4] Enable multiple MCAN on AM62x
-Date:   Wed, 19 Apr 2023 17:33:19 -0500
-Message-ID: <20230419223323.20384-1-jm@ti.com>
+Subject: [PATCH 2/4] dt-bindings: net: can: Make interrupt attributes optional for MCAN
+Date:   Wed, 19 Apr 2023 17:33:21 -0500
+Message-ID: <20230419223323.20384-3-jm@ti.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230419223323.20384-1-jm@ti.com>
+References: <20230419223323.20384-1-jm@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
@@ -68,63 +70,32 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On AM62x there is one MCAN in MAIN domain and two in MCU domain.
-The MCANs in MCU domain were not enabled since there is no
-hardware interrupt routed to A53 GIC interrupt controller.
-Therefore A53 Linux cannot be interrupted by MCU MCANs.
+For MCAN, remove interrupt and interrupt names from the required
+section.
 
-This solution instantiates a hrtimer with 1 ms polling interval
-for a MCAN when there is no hardware interrupt. This hrtimer
-generates a recurring software interrupt which allows to call the
-isr. The isr will check if there is pending transaction by reading
-a register and proceed normally if there is.
+On AM62x SoC, MCANs on MCU domain do not have hardware interrupt
+routed to A53 Linux, instead they will use software interrupt
+by hrtimer. Make interrupt attributes optional in MCAN node
+by removing from required section.
 
-On AM62x this series enables two MCU MCAN which will use the hrtimer
-implementation. MCANs with hardware interrupt routed to A53 Linux
-will continue to use the hardware interrupt as expected.
+Signed-off-by: Judith Mendez <jm@ti.com>
+---
+ Documentation/devicetree/bindings/net/can/bosch,m_can.yaml | 2 --
+ 1 file changed, 2 deletions(-)
 
-Timer polling method was tested on both classic CAN and CAN-FD
-at 125 KBPS, 250 KBPS, 1 MBPS and 2.5 MBPS with 4 MBPS bitrate
-switching.
-
-Letency and CPU load benchmarks were tested on 3x MCAN on AM62x.
-1 MBPS timer polling interval is the better timer polling interval
-since it has comparable latency to hardware interrupt with the worse
-case being 1ms + CAN frame propagation time and CPU load is not
-substantial. Latency can be improved further with less than 1 ms
-polling intervals, howerver it is at the cost of CPU usage since CPU
-load increases at 0.5 ms and lower polling periods than 1ms.
-
-Note that in terms of power, enabling MCU MCANs with timer-polling
-implementation might have negative impact since we will have to wake
-up every 1 ms whether there are CAN packets pending in the RX FIFO or
-not. This might prevent the CPU from entering into deeper idle states
-for extended periods of time.
-
-This patch series depends on 'Enable CAN PHY transceiver driver':
-https://lore.kernel.org/lkml/775ec9ce-7668-429c-a977-6c8995968d6e@app.fastmail.com/T/
-
-Previously sent an RFC:
-https://lore.kernel.org/linux-can/52a37e51-4143-9017-42ee-8d17c67028e3@ti.com/T/#t
-
-Judith Mendez (4):
-  can: m_can: Add hrtimer to generate software interrupt
-  dt-bindings: net: can: Make interrupt attributes optional for MCAN
-  arm64: dts: ti: Add AM62x MCAN MAIN domain transceiver overlay
-  arm64: dts: ti: Enable MCU MCANs for AM62x
-
- .../bindings/net/can/bosch,m_can.yaml         |  2 -
- arch/arm64/boot/dts/ti/Makefile               |  2 +
- arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi       | 24 ++++++++
- .../boot/dts/ti/k3-am625-sk-mcan-main.dtso    | 35 ++++++++++++
- .../boot/dts/ti/k3-am625-sk-mcan-mcu.dtso     | 55 +++++++++++++++++++
- drivers/net/can/m_can/m_can.c                 | 30 +++++++++-
- drivers/net/can/m_can/m_can.h                 |  3 +
- drivers/net/can/m_can/m_can_platform.c        | 13 ++++-
- 8 files changed, 158 insertions(+), 6 deletions(-)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am625-sk-mcan-main.dtso
- create mode 100644 arch/arm64/boot/dts/ti/k3-am625-sk-mcan-mcu.dtso
-
+diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+index 67879aab623b..43f1aa9addc0 100644
+--- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
++++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+@@ -122,8 +122,6 @@ required:
+   - compatible
+   - reg
+   - reg-names
+-  - interrupts
+-  - interrupt-names
+   - clocks
+   - clock-names
+   - bosch,mram-cfg
 -- 
 2.17.1
 
