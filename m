@@ -2,44 +2,44 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 562C0C77B7D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E05F5C77B7C
 	for <linux-can@archiver.kernel.org>; Fri,  5 May 2023 11:03:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231588AbjEELDQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 5 May 2023 07:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53286 "EHLO
+        id S229553AbjEELDR (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 5 May 2023 07:03:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjEELDP (ORCPT
+        with ESMTP id S231394AbjEELDP (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Fri, 5 May 2023 07:03:15 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A4BF1A1EC
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC731A1F3
         for <linux-can@vger.kernel.org>; Fri,  5 May 2023 04:03:14 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1putDU-0004Ww-PT
+        id 1putDU-0004Wn-Ou
         for linux-can@vger.kernel.org; Fri, 05 May 2023 13:03:12 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 3A39F1BE810
+        by bjornoya.blackshift.org (Postfix) with SMTP id 2DB541BE80F
         for <linux-can@vger.kernel.org>; Fri,  5 May 2023 11:03:12 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 106FE1BE805;
-        Fri,  5 May 2023 11:03:11 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id EDA9E1BE803;
+        Fri,  5 May 2023 11:03:10 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4ed3be17;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d834fcec;
         Fri, 5 May 2023 11:03:10 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
         Oleksij Rempel <o.rempel@pengutronix.de>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v3 2/2] can: j1939: recvmsg(): allow MSG_CMSG_COMPAT flag
-Date:   Fri,  5 May 2023 13:03:08 +0200
-Message-Id: <20230505110308.81087-3-mkl@pengutronix.de>
+Subject: [PATCH v3 1/2] can: isotp: recvmsg(): allow MSG_CMSG_COMPAT flag
+Date:   Fri,  5 May 2023 13:03:07 +0200
+Message-Id: <20230505110308.81087-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230505110308.81087-1-mkl@pengutronix.de>
 References: <20230505110308.81087-1-mkl@pengutronix.de>
@@ -55,7 +55,7 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-The control message provided by J1939 support MSG_CMSG_COMPAT but
+The control message provided by isotp support MSG_CMSG_COMPAT but
 blocked recvmsg() syscalls that have set this flag, i.e. on 32bit user
 space on 64 bit kernels.
 
@@ -63,27 +63,25 @@ Link: https://github.com/hartkopp/can-isotp/issues/59
 Cc: Oleksij Rempel <o.rempel@pengutronix.de>
 Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Tested-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Fixes: 42bf50a1795a ("can: isotp: support MSG_TRUNC flag when reading from socket")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/j1939/socket.c | 2 +-
+ net/can/isotp.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 7e90f9e61d9b..1790469b2580 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -798,7 +798,7 @@ static int j1939_sk_recvmsg(struct socket *sock, struct msghdr *msg,
- 	struct j1939_sk_buff_cb *skcb;
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index a750259cb79c..84f9aba02901 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -1139,7 +1139,7 @@ static int isotp_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 	struct isotp_sock *so = isotp_sk(sk);
  	int ret = 0;
  
--	if (flags & ~(MSG_DONTWAIT | MSG_ERRQUEUE))
-+	if (flags & ~(MSG_DONTWAIT | MSG_ERRQUEUE | MSG_CMSG_COMPAT))
+-	if (flags & ~(MSG_DONTWAIT | MSG_TRUNC | MSG_PEEK))
++	if (flags & ~(MSG_DONTWAIT | MSG_TRUNC | MSG_PEEK | MSG_CMSG_COMPAT))
  		return -EINVAL;
  
- 	if (flags & MSG_ERRQUEUE)
+ 	if (!so->bound)
 -- 
 2.39.2
 
