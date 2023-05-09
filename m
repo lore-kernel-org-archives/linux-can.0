@@ -2,324 +2,1395 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C229EC77B75
-	for <linux-can@archiver.kernel.org>; Tue,  9 May 2023 07:12:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80094C7EE22
+	for <linux-can@archiver.kernel.org>; Tue,  9 May 2023 07:39:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235247AbjEIHMy (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 9 May 2023 03:12:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42550 "EHLO
+        id S234025AbjEIHj6 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 9 May 2023 03:39:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235240AbjEIHMx (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 9 May 2023 03:12:53 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDAD173C;
-        Tue,  9 May 2023 00:12:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1683616372; x=1715152372;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=6f6L/O3LBxc5zMlnEQmKqCazq4D/5w3Yu7ZUqlnDh9c=;
-  b=dxY5fF/81iOEtBJORlT6rNWIqBaXEBK2iV6nQFOjImW5jGFHgc65Wd9m
-   abETBHhMxvBMawLJT9RLRSdQrsOyNSW+xbcTT7LKNdu7tkcb3mIxy4uEQ
-   lBlDzVfPDKtuoUmZKb1u48gwUqw1jDPgZCT4AMbMRqYfURd5nqhWPQQIc
-   6xmHYJK6XnYKarGTx5yGDA17oGK0gp8y+xX8yaSfxb7NTkpy2bL7VNrqg
-   PXPddup6LowlDTDn2dTsVf8bB0+budcyb6GPFkEEv2BScAK4tL+n2riY4
-   TaJm4cVcXc7jxCN64xgexFNJP741fDEBGag56gVgOoJvbxWRILU2G58Lk
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.99,261,1677567600"; 
-   d="scan'208";a="210304338"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 May 2023 00:12:51 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Tue, 9 May 2023 00:12:50 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Tue, 9 May 2023 00:12:49 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GBcm/vBfUB1/Rn48xMU8xu/bxnl5LNV/mEVWHdIV5GlNC8L/sEtcVFq5CYib2qHLDi/6f8O4SispODopIWUak2vgqLvyo5fKNXUF8pZLCpbedeQa8ycz+LQIeWcn4sIwtAvVynbYkHy/iBR0QSRwLzSVPXhUdwa3OX5rz/9ft2oWPwULay6tcw/WHIaA5FanCxKyAzFdPe943sdkDGeuUfztUdBQXnu81bBewgUVJxdBRO4dQuBJeNXkrczcnRziCjJ2R1s3YS7HA0CHVQmx0rKl7fxr565H6a2d9c68Kub8WCaZM+ByRA+E+7qiUBjxpihphff+O6Pcrt0Ix3j/LA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6f6L/O3LBxc5zMlnEQmKqCazq4D/5w3Yu7ZUqlnDh9c=;
- b=RH+nn+lnEAdmjoVTWvMRfb4t98UV0Px4AYlDY/KMz+86Cdo8sZ4mGioc2YBkxmJape4uJoNoRyoI7GVP7caTjZBzkCi5Evx3mM8RRogVKnKDPHbfHyY3NhLJykL5PonQpxvMi0SrDQrNVlMACCTII6O2LASnqfeY5+q2jl+j3QiHliQaVNSX4tE8SMfVWj5LV4VSBzwvxR3BHn+repwX+Kope4uxgpEeESa0id3V3ccO558tghzLH97aUDaTwXp0LUib0SjXqFvOmrBxk/b2kk8n2k++HAF5xZT7sNiYVnjDluYCB8jdU+FF3lOj5DDjQ18MpfivgDTlIS0kVsgyTg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6f6L/O3LBxc5zMlnEQmKqCazq4D/5w3Yu7ZUqlnDh9c=;
- b=PIhw7r/DqxL4y/oHZun/mS22HbCStqWxu2VFzSNWsLNq/Av+Svij8pJCN5ajhSc1LHcN+CEJt9v1fz+6lPsYErb+6fb5mLS7Hv88xxV3SxrnbSEMFs82C4p5a1aY+WX3Jb1qYweFh54aunrx7ZKjaNxMmY2uD64XHY4rasdYP64=
-Received: from BL3PR11MB6484.namprd11.prod.outlook.com (2603:10b6:208:3bf::19)
- by CH3PR11MB8362.namprd11.prod.outlook.com (2603:10b6:610:175::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6363.33; Tue, 9 May
- 2023 07:12:47 +0000
-Received: from BL3PR11MB6484.namprd11.prod.outlook.com
- ([fe80::c13:dcee:8af:bbfb]) by BL3PR11MB6484.namprd11.prod.outlook.com
- ([fe80::c13:dcee:8af:bbfb%5]) with mapi id 15.20.6363.033; Tue, 9 May 2023
- 07:12:47 +0000
-From:   <Thomas.Kopp@microchip.com>
-To:     <mailhol.vincent@wanadoo.fr>, <mkl@pengutronix.de>
-CC:     <linux-can@vger.kernel.org>, <marex@denx.de>,
-        <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] can: length: add definitions for frame lengths in bits
-Thread-Topic: [PATCH] can: length: add definitions for frame lengths in bits
-Thread-Index: AQHZgPxeZaBnd1NvTEynohb4vwVjlK9QTOIAgAEW1ACAABi4oA==
-Date:   Tue, 9 May 2023 07:12:47 +0000
-Message-ID: <BL3PR11MB64841417866BA13DFEA3E373FB769@BL3PR11MB6484.namprd11.prod.outlook.com>
-References: <20230507155506.3179711-1-mailhol.vincent@wanadoo.fr>
- <20230508-sprint-cause-80b4172d5a5a-mkl@pengutronix.de>
- <CAMZ6RqKQw702HPjBTNJdBfL8yhkn5vDVDfn6dbrVMv7SX6NO2w@mail.gmail.com>
-In-Reply-To: <CAMZ6RqKQw702HPjBTNJdBfL8yhkn5vDVDfn6dbrVMv7SX6NO2w@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL3PR11MB6484:EE_|CH3PR11MB8362:EE_
-x-ms-office365-filtering-correlation-id: 0831dc5a-b08c-4c38-4f2b-08db505ccb01
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OY9jSqi3jYI6Y5igOPk9F2IZbe0T9Zbq1C7rPMjRv4hgdhgHz007iR0tey5QZ8pfVPpyKTCk9QlfcZ2VftCjJ/9D3XXhQzYeMPK5iB77YJ9bQPDd1v6SXCHUvB7qfWIHqfz5PktHGdBXYSCTK1k8q4DFtU1zEFbbKn0u8/k7zm13Pwiw43PMFJCZOskWwTXJv2V33qWzf++jCsD2JhJLljtnynlHAPXtNvJ/fniHTF10S//mtNPRs5vxVYrU7dQ3YEY4qRVNg8af9GqSklFQInD/+XejG+oZ/h7k89sC8V7sRZnJQ5DY4Mf2GasoopaUB7XHipil/rZYRI6n0ZgJmiXEVVQYDfpH/jXSIZEY1oKwBBFMNHsRqKVEO1KvVfRJBed8Z2Wxi+ER5+cIYqzFS9RjV5s8hQPEVXpeGkVEwZatphgUDKQ4PwmgmvE7b/szbiaALNWMP+P3yGDPoC/3ttSGcWLJAy5rvGbj0gu1BsdVGXBOfVIkKfdtdCF6hQ/AlOEy+FEP7f+Ac6CjmrS3iqaoSY7oimVYf+Xu2JBsW2ZJdiPjWBdqgC4Ix6+pb23ng+ZfBhc5itsw9rP0Q07S/froQGP/3F4RgbpsvNBLq3rPY4+jEc0/483fm3AFJLDuljU/vIuYo3yxdsAOecVKCw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL3PR11MB6484.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(366004)(376002)(346002)(396003)(136003)(451199021)(33656002)(41300700001)(2906002)(86362001)(55016003)(38100700002)(38070700005)(8676002)(8936002)(52536014)(122000001)(5660300002)(64756008)(66446008)(66476007)(66556008)(4326008)(66946007)(478600001)(76116006)(83380400001)(316002)(186003)(54906003)(110136005)(53546011)(6506007)(26005)(9686003)(45080400002)(71200400001)(7696005)(966005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TWxPd3cxWmlLZGl2dVhrZGhVaCtGaXZ3WWkxa25EMjFqREtkWlJzVVlLMnl4?=
- =?utf-8?B?WTZXTkU0QjMxamk3WGxSMDNjaGoyQ1VoT3Yzcis2ZFhwcUpjZWY0UVRBRWgv?=
- =?utf-8?B?eTVrRHpRUTEwMTZyRFZ5ZWkrd2gzUkVYWGRIbDIvTlhaMyt5THhSUWhOVEhh?=
- =?utf-8?B?eVpUUThtTUEwNkVTRG1meEVyT2ErdTBsNWlMVDFDN29NaE1uWVJGR3k4SUU1?=
- =?utf-8?B?aVBaU0xuUzBRbGoyRlM0Zjh3N052SnVBSVc0RzN2SnlwU3pXWmpDQm5FSmk1?=
- =?utf-8?B?RkJ3RHR2TmhSUHdTSXZlVHNkTjQzcG9yYmd1R3Y0Y0tEKzdoTFNIS1BIT1JZ?=
- =?utf-8?B?SHEyNXM4Kzd1ZC83OFJhS1AwSndzM0R4TFdJWGU0RFNtVnNtOFhXUEp0L24v?=
- =?utf-8?B?M3hPaHFCM2toUEljRjBhVEUrTnpPdVRqY05XWUdpNnZUQi8rckNiU0E4ZTVR?=
- =?utf-8?B?cFVON0gvVkdJSllZc0l4OHRvY0JPQXBQNjJKQjhmOXJDOGtkczc1eU54ZnZV?=
- =?utf-8?B?ZFhTSXNYc0VpS2t5OEk5ZHhlRG8wMURaWG5tSXhHcjZWN1VPcmdhUW1ISytp?=
- =?utf-8?B?bWFEWnA0bHNNOG05MFRnNko3cnVvcWo5NklpNkIzUWJxSzNGeUlldnV0L3lH?=
- =?utf-8?B?UHYxN3IrSHV5eGpWUHkzS2J1MzY2Sk5YSk9oRTN4UU9UYTJBTm5hTEhHaGt0?=
- =?utf-8?B?NGNDbVg1NGljSUwrby9WVWNvWEZ4aUhReXExVjRMK0w4Wkd0dDFkKy9xUmNu?=
- =?utf-8?B?N3ZzWFVKTWVUTzFGUTVrZzdvOGcyTkZSZFpxVVZGYWsrOUZwU0tkbmZmTTJT?=
- =?utf-8?B?WnNFdlpaVlBCQUZzQmpUTHlYSjdFd2JxRkxUWDFnZXlicDhsZTUvUGhISWY5?=
- =?utf-8?B?bEhDWVJid3RUSWtPN2k5Rkgyd2Ewek9aSjFlYXVzMGtsYXRVTFQ2ajlGeTNa?=
- =?utf-8?B?bCtBRzNrbnVLMnZwMUZBRWhFdEd5TW5EMnVkalE0Q2pHYkx1cExqclYySjBs?=
- =?utf-8?B?RVVxc082d29mMENhQnEzTHVESTBQVTliWGlYYzgvL1cxMU5Zek81RkpMNVE2?=
- =?utf-8?B?RXFScE82RDBGZENrWVgxdFpxUjhWaGN2MUE4ZVozODRtMm84QVVzTk5sWHly?=
- =?utf-8?B?c0F5N09rMmlSTGpMajBEdEY3RWdKZ0FGbGV6ZUFFM25FM011SHVWdC9NQ0Ro?=
- =?utf-8?B?djBObHhOeEcxUjIxMkpFT1BydGlLZmNCM2Z6blBlVzR1MHUxZDZoUEpFRzV0?=
- =?utf-8?B?NC9XSEVJem1TQXJwMzdKbldVbWczdU8xejJhbC9MRDBsUEVINXZGQTVvVzA2?=
- =?utf-8?B?ZlE0K25ZMmswVGZxd0EzclgvWCtxVzBua21HK1FPWGlZWmlXNVBYNVZQRjhv?=
- =?utf-8?B?UndhUlpwWWErbHJvUU1CUm8xS0F5WUlpbEJJZ0dxdGxOV1VpOFpPbXBJc0xV?=
- =?utf-8?B?VUpPMEhaUkxnU2dxV1VDVk04aVpTb0tYRjRoQ0liMFlxSWdQa1QrakFUNEs1?=
- =?utf-8?B?SVV5OVg2am5BSzZocjJOdGQ2MTBKUFlhVFY4Uk5wYmlWTGJaYi96c05mOW96?=
- =?utf-8?B?TUppUSt1eklqUXZFdFZMN1hSZlZNLzVueFV5UkYvVHo2M1VVbHAwZjhPN2xm?=
- =?utf-8?B?b29uZGIrZG1oRXZraXN1cmxGc2FEYmFxbkZqdlk5YVZPbUdXUEdDRWtHRS93?=
- =?utf-8?B?K1gzRDVGdkdUbDlWUWlaenkrdmhTRExib2MzMEtpSG12WVYxQ3Jib0pyd0Q4?=
- =?utf-8?B?aVBuNjIyZEIvOTlaR01Za1g1VlhTUDJ0VFpPTTZBVmh5b2IrN2ZHTk03ZFdy?=
- =?utf-8?B?OUNOYjV2a1F1Nm1scm9sWUtONGJyRURCcFplaFpnSGNuSEdGMGN0VW51RGFB?=
- =?utf-8?B?YWlMV2xxRlNFNGg3b1hTdHg0eUMzN2cyN2Y4SXc3Y3pJTjZxVDFhNHQySGwx?=
- =?utf-8?B?bTVNalZUbEVMd0NKWjlkWnc2WURGdDNqZEJXK0FnL1J1ZlhDUUVLZjVxOE9Y?=
- =?utf-8?B?UU5FMUpBai8wUlFhRXFBZGU2NFRzOUZ0M1VxUFkzRE9kUFF2YzhYd080TVBh?=
- =?utf-8?B?cldxb1pGemxZdDBBelM1M0piWFc4ZnZndW5WdnE3QjZSdTYvTjdnaHlIT2dp?=
- =?utf-8?Q?JcDaoKDbXyPXImYeL+gs8mBCO?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S234009AbjEIHj6 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 9 May 2023 03:39:58 -0400
+Received: from mail.fintek.com.tw (mail.fintek.com.tw [59.120.186.242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D994EF1;
+        Tue,  9 May 2023 00:39:50 -0700 (PDT)
+Received: from vmMailSRV.fintek.com.tw ([192.168.1.1])
+        by mail.fintek.com.tw with ESMTP id 3497bmYC088758;
+        Tue, 9 May 2023 15:37:48 +0800 (+08)
+        (envelope-from peter_hong@fintek.com.tw)
+Received: from localhost (192.168.1.128) by vmMailSRV.fintek.com.tw
+ (192.168.1.1) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 9 May 2023
+ 15:38:22 +0800
+From:   "Ji-Ze Hong (Peter Hong)" <peter_hong@fintek.com.tw>
+To:     <wg@grandegger.com>, <mkl@pengutronix.de>,
+        <michal.swiatkowski@linux.intel.com>,
+        <Steen.Hegelund@microchip.com>, <mailhol.vincent@wanadoo.fr>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <frank.jungclaus@esd.eu>,
+        <linux-kernel@vger.kernel.org>, <linux-can@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <hpeter+linux_kernel@gmail.com>,
+        "Ji-Ze Hong (Peter Hong)" <peter_hong@fintek.com.tw>
+Subject: [PATCH V7] can: usb: f81604: add Fintek F81604 support
+Date:   Tue, 9 May 2023 15:38:21 +0800
+Message-ID: <20230509073821.25289-1-peter_hong@fintek.com.tw>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL3PR11MB6484.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0831dc5a-b08c-4c38-4f2b-08db505ccb01
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 May 2023 07:12:47.5863
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jTG+7spCmUcpGrQgw+Jq1X9eZYFquYEf2mja/njgDioNmaWFUDUNKdL9oTmLv6KY4l4trIDFT4wJgKHW8XsqPrxAwWgdvrxChAtVnUqMvQ0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8362
+Content-Type: text/plain
+X-Originating-IP: [192.168.1.128]
+X-TM-AS-Product-Ver: SMEX-12.5.0.2055-9.0.1002-27556.001
+X-TM-AS-Result: No-2.417900-8.000000-10
+X-TMASE-MatchedRID: fg7dWpSZHJI/TqR73SoO81lGa4Om1d9npxAd6mi1Ga14YeSlHZYFoswD
+        q5LCkpMyfSv3ksFWDAGKoSP1b8EZpDOfD6L6toKjGqSG/c50XgME9jhJ6ArePLgbJOZ434BsDUZ
+        oR6l9xu8nx5cxKNeBKVQCe54zD9r1I5ufip5gy2kbGIk4hWGaLxeK/B+WKxKseHG52ZQE09Gk16
+        eVRb8rL/B//RkzQVWWumENZJXhj4vSLClnaaUh7PCW/PNRRp/ZB4Ntzrj5dXQN76LiU8zntlOqj
+        Q2eiaSYnMBQUHFOVS8nqFw2BWATnKgZIrutfM9N9Qyzl4FS7Z2p/958oU3WcBG3US/I5cDRdTeg
+        pK7QnXFSHmZoogkDH+affHI8kAmiHY/bzRmIaZGsxn4GpC3Y2kDGfX813PGpbRmE6L06upYAe9b
+        QqNv9QWUVI5FRUTheUQ+hB6auI+wkWzP/wkY0iQrcxrzwsv5uH4pppXAAbjfEosIs7IJbkN1MKI
+        9vdb3lZ8tN2qa0peTs/AoQQPS5EgW2ISv3KJsWnXdphQTSK/L8OKvD4TAscjM6TT9GLIG5/nyw3
+        3FD5lSVdYejSz2J/j6P3kAlvbW7q3OLoks4HX0LsPjFXByaStDEMPvvoocv3M41rVGynHdPo28d
+        IBKhqd9cAtT27cN1RQY71aWwxlpP1dp/IvDimwmyVrMCuJ9SkdxcTYk4Um3you8bQ7c4wmA5oag
+        aX2TWUGjAQRRBH3pt/89n2ujaFT1I7Q1NCxg0Be3KRVyu+k2ZmLDnd2pI30M6Vufrbho1MraJ67
+        wznLHj9TxE8GtfpNEKnxphPo52NtwF1IC9LrWeAiCmPx4NwJuJ+Pb8n/VxSnQ4MjwaO9cqtq5d3
+        cxkNXrA4I2U+gKdTpnMLxmMK2jGIDFa5nv3tKmaRNwOFB3/B3IyHweugXFvx+y4SCozttG1pfB9
+        ENkTtDC+Oypvl/RGDgEFwm6aoD6Qrn3xh/cy
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--2.417900-8.000000
+X-TMASE-Version: SMEX-12.5.0.2055-9.0.1002-27556.001
+X-TM-SNTS-SMTP: BE0C6BDBA4CB4B2F410BF2CBD3734D6655553CDD2CEE75DBCA0B494657BE74DD2000:8
+X-DNSRBL: 
+X-MAIL: mail.fintek.com.tw 3497bmYC088758
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-SGkgVmluY2VudCwNCg0KPiBPbiBNb24uIDggTWF5IDIwMjMgYXQgMjE6MjksIE1hcmMgS2xlaW5l
-LUJ1ZGRlIDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+IHdyb3RlOg0KPiA+IE9uIDA4LjA1LjIwMjMg
-MDA6NTU6MDYsIFZpbmNlbnQgTWFpbGhvbCB3cm90ZToNCj4gPiA+IFdoZW4gY3JlYXRlZCBpbiBb
-MV0sIGZyYW1lcyBsZW5ndGggZGVmaW5pdGlvbnMgd2VyZSBhZGRlZCB0byBpbXBsZW1lbnQNCj4g
-PiA+IGJ5dGUgcXVldWUgbGltaXRzIChicWwpLiBCZWNhdXNlIGJxbCBleHBlY3RzIGxlbmd0aHMg
-aW4gYnl0ZXMsIGJpdA0KPiA+ID4gbGVuZ3RoIGRlZmluaXRpb25zIHdlcmUgbm90IGNvbnNpZGVy
-ZWQgYmFjayB0aGVuLg0KPiA+ID4NCj4gPiA+IFJlY2VudGx5LCBhIG5lZWQgdG8gcmVmZXIgdG8g
-dGhlIGV4YWN0IGZyYW1lIGxlbmd0aCBpbiBiaXRzLCB3aXRoIENBTg0KPiA+ID4gYml0IHN0dWZm
-aW5nLCBhcHBlYXJlZCBpbiBbMl0uDQo+ID4gPg0KPiA+ID4gQWRkIDkgZnJhbWVzIGxlbmd0aCBk
-ZWZpbml0aW9uczoNCj4gPiA+DQo+ID4gPiAgLSBDQU5fRlJBTUVfT1ZFUkhFQURfU0ZGX0JJVFM6
-DQo+ID4gPiAgLSBDQU5fRlJBTUVfT1ZFUkhFQURfRUZGX0JJVFMNCj4gPiA+ICAtIENBTkZEX0ZS
-QU1FX09WRVJIRUFEX1NGRl9CSVRTDQo+ID4gPiAgLSBDQU5GRF9GUkFNRV9PVkVSSEVBRF9FRkZf
-QklUUw0KPiA+ID4gIC0gQ0FOX0JJVF9TVFVGRklOR19PVkVSSEVBRA0KPiA+ID4gIC0gQ0FOX0ZS
-QU1FX0xFTl9NQVhfQklUU19OT19TVFVGRklORw0KPiA+ID4gIC0gQ0FOX0ZSQU1FX0xFTl9NQVhf
-QklUU19TVFVGRklORw0KPiA+ID4gIC0gQ0FORkRfRlJBTUVfTEVOX01BWF9CSVRTX05PX1NUVUZG
-SU5HDQo+ID4gPiAgLSBDQU5GRF9GUkFNRV9MRU5fTUFYX0JJVFNfU1RVRkZJTkcNCj4gPiA+DQo+
-ID4gPiBDQU5fRlJBTUVfTEVOX01BWF9CSVRTX1NUVUZGSU5HIGFuZA0KPiBDQU5GRF9GUkFNRV9M
-RU5fTUFYX0JJVFNfU1RVRkZJTkcNCj4gPiA+IGRlZmluZSByZXNwZWN0aXZlbHkgdGhlIG1heGlt
-dW0gbnVtYmVyIG9mIGJpdHMgaW4gYSBjbGFzc2ljYWwgQ0FOIGFuZA0KPiA+ID4gQ0FOLUZEIGZy
-YW1lIGluY2x1ZGluZyBiaXQgc3R1ZmZpbmcuIFRoZSBvdGhlciBkZWZpbml0aW9ucyBhcmUNCj4g
-PiA+IGludGVybWVkaWF0ZSB2YWx1ZXMuDQo+ID4gPg0KPiA+ID4gSW4gYWRkaXRpb24gdG8gdGhl
-IGFib3ZlOg0KPiA+ID4NCj4gPiA+ICAtIEluY2x1ZGUgbGludXgvYml0cy5oIGFuZCB0aGVuIHJl
-cGxhY2UgdGhlIHZhbHVlIDggYnkgQklUU19QRVJfQllURQ0KPiA+ID4gICAgd2hlbmV2ZXIgcmVs
-ZXZhbnQuDQo+ID4gPiAgLSBJbmNsdWRlIGxpbnV4L21hdGguaCBiZWNhdXNlIG9mIERJVl9ST1VO
-RF9VUCgpLiBOLkI6IHRoZSB1c2Ugb2YNCj4gPiA+ICAgIERJVl9ST1VORF9VUCgpIGlzIG5vdCBu
-ZXcgdG8gdGhpcyBwYXRjaCwgYnV0IHRoZSBpbmNsdWRlIHdhcw0KPiA+ID4gICAgcHJldmlvdXNs
-eSBvbWl0dGVkLg0KPiA+ID4gIC0gVXBkYXRlIHRoZSBleGlzdGluZyBsZW5ndGggZGVmaW5pdGlv
-bnMgdG8gdXNlIHRoZSBuZXdseSBkZWZpbmVkIHZhbHVlcy4NCj4gPiA+ICAtIEFkZCBteXNlbGYg
-YXMgY29weXJpZ2h0IG93bmVyIGZvciAyMDIwIChhcyBjb2F1dGhvciBvZiB0aGUgaW5pdGlhbA0K
-PiA+ID4gICAgdmVyc2lvbiwgYy5mLiBbMV0pIGFuZCBmb3IgMjAyMyAodGhpcyBwYXRjaCkuDQo+
-ID4gPg0KPiA+ID4gWzFdIGNvbW1pdCA4NWQ5OWMzZTJhMTMgKCJjYW46IGxlbmd0aDogY2FuX3Nr
-Yl9nZXRfZnJhbWVfbGVuKCk6DQo+IGludHJvZHVjZQ0KPiA+ID4gICAgIGZ1bmN0aW9uIHRvIGdl
-dCBkYXRhIGxlbmd0aCBvZiBmcmFtZSBpbiBkYXRhIGxpbmsgbGF5ZXIiKQ0KPiA+ID4gTGluazog
-aHR0cHM6Ly9naXQua2VybmVsLm9yZy90b3J2YWxkcy9jLzg1ZDk5YzNlMmExMw0KPiA+ID4NCj4g
-PiA+IFsyXSBSRTogW1BBVENIXSBjYW46IG1jcDI1MXhmZDogSW5jcmVhc2UgcG9sbCB0aW1lb3V0
-DQo+ID4gPiBMaW5rOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC0NCj4gY2FuL0JMM1BS
-MTFNQjY0ODQ2QzgzQUNEMDRFOTMzMEIwRkU2NkZCNzI5QEJMM1BSMTFNQjY0ODQubg0KPiBhbXBy
-ZDExLnByb2Qub3V0bG9vay5jb20vDQo+ID4gPg0KPiA+ID4gU2lnbmVkLW9mZi1ieTogVmluY2Vu
-dCBNYWlsaG9sIDxtYWlsaG9sLnZpbmNlbnRAd2FuYWRvby5mcj4NCj4gPiA+IC0tLQ0KPiA+ID4g
-QXMgYWx3YXlzLCBsZXQgbWUga25vdyBpZiB5b3UgaGF2ZSBiZXR0ZXIgaW5zcGlyYXRpb24gdGhh
-biBtZSBmb3IgdGhlDQo+ID4gPiBuYW1pbmcuDQo+ID4gPiAtLS0NCj4gPiA+ICBpbmNsdWRlL2xp
-bnV4L2Nhbi9sZW5ndGguaCB8IDg0DQo+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-LS0tLS0tDQo+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDcyIGluc2VydGlvbnMoKyksIDEyIGRlbGV0
-aW9ucygtKQ0KPiA+ID4NCj4gPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2Nhbi9sZW5n
-dGguaCBiL2luY2x1ZGUvbGludXgvY2FuL2xlbmd0aC5oDQo+ID4gPiBpbmRleCA2OTk1MDkyYjc3
-NGUuLjYwNDkyZmNiZTM0ZCAxMDA2NDQNCj4gPiA+IC0tLSBhL2luY2x1ZGUvbGludXgvY2FuL2xl
-bmd0aC5oDQo+ID4gPiArKysgYi9pbmNsdWRlL2xpbnV4L2Nhbi9sZW5ndGguaA0KPiA+ID4gQEAg
-LTEsMTMgKzEsMTcgQEANCj4gPiA+ICAvKiBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIu
-MCAqLw0KPiA+ID4gIC8qIENvcHlyaWdodCAoQykgMjAyMCBPbGl2ZXIgSGFydGtvcHAgPHNvY2tl
-dGNhbkBoYXJ0a29wcC5uZXQ+DQo+ID4gPiAgICogQ29weXJpZ2h0IChDKSAyMDIwIE1hcmMgS2xl
-aW5lLUJ1ZGRlIDxrZXJuZWxAcGVuZ3V0cm9uaXguZGU+DQo+ID4gPiArICogQ29weXJpZ2h0IChD
-KSAyMDIwLCAyMDIzIFZpbmNlbnQgTWFpbGhvbA0KPiA8bWFpbGhvbC52aW5jZW50QHdhbmFkb28u
-ZnI+DQo+ID4gPiAgICovDQo+ID4gPg0KPiA+ID4gICNpZm5kZWYgX0NBTl9MRU5HVEhfSA0KPiA+
-ID4gICNkZWZpbmUgX0NBTl9MRU5HVEhfSA0KPiA+ID4NCj4gPiA+ICsjaW5jbHVkZSA8bGludXgv
-Yml0cy5oPg0KPiA+ID4gKyNpbmNsdWRlIDxsaW51eC9tYXRoLmg+DQo+ID4gPiArDQo+ID4gPiAg
-LyoNCj4gPiA+IC0gKiBTaXplIG9mIGEgQ2xhc3NpY2FsIENBTiBTdGFuZGFyZCBGcmFtZQ0KPiA+
-ID4gKyAqIFNpemUgb2YgYSBDbGFzc2ljYWwgQ0FOIFN0YW5kYXJkIEZyYW1lIGluIGJpdHMNCj4g
-PiA+ICAgKg0KPiA+ID4gICAqIE5hbWUgb2YgRmllbGQgICAgICAgICAgICAgICAgICAgICBCaXRz
-DQo+ID4gPiAgICogLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tDQo+ID4gPiBAQCAtMjUsMTIgKzI5LDE5IEBADQo+ID4gPiAgICogRW5kLW9m
-LWZyYW1lIChFT0YpICAgICAgICAgICAgICAgICAgICAgICAgNw0KPiA+ID4gICAqIEludGVyIGZy
-YW1lIHNwYWNpbmcgICAgICAgICAgICAgICAgICAgICAgIDMNCj4gPiA+ICAgKg0KPiA+ID4gLSAq
-IHJvdW5kZWQgdXAgYW5kIGlnbm9yaW5nIGJpdHN0dWZmaW5nDQo+ID4gPiArICogaWdub3Jpbmcg
-Yml0c3R1ZmZpbmcNCj4gPiA+ICAgKi8NCj4gPiA+IC0jZGVmaW5lIENBTl9GUkFNRV9PVkVSSEVB
-RF9TRkYgRElWX1JPVU5EX1VQKDQ3LCA4KQ0KPiA+ID4gKyNkZWZpbmUgQ0FOX0ZSQU1FX09WRVJI
-RUFEX1NGRl9CSVRTIDQ3DQo+ID4gPg0KPiA+ID4gIC8qDQo+ID4gPiAtICogU2l6ZSBvZiBhIENs
-YXNzaWNhbCBDQU4gRXh0ZW5kZWQgRnJhbWUNCj4gPiA+ICsgKiBTaXplIG9mIGEgQ2xhc3NpY2Fs
-IENBTiBTdGFuZGFyZCBGcmFtZQ0KPiA+ID4gKyAqIChyb3VuZGVkIHVwIGFuZCBpZ25vcmluZyBi
-aXRzdHVmZmluZykNCj4gPiA+ICsgKi8NCj4gPiA+ICsjZGVmaW5lIENBTl9GUkFNRV9PVkVSSEVB
-RF9TRkYgXA0KPiA+ID4gKyAgICAgRElWX1JPVU5EX1VQKENBTl9GUkFNRV9PVkVSSEVBRF9TRkZf
-QklUUywgQklUU19QRVJfQllURSkNCj4gPiA+ICsNCj4gPiA+ICsvKg0KPiA+ID4gKyAqIFNpemUg
-b2YgYSBDbGFzc2ljYWwgQ0FOIEV4dGVuZGVkIEZyYW1lIGluIGJpdHMNCj4gPiA+ICAgKg0KPiA+
-ID4gICAqIE5hbWUgb2YgRmllbGQgICAgICAgICAgICAgICAgICAgICBCaXRzDQo+ID4gPiAgICog
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-DQo+ID4gPiBAQCAtNTAsMTIgKzYxLDE5IEBADQo+ID4gPiAgICogRW5kLW9mLWZyYW1lIChFT0Yp
-ICAgICAgICAgICAgICAgICAgICAgICAgNw0KPiA+ID4gICAqIEludGVyIGZyYW1lIHNwYWNpbmcg
-ICAgICAgICAgICAgICAgICAgICAgIDMNCj4gPiA+ICAgKg0KPiA+ID4gLSAqIHJvdW5kZWQgdXAg
-YW5kIGlnbm9yaW5nIGJpdHN0dWZmaW5nDQo+ID4gPiArICogaWdub3JpbmcgYml0c3R1ZmZpbmcN
-Cj4gPiA+ICAgKi8NCj4gPiA+IC0jZGVmaW5lIENBTl9GUkFNRV9PVkVSSEVBRF9FRkYgRElWX1JP
-VU5EX1VQKDY3LCA4KQ0KPiA+ID4gKyNkZWZpbmUgQ0FOX0ZSQU1FX09WRVJIRUFEX0VGRl9CSVRT
-IDY3DQo+ID4gPg0KPiA+ID4gIC8qDQo+ID4gPiAtICogU2l6ZSBvZiBhIENBTi1GRCBTdGFuZGFy
-ZCBGcmFtZQ0KPiA+ID4gKyAqIFNpemUgb2YgYSBDbGFzc2ljYWwgQ0FOIEV4dGVuZGVkIEZyYW1l
-DQo+ID4gPiArICogKHJvdW5kZWQgdXAgYW5kIGlnbm9yaW5nIGJpdHN0dWZmaW5nKQ0KPiA+ID4g
-KyAqLw0KPiA+ID4gKyNkZWZpbmUgQ0FOX0ZSQU1FX09WRVJIRUFEX0VGRiBcDQo+ID4gPiArICAg
-ICBESVZfUk9VTkRfVVAoQ0FOX0ZSQU1FX09WRVJIRUFEX0VGRl9CSVRTLCBCSVRTX1BFUl9CWVRF
-KQ0KPiA+ID4gKw0KPiA+ID4gKy8qDQo+ID4gPiArICogU2l6ZSBvZiBhIENBTi1GRCBTdGFuZGFy
-ZCBGcmFtZSBpbiBiaXRzDQo+ID4gPiAgICoNCj4gPiA+ICAgKiBOYW1lIG9mIEZpZWxkICAgICAg
-ICAgICAgICAgICAgICAgQml0cw0KPiA+ID4gICAqIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiA+ID4gQEAgLTc3LDEyICs5NSwxOSBA
-QA0KPiA+ID4gICAqIEVuZC1vZi1mcmFtZSAoRU9GKSAgICAgICAgICAgICAgICAgICAgICAgIDcN
-Cj4gPiA+ICAgKiBJbnRlciBmcmFtZSBzcGFjaW5nICAgICAgICAgICAgICAgICAgICAgICAzDQo+
-ID4gPiAgICoNCj4gPiA+IC0gKiBhc3N1bWluZyBDUkMyMSwgcm91bmRlZCB1cCBhbmQgaWdub3Jp
-bmcgYml0c3R1ZmZpbmcNCj4gPiA+ICsgKiBhc3N1bWluZyBDUkMyMSBhbmQgaWdub3JpbmcgYml0
-c3R1ZmZpbmcNCj4gPiA+ICAgKi8NCj4gPiA+IC0jZGVmaW5lIENBTkZEX0ZSQU1FX09WRVJIRUFE
-X1NGRiBESVZfUk9VTkRfVVAoNjEsIDgpDQo+ID4gPiArI2RlZmluZSBDQU5GRF9GUkFNRV9PVkVS
-SEVBRF9TRkZfQklUUyA2MQ0KPiA+ID4NCj4gPiA+ICAvKg0KPiA+ID4gLSAqIFNpemUgb2YgYSBD
-QU4tRkQgRXh0ZW5kZWQgRnJhbWUNCj4gPiA+ICsgKiBTaXplIG9mIGEgQ0FOLUZEIFN0YW5kYXJk
-IEZyYW1lDQo+ID4gPiArICogKGFzc3VtaW5nIENSQzIxLCByb3VuZGVkIHVwIGFuZCBpZ25vcmlu
-ZyBiaXRzdHVmZmluZykNCj4gPiA+ICsgKi8NCj4gPiA+ICsjZGVmaW5lIENBTkZEX0ZSQU1FX09W
-RVJIRUFEX1NGRiBcDQo+ID4gPiArICAgICBESVZfUk9VTkRfVVAoQ0FORkRfRlJBTUVfT1ZFUkhF
-QURfU0ZGX0JJVFMsDQo+IEJJVFNfUEVSX0JZVEUpDQo+ID4gPiArDQo+ID4gPiArLyoNCj4gPiA+
-ICsgKiBTaXplIG9mIGEgQ0FOLUZEIEV4dGVuZGVkIEZyYW1lIGluIGJpdHMNCj4gPiA+ICAgKg0K
-PiA+ID4gICAqIE5hbWUgb2YgRmllbGQgICAgICAgICAgICAgICAgICAgICBCaXRzDQo+ID4gPiAg
-ICogLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tDQo+ID4gPiBAQCAtMTA2LDkgKzEzMSwzMiBAQA0KPiA+ID4gICAqIEVuZC1vZi1mcmFtZSAo
-RU9GKSAgICAgICAgICAgICAgICAgICAgICAgIDcNCj4gPiA+ICAgKiBJbnRlciBmcmFtZSBzcGFj
-aW5nICAgICAgICAgICAgICAgICAgICAgICAzDQo+ID4gPiAgICoNCj4gPiA+IC0gKiBhc3N1bWlu
-ZyBDUkMyMSwgcm91bmRlZCB1cCBhbmQgaWdub3JpbmcgYml0c3R1ZmZpbmcNCj4gPiA+ICsgKiBh
-c3N1bWluZyBDUkMyMSBhbmQgaWdub3JpbmcgYml0c3R1ZmZpbmcNCj4gPiA+ICsgKi8NCj4gPiA+
-ICsjZGVmaW5lIENBTkZEX0ZSQU1FX09WRVJIRUFEX0VGRl9CSVRTIDgwDQo+ID4gPiArDQo+ID4g
-PiArLyoNCj4gPiA+ICsgKiBTaXplIG9mIGEgQ0FOLUZEIEV4dGVuZGVkIEZyYW1lDQo+ID4gPiAr
-ICogKGFzc3VtaW5nIENSQzIxLCByb3VuZGVkIHVwIGFuZCBpZ25vcmluZyBiaXRzdHVmZmluZykN
-Cj4gPiA+ICsgKi8NCj4gPiA+ICsjZGVmaW5lIENBTkZEX0ZSQU1FX09WRVJIRUFEX0VGRiBcDQo+
-ID4gPiArICAgICBESVZfUk9VTkRfVVAoQ0FORkRfRlJBTUVfT1ZFUkhFQURfRUZGX0JJVFMsDQo+
-IEJJVFNfUEVSX0JZVEUpDQo+ID4gPiArDQo+ID4gPiArLyogQ0FOIGJpdCBzdHVmZmluZyBvdmVy
-aGVhZCBtdWx0aXBsaWNhdGlvbiBmYWN0b3IgKi8NCj4gPiA+ICsjZGVmaW5lIENBTl9CSVRfU1RV
-RkZJTkdfT1ZFUkhFQUQgMS4yDQo+ID4gPiArDQo+ID4gPiArLyoNCj4gPiA+ICsgKiBNYXhpbXVt
-IHNpemUgb2YgYSBDbGFzc2ljYWwgQ0FOIGZyYW1lIGluIGJpdHMsIGlnbm9yaW5nIGJpdHN0dWZm
-aW5nDQo+ID4gPiAgICovDQo+ID4gPiAtI2RlZmluZSBDQU5GRF9GUkFNRV9PVkVSSEVBRF9FRkYg
-RElWX1JPVU5EX1VQKDgwLCA4KQ0KPiA+ID4gKyNkZWZpbmUgQ0FOX0ZSQU1FX0xFTl9NQVhfQklU
-U19OT19TVFVGRklORyBcDQo+ID4gPiArICAgICAoQ0FOX0ZSQU1FX09WRVJIRUFEX0VGRl9CSVRT
-ICsgQ0FOX01BWF9ETEVOICoNCj4gQklUU19QRVJfQllURSkNCj4gPiA+ICsNCj4gPiA+ICsvKg0K
-PiA+ID4gKyAqIE1heGltdW0gc2l6ZSBvZiBhIENsYXNzaWNhbCBDQU4gZnJhbWUgaW4gYml0cywg
-aW5jbHVkaW5nIGJpdHN0dWZmaW5nDQo+ID4gPiArICovDQo+ID4gPiArI2RlZmluZSBDQU5fRlJB
-TUVfTEVOX01BWF9CSVRTX1NUVUZGSU5HICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXA0K
-PiA+ID4gKyAgICAgKCh1bnNpZ25lZCBpbnQpKENBTl9GUkFNRV9MRU5fTUFYX0JJVFNfTk9fU1RV
-RkZJTkcgKiAgICBcDQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgQ0FOX0JJVF9TVFVGRklO
-R19PVkVSSEVBRCkpDQo+ID4NCj4gPiBUaGUgMS4yIG92ZXJoZWFkIGRvZXNuJ3QgYXBwbHkgdG8g
-dGhlIHdob2xlIGZyYW1lLCBhY2NvcmRpbmcgdG8NCj4gPiBodHRwczovL2llZWV4cGxvcmUuaWVl
-ZS5vcmcvc3RhbXAvc3RhbXAuanNwP3RwPSZhcm51bWJlcj04MzM4MDQ3Lg0KPiANCj4gWW91IGFy
-ZSByaWdodC4gSW4gZmFjdCwgSSByZWFsaXplZCB0aGlzIG1pc3Rha2UgYmVmb3JlIHJlYWRpbmcg
-eW91cg0KPiBtZXNzYWdlICh3aGlsZSBJIHdhcyBzdHVkeWluZyB0aGUgc3RhbmRhcmQgdG8gYW5z
-d2VyIFRob21hcykuDQo+IA0KPiBJU08gMTE4OTgtMToyMDE1IHNlY3Rpb24gMTAuNSAiRnJhbWUg
-Y29kaW5nIiBzYXlzOg0KPiANCj4gICB0aGUgZnJhbWUgc2VnbWVudCBhcyBTT0YsIGFyYml0cmF0
-aW9uIGZpZWxkLCBjb250cm9sIGZpZWxkLA0KPiAgIGRhdGEgZmllbGQsIGFuZCBDUkMgc2VxdWVu
-Y2Ugc2hhbGwgYmUgY29kZWQgYnkgdGhlIG1ldGhvZCBvZg0KPiAgIGJpdCBzdHVmZmluZy4NCj4g
-DQo+IGFuZDoNCj4gDQo+ICAgVGhlIHJlbWFpbmluZyBiaXQgZmllbGRzIG9mIHRoZSBERiBvciBS
-RiAoQ1JDIGRlbGltaXRlciwgQUNLDQo+ICAgZmllbGQgYW5kIEVPRikgc2hhbGwgYmUgb2YgZml4
-ZWQgZm9ybSBhbmQgbm90IHN0dWZmZWQuDQo+IA0KPiBTbywgaW5kZWVkLCB0aGUgYml0IHN0dWZm
-aW5nIGRvZXMgbm90IGFwcGx5IHRvIHRoZSBsYXN0IDEwIGJpdHMgKDEgKyAxICsgMSArIDcpLg0K
-PiBGdXJ0aGVybW9yZSwgZm9yIEZEIGZyYW1lcywgdGhlIENSQyBmaWVsZCBhbHJlYWR5IGNvbnRh
-aW5zIHRoZSBmaXhlZA0KPiBzdHVmZiBiaXRzLiBTbyB0aGUgb3ZlcmhlYWQgc2hhbGwgbm90IGJl
-IGFwcGxpZWQgYWdhaW4gb3IgZWxzZSwgc3R1ZmYNCj4gYml0cyB3b3VsZCBiZSBjb3VudGVkIHR3
-aWNlLiBJbiBjb25jbHVzaW9uLCBmb3IgRkQgZnJhbWVzLCB0aGUNCj4gb3RoZXJoZWFkIGZvciBk
-eW5hbWljIGJpdCBzdHVmZmluZyBvdmVyaGVhZCBzaG91bGQgYXBwbHkgdG8gdGhlIFNPRiwNCj4g
-YXJiaXRyYXRpb24gZmllbGQsIGNvbnRyb2wgZmllbGQgYW5kIGRhdGEgZmllbGQgc2VnbWVudHMu
-DQo+IA0KPiBBZnRlciByZWFkaW5nIHRoZSBzdGFuZGFyZCwgSSB0aG91Z2h0IGFnYWluIGFib3V0
-IHRoZSBvdmVyaGVhZCByYXRpbw0KPiBhbmQgaXQgaXMgbW9yZSBjb21wbGljYXRlZCB0aGFuIHdl
-IGFsbCB0aG91Z2h0Lg0KPiANCj4gTGV0J3MgdXNlIGJlbG93IG5vbWVuY2xhdHVyZSBpbiB0aGUg
-Zm9sbG93aW5nIGV4YW1wbGVzIChib3Jyb3dlZCBmcm9tIElTTyk6DQo+IA0KPiAgIC0gIjAiOiBk
-b21pbmFudCBiaXQNCj4gICAtICJvIjogZG9taW5hbnQgc3R1ZmYgYml0DQo+ICAgLSAiMSI6IHJl
-Y2Vzc2l2ZSBiaXQNCj4gICAtICJpIjogcmVjZXNzaXZlIHN0dWZmIGJpdA0KPiANCj4gV2UgcHJv
-YmFibHkgYWxsIHRob3VnaCBiZWxvdyBleGFtcGxlIHRvIGJlIHRoZSB3b3JzdCBjYXNlOg0KPiAN
-Cj4gICBEZXN0dWZmZWQ6IDExMTExICAxMTExMSAgMTExMTEgIDExMTExDQo+ICAgU3R1ZmZlZDog
-ICAxMTExMW8gMTExMTFvIDExMTExbyAxMTExMW8NCj4gDQo+IEhlcmUsIGluZGVlZCwgb25lIHN0
-dWZmIGJpdCBpcyBhZGRlZCBldmVyeSBmaXZlIGJpdHMgZ2l2aW5nIHVzIGFuDQo+IG92ZXJoZWFk
-IG9mIDYvNSA9IDEuMi4NCj4gDQo+IEhvd2V2ZXIsIElTTyAxMTg5OC0xOjIwMTUgc2VjdGlvbiAx
-MC41ICJGcmFtZSBjb2RpbmciIGFsc28gc2F5czoNCj4gDQo+ICAgV2hlbmV2ZXIgYSB0cmFuc21p
-dHRlciBkZXRlY3RzIGZpdmUgY29uc2VjdXRpdmUgYml0cyAoKmluY2x1ZGluZw0KPiAgIHN0dWZm
-IGJpdHMqKSBvZiBpZGVudGljYWwgdmFsdWUgaW4gdGhlIGJpdCBzdHJlYW0gdG8gYmUNCj4gICB0
-cmFuc21pdHRlZCwgaXQgc2hhbGwgYXV0b21hdGljYWxseSBpbnNlcnQgYSBjb21wbGVtZW50YXJ5
-DQo+ICAgYml0IChjYWxsZWQgc3R1ZmYgYml0KSAuLi4NCj4gDQo+IFBheSBhdHRlbnRpb24gdG8g
-dGhlICppbmNsdWRpbmcgc3R1ZmYgYml0cyogcGFydC4gVGhlIHdvcnN0IGNhc2UgaXMNCj4gYWN0
-dWFsbHkgYSBzZXF1ZW5jZSBpbiB3aGljaCBkb21pbmFudCBhbmQgcmVjZXNzaXZlIGFsdGVybmF0
-ZSBldmVyeQ0KPiBmb3VyIGJpdHM6DQo+IA0KPiAgIERlc3R1ZmZlZDogMSAxMTExICAwMDAwICAx
-MTExICAwMDAwICAxMTExDQo+ICAgU3R1ZmZlZDogICAxIDExMTFvIDAwMDBpIDExMTFvIDAwMDBp
-IDExMTFvDQo+DQo+IElnbm9yaW5nIHRoZSBmaXJzdCBiaXQsIG9uZSBzdHVmZiBiaXQgaXMgYWRk
-ZWQgZXZlcnkgZm91ciBiaXRzIGdpdmluZw0KPiB1cyBhbiBvdmVyaGVhZCBvZiA1LzQgPSAxLjI1
-Lg0KDQpEdWgsIGFic29sdXRlbHkgcmlnaHQuDQoNCj4gVGhlIGV4YWN0IGZvcm11bGEgdGFraW5n
-IGluIGFjY291bnQgdGhlIGZpcnN0IGJpdCB3ZSBwcmV2aW91c2x5IGlnbm9yZWQgdGhlbjoNCj4g
-DQo+ICAgTnVtYmVyIG9mIGR5bmFtaWMgc3R1ZmYgYml0ID0gMSArIHJvdW5kX2Rvd24oKGxlbihz
-dHJlYW0pIC0gNSkgLyA0KQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9IHJvdW5k
-X2Rvd24oKGxlbihzdHJlYW0pIC0gMSkgLyA0KQ0KPiANClJpZ2h0LCBkbyB5b3UgcGxhbiBvbiBz
-ZXBhcmF0aW5nIHRoaXMgZm9yIEFyYml0cmF0aW9uIGJpdHJhdGUgYW5kIGRhdGFiaXRyYXRlPyBJ
-dCB3b3VsZCBwcm9iYWJseSBtYWtlIHNlbnNlIHRvIHVzZSBhIGZpeGVkIG51bWJlciBvZiB3b3Jz
-dCBjYXNlIHN0dWZmYml0cyBmb3IgdGhlIGFyYml0cmF0aW9uIHBoYXNlIGFuZCB0aGUgZm9ybXVs
-YSBmb3IgdGhlIGRhdGEgcGhhc2UuDQogDQpCZXN0IFJlZ2FyZHMsDQpUaG9tYXMNCg==
+This patch adds support for Fintek USB to 2CAN controller.
+
+Signed-off-by: Ji-Ze Hong (Peter Hong) <peter_hong@fintek.com.tw>
+---
+Changelog:
+v7:
+	1. Fix consistency of coding style for "break" in f81604_register_urbs().
+	2. Remove goto statement in f81604_open().
+
+v6:
+	1. Remove non-used define and change constant mask to GENMASK().
+	2. Move some variables declaration from function start to block start.
+	3. Move some variables initization into declaration.
+	4. Change variable "id" in f81604_start_xmit() only for CAN ID usage.
+
+v5:
+	1. Change all u8 *buff to struct f81604_int_data/f81604_can_frame.
+	2. Change all netdev->dev_id to netdev->dev_port.
+	3. Remove over design for f81604_process_rx_packet(). This device only
+	   report a frame at once, so the f81604_process_rx_packet() are reduced
+	   to process 1 frame.
+
+v4:
+	1. Remove f81604_prepare_urbs/f81604_remove_urbs() and alloc URB/buffer
+	   dynamically in f81604_register_urbs(), using "urbs_anchor" for manage
+	   all rx/int URBs.
+	2. Add F81604 to MAINTAINERS list.
+	3. Change handle_clear_reg_work/handle_clear_overrun_work to single
+	   clear_reg_work and using bitwise "clear_flags" to record it.
+	4. Move __f81604_set_termination in front of f81604_probe() to avoid
+	   rarely racing condition.
+	5. Add __aligned to struct f81604_int_data / f81604_sff / f81604_eff.
+	6. Add aligned operations in f81604_start_xmit/f81604_process_rx_packet().
+	7. Change lots of CANBUS functions first parameter from struct usb_device*
+	   to struct f81604_port_priv *priv. But remain f81604_write / f81604_read
+	   / f81604_update_bits() as struct usb_device* for
+	   __f81604_set_termination() in probe() stage.
+	8. Simplify f81604_read_int_callback() and separate into
+	   f81604_handle_tx / f81604_handle_can_bus_errors() functions.
+
+v3:
+	1. Change CAN clock to using MEGA units.
+	2. Remove USB set/get retry, only remain SJA1000 reset/operation retry.
+	3. Fix all numberic constant to define.
+	4. Add terminator control. (only 0 & 120 ohm)
+	5. Using struct data to represent INT/TX/RX endpoints data instead byte
+	   arrays.
+	6. Error message reports changed from %d to %pe for mnemotechnic values.
+	7. Some bit operations are changed to FIELD_PREP().
+	8. Separate TX functions from f81604_read_int_callback().
+	9. cf->can_id |= CAN_ERR_CNT in f81604_read_int_callback to report valid
+	   TX/RX error counts.
+	10. Move f81604_prepare_urbs/f81604_remove_urbs() from CAN open/close() to
+	    USB probe/disconnect().
+	11. coding style refactoring.
+
+v2:
+	1. coding style refactoring.
+	2. some const number are defined to describe itself.
+	3. fix wrong usage for can_get_echo_skb() in f81604_write_bulk_callback().
+
+ MAINTAINERS                  |    6 +
+ drivers/net/can/usb/Kconfig  |   12 +
+ drivers/net/can/usb/Makefile |    1 +
+ drivers/net/can/usb/f81604.c | 1201 ++++++++++++++++++++++++++++++++++
+ 4 files changed, 1220 insertions(+)
+ create mode 100644 drivers/net/can/usb/f81604.c
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index f375bbf3bc80..fa573f637c2f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8058,6 +8058,12 @@ S:	Maintained
+ F:	drivers/hwmon/f75375s.c
+ F:	include/linux/f75375s.h
+ 
++FINTEK F81604 USB to 2xCANBUS DEVICE DRIVER
++M:	Ji-Ze Hong (Peter Hong) <peter_hong@fintek.com.tw>
++L:	linux-can@vger.kernel.org
++S:	Maintained
++F:	drivers/net/can/usb/f81604.c
++
+ FIREWIRE AUDIO DRIVERS and IEC 61883-1/6 PACKET STREAMING ENGINE
+ M:	Clemens Ladisch <clemens@ladisch.de>
+ M:	Takashi Sakamoto <o-takashi@sakamocchi.jp>
+diff --git a/drivers/net/can/usb/Kconfig b/drivers/net/can/usb/Kconfig
+index 445504ababce..58fcd2b34820 100644
+--- a/drivers/net/can/usb/Kconfig
++++ b/drivers/net/can/usb/Kconfig
+@@ -38,6 +38,18 @@ config CAN_ETAS_ES58X
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called etas_es58x.
+ 
++config CAN_F81604
++        tristate "Fintek F81604 USB to 2CAN interface"
++        help
++          This driver supports the Fintek F81604 USB to 2CAN interface.
++          The device can support CAN2.0A/B protocol and also support
++          2 output pins to control external terminator (optional).
++
++          To compile this driver as a module, choose M here: the module will
++          be called f81604.
++
++          (see also https://www.fintek.com.tw).
++
+ config CAN_GS_USB
+ 	tristate "Geschwister Schneider UG and candleLight compatible interfaces"
+ 	help
+diff --git a/drivers/net/can/usb/Makefile b/drivers/net/can/usb/Makefile
+index 1ea16be5743b..8b11088e9a59 100644
+--- a/drivers/net/can/usb/Makefile
++++ b/drivers/net/can/usb/Makefile
+@@ -7,6 +7,7 @@ obj-$(CONFIG_CAN_8DEV_USB) += usb_8dev.o
+ obj-$(CONFIG_CAN_EMS_USB) += ems_usb.o
+ obj-$(CONFIG_CAN_ESD_USB) += esd_usb.o
+ obj-$(CONFIG_CAN_ETAS_ES58X) += etas_es58x/
++obj-$(CONFIG_CAN_F81604) += f81604.o
+ obj-$(CONFIG_CAN_GS_USB) += gs_usb.o
+ obj-$(CONFIG_CAN_KVASER_USB) += kvaser_usb/
+ obj-$(CONFIG_CAN_MCBA_USB) += mcba_usb.o
+diff --git a/drivers/net/can/usb/f81604.c b/drivers/net/can/usb/f81604.c
+new file mode 100644
+index 000000000000..c1ecd3a54431
+--- /dev/null
++++ b/drivers/net/can/usb/f81604.c
+@@ -0,0 +1,1201 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Fintek F81604 USB-to-2CAN controller driver.
++ *
++ * Copyright (C) 2023 Ji-Ze Hong (Peter Hong) <peter_hong@fintek.com.tw>
++ */
++#include <linux/bitfield.h>
++#include <linux/netdevice.h>
++#include <linux/units.h>
++#include <linux/usb.h>
++
++#include <linux/can.h>
++#include <linux/can/dev.h>
++#include <linux/can/error.h>
++#include <linux/can/platform/sja1000.h>
++
++#include <asm-generic/unaligned.h>
++
++/* vendor and product id */
++#define F81604_VENDOR_ID 0x2c42
++#define F81604_PRODUCT_ID 0x1709
++#define F81604_CAN_CLOCK (12 * MEGA)
++#define F81604_MAX_DEV 2
++#define F81604_SET_DEVICE_RETRY 10
++
++#define F81604_USB_TIMEOUT 2000
++#define F81604_SET_GET_REGISTER 0xA0
++#define F81604_PORT_OFFSET 0x1000
++#define F81604_MAX_RX_URBS 4
++
++#define F81604_CMD_DATA 0x00
++
++#define F81604_DLC_LEN_MASK GENMASK(3, 0)
++#define F81604_DLC_EFF_BIT BIT(7)
++#define F81604_DLC_RTR_BIT BIT(6)
++
++#define F81604_SFF_SHIFT 5
++#define F81604_EFF_SHIFT 3
++
++#define F81604_BRP_MASK GENMASK(5, 0)
++#define F81604_SJW_MASK GENMASK(7, 6)
++
++#define F81604_SEG1_MASK GENMASK(3, 0)
++#define F81604_SEG2_MASK GENMASK(6, 4)
++
++#define F81604_CLEAR_ALC 0
++#define F81604_CLEAR_ECC 1
++#define F81604_CLEAR_OVERRUN 2
++
++/* device setting */
++#define F81604_CTRL_MODE_REG 0x80
++#define F81604_TX_ONESHOT (0x03 << 3)
++#define F81604_TX_NORMAL (0x01 << 3)
++#define F81604_RX_AUTO_RELEASE_BUF BIT(1)
++#define F81604_INT_WHEN_CHANGE BIT(0)
++
++#define F81604_TERMINATOR_REG 0x105
++#define F81604_CAN0_TERM BIT(2)
++#define F81604_CAN1_TERM BIT(3)
++
++#define F81604_TERMINATION_DISABLED CAN_TERMINATION_DISABLED
++#define F81604_TERMINATION_ENABLED 120
++
++/* SJA1000 registers - manual section 6.4 (Pelican Mode) */
++#define F81604_SJA1000_MOD 0x00
++#define F81604_SJA1000_CMR 0x01
++#define F81604_SJA1000_IR 0x03
++#define F81604_SJA1000_IER 0x04
++#define F81604_SJA1000_ALC 0x0B
++#define F81604_SJA1000_ECC 0x0C
++#define F81604_SJA1000_RXERR 0x0E
++#define F81604_SJA1000_TXERR 0x0F
++#define F81604_SJA1000_ACCC0 0x10
++#define F81604_SJA1000_ACCM0 0x14
++#define F81604_MAX_FILTER_CNT 4
++
++/* Common registers - manual section 6.5 */
++#define F81604_SJA1000_BTR0 0x06
++#define F81604_SJA1000_BTR1 0x07
++#define F81604_SJA1000_BTR1_SAMPLE_TRIPLE BIT(7)
++#define F81604_SJA1000_OCR 0x08
++#define F81604_SJA1000_CDR 0x1F
++
++/* mode register */
++#define F81604_SJA1000_MOD_RM 0x01
++#define F81604_SJA1000_MOD_LOM 0x02
++#define F81604_SJA1000_MOD_STM 0x04
++
++/* commands */
++#define F81604_SJA1000_CMD_CDO 0x08
++
++/* interrupt sources */
++#define F81604_SJA1000_IRQ_BEI 0x80
++#define F81604_SJA1000_IRQ_ALI 0x40
++#define F81604_SJA1000_IRQ_EPI 0x20
++#define F81604_SJA1000_IRQ_DOI 0x08
++#define F81604_SJA1000_IRQ_EI 0x04
++#define F81604_SJA1000_IRQ_TI 0x02
++#define F81604_SJA1000_IRQ_RI 0x01
++#define F81604_SJA1000_IRQ_ALL 0xFF
++#define F81604_SJA1000_IRQ_OFF 0x00
++
++/* status register content */
++#define F81604_SJA1000_SR_BS 0x80
++#define F81604_SJA1000_SR_ES 0x40
++#define F81604_SJA1000_SR_TCS 0x08
++
++/* ECC register */
++#define F81604_SJA1000_ECC_SEG 0x1F
++#define F81604_SJA1000_ECC_DIR 0x20
++#define F81604_SJA1000_ECC_BIT 0x00
++#define F81604_SJA1000_ECC_FORM 0x40
++#define F81604_SJA1000_ECC_STUFF 0x80
++#define F81604_SJA1000_ECC_MASK 0xc0
++
++/* ALC register */
++#define F81604_SJA1000_ALC_MASK 0x1f
++
++/* table of devices that work with this driver */
++static const struct usb_device_id f81604_table[] = {
++	{ USB_DEVICE(F81604_VENDOR_ID, F81604_PRODUCT_ID) },
++	{} /* Terminating entry */
++};
++
++MODULE_DEVICE_TABLE(usb, f81604_table);
++
++static const struct ethtool_ops f81604_ethtool_ops = {
++	.get_ts_info = ethtool_op_get_ts_info,
++};
++
++static const u16 f81604_termination[] = { F81604_TERMINATION_DISABLED,
++					  F81604_TERMINATION_ENABLED };
++
++struct f81604_priv {
++	struct net_device *netdev[F81604_MAX_DEV];
++};
++
++struct f81604_port_priv {
++	struct can_priv can;
++	struct net_device *netdev;
++	struct sk_buff *echo_skb;
++
++	unsigned long clear_flags;
++	struct work_struct clear_reg_work;
++
++	struct usb_device *dev;
++	struct usb_interface *intf;
++
++	struct usb_anchor urbs_anchor;
++};
++
++/* Interrupt endpoint data format:
++ *	Byte 0: Status register.
++ *	Byte 1: Interrupt register.
++ *	Byte 2: Interrupt enable register.
++ *	Byte 3: Arbitration lost capture(ALC) register.
++ *	Byte 4: Error code capture(ECC) register.
++ *	Byte 5: Error warning limit register.
++ *	Byte 6: RX error counter register.
++ *	Byte 7: TX error counter register.
++ *	Byte 8: Reserved.
++ */
++struct f81604_int_data {
++	u8 sr;
++	u8 isrc;
++	u8 ier;
++	u8 alc;
++	u8 ecc;
++	u8 ewlr;
++	u8 rxerr;
++	u8 txerr;
++	u8 val;
++} __packed __aligned(4);
++
++struct f81604_sff {
++	__be16 id;
++	u8 data[CAN_MAX_DLEN];
++} __packed __aligned(2);
++
++struct f81604_eff {
++	__be32 id;
++	u8 data[CAN_MAX_DLEN];
++} __packed __aligned(2);
++
++struct f81604_can_frame {
++	u8 cmd;
++
++	/* According for F81604 DLC define:
++	 *	bit 3~0: data length (0~8)
++	 *	bit6: is RTR flag.
++	 *	bit7: is EFF frame.
++	 */
++	u8 dlc;
++
++	union {
++		struct f81604_sff sff;
++		struct f81604_eff eff;
++	};
++} __packed __aligned(2);
++
++static const u8 bulk_in_addr[F81604_MAX_DEV] = { 2, 4 };
++static const u8 bulk_out_addr[F81604_MAX_DEV] = { 1, 3 };
++static const u8 int_in_addr[F81604_MAX_DEV] = { 1, 3 };
++
++static int f81604_write(struct usb_device *dev, u16 reg, u8 data)
++{
++	int ret;
++
++	ret = usb_control_msg_send(dev, 0, F81604_SET_GET_REGISTER,
++				   USB_TYPE_VENDOR | USB_DIR_OUT, 0, reg,
++				   &data, sizeof(data), F81604_USB_TIMEOUT,
++				   GFP_KERNEL);
++	if (ret)
++		dev_err(&dev->dev, "%s: reg: %x data: %x failed: %pe\n",
++			__func__, reg, data, ERR_PTR(ret));
++
++	return ret;
++}
++
++static int f81604_read(struct usb_device *dev, u16 reg, u8 *data)
++{
++	int ret;
++
++	ret = usb_control_msg_recv(dev, 0, F81604_SET_GET_REGISTER,
++				   USB_TYPE_VENDOR | USB_DIR_IN, 0, reg, data,
++				   sizeof(*data), F81604_USB_TIMEOUT,
++				   GFP_KERNEL);
++
++	if (ret < 0)
++		dev_err(&dev->dev, "%s: reg: %x failed: %pe\n", __func__, reg,
++			ERR_PTR(ret));
++
++	return ret;
++}
++
++static int f81604_update_bits(struct usb_device *dev, u16 reg, u8 mask,
++			      u8 data)
++{
++	int ret;
++	u8 tmp;
++
++	ret = f81604_read(dev, reg, &tmp);
++	if (ret)
++		return ret;
++
++	tmp &= ~mask;
++	tmp |= (mask & data);
++
++	return f81604_write(dev, reg, tmp);
++}
++
++static int f81604_sja1000_write(struct f81604_port_priv *priv, u16 reg,
++				u8 data)
++{
++	int port = priv->netdev->dev_port;
++	int real_reg;
++
++	real_reg = reg + F81604_PORT_OFFSET * port + F81604_PORT_OFFSET;
++	return f81604_write(priv->dev, real_reg, data);
++}
++
++static int f81604_sja1000_read(struct f81604_port_priv *priv, u16 reg,
++			       u8 *data)
++{
++	int port = priv->netdev->dev_port;
++	int real_reg;
++
++	real_reg = reg + F81604_PORT_OFFSET * port + F81604_PORT_OFFSET;
++	return f81604_read(priv->dev, real_reg, data);
++}
++
++static int f81604_set_reset_mode(struct f81604_port_priv *priv)
++{
++	int ret, i;
++	u8 tmp;
++
++	/* disable interrupts */
++	ret = f81604_sja1000_write(priv, F81604_SJA1000_IER,
++				   F81604_SJA1000_IRQ_OFF);
++	if (ret)
++		return ret;
++
++	for (i = 0; i < F81604_SET_DEVICE_RETRY; i++) {
++		ret = f81604_sja1000_read(priv, F81604_SJA1000_MOD, &tmp);
++		if (ret)
++			return ret;
++
++		/* check reset bit */
++		if (tmp & F81604_SJA1000_MOD_RM) {
++			priv->can.state = CAN_STATE_STOPPED;
++			return 0;
++		}
++
++		/* reset chip */
++		ret = f81604_sja1000_write(priv, F81604_SJA1000_MOD,
++					   F81604_SJA1000_MOD_RM);
++		if (ret)
++			return ret;
++	}
++
++	return -EPERM;
++}
++
++static int f81604_set_normal_mode(struct f81604_port_priv *priv)
++{
++	u8 tmp, ier = 0;
++	u8 mod_reg = 0;
++	int ret, i;
++
++	for (i = 0; i < F81604_SET_DEVICE_RETRY; i++) {
++		ret = f81604_sja1000_read(priv, F81604_SJA1000_MOD, &tmp);
++		if (ret)
++			return ret;
++
++		/* check reset bit */
++		if ((tmp & F81604_SJA1000_MOD_RM) == 0) {
++			priv->can.state = CAN_STATE_ERROR_ACTIVE;
++			/* enable interrupts, RI handled by bulk-in */
++			ier = F81604_SJA1000_IRQ_ALL & ~F81604_SJA1000_IRQ_RI;
++			if (!(priv->can.ctrlmode &
++			      CAN_CTRLMODE_BERR_REPORTING))
++				ier &= ~F81604_SJA1000_IRQ_BEI;
++
++			return f81604_sja1000_write(priv, F81604_SJA1000_IER,
++						    ier);
++		}
++
++		/* set chip to normal mode */
++		if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
++			mod_reg |= F81604_SJA1000_MOD_LOM;
++		if (priv->can.ctrlmode & CAN_CTRLMODE_PRESUME_ACK)
++			mod_reg |= F81604_SJA1000_MOD_STM;
++
++		ret = f81604_sja1000_write(priv, F81604_SJA1000_MOD, mod_reg);
++		if (ret)
++			return ret;
++	}
++
++	return -EPERM;
++}
++
++static int f81604_chipset_init(struct f81604_port_priv *priv)
++{
++	int i, ret;
++
++	/* set clock divider and output control register */
++	ret = f81604_sja1000_write(priv, F81604_SJA1000_CDR,
++				   CDR_CBP | CDR_PELICAN);
++	if (ret)
++		return ret;
++
++	/* set acceptance filter (accept all) */
++	for (i = 0; i < F81604_MAX_FILTER_CNT; ++i) {
++		ret = f81604_sja1000_write(priv, F81604_SJA1000_ACCC0 + i, 0);
++		if (ret)
++			return ret;
++	}
++
++	for (i = 0; i < F81604_MAX_FILTER_CNT; ++i) {
++		ret = f81604_sja1000_write(priv, F81604_SJA1000_ACCM0 + i,
++					   0xFF);
++		if (ret)
++			return ret;
++	}
++
++	return f81604_sja1000_write(priv, F81604_SJA1000_OCR,
++				    OCR_TX0_PUSHPULL | OCR_TX1_PUSHPULL |
++					    OCR_MODE_NORMAL);
++}
++
++static void f81604_process_rx_packet(struct net_device *netdev,
++				     struct f81604_can_frame *frame)
++{
++	struct net_device_stats *stats = &netdev->stats;
++	struct can_frame *cf;
++	struct sk_buff *skb;
++
++	if (frame->cmd != F81604_CMD_DATA)
++		return;
++
++	skb = alloc_can_skb(netdev, &cf);
++	if (!skb) {
++		stats->rx_dropped++;
++		return;
++	}
++
++	cf->len = can_cc_dlc2len(frame->dlc & F81604_DLC_LEN_MASK);
++
++	if (frame->dlc & F81604_DLC_EFF_BIT) {
++		cf->can_id = get_unaligned_be32(&frame->eff.id) >>
++			     F81604_EFF_SHIFT;
++		cf->can_id |= CAN_EFF_FLAG;
++
++		if (!(frame->dlc & F81604_DLC_RTR_BIT))
++			memcpy(cf->data, frame->eff.data, cf->len);
++	} else {
++		cf->can_id = get_unaligned_be16(&frame->sff.id) >>
++			     F81604_SFF_SHIFT;
++
++		if (!(frame->dlc & F81604_DLC_RTR_BIT))
++			memcpy(cf->data, frame->sff.data, cf->len);
++	}
++
++	if (frame->dlc & F81604_DLC_RTR_BIT)
++		cf->can_id |= CAN_RTR_FLAG;
++	else
++		stats->rx_bytes += cf->len;
++
++	stats->rx_packets++;
++	netif_rx(skb);
++}
++
++static void f81604_read_bulk_callback(struct urb *urb)
++{
++	struct f81604_can_frame *frame = urb->transfer_buffer;
++	struct net_device *netdev = urb->context;
++	int ret;
++
++	if (!netif_device_present(netdev))
++		return;
++
++	if (urb->status)
++		netdev_info(netdev, "%s: URB aborted %pe\n", __func__,
++			    ERR_PTR(urb->status));
++
++	switch (urb->status) {
++	case 0: /* success */
++		break;
++
++	case -ENOENT:
++	case -EPIPE:
++	case -EPROTO:
++	case -ESHUTDOWN:
++		return;
++
++	default:
++		goto resubmit_urb;
++	}
++
++	if (urb->actual_length != sizeof(*frame)) {
++		netdev_warn(netdev, "URB length %u not equal to %lu\n",
++			    urb->actual_length, sizeof(*frame));
++		goto resubmit_urb;
++	}
++
++	f81604_process_rx_packet(netdev, frame);
++
++resubmit_urb:
++	ret = usb_submit_urb(urb, GFP_ATOMIC);
++	if (ret == -ENODEV)
++		netif_device_detach(netdev);
++	else if (ret)
++		netdev_err(netdev,
++			   "%s: failed to resubmit read bulk urb: %pe\n",
++			   __func__, ERR_PTR(ret));
++}
++
++static void f81604_handle_tx(struct f81604_port_priv *priv,
++			     struct f81604_int_data *data)
++{
++	struct net_device *netdev = priv->netdev;
++	struct net_device_stats *stats = &netdev->stats;
++
++	/* transmission buffer released */
++	if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT &&
++	    !(data->sr & F81604_SJA1000_SR_TCS)) {
++		stats->tx_errors++;
++		can_free_echo_skb(netdev, 0, NULL);
++	} else {
++		/* transmission complete */
++		stats->tx_bytes += can_get_echo_skb(netdev, 0, NULL);
++		stats->tx_packets++;
++	}
++
++	netif_wake_queue(netdev);
++}
++
++static void f81604_handle_can_bus_errors(struct f81604_port_priv *priv,
++					 struct f81604_int_data *data)
++{
++	enum can_state can_state = priv->can.state;
++	struct net_device *netdev = priv->netdev;
++	struct net_device_stats *stats = &netdev->stats;
++	struct can_frame *cf;
++	struct sk_buff *skb;
++
++	/* Note: ALC/ECC will not auto clear by read here, must be cleared by
++	 * read register (via clear_reg_work).
++	 */
++
++	skb = alloc_can_err_skb(netdev, &cf);
++	if (skb) {
++		cf->can_id |= CAN_ERR_CNT;
++		cf->data[6] = data->txerr;
++		cf->data[7] = data->rxerr;
++	}
++
++	if (data->isrc & F81604_SJA1000_IRQ_DOI) {
++		/* data overrun interrupt */
++		netdev_dbg(netdev, "data overrun interrupt\n");
++
++		if (skb) {
++			cf->can_id |= CAN_ERR_CRTL;
++			cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
++		}
++
++		stats->rx_over_errors++;
++		stats->rx_errors++;
++
++		set_bit(F81604_CLEAR_OVERRUN, &priv->clear_flags);
++	}
++
++	if (data->isrc & F81604_SJA1000_IRQ_EI) {
++		/* error warning interrupt */
++		netdev_dbg(netdev, "error warning interrupt\n");
++
++		if (data->sr & F81604_SJA1000_SR_BS)
++			can_state = CAN_STATE_BUS_OFF;
++		else if (data->sr & F81604_SJA1000_SR_ES)
++			can_state = CAN_STATE_ERROR_WARNING;
++		else
++			can_state = CAN_STATE_ERROR_ACTIVE;
++	}
++
++	if (data->isrc & F81604_SJA1000_IRQ_BEI) {
++		/* bus error interrupt */
++		netdev_dbg(netdev, "bus error interrupt\n");
++
++		priv->can.can_stats.bus_error++;
++		stats->rx_errors++;
++
++		if (skb) {
++			cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
++
++			/* set error type */
++			switch (data->ecc & F81604_SJA1000_ECC_MASK) {
++			case F81604_SJA1000_ECC_BIT:
++				cf->data[2] |= CAN_ERR_PROT_BIT;
++				break;
++			case F81604_SJA1000_ECC_FORM:
++				cf->data[2] |= CAN_ERR_PROT_FORM;
++				break;
++			case F81604_SJA1000_ECC_STUFF:
++				cf->data[2] |= CAN_ERR_PROT_STUFF;
++				break;
++			default:
++				break;
++			}
++
++			/* set error location */
++			cf->data[3] = data->ecc & F81604_SJA1000_ECC_SEG;
++
++			/* Error occurred during transmission? */
++			if ((data->ecc & F81604_SJA1000_ECC_DIR) == 0)
++				cf->data[2] |= CAN_ERR_PROT_TX;
++		}
++
++		set_bit(F81604_CLEAR_ECC, &priv->clear_flags);
++	}
++
++	if (data->isrc & F81604_SJA1000_IRQ_EPI) {
++		if (can_state == CAN_STATE_ERROR_PASSIVE)
++			can_state = CAN_STATE_ERROR_WARNING;
++		else
++			can_state = CAN_STATE_ERROR_PASSIVE;
++
++		/* error passive interrupt */
++		netdev_dbg(netdev, "error passive interrupt: %d\n", can_state);
++	}
++
++	if (data->isrc & F81604_SJA1000_IRQ_ALI) {
++		/* arbitration lost interrupt */
++		netdev_dbg(netdev, "arbitration lost interrupt\n");
++
++		priv->can.can_stats.arbitration_lost++;
++
++		if (skb) {
++			cf->can_id |= CAN_ERR_LOSTARB;
++			cf->data[0] = data->alc & F81604_SJA1000_ALC_MASK;
++		}
++
++		set_bit(F81604_CLEAR_ALC, &priv->clear_flags);
++	}
++
++	if (can_state != priv->can.state) {
++		enum can_state tx_state, rx_state;
++
++		tx_state = data->txerr >= data->rxerr ? can_state : 0;
++		rx_state = data->txerr <= data->rxerr ? can_state : 0;
++
++		can_change_state(netdev, cf, tx_state, rx_state);
++
++		if (can_state == CAN_STATE_BUS_OFF)
++			can_bus_off(netdev);
++	}
++
++	if (priv->clear_flags)
++		schedule_work(&priv->clear_reg_work);
++
++	if (skb)
++		netif_rx(skb);
++}
++
++static void f81604_read_int_callback(struct urb *urb)
++{
++	struct f81604_int_data *data = urb->transfer_buffer;
++	struct net_device *netdev = urb->context;
++	struct f81604_port_priv *priv;
++	int ret;
++
++	priv = netdev_priv(netdev);
++
++	if (!netif_device_present(netdev))
++		return;
++
++	if (urb->status)
++		netdev_info(netdev, "%s: Int URB aborted: %pe\n", __func__,
++			    ERR_PTR(urb->status));
++
++	switch (urb->status) {
++	case 0: /* success */
++		break;
++
++	case -ENOENT:
++	case -EPIPE:
++	case -EPROTO:
++	case -ESHUTDOWN:
++		return;
++
++	default:
++		goto resubmit_urb;
++	}
++
++	/* handle Errors */
++	if (data->isrc & (F81604_SJA1000_IRQ_DOI | F81604_SJA1000_IRQ_EI |
++			  F81604_SJA1000_IRQ_BEI | F81604_SJA1000_IRQ_EPI |
++			  F81604_SJA1000_IRQ_ALI))
++		f81604_handle_can_bus_errors(priv, data);
++
++	/* handle TX */
++	if (priv->can.state != CAN_STATE_BUS_OFF &&
++	    (data->isrc & F81604_SJA1000_IRQ_TI))
++		f81604_handle_tx(priv, data);
++
++resubmit_urb:
++	ret = usb_submit_urb(urb, GFP_ATOMIC);
++	if (ret == -ENODEV)
++		netif_device_detach(netdev);
++	else if (ret)
++		netdev_err(netdev, "%s: failed to resubmit int urb: %pe\n",
++			   __func__, ERR_PTR(ret));
++}
++
++static void f81604_unregister_urbs(struct f81604_port_priv *priv)
++{
++	usb_kill_anchored_urbs(&priv->urbs_anchor);
++}
++
++static int f81604_register_urbs(struct f81604_port_priv *priv)
++{
++	struct net_device *netdev = priv->netdev;
++	struct f81604_int_data *int_data;
++	int id = netdev->dev_port;
++	struct urb *int_urb;
++	int rx_urb_cnt;
++	int ret;
++
++	for (rx_urb_cnt = 0; rx_urb_cnt < F81604_MAX_RX_URBS; ++rx_urb_cnt) {
++		struct f81604_can_frame *frame;
++		struct urb *rx_urb;
++
++		rx_urb = usb_alloc_urb(0, GFP_KERNEL);
++		if (!rx_urb) {
++			ret = -ENOMEM;
++			break;
++		}
++
++		frame = kmalloc(sizeof(*frame), GFP_KERNEL);
++		if (!frame) {
++			usb_free_urb(rx_urb);
++			ret = -ENOMEM;
++			break;
++		}
++
++		usb_fill_bulk_urb(rx_urb, priv->dev,
++				  usb_rcvbulkpipe(priv->dev, bulk_in_addr[id]),
++				  frame, sizeof(*frame),
++				  f81604_read_bulk_callback, netdev);
++
++		rx_urb->transfer_flags |= URB_FREE_BUFFER;
++		usb_anchor_urb(rx_urb, &priv->urbs_anchor);
++
++		ret = usb_submit_urb(rx_urb, GFP_KERNEL);
++		if (ret) {
++			usb_unanchor_urb(rx_urb);
++			usb_free_urb(rx_urb);
++			break;
++		}
++
++		/* Drop reference, USB core will take care of freeing it */
++		usb_free_urb(rx_urb);
++	}
++
++	if (rx_urb_cnt == 0) {
++		netdev_warn(netdev, "%s: submit rx urb failed: %pe\n",
++			    __func__, ERR_PTR(ret));
++
++		goto error;
++	}
++
++	int_urb = usb_alloc_urb(0, GFP_KERNEL);
++	if (!int_urb) {
++		ret = -ENOMEM;
++		goto error;
++	}
++
++	int_data = kmalloc(sizeof(*int_data), GFP_KERNEL);
++	if (!int_data) {
++		usb_free_urb(int_urb);
++		ret = -ENOMEM;
++		goto error;
++	}
++
++	usb_fill_int_urb(int_urb, priv->dev,
++			 usb_rcvintpipe(priv->dev, int_in_addr[id]), int_data,
++			 sizeof(*int_data), f81604_read_int_callback, netdev,
++			 1);
++
++	int_urb->transfer_flags |= URB_FREE_BUFFER;
++	usb_anchor_urb(int_urb, &priv->urbs_anchor);
++
++	ret = usb_submit_urb(int_urb, GFP_KERNEL);
++	if (ret) {
++		usb_unanchor_urb(int_urb);
++		usb_free_urb(int_urb);
++
++		netdev_warn(netdev, "%s: submit int urb failed: %pe\n",
++			    __func__, ERR_PTR(ret));
++		goto error;
++	}
++
++	/* Drop reference, USB core will take care of freeing it */
++	usb_free_urb(int_urb);
++
++	return 0;
++
++error:
++	f81604_unregister_urbs(priv);
++	return ret;
++}
++
++static int f81604_start(struct net_device *netdev)
++{
++	struct f81604_port_priv *priv = netdev_priv(netdev);
++	int ret;
++	u8 mode;
++	u8 tmp;
++
++	mode = F81604_RX_AUTO_RELEASE_BUF | F81604_INT_WHEN_CHANGE;
++
++	/* Set TR/AT mode */
++	if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
++		mode |= F81604_TX_ONESHOT;
++	else
++		mode |= F81604_TX_NORMAL;
++
++	ret = f81604_sja1000_write(priv, F81604_CTRL_MODE_REG, mode);
++	if (ret)
++		return ret;
++
++	/* set reset mode */
++	ret = f81604_set_reset_mode(priv);
++	if (ret)
++		return ret;
++
++	ret = f81604_chipset_init(priv);
++	if (ret)
++		return ret;
++
++	/* Clear error counters and error code capture */
++	ret = f81604_sja1000_write(priv, F81604_SJA1000_TXERR, 0);
++	if (ret)
++		return ret;
++
++	ret = f81604_sja1000_write(priv, F81604_SJA1000_RXERR, 0);
++	if (ret)
++		return ret;
++
++	/* Read clear for ECC/ALC/IR register */
++	ret = f81604_sja1000_read(priv, F81604_SJA1000_ECC, &tmp);
++	if (ret)
++		return ret;
++
++	ret = f81604_sja1000_read(priv, F81604_SJA1000_ALC, &tmp);
++	if (ret)
++		return ret;
++
++	ret = f81604_sja1000_read(priv, F81604_SJA1000_IR, &tmp);
++	if (ret)
++		return ret;
++
++	ret = f81604_register_urbs(priv);
++	if (ret)
++		return ret;
++
++	ret = f81604_set_normal_mode(priv);
++	if (ret) {
++		f81604_unregister_urbs(priv);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int f81604_set_bittiming(struct net_device *dev)
++{
++	struct f81604_port_priv *priv = netdev_priv(dev);
++	struct can_bittiming *bt = &priv->can.bittiming;
++	u8 btr0, btr1;
++	int ret;
++
++	btr0 = FIELD_PREP(F81604_BRP_MASK, bt->brp - 1) |
++	       FIELD_PREP(F81604_SJW_MASK, bt->sjw - 1);
++
++	btr1 = FIELD_PREP(F81604_SEG1_MASK,
++			  bt->prop_seg + bt->phase_seg1 - 1) |
++	       FIELD_PREP(F81604_SEG2_MASK, bt->phase_seg2 - 1);
++
++	if (priv->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES)
++		btr1 |= F81604_SJA1000_BTR1_SAMPLE_TRIPLE;
++
++	ret = f81604_sja1000_write(priv, F81604_SJA1000_BTR0, btr0);
++	if (ret) {
++		netdev_warn(dev, "%s: Set BTR0 failed: %pe\n", __func__,
++			    ERR_PTR(ret));
++		return ret;
++	}
++
++	ret = f81604_sja1000_write(priv, F81604_SJA1000_BTR1, btr1);
++	if (ret) {
++		netdev_warn(dev, "%s: Set BTR1 failed: %pe\n", __func__,
++			    ERR_PTR(ret));
++		return ret;
++	}
++
++	return 0;
++}
++
++static int f81604_set_mode(struct net_device *netdev, enum can_mode mode)
++{
++	int ret;
++
++	switch (mode) {
++	case CAN_MODE_START:
++		ret = f81604_start(netdev);
++		if (!ret && netif_queue_stopped(netdev))
++			netif_wake_queue(netdev);
++		break;
++
++	default:
++		ret = -EOPNOTSUPP;
++	}
++
++	return ret;
++}
++
++static void f81604_write_bulk_callback(struct urb *urb)
++{
++	struct net_device *netdev = urb->context;
++
++	if (!netif_device_present(netdev))
++		return;
++
++	if (urb->status)
++		netdev_info(netdev, "%s: Tx URB error: %pe\n", __func__,
++			    ERR_PTR(urb->status));
++}
++
++static void f81604_clear_reg_work(struct work_struct *work)
++{
++	struct f81604_port_priv *priv;
++	u8 tmp;
++
++	priv = container_of(work, struct f81604_port_priv, clear_reg_work);
++
++	/* dummy read for clear Arbitration lost capture(ALC) register. */
++	if (test_and_clear_bit(F81604_CLEAR_ALC, &priv->clear_flags))
++		f81604_sja1000_read(priv, F81604_SJA1000_ALC, &tmp);
++
++	/* dummy read for clear Error code capture(ECC) register. */
++	if (test_and_clear_bit(F81604_CLEAR_ECC, &priv->clear_flags))
++		f81604_sja1000_read(priv, F81604_SJA1000_ECC, &tmp);
++
++	/* dummy write for clear data overrun flag. */
++	if (test_and_clear_bit(F81604_CLEAR_OVERRUN, &priv->clear_flags))
++		f81604_sja1000_write(priv, F81604_SJA1000_CMR,
++				     F81604_SJA1000_CMD_CDO);
++}
++
++static netdev_tx_t f81604_start_xmit(struct sk_buff *skb,
++				     struct net_device *netdev)
++{
++	struct can_frame *cf = (struct can_frame *)skb->data;
++	struct f81604_port_priv *priv = netdev_priv(netdev);
++	struct net_device_stats *stats = &netdev->stats;
++	struct f81604_can_frame *frame;
++	struct urb *write_urb;
++	int ret;
++
++	if (can_dev_dropped_skb(netdev, skb))
++		return NETDEV_TX_OK;
++
++	netif_stop_queue(netdev);
++
++	write_urb = usb_alloc_urb(0, GFP_ATOMIC);
++	if (!write_urb)
++		goto nomem_urb;
++
++	frame = kzalloc(sizeof(*frame), GFP_ATOMIC);
++	if (!frame)
++		goto nomem_buf;
++
++	usb_fill_bulk_urb(write_urb, priv->dev,
++			  usb_sndbulkpipe(priv->dev,
++					  bulk_out_addr[netdev->dev_port]),
++			  frame, sizeof(*frame), f81604_write_bulk_callback,
++			  priv->netdev);
++
++	write_urb->transfer_flags |= URB_FREE_BUFFER;
++
++	frame->cmd = F81604_CMD_DATA;
++	frame->dlc = cf->len;
++
++	if (cf->can_id & CAN_RTR_FLAG)
++		frame->dlc |= F81604_DLC_RTR_BIT;
++
++	if (cf->can_id & CAN_EFF_FLAG) {
++		u32 id = (cf->can_id & CAN_EFF_MASK) << F81604_EFF_SHIFT;
++
++		put_unaligned_be32(id, &frame->eff.id);
++
++		frame->dlc |= F81604_DLC_EFF_BIT;
++
++		if (!(cf->can_id & CAN_RTR_FLAG))
++			memcpy(&frame->eff.data, cf->data, cf->len);
++	} else {
++		u32 id = (cf->can_id & CAN_SFF_MASK) << F81604_SFF_SHIFT;
++
++		put_unaligned_be16(id, &frame->sff.id);
++
++		if (!(cf->can_id & CAN_RTR_FLAG))
++			memcpy(&frame->sff.data, cf->data, cf->len);
++	}
++
++	can_put_echo_skb(skb, netdev, 0, 0);
++
++	ret = usb_submit_urb(write_urb, GFP_ATOMIC);
++	if (ret) {
++		netdev_err(netdev, "%s: failed to resubmit tx bulk urb: %pe\n",
++			   __func__, ERR_PTR(ret));
++
++		can_free_echo_skb(netdev, 0, NULL);
++		stats->tx_dropped++;
++		stats->tx_errors++;
++
++		if (ret == -ENODEV)
++			netif_device_detach(netdev);
++		else
++			netif_wake_queue(netdev);
++	}
++
++	/* let usb core take care of this urb */
++	usb_free_urb(write_urb);
++
++	return NETDEV_TX_OK;
++
++nomem_buf:
++	usb_free_urb(write_urb);
++
++nomem_urb:
++	dev_kfree_skb(skb);
++	stats->tx_dropped++;
++	stats->tx_errors++;
++	netif_wake_queue(netdev);
++
++	return NETDEV_TX_OK;
++}
++
++static int f81604_get_berr_counter(const struct net_device *netdev,
++				   struct can_berr_counter *bec)
++{
++	struct f81604_port_priv *priv = netdev_priv(netdev);
++	u8 txerr, rxerr;
++	int ret;
++
++	ret = f81604_sja1000_read(priv, F81604_SJA1000_TXERR, &txerr);
++	if (ret)
++		return ret;
++
++	ret = f81604_sja1000_read(priv, F81604_SJA1000_RXERR, &rxerr);
++	if (ret)
++		return ret;
++
++	bec->txerr = txerr;
++	bec->rxerr = rxerr;
++
++	return 0;
++}
++
++/* Open USB device */
++static int f81604_open(struct net_device *netdev)
++{
++	int ret;
++
++	ret = open_candev(netdev);
++	if (ret)
++		return ret;
++
++	ret = f81604_start(netdev);
++	if (ret) {
++		if (ret == -ENODEV)
++			netif_device_detach(netdev);
++
++		close_candev(netdev);
++		return ret;
++	}
++
++	netif_start_queue(netdev);
++	return 0;
++}
++
++/* Close USB device */
++static int f81604_close(struct net_device *netdev)
++{
++	struct f81604_port_priv *priv = netdev_priv(netdev);
++
++	f81604_set_reset_mode(priv);
++
++	netif_stop_queue(netdev);
++	cancel_work_sync(&priv->clear_reg_work);
++	close_candev(netdev);
++
++	f81604_unregister_urbs(priv);
++
++	return 0;
++}
++
++static const struct net_device_ops f81604_netdev_ops = {
++	.ndo_open = f81604_open,
++	.ndo_stop = f81604_close,
++	.ndo_start_xmit = f81604_start_xmit,
++	.ndo_change_mtu = can_change_mtu,
++};
++
++static const struct can_bittiming_const f81604_bittiming_const = {
++	.name = KBUILD_MODNAME,
++	.tseg1_min = 1,
++	.tseg1_max = 16,
++	.tseg2_min = 1,
++	.tseg2_max = 8,
++	.sjw_max = 4,
++	.brp_min = 1,
++	.brp_max = 64,
++	.brp_inc = 1,
++};
++
++/* Called by the usb core when driver is unloaded or device is removed */
++static void f81604_disconnect(struct usb_interface *intf)
++{
++	struct f81604_priv *priv = usb_get_intfdata(intf);
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(priv->netdev); ++i) {
++		if (!priv->netdev[i])
++			continue;
++
++		unregister_netdev(priv->netdev[i]);
++		free_candev(priv->netdev[i]);
++	}
++}
++
++static int __f81604_set_termination(struct usb_device *dev, int idx, u16 term)
++{
++	u8 mask, data = 0;
++
++	if (idx == 0)
++		mask = F81604_CAN0_TERM;
++	else
++		mask = F81604_CAN1_TERM;
++
++	if (term)
++		data = mask;
++
++	return f81604_update_bits(dev, F81604_TERMINATOR_REG, mask, data);
++}
++
++static int f81604_set_termination(struct net_device *netdev, u16 term)
++{
++	struct f81604_port_priv *port_priv = netdev_priv(netdev);
++
++	ASSERT_RTNL();
++
++	return __f81604_set_termination(port_priv->dev, netdev->dev_port,
++					term);
++}
++
++static int f81604_probe(struct usb_interface *intf,
++			const struct usb_device_id *id)
++{
++	struct usb_device *dev = interface_to_usbdev(intf);
++	struct net_device *netdev;
++	struct f81604_priv *priv;
++	int i, ret;
++
++	priv = devm_kzalloc(&intf->dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	usb_set_intfdata(intf, priv);
++
++	for (i = 0; i < ARRAY_SIZE(priv->netdev); ++i) {
++		ret = __f81604_set_termination(dev, i, 0);
++		if (ret) {
++			dev_err(&intf->dev,
++				"Setting termination of CH#%d failed: %pe\n",
++				i, ERR_PTR(ret));
++			return ret;
++		}
++	}
++
++	for (i = 0; i < ARRAY_SIZE(priv->netdev); ++i) {
++		struct f81604_port_priv *port_priv;
++
++		netdev = alloc_candev(sizeof(*port_priv), 1);
++		if (!netdev) {
++			dev_err(&intf->dev, "Couldn't alloc candev: %d\n", i);
++			ret = -ENOMEM;
++
++			goto failure_cleanup;
++		}
++
++		port_priv = netdev_priv(netdev);
++
++		INIT_WORK(&port_priv->clear_reg_work, f81604_clear_reg_work);
++		init_usb_anchor(&port_priv->urbs_anchor);
++
++		port_priv->intf = intf;
++		port_priv->dev = dev;
++		port_priv->netdev = netdev;
++		port_priv->can.clock.freq = F81604_CAN_CLOCK;
++
++		port_priv->can.termination_const = f81604_termination;
++		port_priv->can.termination_const_cnt =
++			ARRAY_SIZE(f81604_termination);
++		port_priv->can.bittiming_const = &f81604_bittiming_const;
++		port_priv->can.do_set_bittiming = f81604_set_bittiming;
++		port_priv->can.do_set_mode = f81604_set_mode;
++		port_priv->can.do_set_termination = f81604_set_termination;
++		port_priv->can.do_get_berr_counter = f81604_get_berr_counter;
++		port_priv->can.ctrlmode_supported =
++			CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_3_SAMPLES |
++			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_BERR_REPORTING |
++			CAN_CTRLMODE_PRESUME_ACK;
++
++		netdev->ethtool_ops = &f81604_ethtool_ops;
++		netdev->netdev_ops = &f81604_netdev_ops;
++		netdev->flags |= IFF_ECHO;
++		netdev->dev_port = i;
++
++		SET_NETDEV_DEV(netdev, &intf->dev);
++
++		ret = register_candev(netdev);
++		if (ret) {
++			netdev_err(netdev, "register CAN device failed: %pe\n",
++				   ERR_PTR(ret));
++			free_candev(netdev);
++
++			goto failure_cleanup;
++		}
++
++		priv->netdev[i] = netdev;
++	}
++
++	return 0;
++
++failure_cleanup:
++	f81604_disconnect(intf);
++	return ret;
++}
++
++static struct usb_driver f81604_driver = {
++	.name = KBUILD_MODNAME,
++	.probe = f81604_probe,
++	.disconnect = f81604_disconnect,
++	.id_table = f81604_table,
++};
++
++module_usb_driver(f81604_driver);
++
++MODULE_AUTHOR("Ji-Ze Hong (Peter Hong) <peter_hong@fintek.com.tw>");
++MODULE_DESCRIPTION("Fintek F81604 USB to 2xCANBUS");
++MODULE_LICENSE("GPL");
+-- 
+2.17.1
+
