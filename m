@@ -2,61 +2,68 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02435C7EE22
-	for <linux-can@archiver.kernel.org>; Tue,  9 May 2023 07:40:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A02D4C7EE22
+	for <linux-can@archiver.kernel.org>; Tue,  9 May 2023 08:07:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234194AbjEIHky (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 9 May 2023 03:40:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57100 "EHLO
+        id S234834AbjEIIHz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 9 May 2023 04:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234146AbjEIHkx (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 9 May 2023 03:40:53 -0400
-Received: from mail.feshiecree.pl (mail.feshiecree.pl [89.40.114.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B577A8B
-        for <linux-can@vger.kernel.org>; Tue,  9 May 2023 00:40:49 -0700 (PDT)
-Received: by mail.feshiecree.pl (Postfix, from userid 1001)
-        id BB9A9875C1; Tue,  9 May 2023 08:37:00 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=feshiecree.pl;
-        s=mail; t=1683617897;
-        bh=hFxZwVw4rIL+JwfEOGI47p+fdoVOAeqVswP6NWoHSHQ=;
-        h=Date:From:To:Subject:From;
-        b=wqpQLmZYdz4LqYBr7teL6yJMdKhqfJS7ni+olsPwHV5jbuCRZFEUQXEu1eEsu46aK
-         Bonzms6s8jdl6XZzX8udh1Pd5fz88wOq9snFnJ+OcPy3AoFjiFi141KrYotrMNJjNO
-         bmYU2/rcC4LuXusKHnWJemVc8L6EUEL5Q5X7elrSGEqaVdN0MXXyfEHaTjYDa2GH+a
-         l0aXEmbhlE+779C7dzyUzzGLz4hxU5ZJHjQtm2+exPFcMucXfE7eLVzW8iFdGh8zjD
-         vYbTdhbgOD/TO80ediRvGBRHwIgN6/QsuM5oF3n/oOhx7VT9PMSoAuRbLcNoEuH6n4
-         olQoNzEPTbvxw==
-Received: by mail.feshiecree.pl for <linux-can@vger.kernel.org>; Tue,  9 May 2023 07:35:45 GMT
-Message-ID: <20230509074504-0.1.2g.fapp.0.cj4bven7t8@feshiecree.pl>
-Date:   Tue,  9 May 2023 07:35:45 GMT
-From:   "Krystian Wieczorek" <krystian.wieczorek@feshiecree.pl>
-To:     <linux-can@vger.kernel.org>
-Subject: W sprawie samochodu
-X-Mailer: mail.feshiecree.pl
+        with ESMTP id S234885AbjEIIHk (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 9 May 2023 04:07:40 -0400
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC0B3106C7;
+        Tue,  9 May 2023 01:07:01 -0700 (PDT)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1ab267e3528so39026595ad.0;
+        Tue, 09 May 2023 01:07:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683619614; x=1686211614;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=40PV0VC+uLvo4YRnubUvGBAuoCKhqk9gddkp21ztTyw=;
+        b=eIznOlKFcFPz+FEinUg41oZYF5abf+aeOD8p6eq5sq/EBK7FZfPtTVw6+4FGM5MKYM
+         BhIGIywC7dXE6d+g6KnulFu4u99onmrY2nl2CyLXE6MQ5KVNu3Igo8MQUZ/9V0DMgbXE
+         +PPLZPBbPCeBRUq7H9cFZOwhLHDsrBleYn8pz3fN+O5NrDQe09fF72DASUvDHne7KzsI
+         uF9r2oKpjqWGtZn6vEpWMS7f4/8KYvIvLqmC/nNBXcJNZJ3/qSuibuIv9L+YY9KulMP/
+         qq/KVWGRCdUemDTSKEdlCK+KUhiTH8okivk6fpjppOqAwuey4bsgfOG8vxOZFXc3mTi+
+         IiKQ==
+X-Gm-Message-State: AC+VfDyl6AyB9QFs2soULm4jSKswOaOc6b/ZdOcx6HjLYd78Plwd8fbU
+        3TtJcPhzjT8TNcD0jX1btDwSpQ5csFE5domYpOI=
+X-Google-Smtp-Source: ACHHUZ5Y+vYnuLr8wBa6PI3ZwpqB724BhdZjdYM8a1RY54pVUhBYOam44+pOyn8tzox9nN+T9rcw9si5zYh4kn21yNo=
+X-Received: by 2002:a17:902:da89:b0:1a2:37fc:b591 with SMTP id
+ j9-20020a170902da8900b001a237fcb591mr15463598plx.69.1683619614305; Tue, 09
+ May 2023 01:06:54 -0700 (PDT)
 MIME-Version: 1.0
+References: <20230507155506.3179711-1-mailhol.vincent@wanadoo.fr>
+ <20230508-sprint-cause-80b4172d5a5a-mkl@pengutronix.de> <CAMZ6RqKQw702HPjBTNJdBfL8yhkn5vDVDfn6dbrVMv7SX6NO2w@mail.gmail.com>
+ <BL3PR11MB64841417866BA13DFEA3E373FB769@BL3PR11MB6484.namprd11.prod.outlook.com>
+In-Reply-To: <BL3PR11MB64841417866BA13DFEA3E373FB769@BL3PR11MB6484.namprd11.prod.outlook.com>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Tue, 9 May 2023 17:06:43 +0900
+Message-ID: <CAMZ6Rq+DW7Vdrjb+T2FVkh4iCFAGWQSUTpCAuFCsH_TJ-NYjTg@mail.gmail.com>
+Subject: Re: [PATCH] can: length: add definitions for frame lengths in bits
+To:     Thomas.Kopp@microchip.com
+Cc:     mkl@pengutronix.de, linux-can@vger.kernel.org, marex@denx.de,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Dzie=C5=84 dobry,
+Hi Thomas,
 
-chcieliby=C5=9Bmy zapewni=C4=87 Pa=C5=84stwu kompleksowe rozwi=C4=85zania=
-, je=C5=9Bli chodzi o system monitoringu GPS.
+On Mon. 9 May 2023 at 16:12, <Thomas.Kopp@microchip.com> wrote:
 
-Precyzyjne monitorowanie pojazd=C3=B3w na mapach cyfrowych, =C5=9Bledzeni=
-e ich parametr=C3=B3w eksploatacyjnych w czasie rzeczywistym oraz kontrol=
-a paliwa to kluczowe funkcjonalno=C5=9Bci naszego systemu.=20
+[...]
 
-Organizowanie pracy pracownik=C3=B3w jest dzi=C4=99ki temu prostsze i bar=
-dziej efektywne, a oszcz=C4=99dno=C5=9Bci i optymalizacja w zakresie pono=
-szonych koszt=C3=B3w, maj=C4=85 dla ka=C5=BCdego przedsi=C4=99biorcy ogro=
-mne znaczenie.
+> Right, do you plan on separating this for Arbitration bitrate and databitrate? It would probably make sense to use a fixed number of worst case stuffbits for the arbitration phase and the formula for the data phase.
 
-Dopasujemy nasz=C4=85 ofert=C4=99 do Pa=C5=84stwa oczekiwa=C5=84 i potrze=
-b organizacji. Czy mogliby=C5=9Bmy porozmawia=C4=87 o naszej propozycji?
+I have a few ideas how to implement it, but seeing how complex things
+are going, I am thinking of creating an inline helper function for the
+bitstuffing calculation (the compiler should be able to fold it into a
+constant expression, so there should be no penalty).
 
-
-Pozdrawiam
-Krystian Wieczorek
+For the exact details, I have not decided yet. I need to experiment.
+This not being so trivial and not having so much free time now, please
+wait a few days for the v2 ;)
