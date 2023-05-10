@@ -2,140 +2,127 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E571C7EE2A
-	for <linux-can@archiver.kernel.org>; Wed, 10 May 2023 14:25:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C3BEC77B7D
+	for <linux-can@archiver.kernel.org>; Wed, 10 May 2023 20:30:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237371AbjEJOZK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 10 May 2023 10:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57074 "EHLO
+        id S236413AbjEJUaZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 10 May 2023 16:30:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237248AbjEJOZG (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 10 May 2023 10:25:06 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC2F09007;
-        Wed, 10 May 2023 07:24:43 -0700 (PDT)
+        with ESMTP id S236292AbjEJUaY (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 10 May 2023 16:30:24 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7D159CA;
+        Wed, 10 May 2023 13:30:22 -0700 (PDT)
 Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 34AENknN023679;
-        Wed, 10 May 2023 09:23:47 -0500
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 34AKTrGj028822;
+        Wed, 10 May 2023 15:29:53 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1683728627;
-        bh=gR6IVuKbRKYO1DmIRDu7mk6S0UxadvOmtfohJs7JR50=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=ItmSnfRFxtgHAabhQiGvTlhdv+SN9n5Qm6WgQMOSmgQreqosoxIPHJh4La2aCOjsl
-         QLjDB0EJat/v+Xwg/nmPT3IJ544OxIZx0ZzuF7ZWt4Rafy3cWgqAo4+vQk4je7GtGM
-         MAXkJ1u2uNSFucdo+zakpJSUI9jk3+Svru7hhUlQ=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 34AENkCD021548
+        s=ti-com-17Q1; t=1683750593;
+        bh=s5ETgWj9H97D/+/gjxuFIP1WU78+qx7k7HI1RNaFw4E=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=pjeCtfQyrlgajzq8k/sRU5fqbbPUahdP6i0IW0hQXSvC3E7Xl/eCxelMFmNW6Tl3Z
+         zJQKKCmSOfaCrhx4go0t0oV//qW9GEFmk08E1C+gHvLwiCeXDUJqxCD+VOC8TPC2XW
+         dap6aaEmRQvEZJ51fWZsNWFrUbGfRO+B1tsADyVI=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 34AKTrMe026213
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 10 May 2023 09:23:46 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 10 May 2023 15:29:53 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 10
- May 2023 09:23:46 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ May 2023 15:29:53 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 10 May 2023 09:23:46 -0500
-Received: from [128.247.81.95] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 34AENkET008910;
-        Wed, 10 May 2023 09:23:46 -0500
-Message-ID: <f8077b36-ed89-e957-1aba-f9cda7acd566@ti.com>
-Date:   Wed, 10 May 2023 09:23:46 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v4 2/4] can: m_can: Add hrtimer to generate software
- interrupt
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-CC:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Frontend Transport; Wed, 10 May 2023 15:29:53 -0500
+Received: from a0498204.dal.design.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 34AKTqDH003872;
+        Wed, 10 May 2023 15:29:53 -0500
+From:   Judith Mendez <jm@ti.com>
+To:     <linux-can@vger.kernel.org>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>
+CC:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, <linux-can@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Schuyler Patton <spatton@ti.com>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Schuyler Patton <spatton@ti.com>,
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
         Oliver Hartkopp <socketcan@hartkopp.net>,
-        Simon Horman <simon.horman@corigine.com>
-References: <20230501224624.13866-1-jm@ti.com>
- <20230501224624.13866-3-jm@ti.com>
- <20230502-twiddling-threaten-d032287d4630-mkl@pengutronix.de>
- <84e5b09e-f8b9-15ae-4871-e5e4c4f4a470@ti.com>
- <20230510-salad-decaf-009b9da48271-mkl@pengutronix.de>
-Content-Language: en-US
-From:   Judith Mendez <jm@ti.com>
-In-Reply-To: <20230510-salad-decaf-009b9da48271-mkl@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v5 1/2] dt-bindings: net: can: Add poll-interval for MCAN
+Date:   Wed, 10 May 2023 15:29:51 -0500
+Message-ID: <20230510202952.27111-2-jm@ti.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230510202952.27111-1-jm@ti.com>
+References: <20230510202952.27111-1-jm@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello Marc,
+On AM62x SoC, MCANs on MCU domain do not have hardware interrupt
+routed to A53 Linux, instead they will use software interrupt by
+hrtimer.
 
-On 5/10/23 02:21, Marc Kleine-Budde wrote:
-> On 09.05.2023 17:18:06, Judith Mendez wrote:
-> [...]
->>>> +	if (!mcan_class->polling && irq < 0) {
->>>> +		ret = -ENXIO;
->>>> +		dev_err_probe(mcan_class->dev, ret, "IRQ int0 not found and polling not activated\n");
->>>> +		goto probe_fail;
->>>> +	}
->>>> +
->>>> +	if (mcan_class->polling) {
->>>> +		if (irq > 0) {
->>>> +			mcan_class->polling = 0;
->>>
->>> false
->>>
->>>> +			dev_dbg(mcan_class->dev, "Polling enabled and hardware IRQ found, use hardware IRQ\n");
->>>
->>> "...using hardware IRQ"
->>>
->>> Use dev_info(), as there is something not 100% correct with the DT.
->>
->> Is it dev_info or dev_dbg?
-> 
-> dev_info() - But without an explicit "poll-interval' in the DT, this
-> code path doesn't exist anymore.
-> 
->> I used to have dev_info since it was nice to see when polling was
->> enabled.
-> 
-> Re-read your code, this is not about enabling polling. This message
-> handles the case where an IRQ was given _and_ "poll-interval" was
-> specified. So there is something not 100% correct with the DT (IRQ _and_
-> polling), but this is obsolete now.
+To enable timer polling method, interrupts should be
+optional so remove interrupts property from required section and
+add an example for MCAN node with timer polling enabled.
 
-Sorry, I meant it was nice to see when polling was enabled or not. In
+Signed-off-by: Judith Mendez <jm@ti.com>
+---
+ .../bindings/net/can/bosch,m_can.yaml         | 20 +++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
-this case, if polling was enabled but hardware IRQ exists, it is good
+diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+index 67879aab623b..bb518c831f7b 100644
+--- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
++++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+@@ -122,8 +122,6 @@ required:
+   - compatible
+   - reg
+   - reg-names
+-  - interrupts
+-  - interrupt-names
+   - clocks
+   - clock-names
+   - bosch,mram-cfg
+@@ -132,6 +130,7 @@ additionalProperties: false
+ 
+ examples:
+   - |
++    // Example with interrupts
+     #include <dt-bindings/clock/imx6sx-clock.h>
+     can@20e8000 {
+       compatible = "bosch,m_can";
+@@ -149,4 +148,21 @@ examples:
+       };
+     };
+ 
++  - |
++    // Example with timer polling
++    #include <dt-bindings/clock/imx6sx-clock.h>
++    can@20e8000 {
++      compatible = "bosch,m_can";
++      reg = <0x020e8000 0x4000>, <0x02298000 0x4000>;
++      reg-names = "m_can", "message_ram";
++      clocks = <&clks IMX6SX_CLK_CANFD>,
++               <&clks IMX6SX_CLK_CANFD>;
++      clock-names = "hclk", "cclk";
++      bosch,mram-cfg = <0x0 0 0 32 0 0 0 1>;
++
++      can-transceiver {
++        max-bitrate = <5000000>;
++      };
++    };
++
+ ...
+-- 
+2.17.1
 
-information to see this print. But I understand now how this is a case
-
-where 'something is strange'.
-
->> Also, I had seen this print and the next as informative prints, hence the dev_info().
-> 
-> We don't print messages when IRQs are enabled, so enabling polling
-> should be a dev_dbg(), too.
-> 
->> However, I was told in this review process to change to dev_dbg. Which is correct?
-> 
-> Driver works correct -> dev_dbg()
-> Something is strange -> dev_info()
-
-Got it, this is very helpful. Thanks.
-
-
-
-regards,
-
-Judith
