@@ -2,30 +2,30 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D5B2C77B75
-	for <linux-can@archiver.kernel.org>; Fri, 12 May 2023 21:28:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EDBFCC77B7C
+	for <linux-can@archiver.kernel.org>; Fri, 12 May 2023 21:28:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240492AbjELV2k (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 12 May 2023 17:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54320 "EHLO
+        id S239369AbjELV24 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 12 May 2023 17:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239960AbjELV2V (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 12 May 2023 17:28:21 -0400
+        with ESMTP id S234709AbjELV2q (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 12 May 2023 17:28:46 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE03DDB4
-        for <linux-can@vger.kernel.org>; Fri, 12 May 2023 14:28:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E585FD7
+        for <linux-can@vger.kernel.org>; Fri, 12 May 2023 14:28:24 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1pxaIe-0005IM-98; Fri, 12 May 2023 23:27:40 +0200
+        id 1pxaIe-0005HQ-DI; Fri, 12 May 2023 23:27:40 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1pxaIX-0033Wc-LT; Fri, 12 May 2023 23:27:33 +0200
+        id 1pxaIU-0033Vk-UV; Fri, 12 May 2023 23:27:30 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1pxaIW-003qiE-Tf; Fri, 12 May 2023 23:27:32 +0200
+        id 1pxaIU-003qhX-9g; Fri, 12 May 2023 23:27:30 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Wolfgang Grandegger <wg@grandegger.com>,
@@ -34,22 +34,45 @@ To:     Wolfgang Grandegger <wg@grandegger.com>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Minghao Chi <chi.minghao@zte.com.cn>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Wei Fang <wei.fang@nxp.com>, Rob Herring <robh@kernel.org>,
+        Pavel Pisa <pisa@cmp.felk.cvut.cz>,
+        Ondrej Ille <ondrej.ille@gmail.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
         Chris Packham <chris.packham@alliedtelesis.co.nz>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Wolfram Sang <wsa@kernel.org>, Mark Brown <broonie@kernel.org>,
         Dongliang Mu <dzm91@hust.edu.cn>,
-        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
+        Michal Simek <michal.simek@amd.com>
 Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH 12/19] can: mscan/mpc5xxx_can.c -- Convert to platform remove callback returning void
-Date:   Fri, 12 May 2023 23:27:18 +0200
-Message-Id: <20230512212725.143824-13-u.kleine-koenig@pengutronix.de>
+        linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de,
+        linux-sunxi@lists.linux.dev,
+        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+Subject: [PATCH net-next 00/19] can: Convert to platform remove callback returning void
+Date:   Fri, 12 May 2023 23:27:06 +0200
+Message-Id: <20230512212725.143824-1-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230512212725.143824-1-u.kleine-koenig@pengutronix.de>
-References: <20230512212725.143824-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1899; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=hzdYlEhuwpsbIfEr2VPGyOZkIv02jTPpvhoSAajEuQw=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBkXq8xwtMvgQTwgJMffXbnc5tCHN04FI+S5sEDx K4xT69Yx9OJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZF6vMQAKCRCPgPtYfRL+ TskGB/9+WKmdRFm72M1LT/FHxRBoH7HjMFlISimL3Uknnm0uFyzrmzjY5LaTyyu9bL3SC4iBlyV nuNojKWWVHZ0WC7abVuzli2a4/Ygp9eLMzXNgBpkjx3dlW1YOwe1uFAK6U0amfDfITDyVwTlzVm LUDoAf+60dCrBcV+dMVj+EG8ON+fARJPKWjcgdYSxRkuItD3d+SRTlSrAtCz3XxWBK3VxDpOzZl VDUQMOeOJOMjDV74q0i85wW4GWRUkDguWoqcePjDFsKuzB2DROZygStnsSqiAJhV8AD93vPAMli dPKDh6sDe0ZEkZhf5wkTVt25HfdA5c1CW8p6bsyvWEJC/kX8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3125; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=CIVa8xJjV/wvM1n16ALppP7HbOG+7K8Otx33EB/s+c0=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBkXq8jGmHgDZEf5cFd1OBFCsjWWCUAe06FRikIq ds4QLnPzAqJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZF6vIwAKCRCPgPtYfRL+ TmYxB/9iNwRB5UaB0O45PJH5RdP8FrqojNP8biv2y/VJGnuzlX8A/i0R+iAnz8Tjwn/doXTpQY1 DupInE8JbPNoloyz40iQR35UMlBZJctUUwsOnbhw8VoKR1t+kXUilqDqXJ/JqRVqV/FvaZnvJVo 6znakdpOYzjF8HttRpv35yOAMGdqOrWTQ8OBiJsz7BODeLQ5NORuHwNqY8J6bVMsBiY12dGiabB rTVqins7zFASXM4Wa/2/twpOEAjhmomMDvXEeDu35JfCpgEyEF8VNZBXb4XZU1FQMxcyFRfeU9k I8CHT0COd2M7AlGhwZnwX9y42GojbmwzsygTn8CYGVlD19Em
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -60,54 +83,65 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is ignored (apart from
-emitting a warning) and this typically results in resource leaks. To improve
-here there is a quest to make the remove callback return void. In the first
-step of this quest all drivers are converted to .remove_new() which already
-returns void. Eventually after all drivers are converted, .remove_new() is
-renamed to .remove().
+Hello,
 
-Trivially convert this driver from always returning zero in the remove
-callback to the void returning variant.
+this series convers the drivers below drivers/net/can to the
+.remove_new() callback of struct platform_driver(). The motivation is to
+make the remove callback less prone for errors and wrong assumptions.
+See commit 5c5a7680e67b ("platform: Provide a remove callback that
+returns no value") for a more detailed rationale.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/net/can/mscan/mpc5xxx_can.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+All drivers already returned zero unconditionally in their
+.remove() callback, so converting them to .remove_new() is trivial.
 
-diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/mpc5xxx_can.c
-index b0ed798ae70f..4837df6efa92 100644
---- a/drivers/net/can/mscan/mpc5xxx_can.c
-+++ b/drivers/net/can/mscan/mpc5xxx_can.c
-@@ -349,7 +349,7 @@ static int mpc5xxx_can_probe(struct platform_device *ofdev)
- 	return err;
- }
- 
--static int mpc5xxx_can_remove(struct platform_device *ofdev)
-+static void mpc5xxx_can_remove(struct platform_device *ofdev)
- {
- 	const struct of_device_id *match;
- 	const struct mpc5xxx_can_data *data;
-@@ -365,8 +365,6 @@ static int mpc5xxx_can_remove(struct platform_device *ofdev)
- 	iounmap(priv->reg_base);
- 	irq_dispose_mapping(dev->irq);
- 	free_candev(dev);
--
--	return 0;
- }
- 
- #ifdef CONFIG_PM
-@@ -437,7 +435,7 @@ static struct platform_driver mpc5xxx_can_driver = {
- 		.of_match_table = mpc5xxx_can_table,
- 	},
- 	.probe = mpc5xxx_can_probe,
--	.remove = mpc5xxx_can_remove,
-+	.remove_new = mpc5xxx_can_remove,
- #ifdef CONFIG_PM
- 	.suspend = mpc5xxx_can_suspend,
- 	.resume = mpc5xxx_can_resume,
+Best regards
+Uwe
+
+Uwe Kleine-König (19):
+  can: at91_can: Convert to platform remove callback returning void
+  can: bxcan: Convert to platform remove callback returning void
+  can: c_can: Convert to platform remove callback returning void
+  can: cc770_isa: Convert to platform remove callback returning void
+  can: cc770_platform: Convert to platform remove callback returning void
+  can: ctucanfd: Convert to platform remove callback returning void
+  can: flexcan: Convert to platform remove callback returning void
+  can: grcan: Convert to platform remove callback returning void
+  can: ifi_canfd: Convert to platform remove callback returning void
+  can: janz-ican3: Convert to platform remove callback returning void
+  can: m_can: Convert to platform remove callback returning void
+  can: mscan/mpc5xxx_can.c -- Convert to platform remove callback returning void
+  can: rcar: Convert to platform remove callback returning void
+  can: sja1000_isa: Convert to platform remove callback returning void
+  can: sja1000_platform: Convert to platform remove callback returning void
+  can: softing: Convert to platform remove callback returning void
+  can: sun4i_can: Convert to platform remove callback returning void
+  can: ti_hecc: Convert to platform remove callback returning void
+  can: xilinx: Convert to platform remove callback returning void
+
+ drivers/net/can/at91_can.c                   | 6 ++----
+ drivers/net/can/bxcan.c                      | 5 ++---
+ drivers/net/can/c_can/c_can_platform.c       | 6 ++----
+ drivers/net/can/cc770/cc770_isa.c            | 6 ++----
+ drivers/net/can/cc770/cc770_platform.c       | 6 ++----
+ drivers/net/can/ctucanfd/ctucanfd_platform.c | 6 ++----
+ drivers/net/can/flexcan/flexcan-core.c       | 6 ++----
+ drivers/net/can/grcan.c                      | 6 ++----
+ drivers/net/can/ifi_canfd/ifi_canfd.c        | 6 ++----
+ drivers/net/can/janz-ican3.c                 | 6 ++----
+ drivers/net/can/m_can/m_can_platform.c       | 6 ++----
+ drivers/net/can/mscan/mpc5xxx_can.c          | 6 ++----
+ drivers/net/can/rcar/rcar_can.c              | 5 ++---
+ drivers/net/can/rcar/rcar_canfd.c            | 6 ++----
+ drivers/net/can/sja1000/sja1000_isa.c        | 6 ++----
+ drivers/net/can/sja1000/sja1000_platform.c   | 6 ++----
+ drivers/net/can/softing/softing_main.c       | 5 ++---
+ drivers/net/can/sun4i_can.c                  | 6 ++----
+ drivers/net/can/ti_hecc.c                    | 6 ++----
+ drivers/net/can/xilinx_can.c                 | 6 ++----
+ 20 files changed, 40 insertions(+), 77 deletions(-)
+
+
+base-commit: ac9a78681b921877518763ba0e89202254349d1b
 -- 
 2.39.2
 
