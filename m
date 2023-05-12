@@ -2,34 +2,33 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F381C7EE25
-	for <linux-can@archiver.kernel.org>; Fri, 12 May 2023 21:28:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93BBCC7EE24
+	for <linux-can@archiver.kernel.org>; Fri, 12 May 2023 21:27:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236282AbjELV16 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S240263AbjELV16 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Fri, 12 May 2023 17:27:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53366 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239739AbjELV1x (ORCPT
+        with ESMTP id S238707AbjELV1x (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Fri, 12 May 2023 17:27:53 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A1D983CD
-        for <linux-can@vger.kernel.org>; Fri, 12 May 2023 14:27:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930073599
+        for <linux-can@vger.kernel.org>; Fri, 12 May 2023 14:27:46 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1pxaIY-0005I9-TF; Fri, 12 May 2023 23:27:34 +0200
+        id 1pxaIa-0005Ku-6h; Fri, 12 May 2023 23:27:36 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1pxaIX-0033WY-Bv; Fri, 12 May 2023 23:27:33 +0200
+        id 1pxaIZ-0033X9-63; Fri, 12 May 2023 23:27:35 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1pxaIW-003qiA-N9; Fri, 12 May 2023 23:27:32 +0200
+        id 1pxaIY-003qie-AW; Fri, 12 May 2023 23:27:34 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
-To:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
+To:     Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -37,15 +36,15 @@ To:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
         Paolo Abeni <pabeni@redhat.com>
 Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
         kernel@pengutronix.de
-Subject: [PATCH 11/19] can: m_can: Convert to platform remove callback returning void
-Date:   Fri, 12 May 2023 23:27:17 +0200
-Message-Id: <20230512212725.143824-12-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 18/19] can: ti_hecc: Convert to platform remove callback returning void
+Date:   Fri, 12 May 2023 23:27:24 +0200
+Message-Id: <20230512212725.143824-19-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230512212725.143824-1-u.kleine-koenig@pengutronix.de>
 References: <20230512212725.143824-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1965; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=zzskZ5tpf+H24pFcmP7ncTMlaLZrL4bcJODIW61mQmk=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBkXq8w2gvE9gI4lOBmX9qRsJ3499FKdlPZff/Bs ATKLvBqnJuJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZF6vMAAKCRCPgPtYfRL+ TmbSB/9SNcnOrEOSj17BHCNF7w/0IovmFO0taTKIcc/1cdqMI+oPq0DE0pk0rvc43qAuHXOvwx8 ReBhFCL0kkcFEnyFeOLC9PXj/nvp9pH24h9pwhydI4TOX0+6IUgQxyrxDwyqq+NHj0cQ7NqA1hn iKZIqI2CKx9cc6Niq2fY1drCuEFNId5zOiyGOAsBsRuHGYshMbP2P70NC6aBL2uFC2tAVn9kJPG OV2z2HZDQXoFHm+6bWtlS1mIsidfcDM6A8b4Qi1R5G+H96bT8kIiRCERxLy43MdOwVfK5qUYPpq YqIngeF2peFOgcEjDXvH6gr9+zrL7xxWQIPVDrhtuG+bUmrX
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1821; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=c4YDZjlvuwi+NrNdZM2p4wmykATVvDSlWFTtsAs1Ip0=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBkXq84oZyncF9k07znLqDAa4KEE+wi3HrTjPp/8 l3Iy6dgL8uJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZF6vOAAKCRCPgPtYfRL+ TuW2B/41ErL4anDcV2GnqbOXhqKj/9aJeOUoYh+TKagaBfetPwe2yIDUjcm5cefKgYGh8TjBET8 j6KdG4WLggFVctQOxGdUBFynLMFOTzosqzn10NFvLsOt323tzhGFzN6lElKEnVF5i8ZfBwnpvDE tSCRLCoH4DZUd6TKOlx0R6NwBnZD3OIHx8JB71sutAReWFtwWhuaoPDMgLsgGt8qowXN9yIRpNo 1k1CIPIFalstTDOBuzmPD60CPhJJJu2Qz84mGl76CHm0Tng43xHe2HjRKuEPTIyaRmf7r+8ShVX MvU2Z5dZK/lrI9rf6cDFuzrL8vHsgJmVExmDwHMOlnzWfsV7
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -70,40 +69,40 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can_platform.c | 6 ++----
+ drivers/net/can/ti_hecc.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
-index 9c1dcf838006..94dc82644113 100644
---- a/drivers/net/can/m_can/m_can_platform.c
-+++ b/drivers/net/can/m_can/m_can_platform.c
-@@ -164,7 +164,7 @@ static __maybe_unused int m_can_resume(struct device *dev)
- 	return m_can_class_resume(dev);
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index 27700f72eac2..9bab0b4cc449 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -963,7 +963,7 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	return err;
  }
  
--static int m_can_plat_remove(struct platform_device *pdev)
-+static void m_can_plat_remove(struct platform_device *pdev)
+-static int ti_hecc_remove(struct platform_device *pdev)
++static void ti_hecc_remove(struct platform_device *pdev)
  {
- 	struct m_can_plat_priv *priv = platform_get_drvdata(pdev);
- 	struct m_can_classdev *mcan_class = &priv->cdev;
-@@ -172,8 +172,6 @@ static int m_can_plat_remove(struct platform_device *pdev)
- 	m_can_class_unregister(mcan_class);
- 
- 	m_can_class_free_dev(mcan_class->net);
+ 	struct net_device *ndev = platform_get_drvdata(pdev);
+ 	struct ti_hecc_priv *priv = netdev_priv(ndev);
+@@ -973,8 +973,6 @@ static int ti_hecc_remove(struct platform_device *pdev)
+ 	clk_put(priv->clk);
+ 	can_rx_offload_del(&priv->offload);
+ 	free_candev(ndev);
 -
 -	return 0;
  }
  
- static int __maybe_unused m_can_runtime_suspend(struct device *dev)
-@@ -223,7 +221,7 @@ static struct platform_driver m_can_plat_driver = {
- 		.pm     = &m_can_pmops,
+ #ifdef CONFIG_PM
+@@ -1028,7 +1026,7 @@ static struct platform_driver ti_hecc_driver = {
+ 		.of_match_table = ti_hecc_dt_ids,
  	},
- 	.probe = m_can_plat_probe,
--	.remove = m_can_plat_remove,
-+	.remove_new = m_can_plat_remove,
+ 	.probe = ti_hecc_probe,
+-	.remove = ti_hecc_remove,
++	.remove_new = ti_hecc_remove,
+ 	.suspend = ti_hecc_suspend,
+ 	.resume = ti_hecc_resume,
  };
- 
- module_platform_driver(m_can_plat_driver);
 -- 
 2.39.2
 
