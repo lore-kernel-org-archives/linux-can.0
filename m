@@ -2,52 +2,56 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4917C77B7F
-	for <linux-can@archiver.kernel.org>; Fri, 12 May 2023 21:28:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3EB8C7EE25
+	for <linux-can@archiver.kernel.org>; Fri, 12 May 2023 21:28:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239199AbjELV2C (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 12 May 2023 17:28:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53462 "EHLO
+        id S239650AbjELV2D (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 12 May 2023 17:28:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239936AbjELV14 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 12 May 2023 17:27:56 -0400
+        with ESMTP id S231803AbjELV16 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 12 May 2023 17:27:58 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C7839ECA
-        for <linux-can@vger.kernel.org>; Fri, 12 May 2023 14:27:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB129EFA
+        for <linux-can@vger.kernel.org>; Fri, 12 May 2023 14:27:51 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1pxaIa-0005LF-HX; Fri, 12 May 2023 23:27:36 +0200
+        id 1pxaIZ-0005Is-Aa; Fri, 12 May 2023 23:27:35 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1pxaIZ-0033XC-8y; Fri, 12 May 2023 23:27:35 +0200
+        id 1pxaIY-0033Wj-1t; Fri, 12 May 2023 23:27:34 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1pxaIY-003qii-H4; Fri, 12 May 2023 23:27:34 +0200
+        id 1pxaIX-003qiI-51; Fri, 12 May 2023 23:27:33 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
-To:     Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
+To:     Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Michal Simek <michal.simek@amd.com>
-Cc:     Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
-Subject: [PATCH 19/19] can: xilinx: Convert to platform remove callback returning void
-Date:   Fri, 12 May 2023 23:27:25 +0200
-Message-Id: <20230512212725.143824-20-u.kleine-koenig@pengutronix.de>
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: [PATCH 13/19] can: rcar: Convert to platform remove callback returning void
+Date:   Fri, 12 May 2023 23:27:19 +0200
+Message-Id: <20230512212725.143824-14-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230512212725.143824-1-u.kleine-koenig@pengutronix.de>
 References: <20230512212725.143824-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1689; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=eh5Ov0LEGxYf4zIXoE5bjScSEhdFT8d4JGdB7L+f0K4=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBkXq852/yC1xvyajrdLWmDYbqblAGsv8L3O+OA8 AQRa8ehvF+JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZF6vOQAKCRCPgPtYfRL+ TqQ3CAC6uCwtwjc0E4hV2pd3ZEDfYC3k/N5vHOyN4nrpGoIDbWJU2ZFTqSlASWQuUqV4E1qA2/2 yIz6GBM23u2z/GZ/6uCgSCxn2ppGfRiia8S1mDabRLiGadhpcqIzjReT7tVQrh1PXlyWeeIH17z D1/tpdoq3UnG9peTsVI6bR+D5+qR/Gka8fq85jdzKjw8qzH3yWO8GCq+0GUifisR8zPXE+W9lxn xObv4DRak1uzonEsKEzFJhcY/v/tIr6Df2+aCQOF0l8MCdqPtuYa+N/Q/tHEHqtDRbFTAncIgwF da5UsoRCFhMwYCVdAFPE8X9DZr7konNUpmfm0WBwG9rZibk9
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2988; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=2Hm+F98eYJmRfuSMPYsbY6bJ5KjYP2/XLf/PqF5XWzM=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBkXq8yqKJWZbKcR+Pz/rKZZSOr3Imac9d4dfKzP LAEMorhq6iJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZF6vMgAKCRCPgPtYfRL+ TiJ2B/0ZpjvS76OrQe+HaCWd6tmrl8h2pgpd+Os79EgXWuYY5Z5FmtmsM6/06e/LXrA8igvZfDM +CiEbjLTlpAVb2RGleTLw18e/oH4W08C6O8G44LJFsf3/kO2E/gz+eDT026qFAIryffRfP5VhPf JwtKB6fkqQNe4TjcelVStl61myls8qBzC9iei1iiS+DagdkEvfDOEX8Va4PviXUZyKB9ZvNRPB/ X7RjHsyukrnrPFsleNnEQPqPFsTT2+/NFOLiV8w3nT+3GmPrmwyxhWLNb6glQmg9QXtrTfiHNS5 Kd4ygBeh0dVG1/3L41sZoMKOR5k1z86owo55K/EKUBWuK3k5
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -72,36 +76,71 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/net/can/xilinx_can.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/net/can/rcar/rcar_can.c   | 5 ++---
+ drivers/net/can/rcar/rcar_canfd.c | 6 ++----
+ 2 files changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 43c812ea1de0..797c69a0314d 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -1898,20 +1898,18 @@ static int xcan_probe(struct platform_device *pdev)
-  * This function frees all the resources allocated to the device.
-  * Return: 0 always
-  */
--static int xcan_remove(struct platform_device *pdev)
-+static void xcan_remove(struct platform_device *pdev)
+diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
+index cc43c9c5e38c..f5aa5dbacaf2 100644
+--- a/drivers/net/can/rcar/rcar_can.c
++++ b/drivers/net/can/rcar/rcar_can.c
+@@ -824,7 +824,7 @@ static int rcar_can_probe(struct platform_device *pdev)
+ 	return err;
+ }
+ 
+-static int rcar_can_remove(struct platform_device *pdev)
++static void rcar_can_remove(struct platform_device *pdev)
  {
  	struct net_device *ndev = platform_get_drvdata(pdev);
- 
+ 	struct rcar_can_priv *priv = netdev_priv(ndev);
+@@ -832,7 +832,6 @@ static int rcar_can_remove(struct platform_device *pdev)
  	unregister_candev(ndev);
- 	pm_runtime_disable(&pdev->dev);
+ 	netif_napi_del(&priv->napi);
  	free_candev(ndev);
+-	return 0;
+ }
+ 
+ static int __maybe_unused rcar_can_suspend(struct device *dev)
+@@ -908,7 +907,7 @@ static struct platform_driver rcar_can_driver = {
+ 		.pm = &rcar_can_pm_ops,
+ 	},
+ 	.probe = rcar_can_probe,
+-	.remove = rcar_can_remove,
++	.remove_new = rcar_can_remove,
+ };
+ 
+ module_platform_driver(rcar_can_driver);
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index 963c42f43755..e4d748913439 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -2078,7 +2078,7 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 	return err;
+ }
+ 
+-static int rcar_canfd_remove(struct platform_device *pdev)
++static void rcar_canfd_remove(struct platform_device *pdev)
+ {
+ 	struct rcar_canfd_global *gpriv = platform_get_drvdata(pdev);
+ 	u32 ch;
+@@ -2096,8 +2096,6 @@ static int rcar_canfd_remove(struct platform_device *pdev)
+ 	clk_disable_unprepare(gpriv->clkp);
+ 	reset_control_assert(gpriv->rstc1);
+ 	reset_control_assert(gpriv->rstc2);
 -
 -	return 0;
  }
  
- static struct platform_driver xcan_driver = {
- 	.probe = xcan_probe,
--	.remove	= xcan_remove,
-+	.remove_new = xcan_remove,
- 	.driver	= {
- 		.name = DRIVER_NAME,
- 		.pm = &xcan_dev_pm_ops,
+ static int __maybe_unused rcar_canfd_suspend(struct device *dev)
+@@ -2130,7 +2128,7 @@ static struct platform_driver rcar_canfd_driver = {
+ 		.pm = &rcar_canfd_pm_ops,
+ 	},
+ 	.probe = rcar_canfd_probe,
+-	.remove = rcar_canfd_remove,
++	.remove_new = rcar_canfd_remove,
+ };
+ 
+ module_platform_driver(rcar_canfd_driver);
 -- 
 2.39.2
 
