@@ -2,30 +2,30 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EBE56C77B7C
-	for <linux-can@archiver.kernel.org>; Fri, 12 May 2023 21:27:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98AE0C77B7F
+	for <linux-can@archiver.kernel.org>; Fri, 12 May 2023 21:27:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240194AbjELV1x (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S240273AbjELV1x (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Fri, 12 May 2023 17:27:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53314 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239739AbjELV1p (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 12 May 2023 17:27:45 -0400
+        with ESMTP id S239936AbjELV1t (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 12 May 2023 17:27:49 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 497A7527D
-        for <linux-can@vger.kernel.org>; Fri, 12 May 2023 14:27:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC4730E1
+        for <linux-can@vger.kernel.org>; Fri, 12 May 2023 14:27:44 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1pxaIX-0005Hw-TY; Fri, 12 May 2023 23:27:33 +0200
+        id 1pxaIX-0005I4-Vj; Fri, 12 May 2023 23:27:34 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1pxaIX-0033WP-61; Fri, 12 May 2023 23:27:33 +0200
+        id 1pxaIX-0033WV-8p; Fri, 12 May 2023 23:27:33 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1pxaIV-003qhz-W4; Fri, 12 May 2023 23:27:32 +0200
+        id 1pxaIW-003qi7-GE; Fri, 12 May 2023 23:27:32 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Wolfgang Grandegger <wg@grandegger.com>,
@@ -36,15 +36,15 @@ To:     Wolfgang Grandegger <wg@grandegger.com>,
         Paolo Abeni <pabeni@redhat.com>
 Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
         kernel@pengutronix.de
-Subject: [PATCH 08/19] can: grcan: Convert to platform remove callback returning void
-Date:   Fri, 12 May 2023 23:27:14 +0200
-Message-Id: <20230512212725.143824-9-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 10/19] can: janz-ican3: Convert to platform remove callback returning void
+Date:   Fri, 12 May 2023 23:27:16 +0200
+Message-Id: <20230512212725.143824-11-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230512212725.143824-1-u.kleine-koenig@pengutronix.de>
 References: <20230512212725.143824-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1817; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=dASDd+cKDMorNlE0KtDRmXHP/lqZVjZwM3RKRK6248Y=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBkXq8sbZxeHtWVZ5SkogO3WMzqpnxMKNqXn7Rhk mRaXtRqD0KJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZF6vLAAKCRCPgPtYfRL+ TjVaCACl81I9GWMcO5Qo9bnMnTYYiQk3JdljcdWdfJmYWXATFndMtFZCPNmWLSw5ngsuw7acQiy v/YQcg4IyLkeAtTT51R11+mVA6H1W+UHgxZMgcr/5FSO5bxPy+8Sx2W+QuwlY2pw+UzFwo6mPVG zXDhdUJY0auiz3FvUf8GMX4gNS9Z6JETlOvkACBpmL5YK0WacYwytIX4PtJ3avY4BO+jTSt/k3T SrK7XpB7/h/H80gg4xCzz8MBhltnZWHZLm8f+iDaL+H2YYEDjj/UlbsPt/N8h9/ap1p1Z0rVw4H r34HvYNUiGfndA7wkBhQqBjRefeyc8ub61Gtspp0HurzBNQZ
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1782; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=u/7hB2ddYCYrZL/WHa/iTR+BFlAMoSy/Fbr/1MkIrOg=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBkXq8voDfzVjE7mQZlBJmh985TlNzbPgMsSp734 9WaeFtp9SeJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZF6vLwAKCRCPgPtYfRL+ Tpa5B/9CV8KNRLdlbx9P3tpkCXUoAp74+jbM4h0TCCpmPolScKUVv4sA2GOJ1Fpb36BuNKcMAc0 UnTrjoHfSd6P1NZ4FrAV7C4IPk62QEFBjBi4693ogYSC9eFvMJl1QmgYa3cr7gu2ukmffJv5Tk5 fe2fXVIMiAYsfc4HHg3PG2wOn18QN7j5Nyz63kzwWvjpOvnpegcpqLqeSASwHc6SqYL31uYoMtq aHxzo+RTe1h8wKx7uht8DflvqcmjkSK6FHWCX+WxdmNKmgF+B6dvnpYeQ15IVbAQ+VPkFe33r+V QR0572VPFNadVoQyshHAZZjq1qEjhsVyTzTaoeyOVnJFqu7W
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -69,40 +69,40 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/net/can/grcan.c | 6 ++----
+ drivers/net/can/janz-ican3.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
-index 4bedcc3eea0d..3174efdae271 100644
---- a/drivers/net/can/grcan.c
-+++ b/drivers/net/can/grcan.c
-@@ -1696,7 +1696,7 @@ static int grcan_probe(struct platform_device *ofdev)
- 	return err;
+diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
+index 0732a5092141..d048ea565b89 100644
+--- a/drivers/net/can/janz-ican3.c
++++ b/drivers/net/can/janz-ican3.c
+@@ -2023,7 +2023,7 @@ static int ican3_probe(struct platform_device *pdev)
+ 	return ret;
  }
  
--static int grcan_remove(struct platform_device *ofdev)
-+static void grcan_remove(struct platform_device *ofdev)
+-static int ican3_remove(struct platform_device *pdev)
++static void ican3_remove(struct platform_device *pdev)
  {
- 	struct net_device *dev = platform_get_drvdata(ofdev);
- 	struct grcan_priv *priv = netdev_priv(dev);
-@@ -1706,8 +1706,6 @@ static int grcan_remove(struct platform_device *ofdev)
- 	irq_dispose_mapping(dev->irq);
- 	netif_napi_del(&priv->napi);
- 	free_candev(dev);
+ 	struct net_device *ndev = platform_get_drvdata(pdev);
+ 	struct ican3_dev *mod = netdev_priv(ndev);
+@@ -2042,8 +2042,6 @@ static int ican3_remove(struct platform_device *pdev)
+ 	iounmap(mod->dpm);
+ 
+ 	free_candev(ndev);
 -
 -	return 0;
  }
  
- static const struct of_device_id grcan_match[] = {
-@@ -1726,7 +1724,7 @@ static struct platform_driver grcan_driver = {
- 		.of_match_table = grcan_match,
+ static struct platform_driver ican3_driver = {
+@@ -2051,7 +2049,7 @@ static struct platform_driver ican3_driver = {
+ 		.name	= DRV_NAME,
  	},
- 	.probe = grcan_probe,
--	.remove = grcan_remove,
-+	.remove_new = grcan_remove,
+ 	.probe		= ican3_probe,
+-	.remove		= ican3_remove,
++	.remove_new	= ican3_remove,
  };
  
- module_platform_driver(grcan_driver);
+ module_platform_driver(ican3_driver);
 -- 
 2.39.2
 
