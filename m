@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5E65C7EE26
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC35AC7EE2C
 	for <linux-can@archiver.kernel.org>; Mon, 15 May 2023 20:58:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245250AbjEOU64 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 15 May 2023 16:58:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33282 "EHLO
+        id S245236AbjEOU65 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 15 May 2023 16:58:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245336AbjEOU6v (ORCPT
+        with ESMTP id S245330AbjEOU6v (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 15 May 2023 16:58:51 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 954BDDD99
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93E112092
         for <linux-can@vger.kernel.org>; Mon, 15 May 2023 13:58:37 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pyfGp-0006sO-R8
-        for linux-can@vger.kernel.org; Mon, 15 May 2023 22:58:15 +0200
+        id 1pyfGq-0006t4-4s
+        for linux-can@vger.kernel.org; Mon, 15 May 2023 22:58:16 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 8F5D11C5D65
+        by bjornoya.blackshift.org (Postfix) with SMTP id B17291C5D67
         for <linux-can@vger.kernel.org>; Mon, 15 May 2023 20:58:07 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 86E961C5D1C;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3179F1C5D0D;
         Mon, 15 May 2023 20:58:05 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1247a200;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id dea27678;
         Mon, 15 May 2023 20:58:02 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
@@ -38,10 +38,12 @@ Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
         =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>,
+        Gerhard Bertelsmann <info@gerhard-bertelsmann.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 22/22] can: xilinx: Convert to platform remove callback returning void
-Date:   Mon, 15 May 2023 22:57:59 +0200
-Message-Id: <20230515205759.1003118-23-mkl@pengutronix.de>
+Subject: [PATCH net-next 20/22] can: sun4i_can: Convert to platform remove callback returning void
+Date:   Mon, 15 May 2023 22:57:57 +0200
+Message-Id: <20230515205759.1003118-21-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230515205759.1003118-1-mkl@pengutronix.de>
 References: <20230515205759.1003118-1-mkl@pengutronix.de>
@@ -71,39 +73,43 @@ Trivially convert this driver from always returning zero in the remove
 callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Link: https://lore.kernel.org/r/20230512212725.143824-20-u.kleine-koenig@pengutronix.de
+Acked-by: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
+Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Link: https://lore.kernel.org/r/20230512212725.143824-18-u.kleine-koenig@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/xilinx_can.c | 6 ++----
+ drivers/net/can/sun4i_can.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 43c812ea1de0..797c69a0314d 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -1898,20 +1898,18 @@ static int xcan_probe(struct platform_device *pdev)
-  * This function frees all the resources allocated to the device.
-  * Return: 0 always
-  */
--static int xcan_remove(struct platform_device *pdev)
-+static void xcan_remove(struct platform_device *pdev)
- {
- 	struct net_device *ndev = platform_get_drvdata(pdev);
+diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
+index 2b78f9197681..0827830bbf28 100644
+--- a/drivers/net/can/sun4i_can.c
++++ b/drivers/net/can/sun4i_can.c
+@@ -791,14 +791,12 @@ static const struct of_device_id sun4ican_of_match[] = {
  
- 	unregister_candev(ndev);
- 	pm_runtime_disable(&pdev->dev);
- 	free_candev(ndev);
+ MODULE_DEVICE_TABLE(of, sun4ican_of_match);
+ 
+-static int sun4ican_remove(struct platform_device *pdev)
++static void sun4ican_remove(struct platform_device *pdev)
+ {
+ 	struct net_device *dev = platform_get_drvdata(pdev);
+ 
+ 	unregister_netdev(dev);
+ 	free_candev(dev);
 -
 -	return 0;
  }
  
- static struct platform_driver xcan_driver = {
- 	.probe = xcan_probe,
--	.remove	= xcan_remove,
-+	.remove_new = xcan_remove,
- 	.driver	= {
- 		.name = DRIVER_NAME,
- 		.pm = &xcan_dev_pm_ops,
+ static int sun4ican_probe(struct platform_device *pdev)
+@@ -901,7 +899,7 @@ static struct platform_driver sun4i_can_driver = {
+ 		.of_match_table = sun4ican_of_match,
+ 	},
+ 	.probe = sun4ican_probe,
+-	.remove = sun4ican_remove,
++	.remove_new = sun4ican_remove,
+ };
+ 
+ module_platform_driver(sun4i_can_driver);
 -- 
 2.39.2
 
