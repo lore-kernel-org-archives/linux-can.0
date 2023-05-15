@@ -2,45 +2,45 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3564C77B7D
-	for <linux-can@archiver.kernel.org>; Mon, 15 May 2023 20:47:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D176BC7EE24
+	for <linux-can@archiver.kernel.org>; Mon, 15 May 2023 20:47:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242892AbjEOUrd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 15 May 2023 16:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53856 "EHLO
+        id S245329AbjEOUre (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 15 May 2023 16:47:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245161AbjEOUrb (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 15 May 2023 16:47:31 -0400
+        with ESMTP id S245345AbjEOUrc (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 15 May 2023 16:47:32 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A498A6C
-        for <linux-can@vger.kernel.org>; Mon, 15 May 2023 13:47:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA9E27EDA
+        for <linux-can@vger.kernel.org>; Mon, 15 May 2023 13:47:31 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pyf6O-0004km-C3
-        for linux-can@vger.kernel.org; Mon, 15 May 2023 22:47:28 +0200
+        id 1pyf6P-0004ms-Ri
+        for linux-can@vger.kernel.org; Mon, 15 May 2023 22:47:29 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id BD5321C5C2E
-        for <linux-can@vger.kernel.org>; Mon, 15 May 2023 20:47:26 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 911521C5C42
+        for <linux-can@vger.kernel.org>; Mon, 15 May 2023 20:47:27 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 06D7F1C5C04;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 875501C5C10;
         Mon, 15 May 2023 20:47:25 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f35d032c;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 476eb9e7;
         Mon, 15 May 2023 20:47:24 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>, stable@vger.kernel.org
-Subject: [PATCH net 2/9] can: j1939: recvmsg(): allow MSG_CMSG_COMPAT flag
-Date:   Mon, 15 May 2023 22:47:15 +0200
-Message-Id: <20230515204722.1000957-3-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 6/9] ARM: dts: stm32f429: put can2 in secondary mode
+Date:   Mon, 15 May 2023 22:47:19 +0200
+Message-Id: <20230515204722.1000957-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230515204722.1000957-1-mkl@pengutronix.de>
 References: <20230515204722.1000957-1-mkl@pengutronix.de>
@@ -54,39 +54,32 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
-The control message provided by J1939 support MSG_CMSG_COMPAT but
-blocked recvmsg() syscalls that have set this flag, i.e. on 32bit user
-space on 64 bit kernels.
+This is a preparation patch for the upcoming support to manage CAN
+peripherals in single configuration.
 
-Link: https://github.com/hartkopp/can-isotp/issues/59
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Tested-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Link: https://lore.kernel.org/20230505110308.81087-3-mkl@pengutronix.de
-Cc: stable@vger.kernel.org
+The addition ensures backwards compatibility.
+
+Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Link: https://lore.kernel.org/all/20230427204540.3126234-3-dario.binacchi@amarulasolutions.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/j1939/socket.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/stm32f429.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 7e90f9e61d9b..1790469b2580 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -798,7 +798,7 @@ static int j1939_sk_recvmsg(struct socket *sock, struct msghdr *msg,
- 	struct j1939_sk_buff_cb *skcb;
- 	int ret = 0;
- 
--	if (flags & ~(MSG_DONTWAIT | MSG_ERRQUEUE))
-+	if (flags & ~(MSG_DONTWAIT | MSG_ERRQUEUE | MSG_CMSG_COMPAT))
- 		return -EINVAL;
- 
- 	if (flags & MSG_ERRQUEUE)
+diff --git a/arch/arm/boot/dts/stm32f429.dtsi b/arch/arm/boot/dts/stm32f429.dtsi
+index c9e05e3540d6..00bf53f99c29 100644
+--- a/arch/arm/boot/dts/stm32f429.dtsi
++++ b/arch/arm/boot/dts/stm32f429.dtsi
+@@ -387,6 +387,7 @@ can2: can@40006800 {
+ 			interrupt-names = "tx", "rx0", "rx1", "sce";
+ 			resets = <&rcc STM32F4_APB1_RESET(CAN2)>;
+ 			clocks = <&rcc 0 STM32F4_APB1_CLOCK(CAN2)>;
++			st,can-secondary;
+ 			st,gcan = <&gcan>;
+ 			status = "disabled";
+ 		};
 -- 
 2.39.2
 
