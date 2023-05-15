@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43639C7EE25
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE43CC7EE2D
 	for <linux-can@archiver.kernel.org>; Mon, 15 May 2023 20:58:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244942AbjEOU6z (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 15 May 2023 16:58:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33398 "EHLO
+        id S245221AbjEOU64 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 15 May 2023 16:58:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245221AbjEOU6u (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 15 May 2023 16:58:50 -0400
+        with ESMTP id S245250AbjEOU6v (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 15 May 2023 16:58:51 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D4711DAF
-        for <linux-can@vger.kernel.org>; Mon, 15 May 2023 13:58:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACEE51163A
+        for <linux-can@vger.kernel.org>; Mon, 15 May 2023 13:58:36 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pyfGp-0006rV-5O
+        id 1pyfGp-0006sI-K6
         for linux-can@vger.kernel.org; Mon, 15 May 2023 22:58:15 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 30C641C5D5B
+        by bjornoya.blackshift.org (Postfix) with SMTP id 8D4EC1C5D64
         for <linux-can@vger.kernel.org>; Mon, 15 May 2023 20:58:07 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 0BF671C5D05;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 60C6B1C5D13;
         Mon, 15 May 2023 20:58:05 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id adec7ec0;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 9973f78d;
         Mon, 15 May 2023 20:58:02 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
@@ -39,9 +39,9 @@ Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 19/22] can: softing: Convert to platform remove callback returning void
-Date:   Mon, 15 May 2023 22:57:56 +0200
-Message-Id: <20230515205759.1003118-20-mkl@pengutronix.de>
+Subject: [PATCH net-next 21/22] can: ti_hecc: Convert to platform remove callback returning void
+Date:   Mon, 15 May 2023 22:57:58 +0200
+Message-Id: <20230515205759.1003118-22-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230515205759.1003118-1-mkl@pengutronix.de>
 References: <20230515205759.1003118-1-mkl@pengutronix.de>
@@ -71,42 +71,43 @@ Trivially convert this driver from always returning zero in the remove
 callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Link: https://lore.kernel.org/r/20230512212725.143824-17-u.kleine-koenig@pengutronix.de
+Link: https://lore.kernel.org/r/20230512212725.143824-19-u.kleine-koenig@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/softing/softing_main.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/net/can/ti_hecc.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
-index c72f505d29fe..bd25137062c5 100644
---- a/drivers/net/can/softing/softing_main.c
-+++ b/drivers/net/can/softing/softing_main.c
-@@ -729,7 +729,7 @@ static const struct attribute_group softing_pdev_group = {
- /*
-  * platform driver
-  */
--static int softing_pdev_remove(struct platform_device *pdev)
-+static void softing_pdev_remove(struct platform_device *pdev)
- {
- 	struct softing *card = platform_get_drvdata(pdev);
- 	int j;
-@@ -747,7 +747,6 @@ static int softing_pdev_remove(struct platform_device *pdev)
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index 27700f72eac2..9bab0b4cc449 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -963,7 +963,7 @@ static int ti_hecc_probe(struct platform_device *pdev)
+ 	return err;
+ }
  
- 	iounmap(card->dpram);
- 	kfree(card);
+-static int ti_hecc_remove(struct platform_device *pdev)
++static void ti_hecc_remove(struct platform_device *pdev)
+ {
+ 	struct net_device *ndev = platform_get_drvdata(pdev);
+ 	struct ti_hecc_priv *priv = netdev_priv(ndev);
+@@ -973,8 +973,6 @@ static int ti_hecc_remove(struct platform_device *pdev)
+ 	clk_put(priv->clk);
+ 	can_rx_offload_del(&priv->offload);
+ 	free_candev(ndev);
+-
 -	return 0;
  }
  
- static int softing_pdev_probe(struct platform_device *pdev)
-@@ -855,7 +854,7 @@ static struct platform_driver softing_driver = {
- 		.name = KBUILD_MODNAME,
+ #ifdef CONFIG_PM
+@@ -1028,7 +1026,7 @@ static struct platform_driver ti_hecc_driver = {
+ 		.of_match_table = ti_hecc_dt_ids,
  	},
- 	.probe = softing_pdev_probe,
--	.remove = softing_pdev_remove,
-+	.remove_new = softing_pdev_remove,
+ 	.probe = ti_hecc_probe,
+-	.remove = ti_hecc_remove,
++	.remove_new = ti_hecc_remove,
+ 	.suspend = ti_hecc_suspend,
+ 	.resume = ti_hecc_resume,
  };
- 
- module_platform_driver(softing_driver);
 -- 
 2.39.2
 
