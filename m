@@ -2,47 +2,43 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E42B2C7EE2E
-	for <linux-can@archiver.kernel.org>; Mon, 15 May 2023 20:58:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B393C77B7D
+	for <linux-can@archiver.kernel.org>; Mon, 15 May 2023 20:58:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243936AbjEOU6o (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S244739AbjEOU6o (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Mon, 15 May 2023 16:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33390 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245341AbjEOU6h (ORCPT
+        with ESMTP id S245372AbjEOU6h (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 15 May 2023 16:58:37 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D98FAD2A
-        for <linux-can@vger.kernel.org>; Mon, 15 May 2023 13:58:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9443AA5FB
+        for <linux-can@vger.kernel.org>; Mon, 15 May 2023 13:58:17 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pyfGi-0006j0-Ot
-        for linux-can@vger.kernel.org; Mon, 15 May 2023 22:58:08 +0200
+        id 1pyfGj-0006jc-81
+        for linux-can@vger.kernel.org; Mon, 15 May 2023 22:58:09 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 6336A1C5D16
+        by bjornoya.blackshift.org (Postfix) with SMTP id 782321C5D1A
         for <linux-can@vger.kernel.org>; Mon, 15 May 2023 20:58:05 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 0C9381C5CC2;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 597D91C5CCA;
         Mon, 15 May 2023 20:58:03 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7381a132;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id bd9c85fd;
         Mon, 15 May 2023 20:58:02 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 06/22] can: bxcan: Remove unnecessary print function dev_err()
-Date:   Mon, 15 May 2023 22:57:43 +0200
-Message-Id: <20230515205759.1003118-7-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 08/22] can: length: make header self contained
+Date:   Mon, 15 May 2023 22:57:45 +0200
+Message-Id: <20230515205759.1003118-9-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230515205759.1003118-1-mkl@pengutronix.de>
 References: <20230515205759.1003118-1-mkl@pengutronix.de>
@@ -56,55 +52,29 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Include the headers that "can/length.h" depends on.
 
-The print function dev_err() is redundant because
-platform_get_irq_byname() already prints an error.
-
-./drivers/net/can/bxcan.c:970:2-9: line 970 is redundant because platform_get_irq() already prints an error.
-./drivers/net/can/bxcan.c:964:2-9: line 964 is redundant because platform_get_irq() already prints an error.
-./drivers/net/can/bxcan.c:958:2-9: line 958 is redundant because platform_get_irq() already prints an error.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Link: https://bugzilla.openanolis.cn/show_bug.cgi?id=4878
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Reviewed-by: Simon Horman <simon.horman@corigine.com>
-Link: https://lore.kernel.org/all/20230506080725.68401-1-jiapeng.chong@linux.alibaba.com
+Fixes: bdd2e413192d ("can: dev: move length related code into seperate file")
+Link: https://lore.kernel.org/all/20230509122854.350426-1-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/bxcan.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ include/linux/can/length.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/can/bxcan.c b/drivers/net/can/bxcan.c
-index e26ccd41e3cb..7b285eeb08a1 100644
---- a/drivers/net/can/bxcan.c
-+++ b/drivers/net/can/bxcan.c
-@@ -954,22 +954,16 @@ static int bxcan_probe(struct platform_device *pdev)
- 	}
+diff --git a/include/linux/can/length.h b/include/linux/can/length.h
+index 6995092b774e..69336549d24f 100644
+--- a/include/linux/can/length.h
++++ b/include/linux/can/length.h
+@@ -6,6 +6,9 @@
+ #ifndef _CAN_LENGTH_H
+ #define _CAN_LENGTH_H
  
- 	rx_irq = platform_get_irq_byname(pdev, "rx0");
--	if (rx_irq < 0) {
--		dev_err(dev, "failed to get rx0 irq\n");
-+	if (rx_irq < 0)
- 		return rx_irq;
--	}
- 
- 	tx_irq = platform_get_irq_byname(pdev, "tx");
--	if (tx_irq < 0) {
--		dev_err(dev, "failed to get tx irq\n");
-+	if (tx_irq < 0)
- 		return tx_irq;
--	}
- 
- 	sce_irq = platform_get_irq_byname(pdev, "sce");
--	if (sce_irq < 0) {
--		dev_err(dev, "failed to get sce irq\n");
-+	if (sce_irq < 0)
- 		return sce_irq;
--	}
- 
- 	ndev = alloc_candev(sizeof(struct bxcan_priv), BXCAN_TX_MB_NUM);
- 	if (!ndev) {
++#include <linux/can.h>
++#include <linux/can/netlink.h>
++
+ /*
+  * Size of a Classical CAN Standard Frame
+  *
 -- 
 2.39.2
 
