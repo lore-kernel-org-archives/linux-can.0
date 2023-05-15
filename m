@@ -2,46 +2,45 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DD77C7EE2F
-	for <linux-can@archiver.kernel.org>; Mon, 15 May 2023 20:47:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CBD4C7EE2D
+	for <linux-can@archiver.kernel.org>; Mon, 15 May 2023 20:47:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245113AbjEOUre (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 15 May 2023 16:47:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53884 "EHLO
+        id S242991AbjEOUrd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 15 May 2023 16:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245329AbjEOUrc (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 15 May 2023 16:47:32 -0400
+        with ESMTP id S245113AbjEOUrb (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 15 May 2023 16:47:31 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C1693E8
-        for <linux-can@vger.kernel.org>; Mon, 15 May 2023 13:47:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3698694
+        for <linux-can@vger.kernel.org>; Mon, 15 May 2023 13:47:29 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pyf6P-0004l9-75
-        for linux-can@vger.kernel.org; Mon, 15 May 2023 22:47:29 +0200
+        id 1pyf6O-0004kk-7g
+        for linux-can@vger.kernel.org; Mon, 15 May 2023 22:47:28 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id F2BF01C5C33
+        by bjornoya.blackshift.org (Postfix) with SMTP id A6BA01C5C2C
         for <linux-can@vger.kernel.org>; Mon, 15 May 2023 20:47:26 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4590A1C5C08;
-        Mon, 15 May 2023 20:47:25 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id DF1551C5C03;
+        Mon, 15 May 2023 20:47:24 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 9749b57e;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1c41ad3d;
         Mon, 15 May 2023 20:47:24 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Simon Horman <simon.horman@corigine.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 4/9] can: CAN_BXCAN should depend on ARCH_STM32
-Date:   Mon, 15 May 2023 22:47:17 +0200
-Message-Id: <20230515204722.1000957-5-mkl@pengutronix.de>
+        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>, stable@vger.kernel.org
+Subject: [PATCH net 1/9] can: isotp: recvmsg(): allow MSG_CMSG_COMPAT flag
+Date:   Mon, 15 May 2023 22:47:14 +0200
+Message-Id: <20230515204722.1000957-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230515204722.1000957-1-mkl@pengutronix.de>
 References: <20230515204722.1000957-1-mkl@pengutronix.de>
@@ -55,35 +54,39 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-The STMicroelectronics STM32 basic extended CAN Controller (bxCAN) is
-only present on STM32 SoCs.  Hence drop the "|| OF" part from its
-dependency rule, to prevent asking the user about this driver when
-configuring a kernel without STM32 SoC support.
+The control message provided by isotp support MSG_CMSG_COMPAT but
+blocked recvmsg() syscalls that have set this flag, i.e. on 32bit user
+space on 64 bit kernels.
 
-Fixes: f00647d8127be4d3 ("can: bxcan: add support for ST bxCAN controller")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Simon Horman <simon.horman@corigine.com>
-Link: https://lore.kernel.org/all/40095112efd1b2214e4223109fd9f0c6d0158a2d.1680609318.git.geert+renesas@glider.be
+Link: https://github.com/hartkopp/can-isotp/issues/59
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Fixes: 42bf50a1795a ("can: isotp: support MSG_TRUNC flag when reading from socket")
+Link: https://lore.kernel.org/20230505110308.81087-2-mkl@pengutronix.de
+Cc: stable@vger.kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/Kconfig | 2 +-
+ net/can/isotp.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-index 3ceccafd701b..b190007c01be 100644
---- a/drivers/net/can/Kconfig
-+++ b/drivers/net/can/Kconfig
-@@ -95,7 +95,7 @@ config CAN_AT91
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index a750259cb79c..84f9aba02901 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -1139,7 +1139,7 @@ static int isotp_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 	struct isotp_sock *so = isotp_sk(sk);
+ 	int ret = 0;
  
- config CAN_BXCAN
- 	tristate "STM32 Basic Extended CAN (bxCAN) devices"
--	depends on OF || ARCH_STM32 || COMPILE_TEST
-+	depends on ARCH_STM32 || COMPILE_TEST
- 	depends on HAS_IOMEM
- 	select CAN_RX_OFFLOAD
- 	help
+-	if (flags & ~(MSG_DONTWAIT | MSG_TRUNC | MSG_PEEK))
++	if (flags & ~(MSG_DONTWAIT | MSG_TRUNC | MSG_PEEK | MSG_CMSG_COMPAT))
+ 		return -EINVAL;
+ 
+ 	if (!so->bound)
+
+base-commit: df0acdc59b094cdaef19b1c8d83c9721082bab7b
 -- 
 2.39.2
 
