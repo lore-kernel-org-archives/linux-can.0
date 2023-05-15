@@ -2,90 +2,86 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C98D5C7EE24
-	for <linux-can@archiver.kernel.org>; Mon, 15 May 2023 20:44:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D024EC7EE24
+	for <linux-can@archiver.kernel.org>; Mon, 15 May 2023 20:47:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231876AbjEOUoH (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 15 May 2023 16:44:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52270 "EHLO
+        id S245294AbjEOUrb (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 15 May 2023 16:47:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbjEOUoG (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 15 May 2023 16:44:06 -0400
-X-Greylist: delayed 450 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 15 May 2023 13:44:05 PDT
-Received: from smtp.smtpout.orange.fr (smtp-28.smtpout.orange.fr [80.12.242.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 54411AD11
-        for <linux-can@vger.kernel.org>; Mon, 15 May 2023 13:44:04 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id yevlpfkLqarguyevlp1xx0; Mon, 15 May 2023 22:36:32 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1684182992;
-        bh=kB1RD+4WplvIWh7fw3+/GdX+k7JLdrHPlj+idk3PIbE=;
-        h=From:To:Cc:Subject:Date;
-        b=J5Pigy85+HmGNs0GS2F6HLphCoLP0S7NibMZAauZTrWNyHEN3RIg+r3U9Tx5qbDZN
-         WcHC3AbzXyYUl8XZhf5yEfgrlcnrfZueGGx8720ABz6C9hwPJFcdpEOmEOqepS1ZNq
-         d5WdVm+YnBxDM7gXZGjCO262mrJAj3waSrA+CTwoQeX/efsXHBwxXOzI13RxaR/FFk
-         5R/zQdFQAQUxuXDmhvksnVscuU6EmcF6e/WWQ25gGsCef1CogVHWdf5bAAioP3bYNY
-         uQ1Kii5ELDl1MiRzL2aOnjW1hY3uItYvfIekuv0K9aN1bA7z/9UaTSoQvPW0waHgj/
-         ezA13kKQFL+sA==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 15 May 2023 22:36:32 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Pavel Pisa <pisa@cmp.felk.cvut.cz>,
-        Ondrej Ille <ondrej.ille@gmail.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Martin Jerabek <martin.jerabek01@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH] can: ctucanfd: Fix an error handling path in ctucan_probe_common()
-Date:   Mon, 15 May 2023 22:36:28 +0200
-Message-Id: <4b78c848826fde1b8a3ccd53f32b80674812cb12.1684182962.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S244704AbjEOUra (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 15 May 2023 16:47:30 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0668986AB
+        for <linux-can@vger.kernel.org>; Mon, 15 May 2023 13:47:30 -0700 (PDT)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1pyf6O-0004kj-8w
+        for linux-can@vger.kernel.org; Mon, 15 May 2023 22:47:28 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id 9B0541C5C2B
+        for <linux-can@vger.kernel.org>; Mon, 15 May 2023 20:47:26 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2D7C11C5C07;
+        Mon, 15 May 2023 20:47:25 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0ea5a96d;
+        Mon, 15 May 2023 20:47:24 +0000 (UTC)
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 3/9] can: dev: fix missing CAN XL support in can_put_echo_skb()
+Date:   Mon, 15 May 2023 22:47:16 +0200
+Message-Id: <20230515204722.1000957-4-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230515204722.1000957-1-mkl@pengutronix.de>
+References: <20230515204722.1000957-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-If register_candev() fails, a previous netif_napi_add() needs to be undone.
-Add the missing netif_napi_del() in the error handling path.
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Fixes: 2dcb8e8782d8 ("can: ctucanfd: add support for CTU CAN FD open-source IP core - bus independent part.")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+can_put_echo_skb() checks for the enabled IFF_ECHO flag and the
+correct ETH_P type of the given skbuff. When implementing the CAN XL
+support the new check for ETH_P_CANXL has been forgotten.
+
+Fixes: fb08cba12b52 ("can: canxl: update CAN infrastructure for CAN XL frames")
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://lore.kernel.org/all/20230506184515.39241-1-socketcan@hartkopp.net
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/ctucanfd/ctucanfd_base.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/can/dev/skb.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/ctucanfd/ctucanfd_base.c b/drivers/net/can/ctucanfd/ctucanfd_base.c
-index 64c349fd4600..59e1708e43d6 100644
---- a/drivers/net/can/ctucanfd/ctucanfd_base.c
-+++ b/drivers/net/can/ctucanfd/ctucanfd_base.c
-@@ -1429,7 +1429,7 @@ int ctucan_probe_common(struct device *dev, void __iomem *addr, int irq, unsigne
- 	ret = register_candev(ndev);
- 	if (ret) {
- 		dev_err(dev, "fail to register failed (err=%d)\n", ret);
--		goto err_deviceoff;
-+		goto err_del_napi;
+diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
+index 241ec636e91f..f6d05b3ef59a 100644
+--- a/drivers/net/can/dev/skb.c
++++ b/drivers/net/can/dev/skb.c
+@@ -54,7 +54,8 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 	/* check flag whether this packet has to be looped back */
+ 	if (!(dev->flags & IFF_ECHO) ||
+ 	    (skb->protocol != htons(ETH_P_CAN) &&
+-	     skb->protocol != htons(ETH_P_CANFD))) {
++	     skb->protocol != htons(ETH_P_CANFD) &&
++	     skb->protocol != htons(ETH_P_CANXL))) {
+ 		kfree_skb(skb);
+ 		return 0;
  	}
- 
- 	pm_runtime_put(dev);
-@@ -1439,6 +1439,8 @@ int ctucan_probe_common(struct device *dev, void __iomem *addr, int irq, unsigne
- 
- 	return 0;
- 
-+err_del_napi:
-+	netif_napi_del(&priv->napi);
- err_deviceoff:
- 	pm_runtime_put(priv->dev);
- err_pmdisable:
 -- 
-2.34.1
+2.39.2
+
 
