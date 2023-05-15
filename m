@@ -2,51 +2,51 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E37FCC7EE26
-	for <linux-can@archiver.kernel.org>; Mon, 15 May 2023 20:58:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E42B2C7EE2E
+	for <linux-can@archiver.kernel.org>; Mon, 15 May 2023 20:58:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244730AbjEOU6m (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 15 May 2023 16:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33300 "EHLO
+        id S243936AbjEOU6o (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 15 May 2023 16:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245250AbjEOU6c (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 15 May 2023 16:58:32 -0400
+        with ESMTP id S245341AbjEOU6h (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 15 May 2023 16:58:37 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 700BD120BB
-        for <linux-can@vger.kernel.org>; Mon, 15 May 2023 13:58:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D98FAD2A
+        for <linux-can@vger.kernel.org>; Mon, 15 May 2023 13:58:16 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pyfGf-0006c8-An
-        for linux-can@vger.kernel.org; Mon, 15 May 2023 22:58:05 +0200
+        id 1pyfGi-0006j0-Ot
+        for linux-can@vger.kernel.org; Mon, 15 May 2023 22:58:08 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 1F8901C5CE1
-        for <linux-can@vger.kernel.org>; Mon, 15 May 2023 20:58:04 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 6336A1C5D16
+        for <linux-can@vger.kernel.org>; Mon, 15 May 2023 20:58:05 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 9AA301C5CB8;
-        Mon, 15 May 2023 20:58:02 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 0C9381C5CC2;
+        Mon, 15 May 2023 20:58:03 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4a5a380d;
-        Mon, 15 May 2023 20:58:01 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7381a132;
+        Mon, 15 May 2023 20:58:02 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>,
+        Simon Horman <simon.horman@corigine.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 03/22] can: c_can: Convert to platform remove callback returning void
-Date:   Mon, 15 May 2023 22:57:40 +0200
-Message-Id: <20230515205759.1003118-4-mkl@pengutronix.de>
+Subject: [PATCH net-next 06/22] can: bxcan: Remove unnecessary print function dev_err()
+Date:   Mon, 15 May 2023 22:57:43 +0200
+Message-Id: <20230515205759.1003118-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230515205759.1003118-1-mkl@pengutronix.de>
 References: <20230515205759.1003118-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -56,58 +56,55 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is ignored (apart from
-emitting a warning) and this typically results in resource leaks. To improve
-here there is a quest to make the remove callback return void. In the first
-step of this quest all drivers are converted to .remove_new() which already
-returns void. Eventually after all drivers are converted, .remove_new() is
-renamed to .remove().
+The print function dev_err() is redundant because
+platform_get_irq_byname() already prints an error.
 
-Trivially convert this driver from always returning zero in the remove
-callback to the void returning variant.
+./drivers/net/can/bxcan.c:970:2-9: line 970 is redundant because platform_get_irq() already prints an error.
+./drivers/net/can/bxcan.c:964:2-9: line 964 is redundant because platform_get_irq() already prints an error.
+./drivers/net/can/bxcan.c:958:2-9: line 958 is redundant because platform_get_irq() already prints an error.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Link: https://lore.kernel.org/r/20230512212725.143824-4-u.kleine-koenig@pengutronix.de
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Link: https://bugzilla.openanolis.cn/show_bug.cgi?id=4878
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
+Link: https://lore.kernel.org/all/20230506080725.68401-1-jiapeng.chong@linux.alibaba.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/c_can/c_can_platform.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/net/can/bxcan.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-index 03ccb7cfacaf..925930b6c4ca 100644
---- a/drivers/net/can/c_can/c_can_platform.c
-+++ b/drivers/net/can/c_can/c_can_platform.c
-@@ -410,7 +410,7 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 	return ret;
- }
+diff --git a/drivers/net/can/bxcan.c b/drivers/net/can/bxcan.c
+index e26ccd41e3cb..7b285eeb08a1 100644
+--- a/drivers/net/can/bxcan.c
++++ b/drivers/net/can/bxcan.c
+@@ -954,22 +954,16 @@ static int bxcan_probe(struct platform_device *pdev)
+ 	}
  
--static int c_can_plat_remove(struct platform_device *pdev)
-+static void c_can_plat_remove(struct platform_device *pdev)
- {
- 	struct net_device *dev = platform_get_drvdata(pdev);
- 	struct c_can_priv *priv = netdev_priv(dev);
-@@ -418,8 +418,6 @@ static int c_can_plat_remove(struct platform_device *pdev)
- 	unregister_c_can_dev(dev);
- 	pm_runtime_disable(priv->device);
- 	free_c_can_dev(dev);
--
--	return 0;
- }
+ 	rx_irq = platform_get_irq_byname(pdev, "rx0");
+-	if (rx_irq < 0) {
+-		dev_err(dev, "failed to get rx0 irq\n");
++	if (rx_irq < 0)
+ 		return rx_irq;
+-	}
  
- #ifdef CONFIG_PM
-@@ -487,7 +485,7 @@ static struct platform_driver c_can_plat_driver = {
- 		.of_match_table = c_can_of_table,
- 	},
- 	.probe = c_can_plat_probe,
--	.remove = c_can_plat_remove,
-+	.remove_new = c_can_plat_remove,
- 	.suspend = c_can_suspend,
- 	.resume = c_can_resume,
- 	.id_table = c_can_id_table,
+ 	tx_irq = platform_get_irq_byname(pdev, "tx");
+-	if (tx_irq < 0) {
+-		dev_err(dev, "failed to get tx irq\n");
++	if (tx_irq < 0)
+ 		return tx_irq;
+-	}
+ 
+ 	sce_irq = platform_get_irq_byname(pdev, "sce");
+-	if (sce_irq < 0) {
+-		dev_err(dev, "failed to get sce irq\n");
++	if (sce_irq < 0)
+ 		return sce_irq;
+-	}
+ 
+ 	ndev = alloc_candev(sizeof(struct bxcan_priv), BXCAN_TX_MB_NUM);
+ 	if (!ndev) {
 -- 
 2.39.2
 
