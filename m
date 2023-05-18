@@ -2,190 +2,143 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88E76C77B7D
-	for <linux-can@archiver.kernel.org>; Thu, 18 May 2023 10:00:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75398C7EE25
+	for <linux-can@archiver.kernel.org>; Thu, 18 May 2023 19:36:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbjERKAI (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 18 May 2023 06:00:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39382 "EHLO
+        id S229626AbjERTgu (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 18 May 2023 15:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbjERKAG (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 18 May 2023 06:00:06 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19884E7B
-        for <linux-can@vger.kernel.org>; Thu, 18 May 2023 03:00:05 -0700 (PDT)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1pzaQU-0001ZA-4G; Thu, 18 May 2023 12:00:02 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 518761C7B79;
-        Thu, 18 May 2023 10:00:01 +0000 (UTC)
-Date:   Thu, 18 May 2023 12:00:00 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Frank Jungclaus <frank.jungclaus@esd.eu>
-Cc:     linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Stefan =?utf-8?B?TcOkdGpl?= <stefan.maetje@esd.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] can: esd_usb: Make use of existing kernel macros
-Message-ID: <20230518-grower-film-ea8b5f853f3e-mkl@pengutronix.de>
-References: <20230517192251.2405290-1-frank.jungclaus@esd.eu>
- <20230517192251.2405290-2-frank.jungclaus@esd.eu>
+        with ESMTP id S229461AbjERTgt (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 18 May 2023 15:36:49 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BC6E0;
+        Thu, 18 May 2023 12:36:46 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 34IJaEx4111046;
+        Thu, 18 May 2023 14:36:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1684438574;
+        bh=WNu+0kk84vY5N1ixcyEihltPbCfUf1wV2gQNQmZvxFA=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=HW7S7nc2iHONnG1rkw8Z7QDdwVSEWUWqWA/kF3nKYxQveAXSxzFNX88HwRpXXT5Od
+         njanJQeLi3vHkWk2QBNBf5rdQf1TQtpssOGDeWFG3E2RYUQwMuI8vv23rA401ZB0ih
+         IF1Z+iSJUuNxxkereGwUZLPXxlkqITMBveoqN64I=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 34IJaEZS103785
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 18 May 2023 14:36:14 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 18
+ May 2023 14:36:13 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 18 May 2023 14:36:13 -0500
+Received: from a0498204.dal.design.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 34IJaDvU053146;
+        Thu, 18 May 2023 14:36:13 -0500
+From:   Judith Mendez <jm@ti.com>
+To:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        <linux-can@vger.kernel.org>
+CC:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Schuyler Patton <spatton@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Conor Dooley <conor+dt@kernel.org>
+Subject: [PATCH v6 1/2] dt-bindings: net: can: Remove interrupt properties for MCAN
+Date:   Thu, 18 May 2023 14:36:12 -0500
+Message-ID: <20230518193613.15185-2-jm@ti.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230518193613.15185-1-jm@ti.com>
+References: <20230518193613.15185-1-jm@ti.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xuxstbtrrmjtjzza"
-Content-Disposition: inline
-In-Reply-To: <20230517192251.2405290-2-frank.jungclaus@esd.eu>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+On AM62x SoC, MCANs on MCU domain do not have hardware interrupt
+routed to A53 Linux, instead they will use software interrupt by
+timer polling.
 
---xuxstbtrrmjtjzza
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+To enable timer polling method, interrupts should be
+optional so remove interrupts property from required section and
+add an example for MCAN node with timer polling enabled.
 
-On 17.05.2023 21:22:46, Frank Jungclaus wrote:
-> As suggested by Vincent Mailhol make use of existing kernel macros:
-> - Use the unit suffixes from linux/units.h for the controller clock
-> frequencies
-> - Use the BIT() macro to set specific bits in some constants
-> - Use CAN_MAX_DLEN (instead of directly using the value 8) for the
-> maximum CAN payload length
->=20
-> Additionally:
-> - Spend some commenting for the previously changed constants
-> - Add the current year to the copyright notice
-> - While adding the header linux/units.h to the list of include files
-> also sort that list alphabetically
->=20
-> Suggested-by: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-> Link: https://lore.kernel.org/all/CAMZ6RqLaDNy-fZ2G0+QMhUEckkXLL+ZyELVSDF=
-mqpd++aBzZQg@mail.gmail.com/
-> Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
-> ---
->  drivers/net/can/usb/esd_usb.c | 38 ++++++++++++++++++-----------------
->  1 file changed, 20 insertions(+), 18 deletions(-)
->=20
-> diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
-> index d33bac3a6c10..042dda98b3db 100644
-> --- a/drivers/net/can/usb/esd_usb.c
-> +++ b/drivers/net/can/usb/esd_usb.c
-> @@ -3,19 +3,20 @@
->   * CAN driver for esd electronics gmbh CAN-USB/2 and CAN-USB/Micro
->   *
->   * Copyright (C) 2010-2012 esd electronic system design gmbh, Matthias F=
-uchs <socketcan@esd.eu>
-> - * Copyright (C) 2022 esd electronics gmbh, Frank Jungclaus <frank.jungc=
-laus@esd.eu>
-> + * Copyright (C) 2022-2023 esd electronics gmbh, Frank Jungclaus <frank.=
-jungclaus@esd.eu>
->   */
-> +#include <linux/can.h>
-> +#include <linux/can/dev.h>
-> +#include <linux/can/error.h>
-> +
->  #include <linux/ethtool.h>
-> -#include <linux/signal.h>
-> -#include <linux/slab.h>
->  #include <linux/module.h>
->  #include <linux/netdevice.h>
-> +#include <linux/signal.h>
-> +#include <linux/slab.h>
-> +#include <linux/units.h>
->  #include <linux/usb.h>
-> =20
-> -#include <linux/can.h>
-> -#include <linux/can/dev.h>
-> -#include <linux/can/error.h>
-> -
->  MODULE_AUTHOR("Matthias Fuchs <socketcan@esd.eu>");
->  MODULE_AUTHOR("Frank Jungclaus <frank.jungclaus@esd.eu>");
->  MODULE_DESCRIPTION("CAN driver for esd electronics gmbh CAN-USB/2 and CA=
-N-USB/Micro interfaces");
-> @@ -27,8 +28,8 @@ MODULE_LICENSE("GPL v2");
->  #define USB_CANUSBM_PRODUCT_ID	0x0011
-> =20
->  /* CAN controller clock frequencies */
-> -#define ESD_USB2_CAN_CLOCK	60000000
-> -#define ESD_USBM_CAN_CLOCK	36000000
-> +#define ESD_USB2_CAN_CLOCK	(60 * MEGA) /* Hz */
-> +#define ESD_USBM_CAN_CLOCK	(36 * MEGA) /* Hz */
-> =20
->  /* Maximum number of CAN nets */
->  #define ESD_USB_MAX_NETS	2
-> @@ -42,20 +43,21 @@ MODULE_LICENSE("GPL v2");
->  #define CMD_IDADD		6 /* also used for IDADD_REPLY */
-> =20
->  /* esd CAN message flags - dlc field */
-> -#define ESD_RTR			0x10
-> +#define ESD_RTR	BIT(4) /* 0x10 */
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Judith Mendez <jm@ti.com>
+---
+Changelog:
+v6:
+   1. No changes
+v5:
+   1. Remove poll-interval
+   2. Remove oneOf that selects interrupts/interrupt-names or poll-interval
+v3:
+   1. Update binding poll-interval description
+   2. Add oneOf to select interrupts/interrupt-names or poll-interval
+v2:
+   1. Add poll-interval property to enable timer polling method
+   2. Add example using poll-interval property
+---
+ .../bindings/net/can/bosch,m_can.yaml         | 20 +++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
-Nitpick, personal style preference, maintainability: For me the hex
-constant is redundant information, and it's not checked by the compiler,
-please remove it.
+diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+index 67879aab623b..bb518c831f7b 100644
+--- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
++++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+@@ -122,8 +122,6 @@ required:
+   - compatible
+   - reg
+   - reg-names
+-  - interrupts
+-  - interrupt-names
+   - clocks
+   - clock-names
+   - bosch,mram-cfg
+@@ -132,6 +130,7 @@ additionalProperties: false
+ 
+ examples:
+   - |
++    // Example with interrupts
+     #include <dt-bindings/clock/imx6sx-clock.h>
+     can@20e8000 {
+       compatible = "bosch,m_can";
+@@ -149,4 +148,21 @@ examples:
+       };
+     };
+ 
++  - |
++    // Example with timer polling
++    #include <dt-bindings/clock/imx6sx-clock.h>
++    can@20e8000 {
++      compatible = "bosch,m_can";
++      reg = <0x020e8000 0x4000>, <0x02298000 0x4000>;
++      reg-names = "m_can", "message_ram";
++      clocks = <&clks IMX6SX_CLK_CANFD>,
++               <&clks IMX6SX_CLK_CANFD>;
++      clock-names = "hclk", "cclk";
++      bosch,mram-cfg = <0x0 0 0 32 0 0 0 1>;
++
++      can-transceiver {
++        max-bitrate = <5000000>;
++      };
++    };
++
+ ...
+-- 
+2.17.1
 
-> +
-> =20
->  /* esd CAN message flags - id field */
-> -#define ESD_EXTID		0x20000000
-> -#define ESD_EVENT		0x40000000
-> -#define ESD_IDMASK		0x1fffffff
-> +#define ESD_EXTID	BIT(29) /* 0x20000000 */
-> +#define ESD_EVENT	BIT(30) /* 0x40000000 */
-> +#define ESD_IDMASK	0x1fffffff
-
-Please use GEN_MASK.
-
-> =20
->  /* esd CAN event ids */
->  #define ESD_EV_CAN_ERROR_EXT	2 /* CAN controller specific diagnostic dat=
-a */
-> =20
->  /* baudrate message flags */
-> -#define ESD_USB_UBR		0x80000000
-> -#define ESD_USB_LOM		0x40000000
-> -#define ESD_USB_NO_BAUDRATE	0x7fffffff
-> +#define ESD_USB_LOM	BIT(30) /* 0x40000000, Listen Only Mode */
-> +#define ESD_USB_UBR	BIT(31) /* 0x80000000, User Bit Rate (controller BTR=
-) in bits 0..27 */
-> +#define ESD_USB_NO_BAUDRATE	0x7fffffff /* bit rate unconfigured */
-
-You might use GEN_MASK here, too.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---xuxstbtrrmjtjzza
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmRl9x0ACgkQvlAcSiqK
-BOg+cAf+KzVa9cmUPggy1Tcco5Isoib0g1IdvOmpg9f/yNn8bvRP7hh3eiwkZD8z
-txb3kHedg4loWwnlGnZtjFebuyRPwOVgRnwDoWvHG6rhJ40YSyPHbcGMXl5e+oht
-iAwx+Fd46Bz5WANelqEcGXmnZBix+pKvVhzCeRwhaksf1nE6YfpUNyHguVqiUXul
-N8LuE+eWcG49PbilEJ7xwBY77S5ymnO7giaG/AbA24XZ3aPBwk1E83wkJWmyXYes
-t7NFLaDm5vlhSoOSjfVi74b9FIL9mBVnBbXOKwfXG/MKAAjzJ12RxcffuggPtXrC
-AYwijWBPDmUCWw42kDiO4X6XBYtekw==
-=lOIs
------END PGP SIGNATURE-----
-
---xuxstbtrrmjtjzza--
