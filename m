@@ -2,44 +2,47 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B55D2C7EE2D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C16EC7EE24
 	for <linux-can@archiver.kernel.org>; Thu, 18 May 2023 07:33:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbjERHdS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 18 May 2023 03:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60580 "EHLO
+        id S230117AbjERHdR (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 18 May 2023 03:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230129AbjERHdN (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 18 May 2023 03:33:13 -0400
+        with ESMTP id S230130AbjERHdO (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 18 May 2023 03:33:14 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6006126AA
-        for <linux-can@vger.kernel.org>; Thu, 18 May 2023 00:32:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8982D53
+        for <linux-can@vger.kernel.org>; Thu, 18 May 2023 00:32:52 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1pzY7x-0000zl-O7
-        for linux-can@vger.kernel.org; Thu, 18 May 2023 09:32:45 +0200
+        id 1pzY7y-00010o-Uc
+        for linux-can@vger.kernel.org; Thu, 18 May 2023 09:32:47 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 93B9B1C7A0F
-        for <linux-can@vger.kernel.org>; Thu, 18 May 2023 07:32:44 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 6263A1C7A21
+        for <linux-can@vger.kernel.org>; Thu, 18 May 2023 07:32:45 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 859FC1C79F8;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id DC3C91C79FE;
         Thu, 18 May 2023 07:32:43 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id bdffd252;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 39fb9037;
         Thu, 18 May 2023 07:32:42 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net 0/7] pull-request: can 2023-05-18
-Date:   Thu, 18 May 2023 09:32:34 +0200
-Message-Id: <20230518073241.1110453-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, Jimmy Assarsson <extja@kvaser.com>,
+        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 3/7] can: kvaser_pciefd: Call request_irq() before enabling interrupts
+Date:   Thu, 18 May 2023 09:32:37 +0200
+Message-Id: <20230518073241.1110453-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230518073241.1110453-1-mkl@pengutronix.de>
+References: <20230518073241.1110453-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
@@ -50,51 +53,48 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello netdev-team,
+From: Jimmy Assarsson <extja@kvaser.com>
 
-this is a pull request of 7 patches for net/master.
+Make sure the interrupt handler is registered before enabling interrupts.
 
-The first 6 patches are by Jimmy Assarsson and fix several bugs in the
-kvaser_pciefd driver.
-
-The latest patch is from me and reverts a change in stm32f746.dtsi
-that causes build errors due to a missing dependent patch.
-
-regards,
-Marc
-
+Fixes: 26ad340e582d ("can: kvaser_pciefd: Add driver for Kvaser PCIEcan devices")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
+Link: https://lore.kernel.org/r/20230516134318.104279-4-extja@kvaser.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/kvaser_pciefd.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-The following changes since commit 6ad85ed0ebf7ece0f376950a6b3b3c6048093d35:
-
-  Merge tag 'ipsec-2023-05-16' of git://git.kernel.org/pub/scm/linux/kernel/git/klassert/ipsec (2023-05-16 20:52:35 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-6.4-20230518
-
-for you to fetch changes up to 36a6418bb125944838b91a33eddca4064a5eb610:
-
-  Revert "ARM: dts: stm32: add CAN support on stm32f746" (2023-05-17 20:20:12 +0200)
-
-----------------------------------------------------------------
-linux-can-fixes-for-6.4-20230518
-
-----------------------------------------------------------------
-Jimmy Assarsson (6):
-      can: kvaser_pciefd: Set CAN_STATE_STOPPED in kvaser_pciefd_stop()
-      can: kvaser_pciefd: Clear listen-only bit if not explicitly requested
-      can: kvaser_pciefd: Call request_irq() before enabling interrupts
-      can: kvaser_pciefd: Empty SRB buffer in probe
-      can: kvaser_pciefd: Do not send EFLUSH command on TFD interrupt
-      can: kvaser_pciefd: Disable interrupts in probe error path
-
-Marc Kleine-Budde (2):
-      Merge patch series "can: kvaser_pciefd: Bug fixes"
-      Revert "ARM: dts: stm32: add CAN support on stm32f746"
-
- arch/arm/boot/dts/stm32f746.dtsi | 47 ------------------------------------
- drivers/net/can/kvaser_pciefd.c  | 51 +++++++++++++++++++++++-----------------
- 2 files changed, 29 insertions(+), 69 deletions(-)
+diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
+index cdc894d12885..4b8591d48735 100644
+--- a/drivers/net/can/kvaser_pciefd.c
++++ b/drivers/net/can/kvaser_pciefd.c
+@@ -1827,6 +1827,11 @@ static int kvaser_pciefd_probe(struct pci_dev *pdev,
+ 	if (err)
+ 		goto err_teardown_can_ctrls;
+ 
++	err = request_irq(pcie->pci->irq, kvaser_pciefd_irq_handler,
++			  IRQF_SHARED, KVASER_PCIEFD_DRV_NAME, pcie);
++	if (err)
++		goto err_teardown_can_ctrls;
++
+ 	iowrite32(KVASER_PCIEFD_SRB_IRQ_DPD0 | KVASER_PCIEFD_SRB_IRQ_DPD1,
+ 		  pcie->reg_base + KVASER_PCIEFD_SRB_IRQ_REG);
+ 
+@@ -1847,11 +1852,6 @@ static int kvaser_pciefd_probe(struct pci_dev *pdev,
+ 	iowrite32(KVASER_PCIEFD_SRB_CMD_RDB1,
+ 		  pcie->reg_base + KVASER_PCIEFD_SRB_CMD_REG);
+ 
+-	err = request_irq(pcie->pci->irq, kvaser_pciefd_irq_handler,
+-			  IRQF_SHARED, KVASER_PCIEFD_DRV_NAME, pcie);
+-	if (err)
+-		goto err_teardown_can_ctrls;
+-
+ 	err = kvaser_pciefd_reg_candev(pcie);
+ 	if (err)
+ 		goto err_free_irq;
+-- 
+2.39.2
 
 
