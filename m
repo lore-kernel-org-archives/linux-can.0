@@ -2,93 +2,123 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5874AC7EE23
-	for <linux-can@archiver.kernel.org>; Thu, 18 May 2023 07:10:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F963C77B7D
+	for <linux-can@archiver.kernel.org>; Thu, 18 May 2023 07:33:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbjERHKw (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 18 May 2023 03:10:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52324 "EHLO
+        id S230088AbjERHdQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 18 May 2023 03:33:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbjERHKv (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 18 May 2023 03:10:51 -0400
-Received: from smtp.smtpout.orange.fr (smtp-13.smtpout.orange.fr [80.12.242.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926E01718
-        for <linux-can@vger.kernel.org>; Thu, 18 May 2023 00:10:46 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id zXmapJCyDEQ0YzXmbpoAuZ; Thu, 18 May 2023 09:10:44 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1684393844;
-        bh=F+zInelYRTBn1Bc3nl++TZglWSkvYGCgphkwfxYXGUI=;
-        h=From:To:Cc:Subject:Date;
-        b=jj5h5i+UBg8mXjxtMytCz3rOb/3ZuplCgQI7Qtmube/kc/QQnYDVSVNeRw4htK//5
-         JtCtXmMUqbJq96EQ2dpuiOHjg3Is7ZG3zDKWOUrK+ko4kGTcuDsrPINQ6qhP5Q0q70
-         yCn5VgPnQDvFvZ/NgNCMuopUozdGtPGJWiSWC+634Ft55qDtM1WNMC+fpjx/BEnGQ/
-         GTzk4kULOfnMzjSEIk14pCoEN08qbs9IO0TWBuIvrauEetjnYGh36xT/pXmczco7lV
-         6obaf4B7UzFX1Vln9AD8XW0fvSx3pgLG21OZTLdYyeIWjG0M4m4dIHHhdVnU2JUzOb
-         AkY+DDx1mDgkA==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 18 May 2023 09:10:44 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Pavel Pisa <pisa@cmp.felk.cvut.cz>,
-        Ondrej Ille <ondrej.ille@gmail.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH] can: ctucanfd: Remove a useless netif_napi_del() call
-Date:   Thu, 18 May 2023 09:10:39 +0200
-Message-Id: <58500052a6740806e8af199ece45e97cb5eeb1b8.1684393811.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S230117AbjERHdN (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 18 May 2023 03:33:13 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979D3213E
+        for <linux-can@vger.kernel.org>; Thu, 18 May 2023 00:32:50 -0700 (PDT)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1pzY7y-00010r-Pd
+        for linux-can@vger.kernel.org; Thu, 18 May 2023 09:32:46 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id 808731C7A24
+        for <linux-can@vger.kernel.org>; Thu, 18 May 2023 07:32:45 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 0ED3B1C7A01;
+        Thu, 18 May 2023 07:32:44 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 01b74c09;
+        Thu, 18 May 2023 07:32:42 +0000 (UTC)
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de, Jimmy Assarsson <extja@kvaser.com>,
+        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 4/7] can: kvaser_pciefd: Empty SRB buffer in probe
+Date:   Thu, 18 May 2023 09:32:38 +0200
+Message-Id: <20230518073241.1110453-5-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230518073241.1110453-1-mkl@pengutronix.de>
+References: <20230518073241.1110453-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-free_candev() already calls netif_napi_del(), so there is no need to call
-it explicitly. It is harmless, but useless.
+From: Jimmy Assarsson <extja@kvaser.com>
 
-This makes the code mode consistent with the error handling path of
-ctucan_probe_common().
+Empty the "Shared receive buffer" (SRB) in probe, to assure we start in a
+known state, and don't process any irrelevant packets.
 
-While at it, remove a wrong comment about the return value of this
-function.
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Fixes: 26ad340e582d ("can: kvaser_pciefd: Add driver for Kvaser PCIEcan devices")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
+Link: https://lore.kernel.org/r/20230516134318.104279-5-extja@kvaser.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
-The comment went wrong after 45413bf75919 ("can: ctucanfd: Convert to platform remove callback returning void")
----
- drivers/net/can/ctucanfd/ctucanfd_platform.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/can/kvaser_pciefd.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/drivers/net/can/ctucanfd/ctucanfd_platform.c b/drivers/net/can/ctucanfd/ctucanfd_platform.c
-index 55bb10b157b4..8fe224b8dac0 100644
---- a/drivers/net/can/ctucanfd/ctucanfd_platform.c
-+++ b/drivers/net/can/ctucanfd/ctucanfd_platform.c
-@@ -84,7 +84,6 @@ static int ctucan_platform_probe(struct platform_device *pdev)
-  * @pdev:	Handle to the platform device structure
-  *
-  * This function frees all the resources allocated to the device.
-- * Return: 0 always
-  */
- static void ctucan_platform_remove(struct platform_device *pdev)
+diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
+index 4b8591d48735..0e03c1cd47b3 100644
+--- a/drivers/net/can/kvaser_pciefd.c
++++ b/drivers/net/can/kvaser_pciefd.c
+@@ -71,10 +71,12 @@ MODULE_DESCRIPTION("CAN driver for Kvaser CAN/PCIe devices");
+ #define KVASER_PCIEFD_SYSID_BUILD_REG (KVASER_PCIEFD_SYSID_BASE + 0x14)
+ /* Shared receive buffer registers */
+ #define KVASER_PCIEFD_SRB_BASE 0x1f200
++#define KVASER_PCIEFD_SRB_FIFO_LAST_REG (KVASER_PCIEFD_SRB_BASE + 0x1f4)
+ #define KVASER_PCIEFD_SRB_CMD_REG (KVASER_PCIEFD_SRB_BASE + 0x200)
+ #define KVASER_PCIEFD_SRB_IEN_REG (KVASER_PCIEFD_SRB_BASE + 0x204)
+ #define KVASER_PCIEFD_SRB_IRQ_REG (KVASER_PCIEFD_SRB_BASE + 0x20c)
+ #define KVASER_PCIEFD_SRB_STAT_REG (KVASER_PCIEFD_SRB_BASE + 0x210)
++#define KVASER_PCIEFD_SRB_RX_NR_PACKETS_REG (KVASER_PCIEFD_SRB_BASE + 0x214)
+ #define KVASER_PCIEFD_SRB_CTRL_REG (KVASER_PCIEFD_SRB_BASE + 0x218)
+ /* EPCS flash controller registers */
+ #define KVASER_PCIEFD_SPI_BASE 0x1fc00
+@@ -111,6 +113,9 @@ MODULE_DESCRIPTION("CAN driver for Kvaser CAN/PCIe devices");
+ /* DMA support */
+ #define KVASER_PCIEFD_SRB_STAT_DMA BIT(24)
+ 
++/* SRB current packet level */
++#define KVASER_PCIEFD_SRB_RX_NR_PACKETS_MASK 0xff
++
+ /* DMA Enable */
+ #define KVASER_PCIEFD_SRB_CTRL_DMA_ENABLE BIT(0)
+ 
+@@ -1061,6 +1066,7 @@ static int kvaser_pciefd_setup_dma(struct kvaser_pciefd *pcie)
  {
-@@ -95,7 +94,6 @@ static void ctucan_platform_remove(struct platform_device *pdev)
+ 	int i;
+ 	u32 srb_status;
++	u32 srb_packet_count;
+ 	dma_addr_t dma_addr[KVASER_PCIEFD_DMA_COUNT];
  
- 	unregister_candev(ndev);
- 	pm_runtime_disable(&pdev->dev);
--	netif_napi_del(&priv->napi);
- 	free_candev(ndev);
- }
+ 	/* Disable the DMA */
+@@ -1088,6 +1094,15 @@ static int kvaser_pciefd_setup_dma(struct kvaser_pciefd *pcie)
+ 		  KVASER_PCIEFD_SRB_CMD_RDB1,
+ 		  pcie->reg_base + KVASER_PCIEFD_SRB_CMD_REG);
  
++	/* Empty Rx FIFO */
++	srb_packet_count = ioread32(pcie->reg_base + KVASER_PCIEFD_SRB_RX_NR_PACKETS_REG) &
++			   KVASER_PCIEFD_SRB_RX_NR_PACKETS_MASK;
++	while (srb_packet_count) {
++		/* Drop current packet in FIFO */
++		ioread32(pcie->reg_base + KVASER_PCIEFD_SRB_FIFO_LAST_REG);
++		srb_packet_count--;
++	}
++
+ 	srb_status = ioread32(pcie->reg_base + KVASER_PCIEFD_SRB_STAT_REG);
+ 	if (!(srb_status & KVASER_PCIEFD_SRB_STAT_DI)) {
+ 		dev_err(&pcie->pci->dev, "DMA not idle before enabling\n");
 -- 
-2.34.1
+2.39.2
+
 
