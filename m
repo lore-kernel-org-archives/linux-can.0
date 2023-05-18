@@ -2,150 +2,148 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A6D4C7EE2F
-	for <linux-can@archiver.kernel.org>; Thu, 18 May 2023 07:33:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C962C77B7D
+	for <linux-can@archiver.kernel.org>; Thu, 18 May 2023 07:50:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229966AbjERHdW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 18 May 2023 03:33:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60702 "EHLO
+        id S229804AbjERHuC (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 18 May 2023 03:50:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbjERHdU (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 18 May 2023 03:33:20 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22CC930DE
-        for <linux-can@vger.kernel.org>; Thu, 18 May 2023 00:33:02 -0700 (PDT)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1pzY80-000159-QY
-        for linux-can@vger.kernel.org; Thu, 18 May 2023 09:32:48 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id E17341C7A41
-        for <linux-can@vger.kernel.org>; Thu, 18 May 2023 07:32:47 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7325F1C7A0C;
-        Thu, 18 May 2023 07:32:44 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c7629806;
-        Thu, 18 May 2023 07:32:43 +0000 (UTC)
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        kernel test robot <lkp@intel.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH net 7/7] Revert "ARM: dts: stm32: add CAN support on stm32f746"
-Date:   Thu, 18 May 2023 09:32:41 +0200
-Message-Id: <20230518073241.1110453-8-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230518073241.1110453-1-mkl@pengutronix.de>
-References: <20230518073241.1110453-1-mkl@pengutronix.de>
+        with ESMTP id S229582AbjERHuB (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 18 May 2023 03:50:01 -0400
+Received: from mx-8.mail.web4u.cz (smtp7.web4u.cz [81.91.87.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0310B2690;
+        Thu, 18 May 2023 00:49:59 -0700 (PDT)
+Received: from mx-8.mail.web4u.cz (localhost [IPv6:::1])
+        by mx-8.mail.web4u.cz (Postfix) with ESMTP id 7630C1FF4E0;
+        Thu, 18 May 2023 09:32:39 +0200 (CEST)
+Received: from baree.pikron.com (unknown [89.103.131.245])
+        (Authenticated sender: ppisa@pikron.com)
+        by mx-8.mail.web4u.cz (Postfix) with ESMTPA id 2D4981FF4D8;
+        Thu, 18 May 2023 09:32:39 +0200 (CEST)
+From:   Pavel Pisa <pisa@cmp.felk.cvut.cz>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH] can: ctucanfd: Remove a useless netif_napi_del() call
+Date:   Thu, 18 May 2023 09:32:38 +0200
+User-Agent: KMail/1.9.10
+Cc:     Ondrej Ille <ondrej.ille@gmail.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "Marc Kleine-Budde" <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <58500052a6740806e8af199ece45e97cb5eeb1b8.1684393811.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <58500052a6740806e8af199ece45e97cb5eeb1b8.1684393811.git.christophe.jaillet@wanadoo.fr>
+X-KMail-QuotePrefix: > 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <202305180932.38815.pisa@cmp.felk.cvut.cz>
+X-W4U-Auth: 59c178831a6430d3fd87e564e9d84dd1bf4afcea
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This reverts commit 0920ccdf41e3078a4dd2567eb905ea154bc826e6.
+Dear Christophe,
 
-The commit 0920ccdf41e3 ("ARM: dts: stm32: add CAN support on
-stm32f746") depends on the patch "dt-bindings: mfd: stm32f7: add
-binding definition for CAN3" [1], which is not in net/main, yet. This
-results in a parsing error of "stm32f746.dtsi".
+On Thursday 18 of May 2023 09:10:39 Christophe JAILLET wrote:
+> free_candev() already calls netif_napi_del(), so there is no need to call
+> it explicitly. It is harmless, but useless.
+>
+> This makes the code mode consistent with the error handling path of
+> ctucan_probe_common().
 
-So revert this commit.
+OK, but I would suggest to consider to keep sequence in sync with
 
-[1] https://lore.kernel.org/all/20230423172528.1398158-2-dario.binacchi@amarulasolutions.com
+linux/drivers/net/can/ctucanfd/ctucanfd_pci.c
 
-Cc: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Cc: Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202305172108.x5acbaQG-lkp@intel.com
-Closes: https://lore.kernel.org/oe-kbuild-all/202305172130.eGGEUhpi-lkp@intel.com
-Fixes: 0920ccdf41e3 ("ARM: dts: stm32: add CAN support on stm32f746")
-Suggested-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Link: https://lore.kernel.org/20230517181950.1106697-1-mkl@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- arch/arm/boot/dts/stm32f746.dtsi | 47 --------------------------------
- 1 file changed, 47 deletions(-)
+where is netif_napi_del() used as well
 
-diff --git a/arch/arm/boot/dts/stm32f746.dtsi b/arch/arm/boot/dts/stm32f746.dtsi
-index 973698bc9ef4..dc868e6da40e 100644
---- a/arch/arm/boot/dts/stm32f746.dtsi
-+++ b/arch/arm/boot/dts/stm32f746.dtsi
-@@ -257,23 +257,6 @@ rtc: rtc@40002800 {
- 			status = "disabled";
- 		};
- 
--		can3: can@40003400 {
--			compatible = "st,stm32f4-bxcan";
--			reg = <0x40003400 0x200>;
--			interrupts = <104>, <105>, <106>, <107>;
--			interrupt-names = "tx", "rx0", "rx1", "sce";
--			resets = <&rcc STM32F7_APB1_RESET(CAN3)>;
--			clocks = <&rcc 0 STM32F7_APB1_CLOCK(CAN3)>;
--			st,gcan = <&gcan3>;
--			status = "disabled";
--		};
--
--		gcan3: gcan@40003600 {
--			compatible = "st,stm32f4-gcan", "syscon";
--			reg = <0x40003600 0x200>;
--			clocks = <&rcc 0 STM32F7_APB1_CLOCK(CAN3)>;
--		};
--
- 		usart2: serial@40004400 {
- 			compatible = "st,stm32f7-uart";
- 			reg = <0x40004400 0x400>;
-@@ -354,36 +337,6 @@ i2c4: i2c@40006000 {
- 			status = "disabled";
- 		};
- 
--		can1: can@40006400 {
--			compatible = "st,stm32f4-bxcan";
--			reg = <0x40006400 0x200>;
--			interrupts = <19>, <20>, <21>, <22>;
--			interrupt-names = "tx", "rx0", "rx1", "sce";
--			resets = <&rcc STM32F7_APB1_RESET(CAN1)>;
--			clocks = <&rcc 0 STM32F7_APB1_CLOCK(CAN1)>;
--			st,can-primary;
--			st,gcan = <&gcan1>;
--			status = "disabled";
--		};
--
--		gcan1: gcan@40006600 {
--			compatible = "st,stm32f4-gcan", "syscon";
--			reg = <0x40006600 0x200>;
--			clocks = <&rcc 0 STM32F7_APB1_CLOCK(CAN1)>;
--		};
--
--		can2: can@40006800 {
--			compatible = "st,stm32f4-bxcan";
--			reg = <0x40006800 0x200>;
--			interrupts = <63>, <64>, <65>, <66>;
--			interrupt-names = "tx", "rx0", "rx1", "sce";
--			resets = <&rcc STM32F7_APB1_RESET(CAN2)>;
--			clocks = <&rcc 0 STM32F7_APB1_CLOCK(CAN2)>;
--			st,can-secondary;
--			st,gcan = <&gcan1>;
--			status = "disabled";
--		};
--
- 		cec: cec@40006c00 {
- 			compatible = "st,stm32-cec";
- 			reg = <0x40006C00 0x400>;
--- 
-2.39.2
+        while ((priv = list_first_entry_or_null(&bdata->ndev_list_head, struct ctucan_priv,
+                                                peers_on_pdev)) != NULL) {
+                ndev = priv->can.dev;
 
+                unregister_candev(ndev);
 
+                netif_napi_del(&priv->napi);
+
+                list_del_init(&priv->peers_on_pdev);
+                free_candev(ndev);
+        }
+
+On the other hand, if interrupt can be called for device between
+unregister_candev() and free_candev() or some other callback
+which is prevented by netif_napi_del() now then I would consider
+to keep explicit netif_napi_del() to ensure that no callback
+is activated to driver there. And for PCI integration it is more
+critical because list_del_init(&priv->peers_on_pdev); appears in
+between and I would prefer that no interrupt appears when instance
+is not on the peers list anymore. Even that would not be a problem
+for actual CTU CAN FD implementation, peers are accessed only during
+physical device remove, but I have worked on other controllers
+in past, which required to coordinate with peers in interrupt
+handling...
+
+So I would be happy for some feedback what is actual guarantee
+when device is stopped.
+
+May it be that it would be even more robust to run removal
+with two loop where the first one calls unregister_candev()
+and netif_napi_del() and only the second one removes from peers
+and call free_candev()... But I am not sure there and it is not
+problem in actual driver because peers are not used in any
+other place...
+
+> While at it, remove a wrong comment about the return value of this
+> function.
+
+OK, this has been caused probably by prototype change.
+
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> The comment went wrong after 45413bf75919 ("can: ctucanfd: Convert to
+> platform remove callback returning void") ---
+>  drivers/net/can/ctucanfd/ctucanfd_platform.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/net/can/ctucanfd/ctucanfd_platform.c
+> b/drivers/net/can/ctucanfd/ctucanfd_platform.c index
+> 55bb10b157b4..8fe224b8dac0 100644
+> --- a/drivers/net/can/ctucanfd/ctucanfd_platform.c
+> +++ b/drivers/net/can/ctucanfd/ctucanfd_platform.c
+> @@ -84,7 +84,6 @@ static int ctucan_platform_probe(struct platform_device
+> *pdev) * @pdev:	Handle to the platform device structure
+>   *
+>   * This function frees all the resources allocated to the device.
+> - * Return: 0 always
+>   */
+>  static void ctucan_platform_remove(struct platform_device *pdev)
+>  {
+> @@ -95,7 +94,6 @@ static void ctucan_platform_remove(struct platform_device
+> *pdev)
+>
+>  	unregister_candev(ndev);
+>  	pm_runtime_disable(&pdev->dev);
+> -	netif_napi_del(&priv->napi);
+>  	free_candev(ndev);
+>  }
+
+Best wishes,
+
+                Pavel Pisa
+    phone:      +420 603531357
+    e-mail:     pisa@cmp.felk.cvut.cz
+    Department of Control Engineering FEE CVUT
+    Karlovo namesti 13, 121 35, Prague 2
+    university: http://control.fel.cvut.cz/
+    personal:   http://cmp.felk.cvut.cz/~pisa
+    projects:   https://www.openhub.net/accounts/ppisa
+    CAN related:http://canbus.pages.fel.cvut.cz/
+    RISC-V education: https://comparch.edu.cvut.cz/
+    Open Technologies Research Education and Exchange Services
+    https://gitlab.fel.cvut.cz/otrees/org/-/wikis/home
