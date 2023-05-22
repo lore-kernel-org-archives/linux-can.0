@@ -2,47 +2,48 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB932C7EE2A
-	for <linux-can@archiver.kernel.org>; Mon, 22 May 2023 08:20:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8564C7EE2D
+	for <linux-can@archiver.kernel.org>; Mon, 22 May 2023 08:20:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbjEVIUB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 22 May 2023 04:20:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52120 "EHLO
+        id S232216AbjEVIUC (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 22 May 2023 04:20:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231781AbjEVIT4 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 22 May 2023 04:19:56 -0400
+        with ESMTP id S232174AbjEVIT6 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 22 May 2023 04:19:58 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4616AB7
-        for <linux-can@vger.kernel.org>; Mon, 22 May 2023 01:19:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6065C1
+        for <linux-can@vger.kernel.org>; Mon, 22 May 2023 01:19:56 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1q10lk-0000SI-GG; Mon, 22 May 2023 10:19:52 +0200
+        id 1q10lk-0000SJ-Ab; Mon, 22 May 2023 10:19:52 +0200
 Received: from pengutronix.de (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
         (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id C88EC1C9683;
-        Mon, 22 May 2023 08:03:15 +0000 (UTC)
-Date:   Mon, 22 May 2023 10:03:15 +0200
+        by smtp.blackshift.org (Postfix) with ESMTPSA id CD25A1C96BD;
+        Mon, 22 May 2023 08:19:30 +0000 (UTC)
+Date:   Mon, 22 May 2023 10:19:30 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     Marcel Hellwig <git@cookiesoft.de>,
-        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
-        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        Marcel Hellwig <mhellwig@mut-group.com>
-Subject: Re: [PATCH] can: dev: add transceiver capabilities to xilinx_can
-Message-ID: <20230522-untainted-saga-f05e02fdb66d-mkl@pengutronix.de>
-References: <20230417085204.179268-1-git@cookiesoft.de>
- <CAMZ6RqJqwyJQ17EJd0eV_8tbsC5b16nbuQj3uD38BeRzSdPc3Q@mail.gmail.com>
+Cc:     Frank Jungclaus <frank.jungclaus@esd.eu>,
+        linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
+        Stefan =?utf-8?B?TcOkdGpl?= <stefan.maetje@esd.eu>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] can: esd_usb: Replace initializer macros used for
+ struct can_bittiming_const
+Message-ID: <20230522-tattling-drum-b02b6c6bf76a-mkl@pengutronix.de>
+References: <20230519195600.420644-1-frank.jungclaus@esd.eu>
+ <20230519195600.420644-3-frank.jungclaus@esd.eu>
+ <CAMZ6RqL-2qB=kLPd84rWHd3=xPcspSNXvNYpR9Fyx+4-Ft16gQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xtzwnswlwv7ehunt"
+        protocol="application/pgp-signature"; boundary="iqguu65hudcmyit7"
 Content-Disposition: inline
-In-Reply-To: <CAMZ6RqJqwyJQ17EJd0eV_8tbsC5b16nbuQj3uD38BeRzSdPc3Q@mail.gmail.com>
+In-Reply-To: <CAMZ6RqL-2qB=kLPd84rWHd3=xPcspSNXvNYpR9Fyx+4-Ft16gQ@mail.gmail.com>
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -52,76 +53,102 @@ List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
 
---xtzwnswlwv7ehunt
+--iqguu65hudcmyit7
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On 22.05.2023 16:58:02, Vincent MAILHOL wrote:
-> Hi Marcel,
+On 21.05.2023 18:16:17, Vincent MAILHOL wrote:
+> Thanks for the patch.
 >=20
-> Style check only (I am not yet familiar enough with the devicetree).
->=20
-> On Mon. 17 Apr. 2023 at 18:01, Marcel Hellwig <git@cookiesoft.de> wrote:
-> > Currently the xilinx_can driver does not support adding a phy like the
-> > "ti,tcan1043" to its devicetree.
+> On Sat. 20 May 2023 at 04:57, Frank Jungclaus <frank.jungclaus@esd.eu> wr=
+ote:
+> > Replace the macros used to initialize the members of struct
+> > can_bittiming_const with direct values. Then also use those struct
+> > members to do the calculations in esd_usb2_set_bittiming().
 > >
-> > This code makes it possible to add such phy, so that the kernel makes
-> > sure that the PHY is in operational state, when the link is set to an
-> > "up" state.
-> >
-> > Signed-off-by: Marcel Hellwig <git@cookiesoft.de>
+> > Link: https://lore.kernel.org/all/CAMZ6RqLaDNy-fZ2G0+QMhUEckkXLL+ZyELVS=
+DFmqpd++aBzZQg@mail.gmail.com/
+> > Suggested-by: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+> > Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
 > > ---
-> >  drivers/net/can/xilinx_can.c | 20 ++++++++++++++++++++
-> >  1 file changed, 20 insertions(+)
+> >  drivers/net/can/usb/esd_usb.c | 33 +++++++++++++--------------------
+> >  1 file changed, 13 insertions(+), 20 deletions(-)
 > >
-> > diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-> > index 43c812ea1de0..6a5b805d579a 100644
-> > --- a/drivers/net/can/xilinx_can.c
-> > +++ b/drivers/net/can/xilinx_can.c
-> > @@ -28,6 +28,7 @@
-> >  #include <linux/types.h>
-> >  #include <linux/can/dev.h>
-> >  #include <linux/can/error.h>
-> > +#include <linux/phy/phy.h>
-> >  #include <linux/pm_runtime.h>
+> > diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_us=
+b.c
+> > index 32354cfdf151..2eecf352ec47 100644
+> > --- a/drivers/net/can/usb/esd_usb.c
+> > +++ b/drivers/net/can/usb/esd_usb.c
+> > @@ -60,18 +60,10 @@ MODULE_LICENSE("GPL v2");
+> >  #define ESD_USB_NO_BAUDRATE    GENMASK(30, 0) /* bit rate unconfigured=
+ */
 > >
-> >  #define DRIVER_NAME    "xilinx_can"
-> > @@ -215,6 +216,7 @@ struct xcan_priv {
-> >         struct clk *bus_clk;
-> >         struct clk *can_clk;
-> >         struct xcan_devtype_data devtype;
-> > +       struct phy *transceiver;
+> >  /* bit timing CAN-USB/2 */
+> > -#define ESD_USB2_TSEG1_MIN     1
+> > -#define ESD_USB2_TSEG1_MAX     16
+> >  #define ESD_USB2_TSEG1_SHIFT   16
+> > -#define ESD_USB2_TSEG2_MIN     1
+> > -#define ESD_USB2_TSEG2_MAX     8
+> >  #define ESD_USB2_TSEG2_SHIFT   20
+> > -#define ESD_USB2_SJW_MAX       4
+> >  #define ESD_USB2_SJW_SHIFT     14
+> >  #define ESD_USBM_SJW_SHIFT     24
+> > -#define ESD_USB2_BRP_MIN       1
+> > -#define ESD_USB2_BRP_MAX       1024
+> > -#define ESD_USB2_BRP_INC       1
+> >  #define ESD_USB2_3_SAMPLES     BIT(23)
+> >
+> >  /* esd IDADD message */
+> > @@ -909,19 +901,20 @@ static const struct ethtool_ops esd_usb_ethtool_o=
+ps =3D {
+> >
+> >  static const struct can_bittiming_const esd_usb2_bittiming_const =3D {
+> >         .name =3D "esd_usb2",
+> > -       .tseg1_min =3D ESD_USB2_TSEG1_MIN,
+> > -       .tseg1_max =3D ESD_USB2_TSEG1_MAX,
+> > -       .tseg2_min =3D ESD_USB2_TSEG2_MIN,
+> > -       .tseg2_max =3D ESD_USB2_TSEG2_MAX,
+> > -       .sjw_max =3D ESD_USB2_SJW_MAX,
+> > -       .brp_min =3D ESD_USB2_BRP_MIN,
+> > -       .brp_max =3D ESD_USB2_BRP_MAX,
+> > -       .brp_inc =3D ESD_USB2_BRP_INC,
+> > +       .tseg1_min =3D 1,
+> > +       .tseg1_max =3D 16,
+> > +       .tseg2_min =3D 1,
+> > +       .tseg2_max =3D 8,
+> > +       .sjw_max =3D 4,
+> > +       .brp_min =3D 1,
+> > +       .brp_max =3D 1024,
+> > +       .brp_inc =3D 1,
 > >  };
 > >
-> >  /* CAN Bittiming constants as per Xilinx CAN specs */
-> > @@ -1419,6 +1421,12 @@ static int xcan_open(struct net_device *ndev)
-> >         struct xcan_priv *priv =3D netdev_priv(ndev);
-> >         int ret;
-> >
-> > +       ret =3D phy_power_on(priv->transceiver);
-> > +       if (ret) {
-> > +               netdev_err(ndev, "%s: phy_power_on failed(%d)\n", __fun=
-c__, ret);
+> >  static int esd_usb2_set_bittiming(struct net_device *netdev)
+> >  {
+> >         struct esd_usb_net_priv *priv =3D netdev_priv(netdev);
+> > +       const struct can_bittiming_const *btc =3D priv->can.bittiming_c=
+onst;
 >=20
-> From the Linux kernel coding style:
+> I initially suggested doing:
 >=20
->   Printing numbers in parentheses (%d) adds no value and should be avoide=
-d.
->   Link: https://www.kernel.org/doc/html/latest/process/coding-style.html#=
-printing-kernel-messages
+>           const struct can_bittiming_const *btc =3D priv->can.bittiming_c=
+onst;
 >=20
-> Also consider %pe to print the mnemotechnic instead of the value:
+> But now that I think again about it, doing:
 >=20
->           netdev_err(ndev, "%s: phy_power_on failed: %pe\n", __func__,
-> ERR_PTR(ret));
+>           const struct can_bittiming_const *btc =3D &esd_usb2_bittiming_c=
+onst;
+>=20
+> is slightly better as it will allow the compiler to fold the integer
+> constant expressions such as btc->brp_max - 1. The compiler is not
+> smart enough to figure out what values are held in
+> priv->can.bittiming_const at compile time.
+>=20
+> Sorry for not figuring this the first time.
 
-Good point. phy_power_on() already writes an error message:
+Good suggestion! Fixed up while applying.
 
-| https://elixir.bootlin.com/linux/v6.3/source/drivers/phy/phy-core.c#L343
-
-I'll remove that from this patch.
-
+regards,
 Marc
 
 --=20
@@ -130,19 +157,19 @@ Embedded Linux                   | https://www.pengutronix.de |
 Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
---xtzwnswlwv7ehunt
+--iqguu65hudcmyit7
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmRrIcAACgkQvlAcSiqK
-BOjYLwf/SG2j6BDvXxyQC+bCI+t+OEDE2yVufB50HwcC45cY/1cWvMaSf5QBECqt
-M2+a6gygc9xb9FIA24kHsUu6QARbkc80czOYelkdpF8fYIAJnVS4L7gsyUrMmWj1
-hV50zZzS2iKnyyvbqzjwXnLeJ7/N9s4BMwp4cNGGYy19aa0rSbK1zxwFoYXtsujE
-AQMOzbAi79hyYLHl+hwMb58maqVlLk14yGLcKR5J+ckC6tXG7V+9JV4jOFH1hW3Z
-Sk2lVSiMPNTnMTJLsmiG12qtlnTE9wtnaPXBH0+0KXV2llPTNuS7YP+ANBZBfohq
-jXEZnQGrJmCAGohRTf4VqkvVJ8gsBA==
-=TZLP
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmRrJY8ACgkQvlAcSiqK
+BOhHzQgArh8iOdOn4ECwgOQWxo5eUoe+7PZz9/bi4lsZwzKr3ynbouweNyHdCMdi
+e5FbdEIxkNsQHdQCE4momJ0lfW4PBvl8T75SWxWixN2KJqdtcg4YmCCFRPSsL/jN
+JXzWqxnW169wnJkQ7FxStSLX5DQJLxMevJiraGOz9dBAhboFDOMWmBJag+DBfmrL
+jBa91bLKvIb4ezOFbwxlt1qqkE7bHuDLTh2jHPkZ/xCD8mt3CYhVzCC7DS3N/+s1
+kYeFTyxDC0rW9Z/N+VRXPby5476KGo75uhNAhhGV5IzrDr0EKoMAueNxUSv0Er12
+UyYWHBeEOMPqjpycKeM3wn44fbqp/w==
+=LL8L
 -----END PGP SIGNATURE-----
 
---xtzwnswlwv7ehunt--
+--iqguu65hudcmyit7--
