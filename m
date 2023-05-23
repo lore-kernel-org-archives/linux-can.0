@@ -2,124 +2,132 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C29F5C77B75
-	for <linux-can@archiver.kernel.org>; Tue, 23 May 2023 06:52:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 366DCC7EE2D
+	for <linux-can@archiver.kernel.org>; Tue, 23 May 2023 06:53:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232450AbjEWGw5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 23 May 2023 02:52:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46516 "EHLO
+        id S232326AbjEWGw7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 23 May 2023 02:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232326AbjEWGwy (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 23 May 2023 02:52:54 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2E7119;
-        Mon, 22 May 2023 23:52:53 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1ae3f6e5d70so63934965ad.1;
-        Mon, 22 May 2023 23:52:53 -0700 (PDT)
+        with ESMTP id S232057AbjEWGw6 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 23 May 2023 02:52:58 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FD1119;
+        Mon, 22 May 2023 23:52:57 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-64d57cd373fso1833828b3a.1;
+        Mon, 22 May 2023 23:52:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684824772; x=1687416772;
+        d=gmail.com; s=20221208; t=1684824777; x=1687416777;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cLZF78elZ5fywU4ggbjiempk1JzD13372+eqZZhE/fU=;
-        b=cvJWnD2kQdi+LzN7svo4PxJAY0WHhqoM1vavUUyyvgSQ0zxkR2VaeRau9lZ7eAETjj
-         jpr2M/pq/TOy6wFQp3z7yb6fnggo0sjdyFj8NValhSO6IAwv4ETYXKBdq14kCLErbIjY
-         TTVit5ylXO7J7CCF2LH4e/LpbiP0Fx0rkvG0sD/wtDkhMeawL5WAGcXo20qYzakPfKEr
-         lIgR0qQ8lCkl4WiM7pAal35Oy+fD5pqfYzZgVCSu///crm4XZRKKrZEP4JE7U5Qv6IR3
-         4ZYP9fJH9kslLQ/nSWrSvyHhlGAT3egX/Cfs8h7AfIhmx2tG8DVhvyKOEyllu3zK5hYa
-         jE1g==
+        bh=zpK9eA/3lj+tjk28hEidhkgrs72aVJBKWP37x7Y8nRU=;
+        b=jxSF1xNrMXLa2fxm1HVUxgI+vnvNGjGG11M8uSAyHpciiyZxguwmmwPhAqXAIuX7Al
+         AXQfvAgbkmHVEAFeY69CvN4nFCfMfBSVVaE8o7GQscOHPMZCzjApSWdQfuMQbMgF/qJS
+         Tz5Cdrc5SW94sdDyhA4kFzIqI9pRQ1GP6g8RrPNMTAoNT0LmH9R+DE72NrSG6oB55itw
+         UlXLmZbvB/x3WwJMG5AprzGcrl5rnCtv89xqTAirRoyxh4jy5NZMKtdnZbbIFBjfPc0t
+         1BYEY8ju8QuR6wfNOt1agDFKlRo653+KePKZ6eDtgpd+6+DVWqyr0H5/nB03nfWd6dnO
+         /Twg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684824772; x=1687416772;
+        d=1e100.net; s=20221208; t=1684824777; x=1687416777;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=cLZF78elZ5fywU4ggbjiempk1JzD13372+eqZZhE/fU=;
-        b=iLliyB31PZ3UxneTXs5yknlMmfze9QVHVE07ehRBfwByBHV2eobrM/mG3hVOrr9AWa
-         evKPt9I8IVGbq7xQsu27PXkNIQehgY25P1zyAwfhAor2SCb0auCJrLsenzAU2r9GFUUl
-         oHGvejP4cezp43z+wKrDpYVh7WceuFy6JMVckfN/nXgPQveok717Z1ItqjjhKzgORdIC
-         SK1XSBryN9Zi/i/htVbCw83FOFenowGe44Z5PlsDNyuI9arXbTyz98dcnYrQDYPPQuXe
-         Ivop+B79XYhks/7eBcWXBv5dLtLqVuGIpm2b53sHHyhKwA9y4nPMOfAbKpDmQH/n47TX
-         iuOw==
-X-Gm-Message-State: AC+VfDzR6Z73HNOinlDUeMBFmWgAno8XnenD5pMiqbAuG1jIydOnkZ+k
-        meyBiPnOQY8Vd3Paa+alob4=
-X-Google-Smtp-Source: ACHHUZ6QQekh2zqaE63vIhPpBu0Tktbw+k/ntY3lepRohD8A7cdvGkll8SHqFD4mVlxiMBiYFpwPsA==
-X-Received: by 2002:a17:902:6b8c:b0:1af:bae0:6bed with SMTP id p12-20020a1709026b8c00b001afbae06bedmr3240770plk.56.1684824772460;
-        Mon, 22 May 2023 23:52:52 -0700 (PDT)
+        bh=zpK9eA/3lj+tjk28hEidhkgrs72aVJBKWP37x7Y8nRU=;
+        b=QzKjcIsbBm0WI14+y73Cz8QZExeDEx0X2DG2xHDrOJPqD0Pt5pgMM/MUd+V5FA8d5i
+         BeGpTsfS82krUS4YLPWwMECuDoMobdGNp+qzqWjaHRA1QAFLsqed5o6dcyvdLbmYWEcS
+         lHsbJxXFTzAJ42sIWHowNloHTBUjzQu6CUqcbXzXPjwcOk5wFLSvFmK2FpEuSYNqEM+N
+         S/k2rpuYqOfh6EDpZp7dGhZNXuBPGO6LDmIzYfsX11rhQMN4Xuv/w/Dstz1iTScINlq7
+         GX1bAlR0C38M29Q+WLtsg3ohyHo7P2019qJY5su2q9IcfFBr2id0vNx9ztlmHjFY1/a1
+         5upQ==
+X-Gm-Message-State: AC+VfDzkrvnd1MBaHCNOBrPR6lO9LBN2GQVcvq5sZfj+eR0swalZlOKO
+        JyX6t70V9RRDl/Plc9nu3lU=
+X-Google-Smtp-Source: ACHHUZ5OxZKCKXwKZUZsVbNCwhiHNClCKuTWkPqsjWpXlN1aK1d5YNXWHwIALY/HIiTRg9XVvYnMoQ==
+X-Received: by 2002:a17:902:ecc8:b0:1ab:1260:19de with SMTP id a8-20020a170902ecc800b001ab126019demr15771034plh.11.1684824776960;
+        Mon, 22 May 2023 23:52:56 -0700 (PDT)
 Received: from XH22050090-L.ad.ts.tri-ad.global ([103.175.111.222])
-        by smtp.gmail.com with ESMTPSA id d10-20020a170902ceca00b001aafa2e212esm5963920plg.52.2023.05.22.23.52.50
+        by smtp.gmail.com with ESMTPSA id d10-20020a170902ceca00b001aafa2e212esm5963920plg.52.2023.05.22.23.52.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 May 2023 23:52:52 -0700 (PDT)
+        Mon, 22 May 2023 23:52:56 -0700 (PDT)
 Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
 From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
         Thomas.Kopp@microchip.com
 Cc:     Oliver Hartkopp <socketcan@hartkopp.net>, netdev@vger.kernel.org,
         marex@denx.de, Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v2 0/3] can: length: fix definitions and add bit length calculation
-Date:   Tue, 23 May 2023 15:52:15 +0900
-Message-Id: <20230523065218.51227-1-mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v2 2/3] can: length: fix description of the RRS field
+Date:   Tue, 23 May 2023 15:52:17 +0900
+Message-Id: <20230523065218.51227-3-mailhol.vincent@wanadoo.fr>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230507155506.3179711-1-mailhol.vincent@wanadoo.fr>
+In-Reply-To: <20230523065218.51227-1-mailhol.vincent@wanadoo.fr>
 References: <20230507155506.3179711-1-mailhol.vincent@wanadoo.fr>
+ <20230523065218.51227-1-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-When created in [1], frames length definitions were added to implement
-byte queue limits (bql). Because bql expects lengths in bytes, bit
-length definitions were not considered back then.
-    
-Recently, a need to refer to the exact frame length in bits, with CAN
-bit stuffing, appeared in [2].
+The CAN-FD frames only have one reserved bit. The bit corresponding to
+Classical CAN frame's RTR bit is called the "Remote Request
+Substitution (RRS)" [1].
 
-This series introduces can_frame_bits(): an inline function that can
-calculate the exact size of a CAN(-FD) frame in bits with or without
-bitsuffing.
+N.B. The RRS is not to be confused with the Substitute remote request
+(SRR).
 
-The review of v1, pointed out a few discrepancies of the current
-length definitions. This series got extended to fix those
-discrepancies.
+Fix the description in the CANFD_FRAME_OVERHEAD_SFF/EFF.
 
-[1] commit 85d99c3e2a13 ("can: length: can_skb_get_frame_len(): introduce
-    function to get data length of frame in data link layer")
-Link: https://git.kernel.org/torvalds/c/85d99c3e2a13
+The total remains unchange, so this is just a documentation fix.
 
-[2] RE: [PATCH] can: mcp251xfd: Increase poll timeout
-Link: https://lore.kernel.org/linux-can/BL3PR11MB64846C83ACD04E9330B0FE66FB729@BL3PR11MB6484.namprd11.prod.outlook.com/
+In addition to the above add myself as copyright owner for 2020 (as
+coauthor of the initial version, c.f. Fixes tag).
 
+[1] ISO 11898-1:2015 paragraph 10.4.2.3 "Arbitration field":
 
-* Changelog *
+  RSS bit [only in FD Frames]
 
-v1 -> v2:
+    The RRS bit shall be transmitted in fD Frames at the position of
+    the RTR bit in Classical Frames. The RRS bit shall be transmitted
+    dominant, but receivers shall accept recessive and dominant RRS
+    bits.
 
-  * as suggested by Thomas Kopp, add a new patch to the series to fix
-    the stuff bit count and the fixed stuff bits definitions
+Fixes: 85d99c3e2a13 ("can: length: can_skb_get_frame_len(): introduce function to get data length of frame in data link layer")
+Suggested-by: Thomas Kopp <Thomas.Kopp@microchip.com>
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+---
+ include/linux/can/length.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-  * and another patch to fix documentation of the Remote Request
-    Substitution (RRS).
-
-  * refactor the length definition. Instead of using individual macro,
-    rely on an inline function. One reason is to minimize the number
-    of definitions. An other reason is that because the dynamic bit
-    stuff is calculated differently for CAN and CAN-FD, it is just not
-    possible to multiply the existing CANFD_FRAME_OVERHEAD_SFF/EFF by
-    the overhead ratio to get the bitsuffing: for CAN-FD, the CRC
-    field is already stuffed by the fix stuff bits and is out of scope
-    of the dynamic bitstuffing.
-
-Link: https://lore.kernel.org/linux-can/20230507155506.3179711-1-mailhol.vincent@wanadoo.fr/T/#u
-
-Vincent Mailhol (3):
-  can: length: fix bitstuffing count
-  can: length: fix description of the RRS field
-  can: length: refactor frame lengths definition to add size in bits
-
- drivers/net/can/dev/length.c |  15 +-
- include/linux/can/length.h   | 323 +++++++++++++++++++++++++----------
- 2 files changed, 238 insertions(+), 100 deletions(-)
-
+diff --git a/include/linux/can/length.h b/include/linux/can/length.h
+index b8c12c83bc51..521fdbce2d69 100644
+--- a/include/linux/can/length.h
++++ b/include/linux/can/length.h
+@@ -1,6 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ /* Copyright (C) 2020 Oliver Hartkopp <socketcan@hartkopp.net>
+  * Copyright (C) 2020 Marc Kleine-Budde <kernel@pengutronix.de>
++ * Copyright (C) 2020 Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+  */
+ 
+ #ifndef _CAN_LENGTH_H
+@@ -64,7 +65,7 @@
+  * ---------------------------------------------------------
+  * Start-of-frame			1
+  * Identifier				11
+- * Reserved bit (r1)			1
++ * Remote Request Substitution (RRS)	1
+  * Identifier extension bit (IDE)	1
+  * Flexible data rate format (FDF)	1
+  * Reserved bit (r0)			1
+@@ -95,7 +96,7 @@
+  * Substitute remote request (SRR)	1
+  * Identifier extension bit (IDE)	1
+  * Identifier B				18
+- * Reserved bit (r1)			1
++ * Remote Request Substitution (RRS)	1
+  * Flexible data rate format (FDF)	1
+  * Reserved bit (r0)			1
+  * Bit Rate Switch (BRS)		1
 -- 
 2.25.1
 
