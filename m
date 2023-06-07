@@ -2,37 +2,45 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8210C7EE2F
-	for <linux-can@archiver.kernel.org>; Wed,  7 Jun 2023 17:51:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84628C7EE25
+	for <linux-can@archiver.kernel.org>; Wed,  7 Jun 2023 23:03:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232317AbjFGRvV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 7 Jun 2023 13:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
+        id S232401AbjFGXDW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 7 Jun 2023 19:03:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbjFGRvU (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 7 Jun 2023 13:51:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 207E41FC2;
-        Wed,  7 Jun 2023 10:51:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A994164247;
-        Wed,  7 Jun 2023 17:51:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4F26C433EF;
-        Wed,  7 Jun 2023 17:51:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686160279;
-        bh=ntiLTYcguWXdxyRVd95QDYdTgdqGqLgcSnpXeyhTLIA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VMIyp3sPP3MH59VYsFFpl5YuH4ki5veZ2kAVMFJLMyQ/yoQYDjc0CeDPpRs5KHWsz
-         9rCJ4u5LJ4xI4gaOFblTwnmrKNpIeQuJP6p/yQjyccP/P7r5vpy0k3oQ3hVNkf7oaa
-         NTxUWKhlONJsi7dHmTBqKXKfUYhBFQTGPMnJDjvheI7XAgc6oAJ/rXOFtL+P8epmR7
-         iER/mANVMc8QMs35lHlg80bmV4q7hi7JxbNsseTju9sbLgGUsZHMPqX366LURzMolu
-         xURY7x3z8tEiw+61WBrd21zD+t3CIB2jRghx3caAnd0nRr3uTSNSzONzLiuq0xunj9
-         CGE0H4WVkrVzA==
-Date:   Wed, 7 Jun 2023 18:51:13 +0100
-From:   Conor Dooley <conor@kernel.org>
+        with ESMTP id S230424AbjFGXDV (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 7 Jun 2023 19:03:21 -0400
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBCEE11A;
+        Wed,  7 Jun 2023 16:03:20 -0700 (PDT)
+Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-777ac791935so168662439f.2;
+        Wed, 07 Jun 2023 16:03:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686179000; x=1688771000;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TJmr8d4vIXjlqQuoPxUVCbEDrAJO2WI0A5hbY1xFW/M=;
+        b=kXMrhL34QMF89+khf1u9l+LXp92L7z3HhRhRltTxsutnEcZNt5Fu9/XP3knE5xbrA5
+         bZ5zcLfXWCplPjb2z+OY0XFTlUg7utAC0m6em9a6ZiGaiBwpnWFhG+tTV3MsOldmIZBe
+         wqdXPLiLhlAU/nkL6kDNe580UipqH9SnIzz+4NBpGBqk5JD22UJpdrYWX8vup7Ha8fI3
+         NCvC0+m/KC4Ol8dr/CChrbSuREhMUOFKOz6bH3Lq0xK19TY/UO/7z+hXn/F48cKQ+sSE
+         hBQcXeNI/Pml2LWh4g2CRQMm5divklX/o6ArnXr6wyIXDkW6FAKsQHexF/dBbsR9qI2p
+         R52w==
+X-Gm-Message-State: AC+VfDxoy7ojdZ3gP5HTuQx/Olvj9g+PBUukBkt6ZL/IkfUtk4NCQiWL
+        dcoyIjUnChvrcy7xS13c3g==
+X-Google-Smtp-Source: ACHHUZ44anLflGzxROAwGHEtAG2uexfjuAvsT+mvkm2zNj8Yil495qpTVuBzwUiFga9s18d4NWvDVA==
+X-Received: by 2002:a6b:e614:0:b0:760:f795:ccdf with SMTP id g20-20020a6be614000000b00760f795ccdfmr5743972ioh.8.1686179000100;
+        Wed, 07 Jun 2023 16:03:20 -0700 (PDT)
+Received: from robh_at_kernel.org ([64.188.179.250])
+        by smtp.gmail.com with ESMTPSA id z25-20020a6b0a19000000b00760f256037dsm2289652ioi.44.2023.06.07.16.03.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jun 2023 16:03:19 -0700 (PDT)
+Received: (nullmailer pid 150871 invoked by uid 1000);
+        Wed, 07 Jun 2023 23:03:15 -0000
+Date:   Wed, 7 Jun 2023 17:03:15 -0600
+From:   Rob Herring <robh@kernel.org>
 To:     Leonard =?iso-8859-1?Q?G=F6hrs?= <l.goehrs@pengutronix.de>
 Cc:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
         Wolfgang Grandegger <wg@grandegger.com>,
@@ -41,52 +49,52 @@ Cc:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>, kernel@pengutronix.de,
-        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>, linux-can@vger.kernel.org,
         netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v1 4/8] dt-bindings: can: m_can: add
  termination-{gpios,ohms} properties
-Message-ID: <20230607-squire-anointer-762f08b27d3d@spud>
+Message-ID: <20230607230315.GA141591-robh@kernel.org>
 References: <20230607115508.2964574-1-l.goehrs@pengutronix.de>
  <20230607115508.2964574-4-l.goehrs@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="WZNfJtvOS3jfTXvT"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 In-Reply-To: <20230607115508.2964574-4-l.goehrs@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-
---WZNfJtvOS3jfTXvT
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Jun 07, 2023 at 01:55:03PM +0200, Leonard G=F6hrs wrote:
+On Wed, Jun 07, 2023 at 01:55:03PM +0200, Leonard Göhrs wrote:
 > The termination-gpios property allows specifying a GPIO pin that
 > enables/disables a termination resistor on said CAN interface.
 > The termination-ohms property specifies the resistance of said resistor.
->=20
-> Signed-off-by: Leonard G=F6hrs <l.goehrs@pengutronix.de>
+> 
+> Signed-off-by: Leonard Göhrs <l.goehrs@pengutronix.de>
+> ---
+>  Documentation/devicetree/bindings/net/can/bosch,m_can.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+> index 67879aab623b5..106c79fa560c3 100644
+> --- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+> +++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+> @@ -118,6 +118,9 @@ properties:
+>    phys:
+>      maxItems: 1
+>  
+> +  termination-gpios: true
+> +  termination-ohms: true
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+All you should need here is change additionalProperties to 
+unevaluatedProperties as these are defined by can-controller.yaml.
 
-Cheers,
-Conor.
-
---WZNfJtvOS3jfTXvT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZIDDkQAKCRB4tDGHoIJi
-0oEuAPwJc1/Z8ftPtfOnY/Sgc8KPdSdKO5wwVToMZDYksPiTwQD/a6uwG0LRepdo
-X/Vv1J3qe8cz0FCk2a5oY/eJnZ+Rcg0=
-=tfPj
------END PGP SIGNATURE-----
-
---WZNfJtvOS3jfTXvT--
+> +
+>  required:
+>    - compatible
+>    - reg
+> -- 
+> 2.39.2
+> 
