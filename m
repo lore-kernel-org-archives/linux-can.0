@@ -2,210 +2,96 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA61AEB64D9
-	for <linux-can@archiver.kernel.org>; Thu, 15 Jun 2023 09:58:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55C7DEB64DD
+	for <linux-can@archiver.kernel.org>; Thu, 15 Jun 2023 12:05:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238214AbjFOJ6T (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 15 Jun 2023 05:58:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53866 "EHLO
+        id S231298AbjFOMFU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 15 Jun 2023 08:05:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240283AbjFOJ6S (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 15 Jun 2023 05:58:18 -0400
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C4ED1FDB;
-        Thu, 15 Jun 2023 02:58:16 -0700 (PDT)
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1b517ee9157so3081945ad.3;
-        Thu, 15 Jun 2023 02:58:16 -0700 (PDT)
+        with ESMTP id S1344768AbjFOMEx (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 15 Jun 2023 08:04:53 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6563B2976;
+        Thu, 15 Jun 2023 05:02:51 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6658b869cf2so523696b3a.1;
+        Thu, 15 Jun 2023 05:02:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686830571; x=1689422571;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gtR5yyjqqOCcg96T40YDoUHPwlla3NqWVuy2D+ZwTIk=;
+        b=PhKz+v5RhdIZi9p3VwAdDvXQV5oRpln5h3H1OahPU9aPdUTrEDtHRZrQWyeNYkXDhQ
+         FW+GtnP5O4PQNfU7c2r1RSfrUsxyPAFnXmWW+HL0psVqM9niZcIAYtfP5rNoVRk4TNtA
+         1NnBSz0msntQ5g15c8mgesTGUDLTiopufKHo2jgbtnZjCRPcD+iOvpo8B+0YrVBPdzWj
+         V6etC3SrridTxb50fjzgznPI1RZxiKP3A1hIX+EKYTB6Bt9/Y3G7ccRoUuVtM96MUFXV
+         6fVkLBvdMEcOMh5w/qxg0mEj74/3VJSzLpmSzJwEZRtZMgrRkG82ll5H7pqgycrPVgbi
+         FGqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686823096; x=1689415096;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=//1nqNY65Oj9cRjVXCMigOTuSDy4ibT25fqZRbusfJc=;
-        b=BB5q9MdtwCRUT5T5+PwwjLSZyYzDVGEcwpff1E8awnC+Pxsns1rYMtfX+PlNisHMCX
-         R9GBjz1QH44waIdZGLmXKS47V7hAWZGo8bTONG0Nqee/rx0AJWMJnbGTHCLaARi56bvu
-         z0hvNAlbQpQXLL8Zk7zBgYpKoqPZvKU88ykn6354azGQgQF/NXIc+QldR/5C96hlc/Bb
-         KfARq03siodybJMJQ5AFIBojEzOd8at/V7QySKQB6hSUdbFJp3CjHV7uWQYmQHalfGGO
-         opAWPGMeEeelPFF1SEfGvo233d+lj8AnH5RvXtrBWKnPsZCRW1D398zBPzaO1V77I45f
-         68Yg==
-X-Gm-Message-State: AC+VfDwVzH/7Wyg/9O0LoN8NuuADI+cMcUcP5kY927ejQskGboXEY/Lb
-        MKJC2bnBWKWVHZBRiuZNSvquPLdUCfpnI8CbpHo=
-X-Google-Smtp-Source: ACHHUZ7W9cAAI27g+9TLkuwB+IooIIWUEnWJOIa17tJaPX+uJTmj10PyWRum4nzlnV8maFyi7HhLNYe3CjfjzuDGYPc=
-X-Received: by 2002:a17:90a:2b49:b0:253:971b:dd1e with SMTP id
- y9-20020a17090a2b4900b00253971bdd1emr3486539pjc.0.1686823095856; Thu, 15 Jun
- 2023 02:58:15 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1686830571; x=1689422571;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gtR5yyjqqOCcg96T40YDoUHPwlla3NqWVuy2D+ZwTIk=;
+        b=F28zpCSHpiY2uM3giO6LZc8uI6Cd4+EaLF8P/M6IgbYHQNk5DBMTXqVp+Cu6Kwwg0d
+         eObX21EWKLvJaSvDTrXb1JdPqjaqwQ8kS4M6iTM4QIWyk9CnNXPUKNC9FBP+pSP13lQL
+         BZ2lWXp9wGPnsRrPF8J4j+WelmV04zFDXQpBPnMzRnFtSMLt+MGHuHhnMnm6IGJpFeH1
+         5p2QADfOvG7A22LSGb0KZtfBsCsSL4KLghI6yUmeI006XC8t6QmIkeSIphL1gfnkDRfE
+         pYr6GtUOhbdSJFyYe4vX08inlxDrjDbih/gWjGuM1k2A2DzFFjvQXi5I8hzaQZDac/QL
+         C0VQ==
+X-Gm-Message-State: AC+VfDzm1jJhc6RtJC8bZQjyWBNJ5FDqPD1SIR02vRa+hDOfWNyNeXkM
+        z7Q4AW2yN9HUUVXzCxVSzbfy4eljVX9E16hXfR0=
+X-Google-Smtp-Source: ACHHUZ6+VxPro345cAyYns3wxBIQ8MkoqAQ7K0joSqII6JtVpNSXaEzuVfrY/vlsvBIaTx3vOplxpbmmOMkf991aJKQ=
+X-Received: by 2002:a17:90b:3614:b0:253:25c3:7a95 with SMTP id
+ ml20-20020a17090b361400b0025325c37a95mr5822610pjb.14.1686830570764; Thu, 15
+ Jun 2023 05:02:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <PAVPR10MB7209CEA1F5AD12B2E5C8ED86B15AA@PAVPR10MB7209.EURPRD10.PROD.OUTLOOK.COM>
- <ZIrC6DpjjtmpIsI9@corigine.com>
-In-Reply-To: <ZIrC6DpjjtmpIsI9@corigine.com>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Thu, 15 Jun 2023 18:58:04 +0900
-Message-ID: <CAMZ6RqKzkEL+zfNyqn_f46K_h3_cX-BwGQJb8X5hH-vms0P=cw@mail.gmail.com>
-Subject: Re: [PATCH v5 1/3] can: length: fix bitstuffing count
-To:     Simon Horman <simon.horman@corigine.com>,
-        HMS Incident Management <incidentmanagement@hms.se>
-Cc:     "mkl@pengutronix.de" <mkl@pengutronix.de>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        "Thomas.Kopp@microchip.com" <Thomas.Kopp@microchip.com>,
-        "socketcan@hartkopp.net" <socketcan@hartkopp.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "marex@denx.de" <marex@denx.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20230530224820.303619-1-jm@ti.com> <20230530224820.303619-3-jm@ti.com>
+In-Reply-To: <20230530224820.303619-3-jm@ti.com>
+From:   Hiago Franco <hiagofranco@gmail.com>
+Date:   Thu, 15 Jun 2023 14:02:39 +0200
+Message-ID: <CAK4Znzk_9-nsEW16-ue4sSapixTn3UCPqKkj7iBX+Q_GKLUjoQ@mail.gmail.com>
+Subject: Re: [PATCH v8 2/2] can: m_can: Add hrtimer to generate software interrupt
+To:     Judith Mendez <jm@ti.com>
+Cc:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Schuyler Patton <spatton@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Simon Horman <simon.horman@corigine.com>,
+        Conor Dooley <conor+dt@linaro.org>,
+        Tony Lindgren <tony@atomide.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Thu. 15 Jun. 2023 at 17:03, Simon Horman <simon.horman@corigine.com> wrote:
-> On Wed, Jun 14, 2023 at 08:40:42PM +0000, HMS Incident Management wrote:
-> > [You don't often get email from incidentmanagement@hms.se. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
-> >
-> > **We apologize for the delay in delivering this email, which was caused by a mail incident that occurred over the weekend on June 10th. This email was originally sent from vincent.mailhol@gmail.com on 06/11/2023 02:58:08
-> >
-> > The Stuff Bit Count is always coded on 4 bits [1]. Update the Stuff
-> > Bit Count size accordingly.
-> >
-> > In addition, the CRC fields of CAN FD Frames contain stuff bits at
-> > fixed positions called fixed stuff bits [2]. The CRC field starts with
-> > a fixed stuff bit and then has another fixed stuff bit after each
-> > fourth bit [2], which allows us to derive this formula:
-> >
-> >   FSB count = 1 + round_down(len(CRC field)/4)
-> >
-> > The length of the CRC field is [1]:
-> >
-> >   len(CRC field) = len(Stuff Bit Count) + len(CRC)
-> >                  = 4 + len(CRC)
-> >
-> > with len(CRC) either 17 or 21 bits depending of the payload length.
-> >
-> > In conclusion, for CRC17:
-> >
-> >   FSB count = 1 + round_down((4 + 17)/4)
-> >             = 6
-> >
-> > and for CRC 21:
-> >
-> >   FSB count = 1 + round_down((4 + 21)/4)
-> >             = 7
-> >
-> > Add a Fixed Stuff bits (FSB) field with above values and update
-> > CANFD_FRAME_OVERHEAD_SFF and CANFD_FRAME_OVERHEAD_EFF accordingly.
-> >
-> > [1] ISO 11898-1:2015 section 10.4.2.6 "CRC field":
-> >
-> >   The CRC field shall contain the CRC sequence followed by a recessive
-> >   CRC delimiter. For FD Frames, the CRC field shall also contain the
-> >   stuff count.
-> >
-> >   Stuff count
-> >
-> >   If FD Frames, the stuff count shall be at the beginning of the CRC
-> >   field. It shall consist of the stuff bit count modulo 8 in a 3-bit
-> >   gray code followed by a parity bit [...]
-> >
-> > [2] ISO 11898-1:2015 paragraph 10.5 "Frame coding":
-> >
-> >   In the CRC field of FD Frames, the stuff bits shall be inserted at
-> >   fixed positions; they are called fixed stuff bits. There shall be a
-> >   fixed stuff bit before the first bit of the stuff count, even if the
-> >   last bits of the preceding field are a sequence of five consecutive
-> >   bits of identical value, there shall be only the fixed stuff bit,
-> >   there shall not be two consecutive stuff bits. A further fixed stuff
-> >   bit shall be inserted after each fourth bit of the CRC field [...]
-> >
-> > Fixes: 85d99c3e2a13 ("can: length: can_skb_get_frame_len(): introduce function to get data length of frame in data link layer")
-> > Suggested-by: Thomas Kopp
-> > Signed-off-by: Vincent Mailhol
-> > Reviewed-by: Thomas Kopp
+On Wed, May 31, 2023 at 12:51=E2=80=AFAM Judith Mendez <jm@ti.com> wrote:
 >
-> Hi,
+> Introduce timer polling method to MCAN since some SoCs may not
+> have M_CAN interrupt routed to A53 Linux and do not have
+> interrupt property in device tree M_CAN node.
 >
-> Some feedback from my side, in the hope that it is useful.
+> On AM62x SoC, MCANs on MCU domain do not have hardware interrupt
+> routed to A53 Linux, instead they will use timer polling method.
 >
-> I guess this patch-set has had a bit of a journey, email-wise.
-> Unfortunately on it's trip the email addresses for the tags above got lost,
-> which by itself leads me to think it should be resent.
+> Add an hrtimer to MCAN class device. Each MCAN will have its own
+> hrtimer instantiated if there is no hardware interrupt found in
+> device tree M_CAN node. The timer will generate a software
+> interrupt every 1 ms. In hrtimer callback, we check if there is
+> a transaction pending by reading a register, then process by
+> calling the isr if there is.
+>
+> Signed-off-by: Judith Mendez <jm@ti.com>
 
-I can see Thomas's email in the To: field.
-
-> Also, I think it would be best if the From address of the email
-> was from a human, who features in the Signed-off-by tags of the patches.
-> But perhaps this is also an artifact of the journey.
-
-Yes, the original message had a correct From: tag. As far as I can
-see, only that From: tag was lost. The other To: and CC: fields seem
-correct.
-
-Also, the original message correctly reached the CAN mailing list with
-all the good tags.
-
-  https://lore.kernel.org/linux-can/20230611025728.450837-1-mailhol.vincent@wanadoo.fr/
-
-> It is also unclear to me where this applies - f.e. it doesn't
-> apply to the main branch of linux-can-next.
-
-I tested it right now, the original series apply well. The one you
-received was redacted and indeed does not apply. For example, this:
-
-  diff --git a/include/linux/can/length.h b/include/linux/can/length.h
-  index b8c12c83bc51..521fdbce2d69 100644
-  --- a/include/linux/can/length.h
-  +++ b/include/linux/can/length.h
-  @@ -1,6 +1,7 @@
-   /* SPDX-License-Identifier: GPL-2.0 */
-   /* Copyright (C) 2020 Oliver Hartkopp <socketcan@hartkopp.net>
-    * Copyright (C) 2020 Marc Kleine-Budde <kernel@pengutronix.de>
-  + * Copyright (C) 2020 Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-    */
-
-   #ifndef _CAN_LENGTH_H
-
-became that:
-
-  diff --git a/include/linux/can/length.h b/include/linux/can/length.h
-  index b8c12c83bc51..521fdbce2d69 100644
-  --- a/include/linux/can/length.h
-  +++ b/include/linux/can/length.h
-  @@ -1,6 +1,7 @@
-   /* SPDX-License-Identifier: GPL-2.0 */
-   /* Copyright (C) 2020 Oliver Hartkopp
-    * Copyright (C) 2020 Marc Kleine-Budde
-  + * Copyright (C) 2020 Vincent Mailhol
-    */
-
-   #ifndef _CAN_LENGTH_H
-
-(note the missing e-mail address).
-
-@HMS incident management team, maybe this is something you should fix.
-
-> Lastly, I'm not a CAN maintainer. But I think it's usual to separate
-> fixes and enhancements into different series, likely the former
-> targeting the can tree while the latter targets the can-next tree
-> (I could be way off here).
-
-Hmm... The fact is that only the first two patches are fixes. The
-third one is not.  The fixes being really minor, there is no urgency.
-So I was thinking of having the full series go to the next branch and
-as long as there is the Fix: tag, the two first patches will
-eventually be picked by the stable team. I thought that this approach
-was easier than sending two fixes to the stable branch, wait for these
-to propagate to next and then send a second series of a single patch
-for next.
-
-@Marc, let me know what you prefer. I am fine to split if this works
-best for you. Also, I will wait for your answer before doing any
-resend.
-
-> If on the other hand, the patches in this series are not bug fixes,
-> then it is probably best to drop the 'fixes' language.
-
-I will keep the Fix tags. Even if minor (probably no visible
-repercussions) it still fixes an existing inaccuracy (whether you call
-it bug or not is another debate, but I often see typo fixes being
-backported, and these are a bit more than a typo fix).
-
-
-Yours sincerely,
-Vincent Mailhol
+Tested-by: Hiago De Franco <hiago.franco@toradex.com> # Toradex Verdin AM62
