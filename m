@@ -2,108 +2,216 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E71BEB64D9
-	for <linux-can@archiver.kernel.org>; Sat, 17 Jun 2023 07:33:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7536DC0015E
+	for <linux-can@archiver.kernel.org>; Sat, 17 Jun 2023 12:15:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346145AbjFQHdJ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 17 Jun 2023 03:33:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
+        id S1346351AbjFQMPA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 17 Jun 2023 08:15:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234647AbjFQHdI (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 17 Jun 2023 03:33:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7340297A;
-        Sat, 17 Jun 2023 00:33:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        with ESMTP id S1346293AbjFQMOo (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 17 Jun 2023 08:14:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E23102967
+        for <linux-can@vger.kernel.org>; Sat, 17 Jun 2023 05:13:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1687003988;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MKaOCCzXJedIVdLsu0rWphyHTQRA+RfNYbfx/yO3kzQ=;
+        b=ClVKjvJNnXNOFegc5/E+t8/AcqrfzqTejZfj1ha3vaTBTtOJT4CBui3Gg7XYaoiI9NUB8q
+        BdZH+IMn74ZLmNxqjlwG8jK5rpZe1u90mjVuVq35TSDSoS5xfksMMorynQ8ULDp6M2VBbC
+        lg7Z8E/1k0iPJltgvWqWFD3frtGRWgo=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-557-0frgcycTO9ec3FXSZq0ViQ-1; Sat, 17 Jun 2023 08:13:03 -0400
+X-MC-Unique: 0frgcycTO9ec3FXSZq0ViQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 48C5260A73;
-        Sat, 17 Jun 2023 07:33:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FC93C433C8;
-        Sat, 17 Jun 2023 07:33:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686987185;
-        bh=ptIUt8Giy+UX+V4UbH0FVrL7yqzDEK1ImVjFGbruads=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=UD5QZAgungDxwbEEdJFqJAfYhiB0+n5c2GA+6l9UBZ4eiJksYv8Kh+bHX21yOZuYr
-         nmlR2AqeiR+JYFXlyEkfPtxKdUankyhT+z3CXp8YCUnHmreMPFZhTmJryzdyEVMdkY
-         bv4mekIv+PSTdkydKWM1q95Nlkn6HNOn/Pga5scSTlvVqz0444m/l5UALC0jsto92Y
-         laourqKUK5FmeHZsbDFP4AOgC/+1aMsS4nKxnKeKOBu2adlOPNtrRHQVtw6nhj5Oxm
-         YlmHaNDEC1peE9xdVgUX8K3FxprHNW5KghxoCp75Z/xB72sYTUS4jhusSvgY4YT3DI
-         AqEkwiXyQdGnQ==
-Message-ID: <aed1592f-927f-13ab-b692-7a0745ac5733@kernel.org>
-Date:   Sat, 17 Jun 2023 09:32:58 +0200
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 687B780006E;
+        Sat, 17 Jun 2023 12:13:02 +0000 (UTC)
+Received: from warthog.procyon.org.com (unknown [10.42.28.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 422AD1415102;
+        Sat, 17 Jun 2023 12:12:59 +0000 (UTC)
+From:   David Howells <dhowells@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     David Howells <dhowells@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        dccp@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-hams@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-wpan@vger.kernel.org, linux-x25@vger.kernel.org,
+        mptcp@lists.linux.dev, rds-devel@oss.oracle.com,
+        tipc-discussion@lists.sourceforge.net,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH net-next v2 17/17] net: Kill MSG_SENDPAGE_NOTLAST
+Date:   Sat, 17 Jun 2023 13:11:46 +0100
+Message-ID: <20230617121146.716077-18-dhowells@redhat.com>
+In-Reply-To: <20230617121146.716077-1-dhowells@redhat.com>
+References: <20230617121146.716077-1-dhowells@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: =?UTF-8?Q?Re=3a_=5bPATCH_1/3=5d_dt-bindings=3a_can=3a_xilinx=5fcan?=
- =?UTF-8?B?OiBBZGQgRUNDIHByb3BlcnR5IOKAmHhsbngsaGFzLWVjY+KAmQ==?=
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     "Goud, Srinivas" <srinivas.goud@amd.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     "wg@grandegger.com" <wg@grandegger.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "gcnu.goud@gmail.com" <gcnu.goud@gmail.com>,
-        "git (AMD-Xilinx)" <git@amd.com>,
-        "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <1686570177-2836108-1-git-send-email-srinivas.goud@amd.com>
- <1686570177-2836108-2-git-send-email-srinivas.goud@amd.com>
- <20230613-outskirts-dove-e3e39b096647-mkl@pengutronix.de>
- <PH8PR12MB667577C4800ED8E82C36D57DE15AA@PH8PR12MB6675.namprd12.prod.outlook.com>
- <d12e3d8b-20e8-48bb-84d0-3fe7d3502c83@kernel.org>
-In-Reply-To: <d12e3d8b-20e8-48bb-84d0-3fe7d3502c83@kernel.org>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On 14/06/2023 13:11, Krzysztof Kozlowski wrote:
-> On 14/06/2023 12:22, Goud, Srinivas wrote:
->> Hi,
->>
->>> -----Original Message-----
->>> From: Marc Kleine-Budde <mkl@pengutronix.de>
->>> Sent: Tuesday, June 13, 2023 1:23 PM
->>> To: Goud, Srinivas <srinivas.goud@amd.com>
->>> Cc: wg@grandegger.com; davem@davemloft.net; edumazet@google.com;
->>> kuba@kernel.org; pabeni@redhat.com; gcnu.goud@gmail.com; git (AMD-
->>> Xilinx) <git@amd.com>; michal.simek@xilinx.com; linux-can@vger.kernel.org;
->>> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org
->>> Subject: Re: [PATCH 1/3] dt-bindings: can: xilinx_can: Add ECC property
->>> ‘xlnx,has-ecc’
->>>
->>> On 12.06.2023 17:12:55, Srinivas Goud wrote:
->>>> ECC feature added to Tx and Rx FIFO’s for Xilinx CAN Controller.
->>>> Part of this feature configuration and counter registers added in IP
->>>> for 1bit/2bit ECC errors.
->>>> Please find more details in PG096 v5.1 document.
->>>>
->>>> xlnx,has-ecc is optional property and added to Xilinx CAN Controller
->>>> node if ECC block enabled in the HW.
->>>>
->>>> Signed-off-by: Srinivas Goud <srinivas.goud@amd.com>
->>>
->>> Is there a way to introspect the IP core to check if this feature is compiled in?
->> There is no way(IP registers) to indicate whether ECC feature is enabled or not.
-> 
-> Isn't this then deductible from compatible? Your binding claims it is
-> only for AXI CAN, so xlnx,axi-can-1.00.a, even though you did not
-> restrict it in the binding.
+Now that ->sendpage() has been removed, MSG_SENDPAGE_NOTLAST can be cleaned
+up.  Things were converted to use MSG_MORE instead, but the protocol
+sendpage stubs still convert MSG_SENDPAGE_NOTLAST to MSG_MORE, which is now
+unnecessary.
 
-BTW, this is not an ACK, because this was not tested by automation. I
-don't understand why get_maintainers.pl are so tricky to use, but
-nevertheless I require resend to satisfy automation.
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: "David S. Miller" <davem@davemloft.net>
+cc: Eric Dumazet <edumazet@google.com>
+cc: Jakub Kicinski <kuba@kernel.org>
+cc: Paolo Abeni <pabeni@redhat.com>
+cc: Jens Axboe <axboe@kernel.dk>
+cc: Matthew Wilcox <willy@infradead.org>
+cc: bpf@vger.kernel.org
+cc: dccp@vger.kernel.org
+cc: linux-afs@lists.infradead.org
+cc: linux-arm-msm@vger.kernel.org
+cc: linux-can@vger.kernel.org
+cc: linux-crypto@vger.kernel.org
+cc: linux-doc@vger.kernel.org
+cc: linux-hams@vger.kernel.org
+cc: linux-perf-users@vger.kernel.org
+cc: linux-rdma@vger.kernel.org
+cc: linux-sctp@vger.kernel.org
+cc: linux-wpan@vger.kernel.org
+cc: linux-x25@vger.kernel.org
+cc: mptcp@lists.linux.dev
+cc: netdev@vger.kernel.org
+cc: rds-devel@oss.oracle.com
+cc: tipc-discussion@lists.sourceforge.net
+cc: virtualization@lists.linux-foundation.org
+---
+ include/linux/socket.h                         | 4 +---
+ net/ipv4/tcp_bpf.c                             | 4 +++-
+ net/tls/tls_device.c                           | 3 +--
+ net/tls/tls_main.c                             | 2 +-
+ net/tls/tls_sw.c                               | 2 +-
+ tools/perf/trace/beauty/include/linux/socket.h | 1 -
+ tools/perf/trace/beauty/msg_flags.c            | 3 ---
+ 7 files changed, 7 insertions(+), 12 deletions(-)
 
-Best regards,
-Krzysztof
+diff --git a/include/linux/socket.h b/include/linux/socket.h
+index 58204700018a..39b74d83c7c4 100644
+--- a/include/linux/socket.h
++++ b/include/linux/socket.h
+@@ -319,7 +319,6 @@ struct ucred {
+ #define MSG_MORE	0x8000	/* Sender will send more */
+ #define MSG_WAITFORONE	0x10000	/* recvmmsg(): block until 1+ packets avail */
+ #define MSG_SENDPAGE_NOPOLICY 0x10000 /* sendpage() internal : do no apply policy */
+-#define MSG_SENDPAGE_NOTLAST 0x20000 /* sendpage() internal : not the last page */
+ #define MSG_BATCH	0x40000 /* sendmmsg(): more messages coming */
+ #define MSG_EOF         MSG_FIN
+ #define MSG_NO_SHARED_FRAGS 0x80000 /* sendpage() internal : page frags are not shared */
+@@ -341,8 +340,7 @@ struct ucred {
+ 
+ /* Flags to be cleared on entry by sendmsg and sendmmsg syscalls */
+ #define MSG_INTERNAL_SENDMSG_FLAGS \
+-	(MSG_SPLICE_PAGES | MSG_SENDPAGE_NOPOLICY | MSG_SENDPAGE_NOTLAST | \
+-	 MSG_SENDPAGE_DECRYPTED)
++	(MSG_SPLICE_PAGES | MSG_SENDPAGE_NOPOLICY | MSG_SENDPAGE_DECRYPTED)
+ 
+ /* Setsockoptions(2) level. Thanks to BSD these must match IPPROTO_xxx */
+ #define SOL_IP		0
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index 870c1cde4010..8f535e436ea3 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -90,7 +90,9 @@ static int tcp_bpf_push(struct sock *sk, struct sk_msg *msg, u32 apply_bytes,
+ {
+ 	bool apply = apply_bytes;
+ 	struct scatterlist *sge;
+-	struct msghdr msghdr = { .msg_flags = flags | MSG_SPLICE_PAGES, };
++	struct msghdr msghdr = {
++		.msg_flags = flags | MSG_SPLICE_PAGES | MSG_MORE,
++	};
+ 	struct page *page;
+ 	int size, ret = 0;
+ 	u32 off;
+diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
+index 840ee06f1708..2021fe557e50 100644
+--- a/net/tls/tls_device.c
++++ b/net/tls/tls_device.c
+@@ -441,8 +441,7 @@ static int tls_push_data(struct sock *sk,
+ 	long timeo;
+ 
+ 	if (flags &
+-	    ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL | MSG_SENDPAGE_NOTLAST |
+-	      MSG_SPLICE_PAGES))
++	    ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL | MSG_SPLICE_PAGES))
+ 		return -EOPNOTSUPP;
+ 
+ 	if (unlikely(sk->sk_err))
+diff --git a/net/tls/tls_main.c b/net/tls/tls_main.c
+index d5ed4d47b16e..b6896126bb92 100644
+--- a/net/tls/tls_main.c
++++ b/net/tls/tls_main.c
+@@ -127,7 +127,7 @@ int tls_push_sg(struct sock *sk,
+ {
+ 	struct bio_vec bvec;
+ 	struct msghdr msg = {
+-		.msg_flags = MSG_SENDPAGE_NOTLAST | MSG_SPLICE_PAGES | flags,
++		.msg_flags = MSG_SPLICE_PAGES | flags,
+ 	};
+ 	int ret = 0;
+ 	struct page *p;
+diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+index 9b3aa89a4292..53f944e6d8ef 100644
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -1194,7 +1194,7 @@ int tls_sw_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
+ 
+ 	if (msg->msg_flags & ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL |
+ 			       MSG_CMSG_COMPAT | MSG_SPLICE_PAGES |
+-			       MSG_SENDPAGE_NOTLAST | MSG_SENDPAGE_NOPOLICY))
++			       MSG_SENDPAGE_NOPOLICY))
+ 		return -EOPNOTSUPP;
+ 
+ 	ret = mutex_lock_interruptible(&tls_ctx->tx_lock);
+diff --git a/tools/perf/trace/beauty/include/linux/socket.h b/tools/perf/trace/beauty/include/linux/socket.h
+index 13c3a237b9c9..3bef212a24d7 100644
+--- a/tools/perf/trace/beauty/include/linux/socket.h
++++ b/tools/perf/trace/beauty/include/linux/socket.h
+@@ -318,7 +318,6 @@ struct ucred {
+ #define MSG_MORE	0x8000	/* Sender will send more */
+ #define MSG_WAITFORONE	0x10000	/* recvmmsg(): block until 1+ packets avail */
+ #define MSG_SENDPAGE_NOPOLICY 0x10000 /* sendpage() internal : do no apply policy */
+-#define MSG_SENDPAGE_NOTLAST 0x20000 /* sendpage() internal : not the last page */
+ #define MSG_BATCH	0x40000 /* sendmmsg(): more messages coming */
+ #define MSG_EOF         MSG_FIN
+ #define MSG_NO_SHARED_FRAGS 0x80000 /* sendpage() internal : page frags are not shared */
+diff --git a/tools/perf/trace/beauty/msg_flags.c b/tools/perf/trace/beauty/msg_flags.c
+index ea68db08b8e7..b5b580e5a77e 100644
+--- a/tools/perf/trace/beauty/msg_flags.c
++++ b/tools/perf/trace/beauty/msg_flags.c
+@@ -8,9 +8,6 @@
+ #ifndef MSG_WAITFORONE
+ #define MSG_WAITFORONE		   0x10000
+ #endif
+-#ifndef MSG_SENDPAGE_NOTLAST
+-#define MSG_SENDPAGE_NOTLAST	   0x20000
+-#endif
+ #ifndef MSG_FASTOPEN
+ #define MSG_FASTOPEN		0x20000000
+ #endif
 
