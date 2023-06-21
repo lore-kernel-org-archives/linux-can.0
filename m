@@ -2,52 +2,53 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F0A5EB64D8
-	for <linux-can@archiver.kernel.org>; Wed, 21 Jun 2023 09:32:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D4C2C0015E
+	for <linux-can@archiver.kernel.org>; Wed, 21 Jun 2023 09:32:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231818AbjFUJcT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 21 Jun 2023 05:32:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35086 "EHLO
+        id S231244AbjFUJc3 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 21 Jun 2023 05:32:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230463AbjFUJbP (ORCPT
+        with ESMTP id S231869AbjFUJbP (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 21 Jun 2023 05:31:15 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD1801704
-        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 02:31:09 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3f8ff5fe50aso37203595e9.0
-        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 02:31:09 -0700 (PDT)
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F4D6E2
+        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 02:31:12 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-311367a3e12so4743708f8f.2
+        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 02:31:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1687339868; x=1689931868;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FnoYzlqcpbqIFDX/QCzP0DM0XYhA9I/O0wRSd0b2d80=;
-        b=OKCgz0VaMI1Fv6yd2XldHp/3Alw1/cS1VYDm4ECvg32UV+E10/b7GlASd5Luv4QTDe
-         gl7+Y2+pMX7ebU1ik0S+/Bfjt+amyNuaVDzBp9q1dQm8nFS470hJzdR7tZXyr6Q4x5fN
-         yy4l8FtsayAy/qYIK/O4ngS4Z8pBog+1eRV8Um2eyVNWrMK0IbXKS858U0IWVV4eTRw9
-         sr7aBZXPzwDkEI7pzvxZQqaGXD45sobVdOJ+U7xJMGNTAwX13i+wjEefT/9ctkCN8KjB
-         7ZStrac+Cl8yc2N9adH9Rcz9ni7eoCebFDY12q/U9V52Id688qhVzmdepEW+oLWS+tbE
-         n0OQ==
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1687339871; x=1689931871;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aOPR69iAQ16PRI3TWa1E2gZcgSDBVpUe2mB3Tg7XdFY=;
+        b=p6VfhCsZ1XQVk+UFLTJRo9cf3iTipfn7+MBuZGX/3xu99DkZWmG8tzt/4QEiu0vdoP
+         SwlKwJZpil8SEzBGic9Sdgl41L2ROAyA7fjHmwCysGNFyiJ2HXeo4xDhFyiizQzpbGAb
+         pFEwDePat4OO5iNIvyfT6kCa1Y1wwPfNVqWTUay+XSTDaay8iLXaiNAWpNJosnHvR002
+         85B6egNdHCN4pFH1hnrVd2eyXbxaTHobsIy0GYO0HIrF0qrfTKXUZWMqa3bWv6qy4XO8
+         Fmtgt9r0knq3H5Xf8bnbXgXrDmp7C2UqP5JkHSCkA99CZSH22vhgwzEkEOE5iahxQgJf
+         FIAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687339868; x=1689931868;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FnoYzlqcpbqIFDX/QCzP0DM0XYhA9I/O0wRSd0b2d80=;
-        b=CPhUxF3aBoGHpkpqUTSrr/QK6qBEW4WvIhNYxO+xRTsNieMSTydEQ06D843tQW+7Az
-         148AIhRXSOwsZbvi7hRoYbgMk/DamZB4yYD1RAvM80o0SGTXd+PQVI4ozJ8gCCWJV5HL
-         8auN0FrP/htXi/HpG3tsKYxjm/51nEJHH/Bg7QDnIQaeB8nc2LsWxqNZK54WsedkYSIN
-         +rtdJFmWbVLk7NQ5gJHnp8TH9hi1q1Sc7/UdIRI4TqyBoZpDCt0Xs1wngQ+Q3RAJklXT
-         oSsC8WndSMoset4OuHcnWvVVAkM+Jq7+3Dl4qVIb4r/Ln/dXZ1S7BmnS2l6mnniirAal
-         uPsw==
-X-Gm-Message-State: AC+VfDznNRm3utJMhgw2cHA7D78qATKZ2JS0pFhfUy4vxTKZRPmbjnL7
-        dtGAGS7f1AyuAlLISKdbgbwJMw==
-X-Google-Smtp-Source: ACHHUZ6wNggPJlaWNtBCFb85tB2zyBb3w5c/2/L22CBkW3973Qtp0kgzE6fLsZu8EOuufjAe/NANWQ==
-X-Received: by 2002:a5d:4203:0:b0:311:1107:9aba with SMTP id n3-20020a5d4203000000b0031111079abamr13408111wrq.19.1687339868152;
-        Wed, 21 Jun 2023 02:31:08 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1687339871; x=1689931871;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aOPR69iAQ16PRI3TWa1E2gZcgSDBVpUe2mB3Tg7XdFY=;
+        b=js7R/YBj1fdWIwYLpyDohOKhgU21BC/nzMylJbh638FyKQ8pKlT++3fdb1cq/ERvLy
+         jy9XuyDzvVwtlnCFS7yVcjhRafVvhuapRK9sxbieQjJgcty76kKEWkZZ73BGaVUX0tCX
+         qb7LkVFOeUQWfyfIcza3UC7OBgYqVui5UdexS1p5bpTN+dTIbpV7In3mJmrKndB8/5V7
+         sTtJ0yVV6l2vDdYorpZdk5npGBGChjpRNCtQnSCq0SqElrpharjAw+B2dmAksbohXqur
+         Tk81vxAYO7p/lb5k6EapAoqOqAJE5PxWftSOvwiaJH0cJi1etp9ptaWUTZ75pZFrh9oN
+         DWGQ==
+X-Gm-Message-State: AC+VfDx2Ly6jmbbGV1S1/4zGubWMZNntzst+hytmagkO9rN/yi/VPgkU
+        eyOmLTBTzgJvR/hPohYhpgeeOA==
+X-Google-Smtp-Source: ACHHUZ7h1oBelfPdJ7hS0YJrsBMI7+8RNi0jGbeXTETw7BrgmXNO4eGVgr+m/lxb6bEa7Izo9X0Sqw==
+X-Received: by 2002:adf:f287:0:b0:311:13e6:650a with SMTP id k7-20020adff287000000b0031113e6650amr12500326wro.28.1687339870910;
+        Wed, 21 Jun 2023 02:31:10 -0700 (PDT)
 Received: from blmsp.fritz.box ([2001:4091:a247:82fa:b762:4f68:e1ed:5041])
-        by smtp.gmail.com with ESMTPSA id t10-20020a5d49ca000000b002fe96f0b3acsm3977344wrs.63.2023.06.21.02.31.06
+        by smtp.gmail.com with ESMTPSA id t10-20020a5d49ca000000b002fe96f0b3acsm3977344wrs.63.2023.06.21.02.31.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jun 2023 02:31:07 -0700 (PDT)
+        Wed, 21 Jun 2023 02:31:10 -0700 (PDT)
 From:   Markus Schneider-Pargmann <msp@baylibre.com>
 To:     Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -65,59 +66,40 @@ Cc:     "David S . Miller" <davem@davemloft.net>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Simon Horman <simon.horman@corigine.com>,
         Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH v2 0/6] can: tcan4x5x: Introduce tcan4552/4553
-Date:   Wed, 21 Jun 2023 11:30:57 +0200
-Message-Id: <20230621093103.3134655-1-msp@baylibre.com>
+Subject: [PATCH v2 2/6] can: tcan4x5x: Remove reserved register 0x814 from writable table
+Date:   Wed, 21 Jun 2023 11:30:59 +0200
+Message-Id: <20230621093103.3134655-3-msp@baylibre.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230621093103.3134655-1-msp@baylibre.com>
+References: <20230621093103.3134655-1-msp@baylibre.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi everyone,
+The mentioned register is not writable. It is reserved and should not be
+written.
 
-This series introduces two new chips tcan-4552 and tcan-4553. The
-generic driver works in general but needs a few small changes. These are
-caused by the removal of wake and state pins.
+Fixes: 39dbb21b6a29 ("can: tcan4x5x: Specify separate read/write ranges")
+Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
+Reviewed-by: Michal Kubiak <michal.kubiak@intel.com>
+---
+ drivers/net/can/m_can/tcan4x5x-regmap.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-In v2 I updated the bindings to use tcan4x5x always as a fallback. The
-driver now uses the first more specific binding if available. If the
-given binding does not match the chip that is present, a warning is
-printed and the correct driver data is loaded instead.
-
-Based on v6.4-rc1.
-
-Best,
-Markus
-
-Changes in v2:
-- Update the binding documentation to specify tcan4552 and tcan4553 with
-  the tcan4x5x as fallback
-- Update the driver to use auto detection as well. If compatible differs
-  from the ID2 register, use the ID2 register and print a warning.
-- Small style changes
-
-Previous versions:
-v1 - https://lore.kernel.org/lkml/20230314151201.2317134-1-msp@baylibre.com
-
-Markus Schneider-Pargmann (6):
-  dt-bindings: can: tcan4x5x: Add tcan4552 and tcan4553 variants
-  can: tcan4x5x: Remove reserved register 0x814 from writable table
-  can: tcan4x5x: Check size of mram configuration
-  can: tcan4x5x: Rename ID registers to match datasheet
-  can: tcan4x5x: Add support for tcan4552/4553
-  can: tcan4x5x: Add error messages in probe
-
- .../devicetree/bindings/net/can/tcan4x5x.txt  |  11 +-
- drivers/net/can/m_can/m_can.c                 |  16 ++
- drivers/net/can/m_can/m_can.h                 |   1 +
- drivers/net/can/m_can/tcan4x5x-core.c         | 161 ++++++++++++++----
- drivers/net/can/m_can/tcan4x5x-regmap.c       |   1 -
- 5 files changed, 155 insertions(+), 35 deletions(-)
-
-
-base-commit: ac9a78681b921877518763ba0e89202254349d1b
+diff --git a/drivers/net/can/m_can/tcan4x5x-regmap.c b/drivers/net/can/m_can/tcan4x5x-regmap.c
+index 2b218ce04e9f..fafa6daa67e6 100644
+--- a/drivers/net/can/m_can/tcan4x5x-regmap.c
++++ b/drivers/net/can/m_can/tcan4x5x-regmap.c
+@@ -95,7 +95,6 @@ static const struct regmap_range tcan4x5x_reg_table_wr_range[] = {
+ 	regmap_reg_range(0x000c, 0x0010),
+ 	/* Device configuration registers and Interrupt Flags*/
+ 	regmap_reg_range(0x0800, 0x080c),
+-	regmap_reg_range(0x0814, 0x0814),
+ 	regmap_reg_range(0x0820, 0x0820),
+ 	regmap_reg_range(0x0830, 0x0830),
+ 	/* M_CAN */
 -- 
 2.40.1
 
