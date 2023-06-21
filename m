@@ -2,549 +2,147 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63356C0015E
-	for <linux-can@archiver.kernel.org>; Wed, 21 Jun 2023 13:30:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55557EB64D8
+	for <linux-can@archiver.kernel.org>; Wed, 21 Jun 2023 13:51:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbjFUNaZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 21 Jun 2023 09:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57570 "EHLO
+        id S232119AbjFUNu7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 21 Jun 2023 09:50:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232745AbjFUNaA (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 21 Jun 2023 09:30:00 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733A61FC6
-        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 06:29:43 -0700 (PDT)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qBxu1-0007AB-6b
-        for linux-can@vger.kernel.org; Wed, 21 Jun 2023 15:29:41 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 236FE1DE972
-        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 13:29:24 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id E49DC1DE908;
-        Wed, 21 Jun 2023 13:29:20 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 75e9c5cf;
-        Wed, 21 Jun 2023 13:29:17 +0000 (UTC)
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Jimmy Assarsson <extja@kvaser.com>,
+        with ESMTP id S230416AbjFUNu6 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 21 Jun 2023 09:50:58 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2132.outbound.protection.outlook.com [40.107.220.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D951719B;
+        Wed, 21 Jun 2023 06:50:57 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QSKm34Uet1DMqhR+FrdI1Myv7zk8mDHw9tO+We/76kOzc6B3l4JuJ09eI+m7wpPlmp2qgISqHMHYKR7N1Ic9qdEaGPKU8P4PAa7qNgR645vnNAavx6hX+lx3hG2qiRVIvjNtoeDr+/Poub83EIrU2k9VCSBdRp/ZDFhC8VlCZqwulT/6M+pFft/kTxET5VRrORRvWSITBbICAJw0pNNcGR9989mPucs2laX9aby+NFfhj87tzVNEu8otzNtOb1XLGMYF5/bCSvNNQmiKaxZw0PSoEzN0VclTp2s+EWHAtQMfBP9ImvmFQH2qbHeatl4pBvt9uZnHxJpVHsABDu5cng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=39D6h9Zt5zt8SlABZClFtsBArtpX3/Y/iw3Th0aPvY4=;
+ b=jhcQJroEXY3SPYm5LYoAQlW8Aj4lJpzVFVxPRVf3YJfLc+QYOH7JC8I6FHZ0O6W+0hI9AFmjvlR456B+ckbMMd2m0WXdh0pE/1MjrECbsfVRf+4zEPFhdj8CiFP5aDfai1IJbPFXJCKmqb1K67qkqKu0gQBeuEOkGsMzjdpwrd4TJJMeKqzq1q0ldQyDwDCQdIfC75kt1jX62wmGZb47C/6PGQg936Xf//WPJKi0NrcuRLOAWTlbjAyE4wJpKbKsmgO1E6I2dl0XRxMSnxITcCsA4c3Srhh67o4HSha8/p5H+r3ZIPtOw6nL0ivM8JgVn/R8XmS+00DdoH18unIlOQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=39D6h9Zt5zt8SlABZClFtsBArtpX3/Y/iw3Th0aPvY4=;
+ b=QxGGVOBp6NgGrIOyysmC4o7xzT3kxjptpSXIbLWb9+pTXByYsc/TPIPDGsZCkvyqjXi4n2+j6TVR7TRexdyZKW1eT1ALyUqllJJfxDxp7Nawun2LV3gusPYl6fPxYRReDEh1t9o8RWi2/8/2OmzaKP+8e1kXMs4QYbWF2TVfG8A=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by CO1PR13MB4902.namprd13.prod.outlook.com (2603:10b6:303:f0::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.23; Wed, 21 Jun
+ 2023 13:50:54 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::eb8f:e482:76e0:fe6e]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::eb8f:e482:76e0:fe6e%5]) with mapi id 15.20.6521.023; Wed, 21 Jun 2023
+ 13:50:54 +0000
+Date:   Wed, 21 Jun 2023 15:50:42 +0200
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Markus Schneider-Pargmann <msp@baylibre.com>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
         Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 30/33] can: kvaser_pciefd: Use FIELD_{GET,PREP} and GENMASK where appropriate
-Date:   Wed, 21 Jun 2023 15:29:11 +0200
-Message-Id: <20230621132914.412546-31-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230621132914.412546-1-mkl@pengutronix.de>
-References: <20230621132914.412546-1-mkl@pengutronix.de>
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 13/16] can: m_can: Introduce a tx_fifo_in_flight
+ counter
+Message-ID: <ZJMAMouJBKBzMxN+@corigine.com>
+References: <20230315110546.2518305-1-msp@baylibre.com>
+ <20230315110546.2518305-14-msp@baylibre.com>
+ <ZBSPJHkcLG7gkZ7I@corigine.com>
+ <20230620125354.ipok6i43lvow66t4@blmsp>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230620125354.ipok6i43lvow66t4@blmsp>
+X-ClientProxiedBy: AM0PR02CA0014.eurprd02.prod.outlook.com
+ (2603:10a6:208:3e::27) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|CO1PR13MB4902:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2eb769e7-1672-4855-ce06-08db725e8834
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: a9Ru0ue5euwNCfB5Ny/TtOMYwwLy+1BcOBDUV7CWiZcwtbs1/yzrasOhxLNZJKyzTroxisKUvwq4GFLdWp7QP/QYf9JOnPpc2A8WjPV93km5DpPu0l8y5K8aif4xq3y+uj9vKJz419JW2lEdL+/FApkPJJVSFYzDvJR9r7ReQZVteGacpGt3fzlvKz5a1F9WQ/OccBybg+3T4OagaoEEkZO5UEVTqxJtlU4+3PhX9ZKGDUX3/urHv3E/GGOhJNXQ9g+4o5VI+RnyCKdRIZSNOiqo4JgvTnA7ht/Dt/2bgfm1lPljQ0HW4vLoRmOowiu8hEksIU3D7bF9R5GBrFf3TWtJ2HgjypR5eVnQjYBmxCtGd4dk22pVdqacmV7xwk1P8thUjtAMZGUgcikYnCRRSMP5fBbwYxvH0PagnYvb1NSDOmOaIGRzu88Cw0KgZoBQl+cC5vHd/8j1a8bQaLVMI3bd1S+W3iMYDWSVPedy1mivHiUcxWET9gyxjEPkg7xYbOnQHQ7hr0Bnx0g7oo1ZN4vlWNRUpDQbfiwoOgBebTps/lIjBPthXjSi94JZM4GX8icxH79V9hd/usmEevJkZmOaiyjbVfliIJWLK3ZwJ8U=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(366004)(346002)(396003)(39840400004)(376002)(451199021)(36756003)(38100700002)(86362001)(6666004)(6486002)(41300700001)(8676002)(478600001)(5660300002)(8936002)(6506007)(44832011)(2616005)(186003)(83380400001)(2906002)(66946007)(316002)(54906003)(4326008)(6916009)(6512007)(66556008)(66476007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4qATgXoKaFn8+jSaM+A16y8vVzyGATLm2A1w4iIJ78pzP64uA4gTDC1pwmS9?=
+ =?us-ascii?Q?MVL8yvflJbRsKX2XsEMP+nI0W8DlTwZULaYiyV0bmsixC7YovCQdG8VHZs72?=
+ =?us-ascii?Q?44Tv/k3kCeK83KeU5foVkuQcKLtCoJB1y5JXvveydFcfHlX2JGSzeiO+tqOb?=
+ =?us-ascii?Q?aayEm0iPcvpVDVoGQ8sJQ86QWQadEeKBHK+GmcfkbkSyTOSdjRmVCs4ktL+h?=
+ =?us-ascii?Q?aTHCJEN6sqcfyN2tAmqQ3mCt5wAqC7pY9jJbZb0DGxJeFBw3QJVhWZc+oBxT?=
+ =?us-ascii?Q?LhswrD3gtUmowEcUA6TifenMM76bGF6ObnY0wWoRU/+ziM/ETCSQL143Am/j?=
+ =?us-ascii?Q?yMRO2YLtrA6mfLbDd/lHdxZINrGoNIotBKnhUC9SrL0jypFsKWtQ4zHN/Gmw?=
+ =?us-ascii?Q?oX75YpwwBdEuvbPWLdpiLiGT7kUxSTpHsjLnEqP7lKpoSyITqjmwtTZ4Swge?=
+ =?us-ascii?Q?xp9j9Qvu4ZcjKi6jBDd3ZpJ5ZXgx1TPkDQI04H2r5IPqzEEbrGvREbJV61jr?=
+ =?us-ascii?Q?YISSXe5yWn1IpZyCbzqe19Y5skBmN9V3B55+NRo7QFDe2bmawRIGucIEqz53?=
+ =?us-ascii?Q?9sQmlHomVEq664jOnHJAxxJnJvVEEq9Ej3zM47P9Z0LQoX6CJuZzAw/bqxSX?=
+ =?us-ascii?Q?BnrxZD+YvzcJQ5vpPL81lInViI9SngMqqyUJXpasOJiTMko3PhTUVBoe8Nu+?=
+ =?us-ascii?Q?npBvDZA8mBye53S+131hPedeKD2snfagRY4tOxsnDzo/5RBhmhT78aLSRRKF?=
+ =?us-ascii?Q?boR9qgCzSp2dJzQLXEOyX5otUUmf+Gv7x/9nX4TYZWUwle+4sZydLwK1wOMR?=
+ =?us-ascii?Q?V5xdSdw8e9MBkxI7fk0Arfs4FkM/EM3irjfA5esU+vstjMQMxEF8Mv3GZDWQ?=
+ =?us-ascii?Q?Td7oYt3nfgwTNxEdaIo/ms1qNO7QSoNBw5c100A+gO8L8+lupQQ8xJRoMEac?=
+ =?us-ascii?Q?gvJsBSTq19mO8f22l21wNfXAhGIkPsIJgaRRGPTWzfa/R3uA7pv+cDuy5UA7?=
+ =?us-ascii?Q?iQZs/lMmkeYKWth93lS6me9CpXikJ9dCUNxYz6fZhSrso7CA707DA5DUFyc3?=
+ =?us-ascii?Q?TWLO8jeqsGJ/FTyst1wVwFIsoROqDFgMrSm/MA5FlwSVeEQQDlickHzxYbPE?=
+ =?us-ascii?Q?kAiKFLePpFQ8GlOeqKzMKKI2PFzYSUfmUaGDlNGpDvmqd0Z+Ad/REECyCIKF?=
+ =?us-ascii?Q?GCR622jDXo3plkXsCzlr9buPo/UXNvhFmih9gNeaE4hfX//X4edrOZZCrrLC?=
+ =?us-ascii?Q?/9xi/Fi58DPdWBsjJPdQGxu37a9SRgAKflCZx9yqNHgbkKjsTX4gPLSPKuJN?=
+ =?us-ascii?Q?ssi/xrn2Ste6/5PzJtXu3xAxb6SW0KOEPKrMZBA3k/vZeHPKW72jOfpWyfOS?=
+ =?us-ascii?Q?hIupEUSZvi3+WZkFQ47gpB6hr6q7q4SnlH1ImO4TmJTs8Z3QzaW6QJkF8V0c?=
+ =?us-ascii?Q?4jzfvaytfT9V9UbZt8oxBAwVGfWrL/BVh2QA8OMldZkZfTYiOrs7LwLYCXGd?=
+ =?us-ascii?Q?k/bNImXXIKEhUARUXrTR3lqSaZXteGAzfU/qZB/829npTuHedtz+cge5YQhe?=
+ =?us-ascii?Q?jo8xm5K9UD7j13N/MgaDsNnk6Tk7BKVtVr+ihpU9XJ3mN3BhUrokZjA0ItId?=
+ =?us-ascii?Q?eppWyYe1upgF23sdxDy51145eiAmwe8GMlBbLJXekd28ezGzJcpz20AQ7Dch?=
+ =?us-ascii?Q?2rzFlQ=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2eb769e7-1672-4855-ce06-08db725e8834
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2023 13:50:54.2857
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: isXxfCBF8sOs+ND9pUoWa6tcWgPmVgsQH3hW2s0tcqGY56fgTQ6qmFozqBpBR4l7pHSk1k7lKIvUGSMMKfRR75A9KHypWwmBtwT4KSTAC1Q=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR13MB4902
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Jimmy Assarsson <extja@kvaser.com>
+On Tue, Jun 20, 2023 at 02:53:54PM +0200, Markus Schneider-Pargmann wrote:
+> Hi Simon,
+> 
+> On Fri, Mar 17, 2023 at 05:02:44PM +0100, Simon Horman wrote:
+> > On Wed, Mar 15, 2023 at 12:05:43PM +0100, Markus Schneider-Pargmann wrote:
+> > > Keep track of the number of transmits in flight.
+> > > 
+> > > This patch prepares the driver to control the network interface queue
+> > > based on this counter. By itself this counter be
+> > > implemented with an atomic, but as we need to do other things in the
+> > > critical sections later I am using a spinlock instead.
+> > > 
+> > > Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
+> 
+> Thank you for all your reviews, very helpful.
+> 
+> > 
+> > Nit, assuming the values are always positive, I think
+> > that unsigned might be a more appropriate type than int
+> > for the tx_fifo_in_flight field, and associated function
+> > parameters and local variables.
+> 
+> I agree that tx_fifo_in_flight is and should always be a positive value.
+> However as the code is operating with ++ and -- exclusively I would
+> personally prefer int here as that shows off-by-one errors much easier
+> in case there are any at some point.
+> 
+> Is that fine for you?
 
-Replace opencoded masking and shifting, with GENMASK, FIELD_GET and
-FIELD_PREP macros.
-
-Suggested-by: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
-Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/all/20230529134248.752036-12-extja@kvaser.com
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/kvaser_pciefd.c | 168 +++++++++++++++++---------------
- 1 file changed, 89 insertions(+), 79 deletions(-)
-
-diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
-index d2e520f9eaa7..8779091c448c 100644
---- a/drivers/net/can/kvaser_pciefd.c
-+++ b/drivers/net/can/kvaser_pciefd.c
-@@ -5,6 +5,7 @@
-  *  - PEAK linux canfd driver
-  */
- 
-+#include <linux/bitfield.h>
- #include <linux/can/dev.h>
- #include <linux/device.h>
- #include <linux/ethtool.h>
-@@ -26,7 +27,7 @@ MODULE_DESCRIPTION("CAN driver for Kvaser CAN/PCIe devices");
- #define KVASER_PCIEFD_BEC_POLL_FREQ (jiffies + msecs_to_jiffies(200))
- #define KVASER_PCIEFD_MAX_ERR_REP 256U
- #define KVASER_PCIEFD_CAN_TX_MAX_COUNT 17U
--#define KVASER_PCIEFD_MAX_CAN_CHANNELS 4U
-+#define KVASER_PCIEFD_MAX_CAN_CHANNELS 4UL
- #define KVASER_PCIEFD_DMA_COUNT 2U
- 
- #define KVASER_PCIEFD_DMA_SIZE (4U * 1024U)
-@@ -79,15 +80,16 @@ MODULE_DESCRIPTION("CAN driver for Kvaser CAN/PCIe devices");
- 
- /* PCI interrupt fields */
- #define KVASER_PCIEFD_IRQ_SRB BIT(4)
--#define KVASER_PCIEFD_IRQ_ALL_MSK 0x1f
-+#define KVASER_PCIEFD_IRQ_ALL_MASK GENMASK(4, 0)
- 
- /* Enable 64-bit DMA address translation */
- #define KVASER_PCIEFD_64BIT_DMA_BIT BIT(0)
- 
- /* System build information fields */
--#define KVASER_PCIEFD_SYSID_NRCHAN_SHIFT 24
--#define KVASER_PCIEFD_SYSID_MAJOR_VER_SHIFT 16
--#define KVASER_PCIEFD_SYSID_BUILD_VER_SHIFT 1
-+#define KVASER_PCIEFD_SYSID_VERSION_NR_CHAN_MASK GENMASK(31, 24)
-+#define KVASER_PCIEFD_SYSID_VERSION_MAJOR_MASK GENMASK(23, 16)
-+#define KVASER_PCIEFD_SYSID_VERSION_MINOR_MASK GENMASK(7, 0)
-+#define KVASER_PCIEFD_SYSID_BUILD_SEQ_MASK GENMASK(15, 1)
- 
- /* Reset DMA buffer 0, 1 and FIFO offset */
- #define KVASER_PCIEFD_SRB_CMD_RDB1 BIT(5)
-@@ -110,17 +112,18 @@ MODULE_DESCRIPTION("CAN driver for Kvaser CAN/PCIe devices");
- #define KVASER_PCIEFD_SRB_STAT_DI BIT(15)
- 
- /* SRB current packet level */
--#define KVASER_PCIEFD_SRB_RX_NR_PACKETS_MASK 0xff
-+#define KVASER_PCIEFD_SRB_RX_NR_PACKETS_MASK GENMASK(7, 0)
- 
- /* DMA Enable */
- #define KVASER_PCIEFD_SRB_CTRL_DMA_ENABLE BIT(0)
- 
- /* KCAN CTRL packet types */
--#define KVASER_PCIEFD_KCAN_CTRL_EFLUSH (4 << 29)
--#define KVASER_PCIEFD_KCAN_CTRL_EFRAME (5 << 29)
-+#define KVASER_PCIEFD_KCAN_CTRL_TYPE_MASK GENMASK(31, 29)
-+#define KVASER_PCIEFD_KCAN_CTRL_TYPE_EFLUSH 0x4
-+#define KVASER_PCIEFD_KCAN_CTRL_TYPE_EFRAME 0x5
- 
- /* Command sequence number */
--#define KVASER_PCIEFD_KCAN_CMD_SEQ_SHIFT 16
-+#define KVASER_PCIEFD_KCAN_CMD_SEQ_MASK GENMASK(23, 16)
- /* Abort, flush and reset */
- #define KVASER_PCIEFD_KCAN_CMD_AT BIT(1)
- /* Request status packet */
-@@ -148,10 +151,12 @@ MODULE_DESCRIPTION("CAN driver for Kvaser CAN/PCIe devices");
- #define KVASER_PCIEFD_KCAN_IRQ_TAR BIT(0)
- 
- /* Tx FIFO size */
--#define KVASER_PCIEFD_KCAN_TX_NPACKETS_MAX_SHIFT 16
-+#define KVASER_PCIEFD_KCAN_TX_NR_PACKETS_MAX_MASK GENMASK(23, 16)
-+/* Tx FIFO current packet level */
-+#define KVASER_PCIEFD_KCAN_TX_NR_PACKETS_CURRENT_MASK GENMASK(7, 0)
- 
- /* Current status packet sequence number */
--#define KVASER_PCIEFD_KCAN_STAT_SEQNO_SHIFT 24
-+#define KVASER_PCIEFD_KCAN_STAT_SEQNO_MASK GENMASK(31, 24)
- /* Controller got CAN FD capability */
- #define KVASER_PCIEFD_KCAN_STAT_FD BIT(19)
- /* Controller got one-shot capability */
-@@ -187,12 +192,14 @@ MODULE_DESCRIPTION("CAN driver for Kvaser CAN/PCIe devices");
- #define KVASER_PCIEFD_KCAN_MODE_RM BIT(8)
- 
- /* BTRN and BTRD fields */
--#define KVASER_PCIEFD_KCAN_BTRN_TSEG2_SHIFT 26
--#define KVASER_PCIEFD_KCAN_BTRN_TSEG1_SHIFT 17
--#define KVASER_PCIEFD_KCAN_BTRN_SJW_SHIFT 13
-+#define KVASER_PCIEFD_KCAN_BTRN_TSEG2_MASK GENMASK(30, 26)
-+#define KVASER_PCIEFD_KCAN_BTRN_TSEG1_MASK GENMASK(25, 17)
-+#define KVASER_PCIEFD_KCAN_BTRN_SJW_MASK GENMASK(16, 13)
-+#define KVASER_PCIEFD_KCAN_BTRN_BRP_MASK GENMASK(12, 0)
- 
- /* PWM Control fields */
--#define KVASER_PCIEFD_KCAN_PWM_TOP_SHIFT 16
-+#define KVASER_PCIEFD_KCAN_PWM_TOP_MASK GENMASK(23, 16)
-+#define KVASER_PCIEFD_KCAN_PWM_TRIGGER_MASK GENMASK(7, 0)
- 
- /* KCAN packet type IDs */
- #define KVASER_PCIEFD_PACK_TYPE_DATA 0
-@@ -206,13 +213,14 @@ MODULE_DESCRIPTION("CAN driver for Kvaser CAN/PCIe devices");
- #define KVASER_PCIEFD_PACK_TYPE_BUS_LOAD 9
- 
- /* Common KCAN packet definitions, second word */
--#define KVASER_PCIEFD_PACKET_TYPE_SHIFT 28
--#define KVASER_PCIEFD_PACKET_CHID_SHIFT 25
--#define KVASER_PCIEFD_PACKET_SEQ_MSK 0xff
-+#define KVASER_PCIEFD_PACKET_TYPE_MASK GENMASK(31, 28)
-+#define KVASER_PCIEFD_PACKET_CHID_MASK GENMASK(27, 25)
-+#define KVASER_PCIEFD_PACKET_SEQ_MASK GENMASK(7, 0)
- 
- /* KCAN Transmit/Receive data packet, first word */
- #define KVASER_PCIEFD_RPACKET_IDE BIT(30)
- #define KVASER_PCIEFD_RPACKET_RTR BIT(29)
-+#define KVASER_PCIEFD_RPACKET_ID_MASK GENMASK(28, 0)
- /* KCAN Transmit data packet, second word */
- #define KVASER_PCIEFD_TPACKET_AREQ BIT(31)
- #define KVASER_PCIEFD_TPACKET_SMS BIT(16)
-@@ -220,7 +228,7 @@ MODULE_DESCRIPTION("CAN driver for Kvaser CAN/PCIe devices");
- #define KVASER_PCIEFD_RPACKET_FDF BIT(15)
- #define KVASER_PCIEFD_RPACKET_BRS BIT(14)
- #define KVASER_PCIEFD_RPACKET_ESI BIT(13)
--#define KVASER_PCIEFD_RPACKET_DLC_SHIFT 8
-+#define KVASER_PCIEFD_RPACKET_DLC_MASK GENMASK(11, 8)
- 
- /* KCAN Transmit acknowledge packet, first word */
- #define KVASER_PCIEFD_APACKET_NACK BIT(11)
-@@ -233,7 +241,8 @@ MODULE_DESCRIPTION("CAN driver for Kvaser CAN/PCIe devices");
- #define KVASER_PCIEFD_SPACK_IRM BIT(21)
- #define KVASER_PCIEFD_SPACK_IDET BIT(20)
- #define KVASER_PCIEFD_SPACK_BOFF BIT(16)
--#define KVASER_PCIEFD_SPACK_RXERR_SHIFT 8
-+#define KVASER_PCIEFD_SPACK_RXERR_MASK GENMASK(15, 8)
-+#define KVASER_PCIEFD_SPACK_TXERR_MASK GENMASK(7, 0)
- /* KCAN Status packet, second word */
- #define KVASER_PCIEFD_SPACK_EPLR BIT(24)
- #define KVASER_PCIEFD_SPACK_EWLR BIT(23)
-@@ -318,7 +327,7 @@ static void kvaser_pciefd_request_status(struct kvaser_pciefd_can *can)
- 	u32 cmd;
- 
- 	cmd = KVASER_PCIEFD_KCAN_CMD_SRQ;
--	cmd |= ++can->cmd_seq << KVASER_PCIEFD_KCAN_CMD_SEQ_SHIFT;
-+	cmd |= FIELD_PREP(KVASER_PCIEFD_KCAN_CMD_SEQ_MASK, ++can->cmd_seq);
- 	iowrite32(cmd, can->reg_base + KVASER_PCIEFD_KCAN_CMD_REG);
- }
- 
-@@ -418,7 +427,7 @@ static void kvaser_pciefd_start_controller_flush(struct kvaser_pciefd_can *can)
- 
- 		/* If controller is already idle, run abort, flush and reset */
- 		cmd = KVASER_PCIEFD_KCAN_CMD_AT;
--		cmd |= ++can->cmd_seq << KVASER_PCIEFD_KCAN_CMD_SEQ_SHIFT;
-+		cmd |= FIELD_PREP(KVASER_PCIEFD_KCAN_CMD_SEQ_MASK, ++can->cmd_seq);
- 		iowrite32(cmd, can->reg_base + KVASER_PCIEFD_KCAN_CMD_REG);
- 	} else if (!(status & KVASER_PCIEFD_KCAN_STAT_RMR)) {
- 		u32 mode;
-@@ -489,10 +498,10 @@ static void kvaser_pciefd_pwm_stop(struct kvaser_pciefd_can *can)
- 
- 	spin_lock_irqsave(&can->lock, irq);
- 	pwm_ctrl = ioread32(can->reg_base + KVASER_PCIEFD_KCAN_PWM_REG);
--	top = (pwm_ctrl >> KVASER_PCIEFD_KCAN_PWM_TOP_SHIFT) & 0xff;
-+	top = FIELD_GET(KVASER_PCIEFD_KCAN_PWM_TOP_MASK, pwm_ctrl);
- 
- 	/* Set duty cycle to zero */
--	pwm_ctrl |= top;
-+	pwm_ctrl |= FIELD_PREP(KVASER_PCIEFD_KCAN_PWM_TRIGGER_MASK, top);
- 	iowrite32(pwm_ctrl, can->reg_base + KVASER_PCIEFD_KCAN_PWM_REG);
- 	spin_unlock_irqrestore(&can->lock, irq);
- }
-@@ -509,14 +518,14 @@ static void kvaser_pciefd_pwm_start(struct kvaser_pciefd_can *can)
- 	/* Set frequency to 500 KHz*/
- 	top = can->kv_pcie->bus_freq / (2 * 500000) - 1;
- 
--	pwm_ctrl = top & 0xff;
--	pwm_ctrl |= (top & 0xff) << KVASER_PCIEFD_KCAN_PWM_TOP_SHIFT;
-+	pwm_ctrl = FIELD_PREP(KVASER_PCIEFD_KCAN_PWM_TRIGGER_MASK, top);
-+	pwm_ctrl |= FIELD_PREP(KVASER_PCIEFD_KCAN_PWM_TOP_MASK, top);
- 	iowrite32(pwm_ctrl, can->reg_base + KVASER_PCIEFD_KCAN_PWM_REG);
- 
- 	/* Set duty cycle to 95 */
- 	trigger = (100 * top - 95 * (top + 1) + 50) / 100;
--	pwm_ctrl = trigger & 0xff;
--	pwm_ctrl |= (top & 0xff) << KVASER_PCIEFD_KCAN_PWM_TOP_SHIFT;
-+	pwm_ctrl = FIELD_PREP(KVASER_PCIEFD_KCAN_PWM_TRIGGER_MASK, trigger);
-+	pwm_ctrl |= FIELD_PREP(KVASER_PCIEFD_KCAN_PWM_TOP_MASK, top);
- 	iowrite32(pwm_ctrl, can->reg_base + KVASER_PCIEFD_KCAN_PWM_REG);
- 	spin_unlock_irqrestore(&can->lock, irq);
- }
-@@ -581,8 +590,8 @@ static int kvaser_pciefd_prepare_tx_packet(struct kvaser_pciefd_tx_packet *p,
- 	if (cf->can_id & CAN_EFF_FLAG)
- 		p->header[0] |= KVASER_PCIEFD_RPACKET_IDE;
- 
--	p->header[0] |= cf->can_id & CAN_EFF_MASK;
--	p->header[1] |= can_fd_len2dlc(cf->len) << KVASER_PCIEFD_RPACKET_DLC_SHIFT;
-+	p->header[0] |= FIELD_PREP(KVASER_PCIEFD_RPACKET_ID_MASK, cf->can_id);
-+	p->header[1] |= FIELD_PREP(KVASER_PCIEFD_RPACKET_DLC_MASK, can_fd_len2dlc(cf->len));
- 	p->header[1] |= KVASER_PCIEFD_TPACKET_AREQ;
- 
- 	if (can_is_canfd_skb(skb)) {
-@@ -593,7 +602,7 @@ static int kvaser_pciefd_prepare_tx_packet(struct kvaser_pciefd_tx_packet *p,
- 			p->header[1] |= KVASER_PCIEFD_RPACKET_ESI;
- 	}
- 
--	p->header[1] |= seq & KVASER_PCIEFD_PACKET_SEQ_MSK;
-+	p->header[1] |= FIELD_PREP(KVASER_PCIEFD_PACKET_SEQ_MASK, seq);
- 
- 	packet_size = cf->len;
- 	memcpy(p->data, cf->data, packet_size);
-@@ -645,7 +654,8 @@ static netdev_tx_t kvaser_pciefd_start_xmit(struct sk_buff *skb,
- 			     KVASER_PCIEFD_KCAN_FIFO_LAST_REG);
- 	}
- 
--	count = ioread32(can->reg_base + KVASER_PCIEFD_KCAN_TX_NPACKETS_REG);
-+	count = FIELD_GET(KVASER_PCIEFD_KCAN_TX_NR_PACKETS_CURRENT_MASK,
-+			  ioread32(can->reg_base + KVASER_PCIEFD_KCAN_TX_NPACKETS_REG));
- 	/* No room for a new message, stop the queue until at least one
- 	 * successful transmit
- 	 */
-@@ -670,12 +680,10 @@ static int kvaser_pciefd_set_bittiming(struct kvaser_pciefd_can *can, bool data)
- 	else
- 		bt = &can->can.bittiming;
- 
--	btrn = ((bt->phase_seg2 - 1) & 0x1f) <<
--	       KVASER_PCIEFD_KCAN_BTRN_TSEG2_SHIFT |
--	       (((bt->prop_seg + bt->phase_seg1) - 1) & 0x1ff) <<
--	       KVASER_PCIEFD_KCAN_BTRN_TSEG1_SHIFT |
--	       ((bt->sjw - 1) & 0xf) << KVASER_PCIEFD_KCAN_BTRN_SJW_SHIFT |
--	       ((bt->brp - 1) & 0x1fff);
-+	btrn = FIELD_PREP(KVASER_PCIEFD_KCAN_BTRN_TSEG2_MASK, bt->phase_seg2 - 1) |
-+	       FIELD_PREP(KVASER_PCIEFD_KCAN_BTRN_TSEG1_MASK, bt->prop_seg + bt->phase_seg1 - 1) |
-+	       FIELD_PREP(KVASER_PCIEFD_KCAN_BTRN_SJW_MASK, bt->sjw - 1) |
-+	       FIELD_PREP(KVASER_PCIEFD_KCAN_BTRN_BRP_MASK, bt->brp - 1);
- 
- 	spin_lock_irqsave(&can->lock, irq_flags);
- 	mode = ioread32(can->reg_base + KVASER_PCIEFD_KCAN_MODE_REG);
-@@ -771,7 +779,7 @@ static int kvaser_pciefd_setup_can_ctrls(struct kvaser_pciefd *pcie)
- 	for (i = 0; i < pcie->nr_channels; i++) {
- 		struct net_device *netdev;
- 		struct kvaser_pciefd_can *can;
--		u32 status, tx_npackets;
-+		u32 status, tx_nr_packets_max;
- 
- 		netdev = alloc_candev(sizeof(struct kvaser_pciefd_can),
- 				      KVASER_PCIEFD_CAN_TX_MAX_COUNT);
-@@ -798,10 +806,10 @@ static int kvaser_pciefd_setup_can_ctrls(struct kvaser_pciefd *pcie)
- 		/* Disable Bus load reporting */
- 		iowrite32(0, can->reg_base + KVASER_PCIEFD_KCAN_BUS_LOAD_REG);
- 
--		tx_npackets = ioread32(can->reg_base +
--				       KVASER_PCIEFD_KCAN_TX_NPACKETS_REG);
--		if (((tx_npackets >> KVASER_PCIEFD_KCAN_TX_NPACKETS_MAX_SHIFT) &
--		      0xff) < KVASER_PCIEFD_CAN_TX_MAX_COUNT) {
-+		tx_nr_packets_max =
-+			FIELD_GET(KVASER_PCIEFD_KCAN_TX_NR_PACKETS_MAX_MASK,
-+				  ioread32(can->reg_base + KVASER_PCIEFD_KCAN_TX_NPACKETS_REG));
-+		if (tx_nr_packets_max < KVASER_PCIEFD_CAN_TX_MAX_COUNT) {
- 			dev_err(&pcie->pci->dev,
- 				"Max Tx count is smaller than expected\n");
- 
-@@ -924,8 +932,9 @@ static int kvaser_pciefd_setup_dma(struct kvaser_pciefd *pcie)
- 		  pcie->reg_base + KVASER_PCIEFD_SRB_CMD_REG);
- 
- 	/* Empty Rx FIFO */
--	srb_packet_count = ioread32(pcie->reg_base + KVASER_PCIEFD_SRB_RX_NR_PACKETS_REG) &
--			   KVASER_PCIEFD_SRB_RX_NR_PACKETS_MASK;
-+	srb_packet_count =
-+		FIELD_GET(KVASER_PCIEFD_SRB_RX_NR_PACKETS_MASK,
-+			  ioread32(pcie->reg_base + KVASER_PCIEFD_SRB_RX_NR_PACKETS_REG));
- 	while (srb_packet_count) {
- 		/* Drop current packet in FIFO */
- 		ioread32(pcie->reg_base + KVASER_PCIEFD_SRB_FIFO_LAST_REG);
-@@ -947,17 +956,17 @@ static int kvaser_pciefd_setup_dma(struct kvaser_pciefd *pcie)
- 
- static int kvaser_pciefd_setup_board(struct kvaser_pciefd *pcie)
- {
--	u32 sysid, srb_status, build;
-+	u32 version, srb_status, build;
- 
--	sysid = ioread32(pcie->reg_base + KVASER_PCIEFD_SYSID_VERSION_REG);
-+	version = ioread32(pcie->reg_base + KVASER_PCIEFD_SYSID_VERSION_REG);
- 	pcie->nr_channels = min(KVASER_PCIEFD_MAX_CAN_CHANNELS,
--				((sysid >> KVASER_PCIEFD_SYSID_NRCHAN_SHIFT) & 0xff));
-+				FIELD_GET(KVASER_PCIEFD_SYSID_VERSION_NR_CHAN_MASK, version));
- 
- 	build = ioread32(pcie->reg_base + KVASER_PCIEFD_SYSID_BUILD_REG);
--	dev_dbg(&pcie->pci->dev, "Version %u.%u.%u\n",
--		(sysid >> KVASER_PCIEFD_SYSID_MAJOR_VER_SHIFT) & 0xff,
--		sysid & 0xff,
--		(build >> KVASER_PCIEFD_SYSID_BUILD_VER_SHIFT) & 0x7fff);
-+	dev_dbg(&pcie->pci->dev, "Version %lu.%lu.%lu\n",
-+		FIELD_GET(KVASER_PCIEFD_SYSID_VERSION_MAJOR_MASK, version),
-+		FIELD_GET(KVASER_PCIEFD_SYSID_VERSION_MINOR_MASK, version),
-+		FIELD_GET(KVASER_PCIEFD_SYSID_BUILD_SEQ_MASK, build));
- 
- 	srb_status = ioread32(pcie->reg_base + KVASER_PCIEFD_SRB_STAT_REG);
- 	if (!(srb_status & KVASER_PCIEFD_SRB_STAT_DMA)) {
-@@ -986,7 +995,7 @@ static int kvaser_pciefd_handle_data_packet(struct kvaser_pciefd *pcie,
- 	struct canfd_frame *cf;
- 	struct can_priv *priv;
- 	struct net_device_stats *stats;
--	u8 ch_id = (p->header[1] >> KVASER_PCIEFD_PACKET_CHID_SHIFT) & 0x7;
-+	u8 ch_id = FIELD_GET(KVASER_PCIEFD_PACKET_CHID_MASK, p->header[1]);
- 
- 	if (ch_id >= pcie->nr_channels)
- 		return -EIO;
-@@ -1014,11 +1023,11 @@ static int kvaser_pciefd_handle_data_packet(struct kvaser_pciefd *pcie,
- 		}
- 	}
- 
--	cf->can_id = p->header[0] & CAN_EFF_MASK;
-+	cf->can_id = FIELD_GET(KVASER_PCIEFD_RPACKET_ID_MASK, p->header[0]);
- 	if (p->header[0] & KVASER_PCIEFD_RPACKET_IDE)
- 		cf->can_id |= CAN_EFF_FLAG;
- 
--	cf->len = can_fd_dlc2len(p->header[1] >> KVASER_PCIEFD_RPACKET_DLC_SHIFT);
-+	cf->len = can_fd_dlc2len(FIELD_GET(KVASER_PCIEFD_RPACKET_DLC_MASK, p->header[1]));
- 
- 	if (p->header[0] & KVASER_PCIEFD_RPACKET_RTR) {
- 		cf->can_id |= CAN_RTR_FLAG;
-@@ -1095,8 +1104,8 @@ static int kvaser_pciefd_rx_error_frame(struct kvaser_pciefd_can *can,
- 
- 	old_state = can->can.state;
- 
--	bec.txerr = p->header[0] & 0xff;
--	bec.rxerr = (p->header[0] >> KVASER_PCIEFD_SPACK_RXERR_SHIFT) & 0xff;
-+	bec.txerr = FIELD_GET(KVASER_PCIEFD_SPACK_TXERR_MASK, p->header[0]);
-+	bec.rxerr = FIELD_GET(KVASER_PCIEFD_SPACK_RXERR_MASK, p->header[0]);
- 
- 	kvaser_pciefd_packet_to_state(p, &bec, &new_state, &tx_state,
- 				      &rx_state);
-@@ -1145,7 +1154,7 @@ static int kvaser_pciefd_handle_error_packet(struct kvaser_pciefd *pcie,
- 					     struct kvaser_pciefd_rx_packet *p)
- {
- 	struct kvaser_pciefd_can *can;
--	u8 ch_id = (p->header[1] >> KVASER_PCIEFD_PACKET_CHID_SHIFT) & 0x7;
-+	u8 ch_id = FIELD_GET(KVASER_PCIEFD_PACKET_CHID_MASK, p->header[1]);
- 
- 	if (ch_id >= pcie->nr_channels)
- 		return -EIO;
-@@ -1169,8 +1178,8 @@ static int kvaser_pciefd_handle_status_resp(struct kvaser_pciefd_can *can,
- 
- 	old_state = can->can.state;
- 
--	bec.txerr = p->header[0] & 0xff;
--	bec.rxerr = (p->header[0] >> KVASER_PCIEFD_SPACK_RXERR_SHIFT) & 0xff;
-+	bec.txerr = FIELD_GET(KVASER_PCIEFD_SPACK_TXERR_MASK, p->header[0]);
-+	bec.rxerr = FIELD_GET(KVASER_PCIEFD_SPACK_RXERR_MASK, p->header[0]);
- 
- 	kvaser_pciefd_packet_to_state(p, &bec, &new_state, &tx_state,
- 				      &rx_state);
-@@ -1220,7 +1229,7 @@ static int kvaser_pciefd_handle_status_packet(struct kvaser_pciefd *pcie,
- 	struct kvaser_pciefd_can *can;
- 	u8 cmdseq;
- 	u32 status;
--	u8 ch_id = (p->header[1] >> KVASER_PCIEFD_PACKET_CHID_SHIFT) & 0x7;
-+	u8 ch_id = FIELD_GET(KVASER_PCIEFD_PACKET_CHID_MASK, p->header[1]);
- 
- 	if (ch_id >= pcie->nr_channels)
- 		return -EIO;
-@@ -1228,34 +1237,35 @@ static int kvaser_pciefd_handle_status_packet(struct kvaser_pciefd *pcie,
- 	can = pcie->can[ch_id];
- 
- 	status = ioread32(can->reg_base + KVASER_PCIEFD_KCAN_STAT_REG);
--	cmdseq = (status >> KVASER_PCIEFD_KCAN_STAT_SEQNO_SHIFT) & 0xff;
-+	cmdseq = FIELD_GET(KVASER_PCIEFD_KCAN_STAT_SEQNO_MASK, status);
- 
- 	/* Reset done, start abort and flush */
- 	if (p->header[0] & KVASER_PCIEFD_SPACK_IRM &&
- 	    p->header[0] & KVASER_PCIEFD_SPACK_RMCD &&
- 	    p->header[1] & KVASER_PCIEFD_SPACK_AUTO &&
--	    cmdseq == (p->header[1] & KVASER_PCIEFD_PACKET_SEQ_MSK) &&
-+	    cmdseq == FIELD_GET(KVASER_PCIEFD_PACKET_SEQ_MASK, p->header[1]) &&
- 	    status & KVASER_PCIEFD_KCAN_STAT_IDLE) {
- 		u32 cmd;
- 
- 		iowrite32(KVASER_PCIEFD_KCAN_IRQ_ABD,
- 			  can->reg_base + KVASER_PCIEFD_KCAN_IRQ_REG);
- 		cmd = KVASER_PCIEFD_KCAN_CMD_AT;
--		cmd |= ++can->cmd_seq << KVASER_PCIEFD_KCAN_CMD_SEQ_SHIFT;
-+		cmd |= FIELD_PREP(KVASER_PCIEFD_KCAN_CMD_SEQ_MASK, ++can->cmd_seq);
- 		iowrite32(cmd, can->reg_base + KVASER_PCIEFD_KCAN_CMD_REG);
- 	} else if (p->header[0] & KVASER_PCIEFD_SPACK_IDET &&
- 		   p->header[0] & KVASER_PCIEFD_SPACK_IRM &&
--		   cmdseq == (p->header[1] & KVASER_PCIEFD_PACKET_SEQ_MSK) &&
-+		   cmdseq == FIELD_GET(KVASER_PCIEFD_PACKET_SEQ_MASK, p->header[1]) &&
- 		   status & KVASER_PCIEFD_KCAN_STAT_IDLE) {
- 		/* Reset detected, send end of flush if no packet are in FIFO */
--		u8 count = ioread32(can->reg_base +
--				    KVASER_PCIEFD_KCAN_TX_NPACKETS_REG) & 0xff;
-+		u8 count = FIELD_GET(KVASER_PCIEFD_KCAN_TX_NR_PACKETS_CURRENT_MASK,
-+				     ioread32(can->reg_base + KVASER_PCIEFD_KCAN_TX_NPACKETS_REG));
- 
- 		if (!count)
--			iowrite32(KVASER_PCIEFD_KCAN_CTRL_EFLUSH,
-+			iowrite32(FIELD_PREP(KVASER_PCIEFD_KCAN_CTRL_TYPE_MASK,
-+					     KVASER_PCIEFD_KCAN_CTRL_TYPE_EFLUSH),
- 				  can->reg_base + KVASER_PCIEFD_KCAN_CTRL_REG);
- 	} else if (!(p->header[1] & KVASER_PCIEFD_SPACK_AUTO) &&
--		   cmdseq == (p->header[1] & KVASER_PCIEFD_PACKET_SEQ_MSK)) {
-+		   cmdseq == FIELD_GET(KVASER_PCIEFD_PACKET_SEQ_MASK, p->header[1])) {
- 		/* Response to status request received */
- 		kvaser_pciefd_handle_status_resp(can, p);
- 		if (can->can.state != CAN_STATE_BUS_OFF &&
-@@ -1306,7 +1316,7 @@ static int kvaser_pciefd_handle_ack_packet(struct kvaser_pciefd *pcie,
- {
- 	struct kvaser_pciefd_can *can;
- 	bool one_shot_fail = false;
--	u8 ch_id = (p->header[1] >> KVASER_PCIEFD_PACKET_CHID_SHIFT) & 0x7;
-+	u8 ch_id = FIELD_GET(KVASER_PCIEFD_PACKET_CHID_MASK, p->header[1]);
- 
- 	if (ch_id >= pcie->nr_channels)
- 		return -EIO;
-@@ -1324,7 +1334,7 @@ static int kvaser_pciefd_handle_ack_packet(struct kvaser_pciefd *pcie,
- 	if (p->header[0] & KVASER_PCIEFD_APACKET_FLU) {
- 		netdev_dbg(can->can.dev, "Packet was flushed\n");
- 	} else {
--		int echo_idx = p->header[0] & KVASER_PCIEFD_PACKET_SEQ_MSK;
-+		int echo_idx = FIELD_GET(KVASER_PCIEFD_PACKET_SEQ_MASK, p->header[0]);
- 		int dlc;
- 		u8 count;
- 		struct sk_buff *skb;
-@@ -1333,8 +1343,8 @@ static int kvaser_pciefd_handle_ack_packet(struct kvaser_pciefd *pcie,
- 		if (skb)
- 			kvaser_pciefd_set_skb_timestamp(pcie, skb, p->timestamp);
- 		dlc = can_get_echo_skb(can->can.dev, echo_idx, NULL);
--		count = ioread32(can->reg_base +
--				    KVASER_PCIEFD_KCAN_TX_NPACKETS_REG) & 0xff;
-+		count = FIELD_GET(KVASER_PCIEFD_KCAN_TX_NR_PACKETS_CURRENT_MASK,
-+				  ioread32(can->reg_base + KVASER_PCIEFD_KCAN_TX_NPACKETS_REG));
- 
- 		if (count < KVASER_PCIEFD_CAN_TX_MAX_COUNT &&
- 		    netif_queue_stopped(can->can.dev))
-@@ -1355,7 +1365,7 @@ static int kvaser_pciefd_handle_eflush_packet(struct kvaser_pciefd *pcie,
- 					      struct kvaser_pciefd_rx_packet *p)
- {
- 	struct kvaser_pciefd_can *can;
--	u8 ch_id = (p->header[1] >> KVASER_PCIEFD_PACKET_CHID_SHIFT) & 0x7;
-+	u8 ch_id = FIELD_GET(KVASER_PCIEFD_PACKET_CHID_MASK, p->header[1]);
- 
- 	if (ch_id >= pcie->nr_channels)
- 		return -EIO;
-@@ -1394,15 +1404,15 @@ static int kvaser_pciefd_read_packet(struct kvaser_pciefd *pcie, int *start_pos,
- 	pos += 2;
- 	p->timestamp = le64_to_cpu(timestamp);
- 
--	type = (p->header[1] >> KVASER_PCIEFD_PACKET_TYPE_SHIFT) & 0xf;
-+	type = FIELD_GET(KVASER_PCIEFD_PACKET_TYPE_MASK, p->header[1]);
- 	switch (type) {
- 	case KVASER_PCIEFD_PACK_TYPE_DATA:
- 		ret = kvaser_pciefd_handle_data_packet(pcie, p, &buffer[pos]);
- 		if (!(p->header[0] & KVASER_PCIEFD_RPACKET_RTR)) {
- 			u8 data_len;
- 
--			data_len = can_fd_dlc2len(p->header[1] >>
--					       KVASER_PCIEFD_RPACKET_DLC_SHIFT);
-+			data_len = can_fd_dlc2len(FIELD_GET(KVASER_PCIEFD_RPACKET_DLC_MASK,
-+							    p->header[1]));
- 			pos += DIV_ROUND_UP(data_len, 4);
- 		}
- 		break;
-@@ -1520,7 +1530,7 @@ static irqreturn_t kvaser_pciefd_irq_handler(int irq, void *dev)
- 
- 	board_irq = ioread32(pcie->reg_base + KVASER_PCIEFD_IRQ_REG);
- 
--	if (!(board_irq & KVASER_PCIEFD_IRQ_ALL_MSK))
-+	if (!(board_irq & KVASER_PCIEFD_IRQ_ALL_MASK))
- 		return IRQ_NONE;
- 
- 	if (board_irq & KVASER_PCIEFD_IRQ_SRB)
-@@ -1612,7 +1622,7 @@ static int kvaser_pciefd_probe(struct pci_dev *pdev,
- 		  pcie->reg_base + KVASER_PCIEFD_SRB_IEN_REG);
- 
- 	/* Enable PCI interrupts */
--	iowrite32(KVASER_PCIEFD_IRQ_ALL_MSK,
-+	iowrite32(KVASER_PCIEFD_IRQ_ALL_MASK,
- 		  pcie->reg_base + KVASER_PCIEFD_IEN_REG);
- 
- 	/* Ready the DMA buffers */
--- 
-2.40.1
-
-
+Yes, I think so.
