@@ -2,51 +2,50 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC973C001DF
-	for <linux-can@archiver.kernel.org>; Wed, 21 Jun 2023 13:29:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85DA1EB64D7
+	for <linux-can@archiver.kernel.org>; Wed, 21 Jun 2023 13:29:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232580AbjFUN3g (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 21 Jun 2023 09:29:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57146 "EHLO
+        id S232566AbjFUN3i (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 21 Jun 2023 09:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232591AbjFUN3e (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 21 Jun 2023 09:29:34 -0400
+        with ESMTP id S232591AbjFUN3h (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 21 Jun 2023 09:29:37 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DCA119BB
-        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 06:29:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2C3199D
+        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 06:29:30 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qBxtm-0006di-4q
-        for linux-can@vger.kernel.org; Wed, 21 Jun 2023 15:29:26 +0200
+        id 1qBxto-0006i3-3g
+        for linux-can@vger.kernel.org; Wed, 21 Jun 2023 15:29:28 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 558E11DE8EB
+        by bjornoya.blackshift.org (Postfix) with SMTP id B177E1DE8FB
         for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 13:29:20 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 0E1021DE883;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id E03291DE8A6;
         Wed, 21 Jun 2023 13:29:18 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id bff4fb4b;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4d865103;
         Wed, 21 Jun 2023 13:29:16 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Miquel Raynal <miquel.raynal@bootlin.com>,
-        =?UTF-8?q?J=C3=A9r=C3=A9mie=20Dautheribes?= 
-        <jeremie.dautheribes@bootlin.com>,
+        kernel@pengutronix.de,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Thomas Kopp <Thomas.Kopp@microchip.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 13/33] can: sja1000: Prevent overrun stalls with a soft reset on Renesas SoCs
-Date:   Wed, 21 Jun 2023 15:28:54 +0200
-Message-Id: <20230621132914.412546-14-mkl@pengutronix.de>
+Subject: [PATCH net-next 18/33] can: length: refactor frame lengths definition to add size in bits
+Date:   Wed, 21 Jun 2023 15:28:59 +0200
+Message-Id: <20230621132914.412546-19-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230621132914.412546-1-mkl@pengutronix.de>
 References: <20230621132914.412546-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -56,150 +55,455 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-In their RZN1 SoC, Renesas put a CAN controller supposed to act very
-similarly to the original Philips sja1000. In practice, while flooding
-the bus with another device, we discovered that the controller very
-often after an overrun situation would just refuse any new frame, drop
-them all and trigger over and over again the overrun interrupt, even
-though the buffer would have been totally emptied. The controller acts
-like if its internal buffer offsets (where it writes and where the host
-reads) where totally screwed-up.
+Introduce a method to calculate the exact size in bits of a CAN(-FD)
+frame with or without dynamic bitstuffing.
 
-Renesas manual mentions a single action to perform in order to
-resynchronize the read and write offsets within the buffer: performing
-a soft reset.
+These are all the possible combinations taken into account:
 
-Performing a soft reset takes a bit of time and involves small delays,
-so better do that in a threaded handler rather than inside the hard IRQ
-handler.
+  - Classical CAN or CAN-FD
+  - Standard or Extended frame format
+  - CAN-FD CRC17 or CRC21
+  - Include or not intermission
 
-Add platform data to recognize the platforms which need this workaround,
-and when the faulty situation is diagnosed, stop what is being
-performed and request the threaded handler to be executed in order to
-perform the reset.
+Instead of doing several individual macro definitions, declare the
+can_frame_bits() function-like macro. To this extent, do a full
+refactoring of the length definitions.
 
-Tested-by: Jérémie Dautheribes  <jeremie.dautheribes@bootlin.com> # 5.10
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/all/20230616134553.2786391-2-miquel.raynal@bootlin.com
+In addition add the can_frame_bytes(). This function-like macro
+replaces the existing macro:
+
+  - CAN_FRAME_OVERHEAD_SFF: can_frame_bytes(false, false, 0)
+  - CAN_FRAME_OVERHEAD_EFF: can_frame_bytes(false, true, 0)
+  - CANFD_FRAME_OVERHEAD_SFF: can_frame_bytes(true, false, 0)
+  - CANFD_FRAME_OVERHEAD_EFF: can_frame_bytes(true, true, 0)
+
+Function-like macros were chosen over inline functions because they
+can be used to initialize const struct fields.
+
+The different maximum frame lengths (maximum data length, including
+intermission) are as follow:
+
+   Frame type				bits	bytes
+  -------------------------------------------------------
+   Classic CAN SFF no bitstuffing	111	14
+   Classic CAN EFF no bitstuffing	131	17
+   Classic CAN SFF bitstuffing		135	17
+   Classic CAN EFF bitstuffing		160	20
+   CAN-FD SFF no bitstuffing		579	73
+   CAN-FD EFF no bitstuffing		598	75
+   CAN-FD SFF bitstuffing		712	89
+   CAN-FD EFF bitstuffing		736	92
+
+The macro CAN_FRAME_LEN_MAX and CANFD_FRAME_LEN_MAX are kept as an
+alias to, respectively, can_frame_bytes(false, true, CAN_MAX_DLEN) and
+can_frame_bytes(true, true, CANFD_MAX_DLEN).
+
+In addition to the above:
+
+ - Use ISO 11898-1:2015 definitions for the names of the CAN frame
+   fields.
+ - Include linux/bits.h for use of BITS_PER_BYTE.
+ - Include linux/math.h for use of mult_frac() and
+   DIV_ROUND_UP(). N.B: the use of DIV_ROUND_UP() is not new to this
+   patch, but the include was previously omitted.
+ - Add copyright 2023 for myself.
+
+Suggested-by: Thomas Kopp <Thomas.Kopp@microchip.com>
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Reviewed-by: Thomas Kopp <Thomas.Kopp@microchip.com>
+Link: https://lore.kernel.org/all/20230611025728.450837-4-mailhol.vincent@wanadoo.fr
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/sja1000/sja1000.c          | 29 +++++++++++++++++++---
- drivers/net/can/sja1000/sja1000.h          |  1 +
- drivers/net/can/sja1000/sja1000_platform.c |  5 +++-
- 3 files changed, 31 insertions(+), 4 deletions(-)
+ drivers/net/can/dev/length.c |  15 +-
+ include/linux/can/length.h   | 318 ++++++++++++++++++++++++-----------
+ 2 files changed, 224 insertions(+), 109 deletions(-)
 
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index 4719806e3a9f..0ada0e160e93 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -387,6 +387,16 @@ static void sja1000_rx(struct net_device *dev)
- 	netif_rx(skb);
+diff --git a/drivers/net/can/dev/length.c b/drivers/net/can/dev/length.c
+index b48140b1102e..b7f4d76dd444 100644
+--- a/drivers/net/can/dev/length.c
++++ b/drivers/net/can/dev/length.c
+@@ -78,18 +78,7 @@ unsigned int can_skb_get_frame_len(const struct sk_buff *skb)
+ 	else
+ 		len = cf->len;
+ 
+-	if (can_is_canfd_skb(skb)) {
+-		if (cf->can_id & CAN_EFF_FLAG)
+-			len += CANFD_FRAME_OVERHEAD_EFF;
+-		else
+-			len += CANFD_FRAME_OVERHEAD_SFF;
+-	} else {
+-		if (cf->can_id & CAN_EFF_FLAG)
+-			len += CAN_FRAME_OVERHEAD_EFF;
+-		else
+-			len += CAN_FRAME_OVERHEAD_SFF;
+-	}
+-
+-	return len;
++	return can_frame_bytes(can_is_canfd_skb(skb), cf->can_id & CAN_EFF_FLAG,
++			       false, len);
  }
- 
-+static irqreturn_t sja1000_reset_interrupt(int irq, void *dev_id)
-+{
-+	struct net_device *dev = (struct net_device *)dev_id;
-+
-+	netdev_dbg(dev, "performing a soft reset upon overrun\n");
-+	sja1000_start(dev);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
- {
- 	struct sja1000_priv *priv = netdev_priv(dev);
-@@ -397,6 +407,7 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
- 	enum can_state rx_state, tx_state;
- 	unsigned int rxerr, txerr;
- 	uint8_t ecc, alc;
-+	int ret = 0;
- 
- 	skb = alloc_can_err_skb(dev, &cf);
- 	if (skb == NULL)
-@@ -413,6 +424,15 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
- 		stats->rx_over_errors++;
- 		stats->rx_errors++;
- 		sja1000_write_cmdreg(priv, CMD_CDO);	/* clear bit */
-+
-+		/* Some controllers needs additional handling upon overrun
-+		 * condition: the controller may sometimes be totally confused
-+		 * and refuse any new frame while its buffer is empty. The only
-+		 * way to re-sync the read vs. write buffer offsets is to
-+		 * stop any current handling and perform a reset.
-+		 */
-+		if (priv->flags & SJA1000_QUIRK_RESET_ON_OVERRUN)
-+			ret = IRQ_WAKE_THREAD;
- 	}
- 
- 	if (isrc & IRQ_EI) {
-@@ -492,7 +512,7 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
- 
- 	netif_rx(skb);
- 
--	return 0;
-+	return ret;
- }
- 
- irqreturn_t sja1000_interrupt(int irq, void *dev_id)
-@@ -548,6 +568,8 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
- 		if (isrc & (IRQ_DOI | IRQ_EI | IRQ_BEI | IRQ_EPI | IRQ_ALI)) {
- 			/* error interrupt */
- 			err = sja1000_err(dev, isrc, status);
-+			if (err == IRQ_WAKE_THREAD)
-+				ret = err;
- 			if (err)
- 				break;
- 		}
-@@ -582,8 +604,9 @@ static int sja1000_open(struct net_device *dev)
- 
- 	/* register interrupt handler, if not done by the device driver */
- 	if (!(priv->flags & SJA1000_CUSTOM_IRQ_HANDLER)) {
--		err = request_irq(dev->irq, sja1000_interrupt, priv->irq_flags,
--				  dev->name, (void *)dev);
-+		err = request_threaded_irq(dev->irq, sja1000_interrupt,
-+					   sja1000_reset_interrupt,
-+					   priv->irq_flags, dev->name, (void *)dev);
- 		if (err) {
- 			close_candev(dev);
- 			return -EAGAIN;
-diff --git a/drivers/net/can/sja1000/sja1000.h b/drivers/net/can/sja1000/sja1000.h
-index 7f736f1df547..f015e39e2224 100644
---- a/drivers/net/can/sja1000/sja1000.h
-+++ b/drivers/net/can/sja1000/sja1000.h
-@@ -147,6 +147,7 @@
+ EXPORT_SYMBOL_GPL(can_skb_get_frame_len);
+diff --git a/include/linux/can/length.h b/include/linux/can/length.h
+index 521fdbce2d69..abc978b38f79 100644
+--- a/include/linux/can/length.h
++++ b/include/linux/can/length.h
+@@ -1,132 +1,258 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ /* Copyright (C) 2020 Oliver Hartkopp <socketcan@hartkopp.net>
+  * Copyright (C) 2020 Marc Kleine-Budde <kernel@pengutronix.de>
+- * Copyright (C) 2020 Vincent Mailhol <mailhol.vincent@wanadoo.fr>
++ * Copyright (C) 2020, 2023 Vincent Mailhol <mailhol.vincent@wanadoo.fr>
   */
- #define SJA1000_CUSTOM_IRQ_HANDLER	BIT(0)
- #define SJA1000_QUIRK_NO_CDR_REG	BIT(1)
-+#define SJA1000_QUIRK_RESET_ON_OVERRUN	BIT(2)
+ 
+ #ifndef _CAN_LENGTH_H
+ #define _CAN_LENGTH_H
+ 
++#include <linux/bits.h>
+ #include <linux/can.h>
+ #include <linux/can/netlink.h>
++#include <linux/math.h>
  
  /*
-  * SJA1000 private data structure
-diff --git a/drivers/net/can/sja1000/sja1000_platform.c b/drivers/net/can/sja1000/sja1000_platform.c
-index b4889b5746e5..4e59952c66d4 100644
---- a/drivers/net/can/sja1000/sja1000_platform.c
-+++ b/drivers/net/can/sja1000/sja1000_platform.c
-@@ -106,7 +106,7 @@ static void sp_technologic_init(struct sja1000_priv *priv, struct device_node *o
- 
- static void sp_rzn1_init(struct sja1000_priv *priv, struct device_node *of)
- {
--	priv->flags = SJA1000_QUIRK_NO_CDR_REG;
-+	priv->flags = SJA1000_QUIRK_NO_CDR_REG | SJA1000_QUIRK_RESET_ON_OVERRUN;
- }
- 
- static void sp_populate(struct sja1000_priv *priv,
-@@ -277,6 +277,9 @@ static int sp_probe(struct platform_device *pdev)
- 		priv->irq_flags = IRQF_SHARED;
- 	}
- 
-+	if (priv->flags & SJA1000_QUIRK_RESET_ON_OVERRUN)
-+		priv->irq_flags |= IRQF_ONESHOT;
+- * Size of a Classical CAN Standard Frame
++ * Size of a Classical CAN Standard Frame header in bits
++ *
++ * Name of Field				Bits
++ * ---------------------------------------------------------
++ * Start Of Frame (SOF)				1
++ * Arbitration field:
++ *	base ID					11
++ *	Remote Transmission Request (RTR)	1
++ * Control field:
++ *	IDentifier Extension bit (IDE)		1
++ *	FD Format indicator (FDF)		1
++ *	Data Length Code (DLC)			4
++ *
++ * including all fields preceding the data field, ignoring bitstuffing
++ */
++#define CAN_FRAME_HEADER_SFF_BITS 19
 +
- 	dev->irq = irq;
- 	priv->reg_base = addr;
++/*
++ * Size of a Classical CAN Extended Frame header in bits
++ *
++ * Name of Field				Bits
++ * ---------------------------------------------------------
++ * Start Of Frame (SOF)				1
++ * Arbitration field:
++ *	base ID					11
++ *	Substitute Remote Request (SRR)		1
++ *	IDentifier Extension bit (IDE)		1
++ *	ID extension				18
++ *	Remote Transmission Request (RTR)	1
++ * Control field:
++ *	FD Format indicator (FDF)		1
++ *	Reserved bit (r0)			1
++ *	Data length code (DLC)			4
++ *
++ * including all fields preceding the data field, ignoring bitstuffing
++ */
++#define CAN_FRAME_HEADER_EFF_BITS 39
++
++/*
++ * Size of a CAN-FD Standard Frame in bits
++ *
++ * Name of Field				Bits
++ * ---------------------------------------------------------
++ * Start Of Frame (SOF)				1
++ * Arbitration field:
++ *	base ID					11
++ *	Remote Request Substitution (RRS)	1
++ * Control field:
++ *	IDentifier Extension bit (IDE)		1
++ *	FD Format indicator (FDF)		1
++ *	Reserved bit (res)			1
++ *	Bit Rate Switch (BRS)			1
++ *	Error Status Indicator (ESI)		1
++ *	Data length code (DLC)			4
++ *
++ * including all fields preceding the data field, ignoring bitstuffing
++ */
++#define CANFD_FRAME_HEADER_SFF_BITS 22
++
++/*
++ * Size of a CAN-FD Extended Frame in bits
++ *
++ * Name of Field				Bits
++ * ---------------------------------------------------------
++ * Start Of Frame (SOF)				1
++ * Arbitration field:
++ *	base ID					11
++ *	Substitute Remote Request (SRR)		1
++ *	IDentifier Extension bit (IDE)		1
++ *	ID extension				18
++ *	Remote Request Substitution (RRS)	1
++ * Control field:
++ *	FD Format indicator (FDF)		1
++ *	Reserved bit (res)			1
++ *	Bit Rate Switch (BRS)			1
++ *	Error Status Indicator (ESI)		1
++ *	Data length code (DLC)			4
++ *
++ * including all fields preceding the data field, ignoring bitstuffing
++ */
++#define CANFD_FRAME_HEADER_EFF_BITS 41
++
++/*
++ * Size of a CAN CRC Field in bits
++ *
++ * Name of Field			Bits
++ * ---------------------------------------------------------
++ * CRC sequence (CRC15)			15
++ * CRC Delimiter			1
++ *
++ * ignoring bitstuffing
++ */
++#define CAN_FRAME_CRC_FIELD_BITS 16
++
++/*
++ * Size of a CAN-FD CRC17 Field in bits (length: 0..16)
++ *
++ * Name of Field			Bits
++ * ---------------------------------------------------------
++ * Stuff Count				4
++ * CRC Sequence (CRC17)			17
++ * CRC Delimiter			1
++ * Fixed stuff bits			6
++ */
++#define CANFD_FRAME_CRC17_FIELD_BITS 28
++
++/*
++ * Size of a CAN-FD CRC21 Field in bits (length: 20..64)
++ *
++ * Name of Field			Bits
++ * ---------------------------------------------------------
++ * Stuff Count				4
++ * CRC sequence (CRC21)			21
++ * CRC Delimiter			1
++ * Fixed stuff bits			7
++ */
++#define CANFD_FRAME_CRC21_FIELD_BITS 33
++
++/*
++ * Size of a CAN(-FD) Frame footer in bits
+  *
+  * Name of Field			Bits
+  * ---------------------------------------------------------
+- * Start-of-frame			1
+- * Identifier				11
+- * Remote transmission request (RTR)	1
+- * Identifier extension bit (IDE)	1
+- * Reserved bit (r0)			1
+- * Data length code (DLC)		4
+- * Data field				0...64
+- * CRC					15
+- * CRC delimiter			1
+  * ACK slot				1
+  * ACK delimiter			1
+- * End-of-frame (EOF)			7
+- * Inter frame spacing			3
++ * End Of Frame (EOF)			7
+  *
+- * rounded up and ignoring bitstuffing
++ * including all fields following the CRC field
+  */
+-#define CAN_FRAME_OVERHEAD_SFF DIV_ROUND_UP(47, 8)
++#define CAN_FRAME_FOOTER_BITS 9
  
+ /*
+- * Size of a Classical CAN Extended Frame
+- *
+- * Name of Field			Bits
+- * ---------------------------------------------------------
+- * Start-of-frame			1
+- * Identifier A				11
+- * Substitute remote request (SRR)	1
+- * Identifier extension bit (IDE)	1
+- * Identifier B				18
+- * Remote transmission request (RTR)	1
+- * Reserved bits (r1, r0)		2
+- * Data length code (DLC)		4
+- * Data field				0...64
+- * CRC					15
+- * CRC delimiter			1
+- * ACK slot				1
+- * ACK delimiter			1
+- * End-of-frame (EOF)			7
+- * Inter frame spacing			3
+- *
+- * rounded up and ignoring bitstuffing
++ * First part of the Inter Frame Space
++ * (a.k.a. IMF - intermission field)
+  */
+-#define CAN_FRAME_OVERHEAD_EFF DIV_ROUND_UP(67, 8)
++#define CAN_INTERMISSION_BITS 3
++
++/**
++ * can_bitstuffing_len() - Calculate the maximum length with bitstuffing
++ * @destuffed_len: length of a destuffed bit stream
++ *
++ * The worst bit stuffing case is a sequence in which dominant and
++ * recessive bits alternate every four bits:
++ *
++ *   Destuffed: 1 1111  0000  1111  0000  1111
++ *   Stuffed:   1 1111o 0000i 1111o 0000i 1111o
++ *
++ * Nomenclature
++ *
++ *  - "0": dominant bit
++ *  - "o": dominant stuff bit
++ *  - "1": recessive bit
++ *  - "i": recessive stuff bit
++ *
++ * Aside from the first bit, one stuff bit is added every four bits.
++ *
++ * Return: length of the stuffed bit stream in the worst case scenario.
++ */
++#define can_bitstuffing_len(destuffed_len)			\
++	(destuffed_len + (destuffed_len - 1) / 4)
++
++#define __can_bitstuffing_len(bitstuffing, destuffed_len)	\
++	(bitstuffing ? can_bitstuffing_len(destuffed_len) :	\
++		       destuffed_len)
++
++#define __can_cc_frame_bits(is_eff, bitstuffing,		\
++			    intermission, data_len)		\
++(								\
++	__can_bitstuffing_len(bitstuffing,			\
++		(is_eff ? CAN_FRAME_HEADER_EFF_BITS :		\
++			  CAN_FRAME_HEADER_SFF_BITS) +		\
++		(data_len) * BITS_PER_BYTE +			\
++		CAN_FRAME_CRC_FIELD_BITS) +			\
++	CAN_FRAME_FOOTER_BITS +					\
++	(intermission ? CAN_INTERMISSION_BITS : 0)		\
++)
++
++#define __can_fd_frame_bits(is_eff, bitstuffing,		\
++			    intermission, data_len)		\
++(								\
++	__can_bitstuffing_len(bitstuffing,			\
++		(is_eff ? CANFD_FRAME_HEADER_EFF_BITS :		\
++			  CANFD_FRAME_HEADER_SFF_BITS) +	\
++		(data_len) * BITS_PER_BYTE) +			\
++	((data_len) <= 16 ?					\
++		CANFD_FRAME_CRC17_FIELD_BITS :			\
++		CANFD_FRAME_CRC21_FIELD_BITS) +			\
++	CAN_FRAME_FOOTER_BITS +					\
++	(intermission ? CAN_INTERMISSION_BITS : 0)		\
++)
++
++/**
++ * can_frame_bits() - Calculate the number of bits on the wire in a
++ *	CAN frame
++ * @is_fd: true: CAN-FD frame; false: Classical CAN frame.
++ * @is_eff: true: Extended frame; false: Standard frame.
++ * @bitstuffing: true: calculate the bitstuffing worst case; false:
++ *	calculate the bitstuffing best case (no dynamic
++ *	bitstuffing). CAN-FD's fixed stuff bits are always included.
++ * @intermission: if and only if true, include the inter frame space
++ *	assuming no bus idle (i.e. only the intermission). Strictly
++ *	speaking, the inter frame space is not part of the
++ *	frame. However, it is needed when calculating the delay
++ *	between the Start Of Frame of two consecutive frames.
++ * @data_len: length of the data field in bytes. Correspond to
++ *	can(fd)_frame->len. Should be zero for remote frames. No
++ *	sanitization is done on @data_len and it shall have no side
++ *	effects.
++ *
++ * Return: the numbers of bits on the wire of a CAN frame.
++ */
++#define can_frame_bits(is_fd, is_eff, bitstuffing,		\
++		       intermission, data_len)			\
++(								\
++	is_fd ? __can_fd_frame_bits(is_eff, bitstuffing,	\
++				    intermission, data_len) :	\
++		__can_cc_frame_bits(is_eff, bitstuffing,	\
++				    intermission, data_len)	\
++)
+ 
+ /*
+- * Size of a CAN-FD Standard Frame
+- *
+- * Name of Field			Bits
+- * ---------------------------------------------------------
+- * Start-of-frame			1
+- * Identifier				11
+- * Remote Request Substitution (RRS)	1
+- * Identifier extension bit (IDE)	1
+- * Flexible data rate format (FDF)	1
+- * Reserved bit (r0)			1
+- * Bit Rate Switch (BRS)		1
+- * Error Status Indicator (ESI)		1
+- * Data length code (DLC)		4
+- * Data field				0...512
+- * Stuff Bit Count (SBC)		4
+- * CRC					0...16: 17 20...64:21
+- * CRC delimiter (CD)			1
+- * Fixed Stuff bits (FSB)		0...16: 6 20...64:7
+- * ACK slot (AS)			1
+- * ACK delimiter (AD)			1
+- * End-of-frame (EOF)			7
+- * Inter frame spacing			3
+- *
+- * assuming CRC21, rounded up and ignoring dynamic bitstuffing
++ * Number of bytes in a CAN frame
++ * (rounded up, including intermission)
+  */
+-#define CANFD_FRAME_OVERHEAD_SFF DIV_ROUND_UP(67, 8)
+-
+-/*
+- * Size of a CAN-FD Extended Frame
+- *
+- * Name of Field			Bits
+- * ---------------------------------------------------------
+- * Start-of-frame			1
+- * Identifier A				11
+- * Substitute remote request (SRR)	1
+- * Identifier extension bit (IDE)	1
+- * Identifier B				18
+- * Remote Request Substitution (RRS)	1
+- * Flexible data rate format (FDF)	1
+- * Reserved bit (r0)			1
+- * Bit Rate Switch (BRS)		1
+- * Error Status Indicator (ESI)		1
+- * Data length code (DLC)		4
+- * Data field				0...512
+- * Stuff Bit Count (SBC)		4
+- * CRC					0...16: 17 20...64:21
+- * CRC delimiter (CD)			1
+- * Fixed Stuff bits (FSB)		0...16: 6 20...64:7
+- * ACK slot (AS)			1
+- * ACK delimiter (AD)			1
+- * End-of-frame (EOF)			7
+- * Inter frame spacing			3
+- *
+- * assuming CRC21, rounded up and ignoring dynamic bitstuffing
+- */
+-#define CANFD_FRAME_OVERHEAD_EFF DIV_ROUND_UP(86, 8)
++#define can_frame_bytes(is_fd, is_eff, bitstuffing, data_len)	\
++	DIV_ROUND_UP(can_frame_bits(is_fd, is_eff, bitstuffing,	\
++				    true, data_len),		\
++		     BITS_PER_BYTE)
+ 
+ /*
+  * Maximum size of a Classical CAN frame
+- * (rounded up and ignoring bitstuffing)
++ * (rounded up, ignoring bitstuffing but including intermission)
+  */
+-#define CAN_FRAME_LEN_MAX (CAN_FRAME_OVERHEAD_EFF + CAN_MAX_DLEN)
++#define CAN_FRAME_LEN_MAX can_frame_bytes(false, true, false, CAN_MAX_DLEN)
+ 
+ /*
+  * Maximum size of a CAN-FD frame
+- * (rounded up and ignoring bitstuffing)
++ * (rounded up, ignoring dynamic bitstuffing but including intermission)
+  */
+-#define CANFD_FRAME_LEN_MAX (CANFD_FRAME_OVERHEAD_EFF + CANFD_MAX_DLEN)
++#define CANFD_FRAME_LEN_MAX can_frame_bytes(true, true, false, CANFD_MAX_DLEN)
+ 
+ /*
+  * can_cc_dlc2len(value) - convert a given data length code (dlc) of a
 -- 
 2.40.1
 
