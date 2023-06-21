@@ -2,45 +2,46 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EB24EB64DC
-	for <linux-can@archiver.kernel.org>; Wed, 21 Jun 2023 13:30:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 512EAEB64D7
+	for <linux-can@archiver.kernel.org>; Wed, 21 Jun 2023 13:30:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232615AbjFUNaU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 21 Jun 2023 09:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57598 "EHLO
+        id S231313AbjFUNaV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 21 Jun 2023 09:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232653AbjFUN3w (ORCPT
+        with ESMTP id S232660AbjFUN3w (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 21 Jun 2023 09:29:52 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 015791BD7
-        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 06:29:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC9F1BD3
+        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 06:29:38 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qBxtu-00070Z-Ub
-        for linux-can@vger.kernel.org; Wed, 21 Jun 2023 15:29:35 +0200
+        id 1qBxtw-00074i-Np
+        for linux-can@vger.kernel.org; Wed, 21 Jun 2023 15:29:36 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id C40521DE936
-        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 13:29:21 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 384461DE947
+        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 13:29:22 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5ABC51DE8EC;
-        Wed, 21 Jun 2023 13:29:20 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6EA101DE891;
+        Wed, 21 Jun 2023 13:29:18 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id be518ed6;
-        Wed, 21 Jun 2023 13:29:17 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0cae09eb;
+        Wed, 21 Jun 2023 13:29:16 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Jimmy Assarsson <extja@kvaser.com>,
+        kernel@pengutronix.de,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Thomas Kopp <Thomas.Kopp@microchip.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 27/33] can: kvaser_pciefd: Rename device ID defines
-Date:   Wed, 21 Jun 2023 15:29:08 +0200
-Message-Id: <20230621132914.412546-28-mkl@pengutronix.de>
+Subject: [PATCH net-next 16/33] can: length: fix bitstuffing count
+Date:   Wed, 21 Jun 2023 15:28:57 +0200
+Message-Id: <20230621132914.412546-17-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230621132914.412546-1-mkl@pengutronix.de>
 References: <20230621132914.412546-1-mkl@pengutronix.de>
@@ -54,73 +55,118 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Jimmy Assarsson <extja@kvaser.com>
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-Rename device ID defines to better match the product name of the supported
-device.
-Use 16 bit hexadecimal values for device IDs.
-And format kvaser_pciefd_id_table using clang-format.
+The Stuff Bit Count is always coded on 4 bits [1]. Update the Stuff
+Bit Count size accordingly.
 
-Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
-Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/all/20230529134248.752036-9-extja@kvaser.com
+In addition, the CRC fields of CAN FD Frames contain stuff bits at
+fixed positions called fixed stuff bits [2]. The CRC field starts with
+a fixed stuff bit and then has another fixed stuff bit after each
+fourth bit [2], which allows us to derive this formula:
+
+  FSB count = 1 + round_down(len(CRC field)/4)
+
+The length of the CRC field is [1]:
+
+  len(CRC field) = len(Stuff Bit Count) + len(CRC)
+                 = 4 + len(CRC)
+
+with len(CRC) either 17 or 21 bits depending of the payload length.
+
+In conclusion, for CRC17:
+
+  FSB count = 1 + round_down((4 + 17)/4)
+            = 6
+
+and for CRC 21:
+
+  FSB count = 1 + round_down((4 + 21)/4)
+            = 7
+
+Add a Fixed Stuff bits (FSB) field with above values and update
+CANFD_FRAME_OVERHEAD_SFF and CANFD_FRAME_OVERHEAD_EFF accordingly.
+
+[1] ISO 11898-1:2015 section 10.4.2.6 "CRC field":
+
+  The CRC field shall contain the CRC sequence followed by a recessive
+  CRC delimiter. For FD Frames, the CRC field shall also contain the
+  stuff count.
+
+  Stuff count
+
+  If FD Frames, the stuff count shall be at the beginning of the CRC
+  field. It shall consist of the stuff bit count modulo 8 in a 3-bit
+  gray code followed by a parity bit [...]
+
+[2] ISO 11898-1:2015 paragraph 10.5 "Frame coding":
+
+  In the CRC field of FD Frames, the stuff bits shall be inserted at
+  fixed positions; they are called fixed stuff bits. There shall be a
+  fixed stuff bit before the first bit of the stuff count, even if the
+  last bits of the preceding field are a sequence of five consecutive
+  bits of identical value, there shall be only the fixed stuff bit,
+  there shall not be two consecutive stuff bits. A further fixed stuff
+  bit shall be inserted after each fourth bit of the CRC field [...]
+
+Fixes: 85d99c3e2a13 ("can: length: can_skb_get_frame_len(): introduce function to get data length of frame in data link layer")
+Suggested-by: Thomas Kopp <Thomas.Kopp@microchip.com>
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Reviewed-by: Thomas Kopp <Thomas.Kopp@microchip.com>
+Link: https://lore.kernel.org/all/20230611025728.450837-2-mailhol.vincent@wanadoo.fr
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/kvaser_pciefd.c | 34 ++++++++++++++++++++++-----------
- 1 file changed, 23 insertions(+), 11 deletions(-)
+ include/linux/can/length.h | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
-index 8be27a7dc7e9..bf3fa51069a9 100644
---- a/drivers/net/can/kvaser_pciefd.c
-+++ b/drivers/net/can/kvaser_pciefd.c
-@@ -33,11 +33,11 @@ MODULE_DESCRIPTION("CAN driver for Kvaser CAN/PCIe devices");
- #define KVASER_PCIEFD_64BIT_DMA_BIT BIT(0)
+diff --git a/include/linux/can/length.h b/include/linux/can/length.h
+index 69336549d24f..b8c12c83bc51 100644
+--- a/include/linux/can/length.h
++++ b/include/linux/can/length.h
+@@ -72,17 +72,18 @@
+  * Error Status Indicator (ESI)		1
+  * Data length code (DLC)		4
+  * Data field				0...512
+- * Stuff Bit Count (SBC)		0...16: 4 20...64:5
++ * Stuff Bit Count (SBC)		4
+  * CRC					0...16: 17 20...64:21
+  * CRC delimiter (CD)			1
++ * Fixed Stuff bits (FSB)		0...16: 6 20...64:7
+  * ACK slot (AS)			1
+  * ACK delimiter (AD)			1
+  * End-of-frame (EOF)			7
+  * Inter frame spacing			3
+  *
+- * assuming CRC21, rounded up and ignoring bitstuffing
++ * assuming CRC21, rounded up and ignoring dynamic bitstuffing
+  */
+-#define CANFD_FRAME_OVERHEAD_SFF DIV_ROUND_UP(61, 8)
++#define CANFD_FRAME_OVERHEAD_SFF DIV_ROUND_UP(67, 8)
  
- #define KVASER_PCIEFD_VENDOR 0x1a07
--#define KVASER_PCIEFD_4HS_ID 0x0d
--#define KVASER_PCIEFD_2HS_ID 0x0e
--#define KVASER_PCIEFD_HS_ID 0x0f
--#define KVASER_PCIEFD_MINIPCIE_HS_ID 0x10
--#define KVASER_PCIEFD_MINIPCIE_2HS_ID 0x11
-+#define KVASER_PCIEFD_4HS_DEVICE_ID 0x000d
-+#define KVASER_PCIEFD_2HS_V2_DEVICE_ID 0x000e
-+#define KVASER_PCIEFD_HS_V2_DEVICE_ID 0x000f
-+#define KVASER_PCIEFD_MINIPCIE_HS_V2_DEVICE_ID 0x0010
-+#define KVASER_PCIEFD_MINIPCIE_2HS_V2_DEVICE_ID 0x0011
+ /*
+  * Size of a CAN-FD Extended Frame
+@@ -101,17 +102,18 @@
+  * Error Status Indicator (ESI)		1
+  * Data length code (DLC)		4
+  * Data field				0...512
+- * Stuff Bit Count (SBC)		0...16: 4 20...64:5
++ * Stuff Bit Count (SBC)		4
+  * CRC					0...16: 17 20...64:21
+  * CRC delimiter (CD)			1
++ * Fixed Stuff bits (FSB)		0...16: 6 20...64:7
+  * ACK slot (AS)			1
+  * ACK delimiter (AD)			1
+  * End-of-frame (EOF)			7
+  * Inter frame spacing			3
+  *
+- * assuming CRC21, rounded up and ignoring bitstuffing
++ * assuming CRC21, rounded up and ignoring dynamic bitstuffing
+  */
+-#define CANFD_FRAME_OVERHEAD_EFF DIV_ROUND_UP(80, 8)
++#define CANFD_FRAME_OVERHEAD_EFF DIV_ROUND_UP(86, 8)
  
- /* PCIe IRQ registers */
- #define KVASER_PCIEFD_IRQ_REG 0x40
-@@ -282,12 +282,24 @@ static const struct can_bittiming_const kvaser_pciefd_bittiming_const = {
- };
- 
- static struct pci_device_id kvaser_pciefd_id_table[] = {
--	{ PCI_DEVICE(KVASER_PCIEFD_VENDOR, KVASER_PCIEFD_4HS_ID), },
--	{ PCI_DEVICE(KVASER_PCIEFD_VENDOR, KVASER_PCIEFD_2HS_ID), },
--	{ PCI_DEVICE(KVASER_PCIEFD_VENDOR, KVASER_PCIEFD_HS_ID), },
--	{ PCI_DEVICE(KVASER_PCIEFD_VENDOR, KVASER_PCIEFD_MINIPCIE_HS_ID), },
--	{ PCI_DEVICE(KVASER_PCIEFD_VENDOR, KVASER_PCIEFD_MINIPCIE_2HS_ID), },
--	{ 0,},
-+	{
-+		PCI_DEVICE(KVASER_PCIEFD_VENDOR, KVASER_PCIEFD_4HS_DEVICE_ID),
-+	},
-+	{
-+		PCI_DEVICE(KVASER_PCIEFD_VENDOR, KVASER_PCIEFD_2HS_V2_DEVICE_ID),
-+	},
-+	{
-+		PCI_DEVICE(KVASER_PCIEFD_VENDOR, KVASER_PCIEFD_HS_V2_DEVICE_ID),
-+	},
-+	{
-+		PCI_DEVICE(KVASER_PCIEFD_VENDOR, KVASER_PCIEFD_MINIPCIE_HS_V2_DEVICE_ID),
-+	},
-+	{
-+		PCI_DEVICE(KVASER_PCIEFD_VENDOR, KVASER_PCIEFD_MINIPCIE_2HS_V2_DEVICE_ID),
-+	},
-+	{
-+		0,
-+	},
- };
- MODULE_DEVICE_TABLE(pci, kvaser_pciefd_id_table);
- 
+ /*
+  * Maximum size of a Classical CAN frame
 -- 
 2.40.1
 
