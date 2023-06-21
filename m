@@ -2,44 +2,44 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CB0BEB64D7
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C272C0015E
 	for <linux-can@archiver.kernel.org>; Wed, 21 Jun 2023 13:29:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232585AbjFUN3e (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S231931AbjFUN3e (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Wed, 21 Jun 2023 09:29:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57088 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232566AbjFUN3d (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 21 Jun 2023 09:29:33 -0400
+        with ESMTP id S232585AbjFUN3c (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 21 Jun 2023 09:29:32 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ACD1199C
-        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 06:29:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B2519B7
+        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 06:29:25 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qBxtk-0006bR-B4
+        id 1qBxtj-0006aO-Ux
         for linux-can@vger.kernel.org; Wed, 21 Jun 2023 15:29:24 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id E335D1DE8D5
+        by bjornoya.blackshift.org (Postfix) with SMTP id B464C1DE8CA
         for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 13:29:19 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id C0A7B1DE87B;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 55C581DE871;
         Wed, 21 Jun 2023 13:29:17 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 518328b8;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f332ce77;
         Wed, 21 Jun 2023 13:29:16 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Miquel Raynal <miquel.raynal@bootlin.com>,
+        kernel@pengutronix.de, Frank Jungclaus <frank.jungclaus@esd.eu>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 12/33] can: sja1000: Prepare the use of a threaded handler
-Date:   Wed, 21 Jun 2023 15:28:53 +0200
-Message-Id: <20230621132914.412546-13-mkl@pengutronix.de>
+Subject: [PATCH net-next 10/33] can: esd_usb: Make use of kernel macros BIT() and GENMASK()
+Date:   Wed, 21 Jun 2023 15:28:51 +0200
+Message-Id: <20230621132914.412546-11-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230621132914.412546-1-mkl@pengutronix.de>
 References: <20230621132914.412546-1-mkl@pengutronix.de>
@@ -53,65 +53,77 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Frank Jungclaus <frank.jungclaus@esd.eu>
 
-In order to support a flavor of the sja1000 which sometimes freezes, it
-will be needed upon certain interrupts to perform a soft reset. The soft
-reset operation takes a bit of time, so better not do it within the hard
-interrupt handler but rather in a threaded handler. Let's prepare the
-possibility for sja1000_err() to request "interrupting" the current flow
-and request the threaded handler to be run while keeping the interrupt
-line low.
+Make use of kernel macros BIT() and GENMASK().
 
-There is no functional change.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/all/20230616134553.2786391-1-miquel.raynal@bootlin.com
+Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
+Link: https://lore.kernel.org/r/20230523173105.3175086-2-frank.jungclaus@esd.eu
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/sja1000/sja1000.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/net/can/usb/esd_usb.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index aac5956e4a53..4719806e3a9f 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -501,7 +501,8 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
- 	struct sja1000_priv *priv = netdev_priv(dev);
- 	struct net_device_stats *stats = &dev->stats;
- 	uint8_t isrc, status;
--	int n = 0;
-+	irqreturn_t ret = 0;
-+	int n = 0, err;
+diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
+index 1399b832ea3f..d40a04db7458 100644
+--- a/drivers/net/can/usb/esd_usb.c
++++ b/drivers/net/can/usb/esd_usb.c
+@@ -67,23 +67,23 @@ MODULE_LICENSE("GPL v2");
+ #define ESD_USB_TRIPLE_SAMPLES	BIT(23)
  
- 	if (priv->pre_irq)
- 		priv->pre_irq(priv);
-@@ -546,19 +547,23 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
- 		}
- 		if (isrc & (IRQ_DOI | IRQ_EI | IRQ_BEI | IRQ_EPI | IRQ_ALI)) {
- 			/* error interrupt */
--			if (sja1000_err(dev, isrc, status))
-+			err = sja1000_err(dev, isrc, status);
-+			if (err)
- 				break;
- 		}
- 		n++;
- 	}
- out:
-+	if (!ret)
-+		ret = (n) ? IRQ_HANDLED : IRQ_NONE;
-+
- 	if (priv->post_irq)
- 		priv->post_irq(priv);
+ /* esd IDADD message */
+-#define ESD_USB_ID_ENABLE	0x80
++#define ESD_USB_ID_ENABLE	BIT(7)
+ #define ESD_USB_MAX_ID_SEGMENT	64
  
- 	if (n >= SJA1000_MAX_IRQ)
- 		netdev_dbg(dev, "%d messages handled in ISR", n);
+ /* SJA1000 ECC register (emulated by usb firmware) */
+-#define ESD_USB_SJA1000_ECC_SEG		0x1F
+-#define ESD_USB_SJA1000_ECC_DIR		0x20
+-#define ESD_USB_SJA1000_ECC_ERR		0x06
++#define ESD_USB_SJA1000_ECC_SEG		GENMASK(4, 0)
++#define ESD_USB_SJA1000_ECC_DIR		BIT(5)
++#define ESD_USB_SJA1000_ECC_ERR		BIT(2, 1)
+ #define ESD_USB_SJA1000_ECC_BIT		0x00
+-#define ESD_USB_SJA1000_ECC_FORM	0x40
+-#define ESD_USB_SJA1000_ECC_STUFF	0x80
+-#define ESD_USB_SJA1000_ECC_MASK	0xc0
++#define ESD_USB_SJA1000_ECC_FORM	BIT(6)
++#define ESD_USB_SJA1000_ECC_STUFF	BIT(7)
++#define ESD_USB_SJA1000_ECC_MASK	GENMASK(7, 6)
  
--	return (n) ? IRQ_HANDLED : IRQ_NONE;
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(sja1000_interrupt);
+ /* esd bus state event codes */
+-#define ESD_USB_BUSSTATE_MASK	0xc0
+-#define ESD_USB_BUSSTATE_WARN	0x40
+-#define ESD_USB_BUSSTATE_ERRPASSIVE	0x80
+-#define ESD_USB_BUSSTATE_BUSOFF	0xc0
++#define ESD_USB_BUSSTATE_MASK	GENMASK(7, 6)
++#define ESD_USB_BUSSTATE_WARN	BIT(6)
++#define ESD_USB_BUSSTATE_ERRPASSIVE	BIT(7)
++#define ESD_USB_BUSSTATE_BUSOFF	GENMASK(7, 6)
  
+ #define ESD_USB_RX_BUFFER_SIZE		1024
+ #define ESD_USB_MAX_RX_URBS		4
+@@ -652,9 +652,9 @@ static int esd_usb_start(struct esd_usb_net_priv *priv)
+ 	msg->filter.net = priv->index;
+ 	msg->filter.option = ESD_USB_ID_ENABLE; /* start with segment 0 */
+ 	for (i = 0; i < ESD_USB_MAX_ID_SEGMENT; i++)
+-		msg->filter.mask[i] = cpu_to_le32(0xffffffff);
++		msg->filter.mask[i] = cpu_to_le32(GENMASK(31, 0));
+ 	/* enable 29bit extended IDs */
+-	msg->filter.mask[ESD_USB_MAX_ID_SEGMENT] = cpu_to_le32(0x00000001);
++	msg->filter.mask[ESD_USB_MAX_ID_SEGMENT] = cpu_to_le32(BIT(0));
+ 
+ 	err = esd_usb_send_msg(dev, msg);
+ 	if (err)
+@@ -796,7 +796,7 @@ static netdev_tx_t esd_usb_start_xmit(struct sk_buff *skb,
+ 	context->echo_index = i;
+ 
+ 	/* hnd must not be 0 - MSB is stripped in txdone handling */
+-	msg->tx.hnd = 0x80000000 | i; /* returned in TX done message */
++	msg->tx.hnd = BIT(31) | i; /* returned in TX done message */
+ 
+ 	usb_fill_bulk_urb(urb, dev->udev, usb_sndbulkpipe(dev->udev, 2), buf,
+ 			  msg->hdr.len * sizeof(u32), /* convert to # of bytes */
 -- 
 2.40.1
 
