@@ -2,45 +2,44 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C36AEB64DD
-	for <linux-can@archiver.kernel.org>; Wed, 21 Jun 2023 13:29:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CB0BEB64D7
+	for <linux-can@archiver.kernel.org>; Wed, 21 Jun 2023 13:29:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232588AbjFUN3c (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 21 Jun 2023 09:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57044 "EHLO
+        id S232585AbjFUN3e (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 21 Jun 2023 09:29:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232586AbjFUN3b (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 21 Jun 2023 09:29:31 -0400
+        with ESMTP id S232566AbjFUN3d (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 21 Jun 2023 09:29:33 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0792E191
-        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 06:29:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ACD1199C
+        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 06:29:26 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qBxtj-0006ZY-5q
-        for linux-can@vger.kernel.org; Wed, 21 Jun 2023 15:29:23 +0200
+        id 1qBxtk-0006bR-B4
+        for linux-can@vger.kernel.org; Wed, 21 Jun 2023 15:29:24 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 9319F1DE8C5
+        by bjornoya.blackshift.org (Postfix) with SMTP id E335D1DE8D5
         for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 13:29:19 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 125A21DE869;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id C0A7B1DE87B;
         Wed, 21 Jun 2023 13:29:17 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 20251cd9;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 518328b8;
         Wed, 21 Jun 2023 13:29:16 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Frank Jungclaus <frank.jungclaus@esd.eu>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH net-next 08/33] can: esd_usb: Don't bother the user with nonessential log message
-Date:   Wed, 21 Jun 2023 15:28:49 +0200
-Message-Id: <20230621132914.412546-9-mkl@pengutronix.de>
+        kernel@pengutronix.de, Miquel Raynal <miquel.raynal@bootlin.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 12/33] can: sja1000: Prepare the use of a threaded handler
+Date:   Wed, 21 Jun 2023 15:28:53 +0200
+Message-Id: <20230621132914.412546-13-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230621132914.412546-1-mkl@pengutronix.de>
 References: <20230621132914.412546-1-mkl@pengutronix.de>
@@ -54,34 +53,64 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Frank Jungclaus <frank.jungclaus@esd.eu>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-Replace a netdev_info(), emitting an informational message about the
-BTR value to be send to the controller, with a debug message by means
-of netdev_dbg().
+In order to support a flavor of the sja1000 which sometimes freezes, it
+will be needed upon certain interrupts to perform a soft reset. The soft
+reset operation takes a bit of time, so better not do it within the hard
+interrupt handler but rather in a threaded handler. Let's prepare the
+possibility for sja1000_err() to request "interrupting" the current flow
+and request the threaded handler to be run while keeping the interrupt
+line low.
 
-Link: https://lore.kernel.org/all/20230509-superglue-hazy-38108aa66bfa-mkl@pengutronix.de/
-Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Suggested-by: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
-Link: https://lore.kernel.org/r/20230519195600.420644-7-frank.jungclaus@esd.eu
+There is no functional change.
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/all/20230616134553.2786391-1-miquel.raynal@bootlin.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/esd_usb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/sja1000/sja1000.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
-index c10fa578a5b0..1399b832ea3f 100644
---- a/drivers/net/can/usb/esd_usb.c
-+++ b/drivers/net/can/usb/esd_usb.c
-@@ -955,7 +955,7 @@ static int esd_usb_2_set_bittiming(struct net_device *netdev)
- 	msg->setbaud.rsvd = 0;
- 	msg->setbaud.baud = cpu_to_le32(canbtr);
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index aac5956e4a53..4719806e3a9f 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -501,7 +501,8 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 	struct sja1000_priv *priv = netdev_priv(dev);
+ 	struct net_device_stats *stats = &dev->stats;
+ 	uint8_t isrc, status;
+-	int n = 0;
++	irqreturn_t ret = 0;
++	int n = 0, err;
  
--	netdev_info(netdev, "setting BTR=%#x\n", canbtr);
-+	netdev_dbg(netdev, "setting BTR=%#x\n", canbtr);
+ 	if (priv->pre_irq)
+ 		priv->pre_irq(priv);
+@@ -546,19 +547,23 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
+ 		}
+ 		if (isrc & (IRQ_DOI | IRQ_EI | IRQ_BEI | IRQ_EPI | IRQ_ALI)) {
+ 			/* error interrupt */
+-			if (sja1000_err(dev, isrc, status))
++			err = sja1000_err(dev, isrc, status);
++			if (err)
+ 				break;
+ 		}
+ 		n++;
+ 	}
+ out:
++	if (!ret)
++		ret = (n) ? IRQ_HANDLED : IRQ_NONE;
++
+ 	if (priv->post_irq)
+ 		priv->post_irq(priv);
  
- 	err = esd_usb_send_msg(priv->usb, msg);
+ 	if (n >= SJA1000_MAX_IRQ)
+ 		netdev_dbg(dev, "%d messages handled in ISR", n);
+ 
+-	return (n) ? IRQ_HANDLED : IRQ_NONE;
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(sja1000_interrupt);
  
 -- 
 2.40.1
