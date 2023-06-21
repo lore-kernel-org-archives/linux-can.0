@@ -2,45 +2,45 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4F5EEB64DD
-	for <linux-can@archiver.kernel.org>; Wed, 21 Jun 2023 13:30:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EDDF9C001B3
+	for <linux-can@archiver.kernel.org>; Wed, 21 Jun 2023 13:30:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbjFUNaT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 21 Jun 2023 09:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57606 "EHLO
+        id S231226AbjFUNaV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 21 Jun 2023 09:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232655AbjFUN3w (ORCPT
+        with ESMTP id S232657AbjFUN3w (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 21 Jun 2023 09:29:52 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32801BC8
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21951BE1
         for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 06:29:38 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qBxtw-000736-4M
+        id 1qBxtw-00073U-26
         for linux-can@vger.kernel.org; Wed, 21 Jun 2023 15:29:36 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 2C8F81DE942
+        by bjornoya.blackshift.org (Postfix) with SMTP id 30B711DE943
         for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 13:29:22 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8433F1DE8F3;
-        Wed, 21 Jun 2023 13:29:20 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2DEAC1DE8B2;
+        Wed, 21 Jun 2023 13:29:19 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 70da4ea8;
-        Wed, 21 Jun 2023 13:29:17 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 285134fc;
+        Wed, 21 Jun 2023 13:29:16 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Jimmy Assarsson <extja@kvaser.com>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 28/33] can: kvaser_pciefd: Change return type for kvaser_pciefd_{receive,transmit,set_tx}_irq()
-Date:   Wed, 21 Jun 2023 15:29:09 +0200
-Message-Id: <20230621132914.412546-29-mkl@pengutronix.de>
+Subject: [PATCH net-next 20/33] can: kvaser_pciefd: Remove useless write to interrupt register
+Date:   Wed, 21 Jun 2023 15:29:01 +0200
+Message-Id: <20230621132914.412546-21-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230621132914.412546-1-mkl@pengutronix.de>
 References: <20230621132914.412546-1-mkl@pengutronix.de>
@@ -56,69 +56,53 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Jimmy Assarsson <extja@kvaser.com>
 
-Change return type to void for kvaser_pciefd_transmit_irq(),
-kvaser_pciefd_receive_irq() and kvaser_pciefd_set_tx_irq().
-These functions always return zero.
+The PCI interrupt register, KVASER_PCIEFD_IRQ_REG, is level triggered.
+Writing to the register doesn't affect it.
 
+Fixes: 26ad340e582d ("can: kvaser_pciefd: Add driver for Kvaser PCIEcan devices")
 Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
 Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/all/20230529134248.752036-10-extja@kvaser.com
+Link: https://lore.kernel.org/all/20230529134248.752036-2-extja@kvaser.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/kvaser_pciefd.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/net/can/kvaser_pciefd.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
-index bf3fa51069a9..feef044c6b0a 100644
+index be189edb256c..d60d17199a1b 100644
 --- a/drivers/net/can/kvaser_pciefd.c
 +++ b/drivers/net/can/kvaser_pciefd.c
-@@ -338,7 +338,7 @@ static void kvaser_pciefd_disable_err_gen(struct kvaser_pciefd_can *can)
- 	spin_unlock_irqrestore(&can->lock, irq);
+@@ -1768,7 +1768,6 @@ static irqreturn_t kvaser_pciefd_irq_handler(int irq, void *dev)
+ 			kvaser_pciefd_transmit_irq(pcie->can[i]);
+ 	}
+ 
+-	iowrite32(board_irq, pcie->reg_base + KVASER_PCIEFD_IRQ_REG);
+ 	return IRQ_HANDLED;
  }
  
--static int kvaser_pciefd_set_tx_irq(struct kvaser_pciefd_can *can)
-+static void kvaser_pciefd_set_tx_irq(struct kvaser_pciefd_can *can)
- {
- 	u32 msk;
+@@ -1842,9 +1841,7 @@ static int kvaser_pciefd_probe(struct pci_dev *pdev,
+ 		  KVASER_PCIEFD_SRB_IRQ_DUF0 | KVASER_PCIEFD_SRB_IRQ_DUF1,
+ 		  pcie->reg_base + KVASER_PCIEFD_SRB_IEN_REG);
  
-@@ -349,8 +349,6 @@ static int kvaser_pciefd_set_tx_irq(struct kvaser_pciefd_can *can)
- 	      KVASER_PCIEFD_KCAN_IRQ_TAR;
+-	/* Reset IRQ handling, expected to be off before */
+-	iowrite32(KVASER_PCIEFD_IRQ_ALL_MSK,
+-		  pcie->reg_base + KVASER_PCIEFD_IRQ_REG);
++	/* Enable PCI interrupts */
+ 	iowrite32(KVASER_PCIEFD_IRQ_ALL_MSK,
+ 		  pcie->reg_base + KVASER_PCIEFD_IEN_REG);
  
- 	iowrite32(msk, can->reg_base + KVASER_PCIEFD_KCAN_IEN_REG);
--
--	return 0;
- }
+@@ -1906,10 +1903,8 @@ static void kvaser_pciefd_remove(struct pci_dev *pdev)
  
- static inline void kvaser_pciefd_set_skb_timestamp(const struct kvaser_pciefd *pcie,
-@@ -1456,7 +1454,7 @@ static int kvaser_pciefd_read_buffer(struct kvaser_pciefd *pcie, int dma_buf)
- 	return res;
- }
+ 	kvaser_pciefd_remove_all_ctrls(pcie);
  
--static int kvaser_pciefd_receive_irq(struct kvaser_pciefd *pcie)
-+static void kvaser_pciefd_receive_irq(struct kvaser_pciefd *pcie)
- {
- 	u32 irq;
+-	/* Turn off IRQ generation */
++	/* Disable interrupts */
+ 	iowrite32(0, pcie->reg_base + KVASER_PCIEFD_SRB_CTRL_REG);
+-	iowrite32(KVASER_PCIEFD_IRQ_ALL_MSK,
+-		  pcie->reg_base + KVASER_PCIEFD_IRQ_REG);
+ 	iowrite32(0, pcie->reg_base + KVASER_PCIEFD_IEN_REG);
  
-@@ -1482,10 +1480,9 @@ static int kvaser_pciefd_receive_irq(struct kvaser_pciefd *pcie)
- 		dev_err(&pcie->pci->dev, "DMA IRQ error 0x%08X\n", irq);
- 
- 	iowrite32(irq, pcie->reg_base + KVASER_PCIEFD_SRB_IRQ_REG);
--	return 0;
- }
- 
--static int kvaser_pciefd_transmit_irq(struct kvaser_pciefd_can *can)
-+static void kvaser_pciefd_transmit_irq(struct kvaser_pciefd_can *can)
- {
- 	u32 irq = ioread32(can->reg_base + KVASER_PCIEFD_KCAN_IRQ_REG);
- 
-@@ -1503,7 +1500,6 @@ static int kvaser_pciefd_transmit_irq(struct kvaser_pciefd_can *can)
- 		netdev_err(can->can.dev, "Rx FIFO overflow\n");
- 
- 	iowrite32(irq, can->reg_base + KVASER_PCIEFD_KCAN_IRQ_REG);
--	return 0;
- }
- 
- static irqreturn_t kvaser_pciefd_irq_handler(int irq, void *dev)
+ 	free_irq(pcie->pci->irq, pcie);
 -- 
 2.40.1
 
