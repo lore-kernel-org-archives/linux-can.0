@@ -2,45 +2,45 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6166C0015E
-	for <linux-can@archiver.kernel.org>; Wed, 21 Jun 2023 13:30:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4F5EEB64DD
+	for <linux-can@archiver.kernel.org>; Wed, 21 Jun 2023 13:30:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbjFUNaS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 21 Jun 2023 09:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57428 "EHLO
+        id S229789AbjFUNaT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 21 Jun 2023 09:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232593AbjFUN3p (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 21 Jun 2023 09:29:45 -0400
+        with ESMTP id S232655AbjFUN3w (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 21 Jun 2023 09:29:52 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C5019A9
-        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 06:29:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32801BC8
+        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 06:29:38 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qBxtt-0006wV-Bj
-        for linux-can@vger.kernel.org; Wed, 21 Jun 2023 15:29:33 +0200
+        id 1qBxtw-000736-4M
+        for linux-can@vger.kernel.org; Wed, 21 Jun 2023 15:29:36 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 72F4C1DE925
-        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 13:29:21 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 2C8F81DE942
+        for <linux-can@vger.kernel.org>; Wed, 21 Jun 2023 13:29:22 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5DD5A1DE8BB;
-        Wed, 21 Jun 2023 13:29:19 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8433F1DE8F3;
+        Wed, 21 Jun 2023 13:29:20 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 347620ee;
-        Wed, 21 Jun 2023 13:29:16 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 70da4ea8;
+        Wed, 21 Jun 2023 13:29:17 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Jimmy Assarsson <extja@kvaser.com>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 21/33] can: kvaser_pciefd: Remove handler for unused KVASER_PCIEFD_PACK_TYPE_EFRAME_ACK
-Date:   Wed, 21 Jun 2023 15:29:02 +0200
-Message-Id: <20230621132914.412546-22-mkl@pengutronix.de>
+Subject: [PATCH net-next 28/33] can: kvaser_pciefd: Change return type for kvaser_pciefd_{receive,transmit,set_tx}_irq()
+Date:   Wed, 21 Jun 2023 15:29:09 +0200
+Message-Id: <20230621132914.412546-29-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230621132914.412546-1-mkl@pengutronix.de>
 References: <20230621132914.412546-1-mkl@pengutronix.de>
@@ -56,84 +56,69 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Jimmy Assarsson <extja@kvaser.com>
 
-The Kvaser KCAN controller got a feature to send error frames on request.
-The packet KVASER_PCIEFD_PACK_TYPE_EFRAME_ACK signals that the requested
-error frame was transmitted.
-Since this feature is not supported by the driver, drop the handler and add
-KVASER_PCIEFD_PACK_TYPE_EFRAME_ACK to the list of unexpected packet types.
+Change return type to void for kvaser_pciefd_transmit_irq(),
+kvaser_pciefd_receive_irq() and kvaser_pciefd_set_tx_irq().
+These functions always return zero.
 
-Fixes: 26ad340e582d ("can: kvaser_pciefd: Add driver for Kvaser PCIEcan devices")
 Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
 Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/all/20230529134248.752036-3-extja@kvaser.com
+Link: https://lore.kernel.org/all/20230529134248.752036-10-extja@kvaser.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/kvaser_pciefd.c | 39 +--------------------------------
- 1 file changed, 1 insertion(+), 38 deletions(-)
+ drivers/net/can/kvaser_pciefd.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
-index d60d17199a1b..1821ffa4ca79 100644
+index bf3fa51069a9..feef044c6b0a 100644
 --- a/drivers/net/can/kvaser_pciefd.c
 +++ b/drivers/net/can/kvaser_pciefd.c
-@@ -1472,40 +1472,6 @@ static int kvaser_pciefd_handle_status_packet(struct kvaser_pciefd *pcie,
- 	return 0;
+@@ -338,7 +338,7 @@ static void kvaser_pciefd_disable_err_gen(struct kvaser_pciefd_can *can)
+ 	spin_unlock_irqrestore(&can->lock, irq);
  }
  
--static int kvaser_pciefd_handle_eack_packet(struct kvaser_pciefd *pcie,
--					    struct kvaser_pciefd_rx_packet *p)
--{
--	struct kvaser_pciefd_can *can;
--	u8 ch_id = (p->header[1] >> KVASER_PCIEFD_PACKET_CHID_SHIFT) & 0x7;
--
--	if (ch_id >= pcie->nr_channels)
--		return -EIO;
--
--	can = pcie->can[ch_id];
--
--	/* If this is the last flushed packet, send end of flush */
--	if (p->header[0] & KVASER_PCIEFD_APACKET_FLU) {
--		u8 count = ioread32(can->reg_base +
--				    KVASER_PCIEFD_KCAN_TX_NPACKETS_REG) & 0xff;
--
--		if (count == 0)
--			iowrite32(KVASER_PCIEFD_KCAN_CTRL_EFLUSH,
--				  can->reg_base + KVASER_PCIEFD_KCAN_CTRL_REG);
--	} else {
--		int echo_idx = p->header[0] & KVASER_PCIEFD_PACKET_SEQ_MSK;
--		int dlc = can_get_echo_skb(can->can.dev, echo_idx, NULL);
--		struct net_device_stats *stats = &can->can.dev->stats;
--
--		stats->tx_bytes += dlc;
--		stats->tx_packets++;
--
--		if (netif_queue_stopped(can->can.dev))
--			netif_wake_queue(can->can.dev);
--	}
+-static int kvaser_pciefd_set_tx_irq(struct kvaser_pciefd_can *can)
++static void kvaser_pciefd_set_tx_irq(struct kvaser_pciefd_can *can)
+ {
+ 	u32 msk;
+ 
+@@ -349,8 +349,6 @@ static int kvaser_pciefd_set_tx_irq(struct kvaser_pciefd_can *can)
+ 	      KVASER_PCIEFD_KCAN_IRQ_TAR;
+ 
+ 	iowrite32(msk, can->reg_base + KVASER_PCIEFD_KCAN_IEN_REG);
 -
 -	return 0;
--}
--
- static void kvaser_pciefd_handle_nack_packet(struct kvaser_pciefd_can *can,
- 					     struct kvaser_pciefd_rx_packet *p)
+ }
+ 
+ static inline void kvaser_pciefd_set_skb_timestamp(const struct kvaser_pciefd *pcie,
+@@ -1456,7 +1454,7 @@ static int kvaser_pciefd_read_buffer(struct kvaser_pciefd *pcie, int dma_buf)
+ 	return res;
+ }
+ 
+-static int kvaser_pciefd_receive_irq(struct kvaser_pciefd *pcie)
++static void kvaser_pciefd_receive_irq(struct kvaser_pciefd *pcie)
  {
-@@ -1644,16 +1610,13 @@ static int kvaser_pciefd_read_packet(struct kvaser_pciefd *pcie, int *start_pos,
- 		ret = kvaser_pciefd_handle_error_packet(pcie, p);
- 		break;
+ 	u32 irq;
  
--	case KVASER_PCIEFD_PACK_TYPE_EFRAME_ACK:
--		ret = kvaser_pciefd_handle_eack_packet(pcie, p);
--		break;
--
- 	case KVASER_PCIEFD_PACK_TYPE_EFLUSH_ACK:
- 		ret = kvaser_pciefd_handle_eflush_packet(pcie, p);
- 		break;
+@@ -1482,10 +1480,9 @@ static int kvaser_pciefd_receive_irq(struct kvaser_pciefd *pcie)
+ 		dev_err(&pcie->pci->dev, "DMA IRQ error 0x%08X\n", irq);
  
- 	case KVASER_PCIEFD_PACK_TYPE_ACK_DATA:
- 	case KVASER_PCIEFD_PACK_TYPE_BUS_LOAD:
-+	case KVASER_PCIEFD_PACK_TYPE_EFRAME_ACK:
- 	case KVASER_PCIEFD_PACK_TYPE_TXRQ:
- 		dev_info(&pcie->pci->dev,
- 			 "Received unexpected packet type 0x%08X\n", type);
+ 	iowrite32(irq, pcie->reg_base + KVASER_PCIEFD_SRB_IRQ_REG);
+-	return 0;
+ }
+ 
+-static int kvaser_pciefd_transmit_irq(struct kvaser_pciefd_can *can)
++static void kvaser_pciefd_transmit_irq(struct kvaser_pciefd_can *can)
+ {
+ 	u32 irq = ioread32(can->reg_base + KVASER_PCIEFD_KCAN_IRQ_REG);
+ 
+@@ -1503,7 +1500,6 @@ static int kvaser_pciefd_transmit_irq(struct kvaser_pciefd_can *can)
+ 		netdev_err(can->can.dev, "Rx FIFO overflow\n");
+ 
+ 	iowrite32(irq, can->reg_base + KVASER_PCIEFD_KCAN_IRQ_REG);
+-	return 0;
+ }
+ 
+ static irqreturn_t kvaser_pciefd_irq_handler(int irq, void *dev)
 -- 
 2.40.1
 
