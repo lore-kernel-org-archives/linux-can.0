@@ -2,46 +2,45 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F14FEB64DC
-	for <linux-can@archiver.kernel.org>; Thu, 22 Jun 2023 08:27:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0330C0015E
+	for <linux-can@archiver.kernel.org>; Thu, 22 Jun 2023 08:27:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbjFVI1a (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 22 Jun 2023 04:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44360 "EHLO
+        id S230315AbjFVI1b (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 22 Jun 2023 04:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbjFVI1U (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 22 Jun 2023 04:27:20 -0400
+        with ESMTP id S230265AbjFVI1V (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 22 Jun 2023 04:27:21 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8BBF1BF4
-        for <linux-can@vger.kernel.org>; Thu, 22 Jun 2023 01:27:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235351FDF
+        for <linux-can@vger.kernel.org>; Thu, 22 Jun 2023 01:27:07 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qCFei-0002Rp-UC
-        for linux-can@vger.kernel.org; Thu, 22 Jun 2023 10:27:04 +0200
+        id 1qCFej-0002S8-7U
+        for linux-can@vger.kernel.org; Thu, 22 Jun 2023 10:27:05 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id AACC21DF365
+        by bjornoya.blackshift.org (Postfix) with SMTP id D76BA1DF36B
         for <linux-can@vger.kernel.org>; Thu, 22 Jun 2023 08:27:02 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id E135B1DF338;
-        Thu, 22 Jun 2023 08:27:00 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4D0C11DF33E;
+        Thu, 22 Jun 2023 08:27:01 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 634c0322;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c6907d16;
         Thu, 22 Jun 2023 08:27:00 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Carsten Schmidt <carsten.schmidt-achim@t-online.de>,
-        Jimmy Assarsson <extja@kvaser.com>,
+        kernel@pengutronix.de, Frank Jungclaus <frank.jungclaus@esd.eu>,
+        Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 01/33] can: kvaser_usb: Add len8_dlc support
-Date:   Thu, 22 Jun 2023 10:26:26 +0200
-Message-Id: <20230622082658.571150-2-mkl@pengutronix.de>
+Subject: [PATCH net-next 04/33] can: esd_usb: Replace initializer macros used for struct can_bittiming_const
+Date:   Thu, 22 Jun 2023 10:26:29 +0200
+Message-Id: <20230622082658.571150-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230622082658.571150-1-mkl@pengutronix.de>
 References: <20230622082658.571150-1-mkl@pengutronix.de>
@@ -55,122 +54,98 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Carsten Schmidt <carsten.schmidt-achim@t-online.de>
+From: Frank Jungclaus <frank.jungclaus@esd.eu>
 
-Add support for the Classical CAN raw DLC functionality to send and
-receive DLC values from 9 .. 15.
+Replace the macros used to initialize the members of struct
+can_bittiming_const with direct values. Then also use those struct
+members to do the calculations in esd_usb2_set_bittiming().
 
-v1: https://lore.kernel.org/all/20230506105529.4023-1-carsten.schmidt-achim@t-online.de
-
-Signed-off-by: Carsten Schmidt <carsten.schmidt-achim@t-online.de>
-Tested-by: Jimmy Assarsson <extja@kvaser.com>
-Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
-Link: https://lore.kernel.org/r/20230516125332.82894-1-extja@kvaser.com
+Link: https://lore.kernel.org/all/CAMZ6RqLaDNy-fZ2G0+QMhUEckkXLL+ZyELVSDFmqpd++aBzZQg@mail.gmail.com/
+Suggested-by: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
+Link: https://lore.kernel.org/r/20230519195600.420644-3-frank.jungclaus@esd.eu
+[mkl: esd_usb2_set_bittiming() use esd_usb2_bittiming_const instead of priv->can.bittiming_const]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c  |  2 +-
- drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 13 +++++++++----
- drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c  |  6 +++---
- 3 files changed, 13 insertions(+), 8 deletions(-)
+ drivers/net/can/usb/esd_usb.c | 33 +++++++++++++--------------------
+ 1 file changed, 13 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-index 7135ec851341..71ef4db5c09f 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-@@ -816,7 +816,7 @@ static int kvaser_usb_init_one(struct kvaser_usb *dev, int channel)
- 	init_completion(&priv->stop_comp);
- 	init_completion(&priv->flush_comp);
- 	init_completion(&priv->get_busparams_comp);
--	priv->can.ctrlmode_supported = 0;
-+	priv->can.ctrlmode_supported = CAN_CTRLMODE_CC_LEN8_DLC;
+diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
+index 93c2351d1e3c..310cae5c4648 100644
+--- a/drivers/net/can/usb/esd_usb.c
++++ b/drivers/net/can/usb/esd_usb.c
+@@ -60,18 +60,10 @@ MODULE_LICENSE("GPL v2");
+ #define ESD_USB_NO_BAUDRATE	GENMASK(30, 0) /* bit rate unconfigured */
  
- 	priv->dev = dev;
- 	priv->netdev = netdev;
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-index ef341c4254fc..c7ba768dfe17 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-@@ -1263,7 +1263,7 @@ static void kvaser_usb_hydra_rx_msg_std(const struct kvaser_usb *dev,
- 	if (flags & KVASER_USB_HYDRA_CF_FLAG_OVERRUN)
- 		kvaser_usb_can_rx_over_error(priv->netdev);
+ /* bit timing CAN-USB/2 */
+-#define ESD_USB2_TSEG1_MIN	1
+-#define ESD_USB2_TSEG1_MAX	16
+ #define ESD_USB2_TSEG1_SHIFT	16
+-#define ESD_USB2_TSEG2_MIN	1
+-#define ESD_USB2_TSEG2_MAX	8
+ #define ESD_USB2_TSEG2_SHIFT	20
+-#define ESD_USB2_SJW_MAX	4
+ #define ESD_USB2_SJW_SHIFT	14
+ #define ESD_USBM_SJW_SHIFT	24
+-#define ESD_USB2_BRP_MIN	1
+-#define ESD_USB2_BRP_MAX	1024
+-#define ESD_USB2_BRP_INC	1
+ #define ESD_USB2_3_SAMPLES	BIT(23)
  
--	cf->len = can_cc_dlc2len(cmd->rx_can.dlc);
-+	can_frame_set_cc_len((struct can_frame *)cf, cmd->rx_can.dlc, priv->can.ctrlmode);
+ /* esd IDADD message */
+@@ -909,18 +901,19 @@ static const struct ethtool_ops esd_usb_ethtool_ops = {
  
- 	if (flags & KVASER_USB_HYDRA_CF_FLAG_REMOTE_FRAME) {
- 		cf->can_id |= CAN_RTR_FLAG;
-@@ -1342,7 +1342,7 @@ static void kvaser_usb_hydra_rx_msg_ext(const struct kvaser_usb *dev,
- 		if (flags & KVASER_USB_HYDRA_CF_FLAG_ESI)
- 			cf->flags |= CANFD_ESI;
- 	} else {
--		cf->len = can_cc_dlc2len(dlc);
-+		can_frame_set_cc_len((struct can_frame *)cf, dlc, priv->can.ctrlmode);
- 	}
+ static const struct can_bittiming_const esd_usb2_bittiming_const = {
+ 	.name = "esd_usb2",
+-	.tseg1_min = ESD_USB2_TSEG1_MIN,
+-	.tseg1_max = ESD_USB2_TSEG1_MAX,
+-	.tseg2_min = ESD_USB2_TSEG2_MIN,
+-	.tseg2_max = ESD_USB2_TSEG2_MAX,
+-	.sjw_max = ESD_USB2_SJW_MAX,
+-	.brp_min = ESD_USB2_BRP_MIN,
+-	.brp_max = ESD_USB2_BRP_MAX,
+-	.brp_inc = ESD_USB2_BRP_INC,
++	.tseg1_min = 1,
++	.tseg1_max = 16,
++	.tseg2_min = 1,
++	.tseg2_max = 8,
++	.sjw_max = 4,
++	.brp_min = 1,
++	.brp_max = 1024,
++	.brp_inc = 1,
+ };
  
- 	if (flags & KVASER_USB_HYDRA_CF_FLAG_REMOTE_FRAME) {
-@@ -1442,7 +1442,7 @@ kvaser_usb_hydra_frame_to_cmd_ext(const struct kvaser_usb_net_priv *priv,
- 	struct kvaser_usb *dev = priv->dev;
- 	struct kvaser_cmd_ext *cmd;
- 	struct canfd_frame *cf = (struct canfd_frame *)skb->data;
--	u8 dlc = can_fd_len2dlc(cf->len);
-+	u8 dlc;
- 	u8 nbr_of_bytes = cf->len;
- 	u32 flags;
- 	u32 id;
-@@ -1467,6 +1467,11 @@ kvaser_usb_hydra_frame_to_cmd_ext(const struct kvaser_usb_net_priv *priv,
+ static int esd_usb2_set_bittiming(struct net_device *netdev)
+ {
++	const struct can_bittiming_const *btc = &esd_usb2_bittiming_const;
+ 	struct esd_usb_net_priv *priv = netdev_priv(netdev);
+ 	struct can_bittiming *bt = &priv->can.bittiming;
+ 	union esd_usb_msg *msg;
+@@ -932,7 +925,7 @@ static int esd_usb2_set_bittiming(struct net_device *netdev)
+ 	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
+ 		canbtr |= ESD_USB_LOM;
  
- 	cmd->len = cpu_to_le16(*cmd_len);
+-	canbtr |= (bt->brp - 1) & (ESD_USB2_BRP_MAX - 1);
++	canbtr |= (bt->brp - 1) & (btc->brp_max - 1);
  
-+	if (can_is_canfd_skb(skb))
-+		dlc = can_fd_len2dlc(cf->len);
-+	else
-+		dlc = can_get_cc_dlc((struct can_frame *)cf, priv->can.ctrlmode);
-+
- 	cmd->tx_can.databytes = nbr_of_bytes;
- 	cmd->tx_can.dlc = dlc;
+ 	if (le16_to_cpu(priv->usb->udev->descriptor.idProduct) ==
+ 	    USB_CANUSBM_PRODUCT_ID)
+@@ -940,12 +933,12 @@ static int esd_usb2_set_bittiming(struct net_device *netdev)
+ 	else
+ 		sjw_shift = ESD_USB2_SJW_SHIFT;
  
-@@ -1542,7 +1547,7 @@ kvaser_usb_hydra_frame_to_cmd_std(const struct kvaser_usb_net_priv *priv,
- 		id = cf->can_id & CAN_SFF_MASK;
- 	}
- 
--	cmd->tx_can.dlc = cf->len;
-+	cmd->tx_can.dlc = can_get_cc_dlc(cf, priv->can.ctrlmode);
- 
- 	flags = (cf->can_id & CAN_EFF_FLAG ?
- 		 KVASER_USB_HYDRA_CF_FLAG_EXTENDED_ID : 0);
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-index 1c2f99ce4c6c..23bd7574b1c7 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-@@ -573,7 +573,7 @@ kvaser_usb_leaf_frame_to_cmd(const struct kvaser_usb_net_priv *priv,
- 			cmd->u.tx_can.data[1] = cf->can_id & 0x3f;
- 		}
- 
--		cmd->u.tx_can.data[5] = cf->len;
-+		cmd->u.tx_can.data[5] = can_get_cc_dlc(cf, priv->can.ctrlmode);
- 		memcpy(&cmd->u.tx_can.data[6], cf->data, cf->len);
- 
- 		if (cf->can_id & CAN_RTR_FLAG)
-@@ -1349,7 +1349,7 @@ static void kvaser_usb_leaf_rx_can_msg(const struct kvaser_usb *dev,
- 		else
- 			cf->can_id &= CAN_SFF_MASK;
- 
--		cf->len = can_cc_dlc2len(cmd->u.leaf.log_message.dlc);
-+		can_frame_set_cc_len(cf, cmd->u.leaf.log_message.dlc & 0xF, priv->can.ctrlmode);
- 
- 		if (cmd->u.leaf.log_message.flags & MSG_FLAG_REMOTE_FRAME)
- 			cf->can_id |= CAN_RTR_FLAG;
-@@ -1367,7 +1367,7 @@ static void kvaser_usb_leaf_rx_can_msg(const struct kvaser_usb *dev,
- 			cf->can_id |= CAN_EFF_FLAG;
- 		}
- 
--		cf->len = can_cc_dlc2len(rx_data[5]);
-+		can_frame_set_cc_len(cf, rx_data[5] & 0xF, priv->can.ctrlmode);
- 
- 		if (cmd->u.rx_can_header.flag & MSG_FLAG_REMOTE_FRAME)
- 			cf->can_id |= CAN_RTR_FLAG;
-
-base-commit: d49b9b07725f5dfa3344dc3eed59b8ccc0a0ddbc
+-	canbtr |= ((bt->sjw - 1) & (ESD_USB2_SJW_MAX - 1))
++	canbtr |= ((bt->sjw - 1) & (btc->sjw_max - 1))
+ 		<< sjw_shift;
+ 	canbtr |= ((bt->prop_seg + bt->phase_seg1 - 1)
+-		   & (ESD_USB2_TSEG1_MAX - 1))
++		   & (btc->tseg1_max - 1))
+ 		<< ESD_USB2_TSEG1_SHIFT;
+-	canbtr |= ((bt->phase_seg2 - 1) & (ESD_USB2_TSEG2_MAX - 1))
++	canbtr |= ((bt->phase_seg2 - 1) & (btc->tseg2_max - 1))
+ 		<< ESD_USB2_TSEG2_SHIFT;
+ 	if (priv->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES)
+ 		canbtr |= ESD_USB2_3_SAMPLES;
 -- 
 2.40.1
 
