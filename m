@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EDE2EB64DD
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E6D7C0015E
 	for <linux-can@archiver.kernel.org>; Thu, 22 Jun 2023 08:27:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbjFVI1z (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S230327AbjFVI1z (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Thu, 22 Jun 2023 04:27:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45342 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230319AbjFVI1u (ORCPT
+        with ESMTP id S230266AbjFVI1u (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 22 Jun 2023 04:27:50 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A1E2116
-        for <linux-can@vger.kernel.org>; Thu, 22 Jun 2023 01:27:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C1D72123
+        for <linux-can@vger.kernel.org>; Thu, 22 Jun 2023 01:27:26 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qCFez-00031Z-6T
+        id 1qCFez-00031b-59
         for linux-can@vger.kernel.org; Thu, 22 Jun 2023 10:27:21 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 50BCD1DF422
+        by bjornoya.blackshift.org (Postfix) with SMTP id 50C291DF423
         for <linux-can@vger.kernel.org>; Thu, 22 Jun 2023 08:27:06 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id D19BC1DF392;
-        Thu, 22 Jun 2023 08:27:03 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 339B11DF3A0;
+        Thu, 22 Jun 2023 08:27:04 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 5e8e57ca;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 62aed880;
         Thu, 22 Jun 2023 08:27:01 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Jimmy Assarsson <extja@kvaser.com>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 21/33] can: kvaser_pciefd: Add function to set skb hwtstamps
-Date:   Thu, 22 Jun 2023 10:26:46 +0200
-Message-Id: <20230622082658.571150-22-mkl@pengutronix.de>
+Subject: [PATCH net-next 23/33] can: kvaser_pciefd: Define unsigned constants with type suffix 'U'
+Date:   Thu, 22 Jun 2023 10:26:48 +0200
+Message-Id: <20230622082658.571150-24-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230622082658.571150-1-mkl@pengutronix.de>
 References: <20230622082658.571150-1-mkl@pengutronix.de>
@@ -56,96 +56,38 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Jimmy Assarsson <extja@kvaser.com>
 
-Add new function, kvaser_pciefd_set_skb_timestamp(), to set skb hwtstamps.
+Define unsigned constants with type suffix 'U'
 
 Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
 Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/all/20230529134248.752036-4-extja@kvaser.com
+Link: https://lore.kernel.org/all/20230529134248.752036-6-extja@kvaser.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/kvaser_pciefd.c | 27 ++++++++++-----------------
- 1 file changed, 10 insertions(+), 17 deletions(-)
+ drivers/net/can/kvaser_pciefd.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
-index 1821ffa4ca79..7646338d4d44 100644
+index 88bad2c2b641..abb556fb5cb6 100644
 --- a/drivers/net/can/kvaser_pciefd.c
 +++ b/drivers/net/can/kvaser_pciefd.c
-@@ -538,6 +538,13 @@ static int kvaser_pciefd_set_tx_irq(struct kvaser_pciefd_can *can)
- 	return 0;
- }
+@@ -25,12 +25,12 @@ MODULE_DESCRIPTION("CAN driver for Kvaser CAN/PCIe devices");
  
-+static inline void kvaser_pciefd_set_skb_timestamp(const struct kvaser_pciefd *pcie,
-+						   struct sk_buff *skb, u64 timestamp)
-+{
-+	skb_hwtstamps(skb)->hwtstamp =
-+		ns_to_ktime(div_u64(timestamp * 1000, pcie->freq_to_ticks_div));
-+}
-+
- static void kvaser_pciefd_setup_controller(struct kvaser_pciefd_can *can)
- {
- 	u32 mode;
-@@ -1171,7 +1178,6 @@ static int kvaser_pciefd_handle_data_packet(struct kvaser_pciefd *pcie,
- 	struct canfd_frame *cf;
- 	struct can_priv *priv;
- 	struct net_device_stats *stats;
--	struct skb_shared_hwtstamps *shhwtstamps;
- 	u8 ch_id = (p->header[1] >> KVASER_PCIEFD_PACKET_CHID_SHIFT) & 0x7;
+ #define KVASER_PCIEFD_WAIT_TIMEOUT msecs_to_jiffies(1000)
+ #define KVASER_PCIEFD_BEC_POLL_FREQ (jiffies + msecs_to_jiffies(200))
+-#define KVASER_PCIEFD_MAX_ERR_REP 256
+-#define KVASER_PCIEFD_CAN_TX_MAX_COUNT 17
+-#define KVASER_PCIEFD_MAX_CAN_CHANNELS 4
+-#define KVASER_PCIEFD_DMA_COUNT 2
++#define KVASER_PCIEFD_MAX_ERR_REP 256U
++#define KVASER_PCIEFD_CAN_TX_MAX_COUNT 17U
++#define KVASER_PCIEFD_MAX_CAN_CHANNELS 4U
++#define KVASER_PCIEFD_DMA_COUNT 2U
  
- 	if (ch_id >= pcie->nr_channels)
-@@ -1214,12 +1220,7 @@ static int kvaser_pciefd_handle_data_packet(struct kvaser_pciefd *pcie,
- 		stats->rx_bytes += cf->len;
- 	}
- 	stats->rx_packets++;
--
--	shhwtstamps = skb_hwtstamps(skb);
--
--	shhwtstamps->hwtstamp =
--		ns_to_ktime(div_u64(p->timestamp * 1000,
--				    pcie->freq_to_ticks_div));
-+	kvaser_pciefd_set_skb_timestamp(pcie, skb, p->timestamp);
+-#define KVASER_PCIEFD_DMA_SIZE (4 * 1024)
++#define KVASER_PCIEFD_DMA_SIZE (4U * 1024U)
+ #define KVASER_PCIEFD_64BIT_DMA_BIT BIT(0)
  
- 	return netif_rx(skb);
- }
-@@ -1282,7 +1283,6 @@ static int kvaser_pciefd_rx_error_frame(struct kvaser_pciefd_can *can,
- 	struct net_device *ndev = can->can.dev;
- 	struct sk_buff *skb;
- 	struct can_frame *cf = NULL;
--	struct skb_shared_hwtstamps *shhwtstamps;
- 	struct net_device_stats *stats = &ndev->stats;
- 
- 	old_state = can->can.state;
-@@ -1323,10 +1323,7 @@ static int kvaser_pciefd_rx_error_frame(struct kvaser_pciefd_can *can,
- 		return -ENOMEM;
- 	}
- 
--	shhwtstamps = skb_hwtstamps(skb);
--	shhwtstamps->hwtstamp =
--		ns_to_ktime(div_u64(p->timestamp * 1000,
--				    can->kv_pcie->freq_to_ticks_div));
-+	kvaser_pciefd_set_skb_timestamp(can->kv_pcie, skb, p->timestamp);
- 	cf->can_id |= CAN_ERR_BUSERROR | CAN_ERR_CNT;
- 
- 	cf->data[6] = bec.txerr;
-@@ -1374,7 +1371,6 @@ static int kvaser_pciefd_handle_status_resp(struct kvaser_pciefd_can *can,
- 		struct net_device *ndev = can->can.dev;
- 		struct sk_buff *skb;
- 		struct can_frame *cf;
--		struct skb_shared_hwtstamps *shhwtstamps;
- 
- 		skb = alloc_can_err_skb(ndev, &cf);
- 		if (!skb) {
-@@ -1394,10 +1390,7 @@ static int kvaser_pciefd_handle_status_resp(struct kvaser_pciefd_can *can,
- 			cf->can_id |= CAN_ERR_RESTARTED;
- 		}
- 
--		shhwtstamps = skb_hwtstamps(skb);
--		shhwtstamps->hwtstamp =
--			ns_to_ktime(div_u64(p->timestamp * 1000,
--					    can->kv_pcie->freq_to_ticks_div));
-+		kvaser_pciefd_set_skb_timestamp(can->kv_pcie, skb, p->timestamp);
- 
- 		cf->data[6] = bec.txerr;
- 		cf->data[7] = bec.rxerr;
+ #define KVASER_PCIEFD_VENDOR 0x1a07
 -- 
 2.40.1
 
