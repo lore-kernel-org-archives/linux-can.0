@@ -2,51 +2,48 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7DA5EB64DA
-	for <linux-can@archiver.kernel.org>; Thu, 22 Jun 2023 08:27:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D613CEB64DA
+	for <linux-can@archiver.kernel.org>; Thu, 22 Jun 2023 08:27:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbjFVI1k (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 22 Jun 2023 04:27:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44910 "EHLO
+        id S230267AbjFVI1u (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 22 Jun 2023 04:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230195AbjFVI1j (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 22 Jun 2023 04:27:39 -0400
+        with ESMTP id S230280AbjFVI1p (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 22 Jun 2023 04:27:45 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A002130
-        for <linux-can@vger.kernel.org>; Thu, 22 Jun 2023 01:27:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C27761FE0
+        for <linux-can@vger.kernel.org>; Thu, 22 Jun 2023 01:27:21 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qCFep-0002bD-5v
-        for linux-can@vger.kernel.org; Thu, 22 Jun 2023 10:27:11 +0200
+        id 1qCFet-0002mi-VT
+        for linux-can@vger.kernel.org; Thu, 22 Jun 2023 10:27:16 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id F01BB1DF3C9
-        for <linux-can@vger.kernel.org>; Thu, 22 Jun 2023 08:27:04 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 9708D1DF3F4
+        for <linux-can@vger.kernel.org>; Thu, 22 Jun 2023 08:27:05 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7B21F1DF35E;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id D2BD61DF36A;
         Thu, 22 Jun 2023 08:27:02 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id df7509bd;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id acd8e31c;
         Thu, 22 Jun 2023 08:27:01 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Miquel Raynal <miquel.raynal@bootlin.com>,
-        =?UTF-8?q?J=C3=A9r=C3=A9mie=20Dautheribes?= 
-        <jeremie.dautheribes@bootlin.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 12/33] can: sja1000: Prevent overrun stalls with a soft reset on Renesas SoCs
-Date:   Thu, 22 Jun 2023 10:26:37 +0200
-Message-Id: <20230622082658.571150-13-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Judith Mendez <jm@ti.com>
+Subject: [PATCH net-next 15/33] can: m_can: fix coding style
+Date:   Thu, 22 Jun 2023 10:26:40 +0200
+Message-Id: <20230622082658.571150-16-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230622082658.571150-1-mkl@pengutronix.de>
 References: <20230622082658.571150-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
 X-SA-Exim-Mail-From: mkl@pengutronix.de
@@ -56,150 +53,40 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+This patch aligns code to match open parenthesis and removes a
+trailing whitespace.
 
-In their RZN1 SoC, Renesas put a CAN controller supposed to act very
-similarly to the original Philips sja1000. In practice, while flooding
-the bus with another device, we discovered that the controller very
-often after an overrun situation would just refuse any new frame, drop
-them all and trigger over and over again the overrun interrupt, even
-though the buffer would have been totally emptied. The controller acts
-like if its internal buffer offsets (where it writes and where the host
-reads) where totally screwed-up.
-
-Renesas manual mentions a single action to perform in order to
-resynchronize the read and write offsets within the buffer: performing
-a soft reset.
-
-Performing a soft reset takes a bit of time and involves small delays,
-so better do that in a threaded handler rather than inside the hard IRQ
-handler.
-
-Add platform data to recognize the platforms which need this workaround,
-and when the faulty situation is diagnosed, stop what is being
-performed and request the threaded handler to be executed in order to
-perform the reset.
-
-Tested-by: Jérémie Dautheribes  <jeremie.dautheribes@bootlin.com> # 5.10
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/all/20230616134553.2786391-2-miquel.raynal@bootlin.com
+Fixes: eb38c2053b67 ("can: rx-offload: rename can_rx_offload_queue_sorted() -> can_rx_offload_queue_timestamp()")
+Fixes: f5071d9e729d ("can: m_can: m_can_handle_bus_errors(): add support for handling DLEC error on CAN-FD frames")
+Reported-by: Judith Mendez <jm@ti.com>
+Link: https://lore.kernel.org/all/20230523062410.1984098-1-mkl@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/sja1000/sja1000.c          | 29 +++++++++++++++++++---
- drivers/net/can/sja1000/sja1000.h          |  1 +
- drivers/net/can/sja1000/sja1000_platform.c |  5 +++-
- 3 files changed, 31 insertions(+), 4 deletions(-)
+ drivers/net/can/m_can/m_can.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index 4719806e3a9f..0ada0e160e93 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -387,6 +387,16 @@ static void sja1000_rx(struct net_device *dev)
- 	netif_rx(skb);
- }
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index a5003435802b..c5af92bcc9c9 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -469,7 +469,7 @@ static void m_can_receive_skb(struct m_can_classdev *cdev,
+ 		int err;
  
-+static irqreturn_t sja1000_reset_interrupt(int irq, void *dev_id)
-+{
-+	struct net_device *dev = (struct net_device *)dev_id;
-+
-+	netdev_dbg(dev, "performing a soft reset upon overrun\n");
-+	sja1000_start(dev);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
- {
- 	struct sja1000_priv *priv = netdev_priv(dev);
-@@ -397,6 +407,7 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
- 	enum can_state rx_state, tx_state;
- 	unsigned int rxerr, txerr;
- 	uint8_t ecc, alc;
-+	int ret = 0;
- 
- 	skb = alloc_can_err_skb(dev, &cf);
- 	if (skb == NULL)
-@@ -413,6 +424,15 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
- 		stats->rx_over_errors++;
- 		stats->rx_errors++;
- 		sja1000_write_cmdreg(priv, CMD_CDO);	/* clear bit */
-+
-+		/* Some controllers needs additional handling upon overrun
-+		 * condition: the controller may sometimes be totally confused
-+		 * and refuse any new frame while its buffer is empty. The only
-+		 * way to re-sync the read vs. write buffer offsets is to
-+		 * stop any current handling and perform a reset.
-+		 */
-+		if (priv->flags & SJA1000_QUIRK_RESET_ON_OVERRUN)
-+			ret = IRQ_WAKE_THREAD;
- 	}
- 
- 	if (isrc & IRQ_EI) {
-@@ -492,7 +512,7 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
- 
- 	netif_rx(skb);
- 
--	return 0;
-+	return ret;
- }
- 
- irqreturn_t sja1000_interrupt(int irq, void *dev_id)
-@@ -548,6 +568,8 @@ irqreturn_t sja1000_interrupt(int irq, void *dev_id)
- 		if (isrc & (IRQ_DOI | IRQ_EI | IRQ_BEI | IRQ_EPI | IRQ_ALI)) {
- 			/* error interrupt */
- 			err = sja1000_err(dev, isrc, status);
-+			if (err == IRQ_WAKE_THREAD)
-+				ret = err;
- 			if (err)
- 				break;
+ 		err = can_rx_offload_queue_timestamp(&cdev->offload, skb,
+-						  timestamp);
++						     timestamp);
+ 		if (err)
+ 			stats->rx_fifo_errors++;
+ 	} else {
+@@ -895,7 +895,7 @@ static int m_can_handle_bus_errors(struct net_device *dev, u32 irqstatus,
+ 			netdev_dbg(dev, "Arbitration phase error detected\n");
+ 			work_done += m_can_handle_lec_err(dev, lec);
  		}
-@@ -582,8 +604,9 @@ static int sja1000_open(struct net_device *dev)
- 
- 	/* register interrupt handler, if not done by the device driver */
- 	if (!(priv->flags & SJA1000_CUSTOM_IRQ_HANDLER)) {
--		err = request_irq(dev->irq, sja1000_interrupt, priv->irq_flags,
--				  dev->name, (void *)dev);
-+		err = request_threaded_irq(dev->irq, sja1000_interrupt,
-+					   sja1000_reset_interrupt,
-+					   priv->irq_flags, dev->name, (void *)dev);
- 		if (err) {
- 			close_candev(dev);
- 			return -EAGAIN;
-diff --git a/drivers/net/can/sja1000/sja1000.h b/drivers/net/can/sja1000/sja1000.h
-index 7f736f1df547..f015e39e2224 100644
---- a/drivers/net/can/sja1000/sja1000.h
-+++ b/drivers/net/can/sja1000/sja1000.h
-@@ -147,6 +147,7 @@
-  */
- #define SJA1000_CUSTOM_IRQ_HANDLER	BIT(0)
- #define SJA1000_QUIRK_NO_CDR_REG	BIT(1)
-+#define SJA1000_QUIRK_RESET_ON_OVERRUN	BIT(2)
- 
- /*
-  * SJA1000 private data structure
-diff --git a/drivers/net/can/sja1000/sja1000_platform.c b/drivers/net/can/sja1000/sja1000_platform.c
-index b4889b5746e5..4e59952c66d4 100644
---- a/drivers/net/can/sja1000/sja1000_platform.c
-+++ b/drivers/net/can/sja1000/sja1000_platform.c
-@@ -106,7 +106,7 @@ static void sp_technologic_init(struct sja1000_priv *priv, struct device_node *o
- 
- static void sp_rzn1_init(struct sja1000_priv *priv, struct device_node *of)
- {
--	priv->flags = SJA1000_QUIRK_NO_CDR_REG;
-+	priv->flags = SJA1000_QUIRK_NO_CDR_REG | SJA1000_QUIRK_RESET_ON_OVERRUN;
- }
- 
- static void sp_populate(struct sja1000_priv *priv,
-@@ -277,6 +277,9 @@ static int sp_probe(struct platform_device *pdev)
- 		priv->irq_flags = IRQF_SHARED;
- 	}
- 
-+	if (priv->flags & SJA1000_QUIRK_RESET_ON_OVERRUN)
-+		priv->irq_flags |= IRQF_ONESHOT;
+-		
 +
- 	dev->irq = irq;
- 	priv->reg_base = addr;
- 
+ 		if (is_lec_err(dlec)) {
+ 			netdev_dbg(dev, "Data phase error detected\n");
+ 			work_done += m_can_handle_lec_err(dev, dlec);
 -- 
 2.40.1
 
