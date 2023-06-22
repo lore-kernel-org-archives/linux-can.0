@@ -2,35 +2,35 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0330C0015E
-	for <linux-can@archiver.kernel.org>; Thu, 22 Jun 2023 08:27:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9303EB64DA
+	for <linux-can@archiver.kernel.org>; Thu, 22 Jun 2023 08:27:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbjFVI1b (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 22 Jun 2023 04:27:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44216 "EHLO
+        id S230143AbjFVI1c (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 22 Jun 2023 04:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbjFVI1V (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 22 Jun 2023 04:27:21 -0400
+        with ESMTP id S230270AbjFVI1Z (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 22 Jun 2023 04:27:25 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235351FDF
-        for <linux-can@vger.kernel.org>; Thu, 22 Jun 2023 01:27:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D412683
+        for <linux-can@vger.kernel.org>; Thu, 22 Jun 2023 01:27:08 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qCFej-0002S8-7U
-        for linux-can@vger.kernel.org; Thu, 22 Jun 2023 10:27:05 +0200
+        id 1qCFek-0002UR-HO
+        for linux-can@vger.kernel.org; Thu, 22 Jun 2023 10:27:06 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id D76BA1DF36B
-        for <linux-can@vger.kernel.org>; Thu, 22 Jun 2023 08:27:02 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 915ED1DF385
+        for <linux-can@vger.kernel.org>; Thu, 22 Jun 2023 08:27:03 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4D0C11DF33E;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 98A3F1DF345;
         Thu, 22 Jun 2023 08:27:01 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c6907d16;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id a8b3b864;
         Thu, 22 Jun 2023 08:27:00 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Frank Jungclaus <frank.jungclaus@esd.eu>,
         Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 04/33] can: esd_usb: Replace initializer macros used for struct can_bittiming_const
-Date:   Thu, 22 Jun 2023 10:26:29 +0200
-Message-Id: <20230622082658.571150-5-mkl@pengutronix.de>
+Subject: [PATCH net-next 06/33] can: esd_usb: Prefix all structures with the device name
+Date:   Thu, 22 Jun 2023 10:26:31 +0200
+Message-Id: <20230622082658.571150-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230622082658.571150-1-mkl@pengutronix.de>
 References: <20230622082658.571150-1-mkl@pengutronix.de>
@@ -56,96 +56,151 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: Frank Jungclaus <frank.jungclaus@esd.eu>
 
-Replace the macros used to initialize the members of struct
-can_bittiming_const with direct values. Then also use those struct
-members to do the calculations in esd_usb2_set_bittiming().
+Prefix all the structures with the device name.
+For commonly used structures make use of (the module name) esd_usb_.
+For esd CAN-USB/2 and CAN-USB/Micro specific structures use
+esd_usb_2_ and esd_usb_m.
 
 Link: https://lore.kernel.org/all/CAMZ6RqLaDNy-fZ2G0+QMhUEckkXLL+ZyELVSDFmqpd++aBzZQg@mail.gmail.com/
 Suggested-by: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
 Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
-Link: https://lore.kernel.org/r/20230519195600.420644-3-frank.jungclaus@esd.eu
-[mkl: esd_usb2_set_bittiming() use esd_usb2_bittiming_const instead of priv->can.bittiming_const]
+Link: https://lore.kernel.org/r/20230519195600.420644-5-frank.jungclaus@esd.eu
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/esd_usb.c | 33 +++++++++++++--------------------
- 1 file changed, 13 insertions(+), 20 deletions(-)
+ drivers/net/can/usb/esd_usb.c | 44 +++++++++++++++++------------------
+ 1 file changed, 22 insertions(+), 22 deletions(-)
 
 diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
-index 93c2351d1e3c..310cae5c4648 100644
+index b7d5a82d602b..842e4dd187d4 100644
 --- a/drivers/net/can/usb/esd_usb.c
 +++ b/drivers/net/can/usb/esd_usb.c
-@@ -60,18 +60,10 @@ MODULE_LICENSE("GPL v2");
- #define ESD_USB_NO_BAUDRATE	GENMASK(30, 0) /* bit rate unconfigured */
+@@ -89,13 +89,13 @@ MODULE_LICENSE("GPL v2");
+ #define ESD_USB_MAX_RX_URBS		4
+ #define ESD_USB_MAX_TX_URBS		16 /* must be power of 2 */
  
- /* bit timing CAN-USB/2 */
--#define ESD_USB2_TSEG1_MIN	1
--#define ESD_USB2_TSEG1_MAX	16
- #define ESD_USB2_TSEG1_SHIFT	16
--#define ESD_USB2_TSEG2_MIN	1
--#define ESD_USB2_TSEG2_MAX	8
- #define ESD_USB2_TSEG2_SHIFT	20
--#define ESD_USB2_SJW_MAX	4
- #define ESD_USB2_SJW_SHIFT	14
- #define ESD_USBM_SJW_SHIFT	24
--#define ESD_USB2_BRP_MIN	1
--#define ESD_USB2_BRP_MAX	1024
--#define ESD_USB2_BRP_INC	1
- #define ESD_USB2_3_SAMPLES	BIT(23)
- 
- /* esd IDADD message */
-@@ -909,18 +901,19 @@ static const struct ethtool_ops esd_usb_ethtool_ops = {
- 
- static const struct can_bittiming_const esd_usb2_bittiming_const = {
- 	.name = "esd_usb2",
--	.tseg1_min = ESD_USB2_TSEG1_MIN,
--	.tseg1_max = ESD_USB2_TSEG1_MAX,
--	.tseg2_min = ESD_USB2_TSEG2_MIN,
--	.tseg2_max = ESD_USB2_TSEG2_MAX,
--	.sjw_max = ESD_USB2_SJW_MAX,
--	.brp_min = ESD_USB2_BRP_MIN,
--	.brp_max = ESD_USB2_BRP_MAX,
--	.brp_inc = ESD_USB2_BRP_INC,
-+	.tseg1_min = 1,
-+	.tseg1_max = 16,
-+	.tseg2_min = 1,
-+	.tseg2_max = 8,
-+	.sjw_max = 4,
-+	.brp_min = 1,
-+	.brp_max = 1024,
-+	.brp_inc = 1,
+-struct header_msg {
++struct esd_usb_header_msg {
+ 	u8 len; /* len is always the total message length in 32bit words */
+ 	u8 cmd;
+ 	u8 rsvd[2];
  };
  
- static int esd_usb2_set_bittiming(struct net_device *netdev)
+-struct version_msg {
++struct esd_usb_version_msg {
+ 	u8 len;
+ 	u8 cmd;
+ 	u8 rsvd;
+@@ -103,7 +103,7 @@ struct version_msg {
+ 	__le32 drv_version;
+ };
+ 
+-struct version_reply_msg {
++struct esd_usb_version_reply_msg {
+ 	u8 len;
+ 	u8 cmd;
+ 	u8 nets;
+@@ -114,7 +114,7 @@ struct version_reply_msg {
+ 	__le32 ts;
+ };
+ 
+-struct rx_msg {
++struct esd_usb_rx_msg {
+ 	u8 len;
+ 	u8 cmd;
+ 	u8 net;
+@@ -132,7 +132,7 @@ struct rx_msg {
+ 	};
+ };
+ 
+-struct tx_msg {
++struct esd_usb_tx_msg {
+ 	u8 len;
+ 	u8 cmd;
+ 	u8 net;
+@@ -142,7 +142,7 @@ struct tx_msg {
+ 	u8 data[CAN_MAX_DLEN];
+ };
+ 
+-struct tx_done_msg {
++struct esd_usb_tx_done_msg {
+ 	u8 len;
+ 	u8 cmd;
+ 	u8 net;
+@@ -151,7 +151,7 @@ struct tx_done_msg {
+ 	__le32 ts;
+ };
+ 
+-struct id_filter_msg {
++struct esd_usb_id_filter_msg {
+ 	u8 len;
+ 	u8 cmd;
+ 	u8 net;
+@@ -159,7 +159,7 @@ struct id_filter_msg {
+ 	__le32 mask[ESD_USB_MAX_ID_SEGMENT + 1];
+ };
+ 
+-struct set_baudrate_msg {
++struct esd_usb_set_baudrate_msg {
+ 	u8 len;
+ 	u8 cmd;
+ 	u8 net;
+@@ -169,14 +169,14 @@ struct set_baudrate_msg {
+ 
+ /* Main message type used between library and application */
+ union __packed esd_usb_msg {
+-	struct header_msg hdr;
+-	struct version_msg version;
+-	struct version_reply_msg version_reply;
+-	struct rx_msg rx;
+-	struct tx_msg tx;
+-	struct tx_done_msg txdone;
+-	struct set_baudrate_msg setbaud;
+-	struct id_filter_msg filter;
++	struct esd_usb_header_msg hdr;
++	struct esd_usb_version_msg version;
++	struct esd_usb_version_reply_msg version_reply;
++	struct esd_usb_rx_msg rx;
++	struct esd_usb_tx_msg tx;
++	struct esd_usb_tx_done_msg txdone;
++	struct esd_usb_set_baudrate_msg setbaud;
++	struct esd_usb_id_filter_msg filter;
+ };
+ 
+ static struct usb_device_id esd_usb_table[] = {
+@@ -899,8 +899,8 @@ static const struct ethtool_ops esd_usb_ethtool_ops = {
+ 	.get_ts_info = ethtool_op_get_ts_info,
+ };
+ 
+-static const struct can_bittiming_const esd_usb2_bittiming_const = {
+-	.name = "esd_usb2",
++static const struct can_bittiming_const esd_usb_2_bittiming_const = {
++	.name = "esd_usb_2",
+ 	.tseg1_min = 1,
+ 	.tseg1_max = 16,
+ 	.tseg2_min = 1,
+@@ -911,9 +911,9 @@ static const struct can_bittiming_const esd_usb2_bittiming_const = {
+ 	.brp_inc = 1,
+ };
+ 
+-static int esd_usb2_set_bittiming(struct net_device *netdev)
++static int esd_usb_2_set_bittiming(struct net_device *netdev)
  {
-+	const struct can_bittiming_const *btc = &esd_usb2_bittiming_const;
+-	const struct can_bittiming_const *btc = &esd_usb2_bittiming_const;
++	const struct can_bittiming_const *btc = &esd_usb_2_bittiming_const;
  	struct esd_usb_net_priv *priv = netdev_priv(netdev);
  	struct can_bittiming *bt = &priv->can.bittiming;
  	union esd_usb_msg *msg;
-@@ -932,7 +925,7 @@ static int esd_usb2_set_bittiming(struct net_device *netdev)
- 	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
- 		canbtr |= ESD_USB_LOM;
+@@ -1026,8 +1026,8 @@ static int esd_usb_probe_one_net(struct usb_interface *intf, int index)
+ 		priv->can.ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
+ 	}
  
--	canbtr |= (bt->brp - 1) & (ESD_USB2_BRP_MAX - 1);
-+	canbtr |= (bt->brp - 1) & (btc->brp_max - 1);
+-	priv->can.bittiming_const = &esd_usb2_bittiming_const;
+-	priv->can.do_set_bittiming = esd_usb2_set_bittiming;
++	priv->can.bittiming_const = &esd_usb_2_bittiming_const;
++	priv->can.do_set_bittiming = esd_usb_2_set_bittiming;
+ 	priv->can.do_set_mode = esd_usb_set_mode;
+ 	priv->can.do_get_berr_counter = esd_usb_get_berr_counter;
  
- 	if (le16_to_cpu(priv->usb->udev->descriptor.idProduct) ==
- 	    USB_CANUSBM_PRODUCT_ID)
-@@ -940,12 +933,12 @@ static int esd_usb2_set_bittiming(struct net_device *netdev)
- 	else
- 		sjw_shift = ESD_USB2_SJW_SHIFT;
- 
--	canbtr |= ((bt->sjw - 1) & (ESD_USB2_SJW_MAX - 1))
-+	canbtr |= ((bt->sjw - 1) & (btc->sjw_max - 1))
- 		<< sjw_shift;
- 	canbtr |= ((bt->prop_seg + bt->phase_seg1 - 1)
--		   & (ESD_USB2_TSEG1_MAX - 1))
-+		   & (btc->tseg1_max - 1))
- 		<< ESD_USB2_TSEG1_SHIFT;
--	canbtr |= ((bt->phase_seg2 - 1) & (ESD_USB2_TSEG2_MAX - 1))
-+	canbtr |= ((bt->phase_seg2 - 1) & (btc->tseg2_max - 1))
- 		<< ESD_USB2_TSEG2_SHIFT;
- 	if (priv->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES)
- 		canbtr |= ESD_USB2_3_SAMPLES;
 -- 
 2.40.1
 
