@@ -2,46 +2,45 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE0C9EB64D8
-	for <linux-can@archiver.kernel.org>; Thu, 22 Jun 2023 08:28:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 392A7EB64DD
+	for <linux-can@archiver.kernel.org>; Thu, 22 Jun 2023 08:28:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230339AbjFVI2F (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S230346AbjFVI2F (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Thu, 22 Jun 2023 04:28:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45446 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230314AbjFVI17 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 22 Jun 2023 04:27:59 -0400
+        with ESMTP id S230364AbjFVI16 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 22 Jun 2023 04:27:58 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CD12127
-        for <linux-can@vger.kernel.org>; Thu, 22 Jun 2023 01:27:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD102125
+        for <linux-can@vger.kernel.org>; Thu, 22 Jun 2023 01:27:40 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qCFf5-00039P-9t
+        id 1qCFf5-00039A-69
         for linux-can@vger.kernel.org; Thu, 22 Jun 2023 10:27:27 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 9AECC1DF456
+        by bjornoya.blackshift.org (Postfix) with SMTP id 5D8E51DF450
         for <linux-can@vger.kernel.org>; Thu, 22 Jun 2023 08:27:07 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2C77F1DF375;
-        Thu, 22 Jun 2023 08:27:03 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id BB86D1DF3FB;
+        Thu, 22 Jun 2023 08:27:05 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e5aefe0d;
-        Thu, 22 Jun 2023 08:27:01 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 994ddeb6;
+        Thu, 22 Jun 2023 08:27:02 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
+        kernel@pengutronix.de, Jimmy Assarsson <extja@kvaser.com>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Thomas Kopp <Thomas.Kopp@microchip.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 17/33] can: length: fix bitstuffing count
-Date:   Thu, 22 Jun 2023 10:26:42 +0200
-Message-Id: <20230622082658.571150-18-mkl@pengutronix.de>
+Subject: [PATCH net-next 33/33] can: kvaser_pciefd: Use TX FIFO size read from CAN controller
+Date:   Thu, 22 Jun 2023 10:26:58 +0200
+Message-Id: <20230622082658.571150-34-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230622082658.571150-1-mkl@pengutronix.de>
 References: <20230622082658.571150-1-mkl@pengutronix.de>
@@ -55,118 +54,61 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+From: Jimmy Assarsson <extja@kvaser.com>
 
-The Stuff Bit Count is always coded on 4 bits [1]. Update the Stuff
-Bit Count size accordingly.
+Use the TX FIFO size read from CAN controller register, instead of using
+hard coded value.
 
-In addition, the CRC fields of CAN FD Frames contain stuff bits at
-fixed positions called fixed stuff bits [2]. The CRC field starts with
-a fixed stuff bit and then has another fixed stuff bit after each
-fourth bit [2], which allows us to derive this formula:
-
-  FSB count = 1 + round_down(len(CRC field)/4)
-
-The length of the CRC field is [1]:
-
-  len(CRC field) = len(Stuff Bit Count) + len(CRC)
-                 = 4 + len(CRC)
-
-with len(CRC) either 17 or 21 bits depending of the payload length.
-
-In conclusion, for CRC17:
-
-  FSB count = 1 + round_down((4 + 17)/4)
-            = 6
-
-and for CRC 21:
-
-  FSB count = 1 + round_down((4 + 21)/4)
-            = 7
-
-Add a Fixed Stuff bits (FSB) field with above values and update
-CANFD_FRAME_OVERHEAD_SFF and CANFD_FRAME_OVERHEAD_EFF accordingly.
-
-[1] ISO 11898-1:2015 section 10.4.2.6 "CRC field":
-
-  The CRC field shall contain the CRC sequence followed by a recessive
-  CRC delimiter. For FD Frames, the CRC field shall also contain the
-  stuff count.
-
-  Stuff count
-
-  If FD Frames, the stuff count shall be at the beginning of the CRC
-  field. It shall consist of the stuff bit count modulo 8 in a 3-bit
-  gray code followed by a parity bit [...]
-
-[2] ISO 11898-1:2015 paragraph 10.5 "Frame coding":
-
-  In the CRC field of FD Frames, the stuff bits shall be inserted at
-  fixed positions; they are called fixed stuff bits. There shall be a
-  fixed stuff bit before the first bit of the stuff count, even if the
-  last bits of the preceding field are a sequence of five consecutive
-  bits of identical value, there shall be only the fixed stuff bit,
-  there shall not be two consecutive stuff bits. A further fixed stuff
-  bit shall be inserted after each fourth bit of the CRC field [...]
-
-Fixes: 85d99c3e2a13 ("can: length: can_skb_get_frame_len(): introduce function to get data length of frame in data link layer")
-Suggested-by: Thomas Kopp <Thomas.Kopp@microchip.com>
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Reviewed-by: Thomas Kopp <Thomas.Kopp@microchip.com>
-Link: https://lore.kernel.org/all/20230611025728.450837-2-mailhol.vincent@wanadoo.fr
+Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
+Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Link: https://lore.kernel.org/all/20230529134248.752036-15-extja@kvaser.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- include/linux/can/length.h | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/net/can/kvaser_pciefd.c | 15 +++------------
+ 1 file changed, 3 insertions(+), 12 deletions(-)
 
-diff --git a/include/linux/can/length.h b/include/linux/can/length.h
-index 69336549d24f..b8c12c83bc51 100644
---- a/include/linux/can/length.h
-+++ b/include/linux/can/length.h
-@@ -72,17 +72,18 @@
-  * Error Status Indicator (ESI)		1
-  * Data length code (DLC)		4
-  * Data field				0...512
-- * Stuff Bit Count (SBC)		0...16: 4 20...64:5
-+ * Stuff Bit Count (SBC)		4
-  * CRC					0...16: 17 20...64:21
-  * CRC delimiter (CD)			1
-+ * Fixed Stuff bits (FSB)		0...16: 6 20...64:7
-  * ACK slot (AS)			1
-  * ACK delimiter (AD)			1
-  * End-of-frame (EOF)			7
-  * Inter frame spacing			3
-  *
-- * assuming CRC21, rounded up and ignoring bitstuffing
-+ * assuming CRC21, rounded up and ignoring dynamic bitstuffing
-  */
--#define CANFD_FRAME_OVERHEAD_SFF DIV_ROUND_UP(61, 8)
-+#define CANFD_FRAME_OVERHEAD_SFF DIV_ROUND_UP(67, 8)
+diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
+index 0321b70a3b71..db6256f2b1b3 100644
+--- a/drivers/net/can/kvaser_pciefd.c
++++ b/drivers/net/can/kvaser_pciefd.c
+@@ -658,8 +658,7 @@ static netdev_tx_t kvaser_pciefd_start_xmit(struct sk_buff *skb,
+ 	/* No room for a new message, stop the queue until at least one
+ 	 * successful transmit
+ 	 */
+-	if (count >= KVASER_PCIEFD_CAN_TX_MAX_COUNT ||
+-	    can->can.echo_skb[can->echo_idx])
++	if (count >= can->can.echo_skb_max || can->can.echo_skb[can->echo_idx])
+ 		netif_stop_queue(netdev);
+ 	spin_unlock_irqrestore(&can->echo_lock, irq_flags);
  
- /*
-  * Size of a CAN-FD Extended Frame
-@@ -101,17 +102,18 @@
-  * Error Status Indicator (ESI)		1
-  * Data length code (DLC)		4
-  * Data field				0...512
-- * Stuff Bit Count (SBC)		0...16: 4 20...64:5
-+ * Stuff Bit Count (SBC)		4
-  * CRC					0...16: 17 20...64:21
-  * CRC delimiter (CD)			1
-+ * Fixed Stuff bits (FSB)		0...16: 6 20...64:7
-  * ACK slot (AS)			1
-  * ACK delimiter (AD)			1
-  * End-of-frame (EOF)			7
-  * Inter frame spacing			3
-  *
-- * assuming CRC21, rounded up and ignoring bitstuffing
-+ * assuming CRC21, rounded up and ignoring dynamic bitstuffing
-  */
--#define CANFD_FRAME_OVERHEAD_EFF DIV_ROUND_UP(80, 8)
-+#define CANFD_FRAME_OVERHEAD_EFF DIV_ROUND_UP(86, 8)
+@@ -802,16 +801,9 @@ static int kvaser_pciefd_setup_can_ctrls(struct kvaser_pciefd *pcie)
+ 		tx_nr_packets_max =
+ 			FIELD_GET(KVASER_PCIEFD_KCAN_TX_NR_PACKETS_MAX_MASK,
+ 				  ioread32(can->reg_base + KVASER_PCIEFD_KCAN_TX_NR_PACKETS_REG));
+-		if (tx_nr_packets_max < KVASER_PCIEFD_CAN_TX_MAX_COUNT) {
+-			dev_err(&pcie->pci->dev,
+-				"Max Tx count is smaller than expected\n");
+-
+-			free_candev(netdev);
+-			return -ENODEV;
+-		}
  
- /*
-  * Maximum size of a Classical CAN frame
+ 		can->can.clock.freq = pcie->freq;
+-		can->can.echo_skb_max = KVASER_PCIEFD_CAN_TX_MAX_COUNT;
++		can->can.echo_skb_max = min(KVASER_PCIEFD_CAN_TX_MAX_COUNT, tx_nr_packets_max - 1);
+ 		can->echo_idx = 0;
+ 		spin_lock_init(&can->echo_lock);
+ 		spin_lock_init(&can->lock);
+@@ -1311,8 +1303,7 @@ static int kvaser_pciefd_handle_ack_packet(struct kvaser_pciefd *pcie,
+ 		count = FIELD_GET(KVASER_PCIEFD_KCAN_TX_NR_PACKETS_CURRENT_MASK,
+ 				  ioread32(can->reg_base + KVASER_PCIEFD_KCAN_TX_NR_PACKETS_REG));
+ 
+-		if (count < KVASER_PCIEFD_CAN_TX_MAX_COUNT &&
+-		    netif_queue_stopped(can->can.dev))
++		if (count < can->can.echo_skb_max && netif_queue_stopped(can->can.dev))
+ 			netif_wake_queue(can->can.dev);
+ 
+ 		if (!one_shot_fail) {
 -- 
 2.40.1
 
