@@ -2,127 +2,214 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2E17EB64D7
-	for <linux-can@archiver.kernel.org>; Fri, 23 Jun 2023 09:01:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96577C001E0
+	for <linux-can@archiver.kernel.org>; Fri, 23 Jun 2023 11:48:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbjFWJBB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 23 Jun 2023 05:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
+        id S231688AbjFWLsD (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 23 Jun 2023 07:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231922AbjFWJAu (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 23 Jun 2023 05:00:50 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C010F30D2;
-        Fri, 23 Jun 2023 02:00:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1687510822; x=1719046822;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=HWj1VSHjeQifGegDV6SwXxM3IwTPiL+2f0IbuRC5FmI=;
-  b=K9HVQBUPwviHju8xiOJzhGOM9OrQ6EtxZXQ3PKAnayHY8kkaOOeUMK8n
-   DEVPu60SuTrwfLuS3g1bkrGsA5eNoAEVcPIIcueQXSj/sQ9Wi6PqeJiwS
-   sMIIgfs60B0yyjuGlul8RQDPDA+asj3QTnn8QMCwV2Tuc15h92gUHy2/0
-   pIz3wB96dudeK6Y/qWh1MaE+vzce0ToU/sFik/0xaH+I3X7byDV9Vx6KG
-   y4N9vfoZ+dcnH/yM7inA+YY05e0U6u/2eTmdKoQW38FXm2PxjLslUTAhr
-   sZMwvvDMhFMzuskwf+9luET8mjX82LDHr7IQt+nEr5wdxa8Cv6rqHqMf6
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10749"; a="345477332"
-X-IronPort-AV: E=Sophos;i="6.01,151,1684825200"; 
-   d="scan'208";a="345477332"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2023 01:59:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10749"; a="961901236"
-X-IronPort-AV: E=Sophos;i="6.01,151,1684825200"; 
-   d="scan'208";a="961901236"
-Received: from inesxmail01.iind.intel.com ([10.223.154.20])
-  by fmsmga006.fm.intel.com with ESMTP; 23 Jun 2023 01:59:23 -0700
-Received: from inlubt0246.localdomain (inlubt0246.iind.intel.com [10.67.198.165])
-        by inesxmail01.iind.intel.com (Postfix) with ESMTP id C345515B53;
-        Fri, 23 Jun 2023 14:29:22 +0530 (IST)
-Received: by inlubt0246.localdomain (Postfix, from userid 12088949)
-        id B8C965F772; Fri, 23 Jun 2023 14:29:22 +0530 (IST)
-From:   Kumari Pallavi <kumari.pallavi@intel.com>
-To:     rcsekar@samsung.com, wg@grandegger.com, mkl@pengutronix.de,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     mallikarjunappa.sangannavar@intel.com, jarkko.nikula@intel.com,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Kumari Pallavi <kumari.pallavi@intel.com>,
-        Srikanth Thokala <srikanth.thokala@intel.com>
-Subject: [RESEND] [PATCH 1/1] can: m_can: Control tx and rx flow to avoid communication stall
-Date:   Fri, 23 Jun 2023 14:29:20 +0530
-Message-Id: <20230623085920.12904-1-kumari.pallavi@intel.com>
-X-Mailer: git-send-email 2.17.1
+        with ESMTP id S231929AbjFWLq6 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 23 Jun 2023 07:46:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4ACA2708
+        for <linux-can@vger.kernel.org>; Fri, 23 Jun 2023 04:45:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1687520731;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xQVg0pnXVfTxPUpA8yd29SmocczyZN6S+xS0BIA8ljI=;
+        b=bxboeP2xHpz67FxFlC5H7NXgauJ1eRUyaVZinDKbrkg5d8FSgk5lFQ/9w8NeF+Dc+f/V5D
+        JtKjSYEcwXLezy9PQWJ1+gKGM/A1WCKDVzG8kW/DhaqG8+AAtn3WwyAVz50wh9USbscnVR
+        q/H48tsQo2RFfmo3UjfIsFWDFezVEpc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-648-Fm_QQgf9PJ2p0L6RUxDWNA-1; Fri, 23 Jun 2023 07:45:26 -0400
+X-MC-Unique: Fm_QQgf9PJ2p0L6RUxDWNA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C0D988E44EF;
+        Fri, 23 Jun 2023 11:45:24 +0000 (UTC)
+Received: from warthog.procyon.org.com (unknown [10.42.28.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 48F094087C6D;
+        Fri, 23 Jun 2023 11:45:21 +0000 (UTC)
+From:   David Howells <dhowells@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     David Howells <dhowells@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        dccp@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-hams@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-wpan@vger.kernel.org, linux-x25@vger.kernel.org,
+        mptcp@lists.linux.dev, rds-devel@oss.oracle.com,
+        tipc-discussion@lists.sourceforge.net,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH net-next v4 15/15] net: Kill MSG_SENDPAGE_NOTLAST
+Date:   Fri, 23 Jun 2023 12:44:25 +0100
+Message-ID: <20230623114425.2150536-16-dhowells@redhat.com>
+In-Reply-To: <20230623114425.2150536-1-dhowells@redhat.com>
+References: <20230623114425.2150536-1-dhowells@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-In bi-directional CAN transfer using M_CAN IP, with
-the frame gap being set to '0', it leads to Protocol
-error in Arbitration phase resulting in communication
-stall.
-Discussed with Bosch M_CAN IP team and the stall issue
-can only be overcome by controlling the tx and rx 
-packets flow as done by the patch.
+Now that ->sendpage() has been removed, MSG_SENDPAGE_NOTLAST can be cleaned
+up.  Things were converted to use MSG_MORE instead, but the protocol
+sendpage stubs still convert MSG_SENDPAGE_NOTLAST to MSG_MORE, which is now
+unnecessary.
 
-Rx packets would also be serviced when there is a tx 
-interrupt. The solution has been tested extensively for
-more than 10 days, and no issues has been observed.
-
-Setup that is used to reproduce the issue: 
-
-+---------------------+		+----------------------+
-|Intel ElkhartLake    |		|Intel ElkhartLake     |		
-|	+--------+    |		|	+--------+     |
-|	|m_can 0 |    |<=======>|	|m_can 0 |     |		    
-|	+--------+    |		|	+--------+     |		 
-+---------------------+		+----------------------+           
-
-Steps to be run on the two Elkhartlake HW:
-
-1. ip link set can0 type can bitrate 1000000
-2. ip link set can0 txqueuelen 2048
-3. ip link set can0 up
-4. cangen -g 0 can0
-5. candump can0
-
-cangen -g 0 can0 & candump can0 commands are used for transmit and 
-receive on both the m_can HW simultaneously where -g is the frame gap 
-between two frames.
-
-Signed-off-by: Kumari Pallavi <kumari.pallavi@intel.com>
-Signed-off-by: Srikanth Thokala <srikanth.thokala@intel.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: "David S. Miller" <davem@davemloft.net>
+cc: Eric Dumazet <edumazet@google.com>
+cc: Jakub Kicinski <kuba@kernel.org>
+cc: Paolo Abeni <pabeni@redhat.com>
+cc: Jens Axboe <axboe@kernel.dk>
+cc: Matthew Wilcox <willy@infradead.org>
+cc: bpf@vger.kernel.org
+cc: dccp@vger.kernel.org
+cc: linux-afs@lists.infradead.org
+cc: linux-arm-msm@vger.kernel.org
+cc: linux-can@vger.kernel.org
+cc: linux-crypto@vger.kernel.org
+cc: linux-doc@vger.kernel.org
+cc: linux-hams@vger.kernel.org
+cc: linux-perf-users@vger.kernel.org
+cc: linux-rdma@vger.kernel.org
+cc: linux-sctp@vger.kernel.org
+cc: linux-wpan@vger.kernel.org
+cc: linux-x25@vger.kernel.org
+cc: mptcp@lists.linux.dev
+cc: netdev@vger.kernel.org
+cc: rds-devel@oss.oracle.com
+cc: tipc-discussion@lists.sourceforge.net
+cc: virtualization@lists.linux-foundation.org
 ---
- drivers/net/can/m_can/m_can.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index a5003435802b..94aa0ba89202 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1118,7 +1118,7 @@ static irqreturn_t m_can_isr(int irq, void *dev_id)
- 			/* New TX FIFO Element arrived */
- 			if (m_can_echo_tx_event(dev) != 0)
- 				goto out_fail;
--
-+			m_can_write(cdev, M_CAN_IE, IR_ALL_INT & ~(IR_TEFN));
- 			if (netif_queue_stopped(dev) &&
- 			    !m_can_tx_fifo_full(cdev))
- 				netif_wake_queue(dev);
-@@ -1787,6 +1787,7 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
- 		}
- 	} else {
- 		cdev->tx_skb = skb;
-+		m_can_write(cdev, M_CAN_IE, IR_ALL_INT & (IR_TEFN));
- 		return m_can_tx_handler(cdev);
- 	}
+Notes:
+    ver #3)
+     - tcp_bpf is now handled by an earlier patch.
+
+ include/linux/socket.h                         | 4 +---
+ net/tls/tls_device.c                           | 3 +--
+ net/tls/tls_main.c                             | 2 +-
+ net/tls/tls_sw.c                               | 2 +-
+ tools/perf/trace/beauty/include/linux/socket.h | 1 -
+ tools/perf/trace/beauty/msg_flags.c            | 5 +----
+ 6 files changed, 5 insertions(+), 12 deletions(-)
+
+diff --git a/include/linux/socket.h b/include/linux/socket.h
+index 58204700018a..39b74d83c7c4 100644
+--- a/include/linux/socket.h
++++ b/include/linux/socket.h
+@@ -319,7 +319,6 @@ struct ucred {
+ #define MSG_MORE	0x8000	/* Sender will send more */
+ #define MSG_WAITFORONE	0x10000	/* recvmmsg(): block until 1+ packets avail */
+ #define MSG_SENDPAGE_NOPOLICY 0x10000 /* sendpage() internal : do no apply policy */
+-#define MSG_SENDPAGE_NOTLAST 0x20000 /* sendpage() internal : not the last page */
+ #define MSG_BATCH	0x40000 /* sendmmsg(): more messages coming */
+ #define MSG_EOF         MSG_FIN
+ #define MSG_NO_SHARED_FRAGS 0x80000 /* sendpage() internal : page frags are not shared */
+@@ -341,8 +340,7 @@ struct ucred {
  
--- 
-2.17.1
+ /* Flags to be cleared on entry by sendmsg and sendmmsg syscalls */
+ #define MSG_INTERNAL_SENDMSG_FLAGS \
+-	(MSG_SPLICE_PAGES | MSG_SENDPAGE_NOPOLICY | MSG_SENDPAGE_NOTLAST | \
+-	 MSG_SENDPAGE_DECRYPTED)
++	(MSG_SPLICE_PAGES | MSG_SENDPAGE_NOPOLICY | MSG_SENDPAGE_DECRYPTED)
+ 
+ /* Setsockoptions(2) level. Thanks to BSD these must match IPPROTO_xxx */
+ #define SOL_IP		0
+diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
+index 840ee06f1708..2021fe557e50 100644
+--- a/net/tls/tls_device.c
++++ b/net/tls/tls_device.c
+@@ -441,8 +441,7 @@ static int tls_push_data(struct sock *sk,
+ 	long timeo;
+ 
+ 	if (flags &
+-	    ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL | MSG_SENDPAGE_NOTLAST |
+-	      MSG_SPLICE_PAGES))
++	    ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL | MSG_SPLICE_PAGES))
+ 		return -EOPNOTSUPP;
+ 
+ 	if (unlikely(sk->sk_err))
+diff --git a/net/tls/tls_main.c b/net/tls/tls_main.c
+index d5ed4d47b16e..b6896126bb92 100644
+--- a/net/tls/tls_main.c
++++ b/net/tls/tls_main.c
+@@ -127,7 +127,7 @@ int tls_push_sg(struct sock *sk,
+ {
+ 	struct bio_vec bvec;
+ 	struct msghdr msg = {
+-		.msg_flags = MSG_SENDPAGE_NOTLAST | MSG_SPLICE_PAGES | flags,
++		.msg_flags = MSG_SPLICE_PAGES | flags,
+ 	};
+ 	int ret = 0;
+ 	struct page *p;
+diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+index 9b3aa89a4292..53f944e6d8ef 100644
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -1194,7 +1194,7 @@ int tls_sw_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
+ 
+ 	if (msg->msg_flags & ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL |
+ 			       MSG_CMSG_COMPAT | MSG_SPLICE_PAGES |
+-			       MSG_SENDPAGE_NOTLAST | MSG_SENDPAGE_NOPOLICY))
++			       MSG_SENDPAGE_NOPOLICY))
+ 		return -EOPNOTSUPP;
+ 
+ 	ret = mutex_lock_interruptible(&tls_ctx->tx_lock);
+diff --git a/tools/perf/trace/beauty/include/linux/socket.h b/tools/perf/trace/beauty/include/linux/socket.h
+index 13c3a237b9c9..3bef212a24d7 100644
+--- a/tools/perf/trace/beauty/include/linux/socket.h
++++ b/tools/perf/trace/beauty/include/linux/socket.h
+@@ -318,7 +318,6 @@ struct ucred {
+ #define MSG_MORE	0x8000	/* Sender will send more */
+ #define MSG_WAITFORONE	0x10000	/* recvmmsg(): block until 1+ packets avail */
+ #define MSG_SENDPAGE_NOPOLICY 0x10000 /* sendpage() internal : do no apply policy */
+-#define MSG_SENDPAGE_NOTLAST 0x20000 /* sendpage() internal : not the last page */
+ #define MSG_BATCH	0x40000 /* sendmmsg(): more messages coming */
+ #define MSG_EOF         MSG_FIN
+ #define MSG_NO_SHARED_FRAGS 0x80000 /* sendpage() internal : page frags are not shared */
+diff --git a/tools/perf/trace/beauty/msg_flags.c b/tools/perf/trace/beauty/msg_flags.c
+index ea68db08b8e7..5cdebd7ece7e 100644
+--- a/tools/perf/trace/beauty/msg_flags.c
++++ b/tools/perf/trace/beauty/msg_flags.c
+@@ -8,9 +8,6 @@
+ #ifndef MSG_WAITFORONE
+ #define MSG_WAITFORONE		   0x10000
+ #endif
+-#ifndef MSG_SENDPAGE_NOTLAST
+-#define MSG_SENDPAGE_NOTLAST	   0x20000
+-#endif
+ #ifndef MSG_FASTOPEN
+ #define MSG_FASTOPEN		0x20000000
+ #endif
+@@ -50,7 +47,7 @@ static size_t syscall_arg__scnprintf_msg_flags(char *bf, size_t size,
+ 	P_MSG_FLAG(NOSIGNAL);
+ 	P_MSG_FLAG(MORE);
+ 	P_MSG_FLAG(WAITFORONE);
+-	P_MSG_FLAG(SENDPAGE_NOTLAST);
++	P_MSG_FLAG(SPLICE_PAGES);
+ 	P_MSG_FLAG(FASTOPEN);
+ 	P_MSG_FLAG(CMSG_CLOEXEC);
+ #undef P_MSG_FLAG
 
