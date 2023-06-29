@@ -2,126 +2,85 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D16F2EB64DD
-	for <linux-can@archiver.kernel.org>; Tue, 27 Jun 2023 14:23:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA4ABC001DB
+	for <linux-can@archiver.kernel.org>; Thu, 29 Jun 2023 19:06:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbjF0OXG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 27 Jun 2023 10:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60830 "EHLO
+        id S233035AbjF2TGM (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 29 Jun 2023 15:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231410AbjF0OXG (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 27 Jun 2023 10:23:06 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94CA6273C
-        for <linux-can@vger.kernel.org>; Tue, 27 Jun 2023 07:23:03 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-98df69cacd1so289400166b.1
-        for <linux-can@vger.kernel.org>; Tue, 27 Jun 2023 07:23:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1687875782; x=1690467782;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ukf8kcwkmzk9LYwqXTolLjKgBXXfv/auIr6rnxGGo+0=;
-        b=lDipDssM6fhnzbxP/+otLf3ADAtXGyAWRBBj5ozeFqK8p3nHDp9UbZapzYCqpThk7A
-         V1J32lVWt4v2aH4iJoJdRTJogfKlEk4UUtAz2pYJ9gkn/KsL1MlfUCOlVjqi+Gmc43CR
-         XFwHayAXhaF4YsUIm3g1AHDKCYA8Q0kmdoUy1pRvvObgIV565hclnHeyYr9feSaFlnSd
-         Wnzx5fFl/9mbdLvb6v/D4KxnfDiGfYQZUbadrZfvgtpKfVY+0LhOTGuxZSUWxzZM433i
-         HRx164LS4cDISfoD7dPe6Fc2UfktqMo01/1RtNb/AMUx28tqCsWrljq5OKogYlTi9/SZ
-         qzxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687875782; x=1690467782;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ukf8kcwkmzk9LYwqXTolLjKgBXXfv/auIr6rnxGGo+0=;
-        b=a5hLfIuJNZlokmVeZ0LiQKmF7JAiVXcTnnPw1ct8M13nD9N6clvvfgqn2p0a/lACm/
-         DEZUAPEb5K7UkhSvmigIkmveolIJZ1JAn7bf8WePsYaeEWYrmRrGWJWLblbeKa7ojpWV
-         aYjtSnuJnF4npoRyBIhhGw2M7cwiRE5yfqkNWwVPvsm0CRjbwpqXdKaW9m+YVVskPP8A
-         3FAIpBagESpVAMXjOFjEDGG1SG+LotccRAmShFZ9CLnJ2UOnRhXCaRjBJrDh31pV35+x
-         T/PWqqxc5oLD4vDbtX5y387x9oRCBXeJE3szgdhb+Hukpmmih8cm8LSlBVBkzxtFIkWb
-         lxnQ==
-X-Gm-Message-State: AC+VfDyyUZfPzwu8jylmmsGEEjGc37P1+nf8U3uemqAfQB1s8HhsW8V8
-        CUE5xAymXuQo5xQyMvIt1vyAyQ==
-X-Google-Smtp-Source: ACHHUZ6OV19c18Cv0nNU8zXxPholYkVouLpnSEi8QQ79pSZZvEUYZC9ugwMwAT4QmdwLm8ARWM1TxA==
-X-Received: by 2002:a17:907:d1a:b0:988:e223:9566 with SMTP id gn26-20020a1709070d1a00b00988e2239566mr23513151ejc.62.1687875782075;
-        Tue, 27 Jun 2023 07:23:02 -0700 (PDT)
-Received: from blmsp ([2001:4091:a247:82fa:b762:4f68:e1ed:5041])
-        by smtp.gmail.com with ESMTPSA id qh15-20020a170906ecaf00b009885462a644sm4575596ejb.215.2023.06.27.07.23.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jun 2023 07:23:01 -0700 (PDT)
-Date:   Tue, 27 Jun 2023 16:23:00 +0200
-From:   Markus Schneider-Pargmann <msp@baylibre.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        with ESMTP id S233563AbjF2TFH (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 29 Jun 2023 15:05:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FBA34480;
+        Thu, 29 Jun 2023 12:02:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9D0D161601;
+        Thu, 29 Jun 2023 19:02:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6D79C433CA;
+        Thu, 29 Jun 2023 19:02:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1688065335;
+        bh=lUWaVxP15HP+vlQfvQOWXvQCRcQtq2JiU6ju/1xpPYw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jBLKM4AbAQNKxJY1hTnIP8r2nLARNd2QTgyvOrvevBEjRrM4jkE4UIfw92CUNbUbi
+         q1ZZvKExT7Gvvk0Sxzo9YYEwWHWZ9Ms7zmLT3/sd68I80/bviLvuO8CKcdKC6FH2Us
+         0qyxiDVHJdN1bzlRZ2x3uqIwqqZQFJ2nllT0GORzJHxBdBOuK6IW1s1fG3vDFP1/DG
+         WstvtFcjiGoHFt92ahOPG7RVXJzVYzfkVEvRwiO0omIo1OytO2Vz+wGay6VM2bJ6aa
+         nnnmTtARhn95PoKG3VWiQ2rS6KvpmAzJjXBW//iYt2rl5h6RglyX+nAKtaK6+yT3u9
+         FlA480C9IETug==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Heiko Schocher <hs@denx.de>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Michal Kubiak <michal.kubiak@intel.com>,
-        Vivek Yadav <vivek.2311@samsung.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Simon Horman <simon.horman@corigine.com>
-Subject: Re: [PATCH v2 5/6] can: tcan4x5x: Add support for tcan4552/4553
-Message-ID: <20230627142300.heju4qccian5hsjk@blmsp>
-References: <20230621093103.3134655-1-msp@baylibre.com>
- <20230621093103.3134655-6-msp@baylibre.com>
- <32557326-650c-192d-9a82-ca5451b01f70@linaro.org>
- <20230621123158.fd3pd6i7aefawobf@blmsp>
- <21f12495-ffa9-a0bf-190a-11b6ae30ca45@linaro.org>
- <20230622122339.6tkajdcenj5r3vdm@blmsp>
- <e2cc150b-49e3-7f2f-ce7f-a5982d129346@linaro.org>
+        Sasha Levin <sashal@kernel.org>, wg@grandegger.com,
+        linux-can@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 3/5] can: sja1000: fix size of OCR_MODE_MASK define
+Date:   Thu, 29 Jun 2023 15:02:10 -0400
+Message-Id: <20230629190212.908306-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230629190212.908306-1-sashal@kernel.org>
+References: <20230629190212.908306-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e2cc150b-49e3-7f2f-ce7f-a5982d129346@linaro.org>
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 5.4.248
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hi Krzysztof,
+From: Heiko Schocher <hs@denx.de>
 
-On Thu, Jun 22, 2023 at 02:52:48PM +0200, Krzysztof Kozlowski wrote:
-> On 22/06/2023 14:23, Markus Schneider-Pargmann wrote:
-> >>
-> >> Yeah, but your code is different, although maybe we just misunderstood
-> >> each other. You wrote that you cannot use the GPIOs, so I assumed you
-> >> need to know the variant before using the GPIOs. Then you need
-> >> compatibles. It's not the case here. You can read the variant and based
-> >> on this skip entirely GPIOs as they are entirely missing.
-> > 
-> > The version information is always readable for that chip, regardless of
-> > state and wake GPIOs as far as I know. So yes it is possible to setup
-> > the GPIOs based on the content of the ID register.
-> > 
-> > I personally would prefer separate compatibles. The binding
-> > documentation needs to address that wake and state GPIOs are not
-> > available for tcan4552/4553. I think having compatibles that are for
-> > these chips would make sense then. However this is my opinion, you are
-> > the maintainer.
-> 
-> We do not talk about compatibles in the bindings here. This is
-> discussion about your driver. The entire logic of validating DTB is
-> flawed and not needed. Detect the variant and act based on this.
+[ Upstream commit 26e8f6a75248247982458e8237b98c9fb2ffcf9d ]
 
-I thought it was about the bindings, sorry.
+bitfield mode in ocr register has only 2 bits not 3, so correct
+the OCR_MODE_MASK define.
 
-So to summarize the compatibles ti,tcan4552 and ti,tcan4553 are fine.
-But the driver should use the ID register for detection and not compare
-the detected variant with the given compatible?
+Signed-off-by: Heiko Schocher <hs@denx.de>
+Link: https://lore.kernel.org/all/20221123071636.2407823-1-hs@denx.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ include/linux/can/platform/sja1000.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-In my opinion it is useful to have an error messages that says there is
-something wrong with the devicetree as this can be very helpful for the
-developers who bringup new devices. This helps to quickly find issues
-with the devicetree.
+diff --git a/include/linux/can/platform/sja1000.h b/include/linux/can/platform/sja1000.h
+index 5755ae5a47122..6a869682c1207 100644
+--- a/include/linux/can/platform/sja1000.h
++++ b/include/linux/can/platform/sja1000.h
+@@ -14,7 +14,7 @@
+ #define OCR_MODE_TEST     0x01
+ #define OCR_MODE_NORMAL   0x02
+ #define OCR_MODE_CLOCK    0x03
+-#define OCR_MODE_MASK     0x07
++#define OCR_MODE_MASK     0x03
+ #define OCR_TX0_INVERT    0x04
+ #define OCR_TX0_PULLDOWN  0x08
+ #define OCR_TX0_PULLUP    0x10
+-- 
+2.39.2
 
-@Marc: What do you think? Maybe I misinterpreted your mail from last
-version?
-
-Best,
-Markus
