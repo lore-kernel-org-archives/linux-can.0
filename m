@@ -2,60 +2,65 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41D06EB64DC
-	for <linux-can@archiver.kernel.org>; Fri, 14 Jul 2023 07:49:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD11AC001B0
+	for <linux-can@archiver.kernel.org>; Fri, 14 Jul 2023 10:00:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235456AbjGNHtd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 14 Jul 2023 03:49:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43848 "EHLO
+        id S234804AbjGNKAF (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 14 Jul 2023 06:00:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235467AbjGNHtc (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 14 Jul 2023 03:49:32 -0400
-Received: from mail.durme.pl (mail.durme.pl [217.182.69.186])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD49030E2
-        for <linux-can@vger.kernel.org>; Fri, 14 Jul 2023 00:49:31 -0700 (PDT)
-Received: by mail.durme.pl (Postfix, from userid 1002)
-        id C05924F810; Fri, 14 Jul 2023 07:46:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=durme.pl; s=mail;
-        t=1689320849; bh=hFxZwVw4rIL+JwfEOGI47p+fdoVOAeqVswP6NWoHSHQ=;
-        h=Date:From:To:Subject:From;
-        b=kgNovBZIXzuIxmtPzcSHZltn02Qa4J+YXlT5MAYd3XenM3ee9N8hlde6q/WCEQ4YJ
-         Xp31vTQKPp6f69qTL/RN3CooK8XPXLOg9CmiAD1xeCjH6p6aAvZ7V0VZSRmCnv+i9C
-         KKe4uTwBpS8gvnFs8MNaX/dOuU9nv0vFP3OIPZNQannbkIwOifvXMpAUEgbYaOa39y
-         ug4TXG8mS1Iyluh9qbILnCRJwMiBYoHXC7SYHzne2T9ilciI3m3FyDXgXFiDr2w8US
-         tcVuzLnl7MxUu3ClpCtD3O8XXpJis7fP07sYmwlu/X6dOrioxtbmgcRW4192lCbOs0
-         IotMWD1glGqTw==
-Received: by mail.durme.pl for <linux-can@vger.kernel.org>; Fri, 14 Jul 2023 07:45:34 GMT
-Message-ID: <20230714064502-0.1.33.cm32.0.ohjsh6rjm8@durme.pl>
-Date:   Fri, 14 Jul 2023 07:45:34 GMT
-From:   "Krystian Wieczorek" <krystian.wieczorek@durme.pl>
-To:     <linux-can@vger.kernel.org>
-Subject: W sprawie samochodu
-X-Mailer: mail.durme.pl
+        with ESMTP id S232713AbjGNKAE (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 14 Jul 2023 06:00:04 -0400
+Received: from mail11.truemail.it (mail11.truemail.it [IPv6:2001:4b7e:0:8::81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55FB1BD4;
+        Fri, 14 Jul 2023 02:59:58 -0700 (PDT)
+Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+        by mail11.truemail.it (Postfix) with ESMTPA id D964B209BD;
+        Fri, 14 Jul 2023 11:59:51 +0200 (CEST)
+Date:   Fri, 14 Jul 2023 11:59:47 +0200
+From:   Francesco Dolcini <francesco@dolcini.it>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Judith Mendez <jm@ti.com>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Schuyler Patton <spatton@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Simon Horman <simon.horman@corigine.com>
+Subject: Re: [PATCH v10 0/2] Enable multiple MCAN on AM62x
+Message-ID: <ZLEckxW0oLklkMtn@francesco-nb.int.toradex.com>
+References: <20230707204714.62964-1-jm@ti.com>
+ <20230710-overheat-ruined-12d17707e324-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230710-overheat-ruined-12d17707e324-mkl@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Dzie=C5=84 dobry,
+Hello Mark,
 
-chcieliby=C5=9Bmy zapewni=C4=87 Pa=C5=84stwu kompleksowe rozwi=C4=85zania=
-, je=C5=9Bli chodzi o system monitoringu GPS.
+On Mon, Jul 10, 2023 at 11:57:51AM +0200, Marc Kleine-Budde wrote:
+> On 07.07.2023 15:47:12, Judith Mendez wrote:
+> > On AM62x there are two MCANs in MCU domain. The MCANs in MCU domain
+> > were not enabled since there is no hardware interrupt routed to A53
+> > GIC interrupt controller. Therefore A53 Linux cannot be interrupted
+> > by MCU MCANs.
+...
 
-Precyzyjne monitorowanie pojazd=C3=B3w na mapach cyfrowych, =C5=9Bledzeni=
-e ich parametr=C3=B3w eksploatacyjnych w czasie rzeczywistym oraz kontrol=
-a paliwa to kluczowe funkcjonalno=C5=9Bci naszego systemu.=20
+> Applied to linux-can-next/testing.
 
-Organizowanie pracy pracownik=C3=B3w jest dzi=C4=99ki temu prostsze i bar=
-dziej efektywne, a oszcz=C4=99dno=C5=9Bci i optymalizacja w zakresie pono=
-szonych koszt=C3=B3w, maj=C4=85 dla ka=C5=BCdego przedsi=C4=99biorcy ogro=
-mne znaczenie.
+Did you forgot to push your changes out? Nothing here
+git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git
 
-Dopasujemy nasz=C4=85 ofert=C4=99 do Pa=C5=84stwa oczekiwa=C5=84 i potrze=
-b organizacji. Czy mogliby=C5=9Bmy porozmawia=C4=87 o naszej propozycji?
+Francesco
 
-
-Pozdrawiam
-Krystian Wieczorek
