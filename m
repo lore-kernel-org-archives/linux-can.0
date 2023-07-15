@@ -2,32 +2,31 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC76CC001DF
-	for <linux-can@archiver.kernel.org>; Sat, 15 Jul 2023 11:33:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8852BC04A94
+	for <linux-can@archiver.kernel.org>; Sat, 15 Jul 2023 11:33:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbjGOLdT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S229904AbjGOLdT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Sat, 15 Jul 2023 07:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbjGOLdS (ORCPT
+        with ESMTP id S229953AbjGOLdS (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Sat, 15 Jul 2023 07:33:18 -0400
-X-Greylist: delayed 438 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 15 Jul 2023 04:33:16 PDT
-Received: from out-4.mta0.migadu.com (out-4.mta0.migadu.com [91.218.175.4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E277B35A2
+Received: from out-61.mta0.migadu.com (out-61.mta0.migadu.com [91.218.175.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB6B35B7
         for <linux-can@vger.kernel.org>; Sat, 15 Jul 2023 04:33:16 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
-        t=1689420371;
+        t=1689420356;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=S19A3FkW85iI4MOdVdogxGLjgMY/8iwm4JrY7sESR78=;
-        b=cdJmkzztUHM/iqtbwjQjVkdiFsgm/eGDU+PkljtPsRl3jELhJy42itIlhqCej7tose959G
-        HWkaa2M7uo5U5q7zbvOC/FOMHeDWjCFgMcxg+RQHOApUy4hUhXc0MKiCbadQoSBhf6RdOq
-        njc8oIOkK0qqMmjsh1mBB9anhgLqPBo/4+clV+6dwGjnD+TbTeBFNKmLi5pcDTKF5/XR2P
-        4byUU9a8JmBl8z9SJOdhHRCxPi14lrPbaVhAuh5Go+4973EgQG6ZWtPFx2lo3kQg6knWsl
-        S2kO8GLro8HxzMtATj90i3jnjWUxse3KO9ZqyKVouEaFBfiZT3P9QrgvV14kCg==
+        bh=1Je1IK6lfysTXxuDNeexeifoUO9/0LoHKaSsEoi0nLA=;
+        b=qjycuv7C8MM478tu7GZ1iqbtbkEH02oqYIe20ph/cC2vFNuIxx52ibutHnTswTA4rQLA8I
+        SsFzX6UX0QW6GYj8F2KcCuLrIaAUjvEEEyy9okx6KhDymZuFjSaJUyYXN7KGvt7qAFLT3q
+        oyjtrZ6w7jXwzXWmG2cIghULR3qyVuFa7G46ocL0A2F3teNFe83XRvCaYt//6g/JOHq27y
+        SnItJKe0g0v0tcURmWZLayi7iiK1q00R5S9otEUbzcQtKm1IFZIA6uoywdccEfu8lzFawV
+        g1lTX62UuAZ1Z/WMNXDDZJKNSoEbHohkPD2kQDqby6emGFu7c2UJv6XxSXtW3w==
 From:   Jookia <contact@jookia.org>
 To:     linux-sunxi@lists.linux.dev
 Cc:     John Watts <contact@jookia.org>, devicetree@vger.kernel.org,
@@ -36,9 +35,9 @@ Cc:     John Watts <contact@jookia.org>, devicetree@vger.kernel.org,
         Samuel Holland <samuel@sholland.org>,
         Jernej Skrabec <jernej.skrabec@gmail.com>,
         Chen-Yu Tsai <wens@csie.org>
-Subject: [PATCH 4/4] can: sun4i_can: Correctly set acceptance registers on the D1
-Date:   Sat, 15 Jul 2023 21:25:22 +1000
-Message-ID: <20230715112523.2533742-5-contact@jookia.org>
+Subject: [PATCH 2/4] riscv: dts: allwinner: d1: Add CAN controller nodes
+Date:   Sat, 15 Jul 2023 21:25:20 +1000
+Message-ID: <20230715112523.2533742-3-contact@jookia.org>
 In-Reply-To: <20230715112523.2533742-1-contact@jookia.org>
 References: <20230715112523.2533742-1-contact@jookia.org>
 MIME-Version: 1.0
@@ -50,85 +49,68 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: John Watts <contact@jookia.org>
 
-The Allwinner D1's CAN controllers have the ACPC and ACPM registers
-moved down. Compensate for this by adding an offset quirk for the
-acceptance registers.
+The Allwinner D1, T113 provide two CAN controllers that are variants
+of the R40 controller.
+
+I have tested support for these controllers on two boards:
+
+- A Lichee Panel RV 86 Panel running a D1 chip
+- A Mango Pi MQ Dual running a T113-s3 chip
+
+Both of these fully support both CAN controllers.
 
 Signed-off-by: John Watts <contact@jookia.org>
 ---
- drivers/net/can/sun4i_can.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ .../boot/dts/allwinner/sunxi-d1s-t113.dtsi    | 30 +++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
-index 06f2cf05aaf5..c508a328e38d 100644
---- a/drivers/net/can/sun4i_can.c
-+++ b/drivers/net/can/sun4i_can.c
-@@ -91,6 +91,8 @@
- #define SUN4I_REG_BUF12_ADDR	0x0070	/* CAN Tx/Rx Buffer 12 */
- #define SUN4I_REG_ACPC_ADDR	0x0040	/* CAN Acceptance Code 0 */
- #define SUN4I_REG_ACPM_ADDR	0x0044	/* CAN Acceptance Mask 0 */
-+#define SUN4I_REG_ACPC_ADDR_D1	0x0028	/* CAN Acceptance Code 0 on the D1 */
-+#define SUN4I_REG_ACPM_ADDR_D1	0x002C	/* CAN Acceptance Mask 0 on the D1 */
- #define SUN4I_REG_RBUF_RBACK_START_ADDR	0x0180	/* CAN transmit buffer start */
- #define SUN4I_REG_RBUF_RBACK_END_ADDR	0x01b0	/* CAN transmit buffer end */
+diff --git a/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi b/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
+index 1bb1e5cae602..b185398334be 100644
+--- a/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
++++ b/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
+@@ -131,6 +131,18 @@ uart3_pb_pins: uart3-pb-pins {
+ 				pins = "PB6", "PB7";
+ 				function = "uart3";
+ 			};
++
++			/omit-if-no-ref/
++			can0_pins: can0_pins {
++				pins = "PB2", "PB3";
++				function = "can0";
++			};
++
++			/omit-if-no-ref/
++			can1_pins: can1_pins {
++				pins = "PB4", "PB5";
++				function = "can1";
++			};
+ 		};
  
-@@ -205,9 +207,11 @@
-  * struct sun4ican_quirks - Differences between SoC variants.
-  *
-  * @has_reset: SoC needs reset deasserted.
-+ * @acp_offset: Offset of ACPC and ACPM registers
-  */
- struct sun4ican_quirks {
- 	bool has_reset;
-+	int acp_offset;
+ 		ccu: clock-controller@2001000 {
+@@ -879,5 +891,23 @@ rtc: rtc@7090000 {
+ 			clock-names = "bus", "hosc", "ahb";
+ 			#clock-cells = <1>;
+ 		};
++
++		can0: can@2504000 {
++			compatible = "allwinner,sun20i-d1-can";
++			reg = <0x02504000 0x400>;
++			interrupts = <SOC_PERIPHERAL_IRQ(21) IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&ccu CLK_BUS_CAN0>;
++			resets = <&ccu RST_BUS_CAN0>;
++			status = "disabled";
++		};
++
++		can1: can@2504400 {
++			compatible = "allwinner,sun20i-d1-can";
++			reg = <0x02504400 0x400>;
++			interrupts = <SOC_PERIPHERAL_IRQ(22) IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&ccu CLK_BUS_CAN1>;
++			resets = <&ccu RST_BUS_CAN1>;
++			status = "disabled";
++		};
+ 	};
  };
- 
- struct sun4ican_priv {
-@@ -216,6 +220,7 @@ struct sun4ican_priv {
- 	struct clk *clk;
- 	struct reset_control *reset;
- 	spinlock_t cmdreg_lock;	/* lock for concurrent cmd register writes */
-+	int acp_offset;
- };
- 
- static const struct can_bittiming_const sun4ican_bittiming_const = {
-@@ -338,8 +343,8 @@ static int sun4i_can_start(struct net_device *dev)
- 	}
- 
- 	/* set filters - we accept all */
--	writel(0x00000000, priv->base + SUN4I_REG_ACPC_ADDR);
--	writel(0xFFFFFFFF, priv->base + SUN4I_REG_ACPM_ADDR);
-+	writel(0x00000000, priv->base + SUN4I_REG_ACPC_ADDR + priv->acp_offset);
-+	writel(0xFFFFFFFF, priv->base + SUN4I_REG_ACPM_ADDR + priv->acp_offset);
- 
- 	/* clear error counters and error code capture */
- 	writel(0, priv->base + SUN4I_REG_ERRC_ADDR);
-@@ -768,14 +773,17 @@ static const struct ethtool_ops sun4ican_ethtool_ops = {
- 
- static const struct sun4ican_quirks sun4ican_quirks_a10 = {
- 	.has_reset = false,
-+	.acp_offset = 0,
- };
- 
- static const struct sun4ican_quirks sun4ican_quirks_r40 = {
- 	.has_reset = true,
-+	.acp_offset = 0,
- };
- 
- static const struct sun4ican_quirks sun4ican_quirks_d1 = {
- 	.has_reset = true,
-+	.acp_offset = (SUN4I_REG_ACPC_ADDR_D1 - SUN4I_REG_ACPC_ADDR),
- };
- 
- static const struct of_device_id sun4ican_of_match[] = {
-@@ -877,6 +885,7 @@ static int sun4ican_probe(struct platform_device *pdev)
- 	priv->base = addr;
- 	priv->clk = clk;
- 	priv->reset = reset;
-+	priv->acp_offset = quirks->acp_offset;
- 	spin_lock_init(&priv->cmdreg_lock);
- 
- 	platform_set_drvdata(pdev, dev);
 -- 
 2.41.0
 
