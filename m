@@ -2,32 +2,32 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60931C0015E
-	for <linux-can@archiver.kernel.org>; Sat, 15 Jul 2023 11:32:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1181DEB64DC
+	for <linux-can@archiver.kernel.org>; Sat, 15 Jul 2023 11:33:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbjGOLci (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Sat, 15 Jul 2023 07:32:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48570 "EHLO
+        id S229861AbjGOLdS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 15 Jul 2023 07:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbjGOLch (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Sat, 15 Jul 2023 07:32:37 -0400
-X-Greylist: delayed 409 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 15 Jul 2023 04:32:31 PDT
-Received: from out-32.mta1.migadu.com (out-32.mta1.migadu.com [95.215.58.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 038EB35A0
-        for <linux-can@vger.kernel.org>; Sat, 15 Jul 2023 04:32:31 -0700 (PDT)
+        with ESMTP id S229745AbjGOLdR (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 15 Jul 2023 07:33:17 -0400
+X-Greylist: delayed 437 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 15 Jul 2023 04:33:16 PDT
+Received: from out-26.mta0.migadu.com (out-26.mta0.migadu.com [IPv6:2001:41d0:1004:224b::1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C85F135A0
+        for <linux-can@vger.kernel.org>; Sat, 15 Jul 2023 04:33:16 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
-        t=1689420347;
+        t=1689420363;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TwGDE3yVIxPwsfY7daqG3Fg4YYN3E6U2TSbdOoNGr2c=;
-        b=qij1kjnFwoJdPsm8qHKTlc+hKlEqw0z6iH0/AKScKt/SNRm2MnIEdugATrTQV7XEoY5Tyu
-        awM9uAT0Ja7GYNRqt0zuQlHylvACAggWDBFPsJIwUrUZbxOQ9vc9SdXq3ujOjIHN9Bo9DI
-        M/myL22XbVD07cjWzndjI7gDUjVTO9fTWwWey3fzAhsKK0TxLAYBGnlQ1sMxnE7Gk/MNUZ
-        quj/oLQsJH/RdpMIxzLy46NJAzzMZNvN9QnKf+hzKzBD5ZG+hoIO7zwvKfR6SB0yYY+tBh
-        pH8hqw5zSR7xDca8eOIBM8nKZM4TOe8upoWE5Qw7HYXyJbZGxN7tJ7KhITGS4A==
+        bh=KPF7WuMTa88q4pM2B8RLcTtpmoYLpabME/stwQ3zxw8=;
+        b=CvCizP0wHXr3KbIN7dwVKFLWFHr8fmROa12Yfr1EWNbQgkKHOpztrR7FjE4CeTV+/aMjRy
+        ISxaiyC+x3gyUDjl5CZOg+hFuGwZWsM0Wp6e/SwF+FAjD9oMG8ylmXuaMhFce8Lj03Z1tC
+        TsKtpPGzh7GQD62V6lwsGk5YQYlTaYUb5Az3KCbIKqe8Vs4TkduXgnHLahbaHoxP7s7pXT
+        74cIjgqGlBJLNPkvbL3X2RHsaJv+ORM4P3mHt84LVmOnZbtdEHZmwminN3w0ARveEABhP9
+        skBnDh0t8z3efwAIBt3PKpwNRRquQVJgTMCY4MKl0IgYhKsp8gyPEDP1zgz2mA==
 From:   Jookia <contact@jookia.org>
 To:     linux-sunxi@lists.linux.dev
 Cc:     John Watts <contact@jookia.org>, devicetree@vger.kernel.org,
@@ -36,9 +36,9 @@ Cc:     John Watts <contact@jookia.org>, devicetree@vger.kernel.org,
         Samuel Holland <samuel@sholland.org>,
         Jernej Skrabec <jernej.skrabec@gmail.com>,
         Chen-Yu Tsai <wens@csie.org>
-Subject: [PATCH 1/4] dt-bindings: net: can: Add support for Allwinner D1 CAN controller
-Date:   Sat, 15 Jul 2023 21:25:19 +1000
-Message-ID: <20230715112523.2533742-2-contact@jookia.org>
+Subject: [PATCH 3/4] can: sun4i_can: Add send support for the Allwinner D1
+Date:   Sat, 15 Jul 2023 21:25:21 +1000
+Message-ID: <20230715112523.2533742-4-contact@jookia.org>
 In-Reply-To: <20230715112523.2533742-1-contact@jookia.org>
 References: <20230715112523.2533742-1-contact@jookia.org>
 MIME-Version: 1.0
@@ -50,41 +50,64 @@ X-Mailing-List: linux-can@vger.kernel.org
 
 From: John Watts <contact@jookia.org>
 
-The Allwinner D1 has two CAN controllers, both a variant of the R40
-controller. Unfortunately the registers for the D1 controllers are
-moved around enough to be incompatible and require a new compatible.
-
-Introduce the "allwinner,sun20i-d1-can" compatible to support this.
+The controllers present in the D1 are extremely similar to the R40
+and require the same reset quirks. This alone can support sending
+packets. An extra quirk is needed to support receiving packets.
 
 Signed-off-by: John Watts <contact@jookia.org>
 ---
- .../bindings/net/can/allwinner,sun4i-a10-can.yaml           | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/can/Kconfig     | 4 ++--
+ drivers/net/can/sun4i_can.c | 9 ++++++++-
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/allwinner,sun4i-a10-can.yaml b/Documentation/devicetree/bindings/net/can/allwinner,sun4i-a10-can.yaml
-index 9c494957a07a..e42ea28d6ab4 100644
---- a/Documentation/devicetree/bindings/net/can/allwinner,sun4i-a10-can.yaml
-+++ b/Documentation/devicetree/bindings/net/can/allwinner,sun4i-a10-can.yaml
-@@ -21,6 +21,7 @@ properties:
-           - const: allwinner,sun4i-a10-can
-       - const: allwinner,sun4i-a10-can
-       - const: allwinner,sun8i-r40-can
-+      - const: allwinner,sun20i-d1-can
+diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+index a5c5036dfb94..e626de33e735 100644
+--- a/drivers/net/can/Kconfig
++++ b/drivers/net/can/Kconfig
+@@ -185,10 +185,10 @@ config CAN_SLCAN
  
-   reg:
-     maxItems: 1
-@@ -37,8 +38,9 @@ properties:
- if:
-   properties:
-     compatible:
--      contains:
--        const: allwinner,sun8i-r40-can
-+      enum:
-+        - allwinner,sun8i-r40-can
-+        - allwinner,sun20i-d1-can
+ config CAN_SUN4I
+ 	tristate "Allwinner A10 CAN controller"
+-	depends on MACH_SUN4I || MACH_SUN7I || COMPILE_TEST
++	depends on MACH_SUN4I || MACH_SUN7I || RISCV || COMPILE_TEST
+ 	help
+ 	  Say Y here if you want to use CAN controller found on Allwinner
+-	  A10/A20 SoCs.
++	  A10/A20/D1 SoCs.
  
- then:
-   required:
+ 	  To compile this driver as a module, choose M here: the module will
+ 	  be called sun4i_can.
+diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
+index 0827830bbf28..06f2cf05aaf5 100644
+--- a/drivers/net/can/sun4i_can.c
++++ b/drivers/net/can/sun4i_can.c
+@@ -774,6 +774,10 @@ static const struct sun4ican_quirks sun4ican_quirks_r40 = {
+ 	.has_reset = true,
+ };
+ 
++static const struct sun4ican_quirks sun4ican_quirks_d1 = {
++	.has_reset = true,
++};
++
+ static const struct of_device_id sun4ican_of_match[] = {
+ 	{
+ 		.compatible = "allwinner,sun4i-a10-can",
+@@ -784,6 +788,9 @@ static const struct of_device_id sun4ican_of_match[] = {
+ 	}, {
+ 		.compatible = "allwinner,sun8i-r40-can",
+ 		.data = &sun4ican_quirks_r40
++	}, {
++		.compatible = "allwinner,sun20i-d1-can",
++		.data = &sun4ican_quirks_d1
+ 	}, {
+ 		/* sentinel */
+ 	},
+@@ -907,4 +914,4 @@ module_platform_driver(sun4i_can_driver);
+ MODULE_AUTHOR("Peter Chen <xingkongcp@gmail.com>");
+ MODULE_AUTHOR("Gerhard Bertelsmann <info@gerhard-bertelsmann.de>");
+ MODULE_LICENSE("Dual BSD/GPL");
+-MODULE_DESCRIPTION("CAN driver for Allwinner SoCs (A10/A20)");
++MODULE_DESCRIPTION("CAN driver for Allwinner SoCs (A10/A20/D1)");
 -- 
 2.41.0
 
