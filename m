@@ -2,44 +2,48 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24BC5EB64DC
-	for <linux-can@archiver.kernel.org>; Mon, 17 Jul 2023 18:09:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE66FC001DC
+	for <linux-can@archiver.kernel.org>; Mon, 17 Jul 2023 18:09:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbjGQSJq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 17 Jul 2023 14:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40352 "EHLO
+        id S229995AbjGQSJs (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 17 Jul 2023 14:09:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjGQSJp (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 17 Jul 2023 14:09:45 -0400
+        with ESMTP id S229449AbjGQSJr (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 17 Jul 2023 14:09:47 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA75299
-        for <linux-can@vger.kernel.org>; Mon, 17 Jul 2023 11:09:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E2099
+        for <linux-can@vger.kernel.org>; Mon, 17 Jul 2023 11:09:46 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qLSfH-00085A-Do
-        for linux-can@vger.kernel.org; Mon, 17 Jul 2023 20:09:43 +0200
+        id 1qLSfI-00087G-MG
+        for linux-can@vger.kernel.org; Mon, 17 Jul 2023 20:09:44 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 154F81F3952
-        for <linux-can@vger.kernel.org>; Mon, 17 Jul 2023 18:09:42 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 1E0EE1F3967
+        for <linux-can@vger.kernel.org>; Mon, 17 Jul 2023 18:09:43 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 119B41F3941;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 52DA01F3944;
         Mon, 17 Jul 2023 18:09:41 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 793fb659;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b2b03231;
         Mon, 17 Jul 2023 18:09:40 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH net 0/5] pull-request: can 2023-07-17
-Date:   Mon, 17 Jul 2023 20:09:33 +0200
-Message-Id: <20230717180938.230816-1-mkl@pengutronix.de>
+        kernel@pengutronix.de, YueHaibing <yuehaibing@huawei.com>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 2/5] can: bcm: Fix UAF in bcm_proc_show()
+Date:   Mon, 17 Jul 2023 20:09:35 +0200
+Message-Id: <20230717180938.230816-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230717180938.230816-1-mkl@pengutronix.de>
+References: <20230717180938.230816-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
@@ -50,65 +54,93 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello netdev-team,
+From: YueHaibing <yuehaibing@huawei.com>
 
-this is a pull request of 5 patches for net/master.
+BUG: KASAN: slab-use-after-free in bcm_proc_show+0x969/0xa80
+Read of size 8 at addr ffff888155846230 by task cat/7862
 
-The 1st patch is by Ziyang Xuan and fixes a possible memory leak in
-the receiver handling in the CAN RAW protocol.
+CPU: 1 PID: 7862 Comm: cat Not tainted 6.5.0-rc1-00153-gc8746099c197 #230
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0xd5/0x150
+ print_report+0xc1/0x5e0
+ kasan_report+0xba/0xf0
+ bcm_proc_show+0x969/0xa80
+ seq_read_iter+0x4f6/0x1260
+ seq_read+0x165/0x210
+ proc_reg_read+0x227/0x300
+ vfs_read+0x1d5/0x8d0
+ ksys_read+0x11e/0x240
+ do_syscall_64+0x35/0xb0
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-YueHaibing contributes a use after free in bcm_proc_show() of the
-Broad Cast Manager (BCM) CAN protocol.
+Allocated by task 7846:
+ kasan_save_stack+0x1e/0x40
+ kasan_set_track+0x21/0x30
+ __kasan_kmalloc+0x9e/0xa0
+ bcm_sendmsg+0x264b/0x44e0
+ sock_sendmsg+0xda/0x180
+ ____sys_sendmsg+0x735/0x920
+ ___sys_sendmsg+0x11d/0x1b0
+ __sys_sendmsg+0xfa/0x1d0
+ do_syscall_64+0x35/0xb0
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-The next 2 patches are by me and fix a possible null pointer
-dereference in the RX path of the gs_usb driver with activated
-hardware timestamps and the candlelight firmware.
+Freed by task 7846:
+ kasan_save_stack+0x1e/0x40
+ kasan_set_track+0x21/0x30
+ kasan_save_free_info+0x27/0x40
+ ____kasan_slab_free+0x161/0x1c0
+ slab_free_freelist_hook+0x119/0x220
+ __kmem_cache_free+0xb4/0x2e0
+ rcu_core+0x809/0x1bd0
 
-The last patch is by Fedor Ross, Marek Vasut and me and targets the
-mcp251xfd driver. The polling timeout of __mcp251xfd_chip_set_mode()
-is increased to fix bus joining on busy CAN buses and very low bit
-rate.
+bcm_op is freed before procfs entry be removed in bcm_release(),
+this lead to bcm_proc_show() may read the freed bcm_op.
 
-regards,
-Marc
-
+Fixes: ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Reviewed-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://lore.kernel.org/all/20230715092543.15548-1-yuehaibing@huawei.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ net/can/bcm.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-The following changes since commit 0dd1805fe498e0cf64f68e451a8baff7e64494ec:
-
-  Merge branch 'net-fix-kernel-doc-problems-in-include-net' (2023-07-14 20:39:35 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-6.5-20230717
-
-for you to fetch changes up to 9efa1a5407e81265ea502cab83be4de503decc49:
-
-  can: mcp251xfd: __mcp251xfd_chip_set_mode(): increase poll timeout (2023-07-17 19:54:51 +0200)
-
-----------------------------------------------------------------
-linux-can-fixes-for-6.5-20230717
-
-----------------------------------------------------------------
-Fedor Ross (1):
-      can: mcp251xfd: __mcp251xfd_chip_set_mode(): increase poll timeout
-
-Marc Kleine-Budde (3):
-      can: gs_usb: gs_can_open(): improve error handling
-      can: gs_usb: fix time stamp counter initialization
-      Merge patch series "can: gs_usb: fix time stamp counter initialization"
-
-YueHaibing (1):
-      can: bcm: Fix UAF in bcm_proc_show()
-
-Ziyang Xuan (1):
-      can: raw: fix receiver memory leak
-
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c |  10 +-
- drivers/net/can/spi/mcp251xfd/mcp251xfd.h      |   1 +
- drivers/net/can/usb/gs_usb.c                   | 130 ++++++++++++++-----------
- net/can/bcm.c                                  |  12 +--
- net/can/raw.c                                  |  57 +++++------
- 5 files changed, 113 insertions(+), 97 deletions(-)
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index 9ba35685b043..9168114fc87f 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -1526,6 +1526,12 @@ static int bcm_release(struct socket *sock)
+ 
+ 	lock_sock(sk);
+ 
++#if IS_ENABLED(CONFIG_PROC_FS)
++	/* remove procfs entry */
++	if (net->can.bcmproc_dir && bo->bcm_proc_read)
++		remove_proc_entry(bo->procname, net->can.bcmproc_dir);
++#endif /* CONFIG_PROC_FS */
++
+ 	list_for_each_entry_safe(op, next, &bo->tx_ops, list)
+ 		bcm_remove_op(op);
+ 
+@@ -1561,12 +1567,6 @@ static int bcm_release(struct socket *sock)
+ 	list_for_each_entry_safe(op, next, &bo->rx_ops, list)
+ 		bcm_remove_op(op);
+ 
+-#if IS_ENABLED(CONFIG_PROC_FS)
+-	/* remove procfs entry */
+-	if (net->can.bcmproc_dir && bo->bcm_proc_read)
+-		remove_proc_entry(bo->procname, net->can.bcmproc_dir);
+-#endif /* CONFIG_PROC_FS */
+-
+ 	/* remove device reference */
+ 	if (bo->bound) {
+ 		bo->bound   = 0;
+-- 
+2.40.1
 
 
