@@ -2,45 +2,47 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89B6FC0015E
-	for <linux-can@archiver.kernel.org>; Mon, 17 Jul 2023 18:23:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66C93C04FE0
+	for <linux-can@archiver.kernel.org>; Mon, 17 Jul 2023 18:23:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbjGQSXV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 17 Jul 2023 14:23:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
+        id S230160AbjGQSXW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 17 Jul 2023 14:23:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230244AbjGQSWv (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 17 Jul 2023 14:22:51 -0400
+        with ESMTP id S230131AbjGQSWu (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 17 Jul 2023 14:22:50 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6796810E5
-        for <linux-can@vger.kernel.org>; Mon, 17 Jul 2023 11:22:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947EF19A
+        for <linux-can@vger.kernel.org>; Mon, 17 Jul 2023 11:22:36 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qLSrj-0001bw-Oe
-        for linux-can@vger.kernel.org; Mon, 17 Jul 2023 20:22:35 +0200
+        id 1qLSri-0001Zy-Tw
+        for linux-can@vger.kernel.org; Mon, 17 Jul 2023 20:22:34 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 00D621F39F7
+        by bjornoya.blackshift.org (Postfix) with SMTP id 52A031F39EB
         for <linux-can@vger.kernel.org>; Mon, 17 Jul 2023 18:22:33 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id A867F1F39C2;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 1026C1F39B7;
         Mon, 17 Jul 2023 18:22:31 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0f2ad148;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id bbcd5ced;
         Mon, 17 Jul 2023 18:22:30 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Srinivas Neeli <srinivas.neeli@amd.com>,
-        Michal Simek <michal.simek@amd.com>,
+        kernel@pengutronix.de, Judith Mendez <jm@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 6/8] can: xilinx_can: Add support for controller reset
-Date:   Mon, 17 Jul 2023 20:22:27 +0200
-Message-Id: <20230717182229.250565-7-mkl@pengutronix.de>
+Subject: [PATCH net-next 1/8] dt-bindings: net: can: Remove interrupt properties for MCAN
+Date:   Mon, 17 Jul 2023 20:22:22 +0200
+Message-Id: <20230717182229.250565-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230717182229.250565-1-mkl@pengutronix.de>
 References: <20230717182229.250565-1-mkl@pengutronix.de>
@@ -54,120 +56,71 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Srinivas Neeli <srinivas.neeli@amd.com>
+From: Judith Mendez <jm@ti.com>
 
-Add support for an optional reset for the CAN controller using the reset
-driver. If the CAN node contains the "resets" property, then this logic
-will perform CAN controller reset.
+On AM62x SoC, MCANs on MCU domain do not have hardware interrupt
+routed to A53 Linux, instead they will use software interrupt by
+timer polling.
 
-Signed-off-by: Srinivas Neeli <srinivas.neeli@amd.com>
-Signed-off-by: Michal Simek <michal.simek@amd.com>
-Link: https://lore.kernel.org/all/ab7e6503aa3343e39ead03c1797e765be6c50de2.1689164442.git.michal.simek@amd.com
+To enable timer polling method, interrupts should be
+optional so remove interrupts property from required section and
+add an example for MCAN node with timer polling enabled.
+
+Reviewed-by: Tony Lindgren <tony@atomide.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Judith Mendez <jm@ti.com>
+Link: https://lore.kernel.org/all/20230707204714.62964-2-jm@ti.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/xilinx_can.c | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
+ .../bindings/net/can/bosch,m_can.yaml         | 20 +++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 4d3283db3a13..abe58f103043 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -30,6 +30,7 @@
- #include <linux/can/error.h>
- #include <linux/phy/phy.h>
- #include <linux/pm_runtime.h>
-+#include <linux/reset.h>
+diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+index 67879aab623b..bb518c831f7b 100644
+--- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
++++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+@@ -122,8 +122,6 @@ required:
+   - compatible
+   - reg
+   - reg-names
+-  - interrupts
+-  - interrupt-names
+   - clocks
+   - clock-names
+   - bosch,mram-cfg
+@@ -132,6 +130,7 @@ additionalProperties: false
  
- #define DRIVER_NAME	"xilinx_can"
+ examples:
+   - |
++    // Example with interrupts
+     #include <dt-bindings/clock/imx6sx-clock.h>
+     can@20e8000 {
+       compatible = "bosch,m_can";
+@@ -149,4 +148,21 @@ examples:
+       };
+     };
  
-@@ -200,6 +201,7 @@ struct xcan_devtype_data {
-  * @can_clk:			Pointer to struct clk
-  * @devtype:			Device type specific constants
-  * @transceiver:		Optional pointer to associated CAN transceiver
-+ * @rstc:			Pointer to reset control
-  */
- struct xcan_priv {
- 	struct can_priv can;
-@@ -218,6 +220,7 @@ struct xcan_priv {
- 	struct clk *can_clk;
- 	struct xcan_devtype_data devtype;
- 	struct phy *transceiver;
-+	struct reset_control *rstc;
- };
- 
- /* CAN Bittiming constants as per Xilinx CAN specs */
-@@ -1799,6 +1802,16 @@ static int xcan_probe(struct platform_device *pdev)
- 	priv->can.do_get_berr_counter = xcan_get_berr_counter;
- 	priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
- 					CAN_CTRLMODE_BERR_REPORTING;
-+	priv->rstc = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
-+	if (IS_ERR(priv->rstc)) {
-+		dev_err(&pdev->dev, "Cannot get CAN reset.\n");
-+		ret = PTR_ERR(priv->rstc);
-+		goto err_free;
-+	}
++  - |
++    // Example with timer polling
++    #include <dt-bindings/clock/imx6sx-clock.h>
++    can@20e8000 {
++      compatible = "bosch,m_can";
++      reg = <0x020e8000 0x4000>, <0x02298000 0x4000>;
++      reg-names = "m_can", "message_ram";
++      clocks = <&clks IMX6SX_CLK_CANFD>,
++               <&clks IMX6SX_CLK_CANFD>;
++      clock-names = "hclk", "cclk";
++      bosch,mram-cfg = <0x0 0 0 32 0 0 0 1>;
 +
-+	ret = reset_control_reset(priv->rstc);
-+	if (ret)
-+		goto err_free;
- 
- 	if (devtype->cantype == XAXI_CANFD) {
- 		priv->can.data_bittiming_const =
-@@ -1827,7 +1840,7 @@ static int xcan_probe(struct platform_device *pdev)
- 	/* Get IRQ for the device */
- 	ret = platform_get_irq(pdev, 0);
- 	if (ret < 0)
--		goto err_free;
-+		goto err_reset;
- 
- 	ndev->irq = ret;
- 
-@@ -1843,21 +1856,21 @@ static int xcan_probe(struct platform_device *pdev)
- 	if (IS_ERR(priv->can_clk)) {
- 		ret = dev_err_probe(&pdev->dev, PTR_ERR(priv->can_clk),
- 				    "device clock not found\n");
--		goto err_free;
-+		goto err_reset;
- 	}
- 
- 	priv->bus_clk = devm_clk_get(&pdev->dev, devtype->bus_clk_name);
- 	if (IS_ERR(priv->bus_clk)) {
- 		ret = dev_err_probe(&pdev->dev, PTR_ERR(priv->bus_clk),
- 				    "bus clock not found\n");
--		goto err_free;
-+		goto err_reset;
- 	}
- 
- 	transceiver = devm_phy_optional_get(&pdev->dev, NULL);
- 	if (IS_ERR(transceiver)) {
- 		ret = PTR_ERR(transceiver);
- 		dev_err_probe(&pdev->dev, ret, "failed to get phy\n");
--		goto err_free;
-+		goto err_reset;
- 	}
- 	priv->transceiver = transceiver;
- 
-@@ -1904,6 +1917,8 @@ static int xcan_probe(struct platform_device *pdev)
- err_disableclks:
- 	pm_runtime_put(priv->dev);
- 	pm_runtime_disable(&pdev->dev);
-+err_reset:
-+	reset_control_assert(priv->rstc);
- err_free:
- 	free_candev(ndev);
- err:
-@@ -1920,9 +1935,11 @@ static int xcan_probe(struct platform_device *pdev)
- static void xcan_remove(struct platform_device *pdev)
- {
- 	struct net_device *ndev = platform_get_drvdata(pdev);
-+	struct xcan_priv *priv = netdev_priv(ndev);
- 
- 	unregister_candev(ndev);
- 	pm_runtime_disable(&pdev->dev);
-+	reset_control_assert(priv->rstc);
- 	free_candev(ndev);
- }
- 
++      can-transceiver {
++        max-bitrate = <5000000>;
++      };
++    };
++
+ ...
+
+base-commit: 68af900072c157c0cdce0256968edd15067e1e5a
 -- 
 2.40.1
 
