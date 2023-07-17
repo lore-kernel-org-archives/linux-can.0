@@ -2,45 +2,44 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB433C001DF
-	for <linux-can@archiver.kernel.org>; Mon, 17 Jul 2023 18:23:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02B31C04A94
+	for <linux-can@archiver.kernel.org>; Mon, 17 Jul 2023 18:23:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229892AbjGQSXS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 17 Jul 2023 14:23:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53536 "EHLO
+        id S229919AbjGQSXT (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 17 Jul 2023 14:23:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230241AbjGQSWu (ORCPT
+        with ESMTP id S230097AbjGQSWu (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Mon, 17 Jul 2023 14:22:50 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D7910DD
-        for <linux-can@vger.kernel.org>; Mon, 17 Jul 2023 11:22:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98381188
+        for <linux-can@vger.kernel.org>; Mon, 17 Jul 2023 11:22:35 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qLSrj-0001bx-Pa
-        for linux-can@vger.kernel.org; Mon, 17 Jul 2023 20:22:35 +0200
+        id 1qLSri-0001Yu-00
+        for linux-can@vger.kernel.org; Mon, 17 Jul 2023 20:22:34 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 049671F39F8
-        for <linux-can@vger.kernel.org>; Mon, 17 Jul 2023 18:22:33 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id CC0E91F39DE
+        for <linux-can@vger.kernel.org>; Mon, 17 Jul 2023 18:22:32 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8E4631F39BF;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5A4F81F39BA;
         Mon, 17 Jul 2023 18:22:31 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 37f8e5da;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 9e675d8d;
         Mon, 17 Jul 2023 18:22:30 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Michal Simek <michal.simek@amd.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
+        kernel@pengutronix.de, Wu Yunchuan <yunchuan@nfschina.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 5/8] dt-bindings: can: xilinx_can: Add reset description
-Date:   Mon, 17 Jul 2023 20:22:26 +0200
-Message-Id: <20230717182229.250565-6-mkl@pengutronix.de>
+Subject: [PATCH net-next 3/8] can: ems_pci: Remove unnecessary (void *) conversions
+Date:   Mon, 17 Jul 2023 20:22:24 +0200
+Message-Id: <20230717182229.250565-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230717182229.250565-1-mkl@pengutronix.de>
 References: <20230717182229.250565-1-mkl@pengutronix.de>
@@ -54,33 +53,50 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Michal Simek <michal.simek@amd.com>
+From: Wu Yunchuan <yunchuan@nfschina.com>
 
-IP core has input for reset signal which can be connected that's why
-describe optional reset property.
+No need cast (void *) to (struct ems_pci_card *).
 
-Signed-off-by: Michal Simek <michal.simek@amd.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-Link: https://lore.kernel.org/all/bfaed896cc51af02fe5f290675313ab4dcab0d33.1689164442.git.michal.simek@amd.com
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Wu Yunchuan <yunchuan@nfschina.com>
+Link: https://lore.kernel.org/all/20230717071800.144129-1-yunchuan@nfschina.com
+[mkl: slightly adjusted subject and commit message]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- Documentation/devicetree/bindings/net/can/xilinx,can.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/can/sja1000/ems_pci.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/xilinx,can.yaml b/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
-index 897d2cbda45b..64d57c343e6f 100644
---- a/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
-+++ b/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
-@@ -46,6 +46,9 @@ properties:
-     $ref: /schemas/types.yaml#/definitions/uint32
-     description: CAN Tx mailbox buffer count (CAN FD)
+diff --git a/drivers/net/can/sja1000/ems_pci.c b/drivers/net/can/sja1000/ems_pci.c
+index c56e27223e5f..ac86640998a8 100644
+--- a/drivers/net/can/sja1000/ems_pci.c
++++ b/drivers/net/can/sja1000/ems_pci.c
+@@ -148,7 +148,7 @@ static void ems_pci_v1_write_reg(const struct sja1000_priv *priv,
  
-+  resets:
-+    maxItems: 1
-+
- required:
-   - compatible
-   - reg
+ static void ems_pci_v1_post_irq(const struct sja1000_priv *priv)
+ {
+-	struct ems_pci_card *card = (struct ems_pci_card *)priv->priv;
++	struct ems_pci_card *card = priv->priv;
+ 
+ 	/* reset int flag of pita */
+ 	writel(PITA2_ICR_INT0_EN | PITA2_ICR_INT0,
+@@ -168,7 +168,7 @@ static void ems_pci_v2_write_reg(const struct sja1000_priv *priv,
+ 
+ static void ems_pci_v2_post_irq(const struct sja1000_priv *priv)
+ {
+-	struct ems_pci_card *card = (struct ems_pci_card *)priv->priv;
++	struct ems_pci_card *card = priv->priv;
+ 
+ 	writel(PLX_ICSR_ENA_CLR, card->conf_addr + PLX_ICSR);
+ }
+@@ -186,7 +186,7 @@ static void ems_pci_v3_write_reg(const struct sja1000_priv *priv,
+ 
+ static void ems_pci_v3_post_irq(const struct sja1000_priv *priv)
+ {
+-	struct ems_pci_card *card = (struct ems_pci_card *)priv->priv;
++	struct ems_pci_card *card = priv->priv;
+ 
+ 	writel(ASIX_LINTSR_INT0AC, card->conf_addr + ASIX_LINTSR);
+ }
 -- 
 2.40.1
 
