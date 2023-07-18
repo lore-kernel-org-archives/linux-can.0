@@ -2,91 +2,146 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52C23C0015E
-	for <linux-can@archiver.kernel.org>; Mon, 17 Jul 2023 18:24:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CF4CEB64DA
+	for <linux-can@archiver.kernel.org>; Tue, 18 Jul 2023 07:57:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbjGQSYz (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 17 Jul 2023 14:24:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
+        id S230183AbjGRH5n (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 18 Jul 2023 03:57:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbjGQSWu (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 17 Jul 2023 14:22:50 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4DD18D
-        for <linux-can@vger.kernel.org>; Mon, 17 Jul 2023 11:22:36 -0700 (PDT)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qLSri-0001Z5-Bk
-        for linux-can@vger.kernel.org; Mon, 17 Jul 2023 20:22:34 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id DD7AC1F39E0
-        for <linux-can@vger.kernel.org>; Mon, 17 Jul 2023 18:22:32 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 71A3B1F39BC;
-        Mon, 17 Jul 2023 18:22:31 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d0dc8c6d;
-        Mon, 17 Jul 2023 18:22:30 +0000 (UTC)
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Rob Herring <robh@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 4/8] can: Explicitly include correct DT includes
-Date:   Mon, 17 Jul 2023 20:22:25 +0200
-Message-Id: <20230717182229.250565-5-mkl@pengutronix.de>
+        with ESMTP id S231623AbjGRH5j (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 18 Jul 2023 03:57:39 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE831737
+        for <linux-can@vger.kernel.org>; Tue, 18 Jul 2023 00:57:14 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fb960b7c9dso8785840e87.0
+        for <linux-can@vger.kernel.org>; Tue, 18 Jul 2023 00:57:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689667032; x=1690271832;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Yw8S8ohFAjJvqm8HRm1Ib4h2RNi+dhnA4IaPY526ysM=;
+        b=xuotYMKhWom8XlUQzbv1lWFQHoApOVmGWqonV/mG0O2JornO3adaNKalFzJSwG3xe9
+         HKBn/TVVQB2sZaQ9D9v48G7eGqizLOZcxgPyMPr7+fjzudxg+UXKbRK3Y87vD+k0tTfq
+         0FWaaou+5SFObSYd9wmn+4YCqHYt1m8bCMXzNxX60Xmm/R+T6ZL/NgEHNxGgqiSchNKI
+         RzYLGXllSWwxyPhLzS7SMA5wp9EpH7kJA1RNoCNdR3hxgpa5Lzi4I81ak1A9DqWuAitA
+         RhTVTBrzPBBYNaq7xK2ETPUWGIpaLQCHK4kD8DB911JpPi+iQxnsGIl3EwLv1gZp3rvc
+         52+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689667032; x=1690271832;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Yw8S8ohFAjJvqm8HRm1Ib4h2RNi+dhnA4IaPY526ysM=;
+        b=YhUJj6q3t3CPKY2FfJAKv8t34GpLRjmoz6U/YMkkLF4lZgMszMMix+iTQcdMfSpukz
+         NCg0dM8/RoMgkBnsdJMAs244ycOUTZD4zSbCV4W9n8/MQZa4BXFzL9ebVgnsmj64c+bg
+         vYf931HUNraOB8o28XzD8tIjul3r9oFuVMCUxqAPot0fiZegQRA74Nn62yqN8/0/yjD/
+         sVjp+ifpdVK7uhXaUe6yJUp38+BNZUUizbLrVSmRYzbOYW0QD049plSHrb0CdzMpmiC8
+         j6HL8JDjJNpA8DWlbeAJdbNfxrAlRNbplvMH+ss6P+YbtU+LOKkPKd+ahXGrJBqcbhHV
+         rZ3w==
+X-Gm-Message-State: ABy/qLbeGYMbc9zcONVI0s/NxsiGNa6kzq1Vtsr5l5TH7YzmzwmdQg8b
+        y12/JF3gwOyA5xL8GhTIQQEPiw==
+X-Google-Smtp-Source: APBJJlHx6i25vRWw7/xD22QR+8rmUVx4iZRBYki5dchLFjO6eC9KSAqrqs3yPRIxKY1p0z1dv1+OZQ==
+X-Received: by 2002:ac2:4a87:0:b0:4f9:547c:a3cc with SMTP id l7-20020ac24a87000000b004f9547ca3ccmr8551001lfp.14.1689667032251;
+        Tue, 18 Jul 2023 00:57:12 -0700 (PDT)
+Received: from blmsp.fritz.box ([2001:4091:a247:82fa:b762:4f68:e1ed:5041])
+        by smtp.gmail.com with ESMTPSA id x4-20020a5d54c4000000b003142439c7bcsm1585959wrv.80.2023.07.18.00.57.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 00:57:11 -0700 (PDT)
+From:   Markus Schneider-Pargmann <msp@baylibre.com>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Wolfgang Grandegger <wg@grandegger.com>
+Cc:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
+        Simon Horman <simon.horman@corigine.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Julien Panis <jpanis@baylibre.com>,
+        Markus Schneider-Pargmann <msp@baylibre.com>
+Subject: [PATCH v5 00/12] can: m_can: Optimizations for m_can/tcan part 2
+Date:   Tue, 18 Jul 2023 09:56:56 +0200
+Message-Id: <20230718075708.958094-1-msp@baylibre.com>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230717182229.250565-1-mkl@pengutronix.de>
-References: <20230717182229.250565-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Rob Herring <robh@kernel.org>
+Hi Marc, Simon and everyone,
 
-The DT of_device.h and of_platform.h date back to the separate
-of_platform_bus_type before it as merged into the regular platform bus.
-As part of that merge prepping Arm DT support 13 years ago, they
-"temporarily" include each other. They also include platform_device.h
-and of.h. As a result, there's a pretty much random mix of those include
-files used throughout the tree. In order to detangle these headers and
-replace the implicit includes with struct declarations, users need to
-explicitly include the correct includes.
+v5 got a rebase on v6.5 with some small style fixes as pointed out in v4.
 
-Signed-off-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/all/20230714174757.4060748-1-robh@kernel.org
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/grcan.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+It is tested on tcan455x but I don't have hardware with mcan on the SoC
+myself so any testing is appreciated.
 
-diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
-index 3174efdae271..6d3ba71a6a73 100644
---- a/drivers/net/can/grcan.c
-+++ b/drivers/net/can/grcan.c
-@@ -30,8 +30,9 @@
- #include <linux/ethtool.h>
- #include <linux/io.h>
- #include <linux/can/dev.h>
-+#include <linux/platform_device.h>
- #include <linux/spinlock.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
- #include <linux/of_irq.h>
- 
- #include <linux/dma-mapping.h>
+The series implements many small and bigger throughput improvements and
+adds rx/tx coalescing at the end.
+
+Based on v6.5-rc1. Also available at
+https://gitlab.baylibre.com/msp8/linux/-/tree/topic/mcan-optimization/v6.5?ref_type=heads
+
+Best,
+Markus
+
+Changes in v5:
+- Add back parenthesis in m_can_set_coalesce(). This will make
+  checkpatch unhappy but gcc happy.
+- Remove unused fifo_header variable in m_can_tx_handler().
+- Rebased to v6.5-rc1
+
+Changes in v4:
+- Create and use struct m_can_fifo_element in m_can_tx_handler
+- Fix memcpy_and_pad to copy the full buffer
+- Fixed a few checkpatch warnings
+- Change putidx to be unsigned
+- Print hard_xmit error only once when TX FIFO is full
+
+Changes in v3:
+- Remove parenthesis in error messages
+- Use memcpy_and_pad for buffer copy in 'can: m_can: Write transmit
+  header and data in one transaction'.
+- Replace spin_lock with spin_lock_irqsave. I got a report of a
+  interrupt that was calling start_xmit just after the netqueue was
+  woken up before the locked region was exited. spin_lock_irqsave should
+  fix this. I attached the full stack at the end of the mail if someone
+  wants to know.
+- Rebased to v6.3-rc1.
+- Removed tcan4x5x patches from this series.
+
+Changes in v2:
+- Rebased on v6.2-rc5
+- Fixed missing/broken accounting for non peripheral m_can devices.
+
+previous versions:
+v1 - https://lore.kernel.org/lkml/20221221152537.751564-1-msp@baylibre.com
+v2 - https://lore.kernel.org/lkml/20230125195059.630377-1-msp@baylibre.com
+v3 - https://lore.kernel.org/lkml/20230315110546.2518305-1-msp@baylibre.com/
+v4 - https://lore.kernel.org/lkml/20230621092350.3130866-1-msp@baylibre.com/
+
+Markus Schneider-Pargmann (12):
+  can: m_can: Write transmit header and data in one transaction
+  can: m_can: Implement receive coalescing
+  can: m_can: Implement transmit coalescing
+  can: m_can: Add rx coalescing ethtool support
+  can: m_can: Add tx coalescing ethtool support
+  can: m_can: Use u32 for putidx
+  can: m_can: Cache tx putidx
+  can: m_can: Use the workqueue as queue
+  can: m_can: Introduce a tx_fifo_in_flight counter
+  can: m_can: Use tx_fifo_in_flight for netif_queue control
+  can: m_can: Implement BQL
+  can: m_can: Implement transmit submission coalescing
+
+ drivers/net/can/m_can/m_can.c | 517 +++++++++++++++++++++++++---------
+ drivers/net/can/m_can/m_can.h |  35 ++-
+ 2 files changed, 418 insertions(+), 134 deletions(-)
+
+
+base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
 -- 
 2.40.1
-
 
