@@ -2,53 +2,53 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC78CC001DF
-	for <linux-can@archiver.kernel.org>; Tue, 18 Jul 2023 07:58:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52C0AEB64DD
+	for <linux-can@archiver.kernel.org>; Tue, 18 Jul 2023 07:58:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231861AbjGRH6R (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S231867AbjGRH6R (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Tue, 18 Jul 2023 03:58:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60150 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231805AbjGRH5r (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 18 Jul 2023 03:57:47 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD0D1738
-        for <linux-can@vger.kernel.org>; Tue, 18 Jul 2023 00:57:17 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-3110ab7110aso5639793f8f.3
-        for <linux-can@vger.kernel.org>; Tue, 18 Jul 2023 00:57:17 -0700 (PDT)
+        with ESMTP id S231922AbjGRH6F (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 18 Jul 2023 03:58:05 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A4AA172D
+        for <linux-can@vger.kernel.org>; Tue, 18 Jul 2023 00:57:40 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-307d58b3efbso5228137f8f.0
+        for <linux-can@vger.kernel.org>; Tue, 18 Jul 2023 00:57:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689667036; x=1690271836;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689667043; x=1690271843;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aw3452bl3IVkLYCgTU07wlcs12OEKKnmFHT15uujsjI=;
-        b=jb+AE0lg/ruaMMzxDMgfRqakGL8VLjLeo6Uqd5vQpe/fo4aghhp8yAogRi3gZN5Di+
-         VjqGOimJnzwWl7hPJiaE2MWJSUKmZPAMM47DS926vvpjih1ch3h8fvIeY/1E6e/PGzvt
-         uoH5TenqWMg+mW0R4LuG0uYfi8sLgrUiQh0hH0BpNNRzAhafkDEVQqunY2X9Qe/ZTnwj
-         2Z/FyIAW/GZQSwLCNsuqAka2sIo9oVdFgR0URDWc8Y9BpQJz5JrJBzX0lW+QgDREUE/h
-         ZSr+17C19j3SaRz6O3h2BvRvNcF5ppmXfBm9DV54NcuVex9xh2qhpsMglB6RzpZPw8Se
-         4yvQ==
+        bh=SZ6L5uumYKOU4JGWuXQWu7fb4u67lZUK8TfUOaYC8lo=;
+        b=EkOesFd126yLWUnLDj8XN6+vGSPelltoNK6t0wTXx31zvFY5ee6GeslsBzFOTACEgc
+         ZJunRJ5DlZqDeqjrQgZt06Pj/TehLAEpHqMCBB/Jq9xal9Kqgd3d9NrAt0Ol1ap5qzBY
+         dxLIdJ6fop/c/1izZawlhvZIDVz/9ngDm5w666enVboHQES+Y0Pas1QU0tQSMDG3USt9
+         YxmAHP40cX9Etzwabw/mkYH6XGwNtEroS62ukZniqa/JqjyF251mGeNXpAQvTdbCFA3b
+         N4iOruUmkf0FHWBoIHZU/0zP+lABg7WxIXpGgrf2ELl4lI2kM0Wj7QGzabHKXyq8eVJq
+         +Rhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689667036; x=1690271836;
+        d=1e100.net; s=20221208; t=1689667043; x=1690271843;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aw3452bl3IVkLYCgTU07wlcs12OEKKnmFHT15uujsjI=;
-        b=bfaNPqHEwfOArodwFGVO6hF9Acm/EMiGVh3Tr8HbBO2GKb2K6sqIoZO2dvLO8BjQ04
-         4KMSAXf94LDjgkMLsCvglEpHgPtqkXQEJVfmvm1tHVVE2PWgcR6pkAh4N/4/8w6gX+n+
-         Y8B6MNdLoXUjQNznNjJ5LkSCv5MVc/jCAXfKq+4kLF4P53k9K8YpiiD94iZjMdtSTO7b
-         kNR0mTTDZcvvNWodnvo8q9+THflfs1L55UJH7r09SJINgjD3TaHxiznd+L698aZxXe7s
-         K1DJQLpGniu0B6/t8w1Kcc2WdYRJSozUocmpSI/hlDtcOOJFtIN/wt5fmHzokWl1jnX9
-         cYeg==
-X-Gm-Message-State: ABy/qLb2sRuJoQ6/MGBNKQxVCK3Rqw4T2uK17pALN4YIhk7KPM2rjQ02
-        7Qjp8d1/TJKOpyW0or5iOj9cOWEeli92G1SOo7q0Hg==
-X-Google-Smtp-Source: APBJJlG4gvJkuWZOqhO+jvg2v72AC2MPY7n1+BA4EirjRCEXV+BN3SdjTHxmOiThZLSH6zO/kwgnIA==
-X-Received: by 2002:a5d:6841:0:b0:314:1ebc:6e19 with SMTP id o1-20020a5d6841000000b003141ebc6e19mr12196935wrw.64.1689667036031;
-        Tue, 18 Jul 2023 00:57:16 -0700 (PDT)
+        bh=SZ6L5uumYKOU4JGWuXQWu7fb4u67lZUK8TfUOaYC8lo=;
+        b=kSd6wOtfJapSCmINzF2Yq+dgWdEQqpvI7zYKSQJODBbBu6BddnUDdN8Ho8O7PAq3QJ
+         D0otE+pnu+AAqzYUX0ZuEsRrogMp4AFP9nJB1mGpaKoMAySM2Wp2IID1LYeYdNIeVgdc
+         Qx6V+9tV/EWywDUGmlkywBxnu47yBJ0ldwOA1rWU60pvs6HdvnaaUVoO57bH4lO/Lv2A
+         y/Ti0QJyyiNsEK6dZb4W+o3I+GXmP0WgYis688LKarmiqxuu5FiureGNrQUXrSvmzf2M
+         Om9bJIPZ6JO/vlEdrpwzI2X1A1AZLrjIsDhOSYk4YlJlyxf0fYlifsBldKSnpjPREWku
+         mGiA==
+X-Gm-Message-State: ABy/qLaWAM/3Ji0Fl6WlFazZqPEhAQZ2K6ubq5ZQd762eE5eD9PSotAY
+        ruwM5eDkLYdnehalJSG3ULTBUw==
+X-Google-Smtp-Source: APBJJlFVYF+XPug8xCE3Vvq11FheaNmr+0uDVZr/VGmrgyyZlMXLXs86QM1TqAW41sYLAoARgCaQjg==
+X-Received: by 2002:a05:6000:d2:b0:314:424b:45c3 with SMTP id q18-20020a05600000d200b00314424b45c3mr10740251wrx.57.1689667043516;
+        Tue, 18 Jul 2023 00:57:23 -0700 (PDT)
 Received: from blmsp.fritz.box ([2001:4091:a247:82fa:b762:4f68:e1ed:5041])
-        by smtp.gmail.com with ESMTPSA id x4-20020a5d54c4000000b003142439c7bcsm1585959wrv.80.2023.07.18.00.57.15
+        by smtp.gmail.com with ESMTPSA id x4-20020a5d54c4000000b003142439c7bcsm1585959wrv.80.2023.07.18.00.57.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 00:57:15 -0700 (PDT)
+        Tue, 18 Jul 2023 00:57:23 -0700 (PDT)
 From:   Markus Schneider-Pargmann <msp@baylibre.com>
 To:     Marc Kleine-Budde <mkl@pengutronix.de>,
         Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
@@ -62,9 +62,9 @@ Cc:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         Julien Panis <jpanis@baylibre.com>,
         Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH v5 04/12] can: m_can: Add rx coalescing ethtool support
-Date:   Tue, 18 Jul 2023 09:57:00 +0200
-Message-Id: <20230718075708.958094-5-msp@baylibre.com>
+Subject: [PATCH v5 12/12] can: m_can: Implement transmit submission coalescing
+Date:   Tue, 18 Jul 2023 09:57:08 +0200
+Message-Id: <20230718075708.958094-13-msp@baylibre.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230718075708.958094-1-msp@baylibre.com>
 References: <20230718075708.958094-1-msp@baylibre.com>
@@ -74,79 +74,195 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Add the possibility to set coalescing parameters with ethtool.
+m_can supports submitting multiple transmits with one register write.
+This is an interesting option to reduce the number of SPI transfers for
+peripheral chips.
 
-rx-frames-irq and rx-usecs-irq can only be set and unset together as the
-implemented mechanism would not work otherwise. rx-frames-irq can't be
-greater than the RX FIFO size.
+The m_can_tx_op is extended with a bool that signals if it is the last
+transmission and the submit should be executed immediately.
 
-Also all values can only be changed if the chip is not active.
+The worker then writes the skb to the FIFO and submits it only if the
+submit bool is set. If it isn't set, the worker will write the next skb
+which is waiting in the workqueue to the FIFO, etc.
 
 Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-Reviewed-by: Simon Horman <simon.horman@corigine.com>
 ---
- drivers/net/can/m_can/m_can.c | 46 +++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+
+Notes:
+    Notes:
+    - I put this behind the tx-frames ethtool coalescing option as we do
+      wait before submitting packages but it is something different than the
+      tx-frames-irq option. I am not sure if this is the correct option,
+      please let me know.
+
+ drivers/net/can/m_can/m_can.c | 55 ++++++++++++++++++++++++++++++++---
+ drivers/net/can/m_can/m_can.h |  6 ++++
+ 2 files changed, 57 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index e979aeb2ef13..c19fc10a7645 100644
+index b775ee8e5ff5..aa8c5a8445de 100644
 --- a/drivers/net/can/m_can/m_can.c
 +++ b/drivers/net/can/m_can/m_can.c
-@@ -1943,8 +1943,54 @@ static const struct net_device_ops m_can_netdev_ops = {
- 	.ndo_change_mtu = can_change_mtu,
- };
+@@ -1515,6 +1515,9 @@ static int m_can_start(struct net_device *dev)
+ 	if (ret)
+ 		return ret;
  
-+static int m_can_get_coalesce(struct net_device *dev,
-+			      struct ethtool_coalesce *ec,
-+			      struct kernel_ethtool_coalesce *kec,
-+			      struct netlink_ext_ack *ext_ack)
++	netdev_queue_set_dql_min_limit(netdev_get_tx_queue(cdev->net, 0),
++				       cdev->tx_max_coalesced_frames);
++
+ 	cdev->can.state = CAN_STATE_ERROR_ACTIVE;
+ 
+ 	m_can_enable_all_interrupts(cdev);
+@@ -1811,8 +1814,13 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev,
+ 		 */
+ 		can_put_echo_skb(skb, dev, putidx, frame_len);
+ 
+-		/* Enable TX FIFO element to start transfer  */
+-		m_can_write(cdev, M_CAN_TXBAR, (1 << putidx));
++		if (cdev->is_peripheral) {
++			/* Delay enabling TX FIFO element */
++			cdev->tx_peripheral_submit |= BIT(putidx);
++		} else {
++			/* Enable TX FIFO element to start transfer  */
++			m_can_write(cdev, M_CAN_TXBAR, BIT(putidx));
++		}
+ 		cdev->tx_fifo_putidx = (++cdev->tx_fifo_putidx >= cdev->can.echo_skb_max ?
+ 					0 : cdev->tx_fifo_putidx);
+ 	}
+@@ -1825,6 +1833,17 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev,
+ 	return NETDEV_TX_BUSY;
+ }
+ 
++static void m_can_tx_submit(struct m_can_classdev *cdev)
 +{
-+	struct m_can_classdev *cdev = netdev_priv(dev);
++	if (cdev->version == 30)
++		return;
++	if (!cdev->is_peripheral)
++		return;
 +
-+	ec->rx_max_coalesced_frames_irq = cdev->rx_max_coalesced_frames_irq;
-+	ec->rx_coalesce_usecs_irq = cdev->rx_coalesce_usecs_irq;
-+
-+	return 0;
++	m_can_write(cdev, M_CAN_TXBAR, cdev->tx_peripheral_submit);
++	cdev->tx_peripheral_submit = 0;
 +}
 +
-+static int m_can_set_coalesce(struct net_device *dev,
-+			      struct ethtool_coalesce *ec,
-+			      struct kernel_ethtool_coalesce *kec,
-+			      struct netlink_ext_ack *ext_ack)
-+{
-+	struct m_can_classdev *cdev = netdev_priv(dev);
-+
-+	if (cdev->can.state != CAN_STATE_STOPPED) {
-+		netdev_err(dev, "Device is in use, please shut it down first\n");
-+		return -EBUSY;
+ static void m_can_tx_work_queue(struct work_struct *ws)
+ {
+ 	struct m_can_tx_op *op = container_of(ws, struct m_can_tx_op, work);
+@@ -1833,11 +1852,15 @@ static void m_can_tx_work_queue(struct work_struct *ws)
+ 
+ 	op->skb = NULL;
+ 	m_can_tx_handler(cdev, skb);
++	if (op->submit)
++		m_can_tx_submit(cdev);
+ }
+ 
+-static void m_can_tx_queue_skb(struct m_can_classdev *cdev, struct sk_buff *skb)
++static void m_can_tx_queue_skb(struct m_can_classdev *cdev, struct sk_buff *skb,
++			       bool submit)
+ {
+ 	cdev->tx_ops[cdev->next_tx_op].skb = skb;
++	cdev->tx_ops[cdev->next_tx_op].submit = submit;
+ 	queue_work(cdev->tx_wq, &cdev->tx_ops[cdev->next_tx_op].work);
+ 
+ 	++cdev->next_tx_op;
+@@ -1849,6 +1872,7 @@ static netdev_tx_t m_can_start_peripheral_xmit(struct m_can_classdev *cdev,
+ 					       struct sk_buff *skb)
+ {
+ 	netdev_tx_t err;
++	bool submit;
+ 
+ 	if (cdev->can.state == CAN_STATE_BUS_OFF) {
+ 		m_can_clean(cdev->net);
+@@ -1859,7 +1883,15 @@ static netdev_tx_t m_can_start_peripheral_xmit(struct m_can_classdev *cdev,
+ 	if (err != NETDEV_TX_OK)
+ 		return err;
+ 
+-	m_can_tx_queue_skb(cdev, skb);
++	++cdev->nr_txs_without_submit;
++	if (cdev->nr_txs_without_submit >= cdev->tx_max_coalesced_frames ||
++	    !netdev_xmit_more()) {
++		cdev->nr_txs_without_submit = 0;
++		submit = true;
++	} else {
++		submit = false;
 +	}
-+
-+	if (ec->rx_max_coalesced_frames_irq > cdev->mcfg[MRAM_RXF0].num) {
-+		netdev_err(dev, "rx-frames-irq %u greater than the RX FIFO %u\n",
-+			   ec->rx_max_coalesced_frames_irq,
-+			   cdev->mcfg[MRAM_RXF0].num);
++	m_can_tx_queue_skb(cdev, skb, submit);
+ 
+ 	return NETDEV_TX_OK;
+ }
+@@ -1991,6 +2023,7 @@ static int m_can_get_coalesce(struct net_device *dev,
+ 
+ 	ec->rx_max_coalesced_frames_irq = cdev->rx_max_coalesced_frames_irq;
+ 	ec->rx_coalesce_usecs_irq = cdev->rx_coalesce_usecs_irq;
++	ec->tx_max_coalesced_frames = cdev->tx_max_coalesced_frames;
+ 	ec->tx_max_coalesced_frames_irq = cdev->tx_max_coalesced_frames_irq;
+ 	ec->tx_coalesce_usecs_irq = cdev->tx_coalesce_usecs_irq;
+ 
+@@ -2035,6 +2068,18 @@ static int m_can_set_coalesce(struct net_device *dev,
+ 		netdev_err(dev, "tx-frames-irq and tx-usecs-irq can only be set together\n");
+ 		return -EINVAL;
+ 	}
++	if (ec->tx_max_coalesced_frames > cdev->mcfg[MRAM_TXE].num) {
++		netdev_err(dev, "tx-frames %u greater than the TX event FIFO %u\n",
++			   ec->tx_max_coalesced_frames,
++			   cdev->mcfg[MRAM_TXE].num);
 +		return -EINVAL;
 +	}
-+	if ((ec->rx_max_coalesced_frames_irq == 0) != (ec->rx_coalesce_usecs_irq == 0)) {
-+		netdev_err(dev, "rx-frames-irq and rx-usecs-irq can only be set together\n");
++	if (ec->tx_max_coalesced_frames > cdev->mcfg[MRAM_TXB].num) {
++		netdev_err(dev, "tx-frames %u greater than the TX FIFO %u\n",
++			   ec->tx_max_coalesced_frames,
++			   cdev->mcfg[MRAM_TXB].num);
 +		return -EINVAL;
 +	}
-+
-+	cdev->rx_max_coalesced_frames_irq = ec->rx_max_coalesced_frames_irq;
-+	cdev->rx_coalesce_usecs_irq = ec->rx_coalesce_usecs_irq;
-+
-+	return 0;
-+}
-+
- static const struct ethtool_ops m_can_ethtool_ops = {
-+	.supported_coalesce_params = ETHTOOL_COALESCE_RX_USECS_IRQ |
-+		ETHTOOL_COALESCE_RX_MAX_FRAMES_IRQ,
+ 	if (ec->rx_coalesce_usecs_irq != 0 && ec->tx_coalesce_usecs_irq != 0 &&
+ 	    ec->rx_coalesce_usecs_irq != ec->tx_coalesce_usecs_irq) {
+ 		netdev_err(dev, "rx-usecs-irq %u needs to be equal to tx-usecs-irq %u if both are enabled\n",
+@@ -2045,6 +2090,7 @@ static int m_can_set_coalesce(struct net_device *dev,
+ 
+ 	cdev->rx_max_coalesced_frames_irq = ec->rx_max_coalesced_frames_irq;
+ 	cdev->rx_coalesce_usecs_irq = ec->rx_coalesce_usecs_irq;
++	cdev->tx_max_coalesced_frames = ec->tx_max_coalesced_frames;
+ 	cdev->tx_max_coalesced_frames_irq = ec->tx_max_coalesced_frames_irq;
+ 	cdev->tx_coalesce_usecs_irq = ec->tx_coalesce_usecs_irq;
+ 
+@@ -2062,6 +2108,7 @@ static const struct ethtool_ops m_can_ethtool_ops = {
+ 	.supported_coalesce_params = ETHTOOL_COALESCE_RX_USECS_IRQ |
+ 		ETHTOOL_COALESCE_RX_MAX_FRAMES_IRQ |
+ 		ETHTOOL_COALESCE_TX_USECS_IRQ |
++		ETHTOOL_COALESCE_TX_MAX_FRAMES |
+ 		ETHTOOL_COALESCE_TX_MAX_FRAMES_IRQ,
  	.get_ts_info = ethtool_op_get_ts_info,
-+	.get_coalesce = m_can_get_coalesce,
-+	.set_coalesce = m_can_set_coalesce,
+ 	.get_coalesce = m_can_get_coalesce,
+diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
+index 5c182aece15c..54af26a94042 100644
+--- a/drivers/net/can/m_can/m_can.h
++++ b/drivers/net/can/m_can/m_can.h
+@@ -74,6 +74,7 @@ struct m_can_tx_op {
+ 	struct m_can_classdev *cdev;
+ 	struct work_struct work;
+ 	struct sk_buff *skb;
++	bool submit;
  };
  
- static int register_m_can_dev(struct net_device *dev)
+ struct m_can_classdev {
+@@ -103,6 +104,7 @@ struct m_can_classdev {
+ 	u32 active_interrupts;
+ 	u32 rx_max_coalesced_frames_irq;
+ 	u32 rx_coalesce_usecs_irq;
++	u32 tx_max_coalesced_frames;
+ 	u32 tx_max_coalesced_frames_irq;
+ 	u32 tx_coalesce_usecs_irq;
+ 
+@@ -117,6 +119,10 @@ struct m_can_classdev {
+ 	int tx_fifo_size;
+ 	int next_tx_op;
+ 
++	int nr_txs_without_submit;
++	/* bitfield of fifo elements that will be submitted together */
++	u32 tx_peripheral_submit;
++
+ 	struct mram_cfg mcfg[MRAM_CFG_NUM];
+ };
+ 
 -- 
 2.40.1
 
