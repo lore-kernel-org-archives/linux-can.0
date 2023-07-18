@@ -2,58 +2,59 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D782EB64DD
-	for <linux-can@archiver.kernel.org>; Tue, 18 Jul 2023 15:06:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9281AEB64DA
+	for <linux-can@archiver.kernel.org>; Tue, 18 Jul 2023 15:06:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232976AbjGRPGH (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 18 Jul 2023 11:06:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45016 "EHLO
+        id S232840AbjGRPGG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 18 Jul 2023 11:06:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231851AbjGRPGG (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 18 Jul 2023 11:06:06 -0400
+        with ESMTP id S230209AbjGRPGF (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 18 Jul 2023 11:06:05 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14ADF10F1
-        for <linux-can@vger.kernel.org>; Tue, 18 Jul 2023 08:06:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F27FC
+        for <linux-can@vger.kernel.org>; Tue, 18 Jul 2023 08:06:04 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qLmH5-0003aG-I4
+        id 1qLmH5-0003Zm-7h
         for linux-can@vger.kernel.org; Tue, 18 Jul 2023 17:06:03 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id B83E01F4368
+        by bjornoya.blackshift.org (Postfix) with SMTP id 7DA1E1F4364
         for <linux-can@vger.kernel.org>; Tue, 18 Jul 2023 15:06:02 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id F25801F435C;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id C47961F435A;
         Tue, 18 Jul 2023 15:06:01 +0000 (UTC)
 Received: from [172.20.34.65] (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 579e990d;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id cd18b8d6;
         Tue, 18 Jul 2023 15:06:01 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Date:   Tue, 18 Jul 2023 17:05:49 +0200
-Subject: [PATCH v2 2/3] can: rx-offload: add
- can_rx_offload_get_echo_skb_queue_tail()
+Subject: [PATCH v2 0/3] can: gs_usb: convert to NAPI
+Date:   Tue, 18 Jul 2023 17:05:47 +0200
+Message-Id: <20230718-gs_usb-rx-offload-v2-0-716e542d14d5@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230718-gs_usb-rx-offload-v2-2-716e542d14d5@pengutronix.de>
-References: <20230718-gs_usb-rx-offload-v2-0-716e542d14d5@pengutronix.de>
-In-Reply-To: <20230718-gs_usb-rx-offload-v2-0-716e542d14d5@pengutronix.de>
+X-B4-Tracking: v=1; b=H4sIAEuqtmQC/32NWwqDMBBFtyLz3SlxfET65T6KFNuMOlASSVQsk
+ r03dQH9PAfuuQcE9sIBbtkBnjcJ4mwCumTwmno7MopJDKSoUFpVOIbHGp7od3TD8Ha9QU1kiKp
+ am7qBtJs9D7KfzXuXeJKwOP85L7b8Z//VthwVNqy5rLlUeaHbme24Lt5Z2a+GoYsxfgHYi3YAt
+ wAAAA==
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
 X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2893; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=5ETi2Qe+AiH4EnZHcFNk/HBG7Lj+/2jPeFnqBiQ9zNQ=;
- b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBktqpUJCcdxCECSVbP/xKh9BA1oAFChHcYW/HjA
- HXBM97c5EuJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZLaqVAAKCRC+UBxKKooE
- 6FCmB/9oxzoCeuPGf8hB6iY1HHIV/nwGKw49nuJtZcmP+mpayRpSI6FtqRn5ga0jDkttdBZ1kqK
- t8K1ztglY83RFtlAFRAuUdYoTc2MCHUvrdKjCO3IjdJnntQiXIAWgMa2gQRi2Af5d7i6Gs9NsrB
- 24m2T8Z5AepIkh+ZgK25Uj1uigmm/d3/V4CIq8NJAit2bPWeLau4OdliSlgKW5ui6wLIaoxtk6i
- 0tCsPgPVpGjonOlBLruphlRZzPJLUGEFSlEFdspiVDrhx1nyBcyZ2SJsqfifpOVIG59zfCdv73F
- ISDqpzSSkWZ3EpcRyo384qKJVyx6r1V14k4/L0Kpqr6sEHcA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2296; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=uxRjZhCVnZQ3Hc3+z77ztlj39VkzpAFB57mN+NgkspY=;
+ b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBktqpPlvDQ/+tZJ4AWX1mOUFj4sCsFGSlwE7n8G
+ MfdcYdNbj6JATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZLaqTwAKCRC+UBxKKooE
+ 6NbCB/9XkydiDr7/aFhz6d8OEV8XwOFoPLKtZ0SQRzE4jjwtad++ToQ3JEi226KqjGu9MiXGlof
+ 8JHV64PQ7EMFpJ+Y+2FA/JXnYEY6+rKwD2XVDi/zo2cyJReTSCGq/GtqBsM4byfSHuW/6LhuNpN
+ drSQkNBwwLEt3CvHG/DHBShlYbLmPfjRRFbRjAht8jrYze/Z3Zm/0MMWCNDTIIwBQRiuGUqy3yd
+ 1S8OoVVju94PCw2xU0vhsVIUmsWXnP7MpsseikroPWvuRX3NNGI3emGhSmaaYhCwbfpJq+cbcH7
+ ZCFUtStMEsiBE37DOBFIrIyk4FT85PkTMhK158lsGKVY6mjK
 X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
  fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
@@ -64,86 +65,56 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Add can_rx_offload_get_echo_skb_queue_tail(). This function addds the
-echo skb at the end of rx-offload the queue. This is intended for
-devices without timestamp support.
+Traditionally USB drivers used netif_rx to pass the received CAN
+frames/skbs to the network stack. In netif_rx() the skbs are queued to
+the local CPU. If IRQs are handled in round robin, CAN frames may be
+delivered out-of-order to user space.
 
+To support devices without timestamping the TX path of the rx-offload
+helper is cleaned up and extended:
+- rename rx_offload_get_echo_skb() ->
+  can_rx_offload_get_echo_skb_queue_timestamp()
+- add can_rx_offload_get_echo_skb_queue_tail()
+
+The last patch converts the gs_usb driver to NAPI with the rx-offload
+helper.
+
+This series depends on the gs_usb cleanup series:
+https://lore.kernel.org/all/20230718-gs_usb-cleanups-v1-0-c3b9154ec605@pengutronix.de
+
+Link: https://lore.kernel.org/all/559D628C.5020100@hartkopp.net
+Link: https://github.com/candle-usb/candleLight_fw/issues/166
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/rx-offload.c | 27 ++++++++++++++++++++++++++-
- include/linux/can/rx-offload.h   |  5 ++++-
- 2 files changed, 30 insertions(+), 2 deletions(-)
+Changes in v2:
+- move cleanup patches into separate series:
+  https://lore.kernel.org/all/20230718-gs_usb-cleanups-v1-0-c3b9154ec605@pengutronix.de
+- use GS_NAPI_WEIGHT instead of hard coded 32
+- move can_rx_offload_add_manual()/can_rx_offload_del() to
+  gs_make_candev()/gs_destroy_candev()
+- Link to v1: https://lore.kernel.org/all/20230705-gs_usb-rx-offload-v1-0-8e7e46e40137@pengutronix.de
 
-diff --git a/drivers/net/can/dev/rx-offload.c b/drivers/net/can/dev/rx-offload.c
-index 6e87ad908346..77091f7d1fa7 100644
---- a/drivers/net/can/dev/rx-offload.c
-+++ b/drivers/net/can/dev/rx-offload.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /* Copyright (c) 2014      Protonic Holland,
-  *                         David Jander
-- * Copyright (C) 2014-2021 Pengutronix,
-+ * Copyright (C) 2014-2021, 2023 Pengutronix,
-  *                         Marc Kleine-Budde <kernel@pengutronix.de>
-  */
- 
-@@ -280,6 +280,31 @@ int can_rx_offload_queue_tail(struct can_rx_offload *offload,
- }
- EXPORT_SYMBOL_GPL(can_rx_offload_queue_tail);
- 
-+unsigned int
-+can_rx_offload_get_echo_skb_queue_tail(struct can_rx_offload *offload,
-+				       unsigned int idx,
-+				       unsigned int *frame_len_ptr)
-+{
-+	struct net_device *dev = offload->dev;
-+	struct net_device_stats *stats = &dev->stats;
-+	struct sk_buff *skb;
-+	unsigned int len;
-+	int err;
-+
-+	skb = __can_get_echo_skb(dev, idx, &len, frame_len_ptr);
-+	if (!skb)
-+		return 0;
-+
-+	err = can_rx_offload_queue_tail(offload, skb);
-+	if (err) {
-+		stats->rx_errors++;
-+		stats->tx_fifo_errors++;
-+	}
-+
-+	return len;
-+}
-+EXPORT_SYMBOL_GPL(can_rx_offload_get_echo_skb_queue_tail);
-+
- void can_rx_offload_irq_finish(struct can_rx_offload *offload)
- {
- 	unsigned long flags;
-diff --git a/include/linux/can/rx-offload.h b/include/linux/can/rx-offload.h
-index e3b4199732c6..d29bb4521947 100644
---- a/include/linux/can/rx-offload.h
-+++ b/include/linux/can/rx-offload.h
-@@ -3,7 +3,7 @@
-  * linux/can/rx-offload.h
-  *
-  * Copyright (c) 2014 David Jander, Protonic Holland
-- * Copyright (c) 2014-2017 Pengutronix, Marc Kleine-Budde <kernel@pengutronix.de>
-+ * Copyright (c) 2014-2017, 2023 Pengutronix, Marc Kleine-Budde <kernel@pengutronix.de>
-  */
- 
- #ifndef _CAN_RX_OFFLOAD_H
-@@ -49,6 +49,9 @@ unsigned int can_rx_offload_get_echo_skb_queue_timestamp(struct can_rx_offload *
- 							 unsigned int *frame_len_ptr);
- int can_rx_offload_queue_tail(struct can_rx_offload *offload,
- 			      struct sk_buff *skb);
-+unsigned int can_rx_offload_get_echo_skb_queue_tail(struct can_rx_offload *offload,
-+						    unsigned int idx,
-+						    unsigned int *frame_len_ptr);
- void can_rx_offload_irq_finish(struct can_rx_offload *offload);
- void can_rx_offload_threaded_irq_finish(struct can_rx_offload *offload);
- void can_rx_offload_del(struct can_rx_offload *offload);
+---
+Marc Kleine-Budde (3):
+      can: rx-offload: rename rx_offload_get_echo_skb() -> can_rx_offload_get_echo_skb_queue_timestamp()
+      can: rx-offload: add can_rx_offload_get_echo_skb_queue_tail()
+      can: gs_usb: convert to NAPI/rx-offload to avoid OoO reception
 
+ drivers/net/can/dev/rx-offload.c              | 36 ++++++++++--
+ drivers/net/can/flexcan/flexcan-core.c        |  4 +-
+ drivers/net/can/m_can/m_can.c                 |  8 +--
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c |  6 +-
+ drivers/net/can/ti_hecc.c                     |  4 +-
+ drivers/net/can/usb/Kconfig                   |  1 +
+ drivers/net/can/usb/gs_usb.c                  | 85 +++++++++++++++++++++------
+ include/linux/can/rx-offload.h                | 11 ++--
+ 8 files changed, 116 insertions(+), 39 deletions(-)
+---
+base-commit: 59062ea9b7dc0bc8d6f0bb03283d8c6fb170f6da
+change-id: 20230705-gs_usb-rx-offload-722d22567d68
+
+Best regards,
 -- 
-2.40.1
+Marc Kleine-Budde <mkl@pengutronix.de>
 
 
