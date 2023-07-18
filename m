@@ -2,58 +2,58 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EB6DEB64DA
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA65AC001DE
 	for <linux-can@archiver.kernel.org>; Tue, 18 Jul 2023 11:11:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbjGRLLi (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S231779AbjGRLLi (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Tue, 18 Jul 2023 07:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33886 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231960AbjGRLLe (ORCPT
+        with ESMTP id S229740AbjGRLLe (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 18 Jul 2023 07:11:34 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0271C1984
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1296E1BCA
         for <linux-can@vger.kernel.org>; Tue, 18 Jul 2023 04:11:09 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qLibj-0006ZZ-1Q
+        id 1qLibj-0006ZP-BG
         for linux-can@vger.kernel.org; Tue, 18 Jul 2023 13:11:07 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 924491F40F0
+        by bjornoya.blackshift.org (Postfix) with SMTP id 710821F40ED
         for <linux-can@vger.kernel.org>; Tue, 18 Jul 2023 11:11:05 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id C68BA1F40D9;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6A53F1F40CE;
         Tue, 18 Jul 2023 11:11:04 +0000 (UTC)
 Received: from [172.20.34.65] (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3bd37676;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 771ec8da;
         Tue, 18 Jul 2023 11:11:03 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Date:   Tue, 18 Jul 2023 13:10:31 +0200
-Subject: [PATCH 09/11] cam: gs_usb: gs_can_close(): don't complain about
- failed device reset during ndo_stop
+Date:   Tue, 18 Jul 2023 13:10:28 +0200
+Subject: [PATCH 06/11] can: gs_usb: gs_usb_receive_bulk_callback(): make
+ use of stats
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230718-gs_usb-cleanups-v1-9-c3b9154ec605@pengutronix.de>
+Message-Id: <20230718-gs_usb-cleanups-v1-6-c3b9154ec605@pengutronix.de>
 References: <20230718-gs_usb-cleanups-v1-0-c3b9154ec605@pengutronix.de>
 In-Reply-To: <20230718-gs_usb-cleanups-v1-0-c3b9154ec605@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
 X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1094; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=ogSJ1CNFawZymit/cuTDEW7zFGdJaB0gC0CHr5xaLg8=;
- b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBktnM9yjoWZ8T63OYT58iRaiFgtuHd40VE2yIuh
- 9Jd6P8PlQ6JATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZLZzPQAKCRC+UBxKKooE
- 6MywB/9qlcdzN2gtukizePm4q9M8jw73p2I88ELxwHkvvpjjP/t6FYYBVW63KOO9iTDCudiGIZH
- 07KggiXRVa82Ttc2tqYM/Y97LG3jQpILP8qcqsZgBvLCBzUgyYzSWaxcxzKo3pJJ2Ha8xbo/c1d
- W+IoTmEOgkrO9BYV0osjLOIL3AzOQ9FXQt4TLvbxcWcqsuUMZNOEPuCVEffGrA4w2a55P8cOLaK
- xsSFZKQnu/P/T/msxxJXJjf1KCS14lLvOHcAKBFCDImcLI8Mh7lRAO5ArISbeg8c+yVithpAppP
- WfnqAlE5uqPPJLxV3L047bCXrFLWfGdhtOEa9mEu9LLvTFas
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1192; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=WEUlvySMcPp+h/n7ZgkFtyDfSWhqkv5oOvs2KpZKWUU=;
+ b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBktnMzdZtmncfuKCptlk6ACN8SWUkSjheemsckv
+ DuGOZ+/bPSJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZLZzMwAKCRC+UBxKKooE
+ 6LvcB/0dk4V2INdMi00nysZ9Pd0Cw44MXaWBc1W16n+Ql63pskclBWrANylGQ23mFbNTrsUwgmU
+ uJkiGv/j2d02tggTBmAcJ2ATW5rYrmM+RQJ0iy/pK87BQMrGnbC0UjEndNsj1k7TuA2i5ZNGhh7
+ Hw65PBeAYe2tljBqlAfpv0Negi8zQQMngMmbdyzWQupiVhQO3VMhgN0un8yPD15nCqnQ0FZQsmH
+ OSJRHcFa+MXuZNAD795jaOtbbv1u5gXvB1I01VMRM5+piyglWZz4njVYeCwwoW9pSYASb07CA0Q
+ 43cRQG9qL+S4wxv0OPnWgfgzgg6PbIsEljsnYXTzY+vHSH69
 X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
  fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
@@ -64,35 +64,42 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-When the USB device is unplugged, gs_can_close() (which implements the
-struct net_device_ops::ndo_stop callback) is called. In this function
-an attempt is made to shut down the USB device with a USB control
-message. For disconnected devices this will fail and a warning message
-is printed.
-
-Silence the driver by removing the printout of the error message if
-the reset command fails.
+Make use the previously assigned variable stats instead of using
+netdev->stats.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/gs_usb.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/can/usb/gs_usb.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index a5cab6a07002..7718f6a4367e 100644
+index 04cbe949c290..0d0a3405ba19 100644
 --- a/drivers/net/can/usb/gs_usb.c
 +++ b/drivers/net/can/usb/gs_usb.c
-@@ -1029,9 +1029,7 @@ static int gs_can_close(struct net_device *netdev)
- 	dev->can.state = CAN_STATE_STOPPED;
+@@ -594,8 +594,8 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
  
- 	/* reset the device */
--	rc = gs_cmd_reset(dev);
--	if (rc < 0)
--		netdev_warn(netdev, "Couldn't shutdown device (err=%d)", rc);
-+	gs_cmd_reset(dev);
+ 		gs_usb_set_timestamp(dev, skb, hf);
  
- 	/* reset tx contexts */
- 	for (rc = 0; rc < GS_MAX_TX_URBS; rc++) {
+-		netdev->stats.rx_packets++;
+-		netdev->stats.rx_bytes += hf->can_dlc;
++		stats->rx_packets++;
++		stats->rx_bytes += hf->can_dlc;
+ 
+ 		netif_rx(skb);
+ 	} else { /* echo_id == hf->echo_id */
+@@ -619,9 +619,9 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
+ 		skb = dev->can.echo_skb[hf->echo_id];
+ 		gs_usb_set_timestamp(dev, skb, hf);
+ 
+-		netdev->stats.tx_packets++;
+-		netdev->stats.tx_bytes += can_get_echo_skb(netdev, hf->echo_id,
+-							   NULL);
++		stats->tx_packets++;
++		stats->tx_bytes += can_get_echo_skb(netdev, hf->echo_id,
++						    NULL);
+ 
+ 		gs_free_tx_context(txc);
+ 
 
 -- 
 2.40.1
