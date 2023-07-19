@@ -2,69 +2,82 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52970C001B0
-	for <linux-can@archiver.kernel.org>; Wed, 19 Jul 2023 06:53:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78762EB64DA
+	for <linux-can@archiver.kernel.org>; Wed, 19 Jul 2023 07:24:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbjGSGxf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 19 Jul 2023 02:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38374 "EHLO
+        id S229610AbjGSHYc (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 19 Jul 2023 03:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjGSGxe (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 19 Jul 2023 02:53:34 -0400
-Received: from out-62.mta0.migadu.com (out-62.mta0.migadu.com [IPv6:2001:41d0:1004:224b::3e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E8991FC4
-        for <linux-can@vger.kernel.org>; Tue, 18 Jul 2023 23:53:31 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 16:52:46 +1000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
-        t=1689749609;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Lc9Aiu6PXaiP7fZ39vLAvDfId+QeqHYOYEE/jCSgr4k=;
-        b=EutD7K3D+v5ucF4MRVCpzb04OEpQRUCikJigDSzA0eiUMOjhsaODcLGcBPF0AnKQMvVhld
-        ljLrR5rUxmrMGH/m1UzntBC/fvc5KoLQd5hZW3Lg7stDUnJuJWWaZ6iToAoQpi0/+JwATA
-        DSgzmtiTVQfSsBMzBeXcILXn7f2ocQeoPXBmi+uETsZRGmZqO9CecMeOlB/dT4iS0rdGSB
-        9r0dyfcR23BCxF8D2gGheOi5UxkdjBKitoKzfMErYbfoqx9i5bincWEoevHvR0csNc1WSu
-        u1AjR8Ykh4OZ8R54ddMqjIxg5k10C5FcBWRpvobo8yYTsUuLhtcDsl+FUZmBnw==
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   John Watts <contact@jookia.org>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        linux-sunxi@lists.linux.dev, devicetree@vger.kernel.org,
-        linux-can@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Fabien Poussin <fabien.poussin@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH 0/4] Add support for Allwinner D1 CAN controllers
-Message-ID: <ZLeIPnpQnFq1qmfF@titan>
-References: <20230715112523.2533742-1-contact@jookia.org>
- <96641e09-c676-2702-149c-885002f45a64@codethink.co.uk>
- <20230718221504.GA2015343-robh@kernel.org>
- <20230718-matron-backlit-ddf56c391f8a@spud>
+        with ESMTP id S229531AbjGSHYc (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 19 Jul 2023 03:24:32 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F247AE69
+        for <linux-can@vger.kernel.org>; Wed, 19 Jul 2023 00:24:30 -0700 (PDT)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qM1Xx-0002pi-By
+        for linux-can@vger.kernel.org; Wed, 19 Jul 2023 09:24:29 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id 00B4D1F4C97
+        for <linux-can@vger.kernel.org>; Wed, 19 Jul 2023 07:23:53 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 157771F4C28;
+        Wed, 19 Jul 2023 07:23:51 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4b459744;
+        Wed, 19 Jul 2023 07:23:50 +0000 (UTC)
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de, Mao Zhu <zhumao001@208suo.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 8/8] can: ucan: Remove repeated word
+Date:   Wed, 19 Jul 2023 09:23:48 +0200
+Message-Id: <20230719072348.525039-9-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230719072348.525039-1-mkl@pengutronix.de>
+References: <20230719072348.525039-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718-matron-backlit-ddf56c391f8a@spud>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 11:38:48PM +0100, Conor Dooley wrote:
-> > The email needs to be an actual person. 'contact' doesn't appear to be 
-> > one.
-> 
-> I don't think it is that complicated, a cursory check of the domain
-> suggests that "Jookia" is a nickname & there's surely nothing wrong with
-> not having your name in your email address.
+From: Mao Zhu <zhumao001@208suo.com>
 
-Yes, this is the case. I figured contact@jookia.org was better than
-jookia@jookia.org.
+Delete one of repeated word 'information' in comment.
 
-I generally go by my nickname online and in the open source community so
-it's much more useful as an identifier in this case, but I've put my real
-name here instead to make things easier on everyone.
+Signed-off-by: Mao Zhu <zhumao001@208suo.com>
+Link: https://lore.kernel.org/all/20230718163718.461137-1-mkl@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/usb/ucan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-John.
+diff --git a/drivers/net/can/usb/ucan.c b/drivers/net/can/usb/ucan.c
+index a0f7bcec719c..39a63b7313a4 100644
+--- a/drivers/net/can/usb/ucan.c
++++ b/drivers/net/can/usb/ucan.c
+@@ -284,7 +284,7 @@ struct ucan_priv {
+ 	 */
+ 	spinlock_t echo_skb_lock;
+ 
+-	/* usb device information information */
++	/* usb device information */
+ 	u8 intf_index;
+ 	u8 in_ep_addr;
+ 	u8 out_ep_addr;
+-- 
+2.40.1
+
+
