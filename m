@@ -2,103 +2,98 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1DEFC001B0
-	for <linux-can@archiver.kernel.org>; Mon, 24 Jul 2023 09:06:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63014C41513
+	for <linux-can@archiver.kernel.org>; Mon, 24 Jul 2023 12:59:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232093AbjGXJGv (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 24 Jul 2023 05:06:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59266 "EHLO
+        id S231220AbjGXM67 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 24 Jul 2023 08:58:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232070AbjGXJGs (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 24 Jul 2023 05:06:48 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4530A18F
-        for <linux-can@vger.kernel.org>; Mon, 24 Jul 2023 02:06:46 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fba86f069bso5959306e87.3
-        for <linux-can@vger.kernel.org>; Mon, 24 Jul 2023 02:06:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690189604; x=1690794404;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=MWiZQGtEoDd6vYkaCeUUHjlAedCnBQMw8cP5GB7UACs=;
-        b=T9je4nDcYplTvk7qGBjMRHyCVdXOwnMahnWtLXKXhBoorgvTE/t5sdwcXUZiBncr6U
-         bLqrke6vUMhkeBL6adwaYPqoRzfb7M6Vmm2/Vh7dlQ1lwqgr8m6WPZb0stCWt3q5jbE8
-         kAy1+N8x8aEiDHWJF1FclVDmfZFoksV7OJrap7krdYpWSmzBAMXKYX5S3W8OTJBQbgn6
-         aTvAktMm7eey+yYsXs1il/63EvZnlg70B6SD8LTUDdW4BMpChes/r/SzVm//lDlbBx8+
-         xUG5p+szFz5jJJ/VtJNOFrr0YzY4AnjQEB/M161fAMQJaXgS+XYKlJD+liV3ErxJrtGy
-         whnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690189604; x=1690794404;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MWiZQGtEoDd6vYkaCeUUHjlAedCnBQMw8cP5GB7UACs=;
-        b=QC1hxAlR+DnTZ2O1ITCSrtdDBgwfUeMGbz5XEv3YgfQU9WSwY+rB0F8oEyA8mYLGe/
-         1099/ioqu80mzJG283e4hQsKlOdCr5R2nRP2Pjv77pdGpx31+ir8tz+kroENAUQZweM+
-         7IZ3gV6sikCC4vM7NV4sSzbN5vB0rJzeIdw9ZqYZiXCQxCOFaXr4g21ueH6KrmxJQhdb
-         ueC0v8rUFNeDngw1ihXDGLg5fKu84R3kSpZ/4P3+3+kJ3JDzVv6lyKl47mKOyM2+0o4a
-         abrtuA+yz0q2BC4XA2eYpWUxG3PaAwW+jfmXu4P1DVYdBsqrrb5yUPKxxOzx/rUc4UYQ
-         qCpA==
-X-Gm-Message-State: ABy/qLarfY/lKvglCAW+Hu4IJPjvTdVWtK9eUuMEt4GJvVUlGT0e/TPq
-        hLVNMimm824Z/sso25G1CeGrZQ==
-X-Google-Smtp-Source: APBJJlGtZfuY7Kf4FYV4ziuMtTtkHqU8SSVKob/5rCL8zHjE3hyY370Fx8+xNu+OdiqC5x51a1zcgw==
-X-Received: by 2002:a05:6512:ac2:b0:4f7:6a40:9fd7 with SMTP id n2-20020a0565120ac200b004f76a409fd7mr5296059lfu.47.1690189604320;
-        Mon, 24 Jul 2023 02:06:44 -0700 (PDT)
-Received: from blmsp ([2001:4091:a247:82fa:b762:4f68:e1ed:5041])
-        by smtp.gmail.com with ESMTPSA id t18-20020aa7d4d2000000b0051de3c6c5e5sm5824932edr.94.2023.07.24.02.06.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 02:06:43 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 11:06:42 +0200
-From:   Markus Schneider-Pargmann <msp@baylibre.com>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        with ESMTP id S229696AbjGXM5x (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 24 Jul 2023 08:57:53 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B73130F0
+        for <linux-can@vger.kernel.org>; Mon, 24 Jul 2023 05:54:24 -0700 (PDT)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qNv3m-0003xy-60; Mon, 24 Jul 2023 14:53:10 +0200
+Received: from pengutronix.de (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 7BE8F1F883E;
+        Mon, 24 Jul 2023 12:53:06 +0000 (UTC)
+Date:   Mon, 24 Jul 2023 14:53:05 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     Eric Dumazet <edumazet@google.com>,
         "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Michal Kubiak <michal.kubiak@intel.com>,
-        Vivek Yadav <vivek.2311@samsung.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Simon Horman <simon.horman@corigine.com>
-Subject: Re: [PATCH v3 6/6] can: tcan4x5x: Add error messages in probe
-Message-ID: <20230724090642.o7qzib5onl53nmqc@blmsp>
-References: <20230721135009.1120562-1-msp@baylibre.com>
- <20230721135009.1120562-7-msp@baylibre.com>
- <20230724-switch-mulch-3ba56c15997e-mkl@pengutronix.de>
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-can@vger.kernel.org, eric.dumazet@gmail.com,
+        syzbot <syzkaller@googlegroups.com>,
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH net] can: raw: fix lockdep issue in raw_release()
+Message-ID: <20230724-bubble-grasp-b7e65af54bb9-mkl@pengutronix.de>
+References: <20230720114438.172434-1-edumazet@google.com>
+ <35c85eb5-24aa-d948-516a-72fa7db28c88@hartkopp.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rviok646mxfd6hxt"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230724-switch-mulch-3ba56c15997e-mkl@pengutronix.de>
+In-Reply-To: <35c85eb5-24aa-d948-516a-72fa7db28c88@hartkopp.net>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 10:37:51AM +0200, Marc Kleine-Budde wrote:
-> On 21.07.2023 15:50:09, Markus Schneider-Pargmann wrote:
-> > To be able to understand issues during probe easier, add error messages
-> > if something fails.
-> 
-> Can you print the error codes as "%pe", ERR_PTR(err)?
 
-Yes, thank you, I will use that instead.
+--rviok646mxfd6hxt
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Best,
-Markus
+On 24.07.2023 14:49:28, Oliver Hartkopp wrote:
+> Hello Eric, Jakub,
+>=20
+> the patch that needs to be fixed here is currently already on its way into
+> the stable trees:
+>=20
+> > Fixes: ee8b94c8510c ("can: raw: fix receiver memory leak")
+>=20
+> Should this patch go through the linux-can tree or would somebody like to
+> apply it directly to the net tree?
 
-> 
-> Marc
-> 
-> -- 
-> Pengutronix e.K.                 | Marc Kleine-Budde          |
-> Embedded Linux                   | https://www.pengutronix.de |
-> Vertretung Nürnberg              | Phone: +49-5121-206917-129 |
-> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+I'll send a PR including this fix today.
 
+Marc
 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--rviok646mxfd6hxt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmS+dC8ACgkQvlAcSiqK
+BOiXtAgAiaZgw+a+qM+EwegTjTMuBFDkqzNk/J/0algu+wrN2JCSjxfEA4LNwjNv
+779J3kcRB6xkFSlLDfh9ZZ7D2i27hH5G0KhJ39N0qQMbUdLY6yzADM58Gegxqnij
+NZHXpT3A1JMh/Bm4qAL6NIS+bHS/aiwPIyWF2jsBKI1TMC1ykSoSKTMRMjZoshkx
++Guibdz9Zr4hAGuZe1fI0JPcHpIYir88atslMDGsGVcomfvLgQrC1ubIbyvf9UYu
+IoKY0VehsCcdT3v2+QioQ7w0BTtxcfMEomebMyvziVoESkyM0Fp9fNVEjZHjNQRo
+Vg/qlDn7q+nTsaYAIcZUepBdKOAqTg==
+=BYRw
+-----END PGP SIGNATURE-----
+
+--rviok646mxfd6hxt--
