@@ -2,53 +2,53 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82C69C04E69
-	for <linux-can@archiver.kernel.org>; Fri, 28 Jul 2023 14:19:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5752C001E0
+	for <linux-can@archiver.kernel.org>; Fri, 28 Jul 2023 14:19:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236998AbjG1OTd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 28 Jul 2023 10:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44294 "EHLO
+        id S233992AbjG1OTg (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 28 Jul 2023 10:19:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236413AbjG1OTb (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 28 Jul 2023 10:19:31 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577B83C05
-        for <linux-can@vger.kernel.org>; Fri, 28 Jul 2023 07:19:30 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-31751d7d96eso2022029f8f.1
-        for <linux-can@vger.kernel.org>; Fri, 28 Jul 2023 07:19:30 -0700 (PDT)
+        with ESMTP id S236982AbjG1OTa (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 28 Jul 2023 10:19:30 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85AF73AB4
+        for <linux-can@vger.kernel.org>; Fri, 28 Jul 2023 07:19:28 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbc244d307so23349725e9.1
+        for <linux-can@vger.kernel.org>; Fri, 28 Jul 2023 07:19:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690553969; x=1691158769;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690553967; x=1691158767;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mzaljnOO1Gw4qS38ZHWvBAE06zq5Umr4CoJZWfxvzDg=;
-        b=xUKyFTsSuvcbCo9x7xJzgCo0oi8PFn1TINP4lMKpkxprTf0fSFnKI6CO/S5K6BG4U4
-         aoSzf21spDOrbbJxqmOzt3E2ezOIXsAIegZZXaBpZ9sTRLPzZnHfC4sH6o6QWLc8Rogr
-         +yXcap8TxO+tUAf6McFVa8Iuk4X2x1lQaF3GXWSpz64Q4LI590V++pfeW+hUbDZ/qbCK
-         FdP4mQBw+v/PRGEN8ni/vSzX4KVKhkasOtgZvmStCpQZ5+cI1dpATaCtFOrMzXBBOSQh
-         9MVaZXQDFeOApmJTmwVjSyFg6Y6Vt3Z6yE8pIAkRw08w7U+eKNQ/aROZB6Tck/bZQ/SC
-         +Y5A==
+        bh=KudsjLXhwuLL2d8mNXrF7qeXjTkj4g+r6rSckABUYoI=;
+        b=Z2kDCPjN1LPXmd6+dLzNEdwFl0tm/J1OLyqOgx9lpAsei0DTcOZ9Rm1TDDyeMaVx4Q
+         3TANE5fPp+7puCmC7KkIkWm8DLldEvX2ymDm6Z3g86nbpRbss9VIUAsUEukjSlLf107L
+         l07dHdPmuGB1D1F6XIuVwYaY4mWWFIc2GEC4tbe4UoB6KPJdJHyPrTjvWZkFocjJMFFh
+         INI30gTj79+BSROU9eSzL7vz5c9j23uYGU+fMqgGmzsmpmPKqyRIc8wCFo9ra4nfADpW
+         AujkGy8Gsl+XROI4Q/lME/cNih96/ktTbwm7FBKcBPack9lbfXjLSlqPdw+pCbBH/j+5
+         MFcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690553969; x=1691158769;
+        d=1e100.net; s=20221208; t=1690553967; x=1691158767;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mzaljnOO1Gw4qS38ZHWvBAE06zq5Umr4CoJZWfxvzDg=;
-        b=PfIIo6LtaLUwrYdduWT/zJ78ws4AyxKZccS918x+yUh/PDrysQ01213dF666dom1k+
-         1B/K+I+9raJcWkYRoI8hTkAoIwc7Vwq22qSgBnAWw/5+IE3HRzwvfC0akY+zlGY/Xpw6
-         I3F7gA1fYctPUVas774frjQhQ1vYYS8bahh/4weimSgrvSO+2iK3LnpnVLl2ewjKGMBq
-         2gZhnqTNkZBJPT6Lwyf9+vl0zldhyxtZ/+ACzAyGgtr7vvkQsVYZOp83V0i/64WoCE4T
-         CXa7fQbONnGG466QFFR4XvqdTBhpFJrkHcr/zqbuSK5tXk5xjU6QveeSNVQ5thBQXWsL
-         clkA==
-X-Gm-Message-State: ABy/qLZF6xtLyQJ3sgRKuyi5a4tZz+AfiTTcTbJ1SdHYbnpzR793lCKT
-        axZanyNv8qCZ2NXuoTggfxlFJg==
-X-Google-Smtp-Source: APBJJlFcmt7PAwt3/8ccEaz69Q1c5nt6HSR44F+rbNLEzPLymPTwyiEBTmcnY9kb/BekXh461NYLFw==
-X-Received: by 2002:adf:d84b:0:b0:317:568d:d69a with SMTP id k11-20020adfd84b000000b00317568dd69amr1991756wrl.11.1690553968837;
-        Fri, 28 Jul 2023 07:19:28 -0700 (PDT)
+        bh=KudsjLXhwuLL2d8mNXrF7qeXjTkj4g+r6rSckABUYoI=;
+        b=Q/cuckS9fvbyh3NF3ORnOt1cIlpolTJXpROxUvvi2bbZrIKVnGO4CgLMuQrOt4a1dC
+         uyWakVc6NzFiI4sm5p+fDEtFdMQc9JFKx3eGm8HiktsaFu9TwCwob2d24QqlCU9txHMO
+         QENjTyGxjkOPsZSWiop/JIOPxn7zQpOodWAI8kEjjavhSU+UD+zHXZ8wKwdk1h4tHSMC
+         eTOpZYZnzn0+QbzfrORadZnbwRmlp7xsRQqKL+CEDEWEfaFcgxg0L8xkLUvZl5B5NxKt
+         xxI+TcctPj0ZDmU4E4c8XTdfzrZ48QszWjUfqKV5+n2ljDTZ2E5FzAYIu51/AVAHRX1+
+         6xUA==
+X-Gm-Message-State: ABy/qLb28zE3M3+qpVlKL5hQ3qnivI7phQhNDnNJcOAS3SMWR8WYhpFR
+        VoNOL9dOuyYmGFQp5VXpY2mncK4GACXcQHlfS4o=
+X-Google-Smtp-Source: APBJJlFlCbcYPtP9PubsLuQd0EaqWiZsnjn2BGoHiyX0S1ujBgKIIU8F6mzjr6MSr0vf3fYIXplKTw==
+X-Received: by 2002:a1c:4c12:0:b0:3fd:ad65:ea8b with SMTP id z18-20020a1c4c12000000b003fdad65ea8bmr1857466wmf.12.1690553966984;
+        Fri, 28 Jul 2023 07:19:26 -0700 (PDT)
 Received: from blmsp.fritz.box ([2001:4090:a246:80e3:766f:be78:d79a:8686])
-        by smtp.gmail.com with ESMTPSA id l6-20020adfe586000000b0031416362e23sm5013681wrm.3.2023.07.28.07.19.27
+        by smtp.gmail.com with ESMTPSA id l6-20020adfe586000000b0031416362e23sm5013681wrm.3.2023.07.28.07.19.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 07:19:28 -0700 (PDT)
+        Fri, 28 Jul 2023 07:19:26 -0700 (PDT)
 From:   Markus Schneider-Pargmann <msp@baylibre.com>
 To:     Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -65,10 +65,11 @@ Cc:     "David S . Miller" <davem@davemloft.net>,
         linux-can@vger.kernel.org, netdev@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Simon Horman <simon.horman@corigine.com>,
-        Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH v4 3/6] can: tcan4x5x: Check size of mram configuration
-Date:   Fri, 28 Jul 2023 16:19:20 +0200
-Message-Id: <20230728141923.162477-4-msp@baylibre.com>
+        Markus Schneider-Pargmann <msp@baylibre.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v4 1/6] dt-bindings: can: tcan4x5x: Add tcan4552 and tcan4553 variants
+Date:   Fri, 28 Jul 2023 16:19:18 +0200
+Message-Id: <20230728141923.162477-2-msp@baylibre.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230728141923.162477-1-msp@baylibre.com>
 References: <20230728141923.162477-1-msp@baylibre.com>
@@ -78,81 +79,43 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-To reduce debugging effort in case the mram is misconfigured, add this
-size check of the DT configuration. Currently if the mram configuration
-doesn't fit into the available MRAM it just overwrites other areas of
-the MRAM.
+These two new chips do not have state or wake pins.
 
 Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-Reviewed-by: Michal Kubiak <michal.kubiak@intel.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/net/can/m_can/m_can.c         | 16 ++++++++++++++++
- drivers/net/can/m_can/m_can.h         |  1 +
- drivers/net/can/m_can/tcan4x5x-core.c |  5 +++++
- 3 files changed, 22 insertions(+)
+ .../devicetree/bindings/net/can/tcan4x5x.txt          | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index c5af92bcc9c9..9210cf0705a1 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1887,6 +1887,22 @@ static int register_m_can_dev(struct net_device *dev)
- 	return register_candev(dev);
- }
+diff --git a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+index e3501bfa22e9..170e23f0610d 100644
+--- a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
++++ b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+@@ -4,7 +4,10 @@ Texas Instruments TCAN4x5x CAN Controller
+ This file provides device node information for the TCAN4x5x interface contains.
  
-+int m_can_check_mram_cfg(struct m_can_classdev *cdev, u32 mram_max_size)
-+{
-+	u32 total_size;
-+
-+	total_size = cdev->mcfg[MRAM_TXB].off - cdev->mcfg[MRAM_SIDF].off +
-+			cdev->mcfg[MRAM_TXB].num * TXB_ELEMENT_SIZE;
-+	if (total_size > mram_max_size) {
-+		dev_err(cdev->dev, "Total size of mram config(%u) exceeds mram(%u)\n",
-+			total_size, mram_max_size);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(m_can_check_mram_cfg);
-+
- static void m_can_of_parse_mram(struct m_can_classdev *cdev,
- 				const u32 *mram_config_vals)
- {
-diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
-index a839dc71dc9b..d8150d8128e7 100644
---- a/drivers/net/can/m_can/m_can.h
-+++ b/drivers/net/can/m_can/m_can.h
-@@ -101,6 +101,7 @@ int m_can_class_register(struct m_can_classdev *cdev);
- void m_can_class_unregister(struct m_can_classdev *cdev);
- int m_can_class_get_clocks(struct m_can_classdev *cdev);
- int m_can_init_ram(struct m_can_classdev *priv);
-+int m_can_check_mram_cfg(struct m_can_classdev *cdev, u32 mram_max_size);
+ Required properties:
+-	- compatible: "ti,tcan4x5x"
++	- compatible:
++		"ti,tcan4552", "ti,tcan4x5x"
++		"ti,tcan4553", "ti,tcan4x5x" or
++		"ti,tcan4x5x"
+ 	- reg: 0
+ 	- #address-cells: 1
+ 	- #size-cells: 0
+@@ -21,8 +24,10 @@ Optional properties:
+ 	- reset-gpios: Hardwired output GPIO. If not defined then software
+ 		       reset.
+ 	- device-state-gpios: Input GPIO that indicates if the device is in
+-			      a sleep state or if the device is active.
+-	- device-wake-gpios: Wake up GPIO to wake up the TCAN device.
++			      a sleep state or if the device is active. Not
++			      available with tcan4552/4553.
++	- device-wake-gpios: Wake up GPIO to wake up the TCAN device. Not
++			     available with tcan4552/4553.
  
- int m_can_class_suspend(struct device *dev);
- int m_can_class_resume(struct device *dev);
-diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
-index 2342aa011647..e706518176e4 100644
---- a/drivers/net/can/m_can/tcan4x5x-core.c
-+++ b/drivers/net/can/m_can/tcan4x5x-core.c
-@@ -80,6 +80,7 @@
- 	 TCAN4X5X_MCAN_IR_RF1F)
- 
- #define TCAN4X5X_MRAM_START 0x8000
-+#define TCAN4X5X_MRAM_SIZE 0x800
- #define TCAN4X5X_MCAN_OFFSET 0x1000
- 
- #define TCAN4X5X_CLEAR_ALL_INT 0xffffffff
-@@ -307,6 +308,10 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
- 	if (!mcan_class)
- 		return -ENOMEM;
- 
-+	ret = m_can_check_mram_cfg(mcan_class, TCAN4X5X_MRAM_SIZE);
-+	if (ret)
-+		goto out_m_can_class_free_dev;
-+
- 	priv = cdev_to_priv(mcan_class);
- 
- 	priv->power = devm_regulator_get_optional(&spi->dev, "vsup");
+ Example:
+ tcan4x5x: tcan4x5x@0 {
 -- 
 2.40.1
 
