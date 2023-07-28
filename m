@@ -2,53 +2,49 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE1BAC001DC
-	for <linux-can@archiver.kernel.org>; Wed, 26 Jul 2023 11:48:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E1A7C001DE
+	for <linux-can@archiver.kernel.org>; Fri, 28 Jul 2023 07:59:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234319AbjGZLs6 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 26 Jul 2023 07:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46374 "EHLO
+        id S233406AbjG1H7N (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 28 Jul 2023 03:59:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234418AbjGZLsC (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 26 Jul 2023 07:48:02 -0400
+        with ESMTP id S234669AbjG1H67 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 28 Jul 2023 03:58:59 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF541FCB
-        for <linux-can@vger.kernel.org>; Wed, 26 Jul 2023 04:47:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090D03C35
+        for <linux-can@vger.kernel.org>; Fri, 28 Jul 2023 00:58:30 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qOczB-0005pA-Ln; Wed, 26 Jul 2023 13:47:21 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
+        id 1qPIMm-0008AS-Ot
+        for linux-can@vger.kernel.org; Fri, 28 Jul 2023 09:58:28 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id 0D7041FD1E4
+        for <linux-can@vger.kernel.org>; Fri, 28 Jul 2023 07:56:19 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 47A741FB4B5;
-        Wed, 26 Jul 2023 11:47:20 +0000 (UTC)
-Date:   Wed, 26 Jul 2023 13:47:19 +0200
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 5D69E1FD19C;
+        Fri, 28 Jul 2023 07:56:17 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 356e560a;
+        Fri, 28 Jul 2023 07:56:16 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiaqing Zhao <jiaqing.zhao@linux.intel.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>,
-        support@ems-wuensche.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-can@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v2 2/2] can: ems_pci: move ASIX AX99100 ids to pci_ids.h
-Message-ID: <20230726-hubcap-jersey-83445f9e5531-mkl@pengutronix.de>
-References: <20230720102859.2985655-1-jiaqing.zhao@linux.intel.com>
- <20230720102859.2985655-3-jiaqing.zhao@linux.intel.com>
- <20230720-document-tingle-e5d555714021-mkl@pengutronix.de>
- <61bbb2e6-8c18-d2fc-ce1e-78d462ac1bba@linux.intel.com>
- <2023072657-unloved-magma-8cf2@gregkh>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de, John Watts <contact@jookia.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 03/21] can: sun4i_can: Add acceptance register quirk
+Date:   Fri, 28 Jul 2023 09:55:56 +0200
+Message-Id: <20230728075614.1014117-4-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230728075614.1014117-1-mkl@pengutronix.de>
+References: <20230728075614.1014117-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="t6js5eclfcsqqax7"
-Content-Disposition: inline
-In-Reply-To: <2023072657-unloved-magma-8cf2@gregkh>
+Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
@@ -57,60 +53,76 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
+From: John Watts <contact@jookia.org>
 
---t6js5eclfcsqqax7
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The Allwinner D1's CAN controllers have the ACPC and ACPM registers
+moved down. Compensate for this by adding an offset quirk for the
+acceptance registers.
 
-On 26.07.2023 13:38:22, Greg Kroah-Hartman wrote:
-> On Thu, Jul 20, 2023 at 10:54:01PM +0800, Jiaqing Zhao wrote:
-> > On 2023-07-20 18:40, Marc Kleine-Budde wrote:
-> > > On 20.07.2023 10:28:59, Jiaqing Zhao wrote:
-> > >> Move PCI Vendor and Device ID of ASIX AX99100 PCIe to Multi I/O
-> > >> Controller to pci_ids.h for its serial and parallel port driver
-> > >> support in subsequent patches.
-> > >=20
-> > > Sorry, I haven't noticed the change in "include/linux/pci_ids.h", that
-> > > the other patches depend on. How to coordinate among the subsystems?
-> > >=20
-> > > I don't mind taking the entire (v1) series with the Acks from the
-> > > tty/serial and parport maintainers, or give my Acked-by to upstream
-> > > via their trees.
-> >=20
-> > Add tty and parport maintainers to this thread.
-> >=20
-> > I'd like to ask other maintainers' opinion as I'm not sure which option
-> > is better and I had no similar experience before.=20
->=20
-> Either is fine with me, I can just take them all through my tty tree as
-> that's simplest for me :)
+Signed-off-by: John Watts <contact@jookia.org>
+Link: https://lore.kernel.org/all/20230721221552.1973203-5-contact@jookia.org
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/sun4i_can.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-Go ahead!
+diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
+index 0827830bbf28..1f90fe6dbb8b 100644
+--- a/drivers/net/can/sun4i_can.c
++++ b/drivers/net/can/sun4i_can.c
+@@ -205,9 +205,11 @@
+  * struct sun4ican_quirks - Differences between SoC variants.
+  *
+  * @has_reset: SoC needs reset deasserted.
++ * @acp_offset: Offset of ACPC and ACPM registers
+  */
+ struct sun4ican_quirks {
+ 	bool has_reset;
++	int acp_offset;
+ };
+ 
+ struct sun4ican_priv {
+@@ -216,6 +218,7 @@ struct sun4ican_priv {
+ 	struct clk *clk;
+ 	struct reset_control *reset;
+ 	spinlock_t cmdreg_lock;	/* lock for concurrent cmd register writes */
++	int acp_offset;
+ };
+ 
+ static const struct can_bittiming_const sun4ican_bittiming_const = {
+@@ -338,8 +341,8 @@ static int sun4i_can_start(struct net_device *dev)
+ 	}
+ 
+ 	/* set filters - we accept all */
+-	writel(0x00000000, priv->base + SUN4I_REG_ACPC_ADDR);
+-	writel(0xFFFFFFFF, priv->base + SUN4I_REG_ACPM_ADDR);
++	writel(0x00000000, priv->base + SUN4I_REG_ACPC_ADDR + priv->acp_offset);
++	writel(0xFFFFFFFF, priv->base + SUN4I_REG_ACPM_ADDR + priv->acp_offset);
+ 
+ 	/* clear error counters and error code capture */
+ 	writel(0, priv->base + SUN4I_REG_ERRC_ADDR);
+@@ -768,10 +771,12 @@ static const struct ethtool_ops sun4ican_ethtool_ops = {
+ 
+ static const struct sun4ican_quirks sun4ican_quirks_a10 = {
+ 	.has_reset = false,
++	.acp_offset = 0,
+ };
+ 
+ static const struct sun4ican_quirks sun4ican_quirks_r40 = {
+ 	.has_reset = true,
++	.acp_offset = 0,
+ };
+ 
+ static const struct of_device_id sun4ican_of_match[] = {
+@@ -870,6 +875,7 @@ static int sun4ican_probe(struct platform_device *pdev)
+ 	priv->base = addr;
+ 	priv->clk = clk;
+ 	priv->reset = reset;
++	priv->acp_offset = quirks->acp_offset;
+ 	spin_lock_init(&priv->cmdreg_lock);
+ 
+ 	platform_set_drvdata(pdev, dev);
+-- 
+2.40.1
 
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---t6js5eclfcsqqax7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmTBB8QACgkQvlAcSiqK
-BOjobgf9E968vJVXb8xxGUp+xNfrKHksWTMZpC5ObFx3vrq/Lsiz4u9Pw7ZFYaIQ
-2wzOdPjqX7VUAtsAz1EUE05RTKSonK5+2f5Whp37Zaslf/UKet01MJcDK/9jrI23
-F6ikSwOqFwRww1pX6b/VpQrALCmCQMWRUgwfThSY0uFbGa3vCtC75CU6t6XwcMiD
-i72n8+LU3ylzD1kDUiavPBZjlR6RdI4cW6RrtT5/6CX4Oqxs7GWw6qVerw9uBnzn
-rRCvmoqDymIGp1Tb2xw1c+Ckt7fWohsngZ0m00XaG7Cp2Yr21M/03UD+6QHyJdtN
-y89e5PzuysAKybhCyBwd3OXpe/l4Uw==
-=v+NL
------END PGP SIGNATURE-----
-
---t6js5eclfcsqqax7--
