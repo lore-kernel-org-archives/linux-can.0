@@ -2,47 +2,44 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BBD8C001DE
-	for <linux-can@archiver.kernel.org>; Fri, 28 Jul 2023 08:00:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53568C0015E
+	for <linux-can@archiver.kernel.org>; Fri, 28 Jul 2023 08:00:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234575AbjG1IAG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 28 Jul 2023 04:00:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42712 "EHLO
+        id S234631AbjG1IAI (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 28 Jul 2023 04:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234556AbjG1H7g (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 28 Jul 2023 03:59:36 -0400
+        with ESMTP id S234536AbjG1H7i (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 28 Jul 2023 03:59:38 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 334833AB3
-        for <linux-can@vger.kernel.org>; Fri, 28 Jul 2023 00:59:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3593C0F
+        for <linux-can@vger.kernel.org>; Fri, 28 Jul 2023 00:59:06 -0700 (PDT)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qPIMw-0008N7-N5
-        for linux-can@vger.kernel.org; Fri, 28 Jul 2023 09:58:38 +0200
+        id 1qPIMx-0008OB-AD
+        for linux-can@vger.kernel.org; Fri, 28 Jul 2023 09:58:39 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id DC4871FD220
-        for <linux-can@vger.kernel.org>; Fri, 28 Jul 2023 07:56:19 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id E94711FD1AB
+        for <linux-can@vger.kernel.org>; Fri, 28 Jul 2023 07:56:17 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id C86BD1FD1A6;
-        Fri, 28 Jul 2023 07:56:17 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id F11831FD197;
+        Fri, 28 Jul 2023 07:56:16 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 8cb7fdcb;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7c42827d;
         Fri, 28 Jul 2023 07:56:16 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Peter Seiderer <ps.report@gmx.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 06/21] can: peak_usb: remove unused/legacy peak_usb_netif_rx() function
-Date:   Fri, 28 Jul 2023 09:55:59 +0200
-Message-Id: <20230728075614.1014117-7-mkl@pengutronix.de>
+        kernel@pengutronix.de
+Subject: [PATCH net-next 0/21] pull-request: can-next 2023-07-28
+Date:   Fri, 28 Jul 2023 09:55:53 +0200
+Message-Id: <20230728075614.1014117-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230728075614.1014117-1-mkl@pengutronix.de>
-References: <20230728075614.1014117-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
@@ -53,58 +50,102 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Peter Seiderer <ps.report@gmx.net>
+Hello netdev-team,
 
-Remove unused/legacy peak_usb_netif_rx() function (not longer used
-since commit 28e0a70cede3 ("can: peak_usb: CANFD: store 64-bits hw
-timestamps").
+this is a pull request of 21 patches for net-next/master.
 
-Signed-off-by: Peter Seiderer <ps.report@gmx.net>
-Link: https://lore.kernel.org/all/20230721180758.26199-1-ps.report@gmx.net
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+The 1st patch is by Gerhard Uttenthaler, which adds Gerhard as the
+maintainer ems_pci driver.
+
+Peter Seiderer's patch removes a unused function from the peak_usb
+driver.
+
+The next 4 patches are by John Watts and add support for the sun4i_can
+driver on the Allwinner D1.
+
+Rob Herring's patch corrects the DT includes in various CAN drivers.
+
+Followed by 14 patches from me concerning the gs_usb driver. The first
+11 are various cleanups consisting of coding style improvements, error
+path printout cleanups, and removal of unneeded
+usb_kill_anchored_urbs(). The last 3 convert the driver to use NAPI to
+avoid out-of-order reception of CAN frames.
+
+regards,
+Marc
+
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 13 -------------
- drivers/net/can/usb/peak_usb/pcan_usb_core.h |  2 --
- 2 files changed, 15 deletions(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index d881e1d30183..24ad9f593a77 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -214,19 +214,6 @@ void peak_usb_get_ts_time(struct peak_time_ref *time_ref, u32 ts, ktime_t *time)
- 	}
- }
- 
--/*
-- * post received skb after having set any hw timestamp
-- */
--int peak_usb_netif_rx(struct sk_buff *skb,
--		      struct peak_time_ref *time_ref, u32 ts_low)
--{
--	struct skb_shared_hwtstamps *hwts = skb_hwtstamps(skb);
--
--	peak_usb_get_ts_time(time_ref, ts_low, &hwts->hwtstamp);
--
--	return netif_rx(skb);
--}
--
- /* post received skb with native 64-bit hw timestamp */
- int peak_usb_netif_rx_64(struct sk_buff *skb, u32 ts_low, u32 ts_high)
- {
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-index 980e315186cf..f6cf84bb718f 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-@@ -142,8 +142,6 @@ void peak_usb_init_time_ref(struct peak_time_ref *time_ref,
- void peak_usb_update_ts_now(struct peak_time_ref *time_ref, u32 ts_now);
- void peak_usb_set_ts_now(struct peak_time_ref *time_ref, u32 ts_now);
- void peak_usb_get_ts_time(struct peak_time_ref *time_ref, u32 ts, ktime_t *tv);
--int peak_usb_netif_rx(struct sk_buff *skb,
--		      struct peak_time_ref *time_ref, u32 ts_low);
- int peak_usb_netif_rx_64(struct sk_buff *skb, u32 ts_low, u32 ts_high);
- void peak_usb_async_complete(struct urb *urb);
- void peak_usb_restart_complete(struct peak_usb_device *dev);
--- 
-2.40.1
+The following changes since commit 3d40aed862874db14e1dd41fd6f12636dcfdcc3e:
+
+  net: Explicitly include correct DT includes (2023-07-27 20:33:16 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-6.6-20230728
+
+for you to fetch changes up to 52be626ccbd7421f6124429b6d9fea9e31ae602f:
+
+  Merge patch series "can: gs_usb: convert to NAPI" (2023-07-28 09:46:15 +0200)
+
+----------------------------------------------------------------
+linux-can-next-for-6.6-20230728
+
+----------------------------------------------------------------
+Gerhard Uttenthaler (1):
+      MAINTAINERS: Add myself as maintainer of the ems_pci.c driver
+
+John Watts (4):
+      dt-bindings: net: can: Add support for Allwinner D1 CAN controller
+      riscv: dts: allwinner: d1: Add CAN controller nodes
+      can: sun4i_can: Add acceptance register quirk
+      can: sun4i_can: Add support for the Allwinner D1
+
+Marc Kleine-Budde (17):
+      Merge patch series "Add support for Allwinner D1 CAN controllers"
+      can: gs_usb: remove leading space from goto labels
+      can: gs_usb: gs_usb_probe(): align block comment
+      can: gs_usb: gs_usb_set_timestamp(): remove return statements form void function
+      can: gs_usb: uniformly use "parent" as variable name for struct gs_usb
+      can: gs_usb: gs_usb_receive_bulk_callback(): make use of netdev
+      can: gs_usb: gs_usb_receive_bulk_callback(): make use of stats
+      can: gs_usb: gs_usb_receive_bulk_callback(): count RX overflow errors also in case of OOM
+      can: gs_usb: gs_can_start_xmit(), gs_can_open(): clean up printouts in error path
+      can: gs_usb: gs_can_close(): don't complain about failed device reset during ndo_stop
+      can: gs_usb: gs_destroy_candev(): remove not needed usb_kill_anchored_urbs()
+      can: gs_usb: gs_usb_disconnect(): remove not needed usb_kill_anchored_urbs()
+      Merge patch series "can: gs_usb-cleanups: various clenaups"
+      can: rx-offload: rename rx_offload_get_echo_skb() -> can_rx_offload_get_echo_skb_queue_timestamp()
+      can: rx-offload: add can_rx_offload_get_echo_skb_queue_tail()
+      can: gs_usb: convert to NAPI/rx-offload to avoid OoO reception
+      Merge patch series "can: gs_usb: convert to NAPI"
+
+Peter Seiderer (1):
+      can: peak_usb: remove unused/legacy peak_usb_netif_rx() function
+
+Rob Herring (1):
+      can: Explicitly include correct DT includes, part 2
+
+ .../bindings/net/can/allwinner,sun4i-a10-can.yaml  |   6 +-
+ MAINTAINERS                                        |   7 +
+ arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi  |  30 ++++
+ drivers/net/can/Kconfig                            |   4 +-
+ drivers/net/can/bxcan.c                            |   1 -
+ drivers/net/can/dev/rx-offload.c                   |  36 +++-
+ drivers/net/can/flexcan/flexcan-core.c             |   4 +-
+ drivers/net/can/ifi_canfd/ifi_canfd.c              |   1 -
+ drivers/net/can/m_can/m_can.c                      |   9 +-
+ drivers/net/can/m_can/m_can.h                      |   1 -
+ drivers/net/can/rcar/rcar_canfd.c                  |   1 -
+ drivers/net/can/sja1000/sja1000_platform.c         |   1 -
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c      |   6 +-
+ drivers/net/can/sun4i_can.c                        |  23 ++-
+ drivers/net/can/ti_hecc.c                          |   5 +-
+ drivers/net/can/usb/Kconfig                        |   1 +
+ drivers/net/can/usb/gs_usb.c                       | 187 +++++++++++++--------
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c       |  13 --
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h       |   2 -
+ include/linux/can/rx-offload.h                     |  11 +-
+ 20 files changed, 225 insertions(+), 124 deletions(-)
 
 
