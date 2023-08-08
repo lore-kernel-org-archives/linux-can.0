@@ -2,82 +2,86 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 190C0C001DB
-	for <linux-can@archiver.kernel.org>; Mon,  7 Aug 2023 19:30:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 833C6C04E69
+	for <linux-can@archiver.kernel.org>; Tue,  8 Aug 2023 16:32:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbjHGTa0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Mon, 7 Aug 2023 15:30:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
+        id S229952AbjHHQcS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 8 Aug 2023 12:32:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjHGTa0 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 7 Aug 2023 15:30:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C788A1715
-        for <linux-can@vger.kernel.org>; Mon,  7 Aug 2023 12:30:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5A9B961FB5
-        for <linux-can@vger.kernel.org>; Mon,  7 Aug 2023 19:30:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B9F81C433C8;
-        Mon,  7 Aug 2023 19:30:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691436624;
-        bh=/7v3mZhFIHfUVk3LqO4HMIjd7CSdrFevRfSSYLZKDrM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=FGlkkv/GSmFsdGvPrl7nQV/NfnCxpS7oKt68rTpGg/7EBgNZTBp0QL7URCElpNIQ4
-         rH2prj9DAAv6uujPcZNxH6+fT+5XpnEpy/FFRfigPOxrH918WlnXztNk0aMdOUOmpU
-         7plyprFkBM9/nyU6guMnYvoGHvgZuOb+JSZygfqhdZjuGU+rmvMDM+l+hdzpCyH4Y+
-         drUwrb+x4Ru55XrKdlXpM4tHR/+hm7IUm15XDTXSofzKYT3CnhdWG7uK/YJAJDrk43
-         r7ULPj0+P7bqTdsc0k6UENeckScEvnUbfzkb3nCGew/mDZC+9s0SnH8awXNCCgNA+R
-         l+my92yRCgT6Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A5DE9E505D5;
-        Mon,  7 Aug 2023 19:30:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S232919AbjHHQbB (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 8 Aug 2023 12:31:01 -0400
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com [209.85.210.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C924413950
+        for <linux-can@vger.kernel.org>; Tue,  8 Aug 2023 08:51:39 -0700 (PDT)
+Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-6bb31e13a13so10350034a34.1
+        for <linux-can@vger.kernel.org>; Tue, 08 Aug 2023 08:51:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691509861; x=1692114661;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=try7kLiqOvWBbDWNv3AsjzJNZ1pHNvllo2yNmM+PfCo=;
+        b=fdadulK4vJRVRz9B6U67CZthbN9RzJ6ZCyYuHEeHsTsSnJHv6qERMbepPb54gQhQ5T
+         +EESVqyyoGFaGl388k/iWIl3MLa1APlLqq3LP/CEQNlkggYA4He1d/OGDWdmMgRSLI7F
+         e+2LJ6EvhpN1ZijexlsIGrg2rungfJlbJJMSz6F7kmNsBex51kF2SjzRSvKNNnAA4/cE
+         zbSpovn2ecjvfEhe2+fZ4mX7gHDz9nXVKlr7czIfqSV1uqVG3CxcLfgp2kHLsLezbnD+
+         gSSHEkTBxIo6rH71o1wNh1rkNA5Kg7isD6sw7ACpHuJnluAyOhvqEr8aPdSq7mG/ZYoD
+         4XRw==
+X-Gm-Message-State: AOJu0Yzs3htsPNV77pgiuFy4AoK1lrjaE1l271C1t9h5mizMAQm3bxLj
+        LhqckE2Xa10kY3AL5DwgKMsEOXf4WQpEd1zSFHvgU7yXiHWX
+X-Google-Smtp-Source: AGHT+IHVxzz7rv3Yc6Ex9nVZyfccRlIl4YuPHqh33kxidSRG2ZsY/cJC8dt7jVr/W6xkY4FX1aCJajbFNScBQQQ0cLLlU2M2U+jQ
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] Revert "riscv: dts: allwinner: d1: Add CAN
- controller nodes"
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169143662467.21933.9656894159328024751.git-patchwork-notify@kernel.org>
-Date:   Mon, 07 Aug 2023 19:30:24 +0000
-References: <20230807074222.1576119-2-mkl@pengutronix.de>
-In-Reply-To: <20230807074222.1576119-2-mkl@pengutronix.de>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        linux-can@vger.kernel.org, kernel@pengutronix.de,
-        jernej.skrabec@gmail.com
+X-Received: by 2002:a05:6870:c794:b0:1ba:7bf5:67cd with SMTP id
+ dy20-20020a056870c79400b001ba7bf567cdmr16115130oab.11.1691502890465; Tue, 08
+ Aug 2023 06:54:50 -0700 (PDT)
+Date:   Tue, 08 Aug 2023 06:54:50 -0700
+In-Reply-To: <0000000000009393ba059691c6a3@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ec3e1f060269b476@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in j1939_session_get_by_addr
+From:   syzbot <syzbot+d9536adc269404a984f8@syzkaller.appspotmail.com>
+To:     Jose.Abreu@synopsys.com, arvid.brodin@alten.se,
+        davem@davemloft.net, dvyukov@google.com,
+        ilias.apalodimas@linaro.org, joabreu@synopsys.com,
+        jose.abreu@synopsys.com, kernel@pengutronix.de,
+        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org,
+        nogikh@google.com, robin@protonic.nl, socketcan@hartkopp.net,
+        syzkaller-bugs@googlegroups.com, tonymarislogistics@yandex.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Hello:
+This bug is marked as fixed by commit:
+can: j1939: transport: make sure the aborted session will be
 
-This patch was applied to netdev/net-next.git (main)
-by Marc Kleine-Budde <mkl@pengutronix.de>:
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-On Mon,  7 Aug 2023 09:42:22 +0200 you wrote:
-> It turned out the dtsi changes were not quite ready, revert them for
-> now.
-> 
-> This reverts commit 6ea1ad888f5900953a21853e709fa499fdfcb317.
-> 
-> Link: https://lore.kernel.org/all/2690764.mvXUDI8C0e@jernej-laptop
-> Suggested-by: Jernej Škrabec <jernej.skrabec@gmail.com>
-> Link: https://lore.kernel.org/all/20230807-riscv-allwinner-d1-revert-can-controller-nodes-v1-1-eb3f70b435d9@pengutronix.de
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> 
-> [...]
+#syz fix: exact-commit-title
 
-Here is the summary with links:
-  - [net-next] Revert "riscv: dts: allwinner: d1: Add CAN controller nodes"
-    https://git.kernel.org/netdev/net-next/c/84059a0ef5c6
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=d9536adc269404a984f8
 
+---
+[1] I expect the commit to be present in:
 
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
