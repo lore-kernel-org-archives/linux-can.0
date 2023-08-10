@@ -2,126 +2,155 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A196BC41513
-	for <linux-can@archiver.kernel.org>; Thu, 10 Aug 2023 09:16:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DEDAC001DE
+	for <linux-can@archiver.kernel.org>; Thu, 10 Aug 2023 09:33:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233680AbjHJJQQ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 10 Aug 2023 05:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
+        id S235111AbjHJJdf (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 10 Aug 2023 05:33:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234538AbjHJJPj (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Aug 2023 05:15:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844D326AB;
-        Thu, 10 Aug 2023 02:15:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2247C654D3;
-        Thu, 10 Aug 2023 09:15:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 004D2C433CA;
-        Thu, 10 Aug 2023 09:15:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691658937;
-        bh=kbnu6b3hLQjWdfnuwr7SeXr3exMSU6M7+jqx7zQJd3k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KfijH1FwDoxzGj1CXeU8p4mDVBdq8oeaMH4aJuVSLiuDhUR3X5lOC+f9d47Rg8vPl
-         pysjNfmG9qAKraPtDuHnv585nnRC9bXUvSUHKeFD3UYSrX6KLYV9+wJg6ZK3aTYuTl
-         qPH5Xh7AKYJ96e5jcKwiadEy4oUMkjEmFyIBzoqzFgpM7CseZB7hXyXns+yeeSma7Q
-         JulPMfYJCHS4zli+NO9vqERnpwLWBwj17/3oLFmcBtRDtb+CzETUSWoAElafUIz6sy
-         HyAFY4Ap1J/coWzhy2JaWYiSP3Z+6m/caH5vd4dHHO1oGTEOj/cpZU7DNG0X3/xBvX
-         CQs1v1M6Jtr8Q==
-From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-        Max Staudt <max@enpas.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
+        with ESMTP id S235122AbjHJJdW (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Aug 2023 05:33:22 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C31D2D66
+        for <linux-can@vger.kernel.org>; Thu, 10 Aug 2023 02:33:00 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5236c9ff275so876732a12.1
+        for <linux-can@vger.kernel.org>; Thu, 10 Aug 2023 02:33:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1691659972; x=1692264772;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rb0rfZaZQTOJ9RosZEXBpg0Z1lQ7lbBcT+HB1fvjTT8=;
+        b=j1hNz2mlXMpJkSQMmOO6lLf1l50U5/dhUMjMeyvKuDEQWGtT2wpDhQy8CDQ1UTANAq
+         mNgcsQ8SJP2mKxF/y0CkzJFBHcXSGcxBJuzIbG4C3zQHw8GJTJD6XFM/H6Cpe9AsTO9m
+         u6HzWSdNpul1pLFtlst+jG61wu0BdzbSC6KT/HHTIirtIPrHubh+LeleL5o4fSe8Hlnt
+         w06qmLLcg87+EQ8VaMZX9HRHGRPTMe9D7LZREHvdhx6hsz3l3kFYoJO7V+JbEVOvFpoH
+         O1qAoo9VN//nhMDD6fK1n5vX/p10NWcyFEy4pbrJ2zg5zfhkmow3w4ozGLJPPNOvm73C
+         kp2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691659972; x=1692264772;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Rb0rfZaZQTOJ9RosZEXBpg0Z1lQ7lbBcT+HB1fvjTT8=;
+        b=TXWJ7oDKGJkdxC5WphW2Y8fbzXr+cLI571qrARUheEwXjDzQAVod/VrYrfUQS68Utn
+         n3+5+MrD2XkfMHMd4GcGuerJbd/wJy3zzTPS8Dj7opp50Z+1ivIxRm6OVHEAMlA/Bj4v
+         7nyRLDdVggpdwzXqfln+6BnVUXZXrrRi6UEKXAhFfIuCWhs3qL5oF98IPSK7mm51ky5l
+         yVPhZDovknPIGNlpvIIUuxyQf67QvxjFKgwJT4olyXsSIpoxh7RXNTUZgGacK7TW7f9t
+         CP+AAkFACQ1KbU++uZnG8bWdMm6NawSCADI33HxfL6JH5Yqg+PmngfbhQl2UPK2emad6
+         M1Rg==
+X-Gm-Message-State: AOJu0YyV+IhkxvPmQ2ckBKhClhUgchdZQn5cKJLNVaGV8ywSxCXuo3mk
+        IwIHAYU109KWSr11Kfep39md4w==
+X-Google-Smtp-Source: AGHT+IEHlYdFQPucZN7ly1WkptrPpgjmpsdinQYlUi2ctGN2pqdQAaHrmqx/Lt/CxlAhk9fNyirRVQ==
+X-Received: by 2002:a17:906:76ca:b0:99c:bb4d:f5a0 with SMTP id q10-20020a17090676ca00b0099cbb4df5a0mr1590701ejn.14.1691659972393;
+        Thu, 10 Aug 2023 02:32:52 -0700 (PDT)
+Received: from blmsp ([2001:4090:a245:81da:7521:a3aa:9abb:fac5])
+        by smtp.gmail.com with ESMTPSA id l18-20020a1709065a9200b00991e2b5a27dsm685380ejq.37.2023.08.10.02.32.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 02:32:51 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 11:32:50 +0200
+From:   Markus Schneider-Pargmann <msp@baylibre.com>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Wolfgang Grandegger <wg@grandegger.com>
+Cc:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
+        Simon Horman <simon.horman@corigine.com>,
+        "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-can@vger.kernel.org
-Subject: [PATCH 13/36] tty: can327: unify error paths in can327_ldisc_rx()
-Date:   Thu, 10 Aug 2023 11:14:47 +0200
-Message-ID: <20230810091510.13006-14-jirislaby@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230810091510.13006-1-jirislaby@kernel.org>
-References: <20230810091510.13006-1-jirislaby@kernel.org>
+        Paolo Abeni <pabeni@redhat.com>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Julien Panis <jpanis@baylibre.com>
+Subject: Re: [PATCH v5 00/12] can: m_can: Optimizations for m_can/tcan part 2
+Message-ID: <20230810093250.fxzxss7cfmazsrd7@blmsp>
+References: <20230718075708.958094-1-msp@baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230718075708.958094-1-msp@baylibre.com>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Create a label with can327_uart_side_failure() and spin unlock. And jump
-there from all three fail paths.
+Hi Marc,
 
-Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-Cc: Max Staudt <max@enpas.org>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: linux-can@vger.kernel.org
----
- drivers/net/can/can327.c | 22 ++++++++--------------
- 1 file changed, 8 insertions(+), 14 deletions(-)
+did you have some time to review this series? Anything I should rework?
 
-diff --git a/drivers/net/can/can327.c b/drivers/net/can/can327.c
-index ee8a977acc8d..05e9c035e8f6 100644
---- a/drivers/net/can/can327.c
-+++ b/drivers/net/can/can327.c
-@@ -905,11 +905,7 @@ static void can327_ldisc_rx(struct tty_struct *tty, const unsigned char *cp,
- 		if (fp && *fp++) {
- 			netdev_err(elm->dev,
- 				   "Error in received character stream. Check your wiring.");
--
--			can327_uart_side_failure(elm);
--
--			spin_unlock_bh(&elm->lock);
--			return;
-+			goto uart_failure;
- 		}
- 
- 		/* Ignore NUL characters, which the PIC microcontroller may
-@@ -925,10 +921,7 @@ static void can327_ldisc_rx(struct tty_struct *tty, const unsigned char *cp,
- 				netdev_err(elm->dev,
- 					   "Received illegal character %02x.\n",
- 					   *cp);
--				can327_uart_side_failure(elm);
--
--				spin_unlock_bh(&elm->lock);
--				return;
-+				goto uart_failure;
- 			}
- 
- 			elm->rxbuf[elm->rxfill++] = *cp;
-@@ -941,15 +934,16 @@ static void can327_ldisc_rx(struct tty_struct *tty, const unsigned char *cp,
- 		netdev_err(elm->dev,
- 			   "Receive buffer overflowed. Bad chip or wiring? count = %i",
- 			   count);
--
--		can327_uart_side_failure(elm);
--
--		spin_unlock_bh(&elm->lock);
--		return;
-+		goto uart_failure;
- 	}
- 
- 	can327_parse_rxbuf(elm, first_new_char_idx);
- 	spin_unlock_bh(&elm->lock);
-+
-+	return;
-+uart_failure:
-+	can327_uart_side_failure(elm);
-+	spin_unlock_bh(&elm->lock);
- }
- 
- /* Write out remaining transmit buffer.
--- 
-2.41.0
+Thanks,
+Markus
 
+On Tue, Jul 18, 2023 at 09:56:56AM +0200, Markus Schneider-Pargmann wrote:
+> Hi Marc, Simon and everyone,
+> 
+> v5 got a rebase on v6.5 with some small style fixes as pointed out in v4.
+> 
+> It is tested on tcan455x but I don't have hardware with mcan on the SoC
+> myself so any testing is appreciated.
+> 
+> The series implements many small and bigger throughput improvements and
+> adds rx/tx coalescing at the end.
+> 
+> Based on v6.5-rc1. Also available at
+> https://gitlab.baylibre.com/msp8/linux/-/tree/topic/mcan-optimization/v6.5?ref_type=heads
+> 
+> Best,
+> Markus
+> 
+> Changes in v5:
+> - Add back parenthesis in m_can_set_coalesce(). This will make
+>   checkpatch unhappy but gcc happy.
+> - Remove unused fifo_header variable in m_can_tx_handler().
+> - Rebased to v6.5-rc1
+> 
+> Changes in v4:
+> - Create and use struct m_can_fifo_element in m_can_tx_handler
+> - Fix memcpy_and_pad to copy the full buffer
+> - Fixed a few checkpatch warnings
+> - Change putidx to be unsigned
+> - Print hard_xmit error only once when TX FIFO is full
+> 
+> Changes in v3:
+> - Remove parenthesis in error messages
+> - Use memcpy_and_pad for buffer copy in 'can: m_can: Write transmit
+>   header and data in one transaction'.
+> - Replace spin_lock with spin_lock_irqsave. I got a report of a
+>   interrupt that was calling start_xmit just after the netqueue was
+>   woken up before the locked region was exited. spin_lock_irqsave should
+>   fix this. I attached the full stack at the end of the mail if someone
+>   wants to know.
+> - Rebased to v6.3-rc1.
+> - Removed tcan4x5x patches from this series.
+> 
+> Changes in v2:
+> - Rebased on v6.2-rc5
+> - Fixed missing/broken accounting for non peripheral m_can devices.
+> 
+> previous versions:
+> v1 - https://lore.kernel.org/lkml/20221221152537.751564-1-msp@baylibre.com
+> v2 - https://lore.kernel.org/lkml/20230125195059.630377-1-msp@baylibre.com
+> v3 - https://lore.kernel.org/lkml/20230315110546.2518305-1-msp@baylibre.com/
+> v4 - https://lore.kernel.org/lkml/20230621092350.3130866-1-msp@baylibre.com/
+> 
+> Markus Schneider-Pargmann (12):
+>   can: m_can: Write transmit header and data in one transaction
+>   can: m_can: Implement receive coalescing
+>   can: m_can: Implement transmit coalescing
+>   can: m_can: Add rx coalescing ethtool support
+>   can: m_can: Add tx coalescing ethtool support
+>   can: m_can: Use u32 for putidx
+>   can: m_can: Cache tx putidx
+>   can: m_can: Use the workqueue as queue
+>   can: m_can: Introduce a tx_fifo_in_flight counter
+>   can: m_can: Use tx_fifo_in_flight for netif_queue control
+>   can: m_can: Implement BQL
+>   can: m_can: Implement transmit submission coalescing
+> 
+>  drivers/net/can/m_can/m_can.c | 517 +++++++++++++++++++++++++---------
+>  drivers/net/can/m_can/m_can.h |  35 ++-
+>  2 files changed, 418 insertions(+), 134 deletions(-)
+> 
+> 
+> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+> -- 
+> 2.40.1
+> 
