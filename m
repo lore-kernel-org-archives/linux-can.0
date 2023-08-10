@@ -2,67 +2,111 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DE4BC001DB
-	for <linux-can@archiver.kernel.org>; Thu, 10 Aug 2023 08:05:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42B05C04E69
+	for <linux-can@archiver.kernel.org>; Thu, 10 Aug 2023 09:16:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232976AbjHJIFZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 10 Aug 2023 04:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48768 "EHLO
+        id S233253AbjHJJQR (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 10 Aug 2023 05:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbjHJIFZ (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Aug 2023 04:05:25 -0400
-X-Greylist: delayed 548 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 10 Aug 2023 01:05:20 PDT
-Received: from mail.statusfirmy.pl (mail.statusfirmy.pl [51.195.117.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B70351BCF
-        for <linux-can@vger.kernel.org>; Thu, 10 Aug 2023 01:05:20 -0700 (PDT)
-Received: by mail.statusfirmy.pl (Postfix, from userid 1002)
-        id 32511A2D2D; Thu, 10 Aug 2023 07:55:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=statusfirmy.pl;
-        s=mail; t=1691654170;
-        bh=7OEG3SfCKJNSmT08lh/uQdsJC2j4joLhifJ/GJ7beng=;
-        h=Date:From:To:Subject:From;
-        b=EpJLxRPCGjzpMxlLwTlrexGJ7GjlK6X9hjRMEuWBz/L+5xFHh4/TT4MeAu6rfS9Cr
-         s5iEIWbU/TGGVD7WBCmQjhZ0BLoJQSm7cGEo4Fo4LN2/Y5UqKLbl9h5UHyl1d3B0r7
-         RtRYJHUSYTIU0Av2hTvEEnBxqrmWrC6YsjG2vnlbW1qDsIMtUR147lBCYKAxqdh6aP
-         cMztE5QJBAPNe4pg1SxYIoSPfWo9DX3lvo9JCbdGSr6J57Sa6YEjabKFGjMpRXL8P7
-         H8K7+6oJP/OVXXcYQcYm04jJQbq184D4ZRU7bWHCXKy9L+YlhGptL/TXv2vnbDFjXJ
-         o5fbhmuEUhmKg==
-Received: by mail.statusfirmy.pl for <linux-can@vger.kernel.org>; Thu, 10 Aug 2023 07:55:50 GMT
-Message-ID: <20230810064500-0.1.au.1zp2z.0.ncssze954o@statusfirmy.pl>
-Date:   Thu, 10 Aug 2023 07:55:50 GMT
-From:   =?UTF-8?Q? "Piotr_Poniedzia=C5=82ek" ?= 
-        <piotr.poniedzialek@statusfirmy.pl>
-To:     <linux-can@vger.kernel.org>
-Subject: Franczyza salonu kosmetycznego
-X-Mailer: mail.statusfirmy.pl
+        with ESMTP id S234546AbjHJJPl (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 10 Aug 2023 05:15:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 874BA2D71;
+        Thu, 10 Aug 2023 02:15:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 263A8654CD;
+        Thu, 10 Aug 2023 09:15:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04BA6C433CC;
+        Thu, 10 Aug 2023 09:15:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691658940;
+        bh=/6gBp59IIeAJu6gxv5VKOtBckU5nQfxa5DEsbTV9E6U=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HFwAREQpZ/lAxISpilmXwfEfwiUtf047Qrgajcf6NYSCE2Z57lCQmkCsdr1S7JA+o
+         kckZFTcaZhxk8Mup8VpG8PZpzQuoJXimVvcH06NXH4jXMRPppi8jDftkrkhfNtXeCT
+         jX5tiJugfgwWcGn07n1T+0IQ0C/Nl5fWrv4A1uvFDZ99Y2l9iLnfbBAKtvz05YTW36
+         X9zgHtoyDa7AD+mWmElBJ12FGQFBruDCy1YI7lkjqZmBc+xwmJv8nJ/BO8qZr00xUs
+         vd/8phH85v3cwFLZE2XMyvJkGCeqy82qjDajro5YmIIwZDL9DTbmXu8hPr7Zhn7JQT
+         wq0icwaUGgWhw==
+From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+        Max Staudt <max@enpas.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-can@vger.kernel.org
+Subject: [PATCH 14/36] tty: can327, move overflow test inside can327_ldisc_rx()'s loop
+Date:   Thu, 10 Aug 2023 11:14:48 +0200
+Message-ID: <20230810091510.13006-15-jirislaby@kernel.org>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230810091510.13006-1-jirislaby@kernel.org>
+References: <20230810091510.13006-1-jirislaby@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Dzie=C5=84 dobry,
+The 'count' is going to be unsigned and the 'count >= 0' test would be
+always true then. Move the condition to the loop where this is easier to
+check.
 
-jestem przedstawicielem wiod=C4=85cej marki salon=C3=B3w kosmetycznych w =
-Polsce.
+It looks as is easier to follow after all too.
 
-Chcia=C5=82bym da=C4=87 Pa=C5=84stwu do rozwa=C5=BCenia wsp=C3=B3=C5=82pr=
-ac=C4=99 w ramach franczyzy, dzi=C4=99ki kt=C3=B3rej ju=C5=BC wielu naszy=
-ch Partner=C3=B3w w wielu miastach w Polsce osi=C4=85ga konkretne zyski.
+Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+Cc: Max Staudt <max@enpas.org>
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: linux-can@vger.kernel.org
+---
+ drivers/net/can/can327.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-Przemy=C5=9Blana i przede wszystkim skuteczna strategia biznesowa przek=C5=
-=82ada si=C4=99 na ci=C4=85g=C5=82y rozwoju sieci i wzrost uzyskiwanych p=
-rzychod=C3=B3w.
+diff --git a/drivers/net/can/can327.c b/drivers/net/can/can327.c
+index 05e9c035e8f6..4533dc00f215 100644
+--- a/drivers/net/can/can327.c
++++ b/drivers/net/can/can327.c
+@@ -901,7 +901,13 @@ static void can327_ldisc_rx(struct tty_struct *tty, const unsigned char *cp,
+ 	 */
+ 	first_new_char_idx = elm->rxfill;
+ 
+-	while (count-- && elm->rxfill < CAN327_SIZE_RXBUF) {
++	while (count--) {
++		if (elm->rxfill >= CAN327_SIZE_RXBUF) {
++			netdev_err(elm->dev,
++				   "Receive buffer overflowed. Bad chip or wiring? count = %i",
++				   count);
++			goto uart_failure;
++		}
+ 		if (fp && *fp++) {
+ 			netdev_err(elm->dev,
+ 				   "Error in received character stream. Check your wiring.");
+@@ -930,13 +936,6 @@ static void can327_ldisc_rx(struct tty_struct *tty, const unsigned char *cp,
+ 		cp++;
+ 	}
+ 
+-	if (count >= 0) {
+-		netdev_err(elm->dev,
+-			   "Receive buffer overflowed. Bad chip or wiring? count = %i",
+-			   count);
+-		goto uart_failure;
+-	}
+-
+ 	can327_parse_rxbuf(elm, first_new_char_idx);
+ 	spin_unlock_bh(&elm->lock);
+ 
+-- 
+2.41.0
 
-Dzi=C4=99ki unikalnej strategii, najwy=C5=BCszej jako=C5=9Bci obs=C5=82ud=
-ze i atrakcyjnym zabiegom popyt stale ro=C5=9Bnie.
-
-Gwarantujemy wsparcie na ka=C5=BCdym etapie prowadzenia dzia=C5=82alno=C5=
-=9Bci, od otwarcia po pozyskanie Klient=C3=B3w.
-
-M=C3=B3g=C5=82bym przedstawi=C4=87 Pa=C5=84stwu szczeg=C3=B3=C5=82y?
-
-
-Pozdrawiam
-Piotr Poniedzia=C5=82ek
