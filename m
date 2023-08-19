@@ -2,108 +2,100 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28D29EE499C
-	for <linux-can@archiver.kernel.org>; Sat, 19 Aug 2023 03:24:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01F24EE49A8
+	for <linux-can@archiver.kernel.org>; Sat, 19 Aug 2023 13:11:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245194AbjHSDXs (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 18 Aug 2023 23:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38550 "EHLO
+        id S232438AbjHSNLp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Sat, 19 Aug 2023 09:11:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244849AbjHSDXl (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 18 Aug 2023 23:23:41 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC522701
-        for <linux-can@vger.kernel.org>; Fri, 18 Aug 2023 20:23:40 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-34b01711a15so57705ab.0
-        for <linux-can@vger.kernel.org>; Fri, 18 Aug 2023 20:23:40 -0700 (PDT)
+        with ESMTP id S232709AbjHSNLp (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Sat, 19 Aug 2023 09:11:45 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003A51CABC;
+        Sat, 19 Aug 2023 06:10:48 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-26b56cc7896so1091538a91.3;
+        Sat, 19 Aug 2023 06:10:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692415419; x=1693020219;
+        d=gmail.com; s=20221208; t=1692450648; x=1693055448;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RE56BA+fjk8/z3qvl6qq/GPKLP13SHW87kDx4EuRSw0=;
-        b=3I1rU9H9rqRgHY2QkBBZcK4ymBmaj+bqn5e86MzshNOSE1kSP21V44AlgsQZWFjaXA
-         im90AOesezLS3/sNC2niPKyHBxBzIss7jAXPl1KbFWMj6SrOydboDUuob0+PJlNPUf/O
-         1NPQpdWnIZSd1+2Oh1iNnnxyQOXKE0KjUAGu3RIT5M9iuXn5a4qguwOUtxwXMyKV9OLO
-         wMq4MHEDItBf+BcHkpx6DYpMu3W68yFM4iAy/OB9ddQKbfpehPB2dtXLWEG1CrMTuhXz
-         EMlFulCd6HbMIZBaAsiFNpn2BDe6WWba+MiwI160LXuFuUfymARJWUavRDFk9y+6IInY
-         Crzw==
+        bh=1e+/XnsKbjswDuOJErNhCCCCiL5iSSWZ7RF7mQ7/+3w=;
+        b=dwid1HtELpcOUIDba9rowZithC342CaX+0ngTuoCeNcueWxXGFhoWXugu7R4ecOTrC
+         I+wpq1K4TlPwvXLxFp0FL+Jx2nhNrnQEEPH2gRsIlEomRiDDMB9gbyNxudIc+ZRIZkYB
+         Wu9dJW491DFNgAWornGvxBIeDQuarRvCYe96XBUCuxy0q87R4/NGT5cbbgbS1sPCybAW
+         eNpTlNirDvufASE2ol3xIdQfreVVxmzuIAToa1evJG21qld3oNtSbCWRZ/x0XRTU1yG6
+         0VofgmdvBMsdxKjzpRRE2PnbiIiLzWXYbbbmDV64y8ZBXxO7mKYVLTwuBxOaxSqflQQM
+         9QQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692415419; x=1693020219;
+        d=1e100.net; s=20221208; t=1692450648; x=1693055448;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RE56BA+fjk8/z3qvl6qq/GPKLP13SHW87kDx4EuRSw0=;
-        b=f3hhUWQ00jN7z5otiTkcp8u0WAxQn+6zPyhX02JLX8BkpXA8cz51I4j4zf2B+VMPd8
-         fp4bGVwcXk0T3cbJhB8ex370gW2YzZgt378mo/PFpOr6F+iijSKSf6wJAcY2ZcpuUjpv
-         QNlzmRrZa44YoRYhrMUpFUtUCSmHBhDZ3WtSNGlwMTp5SNQyPiG2rJXK9VzfWbt9h3As
-         5WqH/fl+qMviQsu3c/QXGzMOZif7V12vJb3XKzVXDO4/QYTbok0Nl8MUByhTXzKcu1kd
-         T86yhN5dpsZjC7Ok2i/p/ZyVbhljEl9ZpjsCEOD+LHy3Hhvl4yQIeG5+NOHX6lDbccXb
-         ndLg==
-X-Gm-Message-State: AOJu0YwraTf/FoXhlGsb7BnyFXRoCWiK3Jt0Og2p+SZJOzaZbstq2AaZ
-        RSsE9x+C/U/waVs0aSHuGT512ScYbFcorudtTNnF+Lc7Awr5OqBGSTo=
-X-Google-Smtp-Source: AGHT+IFR47N9u0TH7mIkOMfDcOzMPWv0Z04MxXtBy1b6R3HfQI1/EJLUTf5amDGAYHVzNsjmpVkg9j/lxgBUg0qnvaQ=
-X-Received: by 2002:a92:c542:0:b0:346:676f:3517 with SMTP id
- a2-20020a92c542000000b00346676f3517mr367257ilj.11.1692415419206; Fri, 18 Aug
- 2023 20:23:39 -0700 (PDT)
+        bh=1e+/XnsKbjswDuOJErNhCCCCiL5iSSWZ7RF7mQ7/+3w=;
+        b=RqcxFsBQDgiKObc75lFu4GAK6+EJ+A4o9x62FDYNmyWht95Au8U8J8m5krTChXDJFr
+         DQ3dQCz+h9aKgqT7kO+Ocuqgbjh/MP6sgnBwGpRfg3anCzJp4GF5BETbh4kbytqrW8IJ
+         otTWDkPYhPFjnGcnH+ci1pQpFQuQm7WfMKkdrJYcm8SySYj3pX4g73o0mo2GES1FP0LJ
+         qItc0F4ip66wxc3TyEmPwL+3HyvH4SWA5ON+wQR0wCxpM5hIwc+lYaVkjKDaao8oiH4A
+         8YCWVxMGKztWvmDsPoSYzLl+SPb6l4diR0rPcYiNeHmb7hj6XjB3AUixOztsAIylLJUG
+         gWzA==
+X-Gm-Message-State: AOJu0Yw48ilyojxvBcO5qKXjCrF5t15fHcSvz9I5mSbF3XGVj9WMEwZB
+        6BQvt6qrsINYZCcEmA9Ykv2JgRoejU39A92/dt8=
+X-Google-Smtp-Source: AGHT+IEi7ryax+7gcMZllWjyl1lEZYP/Sxe6jDorLDrYSUoJSuj5qN0WtumtQ6/fR+4XZPf4+VbMKLip+gBwMC4uYcY=
+X-Received: by 2002:a17:90a:f98a:b0:268:2d92:55d3 with SMTP id
+ cq10-20020a17090af98a00b002682d9255d3mr1120669pjb.39.1692450647831; Sat, 19
+ Aug 2023 06:10:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230819012602.239550-1-kuba@kernel.org>
-In-Reply-To: <20230819012602.239550-1-kuba@kernel.org>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Sat, 19 Aug 2023 05:23:28 +0200
-Message-ID: <CANn89i+DzusGJEZQYXe+z_zDzj7deYvWrxG7G=9L3Q+r1P0h9g@mail.gmail.com>
-Subject: Re: [PATCH net] net: validate veth and vxcan peer ifindexes
+References: <20230817101014.3484715-1-martin@geanix.com> <20230817101014.3484715-2-martin@geanix.com>
+ <20230817094529.68ae1083@kernel.org>
+In-Reply-To: <20230817094529.68ae1083@kernel.org>
+From:   Vincent Mailhol <vincent.mailhol@gmail.com>
+Date:   Sat, 19 Aug 2023 22:10:36 +0900
+Message-ID: <CAMZ6RqLvbp8EStaSRFQUimhUMpn75=3pkQZYspnP1gYRsspv-g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] can: netlink: support setting hardware filters
 To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, pabeni@redhat.com,
-        syzbot+5ba06978f34abb058571@syzkaller.appspotmail.com,
-        wg@grandegger.com, mkl@pengutronix.de, idosch@nvidia.com,
-        lucien.xin@gmail.com, xemul@parallels.com, socketcan@hartkopp.net,
-        linux-can@vger.kernel.org
+Cc:     =?UTF-8?Q?Martin_Hundeb=C3=B8ll?= <martin@geanix.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        linux-can <linux-can@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Sat, Aug 19, 2023 at 3:26=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
+On Sat. 19 Aug. 2023, 01:19, Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> veth and vxcan need to make sure the ifindexes of the peer
-> are not negative, core does not validate this.
+> On Thu, 17 Aug 2023 12:10:13 +0200 Martin Hundeb=C3=B8ll wrote:
+> > +             int len =3D nla_len(data[IFLA_CAN_HW_FILTER]);
+> > +             int num_filter =3D len / sizeof(struct can_filter);
+> > +             struct can_filter *filter =3D nla_data(data[IFLA_CAN_HW_F=
+ILTER]);
 >
-> Using iproute2 with user-space-level checking removed:
->
-> Before:
->
->   # ./ip link add index 10 type veth peer index -1
->   # ip link show
->   1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mod=
-e DEFAULT group default qlen 1000
->     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
->   2: enp1s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel st=
-ate UP mode DEFAULT group default qlen 1000
->     link/ether 52:54:00:74:b2:03 brd ff:ff:ff:ff:ff:ff
->   10: veth1@veth0: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state=
- DOWN mode DEFAULT group default qlen 1000
->     link/ether 8a:90:ff:57:6d:5d brd ff:ff:ff:ff:ff:ff
->   -1: veth0@veth1: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state=
- DOWN mode DEFAULT group default qlen 1000
->     link/ether ae:ed:18:e6:fa:7f brd ff:ff:ff:ff:ff:ff
->
-> Now:
->
->   $ ./ip link add index 10 type veth peer index -1
->   Error: ifindex can't be negative.
->
-> This problem surfaced in net-next because an explicit WARN()
-> was added, the root cause is older.
->
-> Fixes: e6f8f1a739b6 ("veth: Allow to create peer link with given ifindex"=
-)
-> Fixes: a8f820a380a2 ("can: add Virtual CAN Tunnel driver (vxcan)")
-> Reported-by: syzbot+5ba06978f34abb058571@syzkaller.appspotmail.com
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> This will prevent you from ever extending struct can_filter in
+> a backward-compatible fashion, right? I obviously know very little
+> about CAN but are you confident a more bespoke API to manipulate
+> filters individually and allow extensibility is not warranted?
 
-SGTM, I was not sure how to fix this myself ;)
+I follow Jakub's point of view.
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+The current struct can_filter is not sound. Some devices such as the
+ES582.1 supports filtering of the CAN frame based on the flags (i.e.
+SFF/EFF, RTR, FDF).
+
+I think that each of the fields of the filter should have its own NLA
+declaration with the whole thing wrapped within a NLA_NESTED_ARRAY.
+
+I also think that there should then be a method to report the precise
+filtering capabilities of the hardware.
+
+
+Yours sincerely,
+Vincent Mailhol
