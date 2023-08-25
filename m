@@ -2,49 +2,66 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EF60C7113B
-	for <linux-can@archiver.kernel.org>; Thu, 24 Aug 2023 07:47:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A8AFEE49AB
+	for <linux-can@archiver.kernel.org>; Fri, 25 Aug 2023 06:48:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235526AbjHXHrS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 24 Aug 2023 03:47:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36098 "EHLO
+        id S242340AbjHYGrm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 25 Aug 2023 02:47:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237890AbjHXHqz (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 24 Aug 2023 03:46:55 -0400
-Received: from mail.loanfly.pl (mail.loanfly.pl [141.94.250.68])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E4010D0
-        for <linux-can@vger.kernel.org>; Thu, 24 Aug 2023 00:46:53 -0700 (PDT)
-Received: by mail.loanfly.pl (Postfix, from userid 1002)
-        id 155F8A46E6; Thu, 24 Aug 2023 07:46:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=loanfly.pl; s=mail;
-        t=1692863186; bh=Y0HnXqH+26AP5Uq6M8BQXaj1HIAPQY/WndV9tkpAHHU=;
-        h=Date:From:To:Subject:From;
-        b=r6P8lbmWogx9dVEOxOddoUaQ7DZPTNIEG+eGFOc11udk6Iuj1co73cb9BWFLtISEZ
-         iam7o/I7BK5QSETRC+zZr8/DbdBzJ30v9RiMzkk1VtVkhdTsct0cQXCROIlSS+WI6d
-         cq0w9Edvp4haZeH23E+R3tei8U1Dsx0FqAtqR51+OaCRzFahPiLFKjbr1sxSJhSDqv
-         MZlp8f3L0xWYwnuRidVrnE3eb90o2jz3zD0vrEdeUGrPDZnJF1tcqXJu9AyaSVl2XP
-         sEERILZa5fOdNfz8bYv6mDGtofhQN4OCDLrTAlaD/Ci2fIRTVEF6xTNCwlFBIlDzVv
-         rrDjffIwbHI/g==
-Received: by mail.loanfly.pl for <linux-can@vger.kernel.org>; Thu, 24 Aug 2023 07:45:43 GMT
-Message-ID: <20230824064500-0.1.c3.1d7lr.0.bx4dj8d1de@loanfly.pl>
-Date:   Thu, 24 Aug 2023 07:45:43 GMT
-From:   "Damian Cichocki" <damian.cichocki@loanfly.pl>
-To:     <linux-can@vger.kernel.org>
-Subject: =?UTF-8?Q?Pytanie_o_samoch=C3=B3d?=
-X-Mailer: mail.loanfly.pl
+        with ESMTP id S236416AbjHYGrL (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 25 Aug 2023 02:47:11 -0400
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF68CE;
+        Thu, 24 Aug 2023 23:47:07 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R571e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0VqW2QpI_1692946019;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0VqW2QpI_1692946019)
+          by smtp.aliyun-inc.com;
+          Fri, 25 Aug 2023 14:47:05 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     socketcan@hartkopp.net
+Cc:     mkl@pengutronix.de, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH] can: raw: Remove NULL check before dev_{put, hold}
+Date:   Fri, 25 Aug 2023 14:46:56 +0800
+Message-Id: <20230825064656.87751-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Dzie=C5=84 dobry,
+The call netdev_{put, hold} of dev_{put, hold} will check NULL, so there
+is no need to check before using dev_{put, hold}, remove it to silence
+the warning:
 
-Czy interesuje Pa=C5=84stwa rozwi=C4=85zanie umo=C5=BCliwiaj=C4=85ce moni=
-torowanie samochod=C3=B3w firmowych oraz optymalizacj=C4=99 koszt=C3=B3w =
-ich utrzymania?=20
+./net/can/raw.c:497:2-9: WARNING: NULL check before dev_{put, hold} functions is not needed.
 
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6231
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ net/can/raw.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Pozdrawiam,
-Damian Cichocki
+diff --git a/net/can/raw.c b/net/can/raw.c
+index d50c3f3d892f..ff7797c37018 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -493,8 +493,7 @@ static int raw_bind(struct socket *sock, struct sockaddr *uaddr, int len)
+ 
+ out_put_dev:
+ 	/* remove potential reference from dev_get_by_index() */
+-	if (dev)
+-		dev_put(dev);
++	dev_put(dev);
+ out:
+ 	release_sock(sk);
+ 	rtnl_unlock();
+-- 
+2.20.1.7.g153144c
+
