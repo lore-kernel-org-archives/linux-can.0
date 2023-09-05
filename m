@@ -2,63 +2,61 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1B67CA0FF8
-	for <linux-can@archiver.kernel.org>; Tue,  5 Sep 2023 16:27:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56B0BCA100A
+	for <linux-can@archiver.kernel.org>; Tue,  5 Sep 2023 20:14:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352356AbjIEQ1V (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 5 Sep 2023 12:27:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55594 "EHLO
+        id S242446AbjIEUOG (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 5 Sep 2023 16:14:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354059AbjIEJd3 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 5 Sep 2023 05:33:29 -0400
-X-Greylist: delayed 4135 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Sep 2023 02:33:26 PDT
-Received: from mail.equinoxrise.pl (mail.equinoxrise.pl [217.61.112.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE251A7
-        for <linux-can@vger.kernel.org>; Tue,  5 Sep 2023 02:33:26 -0700 (PDT)
-Received: by mail.equinoxrise.pl (Postfix, from userid 1002)
-        id 8703C8368B; Mon,  4 Sep 2023 09:41:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=equinoxrise.pl;
-        s=mail; t=1693813307;
-        bh=v6OgBfK5dN7P5dQ0wCu59rOfZaiqziJeLNblJ8dOcGI=;
-        h=Date:From:To:Subject:From;
-        b=EL/kuzXzXpDShSjGHEQ2TXP/kdBDaEMKIDElnJQCKOCqBgy5wG9kBlSB/ud8rrbM2
-         UdltsFC+Lf+KQD5WC+eJ4R/wlwYRlNOq6+wODj/0Jpz3opID/yjVrhcrx21V3rAh/3
-         ou16dbsVyYAVqEoNFdCrTXuJcOSriWNIuegjf2O6xFy3u170aI5hn7H6dVsdwfSUMe
-         8RB0m/ZKJiyTCfNYzhCehxEKTDU4opA71foAerbZ59nkTShn5vuYtwfu0uLQHi08pw
-         DX9QewiAdDqZLrWQz3ZOgHJ+D5KcN1ModSowbDALzNKcNBya6f3z/dOcfWAYqBhSsM
-         /NxPIFXsE5cIA==
-Received: by mail.equinoxrise.pl for <linux-can@vger.kernel.org>; Mon,  4 Sep 2023 07:40:34 GMT
-Message-ID: <20230904084500-0.1.7.qo9.0.u873cljacl@equinoxrise.pl>
-Date:   Mon,  4 Sep 2023 07:40:34 GMT
-From:   "Mateusz Talaga" <mateusz.talaga@equinoxrise.pl>
-To:     <linux-can@vger.kernel.org>
-Subject: Prezentacja
-X-Mailer: mail.equinoxrise.pl
+        with ESMTP id S243451AbjIEUNu (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 5 Sep 2023 16:13:50 -0400
+X-Greylist: delayed 294 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Sep 2023 13:13:32 PDT
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0237B1B4
+        for <linux-can@vger.kernel.org>; Tue,  5 Sep 2023 13:13:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3893C433C9;
+        Tue,  5 Sep 2023 18:02:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693936937;
+        bh=xtoJaatQ/1C8wi9mzYWBCRGcYEDArwLrXMVOyAABDe4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OR4kCKWGEVSZLtIbLQbUrcEzJq75KIBc+VrWW4wgt6wlQVYxjoBLGILlbbSiQPHRY
+         MoJlwU8aIRVbLDQyQ9rvfyK83AmvEPridjfzOE3HpAC06PZvgyBowl/ST2PwT57s1s
+         XOELG+Jci/Pk9Ok8KilHChtsHBaNOncbx9qjmqmgYDCMcNNpXfWZUeXTZOx6ivV0LM
+         7BFQIxI+UOHexQmZgVRDuuOCnrzNncqry6MqjN1AORUV/+TOHys8lMndjAnKqdcj/1
+         mDqU23j9PFEp6urkD0YirdVUUTDaR5CRCTWrfitPetXsE4LzSZFP/XNIlFbAL77/0L
+         beMfY0fh0pFqg==
+Received: (nullmailer pid 3669220 invoked by uid 1000);
+        Tue, 05 Sep 2023 18:02:15 -0000
+Date:   Tue, 5 Sep 2023 13:02:15 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Cc:     devicetree@vger.kernel.org, linux-can@vger.kernel.org,
+        Lizhi Hou <lizhi.hou@amd.com>
+Subject: Re: [PATCH] of: overlay: Fix of_overlay_fdt_apply prototype when
+ !CONFIG_OF_OVERLAY
+Message-ID: <169393693413.3669145.6896827224153747407.robh@kernel.org>
+References: <20230904100002.7913-1-pisa@cmp.felk.cvut.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230904100002.7913-1-pisa@cmp.felk.cvut.cz>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Dzie=C5=84 dobry!
 
-Czy m=C3=B3g=C5=82bym przedstawi=C4=87 rozwi=C4=85zanie, kt=C3=B3re umo=C5=
-=BCliwia monitoring ka=C5=BCdego auta w czasie rzeczywistym w tym jego po=
-zycj=C4=99, zu=C5=BCycie paliwa i przebieg?
+On Mon, 04 Sep 2023 12:00:02 +0200, Pavel Pisa wrote:
+> The of_overlay_fdt_apply has been changed but when CONFIG_OF_OVERLAY
+> support is not configured then old stub prototype is declared
+> by of.h header.
+> 
+> Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+> ---
+>  include/linux/of.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
 
-Dodatkowo nasze narz=C4=99dzie minimalizuje koszty utrzymania samochod=C3=
-=B3w, skraca czas przejazd=C3=B3w, a tak=C5=BCe tworzenie planu tras czy =
-dostaw.
+Applied, thanks!
 
-Z naszej wiedzy i do=C5=9Bwiadczenia korzysta ju=C5=BC ponad 49 tys. Klie=
-nt=C3=B3w. Monitorujemy 809 000 pojazd=C3=B3w na ca=C5=82ym =C5=9Bwiecie,=
- co jest nasz=C4=85 najlepsz=C4=85 wizyt=C3=B3wk=C4=85.
-
-Bardzo prosz=C4=99 o e-maila zwrotnego, je=C5=9Bli mogliby=C5=9Bmy wsp=C3=
-=B3lnie om=C3=B3wi=C4=87 potencja=C5=82 wykorzystania takiego rozwi=C4=85=
-zania w Pa=C5=84stwa firmie.
-
-
-Pozdrawiam
-Mateusz Talaga
