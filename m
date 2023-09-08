@@ -2,88 +2,130 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6642EB8FAF
-	for <linux-can@archiver.kernel.org>; Wed,  6 Sep 2023 11:53:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20852EEB56A
+	for <linux-can@archiver.kernel.org>; Fri,  8 Sep 2023 18:17:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234312AbjIFLxC convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 6 Sep 2023 07:53:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35620 "EHLO
+        id S233095AbjIHSRa (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 8 Sep 2023 14:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbjIFLxA (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 6 Sep 2023 07:53:00 -0400
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DE2BF;
-        Wed,  6 Sep 2023 04:52:56 -0700 (PDT)
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-59234aaca15so36366747b3.3;
-        Wed, 06 Sep 2023 04:52:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694001175; x=1694605975;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l619IiJ0KCtPDL+pldHQPgfnh20UhK/b+vepWlezdcI=;
-        b=dudaA4fjypyFwhP+hu2gSd9Ordd7BJMHvRM9myK0Mu/Hknq0+xkQ9b7dtMc6hmdmgH
-         WsTVoTaGKYhxCeEkhrPLVGdHP4Wyr0rDUtr3a3UqevWI6GwIoAh8/7jInXtOH1po35tg
-         4r1G8bbaouriLUVhfF/zv58BlXgAxqdpE/jvCoVw7yFEqr6o/+MumECeAlCmxItvLVSp
-         iNg8I6zD0IXIm4oeMgBoA3LeA4eal62Uy1pxz7+nY5HWNb4Zs4d6IelZ0BkiBSHxKXiU
-         Vpa5c1j2unytMyIQdaq6Bkhfm806cTRS3bpe2UlZqVmEihI6elikNfzzH4aPwJ0wjfyS
-         L3hQ==
-X-Gm-Message-State: AOJu0YwubUvcZ4oZaQMFd9A1414gd3x2F1F06EakLjcRFoLi0RIX42nF
-        4VciHbUkoaHHHdWTHN2GgnAV/utf5MjF4g==
-X-Google-Smtp-Source: AGHT+IEqW2hWMENiEEBhkk0PRki4fAE8Cr7AYpaV681T0HgxDzyIdsRSvskuMMvi2MsRuHn+gZx7Pw==
-X-Received: by 2002:a0d:c004:0:b0:592:8893:3fa2 with SMTP id b4-20020a0dc004000000b0059288933fa2mr15966536ywd.29.1694001175229;
-        Wed, 06 Sep 2023 04:52:55 -0700 (PDT)
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
-        by smtp.gmail.com with ESMTPSA id p189-20020a815bc6000000b0054bfc94a10dsm3705390ywb.47.2023.09.06.04.52.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 04:52:54 -0700 (PDT)
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-d77ad095f13so2698370276.2;
-        Wed, 06 Sep 2023 04:52:54 -0700 (PDT)
-X-Received: by 2002:a25:ca17:0:b0:d7b:7249:6dc3 with SMTP id
- a23-20020a25ca17000000b00d7b72496dc3mr15978642ybg.53.1694001174255; Wed, 06
- Sep 2023 04:52:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230905231342.2042759-2-contact@jookia.org>
-In-Reply-To: <20230905231342.2042759-2-contact@jookia.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 6 Sep 2023 13:52:42 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXhHbdxFqqKdnrGV=Goax-ewpPh109b2Tfm8v+BE5d8aQ@mail.gmail.com>
-Message-ID: <CAMuHMdXhHbdxFqqKdnrGV=Goax-ewpPh109b2Tfm8v+BE5d8aQ@mail.gmail.com>
-Subject: Re: [PATCH] can: sun4i_can: Only show Kconfig if ARCH_SUNXI is set
-To:     John Watts <contact@jookia.org>
-Cc:     linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
+        with ESMTP id S1343797AbjIHSRY (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 8 Sep 2023 14:17:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F4D2114;
+        Fri,  8 Sep 2023 11:17:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBCD4C116A2;
+        Fri,  8 Sep 2023 18:14:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694196849;
+        bh=WllazrnZK0zNC+xRvsjB/+MK5mWapWEDFuwgqp2oeKU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=TVeS/ZGsIiQyjTtqnuImRv1nQUZbvMT01PCXGUgJoFGaZ+0xCOW1JEbDsrG1ekVQu
+         QnOn2ldG9i7by1SpwvBSJ1lUJZsCjFcRc4f9wsplsy4SX+JS0MBfnQIdw6nDNNpvN2
+         IUrtERdFhfC8Ah/HWo7k1OJyiYZIi3td2gKFbPG2PHi2ptjhFo6V5rN2xsX9yyhPPF
+         4fIUVAeSlJoH1xJ+WFPg9UeHx9bNjLwSVfiV73M23QlsEOPvvVDbsz5eKMI17tmFST
+         3CRgw43nbhtYXWcZgM1/HaZGIX8ZlH1YQG9JCVBaiFDmwIRWKUjI1fM9YoKg9HUxqQ
+         hyl8BWQQet8Qg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     John Watts <contact@jookia.org>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+        Sasha Levin <sashal@kernel.org>, wg@grandegger.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, wens@csie.org, jernej.skrabec@gmail.com,
+        samuel@sholland.org, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.5 14/45] can: sun4i_can: Add support for the Allwinner D1
+Date:   Fri,  8 Sep 2023 14:12:55 -0400
+Message-Id: <20230908181327.3459042-14-sashal@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230908181327.3459042-1-sashal@kernel.org>
+References: <20230908181327.3459042-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.5.2
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 1:15 AM John Watts <contact@jookia.org> wrote:
-> When adding the RISCV option I didn't gate it behind ARCH_SUNXI.
-> As a result this option shows up with Allwinner support isn't enabled.
-> Fix that by requiring ARCH_SUNXI to be set if RISCV is set.
->
-> Fixes: 8abb95250ae6 ("can: sun4i_can: Add support for the Allwinner D1")
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Closes: https://lore.kernel.org/linux-sunxi/CAMuHMdV2m54UAH0X2dG7stEg=grFihrdsz4+o7=_DpBMhjTbkw@mail.gmail.com/
-> Signed-off-by: John Watts <contact@jookia.org>
+From: John Watts <contact@jookia.org>
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+[ Upstream commit 8abb95250ae6af2d51993da8fcae18da2ce24cc4 ]
 
-Gr{oetje,eeting}s,
+The controllers present in the D1 are extremely similar to the R40
+and require the same reset quirks, but An extra quirk is needed to support
+receiving packets.
 
-                        Geert
+Signed-off-by: John Watts <contact@jookia.org>
+Link: https://lore.kernel.org/all/20230721221552.1973203-6-contact@jookia.org
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/can/Kconfig     |  4 ++--
+ drivers/net/can/sun4i_can.c | 12 +++++++++++-
+ 2 files changed, 13 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+index a5c5036dfb943..e626de33e735d 100644
+--- a/drivers/net/can/Kconfig
++++ b/drivers/net/can/Kconfig
+@@ -185,10 +185,10 @@ config CAN_SLCAN
+ 
+ config CAN_SUN4I
+ 	tristate "Allwinner A10 CAN controller"
+-	depends on MACH_SUN4I || MACH_SUN7I || COMPILE_TEST
++	depends on MACH_SUN4I || MACH_SUN7I || RISCV || COMPILE_TEST
+ 	help
+ 	  Say Y here if you want to use CAN controller found on Allwinner
+-	  A10/A20 SoCs.
++	  A10/A20/D1 SoCs.
+ 
+ 	  To compile this driver as a module, choose M here: the module will
+ 	  be called sun4i_can.
+diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
+index 1f90fe6dbb8bb..c508a328e38d4 100644
+--- a/drivers/net/can/sun4i_can.c
++++ b/drivers/net/can/sun4i_can.c
+@@ -91,6 +91,8 @@
+ #define SUN4I_REG_BUF12_ADDR	0x0070	/* CAN Tx/Rx Buffer 12 */
+ #define SUN4I_REG_ACPC_ADDR	0x0040	/* CAN Acceptance Code 0 */
+ #define SUN4I_REG_ACPM_ADDR	0x0044	/* CAN Acceptance Mask 0 */
++#define SUN4I_REG_ACPC_ADDR_D1	0x0028	/* CAN Acceptance Code 0 on the D1 */
++#define SUN4I_REG_ACPM_ADDR_D1	0x002C	/* CAN Acceptance Mask 0 on the D1 */
+ #define SUN4I_REG_RBUF_RBACK_START_ADDR	0x0180	/* CAN transmit buffer start */
+ #define SUN4I_REG_RBUF_RBACK_END_ADDR	0x01b0	/* CAN transmit buffer end */
+ 
+@@ -779,6 +781,11 @@ static const struct sun4ican_quirks sun4ican_quirks_r40 = {
+ 	.acp_offset = 0,
+ };
+ 
++static const struct sun4ican_quirks sun4ican_quirks_d1 = {
++	.has_reset = true,
++	.acp_offset = (SUN4I_REG_ACPC_ADDR_D1 - SUN4I_REG_ACPC_ADDR),
++};
++
+ static const struct of_device_id sun4ican_of_match[] = {
+ 	{
+ 		.compatible = "allwinner,sun4i-a10-can",
+@@ -789,6 +796,9 @@ static const struct of_device_id sun4ican_of_match[] = {
+ 	}, {
+ 		.compatible = "allwinner,sun8i-r40-can",
+ 		.data = &sun4ican_quirks_r40
++	}, {
++		.compatible = "allwinner,sun20i-d1-can",
++		.data = &sun4ican_quirks_d1
+ 	}, {
+ 		/* sentinel */
+ 	},
+@@ -913,4 +923,4 @@ module_platform_driver(sun4i_can_driver);
+ MODULE_AUTHOR("Peter Chen <xingkongcp@gmail.com>");
+ MODULE_AUTHOR("Gerhard Bertelsmann <info@gerhard-bertelsmann.de>");
+ MODULE_LICENSE("Dual BSD/GPL");
+-MODULE_DESCRIPTION("CAN driver for Allwinner SoCs (A10/A20)");
++MODULE_DESCRIPTION("CAN driver for Allwinner SoCs (A10/A20/D1)");
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.40.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
