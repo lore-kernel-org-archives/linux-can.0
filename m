@@ -2,30 +2,30 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FD74EEB569
-	for <linux-can@archiver.kernel.org>; Fri,  8 Sep 2023 18:17:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC9DDEEB569
+	for <linux-can@archiver.kernel.org>; Fri,  8 Sep 2023 18:19:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240670AbjIHSRa (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 8 Sep 2023 14:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52254 "EHLO
+        id S242057AbjIHST1 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 8 Sep 2023 14:19:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343794AbjIHSRY (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 8 Sep 2023 14:17:24 -0400
+        with ESMTP id S1344015AbjIHSSm (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 8 Sep 2023 14:18:42 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E6A210C;
-        Fri,  8 Sep 2023 11:16:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82CE5C4166B;
-        Fri,  8 Sep 2023 18:14:05 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DF6526BF;
+        Fri,  8 Sep 2023 11:18:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35DE9C116D5;
+        Fri,  8 Sep 2023 18:16:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196847;
-        bh=E9CG2erST0QIlKGicll2mOJwDlhvm/t9GkLEog/8NbM=;
+        s=k20201202; t=1694196989;
+        bh=EGbsDVsZNms7upBYSeRrUatqVazpwDq3nnR92nhGFSc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HUhZuC6vvHFHzBf1B5LXecxwIptWjZnMop8Q3UJTOxe/p/er5skNyFO3XEx+skn9m
-         QC886BpdwJGwa93Xt3YygiCgI4IHbX7F38LAUVweT+RFQF8+vRXXHQjEzs4vGLuJ6X
-         9RPuvyTrOObaeX8xDiuKpIzsOl90omkESi5AqHXRbIFnh4TTrJ/qxV5W0diVED0dKf
-         qR+JCQPgsBhF1OLuB8Q8RJ+wqcIunY0mX8vz6dJBAeutaNqpxbu5G/CsPVHdLsyE7x
-         6+Y7u4CzD4sMrzQeI+/MuXDhLPhwBCaB12KtPJqqNllSwzbxWfQ7xhEgqgRdqTuFFl
-         vIckVgVhuFpUw==
+        b=N74nNzt/0nhTakm3fJma7KeON9XCoLaJZi5+oWfDIMqJb56bZsnHGbGNAOzOxxT4b
+         IDpLTJmqGfZIrCuRx6fFYwJ5ILK2XJDmKmSJ1UDKYbtNx60MUJvkyQX3bD+1gjZ+zK
+         +5nG1lG/FWur3J/wLK+Q0z4WHHHth7bpmnlPV8CdoQP/vD69OQHLjwb5I5ZFg5Y+u2
+         7bLHMQgBCD5Dmg944WdypG7OPdfNIp2BLPAnLoMIW8M0Qg3OuP+/roWSAmHUldKhFy
+         +8xJ5+1/wagycpZihA3FNIJWrT9ywcTrSINCil/WRUj0V7FGpMAHZlVqL+6nuPvWOV
+         pXsg3DyJK79Rg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     John Watts <contact@jookia.org>,
@@ -36,16 +36,16 @@ Cc:     John Watts <contact@jookia.org>,
         samuel@sholland.org, linux-can@vger.kernel.org,
         netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-sunxi@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.5 13/45] can: sun4i_can: Add acceptance register quirk
-Date:   Fri,  8 Sep 2023 14:12:54 -0400
-Message-Id: <20230908181327.3459042-13-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.4 11/41] can: sun4i_can: Add acceptance register quirk
+Date:   Fri,  8 Sep 2023 14:15:25 -0400
+Message-Id: <20230908181555.3459640-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908181327.3459042-1-sashal@kernel.org>
-References: <20230908181327.3459042-1-sashal@kernel.org>
+In-Reply-To: <20230908181555.3459640-1-sashal@kernel.org>
+References: <20230908181555.3459640-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.5.2
+X-stable-base: Linux 6.4.15
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
@@ -68,7 +68,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
-index 0827830bbf28c..1f90fe6dbb8bb 100644
+index 2b78f9197681b..dd0c6cd76c5f5 100644
 --- a/drivers/net/can/sun4i_can.c
 +++ b/drivers/net/can/sun4i_can.c
 @@ -205,9 +205,11 @@
@@ -115,7 +115,7 @@ index 0827830bbf28c..1f90fe6dbb8bb 100644
  };
  
  static const struct of_device_id sun4ican_of_match[] = {
-@@ -870,6 +875,7 @@ static int sun4ican_probe(struct platform_device *pdev)
+@@ -872,6 +877,7 @@ static int sun4ican_probe(struct platform_device *pdev)
  	priv->base = addr;
  	priv->clk = clk;
  	priv->reset = reset;
