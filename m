@@ -2,96 +2,138 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21453CD54AC
-	for <linux-can@archiver.kernel.org>; Tue, 19 Sep 2023 09:55:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 029B8CD5BA7
+	for <linux-can@archiver.kernel.org>; Tue, 19 Sep 2023 12:29:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbjISJzg (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 19 Sep 2023 05:55:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40772 "EHLO
+        id S229988AbjISM3R (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 19 Sep 2023 08:29:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231820AbjISJzR (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 19 Sep 2023 05:55:17 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7F019B5
-        for <linux-can@vger.kernel.org>; Tue, 19 Sep 2023 02:54:12 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99bdcade7fbso701157066b.1
-        for <linux-can@vger.kernel.org>; Tue, 19 Sep 2023 02:54:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695117251; x=1695722051; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OmXgnmvOiVfooj4M23wQXodnaTVsRKoq6QYvvY7fqHM=;
-        b=RgQyoqUm11pRry9dUDKqKUxVvTI2uVecQ2JniY1b3jBaAKIkQB3UZb6B3YcCKXUXaf
-         OT6KuGJuX0mDfVrGdMKsYB5ZyO5oY5/Q5Q2iTNdm5LZZeGW67c2fNvtmlJIWeUncBlyq
-         XLua7I+5+CQ1K9KC9Z3e9kxqYf/zhl0vsIVU2iZkxLgACELaFfggRdSzq9JVj5gFTDpM
-         yLPJUltHgzM49H2mY4Mkp8aSHbWg/E5UvU0QB30jTg1u2p/+oaaILpIG8rHGNBZFVj9K
-         FCaXn1/F3e73NHlCXn4a7TX0RG9iapgjtGEyL4xlh225FEKIei0klikQj+UN1Pjambrr
-         9YaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695117251; x=1695722051;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OmXgnmvOiVfooj4M23wQXodnaTVsRKoq6QYvvY7fqHM=;
-        b=i+f+uLWZGiW3bUFKYwwoGMCG6xfnHIPX9Aa9bGd1B7Xwty5tLRAbVSP9KiwjQTSEID
-         VQT2wQKcUx+qRR8kYp4rxnr8ENa3mh5X3W16ifJ72J97xY3gb0w7Ryz1F/JU6FxXTmbN
-         AbDr+aNCmigZVWMW+fwn4iIIJKtwu6fihU1OhOXvr9wbg3IDFysqsyCw1YKG/GDZI1FJ
-         muPBQKL35Us6cEgR74KYjzTqPO6PmiRTPl+Y6eZUXpTq7p6ZoF9Jdaqy+RpbeSUhAKOG
-         qDypAFI82KW0Gul/SP2x9f7QSoVf30IKqYNBAMCKzdc/KehVp5m9loIlf1VfLkDly1Sb
-         wWNA==
-X-Gm-Message-State: AOJu0Yz2UCWfE6OZitQv5ys9UN4J4CLriMmvbHI8r3h9NyYhrut+8Ebw
-        Zw9O4zYUeskQHOHSb1OuF0IqDg==
-X-Google-Smtp-Source: AGHT+IFD+/JR8bBXkKzRaOn6uW69Q1H71e3hBw6gpkPpcO6ABZxmcJoEcS7N9t36yAyaScr+LBt+gA==
-X-Received: by 2002:a17:907:a07c:b0:992:bc8:58e4 with SMTP id ia28-20020a170907a07c00b009920bc858e4mr6491327ejc.20.1695117250517;
-        Tue, 19 Sep 2023 02:54:10 -0700 (PDT)
-Received: from blmsp.fritz.box ([2001:4091:a246:8222:dbda:9cd9:39cc:f174])
-        by smtp.gmail.com with ESMTPSA id g11-20020a170906198b00b009926928d486sm7521855ejd.35.2023.09.19.02.54.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 02:54:09 -0700 (PDT)
-From:   Markus Schneider-Pargmann <msp@baylibre.com>
-To:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Sean Anderson <sean.anderson@seco.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH] can: tcan4x5x: Fix id2_register for tcan4553
-Date:   Tue, 19 Sep 2023 11:54:01 +0200
-Message-Id: <20230919095401.1312259-1-msp@baylibre.com>
-X-Mailer: git-send-email 2.40.1
+        with ESMTP id S231501AbjISM3Q (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 19 Sep 2023 08:29:16 -0400
+Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF3E7E3
+        for <linux-can@vger.kernel.org>; Tue, 19 Sep 2023 05:29:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
+        s=default2211; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
+        References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=AAxzke1vXCmIlWvAD6yVp1aVST7MODkE1kU8X26rQV8=; b=lxIXFuBmhNndVydtgrQvx0mhKJ
+        7EyCOw9rHigKAjXWcean8Fk5Ze25cBpA33A2H1YyJiU+T/rUqXF+8Opclbi8UWDlvZjNtxOUsiKm1
+        lYXnY8U2B4xU8UDtKNq4JiJj4LzQRUINWMw2czZXEfUB0l6825hF8119Jrpxav558SApzd/APbQ2Z
+        zypkLvcVVQEApqgS1xtA3+HZKantZ04RNHzdw4FQNJmYV9MvMBTjylFM45sKYb4ftO95GbSWLzsiF
+        GyMYAuzCEZKo0A7aVnr/h0wCM0FAwuW39x63lPNhOjbncm3I1drwl8A8SwK1G+yH1Q5oM3zHbB3AU
+        iO239/WQ==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <martin@geanix.com>)
+        id 1qiZqb-00033g-Hc; Tue, 19 Sep 2023 14:28:57 +0200
+Received: from [185.17.218.86] (helo=zen..)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <martin@geanix.com>)
+        id 1qiZqa-000GHn-Tw; Tue, 19 Sep 2023 14:28:56 +0200
+From:   =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>
+To:     linux-can@vger.kernel.org
+Cc:     =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Dong Aisheng <b29396@freescale.com>,
+        Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v2 2/2] can: tcan4x5x: support resuming from rx interrupt signal
+Date:   Tue, 19 Sep 2023 14:28:33 +0200
+Message-ID: <20230919122841.3803289-2-martin@geanix.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230919122841.3803289-1-martin@geanix.com>
+References: <20230919122841.3803289-1-martin@geanix.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: martin@geanix.com
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27036/Tue Sep 19 09:42:31 2023)
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Fix id2_register content for tcan4553. This slipped through my testing.
+Implement the "wakeup-source" device tree property, so the chip is left
+running when suspending, and its rx interrupt is used as a wakeup source
+to resume operation.
 
-Reported-by: Sean Anderson <sean.anderson@seco.com>
-Closes: https://lore.kernel.org/lkml/a94e6fc8-4f08-7877-2ba0-29b9c2780136@seco.com/
-Fixes: 142c6dc6d9d7 ("can: tcan4x5x: Add support for tcan4552/4553")
-Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
+Signed-off-by: Martin Hundebøll <martin@geanix.com>
 ---
- drivers/net/can/m_can/tcan4x5x-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Change since v1:
+ * Added `static` keyword to dev_pm_ops sturcture
+
+ drivers/net/can/m_can/tcan4x5x-core.c | 34 ++++++++++++++++++++++++++-
+ 1 file changed, 33 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
-index 8a4143809d33..ae8c42f5debd 100644
+index 8a4143809d33..ccb279af22bb 100644
 --- a/drivers/net/can/m_can/tcan4x5x-core.c
 +++ b/drivers/net/can/m_can/tcan4x5x-core.c
-@@ -125,7 +125,7 @@ static const struct tcan4x5x_version_info tcan4x5x_versions[] = {
+@@ -459,6 +459,9 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+ 		goto out_power;
+ 	}
+ 
++	if (device_property_read_bool(&spi->dev, "wakeup-source"))
++		device_init_wakeup(&spi->dev, true);
++
+ 	ret = m_can_class_register(mcan_class);
+ 	if (ret) {
+ 		dev_err(&spi->dev, "Failed registering m_can device %pe\n",
+@@ -487,6 +490,31 @@ static void tcan4x5x_can_remove(struct spi_device *spi)
+ 	m_can_class_free_dev(priv->cdev.net);
+ }
+ 
++static int __maybe_unused tcan4x5x_suspend(struct device *dev)
++{
++	struct spi_device *spi = to_spi_device(dev);
++
++	if (device_may_wakeup(dev)) {
++		enable_irq_wake(spi->irq);
++
++		return m_can_class_suspend(dev, true);
++	}
++
++	return m_can_class_suspend(dev, false);
++}
++
++static int __maybe_unused tcan4x5x_resume(struct device *dev)
++{
++	struct spi_device *spi = to_spi_device(dev);
++	bool wake_source = device_may_wakeup(dev);
++	int ret = m_can_class_resume(dev, wake_source);
++
++	if (wake_source)
++		disable_irq_wake(spi->irq);
++
++	return ret;
++}
++
+ static const struct of_device_id tcan4x5x_of_match[] = {
+ 	{
+ 		.compatible = "ti,tcan4x5x",
+@@ -505,11 +533,15 @@ static const struct spi_device_id tcan4x5x_id_table[] = {
+ };
+ MODULE_DEVICE_TABLE(spi, tcan4x5x_id_table);
+ 
++static const struct dev_pm_ops tcan4x5x_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(tcan4x5x_suspend, tcan4x5x_resume)
++};
++
+ static struct spi_driver tcan4x5x_can_driver = {
+ 	.driver = {
+ 		.name = KBUILD_MODNAME,
+ 		.of_match_table = tcan4x5x_of_match,
+-		.pm = NULL,
++		.pm = &tcan4x5x_pm_ops,
  	},
- 	[TCAN4553] = {
- 		.name = "4553",
--		.id2_register = 0x32353534,
-+		.id2_register = 0x33353534,
- 	},
- 	/* generic version with no id2_register at the end */
- 	[TCAN4X5X] = {
+ 	.id_table = tcan4x5x_id_table,
+ 	.probe = tcan4x5x_can_probe,
 -- 
-2.40.1
+2.42.0
 
