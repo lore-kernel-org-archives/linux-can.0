@@ -2,58 +2,60 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B71DCE79AB
-	for <linux-can@archiver.kernel.org>; Wed, 20 Sep 2023 07:42:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93B8FCD494F
+	for <linux-can@archiver.kernel.org>; Thu, 21 Sep 2023 17:04:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233806AbjITHmt (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 20 Sep 2023 03:42:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49236 "EHLO
+        id S229698AbjIURED (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 21 Sep 2023 13:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233790AbjITHms (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 20 Sep 2023 03:42:48 -0400
-X-Greylist: delayed 390 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Sep 2023 00:42:43 PDT
-Received: from mail.venturelinkage.com (mail.venturelinkage.com [80.211.143.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D3F39E
-        for <linux-can@vger.kernel.org>; Wed, 20 Sep 2023 00:42:43 -0700 (PDT)
-Received: by mail.venturelinkage.com (Postfix, from userid 1002)
-        id 55BB4826B8; Wed, 20 Sep 2023 09:36:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=venturelinkage.com;
-        s=mail; t=1695195372;
-        bh=7iowqdzve/IIiUUjcEwx8j3uMrVqqiE7R9zbOCKRV9Q=;
-        h=Date:From:To:Subject:From;
-        b=mu6EiNFXRdGhdo7v91OPdOeqBcEp7jo1FOwS7aya3600M3uP2h5Kncj7fmczA5j9L
-         B1xkqpcwCcrkhpeThbw4/7qRgEJ8qh3mLtDg+PJ/jm29IVYzKQS78WrZu6ZH6eNYTb
-         SwhAfVng8qlK3hNjFi1Gvm/RoRzXYojWw/Asaob461fiisNjuek7eyiAmHR9ErAE1B
-         0a9QfDrBqdZzRMkoBp2UcugF35YaS68HriUW+6UXCpnvtaH5nJY8IpkCRoa4XmzSug
-         Qg2Br4NqvDVYAJLY9rtrBS1zO49REZSpn1p6uE6tvXtaMvIdI8TdsvvsRw3pkvKZL0
-         4b9xPm9j7S4Cg==
-Received: by mail.venturelinkage.com for <linux-can@vger.kernel.org>; Wed, 20 Sep 2023 07:36:09 GMT
-Message-ID: <20230920084500-0.1.l.11ar.0.bn6w3k9khf@venturelinkage.com>
-Date:   Wed, 20 Sep 2023 07:36:09 GMT
-From:   "Lukas Varga" <lukas.varga@venturelinkage.com>
-To:     <linux-can@vger.kernel.org>
-Subject: =?UTF-8?Q?Popt=C3=A1vka?=
-X-Mailer: mail.venturelinkage.com
+        with ESMTP id S229983AbjIURDe (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 21 Sep 2023 13:03:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6525199D;
+        Thu, 21 Sep 2023 10:02:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77002C4E66F;
+        Thu, 21 Sep 2023 13:18:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695302328;
+        bh=MQmDcrstvVZY6kP40oKfTwDz3+GADNbB6xrGhKqtNWI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V6ypGZ2LXHS25WVtSQxLI5ff8jnb4+RBGEIa0dSL+FH9YHplFSwurc1OuT0UjsT63
+         RsLHsVQ+l4sPhSAMZKhJZl8yWpEIUgIqScF4g0/U87ecw1zTMgIcRnNQxftsTPbiMv
+         9nWpfgWorIWn+V9Qcydb7anewyFKwvi9Bf4voOkSrZ5GE854CJCdJSAEQKbi0Rb8q+
+         dT8PU1ixceAAnL0hbaJsKd7TMctC4JMUFgngXx2yQ7EeFgVGj6+NslN8LYM8WwRRGt
+         PTXNmAAFotmZjsAmahKs7EcIdOYbsKVGh65/XBirb6R6e11JuQJTOsaGlKBbAVMGZA
+         xkun8OAHmZ85A==
+Date:   Thu, 21 Sep 2023 14:18:40 +0100
+From:   Simon Horman <horms@kernel.org>
+To:     Markus Schneider-Pargmann <msp@baylibre.com>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Sean Anderson <sean.anderson@seco.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] can: tcan4x5x: Fix id2_register for tcan4553
+Message-ID: <20230921131840.GM224399@kernel.org>
+References: <20230919095401.1312259-1-msp@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230919095401.1312259-1-msp@baylibre.com>
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Dobr=C3=A9 r=C3=A1no,
+On Tue, Sep 19, 2023 at 11:54:01AM +0200, Markus Schneider-Pargmann wrote:
+> Fix id2_register content for tcan4553. This slipped through my testing.
+> 
+> Reported-by: Sean Anderson <sean.anderson@seco.com>
+> Closes: https://lore.kernel.org/lkml/a94e6fc8-4f08-7877-2ba0-29b9c2780136@seco.com/
+> Fixes: 142c6dc6d9d7 ("can: tcan4x5x: Add support for tcan4552/4553")
+> Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
 
-Dovolil jsem si V=C3=A1s kontaktovat, proto=C5=BEe m=C3=A1m z=C3=A1jem ov=
-=C4=9B=C5=99it mo=C5=BEnost nav=C3=A1z=C3=A1n=C3=AD spolupr=C3=A1ce.
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-Podporujeme firmy p=C5=99i z=C3=ADsk=C3=A1v=C3=A1n=C3=AD nov=C3=BDch obch=
-odn=C3=ADch z=C3=A1kazn=C3=ADk=C5=AF.
-
-M=C5=AF=C5=BEeme si promluvit a poskytnout podrobnosti?
-
-V p=C5=99=C3=ADpad=C4=9B z=C3=A1jmu V=C3=A1s bude kontaktovat n=C3=A1=C5=A1=
- anglicky mluv=C3=ADc=C3=AD z=C3=A1stupce.
-
-
-Pozdravy
-Lukas Varga
