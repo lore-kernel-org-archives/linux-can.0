@@ -2,53 +2,53 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D981BE71D40
-	for <linux-can@archiver.kernel.org>; Fri, 29 Sep 2023 14:13:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FD5AE71D43
+	for <linux-can@archiver.kernel.org>; Fri, 29 Sep 2023 14:13:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233333AbjI2ONY (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 29 Sep 2023 10:13:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37154 "EHLO
+        id S233373AbjI2ONZ (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 29 Sep 2023 10:13:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233268AbjI2ONV (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 29 Sep 2023 10:13:21 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 898AB1AE
-        for <linux-can@vger.kernel.org>; Fri, 29 Sep 2023 07:13:17 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-4065f29e933so5697935e9.1
-        for <linux-can@vger.kernel.org>; Fri, 29 Sep 2023 07:13:17 -0700 (PDT)
+        with ESMTP id S233215AbjI2ONW (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 29 Sep 2023 10:13:22 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87C9CC3
+        for <linux-can@vger.kernel.org>; Fri, 29 Sep 2023 07:13:19 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-4053c6f1087so134804735e9.0
+        for <linux-can@vger.kernel.org>; Fri, 29 Sep 2023 07:13:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695996796; x=1696601596; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695996798; x=1696601598; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tygpmxkKpMSdICit1qShK3ZZjtEq4RFKUNN+V0vvjrQ=;
-        b=hfaBzMTA/pAf0CEdtGspu26m2HMwO9jSieasg7dDMK7z6jkdvCho0g9jpMI2eJIxWO
-         ronQv1xOzyzN851GQOX74Mf3ZjpIapvyHUUeN6CgN50/zQv+bxDB+Wayd0AUa3GACH6q
-         Z4+HbCLYTVcZWMr9nO5K+XVuX1PRER8cqX5DHdp7n+c5EDEhfQtrzof5suIM43dFioSV
-         FdGiyQLjw+1GZW+ARJpqhkqFPuyd9gvHjJf+QPWhdAM7gjpMOKKuHIflDa4X764MiHjf
-         8FA/6CA8o1PJWM6bqUvf7kn9B4J9TaT/astRPrGWwDHLqFMs7uwwcgzu3bUa1Wfpn/8R
-         ujkw==
+        bh=YHWXcPt8CLFE4Grfzc8XZlmrz9AJKUqi/14pD9LRVmk=;
+        b=c7lGh5WVM2ASu/EHMTBoSnlK9ZBFlhnMlbKtxYZ9GNfzZQ5ZCh1B/pyNnD4h1W/1HB
+         7k1hY0q+68gpjkAJ4mzM07dIkwf7TrIywpk/AUcGjjg5fPVq0xw4o6KWnPMoswbj7phI
+         oXxRqoWz2kBtafOF9WaSZb9GooWEa58n6CdIS0dW4/X+YqswCk0dE6NJFKnlICMlgPW8
+         th7vasWev933Hy/lHM4POEPhDqGGgvZHjjeKp41R8T3gHmPPJWFLkstLw2px066pkZln
+         qkUmuILzE27/yiNi/vpSOXU1dIO6/lWsj/Lmen5SxfFzds7zcLgHhzT6O/rb3rUM/fMc
+         sHfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695996796; x=1696601596;
+        d=1e100.net; s=20230601; t=1695996798; x=1696601598;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tygpmxkKpMSdICit1qShK3ZZjtEq4RFKUNN+V0vvjrQ=;
-        b=mETz56Fm2BmKA9WuJjiLFsA9c4UnUTWpZFYhJNNf7jt8OtAqyYfc6M/SyZea+wAjx/
-         u8JQxTqUJDip6IX6dgwUYg4cLjRNUwRTI3iPzaOdED8V4l8XLJKDErRNElQD31Nw44Ip
-         htyMzCZV+9qJhEy+5QB4N8LO1U0KWw5GdmOeZWLlh7zQQPkkYNbh9g1HqEDcU7wNnYho
-         a/L233BkH/1db8PIoY5qJU67xIfGv7krW4kcI0pgyt/+GY4SwhgTbVvIjAJHn7EbBe+z
-         g/e1KfLoDF/eOlgk+Hf9k4Rdez89dtE8rhhc0yu9BF0DNORgYsuZjpptn3Y2rhpaKrQg
-         1tuQ==
-X-Gm-Message-State: AOJu0YxnlLKB0tySMs7OnvEi4x9c7RXzFNwOWoKG0pg7kW3gEdW4r9lr
-        Qdx0ywGvWlS0PF3QVEskzJjEnw==
-X-Google-Smtp-Source: AGHT+IE0slc+UK6Ou6FpwHUsnr0SX9vylqCEpIS0H1NKjt+5oQUOiaSff3PSrRGsYCBZaRXX7gyu/Q==
-X-Received: by 2002:a7b:c5c7:0:b0:405:3ab9:eb07 with SMTP id n7-20020a7bc5c7000000b004053ab9eb07mr4192119wmk.20.1695996795962;
-        Fri, 29 Sep 2023 07:13:15 -0700 (PDT)
+        bh=YHWXcPt8CLFE4Grfzc8XZlmrz9AJKUqi/14pD9LRVmk=;
+        b=BzcH5QfBZSqhxTA/8lYgWw4vcLG+N8KktwZeO46Pvh6d7nn4ZnhkAz7XDO8VqGXNhV
+         gjDocrGRkPzlaGDd1uPosGzwAR4sy53/za+Qoe7nUEh9JNZ51pYkabTs2Tr6OJOy1shC
+         D6IlEvfAvR6mF0DC+EjOdI2ybGqkG6sx+nIkPA27xTDHg5/N192VzrFj9E3Eol6bk/O1
+         yweSh3rAji2pkb4NIVWNkIbsUFDC9d55tZqx1EwuIWQEA2SIl5bGkQbkX+9tLpAp3x5M
+         oXFHxNVoJSbfPzW2WNby7uocJtutKNQ9lAGymjbhHzUjBIBZR8RvBzmS2uLevMZRur35
+         +c9Q==
+X-Gm-Message-State: AOJu0YzjCvTqFlXdSlkEdm8h0MFBH/WxsdF4sNKKl/EzPliOpxMb/PPN
+        DO6K2Mpl9HK3T4NhKYeOQHejWw==
+X-Google-Smtp-Source: AGHT+IEdGnLSLZqW01C1jw5dQYyVWD30KEFa8nNeZ2tBfP8adQ2H0UJdQsTpEo4n5Ig8zwt9XS+n5A==
+X-Received: by 2002:a05:600c:1e18:b0:406:599f:f92c with SMTP id ay24-20020a05600c1e1800b00406599ff92cmr2274668wmb.20.1695996798348;
+        Fri, 29 Sep 2023 07:13:18 -0700 (PDT)
 Received: from blmsp.fritz.box ([2001:4091:a246:8222:dbda:9cd9:39cc:f174])
-        by smtp.gmail.com with ESMTPSA id t25-20020a7bc3d9000000b00405391f485fsm1513068wmj.41.2023.09.29.07.13.15
+        by smtp.gmail.com with ESMTPSA id t25-20020a7bc3d9000000b00405391f485fsm1513068wmj.41.2023.09.29.07.13.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 07:13:15 -0700 (PDT)
+        Fri, 29 Sep 2023 07:13:17 -0700 (PDT)
 From:   Markus Schneider-Pargmann <msp@baylibre.com>
 To:     Marc Kleine-Budde <mkl@pengutronix.de>,
         Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
@@ -62,9 +62,9 @@ Cc:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         Julien Panis <jpanis@baylibre.com>, Judith Mendez <jm@ti.com>,
         Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH v6 05/14] can: m_can: Implement transmit coalescing
-Date:   Fri, 29 Sep 2023 16:12:55 +0200
-Message-Id: <20230929141304.3934380-6-msp@baylibre.com>
+Subject: [PATCH v6 07/14] can: m_can: Add tx coalescing ethtool support
+Date:   Fri, 29 Sep 2023 16:12:57 +0200
+Message-Id: <20230929141304.3934380-8-msp@baylibre.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230929141304.3934380-1-msp@baylibre.com>
 References: <20230929141304.3934380-1-msp@baylibre.com>
@@ -74,136 +74,86 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Extend the coalescing implementation for transmits.
+Add TX support to get/set functions for ethtool coalescing.
+tx-frames-irq and tx-usecs-irq can only be set/unset together.
+tx-frames-irq needs to be less than TXE and TXB.
 
-In normal mode the chip raises an interrupt for every finished transmit.
-This implementation switches to coalescing mode as soon as an interrupt
-handled a transmit. For coalescing the watermark level interrupt is used
-to interrupt exactly after x frames were sent. It switches back into
-normal mode once there was an interrupt with no finished transmit and
-the timer being inactive.
+As rx and tx share the same timer, rx-usecs-irq and tx-usecs-irq can be
+enabled/disabled individually but they need to have the same value if
+enabled.
 
-The timer is shared with receive coalescing. The time for receive and
-transmit coalescing timers have to be the same for that to work. The
-benefit is to have only a single running timer.
+Polling is excluded from TX irq coalescing.
 
 Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
 ---
- drivers/net/can/m_can/m_can.c | 33 ++++++++++++++++++++-------------
- drivers/net/can/m_can/m_can.h |  4 ++++
- 2 files changed, 24 insertions(+), 13 deletions(-)
+ drivers/net/can/m_can/m_can.c | 38 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 37 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 4492fe0da29c..b20edd64bb7e 100644
+index 546193ab6e0d..1c021d99bae2 100644
 --- a/drivers/net/can/m_can/m_can.c
 +++ b/drivers/net/can/m_can/m_can.c
-@@ -255,6 +255,7 @@ enum m_can_reg {
- #define TXESC_TBDS_64B		0x7
+@@ -1985,6 +1985,8 @@ static int m_can_get_coalesce(struct net_device *dev,
  
- /* Tx Event FIFO Configuration (TXEFC) */
-+#define TXEFC_EFWM_MASK		GENMASK(29, 24)
- #define TXEFC_EFS_MASK		GENMASK(21, 16)
+ 	ec->rx_max_coalesced_frames_irq = cdev->rx_max_coalesced_frames_irq;
+ 	ec->rx_coalesce_usecs_irq = cdev->rx_coalesce_usecs_irq;
++	ec->tx_max_coalesced_frames_irq = cdev->tx_max_coalesced_frames_irq;
++	ec->tx_coalesce_usecs_irq = cdev->tx_coalesce_usecs_irq;
  
- /* Tx Event FIFO Status (TXEFS) */
-@@ -432,7 +433,7 @@ static void m_can_interrupt_enable(struct m_can_classdev *cdev, u32 interrupts)
- 
- static void m_can_coalescing_disable(struct m_can_classdev *cdev)
- {
--	u32 new_interrupts = cdev->active_interrupts | IR_RF0N;
-+	u32 new_interrupts = cdev->active_interrupts | IR_RF0N | IR_TEFN;
- 
- 	if (!cdev->net->irq)
- 		return;
-@@ -1114,24 +1115,29 @@ static int m_can_echo_tx_event(struct net_device *dev)
- static void m_can_coalescing_update(struct m_can_classdev *cdev, u32 ir)
- {
- 	u32 new_interrupts = cdev->active_interrupts;
--	bool enable_timer = false;
-+	bool enable_rx_timer = false;
-+	bool enable_tx_timer = false;
- 
- 	if (!cdev->net->irq)
- 		return;
- 
- 	if (cdev->rx_coalesce_usecs_irq > 0 && (ir & (IR_RF0N | IR_RF0W))) {
--		enable_timer = true;
-+		enable_rx_timer = true;
- 		new_interrupts &= ~IR_RF0N;
--	} else if (!hrtimer_active(&cdev->hrtimer)) {
--		new_interrupts |= IR_RF0N;
+ 	return 0;
+ }
+@@ -2011,16 +2013,50 @@ static int m_can_set_coalesce(struct net_device *dev,
+ 		netdev_err(dev, "rx-frames-irq and rx-usecs-irq can only be set together\n");
+ 		return -EINVAL;
  	}
-+	if (cdev->tx_coalesce_usecs_irq > 0 && (ir & (IR_TEFN | IR_TEFW))) {
-+		enable_tx_timer = true;
-+		new_interrupts &= ~IR_TEFN;
++	if (ec->tx_max_coalesced_frames_irq > cdev->mcfg[MRAM_TXE].num) {
++		netdev_err(dev, "tx-frames-irq %u greater than the TX event FIFO %u\n",
++			   ec->tx_max_coalesced_frames_irq,
++			   cdev->mcfg[MRAM_TXE].num);
++		return -EINVAL;
 +	}
-+	if (!enable_rx_timer && !hrtimer_active(&cdev->hrtimer))
-+		new_interrupts |= IR_RF0N;
-+	if (!enable_tx_timer && !hrtimer_active(&cdev->hrtimer))
-+		new_interrupts |= IR_TEFN;
++	if (ec->tx_max_coalesced_frames_irq > cdev->mcfg[MRAM_TXB].num) {
++		netdev_err(dev, "tx-frames-irq %u greater than the TX FIFO %u\n",
++			   ec->tx_max_coalesced_frames_irq,
++			   cdev->mcfg[MRAM_TXB].num);
++		return -EINVAL;
++	}
++	if ((ec->tx_max_coalesced_frames_irq == 0) != (ec->tx_coalesce_usecs_irq == 0)) {
++		netdev_err(dev, "tx-frames-irq and tx-usecs-irq can only be set together\n");
++		return -EINVAL;
++	}
++	if (ec->rx_coalesce_usecs_irq != 0 && ec->tx_coalesce_usecs_irq != 0 &&
++	    ec->rx_coalesce_usecs_irq != ec->tx_coalesce_usecs_irq) {
++		netdev_err(dev, "rx-usecs-irq %u needs to be equal to tx-usecs-irq %u if both are enabled\n",
++			   ec->rx_coalesce_usecs_irq,
++			   ec->tx_coalesce_usecs_irq);
++		return -EINVAL;
++	}
  
- 	m_can_interrupt_enable(cdev, new_interrupts);
--	if (enable_timer) {
--		hrtimer_start(&cdev->hrtimer,
--			      ns_to_ktime(cdev->rx_coalesce_usecs_irq * NSEC_PER_USEC),
-+	if (enable_rx_timer | enable_tx_timer)
-+		hrtimer_start(&cdev->hrtimer, cdev->irq_timer_wait,
- 			      HRTIMER_MODE_REL);
--	}
+ 	cdev->rx_max_coalesced_frames_irq = ec->rx_max_coalesced_frames_irq;
+ 	cdev->rx_coalesce_usecs_irq = ec->rx_coalesce_usecs_irq;
++	cdev->tx_max_coalesced_frames_irq = ec->tx_max_coalesced_frames_irq;
++	cdev->tx_coalesce_usecs_irq = ec->tx_coalesce_usecs_irq;
++
++	if (cdev->rx_coalesce_usecs_irq)
++		cdev->irq_timer_wait =
++			ns_to_ktime(cdev->rx_coalesce_usecs_irq * NSEC_PER_USEC);
++	else
++		cdev->irq_timer_wait =
++			ns_to_ktime(cdev->tx_coalesce_usecs_irq * NSEC_PER_USEC);
+ 
+ 	return 0;
  }
  
- static irqreturn_t m_can_isr(int irq, void *dev_id)
-@@ -1186,7 +1192,7 @@ static irqreturn_t m_can_isr(int irq, void *dev_id)
- 			netif_wake_queue(dev);
- 		}
- 	} else  {
--		if (ir & IR_TEFN) {
-+		if (ir & (IR_TEFN | IR_TEFW)) {
- 			/* New TX FIFO Element arrived */
- 			if (m_can_echo_tx_event(dev) != 0)
- 				goto out_fail;
-@@ -1354,9 +1360,8 @@ static int m_can_chip_config(struct net_device *dev)
- 	}
- 
- 	/* Disable unused interrupts */
--	interrupts &= ~(IR_ARA | IR_ELO | IR_DRX | IR_TEFF | IR_TEFW | IR_TFE |
--			IR_TCF | IR_HPM | IR_RF1F | IR_RF1W | IR_RF1N |
--			IR_RF0F);
-+	interrupts &= ~(IR_ARA | IR_ELO | IR_DRX | IR_TEFF | IR_TFE | IR_TCF |
-+			IR_HPM | IR_RF1F | IR_RF1W | IR_RF1N | IR_RF0F);
- 
- 	m_can_config_endisable(cdev, true);
- 
-@@ -1393,6 +1398,8 @@ static int m_can_chip_config(struct net_device *dev)
- 	} else {
- 		/* Full TX Event FIFO is used */
- 		m_can_write(cdev, M_CAN_TXEFC,
-+			    FIELD_PREP(TXEFC_EFWM_MASK,
-+				       cdev->tx_max_coalesced_frames_irq) |
- 			    FIELD_PREP(TXEFC_EFS_MASK,
- 				       cdev->mcfg[MRAM_TXE].num) |
- 			    cdev->mcfg[MRAM_TXE].off);
-diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
-index b916206199f1..1e461d305bce 100644
---- a/drivers/net/can/m_can/m_can.h
-+++ b/drivers/net/can/m_can/m_can.h
-@@ -84,6 +84,8 @@ struct m_can_classdev {
- 	struct sk_buff *tx_skb;
- 	struct phy *transceiver;
- 
-+	ktime_t irq_timer_wait;
-+
- 	struct m_can_ops *ops;
- 
- 	int version;
-@@ -96,6 +98,8 @@ struct m_can_classdev {
- 	u32 active_interrupts;
- 	u32 rx_max_coalesced_frames_irq;
- 	u32 rx_coalesce_usecs_irq;
-+	u32 tx_max_coalesced_frames_irq;
-+	u32 tx_coalesce_usecs_irq;
- 
- 	struct mram_cfg mcfg[MRAM_CFG_NUM];
- 
+ static const struct ethtool_ops m_can_ethtool_ops = {
+ 	.supported_coalesce_params = ETHTOOL_COALESCE_RX_USECS_IRQ |
+-		ETHTOOL_COALESCE_RX_MAX_FRAMES_IRQ,
++		ETHTOOL_COALESCE_RX_MAX_FRAMES_IRQ |
++		ETHTOOL_COALESCE_TX_USECS_IRQ |
++		ETHTOOL_COALESCE_TX_MAX_FRAMES_IRQ,
+ 	.get_ts_info = ethtool_op_get_ts_info,
+ 	.get_coalesce = m_can_get_coalesce,
+ 	.set_coalesce = m_can_set_coalesce,
 -- 
 2.40.1
 
