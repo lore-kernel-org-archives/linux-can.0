@@ -2,64 +2,65 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8717AE776F4
-	for <linux-can@archiver.kernel.org>; Wed,  4 Oct 2023 09:17:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E158E7B5E1
+	for <linux-can@archiver.kernel.org>; Wed,  4 Oct 2023 09:24:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241946AbjJDJSA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 4 Oct 2023 05:18:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55084 "EHLO
+        id S232904AbjJDJYS (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 4 Oct 2023 05:24:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242085AbjJDJR5 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Wed, 4 Oct 2023 05:17:57 -0400
+        with ESMTP id S232852AbjJDJYS (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Wed, 4 Oct 2023 05:24:18 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3119BB7
-        for <linux-can@vger.kernel.org>; Wed,  4 Oct 2023 02:17:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7949E
+        for <linux-can@vger.kernel.org>; Wed,  4 Oct 2023 02:24:14 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qny0t-0004Ad-LI
-        for linux-can@vger.kernel.org; Wed, 04 Oct 2023 11:17:51 +0200
+        id 1qny72-0005Lf-SA
+        for linux-can@vger.kernel.org; Wed, 04 Oct 2023 11:24:12 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qny0t-00AzgT-16
-        for linux-can@vger.kernel.org; Wed, 04 Oct 2023 11:17:51 +0200
+        id 1qny72-00AzjB-8u
+        for linux-can@vger.kernel.org; Wed, 04 Oct 2023 11:24:12 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id B9DB122EAED
-        for <linux-can@vger.kernel.org>; Wed,  4 Oct 2023 09:17:50 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id EF75822EB39
+        for <linux-can@vger.kernel.org>; Wed,  4 Oct 2023 09:24:11 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 0E63622EADE;
-        Wed,  4 Oct 2023 09:17:50 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 3FAA122EB2A;
+        Wed,  4 Oct 2023 09:24:11 +0000 (UTC)
 Received: from [192.168.178.131] (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 572267ee;
-        Wed, 4 Oct 2023 09:17:49 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d32296fc;
+        Wed, 4 Oct 2023 09:24:10 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Date:   Wed, 04 Oct 2023 11:17:29 +0200
-Subject: [PATCH 2/5] can: dev: can_restart(): fix race condition between
- controller restart and netif_carrier_on()
+Subject: [PATCH 00/27] can: at91: add can_state_get_by_berr_counter()
+ helper, cleanup and convert to rx_offload
+Date:   Wed, 04 Oct 2023 11:23:19 +0200
+Message-Id: <20231004-at91_can-rx_offload-v1-0-c32bf99097db@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231004-can-dev-fix-can-restart-v1-2-2e52899eaaf5@pengutronix.de>
-References: <20231004-can-dev-fix-can-restart-v1-0-2e52899eaaf5@pengutronix.de>
-In-Reply-To: <20231004-can-dev-fix-can-restart-v1-0-2e52899eaaf5@pengutronix.de>
+X-B4-Tracking: v=1; b=H4sIAAgvHWUC/x3MTQqAIBBA4avErBN0jP6uEhFDjTUQGhoRRHdPW
+ n6L9x5IHIUT9MUDkS9JEnyGKQuYN/IrK1myATVao3Wl6OzMNJNX8Z6Cc3ugRVmssaWm0uQQcnl
+ EdnL/12F83w9Gn8DdZQAAAA==
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
 X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3139; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=oEHQfe7mf9LSRC6kP92CwD+MM5HyrRcGZsTCS013mNc=;
- b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBlHS2zWUg72REbVylkIP935kjfBslfo80jOrQOL
- BZycTIfZDOJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZR0tswAKCRC+UBxKKooE
- 6PNHB/4xF/0taAh42p8XYUmjKuR03qawUTSabRdS2fh0dVeQNeaYMYy+Q5ukklmfFrNtpI8ZDKl
- 9APxh/ZjmvWla2jwbV9udtC4nSQDXJjVRMDFd8dfKvixOfjD3WXZNPLNcSOwMt0HfqEwJxduV7c
- uj/FFrK0TX19ury7jynECk6cdBjG6jKkCulC3xcgv2mzqh2SXYlDkAA/gqBzOMh7oACUB/Qv8Gv
- dylWbt7xD3oFeK3gKNJy+X5MBJIoujUPWHYSPx0NhmDU05kayAHVkn0arAgMs8LEMuOgNqcPFxX
- 4ylGn7jzmdLpNO/Mb4doTaVMY6uRFyW4oJUH9pk8F7iqHK0l
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3230; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=AUvoggBDIWmGr8CY4Pdjxltd9LDGwt64yIoNVWoM2wQ=;
+ b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBlHS8K+/BFC7buLRIdCGb58cY2r0rh7f91qh0WG
+ KSA3tSx2OWJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZR0vCgAKCRC+UBxKKooE
+ 6I8sB/4qhqsTgwYA3Jjv/CcSvWolJjRgAPkyRf4sBvI7C7XVFA2szBfKv8owVJKOdAbfSomtsxc
+ lFfQTJKEmr4eIUWFi9835ou+1MAOVgFbxl1ZxkuYbhqDJtCmiTUOHoomZKgar6uWYx1hy8MFLQQ
+ 2Zyjgs494QRkvOpUf3w4lxwJLEzUzrb2QXa4TMq+8X53jhHwSrh10Du2B/Gg8N9crXGtWOZTHFi
+ OaNivigJfkbp519sHnJHj+rAXHuhBB1pmbGZZ2gMk1eioAQus1u4lsmrPJiXpLQP2N5QHGcuE70
+ J/ZFFv8PFD/ROgSRtjNQuYoHiFzUyIrAvk4ln4+QfT9DUJEV
 X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
  fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -70,94 +71,65 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This race condition was discovered while updating the at91_can driver
-to use can_bus_off(). The following scenario describes how the
-converted at91_can driver would behave.
+This series first introduces the can_state_get_by_berr_counter()
+helper function. It returns the current TX and RX state depending on
+the provided CAN bit error counters. It will be later used by the
+at91_can driver.
 
-When a CAN device goes into BUS-OFF state, the driver usually
-stops/resets the CAN device and calls can_bus_off().
+The remaining patches of this series first clean up the at91_can
+driver, clean up the bus- and line error (including bus-off) handling,
+and then convert it use the rx_offload helper. The driver works better
+under high system load and the order of received CAN frames is better
+maintained.
 
-This function sets the netif carrier to off, and (if configured by
-user space) schedules a delayed work that calls can_restart() to
-restart the CAN device.
+Due to a hardware limitation the converted driver could trigger a race
+condition in the can_restart() CAN bus-off handler. The patch series
+[1] fixes the issue.
 
-The can_restart() function first checks if the carrier is off and
-triggers an error message if the carrier is OK.
+[1] https://lore.kernel.org/all/20231004-can-dev-fix-can-restart-v1-0-2e52899eaaf5@pengutronix.de
 
-Then it calls the driver's do_set_mode() function to restart the
-device, then it sets the netif carrier to on. There is a race window
-between these two calls.
-
-The at91 CAN controller (observed on the sama5d3, a single core 32 bit
-ARM CPU) has a hardware limitation. If the device goes into bus-off
-while sending a CAN frame, there is no way to abort the sending of
-this frame. After the controller is enabled again, another attempt is
-made to send it.
-
-If the bus is still faulty, the device immediately goes back to the
-bus-off state. The driver calls can_bus_off(), the netif carrier is
-switched off and another can_restart is scheduled. This occurs within
-the race window before the original can_restart() handler marks the
-netif carrier as OK. This would cause the 2nd can_restart() to be
-called with an OK netif carrier, resulting in an error message.
-
-The flow of the 1st can_restart() looks like this:
-
-can_restart()
-    // bail out if netif_carrier is OK
-
-    netif_carrier_ok(dev)
-    priv->do_set_mode(dev, CAN_MODE_START)
-        // enable CAN controller
-        // sama5d3 restarts sending old message
-
-        // CAN devices goes into BUS_OFF, triggers IRQ
-
-// IRQ handler start
-    at91_irq()
-        at91_irq_err_line()
-            can_bus_off()
-                netif_carrier_off()
-                schedule_delayed_work()
-// IRQ handler end
-
-    netif_carrier_on()
-
-The 2nd can_restart() will be called with an OK netif carrier and the
-error message will be printed.
-
-To close the race window, first set the netif carrier to on, then
-restart the controller. In case the restart fails with an error code,
-roll back the netif carrier to off.
-
-Fixes: 39549eef3587 ("can: CAN Network device driver and Netlink interface")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/dev.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Marc Kleine-Budde (27):
+      can: dev: add can_state_get_by_berr_counter() to return the CAN state based on the current error counters
+      can: at91_can: use a consistent indention
+      can: at91_can: at91_irq_tx(): remove one level of indention
+      can: at91_can: BR register: convert to FIELD_PREP()
+      can: at91_can: ECR register: convert to FIELD_GET()
+      can: at91_can: MMR registers: convert to FIELD_PREP()
+      can: at91_can: MID registers: convert access to FIELD_PREP(), FIELD_GET()
+      can: at91_can: MSR Register: convert to FIELD_PREP()
+      can: at91_can: MCR Register: convert to FIELD_PREP()
+      can: at91_can: add more register definitions
+      can: at91_can: at91_setup_mailboxes(): update comments
+      can: at91_can: rename struct at91_priv::{tx_next,tx_echo} to {tx_head,tx_tail}
+      can: at91_can: at91_set_bittiming(): demote register output to debug level
+      can: at91_can: at91_chip_start(): don't disable IRQs twice
+      can: at91_can: at91_open(): forward request_irq()'s return value in case or an error
+      can: at91_can: add CAN transceiver support
+      can: at91_can: at91_poll_err(): fold in at91_poll_err_frame()
+      can: at91_can: at91_poll_err(): increase stats even if no quota left or OOM
+      can: at91_can: at91_irq_err_frame(): call directly from IRQ handler
+      can: at91_can: at91_irq_err_frame(): move next to at91_irq_err()
+      can: at91_can: at91_irq_err(): rename to at91_irq_err_line()
+      can: at91_can: at91_irq_err_line(): make use of can_state_get_by_berr_counter()
+      can: at91_can: at91_irq_err_line(): take reg_sr into account for bus off
+      can: at91_can: at91_irq_err_line(): make use of can_change_state() and can_bus_off()
+      can: at91_can: at91_irq_err_line(): send error counters with state change
+      can: at91_can: at91_alloc_can_err_skb() introduce new function
+      can: at91_can: switch to rx-offload implementation
 
-diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
-index a5bbdfa9a269..735d5de3caa0 100644
---- a/drivers/net/can/dev/dev.c
-+++ b/drivers/net/can/dev/dev.c
-@@ -154,11 +154,12 @@ static void can_restart(struct net_device *dev)
- 	priv->can_stats.restarts++;
- 
- 	/* Now restart the device */
--	err = priv->do_set_mode(dev, CAN_MODE_START);
--
- 	netif_carrier_on(dev);
--	if (err)
-+	err = priv->do_set_mode(dev, CAN_MODE_START);
-+	if (err) {
- 		netdev_err(dev, "Error %d during restart", err);
-+		netif_carrier_off(dev);
-+	}
- }
- 
- static void can_restart_work(struct work_struct *work)
+ drivers/net/can/Kconfig    |   1 +
+ drivers/net/can/at91_can.c | 998 ++++++++++++++++++---------------------------
+ drivers/net/can/dev/dev.c  |  22 +
+ include/linux/can/dev.h    |   4 +
+ 4 files changed, 432 insertions(+), 593 deletions(-)
+---
+base-commit: 473267a4911f2469722c74ca58087d951072f72a
+change-id: 20231004-at91_can-rx_offload-32628a740af2
 
+Best regards,
 -- 
-2.40.1
+Marc Kleine-Budde <mkl@pengutronix.de>
 
 
