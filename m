@@ -2,64 +2,64 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8A27E776F5
-	for <linux-can@archiver.kernel.org>; Wed,  4 Oct 2023 09:17:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B108E784A9
+	for <linux-can@archiver.kernel.org>; Wed,  4 Oct 2023 09:17:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242153AbjJDJR5 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Wed, 4 Oct 2023 05:17:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55038 "EHLO
+        id S242006AbjJDJR7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Wed, 4 Oct 2023 05:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241879AbjJDJR4 (ORCPT
+        with ESMTP id S242003AbjJDJR4 (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Wed, 4 Oct 2023 05:17:56 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E45AD
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30ABBB4
         for <linux-can@vger.kernel.org>; Wed,  4 Oct 2023 02:17:53 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qny0t-0004AZ-Fo
+        id 1qny0t-0004Ay-LR
         for linux-can@vger.kernel.org; Wed, 04 Oct 2023 11:17:51 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qny0s-00AzgJ-UF
-        for linux-can@vger.kernel.org; Wed, 04 Oct 2023 11:17:50 +0200
+        id 1qny0t-00AzgY-44
+        for linux-can@vger.kernel.org; Wed, 04 Oct 2023 11:17:51 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id A283422EAEB
+        by bjornoya.blackshift.org (Postfix) with SMTP id D14B922EAEF
         for <linux-can@vger.kernel.org>; Wed,  4 Oct 2023 09:17:50 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id E545522EADC;
-        Wed,  4 Oct 2023 09:17:49 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 299B622EADF;
+        Wed,  4 Oct 2023 09:17:50 +0000 (UTC)
 Received: from [192.168.178.131] (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d5334575;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c3de5ba9;
         Wed, 4 Oct 2023 09:17:49 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Date:   Wed, 04 Oct 2023 11:17:28 +0200
-Subject: [PATCH 1/5] can: dev: can_restart(): don't crash kernel if carrier
- is OK
+Date:   Wed, 04 Oct 2023 11:17:30 +0200
+Subject: [PATCH 3/5] can: dev: can_restart(): reverse logic to remove need
+ for goto
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231004-can-dev-fix-can-restart-v1-1-2e52899eaaf5@pengutronix.de>
+Message-Id: <20231004-can-dev-fix-can-restart-v1-3-2e52899eaaf5@pengutronix.de>
 References: <20231004-can-dev-fix-can-restart-v1-0-2e52899eaaf5@pengutronix.de>
 In-Reply-To: <20231004-can-dev-fix-can-restart-v1-0-2e52899eaaf5@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
 X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1225; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=HtEBMCFEoiUqSIy/quU3FUBjWZjQuuoZEXqdX2FYCNU=;
- b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBlHS2w7zcS+mdFhdDyO2wAUisUX+H8k1jntTHnt
- qTt1gWBHbKJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZR0tsAAKCRC+UBxKKooE
- 6CXYB/9P40OhOxNmSPfgc2aIxC1nkQmssOZVfHfBQx0gKl0bYE4h8HjZ2nbSFj1BWW+K1pOEDJn
- RRS6Ekn4mX5+l6vDBHpxcTvc3zuf6S4c3jCLW5t0PKIl0sXzxReoYPewDFBX0H38/fb3WDFxXig
- AljCFPmSEYhrg5afiCyGwSR2HUISWfTDSZjvMWQtteFVE/Lt35LUIcoGR7yOOfBV+K4nI+IYOIf
- eGU+aAPWjesZT/deFJU+e/DcM9dk4TgYHhmU8dSclf71Mr62LY447CLZW9U3aYqksCv6DaN5k5x
- gwuo6UT2fU2aT0WIsOiypVGrL2J17dzoZVw8JC8b8AAfqL+L
+X-Developer-Signature: v=1; a=openpgp-sha256; l=853; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=nGQEpiksyuJeEdUcRtLUNhXcIwJiVwCzGVceJl1lCn4=;
+ b=owEBbAGT/pANAwAKAb5QHEoqigToAcsmYgBlHS22UVIdTcn5Ye3eI3n2ZqrQ/yqDghaiwTlBV
+ gYysjsasAWJATIEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZR0ttgAKCRC+UBxKKooE
+ 6O2HB/jzirZF/qW3QId29/rjbBVRxGyJzki7MjEALJPDXu7LBB5GVkacDIzNs50SPCo+GFCSOG/
+ QNqY99eYM7se2c2V2JS5h+c0X2Isy3W7Cuf+PcWcuh2hC9b9MRYBIeEzZ1BIqYvyk5EqVZOvBXl
+ gKgXh70PBRJAUdmW9x0Oh5cn7yRsq/ucvUgG+TP2C3iUMnt2Lvkv1MiMwAS0UiKXhb//UZyFZ5B
+ lkebjT/YKIpcW1hhCb61xnpPzbEP63gGqbTJ6BOMROwSfA/QjzjkTqnuyL67IBP1IhWUkDngPTe
+ vhtCrApDInGdoxn7FkeaMG/8z2euy/ac9RqDLOMLGNGENi4=
 X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
  fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -70,37 +70,37 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-During testing, I triggered a can_restart() with the netif carrier
-being OK [1]. The BUG_ON, which checks if the carrier is OK, results
-in a fatal kernel crash. This is neither helpful for debugging nor for
-a production system.
+Reverse the logic in the if statement and eliminate the need for a
+goto to simplify code readability.
 
-[1] The root cause is a race condition in can_restart() which will be
-fixed in the next patch.
-
-Do not crash the kernel, issue an error message instead, and continue
-restarting the CAN device anyway.
-
-Fixes: 39549eef3587 ("can: CAN Network device driver and Netlink interface")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/dev.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/can/dev/dev.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
-index 7f9334a8af50..a5bbdfa9a269 100644
+index 735d5de3caa0..9014256c486a 100644
 --- a/drivers/net/can/dev/dev.c
 +++ b/drivers/net/can/dev/dev.c
-@@ -132,7 +132,8 @@ static void can_restart(struct net_device *dev)
- 	struct can_frame *cf;
- 	int err;
+@@ -142,14 +142,11 @@ static void can_restart(struct net_device *dev)
  
--	BUG_ON(netif_carrier_ok(dev));
-+	if (netif_carrier_ok(dev))
-+		netdev_err(dev, "Attempt to restart for bus-off recovery, but carrier is OK?\n");
+ 	/* send restart message upstream */
+ 	skb = alloc_can_err_skb(dev, &cf);
+-	if (!skb)
+-		goto restart;
++	if (skb) {
++		cf->can_id |= CAN_ERR_RESTARTED;
++		netif_rx(skb);
++	}
  
- 	/* No synchronization needed because the device is bus-off and
- 	 * no messages can come in or go out.
+-	cf->can_id |= CAN_ERR_RESTARTED;
+-
+-	netif_rx(skb);
+-
+-restart:
+ 	netdev_dbg(dev, "restarted\n");
+ 	priv->can_stats.restarts++;
+ 
 
 -- 
 2.40.1
