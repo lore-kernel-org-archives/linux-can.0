@@ -2,49 +2,49 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF601E92738
-	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 19:58:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E6DDE92731
+	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 19:58:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231536AbjJET6i (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S230254AbjJET6i (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Thu, 5 Oct 2023 15:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56350 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231853AbjJET62 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 15:58:28 -0400
+        with ESMTP id S231890AbjJET63 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 15:58:29 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60F3E8
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D00EA
         for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 12:58:26 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoUUK-0004pE-MS
+        id 1qoUUK-0004ps-Pf
         for linux-can@vger.kernel.org; Thu, 05 Oct 2023 21:58:24 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoUUG-00BLKX-3X
+        id 1qoUUG-00BLLL-En
         for linux-can@vger.kernel.org; Thu, 05 Oct 2023 21:58:20 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id EDABB23002E
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 19:58:18 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 34E65230049
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 19:58:19 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7BD6022FFA9;
-        Thu,  5 Oct 2023 19:58:16 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 96E2522FFDB;
+        Thu,  5 Oct 2023 19:58:17 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1140e0e9;
-        Thu, 5 Oct 2023 19:58:14 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ff8ba5d4;
+        Thu, 5 Oct 2023 19:58:15 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 21/37] can: at91_can: at91_setup_mailboxes(): update comments
-Date:   Thu,  5 Oct 2023 21:57:56 +0200
-Message-Id: <20231005195812.549776-22-mkl@pengutronix.de>
+Subject: [PATCH net-next 30/37] can: at91_can: at91_irq_err_frame(): move next to at91_irq_err()
+Date:   Thu,  5 Oct 2023 21:58:05 +0200
+Message-Id: <20231005195812.549776-31-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231005195812.549776-1-mkl@pengutronix.de>
 References: <20231005195812.549776-1-mkl@pengutronix.de>
@@ -58,42 +58,156 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Since 6388b3961420 ("can: at91_can: add support for the AT91SAM9X5
-SOCs") the number of mailboxes used for RX and TX is no longer
-constant, but depends on the IP core used.
+This is a cleanup patch, no functional change intended. As
+at91_irq_err_frame() is called from the IRQ handler move it in front
+of the IRQ handler next to at91_irq_err().
 
-Remove the fixed number of mailboxes from the comment.
-
-Link: https://lore.kernel.org/all/20231005-at91_can-rx_offload-v2-11-9987d53600e0@pengutronix.de
+Link: https://lore.kernel.org/all/20231005-at91_can-rx_offload-v2-20-9987d53600e0@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/at91_can.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/can/at91_can.c | 122 ++++++++++++++++++-------------------
+ 1 file changed, 61 insertions(+), 61 deletions(-)
 
 diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index f23d036d947d..b94fb35dc59e 100644
+index a84da1995816..6b017fd695c0 100644
 --- a/drivers/net/can/at91_can.c
 +++ b/drivers/net/can/at91_can.c
-@@ -347,8 +347,8 @@ static void at91_setup_mailboxes(struct net_device *dev)
- 	u32 reg_mid;
+@@ -750,67 +750,6 @@ static int at91_poll_rx(struct net_device *dev, int quota)
+ 	return received;
+ }
  
- 	/* Due to a chip bug (errata 50.2.6.3 & 50.3.5.3) the first
--	 * mailbox is disabled. The next 11 mailboxes are used as a
--	 * reception FIFO. The last mailbox is configured with
-+	 * mailbox is disabled. The next mailboxes are used as a
-+	 * reception FIFO. The last of the RX mailboxes is configured with
- 	 * overwrite option. The overwrite flag indicates a FIFO
- 	 * overflow.
- 	 */
-@@ -369,7 +369,7 @@ static void at91_setup_mailboxes(struct net_device *dev)
- 		at91_write(priv, AT91_MID(i), AT91_MID_MIDE);
- 	}
+-static void at91_irq_err_frame(struct net_device *dev, const u32 reg_sr)
+-{
+-	struct net_device_stats *stats = &dev->stats;
+-	struct at91_priv *priv = netdev_priv(dev);
+-	struct sk_buff *skb;
+-	struct can_frame *cf = NULL;
+-
+-	priv->can.can_stats.bus_error++;
+-
+-	skb = alloc_can_err_skb(dev, &cf);
+-	if (cf)
+-		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+-
+-	if (reg_sr & AT91_IRQ_CERR) {
+-		netdev_dbg(dev, "CRC error\n");
+-
+-		stats->rx_errors++;
+-		if (cf)
+-			cf->data[3] |= CAN_ERR_PROT_LOC_CRC_SEQ;
+-	}
+-
+-	if (reg_sr & AT91_IRQ_SERR) {
+-		netdev_dbg(dev, "Stuff error\n");
+-
+-		stats->rx_errors++;
+-		if (cf)
+-			cf->data[2] |= CAN_ERR_PROT_STUFF;
+-	}
+-
+-	if (reg_sr & AT91_IRQ_AERR) {
+-		netdev_dbg(dev, "NACK error\n");
+-
+-		stats->tx_errors++;
+-		if (cf) {
+-			cf->can_id |= CAN_ERR_ACK;
+-			cf->data[2] |= CAN_ERR_PROT_TX;
+-		}
+-	}
+-
+-	if (reg_sr & AT91_IRQ_FERR) {
+-		netdev_dbg(dev, "Format error\n");
+-
+-		stats->rx_errors++;
+-		if (cf)
+-			cf->data[2] |= CAN_ERR_PROT_FORM;
+-	}
+-
+-	if (reg_sr & AT91_IRQ_BERR) {
+-		netdev_dbg(dev, "Bit error\n");
+-
+-		stats->tx_errors++;
+-		if (cf)
+-			cf->data[2] |= CAN_ERR_PROT_TX | CAN_ERR_PROT_BIT;
+-	}
+-
+-	if (!cf)
+-		return;
+-
+-	netif_receive_skb(skb);
+-}
+-
+ static int at91_poll(struct napi_struct *napi, int quota)
+ {
+ 	struct net_device *dev = napi->dev;
+@@ -1061,6 +1000,67 @@ static void at91_irq_err(struct net_device *dev)
+ 	priv->can.state = new_state;
+ }
  
--	/* The last 4 mailboxes are used for transmitting. */
-+	/* The last mailboxes are used for transmitting. */
- 	for (i = get_mb_tx_first(priv); i <= get_mb_tx_last(priv); i++)
- 		set_mb_mode_prio(priv, i, AT91_MB_MODE_TX, 0);
- 
++static void at91_irq_err_frame(struct net_device *dev, const u32 reg_sr)
++{
++	struct net_device_stats *stats = &dev->stats;
++	struct at91_priv *priv = netdev_priv(dev);
++	struct sk_buff *skb;
++	struct can_frame *cf = NULL;
++
++	priv->can.can_stats.bus_error++;
++
++	skb = alloc_can_err_skb(dev, &cf);
++	if (cf)
++		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
++
++	if (reg_sr & AT91_IRQ_CERR) {
++		netdev_dbg(dev, "CRC error\n");
++
++		stats->rx_errors++;
++		if (cf)
++			cf->data[3] |= CAN_ERR_PROT_LOC_CRC_SEQ;
++	}
++
++	if (reg_sr & AT91_IRQ_SERR) {
++		netdev_dbg(dev, "Stuff error\n");
++
++		stats->rx_errors++;
++		if (cf)
++			cf->data[2] |= CAN_ERR_PROT_STUFF;
++	}
++
++	if (reg_sr & AT91_IRQ_AERR) {
++		netdev_dbg(dev, "NACK error\n");
++
++		stats->tx_errors++;
++		if (cf) {
++			cf->can_id |= CAN_ERR_ACK;
++			cf->data[2] |= CAN_ERR_PROT_TX;
++		}
++	}
++
++	if (reg_sr & AT91_IRQ_FERR) {
++		netdev_dbg(dev, "Format error\n");
++
++		stats->rx_errors++;
++		if (cf)
++			cf->data[2] |= CAN_ERR_PROT_FORM;
++	}
++
++	if (reg_sr & AT91_IRQ_BERR) {
++		netdev_dbg(dev, "Bit error\n");
++
++		stats->tx_errors++;
++		if (cf)
++			cf->data[2] |= CAN_ERR_PROT_TX | CAN_ERR_PROT_BIT;
++	}
++
++	if (!cf)
++		return;
++
++	netif_receive_skb(skb);
++}
++
+ /* interrupt handler
+  */
+ static irqreturn_t at91_irq(int irq, void *dev_id)
 -- 
 2.40.1
 
