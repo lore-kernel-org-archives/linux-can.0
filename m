@@ -2,64 +2,64 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFDC7E92705
-	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 14:18:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34A56E92704
+	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 14:21:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233668AbjJEOS0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 5 Oct 2023 10:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57362 "EHLO
+        id S234521AbjJEOVd (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 5 Oct 2023 10:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244323AbjJENw7 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 09:52:59 -0400
+        with ESMTP id S233627AbjJEOTo (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 10:19:44 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF047EDC
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 00:50:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E52A7ED1
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 00:50:16 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoJ7i-0001G2-Ag
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:18 +0200
+        id 1qoJ7e-0001Dq-W9
+        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:15 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoJ7f-00BDMB-Gw
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:15 +0200
+        id 1qoJ7e-00BDKH-A2
+        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:14 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 36E8622F7C6
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 07:50:15 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 08EA722F795
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 07:50:13 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8CC2522F7AA;
-        Thu,  5 Oct 2023 07:50:14 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 51C1022F784;
+        Thu,  5 Oct 2023 07:50:13 +0000 (UTC)
 Received: from [192.168.178.131] (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 576a7b43;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 284343d8;
         Thu, 5 Oct 2023 07:50:12 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Date:   Thu, 05 Oct 2023 09:49:41 +0200
-Subject: [PATCH v2 13/27] can: at91_can: at91_set_bittiming(): demote
- register output to debug level
+Date:   Thu, 05 Oct 2023 09:49:29 +0200
+Subject: [PATCH v2 01/27] can: dev: add can_state_get_by_berr_counter() to
+ return the CAN state based on the current error counters
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231005-at91_can-rx_offload-v2-13-9987d53600e0@pengutronix.de>
+Message-Id: <20231005-at91_can-rx_offload-v2-1-9987d53600e0@pengutronix.de>
 References: <20231005-at91_can-rx_offload-v2-0-9987d53600e0@pengutronix.de>
 In-Reply-To: <20231005-at91_can-rx_offload-v2-0-9987d53600e0@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
 X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=815; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=IxnP+JbX3X7x8zAlCN1Gdw+5d/+0HctZK2nmmCH9Orc=;
- b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBlHmqdSEEiQbPHV17EXmBJcdlsoQNA8B2r1zoQb
- +ioM5CyewCJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZR5qnQAKCRC+UBxKKooE
- 6GZdB/wKw4WgB7GntdHtrs4vTfbonfI64j94XM9okw5shrSmt0GXObk0guHR1uUL7XVcJWCC8Kb
- oYxPhVIrrKYdFCz5BYxh2tg4vVJqboFnSW3JIbCu2wHMwa0YxCjJ5AZADra8pJd2hicO+0+6mtx
- a01zCmoZUKlSeqkPJnUyq1+m217rgItgZBeNeatrOYl4rpnMOHFMT9R4r11u64GmcjgUnFjmrkD
- hq6qhJ0R+S1QrAPVwZ0dUwmlItCKP9M6w3NWYO2FYmcawVq3Xkfei73XucAXEo3EfdqMrVoGa2A
- K9pPzt41WR9W6rDZAKWgSCM4zDyHJKjZ2T/6MsO9SF42KEjS
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2265; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=/n+//jbEFVntgX6pMIGgucvZBSKnsOh7NM80s7w5zZY=;
+ b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBlHmqLGTTNzyf6DZVIR3WAUiFzicaBns8/eRSyz
+ i7Mx5PtMOWJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZR5qiwAKCRC+UBxKKooE
+ 6E/BB/9QQOKoUuYpIwrj7ELV3dhrUG4sXWD7fUFKFl2Ax8AtTw6qpGaqoLrSScBQuLicBLgYGiM
+ p6ffyym1YWOPDsGQA7jtvFFGSosPywCcgucutEffIgkKEP3mUQE0kt1eclwGd+UlJLUMx359iWh
+ q9DBYX+q6yMEgiZxWeV6kKhN60RCj6VlZQfBCXQftVKWY7lct1zJWv88sq/YQ8KkgGZC/Sm7jiT
+ S6DdYijA4W3iv0UwsmEI5QGlJCPFMWUiqVZN+7ZFZ1fK/rvB04dx/mfhsk+NGCX+9NaohaFrXK+
+ QRtHjI13FPrPWyXWToygPzeUicSRhyJ8ENt1FyD5reyN9Ytt
 X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
  fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -70,26 +70,66 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-This message isn't really helpful for the general reader of the kernel
-logs, so should not be printed with info level.
+Some CAN controllers do not have a register that contains the current
+CAN state, but only a register that contains the error counters.
+
+Introduce a new function can_state_get_by_berr_counter() that returns
+the current TX and RX state depending on the provided CAN bit error
+counters.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/at91_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/dev/dev.c | 22 ++++++++++++++++++++++
+ include/linux/can/dev.h   |  4 ++++
+ 2 files changed, 26 insertions(+)
 
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index 092652fd7352..f92d8a75d1b1 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -393,7 +393,7 @@ static int at91_set_bittiming(struct net_device *dev)
- 		FIELD_PREP(AT91_BR_PHASE1_MASK, bt->phase_seg1 - 1) |
- 		FIELD_PREP(AT91_BR_PHASE2_MASK, bt->phase_seg2 - 1);
+diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
+index 7f9334a8af50..a0db1f78d61d 100644
+--- a/drivers/net/can/dev/dev.c
++++ b/drivers/net/can/dev/dev.c
+@@ -90,6 +90,28 @@ const char *can_get_state_str(const enum can_state state)
+ }
+ EXPORT_SYMBOL_GPL(can_get_state_str);
  
--	netdev_info(dev, "writing AT91_BR: 0x%08x\n", reg_br);
-+	netdev_dbg(dev, "writing AT91_BR: 0x%08x\n", reg_br);
++static enum can_state can_state_err_to_state(u16 err)
++{
++	if (err < CAN_ERROR_WARNING_THRESHOLD)
++		return CAN_STATE_ERROR_ACTIVE;
++	if (err < CAN_ERROR_PASSIVE_THRESHOLD)
++		return CAN_STATE_ERROR_WARNING;
++	if (err < CAN_BUS_OFF_THRESHOLD)
++		return CAN_STATE_ERROR_PASSIVE;
++
++	return CAN_STATE_BUS_OFF;
++}
++
++void can_state_get_by_berr_counter(const struct net_device *dev,
++				   const struct can_berr_counter *bec,
++				   enum can_state *tx_state,
++				   enum can_state *rx_state)
++{
++	*tx_state = can_state_err_to_state(bec->txerr);
++	*rx_state = can_state_err_to_state(bec->rxerr);
++}
++EXPORT_SYMBOL_GPL(can_state_get_by_berr_counter);
++
+ void can_change_state(struct net_device *dev, struct can_frame *cf,
+ 		      enum can_state tx_state, enum can_state rx_state)
+ {
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 982ba245eb41..1b92aed49363 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -195,6 +195,10 @@ int can_restart_now(struct net_device *dev);
+ void can_bus_off(struct net_device *dev);
  
- 	at91_write(priv, AT91_BR, reg_br);
+ const char *can_get_state_str(const enum can_state state);
++void can_state_get_by_berr_counter(const struct net_device *dev,
++				   const struct can_berr_counter *bec,
++				   enum can_state *tx_state,
++				   enum can_state *rx_state);
+ void can_change_state(struct net_device *dev, struct can_frame *cf,
+ 		      enum can_state tx_state, enum can_state rx_state);
  
 
 -- 
