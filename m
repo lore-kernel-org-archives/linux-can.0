@@ -2,50 +2,54 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A212E92734
-	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 19:58:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B65A7E92738
+	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 19:58:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231792AbjJET6c (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 5 Oct 2023 15:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56340 "EHLO
+        id S232032AbjJET6d (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 5 Oct 2023 15:58:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231799AbjJET6Y (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 15:58:24 -0400
+        with ESMTP id S229881AbjJET6X (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 15:58:23 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A02A910F
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 12:58:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C46B100
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 12:58:21 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoUUG-0004jW-H8
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 21:58:20 +0200
+        id 1qoUUF-0004j1-Aw
+        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 21:58:19 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoUUD-00BLGV-GW
+        id 1qoUUD-00BLFU-4A
         for linux-can@vger.kernel.org; Thu, 05 Oct 2023 21:58:17 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 37E1422FFC9
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 19:58:17 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id AB22B22FFB1
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 19:58:16 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 074E822FF76;
-        Thu,  5 Oct 2023 19:58:15 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6B7AD22FF65;
+        Thu,  5 Oct 2023 19:58:14 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 544f2f91;
-        Thu, 5 Oct 2023 19:58:14 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c148904d;
+        Thu, 5 Oct 2023 19:58:13 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH net-next 09/37] can: dev: can_restart(): move debug message and stats after successful restart
-Date:   Thu,  5 Oct 2023 21:57:44 +0200
-Message-Id: <20231005195812.549776-10-mkl@pengutronix.de>
+        kernel@pengutronix.de,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>,
+        Simon Horman <horms@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 04/37] can: raw: Remove NULL check before dev_{put, hold}
+Date:   Thu,  5 Oct 2023 21:57:39 +0200
+Message-Id: <20231005195812.549776-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231005195812.549776-1-mkl@pengutronix.de>
 References: <20231005195812.549776-1-mkl@pengutronix.de>
@@ -59,45 +63,39 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Move the debug message "restarted" and the CAN restart stats_after_
-the successful restart of the CAN device, because the restart may
-fail.
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-While there update the error message from printing the error number to
-printing symbolic error names.
+The call netdev_{put, hold} of dev_{put, hold} will check NULL, so there
+is no need to check before using dev_{put, hold}, remove it to silence
+the warning:
 
-Link: https://lore.kernel.org/all/20231005-can-dev-fix-can-restart-v2-4-91b5c1fd922c@pengutronix.de
-Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-[mkl: mention stats in subject and description, too]
+./net/can/raw.c:497:2-9: WARNING: NULL check before dev_{put, hold} functions is not needed.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6231
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Reported-by: Simon Horman <horms@kernel.org>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://lore.kernel.org/all/20230825064656.87751-1-jiapeng.chong@linux.alibaba.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/dev.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ net/can/raw.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
-index 9014256c486a..82b12902fc35 100644
---- a/drivers/net/can/dev/dev.c
-+++ b/drivers/net/can/dev/dev.c
-@@ -147,15 +147,15 @@ static void can_restart(struct net_device *dev)
- 		netif_rx(skb);
- 	}
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 73468d2ebd51..e6b822624ba2 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -493,8 +493,7 @@ static int raw_bind(struct socket *sock, struct sockaddr *uaddr, int len)
  
--	netdev_dbg(dev, "restarted\n");
--	priv->can_stats.restarts++;
--
- 	/* Now restart the device */
- 	netif_carrier_on(dev);
- 	err = priv->do_set_mode(dev, CAN_MODE_START);
- 	if (err) {
--		netdev_err(dev, "Error %d during restart", err);
-+		netdev_err(dev, "Restart failed, error %pe\n", ERR_PTR(err));
- 		netif_carrier_off(dev);
-+	} else {
-+		netdev_dbg(dev, "Restarted\n");
-+		priv->can_stats.restarts++;
- 	}
- }
- 
+ out_put_dev:
+ 	/* remove potential reference from dev_get_by_index() */
+-	if (dev)
+-		dev_put(dev);
++	dev_put(dev);
+ out:
+ 	release_sock(sk);
+ 	rtnl_unlock();
 -- 
 2.40.1
 
