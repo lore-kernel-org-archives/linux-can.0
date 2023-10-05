@@ -2,63 +2,65 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58557E92727
-	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 16:43:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6344E7AD44
+	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 16:50:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbjJEQnW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 5 Oct 2023 12:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53120 "EHLO
+        id S229654AbjJEQuK (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 5 Oct 2023 12:50:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232531AbjJEQlm (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 12:41:42 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A0B4228
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 09:12:09 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-405459d9a96so99455e9.0
-        for <linux-can@vger.kernel.org>; Thu, 05 Oct 2023 09:12:09 -0700 (PDT)
+        with ESMTP id S230408AbjJEQsX (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 12:48:23 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 914281FDA
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 09:41:16 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-405459d9a96so1935e9.0
+        for <linux-can@vger.kernel.org>; Thu, 05 Oct 2023 09:41:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696522328; x=1697127128; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1696524075; x=1697128875; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0r0z6lg6WCpdjTrIkK0dVsLYyVCZ/7MdG8Aqn4UL8Rc=;
-        b=o681KbIh2TlLlhg8XG13gpUMzwdOWGu93tlv1/AmAQmTSR1pYFOLQ39scqoBCGGlhi
-         4twWQG1uOshmLs2xF5w3/nPDQegq0pHr0IWitMDfaFoK/bDa9m+nCYE67EVozR0MX0+X
-         EyGpMb4MPF9fy3rf61gcJROjNqNa6HcEqJuxmhB+ki0io7BHtCw0U0i/lw4kIKZpWQfR
-         6Kjip00dYddoVNJ958TrIuB6gJsLypWAVPUE31LC1LfuJ6rivEEgPkbYFRhuBmoZQOui
-         QtqcpUzWEIo2mO1rI7Z0w5A7W0peQitW15tx4IKCl23o7rV+GX/ihXN7g61y1pw7elN7
-         oC2A==
+        bh=kKTDRIoUmCSN9wKAZkd+bxIJEDblkCbUKypHY3ps4Iw=;
+        b=Q+9rGAz/E7g9ybkcIAMcFbKwvoF1EZUZRfBom65Nza9mTZxv5FdEt5FcqQNQF4BW3Q
+         6rUFyD4mxY75T+3bGjsgQYrrEBDxwaWrhNrtrwWIweqXkPyzy2PqaqDxs0dREmRn5Tzr
+         YNyLMfb8A8zAGs9Yg7BF5MmvP0QI6wJACnWAejFGjNFYBl8w3lkkjY4i+AA4Mxas3Dj+
+         ooHh7ByEuqTi7CdLSa3a0V/FuVsVaQ2uPyA+TdPD7ILsl3k2SZJMQpQT+KqTY+9EetUm
+         dgTEPMriDfHV42y+ZQBfdJpC263VP4M/pnNHLYwAFzsRL5Q9H6j99SQVa2AUSVR6UW9A
+         hGNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696522328; x=1697127128;
+        d=1e100.net; s=20230601; t=1696524075; x=1697128875;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0r0z6lg6WCpdjTrIkK0dVsLYyVCZ/7MdG8Aqn4UL8Rc=;
-        b=qm0GJ0wOvoGy3RzXWcmrn8zSkZr+NPrkRHqJgsD90wqxz4nEicsJ+NdNtZJGT2o+Hs
-         fNNQdrF3dfyCC3ET153++MMxJeD4x8dfTmyEdZfbIBDD9qH9gCauT68IH7JUcafJTZSS
-         h7xSyWxLqFFGUsw8deBpLUa21YN8TDgblEz8ZzxM7aloqBpF2U/EF0/AixYdPYoYaMbC
-         oL6xh1PIJ2GmJjdlssX+p/ztVD5pq6jlmXn1FCq1Xr38I1Pr2ypphaKUJKcu6pFZa03M
-         nncZmee7lzapszOOCq7v7apUrOU921yUGwJP0sOEsTIC4SbHB75fcEw0p5UG6d9ZOXfF
-         7wGQ==
-X-Gm-Message-State: AOJu0YwIuYXDS7yixfaLdXW55VYgwDqVkwKw8Zl9srcAk4uzHvbykIae
-        5TyQjbSk4l7ezaxMxpvqhSyzdHHINoTVXXE0bwbqeg==
-X-Google-Smtp-Source: AGHT+IHsG9cALy9l/AGtf9WGqoTk1+vFPuwod1G0A2HPE9T+W6tIBWkayyF2LSEa5O28SfRy9xIMPv/xnERf3BuOFTY=
-X-Received: by 2002:a05:600c:b93:b0:3fe:eb42:7ec with SMTP id
- fl19-20020a05600c0b9300b003feeb4207ecmr61696wmb.1.1696522327966; Thu, 05 Oct
- 2023 09:12:07 -0700 (PDT)
+        bh=kKTDRIoUmCSN9wKAZkd+bxIJEDblkCbUKypHY3ps4Iw=;
+        b=StJtba1zoCMqVcbzccZC3aFWbUs0uG3jdVwbi+RR2+gnbNUuoqnBsvoH7yO1Fn23/f
+         CmsvmUmbCFzXXBjhQDFabdVwCgTRs6iumUBoMIO+JEtrqB6utcc2qGGo+WS9uIlA/rW8
+         bCZPUlX+6mRVDfql7+pwC7CFMVVtENVmOhVhF6ujubXeAb2pn6RSpZhatc3PGrgyvY82
+         gyW6x3dHKISuHEPw/DBB8GWkezkni3LjE62ewIeVmN674mqylq+mfGdkhtUwXpiMaqN/
+         i0w2XFEEFeCLnVrpaNfDJ/VdtuEpP0m5tfGIbVxqd94nuKd4z1SY7d+UGJtrRMwNAlVK
+         dprw==
+X-Gm-Message-State: AOJu0YzOgH7PREp8LLFOjs+DefvX8/gFH8BKa4BtnOoAWxXIGHfchMX2
+        jovO5lL2w311DgYi0AiLXTQ35f5pxjsjS1erzz3z9w==
+X-Google-Smtp-Source: AGHT+IHCYz0blMBWwpdJoZ1RUCKFkOGFeBm9VdaHikhjZLlf2r3eA9UAmptIepXMQVxXyXzuuEUlEkvL8t18CpmL0rk=
+X-Received: by 2002:a05:600c:2301:b0:405:38d1:e146 with SMTP id
+ 1-20020a05600c230100b0040538d1e146mr66369wmo.4.1696524074654; Thu, 05 Oct
+ 2023 09:41:14 -0700 (PDT)
 MIME-Version: 1.0
 References: <20231003145150.2498-1-ansuelsmth@gmail.com> <20231003145150.2498-3-ansuelsmth@gmail.com>
-In-Reply-To: <20231003145150.2498-3-ansuelsmth@gmail.com>
+ <CANn89iK226C-pHUJm7HKMyEtMycGC=KCA2M6kw2KJaUj0cCT6w@mail.gmail.com> <20231005093253.2e25533a@kernel.org>
+In-Reply-To: <20231005093253.2e25533a@kernel.org>
 From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 5 Oct 2023 18:11:56 +0200
-Message-ID: <CANn89iK226C-pHUJm7HKMyEtMycGC=KCA2M6kw2KJaUj0cCT6w@mail.gmail.com>
+Date:   Thu, 5 Oct 2023 18:41:03 +0200
+Message-ID: <CANn89iJQ50AdXP2C1YB2pGjE02WCJ-QCsZqE1yGXtcGsfLA0Jw@mail.gmail.com>
 Subject: Re: [net-next PATCH v2 3/4] netdev: replace napi_reschedule with napi_schedule
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Christian Marangi <ansuelsmth@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
         Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
         Chris Snook <chris.snook@gmail.com>,
         Raju Rangoju <rajur@chelsio.com>,
@@ -123,23 +125,29 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Tue, Oct 3, 2023 at 8:36=E2=80=AFPM Christian Marangi <ansuelsmth@gmail.=
-com> wrote:
+On Thu, Oct 5, 2023 at 6:32=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wro=
+te:
 >
-> Now that napi_schedule return a bool, we can drop napi_reschedule that
-> does the same exact function. The function comes from a very old commit
-> bfe13f54f502 ("ibm_emac: Convert to use napi_struct independent of struct
-> net_device") and the purpose is actually deprecated in favour of
-> different logic.
+> On Thu, 5 Oct 2023 18:11:56 +0200 Eric Dumazet wrote:
+> > OK, but I suspect some users of napi_reschedule() might not be race-fre=
+e...
 >
-> Convert every user of napi_reschedule to napi_schedule.
->
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com> # ath10k
-> Acked-by: Nick Child <nnac123@linux.ibm.com> # ibm
-> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # for can/dev/rx-offload=
-.c
+> What's the race you're thinking of?
 
-OK, but I suspect some users of napi_reschedule() might not be race-free...
+This sort of thing... the race is in fl_starving() though...
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c
+b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+index 98dd78551d89..b5ff2e1a9975 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+@@ -4261,7 +4261,7 @@ static void sge_rx_timer_cb(struct timer_list *t)
+
+                        if (fl_starving(adap, fl)) {
+                                rxq =3D container_of(fl, struct sge_eth_rxq=
+, fl);
+-                               if (napi_reschedule(&rxq->rspq.napi))
++                               if (napi_schedule(&rxq->rspq.napi))
+                                        fl->starving++;
+                                else
+                                        set_bit(id, s->starving_fl);
