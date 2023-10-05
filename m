@@ -2,57 +2,68 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34F27E92708
-	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 14:34:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B09A1E92702
+	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 14:35:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233668AbjJEOew (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 5 Oct 2023 10:34:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58004 "EHLO
+        id S231329AbjJEOfL (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 5 Oct 2023 10:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234143AbjJEOc0 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 10:32:26 -0400
+        with ESMTP id S234120AbjJEOdw (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 10:33:52 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B21D21D27
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 02:46:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C67E7EC3
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 00:48:33 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoKwR-0002zA-M4
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 11:46:47 +0200
+        id 1qoJ5z-0000ZJ-TM
+        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:48:31 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoKwQ-00BEe1-G6
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 11:46:46 +0200
+        id 1qoJ5z-00BDIj-G2
+        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:48:31 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 2BDF322F967
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 09:46:46 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 37E7022F75D
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 07:48:31 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2DFCA22F938;
-        Thu,  5 Oct 2023 09:46:44 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 40e27c31;
-        Thu, 5 Oct 2023 09:46:43 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6577022F74E;
+        Thu,  5 Oct 2023 07:48:30 +0000 (UTC)
+Received: from [192.168.178.131] (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ee22b864;
+        Thu, 5 Oct 2023 07:48:29 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, John Watts <contact@jookia.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 3/7] can: sun4i_can: Only show Kconfig if ARCH_SUNXI is set
-Date:   Thu,  5 Oct 2023 11:46:35 +0200
-Message-Id: <20231005094639.387019-4-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231005094639.387019-1-mkl@pengutronix.de>
-References: <20231005094639.387019-1-mkl@pengutronix.de>
+Subject: [PATCH v2 0/5] can: dev: fix can_restart() and replace BUG_ON() by
+ error handling
+Date:   Thu, 05 Oct 2023 09:48:17 +0200
+Message-Id: <20231005-can-dev-fix-can-restart-v2-0-91b5c1fd922c@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEJqHmUC/4WNTQ6CMBCFr2Jm7ZhSxIAr72FYVHjAbAqZ1gZDu
+ LuVC7h738v72ShABYHup40USYLMPoM9n6ibnB/B0mcma2xZGHPlznnukXiQ9dCKEJ1GBob65Up
+ UuIFye1HkyLH8bDNPEuKsn+MoFT/3/2Yq2LBFZeumgXND9Vjgx3fU2ct66UHtvu9fs1r31cMAA
+ AA=
+To:     linux-can@vger.kernel.org
+Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+X-Mailer: b4 0.13-dev-0438c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1484; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=N4EVa4edcOEn7DA9EVzG3jC6ZX1ud0WXtk2qTMbRaiE=;
+ b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBlHmpE6X278U5Q5pAtkiYqcOMLlhD/a7iH1xAc3
+ EsacIDzLAqJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZR5qRAAKCRC+UBxKKooE
+ 6OOjB/9Vbcn6JB7bi0VmZvSj54w06Q2U/nHmrsbTF3fmM1qv3iflVg+dW5AO2OCzDqCA931GgAq
+ /dM0JDpCqnO4w/uSHLTaUOpMAqVu70TDYuMBG6Vvt7gu1v663Urfz+WboAq/jtquQM7o1uW7V5G
+ /59k4wsz6K0ehEzHrF0Uhbj4ydJsVkELPttNW2JJK4CCBjt8xN1YPEWs+0ksEtQcSnXHFyafHAQ
+ xJS/eU5OIX13fGggmpPcpe4fPm3PmxRMHJ6LhNepfAjvs5F/dP/KEQeWpgze1W2XPF9narCFA0x
+ 6R7vLZqu0W8PQrFCH0Tr1awkXaho0Tqb9qcqexE3zaQIt1TI
+X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
+ fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
@@ -61,37 +72,38 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: John Watts <contact@jookia.org>
+There are 2 BUG_ON() in the CAN dev helpers. During the update/test of
+the at91_can driver to rx-offload the one in can_restart() was
+triggered, due to a race condition in can_restart() and a hardware
+limitation of the at91_can IP core.
 
-When adding the RISCV option I didn't gate it behind ARCH_SUNXI.
-As a result this option shows up with Allwinner support isn't enabled.
-Fix that by requiring ARCH_SUNXI to be set if RISCV is set.
+This series fixes the race condition, replaces BUG_ON() with an error
+message, and does some cleanup. Finally, the BUG_ON() in
+can_put_echo_skb() is also replaced with error handling.
 
-Fixes: 8abb95250ae6 ("can: sun4i_can: Add support for the Allwinner D1")
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Closes: https://lore.kernel.org/linux-sunxi/CAMuHMdV2m54UAH0X2dG7stEg=grFihrdsz4+o7=_DpBMhjTbkw@mail.gmail.com/
-Signed-off-by: John Watts <contact@jookia.org>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/all/20230905231342.2042759-2-contact@jookia.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes in v2:
+- 4/5: move "Restarted" debug message and stats after successful restart (Thanks Vincent)
+- Link to v1: https://lore.kernel.org/all/20231004-can-dev-fix-can-restart-v1-0-2e52899eaaf5@pengutronix.de
 
-diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-index 649453a3c858..f8cde9f9f554 100644
---- a/drivers/net/can/Kconfig
-+++ b/drivers/net/can/Kconfig
-@@ -190,7 +190,7 @@ config CAN_SLCAN
- 
- config CAN_SUN4I
- 	tristate "Allwinner A10 CAN controller"
--	depends on MACH_SUN4I || MACH_SUN7I || RISCV || COMPILE_TEST
-+	depends on MACH_SUN4I || MACH_SUN7I || (RISCV && ARCH_SUNXI) || COMPILE_TEST
- 	help
- 	  Say Y here if you want to use CAN controller found on Allwinner
- 	  A10/A20/D1 SoCs.
+---
+Marc Kleine-Budde (5):
+      can: dev: can_restart(): don't crash kernel if carrier is OK
+      can: dev: can_restart(): fix race condition between controller restart and netif_carrier_on()
+      can: dev: can_restart(): reverse logic to remove need for goto
+      can: dev: can_restart(): update debug and error messages
+      can: dev: can_put_echo_skb(): don't crash kernel if can_priv::echo_skb is accessed out of bounds
+
+ drivers/net/can/dev/dev.c | 29 ++++++++++++++---------------
+ drivers/net/can/dev/skb.c |  6 +++++-
+ 2 files changed, 19 insertions(+), 16 deletions(-)
+---
+base-commit: 93e7eca853ca0087b129433630ddd89288d2b8b4
+change-id: 20231004-can-dev-fix-can-restart-eef8ba3e5e6e
+
+Best regards,
 -- 
-2.40.1
+Marc Kleine-Budde <mkl@pengutronix.de>
 
 
