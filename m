@@ -2,64 +2,64 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30E26E92704
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92207E92706
 	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 14:23:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231882AbjJEOXr (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 5 Oct 2023 10:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58124 "EHLO
+        id S232478AbjJEOXs (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 5 Oct 2023 10:23:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233255AbjJEOWM (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 10:22:12 -0400
+        with ESMTP id S233103AbjJEOWK (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 10:22:10 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E87D7EC4
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 00:48:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 666E97EDA
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 00:50:19 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoJ60-0000ZQ-0m
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:48:32 +0200
+        id 1qoJ7h-0001FL-Hm
+        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:17 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoJ5z-00BDIn-Hz
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:48:31 +0200
+        id 1qoJ7f-00BDLb-5i
+        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:15 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 44AFF22F75E
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 07:48:31 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id D509222F7B8
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 07:50:14 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8330B22F74F;
-        Thu,  5 Oct 2023 07:48:30 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 2BD0322F79B;
+        Thu,  5 Oct 2023 07:50:14 +0000 (UTC)
 Received: from [192.168.178.131] (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 741f5778;
-        Thu, 5 Oct 2023 07:48:29 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 9dfa2982;
+        Thu, 5 Oct 2023 07:50:12 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Date:   Thu, 05 Oct 2023 09:48:18 +0200
-Subject: [PATCH v2 1/5] can: dev: can_restart(): don't crash kernel if
- carrier is OK
+Date:   Thu, 05 Oct 2023 09:49:37 +0200
+Subject: [PATCH v2 09/27] can: at91_can: MCR Register: convert to
+ FIELD_PREP()
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231005-can-dev-fix-can-restart-v2-1-91b5c1fd922c@pengutronix.de>
-References: <20231005-can-dev-fix-can-restart-v2-0-91b5c1fd922c@pengutronix.de>
-In-Reply-To: <20231005-can-dev-fix-can-restart-v2-0-91b5c1fd922c@pengutronix.de>
+Message-Id: <20231005-at91_can-rx_offload-v2-9-9987d53600e0@pengutronix.de>
+References: <20231005-at91_can-rx_offload-v2-0-9987d53600e0@pengutronix.de>
+In-Reply-To: <20231005-at91_can-rx_offload-v2-0-9987d53600e0@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
 X-Mailer: b4 0.13-dev-0438c
 X-Developer-Signature: v=1; a=openpgp-sha256; l=1225; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=HtEBMCFEoiUqSIy/quU3FUBjWZjQuuoZEXqdX2FYCNU=;
- b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBlHmpGoM26QVdhi1hqHE98DBim6jtBuGhM1eypD
- fqd6Q7FBaaJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZR5qRgAKCRC+UBxKKooE
- 6MpdB/9SNP6CBuchfu7MWTBVzQF/RqDhZUGd2pU8oiy23l/1YCPadnBlfho0ozxyUL3KuIyVhgj
- /LiA4UyNnxc4E9YoJn+uCK2+SQhhcbLObQ81PhIeoJweFttgzLwDbeI67xd/jTaXGVqObsCUyJD
- mVoiYQ+oVWDZoNaVOsi7teN8A2UtYDRUIJOEEewcEWkmZNdmTv0nhQN8AP5a6D24eM1IjMhC0yw
- 9NvhqDW+x98GJ8FDu8xTrrWCozpO+JKEef5c4bvcaWgy3vomnvxNuSfJcDLkgT7ADXL+WQz+QtD
- oEmfLuSnD0F/TYP0yvf2ILml99/JEBAkG/KegjwM6AjyLdF1
+ h=from:subject:message-id; bh=YrM90VorI74f0rY0f0LwiI96RbngAxwugCi7U3Yt+i4=;
+ b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBlHmqXzpfhC7WIB/FvNz4IXw3/R/tsiwGKtk0Nd
+ D9kTQc1gOCJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZR5qlwAKCRC+UBxKKooE
+ 6LvUCACoPAAzDB5Tb8VgcGdjClAW1IMIkzh3xUJYLzI4sL+e+GZOPhEJGHrzwLSURfHlPIWWdr1
+ JWqWxqo5+fumlMmPsldSa3QKgaNU2AaLxS8PixlgOJGQ7ypLmCd8QJEj7P0ECS5QBHUG7rcT68G
+ vK3EdNPXSPwnCKg5uW5zYAhvk2Uehrzx40VRIbrAz/xoVOlvM/O+0dVx5pXD99a7Rn8nVN1axBb
+ Fcli2Irue6q0KSsHQIVSMeUaDLAwWg9srO5H+L0y8PNi6VqNGsl5pPGWfppsHRIgZwWs7+VSlD8
+ DrVp+36a6eQr5HwrHEU2pQp+cW4OQLVsL5XJB1BJyzs7H+M/
 X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
  fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -70,37 +70,42 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-During testing, I triggered a can_restart() with the netif carrier
-being OK [1]. The BUG_ON, which checks if the carrier is OK, results
-in a fatal kernel crash. This is neither helpful for debugging nor for
-a production system.
+Use FIELD_PREP() to access the individual fields of the MCR register.
 
-[1] The root cause is a race condition in can_restart() which will be
-fixed in the next patch.
-
-Do not crash the kernel, issue an error message instead, and continue
-restarting the CAN device anyway.
-
-Fixes: 39549eef3587 ("can: CAN Network device driver and Netlink interface")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/dev.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/can/at91_can.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
-index 7f9334a8af50..a5bbdfa9a269 100644
---- a/drivers/net/can/dev/dev.c
-+++ b/drivers/net/can/dev/dev.c
-@@ -132,7 +132,8 @@ static void can_restart(struct net_device *dev)
- 	struct can_frame *cf;
- 	int err;
+diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
+index 41dd2ea239b9..0269e2a6508a 100644
+--- a/drivers/net/can/at91_can.c
++++ b/drivers/net/can/at91_can.c
+@@ -90,7 +90,9 @@ enum at91_reg {
+ #define AT91_MSR_MRDY BIT(23)
+ #define AT91_MSR_MMI BIT(24)
  
--	BUG_ON(netif_carrier_ok(dev));
-+	if (netif_carrier_ok(dev))
-+		netdev_err(dev, "Attempt to restart for bus-off recovery, but carrier is OK?\n");
++#define AT91_MCR_MDLC_MASK GENMASK(19, 16)
+ #define AT91_MCR_MRTR BIT(20)
++#define AT91_MCR_MACR BIT(22)
+ #define AT91_MCR_MTCR BIT(23)
  
- 	/* No synchronization needed because the device is bus-off and
- 	 * no messages can come in or go out.
+ /* Mailbox Modes */
+@@ -490,8 +492,12 @@ static netdev_tx_t at91_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 		return NETDEV_TX_BUSY;
+ 	}
+ 	reg_mid = at91_can_id_to_reg_mid(cf->can_id);
+-	reg_mcr = ((cf->can_id & CAN_RTR_FLAG) ? AT91_MCR_MRTR : 0) |
+-		(cf->len << 16) | AT91_MCR_MTCR;
++
++	reg_mcr = FIELD_PREP(AT91_MCR_MDLC_MASK, cf->len) |
++		AT91_MCR_MTCR;
++
++	if (cf->can_id & CAN_RTR_FLAG)
++		reg_mcr |= AT91_MCR_MRTR;
+ 
+ 	/* disable MB while writing ID (see datasheet) */
+ 	set_mb_mode(priv, mb, AT91_MB_MODE_DISABLED);
 
 -- 
 2.40.1
