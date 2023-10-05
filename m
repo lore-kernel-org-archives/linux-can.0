@@ -2,49 +2,49 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26617E92736
-	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 19:58:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99606E92735
+	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 19:58:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbjJET6t (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S230521AbjJET6t (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Thu, 5 Oct 2023 15:58:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49062 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231944AbjJET6b (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 15:58:31 -0400
+        with ESMTP id S231935AbjJET6a (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 15:58:30 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F75B11F
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D1B116
         for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 12:58:28 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoUUM-0004sj-E6
+        id 1qoUUL-0004tT-U6
         for linux-can@vger.kernel.org; Thu, 05 Oct 2023 21:58:26 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoUUH-00BLO5-Iu
+        id 1qoUUH-00BLOq-TB
         for linux-can@vger.kernel.org; Thu, 05 Oct 2023 21:58:21 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 2D294230084
+        by bjornoya.blackshift.org (Postfix) with SMTP id 94B60230089
         for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 19:58:21 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 0474222FFF2;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 63B7623000C;
         Thu,  5 Oct 2023 19:58:18 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 91987050;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1f4cf061;
         Thu, 5 Oct 2023 19:58:15 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
         kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 33/37] can: at91_can: at91_irq_err_line(): take reg_sr into account for bus off
-Date:   Thu,  5 Oct 2023 21:58:08 +0200
-Message-Id: <20231005195812.549776-34-mkl@pengutronix.de>
+Subject: [PATCH net-next 36/37] can: at91_can: at91_alloc_can_err_skb() introduce new function
+Date:   Thu,  5 Oct 2023 21:58:11 +0200
+Message-Id: <20231005195812.549776-37-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231005195812.549776-1-mkl@pengutronix.de>
 References: <20231005195812.549776-1-mkl@pengutronix.de>
@@ -58,82 +58,47 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-The at91 CAN controller automatically recovers from bus-off after 128
-occurrences of 11 consecutive recessive bits.
+This is a preparation patch to convert the driver to make use of the
+rx-offload helper. With rx-offload the received CAN frames are sorted
+by their timestamp. Regular CAN RX'ed and TX'ed CAN frames are
+timestamped by the hardware. Error events are not.
 
-After an auto-recovered bus-off, the error counters no longer reflect
-this fact. On the sam9263 the state bits in the SR register show the
-current state (based on the current error counters), while on sam9x5
-and newer SoCs these bits are latched.
+Introduce a new function at91_alloc_can_err_skb() the allocates an
+error SKB and reads the current timestamp from the controller.
 
-Take any latched bus-off information from the SR register into account
-when calculating the CAN new state, to start the standard CAN bus off
-handling.
-
-Link: https://lore.kernel.org/all/20231005-at91_can-rx_offload-v2-23-9987d53600e0@pengutronix.de
+Link: https://lore.kernel.org/all/20231005-at91_can-rx_offload-v2-26-9987d53600e0@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/at91_can.c | 26 ++++++++++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
+ drivers/net/can/at91_can.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
 diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index 68b611d0fa6c..fbe58a1a1989 100644
+index d5e1d1b2cdd1..ca62aa027e5f 100644
 --- a/drivers/net/can/at91_can.c
 +++ b/drivers/net/can/at91_can.c
-@@ -437,6 +437,11 @@ static void at91_chip_start(struct net_device *dev)
- 
- 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
- 
-+	/* Dummy read to clear latched line error interrupts on
-+	 * sam9x5 and newer SoCs.
-+	 */
-+	at91_read(priv, AT91_SR);
-+
- 	/* Enable interrupts */
- 	reg_ier = get_irq_mb_rx(priv) | AT91_IRQ_ERRP | AT91_IRQ_ERR_FRAME;
- 	at91_write(priv, AT91_IER, reg_ier);
-@@ -932,7 +937,7 @@ static void at91_irq_err_state(struct net_device *dev,
- 	at91_write(priv, AT91_IER, reg_ier);
+@@ -576,6 +576,22 @@ static inline void at91_activate_rx_mb(const struct at91_priv *priv,
+ 	at91_write(priv, AT91_TCR, mask);
  }
  
--static void at91_irq_err_line(struct net_device *dev)
-+static void at91_irq_err_line(struct net_device *dev, const u32 reg_sr)
- {
- 	enum can_state new_state, rx_state, tx_state;
- 	struct at91_priv *priv = netdev_priv(dev);
-@@ -942,6 +947,23 @@ static void at91_irq_err_line(struct net_device *dev)
- 
- 	at91_get_berr_counter(dev, &bec);
- 	can_state_get_by_berr_counter(dev, &bec, &tx_state, &rx_state);
++static inline u32 at91_get_timestamp(const struct at91_priv *priv)
++{
++	return at91_read(priv, AT91_TIM);
++}
 +
-+	/* The chip automatically recovers from bus-off after 128
-+	 * occurrences of 11 consecutive recessive bits.
-+	 *
-+	 * After an auto-recovered bus-off, the error counters no
-+	 * longer reflect this fact. On the sam9263 the state bits in
-+	 * the SR register show the current state (based on the
-+	 * current error counters), while on sam9x5 and newer SoCs
-+	 * these bits are latched.
-+	 *
-+	 * Take any latched bus-off information from the SR register
-+	 * into account when calculating the CAN new state, to start
-+	 * the standard CAN bus off handling.
-+	 */
-+	if (reg_sr & AT91_IRQ_BOFF)
-+		rx_state = CAN_STATE_BUS_OFF;
++static inline struct sk_buff *
++at91_alloc_can_err_skb(struct net_device *dev,
++		       struct can_frame **cf, u32 *timestamp)
++{
++	const struct at91_priv *priv = netdev_priv(dev);
 +
- 	new_state = max(tx_state, rx_state);
- 
- 	/* state hasn't changed */
-@@ -1050,7 +1072,7 @@ static irqreturn_t at91_irq(int irq, void *dev_id)
- 	if (reg_sr & get_irq_mb_tx(priv))
- 		at91_irq_tx(dev, reg_sr);
- 
--	at91_irq_err_line(dev);
-+	at91_irq_err_line(dev, reg_sr);
- 
- 	/* Frame Error Interrupt */
- 	if (reg_sr & AT91_IRQ_ERR_FRAME)
++	*timestamp = at91_get_timestamp(priv);
++
++	return alloc_can_err_skb(dev, cf);
++}
++
+ /**
+  * at91_rx_overflow_err - send error frame due to rx overflow
+  * @dev: net device
 -- 
 2.40.1
 
