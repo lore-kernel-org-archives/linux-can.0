@@ -2,57 +2,66 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1293E9270D
-	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 15:48:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F2D0E71D4F
+	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 16:13:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234343AbjJEPsq (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 5 Oct 2023 11:48:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36366 "EHLO
+        id S233553AbjJEQMx (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 5 Oct 2023 12:12:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233831AbjJEPsE (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 11:48:04 -0400
+        with ESMTP id S240205AbjJEQLh (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 12:11:37 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A6B321D26
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 02:46:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDC27EC6
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 00:48:33 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoKwR-0002ys-HO
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 11:46:47 +0200
+        id 1qoJ60-0000Zn-8F
+        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:48:32 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoKwQ-00BEdl-92
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 11:46:46 +0200
+        id 1qoJ5z-00BDIy-MV
+        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:48:31 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id EEB8422F964
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 09:46:45 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 68D1F22F761
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 07:48:31 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 03B0522F936;
-        Thu,  5 Oct 2023 09:46:44 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 55a6fc9c;
-        Thu, 5 Oct 2023 09:46:43 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id BC95F22F752;
+        Thu,  5 Oct 2023 07:48:30 +0000 (UTC)
+Received: from [192.168.178.131] (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 292e647c;
+        Thu, 5 Oct 2023 07:48:29 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Lukas Magel <lukas.magel@posteo.net>,
-        Maxime Jayat <maxime.jayat@mobile-devices.fr>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 2/7] can: isotp: isotp_sendmsg(): fix TX state detection and wait behavior
-Date:   Thu,  5 Oct 2023 11:46:34 +0200
-Message-Id: <20231005094639.387019-3-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231005094639.387019-1-mkl@pengutronix.de>
-References: <20231005094639.387019-1-mkl@pengutronix.de>
+Date:   Thu, 05 Oct 2023 09:48:20 +0200
+Subject: [PATCH v2 3/5] can: dev: can_restart(): reverse logic to remove
+ need for goto
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231005-can-dev-fix-can-restart-v2-3-91b5c1fd922c@pengutronix.de>
+References: <20231005-can-dev-fix-can-restart-v2-0-91b5c1fd922c@pengutronix.de>
+In-Reply-To: <20231005-can-dev-fix-can-restart-v2-0-91b5c1fd922c@pengutronix.de>
+To:     linux-can@vger.kernel.org
+Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+X-Mailer: b4 0.13-dev-0438c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=853; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=nGQEpiksyuJeEdUcRtLUNhXcIwJiVwCzGVceJl1lCn4=;
+ b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBlHmpJi5G47d/wZUhu4SmzxJN65LzF4yuXfuFWR
+ EgFKRCoNeyJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZR5qSQAKCRC+UBxKKooE
+ 6HdKB/9xhV5WviFfOCj+RQMEmEAZiJO0g+ACOzW+1hDW+qcxrWDpxuLiUEDIPVjSbYDtes6DART
+ QGh6YQhwx8/XMt/75axYRLQKFVUaJ5R6sXSm4EpCmNE0hVoLweQHxRn43FXnbGsYBoHwQ2RUbQ5
+ LhFuER6LiRfOCu4jLIl/TJmT7yWQIpcz9Ywpzpxjt6aEvyuJc7EQ4D1ZuJJl456xm4eZPwBhUMD
+ 4Xeu6gWHCbPyecWJ+QVlpxtbL58XAqoXHlUo5aIY073kXrc7Bxdtrztc1mHFBAJZFwV5Weswqzs
+ YBL0WnHYUFLxyqpAkc86Qjm4W21ZC21+dpoajf1+I/s+ucYC
+X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
+ fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
@@ -61,72 +70,38 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Lukas Magel <lukas.magel@posteo.net>
+Reverse the logic in the if statement and eliminate the need for a
+goto to simplify code readability.
 
-With patch [1], isotp_poll was updated to also queue the poller in the
-so->wait queue, which is used for send state changes. Since the queue
-now also contains polling tasks that are not interested in sending, the
-queue fill state can no longer be used as an indication of send
-readiness. As a consequence, nonblocking writes can lead to a race and
-lock-up of the socket if there is a second task polling the socket in
-parallel.
-
-With this patch, isotp_sendmsg does not consult wq_has_sleepers but
-instead tries to atomically set so->tx.state and waits on so->wait if it
-is unable to do so. This behavior is in alignment with isotp_poll, which
-also checks so->tx.state to determine send readiness.
-
-V2:
-- Revert direct exit to goto err_event_drop
-
-[1] https://lore.kernel.org/all/20230331125511.372783-1-michal.sojka@cvut.cz
-
-Reported-by: Maxime Jayat <maxime.jayat@mobile-devices.fr>
-Closes: https://lore.kernel.org/linux-can/11328958-453f-447f-9af8-3b5824dfb041@munic.io/
-Signed-off-by: Lukas Magel <lukas.magel@posteo.net>
-Reviewed-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Fixes: 79e19fa79cb5 ("can: isotp: isotp_ops: fix poll() to not report false EPOLLOUT events")
-Link: https://github.com/pylessard/python-udsoncan/issues/178#issuecomment-1743786590
-Link: https://lore.kernel.org/all/20230827092205.7908-1-lukas.magel@posteo.net
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/isotp.c | 19 ++++++++-----------
- 1 file changed, 8 insertions(+), 11 deletions(-)
+ drivers/net/can/dev/dev.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index f02b5d3e4733..d1c6f206f429 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -948,21 +948,18 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	if (!so->bound || so->tx.state == ISOTP_SHUTDOWN)
- 		return -EADDRNOTAVAIL;
+diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
+index 735d5de3caa0..9014256c486a 100644
+--- a/drivers/net/can/dev/dev.c
++++ b/drivers/net/can/dev/dev.c
+@@ -142,14 +142,11 @@ static void can_restart(struct net_device *dev)
  
--wait_free_buffer:
--	/* we do not support multiple buffers - for now */
--	if (wq_has_sleeper(&so->wait) && (msg->msg_flags & MSG_DONTWAIT))
--		return -EAGAIN;
-+	while (cmpxchg(&so->tx.state, ISOTP_IDLE, ISOTP_SENDING) != ISOTP_IDLE) {
-+		/* we do not support multiple buffers - for now */
-+		if (msg->msg_flags & MSG_DONTWAIT)
-+			return -EAGAIN;
+ 	/* send restart message upstream */
+ 	skb = alloc_can_err_skb(dev, &cf);
+-	if (!skb)
+-		goto restart;
++	if (skb) {
++		cf->can_id |= CAN_ERR_RESTARTED;
++		netif_rx(skb);
++	}
  
--	/* wait for complete transmission of current pdu */
--	err = wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
--	if (err)
--		goto err_event_drop;
+-	cf->can_id |= CAN_ERR_RESTARTED;
 -
--	if (cmpxchg(&so->tx.state, ISOTP_IDLE, ISOTP_SENDING) != ISOTP_IDLE) {
- 		if (so->tx.state == ISOTP_SHUTDOWN)
- 			return -EADDRNOTAVAIL;
+-	netif_rx(skb);
+-
+-restart:
+ 	netdev_dbg(dev, "restarted\n");
+ 	priv->can_stats.restarts++;
  
--		goto wait_free_buffer;
-+		/* wait for complete transmission of current pdu */
-+		err = wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
-+		if (err)
-+			goto err_event_drop;
- 	}
- 
- 	/* PDU size > default => try max_pdu_size */
+
 -- 
 2.40.1
 
