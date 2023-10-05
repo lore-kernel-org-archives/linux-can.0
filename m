@@ -2,64 +2,64 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED768E92719
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DCD92E92717
 	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 16:42:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231297AbjJEQlk (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 5 Oct 2023 12:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40556 "EHLO
+        id S232523AbjJEQlm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 5 Oct 2023 12:41:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbjJEQkO (ORCPT
+        with ESMTP id S231419AbjJEQkO (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 12:40:14 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C0A7EC8
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 00:48:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0C67EDB
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 00:50:19 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoJ60-0000ah-PY
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:48:32 +0200
+        id 1qoJ7i-0001G8-08
+        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:18 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoJ60-00BDJO-7c
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:48:32 +0200
+        id 1qoJ7f-00BDMO-KL
+        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:15 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id EAC2822F765
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 07:48:31 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 5740822F7CA
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 07:50:15 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id DFB5E22F755;
-        Thu,  5 Oct 2023 07:48:30 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id A545F22F7AF;
+        Thu,  5 Oct 2023 07:50:14 +0000 (UTC)
 Received: from [192.168.178.131] (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 432a306b;
-        Thu, 5 Oct 2023 07:48:29 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e1a72088;
+        Thu, 5 Oct 2023 07:50:12 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Date:   Thu, 05 Oct 2023 09:48:22 +0200
-Subject: [PATCH v2 5/5] can: dev: can_put_echo_skb(): don't crash kernel if
- can_priv::echo_skb is accessed out of bounds
+Date:   Thu, 05 Oct 2023 09:49:42 +0200
+Subject: [PATCH v2 14/27] can: at91_can: at91_chip_start(): don't disable
+ IRQs twice
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231005-can-dev-fix-can-restart-v2-5-91b5c1fd922c@pengutronix.de>
-References: <20231005-can-dev-fix-can-restart-v2-0-91b5c1fd922c@pengutronix.de>
-In-Reply-To: <20231005-can-dev-fix-can-restart-v2-0-91b5c1fd922c@pengutronix.de>
+Message-Id: <20231005-at91_can-rx_offload-v2-14-9987d53600e0@pengutronix.de>
+References: <20231005-at91_can-rx_offload-v2-0-9987d53600e0@pengutronix.de>
+In-Reply-To: <20231005-at91_can-rx_offload-v2-0-9987d53600e0@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
 X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1061; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=pD2o4xnKwQcBKweVju9ZVPt70FvlUBkyOOnK2hgeGDc=;
- b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBlHmpMr1YKu2T3dewvLOGJQ7a4wQdA6AL1Fa28+
- nSf7PPN1bWJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZR5qTAAKCRC+UBxKKooE
- 6C38CACme5CZE9KGdDsGcw0LvVJbWNdQMhW2Z8lOh1y1av8/5lBuvcspRrclhK1axiXClSNgRR1
- OQeR0hXQFyw1tma3+mUqO07dCXQGgOaFtmowxqQDy6a8Eu2vYQ5y7uzgp3UPFs4eErzyJtpO2qC
- jLWRPX57uM4xwGEtZ+0GHyDgrWT3bDM2Om8lj/XJB3R13nSws/Hd7aX8drBz8u1ZI3nioOXw9Y1
- Zu/PrPvof3WPCNIU76062LYbej6WP8twVpgWbWKHKO19w7ABd1DE/B/hx5x65UZ4ySVdWQHeVs8
- amBxhCFSNirTDpppZRhJkz0mj8u7Rp+C2gYEGPbUMGzXoUPI
+X-Developer-Signature: v=1; a=openpgp-sha256; l=814; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=gSd9/BJPdoW7J7vcURY0RIS4mTLqWcq6uhvw1HGLVbw=;
+ b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBlHmqfuCkeI2CxE/LD4PgGihIXLN5tpFu6f1BQJ
+ oOKDK/45dyJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZR5qnwAKCRC+UBxKKooE
+ 6NA5B/0RPFIfCB7tbbn5PXI33AG9ulfu3wN28sD5YwWQNiGmC87oGVrVTl0iw3mOQ/pwe/Bj+Qa
+ rK2LirpfPS02dnLix/2NvJ/4RDxwzXjzJ1xbKY+K+PGICYVxfVp5RZfxV40oSvIZtTM0flX+dUT
+ wm0gYMAjuvKun8dGdwxj4WHigkfUvI8FFxMroyQZOgglgXh2Qgkcn2nSXmlW1yAw9mZkrLD7I9k
+ O/Z8kgEmALCLTxf6tUOWiiEMLDjkA/pnhpzEuKqdcdDMq1Zxc9HNePJ0OeWU7I4sr3PLX/8u1j+
+ ubvsEaIbmGqZthl4HV2eMpDTtC5tctNdvm2h1Gsqv48WmsHg
 X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
  fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -70,33 +70,29 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-If the "struct can_priv::echoo_skb" is accessed out of bounds, this
-would cause a kernel crash. Instead, issue a meaningful warning
-message and return with an error.
+In at91_chip_start() first all IRQs are disabled, they do not have to
+be disabled again at the end of the function before the requested IRQs
+are enabled.
 
-Fixes: a6e4bc530403 ("can: make the number of echo skb's configurable")
+Remove the 2nd disable of all IRQs at the end of the function.
+
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/skb.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/net/can/at91_can.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-index f6d05b3ef59a..3ebd4f779b9b 100644
---- a/drivers/net/can/dev/skb.c
-+++ b/drivers/net/can/dev/skb.c
-@@ -49,7 +49,11 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- {
- 	struct can_priv *priv = netdev_priv(dev);
+diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
+index f92d8a75d1b1..3f3c6f2107a8 100644
+--- a/drivers/net/can/at91_can.c
++++ b/drivers/net/can/at91_can.c
+@@ -438,7 +438,6 @@ static void at91_chip_start(struct net_device *dev)
  
--	BUG_ON(idx >= priv->echo_skb_max);
-+	if (idx >= priv->echo_skb_max) {
-+		netdev_err(dev, "%s: BUG! Trying to access can_priv::echo_skb out of bounds (%u/max %u)\n",
-+			   __func__, idx, priv->echo_skb_max);
-+		return -EINVAL;
-+	}
+ 	/* Enable interrupts */
+ 	reg_ier = get_irq_mb_rx(priv) | AT91_IRQ_ERRP | AT91_IRQ_ERR_FRAME;
+-	at91_write(priv, AT91_IDR, AT91_IRQ_ALL);
+ 	at91_write(priv, AT91_IER, reg_ier);
+ }
  
- 	/* check flag whether this packet has to be looped back */
- 	if (!(dev->flags & IFF_ECHO) ||
 
 -- 
 2.40.1
