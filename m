@@ -2,186 +2,134 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C57BDE9271A
-	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 16:40:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E783E92716
+	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 16:41:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbjJEQjo (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 5 Oct 2023 12:39:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33438 "EHLO
+        id S233039AbjJEQke (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 5 Oct 2023 12:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231516AbjJEQiw (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 12:38:52 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F2F7EDF
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 00:50:20 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qoJ7i-0001HE-H0
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:18 +0200
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qoJ7f-00BDMf-SH
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:15 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 8396B22F7D2
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 07:50:15 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id CD73522F7B6;
-        Thu,  5 Oct 2023 07:50:14 +0000 (UTC)
-Received: from [192.168.178.131] (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f48608ac;
-        Thu, 5 Oct 2023 07:50:12 +0000 (UTC)
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Date:   Thu, 05 Oct 2023 09:49:44 +0200
-Subject: [PATCH v2 16/27] can: at91_can: add CAN transceiver support
+        with ESMTP id S234604AbjJEQjS (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 12:39:18 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB062719
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 09:10:01 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-536ef8a7dcdso15582a12.0
+        for <linux-can@vger.kernel.org>; Thu, 05 Oct 2023 09:10:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696522200; x=1697127000; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wRCO/tDP4lRLu2OPV/gEOu9clmIfNVaCcbX9ayRgMZQ=;
+        b=sIFf5Zh2sZHqRywywGBF8so85oAW0i5GI0cfRWdSUM8jDcIuCvvr/mdR2e96GGLdfV
+         Gq13bsMyuJsLjtXcYKN1HBsa5ehu+CPd/k5pv9KgHTZrdmCJrA9SjsvkYp5XjmfvQ4im
+         12eztqV2Pz56UGyn/8wKmIPKtvh2SKa7FLlU+18dtVgdKlbrTrs/3E1PybeQdrvC0nVc
+         oGVK1HjcgbBKi2lEbQq2QHHfSB45JcGS7qGwTh32GVgkI+TsiQfEEKyczPIOes6YgeZ3
+         J5DVSgGwxfLVdZl4nP+XOYx2Ho1RU+q95bPKdLh/LqpGgHA5wW67Ym+6Oi9AC84wXiH9
+         M8fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696522200; x=1697127000;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wRCO/tDP4lRLu2OPV/gEOu9clmIfNVaCcbX9ayRgMZQ=;
+        b=CnJUUfG09ztHZ93L/XiRifXGmJVUT02s1ghjH/blNybiw+RIqfiL/lRexMjLixG3sY
+         IJGPNhp4sgkI5AnzhcpwEwCTXkxYzmYQDDTncW9I742RpC5KS/N6zPF9fX9mPaLWwYMQ
+         /CXb2C7y5gZuAt7AIGSElM/Tq9pFu6R14GuX67nJ2ngo5ogDVQvlaYtRU5M2lt0QB8sP
+         D8UFaWvF+rRZ/cFjQUnV8YsiuXkzZDjPW26DYL/tisdhffEmWfZbkoteo8uTJn02F4lc
+         AuiGhMmBiseO9pHt4A+CwXf9wcKKZ87avo6yZgmpCPfASW1cjtLpVHOex9b/8TBUNnbi
+         NlLQ==
+X-Gm-Message-State: AOJu0YyBoEJu3GKYAXKLLErymj+PTmyAC2Ox26hr2MLN43EHmKTGQwsr
+        HINlntZV8nkFzVe8pOc30El97qiqjO1RdNWswqKIRg==
+X-Google-Smtp-Source: AGHT+IFzYlK6nOXqFn3XTRyZ9yDEZC9Bs5FeKRJ0Zfr3978r7XwjxquujorP05hjLrjSFu1gUI2ea386eAkHyH3Ha+s=
+X-Received: by 2002:a50:8d0f:0:b0:538:50e4:5446 with SMTP id
+ s15-20020a508d0f000000b0053850e45446mr71813eds.5.1696522199600; Thu, 05 Oct
+ 2023 09:09:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231005-at91_can-rx_offload-v2-16-9987d53600e0@pengutronix.de>
-References: <20231005-at91_can-rx_offload-v2-0-9987d53600e0@pengutronix.de>
-In-Reply-To: <20231005-at91_can-rx_offload-v2-0-9987d53600e0@pengutronix.de>
-To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3167; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=+LVBwVXk7Zd8TWXugHyv8KhhV395gMiaRn5FZsyTdMI=;
- b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBlHmqi5N4iepXDmlSu3LoIOMIZE+IozEKOMSAoU
- /OGHzXpQLCJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZR5qogAKCRC+UBxKKooE
- 6C33B/9Q1iZ9xUIJf14QEHFubL1nFflpftxq9Wdu636pzcwMHuA60YFW8XCRFd9K8a+2FsE7Qfo
- E/2eSnv1LwjByFjZwtEuFdweuXoq95XCfvoG1Q1xXco7JDes+qS1EQjVPiJk2XWgK13Ot1oPF6E
- zWuisaFUrhQQkoli0UC6VBqvTr9M84aqix4rSHwppehn9gio0asyY9OubQw7EeHlHZ69ijaYXhM
- kbvXlv0nkkvvSFtr5GuuLHEQ87I+lmUN5Fd75rj+Uxd8zNRfk73+qmo4vdvx7gRy5/Y+jbauxea
- tEbnFUGnJ5eawh0V9I965gi4C5eptXOgvaKrKy+Jii7S+mZ/
-X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
- fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+References: <20231003145150.2498-1-ansuelsmth@gmail.com>
+In-Reply-To: <20231003145150.2498-1-ansuelsmth@gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 5 Oct 2023 18:09:42 +0200
+Message-ID: <CANn89iK5E=SFJoNNTd3SNdT0oPR503dEf_gNfP=Ls3AKS_4F_g@mail.gmail.com>
+Subject: Re: [net-next PATCH v2 1/4] netdev: replace simple
+ napi_schedule_prep/__napi_schedule to napi_schedule
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        Raju Rangoju <rajur@chelsio.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Shailend Chand <shailend@google.com>,
+        Douglas Miller <dougmill@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nick Child <nnac123@linux.ibm.com>,
+        Haren Myneni <haren@linux.ibm.com>,
+        Rick Lindsley <ricklind@linux.ibm.com>,
+        Dany Madden <danymadden@us.ibm.com>,
+        Thomas Falcon <tlfalcon@linux.ibm.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Kalle Valo <kvalo@kernel.org>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>,
+        Gregory Greenman <gregory.greenman@intel.com>,
+        Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
+        Intel Corporation <linuxwwan@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
+        Liu Haijun <haijun.liu@mediatek.com>,
+        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
+        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Yuanjun Gong <ruc_gongyuanjun@163.com>,
+        Simon Horman <horms@kernel.org>, Rob Herring <robh@kernel.org>,
+        Ziwei Xiao <ziweixiao@google.com>,
+        Rushil Gupta <rushilg@google.com>,
+        Coco Li <lixiaoyan@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Junfeng Guo <junfeng.guo@intel.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Wei Fang <wei.fang@nxp.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Yuri Karpov <YKarpov@ispras.ru>,
+        Zhengchao Shao <shaozhengchao@huawei.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Zheng Zengkai <zhengzengkai@huawei.com>,
+        Lee Jones <lee@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Dawei Li <set_pte_at@outlook.com>,
+        Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
+        Benjamin Berg <benjamin.berg@intel.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Add support for Linux-PHY based CAN transceivers.
+On Tue, Oct 3, 2023 at 8:36=E2=80=AFPM Christian Marangi <ansuelsmth@gmail.=
+com> wrote:
+>
+> Replace drivers that still use napi_schedule_prep/__napi_schedule
+> with napi_schedule helper as it does the same exact check and call.
+>
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/at91_can.c | 32 ++++++++++++++++++++++++++------
- 1 file changed, 26 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index bfe414581fa1..94e9740c80de 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -16,6 +16,7 @@
- #include <linux/module.h>
- #include <linux/netdevice.h>
- #include <linux/of.h>
-+#include <linux/phy/phy.h>
- #include <linux/platform_device.h>
- #include <linux/rtnetlink.h>
- #include <linux/skbuff.h>
-@@ -150,6 +151,7 @@ struct at91_devtype_data {
- struct at91_priv {
- 	struct can_priv can;		/* must be the first member! */
- 	struct napi_struct napi;
-+	struct phy *transceiver;
- 
- 	void __iomem *reg_base;
- 
-@@ -1118,20 +1120,24 @@ static int at91_open(struct net_device *dev)
- 	struct at91_priv *priv = netdev_priv(dev);
- 	int err;
- 
--	err = clk_prepare_enable(priv->clk);
-+	err = phy_power_on(priv->transceiver);
- 	if (err)
- 		return err;
- 
- 	/* check or determine and set bittime */
- 	err = open_candev(dev);
- 	if (err)
--		goto out;
-+		goto out_phy_power_off;
-+
-+	err = clk_prepare_enable(priv->clk);
-+	if (err)
-+		goto out_close_candev;
- 
- 	/* register interrupt handler */
- 	err = request_irq(dev->irq, at91_irq, IRQF_SHARED,
- 			  dev->name, dev);
- 	if (err)
--		goto out_close;
-+		goto out_clock_disable_unprepare;
- 
- 	/* start chip and queuing */
- 	at91_chip_start(dev);
-@@ -1140,10 +1146,12 @@ static int at91_open(struct net_device *dev)
- 
- 	return 0;
- 
-- out_close:
--	close_candev(dev);
-- out:
-+ out_clock_disable_unprepare:
- 	clk_disable_unprepare(priv->clk);
-+ out_close_candev:
-+	close_candev(dev);
-+ out_phy_power_off:
-+	phy_power_off(priv->transceiver);
- 
- 	return err;
- }
-@@ -1160,6 +1168,7 @@ static int at91_close(struct net_device *dev)
- 
- 	free_irq(dev->irq, dev);
- 	clk_disable_unprepare(priv->clk);
-+	phy_power_off(priv->transceiver);
- 
- 	close_candev(dev);
- 
-@@ -1284,6 +1293,7 @@ static const struct at91_devtype_data *at91_can_get_driver_data(struct platform_
- static int at91_can_probe(struct platform_device *pdev)
- {
- 	const struct at91_devtype_data *devtype_data;
-+	struct phy *transceiver;
- 	struct net_device *dev;
- 	struct at91_priv *priv;
- 	struct resource *res;
-@@ -1332,6 +1342,13 @@ static int at91_can_probe(struct platform_device *pdev)
- 		goto exit_iounmap;
- 	}
- 
-+	transceiver = devm_phy_optional_get(&pdev->dev, NULL);
-+	if (IS_ERR(transceiver)) {
-+		err = PTR_ERR(transceiver);
-+		dev_err_probe(&pdev->dev, err, "failed to get phy\n");
-+		goto exit_iounmap;
-+	}
-+
- 	dev->netdev_ops	= &at91_netdev_ops;
- 	dev->ethtool_ops = &at91_ethtool_ops;
- 	dev->irq = irq;
-@@ -1352,6 +1369,9 @@ static int at91_can_probe(struct platform_device *pdev)
- 
- 	netif_napi_add_weight(dev, &priv->napi, at91_poll, get_mb_rx_num(priv));
- 
-+	if (transceiver)
-+		priv->can.bitrate_max = transceiver->attrs.max_link_rate;
-+
- 	if (at91_is_sam9263(priv))
- 		dev->sysfs_groups[0] = &at91_sysfs_attr_group;
- 
-
--- 
-2.40.1
-
-
+Reviewed-by: Eric Dumazet <edumazet@google.com>
