@@ -2,68 +2,53 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B09A1E92702
-	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 14:35:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C2C7E92705
+	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 14:35:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231329AbjJEOfL (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 5 Oct 2023 10:35:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36322 "EHLO
+        id S235579AbjJEOfp (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 5 Oct 2023 10:35:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234120AbjJEOdw (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 10:33:52 -0400
+        with ESMTP id S235387AbjJEOeQ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 10:34:16 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C67E7EC3
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 00:48:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 438158697
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 01:10:55 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoJ5z-0000ZJ-TM
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:48:31 +0200
+        id 1qoJRY-0007TQ-8T; Thu, 05 Oct 2023 10:10:48 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoJ5z-00BDIj-G2
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:48:31 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 37E7022F75D
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 07:48:31 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        id 1qoJRW-00BDt4-Vq; Thu, 05 Oct 2023 10:10:47 +0200
+Received: from pengutronix.de (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 6577022F74E;
-        Thu,  5 Oct 2023 07:48:30 +0000 (UTC)
-Received: from [192.168.178.131] (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ee22b864;
-        Thu, 5 Oct 2023 07:48:29 +0000 (UTC)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 96E5722F885;
+        Thu,  5 Oct 2023 08:10:46 +0000 (UTC)
+Date:   Thu, 5 Oct 2023 10:10:46 +0200
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v2 0/5] can: dev: fix can_restart() and replace BUG_ON() by
- error handling
-Date:   Thu, 05 Oct 2023 09:48:17 +0200
-Message-Id: <20231005-can-dev-fix-can-restart-v2-0-91b5c1fd922c@pengutronix.de>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] can: peak_pci: replace deprecated strncpy with strscpy
+Message-ID: <20231005-protract-trough-04a747b5dae2-mkl@pengutronix.de>
+References: <20231005-strncpy-drivers-net-can-sja1000-peak_pci-c-v1-1-c36e1702cd56@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAEJqHmUC/4WNTQ6CMBCFr2Jm7ZhSxIAr72FYVHjAbAqZ1gZDu
- LuVC7h738v72ShABYHup40USYLMPoM9n6ibnB/B0mcma2xZGHPlznnukXiQ9dCKEJ1GBob65Up
- UuIFye1HkyLH8bDNPEuKsn+MoFT/3/2Yq2LBFZeumgXND9Vjgx3fU2ct66UHtvu9fs1r31cMAA
- AA=
-To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1484; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=N4EVa4edcOEn7DA9EVzG3jC6ZX1ud0WXtk2qTMbRaiE=;
- b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBlHmpE6X278U5Q5pAtkiYqcOMLlhD/a7iH1xAc3
- EsacIDzLAqJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZR5qRAAKCRC+UBxKKooE
- 6OOjB/9Vbcn6JB7bi0VmZvSj54w06Q2U/nHmrsbTF3fmM1qv3iflVg+dW5AO2OCzDqCA931GgAq
- /dM0JDpCqnO4w/uSHLTaUOpMAqVu70TDYuMBG6Vvt7gu1v663Urfz+WboAq/jtquQM7o1uW7V5G
- /59k4wsz6K0ehEzHrF0Uhbj4ydJsVkELPttNW2JJK4CCBjt8xN1YPEWs+0ksEtQcSnXHFyafHAQ
- xJS/eU5OIX13fGggmpPcpe4fPm3PmxRMHJ6LhNepfAjvs5F/dP/KEQeWpgze1W2XPF9narCFA0x
- 6R7vLZqu0W8PQrFCH0Tr1awkXaho0Tqb9qcqexE3zaQIt1TI
-X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
- fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yfy7e5plv3snihai"
+Content-Disposition: inline
+In-Reply-To: <20231005-strncpy-drivers-net-can-sja1000-peak_pci-c-v1-1-c36e1702cd56@google.com>
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
@@ -72,38 +57,56 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-There are 2 BUG_ON() in the CAN dev helpers. During the update/test of
-the at91_can driver to rx-offload the one in can_restart() was
-triggered, due to a race condition in can_restart() and a hardware
-limitation of the at91_can IP core.
 
-This series fixes the race condition, replaces BUG_ON() with an error
-message, and does some cleanup. Finally, the BUG_ON() in
-can_put_echo_skb() is also replaced with error handling.
+--yfy7e5plv3snihai
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
-Changes in v2:
-- 4/5: move "Restarted" debug message and stats after successful restart (Thanks Vincent)
-- Link to v1: https://lore.kernel.org/all/20231004-can-dev-fix-can-restart-v1-0-2e52899eaaf5@pengutronix.de
+On 05.10.2023 00:05:35, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+>=20
+> NUL-padding is not required since card is already zero-initialized:
+> |       card =3D kzalloc(sizeof(*card), GFP_KERNEL);
+>=20
+> A suitable replacement is `strscpy` [2] due to the fact that it
+> guarantees NUL-termination on the destination buffer without
+> unnecessarily NUL-padding.
+>=20
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strn=
+cpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.h=
+tml [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
----
-Marc Kleine-Budde (5):
-      can: dev: can_restart(): don't crash kernel if carrier is OK
-      can: dev: can_restart(): fix race condition between controller restart and netif_carrier_on()
-      can: dev: can_restart(): reverse logic to remove need for goto
-      can: dev: can_restart(): update debug and error messages
-      can: dev: can_put_echo_skb(): don't crash kernel if can_priv::echo_skb is accessed out of bounds
+applied to linux-can-next/testing.
 
- drivers/net/can/dev/dev.c | 29 ++++++++++++++---------------
- drivers/net/can/dev/skb.c |  6 +++++-
- 2 files changed, 19 insertions(+), 16 deletions(-)
----
-base-commit: 93e7eca853ca0087b129433630ddd89288d2b8b4
-change-id: 20231004-can-dev-fix-can-restart-eef8ba3e5e6e
+regards,
+Marc
 
-Best regards,
--- 
-Marc Kleine-Budde <mkl@pengutronix.de>
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
+--yfy7e5plv3snihai
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmUeb4MACgkQvlAcSiqK
+BOi/9AgAsHPVzlJglzleNQFMFyxaqGkZkwgc5tOD3xnbqtN9QtO26R+8Aoq7BBSz
+Sh/g6gASRMZ+SLHQRN+kREceexYQE9Yj9/LQ5btjEEQDvtqCH18wFbKs8UPUrTM6
+OVxPY2nABTwkAlPHflfFqZMj8e04Dj5xzINkzL5Y/zJb0EjQkW//vArdwsoN1MaZ
+Xl416b4G1VEvnRiL1r72stKahrdcatuVGeFiX3h/MaK9dxEh9TTDfbRBy4as9ffL
+ce5iKQRJRC2Cdwz1e59lQNS1Swk+uBuE70TNJmMD7+0oI6DG2HCulCIsPGoHxvii
+gpVabP87ZEiCOeIynVbyyJeYAxNsSA==
+=Ov1N
+-----END PGP SIGNATURE-----
+
+--yfy7e5plv3snihai--
