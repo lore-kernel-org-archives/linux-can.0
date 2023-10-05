@@ -2,66 +2,56 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CC4FE9270D
-	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 14:09:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15420E92702
+	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 14:13:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232763AbjJEOJh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 5 Oct 2023 10:09:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42792 "EHLO
+        id S232475AbjJEONI (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 5 Oct 2023 10:13:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbjJEOHe (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 10:07:34 -0400
+        with ESMTP id S232477AbjJEOLR (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 10:11:17 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856037EE2
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 00:50:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A510721D2B
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 02:46:49 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoJ7i-0001Hx-Kq
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:18 +0200
+        id 1qoKwR-0002zZ-Qi
+        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 11:46:47 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoJ7g-00BDN3-3J
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:16 +0200
+        id 1qoKwQ-00BEeO-NP
+        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 11:46:46 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id BFAD222F7DA
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 07:50:15 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 6E2C522F96E
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 09:46:46 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 1754822F7C0;
-        Thu,  5 Oct 2023 07:50:15 +0000 (UTC)
-Received: from [192.168.178.131] (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id efe07314;
-        Thu, 5 Oct 2023 07:50:12 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8AFFD22F942;
+        Thu,  5 Oct 2023 09:46:44 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4ecb0509;
+        Thu, 5 Oct 2023 09:46:43 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Date:   Thu, 05 Oct 2023 09:49:46 +0200
-Subject: [PATCH v2 18/27] can: at91_can: at91_poll_err(): increase stats
- even if no quota left or OOM
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de, Haibo Chen <haibo.chen@nxp.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 6/7] arm64: dts: imx93: add the Flex-CAN stop mode by GPR
+Date:   Thu,  5 Oct 2023 11:46:38 +0200
+Message-Id: <20231005094639.387019-7-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231005094639.387019-1-mkl@pengutronix.de>
+References: <20231005094639.387019-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231005-at91_can-rx_offload-v2-18-9987d53600e0@pengutronix.de>
-References: <20231005-at91_can-rx_offload-v2-0-9987d53600e0@pengutronix.de>
-In-Reply-To: <20231005-at91_can-rx_offload-v2-0-9987d53600e0@pengutronix.de>
-To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3406; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=5rbdFIiR/Z/p3f8J+hdbbnVVRmgtjPB/ER2etF/cbrc=;
- b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBlHmql1IPMJYQ/lbunkJsXJgY4fuNfaGzMQMmDP
- vlebfT7d2mJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZR5qpQAKCRC+UBxKKooE
- 6FFhB/98qyIJvi3L14EdFQSzkNsW8LpzKsyxS6XbA6ecpsxrk7QLi1j0p5r7ZGYIRXwNb6dMTxc
- UKEJk6ObLQ6zWEU4izCiQNPbAysrebgx4aIhcRit52haMRVViupVt9PjPGbcva3R2Kdm80EyiDF
- r6XWGMeDYQU+JBHQQrXpPbx+wFOWq9cA1jkcGnKp8VARu0kWiRBRYtKYl4KhYxa949BldJDEf9u
- +PK5kxosI2TfCNa8SZhEz9+QNWvbGGM8iLPGlSh1kyvnZ4Ca98T1Ub/QH7oLCH4b0MP61gu9avB
- 8bI+gn/dZHnpXnpAFOpw7nXz+7Wn7iGi37cfxUAGcQlDrIIL
-X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
- fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
@@ -70,128 +60,54 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-at91_poll_err() allocates a can error SKB, to inform the user space
-about the CAN error. Then it fills the SKB with information the error
-information and increases the net device error stats.
+From: Haibo Chen <haibo.chen@nxp.com>
 
-In case no SBK can be allocated (e.g. due to an OOM) or the NAPI quota
-is 0 the function is left early and no stats are updated. This is not
-helpful to the user, as there is no information about the faulty CAN
-bus.
+imx93 A0 chip use the internal q-channel handshake signal in LPCG
+and CCM to automatically handle the Flex-CAN stop mode. But this
+method meet issue when do the system PM stress test. IC can't fix
+it easily. So in the new imx93 A1 chip, IC drop this method, and
+involve back the old way，use the GPR method to trigger the Flex-CAN
+stop mode signal. Now NXP claim to drop imx93 A0, and only support
+imx93 A1. So here add the stop mode through GPR.
 
-Increase the error stats even if no quota is left or no SKB can be
-allocated.
+This patch also fix a typo for aonmix_ns_gpr.
 
-While there treat No-Acknowledgment as a bus error, too.
-
+Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
+Link: https://lore.kernel.org/all/20230726112458.3524165-1-haibo.chen@nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/at91_can.c | 71 +++++++++++++++++++++++++---------------------
- 1 file changed, 38 insertions(+), 33 deletions(-)
+ arch/arm64/boot/dts/freescale/imx93.dtsi | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index 2071011ee812..5b611657b41f 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -753,59 +753,64 @@ static int at91_poll_rx(struct net_device *dev, int quota)
+diff --git a/arch/arm64/boot/dts/freescale/imx93.dtsi b/arch/arm64/boot/dts/freescale/imx93.dtsi
+index 6f85a05ee7e1..dcf6e4846ac9 100644
+--- a/arch/arm64/boot/dts/freescale/imx93.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx93.dtsi
+@@ -185,7 +185,7 @@ aips1: bus@44000000 {
+ 			#size-cells = <1>;
+ 			ranges;
  
- static int at91_poll_err(struct net_device *dev, int quota, u32 reg_sr)
- {
-+	struct net_device_stats *stats = &dev->stats;
- 	struct at91_priv *priv = netdev_priv(dev);
- 	struct sk_buff *skb;
--	struct can_frame *cf;
-+	struct can_frame *cf = NULL;
+-			anomix_ns_gpr: syscon@44210000 {
++			aonmix_ns_gpr: syscon@44210000 {
+ 				compatible = "fsl,imx93-aonmix-ns-syscfg", "syscon";
+ 				reg = <0x44210000 0x1000>;
+ 			};
+@@ -319,6 +319,7 @@ flexcan1: can@443a0000 {
+ 				assigned-clock-parents = <&clk IMX93_CLK_SYS_PLL_PFD1_DIV2>;
+ 				assigned-clock-rates = <40000000>;
+ 				fsl,clk-source = /bits/ 8 <0>;
++				fsl,stop-mode = <&aonmix_ns_gpr 0x14 0>;
+ 				status = "disabled";
+ 			};
  
--	if (quota == 0)
--		return 0;
-+	priv->can.can_stats.bus_error++;
+@@ -591,6 +592,7 @@ flexcan2: can@425b0000 {
+ 				assigned-clock-parents = <&clk IMX93_CLK_SYS_PLL_PFD1_DIV2>;
+ 				assigned-clock-rates = <40000000>;
+ 				fsl,clk-source = /bits/ 8 <0>;
++				fsl,stop-mode = <&wakeupmix_gpr 0x0c 2>;
+ 				status = "disabled";
+ 			};
  
--	skb = alloc_can_err_skb(dev, &cf);
--	if (unlikely(!skb))
--		return 0;
-+	if (quota) {
-+		skb = alloc_can_err_skb(dev, &cf);
-+		if (cf)
-+			cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
-+	}
- 
--	/* CRC error */
- 	if (reg_sr & AT91_IRQ_CERR) {
--		netdev_dbg(dev, "CERR irq\n");
--		dev->stats.rx_errors++;
--		priv->can.can_stats.bus_error++;
--		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
-+		netdev_dbg(dev, "CRC error\n");
-+
-+		stats->rx_errors++;
-+		if (cf)
-+			cf->data[3] |= CAN_ERR_PROT_LOC_CRC_SEQ;
- 	}
- 
--	/* Stuffing Error */
- 	if (reg_sr & AT91_IRQ_SERR) {
--		netdev_dbg(dev, "SERR irq\n");
--		dev->stats.rx_errors++;
--		priv->can.can_stats.bus_error++;
--		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
--		cf->data[2] |= CAN_ERR_PROT_STUFF;
-+		netdev_dbg(dev, "Stuff error\n");
-+
-+		stats->rx_errors++;
-+		if (cf)
-+			cf->data[2] |= CAN_ERR_PROT_STUFF;
- 	}
- 
--	/* Acknowledgement Error */
- 	if (reg_sr & AT91_IRQ_AERR) {
--		netdev_dbg(dev, "AERR irq\n");
--		dev->stats.tx_errors++;
--		cf->can_id |= CAN_ERR_ACK;
-+		netdev_dbg(dev, "NACK error\n");
-+
-+		stats->tx_errors++;
-+		if (cf) {
-+			cf->can_id |= CAN_ERR_ACK;
-+			cf->data[2] |= CAN_ERR_PROT_TX;
-+		}
- 	}
- 
--	/* Form error */
- 	if (reg_sr & AT91_IRQ_FERR) {
--		netdev_dbg(dev, "FERR irq\n");
--		dev->stats.rx_errors++;
--		priv->can.can_stats.bus_error++;
--		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
--		cf->data[2] |= CAN_ERR_PROT_FORM;
-+		netdev_dbg(dev, "Format error\n");
-+
-+		stats->rx_errors++;
-+		if (cf)
-+			cf->data[2] |= CAN_ERR_PROT_FORM;
- 	}
- 
--	/* Bit Error */
- 	if (reg_sr & AT91_IRQ_BERR) {
--		netdev_dbg(dev, "BERR irq\n");
--		dev->stats.tx_errors++;
--		priv->can.can_stats.bus_error++;
--		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
--		cf->data[2] |= CAN_ERR_PROT_BIT;
-+		netdev_dbg(dev, "Bit error\n");
-+
-+		stats->tx_errors++;
-+		if (cf)
-+			cf->data[2] |= CAN_ERR_PROT_TX | CAN_ERR_PROT_BIT;
- 	}
- 
-+	if (!cf)
-+		return 0;
-+
- 	netif_receive_skb(skb);
- 
- 	return 1;
-
 -- 
 2.40.1
 
