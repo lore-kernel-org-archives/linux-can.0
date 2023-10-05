@@ -2,51 +2,50 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EEB6E92736
-	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 19:58:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A212E92734
+	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 19:58:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231997AbjJET6d (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 5 Oct 2023 15:58:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33886 "EHLO
+        id S231792AbjJET6c (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 5 Oct 2023 15:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbjJET6Y (ORCPT
+        with ESMTP id S231799AbjJET6Y (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 15:58:24 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0550910B
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A02A910F
         for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 12:58:22 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoUUG-0004jA-1v
+        id 1qoUUG-0004jW-H8
         for linux-can@vger.kernel.org; Thu, 05 Oct 2023 21:58:20 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoUUD-00BLFv-84
+        id 1qoUUD-00BLGV-GW
         for linux-can@vger.kernel.org; Thu, 05 Oct 2023 21:58:17 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id E2D1722FFBA
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 19:58:16 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 37E1422FFC9
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 19:58:17 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8D78222FF69;
-        Thu,  5 Oct 2023 19:58:14 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 074E822FF76;
+        Thu,  5 Oct 2023 19:58:15 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 8568e3eb;
-        Thu, 5 Oct 2023 19:58:13 +0000 (UTC)
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 544f2f91;
+        Thu, 5 Oct 2023 19:58:14 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Justin Stitt <justinstitt@google.com>,
-        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 05/37] can: peak_pci: replace deprecated strncpy with strscpy
-Date:   Thu,  5 Oct 2023 21:57:40 +0200
-Message-Id: <20231005195812.549776-6-mkl@pengutronix.de>
+        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH net-next 09/37] can: dev: can_restart(): move debug message and stats after successful restart
+Date:   Thu,  5 Oct 2023 21:57:44 +0200
+Message-Id: <20231005195812.549776-10-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231005195812.549776-1-mkl@pengutronix.de>
 References: <20231005195812.549776-1-mkl@pengutronix.de>
@@ -60,44 +59,45 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Justin Stitt <justinstitt@google.com>
+Move the debug message "restarted" and the CAN restart stats_after_
+the successful restart of the CAN device, because the restart may
+fail.
 
-`strncpy` is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+While there update the error message from printing the error number to
+printing symbolic error names.
 
-NUL-padding is not required since card is already zero-initialized:
-|       card = kzalloc(sizeof(*card), GFP_KERNEL);
-
-A suitable replacement is `strscpy` [2] due to the fact that it
-guarantees NUL-termination on the destination buffer without
-unnecessarily NUL-padding.
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/all/20231005-strncpy-drivers-net-can-sja1000-peak_pci-c-v1-1-c36e1702cd56@google.com
+Link: https://lore.kernel.org/all/20231005-can-dev-fix-can-restart-v2-4-91b5c1fd922c@pengutronix.de
+Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+[mkl: mention stats in subject and description, too]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/sja1000/peak_pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/dev/dev.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/sja1000/peak_pci.c b/drivers/net/can/sja1000/peak_pci.c
-index 84f34020aafb..da396d641e24 100644
---- a/drivers/net/can/sja1000/peak_pci.c
-+++ b/drivers/net/can/sja1000/peak_pci.c
-@@ -462,7 +462,7 @@ static int peak_pciec_probe(struct pci_dev *pdev, struct net_device *dev)
- 		card->led_chip.owner = THIS_MODULE;
- 		card->led_chip.dev.parent = &pdev->dev;
- 		card->led_chip.algo_data = &card->i2c_bit;
--		strncpy(card->led_chip.name, "peak_i2c",
-+		strscpy(card->led_chip.name, "peak_i2c",
- 			sizeof(card->led_chip.name));
+diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
+index 9014256c486a..82b12902fc35 100644
+--- a/drivers/net/can/dev/dev.c
++++ b/drivers/net/can/dev/dev.c
+@@ -147,15 +147,15 @@ static void can_restart(struct net_device *dev)
+ 		netif_rx(skb);
+ 	}
  
- 		card->i2c_bit = peak_pciec_i2c_bit_ops;
+-	netdev_dbg(dev, "restarted\n");
+-	priv->can_stats.restarts++;
+-
+ 	/* Now restart the device */
+ 	netif_carrier_on(dev);
+ 	err = priv->do_set_mode(dev, CAN_MODE_START);
+ 	if (err) {
+-		netdev_err(dev, "Error %d during restart", err);
++		netdev_err(dev, "Restart failed, error %pe\n", ERR_PTR(err));
+ 		netif_carrier_off(dev);
++	} else {
++		netdev_dbg(dev, "Restarted\n");
++		priv->can_stats.restarts++;
+ 	}
+ }
+ 
 -- 
 2.40.1
 
