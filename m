@@ -2,99 +2,104 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCD92E92717
-	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 16:42:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87205E9271D
+	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 16:43:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232523AbjJEQlm (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 5 Oct 2023 12:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47038 "EHLO
+        id S232464AbjJEQnU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 5 Oct 2023 12:43:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231419AbjJEQkO (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 12:40:14 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0C67EDB
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 00:50:19 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qoJ7i-0001G8-08
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:18 +0200
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qoJ7f-00BDMO-KL
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:15 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 5740822F7CA
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 07:50:15 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id A545F22F7AF;
-        Thu,  5 Oct 2023 07:50:14 +0000 (UTC)
-Received: from [192.168.178.131] (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e1a72088;
-        Thu, 5 Oct 2023 07:50:12 +0000 (UTC)
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Date:   Thu, 05 Oct 2023 09:49:42 +0200
-Subject: [PATCH v2 14/27] can: at91_can: at91_chip_start(): don't disable
- IRQs twice
+        with ESMTP id S234554AbjJEQl7 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 12:41:59 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5655AD3A
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 09:30:45 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-2799b7280d1so888881a91.1
+        for <linux-can@vger.kernel.org>; Thu, 05 Oct 2023 09:30:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696523391; x=1697128191; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=78u/4AcH37Ns3ez0KXHw64klEWNy2+xiSAb6r9kIN0U=;
+        b=RPEGlzUWrGrHZF957UMiOtmg6ay5cOaW74n2SBOaJ7LTAEd3fPL39swXiEvMh8zSNe
+         hFWdHeE1ueeTYnumoAWaLWrm6Fj76x4dAjWgo8o1RhGD0sb4GLrkSt+tBSbmVTX9baNA
+         wgExePaSSaVixLmkd0x/LcEMuMZlVLG4n0nC7fTOk/W1iIbwYyn4um/xMq+/AbTXwb3A
+         qHf5L92zvadLeMp7oL70YXaN0EqY0KjpuQbylciKqycIMaeVyRoEfmBgv8ntUGg29c5w
+         vtKAxEwuWpvc5GZXOMiJ+pKiSnrjGyblyiFuFLPcWbwc3zJoOEeiXX32UilnBo6nOb+4
+         jFzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696523391; x=1697128191;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=78u/4AcH37Ns3ez0KXHw64klEWNy2+xiSAb6r9kIN0U=;
+        b=n0FosRNTPKxHVxeDrVMbUcfUmSICaeLnNH0SmYf2zCrowekM1eTNc2iLbVv24wMCw9
+         76nuy4Z3ZRb6J2XL+jE+Tgur1d0PdOXyY8aBugxh3f1rtpfiJwM7lBWHTVLmF2YdTcOp
+         ThQIKk04p15w0e4IYxwLebP5oVHkF0G3CCY5QpzsoTbz/exyaJ++DxoKeKlk+PLjztAH
+         WjpFyn/5jIs0AoSm+U6ClwONTi/6jP9169HDY7yDLQ+AjoP+1JKhf1pqhjpH2NMwpsGN
+         B+sHlVauv1GA3upFUQWGlLZUdPclGk50H6X8pj8htk1t62wOtQ/E8BVvqCxXWYkRrwqI
+         tdLA==
+X-Gm-Message-State: AOJu0Yxj8K0pDktqT1eqS+0M9qneo7D8FQyE2EH4MTebmHzkiwzFXgSb
+        p3BXLUu4vfPTzYvWhAv/Ys/3LCpz1FOrxY+4H5k=
+X-Google-Smtp-Source: AGHT+IEWpZUMzJfV7+IQSij4Egv6wiIqJ3+YU74pjI9gcD21+29cWl17GxsUOz7HlKqo5n7tnEQgEytQXHYYkW3sx24=
+X-Received: by 2002:a17:90b:4f44:b0:26d:5cd0:979f with SMTP id
+ pj4-20020a17090b4f4400b0026d5cd0979fmr5604674pjb.43.1696523390625; Thu, 05
+ Oct 2023 09:29:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231005-at91_can-rx_offload-v2-14-9987d53600e0@pengutronix.de>
-References: <20231005-at91_can-rx_offload-v2-0-9987d53600e0@pengutronix.de>
-In-Reply-To: <20231005-at91_can-rx_offload-v2-0-9987d53600e0@pengutronix.de>
-To:     linux-can@vger.kernel.org
-Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=814; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=gSd9/BJPdoW7J7vcURY0RIS4mTLqWcq6uhvw1HGLVbw=;
- b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBlHmqfuCkeI2CxE/LD4PgGihIXLN5tpFu6f1BQJ
- oOKDK/45dyJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZR5qnwAKCRC+UBxKKooE
- 6NA5B/0RPFIfCB7tbbn5PXI33AG9ulfu3wN28sD5YwWQNiGmC87oGVrVTl0iw3mOQ/pwe/Bj+Qa
- rK2LirpfPS02dnLix/2NvJ/4RDxwzXjzJ1xbKY+K+PGICYVxfVp5RZfxV40oSvIZtTM0flX+dUT
- wm0gYMAjuvKun8dGdwxj4WHigkfUvI8FFxMroyQZOgglgXh2Qgkcn2nSXmlW1yAw9mZkrLD7I9k
- O/Z8kgEmALCLTxf6tUOWiiEMLDjkA/pnhpzEuKqdcdDMq1Zxc9HNePJ0OeWU7I4sr3PLX/8u1j+
- ubvsEaIbmGqZthl4HV2eMpDTtC5tctNdvm2h1Gsqv48WmsHg
-X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
- fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+References: <20231004-at91_can-rx_offload-v1-0-c32bf99097db@pengutronix.de>
+ <20231004-at91_can-rx_offload-v1-27-c32bf99097db@pengutronix.de>
+ <CAMZ6RqLoyCOsTuYCryr++yZw036cF2VyEbxawQSKvM-54aaHuA@mail.gmail.com> <20231005-overfull-chirping-9900063427f4-mkl@pengutronix.de>
+In-Reply-To: <20231005-overfull-chirping-9900063427f4-mkl@pengutronix.de>
+From:   Vincent Mailhol <vincent.mailhol@gmail.com>
+Date:   Fri, 6 Oct 2023 01:29:38 +0900
+Message-ID: <CAMZ6Rq+v=DqZ1+T+tyN0n5hQRd0Av2APW8OWpEFbKXQsS8itpQ@mail.gmail.com>
+Subject: Re: [PATCH 27/27] can: at91_can: switch to rx-offload implementation
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can@vger.kernel.org, kernel@pengutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-In at91_chip_start() first all IRQs are disabled, they do not have to
-be disabled again at the end of the function before the requested IRQs
-are enabled.
+On Thu. 5 Oct. 2023 at 16:28, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 04.10.2023 21:55:41, Vincent Mailhol wrote:
 
-Remove the 2nd disable of all IRQs at the end of the function.
+(...)
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/at91_can.c | 1 -
- 1 file changed, 1 deletion(-)
+> > If I understand correctly, you only use the hardware timestamp for the
+> > napi but you do not report it to the userland.
+>
+> ACK
+>
+> > Not a criticism of this series, but it seems to me that it would be
+> > easy to add one follow-up patch that would populate
+> > skb_shared_hwtstamps->hwtstamp and update ethtool_ops->get_ts_info in
+> > order to report those hardware timestamps to the user.
+>
+> Yes. I have proof-of-concept patches for it laying around, but I want to
+> get this mainline first. One limitation of the hardware is that the
+> timer is only 16 bits wide and runs on CAN clock, which means a maximum
+> of 1MHz. This causes the timer to overflow every 64ms, which in turn
+> requires a worker every 30ms or so.
 
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index f92d8a75d1b1..3f3c6f2107a8 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -438,7 +438,6 @@ static void at91_chip_start(struct net_device *dev)
- 
- 	/* Enable interrupts */
- 	reg_ier = get_irq_mb_rx(priv) | AT91_IRQ_ERRP | AT91_IRQ_ERR_FRAME;
--	at91_write(priv, AT91_IDR, AT91_IRQ_ALL);
- 	at91_write(priv, AT91_IER, reg_ier);
- }
- 
+ACK.
 
--- 
-2.40.1
+> For this reason, I want hardware TS
+> to be configurable and this is not yet implemented. Also $CUSTOMER
+> doesn't need HW timestamps :)
 
+Actually, this is already available in the kernel. You just need to
+implement the SIOCSHWTSTAMP and SIOCGHWTSTAMP ioctl in
+net_device_ops->ndo_eth_ioctl().
 
+More details in:
+
+  https://git.kernel.org/torvalds/c/90f942c5a6d7
+
+The caveat is in the userland: the can-utils currently do not follow
+the conventions. It does not send those ioctls and instead expects
+hardware timestamps to be unconditionally always on.
+But at least, it should work with tcpdump or any other generic packet
+capture utilities which follow the kernel conventions.
+
+(...)
