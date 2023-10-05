@@ -2,104 +2,138 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87205E9271D
-	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 16:43:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 274A0E92724
+	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 16:43:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbjJEQnU (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 5 Oct 2023 12:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47082 "EHLO
+        id S233527AbjJEQnV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 5 Oct 2023 12:43:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234554AbjJEQl7 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 12:41:59 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5655AD3A
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 09:30:45 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-2799b7280d1so888881a91.1
-        for <linux-can@vger.kernel.org>; Thu, 05 Oct 2023 09:30:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696523391; x=1697128191; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=78u/4AcH37Ns3ez0KXHw64klEWNy2+xiSAb6r9kIN0U=;
-        b=RPEGlzUWrGrHZF957UMiOtmg6ay5cOaW74n2SBOaJ7LTAEd3fPL39swXiEvMh8zSNe
-         hFWdHeE1ueeTYnumoAWaLWrm6Fj76x4dAjWgo8o1RhGD0sb4GLrkSt+tBSbmVTX9baNA
-         wgExePaSSaVixLmkd0x/LcEMuMZlVLG4n0nC7fTOk/W1iIbwYyn4um/xMq+/AbTXwb3A
-         qHf5L92zvadLeMp7oL70YXaN0EqY0KjpuQbylciKqycIMaeVyRoEfmBgv8ntUGg29c5w
-         vtKAxEwuWpvc5GZXOMiJ+pKiSnrjGyblyiFuFLPcWbwc3zJoOEeiXX32UilnBo6nOb+4
-         jFzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696523391; x=1697128191;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=78u/4AcH37Ns3ez0KXHw64klEWNy2+xiSAb6r9kIN0U=;
-        b=n0FosRNTPKxHVxeDrVMbUcfUmSICaeLnNH0SmYf2zCrowekM1eTNc2iLbVv24wMCw9
-         76nuy4Z3ZRb6J2XL+jE+Tgur1d0PdOXyY8aBugxh3f1rtpfiJwM7lBWHTVLmF2YdTcOp
-         ThQIKk04p15w0e4IYxwLebP5oVHkF0G3CCY5QpzsoTbz/exyaJ++DxoKeKlk+PLjztAH
-         WjpFyn/5jIs0AoSm+U6ClwONTi/6jP9169HDY7yDLQ+AjoP+1JKhf1pqhjpH2NMwpsGN
-         B+sHlVauv1GA3upFUQWGlLZUdPclGk50H6X8pj8htk1t62wOtQ/E8BVvqCxXWYkRrwqI
-         tdLA==
-X-Gm-Message-State: AOJu0Yxj8K0pDktqT1eqS+0M9qneo7D8FQyE2EH4MTebmHzkiwzFXgSb
-        p3BXLUu4vfPTzYvWhAv/Ys/3LCpz1FOrxY+4H5k=
-X-Google-Smtp-Source: AGHT+IEWpZUMzJfV7+IQSij4Egv6wiIqJ3+YU74pjI9gcD21+29cWl17GxsUOz7HlKqo5n7tnEQgEytQXHYYkW3sx24=
-X-Received: by 2002:a17:90b:4f44:b0:26d:5cd0:979f with SMTP id
- pj4-20020a17090b4f4400b0026d5cd0979fmr5604674pjb.43.1696523390625; Thu, 05
- Oct 2023 09:29:50 -0700 (PDT)
+        with ESMTP id S229889AbjJEQlj (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 12:41:39 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D9721D23
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 02:46:48 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qoKwR-0002y6-4T
+        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 11:46:47 +0200
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qoKwQ-00BEdV-2R
+        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 11:46:46 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id BDAA722F95F
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 09:46:45 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 4C8F222F93B;
+        Thu,  5 Oct 2023 09:46:44 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2ef889b9;
+        Thu, 5 Oct 2023 09:46:43 +0000 (UTC)
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de, Miquel Raynal <miquel.raynal@bootlin.com>,
+        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 4/7] can: sja1000: Always restart the Tx queue after an overrun
+Date:   Thu,  5 Oct 2023 11:46:36 +0200
+Message-Id: <20231005094639.387019-5-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231005094639.387019-1-mkl@pengutronix.de>
+References: <20231005094639.387019-1-mkl@pengutronix.de>
 MIME-Version: 1.0
-References: <20231004-at91_can-rx_offload-v1-0-c32bf99097db@pengutronix.de>
- <20231004-at91_can-rx_offload-v1-27-c32bf99097db@pengutronix.de>
- <CAMZ6RqLoyCOsTuYCryr++yZw036cF2VyEbxawQSKvM-54aaHuA@mail.gmail.com> <20231005-overfull-chirping-9900063427f4-mkl@pengutronix.de>
-In-Reply-To: <20231005-overfull-chirping-9900063427f4-mkl@pengutronix.de>
-From:   Vincent Mailhol <vincent.mailhol@gmail.com>
-Date:   Fri, 6 Oct 2023 01:29:38 +0900
-Message-ID: <CAMZ6Rq+v=DqZ1+T+tyN0n5hQRd0Av2APW8OWpEFbKXQsS8itpQ@mail.gmail.com>
-Subject: Re: [PATCH 27/27] can: at91_can: switch to rx-offload implementation
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-can@vger.kernel.org, kernel@pengutronix.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Thu. 5 Oct. 2023 at 16:28, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> On 04.10.2023 21:55:41, Vincent Mailhol wrote:
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-(...)
+Upstream commit 717c6ec241b5 ("can: sja1000: Prevent overrun stalls with
+a soft reset on Renesas SoCs") fixes an issue with Renesas own SJA1000
+CAN controller reception: the Rx buffer is only 5 messages long, so when
+the bus loaded (eg. a message every 50us), overrun may easily
+happen. Upon an overrun situation, due to a possible internal crosstalk
+situation, the controller enters a frozen state which only can be
+unlocked with a soft reset (experimentally). The solution was to offload
+a call to sja1000_start() in a threaded handler. This needs to happen in
+process context as this operation requires to sleep. sja1000_start()
+basically enters "reset mode", performs a proper software reset and
+returns back into "normal mode".
 
-> > If I understand correctly, you only use the hardware timestamp for the
-> > napi but you do not report it to the userland.
->
-> ACK
->
-> > Not a criticism of this series, but it seems to me that it would be
-> > easy to add one follow-up patch that would populate
-> > skb_shared_hwtstamps->hwtstamp and update ethtool_ops->get_ts_info in
-> > order to report those hardware timestamps to the user.
->
-> Yes. I have proof-of-concept patches for it laying around, but I want to
-> get this mainline first. One limitation of the hardware is that the
-> timer is only 16 bits wide and runs on CAN clock, which means a maximum
-> of 1MHz. This causes the timer to overflow every 64ms, which in turn
-> requires a worker every 30ms or so.
+Since this fix was introduced, we no longer observe any stalls in
+reception. However it was sporadically observed that the transmit path
+would now freeze. Further investigation blamed the fix mentioned above,
+and especially the reset operation. Reproducing the reset in a loop
+helped identifying what could possibly go wrong. The sja1000 is a single
+Tx queue device, which leverages the netdev helpers to process one Tx
+message at a time. The logic is: the queue is stopped, the message sent
+to the transceiver, once properly transmitted the controller sets a
+status bit which triggers an interrupt, in the interrupt handler the
+transmission status is checked and the queue woken up. Unfortunately, if
+an overrun happens, we might perform the soft reset precisely between
+the transmission of the buffer to the transceiver and the advent of the
+transmission status bit. We would then stop the transmission operation
+without re-enabling the queue, leading to all further transmissions to
+be ignored.
 
-ACK.
+The reset interrupt can only happen while the device is "open", and
+after a reset we anyway want to resume normal operations, no matter if a
+packet to transmit got dropped in the process, so we shall wake up the
+queue. Restarting the device and waking-up the queue is exactly what
+sja1000_set_mode(CAN_MODE_START) does. In order to be consistent about
+the queue state, we must acquire a lock both in the reset handler and in
+the transmit path to ensure serialization of both operations. It turns
+out, a lock is already held when entering the transmit path, so we can
+just acquire/release it as well with the regular net helpers inside the
+threaded interrupt handler and this way we should be safe. As the
+reset handler might still be called after the transmission of a frame to
+the transceiver but before it actually gets transmitted, we must ensure
+we don't leak the skb, so we free it (the behavior is consistent, no
+matter if there was an skb on the stack or not).
 
-> For this reason, I want hardware TS
-> to be configurable and this is not yet implemented. Also $CUSTOMER
-> doesn't need HW timestamps :)
+Fixes: 717c6ec241b5 ("can: sja1000: Prevent overrun stalls with a soft reset on Renesas SoCs")
+Cc: stable@vger.kernel.org
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/all/20231002160206.190953-1-miquel.raynal@bootlin.com
+[mkl: fixed call to can_free_echo_skb()]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/sja1000/sja1000.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-Actually, this is already available in the kernel. You just need to
-implement the SIOCSHWTSTAMP and SIOCGHWTSTAMP ioctl in
-net_device_ops->ndo_eth_ioctl().
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index 0ada0e160e93..743c2eb62b87 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -392,7 +392,13 @@ static irqreturn_t sja1000_reset_interrupt(int irq, void *dev_id)
+ 	struct net_device *dev = (struct net_device *)dev_id;
+ 
+ 	netdev_dbg(dev, "performing a soft reset upon overrun\n");
+-	sja1000_start(dev);
++
++	netif_tx_lock(dev);
++
++	can_free_echo_skb(dev, 0, NULL);
++	sja1000_set_mode(dev, CAN_MODE_START);
++
++	netif_tx_unlock(dev);
+ 
+ 	return IRQ_HANDLED;
+ }
+-- 
+2.40.1
 
-More details in:
 
-  https://git.kernel.org/torvalds/c/90f942c5a6d7
-
-The caveat is in the userland: the can-utils currently do not follow
-the conventions. It does not send those ioctls and instead expects
-hardware timestamps to be unconditionally always on.
-But at least, it should work with tcpdump or any other generic packet
-capture utilities which follow the kernel conventions.
-
-(...)
