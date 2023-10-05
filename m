@@ -2,64 +2,64 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8655AE92716
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CA34E7AD44
 	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 16:15:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240366AbjJEQOB (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 5 Oct 2023 12:14:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38672 "EHLO
+        id S237764AbjJEQOA (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 5 Oct 2023 12:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240222AbjJEQNF (ORCPT
+        with ESMTP id S240520AbjJEQNF (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 12:13:05 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4B27ED2
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 00:50:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A4D7EE7
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 00:50:20 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoJ7f-0001EJ-Da
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:15 +0200
+        id 1qoJ7j-0001KA-3C
+        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:19 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qoJ7e-00BDKX-HC
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:14 +0200
+        id 1qoJ7g-00BDNb-G7
+        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:16 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 3AC8B22F79C
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 07:50:14 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 255DE22F7E9
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 07:50:16 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id 8572722F788;
-        Thu,  5 Oct 2023 07:50:13 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 7E53A22F7D0;
+        Thu,  5 Oct 2023 07:50:15 +0000 (UTC)
 Received: from [192.168.178.131] (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 35f25d61;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4d4ceaa0;
         Thu, 5 Oct 2023 07:50:12 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Date:   Thu, 05 Oct 2023 09:49:31 +0200
-Subject: [PATCH v2 03/27] can: at91_can: at91_irq_tx(): remove one level of
- indention
+Date:   Thu, 05 Oct 2023 09:49:50 +0200
+Subject: [PATCH v2 22/27] can: at91_can: at91_irq_err_line(): make use of
+ can_state_get_by_berr_counter()
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231005-at91_can-rx_offload-v2-3-9987d53600e0@pengutronix.de>
+Message-Id: <20231005-at91_can-rx_offload-v2-22-9987d53600e0@pengutronix.de>
 References: <20231005-at91_can-rx_offload-v2-0-9987d53600e0@pengutronix.de>
 In-Reply-To: <20231005-at91_can-rx_offload-v2-0-9987d53600e0@pengutronix.de>
 To:     linux-can@vger.kernel.org
 Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
 X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1287; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=sV9DcKYzUHX0bevzb/vhNyQqkr7UfQ2LmqsDKzZCKIM=;
- b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBlHmqOcUHu4Whn0rW4C3v2uCdUtG+i1WV/4HuUu
- oj/EL3zbfSJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZR5qjgAKCRC+UBxKKooE
- 6L+DB/0RUrvRBnZ6DFQmIbL202fu8qryAKWbaLVTM1Kfv+KVPFdoKkRd53d+1XR2wUVymMzvogH
- P/L7fh1Fz+PS3MczmmKa/+8q1R0srpaE49/v4jW0+tWlFUB6biuEHFzD/yI/B6JTLEYLmPgyQZJ
- A+cSXJwqj6QEh4Itwwf4ohZYrbk4yMeMalbpqDAC4lHQcp2eOJcGkVVX5Nw3xwK089/pnRGwy6/
- Lip1HMbxErO+JHM0HU84L6X+luoYRt+QYDDWBVy2awozZ2Mu/MA295dmH/Aiu/JEUTEIsGEWDcS
- GEXHPcd8aceTXpljYcjVX+qYzpa6Bwpf1qVB1xKTPO5yZBqA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2566; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=NBtg0nSF52ASCwpECUByxMfwkRbieD30ti/dFVOHNU4=;
+ b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBlHmqqPu0p4C3SpyoXohPma8taHKTM92sO/FQRj
+ Yeo9o9MsDKJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZR5qqgAKCRC+UBxKKooE
+ 6GEFB/97+EZmgHxUBsvuyA6vKCMrIV2SkBJ65wftay+Z+83u4ejFhkLP8BTVamFouatB7Sxvq9Z
+ 1lhD2Ye3SxjqxH9TTkjaxxenFmKsUPre0d+n1N6AVboAmoX/G1K91aCK0GXuwOp9wLzEm2GCdw+
+ VrCGUJxhScZuFW9t/9h7mu35jVKcQE7yAy9N3wVjrO4lroXaEkmHqJ4qYwhcHevjCONS8uZKBpD
+ yaN6tNNmoqAv8Qz3FVqqqx9g6mVcQjEg1T7OL9nYNzueI3WBm8Spp5ZX2NWUi1r8PPqzV+EmmlZ
+ g8pEowKD0VBFvioghcNcIPfykV79v6oCOc0pvmpOTgaHUQgZ
 X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
  fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -70,43 +70,86 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Improve code readability by removing one level of indention.
+On the sam9263 the SR bits for bus off, error passive, warning limit,
+and error active are not latched and reflect the current status of the
+controller. On the sam9x5 and newer SoCs these bits are latched.
 
-If a mailbox is not ready, continue the loop early.
+To simplify the code, use can_state_get_by_berr_counter() to get the
+state of the controller regardless of the SoC version.
 
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/at91_can.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ drivers/net/can/at91_can.c | 51 +++++-----------------------------------------
+ 1 file changed, 5 insertions(+), 46 deletions(-)
 
 diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index 367ccf109652..966980d4b5dd 100644
+index 4249a1c95769..68b611d0fa6c 100644
 --- a/drivers/net/can/at91_can.c
 +++ b/drivers/net/can/at91_can.c
-@@ -844,15 +844,14 @@ static void at91_irq_tx(struct net_device *dev, u32 reg_sr)
- 		 * parked in the echo queue.
- 		 */
- 		reg_msr = at91_read(priv, AT91_MSR(mb));
--		if (likely(reg_msr & AT91_MSR_MRDY &&
--			   ~reg_msr & AT91_MSR_MABT)) {
--			/* _NOTE_: subtract AT91_MB_TX_FIRST offset from mb! */
--			dev->stats.tx_bytes +=
--				can_get_echo_skb(dev,
--						 mb - get_mb_tx_first(priv),
--						 NULL);
--			dev->stats.tx_packets++;
--		}
-+		if (unlikely(!(reg_msr & AT91_MSR_MRDY &&
-+			       ~reg_msr & AT91_MSR_MABT)))
-+			continue;
-+
-+		/* _NOTE_: subtract AT91_MB_TX_FIRST offset from mb! */
-+		dev->stats.tx_bytes +=
-+			can_get_echo_skb(dev, mb - get_mb_tx_first(priv), NULL);
-+		dev->stats.tx_packets++;
- 	}
+@@ -932,58 +932,17 @@ static void at91_irq_err_state(struct net_device *dev,
+ 	at91_write(priv, AT91_IER, reg_ier);
+ }
  
- 	/* restart queue if we don't have a wrap around but restart if
+-static int at91_get_state_by_bec(const struct net_device *dev,
+-				 enum can_state *state)
+-{
+-	struct can_berr_counter bec;
+-	int err;
+-
+-	err = at91_get_berr_counter(dev, &bec);
+-	if (err)
+-		return err;
+-
+-	if (bec.txerr < 96 && bec.rxerr < 96)
+-		*state = CAN_STATE_ERROR_ACTIVE;
+-	else if (bec.txerr < 128 && bec.rxerr < 128)
+-		*state = CAN_STATE_ERROR_WARNING;
+-	else if (bec.txerr < 256 && bec.rxerr < 256)
+-		*state = CAN_STATE_ERROR_PASSIVE;
+-	else
+-		*state = CAN_STATE_BUS_OFF;
+-
+-	return 0;
+-}
+-
+ static void at91_irq_err_line(struct net_device *dev)
+ {
++	enum can_state new_state, rx_state, tx_state;
+ 	struct at91_priv *priv = netdev_priv(dev);
++	struct can_berr_counter bec;
+ 	struct sk_buff *skb;
+ 	struct can_frame *cf;
+-	enum can_state new_state;
+-	u32 reg_sr;
+-	int err;
+ 
+-	if (at91_is_sam9263(priv)) {
+-		reg_sr = at91_read(priv, AT91_SR);
+-
+-		/* we need to look at the unmasked reg_sr */
+-		if (unlikely(reg_sr & AT91_IRQ_BOFF)) {
+-			new_state = CAN_STATE_BUS_OFF;
+-		} else if (unlikely(reg_sr & AT91_IRQ_ERRP)) {
+-			new_state = CAN_STATE_ERROR_PASSIVE;
+-		} else if (unlikely(reg_sr & AT91_IRQ_WARN)) {
+-			new_state = CAN_STATE_ERROR_WARNING;
+-		} else if (likely(reg_sr & AT91_IRQ_ERRA)) {
+-			new_state = CAN_STATE_ERROR_ACTIVE;
+-		} else {
+-			netdev_err(dev, "BUG! hardware in undefined state\n");
+-			return;
+-		}
+-	} else {
+-		err = at91_get_state_by_bec(dev, &new_state);
+-		if (err)
+-			return;
+-	}
++	at91_get_berr_counter(dev, &bec);
++	can_state_get_by_berr_counter(dev, &bec, &tx_state, &rx_state);
++	new_state = max(tx_state, rx_state);
+ 
+ 	/* state hasn't changed */
+ 	if (likely(new_state == priv->can.state))
 
 -- 
 2.40.1
