@@ -2,92 +2,108 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74D44E92701
-	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 14:05:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F0FEE92702
+	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 14:07:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbjJEOEt (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 5 Oct 2023 10:04:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53246 "EHLO
+        id S231810AbjJEOHh (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Thu, 5 Oct 2023 10:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231479AbjJEODn (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 10:03:43 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CDD2126
-        for <linux-can@vger.kernel.org>; Wed,  4 Oct 2023 19:58:43 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c724577e1fso3734445ad.0
-        for <linux-can@vger.kernel.org>; Wed, 04 Oct 2023 19:58:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696474723; x=1697079523; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0kNnoNX+VycKJxCFVsIPAbCtAe5boObmTDcjKlCDp2k=;
-        b=i4L/3Aj8ygTjSUp9/p9XDWPSBBKIRjWIC5psTSo5nX3ZwidzXnhiCBlczgVVI2zjpZ
-         9XWh+QJWSXuMiPpDWrlgZpJl/Z8tuZxCXx3YMi3JB62A4zXJlhkRATn11k3SCHNFLDbf
-         Tk89LjB5wR/1YdxTpbiNiRU0F/Rvj9JM4j2NY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696474723; x=1697079523;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0kNnoNX+VycKJxCFVsIPAbCtAe5boObmTDcjKlCDp2k=;
-        b=p0JzyWco7x9QdlB9XHDNRF/n7zaW/dCE5WB3ASAb4OvkjlX4uf80Ur0Nt/a122vihF
-         RE4osmNFx8UqXMRBfnXo1WrE0HfuDHjAWukxhL80uoi2g2ukptFTOVRn3yeSwIW6tuIk
-         dyS7SaXGRXUiXlpiuZXcz0UXSnxHqDX0E7Se/OE/SgR392B557jWEVfLQPrvvQagMK4d
-         BmXLxK5e38O09RJHtKzGtLmha+uKaKSWHY/eR4PckFnl7L9/QkZahN65Vt1BRRS7nsij
-         /8G+qUqDg6h7sx63Qt1FBIhPM9Z7GvxSsYtZ05QkJDmmcYnYJapTtpPNzrXW8e2zbSmq
-         XFJw==
-X-Gm-Message-State: AOJu0Ywmw2ADMK2rGgM4qy/Th3t+7KPBDYNWB1gR1Dsr3QVhSM6q95+X
-        HvOurEK0hbASuxVyjzomYCDMAA==
-X-Google-Smtp-Source: AGHT+IEuvtkB5cCQbgCWYrRd54NAG8rv4yhh7aSFHMbN97v3p48aULxm0ARxKFDY+QpqB2XuHsjBOg==
-X-Received: by 2002:a17:903:1cc:b0:1c7:2661:91e1 with SMTP id e12-20020a17090301cc00b001c7266191e1mr3864559plh.15.1696474722969;
-        Wed, 04 Oct 2023 19:58:42 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id p10-20020a170902eaca00b001b8a85489a3sm313410pld.262.2023.10.04.19.58.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Oct 2023 19:58:42 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 19:58:39 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] can: peak_pci: replace deprecated strncpy with strscpy
-Message-ID: <202310041958.12F8A261A@keescook>
-References: <20231005-strncpy-drivers-net-can-sja1000-peak_pci-c-v1-1-c36e1702cd56@google.com>
+        with ESMTP id S231765AbjJEOFz (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 10:05:55 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 970E77EE3
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 00:50:20 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qoJ7i-0001Jm-OM
+        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:18 +0200
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qoJ7g-00BDNU-EA
+        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 09:50:16 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+        by bjornoya.blackshift.org (Postfix) with SMTP id 12D7522F7E6
+        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 07:50:16 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 667B522F7CD;
+        Thu,  5 Oct 2023 07:50:15 +0000 (UTC)
+Received: from [192.168.178.131] (localhost [::1])
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f6ec2cc2;
+        Thu, 5 Oct 2023 07:50:12 +0000 (UTC)
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Date:   Thu, 05 Oct 2023 09:49:49 +0200
+Subject: [PATCH v2 21/27] can: at91_can: at91_irq_err(): rename to
+ at91_irq_err_line()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231005-strncpy-drivers-net-can-sja1000-peak_pci-c-v1-1-c36e1702cd56@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231005-at91_can-rx_offload-v2-21-9987d53600e0@pengutronix.de>
+References: <20231005-at91_can-rx_offload-v2-0-9987d53600e0@pengutronix.de>
+In-Reply-To: <20231005-at91_can-rx_offload-v2-0-9987d53600e0@pengutronix.de>
+To:     linux-can@vger.kernel.org
+Cc:     kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+X-Mailer: b4 0.13-dev-0438c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1066; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=RpoMfe+B9odeRtGMBjUm5lGF5acFRzcydKsBKD4zINg=;
+ b=owEBbQGS/pANAwAKAb5QHEoqigToAcsmYgBlHmqpEUwNDbyPgnaWYjPYPQQ8zV/9qCpM+HoXI
+ jI1r/vfL9qJATMEAAEKAB0WIQQOzYG9qPI0qV/1MlC+UBxKKooE6AUCZR5qqQAKCRC+UBxKKooE
+ 6GnjCACbXmGIC7QgfGOBsJwzhRQzusP1WThQEXf+xh6DGNAOfIQ1iC8/Y34j0BTKTQGhyXrogQ0
+ KvxWOutX1PdxibL6tBKVwj5VSPUtYzpMs0uDOCMJAlZzfH8P1z9kp/qb2HADSul8nonmFxF1wdN
+ f+I9Jcx4j4J5y7FFlXiKRq0d/0Vq2Gg631lNSYIpSoRu3bsZmtaUTWW4k9C6fMvyebIxt6AKdgu
+ eyR2fbekffHawSNoPc/sEgXoDP8dHUSV06LXRVAgbCmb5U7IkL1sogQZ4u1QPwE/FD+IE8EOuXW
+ 1+SCEay0DANGRwfV/I356ZSWOYxxMa9GDyRFJXnOIXHFtgJ3
+X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
+ fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 12:05:35AM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> NUL-padding is not required since card is already zero-initialized:
-> |       card = kzalloc(sizeof(*card), GFP_KERNEL);
-> 
-> A suitable replacement is `strscpy` [2] due to the fact that it
-> guarantees NUL-termination on the destination buffer without
-> unnecessarily NUL-padding.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+This is a cleanup patch, no functional change intended.
 
-Yup, this looks like a standard direct replacement.
+The function at91_irq_err() only handles the CAN line errors, so
+rename it accordingly to at91_irq_err_line().
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/at91_can.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
+index 6b017fd695c0..4249a1c95769 100644
+--- a/drivers/net/can/at91_can.c
++++ b/drivers/net/can/at91_can.c
+@@ -954,7 +954,7 @@ static int at91_get_state_by_bec(const struct net_device *dev,
+ 	return 0;
+ }
+ 
+-static void at91_irq_err(struct net_device *dev)
++static void at91_irq_err_line(struct net_device *dev)
+ {
+ 	struct at91_priv *priv = netdev_priv(dev);
+ 	struct sk_buff *skb;
+@@ -1091,7 +1091,7 @@ static irqreturn_t at91_irq(int irq, void *dev_id)
+ 	if (reg_sr & get_irq_mb_tx(priv))
+ 		at91_irq_tx(dev, reg_sr);
+ 
+-	at91_irq_err(dev);
++	at91_irq_err_line(dev);
+ 
+ 	/* Frame Error Interrupt */
+ 	if (reg_sr & AT91_IRQ_ERR_FRAME)
 
 -- 
-Kees Cook
+2.40.1
+
+
