@@ -2,101 +2,85 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A564EE92734
-	for <linux-can@archiver.kernel.org>; Thu,  5 Oct 2023 19:59:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CC5EE92FFB
+	for <linux-can@archiver.kernel.org>; Fri,  6 Oct 2023 10:34:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231828AbjJET7E (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Thu, 5 Oct 2023 15:59:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
+        id S231659AbjJFKd7 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Fri, 6 Oct 2023 06:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231876AbjJET7C (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Thu, 5 Oct 2023 15:59:02 -0400
+        with ESMTP id S231821AbjJFKd4 (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Fri, 6 Oct 2023 06:33:56 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE4B192
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 12:58:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDA8BE
+        for <linux-can@vger.kernel.org>; Fri,  6 Oct 2023 03:33:55 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qoUUl-0006Bu-De
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 21:58:51 +0200
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qoi9R-0003Mi-Bu; Fri, 06 Oct 2023 12:33:45 +0200
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qoUUk-00BLRP-7b
-        for linux-can@vger.kernel.org; Thu, 05 Oct 2023 21:58:50 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id B241923001B
-        for <linux-can@vger.kernel.org>; Thu,  5 Oct 2023 19:58:18 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id DE3DE22FF90;
-        Thu,  5 Oct 2023 19:58:15 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id eedfffbb;
-        Thu, 5 Oct 2023 19:58:14 +0000 (UTC)
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 16/37] can: at91_can: MMR registers: convert to FIELD_PREP()
-Date:   Thu,  5 Oct 2023 21:57:51 +0200
-Message-Id: <20231005195812.549776-17-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231005195812.549776-1-mkl@pengutronix.de>
-References: <20231005195812.549776-1-mkl@pengutronix.de>
+        (envelope-from <ore@pengutronix.de>)
+        id 1qoi9O-00BUbQ-I4; Fri, 06 Oct 2023 12:33:42 +0200
+Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qoi9O-00D3kd-FU; Fri, 06 Oct 2023 12:33:42 +0200
+Date:   Fri, 6 Oct 2023 12:33:42 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org,
+        stable@vger.kernel.org, linux-can@vger.kernel.org,
+        kernel@pengutronix.de, Sili Luo <rootlab@huawei.com>,
+        davem@davemloft.net
+Subject: Re: [PATCH net 1/7] can: j1939: Fix UAF in j1939_sk_match_filter
+ during setsockopt(SO_J1939_FILTER)
+Message-ID: <20231006103342.GA3112038@pengutronix.de>
+References: <20231005094639.387019-1-mkl@pengutronix.de>
+ <20231005094639.387019-2-mkl@pengutronix.de>
+ <20231005094421.09a6a58f@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231005094421.09a6a58f@kernel.org>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Mail-From: ore@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Use FIELD_PREP() to access the individual fields of the MMR register.
+Hi Jakub,
 
-Link: https://lore.kernel.org/all/20231005-at91_can-rx_offload-v2-6-9987d53600e0@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/at91_can.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+On Thu, Oct 05, 2023 at 09:44:21AM -0700, Jakub Kicinski wrote:
+> On Thu,  5 Oct 2023 11:46:33 +0200 Marc Kleine-Budde wrote:
+> > Lock jsk->sk to prevent UAF when setsockopt(..., SO_J1939_FILTER, ...)
+> > modifies jsk->filters while receiving packets.
+> 
+> Doesn't it potentially introduce sleep in atomic?
+> 
+> j1939_sk_recv_match()
+>   spin_lock_bh(&priv->j1939_socks_lock);
+>   j1939_sk_recv_match_one()
+>     j1939_sk_match_filter()
+>       lock_sock()
+>         sleep
 
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index 7597da543348..16a62f649418 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -75,7 +75,9 @@ enum at91_reg {
- #define AT91_ECR_REC_MASK GENMASK(8, 0)
- #define AT91_ECR_TEC_MASK GENMASK(23, 16)
- 
--#define AT91_MMR_PRIO_SHIFT (16)
-+#define AT91_MMR_MTIMEMARK_MASK GENMASK(15, 0)
-+#define AT91_MMR_PRIOR_MASK GENMASK(19, 16)
-+#define AT91_MMR_MOT_MASK GENMASK(26, 24)
- 
- #define AT91_MID_MIDE BIT(29)
- 
-@@ -299,9 +301,12 @@ static inline void at91_write(const struct at91_priv *priv, enum at91_reg reg,
- 
- static inline void set_mb_mode_prio(const struct at91_priv *priv,
- 				    unsigned int mb, enum at91_mb_mode mode,
--				    int prio)
-+				    u8 prio)
- {
--	at91_write(priv, AT91_MMR(mb), (mode << 24) | (prio << 16));
-+	const u32 reg_mmr = FIELD_PREP(AT91_MMR_MOT_MASK, mode) |
-+		FIELD_PREP(AT91_MMR_PRIOR_MASK, prio);
-+
-+	at91_write(priv, AT91_MMR(mb), reg_mmr);
- }
- 
- static inline void set_mb_mode(const struct at91_priv *priv, unsigned int mb,
+Good point! Thank you for the review.
+
+@Sili Luo, can you please take a look at this?
+
+Regards,
+Oleksij
 -- 
-2.40.1
-
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
