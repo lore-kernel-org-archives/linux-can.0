@@ -2,56 +2,50 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AE09E95A8E
-	for <linux-can@archiver.kernel.org>; Mon,  9 Oct 2023 09:39:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 026C6E95A91
+	for <linux-can@archiver.kernel.org>; Mon,  9 Oct 2023 09:39:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345952AbjJIJjV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        id S1345956AbjJIJjV (ORCPT <rfc822;linux-can@archiver.kernel.org>);
         Mon, 9 Oct 2023 05:39:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39326 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345951AbjJIJjV (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Mon, 9 Oct 2023 05:39:21 -0400
+        with ESMTP id S1345928AbjJIJjU (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 9 Oct 2023 05:39:20 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA540C6
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1861494
         for <linux-can@vger.kernel.org>; Mon,  9 Oct 2023 02:39:19 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qpmjO-0000cU-Ao
-        for linux-can@vger.kernel.org; Mon, 09 Oct 2023 11:39:18 +0200
+        id 1qpmjN-0000be-Kq
+        for linux-can@vger.kernel.org; Mon, 09 Oct 2023 11:39:17 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <mkl@pengutronix.de>)
-        id 1qpmjN-000NeR-GY
+        id 1qpmjN-000Ndt-2q
         for linux-can@vger.kernel.org; Mon, 09 Oct 2023 11:39:17 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-        by bjornoya.blackshift.org (Postfix) with SMTP id 477C723266B
-        for <linux-can@vger.kernel.org>; Mon,  9 Oct 2023 08:53:01 +0000 (UTC)
+        by bjornoya.blackshift.org (Postfix) with SMTP id 11E25232617
+        for <linux-can@vger.kernel.org>; Mon,  9 Oct 2023 08:52:59 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by bjornoya.blackshift.org (Postfix) with ESMTPS id CF2A923260D;
+        by bjornoya.blackshift.org (Postfix) with ESMTPS id 1031F2325FC;
         Mon,  9 Oct 2023 08:52:58 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2cc6b211;
+        by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 247cc0be;
         Mon, 9 Oct 2023 08:52:57 +0000 (UTC)
 From:   Marc Kleine-Budde <mkl@pengutronix.de>
 To:     netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de,
-        Markus Schneider-Pargmann <msp@baylibre.com>,
-        Sean Anderson <sean.anderson@seco.com>,
-        Simon Horman <horms@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 6/6] can: tcan4x5x: Fix id2_register for tcan4553
-Date:   Mon,  9 Oct 2023 10:50:08 +0200
-Message-ID: <20231009085256.693378-7-mkl@pengutronix.de>
+        kernel@pengutronix.de
+Subject: [PATCH net 0/6] pull-request: can 2023-10-09
+Date:   Mon,  9 Oct 2023 10:50:02 +0200
+Message-ID: <20231009085256.693378-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231009085256.693378-1-mkl@pengutronix.de>
-References: <20231009085256.693378-1-mkl@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -62,35 +56,72 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Markus Schneider-Pargmann <msp@baylibre.com>
+Hello netdev-team,
 
-Fix id2_register content for tcan4553. This slipped through my testing.
+this is a pull request of 6 patches for net/master. (It's basically
+linux-can-fixes-for-6.6-20231005 with the problematic j1939 patch
+removed.)
 
-Reported-by: Sean Anderson <sean.anderson@seco.com>
-Closes: https://lore.kernel.org/lkml/a94e6fc8-4f08-7877-2ba0-29b9c2780136@seco.com/
-Fixes: 142c6dc6d9d7 ("can: tcan4x5x: Add support for tcan4552/4553")
-Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
-Link: https://lore.kernel.org/all/20230919095401.1312259-1-msp@baylibre.com
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Lukas Magel's patch for the CAN ISO-TP protocol fixes the TX state
+detection and wait behavior.
+
+John Watts contributes a patch to only show the sun4i_can Kconfig
+option on ARCH_SUNXI.
+
+A patch by Miquel Raynal fixes the soft-reset workaround for Renesas
+SoCs in the sja1000 driver.
+
+Markus Schneider-Pargmann's patch for the tcan4x5x m_can glue driver
+fixes the id2 register for the tcan4553.
+
+2 patches by Haibo Chen fix the flexcan stop mode for the imx93 SoC.
+
+regards,
+Marc
+
 ---
- drivers/net/can/m_can/tcan4x5x-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The following changes since commit d0f95894fda7d4f895b29c1097f92d7fee278cb2:
 
-diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
-index 8a4143809d33..ae8c42f5debd 100644
---- a/drivers/net/can/m_can/tcan4x5x-core.c
-+++ b/drivers/net/can/m_can/tcan4x5x-core.c
-@@ -125,7 +125,7 @@ static const struct tcan4x5x_version_info tcan4x5x_versions[] = {
- 	},
- 	[TCAN4553] = {
- 		.name = "4553",
--		.id2_register = 0x32353534,
-+		.id2_register = 0x33353534,
- 	},
- 	/* generic version with no id2_register at the end */
- 	[TCAN4X5X] = {
--- 
-2.42.0
+  netlink: annotate data-races around sk->sk_err (2023-10-04 17:32:54 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-6.6-20231009
+
+for you to fetch changes up to c881047071547f4442aae72a6a45140d373b5cb0:
+
+  Merge patch series "arm64: dts: imx93: add the Flex-CAN stop mode by GPR" (2023-10-06 12:55:10 +0200)
+
+----------------------------------------------------------------
+linux-can-fixes-for-6.6-20231009
+
+----------------------------------------------------------------
+Haibo Chen (2):
+      arm64: dts: imx93: add the Flex-CAN stop mode by GPR
+      can: flexcan: remove the auto stop mode for IMX93
+
+John Watts (1):
+      can: sun4i_can: Only show Kconfig if ARCH_SUNXI is set
+
+Lukas Magel (1):
+      can: isotp: isotp_sendmsg(): fix TX state detection and wait behavior
+
+Marc Kleine-Budde (1):
+      Merge patch series "arm64: dts: imx93: add the Flex-CAN stop mode by GPR"
+
+Markus Schneider-Pargmann (1):
+      can: tcan4x5x: Fix id2_register for tcan4553
+
+Miquel Raynal (1):
+      can: sja1000: Always restart the Tx queue after an overrun
+
+ arch/arm64/boot/dts/freescale/imx93.dtsi |  4 ++-
+ drivers/net/can/Kconfig                  |  2 +-
+ drivers/net/can/flexcan/flexcan-core.c   | 46 +++++++++-----------------------
+ drivers/net/can/flexcan/flexcan.h        |  2 --
+ drivers/net/can/m_can/tcan4x5x-core.c    |  2 +-
+ drivers/net/can/sja1000/sja1000.c        |  8 +++++-
+ net/can/isotp.c                          | 19 ++++++-------
+ 7 files changed, 33 insertions(+), 50 deletions(-)
 
 
