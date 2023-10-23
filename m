@@ -2,243 +2,49 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ABBF0CDB474
-	for <linux-can@archiver.kernel.org>; Fri, 20 Oct 2023 13:38:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BB56CDB474
+	for <linux-can@archiver.kernel.org>; Mon, 23 Oct 2023 07:32:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377295AbjJTNi2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Fri, 20 Oct 2023 09:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37838 "EHLO
+        id S229650AbjJWHcw (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Mon, 23 Oct 2023 03:32:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377002AbjJTNi1 (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Fri, 20 Oct 2023 09:38:27 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 122E719E
-        for <linux-can@vger.kernel.org>; Fri, 20 Oct 2023 06:38:25 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qtphi-000368-A0; Fri, 20 Oct 2023 15:38:18 +0200
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qtphf-0032Vm-PR; Fri, 20 Oct 2023 15:38:15 +0200
-Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qtphf-001buo-2M;
-        Fri, 20 Oct 2023 15:38:15 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Robin van der Gracht <robin@protonic.nl>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Sili Luo <rootlab@huawei.com>, stable@vger.kernel.org,
-        kernel@pengutronix.de, linux-can@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] can: j1939: Fix UAF in j1939_sk_match_filter during setsockopt(SO_J1939_FILTER)
-Date:   Fri, 20 Oct 2023 15:38:14 +0200
-Message-Id: <20231020133814.383996-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
+        with ESMTP id S229450AbjJWHcv (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Mon, 23 Oct 2023 03:32:51 -0400
+Received: from mail.loanfly.pl (mail.loanfly.pl [141.94.250.68])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E78C9B
+        for <linux-can@vger.kernel.org>; Mon, 23 Oct 2023 00:32:50 -0700 (PDT)
+Received: by mail.loanfly.pl (Postfix, from userid 1002)
+        id C9FFCA379A; Mon, 23 Oct 2023 07:31:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=loanfly.pl; s=mail;
+        t=1698046332; bh=Y0HnXqH+26AP5Uq6M8BQXaj1HIAPQY/WndV9tkpAHHU=;
+        h=Date:From:To:Subject:From;
+        b=qpNYkWsFL5tDiUVu/6ycwtQ+IOC13bZQKKgq15BlwUA3g65yAhKvH9P+yMw+wS2nY
+         6IXgv1b7SJAsleklfpdmGQouDwxvWyaTd6XwRu4hadiFsbYgwoBoriGtc2fRESTUHb
+         aYUmni64tkWcryVFm9O0p/F+hK1+fR/JDQneRzhqkVUzvEiQaNp46lLUbaTQjxrd3m
+         EE+qLEeeyDE5nh8AX7e9NJyTTkWjdVmq8E16rH9fDEWIao6l+9lLxWSfRMsagb+9by
+         0tMSdCm4M/F6Z9MkgJyqZ6Ns6BDfkWkPvz39t0XIwfLhsiGiLHykNMJQ2rn/iuERcI
+         JIgOW8IxajJjw==
+Received: by mail.loanfly.pl for <linux-can@vger.kernel.org>; Mon, 23 Oct 2023 07:31:09 GMT
+Message-ID: <20231023064501-0.1.da.1keba.0.baknma4f51@loanfly.pl>
+Date:   Mon, 23 Oct 2023 07:31:09 GMT
+From:   "Damian Cichocki" <damian.cichocki@loanfly.pl>
+To:     <linux-can@vger.kernel.org>
+Subject: =?UTF-8?Q?Pytanie_o_samoch=C3=B3d?=
+X-Mailer: mail.loanfly.pl
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-Lock jsk->sk to prevent UAF when setsockopt(..., SO_J1939_FILTER, ...)
-modifies jsk->filters while receiving packets.
+Dzie=C5=84 dobry,
 
-Following trace was seen on affected system:
- ==================================================================
- BUG: KASAN: slab-use-after-free in j1939_sk_recv_match_one+0x1af/0x2d0 [can_j1939]
- Read of size 4 at addr ffff888012144014 by task j1939/350
+Czy interesuje Pa=C5=84stwa rozwi=C4=85zanie umo=C5=BCliwiaj=C4=85ce moni=
+torowanie samochod=C3=B3w firmowych oraz optymalizacj=C4=99 koszt=C3=B3w =
+ich utrzymania?=20
 
- CPU: 0 PID: 350 Comm: j1939 Tainted: G        W  OE      6.5.0-rc5 #1
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
- Call Trace:
-  print_report+0xd3/0x620
-  ? kasan_complete_mode_report_info+0x7d/0x200
-  ? j1939_sk_recv_match_one+0x1af/0x2d0 [can_j1939]
-  kasan_report+0xc2/0x100
-  ? j1939_sk_recv_match_one+0x1af/0x2d0 [can_j1939]
-  __asan_load4+0x84/0xb0
-  j1939_sk_recv_match_one+0x1af/0x2d0 [can_j1939]
-  j1939_sk_recv+0x20b/0x320 [can_j1939]
-  ? __kasan_check_write+0x18/0x20
-  ? __pfx_j1939_sk_recv+0x10/0x10 [can_j1939]
-  ? j1939_simple_recv+0x69/0x280 [can_j1939]
-  ? j1939_ac_recv+0x5e/0x310 [can_j1939]
-  j1939_can_recv+0x43f/0x580 [can_j1939]
-  ? __pfx_j1939_can_recv+0x10/0x10 [can_j1939]
-  ? raw_rcv+0x42/0x3c0 [can_raw]
-  ? __pfx_j1939_can_recv+0x10/0x10 [can_j1939]
-  can_rcv_filter+0x11f/0x350 [can]
-  can_receive+0x12f/0x190 [can]
-  ? __pfx_can_rcv+0x10/0x10 [can]
-  can_rcv+0xdd/0x130 [can]
-  ? __pfx_can_rcv+0x10/0x10 [can]
-  __netif_receive_skb_one_core+0x13d/0x150
-  ? __pfx___netif_receive_skb_one_core+0x10/0x10
-  ? __kasan_check_write+0x18/0x20
-  ? _raw_spin_lock_irq+0x8c/0xe0
-  __netif_receive_skb+0x23/0xb0
-  process_backlog+0x107/0x260
-  __napi_poll+0x69/0x310
-  net_rx_action+0x2a1/0x580
-  ? __pfx_net_rx_action+0x10/0x10
-  ? __pfx__raw_spin_lock+0x10/0x10
-  ? handle_irq_event+0x7d/0xa0
-  __do_softirq+0xf3/0x3f8
-  do_softirq+0x53/0x80
-  </IRQ>
-  <TASK>
-  __local_bh_enable_ip+0x6e/0x70
-  netif_rx+0x16b/0x180
-  can_send+0x32b/0x520 [can]
-  ? __pfx_can_send+0x10/0x10 [can]
-  ? __check_object_size+0x299/0x410
-  raw_sendmsg+0x572/0x6d0 [can_raw]
-  ? __pfx_raw_sendmsg+0x10/0x10 [can_raw]
-  ? apparmor_socket_sendmsg+0x2f/0x40
-  ? __pfx_raw_sendmsg+0x10/0x10 [can_raw]
-  sock_sendmsg+0xef/0x100
-  sock_write_iter+0x162/0x220
-  ? __pfx_sock_write_iter+0x10/0x10
-  ? __rtnl_unlock+0x47/0x80
-  ? security_file_permission+0x54/0x320
-  vfs_write+0x6ba/0x750
-  ? __pfx_vfs_write+0x10/0x10
-  ? __fget_light+0x1ca/0x1f0
-  ? __rcu_read_unlock+0x5b/0x280
-  ksys_write+0x143/0x170
-  ? __pfx_ksys_write+0x10/0x10
-  ? __kasan_check_read+0x15/0x20
-  ? fpregs_assert_state_consistent+0x62/0x70
-  __x64_sys_write+0x47/0x60
-  do_syscall_64+0x60/0x90
-  ? do_syscall_64+0x6d/0x90
-  ? irqentry_exit+0x3f/0x50
-  ? exc_page_fault+0x79/0xf0
-  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
 
- Allocated by task 348:
-  kasan_save_stack+0x2a/0x50
-  kasan_set_track+0x29/0x40
-  kasan_save_alloc_info+0x1f/0x30
-  __kasan_kmalloc+0xb5/0xc0
-  __kmalloc_node_track_caller+0x67/0x160
-  j1939_sk_setsockopt+0x284/0x450 [can_j1939]
-  __sys_setsockopt+0x15c/0x2f0
-  __x64_sys_setsockopt+0x6b/0x80
-  do_syscall_64+0x60/0x90
-  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-
- Freed by task 349:
-  kasan_save_stack+0x2a/0x50
-  kasan_set_track+0x29/0x40
-  kasan_save_free_info+0x2f/0x50
-  __kasan_slab_free+0x12e/0x1c0
-  __kmem_cache_free+0x1b9/0x380
-  kfree+0x7a/0x120
-  j1939_sk_setsockopt+0x3b2/0x450 [can_j1939]
-  __sys_setsockopt+0x15c/0x2f0
-  __x64_sys_setsockopt+0x6b/0x80
-  do_syscall_64+0x60/0x90
-  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-
-Fixes: 9d71dd0c70099 ("can: add support of SAE J1939 protocol")
-Reported-by: Sili Luo <rootlab@huawei.com>
-Suggested-by: Sili Luo <rootlab@huawei.com>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: stable@vger.kernel.org
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
-changes v2:
-- spin_lock_bh() instead of lock_sock()
-
- net/can/j1939/j1939-priv.h |  1 +
- net/can/j1939/socket.c     | 22 ++++++++++++++++++----
- 2 files changed, 19 insertions(+), 4 deletions(-)
-
-diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
-index 16af1a7f80f6..c4d098362155 100644
---- a/net/can/j1939/j1939-priv.h
-+++ b/net/can/j1939/j1939-priv.h
-@@ -301,6 +301,7 @@ struct j1939_sock {
- 
- 	int ifindex;
- 	struct j1939_addr addr;
-+	spinlock_t filters_lock;
- 	struct j1939_filter *filters;
- 	int nfilters;
- 	pgn_t pgn_rx_filter;
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 14c431663233..641d37671c19 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -262,12 +262,17 @@ static bool j1939_sk_match_dst(struct j1939_sock *jsk,
- static bool j1939_sk_match_filter(struct j1939_sock *jsk,
- 				  const struct j1939_sk_buff_cb *skcb)
- {
--	const struct j1939_filter *f = jsk->filters;
--	int nfilter = jsk->nfilters;
-+	const struct j1939_filter *f;
-+	int nfilter;
-+
-+	spin_lock_bh(&jsk->filters_lock);
-+
-+	f = jsk->filters;
-+	nfilter = jsk->nfilters;
- 
- 	if (!nfilter)
- 		/* receive all when no filters are assigned */
--		return true;
-+		goto filter_match_found;
- 
- 	for (; nfilter; ++f, --nfilter) {
- 		if ((skcb->addr.pgn & f->pgn_mask) != f->pgn)
-@@ -276,9 +281,15 @@ static bool j1939_sk_match_filter(struct j1939_sock *jsk,
- 			continue;
- 		if ((skcb->addr.src_name & f->name_mask) != f->name)
- 			continue;
--		return true;
-+		goto filter_match_found;
- 	}
-+
-+	spin_unlock_bh(&jsk->filters_lock);
- 	return false;
-+
-+filter_match_found:
-+	spin_unlock_bh(&jsk->filters_lock);
-+	return true;
- }
- 
- static bool j1939_sk_recv_match_one(struct j1939_sock *jsk,
-@@ -401,6 +412,7 @@ static int j1939_sk_init(struct sock *sk)
- 	atomic_set(&jsk->skb_pending, 0);
- 	spin_lock_init(&jsk->sk_session_queue_lock);
- 	INIT_LIST_HEAD(&jsk->sk_session_queue);
-+	spin_lock_init(&jsk->filters_lock);
- 
- 	/* j1939_sk_sock_destruct() depends on SOCK_RCU_FREE flag */
- 	sock_set_flag(sk, SOCK_RCU_FREE);
-@@ -703,9 +715,11 @@ static int j1939_sk_setsockopt(struct socket *sock, int level, int optname,
- 		}
- 
- 		lock_sock(&jsk->sk);
-+		spin_lock_bh(&jsk->filters_lock);
- 		ofilters = jsk->filters;
- 		jsk->filters = filters;
- 		jsk->nfilters = count;
-+		spin_unlock_bh(&jsk->filters_lock);
- 		release_sock(&jsk->sk);
- 		kfree(ofilters);
- 		return 0;
--- 
-2.39.2
-
+Pozdrawiam,
+Damian Cichocki
