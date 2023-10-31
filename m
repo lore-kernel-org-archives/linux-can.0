@@ -2,77 +2,77 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD01AC4167B
-	for <linux-can@archiver.kernel.org>; Tue, 31 Oct 2023 09:30:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01C7AC4332F
+	for <linux-can@archiver.kernel.org>; Tue, 31 Oct 2023 09:30:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343893AbjJaJa0 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 31 Oct 2023 05:30:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
+        id S1343903AbjJaJa2 (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 31 Oct 2023 05:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343894AbjJaJaW (ORCPT
-        <rfc822;linux-can@vger.kernel.org>); Tue, 31 Oct 2023 05:30:22 -0400
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 460A6DB;
-        Tue, 31 Oct 2023 02:30:19 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1698744597; cv=none;
+        with ESMTP id S1343897AbjJaJaZ (ORCPT
+        <rfc822;linux-can@vger.kernel.org>); Tue, 31 Oct 2023 05:30:25 -0400
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEAA9B7;
+        Tue, 31 Oct 2023 02:30:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1698744595; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=FqfrjacrWmSxUAAhvg9EMLSJUdbndlbnKsJQ8JX2yqcT4CEj2mgkYG1wcD0QVaoMtB
-    wLc4eC0nioLpVrt3EW+OTQjRe3Zum1DOaRhTC7xesReSdC2rVE2Dqqvzm0nBxdej2CHv
-    v5MpNW+fQps6YKOmlHE8J1AaOxTQTaVsGxdRJAU1VlXT2zBcvA2m7o9QSKA44ZWxl5A7
-    FoswmqRyc7qIg9/PkEclR6OUPYGsAFtfePinKi2SPeRu4jfYlc29mnko++1jf7h48yyV
-    L2yvV+m9lLhbilf6p776JxguvOg6fhcEioSPzj9q69ZRBRmvxRDhhgIOyzzNZGumH1V1
-    7EVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1698744597;
+    b=FU1mdTQStvFPgUh+LrvTyMEzbzYe9Kq9T3RBZzLtZBS3dYGlgkL2tbLppwrQ+Dg0XF
+    WwPj1Ul+a34g4zqyTcg4aI2AejJLZgqEgGoG8PU7Iw5c38garRRKoM/RL7DYK3aSErfQ
+    gYZo4maPAaclJTaZ5jnwJ3lhACUkaca/hIHaDgQD06hCwZutNIFy1J1mV8dOgl4oepe1
+    I5U8IBICD95PmnBXBdHRHeBuEuGVJYoz9mekVTmDd6rFaFyRxaRz3FvT9fVF5Vf19miC
+    YJSTNnVGQIIRkMxcSpdasvO9XaQhf+3Y/7LGpFHkkPN/lVxOhS8dCbqWKqkMXkhykkDZ
+    XGpQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1698744595;
     s=strato-dkim-0002; d=strato.com;
     h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=sOZtvX6fAm3rEME4QaBlcvE5hEKaO1W/hBkfGk6fYKY=;
-    b=IMppRmy4itzX5KFCdfxxfwHFbnLQ7IUXMmRb+61tvuF6CHIcf2PH1jlaisIepfK6wN
-    QC05cWeqBjYXF+Kwx/bKweZvo0r/6F0l8R29HkNgfCI7X39yCpdCEnQOSCt6Egby8Aa8
-    fEj4MFb9OyrAhg4CxgAFufosOv9hjJPd9j+h17fe/ds1B0qk+CGhgGmHN9EThUvEBgeU
-    VSTnEo2e02r0pMndiv3f3mdJqqlsXxi1+mAGzqWR5107cloXjbXnIb18wHfbEaBL4IWL
-    /YzXoVHyyOM6i1127hjDTqKH5WXBla/WMS/IWh9Yi7PWZVVOeTGTTsZAatjSp5bvBA9R
-    XT8w==
+    bh=+3+3fl8Dw9igqgWyPi9LuZfPNwP8R5zOZwXySk4OGfw=;
+    b=kixMJ16m1kheVIJhSzbpwBXQxRzlCKfO9msenXs4KpuKfHo0pzEmXTdvKBGm26/bxk
+    /zJ4Nv/XgKexCSbRhHIOjcT4VmMjCqQehu0UarwfFlmpemnlf2G76krKAh6ZGO0GzeqV
+    phC1U8B1yS5yPTBpZ17I4jjStPRWysZ+vXawwiyuxTzTswx+2lR3Q8MjjD8JlQoVMWwb
+    ojCiuqxRmD3u/CNAgmMJWcfbrBQ6OedHGA8Zh3uM+33l2i0H5DM8pdxgGA7Rc7MbX1oT
+    SpgQk56tIdG9UcVs7EIv5IiFYxPAe0AlIfwTuz/iTlDUy93MZsZXylAfCldUZevMQbel
+    A7RQ==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1698744597;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1698744595;
     s=strato-dkim-0002; d=hartkopp.net;
     h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=sOZtvX6fAm3rEME4QaBlcvE5hEKaO1W/hBkfGk6fYKY=;
-    b=QJV5EScPf9jLbNTQse9lvsh7PbJCA3JSF/dHcbpPoy16ea0t2EGwPS/SBjqjWVHUMk
-    UEG1S6U6Y+gdTz606Mmqi89Ivqy+JBEg/VqNrATgF3P99Z0kMcvB2STQQd2vYZJIJ9Tr
-    3ml9Yc80tIaOMmCsNkR00igcJE5e4x1UhVlq3z7cbYWzbOQB4X9yZVbPg1qZVTDGF8ml
-    nOHatpik2FLrsdteFdE12KUyd3QrsX01D7VVtfqveWA8pHiL+8UmNZaA5S+rPS6upQza
-    obQ4KSL/hQK2iLFbs4on5XIDIlPdp/SQfGVlKqipwj4UkCmtWx3w81W+Ude+B75/PmO7
-    doLw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1698744597;
+    bh=+3+3fl8Dw9igqgWyPi9LuZfPNwP8R5zOZwXySk4OGfw=;
+    b=JY++M8E+TFVKJ5AzLCKmP4iWmiign8Kmfs2gYrKj/kDXS26AAyr53ojp7L1r7gutQo
+    CKCPhf9QbRpTYuUknn7jdj/BEsABfYbEbFox8pK4WHngpG3NoUpzO3Lyg5jQAqnVeHbV
+    DVl4DkVysEz8L/EEksjwg2mrEmsok33brRYiq9CLk1g40BVKBcEI5LK4ev6VKSP3Su0k
+    plqbWWuASb0ttWDQI0QAJHu3VuIhy8Zc1LSJwunWb5PCOlH/jcnERVe7psfV+DPH9k0p
+    TEyNAy65rQLL5WoZ8qgN96ZU7HvXYi//xU177sL7VRsoRA4Hmj46UVjewlg9uhJbjHt0
+    ijOw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1698744595;
     s=strato-dkim-0003; d=hartkopp.net;
     h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=sOZtvX6fAm3rEME4QaBlcvE5hEKaO1W/hBkfGk6fYKY=;
-    b=yFKk8U+cx0AVy8qdLLjfmEEm4UbXoBM9u49HfmjtVQl+S357f7Vhrp3C+vR5hlGElD
-    umQBYVKrTBw4i6mK2tAQ==
+    bh=+3+3fl8Dw9igqgWyPi9LuZfPNwP8R5zOZwXySk4OGfw=;
+    b=BxFgbx7IkBGkI0WHCOy+ssBiDG1ra2KjILG6qSenWzuQ269cjHRKgc7U5rSsEqP7FV
+    29yAqCy3tmgBkU7CAqBw==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS0k+8CejuVITM8sik0"
 Received: from lenov17.lan
     by smtp.strato.de (RZmta 49.9.1 DYNA|AUTH)
-    with ESMTPSA id Kda39bz9V9TuFhI
+    with ESMTPSA id Kda39bz9V9TtFhD
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Tue, 31 Oct 2023 10:29:56 +0100 (CET)
+    Tue, 31 Oct 2023 10:29:55 +0100 (CET)
 From:   Oliver Hartkopp <socketcan@hartkopp.net>
 To:     gregkh@linuxfoundation.org, stable@vger.kernel.org,
         sashal@kernel.org
 Cc:     linux-can@vger.kernel.org, lukas.magel@posteo.net,
         patches@lists.linux.dev, maxime.jayat@mobile-devices.fr,
         mkl@pengutronix.de, michal.sojka@cvut.cz,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        syzbot+5aed6c3aaba661f5b917@syzkaller.appspotmail.com
-Subject: [PATCH stable 5.10 06/10] can: isotp: check CAN address family in isotp_bind()
-Date:   Tue, 31 Oct 2023 10:29:14 +0100
-Message-Id: <20231031092918.2668-7-socketcan@hartkopp.net>
+        Patrick Menschel <menschel.p@posteo.de>,
+        Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH stable 5.10 02/10] can: isotp: add symbolic error message to isotp_module_init()
+Date:   Tue, 31 Oct 2023 10:29:10 +0100
+Message-Id: <20231031092918.2668-3-socketcan@hartkopp.net>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231031092918.2668-1-socketcan@hartkopp.net>
 References: <20231031092918.2668-1-socketcan@hartkopp.net>
@@ -83,46 +83,38 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-commit c6adf659a8ba85913e16a571d5a9bcd17d3d1234 upstream
+From: Patrick Menschel <menschel.p@posteo.de>
 
-Add missing check to block non-AF_CAN binds.
+commit 6a5ddae578842652719fb926b22f1d510fe50bee upstream
 
-Syzbot created some code which matched the right sockaddr struct size
-but used AF_XDP (0x2C) instead of AF_CAN (0x1D) in the address family
-field:
+This patch adds the value of err with format %pe to the already
+existing error message.
 
-bind$xdp(r2, &(0x7f0000000540)={0x2c, 0x0, r4, 0x0, r2}, 0x10)
-                                ^^^^
-This has no funtional impact but the userspace should be notified about
-the wrong address family field content.
-
-Link: https://syzkaller.appspot.com/text?tag=CrashLog&x=11ff9d8c480000
-Reported-by: syzbot+5aed6c3aaba661f5b917@syzkaller.appspotmail.com
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://lore.kernel.org/all/20230104201844.13168-1-socketcan@hartkopp.net
+Link: https://lore.kernel.org/r/20210427052150.2308-3-menschel.p@posteo.de
+Signed-off-by: Patrick Menschel <menschel.p@posteo.de>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- net/can/isotp.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/can/isotp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 902cb61b6495..87de9a08cc85 100644
+index d34f9ab2eb62..009d5216f3ea 100644
 --- a/net/can/isotp.c
 +++ b/net/can/isotp.c
-@@ -1127,10 +1127,13 @@ static int isotp_bind(struct socket *sock, struct sockaddr *uaddr, int len)
- 	int do_rx_reg = 1;
+@@ -1548,11 +1548,11 @@ static __init int isotp_module_init(void)
  
- 	if (len < ISOTP_MIN_NAMELEN)
- 		return -EINVAL;
+ 	pr_info("can: isotp protocol\n");
  
-+	if (addr->can_family != AF_CAN)
-+		return -EINVAL;
-+
- 	/* sanitize tx/rx CAN identifiers */
- 	tx_id = addr->can_addr.tp.tx_id;
- 	if (tx_id & CAN_EFF_FLAG)
- 		tx_id &= (CAN_EFF_FLAG | CAN_EFF_MASK);
+ 	err = can_proto_register(&isotp_can_proto);
+ 	if (err < 0)
+-		pr_err("can: registration of isotp protocol failed\n");
++		pr_err("can: registration of isotp protocol failed %pe\n", ERR_PTR(err));
  	else
+ 		register_netdevice_notifier(&canisotp_notifier);
+ 
+ 	return err;
+ }
 -- 
 2.34.1
 
