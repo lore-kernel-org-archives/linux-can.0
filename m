@@ -2,80 +2,75 @@ Return-Path: <linux-can-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A1BEC00144
-	for <linux-can@archiver.kernel.org>; Tue, 31 Oct 2023 09:30:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D1E3C0018C
+	for <linux-can@archiver.kernel.org>; Tue, 31 Oct 2023 09:30:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343892AbjJaJaW (ORCPT <rfc822;linux-can@archiver.kernel.org>);
-        Tue, 31 Oct 2023 05:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52712 "EHLO
+        id S1343895AbjJaJaX (ORCPT <rfc822;linux-can@archiver.kernel.org>);
+        Tue, 31 Oct 2023 05:30:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343878AbjJaJaU (ORCPT
+        with ESMTP id S1343885AbjJaJaU (ORCPT
         <rfc822;linux-can@vger.kernel.org>); Tue, 31 Oct 2023 05:30:20 -0400
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52DF8C1;
-        Tue, 31 Oct 2023 02:30:17 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1698744595; cv=none;
+X-Greylist: delayed 79130 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 31 Oct 2023 02:30:18 PDT
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.164])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B95D8;
+        Tue, 31 Oct 2023 02:30:18 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1698744594; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=Oi3lRsfP339z7GzySLlcFWCElboDJPhaCBdy8pUFQiq4IqHcV0a9qcdiv53458sLnp
-    cjHW63pHjorWEjJvgZafaUqwXwNceF9FiMoIEQ0b0bbAssBHRLDAXpywJ5J0dBJGgwBm
-    jBhV1anQyE4OTFo+DLFYzI1eOOJgZDlRLO3SRx0dArfgfwc21Cqvn/BDPT/jM4yG8wB8
-    n/PHh+nYo9ciNqzSvCrc9z4RQkSh3UTAaxNTn2Y9qc9c0yTBKY89nS5JqRoJzzc6FH/Q
-    wrbjg6GyDqhdPVL+H0Y4K0DsAQmYDcX0IIiZvomuk2ckn1slPpCYHl7G5m4Qwr1TAUwq
-    c8ig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1698744595;
+    b=Fwa8oJylUw3RGkcgug1yHwLZvusWKDGyw063fbbqX4kuFZZCxOLGA02tNslp4O79rC
+    c4EWihyMPshETtfZsu2E74O3XJdD28uy8+rKZPqFy5B4pr2wvXOAC5t9i3Vr8i4IR2I8
+    ftOEZDuho3R0vw9UY4BuW17isK6EHyTLfzmnq0ywoA51ni2yynd9Sw0lJIuwZhSAu3bB
+    sKPbiKr7+7cvKJvPmL9vEP/OqPcaQyqi0fdUmUGXCpUhu7wCjSe68hB3J+8qsUec8SyD
+    0FQun9HSXYeLYEVxu5wXtkjN/5rq2Y8RJOHk+Q/e3BERqlLh3KstTbbDG6ZgTzX0DPAS
+    JGxQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1698744594;
     s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=kCiPsmHP7A+8+OSHVc4VVcQK0OfGm/StDJ6OGxer1S0=;
-    b=BBBwb/wUOoyvriS6qDFDbI8NfOqCNvw6KJrJAtXA1Yhg4sSUwM49pp1TMIk33+rWQz
-    Y+GQEU1ZJ8GL7k403DplVwLAii8BJRVb7lmDjkpv5nFjez2WGoskxs7Doy3xFyN8oME3
-    XeVOgRnZlpQOaRMN66iflX9SVKHvBXbOY7o+r9rHIluB4lBTeQ6ylYCHevoLtJ4jEByV
-    N706ihBBJB80TxCSfmJUJMugNvG8vBM7bXdclaR1/kNj4JnK0vpoEq/SUme3lTIjKK3+
-    bQTXkY2zFpNRXNiw7YxVhS5UBYOtwCZbP/SNPXqJXzygCg9ZesKH66coYInh+vYTghFf
-    +1NQ==
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=ZfFTC5Dx7oItzKGDdq61zrmPGDnUDc64z2Z7f0RNLbI=;
+    b=Aoos+i4HjKysrP7uwLnkQRyv0PFBkuSLMz1fsczH08OaVpt4pmaqYtIlsQiujbUJY9
+    1q0Ud0Z3VJ+2ppFtqaT5eZSTdz/56ol7f4Ld+Ey/bOMdvpOpv/y+H07mfwc0jYjsy9Qq
+    /biyzEq+Fp1EX53ihv/tykcI1v4S4LUJ42s11cygJ/7F1bnIeiP5gKf6R6RbCKgypigM
+    wDVQJ851ZdxGGWDJ0DiA3QEbLthvS9RgaoYpnQgbaLrBC/q6RbzKCZrw30fbxC1DcOA8
+    PJsCIks/+FGpTlp7hE+ez9/5R8pY43ckMvYuXAN1x9ppwCxIEVMJU+90wqmzPFKEzAk6
+    1kcg==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1698744595;
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1698744594;
     s=strato-dkim-0002; d=hartkopp.net;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=kCiPsmHP7A+8+OSHVc4VVcQK0OfGm/StDJ6OGxer1S0=;
-    b=YN+exxeaBMFYyaCiIHQukjkmMzRVYMvc7swu5VIbZd2g5uiApPY/4KHBr+IyDVATTm
-    n4bT3jS0emwlppbvig7D0S1mtC/CpnoV5W4JJnm9eYRAiHxScmCwwOAW1MKYUSENguWT
-    77Ohf4hA6Wra9SjJYoJW/+vAR0MvbRw2WRD6vd8w/Vkgv+X3665jwAXCEzm2jG5JlIsJ
-    6Bv/enUrxESJBUBfs2pfvjpU5JNNcaDdlbV8k3O9l3mTkjKWIb9ePMyioQ9JoTbEglWr
-    y7Z4kd89zTIevOxCLIL3Hq7NqpATsOGFgxBUPaorfwRZcOZLrPoyxb+Zm3zc2pFuycJn
-    Im5Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1698744595;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=ZfFTC5Dx7oItzKGDdq61zrmPGDnUDc64z2Z7f0RNLbI=;
+    b=g5xaFsFabLVpLaPVNQnMGCVn7mHokPOniSQ7GTkWnxF4cyUus3JzpP6A6QAqU3v16q
+    6s9E1t01IguV0vYZhMxfltQdk2jo4p3L6DatTJ6o8f4hmlC6mG0PDW5mEHnXUMAjZ8dA
+    EndebLmPWB2iAfhcTGHW9u7I5ugbJe5KUfEr1U9YIGo5QCzZvvDayJExnb87vXeLRk3u
+    +D6+9IUN7BPQI47uJVSjz0JVeTYbgJJeVFqw4KHV8SxcpI9PIJ6DA0at6CvWJGp3HZPu
+    EVDWKNAZCrFFm81AAolOMPVKooV+FP9U2wF3gCzSLYmM7ARMFscnCX/Ah0hbin/TNfHb
+    sOOg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1698744594;
     s=strato-dkim-0003; d=hartkopp.net;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=kCiPsmHP7A+8+OSHVc4VVcQK0OfGm/StDJ6OGxer1S0=;
-    b=P65ZEk70H9dcYD0pqpZfhDUGEjoOEi42dMTvS8RGAlY4fpP3oiGgxqQCFYDoU5JD1B
-    xnTRiIekbzK2JdsD66BQ==
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=ZfFTC5Dx7oItzKGDdq61zrmPGDnUDc64z2Z7f0RNLbI=;
+    b=ItHlohsoKaWinidjvzhRN4BkA0J3WTuA+WmSbXnG46g6alZ1sJrQ2KzDIzHJQrgF2t
+    vvAJcrvCUVbGzKIu2fBQ==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS0k+8CejuVITM8sik0"
 Received: from lenov17.lan
     by smtp.strato.de (RZmta 49.9.1 DYNA|AUTH)
-    with ESMTPSA id Kda39bz9V9TtFhE
+    with ESMTPSA id Kda39bz9V9TrFhB
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Tue, 31 Oct 2023 10:29:55 +0100 (CET)
+    Tue, 31 Oct 2023 10:29:53 +0100 (CET)
 From:   Oliver Hartkopp <socketcan@hartkopp.net>
 To:     gregkh@linuxfoundation.org, stable@vger.kernel.org,
         sashal@kernel.org
 Cc:     linux-can@vger.kernel.org, lukas.magel@posteo.net,
         patches@lists.linux.dev, maxime.jayat@mobile-devices.fr,
         mkl@pengutronix.de, michal.sojka@cvut.cz,
-        Patrick Menschel <menschel.p@posteo.de>,
         Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH stable 5.10 03/10] can: isotp: Add error message if txqueuelen is too small
-Date:   Tue, 31 Oct 2023 10:29:11 +0100
-Message-Id: <20231031092918.2668-4-socketcan@hartkopp.net>
+Subject: [PATCH stable 5.10 00/10] can: isotp: upgrade to latest 6.1 LTS code base
+Date:   Tue, 31 Oct 2023 10:29:08 +0100
+Message-Id: <20231031092918.2668-1-socketcan@hartkopp.net>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231031092918.2668-1-socketcan@hartkopp.net>
-References: <20231031092918.2668-1-socketcan@hartkopp.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="us-ascii"
@@ -83,47 +78,33 @@ Precedence: bulk
 List-ID: <linux-can.vger.kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 
-From: Patrick Menschel <menschel.p@posteo.de>
+The backport of commit 9c5df2f14ee3 ("can: isotp: isotp_ops: fix poll() to
+not report false EPOLLOUT events") introduced a new regression where the
+fix could potentially introduce new side effects.
 
-commit c69d190f7bb9a03cf5237d45a457993730d01605 upstream
+To reduce the risk of other unmet dependencies and missing fixes and checks
+the latest 6.1 LTS code base is ported back to the 5.10 LTS tree.
 
-This patch adds an additional error message in case that txqueuelen is
-set too small and advices the user to increase txqueuelen.
+Lukas Magel (1):
+  can: isotp: isotp_sendmsg(): fix TX state detection and wait behavior
 
-This is likely to happen even with small transfers if txqueuelen is at
-default value 10 frames.
+Oliver Hartkopp (6):
+  can: isotp: set max PDU size to 64 kByte
+  can: isotp: isotp_bind(): return -EINVAL on incorrect CAN ID formatting
+  can: isotp: check CAN address family in isotp_bind()
+  can: isotp: handle wait_event_interruptible() return values
+  can: isotp: add local echo tx processing and tx without FC
+  can: isotp: isotp_bind(): do not validate unused address information
 
-Link: https://lore.kernel.org/r/20210427052150.2308-4-menschel.p@posteo.de
-Signed-off-by: Patrick Menschel <menschel.p@posteo.de>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- net/can/isotp.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Patrick Menschel (3):
+  can: isotp: change error format from decimal to symbolic error names
+  can: isotp: add symbolic error message to isotp_module_init()
+  can: isotp: Add error message if txqueuelen is too small
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 009d5216f3ea..ef72e5344789 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -811,14 +811,16 @@ static enum hrtimer_restart isotp_tx_timer_handler(struct hrtimer *hrtimer)
- 
- 		skb->dev = dev;
- 		can_skb_set_owner(skb, sk);
- 
- 		can_send_ret = can_send(skb, 1);
--		if (can_send_ret)
-+		if (can_send_ret) {
- 			pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
- 				       __func__, ERR_PTR(can_send_ret));
--
-+			if (can_send_ret == -ENOBUFS)
-+				pr_notice_once("can-isotp: tx queue is full, increasing txqueuelen may prevent this error\n");
-+		}
- 		if (so->tx.idx >= so->tx.len) {
- 			/* we are done */
- 			so->tx.state = ISOTP_IDLE;
- 			dev_put(dev);
- 			wake_up_interruptible(&so->wait);
+ include/uapi/linux/can/isotp.h |  25 +-
+ net/can/isotp.c                | 434 +++++++++++++++++++++------------
+ 2 files changed, 293 insertions(+), 166 deletions(-)
+
 -- 
 2.34.1
 
