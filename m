@@ -1,103 +1,148 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA4D3033A;
-	Wed,  8 Nov 2023 15:23:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 627991DFD6;
+	Mon, 13 Nov 2023 13:15:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s7Z5lHbG"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CECEFC433C9;
-	Wed,  8 Nov 2023 15:23:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699456994;
-	bh=GYkmk8qCTCeJLO8tC4gkRcDTmGCJ6Fq6YovqQyNeMc4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=s7Z5lHbGCP/2ulRL1hIUMwtIwLwQLo426JNTActtX+dc2/GhkZkUMYZfVli+LRf/i
-	 4O3RAcTPZtKBHHPXaH4CqHeuufwE9kAmmGkGRRuy7GHZfZ1icIjYEwVkqnTvGJ0GbT
-	 B/zoymBCtjuKGcu5TeTLuEEtpr8jj2UvHSoqEmxBPKYZvzl2zeqouvs6q8rxAd+WnH
-	 BPgFcecgSeez7WNBNfcUEn1wlZhuoYZFwGKntv120VOI8y8CVgRGoFEUY9i0Lo7BJl
-	 XGWKjB0K/iPP0liiDJSoyu7UXaxP9IZRj7p2qsXAc9c8sGWvLiSn1Zg59K4A5mpO+L
-	 4aQ2SNI9gV4zw==
-Date: Wed, 8 Nov 2023 10:23:11 -0500
-From: Simon Horman <horms@kernel.org>
-To: Stefan =?utf-8?B?TcOkdGpl?= <Stefan.Maetje@esd.eu>
-Cc: "wg@grandegger.com" <wg@grandegger.com>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"mkl@pengutronix.de" <mkl@pengutronix.de>,
-	"kuba@kernel.org" <kuba@kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"edumazet@google.com" <edumazet@google.com>,
-	"pabeni@redhat.com" <pabeni@redhat.com>
-Subject: Re: [PATCH v8 2/2] can: esd: add support for esd GmbH PCIe/402 CAN
- interface family
-Message-ID: <20231108152311.GD173253@kernel.org>
-References: <20231025141635.1459606-1-stefan.maetje@esd.eu>
- <20231025141635.1459606-3-stefan.maetje@esd.eu>
- <20231103164839.GA714036@kernel.org>
- <1a1d0f4257cd980c58b6e2f83e2456dde5fe9441.camel@esd.eu>
+	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="XGEuILR8"
+Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D3D71722;
+	Mon, 13 Nov 2023 05:15:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
+	s=default2211; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
+	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=QwxS8AAVgWbWSXqucpTTpQWhMELRpsu4i5sqjUo/D6s=; b=XGEuILR8RHW7TNXIQ1ezV0tScb
+	xUSQKxrzyuVi+QB8Ar20pQ3kSSCmDOdvNgn3WYau210ggYhkPr80PXwQculpOWMyR3RtDm043Y2X8
+	AdPCzVfY8B8uqnPVEslGNWEGXScT0KUMElcnPPpM6l0XY75GDZNZTDuSsX5y7dHuVk4z/YBww9Qxq
+	XDwo7Z0piDLYzQ1vzDzibt9H1ryEG24pCZ76tAyvjfbhNeKCwF4pbyDc5W9U0HTx/2HODtir+W1cY
+	7XeNrpnU9Xh5idNOU4ZLK/kbGkuPyex/MG0d0rv3YkHM3opDDrXpgQOTAtlE+WHt+ABGmBbxE9yb+
+	9FcX+jNw==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <martin@geanix.com>)
+	id 1r2WmF-0007Gd-Uw; Mon, 13 Nov 2023 14:14:55 +0100
+Received: from [185.17.218.86] (helo=zen..)
+	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <martin@geanix.com>)
+	id 1r2WmF-000XPJ-CC; Mon, 13 Nov 2023 14:14:55 +0100
+From: =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>
+To: linux-can@vger.kernel.org,
+	devicetree@vger.kernel.org
+Cc: Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+	Wolfgang Grandegger <wg@grandegger.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	=?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>
+Subject: [PATCH v3 2/3] can: tcan4x5x: support resuming from rx interrupt signal
+Date: Mon, 13 Nov 2023 14:14:51 +0100
+Message-ID: <20231113131452.214961-3-martin@geanix.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231113131452.214961-1-martin@geanix.com>
+References: <20231113131452.214961-1-martin@geanix.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1a1d0f4257cd980c58b6e2f83e2456dde5fe9441.camel@esd.eu>
+X-Authenticated-Sender: martin@geanix.com
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27092/Mon Nov 13 09:38:20 2023)
 
-On Tue, Nov 07, 2023 at 01:27:34PM +0000, Stefan Mätje wrote:
-> Am Freitag, dem 03.11.2023 um 16:48 +0000 schrieb Simon Horman:
-> > On Wed, Oct 25, 2023 at 04:16:35PM +0200, Stefan Mätje wrote:
-> > > This patch adds support for the PCI based PCIe/402 CAN interface family
-> > > from esd GmbH that is available with various form factors
-> > > (https://esd.eu/en/products/402-series-can-interfaces).
-> > > 
-> > > All boards utilize a FPGA based CAN controller solution developed
-> > > by esd (esdACC). For more information on the esdACC see
-> > > https://esd.eu/en/products/esdacc.
-> > > 
-> > > This driver detects all available CAN interface board variants of
-> > > the family but atm. operates the CAN-FD capable devices in
-> > > Classic-CAN mode only! A later patch will introduce the CAN-FD
-> > > functionality in this driver.
-> > > 
-> > > Co-developed-by: Thomas Körper <thomas.koerper@esd.eu>
-> > > Signed-off-by: Thomas Körper <thomas.koerper@esd.eu>
-> > > Signed-off-by: Stefan Mätje <stefan.maetje@esd.eu>
-> > 
-> > ...
-> > 
-> > > +static int pci402_probe(struct pci_dev *pdev, const struct pci_device_id
-> > > *ent)
-> > > +{
-> > > +       struct pci402_card *card = NULL;
-> > > +       int err;
-> > > +
-> > > +       err = pci_enable_device(pdev);
-> > > +       if (err)
-> > > +               return err;
-> > > +
-> > > +       card = devm_kzalloc(&pdev->dev, sizeof(*card), GFP_KERNEL);
-> > > +       if (!card)
-> > 
-> > Hi Thomas and Stefan,
-> > 
-> > If this condition is met then the function will return err,
-> > but err is set to 0. Perhaps it should be set to an error value here?
-> > 
-> > Flagged by Smatch.
-> 
-> Hi Simon,
-> 
-> thank you for reviewing this. Looking at the code it is apparently wrong.
-> 
-> I was not aware of smatch. I got a copy and could reproduce the error report.
-> This will add another tool of static code analysis to my release routine.
-> 
-> An upgraded patch with a fix will follow.
+Implement the "wakeup-source" device tree property, so the chip is left
+running when suspending, and its rx interrupt is used as a wakeup source
+to resume operation.
 
-Thanks Stefan, that sounds good to me on both counts.
+Signed-off-by: Martin Hundebøll <martin@geanix.com>
+---
 
-...
+Change in v3:
+ * Updated to use the property in struct m_can_classdev instead of
+   passing parameters to suspend/resume functions.
+
+Change in v2:
+ * Added `static` keyword to dev_pm_ops sturcture
+
+ drivers/net/can/m_can/tcan4x5x-core.c | 34 +++++++++++++++++++++++++--
+ 1 file changed, 32 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
+index 870ab4aef610..0f4c2ac7e4f6 100644
+--- a/drivers/net/can/m_can/tcan4x5x-core.c
++++ b/drivers/net/can/m_can/tcan4x5x-core.c
+@@ -411,7 +411,7 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+ 	priv->spi = spi;
+ 
+ 	mcan_class->pm_clock_support = 0;
+-	mcan_class->pm_wake_source = 0;
++	mcan_class->pm_wake_source = device_property_read_bool(&spi->dev, "wakeup-source");
+ 	mcan_class->can.clock.freq = freq;
+ 	mcan_class->dev = &spi->dev;
+ 	mcan_class->ops = &tcan4x5x_ops;
+@@ -460,6 +460,9 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+ 		goto out_power;
+ 	}
+ 
++	if (mcan_class->pm_wake_source)
++		device_init_wakeup(&spi->dev, true);
++
+ 	ret = m_can_class_register(mcan_class);
+ 	if (ret) {
+ 		dev_err(&spi->dev, "Failed registering m_can device %pe\n",
+@@ -488,6 +491,29 @@ static void tcan4x5x_can_remove(struct spi_device *spi)
+ 	m_can_class_free_dev(priv->cdev.net);
+ }
+ 
++static int __maybe_unused tcan4x5x_suspend(struct device *dev)
++{
++	struct m_can_classdev *cdev = dev_get_drvdata(dev);
++	struct spi_device *spi = to_spi_device(dev);
++
++	if (cdev->pm_wake_source)
++		enable_irq_wake(spi->irq);
++
++	return m_can_class_suspend(dev);
++}
++
++static int __maybe_unused tcan4x5x_resume(struct device *dev)
++{
++	struct m_can_classdev *cdev = dev_get_drvdata(dev);
++	struct spi_device *spi = to_spi_device(dev);
++	int ret = m_can_class_resume(dev);
++
++	if (cdev->pm_wake_source)
++		disable_irq_wake(spi->irq);
++
++	return ret;
++}
++
+ static const struct of_device_id tcan4x5x_of_match[] = {
+ 	{
+ 		.compatible = "ti,tcan4x5x",
+@@ -506,11 +532,15 @@ static const struct spi_device_id tcan4x5x_id_table[] = {
+ };
+ MODULE_DEVICE_TABLE(spi, tcan4x5x_id_table);
+ 
++static const struct dev_pm_ops tcan4x5x_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(tcan4x5x_suspend, tcan4x5x_resume)
++};
++
+ static struct spi_driver tcan4x5x_can_driver = {
+ 	.driver = {
+ 		.name = KBUILD_MODNAME,
+ 		.of_match_table = tcan4x5x_of_match,
+-		.pm = NULL,
++		.pm = &tcan4x5x_pm_ops,
+ 	},
+ 	.id_table = tcan4x5x_id_table,
+ 	.probe = tcan4x5x_can_probe,
+-- 
+2.42.0
+
