@@ -1,76 +1,76 @@
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com [209.85.215.199])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 677C1139
-	for <linux-can@vger.kernel.org>; Mon, 20 Nov 2023 06:35:21 -0800 (PST)
-Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5be39ccc2e9so5958606a12.3
-        for <linux-can@vger.kernel.org>; Mon, 20 Nov 2023 06:35:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700490921; x=1701095721;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l7LnU8RknCJWsPsqm7RXDpRlRmyk9PFdTymemdD1BB0=;
-        b=Cm18fdx8Py2eg+xSihQaYflFuxAiPsHo4aQ3+LD1/4Smri8hX0KaIklmFvQoCMUJ08
-         mCVu3goRZgyu0gi33ahSR35FbrJsnoLC54n1SBsLM0jpnieivXTWW7CYr2dql24ZXO6S
-         ULzV0r/2JifQdhCqEw8TGa5wKzTXi/oOHU7XRq7r3bZRmjFIbfN5TlpX50ysJ5CHCZLU
-         uZgxVHrOa5SOnFmf3o3PU6LEBUlLUYAu6zJRZ+r1kMwgMfUXe5CGMHCYVgmZdxrI0e5h
-         VUYkh+aJp2sZjt+os1RenwfA//6+5RvUawUxti0B0s+CFA9qTnIoMTHksqpjmAtXHZmy
-         WRtg==
-X-Gm-Message-State: AOJu0YwhT9aa0ujc3zN/5OfQCGqkcUP369yDh20gcegdL/AdSA3sOhb9
-	98ZHObJI5R3ytvgNqVT3Mdldfi/DDm/B7gPasWw1KRGVtIGa
-X-Google-Smtp-Source: AGHT+IEzo56JbmoqVwXpNg8mySCpYTtfjo3yW4Qe9XqQZVtkbrSYD8LRgMtcpz+jO1iIYLRpugHW71s2+YOd//5V4KN6QrJvxIwu
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ka-long.de header.i=@ka-long.de header.b="YfSqmjkc"
+X-Greylist: delayed 335 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 20 Nov 2023 08:16:44 PST
+Received: from dd15738.kasserver.com (dd15738.kasserver.com [85.13.151.39])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5926DD51
+	for <linux-can@vger.kernel.org>; Mon, 20 Nov 2023 08:16:44 -0800 (PST)
+Received: from dd15738.kasserver.com (dd0805.kasserver.com [85.13.161.253])
+	by dd15738.kasserver.com (Postfix) with ESMTPSA id AA49E5B00817;
+	Mon, 20 Nov 2023 17:11:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ka-long.de;
+	s=kas202309031034; t=1700496666;
+	bh=UNTwFpRG+W048dcAxu8qpseZjf27XDi6hOJWwU9yoQw=;
+	h=Subject:To:From:Date:From;
+	b=YfSqmjkcFOYCq3kyt/LeYs18WM8lYVBKq27MuYZkGV3BryOacvbNQ8CcoDrf4Cggs
+	 1sDNmi+skl2/8juP7XRF9yNiy/XYlSX4m3rVVFXO6IYK34OvS5NAoYAPriLEvhZW4Y
+	 TFehVTN9DIkK/xIA5k3sopFL4rwGP/pyj9wguAXqesEbF8PJHZtSGRMK+hW/L5dbF/
+	 ML39Vgnlhq4U7gIDjdfgMk4HvbHO2Szmhta6mnIZIA9yX6jX9NIR1g6qN5bUloI+Tf
+	 YpgnQgUY9By+lwPk/FH33Y2QRPDb/MorxigoXnvBekuta9A5o3kGsRl1ob9GH5jjOl
+	 dzW4z9yyQ9jKg==
+Subject: mcp251xfd on NXP LX2160A
+To: linux-can@vger.kernel.org, mkl@pengutronix.de
+From: petter@ka-long.de
+User-Agent: ALL-INKL Webmail 2.11
+X-SenderIP: 147.161.255.85
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a65:6897:0:b0:5c2:1816:24c5 with SMTP id
- e23-20020a656897000000b005c2181624c5mr1598710pgt.10.1700490920919; Mon, 20
- Nov 2023 06:35:20 -0800 (PST)
-Date: Mon, 20 Nov 2023 06:35:20 -0800
-In-Reply-To: <0000000000009393ba059691c6a3@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000490858060a96651c@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in j1939_session_get_by_addr
-From: syzbot <syzbot+d9536adc269404a984f8@syzkaller.appspotmail.com>
-To: Jose.Abreu@synopsys.com, arvid.brodin@alten.se, davem@davemloft.net, 
-	dvyukov@google.com, ilias.apalodimas@linaro.org, joabreu@synopsys.com, 
-	jose.abreu@synopsys.com, kernel@pengutronix.de, linux-can@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux@rempel-privat.de, mkl@pengutronix.de, 
-	netdev@vger.kernel.org, nogikh@google.com, robin@protonic.nl, 
-	socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com, 
-	tonymarislogistics@yandex.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-Id: <20231120161106.AA49E5B00817@dd15738.kasserver.com>
+Date: Mon, 20 Nov 2023 17:11:06 +0100 (CET)
+X-Spamd-Bar: /
 
-This bug is marked as fixed by commit:
-can: j1939: transport: make sure the aborted session will be deactivated only once
+Hi Folks,
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+Some time ago I have asked for help for mcp251xfd driver with an IMX7D, so I am somehow familar with the system.
+The next iteration is with a NXP LX 2160A ... new hardware platform ... new kernel (6.1.1) ... new problems ;)
 
-#syz fix: exact-commit-title
+What is working : Driver is successfully initialised.
+❯ sudo modprobe mcp251xfd
+[ 4493.557075] mcp251xfd spi1.2 can2: MCP2518FD rev0.0 (-RX_INT -PLL -MAB_NO_WARN +CRC_REG +CRC_RX +CRC_TX +ECC -HD o:40.00MHz c:40.00MHz m:8.00MHz rs:8.00MHz es:0.00MHz rf:8.00MHz ef:0.00MHz) successfully initialized.
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
+If I use a "wrong" interrupt for testing purposes (interrupt wont get it to the driver code), I am able to send one CAN Message from SPI CAN to LX2160A internal CAN (cangen/candump). Then the driver stuck.
+This is more or less expected.
 
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=d9536adc269404a984f8
+Enable the interrupt on the right pin (IRQ_LEVEL_LOW) does make some trouble. Driver is successfully initialised. If I bring up the interface (ip link set canx type can bitrate 500000 ; ip link set canx up)
+I will get contineous errors:
 
----
-[1] I expect the commit to be present in:
+.
+.
+. 
+[  508.352616] mcp251xfd spi1.2 can2: CRC write error detected. CRC=0x6844.
+[  508.362081] mcp251xfd spi1.2 can2: CRC write command format error.
+[  508.368956] mcp251xfd spi1.2 can2: CRC write command format error.
+[  508.375242] mcp251xfd spi1.2 can2: CRC write command format error.
+[  508.381531] mcp251xfd spi1.2 can2: CRC write command format error.
+[  508.387822] mcp251xfd spi1.2 can2: CRC write command format error.
+[  508.394117] mcp251xfd spi1.2 can2: CRC write command format error.
+[  508.400402] mcp251xfd spi1.2 can2: CRC write command format error.
+[  508.406700] mcp251xfd spi1.2 can2: CRC write error detected. CRC=0x537f.
+.
+.
+.
 
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+Since driver successfully initializes, no CRC read errors and sending a frame is working I assume SPI itself is okay.
+/proc/interrupt shows only one additonal interrupt during a down / up cycle. This indicates that the interrupt is never cleared via SPI.
+Since the error is a command error assuming the command is the one clearing the interrupt, that makes sense.
+What can be the reason for the command format error ? Any ideas how to investigate further ?
 
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+BR
+Niels
 
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
 
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
