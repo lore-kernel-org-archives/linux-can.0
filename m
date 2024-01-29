@@ -1,149 +1,115 @@
-Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2063.outbound.protection.partner.outlook.cn [139.219.146.63])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED12212E5B;
-	Mon, 29 Jan 2024 03:45:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.63
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706499958; cv=fail; b=eaCHUF9Z/qUpDr9ggukDiuYgzvWSV1jNc3gWWXniIese8WASSSunWBX6ZVtmpKHP0pms389Ytv0bckn8jzJpcN3d3/MzAbwOWf6OhDI+FbS0Yxz2d9TJLiEdV4FDMO7KoRF+7XzI02SH2Jx4VVx+bBXAr6G6pWWwIAw30Dwu5UE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706499958; c=relaxed/simple;
-	bh=F7J4f8gtLa+wO9nEdwHplBUO85WpsWNy3w+btNEJur0=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=pET/0sSl65xHoPtbLXP0Suz23QEzChzpwQFr17zqfUvtAkO0Uk8HCOql4b4uReVGITjkSY62Uk+nCe7I/C1eDcf8IAArs06bgUF1rOgayl/DdWwo+78CrCApm8rCIr5mwexGY+ms0QbQuHTNXw5MUBV2O8vmwNW8VEcCOjDBDb4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KstA/YKVS8OJ38ljfsu016E1RB/cJBtrYag6GKl4EkWCim0AohraUXyWokMqnZ/yUye8YtGQGw0uvK9MGCbu3CHX6I2lEfc36TyuAl7pgbsfSrjOE1e/wKVPIj+OSsufrYjcrYj0F1q/fBTfmECoZ7OkQkD+S74v8+hXUSFm+ydRaEJGDoBWE/3+03Bf42ulAWtffYppBFMRfd9fNRxOxySYhRpAcTunobFLBAewM0duNbvTTI4RRpMcdRHFtCu3U4SgoN+Rb2t1R+qOhIsWCtlmYtww3d1bcfLRo3uM2yYqZAnVl65fgs8tZHaTNDUOMtJTvbrAmqTMwVYeuzROdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4rDk4Khc8YWQzN5hnYx7eNSRP+jczG9LqiGFQEMi2QA=;
- b=CFIBBB1HxFulvpEX707v4g4jZBE8GrXdgVZlhlwNNaJoG6Zl0MwswQ+z24CJ3zYdShZYN9rq/IPbWQZ0wOHVbjCcsIR5u3JM+CYLjZ0y0BsDnlMR4ea75XZc0s7ZuXgNQe2exVcFCUNU7pI649HgY5Cn/dajv92kzPba9vhjI92dbx8mMzJoXoLelRkC7Ao3NR4PQ7z2bHjF6od2ZivyU8RpWTKZ42fpgLc8tg+jPsGs4EJRp1ta9dLQm8uEbGoF6WH42eZUmQ+4rUpSr8I1BnJo6DFL881V549IgRGfZMDkEZyfceZQk+cOesZj55uR6AfXEqcEtnQSbvIcXcuAzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-Received: from ZQ0PR01MB1253.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:1b::8) by ZQ0PR01MB1253.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:1b::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Mon, 29 Jan
- 2024 03:12:48 +0000
-Received: from ZQ0PR01MB1253.CHNPR01.prod.partner.outlook.cn
- ([fe80::a5c6:9ab0:d20f:cb78]) by
- ZQ0PR01MB1253.CHNPR01.prod.partner.outlook.cn ([fe80::a5c6:9ab0:d20f:cb78%6])
- with mapi id 15.20.7228.029; Mon, 29 Jan 2024 03:12:48 +0000
-From: William Qiu <william.qiu@starfivetech.com>
-To: devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-can@vger.kernel.org
-Cc: Emil Renner Berthing <kernel@esmil.dk>,
-	Rob Herring <robh+dt@kernel.org>,
-	Wolfgang Grandegger <wg@grandegger.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	William Qiu <william.qiu@starfivetech.com>
-Subject: [PATCH v1 0/4] CAST Controller Area Network driver support
-Date: Mon, 29 Jan 2024 11:12:35 +0800
-Message-Id: <20240129031239.17037-1-william.qiu@starfivetech.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SH0PR01CA0011.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:5::23) To ZQ0PR01MB1253.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:1b::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9742C4EB3E
+	for <linux-can@vger.kernel.org>; Mon, 29 Jan 2024 07:57:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706515026; cv=none; b=FbzKk+LW1kMGY8/N1+pCfmA8W5VZfp6o4NllaFUCx5l1e6M+WteWhQfcF5tPHMBz0w1lkOnJwOT/Df9Yqf8YAI2Cik5JLNt56TeNhD3RN7p20PDt0tRlO/d6KRqVqD52ivZK0ZY4iF+sz1BHOdLF1XL0BuxYufzSWsQNBURfVGM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706515026; c=relaxed/simple;
+	bh=cpzbQdEFyJfdWkgTGQtglKfld1njoP+xNZIO0UPn3nU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ucSophnqK93PtEml3sLXMrfcK+s0oZNl3Tn+YXZgp4PBhF6gd2Rvow6DgLy7NnT2n/FOpCUQTkBga8XdIhjaC+8Rc2T56d2xBjOXvnjc57sADu8Cii4cgcx6+OyxraZe34e4/5ZUjhgXewJEN6EApJcuMdohH0fCZswZDODM/1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rUMVn-0005hM-7z; Mon, 29 Jan 2024 08:56:59 +0100
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rUMVm-0037Pp-Hj; Mon, 29 Jan 2024 08:56:58 +0100
+Received: from pengutronix.de (unknown [172.20.34.65])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 35ADF2806D6;
+	Mon, 29 Jan 2024 07:56:58 +0000 (UTC)
+Date: Mon, 29 Jan 2024 08:56:57 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Uwe Bonnes <bon@elektron.ikp.physik.tu-darmstadt.de>
+Cc: linux-can@vger.kernel.org
+Subject: Re: SLCAN and systemd
+Message-ID: <20240129-matrimony-net-4e529ace684b-mkl@pengutronix.de>
+References: <26034.34881.283564.969697@gargle.gargle.HOWL>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: ZQ0PR01MB1253:EE_
-X-MS-Office365-Filtering-Correlation-Id: b3f632c2-42a2-4c0a-91e9-08dc20782bd9
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	CckDggfJ+OFmWmql7gfzHCaHzlEqotrS5GvKir6khoQFA/1WS4WNxt45joAveNy25kWfsDmNGOCPYoCe+BU14DzoizrydEM7HLpesrhxyW5JOWz0Yetuar2KKm/igve3jm10IFihjcAB7/bCWnCXjwXDO/hBk01UwEXJLRNziYXFKMtAbTtVv3xZU7ELJ5eXmkXEHQg0jtxJ+y3ciulKXyhC6TVRS5TGGGwrqGWQCD3AQFz0J/JHylCN3ThZmOFjBRjG+2SfoEAM/cHrPiPj0UorDRD/aXZZ7gZ121chFmFBdl0X2OlHw6M00Ta6H3NF2BZbnvTYsbnv5vn1F0gVUw/aCHX4Y5ESrz7tGsv9LGk9X5jf6WJKvXDxHUbbABWxy5FjO7R2g7M6q2Vn9ZnePbL3qoX/2w3/UDL8u1sYroqjbN90Bpz8lgzcvWh0ArVrYbKPosrqWGr9qYmfu12/wsGp6s8H9WWkd5q3FArJCunKNwwQKDFqu+1TL4IncGgvnSENrTG+YNbj4kjkVfWx5syMJTD+pfs9nQGJjgg2UXNQ3xF7OUbL8Jc+K3+j2d0h
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ZQ0PR01MB1253.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(136003)(39830400003)(346002)(366004)(396003)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(41320700001)(4326008)(8936002)(8676002)(7416002)(5660300002)(44832011)(86362001)(54906003)(66946007)(66556008)(66476007)(38350700005)(4744005)(2906002)(40180700001)(41300700001)(36756003)(38100700002)(52116002)(508600001)(6666004)(2616005)(1076003)(40160700002)(107886003)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?o0mJAPtiZN8+Hjsshb4/dqolBkhqvOuIQsqEzgICEgqDUU5qnc2lkmCQAJw/?=
- =?us-ascii?Q?JWBeLq8/kVhH11V1MVZkTHJ3Kd4LM+JcX61yXGZ/D4Y3xSPsvK/FCLBGLjMG?=
- =?us-ascii?Q?ztQlbRdTCje8XhsV9bC+qPORhoZH0+L84OiWR58QJi+II1S0VilHMY1EksnF?=
- =?us-ascii?Q?KMAHNUAN1xpLY1QtwuFCh09wy8TEM3kME8MkHTjIuKOTXSy94q9hPoruS5yO?=
- =?us-ascii?Q?vgvHIwApNjpChN67lxyoY9Qm90yQ3OHXkhto5FpqpsCHJcogfGktYSfjgJN2?=
- =?us-ascii?Q?TYpB1Wvj8S6BmDDaN594ipm0EIgKqdXsSalpEXoC5QE6jQhpUvOQq+HBcucz?=
- =?us-ascii?Q?oeu5A+4suqw9vIF4+/j3yN98IWxwEwtx1fKnfZsC3/cCRjEnpyCSaXvLAAZM?=
- =?us-ascii?Q?9h+AkGpbHYwBMudo4pSlGjUcK4hQr0VJvA/8U4reLhmbZwczZr0AkBh5NvoF?=
- =?us-ascii?Q?3rYkNKmwHsqV3GKjwEHNKwb538CO0o/O37uomUzCes+JJQ/MTV80tktuZPKj?=
- =?us-ascii?Q?RozYVF7b7XENI2nFDxr426wsBPt2s2KEicu88lS3/z6RX64hYxDFGxpycMi9?=
- =?us-ascii?Q?UZwFu0PA20rHBcHm0qezh3wnEHAu1oz5l6+ulxnlt1q984RLCIuT4BP1JHGf?=
- =?us-ascii?Q?yokotmOtm9V7LtGnR7dkxnFF3h0GCjvF0hfNjfkYVLrk5DafLKqiu88xaAr7?=
- =?us-ascii?Q?cz17DYPZ+nenjKaSMPKGdszwScT2RjlKhtA6/EF7LskWY4WK3IUaooERQXqs?=
- =?us-ascii?Q?dIX4je9zQEtSX6l07p3lES+fLnltt+eMXQEWMhTP4zOjUdsB+M12eCzy3ls0?=
- =?us-ascii?Q?JIrNDBEeuazcjID46q3m4qUxwj1WW6I3mZuSOkUYvnWB4Xi4i629EPZOVOwr?=
- =?us-ascii?Q?KIcKAj7XlTng0ffPOlp7Xm6XNdkRak61FTp9X39H6ZUqewwpzFB3acx5SxsM?=
- =?us-ascii?Q?GkhcCNmVj2r7dk/WtARQp0B0BpHuPnz58IuC/P0RLLDEK6B6SSjcAPpPU0uV?=
- =?us-ascii?Q?9Iueo03yuxpObFvZLS+WQK6KWu7uGRRm8NZebNKRwAH2120VyoYNWrqlgnsk?=
- =?us-ascii?Q?dkxvOjSGfDjM73qaKenOITxDz2Szhis/kjt3FjzX63t4IMIBMYYO5I52vEir?=
- =?us-ascii?Q?ZAhmnbf9W9TuI/nVtp9cBancgOetsDOD5PvKjHrF/Bjxy8fdhMsObZ5QF3DQ?=
- =?us-ascii?Q?OeonTn7DFNGVMnFZ7k6nuRjDBot7TBG+uVF9LvuMgFwELij4vSbtNcPb5yEc?=
- =?us-ascii?Q?H7M83Bjv2S0gHgc9W/NHv45q9i36AI1dYw7VJ/kt2aYi6Kfw1PdFV3Ila2BM?=
- =?us-ascii?Q?Thzs/2gewJUD9USjKbBQ/ShHGtfSWN2UcpJHmf/YtTaQ8mQ1xEdjSGGIXpuJ?=
- =?us-ascii?Q?kF8CARDxQWg93vP86Vabw4hklYpwI2Qs6dKcgcdtuxlcyUAhkjdzCf5vJmCZ?=
- =?us-ascii?Q?bYgyKDH/pFUOKf6C1GWNKZQ/RSsHoUfQ1suM4Xk6wdpBDQtjz3NhItfRvoI3?=
- =?us-ascii?Q?fi0cpxXhAPfHYkUgX2M3PqzwNIY/1WSTV7F19DBPtmLw2vEEaaHsF0fgmlPX?=
- =?us-ascii?Q?M1ISMW2H5+pJNNo8eRd7RvSrp7QUKseG+DH5yiJhRUn7WVTGc3FXZ2Zmfy73?=
- =?us-ascii?Q?RA=3D=3D?=
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b3f632c2-42a2-4c0a-91e9-08dc20782bd9
-X-MS-Exchange-CrossTenant-AuthSource: ZQ0PR01MB1253.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2024 03:12:48.5368
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BveT9G7tPu+9E/KjjTE0bRqn0f3jABVwqgYuE/CEFKAK6kK9KC1JzWdaT4cyiquZ45ldkXoxbyeEA7ktMODhFkZlW0bqaTIXGpfDqippDXc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: ZQ0PR01MB1253
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="6omznj47ldpdnst4"
+Content-Disposition: inline
+In-Reply-To: <26034.34881.283564.969697@gargle.gargle.HOWL>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Hi,
 
-This patchset adds initial rudimentary support for the CAST Controller
-Area Network driver. And we registered cast in kernel as well. This
-driver will be applied in JH7110 SoC first, so add relevant
-compatibility support.
+--6omznj47ldpdnst4
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-William Qiu (4):
-  dt-bindings: vendor-prefixes: Add cast vendor prefix
-  dt-bindings: can: Add bindings for CAST CAN Controller
-  can: cast: add driver for CAST CAN controller
-  riscv: dts: starfive: jh7110: Add CAN node
+On 25.01.2024 17:11:45, Uwe Bonnes wrote:
+> can anybody help to set up an SLCAN adapter via systemd?
 
- .../devicetree/bindings/net/can/cast,can.yaml |   95 ++
- .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
- MAINTAINERS                                   |    7 +
- arch/riscv/boot/dts/starfive/jh7110.dtsi      |   32 +
- drivers/net/can/Kconfig                       |    7 +
- drivers/net/can/Makefile                      |    1 +
- drivers/net/can/cast_can.c                    | 1215 +++++++++++++++++
- 7 files changed, 1359 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/can/cast,can.yaml
- create mode 100644 drivers/net/can/cast_can.c
+If you have the option of using a proper CAN adapter, e.g. a candlelight
+compatible one, you should do so. You won't have much fun with slcan
+based devices.
 
---
-2.34.1
+> By hand and for the given adapter I can do
+> slcand -o -s8 -t hw -S 3000000 \
+> /dev/serial/by-id/usb-Black_Sphere_Technologies_Black_Magic_Probe_STLINK-=
+V3_v1.7.1-353-gbb84e8ec_004100483038510D34333935-if06
+>=20
+> and
+>=20
+> ip link set up slcan
+>=20
+> and it works as expected. However automativ setup at plug would be fine.
 
+You can create a systemd "service" that uses "BindsTo" to bind to your
+USB Serial Adapter. Have a look at the output of "systemctl" to get the
+corresponding "device". This service would be automatically started, if
+you plug the device. =20
+
+It looks something like this (untested, not sure about the quoting):
+
+"BindsTo=3Dsys-devices-pci0000:00-0000:00:14.0-usb2-2\x2d1-2\x2d1.3-2\x2d1.=
+3.2-2\x2d1.3.2:1.0-ttyUSB0-tty-ttyUSB0.device"
+
+Use "slcand" as "ExecStart" in that service.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--6omznj47ldpdnst4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmW3WkcACgkQvlAcSiqK
+BOgaZwf/UTmd4mhYN6enm30ZHVfpvAine0/7/bhW0Gu2iz4rJlnGYhYHf8bCWSDV
+ZnDDnSUS0z+QysWBEhr64BCJ9qdp22YuWq0LkdiQr66FN/AeVUgPhdul45VLXjUB
+sHjBqzLpngpefLXJXQHAytEWt0Zft5kMFv5Wbu3//c49kNLQuh5RUt5HejFmCTZU
+mYWQrGTFxwL9u1PflRN95jWkmVMR4QVbstPjfY0Ja9oZgZaUupqXSG6ImwrSg6s/
+s8WD/h7zL58IYBDhdXdStERtZKD/wVpV6lhENfSIyMd8CeXXLuisAjyPL3Q7WR6i
+ql1KQLEps/vZbcEOAXlgGv6yjxQcYQ==
+=zWUo
+-----END PGP SIGNATURE-----
+
+--6omznj47ldpdnst4--
