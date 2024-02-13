@@ -1,15 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5901C36AFD
-	for <linux-can@vger.kernel.org>; Tue, 13 Feb 2024 11:34:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78EC936AF0
+	for <linux-can@vger.kernel.org>; Tue, 13 Feb 2024 11:34:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707824085; cv=none; b=TehLrXinrq+NRt28xJcL9CmrqrpUc8tecrhI8mZMwYocIFbu3r3zdJnh13taUy7EvmyG9ADLuRvaznESQ2PB9lnGZ43fOHTo9grkdpmXIQ+aBrz07yKUMoW36+2NlM2NBwgy+Lt3x/DWH7Nef58regn5GH7guth1WZ1uxu4caYQ=
+	t=1707824085; cv=none; b=rlM/0WheZCXFTS4pu1iD+eoZGdbtOBLqF1ZG88JT93QM6epgOEyM+IYxRtktGDdZsYDyB7OpIIAr9XVzGxJgsSOEGfPw2nqeu5HlUuRhx1DfadZj29j4JvgniUajtgg/KKVegt/phkkrqtx/EEjzuXiYk6W8GUKwBDrooEU1vJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707824085; c=relaxed/simple;
-	bh=VnOj+lN5A4LqeuCIOf0QipWgjppniZNEf+6vtJIg4HI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=h22j5Zfl71PgBYkph5mFz6GrPtEUoNwXSapnt3bjBUS9w+Tx35ILlkxgY1CJPnrahMge+4yc3WPgN2ldjVGI4E3lPSKseDS31XMDuIXHjPnppuOfoT4PSBS6j89BIh+laToWFvX2DyKxeVWQ9Fso1ULENouLWMW1v2/oG+WsIuM=
+	bh=bEIc8h/Aqqv6z3a1vl6XcDEVVL1CiMYoyBdzePDp17o=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=oGJpsu1vk0UXVYD1cQ09pLS57p1cQII05ZYoV6mfqK0x41WngJ7TPAPBQRBvgKCQgBat7dq7v1OMo4J/3I+A1dCLM9yBk1MLE4ZIzbzuUy/+CBqoMQqiHTFe9TFmzDdqpJhSDwWpdIAG60y2yQDKBGgOZy7EVHtYqse7Loaaqpo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -17,169 +18,97 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1rZr3g-00013d-Hi
-	for linux-can@vger.kernel.org; Tue, 13 Feb 2024 12:34:40 +0100
+	id 1rZr3h-00015X-IN
+	for linux-can@vger.kernel.org; Tue, 13 Feb 2024 12:34:41 +0100
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1rZr3f-000TPl-Vr
+	id 1rZr3g-000TQp-TE
 	for linux-can@vger.kernel.org; Tue, 13 Feb 2024 12:34:40 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 99CAF28D636
-	for <linux-can@vger.kernel.org>; Tue, 13 Feb 2024 11:34:39 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with SMTP id 47E3E28D648
+	for <linux-can@vger.kernel.org>; Tue, 13 Feb 2024 11:34:40 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 9E5EB28D621;
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id D5EE628D624;
 	Tue, 13 Feb 2024 11:34:38 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3d7f212e;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 25e77370;
 	Tue, 13 Feb 2024 11:34:38 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
-	kernel@pengutronix.de
-Subject: [PATCH net-next 0/23] pull-request: can-next 2024-02-13
-Date: Tue, 13 Feb 2024 12:25:03 +0100
-Message-ID: <20240213113437.1884372-1-mkl@pengutronix.de>
+	kernel@pengutronix.de,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 02/23] can: isotp: support dynamic flow control parameters
+Date: Tue, 13 Feb 2024 12:25:05 +0100
+Message-ID: <20240213113437.1884372-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240213113437.1884372-1-mkl@pengutronix.de>
+References: <20240213113437.1884372-1-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Hello netdev-team,
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-this is a pull request of 23 patches for net-next/master.
+The ISO15765-2 standard supports to take the PDUs communication parameters
+blocksize (BS) and Separation Time minimum (STmin) either from the first
+received flow control (FC) "static" or from every received FC "dynamic".
 
-The first patch is by Nicolas Maier and targets the CAN Broadcast
-Manager (bcm), it adds message flags to distinguish between own local
-and remote traffic.
+Add a new CAN_ISOTP_DYN_FC_PARMS flag to support dynamic FC parameters.
 
-Oliver Hartkopp contributes a patch for the CAN ISOTP protocol that
-adds dynamic flow control parameters.
-
-Stefan Mätje's patch series add support for the esd PCIe/402 CAN
-interface family.
-
-Markus Schneider-Pargmann contributes 14 patches for the m_can to
-optimize for the SPI attached tcan4x5x controller.
-
-A patch by Vincent Mailhol replaces Wolfgang Grandegger by Vincent
-Mailhol as the CAN drivers Co-Maintainer.
-
-Jimmy Assarsson's patch add support for the Kvaser M.2 PCIe 4xCAN
-adapter.
-
-A patch by Daniil Dulov removed a redundant NULL check in the softing
-driver.
-
-Oliver Hartkopp contributes a patch to add CANXL virtual CAN network
-identifier support.
-
-A patch by myself removes Naga Sureshkumar Relli as the maintainer of
-the xilinx_can driver, as their email bounces.
-
-regards,
-Marc
-
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://lore.kernel.org/all/20231208165729.3011-1-socketcan@hartkopp.net
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ include/uapi/linux/can/isotp.h | 1 +
+ net/can/isotp.c                | 5 +++--
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-The following changes since commit 970cb1ceda170a3e583a5f26afdbebdfe5bf5a80:
+diff --git a/include/uapi/linux/can/isotp.h b/include/uapi/linux/can/isotp.h
+index 439c982f7e81..6cde62371b6f 100644
+--- a/include/uapi/linux/can/isotp.h
++++ b/include/uapi/linux/can/isotp.h
+@@ -137,6 +137,7 @@ struct can_isotp_ll_options {
+ #define CAN_ISOTP_WAIT_TX_DONE	0x0400	/* wait for tx completion */
+ #define CAN_ISOTP_SF_BROADCAST	0x0800	/* 1-to-N functional addressing */
+ #define CAN_ISOTP_CF_BROADCAST	0x1000	/* 1-to-N transmission w/o FC */
++#define CAN_ISOTP_DYN_FC_PARMS	0x2000	/* dynamic FC parameters BS/STmin */
+ 
+ /* protocol machine default values */
+ 
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index d1c6f206f429..25bac0fafc83 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -381,8 +381,9 @@ static int isotp_rcv_fc(struct isotp_sock *so, struct canfd_frame *cf, int ae)
+ 		return 1;
+ 	}
+ 
+-	/* get communication parameters only from the first FC frame */
+-	if (so->tx.state == ISOTP_WAIT_FIRST_FC) {
++	/* get static/dynamic communication params from first/every FC frame */
++	if (so->tx.state == ISOTP_WAIT_FIRST_FC ||
++	    so->opt.flags & CAN_ISOTP_DYN_FC_PARMS) {
+ 		so->txfc.bs = cf->data[ae + 1];
+ 		so->txfc.stmin = cf->data[ae + 2];
+ 
+-- 
+2.43.0
 
-  Merge branch 'phy-package' (2024-02-10 15:36:20 +0000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-6.9-20240213
-
-for you to fetch changes up to 73b8f5015889d4b5fbd885fa310ad8905fe50e4f:
-
-  MAINTAINERS: can: xilinx_can: remove Naga Sureshkumar Relli (2024-02-13 11:47:17 +0100)
-
-----------------------------------------------------------------
-linux-can-next-for-6.9-20240213
-
-----------------------------------------------------------------
-Daniil Dulov (1):
-      can: softing: remove redundant NULL check
-
-Jimmy Assarsson (1):
-      can: kvaser_pciefd: Add support for Kvaser M.2 PCIe 4xCAN
-
-Marc Kleine-Budde (4):
-      Merge patch series "can: esd: add support for esd GmbH PCIe/402 CAN interface"
-      Merge patch series "can: m_can: Optimizations for m_can/tcan part 2"
-      Merge patch "can network drivers maintainer"
-      MAINTAINERS: can: xilinx_can: remove Naga Sureshkumar Relli
-
-Markus Schneider-Pargmann (14):
-      can: m_can: Start/Cancel polling timer together with interrupts
-      can: m_can: Move hrtimer init to m_can_class_register
-      can: m_can: Write transmit header and data in one transaction
-      can: m_can: Implement receive coalescing
-      can: m_can: Implement transmit coalescing
-      can: m_can: Add rx coalescing ethtool support
-      can: m_can: Add tx coalescing ethtool support
-      can: m_can: Use u32 for putidx
-      can: m_can: Cache tx putidx
-      can: m_can: Use the workqueue as queue
-      can: m_can: Introduce a tx_fifo_in_flight counter
-      can: m_can: Use tx_fifo_in_flight for netif_queue control
-      can: m_can: Implement BQL
-      can: m_can: Implement transmit submission coalescing
-
-Nicolas Maier (1):
-      can: bcm: add recvmsg flags for own, local and remote traffic
-
-Oliver Hartkopp (2):
-      can: isotp: support dynamic flow control parameters
-      can: canxl: add virtual CAN network identifier support
-
-Stefan Mätje (2):
-      MAINTAINERS: add Stefan Mätje as maintainer for the esd electronics GmbH PCIe/402 CAN drivers
-      can: esd: add support for esd GmbH PCIe/402 CAN interface family
-
-Vincent Mailhol (1):
-      can: change can network drivers maintainer
-
- Documentation/networking/can.rst       |  34 +-
- MAINTAINERS                            |  10 +-
- drivers/net/can/Kconfig                |   2 +
- drivers/net/can/Makefile               |   1 +
- drivers/net/can/esd/Kconfig            |  12 +
- drivers/net/can/esd/Makefile           |   7 +
- drivers/net/can/esd/esd_402_pci-core.c | 514 ++++++++++++++++++++++
- drivers/net/can/esd/esdacc.c           | 764 +++++++++++++++++++++++++++++++++
- drivers/net/can/esd/esdacc.h           | 356 +++++++++++++++
- drivers/net/can/kvaser_pciefd.c        |  55 +++
- drivers/net/can/m_can/m_can.c          | 551 +++++++++++++++++-------
- drivers/net/can/m_can/m_can.h          |  34 +-
- drivers/net/can/m_can/m_can_platform.c |   4 -
- drivers/net/can/softing/softing_fw.c   |   2 +-
- include/uapi/linux/can.h               |   9 +-
- include/uapi/linux/can/isotp.h         |   1 +
- include/uapi/linux/can/raw.h           |  16 +
- net/can/af_can.c                       |   2 +
- net/can/bcm.c                          |  69 ++-
- net/can/isotp.c                        |   5 +-
- net/can/raw.c                          |  93 +++-
- 21 files changed, 2348 insertions(+), 193 deletions(-)
- create mode 100644 drivers/net/can/esd/Kconfig
- create mode 100644 drivers/net/can/esd/Makefile
- create mode 100644 drivers/net/can/esd/esd_402_pci-core.c
- create mode 100644 drivers/net/can/esd/esdacc.c
- create mode 100644 drivers/net/can/esd/esdacc.h
 
