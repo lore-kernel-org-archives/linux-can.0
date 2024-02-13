@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3392C3D99E
-	for <linux-can@vger.kernel.org>; Tue, 13 Feb 2024 11:34:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFDFF38DEC
+	for <linux-can@vger.kernel.org>; Tue, 13 Feb 2024 11:34:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707824094; cv=none; b=rLtnwitgAAaS0O3D6B2P25sPTAWMul231iPvVoAxb23jfxEKqZYMfn1P9mWXR7EWRF7JKKBxOPTi0CUyYzk0ykXvVdYUYAPo8Cp5JvxM43zprkR/jMTofClncoS+Www+xHv/gQW6SCbTYXJQPuFIgGSm20NyhRPYiqfpx9zjBjs=
+	t=1707824095; cv=none; b=MgGTkBFORYjIIOcAAIw6ULSem/KYdin4Nm7L3jpzMs03h8O5+5PUxec44Kl6oqvkUkaK4wXMjtF91rPSztxy2LPjKOh9r3rghPj1V6fGxdtJ4QOyWyQnhgnjdUUIEJu+n0nbtTln4tWfodjx4NxC9c/fPI2HhHnsy7kgnF45CWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707824094; c=relaxed/simple;
-	bh=DZfyVlBF/IVYbzjEHs3SUSbOANgZUbgSDmC/i6q5Zxg=;
+	s=arc-20240116; t=1707824095; c=relaxed/simple;
+	bh=PgKEsmf28QqUee3tKcRim3f/PqAfhToO6QYdC4wpF8c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IoV0hfEWCoREFfbMqcQ5AOUkrkav0nyb4RvxqoQ/MJmIoIzulIR2ilI0Anzu2qFMbEHBflT7RhBD/JY5VQh5AwPlYdxNiQ3w9HgdqPzlIAMfYmyClUbmavEtHWAuD44ipGQBD3AqJ/g78XfSsBMy6y41FuYFldluUHpMr8RQmps=
+	 MIME-Version; b=rV6bAxQtaPEkMUC3XCeYCsYe2kGv9exgvBJuGogGLX0WqJC7NLoNdJgPyV2Ub8u/ArqDLnO1L+UHxjydkfyRpqKptJ5n87R43UWZS6s5ZUI1kPugEnge7tEmQgc0L4T3C99nfYj+E4Hi8+7wJxYAMbjE1We4eVt5slT0bPlaY6I=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,25 +18,25 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1rZr3p-0001CQ-Js
+	id 1rZr3p-0001BM-86
 	for linux-can@vger.kernel.org; Tue, 13 Feb 2024 12:34:49 +0100
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1rZr3l-000TYL-4Y
-	for linux-can@vger.kernel.org; Tue, 13 Feb 2024 12:34:45 +0100
+	id 1rZr3k-000TXM-FH
+	for linux-can@vger.kernel.org; Tue, 13 Feb 2024 12:34:44 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id C6A2B28D6E4
+	by bjornoya.blackshift.org (Postfix) with SMTP id 2726828D6D8
 	for <linux-can@vger.kernel.org>; Tue, 13 Feb 2024 11:34:44 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 5E72D28D66A;
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id A3A1228D677;
 	Tue, 13 Feb 2024 11:34:41 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 6f688c39;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 774cb0b5;
 	Tue, 13 Feb 2024 11:34:39 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -44,11 +44,11 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Markus Schneider-Pargmann <msp@baylibre.com>,
+	Jimmy Assarsson <extja@kvaser.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 18/23] can: m_can: Implement transmit submission coalescing
-Date: Tue, 13 Feb 2024 12:25:21 +0100
-Message-ID: <20240213113437.1884372-19-mkl@pengutronix.de>
+Subject: [PATCH net-next 20/23] can: kvaser_pciefd: Add support for Kvaser M.2 PCIe 4xCAN
+Date: Tue, 13 Feb 2024 12:25:23 +0100
+Message-ID: <20240213113437.1884372-21-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213113437.1884372-1-mkl@pengutronix.de>
 References: <20240213113437.1884372-1-mkl@pengutronix.de>
@@ -64,185 +64,152 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Markus Schneider-Pargmann <msp@baylibre.com>
+From: Jimmy Assarsson <extja@kvaser.com>
 
-m_can supports submitting multiple transmits with one register write.
-This is an interesting option to reduce the number of SPI transfers for
-peripheral chips.
+Add support for new Kvaser pciefd device, M.2 PCIe 4xCAN, based on
+Xilinx FPGA.
 
-The m_can_tx_op is extended with a bool that signals if it is the last
-transmission and the submit should be executed immediately.
-
-The worker then writes the skb to the FIFO and submits it only if the
-submit bool is set. If it isn't set, the worker will write the next skb
-which is waiting in the workqueue to the FIFO, etc.
-
-Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-Link: https://lore.kernel.org/all/20240207093220.2681425-15-msp@baylibre.com
+Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
+Link: https://lore.kernel.org/all/20231113134717.515037-1-extja@kvaser.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 56 ++++++++++++++++++++++++++++++++---
- drivers/net/can/m_can/m_can.h |  6 ++++
- 2 files changed, 58 insertions(+), 4 deletions(-)
+ drivers/net/can/Kconfig         |  1 +
+ drivers/net/can/kvaser_pciefd.c | 55 +++++++++++++++++++++++++++++++++
+ 2 files changed, 56 insertions(+)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 48968da69ae9..b7dbce4c342a 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1539,6 +1539,9 @@ static int m_can_start(struct net_device *dev)
- 	if (ret)
- 		return ret;
+diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+index 2da126f13641..620766eb6bc1 100644
+--- a/drivers/net/can/Kconfig
++++ b/drivers/net/can/Kconfig
+@@ -168,6 +168,7 @@ config CAN_KVASER_PCIEFD
+ 	    Kvaser Mini PCI Express 2xHS v2
+ 	    Kvaser Mini PCI Express 1xCAN v3
+ 	    Kvaser Mini PCI Express 2xCAN v3
++	    Kvaser M.2 PCIe 4xCAN
  
-+	netdev_queue_set_dql_min_limit(netdev_get_tx_queue(cdev->net, 0),
-+				       cdev->tx_max_coalesced_frames);
+ config CAN_SLCAN
+ 	tristate "Serial / USB serial CAN Adaptors (slcan)"
+diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
+index a57005faa04f..416f10480b40 100644
+--- a/drivers/net/can/kvaser_pciefd.c
++++ b/drivers/net/can/kvaser_pciefd.c
+@@ -47,12 +47,18 @@ MODULE_DESCRIPTION("CAN driver for Kvaser CAN/PCIe devices");
+ #define KVASER_PCIEFD_MINIPCIE_2CAN_V3_DEVICE_ID 0x0015
+ #define KVASER_PCIEFD_MINIPCIE_1CAN_V3_DEVICE_ID 0x0016
+ 
++/* Xilinx based devices */
++#define KVASER_PCIEFD_M2_4CAN_DEVICE_ID 0x0017
 +
- 	cdev->can.state = CAN_STATE_ERROR_ACTIVE;
+ /* Altera SerDes Enable 64-bit DMA address translation */
+ #define KVASER_PCIEFD_ALTERA_DMA_64BIT BIT(0)
  
- 	m_can_enable_all_interrupts(cdev);
-@@ -1835,8 +1838,13 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev,
- 		 */
- 		can_put_echo_skb(skb, dev, putidx, frame_len);
+ /* SmartFusion2 SerDes LSB address translation mask */
+ #define KVASER_PCIEFD_SF2_DMA_LSB_MASK GENMASK(31, 12)
  
--		/* Enable TX FIFO element to start transfer  */
--		m_can_write(cdev, M_CAN_TXBAR, (1 << putidx));
-+		if (cdev->is_peripheral) {
-+			/* Delay enabling TX FIFO element */
-+			cdev->tx_peripheral_submit |= BIT(putidx);
-+		} else {
-+			/* Enable TX FIFO element to start transfer  */
-+			m_can_write(cdev, M_CAN_TXBAR, BIT(putidx));
-+		}
- 		cdev->tx_fifo_putidx = (++cdev->tx_fifo_putidx >= cdev->can.echo_skb_max ?
- 					0 : cdev->tx_fifo_putidx);
- 	}
-@@ -1849,6 +1857,17 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev,
- 	return NETDEV_TX_BUSY;
- }
- 
-+static void m_can_tx_submit(struct m_can_classdev *cdev)
-+{
-+	if (cdev->version == 30)
-+		return;
-+	if (!cdev->is_peripheral)
-+		return;
++/* Xilinx SerDes LSB address translation mask */
++#define KVASER_PCIEFD_XILINX_DMA_LSB_MASK GENMASK(31, 12)
 +
-+	m_can_write(cdev, M_CAN_TXBAR, cdev->tx_peripheral_submit);
-+	cdev->tx_peripheral_submit = 0;
-+}
-+
- static void m_can_tx_work_queue(struct work_struct *ws)
- {
- 	struct m_can_tx_op *op = container_of(ws, struct m_can_tx_op, work);
-@@ -1857,11 +1876,15 @@ static void m_can_tx_work_queue(struct work_struct *ws)
+ /* Kvaser KCAN CAN controller registers */
+ #define KVASER_PCIEFD_KCAN_FIFO_REG 0x100
+ #define KVASER_PCIEFD_KCAN_FIFO_LAST_REG 0x180
+@@ -281,6 +287,8 @@ static void kvaser_pciefd_write_dma_map_altera(struct kvaser_pciefd *pcie,
+ 					       dma_addr_t addr, int index);
+ static void kvaser_pciefd_write_dma_map_sf2(struct kvaser_pciefd *pcie,
+ 					    dma_addr_t addr, int index);
++static void kvaser_pciefd_write_dma_map_xilinx(struct kvaser_pciefd *pcie,
++					       dma_addr_t addr, int index);
  
- 	op->skb = NULL;
- 	m_can_tx_handler(cdev, skb);
-+	if (op->submit)
-+		m_can_tx_submit(cdev);
- }
- 
--static void m_can_tx_queue_skb(struct m_can_classdev *cdev, struct sk_buff *skb)
-+static void m_can_tx_queue_skb(struct m_can_classdev *cdev, struct sk_buff *skb,
-+			       bool submit)
- {
- 	cdev->tx_ops[cdev->next_tx_op].skb = skb;
-+	cdev->tx_ops[cdev->next_tx_op].submit = submit;
- 	queue_work(cdev->tx_wq, &cdev->tx_ops[cdev->next_tx_op].work);
- 
- 	++cdev->next_tx_op;
-@@ -1872,7 +1895,17 @@ static void m_can_tx_queue_skb(struct m_can_classdev *cdev, struct sk_buff *skb)
- static netdev_tx_t m_can_start_peripheral_xmit(struct m_can_classdev *cdev,
- 					       struct sk_buff *skb)
- {
--	m_can_tx_queue_skb(cdev, skb);
-+	bool submit;
-+
-+	++cdev->nr_txs_without_submit;
-+	if (cdev->nr_txs_without_submit >= cdev->tx_max_coalesced_frames ||
-+	    !netdev_xmit_more()) {
-+		cdev->nr_txs_without_submit = 0;
-+		submit = true;
-+	} else {
-+		submit = false;
-+	}
-+	m_can_tx_queue_skb(cdev, skb, submit);
- 
- 	return NETDEV_TX_OK;
- }
-@@ -2015,6 +2048,7 @@ static int m_can_get_coalesce(struct net_device *dev,
- 
- 	ec->rx_max_coalesced_frames_irq = cdev->rx_max_coalesced_frames_irq;
- 	ec->rx_coalesce_usecs_irq = cdev->rx_coalesce_usecs_irq;
-+	ec->tx_max_coalesced_frames = cdev->tx_max_coalesced_frames;
- 	ec->tx_max_coalesced_frames_irq = cdev->tx_max_coalesced_frames_irq;
- 	ec->tx_coalesce_usecs_irq = cdev->tx_coalesce_usecs_irq;
- 
-@@ -2059,6 +2093,18 @@ static int m_can_set_coalesce(struct net_device *dev,
- 		netdev_err(dev, "tx-frames-irq and tx-usecs-irq can only be set together\n");
- 		return -EINVAL;
- 	}
-+	if (ec->tx_max_coalesced_frames > cdev->mcfg[MRAM_TXE].num) {
-+		netdev_err(dev, "tx-frames %u greater than the TX event FIFO %u\n",
-+			   ec->tx_max_coalesced_frames,
-+			   cdev->mcfg[MRAM_TXE].num);
-+		return -EINVAL;
-+	}
-+	if (ec->tx_max_coalesced_frames > cdev->mcfg[MRAM_TXB].num) {
-+		netdev_err(dev, "tx-frames %u greater than the TX FIFO %u\n",
-+			   ec->tx_max_coalesced_frames,
-+			   cdev->mcfg[MRAM_TXB].num);
-+		return -EINVAL;
-+	}
- 	if (ec->rx_coalesce_usecs_irq != 0 && ec->tx_coalesce_usecs_irq != 0 &&
- 	    ec->rx_coalesce_usecs_irq != ec->tx_coalesce_usecs_irq) {
- 		netdev_err(dev, "rx-usecs-irq %u needs to be equal to tx-usecs-irq %u if both are enabled\n",
-@@ -2069,6 +2115,7 @@ static int m_can_set_coalesce(struct net_device *dev,
- 
- 	cdev->rx_max_coalesced_frames_irq = ec->rx_max_coalesced_frames_irq;
- 	cdev->rx_coalesce_usecs_irq = ec->rx_coalesce_usecs_irq;
-+	cdev->tx_max_coalesced_frames = ec->tx_max_coalesced_frames;
- 	cdev->tx_max_coalesced_frames_irq = ec->tx_max_coalesced_frames_irq;
- 	cdev->tx_coalesce_usecs_irq = ec->tx_coalesce_usecs_irq;
- 
-@@ -2086,6 +2133,7 @@ static const struct ethtool_ops m_can_ethtool_ops = {
- 	.supported_coalesce_params = ETHTOOL_COALESCE_RX_USECS_IRQ |
- 		ETHTOOL_COALESCE_RX_MAX_FRAMES_IRQ |
- 		ETHTOOL_COALESCE_TX_USECS_IRQ |
-+		ETHTOOL_COALESCE_TX_MAX_FRAMES |
- 		ETHTOOL_COALESCE_TX_MAX_FRAMES_IRQ,
- 	.get_ts_info = ethtool_op_get_ts_info,
- 	.get_coalesce = m_can_get_coalesce,
-diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
-index 76b1ce1b7c1b..2986c4ce0b2f 100644
---- a/drivers/net/can/m_can/m_can.h
-+++ b/drivers/net/can/m_can/m_can.h
-@@ -74,6 +74,7 @@ struct m_can_tx_op {
- 	struct m_can_classdev *cdev;
- 	struct work_struct work;
- 	struct sk_buff *skb;
-+	bool submit;
+ struct kvaser_pciefd_address_offset {
+ 	u32 serdes;
+@@ -335,6 +343,18 @@ static const struct kvaser_pciefd_address_offset kvaser_pciefd_sf2_address_offse
+ 	.kcan_ch1 = 0x142000,
  };
  
- struct m_can_classdev {
-@@ -102,6 +103,7 @@ struct m_can_classdev {
- 	u32 active_interrupts;
- 	u32 rx_max_coalesced_frames_irq;
- 	u32 rx_coalesce_usecs_irq;
-+	u32 tx_max_coalesced_frames;
- 	u32 tx_max_coalesced_frames_irq;
- 	u32 tx_coalesce_usecs_irq;
- 
-@@ -116,6 +118,10 @@ struct m_can_classdev {
- 	int tx_fifo_size;
- 	int next_tx_op;
- 
-+	int nr_txs_without_submit;
-+	/* bitfield of fifo elements that will be submitted together */
-+	u32 tx_peripheral_submit;
++static const struct kvaser_pciefd_address_offset kvaser_pciefd_xilinx_address_offset = {
++	.serdes = 0x00208,
++	.pci_ien = 0x102004,
++	.pci_irq = 0x102008,
++	.sysid = 0x100000,
++	.loopback = 0x103000,
++	.kcan_srb_fifo = 0x120000,
++	.kcan_srb = 0x121000,
++	.kcan_ch0 = 0x140000,
++	.kcan_ch1 = 0x142000,
++};
 +
- 	struct mram_cfg mcfg[MRAM_CFG_NUM];
+ static const struct kvaser_pciefd_irq_mask kvaser_pciefd_altera_irq_mask = {
+ 	.kcan_rx0 = BIT(4),
+ 	.kcan_tx = { BIT(0), BIT(1), BIT(2), BIT(3) },
+@@ -347,6 +367,12 @@ static const struct kvaser_pciefd_irq_mask kvaser_pciefd_sf2_irq_mask = {
+ 	.all = GENMASK(19, 16) | BIT(4),
+ };
  
- 	struct hrtimer hrtimer;
++static const struct kvaser_pciefd_irq_mask kvaser_pciefd_xilinx_irq_mask = {
++	.kcan_rx0 = BIT(4),
++	.kcan_tx = { BIT(16), BIT(17), BIT(18), BIT(19) },
++	.all = GENMASK(19, 16) | BIT(4),
++};
++
+ static const struct kvaser_pciefd_dev_ops kvaser_pciefd_altera_dev_ops = {
+ 	.kvaser_pciefd_write_dma_map = kvaser_pciefd_write_dma_map_altera,
+ };
+@@ -355,6 +381,10 @@ static const struct kvaser_pciefd_dev_ops kvaser_pciefd_sf2_dev_ops = {
+ 	.kvaser_pciefd_write_dma_map = kvaser_pciefd_write_dma_map_sf2,
+ };
+ 
++static const struct kvaser_pciefd_dev_ops kvaser_pciefd_xilinx_dev_ops = {
++	.kvaser_pciefd_write_dma_map = kvaser_pciefd_write_dma_map_xilinx,
++};
++
+ static const struct kvaser_pciefd_driver_data kvaser_pciefd_altera_driver_data = {
+ 	.address_offset = &kvaser_pciefd_altera_address_offset,
+ 	.irq_mask = &kvaser_pciefd_altera_irq_mask,
+@@ -367,6 +397,12 @@ static const struct kvaser_pciefd_driver_data kvaser_pciefd_sf2_driver_data = {
+ 	.ops = &kvaser_pciefd_sf2_dev_ops,
+ };
+ 
++static const struct kvaser_pciefd_driver_data kvaser_pciefd_xilinx_driver_data = {
++	.address_offset = &kvaser_pciefd_xilinx_address_offset,
++	.irq_mask = &kvaser_pciefd_xilinx_irq_mask,
++	.ops = &kvaser_pciefd_xilinx_dev_ops,
++};
++
+ struct kvaser_pciefd_can {
+ 	struct can_priv can;
+ 	struct kvaser_pciefd *kv_pcie;
+@@ -456,6 +492,10 @@ static struct pci_device_id kvaser_pciefd_id_table[] = {
+ 		PCI_DEVICE(KVASER_PCIEFD_VENDOR, KVASER_PCIEFD_MINIPCIE_1CAN_V3_DEVICE_ID),
+ 		.driver_data = (kernel_ulong_t)&kvaser_pciefd_sf2_driver_data,
+ 	},
++	{
++		PCI_DEVICE(KVASER_PCIEFD_VENDOR, KVASER_PCIEFD_M2_4CAN_DEVICE_ID),
++		.driver_data = (kernel_ulong_t)&kvaser_pciefd_xilinx_driver_data,
++	},
+ 	{
+ 		0,
+ 	},
+@@ -1035,6 +1075,21 @@ static void kvaser_pciefd_write_dma_map_sf2(struct kvaser_pciefd *pcie,
+ 	iowrite32(msb, serdes_base + 0x4);
+ }
+ 
++static void kvaser_pciefd_write_dma_map_xilinx(struct kvaser_pciefd *pcie,
++					       dma_addr_t addr, int index)
++{
++	void __iomem *serdes_base;
++	u32 lsb = addr & KVASER_PCIEFD_XILINX_DMA_LSB_MASK;
++	u32 msb = 0x0;
++
++#ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
++	msb = addr >> 32;
++#endif
++	serdes_base = KVASER_PCIEFD_SERDES_ADDR(pcie) + 0x8 * index;
++	iowrite32(msb, serdes_base);
++	iowrite32(lsb, serdes_base + 0x4);
++}
++
+ static int kvaser_pciefd_setup_dma(struct kvaser_pciefd *pcie)
+ {
+ 	int i;
 -- 
 2.43.0
 
