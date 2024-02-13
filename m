@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 579273D0D4
-	for <linux-can@vger.kernel.org>; Tue, 13 Feb 2024 11:34:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6D03A1B5
+	for <linux-can@vger.kernel.org>; Tue, 13 Feb 2024 12:04:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707824095; cv=none; b=DMlmfw/Hara5cG9ZIZm9tdu58SgmHtUbH13SMxT/IYH/T0DwsokiUJcnbCFgxfiqXVVsj8JlGdw+75yj4UjTRsbV7P8xYMAVWni0aIH4QjxUfmAEDZEYfJmlb1lEoEVFGK4Yq7uzW59PcXrQDoePMgX2UfG1QciUGsiq25J3LSk=
+	t=1707825862; cv=none; b=X8s/xj/P199B02DvVNZG+yYed8D/a48KB1NciYHxEndyDVCg7nVOhbG5ExcbRoe5gir5kTu4mB3WErx9+ZeSQ97J9QiuU29/m14v2BlGm/S6j2H9Aw122Dlc50b9aZjrM4UdDIHP8CVox3uMfPYXnJLlWhdBvTlmCBjqGd4b6qA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707824095; c=relaxed/simple;
-	bh=uXYb35dld7BqxX2XQcMPJMxaflkXMsl7PqYNxAjkyD8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XNvDeMnNrL5v9ZGTvGPh6M3E5A9EcoCoKMllQok0oh0SeRoAwX0QbMvNSyu5VPhdORhQ5JEbHg0+jgyzYZuUYZ30G9abmZFoBERFl/54WenLAip5lyZmHzKWV7l7ZfDrsXP4wEd7Rx8ZdHAz0g5toJRKriS/pilvVKEctMTslI0=
+	s=arc-20240116; t=1707825862; c=relaxed/simple;
+	bh=ZTLBNtBHSXgDnD/RltSsgibaukz383VqhSTCssQQrw4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UyirtW+TImAkUvnq8kPcccNM30okfQJHxBgnZHPoN1t58OBuy86tgtWg8aXEhRhEbeteChghkYQHC3pcFwBHa7zKGcPrq/OgRdQB5Rmlej9KIvu/+6O8ER2rqybZvthGb2m9scTq3TyJLNIVrRuECyJE2n/cVBU98zQpuSd7Ol0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,222 +18,81 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1rZr3p-0001DW-7M
-	for linux-can@vger.kernel.org; Tue, 13 Feb 2024 12:34:49 +0100
+	id 1rZrWN-0005Hw-0q; Tue, 13 Feb 2024 13:04:19 +0100
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1rZr3l-000TYu-Tx
-	for linux-can@vger.kernel.org; Tue, 13 Feb 2024 12:34:45 +0100
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 940D328D6ED
-	for <linux-can@vger.kernel.org>; Tue, 13 Feb 2024 11:34:45 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+	id 1rZrWM-000TyA-HV; Tue, 13 Feb 2024 13:04:18 +0100
+Received: from pengutronix.de (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 45AEB28D663;
-	Tue, 13 Feb 2024 11:34:41 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 985ee28f;
-	Tue, 13 Feb 2024 11:34:39 +0000 (UTC)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 375C528D822;
+	Tue, 13 Feb 2024 12:04:18 +0000 (UTC)
+Date: Tue, 13 Feb 2024 13:04:17 +0100
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	kuba@kernel.org,
-	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	Markus Schneider-Pargmann <msp@baylibre.com>,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 17/23] can: m_can: Implement BQL
-Date: Tue, 13 Feb 2024 12:25:20 +0100
-Message-ID: <20240213113437.1884372-18-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240213113437.1884372-1-mkl@pengutronix.de>
+To: Dave Taht <dave.taht@gmail.com>
+Cc: linux-can@vger.kernel.org, msp@baylibre.com
+Subject: Re: [PATCH net-next 17/23] can: m_can: Implement BQL
+Message-ID: <20240213-uphill-cussed-820d691c7d95-mkl@pengutronix.de>
 References: <20240213113437.1884372-1-mkl@pengutronix.de>
+ <20240213113437.1884372-18-mkl@pengutronix.de>
+ <CAA93jw4awX=pjLVh4u3ERboZw+gG1aaAaEc2Q4ixa5fpS7UNxg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="lpdidm3jojz4quuu"
+Content-Disposition: inline
+In-Reply-To: <CAA93jw4awX=pjLVh4u3ERboZw+gG1aaAaEc2Q4ixa5fpS7UNxg@mail.gmail.com>
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Markus Schneider-Pargmann <msp@baylibre.com>
 
-Implement byte queue limiting in preparation for the use of xmit_more().
+--lpdidm3jojz4quuu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-Link: https://lore.kernel.org/all/20240207093220.2681425-14-msp@baylibre.com
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/m_can/m_can.c | 50 +++++++++++++++++++++++++----------
- 1 file changed, 36 insertions(+), 14 deletions(-)
+On 13.02.2024 06:45:04, Dave Taht wrote:
+> while I am delighted to see this, what is the observed benefit?
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 20595b7141af..48968da69ae9 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -489,6 +489,8 @@ static void m_can_clean(struct net_device *net)
- 	for (int i = 0; i != cdev->can.echo_skb_max; ++i)
- 		can_free_echo_skb(cdev->net, i, NULL);
- 
-+	netdev_reset_queue(cdev->net);
-+
- 	spin_lock_irqsave(&cdev->tx_handling_spinlock, irqflags);
- 	cdev->tx_fifo_in_flight = 0;
- 	spin_unlock_irqrestore(&cdev->tx_handling_spinlock, irqflags);
-@@ -1043,29 +1045,34 @@ static int m_can_poll(struct napi_struct *napi, int quota)
-  * echo. timestamp is used for peripherals to ensure correct ordering
-  * by rx-offload, and is ignored for non-peripherals.
-  */
--static void m_can_tx_update_stats(struct m_can_classdev *cdev,
--				  unsigned int msg_mark,
--				  u32 timestamp)
-+static unsigned int m_can_tx_update_stats(struct m_can_classdev *cdev,
-+					  unsigned int msg_mark, u32 timestamp)
- {
- 	struct net_device *dev = cdev->net;
- 	struct net_device_stats *stats = &dev->stats;
-+	unsigned int frame_len;
- 
- 	if (cdev->is_peripheral)
- 		stats->tx_bytes +=
- 			can_rx_offload_get_echo_skb_queue_timestamp(&cdev->offload,
- 								    msg_mark,
- 								    timestamp,
--								    NULL);
-+								    &frame_len);
- 	else
--		stats->tx_bytes += can_get_echo_skb(dev, msg_mark, NULL);
-+		stats->tx_bytes += can_get_echo_skb(dev, msg_mark, &frame_len);
- 
- 	stats->tx_packets++;
-+
-+	return frame_len;
- }
- 
--static void m_can_finish_tx(struct m_can_classdev *cdev, int transmitted)
-+static void m_can_finish_tx(struct m_can_classdev *cdev, int transmitted,
-+			    unsigned int transmitted_frame_len)
- {
- 	unsigned long irqflags;
- 
-+	netdev_completed_queue(cdev->net, transmitted, transmitted_frame_len);
-+
- 	spin_lock_irqsave(&cdev->tx_handling_spinlock, irqflags);
- 	if (cdev->tx_fifo_in_flight >= cdev->tx_fifo_size && transmitted > 0)
- 		netif_wake_queue(cdev->net);
-@@ -1104,6 +1111,7 @@ static int m_can_echo_tx_event(struct net_device *dev)
- 	int err = 0;
- 	unsigned int msg_mark;
- 	int processed = 0;
-+	unsigned int processed_frame_len = 0;
- 
- 	struct m_can_classdev *cdev = netdev_priv(dev);
- 
-@@ -1132,7 +1140,9 @@ static int m_can_echo_tx_event(struct net_device *dev)
- 		fgi = (++fgi >= cdev->mcfg[MRAM_TXE].num ? 0 : fgi);
- 
- 		/* update stats */
--		m_can_tx_update_stats(cdev, msg_mark, timestamp);
-+		processed_frame_len += m_can_tx_update_stats(cdev, msg_mark,
-+							     timestamp);
-+
- 		++processed;
- 	}
- 
-@@ -1140,7 +1150,7 @@ static int m_can_echo_tx_event(struct net_device *dev)
- 		m_can_write(cdev, M_CAN_TXEFA, FIELD_PREP(TXEFA_EFAI_MASK,
- 							  ack_fgi));
- 
--	m_can_finish_tx(cdev, processed);
-+	m_can_finish_tx(cdev, processed, processed_frame_len);
- 
- 	return err;
- }
-@@ -1218,11 +1228,12 @@ static irqreturn_t m_can_isr(int irq, void *dev_id)
- 		if (ir & IR_TC) {
- 			/* Transmission Complete Interrupt*/
- 			u32 timestamp = 0;
-+			unsigned int frame_len;
- 
- 			if (cdev->is_peripheral)
- 				timestamp = m_can_get_timestamp(cdev);
--			m_can_tx_update_stats(cdev, 0, timestamp);
--			m_can_finish_tx(cdev, 1);
-+			frame_len = m_can_tx_update_stats(cdev, 0, timestamp);
-+			m_can_finish_tx(cdev, 1, frame_len);
- 		}
- 	} else  {
- 		if (ir & (IR_TEFN | IR_TEFW)) {
-@@ -1738,6 +1749,7 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev,
- 	u32 cccr, fdflags;
- 	int err;
- 	u32 putidx;
-+	unsigned int frame_len = can_skb_get_frame_len(skb);
- 
- 	/* Generate ID field for TX buffer Element */
- 	/* Common to all supported M_CAN versions */
-@@ -1783,7 +1795,7 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev,
- 		}
- 		m_can_write(cdev, M_CAN_TXBTIE, 0x1);
- 
--		can_put_echo_skb(skb, dev, 0, 0);
-+		can_put_echo_skb(skb, dev, 0, frame_len);
- 
- 		m_can_write(cdev, M_CAN_TXBAR, 0x1);
- 		/* End of xmit function for version 3.0.x */
-@@ -1821,7 +1833,7 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev,
- 		/* Push loopback echo.
- 		 * Will be looped back on TX interrupt based on message marker
- 		 */
--		can_put_echo_skb(skb, dev, putidx, 0);
-+		can_put_echo_skb(skb, dev, putidx, frame_len);
- 
- 		/* Enable TX FIFO element to start transfer  */
- 		m_can_write(cdev, M_CAN_TXBAR, (1 << putidx));
-@@ -1869,11 +1881,14 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
- 				    struct net_device *dev)
- {
- 	struct m_can_classdev *cdev = netdev_priv(dev);
-+	unsigned int frame_len;
- 	netdev_tx_t ret;
- 
- 	if (can_dev_dropped_skb(dev, skb))
- 		return NETDEV_TX_OK;
- 
-+	frame_len = can_skb_get_frame_len(skb);
-+
- 	if (cdev->can.state == CAN_STATE_BUS_OFF) {
- 		m_can_clean(cdev->net);
- 		return NETDEV_TX_OK;
-@@ -1883,10 +1898,17 @@ static netdev_tx_t m_can_start_xmit(struct sk_buff *skb,
- 	if (ret != NETDEV_TX_OK)
- 		return ret;
- 
-+	netdev_sent_queue(dev, frame_len);
-+
- 	if (cdev->is_peripheral)
--		return m_can_start_peripheral_xmit(cdev, skb);
-+		ret = m_can_start_peripheral_xmit(cdev, skb);
- 	else
--		return m_can_tx_handler(cdev, skb);
-+		ret = m_can_tx_handler(cdev, skb);
-+
-+	if (ret != NETDEV_TX_OK)
-+		netdev_completed_queue(dev, 1, frame_len);
-+
-+	return ret;
- }
- 
- static enum hrtimer_restart hrtimer_callback(struct hrtimer *timer)
--- 
-2.43.0
+Let's add Markus (the author of this patch) and the linux-can Mailing
+list on Cc. I haven't implemented this feature, but Markus has.
 
+IIRC BQL is mandatory for xmit_more(). And xmit_more() is used to batch
+more then one transfer from the host to the CAN controller. This brings
+a performance improvement on for tcan4x5x, which is connected via SPI.
+And SPI is a quite slow bus with lots of overhead (at least on Linux).
 
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--lpdidm3jojz4quuu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmXLWr4ACgkQKDiiPnot
+vG+vvwgAi6P9v0/XowkoC2G/PwqMTktiaJ6NLfVGjI29YXCQf0BCFt71ONJi1V6t
+MDlv+dOxAWaxfyvkpcpgTBZhLv8j2gWGaZ1cztoMRwqb1CA93fAYFZmg2p7vLNeF
+iWJSOFkgBGFzNBnx2GlZdBG+TiPwnN0Irj1sVZAzbg7Sf/hyiXNC1pBZswFN4TVP
+N3LSWKrE0WhY8+tD9Qn0beIEE7RQyXkxuGQ24JVWgN6Q+axX+a48dJhBkEFuZZQS
+Ob/R+ULnAUgIkAeyKtePZ9OfrKx1jNb4Yic5A5nx3x3iJVw0Bg2LKwaQmsx7e0qy
+N255BvPD36ZwQoXZnaIXRKqJz9zw2w==
+=SXDk
+-----END PGP SIGNATURE-----
+
+--lpdidm3jojz4quuu--
