@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 069CC39AF0
-	for <linux-can@vger.kernel.org>; Tue, 13 Feb 2024 11:34:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4508E37167
+	for <linux-can@vger.kernel.org>; Tue, 13 Feb 2024 11:34:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707824091; cv=none; b=HHLNxCbR4+bfJkmFLDKDn4HgoxT6LkKwDLoSxuhWRZ2sOO/0QtC2mUNWm30D0u5OAnbfNpQDLSHbCvW82zB22V0DvXthQUANv875GUmgGDX2GYIP3aQQYqayL8bayTgqByWXFowScr+EKMUoQ94+EpSg2NbYhURIGKQKiu7HvV4=
+	t=1707824091; cv=none; b=NP8ftIPBAo02aOyqIBO35buQt77rupDFHtM0PlzLdwddrrK5x22/NOm+605+EYJqY/11VhMN1sPE2RfT3psvwR7QVA4luZzliICoqrMnOSudI90sEisy7PvgOMfL0uL9qPWW8FI+E6Vco/4j+vq0ICEEli9f7+HFMiuNyEjILr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707824091; c=relaxed/simple;
-	bh=C1Xypfglw2+YGYvCKvkUdSO+59VsQ9oFS0SgSH2DEyw=;
+	bh=t0Y8CpeDu5U5jiEMD7xzwE8k+1BsWw+TJB/4buolzTQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Udzdpku/o9DcLeqWbqRYKD/vz6NWtxxsW+bSb9aVJ/cbfJ5hzF4GRKoGeaPtUpv7Tx7gITwzNKuDZPwRpjJFD1cF6GFQymz2i/1coG8RaQVMgUOSGU6dIScNYVXgNWWzLVUtvOYDCLTX8CEHuL90XCkliBhblwNiw8Vc2inOOzc=
+	 MIME-Version; b=DO1M0doPMTLafYXGUjfZ8MfJEkHRuYirlRD1BIqc2wVSGchnx5ss4lyKB5Dkqsf7ghmgAgsb+QO+R3ghVOLo+AapEVD9f9djdKue0Vx3Py3pWoAcvsrk6wlf8k5JDVI/8dYouOCAII0CKUtTviXFsQi3R7MZz+1T9x9/nu2hNhg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,26 +18,26 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1rZr3m-000199-MN
+	id 1rZr3m-00019X-SC
 	for linux-can@vger.kernel.org; Tue, 13 Feb 2024 12:34:46 +0100
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1rZr3i-000TUH-QA
-	for linux-can@vger.kernel.org; Tue, 13 Feb 2024 12:34:42 +0100
+	id 1rZr3i-000TUd-VP
+	for linux-can@vger.kernel.org; Tue, 13 Feb 2024 12:34:43 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 78D3928D69B
+	by bjornoya.blackshift.org (Postfix) with SMTP id 9F95A28D6A4
 	for <linux-can@vger.kernel.org>; Tue, 13 Feb 2024 11:34:42 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 8C8CC28D634;
-	Tue, 13 Feb 2024 11:34:39 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 5E6DD28D64C;
+	Tue, 13 Feb 2024 11:34:40 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 77708002;
-	Tue, 13 Feb 2024 11:34:38 +0000 (UTC)
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2fc3bf79;
+	Tue, 13 Feb 2024 11:34:39 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -47,9 +47,9 @@ Cc: davem@davemloft.net,
 	Markus Schneider-Pargmann <msp@baylibre.com>,
 	Simon Horman <simon.horman@corigine.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 07/23] can: m_can: Write transmit header and data in one transaction
-Date: Tue, 13 Feb 2024 12:25:10 +0100
-Message-ID: <20240213113437.1884372-8-mkl@pengutronix.de>
+Subject: [PATCH net-next 12/23] can: m_can: Use u32 for putidx
+Date: Tue, 13 Feb 2024 12:25:15 +0100
+Message-ID: <20240213113437.1884372-13-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213113437.1884372-1-mkl@pengutronix.de>
 References: <20240213113437.1884372-1-mkl@pengutronix.de>
@@ -67,102 +67,53 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Markus Schneider-Pargmann <msp@baylibre.com>
 
-Combine header and data before writing to the transmit fifo to reduce
-the overhead for peripheral chips.
+putidx is not an integer normally, it is an unsigned field used in
+hardware registers. Use a u32 for it.
 
 Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
 Reviewed-by: Simon Horman <simon.horman@corigine.com>
-Link: https://lore.kernel.org/all/20240207093220.2681425-4-msp@baylibre.com
+Link: https://lore.kernel.org/all/20240207093220.2681425-9-msp@baylibre.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 35 +++++++++++++++++++++--------------
- 1 file changed, 21 insertions(+), 14 deletions(-)
+ drivers/net/can/m_can/m_can.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 45391492339e..a01c9261331d 100644
+index b31df3e3ceeb..1b62613f195c 100644
 --- a/drivers/net/can/m_can/m_can.c
 +++ b/drivers/net/can/m_can/m_can.c
-@@ -320,6 +320,12 @@ struct id_and_dlc {
- 	u32 dlc;
- };
+@@ -486,7 +486,7 @@ static void m_can_clean(struct net_device *net)
+ 	struct m_can_classdev *cdev = netdev_priv(net);
  
-+struct m_can_fifo_element {
-+	u32 id;
-+	u32 dlc;
-+	u8 data[CANFD_MAX_DLEN];
-+};
-+
- static inline u32 m_can_read(struct m_can_classdev *cdev, enum m_can_reg reg)
+ 	if (cdev->tx_skb) {
+-		int putidx = 0;
++		u32 putidx = 0;
+ 
+ 		net->stats.tx_errors++;
+ 		if (cdev->version > 30)
+@@ -1695,12 +1695,12 @@ static int m_can_close(struct net_device *dev)
+ 	return 0;
+ }
+ 
+-static int m_can_next_echo_skb_occupied(struct net_device *dev, int putidx)
++static int m_can_next_echo_skb_occupied(struct net_device *dev, u32 putidx)
  {
- 	return cdev->ops->read_reg(cdev, reg);
-@@ -1637,9 +1643,10 @@ static int m_can_next_echo_skb_occupied(struct net_device *dev, int putidx)
- static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
- {
- 	struct canfd_frame *cf = (struct canfd_frame *)cdev->tx_skb->data;
-+	u8 len_padded = DIV_ROUND_UP(cf->len, 4);
-+	struct m_can_fifo_element fifo_element;
- 	struct net_device *dev = cdev->net;
- 	struct sk_buff *skb = cdev->tx_skb;
--	struct id_and_dlc fifo_header;
+ 	struct m_can_classdev *cdev = netdev_priv(dev);
+ 	/*get wrap around for loopback skb index */
+ 	unsigned int wrap = cdev->can.echo_skb_max;
+-	int next_idx;
++	u32 next_idx;
+ 
+ 	/* calculate next index */
+ 	next_idx = (++putidx >= wrap ? 0 : putidx);
+@@ -1719,7 +1719,7 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
  	u32 cccr, fdflags;
  	u32 txfqs;
  	int err;
-@@ -1650,27 +1657,27 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
- 	/* Generate ID field for TX buffer Element */
- 	/* Common to all supported M_CAN versions */
- 	if (cf->can_id & CAN_EFF_FLAG) {
--		fifo_header.id = cf->can_id & CAN_EFF_MASK;
--		fifo_header.id |= TX_BUF_XTD;
-+		fifo_element.id = cf->can_id & CAN_EFF_MASK;
-+		fifo_element.id |= TX_BUF_XTD;
- 	} else {
--		fifo_header.id = ((cf->can_id & CAN_SFF_MASK) << 18);
-+		fifo_element.id = ((cf->can_id & CAN_SFF_MASK) << 18);
- 	}
+-	int putidx;
++	u32 putidx;
  
- 	if (cf->can_id & CAN_RTR_FLAG)
--		fifo_header.id |= TX_BUF_RTR;
-+		fifo_element.id |= TX_BUF_RTR;
- 
- 	if (cdev->version == 30) {
- 		netif_stop_queue(dev);
- 
--		fifo_header.dlc = can_fd_len2dlc(cf->len) << 16;
-+		fifo_element.dlc = can_fd_len2dlc(cf->len) << 16;
- 
- 		/* Write the frame ID, DLC, and payload to the FIFO element. */
--		err = m_can_fifo_write(cdev, 0, M_CAN_FIFO_ID, &fifo_header, 2);
-+		err = m_can_fifo_write(cdev, 0, M_CAN_FIFO_ID, &fifo_element, 2);
- 		if (err)
- 			goto out_fail;
- 
- 		err = m_can_fifo_write(cdev, 0, M_CAN_FIFO_DATA,
--				       cf->data, DIV_ROUND_UP(cf->len, 4));
-+				       cf->data, len_padded);
- 		if (err)
- 			goto out_fail;
- 
-@@ -1732,15 +1739,15 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
- 				fdflags |= TX_BUF_BRS;
- 		}
- 
--		fifo_header.dlc = FIELD_PREP(TX_BUF_MM_MASK, putidx) |
-+		fifo_element.dlc = FIELD_PREP(TX_BUF_MM_MASK, putidx) |
- 			FIELD_PREP(TX_BUF_DLC_MASK, can_fd_len2dlc(cf->len)) |
- 			fdflags | TX_BUF_EFC;
--		err = m_can_fifo_write(cdev, putidx, M_CAN_FIFO_ID, &fifo_header, 2);
--		if (err)
--			goto out_fail;
- 
--		err = m_can_fifo_write(cdev, putidx, M_CAN_FIFO_DATA,
--				       cf->data, DIV_ROUND_UP(cf->len, 4));
-+		memcpy_and_pad(fifo_element.data, CANFD_MAX_DLEN, &cf->data,
-+			       cf->len, 0);
-+
-+		err = m_can_fifo_write(cdev, putidx, M_CAN_FIFO_ID,
-+				       &fifo_element, 2 + len_padded);
- 		if (err)
- 			goto out_fail;
+ 	cdev->tx_skb = NULL;
  
 -- 
 2.43.0
