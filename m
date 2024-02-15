@@ -1,262 +1,118 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D88212C7FE
-	for <linux-can@vger.kernel.org>; Thu, 15 Feb 2024 10:44:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C249012A14D
+	for <linux-can@vger.kernel.org>; Thu, 15 Feb 2024 11:43:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707993890; cv=none; b=Vc9nXxKQbZHzVH9dXo8+mr0AiY3+idQD3fjEY0SXe8D7aCNgEhHvK9xX0Qnf2NgVKkXOziu1DghqGSUfBNEoQkBuFrmSFH0j+akGBF4EmIL0xrRqWgxtHnNr2mZEoz8vf8wxSYV8fTA73eoYKq4LccAasC59RO6h/o7lwrK075k=
+	t=1707997430; cv=none; b=Az6E/DnyM5O3GzAUPfVlv3lgoZr3fLJIeQxAFWItKdEHphTVeYnu67qs5o1gz7BFTf+NfkOQMrw8VWEotlVk+YZAYHCt2lktz+F2+r+Upjme4vXg1j1UbSpDqU7hD0peBu3w2+2/DbxFwpEMFopnoSP9G8ftKaauyGfzZVlwQH4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707993890; c=relaxed/simple;
-	bh=28hFVFkX/qTX2YlQcdUVqHOYYKNFrN7C5rA97xrRDeU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VVk4al7avY0u603ux5nDfEDVB2rtEk0B/QCkFvb5rmLo2MmPctVe9d5W0NKwcDs4DQAJBWszJljiK1A6WgQn8aZT3lscVxkWLVO+KClpmFtV1TEkbaFnuZEo3if8LwbflWw7y0hzfU1JbL6SIoaN8Vr/2PSslw7Ma/2JKam746A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1raZET-0000pD-Ly
-	for linux-can@vger.kernel.org; Thu, 15 Feb 2024 11:44:45 +0100
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1raZES-000rm7-Hq
-	for linux-can@vger.kernel.org; Thu, 15 Feb 2024 11:44:44 +0100
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id DF2F928E570
-	for <linux-can@vger.kernel.org>; Wed, 14 Feb 2024 14:03:51 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 32D9528E541;
-	Wed, 14 Feb 2024 14:03:50 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2b0f11ca;
-	Wed, 14 Feb 2024 14:03:49 +0000 (UTC)
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	kuba@kernel.org,
-	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Sili Luo <rootlab@huawei.com>,
-	stable@vger.kernel.org,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 2/3] can: j1939: Fix UAF in j1939_sk_match_filter during setsockopt(SO_J1939_FILTER)
-Date: Wed, 14 Feb 2024 14:59:06 +0100
-Message-ID: <20240214140348.2412776-3-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240214140348.2412776-1-mkl@pengutronix.de>
+	s=arc-20240116; t=1707997430; c=relaxed/simple;
+	bh=UTRi7hArcqCF9bXSNX38RRRB1wn578S0xhbsL7prpqY=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=G69gfINEdIc5Z1CU/vHWkvg2Ih4iIVsvt5ifFTlRTNQdyHAVt+TZKxV+HbKOBf58mqKG3V5uDmiGO3gy0HFQQ6QGIsNjwSQp4RzRGuPWPazFzgcTKz0Buzf/RWPfQTbkToGPZYtDorBxg6PjxsyueNWNC0IeTVqnhY0RDIWgEEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gAnP4cRv; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gAnP4cRv"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707997427;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=UTRi7hArcqCF9bXSNX38RRRB1wn578S0xhbsL7prpqY=;
+	b=gAnP4cRvAx0XowRGdqAWGLslU1Ge1FLnEaME1yNNnqgTEJQkHiv9e+R766SKDfbMjEKaPS
+	1S0RGSU/2zyganXZQKwrvVvUWJRgUSytKXHJKgTErgzVZ/z0ayjYLd1QOIrDu35Xp0cBT3
+	Qx50JfQ5H2iTnHgE4PYi46TXHq2uKMs=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-684-kSPtKfu0Ns2le5y1M2rhtQ-1; Thu, 15 Feb 2024 06:43:45 -0500
+X-MC-Unique: kSPtKfu0Ns2le5y1M2rhtQ-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-411b1d7223eso1272995e9.0
+        for <linux-can@vger.kernel.org>; Thu, 15 Feb 2024 03:43:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707997424; x=1708602224;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UTRi7hArcqCF9bXSNX38RRRB1wn578S0xhbsL7prpqY=;
+        b=JbHkb9G788jQjEBRRhWNQeFhtSXgSoO7dMIh/EIs31wGrRQX7579C6PbP2yhZp+2u9
+         7Q3drVagrosINft1RaJ1F3LiHsZhuViXsxb7w+pM+Ty90ji4Rnnm1giEDJF4Ww9hijkX
+         WBf4uYU9eMwXsU4XNwYFWWXC4fwhsI1VzT34I+yslT7Ikr4WG9LZVcTq8BtIWInGfswZ
+         2Ld39GSyqjStZeE+0YDvZkhgwuHGrBdLRYAp/vSRsSiPK43FbIXUgQBdIYuzN8r8UiAW
+         0t31mARAyUxCiVQldtsCtw6R9AG7nDNjeOf728OVPJ67BL+KU5y51nFuPnYh+CT0l2ZY
+         tHxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU26jGTOkGGcO2A3jRrMaE11jbGzN+giVsipyqxpJqfhYd8a1cMtxaZyHnuI878rKNMoDXlXJHl/dVqkKWtSs/+oMU5kJgAkmoZ
+X-Gm-Message-State: AOJu0YzFmGM/WSPPW0uSsvgdmasMTydCCdn93uNrPzfYdc2KNMH4PPow
+	BK7Otz/tqPO3HWYPp3alm/oN00InCYQKHkJO4pJXZfDowzOWGo3FBtQYRUL+tW2y3D/TqFAIFC6
+	W9eRQXsLIXBWmL4wnr8RZl4p9k6EJF3UkRAig9jhXAnCTqD8X8MrlBhnFKg==
+X-Received: by 2002:adf:e192:0:b0:33b:88a0:a1e9 with SMTP id az18-20020adfe192000000b0033b88a0a1e9mr1241969wrb.4.1707997424726;
+        Thu, 15 Feb 2024 03:43:44 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF6fWRSpuP+qqQhHlkiHh+C8785vsVrTNxgZJ6WL7wHZ9ZTF07eM+CnZRjh83y1aBmZ51+hFw==
+X-Received: by 2002:adf:e192:0:b0:33b:88a0:a1e9 with SMTP id az18-20020adfe192000000b0033b88a0a1e9mr1241957wrb.4.1707997424410;
+        Thu, 15 Feb 2024 03:43:44 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-227-156.dyn.eolo.it. [146.241.227.156])
+        by smtp.gmail.com with ESMTPSA id u5-20020a056000038500b0033b66ce7ae9sm1576625wrf.84.2024.02.15.03.43.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 03:43:43 -0800 (PST)
+Message-ID: <1b9377e954adab3cd007d77f8e618d3d49753f6f.camel@redhat.com>
+Subject: Re: [PATCH net 1/3] can: j1939: prevent deadlock by changing
+ j1939_socks_lock to rwlock
+From: Paolo Abeni <pabeni@redhat.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org
+Cc: davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org, 
+	kernel@pengutronix.de, Ziqi Zhao <astrajoan@yahoo.com>, 
+	syzbot+1591462f226d9cbf0564@syzkaller.appspotmail.com, Oleksij Rempel
+	 <o.rempel@pengutronix.de>, stable@vger.kernel.org
+Date: Thu, 15 Feb 2024 12:43:42 +0100
+In-Reply-To: <20240214140348.2412776-2-mkl@pengutronix.de>
 References: <20240214140348.2412776-1-mkl@pengutronix.de>
+	 <20240214140348.2412776-2-mkl@pengutronix.de>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+On Wed, 2024-02-14 at 14:59 +0100, Marc Kleine-Budde wrote:
+> From: Ziqi Zhao <astrajoan@yahoo.com>
+>=20
+> The following 3 locks would race against each other, causing the
+> deadlock situation in the Syzbot bug report:
+>=20
+> - j1939_socks_lock
+> - active_session_list_lock
+> - sk_session_queue_lock
+>=20
+> A reasonable fix is to change j1939_socks_lock to an rwlock, since in
+> the rare situations where a write lock is required for the linked list
+> that j1939_socks_lock is protecting, the code does not attempt to
+> acquire any more locks. This would break the circular lock dependency,
+> where, for example, the current thread already locks j1939_socks_lock
+> and attempts to acquire sk_session_queue_lock, and at the same time,
+> another thread attempts to acquire j1939_socks_lock while holding
+> sk_session_queue_lock.
 
-Lock jsk->sk to prevent UAF when setsockopt(..., SO_J1939_FILTER, ...)
-modifies jsk->filters while receiving packets.
+Just FYI, Eric recently did a great job removing most rwlock in
+networking code, see commit 0daf07e52709 ("raw: convert raw sockets to
+RCU").
 
-Following trace was seen on affected system:
- ==================================================================
- BUG: KASAN: slab-use-after-free in j1939_sk_recv_match_one+0x1af/0x2d0 [can_j1939]
- Read of size 4 at addr ffff888012144014 by task j1939/350
+I'm unsure if the same reasoning apply to can, but perhaps you could
+consider converting this code to RCU for net-next.
 
- CPU: 0 PID: 350 Comm: j1939 Tainted: G        W  OE      6.5.0-rc5 #1
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
- Call Trace:
-  print_report+0xd3/0x620
-  ? kasan_complete_mode_report_info+0x7d/0x200
-  ? j1939_sk_recv_match_one+0x1af/0x2d0 [can_j1939]
-  kasan_report+0xc2/0x100
-  ? j1939_sk_recv_match_one+0x1af/0x2d0 [can_j1939]
-  __asan_load4+0x84/0xb0
-  j1939_sk_recv_match_one+0x1af/0x2d0 [can_j1939]
-  j1939_sk_recv+0x20b/0x320 [can_j1939]
-  ? __kasan_check_write+0x18/0x20
-  ? __pfx_j1939_sk_recv+0x10/0x10 [can_j1939]
-  ? j1939_simple_recv+0x69/0x280 [can_j1939]
-  ? j1939_ac_recv+0x5e/0x310 [can_j1939]
-  j1939_can_recv+0x43f/0x580 [can_j1939]
-  ? __pfx_j1939_can_recv+0x10/0x10 [can_j1939]
-  ? raw_rcv+0x42/0x3c0 [can_raw]
-  ? __pfx_j1939_can_recv+0x10/0x10 [can_j1939]
-  can_rcv_filter+0x11f/0x350 [can]
-  can_receive+0x12f/0x190 [can]
-  ? __pfx_can_rcv+0x10/0x10 [can]
-  can_rcv+0xdd/0x130 [can]
-  ? __pfx_can_rcv+0x10/0x10 [can]
-  __netif_receive_skb_one_core+0x13d/0x150
-  ? __pfx___netif_receive_skb_one_core+0x10/0x10
-  ? __kasan_check_write+0x18/0x20
-  ? _raw_spin_lock_irq+0x8c/0xe0
-  __netif_receive_skb+0x23/0xb0
-  process_backlog+0x107/0x260
-  __napi_poll+0x69/0x310
-  net_rx_action+0x2a1/0x580
-  ? __pfx_net_rx_action+0x10/0x10
-  ? __pfx__raw_spin_lock+0x10/0x10
-  ? handle_irq_event+0x7d/0xa0
-  __do_softirq+0xf3/0x3f8
-  do_softirq+0x53/0x80
-  </IRQ>
-  <TASK>
-  __local_bh_enable_ip+0x6e/0x70
-  netif_rx+0x16b/0x180
-  can_send+0x32b/0x520 [can]
-  ? __pfx_can_send+0x10/0x10 [can]
-  ? __check_object_size+0x299/0x410
-  raw_sendmsg+0x572/0x6d0 [can_raw]
-  ? __pfx_raw_sendmsg+0x10/0x10 [can_raw]
-  ? apparmor_socket_sendmsg+0x2f/0x40
-  ? __pfx_raw_sendmsg+0x10/0x10 [can_raw]
-  sock_sendmsg+0xef/0x100
-  sock_write_iter+0x162/0x220
-  ? __pfx_sock_write_iter+0x10/0x10
-  ? __rtnl_unlock+0x47/0x80
-  ? security_file_permission+0x54/0x320
-  vfs_write+0x6ba/0x750
-  ? __pfx_vfs_write+0x10/0x10
-  ? __fget_light+0x1ca/0x1f0
-  ? __rcu_read_unlock+0x5b/0x280
-  ksys_write+0x143/0x170
-  ? __pfx_ksys_write+0x10/0x10
-  ? __kasan_check_read+0x15/0x20
-  ? fpregs_assert_state_consistent+0x62/0x70
-  __x64_sys_write+0x47/0x60
-  do_syscall_64+0x60/0x90
-  ? do_syscall_64+0x6d/0x90
-  ? irqentry_exit+0x3f/0x50
-  ? exc_page_fault+0x79/0xf0
-  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+Cheers,
 
- Allocated by task 348:
-  kasan_save_stack+0x2a/0x50
-  kasan_set_track+0x29/0x40
-  kasan_save_alloc_info+0x1f/0x30
-  __kasan_kmalloc+0xb5/0xc0
-  __kmalloc_node_track_caller+0x67/0x160
-  j1939_sk_setsockopt+0x284/0x450 [can_j1939]
-  __sys_setsockopt+0x15c/0x2f0
-  __x64_sys_setsockopt+0x6b/0x80
-  do_syscall_64+0x60/0x90
-  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-
- Freed by task 349:
-  kasan_save_stack+0x2a/0x50
-  kasan_set_track+0x29/0x40
-  kasan_save_free_info+0x2f/0x50
-  __kasan_slab_free+0x12e/0x1c0
-  __kmem_cache_free+0x1b9/0x380
-  kfree+0x7a/0x120
-  j1939_sk_setsockopt+0x3b2/0x450 [can_j1939]
-  __sys_setsockopt+0x15c/0x2f0
-  __x64_sys_setsockopt+0x6b/0x80
-  do_syscall_64+0x60/0x90
-  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-
-Fixes: 9d71dd0c70099 ("can: add support of SAE J1939 protocol")
-Reported-by: Sili Luo <rootlab@huawei.com>
-Suggested-by: Sili Luo <rootlab@huawei.com>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: stable@vger.kernel.org
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/all/20231020133814.383996-1-o.rempel@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- net/can/j1939/j1939-priv.h |  1 +
- net/can/j1939/socket.c     | 22 ++++++++++++++++++----
- 2 files changed, 19 insertions(+), 4 deletions(-)
-
-diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
-index 74f15592d170..31a93cae5111 100644
---- a/net/can/j1939/j1939-priv.h
-+++ b/net/can/j1939/j1939-priv.h
-@@ -301,6 +301,7 @@ struct j1939_sock {
- 
- 	int ifindex;
- 	struct j1939_addr addr;
-+	spinlock_t filters_lock;
- 	struct j1939_filter *filters;
- 	int nfilters;
- 	pgn_t pgn_rx_filter;
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 94cfc2315e54..305dd72c844c 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -262,12 +262,17 @@ static bool j1939_sk_match_dst(struct j1939_sock *jsk,
- static bool j1939_sk_match_filter(struct j1939_sock *jsk,
- 				  const struct j1939_sk_buff_cb *skcb)
- {
--	const struct j1939_filter *f = jsk->filters;
--	int nfilter = jsk->nfilters;
-+	const struct j1939_filter *f;
-+	int nfilter;
-+
-+	spin_lock_bh(&jsk->filters_lock);
-+
-+	f = jsk->filters;
-+	nfilter = jsk->nfilters;
- 
- 	if (!nfilter)
- 		/* receive all when no filters are assigned */
--		return true;
-+		goto filter_match_found;
- 
- 	for (; nfilter; ++f, --nfilter) {
- 		if ((skcb->addr.pgn & f->pgn_mask) != f->pgn)
-@@ -276,9 +281,15 @@ static bool j1939_sk_match_filter(struct j1939_sock *jsk,
- 			continue;
- 		if ((skcb->addr.src_name & f->name_mask) != f->name)
- 			continue;
--		return true;
-+		goto filter_match_found;
- 	}
-+
-+	spin_unlock_bh(&jsk->filters_lock);
- 	return false;
-+
-+filter_match_found:
-+	spin_unlock_bh(&jsk->filters_lock);
-+	return true;
- }
- 
- static bool j1939_sk_recv_match_one(struct j1939_sock *jsk,
-@@ -401,6 +412,7 @@ static int j1939_sk_init(struct sock *sk)
- 	atomic_set(&jsk->skb_pending, 0);
- 	spin_lock_init(&jsk->sk_session_queue_lock);
- 	INIT_LIST_HEAD(&jsk->sk_session_queue);
-+	spin_lock_init(&jsk->filters_lock);
- 
- 	/* j1939_sk_sock_destruct() depends on SOCK_RCU_FREE flag */
- 	sock_set_flag(sk, SOCK_RCU_FREE);
-@@ -703,9 +715,11 @@ static int j1939_sk_setsockopt(struct socket *sock, int level, int optname,
- 		}
- 
- 		lock_sock(&jsk->sk);
-+		spin_lock_bh(&jsk->filters_lock);
- 		ofilters = jsk->filters;
- 		jsk->filters = filters;
- 		jsk->nfilters = count;
-+		spin_unlock_bh(&jsk->filters_lock);
- 		release_sock(&jsk->sk);
- 		kfree(ofilters);
- 		return 0;
--- 
-2.43.0
+Paolo
 
 
