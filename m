@@ -1,29 +1,32 @@
 Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BFB2132C1C
-	for <linux-can@vger.kernel.org>; Thu, 15 Feb 2024 15:27:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77EB0132C1B
+	for <linux-can@vger.kernel.org>; Thu, 15 Feb 2024 15:27:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708010841; cv=none; b=G/W4KOmiKSMtxErPWtTtl/E6l8xlNcPxgRiod6Nkczp3uqGHCL0DY1i3hb+zesQ9MhN3bZFzUfJ0O4L2l+dptuNBkwnzWBFAM9mJuOi/3lO9IEzsu7RPcb1j4pEzZuLixB9y4fQavVMgg7oOHtMtoNTlGsUpJTrCopCBT7+2kx0=
+	t=1708010843; cv=none; b=QktWjyBPGLcpxoMuIGzTnZ0qGhTrvbV/9VskqFXj9g1HZLzQ1mKCAj7qQon8N8sw7tOr7FtgR/oIgziIdxyzdueoh6XPBwu2dAb1lba54L2JU54iQl3IHDX8yLZd8HY5tkOyrgIZFbfuJphlnjup9d2P4lPl+cZd14HCDcGKOlk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708010841; c=relaxed/simple;
-	bh=KjHOOGxx3VW3eiB5SGwJOFMHLo6NbJjw6XNHpiUO95Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cHCGDX64hi4iFNEffN8ozDbji8uMRSV0R2pgRwrBwkG1+/a2bKDCA5o9O0Kc+E/Kz+JR3nGUDFi/0tuP8ybpr6XV/TyQUrsWvN5NMSZ985RzbTFjmaRehRCSHXE/F/Rrh99QTmDg+C4Z6oqTDL8QjjLBBqmsv9Fhk+sxCNBtfbg=
+	s=arc-20240116; t=1708010843; c=relaxed/simple;
+	bh=B36qZuLxUdzbT6s4DW1VabYjRdCvzgLMl7VbRLHgGDU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=iqY4HyCAGcyAC2OSV1t8iJagmyP2c0515ouKVHlURVk3GZkFxs3oCM5SWsfVLqPW79heGEqhUsYaoiuzXXCklCHFpPb0y0ymual0nFtBd29i+ioS7GOY8YyA18qYcQMxu6AFFI8O40PSURWkqbC0lc2GiD8s17TQ7yQ63Etp6Lo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=peak-system.com; spf=fail smtp.mailfrom=peak-system.com; arc=none smtp.client-ip=212.27.42.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=peak-system.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=peak-system.com
 Received: from stf-laptop.. (unknown [IPv6:2a02:8428:60a1:3e01:d1b:b57b:aee8:95cc])
 	(Authenticated sender: stephane.grosjean@free.fr)
-	by smtp1-g21.free.fr (Postfix) with ESMTPSA id 72D01B005AA;
-	Thu, 15 Feb 2024 16:27:06 +0100 (CET)
+	by smtp1-g21.free.fr (Postfix) with ESMTPSA id 80889B005B6;
+	Thu, 15 Feb 2024 16:27:16 +0100 (CET)
 From: Stephane Grosjean <s.grosjean@peak-system.com>
 To: linux-can Mailing List <linux-can@vger.kernel.org>
 Cc: Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH 1/3] can: peak_usb: fix potential "UBSAN: shitf-out-of-bounds" issue
-Date: Thu, 15 Feb 2024 16:26:54 +0100
-Message-Id: <20240215152656.13883-1-s.grosjean@peak-system.com>
+Subject: [PATCH 3/3] can: peak_usb: fix potential kernel log flooding
+Date: Thu, 15 Feb 2024 16:26:56 +0100
+Message-Id: <20240215152656.13883-3-s.grosjean@peak-system.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240215152656.13883-1-s.grosjean@peak-system.com>
+References: <20240215152656.13883-1-s.grosjean@peak-system.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -32,31 +35,85 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Shift exponent 32 is too large for 32-bit type 'int' so u64 values are
-used instead.
+In rare cases of very high bus load, the firmware can generate messages
+warning that the receive cache capacity is about to be exceeded.
+This modification prevents the driver from flooding the kernel log with
+messages and memory dumps that are far too verbose in such cases,
+by limiting their production to once per session.
 
 Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 36 ++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index 1efa39e134f4..edecb6e09c3c 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -108,10 +108,10 @@ void peak_usb_update_ts_now(struct peak_time_ref *time_ref, u32 ts_now)
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+index a1c339716776..d444ff0fa7cc 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+@@ -70,6 +70,7 @@ struct pcan_usb_fd_if {
+ struct pcan_usb_fd_device {
+ 	struct peak_usb_device	dev;
+ 	struct can_berr_counter	bec;
++	bool			rx_cache_warn_handled;
+ 	struct pcan_usb_fd_if	*usb_if;
+ 	u8			*cmd_buffer_addr;
+ };
+@@ -667,6 +668,28 @@ static int pcan_usb_fd_decode_error(struct pcan_usb_fd_if *usb_if,
+ 	return 0;
+ }
  
- 	/* should wait at least two passes before computing */
- 	if (ktime_to_ns(time_ref->tv_host) > 0) {
--		u32 delta_ts = time_ref->ts_dev_2 - time_ref->ts_dev_1;
-+		u64 delta_ts = time_ref->ts_dev_2 - time_ref->ts_dev_1;
++/* Handle uCAN Rx cache warning messages.
++ *
++ * Such messages SHOULD NOT occur. If they do, then this might come from
++ * massive PING host flooding that prevents PCAN-USB Pro FD HW v4 to handle
++ * CAN traffic anymore. In this case, the driver itself manages the display of
++ * the warning message.
++ */
++static void pcan_usb_fd_handle_rx_cache_warn(struct peak_usb_device *dev,
++					     struct pucan_msg *rx_msg)
++{
++	struct pcan_usb_fd_device *pdev =
++			container_of(dev, struct pcan_usb_fd_device, dev);
++
++	if (pdev->rx_cache_warn_handled)
++		return;
++
++	netdev_warn(dev->netdev,
++		    "Rx cache size warning! Possible loss of frames\n");
++
++	pdev->rx_cache_warn_handled = true;
++}
++
+ /* handle uCAN overrun message */
+ static int pcan_usb_fd_decode_overrun(struct pcan_usb_fd_if *usb_if,
+ 				      struct pucan_msg *rx_msg)
+@@ -768,6 +791,14 @@ static int pcan_usb_fd_decode_buf(struct peak_usb_device *dev, struct urb *urb)
+ 				goto fail;
+ 			break;
  
- 		if (time_ref->ts_dev_2 < time_ref->ts_dev_1)
--			delta_ts &= (1 << time_ref->adapter->ts_used_bits) - 1;
-+			delta_ts &= (1UL << time_ref->adapter->ts_used_bits) - 1;
++		case PUCAN_MSG_CACHE_CRITICAL:
++			pcan_usb_fd_handle_rx_cache_warn(dev, rx_msg);
++
++			/* Rx cache warning means possible overrun cases in
++			 * the device.
++			 */
++			fallthrough;
++
+ 		case PCAN_UFD_MSG_OVERRUN:
+ 			err = pcan_usb_fd_decode_overrun(usb_if, rx_msg);
+ 			if (err < 0)
+@@ -885,6 +916,11 @@ static int pcan_usb_fd_start(struct peak_usb_device *dev)
+ 	pdev->bec.txerr = 0;
+ 	pdev->bec.rxerr = 0;
  
- 		time_ref->ts_total += delta_ts;
- 	}
++	/* warn of a cache problem only once per session, to avoid flooding
++	 * the kernel log.
++	 */
++	pdev->rx_cache_warn_handled = false;
++
+ 	return err;
+ }
+ 
 -- 
 2.34.1
 
