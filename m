@@ -1,41 +1,41 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.162])
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B35E2E644
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 685612DF92
 	for <linux-can@vger.kernel.org>; Mon, 18 Mar 2024 10:47:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.162
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.24
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710758841; cv=pass; b=Vi1GB2tyIrTIHNThIfCJALn3uKmcwVqafioA14NaWbGEkNBeEywHenGmXkuhrx3GaQIf4w0TboQIrldbcNK1rdZYMskhC3D1leOoIGFrMUdgV+lWDoMyHb3XfiEWEz3pN0E98sMwTDrWUDNfhaLgZR17o11PMwfcHqTyFxYoyTA=
+	t=1710758842; cv=pass; b=sgz1sqODs5ffEj2VeQJBl1rUy3abYz/Psi16qa+wRPawvfCxzQKPm97ml70iqyDYMdztOK+uBJ43wGU23R+zGCO6XMt6Tw+bcMriVqLA0SpoKimF2Te7Y0Hsd01Td2LW6HjByMS8ixgrJBCulZl8vAzBIHX9DkMHdTr+joNrS0U=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710758841; c=relaxed/simple;
-	bh=RZ1kZA1UuHk68vpc5FOPfWSGAIaVAUad5si1Me1O8Fc=;
+	s=arc-20240116; t=1710758842; c=relaxed/simple;
+	bh=qHU8hULWinA+2WQ+M3zMT1xweP4x0/wD0nivR9bPEKg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tXNLl9LbScznxvbhBflwStomHsJcxpI/Kj6PkUOPB/tA0jq1JeQbj69Pd+aqN9pT6cYWo8njuSFZjb8IlOqBDhrcZ99/JqDJeG/qa37xw/aQACQK+1zdyZChaTMsVGEzLUtNNHe4rwkMRZ7I/Wux8bg/5F2N5nMRuoUbSK9Plns=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=E+fSyku1; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=ZI1+Ox2b; arc=pass smtp.client-ip=81.169.146.162
+	 MIME-Version:Content-Type; b=GjM/g1ji5P7/8IqdNSOZH7sdJvlM4VrDfXmkmhmPYM3q2aHQxSi7OMid3J9maAFKVrITY/kpFu/SkwtP4EUiL3pX5n5HNNUNU84JoGod3MdOBU52lQoCqZuk+MVaEnbzSrULFNx1N9ysYN5TOXwNcMsHXUmkvJtwBFvE39/YXpU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=HZoAioJ2; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=o+mLyqfj; arc=pass smtp.client-ip=85.215.255.24
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="E+fSyku1";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="ZI1+Ox2b"
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="HZoAioJ2";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="o+mLyqfj"
 ARC-Seal: i=1; a=rsa-sha256; t=1710758829; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=Kg6cTuHF41nwP9aGvNbDa2mvI6+7G2Je3BpSCE7mJTebOw/mbkoecbwbXnDdo3ZNer
-    10Rr3x8Q0R2B1fMLpDtaaZ7wrgt54LSuzTepstPp94Lr7AzGGkSdJjnohkFVcUcvDTLv
-    rnoQbPW12VuLBpico6qpCiGwI3fxVRRBbW3i/LgHJVmWjCMpDOrf5auVnLCUpKFkdBAK
-    Pe9Vkn1l5s0owSezyKslQLcXSYK4dIYIV2gqXta1fpb+2NRlh4n06mh7ivo2ryvBMjQS
-    mOMAfCuJag0bAhoih4j5a1BLR9HHcNc1LD9RgLQJUVZSc3G1s6j3ZE73Lg5wZLkYFsig
-    D8Tg==
+    b=nIwXFfFzwW8PzycEpCU47+3Txjo6+yXxE145ef3KAKS5SP+w0G5f7FCPTVRR1hAF8l
+    x9BZ7opD30Lx651uvsmezeeqcOipXlK1ISYez8jPlp9syk1wloWgzO25d+A/rCkH8DEs
+    QFb5lJFQmzqXg8rSixZqISg8DYZsAlQVkB8vxQc1Ppta03zdK7I5pQNOaAU+Xutn5PBv
+    ZyUwQpdc2c0HXhROpuk7nuLhpQnW5qg0el3y8R0Xii0/Fje9KCRIzhT0D+UuLiZBTERN
+    ROpiWv1Xai6Yj4Dt6HzL7CGAagJei27Ymihg43Ujsp6sP+TXjVOUH1uY5yk1BRovY3NL
+    6NeQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1710758829;
     s=strato-dkim-0002; d=strato.com;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=49sTKYEAcSa6RLnINJ81WIKjUWN4TsR5fU4B90yTwAA=;
-    b=I1lJW5KQ8aK784PspykJGwcU0tsF9ucKvd1KQwaENAGuPz5ynCOqiG0g8Ujmu4lx5W
-    6S4KgXGoz4QsGTqNTE0D61qSmH5TECXhmWsA69ZUNPAhi8YaLRNWxjZPtIWOKQ0U1++/
-    4YxOGyS/+TDXqoUH8ERaNrAJhRLjCrFIcdwa6AA8jVjIT7MMqwMYwF2J2uCXi2FzlfDY
-    apsARCWMw0UBM9EJfLltwGar8E56gaDSoOIiTfJVAIUD1/gML344nQF2awpUcgVwbya3
-    E8q5a6evBg0Bhbmpe0oFc9oUdn78KuCgyEQALpV1yYBefivTTW3P+4vpWfW2Etl0lm14
-    nQTA==
+    bh=ojzVciQjPVAv/TxAqtx0OA4Ge2KrFeUyLFJz0VNjKSo=;
+    b=dwqlcu0ajh+dGHXBmCwfU7K/HLX09yYgNtDAzKzKIoTogZlUC390UDSObW4+5S1UUd
+    Q4FkMGlWdkWlivl7LU1Oxbbsc7w7aO39SOjKKvu+joxEPc6qkYjU6qvumtkGyg8UItcG
+    l819ClIZxR5SW9E48LK5fxzhG3G87uCC11Pf38JtAZTwiVUk/CEcVHDq52gYpzXxzx+P
+    dJ8luYNQ+vSPO4fxXfijQPAGZzoFs/NqKpbhnZZiLTgO2WoL1/5948SVX9tfeu5nyqMb
+    EOr8dq6jmJivoaPmyNSfLw+ITa4Q5xssWOI/Ihdk985oqRTu6x5L55KMTvybSUf4+h1a
+    4oxg==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
@@ -44,24 +44,24 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1710758829;
     s=strato-dkim-0002; d=hartkopp.net;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=49sTKYEAcSa6RLnINJ81WIKjUWN4TsR5fU4B90yTwAA=;
-    b=E+fSyku1nXt2+nHIpQ34j0n3J9m8P0h993aUfCnLWfa3N68sVXAm48kCmG1UkHBHdD
-    XDm4DwJ74o6bThA1anolfUpTv+q2nDDhatWYjutIg6jhQEu6FveTDwqYumwtLLDeOHyT
-    gaowedHOrwpfHj+xeInYk0dbk6bnFLYGXhp6ZojtZ8jOP61fNfLKS9FCqpQEApFda9tY
-    6YHXoxze8dmvw0STo5GEmjM2CxVxUsgxZZ5c0xz9jQM8T1IYBV5F7aHr3YwiicGB0HUp
-    EcaS0xKdxuRT9DOy/+VhDTzdCCwqkCIRmr5+q1hFjFFNfzDi7N7r2yVHWxYs9TwnIxyV
-    tX7Q==
+    bh=ojzVciQjPVAv/TxAqtx0OA4Ge2KrFeUyLFJz0VNjKSo=;
+    b=HZoAioJ2L8WJ7TQHUYEjAS92u3uQrytuUs3uTOhntr2Lxu+Ym7PJfY+txeKwJ2VYAc
+    UwsxuophaG+dK9UaVp3WYPba5Xyt6PKnsiQg3hjnQclJ1C9sO7jKAkigYCaT+gCTwfOa
+    iVyD7Cn9L3UEJj/vPOo0QaBpYMPm05B+Tit074JOXVc1PKoN2nb8rGZKITIekXYCHm5l
+    cjlQp5pwvr6yz/tc43y0n39GgcMOiCSM2+1bLRVolpQmKRYwwvkybhDFCadCZBb0Zr4g
+    hy9eRCM9T6LCtJIO6o9Pg2+Phj5hrhOQsnPl49Vyrn2PCwEyG07LnO31IGtbczvG+niT
+    aksQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1710758829;
     s=strato-dkim-0003; d=hartkopp.net;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=49sTKYEAcSa6RLnINJ81WIKjUWN4TsR5fU4B90yTwAA=;
-    b=ZI1+Ox2byoV7hlAc/S9Gdj84U35mAmD5x9yKQkRCaNuXedehaOtkSw8uMXbrT8W1kA
-    pz0cBb22d015wYuGvICw==
+    bh=ojzVciQjPVAv/TxAqtx0OA4Ge2KrFeUyLFJz0VNjKSo=;
+    b=o+mLyqfjdbyWSo7c+cnq5dDIzzuU+jhbXhyCX5QPf6W3Cfbp9zagW+/XSTCyM/utXp
+    LU43343OzveQe+JvOWBQ==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS/xvEBL7X5sbo3VYpXsQi7qV3YmVcfhbrd"
 Received: from lenov17.lan
     by smtp.strato.de (RZmta 50.2.2 AUTH)
-    with ESMTPSA id K0cc6102IAl98Ts
+    with ESMTPSA id K0cc6102IAl98Tp
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
     Mon, 18 Mar 2024 11:47:09 +0100 (CET)
@@ -70,9 +70,9 @@ To: Guy Harris <gharris@sonic.net>
 Cc: wireshark-dev@wireshark.org,
 	linux-can@vger.kernel.org,
 	Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH 4/4] socketcan: update CAN CiA 611-1 definitions
-Date: Mon, 18 Mar 2024 11:46:43 +0100
-Message-ID: <20240318104643.24098-5-socketcan@hartkopp.net>
+Subject: [PATCH 1/4] socketcan: simplify CAN packet type detection
+Date: Mon, 18 Mar 2024 11:46:40 +0100
+Message-ID: <20240318104643.24098-2-socketcan@hartkopp.net>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240318104643.24098-1-socketcan@hartkopp.net>
 References: <20240318104643.24098-1-socketcan@hartkopp.net>
@@ -85,73 +85,119 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="us-ascii"
 
+The different CAN frame types are defined by Linux SLL_P types in the
+sll_protocol field and the length of the frame.
+
+LINUX_SLL_P_CANXL:
+The frame length for CAN XL can be 12 + 1 to 12 + 2048 (13 .. 2060) byte.
+Additionally the CANXL_XLF flag has to be set.
+
+LINUX_SLL_P_CAN and LINUX_SLL_P_CANFD:
+The frame length for CAN CC is 16 byte and for CAN FD it is 72 byte.
+Additionally the CANXL_XLF flag is cleared in CAN CC/FD frames.
+
+Simplify the CAN packet type detection by checking exactly the above
+rules without checking the CANFD_FDF flag which is not guarantied
+over all Linux kernel versions.
+
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- epan/dissectors/packet-socketcan.c | 13 ++++++++-----
- epan/dissectors/packet-socketcan.h | 17 ++++++++++-------
- 2 files changed, 18 insertions(+), 12 deletions(-)
+ epan/dissectors/packet-socketcan.c | 56 +++++-------------------------
+ 1 file changed, 8 insertions(+), 48 deletions(-)
 
 diff --git a/epan/dissectors/packet-socketcan.c b/epan/dissectors/packet-socketcan.c
-index 4ca0479f79..09b5f687fc 100644
+index e441c44ade..e9fcdb2dd8 100644
 --- a/epan/dissectors/packet-socketcan.c
 +++ b/epan/dissectors/packet-socketcan.c
-@@ -171,15 +171,18 @@ static const value_string can_err_trx_canl_vals[] = {
+@@ -110,10 +110,11 @@ static heur_dtbl_entry_t *heur_dtbl_entry;
+ #define CANFD_FLAG_OFFSET  5
  
- static const value_string canxl_sdu_type_vals[] = {
-     { 0x00, "Reserved" },
-     { CANXL_SDU_TYPE_CONTENT_BASED_ADDRESSING, "Content-based Addressing" },
-     { 0x02, "Reserved for future use" },
--    { CANXL_SDU_TYPE_CLASSICAL_CAN_AND_CAN_FD_MAPPED_TUNNELING, "Classical CAN/CAN FD mapped tunneling" },
--    { CANXL_SDU_TYPE_IEEE_802_3_MAC_FRAME_TUNNELLING, "IEEE 802.3 (MAC frame) tunneling" },
--    { CANXL_SDU_TYPE_IEEE_802_3_MAC_FRAME_MAPPED_TUNNELING, "IEEE 802.3 (MAC frame) mapped tunneling" },
--    { CANXL_SDU_TYPE_CLASSICAL_CAN_MAPPED_TUNNELING, "Classical CAN mapped tunneling" },
--    { CANXL_SDU_TYPE_CAN_FD_MAPPED_TUNNELING, "CAN FD mapped tunneling" },
-+    { CANXL_SDU_TYPE_CAN_CC_CAN_FD, "CAN CC/CAN FD" },
-+    { CANXL_SDU_TYPE_IEEE_802_3, "IEEE 802.3 (MAC frame)" },
-+    { CANXL_SDU_TYPE_IEEE_802_3_EXTENDED, "IEEE 802.3 (MAC frame) extended" },
-+    { CANXL_SDU_TYPE_CAN_CC, "CAN CC" },
-+    { CANXL_SDU_TYPE_CAN_FD, "CAN FD" },
-+    { CANXL_SDU_TYPE_CIA_611_2, "CiA 611-2 (Multi-PDU)" },
-+    { CANXL_SDU_TYPE_AUTOSAR_MPDU, "AUTOSAR Multi-PDU" },
-+    { CANXL_SDU_TYPE_CIA_613_2, "CiA 613-2 (CANsec key agreement protocol" },
-     { 0xFF, "Reserved" },
-     { 0, NULL }
- };
+ #define CANFD_BRS 0x01 /* bit rate switch (second bitrate for payload data) */
+ #define CANFD_ESI 0x02 /* error state indicator of the transmitting node */
  
- /********* UATs *********/
-diff --git a/epan/dissectors/packet-socketcan.h b/epan/dissectors/packet-socketcan.h
-index f82fa5e20b..87f51b2328 100644
---- a/epan/dissectors/packet-socketcan.h
-+++ b/epan/dissectors/packet-socketcan.h
-@@ -123,18 +123,21 @@ typedef struct can_info {
++#define CANXL_FLAGS_OFFSET CAN_LEN_OFFSET
+ #define CANXL_LEN_OFFSET   6
+ #define CANXL_DATA_OFFSET  12
  
- gboolean socketcan_call_subdissectors(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree, struct can_info *can_info, const gboolean use_heuristics_first);
- gboolean socketcan_set_source_and_destination_columns(packet_info* pinfo, can_info_t *caninfo);
+ static dissector_table_t can_id_dissector_table = NULL;
+ static dissector_table_t can_extended_id_dissector_table = NULL;
+@@ -589,69 +590,28 @@ dissect_socketcan_common(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree, gu
+     static int * const canxl_flag_fields[] = {
+         &hf_canxl_secflag,
+         NULL,
+     };
  
- /*
-- * CAN XL SDU types.
-+ * CAN XL SDU types from CAN CiA 611-1
-  */
--#define CANXL_SDU_TYPE_CONTENT_BASED_ADDRESSING	                 0x01
--#define CANXL_SDU_TYPE_CLASSICAL_CAN_AND_CAN_FD_MAPPED_TUNNELING 0x03
--#define CANXL_SDU_TYPE_IEEE_802_3_MAC_FRAME_TUNNELLING           0x04
--#define CANXL_SDU_TYPE_IEEE_802_3_MAC_FRAME_MAPPED_TUNNELING     0x05
--#define CANXL_SDU_TYPE_CLASSICAL_CAN_MAPPED_TUNNELING            0x06
--#define CANXL_SDU_TYPE_CAN_FD_MAPPED_TUNNELING                   0x07
-+#define CANXL_SDU_TYPE_CONTENT_BASED_ADDRESSING 0x01
-+#define CANXL_SDU_TYPE_CAN_CC_CAN_FD            0x03
-+#define CANXL_SDU_TYPE_IEEE_802_3               0x04
-+#define CANXL_SDU_TYPE_IEEE_802_3_EXTENDED      0x05
-+#define CANXL_SDU_TYPE_CAN_CC                   0x06
-+#define CANXL_SDU_TYPE_CAN_FD                   0x07
-+#define CANXL_SDU_TYPE_CIA_611_2                0x08
-+#define CANXL_SDU_TYPE_AUTOSAR_MPDU             0x09
-+#define CANXL_SDU_TYPE_CIA_613_2                0x0A
+-    /*
+-     * If we weren't told the type of this frame, check
+-     * whether the CANFD_FDF flag is set in the FD flags
+-     * field of the header; if so, it's a CAN FD frame.
+-     * otherwise, it's a CAN frame.
+-     *
+-     * However, trust the CANFD_FDF flag only if the only
+-     * bits set in the FD flags field are the known bits,
+-     * and the two bytes following that field are both
+-     * zero.  This is because some older LINKTYPE_CAN_SOCKETCAN
+-     * frames had uninitialized junk in the FD flags field,
+-     * so we treat a frame with what appears to be uninitialized
+-     * junk as being CAN rather than CAN FD, under the assumption
+-     * that the CANFD_FDF bit is set because the field is
+-     * uninitialized, not because it was explicitly set because
+-     * it's a CAN FD frame.  At least some newer code that sets
+-     * that flag also makes sure that the fields in question are
+-     * initialized, so we assume that if they're not initialized
+-     * the code is older code that didn't support CAN FD.
+-     */
++    /* determine CAN packet type */
+     if (can_packet_type == PACKET_TYPE_UNKNOWN) {
+-        guint8 frame_length;
+-        guint8 fd_flags;
++        guint8 canxl_flags;
  
- #endif /* __PACKET_SOCKETCAN_H__ */
+         /*
+          * Check whether the frame has the CANXL_XLF flag set in what
+          * is in the location of the frame length field of a CAN classic
+          * or CAN FD frame; if so, then it's a CAN XL frame (and that
+          * field is the flags field of that frame).
+          */
+-        frame_length = tvb_get_guint8(tvb, CAN_LEN_OFFSET);
+-        if (frame_length & CANXL_XLF) {
++        canxl_flags = tvb_get_guint8(tvb, CANXL_FLAGS_OFFSET);
++        if ((tvb_reported_length(tvb) > 12) && (canxl_flags & CANXL_XLF)) {
+             can_packet_type = PACKET_TYPE_CAN_XL;
+         } else {
+-            /*
+-             * This is a CAN classic or CAN FD frame.
+-             * Check whether the flags field has the CANFD_FDF
+-             * flag set, has no unknown flag bits set, and has
+-             * no bits set in the two reserved fields.  If so,
+-             * it's a CAN FD frame; otherwise, it's either a
+-             * CAN classic frame, or a frame where the CANFD_FDF
+-             * flag is set but where that might just be because
+-             * that field contains uninitialized junk rather
+-             * than because it's a CAN FD frame, so we treat it
+-             * as a CAN classic frame.
+-             */
+-            fd_flags = tvb_get_guint8(tvb, CANFD_FLAG_OFFSET);
+-
+-            if ((fd_flags & CANFD_FDF) &&
+-                    ((fd_flags & ~(CANFD_BRS | CANFD_ESI | CANFD_FDF)) == 0) &&
+-                    tvb_get_guint8(tvb, CANFD_FLAG_OFFSET + 1) == 0 &&
+-                    tvb_get_guint8(tvb, CANFD_FLAG_OFFSET + 2) == 0) {
++            if (tvb_reported_length(tvb) == 72)
+                 can_packet_type = PACKET_TYPE_CAN_FD;
+-            } else {
+-                if (tvb_reported_length(tvb) == 72)
+-                    can_packet_type = PACKET_TYPE_CAN_FD;
+-                else
+-                    can_packet_type = PACKET_TYPE_CAN;
+-            }
++            else if  (tvb_reported_length(tvb) == 16)
++                can_packet_type = PACKET_TYPE_CAN;
+         }
+     }
  
- /*
-  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
+     can_info.bus_id = get_bus_id(pinfo);
+ 
 -- 
 2.43.0
 
