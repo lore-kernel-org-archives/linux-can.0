@@ -1,81 +1,75 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.24])
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 685612DF92
-	for <linux-can@vger.kernel.org>; Mon, 18 Mar 2024 10:47:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DBF732C6C
+	for <linux-can@vger.kernel.org>; Mon, 18 Mar 2024 10:49:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.23
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710758842; cv=pass; b=sgz1sqODs5ffEj2VeQJBl1rUy3abYz/Psi16qa+wRPawvfCxzQKPm97ml70iqyDYMdztOK+uBJ43wGU23R+zGCO6XMt6Tw+bcMriVqLA0SpoKimF2Te7Y0Hsd01Td2LW6HjByMS8ixgrJBCulZl8vAzBIHX9DkMHdTr+joNrS0U=
+	t=1710758990; cv=pass; b=A7zK8RjRc8eNbwME4K10Bc0e0PDayRiLh/iElV2YCtjL4AJJPWdGia+55Y8P7N9IaUGRt63IW0gtlcGC+jAE2KaCKW+7mF5HRsllbLZe2RZo0MZNjJCI7sK70vC9qOPPAms6bDZKBsg8a2yFmfZC5wq5deXlCQGHrfPTFzgUHQY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710758842; c=relaxed/simple;
-	bh=qHU8hULWinA+2WQ+M3zMT1xweP4x0/wD0nivR9bPEKg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GjM/g1ji5P7/8IqdNSOZH7sdJvlM4VrDfXmkmhmPYM3q2aHQxSi7OMid3J9maAFKVrITY/kpFu/SkwtP4EUiL3pX5n5HNNUNU84JoGod3MdOBU52lQoCqZuk+MVaEnbzSrULFNx1N9ysYN5TOXwNcMsHXUmkvJtwBFvE39/YXpU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=HZoAioJ2; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=o+mLyqfj; arc=pass smtp.client-ip=85.215.255.24
+	s=arc-20240116; t=1710758990; c=relaxed/simple;
+	bh=7jiStVjzFQLL5YpfEGI67cI98Ysi2z6/aVesRdn3HK4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kb/rdItJRxByAKVLGlu8IeNIqPChCwrNmD0lql6WusqozUtkw3MMQ2UGhJIJ2gwudoG5a22p5V/2ry8hGn+4MOc8+mMCF9eBbl7MhjA7s1YTwvhp70cOKWBRvoM4uf3gkFYyKsCJ0lvrSJcTN/nsz7kEbU+lPyOkrGkT/+GQ5ag=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=Dl5FGBYF; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=nfQhKVMS; arc=pass smtp.client-ip=85.215.255.23
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="HZoAioJ2";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="o+mLyqfj"
-ARC-Seal: i=1; a=rsa-sha256; t=1710758829; cv=none;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="Dl5FGBYF";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="nfQhKVMS"
+ARC-Seal: i=1; a=rsa-sha256; t=1710758980; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=nIwXFfFzwW8PzycEpCU47+3Txjo6+yXxE145ef3KAKS5SP+w0G5f7FCPTVRR1hAF8l
-    x9BZ7opD30Lx651uvsmezeeqcOipXlK1ISYez8jPlp9syk1wloWgzO25d+A/rCkH8DEs
-    QFb5lJFQmzqXg8rSixZqISg8DYZsAlQVkB8vxQc1Ppta03zdK7I5pQNOaAU+Xutn5PBv
-    ZyUwQpdc2c0HXhROpuk7nuLhpQnW5qg0el3y8R0Xii0/Fje9KCRIzhT0D+UuLiZBTERN
-    ROpiWv1Xai6Yj4Dt6HzL7CGAagJei27Ymihg43Ujsp6sP+TXjVOUH1uY5yk1BRovY3NL
-    6NeQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1710758829;
+    b=UY/lCYLS1/iihc3Ph9lNXzWpW5TlIeVbmAXur/qzRSK7rfaroJwYK0evC4CRy2QIDq
+    2/q4DVOaBXk9FH/4EoCToTdVn42aZ9DX3YF5dstUbzV3zaWTyjsbbbOoIf9rtCJjnExD
+    iQuaXywQWEifJFloadEs5tcEFUyK5TE91xopf8kXTWr7gTdpCWSbRUofBd2MqsyJARcs
+    +PoFrbL3RhVi1jenjWsUc23XP6hrwkQZh6rAPUmHa60URoMMKK02eNrjT5VOPK32Bisy
+    AJNH473/6TY4JAa4h/nrhdRT8dtLXj//UvlO9tSa05BhnyKoQce27kcedu0Vv3IFgQqa
+    JvOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1710758980;
     s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=ojzVciQjPVAv/TxAqtx0OA4Ge2KrFeUyLFJz0VNjKSo=;
-    b=dwqlcu0ajh+dGHXBmCwfU7K/HLX09yYgNtDAzKzKIoTogZlUC390UDSObW4+5S1UUd
-    Q4FkMGlWdkWlivl7LU1Oxbbsc7w7aO39SOjKKvu+joxEPc6qkYjU6qvumtkGyg8UItcG
-    l819ClIZxR5SW9E48LK5fxzhG3G87uCC11Pf38JtAZTwiVUk/CEcVHDq52gYpzXxzx+P
-    dJ8luYNQ+vSPO4fxXfijQPAGZzoFs/NqKpbhnZZiLTgO2WoL1/5948SVX9tfeu5nyqMb
-    EOr8dq6jmJivoaPmyNSfLw+ITa4Q5xssWOI/Ihdk985oqRTu6x5L55KMTvybSUf4+h1a
-    4oxg==
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=LJuaUUYQRi+zvqrESpF/BtyposMvIu71EcWZ53o3dDM=;
+    b=VxvOKc5mIuo1ypRIiwXsGXJKWpGoo60gGPYOEIeL/FqJl0SoLD74kSaSrVD5Qz/LcO
+    JfvlcL9OjwH0sg1yevusdFa19BtVHDqyTbUDVFAX90LT2cwqgGcVjHvvYQtk31xKkK1/
+    00XuB9ZpHy9fCz5VdgeVhfdB+Q5VKM/HIHmvxLx0nSR6ZNOGQQJLvJIc9knXGZdtr+5n
+    CxO5B6D9bgAr3a9Jt9lQJvYgecMi4MzXEvx13uW2+iKnAk5KPA0syK8dkrvUSGdRoURa
+    xhORqQGOhl5LDpliuOrFY8tddM6hmYuQ//cBtyxTc9IB4PdedQ4VXA+P+pE3JK2gl7sU
+    W7zQ==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1710758829;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1710758980;
     s=strato-dkim-0002; d=hartkopp.net;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=ojzVciQjPVAv/TxAqtx0OA4Ge2KrFeUyLFJz0VNjKSo=;
-    b=HZoAioJ2L8WJ7TQHUYEjAS92u3uQrytuUs3uTOhntr2Lxu+Ym7PJfY+txeKwJ2VYAc
-    UwsxuophaG+dK9UaVp3WYPba5Xyt6PKnsiQg3hjnQclJ1C9sO7jKAkigYCaT+gCTwfOa
-    iVyD7Cn9L3UEJj/vPOo0QaBpYMPm05B+Tit074JOXVc1PKoN2nb8rGZKITIekXYCHm5l
-    cjlQp5pwvr6yz/tc43y0n39GgcMOiCSM2+1bLRVolpQmKRYwwvkybhDFCadCZBb0Zr4g
-    hy9eRCM9T6LCtJIO6o9Pg2+Phj5hrhOQsnPl49Vyrn2PCwEyG07LnO31IGtbczvG+niT
-    aksQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1710758829;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=LJuaUUYQRi+zvqrESpF/BtyposMvIu71EcWZ53o3dDM=;
+    b=Dl5FGBYF/91TJKKAQypu2irMObNQBymD5w92cB3d39O1II7mLkITVu1f8z3nS8qIjL
+    /rfukJuGECL+Aqs7oqqq81CaOl7qbJCGp1T8cPj/K03CFgTTfw5t44s1mt7Rvfxp0xcq
+    IhLDwqO1WKxRU3o6/ZHNO8hzkxWZ4W3TJejNrrxmoH8pbQii8PRcu+5Na/v7cOpfjLDC
+    hOVz45bAKFjF956a1aLT62WilTIPFX2arYMdDjS7aVxMPj1ao+XnmTTXZuY1QaukMfoY
+    Olst5cn/EFb11j707IpVs1jpNyAxDoLOrJDFPM2+QjB+nZqTu7sM7Hk4bWMd78aOCd8M
+    3xKw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1710758980;
     s=strato-dkim-0003; d=hartkopp.net;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=ojzVciQjPVAv/TxAqtx0OA4Ge2KrFeUyLFJz0VNjKSo=;
-    b=o+mLyqfjdbyWSo7c+cnq5dDIzzuU+jhbXhyCX5QPf6W3Cfbp9zagW+/XSTCyM/utXp
-    LU43343OzveQe+JvOWBQ==
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=LJuaUUYQRi+zvqrESpF/BtyposMvIu71EcWZ53o3dDM=;
+    b=nfQhKVMSbFC2xk/IFL6VNHwddJGBUaH2+WQa/wHTFAoBdQMR4CMAtaJsT3JcWq67VM
+    hG18kZcgEI7g3qT2TjAw==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjGrp7owjzFK3JbFk1mS/xvEBL7X5sbo3VYpXsQi7qV3YmVcfhbrd"
 Received: from lenov17.lan
     by smtp.strato.de (RZmta 50.2.2 AUTH)
-    with ESMTPSA id K0cc6102IAl98Tp
+    with ESMTPSA id K0cc6102IAne8Ux
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Mon, 18 Mar 2024 11:47:09 +0100 (CET)
+    Mon, 18 Mar 2024 11:49:40 +0100 (CET)
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 To: Guy Harris <gharris@sonic.net>
 Cc: wireshark-dev@wireshark.org,
 	linux-can@vger.kernel.org,
 	Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH 1/4] socketcan: simplify CAN packet type detection
-Date: Mon, 18 Mar 2024 11:46:40 +0100
-Message-ID: <20240318104643.24098-2-socketcan@hartkopp.net>
+Subject: [PATCH] socketcan: make CAN CC/FD/XL frame handling less invasive
+Date: Mon, 18 Mar 2024 11:49:33 +0100
+Message-ID: <20240318104933.24194-1-socketcan@hartkopp.net>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240318104643.24098-1-socketcan@hartkopp.net>
-References: <20240318104643.24098-1-socketcan@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -96,108 +90,167 @@ LINUX_SLL_P_CAN and LINUX_SLL_P_CANFD:
 The frame length for CAN CC is 16 byte and for CAN FD it is 72 byte.
 Additionally the CANXL_XLF flag is cleared in CAN CC/FD frames.
 
-Simplify the CAN packet type detection by checking exactly the above
-rules without checking the CANFD_FDF flag which is not guarantied
-over all Linux kernel versions.
+Reduce the modification and 'sanitizing' efforts only to the above
+requirements to be robust against incompliant content which might be
+provided via PACKET sockets but do not manipulate further content.
+
+This helps to identify uninitialized data and to support new features
+in formerly reserved structure elements without changing the libpcap.
 
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- epan/dissectors/packet-socketcan.c | 56 +++++-------------------------
- 1 file changed, 8 insertions(+), 48 deletions(-)
+ pcap-linux.c | 98 ++++++----------------------------------------------
+ 1 file changed, 10 insertions(+), 88 deletions(-)
 
-diff --git a/epan/dissectors/packet-socketcan.c b/epan/dissectors/packet-socketcan.c
-index e441c44ade..e9fcdb2dd8 100644
---- a/epan/dissectors/packet-socketcan.c
-+++ b/epan/dissectors/packet-socketcan.c
-@@ -110,10 +110,11 @@ static heur_dtbl_entry_t *heur_dtbl_entry;
- #define CANFD_FLAG_OFFSET  5
+diff --git a/pcap-linux.c b/pcap-linux.c
+index c6516c19..0afd75eb 100644
+--- a/pcap-linux.c
++++ b/pcap-linux.c
+@@ -3960,103 +3960,17 @@ static int pcap_handle_packet_mmap(
+ 		 * type is DLT_CAN_SOCKETCAN.  Fix up the header
+ 		 * provided by the code below us to match what
+ 		 * DLT_CAN_SOCKETCAN is expected to provide.
+ 		 */
+ 		if (sll->sll_hatype == ARPHRD_CAN) {
+-			pcap_can_socketcan_hdr *canhdr = (pcap_can_socketcan_hdr *)bp;
+ 			uint16_t protocol = ntohs(sll->sll_protocol);
  
- #define CANFD_BRS 0x01 /* bit rate switch (second bitrate for payload data) */
- #define CANFD_ESI 0x02 /* error state indicator of the transmitting node */
- 
-+#define CANXL_FLAGS_OFFSET CAN_LEN_OFFSET
- #define CANXL_LEN_OFFSET   6
- #define CANXL_DATA_OFFSET  12
- 
- static dissector_table_t can_id_dissector_table = NULL;
- static dissector_table_t can_extended_id_dissector_table = NULL;
-@@ -589,69 +590,28 @@ dissect_socketcan_common(tvbuff_t *tvb, packet_info *pinfo, proto_tree *tree, gu
-     static int * const canxl_flag_fields[] = {
-         &hf_canxl_secflag,
-         NULL,
-     };
- 
--    /*
--     * If we weren't told the type of this frame, check
--     * whether the CANFD_FDF flag is set in the FD flags
--     * field of the header; if so, it's a CAN FD frame.
--     * otherwise, it's a CAN frame.
--     *
--     * However, trust the CANFD_FDF flag only if the only
--     * bits set in the FD flags field are the known bits,
--     * and the two bytes following that field are both
--     * zero.  This is because some older LINKTYPE_CAN_SOCKETCAN
--     * frames had uninitialized junk in the FD flags field,
--     * so we treat a frame with what appears to be uninitialized
--     * junk as being CAN rather than CAN FD, under the assumption
--     * that the CANFD_FDF bit is set because the field is
--     * uninitialized, not because it was explicitly set because
--     * it's a CAN FD frame.  At least some newer code that sets
--     * that flag also makes sure that the fields in question are
--     * initialized, so we assume that if they're not initialized
--     * the code is older code that didn't support CAN FD.
--     */
-+    /* determine CAN packet type */
-     if (can_packet_type == PACKET_TYPE_UNKNOWN) {
--        guint8 frame_length;
--        guint8 fd_flags;
-+        guint8 canxl_flags;
- 
-         /*
-          * Check whether the frame has the CANXL_XLF flag set in what
-          * is in the location of the frame length field of a CAN classic
-          * or CAN FD frame; if so, then it's a CAN XL frame (and that
-          * field is the flags field of that frame).
-          */
--        frame_length = tvb_get_guint8(tvb, CAN_LEN_OFFSET);
--        if (frame_length & CANXL_XLF) {
-+        canxl_flags = tvb_get_guint8(tvb, CANXL_FLAGS_OFFSET);
-+        if ((tvb_reported_length(tvb) > 12) && (canxl_flags & CANXL_XLF)) {
-             can_packet_type = PACKET_TYPE_CAN_XL;
-         } else {
--            /*
--             * This is a CAN classic or CAN FD frame.
--             * Check whether the flags field has the CANFD_FDF
--             * flag set, has no unknown flag bits set, and has
--             * no bits set in the two reserved fields.  If so,
--             * it's a CAN FD frame; otherwise, it's either a
--             * CAN classic frame, or a frame where the CANFD_FDF
--             * flag is set but where that might just be because
--             * that field contains uninitialized junk rather
--             * than because it's a CAN FD frame, so we treat it
--             * as a CAN classic frame.
--             */
--            fd_flags = tvb_get_guint8(tvb, CANFD_FLAG_OFFSET);
+-			/*
+-			 * Check the protocol field from the sll header.
+-			 * If it's one of the known CAN protocol types,
+-			 * make sure the appropriate flags are set, so
+-			 * that a program can tell what type of frame
+-			 * it is.
+-			 *
+-			 * The two flags are:
+-			 *
+-			 *   CANFD_FDF, which is in the fd_flags field
+-			 *   of the CAN classic/CAN FD header;
+-			 *
+-			 *   CANXL_XLF, which is in the flags field
+-			 *   of the CAN XL header, which overlaps
+-			 *   the payload_length field of the CAN
+-			 *   classic/CAN FD header.
+-			 */
+-			switch (protocol) {
 -
--            if ((fd_flags & CANFD_FDF) &&
--                    ((fd_flags & ~(CANFD_BRS | CANFD_ESI | CANFD_FDF)) == 0) &&
--                    tvb_get_guint8(tvb, CANFD_FLAG_OFFSET + 1) == 0 &&
--                    tvb_get_guint8(tvb, CANFD_FLAG_OFFSET + 2) == 0) {
-+            if (tvb_reported_length(tvb) == 72)
-                 can_packet_type = PACKET_TYPE_CAN_FD;
--            } else {
--                if (tvb_reported_length(tvb) == 72)
--                    can_packet_type = PACKET_TYPE_CAN_FD;
--                else
--                    can_packet_type = PACKET_TYPE_CAN;
--            }
-+            else if  (tvb_reported_length(tvb) == 16)
-+                can_packet_type = PACKET_TYPE_CAN;
-         }
-     }
+-			case LINUX_SLL_P_CAN:
+-				/*
+-				 * CAN classic.
+-				 *
+-				 * Zero out the fd_flags and reserved
+-				 * fields, in case they're uninitialized
+-				 * crap, and clear the CANXL_XLF bit in
+-				 * the payload_length field.
+-				 *
+-				 * This means that the CANFD_FDF flag isn't
+-				 * set in the fd_flags field, and that
+-				 * the CANXL_XLF bit isn't set in the
+-				 * payload_length field, so this frame
+-				 * will appear to be a CAN classic frame.
+-				 */
+-				canhdr->payload_length &= ~CANXL_XLF;
+-				canhdr->fd_flags = 0;
+-				canhdr->reserved1 = 0;
+-				canhdr->reserved2 = 0;
+-				break;
+-
+-			case LINUX_SLL_P_CANFD:
+-				/*
+-				 * Set CANFD_FDF in the fd_flags field,
+-				 * and clear the CANXL_XLF bit in the
+-				 * payload_length field, so this frame
+-				 * will appear to be a CAN FD frame.
+-				 */
+-				canhdr->payload_length &= ~CANXL_XLF;
+-				canhdr->fd_flags |= CANFD_FDF;
+-
+-				/*
+-				 * Zero out all the unknown bits in fd_flags
+-				 * and clear the reserved fields, so that
+-				 * a program reading this can assume that
+-				 * CANFD_FDF is set because we set it, not
+-				 * because some uninitialized crap was
+-				 * provided in the fd_flags field.
+-				 *
+-				 * (At least some LINKTYPE_CAN_SOCKETCAN
+-				 * files attached to Wireshark bugs had
+-				 * uninitialized junk there, so it does
+-				 * happen.)
+-				 *
+-				 * Update this if Linux adds more flag bits
+-				 * to the fd_flags field or uses either of
+-				 * the reserved fields for FD frames.
+-				 */
+-				canhdr->fd_flags &= (CANFD_FDF|CANFD_ESI|CANFD_BRS);
+-				canhdr->reserved1 = 0;
+-				canhdr->reserved2 = 0;
+-				break;
+-
+-			case LINUX_SLL_P_CANXL:
+-				/*
+-				 * CAN XL frame.
+-				 *
+-				 * Make sure the CANXL_XLF bit is set in
+-				 * the payload_length field, so that
+-				 * this frame will appear to be a
+-				 * CAN XL frame.
+-				 */
+-				canhdr->payload_length |= CANXL_XLF;
+-				break;
+-			}
+-
+ 			/*
+ 			 * Put multi-byte header fields in a byte-order
+ 			 *-independent format.
+ 			 */
+-			if (canhdr->payload_length & CANXL_XLF) {
++			if (protocol == LINUX_SLL_P_CANXL) {
+ 				/*
+ 				 * This is a CAN XL frame.
+ 				 *
+ 				 * DLT_CAN_SOCKETCAN is specified as having
+ 				 * the Priority ID/VCID field in big--
+@@ -4085,10 +3999,13 @@ static int pcap_handle_packet_mmap(
+ 				 * frames were captured are likely
+ 				 * to be little-endian processors.
+ 				 */
+ 				pcap_can_socketcan_xl_hdr *canxl_hdr = (pcap_can_socketcan_xl_hdr *)bp;
  
-     can_info.bus_id = get_bus_id(pinfo);
++				/* ensure CAN XL flag for CAN XL fame detection */
++				canxl_hdr->flags |= CANXL_XLF;
++
+ #if __BYTE_ORDER == __LITTLE_ENDIAN
+ 				/*
+ 				 * We're capturing on a little-endian
+ 				 * machine, so we put the priority/VCID
+ 				 * field into big-endian byte order, and
+@@ -4118,19 +4035,24 @@ static int pcap_handle_packet_mmap(
+ #else
+ #error "Unknown byte order"
+ #endif
+ 			} else {
+ 				/*
+-				 * CAN or CAN FD frame.
++				 * CAN CC or CAN FD frame.
+ 				 *
+ 				 * DLT_CAN_SOCKETCAN is specified as having
+ 				 * the CAN ID and flags in network byte
+ 				 * order, but capturing on a CAN device
+ 				 * provides it in host byte order.  Convert
+ 				 * it to network byte order.
+ 				 */
++				pcap_can_socketcan_hdr *canhdr = (pcap_can_socketcan_hdr *)bp;
++
+ 				canhdr->can_id = htonl(canhdr->can_id);
++
++				/* make sure the CAN XL detection is not affected */
++				canhdr->payload_length &= ~CANXL_XLF;
+ 			}
+ 		}
+ 	}
  
+ 	if (handlep->filter_in_userland && handle->fcode.bf_insns) {
 -- 
 2.43.0
 
