@@ -1,180 +1,210 @@
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fritzc.com (mail.fritzc.com [213.160.72.247])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6D781B964
-	for <linux-can@vger.kernel.org>; Mon, 22 Apr 2024 05:50:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F721482F6;
+	Mon, 22 Apr 2024 07:11:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.160.72.247
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713765042; cv=none; b=hyis7LaH+I2O/BhzytQbt8sX+cYuBjdlhqbRejQnaVCQl38Q986nWFOnP0nfx/bBgGQWKYJM0SkrUxW5aci4R0N0zZ1XyHKnceXac7CO8v1QxbQcBx9nz0vkkrjGGXUNP0C0GjGpotdg7lo2YLQCxgrNPldxZL1dBKIqUSZOjeo=
+	t=1713769918; cv=none; b=N6s+GBOL4hUNQkFAieENZdXxoCD0z7MdKXc4Oivs/+LfO5o7ewS6LFU6Y1W7xypizFp/a+JRDg3Udj4TAomqh5WI9Oj14zLsLiH82h/Nc93Cj9s+WRl2uHOIC6ao7PJp7w3jIl3+mPqhaa3IJyyVXn5avDhHpHvyyg5qc5DvF3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713765042; c=relaxed/simple;
-	bh=85BbHvsuCYK7Ck+ERcQqw61e7bBjuLPidlASzc4zeog=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Of7jt08qwLVzpV8Cf/LseH0V6Ay9RyHzfSpgmPyNsoVrL5cTzqocYuXAKuJnoeYzoio28q+M8ixhSU9cw5vbt2D9uxi5vbbpq4wxNxxoXNtYZUaDWaK44jFwgz0zQ7F8Ls/yKS5KA9xukoEJL34R+u+npnMQG53f2dMgNkVrRqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TiHBGSr+; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1713769918; c=relaxed/simple;
+	bh=+LED3j9UryOnzM8qONYEGqaHQ70XD8TvZDjsh/8WL7Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=c2FZ4mNJRfqgw8XRCAoUEHLYr+osl3gUd+Nqr1pgnVb9WT9S6ocxgfXKIIgyNhUArmh/MRnokwv30gMH5Fih6MdEiBDrFZWm0Xhynr2+NNo1CU34WgpjFv/3HLGeidr3UjEsIw2e6DmAbMKRyl3J3vgEpHvgdl1bTCJ4cCN3d90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hexdev.de; spf=pass smtp.mailfrom=hexdev.de; dkim=pass (1024-bit key) header.d=fritzc.com header.i=@fritzc.com header.b=QtDdTuSi; arc=none smtp.client-ip=213.160.72.247
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hexdev.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hexdev.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TiHBGSr+"
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2a2e5d86254so3427966a91.1
-        for <linux-can@vger.kernel.org>; Sun, 21 Apr 2024 22:50:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713765040; x=1714369840; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cWzfBS1MVum6cLnpBzkrrBYMfkXKfvOtZEdhxryLkOQ=;
-        b=TiHBGSr+OHJGf0VG2Hho7GFml3e3uGBajbgqArldeX3hhVWtnnMEjHjSQI+7OduvsG
-         lTKD0nI8W0Wa1ZDjC4zyR+wFpEdADjpqI0ZvzW359DhrXsrcZT2HvofjXf7O1LWapO4n
-         56GoLOew2dDB7QbkDrps95TtqyMB1zubtqqNyPKv9IdEByOXX+HzJ0FLuWavLHPcg+FA
-         gmweP5B+KemBPfU7NkBvOXWr4hh28dTMAHouW/WUse2DIqenMRvewCfu4YlE1JBNbT+x
-         H9uzg43KWqu/jSJW+DBEL0iggr/5R4oNxYdT/sMPbCGX6kH3sUAz3yHzt2x/qxLEzsJG
-         a5Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713765040; x=1714369840;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cWzfBS1MVum6cLnpBzkrrBYMfkXKfvOtZEdhxryLkOQ=;
-        b=YTHZYWMgUr6aEwvvgfElyXGeZvyOa4g3/NIV0FXjruM9cBTuY0e7zFds8ngo6Mq0nF
-         3ujFTInNlwKKat/i5NCikqgGbnYiJITY274TxmCybPxpON/lLRcK/VyVNv+FWyTjRac3
-         ueJbSdowMA6LDJmI+eN10uMTqQ3njLSZjLuPW8rGySmDX006qonBEfOrzYh7PL1Z30aT
-         fAEQLPhoFzUx7rAx/i3xEkg8MPiFQfEc1tVDfU1EtssNpuD6QDmkX5Me1dnMX5DS0jQc
-         tB+HPdTj6E1yD+e+lCaoy4QcclFoWUuZSuKR9MI1kbUwn4q2ZdR3oMndg3Vhibjl4ToF
-         xSnA==
-X-Gm-Message-State: AOJu0Yyb4bUgNaw3RRbHcC2rg/inWMpU/UY3qL3lvBPkd8SMFSoYCWaY
-	TJV2EdGVRi5REzWf/iywwbyLFFQKXS3bEaC6+thk/SyyxrHCxCbG0DlVVaJgsn0NLnvuv/vYKyO
-	QilKfA6MjMVd1g/QWIRK+vnEkktWzxFO7
-X-Google-Smtp-Source: AGHT+IFz5lUcJSfTMUN+qOzcyw84/u9vMDTFvT8VohteiaGWuwYGax0DgKCNfltHAohuwI6SUGbCb4gWYCYYG5ulUCQ=
-X-Received: by 2002:a17:90a:cf04:b0:2a7:329c:7976 with SMTP id
- h4-20020a17090acf0400b002a7329c7976mr12123047pju.8.1713765039809; Sun, 21 Apr
- 2024 22:50:39 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=fritzc.com header.i=@fritzc.com header.b="QtDdTuSi"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fritzc.com;
+	s=dkim; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=4mGMEjjPGqNagIRfWqi116NhC2pHD+0tS99iQ53aUj4=; b=QtDdTuSiOyCuCyG3JNegCO8gE+
+	MZDn/L5mOZTMdp9DG8ws+4pkck15m5Guy0MQMx9snhnUhjyJJ4HubuzHrsd4AdYfjT9ySHNiywK60
+	YJNeErV7+ivAndLn7vWAXy0b/wmx/gR/9Ue3/OnKjQmywO/+u4jPvgG+KynSY3wBKN9Y=;
+Received: from 127.0.0.1
+	by fritzc.com with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim latest)
+	(envelope-from <christoph.fritz@hexdev.de>)
+	id 1rynWo-001JRH-0s;
+	Mon, 22 Apr 2024 08:51:50 +0200
+From: Christoph Fritz <christoph.fritz@hexdev.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jiri Kosina <jikos@kernel.org>,
+	Benjamin Tissoires <bentiss@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>
+Cc: Andreas Lauser <andreas.lauser@mercedes-benz.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	linux-can@vger.kernel.org,
+	netdev@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Subject: [PATCH 08/11] can: bcm: Add LIN answer offloading for responder mode
+Date: Mon, 22 Apr 2024 08:51:11 +0200
+Message-Id: <20240422065114.3185505-9-christoph.fritz@hexdev.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240422065114.3185505-1-christoph.fritz@hexdev.de>
+References: <20240422065114.3185505-1-christoph.fritz@hexdev.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240420194746.4885-1-socketcan@hartkopp.net>
-In-Reply-To: <20240420194746.4885-1-socketcan@hartkopp.net>
-From: Vincent Mailhol <vincent.mailhol@gmail.com>
-Date: Mon, 22 Apr 2024 14:50:28 +0900
-Message-ID: <CAMZ6Rq+3LJKcU5+nQmZ95AyLMqQe=y4_tCsBbuZ_j2cSuz9+3A@mail.gmail.com>
-Subject: Re: [PATCH] can: isotp: remove ISO 15675-2 specification version
- where possible
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Sun. 21 Apr. 2024 at 04:48, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
-> With the new ISO 15765-2:2024 release the former documentation and comments
-> have to be reworked. This patch removes the ISO specification version/date
-> where possible.
+Enhance CAN broadcast manager with RX_LIN_SETUP and RX_LIN_DELETE
+operations to setup automatic LIN frame responses in responder mode.
 
-The patch also renames "classical CAN" into "CAN CC", which is fine
-but maybe add one sentence in the patch description for that.
+Additionally, the patch introduces the LIN_EVENT_FRAME flag to
+setup event-triggered LIN frames.
 
-Aside from that nitpick, one comment (see below). Meanwhile, I am
-giving my acknowledgement in advance:
+Signed-off-by: Christoph Fritz <christoph.fritz@hexdev.de>
+---
+ include/uapi/linux/can/bcm.h |  5 ++-
+ net/can/bcm.c                | 74 +++++++++++++++++++++++++++++++++++-
+ 2 files changed, 77 insertions(+), 2 deletions(-)
 
-Acked-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+diff --git a/include/uapi/linux/can/bcm.h b/include/uapi/linux/can/bcm.h
+index f1e45f533a72c..c46268a114078 100644
+--- a/include/uapi/linux/can/bcm.h
++++ b/include/uapi/linux/can/bcm.h
+@@ -86,7 +86,9 @@ enum {
+ 	TX_EXPIRED,	/* notification on performed transmissions (count=0) */
+ 	RX_STATUS,	/* reply to RX_READ request */
+ 	RX_TIMEOUT,	/* cyclic message is absent */
+-	RX_CHANGED	/* updated CAN frame (detected content change) */
++	RX_CHANGED,	/* updated CAN frame (detected content change) */
++	RX_LIN_SETUP,	/* create auto-response for LIN frame */
++	RX_LIN_DELETE,  /* remove auto-response for LIN frame */
+ };
+ 
+ #define SETTIMER            0x0001
+@@ -101,5 +103,6 @@ enum {
+ #define TX_RESET_MULTI_IDX  0x0200
+ #define RX_RTR_FRAME        0x0400
+ #define CAN_FD_FRAME        0x0800
++#define LIN_EVENT_FRAME     0x1000
+ 
+ #endif /* !_UAPI_CAN_BCM_H */
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index 27d5fcf0eac9d..a717e594234d1 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -59,6 +59,7 @@
+ #include <linux/can/bcm.h>
+ #include <linux/slab.h>
+ #include <net/sock.h>
++#include <net/lin.h>
+ #include <net/net_namespace.h>
+ 
+ /*
+@@ -1330,6 +1331,59 @@ static int bcm_tx_send(struct msghdr *msg, int ifindex, struct sock *sk,
+ 	return cfsiz + MHSIZ;
+ }
+ 
++static int bcm_lin_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
++			 int ifindex, struct sock *sk, int cfsiz, int is_active)
++{
++	struct lin_responder_answer answ;
++	struct net_device *dev;
++	struct sk_buff *skb;
++	struct canfd_frame cf;
++	netdevice_tracker tracker;
++	size_t sz;
++	int ret;
++
++	if (msg_head->nframes > 1)
++		return -EINVAL;
++
++	if (!(msg_head->flags & CAN_FD_FRAME))
++		return -EINVAL;
++
++	ret = memcpy_from_msg(&cf, msg, cfsiz);
++	if (ret < 0)
++		return ret;
++
++	answ.lf.lin_id = cf.can_id & LIN_ID_MASK;
++	answ.is_active = is_active;
++	answ.is_event_frame = !!(msg_head->flags & LIN_EVENT_FRAME);
++	answ.event_associated_id = msg_head->can_id;
++	answ.lf.len = min(cf.len, LIN_MAX_DLEN);
++	memcpy(answ.lf.data, cf.data, answ.lf.len);
++	sz = min(sizeof(struct lin_responder_answer), sizeof(cf.data));
++	cf.can_id |= LIN_RXOFFLOAD_DATA_FLAG;
++	memcpy(cf.data, &answ, sz);
++
++	dev = netdev_get_by_index(sock_net(sk), ifindex, &tracker, GFP_KERNEL);
++	if (!dev)
++		return -ENODEV;
++
++	skb = alloc_skb(cfsiz + sizeof(struct can_skb_priv), gfp_any());
++	if (!skb)
++		goto lin_out;
++
++	can_skb_reserve(skb);
++	can_skb_prv(skb)->ifindex = dev->ifindex;
++	can_skb_prv(skb)->skbcnt = 0;
++	skb_put_data(skb, &cf, cfsiz);
++
++	skb->dev = dev;
++	can_skb_set_owner(skb, sk);
++	ret = can_send(skb, 1); /* send with loopback */
++
++lin_out:
++	netdev_put(dev, &tracker);
++	return ret;
++}
++
+ /*
+  * bcm_sendmsg - process BCM commands (opcodes) from the userspace
+  */
+@@ -1429,12 +1483,30 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 
+ 	case TX_SEND:
+ 		/* we need exactly one CAN frame behind the msg head */
+-		if ((msg_head.nframes != 1) || (size != cfsiz + MHSIZ))
++		if (msg_head.nframes != 1 || size != cfsiz + MHSIZ)
+ 			ret = -EINVAL;
+ 		else
+ 			ret = bcm_tx_send(msg, ifindex, sk, cfsiz);
+ 		break;
+ 
++	case RX_LIN_SETUP:
++		/* we need exactly one CAN frame behind the msg head */
++		if (msg_head.nframes != 1 || size != cfsiz + MHSIZ)
++			ret = -EINVAL;
++		else
++			ret = bcm_lin_setup(&msg_head, msg, ifindex, sk, cfsiz,
++					    1);
++		break;
++
++	case RX_LIN_DELETE:
++		/* we need exactly one CAN frame behind the msg head */
++		if (msg_head.nframes != 1 || size != cfsiz + MHSIZ)
++			ret = -EINVAL;
++		else
++			ret = bcm_lin_setup(&msg_head, msg, ifindex, sk, cfsiz,
++					    0);
++		break;
++
+ 	default:
+ 		ret = -EINVAL;
+ 		break;
+-- 
+2.39.2
 
-Thank you.
-
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> ---
->  include/uapi/linux/can/isotp.h |  2 +-
->  net/can/Kconfig                | 11 +++++------
->  net/can/isotp.c                | 11 ++++++-----
->  3 files changed, 12 insertions(+), 12 deletions(-)
->
-> diff --git a/include/uapi/linux/can/isotp.h b/include/uapi/linux/can/isotp.h
-> index 6cde62371b6f..bd990917f7c4 100644
-> --- a/include/uapi/linux/can/isotp.h
-> +++ b/include/uapi/linux/can/isotp.h
-> @@ -1,10 +1,10 @@
->  /* SPDX-License-Identifier: ((GPL-2.0-only WITH Linux-syscall-note) OR BSD-3-Clause) */
->  /*
->   * linux/can/isotp.h
->   *
-> - * Definitions for isotp CAN sockets (ISO 15765-2:2016)
-> + * Definitions for ISO 15765-2 CAN transport protocol sockets
->   *
->   * Copyright (c) 2020 Volkswagen Group Electronic Research
->   * All rights reserved.
->   *
->   * Redistribution and use in source and binary forms, with or without
-> diff --git a/net/can/Kconfig b/net/can/Kconfig
-> index cb56be8e3862..af64a6f76458 100644
-> --- a/net/can/Kconfig
-> +++ b/net/can/Kconfig
-> @@ -54,20 +54,19 @@ config CAN_GW
->           by the netlink configuration interface known e.g. from iptables.
->
->  source "net/can/j1939/Kconfig"
->
->  config CAN_ISOTP
-> -       tristate "ISO 15765-2:2016 CAN transport protocol"
-> +       tristate "ISO 15765-2 CAN transport protocol"
->         help
->           CAN Transport Protocols offer support for segmented Point-to-Point
->           communication between CAN nodes via two defined CAN Identifiers.
-> +         This protocol driver implements segmented data transfers for CAN CC
-> +         (aka Classical CAN, CAN 2.0B) and CAN FD frame types which were
-> +         introduced with ISO 15765-2:2016.
->           As CAN frames can only transport a small amount of data bytes
-> -         (max. 8 bytes for 'classic' CAN and max. 64 bytes for CAN FD) this
-> +         (max. 8 bytes for CAN CC and max. 64 bytes for CAN FD) this
->           segmentation is needed to transport longer Protocol Data Units (PDU)
->           as needed e.g. for vehicle diagnosis (UDS, ISO 14229) or IP-over-CAN
->           traffic.
-> -         This protocol driver implements data transfers according to
-> -         ISO 15765-2:2016 for 'classic' CAN and CAN FD frame types.
-> -         If you want to perform automotive vehicle diagnostic services (UDS),
-> -         say 'y'.
-
-Not sure why that last sentence was removed. This is out of scope from
-this patch and I think this can be helpful for the audience not aware
-that UDS relies on ISO-TP. I suggest keeping that one.
-
->
->  endif
-> diff --git a/net/can/isotp.c b/net/can/isotp.c
-> index 25bac0fafc83..16046931542a 100644
-> --- a/net/can/isotp.c
-> +++ b/net/can/isotp.c
-> @@ -70,25 +70,26 @@
->  #include <linux/can/isotp.h>
->  #include <linux/slab.h>
->  #include <net/sock.h>
->  #include <net/net_namespace.h>
->
-> -MODULE_DESCRIPTION("PF_CAN isotp 15765-2:2016 protocol");
-> +MODULE_DESCRIPTION("PF_CAN ISO 15765-2 transport protocol");
->  MODULE_LICENSE("Dual BSD/GPL");
->  MODULE_AUTHOR("Oliver Hartkopp <socketcan@hartkopp.net>");
->  MODULE_ALIAS("can-proto-6");
->
->  #define ISOTP_MIN_NAMELEN CAN_REQUIRED_SIZE(struct sockaddr_can, can_addr.tp)
->
->  #define SINGLE_MASK(id) (((id) & CAN_EFF_FLAG) ? \
->                          (CAN_EFF_MASK | CAN_EFF_FLAG | CAN_RTR_FLAG) : \
->                          (CAN_SFF_MASK | CAN_EFF_FLAG | CAN_RTR_FLAG))
->
-> -/* ISO 15765-2:2016 supports more than 4095 byte per ISO PDU as the FF_DL can
-> - * take full 32 bit values (4 Gbyte). We would need some good concept to handle
-> - * this between user space and kernel space. For now set the static buffer to
-> - * something about 8 kbyte to be able to test this new functionality.
-> +/* Since ISO 15765-2:2016 the CAN isotp protocol supports more than 4095
-> + * byte per ISO PDU as the FF_DL can take full 32 bit values (4 Gbyte).
-> + * We would need some good concept to handle this between user space and
-> + * kernel space. For now set the static buffer to something about 8 kbyte
-> + * to be able to test this new functionality.
->   */
->  #define DEFAULT_MAX_PDU_SIZE 8300
->
->  /* maximum PDU size before ISO 15765-2:2016 extension was 4095 */
->  #define MAX_12BIT_PDU_SIZE 4095
-> --
-> 2.39.2
->
->
