@@ -1,28 +1,28 @@
 Received: from qmail.kvaser.se (static-195-22-86-94.cust.tele2.se [195.22.86.94])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32D4115A861
-	for <linux-can@vger.kernel.org>; Fri, 14 Jun 2024 15:15:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C45526AE6
+	for <linux-can@vger.kernel.org>; Fri, 14 Jun 2024 15:15:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.22.86.94
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718378155; cv=none; b=uxGa7sIN1N/eTbHa0XuQNvuT7topnR95FwuYGN09ZXowduEr1pX5dEHcAuPKtJXa60nQ+MzT82DywHZW0A2N2PCAcfJmzWf8jdFZtnkSI6UsxDSscjN1EujQzEqes0U3JfyW/BkQk9LVBBpR9VA/ffzT+H7C4X6gip1CE6AFmkA=
+	t=1718378156; cv=none; b=GzAx+VwO1i6A1FgesK50fn2H/UdMNHBjZ3oMVKjwyneqxUcNlS/dx3tbHcD8sBD0YS2MA1HF2jpRqX+yOQnUFXTafIB1zMBVBCNGcmeWit+Kj4hnsYr+/aUhmHmxehkilrk/h1JugO7lfIs4mGugso9SrLmPwJrn4tOzjMVk92Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718378155; c=relaxed/simple;
-	bh=v/GC5OLSvkxMYg8D0PX/oSwyh//1M8cz1HlL/WOpQsw=;
+	s=arc-20240116; t=1718378156; c=relaxed/simple;
+	bh=rjIPwUQBIjQd9JfKNNC2hSuT60SAooBRdFpnJCipNJU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Dmp0YcyyX65kFFiH9Slqt7fdBEk9lQVryA/kLOkdtJ8OfWgxwKWAI8e5k+EGcUECe/NvF2LGpt0RFDdnFHp2SvCtL/VIynxSdfzicsXpiJ4hwDJ2fc04dUqrwZYsY79mcP9KE6aJMX83V+5d8k72LUfMF7Ki1pOBNkV5q+vpSFY=
+	 MIME-Version; b=TrQvZIOORIB+vaBciiLmkq3fnxHPqXwQRDwwp3sLDJPyxVFsieTYFU9LPgKUOeFhjTpzLICsgboBLsTAoPWpDE+NQI/AiApywwsHqClnfqm4rdwMg2sgUopgoy76dsViurrRga7peQU2Lvi9k6fCBmx3tg2+oTChLHDd1mlCB3E=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com; spf=pass smtp.mailfrom=kvaser.com; arc=none smtp.client-ip=195.22.86.94
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kvaser.com
 Received: from localhost (balder.kvaser.se [10.0.6.1])
-	by qmail.kvaser.se (Postfix) with ESMTP id EF87AE03A9;
+	by qmail.kvaser.se (Postfix) with ESMTP id EC706E014B;
 	Fri, 14 Jun 2024 17:15:41 +0200 (CEST)
 From: Martin Jocic <martin.jocic@kvaser.com>
 To: linux-can@vger.kernel.org,
 	mkl@pengutronix.de,
 	mailhol.vincent@wanadoo.fr
 Cc: extja@kvaser.com
-Subject: [PATCH 6/7] can: kvaser_pciefd: Rename board_irq to pci_irq
-Date: Fri, 14 Jun 2024 17:15:23 +0200
-Message-Id: <20240614151524.2718287-7-martin.jocic@kvaser.com>
+Subject: [PATCH 5/7] can: kvaser_pciefd: Add unlikely
+Date: Fri, 14 Jun 2024 17:15:22 +0200
+Message-Id: <20240614151524.2718287-6-martin.jocic@kvaser.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240614151524.2718287-1-martin.jocic@kvaser.com>
 References: <20240614151524.2718287-1-martin.jocic@kvaser.com>
@@ -34,40 +34,41 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Rename the variable name board_irq in the ISR to pci_irq to
-be more specific and to match the macro by which it is read.
+Use unlikely for some unexpected errors.
 
 Signed-off-by: Martin Jocic <martin.jocic@kvaser.com>
 ---
- drivers/net/can/kvaser_pciefd.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/can/kvaser_pciefd.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
-index b08084b0a95b..8b2c18f2f23b 100644
+index 3d40d7b3d64c..b08084b0a95b 100644
 --- a/drivers/net/can/kvaser_pciefd.c
 +++ b/drivers/net/can/kvaser_pciefd.c
-@@ -1691,17 +1691,17 @@ static irqreturn_t kvaser_pciefd_irq_handler(int irq, void *dev)
- {
- 	struct kvaser_pciefd *pcie = (struct kvaser_pciefd *)dev;
- 	const struct kvaser_pciefd_irq_mask *irq_mask = pcie->driver_data->irq_mask;
--	u32 board_irq = ioread32(KVASER_PCIEFD_PCI_IRQ_ADDR(pcie));
-+	u32 pci_irq = ioread32(KVASER_PCIEFD_PCI_IRQ_ADDR(pcie));
- 	int i;
+@@ -1619,7 +1619,7 @@ static int kvaser_pciefd_read_packet(struct kvaser_pciefd *pcie, int *start_pos,
+ 	/* Position does not point to the end of the package,
+ 	 * corrupted packet size?
+ 	 */
+-	if ((*start_pos + size) != pos)
++	if (unlikely((*start_pos + size) != pos))
+ 		return -EIO;
  
--	if (!(board_irq & irq_mask->all))
-+	if (!(pci_irq & irq_mask->all))
- 		return IRQ_NONE;
- 
--	if (board_irq & irq_mask->kcan_rx0)
-+	if (pci_irq & irq_mask->kcan_rx0)
- 		kvaser_pciefd_receive_irq(pcie);
- 
- 	for (i = 0; i < pcie->nr_channels; i++) {
--		if (board_irq & irq_mask->kcan_tx[i])
-+		if (pci_irq & irq_mask->kcan_tx[i])
- 			kvaser_pciefd_transmit_irq(pcie->can[i]);
+ 	/* Point to the next packet header, if any */
+@@ -1658,10 +1658,10 @@ static void kvaser_pciefd_receive_irq(struct kvaser_pciefd *pcie)
+ 			  KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_CMD_REG);
  	}
  
+-	if (irq & KVASER_PCIEFD_SRB_IRQ_DOF0 ||
+-	    irq & KVASER_PCIEFD_SRB_IRQ_DOF1 ||
+-	    irq & KVASER_PCIEFD_SRB_IRQ_DUF0 ||
+-	    irq & KVASER_PCIEFD_SRB_IRQ_DUF1)
++	if (unlikely(irq & KVASER_PCIEFD_SRB_IRQ_DOF0 ||
++		     irq & KVASER_PCIEFD_SRB_IRQ_DOF1 ||
++		     irq & KVASER_PCIEFD_SRB_IRQ_DUF0 ||
++		     irq & KVASER_PCIEFD_SRB_IRQ_DUF1))
+ 		dev_err(&pcie->pci->dev, "DMA IRQ error 0x%08X\n", irq);
+ 
+ 	iowrite32(irq, KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_IRQ_REG);
 -- 
 2.40.1
 
