@@ -1,122 +1,95 @@
-Received: from qmail.kvaser.se (static-195-22-86-94.cust.tele2.se [195.22.86.94])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C16E12628B
-	for <linux-can@vger.kernel.org>; Fri, 14 Jun 2024 15:20:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.22.86.94
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BC8D26AD7;
+	Fri, 14 Jun 2024 19:33:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718378413; cv=none; b=OhKLdmlkJfQVYSlRrHCz9+ajjwig6RoPi4EdZZoFEn3iEa7GTttroPZKNxppjcuDd9Qbdsz7mmSSMDBp0vUO3kBBCgvCUd8gEhFAxD8kjjRdGPyV8a3nVzaxGUjcXcU8nFTCDaRIRA6DtU9BYTXqFEDX2di0sIkItLH/5YXQWbA=
+	t=1718393638; cv=none; b=dl+pCGeNQ2hQSLtgfDQar0YVr9tBn9Xoz2YTqbNxPUcjA5EyTrRwu28myy0oAxeTQPeEPS22PYLNrJfmvyLvdkP9gO7iYohkokIA9Pc4bp+o5prIwXozRfeY3lEfzN2eIHPNb4JzWvQH3afgsMAzTOG61BJ7TsQuZkdpAhpevJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718378413; c=relaxed/simple;
-	bh=NhXIrkOTMwwX8cexcUoNoTv0xE8ufFjZ8lrYhdcFxwE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CMAGStrXEPCZEqHWiO9ODMHgtE+qtx3XcqpkhH3s+glLsedo4itD7GQbcxVMW93wa/vrHhlu9y78FvnAfJSWg4thlQNQnJEbmSR5Dd8/8C44MsFAHpgSPs+cErz9Ulkwx/arWFKJvhb8WPxVua5G1M6oqqLdTkevM7T5I5pFhNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com; spf=pass smtp.mailfrom=kvaser.com; arc=none smtp.client-ip=195.22.86.94
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kvaser.com
-Received: from localhost (balder.kvaser.se [10.0.6.1])
-	by qmail.kvaser.se (Postfix) with ESMTP id D6DEEE0433;
-	Fri, 14 Jun 2024 17:20:10 +0200 (CEST)
-From: Martin Jocic <martin.jocic@kvaser.com>
-To: linux-can@vger.kernel.org,
-	mkl@pengutronix.de,
-	mailhol.vincent@wanadoo.fr
-Cc: extja@kvaser.com
-Subject: [PATCH 1/2] can: kvaser_pciefd: Move reset of DMA RX buffers to the end of the ISR
-Date: Fri, 14 Jun 2024 17:20:07 +0200
-Message-Id: <20240614152008.2730746-2-martin.jocic@kvaser.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240614152008.2730746-1-martin.jocic@kvaser.com>
-References: <20240614152008.2730746-1-martin.jocic@kvaser.com>
+	s=arc-20240116; t=1718393638; c=relaxed/simple;
+	bh=un2DKs68DVerlXBeKlpV6w20TzStZ/MgihGnCdsi2EU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A5O4zg/6E5qHVKs3c8INeozn/yCj0lrM3OGaEMV7P0Y+0O6D3bR5gNgd0fArTmglhgLXkhnUt9aaXO5/h15zYzD7wXiR0UN589jbazD6q4dym9gA+Vto8AlS7sSREOCzwnnHCyWpZbIV1PVG7l0ghBlmbsBxDjKYnTtbJPzKCQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=Piy7/8cY; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Piy7/8cY"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF8CBC2BD10;
+	Fri, 14 Jun 2024 19:33:55 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Piy7/8cY"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1718393634;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DXA9wvv5IhNhdgqqoog09hrS0W28PIbc3nCXFgq2mxA=;
+	b=Piy7/8cYE5kX8QxCb1ovvf7Oew+mzdXJL4F6If9Frkz4X0RUzqFF12WjwrhUhRlUy+iIKO
+	DoV+j//Avs/4vzAsOjkSD1yxY/bbFo9eXQkn/oEw9txGMiy9XDfptZ5hiqtMHXpzOrUrXv
+	cPfOpW6hB2UusbVHO75CZUsDVUtb8kw=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 6d22401f (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Fri, 14 Jun 2024 19:33:52 +0000 (UTC)
+Date: Fri, 14 Jun 2024 21:33:45 +0200
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	Vlastimil Babka <vbabka@suse.cz>, Jakub Kicinski <kuba@kernel.org>,
+	Julia Lawall <Julia.Lawall@inria.fr>, linux-block@vger.kernel.org,
+	kernel-janitors@vger.kernel.org, bridge@lists.linux.dev,
+	linux-trace-kernel@vger.kernel.org,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	kvm@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Nicholas Piggin <npiggin@gmail.com>, netdev@vger.kernel.org,
+	wireguard@lists.zx2c4.com, linux-kernel@vger.kernel.org,
+	ecryptfs@vger.kernel.org, Neil Brown <neilb@suse.de>,
+	Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>,
+	Tom Talpey <tom@talpey.com>, linux-nfs@vger.kernel.org,
+	linux-can@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
+	netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+Subject: Re: [PATCH 00/14] replace call_rcu by kfree_rcu for simple
+ kmem_cache_free callback
+Message-ID: <ZmybGZDbXkw7JTjc@zx2c4.com>
+References: <baee4d58-17b4-4918-8e45-4d8068a23e8c@paulmck-laptop>
+ <ZmrfA1p2zSVIaYam@zx2c4.com>
+ <80e03b02-7e24-4342-af0b-ba5117b19828@paulmck-laptop>
+ <Zmru7hhz8kPDPsyz@pc636>
+ <7efde25f-6af5-4a67-abea-b26732a8aca1@paulmck-laptop>
+ <Zmsuswo8OPIhY5KJ@pc636>
+ <cb51bc57-47b8-456a-9ac0-f8aa0931b144@paulmck-laptop>
+ <ZmszOd5idhf2Cb-v@pc636>
+ <b03b007f-3afa-4ad4-b76b-dea7b3aa2bc3@paulmck-laptop>
+ <Zmw5FTX752g0vtlD@pc638.lan>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <Zmw5FTX752g0vtlD@pc638.lan>
 
-A new interrupt is triggered by resetting the DMA RX buffers.
-Since MSI interrupts are faster than legacy interrupts, the reset
-of the DMA buffers must be moved to the very end of the ISR,
-otherwise a new MSI interrupt will be masked by the current one.
+On Fri, Jun 14, 2024 at 02:35:33PM +0200, Uladzislau Rezki wrote:
+> +	/* Should a destroy process be deferred? */
+> +	if (s->flags & SLAB_DEFER_DESTROY) {
+> +		list_move_tail(&s->list, &slab_caches_defer_destroy);
+> +		schedule_delayed_work(&slab_caches_defer_destroy_work, HZ);
+> +		goto out_unlock;
+> +	}
 
-Signed-off-by: Martin Jocic <martin.jocic@kvaser.com>
----
- drivers/net/can/kvaser_pciefd.c | 30 ++++++++++++++++++------------
- 1 file changed, 18 insertions(+), 12 deletions(-)
+Wouldn't it be smoother to have the actual kmem_cache_free() function
+check to see if it's been marked for destruction and the refcount is
+zero, rather than polling every one second? I mentioned this approach
+in: https://lore.kernel.org/all/Zmo9-YGraiCj5-MI@zx2c4.com/ -
 
-diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
-index 24871c276b31..63b4d2a4c7ce 100644
---- a/drivers/net/can/kvaser_pciefd.c
-+++ b/drivers/net/can/kvaser_pciefd.c
-@@ -1640,23 +1640,15 @@ static int kvaser_pciefd_read_buffer(struct kvaser_pciefd *pcie, int dma_buf)
- 	return res;
- }
- 
--static void kvaser_pciefd_receive_irq(struct kvaser_pciefd *pcie)
-+static u32 kvaser_pciefd_receive_irq(struct kvaser_pciefd *pcie)
- {
- 	u32 irq = ioread32(KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_IRQ_REG);
- 
--	if (irq & KVASER_PCIEFD_SRB_IRQ_DPD0) {
-+	if (irq & KVASER_PCIEFD_SRB_IRQ_DPD0)
- 		kvaser_pciefd_read_buffer(pcie, 0);
--		/* Reset DMA buffer 0 */
--		iowrite32(KVASER_PCIEFD_SRB_CMD_RDB0,
--			  KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_CMD_REG);
--	}
- 
--	if (irq & KVASER_PCIEFD_SRB_IRQ_DPD1) {
-+	if (irq & KVASER_PCIEFD_SRB_IRQ_DPD1)
- 		kvaser_pciefd_read_buffer(pcie, 1);
--		/* Reset DMA buffer 1 */
--		iowrite32(KVASER_PCIEFD_SRB_CMD_RDB1,
--			  KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_CMD_REG);
--	}
- 
- 	if (unlikely(irq & KVASER_PCIEFD_SRB_IRQ_DOF0 ||
- 		     irq & KVASER_PCIEFD_SRB_IRQ_DOF1 ||
-@@ -1665,6 +1657,7 @@ static void kvaser_pciefd_receive_irq(struct kvaser_pciefd *pcie)
- 		dev_err(&pcie->pci->dev, "DMA IRQ error 0x%08X\n", irq);
- 
- 	iowrite32(irq, KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_IRQ_REG);
-+	return irq;
- }
- 
- static void kvaser_pciefd_transmit_irq(struct kvaser_pciefd_can *can)
-@@ -1692,19 +1685,32 @@ static irqreturn_t kvaser_pciefd_irq_handler(int irq, void *dev)
- 	struct kvaser_pciefd *pcie = (struct kvaser_pciefd *)dev;
- 	const struct kvaser_pciefd_irq_mask *irq_mask = pcie->driver_data->irq_mask;
- 	u32 pci_irq = ioread32(KVASER_PCIEFD_PCI_IRQ_ADDR(pcie));
-+	u32 srb_irq = 0;
- 	int i;
- 
- 	if (!(pci_irq & irq_mask->all))
- 		return IRQ_NONE;
- 
- 	if (pci_irq & irq_mask->kcan_rx0)
--		kvaser_pciefd_receive_irq(pcie);
-+		srb_irq = kvaser_pciefd_receive_irq(pcie);
- 
- 	for (i = 0; i < pcie->nr_channels; i++) {
- 		if (pci_irq & irq_mask->kcan_tx[i])
- 			kvaser_pciefd_transmit_irq(pcie->can[i]);
- 	}
- 
-+	if (srb_irq & KVASER_PCIEFD_SRB_IRQ_DPD0) {
-+		/* Reset DMA buffer 0, may trigger new interrupt */
-+		iowrite32(KVASER_PCIEFD_SRB_CMD_RDB0,
-+			  KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_CMD_REG);
-+	}
-+
-+	if (srb_irq & KVASER_PCIEFD_SRB_IRQ_DPD1) {
-+		/* Reset DMA buffer 1, may trigger new interrupt */
-+		iowrite32(KVASER_PCIEFD_SRB_CMD_RDB1,
-+			  KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_CMD_REG);
-+	}
-+
- 	return IRQ_HANDLED;
- }
- 
--- 
-2.40.1
+    I wonder if the right fix to this would be adding a `should_destroy`
+    boolean to kmem_cache, which kmem_cache_destroy() sets to true. And
+    then right after it checks `if (number_of_allocations == 0)
+    actually_destroy()`, and likewise on each kmem_cache_free(), it
+    could check `if (should_destroy && number_of_allocations == 0)
+    actually_destroy()`. 
 
+Jason
