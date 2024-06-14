@@ -1,28 +1,28 @@
 Received: from qmail.kvaser.se (static-195-22-86-94.cust.tele2.se [195.22.86.94])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A5C815F406
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D2B7154457
 	for <linux-can@vger.kernel.org>; Fri, 14 Jun 2024 15:15:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.22.86.94
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718378153; cv=none; b=d8KHxK2GdGnThQjWdTkQnVWXhAopBdFaJWtYI7v/wOD7fuih1IQAQpsSWPFtEcrG98v75Xwos3fzWGxLxyW6sV2P0WsHA0A2VYvlK8/B82XaVg8/kJPPYvesHQiZA0h5nhPLBSnJ2DjkcM1FWb+xrDuK23jTgxWe+Lk3xW8QVIE=
+	t=1718378153; cv=none; b=CDSc91iYeJjWBgS2F+IIMVtLfb4hfYXkyTU/+X/QpAaeXVwLPYp0XndXklQq88reO49UqmI97kSbeUXK5FmU4upJocMf7QXlpi60Xb9AucavlkrD47LKMej4DW+uFB92gg6UqKwTu8ldML6lsQCO22Ag1Fqq1plyBHxAoJFbea4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1718378153; c=relaxed/simple;
-	bh=3F2jXqKnrFVR2ZrHHI0lKVhSJgJrM9XqGW8wke1i+vM=;
+	bh=i6ES7opbPHx7cC5iGeXfCxzF7yttoZJVr1Hv50u6WRM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QOu5B+P4YqBLIcDiThEfyXie1e2gtg/N7Ki4rxihxi+jP8iKHmi8JbLPTk/JhnuJg9x60/ATIs6Zo+tAFof1S53tQ9rrcl0l2JFLoCtpGPvx4xJEQrHa7N75q34v9NTjtJLTfw8KQBD2sO15nN043qSty9mfxTwhVDsrSKvmPPU=
+	 MIME-Version; b=iahkgaisdlJpWzjpRqTXMiUJgFSRuReTHaOx32fH1zSkvLuDKzaiGrA0MkwUhJgSp5rIz7iX7s6wyNFtLosJkRwBUnA0uuC2uUrf1D77P9xdhZyeNZwUd/D0hWjbnckQSDYgXErHeHFm7ZCSvihqdY6P4ShBvGjyIdeWtvde9Ck=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com; spf=pass smtp.mailfrom=kvaser.com; arc=none smtp.client-ip=195.22.86.94
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kvaser.com
 Received: from localhost (balder.kvaser.se [10.0.6.1])
-	by qmail.kvaser.se (Postfix) with ESMTP id C80C1E0119;
+	by qmail.kvaser.se (Postfix) with ESMTP id B78C4E0103;
 	Fri, 14 Jun 2024 17:15:41 +0200 (CEST)
 From: Martin Jocic <martin.jocic@kvaser.com>
 To: linux-can@vger.kernel.org,
 	mkl@pengutronix.de,
 	mailhol.vincent@wanadoo.fr
 Cc: extja@kvaser.com
-Subject: [PATCH 2/7] can: kvaser_pciefd: Skip redundant NULL pointer check in ISR
-Date: Fri, 14 Jun 2024 17:15:19 +0200
-Message-Id: <20240614151524.2718287-3-martin.jocic@kvaser.com>
+Subject: [PATCH 1/7] can: kvaser_pciefd: Group #defines together
+Date: Fri, 14 Jun 2024 17:15:18 +0200
+Message-Id: <20240614151524.2718287-2-martin.jocic@kvaser.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240614151524.2718287-1-martin.jocic@kvaser.com>
 References: <20240614151524.2718287-1-martin.jocic@kvaser.com>
@@ -34,35 +34,29 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This check is already done at the creation of the net devices in
-kvaser_pciefd_setup_can_ctrls called from kvaser_pciefd_probe.
-
-If it fails, the driver won't load, so there should be no need to
-repeat the check inside the ISR. The number of channels is read
-from the FPGA and should be trusted.
+Increases readability
 
 Signed-off-by: Martin Jocic <martin.jocic@kvaser.com>
 ---
- drivers/net/can/kvaser_pciefd.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/net/can/kvaser_pciefd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
-index fa205091aafe..4832a93d34de 100644
+index 7b5028b67cd5..fa205091aafe 100644
 --- a/drivers/net/can/kvaser_pciefd.c
 +++ b/drivers/net/can/kvaser_pciefd.c
-@@ -1701,12 +1701,6 @@ static irqreturn_t kvaser_pciefd_irq_handler(int irq, void *dev)
- 		kvaser_pciefd_receive_irq(pcie);
- 
- 	for (i = 0; i < pcie->nr_channels; i++) {
--		if (!pcie->can[i]) {
--			dev_err(&pcie->pci->dev,
--				"IRQ mask points to unallocated controller\n");
--			break;
--		}
+@@ -29,10 +29,10 @@ MODULE_DESCRIPTION("CAN driver for Kvaser CAN/PCIe devices");
+ #define KVASER_PCIEFD_CAN_TX_MAX_COUNT 17U
+ #define KVASER_PCIEFD_MAX_CAN_CHANNELS 8UL
+ #define KVASER_PCIEFD_DMA_COUNT 2U
 -
- 		/* Check that mask matches channel (i) IRQ mask */
- 		if (board_irq & irq_mask->kcan_tx[i])
- 			kvaser_pciefd_transmit_irq(pcie->can[i]);
+ #define KVASER_PCIEFD_DMA_SIZE (4U * 1024U)
+ 
+ #define KVASER_PCIEFD_VENDOR 0x1a07
++
+ /* Altera based devices */
+ #define KVASER_PCIEFD_4HS_DEVICE_ID 0x000d
+ #define KVASER_PCIEFD_2HS_V2_DEVICE_ID 0x000e
 -- 
 2.40.1
 
