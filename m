@@ -1,28 +1,31 @@
 Received: from qmail.kvaser.se (static-195-22-86-94.cust.tele2.se [195.22.86.94])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A65915FCE7
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A61815FA73
 	for <linux-can@vger.kernel.org>; Fri, 14 Jun 2024 15:15:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.22.86.94
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718378152; cv=none; b=R7DGTZvIMeXFbEWQHgu6N0ntwlngvdQFg/dkcLOWl9vCtDh/MGeMhX744q3RF9ZVNwudTxXZLMwHWfegFHx12NkAQtD0V71TY81kB4sZ8MfwqqLSBLwiURa4jeMOLJCevB8TFafGAtGlpO1q0/Zm0ajUvabHjjMoAXsbuZkgPjE=
+	t=1718378152; cv=none; b=ikAKIZc59YteB6Ybm16dvVwMJ674/sYRavSZukrIsA/anE2KKQPpIgoIftfOiRGVCmCMeVA8gXTVykMNt/cD4nywN5/geFRPn1K+MneMlOW2Zwo2ClLVHviUfdRKMZmXohXgyNZbTjsYTgNRWuGTLs+fZTbUmrVlebO2O/n0ntY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1718378152; c=relaxed/simple;
-	bh=a0comCYX5UTVsuppaBqCQ/6FtvXp3om3CP+5NzCrGY0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RxCerWb4mEO0ru/yM2K8JDg922YYwIMeeBqnb8LjYMp0peU3g4neJ/1Og3bCuO9knRRqvK/J4hqLZcDD+eYwvaW5WZrOKp0T/ALWjAy4uUVoIJ1XqkGOGiK4VnMECZWg5OeptKa4hZiT031sWAiF0CqEZYx67SOBFJSme4B/bhU=
+	bh=EKLF8Y/M3xJYR42xzNUraXINKsM1oJq+uG0YUnLaGGA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Lp4cu8onrfPXYNlEe9ehVTcyN0sU22W2/E2GVwPJTWBnpv7kvKOsab8YDXakvkpCIUikdq0/ozRcVUMwcnQJ2MGyT2YxoHnQayIX+Q5MS7PoN7h1N9wkHgFbhX14L5uB/Y7Qy8roBbLhH1r+IfA3n5HB9/aKtWUtLx3ivKIehkU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com; spf=pass smtp.mailfrom=kvaser.com; arc=none smtp.client-ip=195.22.86.94
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kvaser.com
 Received: from localhost (balder.kvaser.se [10.0.6.1])
-	by qmail.kvaser.se (Postfix) with ESMTP id A83A4E00FF;
+	by qmail.kvaser.se (Postfix) with ESMTP id CDF74E0149;
 	Fri, 14 Jun 2024 17:15:41 +0200 (CEST)
 From: Martin Jocic <martin.jocic@kvaser.com>
 To: linux-can@vger.kernel.org,
 	mkl@pengutronix.de,
 	mailhol.vincent@wanadoo.fr
 Cc: extja@kvaser.com
-Subject: [PATCH 0/7] can: kvaser_pciefd: Minor improvements and cleanups
-Date: Fri, 14 Jun 2024 17:15:17 +0200
-Message-Id: <20240614151524.2718287-1-martin.jocic@kvaser.com>
+Subject: [PATCH 3/7] can: kvaser_pciefd: Remove unnecessary comment
+Date: Fri, 14 Jun 2024 17:15:20 +0200
+Message-Id: <20240614151524.2718287-4-martin.jocic@kvaser.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240614151524.2718287-1-martin.jocic@kvaser.com>
+References: <20240614151524.2718287-1-martin.jocic@kvaser.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -31,21 +34,25 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Minor improvements and cleanups for the kvaser_pciefd driver
-in preparation for an upcoming MSI interrupts patch series.
+The code speaks for itself.
 
-Martin Jocic (7):
-  can: kvaser_pciefd: Group #defines together
-  can: kvaser_pciefd: Skip redundant NULL pointer check in ISR
-  can: kvaser_pciefd: Remove unnecessary comment
-  can: kvaser_pciefd: Add inline
-  can: kvaser_pciefd: Add unlikely
-  can: kvaser_pciefd: Rename board_irq to pci_irq
-  can: kvaser_pciefd: Change name of return code variable
+Signed-off-by: Martin Jocic <martin.jocic@kvaser.com>
+---
+ drivers/net/can/kvaser_pciefd.c | 1 -
+ 1 file changed, 1 deletion(-)
 
- drivers/net/can/kvaser_pciefd.c | 85 +++++++++++++++------------------
- 1 file changed, 39 insertions(+), 46 deletions(-)
-
---
+diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
+index 4832a93d34de..8c9abc702b24 100644
+--- a/drivers/net/can/kvaser_pciefd.c
++++ b/drivers/net/can/kvaser_pciefd.c
+@@ -1701,7 +1701,6 @@ static irqreturn_t kvaser_pciefd_irq_handler(int irq, void *dev)
+ 		kvaser_pciefd_receive_irq(pcie);
+ 
+ 	for (i = 0; i < pcie->nr_channels; i++) {
+-		/* Check that mask matches channel (i) IRQ mask */
+ 		if (board_irq & irq_mask->kcan_tx[i])
+ 			kvaser_pciefd_transmit_irq(pcie->can[i]);
+ 	}
+-- 
 2.40.1
 
