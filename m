@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F48317106F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F184C171E47
 	for <linux-can@vger.kernel.org>; Fri, 21 Jun 2024 08:02:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718956939; cv=none; b=L4ges6zfxkia+zDcyCc3O5VbBLg6Ruzsg8B4l9Kam3gCe4uE81JhR2S7wGqT1hZ1C+2oCLjns6IXX9sSG9lP5/95O5oNC8m/F/56rdz7puyphQNqS+h+3+UUlI/LVQUOPFlgExPV0TYwGjt6Opa69RZ7UZXf4i1C2X7UinHAn3I=
+	t=1718956939; cv=none; b=a1U3+VTeU5jpWbVuczYxcmXhf278aexyOsV4gESWPh5a81HauT5U+HXil1W4x+HGViePhdcOBpnsAJAfChRaP7//9S3CAhIXVpOARMIRXpI61QtgfNki0gbZ0gKJb9nG/SdoTnUkFSY09oGeG9Gv7jc2gtcIjFVPLPM8FmCpZP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1718956939; c=relaxed/simple;
-	bh=sLTWxLMRIAdqB71nC3rNemJfUxTcKdLc7k+nyizpYsA=;
+	bh=X1hOZBbei9T1VuKc2ZrGeJR83NX8l+OVKSLL1ZRY65M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=p2lQt85V907Zbn/cj6ZxzedB15UpvAaKPVai/MRMs8smh2dFDU6VYu/tJ56+PtLn+bB9t7sgPWZ4a0pqaW/lUYxWD4TqBt6hulHSnyB6n6xV3Dfaes5lFUPWAhcEiNQ5CXxNiIOanKEUtb/iP9n13/LfSeUePo1QOxEymABa9Ug=
+	 MIME-Version; b=YrIVwkCExcczxC2SerY8nLHNfRcqxtT1vPp9JPzbmB6DYED+nS+lXO6HJezJRiIv5caSUGcx/Jx1lFKAqduuPa9QcPVGlbQLcythyffUwkjGg9kNsdiziYndbfcDDGxw7mSIAO9hZao4C99qbqiwlT0y3/EuvF52Zxypev0SE7c=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,25 +18,25 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sKZDp-00048J-Fo
-	for linux-can@vger.kernel.org; Fri, 21 Jun 2024 10:02:13 +0200
+	id 1sKZDq-00048X-4A
+	for linux-can@vger.kernel.org; Fri, 21 Jun 2024 10:02:14 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sKZDl-003tOE-Kw
+	id 1sKZDl-003tON-Tb
 	for linux-can@vger.kernel.org; Fri, 21 Jun 2024 10:02:09 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 4E7242EE45C
+	by bjornoya.blackshift.org (Postfix) with SMTP id 8FE632EE45F
 	for <linux-can@vger.kernel.org>; Fri, 21 Jun 2024 08:02:09 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 035772EE3B5;
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 34D222EE3BD;
 	Fri, 21 Jun 2024 08:02:04 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 2b7485de;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 121b0391;
 	Fri, 21 Jun 2024 08:02:03 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -46,9 +46,9 @@ Cc: davem@davemloft.net,
 	kernel@pengutronix.de,
 	Martin Jocic <martin.jocic@kvaser.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 18/24] can: kvaser_pciefd: Change name of return code variable
-Date: Fri, 21 Jun 2024 09:48:38 +0200
-Message-ID: <20240621080201.305471-19-mkl@pengutronix.de>
+Subject: [PATCH net-next 20/24] can: kvaser_pciefd: Add MSI interrupts
+Date: Fri, 21 Jun 2024 09:48:40 +0200
+Message-ID: <20240621080201.305471-21-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240621080201.305471-1-mkl@pengutronix.de>
 References: <20240621080201.305471-1-mkl@pengutronix.de>
@@ -66,148 +66,67 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Martin Jocic <martin.jocic@kvaser.com>
 
-Replace the variable name err used for return codes with the more
-generic name ret. An upcoming patch series for adding MSI interrupts
-will introduce code which also returns values other than return codes.
-Renaming the variable to ret enables using it for both purposes.
-This is applied to the whole file to make it consistent.
+Use MSI interrupts with fallback to INTx interrupts.
 
 Signed-off-by: Martin Jocic <martin.jocic@kvaser.com>
-Link: https://lore.kernel.org/all/20240614151524.2718287-8-martin.jocic@kvaser.com
+Link: https://lore.kernel.org/all/20240620181320.235465-3-martin.jocic@kvaser.com
+[mkl: kvaser_pciefd_probe(): call pci_free_irq_vectors() unconditionally]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/kvaser_pciefd.c | 56 ++++++++++++++++-----------------
- 1 file changed, 28 insertions(+), 28 deletions(-)
+ drivers/net/can/kvaser_pciefd.c | 24 ++++++++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
-index 8b2c18f2f23b..24871c276b31 100644
+index b4ffd56fdeff..a60d9efd5f8d 100644
 --- a/drivers/net/can/kvaser_pciefd.c
 +++ b/drivers/net/can/kvaser_pciefd.c
-@@ -711,17 +711,17 @@ static void kvaser_pciefd_pwm_start(struct kvaser_pciefd_can *can)
- 
- static int kvaser_pciefd_open(struct net_device *netdev)
- {
--	int err;
-+	int ret;
- 	struct kvaser_pciefd_can *can = netdev_priv(netdev);
- 
--	err = open_candev(netdev);
--	if (err)
--		return err;
-+	ret = open_candev(netdev);
-+	if (ret)
-+		return ret;
- 
--	err = kvaser_pciefd_bus_on(can);
--	if (err) {
-+	ret = kvaser_pciefd_bus_on(can);
-+	if (ret) {
- 		close_candev(netdev);
--		return err;
-+		return ret;
- 	}
- 
- 	return 0;
-@@ -1032,15 +1032,15 @@ static int kvaser_pciefd_reg_candev(struct kvaser_pciefd *pcie)
- 	int i;
- 
- 	for (i = 0; i < pcie->nr_channels; i++) {
--		int err = register_candev(pcie->can[i]->can.dev);
-+		int ret = register_candev(pcie->can[i]->can.dev);
- 
--		if (err) {
-+		if (ret) {
- 			int j;
- 
- 			/* Unregister all successfully registered devices. */
- 			for (j = 0; j < i; j++)
- 				unregister_candev(pcie->can[j]->can.dev);
--			return err;
-+			return ret;
- 		}
- 	}
- 
-@@ -1726,7 +1726,7 @@ static void kvaser_pciefd_teardown_can_ctrls(struct kvaser_pciefd *pcie)
- static int kvaser_pciefd_probe(struct pci_dev *pdev,
- 			       const struct pci_device_id *id)
- {
--	int err;
-+	int ret;
- 	struct kvaser_pciefd *pcie;
- 	const struct kvaser_pciefd_irq_mask *irq_mask;
- 	void __iomem *irq_en_base;
-@@ -1740,37 +1740,37 @@ static int kvaser_pciefd_probe(struct pci_dev *pdev,
- 	pcie->driver_data = (const struct kvaser_pciefd_driver_data *)id->driver_data;
- 	irq_mask = pcie->driver_data->irq_mask;
- 
--	err = pci_enable_device(pdev);
--	if (err)
--		return err;
-+	ret = pci_enable_device(pdev);
-+	if (ret)
-+		return ret;
- 
--	err = pci_request_regions(pdev, KVASER_PCIEFD_DRV_NAME);
--	if (err)
-+	ret = pci_request_regions(pdev, KVASER_PCIEFD_DRV_NAME);
-+	if (ret)
- 		goto err_disable_pci;
- 
- 	pcie->reg_base = pci_iomap(pdev, 0, 0);
- 	if (!pcie->reg_base) {
--		err = -ENOMEM;
-+		ret = -ENOMEM;
- 		goto err_release_regions;
- 	}
- 
--	err = kvaser_pciefd_setup_board(pcie);
--	if (err)
-+	ret = kvaser_pciefd_setup_board(pcie);
-+	if (ret)
- 		goto err_pci_iounmap;
- 
--	err = kvaser_pciefd_setup_dma(pcie);
--	if (err)
-+	ret = kvaser_pciefd_setup_dma(pcie);
-+	if (ret)
- 		goto err_pci_iounmap;
- 
- 	pci_set_master(pdev);
- 
--	err = kvaser_pciefd_setup_can_ctrls(pcie);
--	if (err)
-+	ret = kvaser_pciefd_setup_can_ctrls(pcie);
-+	if (ret)
+@@ -1774,11 +1774,24 @@ static int kvaser_pciefd_probe(struct pci_dev *pdev,
+ 	if (ret)
  		goto err_teardown_can_ctrls;
  
--	err = request_irq(pcie->pci->irq, kvaser_pciefd_irq_handler,
-+	ret = request_irq(pcie->pci->irq, kvaser_pciefd_irq_handler,
++	ret = pci_alloc_irq_vectors(pcie->pci, 1, 1, PCI_IRQ_INTX | PCI_IRQ_MSI);
++	if (ret < 0) {
++		dev_err(&pcie->pci->dev, "Failed to allocate IRQ vectors.\n");
++		goto err_teardown_can_ctrls;
++	}
++
++	ret = pci_irq_vector(pcie->pci, 0);
++	if (ret < 0)
++		goto err_pci_free_irq_vectors;
++
++	pcie->pci->irq = ret;
++
+ 	ret = request_irq(pcie->pci->irq, kvaser_pciefd_irq_handler,
  			  IRQF_SHARED, KVASER_PCIEFD_DRV_NAME, pcie);
--	if (err)
-+	if (ret)
- 		goto err_teardown_can_ctrls;
- 
+-	if (ret)
+-		goto err_teardown_can_ctrls;
+-
++	if (ret) {
++		dev_err(&pcie->pci->dev, "Failed to request IRQ %d\n", pcie->pci->irq);
++		goto err_pci_free_irq_vectors;
++	}
  	iowrite32(KVASER_PCIEFD_SRB_IRQ_DPD0 | KVASER_PCIEFD_SRB_IRQ_DPD1,
-@@ -1790,8 +1790,8 @@ static int kvaser_pciefd_probe(struct pci_dev *pdev,
- 	iowrite32(KVASER_PCIEFD_SRB_CMD_RDB1,
- 		  KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_CMD_REG);
+ 		  KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_IRQ_REG);
  
--	err = kvaser_pciefd_reg_candev(pcie);
--	if (err)
-+	ret = kvaser_pciefd_reg_candev(pcie);
-+	if (ret)
- 		goto err_free_irq;
+@@ -1807,6 +1820,9 @@ static int kvaser_pciefd_probe(struct pci_dev *pdev,
+ 	iowrite32(0, irq_en_base);
+ 	free_irq(pcie->pci->irq, pcie);
  
- 	return 0;
-@@ -1815,7 +1815,7 @@ static int kvaser_pciefd_probe(struct pci_dev *pdev,
- err_disable_pci:
++err_pci_free_irq_vectors:
++	pci_free_irq_vectors(pcie->pci);
++
+ err_teardown_can_ctrls:
+ 	kvaser_pciefd_teardown_can_ctrls(pcie);
+ 	iowrite32(0, KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_CTRL_REG);
+@@ -1852,7 +1868,7 @@ static void kvaser_pciefd_remove(struct pci_dev *pdev)
+ 	iowrite32(0, KVASER_PCIEFD_PCI_IEN_ADDR(pcie));
+ 
+ 	free_irq(pcie->pci->irq, pcie);
+-
++	pci_free_irq_vectors(pcie->pci);
+ 	pci_iounmap(pdev, pcie->reg_base);
+ 	pci_release_regions(pdev);
  	pci_disable_device(pdev);
- 
--	return err;
-+	return ret;
- }
- 
- static void kvaser_pciefd_remove_all_ctrls(struct kvaser_pciefd *pcie)
 -- 
 2.43.0
 
