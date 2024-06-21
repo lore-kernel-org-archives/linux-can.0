@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CA7C17083B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1FE417108E
 	for <linux-can@vger.kernel.org>; Fri, 21 Jun 2024 08:02:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718956933; cv=none; b=B3aJmaLMYQmXdRtX47CPt5/8lL4L+57HNgWQbhYpX3AFDa1N7/oZBwSHcjRBPPGWUIsEAK/lkQST05m62OsHk0oCb5fiZbjY+Pp+Y/PWG84uYbO8tlvZ5V6lKiXDFolFJv4On5w4zNp1PTyfqg2+8jfNcfA/XCpQ1reZ63rsZKo=
+	t=1718956934; cv=none; b=LBeUVuCl0i6fw3RT6r1luYM8RychHNc+i60lsPtYuihJ9ywsgrNwVnucmknWPwJMtw3RevustYGuLmNNxb974URw5BLJvLWJRDWOKuFAoNSkhalKCmMTinFU0QqamqfHWPRCZlEigUxJAcBtkvs3E3xNANJ5/fGO+EYQxX+2TpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718956933; c=relaxed/simple;
-	bh=yiD90I/Ocf1dLl7j2ithHU9pTuOCi+MNARJ0Y5wo1vM=;
+	s=arc-20240116; t=1718956934; c=relaxed/simple;
+	bh=SuR8SJSI3koMzK//eHX5vRzmKUn3/C2V5p2wjgu632Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JGRSSSuMfve43PrqWotHaqe7P++VfyolNBl2PthAleEFifXuniDv4frKlQxJpGLfFmXuFwgflgVyTaLiTqlbekPk4IjSS2oJ/dNQmwDVEiSELsnrN1aw0hLUX9AijkXz7kngArMhQ+u6e+H2fELB3LCDvbXN3yb12h8Y3yk9JX8=
+	 MIME-Version; b=PbeMjrHDZ83MNyJ0SVkQFcDRyvg8O5KHHJw+8LXUP8F7EQW30MlMbf344Xt+4P7nyIN/2cm3YKH4JtwF+Uv2E2jTvlDYuQt31a742zBFGK9VvKSnhkeGZj4cmpUL5NSNZS5xFKdNn9t/J4UASo6S8fZ5mbQrfiwCxVKIQr0ZKh4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,25 +18,25 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sKZDl-00040T-Sa
-	for linux-can@vger.kernel.org; Fri, 21 Jun 2024 10:02:09 +0200
+	id 1sKZDm-00044B-Ga
+	for linux-can@vger.kernel.org; Fri, 21 Jun 2024 10:02:10 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sKZDh-003tI6-NQ
-	for linux-can@vger.kernel.org; Fri, 21 Jun 2024 10:02:05 +0200
+	id 1sKZDi-003tJT-Jh
+	for linux-can@vger.kernel.org; Fri, 21 Jun 2024 10:02:06 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 5A3712EE3E6
-	for <linux-can@vger.kernel.org>; Fri, 21 Jun 2024 08:02:05 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with SMTP id 1E9472EE405
+	for <linux-can@vger.kernel.org>; Fri, 21 Jun 2024 08:02:06 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 137462EE396;
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 3E86C2EE39D;
 	Fri, 21 Jun 2024 08:02:03 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id af85d136;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 8a6d8a2f;
 	Fri, 21 Jun 2024 08:02:02 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -44,11 +44,11 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Harini T <harini.t@amd.com>,
+	Martin Jocic <martin.jocic@kvaser.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 06/24] can: xilinx_can: Document driver description to list all supported IPs
-Date: Fri, 21 Jun 2024 09:48:26 +0200
-Message-ID: <20240621080201.305471-7-mkl@pengutronix.de>
+Subject: [PATCH net-next 09/24] can: kvaser_usb: Add support for Vining 800
+Date: Fri, 21 Jun 2024 09:48:29 +0200
+Message-ID: <20240621080201.305471-10-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240621080201.305471-1-mkl@pengutronix.de>
 References: <20240621080201.305471-1-mkl@pengutronix.de>
@@ -64,31 +64,52 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Harini T <harini.t@amd.com>
+From: Martin Jocic <martin.jocic@kvaser.com>
 
-Xilinx CAN driver supports AXI CAN, AXI CANFD, CANPS and CANFD PS IPs.
-Document all supported IPs in comment description.
+Add support for Vining 800, a branded device based on the hydra
+platform.
 
-Signed-off-by: Harini T <harini.t@amd.com>
-Link: https://lore.kernel.org/all/20240503060553.8520-3-harini.t@amd.com
+Signed-off-by: Martin Jocic <martin.jocic@kvaser.com>
+Link: https://lore.kernel.org/all/20240612141946.3352364-2-martin.jocic@kvaser.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/xilinx_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/usb/Kconfig                      | 1 +
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c | 3 +++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index fae0120473f8..d944911d7f05 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -6,7 +6,7 @@
-  * Copyright (C) 2017 - 2018 Sandvik Mining and Construction Oy
-  *
-  * Description:
-- * This driver is developed for Axi CAN IP and for Zynq CANPS Controller.
-+ * This driver is developed for AXI CAN IP, AXI CANFD IP, CANPS and CANFD PS Controller.
-  */
+diff --git a/drivers/net/can/usb/Kconfig b/drivers/net/can/usb/Kconfig
+index bd58c636d465..d01b46a8071a 100644
+--- a/drivers/net/can/usb/Kconfig
++++ b/drivers/net/can/usb/Kconfig
+@@ -117,6 +117,7 @@ config CAN_KVASER_USB
+ 	    - Kvaser U100S
+ 	    - ATI Memorator Pro 2xHS v2
+ 	    - ATI USBcan Pro 2xHS v2
++	    - Vining 800
  
- #include <linux/bitfield.h>
+ 	  If unsure, say N.
+ 
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+index 8faf8a462c05..b828fad123b2 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+@@ -89,6 +89,7 @@
+ #define USB_HYBRID_CANLIN_PRODUCT_ID 0x0115
+ #define USB_HYBRID_PRO_CANLIN_PRODUCT_ID 0x0116
+ #define USB_LEAF_V3_PRODUCT_ID 0x0117
++#define USB_VINING_800_PRODUCT_ID 0x0119
+ 
+ static const struct kvaser_usb_driver_info kvaser_usb_driver_info_hydra = {
+ 	.quirks = KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP,
+@@ -238,6 +239,8 @@ static const struct usb_device_id kvaser_usb_table[] = {
+ 		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_hydra },
+ 	{ USB_DEVICE(KVASER_VENDOR_ID, USB_LEAF_V3_PRODUCT_ID),
+ 		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_hydra },
++	{ USB_DEVICE(KVASER_VENDOR_ID, USB_VINING_800_PRODUCT_ID),
++		.driver_info = (kernel_ulong_t)&kvaser_usb_driver_info_hydra },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(usb, kvaser_usb_table);
 -- 
 2.43.0
 
