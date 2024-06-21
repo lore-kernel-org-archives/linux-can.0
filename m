@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0601D171661
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07769171663
 	for <linux-can@vger.kernel.org>; Fri, 21 Jun 2024 08:02:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718956939; cv=none; b=jgS5OiMJ1xwx9vr1gIWq5C2UKmwtJBEvK4o9UkWyMahb5er7q5RwX+Y5rGavV0Cs1cx2b7I3aU2aAvuntfFWmlzZxO0o3QalownktOx9evpA6jigC0Tb9VhKvsJVwiA5dbLCfxnZp8GQsh8D4HRk3xJ8Kp2TsmsWC7gP+COVyfk=
+	t=1718956939; cv=none; b=ZF7ONIXc2xcLAUUBZxHhuPVDfGzmZTb8sIOeVk9fm8tURmL816AOnDTWqaN4/x9OQeM7UiiM2kJ865lezcPj+rJb8pNt9yeX5rGXKwgqQ8NMKM6iXqJU9p67G1rpmP3fYYVKjD6cOYL4tl33KSz/9yuDBjYcmW6ILYxEKZ2Y/Nk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1718956939; c=relaxed/simple;
-	bh=gVUzFkpw+3jHfVU+d5+6kH10EQc+2eZKTSmxjysVIZE=;
+	bh=AS8bkESlyFlqiUMd17YWu3HKTlLPnlp40sq/mLYzOkk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aa+Ffmm5xOhp1yE8xkL90N109DVKUVYn7gl5z7l/J5iK9H+lWvggXStMJihYUeMer0Vg2wPIruXsOlsoh0A8OvQqFuGxWI1Bf/rRoq/oqGIjpNyV2rDpFSCqtlY4O5FDsTlf8fYnjmRCBb6ApvzQIv4KogbJGlwGBVbSIOHFG9k=
+	 MIME-Version; b=rAMd0pszJYs8E+zSLCDprDeKbhNPCnfSkekLpAui4Ts/Fp1bOhm601UCtXHjeUAheLFs+3mrBa4/FykFAFbEA94HmuP6K1oTi4C9dnzqzFglYICYDCm07xkcHGYrebR0R2G5ewq9ogm2B9Ipvzf2p8UTQr1CMnOLl/dCaOPT0AY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,26 +18,26 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sKZDo-00046r-DI
+	id 1sKZDo-000470-9w
 	for linux-can@vger.kernel.org; Fri, 21 Jun 2024 10:02:12 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sKZDk-003tMk-8E
+	id 1sKZDk-003tMw-Bq
 	for linux-can@vger.kernel.org; Fri, 21 Jun 2024 10:02:08 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id DC4472EE446
+	by bjornoya.blackshift.org (Postfix) with SMTP id 037012EE449
 	for <linux-can@vger.kernel.org>; Fri, 21 Jun 2024 08:02:07 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 508632EE3C1;
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 71BEE2EE3C6;
 	Fri, 21 Jun 2024 08:02:04 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 15acf250;
-	Fri, 21 Jun 2024 08:02:03 +0000 (UTC)
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7e7fd571;
+	Fri, 21 Jun 2024 08:02:04 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -46,9 +46,9 @@ Cc: davem@davemloft.net,
 	kernel@pengutronix.de,
 	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 21/24] can: hi311x: simplify with spi_get_device_match_data()
-Date: Fri, 21 Jun 2024 09:48:41 +0200
-Message-ID: <20240621080201.305471-22-mkl@pengutronix.de>
+Subject: [PATCH net-next 23/24] can: mcp251xfd: simplify with spi_get_device_match_data()
+Date: Fri, 21 Jun 2024 09:48:43 +0200
+Message-ID: <20240621080201.305471-24-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240621080201.305471-1-mkl@pengutronix.de>
 References: <20240621080201.305471-1-mkl@pengutronix.de>
@@ -69,38 +69,39 @@ From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Use spi_get_device_match_data() helper to simplify a bit the driver.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Link: https://lore.kernel.org/all/20240606142424.129709-1-krzysztof.kozlowski@linaro.org
-[mkl: add intermediate cast to uintptr_t]
+Link: https://lore.kernel.org/all/20240606142424.129709-3-krzysztof.kozlowski@linaro.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/hi311x.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
-index e1b8533a602e..148d974ebb21 100644
---- a/drivers/net/can/spi/hi311x.c
-+++ b/drivers/net/can/spi/hi311x.c
-@@ -830,7 +830,6 @@ static int hi3110_can_probe(struct spi_device *spi)
- 	struct device *dev = &spi->dev;
- 	struct net_device *net;
- 	struct hi3110_priv *priv;
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index 1d9057dc44f2..4b7e08e8ed56 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -1989,7 +1989,6 @@ MODULE_DEVICE_TABLE(spi, mcp251xfd_id_table);
+ 
+ static int mcp251xfd_probe(struct spi_device *spi)
+ {
 -	const void *match;
- 	struct clk *clk;
- 	u32 freq;
- 	int ret;
-@@ -874,11 +873,7 @@ static int hi3110_can_probe(struct spi_device *spi)
- 		CAN_CTRLMODE_LISTENONLY |
- 		CAN_CTRLMODE_BERR_REPORTING;
- 
--	match = device_get_match_data(dev);
+ 	struct net_device *ndev;
+ 	struct mcp251xfd_priv *priv;
+ 	struct gpio_desc *rx_int;
+@@ -2081,13 +2080,7 @@ static int mcp251xfd_probe(struct spi_device *spi)
+ 	priv->pll_enable = pll_enable;
+ 	priv->reg_vdd = reg_vdd;
+ 	priv->reg_xceiver = reg_xceiver;
+-
+-	match = device_get_match_data(&spi->dev);
 -	if (match)
--		priv->model = (enum hi3110_model)(uintptr_t)match;
+-		priv->devtype_data = *(struct mcp251xfd_devtype_data *)match;
 -	else
--		priv->model = spi_get_device_id(spi)->driver_data;
-+	priv->model = (enum hi3110_model)(uintptr_t)spi_get_device_match_data(spi);
- 	priv->net = net;
- 	priv->clk = clk;
+-		priv->devtype_data = *(struct mcp251xfd_devtype_data *)
+-			spi_get_device_id(spi)->driver_data;
++	priv->devtype_data = *(struct mcp251xfd_devtype_data *)spi_get_device_match_data(spi);
  
+ 	/* Errata Reference:
+ 	 * mcp2517fd: DS80000792C 5., mcp2518fd: DS80000789C 4.
 -- 
 2.43.0
 
