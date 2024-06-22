@@ -1,105 +1,86 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F52C150993
-	for <linux-can@vger.kernel.org>; Fri, 21 Jun 2024 12:17:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4329633;
+	Sat, 22 Jun 2024 01:20:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718972270; cv=none; b=kC6dDgEJ+OgvQ6uNL5HNJmlbh8rCZfWX06yWVrtEiHiQKxpWowJB9e/T+hESua0zjbtqWqy+TTpubqeiLKXT+/Jfh7+zlSWVdnlvltdKaWTW6J+3mx7OswIfPv3/Z1Hm4yScYmvXOrwkACRiNLX0T0cnwCJBRve0baw3HRqMUks=
+	t=1719019231; cv=none; b=Jw8Yd6t2MAC5TjsQvWu9CbsMVNd7WZmnvcKLXpgdyXdL0DZ7uLUcnYPPSdEEwebwxGKNjheOXTwEIxKsTJhCocH7MYMxs12Je3oy8iMZOetot4MGfLgjKRSL4oLvnsu9C9FWodoT67hve6vw3UlAHKO0OdVwsBh5AHLbjSPQkU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718972270; c=relaxed/simple;
-	bh=4TNEajhmxtz6qltSapQzxekRO3DR6xrS6qCR8FNRgec=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nDcivAZySgonyxj2NiN8kIXazn2+xvttFO0JydWJ1fjaAhZypj3/IRSJDoX2pHNw+0++6m9jADaq+NIuHycU/tNQ1c0cMt7F9ZFGlgYr2jxxUEEmD0Ih8Evri+c0HNicFNV3gKqX/OqGSb5/Tb4llX1dYF+/OqWhRNtVMs56+xA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1sKdD8-0002O5-1s
-	for linux-can@vger.kernel.org; Fri, 21 Jun 2024 14:17:46 +0200
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1sKdD7-003wFA-4u
-	for linux-can@vger.kernel.org; Fri, 21 Jun 2024 14:17:45 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id CA68D2EE831
-	for <linux-can@vger.kernel.org>; Fri, 21 Jun 2024 12:17:44 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id F15FE2EE80C;
-	Fri, 21 Jun 2024 12:17:42 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e45de929;
-	Fri, 21 Jun 2024 12:17:42 +0000 (UTC)
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	kuba@kernel.org,
-	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	stable@vger.kernel.org,
-	=?UTF-8?q?Alexander=20H=C3=B6lzl?= <alexander.hoelzl@gmx.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 3/5] net: can: j1939: recover socket queue on CAN bus error during BAM transmission
-Date: Fri, 21 Jun 2024 13:23:38 +0200
-Message-ID: <20240621121739.434355-4-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240621121739.434355-1-mkl@pengutronix.de>
-References: <20240621121739.434355-1-mkl@pengutronix.de>
+	s=arc-20240116; t=1719019231; c=relaxed/simple;
+	bh=qS50Z94mAvRd6jOyFngt2IluBzkX6dLoaTRS2qGYHAQ=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=oU8uPPBSnwpMxddsrHqcU1aJ/PCUTXOFmJlYjC+o5m3IIleYFoKcNtWagJMo29pvuR8mVXMAsdEVkE6aGUPpPcUn2lRNYq2EmU4fuxo76khgfR/8JslqFLvC2PhxahMgYUwI5qSvv3h0/V9qUPhaMNHrYPxI0x9mKihIKLGPeFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hDcy54tV; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hDcy54tV"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 381E6C3277B;
+	Sat, 22 Jun 2024 01:20:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719019231;
+	bh=qS50Z94mAvRd6jOyFngt2IluBzkX6dLoaTRS2qGYHAQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=hDcy54tV3z+TIGh4o6ytebJ8XViITa8IrLe2YNGCB85Ev1Ac8C9FQvw9xjwhbBPmv
+	 qNEKOa61Q3ZmLm7EA03krOgdosedpbPlcCUc63fSFek0UNVlSEMGdeWIzHufmCgLEQ
+	 bBnHYUIlnxkS4sicPhGGH/olzhHabX0cxQntKR55H2Df0oDYNlOAvBUW4J/SedhRtM
+	 rqYFYR2dYDN3pL2I/u4P6unC8+CoU2hHmF9icYQlGAtD8htzC2BH3AfnzENmWST6eB
+	 ELbEtYK3s748fiHDXeFCQvBCXpoN/n4CriK/PMpAG+B2/PI8X4eV24mzmnB5odNckn
+	 CJqjbPMgWMHwA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1854CD2D0E2;
+	Sat, 22 Jun 2024 01:20:31 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Subject: Re: [PATCH net 1/5] net: can: j1939: enhanced error handling for tightly
+ received RTS messages in xtp_rx_rts_session_new
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171901923109.1383.11282114913538537501.git-patchwork-notify@kernel.org>
+Date: Sat, 22 Jun 2024 01:20:31 +0000
+References: <20240621121739.434355-2-mkl@pengutronix.de>
+In-Reply-To: <20240621121739.434355-2-mkl@pengutronix.de>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+ linux-can@vger.kernel.org, kernel@pengutronix.de, o.rempel@pengutronix.de,
+ syzbot+daa36413a5cedf799ae4@syzkaller.appspotmail.com, stable@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+Hello:
 
-Addresses an issue where a CAN bus error during a BAM transmission
-could stall the socket queue, preventing further transmissions even
-after the bus error is resolved. The fix activates the next queued
-session after the error recovery, allowing communication to continue.
+This series was applied to netdev/net.git (main)
+by Marc Kleine-Budde <mkl@pengutronix.de>:
 
-Fixes: 9d71dd0c70099 ("can: add support of SAE J1939 protocol")
-Cc: stable@vger.kernel.org
-Reported-by: Alexander Hölzl <alexander.hoelzl@gmx.net>
-Tested-by: Alexander Hölzl <alexander.hoelzl@gmx.net>
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/all/20240528070648.1947203-1-o.rempel@pengutronix.de
-Cc: stable@vger.kernel.org
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- net/can/j1939/transport.c | 2 ++
- 1 file changed, 2 insertions(+)
+On Fri, 21 Jun 2024 13:23:36 +0200 you wrote:
+> From: Oleksij Rempel <o.rempel@pengutronix.de>
+> 
+> This patch enhances error handling in scenarios with RTS (Request to
+> Send) messages arriving closely. It replaces the less informative WARN_ON_ONCE
+> backtraces with a new error handling method. This provides clearer error
+> messages and allows for the early termination of problematic sessions.
+> Previously, sessions were only released at the end of j1939_xtp_rx_rts().
+> 
+> [...]
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index c6569f98d251..4be73de5033c 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -1696,6 +1696,8 @@ static int j1939_xtp_rx_rts_session_active(struct j1939_session *session,
- 
- 		j1939_session_timers_cancel(session);
- 		j1939_session_cancel(session, J1939_XTP_ABORT_BUSY);
-+		if (session->transmission)
-+			j1939_session_deactivate_activate_next(session);
- 
- 		return -EBUSY;
- 	}
+Here is the summary with links:
+  - [net,1/5] net: can: j1939: enhanced error handling for tightly received RTS messages in xtp_rx_rts_session_new
+    https://git.kernel.org/netdev/net/c/d3e2904f71ea
+  - [net,2/5] net: can: j1939: Initialize unused data in j1939_send_one()
+    https://git.kernel.org/netdev/net/c/b7cdf1dd5d2a
+  - [net,3/5] net: can: j1939: recover socket queue on CAN bus error during BAM transmission
+    https://git.kernel.org/netdev/net/c/9ad1da14ab3b
+  - [net,4/5] can: kvaser_usb: fix return value for hif_usb_send_regout
+    https://git.kernel.org/netdev/net/c/0d34d8163fd8
+  - [net,5/5] can: mcp251xfd: fix infinite loop when xmit fails
+    https://git.kernel.org/netdev/net/c/d8fb63e46c88
+
+You are awesome, thank you!
 -- 
-2.43.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
