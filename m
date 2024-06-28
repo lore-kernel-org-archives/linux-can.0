@@ -1,56 +1,56 @@
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2111.outbound.protection.outlook.com [40.107.104.111])
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2117.outbound.protection.outlook.com [40.107.21.117])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4011770FA
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBF21770F0
 	for <linux-can@vger.kernel.org>; Fri, 28 Jun 2024 19:55:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.111
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.117
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719604553; cv=fail; b=XgjPM29Q38e2Vwid1W3yeDWK44oedSBdM6ki4/1lzLNYLdfh/AswEEbFCzaiEuErZ5Qt+zaEXERGomxgCtiP6Lh0/OAIpNnVZ6UyfhVhQ2+9tUrECP5SpwK1wnVEAyDnaw0j3DL76jzNWgVyrVEFxmflhqEl1LON7mLWNRBjaYo=
+	t=1719604553; cv=fail; b=AaAcAkvpHL+RqLaR8Eutt7+A9CLhg7D7ZB8J6pzMX0xB3guYzbRuqtJiA7gqsBJjaFqmTUyjFikPhNYLtLC3Es9PTrpC5mk2dNzdq8o8m4vUX3MqH8KonIVMl8SuwLWMMyXKxRt2+GozLmYOTMnoaAsD2QI1I/DARqSu7fIKvLM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1719604553; c=relaxed/simple;
-	bh=k0EI/naW0nJ71JEb8IB9iXoxtnuUt6IVDZUnXdmp6FE=;
+	bh=J6o8VCRVzo4c3PlMMzw6y//VYXGtYGPg1K3O4UC8rIQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=AswGcSQTTXsHPgCPnFpBnSlf4XzscPLawfm3Sz8c5StDJgIYDs8VRTetbdwI/8N916/hhgZLQco8jZWe16rMiuTdNJbwWG7jdQzH3sw1IIeOoM3LRpByFz5sb4vIuUyu/EqnmSFRQKXV6UJ3dmTbnWxLQoBkniNGJdCX2yBhKck=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com; spf=pass smtp.mailfrom=kvaser.com; dkim=pass (1024-bit key) header.d=kvaser.com header.i=@kvaser.com header.b=Lfw9Zc4k; arc=fail smtp.client-ip=40.107.104.111
+	 Content-Type:MIME-Version; b=eDdJR6m6dgzkeMM3XxZAj4p9JpphD4uzKNnE+D8wqh8/csldDtUsRTVMdV0izkX8YgPRwLAUIiHpaluezsLgXoQAv48Jdp56tB1YgD+WNJTfCPAtZi01OfoO/b7L7gyXM+eP8xJp8CTMaf4ZKpEK8MEGTX4ywIZLLs2fDUBLMCk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com; spf=pass smtp.mailfrom=kvaser.com; dkim=pass (1024-bit key) header.d=kvaser.com header.i=@kvaser.com header.b=hK+qoWZB; arc=fail smtp.client-ip=40.107.21.117
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kvaser.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=kvaser.com header.i=@kvaser.com header.b="Lfw9Zc4k"
+	dkim=pass (1024-bit key) header.d=kvaser.com header.i=@kvaser.com header.b="hK+qoWZB"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nZG+bHwcUI5jDk84zmiIicWZjgQKPx4KX0yL44mkdE+74qPTqIy/P/f6QeorAzTBIyvJ9yClrboqnC7embdbv1OwGKCFNrZyWbUAG5TNRkJUopfls49GyiwEufEyAthPUQ7YTouBGg+NwzJuV1EDTzjS8Z3pG7Eitx+0JgR6YoE3dmCCA3cmta6TAgu7PJChUwjJu4tDIEiEY20wiQR5BAa4OoEoKHc3+wMagkzHZqqU9sLIiok5Bk2caJHXpKbzUWEwydhBt4TnzJcFU1Xe6RAOIMf+ZlB7/pAB5HXU+XK+KhsjaD1tDWO8MhhfhytqkmLXlde/Rz4ms0jIlhAfYg==
+ b=Tpe+rKPetPvEaznu7MgOcaah3tuVlaIvpImaQCxivK8FTx1Sv9w8lukCiqUB9qFKnf6sQaAjlF9C6eAI8pfk1MVBVJNcuAlw8tDhmSAD4eep8ECwKIH0YQ6pC1qL2kEsyZObqHr1CNuz155lMwNWaIUaUyAQPRqRRpYXaQ2ZCRQURmom3DeUn5bljX3oi+v+9BMYHWBctWkcW4xlptguviKcKUUJdvUvjBRj5L+USwuvH4T2V+WcptC0TJ48V526pFnTSWLs38HP6VOrP8UkxK6+PQsbl+/+eGUCZGYopgDYuiAfDR/VRmyY15Vc7U833M0fsorq6s5ejMIAYyYHcw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bNqyrrNq9otJWY+Aj1J2/99kZ/hqJYf8ZOrVvd9iCf4=;
- b=GRpYo6viC2vdbe0inIdljYFnmhoR8tYhfR8H2iIQ0Z6SJWvJNersPto7D9H0wiwL/hPszqmp0Z+EuwmbanfAKWuXvzV7lmMWEYKpA+Tk8N/A9DqtUVHYIxf0l/H2sDMLYz6ux550Uqlx2x3NY4R3fesg+kpAbva1EQTvTqJMfPrYePkbRQGhSQgHr+EoEJY+niDDhBg0NuNUigyxXamEE8EOXtH6HeZOJqq5u/QX3DtIJ3ckaHk/rGp9h+vQk7/Bs7f3HNxLmouudv3d57P0WQ7KECdckDYjax2Lex3FlgiyCK6wD/xY5MPckJFS+a89KYQPsV/49DLHaTUS2WmR+A==
+ bh=AYEovHVzd0u4/HtoK1HdDtUn4mBLVMPjO/xnbjbDU0Q=;
+ b=TmvaIqISf/FmU4cmN1WPZrttEctPqCEMjBlEwM6RxOG1q89vCe/Byc5MIu7MhPpotYnFEr9bJfL4ZFS3AC8hFMKBJqEXNfIHC5fRvxk2YmmrjMjB+Rv3fSc38i0EGoZtBpiiedzOJv0XGQcLTSsjmA3Dt4mSZXvo87ReqGHPkHFpmSWRfh1gCP32sn7R7IcxUQkIPhppM/eERnvaKds+pnwGw9oqfxC3m18SpsAeFxgYzaxGQbaM+Al9Zj5qOPzO+P13NA7wKFooQne/B02Cc9E9oSchST8GCBFlc1Ov3xlQvbxCBhASKl+jeskjOZs44lzNz0wz72N9modnAmLusQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=kvaser.com; dmarc=pass action=none header.from=kvaser.com;
  dkim=pass header.d=kvaser.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kvaser.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bNqyrrNq9otJWY+Aj1J2/99kZ/hqJYf8ZOrVvd9iCf4=;
- b=Lfw9Zc4kJZyyKsCz91klh4qiD4gFmgZ9eOBgTrUyhuAR5S/eZDPYKgRj8ZTp2WdxgBWuUx6t25HvCsAkhbgYKJYFKLRUHIX0u/79RW0TPO1LfyTvwymllaJ6Lm43WkEGn4zItViqGZqejPH1vtdiwYNe67zqW2j96Q29R4ePGQ8=
+ bh=AYEovHVzd0u4/HtoK1HdDtUn4mBLVMPjO/xnbjbDU0Q=;
+ b=hK+qoWZBpiMCGZrTk2UOv9Ee0HuQyPNz0+5ix5V2pN9VOguLrA4VKqpMODT6wlwK3UhMbb7LvPl1l4HXD764BpB9wh/lh0jVKPi6c6ldPvT6gKHlKNPZMd39T7tO451TskIBEvRkHSYF2fQ1ZL+Cr1SDTuIVPRj6bX7+3dhoTlg=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=kvaser.com;
 Received: from AS8P193MB2014.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:40d::20)
- by AM9P193MB1142.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:1f9::19) with
+ by VI1P193MB0544.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:15b::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7698.38; Fri, 28 Jun
- 2024 19:55:43 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7719.28; Fri, 28 Jun
+ 2024 19:55:47 +0000
 Received: from AS8P193MB2014.EURP193.PROD.OUTLOOK.COM
  ([fe80::ecab:d3fc:ce8e:ab6]) by AS8P193MB2014.EURP193.PROD.OUTLOOK.COM
  ([fe80::ecab:d3fc:ce8e:ab6%6]) with mapi id 15.20.7698.025; Fri, 28 Jun 2024
- 19:55:43 +0000
+ 19:55:47 +0000
 From: Jimmy Assarsson <extja@kvaser.com>
 To: linux-can@vger.kernel.org
 Cc: Jimmy Assarsson <jimmyassarsson@gmail.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>,
 	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
 	Jimmy Assarsson <extja@kvaser.com>
-Subject: [PATCH can-next 03/15] can: kvaser_usb: hydra: Set hardware timestamp on transmitted packets
-Date: Fri, 28 Jun 2024 21:55:02 +0200
-Message-ID: <20240628195514.316895-4-extja@kvaser.com>
+Subject: [PATCH can-next 13/15] can: kvaser_usb: Remove KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP
+Date: Fri, 28 Jun 2024 21:55:12 +0200
+Message-ID: <20240628195514.316895-14-extja@kvaser.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240628195514.316895-1-extja@kvaser.com>
 References: <20240628195514.316895-1-extja@kvaser.com>
@@ -66,115 +66,171 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8P193MB2014:EE_|AM9P193MB1142:EE_
-X-MS-Office365-Filtering-Correlation-Id: cff211b3-1ffc-409f-dbd3-08dc97ac4b09
+X-MS-TrafficTypeDiagnostic: AS8P193MB2014:EE_|VI1P193MB0544:EE_
+X-MS-Office365-Filtering-Correlation-Id: a8347ca1-3c8d-43a0-1638-08dc97ac4de7
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?aZpeQGkCjJDaC+xoiWtnYd2CxhOqW45VIpoNOw0KncOfTxzW0ERH8Y2oljBw?=
- =?us-ascii?Q?ly7Y2utYBT8vJ3OlYVvZhiwg7pRI97K7oD7bCmBuMw73J5bs4WF7Zl+xPngK?=
- =?us-ascii?Q?m+o65+tZV6Fa3OhkCqRQJemQFYDbts3xH1KEFN+9uL0+txanmyWTPM5NGnCh?=
- =?us-ascii?Q?L4FQ3MIaFmbGjF9OAXgosjm6NuW3gCNVtNY9h7Lc+xIDUhlCnYhKzSC2cm9z?=
- =?us-ascii?Q?m+mikW9C7bmEJOWQQdUiwVbB25se05CftQDx7+7PCqsT3DQ5wBFk6nzQoJk1?=
- =?us-ascii?Q?mo8+f7NrpyIjX+rK3LpmuKwLxSwIP67Yd9tpOjJ2d2eFu8W7+OlnvSNiSKOf?=
- =?us-ascii?Q?6RTVG5Wuz5RDSoSSrDeOC3F6owb9D3BIi3xcBtKrDHSiAqaVCLHoINIBtFJw?=
- =?us-ascii?Q?D6vk7rfztBiuStGs/3CzA9btm9GzUA9hvM8zPNrhrTqz6pyyUhhOfKO0xedI?=
- =?us-ascii?Q?OfCokwi32myDGDkSALIZKPTXbsYjzHqERUv2B4sqkm7f+YJ9efCqhBQ1QACl?=
- =?us-ascii?Q?x76EWZeaXo24We+Ho8Y/9xr3QiBW00UJjZ3TeiWVWSKJoP/d2LxNsy5zjbHv?=
- =?us-ascii?Q?hFnhpU/nkK9o3toN8dcVhxPXD+xkAXHp0DMwCGtltcYZx/x6vNJ+oRyyAZdV?=
- =?us-ascii?Q?t4DyLwSSdzc6Z+LvpmOAcRHRG6iFw3XiuYfzfvMW42hxlqbrhCy5Vc+P71qa?=
- =?us-ascii?Q?ak0VpA4Q1L2F3ZvD3MKrmB4WnHqiWSZGO3k24nckA/56Y1k5t/Wh28trwToW?=
- =?us-ascii?Q?Xkv6uZ/nQrClLgOq346kXnphtpLAobeYoEy7Y5QMvfmWXXnw4+66/wZQoNsF?=
- =?us-ascii?Q?levJo+60sc5kgUuP0ZqEUlnqQR+bRmVmlKzhz3JqJrM2CyDT5vukxOcUl04K?=
- =?us-ascii?Q?8GStgXvP3jImgmPft/EOzx/jZcqXQxogMHK5RgMyYMx+Hf/X5wkSuQi0CV80?=
- =?us-ascii?Q?bFLrwI5GlDg13koFAmFOAKPSmlzMpn4R0yKEdcvKmemd5zDw0iHADGrtWhi0?=
- =?us-ascii?Q?urPe9trY2jiSDFua2NYuMm5I6f27L/v2X35X5mtSlfY5SfspL+SAD6mJHOCN?=
- =?us-ascii?Q?zmynwN+DF1gwn8QFGsMvDHK23/mb5FKmZlmUD3wtAUnyFT6CzcOtA07CV/kD?=
- =?us-ascii?Q?Mm3LtALRDG/jjDJO3FPnEGl5mpAzAiJg2MH9rekM1nSHk8Trhveotlx6PgjS?=
- =?us-ascii?Q?ljm73rHNZMOBJGmwgtf8HnOiw/pEFOOJPIxfPlygDVFZqZn8Dq101pksIW/m?=
- =?us-ascii?Q?MQu7TLyXnkxlBGdy3Gm6cY87AJQ7bGXra9s23J1lso1m5oaq1/T/3tvIrIMF?=
- =?us-ascii?Q?QFJ/jjSVA8JNROySTrYoHX1T2W//VIL3XgGUY7gih65ZKQ=3D=3D?=
+	=?us-ascii?Q?gOIPbJmY4V71hnTFP7Rwp5I2mDbXZsgWmPw7PT6b7+P/tonGMFt8RwddvN+N?=
+ =?us-ascii?Q?OZBl23SsI+kVzw0YHA+9qRfPrwwbaeTUTKG9XfiNsGmhBnICBjB+WjGB3lcm?=
+ =?us-ascii?Q?tdI9/b3ZwQZwK5oGrEsD3XmmJ9iWEtKC6D51Ml+Z7bG11nb8Q+LfIb61LFv3?=
+ =?us-ascii?Q?YSEEIcFXePtO297ZIQ3PkH+96DMnM9QWOGWTsEfbowTOoH89FykijbyCTSBe?=
+ =?us-ascii?Q?LwGEGy+Siw5n2uaeXrylvPOBjSyWOLofQaHUAlelaPZlG/tReOT3RdZCJZUS?=
+ =?us-ascii?Q?7ypXaydDOLzz6U7FDy7C9glYtGxVdL/w5wfAAN7dlSn8I51Xh3gGTDClTfpD?=
+ =?us-ascii?Q?nhcrADTENgka19bS1hNwy257WRpLotzLWm2/oDnXls40dKIGcRRfFCkFlXwf?=
+ =?us-ascii?Q?uFyQDbnBQPMEDD35LamURwZ/J1Xg/FGGznoC1sbzgHRwANoS4/HsIxwXr/8v?=
+ =?us-ascii?Q?4eTRB8h4Q/s4UQquDP9XGKVLqW5Vsi/zT7ZHe3cBGDHH/G+poDdN0+6cFjg5?=
+ =?us-ascii?Q?v5hj5HM8Ok6SKq3fvbyONxr2JAXwVCYtD1aF+9JmsEckZVhbEwIIjFXQwiYo?=
+ =?us-ascii?Q?FS2QwKxV27pF+vVz7gp4PW47QumSJBTPJQZHK3VybRuhCy3W8NLug2GH9bIs?=
+ =?us-ascii?Q?ZkhG5s71gCwzp0KyExO1MBzlXTAW67BtDd9oKH5sXKBPpYSFctSbPoLQcP3a?=
+ =?us-ascii?Q?y9Yoy0rbXQGWm+lyo2Z2na/gMQp/TyAP4YkDcgyHV9VkSJhSuDVUnZkae+Wk?=
+ =?us-ascii?Q?9WfpxKdmtZbTInXU80dGintyiX92DSxo1e1ADBZMste5fnNEuwhd3zZ16Fc2?=
+ =?us-ascii?Q?64H88FP8l5eVd2lp6tvCd8TmXeXVN3rjPNAEPwWy+Lsfytpe3F3UM51w0rSl?=
+ =?us-ascii?Q?mvE/nLiwrueXrXczQSqjU4smczWC1F4I+ewpsC10dEIsuNv4ni8h3CnMu0dy?=
+ =?us-ascii?Q?M/MxkCwoopza6N/odpEGtMmm9sM4TnPong8Cf1PW9YYiWv0FxjlXhOzYJSqr?=
+ =?us-ascii?Q?2uwGJbHF2+B5g26PyAoO/3o6rE5eUbxex2xC3nQaBydKLHVd1ajuboeKFRa5?=
+ =?us-ascii?Q?3PuxChQ34fn+R/eJopMMkXx35ZrHScP0zn4Ip52imD0DiDSosdrK5Z/iBJ2Y?=
+ =?us-ascii?Q?KEcvdRy2boupFhVuSCYGhbBk3tXbimUp/WyiIxzvCYknPjIictKJML1yVVTA?=
+ =?us-ascii?Q?s+a/SK6HPftoNqCCT9dirgkmOAUTJE3cdAD/OI0x6lKlhnhZnhqP5m7D5FnB?=
+ =?us-ascii?Q?RpTScN9FEvxVz/ivONnp+uS+LkGJ5e/XCZ7OViEwVnfDvPf/kJ6nb89doWep?=
+ =?us-ascii?Q?70/mGuHMa/7vQz9p8zrP+rIdaHHj3W1uc1uXIVgYPqF2eA=3D=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8P193MB2014.EURP193.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1102;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8P193MB2014.EURP193.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?1pUbnZ17K3kOXz4DNJ/yZVmPGdC9nYhyEQF1qA3XGW73t/RJpmfTPghdRdFt?=
- =?us-ascii?Q?NG/kH3dw3/Jz/AhDpCpNSMOXd3+v5tp21c3DNRyB7HhA9beaNEPR55Ni6Jqk?=
- =?us-ascii?Q?tLOcLk8xnZWm0NDb13KBqXW3UrpO0z0ZftjAXubCHliLL8o+Uxe7fBwOrez1?=
- =?us-ascii?Q?KkunVKoXs1nwyAzsuZ3WTzLJa8SSjZI3pdLEIWpCtUZ02RVvg3Bky1Rx4bn1?=
- =?us-ascii?Q?7bFH87m0j29LC6z4F0bGGzDgOAvtaMfAO49JyxWuHJ9fXQOk4mT/Om9i7k9P?=
- =?us-ascii?Q?EfAY6A0lSH2iqLx3q7giai3H5AiAjJHYWep7tUQSm/7bhIpSbhx0qrSO23m1?=
- =?us-ascii?Q?OxhNsRmbNGYqzJy87fOi4Ek4sForWG9gkxFVC0uRd54YlA9I/pjhCx7qTbWI?=
- =?us-ascii?Q?lgnvyikwGKZ14Oy4P9cpgjCkTKfMIvcRpHgm0JO5thvC4HcK+3PGyOCeWUSH?=
- =?us-ascii?Q?UNh+CXxyeait4XyXvTIaPF3sgmI7KC6f1ZMpYUHG6jU/qC42hRoWhFQG4x7f?=
- =?us-ascii?Q?AUe4q4u3ocuzesqHb6Vpg2rpEEV6VdQNzUq31dlx6z6h26/PSd21ONrN3FQa?=
- =?us-ascii?Q?gIShjiussm8uhsvz9kc95wIoVD5qd8XXDalREEueNhdnRqbjcXTFIPRfb4zC?=
- =?us-ascii?Q?U86OfsBr+M3UFTVU8jA6U+PBHRsw/bAwAm+J2gzg52lHU8lwGwvcYMntS1HR?=
- =?us-ascii?Q?rKrFomHRHFGNX6x4SxtiJnXbh14cqJ9hTO44Td0np+5XPVMNKxzhYh0VTqTl?=
- =?us-ascii?Q?teZU0KqCp1SvhTSuyJIny4sDf9l+NwbxJuApJGPTrE3JA82HK/QWA+4wIFht?=
- =?us-ascii?Q?U4fx89okCd2l77cgoxUqRl19d0d3TpHhS05HUtOi/kgXFPe2jesEPe4aJi5H?=
- =?us-ascii?Q?z+W7J1KVrqZr7jlX190O2fqIQMeTC8QzmmpNPP68TgZoRioGidM1lYJyHy8m?=
- =?us-ascii?Q?5ZxseJl2Lj8gUnSrS0aisEydYXYHmEI5UQTXyStmAS1X1TCl0ofLROJ5VDRz?=
- =?us-ascii?Q?yih0e0vs4nN6yDq76sBim3MO5pnB0bx+XlJqzGDR0LRqv0m1YMkQ4Po9G0nV?=
- =?us-ascii?Q?nNZDQuJitCNTeUBd0Xv+WMVAgt/YbDe9xt6FlmxqnXA1aFv5sRHPMFAiZ44J?=
- =?us-ascii?Q?U10ABRvL8XwTJwRjCisGZ2PGBH5bv6ywCKymmr8KDyoBVYlBYm/cO1NlOEal?=
- =?us-ascii?Q?4L6ZkpVLmdc0lrBpKRfi+ymhheK5I26fBcHRZ+ann5x5HbHJMVPjgXAWDXNz?=
- =?us-ascii?Q?eZu3Oy1fb/kVCKFWAeNNoVHRYD0oN8wla5Sedll2A9L/jjv5C1zCODRghQRs?=
- =?us-ascii?Q?EmBWq0rMU7ZCwj2SXzIhXp3FJFdYVPrqIt5qc0j8DbFZy0cuhtOFMjFd2Sbv?=
- =?us-ascii?Q?cl1GQ0DF9HjYZxLBdz5DoN3K+UURDjVUa9W8RvHRNzfFfaWNBe3dyYZkyffi?=
- =?us-ascii?Q?UYyjPplHNMn3YJQcwumpWymuiAx67C5XrMufFbTKQytcSqJJxLLZgfsSAC/8?=
- =?us-ascii?Q?DVRt7R6OhnXt0EkbFEXe+0/ARxnYuemo2Wp3zOPRl5M64yJB8z3CDk1y3seg?=
- =?us-ascii?Q?Nv30Wzqj5Bt4ciwGfsrcXjn+PJtNaFSWa4Gr6BWe?=
+	=?us-ascii?Q?p1LGj60xaUhCbxsdFFylqw8FQInrkGMLw9gZ343gggsNURg/MSdJCBJXo/eZ?=
+ =?us-ascii?Q?9RidnZej6MLe+4y/WKg9j1bCvh9MGrMqZ69bwJ/K4pQlL03aHewN+Z2+qJFZ?=
+ =?us-ascii?Q?MgT2+MbE/yKIYM0mJhT5R7nF5aqNOkZxGhROgfshiaK2/euwhHP+vyshLhMM?=
+ =?us-ascii?Q?kdr0KOclfHgmmYWCT0M/jaueCBnJiFlf1nXUuoK8IQwsVuMyWWhDf5rtj9gF?=
+ =?us-ascii?Q?1j5tXLmxJc8sCoZvYmrKBP+lDlYLSSVWTVGwaDr2bcOfoRGb0A04KRaaZXKJ?=
+ =?us-ascii?Q?quN3ljoDm7Il4QgDPOWszpFanJ0ikg2qP8J0QB/vLf9qzum3r+00ucv0v36K?=
+ =?us-ascii?Q?rU6W964OHoD8Ohf8gx9ioUwtc8g9lIgcxfg0HsbrSINxU7t0UfvPN89eywLL?=
+ =?us-ascii?Q?/6kSBeowp8i9zafxGmUwt4+QbxtK8Sv1FrGk6VgR6Sa/OJ2BArGl3MVma5X4?=
+ =?us-ascii?Q?s4fOmX3mti6jVmClah/zUzmrVOwuklETmfih0MvoHiEKYJqvDvZ8u24U4zwo?=
+ =?us-ascii?Q?YNWg/xGl++1OVgC1o2Um3XyX58ifgTcuIkyEjo2YGUY7CxZqbNaLBK8V741z?=
+ =?us-ascii?Q?q/c8H81p1WIDFJI7e+YQ7aMbnBx5pikTgc6Cq0c98z148uinKcN6bJ2CYWy0?=
+ =?us-ascii?Q?dP7AHqDiSO9VVaqGh/zH+lDTd0e8Uue4Xk2hO0LXgH9EC/XC86lsFBRc6IYf?=
+ =?us-ascii?Q?t3ghfPzf4h/A7C8Oh2dJMw/Nd3O53Ix4JdJqVlCLkd4CG10ZUBumMaQvR9Tb?=
+ =?us-ascii?Q?GjXZNYGrxg0LkPVe1MEFEBnZqPQj65frNi+UMbKvYKwMIYFF0Ff5oqtGgvak?=
+ =?us-ascii?Q?tESrRpka546g7Ev54RzInhgcv4UUaEdaJI9u5QA12Hu18tzFNXitIGuzzAU9?=
+ =?us-ascii?Q?RiRoBsWmeXt9ffliTjgY3ME29/g34E8EnvFFGgfVI+G10wDPg6mEUVmj+Wag?=
+ =?us-ascii?Q?UCLJ+GJlMCpJycU9/bbCQZIBLGE6A8bS97xQ40Y9b/+MSFxp1q1qV84R6Sqc?=
+ =?us-ascii?Q?TjrFYkfvHPcMut7+eFXfivHLF4PfUPR7cxRH8KEj/2oF/+B4b2c7CXzd43RJ?=
+ =?us-ascii?Q?fFvU1cxWk5JC4NYwiFsl2zT/uN85l+KPRuPJCodQlQd3pfc2e2iNj6pQ7Hu2?=
+ =?us-ascii?Q?T++ak291eUamV5xiXgVOeb0FvWrcOv5WYsCozbyChCLhOhODBkeY0pLib8Mw?=
+ =?us-ascii?Q?HLDIs665NibRVyvMvGDn2jM1kAJFPElRkzK5Z9RxjQ0Qi79Ez9dlV/xcXJdG?=
+ =?us-ascii?Q?ZP240AOuFUeh7ejYOFEKhE68qFGE1QILWuULIq01DlXviWhqjw0yZKGbipJC?=
+ =?us-ascii?Q?QV3+FnL6Olz4PHzWqXb3dlGNp+7GVE51BMam6qnzFdQLrQbuiZng7eOSRIeB?=
+ =?us-ascii?Q?IW0esjw5WIDn6cXy+iOYUnmB/6ha8/bkjhzWwGuUOY6gm6zEE9PJYfACP/22?=
+ =?us-ascii?Q?4NZ4zimcLFDO7xzdXzPYAEop4sPF7N2UNEi1ABXGV9GQr6vc2vHeDBzGp8pa?=
+ =?us-ascii?Q?oaGUtDnJckujj6U0mL8eiUlncnlPWZRzc7KXxOgZF00SA5gw9jMkpdY6M26Z?=
+ =?us-ascii?Q?tldI4Xb2wAsyItfTejRLpJzoN4e+MIA7xcewdFMM?=
 X-OriginatorOrg: kvaser.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cff211b3-1ffc-409f-dbd3-08dc97ac4b09
+X-MS-Exchange-CrossTenant-Network-Message-Id: a8347ca1-3c8d-43a0-1638-08dc97ac4de7
 X-MS-Exchange-CrossTenant-AuthSource: AS8P193MB2014.EURP193.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2024 19:55:42.9694
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2024 19:55:47.7772
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 73c42141-e364-4232-a80b-d96bd34367f3
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: u6cGex076itM6whleCvbF/8mzD9Vk4m3jisSkcNaz0tIb2KVP85gq+xKwvS9ztgdmQhQisQRIOKFj07MJzsziQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9P193MB1142
+X-MS-Exchange-CrossTenant-UserPrincipalName: CbN/mbBsMpE6UJsDW/Jd/YQw5wz00XwnVV2n64nCk0TBHbH8ssJ+dz0y8wKutISVaOwoM0mdMnlQ3ZXoeRgy1w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1P193MB0544
 
-Set hardware timestamp on transmitted packets.
+Remove KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP, since all devices got
+hardware timestamp support.
 
 Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
 ---
- drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb.h   |  1 -
+ .../net/can/usb/kvaser_usb/kvaser_usb_core.c  | 26 ++++++-------------
+ 2 files changed, 8 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-index 0be1cfe8d964..28a99d78ba8d 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-@@ -10,7 +10,6 @@
-  *  - Transition from CAN_STATE_ERROR_WARNING to CAN_STATE_ERROR_ACTIVE is only
-  *    reported after a call to do_get_berr_counter(), since firmware does not
-  *    distinguish between ERROR_WARNING and ERROR_ACTIVE.
-- *  - Hardware timestamps are not set for CAN Tx frames.
-  */
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
+index 5552140c0869..9fa02d8f49f9 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
+@@ -41,7 +41,6 @@
+ #define KVASER_USB_QUIRK_HAS_SILENT_MODE	BIT(0)
+ #define KVASER_USB_QUIRK_HAS_TXRX_ERRORS	BIT(1)
+ #define KVASER_USB_QUIRK_IGNORE_CLK_FREQ	BIT(2)
+-#define KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP	BIT(3)
  
- #include <linux/completion.h>
-@@ -1191,6 +1190,7 @@ static void kvaser_usb_hydra_tx_acknowledge(const struct kvaser_usb *dev,
- 	bool one_shot_fail = false;
- 	bool is_err_frame = false;
- 	u16 transid = kvaser_usb_hydra_get_cmd_transid(cmd);
-+	struct sk_buff *skb;
+ /* Device capabilities */
+ #define KVASER_USB_CAP_BERR_CAP			0x01
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+index 576ddf932f47..a4f32d57173a 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+@@ -94,29 +94,26 @@
+ #define USB_MINI_PCIE_1XCAN_PRODUCT_ID 0x011B
  
- 	priv = kvaser_usb_hydra_net_priv_from_cmd(dev, cmd);
- 	if (!priv)
-@@ -1217,6 +1217,9 @@ static void kvaser_usb_hydra_tx_acknowledge(const struct kvaser_usb *dev,
+ static const struct kvaser_usb_driver_info kvaser_usb_driver_info_hydra = {
+-	.quirks = KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP,
++	.quirks = 0,
+ 	.ops = &kvaser_usb_hydra_dev_ops,
+ };
  
- 	spin_lock_irqsave(&priv->tx_contexts_lock, irq_flags);
+ static const struct kvaser_usb_driver_info kvaser_usb_driver_info_usbcan = {
+ 	.quirks = KVASER_USB_QUIRK_HAS_TXRX_ERRORS |
+-		  KVASER_USB_QUIRK_HAS_SILENT_MODE |
+-		  KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP,
++		  KVASER_USB_QUIRK_HAS_SILENT_MODE,
+ 	.family = KVASER_USBCAN,
+ 	.ops = &kvaser_usb_leaf_dev_ops,
+ };
  
-+	skb = priv->can.echo_skb[context->echo_index];
-+	if (skb)
-+		skb_hwtstamps(skb)->hwtstamp = kvaser_usb_hydra_ktime_from_cmd(dev->cfg, cmd);
- 	len = can_get_echo_skb(priv->netdev, context->echo_index, NULL);
- 	context->echo_index = dev->max_tx_urbs;
- 	--priv->active_tx_contexts;
+ static const struct kvaser_usb_driver_info kvaser_usb_driver_info_leaf = {
+-	.quirks = KVASER_USB_QUIRK_IGNORE_CLK_FREQ |
+-		  KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP,
++	.quirks = KVASER_USB_QUIRK_IGNORE_CLK_FREQ,
+ 	.family = KVASER_LEAF,
+ 	.ops = &kvaser_usb_leaf_dev_ops,
+ };
+ 
+ static const struct kvaser_usb_driver_info kvaser_usb_driver_info_leaf_err = {
+ 	.quirks = KVASER_USB_QUIRK_HAS_TXRX_ERRORS |
+-		  KVASER_USB_QUIRK_IGNORE_CLK_FREQ |
+-		  KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP,
++		  KVASER_USB_QUIRK_IGNORE_CLK_FREQ,
+ 	.family = KVASER_LEAF,
+ 	.ops = &kvaser_usb_leaf_dev_ops,
+ };
+@@ -124,14 +121,13 @@ static const struct kvaser_usb_driver_info kvaser_usb_driver_info_leaf_err = {
+ static const struct kvaser_usb_driver_info kvaser_usb_driver_info_leaf_err_listen = {
+ 	.quirks = KVASER_USB_QUIRK_HAS_TXRX_ERRORS |
+ 		  KVASER_USB_QUIRK_HAS_SILENT_MODE |
+-		  KVASER_USB_QUIRK_IGNORE_CLK_FREQ |
+-		  KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP,
++		  KVASER_USB_QUIRK_IGNORE_CLK_FREQ,
+ 	.family = KVASER_LEAF,
+ 	.ops = &kvaser_usb_leaf_dev_ops,
+ };
+ 
+ static const struct kvaser_usb_driver_info kvaser_usb_driver_info_leafimx = {
+-	.quirks = KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP,
++	.quirks = 0,
+ 	.family = KVASER_LEAF,
+ 	.ops = &kvaser_usb_leaf_dev_ops,
+ };
+@@ -862,14 +858,8 @@ static int kvaser_usb_init_one(struct kvaser_usb *dev, int channel)
+ 
+ 	netdev->flags |= IFF_ECHO;
+ 
+-	netdev->netdev_ops = &kvaser_usb_netdev_ops;
+-	if (driver_info->quirks & KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP) {
+-		netdev->netdev_ops = &kvaser_usb_netdev_ops_hwts;
+-		netdev->ethtool_ops = &kvaser_usb_ethtool_ops_hwts;
+-	} else {
+-		netdev->netdev_ops = &kvaser_usb_netdev_ops;
+-		netdev->ethtool_ops = &kvaser_usb_ethtool_ops;
+-	}
++	netdev->netdev_ops = &kvaser_usb_netdev_ops_hwts;
++	netdev->ethtool_ops = &kvaser_usb_ethtool_ops_hwts;
+ 	SET_NETDEV_DEV(netdev, &dev->intf->dev);
+ 	netdev->dev_id = channel;
+ 
 -- 
 2.45.2
 
