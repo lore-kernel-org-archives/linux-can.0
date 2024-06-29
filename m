@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B25B14F606
-	for <linux-can@vger.kernel.org>; Sat, 29 Jun 2024 11:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B79DB4D9FB
+	for <linux-can@vger.kernel.org>; Sat, 29 Jun 2024 11:40:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719661227; cv=none; b=OxDFZR/uvpYtUKLGFXYWQy+4nQAPKFr8x9bqjBYpyGhG+EpXEFCCfpNetedzQuvA+VOnHq4hWu3gXViiHACzYTK4O3V9/pvW4LG58y6SJtmcje7nWVjjIT1uvN8ctjQ2I4/PmmN7xDrlUMQtJuxBOC6HQKr5P8BUmDh4DXpEus0=
+	t=1719661227; cv=none; b=MngUnDEcU6k8a3OB/RqsP/Bfx68v2XfoK2Mb5dSjEini7Xvxfj3781ArvaEC4mrujpyWi48ntTq2+CTLza7v1g72jTEQLvytC2P4KVTQF+Bj/UOCxavh24RUVMh0oC/R/70hfxpbFNFI75c1z2x7skt79tVQ8Iq3fh27Y7N9yZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1719661227; c=relaxed/simple;
-	bh=RqiBkh6sIXLxbQkYiSB8ly5wAaXJbNvqux0/EASPrEg=;
+	bh=g9DYHA9n/mS/01ocSc8ZuYgyvsNrXlDHFOkXI35SmPk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=W1H648MFRyuLVYUp0Q81fVWXUlGXabntwwkrHrOQxHYaxPvNH/+HxHrooFr+1/3NomeyA35r+tN2CfysgasVs9McU4IdyD6IUR6wrVJFWwp8vvueeFO2NXiRiJTrBpixoTg2lIWL/pBGKD9GdVydrzp24XhMjar4V03Tx/zA0MY=
+	 MIME-Version; b=ApfcHlNJVG67XpEEjUsVBgkZ33uZp05EIll+NZpo7EJ7FR2dCgL35/yxVPxwOvHMOesYvVLSiVzrmfJJR4ezMHZOY0xPrpC4dUOtVwgGpG7zeLKDGR2rCms/Be3sJd48gads2SHOVLew9VqPHl6yGLTXZi7F7+S39+/EvUt7CuM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,25 +18,25 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sNWRL-00035X-Ka
-	for linux-can@vger.kernel.org; Sat, 29 Jun 2024 13:40:23 +0200
+	id 1sNWRK-00034v-FG
+	for linux-can@vger.kernel.org; Sat, 29 Jun 2024 13:40:22 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sNWRK-005pYU-1P
-	for linux-can@vger.kernel.org; Sat, 29 Jun 2024 13:40:22 +0200
+	id 1sNWRJ-005pXl-JY
+	for linux-can@vger.kernel.org; Sat, 29 Jun 2024 13:40:21 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id B4F902F6463
+	by bjornoya.blackshift.org (Postfix) with SMTP id 3E8E32F6455
 	for <linux-can@vger.kernel.org>; Sat, 29 Jun 2024 11:40:21 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id D52D32F6434;
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 5BEDB2F642F;
 	Sat, 29 Jun 2024 11:40:19 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e5217d75;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id a8328be3;
 	Sat, 29 Jun 2024 11:40:18 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -48,9 +48,9 @@ Cc: davem@davemloft.net,
 	Wolfram Sang <wsa+renesas@sang-engineering.com>,
 	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 03/14] can: rcar_canfd: Remove superfluous parentheses in address calculations
-Date: Sat, 29 Jun 2024 13:36:17 +0200
-Message-ID: <20240629114017.1080160-4-mkl@pengutronix.de>
+Subject: [PATCH net-next 01/14] can: rcar_canfd: Simplify clock handling
+Date: Sat, 29 Jun 2024 13:36:15 +0200
+Message-ID: <20240629114017.1080160-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240629114017.1080160-1-mkl@pengutronix.de>
 References: <20240629114017.1080160-1-mkl@pengutronix.de>
@@ -68,74 +68,87 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-There is no need to wrap simple variables or multiplications inside
-parentheses.
+The main CAN clock is either the internal CANFD clock, or the external
+CAN clock.  Hence replace the two-valued enum by a simple boolean flag.
+Consolidate all CANFD clock handling inside a single branch.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/all/b5aee80895fa029070fd37d1d837cf1c0ecb52dc.1716973640.git.geert+renesas@glider.be
+Link: https://lore.kernel.org/all/2cf38c10b83c8e5c04d68b17a930b6d9dbf66f40.1716973640.git.geert+renesas@glider.be
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rcar/rcar_canfd.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/net/can/rcar/rcar_canfd.c | 24 +++++++-----------------
+ 1 file changed, 7 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index c2c1c47bcc7a..c919668bbe7a 100644
+index b82842718735..474840b58e8f 100644
 --- a/drivers/net/can/rcar/rcar_canfd.c
 +++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -627,28 +627,28 @@ static inline void rcar_canfd_update(u32 mask, u32 val, u32 __iomem *reg)
+@@ -508,12 +508,6 @@
+  */
+ #define RCANFD_CFFIFO_IDX		0
  
- static inline u32 rcar_canfd_read(void __iomem *base, u32 offset)
- {
--	return readl(base + (offset));
-+	return readl(base + offset);
- }
+-/* fCAN clock select register settings */
+-enum rcar_canfd_fcanclk {
+-	RCANFD_CANFDCLK = 0,		/* CANFD clock */
+-	RCANFD_EXTCLK,			/* Externally input clock */
+-};
+-
+ struct rcar_canfd_global;
  
- static inline void rcar_canfd_write(void __iomem *base, u32 offset, u32 val)
- {
--	writel(val, base + (offset));
-+	writel(val, base + offset);
- }
+ struct rcar_canfd_hw_info {
+@@ -545,8 +539,8 @@ struct rcar_canfd_global {
+ 	struct platform_device *pdev;	/* Respective platform device */
+ 	struct clk *clkp;		/* Peripheral clock */
+ 	struct clk *can_clk;		/* fCAN clock */
+-	enum rcar_canfd_fcanclk fcan;	/* CANFD or Ext clock */
+ 	unsigned long channels_mask;	/* Enabled channels mask */
++	bool extclk;			/* CANFD or Ext clock */
+ 	bool fdmode;			/* CAN FD or Classical CAN only mode */
+ 	struct reset_control *rstc1;
+ 	struct reset_control *rstc2;
+@@ -777,7 +771,7 @@ static void rcar_canfd_configure_controller(struct rcar_canfd_global *gpriv)
+ 		cfg |= RCANFD_GCFG_CMPOC;
  
- static void rcar_canfd_set_bit(void __iomem *base, u32 reg, u32 val)
- {
--	rcar_canfd_update(val, val, base + (reg));
-+	rcar_canfd_update(val, val, base + reg);
- }
+ 	/* Set External Clock if selected */
+-	if (gpriv->fcan != RCANFD_CANFDCLK)
++	if (gpriv->extclk)
+ 		cfg |= RCANFD_GCFG_DCS;
  
- static void rcar_canfd_clear_bit(void __iomem *base, u32 reg, u32 val)
- {
--	rcar_canfd_update(val, 0, base + (reg));
-+	rcar_canfd_update(val, 0, base + reg);
- }
+ 	rcar_canfd_set_bit(gpriv->base, RCANFD_GCFG, cfg);
+@@ -1941,16 +1935,12 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 			return dev_err_probe(dev, PTR_ERR(gpriv->can_clk),
+ 					     "cannot get canfd clock\n");
  
- static void rcar_canfd_update_bit(void __iomem *base, u32 reg,
- 				  u32 mask, u32 val)
- {
--	rcar_canfd_update(mask, val, base + (reg));
-+	rcar_canfd_update(mask, val, base + reg);
- }
+-		gpriv->fcan = RCANFD_CANFDCLK;
+-
++		/* CANFD clock may be further divided within the IP */
++		fcan_freq = clk_get_rate(gpriv->can_clk) / info->postdiv;
+ 	} else {
+-		gpriv->fcan = RCANFD_EXTCLK;
++		fcan_freq = clk_get_rate(gpriv->can_clk);
++		gpriv->extclk = true;
+ 	}
+-	fcan_freq = clk_get_rate(gpriv->can_clk);
+-
+-	if (gpriv->fcan == RCANFD_CANFDCLK)
+-		/* CANFD clock is further divided by (1/2) within the IP */
+-		fcan_freq /= info->postdiv;
  
- static void rcar_canfd_get_data(struct rcar_canfd_channel *priv,
-@@ -659,7 +659,7 @@ static void rcar_canfd_get_data(struct rcar_canfd_channel *priv,
- 	lwords = DIV_ROUND_UP(cf->len, sizeof(u32));
- 	for (i = 0; i < lwords; i++)
- 		*((u32 *)cf->data + i) =
--			rcar_canfd_read(priv->base, off + (i * sizeof(u32)));
-+			rcar_canfd_read(priv->base, off + i * sizeof(u32));
- }
+ 	addr = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(addr)) {
+@@ -2060,7 +2050,7 @@ static int rcar_canfd_probe(struct platform_device *pdev)
  
- static void rcar_canfd_put_data(struct rcar_canfd_channel *priv,
-@@ -669,7 +669,7 @@ static void rcar_canfd_put_data(struct rcar_canfd_channel *priv,
+ 	platform_set_drvdata(pdev, gpriv);
+ 	dev_info(dev, "global operational state (clk %d, fdmode %d)\n",
+-		 gpriv->fcan, gpriv->fdmode);
++		 gpriv->extclk, gpriv->fdmode);
+ 	return 0;
  
- 	lwords = DIV_ROUND_UP(cf->len, sizeof(u32));
- 	for (i = 0; i < lwords; i++)
--		rcar_canfd_write(priv->base, off + (i * sizeof(u32)),
-+		rcar_canfd_write(priv->base, off + i * sizeof(u32),
- 				 *((u32 *)cf->data + i));
- }
- 
+ fail_channel:
+
+base-commit: 94833addfaba89d12e5dbd82e350a692c00648ab
 -- 
 2.43.0
 
