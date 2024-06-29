@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B79DB4D9FB
-	for <linux-can@vger.kernel.org>; Sat, 29 Jun 2024 11:40:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D84A2502A9
+	for <linux-can@vger.kernel.org>; Sat, 29 Jun 2024 11:40:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719661227; cv=none; b=MngUnDEcU6k8a3OB/RqsP/Bfx68v2XfoK2Mb5dSjEini7Xvxfj3781ArvaEC4mrujpyWi48ntTq2+CTLza7v1g72jTEQLvytC2P4KVTQF+Bj/UOCxavh24RUVMh0oC/R/70hfxpbFNFI75c1z2x7skt79tVQ8Iq3fh27Y7N9yZI=
+	t=1719661227; cv=none; b=thAG3L0kNLxQZAUHdNY//bBODYAnjnj6LjqV0WBeqwLaa4RUOkQc7arKOpWqvqgYM0ILKwOAw4yqejI2tpdq1QLc6ymeGC/8HpieKrKv6CnoZA9wLHB82vCIcRStIU2FWPYFoGXDCNYGJiQmYxpWKTn+6DuEHqYc80ygIgJWHek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1719661227; c=relaxed/simple;
-	bh=g9DYHA9n/mS/01ocSc8ZuYgyvsNrXlDHFOkXI35SmPk=;
+	bh=TjOddUILW02R3/Fs8QFSjvvbSCdHBSjfH9hINvnLqaQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ApfcHlNJVG67XpEEjUsVBgkZ33uZp05EIll+NZpo7EJ7FR2dCgL35/yxVPxwOvHMOesYvVLSiVzrmfJJR4ezMHZOY0xPrpC4dUOtVwgGpG7zeLKDGR2rCms/Be3sJd48gads2SHOVLew9VqPHl6yGLTXZi7F7+S39+/EvUt7CuM=
+	 MIME-Version; b=MBwspchrMyIPdrcbGR/ApchTIVIWT8BuLZdkmYPkpOgsDqkg/mFHa52DGJhYw/mxHBKTXK3rLElJlIoiDbTFnBSHxYhu0/3HmHF64l7l9yDHi9Mb98fEh7DjAmxD/GpxKZl78BKxm41595iw+Qb5ht+YWbbLpP7SzfB2hUGzzww=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,25 +18,25 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sNWRK-00034v-FG
-	for linux-can@vger.kernel.org; Sat, 29 Jun 2024 13:40:22 +0200
+	id 1sNWRL-00036C-TK
+	for linux-can@vger.kernel.org; Sat, 29 Jun 2024 13:40:23 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sNWRJ-005pXl-JY
-	for linux-can@vger.kernel.org; Sat, 29 Jun 2024 13:40:21 +0200
+	id 1sNWRK-005pYo-9g
+	for linux-can@vger.kernel.org; Sat, 29 Jun 2024 13:40:22 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 3E8E32F6455
+	by bjornoya.blackshift.org (Postfix) with SMTP id F27852F646A
 	for <linux-can@vger.kernel.org>; Sat, 29 Jun 2024 11:40:21 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 5BEDB2F642F;
-	Sat, 29 Jun 2024 11:40:19 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 936D52F6443;
+	Sat, 29 Jun 2024 11:40:20 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id a8328be3;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4e667ca7;
 	Sat, 29 Jun 2024 11:40:18 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -44,13 +44,10 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 01/14] can: rcar_canfd: Simplify clock handling
-Date: Sat, 29 Jun 2024 13:36:15 +0200
-Message-ID: <20240629114017.1080160-2-mkl@pengutronix.de>
+Subject: [PATCH net-next 06/14] can: mcp251xfd: properly indent labels
+Date: Sat, 29 Jun 2024 13:36:20 +0200
+Message-ID: <20240629114017.1080160-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240629114017.1080160-1-mkl@pengutronix.de>
 References: <20240629114017.1080160-1-mkl@pengutronix.de>
@@ -66,89 +63,149 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+To fix the coding style, remove the whitespace in front of labels.
 
-The main CAN clock is either the internal CANFD clock, or the external
-CAN clock.  Hence replace the two-valued enum by a simple boolean flag.
-Consolidate all CANFD clock handling inside a single branch.
-
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/all/2cf38c10b83c8e5c04d68b17a930b6d9dbf66f40.1716973640.git.geert+renesas@glider.be
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rcar/rcar_canfd.c | 24 +++++++-----------------
- 1 file changed, 7 insertions(+), 17 deletions(-)
+ .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 34 +++++++++----------
+ .../net/can/spi/mcp251xfd/mcp251xfd-dump.c    |  2 +-
+ .../net/can/spi/mcp251xfd/mcp251xfd-regmap.c  |  2 +-
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c |  2 +-
+ 4 files changed, 20 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index b82842718735..474840b58e8f 100644
---- a/drivers/net/can/rcar/rcar_canfd.c
-+++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -508,12 +508,6 @@
-  */
- #define RCANFD_CFFIFO_IDX		0
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index c116d3255207..61e749f97650 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -791,7 +791,7 @@ static int mcp251xfd_chip_start(struct mcp251xfd_priv *priv)
  
--/* fCAN clock select register settings */
--enum rcar_canfd_fcanclk {
--	RCANFD_CANFDCLK = 0,		/* CANFD clock */
--	RCANFD_EXTCLK,			/* Externally input clock */
--};
--
- struct rcar_canfd_global;
- 
- struct rcar_canfd_hw_info {
-@@ -545,8 +539,8 @@ struct rcar_canfd_global {
- 	struct platform_device *pdev;	/* Respective platform device */
- 	struct clk *clkp;		/* Peripheral clock */
- 	struct clk *can_clk;		/* fCAN clock */
--	enum rcar_canfd_fcanclk fcan;	/* CANFD or Ext clock */
- 	unsigned long channels_mask;	/* Enabled channels mask */
-+	bool extclk;			/* CANFD or Ext clock */
- 	bool fdmode;			/* CAN FD or Classical CAN only mode */
- 	struct reset_control *rstc1;
- 	struct reset_control *rstc2;
-@@ -777,7 +771,7 @@ static void rcar_canfd_configure_controller(struct rcar_canfd_global *gpriv)
- 		cfg |= RCANFD_GCFG_CMPOC;
- 
- 	/* Set External Clock if selected */
--	if (gpriv->fcan != RCANFD_CANFDCLK)
-+	if (gpriv->extclk)
- 		cfg |= RCANFD_GCFG_DCS;
- 
- 	rcar_canfd_set_bit(gpriv->base, RCANFD_GCFG, cfg);
-@@ -1941,16 +1935,12 @@ static int rcar_canfd_probe(struct platform_device *pdev)
- 			return dev_err_probe(dev, PTR_ERR(gpriv->can_clk),
- 					     "cannot get canfd clock\n");
- 
--		gpriv->fcan = RCANFD_CANFDCLK;
--
-+		/* CANFD clock may be further divided within the IP */
-+		fcan_freq = clk_get_rate(gpriv->can_clk) / info->postdiv;
- 	} else {
--		gpriv->fcan = RCANFD_EXTCLK;
-+		fcan_freq = clk_get_rate(gpriv->can_clk);
-+		gpriv->extclk = true;
- 	}
--	fcan_freq = clk_get_rate(gpriv->can_clk);
--
--	if (gpriv->fcan == RCANFD_CANFDCLK)
--		/* CANFD clock is further divided by (1/2) within the IP */
--		fcan_freq /= info->postdiv;
- 
- 	addr = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(addr)) {
-@@ -2060,7 +2050,7 @@ static int rcar_canfd_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, gpriv);
- 	dev_info(dev, "global operational state (clk %d, fdmode %d)\n",
--		 gpriv->fcan, gpriv->fdmode);
-+		 gpriv->extclk, gpriv->fdmode);
  	return 0;
  
- fail_channel:
-
-base-commit: 94833addfaba89d12e5dbd82e350a692c00648ab
+- out_chip_stop:
++out_chip_stop:
+ 	mcp251xfd_dump(priv);
+ 	mcp251xfd_chip_stop(priv, CAN_STATE_STOPPED);
+ 
+@@ -1576,7 +1576,7 @@ static irqreturn_t mcp251xfd_irq(int irq, void *dev_id)
+ 		handled = IRQ_HANDLED;
+ 	} while (1);
+ 
+- out_fail:
++out_fail:
+ 	can_rx_offload_threaded_irq_finish(&priv->offload);
+ 
+ 	netdev_err(priv->ndev, "IRQ handler returned %d (intf=0x%08x).\n",
+@@ -1641,22 +1641,22 @@ static int mcp251xfd_open(struct net_device *ndev)
+ 
+ 	return 0;
+ 
+- out_free_irq:
++out_free_irq:
+ 	free_irq(spi->irq, priv);
+- out_destroy_workqueue:
++out_destroy_workqueue:
+ 	destroy_workqueue(priv->wq);
+- out_can_rx_offload_disable:
++out_can_rx_offload_disable:
+ 	can_rx_offload_disable(&priv->offload);
+ 	set_bit(MCP251XFD_FLAGS_DOWN, priv->flags);
+ 	mcp251xfd_timestamp_stop(priv);
+- out_transceiver_disable:
++out_transceiver_disable:
+ 	mcp251xfd_transceiver_disable(priv);
+- out_mcp251xfd_ring_free:
++out_mcp251xfd_ring_free:
+ 	mcp251xfd_ring_free(priv);
+- out_pm_runtime_put:
++out_pm_runtime_put:
+ 	mcp251xfd_chip_stop(priv, CAN_STATE_STOPPED);
+ 	pm_runtime_put(ndev->dev.parent);
+- out_close_candev:
++out_close_candev:
+ 	close_candev(ndev);
+ 
+ 	return err;
+@@ -1820,9 +1820,9 @@ mcp251xfd_register_get_dev_id(const struct mcp251xfd_priv *priv, u32 *dev_id,
+ 	*effective_speed_hz_slow = xfer[0].effective_speed_hz;
+ 	*effective_speed_hz_fast = xfer[1].effective_speed_hz;
+ 
+- out_kfree_buf_tx:
++out_kfree_buf_tx:
+ 	kfree(buf_tx);
+- out_kfree_buf_rx:
++out_kfree_buf_rx:
+ 	kfree(buf_rx);
+ 
+ 	return err;
+@@ -1936,13 +1936,13 @@ static int mcp251xfd_register(struct mcp251xfd_priv *priv)
+ 
+ 	return 0;
+ 
+- out_unregister_candev:
++out_unregister_candev:
+ 	unregister_candev(ndev);
+- out_chip_sleep:
++out_chip_sleep:
+ 	mcp251xfd_chip_sleep(priv);
+- out_runtime_disable:
++out_runtime_disable:
+ 	pm_runtime_disable(ndev->dev.parent);
+- out_runtime_put_noidle:
++out_runtime_put_noidle:
+ 	pm_runtime_put_noidle(ndev->dev.parent);
+ 	mcp251xfd_clks_and_vdd_disable(priv);
+ 
+@@ -2155,9 +2155,9 @@ static int mcp251xfd_probe(struct spi_device *spi)
+ 
+ 	return 0;
+ 
+- out_can_rx_offload_del:
++out_can_rx_offload_del:
+ 	can_rx_offload_del(&priv->offload);
+- out_free_candev:
++out_free_candev:
+ 	spi->max_speed_hz = priv->spi_max_speed_hz_orig;
+ 
+ 	free_candev(ndev);
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-dump.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-dump.c
+index 004eaf96262b..050321345304 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-dump.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-dump.c
+@@ -94,7 +94,7 @@ static void mcp251xfd_dump_registers(const struct mcp251xfd_priv *priv,
+ 		kfree(buf);
+ 	}
+ 
+- out:
++out:
+ 	mcp251xfd_dump_header(iter, MCP251XFD_DUMP_OBJECT_TYPE_REG, reg);
+ }
+ 
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
+index 92b7bc7f14b9..65150e762007 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
+@@ -397,7 +397,7 @@ mcp251xfd_regmap_crc_read(void *context,
+ 
+ 		return err;
+ 	}
+- out:
++out:
+ 	memcpy(val_buf, buf_rx->data, val_len);
+ 
+ 	return 0;
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c
+index e5bd57b65aaf..ee7028c027b5 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c
+@@ -216,7 +216,7 @@ int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
+ 		total_frame_len += frame_len;
+ 	}
+ 
+- out_netif_wake_queue:
++out_netif_wake_queue:
+ 	len = i;	/* number of handled goods TEFs */
+ 	if (len) {
+ 		struct mcp251xfd_tef_ring *ring = priv->tef;
 -- 
 2.43.0
 
