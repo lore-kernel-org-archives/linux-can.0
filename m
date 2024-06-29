@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FCE173455
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32BDE6EB58
 	for <linux-can@vger.kernel.org>; Sat, 29 Jun 2024 11:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719661231; cv=none; b=ZSsqK5Fn71zswQPQf4cVOok+dWHjCotC5OfQr4eRKk65LjwmxG/a/lrzpWQpIcJuTH6D6bD4OFllg+KO6hqJmFtTpKnj9VUulnrG6mYCAyTWCnToxfj1mNfHg+oBBqi2LjhubofooblMWRBGINv1w5mnZATgOm/TB8IMwdd4xkI=
+	t=1719661231; cv=none; b=pnboKUQDZB9wwP/MdlC5ATAGDiOt+U9smCft9eQZFnfQmIQ00c57Wqe9kkIso8KjLux+o7xnIr8GDqfogZWoKweXh6piaBjOyfS1AH7w/zzj+QDwTXlxkng0376rmPBIbM+SpDXBmAJIQmfJfqw5J90Q5Ts5wGvZEf73mVAZonw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1719661231; c=relaxed/simple;
-	bh=EhTqBcBpcNytp4UuzcSfnEgHzgPnCMMsLYrmZeiiokU=;
+	bh=ZDP6KeBtLvgrOpWOtjOPuqvLFbtJ8+gsRucxJz1UV+0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=POYawOXeVkLmsuucEEI5xIKO9N1GfNollmnY4Muuhim5SAb68jDHbGYIo63j2P3kMFTCoIv0Cs8NzLHlPt58L6/wEb/EMmIbvhOeiX3wjDWdbSJylM//7Wwz6b5Qfim0bDI2/apiETjqj520wsqoucPfZBcwuoegHgwI/fR6YuA=
+	 MIME-Version:Content-Type; b=lPNdzBhN6dFsCef5F92SuUbaENE6Upx3XcmFNMjHC+d18CT5lCqQgOw++cCe9jW3SXZN3Ge2Rv5OA9vYK1EsIGcyYMdL+jxl8THp1131ioOvP+nCz0zxMmW1yi1raefq/FJgFdHrwDuKcn+ADYrCuS/Dx65EBZwxUQvZIlNmcXI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,26 +18,26 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sNWRO-00039z-QG
+	id 1sNWRO-00039T-Bv
 	for linux-can@vger.kernel.org; Sat, 29 Jun 2024 13:40:26 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sNWRM-005pcQ-Jw
+	id 1sNWRM-005pbq-72
 	for linux-can@vger.kernel.org; Sat, 29 Jun 2024 13:40:24 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 44B7F2F64AB
-	for <linux-can@vger.kernel.org>; Sat, 29 Jun 2024 11:40:24 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with SMTP id DB2F02F64A5
+	for <linux-can@vger.kernel.org>; Sat, 29 Jun 2024 11:40:23 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 7ED802F647D;
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 0BBA82F646D;
 	Sat, 29 Jun 2024 11:40:22 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 5a3e33d4;
-	Sat, 29 Jun 2024 11:40:19 +0000 (UTC)
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 508a220b;
+	Sat, 29 Jun 2024 11:40:18 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -47,9 +47,9 @@ Cc: davem@davemloft.net,
 	Marc Kleine-Budde <mkl@pengutronix.de>,
 	=?UTF-8?q?Stefan=20Alth=C3=B6fer?= <Stefan.Althoefer@janztec.com>,
 	Thomas Kopp <thomas.kopp@microchip.com>
-Subject: [PATCH net-next 14/14] can: mcp251xfd: tef: update workaround for erratum DS80000789E 6 of mcp2518fd
-Date: Sat, 29 Jun 2024 13:36:28 +0200
-Message-ID: <20240629114017.1080160-15-mkl@pengutronix.de>
+Subject: [PATCH net-next 12/14] can: mcp251xfd: rx: add workaround for erratum DS80000789E 6 of mcp2518fd
+Date: Sat, 29 Jun 2024 13:36:26 +0200
+Message-ID: <20240629114017.1080160-13-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240629114017.1080160-1-mkl@pengutronix.de>
 References: <20240629114017.1080160-1-mkl@pengutronix.de>
@@ -66,140 +66,135 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-This patch updates the workaround for a problem similar to erratum
-DS80000789E 6 of the mcp2518fd, the other variants of the chip
-family (mcp2517fd and mcp251863) are probably also affected.
+This patch tries to works around erratum DS80000789E 6 of the
+mcp2518fd, the other variants of the chip family (mcp2517fd and
+mcp251863) are probably also affected.
 
-Erratum DS80000789E 6 says "reading of the FIFOCI bits in the FIFOSTA
-register for an RX FIFO may be corrupted". However observation shows
-that this problem is not limited to RX FIFOs but also effects the TEF
-FIFO.
+In the bad case, the driver reads a too large head index. In the
+original code, the driver always trusted the read value, which caused
+old, already processed CAN frames or new, incompletely written CAN
+frames to be (re-)processed.
 
-In the bad case, the driver reads a too large head index. As the FIFO
-is implemented as a ring buffer, this results in re-handling old CAN
-transmit complete events.
+To work around this issue, keep a per FIFO timestamp [1] of the last
+valid received CAN frame and compare against the timestamp of every
+received CAN frame. If an old CAN frame is detected, abort the
+iteration and mark the number of valid CAN frames as processed in the
+chip by incrementing the FIFO's tail index.
 
-Every transmit complete event contains with a sequence number that
-equals to the sequence number of the corresponding TX request. This
-way old TX complete events can be detected.
+Further tests showed that this workaround can recognize old CAN
+frames, but a small time window remains in which partially written CAN
+frames [2] are not recognized but then processed. These CAN frames
+have the correct data and time stamps, but the DLC has not yet been
+updated.
 
-If the original driver detects a non matching sequence number, it
-prints an info message and tries again later. As wrong sequence
-numbers can be explained by the erratum DS80000789E 6, demote the info
-message to debug level, streamline the code and update the comments.
+[1] As the raw timestamp overflows every 107 seconds (at the usual
+    clock rate of 40 MHz) convert it to nanoseconds with the
+    timecounter framework and use this to detect stale CAN frames.
 
-Keep the behavior: If an old CAN TX complete event is detected, abort
-the iteration and mark the number of valid CAN TX complete events as
-processed in the chip by incrementing the FIFO's tail index.
-
-Cc: Stefan Althöfer <Stefan.Althoefer@janztec.com>
-Cc: Thomas Kopp <thomas.kopp@microchip.com>
+Link: https://lore.kernel.org/all/BL3PR11MB64844C1C95CA3BDADAE4D8CCFBC99@BL3PR11MB6484.namprd11.prod.outlook.com [2]
+Reported-by: Stefan Althöfer <Stefan.Althoefer@janztec.com>
+Closes: https://lore.kernel.org/all/FR0P281MB1966273C216630B120ABB6E197E89@FR0P281MB1966.DEUP281.PROD.OUTLOOK.COM
+Tested-by: Stefan Althöfer <Stefan.Althoefer@janztec.com>
+Tested-by: Thomas Kopp <thomas.kopp@microchip.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c | 71 +++++++------------
- 1 file changed, 27 insertions(+), 44 deletions(-)
+ .../net/can/spi/mcp251xfd/mcp251xfd-ring.c    |  1 +
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c  | 32 +++++++++++++++++--
+ drivers/net/can/spi/mcp251xfd/mcp251xfd.h     |  3 ++
+ 3 files changed, 33 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c
-index 3d9c348ad868..f732556d233a 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c
-@@ -60,56 +60,39 @@ static int mcp251xfd_check_tef_tail(const struct mcp251xfd_priv *priv)
- 	return 0;
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
+index b308a375e26e..8464fc4f37d0 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
+@@ -206,6 +206,7 @@ mcp251xfd_ring_init_rx(struct mcp251xfd_priv *priv, u16 *base, u8 *fifo_nr)
+ 	int i, j;
+ 
+ 	mcp251xfd_for_each_rx_ring(priv, rx_ring, i) {
++		rx_ring->last_valid = timecounter_read(&priv->tc);
+ 		rx_ring->head = 0;
+ 		rx_ring->tail = 0;
+ 		rx_ring->base = *base;
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c
+index a79e6c661ecc..fe897f3e4c12 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-rx.c
+@@ -159,8 +159,6 @@ mcp251xfd_hw_rx_obj_to_skb(const struct mcp251xfd_priv *priv,
+ 
+ 	if (!(hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_RTR))
+ 		memcpy(cfd->data, hw_rx_obj->data, cfd->len);
+-
+-	mcp251xfd_skb_set_timestamp_raw(priv, skb, hw_rx_obj->ts);
  }
  
--static int
--mcp251xfd_handle_tefif_recover(const struct mcp251xfd_priv *priv, const u32 seq)
--{
--	const struct mcp251xfd_tx_ring *tx_ring = priv->tx;
--	u32 tef_sta;
--	int err;
--
--	err = regmap_read(priv->map_reg, MCP251XFD_REG_TEFSTA, &tef_sta);
--	if (err)
--		return err;
--
--	if (tef_sta & MCP251XFD_REG_TEFSTA_TEFOVIF) {
--		netdev_err(priv->ndev,
--			   "Transmit Event FIFO buffer overflow.\n");
--		return -ENOBUFS;
--	}
--
--	netdev_info(priv->ndev,
--		    "Transmit Event FIFO buffer %s. (seq=0x%08x, tef_tail=0x%08x, tef_head=0x%08x, tx_head=0x%08x).\n",
--		    tef_sta & MCP251XFD_REG_TEFSTA_TEFFIF ?
--		    "full" : tef_sta & MCP251XFD_REG_TEFSTA_TEFNEIF ?
--		    "not empty" : "empty",
--		    seq, priv->tef->tail, priv->tef->head, tx_ring->head);
--
--	/* The Sequence Number in the TEF doesn't match our tef_tail. */
--	return -EAGAIN;
--}
--
  static int
- mcp251xfd_handle_tefif_one(struct mcp251xfd_priv *priv,
- 			   const struct mcp251xfd_hw_tef_obj *hw_tef_obj,
- 			   unsigned int *frame_len_ptr)
- {
+@@ -171,8 +169,26 @@ mcp251xfd_handle_rxif_one(struct mcp251xfd_priv *priv,
  	struct net_device_stats *stats = &priv->ndev->stats;
-+	u32 seq, tef_tail_masked, tef_tail;
  	struct sk_buff *skb;
--	u32 seq, seq_masked, tef_tail_masked, tef_tail;
+ 	struct canfd_frame *cfd;
++	u64 timestamp;
+ 	int err;
  
--	seq = FIELD_GET(MCP251XFD_OBJ_FLAGS_SEQ_MCP2518FD_MASK,
-+	 /* Use the MCP2517FD mask on the MCP2518FD, too. We only
-+	  * compare 7 bits, this is enough to detect old TEF objects.
-+	  */
-+	seq = FIELD_GET(MCP251XFD_OBJ_FLAGS_SEQ_MCP2517FD_MASK,
- 			hw_tef_obj->flags);
--
--	/* Use the MCP2517FD mask on the MCP2518FD, too. We only
--	 * compare 7 bits, this should be enough to detect
--	 * net-yet-completed, i.e. old TEF objects.
--	 */
--	seq_masked = seq &
--		field_mask(MCP251XFD_OBJ_FLAGS_SEQ_MCP2517FD_MASK);
- 	tef_tail_masked = priv->tef->tail &
- 		field_mask(MCP251XFD_OBJ_FLAGS_SEQ_MCP2517FD_MASK);
--	if (seq_masked != tef_tail_masked)
--		return mcp251xfd_handle_tefif_recover(priv, seq);
-+
 +	/* According to mcp2518fd erratum DS80000789E 6. the FIFOCI
-+	 * bits of a FIFOSTA register, here the TX FIFO tail index
-+	 * might be corrupted and we might process past the TEF FIFO's
++	 * bits of a FIFOSTA register, here the RX FIFO head index
++	 * might be corrupted and we might process past the RX FIFO's
 +	 * head into old CAN frames.
 +	 *
-+	 * Compare the sequence number of the currently processed CAN
-+	 * frame with the expected sequence number. Abort with
-+	 * -EBADMSG if an old CAN frame is detected.
++	 * Compare the timestamp of currently processed CAN frame with
++	 * last valid frame received. Abort with -EBADMSG if an old
++	 * CAN frame is detected.
 +	 */
-+	if (seq != tef_tail_masked) {
-+		netdev_dbg(priv->ndev, "%s: chip=0x%02x ring=0x%02x\n", __func__,
-+			   seq, tef_tail_masked);
-+		stats->tx_fifo_errors++;
++	timestamp = timecounter_cyc2time(&priv->tc, hw_rx_obj->ts);
++	if (timestamp <= ring->last_valid) {
++		stats->rx_fifo_errors++;
 +
 +		return -EBADMSG;
 +	}
++	ring->last_valid = timestamp;
++
+ 	if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_FDF)
+ 		skb = alloc_canfd_skb(priv->ndev, &cfd);
+ 	else
+@@ -183,6 +199,7 @@ mcp251xfd_handle_rxif_one(struct mcp251xfd_priv *priv,
+ 		return 0;
+ 	}
  
- 	tef_tail = mcp251xfd_get_tef_tail(priv);
- 	skb = priv->can.echo_skb[tef_tail];
-@@ -223,12 +206,12 @@ int mcp251xfd_handle_tefif(struct mcp251xfd_priv *priv)
- 		unsigned int frame_len = 0;
++	mcp251xfd_skb_set_timestamp(skb, timestamp);
+ 	mcp251xfd_hw_rx_obj_to_skb(priv, hw_rx_obj, skb);
+ 	err = can_rx_offload_queue_timestamp(&priv->offload, skb, hw_rx_obj->ts);
+ 	if (err)
+@@ -265,7 +282,16 @@ mcp251xfd_handle_rxif_ring(struct mcp251xfd_priv *priv,
+ 			err = mcp251xfd_handle_rxif_one(priv, ring,
+ 							(void *)hw_rx_obj +
+ 							i * ring->obj_size);
+-			if (err)
++
++			/* -EBADMSG means we're affected by mcp2518fd
++			 * erratum DS80000789E 6., i.e. the timestamp
++			 * in the RX object is older that the last
++			 * valid received CAN frame. Don't process any
++			 * further and mark processed frames as good.
++			 */
++			if (err == -EBADMSG)
++				return mcp251xfd_handle_rxif_ring_uinc(priv, ring, i);
++			else if (err)
+ 				return err;
+ 		}
  
- 		err = mcp251xfd_handle_tefif_one(priv, &hw_tef_obj[i], &frame_len);
--		/* -EAGAIN means the Sequence Number in the TEF
--		 * doesn't match our tef_tail. This can happen if we
--		 * read the TEF objects too early. Leave loop let the
--		 * interrupt handler call us again.
-+		/* -EBADMSG means we're affected by mcp2518fd erratum
-+		 * DS80000789E 6., i.e. the Sequence Number in the TEF
-+		 * doesn't match our tef_tail. Don't process any
-+		 * further and mark processed frames as good.
- 		 */
--		if (err == -EAGAIN)
-+		if (err == -EBADMSG)
- 			goto out_netif_wake_queue;
- 		if (err)
- 			return err;
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+index 453a2b193c75..d32ece3d7aee 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
+@@ -552,6 +552,9 @@ struct mcp251xfd_rx_ring {
+ 	unsigned int head;
+ 	unsigned int tail;
+ 
++	/* timestamp of the last valid received CAN frame */
++	u64 last_valid;
++
+ 	u16 base;
+ 	u8 nr;
+ 	u8 fifo_nr;
 -- 
 2.43.0
 
