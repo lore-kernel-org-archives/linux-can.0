@@ -1,28 +1,27 @@
-Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazon11023137.outbound.protection.outlook.com [52.101.67.137])
+Received: from AM0PR83CU005.outbound.protection.outlook.com (mail-westeuropeazon11020116.outbound.protection.outlook.com [52.101.69.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4689F4688;
-	Wed, 17 Jul 2024 21:44:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.67.137
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BD421822FD;
+	Wed, 17 Jul 2024 21:44:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.69.116
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721252657; cv=fail; b=p1HlGk8sP7LAjFKkuJyXJNKDfPW4P1qpm89f2k/6deOpcUutro1EFc80BPqbJku9MmY2M4n7yWfbl0fq2vdMAZV148p3XFLj99tt9lGOVr774zMltfy1t93EejnJ/606dEEcJCBJ+ddujOPp1i/7plKHYp4fSgdqxRJRKpZlc9s=
+	t=1721252657; cv=fail; b=nvgfl0n7mV7liNLNfOPPAMMxBMeqNPplk0Q51VLeNHrIZefAufOo2gK0pH8G9k0Xt4aKBXKSLPk8gZpKYlvXc7Y1qcrx00Vp+iwlUgpby58sZIHhYbceRqVZ5nG5aDM9036vLUy9MZAxr2fJ5HVj301bz4Eqnw/DdfaPP3Pl9a8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1721252657; c=relaxed/simple;
-	bh=iBuU0KgkP5loNvI9ehGVm8Olu21jZYbjftYW2u+nLvM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XX+Ogj5E+sviZTOnzF4bqHo15wU/bVo4LVc3vTeGV4GuFVcHUtE2SGJ9Csvgn8ObvsPJQsBT7NjjE51/cqLxsygpHC3xgll8dpY5bSZs9fJdMSeXDYeMCZN6JGay0LaJukSXsnCLcOBXx8XB4Cb7lrcXEPGigZjSK9sx9k1q7rM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=esd.eu; spf=pass smtp.mailfrom=esd.eu; dkim=pass (1024-bit key) header.d=esdhannover.onmicrosoft.com header.i=@esdhannover.onmicrosoft.com header.b=HnmoEQ6b; arc=fail smtp.client-ip=52.101.67.137
+	bh=ceqHBvgFTTVoja0GTY7EDYCXDxhPJ6u4UUVub3Sw3Cw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=i9rJMIFgYmSsEwjzt9l5Km1IY3V3R8LMyfu0JeJUB/E9UTrBkQK06owqAxTd4ndA3YYQ7WI5taamvI2tkOXMdELnPcT+xruwJsBqzwQS5ah4dII0TQSebNo4kRI5Y1WMO/OYzaLo8hD911MbnOATBwp+lTV4pLl1T3R0p2Y8s9s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=esd.eu; spf=pass smtp.mailfrom=esd.eu; dkim=pass (1024-bit key) header.d=esdhannover.onmicrosoft.com header.i=@esdhannover.onmicrosoft.com header.b=AJDXwqS0; arc=fail smtp.client-ip=52.101.69.116
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=esd.eu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=esd.eu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=esdhannover.onmicrosoft.com header.i=@esdhannover.onmicrosoft.com header.b="HnmoEQ6b"
+	dkim=pass (1024-bit key) header.d=esdhannover.onmicrosoft.com header.i=@esdhannover.onmicrosoft.com header.b="AJDXwqS0"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=W1nKm0aGduJvObZnGvyNKcMYj6XX/r79L863PsmrcZtiQuxIaioeodwdtSuWqGgQ51AJ+c5NXQ5xd6ShjDyKb6rSCm/EYjMl5KILa2OZyo8HuGAAtksEYgzl/hqB0wQNRg00PfPX5fhiy5o0mA5yVFf7cU41ElcrOW9Xz+PIL9cgTFzpAepxopP/zSvGCIA5UqeXBGk1gadl5D2U2csQKrAKTiF+2vaDOAVp7fa6mEgsIfKKZWlVKpZ2yXqikLvAOg8FVNrzbMXso7BiNJUoygA7qzSpqVILcHxnqpRp+g+BPVVvTDwvXx6LZfoBQKtx0Ta+E6yr7jqvzNubqQ7Jnw==
+ b=gThYnNHaJwCb4IOtev3ZUCe9eCmfaYAPnKW5aybsSSkgTvvogA0/thRF0KbcMHwwDhQXu3pX/R5M1X1At4HUDOEdb+yFxuhArjusXGdW5Qaw2d92IMZvFk9932HNX8Wk33sGLhX3awOe0LfTY2NYYUi4lCA+xOKEGsbfC0+4W+h6wMhFR66u0LkSPLTImCd//BrwGmwOq0YyR+Fj3mCxATem7WiQyrxotSktppnrWCfDAptem4o3yAkixM2qScOOyDpcHIQhiQveK5XlA4Rer90ovhKj8X/Q1tLuypvIAvbblWVOeVrH1z+GZG8GSLlnlHWMiAflITr7c1Ps157ujA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hLB1l7TZKzTbV5W/Z74Yx3nlK05AboEEchJ6yWSO0m8=;
- b=i1PvgIoR4y/w5ChLzosRNXg2NDY4sL00maC3xRU0n/xO+ndiNenIOKQ7eNSVOzIc45eK9R5e2O1z5cmV4nxS5k+irR3xb2FrynXSJ4XXMLjqh2+GMY5o/6pOZQo3oRPR5sWSuyymb8/5oohGqLK5cJKZHJqHXcPgk9K5aXgxaZz9KO47YMA4ZtJjvQWeZZw4gEKApBsNQpqJM/VS8HhHzeVucx1U0L8kqSJ1GgHEvGtekf0pFriiAFPlsgXa6o9a4ONpjfbveM/HNxt+NV01uledVKNZfDjWDa83l8p51rTqcaqju5u8QSVfRwnLGJN9vf3mR1gWxBHdtIqNbEtiKw==
+ bh=1fhRy3kzIVOPN5Yn/l85kLNce7Ucr6tPCMQP+nU1VoE=;
+ b=OftNLudHVJgxBFGmoQenkVJURgCVkNKRwUQt9joDaJEdAnNOCfQL61ZvFTW7kNyWo4zYiHuRX+t7jkA1i4/ShgELRenH9cB8WBd9qW1k/+816k87m1F1lqAdIqibw0xO8jTAwIt7PvYTnDF2qEScS4Zl/bYPYgYo9A7lIuxs38Nl2C635MvtHknxmGIBGD7iQeYSObupnVoni5RzKrXcfNlvJ/bLS7aNJKH7kUCMcbNz/cK4jvpV/SkoJbec5jTnmgL2CpqeWMVns0UsOqIdgSN883FQmtYsNkbn0ca51WHEbX7hALYhCDRdA7UToCzLZuj1XnBYz4cRq03fni6rBg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
  is 80.151.164.27) smtp.rcpttodomain=davemloft.net smtp.mailfrom=esd.eu;
  dmarc=fail (p=none sp=none pct=100) action=none header.from=esd.eu; dkim=none
@@ -30,17 +29,17 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=esdhannover.onmicrosoft.com; s=selector1-esdhannover-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hLB1l7TZKzTbV5W/Z74Yx3nlK05AboEEchJ6yWSO0m8=;
- b=HnmoEQ6blubqwEFrZCsqLZDNA+qTV2XCnkyu86ZVtCUW1+NIeeXBFSjpFKMQqSlb9yN3BXvmq4bEAJ8dy5hcTexGd9YOZVg7ue5pQ03BhIZ0mXPMN+Aff97NedD+ykX4M8zoJZDn5DAjYlLG++wa9PCeEZT1t1Sx9h6ekbSPiSs=
-Received: from AS4P191CA0053.EURP191.PROD.OUTLOOK.COM (2603:10a6:20b:657::29)
- by DU2PR03MB10163.eurprd03.prod.outlook.com (2603:10a6:10:49d::10) with
+ bh=1fhRy3kzIVOPN5Yn/l85kLNce7Ucr6tPCMQP+nU1VoE=;
+ b=AJDXwqS0vtLtJaz28hDgFICjJluPKmhbwMTLfVMsVuScu/fAJLxTZrgl0Kgi1drAE4W4YS0VnvciJdP5qhI4ovwOic9HGljr87nn3GX0lNcbvLZcno+eNqqxxHDT+1aRJdyqq5hmSo2i3caa3ff1jGBH2wd3wVj1jT4IkXT1Wgk=
+Received: from AM6PR02CA0034.eurprd02.prod.outlook.com (2603:10a6:20b:6e::47)
+ by GV1PR03MB10385.eurprd03.prod.outlook.com (2603:10a6:150:170::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7762.29; Wed, 17 Jul
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7762.31; Wed, 17 Jul
  2024 21:44:10 +0000
-Received: from AMS0EPF00000193.eurprd05.prod.outlook.com
- (2603:10a6:20b:657:cafe::b3) by AS4P191CA0053.outlook.office365.com
- (2603:10a6:20b:657::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7784.16 via Frontend
+Received: from AM2PEPF0001C708.eurprd05.prod.outlook.com
+ (2603:10a6:20b:6e:cafe::8c) by AM6PR02CA0034.outlook.office365.com
+ (2603:10a6:20b:6e::47) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7784.18 via Frontend
  Transport; Wed, 17 Jul 2024 21:44:10 +0000
 X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
  80.151.164.27) smtp.mailfrom=esd.eu; dkim=none (message not signed)
@@ -48,14 +47,14 @@ X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
 Received-SPF: SoftFail (protection.outlook.com: domain of transitioning esd.eu
  discourages use of 80.151.164.27 as permitted sender)
 Received: from esd-s7.esd (80.151.164.27) by
- AMS0EPF00000193.mail.protection.outlook.com (10.167.16.212) with Microsoft
+ AM2PEPF0001C708.mail.protection.outlook.com (10.167.16.196) with Microsoft
  SMTP Server id 15.20.7784.11 via Frontend Transport; Wed, 17 Jul 2024
  21:44:09 +0000
-Received: from debby.esd.local (jenkins.esd [10.0.0.190])
-	by esd-s7.esd (Postfix) with ESMTPS id 8B2287C16CB;
+Received: from debby.esd.local (debby [10.0.0.190])
+	by esd-s7.esd (Postfix) with ESMTPS id 883F87C16C8;
 	Wed, 17 Jul 2024 23:44:09 +0200 (CEST)
 Received: by debby.esd.local (Postfix, from userid 2044)
-	id 7EEA52E0166; Wed, 17 Jul 2024 23:44:09 +0200 (CEST)
+	id 764072E014B; Wed, 17 Jul 2024 23:44:09 +0200 (CEST)
 From: =?UTF-8?q?Stefan=20M=C3=A4tje?= <stefan.maetje@esd.eu>
 To: Marc Kleine-Budde <mkl@pengutronix.de>,
 	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
@@ -67,12 +66,10 @@ Cc: netdev@vger.kernel.org,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>
-Subject: [PATCH 2/2] can: esd_402_pci: Add support for one-shot mode
-Date: Wed, 17 Jul 2024 23:44:09 +0200
-Message-Id: <20240717214409.3934333-3-stefan.maetje@esd.eu>
+Subject: [PATCH 0/2] can: esd_402_pci: Do cleanup; Add one-shot mode
+Date: Wed, 17 Jul 2024 23:44:07 +0200
+Message-Id: <20240717214409.3934333-1-stefan.maetje@esd.eu>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240717214409.3934333-1-stefan.maetje@esd.eu>
-References: <20240717214409.3934333-1-stefan.maetje@esd.eu>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -83,144 +80,74 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AMS0EPF00000193:EE_|DU2PR03MB10163:EE_
-X-MS-Office365-Filtering-Correlation-Id: bc644768-dd9b-4bfd-a9ee-08dca6a99761
+X-MS-TrafficTypeDiagnostic: AM2PEPF0001C708:EE_|GV1PR03MB10385:EE_
+X-MS-Office365-Filtering-Correlation-Id: 97864543-2fdb-4c64-476c-08dca6a99760
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|7416014|376014|36860700013|82310400026;
+	BCL:0;ARA:13230040|1800799024|36860700013|7416014|376014|82310400026;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?aEI4UFlDMXB6VDM4aFVBVEJnb2ZZdlBRbFlpNTVGdytvbHlMMGZSenlPanh3?=
- =?utf-8?B?UVpURXRvTStqZUJRVVc4a1ROS0xHTjRxN2E4NGJ1eGpnWjcyMUpienZQQXBH?=
- =?utf-8?B?N1ZyNmdOSmZINHE5a3VTR0ErdmZONVlzTUg1T1g2TWx3R3BNSjVVdEZTc0xG?=
- =?utf-8?B?SXpkNHJ5akxpYVR2TlJqNTY1WlU0RU4zQTVFZWg2OGZ1UVQ0Ym9FdUt3UXBO?=
- =?utf-8?B?TlFjZTBFRFZPYXZ6QjRhOHZZclF0UFBWSGU4bTF3OWVwY3owSWZCelFYQVls?=
- =?utf-8?B?RkU5RCtJY3ppblZDZ0xuYWRLMkxGNGF6K09KVEJBVXpJMzg2YWFyZ014bnJI?=
- =?utf-8?B?bmp6OTVJS0VHQkVCclB2M0k4cXVBNnFRUStnWUZkSktNVDJtanF4NDl5THpR?=
- =?utf-8?B?Wkw2eTZhR3Zxb01sSFNCenpPL2xWNC80Q1pNelNFV21CMDVyNXd5eEtvM2RG?=
- =?utf-8?B?STlaSE5RT2ZkUDcvOGpxWEQ3NnNzQ005ajhjRUsyL1RrdHpDR3dOUGpKRkND?=
- =?utf-8?B?YkdpL3ZINWZEcnJuMldTZXN6clhVbnRqYXVpTTZPNWFNRVBSblo1SGhJMDRD?=
- =?utf-8?B?RlIreFpuS2d0R2g0UWVhbER3TmxPVWI3aVlCbkNaa2xJR0RSb2hvU2VENzFD?=
- =?utf-8?B?TDUzUDh5d2c0R2lQbW1LcW1IdmtiUCs1VGpLbWJ6NjQxaVN2UWhobnd2V3J5?=
- =?utf-8?B?c1FRcHFXbm16a2lQcG91TU5FN1RaWEpwR0xvMCtCMi92VlBkZUVmMW1CK3VS?=
- =?utf-8?B?VEFSdXl3dnlqTTVjR0ZkSzFDSmlkTHZRUmhWeTY3TW14QjJmZ09FRFBKY2h6?=
- =?utf-8?B?b0JyMGJkSzRHcXFjV1hYZmxpZW94RFd0U2ZtdklFRnMyWTRSQXlTc2w3Yjdq?=
- =?utf-8?B?aVQzQTZacTVmallKOE5aQ3c3N1RqblhRMW9vdThwNXFPVnpPSlRzRGs4V0xk?=
- =?utf-8?B?bFJWWnBxT1U1Q0ZTWVlFM21lV0tyVjE1ZkhpeGQwZFhKdzRiamloaHI0Z3pG?=
- =?utf-8?B?aWdRc3R2OXRoQTdsWGl5U3JwMjVRSHJUTE1IR3pQVk5qd0YxVmVFdWk2NmNJ?=
- =?utf-8?B?QU55RGROYzBnVGpjcUJOZ0RMYU1qaEhKWDdIYjgvdkpZMGxaMzhhUEhjWkth?=
- =?utf-8?B?dGV0TVdQL29nZS9Ka0lkdEdjQVFtMER0aDk3cVlERjUvSTh4SjY4dnpybG9x?=
- =?utf-8?B?QW1rWTJPckg1emJqZTAyakxiN1g0cWdEMWxmNU9YV1c5L3VkTW5iaTBwVmtY?=
- =?utf-8?B?R2drQ0lBRHhDSlJSQ2RwV2lieFQySVptMVNCVjNIckpHNHFDcUZrQkVjamRl?=
- =?utf-8?B?WjZNekZrQnNMU3F1UU9vbTM2ckVtVWhOTy91WDR3c0pEa2dtTmcwaUlBRzN4?=
- =?utf-8?B?eHFBeUtQeHp0a0RlSTBRTWJzOXhpWHRJU1Z0d09VTWFzcEhlOEM0dEthV2V4?=
- =?utf-8?B?OFN0dzNWUUZzeWIvTE5EQ3YweWJEay9NbGkyYUcvTDgxR0pldkd4YjBMdFdy?=
- =?utf-8?B?RGF1RVMzazEybnlKV05PbmZYNU1pY2FSdCt1aUxzUTJ4MTJKa09WaHN2RFJB?=
- =?utf-8?B?cnJxT1J4akxQR2JVYmphS1ArZFdkdk9DNmZWYm5rZllaUlpVMHlVbjZ4WWFv?=
- =?utf-8?B?VS85TkYveHM1aDFFektzeGJDN0ZoZ3BwcjdncCs1a1c5bm9tYjFQdVQ4MmdH?=
- =?utf-8?B?b1dFN1BoSnlueWpVQU42MWtBVUIwUWxFYTNEWk1rTHJNVmNSalhQam5wZ0tF?=
- =?utf-8?B?MnpQMllidkhBV3M0bWhvWjV0dEtzeHFNZEowT2Z2UEl3N1owSXBMZHBXNGZX?=
- =?utf-8?B?dndxekFBd3IwTGhGUTlmL0ZvRHpkRkN1MmhJZ2l1Mm1ob3V5Q1BzZGw1YWZZ?=
- =?utf-8?B?UitqcGE4a1NWWGZwQjd6K0dFYWZhMThuSC9naEZmMVZ3N3NZZ0wvbnhvcHZn?=
- =?utf-8?Q?me4DzJCHosh9Pp0DaLVSsuTv4cwGf6yh?=
+	=?utf-8?B?TVhBeGRKZnpEYmdiQW5jS0RnSGphRFVvUTE2K21mS2FRTXVzek1TQU43MG45?=
+ =?utf-8?B?WDI5S3ptbkxmZi8zRkNSVVdjc09ob3NoVUxZUDhvNE5lTGdiUVQvdEsxaHlo?=
+ =?utf-8?B?NUpKYTRGeFo1bTA1TkpUUWl0T3JkSjRGOW9zWXgrZUxJb1BaOW5HWGRqeVQ4?=
+ =?utf-8?B?eWRrRUllMlgzdzN0ZExGNGx4NFJTd0hzUzA4bGZqWVhZVkdYZjhtMHNvK0hF?=
+ =?utf-8?B?a1ZJT1lXeFFaaGNwV1owZEQ3eDQvUzlNdXBaUjhDTys1aFl2K0hyN3RCQzZ0?=
+ =?utf-8?B?NEVxZTkzTWkxTFZSVDd4RjVTMkZQMWVZWUNKMm03bFB4Sk9WQW8zYWFnWWNI?=
+ =?utf-8?B?dzN3MHM1VFR5eHZacWloN01YWDlIaytIRUlPOWQyZnZneWpHMDJ1SU9jdEpq?=
+ =?utf-8?B?ZXJWbUhGcWdmZUI3WVN0UHduMTNZQWthdjVOV3BPeDlRV0kvOEsxUUM4Y2lx?=
+ =?utf-8?B?cmNMSkZobWRTVitmTXJOTzQwekZpVFZ1TjJLWUZSVmZJMHI1ei9YWmUvK2FG?=
+ =?utf-8?B?dEJHYWZBaU1qVXZ1elZDUjhKVW13ekl0MlRLb1dUbGJESUhDYy9uUjNoTnFr?=
+ =?utf-8?B?SjQwM3lsZmJEaDF2MUtBYTR3ak1nUVJ6MG5iSWNIeGRmNHVnV0k2b01sVmsx?=
+ =?utf-8?B?bjN4ZHl5YmdsZ0lHSXUzYkdlRkhkbFZIRTlNWnFiMHhuUjIwV28za2hrTzE2?=
+ =?utf-8?B?ajF6ZXFVWU4wNk92ajhlWXhNY2RZYVlGSzFMamtoMUVTL3FQeU93VExXTWZ3?=
+ =?utf-8?B?b3ZJZnJPQ0tMZXRBSnNDeTk2T1lmL054OXZmb3lyT250THJYQkdzZVVlSGg5?=
+ =?utf-8?B?NjJnSjF1bzRncFZDQVhjQUcyZk9samdGZnNYcHQ0YXVhTHZ2ditzOVpZZ1pr?=
+ =?utf-8?B?bVduMGMyM0t6TFEycnJIQThPdlprT1MrZDlsd0p6NGxHTXc5eG5STURvYXQz?=
+ =?utf-8?B?cERSVmU0d0lJOHlySG16YTBlbmpuZUIyQXhJdGdWRzRzaWhFRGhJVS9KRDVk?=
+ =?utf-8?B?aG9LV1hFYzc5Znc2U1RLZnUyWDNjL2hYQXdja01UM1JockhUYzFHRGd6MnY4?=
+ =?utf-8?B?bFZrb2tGU0IrdFp0ek84MWZWcyt5bXJKSGFFNTNOZDJCU0MzaDRrak14VWhx?=
+ =?utf-8?B?RUVKYy9GbVpyaG9RTm5PNnViL2tHb1NMY21YRVVMenhWeFBoS0hHQ05iN2JT?=
+ =?utf-8?B?OUdQcTZQZ0duSkNzYldxaFFVa0xwclROb2xFR3drZlc0VXNPWEpjQ3VndndH?=
+ =?utf-8?B?NXVycVhCeERGVVVSc0I3UjZaRTNYT2YwbHVUU0xBbDNOQzg1V0xaNGRmNk5X?=
+ =?utf-8?B?cW1jRXdDZFRqWjdjQ0pzc1p4ajFLY1BxU2x6RHg5bnpKaldZcEszNE1XVHEy?=
+ =?utf-8?B?M0FUVzdEMDRoZjh6NVRrRUVLOWZwN0FET3V4VWd2a05KUE9mczJLWWhWeUxq?=
+ =?utf-8?B?eHNNRGNVN01OU2dDalNkMWdJM2o5VVIvbXAyMnlnaCtYSDBYbkFxQXhybVRR?=
+ =?utf-8?B?UUk0MkNaekN1dk9zSzdjaWcrS0N2VkQ4WFNNSUw0cUUva2tGamlkNjNsRDJH?=
+ =?utf-8?B?ZUh0UjJKNXh1N3JPSnEzdFdhejdIbGV3Q1l1dlV4UDhCRHhPSGpZdWQyTEt4?=
+ =?utf-8?B?akZtMXRrOHQ0ZUVJbUJLRWVHZkJabGJTL3R4RUNheWxSbVplU2ZUQTNOS0Fr?=
+ =?utf-8?B?ZEdMWkFtSlEwY3pwVUxqZWVEa0ptcVYrVVo3QlA1a2VOZk1hYlpoWE9NTDJ2?=
+ =?utf-8?B?OFBQeGx6TStBZTdpb2NCa09QQVNrNnp4d0xJUys4dTI5anExS1VwQThzcXBr?=
+ =?utf-8?B?TzJHQkIxbjRqRU1oQmppMENpUFgveUNidm5uMTYvbnE4cE1lREhxQlN3bU9q?=
+ =?utf-8?B?eldaS0ZabXptbkxUaExUVDRwTjV1eTVJNmFYNG96emFDbUx4YnM2ME1jN0JH?=
+ =?utf-8?Q?HinEQBuBQJ/N4wDo17Kv/sgZ8nQQW4y/?=
 X-Forefront-Antispam-Report:
-	CIP:80.151.164.27;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:esd-s7.esd;PTR:p5097a41b.dip0.t-ipconnect.de;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(36860700013)(82310400026);DIR:OUT;SFP:1102;
+	CIP:80.151.164.27;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:esd-s7.esd;PTR:p5097a41b.dip0.t-ipconnect.de;CAT:NONE;SFS:(13230040)(1800799024)(36860700013)(7416014)(376014)(82310400026);DIR:OUT;SFP:1102;
 X-OriginatorOrg: esd.eu
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2024 21:44:09.8586
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2024 21:44:09.8495
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc644768-dd9b-4bfd-a9ee-08dca6a99761
+X-MS-Exchange-CrossTenant-Network-Message-Id: 97864543-2fdb-4c64-476c-08dca6a99760
 X-MS-Exchange-CrossTenant-Id: 5a9c3a1d-52db-4235-b74c-9fd851db2e6b
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5a9c3a1d-52db-4235-b74c-9fd851db2e6b;Ip=[80.151.164.27];Helo=[esd-s7.esd]
 X-MS-Exchange-CrossTenant-AuthSource:
-	AMS0EPF00000193.eurprd05.prod.outlook.com
+	AM2PEPF0001C708.eurprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR03MB10163
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR03MB10385
 
-This patch adds support for one-shot mode. In this mode there happens no
-automatic retransmission in the case of an arbitration lost error or on
-any bus error.
+The goal of this patch series is to do some cleanup
+and also add the support for the one-shot mode before
+the next patch introduces CAN-FD support for this
+driver.
 
-Signed-off-by: Stefan Mätje <stefan.maetje@esd.eu>
----
- drivers/net/can/esd/esd_402_pci-core.c | 5 +++--
- drivers/net/can/esd/esdacc.c           | 9 +++++++--
- drivers/net/can/esd/esdacc.h           | 1 +
- 3 files changed, 11 insertions(+), 4 deletions(-)
+Stefan Mätje (2):
+  can: esd_402_pci: Rename esdACC CTRL register macros
+  can: esd_402_pci: Add support for one-shot mode
 
-diff --git a/drivers/net/can/esd/esd_402_pci-core.c b/drivers/net/can/esd/esd_402_pci-core.c
-index b7cdcffd0e45..5d6d2828cd04 100644
---- a/drivers/net/can/esd/esd_402_pci-core.c
-+++ b/drivers/net/can/esd/esd_402_pci-core.c
-@@ -369,12 +369,13 @@ static int pci402_init_cores(struct pci_dev *pdev)
- 		SET_NETDEV_DEV(netdev, &pdev->dev);
- 
- 		priv = netdev_priv(netdev);
-+		priv->can.clock.freq = card->ov.core_frequency;
- 		priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
- 			CAN_CTRLMODE_LISTENONLY |
- 			CAN_CTRLMODE_BERR_REPORTING |
- 			CAN_CTRLMODE_CC_LEN8_DLC;
--
--		priv->can.clock.freq = card->ov.core_frequency;
-+		if (card->ov.features & ACC_OV_REG_FEAT_MASK_DAR)
-+			priv->can.ctrlmode_supported |= CAN_CTRLMODE_ONE_SHOT;
- 		if (card->ov.features & ACC_OV_REG_FEAT_MASK_CANFD)
- 			priv->can.bittiming_const = &pci402_bittiming_const_canfd;
- 		else
-diff --git a/drivers/net/can/esd/esdacc.c b/drivers/net/can/esd/esdacc.c
-index ef33d2ccd220..c80032bc1a52 100644
---- a/drivers/net/can/esd/esdacc.c
-+++ b/drivers/net/can/esd/esdacc.c
-@@ -17,6 +17,9 @@
- /* esdACC DLC register layout */
- #define ACC_DLC_DLC_MASK GENMASK(3, 0)
- #define ACC_DLC_RTR_FLAG BIT(4)
-+#define ACC_DLC_SSTX_FLAG BIT(24)	/* Single Shot TX */
-+
-+/* esdACC DLC in struct acc_bmmsg_rxtxdone::acc_dlc.len only! */
- #define ACC_DLC_TXD_FLAG BIT(5)
- 
- /* ecc value of esdACC equals SJA1000's ECC register */
-@@ -59,7 +62,7 @@ static void acc_resetmode_leave(struct acc_core *core)
- 	acc_resetmode_entered(core);
- }
- 
--static void acc_txq_put(struct acc_core *core, u32 acc_id, u8 acc_dlc,
-+static void acc_txq_put(struct acc_core *core, u32 acc_id, u32 acc_dlc,
- 			const void *data)
- {
- 	acc_write32_noswap(core, ACC_CORE_OF_TXFIFO_DATA_1,
-@@ -249,7 +252,7 @@ netdev_tx_t acc_start_xmit(struct sk_buff *skb, struct net_device *netdev)
- 	u8 tx_fifo_head = core->tx_fifo_head;
- 	int fifo_usage;
- 	u32 acc_id;
--	u8 acc_dlc;
-+	u32 acc_dlc;
- 
- 	if (can_dropped_invalid_skb(netdev, skb))
- 		return NETDEV_TX_OK;
-@@ -274,6 +277,8 @@ netdev_tx_t acc_start_xmit(struct sk_buff *skb, struct net_device *netdev)
- 	acc_dlc = can_get_cc_dlc(cf, priv->can.ctrlmode);
- 	if (cf->can_id & CAN_RTR_FLAG)
- 		acc_dlc |= ACC_DLC_RTR_FLAG;
-+	if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
-+		acc_dlc |= ACC_DLC_SSTX_FLAG;
- 
- 	if (cf->can_id & CAN_EFF_FLAG) {
- 		acc_id = cf->can_id & CAN_EFF_MASK;
-diff --git a/drivers/net/can/esd/esdacc.h b/drivers/net/can/esd/esdacc.h
-index d13dfa60703a..6b7ebd8c91b2 100644
---- a/drivers/net/can/esd/esdacc.h
-+++ b/drivers/net/can/esd/esdacc.h
-@@ -35,6 +35,7 @@
-  */
- #define ACC_OV_REG_FEAT_MASK_CANFD BIT(27 - 16)
- #define ACC_OV_REG_FEAT_MASK_NEW_PSC BIT(28 - 16)
-+#define ACC_OV_REG_FEAT_MASK_DAR BIT(30 - 16)
- 
- #define ACC_OV_REG_MODE_MASK_ENDIAN_LITTLE BIT(0)
- #define ACC_OV_REG_MODE_MASK_BM_ENABLE BIT(1)
+ drivers/net/can/esd/esd_402_pci-core.c |  5 ++-
+ drivers/net/can/esd/esdacc.c           | 55 ++++++++++++++------------
+ drivers/net/can/esd/esdacc.h           | 38 +++++++++---------
+ 3 files changed, 53 insertions(+), 45 deletions(-)
+
 -- 
 2.34.1
 
