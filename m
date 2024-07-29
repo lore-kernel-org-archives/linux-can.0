@@ -1,129 +1,261 @@
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6673A13B593
-	for <linux-can@vger.kernel.org>; Mon, 29 Jul 2024 07:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40971139D12;
+	Mon, 29 Jul 2024 08:52:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722238929; cv=none; b=pEY2oTA2qfCO5ej6lrqXjzHF0wvvDWMudgul36m2UeGr0WD8RMnaU8NLuAzzW+3Wg8/pwDTvaYvKS0ClEtkY9lyFCRYXyVSQ9ev0GH92w4X5/FjmIKjq1/pmRaQjccZspv7mdgWTnBUSx/u/vnHvTDo/+d4PDC4V+A9yqDElwsY=
+	t=1722243127; cv=none; b=ZorE/tipSsPP9uf899bzFMtJ6egfSST5V376L2v6TMrn9VQM24bRGs1+SV5509NmFC9jqS6yCuhZyW7KnpepUT+SulLPllFKO7kvtQNvdH4VTrnRRxZ6WSZ4UAWTspA/Oxim/g483fslydvuFsLpdAVQU9AoC5sNAbYcnLlu40w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722238929; c=relaxed/simple;
-	bh=RC9+oAb1G3FrEzAPShpCOonJZhBTxvWXVZW+5cFMqSI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DHL/cnjUGsGRuSsA+FeLUK30yYCPtf8WajJ2QrLyNDGTqMVNyAJBjXlXBNMLWDM413lVFwQeiB0wLV6k0XiEN/FDmvy0j0V43QmmjdKG/S8Ji3RBX8xUCQbmkxmBf5b6KrcxGUkSW3AjGL/ofKtVZN/S7+wsLsU73wKqFBmKTQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=OQ87rEX5; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="OQ87rEX5"
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-42808071810so13895945e9.1
-        for <linux-can@vger.kernel.org>; Mon, 29 Jul 2024 00:42:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1722238926; x=1722843726; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JbaHllSBP44xGl3C1E+M24vLcFnhJW8T63/SQdZs/pw=;
-        b=OQ87rEX5y/RemIV973dqDThyV7ow20reOPrqZ1OaQIzNmO4Dl5j30ulD6/FuHV9rrV
-         iEscUfnQd9vc9JaDDeUbnIDWsGVaOcfZ0oQxBx5/YuAQHHlKs+K5V8h8hJT+JUZd1XVA
-         ggVQUG2gpuvlMK+XGSAYc5EJoAv2naCgLIVEJ7P1n6v3KLo9+dnzWYb5FKp4GVgHl8pt
-         /VEK00nNTyM1O9ZQoiRwhvnIKnIM0RCeaGqSkB+jwiJ2evNJY2JTqP6NgAiktJ6GTGjO
-         eDZwk8964PQFsIOu92OwHVxkni2wwPGQW/qAY5iq4PQDi4mgGIpRAFWx7DIfqPPf/PeG
-         LL6w==
+	s=arc-20240116; t=1722243127; c=relaxed/simple;
+	bh=EllNsFQhKjhnG5Z+UAfKg7NfTbmjqrF+y4x25MeYGlo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ReIfVRpm/sQNQXFwaAerHNN2QR6BLR7TYRJtRVZdYecW2D2RptFlm89DRPLJGEeZXK5oMVp/1zNO9UoK1C0faIlz0rZYJmGz41m0XP2hQfbHPvRu2Vu99lLzDvMMJ2kKcoBsZaJ52yvwidJBiF0dSqmnAMS55ygj7lE0N/E4Izo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-65cd720cee2so17070657b3.1;
+        Mon, 29 Jul 2024 01:52:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722238926; x=1722843726;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1722243123; x=1722847923;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JbaHllSBP44xGl3C1E+M24vLcFnhJW8T63/SQdZs/pw=;
-        b=fX3WtzO8ppsn7/woT6ysP5CDes6EXo9OT3HtThu5W5nEbv9HhfCaooitoiCtSvI9az
-         nbK34mcfkhOGgADTmQ7M6QAhsCHavaAkACM67tJNNHB5KnYySo70Qgdwn2vbLXG0KyMW
-         BIutvS4VA8a+f7oR5ZMj48kGPwzyKUzwWmxWjhMEP+PWST2MKu39vYSeNmAA3Ydid4cb
-         aidKvYoBIQHkqsEjOVeEt3bP0xe6HSqYUua1kDkvATmbi7wEMOtzRNUw556rdvSwhExs
-         ZcAPlZyC9sXYICOMyHyaoHdovO70ZtPu5BVkifK2+MNJxN7YwX69x9N9LwvMz+kGQ3Js
-         fNkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVhQS0VnJuco8xxIc8ZVhBhUVa3woim6FVSR7bJBsRUXdpOgqliDIZEm5hCBq4tHUntRMw6n8i7l9d6TwFQv81/tAdzS+hAuBxb
-X-Gm-Message-State: AOJu0Yy5nTSxEk1irGdCyu1cVpflwr/LAnmYtGikdmaMpaE/LlS+si6O
-	ENfqMBTBryOJs21zCtPMglAuTP8iCZ1tMXmtKqIMnh2TzBqYFnd9Q1fcBAfffIs=
-X-Google-Smtp-Source: AGHT+IFE1SgIJAautjVauLTqd9nxU/X7KWKBTgVQV4TWBqBwOoYebOAUmEVbfA6ZOnR9sLeiqeX4uQ==
-X-Received: by 2002:a5d:5751:0:b0:368:4910:8f49 with SMTP id ffacd0b85a97d-36b5cecef87mr4342658f8f.12.1722238925793;
-        Mon, 29 Jul 2024 00:42:05 -0700 (PDT)
-Received: from blmsp.fritz.box ([2001:4091:a245:8609:c1c4:a4f8:94c8:31f2])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-36b36863aa7sm11460879f8f.109.2024.07.29.00.42.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jul 2024 00:42:05 -0700 (PDT)
-From: Markus Schneider-Pargmann <msp@baylibre.com>
-To: Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Nishanth Menon <nm@ti.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tero Kristo <kristo@kernel.org>,
-	Markus Schneider-Pargmann <msp@baylibre.com>,
-	=?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Michal Kubiak <michal.kubiak@intel.com>
-Cc: Vibhore Vardhan <vibhore@ti.com>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Dhruva Gole <d-gole@ti.com>,
-	Conor Dooley <conor@kernel.org>,
-	linux-can@vger.kernel.org,
-	netdev@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 7/7] arm64: dts: ti: k3-am62p-mcu: Mark mcu_mcan0/1 as wakeup-source
-Date: Mon, 29 Jul 2024 09:41:35 +0200
-Message-ID: <20240729074135.3850634-8-msp@baylibre.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240729074135.3850634-1-msp@baylibre.com>
-References: <20240729074135.3850634-1-msp@baylibre.com>
+        bh=qqSAntpxwAaK8Ju6K/LOPA95uiNO3TLROZcY1mWI+vA=;
+        b=omEd6X0xfLCJ/A/OIWUJvZDB6zcMIxPFTpqaAvL7lbbmQO21Lw9GkhkLEx0xYAlrVF
+         TgEAttJzF3t23xppUH6muXzr6/h76BHP0hzZ/nqll7xJj6Ur3K3ns56BO2FDP8yrW4Ps
+         g+0NRSJelcP8nE/2igTDNfslyGXDiMs58yq/SxzGZ9lyAUwxInPsJTM1TbfGjk5gvZNR
+         v5CfnI3bG4yiOvgUbZ9nVMvoAOzAwbLtimZCQ63BXab8XNdc7+fSxchu0p13kdmED9H2
+         n4YPukEMrIdRMn+gdqvJiwc3scMDmHXUVGCR1EOBUOskihZ61oFey1MXcXH5XyGRt8rK
+         9ZDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXfRZPRitOrTvR+kXltBlXfdDsinDmuOs6uDpZ1u23WhGUw6aq98GsIeo2h3BRLQ2oDhcWtbRKqH3ZrlokTxklprXolcwvcMQYLzfvi0egt58fewItZKsIjVvuA+7hxtZs9eRAoGw==
+X-Gm-Message-State: AOJu0Yxfac8RAUg9RsrlGV9Ut8JYJ2ieQFR6plY5ElM0M5c2kWtns/T6
+	uL3rmII1/ATMSlBYPY5ie5ekPv8g6LGpQFHdSDCL3Pt3dfbEwCVItxDDJrwO
+X-Google-Smtp-Source: AGHT+IE3FxFtbW35rP/iJQ67nZfFXxxUlKx05dZvHcF3PjBZpWjKzXJlT6fCPlwvNCfjVbmd3I+L+g==
+X-Received: by 2002:a0d:c344:0:b0:64a:e220:bfbf with SMTP id 00721157ae682-67a0813c74amr83389287b3.23.1722243123161;
+        Mon, 29 Jul 2024 01:52:03 -0700 (PDT)
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6756b024aeasm19700287b3.89.2024.07.29.01.52.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jul 2024 01:52:02 -0700 (PDT)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-66599ca3470so16080977b3.2;
+        Mon, 29 Jul 2024 01:52:02 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWk1gI/PjQQ48EM3cdzm6nk2grcC/3HbZkuU8iEq8gHHrX63YyNpoZm8tveTsJQxXyA50HSlYFFMkS0d/DmCYHWhli3ByU22/63Q8uB/ejVsqdRPXeQcAv6gUAieaNciPAajrGbhA==
+X-Received: by 2002:a81:8101:0:b0:665:54fa:5abf with SMTP id
+ 00721157ae682-67a05e78c43mr85473567b3.2.1722243122638; Mon, 29 Jul 2024
+ 01:52:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240718210322.37492-1-ilordash02@gmail.com> <20240718210322.37492-2-ilordash02@gmail.com>
+ <20240719-ahead-kiwi-995e52bf3e74@spud> <CAGCz5HkF_WNZBVpY2SWVf071Pi896BvKFk0jnfNAYX5AKx2Zcw@mail.gmail.com>
+ <20240723-dinginess-john-608d0b28293b@spud> <CAGCz5H=Gncw+Tr0XaQQhhGWQER5Rs1BcxbkPaJwx9jJ-8j7LGQ@mail.gmail.com>
+ <20240723-municipal-snowy-136b08b6db90@spud> <CAGCz5HnJKjNj7A0YD2fw20m-NrEs3MoCLwox86mC11Kudq8xbg@mail.gmail.com>
+In-Reply-To: <CAGCz5HnJKjNj7A0YD2fw20m-NrEs3MoCLwox86mC11Kudq8xbg@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 29 Jul 2024 10:51:50 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUf=McxMLqb1hgu_-4QkSFJkdWrdtbwiwn9yJoMSi3YWA@mail.gmail.com>
+Message-ID: <CAMuHMdUf=McxMLqb1hgu_-4QkSFJkdWrdtbwiwn9yJoMSi3YWA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: phy: ti,tcan104x-can: Document Microchip ATA6561
+To: Ilya Orazov <ilordash02@gmail.com>
+Cc: Conor Dooley <conor@kernel.org>, mkl@pengutronix.de, mailhol.vincent@wanadoo.fr, 
+	vkoul@kernel.org, kishon@kernel.org, robh@kernel.org, krzk+dt@kernel.org, 
+	a-govindraju@ti.com, linux-can@vger.kernel.org, linux-phy@lists.infradead.org, 
+	devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Vibhore Vardhan <vibhore@ti.com>
+Hi Ilya,
 
-mcu_mcan0 and mcu_mcan1 can be wakeup sources for the SoC. Mark them
-accordingly in the devicetree. Based on the patch for AM62a.
+On Sun, Jul 28, 2024 at 10:52=E2=80=AFAM Ilya Orazov <ilordash02@gmail.com>=
+ wrote:
+> On Tue, 23 Jul 2024 at 23:14, Conor Dooley <conor@kernel.org> wrote:
+> > On Tue, Jul 23, 2024 at 10:55:17PM +0300, Ilya Orazov wrote:
+> > > On Tue, 23 Jul 2024 at 21:50, Conor Dooley <conor@kernel.org> wrote:
+> > > > On Tue, Jul 23, 2024 at 08:20:04PM +0300, IlorDash wrote:
+> > > > > On Fri, 19 Jul 2024 at 18:07, Conor Dooley <conor@kernel.org> wro=
+te:
+> > > > > >
+> > > > > > On Fri, Jul 19, 2024 at 12:03:21AM +0300, Ilya Orazov wrote:
+> > > > > > > Microchip ATA6561 is High-Speed CAN Transceiver with Standby =
+Mode.
+> > > > > > > It is pin-compatible with TI TCAN1042.
+> > > > > > >
+> > > > > > > Signed-off-by: Ilya Orazov <ilordash02@gmail.com>
+> > > > > > > ---
+> > > > > > >  Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml |=
+ 1 +
+> > > > > > >  1 file changed, 1 insertion(+)
+> > > > > > >
+> > > > > > > diff --git a/Documentation/devicetree/bindings/phy/ti,tcan104=
+x-can.yaml b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+> > > > > > > index 79dad3e89aa6..03de361849d2 100644
+> > > > > > > --- a/Documentation/devicetree/bindings/phy/ti,tcan104x-can.y=
+aml
+> > > > > > > +++ b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.y=
+aml
+> > > > > > > @@ -18,6 +18,7 @@ properties:
+> > > > > > >        - nxp,tjr1443
+> > > > > > >        - ti,tcan1042
+> > > > > > >        - ti,tcan1043
+> > > > > > > +      - microchip,ata6561
+> > > > > >
+> > > > > > Given that your driver patch has
+> > > > > > | diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/=
+phy-can-transceiver.c
+> > > > > > | index ee4ce4249698..dbcd99213ba1 100644
+> > > > > > | --- a/drivers/phy/phy-can-transceiver.c
+> > > > > > | +++ b/drivers/phy/phy-can-transceiver.c
+> > > > > > | @@ -89,6 +89,10 @@ static const struct of_device_id can_trans=
+ceiver_phy_ids[] =3D {
+> > > > > > |                 .compatible =3D "nxp,tjr1443",
+> > > > > > |                 .data =3D &tcan1043_drvdata
+> > > > > > |         },
+> > > > > > | +       {
+> > > > > > | +               .compatible =3D "microchip,ata6561",
+> > > > > > | +               .data =3D &tcan1042_drvdata
+> > > > > > | +       },
+> > > > > > |         { }
+> > > > > > |  };
+> > > > > >
+> > > > > > the driver patch is actually not needed at all, and you just ne=
+ed to
+> > > > > > allow ti,tcan1042 as fallback compatible in the binding, so som=
+ething
+> > > > > > like:
+> > > > > >
+> > > > > >   compatible:
+> > > > > >     oneOf:
+> > > > > >       - enum:
+> > > > > >           - nxp,tjr1443
+> > > > > >           - ti,tcan1042
+> > > > > >           - ti,tcan1043
+> > > > > >       - items:
+> > > > > >           - const: microchip,ata6561
+> > > > > >           - const: ti,tcan1042
+> > > > > >
+> > > > > >    '#phy-cells':
+> > > > > >      const: 0
+> > > > >
+> > > > > I tested the build with fallback compatible:
+> > > > >
+> > > > > compatible:
+> > > > >   oneOf:
+> > > > >     - items:
+> > > > >       - enum:
+> > > > >         - microchip,ata6561
+> > > > >       - const: ti,tcan1042
+> > > > >     - items:
+> > > > >       - enum:
+> > > > >         - nxp,tjr1443
+> > > > >       - const: ti,tcan1043
+> > > > >
+> > > > > and modified compatible property in DTS:
+> > > > >
+> > > > > compatible =3D "microchip,ata6561", "ti,tcan1042";
+> > > > >
+> > > > > Build succeeded, phy-can-transceiver driver was used. So I would =
+like
+> > > > > to add a fallback compatible for both "microchip,ata6561" and
+> > > > > "nxp,tjr1443" in this binding and modify other DTS files with
+> > > > > compatible =3D "nxp,tjr1443". What do you think?
+> > > >
+> > > > This is wrong on two counts. Firstly, were what you have correct, y=
+ou
+> > > > should
+> > > > squash the two:
+> > > >      - items:
+> > > >          - enum:
+> > > >            - nxp,tjr1443
+> > > >            - microchip,ata6561
+> > > >          - const: ti,tcan1042
+> > > >
+> > > > However, that does not allow the TI compatibles in isolation, so yo=
+u
+> > > > still need to allow that for the actual TI devices, so you need:
+> > > >
+> > > >    oneOf:
+> > > >      - items:
+> > > >          - enum:
+> > > >            - microchip,ata6561
+> > > >            - nxp,tjr1443
+> > > >            - ti,tcan1043
+> > > >          - const: ti,tcan1042
+> > > >      - const: ti,tcan1042
+> > > >
+> > > > There's probably some devicetrees that would need to be fixed up. I=
+'m
+> > > > just not convinced that this is worth retrofitting however.
+> > >
+> > > But nxp,tjr1443 is pin compatible with ti,tcan1043, so it should
+> > > fallback only to ti,tcan1043 and not ti,tcan1042. That's why I decide=
+d
+> > > to split them into different enums.
+> >
+> > Ah, sorry I missed that. I misread the match data. Then you need:
+> >   compatible:
+> >     oneOf:
+> >       - items:
+> >         - enum:
+> >           - microchip,ata6561
+> >         - const: ti,tcan1042
+> >       - items:
+> >         - enum:
+> >           - nxp,tjr1443
+> >         - const: ti,tcan1043
+> >       - enum:
+> >           const: ti,tcan1042
+> >           const: ti,tcan1043
+> >
+> > because the TI devices exist and we still need to be able to
+> > differentiate the TI and NXP devices. If you have
+> >   compatible =3D "nxp,tjr1443", "ti,tcan1042";
+> > that means the device is an nxp,tjr1443. If you have
+> >   compatible =3D "ti,tcan1042";
+> > then that's a tcan1042.
+> >
+> > > I made my patch according to a similar one that adds support for
+> > > nxp,tjr1443. You can find it's conversation on
+> > > https://lore.kernel.org/all/6ee5e2ce00019bd3f77d6a702b38bab1a45f3bb0.=
+1674037830.git.geert+renesas@glider.be/t/#u.
+> >
+> > > I thought we want to hold all PHY chip names in one compatible enum
+> > > and each in its own of_device_id struct in driver and extend them
+> > > where appropriate.
+> >
+> > Nah, fallbacks are preferred when the programming model is either
+> > identical or a "compatible superset" of an existing device. New
+> > of_device_id structs should only be used where we need to account for
+> > differences in the programming model.
+>
+> However, I am curious as to why the NXP CAN PHY transceiver was not
+> included as fallback compatible. Geert, could you please share your
+> thoughts on this matter?
 
-Signed-off-by: Vibhore Vardhan <vibhore@ti.com>
-Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
----
- arch/arm64/boot/dts/ti/k3-am62p-j722s-common-mcu.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+The TJR1443 looked sufficiently similar to the TCAN1043 to use the
+same driver configuration (which is limited to having standby and/or
+enable signals or not).  However, I'm not sure it behaves exactly
+the same, e.g. in case of reporting an error condition (which is not
+yet supported by the driver). The part numbers are also different,
+so this is not a simple case of SN74HCxx vs. CD74HCxx.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62p-j722s-common-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-j722s-common-mcu.dtsi
-index e65db6ce02bf..d6eccaea7a46 100644
---- a/arch/arm64/boot/dts/ti/k3-am62p-j722s-common-mcu.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62p-j722s-common-mcu.dtsi
-@@ -171,6 +171,7 @@ mcu_mcan0: can@4e08000 {
- 		interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>,
- 			     <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-names = "int0", "int1";
-+		wakeup-source;
- 		status = "disabled";
- 	};
- 
-@@ -186,6 +187,7 @@ mcu_mcan1: can@4e18000 {
- 		interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>,
- 			     <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-names = "int0", "int1";
-+		wakeup-source;
- 		status = "disabled";
- 	};
- 
--- 
-2.45.2
+Summary: I don't know if they are identical, or if TJR1443 is a
+compatible superset of TCAN1043, or vice versa. Hence I went for the
+safest way....
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
