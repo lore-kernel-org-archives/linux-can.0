@@ -1,215 +1,147 @@
-Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1A6113C9A2;
-	Mon, 29 Jul 2024 09:16:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.30.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8028E1465B4
+	for <linux-can@vger.kernel.org>; Mon, 29 Jul 2024 13:06:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722244606; cv=none; b=gcJbUIpr3ARBAR9Y7qMRfNxyiE6gVTphxd08O35AxfLiXPHwelirCcqN1Z+dkYBdjj9hHsR4u2coAQrWNxQWvlAs9KXLN7/UTnz1i8iE8/1GsU5LD4cqU1/dbexpHq/6JXt16F91T0ORb1RkiIyWEzpwLHSwA+qMIbdbWIVeyzY=
+	t=1722258410; cv=none; b=c/B47qA8emnvl7nJ9W29esFaDpi4Y2TJLnlebO4G/zLJID2qVOqXVy0s7/kYlwgFi3j6aHvOaCymRdumEFBoadqhGHAu8+86OmvESDflcNZFco9wAohl+4Mc0QwhmzIXpwITGBvC6tWv5Ynf8EMDpA3C0UwFUca6LDTxCv8+wKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722244606; c=relaxed/simple;
-	bh=vCO3rsz4c96FQBi8lBkTzWSFhuPoohJEICqV05nVnqk=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=UV5RObZvMZAy+7Sa3I8Rn6CD0Of3hYvCih4zXwforM4z8qW3OnAarMRmkEgMWk92TZRWhkaQIk0oIa6T2ynOGDSHFOY4+aF7Dk2q4pcZD8Rrg+8pimBbzAizRprfUQdmYzTGk6JzPGxWunrPc7m8yER7rwnUiTCc5WWVjRygdkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=o9fPmLMB; arc=none smtp.client-ip=188.40.30.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="o9fPmLMB"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-	s=default2211; h=MIME-Version:Content-Transfer-Encoding:Content-Type:
-	References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=JMXOgVywNt8Njq2iXfRLDs6RYuucGTU1xDoulcabn5o=; b=o9fPmLMB75Q6LfZsEVtMgFgTZZ
-	DR8IDwsG3Yor5M89f2NXxUp0fcT7DJnNuXRIpn9czqWNisB2PeO44h5u1XvYuJMuo7gjnKhdyUdgz
-	lpn8rLaDIJuZrj1Z5CgCu8Bl+Kt99Shwd+vKPyLFNIRyFSwUufG56p1oC3I72bYIolAGe7bzOmfzT
-	ULVMZxrlVPXAynNEFx/iXKx5JmSAynUDiKX/64lrgvg6ZulqqZDIOCXbJCNW4fdLZ+mmi04DRA2oB
-	/gLTMae6z0gEwwuHWS0DiwdbPRKlvuQZQRa8SiKdVlUzMXzl+yHT3/kj47YJ2TgtLjQiVOczdZUmT
-	u4BDqJag==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	s=arc-20240116; t=1722258410; c=relaxed/simple;
+	bh=hlEGTdwY0x+K5Na55TZsk5mIJrFenASjMW0vF12hjuI=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=E+iLpwEKO/kycIpFGpvgfnTQ9gqTn1k1MJ9xXCx7jv8qAL7ccn9Q2mGVDfkekFiOjE1Kb8pt6i+NQQiuOMtyomyp3SBRjhOuRTzXdvs6s1Giq34aOVNyN489yT5OMU65KNxeKAvAxdja66L0piDxnrO/4nJtymdmImjZo0MkNhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1sYQ5O-0008KW-3i
+	for linux-can@vger.kernel.org; Mon, 29 Jul 2024 15:06:46 +0200
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
-	(envelope-from <martin@geanix.com>)
-	id 1sYM6H-000OTm-2F; Mon, 29 Jul 2024 10:51:25 +0200
-Received: from [185.17.218.86] (helo=[192.168.64.76])
-	by sslproxy03.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <martin@geanix.com>)
-	id 1sYM6G-000Iz2-0W;
-	Mon, 29 Jul 2024 10:51:24 +0200
-Message-ID: <8dc30044f36a451766d2332f2869dce9d5e6f333.camel@geanix.com>
-Subject: Re: [PATCH v2 4/7] can: m_can: Support pinctrl wakeup state
-From: Martin =?ISO-8859-1?Q?Hundeb=F8ll?= <martin@geanix.com>
-To: Markus Schneider-Pargmann <msp@baylibre.com>, Chandrasekar Ramakrishnan
- <rcsekar@samsung.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Vincent
- Mailhol <mailhol.vincent@wanadoo.fr>, "David S . Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
- <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,  Rob Herring
- <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>,  Nishanth Menon <nm@ti.com>, Vignesh Raghavendra
- <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>, Christophe JAILLET
- <christophe.jaillet@wanadoo.fr>,  Michal Kubiak <michal.kubiak@intel.com>
-Cc: Vibhore Vardhan <vibhore@ti.com>, Kevin Hilman <khilman@baylibre.com>, 
- Dhruva Gole <d-gole@ti.com>, Conor Dooley <conor@kernel.org>,
- linux-can@vger.kernel.org,  netdev@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org
-Date: Mon, 29 Jul 2024 10:51:23 +0200
-In-Reply-To: <20240729074135.3850634-5-msp@baylibre.com>
-References: <20240729074135.3850634-1-msp@baylibre.com>
-	 <20240729074135.3850634-5-msp@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.3 
+	(envelope-from <mkl@pengutronix.de>)
+	id 1sYQ5N-0032tx-Ly
+	for linux-can@vger.kernel.org; Mon, 29 Jul 2024 15:06:45 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+	by bjornoya.blackshift.org (Postfix) with SMTP id 58575310D67
+	for <linux-can@vger.kernel.org>; Mon, 29 Jul 2024 13:06:45 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 1313E310D4C;
+	Mon, 29 Jul 2024 13:06:33 +0000 (UTC)
+Received: from [172.20.34.65] (localhost [::1])
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 10482e65;
+	Mon, 29 Jul 2024 13:06:31 +0000 (UTC)
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH can-next 00/21] can: rockchip_canfd: add support for CAN-FD
+ IP core found on Rockchip RK3568
+Date: Mon, 29 Jul 2024 15:05:31 +0200
+Message-Id: <20240729-rockchip-canfd-v1-0-fa1250fd6be3@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Authenticated-Sender: martin@geanix.com
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27350/Sun Jul 28 10:25:11 2024)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAJuTp2YC/x2MQQqAIBAAvxJ7bkEtivpKdJBtrSVQ0Qgh+nvSc
+ WBmHsichDPMzQOJb8kSfAXdNkCH9TujbJXBKNOr0UyYAp10SESy3m3Ym66jUTtFNECNYmIn5R8
+ uUBX0XC5Y3/cD9cpekWoAAAA=
+To: kernel@pengutronix.de, Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>, 
+ Philipp Zabel <p.zabel@pengutronix.de>, 
+ Elaine Zhang <zhangqing@rock-chips.com>, 
+ David Jander <david.jander@protonic.nl>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Marc Kleine-Budde <mkl@pengutronix.de>, David Jander <david@protonic.nl>
+X-Mailer: b4 0.15-dev-37811
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3079; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=hlEGTdwY0x+K5Na55TZsk5mIJrFenASjMW0vF12hjuI=;
+ b=owEBbQGS/pANAwAKASg4oj56LbxvAcsmYgBmp5Ozrs1zPlMaUXtRWewD09/Zeezcdp08WvMnE
+ Tnekw1F6UiJATMEAAEKAB0WIQRQQLqG4LYE3Sm8Pl8oOKI+ei28bwUCZqeTswAKCRAoOKI+ei28
+ b708CACBi8YDC8rPjeTmlHKrwHiQCg5ojwJOGeHWUOPsaX1WhXrUOGMBVcNK3CxmbZBPpVjOI2B
+ yn/kgGxwtps7Q/KFUSx4oD6V4J+TWngs3ozPCjOxOFtnXzuxXmRbU0hf9pnDca4cLfil9afV3iL
+ jeBU5PdLQZ9A1hW07/6d3IHfx5DvOKVr4zIniqg4fhLxzumA/nKZjU3NXfu598YvEEmhaRVDxHU
+ xhnFciRbGpn19H/Vbjy3Z1K3Q+U3yDVWmY4Uid7upx7ZqXympEBNYcHfnmKcGjgTPiafGAJltH4
+ bRTwX0KV/udqRnUgL3p+BC9682GurEyCcJS0BmsfgfKe4RFk
+X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
+ fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Hi Markus,
+This series adds support for the CAN-FD IP core found on the Rockchip
+RK3568.
 
-On Mon, 2024-07-29 at 09:41 +0200, Markus Schneider-Pargmann wrote:
-> am62 requires a wakeup flag being set in pinctrl when mcan pins acts
-> as
-> a wakeup source. Add support to select the wakeup state if WOL is
-> enabled.
->=20
-> Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-> ---
-> =C2=A0drivers/net/can/m_can/m_can.c | 57
-> +++++++++++++++++++++++++++++++++++
-> =C2=A0drivers/net/can/m_can/m_can.h |=C2=A0 4 +++
-> =C2=A02 files changed, 61 insertions(+)
->=20
-> diff --git a/drivers/net/can/m_can/m_can.c
-> b/drivers/net/can/m_can/m_can.c
-> index 5b80a7d1f9a1..b71e7f8e9727 100644
-> --- a/drivers/net/can/m_can/m_can.c
-> +++ b/drivers/net/can/m_can/m_can.c
-> @@ -2193,6 +2193,7 @@ static void m_can_get_wol(struct net_device
-> *dev, struct ethtool_wolinfo *wol)
-> =C2=A0static int m_can_set_wol(struct net_device *dev, struct
-> ethtool_wolinfo *wol)
-> =C2=A0{
-> =C2=A0	struct m_can_classdev *cdev =3D netdev_priv(dev);
-> +	struct pinctrl_state *new_pinctrl_state =3D NULL;
-> =C2=A0	bool wol_enable =3D !!wol->wolopts & WAKE_PHY;
-> =C2=A0	int ret;
-> =C2=A0
-> @@ -2209,7 +2210,27 @@ static int m_can_set_wol(struct net_device
-> *dev, struct ethtool_wolinfo *wol)
-> =C2=A0		return ret;
-> =C2=A0	}
-> =C2=A0
-> +	if (wol_enable)
-> +		new_pinctrl_state =3D cdev->pinctrl_state_wakeup;
-> +	else
-> +		new_pinctrl_state =3D cdev->pinctrl_state_default;
-> +
-> +	if (!IS_ERR_OR_NULL(new_pinctrl_state)) {
+The IP core is a bit complicated and has several documented errata.
+The driver is added in several stages, first the base driver including
+the RX-path. Then several workarounds for errata and the TX-path, and
+finally features like hardware time stamping, loop-back mode and
+bus error reporting.
 
-Why not do
+regards,
+Marc
 
-	if (IS_ERR_OR_NULL(new_pinctrl_state))
-		return 0;
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+David Jander (2):
+      arm64: dts: rockchip: add CAN-FD controller nodes to rk3568
+      arm64: dts: rockchip: mecsbc: add CAN0 and CAN1 interfaces
 
-?
+Marc Kleine-Budde (19):
+      dt-bindings: can: rockchip_canfd: add binding for rockchip CAN-FD controller
+      can: rockchip_canfd: add driver for Rockchip CAN-FD controller
+      can: rockchip_canfd: add quirks for errata workarounds
+      can: rockchip_canfd: add quirk for broken CAN-FD support
+      can: rockchip_canfd: add support for rk3568v3
+      can: rockchip_canfd: add notes about known issues
+      can: rockchip_canfd: rkcanfd_handle_rx_int_one(): implement workaround for erratum 5: check for empty FIFO
+      can: rockchip_canfd: rkcanfd_register_done(): add warning for erratum 5
+      can: rockchip_canfd: add functions to check if CAN-FD frames are equal
+      can: rockchip_canfd: add TX PATH
+      can: rockchip_canfd: implement workaround for erratum 6
+      can: rockchip_canfd: implement workaround for erratum 12
+      can: rockchip_canfd: rkcanfd_get_berr_counter_corrected(): work around broken {RX,TX}ERRORCNT register
+      can: rockchip_canfd: add stats support for errata workarounds
+      can: rockchip_canfd: prepare to use full TX-FIFO depth
+      can: rockchip_canfd: enable full TX-FIFO depth of 2
+      can: rockchip_canfd: add hardware timestamping support
+      can: rockchip_canfd: add support for CAN_CTRLMODE_LOOPBACK
+      can: rockchip_canfd: add support for CAN_CTRLMODE_BERR_REPORTING
 
-// Martin
+ .../bindings/net/can/rockchip,canfd.yaml           |  76 ++
+ MAINTAINERS                                        |   8 +
+ arch/arm64/boot/dts/rockchip/rk3568-mecsbc.dts     |  14 +
+ arch/arm64/boot/dts/rockchip/rk3568.dtsi           |  39 +
+ drivers/net/can/Kconfig                            |   1 +
+ drivers/net/can/Makefile                           |   1 +
+ drivers/net/can/rockchip/Kconfig                   |   9 +
+ drivers/net/can/rockchip/Makefile                  |  10 +
+ drivers/net/can/rockchip/rockchip_canfd-core.c     | 972 +++++++++++++++++++++
+ drivers/net/can/rockchip/rockchip_canfd-ethtool.c  |  73 ++
+ drivers/net/can/rockchip/rockchip_canfd-rx.c       | 299 +++++++
+ .../net/can/rockchip/rockchip_canfd-timestamp.c    | 105 +++
+ drivers/net/can/rockchip/rockchip_canfd-tx.c       | 167 ++++
+ drivers/net/can/rockchip/rockchip_canfd.h          | 551 ++++++++++++
+ 14 files changed, 2325 insertions(+)
+---
+base-commit: 1722389b0d863056d78287a120a1d6cadb8d4f7b
+change-id: 20240729-rockchip-canfd-4233c71f0cc6
 
-> +		ret =3D pinctrl_select_state(cdev->pinctrl,
-> new_pinctrl_state);
-> +		if (ret) {
-> +			netdev_err(cdev->net, "Failed to select
-> pinctrl state %pE\n",
-> +				=C2=A0=C2=A0 ERR_PTR(ret));
-> +			goto err_wakeup_enable;
-> +		}
-> +	}
-> +
-> =C2=A0	return 0;
-> +
-> +err_wakeup_enable:
-> +	/* Revert wakeup enable */
-> +	device_set_wakeup_enable(cdev->dev, !wol_enable);
-> +
-> +	return ret;
-> =C2=A0}
-> =C2=A0
-> =C2=A0static const struct ethtool_ops m_can_ethtool_ops_coalescing =3D {
-> @@ -2377,7 +2398,43 @@ struct m_can_classdev
-> *m_can_class_allocate_dev(struct device *dev,
-> =C2=A0
-> =C2=A0	m_can_of_parse_mram(class_dev, mram_config_vals);
-> =C2=A0
-> +	class_dev->pinctrl =3D devm_pinctrl_get(dev);
-> +	if (IS_ERR(class_dev->pinctrl)) {
-> +		ret =3D PTR_ERR(class_dev->pinctrl);
-> +
-> +		if (ret !=3D -ENODEV) {
-> +			dev_err_probe(dev, ret, "Failed to get
-> pinctrl\n");
-> +			goto err_free_candev;
-> +		}
-> +
-> +		class_dev->pinctrl =3D NULL;
-> +	} else {
-> +		class_dev->pinctrl_state_wakeup =3D
-> pinctrl_lookup_state(class_dev->pinctrl, "wakeup");
-> +		if (IS_ERR(class_dev->pinctrl_state_wakeup)) {
-> +			ret =3D PTR_ERR(class_dev-
-> >pinctrl_state_wakeup);
-> +			ret =3D -EIO;
-> +
-> +			if (ret !=3D -ENODEV) {
-> +				dev_err_probe(dev, ret, "Failed to
-> lookup pinctrl wakeup state\n");
-> +				goto err_free_candev;
-> +			}
-> +
-> +			class_dev->pinctrl_state_wakeup =3D NULL;
-> +		} else {
-> +			class_dev->pinctrl_state_default =3D
-> pinctrl_lookup_state(class_dev->pinctrl, "default");
-> +			if (IS_ERR(class_dev-
-> >pinctrl_state_default)) {
-> +				ret =3D PTR_ERR(class_dev-
-> >pinctrl_state_default);
-> +				dev_err_probe(dev, ret, "Failed to
-> lookup pinctrl default state\n");
-> +				goto err_free_candev;
-> +			}
-> +		}
-> +	}
-> +
-> =C2=A0	return class_dev;
-> +
-> +err_free_candev:
-> +	free_candev(net_dev);
-> +	return ERR_PTR(ret);
-> =C2=A0}
-> =C2=A0EXPORT_SYMBOL_GPL(m_can_class_allocate_dev);
-> =C2=A0
-> diff --git a/drivers/net/can/m_can/m_can.h
-> b/drivers/net/can/m_can/m_can.h
-> index 92b2bd8628e6..b75b0dd6ccc9 100644
-> --- a/drivers/net/can/m_can/m_can.h
-> +++ b/drivers/net/can/m_can/m_can.h
-> @@ -126,6 +126,10 @@ struct m_can_classdev {
-> =C2=A0	struct mram_cfg mcfg[MRAM_CFG_NUM];
-> =C2=A0
-> =C2=A0	struct hrtimer hrtimer;
-> +
-> +	struct pinctrl *pinctrl;
-> +	struct pinctrl_state *pinctrl_state_default;
-> +	struct pinctrl_state *pinctrl_state_wakeup;
-> =C2=A0};
-> =C2=A0
-> =C2=A0struct m_can_classdev *m_can_class_allocate_dev(struct device *dev,
-> int sizeof_priv);
+Best regards,
+-- 
+Marc Kleine-Budde <mkl@pengutronix.de>
+
 
