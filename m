@@ -1,154 +1,121 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7CB615C12F
-	for <linux-can@vger.kernel.org>; Mon,  5 Aug 2024 16:23:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 561B02AD13
+	for <linux-can@vger.kernel.org>; Mon,  5 Aug 2024 18:31:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722875019; cv=none; b=XNXX2CPgDWe01INAmxnQRrIXAqG7xizw5ZvULfoF8RYEYI/3Mvsnp5e0VQgCiumYADyKCb2YIRtxiovo7B7bV4WOJc3Qd8rEkFPCYd0qv7dLNlZ20dLQMzRVZcgRM9JaEVWzSm2g4kTX1J7SkqzbyqC5zXZtMbeUXk/DEYqF/GM=
+	t=1722882671; cv=none; b=J1F1EQkkQ17kqwiPai8nwiDG21B1qLjTiMNBSuEplcNd09l9fFdI/mjAY0noWxYF4DYv2PnKpsB1rEWBENbJkFLg6A262ScH2rxiS8tx5105L+xHmBb7tgioB3k3ImbX72aJqeAYsJDFUsi4UR+Enq5uvZl7k169UuXW6lKTxV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722875019; c=relaxed/simple;
-	bh=2LkBDOQ8buBKxMXFJgvltXNwl1liYgvvPx8y3g/ioMs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=CkPbp7+3pAYxZ2rYQdUEF8MQqGZmPd5am0uG+f1mpG3coNCy+LLlY4qbv/UGQqcOkbGTVcSY9jP0oIv6Z3I8DORbzInQrjyaIMwv3o2OowAlbdjKmOoFRumucWBUPWDGVlfa9wgMI0wUtoid0M2ms6DOlOCnEt4tkGd9UpjI1io=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1sb0Ug-00075B-Vd
-	for linux-can@vger.kernel.org; Mon, 05 Aug 2024 18:23:35 +0200
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1sb0Ug-004klC-Ds
-	for linux-can@vger.kernel.org; Mon, 05 Aug 2024 18:23:34 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 1A00D3173DB
-	for <linux-can@vger.kernel.org>; Mon, 05 Aug 2024 16:23:34 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id DE7743173C0;
-	Mon, 05 Aug 2024 16:23:31 +0000 (UTC)
-Received: from [172.20.34.65] (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3db2daf9;
-	Mon, 5 Aug 2024 16:23:31 +0000 (UTC)
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Mon, 05 Aug 2024 18:23:20 +0200
-Subject: [PATCH 1/2] can: mcp251xfd: fix ring configuration when switching
- from CAN-CC to CAN-FD mode
+	s=arc-20240116; t=1722882671; c=relaxed/simple;
+	bh=DhthJzQUgrAFURwHIvJzMMhEyam9emx1mKZe4wt+dcU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=tcS++kEyFN3tnqkYJIO4GKQ2p9vtsKg5ubsAn7dTN8id2mDNgrkEtacAuoi+6X7KMsdGgTLzhh6tnn+86gfmwu5RJGcZdHwwyUniK4mSA8mv4i09etO6g5bcVxHrwqpvudMHBlMyHcxztZVeJYG88oY0TxKTZpPWZ0n8e/ky28M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=10vt2jvm; arc=none smtp.client-ip=209.85.166.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="10vt2jvm"
+Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-397052a7b63so44120875ab.1
+        for <linux-can@vger.kernel.org>; Mon, 05 Aug 2024 11:31:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1722882668; x=1723487468; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HBokw9oEyYRijU8V8MR0ptQT6J/uWSsuZHdUP+pag0s=;
+        b=10vt2jvmG+++8/EYrdLZPJv6mcId3n3HqEf83gNpZGTj7UIWjiJbbCM7opLJX6NUn+
+         Y1l0h1VcmUiamru8/YN5xR8T2bawZplfHPmUWg4bdtYfMSFnYsfk4m2vKj/47fwcezYs
+         b7HjX4GD+jvDw+OObqLwjqCWUmcLkS+Y7TcSOvSA55i3lIJiF7BfW4SGRJOe1Y2CDawn
+         8xYafdMWh6m3hTerAoC0qIgnzGPqLd6tlUJdmNtOAqwYwBKs8zYGhY98/l2ijP28ZVhX
+         nZITxuwc1aCq8ByErcxoyFpb5sOeejtI5FATaNEgg3Vjhowxiy7Xc7PolEE8bCtD4S4s
+         vhIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722882668; x=1723487468;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HBokw9oEyYRijU8V8MR0ptQT6J/uWSsuZHdUP+pag0s=;
+        b=cHhFXf5RhZVEoyw+OYPb6E6B6RIjBaaI6QDzsGNymgdO2LAk3YjV3QeGpA7MulKwRU
+         cTksKhOlgGI1lifeiPF8+ecI2CXZytS15zwfxXzdPpJ7N+zQRnzlk2rftEKImwfGuAoB
+         xA8hseIb+ZpLWSAWp68RQSoK4SQ4sR9I2z4Rq6cYYXSTwjEYHu/nnURjc3q3Y4wdoTRq
+         I6psxFESeK/N7voCxEXOSLR79jtbB0Uw6Z2w93po9LPZof/7+i/+VIG9FrwTJFKoSKua
+         Nm1AQrRRwPWgkhOX49TATLv8B3qSigdJWGtT1Z0X3rnl/97mMZkJ7uKfJXppx1c09+z+
+         qToQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXMZekaOzr75I9QJ6QrG/RPx+kVYlNDB0nqg7xfH3ehJIEr7kA4mdgUrVhM2g54zxAmDSUQ4MSyxZK92zOGb7xwTdxJvmHcZOMK
+X-Gm-Message-State: AOJu0YxihIZYkB8D9buT165BhGBp/tn2c9Fsvh6GQCmbgbxwg8PcHKJU
+	ArqilLWubvk218JDdhCwXWH1JMwbf+cBj02JBLDJKWKc0QNl2b9Ar1LJQm+DrdQ=
+X-Google-Smtp-Source: AGHT+IEIYrl4tOpKOuu8cQDxHO7vGrhEGCxzt6s8+OkqVq51qI0Ood3dvQh4rwOjJ4Z2X9zNbWivyA==
+X-Received: by 2002:a05:6e02:1ca7:b0:397:d503:6216 with SMTP id e9e14a558f8ab-39b1fc33e2amr181609425ab.25.1722882668428;
+        Mon, 05 Aug 2024 11:31:08 -0700 (PDT)
+Received: from blmsp.fritz.box ([2001:4091:a245:8609:c1c4:a4f8:94c8:31f2])
+        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-39b20a9af29sm30867925ab.13.2024.08.05.11.31.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Aug 2024 11:31:08 -0700 (PDT)
+From: Markus Schneider-Pargmann <msp@baylibre.com>
+To: Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	=?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>,
+	Markus Schneider-Pargmann <msp@baylibre.com>,
+	Judith Mendez <jm@ti.com>,
+	Tony Lindgren <tony@atomide.com>,
+	Simon Horman <horms@kernel.org>
+Cc: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+	Linux regression tracking <regressions@leemhuis.info>,
+	linux-can@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/7] can: m_can: Fix polling and other issues
+Date: Mon,  5 Aug 2024 20:30:40 +0200
+Message-ID: <20240805183047.305630-1-msp@baylibre.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240805-mcp251xfd-fix-ringconfig-v1-1-72086f0ca5ee@pengutronix.de>
-References: <20240805-mcp251xfd-fix-ringconfig-v1-0-72086f0ca5ee@pengutronix.de>
-In-Reply-To: <20240805-mcp251xfd-fix-ringconfig-v1-0-72086f0ca5ee@pengutronix.de>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
- Thomas Kopp <thomas.kopp@microchip.com>, 
- Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, kernel@pengutronix.de, 
- Marc Kleine-Budde <mkl@pengutronix.de>
-X-Mailer: b4 0.15-dev-37811
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2997; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=2LkBDOQ8buBKxMXFJgvltXNwl1liYgvvPx8y3g/ioMs=;
- b=owEBbQGS/pANAwAKASg4oj56LbxvAcsmYgBmsPx9EX5/qlqur3k/YdflrNGYBunMPQ5NUQFw/
- IrGn1TspSSJATMEAAEKAB0WIQRQQLqG4LYE3Sm8Pl8oOKI+ei28bwUCZrD8fQAKCRAoOKI+ei28
- b1MPB/4ugnSgc7SodagaDJFNceWpEnIgnUlEg4mpR10YIX5/kO032ZXxAjwTcn2iYDnEqmzCpxG
- dmEwDs30MyK1v5/fnS8FZJ51vOtPFkOkzS0U4HsD6qmuY4ZA80durUjcbUkJf50namuFiCAMKa3
- Gi8dIIIq5+vz+vdJrpeeZVIjXTx3ImJfN9w2VnM3Z4zm08SKJqPXKre1/aw/5PBTPD9sM6DHF8+
- xb+fcDrwTlxKRoLEm7ulVPu+zwRv1B6AjjjNHtBxBLsds1UJ3eXXnKn7kD9jw0nlq1VtL/YRRit
- u+igL6YkmsW4cajCZKIXwa0y+073EUw1uV8TMlFcGcpMHMdb
-X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
- fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-If the ring (rx, tx) and/or coalescing parameters (rx-frames-irq,
-tx-frames-irq) have been configured while the interface was in CAN-CC
-mode, but the interface is brought up in CAN-FD mode, the ring
-parameters might be too big.
+Hi everyone,
 
-Use the default CAN-FD values in this case.
+these are a number of fixes for m_can that fix polling mode and some
+other issues that I saw while working on the code.
 
-Fixes: 9263c2e92be9 ("can: mcp251xfd: ring: add support for runtime configurable RX/TX ring parameters")
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/spi/mcp251xfd/mcp251xfd-ram.c  | 11 ++++++++++-
- drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c | 20 +++++++++++++++++---
- 2 files changed, 27 insertions(+), 4 deletions(-)
+Any testing and review is appreciated.
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ram.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ram.c
-index 9e8e82cdba46..61b0d6fa52dd 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ram.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ram.c
-@@ -97,7 +97,16 @@ void can_ram_get_layout(struct can_ram_layout *layout,
- 	if (ring) {
- 		u8 num_rx_coalesce = 0, num_tx_coalesce = 0;
- 
--		num_rx = can_ram_rounddown_pow_of_two(config, &config->rx, 0, ring->rx_pending);
-+		/* If the ring parameters have been configured in
-+		 * CAN-CC mode, but and we are in CAN-FD mode now,
-+		 * they might be to big. Use the default CAN-FD values
-+		 * in this case.
-+		 */
-+		num_rx = ring->rx_pending;
-+		if (num_rx > layout->max_rx)
-+			num_rx = layout->default_rx;
-+
-+		num_rx = can_ram_rounddown_pow_of_two(config, &config->rx, 0, num_rx);
- 
- 		/* The ethtool doc says:
- 		 * To disable coalescing, set usecs = 0 and max_frames = 1.
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
-index 7bd2bcb5cf87..f72582d4d3e8 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
-@@ -469,11 +469,25 @@ int mcp251xfd_ring_alloc(struct mcp251xfd_priv *priv)
- 
- 	/* switching from CAN-2.0 to CAN-FD mode or vice versa */
- 	if (fd_mode != test_bit(MCP251XFD_FLAGS_FD_MODE, priv->flags)) {
-+		const struct ethtool_ringparam ring = {
-+			.rx_pending = priv->rx_obj_num,
-+			.tx_pending = priv->tx->obj_num,
-+		};
-+		const struct ethtool_coalesce ec = {
-+			.rx_coalesce_usecs_irq = priv->rx_coalesce_usecs_irq,
-+			.rx_max_coalesced_frames_irq = priv->rx_obj_num_coalesce_irq,
-+			.tx_coalesce_usecs_irq = priv->tx_coalesce_usecs_irq,
-+			.tx_max_coalesced_frames_irq = priv->tx_obj_num_coalesce_irq,
-+		};
- 		struct can_ram_layout layout;
- 
--		can_ram_get_layout(&layout, &mcp251xfd_ram_config, NULL, NULL, fd_mode);
--		priv->rx_obj_num = layout.default_rx;
--		tx_ring->obj_num = layout.default_tx;
-+		can_ram_get_layout(&layout, &mcp251xfd_ram_config, &ring, &ec, fd_mode);
-+
-+		priv->rx_obj_num = layout.cur_rx;
-+		priv->rx_obj_num_coalesce_irq = layout.rx_coalesce;
-+
-+		tx_ring->obj_num = layout.cur_tx;
-+		priv->tx_obj_num_coalesce_irq = layout.tx_coalesce;
- 	}
- 
- 	if (fd_mode) {
+Base
+----
+v6.11-rc1
+
+Changes in v2
+-------------
+ - Fixed one multiline comment
+ - Rebased to v6.11-rc1
+
+Previous versions
+-----------------
+ v1: https://lore.kernel.org/lkml/20240726195944.2414812-1-msp@baylibre.com/
+
+Best,
+Markus
+
+Markus Schneider-Pargmann (7):
+  can: m_can: Reset coalescing during suspend/resume
+  can: m_can: Remove coalesing disable in isr during suspend
+  can: m_can: Remove m_can_rx_peripheral indirection
+  can: m_can: Do not cancel timer from within timer
+  can: m_can: disable_all_interrupts, not clear active_interrupts
+  can: m_can: Reset cached active_interrupts on start
+  can: m_can: Limit coalescing to peripheral instances
+
+ drivers/net/can/m_can/m_can.c | 111 ++++++++++++++++++++--------------
+ 1 file changed, 66 insertions(+), 45 deletions(-)
 
 -- 
-2.43.0
-
+2.45.2
 
