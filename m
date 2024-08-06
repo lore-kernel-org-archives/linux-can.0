@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D871BC9F0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 533231BC9EE
 	for <linux-can@vger.kernel.org>; Tue,  6 Aug 2024 07:47:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722930468; cv=none; b=drcu0XzuxmxgkMlUrVhIlJncIpedKTfZdyUVAtfOIjiAPc5pokKY0HOG1rAjOYR5nN7z+Pz2tlFEaeAjfR6xttgj84R4nYWSPJHkaWA5a/epv3IZuOCNU6AcAS1El03qbnTlIq4FbRjD+hrmJniCnu2GD+Obq6syOxgB36rwdh0=
+	t=1722930468; cv=none; b=HunbiLIKby9MeHzIw7Xk6v18z0Ya/8Ql6orWiKfH9is5ub/kHTYLwJ4aO0SyOJOphJNpeemhXcUMKrIFOzDYgv9YU3OJoxwK2gkaRdCdAmJpnTn7V6+v14RzJ0zkhkOdqfj7F1X4te9XGBoduRf7+Nrk1P5I6VBHyoMjiqhwmt0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1722930468; c=relaxed/simple;
-	bh=aLGMW9VqJnEHF0qr5QhIzaxndG71m8GrB7NBr9RFluQ=;
+	bh=Fz+iFrAYeV1F9XMc/uWUhaVGP+c9EPgtkUAOvg6DzzQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NqHXQLMg3djS+GrPte2z5xKWJIbK/2yz4IVHVEyYS60xfiHenF1VHgLPbGMT76c8Evb2Da78EV2YcS0vGikPGjH/BLw65iQqMpxFoLYloivRNig9baRGDRO7T8EEGgkT4ZEOv/rruJVr356NN02eGnObEgaeAyoAKWHoOmGLFn0=
+	 MIME-Version; b=Krk0iRGgaMzmssEgz9PHSkvtq3PVHBb7VjvDg8AqhO95jdjPVDCen6bgsKlMxiTixQtfkZcPtDlUxvwSv64Mx9cd05F2vu5AXiJhzkiHG0eUr37aIrlNNWRK4Dw4g3tsDH2Z58EOm7iD+zK9fPdcxcqdz4Yp8DH47jowlG7srUI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,38 +18,40 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sbEv1-00048R-8o
-	for linux-can@vger.kernel.org; Tue, 06 Aug 2024 09:47:43 +0200
+	id 1sbEuw-00043h-4O
+	for linux-can@vger.kernel.org; Tue, 06 Aug 2024 09:47:38 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sbEuw-004tue-Nr
-	for linux-can@vger.kernel.org; Tue, 06 Aug 2024 09:47:38 +0200
+	id 1sbEuu-004tq6-0H
+	for linux-can@vger.kernel.org; Tue, 06 Aug 2024 09:47:36 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 31A14317A0F
-	for <linux-can@vger.kernel.org>; Tue, 06 Aug 2024 07:47:38 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with SMTP id AB2EB3179AA
+	for <linux-can@vger.kernel.org>; Tue, 06 Aug 2024 07:47:35 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 2AF4331799A;
-	Tue, 06 Aug 2024 07:47:35 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id B016431796E;
+	Tue, 06 Aug 2024 07:47:33 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b8b908ca;
-	Tue, 6 Aug 2024 07:47:33 +0000 (UTC)
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 6a850fff;
+	Tue, 6 Aug 2024 07:47:32 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Jimmy Assarsson <extja@kvaser.com>,
+	Haibo Chen <haibo.chen@nxp.com>,
+	Han Xu <han.xu@nxp.com>,
 	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+	Frank Li <Frank.Li@nxp.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 18/20] can: kvaser_usb: Remove KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP
-Date: Tue,  6 Aug 2024 09:42:09 +0200
-Message-ID: <20240806074731.1905378-19-mkl@pengutronix.de>
+Subject: [PATCH net-next 03/20] can: flexcan: add wakeup support for imx95
+Date: Tue,  6 Aug 2024 09:41:54 +0200
+Message-ID: <20240806074731.1905378-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240806074731.1905378-1-mkl@pengutronix.de>
 References: <20240806074731.1905378-1-mkl@pengutronix.de>
@@ -65,104 +67,159 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Jimmy Assarsson <extja@kvaser.com>
+From: Haibo Chen <haibo.chen@nxp.com>
 
-Remove KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP, since all devices got
-hardware timestamp support.
+iMX95 defines a bit in GPR that sets/unsets the IPG_STOP signal to the
+FlexCAN module, controlling its entry into STOP mode. Wakeup should work
+even if FlexCAN is in STOP mode.
 
-Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
+Due to iMX95 architecture design, the A-Core cannot access GPR; only the
+system manager (SM) can configure GPR. To support the wakeup feature,
+follow these steps:
+
+- For suspend:
+  1) During Linux suspend, when CAN suspends, do nothing for GPR and keep
+     CAN-related clocks on.
+  2) In ATF, check whether CAN needs to support wakeup; if yes, send a
+     request to SM through the SCMI protocol.
+  3) In SM, configure the GPR and unset IPG_STOP.
+  4) A-Core suspends.
+
+- For wakeup and resume:
+  1) A-Core wakeup event arrives.
+  2) In SM, deassert IPG_STOP.
+  3) Linux resumes.
+
+Add a new fsl_imx95_devtype_data and FLEXCAN_QUIRK_SETUP_STOP_MODE_SCMI to
+reflect this.
+
+Reviewed-by: Han Xu <han.xu@nxp.com>
+Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
 Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/all/20240701154936.92633-14-extja@kvaser.com
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+Link: https://lore.kernel.org/all/20240731-flexcan-v4-2-82ece66e5a76@nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/kvaser_usb/kvaser_usb.h   |  1 -
- .../net/can/usb/kvaser_usb/kvaser_usb_core.c  | 26 ++++++-------------
- 2 files changed, 8 insertions(+), 19 deletions(-)
+ drivers/net/can/flexcan/flexcan-core.c | 50 ++++++++++++++++++++++----
+ drivers/net/can/flexcan/flexcan.h      |  2 ++
+ 2 files changed, 45 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
-index 591f707d2895..078496d9b7ba 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
-@@ -41,7 +41,6 @@
- #define KVASER_USB_QUIRK_HAS_SILENT_MODE	BIT(0)
- #define KVASER_USB_QUIRK_HAS_TXRX_ERRORS	BIT(1)
- #define KVASER_USB_QUIRK_IGNORE_CLK_FREQ	BIT(2)
--#define KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP	BIT(3)
- 
- /* Device capabilities */
- #define KVASER_USB_CAP_BERR_CAP			0x01
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-index 576ddf932f47..a4f32d57173a 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-@@ -94,29 +94,26 @@
- #define USB_MINI_PCIE_1XCAN_PRODUCT_ID 0x011B
- 
- static const struct kvaser_usb_driver_info kvaser_usb_driver_info_hydra = {
--	.quirks = KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP,
-+	.quirks = 0,
- 	.ops = &kvaser_usb_hydra_dev_ops,
+diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
+index 8ea7f2795551..d11411029330 100644
+--- a/drivers/net/can/flexcan/flexcan-core.c
++++ b/drivers/net/can/flexcan/flexcan-core.c
+@@ -354,6 +354,14 @@ static struct flexcan_devtype_data fsl_imx93_devtype_data = {
+ 		FLEXCAN_QUIRK_SUPPORT_RX_MAILBOX_RTR,
  };
  
- static const struct kvaser_usb_driver_info kvaser_usb_driver_info_usbcan = {
- 	.quirks = KVASER_USB_QUIRK_HAS_TXRX_ERRORS |
--		  KVASER_USB_QUIRK_HAS_SILENT_MODE |
--		  KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP,
-+		  KVASER_USB_QUIRK_HAS_SILENT_MODE,
- 	.family = KVASER_USBCAN,
- 	.ops = &kvaser_usb_leaf_dev_ops,
- };
++static const struct flexcan_devtype_data fsl_imx95_devtype_data = {
++	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
++		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_RX_MAILBOX |
++		FLEXCAN_QUIRK_BROKEN_PERR_STATE | FLEXCAN_QUIRK_SUPPORT_FD |
++		FLEXCAN_QUIRK_SUPPORT_ECC | FLEXCAN_QUIRK_SUPPORT_RX_MAILBOX |
++		FLEXCAN_QUIRK_SUPPORT_RX_MAILBOX_RTR | FLEXCAN_QUIRK_SETUP_STOP_MODE_SCMI,
++};
++
+ static const struct flexcan_devtype_data fsl_vf610_devtype_data = {
+ 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
+ 		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_RX_MAILBOX |
+@@ -544,6 +552,13 @@ static inline int flexcan_enter_stop_mode(struct flexcan_priv *priv)
+ 	} else if (priv->devtype_data.quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR) {
+ 		regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
+ 				   1 << priv->stm.req_bit, 1 << priv->stm.req_bit);
++	} else if (priv->devtype_data.quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_SCMI) {
++		/* For the SCMI mode, driver do nothing, ATF will send request to
++		 * SM(system manager, M33 core) through SCMI protocol after linux
++		 * suspend. Once SM get this request, it will send IPG_STOP signal
++		 * to Flex_CAN, let CAN in STOP mode.
++		 */
++		return 0;
+ 	}
  
- static const struct kvaser_usb_driver_info kvaser_usb_driver_info_leaf = {
--	.quirks = KVASER_USB_QUIRK_IGNORE_CLK_FREQ |
--		  KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP,
-+	.quirks = KVASER_USB_QUIRK_IGNORE_CLK_FREQ,
- 	.family = KVASER_LEAF,
- 	.ops = &kvaser_usb_leaf_dev_ops,
- };
+ 	return flexcan_low_power_enter_ack(priv);
+@@ -555,7 +570,11 @@ static inline int flexcan_exit_stop_mode(struct flexcan_priv *priv)
+ 	u32 reg_mcr;
+ 	int ret;
  
- static const struct kvaser_usb_driver_info kvaser_usb_driver_info_leaf_err = {
- 	.quirks = KVASER_USB_QUIRK_HAS_TXRX_ERRORS |
--		  KVASER_USB_QUIRK_IGNORE_CLK_FREQ |
--		  KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP,
-+		  KVASER_USB_QUIRK_IGNORE_CLK_FREQ,
- 	.family = KVASER_LEAF,
- 	.ops = &kvaser_usb_leaf_dev_ops,
- };
-@@ -124,14 +121,13 @@ static const struct kvaser_usb_driver_info kvaser_usb_driver_info_leaf_err = {
- static const struct kvaser_usb_driver_info kvaser_usb_driver_info_leaf_err_listen = {
- 	.quirks = KVASER_USB_QUIRK_HAS_TXRX_ERRORS |
- 		  KVASER_USB_QUIRK_HAS_SILENT_MODE |
--		  KVASER_USB_QUIRK_IGNORE_CLK_FREQ |
--		  KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP,
-+		  KVASER_USB_QUIRK_IGNORE_CLK_FREQ,
- 	.family = KVASER_LEAF,
- 	.ops = &kvaser_usb_leaf_dev_ops,
- };
+-	/* remove stop request */
++	/* Remove stop request, for FLEXCAN_QUIRK_SETUP_STOP_MODE_SCMI,
++	 * do nothing here, because ATF already send request to SM before
++	 * linux resume. Once SM get this request, it will deassert the
++	 * IPG_STOP signal to Flex_CAN.
++	 */
+ 	if (priv->devtype_data.quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW) {
+ 		ret = flexcan_stop_mode_enable_scfw(priv, false);
+ 		if (ret < 0)
+@@ -1983,6 +2002,9 @@ static int flexcan_setup_stop_mode(struct platform_device *pdev)
+ 		ret = flexcan_setup_stop_mode_scfw(pdev);
+ 	else if (priv->devtype_data.quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR)
+ 		ret = flexcan_setup_stop_mode_gpr(pdev);
++	else if (priv->devtype_data.quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_SCMI)
++		/* ATF will handle all STOP_IPG related work */
++		ret = 0;
+ 	else
+ 		/* return 0 directly if doesn't support stop mode feature */
+ 		return 0;
+@@ -2009,6 +2031,7 @@ static const struct of_device_id flexcan_of_match[] = {
+ 	{ .compatible = "fsl,imx8qm-flexcan", .data = &fsl_imx8qm_devtype_data, },
+ 	{ .compatible = "fsl,imx8mp-flexcan", .data = &fsl_imx8mp_devtype_data, },
+ 	{ .compatible = "fsl,imx93-flexcan", .data = &fsl_imx93_devtype_data, },
++	{ .compatible = "fsl,imx95-flexcan", .data = &fsl_imx95_devtype_data, },
+ 	{ .compatible = "fsl,imx6q-flexcan", .data = &fsl_imx6q_devtype_data, },
+ 	{ .compatible = "fsl,imx28-flexcan", .data = &fsl_imx28_devtype_data, },
+ 	{ .compatible = "fsl,imx53-flexcan", .data = &fsl_imx25_devtype_data, },
+@@ -2309,9 +2332,19 @@ static int __maybe_unused flexcan_noirq_suspend(struct device *device)
+ 		if (device_may_wakeup(device))
+ 			flexcan_enable_wakeup_irq(priv, true);
  
- static const struct kvaser_usb_driver_info kvaser_usb_driver_info_leafimx = {
--	.quirks = KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP,
-+	.quirks = 0,
- 	.family = KVASER_LEAF,
- 	.ops = &kvaser_usb_leaf_dev_ops,
- };
-@@ -862,14 +858,8 @@ static int kvaser_usb_init_one(struct kvaser_usb *dev, int channel)
+-		err = pm_runtime_force_suspend(device);
+-		if (err)
+-			return err;
++		/* For FLEXCAN_QUIRK_SETUP_STOP_MODE_SCMI, it need ATF to send
++		 * to SM through SCMI protocol, SM will assert the IPG_STOP
++		 * signal. But all this works need the CAN clocks keep on.
++		 * After the CAN module get the IPG_STOP mode, and switch to
++		 * STOP mode, whether still keep the CAN clocks on or gate them
++		 * off depend on the Hardware design.
++		 */
++		if (!(device_may_wakeup(device) &&
++		      priv->devtype_data.quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_SCMI)) {
++			err = pm_runtime_force_suspend(device);
++			if (err)
++				return err;
++		}
+ 	}
  
- 	netdev->flags |= IFF_ECHO;
+ 	return 0;
+@@ -2325,9 +2358,12 @@ static int __maybe_unused flexcan_noirq_resume(struct device *device)
+ 	if (netif_running(dev)) {
+ 		int err;
  
--	netdev->netdev_ops = &kvaser_usb_netdev_ops;
--	if (driver_info->quirks & KVASER_USB_QUIRK_HAS_HARDWARE_TIMESTAMP) {
--		netdev->netdev_ops = &kvaser_usb_netdev_ops_hwts;
--		netdev->ethtool_ops = &kvaser_usb_ethtool_ops_hwts;
--	} else {
--		netdev->netdev_ops = &kvaser_usb_netdev_ops;
--		netdev->ethtool_ops = &kvaser_usb_ethtool_ops;
--	}
-+	netdev->netdev_ops = &kvaser_usb_netdev_ops_hwts;
-+	netdev->ethtool_ops = &kvaser_usb_ethtool_ops_hwts;
- 	SET_NETDEV_DEV(netdev, &dev->intf->dev);
- 	netdev->dev_id = channel;
+-		err = pm_runtime_force_resume(device);
+-		if (err)
+-			return err;
++		if (!(device_may_wakeup(device) &&
++		      priv->devtype_data.quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_SCMI)) {
++			err = pm_runtime_force_resume(device);
++			if (err)
++				return err;
++		}
  
+ 		if (device_may_wakeup(device))
+ 			flexcan_enable_wakeup_irq(priv, false);
+diff --git a/drivers/net/can/flexcan/flexcan.h b/drivers/net/can/flexcan/flexcan.h
+index 025c3417031f..4933d8c7439e 100644
+--- a/drivers/net/can/flexcan/flexcan.h
++++ b/drivers/net/can/flexcan/flexcan.h
+@@ -68,6 +68,8 @@
+ #define FLEXCAN_QUIRK_SUPPORT_RX_MAILBOX_RTR BIT(15)
+ /* Device supports RX via FIFO */
+ #define FLEXCAN_QUIRK_SUPPORT_RX_FIFO BIT(16)
++/* Setup stop mode with ATF SCMI protocol to support wakeup */
++#define FLEXCAN_QUIRK_SETUP_STOP_MODE_SCMI BIT(17)
+ 
+ struct flexcan_devtype_data {
+ 	u32 quirks;		/* quirks needed for different IP cores */
 -- 
 2.43.0
 
