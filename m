@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B79011BB696
-	for <linux-can@vger.kernel.org>; Tue,  6 Aug 2024 07:47:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AB561BCA13
+	for <linux-can@vger.kernel.org>; Tue,  6 Aug 2024 07:47:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722930468; cv=none; b=t+UfAIk4XGbQ5oMxO6rNTjBVAerKde/mpBCuaR9VNf8FSVl55j64bKfh/Jpqh7/MbKjKXpyi0fMtO8sMHxrkQwleaHhQXv/+GA4joF5rhw6mpjOiz3tkDMQeY9VNtHLl7PSSu1iV1NKtTa/GJQD+ODgkKFzKOAcGUMe0r6ClFzM=
+	t=1722930469; cv=none; b=ABtEd3NxnRJ6cLQzIJqk696fsAQV2V5NyrJqcj1Uq03cdGO89eevatTYcNUtbify1mbJi81zH/JXGfeF29/Wh3Bg/AbCYIT/NNi9Ke9uCuflAbbuaSO7YjIqZdggtmhG6BiCMdQ5XJGN01Yz2q7ShOah9600czM7i2vSoSfcov4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722930468; c=relaxed/simple;
-	bh=fpnTyHHiI6hcea7rksHUPbsGQ2bvKi+FlCb7LKz8Q8E=;
+	s=arc-20240116; t=1722930469; c=relaxed/simple;
+	bh=8orXzwhm0Kymc1lKpxMkI2fPN9IRnxlYADelodX1iOE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lO6PGse0/LJHiTrgc2QZR6C7knBrzfBo2XLEK99tW1ov+rvPYtmHH/FSlTZL8js49Azi+zGoD3GW6SomyzDa26gQ0FhGSi8NMUGfGLtZYQBb2E+GT7DvcHb5f79apUcKw3Je7xRbJNTqtZ2UWnTgKEZu9Y3yvlfwf/BrrcYiEJg=
+	 MIME-Version; b=DVyiW6w5VsTbCsgIIPMOQGLO3mJgzkPIlA1Ce1YKEFAgq35Ow/7k46q4BV5Uo7ZTgl30ROxJe1FA0XzL39+1+0fCMYM69+MenwwqYpgpTsFYSSaE8c3Gluu9y/QOcmxgvpduQTtMmISm+w6ljR+KMIp1fLUWJx9bm8JSYTg8rWM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,25 +18,25 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sbEv0-00047s-En
-	for linux-can@vger.kernel.org; Tue, 06 Aug 2024 09:47:42 +0200
+	id 1sbEv1-00047x-Ku
+	for linux-can@vger.kernel.org; Tue, 06 Aug 2024 09:47:43 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sbEuw-004ttn-4k
+	id 1sbEuw-004ttu-7o
 	for linux-can@vger.kernel.org; Tue, 06 Aug 2024 09:47:38 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 92CB53179F5
+	by bjornoya.blackshift.org (Postfix) with SMTP id AF25D3179F8
 	for <linux-can@vger.kernel.org>; Tue, 06 Aug 2024 07:47:37 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 5C8C5317983;
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 8EEF0317989;
 	Tue, 06 Aug 2024 07:47:34 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4f3fed43;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f6f0be25;
 	Tue, 6 Aug 2024 07:47:33 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -47,9 +47,9 @@ Cc: davem@davemloft.net,
 	Jimmy Assarsson <extja@kvaser.com>,
 	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 11/20] can: kvaser_usb: leaf: Assign correct timestamp_freq for kvaser_usb_leaf_imx_dev_cfg_{16,24,32}mhz
-Date: Tue,  6 Aug 2024 09:42:02 +0200
-Message-ID: <20240806074731.1905378-12-mkl@pengutronix.de>
+Subject: [PATCH net-next 13/20] can: kvaser_usb: leaf: kvaser_usb_leaf_tx_acknowledge: Rename local variable
+Date: Tue,  6 Aug 2024 09:42:04 +0200
+Message-ID: <20240806074731.1905378-14-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240806074731.1905378-1-mkl@pengutronix.de>
 References: <20240806074731.1905378-1-mkl@pengutronix.de>
@@ -67,48 +67,39 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Jimmy Assarsson <extja@kvaser.com>
 
-Assign correct timestamp_freq to kvaser_usb_leaf_imx_dev_cfg_{16,24,32}mhz.
-Since the driver didn't utilize the value, this didn't cause any problems.
+Rename local variable skb to err_skb.
 
 Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
 Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/all/20240701154936.92633-7-extja@kvaser.com
+Link: https://lore.kernel.org/all/20240701154936.92633-9-extja@kvaser.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-index 70511e151a3b..00fe7410e36d 100644
+index 3245471e906b..caef1f26a95c 100644
 --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
 +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-@@ -483,7 +483,7 @@ static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_imx_dev_cfg_16mhz = {
- 	.clock = {
- 		.freq = 16 * MEGA /* Hz */,
- 	},
--	.timestamp_freq = 1,
-+	.timestamp_freq = 16,
- 	.bittiming_const = &kvaser_usb_flexc_bittiming_const,
- };
+@@ -936,14 +936,14 @@ static void kvaser_usb_leaf_tx_acknowledge(const struct kvaser_usb *dev,
  
-@@ -491,7 +491,7 @@ static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_imx_dev_cfg_24mhz = {
- 	.clock = {
- 		.freq = 24 * MEGA /* Hz */,
- 	},
--	.timestamp_freq = 1,
-+	.timestamp_freq = 24,
- 	.bittiming_const = &kvaser_usb_flexc_bittiming_const,
- };
+ 	/* Sometimes the state change doesn't come after a bus-off event */
+ 	if (priv->can.restart_ms && priv->can.state == CAN_STATE_BUS_OFF) {
+-		struct sk_buff *skb;
++		struct sk_buff *err_skb;
+ 		struct can_frame *cf;
  
-@@ -499,7 +499,7 @@ static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_imx_dev_cfg_32mhz = {
- 	.clock = {
- 		.freq = 32 * MEGA /* Hz */,
- 	},
--	.timestamp_freq = 1,
-+	.timestamp_freq = 32,
- 	.bittiming_const = &kvaser_usb_flexc_bittiming_const,
- };
+-		skb = alloc_can_err_skb(priv->netdev, &cf);
+-		if (skb) {
++		err_skb = alloc_can_err_skb(priv->netdev, &cf);
++		if (err_skb) {
+ 			cf->can_id |= CAN_ERR_RESTARTED;
  
+-			netif_rx(skb);
++			netif_rx(err_skb);
+ 		} else {
+ 			netdev_err(priv->netdev,
+ 				   "No memory left for err_skb\n");
 -- 
 2.43.0
 
