@@ -1,157 +1,159 @@
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A089A170A2D
-	for <linux-can@vger.kernel.org>; Mon,  5 Aug 2024 21:29:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CFCB3C092
+	for <linux-can@vger.kernel.org>; Tue,  6 Aug 2024 07:47:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722893379; cv=none; b=VUR1i+MBEe2O4LNUwF1mweHhT9TxOb6YNJyh2K5UpuiPY0xnp1XMG2OcLlGsLsNYAgRcAX5wgVGm5wdxk2LFT99kXSDKpaCDCkDpjGzWO9QPcMCok6mCWtSD6k2ZDH/S2RTBxbBmR+Y/asY3Ll+2HQrxx0rbjQw7mDkgf8a7gXc=
+	t=1722930465; cv=none; b=Zanf0cMj+SVHbegDWIitiZWUCffm/jBn8sqM1sfuS8k3yZnUnv+1Sp6L6KaZCHevWzK1ZjJchPL5j+8QY4ayG2alqfOCjLsSKqyRs7yGnX5meaWDRE/UmoZ8xLH7WhUjXc6E+csR4Hbr3cG0eMKQuNPLwHeE/EN5YmYC7nipYTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722893379; c=relaxed/simple;
-	bh=R5FH0585GLONubfqzvRxY1SYFTTpoc2SBHN3HVIAlk8=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=gN5VOnsqM0jyMX/NuxJQu7tUApvLKLaKomXeZQffwSKIiJdT1P1Nn40KZ511+pzpIP+tuh7ffvIkmQoQ/PzvkEEiIQQBoudGVJSZzbw78BcwQW5b+wDGNZBE10EoHKR4FyEvuikayBpYDq5fAGq3eMktNfMeg9O1LIXKkEpIf3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-39b3e750e48so26036885ab.2
-        for <linux-can@vger.kernel.org>; Mon, 05 Aug 2024 14:29:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722893377; x=1723498177;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yPMsp4iAjFXmhGlUB5aK2jt2H3yu8iP9jPB6KmKxsZw=;
-        b=cjIMMrdyeyuGhLx8f/SGP/cw4iVDrBRJNiHMoygQ6p8qj70gVgAfSekoCYfvQN3Dws
-         TBh5hfAyexw8wwknTSYnklas0JM73zGLI4HkjkDgyvhLXsgg/IJj/XQbxCAgybCa13gc
-         iVPLcE5nhTx0f0FsefD2Xsr+7by1fCl3dEjFsHnQZw+JHwNAZbvlwEgCIX/x1vUtf4hR
-         U9RQOZnxGqQ7HMvLfILYmeRn7d9ROY7cscErJDfZnpMTxdRjO8NSY0LIQqX33jI/7uCC
-         0rsp6fClTA9z8w+wGidmAPrasJn/g/AGC70IVk6oW5l24c2tGFHl1P7CFoieKPC/MG3F
-         Q/0A==
-X-Forwarded-Encrypted: i=1; AJvYcCX/F99XjXI3VC4r7VBrQEIF4yHIg3His660EXTfXDbOKXNX/lmP1JsuR+gK/637dABeDM7TcgAo08XMJBjNcSsrih7GeduticlR
-X-Gm-Message-State: AOJu0YxPvj2G9MIdIHQFi/kXykpJceBPIQb9DYUM/b1uWIhdnNfqMTtP
-	H2OAyJ9nXqY6Ea4UWozbF7GT1zQtbOrULilA1gPuTyf3VfFmOBbSFExy1xRsQsSqOvqsDBRej7b
-	SKEUCI1nV6QH9D6JpqlEnqYIUWfYLkslYxperpw2rSWlApa9XpXpyIpg=
-X-Google-Smtp-Source: AGHT+IEEkC62LVfM7geGN1HBRDfv7b7BTxF/9GGbTyQ5sZ3tWhTTDD34KkP9IY+WDU+JW1aYpH0hi7XTU0Q68xFfhT1oMb8S5QXL
+	s=arc-20240116; t=1722930465; c=relaxed/simple;
+	bh=HnUUsY0Ik0bNaWSvrTyj6lvUM9rw4Wd0Oy6j5RsIBag=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=p+0N3hNlYmx6ZNftbwpJac+o/tNd9MVh0fLfLx8Dmou+v7jspP/alz+Ff6QlC2LHF51w/jwyYb24APxrBNxNAC0hB8t24aelQuNRCQhbhitv6qZFzkr/JmODmmQwawva7CqpzKui1ce8dfs/VjouIgxKHON2vt+o3SSPRT9bvj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1sbEuy-00044Y-2d
+	for linux-can@vger.kernel.org; Tue, 06 Aug 2024 09:47:40 +0200
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1sbEuu-004tqx-GV
+	for linux-can@vger.kernel.org; Tue, 06 Aug 2024 09:47:36 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+	by bjornoya.blackshift.org (Postfix) with SMTP id 2F54D3179B9
+	for <linux-can@vger.kernel.org>; Tue, 06 Aug 2024 07:47:36 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id CFA48317972;
+	Tue, 06 Aug 2024 07:47:33 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id e9ae320a;
+	Tue, 6 Aug 2024 07:47:33 +0000 (UTC)
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net,
+	kuba@kernel.org,
+	linux-can@vger.kernel.org,
+	kernel@pengutronix.de,
+	=?UTF-8?q?Stefan=20M=C3=A4tje?= <stefan.maetje@esd.eu>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 05/20] can: esd_402_pci: Add support for one-shot mode
+Date: Tue,  6 Aug 2024 09:41:56 +0200
+Message-ID: <20240806074731.1905378-6-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240806074731.1905378-1-mkl@pengutronix.de>
+References: <20240806074731.1905378-1-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d03:b0:382:56bd:dfbc with SMTP id
- e9e14a558f8ab-39b1fb83a10mr7747185ab.2.1722893376792; Mon, 05 Aug 2024
- 14:29:36 -0700 (PDT)
-Date: Mon, 05 Aug 2024 14:29:36 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b5bde0061ef65fc8@google.com>
-Subject: [syzbot] [can?] WARNING: refcount bug in j1939_xtp_rx_cts
-From: syzbot <syzbot+5a1281566cc25c9881e0@syzkaller.appspotmail.com>
-To: davem@davemloft.net, edumazet@google.com, kernel@pengutronix.de, 
-	kuba@kernel.org, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	mkl@pengutronix.de, netdev@vger.kernel.org, o.rempel@pengutronix.de, 
-	pabeni@redhat.com, robin@protonic.nl, socketcan@hartkopp.net, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Hello,
+From: Stefan Mätje <stefan.maetje@esd.eu>
 
-syzbot found the following issue on:
+This patch adds support for one-shot mode. In this mode there happens no
+automatic retransmission in the case of an arbitration lost error or on
+any bus error.
 
-HEAD commit:    743ff02152bc ethtool: Don't check for NULL info in prepare..
-git tree:       net-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1058b26d980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5efb917b1462a973
-dashboard link: https://syzkaller.appspot.com/bug?extid=5a1281566cc25c9881e0
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15041155980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=162bd19d980000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/69cb8d5cd046/disk-743ff021.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8f52c95a23c5/vmlinux-743ff021.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/93f2f40e650b/bzImage-743ff021.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5a1281566cc25c9881e0@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-refcount_t: underflow; use-after-free.
-WARNING: CPU: 0 PID: 8 at lib/refcount.c:28 refcount_warn_saturate+0x15a/0x1d0 lib/refcount.c:28
-Modules linked in:
-CPU: 0 UID: 0 PID: 8 Comm: kworker/0:0 Not tainted 6.10.0-syzkaller-12610-g743ff02152bc #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/27/2024
-Workqueue: events nsim_dev_trap_report_work
-RIP: 0010:refcount_warn_saturate+0x15a/0x1d0 lib/refcount.c:28
-Code: 00 17 40 8c e8 67 97 a5 fc 90 0f 0b 90 90 eb 99 e8 1b 89 e3 fc c6 05 76 7d 31 0b 01 90 48 c7 c7 60 17 40 8c e8 47 97 a5 fc 90 <0f> 0b 90 90 e9 76 ff ff ff e8 f8 88 e3 fc c6 05 50 7d 31 0b 01 90
-RSP: 0018:ffffc900000076e0 EFLAGS: 00010246
-RAX: b72359b2da0c4a00 RBX: ffff8880213d1864 RCX: ffff8880176cda00
-RDX: 0000000080000102 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000003 R08: ffffffff81559432 R09: 1ffff1101724519a
-R10: dffffc0000000000 R11: ffffed101724519b R12: ffff88802b3dac00
-R13: ffff8880213d1864 R14: ffff88802b3dac00 R15: ffff888077daa118
-FS:  0000000000000000(0000) GS:ffff8880b9200000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005626f04f7000 CR3: 000000007c7d2000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- kfree_skb_reason include/linux/skbuff.h:1260 [inline]
- kfree_skb include/linux/skbuff.h:1269 [inline]
- j1939_session_skb_drop_old net/can/j1939/transport.c:347 [inline]
- j1939_xtp_rx_cts_one net/can/j1939/transport.c:1445 [inline]
- j1939_xtp_rx_cts+0x54f/0xc70 net/can/j1939/transport.c:1484
- j1939_tp_cmd_recv net/can/j1939/transport.c:2089 [inline]
- j1939_tp_recv+0x8ae/0x1050 net/can/j1939/transport.c:2161
- j1939_can_recv+0x732/0xb20 net/can/j1939/main.c:108
- deliver net/can/af_can.c:572 [inline]
- can_rcv_filter+0x359/0x7f0 net/can/af_can.c:606
- can_receive+0x31c/0x470 net/can/af_can.c:663
- can_rcv+0x144/0x260 net/can/af_can.c:687
- __netif_receive_skb_one_core net/core/dev.c:5660 [inline]
- __netif_receive_skb+0x2e0/0x650 net/core/dev.c:5774
- process_backlog+0x662/0x15b0 net/core/dev.c:6107
- __napi_poll+0xcb/0x490 net/core/dev.c:6771
- napi_poll net/core/dev.c:6840 [inline]
- net_rx_action+0x89b/0x1240 net/core/dev.c:6962
- handle_softirqs+0x2c4/0x970 kernel/softirq.c:554
- do_softirq+0x11b/0x1e0 kernel/softirq.c:455
- </IRQ>
- <TASK>
- __local_bh_enable_ip+0x1bb/0x200 kernel/softirq.c:382
- spin_unlock_bh include/linux/spinlock.h:396 [inline]
- nsim_dev_trap_report drivers/net/netdevsim/dev.c:820 [inline]
- nsim_dev_trap_report_work+0x75d/0xaa0 drivers/net/netdevsim/dev.c:850
- process_one_work kernel/workqueue.c:3231 [inline]
- process_scheduled_works+0xa2c/0x1830 kernel/workqueue.c:3312
- worker_thread+0x86d/0xd40 kernel/workqueue.c:3390
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-
-
+Signed-off-by: Stefan Mätje <stefan.maetje@esd.eu>
+Link: https://lore.kernel.org/all/20240717214409.3934333-3-stefan.maetje@esd.eu
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/net/can/esd/esd_402_pci-core.c | 5 +++--
+ drivers/net/can/esd/esdacc.c           | 9 +++++++--
+ drivers/net/can/esd/esdacc.h           | 1 +
+ 3 files changed, 11 insertions(+), 4 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/net/can/esd/esd_402_pci-core.c b/drivers/net/can/esd/esd_402_pci-core.c
+index b7cdcffd0e45..5d6d2828cd04 100644
+--- a/drivers/net/can/esd/esd_402_pci-core.c
++++ b/drivers/net/can/esd/esd_402_pci-core.c
+@@ -369,12 +369,13 @@ static int pci402_init_cores(struct pci_dev *pdev)
+ 		SET_NETDEV_DEV(netdev, &pdev->dev);
+ 
+ 		priv = netdev_priv(netdev);
++		priv->can.clock.freq = card->ov.core_frequency;
+ 		priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
+ 			CAN_CTRLMODE_LISTENONLY |
+ 			CAN_CTRLMODE_BERR_REPORTING |
+ 			CAN_CTRLMODE_CC_LEN8_DLC;
+-
+-		priv->can.clock.freq = card->ov.core_frequency;
++		if (card->ov.features & ACC_OV_REG_FEAT_MASK_DAR)
++			priv->can.ctrlmode_supported |= CAN_CTRLMODE_ONE_SHOT;
+ 		if (card->ov.features & ACC_OV_REG_FEAT_MASK_CANFD)
+ 			priv->can.bittiming_const = &pci402_bittiming_const_canfd;
+ 		else
+diff --git a/drivers/net/can/esd/esdacc.c b/drivers/net/can/esd/esdacc.c
+index ef33d2ccd220..c80032bc1a52 100644
+--- a/drivers/net/can/esd/esdacc.c
++++ b/drivers/net/can/esd/esdacc.c
+@@ -17,6 +17,9 @@
+ /* esdACC DLC register layout */
+ #define ACC_DLC_DLC_MASK GENMASK(3, 0)
+ #define ACC_DLC_RTR_FLAG BIT(4)
++#define ACC_DLC_SSTX_FLAG BIT(24)	/* Single Shot TX */
++
++/* esdACC DLC in struct acc_bmmsg_rxtxdone::acc_dlc.len only! */
+ #define ACC_DLC_TXD_FLAG BIT(5)
+ 
+ /* ecc value of esdACC equals SJA1000's ECC register */
+@@ -59,7 +62,7 @@ static void acc_resetmode_leave(struct acc_core *core)
+ 	acc_resetmode_entered(core);
+ }
+ 
+-static void acc_txq_put(struct acc_core *core, u32 acc_id, u8 acc_dlc,
++static void acc_txq_put(struct acc_core *core, u32 acc_id, u32 acc_dlc,
+ 			const void *data)
+ {
+ 	acc_write32_noswap(core, ACC_CORE_OF_TXFIFO_DATA_1,
+@@ -249,7 +252,7 @@ netdev_tx_t acc_start_xmit(struct sk_buff *skb, struct net_device *netdev)
+ 	u8 tx_fifo_head = core->tx_fifo_head;
+ 	int fifo_usage;
+ 	u32 acc_id;
+-	u8 acc_dlc;
++	u32 acc_dlc;
+ 
+ 	if (can_dropped_invalid_skb(netdev, skb))
+ 		return NETDEV_TX_OK;
+@@ -274,6 +277,8 @@ netdev_tx_t acc_start_xmit(struct sk_buff *skb, struct net_device *netdev)
+ 	acc_dlc = can_get_cc_dlc(cf, priv->can.ctrlmode);
+ 	if (cf->can_id & CAN_RTR_FLAG)
+ 		acc_dlc |= ACC_DLC_RTR_FLAG;
++	if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
++		acc_dlc |= ACC_DLC_SSTX_FLAG;
+ 
+ 	if (cf->can_id & CAN_EFF_FLAG) {
+ 		acc_id = cf->can_id & CAN_EFF_MASK;
+diff --git a/drivers/net/can/esd/esdacc.h b/drivers/net/can/esd/esdacc.h
+index d13dfa60703a..6b7ebd8c91b2 100644
+--- a/drivers/net/can/esd/esdacc.h
++++ b/drivers/net/can/esd/esdacc.h
+@@ -35,6 +35,7 @@
+  */
+ #define ACC_OV_REG_FEAT_MASK_CANFD BIT(27 - 16)
+ #define ACC_OV_REG_FEAT_MASK_NEW_PSC BIT(28 - 16)
++#define ACC_OV_REG_FEAT_MASK_DAR BIT(30 - 16)
+ 
+ #define ACC_OV_REG_MODE_MASK_ENDIAN_LITTLE BIT(0)
+ #define ACC_OV_REG_MODE_MASK_BM_ENABLE BIT(1)
+-- 
+2.43.0
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
