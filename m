@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D44091BA297
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9C951BA29D
 	for <linux-can@vger.kernel.org>; Thu, 29 Aug 2024 19:29:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724959802; cv=none; b=TwEF/ykKnjhnLvYSDJJBs3G2OC/H2PR2I+pj8hOW0bCkwQ6htdRbIuIr5b3mwBiBJXUiXHs207m9LLHLtq8q/g2a/ro0LCUjRvPci9ZjpOj4VzYB+K9u5s4ILXBapDihGWwcbs4zredPR1G/kbiMz4ofE/1MMmxET4AAq1hFKJk=
+	t=1724959802; cv=none; b=fZlZWfiriy9dCKmfuKt6iyV0OAa69OPedVazljV3w7MfaPNSrMEj6g/KvaE7ZHGQ8CJ5cN+XFxHoCTyo2rF18haxSTcxzHCxxOvwFNK+dqCiXihsChgZJW6/pl6yeK//MOHn0phccXoabsYpagAIaxtL41r3x6WpAUAY5IF8HX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1724959802; c=relaxed/simple;
-	bh=tzRpMoC3u6/ANQ048jRNEwevDB5eGK3oVnqGUZKBu3I=;
+	bh=Orv55fzVpJX+25WR5Nz6HMTbb/8F4iNrVzfolY/nPz8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Rw/q5o3pFVsVlR4j+Iz8tfs20wiWsTUkVrHOtW+nLdQ83MuQdg3/dMnIpV2BTZFKBU27sXTTpY8tPc1clYbory3vrfaGQLXxfuT/iEb+zQYp/KyLvdFOjWr5zJvv+aV11fjOCG3WETzqm1s2I1bKIyN06LU3ARIA60u0V4zb+aE=
+	 MIME-Version; b=fHqwS93vH7bETdlBGrGb4Yl8o6NAyBH7cnCcTabo3ZXdJrFRsRnUNiUBhwVBYiJ6uLP/EbaH7Mu8LjxtB1xHm5A9DgcyrDxUzNg+uKYchkSvQuKSrs9Bg5pf/nKkXHZJnz7ISpSPw5Vsb9pbUDRdCyha6ilJqLqDEtoixwJwaLs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,25 +18,25 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sjkqD-00067i-TY
+	id 1sjkqD-00067a-VS
 	for linux-can@vger.kernel.org; Thu, 29 Aug 2024 21:29:57 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sjkqB-003ysb-HM
+	id 1sjkqB-003ysc-Ho
 	for linux-can@vger.kernel.org; Thu, 29 Aug 2024 21:29:55 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 3453932D4CF
+	by bjornoya.blackshift.org (Postfix) with SMTP id 3756732D4D1
 	for <linux-can@vger.kernel.org>; Thu, 29 Aug 2024 19:29:55 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 4E13D32D47D;
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 7D35132D483;
 	Thu, 29 Aug 2024 19:29:52 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 66be2be2;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id df101ff6;
 	Thu, 29 Aug 2024 19:29:51 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -44,11 +44,10 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Markus Schneider-Pargmann <msp@baylibre.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 09/13] can: m_can: Limit coalescing to peripheral instances
-Date: Thu, 29 Aug 2024 21:20:42 +0200
-Message-ID: <20240829192947.1186760-10-mkl@pengutronix.de>
+Subject: [PATCH net 11/13] can: mcp251xfd: mcp251xfd_ring_init(): check TX-coalescing configuration
+Date: Thu, 29 Aug 2024 21:20:44 +0200
+Message-ID: <20240829192947.1186760-12-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240829192947.1186760-1-mkl@pengutronix.de>
 References: <20240829192947.1186760-1-mkl@pengutronix.de>
@@ -64,67 +63,55 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Markus Schneider-Pargmann <msp@baylibre.com>
+When changing the interface from CAN-CC to CAN-FD mode the old
+coalescing parameters are re-used. This might cause problem, as the
+configured parameters are too big for CAN-FD mode.
 
-The use of coalescing for non-peripheral chips in the current
-implementation is limited to non-existing. Disable the possibility to
-set coalescing through ethtool.
+During testing an invalid TX coalescing configuration has been seen.
+The problem should be been fixed in the previous patch, but add a
+safeguard here to ensure that the number of TEF coalescing buffers (if
+configured) is exactly the half of all TEF buffers.
 
-Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-Link: https://lore.kernel.org/all/20240805183047.305630-8-msp@baylibre.com
+Link: https://lore.kernel.org/all/20240805-mcp251xfd-fix-ringconfig-v1-2-72086f0ca5ee@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 67c4c740c416..012c3d22b01d 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -2184,7 +2184,7 @@ static int m_can_set_coalesce(struct net_device *dev,
- 	return 0;
- }
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
+index f72582d4d3e8..83c18035b2a2 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
+@@ -290,7 +290,7 @@ int mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
+ 	const struct mcp251xfd_rx_ring *rx_ring;
+ 	u16 base = 0, ram_used;
+ 	u8 fifo_nr = 1;
+-	int i;
++	int err = 0, i;
  
--static const struct ethtool_ops m_can_ethtool_ops = {
-+static const struct ethtool_ops m_can_ethtool_ops_coalescing = {
- 	.supported_coalesce_params = ETHTOOL_COALESCE_RX_USECS_IRQ |
- 		ETHTOOL_COALESCE_RX_MAX_FRAMES_IRQ |
- 		ETHTOOL_COALESCE_TX_USECS_IRQ |
-@@ -2195,18 +2195,20 @@ static const struct ethtool_ops m_can_ethtool_ops = {
- 	.set_coalesce = m_can_set_coalesce,
- };
+ 	netdev_reset_queue(priv->ndev);
  
--static const struct ethtool_ops m_can_ethtool_ops_polling = {
-+static const struct ethtool_ops m_can_ethtool_ops = {
- 	.get_ts_info = ethtool_op_get_ts_info,
- };
+@@ -386,10 +386,18 @@ int mcp251xfd_ring_init(struct mcp251xfd_priv *priv)
+ 		netdev_err(priv->ndev,
+ 			   "Error during ring configuration, using more RAM (%u bytes) than available (%u bytes).\n",
+ 			   ram_used, MCP251XFD_RAM_SIZE);
+-		return -ENOMEM;
++		err = -ENOMEM;
+ 	}
  
--static int register_m_can_dev(struct net_device *dev)
-+static int register_m_can_dev(struct m_can_classdev *cdev)
- {
-+	struct net_device *dev = cdev->net;
+-	return 0;
++	if (priv->tx_obj_num_coalesce_irq &&
++	    priv->tx_obj_num_coalesce_irq * 2 != priv->tx->obj_num) {
++		netdev_err(priv->ndev,
++			   "Error during ring configuration, number of TEF coalescing buffers (%u) must be half of TEF buffers (%u).\n",
++			   priv->tx_obj_num_coalesce_irq, priv->tx->obj_num);
++		err = -EINVAL;
++	}
 +
- 	dev->flags |= IFF_ECHO;	/* we support local echo */
- 	dev->netdev_ops = &m_can_netdev_ops;
--	if (dev->irq)
--		dev->ethtool_ops = &m_can_ethtool_ops;
-+	if (dev->irq && cdev->is_peripheral)
-+		dev->ethtool_ops = &m_can_ethtool_ops_coalescing;
- 	else
--		dev->ethtool_ops = &m_can_ethtool_ops_polling;
-+		dev->ethtool_ops = &m_can_ethtool_ops;
- 
- 	return register_candev(dev);
++	return err;
  }
-@@ -2392,7 +2394,7 @@ int m_can_class_register(struct m_can_classdev *cdev)
- 	if (ret)
- 		goto rx_offload_del;
  
--	ret = register_m_can_dev(cdev->net);
-+	ret = register_m_can_dev(cdev);
- 	if (ret) {
- 		dev_err(cdev->dev, "registering %s failed (err=%d)\n",
- 			cdev->net->name, ret);
+ void mcp251xfd_ring_free(struct mcp251xfd_priv *priv)
 -- 
 2.45.2
 
