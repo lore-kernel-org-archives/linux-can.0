@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C62E1BA286
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62C311BA277
 	for <linux-can@vger.kernel.org>; Thu, 29 Aug 2024 19:29:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724959801; cv=none; b=MfQ4QrQGzUryeuAn0BN9wOc0TPZB6LcpvD+B4b6DTnrK1ze8Ryu74ZRdXcQTrC+6xo61Z6bO/s8/sViObRs3jKXD9TFC8xzJQw9ojNBooRmvnAPRHj+miLXsFsP3sJ/XZorvIBCJIotmJw9emgahwR5/OL8FiHfqQ/fk+56wPlo=
+	t=1724959801; cv=none; b=RlhZUaQ1p7z8rqeVWVkOvnADmmtgLO5xgYRA4KYQ+oDDq7ifdlg+ApAjEpJrkx6cLICOXfQ8OT2pm1LpY8kxXoQE4y5vA66Q0AfaO1HMt/QFbWhgHh5Oexq3gG1bE+q0zc/IBHhPVgefrVTYdfeKA6UOy3EwW3PnNA7qInCM31c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1724959801; c=relaxed/simple;
-	bh=IMZ0eD/ZSny3SMyy1OVx/YAci7MJ5yQn0pZ+5ZmZ4Vw=;
+	bh=sUzRt1zcFM1JZj8m28P+zBE84P6voXaJifpueLLxdaw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gjrJt+0a2Ev3I8/gDc0fEsIXKnnvqxtLmqkizonnCTsn+H4o4GePOMLelx7zk1HXkwAtD2DTR901hsTePVDaTwFQEGqM2qQjQCEtCuTBjmFBCJVmleAJZjJo2NnoGhLhJu1V/CR0TLxhjXK1C/Yy5xjd297fIedYAi3O3wDVjdc=
+	 MIME-Version; b=o+HL4vKooOxA+uBVoM/Zidq986b2Ai+ccy1Vms1usQRA3znWGYGq5V5qKO6Vp73FSQPTbRDt/+CBmC2fSvqDQHLJB6qNXRqH/+9KsDJNz2TB7M5+2FnaKFNL0B7GRoJlKcREHzqjlhVUsv+Lizo5npGbNSXh0ihZ6RoZyrXVhEU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,25 +18,25 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sjkqD-00067F-O8
+	id 1sjkqD-00067D-Ej
 	for linux-can@vger.kernel.org; Thu, 29 Aug 2024 21:29:57 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sjkqB-003ysO-DD
+	id 1sjkqB-003ysF-Be
 	for linux-can@vger.kernel.org; Thu, 29 Aug 2024 21:29:55 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 120C732D4CD
-	for <linux-can@vger.kernel.org>; Thu, 29 Aug 2024 19:29:55 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with SMTP id 0334B32D4CB
+	for <linux-can@vger.kernel.org>; Thu, 29 Aug 2024 19:29:54 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 40D7932D47A;
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 6564532D47F;
 	Thu, 29 Aug 2024 19:29:52 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 811f5751;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id cea7bff8;
 	Thu, 29 Aug 2024 19:29:51 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -44,11 +44,10 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Markus Schneider-Pargmann <msp@baylibre.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 08/13] can: m_can: Reset cached active_interrupts on start
-Date: Thu, 29 Aug 2024 21:20:41 +0200
-Message-ID: <20240829192947.1186760-9-mkl@pengutronix.de>
+Subject: [PATCH net 10/13] can: mcp251xfd: fix ring configuration when switching from CAN-CC to CAN-FD mode
+Date: Thu, 29 Aug 2024 21:20:43 +0200
+Message-ID: <20240829192947.1186760-11-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240829192947.1186760-1-mkl@pengutronix.de>
 References: <20240829192947.1186760-1-mkl@pengutronix.de>
@@ -64,31 +63,76 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Markus Schneider-Pargmann <msp@baylibre.com>
+If the ring (rx, tx) and/or coalescing parameters (rx-frames-irq,
+tx-frames-irq) have been configured while the interface was in CAN-CC
+mode, but the interface is brought up in CAN-FD mode, the ring
+parameters might be too big.
 
-To force writing the enabled interrupts, reset the active_interrupts
-cache.
+Use the default CAN-FD values in this case.
 
-Fixes: 07f25091ca02 ("can: m_can: Implement receive coalescing")
-Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-Link: https://lore.kernel.org/all/20240805183047.305630-7-msp@baylibre.com
+Fixes: 9263c2e92be9 ("can: mcp251xfd: ring: add support for runtime configurable RX/TX ring parameters")
+Link: https://lore.kernel.org/all/20240805-mcp251xfd-fix-ringconfig-v1-1-72086f0ca5ee@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-ram.c | 11 +++++++++-
+ .../net/can/spi/mcp251xfd/mcp251xfd-ring.c    | 20 ++++++++++++++++---
+ 2 files changed, 27 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 68bd4a00ecca..67c4c740c416 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1541,6 +1541,7 @@ static int m_can_chip_config(struct net_device *dev)
- 		else
- 			interrupts &= ~(IR_ERR_LEC_31X);
- 	}
-+	cdev->active_interrupts = 0;
- 	m_can_interrupt_enable(cdev, interrupts);
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ram.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ram.c
+index 9e8e82cdba46..61b0d6fa52dd 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ram.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ram.c
+@@ -97,7 +97,16 @@ void can_ram_get_layout(struct can_ram_layout *layout,
+ 	if (ring) {
+ 		u8 num_rx_coalesce = 0, num_tx_coalesce = 0;
  
- 	/* route all interrupts to INT0 */
+-		num_rx = can_ram_rounddown_pow_of_two(config, &config->rx, 0, ring->rx_pending);
++		/* If the ring parameters have been configured in
++		 * CAN-CC mode, but and we are in CAN-FD mode now,
++		 * they might be to big. Use the default CAN-FD values
++		 * in this case.
++		 */
++		num_rx = ring->rx_pending;
++		if (num_rx > layout->max_rx)
++			num_rx = layout->default_rx;
++
++		num_rx = can_ram_rounddown_pow_of_two(config, &config->rx, 0, num_rx);
+ 
+ 		/* The ethtool doc says:
+ 		 * To disable coalescing, set usecs = 0 and max_frames = 1.
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
+index 7bd2bcb5cf87..f72582d4d3e8 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-ring.c
+@@ -469,11 +469,25 @@ int mcp251xfd_ring_alloc(struct mcp251xfd_priv *priv)
+ 
+ 	/* switching from CAN-2.0 to CAN-FD mode or vice versa */
+ 	if (fd_mode != test_bit(MCP251XFD_FLAGS_FD_MODE, priv->flags)) {
++		const struct ethtool_ringparam ring = {
++			.rx_pending = priv->rx_obj_num,
++			.tx_pending = priv->tx->obj_num,
++		};
++		const struct ethtool_coalesce ec = {
++			.rx_coalesce_usecs_irq = priv->rx_coalesce_usecs_irq,
++			.rx_max_coalesced_frames_irq = priv->rx_obj_num_coalesce_irq,
++			.tx_coalesce_usecs_irq = priv->tx_coalesce_usecs_irq,
++			.tx_max_coalesced_frames_irq = priv->tx_obj_num_coalesce_irq,
++		};
+ 		struct can_ram_layout layout;
+ 
+-		can_ram_get_layout(&layout, &mcp251xfd_ram_config, NULL, NULL, fd_mode);
+-		priv->rx_obj_num = layout.default_rx;
+-		tx_ring->obj_num = layout.default_tx;
++		can_ram_get_layout(&layout, &mcp251xfd_ram_config, &ring, &ec, fd_mode);
++
++		priv->rx_obj_num = layout.cur_rx;
++		priv->rx_obj_num_coalesce_irq = layout.rx_coalesce;
++
++		tx_ring->obj_num = layout.cur_tx;
++		priv->tx_obj_num_coalesce_irq = layout.tx_coalesce;
+ 	}
+ 
+ 	if (fd_mode) {
 -- 
 2.45.2
 
