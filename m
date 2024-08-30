@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96064176FAB
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 960BA178361
 	for <linux-can@vger.kernel.org>; Fri, 30 Aug 2024 21:44:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725054258; cv=none; b=pumd8Gn+kBJfrtzz7c/iyyZHvGweyF6CX3ii0nriAbS67VCrQgxbv13nHhEU7Yp6RtZL3RmcNa5EsGfO0HHnD9FgKEdtaTVOpxW2y1vRQ8xtLKm+IDKKftI2HF8znbXSAnCaBqkB6gIj0whlsyyopkabpXHGk2j5jTAE0OC/8+k=
+	t=1725054258; cv=none; b=lzTMNpZQ+Na/FIxbaKDJSAKM5RRhdVot4/baUY3l/di2A33zNtDdtXKdiZtQ1Ak1aT89JQHxjsodtkoTcOJWqAejIQSc1P6KDwSLuH2bsF/wKv5gIElIEXoSG9X+0KpnaRoHHWd3VUnKZYS11qIUYTLKBnOLzi4053IH4wZ22V0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1725054258; c=relaxed/simple;
-	bh=IiK8DDw3dydFEF0tcqI9MV/cFH8RHDYIU2flZiJg60o=;
+	bh=K+aNE6xY81gBfaUyJFWAxOwY/yjwy9DN64loW/izHIQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NtusgX5OmGfG4B4J0VUw+515FEsg7goH69t63jGpW+T7xEaoq/+QQbStHS+WGE1y9XYv4QQHR0/gnmw1ydnOjkCwtrnT5a3EEt+KPwaXASdVamEuN1EzTa7caJXRS3Jzqf3YcL2M6TNeBkO+js7KEURk/y6THXfT3IMUFYfZ2Uc=
+	 MIME-Version; b=Xn9zjZ9Wu8Pxuo1reoKPychtt6JuGODSEobyMx/FY18HHHlVYHD0ZdeXAt1MQNfur3qc4mm89YY4WPs66MfTopUd1DWL0saJ0tnKv9hm3e+pdxkABuTurs1M9gES0f9oHPompuqbhc882SpAjhjavNGqpXIPwuLNsnTiOnvy4yI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,25 +18,25 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sk9Pi-0002fT-U9
-	for linux-can@vger.kernel.org; Fri, 30 Aug 2024 23:44:14 +0200
+	id 1sk9Pi-0002gO-Vs
+	for linux-can@vger.kernel.org; Fri, 30 Aug 2024 23:44:15 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sk9Ph-004FN3-T5
-	for linux-can@vger.kernel.org; Fri, 30 Aug 2024 23:44:13 +0200
+	id 1sk9Pi-004FNL-2M
+	for linux-can@vger.kernel.org; Fri, 30 Aug 2024 23:44:14 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 8D45532E475
+	by bjornoya.blackshift.org (Postfix) with SMTP id B912C32E479
 	for <linux-can@vger.kernel.org>; Fri, 30 Aug 2024 21:44:13 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 1E25732E454;
-	Fri, 30 Aug 2024 21:44:12 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id E58D032E450;
+	Fri, 30 Aug 2024 21:44:11 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 9e35ccbf;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ff443a91;
 	Fri, 30 Aug 2024 21:44:11 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -44,11 +44,12 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	=?UTF-8?q?Stefan=20M=C3=A4tje?= <stefan.maetje@esd.eu>,
+	Frank Li <Frank.Li@nxp.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 4/6] can: netlink: avoid call to do_set_data_bittiming callback with stale can_priv::ctrlmode
-Date: Fri, 30 Aug 2024 23:34:37 +0200
-Message-ID: <20240830214406.1605786-5-mkl@pengutronix.de>
+Subject: [PATCH net-next 2/6] dt-bindings: can: convert microchip,mcp251x.txt to yaml
+Date: Fri, 30 Aug 2024 23:34:35 +0200
+Message-ID: <20240830214406.1605786-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240830214406.1605786-1-mkl@pengutronix.de>
 References: <20240830214406.1605786-1-mkl@pengutronix.de>
@@ -58,171 +59,145 @@ List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Stefan Mätje <stefan.maetje@esd.eu>
+From: Frank Li <Frank.Li@nxp.com>
 
-This patch moves the evaluation of data[IFLA_CAN_CTRLMODE] in function
-can_changelink in front of the evaluation of data[IFLA_CAN_BITTIMING].
+Convert binding doc microchip,mcp251x.txt to yaml.
+Additional change:
+- add ref to spi-peripheral-props.yaml
 
-This avoids a call to do_set_data_bittiming providing a stale
-can_priv::ctrlmode with a CAN_CTRLMODE_FD flag not matching the
-requested state when switching between a CAN Classic and CAN-FD bitrate.
+Fix below warning:
+arch/arm64/boot/dts/freescale/imx8dx-colibri-eval-v3.dtb: /bus@5a000000/spi@5a020000/can@0:
+	failed to match any schema with compatible: ['microchip,mcp2515']
 
-In the same manner the evaluation of data[IFLA_CAN_CTRLMODE] in function
-can_validate is also moved in front of the evaluation of
-data[IFLA_CAN_BITTIMING].
-
-This is a preparation for patches where the nominal and data bittiming
-may have interdependencies on the driver side depending on the
-CAN_CTRLMODE_FD flag state.
-
-Signed-off-by: Stefan Mätje <stefan.maetje@esd.eu>
-Link: https://patch.msgid.link/20240808164224.213522-1-stefan.maetje@esd.eu
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Link: https://patch.msgid.link/20240814164407.4022211-1-Frank.Li@nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/netlink.c | 102 +++++++++++++++++-----------------
- 1 file changed, 51 insertions(+), 51 deletions(-)
+ .../bindings/net/can/microchip,mcp2510.yaml   | 70 +++++++++++++++++++
+ .../bindings/net/can/microchip,mcp251x.txt    | 30 --------
+ 2 files changed, 70 insertions(+), 30 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/microchip,mcp2510.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt
 
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index dfdc039d92a6..01aacdcda260 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -65,15 +65,6 @@ static int can_validate(struct nlattr *tb[], struct nlattr *data[],
- 	if (!data)
- 		return 0;
- 
--	if (data[IFLA_CAN_BITTIMING]) {
--		struct can_bittiming bt;
--
--		memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
--		err = can_validate_bittiming(&bt, extack);
--		if (err)
--			return err;
--	}
--
- 	if (data[IFLA_CAN_CTRLMODE]) {
- 		struct can_ctrlmode *cm = nla_data(data[IFLA_CAN_CTRLMODE]);
- 		u32 tdc_flags = cm->flags & CAN_CTRLMODE_TDC_MASK;
-@@ -114,6 +105,15 @@ static int can_validate(struct nlattr *tb[], struct nlattr *data[],
- 		}
- 	}
- 
-+	if (data[IFLA_CAN_BITTIMING]) {
-+		struct can_bittiming bt;
+diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp2510.yaml b/Documentation/devicetree/bindings/net/can/microchip,mcp2510.yaml
+new file mode 100644
+index 000000000000..db446dde6842
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/microchip,mcp2510.yaml
+@@ -0,0 +1,70 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/can/microchip,mcp2510.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+		memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
-+		err = can_validate_bittiming(&bt, extack);
-+		if (err)
-+			return err;
-+	}
++title: Microchip MCP251X stand-alone CAN controller
 +
- 	if (is_can_fd) {
- 		if (!data[IFLA_CAN_BITTIMING] || !data[IFLA_CAN_DATA_BITTIMING])
- 			return -EOPNOTSUPP;
-@@ -195,48 +195,6 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 	/* We need synchronization with dev->stop() */
- 	ASSERT_RTNL();
- 
--	if (data[IFLA_CAN_BITTIMING]) {
--		struct can_bittiming bt;
++maintainers:
++  - Marc Kleine-Budde <mkl@pengutronix.de>
++
++properties:
++  compatible:
++    enum:
++      - microchip,mcp2510
++      - microchip,mcp2515
++      - microchip,mcp25625
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  vdd-supply:
++    description: Regulator that powers the CAN controller.
++
++  xceiver-supply:
++    description: Regulator that powers the CAN transceiver.
++
++  gpio-controller: true
++
++  "#gpio-cells":
++    const: 2
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - interrupts
++
++allOf:
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        can@1 {
++             compatible = "microchip,mcp2515";
++             reg = <1>;
++             clocks = <&clk24m>;
++             interrupt-parent = <&gpio4>;
++             interrupts = <13 IRQ_TYPE_LEVEL_LOW>;
++             vdd-supply = <&reg5v0>;
++             xceiver-supply = <&reg5v0>;
++             gpio-controller;
++             #gpio-cells = <2>;
++        };
++    };
++
+diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt b/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt
+deleted file mode 100644
+index 381f8fb3e865..000000000000
+--- a/Documentation/devicetree/bindings/net/can/microchip,mcp251x.txt
++++ /dev/null
+@@ -1,30 +0,0 @@
+-* Microchip MCP251X stand-alone CAN controller device tree bindings
 -
--		/* Do not allow changing bittiming while running */
--		if (dev->flags & IFF_UP)
--			return -EBUSY;
+-Required properties:
+- - compatible: Should be one of the following:
+-   - "microchip,mcp2510" for MCP2510.
+-   - "microchip,mcp2515" for MCP2515.
+-   - "microchip,mcp25625" for MCP25625.
+- - reg: SPI chip select.
+- - clocks: The clock feeding the CAN controller.
+- - interrupts: Should contain IRQ line for the CAN controller.
 -
--		/* Calculate bittiming parameters based on
--		 * bittiming_const if set, otherwise pass bitrate
--		 * directly via do_set_bitrate(). Bail out if neither
--		 * is given.
--		 */
--		if (!priv->bittiming_const && !priv->do_set_bittiming &&
--		    !priv->bitrate_const)
--			return -EOPNOTSUPP;
+-Optional properties:
+- - vdd-supply: Regulator that powers the CAN controller.
+- - xceiver-supply: Regulator that powers the CAN transceiver.
+- - gpio-controller: Indicates this device is a GPIO controller.
+- - #gpio-cells: Should be two. The first cell is the pin number and
+-                the second cell is used to specify the gpio polarity.
 -
--		memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
--		err = can_get_bittiming(dev, &bt,
--					priv->bittiming_const,
--					priv->bitrate_const,
--					priv->bitrate_const_cnt,
--					extack);
--		if (err)
--			return err;
--
--		if (priv->bitrate_max && bt.bitrate > priv->bitrate_max) {
--			NL_SET_ERR_MSG_FMT(extack,
--					   "arbitration bitrate %u bps surpasses transceiver capabilities of %u bps",
--					   bt.bitrate, priv->bitrate_max);
--			return -EINVAL;
--		}
--
--		memcpy(&priv->bittiming, &bt, sizeof(bt));
--
--		if (priv->do_set_bittiming) {
--			/* Finally, set the bit-timing registers */
--			err = priv->do_set_bittiming(dev);
--			if (err)
--				return err;
--		}
--	}
--
- 	if (data[IFLA_CAN_CTRLMODE]) {
- 		struct can_ctrlmode *cm;
- 		u32 ctrlstatic;
-@@ -284,6 +242,48 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 			priv->ctrlmode &= cm->flags | ~CAN_CTRLMODE_TDC_MASK;
- 	}
- 
-+	if (data[IFLA_CAN_BITTIMING]) {
-+		struct can_bittiming bt;
-+
-+		/* Do not allow changing bittiming while running */
-+		if (dev->flags & IFF_UP)
-+			return -EBUSY;
-+
-+		/* Calculate bittiming parameters based on
-+		 * bittiming_const if set, otherwise pass bitrate
-+		 * directly via do_set_bitrate(). Bail out if neither
-+		 * is given.
-+		 */
-+		if (!priv->bittiming_const && !priv->do_set_bittiming &&
-+		    !priv->bitrate_const)
-+			return -EOPNOTSUPP;
-+
-+		memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
-+		err = can_get_bittiming(dev, &bt,
-+					priv->bittiming_const,
-+					priv->bitrate_const,
-+					priv->bitrate_const_cnt,
-+					extack);
-+		if (err)
-+			return err;
-+
-+		if (priv->bitrate_max && bt.bitrate > priv->bitrate_max) {
-+			NL_SET_ERR_MSG_FMT(extack,
-+					   "arbitration bitrate %u bps surpasses transceiver capabilities of %u bps",
-+					   bt.bitrate, priv->bitrate_max);
-+			return -EINVAL;
-+		}
-+
-+		memcpy(&priv->bittiming, &bt, sizeof(bt));
-+
-+		if (priv->do_set_bittiming) {
-+			/* Finally, set the bit-timing registers */
-+			err = priv->do_set_bittiming(dev);
-+			if (err)
-+				return err;
-+		}
-+	}
-+
- 	if (data[IFLA_CAN_RESTART_MS]) {
- 		/* Do not allow changing restart delay while running */
- 		if (dev->flags & IFF_UP)
+-Example:
+-	can0: can@1 {
+-		compatible = "microchip,mcp2515";
+-		reg = <1>;
+-		clocks = <&clk24m>;
+-		interrupt-parent = <&gpio4>;
+-		interrupts = <13 IRQ_TYPE_LEVEL_LOW>;
+-		vdd-supply = <&reg5v0>;
+-		xceiver-supply = <&reg5v0>;
+-		gpio-controller;
+-		#gpio-cells = <2>;
+-	};
 -- 
 2.45.2
 
