@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 287C81C1AD9
-	for <linux-can@vger.kernel.org>; Fri, 30 Aug 2024 21:59:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C0042AE84
+	for <linux-can@vger.kernel.org>; Fri, 30 Aug 2024 22:03:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725055168; cv=none; b=bw+4lolQhShbF2dZx0/89Yk6dPJHXtw2iQPps435as5mhPjYJfONgE9aZPlZ1NqaWEP+tAbWhDQvnxl0ExQL5kKFXCsN4wpftOtRKZPPJAarZRVUF7QMvnhaNOqm6WNjvF7TJfIHUhrpLr5cvz+t9lH7OTOd4Di3VsXWe+gux7s=
+	t=1725055431; cv=none; b=QxRZOdLP8w1VGL5OqUkOOYUhCBqTjGCu/FugLMu/rZyrP6Nr0A6r2m6YQQgZ+nzDH7fPoXlUTO7eFN7kLyhoE8w1poAuEqF6oPbcWDkZA7cYtYj/Ks/05LDxOQbKDPQduVp9YL6B1rbVaECEjoBw3dHxLB/OsS3cDJT9Rl1AOO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725055168; c=relaxed/simple;
-	bh=QjlpltM6WFPSPXwWxD309mOOafvEIZ88vhL3o9egL0g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=W/7tpM7c0he2EXOccK52BmqYbtmXOnGg0xQQ1hHSvqLl6JtKV0ZQzWUVDMj5A4YR4eEIhueZwxLYbQ55Sj272BNBRMglPmDTCJFpEeMbKGEZkYP20637x8YoAWZNFKLNwgobiFDUe9GE+PTUs3EczRJPU2Ya3bVum7lScuP5IyM=
+	s=arc-20240116; t=1725055431; c=relaxed/simple;
+	bh=4bUqnW+G1QDzMf38UtJ5YT7+nBSIeuQ7oiAfyuD9ut8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Dn69b53HRRJzMkOD6s003pIhL1xw/oK2FH608kKDfHoiQ6gpMOTlr0k1QsJIoXCAETcSw6UdpwmQATr5HtXF2i5ZSzacsuAfoymFjHHLaW2RaxsaU3H29m9Af6fJ5ZwffuifVbKVcjYrg37dZU2Hg9Rq2fwzKcuPnZtSdMG2/Pk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,101 +18,88 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sk9eN-0004GZ-9w
-	for linux-can@vger.kernel.org; Fri, 30 Aug 2024 23:59:23 +0200
+	id 1sk9ib-00074Q-Se; Sat, 31 Aug 2024 00:03:45 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sk9eL-004FZU-5s
-	for linux-can@vger.kernel.org; Fri, 30 Aug 2024 23:59:21 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id DA59B32E540
-	for <linux-can@vger.kernel.org>; Fri, 30 Aug 2024 21:59:20 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+	id 1sk9ib-004Fq2-7F; Sat, 31 Aug 2024 00:03:45 +0200
+Received: from pengutronix.de (pd9e5994e.dip0.t-ipconnect.de [217.229.153.78])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 8837932E4EB;
-	Fri, 30 Aug 2024 21:59:17 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d5b58076;
-	Fri, 30 Aug 2024 21:59:16 +0000 (UTC)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id E464832E5B9;
+	Fri, 30 Aug 2024 22:03:44 +0000 (UTC)
+Date: Sat, 31 Aug 2024 00:03:44 +0200
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	kuba@kernel.org,
-	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	Simon Arlott <simon@octiron.net>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	stable@vger.kernel.org,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 12/13] can: mcp251x: fix deadlock if an interrupt occurs during mcp251x_open
-Date: Fri, 30 Aug 2024 23:53:47 +0200
-Message-ID: <20240830215914.1610393-13-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240830215914.1610393-1-mkl@pengutronix.de>
-References: <20240830215914.1610393-1-mkl@pengutronix.de>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, linux-can@vger.kernel.org, 
+	kernel@pengutronix.de, Martin Jocic <martin.jocic@kvaser.com>
+Subject: Re: [PATCH net 13/13] can: kvaser_pciefd: Enable 64-bit DMA
+ addressing
+Message-ID: <20240830-cheerful-dinosaur-of-relaxation-a9905c-mkl@pengutronix.de>
+References: <20240829192947.1186760-1-mkl@pengutronix.de>
+ <20240829192947.1186760-14-mkl@pengutronix.de>
+ <20240830131724.7c08eac4@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="mbdt5vzsemmzmus2"
+Content-Disposition: inline
+In-Reply-To: <20240830131724.7c08eac4@kernel.org>
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Simon Arlott <simon@octiron.net>
 
-The mcp251x_hw_wake() function is called with the mpc_lock mutex held and
-disables the interrupt handler so that no interrupts can be processed while
-waking the device. If an interrupt has already occurred then waiting for
-the interrupt handler to complete will deadlock because it will be trying
-to acquire the same mutex.
+--mbdt5vzsemmzmus2
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-CPU0                           CPU1
-----                           ----
-mcp251x_open()
- mutex_lock(&priv->mcp_lock)
-  request_threaded_irq()
-                               <interrupt>
-                               mcp251x_can_ist()
-                                mutex_lock(&priv->mcp_lock)
-  mcp251x_hw_wake()
-   disable_irq() <-- deadlock
+On 30.08.2024 13:17:24, Jakub Kicinski wrote:
+> On Thu, 29 Aug 2024 21:20:46 +0200 Marc Kleine-Budde wrote:
+> > +	if (IS_ENABLED(CONFIG_ARCH_DMA_ADDR_T_64BIT))
+> > +		dma_set_mask_and_coherent(&pcie->pci->dev, DMA_BIT_MASK(64));
+>=20
+> This IS_ENABLED() is quite unusual. The driver just advertises its
+> capability of using 64 addressing. If the platform doesn't support
+> 64b DMA addressing and therefore dma_addr_t is narrower, everything
+> will still work. I could be wrong, but that's how I understand it.
 
-Use disable_irq_nosync() instead because the interrupt handler does
-everything while holding the mutex so it doesn't matter if it's still
-running.
+Ditch this PR.
 
-Fixes: 8ce8c0abcba3 ("can: mcp251x: only reset hardware as required")
-Signed-off-by: Simon Arlott <simon@octiron.net>
-Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/all/4fc08687-1d80-43fe-9f0d-8ef8475e75f6@0882a8b5-c6c3-11e9-b005-00805fc181fe.uuid.home.arpa
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/spi/mcp251x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I have sent out a new PR without this patch; however, it contains an
+additional patch that has since arrived.
 
-diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index 3b8736ff0345..ec5c64006a16 100644
---- a/drivers/net/can/spi/mcp251x.c
-+++ b/drivers/net/can/spi/mcp251x.c
-@@ -752,7 +752,7 @@ static int mcp251x_hw_wake(struct spi_device *spi)
- 	int ret;
- 
- 	/* Force wakeup interrupt to wake device, but don't execute IST */
--	disable_irq(spi->irq);
-+	disable_irq_nosync(spi->irq);
- 	mcp251x_write_2regs(spi, CANINTE, CANINTE_WAKIE, CANINTF_WAKIF);
- 
- 	/* Wait for oscillator startup timer after wake up */
--- 
-2.45.2
+regards,
+Marc
 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
+--mbdt5vzsemmzmus2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmbSQb0ACgkQKDiiPnot
+vG9pTwf/TEq24XEJxOoMl3JP+t6jK8DsXYM/3PlJ/ifja291Nmx+wKh1NJ2thTjJ
+WhkTdkK7EJcLSXE2Yu3BG4oSYFbdAIAdgzalvFoHXAsqkpI2yZr0LhukHsyS96wV
+qW/nIYWSOi6q+PR39J9/Il6M1ZWPi8sSQ2bGsTpGuwNmvav1/jypQEUtBxJADiyr
+KQgfa9PmoJ2mFjNjjEViQtGMimSum4Wz6exNXP6zFTUGOqEdWJl2cXlbFx9O/ctH
+cfnZ6alNmlm6aEV3PXC7+3wB8rS6KBinn3MlhakgPc4+6RO5z3cgl617MTzn2vxh
+f+iBDkBPpqGbMFdSYrrPJkr60T7Z1g==
+=KxIG
+-----END PGP SIGNATURE-----
+
+--mbdt5vzsemmzmus2--
