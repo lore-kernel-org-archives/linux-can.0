@@ -1,91 +1,109 @@
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E1E43C00
-	for <linux-can@vger.kernel.org>; Mon,  2 Sep 2024 07:31:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6718D2032A
+	for <linux-can@vger.kernel.org>; Mon,  2 Sep 2024 08:18:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725262319; cv=none; b=k7Uvd/vjXn6FwHALRInxSqVl7TuWTUCfDg8BR6aqGS6ubaKT3kqL1+deUxu9y1WH66TPNC9zWwtzKkZMGjvWfZXHqy1okFKtrzc9jLKt9sod7bpmtPfJn9Hm+yUIDeOWwEKb11I0WKjqYFfhB7JCUBye2a/nkAjIYV1WbJscO5g=
+	t=1725265123; cv=none; b=Mhwa4+tGmFra+2vk8pstpHHuNAY93vqqfvxD8Yh/zB9schIHu0NojPq++L4dk+hfY9bi7EP+ljW5WE12yXAsR+panN4aImLsAksommdj2A8V8c3ArTqg0UtfElZJSFJ+GBiJiQ6BpyblfI4V85BeSJazwX+FGH4F3XN4PTeBV4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725262319; c=relaxed/simple;
-	bh=VYWxwAvhkLuKPpE2aKjnqJ2tnF3raRJ7v8jbIXvonwc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Fs24vg+JHli1QxrQWJLHVKOhQSvtWepAbS1oS9BStiJqPzsPXAhHlgnbphzZoSbDSPJi8Bjh8JlHmf5Wz8XE6RJlT0N2/CJ00hq2ZvvLB92rbux3UKUQOB9CibvdsPxcDVPd/NW8nWy5ahFrPwq+8FV6APfijwpGPtxaJ8p6Eg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SyIJvoci; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SyIJvoci"
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2f4f2868710so40993781fa.1
-        for <linux-can@vger.kernel.org>; Mon, 02 Sep 2024 00:31:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725262315; x=1725867115; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VYWxwAvhkLuKPpE2aKjnqJ2tnF3raRJ7v8jbIXvonwc=;
-        b=SyIJvocixO9Hr5UMpC2a4Q6TxPdNBH5pgd5/CHL4s6dv8yA2kIvN8+Lk6cS7B7/3+I
-         naUMgy2J4/uOAzFPgOmc1h3sZQdwvx3+fYslulUIqEqm/6CZRuIf7Gk3rWBjguNSfg1g
-         nizjXxap5xQZpAnaEivppmDbFCUMSGnIXSsRNGeSgcAj5ikdgLb4pu/fn1ks8JV0Nkyz
-         BoQWkQH0djjA4fsfZkh/D9OccWxu9MKGwlUE9ESop6PaD+tsTsOm6UCSLqfgd3nhRFSN
-         aIWyPj+W7Jxyjh0KLRWIpQAEBrBck1wt4HYukQIiyrLzPJp3UjMt7MQk7A25tUM8UKn5
-         QV7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725262315; x=1725867115;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VYWxwAvhkLuKPpE2aKjnqJ2tnF3raRJ7v8jbIXvonwc=;
-        b=LRy0I1xizHJLyQgaWTJ1NszW0RobeiSt1QJSAMb6qw/uNlw8v7l5qWAme+rO77O1Ip
-         FxmJ79nsIY89DKNL5UOnmp4yJUUcg0h5b+P5AU54AwJOnMLdTkymjT8kd0WIRwTRrC8q
-         BmaHR+Dq0SUPD0icVVB3HSuDuFc5SFCzA5XZGKt9WdYLBLZorXSabhnt7P8+5u36JZln
-         GAmUzeFVNxgVOQXZ4DTMQK/v5MIpQvuw0+FwyOzDrA6H15Z2Re/tGYiYCJcz8xY/7vI3
-         qL9CgOTicuhGAjz3NX1/x6vMkvN9U7LAz8CU9fRkv5mSJtjKerGHag2y8sYkF/0huojB
-         Bi/A==
-X-Forwarded-Encrypted: i=1; AJvYcCXH6AFsbNggGCl5bdO1i2jRqiyGZryptPoPsIMEyjCptZIzrYKgPDxrVfPb6kf6yLgxoHNSYzWUvA0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxPcYwl99NS8Xmn4vvcHGXep8nLsIct60VWxYnlqWkllOnqisou
-	/4a26jL0Bffd66P9j8lW2d8VOh4yNqcFeeOpZZIYziICqZlm5NY1
-X-Google-Smtp-Source: AGHT+IFLKS0s5tWhZgm741hN+pzHdXBktAkClb8elyk1pVRpR5P/QnqJ36pX/VvIlCY9gtwU7+0+qQ==
-X-Received: by 2002:a05:651c:198d:b0:2f1:929b:aef6 with SMTP id 38308e7fff4ca-2f610923301mr105230021fa.36.1725262314775;
-        Mon, 02 Sep 2024 00:31:54 -0700 (PDT)
-Received: from U19.ag.local ([83.69.218.234])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2f614ed1787sm16894491fa.10.2024.09.02.00.31.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Sep 2024 00:31:54 -0700 (PDT)
-From: Alibek Omarov <a1ba.omarov@gmail.com>
-To: mkl@pengutronix.de,
-	linux-can@vger.kernel.org,
-	linux-rockchip@lists.infradead.org
-Cc: Alibek Omarov <a1ba.omarov@gmail.com>
-Subject: Re: [can-next,v3,00/20] can: rockchip_canfd: add support for CAN-FD IP core found on Rockchip RK3568
-Date: Mon,  2 Sep 2024 10:31:17 +0300
-Message-Id: <20240902073116.1620038-1-a1ba.omarov@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240830-rockchip-canfd-v3-0-d426266453fa@pengutronix.de>
+	s=arc-20240116; t=1725265123; c=relaxed/simple;
+	bh=Sw4sCKgKgZ8Yo6pYHkDku1xC+DsorWohNF/ktEsf1ds=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QcrDBakEpHigIMm+G110TVnc5NPcCriMrHbZNN13MzheLJmEs6fsGLPHYGhAubc0Q3lMUywXbO/qHEqyuPVBf2dfsqUwOWmiSDQgrJaJA7TIyxi0viCFwAcXvOFVRRVvsdj+sE/d+18XXThaXbz3anFrNKqFO+/3YGvWEknXBik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1sl2Gj-0000Gn-U3; Mon, 02 Sep 2024 10:18:37 +0200
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1sl2Gj-004rAb-CO; Mon, 02 Sep 2024 10:18:37 +0200
+Received: from pengutronix.de (pd9e5994e.dip0.t-ipconnect.de [217.229.153.78])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id BB0E53302AD;
+	Mon, 02 Sep 2024 07:41:57 +0000 (UTC)
+Date: Mon, 2 Sep 2024 09:41:57 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Alibek Omarov <a1ba.omarov@gmail.com>
+Cc: linux-can@vger.kernel.org, linux-rockchip@lists.infradead.org
+Subject: Re: [can-next,v3,00/20] can: rockchip_canfd: add support for CAN-FD
+ IP core found on Rockchip RK3568
+Message-ID: <20240902-fast-cream-magpie-6d5cea-mkl@pengutronix.de>
 References: <20240830-rockchip-canfd-v3-0-d426266453fa@pengutronix.de>
+ <20240902073116.1620038-1-a1ba.omarov@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="vvj5dzyb7qvxxin6"
+Content-Disposition: inline
+In-Reply-To: <20240902073116.1620038-1-a1ba.omarov@gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Resent to include linux-can@vger.kernel.org by Marc's request.
 
->This series adds support for the CAN-FD IP core found on the Rockchip
->RK3568.
+--vvj5dzyb7qvxxin6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->The IP core is a bit complicated and has several documented errata.
->The driver is added in several stages, first the base driver including
->the RX-path. Then several workarounds for errata and the TX-path, and
->finally features like hardware time stamping, loop-back mode and
->bus error reporting.
+On 02.09.2024 10:31:17, Alibek Omarov wrote:
+> Resent to include linux-can@vger.kernel.org by Marc's request.
+>=20
+> >This series adds support for the CAN-FD IP core found on the Rockchip
+> >RK3568.
+>=20
+> >The IP core is a bit complicated and has several documented errata.
+> >The driver is added in several stages, first the base driver including
+> >the RX-path. Then several workarounds for errata and the TX-path, and
+> >finally features like hardware time stamping, loop-back mode and
+> >bus error reporting.
+>=20
+> We've tried this on v2 patch set, with a custom board with Radxa CM3I
+> connected and it's even more stable than BSP driver we backported ourselv=
+es.
+>=20
+> Tested-by: Alibek Omarov <a1ba.omarov@gmail.com>
 
-We've tried this on v2 patch set, with a custom board with Radxa CM3I
-connected and it's even more stable than BSP driver we backported ourselves.
+The difference between the v2 and v3 patch set was changes in DT
+bindings and the yaml, so I added your Tested-by the upcoming v4.
 
-Tested-by: Alibek Omarov <a1ba.omarov@gmail.com>
+Thanks again,
+Marc
 
-Cheers,
-Alibek.
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--vvj5dzyb7qvxxin6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmbVbEEACgkQKDiiPnot
+vG/KsQf9GgcaVWqZu6MOKeNuM/fGIBrk3aNeuKZ9D+yGwdifGqa58/+//WfPR9Jw
+/c0+WiCtXiiY1WwU4ulQmfluf9ADF62Vwd7Ep84mvqdgyGuIt+k+QGMga+uJf8uH
+c6WYe+7jj1UMfXmuYzl1Rvog5rxhmz/26YHDRdmxnrl0a4JfnmXFHuosANmvNosu
+GxxFZ2BQ2lq5UUXP70Z8c6dRRE90h2A7PExDD7f2zNX/PDpENggHZO2g+b0lJUBg
+zPgSV3cI1L3DqNbdFh7SzpdzeceFsYz0BlnhDjmOVQuKfehLePHuYmXQuZF2mY9g
+um1GuR0blObbLKYe2N+1GMbwSyK7TQ==
+=yvUl
+-----END PGP SIGNATURE-----
+
+--vvj5dzyb7qvxxin6--
