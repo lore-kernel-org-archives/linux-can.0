@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93E721DB54F
-	for <linux-can@vger.kernel.org>; Wed,  4 Sep 2024 13:03:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 090A41DA2EF
+	for <linux-can@vger.kernel.org>; Wed,  4 Sep 2024 13:04:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725454995; cv=none; b=JZUh+Cm+1iVpZPVA3X7oNx8hEo1G63B8w+5nUDFwpdV/5rT4b1sG0B+SeqWerHROdqpGCOJ9DI9Tc6CM9b8FgQ7gjrSxAULWTJrrtLvPVpw+x+sqfTpZsVC0CHOe4TUN0z0axLKIkzJ1o3/Sm0/bTlOEQMRrSUq4bW3YaAsYzFY=
+	t=1725455081; cv=none; b=hZSgQIMPwESpxs5iOlXpAipTvaj5PCu9eL05Fy5sVccMYILwBEVp381cwC1SLfvp5PH5n4+dpEOqxSQK7pyWsHQKuryWLiBKu4txVvkdpq2quZnauU2EQyWjwdyjMS4F1XHj7x4G02nTcNZVg3rAkn0fDEhdonwhuuPe53kFgJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725454995; c=relaxed/simple;
-	bh=iHrK7UlM6U1GS2K172/ramAZ1RaZEThfPD2YcmPJk1U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kQGQqBm8MfN10zFoRz4UzbWb5hhZj/zRXI97pGXgrXCTvckvx4/VmoSGhddS3vYiuvBQGafmjPGTdbunfx4EBFf8Fef6WDswxZQ5JsI8AelNni2g4ubz/UdmZ0aczfIZps7gv0j8PILkhenzhzrvx5um9f0EtY2FG5HwIy1UhTU=
+	s=arc-20240116; t=1725455081; c=relaxed/simple;
+	bh=iUvkWqxZWOqh9qs9Z4qY7apUDk7RXeOCuIbeU/k45lo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gYdttHnCWn0Z1rc2+pLQkVAbVBvRuAavSLKZELq/W31B7R+Fql0YuBw62A2K5qPWftfULqYlErdm5xTkInSt4cO2k87XFrvOwTMea9teaN4iWLvX8RqkWZJYsNNz2HTGGh8wDMVKoGj8dVsxBMVAoGisayBPWCzcIhtYFZaMJoo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,165 +18,80 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1slpfB-00071X-8x
-	for linux-can@vger.kernel.org; Wed, 04 Sep 2024 15:03:09 +0200
+	id 1slpga-0000Pm-Lk; Wed, 04 Sep 2024 15:04:36 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1slpf6-005SWp-DB
-	for linux-can@vger.kernel.org; Wed, 04 Sep 2024 15:03:04 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 0D0853327F0
-	for <linux-can@vger.kernel.org>; Wed, 04 Sep 2024 13:03:04 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+	id 1slpga-005Scb-6e; Wed, 04 Sep 2024 15:04:36 +0200
+Received: from pengutronix.de (pd9e5994e.dip0.t-ipconnect.de [217.229.153.78])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id D480A33277C;
-	Wed, 04 Sep 2024 13:03:00 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b05ec12c;
-	Wed, 4 Sep 2024 13:02:59 +0000 (UTC)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id EC81C332878;
+	Wed, 04 Sep 2024 13:04:35 +0000 (UTC)
+Date: Wed, 4 Sep 2024 15:04:35 +0200
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	kuba@kernel.org,
-	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Alibek Omarov <a1ba.omarov@gmail.com>,
-	Heiko Stuebner <heiko@sntech.de>
-Subject: [PATCH net-next 14/18] can: rockchip_canfd: prepare to use full TX-FIFO depth
-Date: Wed,  4 Sep 2024 14:55:30 +0200
-Message-ID: <20240904130256.1965582-15-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240904130256.1965582-1-mkl@pengutronix.de>
-References: <20240904130256.1965582-1-mkl@pengutronix.de>
+Cc: davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org, 
+	kernel@pengutronix.de
+Subject: Re: [PATCH net-next 0/20] pull-request: can-next 2024-09-04
+Message-ID: <20240904-valiant-camouflaged-dove-171b7d-mkl@pengutronix.de>
+References: <20240904094218.1925386-1-mkl@pengutronix.de>
+ <20240904-stirring-meteoric-cobra-831697-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="564yis4mvy6qojrj"
+Content-Disposition: inline
+In-Reply-To: <20240904-stirring-meteoric-cobra-831697-mkl@pengutronix.de>
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-So far the TX-FIFO is only used with a depth of 1, although the
-hardware offers a depth of 2.
 
-The workaround for the chips that are affected by erratum 6, i.e. EFF
-frames may be send as standard frames, is to re-send the EFF frame.
-This means the driver cannot queue the next frame for sending, as long
-ad the EFF frame has not been successfully send out.
+--564yis4mvy6qojrj
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Introduce rkcanfd_get_effective_tx_free() that returns "0" space in
-the TX-FIFO if an EFF frame is pending and the actual free space in
-the TX-FIFO otherwise. Then replace rkcanfd_get_tx_free() with
-rkcanfd_get_effective_tx_free() everywhere.
+On 04.09.2024 14:56:49, Marc Kleine-Budde wrote:
+> Please don't pull.
+>=20
+> DTS changes should not be included in this PR. I'll send an updated
+> one.
 
-Tested-by: Alibek Omarov <a1ba.omarov@gmail.com>
-Acked-by: Heiko Stuebner <heiko@sntech.de>
-Link: https://patch.msgid.link/20240904-rockchip-canfd-v5-16-8ae22bcb27cc@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/rockchip/rockchip_canfd-rx.c |  2 +-
- drivers/net/can/rockchip/rockchip_canfd-tx.c | 38 ++++++++++++++++++--
- drivers/net/can/rockchip/rockchip_canfd.h    |  1 +
- 3 files changed, 38 insertions(+), 3 deletions(-)
+The updated PR: https://lore.kernel.org/all/20240904130256.1965582-1-mkl@pe=
+ngutronix.de/
 
-diff --git a/drivers/net/can/rockchip/rockchip_canfd-rx.c b/drivers/net/can/rockchip/rockchip_canfd-rx.c
-index 9f72483dab18..bacef5e5dc39 100644
---- a/drivers/net/can/rockchip/rockchip_canfd-rx.c
-+++ b/drivers/net/can/rockchip/rockchip_canfd-rx.c
-@@ -124,7 +124,7 @@ static int rkcanfd_rxstx_filter(struct rkcanfd_priv *priv,
- 
- 		WRITE_ONCE(priv->tx_tail, priv->tx_tail + 1);
- 		netif_subqueue_completed_wake(priv->ndev, 0, 1, frame_len,
--					      rkcanfd_get_tx_free(priv),
-+					      rkcanfd_get_effective_tx_free(priv),
- 					      RKCANFD_TX_START_THRESHOLD);
- 
- 		*tx_done = true;
-diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/can/rockchip/rockchip_canfd-tx.c
-index f8e74e814b3b..d10da548ba71 100644
---- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
-+++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
-@@ -8,6 +8,40 @@
- 
- #include "rockchip_canfd.h"
- 
-+static bool rkcanfd_tx_tail_is_eff(const struct rkcanfd_priv *priv)
-+{
-+	const struct canfd_frame *cfd;
-+	const struct sk_buff *skb;
-+	unsigned int tx_tail;
-+
-+	if (!rkcanfd_get_tx_pending(priv))
-+		return false;
-+
-+	tx_tail = rkcanfd_get_tx_tail(priv);
-+	skb = priv->can.echo_skb[tx_tail];
-+	if (!skb) {
-+		netdev_err(priv->ndev,
-+			   "%s: echo_skb[%u]=NULL tx_head=0x%08x tx_tail=0x%08x\n",
-+			   __func__, tx_tail,
-+			   priv->tx_head, priv->tx_tail);
-+
-+		return false;
-+	}
-+
-+	cfd = (struct canfd_frame *)skb->data;
-+
-+	return cfd->can_id & CAN_EFF_FLAG;
-+}
-+
-+unsigned int rkcanfd_get_effective_tx_free(const struct rkcanfd_priv *priv)
-+{
-+	if (priv->devtype_data.quirks & RKCANFD_QUIRK_RK3568_ERRATUM_6 &&
-+	    rkcanfd_tx_tail_is_eff(priv))
-+		return 0;
-+
-+	return rkcanfd_get_tx_free(priv);
-+}
-+
- static void rkcanfd_start_xmit_write_cmd(const struct rkcanfd_priv *priv,
- 					 const u32 reg_cmd)
- {
-@@ -42,7 +76,7 @@ int rkcanfd_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 		return NETDEV_TX_OK;
- 
- 	if (!netif_subqueue_maybe_stop(priv->ndev, 0,
--				       rkcanfd_get_tx_free(priv),
-+				       rkcanfd_get_effective_tx_free(priv),
- 				       RKCANFD_TX_STOP_THRESHOLD,
- 				       RKCANFD_TX_START_THRESHOLD)) {
- 		if (net_ratelimit())
-@@ -99,7 +133,7 @@ int rkcanfd_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 	rkcanfd_start_xmit_write_cmd(priv, reg_cmd);
- 
- 	netif_subqueue_maybe_stop(priv->ndev, 0,
--				  rkcanfd_get_tx_free(priv),
-+				  rkcanfd_get_effective_tx_free(priv),
- 				  RKCANFD_TX_STOP_THRESHOLD,
- 				  RKCANFD_TX_START_THRESHOLD);
- 
-diff --git a/drivers/net/can/rockchip/rockchip_canfd.h b/drivers/net/can/rockchip/rockchip_canfd.h
-index f24a1d18be66..37d90400429f 100644
---- a/drivers/net/can/rockchip/rockchip_canfd.h
-+++ b/drivers/net/can/rockchip/rockchip_canfd.h
-@@ -533,6 +533,7 @@ int rkcanfd_handle_rx_int(struct rkcanfd_priv *priv);
- 
- void rkcanfd_timestamp_init(struct rkcanfd_priv *priv);
- 
-+unsigned int rkcanfd_get_effective_tx_free(const struct rkcanfd_priv *priv);
- void rkcanfd_xmit_retry(struct rkcanfd_priv *priv);
- int rkcanfd_start_xmit(struct sk_buff *skb, struct net_device *ndev);
- void rkcanfd_handle_tx_done_one(struct rkcanfd_priv *priv, const u32 ts,
--- 
-2.45.2
+regards,
+Marc
 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
+--564yis4mvy6qojrj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmbYWuAACgkQKDiiPnot
+vG9q3Qf/YxMQ2/a8YA53kYe/8TLk1ncL6fZUqNcQLe5H2x5uGvUU/4YqQdQ61nHG
+lJbW/PjTnAAVTd6o1JncOwdHXo/y3PR6MdC2QP4hB2excONeTzStibTMtQdifVAN
+NVWT4PTZNe92pCj4Rbqn+GBtw7tLt2sY3FtHYGjpfeuxSssGq8gqatNFS4Aesj9z
+NCb28WPgeh3LPohi1TlUL9nfuDvetpf+RTQKwgd4MyIkd1wZ1wsqHrundM7HxDqb
+SMlQXYSLuc32tZrbZVEaGtPBrTgDy8i8kunBev6/2ULgyiyf6MOLGesqJ3nTbxLT
+yIF7ZdBukCZTvhXYVh5tZkjOemxfRQ==
+=iau/
+-----END PGP SIGNATURE-----
+
+--564yis4mvy6qojrj--
