@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4E6618950D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4DCC189509
 	for <linux-can@vger.kernel.org>; Wed,  4 Sep 2024 08:13:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725437626; cv=none; b=myHMHmvABSUds9bDwjwdsSusK8D/QOU2Y8yKkPdivcME/WnwUqNVmQkcPpIRnkkyyrB4sWO36BkAUjfm/MddOauKiBJDc27Cxu0RlzV8R9pbhblN+r+5stOtwfEogo3GSlda3ZLGxO44asTMrof9jiN68iVzqifaxAjfyxSLhvA=
+	t=1725437626; cv=none; b=f0/pkqFy6I+3/qvQS8tHYmBhhZhZ9reuIIyXLku8MfWxtjAltj2eBbUiUtN9yl4tGaebt6/az/9+/WiRL9wK7ljCzCZzBMXh/6A7/tdZVXY+KP/ykig/0++8TJqr/J4iJe1I9NszKnIFJ/J+BkNrZF+JDssrv7u64FhGEdjbrLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1725437626; c=relaxed/simple;
-	bh=EE4AmGzepXHNHoSI5zv7ndjZkcaM0ScMwEQQxZFgWvQ=;
+	bh=YuwCD3I+XqgAKfBKKX+ipqusj2W94Al2//omfOQm2OA=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=A9lSTt58n3PSQ0tN12LoOlWqGp3qoyQI+rfyD0gr9P6ZyphTmpY9rnxD9qKzoaUhlh0takOTUgnaHmXthGaM043YRpVTJ05rbgmAxQ5AyJ0OyA01ikLY8ZwwgaBpz93PMCE+jywZxwS1DWEHchqxrQPnG4zSe2//T265I75FrpU=
+	 In-Reply-To:To:Cc; b=cxyRv5cla0XpfZh3LwVCKYGrSWml/REAbwUw5RC16G4XT0N4YxLmQ+XiQzrNaPyaMsDFLsOGxTo/N5LcWpBn79tRu2bQtMVUtBrXgICnMCX3pLFtx/5fMkqRgk3J1kgcX8AjMHd+bVkzPWBoau4GyLZhqMU4/Rj0QoBDJJpMNS4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,30 +18,29 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sll8z-0007ig-OW
+	id 1sll8z-0007hs-LI
 	for linux-can@vger.kernel.org; Wed, 04 Sep 2024 10:13:37 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1sll8v-005Ox7-3c
-	for linux-can@vger.kernel.org; Wed, 04 Sep 2024 10:13:33 +0200
+	id 1sll8u-005Owf-Ob
+	for linux-can@vger.kernel.org; Wed, 04 Sep 2024 10:13:32 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 8EF8433209F
+	by bjornoya.blackshift.org (Postfix) with SMTP id 488D4332092
 	for <linux-can@vger.kernel.org>; Wed, 04 Sep 2024 08:13:32 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 1C9DD331F70;
-	Wed, 04 Sep 2024 08:13:23 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id DAB1A331F6A;
+	Wed, 04 Sep 2024 08:13:22 +0000 (UTC)
 Received: from [172.20.34.65] (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 01707a85;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f791e756;
 	Wed, 4 Sep 2024 08:13:20 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Wed, 04 Sep 2024 10:12:57 +0200
-Subject: [PATCH can-next v5 13/20] can: rockchip_canfd: implement
- workaround for erratum 12
+Date: Wed, 04 Sep 2024 10:12:55 +0200
+Subject: [PATCH can-next v5 11/20] can: rockchip_canfd: add TX PATH
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -50,7 +49,7 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240904-rockchip-canfd-v5-13-8ae22bcb27cc@pengutronix.de>
+Message-Id: <20240904-rockchip-canfd-v5-11-8ae22bcb27cc@pengutronix.de>
 References: <20240904-rockchip-canfd-v5-0-8ae22bcb27cc@pengutronix.de>
 In-Reply-To: <20240904-rockchip-canfd-v5-0-8ae22bcb27cc@pengutronix.de>
 To: kernel@pengutronix.de, Alibek Omarov <a1ba.omarov@gmail.com>, 
@@ -67,15 +66,15 @@ Cc: Simon Horman <horms@kernel.org>, linux-can@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
  linux-kernel@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 X-Mailer: b4 0.15-dev-99b12
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1911; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=EE4AmGzepXHNHoSI5zv7ndjZkcaM0ScMwEQQxZFgWvQ=;
- b=owEBbQGS/pANAwAKASg4oj56LbxvAcsmYgBm2BaU2IV77e9SK7EqFvXpb15hsu01hgjK3h933
- m+o0siPdd+JATMEAAEKAB0WIQRQQLqG4LYE3Sm8Pl8oOKI+ei28bwUCZtgWlAAKCRAoOKI+ei28
- bxxNB/0Uq/zqFh9PH8pK8tmKUpaZHVCNq22WSLYbpWDz+ZyH+9xu4cB473RcxvcokIK1hl7IZrs
- RZbXuBU/esYFjLn2sVaBIB/UVZJjO65JonVSNUg/O7KaicjyaUHVJA1IGYw94jl8bpAArr5Tamd
- yDeaj9DjQTP779/hzHHb20FUpMwQhagdG8c5kcItCY5GPC/sFTm/37H4TJyPPxYAldCUgoFpwXJ
- KsteRbqRBqPu/j35eb0BWSmE8DmdKXQBLbvx6APYL7LaSWoun93qzJ4ZF3KKOA8h6VshrQ/eUuH
- bLXAg9h+BSuIdk3GTnLj93O//CxU3sEpaEph+AcBgUYwY1aw
+X-Developer-Signature: v=1; a=openpgp-sha256; l=10684; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=YuwCD3I+XqgAKfBKKX+ipqusj2W94Al2//omfOQm2OA=;
+ b=owEBbQGS/pANAwAKASg4oj56LbxvAcsmYgBm2BaRZ2Z7HxtWThyExdyfnAfmIBWkbE8MkHhyK
+ h1FF3yM4ACJATMEAAEKAB0WIQRQQLqG4LYE3Sm8Pl8oOKI+ei28bwUCZtgWkQAKCRAoOKI+ei28
+ b9CLB/9iNIcG1RsId7Mhhbqv/4P8NwsjuqaLhgnQEYK45CnEAlOXsnhl9Y73+YcA1q0TdhTBR7z
+ O9yVbKdhP7hG3dwrTNuS56RvT4mkR0B2Zwr0TD/npY3T+JYyqNdgyjKP58Nz4E8gzPoysiXw+F+
+ ddOsd08kIBPXpxmFhyTcFI7zFN+0OonhsR7SmQLXNwZMqnTihZUL3nEFqV5KBc3Hng9VbxJzvbC
+ pNeg3O5gEM4GH9iv61oUoUawty88WHlT5VeYRhULWWAG1n2Yk2IDxGgJc5B0235yUtsH1gWJteM
+ VxrnIstA0iz4pI4kqtoyJMD7T5ptyeqKzgfvLMRJeDyl3Mbd
 X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
  fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -83,53 +82,337 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-The rk3568 CAN-FD errata sheet as of Tue 07 Nov 2023 11:25:31 +08:00
-says:
+The IP core has a TX event FIFO. In other IP cores, this type of FIFO
+usually contains the events that a CAN frame has been successfully
+sent. However, the IP core on the rk3568v2 the FIFO also holds events
+of unsuccessful transmission attempts.
 
-| A dominant bit at the third bit of the intermission may cause a
-| transmission error.
-|
-| When sampling the third bit of the intermission as a dominant bit, if
-| tx_req is configured to transmit extended frames at this time, the
-| extended frame may be sent to the bus in the format of a standard
-| frame. The extended frame will be sent as a standard frame and will not
-| result in error frames
+It turned out that the best way to work around this problem is to set
+the IP core to self-receive mode (RXSTX), filter out the self-received
+frames and insert them into the complete TX path.
 
-Turn on "Interframe Spaceing RX Mode" only during TX to work around
-erratum 12, according to rock-chip:
+Add a pair new functions to check if 2 struct canfd_frame are equal.
+The 1st checks if the header of the CAN frames are equal, the 2nd
+checks if the data portion are equal:
 
-| Spaceing RX Mode = 1, the third Bit between frames cannot receive
-| and send, and the fourth Bit begins to receive and send.
-|
-| Spaceing RX Mode = 0, allowing the third Bit between frames to
-| receive and send.
+- rkcanfd_can_frame_header_equal()
+- rkcanfd_can_frame_data_equal()
 
-Message-ID: <be72939f-0a9e-0608-dfff-7b0096a26eba@rock-chips.com>
 Tested-by: Alibek Omarov <a1ba.omarov@gmail.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rockchip/rockchip_canfd-tx.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/can/rockchip/rockchip_canfd-core.c |  6 +-
+ drivers/net/can/rockchip/rockchip_canfd-rx.c   | 96 ++++++++++++++++++++++++++
+ drivers/net/can/rockchip/rockchip_canfd-tx.c   | 94 +++++++++++++++++++++++++
+ drivers/net/can/rockchip/rockchip_canfd.h      | 26 +++++++
+ 4 files changed, 221 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/can/rockchip/rockchip_canfd-tx.c
-index e98e7a836b83..9db6d90a4e7f 100644
---- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
-+++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
-@@ -11,7 +11,14 @@
- static void rkcanfd_start_xmit_write_cmd(const struct rkcanfd_priv *priv,
- 					 const u32 reg_cmd)
- {
-+	if (priv->devtype_data.quirks & RKCANFD_QUIRK_RK3568_ERRATUM_12)
-+		rkcanfd_write(priv, RKCANFD_REG_MODE, priv->reg_mode_default |
-+			      RKCANFD_REG_MODE_SPACE_RX_MODE);
+diff --git a/drivers/net/can/rockchip/rockchip_canfd-core.c b/drivers/net/can/rockchip/rockchip_canfd-core.c
+index d6c0f2fe8d2b..700702e4d2ed 100644
+--- a/drivers/net/can/rockchip/rockchip_canfd-core.c
++++ b/drivers/net/can/rockchip/rockchip_canfd-core.c
+@@ -229,6 +229,7 @@ static void rkcanfd_chip_start(struct rkcanfd_priv *priv)
+ 	 * - CAN_FD: enable CAN-FD
+ 	 * - AUTO_RETX_MODE: auto retransmission on TX error
+ 	 * - COVER_MODE: RX-FIFO overwrite mode, do not send OVERLOAD frames
++	 * - RXSTX_MODE: Receive Self Transmit data mode
+ 	 * - WORK_MODE: transition from reset to working mode
+ 	 */
+ 	reg = rkcanfd_read(priv, RKCANFD_REG_MODE);
+@@ -236,17 +237,20 @@ static void rkcanfd_chip_start(struct rkcanfd_priv *priv)
+ 		RKCANFD_REG_MODE_CAN_FD_MODE_ENABLE |
+ 		RKCANFD_REG_MODE_AUTO_RETX_MODE |
+ 		RKCANFD_REG_MODE_COVER_MODE |
++		RKCANFD_REG_MODE_RXSTX_MODE |
+ 		RKCANFD_REG_MODE_WORK_MODE;
+ 
+ 	/* mask, i.e. ignore:
+ 	 * - TIMESTAMP_COUNTER_OVERFLOW_INT - timestamp counter overflow interrupt
+ 	 * - TX_ARBIT_FAIL_INT - TX arbitration fail interrupt
+ 	 * - OVERLOAD_INT - CAN bus overload interrupt
++	 * - TX_FINISH_INT - Transmit finish interrupt
+ 	 */
+ 	priv->reg_int_mask_default =
+ 		RKCANFD_REG_INT_TIMESTAMP_COUNTER_OVERFLOW_INT |
+ 		RKCANFD_REG_INT_TX_ARBIT_FAIL_INT |
+-		RKCANFD_REG_INT_OVERLOAD_INT;
++		RKCANFD_REG_INT_OVERLOAD_INT |
++		RKCANFD_REG_INT_TX_FINISH_INT;
+ 
+ 	rkcanfd_chip_fifo_setup(priv);
+ 	rkcanfd_timestamp_init(priv);
+diff --git a/drivers/net/can/rockchip/rockchip_canfd-rx.c b/drivers/net/can/rockchip/rockchip_canfd-rx.c
+index 609282359bca..650dfd41e0a0 100644
+--- a/drivers/net/can/rockchip/rockchip_canfd-rx.c
++++ b/drivers/net/can/rockchip/rockchip_canfd-rx.c
+@@ -4,8 +4,52 @@
+ //               Marc Kleine-Budde <kernel@pengutronix.de>
+ //
+ 
++#include <net/netdev_queues.h>
 +
- 	rkcanfd_write(priv, RKCANFD_REG_CMD, reg_cmd);
+ #include "rockchip_canfd.h"
+ 
++static bool rkcanfd_can_frame_header_equal(const struct canfd_frame *const cfd1,
++					   const struct canfd_frame *const cfd2,
++					   const bool is_canfd)
++{
++	const u8 mask_flags = CANFD_BRS | CANFD_ESI | CANFD_FDF;
++	canid_t mask = CAN_EFF_FLAG;
 +
-+	if (priv->devtype_data.quirks & RKCANFD_QUIRK_RK3568_ERRATUM_12)
-+		rkcanfd_write(priv, RKCANFD_REG_MODE, priv->reg_mode_default);
++	if (canfd_sanitize_len(cfd1->len) != canfd_sanitize_len(cfd2->len))
++		return false;
++
++	if (!is_canfd)
++		mask |= CAN_RTR_FLAG;
++
++	if (cfd1->can_id & CAN_EFF_FLAG)
++		mask |= CAN_EFF_MASK;
++	else
++		mask |= CAN_SFF_MASK;
++
++	if ((cfd1->can_id & mask) != (cfd2->can_id & mask))
++		return false;
++
++	if (is_canfd &&
++	    (cfd1->flags & mask_flags) != (cfd2->flags & mask_flags))
++		return false;
++
++	return true;
++}
++
++static bool rkcanfd_can_frame_data_equal(const struct canfd_frame *cfd1,
++					 const struct canfd_frame *cfd2,
++					 const bool is_canfd)
++{
++	u8 len;
++
++	if (!is_canfd && (cfd1->can_id & CAN_RTR_FLAG))
++		return true;
++
++	len = canfd_sanitize_len(cfd1->len);
++
++	return !memcmp(cfd1->data, cfd2->data, len);
++}
++
+ static unsigned int
+ rkcanfd_fifo_header_to_cfd_header(const struct rkcanfd_priv *priv,
+ 				  const struct rkcanfd_fifo_header *header,
+@@ -47,6 +91,48 @@ rkcanfd_fifo_header_to_cfd_header(const struct rkcanfd_priv *priv,
+ 	return len + cfd->len;
  }
  
- void rkcanfd_xmit_retry(struct rkcanfd_priv *priv)
++static int rkcanfd_rxstx_filter(struct rkcanfd_priv *priv,
++				const struct canfd_frame *cfd_rx, const u32 ts,
++				bool *tx_done)
++{
++	const struct canfd_frame *cfd_nominal;
++	const struct sk_buff *skb;
++	unsigned int tx_tail;
++
++	tx_tail = rkcanfd_get_tx_tail(priv);
++	skb = priv->can.echo_skb[tx_tail];
++	if (!skb) {
++		netdev_err(priv->ndev,
++			   "%s: echo_skb[%u]=NULL tx_head=0x%08x tx_tail=0x%08x\n",
++			   __func__, tx_tail,
++			   priv->tx_head, priv->tx_tail);
++
++		return -ENOMSG;
++	}
++	cfd_nominal = (struct canfd_frame *)skb->data;
++
++	/* We RX'ed a frame identical to our pending TX frame. */
++	if (rkcanfd_can_frame_header_equal(cfd_rx, cfd_nominal,
++					   cfd_rx->flags & CANFD_FDF) &&
++	    rkcanfd_can_frame_data_equal(cfd_rx, cfd_nominal,
++					 cfd_rx->flags & CANFD_FDF)) {
++		unsigned int frame_len;
++
++		rkcanfd_handle_tx_done_one(priv, ts, &frame_len);
++
++		WRITE_ONCE(priv->tx_tail, priv->tx_tail + 1);
++		netif_subqueue_completed_wake(priv->ndev, 0, 1, frame_len,
++					      rkcanfd_get_tx_free(priv),
++					      RKCANFD_TX_START_THRESHOLD);
++
++		*tx_done = true;
++
++		return 0;
++	}
++
++	return 0;
++}
++
+ static inline bool
+ rkcanfd_fifo_header_empty(const struct rkcanfd_fifo_header *header)
+ {
+@@ -89,6 +175,16 @@ static int rkcanfd_handle_rx_int_one(struct rkcanfd_priv *priv)
+ 		return 0;
+ 	}
+ 
++	if (rkcanfd_get_tx_pending(priv)) {
++		bool tx_done = false;
++
++		err = rkcanfd_rxstx_filter(priv, cfd, header->ts, &tx_done);
++		if (err)
++			return err;
++		if (tx_done)
++			return 0;
++	}
++
+ 	if (header->frameinfo & RKCANFD_REG_FD_FRAMEINFO_FDF)
+ 		skb = alloc_canfd_skb(priv->ndev, &skb_cfd);
+ 	else
+diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/can/rockchip/rockchip_canfd-tx.c
+index 89c65db3b2dc..668a902f4c2a 100644
+--- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
++++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
+@@ -4,9 +4,103 @@
+ //               Marc Kleine-Budde <kernel@pengutronix.de>
+ //
+ 
++#include <net/netdev_queues.h>
++
+ #include "rockchip_canfd.h"
+ 
++static void rkcanfd_start_xmit_write_cmd(const struct rkcanfd_priv *priv,
++					 const u32 reg_cmd)
++{
++	rkcanfd_write(priv, RKCANFD_REG_CMD, reg_cmd);
++}
++
+ int rkcanfd_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+ {
++	struct rkcanfd_priv *priv = netdev_priv(ndev);
++	u32 reg_frameinfo, reg_id, reg_cmd;
++	unsigned int tx_head, frame_len;
++	const struct canfd_frame *cfd;
++	int err;
++	u8 i;
++
++	if (can_dropped_invalid_skb(ndev, skb))
++		return NETDEV_TX_OK;
++
++	if (!netif_subqueue_maybe_stop(priv->ndev, 0,
++				       rkcanfd_get_tx_free(priv),
++				       RKCANFD_TX_STOP_THRESHOLD,
++				       RKCANFD_TX_START_THRESHOLD)) {
++		if (net_ratelimit())
++			netdev_info(priv->ndev,
++				    "Stopping tx-queue (tx_head=0x%08x, tx_tail=0x%08x, tx_pending=%d)\n",
++				    priv->tx_head, priv->tx_tail,
++				    rkcanfd_get_tx_pending(priv));
++
++		return NETDEV_TX_BUSY;
++	}
++
++	cfd = (struct canfd_frame *)skb->data;
++
++	if (cfd->can_id & CAN_EFF_FLAG) {
++		reg_frameinfo = RKCANFD_REG_FD_FRAMEINFO_FRAME_FORMAT;
++		reg_id = FIELD_PREP(RKCANFD_REG_FD_ID_EFF, cfd->can_id);
++	} else {
++		reg_frameinfo = 0;
++		reg_id = FIELD_PREP(RKCANFD_REG_FD_ID_SFF, cfd->can_id);
++	}
++
++	if (cfd->can_id & CAN_RTR_FLAG)
++		reg_frameinfo |= RKCANFD_REG_FD_FRAMEINFO_RTR;
++
++	if (can_is_canfd_skb(skb)) {
++		reg_frameinfo |= RKCANFD_REG_FD_FRAMEINFO_FDF;
++
++		if (cfd->flags & CANFD_BRS)
++			reg_frameinfo |= RKCANFD_REG_FD_FRAMEINFO_BRS;
++
++		reg_frameinfo |= FIELD_PREP(RKCANFD_REG_FD_FRAMEINFO_DATA_LENGTH,
++					    can_fd_len2dlc(cfd->len));
++	} else {
++		reg_frameinfo |= FIELD_PREP(RKCANFD_REG_FD_FRAMEINFO_DATA_LENGTH,
++					    cfd->len);
++	}
++
++	tx_head = rkcanfd_get_tx_head(priv);
++	reg_cmd = RKCANFD_REG_CMD_TX_REQ(tx_head);
++
++	rkcanfd_write(priv, RKCANFD_REG_FD_TXFRAMEINFO, reg_frameinfo);
++	rkcanfd_write(priv, RKCANFD_REG_FD_TXID, reg_id);
++	for (i = 0; i < cfd->len; i += 4)
++		rkcanfd_write(priv, RKCANFD_REG_FD_TXDATA0 + i,
++			      *(u32 *)(cfd->data + i));
++
++	frame_len = can_skb_get_frame_len(skb);
++	err = can_put_echo_skb(skb, ndev, tx_head, frame_len);
++	if (!err)
++		netdev_sent_queue(priv->ndev, frame_len);
++
++	WRITE_ONCE(priv->tx_head, priv->tx_head + 1);
++
++	rkcanfd_start_xmit_write_cmd(priv, reg_cmd);
++
++	netif_subqueue_maybe_stop(priv->ndev, 0,
++				  rkcanfd_get_tx_free(priv),
++				  RKCANFD_TX_STOP_THRESHOLD,
++				  RKCANFD_TX_START_THRESHOLD);
++
+ 	return NETDEV_TX_OK;
+ }
++
++void rkcanfd_handle_tx_done_one(struct rkcanfd_priv *priv, const u32 ts,
++				unsigned int *frame_len_p)
++{
++	struct net_device_stats *stats = &priv->ndev->stats;
++	unsigned int tx_tail;
++
++	tx_tail = rkcanfd_get_tx_tail(priv);
++	stats->tx_bytes +=
++		can_rx_offload_get_echo_skb_queue_timestamp(&priv->offload,
++							    tx_tail, ts,
++							    frame_len_p);
++	stats->tx_packets++;
++}
+diff --git a/drivers/net/can/rockchip/rockchip_canfd.h b/drivers/net/can/rockchip/rockchip_canfd.h
+index c775e75a2740..a4688411e586 100644
+--- a/drivers/net/can/rockchip/rockchip_canfd.h
++++ b/drivers/net/can/rockchip/rockchip_canfd.h
+@@ -471,10 +471,36 @@ rkcanfd_get_timestamp(const struct rkcanfd_priv *priv)
+ 	return rkcanfd_read(priv, RKCANFD_REG_TIMESTAMP);
+ }
+ 
++static inline unsigned int
++rkcanfd_get_tx_head(const struct rkcanfd_priv *priv)
++{
++	return READ_ONCE(priv->tx_head) & (RKCANFD_TXFIFO_DEPTH - 1);
++}
++
++static inline unsigned int
++rkcanfd_get_tx_tail(const struct rkcanfd_priv *priv)
++{
++	return READ_ONCE(priv->tx_tail) & (RKCANFD_TXFIFO_DEPTH - 1);
++}
++
++static inline unsigned int
++rkcanfd_get_tx_pending(const struct rkcanfd_priv *priv)
++{
++	return READ_ONCE(priv->tx_head) - READ_ONCE(priv->tx_tail);
++}
++
++static inline unsigned int
++rkcanfd_get_tx_free(const struct rkcanfd_priv *priv)
++{
++	return RKCANFD_TXFIFO_DEPTH - rkcanfd_get_tx_pending(priv);
++}
++
+ int rkcanfd_handle_rx_int(struct rkcanfd_priv *priv);
+ 
+ void rkcanfd_timestamp_init(struct rkcanfd_priv *priv);
+ 
+ int rkcanfd_start_xmit(struct sk_buff *skb, struct net_device *ndev);
++void rkcanfd_handle_tx_done_one(struct rkcanfd_priv *priv, const u32 ts,
++				unsigned int *frame_len_p);
+ 
+ #endif
 
 -- 
 2.45.2
