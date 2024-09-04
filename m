@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CAC91DA2E7
-	for <linux-can@vger.kernel.org>; Wed,  4 Sep 2024 13:03:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97FEF1DA2F8
+	for <linux-can@vger.kernel.org>; Wed,  4 Sep 2024 13:03:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725454987; cv=none; b=ZLidMlC8L92QID2O6zMzYsApTo++drATDtqrMpz1jf/CRsTjPCVCcDVIDI5qGtgOZIpgV3kMkUmPZSRqL+0FK7YWBnAvr9dmYsOFbyKoVb6pqvCVEkWmV2XdxFhnSXB2qETRF+3HUh5TQYrNSXmGUrlEdBm0Fsdn6BjC1MhtM9M=
+	t=1725454988; cv=none; b=mnFreEemVKqYk+VSo3GDdZmqfIx3+bQSg+iEFG6UID1e86AMq9IbzQQbaciUXVnCrwRu6GnBrOCPvvx146/T6+HdgU+0V02ahd/MrGmozCiR/4kJ2vCgCsoldjjU32HmQyT5KktUhH0g9UVJt4DQ4t8b5+Ki1su7lzUAfu4wSKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725454987; c=relaxed/simple;
-	bh=RcEQmeYX9mJE8lRaWoOpYsvbGLVdNBRWBr1gHv0viDU=;
+	s=arc-20240116; t=1725454988; c=relaxed/simple;
+	bh=rAE5jCqTl+CxRdQOC8hkrGT//jBeX51xQ5uBX+mBzXY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=STcwGqzrGZjrt4PsGH1wXUl0KYyBTw4jgV1URY1tzACisaESFG/nXJMKnUay451MDMavmCUHJUw9QuV1xwQz6Xz4ZU2nwyIIzjsUd7hjZNhBQ32ffKZ2NZLugkydoWjlUqR3l2rY1Ksf62wbeCW19OrplIjMnDjt51/U6tbAqvc=
+	 MIME-Version; b=SQepbzlSk3vzrNxT3tCylgsSijhoppnx88YTlsRMw6yNBQPaMkXOJQ2wj5wUcBavE254kN3eWp7wWZwOaM1fIdyBfL7y4OWLFm4uVpP/hnoq2sD+3yMRBhCmgOFUm0PgwdINXYj3c2WpMpONcW7eiDYSXHmmA733rOonnRQEdiU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,25 +18,25 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1slpf5-0006wH-MS
-	for linux-can@vger.kernel.org; Wed, 04 Sep 2024 15:03:03 +0200
+	id 1slpf6-0006we-93
+	for linux-can@vger.kernel.org; Wed, 04 Sep 2024 15:03:04 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1slpf4-005SSM-2V
+	id 1slpf4-005SSu-CG
 	for linux-can@vger.kernel.org; Wed, 04 Sep 2024 15:03:02 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id AD59A332794
+	by bjornoya.blackshift.org (Postfix) with SMTP id 0A56C33279C
 	for <linux-can@vger.kernel.org>; Wed, 04 Sep 2024 13:03:01 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id F0334332760;
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id C5C2933275D;
 	Wed, 04 Sep 2024 13:02:59 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 64dea69e;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c5dbb89a;
 	Wed, 4 Sep 2024 13:02:59 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -45,11 +45,13 @@ Cc: davem@davemloft.net,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
 	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Elaine Zhang <zhangqing@rock-chips.com>,
 	Alibek Omarov <a1ba.omarov@gmail.com>,
+	Rob Herring <robh@kernel.org>,
 	Heiko Stuebner <heiko@sntech.de>
-Subject: [PATCH net-next 03/18] can: rockchip_canfd: add quirks for errata workarounds
-Date: Wed,  4 Sep 2024 14:55:19 +0200
-Message-ID: <20240904130256.1965582-4-mkl@pengutronix.de>
+Subject: [PATCH net-next 01/18] dt-bindings: can: rockchip_canfd: add rockchip CAN-FD controller
+Date: Wed,  4 Sep 2024 14:55:17 +0200
+Message-ID: <20240904130256.1965582-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240904130256.1965582-1-mkl@pengutronix.de>
 References: <20240904130256.1965582-1-mkl@pengutronix.de>
@@ -65,120 +67,121 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Add a basic infrastructure for quirks for the 12 documented errata.
+Add documentation for the rockchip rk3568 CAN-FD controller.
 
+Co-developed-by: Elaine Zhang <zhangqing@rock-chips.com>
+Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
 Tested-by: Alibek Omarov <a1ba.omarov@gmail.com>
-Acked-by: Heiko Stuebner <heiko@sntech.de>
-Link: https://patch.msgid.link/20240904-rockchip-canfd-v5-5-8ae22bcb27cc@pengutronix.de
+Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://patch.msgid.link/20240904-rockchip-canfd-v5-1-8ae22bcb27cc@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../net/can/rockchip/rockchip_canfd-core.c    | 11 +++-
- drivers/net/can/rockchip/rockchip_canfd.h     | 55 +++++++++++++++++++
- 2 files changed, 64 insertions(+), 2 deletions(-)
+ .../net/can/rockchip,rk3568v2-canfd.yaml      | 74 +++++++++++++++++++
+ MAINTAINERS                                   |  7 ++
+ 2 files changed, 81 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/can/rockchip,rk3568v2-canfd.yaml
 
-diff --git a/drivers/net/can/rockchip/rockchip_canfd-core.c b/drivers/net/can/rockchip/rockchip_canfd-core.c
-index f1b2bad04bf4..18957769b3d3 100644
---- a/drivers/net/can/rockchip/rockchip_canfd-core.c
-+++ b/drivers/net/can/rockchip/rockchip_canfd-core.c
-@@ -26,6 +26,12 @@
+diff --git a/Documentation/devicetree/bindings/net/can/rockchip,rk3568v2-canfd.yaml b/Documentation/devicetree/bindings/net/can/rockchip,rk3568v2-canfd.yaml
+new file mode 100644
+index 000000000000..a077c0330013
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/rockchip,rk3568v2-canfd.yaml
+@@ -0,0 +1,74 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/can/rockchip,rk3568v2-canfd.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title:
++  Rockchip CAN-FD controller
++
++maintainers:
++  - Marc Kleine-Budde <mkl@pengutronix.de>
++
++allOf:
++  - $ref: can-controller.yaml#
++
++properties:
++  compatible:
++    oneOf:
++      - const: rockchip,rk3568v2-canfd
++      - items:
++          - const: rockchip,rk3568v3-canfd
++          - const: rockchip,rk3568v2-canfd
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 2
++
++  clock-names:
++    items:
++      - const: baud
++      - const: pclk
++
++  resets:
++    maxItems: 2
++
++  reset-names:
++    items:
++      - const: core
++      - const: apb
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - resets
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/rk3568-cru.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    soc {
++        #address-cells = <2>;
++        #size-cells = <2>;
++
++        can@fe570000 {
++            compatible = "rockchip,rk3568v2-canfd";
++            reg = <0x0 0xfe570000 0x0 0x1000>;
++            interrupts = <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>;
++            clocks = <&cru CLK_CAN0>, <&cru PCLK_CAN0>;
++            clock-names = "baud", "pclk";
++            resets = <&cru SRST_CAN0>, <&cru SRST_P_CAN0>;
++            reset-names = "core", "apb";
++        };
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index baf88e74c907..aa0e023955cf 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -19730,6 +19730,13 @@ F:	Documentation/ABI/*/sysfs-driver-hid-roccat*
+ F:	drivers/hid/hid-roccat*
+ F:	include/linux/hid-roccat*
  
- static const struct rkcanfd_devtype_data rkcanfd_devtype_data_rk3568v2 = {
- 	.model = RKCANFD_MODEL_RK3568V2,
-+	.quirks = RKCANFD_QUIRK_RK3568_ERRATUM_1 | RKCANFD_QUIRK_RK3568_ERRATUM_2 |
-+		RKCANFD_QUIRK_RK3568_ERRATUM_3 | RKCANFD_QUIRK_RK3568_ERRATUM_4 |
-+		RKCANFD_QUIRK_RK3568_ERRATUM_5 | RKCANFD_QUIRK_RK3568_ERRATUM_6 |
-+		RKCANFD_QUIRK_RK3568_ERRATUM_7 | RKCANFD_QUIRK_RK3568_ERRATUM_8 |
-+		RKCANFD_QUIRK_RK3568_ERRATUM_9 | RKCANFD_QUIRK_RK3568_ERRATUM_10 |
-+		RKCANFD_QUIRK_RK3568_ERRATUM_11 | RKCANFD_QUIRK_RK3568_ERRATUM_12,
- };
- 
- static const char *__rkcanfd_get_model_str(enum rkcanfd_model model)
-@@ -709,10 +715,11 @@ static void rkcanfd_register_done(const struct rkcanfd_priv *priv)
- 	dev_id = rkcanfd_read(priv, RKCANFD_REG_RTL_VERSION);
- 
- 	netdev_info(priv->ndev,
--		    "Rockchip-CANFD %s rev%lu.%lu found\n",
-+		    "Rockchip-CANFD %s rev%lu.%lu (errata 0x%04x) found\n",
- 		    rkcanfd_get_model_str(priv),
- 		    FIELD_GET(RKCANFD_REG_RTL_VERSION_MAJOR, dev_id),
--		    FIELD_GET(RKCANFD_REG_RTL_VERSION_MINOR, dev_id));
-+		    FIELD_GET(RKCANFD_REG_RTL_VERSION_MINOR, dev_id),
-+		    priv->devtype_data.quirks);
- }
- 
- static int rkcanfd_register(struct rkcanfd_priv *priv)
-diff --git a/drivers/net/can/rockchip/rockchip_canfd.h b/drivers/net/can/rockchip/rockchip_canfd.h
-index 0848b1900baa..09626ca174a8 100644
---- a/drivers/net/can/rockchip/rockchip_canfd.h
-+++ b/drivers/net/can/rockchip/rockchip_canfd.h
-@@ -295,12 +295,67 @@
- #define RKCANFD_TIMESTAMP_WORK_MAX_DELAY_SEC 60
- #define RKCANFD_ERRATUM_5_SYSCLOCK_HZ_MIN (300 * MEGA)
- 
-+/* rk3568 CAN-FD Errata, as of Tue 07 Nov 2023 11:25:31 +08:00 */
++ROCKCHIP CAN-FD DRIVER
++M:	Marc Kleine-Budde <mkl@pengutronix.de>
++R:	kernel@pengutronix.de
++L:	linux-can@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/net/can/rockchip,rk3568v2-canfd.yaml
 +
-+/* Erratum 1: The error frame sent by the CAN controller has an
-+ * abnormal format.
-+ */
-+#define RKCANFD_QUIRK_RK3568_ERRATUM_1 BIT(0)
-+
-+/* Erratum 2: The error frame sent after detecting a CRC error has an
-+ * abnormal position.
-+ */
-+#define RKCANFD_QUIRK_RK3568_ERRATUM_2 BIT(1)
-+
-+/* Erratum 3: Intermittent CRC calculation errors. */
-+#define RKCANFD_QUIRK_RK3568_ERRATUM_3 BIT(2)
-+
-+/* Erratum 4: Intermittent occurrence of stuffing errors. */
-+#define RKCANFD_QUIRK_RK3568_ERRATUM_4 BIT(3)
-+
-+/* Erratum 5: Counters related to the TXFIFO and RXFIFO exhibit
-+ * abnormal counting behavior.
-+ */
-+#define RKCANFD_QUIRK_RK3568_ERRATUM_5 BIT(4)
-+
-+/* Erratum 6: The CAN controller's transmission of extended frames may
-+ * intermittently change into standard frames
-+ */
-+#define RKCANFD_QUIRK_RK3568_ERRATUM_6 BIT(5)
-+
-+/* Erratum 7: In the passive error state, the CAN controller's
-+ * interframe space segment counting is inaccurate.
-+ */
-+#define RKCANFD_QUIRK_RK3568_ERRATUM_7 BIT(6)
-+
-+/* Erratum 8: The Format-Error error flag is transmitted one bit
-+ * later.
-+ */
-+#define RKCANFD_QUIRK_RK3568_ERRATUM_8 BIT(7)
-+
-+/* Erratum 9: In the arbitration segment, the CAN controller will
-+ * identify stuffing errors as arbitration failures.
-+ */
-+#define RKCANFD_QUIRK_RK3568_ERRATUM_9 BIT(8)
-+
-+/* Erratum 10: Does not support the BUSOFF slow recovery mechanism. */
-+#define RKCANFD_QUIRK_RK3568_ERRATUM_10 BIT(9)
-+
-+/* Erratum 11: Arbitration error. */
-+#define RKCANFD_QUIRK_RK3568_ERRATUM_11 BIT(10)
-+
-+/* Erratum 12: A dominant bit at the third bit of the intermission may
-+ * cause a transmission error.
-+ */
-+#define RKCANFD_QUIRK_RK3568_ERRATUM_12 BIT(11)
-+
- enum rkcanfd_model {
- 	RKCANFD_MODEL_RK3568V2 = 0x35682,
- };
- 
- struct rkcanfd_devtype_data {
- 	enum rkcanfd_model model;
-+	u32 quirks;
- };
- 
- struct rkcanfd_fifo_header {
+ ROCKCHIP CRYPTO DRIVERS
+ M:	Corentin Labbe <clabbe@baylibre.com>
+ L:	linux-crypto@vger.kernel.org
+
+base-commit: 3d4d0fa4fc32f03f615bbf0ac384de06ce0005f5
 -- 
 2.45.2
 
