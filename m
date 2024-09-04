@@ -1,261 +1,160 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D96161DA2F4
-	for <linux-can@vger.kernel.org>; Wed,  4 Sep 2024 13:05:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FAE71DA108
+	for <linux-can@vger.kernel.org>; Wed,  4 Sep 2024 13:56:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725455106; cv=none; b=KOCvf49WNI8EtRLVugRl/JgqmjYyQ67ETyQSkypMAdyzTeNHqADc5Wx1X58JW+bvHa9EFsvai6LH9bKtAercRtelz7Yj8ZT9ef0GmkFIuqCxCA15b8EV0UtIy/MxqPN2zPr6YW+P1svi32mRdTNF/TVrosyEBR6Blt947QPjdQ8=
+	t=1725458186; cv=none; b=hkUgRyMz035C4sn+U14x0t4QpJMud+0MpyL2DHWNSG5hDAr0GCZfg09KY2l1g0CBEeCDTMq0sZVpZqmG7TDR5xKEKpfnz14owio+u6rlhonj+DCWl+E98DIsGKsWBi+5jDsnuOqMb+1dVKIN6uuOXCHa80LihdphC+eJ4Sxmf/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725455106; c=relaxed/simple;
-	bh=VRrFfGX/SuACSFQCeQPHiZz6lAC3zWx31VYKorpbhIA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KRIYfGThHWle9jVdABx8QnSpFTkkPSkOq7Xk/Ay9tNyE19dD3Qv/pZu4xaQbTpKFaOJmRK0oCvL1Y/uk3iNZNyHz+koRDCve5FMoD8pwAcvmg9TsIF7+oeAB0uOyDVwEDh8e9aozWcpgx2jscBsyEZ4FdqLGWoXIfa5Da6RQgGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1slph1-0000nR-Ey
-	for linux-can@vger.kernel.org; Wed, 04 Sep 2024 15:05:03 +0200
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1slph1-005Sck-1S
-	for linux-can@vger.kernel.org; Wed, 04 Sep 2024 15:05:03 +0200
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id CF5013327E4
-	for <linux-can@vger.kernel.org>; Wed, 04 Sep 2024 13:03:03 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id BB2AC332777;
-	Wed, 04 Sep 2024 13:03:00 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c3915c8b;
-	Wed, 4 Sep 2024 13:02:59 +0000 (UTC)
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	kuba@kernel.org,
-	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Alibek Omarov <a1ba.omarov@gmail.com>,
-	Heiko Stuebner <heiko@sntech.de>
-Subject: [PATCH net-next 12/18] can: rockchip_canfd: rkcanfd_get_berr_counter_corrected(): work around broken {RX,TX}ERRORCNT register
-Date: Wed,  4 Sep 2024 14:55:28 +0200
-Message-ID: <20240904130256.1965582-13-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240904130256.1965582-1-mkl@pengutronix.de>
-References: <20240904130256.1965582-1-mkl@pengutronix.de>
+	s=arc-20240116; t=1725458186; c=relaxed/simple;
+	bh=GnJ3J4LB9h3i3mrMXvLyRaIBcF3AkHF0QK2TBpFXWbU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=YHU3M8HbOXcFkHf253nTPLOGYaU/lHJCjdSs0JfMk4tfcXwwjDUZxeIl8qvKkmxWuD1Id80TJGV2vNjKfMx2U8M+lHLuAAlJwy2JT4GeDpZEDhTlh7Q08yxBvKlncmNGFxeNxNPO4azgK8RAkD+Pd9trvSunNWyQaFW6ajIBH/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-82a1fbaba4aso106530739f.0
+        for <linux-can@vger.kernel.org>; Wed, 04 Sep 2024 06:56:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725458183; x=1726062983;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SrzSFGTCyr4+MMyyh7GqVNUCiLJr5fc0UW/sfiKd6Ek=;
+        b=OGFGGMHEp5FfVmua1pu7HLiUiTdQh8DuBGW06bWJjkweDIOzvH/giPAT9uqTABc7II
+         AemkthrLIEA7e5LWsaXvZfTacjANEL9H25q8B4ph4Zws5Z4SjUf3ibcGjEj7UhjEay/U
+         gZmqHhm8S9nkGTCQGGc+l75MSq+wX1TYR0niYOi4WV5ygbbwGTJ/edxEupD9K6azn36K
+         GKNa3klJIvCUw/KboAd21oWRFiBwcH3skX3GIp2Pbceax359thUJZznPwMYGeWbTjgqM
+         0X1XQZ0+7GYYP/uG83whoZQemGvTs4JxkyT41YCrVbSKdtHvZJ/CRDwkxaXVyH3Mnxhf
+         Zszw==
+X-Forwarded-Encrypted: i=1; AJvYcCVWoUaZxqceEJhaX4gRW92ropKgPuAKJmrlz3AaKAiIAgJYl0tZ7MhQWDxfJ51m3CDGGheiKDpZOxE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwYOVR1WuNpmxKmiuovSmyEXN5xvE93T7aRNDzL6CqJWViyrnBm
+	QOFKWPqDBea9QpNO7ypVw59wMBf7Ompwk7PQYNVpjLY4ie+8ArM5Xh0m7+8BVgkAeijfX65Zj3h
+	okMfaVy26jhfBUSLFAdLt1l1aynBsgC9dJdNcJYepfVRp+XZLGBWXisw=
+X-Google-Smtp-Source: AGHT+IGSyNQ8Rtx94SawzEyABtvJRvCxW1pAg//QKH+j9QjhQO9b+/yGXAYCwPX22wqil4YEJFRC6aAefEOcIxCBRrMlZdBKD1Gi
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+X-Received: by 2002:a05:6638:1491:b0:4ce:928f:ad9a with SMTP id
+ 8926c6da1cb9f-4d0600aa00dmr109910173.1.1725458183431; Wed, 04 Sep 2024
+ 06:56:23 -0700 (PDT)
+Date: Wed, 04 Sep 2024 06:56:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001934d306214b8aa9@google.com>
+Subject: [syzbot] [can?] WARNING in remove_proc_entry (6)
+From: syzbot <syzbot+0532ac7a06fb1a03187e@syzkaller.appspotmail.com>
+To: davem@davemloft.net, edumazet@google.com, horms@kernel.org, 
+	kuba@kernel.org, kuniyu@amazon.com, linux-can@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, mkl@pengutronix.de, netdev@vger.kernel.org, 
+	pabeni@redhat.com, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Tests show that sometimes both CAN bus error counters read 0x0, even
-if the controller is in warning mode
-(RKCANFD_REG_STATE_ERROR_WARNING_STATE in RKCANFD_REG_STATE
-set).
+Hello,
 
-To work around this issue, if both error counters read from hardware
-are 0x0, use the structure priv->bec, otherwise save the read value in
-priv->bec.
+syzbot found the following issue on:
 
-In rkcanfd_handle_rx_int_one() decrement the priv->bec.rxerr for
-successfully RX'ed CAN frames.
+HEAD commit:    5517ae241919 Merge tag 'for-net-2024-08-30' of git://git.k..
+git tree:       net
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=111adcfb980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=996585887acdadb3
+dashboard link: https://syzkaller.appspot.com/bug?extid=0532ac7a06fb1a03187e
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=138d43db980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11fe3d43980000
 
-In rkcanfd_handle_tx_done_one() decrement the priv->bec.txerr for
-successfully TX'ed CAN frames.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ddded5c54678/disk-5517ae24.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ce0dfe9dbb55/vmlinux-5517ae24.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ca81d6e3361d/bzImage-5517ae24.xz
 
-Tested-by: Alibek Omarov <a1ba.omarov@gmail.com>
-Acked-by: Heiko Stuebner <heiko@sntech.de>
-Link: https://patch.msgid.link/20240904-rockchip-canfd-v5-14-8ae22bcb27cc@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+The issue was bisected to:
+
+commit 76fe372ccb81b0c89b6cd2fec26e2f38c958be85
+Author: Kuniyuki Iwashima <kuniyu@amazon.com>
+Date:   Mon Jul 22 19:28:42 2024 +0000
+
+    can: bcm: Remove proc entry when dev is unregistered.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=116f8e8f980000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=136f8e8f980000
+console output: https://syzkaller.appspot.com/x/log.txt?x=156f8e8f980000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0532ac7a06fb1a03187e@syzkaller.appspotmail.com
+Fixes: 76fe372ccb81 ("can: bcm: Remove proc entry when dev is unregistered.")
+
+------------[ cut here ]------------
+name '4986'
+WARNING: CPU: 0 PID: 5234 at fs/proc/generic.c:711 remove_proc_entry+0x2e7/0x5d0 fs/proc/generic.c:711
+Modules linked in:
+CPU: 0 UID: 0 PID: 5234 Comm: syz-executor606 Not tainted 6.11.0-rc5-syzkaller-00178-g5517ae241919 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
+RIP: 0010:remove_proc_entry+0x2e7/0x5d0 fs/proc/generic.c:711
+Code: ff eb 05 e8 cb 1e 5e ff 48 8b 5c 24 10 48 c7 c7 e0 f7 aa 8e e8 2a 38 8e 09 90 48 c7 c7 60 3a 1b 8c 48 89 de e8 da 42 20 ff 90 <0f> 0b 90 90 48 8b 44 24 18 48 c7 44 24 40 0e 36 e0 45 49 c7 04 07
+RSP: 0018:ffffc9000345fa20 EFLAGS: 00010246
+RAX: 2a2d0aee2eb64600 RBX: ffff888032f1f548 RCX: ffff888029431e00
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc9000345fb08 R08: ffffffff8155b2f2 R09: 1ffff1101710519a
+R10: dffffc0000000000 R11: ffffed101710519b R12: ffff888011d38640
+R13: 0000000000000004 R14: 0000000000000000 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff8880b8800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fcfb52722f0 CR3: 000000000e734000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ bcm_release+0x250/0x880 net/can/bcm.c:1578
+ __sock_release net/socket.c:659 [inline]
+ sock_close+0xbc/0x240 net/socket.c:1421
+ __fput+0x24a/0x8a0 fs/file_table.c:422
+ task_work_run+0x24f/0x310 kernel/task_work.c:228
+ exit_task_work include/linux/task_work.h:40 [inline]
+ do_exit+0xa2f/0x27f0 kernel/exit.c:882
+ do_group_exit+0x207/0x2c0 kernel/exit.c:1031
+ __do_sys_exit_group kernel/exit.c:1042 [inline]
+ __se_sys_exit_group kernel/exit.c:1040 [inline]
+ __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1040
+ x64_sys_call+0x2634/0x2640 arch/x86/include/generated/asm/syscalls_64.h:232
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fcfb51ee969
+Code: Unable to access opcode bytes at 0x7fcfb51ee93f.
+RSP: 002b:00007ffce0109ca8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007fcfb51ee969
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000001
+RBP: 00007fcfb526f3b0 R08: ffffffffffffffb8 R09: 0000555500000000
+R10: 0000555500000000 R11: 0000000000000246 R12: 00007fcfb526f3b0
+R13: 0000000000000000 R14: 00007fcfb5271ee0 R15: 00007fcfb51bf160
+ </TASK>
+
+
 ---
- .../net/can/rockchip/rockchip_canfd-core.c    | 50 ++++++++++++++++---
- drivers/net/can/rockchip/rockchip_canfd-rx.c  | 15 ++++++
- drivers/net/can/rockchip/rockchip_canfd-tx.c  |  8 +++
- drivers/net/can/rockchip/rockchip_canfd.h     |  2 +
- 4 files changed, 69 insertions(+), 6 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/net/can/rockchip/rockchip_canfd-core.c b/drivers/net/can/rockchip/rockchip_canfd-core.c
-index 700702e4d2ed..cf176180a282 100644
---- a/drivers/net/can/rockchip/rockchip_canfd-core.c
-+++ b/drivers/net/can/rockchip/rockchip_canfd-core.c
-@@ -159,11 +159,47 @@ static int rkcanfd_set_bittiming(struct rkcanfd_priv *priv)
- 	return 0;
- }
- 
--static void rkcanfd_get_berr_counter_raw(struct rkcanfd_priv *priv,
--					 struct can_berr_counter *bec)
-+static void rkcanfd_get_berr_counter_corrected(struct rkcanfd_priv *priv,
-+					       struct can_berr_counter *bec)
- {
-+	struct can_berr_counter bec_raw;
-+	u32 reg_state;
-+
- 	bec->rxerr = rkcanfd_read(priv, RKCANFD_REG_RXERRORCNT);
- 	bec->txerr = rkcanfd_read(priv, RKCANFD_REG_TXERRORCNT);
-+	bec_raw = *bec;
-+
-+	/* Tests show that sometimes both CAN bus error counters read
-+	 * 0x0, even if the controller is in warning mode
-+	 * (RKCANFD_REG_STATE_ERROR_WARNING_STATE in RKCANFD_REG_STATE
-+	 * set).
-+	 *
-+	 * In case both error counters read 0x0, use the struct
-+	 * priv->bec, otherwise save the read value to priv->bec.
-+	 *
-+	 * rkcanfd_handle_rx_int_one() handles the decrementing of
-+	 * priv->bec.rxerr for successfully RX'ed CAN frames.
-+	 *
-+	 * Luckily the controller doesn't decrement the RX CAN bus
-+	 * error counter in hardware for self received TX'ed CAN
-+	 * frames (RKCANFD_REG_MODE_RXSTX_MODE), so RXSTX doesn't
-+	 * interfere with proper RX CAN bus error counters.
-+	 *
-+	 * rkcanfd_handle_tx_done_one() handles the decrementing of
-+	 * priv->bec.txerr for successfully TX'ed CAN frames.
-+	 */
-+	if (!bec->rxerr && !bec->txerr)
-+		*bec = priv->bec;
-+	else
-+		priv->bec = *bec;
-+
-+	reg_state = rkcanfd_read(priv, RKCANFD_REG_STATE);
-+	netdev_vdbg(priv->ndev,
-+		    "%s: Raw/Cor: txerr=%3u/%3u rxerr=%3u/%3u Bus Off=%u Warning=%u\n",
-+		    __func__,
-+		    bec_raw.txerr, bec->txerr, bec_raw.rxerr, bec->rxerr,
-+		    !!(reg_state & RKCANFD_REG_STATE_BUS_OFF_STATE),
-+		    !!(reg_state & RKCANFD_REG_STATE_ERROR_WARNING_STATE));
- }
- 
- static int rkcanfd_get_berr_counter(const struct net_device *ndev,
-@@ -176,7 +212,7 @@ static int rkcanfd_get_berr_counter(const struct net_device *ndev,
- 	if (err)
- 		return err;
- 
--	rkcanfd_get_berr_counter_raw(priv, bec);
-+	rkcanfd_get_berr_counter_corrected(priv, bec);
- 
- 	pm_runtime_put(ndev->dev.parent);
- 
-@@ -252,6 +288,8 @@ static void rkcanfd_chip_start(struct rkcanfd_priv *priv)
- 		RKCANFD_REG_INT_OVERLOAD_INT |
- 		RKCANFD_REG_INT_TX_FINISH_INT;
- 
-+	memset(&priv->bec, 0x0, sizeof(priv->bec));
-+
- 	rkcanfd_chip_fifo_setup(priv);
- 	rkcanfd_timestamp_init(priv);
- 	rkcanfd_set_bittiming(priv);
-@@ -488,7 +526,7 @@ static int rkcanfd_handle_error_int(struct rkcanfd_priv *priv)
- 	if (cf) {
- 		struct can_berr_counter bec;
- 
--		rkcanfd_get_berr_counter_raw(priv, &bec);
-+		rkcanfd_get_berr_counter_corrected(priv, &bec);
- 		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR | CAN_ERR_CNT;
- 		cf->data[6] = bec.txerr;
- 		cf->data[7] = bec.rxerr;
-@@ -517,7 +555,7 @@ static int rkcanfd_handle_state_error_int(struct rkcanfd_priv *priv)
- 	u32 timestamp;
- 	int err;
- 
--	rkcanfd_get_berr_counter_raw(priv, &bec);
-+	rkcanfd_get_berr_counter_corrected(priv, &bec);
- 	can_state_get_by_berr_counter(ndev, &bec, &tx_state, &rx_state);
- 
- 	new_state = max(tx_state, rx_state);
-@@ -570,7 +608,7 @@ rkcanfd_handle_rx_fifo_overflow_int(struct rkcanfd_priv *priv)
- 	if (skb)
- 		return 0;
- 
--	rkcanfd_get_berr_counter_raw(priv, &bec);
-+	rkcanfd_get_berr_counter_corrected(priv, &bec);
- 
- 	cf->can_id |= CAN_ERR_CRTL | CAN_ERR_CNT;
- 	cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
-diff --git a/drivers/net/can/rockchip/rockchip_canfd-rx.c b/drivers/net/can/rockchip/rockchip_canfd-rx.c
-index 31cee3362f1e..eff08948840c 100644
---- a/drivers/net/can/rockchip/rockchip_canfd-rx.c
-+++ b/drivers/net/can/rockchip/rockchip_canfd-rx.c
-@@ -167,6 +167,13 @@ static int rkcanfd_rxstx_filter(struct rkcanfd_priv *priv,
- 
- 	/* Affected by Erratum 6 */
- 
-+	/* Manual handling of CAN Bus Error counters. See
-+	 * rkcanfd_get_corrected_berr_counter() for detailed
-+	 * explanation.
-+	 */
-+	if (priv->bec.txerr)
-+		priv->bec.txerr--;
-+
- 	*tx_done = true;
- 
- 	stats->tx_packets++;
-@@ -229,6 +236,14 @@ static int rkcanfd_handle_rx_int_one(struct rkcanfd_priv *priv)
- 			return 0;
- 	}
- 
-+	/* Manual handling of CAN Bus Error counters. See
-+	 * rkcanfd_get_corrected_berr_counter() for detailed
-+	 * explanation.
-+	 */
-+	if (priv->bec.rxerr)
-+		priv->bec.rxerr = min(CAN_ERROR_PASSIVE_THRESHOLD,
-+				      priv->bec.rxerr) - 1;
-+
- 	if (header->frameinfo & RKCANFD_REG_FD_FRAMEINFO_FDF)
- 		skb = alloc_canfd_skb(priv->ndev, &skb_cfd);
- 	else
-diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/can/rockchip/rockchip_canfd-tx.c
-index 9db6d90a4e7f..f8e74e814b3b 100644
---- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
-+++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
-@@ -113,6 +113,14 @@ void rkcanfd_handle_tx_done_one(struct rkcanfd_priv *priv, const u32 ts,
- 	unsigned int tx_tail;
- 
- 	tx_tail = rkcanfd_get_tx_tail(priv);
-+
-+	/* Manual handling of CAN Bus Error counters. See
-+	 * rkcanfd_get_corrected_berr_counter() for detailed
-+	 * explanation.
-+	 */
-+	if (priv->bec.txerr)
-+		priv->bec.txerr--;
-+
- 	stats->tx_bytes +=
- 		can_rx_offload_get_echo_skb_queue_timestamp(&priv->offload,
- 							    tx_tail, ts,
-diff --git a/drivers/net/can/rockchip/rockchip_canfd.h b/drivers/net/can/rockchip/rockchip_canfd.h
-index 3fe6ddcdd8ac..67f135fbcfb9 100644
---- a/drivers/net/can/rockchip/rockchip_canfd.h
-+++ b/drivers/net/can/rockchip/rockchip_canfd.h
-@@ -459,6 +459,8 @@ struct rkcanfd_priv {
- 	u32 reg_int_mask_default;
- 	struct rkcanfd_devtype_data devtype_data;
- 
-+	struct can_berr_counter bec;
-+
- 	struct reset_control *reset;
- 	struct clk_bulk_data *clks;
- 	int clks_num;
--- 
-2.45.2
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
