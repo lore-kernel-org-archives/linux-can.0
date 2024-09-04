@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 090A41DA2EF
-	for <linux-can@vger.kernel.org>; Wed,  4 Sep 2024 13:04:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D96161DA2F4
+	for <linux-can@vger.kernel.org>; Wed,  4 Sep 2024 13:05:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725455081; cv=none; b=hZSgQIMPwESpxs5iOlXpAipTvaj5PCu9eL05Fy5sVccMYILwBEVp381cwC1SLfvp5PH5n4+dpEOqxSQK7pyWsHQKuryWLiBKu4txVvkdpq2quZnauU2EQyWjwdyjMS4F1XHj7x4G02nTcNZVg3rAkn0fDEhdonwhuuPe53kFgJ4=
+	t=1725455106; cv=none; b=KOCvf49WNI8EtRLVugRl/JgqmjYyQ67ETyQSkypMAdyzTeNHqADc5Wx1X58JW+bvHa9EFsvai6LH9bKtAercRtelz7Yj8ZT9ef0GmkFIuqCxCA15b8EV0UtIy/MxqPN2zPr6YW+P1svi32mRdTNF/TVrosyEBR6Blt947QPjdQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725455081; c=relaxed/simple;
-	bh=iUvkWqxZWOqh9qs9Z4qY7apUDk7RXeOCuIbeU/k45lo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gYdttHnCWn0Z1rc2+pLQkVAbVBvRuAavSLKZELq/W31B7R+Fql0YuBw62A2K5qPWftfULqYlErdm5xTkInSt4cO2k87XFrvOwTMea9teaN4iWLvX8RqkWZJYsNNz2HTGGh8wDMVKoGj8dVsxBMVAoGisayBPWCzcIhtYFZaMJoo=
+	s=arc-20240116; t=1725455106; c=relaxed/simple;
+	bh=VRrFfGX/SuACSFQCeQPHiZz6lAC3zWx31VYKorpbhIA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=KRIYfGThHWle9jVdABx8QnSpFTkkPSkOq7Xk/Ay9tNyE19dD3Qv/pZu4xaQbTpKFaOJmRK0oCvL1Y/uk3iNZNyHz+koRDCve5FMoD8pwAcvmg9TsIF7+oeAB0uOyDVwEDh8e9aozWcpgx2jscBsyEZ4FdqLGWoXIfa5Da6RQgGY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,80 +18,244 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1slpga-0000Pm-Lk; Wed, 04 Sep 2024 15:04:36 +0200
+	id 1slph1-0000nR-Ey
+	for linux-can@vger.kernel.org; Wed, 04 Sep 2024 15:05:03 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1slpga-005Scb-6e; Wed, 04 Sep 2024 15:04:36 +0200
-Received: from pengutronix.de (pd9e5994e.dip0.t-ipconnect.de [217.229.153.78])
+	id 1slph1-005Sck-1S
+	for linux-can@vger.kernel.org; Wed, 04 Sep 2024 15:05:03 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+	by bjornoya.blackshift.org (Postfix) with SMTP id CF5013327E4
+	for <linux-can@vger.kernel.org>; Wed, 04 Sep 2024 13:03:03 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id EC81C332878;
-	Wed, 04 Sep 2024 13:04:35 +0000 (UTC)
-Date: Wed, 4 Sep 2024 15:04:35 +0200
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id BB2AC332777;
+	Wed, 04 Sep 2024 13:03:00 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c3915c8b;
+	Wed, 4 Sep 2024 13:02:59 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org, 
-	kernel@pengutronix.de
-Subject: Re: [PATCH net-next 0/20] pull-request: can-next 2024-09-04
-Message-ID: <20240904-valiant-camouflaged-dove-171b7d-mkl@pengutronix.de>
-References: <20240904094218.1925386-1-mkl@pengutronix.de>
- <20240904-stirring-meteoric-cobra-831697-mkl@pengutronix.de>
+Cc: davem@davemloft.net,
+	kuba@kernel.org,
+	linux-can@vger.kernel.org,
+	kernel@pengutronix.de,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Alibek Omarov <a1ba.omarov@gmail.com>,
+	Heiko Stuebner <heiko@sntech.de>
+Subject: [PATCH net-next 12/18] can: rockchip_canfd: rkcanfd_get_berr_counter_corrected(): work around broken {RX,TX}ERRORCNT register
+Date: Wed,  4 Sep 2024 14:55:28 +0200
+Message-ID: <20240904130256.1965582-13-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240904130256.1965582-1-mkl@pengutronix.de>
+References: <20240904130256.1965582-1-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="564yis4mvy6qojrj"
-Content-Disposition: inline
-In-Reply-To: <20240904-stirring-meteoric-cobra-831697-mkl@pengutronix.de>
+Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
+Tests show that sometimes both CAN bus error counters read 0x0, even
+if the controller is in warning mode
+(RKCANFD_REG_STATE_ERROR_WARNING_STATE in RKCANFD_REG_STATE
+set).
 
---564yis4mvy6qojrj
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+To work around this issue, if both error counters read from hardware
+are 0x0, use the structure priv->bec, otherwise save the read value in
+priv->bec.
 
-On 04.09.2024 14:56:49, Marc Kleine-Budde wrote:
-> Please don't pull.
->=20
-> DTS changes should not be included in this PR. I'll send an updated
-> one.
+In rkcanfd_handle_rx_int_one() decrement the priv->bec.rxerr for
+successfully RX'ed CAN frames.
 
-The updated PR: https://lore.kernel.org/all/20240904130256.1965582-1-mkl@pe=
-ngutronix.de/
+In rkcanfd_handle_tx_done_one() decrement the priv->bec.txerr for
+successfully TX'ed CAN frames.
 
-regards,
-Marc
+Tested-by: Alibek Omarov <a1ba.omarov@gmail.com>
+Acked-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://patch.msgid.link/20240904-rockchip-canfd-v5-14-8ae22bcb27cc@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ .../net/can/rockchip/rockchip_canfd-core.c    | 50 ++++++++++++++++---
+ drivers/net/can/rockchip/rockchip_canfd-rx.c  | 15 ++++++
+ drivers/net/can/rockchip/rockchip_canfd-tx.c  |  8 +++
+ drivers/net/can/rockchip/rockchip_canfd.h     |  2 +
+ 4 files changed, 69 insertions(+), 6 deletions(-)
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+diff --git a/drivers/net/can/rockchip/rockchip_canfd-core.c b/drivers/net/can/rockchip/rockchip_canfd-core.c
+index 700702e4d2ed..cf176180a282 100644
+--- a/drivers/net/can/rockchip/rockchip_canfd-core.c
++++ b/drivers/net/can/rockchip/rockchip_canfd-core.c
+@@ -159,11 +159,47 @@ static int rkcanfd_set_bittiming(struct rkcanfd_priv *priv)
+ 	return 0;
+ }
+ 
+-static void rkcanfd_get_berr_counter_raw(struct rkcanfd_priv *priv,
+-					 struct can_berr_counter *bec)
++static void rkcanfd_get_berr_counter_corrected(struct rkcanfd_priv *priv,
++					       struct can_berr_counter *bec)
+ {
++	struct can_berr_counter bec_raw;
++	u32 reg_state;
++
+ 	bec->rxerr = rkcanfd_read(priv, RKCANFD_REG_RXERRORCNT);
+ 	bec->txerr = rkcanfd_read(priv, RKCANFD_REG_TXERRORCNT);
++	bec_raw = *bec;
++
++	/* Tests show that sometimes both CAN bus error counters read
++	 * 0x0, even if the controller is in warning mode
++	 * (RKCANFD_REG_STATE_ERROR_WARNING_STATE in RKCANFD_REG_STATE
++	 * set).
++	 *
++	 * In case both error counters read 0x0, use the struct
++	 * priv->bec, otherwise save the read value to priv->bec.
++	 *
++	 * rkcanfd_handle_rx_int_one() handles the decrementing of
++	 * priv->bec.rxerr for successfully RX'ed CAN frames.
++	 *
++	 * Luckily the controller doesn't decrement the RX CAN bus
++	 * error counter in hardware for self received TX'ed CAN
++	 * frames (RKCANFD_REG_MODE_RXSTX_MODE), so RXSTX doesn't
++	 * interfere with proper RX CAN bus error counters.
++	 *
++	 * rkcanfd_handle_tx_done_one() handles the decrementing of
++	 * priv->bec.txerr for successfully TX'ed CAN frames.
++	 */
++	if (!bec->rxerr && !bec->txerr)
++		*bec = priv->bec;
++	else
++		priv->bec = *bec;
++
++	reg_state = rkcanfd_read(priv, RKCANFD_REG_STATE);
++	netdev_vdbg(priv->ndev,
++		    "%s: Raw/Cor: txerr=%3u/%3u rxerr=%3u/%3u Bus Off=%u Warning=%u\n",
++		    __func__,
++		    bec_raw.txerr, bec->txerr, bec_raw.rxerr, bec->rxerr,
++		    !!(reg_state & RKCANFD_REG_STATE_BUS_OFF_STATE),
++		    !!(reg_state & RKCANFD_REG_STATE_ERROR_WARNING_STATE));
+ }
+ 
+ static int rkcanfd_get_berr_counter(const struct net_device *ndev,
+@@ -176,7 +212,7 @@ static int rkcanfd_get_berr_counter(const struct net_device *ndev,
+ 	if (err)
+ 		return err;
+ 
+-	rkcanfd_get_berr_counter_raw(priv, bec);
++	rkcanfd_get_berr_counter_corrected(priv, bec);
+ 
+ 	pm_runtime_put(ndev->dev.parent);
+ 
+@@ -252,6 +288,8 @@ static void rkcanfd_chip_start(struct rkcanfd_priv *priv)
+ 		RKCANFD_REG_INT_OVERLOAD_INT |
+ 		RKCANFD_REG_INT_TX_FINISH_INT;
+ 
++	memset(&priv->bec, 0x0, sizeof(priv->bec));
++
+ 	rkcanfd_chip_fifo_setup(priv);
+ 	rkcanfd_timestamp_init(priv);
+ 	rkcanfd_set_bittiming(priv);
+@@ -488,7 +526,7 @@ static int rkcanfd_handle_error_int(struct rkcanfd_priv *priv)
+ 	if (cf) {
+ 		struct can_berr_counter bec;
+ 
+-		rkcanfd_get_berr_counter_raw(priv, &bec);
++		rkcanfd_get_berr_counter_corrected(priv, &bec);
+ 		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR | CAN_ERR_CNT;
+ 		cf->data[6] = bec.txerr;
+ 		cf->data[7] = bec.rxerr;
+@@ -517,7 +555,7 @@ static int rkcanfd_handle_state_error_int(struct rkcanfd_priv *priv)
+ 	u32 timestamp;
+ 	int err;
+ 
+-	rkcanfd_get_berr_counter_raw(priv, &bec);
++	rkcanfd_get_berr_counter_corrected(priv, &bec);
+ 	can_state_get_by_berr_counter(ndev, &bec, &tx_state, &rx_state);
+ 
+ 	new_state = max(tx_state, rx_state);
+@@ -570,7 +608,7 @@ rkcanfd_handle_rx_fifo_overflow_int(struct rkcanfd_priv *priv)
+ 	if (skb)
+ 		return 0;
+ 
+-	rkcanfd_get_berr_counter_raw(priv, &bec);
++	rkcanfd_get_berr_counter_corrected(priv, &bec);
+ 
+ 	cf->can_id |= CAN_ERR_CRTL | CAN_ERR_CNT;
+ 	cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
+diff --git a/drivers/net/can/rockchip/rockchip_canfd-rx.c b/drivers/net/can/rockchip/rockchip_canfd-rx.c
+index 31cee3362f1e..eff08948840c 100644
+--- a/drivers/net/can/rockchip/rockchip_canfd-rx.c
++++ b/drivers/net/can/rockchip/rockchip_canfd-rx.c
+@@ -167,6 +167,13 @@ static int rkcanfd_rxstx_filter(struct rkcanfd_priv *priv,
+ 
+ 	/* Affected by Erratum 6 */
+ 
++	/* Manual handling of CAN Bus Error counters. See
++	 * rkcanfd_get_corrected_berr_counter() for detailed
++	 * explanation.
++	 */
++	if (priv->bec.txerr)
++		priv->bec.txerr--;
++
+ 	*tx_done = true;
+ 
+ 	stats->tx_packets++;
+@@ -229,6 +236,14 @@ static int rkcanfd_handle_rx_int_one(struct rkcanfd_priv *priv)
+ 			return 0;
+ 	}
+ 
++	/* Manual handling of CAN Bus Error counters. See
++	 * rkcanfd_get_corrected_berr_counter() for detailed
++	 * explanation.
++	 */
++	if (priv->bec.rxerr)
++		priv->bec.rxerr = min(CAN_ERROR_PASSIVE_THRESHOLD,
++				      priv->bec.rxerr) - 1;
++
+ 	if (header->frameinfo & RKCANFD_REG_FD_FRAMEINFO_FDF)
+ 		skb = alloc_canfd_skb(priv->ndev, &skb_cfd);
+ 	else
+diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/can/rockchip/rockchip_canfd-tx.c
+index 9db6d90a4e7f..f8e74e814b3b 100644
+--- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
++++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
+@@ -113,6 +113,14 @@ void rkcanfd_handle_tx_done_one(struct rkcanfd_priv *priv, const u32 ts,
+ 	unsigned int tx_tail;
+ 
+ 	tx_tail = rkcanfd_get_tx_tail(priv);
++
++	/* Manual handling of CAN Bus Error counters. See
++	 * rkcanfd_get_corrected_berr_counter() for detailed
++	 * explanation.
++	 */
++	if (priv->bec.txerr)
++		priv->bec.txerr--;
++
+ 	stats->tx_bytes +=
+ 		can_rx_offload_get_echo_skb_queue_timestamp(&priv->offload,
+ 							    tx_tail, ts,
+diff --git a/drivers/net/can/rockchip/rockchip_canfd.h b/drivers/net/can/rockchip/rockchip_canfd.h
+index 3fe6ddcdd8ac..67f135fbcfb9 100644
+--- a/drivers/net/can/rockchip/rockchip_canfd.h
++++ b/drivers/net/can/rockchip/rockchip_canfd.h
+@@ -459,6 +459,8 @@ struct rkcanfd_priv {
+ 	u32 reg_int_mask_default;
+ 	struct rkcanfd_devtype_data devtype_data;
+ 
++	struct can_berr_counter bec;
++
+ 	struct reset_control *reset;
+ 	struct clk_bulk_data *clks;
+ 	int clks_num;
+-- 
+2.45.2
 
---564yis4mvy6qojrj
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmbYWuAACgkQKDiiPnot
-vG9q3Qf/YxMQ2/a8YA53kYe/8TLk1ncL6fZUqNcQLe5H2x5uGvUU/4YqQdQ61nHG
-lJbW/PjTnAAVTd6o1JncOwdHXo/y3PR6MdC2QP4hB2excONeTzStibTMtQdifVAN
-NVWT4PTZNe92pCj4Rbqn+GBtw7tLt2sY3FtHYGjpfeuxSssGq8gqatNFS4Aesj9z
-NCb28WPgeh3LPohi1TlUL9nfuDvetpf+RTQKwgd4MyIkd1wZ1wsqHrundM7HxDqb
-SMlQXYSLuc32tZrbZVEaGtPBrTgDy8i8kunBev6/2ULgyiyf6MOLGesqJ3nTbxLT
-yIF7ZdBukCZTvhXYVh5tZkjOemxfRQ==
-=iau/
------END PGP SIGNATURE-----
-
---564yis4mvy6qojrj--
