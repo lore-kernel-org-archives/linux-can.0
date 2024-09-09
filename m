@@ -1,16 +1,15 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 202C81B9B46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20267146D75
 	for <linux-can@vger.kernel.org>; Mon,  9 Sep 2024 14:29:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725892192; cv=none; b=kGA/HzDKvjGblT6Upt2BcLkd820BDqKRxt9oNPsN//wEI0JX5qI2YciVqVLyoE+fQ/lO0/pKQw/VDhGgljbol0gNkRE7h2yNpBmS7fVJZwNEL2kjRiVyK2RC2RDdABaSlGr20eUhx43CFpBTSHG1AQ6H16NF6GHpiTNT1xqYEQU=
+	t=1725892193; cv=none; b=VhyXrXrCRCe8wxKjtZjePcyxbBLhtuPdxK0mmYf1m0kVC4u+OBuCSeC96MpETzY2kw6q2ASSXzzkg3hcAjwecVEnRlVdjPJAKWtiwobtoeunri9RA+f1f8zH3lXrMrXsSBbiIGd31C1Z76jhgyYn0R8UOUXe9XzCcI+i04iI2mc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725892192; c=relaxed/simple;
-	bh=148obTx++Y3V8ypuU2N7MV5+sIrN7E4EKA3l8o4GR7I=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=MTaDs3EH5tSbOBgT0/MoJwzPZuVH8VMyuYyZmXBNvtPSKNf+1f3f9CRFHDEiMa7+cH8XNx7i1dzPdw7hKKcEm2IANvUIJ1Xl4lZKbk3yWpDksF05jZgEXvfudhaIXF2dAFCV9UWgFlYlOA8JgvnfRShgfSbJU7gzdaXi/ANqXi0=
+	s=arc-20240116; t=1725892193; c=relaxed/simple;
+	bh=fnuxskNVBbwCBy3d4j1pvS+K39JeOMdEJlru22mlufM=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=MzjjTWydO5OPm1oA2Ean61oMJX1TXGdEtjo+qFUOMk2xKw+6iFwljPwb5kaXLqeh/ObEbYmy8tMOe3XsQewXwfERvT7ublqTjHQdR/7WY9tqav/bG7JCMq1xNKnfzPIa+ul+GDgtOHOBa224di1rHkyxOLglsryOZ5kWYf3thyw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,30 +17,31 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1snfOm-00026q-EC
+	id 1snfOm-00026t-Ff
 	for linux-can@vger.kernel.org; Mon, 09 Sep 2024 16:29:48 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1snfOl-006g3D-S8
-	for linux-can@vger.kernel.org; Mon, 09 Sep 2024 16:29:47 +0200
+	id 1snfOm-006g3K-04
+	for linux-can@vger.kernel.org; Mon, 09 Sep 2024 16:29:48 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 8E3CF336B2F
+	by bjornoya.blackshift.org (Postfix) with SMTP id A888E336B30
 	for <linux-can@vger.kernel.org>; Mon, 09 Sep 2024 14:29:47 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 3227C336B12;
-	Mon, 09 Sep 2024 14:29:45 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id EB4E8336B0F;
+	Mon, 09 Sep 2024 14:29:44 +0000 (UTC)
 Received: from [172.20.34.65] (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id b502aa44;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 8ec233f4;
 	Mon, 9 Sep 2024 14:29:44 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Mon, 09 Sep 2024 16:29:36 +0200
-Subject: [PATCH can v2 2/2] can: m_can: m_can_close(): stop clocks after
- device has been shut down
+Subject: [PATCH can v2 0/2] can: m_can: fix struct
+ net_device_ops::{open,stop} callbacks under high bus load
+Date: Mon, 09 Sep 2024 16:29:34 +0200
+Message-Id: <20240909-can-m_can-fix-ifup-v2-0-2b35e624a089@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -50,9 +50,11 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240909-can-m_can-fix-ifup-v2-2-2b35e624a089@pengutronix.de>
-References: <20240909-can-m_can-fix-ifup-v2-0-2b35e624a089@pengutronix.de>
-In-Reply-To: <20240909-can-m_can-fix-ifup-v2-0-2b35e624a089@pengutronix.de>
+X-B4-Tracking: v=1; b=H4sIAE8G32YC/1WMTQuCMBzGv0r8z022ubR1ypjehOgaEWPOHLVNp
+ kYgfveWty4P/J63GQYdjB7gsJkh6LcZjHcR6HYDqpPuoZFpIgPFlGGOOVLSIXv/aWs+yLRTj/I
+ cpzhTkkklIQ77oGO2nl4hNuEWzTZ4i8YuaLn+iXp/vhBWn3aUEsGFSIu8oiTFZUUyUlR5WfGSH
+ v9qiZO2Dw1hSR98k/hpfHn/TJS3sCxfPC2qKMoAAAA=
+X-Change-ID: 20240909-can-m_can-fix-ifup-770306ca4aca
 To: Chandrasekar Ramakrishnan <rcsekar@samsung.com>, 
  Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
  "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
@@ -60,17 +62,18 @@ To: Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
  Dong Aisheng <b29396@freescale.com>, Fengguang Wu <fengguang.wu@intel.com>, 
  Varka Bhadram <varkabhadram@gmail.com>
 Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+ linux-kernel@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, 
+ "Hamby, Jake (US)" <Jake.Hamby@Teledyne.com>
 X-Mailer: b4 0.15-dev-7be4f
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1326; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=148obTx++Y3V8ypuU2N7MV5+sIrN7E4EKA3l8o4GR7I=;
- b=owEBbQGS/pANAwAKASg4oj56LbxvAcsmYgBm3wZVz0ZMV16OHcZFLF6AUqux4obsFEjdjJ5ip
- OzO/4D82n2JATMEAAEKAB0WIQRQQLqG4LYE3Sm8Pl8oOKI+ei28bwUCZt8GVQAKCRAoOKI+ei28
- b1UPCACXZlb+a6UZUK9oa6Djs9b0NCr/yHH2ee04hXM3eCzPMLzaDfNtF3c/w/tHDCs5qs98g4e
- LnbQX6ud4ev8uBYN1UJVeJRwNPXt9WmM3cd01mULGwvuWKMjraSzGrxTaSP7fWm1zZqiRZuIoED
- Atm/BuHiPX3bCvEszTqwlcRAs3SyD5FQzgkVHXUjc9mR5D2r4xrAe47JxTg9Jaxuv72YQUNFE0s
- dkFFwmGStSxq0criNZY4SBy8tjfeXDEyamp2PIJbnXJU8+jDWDXi5Ykim/360xj0yDhlliqwnK6
- 3H9j1xKjTIyAMinzxLT2EqEjBJlu/0x3wRu2PYwe6yjiAMVG
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1295; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=fnuxskNVBbwCBy3d4j1pvS+K39JeOMdEJlru22mlufM=;
+ b=owEBbQGS/pANAwAKASg4oj56LbxvAcsmYgBm3wZQT6oe7UnBnmkctE95HAGMkQ2uGwT7zqGp0
+ uZM1YLV/YiJATMEAAEKAB0WIQRQQLqG4LYE3Sm8Pl8oOKI+ei28bwUCZt8GUAAKCRAoOKI+ei28
+ b+aPB/4+N4ZznWRrDyOiNy44MUGyOXvRza3Yw2S+Ls+S2/uBovO0Eb5z/oB7bLTuMFEnlEVZTSe
+ Zfis4lEm2JTMxG4yfsOm04pUuHP3hc3NEXrzYn8dtKN3ICkR0ZTtGilIIfqvbeyKd1q1COd/zB+
+ Hi6jLOaNA3e5w/VQ5s0eu2NxvNc5UFkeHo2t+nv+okCkKKc8Q1F2ky97gjiUM3lfr/zLK+vIrYX
+ +N+tzNNbXCj74Ou1svJi3JLftlrZPkQ4qJKxv3eb8cNjz25FE9sPN+KMK/BNEhul868M8S6duJC
+ qgby1DRV1JNjk+v4JDaVTLNAbjB7E3NUJwPdDpcoKfWnKbod
 X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
  fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -78,43 +81,45 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-After calling m_can_stop() an interrupt may be pending or NAPI might
-still be executed. This means the driver might still touch registers
-of the IP core after the clocks has been disabled. This is not good
-practice and might lead to aborts depending on the SoC integration.
+Under high CAN-bus load the struct net_device_ops::{open,stop}
+callbacks (m_can_open(), m_can_close()) don't properly start and
+shutdown the device.
 
-To avoid these potential problems, make m_can_close() symmetric to
-m_can_open(), i.e. stop the clocks at the end, right before shutting
-down the transceiver.
+Fix the problems by re-arranging the order of functions in
+m_can_open() and m_can_close().
 
-Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hello,
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 7754dd2d4cb110eee5b83885f5381aed9c67ce03..7aeb56bcd1d660e592b527919d3708add62bfb75 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1764,7 +1764,6 @@ static int m_can_close(struct net_device *dev)
- 	netif_stop_queue(dev);
- 
- 	m_can_stop(dev);
--	m_can_clk_stop(cdev);
- 	free_irq(dev->irq, dev);
- 
- 	/* disable NAPI after disabling interrupts */
-@@ -1781,6 +1780,7 @@ static int m_can_close(struct net_device *dev)
- 
- 	close_candev(dev);
- 
-+	m_can_clk_stop(cdev);
- 	phy_power_off(cdev->transceiver);
- 
- 	return 0;
+I've taken Jake's patch and split the timestamp wraparound changes
+into separate patch. For now, I've added a Not-Signed-off-by, until
+Jake gives the S-o-b.
 
+regards,
+Marc
+
+Changes in v2:
+- 1/1 split timestamp wraparound changes into separate patch
+- 1/1 added "Not-Signed-off-by: Hamby, Jake (US) <Jake.Hamby@Teledyne.com>"
+- 2/2 new patch: fix order of clock shutdown
+- Link to v1: https://patch.msgid.link/DM8PR14MB5221D9DD3A7F2130EF161AF7EF9E2@DM8PR14MB5221.namprd14.prod.outlook.com
+
+---
+Hamby, Jake (US) (1):
+      can: m_can: enable NAPI before enabling interrupts
+
+Marc Kleine-Budde (1):
+      can: m_can: m_can_close(): stop clocks after device has been shut down
+
+ drivers/net/can/m_can/m_can.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
+---
+base-commit: d759ee240d3c0c4a19f4d984eb21c36da76bc6ce
+change-id: 20240909-can-m_can-fix-ifup-770306ca4aca
+
+Best regards,
 -- 
-2.45.2
+Marc Kleine-Budde <mkl@pengutronix.de>
 
 
