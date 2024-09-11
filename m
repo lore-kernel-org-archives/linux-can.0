@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4496713D524
-	for <linux-can@vger.kernel.org>; Wed, 11 Sep 2024 08:18:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B129E13D26B
+	for <linux-can@vger.kernel.org>; Wed, 11 Sep 2024 08:45:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726042708; cv=none; b=kR70XcUOw1TH/vZm83Af+emIo+jmx8QbmQ2z3JheX1a2SY6kTpk7UqcRLk7Da3iZpw+3aB89oWl/vjhawvTO905RCAOS7qdnPyUS3GAP+ILfqrh4fjRa+e+DGzEawrr6vsvjZvbmQzW4qqHC2lHxHbOGzc/s5d25mRXNNJPwD/o=
+	t=1726044338; cv=none; b=kmD4clr+zVE8oyy+NfY2WnmWnNyTQDCi2NGSgviLD3wxqHyW8/UfdlawE3TT+QKE718oljYuD8nIJxi6bRj71vVOyC6qBGKzU89gyJKnL2pHUODowzPwHjD467yyZjJt/hI3Tu6wehc7YCqKTef/3lj6ijJOVO3FD51KnQXopHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726042708; c=relaxed/simple;
-	bh=S3pm95ToL3JHQkbqiOGpkw8FdP37yZ6JFOgmrb7/W8g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PsMsGNtGFO2oTg1cKmWe3/JMCA8BJ4ceYNsIJzwUMEBFcQilMxQMPgm6VK6WRhsxMN9Zy2ok5IzGJz3jxrReNI1sccw5FqzP03apljNRFjyTn/FtJymmjFpGl31/+ahCuSFfngYmjvjq1ttOHKCzveIUtiGZS5+G0dvpCU7vIjE=
+	s=arc-20240116; t=1726044338; c=relaxed/simple;
+	bh=KsJDe9Bok6Du9C+BSWYMCjn52SKb3MGmSqcwhKcc3kM=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=kt2Ijm3YMywRNaMs9pB7BI+tb7HgBNoT6T0IynALy4eqbR6ey2u7P9cX1AM/pQk3OBbXQhQ2RMtlyxdfXvEVgxwiAj8xzFf7wv9ZOnSpNa72lQU4pVdBIxXAe8MwqJnW7hsShe87gbQabvzEnvuI8MpSGhc7PUIQeY/7BuJoLVQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,139 +18,94 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1soIYB-0006va-8T; Wed, 11 Sep 2024 10:18:07 +0200
+	id 1soIyk-0002dM-V7
+	for linux-can@vger.kernel.org; Wed, 11 Sep 2024 10:45:34 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1soIY9-0075kf-Kg; Wed, 11 Sep 2024 10:18:05 +0200
-Received: from pengutronix.de (pd9e595f8.dip0.t-ipconnect.de [217.229.149.248])
+	id 1soIyk-007604-3o
+	for linux-can@vger.kernel.org; Wed, 11 Sep 2024 10:45:34 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+	by bjornoya.blackshift.org (Postfix) with SMTP id C4D8C338158
+	for <linux-can@vger.kernel.org>; Wed, 11 Sep 2024 08:45:33 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 49B393380B1;
-	Wed, 11 Sep 2024 08:18:05 +0000 (UTC)
-Date: Wed, 11 Sep 2024 10:18:04 +0200
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 115B2338137;
+	Wed, 11 Sep 2024 08:45:31 +0000 (UTC)
+Received: from [172.20.34.65] (localhost [::1])
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 0a04ff54;
+	Wed, 11 Sep 2024 08:45:30 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Simon Horman <horms@kernel.org>, kernel@pengutronix.de, 
-	Vincent Mailhol <mailhol.vincent@wanadoo.fr>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Heiko Stuebner <heiko@sntech.de>, linux-can@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-rockchip@lists.infradead.org, llvm@lists.linux.dev, patches@lists.linux.dev
-Subject: Re: [PATCH] can: rockchip_canfd: fix return type of
- rkcanfd_start_xmit()
-Message-ID: <20240911-quirky-wandering-mastodon-fea5b3-mkl@pengutronix.de>
-References: <20240906-rockchip-canfd-wifpts-v1-1-b1398da865b7@kernel.org>
- <20240909084448.GU2097826@kernel.org>
- <20240909-arcane-practical-petrel-015d24-mkl@pengutronix.de>
- <20240909143546.GX2097826@kernel.org>
- <20240910-utopian-meticulous-dodo-4ec230-mkl@pengutronix.de>
- <20240910190525.GA1169362@thelio-3990X>
+Date: Wed, 11 Sep 2024 10:45:25 +0200
+Subject: [PATCH can-next 1/2] can: rockchip_canfd:
+ rkcanfd_timestamp_init(): rework delay calculation
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="rzg4bxks4bvdsike"
-Content-Disposition: inline
-In-Reply-To: <20240910190525.GA1169362@thelio-3990X>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240911-can-rockchip_canfd-fixes-v1-1-5ce385b5ab10@pengutronix.de>
+References: <20240911-can-rockchip_canfd-fixes-v1-0-5ce385b5ab10@pengutronix.de>
+In-Reply-To: <20240911-can-rockchip_canfd-fixes-v1-0-5ce385b5ab10@pengutronix.de>
+To: kernel@pengutronix.de, Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Heiko Stuebner <heiko@sntech.de>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Arnd Bergmann <arnd@arndb.de>
+X-Mailer: b4 0.15-dev-88a27
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1358; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=9WfFS70YrDr2qrfetTrD2fcBkV55eVvJHa3bbG4uxs8=;
+ b=owEBbQGS/pANAwAKASg4oj56LbxvAcsmYgBm4VinquE+Tws44QEClswYLm8kNwf80a6ISQYBA
+ mPD6Zr1Ds+JATMEAAEKAB0WIQRQQLqG4LYE3Sm8Pl8oOKI+ei28bwUCZuFYpwAKCRAoOKI+ei28
+ b0oAB/4g5Iqh2BWMbyXjya4wJb266mMCniZpg89eUuNb1jSWxUfSFVOkqdif+aLiaQ+MPiY/2fS
+ oR1lDkgLs5zbSMwZgK5GnPgDtS7ziBYK20IdVE8Li5COjb8Wti/36hW6bPvRJ/1KMuDvJkZMD+m
+ vnUP8O+8KBEBzp4YqgWSKb+XKgMt2ETWuoZscN6J7rWDrHmaavJCTBq82TpKUCVyoFW3Hn17Q+K
+ xR0Z/LtOibuy+X3SuQd1ogL4z7Hf5jVtNwrjxlfmpaKYIseJCBEJMFM9r/MBmS/3lhvKnvmNHKu
+ f818F71y4FhIkTCQZvzbuqrlRxGBdgGQI5MpiUfuV8aVUW1S
+X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
+ fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
---rzg4bxks4bvdsike
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Rework the delay calculation to only require a single 64-bit division.
 
-On 10.09.2024 12:05:25, Nathan Chancellor wrote:
-> > I was a bit hasty yesterday, clang-20 and W=3D1 produces these errors:
-> >=20
-> > | include/linux/vmstat.h:517:36: error: arithmetic between different en=
-umeration types ('enum node_stat_item' and 'enum lru_list') [-Werror,-Wenum=
--enum-conversion]
-> > |   517 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip=
- "nr_"
-> > |       |                               ~~~~~~~~~~~ ^ ~~~
-> > | 1 error generated.
->=20
-> Unfortunately, this is a completely tangential issue. You can see some
-> backstory behind it in commit 75b5ab134bb5 ("kbuild: Move
-> -Wenum-{compare-conditional,enum-conversion} into W=3D1"). To be honest, I
-> should consider moving that to W=3D2...
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+[mkl: port to on-top of existing 32-bit division fix]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/rockchip/rockchip_canfd-timestamp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks for the background info. I wanted to point out that at least
-clang-20 with W=3D1 finds _something_, though not that what I wanted to
-reproduce :)
+diff --git a/drivers/net/can/rockchip/rockchip_canfd-timestamp.c b/drivers/net/can/rockchip/rockchip_canfd-timestamp.c
+index fb1a8f4e62172b06570b95e6f32c4c0f70fe1ea7..43d4b572181215c50dda9d4f8cdb2d22b7938b38 100644
+--- a/drivers/net/can/rockchip/rockchip_canfd-timestamp.c
++++ b/drivers/net/can/rockchip/rockchip_canfd-timestamp.c
+@@ -71,8 +71,8 @@ void rkcanfd_timestamp_init(struct rkcanfd_priv *priv)
+ 
+ 	max_cycles = div_u64(ULLONG_MAX, cc->mult);
+ 	max_cycles = min(max_cycles, cc->mask);
+-	work_delay_ns = div_u64(clocksource_cyc2ns(max_cycles, cc->mult, cc->shift), 3);
+-	priv->work_delay_jiffies = nsecs_to_jiffies(work_delay_ns);
++	work_delay_ns = clocksource_cyc2ns(max_cycles, cc->mult, cc->shift);
++	priv->work_delay_jiffies = div_u64(work_delay_ns, 3u * NSEC_PER_SEC / HZ);
+ 	INIT_DELAYED_WORK(&priv->timestamp, rkcanfd_timestamp_work);
+ 
+ 	netdev_dbg(priv->ndev, "clock=%lu.%02luMHz bitrate=%lu.%02luMBit/s div=%u rate=%lu.%02luMHz mult=%u shift=%u delay=%lus\n",
 
-> > However I fail to reproduce the ndo_start_xmit problem. Even with 18.1.8
-> > from kernel.org.
-> >=20
-> >=20
-> > The following command (ARCH is unset, compiling x86 -> x86) produces the
-> > above shown "vmstat.h" problems....
-> >=20
-> > | $ make LLVM=3D1 LLVM_IAS=3D1 LLVM_SUFFIX=3D-20 drivers/net/can/rockch=
-ip/  W=3D1 CONFIG_WERROR=3D0
->=20
-> FYI, you could shorten this to just:
->=20
->   $ make LLVM=3D-20 drivers/net/can/rockchip/ W=3D1 CONFIG_WERROR=3D0
->=20
-> As LLVM_SUFFIX will be set through LLVM and LLVM_IAS has defaulted to 1
-> since 5.15.
+-- 
+2.45.2
 
-Thanks, scripts updated :)
 
-> Does CONFIG_WERROR=3D0 work? It seems like it is still present above.
-
-Yes, it works.
-
-> > ... but not the ndo_start_xmit problem.
-> >=20
-> > Am I missing a vital .config option?
->=20
-> No, I might not have made it clear in this commit message but this
-> warning is not on by default. I am looking to turn it on at some point
-> so I keep up with the warnings that it produces but there is one
-> subsystem that has several instances and I am unsure of how to solve
-> them to the maintainer's satisfaction. You can test it by adding
->=20
->   KCFLAGS=3D-Wincompatible-function-pointer-types-strict
->=20
-> to your make command above and it should reproduce.
-
-That was the missing link. Can reproduce now, thanks!
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---rzg4bxks4bvdsike
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmbhUjkACgkQKDiiPnot
-vG/tHQf+NTtvl9Ppp0bGbHnkqrViW25ecpIjPSkKou/0aP23Rr+N4EsbvqwAoDOK
-QTzEW6pIIPog26QQx66TpvOVFKnqECRugjegrzVlaozWMJn0RT9RO2jw8ezmi1qJ
-A+hF6ivY4IgKdIM21ojVnM0tgLQWC2YILXtmibZEgUcU6tCCSt0W1XiVLWn7tA8Z
-vJkNKxWoVnHMAn9a1N9A+miYLHrFGLKb5Wy0oxWUokGQ0eXWhhWWet1DmudjEgQz
-8rShcLAf7Ew0uB+ziNkrdJhcNviEU/PeFx54/Q28Rnp3fH+ZxReqke9nLH363wLA
-TVpVWiK1iygrjmRr+gWrZdlarnd2mQ==
-=O5L3
------END PGP SIGNATURE-----
-
---rzg4bxks4bvdsike--
