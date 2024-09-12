@@ -1,215 +1,122 @@
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB60376025;
-	Thu, 12 Sep 2024 06:37:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B695818F2DD
+	for <linux-can@vger.kernel.org>; Thu, 12 Sep 2024 08:06:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726123036; cv=none; b=iKH+Cnp7jqzSF1aLj8ZSzWl2a/7WHtpDBg43FBb/Bz5XJZImBAbZJZbQi3nHWkOJ+08+O+kCDNjppNRF/InPl8lbadhBASkGeiaILleaD9SEULct6RPw/67riYweogGzsFrA9psLwZhj21sNNfrODC2MptC9urAO2x161IWOzLA=
+	t=1726128376; cv=none; b=WECcLVHj7bsP0Vb9UiC+VHTsSt4Q49awKcDuiVKXBp/L6NtLEWESZX8wboPqZRoRhPLXQgYsh/NMk2zsCGpTxLBu/oBuiySP0aaFEDKdIuxFxdLSQMcUpBRPy5k21/PpvXmfXufeU0eL1PGo64luyERdP+zHPDz6IwD+G5oMrM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726123036; c=relaxed/simple;
-	bh=SU09P/N+FU06lHPPT9dW6yBaIR6NBJ/GB0UO74Le92s=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qB2lICCSruc5OjP7IcA5o+90XSUmA+hZgmL65shvrHZ17aHxgt53Fx7w2T8PALmZ9wW27R0nkW49eG+PJqQlv5Jk6nQ95QhH540LnUXGFqpohwG2nBeoRW1xSfQrN8zLUhH/1d/Wdc05CZAJ8Q2XrjFjriU9cxmmaBD29Gkmk9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=MiShd/+q; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="MiShd/+q"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1726123034; x=1757659034;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SU09P/N+FU06lHPPT9dW6yBaIR6NBJ/GB0UO74Le92s=;
-  b=MiShd/+qx9OH43ZyuKzg2oZtri9JbVezY3gPQYr8ZalAB+Jm+f3iYk3l
-   YMqL2uNAZWn4qWzhDXfjpMT4sbtXB/wEH3vnmEG1kpVCjdi5AduUiis+g
-   wZh20uZLHSguAzLLkVQK5ek3CsYDwCqI9sFhwdeud8NDQvDY3CWTAVL7P
-   rEStcTf/ZgaLg3N+P+zfsQceebYbaXMbsU4VQ2dGCg6UGuRoFLcjb8g/W
-   S6Y8yzP9CVkcZ9VAQ6+FXO87P4JQbtyA7qZs/igdeh2fGQLQE6c1trU2+
-   dtvPW8YHS6dvKENty5/kojxV7GCqw+HZ36GmmfwylPhCQXED5bYNjBM8W
-   A==;
-X-CSE-ConnectionGUID: SF6Mom6KSPO+4b8Pq1TERA==
-X-CSE-MsgGUID: 1HQHhiWbRS2jPXC7Yoajuw==
-X-IronPort-AV: E=Sophos;i="6.10,222,1719903600"; 
-   d="asc'?scan'208";a="199114207"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Sep 2024 23:37:13 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 11 Sep 2024 23:37:12 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Wed, 11 Sep 2024 23:37:10 -0700
-Date: Thu, 12 Sep 2024 07:36:37 +0100
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Charan Pedumuru <charan.pedumuru@microchip.com>
-CC: Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol
-	<mailhol.vincent@wanadoo.fr>, "David S. Miller" <davem@davemloft.net>, "Eric
- Dumazet" <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
-	<krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Nicolas Ferre
-	<nicolas.ferre@microchip.com>, Alexandre Belloni
-	<alexandre.belloni@bootlin.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	<linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] dt-bindings: net: can: atmel: Convert to json schema
-Message-ID: <20240912-pushup-shaky-f0980435caf3@wendy>
-References: <20240912-can-v1-1-c5651b1809bb@microchip.com>
+	s=arc-20240116; t=1726128376; c=relaxed/simple;
+	bh=Y1+lzNAoIYOBrI8kuq5jm2NZrMM2pB0inmdyMbuhvkE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=K0Dr5dxRJDM6Df7tnB/mPKND7aya3AFMzXolgN4U9q6dUp7tZYd4lch8N6/0siIE6g484emYeS+U9x4uNu8B5XTUomXV+HVDzXWmivJHU5eJPENioh44MAO+HvKQXDqBJEZGd2DRMvrDbN0dGEb9cx3W0Dilb3gyAsEcAiauxSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1soeq7-00048F-F6
+	for linux-can@vger.kernel.org; Thu, 12 Sep 2024 10:06:07 +0200
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1soeq6-007Kfd-GV
+	for linux-can@vger.kernel.org; Thu, 12 Sep 2024 10:06:06 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+	by bjornoya.blackshift.org (Postfix) with SMTP id 25A88338E22
+	for <linux-can@vger.kernel.org>; Thu, 12 Sep 2024 07:58:07 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 32577338E04;
+	Thu, 12 Sep 2024 07:58:06 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f00a1166;
+	Thu, 12 Sep 2024 07:58:05 +0000 (UTC)
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net,
+	kuba@kernel.org,
+	linux-can@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: [PATCH net 0/5] pull-request: can 2024-09-12
+Date: Thu, 12 Sep 2024 09:50:49 +0200
+Message-ID: <20240912075804.2825408-1-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="fawzaBO9W7nNBNRn"
-Content-Disposition: inline
-In-Reply-To: <20240912-can-v1-1-c5651b1809bb@microchip.com>
+Content-Type: text/plain; charset=utf8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
---fawzaBO9W7nNBNRn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hello netdev-team,
 
-On Thu, Sep 12, 2024 at 11:19:16AM +0530, Charan Pedumuru wrote:
-> Convert atmel-can documentation to yaml format
->=20
-> Signed-off-by: Charan Pedumuru <charan.pedumuru@microchip.com>
+this is a pull request of 5 patches for net/master.
 
-Please see the comments I left on the internal v2 of this patch.
+Kuniyuki Iwashima's patch fixes an incomplete bug fix in the CAN BCM
+protocol, which was introduced during v6.11.
 
-Thanks,
-Conor.
+A patch by Stefan Mätje removes the unsupported CAN_CTRLMODE_3_SAMPLES
+mode for CAN-USB/3-FD devices in the esd_usb driver.
 
-> ---
->  .../bindings/net/can/atmel,at91sam9263-can.yaml    | 67 ++++++++++++++++=
-++++++
->  .../devicetree/bindings/net/can/atmel-can.txt      | 15 -----
->  2 files changed, 67 insertions(+), 15 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/net/can/atmel,at91sam9263-=
-can.yaml b/Documentation/devicetree/bindings/net/can/atmel,at91sam9263-can.=
-yaml
-> new file mode 100644
-> index 000000000000..269af4c993a7
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/can/atmel,at91sam9263-can.yaml
-> @@ -0,0 +1,67 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/can/atmel,at91sam9263-can.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Atmel CAN Controller
-> +
-> +maintainers:
-> +  - Nicolas Ferre <nicolas.ferre@microchip.com>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - enum:
-> +          - atmel,at91sam9263-can
-> +          - atmel,at91sam9x5-can
-> +          - microchip,sam9x60-can
-> +      - items:
-> +          - enum:
-> +              - microchip,sam9x60-can
-> +          - const: atmel,at91sam9x5-can
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    items:
-> +      - const: can_clk
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +allOf:
-> +  - $ref: can-controller.yaml#
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - microchip,sam9x60-can
-> +    then:
-> +      required:
-> +        - compatible
-> +        - reg
-> +        - interrupts
-> +        - clocks
-> +        - clock-names
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    can0: can@f000c000 {
-> +          compatible =3D "atmel,at91sam9x5-can";
-> +          reg =3D <0xf000c000 0x300>;
-> +          interrupts =3D <30 IRQ_TYPE_LEVEL_HIGH 3>;
-> +    };
-> diff --git a/Documentation/devicetree/bindings/net/can/atmel-can.txt b/Do=
-cumentation/devicetree/bindings/net/can/atmel-can.txt
-> deleted file mode 100644
-> index 218a3b3eb27e..000000000000
-> --- a/Documentation/devicetree/bindings/net/can/atmel-can.txt
-> +++ /dev/null
-> @@ -1,15 +0,0 @@
-> -* AT91 CAN *
-> -
-> -Required properties:
-> -  - compatible: Should be "atmel,at91sam9263-can", "atmel,at91sam9x5-can=
-" or
-> -    "microchip,sam9x60-can"
-> -  - reg: Should contain CAN controller registers location and length
-> -  - interrupts: Should contain IRQ line for the CAN controller
-> -
-> -Example:
-> -
-> -	can0: can@f000c000 {
-> -		compatible =3D "atmel,at91sam9x5-can";
-> -		reg =3D <0xf000c000 0x300>;
-> -		interrupts =3D <40 4 5>
-> -	};
->=20
-> ---
-> base-commit: 32ffa5373540a8d1c06619f52d019c6cdc948bb4
-> change-id: 20240912-can-8eb7f8e7566d
->=20
-> Best regards,
-> --=20
-> Charan Pedumuru <charan.pedumuru@microchip.com>
->=20
+The next patch is by Martin Jocic and enables 64-bit DMA addressing
+for the kvaser_pciefd driver.
 
---fawzaBO9W7nNBNRn
-Content-Type: application/pgp-signature; name="signature.asc"
+The last two patches both affect the m_can driver. Jake Hamby's patch
+activates NAPI before interrupts are activated, a patch by me moves
+the stopping of the clock after the device has been shut down.
 
------BEGIN PGP SIGNATURE-----
+regards,
+Marc
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZuKL8AAKCRB4tDGHoIJi
-0t9CAP0SdR9OtPTrKWLG8ZfJgmtnwlP9n9OKm4E4tJAAWZOncwEAttpdCT2WsNy9
-8GnsssxR3tYA3aqoSkW5rH0gXCmW6ww=
-=0Z9k
------END PGP SIGNATURE-----
+---
 
---fawzaBO9W7nNBNRn--
+The following changes since commit 6513eb3d3191574b58859ef2d6dc26c0277c6f81:
+
+  net: tighten bad gso csum offset check in virtio_net_hdr (2024-09-11 20:43:07 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-6.11-20240912
+
+for you to fetch changes up to 717338e2b23309470e218f0c58177ece62b8d458:
+
+  Merge patch series "can: m_can: fix struct net_device_ops::{open,stop} callbacks under high bus load" (2024-09-12 09:47:36 +0200)
+
+----------------------------------------------------------------
+linux-can-fixes-for-6.11-20240912
+
+----------------------------------------------------------------
+Jake Hamby (1):
+      can: m_can: enable NAPI before enabling interrupts
+
+Kuniyuki Iwashima (1):
+      can: bcm: Clear bo->bcm_proc_read after remove_proc_entry().
+
+Marc Kleine-Budde (2):
+      can: m_can: m_can_close(): stop clocks after device has been shut down
+      Merge patch series "can: m_can: fix struct net_device_ops::{open,stop} callbacks under high bus load"
+
+Martin Jocic (1):
+      can: kvaser_pciefd: Enable 64-bit DMA addressing
+
+Stefan Mätje (1):
+      can: esd_usb: Remove CAN_CTRLMODE_3_SAMPLES for CAN-USB/3-FD
+
+ drivers/net/can/kvaser_pciefd.c |  3 +++
+ drivers/net/can/m_can/m_can.c   | 14 +++++++-------
+ drivers/net/can/usb/esd_usb.c   |  6 +-----
+ net/can/bcm.c                   |  4 +++-
+ 4 files changed, 14 insertions(+), 13 deletions(-)
+
