@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B25E119005A
-	for <linux-can@vger.kernel.org>; Thu, 12 Sep 2024 08:06:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 604C518FDBA
+	for <linux-can@vger.kernel.org>; Thu, 12 Sep 2024 08:06:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726128378; cv=none; b=VFjBrRLxUcSQl95ceEzWYshuNYxxbGGuoSaJlINO1+mZU4pShtiJeEnB8TtZMReRm9BKz+SbVRDWdBPH/dgq8smEFQ/erAb2moXKsBZsdK8qUNniKySWY2sBRlilSdeZrczkTBKMCZmlu3evkIZyo5/2gXZCoXYF9QVR9sm2AUI=
+	t=1726128378; cv=none; b=lG+zzxAKjJ6oDKVJ3nYP/VLHlSwDsZihe/H9sMzT0imSXObJxHyMGn7gBNPmkZ66kFo4iTRlPCv4Is6RU0xKP8xfLJ9TYVfwqERDL9dBoI0X5nNu1mCAsJsKYKFbD8VtjmNR8hYClX8SbgGZE6raMPDOks/qnGX3uPBC0Op4XEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1726128378; c=relaxed/simple;
-	bh=8MZSrcJZ4j6ERG43xGYW02k1WDzKj2clsxG6RrsaDlw=;
+	bh=yfVVPrbdePM+D9YKkuMycB/QyNZ8+Wze970Rbaty6cI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aq2/Y0mHFm99KRw08YKdrypaH0ml0GlSXb1cNYxiB+rlKEJaJpEXGzRLxtAfGpHqwpiu4NfU1yoLcEhbQav3lHuWfhkzWWD9p9fJt5HyNQjjkOMlhwqJO3JYt4SetFSbnSsKi5XJuyoB6k48ZaMwtTPxleefJ3QfUvtlmvJULtk=
+	 MIME-Version; b=TtRpGyePUWVg2ueWXs6zZ/0dY47A1ss36xLgM7r9qtILj7L3Vyn2oEBsu0t0K26AeCFQWLFN3hkerZ5IKH5xpS1Kiyksj66UV/s67YsDeW7jU8CkKVRWTwc5Hc6cebmiM5Dyhmcyl7CjIyMuw/c3aVobFTwbXP8iTtD9UItApMc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,40 +18,40 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1soeq8-00049D-Vk
-	for linux-can@vger.kernel.org; Thu, 12 Sep 2024 10:06:09 +0200
+	id 1soeq6-00047W-Fr
+	for linux-can@vger.kernel.org; Thu, 12 Sep 2024 10:06:06 +0200
 Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1soeq7-007Kgf-41
-	for linux-can@vger.kernel.org; Thu, 12 Sep 2024 10:06:07 +0200
+	id 1soeq6-007KfC-0t
+	for linux-can@vger.kernel.org; Thu, 12 Sep 2024 10:06:06 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 67D74338EF0
-	for <linux-can@vger.kernel.org>; Thu, 12 Sep 2024 08:04:43 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with SMTP id 0673B338E43
+	for <linux-can@vger.kernel.org>; Thu, 12 Sep 2024 07:58:07 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id F13D6338EA4;
-	Thu, 12 Sep 2024 08:04:40 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 7CBD8338E08;
+	Thu, 12 Sep 2024 07:58:06 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1b460190;
-	Thu, 12 Sep 2024 08:04:40 +0000 (UTC)
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ab9c422b;
+	Thu, 12 Sep 2024 07:58:05 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Dan Carpenter <dan.carpenter@linaro.org>
-Subject: [PATCH net-next 5/5] can: rockchip_canfd: rkcanfd_handle_error_int_reg_ec(): fix decoding of error code register
-Date: Thu, 12 Sep 2024 09:59:02 +0200
-Message-ID: <20240912080438.2826895-6-mkl@pengutronix.de>
+	Martin Jocic <martin.jocic@kvaser.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 3/5] can: kvaser_pciefd: Enable 64-bit DMA addressing
+Date: Thu, 12 Sep 2024 09:50:52 +0200
+Message-ID: <20240912075804.2825408-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240912080438.2826895-1-mkl@pengutronix.de>
-References: <20240912080438.2826895-1-mkl@pengutronix.de>
+In-Reply-To: <20240912075804.2825408-1-mkl@pengutronix.de>
+References: <20240912075804.2825408-1-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -64,39 +64,34 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Probably due to a copy/paste error rkcanfd_handle_error_int_reg_ec()
-checks twice if the RKCANFD_REG_ERROR_CODE_TX_ACK_EOF bit is set in
-reg_ec.
+From: Martin Jocic <martin.jocic@kvaser.com>
 
-Keep the correct check for RKCANFD_REG_ERROR_CODE_TX_ACK_EOF and
-remove the superfluous one.
+Enabling 64-bit addressing for DMA buffers will prevent issues
+on some memory constrained platforms like e.g. Raspberry Pi 5,
+where the driver won't load because it cannot allocate enough
+continuous memory in the default 32-bit memory address range.
 
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://patch.msgid.link/9a46d10d-e4e3-40a5-8fb6-f4637959f124@stanley.mountain
-Fixes: ff60bfbaf67f ("can: rockchip_canfd: add driver for Rockchip CAN-FD controller")
-Link: https://patch.msgid.link/20240911-can-rockchip_canfd-fixes-v1-2-5ce385b5ab10@pengutronix.de
+Signed-off-by: Martin Jocic <martin.jocic@kvaser.com>
+Link: https://patch.msgid.link/d7340f78e3db305bfeeb8229d2dd1c9077e10b92.1725875278.git.martin.jocic@kvaser.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rockchip/rockchip_canfd-core.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/can/kvaser_pciefd.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/can/rockchip/rockchip_canfd-core.c b/drivers/net/can/rockchip/rockchip_canfd-core.c
-index 6883153e8fc1..df18c85fc078 100644
---- a/drivers/net/can/rockchip/rockchip_canfd-core.c
-+++ b/drivers/net/can/rockchip/rockchip_canfd-core.c
-@@ -491,11 +491,9 @@ rkcanfd_handle_error_int_reg_ec(struct rkcanfd_priv *priv, struct can_frame *cf,
- 		else if (reg_ec & RKCANFD_REG_ERROR_CODE_TX_CRC)
- 			cf->data[3] = CAN_ERR_PROT_LOC_CRC_SEQ;
- 		else if (reg_ec & RKCANFD_REG_ERROR_CODE_TX_ACK_EOF)
--			cf->data[3] = CAN_ERR_PROT_LOC_ACK;
-+			cf->data[3] = CAN_ERR_PROT_LOC_ACK_DEL;
- 		else if (reg_ec & RKCANFD_REG_ERROR_CODE_TX_ACK)
- 			cf->data[3] = CAN_ERR_PROT_LOC_ACK;
--		else if (reg_ec & RKCANFD_REG_ERROR_CODE_TX_ACK_EOF)
--			cf->data[3] = CAN_ERR_PROT_LOC_ACK_DEL;
- 		/* RKCANFD_REG_ERROR_CODE_TX_ERROR */
- 		else if (reg_ec & RKCANFD_REG_ERROR_CODE_TX_OVERLOAD)
- 			cf->data[2] |= CAN_ERR_PROT_OVERLOAD;
+diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
+index 9ffc3ffb4e8f..f86c9671a03a 100644
+--- a/drivers/net/can/kvaser_pciefd.c
++++ b/drivers/net/can/kvaser_pciefd.c
+@@ -1104,6 +1104,9 @@ static int kvaser_pciefd_setup_dma(struct kvaser_pciefd *pcie)
+ 
+ 	/* Disable the DMA */
+ 	iowrite32(0, KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_CTRL_REG);
++
++	dma_set_mask_and_coherent(&pcie->pci->dev, DMA_BIT_MASK(64));
++
+ 	for (i = 0; i < KVASER_PCIEFD_DMA_COUNT; i++) {
+ 		pcie->dma_data[i] = dmam_alloc_coherent(&pcie->pci->dev,
+ 							KVASER_PCIEFD_DMA_SIZE,
 -- 
 2.45.2
 
