@@ -1,205 +1,155 @@
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB97953370
-	for <linux-can@vger.kernel.org>; Tue, 24 Sep 2024 06:08:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BC5353373
+	for <linux-can@vger.kernel.org>; Tue, 24 Sep 2024 06:21:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727158095; cv=none; b=hkUuJJw+ezkIMLtQKc5SWb2V6kBcQO1tmYRNCEnolQbGA2AJQJtZ2KfkInessBPFBK50v1LDrKBWMNKlfr3oIqKqOLy5uVyfbXwcwqDtFHAJWvBctpOF0SpBRHafpIKf79wuLD4EVfRiIMc0iXmD24d+tf/hCrdFsKcFM239spw=
+	t=1727158875; cv=none; b=fqIAZONJ+oCuPsDU7WI3zN3W06J3CrQqTm30uGOOH5STiu3e/v2LFb/wBwoVBM1vlEoAp0P8ifV7gGKOefhbSjKRkyqUP1FVJSVRiWW0gD46WFFisxKAwZWMLv+TTwNhkhDG2xS/dLTkEINR64Rbmkmx/eCFJHZjVZNlD5ERQME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727158095; c=relaxed/simple;
-	bh=gDW51VJPoXNQgg+K5Mw5ZlfbpYrIZ9JbXKBia32d0+Y=;
+	s=arc-20240116; t=1727158875; c=relaxed/simple;
+	bh=QG/VKk0vH17/JF2w8zE89ygq5JrJkgBerB73y4hm/6M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fo27RzhesaIrr1+ZiYDrCLlOVp+srEuGeTxgMXNXnKMIlqiumvQlod5mQuNiu5sOyjYgg6Q49JAW5ZLIrS74jdLCq0F5DeKfHs7ce6zeAG0X/vjBAmq3tyRPyDUFUkCQtKid6jKnj8cfSWgEP0DHVL4DauS5sIUoAP6QLDy9mFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=xWqndHAx; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="xWqndHAx"
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-42cb1758e41so41152205e9.1
-        for <linux-can@vger.kernel.org>; Mon, 23 Sep 2024 23:08:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1727158090; x=1727762890; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=VzFo2I1E2rP8+5n9kj14nz0J+HvkgPte4rz85u/uQJE=;
-        b=xWqndHAx8cFJs29wfaen/8ExQ9+b5ESrh4k2mn9n8/mj7SgsmO2wO9YqysmWNVK4b1
-         g1kJbvfMHFvEFwn3dCzQQH2xIkR0oAZ6M0hCqFdR3ZqmoKCV6T5L9J630yp1nJYEjBG7
-         O9y/GZoZ9kAoxtX/ZsTW7Shv5ogOVLSHVJkPV6TXlTSp0LWlh0UBHyn8jXMEhaLf89R+
-         jAwsMGEEQIsyJFs/fLMY6P4UN0nzsMT/Kg5yaA1Y0GQuPfp8K4CdsHONhqeXz2ommxAR
-         CJKI+i6fYMrW9wmAPC/tFzBhQJLNxpPdb70SeONVMO7x3P/QTQjsAWcxwQOQYcLAfdyr
-         2eGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727158090; x=1727762890;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VzFo2I1E2rP8+5n9kj14nz0J+HvkgPte4rz85u/uQJE=;
-        b=a+Sv0LtkjxWAwFJFpaB2OCm5oNbYXyV0KHUjyY2wLGWUqgXDMMcLSKb/4yOi8RuJ50
-         QW0vUtIxy04FVAii0UYLr5w2aY7qm6WI33t7GzCL8yCb1LSWNzSSRPnXDofTWN3NODaj
-         RhSa1ulGuRYSuroSISbz591fDHJwZRopdZnaCLcYD+GQ5PoLQXSi6vBnRVhCFENdXNnC
-         E5GYZRCZfCDJDpUHbDMkAGwk8kdLDGEiHm9C+VzxhCWVh67i9YyLu0UGOa4hxz7yH6Md
-         snh6w33pVW4gQFGR9Gfk1ROAQmLLuUWtunOn3KwoGmUCnRdTvl3R78mP9NQ3tqRUn5XG
-         RDXw==
-X-Forwarded-Encrypted: i=1; AJvYcCUgcmPVfANgJvdQfuLIJWC9LyzB+OR8c2SY/YRBi/xacK3NMKSKwyaFgIkTjU1Uz49X9OEEwnheHXI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzAq43SNeIG6p30Mja8slkmSStW2wUgdiJKFB4+jjzgrNstHrfA
-	rjVWdnikW9L+az0D1Q4VgJK6TOxVvqWY4MyGxDVzT69lJ4qitCDuvzU0JymbjN8=
-X-Google-Smtp-Source: AGHT+IFIjkRUSoZ0ykhdCmCTbZ7FojC7Aoo7miCt4ja9O8VZx4rPyeNb8Il00ud5ZJI/VjGVgBeTJQ==
-X-Received: by 2002:a5d:54c3:0:b0:364:6c08:b9b2 with SMTP id ffacd0b85a97d-37a4234d339mr6917282f8f.45.1727158089812;
-        Mon, 23 Sep 2024 23:08:09 -0700 (PDT)
-Received: from blmsp ([2001:4091:a245:8155:f78b:11e0:5100:a478])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37cbc2f976esm662656f8f.69.2024.09.23.23.08.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Sep 2024 23:08:09 -0700 (PDT)
-Date: Tue, 24 Sep 2024 08:08:08 +0200
-From: Markus Schneider-Pargmann <msp@baylibre.com>
-To: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc: Chandrasekar Ramakrishnan <rcsekar@samsung.com>, 
-	Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Martin =?utf-8?Q?Hundeb=C3=B8ll?= <martin@geanix.com>, "Felipe Balbi (Intel)" <balbi@kernel.org>, 
-	Raymond Tan <raymond.tan@intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, 
-	linux-can@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux@ew.tq-group.com
-Subject: Re: [PATCH v3 2/2] can: m_can: fix missed interrupts with m_can_pci
-Message-ID: <6qk7fmbbvi5m3evyriyq4txswuzckbg4lmdbdkyidiedxhzye5@av3gw7vweimu>
-References: <ed86ab0d7d2b295dc894fc3e929beb69bdc921f6.1727092909.git.matthias.schiffer@ew.tq-group.com>
- <4715d1cfed61d74d08dcc6a27085f43092da9412.1727092909.git.matthias.schiffer@ew.tq-group.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=N/q3aQtC+/dqAFaLdV9jQmi+2CSD0yrNHY8ygfTq6kVrtQl8A8v8cr048GkAz7NfWhP+FLF9ixRabxzFeqBkkDXCLhIVTJ2DcE9vm43/pYuyoaucu+ErSCBJogTkqPzUQoDV6kvTQZc8L3lhFkAXG5a4a1LFTrMJAR7nh4gakEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1ssyv7-0006zf-Qe; Tue, 24 Sep 2024 08:21:09 +0200
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1ssyv6-0018DL-Un; Tue, 24 Sep 2024 08:21:08 +0200
+Received: from pengutronix.de (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 366D4341953;
+	Tue, 24 Sep 2024 06:21:08 +0000 (UTC)
+Date: Tue, 24 Sep 2024 08:21:06 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Francesco Dolcini <francesco@dolcini.it>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+	linux-can@vger.kernel.org, Thomas Kopp <thomas.kopp@microchip.com>, 
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: Re: Oops on mcp251xfd open on 6.6.52
+Message-ID: <20240924-goose-of-undeniable-discussion-efc300-mkl@pengutronix.de>
+References: <20240923115310.GA138774@francesco-nb>
+ <20240923-spry-badger-of-perception-303c63-mkl@pengutronix.de>
+ <20240923120027.GB138774@francesco-nb>
+ <20240923-quixotic-okapi-of-rain-99ae09-mkl@pengutronix.de>
+ <ZvHugNKM-Ilu4K3K@gaggiata.pivistrello.it>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="petlyah5sixnu6i7"
+Content-Disposition: inline
+In-Reply-To: <ZvHugNKM-Ilu4K3K@gaggiata.pivistrello.it>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
+
+
+--petlyah5sixnu6i7
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4715d1cfed61d74d08dcc6a27085f43092da9412.1727092909.git.matthias.schiffer@ew.tq-group.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 23, 2024 at 05:32:16PM GMT, Matthias Schiffer wrote:
-> The interrupt line of PCI devices is interpreted as edge-triggered,
-> however the interrupt signal of the m_can controller integrated in Intel
-> Elkhart Lake CPUs appears to be generated level-triggered.
-> 
-> Consider the following sequence of events:
-> 
-> - IR register is read, interrupt X is set
-> - A new interrupt Y is triggered in the m_can controller
-> - IR register is written to acknowledge interrupt X. Y remains set in IR
-> 
-> As at no point in this sequence no interrupt flag is set in IR, the
-> m_can interrupt line will never become deasserted, and no edge will ever
-> be observed to trigger another run of the ISR. This was observed to
-> result in the TX queue of the EHL m_can to get stuck under high load,
-> because frames were queued to the hardware in m_can_start_xmit(), but
-> m_can_finish_tx() was never run to account for their successful
-> transmission.
-> 
-> To fix the issue, repeatedly read and acknowledge interrupts at the
-> start of the ISR until no interrupt flags are set, so the next incoming
-> interrupt will also result in an edge on the interrupt line.
-> 
-> Fixes: cab7ffc0324f ("can: m_can: add PCI glue driver for Intel Elkhart Lake")
-> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+On 24.09.2024 00:41:04, Francesco Dolcini wrote:
+> Hello Marc,
+>=20
+> On Mon, Sep 23, 2024 at 04:36:16PM +0200, Marc Kleine-Budde wrote:
+> > On 23.09.2024 14:00:27, Francesco Dolcini wrote:
+> > > On Mon, Sep 23, 2024 at 01:57:07PM +0200, Marc Kleine-Budde wrote:
+> > > > On 23.09.2024 13:53:10, Francesco Dolcini wrote:
+> > > > > I got the following Oops on doing a simple ip link set canX up, r=
+unning
+> > > > > on an i.MX8MM SoC.
+> > > > >=20
+> > > > > This was reproduced with some automated testing, I have not tried=
+ to
+> > > > > reproduce it so far. Any idea or hint? It seems systematic, intro=
+duced
+> > > > > around 12th september on the v6.6.y branch.
+> > > >=20
+> > > > Which Kernel version are you using?
+> > >=20
+> > > v6.6.52 is reproducing the issue, I guess it started on some previous
+> > > v6.6.x kernel (with x < 52), but I was not able to dig out the logs
+> > > running on older kernel from our automated testing (yet).
+> > >=20
+> > > I was not able to test mainline (yet).
+> >=20
+> > Can you cherry-pick these and see if it fixes your problem?
+> >=20
+> > 51b2a7216122 ("can: mcp251xfd: properly indent labels")
+> > a7801540f325 ("can: mcp251xfd: move mcp251xfd_timestamp_start()/stop() =
+into mcp251xfd_chip_start/stop()")
+>=20
+> Yes, these 2 commits fix the issue.
+> In addition I noticed that also 6.1.111 is affected by the exact same Oop=
+s.
+>=20
+> Thanks!
 
-Just a few comment nitpicks below. Otherwise:
+Thanks for testing!
 
-Reviewed-by: Markus Schneider-Pargmann <msp@baylibre.com>
+> BTW, to reproduce, just
+>=20
+>   ip link set can0 type can bitrate 1000000
+>   ip link set can0 up=20
+>=20
+> How to we move forward now? Would you ask greg to backport to stable kern=
+el also
+> these 2 patches
 
-> ---
-> 
-> v2: introduce flag is_edge_triggered, so we can avoid the loop on !m_can_pci
-> v3:
-> - rename flag to irq_edge_triggered
-> - update comment to describe the issue more generically as one of systems with
->   edge-triggered interrupt line. m_can_pci is mentioned as an example, as it
->   is the only m_can variant that currently sets the irq_edge_triggered flag.
-> 
->  drivers/net/can/m_can/m_can.c     | 22 +++++++++++++++++-----
->  drivers/net/can/m_can/m_can.h     |  1 +
->  drivers/net/can/m_can/m_can_pci.c |  1 +
->  3 files changed, 19 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-> index c85ac1b15f723..24e348f677714 100644
-> --- a/drivers/net/can/m_can/m_can.c
-> +++ b/drivers/net/can/m_can/m_can.c
-> @@ -1207,20 +1207,32 @@ static void m_can_coalescing_update(struct m_can_classdev *cdev, u32 ir)
->  static int m_can_interrupt_handler(struct m_can_classdev *cdev)
->  {
->  	struct net_device *dev = cdev->net;
-> -	u32 ir;
-> +	u32 ir = 0, ir_read;
->  	int ret;
->  
->  	if (pm_runtime_suspended(cdev->dev))
->  		return IRQ_NONE;
->  
-> -	ir = m_can_read(cdev, M_CAN_IR);
-> +	/* The m_can controller signals its interrupt status as a level, but
-> +	 * depending in the integration the CPU may interpret the signal as
-                 ^ on?
+Yeah, that's pretty much what I'm going to do now :).
 
-> +	 * edge-triggered (for example with m_can_pci).
-> +	 * We must observe that IR is 0 at least once to be sure that the next
+> (I assume that something was backported that broke the
+> functionality at some point)?=20
 
-As the loop has a break for non edge-triggered chips, I think you should
-include that in the comment, like 'For these edge-triggered
-integrations, we must observe...' or something similar.
+Yes, it's:
 
-Best
-Markus
+upstream:
+| 24436be590c6 ("can: mcp251xfd: rx: add workaround for erratum DS80000789E=
+ 6 of mcp2518fd")
 
-> +	 * interrupt will generate an edge.
-> +	 */
-> +	while ((ir_read = m_can_read(cdev, M_CAN_IR)) != 0) {
-> +		ir |= ir_read;
-> +
-> +		/* ACK all irqs */
-> +		m_can_write(cdev, M_CAN_IR, ir);
-> +
-> +		if (!cdev->irq_edge_triggered)
-> +			break;
-> +	}
-> +
->  	m_can_coalescing_update(cdev, ir);
->  	if (!ir)
->  		return IRQ_NONE;
->  
-> -	/* ACK all irqs */
-> -	m_can_write(cdev, M_CAN_IR, ir);
-> -
->  	if (cdev->ops->clear_interrupts)
->  		cdev->ops->clear_interrupts(cdev);
->  
-> diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
-> index 92b2bd8628e6b..ef39e8e527ab6 100644
-> --- a/drivers/net/can/m_can/m_can.h
-> +++ b/drivers/net/can/m_can/m_can.h
-> @@ -99,6 +99,7 @@ struct m_can_classdev {
->  	int pm_clock_support;
->  	int pm_wake_source;
->  	int is_peripheral;
-> +	bool irq_edge_triggered;
->  
->  	// Cached M_CAN_IE register content
->  	u32 active_interrupts;
-> diff --git a/drivers/net/can/m_can/m_can_pci.c b/drivers/net/can/m_can/m_can_pci.c
-> index d72fe771dfc7a..9ad7419f88f83 100644
-> --- a/drivers/net/can/m_can/m_can_pci.c
-> +++ b/drivers/net/can/m_can/m_can_pci.c
-> @@ -127,6 +127,7 @@ static int m_can_pci_probe(struct pci_dev *pci, const struct pci_device_id *id)
->  	mcan_class->pm_clock_support = 1;
->  	mcan_class->pm_wake_source = 0;
->  	mcan_class->can.clock.freq = id->driver_data;
-> +	mcan_class->irq_edge_triggered = true;
->  	mcan_class->ops = &m_can_pci_ops;
->  
->  	pci_set_drvdata(pci, mcan_class);
-> -- 
-> TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
-> Amtsgericht München, HRB 105018
-> Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
-> https://www.tq-group.com/
+v6.6:
+| 5ea24ddc26a7 ("can: mcp251xfd: rx: add workaround for erratum DS80000789E=
+ 6 of mcp2518fd")
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--petlyah5sixnu6i7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmbyWk8ACgkQKDiiPnot
+vG81bwf/Vv5q7BkaOfvk1sOVuKf056y8/+bnhBF5naIdJoHZL7o9gOKi6YKfkt12
+piLV0dqGPoba7GWArODioWZ+frcfJeh7wBInJKQI8BANLTGc877QJ5m1PtQ+JbWn
+hojx/3tTbdd+x68aQkk3rrupJRPqp6iUrka2KipiHGsehnF8qjzems1rG1Zq0zf+
+r9JGp6qSILW+NIjlFzaqr7zMU7lpNxHCO9YK2AcqKvbUad9+ZSe8Y6QY3/fmcEyu
+QfhqN3+tdOgCogL4Y8jGRI/BLW5rPSX7ccOSqXpNq6B1fFo6LCzj712T8dYrlm6S
+eron5D20kG680nea0KlVD8OKqe2vDA==
+=prB/
+-----END PGP SIGNATURE-----
+
+--petlyah5sixnu6i7--
