@@ -1,74 +1,163 @@
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0E81153BC7
-	for <linux-can@vger.kernel.org>; Thu, 31 Oct 2024 11:55:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97A0D187864;
+	Thu, 31 Oct 2024 13:48:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.30.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730375730; cv=none; b=g3gOqNbhB7Y5LWSJ7KmOGKFZ4/eUWmlv8nvRrN94vsFPeRHcL7b8zleqwqIlJjuxvfuIgeVrA2+wtms88UBqSiDJz+FGJUKFVlBizFXkeVxsMBu2twcDTwp7TnCZMlDdEErumMS1JJ5ln70SYWjkZG39PWAnRWoFmHnxuzL4/CI=
+	t=1730382484; cv=none; b=D2EYdJVX5hKrMwvWdKkHZgZ3jfj3wXcbUlgivk+HJUkNz4AicS2VY0Z8R72kcQMjI/f/Vtvzy8M2b7KYJUw+rit1qp/IY3PFwX2KbSG0gJKoOb22KYL3SylC0mj5O4antD0WiRizjcVKlhp9PenDIVa289o+WdPPSfO+jC/kjMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730375730; c=relaxed/simple;
-	bh=rBWHHGIBKG7aWGjy5o2LvySYQiy7eKFw8FuN7KLS0oI=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=aVpEn4Mb1Lcy/qBLbVPbJFMDUidynGh3W01vrQTPkazJg6tGEf1HLEYbPxrhoJNcXAhLYu1q2Xw8r+fCyHCU/W3YoC8rGMEy7jYpshLuALxlhXPSqOa6tETfajIRgtLuA1xq3VYwmec0s+rdhfe6mUGzHSuIs1Y7KS4dJiQT9iM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=juidbRsA; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1730382484; c=relaxed/simple;
+	bh=P8aq+HrtTPGRe6NulJzZWkkCydI6pkQrnnOE2fEBAWI=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=Kh+3nYObdZG2w9xymcww0invBWvduqBs7DHee6/wz4qYUArfxLxfI/shIhjGhenreA3h2lR3j4SwD2d9hY+jnESLxWDXcKo8PtlEBA2/QXOkxxaBxKYJO6iiARb89AB44iNw3/t6y5XDb2w4q+bF9i73kKmd8sbUKuVvS3GFWAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=f1JUEiaR; arc=none smtp.client-ip=188.40.30.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="juidbRsA"
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5cb6ca2a776so1186478a12.0
-        for <linux-can@vger.kernel.org>; Thu, 31 Oct 2024 04:55:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730375727; x=1730980527; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rBWHHGIBKG7aWGjy5o2LvySYQiy7eKFw8FuN7KLS0oI=;
-        b=juidbRsA9MRDmYACPHJSmbIGXt7IlbdnGjxeJUIFVDH81jLxswt1spYaN62sL0OPpf
-         BxfjbUfc5UgxPgBeRcr1wpfnoki1pkeX2j8l3FRYrHpMYCXQS+ghkZxxxzTIiedV6ViJ
-         yQIu5MeSEVovMfTkSLAoHZvycVN27843SLPjCe1uhCXyBIQmUWC0xWqMGiS6G5Fejz/K
-         SsqG4DSdVEKZ1aD5by6vkHfX0AL8HMWQ/Jp2y0D6b6Eo/IuaWZ+6b6j6C1pOPIG3Kpjc
-         6O/5repMpx2BFlRkAZeXfjjG0wohnw+QW5zNaXoM5LfxVpOlRS99PQ+mrbwGY1rCVyrF
-         /Aiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730375727; x=1730980527;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rBWHHGIBKG7aWGjy5o2LvySYQiy7eKFw8FuN7KLS0oI=;
-        b=OpA+9c4xyIOJ9xqxsNAzDobCp6UGzRULZBno+CB89/loL3ynvDuoahAClVSlqFLFpU
-         PorbKOBYo7pUSLXeA2jC3UYCy7DMcff/YUcM6Kg6foABlncTdHL9QeKfUfAnlmWUuSRy
-         ZzXvh2QKzaC0M69K7l07JE0r0rmcV0aSuUUvjDJ1jmcpXbMlZT5S0THmq2Su96pnszSq
-         0hqSIGd7bDaZwDahIGXJvwrNRjgG5nGipKm3qozQ5c3P4+lOUgqhr8WDWrSxHPkr8rOn
-         thyBXO6zIgZHHiY6lhvL9VFqm5WbsuKDWjnfAenqbTXNndTOxTd6Gtzsfk93UtvPUvT5
-         1gTA==
-X-Gm-Message-State: AOJu0YzY0n+4/+YGi/+EXtMP2HO2msyYOUQ0ZmlLS1c5JtVjs6KDLFra
-	eZSrpRsPrH0LljqxmqmYIH0CPNfgSHJiWpU8JSmbURh5qRS4Djql5jn3tUSB5TrNYY9PCNm5nrE
-	Sb5XIZYQwpi7JuRS/XUj/K2evZ81mFFbDoGQ=
-X-Google-Smtp-Source: AGHT+IHDI2Qt5N4+fNjPDol62mHT72ORWi4rUlHemvGlamonbgAInoDEvitXy9wAKqfSgec+G3flxURMRL8yLafHenA=
-X-Received: by 2002:a05:6402:5242:b0:5c8:8bde:a1d3 with SMTP id
- 4fb4d7f45d1cf-5cd54af0e79mr4250965a12.22.1730375726030; Thu, 31 Oct 2024
- 04:55:26 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="f1JUEiaR"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
+	s=default2211; h=Cc:To:In-Reply-To:References:Message-Id:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=hInpEUHJpNi2swX8P3rneq+VBn2Cer+loje2Tu7kAPA=; b=f1JUEiaRjnI5zl3njtOa57KrMi
+	fBjzN0lmzu7y6xJhMI5UKmw4BRO/qg+Vwz1TmGpqG7gtz4NQ+EFBIIaKd1tDoyOMWuiwxbgNmqj5R
+	LMVJ4hcUH8EwSi/EgLPR6tOJYIAiDhikBT3/q6wrn1LvzIzygIaqr6TLxpRwCiRuitsoKTszla1El
+	8uwSPagxwIbKWohrdP2N61bJWAVsiQZDGhSKiPFV+IHdXwxOH/IHGGwXLMZpPNCxV06mm3MUdOkcR
+	+YGEW43bCzxRalb9pu7sWNqy7QgzlP3vsDNHnDhkieMmJwM/sutbr76CzApyLil7L+A0kBkXpk1gW
+	kmSCkyuA==;
+Received: from sslproxy07.your-server.de ([78.47.199.104])
+	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <sean@geanix.com>)
+	id 1t6VAR-0005LS-Ti; Thu, 31 Oct 2024 14:24:51 +0100
+Received: from [185.17.218.86] (helo=zen.localdomain)
+	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <sean@geanix.com>)
+	id 1t6VAR-000DTL-1D;
+	Thu, 31 Oct 2024 14:24:51 +0100
+From: Sean Nyekjaer <sean@geanix.com>
+Date: Thu, 31 Oct 2024 14:24:21 +0100
+Subject: [PATCH 1/2] can: tcan4x5x: add option for selecting nWKRQ voltage
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Robert Nawrath <mbro1689@gmail.com>
-Date: Thu, 31 Oct 2024 12:55:14 +0100
-Message-ID: <CAEQ16vpxthctdrpv0kBKEZJA8VNYffjGGPBGBY93RmKDD49bAQ@mail.gmail.com>
-Subject: Missing CAN-XL XL data bit timing
-To: linux-can@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20241031-tcan-wkrqv-v1-1-823dbd12fe4a@geanix.com>
+References: <20241031-tcan-wkrqv-v1-0-823dbd12fe4a@geanix.com>
+In-Reply-To: <20241031-tcan-wkrqv-v1-0-823dbd12fe4a@geanix.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+ Sean Nyekjaer <sean@geanix.com>
+X-Mailer: b4 0.14.2
+X-Authenticated-Sender: sean@geanix.com
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27444/Thu Oct 31 09:34:36 2024)
 
-Hi,
-I'm working on a kernel module for CAN-XL device. I can see in
-/linux/can/dev.h that there are structures and methods for setting
-bittiming and data_bittiming. The bittiming refers to CAN nominal bit
-time, data_bittiming refers to CAN data bit time (using ISO/FDIS
-11898-1:2024 nomenclature). But in CAN-XL the data bit rate has two
-values: FD data bit rate and XL data bit rate. This values are
-different and the device shall have separate configuration register
-sets for them. So for separate configuration registers there shall be
-separate methods and structs.
-Am I right that the current implementation in kernel is incomplete? Or
-am I missing something?
-Robert
+nWKRQ supports an output voltage of either the internal reference voltage
+(3.6V) or the reference voltage of the digital interface 0 - 6V.
+Add the devicetree option ti,nwkrq-voltage-sel to be able to select
+between them.
+Default is kept as the internal reference voltage.
+
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+---
+ drivers/net/can/m_can/tcan4x5x-core.c | 35 +++++++++++++++++++++++++++++++++++
+ drivers/net/can/m_can/tcan4x5x.h      |  2 ++
+ 2 files changed, 37 insertions(+)
+
+diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
+index 2f73bf3abad889c222f15c39a3d43de1a1cf5fbb..264bba830be50033347056da994102f8b614e51b 100644
+--- a/drivers/net/can/m_can/tcan4x5x-core.c
++++ b/drivers/net/can/m_can/tcan4x5x-core.c
+@@ -92,6 +92,8 @@
+ #define TCAN4X5X_MODE_STANDBY BIT(6)
+ #define TCAN4X5X_MODE_NORMAL BIT(7)
+ 
++#define TCAN4X5X_NWKRQ_VOLTAGE_MASK BIT(19)
++
+ #define TCAN4X5X_DISABLE_WAKE_MSK	(BIT(31) | BIT(30))
+ #define TCAN4X5X_DISABLE_INH_MSK	BIT(9)
+ 
+@@ -267,6 +269,11 @@ static int tcan4x5x_init(struct m_can_classdev *cdev)
+ 	if (ret)
+ 		return ret;
+ 
++	ret = regmap_update_bits(tcan4x5x->regmap, TCAN4X5X_CONFIG,
++				 TCAN4X5X_NWKRQ_VOLTAGE_MASK, tcan4x5x->nwkrq_voltage);
++	if (ret)
++		return ret;
++
+ 	return ret;
+ }
+ 
+@@ -318,6 +325,28 @@ static const struct tcan4x5x_version_info
+ 	return &tcan4x5x_versions[TCAN4X5X];
+ }
+ 
++static int tcan4x5x_get_dt_data(struct m_can_classdev *cdev)
++{
++	struct tcan4x5x_priv *tcan4x5x = cdev_to_priv(cdev);
++	struct device_node *np = cdev->dev->of_node;
++	u8 prop;
++	int ret;
++
++	ret = of_property_read_u8(np, "ti,nwkrq-voltage-sel", &prop);
++	if (!ret) {
++		if (prop <= 1)
++			tcan4x5x->nwkrq_voltage = prop;
++		else
++			dev_warn(cdev->dev,
++				 "nwkrq-voltage-sel have invalid option: %u\n",
++				 prop);
++	} else {
++		tcan4x5x->nwkrq_voltage = 0;
++	}
++
++	return 0;
++}
++
+ static int tcan4x5x_get_gpios(struct m_can_classdev *cdev,
+ 			      const struct tcan4x5x_version_info *version_info)
+ {
+@@ -453,6 +482,12 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+ 		goto out_power;
+ 	}
+ 
++	ret = tcan4x5x_get_dt_data(mcan_class);
++	if (ret) {
++		dev_err(&spi->dev, "Getting dt data failed %pe\n", ERR_PTR(ret));
++		goto out_power;
++	}
++
+ 	tcan4x5x_check_wake(priv);
+ 
+ 	ret = tcan4x5x_write_tcan_reg(mcan_class, TCAN4X5X_INT_EN, 0);
+diff --git a/drivers/net/can/m_can/tcan4x5x.h b/drivers/net/can/m_can/tcan4x5x.h
+index e62c030d3e1e5a713c997e7c8ecad4a44aff4e6a..04ebe5c64f4f7056a62e72e717cb85dd3817ab9c 100644
+--- a/drivers/net/can/m_can/tcan4x5x.h
++++ b/drivers/net/can/m_can/tcan4x5x.h
+@@ -42,6 +42,8 @@ struct tcan4x5x_priv {
+ 
+ 	struct tcan4x5x_map_buf map_buf_rx;
+ 	struct tcan4x5x_map_buf map_buf_tx;
++
++	u8 nwkrq_voltage;
+ };
+ 
+ static inline void
+
+-- 
+2.46.2
+
