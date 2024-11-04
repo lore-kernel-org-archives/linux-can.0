@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73EFC1D0950
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84FD61D174A
 	for <linux-can@vger.kernel.org>; Mon,  4 Nov 2024 20:01:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730750489; cv=none; b=ZIoXRRH7pgze16gpPA0xRfO9ymXL8TY6QcBU5OvEFq10InZgEv4DEuxMB6SJ7oz1YDYKAPBzLOe9q88ddxd1Vg9XRSWPwbEehvF6kiNUBYGOChmwkIFgLQiy0BQ2iXTsvJYj33+vpw/EpqDX+7EZOIPSQrYcqDnV52n0vIH6slc=
+	t=1730750490; cv=none; b=jOcqp79zj1SAuIohkrnSZBWOJ/MjeWomRUEbw3immC3yphmT9IbRbFbfeTtrPzAdC/zucdCWHKJG7+cE7lLLXfRN9yHHM7nBZC2cAEv0yLxGdMRzpMaVlJkQDgMNRuo8GrSMWTzHPJAX+hQ70Pofg7TKLnm7/sFFbdTyKjIUTVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730750489; c=relaxed/simple;
-	bh=BJTwdqvEBvDVACwbuektnm+mF4w6etJpPBrLk526E5w=;
+	s=arc-20240116; t=1730750490; c=relaxed/simple;
+	bh=lCKWh9vwzwbHXhvQgv5CKWFeO/f5Gl5MrE7bLfGVkLI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QWqQD+B89fEXqt3EsTl4H6P3F6rMCcODNjB7Klh5tXs0TF51kEGTR+2yVfdhmsw/n5hbvqPPVLr8uw0dT5T8wuxVVhvhF2J6syF0ZCSqIWmesiVTApt9qUPFEpHn4SL1lUmb0e5a+gFrkDz8NQiIbHk4NB52uYP+YwWYYONY0SA=
+	 MIME-Version:Content-Type; b=aQTQ9h2A4F8omru0CGpUgoYtn1uYwBcEOsKwq8yxgvxeF3qjK44n8snHqoyVooo0b/RLmOOKdJm58sQHwQ3ppeHdzHwGOSgh1tg7uNHY6/nCK7xy7DE6OqvX2YwPsqm/igmkUl7Do5WwtJr57ZAWz+EFM59jFfpacnc2TZaTiwM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,26 +18,26 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1t83GP-0001Yd-HG
+	id 1t83GP-0001YV-CS
 	for linux-can@vger.kernel.org; Mon, 04 Nov 2024 21:01:25 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1t83GO-00224f-20
+	id 1t83GO-00224V-1i
 	for linux-can@vger.kernel.org;
 	Mon, 04 Nov 2024 21:01:24 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 4450F367F8C
+	by bjornoya.blackshift.org (Postfix) with SMTP id 3A7A6367F88
 	for <linux-can@vger.kernel.org>; Mon, 04 Nov 2024 20:01:24 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 79415367F64;
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 509D2367F60;
 	Mon, 04 Nov 2024 20:01:22 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 49bdfc6e;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7c9310ef;
 	Mon, 4 Nov 2024 20:01:21 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -45,11 +45,13 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+	=?UTF-8?q?Alexander=20H=C3=B6lzl?= <alexander.hoelzl@gmx.net>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 4/8] can: c_can: fix {rx,tx}_errors statistics
-Date: Mon,  4 Nov 2024 20:53:27 +0100
-Message-ID: <20241104200120.393312-5-mkl@pengutronix.de>
+Subject: [PATCH net 1/8] can: j1939: fix error in J1939 documentation.
+Date: Mon,  4 Nov 2024 20:53:24 +0100
+Message-ID: <20241104200120.393312-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20241104200120.393312-1-mkl@pengutronix.de>
 References: <20241104200120.393312-1-mkl@pengutronix.de>
@@ -59,72 +61,41 @@ List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+From: Alexander Hölzl <alexander.hoelzl@gmx.net>
 
-The c_can_handle_bus_err() function was incorrectly incrementing only the
-receive error counter, even in cases of bit or acknowledgment errors that
-occur during transmission. The patch fixes the issue by incrementing the
-appropriate counter based on the type of error.
+The description of PDU1 format usage mistakenly referred to PDU2 format.
 
-Fixes: 881ff67ad450 ("can: c_can: Added support for Bosch C_CAN controller")
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Link: https://patch.msgid.link/20241014135319.2009782-1-dario.binacchi@amarulasolutions.com
+Signed-off-by: Alexander Hölzl <alexander.hoelzl@gmx.net>
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Acked-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Link: https://patch.msgid.link/20241023145257.82709-1-alexander.hoelzl@gmx.net
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/c_can/c_can_main.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ Documentation/networking/j1939.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/c_can/c_can_main.c b/drivers/net/can/c_can/c_can_main.c
-index c63f7fc1e691..511615dc3341 100644
---- a/drivers/net/can/c_can/c_can_main.c
-+++ b/drivers/net/can/c_can/c_can_main.c
-@@ -1011,7 +1011,6 @@ static int c_can_handle_bus_err(struct net_device *dev,
+diff --git a/Documentation/networking/j1939.rst b/Documentation/networking/j1939.rst
+index e4bd7aa1f5aa..544bad175aae 100644
+--- a/Documentation/networking/j1939.rst
++++ b/Documentation/networking/j1939.rst
+@@ -121,7 +121,7 @@ format, the Group Extension is set in the PS-field.
  
- 	/* common for all type of bus errors */
- 	priv->can.can_stats.bus_error++;
--	stats->rx_errors++;
+ On the other hand, when using PDU1 format, the PS-field contains a so-called
+ Destination Address, which is _not_ part of the PGN. When communicating a PGN
+-from user space to kernel (or vice versa) and PDU2 format is used, the PS-field
++from user space to kernel (or vice versa) and PDU1 format is used, the PS-field
+ of the PGN shall be set to zero. The Destination Address shall be set
+ elsewhere.
  
- 	/* propagate the error condition to the CAN stack */
- 	skb = alloc_can_err_skb(dev, &cf);
-@@ -1027,26 +1026,32 @@ static int c_can_handle_bus_err(struct net_device *dev,
- 	case LEC_STUFF_ERROR:
- 		netdev_dbg(dev, "stuff error\n");
- 		cf->data[2] |= CAN_ERR_PROT_STUFF;
-+		stats->rx_errors++;
- 		break;
- 	case LEC_FORM_ERROR:
- 		netdev_dbg(dev, "form error\n");
- 		cf->data[2] |= CAN_ERR_PROT_FORM;
-+		stats->rx_errors++;
- 		break;
- 	case LEC_ACK_ERROR:
- 		netdev_dbg(dev, "ack error\n");
- 		cf->data[3] = CAN_ERR_PROT_LOC_ACK;
-+		stats->tx_errors++;
- 		break;
- 	case LEC_BIT1_ERROR:
- 		netdev_dbg(dev, "bit1 error\n");
- 		cf->data[2] |= CAN_ERR_PROT_BIT1;
-+		stats->tx_errors++;
- 		break;
- 	case LEC_BIT0_ERROR:
- 		netdev_dbg(dev, "bit0 error\n");
- 		cf->data[2] |= CAN_ERR_PROT_BIT0;
-+		stats->tx_errors++;
- 		break;
- 	case LEC_CRC_ERROR:
- 		netdev_dbg(dev, "CRC error\n");
- 		cf->data[3] = CAN_ERR_PROT_LOC_CRC_SEQ;
-+		stats->rx_errors++;
- 		break;
- 	default:
- 		break;
+
+base-commit: 5ccdcdf186aec6b9111845fd37e1757e9b413e2f
 -- 
 2.45.2
 
