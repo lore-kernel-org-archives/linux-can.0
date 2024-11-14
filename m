@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B459429CFB
-	for <linux-can@vger.kernel.org>; Thu, 14 Nov 2024 09:19:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4BA11DD543
+	for <linux-can@vger.kernel.org>; Thu, 14 Nov 2024 09:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731575959; cv=none; b=XTrO4qrXvsHRREbVWYUvDjOv2ZtGeBXTwockFntst4VaHNzXcc1RYyxsHju65cSmzsMIMSLLkGgTYVUTsy58s3Jk+4ba5v1G0BJ1w2C6zfWXV1K4cJbcrnuBwnnQvjWImybh+DDEwJtaTcomcGmRohDdXaqyztlwaJ2Z0PhKCUM=
+	t=1731575992; cv=none; b=UaphI0bUVZxh96qR7SeT75vKn89EbwZSq1rIUdPgvfTtPB5MCi/9bs/I5/wthHqAgsDUuQJhNW7Ux6USbtQK6O3J2YQGv7IlbW8u4VDyqFL3wjywoBwteZv9CIpsEFdm4SP1FqMeGmlNvjIgIms99Eh7P5ICZOVmEwr+Z/bFdwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731575959; c=relaxed/simple;
-	bh=RtZCouCtaFI1zmBIODep1Ex0qiLADVcYrNIwyl66qx0=;
+	s=arc-20240116; t=1731575992; c=relaxed/simple;
+	bh=LWHAAfli4bGRK7npkueODa/RoTdZufayfH7el0f67kY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xaj7uk8UQNctyX37YbpXoumM+vLJK18T128HIwbS6DIDTGMwms64kuQJlmifm3vfnTh9jdqdyMsl0sDMgI1V2w+KEMnhDXqiLrCM1JqrcDUpTLIrJPMdN/LaZCXdcYtlVH7PBPGg7n+uGP8FlDb3gGorU+w9hftiwatiVaO01OI=
+	 Content-Type:Content-Disposition:In-Reply-To; b=q12IHm0XPriz/F3YaVzcXtAb+coK1G1NtGI02BakAKrhQuqmzSf+sdoa29D4YlNYtp/adiJzsSh3PVxEQXFjX4VZeeUVctov4G8goO8TmgHcoXqkZ9QoFeFVeae+9HzfvbF6C5+gBUv3QKv+EUAQwdbxo96ChaQwjrKI+wvVDLo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,21 +18,21 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1tBW0D-0007H9-SX; Thu, 14 Nov 2024 10:19:01 +0100
+	id 1tBW0o-0007PW-9J; Thu, 14 Nov 2024 10:19:38 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1tBW0D-000ibF-0Z;
-	Thu, 14 Nov 2024 10:19:01 +0100
+	id 1tBW0o-000ibL-0E;
+	Thu, 14 Nov 2024 10:19:38 +0100
 Received: from pengutronix.de (pd9e59fec.dip0.t-ipconnect.de [217.229.159.236])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id BC1B0372F1F;
-	Thu, 14 Nov 2024 09:19:00 +0000 (UTC)
-Date: Thu, 14 Nov 2024 10:19:00 +0100
+	by smtp.blackshift.org (Postfix) with ESMTPSA id C35B6372F20;
+	Thu, 14 Nov 2024 09:19:37 +0000 (UTC)
+Date: Thu, 14 Nov 2024 10:19:37 +0100
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: Sean Nyekjaer <sean@geanix.com>
 Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
@@ -40,11 +40,11 @@ Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
 	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
 	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, linux-can@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH can-next v4 2/2] can: tcan4x5x: add option for selecting
- nWKRQ voltage
-Message-ID: <20241114-classy-mongoose-of-philosophy-e9dbca-mkl@pengutronix.de>
+Subject: Re: [PATCH can-next v4 1/2] dt-bindings: can: tcan4x5x: Document the
+ ti,nwkrq-voltage-vio option
+Message-ID: <20241114-foamy-acrid-dalmatian-9d3afe-mkl@pengutronix.de>
 References: <20241114-tcan-wkrqv-v4-0-f22589d67fb1@geanix.com>
- <20241114-tcan-wkrqv-v4-2-f22589d67fb1@geanix.com>
+ <20241114-tcan-wkrqv-v4-1-f22589d67fb1@geanix.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -52,24 +52,24 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ogii7zxqsnm7ewak"
+	protocol="application/pgp-signature"; boundary="vrzucmzcc43o4bfu"
 Content-Disposition: inline
-In-Reply-To: <20241114-tcan-wkrqv-v4-2-f22589d67fb1@geanix.com>
+In-Reply-To: <20241114-tcan-wkrqv-v4-1-f22589d67fb1@geanix.com>
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 
---ogii7zxqsnm7ewak
+--vrzucmzcc43o4bfu
 Content-Type: text/plain; protected-headers=v1; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH can-next v4 2/2] can: tcan4x5x: add option for selecting
- nWKRQ voltage
+Subject: Re: [PATCH can-next v4 1/2] dt-bindings: can: tcan4x5x: Document the
+ ti,nwkrq-voltage-vio option
 MIME-Version: 1.0
 
-On 14.11.2024 09:52:22, Sean Nyekjaer wrote:
+On 14.11.2024 09:52:21, Sean Nyekjaer wrote:
 > The nWKRQ pin supports an output voltage of either the internal reference
 > voltage (3.6V) or the reference voltage of
 > the digital interface 0-6V (VIO).
@@ -79,14 +79,6 @@ On 14.11.2024 09:52:22, Sean Nyekjaer wrote:
 > voltage, is used.
 >=20
 > Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-> Reviewed-by: Marc Kleine-Budde <mkl@pengutronix.de>
-
-I've given my R-b to 1/2 not 2/2 :)
-
-Have you manually added the R-b? "b4" has an support to collect the
-trailers and add the to the patches with "b4 trailers -u".
-
-With this change, let b4 add by R-b:
 
 Reviewed-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
@@ -94,79 +86,37 @@ regards,
 Marc
 
 > ---
->  drivers/net/can/m_can/tcan4x5x-core.c | 20 ++++++++++++++++++++
->  drivers/net/can/m_can/tcan4x5x.h      |  2 ++
->  2 files changed, 22 insertions(+)
+>  Documentation/devicetree/bindings/net/can/ti,tcan4x5x.yaml | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 >=20
-> diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_ca=
-n/tcan4x5x-core.c
-> index 2f73bf3abad889c222f15c39a3d43de1a1cf5fbb..12a375c653cbd255b5dc85faf=
-2f76de397a644ec 100644
-> --- a/drivers/net/can/m_can/tcan4x5x-core.c
-> +++ b/drivers/net/can/m_can/tcan4x5x-core.c
-> @@ -92,6 +92,8 @@
->  #define TCAN4X5X_MODE_STANDBY BIT(6)
->  #define TCAN4X5X_MODE_NORMAL BIT(7)
+> diff --git a/Documentation/devicetree/bindings/net/can/ti,tcan4x5x.yaml b=
+/Documentation/devicetree/bindings/net/can/ti,tcan4x5x.yaml
+> index f1d18a5461e05296998ae9bf09bdfa1226580131..ff18cf7393550d1b7107b1233=
+d8302203026579d 100644
+> --- a/Documentation/devicetree/bindings/net/can/ti,tcan4x5x.yaml
+> +++ b/Documentation/devicetree/bindings/net/can/ti,tcan4x5x.yaml
+> @@ -106,6 +106,13 @@ properties:
+>        Must be half or less of "clocks" frequency.
+>      maximum: 18000000
 > =20
-> +#define TCAN4X5X_NWKRQ_VOLTAGE_VIO BIT(19)
+> +  ti,nwkrq-voltage-vio:
+> +    type: boolean
+> +    description:
+> +      nWKRQ Pin GPO buffer voltage configuration.
+> +      Set nWKRQ to use VIO voltage rail.
+> +      When not set nWKRQ will use internal voltage rail.
 > +
->  #define TCAN4X5X_DISABLE_WAKE_MSK	(BIT(31) | BIT(30))
->  #define TCAN4X5X_DISABLE_INH_MSK	BIT(9)
-> =20
-> @@ -267,6 +269,13 @@ static int tcan4x5x_init(struct m_can_classdev *cdev)
->  	if (ret)
->  		return ret;
-> =20
-> +	if (tcan4x5x->nwkrq_voltage_vio) {
-> +		ret =3D regmap_set_bits(tcan4x5x->regmap, TCAN4X5X_CONFIG,
-> +				      TCAN4X5X_NWKRQ_VOLTAGE_VIO);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
->  	return ret;
->  }
-> =20
-> @@ -318,6 +327,15 @@ static const struct tcan4x5x_version_info
->  	return &tcan4x5x_versions[TCAN4X5X];
->  }
-> =20
-> +static void tcan4x5x_get_dt_data(struct m_can_classdev *cdev)
-> +{
-> +	struct tcan4x5x_priv *tcan4x5x =3D cdev_to_priv(cdev);
-> +	struct device_node *np =3D cdev->dev->of_node;
-> +
-> +	if (of_property_read_bool(np, "ti,nwkrq-voltage-vio"))
-> +		tcan4x5x->nwkrq_voltage_vio =3D true;
-> +}
-> +
->  static int tcan4x5x_get_gpios(struct m_can_classdev *cdev,
->  			      const struct tcan4x5x_version_info *version_info)
->  {
-> @@ -453,6 +471,8 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
->  		goto out_power;
->  	}
-> =20
-> +	tcan4x5x_get_dt_data(mcan_class);
-> +
->  	tcan4x5x_check_wake(priv);
-> =20
->  	ret =3D tcan4x5x_write_tcan_reg(mcan_class, TCAN4X5X_INT_EN, 0);
-> diff --git a/drivers/net/can/m_can/tcan4x5x.h b/drivers/net/can/m_can/tca=
-n4x5x.h
-> index e62c030d3e1e5a713c997e7c8ecad4a44aff4e6a..203399d5e8ccf3fd7a26b54d8=
-356fca9d398524c 100644
-> --- a/drivers/net/can/m_can/tcan4x5x.h
-> +++ b/drivers/net/can/m_can/tcan4x5x.h
-> @@ -42,6 +42,8 @@ struct tcan4x5x_priv {
-> =20
->  	struct tcan4x5x_map_buf map_buf_rx;
->  	struct tcan4x5x_map_buf map_buf_tx;
-> +
-> +	bool nwkrq_voltage_vio;
->  };
-> =20
->  static inline void
+>    wakeup-source:
+>      $ref: /schemas/types.yaml#/definitions/flag
+>      description:
+> @@ -157,6 +164,7 @@ examples:
+>              device-state-gpios =3D <&gpio3 21 GPIO_ACTIVE_HIGH>;
+>              device-wake-gpios =3D <&gpio1 15 GPIO_ACTIVE_HIGH>;
+>              reset-gpios =3D <&gpio1 27 GPIO_ACTIVE_HIGH>;
+> +            ti,nwkrq-voltage-vio;
+>              wakeup-source;
+>          };
+>      };
 >=20
 > --=20
 > 2.46.2
@@ -180,19 +130,19 @@ Embedded Linux                   | https://www.pengutronix.de |
 Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
---ogii7zxqsnm7ewak
+--vrzucmzcc43o4bfu
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmc1wIEACgkQKDiiPnot
-vG9qbwgAhVo/ZtACONHdxxF9Cq1VFafMGUn8asKMvcKpXv4Y+z0ev2qSSLQ1hWBC
-4/Y960ei0cTJd1tHhKrspU5boKTlGJ4JSMHYzsNdQuC50HNJpdh8j55jiRMUvlQn
-/XCSsQelP+X+qqMcykhMD20mm4BcBMOyVsc4jzj65DT4/05wN7cC6NyUMOpmAK9L
-tOy9d7E1ksf+OE0O5W38z1CAu4xVtNPvXMt+DHgNs1e2A56VwbEMhED7a4EEG5EC
-MNEJJKr5TvBEhKmwWLB67T2pCaLp145b/UQSt7yZSlytenP0s/kI+vOOXXkRpVy2
-E4qxEsSYhG+iVZKYdVar0oOgj+DLRQ==
-=aHBz
+iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmc1wKcACgkQKDiiPnot
+vG/wzggAlj0QJLxPRJoeuzsuwing/AB0/PX1rp6tStujNzgEFZ05HPwxf60F5ZiD
+makZVZXtI5sUDjw6QyxPpeOBCkHNXoGzHK607qpI1uFNgpfF3lkFtQ5bYIu0DE5F
+EOqHrMYLf2+zjKDn5vUl0gvoryuG/jm42TpTQDCovMQ2B4+3R4BBptbaWn+OuAxl
+tbmbSY/8SHtSjjVfXP8uvIaTt0w8xTh5LMFCEkxw3DOzWzv9KEyy97Mi17ALKVs0
+4d5dgrVAaKdNmEsHqOSeRGP5/LXOkmgFrFIQPWRxa8Q5wSnPemQoFpUlMIII5A+A
+ym5nw+foS7CrhQ096Ky+HKIpSaeEJA==
+=yFj+
 -----END PGP SIGNATURE-----
 
---ogii7zxqsnm7ewak--
+--vrzucmzcc43o4bfu--
