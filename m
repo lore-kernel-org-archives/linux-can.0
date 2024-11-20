@@ -1,126 +1,80 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.smtpout.orange.fr (smtp-26.smtpout.orange.fr [80.12.242.26])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7209D15443D
-	for <linux-can@vger.kernel.org>; Wed, 20 Nov 2024 08:27:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C363C8615A;
+	Wed, 20 Nov 2024 08:34:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.26
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732091259; cv=none; b=JwHpI+YsNdxEPPOfB7CWJFM2zV6sF+XSt4VYvhwBD6xQTX4oxbPcJ8IHLCRjjS0HsiM2wON8K89XpLzN8w2YZseWQa7SGtCjyQRQY8jjt2s6F4sqPjCAA0sqeMFlmxvyMjAd+buBMY0iBFuzNFMI5Xgyt1NEwbdL+wFJi7l2i88=
+	t=1732091660; cv=none; b=bu4KvoiCFW9OIXxV5AJdKb20a7rzlgkJ/F+bjInJ3kG4rjqeXgZKxghrUkvlsgyJaL7iszVnemKqhjZCM/VrDqpGKFPCVRwSZB69Hv3rb0flqXmOOFT0yAqm0K/neXlXh8jO0izM5XEdJmjFgtl+Dydl+Y+HByfiG7qRFugatKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732091259; c=relaxed/simple;
-	bh=oRF4Zp8urklCMluJXoTlIYuvlDScKbepSXFEoWRyqoI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pb7MxW/z1fJRUEIjUCW4uqpFqgujF9oi0pt81RmDjrlrYTP/F6zE4c1PXRuqx5QY5b0crCvG7xqjVD8sLmn2FlQ3xuhqIAWkGu0k0TchSoKwg3VKncxmBrD0r815/21jUbn615Ez9Ovu28PSaxrcB8hGHLJwtrubWdUlHNWFZPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1tDg3Z-0006zr-6M; Wed, 20 Nov 2024 09:27:25 +0100
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1tDg3X-001i5O-1a;
-	Wed, 20 Nov 2024 09:27:23 +0100
-Received: from pengutronix.de (pd9e59fec.dip0.t-ipconnect.de [217.229.159.236])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 1EC32377A27;
-	Wed, 20 Nov 2024 08:27:23 +0000 (UTC)
-Date: Wed, 20 Nov 2024 09:27:22 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Ruffalo Lavoisier <ruffalolavoisier@gmail.com>
-Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
-	Thomas Kopp <thomas.kopp@microchip.com>, Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, linux-can@vger.kernel.org, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: remove duplicate word
-Message-ID: <20241120-antique-earwig-of-modernism-1fc66e-mkl@pengutronix.de>
-References: <20241120044014.92375-1-RuffaloLavoisier@gmail.com>
+	s=arc-20240116; t=1732091660; c=relaxed/simple;
+	bh=tAP3yA2f13hGp4ZFJlv2MEDIvrRVb0ghzYb5MaYX2Iw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JSBSDLb1XUa0mxwU08JT1Vz9RiA/a9FB3XMQhpj1Zrtwzg/WyGJXjl7aAYz9lACPcmJCxNqHDkf9u1VaEfqAbcigwod2JJMxtNE9HlsmO2QsuPHVhI1qNnEhwy4vwO1LLlSiAVUUbA2bZm4va3ZAH/n22yLGfz4d2LzuVis4fHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=aZmonetf; arc=none smtp.client-ip=80.12.242.26
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="aZmonetf"
+Received: from mail-ej1-f46.google.com ([209.85.218.46])
+	by smtp.orange.fr with ESMTPSA
+	id DgA5t0hcpdDuoDgA5tTTc9; Wed, 20 Nov 2024 09:34:09 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1732091649;
+	bh=adOYQK7aPwsLhM4oKvhYzDNey9j7CMddEcH9FCvvTQo=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To;
+	b=aZmonetfTwrSQRz9cLp37mKUGxkVgBWLtyJqBYehhxdnoLWUTcAUwdSTZDc/Yadm7
+	 HJ3KloKd5t0MJoy4eW/qBqyVbhgfauA/pjbk2/vjDRDoyL3iLdWR9MvxToRmUwv9wq
+	 q45uKP4z5RyVYOsgN8UgDtDTKlWhblVfDOvkCIEbAa64sC5qGMR6/hU/nyz5eMkGJl
+	 qRlaKwTSbPUd5cGrdQAmVQ4gd9Jfo5//r27Y+pzlh0CwcqPQf6QsbYD1Vu0KfSaqfV
+	 WIikLTZTOoCSZEr5JeoKEcvi3GAPbWOkvA00l8uA1oPWPx8cD0qWO29P+p9TWJtp4Q
+	 cDn8N2niGJMKQ==
+X-ME-Helo: mail-ej1-f46.google.com
+X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 20 Nov 2024 09:34:09 +0100
+X-ME-IP: 209.85.218.46
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a9ec267b879so872510366b.2;
+        Wed, 20 Nov 2024 00:34:09 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUNmdM0VypPdB3ERU6IPif/scqfpuuU2MtQKAADEBWI4OiQEyg4pKjiBtgpuPt1EfzKNBkiSljb@vger.kernel.org, AJvYcCUwRF9jxZ6/M5DvGMO6+hv3BESDcy3QqpH99CYnjvWGGXtNanX4W3N0y5d9l1vU4/F85ZjcFgQQIDYo@vger.kernel.org, AJvYcCV32uZt4sX119DMdqsJcw+x4EGOO+Mw99gFzW8fa8Eqya73zGlP1v2PTDya7Bwdcodp8/K7tisYuk7D@vger.kernel.org, AJvYcCXwJda8Azq3+se4+fJyBpoYjLvq+9fy6K4jihUQIofPMrXEG+jfsoxpIWGSyRKAPhintPPDNErPbGCljBmW@vger.kernel.org
+X-Gm-Message-State: AOJu0YyZFvW1hy8BVlG0Qyor5CEBncmqBoFpj32TGO6jRDgJPFMlv/Ub
+	vhEu5FkiRak9u8FtxoJiL78gAG4754GgNHhuBaGYcmb5L8SSifLj3Le5XHXcGfESXDcv/njd9FA
+	X5t793ts3/pXwdj9F1NquoExkc+Y=
+X-Google-Smtp-Source: AGHT+IHq//r1Bhfb10lz2TdZss0bHvnz2xrRldR2txbJnOPf5VJ4xHiRgJrfjwg3eL3UDdKFiypf3HZSDLQGAzTZ8vQ=
+X-Received: by 2002:a17:907:96a1:b0:a9a:3d5b:dc1a with SMTP id
+ a640c23a62f3a-aa4dd55043cmr167204066b.15.1732091649036; Wed, 20 Nov 2024
+ 00:34:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="yuwyd5k5mk2aw3ay"
-Content-Disposition: inline
+References: <20241120044014.92375-1-RuffaloLavoisier@gmail.com>
 In-Reply-To: <20241120044014.92375-1-RuffaloLavoisier@gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
-
-
---yuwyd5k5mk2aw3ay
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Date: Wed, 20 Nov 2024 17:33:58 +0900
+X-Gmail-Original-Message-ID: <CAMZ6RqKikFgtpYQ-SwV55hCzHHJ=7bbpmcfSPedheUwmFDDqJA@mail.gmail.com>
+Message-ID: <CAMZ6RqKikFgtpYQ-SwV55hCzHHJ=7bbpmcfSPedheUwmFDDqJA@mail.gmail.com>
 Subject: Re: [PATCH] docs: remove duplicate word
-MIME-Version: 1.0
+To: Ruffalo Lavoisier <ruffalolavoisier@gmail.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, 
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, Thomas Kopp <thomas.kopp@microchip.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-can@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 20.11.2024 13:40:13, Ruffalo Lavoisier wrote:
+On Wed. 20 Nov. 2024 at 13:40, Ruffalo Lavoisier
+<ruffalolavoisier@gmail.com> wrote:
+>
 > - Remove duplicate word, 'to'.
+  ^^
 
-Can I add your Signed-off-by to the patch?
+No need for the "-", this is not a list. I am fine if this is fixed by
+Marc while applying.
 
-https://elixir.bootlin.com/linux/v6.12/source/Documentation/process/submitt=
-ing-patches.rst#L396
+Under the condition that the Sign-off-by: tag issue gets resolved:
 
-Marc
-
-> ---
->  .../devicetree/bindings/net/can/microchip,mcp251xfd.yaml        | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/net/can/microchip,mcp251xf=
-d.yaml b/Documentation/devicetree/bindings/net/can/microchip,mcp251xfd.yaml
-> index 2a98b26630cb..c155c9c6db39 100644
-> --- a/Documentation/devicetree/bindings/net/can/microchip,mcp251xfd.yaml
-> +++ b/Documentation/devicetree/bindings/net/can/microchip,mcp251xfd.yaml
-> @@ -40,7 +40,7 @@ properties:
-> =20
->    microchip,rx-int-gpios:
->      description:
-> -      GPIO phandle of GPIO connected to to INT1 pin of the MCP251XFD, wh=
-ich
-> +      GPIO phandle of GPIO connected to INT1 pin of the MCP251XFD, which
->        signals a pending RX interrupt.
->      maxItems: 1
-> =20
-> --=20
-> 2.46.1
->=20
->=20
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---yuwyd5k5mk2aw3ay
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmc9nWcACgkQKDiiPnot
-vG9aAAf/c8tXeQMSvhdWf+YPQQTpApOl0IfwPrF3nhffF59fMFGzaWEKFCV4FyJK
-um242NrMo+ewZVcASlj5ycX+TtjdXe58wYF2DyBTwCZKciegmV4Uq/ku0vEsC/Jf
-t7GUZCt33I55YbHq64ACpGNO8MozSvxgvbMcf2jMeV6LAIKs7Ptrdex/NtCcCxy1
-TvxQmYgGv8OEtwcjKMR+whXIppvlZVq5/2JFncbyKVDc5MHaJr7rEdheXJneIojO
-+EF/Kk6RU+pfjyRC+Q1rFak15kV41HpIrBWQD09KO9G+1JTXpSqitQcY7/UXke7K
-0474na1s2eEBhtBUCG6H4Dm2t1M8HA==
-=nP0u
------END PGP SIGNATURE-----
-
---yuwyd5k5mk2aw3ay--
+Acked-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
