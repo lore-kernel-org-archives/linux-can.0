@@ -1,125 +1,145 @@
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 108AC13A3E4
-	for <linux-can@vger.kernel.org>; Fri, 22 Nov 2024 14:37:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6036113B298;
+	Fri, 22 Nov 2024 14:52:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.30.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732286227; cv=none; b=XVgfl0bquc202/r+HfW9TpWpWtAk+M9rey3Jb5cjMdz8EtXEmZV2Q+vKWGzVgC/UyT7O8qqDrOhf76kIvaXh+tpsNXfZCu76xGFDdzZZ+eA4S+XagMz2x8umQSYnhzT3Yz/fcH2K+KOlr/BpOvaKPH/q1TP3q9J7GDVmoKN5JMQ=
+	t=1732287181; cv=none; b=K0EAzOQ6Mmg2VuZJXMhysyX/68RfXZEy0IWltVV8mNZJIGqOqbca7X4fCsFyR073exVtdYIsSNYuXSLgHm2fUOvX/F+REepNMG/BFWIgh+u6IpRjG3YwuqQeeIbGJwshf51FjpOS/XG1UcSyXPfulwGMLN3z0KymUeF1BP7645k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732286227; c=relaxed/simple;
-	bh=tpxFAZkyZspcgy8QnHv0cv67C1qduITx3cyu/nUuL3o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nWgpqTnHwdZmSAyKttoA5edSXyuX+A1MMsns/x5abtC02AbVwsnWfLVT+2BP2T8PmQmbP6etE+7VrUTrQppl05XfAeLRjFPAVSUIgtwNjonRVnQEgHWChvBz+zFDBNSDTWsqu+XgM9ptRhMt3j1eMpTcJE+UeL/eGcoiU5vqcOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-6e377e4aea3so17242917b3.3
-        for <linux-can@vger.kernel.org>; Fri, 22 Nov 2024 06:37:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732286223; x=1732891023;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZklfME25XvyzUVchjCMWUKA5GZeWxdi5x6GGSsPFFow=;
-        b=MQO1fW4O9NiSRYurVlcNfSnyhFQuvCSh2Ovau6jdeCYmWu/v+8dKTWBijgEXkxL9Ai
-         TFwd4+gG0isYMAimGG69FqTMqp48FmCyIWr4Z6CTSxge9qlOVlzN36DHyxetJP9K8O1C
-         p7xqodi/Yd4esQ98hwPkjP1DTGxIkd5asYXZD856NsKrqfUNgjW6K0DQUEwiKQ3HFaTk
-         fhhizLKxodyvouqZzkFPRP3LVianqfPbE8o359wIYEHEKZigZuJZzmhwROu/ipkYV672
-         YM/mRmp29o70E8OLGsoze8GOcexsWAOohK87fvjusXj0rQQUJbSc8P8l2x2SZFIwK5C3
-         7vsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWrqXZVjjWAC8G14Wvlp7Gx6qWsP7Kj8mfa1OTCRASWUurDWOskTC56SPLJuRyJUadk6h4aAocO0hQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxPl+iv9LjMuU8iqyGDqv1S7JaMuT92bP3w+6Jo/XIp9dV1TfgV
-	6ZPorbkNYSMZYxCUti/O0JcXwDMo75WE+tSXrrWjduayvzqPL2ON1WTX1PND
-X-Gm-Gg: ASbGncv/gqkj3uqo8eyLzY4RfgwXK4G0w/nIvOP5T3vx0+DWQVnAzlY0Jb2ymzcXA7X
-	5kbYMz+KXa/8GFHGefYIZBYN+bklLUho7Lnl7y8siKjwBz0DaGUQbPMVcYTGd7hZXl50N00OsTM
-	MbgDLCqv/xXcy5+BS6JRMXVo5IUbiYhmPCxJk/YdNpRWS59dJQUVtRlGAgQECpKEmEHRmfBc8gP
-	ZyV+1XZ5sTZppD6ChP/3I3ceOoJ/4s2Y/JAcKimMZhqIZl72UEZ+YwCVjQxEy6BVnNSp62Ua3o3
-	lOAgcP99CD9Ckop9
-X-Google-Smtp-Source: AGHT+IGfsI51G7ALadYulhhVtFzXIflVlPInUKckTAwpETwx3VTaKW+LLge8ZaDcIVZkT19fAkMVYw==
-X-Received: by 2002:a05:690c:6c01:b0:6c3:7d68:b400 with SMTP id 00721157ae682-6eee089f2fcmr40115407b3.10.1732286222515;
-        Fri, 22 Nov 2024 06:37:02 -0800 (PST)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6eee00823desm4712257b3.79.2024.11.22.06.37.02
-        for <linux-can@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Nov 2024 06:37:02 -0800 (PST)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-6eebb54fc48so21333797b3.1
-        for <linux-can@vger.kernel.org>; Fri, 22 Nov 2024 06:37:02 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWi2ec9MVxKaZrjAurn7ryZQszDzs8ZegjMrCA4OyUYpWEjXjVlxiUvF6cOzqr1rk9wS7RZ4Ir5818=@vger.kernel.org
-X-Received: by 2002:a05:690c:4a0e:b0:6e3:453f:fbd5 with SMTP id
- 00721157ae682-6eee0a4cd2fmr32735817b3.36.1732286221999; Fri, 22 Nov 2024
- 06:37:01 -0800 (PST)
+	s=arc-20240116; t=1732287181; c=relaxed/simple;
+	bh=aFi5zF3dMYrTZJtFjbLKmRl7u3piNrt0b5TZjGxN6qU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=uk3tdqeDUwy8HhQ9XhRiCsD3oIxUhfNSghAoYhsoAfG9pp6eZ5vYcD24V7SSVurUN8k/HIJmvx7DRT/2dOLPUalByfTvEju96c34gWYFDpvJe8AcdsfOKOaawAVGh3ud1MnXTc6bEwU0rylMPcjgvhL112jcN1H9cJ/bs6av+Ew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=LzCLfG+G; arc=none smtp.client-ip=188.40.30.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="LzCLfG+G"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
+	s=default2211; h=Cc:To:In-Reply-To:References:Message-Id:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=USN4L66UJITCUR+qW8nXpFIAvm6RhtpdO923SmyUnvI=; b=LzCLfG+GXRj0txFYscxL9W73iG
+	V0C3xgDYiiqttu+iINNLYe4Z6IGS2SfooBSdm6aBO4RciEWAiUvriJQQywI4Uoq70+1JBJJ/6/qMn
+	o+LH2/8PssXVn3odg6pa55GxNU1Bmy0QX1AHM68Di/KYHrHUOCVJ6H8j/t3oGV+kpek8Ni+4ltb5P
+	8nzD7R5A9gtbxuiDjhIphGU314bvpr1oIgdexFyv3+fAz2J3SFMrbHPft2f38kjW4vI6YySCxtJ1P
+	AhzpGibl8gHVc7kwVZYRzcl7b7rOZCyg0h0n1lzvz7asguwxhQy2YWyNwmu3UtJnQmigXd2GFHS3/
+	pkehmVFg==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <sean@geanix.com>)
+	id 1tEV1W-000KIH-LG; Fri, 22 Nov 2024 15:52:42 +0100
+Received: from [185.17.218.86] (helo=zen.localdomain)
+	by sslproxy03.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <sean@geanix.com>)
+	id 1tEV1W-000HFz-1T;
+	Fri, 22 Nov 2024 15:52:42 +0100
+From: Sean Nyekjaer <sean@geanix.com>
+Date: Fri, 22 Nov 2024 15:52:24 +0100
+Subject: [PATCH can-next v3 3/3] can: m_can: call deinit/init callback when
+ going into suspend/resume
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241022130439.70d016e9@endymion.delvare> <CAMZ6RqJxb-52eSPqvaESjA-Wd_Jd-=gFO1HWbzxWe3gx7GWDmA@mail.gmail.com>
- <dcced72-7be1-b44-432a-dac2ad7f4cc6@linux-m68k.org> <20241121145017.33ca43f7@endymion.delvare>
- <CAMuHMdXU8tMPbHMDZmU=0xd-X6OqxO_3j=iLDR2XQ4q3URw2RQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdXU8tMPbHMDZmU=0xd-X6OqxO_3j=iLDR2XQ4q3URw2RQ@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 22 Nov 2024 15:36:50 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUGFaa4Fj1ixNJiEtbsneweveb6oq80X2Xe9i0ZN4FVKA@mail.gmail.com>
-Message-ID: <CAMuHMdUGFaa4Fj1ixNJiEtbsneweveb6oq80X2Xe9i0ZN4FVKA@mail.gmail.com>
-Subject: Re: [PATCH] can: rockchip_canfd: Drop obsolete dependency on COMPILE_TEST
-To: Jean Delvare <jdelvare@suse.de>
-Cc: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>, linux-can@vger.kernel.org, 
-	kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>, Miguel Ojeda <ojeda@kernel.org>, 
-	Masahiro Yamada <masahiroy@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20241122-tcan-standby-v3-3-90bafaf5eccd@geanix.com>
+References: <20241122-tcan-standby-v3-0-90bafaf5eccd@geanix.com>
+In-Reply-To: <20241122-tcan-standby-v3-0-90bafaf5eccd@geanix.com>
+To: Chandrasekar Ramakrishnan <rcsekar@samsung.com>, 
+ Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Sean Nyekjaer <sean@geanix.com>
+X-Mailer: b4 0.14.2
+X-Authenticated-Sender: sean@geanix.com
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27465/Fri Nov 22 10:41:26 2024)
 
-On Fri, Nov 22, 2024 at 3:33=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
-> On Thu, Nov 21, 2024 at 2:50=E2=80=AFPM Jean Delvare <jdelvare@suse.de> w=
-rote:
-> > On Tue, 12 Nov 2024 12:15:06 +0100 (CET), Geert Uytterhoeven wrote:
-> > > On Tue, 22 Oct 2024, Vincent MAILHOL wrote:
-> > > > On Tue. 22 Oct. 2024 at 20:06, Jean Delvare <jdelvare@suse.de> wrot=
-e:
-> > > >> Since commit 0166dc11be91 ("of: make CONFIG_OF user selectable"), =
-OF
-> > > >> can be enabled on all architectures. Therefore depending on
-> > > >> COMPILE_TEST as an alternative is no longer needed.
-> > > >
-> > > > I understand the motivation behind this patch, but for me, as a
-> > > > maintainer, it becomes more work when I want to do a compile test.
-> > > > Before I would have needed to only select COMPILE_TEST but now, I
-> > > > would need to remember to also select OF for that driver to appear =
-in
-> > > > the menuconfig.
-> > >
-> > > IMHO these are two different things: to get a working driver, you nee=
-d
-> > > to enable OF;
-> >
-> > True.
-> >
-> > >(...) to do (may be limited, i.e. may not give a working driver)
-> > > compile-testing, you need to enable COMPILE_TEST.
-> >
-> > No, you don't *need* it. Enabling COMPILE_TEST is (or was) one way to
-> > do compile-testing, but it was not the only way. Which is the reason
-> > why it was dropped.
->
-> You could still do it the other way, by enabling CONFIG_OF.
+m_can user like the tcan4x5x device, can go into standby mode.
+Low power RX mode is enabled to allow wake on can.
 
-And you still need to enable COMPILE_TEST, to get around the
-ARCH_ROCKCHIP dependency...
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+---
+ drivers/net/can/m_can/m_can.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-Gr{oetje,eeting}s,
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index e31ce973892a96f47d26d06464e0f6e2245550fd..777dfb23c6fa2052e9544d0808c0c4980e9c8b0f 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -2444,6 +2444,7 @@ int m_can_class_suspend(struct device *dev)
+ {
+ 	struct m_can_classdev *cdev = dev_get_drvdata(dev);
+ 	struct net_device *ndev = cdev->net;
++	int ret = 0;
+ 
+ 	if (netif_running(ndev)) {
+ 		netif_stop_queue(ndev);
+@@ -2456,6 +2457,9 @@ int m_can_class_suspend(struct device *dev)
+ 		if (cdev->pm_wake_source) {
+ 			hrtimer_cancel(&cdev->hrtimer);
+ 			m_can_write(cdev, M_CAN_IE, IR_RF0N);
++
++			if (cdev->ops->deinit)
++				ret = cdev->ops->deinit(cdev);
+ 		} else {
+ 			m_can_stop(ndev);
+ 		}
+@@ -2467,7 +2471,7 @@ int m_can_class_suspend(struct device *dev)
+ 
+ 	cdev->can.state = CAN_STATE_SLEEPING;
+ 
+-	return 0;
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(m_can_class_suspend);
+ 
+@@ -2475,14 +2479,13 @@ int m_can_class_resume(struct device *dev)
+ {
+ 	struct m_can_classdev *cdev = dev_get_drvdata(dev);
+ 	struct net_device *ndev = cdev->net;
++	int ret = 0;
+ 
+ 	pinctrl_pm_select_default_state(dev);
+ 
+ 	cdev->can.state = CAN_STATE_ERROR_ACTIVE;
+ 
+ 	if (netif_running(ndev)) {
+-		int ret;
+-
+ 		ret = m_can_clk_start(cdev);
+ 		if (ret)
+ 			return ret;
+@@ -2495,6 +2498,10 @@ int m_can_class_resume(struct device *dev)
+ 			 * again.
+ 			 */
+ 			cdev->active_interrupts |= IR_RF0N | IR_TEFN;
++
++			if (cdev->ops->init)
++				ret = cdev->ops->init(cdev);
++
+ 			m_can_write(cdev, M_CAN_IE, cdev->active_interrupts);
+ 		} else {
+ 			ret  = m_can_start(ndev);
+@@ -2508,7 +2515,7 @@ int m_can_class_resume(struct device *dev)
+ 		netif_start_queue(ndev);
+ 	}
+ 
+-	return 0;
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(m_can_class_resume);
+ 
 
-                        Geert
+-- 
+2.46.2
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
