@@ -1,73 +1,77 @@
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D95791DE3AA
-	for <linux-can@vger.kernel.org>; Fri, 22 Nov 2024 22:17:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 067501DFDAD
+	for <linux-can@vger.kernel.org>; Fri, 22 Nov 2024 22:17:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732313827; cv=none; b=dil/Og8xFBk/CWVeOn3E9sqOh2wuglGPNWbD5kwVAaoppiJiYvN/Ed1qh7D0fmAQKfrZnzWztgzsKetRAhLkmUOeNItxZIyrJvC38HaLCNrihMA5BmMvipfwG7ndnaHXy8qkmltMRxmWrFKxkc+gJroj5qR/GhYe7aJyr3+RTxk=
+	t=1732313830; cv=none; b=sEWeZz59l1GpdxSLo8lcKlNurR7YA+eO429xP8r3bpAG1BfxxM44UaNIhjzlJ85/v9SeDU+au0sZVo8s9c/vN9OPchdGTpcHaXGrPj6f3gbe+WccEFkabVQsmpA0fuQalBGllg4yG5ZDorbNzZsWspXSu9wSpN6DvQ3uiWWUde4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732313827; c=relaxed/simple;
-	bh=RCHjtrDYGosX7hVMEeF0eEIsFG3i6FYsIXt5jHBzeRA=;
+	s=arc-20240116; t=1732313830; c=relaxed/simple;
+	bh=suvkAfBGBjUXa2245JmSbUdEzRQCqXoVi3fUmt5kocQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BXY2tp749EComaB1p1ihaMsDCJoWM9R764hdOQBnPOuhiFtDTW8mmboz2nt8UB0NQSLBpDu6BV4Vi0l+bhqGs8ok6bMbMdnA/zJ40BafZm9aY0kANNLB4jwbxvg18Hkb1vPFw1e5AJTpVUopQ6wxAqb8eOWZWguRjiiNT6482+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com; spf=pass smtp.mailfrom=amarulasolutions.com; dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b=hdm4jwGS; arc=none smtp.client-ip=209.85.208.181
+	 MIME-Version; b=PY0xHycZHl82MsVEpie5h3IJ1boyfOK5mcILmvGCvRybHVxcS5ARghG/uEV59a8Vpq1aTpkaO879Erypy34goyiNzvL9N7rPEIETT8H/WVmTaYeqhiWvL/wueTzzbOAj9KBTYsJEQ3qWs50Wl+9BwKKvFI4i/si0K9/zNdr67+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com; spf=pass smtp.mailfrom=amarulasolutions.com; dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b=eOTy88oW; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="hdm4jwGS"
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2fb4af0b6beso46255551fa.3
-        for <linux-can@vger.kernel.org>; Fri, 22 Nov 2024 14:17:05 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="eOTy88oW"
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a9ef275b980so410535266b.0
+        for <linux-can@vger.kernel.org>; Fri, 22 Nov 2024 14:17:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1732313824; x=1732918624; darn=vger.kernel.org;
+        d=amarulasolutions.com; s=google; t=1732313826; x=1732918626; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VgKjVRJAevY3wmDGnu8dG/wFQ+or5hcDk8y0qLVlEgA=;
-        b=hdm4jwGShUM5EpuT17WLUC5TaTdkPsrZvQJHP0hea3mFj29mEQySrAFxa7ix9l56aM
-         z33fRn4Jwk2HoOt1z5cRKYXzU/SYVrU9cba3K8KXrPRcdSKT/JzF4ZhJrCdwdY7bN0TD
-         OgR8WROyHvWPjHmtyb4G9BdCX1yjvuwLf903M=
+        bh=koSu2Qr3uUTmv0FA1/R7W/a8VprfWgcqXI/05k6MgFU=;
+        b=eOTy88oWwRKhGbYe/jJydKcu7IAjIigG/XN0jF/BEKmSgdCCufy9oWQmhOhZZrVXLH
+         EAjXtBZo0r/7v0EuYI3ZhE4MTxsn6uuv/m8om06XKXD5qY7KnNGtSwSChlxyKy6YCd0y
+         84guymLA14ZlPoQO7YNj9CKpXk0RpniapbbbU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732313824; x=1732918624;
+        d=1e100.net; s=20230601; t=1732313826; x=1732918626;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VgKjVRJAevY3wmDGnu8dG/wFQ+or5hcDk8y0qLVlEgA=;
-        b=F5CN5lb9D9INIRisKA+4ijEvV/bSHbSNl1heeifRvf7dnENy7Rk+glk+bQEk5fC1bO
-         ahXhy4H7xhM2hVwp5+3srnVQ7nBJN1/Q7kQvRgZ1ruzmzj+3ZEsJNlrWZLQPjiYgl/4s
-         9dshD07I3+YhkkWG12V58ZqPMHEMxv5uEPsvD32+sHmcM1W+Y8pX6sq5UTudPg9ybIJH
-         Ad2XlssnvGMA4VECLK3Fw8A3uyy+CeqBpQAjnbkrxLtyjnSTVJ9qt0xV73zc/loE1XhB
-         WKku2xArIx/yyV/OD5bh5lvwNjw1Ty/4vg6XvnCRNjjAys5kbgP4lJKaxB/i6BZpEj+Q
-         9Zjw==
-X-Forwarded-Encrypted: i=1; AJvYcCX3oMCkvVUu3hHVv3nKSjh6rS5WG3ppQC+0BhQ/7NmaF3evP5PxjqT7TtT/hZJ2uDtUZvBeikuknaU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzw1h9QR7m/yqSMsTj5nwnHZ+Gj8orWSMLdCZ5DBrfZkVf5RZS2
-	vwOvxe3mRWHczFxLDW9KdRBhdJxDEo1y2MiqAvWqKiF1FfrLxuLHTuXpviBrc4w=
-X-Gm-Gg: ASbGncvihsErUUmIrLvHd5Ficd5lW+AdXae7hAG6vMdc0f7PdmkDhvuc3PoVqhQaHUg
-	lLDxLkboFX/9WCtUQLDMgeQbBsaBfOYam/L6qnuFkNQo7BDu02YVjiK3LIJb/mJiJ7WlfSiwPZJ
-	0AIRZR7w/MtljilQ9L/04QfTwRYmV2BTunhYMlzJAz+K8KB+aKqZjBI11vV40blux7OH/bS/HK3
-	GDoyb5k9aQqlzk55PCZ45uLJAyd8MOR7L2TH/LA9VmtVMfpZtqbSl0oYhvVGLdkn/eGi3Yu/J6K
-	waD5Y/OTaexR2mvXv3WKOTj43HKHxwxSfXZiFes7bgE2dsFyAUzcDysojqvpj8wTXHbjo0KMiZN
-	nZsLx7PBmLBXK7wi9
-X-Google-Smtp-Source: AGHT+IHZ/ABLxFIVbFLFvSrsmgIkf3PgZHq1H1ox1bPhmgDf7xN30T44QnNfRAPsf4/UWKxgOeMrTg==
-X-Received: by 2002:a05:6512:b97:b0:53d:a2cb:1350 with SMTP id 2adb3069b0e04-53dd369f458mr3917868e87.17.1732313824154;
-        Fri, 22 Nov 2024 14:17:04 -0800 (PST)
+        bh=koSu2Qr3uUTmv0FA1/R7W/a8VprfWgcqXI/05k6MgFU=;
+        b=Lw8xM68pEfVQCahvqgkrhe7yRuCJSeu20rqnWmqB0ZkGI13n/UrqNd86uGfNqBj+vj
+         hqdvkH+2a5uvLFaP6hgJM8SbzgsVYcbfDrTz8LpuV1VACMwyToZh5oxAvQ3IpyKFlR6f
+         o+qjk8fBsqRyk8ZAHP+/Hq8Ke6O0qK1YhVzvyeEnymjnSXRN2NBiXHDaiSCW+TUVogbj
+         eDduzq68LCQMIXEx4A3MU1vtoTh9x/tL7nGnrsPsCxHbih0bJ1Bp1d0Mkz5mf2R/3KAm
+         b34nu/mTy0ayP9y23MaUSa9Ewy60R7sXeKqU8NqjrkrviNbry5pCwWI2RbQB7sW2oFOC
+         zREQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWHLyVWaxHMGra67nNuClcEwarwvVFHHRWJUo8NH+kjoriy6H2jOSmKnt+lH5pO4DjYjwhzmCWjbdk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzHUGHPky58NKliwm5e5IDDDqZzM8T0vpO1TU6diQ0YgEiceRUg
+	x8WtIkXSlpBfaPNs1INf2CjAXdmRTVYSfWQRo4GPyYQfm/QQQoLNAuxwL/L92mU=
+X-Gm-Gg: ASbGnctOq7UNbeV2mtLha77tSuYa+mT3B1WYWUcDOuNsDyVVhHxWUYTYCmB/YaJM/xH
+	hdUTaev2IFwymf4MxYpHpjKeuz6KBWdn8ziPJdV8vvCJXleevD+ZhJMKszG6PC2mOFiriXEkpH1
+	U2w6VeA3QUyi8TAWUmyrQ3E1hcwSIr01x0GMsj0qULByOK/oi7ojqSxCW8znA6PjS8GotzTr805
+	2PsPZ/vwaswJGhptgDRcn5OOF0B0flcp+HVYI4j8nGrE9h1UpawpDKWrKhdekCPvMDBk9lfa/mP
+	tp/3A3nIVQVvR9O/jCYDD4Z+TDRDXTNNoCEwDz/z2W9aXrc+TZ/GKBFb8xsr85KPgsh4fhZYToy
+	RRLHZSbM7jexSiDB3
+X-Google-Smtp-Source: AGHT+IGzFnZJs4h2n/iV/ioahj7WXElDTwCpUUULB2OBEylU5ouM6Ybr9FJMu/M15S4g4KqefHT26Q==
+X-Received: by 2002:a17:906:31da:b0:aa5:30c0:384b with SMTP id a640c23a62f3a-aa530c03aecmr47395466b.24.1732313826492;
+        Fri, 22 Nov 2024 14:17:06 -0800 (PST)
 Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-82-54-94-193.retail.telecomitalia.it. [82.54.94.193])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa50b52fcebsm148226466b.127.2024.11.22.14.17.02
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa50b52fcebsm148226466b.127.2024.11.22.14.17.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Nov 2024 14:17:03 -0800 (PST)
+        Fri, 22 Nov 2024 14:17:06 -0800 (PST)
 From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 To: linux-kernel@vger.kernel.org
 Cc: linux-amarula@amarulasolutions.com,
 	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-	Akshay Bhat <akshay.bhat@timesys.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Gerhard Bertelsmann <info@gerhard-bertelsmann.de>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Maxime Ripard <mripard@kernel.org>,
+	Samuel Holland <samuel@sholland.org>,
 	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-	Wolfgang Grandegger <wg@grandegger.com>,
-	linux-can@vger.kernel.org
-Subject: [PATCH v2 08/12] can: hi311x: fix {rx,tx}_errors statistics
-Date: Fri, 22 Nov 2024 23:15:49 +0100
-Message-ID: <20241122221650.633981-9-dario.binacchi@amarulasolutions.com>
+	linux-arm-kernel@lists.infradead.org,
+	linux-can@vger.kernel.org,
+	linux-sunxi@lists.linux.dev
+Subject: [PATCH v2 10/12] can: sun4i_can: fix {rx,tx}_errors statistics
+Date: Fri, 22 Nov 2024 23:15:51 +0100
+Message-ID: <20241122221650.633981-11-dario.binacchi@amarulasolutions.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241122221650.633981-1-dario.binacchi@amarulasolutions.com>
 References: <20241122221650.633981-1-dario.binacchi@amarulasolutions.com>
@@ -79,12 +83,13 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The hi3110_can_ist() function was incorrectly incrementing only the
-receive error counter, even in cases of bit or acknowledgment errors that
-occur during transmission. The patch fixes the issue by incrementing the
-appropriate counter based on the type of error.
+The sun4i_can_err() function only incremented the receive error counter
+and never the transmit error counter, even if the STA_ERR_DIR flag
+reported that an error had occurred during transmission. Increment the
+receive/transmit error counter based on the value of the STA_ERR_DIR
+flag.
 
-Fixes: 57e83fb9b746 ("can: hi311x: Add Holt HI-311x CAN driver")
+Fixes: 0738eff14d81 ("can: Allwinner A10/A20 CAN Controller support - Kernel module")
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
 ---
@@ -92,70 +97,39 @@ Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 Changes in v2:
 - Update statistics even if skb allocation fails
 
- drivers/net/can/spi/hi311x.c | 47 ++++++++++++++++++++++--------------
- 1 file changed, 29 insertions(+), 18 deletions(-)
+ drivers/net/can/sun4i_can.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
-index 25d9b32f5701..09ae218315d7 100644
---- a/drivers/net/can/spi/hi311x.c
-+++ b/drivers/net/can/spi/hi311x.c
-@@ -696,27 +696,38 @@ static irqreturn_t hi3110_can_ist(int irq, void *dev_id)
- 			/* Check for protocol errors */
- 			if (eflag & HI3110_ERR_PROTOCOL_MASK) {
- 				skb = alloc_can_err_skb(net, &cf);
--				if (!skb)
--					break;
-+				if (skb)
-+					cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
+index 840b972498c1..5285bb0b7c69 100644
+--- a/drivers/net/can/sun4i_can.c
++++ b/drivers/net/can/sun4i_can.c
+@@ -579,7 +579,6 @@ static int sun4i_can_err(struct net_device *dev, u8 isrc, u8 status)
+ 		/* bus error interrupt */
+ 		netdev_dbg(dev, "bus error interrupt\n");
+ 		priv->can.can_stats.bus_error++;
+-		stats->rx_errors++;
  
--				cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
- 				priv->can.can_stats.bus_error++;
--				priv->net->stats.rx_errors++;
--				if (eflag & HI3110_ERR_BITERR)
--					cf->data[2] |= CAN_ERR_PROT_BIT;
--				else if (eflag & HI3110_ERR_FRMERR)
--					cf->data[2] |= CAN_ERR_PROT_FORM;
--				else if (eflag & HI3110_ERR_STUFERR)
--					cf->data[2] |= CAN_ERR_PROT_STUFF;
--				else if (eflag & HI3110_ERR_CRCERR)
--					cf->data[3] |= CAN_ERR_PROT_LOC_CRC_SEQ;
--				else if (eflag & HI3110_ERR_ACKERR)
--					cf->data[3] |= CAN_ERR_PROT_LOC_ACK;
--
--				cf->data[6] = hi3110_read(spi, HI3110_READ_TEC);
--				cf->data[7] = hi3110_read(spi, HI3110_READ_REC);
-+				if (eflag & HI3110_ERR_BITERR) {
-+					priv->net->stats.tx_errors++;
-+					if (skb)
-+						cf->data[2] |= CAN_ERR_PROT_BIT;
-+				} else if (eflag & HI3110_ERR_FRMERR) {
-+					priv->net->stats.rx_errors++;
-+					if (skb)
-+						cf->data[2] |= CAN_ERR_PROT_FORM;
-+				} else if (eflag & HI3110_ERR_STUFERR) {
-+					priv->net->stats.rx_errors++;
-+					if (skb)
-+						cf->data[2] |= CAN_ERR_PROT_STUFF;
-+				} else if (eflag & HI3110_ERR_CRCERR) {
-+					priv->net->stats.rx_errors++;
-+					if (skb)
-+						cf->data[3] |= CAN_ERR_PROT_LOC_CRC_SEQ;
-+				} else if (eflag & HI3110_ERR_ACKERR) {
-+					priv->net->stats.tx_errors++;
-+					if (skb)
-+						cf->data[3] |= CAN_ERR_PROT_LOC_ACK;
-+				}
-+
- 				netdev_dbg(priv->net, "Bus Error\n");
--				netif_rx(skb);
-+				if (skb) {
-+					cf->data[6] = hi3110_read(spi, HI3110_READ_TEC);
-+					cf->data[7] = hi3110_read(spi, HI3110_READ_REC);
-+					netif_rx(skb);
-+				}
+ 		if (likely(skb)) {
+ 			ecc = readl(priv->base + SUN4I_REG_STA_ADDR);
+@@ -601,9 +600,15 @@ static int sun4i_can_err(struct net_device *dev, u8 isrc, u8 status)
+ 					       >> 16;
+ 				break;
  			}
+-			/* error occurred during transmission? */
+-			if ((ecc & SUN4I_STA_ERR_DIR) == 0)
++		}
++
++		/* error occurred during transmission? */
++		if ((ecc & SUN4I_STA_ERR_DIR) == 0) {
++			if (likely(skb))
+ 				cf->data[2] |= CAN_ERR_PROT_TX;
++			stats->tx_errors++;
++		} else {
++			stats->rx_errors++;
  		}
- 
+ 	}
+ 	if (isrc & SUN4I_INT_ERR_PASSIVE) {
 -- 
 2.43.0
 
