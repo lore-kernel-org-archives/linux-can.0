@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92DCA24835D;
-	Sun, 24 Nov 2024 13:56:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D374924002C;
+	Sun, 24 Nov 2024 13:57:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732456569; cv=none; b=OYx9fog4UKyf/GCtThLXCqG1uJzVL2aP/ETZeRwloC+ohB31FWL5drp44f6yBsNvoM3Xc6Lru1pyTMWj55B66eCWfPySZhDYNzd91MWp3h9JCgWbSdEcx02b8+esNIDsPwx8ip/kwNrHIG5/rNzpNNh7U1H+oAAsfFblRU86aj4=
+	t=1732456644; cv=none; b=NqKvo/3wPvcPqStJ+QzlrYaNsk8CHthakEsqQ+gOqtgDgzVMcsYrnFFQppSIa+sP3HzbsbbNOCwMMP+2uY9V0Kxy6rTgkDqWgoeTa77k6VBPCISxao5CXusxhklz1/+JbQ4EmvyVpXm8UgXyEA2I70BZwhLKG9IoCcZMEgkVUrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732456569; c=relaxed/simple;
-	bh=+HqknN0c1m9ygXQTx0fENNqmE1KpkeEwBt01jGR93E8=;
+	s=arc-20240116; t=1732456644; c=relaxed/simple;
+	bh=nXcFGeitzYT5m1nV1Uogt257741cT1pNjkWWqxUhDuA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YUHRIJDfOMhrMOGxdlu0tDIm9yYun3eybwJUsCo5dHrog3kP56wd99NjKW2NwrMimR1Oo9fFiPclbq2Ar/kdWpX28ceyGXF5UIszQpHCcakSiLVuHXbMSKluFISjlz9HarzijOJwUYOC2GAVwwP8p53gDqifxAU9fjXfzMWQ1JY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=plHJ8VHL; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=QQ4jBMHRbdKFaYsgIZulQ1z8p738eSNpnpKRco92/0OKOxb+/qqZ1hDNsRhW/pDLbqcb3mQZARXAJBRU7qpRBFiB5MFQuV86rsWxLca7N0xvrkdVnArNpRzEx+abJtr8/DXTjpRNJ3AnrDtJvn6kBsV/Gg8lE8ub/ozs/EeY+z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=axuR68f4; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="plHJ8VHL"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FA34C4CED7;
-	Sun, 24 Nov 2024 13:56:08 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="axuR68f4"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5069BC4CED1;
+	Sun, 24 Nov 2024 13:57:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732456569;
-	bh=+HqknN0c1m9ygXQTx0fENNqmE1KpkeEwBt01jGR93E8=;
+	s=k20201202; t=1732456644;
+	bh=nXcFGeitzYT5m1nV1Uogt257741cT1pNjkWWqxUhDuA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=plHJ8VHLvbv7e8J1aduAjM3tx2V84rjDdzdaflFORG5vD+hMlwf6gfstbk7mKszvv
-	 wIspEgfzqpyIxC/waDtxGNesanyuXJIMF/8gquApy/Xkof0wZ+VyJgixRh7fY8OCOQ
-	 Vri88ylPLqSWldAOvGLqOt9Ye7a0viBRpvC/ISkB9rHMwxlDuHd2+UKDVE1J78QqmT
-	 L3qVMv/V0cHz3bNhPik2Kug4yutD0evV9KtF5oqmoDyf+S9rW5wsUy0z1HX/Z46KK9
-	 WE+5PFABDrHfYXtTmoOZDDWA/oZaRSpCqEVV+jiRsHj1FCXObH6Osx5P1Oq1qyRBMR
-	 171WO20GvPAqg==
+	b=axuR68f4nfL7muN598/GYCadku7Z2RELsNl3eI8DoGT1c4PyEwesha/XJRDVIPBwB
+	 RXNaazfcWCTmpzI2BTWURxkVWHnac7KqeJhs7x///bYmwXT6bg2zjq/afSmU20Oc5O
+	 Tr1D2POpC/7kRLuS+uaDOkx8P8Cjr/ZtazE2jeeLDigtooIZchtTTHLxGz6qAKHZxH
+	 Bb+j7H+b4jI1z91jHI2Nwt85N9AOn6phBnGVLdFIL+At9nRgF2MfJ0XFuXfWH0Ji4o
+	 +bkqbVAbbaZ+c56MHcmTuBehFfoTokiqF1Sm0vWdihBE5Cn2U7a/rqiT1drKPyjCUZ
+	 1hU9QWuHM49IQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -37,12 +37,12 @@ Cc: Ignat Korchagin <ignat@cloudflare.com>,
 	Sasha Levin <sashal@kernel.org>,
 	socketcan@hartkopp.net,
 	linux-can@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 10/28] net: af_can: do not leave a dangling sk pointer in can_create()
-Date: Sun, 24 Nov 2024 08:55:10 -0500
-Message-ID: <20241124135549.3350700-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 07/21] net: af_can: do not leave a dangling sk pointer in can_create()
+Date: Sun, 24 Nov 2024 08:56:40 -0500
+Message-ID: <20241124135709.3351371-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241124135549.3350700-1-sashal@kernel.org>
-References: <20241124135549.3350700-1-sashal@kernel.org>
+In-Reply-To: <20241124135709.3351371-1-sashal@kernel.org>
+References: <20241124135709.3351371-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -51,7 +51,7 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.286
+X-stable-base: Linux 4.19.324
 Content-Transfer-Encoding: 8bit
 
 From: Ignat Korchagin <ignat@cloudflare.com>
@@ -74,10 +74,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/net/can/af_can.c b/net/can/af_can.c
-index b396c23561d63..bc06016a4fe90 100644
+index b3edb80921248..2e6fedffddd92 100644
 --- a/net/can/af_can.c
 +++ b/net/can/af_can.c
-@@ -171,6 +171,7 @@ static int can_create(struct net *net, struct socket *sock, int protocol,
+@@ -187,6 +187,7 @@ static int can_create(struct net *net, struct socket *sock, int protocol,
  		/* release sk on errors */
  		sock_orphan(sk);
  		sock_put(sk);
