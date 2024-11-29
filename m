@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3988419E7D3
-	for <linux-can@vger.kernel.org>; Fri, 29 Nov 2024 12:27:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2B0E155352
+	for <linux-can@vger.kernel.org>; Fri, 29 Nov 2024 12:35:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732883262; cv=none; b=UnK2rMVUIWTPxDFrfDO7pZEBoW/Sx9S395q1z3kpMDE5hieElbq6+BznMQFS9RRxOKIEVoXh7Q2sxIH/7Tv44uyb6eraKF09o7UdLZvwcnahOvvKg2Kicb67wNjav+4VVRzTUVUq+dut3CtqsJjllBQJnN9AoWeuB4QTOU7fcBs=
+	t=1732883728; cv=none; b=qvB251flj1Cz2nbxqo7f6euafzacEOFGoXGtvJT4y3PvYpc4PEThVb5OwI3Oip0jYjzR09zsVRC7ltLH3pgoiAkD1e9zTEUceOxe3p5ST7hSf2ab0KOXVxhfQkKRAn3YvREq3Dwi6i2iyQwsLvpa5608Rdx6uAv4gU9xwlk9oqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732883262; c=relaxed/simple;
-	bh=dRNkCEDrD0dyT0vw+xXw/40K2d0o47l4Jw3PNM/LvkY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ppL69bLu2Lyd8q02zijIc580IZ+WhZCsddjc1B75/weErvpyKd6uM5IqiKAAqo3EGdnRT6XwPjsQV4B8y6JH87yj62HzzVsDoK4+TZGosArFQWBhZtd4/FBE/qP+gHZbJnoaXi9LaVTE3hKhIRaY92J52NWUGcmiypCMz+qjb8Y=
+	s=arc-20240116; t=1732883728; c=relaxed/simple;
+	bh=w67/ixr1H7XO0VSjOnNUeruUwtoAOjN1j4exDmNfTbU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u8LoWVngw2bbYBPrdaQ6SL/Z0tCC7uCMvytk0Bq4TRhV42DeZGdfK74myx41tndg5QkqpATbMyvzw86GYHPUr5NYGOqFLulJjknJHqHutCNDv9SA1aqHjkKvAkIcswa6luGg+LaoYUQPhiyquw7EC4J3RlOt/EPDTtsSMNfdWuk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,161 +18,87 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1tH05w-0007rX-8k
-	for linux-can@vger.kernel.org; Fri, 29 Nov 2024 13:27:36 +0100
+	id 1tH0DK-0002FF-FK; Fri, 29 Nov 2024 13:35:14 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1tH05t-000mkJ-0l
-	for linux-can@vger.kernel.org;
-	Fri, 29 Nov 2024 13:27:34 +0100
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id AECF7381170
-	for <linux-can@vger.kernel.org>; Fri, 29 Nov 2024 12:27:33 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+	id 1tH0DJ-000n13-0k;
+	Fri, 29 Nov 2024 13:35:14 +0100
+Received: from pengutronix.de (pd9e59fec.dip0.t-ipconnect.de [217.229.159.236])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 89E6938110F;
-	Fri, 29 Nov 2024 12:27:30 +0000 (UTC)
-Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 6754cccc;
-	Fri, 29 Nov 2024 12:27:29 +0000 (UTC)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id A638A38120F;
+	Fri, 29 Nov 2024 12:35:13 +0000 (UTC)
+Date: Fri, 29 Nov 2024 13:35:13 +0100
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	kuba@kernel.org,
-	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-	Marek Vasut <marex@denx.de>,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 08/14] can: ifi_canfd: ifi_canfd_handle_lec_err(): fix {rx,tx}_errors statistics
-Date: Fri, 29 Nov 2024 13:16:55 +0100
-Message-ID: <20241129122722.1046050-9-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20241129122722.1046050-1-mkl@pengutronix.de>
-References: <20241129122722.1046050-1-mkl@pengutronix.de>
+To: Sean Nyekjaer <sean@geanix.com>
+Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, linux-can@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH can-next v3] dt-bindings: can: convert tcan4x5x.txt to DT
+ schema
+Message-ID: <20241129-godlike-monumental-piculet-1dbd6d-mkl@pengutronix.de>
+References: <20241128-convert-tcan-v3-1-bf2d8005bab5@geanix.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="6hascvzpjolqdpwc"
+Content-Disposition: inline
+In-Reply-To: <20241128-convert-tcan-v3-1-bf2d8005bab5@geanix.com>
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
-The ifi_canfd_handle_lec_err() function was incorrectly incrementing only
-the receive error counter, even in cases of bit or acknowledgment errors
-that occur during transmission.
+--6hascvzpjolqdpwc
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH can-next v3] dt-bindings: can: convert tcan4x5x.txt to DT
+ schema
+MIME-Version: 1.0
 
-Fix the issue by incrementing the appropriate counter based on the
-type of error.
+On 28.11.2024 09:29:21, Sean Nyekjaer wrote:
+> Convert binding doc tcan4x5x.txt to yaml.
+>=20
+> Added during conversion, required clock-names cclk.
+>=20
+> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
 
-Fixes: 5bbd655a8bd0 ("can: ifi: Add more detailed error reporting")
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Reviewed-by: Marek Vasut <marex@denx.de>
-Link: https://patch.msgid.link/20241122221650.633981-8-dario.binacchi@amarulasolutions.com
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/ifi_canfd/ifi_canfd.c | 58 ++++++++++++++++++---------
- 1 file changed, 40 insertions(+), 18 deletions(-)
+I've replaced the v2 in can-next/testing.
 
-diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
-index d32b10900d2f..c86b57d47085 100644
---- a/drivers/net/can/ifi_canfd/ifi_canfd.c
-+++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
-@@ -390,36 +390,55 @@ static int ifi_canfd_handle_lec_err(struct net_device *ndev)
- 		return 0;
- 
- 	priv->can.can_stats.bus_error++;
--	stats->rx_errors++;
- 
- 	/* Propagate the error condition to the CAN stack. */
- 	skb = alloc_can_err_skb(ndev, &cf);
--	if (unlikely(!skb))
--		return 0;
- 
- 	/* Read the error counter register and check for new errors. */
--	cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
-+	if (likely(skb))
-+		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
- 
--	if (errctr & IFI_CANFD_ERROR_CTR_OVERLOAD_FIRST)
--		cf->data[2] |= CAN_ERR_PROT_OVERLOAD;
-+	if (errctr & IFI_CANFD_ERROR_CTR_OVERLOAD_FIRST) {
-+		stats->rx_errors++;
-+		if (likely(skb))
-+			cf->data[2] |= CAN_ERR_PROT_OVERLOAD;
-+	}
- 
--	if (errctr & IFI_CANFD_ERROR_CTR_ACK_ERROR_FIRST)
--		cf->data[3] = CAN_ERR_PROT_LOC_ACK;
-+	if (errctr & IFI_CANFD_ERROR_CTR_ACK_ERROR_FIRST) {
-+		stats->tx_errors++;
-+		if (likely(skb))
-+			cf->data[3] = CAN_ERR_PROT_LOC_ACK;
-+	}
- 
--	if (errctr & IFI_CANFD_ERROR_CTR_BIT0_ERROR_FIRST)
--		cf->data[2] |= CAN_ERR_PROT_BIT0;
-+	if (errctr & IFI_CANFD_ERROR_CTR_BIT0_ERROR_FIRST) {
-+		stats->tx_errors++;
-+		if (likely(skb))
-+			cf->data[2] |= CAN_ERR_PROT_BIT0;
-+	}
- 
--	if (errctr & IFI_CANFD_ERROR_CTR_BIT1_ERROR_FIRST)
--		cf->data[2] |= CAN_ERR_PROT_BIT1;
-+	if (errctr & IFI_CANFD_ERROR_CTR_BIT1_ERROR_FIRST) {
-+		stats->tx_errors++;
-+		if (likely(skb))
-+			cf->data[2] |= CAN_ERR_PROT_BIT1;
-+	}
- 
--	if (errctr & IFI_CANFD_ERROR_CTR_STUFF_ERROR_FIRST)
--		cf->data[2] |= CAN_ERR_PROT_STUFF;
-+	if (errctr & IFI_CANFD_ERROR_CTR_STUFF_ERROR_FIRST) {
-+		stats->rx_errors++;
-+		if (likely(skb))
-+			cf->data[2] |= CAN_ERR_PROT_STUFF;
-+	}
- 
--	if (errctr & IFI_CANFD_ERROR_CTR_CRC_ERROR_FIRST)
--		cf->data[3] = CAN_ERR_PROT_LOC_CRC_SEQ;
-+	if (errctr & IFI_CANFD_ERROR_CTR_CRC_ERROR_FIRST) {
-+		stats->rx_errors++;
-+		if (likely(skb))
-+			cf->data[3] = CAN_ERR_PROT_LOC_CRC_SEQ;
-+	}
- 
--	if (errctr & IFI_CANFD_ERROR_CTR_FORM_ERROR_FIRST)
--		cf->data[2] |= CAN_ERR_PROT_FORM;
-+	if (errctr & IFI_CANFD_ERROR_CTR_FORM_ERROR_FIRST) {
-+		stats->rx_errors++;
-+		if (likely(skb))
-+			cf->data[2] |= CAN_ERR_PROT_FORM;
-+	}
- 
- 	/* Reset the error counter, ack the IRQ and re-enable the counter. */
- 	writel(IFI_CANFD_ERROR_CTR_ER_RESET, priv->base + IFI_CANFD_ERROR_CTR);
-@@ -427,6 +446,9 @@ static int ifi_canfd_handle_lec_err(struct net_device *ndev)
- 	       priv->base + IFI_CANFD_INTERRUPT);
- 	writel(IFI_CANFD_ERROR_CTR_ER_ENABLE, priv->base + IFI_CANFD_ERROR_CTR);
- 
-+	if (unlikely(!skb))
-+		return 0;
-+
- 	netif_receive_skb(skb);
- 
- 	return 1;
--- 
-2.45.2
+regards,
+Marc
 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
+--6hascvzpjolqdpwc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmdJtPwACgkQKDiiPnot
+vG82swf+KHFhEx4+B2xMRR1cWQQzel6mE6zkRaoYVFISkUBAUNJzYAGmOi/n9zSB
+qCCD1I05Ezfhz1w0inZF438LI/zXoZv/QMtPvAQaRwUwmuvYeetCqLQAzaqR+/MU
+3uikMf6I7g+Fq87iu1FR7A6LHud80fM5HavJF4jywMUt3HfC/ZjLH79mtqDF4J+y
+SVRbbiX/3n1m/zPap8HYS++6t+dmjxf4MQIEtDhsuxPRwldUYowX9uFm9Io5nFwg
+k+OvflbSsNu8asBN+oN03ENiQUoHjL6oM7JzDjMmByl/Cb2ljcSoQWZuosIgOeFd
+jauPYNBoUS7zB3kYXbccL1l7AtVgdQ==
+=kSfY
+-----END PGP SIGNATURE-----
+
+--6hascvzpjolqdpwc--
