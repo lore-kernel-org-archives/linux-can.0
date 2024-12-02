@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D0C01FA82B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 925891FA838
 	for <linux-can@vger.kernel.org>; Mon,  2 Dec 2024 09:00:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733130056; cv=none; b=sUKXj2zLn2zgkwcroG0VH5L90yDXZE43LoeggaIhoP6jL0ZeqiC66eKSLZ9G4p9JZ9Ta83iDziNnVqbjUXHldrAmUDklPMJiCNN1+lrbNsEvxtySsfz0Rp7JsgBh+uiYQ3DqrmyR49PiVbtesB4pTiefOuaMBZBgikVE4/i3/L8=
+	t=1733130056; cv=none; b=BdZsS4mroYyeMJhbXpoGQPW1DKVoAITzvX+Zphrkm69+4LMeHj2FZ1/aS5B+PlbrARlYibyDEfnTZt/B3k3uc/klz8vlvyZXm3iu+tjoJnqjEZrlEJfF6jJx+uJdt+5F+fs0lrHvJXBGhuEg4XuJ1TbWse8u8wrbA8/mmEGyNqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1733130056; c=relaxed/simple;
-	bh=4B/grfdRZksUaVgQ+aqcxxM8Hc1yJgtng+6chgMP+hQ=;
+	bh=lsksLE3dD73HNlsMdgSZNkw0ZZ91I4zbGq2uYElyMHY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gISxgJkXFXV4C3xstorKUELKbCiNSwag2Mih5BbExl4mlXfBkS/Cs+9iEsZn0cmQPfQWw0nKfyJo3NsdIv37llUyBEvb9zbu6/9JbARbJTWK/1kqCjnlvPn2w3hdHfi0qgbEgkqbI3uy2O18Ldi+5dPbASuJK5gBwehvfVsNX/A=
+	 MIME-Version; b=sFcKbMWmoj/kNJH5MZ/CnDgxUUiAS6w9xQWvwEQwExT9lswBD7EWs+8zPwhao8N2tjmrZLNroLm4D1n52ZFE0zdkbQ4SUDgCQDfjRCu51+6j+yIkGBJ4jqO7ulzuuEk0B09CucqNnX2FkN+h7Sy55LMR086pILV6pUdZgzkbOV0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,26 +18,26 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1tI2IV-0007hT-Kf
+	id 1tI2IV-0007f3-IP
 	for linux-can@vger.kernel.org; Mon, 02 Dec 2024 10:00:51 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1tI2IS-001GcB-1O
+	id 1tI2IR-001Gal-2S
 	for linux-can@vger.kernel.org;
-	Mon, 02 Dec 2024 10:00:49 +0100
+	Mon, 02 Dec 2024 10:00:48 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id DCA87383397
+	by bjornoya.blackshift.org (Postfix) with SMTP id 284EB38337F
 	for <linux-can@vger.kernel.org>; Mon, 02 Dec 2024 09:00:48 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 14CCB38333E;
-	Mon, 02 Dec 2024 09:00:46 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 0E38B383324;
+	Mon, 02 Dec 2024 09:00:45 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 47080273;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 95f882fa;
 	Mon, 2 Dec 2024 09:00:44 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -45,12 +45,11 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Renjaya Raga Zenta <renjaya.zenta@formulatrix.com>,
-	stable@vger.kernel.org
-Subject: [PATCH net 14/15] can: mcp251xfd: mcp251xfd_get_tef_len(): work around erratum DS80000789E 6.
-Date: Mon,  2 Dec 2024 09:55:48 +0100
-Message-ID: <20241202090040.1110280-15-mkl@pengutronix.de>
+	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 07/15] can: m_can: m_can_handle_lec_err(): fix {rx,tx}_errors statistics
+Date: Mon,  2 Dec 2024 09:55:41 +0100
+Message-ID: <20241202090040.1110280-8-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20241202090040.1110280-1-mkl@pengutronix.de>
 References: <20241202090040.1110280-1-mkl@pengutronix.de>
@@ -66,96 +65,98 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Commit b8e0ddd36ce9 ("can: mcp251xfd: tef: prepare to workaround
-broken TEF FIFO tail index erratum") introduced
-mcp251xfd_get_tef_len() to get the number of unhandled transmit events
-from the Transmit Event FIFO (TEF).
+From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
-As the TEF has no head index, the driver uses the TX-FIFO's tail index
-instead, assuming that send frames are completed.
+The m_can_handle_lec_err() function was incorrectly incrementing only the
+receive error counter, even in cases of bit or acknowledgment errors that
+occur during transmission.
 
-When calculating the number of unhandled TEF events, that commit
-didn't take mcp2518fd erratum DS80000789E 6. into account. According
-to that erratum, the FIFOCI bits of a FIFOSTA register, here the
-TX-FIFO tail index might be corrupted.
+Fix the issue by incrementing the appropriate counter based on the
+type of error.
 
-However here it seems the bit indicating that the TX-FIFO is
-empty (MCP251XFD_REG_FIFOSTA_TFERFFIF) is not correct while the
-TX-FIFO tail index is.
-
-Assume that the TX-FIFO is indeed empty if:
-- Chip's head and tail index are equal (len == 0).
-- The TX-FIFO is less than half full.
-  (The TX-FIFO empty case has already been checked at the
-   beginning of this function.)
-- No free buffers in the TX ring.
-
-If the TX-FIFO is assumed to be empty, assume that the TEF is full and
-return the number of elements in the TX-FIFO (which equals the number
-of TEF elements).
-
-If these assumptions are false, the driver might read to many objects
-from the TEF. mcp251xfd_handle_tefif_one() checks the sequence numbers
-and will refuse to process old events.
-
-Reported-by: Renjaya Raga Zenta <renjaya.zenta@formulatrix.com>
-Closes: https://patch.msgid.link/CAJ7t6HgaeQ3a_OtfszezU=zB-FqiZXqrnATJ3UujNoQJJf7GgA@mail.gmail.com
-Fixes: b8e0ddd36ce9 ("can: mcp251xfd: tef: prepare to workaround broken TEF FIFO tail index erratum")
-Tested-by: Renjaya Raga Zenta <renjaya.zenta@formulatrix.com>
-Cc: stable@vger.kernel.org
-Link: https://patch.msgid.link/20241126-mcp251xfd-fix-length-calculation-v2-1-c2ed516ed6ba@pengutronix.de
+Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
+Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Link: https://patch.msgid.link/20241122221650.633981-7-dario.binacchi@amarulasolutions.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c | 29 ++++++++++++++++++-
- 1 file changed, 28 insertions(+), 1 deletion(-)
+ drivers/net/can/m_can/m_can.c | 33 +++++++++++++++++++++++----------
+ 1 file changed, 23 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c
-index d3ac865933fd..e94321849fd7 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tef.c
-@@ -21,6 +21,11 @@ static inline bool mcp251xfd_tx_fifo_sta_empty(u32 fifo_sta)
- 	return fifo_sta & MCP251XFD_REG_FIFOSTA_TFERFFIF;
- }
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 16e9e7d7527d..533bcb77c9f9 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -695,47 +695,60 @@ static int m_can_handle_lec_err(struct net_device *dev,
+ 	u32 timestamp = 0;
  
-+static inline bool mcp251xfd_tx_fifo_sta_less_than_half_full(u32 fifo_sta)
-+{
-+	return fifo_sta & MCP251XFD_REG_FIFOSTA_TFHRFHIF;
-+}
-+
- static inline int
- mcp251xfd_tef_tail_get_from_chip(const struct mcp251xfd_priv *priv,
- 				 u8 *tef_tail)
-@@ -147,7 +152,29 @@ mcp251xfd_get_tef_len(struct mcp251xfd_priv *priv, u8 *len_p)
- 	BUILD_BUG_ON(sizeof(tx_ring->obj_num) != sizeof(len));
+ 	cdev->can.can_stats.bus_error++;
+-	stats->rx_errors++;
  
- 	len = (chip_tx_tail << shift) - (tail << shift);
--	*len_p = len >> shift;
-+	len >>= shift;
-+
-+	/* According to mcp2518fd erratum DS80000789E 6. the FIFOCI
-+	 * bits of a FIFOSTA register, here the TX-FIFO tail index
-+	 * might be corrupted.
-+	 *
-+	 * However here it seems the bit indicating that the TX-FIFO
-+	 * is empty (MCP251XFD_REG_FIFOSTA_TFERFFIF) is not correct
-+	 * while the TX-FIFO tail index is.
-+	 *
-+	 * We assume the TX-FIFO is empty, i.e. all pending CAN frames
-+	 * haven been send, if:
-+	 * - Chip's head and tail index are equal (len == 0).
-+	 * - The TX-FIFO is less than half full.
-+	 *   (The TX-FIFO empty case has already been checked at the
-+	 *    beginning of this function.)
-+	 * - No free buffers in the TX ring.
-+	 */
-+	if (len == 0 && mcp251xfd_tx_fifo_sta_less_than_half_full(fifo_sta) &&
-+	    mcp251xfd_get_tx_free(tx_ring) == 0)
-+		len = tx_ring->obj_num;
-+
-+	*len_p = len;
+ 	/* propagate the error condition to the CAN stack */
+ 	skb = alloc_can_err_skb(dev, &cf);
+-	if (unlikely(!skb))
+-		return 0;
  
- 	return 0;
- }
+ 	/* check for 'last error code' which tells us the
+ 	 * type of the last error to occur on the CAN bus
+ 	 */
+-	cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
++	if (likely(skb))
++		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+ 
+ 	switch (lec_type) {
+ 	case LEC_STUFF_ERROR:
+ 		netdev_dbg(dev, "stuff error\n");
+-		cf->data[2] |= CAN_ERR_PROT_STUFF;
++		stats->rx_errors++;
++		if (likely(skb))
++			cf->data[2] |= CAN_ERR_PROT_STUFF;
+ 		break;
+ 	case LEC_FORM_ERROR:
+ 		netdev_dbg(dev, "form error\n");
+-		cf->data[2] |= CAN_ERR_PROT_FORM;
++		stats->rx_errors++;
++		if (likely(skb))
++			cf->data[2] |= CAN_ERR_PROT_FORM;
+ 		break;
+ 	case LEC_ACK_ERROR:
+ 		netdev_dbg(dev, "ack error\n");
+-		cf->data[3] = CAN_ERR_PROT_LOC_ACK;
++		stats->tx_errors++;
++		if (likely(skb))
++			cf->data[3] = CAN_ERR_PROT_LOC_ACK;
+ 		break;
+ 	case LEC_BIT1_ERROR:
+ 		netdev_dbg(dev, "bit1 error\n");
+-		cf->data[2] |= CAN_ERR_PROT_BIT1;
++		stats->tx_errors++;
++		if (likely(skb))
++			cf->data[2] |= CAN_ERR_PROT_BIT1;
+ 		break;
+ 	case LEC_BIT0_ERROR:
+ 		netdev_dbg(dev, "bit0 error\n");
+-		cf->data[2] |= CAN_ERR_PROT_BIT0;
++		stats->tx_errors++;
++		if (likely(skb))
++			cf->data[2] |= CAN_ERR_PROT_BIT0;
+ 		break;
+ 	case LEC_CRC_ERROR:
+ 		netdev_dbg(dev, "CRC error\n");
+-		cf->data[3] = CAN_ERR_PROT_LOC_CRC_SEQ;
++		stats->rx_errors++;
++		if (likely(skb))
++			cf->data[3] = CAN_ERR_PROT_LOC_CRC_SEQ;
+ 		break;
+ 	default:
+ 		break;
+ 	}
+ 
++	if (unlikely(!skb))
++		return 0;
++
+ 	if (cdev->is_peripheral)
+ 		timestamp = m_can_get_timestamp(cdev);
+ 
 -- 
 2.45.2
 
