@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 771AF1FAC25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9286C1FAC30
 	for <linux-can@vger.kernel.org>; Mon,  2 Dec 2024 09:00:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733130056; cv=none; b=RVQ8yup0tOEmhkN26ZwnNpuUzOxt8MKjJIMOf2Y4QA7XCVSKi07x4yFjxjcqypN0Xx2Cusxg4xYhM1iygUVomKxngiN2+1apOtB3AJakxg4rgoVklAHBgEbE5K9uI64PMbt6HU3sciXXOZB65NnTDZjeLPrsHC8AL5AJrzUVdNI=
+	t=1733130057; cv=none; b=gmb/YHQcB16SDpzUgd23IN0e95/SEEizjk29zieRamGy1RjdRn7KJ6M+ZD/IRFVlrXB02D//JGg1D7Kg7G1lY00o8edRSTgPzPLOQolbAeV+wRlT0UPPYZLSy/OoxiIpCtd/n+rFPrRKTfjL1SAsxoMZtREF2GEh8WrDOB2HNXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733130056; c=relaxed/simple;
-	bh=p7awPQ9JQQkWRCwMOxdTdFRuiWt5WxjlZtb82lC0anA=;
+	s=arc-20240116; t=1733130057; c=relaxed/simple;
+	bh=h8cCRu1JLjpWd3QOPsuwi9HGbd5UzGSlJPlOIXjshk8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U5eANH4UB0Sdeanh21b5AZFPmMCvW77MltUoVmLgIjtbSXO8aPms8hgaNrrSaCp7HJd2mdPLv9xQyZOor0XEnFsdPtnHSd/ngu0DwUYYD/YoFVaVVooQnyh+vW9zCcpXCRDi+yIF2Hj0906GVLXLtyh9f4+fG180WY0wjKuaLI4=
+	 MIME-Version; b=ONSZZGV3t1Tv9LdwDgn4wZpfWoDEXtwJ2z28Po5AJqdFFMvfZVFTSonl1JUPKiqnohlPhH+KFK5iEWV0eSM70k3umpRcEZcHhDY6vnUgEawkQFeyZOaydNAZtn8+OkLSHC3uN8bhlcyg0ueYGU4wmiB6lptMEMZTdMqljmxyCG4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,26 +18,26 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1tI2IW-0007hL-3W
+	id 1tI2IW-0007jT-DA
 	for linux-can@vger.kernel.org; Mon, 02 Dec 2024 10:00:52 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1tI2IS-001Gbz-1F
+	id 1tI2IS-001Gch-3C
 	for linux-can@vger.kernel.org;
 	Mon, 02 Dec 2024 10:00:49 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id C44A5383396
-	for <linux-can@vger.kernel.org>; Mon, 02 Dec 2024 09:00:48 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with SMTP id 6F4A638339D
+	for <linux-can@vger.kernel.org>; Mon, 02 Dec 2024 09:00:49 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id E5CD538333B;
-	Mon, 02 Dec 2024 09:00:45 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 3C527383344;
+	Mon, 02 Dec 2024 09:00:46 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4d0dd13f;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 6478a1cf;
 	Mon, 2 Dec 2024 09:00:44 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -45,11 +45,13 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+	Dmitry Antipov <dmantipov@yandex.ru>,
+	syzbot+d4e8dc385d9258220c31@syzkaller.appspotmail.com,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 13/15] can: f81604: f81604_handle_can_bus_errors(): fix {rx,tx}_errors statistics
-Date: Mon,  2 Dec 2024 09:55:47 +0100
-Message-ID: <20241202090040.1110280-14-mkl@pengutronix.de>
+Subject: [PATCH net 15/15] can: j1939: j1939_session_new(): fix skb reference counting
+Date: Mon,  2 Dec 2024 09:55:49 +0100
+Message-ID: <20241202090040.1110280-16-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20241202090040.1110280-1-mkl@pengutronix.de>
 References: <20241202090040.1110280-1-mkl@pengutronix.de>
@@ -65,53 +67,38 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+From: Dmitry Antipov <dmantipov@yandex.ru>
 
-The f81604_handle_can_bus_errors() function only incremented the receive
-error counter and never the transmit error counter, even if the ECC_DIR
-flag reported that an error had occurred during transmission.
+Since j1939_session_skb_queue() does an extra skb_get() for each new
+skb, do the same for the initial one in j1939_session_new() to avoid
+refcount underflow.
 
-Increment the receive/transmit error counter based on the value of the
-ECC_DIR flag.
-
-Fixes: 88da17436973 ("can: usb: f81604: add Fintek F81604 support")
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Link: https://patch.msgid.link/20241122221650.633981-13-dario.binacchi@amarulasolutions.com
+Reported-by: syzbot+d4e8dc385d9258220c31@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=d4e8dc385d9258220c31
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+Tested-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Link: https://patch.msgid.link/20241105094823.2403806-1-dmantipov@yandex.ru
+[mkl: clean up commit message]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/f81604.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ net/can/j1939/transport.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/f81604.c b/drivers/net/can/usb/f81604.c
-index bc0c8903fe77..e0cfa1460b0b 100644
---- a/drivers/net/can/usb/f81604.c
-+++ b/drivers/net/can/usb/f81604.c
-@@ -526,7 +526,6 @@ static void f81604_handle_can_bus_errors(struct f81604_port_priv *priv,
- 		netdev_dbg(netdev, "bus error interrupt\n");
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index 319f47df3330..95f7a7e65a73 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -1505,7 +1505,7 @@ static struct j1939_session *j1939_session_new(struct j1939_priv *priv,
+ 	session->state = J1939_SESSION_NEW;
  
- 		priv->can.can_stats.bus_error++;
--		stats->rx_errors++;
+ 	skb_queue_head_init(&session->skb_queue);
+-	skb_queue_tail(&session->skb_queue, skb);
++	skb_queue_tail(&session->skb_queue, skb_get(skb));
  
- 		if (skb) {
- 			cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
-@@ -548,10 +547,15 @@ static void f81604_handle_can_bus_errors(struct f81604_port_priv *priv,
- 
- 			/* set error location */
- 			cf->data[3] = data->ecc & F81604_SJA1000_ECC_SEG;
-+		}
- 
--			/* Error occurred during transmission? */
--			if ((data->ecc & F81604_SJA1000_ECC_DIR) == 0)
-+		/* Error occurred during transmission? */
-+		if ((data->ecc & F81604_SJA1000_ECC_DIR) == 0) {
-+			stats->tx_errors++;
-+			if (skb)
- 				cf->data[2] |= CAN_ERR_PROT_TX;
-+		} else {
-+			stats->rx_errors++;
- 		}
- 
- 		set_bit(F81604_CLEAR_ECC, &priv->clear_flags);
+ 	skcb = j1939_skb_to_cb(skb);
+ 	memcpy(&session->skcb, skcb, sizeof(session->skcb));
 -- 
 2.45.2
 
