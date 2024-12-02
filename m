@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 331CF1FA17C
-	for <linux-can@vger.kernel.org>; Mon,  2 Dec 2024 09:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47C751FA241
+	for <linux-can@vger.kernel.org>; Mon,  2 Dec 2024 09:00:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733130053; cv=none; b=iNaNRKWBZSR5mkzdJN4ZR0+iwW9+OifdcIpsTZzUpS6V4KLuePO4K99Mjj1FhVuS7ha0bVlIW1z3AB5DgvfZQej4+uB8M23PL4pBQn6T7LYOjpr29l+5QfPekYLS2Ddjt4dDo6ByW0ApsT4Vwbp+Ho8YcUXVoKW7IYtsM2/TRgM=
+	t=1733130053; cv=none; b=TRqA1fddtjxFtUDLrP+Wyv5rmZ3XYKhgX8TXcNORS+0XM1JbxE6JEIt+Bfwa57hI7D+LFF6y4l6IFmMFtoo/8mVDIthtdu9ELUawOykbPm1AvxsM1lT9D5D2Ji4LhioM3OA0E3YA3kbLQmZUYft5Qv+gAGbfY3lzyV5pvVdiHOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1733130053; c=relaxed/simple;
-	bh=E/+l/sEtYTBDaKnsJQcv8lGKfLI60QvkRbm4ElVQ2Ng=;
+	bh=e1BqDHyEluDtifCwNbEXpWBrYmUn/q0cxNXM8YIVI5M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VkQV0qUBJWa/sz938cmG2TkKJz8X5PhMLfkIgiI7H+iMyfvVQopOCC0CuyoVbpogDDWyqkuzDtdWUVz4iWN33cpwqZG5Jxje5eu8ARaY/JRqlJjY8yXGw5kjJ7AXVxTPcwk/18hwnB2EqbTOgQdRuuhMYQtKiZrCx3EnWozpnJM=
+	 MIME-Version; b=gtfdek4AJsbSMVHoAWdCNrJNiHCa8kuSlJv6fWPHED7M0XN46xdO2JgCnimxtOUbv0lySAdLtuAtW8ti04r3kjev1MYHWsC5ABtwR+L7ZDWcD3wlQ0MGo6xcmbyQRQMAp2n7tVwZhybPAP64SZoql2A01V93MiLNwO4L2NMeqDo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,26 +18,26 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1tI2IT-0007dt-Vn
+	id 1tI2IU-0007e2-CV
 	for linux-can@vger.kernel.org; Mon, 02 Dec 2024 10:00:50 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1tI2IR-001GZQ-0A
+	id 1tI2IR-001GZW-0T
 	for linux-can@vger.kernel.org;
 	Mon, 02 Dec 2024 10:00:47 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 71424383366
+	by bjornoya.blackshift.org (Postfix) with SMTP id 7853B383368
 	for <linux-can@vger.kernel.org>; Mon, 02 Dec 2024 09:00:47 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id CD3D3383321;
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id E7223383323;
 	Mon, 02 Dec 2024 09:00:44 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 29e39b5d;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4181bd31;
 	Mon, 2 Dec 2024 09:00:43 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -47,9 +47,9 @@ Cc: davem@davemloft.net,
 	kernel@pengutronix.de,
 	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 05/15] can: hi311x: hi3110_can_ist(): fix potential use-after-free
-Date: Mon,  2 Dec 2024 09:55:39 +0100
-Message-ID: <20241202090040.1110280-6-mkl@pengutronix.de>
+Subject: [PATCH net 06/15] can: hi311x: hi3110_can_ist(): update state error statistics if skb allocation fails
+Date: Mon,  2 Dec 2024 09:55:40 +0100
+Message-ID: <20241202090040.1110280-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20241202090040.1110280-1-mkl@pengutronix.de>
 References: <20241202090040.1110280-1-mkl@pengutronix.de>
@@ -67,48 +67,48 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
-The commit a22bd630cfff ("can: hi311x: do not report txerr and rxerr
-during bus-off") removed the reporting of rxerr and txerr even in case
-of correct operation (i. e. not bus-off).
+Ensure that the statistics related to state error counters
+(i. e. warning, passive, and bus-off) are updated even in case the skb
+allocation fails. Additionally, also handle bus-off state is now.
 
-The error count information added to the CAN frame after netif_rx() is
-a potential use after free, since there is no guarantee that the skb
-is in the same state. It might be freed or reused.
-
-Fix the issue by postponing the netif_rx() call in case of txerr and
-rxerr reporting.
-
-Fixes: a22bd630cfff ("can: hi311x: do not report txerr and rxerr during bus-off")
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Link: https://patch.msgid.link/20241122221650.633981-5-dario.binacchi@amarulasolutions.com
+Link: https://patch.msgid.link/20241122221650.633981-6-dario.binacchi@amarulasolutions.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/hi311x.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/can/spi/hi311x.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
-index 148d974ebb21..b67464df25ff 100644
+index b67464df25ff..25d9b32f5701 100644
 --- a/drivers/net/can/spi/hi311x.c
 +++ b/drivers/net/can/spi/hi311x.c
-@@ -671,9 +671,9 @@ static irqreturn_t hi3110_can_ist(int irq, void *dev_id)
- 			tx_state = txerr >= rxerr ? new_state : 0;
- 			rx_state = txerr <= rxerr ? new_state : 0;
+@@ -663,8 +663,6 @@ static irqreturn_t hi3110_can_ist(int irq, void *dev_id)
+ 			u8 rxerr, txerr;
+ 
+ 			skb = alloc_can_err_skb(net, &cf);
+-			if (!skb)
+-				break;
+ 
+ 			txerr = hi3110_read(spi, HI3110_READ_TEC);
+ 			rxerr = hi3110_read(spi, HI3110_READ_REC);
+@@ -673,14 +671,15 @@ static irqreturn_t hi3110_can_ist(int irq, void *dev_id)
  			can_change_state(net, cf, tx_state, rx_state);
--			netif_rx(skb);
  
  			if (new_state == CAN_STATE_BUS_OFF) {
-+				netif_rx(skb);
+-				netif_rx(skb);
++				if (skb)
++					netif_rx(skb);
  				can_bus_off(net);
  				if (priv->can.restart_ms == 0) {
  					priv->force_quit = 1;
-@@ -684,6 +684,7 @@ static irqreturn_t hi3110_can_ist(int irq, void *dev_id)
+ 					hi3110_hw_sleep(spi);
+ 					break;
+ 				}
+-			} else {
++			} else if (skb) {
  				cf->can_id |= CAN_ERR_CNT;
  				cf->data[6] = txerr;
  				cf->data[7] = rxerr;
-+				netif_rx(skb);
- 			}
- 		}
- 
 -- 
 2.45.2
 
