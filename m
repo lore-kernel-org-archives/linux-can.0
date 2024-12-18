@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6957419E97B
-	for <linux-can@vger.kernel.org>; Wed, 18 Dec 2024 12:07:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C4CC19A288
+	for <linux-can@vger.kernel.org>; Wed, 18 Dec 2024 12:17:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734523649; cv=none; b=nosD08OKMSZdJiFN0MUt+VFcF3Uhtu7TJ4+V78yU85OcGN6tx5scVxllSk4pImvVVLyE2fkDXmXo+SGcVgVKCg6tRZG6jMdAHDTDHOySvkKxCrAsPbH6bMp7u8iHe984SUrYmDXfCRCCD0d8EslyWfcmDzyjwaAvBBJE5cVZiTU=
+	t=1734524250; cv=none; b=VmzVSYPzMOCI8qalV/tXbuAG3FWTUrItYIlNS15sJC46bXLfxGw5mIUj6Pk+2AarjVRTEWAMCgRPgB/Ra4G2ItN8MZhV3m94W5oSvexwc03CXA2KyUluNr3G4uLr+s+MHQeSJbckn48n9tbjhd1OtdlLIh5NQiKV77h/cbMzjV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734523649; c=relaxed/simple;
-	bh=A3Q3aiySICafUyM/FGYPJvj3icOL6IVuLCKT1a9ywDI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Pw2yapzvqMWSK4mQxOkNtfkk5O8wN86hA7bi3V7/IIjvU1sVGTiWClsga6eTRohQTSt1aNjCKvV04UWreKha5PJtKKkDwlB3VJ8uW1q4OokYKOOF4s/6QMKLeiDU55d4GuUOfRqU9dME1ta5J/kDKh8nKbOrp0+k8/08uFdJwJE=
+	s=arc-20240116; t=1734524250; c=relaxed/simple;
+	bh=IpqxAPIsZx3w25GQdM2uw9JCEezPzauequ1qRCOnV4A=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=qYVatPQ9+H5EDliyb4kPxtgb1+YVqYkHFonUKnSSE5M7FsnAkWF11X0wKUdnRELtVotoGTNt6qmmYqEBfK6Lnq6k/mtV/4Bp450bfT/snqtc8fJ47COoSY/C4AJKJfWpHBHzbwzafUUxvrUlkCNmdS6d9eiqh18YWGIVyO3iNds=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,87 +18,110 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1tNspf-0001Du-FG; Wed, 18 Dec 2024 13:07:15 +0100
+	id 1tNszW-0003Uj-NX
+	for linux-can@vger.kernel.org; Wed, 18 Dec 2024 13:17:26 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1tNspd-0041hz-2h;
-	Wed, 18 Dec 2024 13:07:14 +0100
-Received: from pengutronix.de (pd9e59fec.dip0.t-ipconnect.de [217.229.159.236])
+	id 1tNszV-0041vx-2Q
+	for linux-can@vger.kernel.org;
+	Wed, 18 Dec 2024 13:17:26 +0100
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+	by bjornoya.blackshift.org (Postfix) with SMTP id 3BC4F39168A
+	for <linux-can@vger.kernel.org>; Wed, 18 Dec 2024 12:17:26 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 4B15B391653;
-	Wed, 18 Dec 2024 12:07:14 +0000 (UTC)
-Date: Wed, 18 Dec 2024 13:07:14 +0100
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 64CC5391677;
+	Wed, 18 Dec 2024 12:17:24 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id ac31a6d3;
+	Wed, 18 Dec 2024 12:17:23 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: =?utf-8?Q?Pr=C3=BCckl?= Thomas <T.Prueckl@hainzl.at>
-Cc: "rcsekar@samsung.com" <rcsekar@samsung.com>, 
-	"linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Subject: Re: AW: net: m_can: missing mutexes in tx_work_queue and isr-handler
-Message-ID: <20241218-athletic-pig-of-perfection-14a7e6-mkl@pengutronix.de>
-References: <f6a9e128fbc04dcebd70e9b254b344e2@hainzl.at>
- <20241210-sly-impressive-kittiwake-aff4f1-mkl@pengutronix.de>
- <a1de308c7f96475281612c8ffa6fc820@hainzl.at>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net,
+	kuba@kernel.org,
+	linux-can@vger.kernel.org,
+	kernel@pengutronix.de,
+	Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+	Markus Schneider-Pargmann <msp@baylibre.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 1/2] can: m_can: set init flag earlier in probe
+Date: Wed, 18 Dec 2024 13:10:27 +0100
+Message-ID: <20241218121722.2311963-2-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20241218121722.2311963-1-mkl@pengutronix.de>
+References: <20241218121722.2311963-1-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="5tf5rj2qqgncud3h"
-Content-Disposition: inline
-In-Reply-To: <a1de308c7f96475281612c8ffa6fc820@hainzl.at>
+Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
+From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 
---5tf5rj2qqgncud3h
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: AW: net: m_can: missing mutexes in tx_work_queue and isr-handler
-MIME-Version: 1.0
+While an m_can controller usually already has the init flag from a
+hardware reset, no such reset happens on the integrated m_can_pci of the
+Intel Elkhart Lake. If the CAN controller is found in an active state,
+m_can_dev_setup() would fail because m_can_niso_supported() calls
+m_can_cccr_update_bits(), which refuses to modify any other configuration
+bits when CCCR_INIT is not set.
 
-On 10.12.2024 15:04:29, Pr=C3=BCckl Thomas wrote:
-> > Can you show us the patch?
->=20
-> My current patch currently just locks the isr and work queue.
-> I guess that additional locks are necessary too (e.g. in m_can_close)
->=20
-> Subject: [PATCH] can: m_can: added mutex to lock isr and tx work queue
+To avoid this issue, set CCCR_INIT before attempting to modify any other
+configuration flags.
 
-Can you make the locking finer, I mean only lock the register access
-which is critical? And keep in mind, that you cannot use mutexes from
-the non-threaded IRQ handler, i.e. in non-peripheral mode.
+Fixes: cd5a46ce6fa6 ("can: m_can: don't enable transceiver when probing")
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Reviewed-by: Markus Schneider-Pargmann <msp@baylibre.com>
+Link: https://patch.msgid.link/e247f331cb72829fcbdfda74f31a59cbad1a6006.1728288535.git.matthias.schiffer@ew.tq-group.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/m_can/m_can.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-regards,
-Marc
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 533bcb77c9f9..67c404fbe166 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1695,6 +1695,14 @@ static int m_can_dev_setup(struct m_can_classdev *cdev)
+ 		return -EINVAL;
+ 	}
+ 
++	/* Write the INIT bit, in case no hardware reset has happened before
++	 * the probe (for example, it was observed that the Intel Elkhart Lake
++	 * SoCs do not properly reset the CAN controllers on reboot)
++	 */
++	err = m_can_cccr_update_bits(cdev, CCCR_INIT, CCCR_INIT);
++	if (err)
++		return err;
++
+ 	if (!cdev->is_peripheral)
+ 		netif_napi_add(dev, &cdev->napi, m_can_poll);
+ 
+@@ -1746,11 +1754,7 @@ static int m_can_dev_setup(struct m_can_classdev *cdev)
+ 		return -EINVAL;
+ 	}
+ 
+-	/* Forcing standby mode should be redundant, as the chip should be in
+-	 * standby after a reset. Write the INIT bit anyways, should the chip
+-	 * be configured by previous stage.
+-	 */
+-	return m_can_cccr_update_bits(cdev, CCCR_INIT, CCCR_INIT);
++	return 0;
+ }
+ 
+ static void m_can_stop(struct net_device *dev)
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+base-commit: 954a2b40719a21e763a1bba2f0da92347e058fce
+-- 
+2.45.2
 
---5tf5rj2qqgncud3h
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmdiuu8ACgkQKDiiPnot
-vG9XGwgAg8vs6NO1w3OxfUo1wdYCImZJWLSoudufFzANzVv2ccG1dvCM6tedZqRN
-vYnUyqN523e5+hduVEN/kjCreHCvTocHLqzdFKRkABrL8KR9OdbTwR6fpy1Y1W+m
-YvPx7ua7NaQkZb/waXL2aL8tfXgwh2OKkoE5kU8opo8SsbgSpjOFDbv5Rfa1WDj1
-9YILV2TJjWvzUw0d1+W6eOeFz/DhlggK4WDOk78zY0JBhqfSBDDKzKSOBaNCl16x
-lx/Q8LZjODw7H0pvJ8Po5wRzlpULN34y4jZdDyGYR+rO/IkgNymLKaIZukm3uoL/
-1A51s6wsHKZ4URDz1Un4739l5ScX0A==
-=XDb7
------END PGP SIGNATURE-----
-
---5tf5rj2qqgncud3h--
