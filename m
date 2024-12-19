@@ -1,82 +1,98 @@
-Received: from mail-m49242.qiye.163.com (mail-m49242.qiye.163.com [45.254.49.242])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4284F86352;
-	Thu, 19 Dec 2024 06:54:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.242
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6E991B4233
+	for <linux-can@vger.kernel.org>; Thu, 19 Dec 2024 08:03:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734591300; cv=none; b=QLeGpIHhPrvtx4FUREfTZSF83z/Pq5g4QEhefE4blqHCafCd4NtDmMeY4PjVsuTsswCjWiMe7bTwXYMtVPhjgeTk6nWkuCPtw//4jxoUlA96a3ov48DoC/2PRuVj6fJpEwVyIlD7BY7/Z2JyePZxGwdQ2RJgOyLgmYenTGJSFow=
+	t=1734595399; cv=none; b=MW09jhC6zCaf6WgD1B8Ua1I9XbbukQDF1AlAIobQO1vYDY4So8vGlroViUgoLLlkC/qTvR6pBCehHFg9jd3D5Gt9uf+bocIsnUXTEFRl2lNYHgZs9I8f8sekvFEvH3iFjdZWlDmYqG1GVqTs0xf0TEbVxfq8O4O3BxwLaBdEhso=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734591300; c=relaxed/simple;
-	bh=XpdbOgM3VnwEfVTg0cYEtg/scfSTdvgpNEaEK+PLQPw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AJYk42YhJkkS6D7aXAsrv0yrfzl6neNOm6E+O8xq/v+Y3n8ukOpaqd/xeCI4jWNsFYPBiTs7nJcHdEMa6tWD+ZJ/bGUBa8sdO6b2btfn3lpuE8hZ6ELJNWZAqINY+5P71OHM08GX17ZUwyyxaw5a3Z1qi+KkBW9c3U0tkXMEznU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=gGN/NZG1; arc=none smtp.client-ip=45.254.49.242
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="gGN/NZG1"
-Received: from rockchip.. (unknown [58.22.7.114])
-	by smtp.qiye.163.com (Hmail) with ESMTP id 626be198;
-	Thu, 19 Dec 2024 09:12:00 +0800 (GMT+08:00)
-From: Elaine Zhang <zhangqing@rock-chips.com>
-To: zhangqing@rock-chips.com,
-	mkl@pengutronix.de,
-	kernel@pengutronix.de,
-	mailhol.vincent@wanadoo.fr,
-	heiko@sntech.de,
-	cl@rock-chips.com,
-	kever.yang@rock-chips.com
-Cc: linux-can@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: [PATCH v2 0/2] rockchip: add can for RK3576 Soc
-Date: Thu, 19 Dec 2024 09:11:57 +0800
-Message-Id: <20241219011159.3357530-1-zhangqing@rock-chips.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1734595399; c=relaxed/simple;
+	bh=wrn8ipLAM3YkV/N8d2Cjr6QdMvZIEtM/98MUZUIX0n4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VkD92Lj1ZJJNfr0omHpn8011Evq4Lvn5YOFw07R7WIPIw8xEdRSjHo4d9lGTcD1g/bFzf8ATqis/ZrC5oPRIHQmnzs8ZeDYgm/EFy4XRspSrRj6JqRu/9xOMPMTp5Y120tgzYrb0dWAajv1yicsw7mP9ahUYC7t3th4o9MS/1ak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1tOBV1-0006Nd-Rj; Thu, 19 Dec 2024 09:03:11 +0100
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1tOBV0-004AkG-00;
+	Thu, 19 Dec 2024 09:03:10 +0100
+Received: from pengutronix.de (pd9e59fec.dip0.t-ipconnect.de [217.229.159.236])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 759DC3920E9;
+	Thu, 19 Dec 2024 08:03:10 +0000 (UTC)
+Date: Thu, 19 Dec 2024 09:03:08 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, linux-can@vger.kernel.org, 
+	kernel@pengutronix.de
+Subject: Re: [PATCH net 0/2] pull-request: can 2024-12-18
+Message-ID: <20241219-shiny-ermine-of-enhancement-6958eb-mkl@pengutronix.de>
+References: <20241218121722.2311963-1-mkl@pengutronix.de>
+ <20241218175423.20cd97b1@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQx9JTFZCS0gdSU0eHUoaTRpWFRQJFh
-	oXVRMBExYaEhckFA4PWVdZGBILWUFZTkNVSUlVTFVKSk9ZV1kWGg8SFR0UWUFZT0tIVUpLSUhCSE
-	NVSktLVUpCS0tZBg++
-X-HM-Tid: 0a93dc78bc2903a3kunm626be198
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PDo6Fhw6SDIVIhcNFB1RMEkM
-	ViMwCjlVSlVKTEhPTkxLTElKT05LVTMWGhIXVQETGhUcChIVHDsJFBgQVhgTEgsIVRgUFkVZV1kS
-	C1lBWU5DVUlJVUxVSkpPWVdZCAFZQUNLSzcG
-DKIM-Signature:a=rsa-sha256;
-	b=gGN/NZG1w4r3Fb4NPDY4FOzxiUj1JzyUyN52IJ13obm4b3yAL1yjWlVw2JtPuZcbb1VSEmwFZSreUcTTTsPiMFQB/rN9ilK0duH3Ou2rw8am3hx5f9yJ55z80av7c7bpEDcJInVP9eOqQcOMw70e6IAIZaD7zitPQoPd6M+qwf4=; c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
-	bh=v5KQiPBEK7te3XVLhGwOItVgj11ELHSc7Ns4KFJJ4sk=;
-	h=date:mime-version:subject:message-id:from;
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ln6ki3hhjam4dpoo"
+Content-Disposition: inline
+In-Reply-To: <20241218175423.20cd97b1@kernel.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-rk3576 can is a new controller:
-Support CAN and CANFD protocol.
 
-There are major differences from the previous rk3568. All errata on the
-rk3568 have been fixed and redesigned.
+--ln6ki3hhjam4dpoo
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH net 0/2] pull-request: can 2024-12-18
+MIME-Version: 1.0
 
-Change in V2:
-[PATCH v2 1/2]: remove rk3576_canfd.c, use the rockchip_canfd driver
-[PATCH v2 2/2]: code style.
+On 18.12.2024 17:54:23, Jakub Kicinski wrote:
+> On Wed, 18 Dec 2024 13:10:26 +0100 Marc Kleine-Budde wrote:
+> > this is a pull request of 21 patches for net/master.
+>=20
+> The "21" is just quantum state of 1 becoming 2? ;)
 
-Elaine Zhang (2):
-  net: can: rockchip: add can for RK3576 Soc
-  arm64: dts: rockchip: rk3576: add can dts nodes
+Must have been the infamous fat-finger quantum state :)
 
- arch/arm64/boot/dts/rockchip/rk3576.dtsi      |  26 +
- .../net/can/rockchip/rockchip_canfd-core.c    | 453 +++++++++++++++---
- drivers/net/can/rockchip/rockchip_canfd-rx.c  | 111 ++++-
- drivers/net/can/rockchip/rockchip_canfd-tx.c  |  29 ++
- drivers/net/can/rockchip/rockchip_canfd.h     | 285 +++++++++++
- 5 files changed, 846 insertions(+), 58 deletions(-)
+Marc
 
--- 
-2.34.1
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
+--ln6ki3hhjam4dpoo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmdj0zoACgkQKDiiPnot
+vG+xTwgAkqzdqHLAdVCVx+ND8OKro8WQM13G5S2Beye7dY3mSxZsDJo1DIzt11a7
+5zsuORN/Br5+IDZeAdA3YnwnrHFP2ZDIWGZYRlIRPRrLlctbnb/lv4IFfcBn0tv0
+usjPolntzayf1lghpQ3+5g+SKa763Hr/QbxxN2W2APp/wF97+watoU1t51tjxFv0
+DNTBD89kXxiuOStp2aq7KSjS6NwhJLZxqqfloRJBJk/KoXtHNcNEYHYYMVHL0rkE
+qambR9nTY+T85WDkDEMMoyCAwZTd51ILrjIxmuHUf///dnJ4RzJ6aihEMasFnMkh
++O0fcXBqxOpYvWSc1DDa0GgWRZBbUg==
+=N10q
+-----END PGP SIGNATURE-----
+
+--ln6ki3hhjam4dpoo--
