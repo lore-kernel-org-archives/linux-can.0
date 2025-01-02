@@ -1,28 +1,28 @@
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2110.outbound.protection.outlook.com [40.107.21.110])
+Received: from DU2PR03CU002.outbound.protection.outlook.com (mail-northeuropeazon11022139.outbound.protection.outlook.com [52.101.66.139])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2EAD7E782
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E13C12DD95
 	for <linux-can@vger.kernel.org>; Thu,  2 Jan 2025 18:58:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.110
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.66.139
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735844312; cv=fail; b=IB+5vNkz9kjG3dYwiRYD58hbs4M+UD7lzQKmWow0vrIYGxDuQVC51vHn+ODInlhVIJUThbZO+zQVbqUUX/FbxgP8WfAmC6FQg4fynaH78ksh2hobhcbwGmHJWv3ZfwHY0jceCNQY6DiWuHzNymCIlVwr82VmsIgK5SzIy2wS+WU=
+	t=1735844313; cv=fail; b=igRiPZ8aNiU9xanwKzWDWZ23JT3a56/0yiCvGFFbtNDK2aCBIB9+pXP7AmIW0t/bavSRM2Ese6RobVIO7p7ULRp1rhqE6N5IDL5uyNAGMaQbG8kAqUjwgbibOozRgEsPOmEU4b6z5Ro8KW+Gc4uJwMYpsm8j+Au9co7i+ggv1rw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735844312; c=relaxed/simple;
-	bh=9PnKRxteWd+7eKFNknWE93B66nChjgpXxGIj7oq2G9E=;
+	s=arc-20240116; t=1735844313; c=relaxed/simple;
+	bh=1GhURzftVTWrizJ8/TLhvdcty33LL1yU12mFq1R+A3s=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LztWvxyrtv+D/WnpwL43U/AM9hXbQdAgU1nqO2Wt1P2goNXC+dBQ5XJfoe8ndGlzLMEfddVTZtiTPHMVmIHnBwh9nvwrtnaAeXQ03Nd4aUMYe5s1sqAvNdVnxdT95sSd1tAk2O7T38L2G/GfhT0WV5psYUCkP6CmlAE+sz1A3W8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=esd.eu; spf=pass smtp.mailfrom=esd.eu; dkim=pass (1024-bit key) header.d=esdhannover.onmicrosoft.com header.i=@esdhannover.onmicrosoft.com header.b=XQvMvscT; arc=fail smtp.client-ip=40.107.21.110
+	 MIME-Version:Content-Type; b=WN8lLFqNk/BqMEe7yKb9b95I9osU82CzaY1fRIJJneENsQWPMPPZyNJUTnR6ier+2YYCLTtMjd05hnq4aYu8hm6cgpcAVueaEf3lNWO6ADKlEwHSRDUlps/C3Jg+VFdFcWrxX+x04qrSsqFd46caNxryf+YxwCOfdH9nBHyJrK0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=esd.eu; spf=pass smtp.mailfrom=esd.eu; dkim=pass (1024-bit key) header.d=esdhannover.onmicrosoft.com header.i=@esdhannover.onmicrosoft.com header.b=WFwH6lbw; arc=fail smtp.client-ip=52.101.66.139
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=esd.eu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=esd.eu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=esdhannover.onmicrosoft.com header.i=@esdhannover.onmicrosoft.com header.b="XQvMvscT"
+	dkim=pass (1024-bit key) header.d=esdhannover.onmicrosoft.com header.i=@esdhannover.onmicrosoft.com header.b="WFwH6lbw"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Y8P8kI0taeZ0LBs/TWQiXRgZGh3gOdwtgaLgltaMTIIff6usCxrU5OQR1ChnDaJJofVVIEIQJ8rwCZg6Ncawp99YjQCYmTwdS2OblXAPCCO5cj+dzFvsCrcTbqV9TiXn6Q2FYV6X3q1U0dv96lGFIjKchzVcBrUIZ8cG6HKcYz+YVDG8W7jeFnRbnnWACUq84JzeIxub6Cr9AcWg+tuSiK+bMguOZYw3Olivi/9C/ccWMOQLJzrnt0Wz4kkgJbP2P0RA2P15N2hz1l1PGfVRdWHAEkbfE7QZohMdd7DavYKrbh8O+PkCDrshXSHK9Lktv2uDKSIkhpO7IMbgOK3kYw==
+ b=aukqHPJmp7uvDZkB6nX2z2cfnUqt2NI239N6enGYa7ZlrQCQC1DdV5+33I+gR4mou8AbhvApZspNaoAKoVpQ/wO9Sh56ay5rsyHistLifQy13O54WmwYo8Ln9HvQUHJMSd6BpZxoifmNk4BX0mWKaQa5xjhOeMsZv/hyTN21UDwe3t2+joQXYCv1E9tDar5HOl8S1NpvvbWdGd02cFQ9gKuoC1wcMsKZO/SACSoeOM4wVqV4uxW4L+DU3e8xEklrsLi8rYbipmGOxBh5TLLIx4gBrGoEL2F35mXFMDEeIaK+NCtIqXM/RoZighQi7zHPRxf7TkFGWq2nu4Fy9e7r5g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=J/kWbnZ3WWiIhCZgmC+ltGmmOElsWIW2msa0xFZ+aQo=;
- b=GAvX1X1kBqZ3ZykCifUWBh03pLWIUoYEfPQVV6hCEG11TnTxjJbdDu7CDHQfCm4HtyDOdbYfRAqY+ygczZQQDND/vq369C7NIyjZB2PBzJZNzsFyNRyCywK4kwxhSmAbrV7DKBLlnvl91cs5QXgBIWzVOtRRfvDSjYCEJJQ3zgRvmha9QqEQB+pywI/Gx4fRopL8RDJFxNh/xMPjA5+W/n4WA7Q6rtzQ9XT2lD/8yDRfXZMLeQXQmuIX3d9uJbdQkw44GXIg8XqmRzussHjf88GkNY6YWf3/SClDZc/dKYTguqj885f/3cC1NEWsChORq9XfSyCRUe2pDWk+ZPNXGA==
+ bh=CrCffxMbHCOb46Lkak9slvxismUrrB/vCrZMEz23lZ0=;
+ b=b7lcbPwbnhgIM/OnVvB2nrJzpMdvK3+y0Gxrfo5uzcWzDCB44Q6/qmihWz+c1l2mUIcuKW24s7PM2PI+cvn7xB+J1T0bD2KNXXL4gCTWmFw5LTLg5mZ5TkeC6SiyWwRdABB8PHBoKO3QWlP9M8mOIS7yQhBKfwaN5U8+rb8uKaW3mWt5Q0BqbN6L62ryATL8V2pa2JO89OZ26CwuMZiVrgHbdPlUBiB4Z3PPoUbnvlYXp9+EQ4TrroALjGuIWaeHz0JeWl9JsAIUbuOhnIYdlYBBCrltQWRjfkPO/e3xwykxOjCdcrwY6jh1CaKexan8JcFlOv812X67dvKYrUATDQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
  is 80.151.164.27) smtp.rcpttodomain=gmail.com smtp.mailfrom=esd.eu;
  dmarc=fail (p=none sp=none pct=100) action=none header.from=esd.eu; dkim=none
@@ -30,41 +30,41 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=esdhannover.onmicrosoft.com; s=selector1-esdhannover-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J/kWbnZ3WWiIhCZgmC+ltGmmOElsWIW2msa0xFZ+aQo=;
- b=XQvMvscTiBbnpm1auFv7/paNLHhnX3DYA9l2afTE8F/17BDbicmHo9IKxELIjMPwswnyy73YU8c8IvHaPPSOeU1Ka10teADaJBvbNliE/nsUyZ/Py6Ai+cAF2qKgU2LzHFBfLtjY5hXowgm8h5dn5AFtSOyS4ky9xnKl3kAtlso=
-Received: from AM0PR02CA0031.eurprd02.prod.outlook.com (2603:10a6:208:3e::44)
- by AS8PR03MB7141.eurprd03.prod.outlook.com (2603:10a6:20b:295::5) with
+ bh=CrCffxMbHCOb46Lkak9slvxismUrrB/vCrZMEz23lZ0=;
+ b=WFwH6lbwTWo+dIm61fN2lI4RJgQHfidm3xRoDvZJ/4DMSpRYgcWqn5QG28x8w4UVUNUK7m5UNOTMFqSVb9R4jaL3eNTYhd89E9lBqN4XXc1SQ7MWVjyfUKDEEih/Ni+nTBbP8/RCIosHFKWwP4GduS7PgHoKcFdm4TclsKZyzOA=
+Received: from PAZP264CA0156.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1f9::17)
+ by AS8PR03MB8441.eurprd03.prod.outlook.com (2603:10a6:20b:52c::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8314.13; Thu, 2 Jan
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8314.12; Thu, 2 Jan
  2025 18:58:22 +0000
-Received: from AMS0EPF0000019F.eurprd05.prod.outlook.com
- (2603:10a6:208:3e:cafe::14) by AM0PR02CA0031.outlook.office365.com
- (2603:10a6:208:3e::44) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8314.12 via Frontend Transport; Thu,
- 2 Jan 2025 18:58:22 +0000
+Received: from AM2PEPF0001C714.eurprd05.prod.outlook.com
+ (2603:10a6:102:1f9:cafe::8f) by PAZP264CA0156.outlook.office365.com
+ (2603:10a6:102:1f9::17) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8314.13 via Frontend Transport; Thu,
+ 2 Jan 2025 18:58:21 +0000
 X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
  80.151.164.27) smtp.mailfrom=esd.eu; dkim=none (message not signed)
  header.d=none;dmarc=fail action=none header.from=esd.eu;
 Received-SPF: SoftFail (protection.outlook.com: domain of transitioning esd.eu
  discourages use of 80.151.164.27 as permitted sender)
 Received: from esd-s7.esd (80.151.164.27) by
- AMS0EPF0000019F.mail.protection.outlook.com (10.167.16.251) with Microsoft
- SMTP Server id 15.20.8314.11 via Frontend Transport; Thu, 2 Jan 2025 18:58:22
+ AM2PEPF0001C714.mail.protection.outlook.com (10.167.16.184) with Microsoft
+ SMTP Server id 15.20.8314.11 via Frontend Transport; Thu, 2 Jan 2025 18:58:21
  +0000
-Received: from debby.esd.local (debby [10.0.0.190])
-	by esd-s7.esd (Postfix) with ESMTPS id 713E57C16CE;
+Received: from debby.esd.local (jenkins.esd [10.0.0.190])
+	by esd-s7.esd (Postfix) with ESMTPS id 6DDA47C16CC;
 	Thu,  2 Jan 2025 19:58:21 +0100 (CET)
 Received: by debby.esd.local (Postfix, from userid 2044)
-	id 6D0292E8034; Thu,  2 Jan 2025 19:58:21 +0100 (CET)
+	id 63FAC2E8047; Thu,  2 Jan 2025 19:58:21 +0100 (CET)
 From: =?UTF-8?q?Stefan=20M=C3=A4tje?= <stefan.maetje@esd.eu>
 To: Marc Kleine-Budde <mkl@pengutronix.de>,
 	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
 	linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
 	Robert Nawrath <mbro1689@gmail.com>
-Subject: [RFC PATCH 5/6] can: esd_402_pci: add request to provide a common BRP
-Date: Thu,  2 Jan 2025 19:58:20 +0100
-Message-Id: <20250102185821.670839-6-stefan.maetje@esd.eu>
+Subject: [RFC PATCH 3/6] can: esd_402_pci: Add support for esdACC CAN-FD versions below 0.72
+Date: Thu,  2 Jan 2025 19:58:18 +0100
+Message-Id: <20250102185821.670839-4-stefan.maetje@esd.eu>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20250102185821.670839-1-stefan.maetje@esd.eu>
 References: <20250102185821.670839-1-stefan.maetje@esd.eu>
@@ -78,88 +78,180 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AMS0EPF0000019F:EE_|AS8PR03MB7141:EE_
-X-MS-Office365-Filtering-Correlation-Id: 19e04555-f145-4b27-93b6-08dd2b5f6e00
+X-MS-TrafficTypeDiagnostic: AM2PEPF0001C714:EE_|AS8PR03MB8441:EE_
+X-MS-Office365-Filtering-Correlation-Id: 69c4a302-5b88-48a9-8b5c-08dd2b5f6d99
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|1800799024|36860700013|82310400026;
+	BCL:0;ARA:13230040|1800799024|376014|36860700013|82310400026;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?ckZiY24vQkQzZjV0WUFGSzhmUnhRbHkyMCtsdlZaRWlpd21aS2ozZ1FFMDhr?=
- =?utf-8?B?WTBDR1lRclh6NVJZMlJtU0V2R3lOcS9JUHdDQk8zaEZ1NURYd0lsTDdNYVUx?=
- =?utf-8?B?Zm80bVRWSDNFRWF2ejBjb0QzTE9NR1BuOGFWS1hQemNTM285VUxDVHZaVW1m?=
- =?utf-8?B?R1VLRlo5Zk8xTFZUWHAwZXFIUkU1UVFRU085U3pLMlptRUdSOCtMZDVCN0dj?=
- =?utf-8?B?U3RpMzZWUXJQWlFIeklVUnJlKzJpWU9CSmpYeHZZWWNyMmhvdUswcTFjVnV4?=
- =?utf-8?B?WWJSSFQwbmNBcldXSWRaRTIwbGVGZmpsbWlPM2hMc2FMZnVGbW56V01hOG84?=
- =?utf-8?B?WUUyVGh4QVByWmpqSnlTa0hhbDJiaGxDV0xIWW05dEcwT0g0UFFEZno3c2F2?=
- =?utf-8?B?RXc0U0x5RGNYVkJaV1FSaFpVVXVSeHBySSsrT0EvSkY4bGJ4YWtlRy9JU2o0?=
- =?utf-8?B?NDVZN3g2RVk0TnAvN2ZsRFBKaG1zMkFQb2NrWmxMc0Nxa0NlTnJzVVBXQ0w1?=
- =?utf-8?B?d29ldXZkTHI1SmJmclBWblZ4Q0tGRGpOYkVXdEFtUGcycmMrQ08xK0hrV1Jj?=
- =?utf-8?B?VGIvUXIrL08xS05SaitKYnJGYWNvNGd5TEliZFd5Q1ZnUU1kQlVyU1hWaVVo?=
- =?utf-8?B?a1dEcWNjUUgreDNXdk9URFhNU2V0dmtBaHBOL1dRYW1XRHUrSmlwZnVhY2dW?=
- =?utf-8?B?eDZOSFp0VGtYT3VFN2hNcmtFaVhnL3dNYlYrUHVQVzlWaGhWMFJKWDdKK2Zy?=
- =?utf-8?B?RGNnU3d0UFlOdXM0eTZRVythb2p3Tnp4M3RnempFVmQ4ZFVaYzMyc1NHakdt?=
- =?utf-8?B?RlJEWkRES1ljS2xvZGhFbkxXdFFBZHJiY2RBeTQ3R1h4NUlSVEQyaTBDbGNo?=
- =?utf-8?B?elJNZjE4Y3hvYmFlTFFCUGpGNWVCTmxidmlJWWprRmgxcXQ5UjF6MTFCUFdD?=
- =?utf-8?B?TjZaNERUZnQ1NFg3V3pPbU54VEQvTHUyeUg2VUxuTUp5UTM4MGxQaUR6dk5s?=
- =?utf-8?B?WU9PNzBOakI2dEtLbGtQclNWb3BMcHV1SWozQ0NyQlBNa0lCMVJXNldEVVJs?=
- =?utf-8?B?SzJIUDdpd3N4NmtGa3Q3Sk5IUWFvcEZhTGUvWWxBQTlybUkvRUFvcUo4M3pV?=
- =?utf-8?B?aC8vOTFtdXcwYW9PaFBMNmkrVlpyOW8vMUdFdTlwRFA3NkdmU2lMTzUrZXJr?=
- =?utf-8?B?WEExY0VuOUhuZWlWWktBS21UQXRvaDBhYkQwbG8vUzZCTEpkWGlUM2JkcTRs?=
- =?utf-8?B?OUQ4ejViVlhlVThVWE5xbjdOTFVpbDkxRE4rQldXOGRlekk2UEw1ZE92SjF6?=
- =?utf-8?B?MkIyUzltNTc5V0RDaVFVOW53ZG95aVkweTBZUGVQVUxxc21qUGRnci9NQWkx?=
- =?utf-8?B?c2xmdTIrM3EyMlNYM2dqRVhIdVFLemRMY0lSdHphekw5cWJ0cmtZb0hZSmlQ?=
- =?utf-8?B?L0IyV0l1R2tXMzN0VVozVlRCb0NhUHdOaUV2UlJCR09zblpjb01LQ0Q5aEcy?=
- =?utf-8?B?RFRCQ2FiQjlNT0d4R3FKTm80VFdqTHJTd3dnNlFxKzdvQ3VaamJDMDg3WlVn?=
- =?utf-8?B?Z1lub1EvRU81bk9LTFJuejArV2YxTGVpQytUdVVGR1krODEvM2w0T0ZrSzZY?=
- =?utf-8?B?ZC9kS2g2TjE1WWFXeCtZcFZBM05DUmlJNUNkSFp2NzF0OEhXVEhRUVc0Vnlt?=
- =?utf-8?B?UzNqS2N5VEpWdFQrcmgvUDNVeEt4b09FSU53SGR1dURRdDVEVWh6M3I2WUN0?=
- =?utf-8?B?RlVlTmY5dVpERWxKNkQ2dmJWSHJoLzZKMndFaFgwN1RVeEsrQzlLNDdvcThY?=
- =?utf-8?B?VHMyVUdKaEwrYVlXVk1jWmVQMTJqdzZ2TzVzS2dJazdySk1IQWV2YmJYSDZs?=
- =?utf-8?B?WXNleCs5UmNocUlpbE13SlVnWTVVaW82NFVZeHJIL0QwWERUTXdVcUZFbEU3?=
- =?utf-8?B?VVQ5RHY2SGtMZ2JkOE5lOFN1djhMeHpxUEh3c3VJUW94Mm5sbE5pdzkzdHFE?=
- =?utf-8?Q?GYJmn7nIex4S5dDCY8IybFZqrmQ8RA=3D?=
+	=?utf-8?B?MG1TQkxTRWk0dzdyckk2SVlLTndTZjlFY2NqdTF1MloxWkNhN1BOV1ZQdmFz?=
+ =?utf-8?B?b25EVUxJdEZIWG95YXY3ZGo1YU9mM2ZpbEZDazRCSHRIVVlqdmpyT0p3aG4r?=
+ =?utf-8?B?WGI4ZEp0eWYxS1VTOUpSaG5rTEhZajNZMkdRcUdaVjhGU0MvbkdobjM5ZXhq?=
+ =?utf-8?B?ZW5QcE4rZlZtQUdUSklCM2hlejJobFljQTg4TFloVnVIWnVYZEgrODNXMWVj?=
+ =?utf-8?B?QWdwU1dpTUZMaDRmTXUvZ0dUa01GY3RibndGV1J3ZG1PYlhrUXhScG5XMXZR?=
+ =?utf-8?B?cUFyQlhxVk9kMnpWT3dsMjJMVEY5K3ZVQWRsZFBRN1U4dFMzUk9NRkMvZlRY?=
+ =?utf-8?B?M0RjQmlRK3dyOElBeS8rL3AxN1p5NEFoWWh4cSt3TzR0TjZ6VVUzTHZJMCsr?=
+ =?utf-8?B?SkJ3MXFXWktsUGdFbTlJMHRHZlppS0M4MmNoMjNCSWlwV1g5R2F6Mk5Qa0Nw?=
+ =?utf-8?B?czdjSWNMN1l4bHY1bFNTdlF6eDVCQnFsclZUa2tlVFAzZUUxRmQ0T0tYOVE0?=
+ =?utf-8?B?SHRVVC85Y1JSRVk3TUQrY2l0Y2t2ZVVOMFBZVk5kbjk0TVpoQ1MvMExUY2tZ?=
+ =?utf-8?B?bWgxVjFJenV2VnAzMGprUGUzYXlTT1N1bE93MUlPdmZsZzdXL1BXc3o5L2JZ?=
+ =?utf-8?B?RlJCU29icGpVUXJNQXBaOFNMRUYxMWErT2RFVGJGWDZiNFlabFd2MGVIanZE?=
+ =?utf-8?B?NVg2dExoZGNlN2t5MWdHWkNyckY5dmRJMHBmS1k4dDlpSzhNaVFDNmhOK1cz?=
+ =?utf-8?B?VnZqbi96U0NCaWJpLzA2RC9yRDhOdGYzU2REVmlhdEZ4V3YxUUtObC9wbWFk?=
+ =?utf-8?B?SkpDS2F4c1hUdkpPN0pEM0lMQ2JhREVCU1ROalMrLzVZK0RTcjhpR1l1b0Y4?=
+ =?utf-8?B?NktCVE1rL2FCcjZxb21QU21tZnRadWJkSkdpRm90QnhrajZES0V5VXlyUEta?=
+ =?utf-8?B?ZnFTdWFQcjN4SkR1dnN1cExBWG5sU2k3WXhzQlRmOGoyM2hGRzE2dTV5NnBY?=
+ =?utf-8?B?LzhqeENVVnF5QXVqak12bjhCOXdNME9TSi9hZVIyQkF1NlJITkhPQVZPWkoy?=
+ =?utf-8?B?S1MzVnUvd3dUdGlJbXJQZlBlekpxWTNabFRhSjRVRGtOK2hYcmkyL05SalFz?=
+ =?utf-8?B?Sy9nTjFzOElqREtVcm9sNlhJNHRCVzNUdGdqN3B4TlJYTUtpZ3ZVSVdmeGhC?=
+ =?utf-8?B?MC9xSVl1K0sxMThmZUw2RHBlSW0vZjRXSkFMUzJnQ3BoZWRRS1I1azlqUTlT?=
+ =?utf-8?B?QldvaVJEd1M1SmhQQ2FxMU1ZS2dCb25DMDJYWWdpeWZzckcvRDluUFJEcFE3?=
+ =?utf-8?B?NEp0ZnFWTEJScWd2cFZVRzVFajFGd3ExNCs0cE1TM3hDaFlXZ0hhcXJmd3Z0?=
+ =?utf-8?B?QWJLMncxTGdsdmd3UW9ER2xkN1Bma2EyZW85WVAyYzd4TnBaSGV5eU5UR3Fp?=
+ =?utf-8?B?Z3JhMjVzTjhhUFhLNEJJdm8yME9SWURhMWE3NFVlQjVTTDlnVDBub3cwNEY4?=
+ =?utf-8?B?QXpHclhzWXVYdVB6dGplRWNhUlV5NUs1Mm5qTWVybUpvTUNUdXpELzJDbkov?=
+ =?utf-8?B?dkdtL3A5d0ZITitKSTJjTjdMQ1lzeFpDckRBUGNDMExnTURHZWhCNjNpVjJP?=
+ =?utf-8?B?MlFWZGZGZDZ2a0xWWHhsTmlCWlRCSk1zWThKNlZhbzQ2UTE0dmdjUFRNa2Vr?=
+ =?utf-8?B?KzU4TmRpYk1XYmQ2Wlo3VW5WMm1QSkJJN0lXOUM3ZHd4eUx6QzJ2S1NlUTFJ?=
+ =?utf-8?B?RjY0alRqSmZUdEo0dksrWU5Nd0lPa3lpbHdLSFFrUmU5eGt1R0d1QnRiN3Ar?=
+ =?utf-8?B?aC96TWZKNTRtVHJIN0lpZ3ExVjJnNk5OcngxOVZaazMrSjR5RkpuMFdRaDht?=
+ =?utf-8?B?MS8vNDFONkJyZVR4dmN1emIvN2RQOUU5akxoeGNvOTFpbUlvczc3YUJjWjY4?=
+ =?utf-8?B?dFFreEJiSGJKRTBZaGtNUmRqaU9XdUZldWFETlQ2RTdJTlViOTlLTkdubG9m?=
+ =?utf-8?Q?PiTnSRlW6nWAjImjH3jtFFqkK3m7sk=3D?=
 X-Forefront-Antispam-Report:
-	CIP:80.151.164.27;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:esd-s7.esd;PTR:p5097a41b.dip0.t-ipconnect.de;CAT:NONE;SFS:(13230040)(376014)(1800799024)(36860700013)(82310400026);DIR:OUT;SFP:1102;
+	CIP:80.151.164.27;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:esd-s7.esd;PTR:p5097a41b.dip0.t-ipconnect.de;CAT:NONE;SFS:(13230040)(1800799024)(376014)(36860700013)(82310400026);DIR:OUT;SFP:1102;
 X-OriginatorOrg: esd.eu
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jan 2025 18:58:22.3272
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jan 2025 18:58:21.6363
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 19e04555-f145-4b27-93b6-08dd2b5f6e00
+X-MS-Exchange-CrossTenant-Network-Message-Id: 69c4a302-5b88-48a9-8b5c-08dd2b5f6d99
 X-MS-Exchange-CrossTenant-Id: 5a9c3a1d-52db-4235-b74c-9fd851db2e6b
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5a9c3a1d-52db-4235-b74c-9fd851db2e6b;Ip=[80.151.164.27];Helo=[esd-s7.esd]
 X-MS-Exchange-CrossTenant-AuthSource:
-	AMS0EPF0000019F.eurprd05.prod.outlook.com
+	AM2PEPF0001C714.eurprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR03MB7141
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR03MB8441
 
-The driver now requests that the bit rate configuration should use a
-single (common) BRP for both CAN FD bit rates by setting statically the
-CAN_CTRLMODE_FD_COMMON_BRP.
+The esdACC CAN-FD FPGA versions below revision 0.72 (0x0048) have some
+features missing:
 
-This is needed because the esdACC CAN controller has only a single BRP
-for both bit rates.
+- Older versions have only a 8-bit wide BRP. Therefore its maximum value
+  is 256 instead of 512.
+- Older versions don't implement the TDC filter logic.
+
+Also the DAR feature (single shot) is implemented only for esdACC
+versions 0.72 and later for the Classic CAN and CAN FD variants.
 
 Signed-off-by: Stefan Mätje <stefan.maetje@esd.eu>
 ---
- drivers/net/can/esd/esd_402_pci-core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/can/esd/esd_402_pci-core.c | 65 ++++++++++++++++++++++----
+ 1 file changed, 55 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/net/can/esd/esd_402_pci-core.c b/drivers/net/can/esd/esd_402_pci-core.c
-index 1152182aa64a..29ffa152097a 100644
+index 03df04251c03..1152182aa64a 100644
 --- a/drivers/net/can/esd/esd_402_pci-core.c
 +++ b/drivers/net/can/esd/esd_402_pci-core.c
-@@ -447,6 +447,10 @@ static int pci402_init_cores(struct pci_dev *pdev)
+@@ -95,6 +95,32 @@ static const struct can_bittiming_const pci402fd_data_bittiming_const = {
+ 	.brp_inc = 1,
+ };
+ 
++/* Used if the esdACC FPGA is built as CAN-FD version, for versions pre 0.72. */
++/*	These older versions have a maximum BRP of 256. */
++static const struct can_bittiming_const pci402fd_pre72_nom_bittiming_const = {
++	.name = "esd_402fd",
++	.tseg1_min = 1,
++	.tseg1_max = 256,
++	.tseg2_min = 1,
++	.tseg2_max = 128,
++	.sjw_max = 128,
++	.brp_min = 1,
++	.brp_max = 256,
++	.brp_inc = 1,
++};
++
++static const struct can_bittiming_const pci402fd_pre72_data_bittiming_const = {
++	.name = "esd_402fd",
++	.tseg1_min = 1,
++	.tseg1_max = 32,
++	.tseg2_min = 1,
++	.tseg2_max = 16,
++	.sjw_max = 16,
++	.brp_min = 1,
++	.brp_max = 256,
++	.brp_inc = 1,
++};
++
+ /* Transmitter Delay Compensation constants for esdACC controller
+  */
+ static const struct can_tdc_const pci402fd_tdc_const = {
+@@ -106,6 +132,18 @@ static const struct can_tdc_const pci402fd_tdc_const = {
+ 	.tdcf_max = 63,
+ };
+ 
++/* Transmitter Delay Compensation constants for esdACC controller
++ * for versions pre 0.72. No TDC Filter register present.
++ */
++static const struct can_tdc_const pci402fd_pre72_tdc_const = {
++	.tdcv_min = 0,
++	.tdcv_max = 0,
++	.tdco_min = 0,
++	.tdco_max = 63,
++	.tdcf_min = 0,
++	.tdcf_max = 0,
++};
++
+ static const struct net_device_ops pci402_acc_netdev_ops = {
+ 	.ndo_open = acc_open,
+ 	.ndo_stop = acc_close,
+@@ -202,6 +240,11 @@ static int pci402_init_card(struct pci_dev *pdev)
+ 			card->ov.version);
+ 		return -EINVAL;
+ 	}
++	if (card->ov.version < PCI402_FPGA_VER_0_72) {
++		pci_warn(pdev,
++			 "esdACC below version 0x%.4x misses some features, please update from 0x%.4x\n",
++			 PCI402_FPGA_VER_0_72, card->ov.version);
++	}
+ 
+ 	if (card->ov.timestamp_frequency != ACC_TS_FREQ_80MHZ) {
+ 		pci_err(pdev,
+@@ -223,13 +266,7 @@ static int pci402_init_card(struct pci_dev *pdev)
+ 
+ 	if (card->ov.features & ACC_OV_REG_FEAT_MASK_CANFD) {
+ 		pci_warn(pdev,
+-			 "esdACC with CAN-FD feature detected. This driver partly implements CAN-FD.\n");
+-		if (card->ov.version < PCI402_FPGA_VER_0_72) {
+-			pci_err(pdev,
+-				"esdACC CAN-FD below version 0x%.4x not supported, please update from 0x%.4x\n",
+-				PCI402_FPGA_VER_0_72, card->ov.version);
+-			return -EINVAL;
+-		}
++			 "esdACC with CAN-FD feature detected. This driver is not feature complete, yet.\n");
+ 	}
+ 
+ #ifdef __LITTLE_ENDIAN
+@@ -410,9 +447,17 @@ static int pci402_init_cores(struct pci_dev *pdev)
  			priv->can.ctrlmode_supported |= CAN_CTRLMODE_FD |
  				CAN_CTRLMODE_TDC_AUTO |
  				CAN_CTRLMODE_TDC_MANUAL;
-+			/* Mark that we always run with a common BRP. This mode is NOT
-+			 * changeable by the user.
-+			 */
-+			priv->can.ctrlmode = CAN_CTRLMODE_FD_COMMON_BRP;
- 
- 			if (card->ov.version >= PCI402_FPGA_VER_0_72) {
- 				priv->can.bittiming_const = &pci402fd_nom_bittiming_const;
+-			priv->can.bittiming_const = &pci402fd_nom_bittiming_const;
+-			priv->can.data_bittiming_const = &pci402fd_data_bittiming_const;
+-			priv->can.tdc_const = &pci402fd_tdc_const;
++
++			if (card->ov.version >= PCI402_FPGA_VER_0_72) {
++				priv->can.bittiming_const = &pci402fd_nom_bittiming_const;
++				priv->can.data_bittiming_const = &pci402fd_data_bittiming_const;
++				priv->can.tdc_const = &pci402fd_tdc_const;
++			} else {
++				priv->can.bittiming_const = &pci402fd_pre72_nom_bittiming_const;
++				priv->can.data_bittiming_const =
++					&pci402fd_pre72_data_bittiming_const;
++				priv->can.tdc_const = &pci402fd_pre72_tdc_const;
++			}
+ 			priv->can.do_get_auto_tdcv = acc_get_auto_tdcv;
+ 		} else {
+ 			priv->can.bittiming_const = &pci402_bittiming_const;
 -- 
 2.34.1
 
