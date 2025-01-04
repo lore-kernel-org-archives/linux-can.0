@@ -1,133 +1,272 @@
-Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAB3E13AD0;
-	Fri,  3 Jan 2025 12:42:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.30.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BA8A13C9D9;
+	Sat,  4 Jan 2025 12:57:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735908132; cv=none; b=diI/3Gn/LUavjZU5sqD0iulQI0J08XoK3dZekJpKFMdWDB1c/h4t+xvo4IHpr6yTjoegXDX+wSLkna2PBYAWSCQTSZE/MARveDVufaoqO0JmDL5M5EjbYvdfWCK+cw6Cc2t7l+ghgO2IxxFax4tVcFQyB8kO6H6zVF/M7hldJpk=
+	t=1735995469; cv=none; b=hz4EltoOjGFxxBiyhF2XR/ILDTZBCJjLsjHPwXA8Den5A+g5BZ4kv2SimPZpTGEZOUbAwwzEWL568I7NEFDq9IK1YrBXV43zGwm67a7yrdEWPGKUh1id6rcaX40cm3QCdRg+CZzejbgBAV754ICcjXhE+cXiZblyvPQVrOlGwkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735908132; c=relaxed/simple;
-	bh=bO8/dVTnZPvMWTMsHQngFWEhaJho18CdgR5bOVbC8Wo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i0aScbKHymtMho2pa28sswGvGfp7H65YFbOtRGa5IHO0bAjZNL6Sf/CWxZ4Is63CBY2nPllfgN2iG0vHTQc7/fBsy7wmiDi+w78Q9W8UTbDpfzP2jN2y3FK16bnZHCt/0qabQnLXwL51iebG6dTNhz0uRcKgrr7WbXdi94Z+V6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=O6GsVT1X; arc=none smtp.client-ip=188.40.30.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
+	s=arc-20240116; t=1735995469; c=relaxed/simple;
+	bh=78iDDWAiBGTMRDha9Obhylfd+VcFmHpySi4wHlZAMxI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=d3BuKTs1v3dStrl57lepMJ/K+snbkLdNfNyYZ7abxrEqrca6BBQGy2kCkkkp7I/6HE7V+a7YiCE7hnPbDuIWGvr126lzkjUtFFScYtZC2ejOv237iB0E5THOiDQDJPyWoranuG3DA8bDM57Kb5/6z5y5iffqPxZqhgSMOgP2EX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aaFdqR9E; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="O6GsVT1X"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-	s=default2211; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID; bh=63DDlv1B8ESMghis3VptMZqGDW2+EMqgGuNLkv78d9o=; b=O6GsVT
-	1XKFgi/a2FK2rPu+nEt1uFWk6P6u1MC7umNuJcjd0wDWg8WJVtMSIymH9D/FH9qvU4vyMNecBLs/T
-	SDZ9/Cjh+Ekz4FB5dEhIT//glH4fi6wFgY1znsJaMRT0cTKr6lhk4tWp1nzz7uZxJ2JrF4zsxLyxZ
-	s4CW/IE7w2JTOkyNB4pul/hvaNv2fdGBMh9eR/AUbHzclKMLAS4cotS8UvT76N8DNrdoNwNxjKeQG
-	9pEUlrucS8/qZjYjJY8zBTzilg91XmxDzQXy1RZZShrupZGZ1Qv9ATvJx57vvHlLghgPRRDMHHTu0
-	0f0wF0pp7TXfpo9TKmVxunASTVlA==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <sean@geanix.com>)
-	id 1tTgrM-0003Ff-0T;
-	Fri, 03 Jan 2025 13:33:00 +0100
-Received: from [2a06:4004:10df:0:9e0:2602:be72:b34a] (helo=Seans-MBP.snzone.dk)
-	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <sean@geanix.com>)
-	id 1tTgrL-000HJ8-1k;
-	Fri, 03 Jan 2025 13:32:59 +0100
-Date: Fri, 3 Jan 2025 13:32:58 +0100
-From: Sean Nyekjaer <sean@geanix.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, linux-can@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH can-next v5 2/2] can: tcan4x5x: add option for selecting
- nWKRQ voltage
-Message-ID: <fndziki656cxg353f7bldt7s5dm2ybaq4e2foou3eb74savebx@q6uyltlj2klv>
-References: <20241114-tcan-wkrqv-v5-0-a2d50833ed71@geanix.com>
- <20241114-tcan-wkrqv-v5-2-a2d50833ed71@geanix.com>
- <clwiowhd5jwf7uzbcbexelsspdpflqhshq6ev5wsabhuugemlp@bbktuqgjd2gg>
- <20241118-impetuous-mackerel-of-glamour-f482ed-mkl@pengutronix.de>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aaFdqR9E"
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-216401de828so171698255ad.3;
+        Sat, 04 Jan 2025 04:57:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1735995466; x=1736600266; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=utMz9TCdnLzB+35RCtS5XbaQfGf7lVYnJhgTvLhC8qc=;
+        b=aaFdqR9EZKxzvbigGlIhXEkjzY4dZ/t0SffjNDBfTJw91eHRa6OIMDvb357NSBzuV5
+         gw1s/qEcX77fk+rE8u6CNgJcG7ATjDlU0ZjjwEpd19eEbjNXmAAZhrBLmcpz1pFrKWun
+         39IBAR4n3JnItH/AwBkbIzqb+41veKqjfApxRGe+ZRxL/CusiL702PCbue7TCRm2Jl/q
+         YUNSxPiKM4b1lbmy2Br3Okjvz+1CIfl6l/uRDcTk9ltLSGO4c5z4VNRNCx46Uu97ELq6
+         qd5aj/PzyfnfFNMth3UmFbK8Lbnw5wp4/mGwSys6hLpY0M9vKPYMj0pPFL6B4SNiZvKj
+         1DWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735995466; x=1736600266;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=utMz9TCdnLzB+35RCtS5XbaQfGf7lVYnJhgTvLhC8qc=;
+        b=lGxUGpBhyuZ70sv+kjZ2YIGle3AK59t+QJc4kgp6KpJ0PVpCcMmqMDyfaWHlbXN38p
+         pePyMq/W12v9976NoFfcte80Z2YVHKUgdU5+ngf85BtO74wzvT0HK3Gb69O73eq2ngZr
+         OzbpIEnkWwN0VE36tzl7ZWoiwb1QcAvoYNeTl1IkQcAYSFBOzt2b99lCG0Mgs76NlPpB
+         gv/mOaeaeDcA2rIvNDeU+m9Pnox7C6sU9GxWvs+oMmvbrDs9SlKmxuO7SJfxy8IKxCEk
+         o0nn+tbUZHI1jFqPlWOzDOqbMp4hAzIStjmF32ve3FVIkGTUk8kfQhlYwwF7mN1hOx0v
+         /EWA==
+X-Forwarded-Encrypted: i=1; AJvYcCUD/Zzs1vUe/Uc+0D5IPPuRTbku13+fCatXpNylDw7SE4rij/JKb1Sb88uyYAJvNJrZ3pe4BFk72Y5pUX/3Kug=@vger.kernel.org, AJvYcCUPzTkx6nSqMJjEC+yD222+R9/+k/MdirVBG7D9EtEggmqI7pG5E3I2oOpKOB7Nx6Qi1pLksmBqnx5Um3wF@vger.kernel.org, AJvYcCUQS7ZcRVi6hO0BvMwu+rTLdPOBasXZKUBUCRPwG6nyrWgLiNS2LK+dpZvbFSngiSTwIEIKKe6h6rnDXM2t3+1x@vger.kernel.org, AJvYcCUhxpDLRg+RzhudfVB+5+KKR9aYc33EYqbFQKNRAqeak7Jf3gvd8WuFGgVbB5zLmNjb8ddgfJl+ezfqww==@vger.kernel.org, AJvYcCXCK6CY5DSfaMXW6BkePYU5xSJiVFW84lLyf4bco8fdzCuNZnKcJOSXGqRI2f+MDQ1chG8=@vger.kernel.org, AJvYcCXJJhlP3ghOV0ARpfg7G8N46lkJRqHgkaUfgXdwknbiHFcC0l12VI59RZrK1Ve8NJEp3gQvqs2S6KUp@vger.kernel.org, AJvYcCXfRyTCixj/AO3bvoNQG6aR1UY3OM2aev1T7y5Di4mic9o8JFkc1n7bIhoAQ0Y1XrVrTgdhe1UFgv5V@vger.kernel.org, AJvYcCXxg1Y/AmIX0/YcOny47bA/Kd2iGL54WD8AHNefdXD6DLZORv1fF7gYsD7E8+6HkV4PRc1PlkfJ2yh5yg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxRikTfhMJDbOBibOTq/e80yeYF9WN786tWLFFBePp0usZB+oVw
+	lp6RwZZn4oDSrFQ8mdBK6A1z5gXY47pYXPd2rYnRvNUkwhJxKK8YTgdoCnRqo5w=
+X-Gm-Gg: ASbGnctak/GXNTkAPJsVGyfHpF+m8AyKahvuDjfWJ/yhn4Z+cjXOxfxGMZAUeYQtCFs
+	rN9GLicb2EyJs3+1AQzdgsm0/xpR/pjORRl8zGr8RHJ7KePNNpZCmhcXZWxuVcXU13VbAYXxWD4
+	Vo3JYmAFN1B8LFRxMejJHBQvV9lOevXQWsCJFgURLf7//MuL0TJUbKw87rTIiRDtWJdL+glS1HY
+	ZprBSg22CKq+SL7U+XuWXLeWR1wVOgm0tH2DwaOBLkZ+mw=
+X-Google-Smtp-Source: AGHT+IGcOHb1dyLQmVkG8bow/TLK/QHadko/AX65rHfAErCpy6bKIwin2B23ApYOFwq4e4AHjEiARA==
+X-Received: by 2002:a05:6a00:3a02:b0:724:bf30:147d with SMTP id d2e1a72fcca58-72abddb20cfmr61551219b3a.11.1735995466219;
+        Sat, 04 Jan 2025 04:57:46 -0800 (PST)
+Received: from ws.. ([103.167.140.11])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad830349sm27761344b3a.47.2025.01.04.04.57.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Jan 2025 04:57:45 -0800 (PST)
+From: Xiao Liang <shaw.leon@gmail.com>
+To: netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Kuniyuki Iwashima <kuniyu@amazon.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Donald Hunter <donald.hunter@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Ido Schimmel <idosch@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Simon Horman <horms@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Hangbin Liu <liuhangbin@gmail.com>,
+	linux-rdma@vger.kernel.org,
+	linux-can@vger.kernel.org,
+	osmocom-net-gprs@lists.osmocom.org,
+	bpf@vger.kernel.org,
+	linux-ppp@vger.kernel.org,
+	wireguard@lists.zx2c4.com,
+	linux-wireless@vger.kernel.org,
+	b.a.t.m.a.n@lists.open-mesh.org,
+	bridge@lists.linux.dev,
+	linux-wpan@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v7 00/11] net: Improve netns handling in rtnetlink
+Date: Sat,  4 Jan 2025 20:57:21 +0800
+Message-ID: <20250104125732.17335-1-shaw.leon@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20241118-impetuous-mackerel-of-glamour-f482ed-mkl@pengutronix.de>
-X-Authenticated-Sender: sean@geanix.com
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27507/Fri Jan  3 10:40:57 2025)
+Content-Transfer-Encoding: 8bit
 
-On Mon, Nov 18, 2024 at 04:14:09PM +0100, Marc Kleine-Budde wrote:
-> On 18.11.2024 16:05:42, Sean Nyekjaer wrote:
-> > Hi Marc,
-> > 
-> > On Thu, Nov 14, 2024 at 10:14:50AM +0100, Sean Nyekjaer wrote:
-> > > The nWKRQ pin supports an output voltage of either the internal reference
-> > > voltage (3.6V) or the reference voltage of
-> > > the digital interface 0-6V (VIO).
-> > > Add the devicetree option ti,nwkrq-voltage-vio to set it to VIO.
-> > > 
-> > > If this property is omitted the reset default, the internal reference
-> > > voltage, is used.
-> > > 
-> > > Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-> > > Reviewed-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> > > Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> > > ---
-> > >  drivers/net/can/m_can/tcan4x5x-core.c | 20 ++++++++++++++++++++
-> > >  drivers/net/can/m_can/tcan4x5x.h      |  2 ++
-> > >  2 files changed, 22 insertions(+)
-> > > 
-> > > diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
-> > > index 2f73bf3abad889c222f15c39a3d43de1a1cf5fbb..7213d9894c82d079bf92f1ec62d4eebb500cdfa4 100644
-> > > --- a/drivers/net/can/m_can/tcan4x5x-core.c
-> > > +++ b/drivers/net/can/m_can/tcan4x5x-core.c
-> > > @@ -92,6 +92,8 @@
-> > >  #define TCAN4X5X_MODE_STANDBY BIT(6)
-> > >  #define TCAN4X5X_MODE_NORMAL BIT(7)
-> > >  
-> > > +#define TCAN4X5X_NWKRQ_VOLTAGE_VIO BIT(19)
-> > > +
-> > >  #define TCAN4X5X_DISABLE_WAKE_MSK	(BIT(31) | BIT(30))
-> > >  #define TCAN4X5X_DISABLE_INH_MSK	BIT(9)
-> > >  
-> > > @@ -267,6 +269,13 @@ static int tcan4x5x_init(struct m_can_classdev *cdev)
-> > >  	if (ret)
-> > >  		return ret;
-> > >  
-> > > +	if (tcan4x5x->nwkrq_voltage_vio) {
-> > > +		ret = regmap_set_bits(tcan4x5x->regmap, TCAN4X5X_CONFIG,
-> > > +				      TCAN4X5X_NWKRQ_VOLTAGE_VIO);
-> > > +		if (ret)
-> > > +			return ret;
-> > > +	}
-> > > +
-> > >  	return ret;
-> > >  }
-> > >  
-> > > @@ -318,6 +327,15 @@ static const struct tcan4x5x_version_info
-> > >  	return &tcan4x5x_versions[TCAN4X5X];
-> > >  }
-> > >  
-> > > +static void tcan4x5x_get_dt_data(struct m_can_classdev *cdev)
-> > > +{
-> > > +	struct tcan4x5x_priv *tcan4x5x = cdev_to_priv(cdev);
-> > > +	struct device_node *np = cdev->dev->of_node;
-> > 
-> > Guess we can remove this line. Sorry
-> 
-> ACK. Will fixup here.
+This patch series includes some netns-related improvements and fixes for
+rtnetlink, to make link creation more intuitive:
 
-Remenber to do the fixup :)
+ 1) Creating link in another net namespace doesn't conflict with link
+    names in current one.
+ 2) Refector rtnetlink link creation. Create link in target namespace
+    directly.
 
-Sorry for the extra work
+So that
 
-/Sean
+  # ip link add netns ns1 link-netns ns2 tun0 type gre ...
+
+will create tun0 in ns1, rather than create it in ns2 and move to ns1.
+And don't conflict with another interface named "tun0" in current netns.
+
+Patch 01 serves for 1) to avoids link name conflict in different netns.
+
+To achieve 2), there're mainly 3 steps:
+
+ - Patch 02 packs newlink() parameters into a struct, including
+   the original "src_net" along with more netns context. No semantic
+   changes are introduced.
+ - Patch 03 ~ 07 converts device drivers to use the explicit netns
+   extracted from params.
+ - Patch 08 ~ 09 removes the old netns parameter, and converts
+   rtnetlink to create device in target netns directly.
+
+Patch 10 ~ 11 adds some tests for link name and link netns.
+
+
+BTW please note there're some issues found in current code:
+
+- In amt_newlink() drivers/net/amt.c:
+
+    amt->net = net;
+    ...
+    amt->stream_dev = dev_get_by_index(net, ...
+
+  Uses net, but amt_lookup_upper_dev() only searches in dev_net.
+  So the AMT device may not be properly deleted if it's in a different
+  netns from lower dev.
+
+- In gtp_newlink() in drivers/net/gtp.c:
+
+    gtp->net = src_net;
+    ...
+    gn = net_generic(dev_net(dev), gtp_net_id);
+    list_add_rcu(&gtp->list, &gn->gtp_dev_list);
+
+  Uses src_net, but priv is linked to list in dev_net. So it may not be
+  properly deleted on removal of link netns.
+
+- In pfcp_newlink() in drivers/net/pfcp.c:
+
+    pfcp->net = net;
+    ...
+    pn = net_generic(dev_net(dev), pfcp_net_id);
+    list_add_rcu(&pfcp->list, &pn->pfcp_dev_list);
+
+  Same as above.
+
+- In lowpan_newlink() in net/ieee802154/6lowpan/core.c:
+
+    wdev = dev_get_by_index(dev_net(ldev), nla_get_u32(tb[IFLA_LINK]));
+
+  Looks for IFLA_LINK in dev_net, but in theory the ifindex is defined
+  in link netns.
+
+---
+
+v7:
+ - Add selftest kconfig.
+ - Remove a duplicated test of ip6gre.
+
+v6:
+ link: https://lore.kernel.org/all/20241218130909.2173-1-shaw.leon@gmail.com/
+ - Split prototype, driver and rtnetlink changes.
+ - Add more tests for link netns.
+ - Fix IPv6 tunnel net overwriten in ndo_init().
+ - Reorder variable declarations.
+ - Exclude a ip_tunnel-specific patch.
+
+v5:
+ link: https://lore.kernel.org/all/20241209140151.231257-1-shaw.leon@gmail.com/
+ - Fix function doc in batman-adv.
+ - Include peer_net in rtnl newlink parameters.
+
+v4:
+ link: https://lore.kernel.org/all/20241118143244.1773-1-shaw.leon@gmail.com/
+ - Pack newlink() parameters to a single struct.
+ - Use ynl async_msg_queue.empty() in selftest.
+
+v3:
+ link: https://lore.kernel.org/all/20241113125715.150201-1-shaw.leon@gmail.com/
+ - Drop "netns_atomic" flag and module parameter. Add netns parameter to
+   newlink() instead, and convert drivers accordingly.
+ - Move python NetNSEnter helper to net selftest lib.
+
+v2:
+ link: https://lore.kernel.org/all/20241107133004.7469-1-shaw.leon@gmail.com/
+ - Check NLM_F_EXCL to ensure only link creation is affected.
+ - Add self tests for link name/ifindex conflict and notifications
+   in different netns.
+ - Changes in dummy driver and ynl in order to add the test case.
+
+v1:
+ link: https://lore.kernel.org/all/20241023023146.372653-1-shaw.leon@gmail.com/
+
+
+Xiao Liang (11):
+  rtnetlink: Lookup device in target netns when creating link
+  rtnetlink: Pack newlink() params into struct
+  net: Use link netns in newlink() of rtnl_link_ops
+  ieee802154: 6lowpan: Use link netns in newlink() of rtnl_link_ops
+  net: ip_tunnel: Use link netns in newlink() of rtnl_link_ops
+  net: ipv6: Use link netns in newlink() of rtnl_link_ops
+  net: xfrm: Use link netns in newlink() of rtnl_link_ops
+  rtnetlink: Remove "net" from newlink params
+  rtnetlink: Create link directly in target net namespace
+  selftests: net: Add python context manager for netns entering
+  selftests: net: Add test cases for link and peer netns
+
+ drivers/infiniband/ulp/ipoib/ipoib_netlink.c  |  11 +-
+ drivers/net/amt.c                             |  16 +-
+ drivers/net/bareudp.c                         |  11 +-
+ drivers/net/bonding/bond_netlink.c            |   8 +-
+ drivers/net/can/dev/netlink.c                 |   4 +-
+ drivers/net/can/vxcan.c                       |   9 +-
+ .../ethernet/qualcomm/rmnet/rmnet_config.c    |  11 +-
+ drivers/net/geneve.c                          |  11 +-
+ drivers/net/gtp.c                             |   9 +-
+ drivers/net/ipvlan/ipvlan.h                   |   4 +-
+ drivers/net/ipvlan/ipvlan_main.c              |  15 +-
+ drivers/net/ipvlan/ipvtap.c                   |  10 +-
+ drivers/net/macsec.c                          |  15 +-
+ drivers/net/macvlan.c                         |   8 +-
+ drivers/net/macvtap.c                         |  11 +-
+ drivers/net/netkit.c                          |   9 +-
+ drivers/net/pfcp.c                            |  11 +-
+ drivers/net/ppp/ppp_generic.c                 |  10 +-
+ drivers/net/team/team_core.c                  |   7 +-
+ drivers/net/veth.c                            |   9 +-
+ drivers/net/vrf.c                             |  11 +-
+ drivers/net/vxlan/vxlan_core.c                |  11 +-
+ drivers/net/wireguard/device.c                |  11 +-
+ drivers/net/wireless/virtual/virt_wifi.c      |  14 +-
+ drivers/net/wwan/wwan_core.c                  |  25 +++-
+ include/net/ip_tunnels.h                      |   5 +-
+ include/net/rtnetlink.h                       |  44 +++++-
+ net/8021q/vlan_netlink.c                      |  15 +-
+ net/batman-adv/soft-interface.c               |  16 +-
+ net/bridge/br_netlink.c                       |  12 +-
+ net/caif/chnl_net.c                           |   6 +-
+ net/core/rtnetlink.c                          |  35 +++--
+ net/hsr/hsr_netlink.c                         |  14 +-
+ net/ieee802154/6lowpan/core.c                 |   9 +-
+ net/ipv4/ip_gre.c                             |  27 ++--
+ net/ipv4/ip_tunnel.c                          |  10 +-
+ net/ipv4/ip_vti.c                             |  10 +-
+ net/ipv4/ipip.c                               |  14 +-
+ net/ipv6/ip6_gre.c                            |  42 ++++--
+ net/ipv6/ip6_tunnel.c                         |  20 ++-
+ net/ipv6/ip6_vti.c                            |  16 +-
+ net/ipv6/sit.c                                |  18 ++-
+ net/xfrm/xfrm_interface_core.c                |  15 +-
+ tools/testing/selftests/net/Makefile          |   1 +
+ tools/testing/selftests/net/config            |   5 +
+ .../testing/selftests/net/lib/py/__init__.py  |   2 +-
+ tools/testing/selftests/net/lib/py/netns.py   |  18 +++
+ tools/testing/selftests/net/link_netns.py     | 141 ++++++++++++++++++
+ tools/testing/selftests/net/netns-name.sh     |  10 ++
+ 49 files changed, 550 insertions(+), 226 deletions(-)
+ create mode 100755 tools/testing/selftests/net/link_netns.py
+
+-- 
+2.47.1
+
