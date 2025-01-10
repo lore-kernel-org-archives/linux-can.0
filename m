@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70EC320C499
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B81120C49F
 	for <linux-can@vger.kernel.org>; Fri, 10 Jan 2025 11:27:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736508447; cv=none; b=ESFGJVUFKX37Gv12T8qf8QEFI5peWFfR5uJcZsFnc3DzF/RHfMP+wyFwdSBSmoPBjQWOmnaeg3mPCLPUS/R8+QHBtLFn0F/57oSGKHmPbFOGpX62Dtb9hHkHjCEfZmVfmGjS+IWjFnao6UKdYj03pZ+WXVav/+9d87mCk1MRx/o=
+	t=1736508447; cv=none; b=gel8ON3n8qzXB4NZs3Q9edx+9+uBDHi+u+en72T0bMknbfyTmwm+RmrKqFQeSLXnC/lNPnZbIUXGStRYZA6Wyog+QMdMp4ZxFwYbYVS+ih6OILtdHjHMTkyNRM5LcyVG/8pHI239m30ayxigpJDlJacQw0E98Vo1i5Ukzz5XWgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1736508447; c=relaxed/simple;
-	bh=eDTaj2cSpeELI5MytHZlE7kGIDVwMM4WC+7I4W4yEUg=;
+	bh=qnN58YsuQTzfmgZQMtdiRBvYXrWYo8wwBnDtplWKtl8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aV4rFriXYwhFWE1KFnmm5cr5RwKxE/y5JOqLCISaCipJhuxJmk5XM2IyearAduJgz/Te3bWYPNa0X7mY90fFJS+vY5DZnuB5XC+Cbro+P3tq53eSh6GEIpGXq2Fc6d51JZHbWNCpnv7q2Rc+wNbBjuJArkFx9wUWnU8/ufEWafQ=
+	 MIME-Version; b=jp5Bw7sqS1iBKnX+h1g4VNh4dWzK8yOEfObPNmsyesbp29zK/ElDOYx8hZexNXhUqAI91FYi8yqPQBsYJt1Ud/lnEKzUMU2P4ujr8gWrZ1cwz0LMcv+rtwRixouHdgn0NMvN7lciQofZh7srs8jL5JQmlaLRLJgWFSpAoobvfwo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,26 +18,26 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1tWDAf-00052i-Fd
+	id 1tWDAf-00052g-IM
 	for linux-can@vger.kernel.org; Fri, 10 Jan 2025 12:27:21 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1tWDAc-0009h4-1p
+	id 1tWDAc-0009hE-1s
 	for linux-can@vger.kernel.org;
 	Fri, 10 Jan 2025 12:27:18 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 139C43A4605
+	by bjornoya.blackshift.org (Postfix) with SMTP id 252833A4607
 	for <linux-can@vger.kernel.org>; Fri, 10 Jan 2025 11:27:18 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 1A3FA3A45A1;
-	Fri, 10 Jan 2025 11:27:15 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id C4A1F3A4597;
+	Fri, 10 Jan 2025 11:27:14 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 103f7989;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id cca0c545;
 	Fri, 10 Jan 2025 11:27:14 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -45,11 +45,12 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Sean Nyekjaer <sean@geanix.com>,
+	Charan Pedumuru <charan.pedumuru@microchip.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 11/18] can: m_can: add deinit callback
-Date: Fri, 10 Jan 2025 12:04:19 +0100
-Message-ID: <20250110112712.3214173-12-mkl@pengutronix.de>
+Subject: [PATCH net-next 07/18] dt-bindings: net: can: atmel: Convert to json schema
+Date: Fri, 10 Jan 2025 12:04:15 +0100
+Message-ID: <20250110112712.3214173-8-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20250110112712.3214173-1-mkl@pengutronix.de>
 References: <20250110112712.3214173-1-mkl@pengutronix.de>
@@ -65,51 +66,114 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Sean Nyekjaer <sean@geanix.com>
+From: Charan Pedumuru <charan.pedumuru@microchip.com>
 
-This is added in preparation for calling standby mode in the tcan4x5x
-driver or other users of m_can.
-For the tcan4x5x; If Vsup 12V, standby mode will save 7-8mA, when the
-interface is down.
+Convert old text based binding to json schema.
+Changes during conversion:
+- Add a fallback for `microchip,sam9x60-can` as it is compatible with the
+  CAN IP core on `atmel,at91sam9x5-can`.
+- Add the required properties `clock` and `clock-names`, which were
+  missing in the original binding.
+- Update examples and include appropriate file directives to resolve
+  errors identified by `dt_binding_check` and `dtbs_check`.
 
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-Link: https://patch.msgid.link/20241122-tcan-standby-v3-1-90bafaf5eccd@geanix.com
+Signed-off-by: Charan Pedumuru <charan.pedumuru@microchip.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Link: https://patch.msgid.link/20241120-can-v3-1-da5bb4f6128d@microchip.com
+[mkl: fixed indention in example]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 7 +++++++
- drivers/net/can/m_can/m_can.h | 1 +
- 2 files changed, 8 insertions(+)
+ .../net/can/atmel,at91sam9263-can.yaml        | 58 +++++++++++++++++++
+ .../devicetree/bindings/net/can/atmel-can.txt | 15 -----
+ 2 files changed, 58 insertions(+), 15 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/atmel,at91sam9263-can.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/can/atmel-can.txt
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 16e9e7d7527d..e31ce973892a 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1756,6 +1756,13 @@ static void m_can_stop(struct net_device *dev)
- 
- 	/* set the state as STOPPED */
- 	cdev->can.state = CAN_STATE_STOPPED;
+diff --git a/Documentation/devicetree/bindings/net/can/atmel,at91sam9263-can.yaml b/Documentation/devicetree/bindings/net/can/atmel,at91sam9263-can.yaml
+new file mode 100644
+index 000000000000..c818c01a718b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/atmel,at91sam9263-can.yaml
+@@ -0,0 +1,58 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/can/atmel,at91sam9263-can.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	if (cdev->ops->deinit) {
-+		ret = cdev->ops->deinit(cdev);
-+		if (ret)
-+			netdev_err(dev, "failed to deinitialize: %pe\n",
-+				   ERR_PTR(ret));
-+	}
- }
- 
- static int m_can_close(struct net_device *dev)
-diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
-index 92b2bd8628e6..6206535341a2 100644
---- a/drivers/net/can/m_can/m_can.h
-+++ b/drivers/net/can/m_can/m_can.h
-@@ -68,6 +68,7 @@ struct m_can_ops {
- 	int (*write_fifo)(struct m_can_classdev *cdev, int addr_offset,
- 			  const void *val, size_t val_count);
- 	int (*init)(struct m_can_classdev *cdev);
-+	int (*deinit)(struct m_can_classdev *cdev);
- };
- 
- struct m_can_tx_op {
++title: Microchip AT91 CAN Controller
++
++maintainers:
++  - Nicolas Ferre <nicolas.ferre@microchip.com>
++
++allOf:
++  - $ref: can-controller.yaml#
++
++properties:
++  compatible:
++    oneOf:
++      - enum:
++          - atmel,at91sam9263-can
++          - atmel,at91sam9x5-can
++      - items:
++          - enum:
++              - microchip,sam9x60-can
++          - const: atmel,at91sam9x5-can
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: can_clk
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/clock/at91.h>
++    can@f000c000 {
++          compatible = "atmel,at91sam9263-can";
++          reg = <0xf000c000 0x300>;
++          interrupts = <30 IRQ_TYPE_LEVEL_HIGH 3>;
++          clocks = <&pmc PMC_TYPE_PERIPHERAL 12>;
++          clock-names = "can_clk";
++    };
+diff --git a/Documentation/devicetree/bindings/net/can/atmel-can.txt b/Documentation/devicetree/bindings/net/can/atmel-can.txt
+deleted file mode 100644
+index 218a3b3eb27e..000000000000
+--- a/Documentation/devicetree/bindings/net/can/atmel-can.txt
++++ /dev/null
+@@ -1,15 +0,0 @@
+-* AT91 CAN *
+-
+-Required properties:
+-  - compatible: Should be "atmel,at91sam9263-can", "atmel,at91sam9x5-can" or
+-    "microchip,sam9x60-can"
+-  - reg: Should contain CAN controller registers location and length
+-  - interrupts: Should contain IRQ line for the CAN controller
+-
+-Example:
+-
+-	can0: can@f000c000 {
+-		compatible = "atmel,at91sam9x5-can";
+-		reg = <0xf000c000 0x300>;
+-		interrupts = <40 4 5>
+-	};
 -- 
 2.45.2
 
