@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3861020B210
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B0AF20B207
 	for <linux-can@vger.kernel.org>; Fri, 10 Jan 2025 11:27:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736508440; cv=none; b=XMq1e6pvJkl1xDEjD1NZjFj/moTn/b0sRc1+pX72cno6ojFc+aThRY0CrOC2NC36y072BXHz60w7wMSiD+tb1fQfiMd9GEx109WrFDWRrXL/CcTb2ZWEJ7cBKRz4x+Df33Ipw/QTpJLf/oZUe7BDsMSWfGM6/LHji3CcEf2G0jI=
+	t=1736508440; cv=none; b=AmMzdFj3n5sc+JORzIhrfwiXasZpjSx0agnNmx8v0Jvd8Vf846xJh7Odro0RoKC5aqihijsrHiIfKXiUg2LACpn4FEB572JNU7SehSbwhfRKqbUfvvk2yYmWWDhw/8yBhrwlyezT+Q6OSX9T2P+bm/SbwMyAAOoLv8Ung3IsIQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1736508440; c=relaxed/simple;
-	bh=jiTiW0nSrpAHq6BrXtk8PZYDJxaG5pTxiBe3d/gpsbo=;
+	bh=IN7/j6W+WE/FE+6TkA1zbPnXByeQhVHZ//mXxzWpAbs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MBtvI1xGVmAVYZ1pCrXU/oHjcITqSqaTZ/rN8ZUriS9RqncI+BrTkos9c7wPoIeSwJwAsqhRHsHL+pmlCdcLgeS5r8/1AdunD5J9JcI09A93wHfKio0msVtH4r3zN0Mn5IfYqzLmT43NMXxfpOMy3prpM+ihv2Xv0E9E6+POjQI=
+	 MIME-Version; b=Sb8l4ZJtuEMTVDZPVbiZgE92VFtUPF2nJodA0UBy22rtZik/dYQ9pkktpik8N68hAiOU0sO2r0ww7CfC0ZSdy1e5NYWSqVSi0hCbH4QAKJCG4EPOv7bzdVj3ekRWzCFPNMaig2/fhjsduXCgmM8tQCzr+1tx1nmDZQQEzW0VP8Q=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,39 +18,39 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1tWDAb-0004wF-Aq
-	for linux-can@vger.kernel.org; Fri, 10 Jan 2025 12:27:17 +0100
+	id 1tWDAa-0004w1-Q4
+	for linux-can@vger.kernel.org; Fri, 10 Jan 2025 12:27:16 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1tWDAa-0009dE-1Z
+	id 1tWDAa-0009d8-1E
 	for linux-can@vger.kernel.org;
 	Fri, 10 Jan 2025 12:27:16 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 292F93A45BF
+	by bjornoya.blackshift.org (Postfix) with SMTP id 128D03A45BD
 	for <linux-can@vger.kernel.org>; Fri, 10 Jan 2025 11:27:16 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 5C2693A458C;
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 8A49C3A4590;
 	Fri, 10 Jan 2025 11:27:14 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 1d3ef886;
-	Fri, 10 Jan 2025 11:27:13 +0000 (UTC)
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id bec37279;
+	Fri, 10 Jan 2025 11:27:14 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Pierre-Henry Moussay <pierre-henry.moussay@microchip.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 01/18] dt-bindings: can: mpfs: add PIC64GX CAN compatibility
-Date: Fri, 10 Jan 2025 12:04:09 +0100
-Message-ID: <20250110112712.3214173-2-mkl@pengutronix.de>
+	Sean Nyekjaer <sean@geanix.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH net-next 04/18] can: tcan4x5x: add option for selecting nWKRQ voltage
+Date: Fri, 10 Jan 2025 12:04:12 +0100
+Message-ID: <20250110112712.3214173-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20250110112712.3214173-1-mkl@pengutronix.de>
 References: <20250110112712.3214173-1-mkl@pengutronix.de>
@@ -66,38 +66,91 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Pierre-Henry Moussay <pierre-henry.moussay@microchip.com>
+From: Sean Nyekjaer <sean@geanix.com>
 
-PIC64GX CAN is compatible with the MPFS CAN, only add a fallback
+The nWKRQ pin supports an output voltage of either the internal reference
+voltage (3.6V) or the reference voltage of
+the digital interface 0-6V (VIO).
+Add the devicetree option ti,nwkrq-voltage-vio to set it to VIO.
 
-Signed-off-by: Pierre-Henry Moussay <pierre-henry.moussay@microchip.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+If this property is omitted the reset default, the internal reference
+voltage, is used.
+
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
 Reviewed-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Link: https://patch.msgid.link/20240930095449.1813195-2-pierre-henry.moussay@microchip.com
+Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Link: https://patch.msgid.link/20241114-tcan-wkrqv-v5-2-a2d50833ed71@geanix.com
+[mkl: remove unused variable in tcan4x5x_get_dt_data()]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../devicetree/bindings/net/can/microchip,mpfs-can.yaml     | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/net/can/m_can/tcan4x5x-core.c | 19 +++++++++++++++++++
+ drivers/net/can/m_can/tcan4x5x.h      |  2 ++
+ 2 files changed, 21 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml b/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml
-index 01e4d4a54df6..1219c5cb601f 100644
---- a/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml
-+++ b/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml
-@@ -15,7 +15,11 @@ allOf:
+diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
+index 2f73bf3abad8..84b914056b7d 100644
+--- a/drivers/net/can/m_can/tcan4x5x-core.c
++++ b/drivers/net/can/m_can/tcan4x5x-core.c
+@@ -92,6 +92,8 @@
+ #define TCAN4X5X_MODE_STANDBY BIT(6)
+ #define TCAN4X5X_MODE_NORMAL BIT(7)
  
- properties:
-   compatible:
--    const: microchip,mpfs-can
-+    oneOf:
-+      - items:
-+          - const: microchip,pic64gx-can
-+          - const: microchip,mpfs-can
-+      - const: microchip,mpfs-can
++#define TCAN4X5X_NWKRQ_VOLTAGE_VIO BIT(19)
++
+ #define TCAN4X5X_DISABLE_WAKE_MSK	(BIT(31) | BIT(30))
+ #define TCAN4X5X_DISABLE_INH_MSK	BIT(9)
  
-   reg:
-     maxItems: 1
-
-base-commit: 65ae975e97d5aab3ee9dc5ec701b12090572ed43
+@@ -267,6 +269,13 @@ static int tcan4x5x_init(struct m_can_classdev *cdev)
+ 	if (ret)
+ 		return ret;
+ 
++	if (tcan4x5x->nwkrq_voltage_vio) {
++		ret = regmap_set_bits(tcan4x5x->regmap, TCAN4X5X_CONFIG,
++				      TCAN4X5X_NWKRQ_VOLTAGE_VIO);
++		if (ret)
++			return ret;
++	}
++
+ 	return ret;
+ }
+ 
+@@ -318,6 +327,14 @@ static const struct tcan4x5x_version_info
+ 	return &tcan4x5x_versions[TCAN4X5X];
+ }
+ 
++static void tcan4x5x_get_dt_data(struct m_can_classdev *cdev)
++{
++	struct tcan4x5x_priv *tcan4x5x = cdev_to_priv(cdev);
++
++	tcan4x5x->nwkrq_voltage_vio =
++		of_property_read_bool(cdev->dev->of_node, "ti,nwkrq-voltage-vio");
++}
++
+ static int tcan4x5x_get_gpios(struct m_can_classdev *cdev,
+ 			      const struct tcan4x5x_version_info *version_info)
+ {
+@@ -453,6 +470,8 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+ 		goto out_power;
+ 	}
+ 
++	tcan4x5x_get_dt_data(mcan_class);
++
+ 	tcan4x5x_check_wake(priv);
+ 
+ 	ret = tcan4x5x_write_tcan_reg(mcan_class, TCAN4X5X_INT_EN, 0);
+diff --git a/drivers/net/can/m_can/tcan4x5x.h b/drivers/net/can/m_can/tcan4x5x.h
+index e62c030d3e1e..203399d5e8cc 100644
+--- a/drivers/net/can/m_can/tcan4x5x.h
++++ b/drivers/net/can/m_can/tcan4x5x.h
+@@ -42,6 +42,8 @@ struct tcan4x5x_priv {
+ 
+ 	struct tcan4x5x_map_buf map_buf_rx;
+ 	struct tcan4x5x_map_buf map_buf_tx;
++
++	bool nwkrq_voltage_vio;
+ };
+ 
+ static inline void
 -- 
 2.45.2
 
