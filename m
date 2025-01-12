@@ -1,157 +1,94 @@
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+Received: from out.smtpout.orange.fr (out-16.smtpout.orange.fr [193.252.22.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58EAF1B87E3
-	for <linux-can@vger.kernel.org>; Sun, 12 Jan 2025 12:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE54829CA;
+	Sun, 12 Jan 2025 14:18:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.252.22.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736685750; cv=none; b=RbkUOZo7b86G+NWXIvnoZOETzfgEaZiI3lSWxsig1xUD9tFYUO6Z/9SlhJQRo5gu/Kfyl7CdcR9Ji5LS2xcg7FmZQfcmkIhArfeZNyu1GPJreJCKPk4DM9mcvdPjDo0ZNILvgKXAVs7alucPbBzPjlx2VD25GRifJZaPT2H51XU=
+	t=1736691504; cv=none; b=UECvKiO3fxVE+4r5SVIsYCHSkPz2SfERUUwVgWp8dFsUGCiEUNdqfXVsPOYVEu11nXBJVwp/9bOJUwgxV7tb4qJzfX8NV0Mhj17IZNbh479L7Dn6UbXkFrYwT2Z+BWPvmiUq1T2sfIRYi2svzJoUyFDAlIuQkmd7lbYWfFp4a0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736685750; c=relaxed/simple;
-	bh=YdLcJOKQc+JyEEQm/WKU7c1rP96Y/6AeinxtJg48yHI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=UwoxTV8AQHWrqSM7lD0Us/TzSTz3QKIA/wOfz63mnOX9LniMKraZQ2sRQQQ6GcJ6OIxfuDtu8yRMLo0f9rSBwiIvsEyfCWJuA7B6DdiNHrpX45678IRCWd1kdSuC+kgH+N+DXHcLZGM/2DBeqbmbifQ/MsYs5tunHkRQo7VA0NA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tQSJdamy; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+	s=arc-20240116; t=1736691504; c=relaxed/simple;
+	bh=/E8/ad59bWfpp48DZweADzGfTUv9gFIC+TwRHeLkO+M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BEaUnjWfmfUtsVNS+JqqzFDNsk4t/j0o3kKBDRrmccfmRImkW+FSWWTKKy9eTJkt/JYsg5VFFqV/vY5aG1C0D3oARD7RLNtfcdUEDn8FHltpgGTgJmC0lL28uWAixKe7yBvC/iC+0kPwUoDOkGIEfPS18NRbwBGw3epo353vYdo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=nDH8t1mk; arc=none smtp.client-ip=193.252.22.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tQSJdamy"
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-ab30614c1d6so15870866b.1
-        for <linux-can@vger.kernel.org>; Sun, 12 Jan 2025 04:42:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1736685746; x=1737290546; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=U3mNPU+LR4h3V6TxdDn8bLuYJ+/VeUr0D42fSLZpupc=;
-        b=tQSJdamykT8gsa26zzMx5bCiQGJlXp3UKj5Ynbc6FwRk48RtJOxXjosZ+Fw6uoqYrw
-         EU1VhNxx6t8e+wUDjAvhQo9o0pTlEERH6MRud9VCiB2emY0o4TAEtmnE/6lRJdcefkMV
-         UYWqi8VTzVSvHz9+8q2VSYiKs39d2PjeXFey6vgZ4FtrcQ8Lpc9tQxniuPEg+vVGAHYn
-         e/AQsCVtsCR3yZUICfTuR0aGUuC89EoUgSvmZyFRHeiEIE/w++EiPfF0SlaygtQHRHz5
-         kSJEz3W1OdwJarWWlOr9UlX9xdGpY/lcaTcKoJ+CugxWtadTY7THvkEptjqbM5rzBZeR
-         P1RQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736685746; x=1737290546;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U3mNPU+LR4h3V6TxdDn8bLuYJ+/VeUr0D42fSLZpupc=;
-        b=oMdK+J4R+BX5FwPsiZkdGqoSxLKY/6wXUk6c43b9SSdu16Hv2ApNd1Lqtb+4WvuF57
-         F//kJO/DAtKFgrVSGqXdabjuajz9yhKpWIkR/tWFr+Y+PQ1Qr2C/JFNOYWlf4RfR6gBN
-         BziysmxtJcWlOhb3DEBS2fBZKNyPKCetFJqDwZ0C+UHWjpYsOGuf59pPpuDLF3ztW8UB
-         sG3tzVvATfB0mHbNl+yYNYwmfU6t0BjkcUtWc4xLxnyTPEyJHMK1JDA8uacr0XGVs15C
-         X+j4hfskm4Muk8V/dEUVBihxYpH1GFP4Lkp7vlNYHZ/okhRcceTGn29mCBLjkl8XiY0G
-         58rg==
-X-Gm-Message-State: AOJu0YyG2xNaLRiwcFtMHfzWxk5NJTmUbIXgBjbeUvDSmr6YakZ2fv5P
-	4L0t7w+ZafknuiUQmUiHXoDwYRzuoxZIpcaMiAe/gOEiRlRCjRt6Q8uLsyvB9SM=
-X-Gm-Gg: ASbGnctMBCIcHQYtZE2/hJQA1SH7yX4V2x0dXfMn8u1u0JV/sU5aEyx7moen4emlqqo
-	MRGPVKfTomWOXx+d3j3CYEZUFpGdzWCtY+2FHwwmCONTMdlxDY2YQf+iOqPv4QIXnddDXrPEGQJ
-	+/Vt8julOU5EzUMXjQyyP8CM9+HuX888bii/4txsB9o8eFrE5d4XqtS1UwZwvBcQkAcs6iPAcE9
-	r9PsIEsn1bFfRQ6MvHzqTqVJcsKTuNWkSib+mrJuGYpDSH/jO2DGrIxS70W3s7pUZWxF7rY
-X-Google-Smtp-Source: AGHT+IF6UmSsTYuP/GNh4fRN8KX6H2p10jm/QlnI2IiCwqPqxm/cr3DvLngaoZh7ZXilHYgIBmx5eA==
-X-Received: by 2002:a05:6402:2355:b0:5d0:8111:e946 with SMTP id 4fb4d7f45d1cf-5d972e15f45mr5734162a12.5.1736685745719;
-        Sun, 12 Jan 2025 04:42:25 -0800 (PST)
-Received: from [127.0.1.1] ([178.197.223.165])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d99091e9absm3777087a12.45.2025.01.12.04.42.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Jan 2025 04:42:24 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Sun, 12 Jan 2025 13:41:56 +0100
-Subject: [PATCH RESEND 5/5] can: c_can: Use
- syscon_regmap_lookup_by_phandle_args
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="nDH8t1mk"
+Received: from [172.16.82.72] ([124.33.176.97])
+	by smtp.orange.fr with ESMTPA
+	id WymrtZpRHQS6pWyn3terfc; Sun, 12 Jan 2025 15:18:12 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1736691492;
+	bh=gpIjNeNmhfIKcQGaETaoxOqM269CanGnN50QoA6S7gA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=nDH8t1mkA4jVNVvcOqfSxzhH2w+H+kUHkuzaKOYpZxpANn7ZRl3xC7qd2vFpCtmB9
+	 Otrby7MblRkZ0CK+ex60znP51soESLaTm1DfLUMvquTY6PZ2SZ20vbseVPcdRjuc2v
+	 6exUEe+ps6gfhA5l4vLf4AiTLp3VDqMKs1u3K+oBfOTc4uiW9vNgAiqw2i53Ar9SWq
+	 3OYmaS75BmHsJqii/N/gLdtKPvTHROdSQQrFk72RUxcCORfkPsOKnQ5l/+WsIB8mXq
+	 N+CwBwQ/KXX5ZPHfpv/mBTaddFGzbQDv5FCqayzt3o7osERJj2+aoIyF4pCjRxqKP/
+	 GOkaCJt/Vd8+Q==
+X-ME-Helo: [172.16.82.72]
+X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 12 Jan 2025 15:18:12 +0100
+X-ME-IP: 124.33.176.97
+Message-ID: <5119977b-acdc-4005-a1a7-bbc6e82412c9@wanadoo.fr>
+Date: Sun, 12 Jan 2025 23:17:56 +0900
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250112-syscon-phandle-args-can-v1-5-314d9549906f@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND 0/5] can: c_can: One fix + simplify few things
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Marc Kleine-Budde <mkl@pengutronix.de>, Tong Zhang <ztong0001@gmail.com>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Rob Herring <robh@kernel.org>, stable@vger.kernel.org
 References: <20250112-syscon-phandle-args-can-v1-0-314d9549906f@linaro.org>
+Content-Language: en-US
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Autocrypt: addr=mailhol.vincent@wanadoo.fr; keydata=
+ xjMEZluomRYJKwYBBAHaRw8BAQdAf+/PnQvy9LCWNSJLbhc+AOUsR2cNVonvxhDk/KcW7FvN
+ LFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI+wrIEExYKAFoC
+ GwMFCQp/CJcFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AWIQTtj3AFdOZ/IOV06OKrX+uI
+ bbuZwgUCZx41XhgYaGtwczovL2tleXMub3BlbnBncC5vcmcACgkQq1/riG27mcIYiwEAkgKK
+ BJ+ANKwhTAAvL1XeApQ+2NNNEwFWzipVAGvTRigA+wUeyB3UQwZrwb7jsQuBXxhk3lL45HF5
+ 8+y4bQCUCqYGzjgEZx4y8xIKKwYBBAGXVQEFAQEHQJrbYZzu0JG5w8gxE6EtQe6LmxKMqP6E
+ yR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDldOjiq1/riG27mcIFAmceMvMCGwwF
+ CQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8VzsZwr/S44HCzcz5+jkxnVVQ5LZ4B
+ ANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
 In-Reply-To: <20250112-syscon-phandle-args-can-v1-0-314d9549906f@linaro.org>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, 
- Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
- Tong Zhang <ztong0001@gmail.com>
-Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2178;
- i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=YdLcJOKQc+JyEEQm/WKU7c1rP96Y/6AeinxtJg48yHI=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBng7ie679x59YlS8BfNpZKoyamPTsumAiQlaO38
- mT6CAZkq1aJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZ4O4ngAKCRDBN2bmhouD
- 1/NlD/4mZ9uKaZ1qR2H0u50NdT9awrKKsAJOjEb9aa8G2hnfjSSntA3JnGJyu09Kjg4ZCxJio7x
- oEbeOiFvzzFhfyKIDh5iE2rHgfVXoSVUAmA3+yFEDfwbneedcAI4ZQEurd5MAL7DxYrSTwzqyg3
- sPA+6IEQyu1VW7tPZ0SuQRXp03rs5QbWi2hS6uhPDlX1EFAFV00sqK5U08c0GYvhDk+0+2MEAbT
- d8uQMIaCA2dP9M9HRAV0vwZPcL4RnodM0JhqU9WzSnmJLgj6diABvP9a9dZy7jnndzS6cALigUl
- nO0A808oucpLNLcmpyOR3etZ8JVggdKz2NZxV+B4NCJ1v0BqT9TcLgTzlK0zpWnZzJIjtvIOg/y
- zq6mZ8wVvsO5/lZM49m9AvfSv2HNt7W53OvmGCSN2Z1Azh3IX6M67yGlTvwXQDCdcTWWirYAkUA
- 7iskDcjaEgMxAG+UYx1GiSslq9Cuvr+O0IT57fTCH6Ibdi7sV7B5Lrjah6wMAVo6w+UoZUWguad
- XLj25bIxLi/Apo4DNb42f9y7nU2g002+unOe/1jDdcMF9gbiR1p9YShW2kasYDqvlaGSGuOjw7r
- NmkoTz4skJ81f2BZTvWQ1wogMdzHt4l4en1nvP07vDWpEbG5vTogVb4x9yFBxpH3n/OUoVuw3xw
- Pp6bsvxSC/aVRDA==
-X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
- fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Use syscon_regmap_lookup_by_phandle_args() which is a wrapper over
-syscon_regmap_lookup_by_phandle() combined with getting the syscon
-argument.  Except simpler code this annotates within one line that given
-phandle has arguments, so grepping for code would be easier.
+Thanks for the clean-up!
 
-There is also no real benefit in printing errors on missing syscon
-argument, because this is done just too late: runtime check on
-static/build-time data.  Dtschema and Devicetree bindings offer the
-static/build-time check for this already.
+On 12/01/2025 at 21:41, Krzysztof Kozlowski wrote:
+> One fix on which rest of the patches are based on (context changes).
+> Not tested on hardware.
+> 
+> Best regards,
+> Krzysztof
+> 
+> ---
+> Krzysztof Kozlowski (5):
+>       can: c_can: Fix unbalanced runtime PM disable in error path
+>       can: c_can: Drop useless final probe failure message
+>       can: c_can: Simplify handling syscon error path
+>       can: c_can: Use of_property_present() to test existence of DT property
+>       can: c_can: Use syscon_regmap_lookup_by_phandle_args
+> 
+>  drivers/net/can/c_can/c_can_platform.c | 56 +++++++++++-----------------------
+>  1 file changed, 18 insertions(+), 38 deletions(-)
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- drivers/net/can/c_can/c_can_platform.c | 21 ++++++---------------
- 1 file changed, 6 insertions(+), 15 deletions(-)
+For the series:
 
-diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-index 1acceb097c17fb7c0e2095a43d926d9cf802ebef..19c86b94a40e4f5c3db3c2da67b64da1310584b8 100644
---- a/drivers/net/can/c_can/c_can_platform.c
-+++ b/drivers/net/can/c_can/c_can_platform.c
-@@ -317,30 +317,21 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 		 * platforms. Only supported with DT boot.
- 		 */
- 		if (np && of_property_present(np, "syscon-raminit")) {
-+			unsigned int args[2];
- 			u32 id;
- 			struct c_can_raminit *raminit = &priv->raminit_sys;
- 
- 			ret = -EINVAL;
--			raminit->syscon = syscon_regmap_lookup_by_phandle(np,
--									  "syscon-raminit");
-+			raminit->syscon = syscon_regmap_lookup_by_phandle_args(np,
-+									       "syscon-raminit",
-+									       2, args);
- 			if (IS_ERR(raminit->syscon)) {
- 				ret = PTR_ERR(raminit->syscon);
- 				goto exit_free_device;
- 			}
- 
--			if (of_property_read_u32_index(np, "syscon-raminit", 1,
--						       &raminit->reg)) {
--				dev_err(&pdev->dev,
--					"couldn't get the RAMINIT reg. offset!\n");
--				goto exit_free_device;
--			}
--
--			if (of_property_read_u32_index(np, "syscon-raminit", 2,
--						       &id)) {
--				dev_err(&pdev->dev,
--					"couldn't get the CAN instance ID\n");
--				goto exit_free_device;
--			}
-+			raminit->reg = args[0];
-+			id = args[1];
- 
- 			if (id >= drvdata->raminit_num) {
- 				dev_err(&pdev->dev,
+Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
--- 
-2.43.0
+
+Yours sincerely,
+Vincent Mailhol
 
