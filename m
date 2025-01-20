@@ -1,27 +1,28 @@
-Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazon11013023.outbound.protection.outlook.com [52.101.67.23])
+Received: from EUR03-VI1-obe.outbound.protection.outlook.com (mail-vi1eur03on2048.outbound.protection.outlook.com [40.107.103.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE8D81E9B18
-	for <linux-can@vger.kernel.org>; Mon, 20 Jan 2025 16:23:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.67.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 704311E9B14
+	for <linux-can@vger.kernel.org>; Mon, 20 Jan 2025 16:23:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.103.48
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737390235; cv=fail; b=g+s6fRfnExL1as3yCQgoLP5J4xZRbyOBGapVkBizeCrqg7XB9jSfOKpX7+KJJ6CGPD+5eBzwrVUZyVlAZtqhaxVFsGO4tLVVf1a+YPEyxjdjFKqjnaQJQaI9LTRcDCKmjm+tLFW2HRBSshhcBMinLjG7qBAgR8FTY+TtKAh4+Ro=
+	t=1737390238; cv=fail; b=QLf2azijFNy5yL2mVayi2FS312H9+3ysmgRX1qmjDHSd+GYMpoQK4j1DaMsgZF5ASYcWCTtQwWHMlPgqUfOurKDitw27f7DOrcQL9a+gBVrdIHyZ/0zB/OAzZJg5b7dfQ3JOuKE52iPmij7EDhrX4Hx0y+5o7aHZ3ZmVpNxOcY4=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737390235; c=relaxed/simple;
-	bh=jzHgRxzhfOUQgEMUFRmDFm8DS21JWtXKnYzo8dLSYA0=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=YRV05lMo+QHOL5B4lPYVgIHAZhPfzCI271Vcpbm8n+Qeixn7WBONAtw5/8MbddbG5qeaBo9ndubHvUHARX5jUVqtxNNiI94rBORkojJTgKaGrbyRcqWuZYRrhcu7/7c1vOps6xigdtyoM/sn5+ykRnx17LkUxzZ3AOiFFjf8kWc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=de.bosch.com; spf=pass smtp.mailfrom=de.bosch.com; dkim=pass (2048-bit key) header.d=de.bosch.com header.i=@de.bosch.com header.b=pIoNqRNU; arc=fail smtp.client-ip=52.101.67.23
+	s=arc-20240116; t=1737390238; c=relaxed/simple;
+	bh=v0KHkSop+AgpRV1ZMx4DPx0xI+5kVKrSm7EKXhW4CLs=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=mpGCNvAiZkpqfr7j+4nmjurZJHWMUTWXedxCmDRWuE4Ji1IeZV3YHP/RtMCHkE+7H7tFlWJaqzCRPF/KHO0Y3tcVW4k2ZgVMnfabc43S7RQXo4hik3N3dT2c68qw80VCFBYNsURwZovGFGTojkKUV4oRGVqW4VKbNHUo7oAK1AQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=de.bosch.com; spf=pass smtp.mailfrom=de.bosch.com; dkim=pass (2048-bit key) header.d=de.bosch.com header.i=@de.bosch.com header.b=o8Z71EJO; arc=fail smtp.client-ip=40.107.103.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=de.bosch.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=de.bosch.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=de.bosch.com header.i=@de.bosch.com header.b="pIoNqRNU"
+	dkim=pass (2048-bit key) header.d=de.bosch.com header.i=@de.bosch.com header.b="o8Z71EJO"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Oy6Seq8REKVUWzkUf8fY5OJGWTuAIy74bDU04dkVzc0gh0tGba/Y6y2bIPzQ7W2f/G/l4DBV69aPnSsL1Z5h9zOO6I9cBGrkHlJCda0iuJeswpZwdCR/xd/Rwo8oggFvecb/KT6UMaSRJwR2P05vpbzLAaAMaoHgwYpsMAlB7T0VxVgYxusWVqXS4NbkZB59+V8mlCg1qqrqkZN9njmN9kv4mF2QPDPhetbHe+DnvnEilq2xb3DrZP6Gz7/YTj4vQ2aDoQiLF6A58+oHjIDG6jxhpKY5mYqal96tLJzonQBpxCek6Y6xfrTDYlWu++0Q0x/PNm3xu6sZM5igvsHTzg==
+ b=H2PNqt9fYlVKfjoVDi3UXbX7v0mS15PZXkB8fSvIlJtYtDzW9tT4EQRjPgbkEkLPynEp3UleqO7fi8Lyoeo6aDjBMYEevOcRFVVkWjOeL8D88pjtWsYFmwE05ZsKIUaTvqJryHPrUqDvbvXiG5r8CM7vGcV5iDBotT0UFo/OVY2pwToxsHXRqzOJqpAUzb/CXWhNnKjmEE72aq0KdD+z2O3mad+M5/cmCGHs4fD/lhcLMDK9uB3SyQT5id1vtyuvinWr/PuXACZbt0Lh03F480dp+ROsrFF1amP437BnWzkHwMxTimVNTfk6ZNjYtYOjEgylKsqkGE2joilQl712gA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FcjY5EQl6eRrhFURA4wNll8GwXlVwYaIhd6isW8wh9g=;
- b=yGa/xIP9/gbR+od4M1D93Ic3eAy3XjJ1Lu0IpJosSwdZhOHMWaQW2jNsXBwFjMKimO7d4duG+8KgpgoXFfla6cgmVqsWUGH5N7oARlHTOxOlrPZ/OxyR2RA73E1I00TqgUxhSvQNSwQr3RiFxO51oNMQgXV/9yK6P7NTsqJ+nDdcUHslPRrZWbDErGOmAsT6w5j5Evq0WgbWlpW1jjLnjINlMbTlnVoBlxO1YofXf+jpthKZV8b+qZuM++RmWZeS+LrY5eUh4RaEigrz4zSBgdc1ql2RtJHxMYyCMbRuoc9+fvN/kz6lU7nw7oWrKOpG+BjkWBbFmxV8c+IMw/3dSA==
+ bh=3AA69U8lZDxfn9jecAPK+ohzaZMMx8nDRdTdNlzfNXI=;
+ b=O47XjLpSpnC8kz19FrkcGBIBHlSD8EqzuB+a75597tedSXiv3osAbQnehWOTv09omQJQ89tX9GGB8mT0rCIvI+DLRbn9wwMdt5LBmaj78SgmMnRqPoMuxqbIK6anf8fOEJctdwXxBcyi5NAePrrYtjF4VjvN4UNsCLcSMUN/JlsktIphJOTD3cP8WptQsrjp54ey2JFt5Pbg7opG91f/8W5Uj49HMWYPFF/HIX2spQuf8kUt8U3mXaLO0Wuyz1xm2hz33Fkx1tf7SK+lUHlxtV5q+QWHrRnvOPNqxJz4bKSgUTSzHYGNxpFm2LIqwuW2GGdQEGmf0m5zWtSemyI4kg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  139.15.153.206) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=de.bosch.com;
  dmarc=pass (p=reject sp=none pct=100) action=none header.from=de.bosch.com;
@@ -29,16 +30,16 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=de.bosch.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FcjY5EQl6eRrhFURA4wNll8GwXlVwYaIhd6isW8wh9g=;
- b=pIoNqRNU1vbjIdPggUZOccM6rtbyU3AN8dzQ0PAZJtQdGUptMBmIIyoTjobtVsrBEkAXHHwQiqa6xLbUXou56WmAtD7mmztuOudq7Q55oPq4gacR+zTC0sJ7sF4dDwD5teIU1pEiOrEsojQ8hpDbVB9XJKRC/kMEv8qF3CEXLh7IrLx3HtS03nUa1mfvNuz+/GGWxjilkIl5saD1e1y1TRJH6Na3CdoFgdFJd0FjbayFOpO2B6zPd3CBYTyEKowTV0boNEZ5QCYafsziUmsXvDk9gpltKOOwWgJKFct6BcsFbZS0SumW/jXmTm+dCfsSDaMtW+4VTElbPCMxL/xleQ==
-Received: from AS9PR06CA0163.eurprd06.prod.outlook.com (2603:10a6:20b:45c::24)
- by DB9PR10MB7172.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:451::22) with
+ bh=3AA69U8lZDxfn9jecAPK+ohzaZMMx8nDRdTdNlzfNXI=;
+ b=o8Z71EJOGUyZSsT9AiAb2uxD0Oe9uy7ydiqpuoCJhml8oOo+Zq7wXdqoFGdb10zhWuvnkH7wb/IQITGBVQID6mNvAbG/tbtDWS0NO0zANm5Zx18vsVvP9g/wri0iHlnNvkck8QycpHAVlOWwacDIge80cwA+FHh6GQWZAnYRHx2flRdinhqRskOcHHKgC2j43ysSAYQk4+UqXhJnVIxs+97sybLbZhL9bgSiVvSDX4/HUfvUaNWrlzPXOEVv8qpC2TQbY8uCxzGyqUiZneFPn0wwCZkb3B9PwyoDEMpemVzGFSAos/rV2xlVmP5BPC9/LH7FTX8xqQEUthW+LrPTUw==
+Received: from AS9PR06CA0164.eurprd06.prod.outlook.com (2603:10a6:20b:45c::15)
+ by DB8PR10MB3273.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:119::24) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8377.13; Mon, 20 Jan
  2025 16:23:50 +0000
 Received: from AM4PEPF00025F98.EURPRD83.prod.outlook.com
- (2603:10a6:20b:45c::4) by AS9PR06CA0163.outlook.office365.com
- (2603:10a6:20b:45c::24) with Microsoft SMTP Server (version=TLS1_3,
+ (2603:10a6:20b:45c:cafe::bc) by AS9PR06CA0164.outlook.office365.com
+ (2603:10a6:20b:45c::15) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.20.8356.21 via Frontend Transport; Mon,
  20 Jan 2025 16:23:50 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 139.15.153.206)
@@ -50,11 +51,11 @@ Received-SPF: Pass (protection.outlook.com: domain of de.bosch.com designates
 Received: from eop.bosch-org.com (139.15.153.206) by
  AM4PEPF00025F98.mail.protection.outlook.com (10.167.16.7) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8398.0 via Frontend Transport; Mon, 20 Jan 2025 16:23:49 +0000
+ 15.20.8398.0 via Frontend Transport; Mon, 20 Jan 2025 16:23:50 +0000
 Received: from SI-EXCAS2001.de.bosch.com (10.139.217.202) by eop.bosch-org.com
  (139.15.153.206) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.13; Mon, 20 Jan
- 2025 17:23:49 +0100
+ 2025 17:23:50 +0100
 Received: from GRB-C-0009M.ot.de.bosch.com (10.139.217.196) by
  SI-EXCAS2001.de.bosch.com (10.139.217.202) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -63,10 +64,12 @@ From: <mark.jonas@de.bosch.com>
 To: <linux-can@vger.kernel.org>
 CC: <mkl@pengutronix.de>, Zhu Yi <yi.zhu5@cn.bosch.com>, Hubert Streidl
 	<hubert.streidl@de.bosch.com>, Mark Jonas <mark.jonas@de.bosch.com>
-Subject: [can-utils][PATCH 1/3] cangen: support socket priority
-Date: Mon, 20 Jan 2025 17:23:30 +0100
-Message-ID: <20250120162332.19157-1-mark.jonas@de.bosch.com>
+Subject: [can-utils][PATCH 3/3] canbusload: support busload visualization
+Date: Mon, 20 Jan 2025 17:23:32 +0100
+Message-ID: <20250120162332.19157-3-mark.jonas@de.bosch.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250120162332.19157-1-mark.jonas@de.bosch.com>
+References: <20250120162332.19157-1-mark.jonas@de.bosch.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -77,123 +80,183 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM4PEPF00025F98:EE_|DB9PR10MB7172:EE_
-X-MS-Office365-Filtering-Correlation-Id: 23c1cd5e-82ca-4249-0826-08dd396ed2b1
+X-MS-TrafficTypeDiagnostic: AM4PEPF00025F98:EE_|DB8PR10MB3273:EE_
+X-MS-Office365-Filtering-Correlation-Id: fc7392d3-c85c-4107-de17-08dd396ed2e7
 X-LD-Processed: 0ae51e19-07c8-4e4b-bb6d-648ee58410f4,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
- BCL:0;ARA:13230040|82310400026|36860700013|1800799024|376014;
+ BCL:0;ARA:13230040|1800799024|376014|36860700013|82310400026;
 X-Microsoft-Antispam-Message-Info:
- =?us-ascii?Q?QJkZTwPTTeauFRjqGniP5DPWN6CJuK1u6YhIh5rwaTZNEhES00vEX6Wl0ABd?=
- =?us-ascii?Q?/y8kLS5uOn8QlQEh2xSw4MrNfDk72dxSUWgE88w2Ys/4mY3YQVFEkuZzWKYC?=
- =?us-ascii?Q?mW4pgjCRPMfsGeUC9TlbyGTBgsi9KZMLp+nRl5M/uD1ojRsKnriAJFetFayn?=
- =?us-ascii?Q?Nj96qwOfXXTf/9Xqk7qKrXNTy2zOfnBnrK8F6cWzWsAVgZ2+jrZyvUSRcEzK?=
- =?us-ascii?Q?Jj3HewGhBHREfPh3zR8mNol2N9LnaITbdJ6B+fU5bE69NZGVXV1C1LkHCEal?=
- =?us-ascii?Q?E2xYNT5edhlnpoqgbinsNLlA1hClN5BJ1LrgX2CrCpQ7pybkGE8chIePqETe?=
- =?us-ascii?Q?uVyX2SWlsEON3P8JHNUVrBKWef11mKX8lLlC9U8hKBLMavKCWOFV2B7gr99B?=
- =?us-ascii?Q?Mj6RMck4kPTEoaPJcihlSNGeI3VTGEWkwHPE5hogCMYBD5nQyeto7jhtCC0Z?=
- =?us-ascii?Q?QRPTYK2S2g46rU6obBcZjtB7O83VuCkQIMNuGKtZy/XPJLyBQuH0P/M5Ziyw?=
- =?us-ascii?Q?8dPPIbC6LEjU1kpq4/y6ni2s+uFeSnIu64S/Nn244IBXp+x8rZyLLoJa+4fC?=
- =?us-ascii?Q?LWXqtRpyHxzW3PoDq8G0L5HN29bPy1Z368j2rl3nZM/m9aw1mSx6DehG585k?=
- =?us-ascii?Q?N0uzgIEttM7YJOV9d6bvobLyP2lG28eDo9mJYTh0E+c1SgdQecGO63UinjrY?=
- =?us-ascii?Q?vRKcrQ44EN/2V+IyaqCKZElNdnFfqNYRov9WmukRYRe4TWobU4aIa3FSzxpR?=
- =?us-ascii?Q?P0ctBEBK0Cw+e8j6mramYVsI6WpYqcUW5dnUGMEILthy7xSqq88xhWsfO6nU?=
- =?us-ascii?Q?zt457kR65jWkgNeVUaKQ9O4myUtrs0yEgMM+vtSYcIMoeEAiP6VXi2vUvr+Q?=
- =?us-ascii?Q?tKemc65cwHVTOquhW46EmP/V3GisMtvidUswn5EvqigJ9ZXVj41L6r5J91RI?=
- =?us-ascii?Q?miypWpH/ac5TUj255cSrccCoz7++b5R/i5HEDh1QHIzsFS0i7qxIMJgnQO89?=
- =?us-ascii?Q?k16nWcyZLGBvhPhIPwfZjpkvkNIVj6WuFpBGHdXhbpArGNQmFShaJmMYKXC4?=
- =?us-ascii?Q?8kKg6E+328Dl9e36JHwMX8aKNU+346bxphPyTnmWEo67rfs2sT5SsmmfI+EK?=
- =?us-ascii?Q?Smua/IgsPeHvPMI/LofstnhpnOGaiCjDt3XqvN95o3H/h4kfGWRkQ0oUrK0c?=
- =?us-ascii?Q?OkWHuuKtTT9i7gEKWgD30CGPbZLfB8f7LUVPraZSj/8DPK4/9503wUKztiyq?=
- =?us-ascii?Q?2ktP8OeRGQkoCGvFQuAI4kauiijtSRF70rW0kaDclUj3DD4UCm4dgQBouwxO?=
- =?us-ascii?Q?8UkC31SVS+sW5djWKdpoWZsudN9vHituTBnyrI0u/E55iV26dPx5VqGVcRCN?=
- =?us-ascii?Q?7upHUXwltTObB7rBJb7WEaVDiDmn2wyO/+IRvegRHXBVT5AKAoVHC5dvaP/J?=
- =?us-ascii?Q?TwAJamU07etZXbHe9OEVZHU+g24wPQ/sDhVHNeS/Bg+S2Z95RfL5uw=3D=3D?=
+ =?us-ascii?Q?176CTfXCRFk5r+ATUPeJHHrEIyChHoTdv63giYy8yX5JWpaCuMT4ETEUIGhz?=
+ =?us-ascii?Q?NiDzkKkwt7gK+gz2BCCF4oki3Dn3FfK0s+zD9jq5Wyu9pfQezQq0QAtzbNz7?=
+ =?us-ascii?Q?OlFEzGf0+Owp/XpUc5G7xVrsBiZC4Qx1k/EydNfdgWh9ketDnED+B0Zz8GRR?=
+ =?us-ascii?Q?bcfCBSWsONxBJ28A4nt9BpnUEiVxWwff4M/TItSRIgu52/YZB/Nn6o44hiHQ?=
+ =?us-ascii?Q?G19RFH4UiLsCn2nkqAwI8znIwiTVXC2DMKzYSH3WOgn+hdfzLuHHzbjSYZPZ?=
+ =?us-ascii?Q?+7fPKjFsf/aUO9rQcLlPw3+877k6yvEANEbnu+Ph+81EQrpzarTnNfbW/wmR?=
+ =?us-ascii?Q?cCFgZo96rFaq01N3kIl17zbysUiv869VtcFAKLQjepVBnPFjIyLQzWCg7p0d?=
+ =?us-ascii?Q?7kdIdY+o2cGotkkEiIAqAmHarN8ISUKeXVz2GzBXlOIGn8EUztB0EVIiPfqG?=
+ =?us-ascii?Q?LKe/6/e8sJJwptYjOmqTiNvF8qkSnVYs9lmJC2fbqSAbR4wZYQo3lPPX5dic?=
+ =?us-ascii?Q?khqOY+x1UN7uQq+JgF1K2HluIXmMLoHtQQU3FH0/RVTK8dbiHZIAtDJCzMLB?=
+ =?us-ascii?Q?OMX9y9sAXy9eGDt+FAiOJsamsXynOGwuQ2YMKYaMzHAxVpJq4MMsoAjHJAXh?=
+ =?us-ascii?Q?+BgNLdch1KUiJqMQuZWntJzpyEIDqpVWtQYeraRzxfVCI+xLIQX680esNGZ5?=
+ =?us-ascii?Q?1Z7MYVkr5hJ3dYpyNoHBKG4fqopZow8G7Von/Q+ITCtMewh+f5ONctneMkgH?=
+ =?us-ascii?Q?YXbWly8kBNtMqNGoKCd30n3O+uZo3suAzdJmRUpAeEtAvJVhX8jXTeULR6/2?=
+ =?us-ascii?Q?652q74KFU2/vXYLEMnxXT14RN6YkFOdvi9wbHCaulhpGj4ObL++cA7xlfK7u?=
+ =?us-ascii?Q?e+B7XxTqIZUjwoP5w6x9MP6WbGIeAvT4VOkFaaXYuA1DjUeK//8aErxUw2d6?=
+ =?us-ascii?Q?qlJtDPSjhJG2UzcJx0EsEyiEwUh5ve3SUhin9KO0mRenn6XtZtqLr0myLy1X?=
+ =?us-ascii?Q?B2T5CT6ApCzLnkkf4b0/Po5mIIPQGlf1U5XZaqJQ7xbeO/7OVS/zs9uoDeZ7?=
+ =?us-ascii?Q?AHaAyHnA7gH6a3YMyBUAXfysjZj+wUmDnjKc+QAdN7pSNAYt1Nu3FB66gmX9?=
+ =?us-ascii?Q?XSYBBQuXrQ2G0UxKRM04ttZYAZ6pTi6irtiTIs1KlgQwT7rJzGV5c5/E761c?=
+ =?us-ascii?Q?2A9NrtBlp4eJH+4/CNnS5Fb2V1CsoH/MAPJQQ/XucnLM0cWP3jyRXbHL9Vnj?=
+ =?us-ascii?Q?NT+Zn2KGGYJ7Kti+ZnSEaZPDoeZt8/BPY3nT0OcvqmkB9ZjY2S4qJd2090jb?=
+ =?us-ascii?Q?yLmuOG3dYGPAxdHzvXCiGQdRmVaqy6uaRFXxGVf0OofrYuAnUH8rsN/GVGLt?=
+ =?us-ascii?Q?aFLRgbTe8gKzI93JYSe74E48TROpjUnjlV1iOr7N+3zyH+LdGY/ZoBZ+KiP4?=
+ =?us-ascii?Q?Gs9fIPPz0Od4UW72N8aCv2fd6b6sxrROw9LwwlhanfRuKa1zAOdevYK7d9Mg?=
+ =?us-ascii?Q?Ll9Mb7R3qCyR+7c=3D?=
 X-Forefront-Antispam-Report:
- CIP:139.15.153.206;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:eop.bosch-org.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(36860700013)(1800799024)(376014);DIR:OUT;SFP:1101;
+ CIP:139.15.153.206;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:eop.bosch-org.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(376014)(36860700013)(82310400026);DIR:OUT;SFP:1101;
 X-OriginatorOrg: de.bosch.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jan 2025 16:23:49.9700
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jan 2025 16:23:50.3451
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 23c1cd5e-82ca-4249-0826-08dd396ed2b1
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc7392d3-c85c-4107-de17-08dd396ed2e7
 X-MS-Exchange-CrossTenant-Id: 0ae51e19-07c8-4e4b-bb6d-648ee58410f4
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=0ae51e19-07c8-4e4b-bb6d-648ee58410f4;Ip=[139.15.153.206];Helo=[eop.bosch-org.com]
 X-MS-Exchange-CrossTenant-AuthSource: AM4PEPF00025F98.EURPRD83.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR10MB7172
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR10MB3273
 
 From: Zhu Yi <yi.zhu5@cn.bosch.com>
 
-Add '-P' option for allow user to set the socket priority. This can be
-useful in conjuction with queuing discipline.
+Add '-v' option for visualize busload, the output shows a moving
+histogram of the past 90 seconds.
+
+canbusload 2024-09-23 17:19:33 (exact bitstuffing)
+ can0@500k   487   55558   31048       0  99% |XXXXXXXXXXXXXXXXXXX.|
+100%|..........................................................................................
+ 95%|..............................................................................XXXXXXXXXXXX
+ 90%|.............................................................................XXXXXXXXXXXXX
+ 85%|.............................................................................XXXXXXXXXXXXX
+ 80%|.............................................................................XXXXXXXXXXXXX
+ 75%|.............................................................................XXXXXXXXXXXXX
+ 70%|.............................................................................XXXXXXXXXXXXX
+ 65%|.............................................................................XXXXXXXXXXXXX
+ 60%|............................................................................XXXXXXXXXXXXXX
+ 55%|............................................................................XXXXXXXXXXXXXX
+ 50%|............................................................................XXXXXXXXXXXXXX
+ 45%|............................................................................XXXXXXXXXXXXXX
+ 40%|............................................................................XXXXXXXXXXXXXX
+ 35%|.........................................XXX................................XXXXXXXXXXXXXX
+ 30%|.........................................XXXX...............................XXXXXXXXXXXXXX
+ 25%|........................................XXXXXX.............................XXXXXXXXXXXXXXX
+ 20%|XXXXXXXX...............................XXXXXXXXXXXXXXXXX....XXXXXXXXXXX...XXXXXXXXXXXXXXXX
+ 15%|XXXXXXXXX.............................XXXXXXXXXXXXXXXXXXXX.XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+ 10%|XXXXXXXXX.XXXXXXXXXXXXXXXXXXX..XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  5%|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 Signed-off-by: Zhu Yi <yi.zhu5@cn.bosch.com>
 Signed-off-by: Hubert Streidl <hubert.streidl@de.bosch.com>
 Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
 ---
- cangen.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+ canbusload.c | 35 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 33 insertions(+), 2 deletions(-)
 
-diff --git a/cangen.c b/cangen.c
-index d9a0448..1346eb7 100644
---- a/cangen.c
-+++ b/cangen.c
-@@ -189,6 +189,7 @@ static void print_usage(char *prg)
- 	fprintf(stderr, "         -A <mode>     (CAN XL AF generation mode - see below, no e/o mode)\n");
- 	fprintf(stderr, "         -V <mode>     (CAN XL VCID generation mode - see below, no e/o mode)\n");
- 	fprintf(stderr, "         -p <timeout>  (poll on -ENOBUFS to write frames with <timeout> ms)\n");
-+	fprintf(stderr, "         -P <priority> (set socket priority using SO_PRIORITY)\n");
- 	fprintf(stderr, "         -n <count>    (terminate after <count> CAN frames - default infinite)\n");
- 	fprintf(stderr, "         -i            (ignore -ENOBUFS return values on write() syscalls)\n");
- 	fprintf(stderr, "         -x            (disable local loopback of generated CAN frames)\n");
-@@ -479,6 +480,7 @@ int main(int argc, char **argv)
- 	uint64_t incdata = 0;
- 	__u8 *data; /* base pointer for CC/FD or XL data */
- 	int incdlc = 0;
-+	int priority = -1;
- 	unsigned long rnd;
- 	unsigned char fixdata[CANFD_MAX_DLEN];
- 	unsigned char rand_position[CANFD_MAX_DLEN] = { 0 };
-@@ -512,7 +514,7 @@ int main(int argc, char **argv)
- 		{ 0,		0,			0, 0 },
- 	};
+diff --git a/canbusload.c b/canbusload.c
+index 577d99c..139d3d7 100644
+--- a/canbusload.c
++++ b/canbusload.c
+@@ -73,6 +73,7 @@
+ #define PERCENTRES 5 /* resolution in percent for bargraph */
+ #define NUMBAR (100 / PERCENTRES) /* number of bargraph elements */
+ #define BRSTRLEN 20
++#define VISUAL_WINDOW 90 /* window width for visualization */
  
--	while ((opt = getopt_long(argc, argv, "g:atefbEXR8mI:L:D:F:S:A:V:p:n:ixc:vh?", long_options, NULL)) != -1) {
-+	while ((opt = getopt_long(argc, argv, "g:atefbEXR8mI:L:D:F:S:A:V:p:P:n:ixc:vh?", long_options, NULL)) != -1) {
+ /*
+  * Inspired from
+@@ -120,6 +121,8 @@ static struct {
+ 	unsigned int load_1m;
+ 	unsigned int load_5m;
+ 	unsigned int load_15m;
++	unsigned int loads[VISUAL_WINDOW];
++	unsigned int index;
+ } stat[MAXDEVS + 1];
+ 
+ static volatile int running = 1;
+@@ -133,6 +136,7 @@ static unsigned char color;
+ static unsigned char bargraph;
+ static unsigned char statistic;
+ static unsigned char reset;
++static unsigned char visualize;
+ static enum cfl_mode mode = CFL_WORSTCASE;
+ static char *prg;
+ static struct termios old;
+@@ -150,6 +154,7 @@ static void print_usage(char *prg)
+ 	fprintf(stderr, "         -i  (ignore bitstuffing in bandwidth calculation)\n");
+ 	fprintf(stderr, "         -e  (exact calculation of stuffed bits)\n");
+ 	fprintf(stderr, "         -s  (show statistics, press 'r' to reset)\n");
++	fprintf(stderr, "         -v  (show busload visualization)\n");
+ 	fprintf(stderr, "\n");
+ 	fprintf(stderr, "Up to %d CAN interfaces with mandatory bitrate can be specified on the \n", MAXDEVS);
+ 	fprintf(stderr, "commandline in the form: <ifname>@<bitrate>[,<dbitrate>]\n");
+@@ -202,7 +207,7 @@ static void create_bitrate_string(int stat_idx, int *max_bitratestr_len)
+ 
+ static void printstats(int signo)
+ {
+-	int i, j, percent;
++	int i, j, k, percent, index;
+ 
+ 	if (redraw)
+ 		printf("%s", CSR_HOME);
+@@ -314,6 +319,28 @@ static void printstats(int signo)
+ 			printf("|");
+ 		}
+ 
++		if (visualize) {
++			stat[i].loads[stat[i].index] = percent;
++			stat[i].index = (stat[i].index + 1) % VISUAL_WINDOW;
++
++			printf("\n");
++			for (j = 0; j < NUMBAR; j++) {
++				printf("%3d%%|", (NUMBAR - j) * PERCENTRES);
++				index = stat[i].index;
++				for (k = 0; k < VISUAL_WINDOW; k++) {
++					percent = stat[i].loads[index];
++
++					if ((percent / PERCENTRES) >= (NUMBAR - j))
++						printf("X");
++					else
++						printf(".");
++
++					index = (index + 1) % VISUAL_WINDOW;
++				}
++				printf("\n");
++			}
++		}
++
+ 		if (color)
+ 			printf("%s", ATTRESET);
+ 
+@@ -375,7 +402,7 @@ int main(int argc, char **argv)
+ 
+ 	prg = basename(argv[0]);
+ 
+-	while ((opt = getopt(argc, argv, "rtbciesh?")) != -1) {
++	while ((opt = getopt(argc, argv, "rtbciesvh?")) != -1) {
  		switch (opt) {
- 		case 'g':
- 			gap = strtod(optarg, NULL);
-@@ -682,6 +684,14 @@ int main(int argc, char **argv)
- 			}
+ 		case 'r':
+ 			redraw = 1;
+@@ -406,6 +433,10 @@ int main(int argc, char **argv)
+ 			reset = 1;
  			break;
  
-+		case 'P':
-+			priority = atoi(optarg);
-+			if (priority < 0) {
-+				printf("socket priority has to be >= 0\n");
-+				return 1;
-+			}
++		case 'v':
++			visualize = 1;
 +			break;
 +
- 		case 'i':
- 			ignore_enobufs = true;
- 			break;
-@@ -750,6 +760,14 @@ int main(int argc, char **argv)
- 	 */
- 	setsockopt(s, SOL_CAN_RAW, CAN_RAW_FILTER, NULL, 0);
- 
-+	/*
-+	 * user can use tc to configure the queuing discipline (e.g. mqprio),
-+	 * together with SO_PRIORITY option to specify the message send from
-+	 * this socket should go to which queue.
-+	 */
-+	if (priority >= 0)
-+		setsockopt(s, SOL_SOCKET, SO_PRIORITY, &priority, sizeof(priority));
-+
- 	if (loopback_disable) {
- 		const int loopback = 0;
- 
+ 		default:
+ 			print_usage(prg);
+ 			exit(1);
 -- 
 2.34.1
 
