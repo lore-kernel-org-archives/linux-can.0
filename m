@@ -1,101 +1,145 @@
-Received: from out.smtpout.orange.fr (out-13.smtpout.orange.fr [193.252.22.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C081C227E95;
-	Mon, 10 Mar 2025 09:55:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.252.22.13
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741600531; cv=none; b=hdPvAwHo7K8YgeoaEs5JHXAwCFDkOV4X9yRyp0pxY52xNORcxmBdfZ6wDDm0Fe8jjEPqOYo54Is8IPzTRtaxeRNYNdDsTv5BQYqMCy9Y8ceIg2rtN48CszCvrWAhnaJYFzjG4mHaJrjhcmO14awAZfmfsB1Z7w74RmwK10T1TPM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741600531; c=relaxed/simple;
-	bh=i4pE8u/XHrdA9344C8oXv2hE4eWk4M9/sOKpCz/S6Zw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rxlNqrzG9vVbdxiAZcrEZ2Ors3Jjk+WkS45UnaqkhTXOx8czzy7S/YFWjnk5b3YDdL+NDrhsFDOplVhxObyOUhbH1B8XOzV1VzeOLYIdQZ0W98JNjat4rhUplnls75kyoN3o2u3JVbYzNlww4Dnz6ugwBEw7hnhSj+iYhPxkKT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=p4C2vohc; arc=none smtp.client-ip=193.252.22.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C7501C6F70;
+	Mon, 10 Mar 2025 10:03:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.25
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741601041; cv=pass; b=ldX5jq6u+Zg9+jJUs0Etc0PIDDvzgpQeJl/ZXJ/z2a4PB/9WsVEIJfPj8/xaISRJJ4H0hIePBfCPmpHJTFue7WH+YRSQXG1D9lzKtXHgsvph84PAxB3jraQw9oATc+FRZpoNj//aJmDQhHKMo9aOUClxDQ48SxGaJ6n9z2OxXU8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741601041; c=relaxed/simple;
+	bh=ieVSgl1n+Y3jk7qQKxXYcWYORmovbjqs1XE5G9Qx9SY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u6rVbFIQwxEDi1Z/HHlYb9wDgmXGOwd2k/90U9xt3Onc3OfrYhoH/HPK4pddSR5Gfcf7XXmJeYoI/sX8nBTt6yXccdN8RagpUmxhPeGXrAuf46cIgCff8pnUJCIAmkXQSIKnsgON5fQ9OKo92W08/63TIFD6gKICG6zGLu5FUiM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=RO0vRoKG; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=YghSe3s3; arc=pass smtp.client-ip=85.215.255.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="p4C2vohc"
-Received: from mail-ed1-f48.google.com ([209.85.208.48])
-	by smtp.orange.fr with ESMTPSA
-	id rZqvtxu0c9A4qrZqyt6QFM; Mon, 10 Mar 2025 10:55:21 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1741600521;
-	bh=i4pE8u/XHrdA9344C8oXv2hE4eWk4M9/sOKpCz/S6Zw=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To;
-	b=p4C2vohc4A/hB4g6q8ih0tjK70nuNUDoIDp63RclMQTHSsr8VeLnJrmB2CN4u5ZrF
-	 oUSt/OFEQJtCS6smIn3yUuPEDMNBb+dRBfTICsfFJ1AkRdBR2ez4mwAwMB8S2jpj+P
-	 bv9bNmn7wBRSw+5/FB1WGgnc656404e1raJ7ptmyt8bgoW4PeH30Mh+ZiLj3Exy5P6
-	 OSm579R9qMcAS99dwUj6JPNXqu28aHp6cMKfomWVjmmQINh9i45BnhPWn/IqUVrHsm
-	 ZXWGMdVAY0f1l5CDfeB128x4tMAKgJbpgEbIz+v6NiM65vyF0kJ/gyLuQI2ktZFqxL
-	 +IPgDQikG5VaQ==
-X-ME-Helo: mail-ed1-f48.google.com
-X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 10 Mar 2025 10:55:21 +0100
-X-ME-IP: 209.85.208.48
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5dc89df7eccso6670428a12.3;
-        Mon, 10 Mar 2025 02:55:20 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXFSGJpFPXW2FXtjIMXbWHvGJMACfvA+Jgl9Hsu6hV2vf1IYO082KigJTMx+nNkXPgqGYT4T1m9OLo=@vger.kernel.org, AJvYcCXpvFr20DXYOUc42MY19iJ1gv6J4xUwDivqEPcJ48ThBx4ELRy07Ge7kbXkg8yuIDNRlvFmye6e1lfxeZkJ@vger.kernel.org
-X-Gm-Message-State: AOJu0YxEEOn4ANeaMyYgODo0zimg1R8E82Q4uYjbiHE/pFCDoaNH4eGV
-	wodmB/VipLNVCfD83VunVCMm7DkWsoUyU92sMK+5nUp+5+nCgspdBWwC6iqfMIkzlf0+m4pAsB+
-	ocVPebpJalpONhT5zofVB2uPeZb8=
-X-Google-Smtp-Source: AGHT+IEdknV3g/6ie0NKekq54C7zANHwaPGViOXbrDTQU5rEkV2SSNDbYe+UNO+aPLf1QuDc95KJ9DudIiPaI3QBwQc=
-X-Received: by 2002:a17:907:720a:b0:ac1:e881:89aa with SMTP id
- a640c23a62f3a-ac2525b9c95mr1504962666b.5.1741600517640; Mon, 10 Mar 2025
- 02:55:17 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="RO0vRoKG";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="YghSe3s3"
+ARC-Seal: i=1; a=rsa-sha256; t=1741599957; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=XMs/unWZqB8wrf2Nf8Y3wArQnAXgMyiADzjUEvaob3BiKLsUogNbm6FTmtX35T1CGc
+    LFb00H1iaGAirPfZ5zYasMgLYFrqGjQRM7HbrgO1VC0pqC+jsDxfifHIMESaEki2u/wE
+    vgZYNmwNlApAYQQB7aaJu6mU+il0yD5SPvsYQ8u4ky3hr4sHnlkAtTCVIRkxmhU+TqIE
+    Rkhxswlwc16VrLs6XjTgiq39X9OXBYTydGPSUlMZbXa5QWwfGOszX3Sq7IyheXVLa4qM
+    +3vfQcXI2CaqMjY6tJwb6WjPAfFMGG9niyjO31zak9dQNaoEFgCSVm3ksfhyDZNJhU22
+    /rKw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1741599957;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=6c0rQTjE4PolH89nIKTpnQcF3fHayb1VmmI7dfoT9P4=;
+    b=ZWyfp2gVUj0vKNvZGBDepWvzLiPtEc1dQUgkc8VbHnXeoyqnBB5cSvLnjTbvRdVIKT
+    YWOxAzXadD/r+2UEm+mpEejiLrG600x5tc+kGX1lt/oRECp2Vg7jvJzInelsDnx9jnJC
+    pRQKI4M0nDu5hADDPpbcl1E/QefohnHM43125Y7O7MArfkotzz4LZVGv1XDv6b861iNv
+    /UsZAns6PWGV2nsc9/xrM8IwHfElr87ABOBkwIB99xfdS4wM7lMRbabfE5006ARtO7Z7
+    och1qps9qC2WzpELaUxdeVkBO86ZxtAY0qZIhvYT+BgJiwxprqkgEas5yrjywqA6H6Pp
+    xzRw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1741599957;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=6c0rQTjE4PolH89nIKTpnQcF3fHayb1VmmI7dfoT9P4=;
+    b=RO0vRoKG7LNeqtgRq8CgsPHMJeu2fAva5lG1cwGz4gf4Z7jYLMLupMRfd1S9Pdqbdo
+    8W41P94ZFf+d9pFMFJy0HDg/HSUgsE3SjiOL69usgrFYlMsFpdRoF7M847YfUyRRiKO8
+    ZGU7t5TNcftxv/OYPU62Ol8WQcSIE7iNXI7p9I+IuJxSmHF4vhv+2WHE5eG3p9uyWQdL
+    lO/I4ulAVKpU4faJm6CI2hdOcQrRX6xa089LM7MwnKbse0Fy2GRTgiZGF4/nvog0kPrC
+    bHF7FzjeLMHmeo9rM6KcPdp4EI5aqnc780QI6WOwGiPCcxo6AvTREIw9Ce9KJSemHVjA
+    kKQA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1741599957;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=6c0rQTjE4PolH89nIKTpnQcF3fHayb1VmmI7dfoT9P4=;
+    b=YghSe3s3dQ2MOYRGyhXD6P8gcPlIrc757HmVBsUglVPehubSDGiZOFRy3OaaLLwfDX
+    PNGbXPd7tR+GhOuQ3IBA==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/vMMcFB+5xtv9aJ67XA=="
+Received: from [IPV6:2a00:6020:4a8e:5000::9f3]
+    by smtp.strato.de (RZmta 51.3.0 AUTH)
+    with ESMTPSA id K2a3e512A9jvSaS
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Mon, 10 Mar 2025 10:45:57 +0100 (CET)
+Message-ID: <f8e7f845-253b-47b7-9e09-97a580ce0e5c@hartkopp.net>
+Date: Mon, 10 Mar 2025 10:45:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <67cd717d.050a0220.e1a89.0006.GAE@google.com> <c9047828-708a-42d8-97f6-fffb7d806679@hartkopp.net>
- <CAMZ6RqKyMreMfNDmYU=tLyaEcReopmGx2VkBWPB12LLzd5o7Pg@mail.gmail.com> <f8e7f845-253b-47b7-9e09-97a580ce0e5c@hartkopp.net>
-In-Reply-To: <f8e7f845-253b-47b7-9e09-97a580ce0e5c@hartkopp.net>
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Date: Mon, 10 Mar 2025 18:55:06 +0900
-X-Gmail-Original-Message-ID: <CAMZ6RqKga=f=Xd33GF1zPwmiearrz3mg+ZiryVbJD_RE5MGjKA@mail.gmail.com>
-X-Gm-Features: AQ5f1JrZXeNMKQBc3ToVK21lghv3_OQv8DM-VpAfJoFaXW060wcyVIotaMf8eOg
-Message-ID: <CAMZ6RqKga=f=Xd33GF1zPwmiearrz3mg+ZiryVbJD_RE5MGjKA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
 Subject: Re: [syzbot] [can?] KCSAN: data-race in can_send / can_send (5)
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: mkl@pengutronix.de, 
-	syzbot <syzbot+78ce4489b812515d5e4d@syzkaller.appspotmail.com>, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	linux-can@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+To: Vincent Mailhol <vincent.mailhol@gmail.com>
+Cc: mkl@pengutronix.de,
+ syzbot <syzbot+78ce4489b812515d5e4d@syzkaller.appspotmail.com>,
+ linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+ linux-can@vger.kernel.org
+References: <67cd717d.050a0220.e1a89.0006.GAE@google.com>
+ <c9047828-708a-42d8-97f6-fffb7d806679@hartkopp.net>
+ <CAMZ6RqKyMreMfNDmYU=tLyaEcReopmGx2VkBWPB12LLzd5o7Pg@mail.gmail.com>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <CAMZ6RqKyMreMfNDmYU=tLyaEcReopmGx2VkBWPB12LLzd5o7Pg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon. 10 Mar 2025 at 18:46, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
-> On 10.03.25 10:29, Vincent Mailhol wrote:
-> > On Mon. 10 Mar 2025 at 03:59, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
 
-(...)
 
-> >> Isn't there some lock-less per-cpu safe statistic handling within netdev
-> >> we might pick for our use-case?
-> >
-> > I see two solutions. Either we use lock_sock(skb->sk) and
-> > release_sock(skb->sk) or we can change the types of
-> > can_pkg_stats->tx_frames and can_pkg_stats->tx_frames_delta from long
-> > to atomic_long_t.
-> >
-> > The atomic_long_t is the closest solution to a lock-less. But my
-> > preference goes to the lock_sock() which looks more natural in this
-> > context. And look_sock() is just a spinlock which under the hood is
-> > also an atomic, so no big penalty either.
->
-> When we get skbs from the netdevice (and not from user space), we do not
-> have a valid sk value. It is set to zero.
->
-> See:
-> https://elixir.bootlin.com/linux/v6.13.6/source/net/can/raw.c#L203
->
-> And those skbs can also be forwarded by can-gw using can_send().
->
-> Therefore there is no lock_sock() without a valid sk ;-)
->
-> When 'atomic_long_t' would also fix this simple statistics handling, we
-> should use that.
+On 10.03.25 10:29, Vincent Mailhol wrote:
+> On Mon. 10 Mar 2025 at 03:59, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
 
-I see, Thanks for the explanation. Then atomic_long_t seems the best
-(and easiest).
+
+>>> value changed: 0x0000000000002b9d -> 0x0000000000002b9e
+>>>
+>>
+>> Increased by '1' ...
+>>
+>> I assume this problem is caused by increasing the per-netdevice statistic in
+>>
+>> https://elixir.bootlin.com/linux/v6.13.6/source/net/can/af_can.c#L289
+>>
+>> pkg_stats->tx_frames++;
+>> pkg_stats->tx_frames_delta++;
+>>
+>> We update the statistics for the device and in this specific case the
+>> hrtimer fired on two CPUs resulting in a can_send() to the same netdevice.
+>>
+>> Do you agree with this quick analysis?
+> 
+> Ack. Same conclusion here.
+> 
+>> Isn't there some lock-less per-cpu safe statistic handling within netdev
+>> we might pick for our use-case?
+> 
+> I see two solutions. Either we use lock_sock(skb->sk) and
+> release_sock(skb->sk) or we can change the types of
+> can_pkg_stats->tx_frames and can_pkg_stats->tx_frames_delta from long
+> to atomic_long_t.
+> 
+> The atomic_long_t is the closest solution to a lock-less. But my
+> preference goes to the lock_sock() which looks more natural in this
+> context. And look_sock() is just a spinlock which under the hood is
+> also an atomic, so no big penalty either.
+
+When we get skbs from the netdevice (and not from user space), we do not 
+have a valid sk value. It is set to zero.
+
+See:
+https://elixir.bootlin.com/linux/v6.13.6/source/net/can/raw.c#L203
+
+And those skbs can also be forwarded by can-gw using can_send().
+
+Therefore there is no lock_sock() without a valid sk ;-)
+
+When 'atomic_long_t' would also fix this simple statistics handling, we 
+should use that.
+
+Best regards,
+Oliver
+
