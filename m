@@ -1,16 +1,15 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 334131FF1A1
-	for <linux-can@vger.kernel.org>; Fri, 14 Mar 2025 13:09:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33E051FF7D5
+	for <linux-can@vger.kernel.org>; Fri, 14 Mar 2025 13:23:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741957762; cv=none; b=VurSudZuvgelkhLO2yTWdYf2gPx8PlFgeR8wVs/4+mbrqpCGGIWbXEnHTe677EwA1TS+OOu6Igw0v+XMOrmcQVUMEg3T+GLpjNQtKnU4/YOU1hK44GxpNq42f0kM61Tp7cujkdp3zJziXB6/o8dPPdSVpooBfumyhT4d4/wB5Y8=
+	t=1741958613; cv=none; b=c63H47YB1IbLkLWte+AKafmyrZJLvMe4iuWeEOX6j2SH8E+/by6QvCFkqpbwC9TIYJjku3OYZTUXWIboEJJ0g4oAuPtMbhI5bkxIe6/uRuvdJWKDXre0W9x9uvmDEINwEN9sRkufM71wvrzwqtNbh3d2XnrKE252BchWkTQ9tqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741957762; c=relaxed/simple;
-	bh=IC552aT+X/cMiX3avKhLN9Kp5e+S8eMcg33A4vhkcbE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uYnn+Ff8/zy80vNMv6ZqE4XowBE+Cx0fkUyUpXSvPp8M8LDQDGS4X1bru8tU8m8dI+Vybe75jkG6KG3LQOtLjQA3BA4m9QkHFpdq2uwrNXt7b2wro+tUSG+0C2AJhHCP43YVzBm8Su2ELEuVm0hPo52tZg/rsXytjQua88udxgA=
+	s=arc-20240116; t=1741958613; c=relaxed/simple;
+	bh=lMCIKNZKcc02fMfv+ywfFQtyP/pXJF8iB5Pk7aJHZjo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KVZeB82BK9vQdHitBxpoY8mTJW47Mk20bn/J1w8WMFFS2Gzrp1nD74OFELhhpBxRSrrngWIJUAbHsGaoamolME4myjoyY4BBIYGMuyCcZCDtTX0/vNR9SNzmIsJKgvkI8rvikrn/Jw9ZxgzKkHvRinjcmkF0nZwpvVSQfS6VjzI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,42 +17,37 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1tt4ms-0007M3-7N
-	for linux-can@vger.kernel.org; Fri, 14 Mar 2025 14:09:18 +0100
+	id 1tt50c-0001hF-K5
+	for linux-can@vger.kernel.org; Fri, 14 Mar 2025 14:23:30 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1tt4mr-005hpU-0v
+	id 1tt50c-005i4Y-1H
 	for linux-can@vger.kernel.org;
-	Fri, 14 Mar 2025 14:09:17 +0100
+	Fri, 14 Mar 2025 14:23:30 +0100
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id F03393DBB86
-	for <linux-can@vger.kernel.org>; Fri, 14 Mar 2025 13:09:16 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with SMTP id 169F23DBBF9
+	for <linux-can@vger.kernel.org>; Fri, 14 Mar 2025 13:23:30 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 4EA453DBB51;
-	Fri, 14 Mar 2025 13:09:14 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 3B6C93DBBE6;
+	Fri, 14 Mar 2025 13:23:29 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f21f756b;
-	Fri, 14 Mar 2025 13:09:12 +0000 (UTC)
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 7e77eee0;
+	Fri, 14 Mar 2025 13:23:28 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	Haibo Chen <haibo.chen@nxp.com>,
-	stable@vger.kernel.org,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 5/6] can: flexcan: only change CAN state when link up in system PM
-Date: Fri, 14 Mar 2025 14:04:04 +0100
-Message-ID: <20250314130909.2890541-6-mkl@pengutronix.de>
+	kernel@pengutronix.de
+Subject: [PATCH net-next 0/4] pull-request: can-next 2025-03-14
+Date: Fri, 14 Mar 2025 14:19:14 +0100
+Message-ID: <20250314132327.2905693-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.47.2
-In-Reply-To: <20250314130909.2890541-1-mkl@pengutronix.de>
-References: <20250314130909.2890541-1-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -66,71 +60,58 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Haibo Chen <haibo.chen@nxp.com>
+Hello netdev-team,
 
-After a suspend/resume cycle on a down interface, it will come up as
-ERROR-ACTIVE.
+this is a pull request of 4 patches for net-next/main.
 
-$ ip -details -s -s a s dev flexcan0
-3: flexcan0: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN group default qlen 10
-    link/can  promiscuity 0 allmulti 0 minmtu 0 maxmtu 0
-    can state STOPPED (berr-counter tx 0 rx 0) restart-ms 1000
+In the first 2 patches by Dimitri Fedrau add CAN transceiver support
+to the flexcan driver.
 
-$ sudo systemctl suspend
+Frank Li's patch adds i.MX94 support to the flexcan device tree
+bindings.
 
-$ ip -details -s -s a s dev flexcan0
-3: flexcan0: <NOARP,ECHO> mtu 16 qdisc pfifo_fast state DOWN group default qlen 10
-    link/can  promiscuity 0 allmulti 0 minmtu 0 maxmtu 0
-    can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 1000
+The last patch is by Davide Caratti and adds protocol counter for
+AF_CAN sockets.
 
-And only set CAN state to CAN_STATE_ERROR_ACTIVE when resume process
-has no issue, otherwise keep in CAN_STATE_SLEEPING as suspend did.
+regards,
+Marc
 
-Fixes: 4de349e786a3 ("can: flexcan: fix resume function")
-Cc: stable@vger.kernel.org
-Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
-Link: https://patch.msgid.link/20250314110145.899179-1-haibo.chen@nxp.com
-Reported-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Closes: https://lore.kernel.org/all/20250314-married-polar-elephant-b15594-mkl@pengutronix.de
-[mkl: add newlines]
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/flexcan/flexcan-core.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+The following changes since commit 941defcea7e11ad7ff8f0d4856716dd637d757dd:
 
-diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index ac1a860986df..3a71fd235722 100644
---- a/drivers/net/can/flexcan/flexcan-core.c
-+++ b/drivers/net/can/flexcan/flexcan-core.c
-@@ -2266,8 +2266,9 @@ static int __maybe_unused flexcan_suspend(struct device *device)
- 		}
- 		netif_stop_queue(dev);
- 		netif_device_detach(dev);
-+
-+		priv->can.state = CAN_STATE_SLEEPING;
- 	}
--	priv->can.state = CAN_STATE_SLEEPING;
- 
- 	return 0;
- }
-@@ -2278,7 +2279,6 @@ static int __maybe_unused flexcan_resume(struct device *device)
- 	struct flexcan_priv *priv = netdev_priv(dev);
- 	int err;
- 
--	priv->can.state = CAN_STATE_ERROR_ACTIVE;
- 	if (netif_running(dev)) {
- 		netif_device_attach(dev);
- 		netif_start_queue(dev);
-@@ -2298,6 +2298,8 @@ static int __maybe_unused flexcan_resume(struct device *device)
- 
- 			flexcan_chip_interrupts_enable(dev);
- 		}
-+
-+		priv->can.state = CAN_STATE_ERROR_ACTIVE;
- 	}
- 
- 	return 0;
--- 
-2.47.2
+  Merge git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2025-03-13 23:08:11 +0100)
 
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-6.15-20250314
+
+for you to fetch changes up to 6bffe88452dbe284747442f10a7ac8249d6495d7:
+
+  can: add protocol counter for AF_CAN sockets (2025-03-14 13:27:33 +0100)
+
+----------------------------------------------------------------
+linux-can-next-for-6.15-20250314
+
+----------------------------------------------------------------
+Davide Caratti (1):
+      can: add protocol counter for AF_CAN sockets
+
+Dimitri Fedrau (2):
+      dt-bindings: can: fsl,flexcan: add transceiver capabilities
+      can: flexcan: add transceiver capabilities
+
+Frank Li (1):
+      dt-bindings: can: fsl,flexcan: add i.MX94 support
+
+Marc Kleine-Budde (1):
+      Merge patch series "can: flexcan: add transceiver capabilities"
+
+ .../devicetree/bindings/net/can/fsl,flexcan.yaml   | 13 +++++++++++
+ drivers/net/can/flexcan/flexcan-core.c             | 27 +++++++++++++++++-----
+ drivers/net/can/flexcan/flexcan.h                  |  1 +
+ net/can/af_can.c                                   |  2 ++
+ net/can/bcm.c                                      |  1 +
+ net/can/isotp.c                                    |  1 +
+ net/can/raw.c                                      |  5 +++-
+ 7 files changed, 43 insertions(+), 7 deletions(-)
 
