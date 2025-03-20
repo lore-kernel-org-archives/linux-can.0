@@ -1,41 +1,45 @@
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com [210.160.252.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6925C21ADCC;
-	Thu, 20 Mar 2025 09:12:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.160.252.172
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55189221DAD;
+	Thu, 20 Mar 2025 09:16:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.160.252.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742461940; cv=none; b=lcu7EIUtjWvuulqVaIQb0CkZLs2YDM5ceqO92cBct1d0BdmH9qQx+66VRkqq7oD3WWq1SPbYmZlixNQbJvK3ov9I2tYAGpi/d1kEZ6mcF0X3q7qoMgTwu0s8aE9W9smRuW/5CKgmQ6+2RBDgfT95x3U3lvYizz5047wZwUfaFSo=
+	t=1742462182; cv=none; b=JbOIeF3Y53c/npHh0yFvBEjbG/bRm8e1e5F5ZG8LfdzUXFok18UZq2f58DenG2mMDikK+ccPB6IJxye3OopEwOXM1aywfa+mXRQ2VaR2VdwZtrhkRPq/9Y4sDrJcfbCwvC5NxNCmZRbfEldeTng+aARRXr0MXkY5GMYeD266Reg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742461940; c=relaxed/simple;
-	bh=aF+WjSE/9OhGGVMB7/9ZYjRflyzXObAKn/+EPq7vW+Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FT7nwAzBlxNDGu+vQczjy+D2SWPIjGvDdmUHqQOxFGpSOrRbgQNq5lzEWV6cjo94uzQrupTelRUAJnEfufIciqPxS0pGwhFrx92Q/A3HeVCuTguu+5TcWn0THv4iBD7UyycZVymtuLrbcqDL2j00u+qP9kKx7eBtxY23E9O8sGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; arc=none smtp.client-ip=210.160.252.172
+	s=arc-20240116; t=1742462182; c=relaxed/simple;
+	bh=ltoA2OPsgapNRSNCQLkjyw8etzpbcf+vdE2Uj9g99ho=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZWqkhTMN94CtMjAUtMLemTMSzQKRtP2FPW4HgLmmi18uj3CHU4mWtTh0Z4YZkLHgp70OgX8brqhZtX7L1u+oifzAF7kPKP4bpiKwU0wNVmit/vbIT+sb7Rf/yn4MbG9oZ3hKz3Ahr20mn+w5GHZsvYKmHuA8o71u2Uy3vW6X9P4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; arc=none smtp.client-ip=210.160.252.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
-X-CSE-ConnectionGUID: BpcTdHdQRFm/Om6fS7cpug==
-X-CSE-MsgGUID: ostQLwWaSvaI+HvITUmtYg==
+X-CSE-ConnectionGUID: GDNfdA5ITUCNzmjr5nIP8w==
+X-CSE-MsgGUID: YfK1egz2T6m6E4idvOFlcg==
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 20 Mar 2025 18:12:17 +0900
+  by relmlie5.idc.renesas.com with ESMTP; 20 Mar 2025 18:11:10 +0900
 Received: from localhost.localdomain (unknown [10.226.93.24])
-	by relmlir5.idc.renesas.com (Postfix) with ESMTP id 552334001B61;
-	Thu, 20 Mar 2025 18:12:14 +0900 (JST)
+	by relmlir5.idc.renesas.com (Postfix) with ESMTP id 4F3564005B59;
+	Thu, 20 Mar 2025 18:11:05 +0900 (JST)
 From: Biju Das <biju.das.jz@bp.renesas.com>
 To: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc: Biju Das <biju.das.jz@bp.renesas.com>,
-	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
 	Geert Uytterhoeven <geert+renesas@glider.be>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>
+Cc: Biju Das <biju.das.jz@bp.renesas.com>,
 	linux-can@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>,
 	Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-	Biju Das <biju.das.au@gmail.com>,
-	linux-renesas-soc@vger.kernel.org
-Subject: [PATCH v6 18/18] can: rcar_canfd: Add RZ/G3E support
-Date: Thu, 20 Mar 2025 09:10:49 +0000
-Message-ID: <20250320091101.33637-19-biju.das.jz@bp.renesas.com>
+	Biju Das <biju.das.au@gmail.com>
+Subject: [PATCH v6 00/18] Add support for RZ/G3E CANFD
+Date: Thu, 20 Mar 2025 09:10:31 +0000
+Message-ID: <20250320091101.33637-1-biju.das.jz@bp.renesas.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250320091101.33637-1-biju.das.jz@bp.renesas.com>
-References: <20250320091101.33637-1-biju.das.jz@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -44,87 +48,94 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The CAN-FD IP found on the RZ/G3E SoC is similar to R-Car Gen4, but
-it has no external clock instead it has clk_ram, it has 6 channels
-and supports 20 interrupts. Add support for RZ/G3E CAN-FD driver.
+The CAN-FD module on RZ/G3E is very similar to the one on both R-Car V4H
+and RZ/G2L, but differs in some hardware parameters:
+ * No external clock, but instead has ram clock.
+ * Support up to 6 channels.
+ * 20 interrupts.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
----
 v5->v6:
- * Collected tag
- * Updated r9a09g047_hw_info table. 
+ * Replaced RCANFD_RNC_PER_REG macro with rnc_stride variable.
+ * Updated commit description for patch#7 and #8
+ * Dropped mask_table:
+     AFLPN_MASK is replaced by max_aflpn variable.
+     CFTML_MASK is replaced by max_cftml variable.
+     BITTIMING MASK's are replaced by {nom,data}_bittiming variables.
+ * Collected tag from Geert.
 v4->v5:
- * Updated error description as "cannot get enabled ram clock"
- * Updated r9a09g047_hw_info table.  
+ * Collected tag from Geert.
+ * The rules for R-Car Gen3/4 could be kept together, reducing the number
+   of lines. Similar change for rzg2l-canfd aswell.
+ * Keeping interrupts and resets together allows to keep a clear
+   separation between RZ/G2L and RZ/G3E, at the expense of only
+   a single line.
+ * Retained the tags for binding patches as it is trivial changes.
+ * Dropped the unused macro RCANFD_GAFLCFG_GETRNC.
+ * Updated macro RCANFD_GERFL_ERR by using gpriv->channels_mask and
+   dropped unused macro RCANFD_GERFL_EEF0_7.
+ * Replaced RNC mask in RCANFD_GAFLCFG_SETRNC macro by using
+   info->num_supported_rules variable.
+ * Updated the macro RCANFD_GAFLCFG by using info->rnc_field_width
+   variable.
+ * Updated shift value in RCANFD_GAFLCFG_SETRNC macro by using a formula
+   (32 - (n % rnc_per_reg + 1) * field_width).
+ * Replaced the variable name shared_can_reg->shared_can_regs.
+ * Improved commit description for patch{#11,#12}by replacing has->have.
+ * Dropped RCANFD_EEF_MASK and RCANFD_RNC_MASK as it is taken
+   care by gpriv->channels_mask and info->num_supported_rules.
+ * Dropped RCANFD_FIRST_RNC_SH and RCANFD_SECOND_RNC_SH by using a
+   formula (32 - (n % rnc_per_reg + 1) * rnc_field_width.
+ * Improved commit description by "All SoCs supports extenal clock"->
+   "All existing SoCs support an external clock".
+ * Updated error description in probe as "cannot get enabled ram clock"
+ * Updated r9a09g047_hw_info table.
 v3->v4:
- * No change.
+ * Added Rb tag from Rob for patch#2.
+ * Added prefix RCANFD_* to enum rcar_canfd_reg_offset_id.
+ * Added prefix RCANFD_* to enum rcar_canfd_mask_id.
+ * Added prefix RCANFD_* to enum rcar_canfd_shift_id.
 v2->v3:
- * Replaced gen4_type entry with mask_table, shift_table, regs,
-   ch_interface_mode and shared_can_reg.
+ * Collected tags.
+ * Dropped reg_gen4() and is_gen4() by adding mask_table, shift_table,
+   regs, ch_interface_mode and shared_can_reg variables to
+   struct rcar_canfd_hw_info.
 v1->v2:
- * No change.
----
- drivers/net/can/rcar/rcar_canfd.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ * Split the series with fixes patch separately.
+ * Added patch for Simplify rcar_canfd_probe() using
+   of_get_available_child_by_name() as dependency patch hit on can-next.
+ * Added Rb tag from Vincent Mailhol.
+ * Dropped redundant comment from commit description for patch#3.
 
-diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index 91f5649078c6..243eaf6c24c4 100644
---- a/drivers/net/can/rcar/rcar_canfd.c
-+++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -730,6 +730,24 @@ static const struct rcar_canfd_hw_info rzg2l_hw_info = {
- 	.multi_channel_irqs = 1,
- };
- 
-+static const struct rcar_canfd_hw_info r9a09g047_hw_info = {
-+	.nom_bittiming = &rcar_canfd_gen4_nom_bittiming_const,
-+	.data_bittiming = &rcar_canfd_gen4_data_bittiming_const,
-+	.regs = rcar_gen4_regs,
-+	.shift_table = rcar_gen4_shift_table,
-+	.num_supported_rules = 512,
-+	.rnc_stride = 2,
-+	.rnc_field_width = 16,
-+	.max_aflpn = 63,
-+	.max_cftml = 31,
-+	.max_channels = 6,
-+	.postdiv = 1,
-+	.multi_channel_irqs = 1,
-+	.ch_interface_mode = 1,
-+	.shared_can_regs = 1,
-+	.only_internal_clks = 1,
-+};
-+
- /* Helper functions */
- static inline void rcar_canfd_update(u32 mask, u32 val, u32 __iomem *reg)
- {
-@@ -1963,6 +1981,7 @@ static int rcar_canfd_probe(struct platform_device *pdev)
- 	u32 rule_entry = 0;
- 	bool fdmode = true;			/* CAN FD only mode - default */
- 	char name[9] = "channelX";
-+	struct clk *clk_ram;
- 	int i;
- 
- 	info = of_device_get_match_data(dev);
-@@ -2052,6 +2071,11 @@ static int rcar_canfd_probe(struct platform_device *pdev)
- 		gpriv->extclk = !gpriv->info->only_internal_clks;
- 	}
- 
-+	clk_ram = devm_clk_get_optional_enabled(dev, "ram_clk");
-+	if (IS_ERR(clk_ram))
-+		return dev_err_probe(dev, PTR_ERR(clk_ram),
-+				     "cannot get enabled ram clock\n");
-+
- 	addr = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(addr)) {
- 		err = PTR_ERR(addr);
-@@ -2214,6 +2238,7 @@ static SIMPLE_DEV_PM_OPS(rcar_canfd_pm_ops, rcar_canfd_suspend,
- 
- static const __maybe_unused struct of_device_id rcar_canfd_of_table[] = {
- 	{ .compatible = "renesas,r8a779a0-canfd", .data = &rcar_gen4_hw_info },
-+	{ .compatible = "renesas,r9a09g047-canfd", .data = &r9a09g047_hw_info },
- 	{ .compatible = "renesas,rcar-gen3-canfd", .data = &rcar_gen3_hw_info },
- 	{ .compatible = "renesas,rcar-gen4-canfd", .data = &rcar_gen4_hw_info },
- 	{ .compatible = "renesas,rzg2l-canfd", .data = &rzg2l_hw_info },
+Biju Das (18):
+  dt-bindings: can: renesas,rcar-canfd: Simplify the conditional schema
+  dt-bindings: can: renesas,rcar-canfd: Document RZ/G3E support
+  can: rcar_canfd: Use of_get_available_child_by_name()
+  can: rcar_canfd: Drop RCANFD_GAFLCFG_GETRNC macro
+  can: rcar_canfd: Drop RCANFD_GERFL_EEF* macros in RCANFD_GERFL_ERR
+  can: rcar_canfd: Add num_supported_rules variable to struct
+    rcar_canfd_hw_info
+  can: rcar_canfd: Add rnc_stride variable to struct rcar_canfd_hw_info
+  can: rcar_canfd: Simplify RCANFD_GAFLCFG_SETRNC macro
+  can: rcar_canfd: Add max_aflpn variable to struct rcar_canfd_hw_info
+  can: rcar_canfd: Add max_cftml variable to struct rcar_canfd_hw_info
+  can: rcar_canfd: Add {nom,data}_bittiming variables to struct
+    rcar_canfd_hw_info
+  can: rcar_canfd: Add ch_interface_mode variable to struct
+    rcar_canfd_hw_info
+  can: rcar_canfd: Add shared_can_regs variable to struct
+    rcar_canfd_hw_info
+  can: rcar_canfd: Add register mapping table to struct
+    rcar_canfd_hw_info
+  can: rcar_canfd: Add shift table to struct rcar_canfd_hw_info
+  can: rcar_canfd: Add only_internal_clks variable to struct
+    rcar_canfd_hw_info
+  can: rcar_canfd: Enhance multi_channel_irqs handling
+  can: rcar_canfd: Add RZ/G3E support
+
+ .../bindings/net/can/renesas,rcar-canfd.yaml  | 171 +++++++++---
+ drivers/net/can/rcar/rcar_canfd.c             | 256 ++++++++++++++----
+ 2 files changed, 327 insertions(+), 100 deletions(-)
+
 -- 
 2.43.0
 
