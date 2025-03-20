@@ -1,73 +1,97 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4034F1DE3A9;
-	Wed, 19 Mar 2025 23:58:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CAD21A238C;
+	Thu, 20 Mar 2025 09:11:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.160.252.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742428693; cv=none; b=Ndoj6luz0+1V47TvDMU8A9SAhUnYbgXrpXC19oLWh9GppfgWp5VrRNgheaQhZuf9tOGi9jxFAa0HPGJisqeDTLXSGpHJztfgCo67nL91WwwLMYVyOuGNLFCUUZn781S2EEPaxJ6NWN+Mi7BgGsMtAJIE5RKenp32LrKBodwB+bc=
+	t=1742461888; cv=none; b=Qtvmme7TFKl9/oWA01Cfx6ExlJfzJkA+EPps5kqujF2P3hVPawlRYdGozSur8w3ZQod7ywsY6Xd3ypQHhLLpDTJJ1RysdE8ouckkuoy4wUYp/olpcSRH6/3SXOWvtR1bNOVbomCCA7dWNjsHATKIKoWMABU3CACTIK9H2PxrU7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742428693; c=relaxed/simple;
-	bh=ZZKfA84RzRDEAliz95nfjz5QwDog7cyZVSrWYTw/zI8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nXLJj2x84gKvXdTOhljDJhSM5yr7bzeu76svY0Y1Q2dmiB6q9DJqFoC+K5wFpieUB20t80s0PX4Cg8cnWTxkCn76rYVsxjdcbCoXQQ32Ps/0IjVz5w39AWPna44nrdh4cPP9c1i4c+fEM439NUGZozmDZtzA808PA8yManRo5D0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aEs3QJCh; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aEs3QJCh"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 458ACC4CEE4;
-	Wed, 19 Mar 2025 23:58:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742428692;
-	bh=ZZKfA84RzRDEAliz95nfjz5QwDog7cyZVSrWYTw/zI8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aEs3QJChJFcdnPOHTauCmOrZ6IULAT7ZHAPKR4zUQKWpU4fVfq9xjjqMYvsI+BjnY
-	 tGhOwI9ScxsMy66k/+abaRY04I7+m9j1tjEdH9fAhcXCSi4LivrGhOBfVFXXTzlwMI
-	 p6De/RCvhON6CzIS0tGTyTbJuvO/FmRVGYyS9qC2+lu2dN/kngG4jI+E5IYPUo5gkM
-	 HheOzDF+CuZXuwayiJHFY7XfsiLvcbIecQPzGP0Uq9g85V4ym5K4eDIuM35vhUNiP3
-	 c/51O56HdxpGl/vDaGjSfPHxwvJ+8zacziTn2x/482i+A/8y3atJDVk6Ur1lsSqNve
-	 C0gP39TapTPrQ==
-Date: Thu, 20 Mar 2025 00:58:09 +0100
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Ming Yu <a0282524688@gmail.com>
-Cc: tmyu0@nuvoton.com, lee@kernel.org, linus.walleij@linaro.org, 
-	brgl@bgdev.pl, mkl@pengutronix.de, mailhol.vincent@wanadoo.fr, 
-	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, wim@linux-watchdog.org, linux@roeck-us.net, jdelvare@suse.com, 
-	alexandre.belloni@bootlin.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	linux-i2c@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-watchdog@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-rtc@vger.kernel.org, 
-	linux-usb@vger.kernel.org
-Subject: Re: [PATCH v8 3/7] i2c: Add Nuvoton NCT6694 I2C support
-Message-ID: <jpaqx2z5io2bvtluexnzrkz4zcvea7qqgpa6bdhm4yzby2rjgb@izncuolmv7tl>
-References: <20250225081644.3524915-1-a0282524688@gmail.com>
- <20250225081644.3524915-4-a0282524688@gmail.com>
+	s=arc-20240116; t=1742461888; c=relaxed/simple;
+	bh=mYcAz6BoFHRauKeQSL+XN0pfmRV9O1L231kghmgcs6M=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=IIlhBQB3tB3ZIGk+dlBvexLKdxys6cZHFasBdduL4ofxeDSDzJ9lm5vifi9puIUTddHRr7jlemfwuXVLxT4AvUpadBGZePOeI6c0HweFJNA1XgAV4oNJBx+msLvFuGPoTtGdj6PMdgf0kUT7LwKHJcSnJYPR5IlupO3QZnRSrlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; arc=none smtp.client-ip=210.160.252.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
+X-CSE-ConnectionGUID: t9jjdjNLTPeo1Jmf2pZtZA==
+X-CSE-MsgGUID: PTafmvMsSA63iAOkqsnyzg==
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 20 Mar 2025 18:11:24 +0900
+Received: from localhost.localdomain (unknown [10.226.93.24])
+	by relmlir5.idc.renesas.com (Postfix) with ESMTP id 718764001B61;
+	Thu, 20 Mar 2025 18:11:21 +0900 (JST)
+From: Biju Das <biju.das.jz@bp.renesas.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc: Biju Das <biju.das.jz@bp.renesas.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>,
+	Rob Herring <robh@kernel.org>,
+	Ulrich Hecht <ulrich.hecht+renesas@gmail.com>,
+	linux-can@vger.kernel.org,
+	Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+	Biju Das <biju.das.au@gmail.com>,
+	linux-renesas-soc@vger.kernel.org
+Subject: [PATCH v6 03/18] can: rcar_canfd: Use of_get_available_child_by_name()
+Date: Thu, 20 Mar 2025 09:10:34 +0000
+Message-ID: <20250320091101.33637-4-biju.das.jz@bp.renesas.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20250320091101.33637-1-biju.das.jz@bp.renesas.com>
+References: <20250320091101.33637-1-biju.das.jz@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250225081644.3524915-4-a0282524688@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Ming,
+Simplify rcar_canfd_probe() using of_get_available_child_by_name().
 
-...
+While at it, move of_node_put(child) inside the if block to avoid
+additional check if of_child is NULL.
 
-> +enum i2c_baudrate {
-> +	I2C_BR_25K = 0,
-> +	I2C_BR_50K,
-> +	I2C_BR_100K,
-> +	I2C_BR_200K,
-> +	I2C_BR_400K,
-> +	I2C_BR_800K,
-> +	I2C_BR_1M
-> +};
+Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+---
+v5->v6:
+ * No change.
+v4->v5:
+ * No change.
+v3->v4:
+ * No change.
+v2->v3:
+ * Added Rb tag from Geert.
+v2:
+ * Added to this series as dependency patch hit on can-next.
+ * Added Rb tag from Vincent Mailhol
+ * Dropped redundant comment from commit description.
+---
+ drivers/net/can/rcar/rcar_canfd.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-do we need all these frequencies? I don't see them use anywhere.
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index aa3df0d05b85..2d9569fd0e0b 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -1855,13 +1855,13 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 
+ 	for (i = 0; i < info->max_channels; ++i) {
+ 		name[7] = '0' + i;
+-		of_child = of_get_child_by_name(dev->of_node, name);
+-		if (of_child && of_device_is_available(of_child)) {
++		of_child = of_get_available_child_by_name(dev->of_node, name);
++		if (of_child) {
+ 			channels_mask |= BIT(i);
+ 			transceivers[i] = devm_of_phy_optional_get(dev,
+ 							of_child, NULL);
++			of_node_put(of_child);
+ 		}
+-		of_node_put(of_child);
+ 		if (IS_ERR(transceivers[i]))
+ 			return PTR_ERR(transceivers[i]);
+ 	}
+-- 
+2.43.0
 
-Besides, can you please use a proper prefix? I2C_BR_* prefix
-doesn't belong to this driver.
-
-Andi
