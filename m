@@ -1,44 +1,38 @@
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com [210.160.252.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 100C51A238C;
-	Thu, 20 Mar 2025 09:11:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F1FF1A238C;
+	Thu, 20 Mar 2025 09:11:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.160.252.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742461891; cv=none; b=rmD2LRL75xci3vCwKb98VSHY80/ixFhRnO0eocP17aDadPxF/l1d/X6cG+OWqRjUnbo0xYeRa7IX84M5kz3bnqVfQ106WsVRCZSxa05gHfZUAe5tc4WVxMpU50Os2nsx9dzT8r7JYKcd9nWbYvdWdBG1owJKnks9d1+vv6TSrBU=
+	t=1742461894; cv=none; b=EPe/8EWTbPeQHKEdoxZPuJGZWMsovdcNnDUt0Yss8oB6OQtIaaWkgxvaMLgVvcOqGAy2XDlF288DftCanfIARKYhhF3Z4/VslLofwSGaL6sfQvWdFeCMerktpkt3g5u0Da2GPwGO/N9syKRfAVccSiXyoMjYGV3GKWhLa+x4OgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742461891; c=relaxed/simple;
-	bh=LvGiVZ6vZF6G7NOxryWlUJTDuYHmygeRSX4hVIG6YBA=;
+	s=arc-20240116; t=1742461894; c=relaxed/simple;
+	bh=aIkOjuMKh6G6RECWYDjoroRBaU/34+NCXx/uUv/VGpE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gDYt9kiGU5Cdl1Cx782szqyheonbOpeZ4esPawPQpJxC6c61As/QXA1tqKG8mhyELB8y1hJWchUIFz8TnBSuXLlUzjpa1wnllQYqT7pk2K/FOlzlEI2pRhDKGpE1jm3y6SwzVSl9HWuOp66zV1x1FpfcK39d0jvui2sLfZ+jwaQ=
+	 MIME-Version; b=sJScy9H/NflTieiTpwqVCfujTqPqFzjF8cNKVtp/VX+V9cNmHFUhvGzYgJo9a1+reCgK1wJaVDKwgSC1mm0O7z6QPGKxfMIMmOoEda9F5up+Otk3C30fP5pLRQH9pFZsmslOsWu8J7JMNXhcvY8McocO7cW7zz7BeULtvSfEnrQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; arc=none smtp.client-ip=210.160.252.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
-X-CSE-ConnectionGUID: nZYMzA09QGifx1G/vZaSeQ==
-X-CSE-MsgGUID: 8Ex0k0aZSsmPv5Iv3dkRJw==
+X-CSE-ConnectionGUID: M4XpkuJsS1qbFJY7vhXvaA==
+X-CSE-MsgGUID: V6WLNP0YS1O/iSWzWtr86w==
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 20 Mar 2025 18:11:20 +0900
+  by relmlie6.idc.renesas.com with ESMTP; 20 Mar 2025 18:11:32 +0900
 Received: from localhost.localdomain (unknown [10.226.93.24])
-	by relmlir5.idc.renesas.com (Postfix) with ESMTP id 738E24001B61;
-	Thu, 20 Mar 2025 18:11:16 +0900 (JST)
+	by relmlir5.idc.renesas.com (Postfix) with ESMTP id 198124001B61;
+	Thu, 20 Mar 2025 18:11:28 +0900 (JST)
 From: Biju Das <biju.das.jz@bp.renesas.com>
 To: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Cc: Biju Das <biju.das.jz@bp.renesas.com>,
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-	Simon Horman <horms@kernel.org>,
-	Duy Nguyen <duy.nguyen.rh@renesas.com>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>,
 	linux-can@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
 	Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-	Biju Das <biju.das.au@gmail.com>
-Subject: [PATCH v6 02/18] dt-bindings: can: renesas,rcar-canfd: Document RZ/G3E support
-Date: Thu, 20 Mar 2025 09:10:33 +0000
-Message-ID: <20250320091101.33637-3-biju.das.jz@bp.renesas.com>
+	Biju Das <biju.das.au@gmail.com>,
+	linux-renesas-soc@vger.kernel.org
+Subject: [PATCH v6 05/18] can: rcar_canfd: Drop RCANFD_GERFL_EEF* macros in RCANFD_GERFL_ERR
+Date: Thu, 20 Mar 2025 09:10:36 +0000
+Message-ID: <20250320091101.33637-6-biju.das.jz@bp.renesas.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250320091101.33637-1-biju.das.jz@bp.renesas.com>
 References: <20250320091101.33637-1-biju.das.jz@bp.renesas.com>
@@ -50,167 +44,45 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Document support for the CAN-FD Interface on the RZ/G3E (R9A09G047) SoC,
-which supports up to six channels.
+The macros RCANFD_GERFL_EEF* in RCANFD_GERFL_ERR can be replaced by
+gpriv->channels_mask << 16.
 
-The CAN-FD module on RZ/G3E is very similar to the one on both R-Car V4H
-and RZ/G2L, but differs in some hardware parameters:
- * No external clock, but instead has ram clock.
- * Support up to 6 channels.
- * 20 interrupts.
+After this drop the macro RCANFD_GERFL_EEF0_7 as it is unused.
 
-Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
 Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
 ---
 v5->v6:
- * No change.
-v4->v5:
- * Keeping interrupts and resets together allows to keep a clear
-   separation between RZ/G2L and RZ/G3E, at the expense of only
-   a single line.
- * Retained the tags as it is trivial change.
-v3->v4:
- * Added Rb tag from Rob.
-v2->v3:
- * Replaced maxItems->minItems: 20 for RZ/G3E interrupt,s as the list has 20
-   elements and for existing platforms dropped minItems and keep maxItems: 8.
-v1->v2:
- * No change.
+ * Collected tag.
+v5:
+ * New patch.
 ---
- .../bindings/net/can/renesas,rcar-canfd.yaml  | 76 +++++++++++++++++--
- 1 file changed, 70 insertions(+), 6 deletions(-)
+ drivers/net/can/rcar/rcar_canfd.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-index 4a83498b2a8b..f4ac21c68427 100644
---- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-+++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-@@ -42,6 +42,8 @@ properties:
-               - renesas,r9a07g054-canfd    # RZ/V2L
-           - const: renesas,rzg2l-canfd     # RZ/G2L family
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index 565a91c2ca83..a9e962a1510e 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -74,7 +74,6 @@
+ #define RCANFD_GSTS_GNOPM		(BIT(0) | BIT(1) | BIT(2) | BIT(3))
  
-+      - const: renesas,r9a09g047-canfd     # RZ/G3E
-+
-   reg:
-     maxItems: 1
+ /* RSCFDnCFDGERFL / RSCFDnGERFL */
+-#define RCANFD_GERFL_EEF0_7		GENMASK(23, 16)
+ #define RCANFD_GERFL_EEF(ch)		BIT(16 + (ch))
+ #define RCANFD_GERFL_CMPOF		BIT(3)	/* CAN FD only */
+ #define RCANFD_GERFL_THLES		BIT(2)
+@@ -82,9 +81,7 @@
+ #define RCANFD_GERFL_DEF		BIT(0)
  
-@@ -59,6 +61,19 @@ properties:
-           - description: CAN1 error interrupt
-           - description: CAN1 transmit interrupt
-           - description: CAN1 transmit/receive FIFO receive completion interrupt
-+          - description: CAN2 error interrupt
-+          - description: CAN2 transmit interrupt
-+          - description: CAN2 transmit/receive FIFO receive completion interrupt
-+          - description: CAN3 error interrupt
-+          - description: CAN3 transmit interrupt
-+          - description: CAN3 transmit/receive FIFO receive completion interrupt
-+          - description: CAN4 error interrupt
-+          - description: CAN4 transmit interrupt
-+          - description: CAN4 transmit/receive FIFO receive completion interrupt
-+          - description: CAN5 error interrupt
-+          - description: CAN5 transmit interrupt
-+          - description: CAN5 transmit/receive FIFO receive completion interrupt
-+        minItems: 8
+ #define RCANFD_GERFL_ERR(gpriv, x) \
+-	((x) & (reg_gen4(gpriv, RCANFD_GERFL_EEF0_7, \
+-			 RCANFD_GERFL_EEF(0) | RCANFD_GERFL_EEF(1)) | \
+-		RCANFD_GERFL_MES | \
++	((x) & ((gpriv->channels_mask << 16) | RCANFD_GERFL_MES | \
+ 		((gpriv)->fdmode ? RCANFD_GERFL_CMPOF : 0)))
  
-   interrupt-names:
-     oneOf:
-@@ -74,15 +89,33 @@ properties:
-           - const: ch1_err
-           - const: ch1_rec
-           - const: ch1_trx
-+          - const: ch2_err
-+          - const: ch2_rec
-+          - const: ch2_trx
-+          - const: ch3_err
-+          - const: ch3_rec
-+          - const: ch3_trx
-+          - const: ch4_err
-+          - const: ch4_rec
-+          - const: ch4_trx
-+          - const: ch5_err
-+          - const: ch5_rec
-+          - const: ch5_trx
-+        minItems: 8
- 
-   clocks:
-     maxItems: 3
- 
-   clock-names:
--    items:
--      - const: fck
--      - const: canfd
--      - const: can_clk
-+    oneOf:
-+      - items:
-+          - const: fck
-+          - const: canfd
-+          - const: can_clk
-+      - items:
-+          - const: fck
-+          - const: ram_clk
-+          - const: can_clk
- 
-   power-domains:
-     maxItems: 1
-@@ -145,11 +178,9 @@ allOf:
-     then:
-       properties:
-         interrupts:
--          minItems: 8
-           maxItems: 8
- 
-         interrupt-names:
--          minItems: 8
-           maxItems: 8
- 
-         resets:
-@@ -183,6 +214,30 @@ allOf:
-         resets:
-           maxItems: 1
- 
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: renesas,r9a09g047-canfd
-+    then:
-+      properties:
-+        interrupts:
-+          minItems: 20
-+
-+        interrupt-names:
-+          minItems: 20
-+
-+        resets:
-+          minItems: 2
-+          maxItems: 2
-+
-+        reset-names:
-+          minItems: 2
-+          maxItems: 2
-+
-+      required:
-+        - reset-names
-+
-   - if:
-       properties:
-         compatible:
-@@ -203,6 +258,15 @@ allOf:
-       patternProperties:
-         "^channel[4-7]$": false
- 
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: renesas,r9a09g047-canfd
-+    then:
-+      patternProperties:
-+        "^channel[6-7]$": false
-+
- unevaluatedProperties: false
- 
- examples:
+ /* AFL Rx rules registers */
 -- 
 2.43.0
 
