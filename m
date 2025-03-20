@@ -1,113 +1,243 @@
-Received: from out.smtpout.orange.fr (out-74.smtpout.orange.fr [193.252.22.74])
-	(using TLSv1.2 with cipher AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E800879C4;
-	Thu, 20 Mar 2025 11:38:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.252.22.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69AA01876;
+	Thu, 20 Mar 2025 14:50:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742470726; cv=none; b=K6SBLs5zV/suwfIa4JMn1OtM7gLVjq/PPy7lcRg7I5f4h2hdzYvl+7KOfrSKj2xdYnV34wuBziswn7Vo40K/+WoVXXvqPs1PtDFIvBDbtxslHyB2Ob+X6gd3UTE1yiE9m4YavPZkh3LV4jYZKS/xm/cmm9JTiahl3odf2/1OzMg=
+	t=1742482250; cv=none; b=up2lDjrIAJCtLBoWZ8e0GjNAfPgFQCQ4m+q4jitmx3YciWFDai+tyqZAlhq2EX2IOG1kLMB9I9JTkjFxV2Ria+gc34VMxfF/QYxvFeOymYsw90T/XJoHdAT1Zcypt8gCRZyyer1MsQkcW/JUi/JWWvRQSgpf8e6G8z5sMISixqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742470726; c=relaxed/simple;
-	bh=sqWe3Yev3PzpdiPsJpDcuVLTdKO468pWXUX9p7X7Sq4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iDeCYmfphaTDsNDO/7WlRDn3WNdIhejqaYKX3Tv1pHqF16akWg0GBQ9YDdjRBL2Se3jaqaLfWr81khMqSYoK0ueqPUXwrHyGbgic1TIlNoCe9bHx5hvj3MtiWZv/YQJ9TPkACn4RZy3US84U5ZtDU5zqNzusWmlKd1g5f5YHDdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=mKigk8MQ; arc=none smtp.client-ip=193.252.22.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+	s=arc-20240116; t=1742482250; c=relaxed/simple;
+	bh=VgHP2YZFJFqQDq6X1Enrko29eUy4PpuSIOCuvJw0JKI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JU23vf56yCSeynELKQGf7YpeU/z+eYk3tketxRSKHr/rVPQhhaaOyr5KVUbQpdEzCyu1PJDjdBs2QwpO8pEKOxmRlNvq4F7CffqBwP6Ib8lB3SFVBxktwzv0dQ444X/CS7n+3M00yR4ais1xB5Hm0dBmxLaMNZK0+nc0Ov51FKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nRPpkYlD; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="mKigk8MQ"
-Received: from [172.16.82.72] ([124.33.176.97])
-	by smtp.orange.fr with ESMTPA
-	id vE5NtqnW0l2qkvE5StwZBJ; Thu, 20 Mar 2025 12:29:26 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1742470167;
-	bh=HtkbDjg5JYzHIlz/GhvgabNqyIBX/GomSRMi/5wmM70=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=mKigk8MQqTSpH+DIMTQgPjZ8ir08SHXMunE3l6aJFhCLo/C2NfZfcRSThm/XplKeR
-	 sYUKFJijfvEtf4qBY2pP5xldRNPytRu/w+bekSg3tjQzypZyVTSbNc/uGqqeERxxxu
-	 VcXE4NxEMKtHNUQiCeKv48JhsitqduHAplFOZlbKaWM7KWHU/LzwIIsVY+a46IYz2w
-	 zxPEp32PGkfVBu0Y04qXNrf37bqpoEshtIX5xQhK2vkDh23pU2bdPh/zJFUPb5KN4a
-	 CgkfPEtF666z6frBEG6jVvVcp/zvgaBI9vP7fzynzXqATSuJhP7VLV2e0vixS1SZlU
-	 +WnH0W4V8JuQg==
-X-ME-Helo: [172.16.82.72]
-X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 20 Mar 2025 12:29:27 +0100
-X-ME-IP: 124.33.176.97
-Message-ID: <864ae6d6-4d60-4175-86a9-039b75440330@wanadoo.fr>
-Date: Thu, 20 Mar 2025 20:29:16 +0900
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nRPpkYlD"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAE15C4CEDD;
+	Thu, 20 Mar 2025 14:50:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742482250;
+	bh=VgHP2YZFJFqQDq6X1Enrko29eUy4PpuSIOCuvJw0JKI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nRPpkYlDUBw1gjGtXjQDSei78Js5SiMhGUtyttvW9CgAqns2tTOPY8/wNVO3igUrp
+	 d9zHAHmBrA+CESjTE8Vd+xoH+NF8JxkVjkUXZY2rGxmW3pfhS8VkKdGG8xyARuj0FL
+	 gQHgAnh715xQCL8AM6m35smLKWm66L881RKbWs2YrcLzTdo+SZBv0gIAnBp529LrWk
+	 2TpFQUzC/HZ9ygyk+1qefsxhF1q9kjA4qEWPS0OL1ov41GqjdVgXiAkgQNedHqDO0I
+	 4AydkziQDb1uW2b3VKIQ3E28ix5DltoIbnT+ryX4BT5beobsVaihxlLPX0QJow5foT
+	 821ydGI3nYYkQ==
+Date: Thu, 20 Mar 2025 14:50:42 +0000
+From: Lee Jones <lee@kernel.org>
+To: Ming Yu <a0282524688@gmail.com>
+Cc: tmyu0@nuvoton.com, linus.walleij@linaro.org, brgl@bgdev.pl,
+	andi.shyti@kernel.org, mkl@pengutronix.de,
+	mailhol.vincent@wanadoo.fr, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, wim@linux-watchdog.org, linux@roeck-us.net,
+	jdelvare@suse.com, alexandre.belloni@bootlin.com,
+	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+	linux-i2c@vger.kernel.org, linux-can@vger.kernel.org,
+	netdev@vger.kernel.org, linux-watchdog@vger.kernel.org,
+	linux-hwmon@vger.kernel.org, linux-rtc@vger.kernel.org,
+	linux-usb@vger.kernel.org
+Subject: Re: [PATCH v8 1/7] mfd: Add core driver for Nuvoton NCT6694
+Message-ID: <20250320145042.GS3890718@google.com>
+References: <20250225081644.3524915-1-a0282524688@gmail.com>
+ <20250225081644.3524915-2-a0282524688@gmail.com>
+ <20250307011542.GE8350@google.com>
+ <CAOoeyxUgiTqtSksfHopEDhZHwNkUq9+d-ojo8ma3PX2dosuwyQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] phy: can-transceiver: Re-instate "mux-states" property
- presence check
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-can@vger.kernel.org, linux-phy@lists.infradead.org,
- linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
- Rob Herring <robh@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>,
- Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
- Peter Rosin <peda@axentia.se>, Aswath Govindraju <a-govindraju@ti.com>
-References: <6bcfde63b3a6b25640a56be2e24a357e41f8400f.1742390569.git.geert+renesas@glider.be>
- <9875d99a-4e16-4f0e-9249-69f0acc4c890@wanadoo.fr>
- <CAMuHMdVCmchuN1LyHGoE6A0TEpc9R1unXi2KNYO94cmT1WwOHA@mail.gmail.com>
-Content-Language: en-US
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Autocrypt: addr=mailhol.vincent@wanadoo.fr; keydata=
- xjMEZluomRYJKwYBBAHaRw8BAQdAf+/PnQvy9LCWNSJLbhc+AOUsR2cNVonvxhDk/KcW7FvN
- LFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI+wrIEExYKAFoC
- GwMFCQp/CJcFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AWIQTtj3AFdOZ/IOV06OKrX+uI
- bbuZwgUCZx41XhgYaGtwczovL2tleXMub3BlbnBncC5vcmcACgkQq1/riG27mcIYiwEAkgKK
- BJ+ANKwhTAAvL1XeApQ+2NNNEwFWzipVAGvTRigA+wUeyB3UQwZrwb7jsQuBXxhk3lL45HF5
- 8+y4bQCUCqYGzjgEZx4y8xIKKwYBBAGXVQEFAQEHQJrbYZzu0JG5w8gxE6EtQe6LmxKMqP6E
- yR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDldOjiq1/riG27mcIFAmceMvMCGwwF
- CQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8VzsZwr/S44HCzcz5+jkxnVVQ5LZ4B
- ANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
-In-Reply-To: <CAMuHMdVCmchuN1LyHGoE6A0TEpc9R1unXi2KNYO94cmT1WwOHA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOoeyxUgiTqtSksfHopEDhZHwNkUq9+d-ojo8ma3PX2dosuwyQ@mail.gmail.com>
 
-On 20/03/2025 at 19:25, Geert Uytterhoeven wrote:
-> Hi Vincent,
+On Mon, 17 Mar 2025, Ming Yu wrote:
 
-(...)
-
->> On 19/03/2025 at 22:27, Geert Uytterhoeven wrote:
->>> On the Renesas Gray Hawk Single development board:
->>>
->>>     can-transceiver-phy can-phy0: /can-phy0: failed to get mux-state (0)
->>>
->>> "mux-states" is an optional property for CAN transceivers.  However,
->>> mux_get() always prints an error message in case of an error, including
->>> when the property is not present, confusing the user.
->>
->> Hmmm, I understand why you are doing this patch. But on the long term,
->> wouldn't it make more sense to have a devm_mux_state_get_optional()? Or
->> maybe add a property somewhere to inform devm_mux_state_get() that this
->> is optional?
->>
->> Regardless, just see this as an open question. I am OK with the approach
->> of your patch.
+> Dear Lee,
 > 
-> Alternatively, we can be proactive and add a temporary local wrapper:
+> Thank you for reviewing,
 > 
->     /* Dummy wrapper until optional muxes are supported */
->     static inline struct mux_state *
->     devm_mux_state_get_optional(struct device *dev, const char *mux_name)
->     {
->             if (!of_property_present(dev->of_node, "mux-states"))
->                     return NULL;
+> Lee Jones <lee@kernel.org> 於 2025年3月7日 週五 上午9:15寫道：
+> >
+> > On Tue, 25 Feb 2025, Ming Yu wrote:
+> >
+> > > The Nuvoton NCT6694 is a peripheral expander with 16 GPIO chips,
+> > > 6 I2C controllers, 2 CANfd controllers, 2 Watchdog timers, ADC,
+> > > PWM, and RTC.
+> >
+> > This needs to go into the Kconfig help passage.
+> >
 > 
->             return devm_mux_state_get(dev, mux_name);
->     }
+> Okay, I will move these to Kconfig in the next patch.
 > 
-> and call that instead?  Then the probe function needs no future changes
-> when the real devm_mux_state_get_optional() arrives.
+> > > This driver implements USB device functionality and shares the
+> > > chip's peripherals as a child device.
+> >
+> > This driver doesn't implement USB functionality.
+> >
+> 
+> Fix it in v9.
+> 
+> > > Each child device can use the USB functions nct6694_read_msg()
+> > > and nct6694_write_msg() to issue a command. They can also request
+> > > interrupt that will be called when the USB device receives its
+> > > interrupt pipe.
+> > >
+> > > Signed-off-by: Ming Yu <a0282524688@gmail.com>
+> >
+> > Why aren't you signing off with your work address?
+> >
+> 
+> Fix it in v9.
+> 
+> > > ---
+> > >  MAINTAINERS                 |   7 +
+> > >  drivers/mfd/Kconfig         |  18 ++
+> > >  drivers/mfd/Makefile        |   2 +
+> > >  drivers/mfd/nct6694.c       | 378 ++++++++++++++++++++++++++++++++++++
+> > >  include/linux/mfd/nct6694.h | 102 ++++++++++
+> > >  5 files changed, 507 insertions(+)
+> > >  create mode 100644 drivers/mfd/nct6694.c
+> > >  create mode 100644 include/linux/mfd/nct6694.h
+> > >
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > index 873aa2cce4d7..c700a0b96960 100644
+> > > --- a/MAINTAINERS
+> > > +++ b/MAINTAINERS
+> > > @@ -16918,6 +16918,13 @@ F:   drivers/nubus/
+> > >  F:   include/linux/nubus.h
+> > >  F:   include/uapi/linux/nubus.h
+> > >
+> > > +NUVOTON NCT6694 MFD DRIVER
+> > > +M:   Ming Yu <tmyu0@nuvoton.com>
+> > > +L:   linux-kernel@vger.kernel.org
+> >
+> > This is the default list.  You shouldn't need to add that here.
+> 
+> Remove it in v9.
 
-This looks like a more elegant and more long term solution!
+Please snip everything that you agree with.
 
-Yours sincerely,
-Vincent Mailhol
+> > > +S:   Supported
+> > > +F:   drivers/mfd/nct6694.c
+> > > +F:   include/linux/mfd/nct6694.h
+> > > +
+> > >  NVIDIA (rivafb and nvidiafb) FRAMEBUFFER DRIVER
+> > >  M:   Antonino Daplas <adaplas@gmail.com>
+> > >  L:   linux-fbdev@vger.kernel.org
 
+[...]
+
+> > > +     MFD_CELL_BASIC("gpio-nct6694", NULL, NULL, 0, 0x1),
+> >
+> > IDs are usually given in base-10.
+> >
+> 
+> Fix it in v9.
+> 
+> > Why are you manually adding the device IDs?
+> >
+> > PLATFORM_DEVID_AUTO doesn't work for you?
+> >
+> 
+> I need to manage these IDs to ensure that child devices can be
+> properly utilized within their respective modules.
+
+How?  Please explain.
+
+This numbering looks sequential and arbitrary.
+
+What does PLATFORM_DEVID_AUTO do differently such that it is not useful?
+
+> 
+> > > +     MFD_CELL_BASIC("gpio-nct6694", NULL, NULL, 0, 0x2),
+> > > +     MFD_CELL_BASIC("gpio-nct6694", NULL, NULL, 0, 0x3),
+> > > +     MFD_CELL_BASIC("gpio-nct6694", NULL, NULL, 0, 0x4),
+> > > +     MFD_CELL_BASIC("gpio-nct6694", NULL, NULL, 0, 0x5),
+> > > +     MFD_CELL_BASIC("gpio-nct6694", NULL, NULL, 0, 0x6),
+> > > +     MFD_CELL_BASIC("gpio-nct6694", NULL, NULL, 0, 0x7),
+> > > +     MFD_CELL_BASIC("gpio-nct6694", NULL, NULL, 0, 0x8),
+> > > +     MFD_CELL_BASIC("gpio-nct6694", NULL, NULL, 0, 0x9),
+> > > +     MFD_CELL_BASIC("gpio-nct6694", NULL, NULL, 0, 0xA),
+> > > +     MFD_CELL_BASIC("gpio-nct6694", NULL, NULL, 0, 0xB),
+> > > +     MFD_CELL_BASIC("gpio-nct6694", NULL, NULL, 0, 0xC),
+> > > +     MFD_CELL_BASIC("gpio-nct6694", NULL, NULL, 0, 0xD),
+> > > +     MFD_CELL_BASIC("gpio-nct6694", NULL, NULL, 0, 0xE),
+> > > +     MFD_CELL_BASIC("gpio-nct6694", NULL, NULL, 0, 0xF),
+
+> > > +
+> > > +     MFD_CELL_BASIC("i2c-nct6694", NULL, NULL, 0, 0x0),
+> > > +     MFD_CELL_BASIC("i2c-nct6694", NULL, NULL, 0, 0x1),
+> > > +     MFD_CELL_BASIC("i2c-nct6694", NULL, NULL, 0, 0x2),
+> > > +     MFD_CELL_BASIC("i2c-nct6694", NULL, NULL, 0, 0x3),
+> > > +     MFD_CELL_BASIC("i2c-nct6694", NULL, NULL, 0, 0x4),
+> > > +     MFD_CELL_BASIC("i2c-nct6694", NULL, NULL, 0, 0x5),
+> > > +
+> > > +     MFD_CELL_BASIC("nct6694_canfd", NULL, NULL, 0, 0x0),
+> >
+> > Why has the naming convention changed here?
+> >
+> 
+> I originally expected the child devices name to directly match its
+> driver name. Do you think it would be better to standardize the naming
+> as "nct6694-xxx" ?
+
+Yes, that is the usual procedure.
+
+> > > +     MFD_CELL_BASIC("nct6694_canfd", NULL, NULL, 0, 0x1),
+> > > +
+> > > +     MFD_CELL_BASIC("nct6694_wdt", NULL, NULL, 0, 0x0),
+> > > +     MFD_CELL_BASIC("nct6694_wdt", NULL, NULL, 0, 0x1),
+> > > +
+> > > +     MFD_CELL_NAME("nct6694-hwmon"),
+> > > +     MFD_CELL_NAME("rtc-nct6694"),
+> >
+> > There doesn't seem to be any consistency here.
+> >
+> 
+> Do you think these two should be changed to use MFD_CELL_BASIC()?
+
+No.  I mean with the device nomenclature.
+
+[...]
+
+> > > +static void usb_int_callback(struct urb *urb)
+> > > +{
+> > > +     struct nct6694 *nct6694 = urb->context;
+> > > +     unsigned int *int_status = urb->transfer_buffer;
+> > > +     int ret;
+> > > +
+> > > +     switch (urb->status) {
+> > > +     case 0:
+> > > +             break;
+> > > +     case -ECONNRESET:
+> > > +     case -ENOENT:
+> > > +     case -ESHUTDOWN:
+> > > +             return;
+> > > +     default:
+> > > +             generic_handle_irq_safe(irq_find_mapping(nct6694->domain, irq));
+> > > +             *int_status &= ~BIT(irq);
+> > > +     }
+> > > +
+> > > +resubmit:
+> > > +     ret = usb_submit_urb(urb, GFP_ATOMIC);
+> > > +     if (ret)
+> > > +             dev_dbg(nct6694->dev, "%s: Failed to resubmit urb, status %pe",
+> >
+> > Why debug?
+> >
+> 
+> Excuse me, do you think it should change to dev_err()?
+
+Probably a dev_warn() since you are not propagating the error.
+
+Is this okay by the way?  Is it okay to fail?
+
+-- 
+Lee Jones [李琼斯]
