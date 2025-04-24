@@ -1,155 +1,116 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 097A6130E58
-	for <linux-can@vger.kernel.org>; Thu, 24 Apr 2025 14:03:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792811C2335
+	for <linux-can@vger.kernel.org>; Thu, 24 Apr 2025 14:27:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745503384; cv=none; b=W9GO2buQVwSg0aRx09uE3VjkOHqCM3wE94JaT96/T17cL6xSBYQDKdBMce9yCoVCqKt5cZe/shSLB/yYi5viie0ETC6JO08q3vtL4xbNj6crGISmY2M+8AHPfoGjblFC31NBl/JVao7CJQSm/dvnhoE/2QmJ4BotvZdCOXphSxc=
+	t=1745504853; cv=none; b=UIxo3379dF5qUcwdsXyKuDlbkjfoCdnmNkuDkTeD1ikRFGP5ZP3N8etp1akkrbuykP8l1dMxWYgFnNA5SukTamVt/HnAfqUuYh48nRVGKU8ALNvP3XpjiCg6NUjk3dP9obDFWXsnar750GC8Tq5dJyNeZs5ZIr/LaKSGRUgCn8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745503384; c=relaxed/simple;
-	bh=zwdZgqdDKmE3Viq+cnCSXsknPD78NVVb7eQv3Kk0QXY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mOQ/KqYtrtXIfd132rZXSRVZWRuy9naqUAVKXRXwxwb5FRvymBGU6k2u6nE8OJ4pBhQ4s18X93lL188UX/y0+1XAaxUszAQKLgpN/TmlfAYsjxb5objRMdSNWQjmNE97vXbRgA57gUHDkzchEpmqIjXycPCsX7/aKlW3GTZU4Ww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cgM7+aJi; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1745504853; c=relaxed/simple;
+	bh=F1YJqwR1H6hHO182e1YH6Y4+1p4GU9R6+42/wafryRw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=O6y7BONTwl/MQJpszdnXSpAqEbUKikmgWN/gDHlancoLiRtje2ZDMhWNuu4oaXUyUqxqixeO/LoBMd3AnSNYmqDOAZ2QzgI6cZgisTQms90Sr8Ar1Q0VA+Jvcy7ORxqNgCG2f9PxGEXl0h+yPvHe1GhX3hc6Iep4jUwbovcle50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mwa.re; spf=pass smtp.mailfrom=mwa.re; dkim=pass (2048-bit key) header.d=mwa.re header.i=@mwa.re header.b=IqtCuEPQ; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mwa.re
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mwa.re
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cgM7+aJi"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1745503381;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7Aaw3Dx4UhHqcEGsD63cd3h5ILZfjEGKNvg/X0u8iQ8=;
-	b=cgM7+aJixYpMbL8LuCQvRJhJV+kA4fXSaFgxopS+wQir5q/4cYlmZaZ/eAvVxdsBLPbq5S
-	QoNrIiTqJIcZV4Y8BPmH+AoASih2wNsf64BPOahSRYTK3w5UCIHTHXIOvtjD2h7BKBkHIH
-	GxJFRdmwmRSvUUezcX+msBnEOCA1QkI=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-685-KpQVPCzEP_mc6MeS5yIHdw-1; Thu, 24 Apr 2025 10:02:25 -0400
-X-MC-Unique: KpQVPCzEP_mc6MeS5yIHdw-1
-X-Mimecast-MFC-AGG-ID: KpQVPCzEP_mc6MeS5yIHdw_1745503344
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-39c184b20a2so409451f8f.1
-        for <linux-can@vger.kernel.org>; Thu, 24 Apr 2025 07:02:24 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=mwa.re header.i=@mwa.re header.b="IqtCuEPQ"
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-43cf628cb14so17407555e9.1
+        for <linux-can@vger.kernel.org>; Thu, 24 Apr 2025 07:27:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mwa.re; s=google; t=1745504850; x=1746109650; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9d7NqJO4EtxlTXgpDiP0f6RU3e65rl//+9+R1L+ng+k=;
+        b=IqtCuEPQUpQMNLHzsOc5SxDZc3t5OUcDXKalghqn9t5FE1T5lKx8XoeMMYefBlf2fQ
+         ffo5qyIphy+Fv0O+koPexCt0JvkyQkGswz1S9Hr95iCZ5Ttlt/PcDlRuJiii9+kfrxqR
+         m//xbEjJNhQglkjL7Sd4fdMYRNqxH6xzViXGN9GPTx+klAuRyK5dL2t21eco5txZMM8S
+         04PpvcR833x+J7zcuYoRL3ymrDMyZiWQGlOqkiQvGlItRcFiB9QU/6MPCfArP08pBlKK
+         mr7ziVj6ous7cB2QvA5IazY0jSiQVa8igOo3HFqs1WY0PkzQHu1HKeIg063FZ3ZrhNx/
+         OMMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745503344; x=1746108144;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7Aaw3Dx4UhHqcEGsD63cd3h5ILZfjEGKNvg/X0u8iQ8=;
-        b=Du8emTMHpcZ9XFrHUnw7fcs3gQI9grJPN+npMZVVnpxVwiTa5ZlziiPLlOkwTG4dXj
-         KzLapN8ZEoXw6xxDrmzeURZ7XEt1WayeeJIVxKxdNmH5XIYeDMoyAryySv/bBjXYJJZo
-         8QGLOs/Ieu7HVCKopWRkIhxYM85xeyGsCtq/qKCsFFfp40TbT00z9zNWDltRmyf2d3x7
-         QVbzqyFLJBlXVvZ950imdG2sJxAHvZg9O40mgnmJO9FpEYsfCHZymu1j2LzylmHt1cXA
-         n34mMBhHAgXj+S7Pk2QYp8J/DORvbWwctU50RIzylIpnvLPRdfRvWRz+SR07PyyWa5h8
-         I6Bw==
-X-Forwarded-Encrypted: i=1; AJvYcCUcerWpY3qIdvam6b53Gfpjgv0fL3bLCWrANRRx1u10pWgYo404oAACjsnd27KXK+CZOb7TbkuNQ5w=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyun52F273MjUkiEDSAskwOvoe5iYkAOlDWsQKndjIupryq0Flh
-	3tdhD6Cz/oHk3FffYLCQRSSJ1HWNUVsUYuxLkjCC5m3wHgxCWZ085t7CUOQmhlzwjmiBzaY54Pb
-	DS/LRkw/HWsKj0SdwilGxoM6IH8gTWpkhmGSqN84Q7DVucC1vRPHhGeoAzQ==
-X-Gm-Gg: ASbGnctAmz+ch4iOZHliEG0hkAe8jHTntZ1mGOTu52QSx31EdGHutPB/6rrhqQ3L/FO
-	ehYSgh4iRnjGuiqjuGhPjrE/X6+mCC79B4TTJnJa2Mk5wjuAV27gm22yXRw6+zNuCXya49x0lHJ
-	vknPQL4h11OofAqDWDxq6odbINjMokYyxa3lVRxVcyRED32lJlo8NOVF1i4OqAWtZTtYdcweHZe
-	I534QUA4DbbwyW/9RZkc5TRScpTw8TgE3xaaR6v4CwWhFTcHk3CH0GFJorrHSDkeV88BdIQj4Ys
-	IQt3SIHeH6G5BHuCehpbMBqpmJHlP3V6mABjiu3Z3MzX
-X-Received: by 2002:a05:6000:401f:b0:392:c64:9aef with SMTP id ffacd0b85a97d-3a06cf5c4cemr2510558f8f.20.1745503342827;
-        Thu, 24 Apr 2025 07:02:22 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFMmdHuRh26hxX1NOR2DOUw8CVhfW7e812bb/UgYtY/gXRNn/UEXH5+zfXwRwtCYWQHMcC6TA==
-X-Received: by 2002:a05:6000:401f:b0:392:c64:9aef with SMTP id ffacd0b85a97d-3a06cf5c4cemr2510337f8f.20.1745503340675;
-        Thu, 24 Apr 2025 07:02:20 -0700 (PDT)
-Received: from [172.16.17.99] (pd9ed5a70.dip0.t-ipconnect.de. [217.237.90.112])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4409d2a36c4sm22153595e9.13.2025.04.24.07.02.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Apr 2025 07:02:20 -0700 (PDT)
-Message-ID: <a28ff624-c73a-4e16-867a-66e423315c29@redhat.com>
-Date: Thu, 24 Apr 2025 16:02:19 +0200
+        d=1e100.net; s=20230601; t=1745504850; x=1746109650;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9d7NqJO4EtxlTXgpDiP0f6RU3e65rl//+9+R1L+ng+k=;
+        b=LqRteXO0AS0eIUx+Q0CTb7n7yxPKXubyiZoCazLewtuE5rgzAVcsmo4wDllv+EUy62
+         JkaJeNyB1MEO44RdQlMa43FIwSFdcbXc5OmIRguwDzJX9gDOpSmdrWGNSZNOoKytx6Qi
+         BGcGdmDjqBi9x9gbHJe3vlbDLJ47aIERbhmx/tVW9gX/lt6FETlt/5fQuXbHwBplT5gS
+         3QQH6ACjMAn8/oB3RWqHh05tUY6FFuGnP0oRHRBDucIm21OwaHmzmHUAlhd5FpCrUvzG
+         3i7DTexjbjzU1YRTbqBdzQcTkkTDOUOoKnJxWrUCzZ4m+ldt2gNqeF+R+5D10igaKMR9
+         eY4w==
+X-Forwarded-Encrypted: i=1; AJvYcCXFXDugytTwAwTOaWmYokoE1BvxhRMSyy+/4SmFTJ3uzhZYrrRYfTfMzHfw/gnLEwR+MomA9wVlttY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywa8mPT2+mFYxgV2PqM2gEswllUOGLt4B1sLJPRkL3S3nB9UhGU
+	3TPPxRZ5F4WO1/OkSP0saWg2o2DQ+xEkzgtximzDkFXcDVUMTA3P0FeCqVet4mzpOOQYDuruqcw
+	1QEw=
+X-Gm-Gg: ASbGncsB4MirA7k5H4JVIw9rj/8IApo76+z2WjdrxCUuYdfzzECA15fImxQWe7wbGBr
+	d79+ng3V2O/H8mF4wBoCBQje6HM7QbxA9ZWpt9/mxBbtYihYrNzOoiUrsrNvM1ihPWRk1NxWssj
+	Alk69myUnYT8alxMG3eGoteht2jWDE9ewQzWU91ztO93m3XN4U+fmgyigXzo/rM4bkPvhHMFAgR
+	tpTXF9jdPIhx4jHm1O7XWm1SCqK6NDpOVmgMzuin1f35lEpZba7pg+NYsz//ZwBAYeXzzqZSIzh
+	8+MJgbylY0xnpTbu4boKl8s9zHLagDr2SR/CG2S2+WkflyANtgoYULfGgNs6T9/fXxch6UFRzmB
+	u
+X-Google-Smtp-Source: AGHT+IEMsAKqZvQKv1HURFPLcJMP9q2fFIiW//bzYr0WFnNqRgNJbE3RCkzOZJu0K7dFBbOpVgGL1Q==
+X-Received: by 2002:a05:600c:91a:b0:435:edb0:5d27 with SMTP id 5b1f17b1804b1-4409c4938ebmr19886315e9.9.1745504849577;
+        Thu, 24 Apr 2025 07:27:29 -0700 (PDT)
+Received: from mw-ac-stu-3.corp.mwa.re (static-195-14-251-13.nc.de. [195.14.251.13])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4409d2b892asm22807565e9.32.2025.04.24.07.27.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Apr 2025 07:27:29 -0700 (PDT)
+From: Antonios Salios <antonios@mwa.re>
+To: rcsekar@samsung.com
+Cc: mkl@pengutronix.de,
+	mailhol.vincent@wanadoo.fr,
+	linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lukas@mwa.re,
+	jan@mwa.re,
+	msp@baylibre.com,
+	Antonios Salios <antonios@mwa.re>
+Subject: [PATCH v2] can: m_can: initialize spin lock on device probe
+Date: Thu, 24 Apr 2025 16:25:26 +0200
+Message-ID: <20250424142525.69930-2-antonios@mwa.re>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] selftests: can: Document test_raw_filter test cases
-To: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc: socketcan@hartkopp.net, mkl@pengutronix.de, shuah@kernel.org,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, horms@kernel.org, linux-can@vger.kernel.org,
- netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
- dcaratti@redhat.com, fstornio@redhat.com
-References: <cover.1745323279.git.fmaurer@redhat.com>
- <710557cef8fb8472628862d9b65edcf7aeb32bb5.1745323279.git.fmaurer@redhat.com>
- <CAMZ6RqKcp=JNcbZjX6xSGo9Hyw=1nXbpS9Nc36xuDkbGG+=wtA@mail.gmail.com>
-Content-Language: en-US
-From: Felix Maurer <fmaurer@redhat.com>
-In-Reply-To: <CAMZ6RqKcp=JNcbZjX6xSGo9Hyw=1nXbpS9Nc36xuDkbGG+=wtA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 24.04.25 09:44, Vincent Mailhol wrote:
-> On Tue. 22 Apr. 2025 at 21:03, Felix Maurer <fmaurer@redhat.com> wrote:
-[...]
->> diff --git a/tools/testing/selftests/net/can/test_raw_filter.c b/tools/testing/selftests/net/can/test_raw_filter.c
->> index 7fe11e020a1c..8d43053824d2 100644
->> --- a/tools/testing/selftests/net/can/test_raw_filter.c
->> +++ b/tools/testing/selftests/net/can/test_raw_filter.c
->> @@ -101,94 +101,113 @@ FIXTURE_VARIANT(can_filters) {
->>         int exp_num_rx;
->>         int exp_rxbits;
->>  };
->> +#define T_EFF (CAN_EFF_FLAG >> 28)
->> +#define T_RTR (CAN_RTR_FLAG >> 28)
-> 
-> I do not like this
-> 
->   >> 28
-> 
-> shift. I understand that it is part of the original design, but for
-> me, this is just obfuscation.
-> 
-> Why just not using CAN_EFF_FLAG and CAN_RTR_FLAG as-is for the
-> expected values? What benefit does this shift add?
+The spin lock tx_handling_spinlock in struct m_can_classdev is not being
+initialized. This leads to bug complaints from the kernel, eg. when
+trying to send CAN frames with cansend from can-utils.
 
-I agree, that looks like magic numbers and the original design is not
-very nice here. The main reason for the >>28 is that later on values are
-shifted by T_EFF and/or T_RTR, so they shouldn't be too large (with the
->>28, the shift value later is in the range 0-14). See below for a
-slightly different idea.
+This patch fixes that by initializing the spin lock in the corresponding
+device probe functions.
 
->> +/* Ignore EFF flag in filter ID if not covered by filter mask */
->>  FIXTURE_VARIANT_ADD(can_filters, base_eff) {
->>         .testcase = 2,
->>         .id = ID | CAN_EFF_FLAG,
->>         .mask = CAN_SFF_MASK,
->>         .exp_num_rx = 4,
->> -       .exp_rxbits = 4369,
->> +       .exp_rxbits = (1 | 1 << (T_EFF) | 1 << (T_RTR) | 1 << (T_EFF | T_RTR)),
->                          ^
-> What is the meaning of this 1?
+Fixes: 1fa80e23c150 ("can: m_can: Introduce a tx_fifo_in_flight counter")
 
-The 1 means that a packet will be received with no flags set.
+Signed-off-by: Antonios Salios <antonios@mwa.re>
+---
 
-The whole rxbit thing took me a while to understand and the result now
-is not straightforward either. Let's see if we can come up with
-something better.
+Changes since v1:
+ * Move spin_lock_init from device probe functions to classdev alloc function
+ * Add a fixes tag
+---
+ drivers/net/can/m_can/m_can.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-The exp_rxbits is basically a bitfield that describes which flags should
-be set on the received frames. Maybe this could be made more explicit
-with something like this:
-
-.exp_rxbits = FRAME_NOFLAGS | FRAME_EFF | FRAME_RTR | FRAME_EFFRTR,
-
-And in the receive loop something like this:
-
-rxbits |= FRAME_RCVD(frame.can_id);
-
-Of course, the definitions of these macros would still have the >>28,
-but at a central point, with better explanation. Do you think that's
-more understandable? Or do you have a different idea?
-
-Thanks,
-   Felix
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 884a6352c..12e313998 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -2379,6 +2379,8 @@ struct m_can_classdev *m_can_class_allocate_dev(struct device *dev,
+ 	SET_NETDEV_DEV(net_dev, dev);
+ 
+ 	m_can_of_parse_mram(class_dev, mram_config_vals);
++
++	spin_lock_init(&class_dev->tx_handling_spinlock);
+ out:
+ 	return class_dev;
+ }
+-- 
+2.49.0
 
