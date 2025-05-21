@@ -1,120 +1,258 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E1C524C09E;
-	Tue, 20 May 2025 21:33:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 430B12356B1
+	for <linux-can@vger.kernel.org>; Wed, 21 May 2025 08:23:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747776824; cv=none; b=BG4NHua2dY6u1/EPm2vPDRejZA6QgUD/Tw19FACYiBehGkdLk7Mo3r4TDdpvyq0O8pSStOORQQp1/ObF2CbV4mSLgmlv5WPHWB28qW/EGiM0c/Jc20cQ7xFQuV6S+HLnmSFhjA5XiSRV5TiqNgNDMu41YlA5OpqPpt70Vn01DP4=
+	t=1747815785; cv=none; b=XMauOsob7TsVEwAmScN08DKq0YLnMpOxvCN9ur/WbMf33WDvVx4aUbwOExGBmXkusr/5akcvsopljPfpKlgddJhOWfWcFKd/nZXr8Jnzkw2WVKlMp4IJK4NM8de9XV3e4yZwRlW8icP9wGaeH6VVXKnvPCBXuvzTmtL4ddfe7m8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747776824; c=relaxed/simple;
-	bh=2dBBkVKAjPqMQO6yAxkJdcJQvunb0imiwfvphMP3bMs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mV/twWMJeYfcGzs1uNwmtMrYTsfNZ9+Z7oM1GmU0V8wXuTMesf9vLKbKxxfIGbzxh0x76mdgxkV2zAGoN9pTb9rf/LaJJU5r06SPYaok3C6Y4l/2QU7j+FaaQocA3ap9yHFIbG7kXN1ICaeVPFgOe9l9jdz/QlsT4HZVJkvmAmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U3VL1+gF; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U3VL1+gF"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1747776823; x=1779312823;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2dBBkVKAjPqMQO6yAxkJdcJQvunb0imiwfvphMP3bMs=;
-  b=U3VL1+gFt75Uj4DOsCKLH8QYfNgR1GPQY25lWmrGXmqBYWIqCGGvhOI2
-   98x8ef9oOE/zUESh2vz7JOiX7n743wjbCbOU+oxyMjIg3tbpIB4aTTSm2
-   K5vsfPpNre5pjFCby2u4AH7tyQBT0JnnpmUhGSfbwr9O/2CyIpw9+1n94
-   j37ai65XObRaCs62/h/1ZFZttnMil1/YAh3VFSKGLR7RklFSiKxqgQboX
-   HVARqCR13II+eoh8NNPg3E0ZwHbWIIcAHbntV2JaCeI05dPCE0pyHIdbf
-   lnwATr0nFw+A4a7E90pYxamnvm1QWvlv4q5/I2Y47Qed1yKy9qHXwf5mu
-   g==;
-X-CSE-ConnectionGUID: FX8r+Xt7Q9SzCLKEYX4Fig==
-X-CSE-MsgGUID: dvasTuh4QGuMPUdGONXEgQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11439"; a="49886560"
-X-IronPort-AV: E=Sophos;i="6.15,302,1739865600"; 
-   d="scan'208";a="49886560"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2025 14:33:41 -0700
-X-CSE-ConnectionGUID: qKGsHbZ/Soe+T5yrGWF48w==
-X-CSE-MsgGUID: Rx5ednNxSfq2WVZorJIWPg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,302,1739865600"; 
-   d="scan'208";a="143811827"
-Received: from lkp-server01.sh.intel.com (HELO 1992f890471c) ([10.239.97.150])
-  by fmviesa003.fm.intel.com with ESMTP; 20 May 2025 14:33:35 -0700
-Received: from kbuild by 1992f890471c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uHUab-000NaO-0J;
-	Tue, 20 May 2025 21:33:33 +0000
-Date: Wed, 21 May 2025 05:32:50 +0800
-From: kernel test robot <lkp@intel.com>
-To: a0282524688@gmail.com, lee@kernel.org, linus.walleij@linaro.org,
-	brgl@bgdev.pl, andi.shyti@kernel.org, mkl@pengutronix.de,
-	mailhol.vincent@wanadoo.fr, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, wim@linux-watchdog.org, linux@roeck-us.net,
-	jdelvare@suse.com, alexandre.belloni@bootlin.com
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-	linux-can@vger.kernel.org, netdev@vger.kernel.org,
-	linux-watchdog@vger.kernel.org, linux-hwmon@vger.kernel.org,
-	linux-rtc@vger.kernel.org, linux-usb@vger.kernel.org,
-	Ming Yu <tmyu0@nuvoton.com>
-Subject: Re: [PATCH v11 6/7] hwmon: Add Nuvoton NCT6694 HWMON support
-Message-ID: <202505210555.mud6jZoi-lkp@intel.com>
-References: <20250520020355.3885597-7-tmyu0@nuvoton.com>
+	s=arc-20240116; t=1747815785; c=relaxed/simple;
+	bh=iRwtL31fHmSw9Hg04lUcXVTzDDSTbyvsYDfX890DbCA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=JXzuWtveV53S4Hi7ooav+JtFyVZkA1Ddr4moD8HqAvJbcUm9AiRFSE6pusbu8P3vQ/avUHXgT7d8zxqLZNMHTpx/arFWCZS2YywliPbJhvFD8kAXRvQBLPSI+O4weokH4u/P+iywNqJjsFXtaEXWLn4eugv/ZiYFirWz1dWO6w4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1uHej1-0003Dd-T0
+	for linux-can@vger.kernel.org; Wed, 21 May 2025 10:22:55 +0200
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1uHej1-000Xdn-2F
+	for linux-can@vger.kernel.org;
+	Wed, 21 May 2025 10:22:55 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+	by bjornoya.blackshift.org (Postfix) with SMTP id 63A6441668E
+	for <linux-can@vger.kernel.org>; Wed, 21 May 2025 08:22:55 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 4F9B741667F;
+	Wed, 21 May 2025 08:22:53 +0000 (UTC)
+Received: from blackshift.org (localhost [::1])
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d3a98683;
+	Wed, 21 May 2025 08:22:52 +0000 (UTC)
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net,
+	kuba@kernel.org,
+	linux-can@vger.kernel.org,
+	kernel@pengutronix.de,
+	Axel Forsman <axfo@kvaser.com>,
+	stable@vger.kernel.org,
+	Jimmy Assarsson <extja@kvaser.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 1/4] can: kvaser_pciefd: Force IRQ edge in case of nested IRQ
+Date: Wed, 21 May 2025 10:14:25 +0200
+Message-ID: <20250521082239.341080-3-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.47.2
+In-Reply-To: <20250521082239.341080-2-mkl@pengutronix.de>
+References: <20250521082239.341080-2-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250520020355.3885597-7-tmyu0@nuvoton.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Hi,
+From: Axel Forsman <axfo@kvaser.com>
 
-kernel test robot noticed the following build errors:
+Avoid the driver missing IRQs by temporarily masking IRQs in the ISR
+to enforce an edge even if a different IRQ is signalled before handled
+IRQs are cleared.
 
-[auto build test ERROR on andi-shyti/i2c/i2c-host]
-[also build test ERROR on mkl-can-next/testing groeck-staging/hwmon-next abelloni/rtc-next linus/master lee-mfd/for-mfd-fixes v6.15-rc7]
-[cannot apply to lee-mfd/for-mfd-next brgl/gpio/for-next next-20250516]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Fixes: 48f827d4f48f ("can: kvaser_pciefd: Move reset of DMA RX buffers to the end of the ISR")
+Cc: stable@vger.kernel.org
+Signed-off-by: Axel Forsman <axfo@kvaser.com>
+Tested-by: Jimmy Assarsson <extja@kvaser.com>
+Reviewed-by: Jimmy Assarsson <extja@kvaser.com>
+Link: https://patch.msgid.link/20250520114332.8961-2-axfo@kvaser.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/kvaser_pciefd.c | 83 ++++++++++++++++-----------------
+ 1 file changed, 39 insertions(+), 44 deletions(-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/a0282524688-gmail-com/mfd-Add-core-driver-for-Nuvoton-NCT6694/20250520-100732
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git i2c/i2c-host
-patch link:    https://lore.kernel.org/r/20250520020355.3885597-7-tmyu0%40nuvoton.com
-patch subject: [PATCH v11 6/7] hwmon: Add Nuvoton NCT6694 HWMON support
-config: i386-randconfig-013-20250521 (https://download.01.org/0day-ci/archive/20250521/202505210555.mud6jZoi-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250521/202505210555.mud6jZoi-lkp@intel.com/reproduce)
+diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
+index cf0d51805272..9cc9176c2058 100644
+--- a/drivers/net/can/kvaser_pciefd.c
++++ b/drivers/net/can/kvaser_pciefd.c
+@@ -1646,24 +1646,28 @@ static int kvaser_pciefd_read_buffer(struct kvaser_pciefd *pcie, int dma_buf)
+ 	return res;
+ }
+ 
+-static u32 kvaser_pciefd_receive_irq(struct kvaser_pciefd *pcie)
++static void kvaser_pciefd_receive_irq(struct kvaser_pciefd *pcie)
+ {
++	void __iomem *srb_cmd_reg = KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_CMD_REG;
+ 	u32 irq = ioread32(KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_IRQ_REG);
+ 
+-	if (irq & KVASER_PCIEFD_SRB_IRQ_DPD0)
+-		kvaser_pciefd_read_buffer(pcie, 0);
++	iowrite32(irq, KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_IRQ_REG);
+ 
+-	if (irq & KVASER_PCIEFD_SRB_IRQ_DPD1)
++	if (irq & KVASER_PCIEFD_SRB_IRQ_DPD0) {
++		kvaser_pciefd_read_buffer(pcie, 0);
++		iowrite32(KVASER_PCIEFD_SRB_CMD_RDB0, srb_cmd_reg); /* Rearm buffer */
++	}
++
++	if (irq & KVASER_PCIEFD_SRB_IRQ_DPD1) {
+ 		kvaser_pciefd_read_buffer(pcie, 1);
++		iowrite32(KVASER_PCIEFD_SRB_CMD_RDB1, srb_cmd_reg); /* Rearm buffer */
++	}
+ 
+ 	if (unlikely(irq & KVASER_PCIEFD_SRB_IRQ_DOF0 ||
+ 		     irq & KVASER_PCIEFD_SRB_IRQ_DOF1 ||
+ 		     irq & KVASER_PCIEFD_SRB_IRQ_DUF0 ||
+ 		     irq & KVASER_PCIEFD_SRB_IRQ_DUF1))
+ 		dev_err(&pcie->pci->dev, "DMA IRQ error 0x%08X\n", irq);
+-
+-	iowrite32(irq, KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_IRQ_REG);
+-	return irq;
+ }
+ 
+ static void kvaser_pciefd_transmit_irq(struct kvaser_pciefd_can *can)
+@@ -1691,29 +1695,22 @@ static irqreturn_t kvaser_pciefd_irq_handler(int irq, void *dev)
+ 	struct kvaser_pciefd *pcie = (struct kvaser_pciefd *)dev;
+ 	const struct kvaser_pciefd_irq_mask *irq_mask = pcie->driver_data->irq_mask;
+ 	u32 pci_irq = ioread32(KVASER_PCIEFD_PCI_IRQ_ADDR(pcie));
+-	u32 srb_irq = 0;
+-	u32 srb_release = 0;
+ 	int i;
+ 
+ 	if (!(pci_irq & irq_mask->all))
+ 		return IRQ_NONE;
+ 
++	iowrite32(0, KVASER_PCIEFD_PCI_IEN_ADDR(pcie));
++
+ 	if (pci_irq & irq_mask->kcan_rx0)
+-		srb_irq = kvaser_pciefd_receive_irq(pcie);
++		kvaser_pciefd_receive_irq(pcie);
+ 
+ 	for (i = 0; i < pcie->nr_channels; i++) {
+ 		if (pci_irq & irq_mask->kcan_tx[i])
+ 			kvaser_pciefd_transmit_irq(pcie->can[i]);
+ 	}
+ 
+-	if (srb_irq & KVASER_PCIEFD_SRB_IRQ_DPD0)
+-		srb_release |= KVASER_PCIEFD_SRB_CMD_RDB0;
+-
+-	if (srb_irq & KVASER_PCIEFD_SRB_IRQ_DPD1)
+-		srb_release |= KVASER_PCIEFD_SRB_CMD_RDB1;
+-
+-	if (srb_release)
+-		iowrite32(srb_release, KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_CMD_REG);
++	iowrite32(irq_mask->all, KVASER_PCIEFD_PCI_IEN_ADDR(pcie));
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -1733,13 +1730,22 @@ static void kvaser_pciefd_teardown_can_ctrls(struct kvaser_pciefd *pcie)
+ 	}
+ }
+ 
++static void kvaser_pciefd_disable_irq_srcs(struct kvaser_pciefd *pcie)
++{
++	unsigned int i;
++
++	/* Masking PCI_IRQ is insufficient as running ISR will unmask it */
++	iowrite32(0, KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_IEN_REG);
++	for (i = 0; i < pcie->nr_channels; ++i)
++		iowrite32(0, pcie->can[i]->reg_base + KVASER_PCIEFD_KCAN_IEN_REG);
++}
++
+ static int kvaser_pciefd_probe(struct pci_dev *pdev,
+ 			       const struct pci_device_id *id)
+ {
+ 	int ret;
+ 	struct kvaser_pciefd *pcie;
+ 	const struct kvaser_pciefd_irq_mask *irq_mask;
+-	void __iomem *irq_en_base;
+ 
+ 	pcie = devm_kzalloc(&pdev->dev, sizeof(*pcie), GFP_KERNEL);
+ 	if (!pcie)
+@@ -1805,8 +1811,7 @@ static int kvaser_pciefd_probe(struct pci_dev *pdev,
+ 		  KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_IEN_REG);
+ 
+ 	/* Enable PCI interrupts */
+-	irq_en_base = KVASER_PCIEFD_PCI_IEN_ADDR(pcie);
+-	iowrite32(irq_mask->all, irq_en_base);
++	iowrite32(irq_mask->all, KVASER_PCIEFD_PCI_IEN_ADDR(pcie));
+ 	/* Ready the DMA buffers */
+ 	iowrite32(KVASER_PCIEFD_SRB_CMD_RDB0,
+ 		  KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_CMD_REG);
+@@ -1820,8 +1825,7 @@ static int kvaser_pciefd_probe(struct pci_dev *pdev,
+ 	return 0;
+ 
+ err_free_irq:
+-	/* Disable PCI interrupts */
+-	iowrite32(0, irq_en_base);
++	kvaser_pciefd_disable_irq_srcs(pcie);
+ 	free_irq(pcie->pci->irq, pcie);
+ 
+ err_pci_free_irq_vectors:
+@@ -1844,35 +1848,26 @@ static int kvaser_pciefd_probe(struct pci_dev *pdev,
+ 	return ret;
+ }
+ 
+-static void kvaser_pciefd_remove_all_ctrls(struct kvaser_pciefd *pcie)
+-{
+-	int i;
+-
+-	for (i = 0; i < pcie->nr_channels; i++) {
+-		struct kvaser_pciefd_can *can = pcie->can[i];
+-
+-		if (can) {
+-			iowrite32(0, can->reg_base + KVASER_PCIEFD_KCAN_IEN_REG);
+-			unregister_candev(can->can.dev);
+-			timer_delete(&can->bec_poll_timer);
+-			kvaser_pciefd_pwm_stop(can);
+-			free_candev(can->can.dev);
+-		}
+-	}
+-}
+-
+ static void kvaser_pciefd_remove(struct pci_dev *pdev)
+ {
+ 	struct kvaser_pciefd *pcie = pci_get_drvdata(pdev);
++	unsigned int i;
+ 
+-	kvaser_pciefd_remove_all_ctrls(pcie);
++	for (i = 0; i < pcie->nr_channels; ++i) {
++		struct kvaser_pciefd_can *can = pcie->can[i];
+ 
+-	/* Disable interrupts */
+-	iowrite32(0, KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_CTRL_REG);
+-	iowrite32(0, KVASER_PCIEFD_PCI_IEN_ADDR(pcie));
++		unregister_candev(can->can.dev);
++		timer_delete(&can->bec_poll_timer);
++		kvaser_pciefd_pwm_stop(can);
++	}
+ 
++	kvaser_pciefd_disable_irq_srcs(pcie);
+ 	free_irq(pcie->pci->irq, pcie);
+ 	pci_free_irq_vectors(pcie->pci);
++
++	for (i = 0; i < pcie->nr_channels; ++i)
++		free_candev(pcie->can[i]->can.dev);
++
+ 	pci_iounmap(pdev, pcie->reg_base);
+ 	pci_release_regions(pdev);
+ 	pci_disable_device(pdev);
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202505210555.mud6jZoi-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> drivers/hwmon/nct6694-hwmon.c:12:10: fatal error: linux<mfd/core.h: No such file or directory
-      12 | #include <linux<mfd/core.h>
-         |          ^~~~~~~~~~~~~~~~~~
-   compilation terminated.
-
-
-vim +12 drivers/hwmon/nct6694-hwmon.c
-
-  > 12	#include <linux<mfd/core.h>
-    13	#include <linux/mfd/nct6694.h>
-    14	#include <linux/module.h>
-    15	#include <linux/platform_device.h>
-    16	#include <linux/slab.h>
-    17	
-
+base-commit: 9e89db3d847f2d66d2799c5533d00aebee2be4d1
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.47.2
+
+
