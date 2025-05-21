@@ -1,15 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084932343B6
-	for <linux-can@vger.kernel.org>; Wed, 21 May 2025 08:23:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D0F42367AC
+	for <linux-can@vger.kernel.org>; Wed, 21 May 2025 08:23:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747815785; cv=none; b=ejZtrzEVEtZZzvp38EDjD2biIBG9W0ofhc7JEaijfWBLPagdphBoWW0q/bQcVkLy9OsrNkTjGr+LfMw1+xX1EQ4jVJo/vumiWcD2Y3JxIyDtiOyGcrOimlQvrAxza0gcyOX+Xzd3Qu1c0oIqIvePyu+kF6Sum1cvyKIciCX76BI=
+	t=1747815786; cv=none; b=K8stV0RGYFF5QUvSssVrR632jE2E+xanENHy1P42kjzzOPoQXFBJYyfnGTdioGJx4Ye6VFl6lA1msz7VyEc8pemAHIpUglssr6ya66TSORaFcQlVf/O9LfVMOmUgEmdj4aCIpYMBu4C4skDdETFo/uJoBQrgjAHDRNt5Y1qctLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747815785; c=relaxed/simple;
-	bh=0V6LXb62KugowFf1gIo3e2laOPDqvEqJp1sEu3as0aQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Xfuw2iYSu9brrr+UcT4QxyZbkl4R7jkJCEk7oGvRL96ReOzmyn7egIq3sb2nwhwt3x+w3msg9RaMEq4yjCtPIfQ59Wbio6YVTozsG4GqtOYiooTL3G83eOIvZ2FbpBq+0jnmAWsGM4TmI6M68zNXfhAhBZuT1gfKLRXv4jciyIM=
+	s=arc-20240116; t=1747815786; c=relaxed/simple;
+	bh=Suh/u/XmZ7xZR25u+iGTujyE0cuCeff4qS1OwR1SJAE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=UmOtf4N6vM07+elOsgBr5BW0W6ky3pCa8EvU4kpmG+cWABC9yvhKtfumhZhWvr9K/OsBLE1w04EbmicThpMj+CQKu58AAsZtqYhAe2aFpv3wHQBjlN39tNbF/mKJn6hZShbB2/Z07Cw1NcPB0WjqhgWfGlhciuvE/r5TbCUCteE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -17,37 +18,43 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1uHeiz-0003BG-HA
-	for linux-can@vger.kernel.org; Wed, 21 May 2025 10:22:53 +0200
+	id 1uHej3-0003Hb-DM
+	for linux-can@vger.kernel.org; Wed, 21 May 2025 10:22:57 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1uHeiz-000Xd1-15
+	id 1uHej3-000Xep-04
 	for linux-can@vger.kernel.org;
-	Wed, 21 May 2025 10:22:53 +0200
+	Wed, 21 May 2025 10:22:57 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 035C841667D
-	for <linux-can@vger.kernel.org>; Wed, 21 May 2025 08:22:52 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with SMTP id AD2F041669F
+	for <linux-can@vger.kernel.org>; Wed, 21 May 2025 08:22:56 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id D62F4416679;
-	Wed, 21 May 2025 08:22:51 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 79AD5416684;
+	Wed, 21 May 2025 08:22:54 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d2b9b246;
-	Wed, 21 May 2025 08:22:50 +0000 (UTC)
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 4b769b83;
+	Wed, 21 May 2025 08:22:52 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
-	kernel@pengutronix.de
-Subject: [PATCH net 0/n] pull-request: can 2025-05-21
-Date: Wed, 21 May 2025 10:14:24 +0200
-Message-ID: <20250521082239.341080-2-mkl@pengutronix.de>
+	kernel@pengutronix.de,
+	Axel Forsman <axfo@kvaser.com>,
+	stable@vger.kernel.org,
+	Jimmy Assarsson <extja@kvaser.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 3/4] can: kvaser_pciefd: Continue parsing DMA buf after dropped RX
+Date: Wed, 21 May 2025 10:14:27 +0200
+Message-ID: <20250521082239.341080-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.47.2
+In-Reply-To: <20250521082239.341080-2-mkl@pengutronix.de>
+References: <20250521082239.341080-2-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -60,49 +67,63 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Hello netdev-team,
+From: Axel Forsman <axfo@kvaser.com>
 
-this is a pull request of 4 patches for net/main.
+Going bus-off on a channel doing RX could result in dropped packets.
 
-The first 3 patches are by Axel Forsman and fix a ISR race condition
-in the kvaser_pciefd driver.
+As netif_running() gets cleared before the channel abort procedure,
+the handling of any last RDATA packets would see netif_rx() return
+non-zero to signal a dropped packet. kvaser_pciefd_read_buffer() dealt
+with this "error" by breaking out of processing the remaining DMA RX
+buffer.
 
-The last patch is by Carlos Sanchez and fixes the reception of short
-error messages in the slcan driver.
+Only return an error from kvaser_pciefd_read_buffer() due to packet
+corruption, otherwise handle it internally.
 
-regards,
-Marc
-
+Cc: stable@vger.kernel.org
+Signed-off-by: Axel Forsman <axfo@kvaser.com>
+Tested-by: Jimmy Assarsson <extja@kvaser.com>
+Reviewed-by: Jimmy Assarsson <extja@kvaser.com>
+Link: https://patch.msgid.link/20250520114332.8961-4-axfo@kvaser.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/kvaser_pciefd.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-The following changes since commit 9e89db3d847f2d66d2799c5533d00aebee2be4d1:
+diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
+index a61cbade96d9..f6921368cd14 100644
+--- a/drivers/net/can/kvaser_pciefd.c
++++ b/drivers/net/can/kvaser_pciefd.c
+@@ -1209,7 +1209,7 @@ static int kvaser_pciefd_handle_data_packet(struct kvaser_pciefd *pcie,
+ 		skb = alloc_canfd_skb(priv->dev, &cf);
+ 		if (!skb) {
+ 			priv->dev->stats.rx_dropped++;
+-			return -ENOMEM;
++			return 0;
+ 		}
+ 
+ 		cf->len = can_fd_dlc2len(dlc);
+@@ -1221,7 +1221,7 @@ static int kvaser_pciefd_handle_data_packet(struct kvaser_pciefd *pcie,
+ 		skb = alloc_can_skb(priv->dev, (struct can_frame **)&cf);
+ 		if (!skb) {
+ 			priv->dev->stats.rx_dropped++;
+-			return -ENOMEM;
++			return 0;
+ 		}
+ 		can_frame_set_cc_len((struct can_frame *)cf, dlc, priv->ctrlmode);
+ 	}
+@@ -1239,7 +1239,9 @@ static int kvaser_pciefd_handle_data_packet(struct kvaser_pciefd *pcie,
+ 	priv->dev->stats.rx_packets++;
+ 	kvaser_pciefd_set_skb_timestamp(pcie, skb, p->timestamp);
+ 
+-	return netif_rx(skb);
++	netif_rx(skb);
++
++	return 0;
+ }
+ 
+ static void kvaser_pciefd_change_state(struct kvaser_pciefd_can *can,
+-- 
+2.47.2
 
-  Merge tag 'linux-can-fixes-for-6.15-20250520' of git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can (2025-05-20 15:54:37 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-6.15-20250521
-
-for you to fetch changes up to ef0841e4cb08754be6cb42bf97739fce5d086e5f:
-
-  can: slcan: allow reception of short error messages (2025-05-21 10:12:05 +0200)
-
-----------------------------------------------------------------
-linux-can-fixes-for-6.15-20250521
-
-----------------------------------------------------------------
-Axel Forsman (3):
-      can: kvaser_pciefd: Force IRQ edge in case of nested IRQ
-      can: kvaser_pciefd: Fix echo_skb race
-      can: kvaser_pciefd: Continue parsing DMA buf after dropped RX
-
-Carlos Sanchez (1):
-      can: slcan: allow reception of short error messages
-
-Marc Kleine-Budde (1):
-      Merge patch series "can: kvaser_pciefd: Fix ISR race conditions"
-
- drivers/net/can/kvaser_pciefd.c    | 184 +++++++++++++++++++++----------------
- drivers/net/can/slcan/slcan-core.c |  26 ++++--
- 2 files changed, 123 insertions(+), 87 deletions(-)
 
