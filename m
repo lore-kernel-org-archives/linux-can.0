@@ -1,163 +1,137 @@
-Received: from mail-m3279.qiye.163.com (mail-m3279.qiye.163.com [220.197.32.79])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F5BF221D8F;
-	Thu, 22 May 2025 07:08:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.32.79
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E40C3234;
+	Thu, 22 May 2025 07:33:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747897694; cv=none; b=q4WUyuwwSe+9OA55YNIVZf+2laEX5S/zxjvrcS9hP1lWgDHDZed75htyveL90aCpeJOv9a9OUzs7E3fYHGpUoYpsnwe8F92p1Whhy5MmDVpYg8MBDKsCnGh6h0KqNolzltgWtDJdiPdQJpphbYq1PFx6abCyp9Q1tsKgK2ErD4o=
+	t=1747899239; cv=none; b=b66au5RPCMgE5UeGUTSnEQKA8kVD80ee5cGVJqU5xCH1SRF0w6jXESPsHhdun/x/R/Ow8PZaE/MBFKJBRIW2+7nA8y8nkpd2mjYiiG7m7QjMvtc3pguy09FCGGnT9XDlB0iUvVAU169RcdxUYOH9lykCCSFafGCq+15frLPX4F4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747897694; c=relaxed/simple;
-	bh=k89P5n3vG1Bm60U8ry2B6uMqPmDuDbKuMvquhY1bQ+A=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jjkJHs0vrd9AnwILaS+JjWKXSvbv9GuKXB+y877zVcsMwqv0wxscHltmCgWmgEwuRV4+n0TVOn/mczxqg2CFwHzlU4CglqRqcgTeGQueVlHSHAk5VYuG+izL0F+0+CSC5NVZjFDrnhuy3AmrsvmyKm9cioEa5666mwZyTI2zOIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=Bd4QCM0t; arc=none smtp.client-ip=220.197.32.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="Bd4QCM0t"
-Received: from rockchip.. (unknown [58.22.7.114])
-	by smtp.qiye.163.com (Hmail) with ESMTP id 1602d1566;
-	Thu, 22 May 2025 14:32:35 +0800 (GMT+08:00)
-From: Elaine Zhang <zhangqing@rock-chips.com>
-To: zhangqing@rock-chips.com,
-	mkl@pengutronix.de,
-	kernel@pengutronix.de,
-	mailhol.vincent@wanadoo.fr,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	heiko@sntech.de,
-	cl@rock-chips.com,
-	kever.yang@rock-chips.com
-Cc: linux-can@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: [PATCH v3 1/3] dt-bindings: can: rockchip_canfd: add rk3576 CAN-FD controller
-Date: Thu, 22 May 2025 14:32:30 +0800
-Message-Id: <20250522063232.2197432-2-zhangqing@rock-chips.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250522063232.2197432-1-zhangqing@rock-chips.com>
-References: <20250522063232.2197432-1-zhangqing@rock-chips.com>
+	s=arc-20240116; t=1747899239; c=relaxed/simple;
+	bh=afyt6vYfbzReFuh6xX3pKfOpek+1H61IQUVeBZj8jEM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eXypGXYQt+r/qfnmoqyO6424xK/GDIv1zLLEwLju0c8Kot9nGA/CymLCs6LgcJTz2ECZMaqUFIQClGfKqcuo5N9bCd8dsrPHd3dk81ZzSDYQ6WxjXiq/N2AiDqJWE9bbQU/E3j/aqmGRsrSl8/1hR7dxCN+IXT/qSQlSSf+d728=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-5242f137a1eso2377987e0c.1;
+        Thu, 22 May 2025 00:33:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747899235; x=1748504035;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=X7KW42M2nPHRBzgnk6YsRbRV24Eym9REz3RjLED1wag=;
+        b=I1OExxbLDyUAkVZhhoEZyCilMQkquKKGH+LI/QJArc5rQWkQSVx8AXYeGWxNkTb5oy
+         jQgFQyNjQc0D+J7yQui+1/D12E1+azdMWI+PDsFJr2X1+I+sXPIiOQvh6OhyC6dXOHZp
+         4vloLPdrzcBZQqqZbPtmnSD9aB7p6YV4XFoyGM7LSPyzDE7liZ21FhMjSp7oPCWYkQYC
+         8sJpbhW1wYJpVA8xOdAt3AnnmT5UtZAeb1TP0uX0opSiTPjLOcXfDmxIKvhLicVBR2SP
+         apxX3QKoxjibfj9LTFgMRMnciHSo9/tSo0x++9lsJRlqicLaa69mJQ8S/UHfIh+U3vNp
+         OsZw==
+X-Forwarded-Encrypted: i=1; AJvYcCWw7CsoLgcnJanHlpOs2YWXm2n1pOYOVvfTDUOkW1xAQZFj52fWFGEcWVoX+76DgQet5KCte6Ip@vger.kernel.org, AJvYcCX2dBlsx+hu7I6nDDCCzgXiVm4yll+BbuAEL90dHP5kKWyjzE2XuYKtiuppjHOAc374tbj/TYrsL7Y=@vger.kernel.org, AJvYcCXgJkzdDfR9BK426nRGmt8iK3l49IaTsn4HMdCzeqeb+go/9dw5zZwz+DBQCw2xjlLqLa45Zk1UzH4U@vger.kernel.org
+X-Gm-Message-State: AOJu0YxiIKpWS1LsDdtG4Syg3DVtOaZUCr6QdoDT5C/Ecy/c4XMl5ahc
+	9lFzEWRkK55xy8JgKr+DMsSoqNO1GbQJCRUC2wR6/60lyNQwQZ9Qyn/HzAxa2mNy
+X-Gm-Gg: ASbGnctW+p3hBoTw05omx9MgU5hwKGqNOf46lh6qoxspkMLqKnjBaXJIhRdozFFAjU5
+	js/y/NQw5EWKukl2pi2WTGyLWBOUuDBVZ+IzllaVUzs8LSG9pw3heQH7OUTg/DZaZibm89iz2ki
+	kbDF8mepiynz9VT0uvFZ1GIQGEkjk5wl3gR7MpOuwxX4tZ7Jl6N5z8BAuFT1+8MmdX2f8nKkzu7
+	c6hDUX++u4tZICVbMvdLSDLHbEPixOoYn/hWUg57ZuDoZ45gNgOxgT25jOHDn5zPnoMFbIyYRIa
+	QdDRadtvTZCZJy9QezE6fpQWhcDmg0A54hYtJTBQLrMnOycI/X//D+tw8tcQHOtFjrL9DOqCX/Z
+	3lzLLvOxDn+J/HA==
+X-Google-Smtp-Source: AGHT+IHikIZLZ1dZSgH/RR2Hdv8CSv8vbOX08ARUI5So85blok34d0/WyJjUj46TinX6Rt76XAidYA==
+X-Received: by 2002:a05:6122:a1f:b0:527:8771:2d39 with SMTP id 71dfb90a1353d-52dbcd6d66dmr19724074e0c.7.1747899235036;
+        Thu, 22 May 2025 00:33:55 -0700 (PDT)
+Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com. [209.85.217.45])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-52dba910901sm11367008e0c.2.2025.05.22.00.33.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 May 2025 00:33:54 -0700 (PDT)
+Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-4e14dd8abdaso2061520137.3;
+        Thu, 22 May 2025 00:33:54 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUQOsYvbTuRwXmLJS9UUXZGOsFd+L7QMvKR5welDqXnMH9wBqGnzpNKnCPe+pv5DfPBfO2+xHPpxfc=@vger.kernel.org, AJvYcCX+4R3Iz2nSf4Ps108yyz+lYgUSc47F2Cq/agLTUYYoG+iC1HOlFydgisr1QzA3W58uHXPgOEtH@vger.kernel.org, AJvYcCXI36llW902E4N2dEAsdFPZqUA5cO08XogZ3ovDmByput4ZFLitE4Hc+0fUW1/DrpvZ8/ObKaEzrA1X@vger.kernel.org
+X-Received: by 2002:a05:6102:b06:b0:4e2:aafe:1bb7 with SMTP id
+ ada2fe7eead31-4e2aafe1e8dmr8036440137.15.1747899234351; Thu, 22 May 2025
+ 00:33:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQ0sYTFZIT0lIS0odQhkeHkNWFRQJFh
-	oXVRMBExYaEhckFA4PWVdZGBILWUFZTkNVSUlVTFVKSk9ZV1kWGg8SFR0UWUFZT0tIVUpLSU9PT0
-	hVSktLVUpCS0tZBg++
-X-HM-Tid: 0a96f6b1957f03a3kunme211611210aaa93
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OAw6Agw5FDE3LhIRDEMiEA42
-	PzhPCwJVSlVKTE9MQ0JOTk5NQkNNVTMWGhIXVQETGhUcChIVHDsJFBgQVhgTEgsIVRgUFkVZV1kS
-	C1lBWU5DVUlJVUxVSkpPWVdZCAFZQUhJSkk3Bg++
-DKIM-Signature:a=rsa-sha256;
-	b=Bd4QCM0tbtFm/iaCR7PjOLmCNQ33/qZch0gsrcXS3HtGqur50gDoSrvbtUwjXXY+tJB4WraKl5tRU/AI28lrCt6FpukbMn2n8S075AyswZgA3eDE+WZdmg3Rbo6camrfta3sujShGHb+tHNxTNSRHc9YhtcgyonOb9Fba9OPQMc=; c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
-	bh=YrD/3cMaELrj0WxecR8TGpVQ/1vDEVc4Rj278Y6+gmg=;
-	h=date:mime-version:subject:message-id:from;
+References: <a679123dfa5a5a421b8ed3e34963835e019099b0.1747820705.git.geert+renesas@glider.be>
+ <20250521-ancient-discreet-weasel-98b145-mkl@pengutronix.de>
+In-Reply-To: <20250521-ancient-discreet-weasel-98b145-mkl@pengutronix.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 22 May 2025 09:33:42 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXVbBciPriF6wWBUE0FHs3ZfEHAodFOsACiaMCEbLKpeg@mail.gmail.com>
+X-Gm-Features: AX0GCFthFAH_k5GLf92vZ0TJkMlPKuOGRFvQs0hIExouVBk96m2MS6fQ5ujhrd8
+Message-ID: <CAMuHMdXVbBciPriF6wWBUE0FHs3ZfEHAodFOsACiaMCEbLKpeg@mail.gmail.com>
+Subject: Re: [PATCH] documentation: networking: can: Document alloc_candev_mqs()
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, Jonathan Corbet <corbet@lwn.net>, 
+	Wolfgang Grandegger <wg@grandegger.com>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Simon Horman <horms@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Add documentation for the rockchip rk3576 CAN-FD controller.
+Hi Marc,
 
-Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
----
- .../net/can/rockchip,rk3576-canfd.yaml        | 82 +++++++++++++++++++
- 1 file changed, 82 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/can/rockchip,rk3576-canfd.yaml
+On Wed, 21 May 2025 at 12:07, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 21.05.2025 11:51:21, Geert Uytterhoeven wrote:
+> > Since the introduction of alloc_candev_mqs() and friends, there is no
+> > longer a need to allocate a generic network device and perform explicit
+> > CAN-specific setup.  Remove the code showing this setup, and document
+> > alloc_candev_mqs() instead.
+>
+> Makes sense.
+>
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > ---
+> > Dunno if this deserves
+> > Fixes: 39549eef3587f1c1 ("can: CAN Network device driver and Netlink interface")
+> >
+> >  Documentation/networking/can.rst | 9 +++------
+> >  1 file changed, 3 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
+> > index b018ce346392652b..784dbd19b140d262 100644
+> > --- a/Documentation/networking/can.rst
+> > +++ b/Documentation/networking/can.rst
+> > @@ -1106,13 +1106,10 @@ General Settings
+> >
+> >  .. code-block:: C
+>
+> This breaks the rst rendering. I think you should remove the "..
+> code-block:: C"...
 
-diff --git a/Documentation/devicetree/bindings/net/can/rockchip,rk3576-canfd.yaml b/Documentation/devicetree/bindings/net/can/rockchip,rk3576-canfd.yaml
-new file mode 100644
-index 000000000000..85caf6d19607
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/rockchip,rk3576-canfd.yaml
-@@ -0,0 +1,82 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/can/rockchip,rk3568v2-canfd.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title:
-+  Rk3576 CAN-FD controller
-+
-+maintainers:
-+  - Elaine Zhang <zhangqing@rock-chips.com>
-+
-+allOf:
-+  - $ref: can-controller.yaml#
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - const: rockchip,rk3576-canfd
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 2
-+
-+  clock-names:
-+    items:
-+      - const: baud
-+      - const: pclk
-+
-+  resets:
-+    maxItems: 2
-+
-+  reset-names:
-+    items:
-+      - const: core
-+      - const: apb
-+
-+  dmas:
-+    maxItems: 1
-+
-+  dma-names:
-+    items:
-+      - const: rx
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - resets
-+  - dmas
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/rockchip,rk3576-cru.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    soc {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+
-+        can0: can@2ac00000 {
-+            compatible = "rockchip,rk3576-canfd";
-+	    reg = <0x0 0x2ac00000 0x0 0x1000>;
-+	    interrupts = <GIC_SPI 121 IRQ_TYPE_LEVEL_HIGH>;
-+	    clocks = <&cru CLK_CAN0>, <&cru HCLK_CAN0>;
-+	    clock-names = "baud", "pclk";
-+	    resets = <&cru SRST_CAN0>, <&cru SRST_H_CAN0>;
-+	    reset-names = "can", "can-apb";
-+	    dmas = <&dmac0 20>;
-+	    dma-names = "rx";
-+	    status = "disabled";
-+	};
-+    };
+Doh, how did I miss that? Will fix...
+
+>
+> >
+> > -    dev->type  = ARPHRD_CAN; /* the netdevice hardware type */
+> > -    dev->flags = IFF_NOARP;  /* CAN has no arp */
+> > +CAN network device drivers can use alloc_candev_mqs() and friends instead of
+> > +alloc_netdev_mqs(), to automatically take care of CAN-specific setup:
+>
+> and add a second ":" after "setup:"
+>
+> >
+> > -    dev->mtu = CAN_MTU; /* sizeof(struct can_frame) -> Classical CAN interface */
+> > -
+> > -    or alternative, when the controller supports CAN with flexible data rate:
+> > -    dev->mtu = CANFD_MTU; /* sizeof(struct canfd_frame) -> CAN FD interface */
+> > +    dev = alloc_candev_mqs(...);
+> >
+> >  The struct can_frame or struct canfd_frame is the payload of each socket
+> >  buffer (skbuff) in the protocol family PF_CAN.
+=
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.34.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
