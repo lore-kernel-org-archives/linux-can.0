@@ -1,121 +1,100 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from mail-m32100.qiye.163.com (mail-m32100.qiye.163.com [220.197.32.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 397E224EF90
-	for <linux-can@vger.kernel.org>; Thu, 22 May 2025 08:00:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E9DD25A2CA;
+	Thu, 22 May 2025 08:01:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.32.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747900815; cv=none; b=afNXP/cFO/owdvxsnHvD6ZAi2T1OUqRKp90SL6ibXj6gYFWuxP9wBDlOJ3Kd8lK2MDJcY0uK3szTW0xIv6Pb38eHMDhvxq5kHWkLfI1h1LKgZ6biPn9FPiSB4VZWL5gXTwHo2ZlkHeo/qSk8suqcuXJH3RbUZOO8uCmrWKxzaTQ=
+	t=1747900909; cv=none; b=CVMBFYLD4oV+VYBFKwGD6SisXcLybyD8CAkezOxXsMEoMED2NcG0nQhKRBzSXfdge3JKYtIr9kXA1oP6y+J9aggPX5vFLfztUS5JHB0dD6UXYkLTcE48BCqUmaNlUo7ZiqnIyHFJStdTgn3UuP3+NOIqNdjkbGjDlbToIDxJqXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747900815; c=relaxed/simple;
-	bh=Bw3kgMM52a4tBIU1z0adE+k11qpVVeTREOCcrArRWZY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZMFPB3pdjFdi/L6esMcBCV/QDcTF10e3QaxMwa388rNwwdxsXGNu51r5Gs2YGdov5qtrE1QGiPzqA5G581Hr3tvWrD5xEp5cwUUUMvoNf1pY+A35vi0qQNDvW6EDOb4Tt4KG5GYLKI2ObdIw73NNZ2lUoO/RRnTNELytIoRVg5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1uI0qN-0004uV-1S; Thu, 22 May 2025 09:59:59 +0200
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1uI0qL-000hFi-0P;
-	Thu, 22 May 2025 09:59:57 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:2260:2009:2000::])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 1A403417179;
-	Thu, 22 May 2025 07:59:56 +0000 (UTC)
-Date: Thu, 22 May 2025 09:59:55 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc: Elaine Zhang <zhangqing@rock-chips.com>, kernel@pengutronix.de, 
-	robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org, heiko@sntech.de, 
-	cl@rock-chips.com, kever.yang@rock-chips.com, linux-can@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	s=arc-20240116; t=1747900909; c=relaxed/simple;
+	bh=T061gL6o7OkK/X1Mo1vcCclwUdfWutRgh766GnDxY84=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mXH7ldoQj/HfBaCqPiaAYOPM9zbfr/Bi0C5waX3SbZ9gAUIdjZAwav0tSkTr3uRomZPfR1F5xwcJfmREC7MdynyKNfmSjAebpg8aW0ySftuzu+E233l4GmSkKjFEN1iGQxcG40k0qZsNli2Blwm0DrE7PukHP7COms/oNe8AjF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=ZHgASNrq; arc=none smtp.client-ip=220.197.32.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="ZHgASNrq"
+Received: from rockchip.. (unknown [58.22.7.114])
+	by smtp.qiye.163.com (Hmail) with ESMTP id 1605e660e;
+	Thu, 22 May 2025 15:46:17 +0800 (GMT+08:00)
+From: Elaine Zhang <zhangqing@rock-chips.com>
+To: zhangqing@rock-chips.com,
+	mkl@pengutronix.de,
+	kernel@pengutronix.de,
+	mailhol.vincent@wanadoo.fr,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	heiko@sntech.de,
+	cl@rock-chips.com,
+	kever.yang@rock-chips.com
+Cc: linux-can@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
 	devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] net: can: rockchip: add can for RK3576 Soc
-Message-ID: <20250522-delightful-lean-chachalaca-4950e0-mkl@pengutronix.de>
-References: <20250522063232.2197432-1-zhangqing@rock-chips.com>
- <20250522063232.2197432-3-zhangqing@rock-chips.com>
- <CAMZ6RqJzR6ucRnCHFq8ZFRnznRsFYq6BMQY24aaROJMLWigU4A@mail.gmail.com>
+Subject: [PATCH v4 0/3] rockchip: add can for RK3576 Soc
+Date: Thu, 22 May 2025 15:46:13 +0800
+Message-Id: <20250522074616.3115348-1-zhangqing@rock-chips.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="lpmlapbweec4lyva"
-Content-Disposition: inline
-In-Reply-To: <CAMZ6RqJzR6ucRnCHFq8ZFRnznRsFYq6BMQY24aaROJMLWigU4A@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGUseGlYaGBhKHUMYHx1KH0hWFRQJFh
+	oXVRMBExYaEhckFA4PWVdZGBILWUFZTkNVSUlVTFVKSk9ZV1kWGg8SFR0UWUFZT0tIVUpLSU9PT0
+	hVSktLVUpCS0tZBg++
+X-HM-Tid: 0a96f6f50f7903a3kunm9938470210de792
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NBg6Izo6ETE0LhIcSTgpDiov
+	GDRPCSlVSlVKTE9MQ0JCQkxCSk9NVTMWGhIXVQETGhUcChIVHDsJFBgQVhgTEgsIVRgUFkVZV1kS
+	C1lBWU5DVUlJVUxVSkpPWVdZCAFZQUlKSks3Bg++
+DKIM-Signature:a=rsa-sha256;
+	b=ZHgASNrqMdf+4b6cLuXsZ1XZEP5++2a9VJU5ozLQi+Y5vCkl5jmy/SzODsHuLCwVANNEto4TcXitwR/kMnZaLfcRXXrL06j2FbOeiZUL4FPlmQXDP0+M4Jwv3HPitH+wsKnczxWwDnUGUScTkRzpiC/fqmZbx5KWpuVH3R5BlE0=; c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
+	bh=sIsz51ve9WD6EIYt9+H904kIrnIh/0ETD/TqyTo6/IU=;
+	h=date:mime-version:subject:message-id:from;
 
+rk3576 can is a new controller:
+Support CAN and CANFD protocol.
+Support Dma.
 
---lpmlapbweec4lyva
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v3 2/3] net: can: rockchip: add can for RK3576 Soc
-MIME-Version: 1.0
+There are major differences from the previous rk3568. All errata on the
+rk3568 have been fixed and redesigned.
 
-On 22.05.2025 16:51:40, Vincent Mailhol wrote:
-> On Thu. 22 May 2025 at 15:38, Elaine Zhang <zhangqing@rock-chips.com> wro=
-te:
-> >
-> > Is new controller:
-> > Support CAN and CANFD protocol.
-> > Support Dma.
->=20
-> Please write a more verbose description with proper sentences.
->=20
-> > Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
->=20
-> You need to break this into several patches and several files.
->=20
-> You can not put everything in rockchip_canfd-core.c. Create a
-> rockchip_rk3568.c in which you will move all the already existing
-> rk3568 specific functions. Then, in another patch, create a
-> rockchip_rk3576.c that will contain all the new code. Also adjust the
-> headers accordingly.
+Change in V4:
+[PATCH v4 1/3]: Correct the format and add explanations.
+[PATCH v4 2/3]: No change.
+[PATCH v4 3/3]: No change.
 
-I think the first patch modifying driver code should be to add the
-callbacks to rockchip_canfd-core.c and move the rk3568 code to it. The
-second patch to add the rk3576 without DMA and then add DMA mode. Maybe
-even split more. Have a look at the series where I added the original
-driver for an idea how to add the support incremental.
+Change in V3:
+[PATCH v3 1/3]: Add documentation for the rk3576 CAN-FD.
+[PATCH v3 2/3]: Adjust the differentiated code section and add dma
+function.
+[PATCH v3 3/3]: Remove dma, no use dma by default.
 
-regards,
-Marc
+Change in V2:
+[PATCH v2 1/2]: remove rk3576_canfd.c, use the rockchip_canfd driver
+[PATCH v2 2/2]: code style.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+Elaine Zhang (3):
+  dt-bindings: can: rockchip_canfd: add rk3576 CAN-FD controller
+  net: can: rockchip: add can for RK3576 Soc
+  arm64: dts: rockchip: rk3576: add can dts nodes
 
---lpmlapbweec4lyva
-Content-Type: application/pgp-signature; name="signature.asc"
+ .../net/can/rockchip,rk3576-canfd.yaml        |  86 +++
+ arch/arm64/boot/dts/rockchip/rk3576.dtsi      |  22 +
+ .../net/can/rockchip/rockchip_canfd-core.c    | 637 ++++++++++++++++--
+ drivers/net/can/rockchip/rockchip_canfd-rx.c  | 193 ++++++
+ drivers/net/can/rockchip/rockchip_canfd-tx.c  |  29 +
+ drivers/net/can/rockchip/rockchip_canfd.h     | 312 +++++++++
+ 6 files changed, 1234 insertions(+), 45 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/rockchip,rk3576-canfd.yaml
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.34.1
 
-iQEzBAABCgAdFiEEn/sM2K9nqF/8FWzzDHRl3/mQkZwFAmgu2XgACgkQDHRl3/mQ
-kZzQJAgApXCC8s2c2+CiMrRCtKvYLVoAutalwYhghaYH2BXfFWc/d+28zc2+kk2x
-A0KBEBHsHyNacv50PzO6Cd4sbbvsPUUHEYBHoqFP4rU/v2ume72v4R6vlnGe5wq4
-ARFfylPB108a4IQ/rFrJK00fBPA0QEL+xLFhs5qhIC4ULpkFZA2gQ3pvOSaBAC/1
-1Lpp8qjNt1Clk2JlI255nJylV04Xe8qcTNq490v1Tj4Cj++vZh414SFvmHBWrbb2
-ui2ptgp7K6tqo+GnUu2aFQf1o3GAGoXCEE0AcQCIBuq1d8Rf2lrVM1Koo0cAgNQ1
-B2NARj0eLbE2aIKJayqbaBmLHYDzrw==
-=uXC8
------END PGP SIGNATURE-----
-
---lpmlapbweec4lyva--
