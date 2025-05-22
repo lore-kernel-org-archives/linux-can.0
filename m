@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D83CE281360
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07F3828935B
 	for <linux-can@vger.kernel.org>; Thu, 22 May 2025 08:41:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747903309; cv=none; b=XOukpLlhRVhPPQGVa9vsAc1Il+s5AYhSgJT3PwBxBs5MgaIoJacqCCzhfRLjbiuHEEGv8kycqWeD9V3ebQ03/2XG7pe/X/H+Imew7O0tNVvXDBkRPLD+yv3TweyyRjdSLfuHsIDX3iUeG5hx24Xi02BTQ46ns3eWpr+DxuXe2eE=
+	t=1747903309; cv=none; b=kNK0N4qB7mGO7wyJm0HhVOcJqxiYI/BVWr+YYG9u1WC8uAzb8MOGnD7ev7hC4pL9Z5B1qGgYB7x5W6bXYKyodGdXz6g3eYNPdvvrofnICvIdRDtp7PWGO3tiTWwjFOQTWdmjno/ckA2ho2xXojcu+zcE4qTPmOtKouQ6qIS2O9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1747903309; c=relaxed/simple;
-	bh=f6B/Gs2R/h2VZ58PvWhNWRf+c9KyccQuW+lJ1UcjNlA=;
+	bh=bX+nwf0Fe0TUmFQb9rnepy7hX8CHipTdtu2Vl6jQmTs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UZeB7S7oMuuyOsIFjBTXqUWaLEhbqUn6VFm1dj4VnqUjZKrwgmVb/YlXf5z1mEDCCcOvA98O5CqODQs2u9g/zQBaFAFidUwA8WjH4akGslTXVpIwQonvzM2WnuTDQJTMc2BWCV5kj0Wd8zQYCjaZlsW+LQ+KdGb6zrIJarH8ZSs=
+	 MIME-Version; b=AJxkEVoJEmxCRbcDidbrtE6/Nrr1kbPsHx0Exd8M3heexh3YabPu4WV6ZtDkVnGb3qwfx7fzTJ0OspPhdbutLBjGPwQ88a1EdDkSL1blZMz1p4EHqkU/fFs8q9JPa8tHuqEhwsQKN37aVCVLd0ykkRAW0xUNCFt/EZTASB2O934=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,38 +18,40 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1uI1Um-0006IX-JN
+	id 1uI1Um-0006IE-OT
 	for linux-can@vger.kernel.org; Thu, 22 May 2025 10:41:44 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1uI1Uj-000hr6-1J
+	id 1uI1Uj-000hqp-0o
 	for linux-can@vger.kernel.org;
 	Thu, 22 May 2025 10:41:41 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 1D635417372
-	for <linux-can@vger.kernel.org>; Thu, 22 May 2025 08:41:41 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with SMTP id E28EA41736F
+	for <linux-can@vger.kernel.org>; Thu, 22 May 2025 08:41:40 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 93AD741734E;
-	Thu, 22 May 2025 08:41:39 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id A4B4741732B;
+	Thu, 22 May 2025 08:41:38 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id abba9649;
-	Thu, 22 May 2025 08:41:31 +0000 (UTC)
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id eaf61fe3;
+	Thu, 22 May 2025 08:41:30 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
+	Biju Das <biju.das.jz@bp.renesas.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
 	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 22/22] selftests: can: test_raw_filter.sh: add support of physical interfaces
-Date: Thu, 22 May 2025 10:36:50 +0200
-Message-ID: <20250522084128.501049-23-mkl@pengutronix.de>
+Subject: [PATCH net-next 19/22] can: rcar_canfd: Add RZ/G3E support
+Date: Thu, 22 May 2025 10:36:47 +0200
+Message-ID: <20250522084128.501049-20-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250522084128.501049-1-mkl@pengutronix.de>
 References: <20250522084128.501049-1-mkl@pengutronix.de>
@@ -65,61 +67,76 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+From: Biju Das <biju.das.jz@bp.renesas.com>
 
-Allow the user to specify a physical interface through the $CANIF
-environment variable. Add a $BITRATE environment variable set with a
-default value of 500000.
+The CAN-FD IP found on the RZ/G3E SoC is similar to R-Car Gen4, but
+it has no external clock instead it has clk_ram, it has 6 channels
+and supports 20 interrupts. Add support for RZ/G3E CAN-FD driver.
 
-If $CANIF is omitted or if it starts with vcan (e.g. vcan1), the test
-will use the virtual can interface type. Otherwise, it will assume
-that the provided interface is a physical can interface.
-
-For example:
-
-  CANIF=can1 BITRATE=1000000 ./test_raw_filter.sh
-
-will run set the can1 interface with a bitrate of one million and run
-the tests on it.
-
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Link: https://patch.msgid.link/20250417054320.14100-20-biju.das.jz@bp.renesas.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- tools/testing/selftests/net/can/test_raw_filter.sh | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ drivers/net/can/rcar/rcar_canfd.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/tools/testing/selftests/net/can/test_raw_filter.sh b/tools/testing/selftests/net/can/test_raw_filter.sh
-index 2216134b431b..276d6c06ac95 100755
---- a/tools/testing/selftests/net/can/test_raw_filter.sh
-+++ b/tools/testing/selftests/net/can/test_raw_filter.sh
-@@ -9,17 +9,25 @@ net_dir=$(dirname $0)/..
- source $net_dir/lib.sh
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index 6a9c970364cb..27d503ac87dc 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -726,6 +726,22 @@ static const struct rcar_canfd_hw_info rzg2l_hw_info = {
+ 	.external_clk = 1,
+ };
  
- export CANIF=${CANIF:-"vcan0"}
-+BITRATE=${BITRATE:-500000}
- 
- setup()
++static const struct rcar_canfd_hw_info r9a09g047_hw_info = {
++	.nom_bittiming = &rcar_canfd_gen4_nom_bittiming_const,
++	.data_bittiming = &rcar_canfd_gen4_data_bittiming_const,
++	.regs = &rcar_gen4_regs,
++	.sh = &rcar_gen4_shift_data,
++	.rnc_field_width = 16,
++	.max_aflpn = 63,
++	.max_cftml = 31,
++	.max_channels = 6,
++	.postdiv = 1,
++	.multi_channel_irqs = 1,
++	.ch_interface_mode = 1,
++	.shared_can_regs = 1,
++	.external_clk = 0,
++};
++
+ /* Helper functions */
+ static inline void rcar_canfd_update(u32 mask, u32 val, u32 __iomem *reg)
  {
--	ip link add name $CANIF type vcan || exit $ksft_skip
-+	if [[ $CANIF == vcan* ]]; then
-+		ip link add name $CANIF type vcan || exit $ksft_skip
-+	else
-+		ip link set dev $CANIF type can bitrate $BITRATE || exit $ksft_skip
-+	fi
- 	ip link set dev $CANIF up
- 	pwd
- }
+@@ -1969,6 +1985,7 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 	u32 rule_entry = 0;
+ 	bool fdmode = true;			/* CAN FD only mode - default */
+ 	char name[9] = "channelX";
++	struct clk *clk_ram;
+ 	int i;
  
- cleanup()
- {
--	ip link delete $CANIF
-+	ip link set dev $CANIF down
-+	if [[ $CANIF == vcan* ]]; then
-+		ip link delete $CANIF
-+	fi
- }
+ 	info = of_device_get_match_data(dev);
+@@ -2058,6 +2075,11 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 		gpriv->extclk = gpriv->info->external_clk;
+ 	}
  
- test_raw_filter()
++	clk_ram = devm_clk_get_optional_enabled(dev, "ram_clk");
++	if (IS_ERR(clk_ram))
++		return dev_err_probe(dev, PTR_ERR(clk_ram),
++				     "cannot get enabled ram clock\n");
++
+ 	addr = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(addr)) {
+ 		err = PTR_ERR(addr);
+@@ -2220,6 +2242,7 @@ static SIMPLE_DEV_PM_OPS(rcar_canfd_pm_ops, rcar_canfd_suspend,
+ 
+ static const __maybe_unused struct of_device_id rcar_canfd_of_table[] = {
+ 	{ .compatible = "renesas,r8a779a0-canfd", .data = &rcar_gen4_hw_info },
++	{ .compatible = "renesas,r9a09g047-canfd", .data = &r9a09g047_hw_info },
+ 	{ .compatible = "renesas,rcar-gen3-canfd", .data = &rcar_gen3_hw_info },
+ 	{ .compatible = "renesas,rcar-gen4-canfd", .data = &rcar_gen4_hw_info },
+ 	{ .compatible = "renesas,rzg2l-canfd", .data = &rzg2l_hw_info },
 -- 
 2.47.2
 
