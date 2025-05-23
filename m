@@ -1,256 +1,110 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail-m19731111.qiye.163.com (mail-m19731111.qiye.163.com [220.197.31.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 812391487FE;
-	Fri, 23 May 2025 09:02:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13F6B224AEE;
+	Fri, 23 May 2025 09:10:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747990935; cv=none; b=YHUnk2879VhpB0Zm7Gs5daDywvLYqr6K37ZVLk2hDHMAd+HJlmK1lndOtGMwZvv2xAkQxRP3f/Khz6bdQGaIPuLD5owkjU3wy2GQ4pSa0FkyBoLpgOpdzd7yuaKE881+rtzJawXgMRHp0pkkN6uSCBQ5c0JyvYdjYBocNbRaB6g=
+	t=1747991414; cv=none; b=HPZp+yPF5+O4G2wZ17u6zGpeSsrTaCKidJmNHr5b/NmG9NRGteqevYx0S5rn/QdRLvHxpsaYUC0tl15rTpb5e5CFi6S8VmJ7mBJsKu15pkDIu3wA+f6Z1wwlv126k1bpPTLlDKu7p5UWBs2pjaro8EyZmCyQnGS97YpsI08tXtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747990935; c=relaxed/simple;
-	bh=Dzl9IFdwpkzphmorX3MPHRaZcbXOQp1myGl9QI6CyzA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NrQR9hbNDmdFuHA1utNBLezAhpPdv6XmxmAHrzUvCnMg2hL6NYJ3naEKykRCGUmDM25JvOVpH/jPQptAtnvE5YI1P6AQ7WmFOYTs90uanNNmaciljnWesxWxg9UJPBzubcGVspzdYpb9/li4Fazkd9ht4h2WztetJAY6wpwwg2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SO2S6mFS; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1747991414; c=relaxed/simple;
+	bh=18/hM79gzTEgc0mz2u3OK3o+sDHBlcvn//5vlPWLGCs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aPLW4UtNBP0raW+UclOiWg57WmyD4oicY6NTefsQzC8/LRV+1KM95CzQtmD09pryU87Psn7yQF9Kve8LRmCLPjq3ho/y7JV3FudMedXlfMRq1hil0AoZ/IP7ZqZPdHT22tv4jX4R5DEF9zBxFCn5UD5WzZj9j774jE2t6qlPjs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=TuTYB+tN; arc=none smtp.client-ip=220.197.31.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SO2S6mFS"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D1FEC4CEE9;
-	Fri, 23 May 2025 09:02:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747990934;
-	bh=Dzl9IFdwpkzphmorX3MPHRaZcbXOQp1myGl9QI6CyzA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SO2S6mFSwXeblGzqX9iEYu9fX0ncmNGLIrqWngvPyBmhDg3Wkz0+Fn5khZb5Q30uC
-	 IkiYUrP61FOr9UY6lBXWKuob9jj4Ze7Q1Tjj1oh/plV08Hf7nMW4jVJ/7t7IgPl5H7
-	 GvFhns9q1gjfpLXQysVyBIcRKHs+b1BjgOCG+VxCyJ6G/IGQnPN5Ami366qNjzS70u
-	 mCuddrf7E3vWwhhCMB52hNWRuEw6QHoEstzq6D4FlACW4ROqjkzqQcFmkfQP7RQey9
-	 u+fKW6YF0YH5sTWU+r74CBgmDq7g/NCOt+kvc6J3fqVLA/XWTZY+xRhUy33NVUJAoC
-	 nPSFhZg41q1Lg==
-Date: Fri, 23 May 2025 10:02:07 +0100
-From: Lee Jones <lee@kernel.org>
-To: a0282524688@gmail.com
-Cc: linus.walleij@linaro.org, brgl@bgdev.pl, andi.shyti@kernel.org,
-	mkl@pengutronix.de, mailhol.vincent@wanadoo.fr,
-	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, wim@linux-watchdog.org,
-	linux@roeck-us.net, jdelvare@suse.com,
-	alexandre.belloni@bootlin.com, linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-	linux-can@vger.kernel.org, netdev@vger.kernel.org,
-	linux-watchdog@vger.kernel.org, linux-hwmon@vger.kernel.org,
-	linux-rtc@vger.kernel.org, linux-usb@vger.kernel.org,
-	Ming Yu <tmyu0@nuvoton.com>
-Subject: Re: [PATCH v11 1/7] mfd: Add core driver for Nuvoton NCT6694
-Message-ID: <20250523090207.GD1378991@google.com>
-References: <20250520020355.3885597-1-tmyu0@nuvoton.com>
- <20250520020355.3885597-2-tmyu0@nuvoton.com>
+	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="TuTYB+tN"
+Received: from rockchip.. (unknown [58.22.7.114])
+	by smtp.qiye.163.com (Hmail) with ESMTP id 1628045c1;
+	Fri, 23 May 2025 15:54:24 +0800 (GMT+08:00)
+From: Elaine Zhang <zhangqing@rock-chips.com>
+To: zhangqing@rock-chips.com,
+	mkl@pengutronix.de,
+	kernel@pengutronix.de,
+	mailhol.vincent@wanadoo.fr,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	heiko@sntech.de,
+	cl@rock-chips.com,
+	kever.yang@rock-chips.com
+Cc: linux-can@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH v5 0/4] rockchip: add can for RK3576 Soc
+Date: Fri, 23 May 2025 15:54:18 +0800
+Message-Id: <20250523075422.4010083-1-zhangqing@rock-chips.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250520020355.3885597-2-tmyu0@nuvoton.com>
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQ0lNGVZLGEIfS0tPGk0aTE9WFRQJFh
+	oXVRMBExYaEhckFA4PWVdZGBILWUFZTkNVSUlVTFVKSk9ZV1kWGg8SFR0UWUFZT0tIVUpLSU9PT0
+	hVSktLVUpCS0tZBg++
+X-HM-Tid: 0a96fc22d8c403a3kunm893a9d4d11da94
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Kz46Azo4TzE#PhU0Eh0MDilC
+	Gk5PC1ZVSlVKTE9MQkNNQ01OQ0JDVTMWGhIXVQETGhUcChIVHDsJFBgQVhgTEgsIVRgUFkVZV1kS
+	C1lBWU5DVUlJVUxVSkpPWVdZCAFZQUlOQ0k3Bg++
+DKIM-Signature:a=rsa-sha256;
+	b=TuTYB+tNs6YN+eiPJLqJ2uWrCNgSxZB0rA2IYnuXg9orTfEXIxGwULJgVfF/0haHB6UFERW9Fg3J5O1Z1C15e6dFduSVBeM5p84PEx0UznIjZhUoUqW/Yxee6vNTWh0gUSTRC2YTV5i2+jm7+bUZevIdESFVEIvWTdEKZtbqDBs=; s=default; c=relaxed/relaxed; d=rock-chips.com; v=1;
+	bh=K5jaFTCngbPDKPi3ZqCN9u0J+a6SzDpijkmm4gsP0Co=;
+	h=date:mime-version:subject:message-id:from;
 
-On Tue, 20 May 2025, a0282524688@gmail.com wrote:
+rk3576 can is a new controller,new register layout and Bit position definition:
+Support CAN and CANFD protocol.
+Support Dma.
 
-> From: Ming Yu <tmyu0@nuvoton.com>
-> 
-> The Nuvoton NCT6694 provides an USB interface to the host to
-> access its features.
-> 
-> Sub-devices can use the USB functions nct6694_read_msg() and
-> nct6694_write_msg() to issue a command. They can also request
-> interrupt that will be called when the USB device receives its
-> interrupt pipe.
-> 
-> Signed-off-by: Ming Yu <tmyu0@nuvoton.com>
-> ---
-> 
-> Changes since version 10:
-> - Add change log for the patch
-> - Fix mfd_cell to MFD_CELL_NAME()
-> - Remove unnecessary blank line
-> 
-> Changes since version 9:
-> - Add KernelDoc to exported functions
-> 
-> Changes since version 8:
-> - Modify the signed-off-by with my work address
-> - Rename all MFD cell names to "nct6694-xxx"
-> - Fix some comments in nct6694.c and in nct6694.h
-> 
-> Changes since version 7:
-> - Add error handling for devm_mutex_init()
-> 
-> Changes since version 6:
-> 
-> Changes since version 5:
-> - Fix mfd_cell to MFD_CELL_NAME() and MFD_CELL_BASIC()
-> - Drop unnecessary macros
-> 
-> Changes since version 4:
-> - Modify arguments in read/write function to a pointer to cmd_header
-> 
-> Changes since version 3:
-> - Modify array buffer to structure
-> - Fix defines and comments
-> - Add header <linux/bits.h> and use BIT macro
-> - Modify mutex_init() to devm_mutex_init()
-> 
-> Changes since version 2:
-> 
-> Changes since version 1:
-> - Implement IRQ domain to handle IRQ demux
-> - Modify USB_DEVICE to USB_DEVICE_AND_INTERFACE_INFO API
-> - Add command structure
-> - Fix USB functions
-> - Sort each driver's header files alphabetically
-> 
->  MAINTAINERS                 |   6 +
->  drivers/mfd/Kconfig         |  15 ++
->  drivers/mfd/Makefile        |   2 +
->  drivers/mfd/nct6694.c       | 387 ++++++++++++++++++++++++++++++++++++
->  include/linux/mfd/nct6694.h |  98 +++++++++
->  5 files changed, 508 insertions(+)
->  create mode 100644 drivers/mfd/nct6694.c
->  create mode 100644 include/linux/mfd/nct6694.h
+There are major differences from the previous rk3568.
+All errata on the rk3568 have been fixed and redesigned.
 
-[...]
+Change in V5:
+[PATCH v5 1/4]: Add rk3576 canfd to rockchip,rk3568v2-canfd.yaml, remove
+                rockchip,rk3576-canfd.yaml
+[PATCH v5 2/4]: Encapsulate some hardware operation functions into
+                rkcanfd_devtype_data to provide differentiated implementations
+                for different models (such as RK3568v2/v3)..
+[PATCH v5 3/4]: Add rk3576 canfd,fix the register naming rule,
+                Delete the variables used by rockchip itself.
+[PATCH v5 4/4]: Fix .h sorting.
 
-I was just going to fix this up for you when I applied the set, but
-seeing as it looks like you have to re-submit anyway ...
 
-> +static const struct usb_device_id nct6694_ids[] = {
-> +	{ USB_DEVICE_AND_INTERFACE_INFO(NCT6694_VENDOR_ID, NCT6694_PRODUCT_ID, 0xFF, 0x00, 0x00)},
+Change in V4:
+[PATCH v4 1/3]: Correct the format and add explanations.
+[PATCH v4 2/3]: No change.
+[PATCH v4 3/3]: No change.
 
-You need a space before the '}'.
+Change in V3:
+[PATCH v3 1/3]: Add documentation for the rk3576 CAN-FD.
+[PATCH v3 2/3]: Adjust the differentiated code section and add dma
+function.
+[PATCH v3 3/3]: Remove dma, no use dma by default.
 
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(usb, nct6694_ids);
-> +
-> +static struct usb_driver nct6694_usb_driver = {
-> +	.name		= "nct6694",
-> +	.id_table	= nct6694_ids,
-> +	.probe		= nct6694_usb_probe,
-> +	.disconnect	= nct6694_usb_disconnect,
-> +};
-> +module_usb_driver(nct6694_usb_driver);
-> +
-> +MODULE_DESCRIPTION("Nuvoton NCT6694 core driver");
-> +MODULE_AUTHOR("Ming Yu <tmyu0@nuvoton.com>");
-> +MODULE_LICENSE("GPL");
-> diff --git a/include/linux/mfd/nct6694.h b/include/linux/mfd/nct6694.h
-> new file mode 100644
-> index 000000000000..5e172609be3f
-> --- /dev/null
-> +++ b/include/linux/mfd/nct6694.h
-> @@ -0,0 +1,98 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2025 Nuvoton Technology Corp.
-> + *
-> + * Nuvoton NCT6694 USB transaction and data structure.
-> + */
-> +
-> +#ifndef __MFD_NCT6694_H
-> +#define __MFD_NCT6694_H
-> +
-> +#define NCT6694_VENDOR_ID	0x0416
-> +#define NCT6694_PRODUCT_ID	0x200B
-> +#define NCT6694_INT_IN_EP	0x81
-> +#define NCT6694_BULK_IN_EP	0x02
-> +#define NCT6694_BULK_OUT_EP	0x03
-> +
-> +#define NCT6694_HCTRL_SET	0x40
-> +#define NCT6694_HCTRL_GET	0x80
-> +
-> +#define NCT6694_URB_TIMEOUT	1000
-> +
-> +enum nct6694_irq_id {
-> +	NCT6694_IRQ_GPIO0 = 0,
-> +	NCT6694_IRQ_GPIO1,
-> +	NCT6694_IRQ_GPIO2,
-> +	NCT6694_IRQ_GPIO3,
-> +	NCT6694_IRQ_GPIO4,
-> +	NCT6694_IRQ_GPIO5,
-> +	NCT6694_IRQ_GPIO6,
-> +	NCT6694_IRQ_GPIO7,
-> +	NCT6694_IRQ_GPIO8,
-> +	NCT6694_IRQ_GPIO9,
-> +	NCT6694_IRQ_GPIOA,
-> +	NCT6694_IRQ_GPIOB,
-> +	NCT6694_IRQ_GPIOC,
-> +	NCT6694_IRQ_GPIOD,
-> +	NCT6694_IRQ_GPIOE,
-> +	NCT6694_IRQ_GPIOF,
-> +	NCT6694_IRQ_CAN0,
-> +	NCT6694_IRQ_CAN1,
-> +	NCT6694_IRQ_RTC,
-> +	NCT6694_NR_IRQS,
-> +};
-> +
-> +enum nct6694_response_err_status {
-> +	NCT6694_NO_ERROR = 0,
-> +	NCT6694_FORMAT_ERROR,
-> +	NCT6694_RESERVED1,
-> +	NCT6694_RESERVED2,
-> +	NCT6694_NOT_SUPPORT_ERROR,
-> +	NCT6694_NO_RESPONSE_ERROR,
-> +	NCT6694_TIMEOUT_ERROR,
-> +	NCT6694_PENDING,
-> +};
-> +
-> +struct __packed nct6694_cmd_header {
-> +	u8 rsv1;
-> +	u8 mod;
-> +	union __packed {
-> +		__le16 offset;
-> +		struct __packed {
-> +			u8 cmd;
-> +			u8 sel;
-> +		};
-> +	};
-> +	u8 hctrl;
-> +	u8 rsv2;
-> +	__le16 len;
-> +};
-> +
-> +struct __packed nct6694_response_header {
-> +	u8 sequence_id;
-> +	u8 sts;
-> +	u8 reserved[4];
-> +	__le16 len;
-> +};
-> +
-> +union __packed nct6694_usb_msg {
-> +	struct nct6694_cmd_header cmd_header;
-> +	struct nct6694_response_header response_header;
-> +};
-> +
-> +struct nct6694 {
-> +	struct device *dev;
-> +	struct irq_domain *domain;
-> +	struct mutex access_lock;
-> +	struct mutex irq_lock;
-> +	struct urb *int_in_urb;
-> +	struct usb_device *udev;
-> +	union nct6694_usb_msg *usb_msg;
-> +	unsigned char *int_buffer;
-> +	unsigned int irq_enable;
-> +};
-> +
-> +int nct6694_read_msg(struct nct6694 *nct6694, const struct nct6694_cmd_header *cmd_hd, void *buf);
-> +int nct6694_write_msg(struct nct6694 *nct6694, const struct nct6694_cmd_header *cmd_hd, void *buf);
-> +
-> +#endif
-> -- 
-> 2.34.1
-> 
+Change in V2:
+[PATCH v2 1/2]: remove rk3576_canfd.c, use the rockchip_canfd driver
+[PATCH v2 2/2]: code style.
+
+Elaine Zhang (4):
+  dt-bindings: can: rockchip_canfd: add rk3576 CAN-FD controller
+  net: can: rockchip: Refactor the rkcanfd_devtype_data structure
+  net: can: rockchip: add can for RK3576 Soc
+  net: can: rockchip: support dma for rk3576 rx
+
+ .../net/can/rockchip,rk3568v2-canfd.yaml      |  24 +
+ .../net/can/rockchip/rockchip_canfd-core.c    | 596 ++++++++++++++++--
+ drivers/net/can/rockchip/rockchip_canfd-rx.c  | 197 ++++++
+ drivers/net/can/rockchip/rockchip_canfd-tx.c  |  29 +
+ drivers/net/can/rockchip/rockchip_canfd.h     | 289 +++++++++
+ 5 files changed, 1092 insertions(+), 43 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
+2.34.1
+
