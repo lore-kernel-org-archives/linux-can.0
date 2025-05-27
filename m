@@ -1,110 +1,114 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.166])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B735227CCF0
-	for <linux-can@vger.kernel.org>; Tue, 27 May 2025 15:58:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748361518; cv=none; b=r6j7dRkkOolglI4cRV9KrTsF1xqtYLr2jmGPEXA45ePTG8WDU5VGrFCMSAZyD2Cod/TX9OlMTnR51oHMe1QcIpNnBGk8/2+hSpvZhqIrasDU+t7FqfSpA4xAKmMlsvJ2Z4vF+FlRDHMWsps4uGqpOmdKGKJMkga4haC9bmG1GUI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748361518; c=relaxed/simple;
-	bh=61A8ZZzlXfCu/SUZbAzP0EpUdS/Qz7fRFXmHVMVqQJg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q3n++Itaz5j/fo3jVYCIJ9fJYbtYsBaYOIfBenNBteQdXxWjIfU81P8lhIOFlCn1SZSybkciiU5ReAhltcgJYOTrJQaZQQ9n1pHyXzvxZ3leBNFv8vkjkWRfTvsML/ljDnIvOlyPeFcOdzw97Wo1csmme2vbR7a4V1HpbEZRzuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1uJwgz-0004eD-Ic; Tue, 27 May 2025 17:58:17 +0200
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1uJwgx-000Rc3-37;
-	Tue, 27 May 2025 17:58:15 +0200
-Received: from pengutronix.de (p5b1645f7.dip0.t-ipconnect.de [91.22.69.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 8E8EB41AA8E;
-	Tue, 27 May 2025 15:58:15 +0000 (UTC)
-Date: Tue, 27 May 2025 17:58:15 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Elaine Zhang <zhangqing@rock-chips.com>
-Cc: kernel@pengutronix.de, mailhol.vincent@wanadoo.fr, robh@kernel.org, 
-	krzk+dt@kernel.org, conor+dt@kernel.org, heiko@sntech.de, cl@rock-chips.com, 
-	kever.yang@rock-chips.com, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 0/4] rockchip: add can for RK3576 Soc
-Message-ID: <20250527-steady-dormouse-of-culture-c45bd6-mkl@pengutronix.de>
-References: <20250526062559.2061311-1-zhangqing@rock-chips.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1F1C1E32B7
+	for <linux-can@vger.kernel.org>; Tue, 27 May 2025 19:56:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.166
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1748375808; cv=pass; b=jBOnNrSu0yE5ZCzmgKcyATqzoMfYpT97UZujSsesOdch5ep69HPoyy/uIfc1JQ5l5YvNvs9NBajwHnnoYBe+lA+CZeAYo0/J5xnnd63okcohwKm4P40pcjmH9OgQQzSGdbe32ZWXe3nHZm50Y3f0Kss+76r7mwAYdkajnu5EAag=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1748375808; c=relaxed/simple;
+	bh=0yptF4MJlU+1ZO4uoS9klTVPEt0Gcqc+TlSwpHwtsks=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=R4vexviQUjlhl4OxVXhc0qjpXmWtP/VEvo29g2CfOwwZkqB7h4wN1aR/jGxF4LfS4F7ADNNosBm5b9SuBGtSe92e0g9+EFcvFqpZo5CwUxLebk0vpdr2wKxHK51kcY3BqWcRn9Wm0L4t+NxFuSNskytf+Q+NnmTa7OD6VFSLHFk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=qxcGY6Qv; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=XHl+q7Yy; arc=pass smtp.client-ip=81.169.146.166
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="qxcGY6Qv";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="XHl+q7Yy"
+ARC-Seal: i=1; a=rsa-sha256; t=1748375802; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=OL/99m9sXIjfz93nkZ7jX7kNmjjqX2yorT3TTA+lcA/DV/tkf3OZpRvE8dxHaGeb+U
+    ruFQL6nWBtSnjsYnpbXEF5nMBvhVqezQ9bUzaHdguJUwsqW+h+r8hVapLc8F0Jm9TO1i
+    vaIXus0WNtwLJPUKMgckM/q1eFszMXWMs2gWiwlCH4zEXudjZdpjsLQnh5bhPCxdiFqR
+    PjT9APQDUo4GTvoJ4NMtgs4ksAWwbkDZP2Qq25MuEidvFIEBrlrO6s7Mgxz2MtvrWeMp
+    9Nfbp+giMv8igeoLE/dbMMUOVqatY/TODpHwfxWduTCz9ZXdh/dHU3kfekI1uPbBCXvF
+    dMMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1748375802;
+    s=strato-dkim-0002; d=strato.com;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=qGw8MT2UEJI+cC/rLu+Gf9swuMa+gBrcT8KnXHw/Pts=;
+    b=JlQrXKLVerjtgpufFURkb6S25CmhAYiKtgs1zJCDz69JcNN7vbsQsCScVZPoKAvdaV
+    ZddC1fun9SOCnEHv88wk2VlKRMBiVopS2sEHKsqu5iHuJqPD/RuBuqJVPXl+2unHKrWv
+    KPCzE7G9yprjaRC27Nb8ISrE6hNuaN0JboaLw3BFvT5iEUHq41ygbq5eNHNtHkR7BaGG
+    luXn4EaV2UIe80qlDg6nHBA+eZPLFKpAgy08gcLwEGk85Dcbl4anOzn31AfndULSH8sK
+    1oeQ69MtWS9zseRi84Hx7Cs/+iviECiFb/jKJqH59hBIdkgc8r2UgzL/SR67re5WpIrs
+    fxGA==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1748375802;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=qGw8MT2UEJI+cC/rLu+Gf9swuMa+gBrcT8KnXHw/Pts=;
+    b=qxcGY6QvMxidJwNjCl47Fv6KbXINIdCC45wWkMUEkMD/kRvEdu5OuPBwGaG3oT0ldQ
+    GzlXCH1EzpoB/mQjbO2mnw9ZyPINaChDTRcrRAWIA0AjMTqLvZPOlTHhkFKRN+w14Ecc
+    dfyoXW/tuWMLpBkT8xvOOnlSu8+Uuo5XtAyxR0CH8s1b/09UJFzozS6C3nfqhwNN8GRI
+    CPY87SGfYNsZVuNbMbe9HL5RRaRfQnL6BkoOfJyN4W3exCJyvtk0q2FUX2O/6js5nBRa
+    AVWyOi8bbeP0wtIQH1VIN6C5dhMCAux9RDLurLfD1AILd1PUW94DTKhcDkbinpNIqHB4
+    uO8Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1748375802;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=qGw8MT2UEJI+cC/rLu+Gf9swuMa+gBrcT8KnXHw/Pts=;
+    b=XHl+q7Yystb3V8fdZJuKKViNBlbfnyxV6ESqtFp4ypUXSeX+bKGrouQQHk5EncW9DT
+    9AMcCv+YneEMw6rb8QBw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/vMMcFB+5xtv9aJ67XA=="
+Received: from lenov17.lan
+    by smtp.strato.de (RZmta 51.3.0 AUTH)
+    with ESMTPSA id K2a3e514RJugiWA
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Tue, 27 May 2025 21:56:42 +0200 (CEST)
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH 08/11] can: canxl: support CAN XL transceiver switching in data phase
+Date: Tue, 27 May 2025 21:56:22 +0200
+Message-ID: <20250527195625.65252-8-socketcan@hartkopp.net>
+X-Mailer: git-send-email 2.47.2
+In-Reply-To: <20250527195625.65252-1-socketcan@hartkopp.net>
+References: <20250527195625.65252-1-socketcan@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="pckthsx2tg77kzdv"
-Content-Disposition: inline
-In-Reply-To: <20250526062559.2061311-1-zhangqing@rock-chips.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 
+In the CAN XL data phase the CAN XL controller can advise the CAN XL
+transceiver to switch the physical layer.
+To enable this feature the CAN_CTRLMODE_XL_TRX has to be set in the
+driver control mode.
 
---pckthsx2tg77kzdv
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v6 0/4] rockchip: add can for RK3576 Soc
-MIME-Version: 1.0
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ include/uapi/linux/can/netlink.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 26.05.2025 14:25:55, Elaine Zhang wrote:
-> rk3576 can is a new controller,new register layout and Bit position
-> definition:
-> Support CAN and CANFD protocol.
-> Support Dma.
->=20
-> There are major differences from the previous rk3568.
-> All errata on the rk3568 have been fixed and redesigned.
+diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
+index 55b8374ab094..652576234f63 100644
+--- a/include/uapi/linux/can/netlink.h
++++ b/include/uapi/linux/can/netlink.h
+@@ -105,10 +105,11 @@ struct can_ctrlmode {
+ #define CAN_CTRLMODE_TDC_MANUAL		0x400	/* FD TDCV is manually set up by user */
+ #define CAN_CTRLMODE_XL			0x800	/* CAN XL mode */
+ #define CAN_CTRLMODE_XL_TDC_AUTO	0x1000	/* XL transceiver automatically calculates TDCV */
+ #define CAN_CTRLMODE_XL_TDC_MANUAL	0x2000	/* XL TDCV is manually set up by user */
+ #define CAN_CTRLMODE_XL_RRS		0x4000	/* XL enable RRS bit access */
++#define CAN_CTRLMODE_XL_TRX		0x8000  /* XL switch trx in data phase */
+ 
+ /*
+  * CAN device statistics
+  */
+ struct can_device_stats {
+-- 
+2.47.2
 
-Can you configure the IP core for CAN-2.0 a.k.a. CAN-CC only mode, so
-that it only receives CAN-CC frames only and not CAN-FD?
-
-What happens if you configure register RKCAN_STR_CTL, ism_sel to 2'b01:
-CAN Fixed and receive a CAN-FD frame?
-
-Is there a more detailed description to "2'b00: Flexible; cover_mode
-must disable" and "2'b11: Mixed. cover_mode must disable"?
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---pckthsx2tg77kzdv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEn/sM2K9nqF/8FWzzDHRl3/mQkZwFAmg14RQACgkQDHRl3/mQ
-kZyZQgf7BB/yyOkv3ry1psGUXvjfa6oVbkh/JVbPbds5HJPB50UhBhjmhbGKPq30
-r4BTF8f4ZEPWK+cEbibjbBdW5DXR4VLJ1bMX4C2f53uDNua+5Z3C6TLq1R5IvDoy
-PDvwfcRTEba9Oivuu9TNEpsV7hMN9opc4UORUId8yU/2vco4Pt3bQSUlbm9iRgMk
-hrWJFWQ+YyEEiJfhVp7V5CarGiEB64ALiK7y8CTESWtc1IWINpFb7raFMF2RvSMW
-/oVTymupsa9ltY8nVa+Mz7o4BXe1wG2ReXfn2QIB+S7+nN+ZGF2PMl/V4a1s9ByH
-kBPX9qhW+6hvLQgeDJhzgFmF9bYpTQ==
-=y8iK
------END PGP SIGNATURE-----
-
---pckthsx2tg77kzdv--
