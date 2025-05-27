@@ -1,240 +1,183 @@
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.83])
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AACBA202C48
-	for <linux-can@vger.kernel.org>; Tue, 27 May 2025 20:00:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.83
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC08E1FCFEF
+	for <linux-can@vger.kernel.org>; Tue, 27 May 2025 20:02:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.24
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748376008; cv=pass; b=tA+VW8WMJBcpr1+u08l6Pxxni6JZE0fdxuCkWSDsmsbrpUXQM8p8E862yqflksHOwPmFUpXe3bf8nF1qfRAiYzNWibb5CeOlQPUbSu/UHjmSkjj1oY76zukBqTCr1O9a5BSAo1yRtH8us4ffotx8tVKHm2240OTv9ZHjBaBz4gA=
+	t=1748376127; cv=pass; b=LHMQt+iniDx019frfB4Fia1oSeI4Vqp2TPazLT/5Y4UUJqYupc5FquCLuaTUkykV/Oq8kOfI9AmghMy1mwOdHAzw3ENtj/nALOuMJPIQwxZaYrKpl1SjSSbYyVT69S5P1WyhJLGJhnTLA/UCGLdsxfNO6vamq/q3KPpLv31mAJU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748376008; c=relaxed/simple;
-	bh=x29L8HC5Q6rvrfQ985GkO//yeN41rqNvTF4ryIupdQM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ET5zE30FIdrUXsLQCN6YuLNZBX15pWDVn6AUV3Wc1t81kJy0S+ei2Y5DTyKCK69/C0OJkb6eag5yIB9yFV1btWgw4u70xmvu7uT2hal8nLgnMWDRZg+G+fBXfT3jFdGIMnytawwA5yIzOTILGJvMDbYUdRiqS55qS7ImmxvVnC8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=H08V0+5U; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=LjqDnfKE; arc=pass smtp.client-ip=85.215.255.83
+	s=arc-20240116; t=1748376127; c=relaxed/simple;
+	bh=L1e4b79sBjAZjdQ+urE4SVRFxbpRQBCUB5oXHFv7Xcc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=crLxOBGdIgP+JZzBngGmV09EVhNfP34Y2B0zy/Z8KmvuFJRS9O8SPZmSFK6/GSn96qSJBVOLIXNQn1fkQeudb4L0TWq/UTzX/XaVs9P+rWQ7HS6yKyfdEe2tkK56VDLfAwVtfsPliPvkhongciHOxnZmF58WY3yt6O9pmaiOnyQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=Gkywb09K; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=+Ubeiiuo; arc=pass smtp.client-ip=85.215.255.24
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="H08V0+5U";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="LjqDnfKE"
-ARC-Seal: i=1; a=rsa-sha256; t=1748375822; cv=none;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="Gkywb09K";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="+Ubeiiuo"
+ARC-Seal: i=1; a=rsa-sha256; t=1748375760; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=OP1Zw+IkC0XAgIAexKEEN59wLoRZnI4jYPLncsuoTNx2teVBwZxC09Y3mhaho6Wt+M
-    XxBGeCzvCsMAshWRuM/4J5oRtdWeMCQkEUBIYfFSA3ot4VfS63F0P6doRn5kRV1luoxZ
-    bWWZRdkfVA7yRH901fWBLKjVlI7TnjQEh3Q9SVtjs9Nf9s0Bj9lpqEw14v7ITsRukyxn
-    tARStgvxDREC4hz0gUESUeh1VWfGxApB8c2y6+t53IOmoKAS/+rS5NlvRv5Pb3OlCnvT
-    1SUKeJHDojFFsR1Q4XhilN8del+Y9psWl+8eN387rh2fvFi9VcFAZXbZu5g3PaA7hALF
-    LRlw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1748375822;
+    b=oQiNKFR8CUjchxceZjDQon2W+0OHeo6p17A9FAn7SloIkdIXPsTTTn+orc4jir23wK
+    gSMnDjoa8mRV5EZkyvooKU7eg1d0MpJH5I12Nb8/KvHfG0a/lxSEc7wB4iICh1tKjeq+
+    U3UphyOA3wfv+6Z/0gYDnIdPMouwT+v/i8M2rQAW9dA4NCPNyDeeqHKoR5yEtpHKuuzz
+    mk0XcM1lFw8R/BAn4V9/DOyewpxHDFHdKKL2zrDDYFB8+g6YLj3Oks9/10waZtb+/oiw
+    4yk5C8d67NQWHKvkAvP7TuhQ9BVeUFlemUxOsKutnCQ6jjdpHzZIS5a3FmeUnIt7rjRQ
+    +xGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1748375760;
     s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=Gk7HFaYACMWmuG/8Kry5UmD0dY0dTw+YcNd5C0Igqzg=;
-    b=K+IBWQJVCjWsiCy7nhwmdGirR/a4WDdI9BjO5mmCPid31X3PVgEmFZQ76B8KYcgqjT
-    PQ/nfBRvknZm4FbzU88VYG8F4fATpGHvhzlYsuyOCztPl8XwwmK1RuJkUF9MB0mw8UQ0
-    BfPZPqLyaBAzU/eCozPUbeDZp0lZqgZ4AiOSq4SnJaLfu2KzPdVgJvPflWCF13zWDwAr
-    MDOx8YJL+1aj1z3tyJGEff6DQvwaDRstsmSwDt7VKHBqT15sTunjKtDdMkdrf4BMZjxu
-    pt1gyLdcD2FpuiftUPgYVpI0j3VVZ/WkNoCevVhjYaLWresqKw/C/DDrFCbyDFJGLte/
-    eq8g==
+    bh=VD3omDS9hc6sBbfoO5udJLfFEc8rzX/gcSdyj5FC7ow=;
+    b=T6EfMkhx8tN/9HlkYrqJzR0/t+kKutTPryyzEJZToJ7gWMoyQZlSfvq5QaM0dHEAp0
+    hdJqF9KPMyw07ocg1P+xjv46ot+tU/rQjrqL42hIobDNKot07eRZLOHBlZhMniBEz4y4
+    2JkhF16P/u8/jMQnmfMt827AcEqPdvAm5UKPcbnxqotUhXbrZ/mvET4qkW4qs1qccEaU
+    Za5HKm4DsVSJUnwiQuf7NXf6W+AuhS1be++KzUB7N8bGWFcRvZG2XzJrStleLuYDqT4w
+    LF6MnMd9tWAqMNTBKSDMeAYkIKpnZ2jmwMnB4LO+Gkm2oue9/kBojJQ9fMb1LobZZJmp
+    trjw==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1748375822;
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1748375760;
     s=strato-dkim-0002; d=hartkopp.net;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=Gk7HFaYACMWmuG/8Kry5UmD0dY0dTw+YcNd5C0Igqzg=;
-    b=H08V0+5USsvNQ74JJo/Al8I0LAuQHvwOtb3j9RxBR48zKc9WqdmXok3IwT9DIGa958
-    g648LiQKCyN6oNUgG0A9RmT+Ez2BY4rgLTE8f4WPb4iOLV0Weqq1HYqnpJEQdsh0ixIT
-    PBnfMMnjqXjVIqBIRdhsXBloBKxlMGg4otMPJ12rkcFat/Xx4hYU4imPS1yKsr5ayCVs
-    C4AnFZhrrV5lurZetiSGFoCZIuuSDSYAk0IjB7+QvDHI9REdRlJ+tErf1zPXqA0QTUCt
-    LXV0Q8bwf1qA8mCPAasEPtiOvvvNHBThmbHVW2WBPnpHrWjHqr0VWTcZEh/6OzziTFm9
-    bJHA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1748375822;
+    bh=VD3omDS9hc6sBbfoO5udJLfFEc8rzX/gcSdyj5FC7ow=;
+    b=Gkywb09KC6ytla+jh8ECTc2xFMJerrdTXepcYicuiWsRL0G4napplH5g8HVZ3CekH6
+    SrF00gUlbF4SdqK9BZnTQNX+5MuTUmeDHueugTKYJkYeA5COpvoH9HENv2mpn+o8Enoh
+    V/c+wVmXGrGmThZfPITyLB72hD58PRurBUiEL3SGso5w4VlO5vlbGgUUaqQGxIopC9b5
+    7cWvx1RYGXRSn9SYkk16L0vT4zXBFVCdViHLh4i6R9hWXwinysxJbIFxpd1kHKbsCxr1
+    2W+ubsdASglr3F844tnhxbXIoUaxtwVO8NqocDsVPQFBRW5LWOYM0NsOt0Sj7EgaD6dN
+    dJZg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1748375760;
     s=strato-dkim-0003; d=hartkopp.net;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=Gk7HFaYACMWmuG/8Kry5UmD0dY0dTw+YcNd5C0Igqzg=;
-    b=LjqDnfKEVAgW4wwOIeP9hHsi/l3FFNeoR2hx8dIR5aW3P/46fb5bJwcXxIoNQTYYlX
-    Mw3eej7Cq22uWlb198AA==
+    bh=VD3omDS9hc6sBbfoO5udJLfFEc8rzX/gcSdyj5FC7ow=;
+    b=+UbeiiuokzW1tjcFMPPXEBQ3s1N7D1+kvHEDdrJ3cPLipDGbuNJQkgmkbtgQ+BSVB7
+    Sj4cqpK5RtbA4YDT7ODA==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/vMMcFB+5xtv9aJ67XA=="
-Received: from lenov17.lan
+Received: from [IPV6:2a00:6020:4a8e:5000::9f3]
     by smtp.strato.de (RZmta 51.3.0 AUTH)
-    with ESMTPSA id K2a3e514RJv2iWJ
+    with ESMTPSA id K2a3e514RJu0iVt
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Tue, 27 May 2025 21:57:02 +0200 (CEST)
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH 5/5] iplink_can: canxl: add PWM config support
-Date: Tue, 27 May 2025 21:56:50 +0200
-Message-ID: <20250527195650.65306-5-socketcan@hartkopp.net>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <20250527195650.65306-1-socketcan@hartkopp.net>
-References: <20250527195650.65306-1-socketcan@hartkopp.net>
+    Tue, 27 May 2025 21:56:00 +0200 (CEST)
+Message-ID: <04a7058c-95c7-4adc-a447-423aec0e0077@hartkopp.net>
+Date: Tue, 27 May 2025 21:55:52 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Latest patches - Re: CAN XL netlink AIP status
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+ =?UTF-8?Q?St=C3=A9phane_Grosjean?= <stephane.grosjean@hms-networks.com>,
+ Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc: linux-can@vger.kernel.org
+References: <DBAPR10MB4187FB44B12BD9DB8B992256D4832@DBAPR10MB4187.EURPRD10.PROD.OUTLOOK.COM>
+ <06bd3b3f-2665-4f19-b13d-581e57f54dfc@hartkopp.net>
+ <AM9PR10MB4184729E14AD5C05ABC65718D496A@AM9PR10MB4184.EURPRD10.PROD.OUTLOOK.COM>
+ <1c502316-ddee-4f12-b0b8-3725cc522591@hartkopp.net>
+ <AM9PR10MB418448751B1DA83EED7F50D4D498A@AM9PR10MB4184.EURPRD10.PROD.OUTLOOK.COM>
+ <63f2f51e-3fbd-4c8b-b7e4-29cb55246eaf@hartkopp.net>
+ <AM9PR10MB41846346BC291F7CFE2CB71DD498A@AM9PR10MB4184.EURPRD10.PROD.OUTLOOK.COM>
+ <49245439-9822-449d-bf2c-5626349d909c@hartkopp.net>
+ <20250527-lilac-panther-of-destiny-a13500-mkl@pengutronix.de>
+ <AM9PR10MB4184E0842D24A4D7A2FEE09BD464A@AM9PR10MB4184.EURPRD10.PROD.OUTLOOK.COM>
+ <20250527-glistening-dog-of-apotheosis-293bd2-mkl@pengutronix.de>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <20250527-glistening-dog-of-apotheosis-293bd2-mkl@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="us-ascii"
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- include/uapi/linux/can/netlink.h | 15 +++++++++++
- ip/iplink_can.c                  | 44 ++++++++++++++++++++++++++++++++
- 2 files changed, 59 insertions(+)
+Hi all,
 
-diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
-index 903d7f2f..79f348a5 100644
---- a/include/uapi/linux/can/netlink.h
-+++ b/include/uapi/linux/can/netlink.h
-@@ -146,16 +146,31 @@ enum {
- 	IFLA_CAN_CTRLMODE_EXT,
- 	IFLA_CAN_XL_DATA_BITTIMING,
- 	IFLA_CAN_XL_DATA_BITTIMING_CONST,
- 	IFLA_CAN_XL_DATA_BITRATE_CONST,
- 	IFLA_CAN_XL_TDC,
-+	IFLA_CAN_XL_PWM,
- 
- 	/* add new constants above here */
- 	__IFLA_CAN_MAX,
- 	IFLA_CAN_MAX = __IFLA_CAN_MAX - 1
- };
- 
-+/*
-+ * CAN XL Transceiver data mode switching PWM configuration
-+ */
-+enum {
-+	IFLA_CAN_PWM_UNSPEC,
-+	IFLA_CAN_PWM_OFFSET,	/* u8 */
-+	IFLA_CAN_PWM_LONG,	/* u8 */
-+	IFLA_CAN_PWM_SHORT,	/* u8 */
-+
-+	/* add new constants above here */
-+	__IFLA_CAN_PWM,
-+	IFLA_CAN_PWM_MAX = __IFLA_CAN_PWM - 1
-+};
-+
- /*
-  * CAN FD/XL Transmitter Delay Compensation (TDC)
-  *
-  * Please refer to struct can_tdc_const and can_tdc in
-  * include/linux/can/bittiming.h for further details.
-diff --git a/ip/iplink_can.c b/ip/iplink_can.c
-index 766eadbe..88cc908f 100644
---- a/ip/iplink_can.c
-+++ b/ip/iplink_can.c
-@@ -27,10 +27,11 @@ static void print_usage(FILE *f)
- 		"\t[ tdcv TDCV tdco TDCO tdcf TDCF ]\n"
- 		"\n"
- 		"\t[ xbitrate BITRATE [ xsample-point SAMPLE-POINT] ] |\n"
- 		"\t[ xtq TQ xprop-seg PROP_SEG xphase-seg1 PHASE-SEG1\n \t  xphase-seg2 PHASE-SEG2 [ xsjw SJW ] ]\n"
- 		"\t[ xtdcv TDCV xtdco TDCO xtdcf TDCF ]\n"
-+		"\t[ pwmo PWMO pwml PWML pwms PWMS ]\n"
- 		"\n"
- 		"\t[ loopback { on | off } ]\n"
- 		"\t[ listen-only { on | off } ]\n"
- 		"\t[ triple-sampling { on | off } ]\n"
- 		"\t[ one-shot { on | off } ]\n"
-@@ -142,17 +143,24 @@ struct can_tdc {
- 	__u32 tdcv;
- 	__u32 tdco;
- 	__u32 tdcf;
- };
- 
-+struct can_pwm {
-+	__u8 pwm_offset;
-+	__u8 pwm_phase_long;
-+	__u8 pwm_phase_short;
-+};
-+
- static int can_parse_opt(struct link_util *lu, int argc, char **argv,
- 			 struct nlmsghdr *n)
- {
- 	struct can_bittiming bt = {}, fd_dbt = {}, xl_dbt = {};
- 	struct can_ctrlmode cm = { 0 };
- 	struct can_tdc fd = { .tdcv = -1, .tdco = -1, .tdcf = -1 };
- 	struct can_tdc xl = { .tdcv = -1, .tdco = -1, .tdcf = -1 };
-+	struct can_pwm pwm = { 0 };
- 
- 	while (argc > 0) {
- 		if (matches(*argv, "bitrate") == 0) {
- 			NEXT_ARG();
- 			if (get_u32(&bt.bitrate, *argv, 0))
-@@ -339,10 +347,22 @@ static int can_parse_opt(struct link_util *lu, int argc, char **argv,
- 					   CAN_CTRLMODE_XL_TDC_MANUAL;
- 			} else {
- 				invarg("\"xtdc-mode\" must be either of \"auto\", \"manual\" or \"off\"",
- 					*argv);
- 			}
-+		} else if (matches(*argv, "pwmo") == 0) {
-+			NEXT_ARG();
-+			if (get_u8(&pwm.pwm_offset, *argv, 0))
-+				invarg("invalid \"pwmo\" value", *argv);
-+		} else if (matches(*argv, "pwml") == 0) {
-+			NEXT_ARG();
-+			if (get_u8(&pwm.pwm_phase_long, *argv, 0))
-+				invarg("invalid \"pwml\" value", *argv);
-+		} else if (matches(*argv, "pwms") == 0) {
-+			NEXT_ARG();
-+			if (get_u8(&pwm.pwm_phase_short, *argv, 0))
-+				invarg("invalid \"pwms\" value", *argv);
- 		} else if (matches(*argv, "xlrrs") == 0) {
- 			NEXT_ARG();
- 			set_ctrlmode("xlrrs", *argv, &cm,
- 				     CAN_CTRLMODE_XL_RRS);
- 		} else if (matches(*argv, "xltrx") == 0) {
-@@ -414,10 +434,22 @@ static int can_parse_opt(struct link_util *lu, int argc, char **argv,
- 			addattr32(n, 1024, IFLA_CAN_TDC_TDCO, xl.tdco);
- 		if (xl.tdcf != -1)
- 			addattr32(n, 1024, IFLA_CAN_TDC_TDCF, xl.tdcf);
- 		addattr_nest_end(n, tdc);
- 	}
-+	if (pwm.pwm_offset || pwm.pwm_phase_long || pwm.pwm_phase_short) {
-+		struct rtattr *xlpwm = addattr_nest(n, 1024,
-+						  IFLA_CAN_XL_PWM | NLA_F_NESTED);
-+
-+		if (pwm.pwm_offset)
-+			addattr8(n, 1024, IFLA_CAN_PWM_OFFSET, pwm.pwm_offset);
-+		if (pwm.pwm_phase_long)
-+			addattr8(n, 1024, IFLA_CAN_PWM_LONG, pwm.pwm_phase_long);
-+		if (pwm.pwm_phase_short)
-+			addattr8(n, 1024, IFLA_CAN_PWM_SHORT, pwm.pwm_phase_short);
-+		addattr_nest_end(n, xlpwm);
-+	}
- 
- 	return 0;
- }
- 
- static const char *can_state_names[CAN_STATE_MAX] = {
-@@ -807,10 +839,22 @@ static void can_print_opt(struct link_util *lu, FILE *f, struct rtattr *tb[])
- 				   dbitrate_const[i]);
- 		}
- 		close_json_array(PRINT_ANY, " ]");
- 	}
- 
-+	if (tb[IFLA_CAN_XL_PWM]) {
-+		struct can_pwm *pwm =
-+			RTA_DATA(tb[IFLA_CAN_XL_PWM]);
-+
-+		open_json_object("xl_pwm");
-+		can_print_nl_indent();
-+		print_uint(PRINT_ANY, "pwmo", " pwmo %u", pwm->pwm_offset);
-+		print_uint(PRINT_ANY, "pwml", " pwml %u", pwm->pwm_phase_long);
-+		print_uint(PRINT_ANY, "pwms", " pwms %u", pwm->pwm_phase_short);
-+		close_json_object();
-+	}
-+
- 	if (tb[IFLA_CAN_TERMINATION_CONST] && tb[IFLA_CAN_TERMINATION]) {
- 		__u16 *trm = RTA_DATA(tb[IFLA_CAN_TERMINATION]);
- 		__u16 *trm_const = RTA_DATA(tb[IFLA_CAN_TERMINATION_CONST]);
- 		int trm_cnt = RTA_PAYLOAD(tb[IFLA_CAN_TERMINATION_CONST]) /
- 			sizeof(*trm_const);
--- 
-2.47.2
+I uploaded the latest work on this GitHub repo where you three (in To:) 
+are requested as collaborators:
+
+https://github.com/hartkopp/canxl-nl
+
+Additionally I will send the patches for iproute2 and the Linux kernel 
+here on the mailing list for further discussions.
+
+This is the commit message from the GitHub commit:
+
+     Add initial patch sets for netlink CAN XL support
+
+     Based on patches from Vincent Mailhol and Oliver Hartkopp.
+
+     iproute2: patches based on iproute2 6.15
+     linux: patches based on linux 6.15 (mainline)
+
+     When applying the linux patches to the current net-next tree (6.16) the
+     patch 0001-can-dev-add-struct-data_bittiming_params-to-group-FD.patch
+     has to be omitted.
+
+     The new features can be seen in the ip help text with
+     ip link set vcan0 type can help
+
+     (..)
+             [ xbitrate BITRATE [ xsample-point SAMPLE-POINT] ] |
+             [ xtq TQ xprop-seg PROP_SEG xphase-seg1 PHASE-SEG1
+               xphase-seg2 PHASE-SEG2 [ xsjw SJW ] ]
+             [ xtdcv TDCV xtdco TDCO xtdcf TDCF ]
+             [ pwmo PWMO pwml PWML pwms PWMS ]
+     (..)
+             [ xl { on | off } ]
+             [ xtdc-mode { auto | manual | off } ]
+             [ xlrrs { on | off } ]
+             [ xltrx { on | off } ]
+             [ xlerrsig { on | off } ]
+     (..)
+
+     TODO:
+
+     - clean up patch descriptions
+     - maybe split patches
+     - add recently added features to dummyxl driver (e.g. PWM)
+     - set priv->can.clock.freq to the common value 160 MHz in dummyxl
+     - PWM rework/extension
+
+     Currently the PWM setting is simply to pass the three values
+     pwmo/pwml/pwms to the CAN drivers data structure to be set into
+     the controllers registers. These values need some sanitizing.
+
+     Additionally the PWM values can be calculated based on the CAN XL
+     bitrates. An new algorithm should be created to calculate PWM values
+     when they are not provided from user space.
+
+Looking forward to the discussions.
+
+Best regards,
+Oliver
+
+On 27.05.25 15:55, Marc Kleine-Budde wrote:
+> Hello,
+> 
+> Cc += linux-can@vger.kernel.org
+> 
+> On 27.05.2025 13:43:05, Stéphane Grosjean wrote:
+>>>> This is probably the point where we should switch the discussion to the
+>>>> Linux-CAN mailing list.
+>>
+>>> Yes, please do so.
+>>
+>> I don't find any reference to CAN_CTRLMODE_XL_ERR_SIGNAL in linux-can.vger.kernel.org archive
+>>
+>> https://lore.kernel.org/linux-can/?q=CAN_CTRLMODE_XL_ERR
+>>
+>> how to talk about this symbol?
+> 
+> Oliver, can you push your kernel patches from
+> netlink-snapshot-2025-05-23.tar.gz as a git tree somewhere?
+> 
+> regards,
+> Marc
+> 
 
