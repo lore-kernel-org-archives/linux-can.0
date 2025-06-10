@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A4B928C2C5
-	for <linux-can@vger.kernel.org>; Tue, 10 Jun 2025 09:49:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1F7728CF4E
+	for <linux-can@vger.kernel.org>; Tue, 10 Jun 2025 09:49:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749548983; cv=none; b=tvjfdin0J6Bh+xjpHgsPrlqtTih7izFskQxTro32dwaC+4Q/TyYWWPcHzkTKGl+7aU+LNbhMfaKABF89oNe6Cve7VKiguDqNm1QUZd8RFffPUzGzi8g8ZJRC5ITjllCg0iNrvOZdjDFCQGW62yQF8R28lRNM9ubsR+qaA6X6h00=
+	t=1749548983; cv=none; b=H7UBBwUaYE/t+VZxklys5smBQWoZguFh+AMGW1os8n7ya7TK5/TrQqbDX5LTR/0VZcwytuyk1B76nJ/pJIVJmnjR17SMxbhGdKPIr+Cxp+gq/11DkPt9BCMAEOhz+hhnCTiELfMbZ2ZJ6d18jFxBIMqVTNvYalizo7Kib7jVuUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1749548983; c=relaxed/simple;
-	bh=sfksOESy/54OYTsecxQUt2yOqobn76gzeR6X8QIzFQA=;
+	bh=tGc6CngZcAmwpDPpXzpkLeXMLc4Il0LReyTkQMtbQQI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bNVle04yD9b2/pAx/TYl35DrZq8iGeEDVf2LpTrcOs6wrAxh9rJRPkU36aj00DVMBvmcBQmevp6AHR21XzS66iPokUbyc22SwtGSVWuVtTFgiK8PhW9f1cybomXA7GhCfXEX/K7nR9i8GmMxd+8U1jyTuJdvrTByJ1HZmXksuRg=
+	 MIME-Version; b=kZugPG579/dV5wtTnsNESi3kF6kqGMSG9hem6bYlPAtLUYdzuIj0nFdsB3pQ+CNASbFf2cuwUzkM7qfIskR7prQMxB5WIbQiSD2wIKRoZLuX0NAti1+B1HdA8n5co+sa/wstweD6yWKxr8EG7Yeyeu2/CS7OMYAOjzXp1g9nDcM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,26 +18,26 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1uOvbv-00068L-Lc
+	id 1uOvbv-00065M-02
 	for linux-can@vger.kernel.org; Tue, 10 Jun 2025 11:49:39 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1uOvbu-002keG-2O
+	id 1uOvbu-002kdo-0f
 	for linux-can@vger.kernel.org;
 	Tue, 10 Jun 2025 11:49:38 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 6A75F4241BC
-	for <linux-can@vger.kernel.org>; Tue, 10 Jun 2025 09:49:38 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with SMTP id D4E594241B6
+	for <linux-can@vger.kernel.org>; Tue, 10 Jun 2025 09:49:37 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id AA60042418C;
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 8B312424187;
 	Tue, 10 Jun 2025 09:49:35 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id d159747e;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id a454389a;
 	Tue, 10 Jun 2025 09:49:34 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -45,11 +45,11 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Davide Caratti <dcaratti@redhat.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 7/7] can: add drop reasons in CAN protocols receive path
-Date: Tue, 10 Jun 2025 11:46:22 +0200
-Message-ID: <20250610094933.1593081-8-mkl@pengutronix.de>
+Subject: [PATCH net-next 5/7] documentation: networking: can: Document alloc_candev_mqs()
+Date: Tue, 10 Jun 2025 11:46:20 +0200
+Message-ID: <20250610094933.1593081-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250610094933.1593081-1-mkl@pengutronix.de>
 References: <20250610094933.1593081-1-mkl@pengutronix.de>
@@ -65,129 +65,45 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Davide Caratti <dcaratti@redhat.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-sock_queue_rcv_skb() can fail because of lack of memory resources: use
-drop reasons and pass the receiving socket to the tracepoint, so that
-it's possible to better locate/debug such events.
+Since the introduction of alloc_candev_mqs() and friends, there is no
+longer a need to allocate a generic network device and perform explicit
+CAN-specific setup.  Remove the code showing this setup, and document
+alloc_candev_mqs() instead.
 
-Tested with:
-
-| # modprobe vcan echo=1
-| # ip link add name vcan2 type vcan
-| # ip link set dev vcan2 up
-| # ./netlayer/tst-proc 1 &
-| # bg
-| # while true ; do perf record -e skb:kfree_skb -aR  -- \
-| > ./raw/tst-raw-sendto vcan2 ; perf script ; done
-| [...]
-| tst-raw-sendto 10942 [000] 506428.431856: skb:kfree_skb: skbaddr=0xffff97cec38b4200 rx_sk=0xffff97cf0f75a800 protocol=12 location=raw_rcv+0x20e reason: SOCKET_RCVBUF
-
-Signed-off-by: Davide Caratti <dcaratti@redhat.com>
-Link: https://patch.msgid.link/20250604160605.1005704-3-dcaratti@redhat.com
+Fixes: 39549eef3587f1c1 ("can: CAN Network device driver and Netlink interface")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://patch.msgid.link/c0f9a706ba31f1a49eb72e58526cd294d97a1ce9.1748865431.git.geert+renesas@glider.be
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/bcm.c          | 5 +++--
- net/can/isotp.c        | 5 +++--
- net/can/j1939/socket.c | 5 +++--
- net/can/raw.c          | 5 +++--
- 4 files changed, 12 insertions(+), 8 deletions(-)
+ Documentation/networking/can.rst | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 6bc1cc4c94c5..5e690a2377e4 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -359,6 +359,7 @@ static void bcm_send_to_user(struct bcm_op *op, struct bcm_msg_head *head,
- 	unsigned int datalen = head->nframes * op->cfsiz;
- 	int err;
- 	unsigned int *pflags;
-+	enum skb_drop_reason reason;
+diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
+index b018ce346392..bc1b585355f7 100644
+--- a/Documentation/networking/can.rst
++++ b/Documentation/networking/can.rst
+@@ -1104,15 +1104,12 @@ for writing CAN network device driver are described below:
+ General Settings
+ ----------------
  
- 	skb = alloc_skb(sizeof(*head) + datalen, gfp_any());
- 	if (!skb)
-@@ -413,11 +414,11 @@ static void bcm_send_to_user(struct bcm_op *op, struct bcm_msg_head *head,
- 	addr->can_family  = AF_CAN;
- 	addr->can_ifindex = op->rx_ifindex;
++CAN network device drivers can use alloc_candev_mqs() and friends instead of
++alloc_netdev_mqs(), to automatically take care of CAN-specific setup:
++
+ .. code-block:: C
  
--	err = sock_queue_rcv_skb(sk, skb);
-+	err = sock_queue_rcv_skb_reason(sk, skb, &reason);
- 	if (err < 0) {
- 		struct bcm_sock *bo = bcm_sk(sk);
+-    dev->type  = ARPHRD_CAN; /* the netdevice hardware type */
+-    dev->flags = IFF_NOARP;  /* CAN has no arp */
+-
+-    dev->mtu = CAN_MTU; /* sizeof(struct can_frame) -> Classical CAN interface */
+-
+-    or alternative, when the controller supports CAN with flexible data rate:
+-    dev->mtu = CANFD_MTU; /* sizeof(struct canfd_frame) -> CAN FD interface */
++    dev = alloc_candev_mqs(...);
  
--		kfree_skb(skb);
-+		sk_skb_reason_drop(sk, skb, reason);
- 		/* don't care about overflows in this statistic */
- 		bo->dropped_usr_msgs++;
- 	}
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 1efa377f002e..dee1412b3c9c 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -278,6 +278,7 @@ static int isotp_send_fc(struct sock *sk, int ae, u8 flowstatus)
- static void isotp_rcv_skb(struct sk_buff *skb, struct sock *sk)
- {
- 	struct sockaddr_can *addr = (struct sockaddr_can *)skb->cb;
-+	enum skb_drop_reason reason;
- 
- 	BUILD_BUG_ON(sizeof(skb->cb) < sizeof(struct sockaddr_can));
- 
-@@ -285,8 +286,8 @@ static void isotp_rcv_skb(struct sk_buff *skb, struct sock *sk)
- 	addr->can_family = AF_CAN;
- 	addr->can_ifindex = skb->dev->ifindex;
- 
--	if (sock_queue_rcv_skb(sk, skb) < 0)
--		kfree_skb(skb);
-+	if (sock_queue_rcv_skb_reason(sk, skb, &reason) < 0)
-+		sk_skb_reason_drop(sk, skb, reason);
- }
- 
- static u8 padlen(u8 datalen)
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 6fefe7a68761..3d8b588822f9 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -311,6 +311,7 @@ static void j1939_sk_recv_one(struct j1939_sock *jsk, struct sk_buff *oskb)
- {
- 	const struct j1939_sk_buff_cb *oskcb = j1939_skb_to_cb(oskb);
- 	struct j1939_sk_buff_cb *skcb;
-+	enum skb_drop_reason reason;
- 	struct sk_buff *skb;
- 
- 	if (oskb->sk == &jsk->sk)
-@@ -331,8 +332,8 @@ static void j1939_sk_recv_one(struct j1939_sock *jsk, struct sk_buff *oskb)
- 	if (skb->sk)
- 		skcb->msg_flags |= MSG_DONTROUTE;
- 
--	if (sock_queue_rcv_skb(&jsk->sk, skb) < 0)
--		kfree_skb(skb);
-+	if (sock_queue_rcv_skb_reason(&jsk->sk, skb, &reason) < 0)
-+		sk_skb_reason_drop(&jsk->sk, skb, reason);
- }
- 
- bool j1939_sk_recv_match(struct j1939_priv *priv, struct j1939_sk_buff_cb *skcb)
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 020f21430b1d..76b867d21def 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -129,6 +129,7 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
- {
- 	struct sock *sk = (struct sock *)data;
- 	struct raw_sock *ro = raw_sk(sk);
-+	enum skb_drop_reason reason;
- 	struct sockaddr_can *addr;
- 	struct sk_buff *skb;
- 	unsigned int *pflags;
-@@ -205,8 +206,8 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
- 	if (oskb->sk == sk)
- 		*pflags |= MSG_CONFIRM;
- 
--	if (sock_queue_rcv_skb(sk, skb) < 0)
--		kfree_skb(skb);
-+	if (sock_queue_rcv_skb_reason(sk, skb, &reason) < 0)
-+		sk_skb_reason_drop(sk, skb, reason);
- }
- 
- static int raw_enable_filters(struct net *net, struct net_device *dev,
+ The struct can_frame or struct canfd_frame is the payload of each socket
+ buffer (skbuff) in the protocol family PF_CAN.
 -- 
 2.47.2
 
