@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAD4628BA85
-	for <linux-can@vger.kernel.org>; Tue, 10 Jun 2025 09:49:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B91028C2A0
+	for <linux-can@vger.kernel.org>; Tue, 10 Jun 2025 09:49:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749548980; cv=none; b=jc6gXaQoZlffWj1juFFLEwOuVqgkwCFeS1XWTGMNyjX3olgpN0kD5Cq9PcAZuvbiYaJDKU2Ya6Y9obGcW2KbA7okWFOt1WLI8knP9E/l+Ut6jK2Dvg/WlZHtG5wV4+dfS+rzfkQpgdkrhOl+8+w7Hh3Ax2JoQ8DF/nSFFcO8VEM=
+	t=1749548981; cv=none; b=fNLNdhjKYJCvFA2be3raiGt2Zxn+aUF3rQVqDxFIc45PJo0xa+GFRWFPCpQdLMvIt/yZPPDBxAaqyKnDddt2jXNoOXOxII39ERfXnFM8tpC5u7D7jOtc1rpIJZPf0dirnprledvAuQ109H46AM8OjMQnpVnXxdhEonptNEAo44M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749548980; c=relaxed/simple;
-	bh=G2AbIDm+d8CmG7vak1QRzDSXqIyrn01Ip9EUWDPVA8w=;
+	s=arc-20240116; t=1749548981; c=relaxed/simple;
+	bh=KabShRj8UASUcnl3Kk5qNBy+Bq7mNbp1XnBranxRLIw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JedHfPUIalKt1GLcpzbulcI3ERQhOclfc46C0c7BS09ZUfKnSkB2NvTXyDHk9HXHSr+LmvR+I5STQE+PmF67Rp4AkyrgiXof00x/XToM1W1tW6CLnihc3ipEZ1Yx2YqhkvADl9uKq1sK5kOyPPiLOPz4ikb7B9LFqQH+Fi0R4K8=
+	 MIME-Version; b=r8TCtdnQibFmzlzCJ2VOARa+ZF45m2tJbkR60j+EX85s8g1xB3d1B2NbsOQ3AeaFeP+4YxgcU+rUJYR1SEKX9Pk8SqOIDrC11hlf07W4uVw4pb+iAFIJtrdZ21uMqWSNRAo/SJpYpXNT9+rWDzw8geR2/vYI8GFBcNuaD/NkVzw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,26 +18,26 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1uOvbt-00063B-8K
+	id 1uOvbt-00063a-HD
 	for linux-can@vger.kernel.org; Tue, 10 Jun 2025 11:49:37 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1uOvbs-002kcG-2n
+	id 1uOvbt-002kcV-09
 	for linux-can@vger.kernel.org;
-	Tue, 10 Jun 2025 11:49:36 +0200
+	Tue, 10 Jun 2025 11:49:37 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 87E5542419E
+	by bjornoya.blackshift.org (Postfix) with SMTP id B0C224241A2
 	for <linux-can@vger.kernel.org>; Tue, 10 Jun 2025 09:49:36 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 542B9424182;
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 720E7424185;
 	Tue, 10 Jun 2025 09:49:35 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 5e326d54;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 14bffc6d;
 	Tue, 10 Jun 2025 09:49:34 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -47,9 +47,9 @@ Cc: davem@davemloft.net,
 	kernel@pengutronix.de,
 	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 2/7] can: bittiming: rename CAN_CTRLMODE_TDC_MASK into CAN_CTRLMODE_FD_TDC_MASK
-Date: Tue, 10 Jun 2025 11:46:17 +0200
-Message-ID: <20250610094933.1593081-3-mkl@pengutronix.de>
+Subject: [PATCH net-next 4/7] can: netlink: can_changelink(): rename tdc_mask into fd_tdc_flag_provided
+Date: Tue, 10 Jun 2025 11:46:19 +0200
+Message-ID: <20250610094933.1593081-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250610094933.1593081-1-mkl@pengutronix.de>
 References: <20250610094933.1593081-1-mkl@pengutronix.de>
@@ -67,108 +67,58 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-With the introduction of CAN XL, a new CAN_CTRLMODE_XL_TDC_MASK will
-be introduced later on. Because CAN_CTRLMODE_TDC_MASK is not part of
-the uapi, rename it to CAN_CTRLMODE_FD_TDC_MASK to make it more
-explicit that this mask is meant for CAN FD.
+The only purpose of the tdc_mask variable is to check whether or not
+any tdc flags (CAN_CTRLMODE_TDC_{AUTO,MANUAL}) were provided. At this
+point, the actual value of the flags do no matter any more because
+these can be deduced from some other information.
+
+Rename the tdc_mask variable into fd_tdc_flag_provided to make this
+more explicit. Note that the fd_ prefix is added in preparation of the
+introduction of CAN XL.
 
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://patch.msgid.link/20241112165118.586613-10-mailhol.vincent@wanadoo.fr
+Link: https://patch.msgid.link/20241112165118.586613-12-mailhol.vincent@wanadoo.fr
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/calc_bittiming.c |  2 +-
- drivers/net/can/dev/netlink.c        | 12 ++++++------
- include/linux/can/bittiming.h        |  2 +-
- include/linux/can/dev.h              |  2 +-
- 4 files changed, 9 insertions(+), 9 deletions(-)
+ drivers/net/can/dev/netlink.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/calc_bittiming.c
-index 3809c148fb88..a94bd67c670c 100644
---- a/drivers/net/can/dev/calc_bittiming.c
-+++ b/drivers/net/can/dev/calc_bittiming.c
-@@ -179,7 +179,7 @@ void can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
- 	if (!tdc_const || !(ctrlmode_supported & CAN_CTRLMODE_TDC_AUTO))
- 		return;
- 
--	*ctrlmode &= ~CAN_CTRLMODE_TDC_MASK;
-+	*ctrlmode &= ~CAN_CTRLMODE_FD_TDC_MASK;
- 
- 	/* As specified in ISO 11898-1 section 11.3.3 "Transmitter
- 	 * delay compensation" (TDC) is only applicable if data BRP is
 diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 4ebd5181aea9..08261cfcf6b2 100644
+index 16b0f326c143..13826e8a707b 100644
 --- a/drivers/net/can/dev/netlink.c
 +++ b/drivers/net/can/dev/netlink.c
-@@ -67,12 +67,12 @@ static int can_validate(struct nlattr *tb[], struct nlattr *data[],
+@@ -189,7 +189,7 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+ 			  struct netlink_ext_ack *extack)
+ {
+ 	struct can_priv *priv = netdev_priv(dev);
+-	u32 tdc_mask = 0;
++	bool fd_tdc_flag_provided = false;
+ 	int err;
  
- 	if (data[IFLA_CAN_CTRLMODE]) {
- 		struct can_ctrlmode *cm = nla_data(data[IFLA_CAN_CTRLMODE]);
--		u32 tdc_flags = cm->flags & CAN_CTRLMODE_TDC_MASK;
-+		u32 tdc_flags = cm->flags & CAN_CTRLMODE_FD_TDC_MASK;
- 
- 		is_can_fd = cm->flags & cm->mask & CAN_CTRLMODE_FD;
- 
- 		/* CAN_CTRLMODE_TDC_{AUTO,MANUAL} are mutually exclusive */
--		if (tdc_flags == CAN_CTRLMODE_TDC_MASK)
-+		if (tdc_flags == CAN_CTRLMODE_FD_TDC_MASK)
- 			return -EOPNOTSUPP;
- 		/* If one of the CAN_CTRLMODE_TDC_* flag is set then
- 		 * TDC must be set and vice-versa
-@@ -230,16 +230,16 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 			dev->mtu = CAN_MTU;
- 			memset(&priv->fd.data_bittiming, 0,
- 			       sizeof(priv->fd.data_bittiming));
--			priv->ctrlmode &= ~CAN_CTRLMODE_TDC_MASK;
-+			priv->ctrlmode &= ~CAN_CTRLMODE_FD_TDC_MASK;
+ 	/* We need synchronization with dev->stop() */
+@@ -234,11 +234,11 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
  			memset(&priv->fd.tdc, 0, sizeof(priv->fd.tdc));
  		}
  
--		tdc_mask = cm->mask & CAN_CTRLMODE_TDC_MASK;
-+		tdc_mask = cm->mask & CAN_CTRLMODE_FD_TDC_MASK;
+-		tdc_mask = cm->mask & CAN_CTRLMODE_FD_TDC_MASK;
++		fd_tdc_flag_provided = cm->mask & CAN_CTRLMODE_FD_TDC_MASK;
  		/* CAN_CTRLMODE_TDC_{AUTO,MANUAL} are mutually
  		 * exclusive: make sure to turn the other one off
  		 */
- 		if (tdc_mask)
--			priv->ctrlmode &= cm->flags | ~CAN_CTRLMODE_TDC_MASK;
-+			priv->ctrlmode &= cm->flags | ~CAN_CTRLMODE_FD_TDC_MASK;
+-		if (tdc_mask)
++		if (fd_tdc_flag_provided)
+ 			priv->ctrlmode &= cm->flags | ~CAN_CTRLMODE_FD_TDC_MASK;
  	}
  
- 	if (data[IFLA_CAN_BITTIMING]) {
-@@ -339,7 +339,7 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 			err = can_tdc_changelink(priv, data[IFLA_CAN_TDC],
- 						 extack);
- 			if (err) {
--				priv->ctrlmode &= ~CAN_CTRLMODE_TDC_MASK;
-+				priv->ctrlmode &= ~CAN_CTRLMODE_FD_TDC_MASK;
+@@ -342,7 +342,7 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+ 				priv->ctrlmode &= ~CAN_CTRLMODE_FD_TDC_MASK;
  				return err;
  			}
- 		} else if (!tdc_mask) {
-diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
-index 9b8a9c39614b..5dfdbb63b1d5 100644
---- a/include/linux/can/bittiming.h
-+++ b/include/linux/can/bittiming.h
-@@ -14,7 +14,7 @@
- #define CAN_BITRATE_UNSET 0
- #define CAN_BITRATE_UNKNOWN (-1U)
- 
--#define CAN_CTRLMODE_TDC_MASK					\
-+#define CAN_CTRLMODE_FD_TDC_MASK				\
- 	(CAN_CTRLMODE_TDC_AUTO | CAN_CTRLMODE_TDC_MANUAL)
- 
- /*
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 492d23bec7be..e492dfa8a472 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -93,7 +93,7 @@ struct can_priv {
- 
- static inline bool can_tdc_is_enabled(const struct can_priv *priv)
- {
--	return !!(priv->ctrlmode & CAN_CTRLMODE_TDC_MASK);
-+	return !!(priv->ctrlmode & CAN_CTRLMODE_FD_TDC_MASK);
- }
- 
- /*
+-		} else if (!tdc_mask) {
++		} else if (!fd_tdc_flag_provided) {
+ 			/* Neither of TDC parameters nor TDC flags are
+ 			 * provided: do calculation
+ 			 */
 -- 
 2.47.2
 
