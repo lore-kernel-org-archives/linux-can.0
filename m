@@ -1,40 +1,40 @@
-Received: from out.smtpout.orange.fr (out-67.smtpout.orange.fr [193.252.22.67])
+Received: from out.smtpout.orange.fr (out-71.smtpout.orange.fr [193.252.22.71])
 	(using TLSv1.2 with cipher AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC532E6133;
-	Thu, 26 Jun 2025 14:50:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.252.22.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF3652F2C68;
+	Thu, 26 Jun 2025 14:56:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.252.22.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750949456; cv=none; b=mEnZX9KiZsZEs3pcfZEzOGfctfip2elcHbf043zq0VXnAtqM6A4gAFlQBiudyyUC0fyCyGYy1WTNAQdBrumrHsDiKBRetLw3FKP4dBAT1kp8cPp54de7hFUDMbIsEtO8HsS/u/MM4xLDALVX2GOUeAJE5aiBh6Imqbo2B5Eoi9s=
+	t=1750949764; cv=none; b=UBjAKL+RYnNSnlYBoqPN0dGBU9lkQecfGoAIOVczFlr+dEEOO3OIEkzQTt+Gxw9XZxMSzt41GWjnPtFIY6aXEgqRd0UPMCA+Zc8CSd7siB4l96cMWM2Ybk+str2gSCOAOriZGecDb/nnT3ClT9MTTuSFqRFhNdWd2b4IGlqri2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750949456; c=relaxed/simple;
-	bh=0MP0tnHu6fQzXUoVEVy0aE8NoUMK5QMnnmNk1hZfbuQ=;
+	s=arc-20240116; t=1750949764; c=relaxed/simple;
+	bh=+l25+Op5jJAkjiBkLDfgy+PH6MvcCFhwsbcfAsrGjLM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uXqioOZXN2D+AFt2xaPkm4ef4sx7xVe257M+uO128Qxxcv7I0TnXi0KbfHiXGpWYD9unHSeAJfqpfNvXtND1AYFqRLRK01aXpYyTi8wvgy4H7KtHp3ngARKi0a14iJfB1vv++LbAAED0OGnhQ6UX+kqlIhlwkncnWT/sp+aOCwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=CnB+jpkD; arc=none smtp.client-ip=193.252.22.67
+	 In-Reply-To:Content-Type; b=W5KMIcxGcAmAovMoWAy7DoV97Opx80mjcnhdACELAmVkjGGgoCXgpMixSk/17/ahqJNKZ5+vgc9lQQP3R9ninlGr2BA+OYHgvRvslqxX1SE1UZb9vcnx6Wf7wch4zQkK/JWa+8urC9yZ6QI37vMOqfSoqKNwnQXg2TltoS76w2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=rUAEo/aO; arc=none smtp.client-ip=193.252.22.71
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="CnB+jpkD"
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="rUAEo/aO"
 Received: from [172.16.82.72] ([124.33.176.97])
 	by smtp.orange.fr with ESMTPA
-	id Unw1uePibyDfnUnw2uCBbf; Thu, 26 Jun 2025 16:50:46 +0200
+	id UnsNuEGNIyAmSUnsOuG3Rz; Thu, 26 Jun 2025 16:47:00 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1750949446;
-	bh=CK8v7DCERysOk/Rvq1+fguI+gY89l+aE5AQv4JbT6Ps=;
+	s=t20230301; t=1750949220;
+	bh=m8PuYT5ontmtHo/xXQjB2LiSJfjPbmVQ8L3XGrqt1rs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=CnB+jpkDINyf3UqSzYPPQJB+Qvb2iXDfs+CitNx9wZRVzbBWVk72ORRI4sfdsVmdx
-	 Pkw9w2hYRmAFxspd8ZaxIn5N9EkZgc4qZMBsDFEvmkuDxvegoItYANif1yL+It/RwM
-	 9tkQaxA3AxV6egyd2A5pUnssifsF/P/4dxwMlMij1jKpQ1/MMb/SrZdxwgdwv496LL
-	 GAB7lreuVvY0kuVaBMq1QLmToBHCXa3lfaNwgPawj5Lf1vOOTD7AHaIvxFJ1I7YQld
-	 tzU9ZnJQ2oO3wZJi0xTQHIHFWX6GQK4rw+8tt/SZpBJvWHz3tOeBjq4bNgYpo0OEuD
-	 BezRNYqa16niQ==
+	b=rUAEo/aO6tk0GIB73NQPKJWG57JZhvmpEwDDcB52Ty6TtXe+3jT0nO9MxmVMNQxh2
+	 Gjmqih+uLkn1iE70COh45OhmQ4rQNHdBo9w0ckgKr3Z1jVJtFGhMtmoSgsKoJjZwpd
+	 yyIYz75xRdwmFcr8MzqkUsKQixKVzFMEbyBvQTTpMFn9wlEZDwEeCHQ+tusiOGAAoV
+	 RchCUfr2/Jgf44ZIZU5rCoI87ohx5+pvNkVzC4+cr/BfgLId+GfrFC8YsWx+Nb9Jg6
+	 tChtChdyjmuPHZk5YZX/4UJbQ9Lvg5KUNi02DNx+fzfTAD8SD2s31lW2X2xAtOSSfZ
+	 kXPlkEEm1QoGQ==
 X-ME-Helo: [172.16.82.72]
 X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 26 Jun 2025 16:50:46 +0200
+X-ME-Date: Thu, 26 Jun 2025 16:47:00 +0200
 X-ME-IP: 124.33.176.97
-Message-ID: <4af1102c-a5b6-4d9b-af8d-2c5f721b845e@wanadoo.fr>
-Date: Thu, 26 Jun 2025 23:50:40 +0900
+Message-ID: <d2447a4f-abcc-4d97-97d9-85737dd954c5@wanadoo.fr>
+Date: Thu, 26 Jun 2025 23:46:54 +0900
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -42,23 +42,16 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] can: ucan: Use two USB endpoint API functions rather
- than duplicating their implementations
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org,
- Chen Ni <nichen@iscas.ac.cn>, linux-can@vger.kernel.org,
- Marc Kleine-Budde <mkl@pengutronix.de>
-References: <48e217a7-b90e-4af3-b535-812c449dd3ba@web.de>
- <bf5442d1-34e0-495f-8a56-4e47f53ca4ad@wanadoo.fr>
- <a7a00125-b393-4283-a7dc-6c80ced8e7e6@web.de>
- <c96a5d2c-0ee1-4e3e-a95d-d38a8f668feb@wanadoo.fr>
- <0768a008-d4a9-41ec-bc47-1e7c63362296@web.de>
- <c04376f2-6ab7-4256-8bdc-aa6ff3ea88b4@wanadoo.fr>
- <7e6f8929-6665-45af-b01b-167a1aa80305@web.de>
- <CAMZ6Rq+PEZWzxNYDODq-Rz_Y8T_XEihyZKoY-MYo6bn5ATaGLQ@mail.gmail.com>
- <1e64bcef-33f1-4295-b91f-d4598b32b866@web.de>
- <57815326-740d-4053-8b85-c5e57d7cec90@wanadoo.fr>
- <e70a929f-a5c5-487e-9231-61b5423115db@web.de>
+Subject: Re: [PATCH] can: m_can: apply rate-limiting to lost msg in rx
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Sean Nyekjaer <sean@geanix.com>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+ Fengguang Wu <fengguang.wu@intel.com>, Varka Bhadram
+ <varkabhadram@gmail.com>, Dong Aisheng <b29396@freescale.com>
+References: <20250620-mcan_ratelimit-v1-1-e747ee30f71f@geanix.com>
+ <d855c26a-1982-4fc6-9333-93df4a5a98d9@wanadoo.fr>
+ <wldhiihvxg42yqaccizms4xfupfv2c7w7jec7jy6iht6dbnr7k@os6f2gyrr45m>
+ <20250626-rigorous-gentle-foxhound-d864c1-mkl@pengutronix.de>
 Content-Language: en-US
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Autocrypt: addr=mailhol.vincent@wanadoo.fr; keydata=
@@ -71,29 +64,32 @@ Autocrypt: addr=mailhol.vincent@wanadoo.fr; keydata=
  yR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDldOjiq1/riG27mcIFAmceMvMCGwwF
  CQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8VzsZwr/S44HCzcz5+jkxnVVQ5LZ4B
  ANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
-In-Reply-To: <e70a929f-a5c5-487e-9231-61b5423115db@web.de>
+In-Reply-To: <20250626-rigorous-gentle-foxhound-d864c1-mkl@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi Markus,
-
-Thanks for the v2.
-
-On 26/06/2025 at 23:46, Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Thu, 26 Jun 2025 16:34:26 +0200
+On 26/06/2025 at 22:57, Marc Kleine-Budde wrote:
+> On 26.06.2025 13:45:09, Sean Nyekjaer wrote:
+>> Hi,
+>>
+>> On Sat, Jun 21, 2025 at 11:13:33AM +0100, Vincent Mailhol wrote:
+>>> On 20/06/2025 at 19:00, Sean Nyekjaer wrote:
+>>>> Wrap the "msg lost in rxf0" error in m_can_handle_lost_msg() with
+>>>> a call to net_ratelimit() to prevent flooding the kernel log
+>>>> with repeated error messages.
+>>>
+>>> Note that another solution is to simply remove the error message. The users can
+>>> use the CAN error frames or the netstasts instead to see if lost messages occurred.
+>>>
+>>> That said, I am OK with your proposed patch. See above comment as a simple FYI.
+>>
+>> I'm up for both solutions :)
+>>
+>> @Marc what would you prefer?
 > 
-> * Reuse existing functionality from usb_endpoint_is_bulk_in()
->   and usb_endpoint_is_bulk_out() instead of keeping duplicate source code.
-> 
-> * Omit two comment lines which became redundant with this refactoring.
-> 
-> The source code was transformed by using the Coccinelle software.
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> If it is my call, then make it a netdev_dbg();
 
-Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-
+I am also OK with that :)
 
 Yours sincerely,
 Vincent Mailhol
