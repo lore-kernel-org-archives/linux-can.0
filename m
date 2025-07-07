@@ -1,233 +1,115 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.220])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1A7854652
-	for <linux-can@vger.kernel.org>; Sun,  6 Jul 2025 13:39:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.220
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751809182; cv=pass; b=t4J3olQ/4tVmKg1rtfeFNODi8EdDdmrbfjoLULCMoaI9A9Y0HupTM6sVt2m3EJJ0wjTBfvWJB1h/4sbVUBX4V3JaoMlI05COBqcG1GQa3B58zfKNSsGY07Ru8OBHAgbXrvwbv+m/ernP6n0Wt8Gmo3Z261JP4n2D18afvRxkDZc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751809182; c=relaxed/simple;
-	bh=uhPR0+SLY2106a9a7c2SUOmQSVDdcnIHtNw9UoELi/k=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=G+3fOXy7lT7EcLWGk2FzgdQs8cy1FTC0LbHNZQBN8lcrGamF9kJJUZulj7gdHAGPTDG8/geYzl3GQ/owSxjasCvUH/qPyJm9afijpcnu1Vg5oZLdVUrCym8kDAyZt46ajp13RtqPiRcTR1xdjX7O1YKvgZZrnfoKrS7gHViJBn4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=ZaBqU2L7; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=CkDvqvFG; arc=pass smtp.client-ip=81.169.146.220
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="ZaBqU2L7";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="CkDvqvFG"
-ARC-Seal: i=1; a=rsa-sha256; t=1751808984; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=jyUDSWyOBNAtBrGkctQNWWH3v3wDVylz3H28cFY69UFqfSMaaJtf5JgS7NFrq6PPGN
-    CTWIAnw4kSAaxZYOxtp2RNdcrgnSX3xDFhOW0sfEJJQK/6bbN4Mq+QrPkT5gzM4KGvei
-    6A5C3tsRQiPve7fjKlSfauqVzDDQl0gMik0JlPl3RA5vyrFA//scu0iXI9FrYacQXKzp
-    88jSCSQhuAWMyCZK7W5GF/T5TUf7A7nl6/IxxMW1st7zhHq7ehGtvHs1kIZy6SJPvJC2
-    RgVFZSwNyXMWI2UjpR2/N70Z1B6T/maC4Wz2pPEhMt1HLJZHowFjG2c6lwVu61u8DEP3
-    2hKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1751808984;
-    s=strato-dkim-0002; d=strato.com;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=PH0ZeGwWqfJvWDK5Wv96r8lWcFZS56tcclr7HLBvf50=;
-    b=XO9jZHw2Da4SPMit0HbULAJXp5z0NJXOdSN/AebBJE/EMLNGuJClIpQLQ+unFLlni7
-    T3RDrX5/64iWijmQABRtlAsnbSMrnO29yrOeYwCi0aWMVop/oTNJbzAUnzTNkEn5eppJ
-    iGqcKV94ktDCepPwrMZY+1GPUBpfQ0IVFak60jsExf1pI69VlpZgZzLxyvKp5mbAWKXr
-    rwjaEpMMXZscZpX6uoqBX3Li9LO/YX3Bn1NhTv5i+mN4f86b2Pgz+kdfe/NN0tyEKPM9
-    mDdOQbITugjsFxChC2n5H7dZzqI0C8Y9myA0QyWW88SSidxjUlTktP7VJn9HZRN/A058
-    8gdg==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1751808984;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=PH0ZeGwWqfJvWDK5Wv96r8lWcFZS56tcclr7HLBvf50=;
-    b=ZaBqU2L7BxLOs1qSzDhjlcc/XlicYeWP049qZx9MY2Jr/xDwB2AknkBu7u7fxdRsH/
-    JGuJ+luWfA1mTC77wrQc5f5je5Bc61rtHAX63CkoOuEDNm4vtgtPkt3c/6BizSi/JS1p
-    8hDWb/nT7pEo183tbL6pqgrq02tpDKV0xFLh9q9iToqZTcLTh+1LHRNyjUMHEz4oPyjH
-    aDWepHs3W077Fv/hNjfj0SDtoroz/yqBtOU11D4NFnJf1kGWKNFNj0GfL/VHkaLGuIx9
-    okX5w8kaIrm8u0XxwzLyugrDByT7vCyYcVd/d9ETsp/WmiBlW769wpOTO49DOt7v+k44
-    d+IA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1751808984;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=PH0ZeGwWqfJvWDK5Wv96r8lWcFZS56tcclr7HLBvf50=;
-    b=CkDvqvFGKUM2NTPH2pRwI0kwSspAL4ebaZKzh45b/521DrITZSe9apI/0VbQDjiFmq
-    QNaqfoSidxiF6czvO5Cg==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/vMMcFB+4xtv9aJ67XA=="
-Received: from lenov17.lan
-    by smtp.strato.de (RZmta 51.3.0 AUTH)
-    with ESMTPSA id K55aa3166DaOK1x
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Sun, 6 Jul 2025 15:36:24 +0200 (CEST)
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH can-next/b4 1/2] dummyxl: update config possibilities and rename dummyxl_priv
-Date: Sun,  6 Jul 2025 15:35:49 +0200
-Message-ID: <20250706133550.47369-1-socketcan@hartkopp.net>
-X-Mailer: git-send-email 2.47.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D60DDDA9
+	for <linux-can@vger.kernel.org>; Mon,  7 Jul 2025 10:07:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1751882850; cv=none; b=rZxDnwvM45zkHYgmq2aN+Qu2Wk475eKZc2m5XSuyYrGsVtaS32MDVCk1l/3T4CqZh1nrF4euijs3eLE3Z7u6z/2rpXigpbntiQMMl7/rvp1sCxUxSR2gYHrm9D3EZDAe3R+TKIoDOYYwOP1eQwMzZ5PUKs67UUCu7/S2+MOw0IU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1751882850; c=relaxed/simple;
+	bh=FtQESEScKEGm4ZZCj0RN7mGsIyE/eoEObXJoSKFHpWQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A3h0VXGj473azXtD+JxpZEMYafLeh9c0ooGTZ+0XARHXBsr2OiKbTyEpyJP1n97H+h1wS+A64r+ZDcxZyfEvSScPu4C7ksFjVr6kWNaIh3NcsJI3eO7boXSKUbP6ERdgINyDG4rddqAoT4vD5KXq2B+NMM028Uw2Q+qzSQ6HkNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1uYikg-00055p-AG; Mon, 07 Jul 2025 12:07:10 +0200
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1uYikc-007EDt-2n;
+	Mon, 07 Jul 2025 12:07:06 +0200
+Received: from pengutronix.de (p5b1645f7.dip0.t-ipconnect.de [91.22.69.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 6B531439509;
+	Mon, 07 Jul 2025 10:07:06 +0000 (UTC)
+Date: Mon, 7 Jul 2025 12:07:05 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc: Ming Yu <a0282524688@gmail.com>, Lee Jones <lee@kernel.org>, 
+	tmyu0@nuvoton.com, linus.walleij@linaro.org, brgl@bgdev.pl, andi.shyti@kernel.org, 
+	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, wim@linux-watchdog.org, linux@roeck-us.net, jdelvare@suse.com, 
+	alexandre.belloni@bootlin.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	linux-i2c@vger.kernel.org, linux-can@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-watchdog@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-rtc@vger.kernel.org, 
+	linux-usb@vger.kernel.org
+Subject: Re: [PATCH v13 1/7] mfd: Add core driver for Nuvoton NCT6694
+Message-ID: <20250707-new-psychedelic-termite-a309d3-mkl@pengutronix.de>
+References: <20250627102730.71222-1-a0282524688@gmail.com>
+ <20250627102730.71222-2-a0282524688@gmail.com>
+ <20250702161513.GX10134@google.com>
+ <CAOoeyxXWbjWvOgsSvXb9u2y6yFExq347ceZe96bm9w+GQAp2Rg@mail.gmail.com>
+ <0360d2e0-e071-4259-a7c7-23c31e52e563@wanadoo.fr>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="kr6nkexyn6izj5au"
+Content-Disposition: inline
+In-Reply-To: <0360d2e0-e071-4259-a7c7-23c31e52e563@wanadoo.fr>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- drivers/net/can/dummyxl.c | 55 +++++++++++++++++++++++++--------------
- 1 file changed, 35 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/net/can/dummyxl.c b/drivers/net/can/dummyxl.c
-index ac1b579b4c1f..c61f27b93e9f 100644
---- a/drivers/net/can/dummyxl.c
-+++ b/drivers/net/can/dummyxl.c
-@@ -10,16 +10,17 @@
- #include <linux/units.h>
- #include <linux/can.h>
- #include <linux/can/dev.h>
- #include <linux/can/skb.h>
- 
--struct dummyxl {
-+struct dummyxl_priv {
- 	struct can_priv can;
- 	struct net_device *dev;
- };
- 
--static struct dummyxl *dummyxl;
-+/* pointer to our single dummy device (for removal) */
-+static struct net_device *dummyxl_dev = NULL;
- 
- static const struct can_bittiming_const dummyxl_bittiming_const = {
- 	.name = "dummyxl nominal",
- 	.tseg1_min = 2,
- 	.tseg1_max = 256,
-@@ -71,11 +72,12 @@ static const struct can_tdc_const dummyxl_xl_tdc_const = {
- 	.tdco_max = 127,
- 	.tdcf_min = 0,
- 	.tdcf_max = 127
- };
- 
--static void dummyxl_print_bittiming(struct net_device *dev, struct can_bittiming *bt)
-+static void dummyxl_print_bittiming(struct net_device *dev,
-+				    struct can_bittiming *bt)
- {
- 	netdev_info(dev, "\tbitrate: %u\n", bt->bitrate);
- 	netdev_info(dev, "\tsample_point: %u\n", bt->sample_point);
- 	netdev_info(dev, "\ttq: %u\n", bt->tq);
- 	netdev_info(dev, "\tprop_seg: %u\n", bt->prop_seg);
-@@ -90,15 +92,14 @@ static void dummyxl_print_tdc(struct net_device *dev, struct can_tdc *tdc)
- 	netdev_info(dev, "\t\ttdcv: %u\n", tdc->tdcv);
- 	netdev_info(dev, "\t\ttdco: %u\n", tdc->tdco);
- 	netdev_info(dev, "\t\ttdcf: %u\n", tdc->tdcf);
- }
- 
--static int dummyxl_netdev_open(struct net_device *dev)
-+static void dummyxl_print_config(struct net_device *dev)
- {
--	struct dummyxl *priv = netdev_priv(dev);
-+	struct dummyxl_priv *priv = netdev_priv(dev);
- 	struct can_priv *can_priv = &priv->can;
--	int ret;
- 
- 	netdev_info(dev, "CAN control mode/supported : %08X/%08X\n",
- 		    can_priv->ctrlmode, can_priv->ctrlmode_supported);
- 	netdev_info(dev, "CAN CC nominal bittiming:\n");
- 	dummyxl_print_bittiming(dev, &can_priv->bittiming);
-@@ -129,10 +130,17 @@ static int dummyxl_netdev_open(struct net_device *dev)
- 		}
- 	} else {
- 		netdev_info(dev, "CAN XL is off\n");
- 	}
- 	netdev_info(dev, "\n");
-+}
-+
-+static int dummyxl_netdev_open(struct net_device *dev)
-+{
-+	int ret;
-+
-+	dummyxl_print_config(dev);
- 
- 	ret = open_candev(dev);
- 	if (ret)
- 		return ret;
- 	netif_start_queue(dev);
-@@ -174,50 +182,57 @@ static const struct net_device_ops dummyxl_netdev_ops = {
- };
- 
- static int __init dummyxl_init(void)
- {
- 	struct net_device *dev;
--	struct dummyxl *priv;
-+	struct dummyxl_priv *priv;
- 	int ret;
- 
--	dev = alloc_candev(sizeof(struct dummyxl), 0);
-+	dev = alloc_candev(sizeof(struct dummyxl_priv), 0);
- 	if (!dev)
- 		return -ENOMEM;
- 
- 	dev->netdev_ops = &dummyxl_netdev_ops;
- 	priv = netdev_priv(dev);
- 	priv->can.bittiming_const = &dummyxl_bittiming_const;
--	priv->can.bitrate_max = 8 * MEGA /* BPS */;
--	priv->can.clock.freq = 80 * MEGA /* Hz */;
-+	priv->can.bitrate_max = 20 * MEGA /* BPS */;
-+	priv->can.clock.freq = 160 * MEGA /* Hz */;
- 	priv->can.fd.data_bittiming_const = &dummyxl_fd_databittiming_const;
- 	priv->can.fd.tdc_const = &dummyxl_fd_tdc_const;
- 	priv->can.xl.data_bittiming_const = &dummyxl_xl_databittiming_const;
- 	priv->can.xl.tdc_const = &dummyxl_xl_tdc_const;
--	priv->can.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
--		CAN_CTRLMODE_FD | CAN_CTRLMODE_TDC_AUTO |
--		CAN_CTRLMODE_XL | CAN_CTRLMODE_XL_TDC_AUTO;
-+	priv->can.ctrlmode_supported =
-+		CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_CC_LEN8_DLC |
-+		CAN_CTRLMODE_FD |
-+		CAN_CTRLMODE_TDC_AUTO | CAN_CTRLMODE_TDC_MANUAL |
-+		CAN_CTRLMODE_XL |
-+		CAN_CTRLMODE_XL_TDC_AUTO | CAN_CTRLMODE_XL_TDC_MANUAL |
-+		CAN_CTRLMODE_XL_RRS | CAN_CTRLMODE_XL_TRX |
-+		CAN_CTRLMODE_XL_ERR_SIGNAL;
- 	priv->dev = dev;
- 
--	ret = register_candev(priv->dev);
-+	ret = register_candev(dev);
- 	if (ret) {
--		free_candev(priv->dev);
-+		free_candev(dev);
- 		return ret;
- 	}
- 
--	dummyxl = priv;
-+	dummyxl_dev = dev;
- 	netdev_info(dev, "dummyxl OK\n");
- 
- 	return 0;
- }
- 
- static void __exit dummyxl_exit(void)
- {
--	struct net_device *dev = dummyxl->dev;
-+	struct net_device *dev = dummyxl_dev;
- 
--	netdev_info(dev, "dummyxl bye bye\n");
--	unregister_candev(dev);
--	free_candev(dev);
-+	if (dev) {
-+		netdev_info(dev, "dummyxl bye bye\n");
-+		unregister_candev(dev);
-+		free_candev(dev);
-+	}
- }
- 
- module_init(dummyxl_init);
- module_exit(dummyxl_exit);
- 
--- 
-2.47.2
+--kr6nkexyn6izj5au
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v13 1/7] mfd: Add core driver for Nuvoton NCT6694
+MIME-Version: 1.0
 
+On 03.07.2025 11:44:27, Vincent Mailhol wrote:
+> On 03/07/2025 =C3=A0 11:39, Ming Yu wrote:
+> > Dear Lee,
+> >=20
+> > Thanks for your feedback and review.
+> > Currently, the status of the sub-device drivers is as follows (A/R/T):
+> >     [v13,1/7] mfd: Add core driver for Nuvoton NCT6694 (- - -)
+> >     [v13,2/7] gpio: Add Nuvoton NCT6694 GPIO support (1 1 -)
+> >     [v13,3/7] i2c: Add Nuvoton NCT6694 I2C support (1 - -)
+> >     [v13,4/7] can: Add Nuvoton NCT6694 CANFD support (- 2 -)
+>=20
+> For the CAN driver, my Reviewed-by can be interpreted as an Acked-by :)
+
+Feel free to interpret my my Reviewed-by as an Acked-by, too.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--kr6nkexyn6izj5au
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEn/sM2K9nqF/8FWzzDHRl3/mQkZwFAmhrnEYACgkQDHRl3/mQ
+kZz+HAgAo6jP3UtNysl6cnqkkovHfol1pDeGThMia/s6eTksN4DY0u5zqdBI03dN
+dXpm+0P8HVf83Alft8JysqSicG3HxMbdHs8En1RAlkkWYlr/kkL8zfEM06mFYVdL
+6EqNun8pwyIg9PrvRFwslkSTu6zKfqhafW8ouC9+65btTk0MG/AgbUgCLX2fe14v
+5jBv/B8OS97ARLf8pGTDQDqO6vXO2imOkP3Td+Ik61oUgLiQhUxLQVR8RvDKbuEA
++iyqwWyWKsyoiF+0sU+mGLy0ejmuzh+PSvo19hzEE7ic08gZYvB4BA5pxljMiGAR
+1NJdMVxN2BILPjtt1d6e95y9ZqFOiA==
+=dD5C
+-----END PGP SIGNATURE-----
+
+--kr6nkexyn6izj5au--
