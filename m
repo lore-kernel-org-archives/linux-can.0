@@ -1,41 +1,41 @@
 Received: from out.smtpout.orange.fr (outm-53.smtpout.orange.fr [193.252.22.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B83692DCBF3;
-	Tue, 15 Jul 2025 11:29:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1480C2D8DBE;
+	Tue, 15 Jul 2025 11:29:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.252.22.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752578990; cv=none; b=XbwWop8vRVGtkT6WsmF5ZOC1y96AtW5TX/LHHvS4NRCY2VkYHOd8kiWJJQmeZ/glGfrSe9+iMUHXOElcuP1c1Dzp4ypvTh8j9k7FvHiBBPf1ZOttHV1UMAS4onkjp8vY/2bEmwoA12howVmtbRkGCDaPV9lgARfdGmrBTWSTLUo=
+	t=1752578997; cv=none; b=pJeMptNoVlhH2bj9ECzbF/cRoe/706YZEHGdYYCc6Bi7iMv5JMmqN3onCXQbHcq4sgJEl88k2PeoXnmBKJd6HCKLzVLXfMjGw0fx5sSR+cpoRMbWh0vAOd9Pmgh/Z811z83RPf/2qtKN2RRp5fBI6B+49nKUXU80SVS0W0kKe3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752578990; c=relaxed/simple;
-	bh=u+wWC3/DzZTGABh9YY/C+ERaQcTmDqogs0K00hiDc9k=;
+	s=arc-20240116; t=1752578997; c=relaxed/simple;
+	bh=BxRJVx8kXdIZKglDaftTW/AKzR/s8mQG7XTuOk2yUI8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=jpBOpvRR/zo18nFq4WALO+n9grK5+0VaAiV4jSuh6l3J2223qyrJjq+ns0tzAv4/+KWAXd5oPjNOy2CTJA6dAQ3hxBkGAUGlXT8H3rLObQ8w+eyPYBo/unpZYup3Wup2b6X8qwkXNMnftZv3wxrtpHmGv1w0cJETsoKLvGa4cJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=qEuPkBuH; arc=none smtp.client-ip=193.252.22.53
+	 In-Reply-To:To:Cc; b=VoqkDEb2wth49XTHOVD98eK/w4NIvkqvijdLcpYwT/hD+lq2rwINLAQ0aSURmVGx5rRNRCU4h6QoYErRjnk7YOvRTWfc94EXR/Zc/SEFF6+veNDCceLODrLiaPuE4zldMD57ozzXZpe+F3n/PpdLGAad2iUMzP4c98mvJqq8uCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=iMT0WHW1; arc=none smtp.client-ip=193.252.22.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="qEuPkBuH"
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="iMT0WHW1"
 Received: from [172.16.82.72] ([124.33.176.97])
 	by smtp.orange.fr with ESMTPA
-	id bdpWuN5ypJXJvbdpvuiCqi; Tue, 15 Jul 2025 13:28:40 +0200
+	id bdpWuN5ypJXJvbdpyuiCyT; Tue, 15 Jul 2025 13:28:43 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1752578920;
-	bh=GgTPVK+rkm4R0WLYzeG2cjIOMr6ZRnv+/aEAV0K4FCE=;
+	s=t20230301; t=1752578923;
+	bh=hJYi/43qocRw/wrecelZ5S5HLmp0zRyZK5SULniDlIQ=;
 	h=From:Date:Subject:MIME-Version:Message-Id:To;
-	b=qEuPkBuHDw9nAggK3RCvFNFP/NIHA6ob5AyT+efXJxdZ2XvZgoIGZnjkEJ+/LF66V
-	 3uKYyiMh6dhyxbWahMWL7DHcet/liog2IYj6aPn4FxgLXqlmq46SstRA9H9kIr9hMI
-	 oDQCDpp7Z6njm5KJnmPdApEZoww9ZuOjP+N9Z5RiwRYY4augybODYlKwVWkgYek19h
-	 e3P82xJByUnFa+jrhcFOe/LmE1CSJqp7B2al0ZMz/EAK0zSqWj2qM/FdTWLUDs/dfy
-	 YLO1K2qGEWXIQNLtCE8wR+jt95D7ooSKXWR9J6s2y8zNpm7ZUDxX45RYjq6v71Ijo2
-	 LImTBgilA8dbQ==
+	b=iMT0WHW1gysZft9FmgAFxmzL3lvY/1WknnzH3wAjJcXW8zZVoqTQyEbodXawO7AxD
+	 m2hl+5N3XIg5FQX2po4aDO+m6GKK55kOylwatUySZMfTb3Qo+Ms2Aoodf4X+HJms8Y
+	 xmTB2Pc43/dwFfovjlqrmS1w0RQNl/3otq196Ssyd5wknktSn+4pnAh9yGF3rpZwCe
+	 ZfRO7j4nsA9+SIaqO1bSTNbYUajGkeFMvuIgzGH52yYE2jnyK8xn+mo9/68Hqp/dCj
+	 zb5A1Y3GYoI6yHXaPcG0fY9mKIcpnzQxewtRvi4TB+L5zc0uRss0X/PgUL+r7jBU3J
+	 2RrVFXRrU+o4w==
 X-ME-Helo: [172.16.82.72]
 X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 15 Jul 2025 13:28:40 +0200
+X-ME-Date: Tue, 15 Jul 2025 13:28:43 +0200
 X-ME-IP: 124.33.176.97
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Date: Tue, 15 Jul 2025 20:28:11 +0900
-Subject: [PATCH v2 1/3] can: ti_hecc: fix -Woverflow compiler warning
+Date: Tue, 15 Jul 2025 20:28:13 +0900
+Subject: [PATCH v2 3/3] can: tscan1: Kconfig: add COMPILE_TEST
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -44,48 +44,56 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250715-can-compile-test-v2-1-f7fd566db86f@wanadoo.fr>
+Message-Id: <20250715-can-compile-test-v2-3-f7fd566db86f@wanadoo.fr>
 References: <20250715-can-compile-test-v2-0-f7fd566db86f@wanadoo.fr>
 In-Reply-To: <20250715-can-compile-test-v2-0-f7fd566db86f@wanadoo.fr>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1077;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1179;
  i=mailhol.vincent@wanadoo.fr; h=from:subject:message-id;
- bh=u+wWC3/DzZTGABh9YY/C+ERaQcTmDqogs0K00hiDc9k=;
- b=owGbwMvMwCV2McXO4Xp97WbG02pJDBll1tFOvZOyXOLubXtvHfBmeZdEhnXANNFDuieKvrtdl
- Zz1t2xCRwkLgxgXg6yYIsuyck5uhY5C77BDfy1h5rAygQxh4OIUgIl8vsLw47eoMPPklH3Wl/Y7
- xP0My6oNdzc7HfXIskjm2YPL6bVKDP8j85Meu5X84PWNOqrpfXQll4RFaOr/5GMX5be4ncq5eoc
- XAA==
+ bh=BxRJVx8kXdIZKglDaftTW/AKzR/s8mQG7XTuOk2yUI8=;
+ b=owGbwMvMwCV2McXO4Xp97WbG02pJDBll1on5N0R/HIizsehgSnLOa27ddVxgzZGYO3w3Jlyx/
+ 8DLLSDRUcrCIMbFICumyLKsnJNboaPQO+zQX0uYOaxMIEMYuDgFYCIPFRkZ3umeYfmWuuX/k5IZ
+ fRfmd5W9PrVN2spQ42DJxowG6UWVkYwM+2Xc8982Hit8V3pLV317+rO+BaKLa7+L9z5uum7o4xz
+ FBwA=
 X-Developer-Key: i=mailhol.vincent@wanadoo.fr; a=openpgp;
  fpr=ED8F700574E67F20E574E8E2AB5FEB886DBB99C2
 
-Fix below default (W=0) warning:
+tscan1 depends on ISA. It also has a hidden dependency on HAS_IOPORT
+as reported by the kernel test bot [1]. That dependency is implied by
+ISA which explains why this was not an issue so far.
 
-  drivers/net/can/ti_hecc.c: In function 'ti_hecc_start':
-  drivers/net/can/ti_hecc.c:386:20: warning: conversion from 'long unsigned int' to 'u32' {aka 'unsigned int'} changes value from '18446744073709551599' to '4294967279' [-Woverflow]
-    386 |         mbx_mask = ~BIT(HECC_RX_LAST_MBOX);
-        |                    ^
+Add both COMPILE_TEST and HAS_IOPORT to the dependency list so that
+this driver can also be built on other platforms.
+
+[1] https://lore.kernel.org/linux-can/202507141417.qAMrchyV-lkp@intel.com/
 
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 ---
- drivers/net/can/ti_hecc.c | 2 +-
+Changelog:
+
+  v1 -> v2:
+
+    - Add HAS_IOPORT
+---
+ drivers/net/can/sja1000/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
-index 644e8b8eb91e74eec050841491f20d3e6796e9b7..e6d6661a908ab12eb4c7ec61c162848c18ef20f4 100644
---- a/drivers/net/can/ti_hecc.c
-+++ b/drivers/net/can/ti_hecc.c
-@@ -383,7 +383,7 @@ static void ti_hecc_start(struct net_device *ndev)
- 	 * overflows instead of the hardware silently dropping the
- 	 * messages.
- 	 */
--	mbx_mask = ~BIT(HECC_RX_LAST_MBOX);
-+	mbx_mask = ~BIT_U32(HECC_RX_LAST_MBOX);
- 	hecc_write(priv, HECC_CANOPC, mbx_mask);
+diff --git a/drivers/net/can/sja1000/Kconfig b/drivers/net/can/sja1000/Kconfig
+index 2f516cc6d22c4028b1de383baa6b3d3a7605b791..ba16d7bc09ef7e9551d9ce200f0febd19bf11eca 100644
+--- a/drivers/net/can/sja1000/Kconfig
++++ b/drivers/net/can/sja1000/Kconfig
+@@ -105,7 +105,7 @@ config CAN_SJA1000_PLATFORM
  
- 	/* Enable interrupts */
+ config CAN_TSCAN1
+ 	tristate "TS-CAN1 PC104 boards"
+-	depends on ISA
++	depends on ISA || (COMPILE_TEST && HAS_IOPORT)
+ 	help
+ 	  This driver is for Technologic Systems' TSCAN-1 PC104 boards.
+ 	  https://www.embeddedts.com/products/TS-CAN1
 
 -- 
 2.49.1
