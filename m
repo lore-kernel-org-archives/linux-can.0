@@ -1,40 +1,40 @@
-Received: from out.smtpout.orange.fr (out-67.smtpout.orange.fr [193.252.22.67])
+Received: from out.smtpout.orange.fr (out-72.smtpout.orange.fr [193.252.22.72])
 	(using TLSv1.2 with cipher AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF725283FD9;
-	Mon, 21 Jul 2025 07:36:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.252.22.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEA28222590;
+	Mon, 21 Jul 2025 07:48:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.252.22.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753083408; cv=none; b=HIUkukQSE8jfedK2sw1Uq5N6Y2wzEjK/8laSdpxdj6A+lS557I89kfz7VNvt2WIvGYT6X/b1py1qysTZuKfIW9IHXCVhORjVeYjS7qUOhMGDn42H+Wbln1VmvnTo3i2OSc9fJWa4L6bAaoZybUGTAYDE5goKIc3idiKWUezdOCI=
+	t=1753084113; cv=none; b=aGD/LMNSU+3Zx0wcqjsAD7I2JMrYnReaz834vQj86+rEd8n0GaDhYZ6Sc0iIAQL+PYS/Be7s4IXI5kGRZtd63/FRRtah/up6d1Do5jbnkklsH7agNQboxQDcZqAqUcHHWfNB21JhWi1LNz7M9RlACVNXM34xBb9Au5GRVb5ZQqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753083408; c=relaxed/simple;
-	bh=0T5uM75NWvtlhyGmeECcEh52vYNniLKCQIyVdTig//g=;
+	s=arc-20240116; t=1753084113; c=relaxed/simple;
+	bh=nDLgxabm1d7xOeJPLKicTvI/q87/XFoWr/jFEv4SLzM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EWd4KrkQ1O2yyQz8uU3vP4dOLhClEDR5IuYgwf7pXBY0cCjdKZeOSq+M7z/dy755prcCBe0Z0amfqgZz9KkUQIBcu/Q8Pka4/2fkWekZFr6OGPbUETcCOFKLAu9jY7RRkcNYYdZznRceyXsLF8McG3xFrRy+RL9VeqmZBKAenUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=KO5z0zTU; arc=none smtp.client-ip=193.252.22.67
+	 In-Reply-To:Content-Type; b=KNBrQtJS+QX2ZyRvhslcayT0o3htYlZaiRZ+0d1ApyIzrUR5r3BlUsmk6GRw1FehNv5+Zw7U20Bj/yxKyDSuVq3b0rzOlJHRFcAZRcMc6mwwRgnSciZY7Wye903rdyyEoB75VudFfqjLVDSsIj/lYACVz6SZO3Q3B1bZBwhjN/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=rGZ4Ex8f; arc=none smtp.client-ip=193.252.22.72
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="KO5z0zTU"
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="rGZ4Ex8f"
 Received: from [172.16.82.72] ([124.33.176.97])
 	by smtp.orange.fr with ESMTPA
-	id dl3UuumIO01KBdl3VuD6wv; Mon, 21 Jul 2025 09:35:32 +0200
+	id dlFuuyWYqLTrpdlFvuXW2h; Mon, 21 Jul 2025 09:48:24 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1753083332;
-	bh=zOiYKF1SPgypvhuaANIQ7rNK2hL/Hn2Fhax3JnmXbN0=;
+	s=t20230301; t=1753084104;
+	bh=gJRVz/YEJYxqdLyzBaVoa58GpKVWf1l4S/w8WDWxRrI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=KO5z0zTUN2kGjc2S2K4Bv+iH8Y92yUqD/GRQVsUcPvZSaXiL4SdVDmxdwPlyLGakI
-	 uV1PBqCNerWhcGtwgvVIAO3hzIaTpa8dmJdUXyTHZkhNKXFzR/8f36ZPJbgtIpiG6/
-	 R+MQnKbNRdLZ4YPB69ovOT4kwKB3g7eDsMlNLpUVSwM6wySOuFChA+X1H+w/1SivTE
-	 bQ9Y8srXE8NMS/RF86r4wD+4OGjqWmvWefeCw8xoywSFmCnklEgZ1/W8RIorWXJUXD
-	 Q324srF4Qb2f4K+QJd9GTY4sASwOhIPTVzz5zyWlR+HwxRnMyV/YacktWcXluKYKUs
-	 z0SjUvIuugWjA==
+	b=rGZ4Ex8fUiy7IILm6R6Je7lCOpG2jm3/iBBWnBq0npkX0GUJlNlEvI6SEAVWa5Xvt
+	 MvADXtgfypf1wX6WWfrJ5GqudiA6waPsDWuLfm4At9zoEyUqaudBSK6e7Si0YPVNr2
+	 3iqPoi7fovIpv5/4EcE4QJVQPxpuBRX/mGNw+FMUV6d1IJ8BLzKi+1fUUkkq15HfbP
+	 SLmBXJogUoDl76w3LMu8rRhZWnkoNp0oYZ8I23O820g5EGVxcHUnbZFkrft9jC8pay
+	 hs3aO/fsMgFo8joV1Xuhdish8r/UTUu68V8FAH0u7uZGB+nmNM0d2bNZ4tpkkb0PWL
+	 wDECYDekjweXA==
 X-ME-Helo: [172.16.82.72]
 X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 21 Jul 2025 09:35:32 +0200
+X-ME-Date: Mon, 21 Jul 2025 09:48:24 +0200
 X-ME-IP: 124.33.176.97
-Message-ID: <a3507397-7166-4685-84c6-ba96ea2b2cd4@wanadoo.fr>
-Date: Mon, 21 Jul 2025 16:35:23 +0900
+Message-ID: <c0cac011-cc07-42f8-bdac-620f3faeebf2@wanadoo.fr>
+Date: Mon, 21 Jul 2025 16:48:13 +0900
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -42,13 +42,19 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] can: tscan1: CAN_TSCAN1 can depend on PC104
-To: Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org
-Cc: "Andre B. Oliveira" <anbadeol@gmail.com>, linux-can@vger.kernel.org,
- Marc Kleine-Budde <mkl@pengutronix.de>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-References: <20250721002823.3548945-1-rdunlap@infradead.org>
+Subject: Re: [PATCH v2 1/1] docs: Fix kernel-doc indentation errors
+To: Luis Felipe Hernandez <luis.hernandez093@gmail.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>, Pavel Pisa <pisa@cmp.felk.cvut.cz>,
+ Ondrej Ille <ondrej.ille@gmail.com>, Frank Li <Frank.Li@nxp.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+ dri-devel@lists.freedesktop.org, linux-i3c@lists.infradead.org,
+ linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Marc Kleine-Budde <mkl@pengutronix.de>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+References: <20250720152401.70720-1-luis.hernandez093@gmail.com>
+ <20250720152401.70720-2-luis.hernandez093@gmail.com>
 Content-Language: en-US
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Autocrypt: addr=mailhol.vincent@wanadoo.fr; keydata=
@@ -61,30 +67,40 @@ Autocrypt: addr=mailhol.vincent@wanadoo.fr; keydata=
  yR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDldOjiq1/riG27mcIFAmceMvMCGwwF
  CQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8VzsZwr/S44HCzcz5+jkxnVVQ5LZ4B
  ANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
-In-Reply-To: <20250721002823.3548945-1-rdunlap@infradead.org>
+In-Reply-To: <20250720152401.70720-2-luis.hernandez093@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 21/07/2025 at 09:28, Randy Dunlap wrote:
-> Add a dependency on PC104 to limit (restrict) this driver kconfig
-> prompt to kernel configs that have PC104 set.
-> 
-> Add COMPILE_TEST as a possibility for more complete build coverage.
-> I tested this build config on x86_64 5 times without problems.
-> 
-> Fixes: 2d3359f8b9e6 ("can: tscan1: add driver for TS-CAN1 boards")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Andre B. Oliveira <anbadeol@gmail.com>
-> Cc: linux-can@vger.kernel.org
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> Cc: Andrew Lunn <andrew+netdev@lunn.ch>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Paolo Abeni <pabeni@redhat.com>
+On 21/07/2025 at 00:24, Luis Felipe Hernandez wrote:
+> Fix kernel-doc issues that reported Unexpected indentation errors
+> durring documentation build (make htmldocs) in CAN, I3C and GPU drivers.
+  ^^^^^^^
+during
 
-Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> Convert formatting to proper ReST list syntax to resolve warning.
+> 
+> Changes since v1:
+> - Convert return value descriptions to proper ReST format
+> - Fix code block introduction with :: syntax  
+> - Add GPU driver fixes
+> - Remove SCSI driver (already fixed)At
+
+The change log does not need to appear in the patch main body.
+
+Add a --- cutter after your signature and put the change log after that cutter.
+This way, the change log will automatically be discarded when the patch is picked.
+
+> Link: https://lore.kernel.org/all/20250703023511.82768-1-luis.hernandez093@gmail.com/
+> 
+> Signed-off-by: Luis Felipe Hernandez <luis.hernandez093@gmail.com>
+> ---
+>  drivers/gpu/drm/drm_gpuvm.c              | 16 ++++++++--------
+>  drivers/i3c/device.c                     | 13 ++++++++-----
+>  drivers/net/can/ctucanfd/ctucanfd_base.c | 12 +++++++-----
+
+Can you do one patch per sub-domains and send them separately? The maintainers
+of drivers/i3c/ are not the same as the maintainers of drivers/net/can/. And
+there is no dependencies preventing you to split.
 
 
 Yours sincerely,
