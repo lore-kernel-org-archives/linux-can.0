@@ -1,63 +1,62 @@
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2127.outbound.protection.outlook.com [40.107.20.127])
+Received: from EUR03-VI1-obe.outbound.protection.outlook.com (mail-vi1eur03on2106.outbound.protection.outlook.com [40.107.103.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2806F278E5A
-	for <linux-can@vger.kernel.org>; Wed, 23 Jul 2025 08:33:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.127
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECBDA2E3713
+	for <linux-can@vger.kernel.org>; Wed, 23 Jul 2025 08:35:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.103.106
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753259603; cv=fail; b=ey4IIbarStoqJ4U5I/E4socYXjEgft7oHJEAzggDRoMuIfkLVIwqMbPRh9eGuy0DMpQBuhLq7dd+lHUkR+HhsPml/70JBGE9ZJql3341ylB7bGbnTiPyeiez9VFcRGQNaQlZp7P+PwVFwzuPPXMLaoOBwPwU83kd+tZLDmP0Inc=
+	t=1753259737; cv=fail; b=n86KIeK+uTepCXSnunxYVb4u4LQ0aUtyAZniehWmDy6WJnw9DeyqWHJgEWglB2v11F5bDZqFc8/vzwon2kXc1M3cHhf9Z72x5nms0BRcxqwTlQXYFsVewumuahgIuon83S15upRKf0GGszd3uCGSATrNW2wEjAtvVXDxusTuREw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753259603; c=relaxed/simple;
-	bh=2mZbWZLIqsFZGKChck0jsMrOAg/5Ct6bpyXUvykfIU8=;
+	s=arc-20240116; t=1753259737; c=relaxed/simple;
+	bh=VgKk04WnTM6JwMbpF5z3ttBTiQ7vTkPr8aR/3QZ2qA4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=N4D6o3Uq4dfxdui6UA4o/a/Dznkb6JHjnFBBvH9rl06oB9Cdn9SaVGklXqUOfA36lksI+Bon+QKOLmcvPI0iiOkW82Nde0uo+KkTyI6UH1MXAqILkO1pD/3rkmSHLUf7Dfa2yuRp81fiMeLj9M2cxGddd8KA4yxKkowoxsAFxDs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com; spf=pass smtp.mailfrom=kvaser.com; dkim=pass (1024-bit key) header.d=kvaser.com header.i=@kvaser.com header.b=JPUEA50P; arc=fail smtp.client-ip=40.107.20.127
+	 Content-Type:MIME-Version; b=BQlc8RFVOUaPKpK2LAnR9xqH2OywH47c4yx5/SDXcZUwT9GKRZwdWNGrZJtbGuypLxW+m62qxNUpKrqvc24Yk6KiWFgR/mKoQDaQ/DrR2SzCSI9QjOif9+e459vAJ9T3yY54+oygc4LLZb/aR5xyiUzmiI3tA1wg3/HW6r/Xtt8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com; spf=pass smtp.mailfrom=kvaser.com; dkim=pass (1024-bit key) header.d=kvaser.com header.i=@kvaser.com header.b=BAV57sho; arc=fail smtp.client-ip=40.107.103.106
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kvaser.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=kvaser.com header.i=@kvaser.com header.b="JPUEA50P"
+	dkim=pass (1024-bit key) header.d=kvaser.com header.i=@kvaser.com header.b="BAV57sho"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=FMBpytLLvYnZ3BpAKmiGMYWwXljqE7KRWEbRSA0O6JQZE2iAcx7iucIPRa05NvBUWCu/AvB3TUtp38oFpxux2UQThBN5Z7i9SCflxlxdfCB0yu/wIFPeJVOYhXL2hhjADx9l373PTeQaGFBtlE40UeNl7pF2Vbh31RmN13SwckxUv/3nVuDYAB0jSmbg6BXM+W6wqcccqhiHEZxwsa2ZwgwrxafAIBLcoVZJfjAGzE3TfP8HwdFkAzZ/+Viz5Xs0bH4GB+Zatn7Wgh3Z7UWx6k3dseiusKUUX24cv2M1n1UzrI8f/VKDw64Lhk3csyxW8jz5tyzL1Wj/UWcB4pGq1g==
+ b=AFOHKLcAn0YA+MfVvVZSy7sbFrrToc0/8fDVWMrTb6Rkt7jsOKtNQSANd2QiUAnjgGQNis/2wDSIED2kWuPhibpNQnmtNgma9ZDUajhoCHFn5Ydowa/FIKpPZccypxM+9MrEyaM+fXm2mTG16ru2Mpgm3lirIas34MD0G3UJKLqhLrEOa3EZb/Jo7/Ik8CtKJi34t5i9Jg59KUmtFXEYfEHYtiaJnmsaoxQppKdsnECZf0uNH3BT0qnZ9r1LvX9//9hg77yNnWIEX2fI9wPfm1L29FXhq4Z3ZIWP+KA5W0wkIbtmRIVrbd15vVTy6wCKKI7wab7C72fDuJbOj6adHw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WgnK0dntkXMhm4wmtVnMeFz/3xGPIqi1NKtLFG3UOOo=;
- b=Ta+7Zw6gZbbkjR9Pd6eYLt9i3ELDcl8uwCUZ3wI0C2DC5ihlsZVkATNkqidL4labNnxprj7lFldD9h8Z9+fFRXd3CqSbJEPGbiPSUWruND/cC7kuDYG7bfxF8KCt/rW1WrJiYqb0Q4g3HiShwCZKa30gKi4lv6pPsi2D1Rs2B1iiQTkkQi/Kekgaj4vPVkCYHXSTaYgfRRAF3V1ae45/GUmbBFv6vSoX611sUrlh/WRuC5lROjxtRfGI0nXXVZ6p4Oprruz7ZdvFwPMbSfyeIqpwrQ7BEZNl+4GnhQWgyApVrLXbs6f1Qy0e00KgmxSSJ66BMVxOH7t4BCdl731iOg==
+ bh=FFH4lAA0tG45yn9BLN8Ygxv0k173+5pVbcY/h+KoAcs=;
+ b=mrt2N57M+RxwLE0NjbixpvvBNLqHMNm+v2QOOBYaMBpRm7FXLV6kkVgtBw4LZb+2wePEoxBSc9mgibugXb9iibDQimjdo/MVAPl62cXvT0/VMBEB8f2B7XCQrqv3cQGNb5UjOI/G6zHzwdlsm2GTL1Y45TnpxGMi7nMMnz4k7nDNqu4RnNpQ3clS5UhfOrZ6X/xkF01Y74VQfHwCcfb5ERZ8spJHnncxpgMqo0sWKn0tnCTwI4+WqMQlFB+Z8KHXNwPEDiOHyWKFubJEEpUYnbLkRCYMEn/d6SdtoSMlhgdbMuzEyW624Fl23qKiXWKmBkSIJy8C7v+v4s4wfGl4IA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=kvaser.com; dmarc=pass action=none header.from=kvaser.com;
  dkim=pass header.d=kvaser.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kvaser.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WgnK0dntkXMhm4wmtVnMeFz/3xGPIqi1NKtLFG3UOOo=;
- b=JPUEA50PvoTPznMT/Pj7M6HrcB1OeKLj+ZB8MBijMwdzoYNfiqApe9gAU5Ud3bgLZnAejlxtvWuPpU7Bfmi5SR36N7RtSiPDf8dtKC8NL/k4KcSeqkR8y0sNQOoA4tQI6bHeZaWKv+qrOO7YW1ig5/mhHxbfpych6BdLYr4ygtY=
+ bh=FFH4lAA0tG45yn9BLN8Ygxv0k173+5pVbcY/h+KoAcs=;
+ b=BAV57shoeP/9RoQvBXiEEZIhVNVBW9en8lTvtBd1D1SB5kJSDYN0mCm0NeOOYDBH4XkoXwKBLCUc70WWUfxiDW3PS3dw9J4ifYKScXqZrdxeWx3CL/GvN4/XTVoIU7YlG6rOXB61onZ2IH8/1ooXM21h1Fm3ZRRnke3j6OiIP2c=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=kvaser.com;
 Received: from AS8P193MB2014.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:40d::20)
- by DB8P193MB0773.EURP193.PROD.OUTLOOK.COM (2603:10a6:10:15a::10) with
+ by DU2P193MB2018.EURP193.PROD.OUTLOOK.COM (2603:10a6:10:2fd::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8964.21; Wed, 23 Jul
- 2025 08:33:11 +0000
+ 2025 08:35:30 +0000
 Received: from AS8P193MB2014.EURP193.PROD.OUTLOOK.COM
  ([fe80::7f84:ce8a:8fc2:fdc]) by AS8P193MB2014.EURP193.PROD.OUTLOOK.COM
  ([fe80::7f84:ce8a:8fc2:fdc%6]) with mapi id 15.20.8943.029; Wed, 23 Jul 2025
- 08:33:11 +0000
+ 08:35:30 +0000
 From: Jimmy Assarsson <extja@kvaser.com>
 To: linux-can@vger.kernel.org
 Cc: Jimmy Assarsson <jimmyassarsson@gmail.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-	Jimmy Assarsson <extja@kvaser.com>
-Subject: [PATCH 9/9] can: kvaser_pciefd: Add devlink port support
-Date: Wed, 23 Jul 2025 10:32:36 +0200
-Message-ID: <20250723083236.9-10-extja@kvaser.com>
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH 1/9] can: kvaser_usb: Add support to control CAN LEDs on device
+Date: Wed, 23 Jul 2025 10:35:00 +0200
+Message-ID: <20250723083508.40-2-extja@kvaser.com>
 X-Mailer: git-send-email 2.50.0
-In-Reply-To: <20250723083236.9-1-extja@kvaser.com>
-References: <20250723083236.9-1-extja@kvaser.com>
+In-Reply-To: <20250723083508.40-1-extja@kvaser.com>
+References: <20250723083508.40-1-extja@kvaser.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: MM0P280CA0034.SWEP280.PROD.OUTLOOK.COM
- (2603:10a6:190:b::15) To AS8P193MB2014.EURP193.PROD.OUTLOOK.COM
+X-ClientProxiedBy: MM0P280CA0064.SWEP280.PROD.OUTLOOK.COM
+ (2603:10a6:190:8::26) To AS8P193MB2014.EURP193.PROD.OUTLOOK.COM
  (2603:10a6:20b:40d::20)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
@@ -66,242 +65,349 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8P193MB2014:EE_|DB8P193MB0773:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6d913bfa-d827-44bd-6588-08ddc9c38efe
+X-MS-TrafficTypeDiagnostic: AS8P193MB2014:EE_|DU2P193MB2018:EE_
+X-MS-Office365-Filtering-Correlation-Id: b9409f37-e334-4f16-abad-08ddc9c3e217
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?LUkL2a4itwgSCo1zncSRuCVITtVvEzX2kkxEJhKj8pFP5WGSy2vRMuAduDIZ?=
- =?us-ascii?Q?kPVq1xdFtnFk/MYJ6qNhGlnGaJoC+2wb0m5ZnQnXfSm93hSEl+6qnmJhfS1q?=
- =?us-ascii?Q?HIR1sSmzxsZrevQvyOcw8z/T7vFAJBdVVJ1quhWqe76ebYp0zFzWzPKcX+Pz?=
- =?us-ascii?Q?fDoKN4yUjnXFACFx8tcAyj8ExEYh7gdnt2fkrO/sPZ6etoxotQYssRgawlIm?=
- =?us-ascii?Q?o7n/J1le72W8WOMVuLPG7ykL3KE5GZ13BtaagjpIBcKWdXhvfkreuACpjVdq?=
- =?us-ascii?Q?WOkqc+raKh3BpjzqHz0tdFnrCW1MDRtOi0yJczauCgRQVCS0175FXmnimE5S?=
- =?us-ascii?Q?BzxPzNjtA1wZZCTgHuDzha4WJz1O3EFY7VqATR8422XGJrrxgluh2X2YXZiP?=
- =?us-ascii?Q?0sfX6XtYq4V5lm3isN/Hw1o/cXdXYHVOgrR7WgpwejzAdpuv4dt0K91aqEud?=
- =?us-ascii?Q?EGZDaZXQBywynxuo5pk8Leh20cD/slemKAIK+BISEEgNldu4IgWYyAghpuWm?=
- =?us-ascii?Q?c6OxHaPOUyIysEm6E8iFaT/JW+6EV5/h4MAJVCEU8rJZ/GgBr316wO8vryhH?=
- =?us-ascii?Q?xHvysdFi7B1VDt4EVhx2G90Ir1TKhzVbafViqSPz+IP4UCaD3UR0CoqnxFVo?=
- =?us-ascii?Q?n5vqFKJouVTj8OhoeHw6cggSfNP14wuAUY1rRzU5ds4XWiDn+qz6PaqVQQmU?=
- =?us-ascii?Q?mjg/HPchxXlyTzYz3cG98cftRyPmf8Hqmp2nBROXf2P/p+VJbw1M4Z8+1UEU?=
- =?us-ascii?Q?R0JmsHX+Oe9y090wFfQrfGVneujjLe/4LAq8AZXjWGf1UMmVBVUzx2BgxYkD?=
- =?us-ascii?Q?pL0r0nsv9OcV5Ae1/YMT0O6TVEgtVpKQpjbSPbgYclLmsE1zpJZWGAedxpsb?=
- =?us-ascii?Q?5YiS5nl5z2UvVWU38VnrTW4g4y/vi0U4okeoiQ/mTwxMaPALFxruLtuAsQ6n?=
- =?us-ascii?Q?rwjLwvrDRuP9vofHTjSEb9Xynms2v9Nc/QFsna4TOIXzLPAmRynMwuzNewfP?=
- =?us-ascii?Q?Xk8nYOMRN2XNTcC+NDXw3xA8BpRYFpdA2aSCIp8dtlK+t7Z06rwwFklJCm99?=
- =?us-ascii?Q?ME9OzrCsCI7uNuTLIT36yrtgbaJOjP8W/Xw5m3i6ct8lv7E2i/YQIFSghqWv?=
- =?us-ascii?Q?Re3+33Rzt3AEqHo6yPTCY1/9lZKNeD66BUW9WvPCdrNpM3MoriuEI4D/khBS?=
- =?us-ascii?Q?82yAzOMOSk1JabmgAs5zd2R1WVqjzJPz2KrbcD+8Xis0Cb6Y0LPSxIkUpsM0?=
- =?us-ascii?Q?PUtaOk7AdYJu3OedXiZoS4R6YeXBqDBqmdN/G1Y5oZ1juBohlq7KbmUn8SIy?=
- =?us-ascii?Q?MNo8BE59cpc2HlO5wu1F/FQwwknjjqJhZabp//0P76Q5xiRL/KapcFm7EW/I?=
- =?us-ascii?Q?Y5hQ96r75TTG4rPCEF49OOmsakMGFUpv5O2gLmZ1wsJf6Dpikdk9/hWDisHI?=
- =?us-ascii?Q?FlqzKsjAYxU=3D?=
+	=?us-ascii?Q?O/zm6lDeZBxpC9or4BuvpiRXWa8YawdGZMwlsiz5WZBTS6wUeZrBTZgWZHZb?=
+ =?us-ascii?Q?k86iN8I7R8IjvqRZT5l5YgguxFUujmdG87zjFDvA6YqEH03oyYACpQKNtuyT?=
+ =?us-ascii?Q?M/tAjzFrLyWktEKbTA3655mA7m+C6hSknzU6aFZ9adeoHdYCKADkotiJS2qZ?=
+ =?us-ascii?Q?b+RRyvseF8f52qY4xsTfk/644Tx7RuX/nQrNCJkWa7VhUkvBuTop54z18vwm?=
+ =?us-ascii?Q?ECmYAtTCx0dvRPpCcemTwRWeZAKxlfBo3/9rxVZmiNF/+mkY4tGbVjHnJXdk?=
+ =?us-ascii?Q?Mm8CeDM1LuVMNYX4pSiYrCFZG8L77WiN087NPhZuw+nPFof7taitJGeFhgKo?=
+ =?us-ascii?Q?l5sQW3qARN1KXyj+2mUpA0Rw2dTx0feVLtByw3Nmi0WDtw9RCZPwAfr8BXV9?=
+ =?us-ascii?Q?Gg9Itg6NpGxkSOZTZ5qjHt4yh6jmNhh3/EAGkOXWDlnYdc4CbQ6GVuHs1AY2?=
+ =?us-ascii?Q?ZGMs4qOi+96feKmuaxi49shoUnKenhEx2FRpAkdZV9+PEEzw45tiGmrGYY/i?=
+ =?us-ascii?Q?RH9ZDNgwfG1Z3y4JuVddmpj6HPRvzX1HmKwNJlLevlkHNXLPct17Ik968dfM?=
+ =?us-ascii?Q?WKW0BBiU04J0u9Ijz2gZpVjqRbfcNzSEL34rgYPaQ9sVmOo2GP997Hw15JEb?=
+ =?us-ascii?Q?8Lx3DRMZR7FLn6sJFfpazElZBKwppYs5qqHVNfH4Xsjdg9OMdao2ATXmTuSL?=
+ =?us-ascii?Q?zB8Ei8bTw0EP+htxdrb0mgiC9ZTbpbMnc56jrROxS36H6uwzxAfwDfd+3hJu?=
+ =?us-ascii?Q?mBXzox4H4WV434EXyLtDt3YKsGGO796OOFh/TEmpmUMy5J+DL6zfu9BTZJD0?=
+ =?us-ascii?Q?lMCIr4AFTOlBHt+8gOJ1lbaa4Mp+gGzYL/G12geO7Ybnzr4zTy4UqGkAYvBy?=
+ =?us-ascii?Q?h1DCXgeW59YpS95DX53aZk4CuxD/Q47eJkxihQU5cWWhboCwTx2PBnzTRAqc?=
+ =?us-ascii?Q?roOvHRv4pMBoMUTT8JB7afilgcagSJTW8FrLOwHxTIftqhDmcZq5NZbvGuOS?=
+ =?us-ascii?Q?Ak+HbjOaglja52F/Z1LeARmsynrzd6ou1OiH8f6kmmJ7EyQ84FAO2RhERpec?=
+ =?us-ascii?Q?AvCufNLBRNFTiZzXdrh7m1o7Ynn6CeYnnVIy/9PQPeDbAgcL52IUuUW99kgk?=
+ =?us-ascii?Q?Vslj3sc1r9wB9Po1+fetYj1VUTZ0SzlvsnAAicmHc0l600rBJvfY0xfIaNgi?=
+ =?us-ascii?Q?8+rnCN9EVwcA5yY0v/xgHfKrx7IoYPNqW5ij9QwvHiWr3JEOTnflvdb216l4?=
+ =?us-ascii?Q?Rk+TLayfAFcv8e6MzMuzJgAYvqeZt2Eyz7V1u75iW2+P9QQq0pF4LqFdOx5w?=
+ =?us-ascii?Q?enPHhNjLbaB5Rf8x1i829nAI4/GtXSzTyy2YBfZkKmghlQgNejevK9j2rhwE?=
+ =?us-ascii?Q?86A5hvPUbZl5PqsPWp1GDcjqAF8cawsXVZmgb3pmLiWQDL7Tz5LR7I7Ns3+N?=
+ =?us-ascii?Q?HOPcifrDfNc=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8P193MB2014.EURP193.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024);DIR:OUT;SFP:1102;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8P193MB2014.EURP193.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?1K9bz/uaQHFk35zJmzMwkrh+30QNafrxYjCHwvZ+mZ1EDgck7OL6XfKSKRJD?=
- =?us-ascii?Q?rxOV6Fv1Z+R0MB0T2UYrk4ypv0c0hvM1PjgjXKsATqfQoXg5NZitd8FtPeSi?=
- =?us-ascii?Q?YCdSsqFldWdKpleU90OSPTU61kExLvLHt88LxF36hkLGzj7m8eYBWg0zibqu?=
- =?us-ascii?Q?WXR/l+I4vTHJbcO5PhdMadD+PDxQ2OGDbhmdd8/FbDKvWpttRsfDFj8/fg3h?=
- =?us-ascii?Q?6FdQ7PDO5cFRTX8JARc2SHGPCPEVdbA0Qh8a6AkUWlL4VCx41lXoDNyP8y9X?=
- =?us-ascii?Q?Frvk6cxupVgifpeCI+/EgojxzN9Q+W7sCeVmQtU1aLfXqB44R8ENVeadHLBe?=
- =?us-ascii?Q?xVPfA4JF5Dic7XOO4XTtmQHY16EyzmrPIwQY82DLDb+aY2t1jMfKBeSwzawv?=
- =?us-ascii?Q?lkqf4sUfSG2qKq3LsO1YwFoPHrRhwfYIId3d2ULsVMrRrM+jv5gJ7Q6bio9c?=
- =?us-ascii?Q?i0EincUV+tscj4JplNeExJqc0ulZZsJHzE7wGZyLjCDpAA4JXkyCAF9m0kHT?=
- =?us-ascii?Q?rsL5P9XuetEHWs5bnW92XMSoXMbARuJHZ7+vIB/yjyu/rg+Ul1AAL1bllFmQ?=
- =?us-ascii?Q?0t8bbLulcWkYtiBcnGbDHy5gfkXMd6Cvr8xNFKgHUXA8zcv032SPWZsbBFNz?=
- =?us-ascii?Q?z7K6L0xX/EnGx2iCKbeNsUF6eYy90dZ3AVXlK5CLZbsn9GsFW+vpMWR2lzhB?=
- =?us-ascii?Q?ebw/V+Iy1MO/dHWlvJw75f5EYYlMo8LJE4GXNZjQl1yGSAtayNLecPO5UvoE?=
- =?us-ascii?Q?x8JZJ4m4cbix1nAfhdk3abCoTHzf0MVwMgHRIPZ5jYeblsP7NiCKwPNQbRK3?=
- =?us-ascii?Q?nNv2TKFnPX0ake4UI9YQrczHi3Jn1gFTSJoppd4aWXhmxbRUWHdZwP+wr4Pm?=
- =?us-ascii?Q?nvCbIMSpefKKLexAu4zjxkUDUlym9rEfZrNZhmY5KrYlZOgqN3+1rmzqiwVK?=
- =?us-ascii?Q?p10zMBU96XTfq/yrnxSZhZj4QXof7huOV0Gt9TUyoUj8URyS2HFy1Ny4ydtJ?=
- =?us-ascii?Q?9v02Z4TrLIm/YoLNMJpZFAnxUBPhsqpUBsxW6Y8Dcy4rupvsCPBgWNzLth/n?=
- =?us-ascii?Q?fkKHkLH8Vx7UB7MSUHL7EwtUntSBzfjtZKL2RRd59dMJRpYsx82dqdLx1f7T?=
- =?us-ascii?Q?Igz0jEobSpFSC2PO7BatxVQ4ZxI7Qx8RDI657WHXoX6ITSJZ2+9QLf+xR+LW?=
- =?us-ascii?Q?EHdXPgIKj5S01doHtG85ezJZqOQCeLwLZFsdGGLoT5PO/VaD2mFWeEVQruAT?=
- =?us-ascii?Q?VtEfltlX5U/QqcEgcjVx3t8Up39vO4GJmXFbGuMm2qlo4nyTfLpB3J2r/Mmp?=
- =?us-ascii?Q?YL9MokUwW9IsZCl53ltRnoiDpcSSAUTMh4Q1nNPRL56Ou+XWp/XPGI60u6a7?=
- =?us-ascii?Q?eudGf1+TbZYtW4LiF8cDUTaYIM0claMwgW6gYQyhXkaWtP0D2nKmNnhZ8pc7?=
- =?us-ascii?Q?8iKYXy0O6nxaN/SFuf5wx1P4eBH3KVytLXh57Aujx3of/9/5mUz1gBLHJmpG?=
- =?us-ascii?Q?FM+VILgNcNjOjEupPrj1Q2oMAZ2oRQ5QO4Lc4MTh8R78MMpLRU5NbburbxAw?=
- =?us-ascii?Q?g8X0igTnkSVClzCSIe/1GwncFaMxGZ11CzBaGzq8ANLXQnsd0roAdbovikLT?=
- =?us-ascii?Q?zg=3D=3D?=
+	=?us-ascii?Q?UGpGP8Gt3Ot/fMFACk72rCcWPRjpgUGRbYi16OksMbHxwAAIt1+gIACLwCfg?=
+ =?us-ascii?Q?5MwD8IhDJR//K65bDgLXgM0VsW+nSHx55o/ux8VSGotXHyRx2/IetwQmFkR5?=
+ =?us-ascii?Q?XlloEv4Zj19V8OcYdBe+0myvmRAuvO4wYyxybVdw7CaAX1aRY8W3Zz4MUNr6?=
+ =?us-ascii?Q?m/e+meG7EI7S6slPYgMZVI7w5psinj1HDQ3RNP2UooFDI6prw3pzqVVG4lmx?=
+ =?us-ascii?Q?xljtnwr6ntVfTv5ZeYtEHjAO/PW0NK0wpd5585u6QZtn9JxcPCglZe759Ujj?=
+ =?us-ascii?Q?r3nJ1FqmQo2pSxfFLAZOLK4y02J9WycaWFRIwR0YFzeO8bmqGbLcDa0N+Vwq?=
+ =?us-ascii?Q?8Ishz0hOAEixuu6N+HUBoeLSRFomPbpuRoFIrSjLKlICnDNytSjZgb5T1uHo?=
+ =?us-ascii?Q?Luy3djwwIhojkrfL5VHTglIl2bGuK+sjl4tRLH2XA87/fmGPNN7T0XgQkzrx?=
+ =?us-ascii?Q?vUc8Vq0QgTu9l4bUdyKsrtgHZo5b0dMqU876WCyiFeHCSj1fkYOqMTvbwASF?=
+ =?us-ascii?Q?QvdPuc99VQHtzJUUmDkGPVqWRI6i2J89EN2W3qgwlmOujm6go7p90Xk+CQrx?=
+ =?us-ascii?Q?VCrevFS84Kp5Ztx7iBHMR8UVYAJjwyBrAiWzau7ogG/7gG/mHFiGX8Bt8VRv?=
+ =?us-ascii?Q?CYgRSPczB+5TIhFCnvTHZU08YsGz1e1scqMjkSP0OHjY8pFu83FArN62GbkS?=
+ =?us-ascii?Q?3pFobQ1a1MhB0GwvUXbozgah7UAbC3/wX9Kui6GgIokyeWDlti5PwDG5F7MN?=
+ =?us-ascii?Q?2oBpOtKI7PCIPWK+Sfo8z9YnR8z74Jqcy66d4+qnJXZ9DvWDkpNqRPulqWLF?=
+ =?us-ascii?Q?vmfBVbQqT2vATebsCEUEAXEsPvg/zyosxXGza04oVPNWQTrV5mKtS+ZHuxfU?=
+ =?us-ascii?Q?0mDd2PeB412KFOE1hBPPdad/8UKfegna8Wo8FSK/TnjDsa1IUg08PHzdPEBN?=
+ =?us-ascii?Q?O+gUsJVk3uJho1Ee0Pj6iPmzvK/lJH//raGaYdJiBzutwZZIUKJV1JuSD7qL?=
+ =?us-ascii?Q?Guu6phmtfFfiUkZxAHK8yVCOHg9KaekQoOFjDfUE8rjUs0ED6KA110DRXDAh?=
+ =?us-ascii?Q?QKzXPETNdJSl5E0liwO6CD6o2iLoG1hXfnleDKM7oVu8h8hjGOMDIhPCii3r?=
+ =?us-ascii?Q?gcwAHknwhWz2bMkWbIGtoAE+FjtRB5U3OvMIybO2G/y8zR253DmBEOTZ0gPp?=
+ =?us-ascii?Q?LMrTlJj0UESRqVeG7HeCC8O9C92uYf4LAtltd4+FC5/vdocDU0L9kDUlWjRt?=
+ =?us-ascii?Q?nWko93Jk8xfrOmJzIBzIq2ZydqUs+l3uo7nAuitGHFpMTX9aYS28HGZF8Myh?=
+ =?us-ascii?Q?4CWeKMpBNJJICb9hH7N0Bvdg4RpDBGYeHUy0UHB+S15SXbnr9xQkhS/4aOEx?=
+ =?us-ascii?Q?fvIdSpWMaKwrEx9tT9KE6fxeVrGgKke9FDTWdaX5iWH/TniA8XbraoCdVj3l?=
+ =?us-ascii?Q?SdptI86CD8JIjq06nKx5FlLzyhLOnpJPOgVT0B9u9kzVtzb8oS43bzkfIMYd?=
+ =?us-ascii?Q?qbRcebFKfJTJXTy+dcjCgK5v3jWyrwaoqKpLMarKa3gS41Qg24houdi2zPWG?=
+ =?us-ascii?Q?SRb09ruvb/M9YL9n9iDf8PwiR5wESHXN302uAQfrVrZsZb59/Ob3DBSKBWgx?=
+ =?us-ascii?Q?zQ=3D=3D?=
 X-OriginatorOrg: kvaser.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6d913bfa-d827-44bd-6588-08ddc9c38efe
+X-MS-Exchange-CrossTenant-Network-Message-Id: b9409f37-e334-4f16-abad-08ddc9c3e217
 X-MS-Exchange-CrossTenant-AuthSource: AS8P193MB2014.EURP193.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jul 2025 08:33:11.3252
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jul 2025 08:35:30.7084
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 73c42141-e364-4232-a80b-d96bd34367f3
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: liu4vFGVtLkhMDtIFZDITkxlnml2aUNI7UREaxx7ZXn1DIjHbVZ7wTnLxnttC/VIN12tnHGxipvIDtkNd2hoLXKSoUkERrxvG7OPot5lV6k=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8P193MB0773
+X-MS-Exchange-CrossTenant-UserPrincipalName: /zig44dagRV2x4664s0lckGLbcpPpVVZZjZ4A/f4QLN4h0XHhqcl5HPo+QcgKYCeXdLWzi2RgRrqqsXjAJAuon3uVKHBk3p/kaTiYpbQrfY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2P193MB2018
 
-Register each CAN channel of the device as an devlink physical port.
-This makes it easier to get device information for a given network
-interface (i.e. can2).
-
-Example output:
-$ devlink dev
-pci/0000:07:00.0
-pci/0000:08:00.0
-pci/0000:09:00.0
-
-$ devlink port
-pci/0000:07:00.0/0: type eth netdev can0 flavour physical port 0 splittable false
-pci/0000:07:00.0/1: type eth netdev can1 flavour physical port 1 splittable false
-pci/0000:07:00.0/2: type eth netdev can2 flavour physical port 2 splittable false
-pci/0000:07:00.0/3: type eth netdev can3 flavour physical port 3 splittable false
-pci/0000:08:00.0/0: type eth netdev can4 flavour physical port 0 splittable false
-pci/0000:08:00.0/1: type eth netdev can5 flavour physical port 1 splittable false
-pci/0000:09:00.0/0: type eth netdev can6 flavour physical port 0 splittable false
-pci/0000:09:00.0/1: type eth netdev can7 flavour physical port 1 splittable false
-pci/0000:09:00.0/2: type eth netdev can8 flavour physical port 2 splittable false
-pci/0000:09:00.0/3: type eth netdev can9 flavour physical port 3 splittable false
-
-$ devlink port show can2
-pci/0000:07:00.0/2: type eth netdev can2 flavour physical port 2 splittable false
-
-$ devlink dev info
-pci/0000:07:00.0:
-  driver kvaser_pciefd
-  versions:
-      running:
-        fw 1.3.75
-pci/0000:08:00.0:
-  driver kvaser_pciefd
-  versions:
-      running:
-        fw 2.4.29
-pci/0000:09:00.0:
-  driver kvaser_pciefd
-  versions:
-      running:
-        fw 1.3.72
-
-$  sudo ethtool -i can2
-driver: kvaser_pciefd
-version: 6.8.0-40-generic
-firmware-version: 1.3.75
-expansion-rom-version:
-bus-info: 0000:07:00.0
-supports-statistics: no
-supports-test: no
-supports-eeprom-access: no
-supports-register-dump: no
-supports-priv-flags: no
+Add support to turn on/off CAN LEDs on device.
 
 Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
 ---
- drivers/net/can/kvaser_pciefd/kvaser_pciefd.h |  4 +++
- .../can/kvaser_pciefd/kvaser_pciefd_core.c    |  8 ++++++
- .../can/kvaser_pciefd/kvaser_pciefd_devlink.c | 25 +++++++++++++++++++
- 3 files changed, 37 insertions(+)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb.h   |  9 ++++
+ .../net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 51 ++++++++++++++++++
+ .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 54 +++++++++++++++++++
+ 3 files changed, 114 insertions(+)
 
-diff --git a/drivers/net/can/kvaser_pciefd/kvaser_pciefd.h b/drivers/net/can/kvaser_pciefd/kvaser_pciefd.h
-index 34ba393d6093..08c9ddc1ee85 100644
---- a/drivers/net/can/kvaser_pciefd/kvaser_pciefd.h
-+++ b/drivers/net/can/kvaser_pciefd/kvaser_pciefd.h
-@@ -59,6 +59,7 @@ struct kvaser_pciefd_fw_version {
- 
- struct kvaser_pciefd_can {
- 	struct can_priv can;
-+	struct devlink_port devlink_port;
- 	struct kvaser_pciefd *kv_pcie;
- 	void __iomem *reg_base;
- 	struct can_berr_counter bec;
-@@ -89,4 +90,7 @@ struct kvaser_pciefd {
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
+index f6c77eca9f43..032dc1821f04 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
+@@ -54,6 +54,11 @@ enum kvaser_usb_leaf_family {
+ 	KVASER_USBCAN,
  };
  
- extern const struct devlink_ops kvaser_pciefd_devlink_ops;
++enum kvaser_usb_led_state {
++	KVASER_USB_LED_ON = 0,
++	KVASER_USB_LED_OFF = 1,
++};
 +
-+int kvaser_pciefd_devlink_port_register(struct kvaser_pciefd_can *can);
-+void kvaser_pciefd_devlink_port_unregister(struct kvaser_pciefd_can *can);
- #endif /* _KVASER_PCIEFD_H */
-diff --git a/drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c b/drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c
-index b553fc1fc3d7..d99708a9f00c 100644
---- a/drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c
-+++ b/drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c
-@@ -945,6 +945,7 @@ static int kvaser_pciefd_setup_can_ctrls(struct kvaser_pciefd *pcie)
- 		struct net_device *netdev;
- 		struct kvaser_pciefd_can *can;
- 		u32 status, tx_nr_packets_max;
-+		int ret;
+ #define KVASER_USB_HYDRA_MAX_CMD_LEN		128
+ struct kvaser_usb_dev_card_data_hydra {
+ 	u8 channel_to_he[KVASER_USB_MAX_NET_DEVICES];
+@@ -149,6 +154,7 @@ struct kvaser_usb_net_priv {
+  * @dev_get_software_details:	get software details
+  * @dev_get_card_info:		get card info
+  * @dev_get_capabilities:	discover device capabilities
++ * @dev_set_led:		turn on/off device LED
+  *
+  * @dev_set_opt_mode:		set ctrlmod
+  * @dev_start_chip:		start the CAN controller
+@@ -176,6 +182,9 @@ struct kvaser_usb_dev_ops {
+ 	int (*dev_get_software_details)(struct kvaser_usb *dev);
+ 	int (*dev_get_card_info)(struct kvaser_usb *dev);
+ 	int (*dev_get_capabilities)(struct kvaser_usb *dev);
++	int (*dev_set_led)(struct kvaser_usb_net_priv *priv,
++			   enum kvaser_usb_led_state state,
++			   u16 duration_ms);
+ 	int (*dev_set_opt_mode)(const struct kvaser_usb_net_priv *priv);
+ 	int (*dev_start_chip)(struct kvaser_usb_net_priv *priv);
+ 	int (*dev_stop_chip)(struct kvaser_usb_net_priv *priv);
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+index 8e88b5917796..758fd13f1bf4 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+@@ -12,6 +12,7 @@
+  *    distinguish between ERROR_WARNING and ERROR_ACTIVE.
+  */
  
- 		netdev = alloc_candev(sizeof(struct kvaser_pciefd_can),
- 				      roundup_pow_of_two(KVASER_PCIEFD_CAN_TX_MAX_COUNT));
-@@ -1015,6 +1016,11 @@ static int kvaser_pciefd_setup_can_ctrls(struct kvaser_pciefd *pcie)
++#include <linux/bitfield.h>
+ #include <linux/completion.h>
+ #include <linux/device.h>
+ #include <linux/gfp.h>
+@@ -67,6 +68,8 @@ static const struct kvaser_usb_dev_cfg kvaser_usb_hydra_dev_cfg_rt;
+ #define CMD_SET_BUSPARAMS_RESP			85
+ #define CMD_GET_CAPABILITIES_REQ		95
+ #define CMD_GET_CAPABILITIES_RESP		96
++#define CMD_LED_ACTION_REQ			101
++#define CMD_LED_ACTION_RESP			102
+ #define CMD_RX_MESSAGE				106
+ #define CMD_MAP_CHANNEL_REQ			200
+ #define CMD_MAP_CHANNEL_RESP			201
+@@ -217,6 +220,22 @@ struct kvaser_cmd_get_busparams_res {
+ 	u8 reserved[20];
+ } __packed;
  
- 		pcie->can[i] = can;
- 		kvaser_pciefd_pwm_start(can);
-+		ret = kvaser_pciefd_devlink_port_register(can);
-+		if (ret) {
-+			dev_err(&pcie->pci->dev, "Failed to register devlink port\n");
-+			return ret;
-+		}
- 	}
++/* The device has two LEDs per CAN channel
++ * The LSB of action field controls the state:
++ *   0 = ON
++ *   1 = OFF
++ * The remaining bits of action field is the LED index
++ */
++#define KVASER_USB_HYDRA_LED_IDX_MASK GENMASK(31, 1)
++#define KVASER_USB_HYDRA_LED_YELLOW_CH0_IDX 3
++#define KVASER_USB_HYDRA_LEDS_PER_CHANNEL 2
++struct kvaser_cmd_led_action_req {
++	u8 action;
++	u8 padding;
++	__le16 duration_ms;
++	u8 reserved[24];
++} __packed;
++
+ /* Ctrl modes */
+ #define KVASER_USB_HYDRA_CTRLMODE_NORMAL	0x01
+ #define KVASER_USB_HYDRA_CTRLMODE_LISTEN	0x02
+@@ -299,6 +318,8 @@ struct kvaser_cmd {
+ 		struct kvaser_cmd_get_busparams_req get_busparams_req;
+ 		struct kvaser_cmd_get_busparams_res get_busparams_res;
  
++		struct kvaser_cmd_led_action_req led_action_req;
++
+ 		struct kvaser_cmd_chip_state_event chip_state_event;
+ 
+ 		struct kvaser_cmd_set_ctrlmode set_ctrlmode;
+@@ -1390,6 +1411,7 @@ static void kvaser_usb_hydra_handle_cmd_std(const struct kvaser_usb *dev,
+ 	/* Ignored commands */
+ 	case CMD_SET_BUSPARAMS_RESP:
+ 	case CMD_SET_BUSPARAMS_FD_RESP:
++	case CMD_LED_ACTION_RESP:
+ 		break;
+ 
+ 	default:
+@@ -1946,6 +1968,34 @@ static int kvaser_usb_hydra_get_capabilities(struct kvaser_usb *dev)
  	return 0;
-@@ -1738,6 +1744,7 @@ static void kvaser_pciefd_teardown_can_ctrls(struct kvaser_pciefd *pcie)
- 		if (can) {
- 			iowrite32(0, can->reg_base + KVASER_PCIEFD_KCAN_IEN_REG);
- 			kvaser_pciefd_pwm_stop(can);
-+			kvaser_pciefd_devlink_port_unregister(can);
- 			free_candev(can->can.dev);
- 		}
- 	}
-@@ -1880,6 +1887,7 @@ static void kvaser_pciefd_remove(struct pci_dev *pdev)
- 		unregister_candev(can->can.dev);
- 		timer_delete(&can->bec_poll_timer);
- 		kvaser_pciefd_pwm_stop(can);
-+		kvaser_pciefd_devlink_port_unregister(can);
- 	}
+ }
  
- 	kvaser_pciefd_disable_irq_srcs(pcie);
-diff --git a/drivers/net/can/kvaser_pciefd/kvaser_pciefd_devlink.c b/drivers/net/can/kvaser_pciefd/kvaser_pciefd_devlink.c
-index b6d3745089d4..194157e6b135 100644
---- a/drivers/net/can/kvaser_pciefd/kvaser_pciefd_devlink.c
-+++ b/drivers/net/can/kvaser_pciefd/kvaser_pciefd_devlink.c
-@@ -6,6 +6,7 @@
- 
- #include "kvaser_pciefd.h"
- 
-+#include <linux/netdevice.h>
- #include <net/devlink.h>
- 
- static int kvaser_pciefd_devlink_info_get(struct devlink *devlink,
-@@ -34,3 +35,27 @@ static int kvaser_pciefd_devlink_info_get(struct devlink *devlink,
- const struct devlink_ops kvaser_pciefd_devlink_ops = {
- 	.info_get = kvaser_pciefd_devlink_info_get,
- };
-+
-+int kvaser_pciefd_devlink_port_register(struct kvaser_pciefd_can *can)
++static int kvaser_usb_hydra_set_led(struct kvaser_usb_net_priv *priv,
++				    enum kvaser_usb_led_state state,
++				    u16 duration_ms)
 +{
++	struct kvaser_usb *dev = priv->dev;
++	struct kvaser_cmd *cmd;
 +	int ret;
-+	struct devlink_port_attrs attrs = {
-+		.flavour = DEVLINK_PORT_FLAVOUR_PHYSICAL,
-+		.phys.port_number = can->can.dev->dev_id,
-+	};
-+	devlink_port_attrs_set(&can->devlink_port, &attrs);
 +
-+	ret = devlink_port_register(priv_to_devlink(can->kv_pcie),
-+				    &can->devlink_port, can->can.dev->dev_id);
-+	if (ret)
-+		return ret;
++	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
++	if (!cmd)
++		return -ENOMEM;
 +
-+	SET_NETDEV_DEVLINK_PORT(can->can.dev, &can->devlink_port);
++	cmd->header.cmd_no = CMD_LED_ACTION_REQ;
++	kvaser_usb_hydra_set_cmd_dest_he(cmd, dev->card_data.hydra.sysdbg_he);
++	kvaser_usb_hydra_set_cmd_transid(cmd, kvaser_usb_hydra_get_next_transid(dev));
 +
-+	return 0;
++	cmd->led_action_req.duration_ms = cpu_to_le16(duration_ms);
++	cmd->led_action_req.action = state |
++				     FIELD_PREP(KVASER_USB_HYDRA_LED_IDX_MASK,
++						KVASER_USB_HYDRA_LED_YELLOW_CH0_IDX +
++						KVASER_USB_HYDRA_LEDS_PER_CHANNEL * priv->channel);
++
++	ret = kvaser_usb_send_cmd(dev, cmd, kvaser_usb_hydra_cmd_size(cmd));
++	kfree(cmd);
++
++	return ret;
 +}
 +
-+void kvaser_pciefd_devlink_port_unregister(struct kvaser_pciefd_can *can)
+ static int kvaser_usb_hydra_set_opt_mode(const struct kvaser_usb_net_priv *priv)
+ {
+ 	struct kvaser_usb *dev = priv->dev;
+@@ -2149,6 +2199,7 @@ const struct kvaser_usb_dev_ops kvaser_usb_hydra_dev_ops = {
+ 	.dev_get_software_details = kvaser_usb_hydra_get_software_details,
+ 	.dev_get_card_info = kvaser_usb_hydra_get_card_info,
+ 	.dev_get_capabilities = kvaser_usb_hydra_get_capabilities,
++	.dev_set_led = kvaser_usb_hydra_set_led,
+ 	.dev_set_opt_mode = kvaser_usb_hydra_set_opt_mode,
+ 	.dev_start_chip = kvaser_usb_hydra_start_chip,
+ 	.dev_stop_chip = kvaser_usb_hydra_stop_chip,
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
+index 6a45adcc45bd..a67855521ccc 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
+@@ -10,6 +10,7 @@
+  * Copyright (C) 2015 Valeo S.A.
+  */
+ 
++#include <linux/bitfield.h>
+ #include <linux/completion.h>
+ #include <linux/device.h>
+ #include <linux/gfp.h>
+@@ -81,6 +82,8 @@
+ #define CMD_FLUSH_QUEUE_REPLY		68
+ #define CMD_GET_CAPABILITIES_REQ	95
+ #define CMD_GET_CAPABILITIES_RESP	96
++#define CMD_LED_ACTION_REQ		101
++#define CMD_LED_ACTION_RESP		102
+ 
+ #define CMD_LEAF_LOG_MESSAGE		106
+ 
+@@ -173,6 +176,21 @@ struct kvaser_cmd_busparams {
+ 	struct kvaser_usb_busparams busparams;
+ } __packed;
+ 
++/* The device has one LED per CAN channel
++ * The LSB of action field controls the state:
++ *   0 = ON
++ *   1 = OFF
++ * The remaining bits of action field is the LED index
++ */
++#define KVASER_USB_LEAF_LED_IDX_MASK GENMASK(31, 1)
++#define KVASER_USB_LEAF_LED_YELLOW_CH0_IDX 2
++struct kvaser_cmd_led_action_req {
++	u8 tid;
++	u8 action;
++	__le16 duration_ms;
++	u8 padding[24];
++} __packed;
++
+ struct kvaser_cmd_tx_can {
+ 	u8 channel;
+ 	u8 tid;
+@@ -359,6 +377,8 @@ struct kvaser_cmd {
+ 		struct kvaser_cmd_cardinfo cardinfo;
+ 		struct kvaser_cmd_busparams busparams;
+ 
++		struct kvaser_cmd_led_action_req led_action_req;
++
+ 		struct kvaser_cmd_rx_can_header rx_can_header;
+ 		struct kvaser_cmd_tx_acknowledge_header tx_acknowledge_header;
+ 
+@@ -409,6 +429,7 @@ static const u8 kvaser_usb_leaf_cmd_sizes_leaf[] = {
+ 	[CMD_ERROR_EVENT]		= kvaser_fsize(u.leaf.error_event),
+ 	/* ignored events: */
+ 	[CMD_FLUSH_QUEUE_REPLY]		= CMD_SIZE_ANY,
++	[CMD_LED_ACTION_RESP]		= CMD_SIZE_ANY,
+ };
+ 
+ static const u8 kvaser_usb_leaf_cmd_sizes_usbcan[] = {
+@@ -423,6 +444,8 @@ static const u8 kvaser_usb_leaf_cmd_sizes_usbcan[] = {
+ 	[CMD_CAN_ERROR_EVENT]		= kvaser_fsize(u.usbcan.can_error_event),
+ 	[CMD_ERROR_EVENT]		= kvaser_fsize(u.usbcan.error_event),
+ 	[CMD_USBCAN_CLOCK_OVERFLOW_EVENT] = kvaser_fsize(u.usbcan.clk_overflow_event),
++	/* ignored events: */
++	[CMD_LED_ACTION_RESP]		= CMD_SIZE_ANY,
+ };
+ 
+ /* Summary of a kvaser error event, for a unified Leaf/Usbcan error
+@@ -924,6 +947,34 @@ static int kvaser_usb_leaf_get_capabilities_leaf(struct kvaser_usb *dev)
+ 	return 0;
+ }
+ 
++static int kvaser_usb_leaf_set_led(struct kvaser_usb_net_priv *priv,
++				   enum kvaser_usb_led_state state,
++				   u16 duration_ms)
 +{
-+	devlink_port_unregister(&can->devlink_port);
++	struct kvaser_usb *dev = priv->dev;
++	struct kvaser_cmd *cmd;
++	int ret;
++
++	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
++	if (!cmd)
++		return -ENOMEM;
++
++	cmd->id = CMD_LED_ACTION_REQ;
++	cmd->len = CMD_HEADER_LEN + sizeof(struct kvaser_cmd_led_action_req);
++	cmd->u.led_action_req.tid = 0xff;
++
++	cmd->u.led_action_req.duration_ms = cpu_to_le16(duration_ms);
++	cmd->u.led_action_req.action = state |
++				       FIELD_PREP(KVASER_USB_LEAF_LED_IDX_MASK,
++						  KVASER_USB_LEAF_LED_YELLOW_CH0_IDX +
++						  priv->channel);
++
++	ret = kvaser_usb_send_cmd(dev, cmd, cmd->len);
++	kfree(cmd);
++
++	return ret;
 +}
++
+ static int kvaser_usb_leaf_get_capabilities(struct kvaser_usb *dev)
+ {
+ 	int err = 0;
+@@ -1638,6 +1689,8 @@ static void kvaser_usb_leaf_handle_command(struct kvaser_usb *dev,
+ 		if (dev->driver_info->family != KVASER_LEAF)
+ 			goto warn;
+ 		break;
++	case CMD_LED_ACTION_RESP:
++		break;
+ 
+ 	default:
+ warn:		dev_warn(&dev->intf->dev, "Unhandled command (%d)\n", cmd->id);
+@@ -1927,6 +1980,7 @@ const struct kvaser_usb_dev_ops kvaser_usb_leaf_dev_ops = {
+ 	.dev_get_software_details = NULL,
+ 	.dev_get_card_info = kvaser_usb_leaf_get_card_info,
+ 	.dev_get_capabilities = kvaser_usb_leaf_get_capabilities,
++	.dev_set_led = kvaser_usb_leaf_set_led,
+ 	.dev_set_opt_mode = kvaser_usb_leaf_set_opt_mode,
+ 	.dev_start_chip = kvaser_usb_leaf_start_chip,
+ 	.dev_stop_chip = kvaser_usb_leaf_stop_chip,
 -- 
 2.49.0
 
