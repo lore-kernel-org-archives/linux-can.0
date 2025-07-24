@@ -1,56 +1,59 @@
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2104.outbound.protection.outlook.com [40.107.105.104])
+Received: from EUR03-VI1-obe.outbound.protection.outlook.com (mail-vi1eur03on2132.outbound.protection.outlook.com [40.107.103.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B150283FEF;
-	Thu, 24 Jul 2025 09:25:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.105.104
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD31425A2A1;
+	Thu, 24 Jul 2025 09:25:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.103.132
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753349133; cv=fail; b=L8t2FAXBeEuEbT9kWXdqPsw27z2kSPk85JFa/6jpYIoUIOYY/SMQ+AzPdlkC4iKE7oZ9OaBz6CeIGJDtQhXKVVXv4ioKLO/KqHo3Yd/W1IxfHPnrOLApQnX5RySN9wLYQxopFV5RkUekk2h3FbvYaf8aQy5S/yD7Cmdz4OwZI5M=
+	t=1753349134; cv=fail; b=AZLECrhCaQl3ybTEXFiX44cciuJ1shSIZCBj0DULqkapllRqJ17onlhy1KRaj+Qc82at+EBqRXt0Xbq5NDpA5eoCSNANwox4DafRN1jh+EmuCnLLlSagSsEz9Jh6xVN5SuiMl3OAwTPUqKPUyxcCIK+0WIB9ybHNctfGTj2w0VM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753349133; c=relaxed/simple;
-	bh=4HHIULxuEDrW2H2V5CZCnU91zelIrxVBPo07GTVIhyk=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=cyJ0tFaTObCjNRL6tSc2IMH7rucH9ApPHTUsKPX9B5UB1Xdjpdfwi9cxTrzFyjgH0VM6V3lU/6aS0MnhlFDNSXd5TLx+2N1G7WUin94eJuHkHWIK5oQ3t8uNAYwJ3DzMxXmDCOeTHSyBoIpWPJvOQ3VKAwDv7srtu/5ampi99qk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com; spf=pass smtp.mailfrom=kvaser.com; dkim=pass (1024-bit key) header.d=kvaser.com header.i=@kvaser.com header.b=Dg4obijD; arc=fail smtp.client-ip=40.107.105.104
+	s=arc-20240116; t=1753349134; c=relaxed/simple;
+	bh=5p2OmlpXFfJqv8FzyebZkNS0ZuaIl5p1VQ5EgVfFVhU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ENjKYaxYfhpq810/QTOEVfm43LN148pL2v2ATIus979kd53Cv3fTn2A7vw6+CnqCNqrog+urhw8/PwP67gi0Cf5MIdrNjvlk26U+gNNITaTwgWlf0kzO+yBTd/3CYEnTBzOrDnI0FnA2yXYjT3pFH5TF118OBy97+Iy+gJFLKvk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com; spf=pass smtp.mailfrom=kvaser.com; dkim=pass (1024-bit key) header.d=kvaser.com header.i=@kvaser.com header.b=RP5wf3AE; arc=fail smtp.client-ip=40.107.103.132
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kvaser.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=kvaser.com header.i=@kvaser.com header.b="Dg4obijD"
+	dkim=pass (1024-bit key) header.d=kvaser.com header.i=@kvaser.com header.b="RP5wf3AE"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=CKqefeK84cu5WLz760zQsUCigSfcVe986BD/NlZeenoFiHaV1jS4kzSVx20QGnou/7E9AoPSjnLJy3cP5IPrgeXTX4x8HT3C7JaK5dPvb9tKCYUTzNHWE4LRlsvNAKmZE8ccM3WBf6PBGKqjmy/v3jscl44hUE6hFSq8Ke8T9ACxsKtIE8RQqf+GY24UPfrZWf18RVWK3gtZJmBX2Y0CVCfhPjbEqHytgv1ZI+LigB2SSYfPZmOR2zTl7qPQJPoOO5zwpKczwvdPAAk6VnZIThs0vagRBlDE+eICq2wiqakl4j3fwpgp8GNpbsCKbHcGPRYrB+r2CKD2IYwMCMX97A==
+ b=VdzlPSVEgt0MFey0yIfwNnVRKAYzAQ2vdclHKG7L5ZQl1+lmJzSxISAj0qM/ZnQhxJt1LOx09sCaVbfMXTpogDjWGa52fKhqU3x+x2khCAyJWAXQ+o8mL8Je8DLm6TstqAFejz0FPwnDHm7YLbgbupprHRok/3R+YQXp8S5TbxZaV5E6WQLYCTbnYonPMguF4JnJV+SbVRjI3mTkFaOAh1ljOktpWh5cLQX6IRk9xjeil8i1tmhOJynWmfxQNCpZX2T5DhSzR+RAgkUw72uwdauMjb9fUxoE8WNnwtHYCc4HYT4+7fIs5XCM5AXgPtn4RvJLvkYIcIckGJKgPg4J9g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=c3eF3qHH9dgJ0PZeTwqK09D8vQxU7q6uAEZ9MSmQoL0=;
- b=Xv0rVYmXlqfaAVnMfHnN3xQNl5EpR5EUOuZbYkbxU8Te5D4k0XdF06fd9pVC/w9TIk5Qft9qVRNh+I6aAlAQEf2brlSUcJh3FE4v04DIMTq8AC0YZ1xsVOZYXeqHQhHm5XXGjudfiSroVitanhm228sQUIGBc3JUivisQQojTETlohwD7afkQ3DKKH03yBn71vdfOrabqL3Sh95Ec1EMj4yMljNbDy/xygqi8v6sv6sfXZzgUNR5mWwGaTq5iTesjOuVnE/I/S0WXkyx0zoGRoU3CrYJB4UqkZMAUZXBJHy6m9HGzW6ZtbG+SADYe8HCZKoEx+DBDf9HgvesFpPe4Q==
+ bh=9mqbuPlNqJsiVHrTDOy1yKaj60YsDB2TK5ugJGqwROM=;
+ b=EA2ew+hpu1skriEI6GbKxFdR95PGtDoPrfPRqP/ucmbpSHqBLebV2LDgheTTL2smJQKCf3/IMWyMbpS6sETCtLrfAfXY0t/ukT8VsFE01P9ePNRe5o8A6lGAnuh5jrHgdcrHrOhGMIdGisEdkV6GTeIbpdHBcd5sQXXWTHGHainVKUwSQlJtftgEAnqPLI7GcVghBE4UFVW3de98A94OzHTHErBzP59UPp30XNtka4poviLMkoO3T+rVuF7+o15Jfmka+vxQG4yIZFXhfrFp+mpHE8s4zV1Td+qM1VKcZ7SOaGnqH+bFYiIHncW7+te/1iF6WUVwQfAA+qkEb0uMNg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=kvaser.com; dmarc=pass action=none header.from=kvaser.com;
  dkim=pass header.d=kvaser.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kvaser.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c3eF3qHH9dgJ0PZeTwqK09D8vQxU7q6uAEZ9MSmQoL0=;
- b=Dg4obijDm+VSdAQPJ7HyIjjaOlEWD7nVjl0WkaBhPF2f9DdkV/qeISEoI3o/XlfJJVxLbMLBNOI9hFm8g80fiSEZ8XFW1BeomKdKMjIZusidB6JMdcki4SPSb4YX5/uwNKH6QBQWFzGnFiRkNRgW6mzbJ9sCofQ4b+FvCZucXkg=
+ bh=9mqbuPlNqJsiVHrTDOy1yKaj60YsDB2TK5ugJGqwROM=;
+ b=RP5wf3AEFubTGlzNaPXA6RmT2RCGKt6m9ouTrqXagn0W/mR1qQIACGwGo3NNhprUrpY6N4VPHnG9RhJwO1RaeY0RzFBuJD7p/qZgbhHMbp2WX754ACodRAVnMqtZTeUPsiqO/NqiG536GpBFje7X3gzP7HkX6MnrsKpmvgQujVo=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=kvaser.com;
 Received: from AS8P193MB2014.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:40d::20)
  by DB9P193MB1433.EURP193.PROD.OUTLOOK.COM (2603:10a6:10:2a6::6) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8964.22; Thu, 24 Jul
- 2025 09:25:22 +0000
+ 2025 09:25:23 +0000
 Received: from AS8P193MB2014.EURP193.PROD.OUTLOOK.COM
  ([fe80::7f84:ce8a:8fc2:fdc]) by AS8P193MB2014.EURP193.PROD.OUTLOOK.COM
  ([fe80::7f84:ce8a:8fc2:fdc%3]) with mapi id 15.20.8964.021; Thu, 24 Jul 2025
- 09:25:22 +0000
+ 09:25:23 +0000
 From: Jimmy Assarsson <extja@kvaser.com>
 To: linux-can@vger.kernel.org
 Cc: Jimmy Assarsson <jimmyassarsson@gmail.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>,
 	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
 	netdev@vger.kernel.org
-Subject: [PATCH v2 00/11] can: kvaser_usb: Simplify identification of physical CAN interfaces
-Date: Thu, 24 Jul 2025 11:24:54 +0200
-Message-ID: <20250724092505.8-1-extja@kvaser.com>
+Subject: [PATCH v2 02/11] can: kvaser_usb: Add support for ethtool set_phys_id()
+Date: Thu, 24 Jul 2025 11:24:56 +0200
+Message-ID: <20250724092505.8-3-extja@kvaser.com>
 X-Mailer: git-send-email 2.50.0
+In-Reply-To: <20250724092505.8-1-extja@kvaser.com>
+References: <20250724092505.8-1-extja@kvaser.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: MM0P280CA0060.SWEP280.PROD.OUTLOOK.COM
@@ -64,117 +67,136 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AS8P193MB2014:EE_|DB9P193MB1433:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5615a937-aa02-4e63-bb18-08ddca94037c
+X-MS-Office365-Filtering-Correlation-Id: e92c3ec3-0057-40aa-a5ea-08ddca94047e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?sOv1SU8TTfBEYc2ZK5XU+jrQUXvb7wHHf0lDHIYaSSedE2JCTFkU0+1KvEL5?=
- =?us-ascii?Q?66EWRiQ5sss69d+TObgBpZHTkGnGRtEDDHeNATmrp8TBzOPVL3LZ78xj1Xhg?=
- =?us-ascii?Q?zRmp4Sz4J2CYNCHPyISBVIBNH3Pa9vgYknw5D8WABAR9Bc/4zcOHyu/TdM/q?=
- =?us-ascii?Q?bxi9GNtNNeM9354qNohpj9W0blK1HSdooyBGd9PNKw0XiyUkg1h33Aa9+Y3Y?=
- =?us-ascii?Q?f9hci1ZBJyQX1VWoOM9kC7NhJXTbw4MytebvR9ePjLtBpz09sx0e1286rTCb?=
- =?us-ascii?Q?sttY3SzvDL8SNCjaJdkRcZKv6MWVPl+YRsNyuduJTBxvM2PHlW7fsd81xK8w?=
- =?us-ascii?Q?8r3ACJctIfh/e2/HUOf40IdPV2IoAgVoYF+OkJu0HWYkj3kCNg41YbHVvVTc?=
- =?us-ascii?Q?Cm7TpEbQOmlMNjqYjmriQqAm4jpEB/JhtqSYDBICA5IdJbNyMYCC0yOhN2PJ?=
- =?us-ascii?Q?ZCnwiZJ6flCVcPeUwGXEskunPo+DdtZ7M7F2O+qIs6rWdcpDiKpG0ncA6ww6?=
- =?us-ascii?Q?Xm4XNvvez+dn1LRUbe016bzZhcfKfVLG2apF2HXgSRW3gV5g5qJZMiQShsZW?=
- =?us-ascii?Q?A5tx7+/EuugvBYhdiWRX+xVYy5PgKiPqBbtBEB2a06931uSLpqRz/b29Bes2?=
- =?us-ascii?Q?9w6lQJBzzwPVU9cuzvBW9i+I37+YZt31XQeNjI9pth4Jg1YIogDNnrEbxmBt?=
- =?us-ascii?Q?NEHW9AkM4TGG8uRUKiC7p2ehvT1x60+hEhT/BPdaZeWtgILA2qq8IoMVB94V?=
- =?us-ascii?Q?cg9oouWe1IqBaYkG0cFnsYTgpAmAkEse6Z/TDSVreUtyYOGLFlOR9GiGbmMH?=
- =?us-ascii?Q?r/7iMmXrJGzxrdR3Cy7axWopZHvmbsHt7fvSNaaIqdWfQq2aU7D6KpilQNwe?=
- =?us-ascii?Q?KDs6vpECPI9G89p33Fn3tgzW08oX/wamvm2jXDWDR4QBPraYTSHzuwF4h3to?=
- =?us-ascii?Q?2g33SO+1yLbphsTSeNKKLr0AoCckMl6S/3SMP1p/q6HTz1vTGZZFfXqpg1TY?=
- =?us-ascii?Q?KcrOryLM86WtA06OP4gpjTrBJV3rGZxoG6Mr5GU63WPp4X0jZ1eNsEJbZlfW?=
- =?us-ascii?Q?IxQqEVNg0hKzFV3TKPuyxrrfvaA7s/GeqWT68+c+HsQqCYxrb/FzPu2fmtW5?=
- =?us-ascii?Q?Xqx0rzIbujezDbvj09QCSKTxpDMbpvFb7N18mb1BZrELf2JmFRPwJjIBIcO+?=
- =?us-ascii?Q?p7wWKVgRCFpP+IZP6OEQ0iO0B1fcOHLFyaEOjyB6uGx+aafOahVj8SKIVdQJ?=
- =?us-ascii?Q?7HXmK1KHaREJy8sP5iC5lDKzdGFFi4ZD/rpGBvnTIMJ6bhtJr78qoGe8Eoui?=
- =?us-ascii?Q?YIWB/6LTHR3x6WTCXugaRz7nbe0f0bXIcwfn8lgDxW61xXyWA2EQywpOBW9l?=
- =?us-ascii?Q?+hkeCi158+WKB+6ffCpGsvXx+5O6d/l4pbQJXj3ngd6rJ/v6mYw+nsPVURhi?=
- =?us-ascii?Q?M1Akm0UvZJg=3D?=
+	=?us-ascii?Q?kMz18q86YO7esVKNS98reoh0pfYF9Se6jlfAzLFFd5YSYjWZyJWlgDPOAFNh?=
+ =?us-ascii?Q?VtFDSVO1LBFxai985wFALuflqlYRZzPtUSPNRuM13NzAbQ4o+PXaqayKoxQk?=
+ =?us-ascii?Q?CN27KGM6jHwjASjyowFpH+fvoZIJ7WitjJfUpEudLwqLiD8v8WSDY1A5pTXy?=
+ =?us-ascii?Q?cXyDzA2QpodhT+Soy4mRTfZ3TLVn45mtPJ5xf/O5zDTHY2MC5Ey1hloTbA3C?=
+ =?us-ascii?Q?th+aiNCnazjWUN6ZH9dvUmyU+r5CD2QlVOfmSZwp8bPXQaluviepfHFwR7e1?=
+ =?us-ascii?Q?v6qJ+LmxR7dBiFiRK6e0NN7PqYMBAerEnNf/9+/s32YgG+GS0cIvTgqGmy1v?=
+ =?us-ascii?Q?kxIfdekEEy7BnaEWLb4H5FNZtsFSpjuRnStXDSB6Xd5Of7JlX9LFTIuLTIA1?=
+ =?us-ascii?Q?mnGIcX1W4uujphacOc+kGZpvs5OK/iWU2UC76JaVQbd+1b3SORx23xW6IdFs?=
+ =?us-ascii?Q?8e3gJmOIH41wJzYEgYeovQub+NSXjhjYcAvCVwbs4gxnFV44LawLpsyAWWIL?=
+ =?us-ascii?Q?mJLD6h2Z/rpXyYDnzoLX9BH1ZC6g4bCtBOp5l06NC0FniePGJaFBIUPPElzc?=
+ =?us-ascii?Q?jYPtnnwi/DGqGgI3m42bZ+W48CocG7s9AH+Mr3yu09obQdqcwBsKzVArylRo?=
+ =?us-ascii?Q?G51VFjnId2Hhp0rPfJYDCMnkJBEL6WEvQz/3e8c+WD2AGFGPhBMxSFku8X58?=
+ =?us-ascii?Q?yakYuLJHaV8af9JhaCg7dq6+puqeRpiNIuxlgokTQqv/8OEo40oGc61i96vp?=
+ =?us-ascii?Q?6qReLa1XtU9k8E2yhzxyxIS2ERcIpF2N16bPiNTg3TDiOrrxoRon5zfZPlW4?=
+ =?us-ascii?Q?BdpVnrQPnVCdOpVNKc+l1QL5EFej89YPAh2pK5iYJPjldOPsOszKEqP0s2TA?=
+ =?us-ascii?Q?OfAgX36M3FwkvGYjJhUPAHbioBWf6zI53L4Wu2R7U4zVcnU+T+o5/lQIyyKa?=
+ =?us-ascii?Q?lsK0PRwDApD4cXSTgqgG/snKV30LontQxIoCH3uPhPII3xYQzxmqoLgStyV6?=
+ =?us-ascii?Q?V5kflZLDrfivXqYREX8ZamotRiLHrrlcO6GrBzmAlViELRu++uiQ+oHlFSnl?=
+ =?us-ascii?Q?jr0wFnVQS6eoRwiUzKVtnMn1rfzbnbq7GQA28x/lLTpGuqnz/k7tShPhO2U4?=
+ =?us-ascii?Q?/UH9d1imFAOljYP+NkJnaz0Vhh8lqfirtEhhYKUi8jzuhHmWuskBzQO0d/JS?=
+ =?us-ascii?Q?aNyqbCcMOix79q0rzDvPsOnsNBthK+LPE7PbQRIdQhfu63xvZoHJzEiVy2fZ?=
+ =?us-ascii?Q?dmhvBJCBHuDgvOhQPm3Sc5/NMKBTF/PX1h4lW4SNHDqnwMwcftTJh8m2mDEV?=
+ =?us-ascii?Q?ZvrmvGsRo7AmzEpVNcGAqM9trjIcUwNEkIH3y44ujcPhWj++YAtXit2Qqv5E?=
+ =?us-ascii?Q?lzs3e4o=3D?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8P193MB2014.EURP193.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?fAlyXhBsnU7lPY2m2DkVHXmLFMKqUcxCfmDllsc3F1wde3vVeKnO37lfzaCi?=
- =?us-ascii?Q?8kbxe+jwV7zCNb7/sPWSQp/wVwpLQmBdyPvlKRqcFmSobAUqJYdxiE+4ZHO9?=
- =?us-ascii?Q?F3lfKKYyoQexwhpIYtkYoZPbjJxDS6zxv0NR8j/6GpNV+1egh63iL6qt+zs1?=
- =?us-ascii?Q?cMEIFPmp6pyEAiJnoefIkvtElNBINRWoHoT+KyRTB9itnzowI3pTN0uzv9kO?=
- =?us-ascii?Q?s3CrUB6vpu/kHSXO2Eqgg/Z5Fr2gP3Z78mBvpgcn9BYGFmq90rg5dARhuDh6?=
- =?us-ascii?Q?qBBLkQu7XXL2y1Fc1G1JgIjsN5A1LH588jzAvI4RiUxYVMM5wcpju3oBtzzi?=
- =?us-ascii?Q?QpbIkWDUc2MsGrMjL/5CQvAUJyOJlOD6d8NNh4aEQgJSXFc1y8nJ1RIHQUNm?=
- =?us-ascii?Q?zpEE5u1N406rEG9Odkhx+Ge/6SCnU30ovp5t05/RujW5GbQ+p8bhO/wrTJBn?=
- =?us-ascii?Q?dQeX/Q2HnfMMY2I+wlXjWmuAQps2/98ZsEJdwqYxHCyS1hlGw4yapBcQt+mI?=
- =?us-ascii?Q?pWumrW/LnVFl6vF6WkR/t7yM4uQ63y9F2caGh8S9b2GS1kn1cDitptfrdLM1?=
- =?us-ascii?Q?UjnvDqPw70XQbWchVe3N0KkswZjsHDs55asR8y8j/o5uektm77+8rChEIndT?=
- =?us-ascii?Q?NvaCG1pWDSoG6AV4InL+aOH9FrGnsiNcP/ydFvuaswYBtjxx7I4LXCw19QXy?=
- =?us-ascii?Q?ym/kFaqc3uvA83IKzzm6cAvwybBv7OQpLpK5ugCPZUxb3vj/A/ce3u5pNTso?=
- =?us-ascii?Q?c6gd8z6/dLcyjg2wVzMUnBBcoZv3gj1+0vym69RmDibsYYe20Zoigctr1S3r?=
- =?us-ascii?Q?lv1pMYoGGjiVHBk/7NQ0UZyAAnVLQI6KsMd2GWhrLbCpDI9YitH09E77RT/b?=
- =?us-ascii?Q?kWm02SrPzg8Rqa/duoW807c0otFmRVC4JD47hs4Fs6HHtBBxJnJxn9I+JBTl?=
- =?us-ascii?Q?SfT2DFUU8TO1A9KoboWyEFw9Qc2RM6eAE1vgX8Gt/FZ/Znt4NYRe0sWI1/bQ?=
- =?us-ascii?Q?keKk3cWxy8zxiKwtFMR/D+fU40Ff17mrLjiduThsK83Cr8O9KShFGlbMjpGE?=
- =?us-ascii?Q?VIsMEFJcN1K6JYtCE1auhonDLRkCLcQ0JxAbDjzhm/dNYlI0mfZ+9OukwtTH?=
- =?us-ascii?Q?WImykD5Mj7xH7eMqHEo8CBAPUe9kYr8exKFMj+7zVC/iz5lIXE82Ukoau+2T?=
- =?us-ascii?Q?d7jDKRGEvAT6HghTCYwaaP78Nzc0xB9PbqdvB+kxY0hatezSYMtEaAapubG1?=
- =?us-ascii?Q?zIdhXkjbY9A6ijEy18sqQZi3ZE93dDmynZW/O1lydNACz2BX2pF0mS7KyRqV?=
- =?us-ascii?Q?41i85buq5dnLJthk7iLHP1vd+pFADa1YHGMoWHYV1W03AAOYDZeKqITz26BE?=
- =?us-ascii?Q?9pRO48SYWG0zfLJRnOT7ekjPGT/9wgLbTbCvOnWOxdI8R/8EhbyYBNkmv5ix?=
- =?us-ascii?Q?oen37hD75H+E81dBNT4a2iYqD9hrOISItWKB9UmJ8aw4Fqav3cegCk4ScbUk?=
- =?us-ascii?Q?IKQC0MPOaQlI1Vp33N0Q30obnlhob0Fn2D6nwEe48jOJOfzmOcMXUde9RzAh?=
- =?us-ascii?Q?vircwwkbbfY7UuFbW9ddP/Anrlty8NkujuMcpsu74PVWT7/fvCEXdlhOeGvv?=
- =?us-ascii?Q?pQ=3D=3D?=
+	=?us-ascii?Q?bkOwQ9hn08YLNXh3qJQielmBfJ8KrjMESa3U8EUgZdrH044F7JaS4e2j8FxT?=
+ =?us-ascii?Q?AVUenb/q4cJOwoYpilyCmaNNht3rvZsMuzB536AKrFwJ/gxS6kKR6GJGkk05?=
+ =?us-ascii?Q?uiXlO9GMSvTk91TMsXrPR7CjaanpAOxcenHSfr0nS0pU+nbLXXHUtu4bp++V?=
+ =?us-ascii?Q?05n1tCZ4hVwYzsa1VnPGVTkmoMQCNH8D5KXMO0TqhUEETgFh/JPMLMuzXdyI?=
+ =?us-ascii?Q?lLVQLifO44HP90ffmnE2VUbTWqYE2VcemO0QYWm44CmCvLzRE3+OxTHHCVVX?=
+ =?us-ascii?Q?bVcUOMiiQjAX4slZEr9HJV9pMikwH0tHZJI2s5eTdqJV9u23qXoDNxepqBJF?=
+ =?us-ascii?Q?GD/NbHe1q5rcoG5tiN88l/DNL0kuXUW4NoSENi8/P4MykOIL4MQSgwuholS8?=
+ =?us-ascii?Q?bTn1UjVrdPDxDmpVcI8UadXPTjbxywQz7sGzc9nMO4U3p+bTiwdg55LKjVLQ?=
+ =?us-ascii?Q?FY5cVGAlCQbqIPFt/ERd9BQ4iZAZ1j1bzNXjZuWyrezLfjvF6WHYiuFHcB7Q?=
+ =?us-ascii?Q?KbdcJYITjHBSASJYasqPnia4isrCxNb6rd27KXRTQZ6EaRapx4rG8Icl+gxg?=
+ =?us-ascii?Q?Abjz+eipk3Z87zPt9s1DGaNYRKugNpCvCV9I8c2xe0UJ+tWxsFZBn+ivRdKi?=
+ =?us-ascii?Q?yeGpwmSlX60SNfekmGRykJTuLWQTK8uH0VLKkD8HCHpIbzJyMO1v+ukRunTz?=
+ =?us-ascii?Q?rJCR+UWvjgeEsIS/B/eFMWKtSfyxfCrt7/VU1ak2To51hatvPYKzC2PNn6O5?=
+ =?us-ascii?Q?FaLRCiyyqW42X2Uz7VMHTbq/MeOr6XuCekj7S1IU8yCrwn/9yMK4zBNd34kd?=
+ =?us-ascii?Q?0z5CGXNDYkn6svO4ywuGP4+NibDmKiqpLYgvZoYgTmxgcLIJxi+ZyVXkrc/1?=
+ =?us-ascii?Q?5xJGlgBSgKx03qGoKeOVwbDVOZEjd8KWoZF+/FUCr7HNJqisflSCpdWnlxpV?=
+ =?us-ascii?Q?sp3k8Ue5XE3Q85pV5n7l+6nrJ5J9jX9If/WyXmcNSlQVwQM+X3lUXVyOmGLD?=
+ =?us-ascii?Q?NILjNP9ETMh5waZG6L2RXthAP+EebWrwnJZeSpoieyQxelzUfPh8li52BL4Q?=
+ =?us-ascii?Q?o6Z6QEEvVlLAKgIp55XHHEzf9B8zlhpAhFMQ23YI25W71c3kvoW01hE50cH3?=
+ =?us-ascii?Q?AhA9x8B2lHUB6qj0vLHcd60U2/0+TVi0v5m21wh+QZBzy61XGy7DsWN8jiN0?=
+ =?us-ascii?Q?Hn+OxNiP9V/j0MkznPKwjOJysHOPOBn3glcR7x3awwHVd3YiOjqzaVbyONlG?=
+ =?us-ascii?Q?vIuIlV07NSlQ0fLg5JKkkxhC14wDDuM5Y5a4MkgDRv7Rltbu55M4zscimuLE?=
+ =?us-ascii?Q?h/tmZRxzXI78L2Sd1XoUwwk+30E4fhKw/t0xja9WC6O8Z6xbj7LFGKRYZtHp?=
+ =?us-ascii?Q?HrzhHzbpBXKYKOTVCPg0r1pydl526RXsZmuJA9ZVb6FbsX6fux5whM1Trl4w?=
+ =?us-ascii?Q?ovEXjAGMkDQhKqj4ifDXCcUh5ZUSN4F0IUM2ka3gm6W8rPUiN+TyExqg53re?=
+ =?us-ascii?Q?AtN/Gx4A9isKWqx2XvTvClyaiKOdCioR3+qEzQrMOYuy3werYtfwjSh5HDq9?=
+ =?us-ascii?Q?Ef1jZEJLcBIYBy83isNyCaWPWeALqab8CLw87ciAEOFXYJoBeN9eq+MdOiJX?=
+ =?us-ascii?Q?Cw=3D=3D?=
 X-OriginatorOrg: kvaser.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5615a937-aa02-4e63-bb18-08ddca94037c
+X-MS-Exchange-CrossTenant-Network-Message-Id: e92c3ec3-0057-40aa-a5ea-08ddca94047e
 X-MS-Exchange-CrossTenant-AuthSource: AS8P193MB2014.EURP193.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2025 09:25:22.3551
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2025 09:25:23.8764
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 73c42141-e364-4232-a80b-d96bd34367f3
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lWJ6gU/2v8C5/hAwnuIC7l0f+1C75NswJT6JjJhecW4lcfGaX/mB2rWLS81HXA1DwH7VSPua2iXht5w3KA703lGf5xEv5pWgwJjodV8qVJw=
+X-MS-Exchange-CrossTenant-UserPrincipalName: bqXfJD3Gnp5TXT5txTIukG3yfTf1GHSRYvX/jW8mEBsf9NXMXEliynmGHkqo3gPMUmxikpmqUmPAFWVceu+xMxAO2K/abJ/AeGxv/MP5pUs=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9P193MB1433
 
-This patch series simplifies the process of identifying which network
-interface (can0..canX) corresponds to which physical CAN channel on
-Kvaser USB based CAN interfaces.
+Add support for ethtool set_phys_id(), to physically locate devices by
+flashing a LED on the device.
 
+Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
+---
 Changes in v2:
-  - New patch with devlink documentation
-  - New patch assigning netdev.dev_port
-  - Formatting and refactoring
+  - Return inside the switch-case. Suggested by Vincent Mailhol [1]
 
-Jimmy Assarsson (11):
-  can: kvaser_usb: Add support to control CAN LEDs on device
-  can: kvaser_usb: Add support for ethtool set_phys_id()
-  can: kvaser_usb: Assign netdev.dev_port based on device channel index
-  can: kvaser_usb: Add intermediate variables
-  can: kvaser_usb: Move comment regarding max_tx_urbs
-  can: kvaser_usb: Store the different firmware version components in a
-    struct
-  can: kvaser_usb: Store additional device information
-  can: kvaser_usb: Add devlink support
-  can: kvaser_usb: Expose device information via devlink info_get()
-  can: kvaser_usb: Add devlink port support
-  Documentation: devlink: add devlink documentation for the kvaser_usb
-    driver
+[1] https://lore.kernel.org/linux-can/20250723083236.9-1-extja@kvaser.com/T/#md10566c624e75c59ec735fed16d5ec4cbdb38430
 
- Documentation/networking/devlink/index.rst    |   1 +
- .../networking/devlink/kvaser_usb.rst         |  33 +++++
- drivers/net/can/usb/Kconfig                   |   1 +
- drivers/net/can/usb/kvaser_usb/Makefile       |   2 +-
- drivers/net/can/usb/kvaser_usb/kvaser_usb.h   |  33 ++++-
- .../net/can/usb/kvaser_usb/kvaser_usb_core.c  | 139 +++++++++++++-----
- .../can/usb/kvaser_usb/kvaser_usb_devlink.c   |  88 +++++++++++
- .../net/can/usb/kvaser_usb/kvaser_usb_hydra.c |  63 +++++++-
- .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c  |  75 +++++++++-
- 9 files changed, 387 insertions(+), 48 deletions(-)
- create mode 100644 Documentation/networking/devlink/kvaser_usb.rst
- create mode 100644 drivers/net/can/usb/kvaser_usb/kvaser_usb_devlink.c
+ .../net/can/usb/kvaser_usb/kvaser_usb_core.c  | 26 +++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+index daf42080f942..c74875f978c4 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+@@ -753,6 +753,31 @@ static netdev_tx_t kvaser_usb_start_xmit(struct sk_buff *skb,
+ 	return ret;
+ }
+ 
++static int kvaser_usb_set_phys_id(struct net_device *netdev,
++				  enum ethtool_phys_id_state state)
++{
++	struct kvaser_usb_net_priv *priv = netdev_priv(netdev);
++	const struct kvaser_usb_dev_ops *ops = priv->dev->driver_info->ops;
++
++	switch (state) {
++	case ETHTOOL_ID_ACTIVE:
++		return 3; /* 3 On/Off cycles per second */
++
++	case ETHTOOL_ID_ON:
++		return ops->dev_set_led(priv, KVASER_USB_LED_ON, 1000);
++
++	case ETHTOOL_ID_OFF:
++		return ops->dev_set_led(priv, KVASER_USB_LED_OFF, 1000);
++
++	case ETHTOOL_ID_INACTIVE:
++		/* Turn LED off and restore standard function after 1ms */
++		return ops->dev_set_led(priv, KVASER_USB_LED_OFF, 1);
++
++	default:
++		return -EINVAL;
++	}
++}
++
+ static const struct net_device_ops kvaser_usb_netdev_ops = {
+ 	.ndo_open = kvaser_usb_open,
+ 	.ndo_stop = kvaser_usb_close,
+@@ -763,6 +788,7 @@ static const struct net_device_ops kvaser_usb_netdev_ops = {
+ 
+ static const struct ethtool_ops kvaser_usb_ethtool_ops = {
+ 	.get_ts_info = can_ethtool_op_get_ts_info_hwts,
++	.set_phys_id = kvaser_usb_set_phys_id,
+ };
+ 
+ static void kvaser_usb_remove_interfaces(struct kvaser_usb *dev)
 -- 
 2.49.0
 
