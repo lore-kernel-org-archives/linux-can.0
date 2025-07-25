@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C6C2F0038
-	for <linux-can@vger.kernel.org>; Fri, 25 Jul 2025 16:13:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDF532F0C41
+	for <linux-can@vger.kernel.org>; Fri, 25 Jul 2025 16:13:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753460025; cv=none; b=DHb8WDfdhI3ZstzbQCo6B9AwJlqjrMFXLsBnzwP2zjPZu4pW9D56TcgBZj8rz2HodWLaOr40fNcrCfqv7Tk5CDcVdTuG9ZdcqWPZCuRdfPemM5telQYxR5nHuzdFu7NyHGdCv4IZRZlwBoK1YLd7GpgdUURqOL5LXMLbJfqiPok=
+	t=1753460026; cv=none; b=bx4o83+w0l8+E1WYO88lwpn+DQPQurtrY+uiIEYdqSR46xl9lQF5n0olXyX9BtoQzOaArPikPA5ITkZ6YTU/K6fnGk8084cLeD7cdbMz2kzjqhPTmqy7pm92TZNPU8yCsKuUHiV2pOxoqo3imUAETcdL4hfZLj7IUt2XWh53NKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753460025; c=relaxed/simple;
-	bh=qcdWp0AWh4XqM3PY71qvRLZaBquraQQGgZHAx2d6/bc=;
+	s=arc-20240116; t=1753460026; c=relaxed/simple;
+	bh=+SuXL1i/LS/TPmoeHroMd0paelhhPut0NFV1V2ffC7M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=F2xqk8NL5kZrpY334FNCAvBBmQp4Tf8jvjtzvzvuVNN9NibzSiye5CiAV0W65/XYPhYA4Jm0c/xR1VUvBV2j/AuS/l4DHjEsppjKqDU1a57LeQRMOCToPRrDYaO1p67CwVDy1y61B4jAXY3RKOd11QujZf3NPmWPUfleXRkzZQw=
+	 MIME-Version; b=oOse6VFN1hZz/SY6rQaVlJkzMeZs6sT+bv+L249KiEFVD8ZM63uXF+PoiIu+1JCkwVdVEwu9xyoyOGHGjFy7U4Q5L10a570/ha2k5XFcJEq4MQ9GMJ2WUgCR24nCgRGgxkggOvUeXEwewCcmXLu/qK88JU4J9vfHfqgvWK/O/OA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,26 +18,26 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1ufL3E-0006il-R8
-	for linux-can@vger.kernel.org; Fri, 25 Jul 2025 18:13:40 +0200
+	id 1ufL3F-0006j2-9L
+	for linux-can@vger.kernel.org; Fri, 25 Jul 2025 18:13:41 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1ufL3A-00AFc5-1R
+	id 1ufL3A-00AFcA-25
 	for linux-can@vger.kernel.org;
 	Fri, 25 Jul 2025 18:13:36 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 2336B4498D7
+	by bjornoya.blackshift.org (Postfix) with SMTP id 291614498D9
 	for <linux-can@vger.kernel.org>; Fri, 25 Jul 2025 16:13:35 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 16E10449830;
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 384E4449836;
 	Fri, 25 Jul 2025 16:13:31 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 8442222a;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 92921d07;
 	Fri, 25 Jul 2025 16:13:30 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -48,9 +48,9 @@ Cc: davem@davemloft.net,
 	Jimmy Assarsson <extja@kvaser.com>,
 	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 19/27] can: kvaser_usb: Assign netdev.dev_port based on device channel index
-Date: Fri, 25 Jul 2025 18:05:29 +0200
-Message-ID: <20250725161327.4165174-20-mkl@pengutronix.de>
+Subject: [PATCH net-next 21/27] can: kvaser_usb: Move comment regarding max_tx_urbs
+Date: Fri, 25 Jul 2025 18:05:31 +0200
+Message-ID: <20250725161327.4165174-22-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250725161327.4165174-1-mkl@pengutronix.de>
 References: <20250725161327.4165174-1-mkl@pengutronix.de>
@@ -68,31 +68,34 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Jimmy Assarsson <extja@kvaser.com>
 
-Assign netdev.dev_port based on the device channel index, to indicate the
-port number of the network device.
-While this driver already uses netdev.dev_id for that purpose, dev_port is
-more appropriate. However, retain dev_id to avoid potential regressions.
+Move comment regarding max_tx_urbs, to where the struct member is declared.
 
-Fixes: 3e66d0138c05 ("can: populate netdev::dev_id for udev discrimination")
 Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
-Link: https://patch.msgid.link/20250725123452.41-4-extja@kvaser.com
+Link: https://patch.msgid.link/20250725123452.41-6-extja@kvaser.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-index c74875f978c4..7be8604bf760 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-@@ -878,6 +878,7 @@ static int kvaser_usb_init_one(struct kvaser_usb *dev, int channel)
- 	netdev->ethtool_ops = &kvaser_usb_ethtool_ops;
- 	SET_NETDEV_DEV(netdev, &dev->intf->dev);
- 	netdev->dev_id = channel;
-+	netdev->dev_port = channel;
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
+index 032dc1821f04..fba972e7220d 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
+@@ -101,12 +101,12 @@ struct kvaser_usb {
+ 	struct usb_endpoint_descriptor *bulk_in, *bulk_out;
+ 	struct usb_anchor rx_submitted;
  
- 	dev->nets[channel] = priv;
++	u32 fw_version;
++	unsigned int nchannels;
+ 	/* @max_tx_urbs: Firmware-reported maximum number of outstanding,
+ 	 * not yet ACKed, transmissions on this device. This value is
+ 	 * also used as a sentinel for marking free tx contexts.
+ 	 */
+-	u32 fw_version;
+-	unsigned int nchannels;
+ 	unsigned int max_tx_urbs;
+ 	struct kvaser_usb_dev_card_data card_data;
  
 -- 
 2.47.2
