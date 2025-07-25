@@ -1,15 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ECEF1F4CB6
-	for <linux-can@vger.kernel.org>; Fri, 25 Jul 2025 16:13:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C32F62EF295
+	for <linux-can@vger.kernel.org>; Fri, 25 Jul 2025 16:13:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753460016; cv=none; b=Bq1Qp4y7MBspIKzBEp0/n0+LzOUsns2Mi1+8rt97ZdKaQcqaRCwBi0z/ywp8VOxlsYGjydFP8cytkuN1QJcPsg5N/NqHXkJxKF4kXqGTpR/T7pEHMn4gwHCHBW7CR3u93ldI4t6EC0eAz6mvJeloItci7zqS1+4X1uDBjaCHyr8=
+	t=1753460018; cv=none; b=Y9NKVSl1YnnU8H+YSI5TbZVAwpVU8HHEBz6M+JknAANIgC5OqUiWiT5H5PSg80S5NggSsVEHFSvjfxEeB9QfPgkivLH5539hxYpVDL8DT3O4MFXq0Mkbl7qRRhvu8dIjzSLjI/C6+dx2pwjhxA8bRh3daSrtla8O0/KNeFRuzy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753460016; c=relaxed/simple;
-	bh=j82L5eJM8xAEdPCDnX3eC/lwWwMZcc06Zi4yUAoh3ZY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=m1RK4UiVEuCqt1P0RwPqT668nWuEXC+dMM4EPFvpCaopiFnmZ82ly4Zi+JwqqesY4X2kkyw3Vq005BxPb9Upts23njaaZzgCG6A7OfwWRUgHjt55ZpNlvdZhJfZkCcBI4zX/hdPvyWQXad6m5A29Bs2FePAd2UP6S1xcWeA2J9o=
+	s=arc-20240116; t=1753460018; c=relaxed/simple;
+	bh=di/y1ujHcckq1+9t7FFelcdoI8xdT4ldZBty9k1c+D0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=RfDs2tG/uvo/vs/yme7LRkrsnVvX9wreKJULRnlt5+oCLc/mOoJTcY9oyu6K5vm7MZLUOby5bcBvip3puRxq+nkNt9FPFTq49GtM8gtDkVVQTj+CkGtRXvASWby6tsSzStJWJQ83IcV4sWT0Y4jglg0BBGQ3fvHIjKXz62DZHTo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -17,37 +18,42 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1ufL35-0006TT-7K
-	for linux-can@vger.kernel.org; Fri, 25 Jul 2025 18:13:31 +0200
+	id 1ufL39-0006bW-3m
+	for linux-can@vger.kernel.org; Fri, 25 Jul 2025 18:13:35 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1ufL34-00AFUB-35
+	id 1ufL37-00AFX5-01
 	for linux-can@vger.kernel.org;
-	Fri, 25 Jul 2025 18:13:30 +0200
+	Fri, 25 Jul 2025 18:13:33 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id A3222449821
-	for <linux-can@vger.kernel.org>; Fri, 25 Jul 2025 16:13:30 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with SMTP id 8C20A449865
+	for <linux-can@vger.kernel.org>; Fri, 25 Jul 2025 16:13:32 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id B4DFC449805;
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id F412444980C;
 	Fri, 25 Jul 2025 16:13:29 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id db26adcb;
-	Fri, 25 Jul 2025 16:13:28 +0000 (UTC)
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 649cccf0;
+	Fri, 25 Jul 2025 16:13:29 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
-	kernel@pengutronix.de
-Subject: [PATCH net-next 0/27] pull-request: can-next 2025-07-25
-Date: Fri, 25 Jul 2025 18:05:10 +0200
-Message-ID: <20250725161327.4165174-1-mkl@pengutronix.de>
+	kernel@pengutronix.de,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 05/27] can: tscan1: CAN_TSCAN1 can depend on PC104
+Date: Fri, 25 Jul 2025 18:05:15 +0200
+Message-ID: <20250725161327.4165174-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.47.2
+In-Reply-To: <20250725161327.4165174-1-mkl@pengutronix.de>
+References: <20250725161327.4165174-1-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -60,116 +66,37 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Hello netdev-team,
+From: Randy Dunlap <rdunlap@infradead.org>
 
-this is a pull request of 27 patches for net-next/main.
+Add a dependency on PC104 to limit (restrict) this driver kconfig
+prompt to kernel configs that have PC104 set.
 
-The first patch is by Khaled Elnaggar and converts the janz-ican3
-driver's fwinfo_show() to sysfs_emit().
+Add COMPILE_TEST as a possibility for more complete build coverage.
+I tested this build config on x86_64 5 times without problems.
 
-Vincent Mailhol contributes 3 patches that first fix a warning in the
-ti_hecc driver and then add missing COMPILE_TEST more compile
-coverage to the ti_hecc and tscan1 driver.
-
-Randy Dunlap's patch let's the tscan1 driver depend on PC104.
-
-A patch by Luis Felipe Hernandez fixes a kernel-doc error in the
-ctucanfd driver.
-
-Jimmy Assarsson contributes 10 patches for the kvaser_pciefd and 11
-for the kvaser_usb driver. Both series simplify the identification of
-physical the CAN interfaces and add devlink support to get information
-about the running firmware.
-
-regards,
-Marc
-
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Link: https://patch.msgid.link/20250721002823.3548945-1-rdunlap@infradead.org
+[mkl: fix conflict, remove Fixes: tag]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/sja1000/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The following changes since commit 06baf9bfa6ca8db7d5f32e12e27d1dc1b7cb3a8a:
+diff --git a/drivers/net/can/sja1000/Kconfig b/drivers/net/can/sja1000/Kconfig
+index ba16d7bc09ef..e061e35769bf 100644
+--- a/drivers/net/can/sja1000/Kconfig
++++ b/drivers/net/can/sja1000/Kconfig
+@@ -105,7 +105,7 @@ config CAN_SJA1000_PLATFORM
+ 
+ config CAN_TSCAN1
+ 	tristate "TS-CAN1 PC104 boards"
+-	depends on ISA || (COMPILE_TEST && HAS_IOPORT)
++	depends on (ISA && PC104) || (COMPILE_TEST && HAS_IOPORT)
+ 	help
+ 	  This driver is for Technologic Systems' TSCAN-1 PC104 boards.
+ 	  https://www.embeddedts.com/products/TS-CAN1
+-- 
+2.47.2
 
-  Merge branch 'tcp-receiver-changes' (2025-07-14 18:41:43 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-6.17-20250725
-
-for you to fetch changes up to ecd82dfb4ccdfab7ecafcdb02b3b388dbaff4396:
-
-  Merge patch series "can: kvaser_usb: Simplify identification of physical CAN interfaces" (2025-07-25 18:01:25 +0200)
-
-----------------------------------------------------------------
-linux-can-next-for-6.17-20250725
-
-----------------------------------------------------------------
-Jimmy Assarsson (21):
-      can: kvaser_pciefd: Add support to control CAN LEDs on device
-      can: kvaser_pciefd: Add support for ethtool set_phys_id()
-      can: kvaser_pciefd: Add intermediate variable for device struct in probe()
-      can: kvaser_pciefd: Store the different firmware version components in a struct
-      can: kvaser_pciefd: Store device channel index
-      can: kvaser_pciefd: Split driver into C-file and header-file.
-      can: kvaser_pciefd: Add devlink support
-      can: kvaser_pciefd: Expose device firmware version via devlink info_get()
-      can: kvaser_pciefd: Add devlink port support
-      Documentation: devlink: add devlink documentation for the kvaser_pciefd driver
-      can: kvaser_usb: Add support to control CAN LEDs on device
-      can: kvaser_usb: Add support for ethtool set_phys_id()
-      can: kvaser_usb: Assign netdev.dev_port based on device channel index
-      can: kvaser_usb: Add intermediate variables
-      can: kvaser_usb: Move comment regarding max_tx_urbs
-      can: kvaser_usb: Store the different firmware version components in a struct
-      can: kvaser_usb: Store additional device information
-      can: kvaser_usb: Add devlink support
-      can: kvaser_usb: Expose device information via devlink info_get()
-      can: kvaser_usb: Add devlink port support
-      Documentation: devlink: add devlink documentation for the kvaser_usb driver
-
-Khaled Elnaggar (1):
-      can: janz-ican3: use sysfs_emit() in fwinfo_show()
-
-Luis Felipe Hernandez (1):
-      docs: Fix kernel-doc error in CAN driver
-
-Marc Kleine-Budde (3):
-      Merge patch series "can: Kconfig: add missing COMPILE_TEST"
-      Merge patch series "can: kvaser_pciefd: Simplify identification of physical CAN interfaces"
-      Merge patch series "can: kvaser_usb: Simplify identification of physical CAN interfaces"
-
-Randy Dunlap (1):
-      can: tscan1: CAN_TSCAN1 can depend on PC104
-
-Vincent Mailhol (3):
-      can: ti_hecc: fix -Woverflow compiler warning
-      can: ti_hecc: Kconfig: add COMPILE_TEST
-      can: tscan1: Kconfig: add COMPILE_TEST
-
- Documentation/networking/devlink/index.rst         |   2 +
- Documentation/networking/devlink/kvaser_pciefd.rst |  24 ++++
- Documentation/networking/devlink/kvaser_usb.rst    |  33 +++++
- drivers/net/can/Kconfig                            |   3 +-
- drivers/net/can/Makefile                           |   2 +-
- drivers/net/can/ctucanfd/ctucanfd_base.c           |  11 +-
- drivers/net/can/janz-ican3.c                       |   2 +-
- drivers/net/can/kvaser_pciefd/Makefile             |   3 +
- drivers/net/can/kvaser_pciefd/kvaser_pciefd.h      |  96 ++++++++++++++
- .../kvaser_pciefd_core.c}                          | 144 ++++++++++-----------
- .../net/can/kvaser_pciefd/kvaser_pciefd_devlink.c  |  60 +++++++++
- drivers/net/can/sja1000/Kconfig                    |   2 +-
- drivers/net/can/ti_hecc.c                          |   2 +-
- drivers/net/can/usb/Kconfig                        |   1 +
- drivers/net/can/usb/kvaser_usb/Makefile            |   2 +-
- drivers/net/can/usb/kvaser_usb/kvaser_usb.h        |  33 ++++-
- drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c   | 139 ++++++++++++++------
- .../net/can/usb/kvaser_usb/kvaser_usb_devlink.c    |  87 +++++++++++++
- drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c  |  65 +++++++++-
- drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c   |  75 ++++++++++-
- 20 files changed, 655 insertions(+), 131 deletions(-)
- create mode 100644 Documentation/networking/devlink/kvaser_pciefd.rst
- create mode 100644 Documentation/networking/devlink/kvaser_usb.rst
- create mode 100644 drivers/net/can/kvaser_pciefd/Makefile
- create mode 100644 drivers/net/can/kvaser_pciefd/kvaser_pciefd.h
- rename drivers/net/can/{kvaser_pciefd.c => kvaser_pciefd/kvaser_pciefd_core.c} (96%)
- create mode 100644 drivers/net/can/kvaser_pciefd/kvaser_pciefd_devlink.c
- create mode 100644 drivers/net/can/usb/kvaser_usb/kvaser_usb_devlink.c
 
