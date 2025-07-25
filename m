@@ -1,47 +1,47 @@
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2132.outbound.protection.outlook.com [40.107.21.132])
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2109.outbound.protection.outlook.com [40.107.20.109])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3782EBDF7;
-	Fri, 25 Jul 2025 12:35:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E1452ECD1C;
+	Fri, 25 Jul 2025 12:35:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.109
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753446911; cv=fail; b=pjV4ZpGUV5mEO8DMFcEgYrL0BHAEhamF50X5IILmiJlo8xHnHamjx+gRxgmM5ylt0Iwl04FMuzBh41VumsoT0GaC3poZS4/rH497e2D1YO7ArUSuctWiZRYEAyxU2zGtLYyuoe+feqB3ft2uQ8K6Vki2+cyrv7tWTPIehQua0JY=
+	t=1753446912; cv=fail; b=cA91yCYXTCcbwTXMkFL5y57ueJH3CIxTjJK5H9IbHa5HJGV24nlLM3wEIZGG0hM4QaYuYDEKkewg16mlRAftUxNjSmmbJu+Q//lCOXt71xFHnSEiwy+8mWQ2zEljybHENawGdNyVjH173UzkPrWRZPzdKeUMjrKEG3iqurz9tLk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753446911; c=relaxed/simple;
-	bh=W56PYIj5OVe8mq9yOG6jWNV8XLjxQ2L9qflJgDwTyMU=;
+	s=arc-20240116; t=1753446912; c=relaxed/simple;
+	bh=x/dgKxPWRwiaOHs17MWy4Y5WLLEdd5aj3Q2GIP03u5w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ext+jS2SHKEj9944VUnRekc4Q7aHJfbHYwDHB3fPXOa1oqGjDYz/aZ6qy8nHQ2H6bgzzBOEWb2cq0vrLVR35OE/aIlCYwL7Z2xlGjmuLD03+dLbMjCc5N8K4yFjqMboQFlC012/aSpLFrAn/oQAJBBIjDaLVB/9j0DwftQ/wwdM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com; spf=pass smtp.mailfrom=kvaser.com; dkim=pass (1024-bit key) header.d=kvaser.com header.i=@kvaser.com header.b=VwEKk8LB; arc=fail smtp.client-ip=40.107.21.132
+	 Content-Type:MIME-Version; b=mcvp3FlsQEY7fJ5qnE7FZswjbFvpUKx5jDcp//25sjsArwOhhqAJCQjXdoHBgNml+Nn73MdunnpdP31c3HYN9v1mZRD4beijUJZkwxaCJeeTYrViY4UxZJ3O51/p95/40HfRkcpslH2ia3j1M1xOmeH8L4mk+hxPzPdWJ1vr4yk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com; spf=pass smtp.mailfrom=kvaser.com; dkim=pass (1024-bit key) header.d=kvaser.com header.i=@kvaser.com header.b=TjaznJxr; arc=fail smtp.client-ip=40.107.20.109
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kvaser.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=kvaser.com header.i=@kvaser.com header.b="VwEKk8LB"
+	dkim=pass (1024-bit key) header.d=kvaser.com header.i=@kvaser.com header.b="TjaznJxr"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=GuoP/yhMATQKzfdycC7B3FNdPnaf4PL/OiqhsdS1zRX9/zFhldzKvHlxc8azNX3oRlCc0I8uHJXbuvQ5Ph6dOfcQyeSyeNByakKTPVtZtMXXpFVZCujqfx2Bl8fJyjw/yDRhJ+vhT7MpmM3JD/DCCZplN/WuMBQzuWDcl8LzOmR8tWZtoqaPYPK3VHqAYb+KBJsDV9uBmf+19f3AQAKgjzx4YFFC4MDlQX8O618IcNluKRVAhAMrwLPBVay28xUuNttuNsjuFAe7mU66rKReFuwbClWAHofd0qPaVVmUljVwLqRpFJogMlnxKD3dAKTQUAEaaydgSGwLTMf3vDglng==
+ b=zKKXI+yVzeWihekgaV7pxAoXyZf54J1fa5tC3aFRTiHqT6l+SQGauqbyQZZjL9s1h14dzN3UG3iwhHnOWS2ZuylqbaLLPjHrFEBTpE5jwWmAs2OboVcLip+cUs+iWQvt75ewZJQqwXP6y25mcVSVmqQ907iVu3xeMQHnvB0hx7rRjJaSXYmbwgMZST1nizJeTk7MkAvdFWuYJd8zyWJTZITEBYowMPXIU7pe6d35zS5+wRUwt7PsJDdEm06VO+FjH/y3umImtGFrNMbgSqLVM+3H35rtGIsPIo6geC3B7Z4F7tBKHAUq8Zh0sWgH2RhZtk2ZOmnpZZ8oToQ7527/Lw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=x3DnSK7ebwPEsQ4o31CWywbZB4AqfpS6UsFBgsyNht8=;
- b=Iygri+A81l9DtSUcGk+XvVdWYUnXWUMM96dMzMyBuUjHZKM4cQrr7APV6YREYO4XQ44HNXtFbzpzMRv6EqEAc0bKZ/RCVXfNbt2J2hr8lP2SVnODvQOE/L1HtGAdR4sIvHHBKOlOsJ2lQ7FGv1j+muQYBPgtf2e4sd2Flt4xYVbNZmo3DyTQmlEelV5r/Xs+2rqT+1cyU3A7C6kFztMps9liIi2etxHunybkqPi1Bw6BiAthoIDSxkAmaQ1uOXhCtVoVQwf/EprvEUyIfJhgKq7OuavYyPPn7xYN50vBUB5PanrTpaLYR0+hsBc8vEAm4l1GNoTL3HuQlXZ0F3/ONA==
+ bh=4kPVtpTlxUjeVByXzGyvQCVFT/ksUlIyGjRk64eNJGk=;
+ b=d/5vR2DQW948inKI8U+rUo6DYoZ843pRna9hyEbJI15kkrFJGFSH5RQjbSvOC+IrwnDAB5eN2bY/cTTKa2LfWCGdtdxSs/XuXWoWQuemKaqYcEPm06UGf01umPYwqXQ2vMpl7o6BLVN2lJzGAkE7/4FZCcOCUYEymrryis0Mw9O8QeQSvKG3ZnM+iBqxWduW2ARzH4Bzb94sW/WJ4JJryLVaO7wQ/BskfEZt2WV3d5G0zFU8lN//ZRjEdi2ZtThFLvEqRyIGqJZxm2zmEZmZdPTi52bO8YA4lBq31URGFAiGwLijEhfvdP6US18h8Gb2Ql8jES9RGjjfHpN0murGvA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=kvaser.com; dmarc=pass action=none header.from=kvaser.com;
  dkim=pass header.d=kvaser.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kvaser.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x3DnSK7ebwPEsQ4o31CWywbZB4AqfpS6UsFBgsyNht8=;
- b=VwEKk8LBr54jAqKRkBJmPR2E9l/fwDCH+r56mwe2jxH4jMMxzozIkU1qnRiRnP4Dj2vC5ZPTmhbGs0/hgsq8L4u6xEPVEYHOTiPRsl8LdTJTZWx0CAlYePdjtJQ6sIlih0GdP7OmDNYkwY9sY+4SmH5Bl8PyEuC9KylGh+EPBB4=
+ bh=4kPVtpTlxUjeVByXzGyvQCVFT/ksUlIyGjRk64eNJGk=;
+ b=TjaznJxroTDfT4wvWwH5hh9RJsQmpmahyPOax71GsesLiEonUSpnjfvnj/SytpNTA14vq4q7h083LBoKp8jCag0XQJ3q9l1SWGNeLbv8kyHPMSRimaddILsTWTHCKdRHnEFDbn4AauDn6FaYLMUjX3rVDb7YSd8lpzZRHUuFkrY=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=kvaser.com;
 Received: from AS8P193MB2014.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:40d::20)
  by AM8P193MB1219.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:36a::24) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8964.24; Fri, 25 Jul
- 2025 12:35:01 +0000
+ 2025 12:35:04 +0000
 Received: from AS8P193MB2014.EURP193.PROD.OUTLOOK.COM
  ([fe80::7f84:ce8a:8fc2:fdc]) by AS8P193MB2014.EURP193.PROD.OUTLOOK.COM
  ([fe80::7f84:ce8a:8fc2:fdc%3]) with mapi id 15.20.8964.021; Fri, 25 Jul 2025
- 12:35:01 +0000
+ 12:35:03 +0000
 From: Jimmy Assarsson <extja@kvaser.com>
 To: linux-can@vger.kernel.org
 Cc: Jimmy Assarsson <jimmyassarsson@gmail.com>,
@@ -49,9 +49,9 @@ Cc: Jimmy Assarsson <jimmyassarsson@gmail.com>,
 	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
 	Simon Horman <horms@kernel.org>,
 	netdev@vger.kernel.org
-Subject: [PATCH v3 01/11] can: kvaser_usb: Add support to control CAN LEDs on device
-Date: Fri, 25 Jul 2025 14:34:42 +0200
-Message-ID: <20250725123452.41-2-extja@kvaser.com>
+Subject: [PATCH v3 05/11] can: kvaser_usb: Move comment regarding max_tx_urbs
+Date: Fri, 25 Jul 2025 14:34:46 +0200
+Message-ID: <20250725123452.41-6-extja@kvaser.com>
 X-Mailer: git-send-email 2.50.0
 In-Reply-To: <20250725123452.41-1-extja@kvaser.com>
 References: <20250725123452.41-1-extja@kvaser.com>
@@ -68,358 +68,110 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AS8P193MB2014:EE_|AM8P193MB1219:EE_
-X-MS-Office365-Filtering-Correlation-Id: 21e8608b-5e0f-4f82-6b7a-08ddcb77acb1
+X-MS-Office365-Filtering-Correlation-Id: 4a461db1-be67-4212-e65c-08ddcb77adfd
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?bJkOgp1ZK+6IEnQ8GN8W0PF2pnKuoTJMBIo9L2Gi6Qbrl7Ih6C6fF9B7tR4c?=
- =?us-ascii?Q?QUZFn87eRT+bTtYusfEcFk8koAynSFE6aimNJJpk49aeAX9pxIMzIYAt+W/P?=
- =?us-ascii?Q?Kn77h7QDOieKhylLIm5demtXwKDnGpQBhJ1JKMTx8V335nNkqzaOPRKai6Mz?=
- =?us-ascii?Q?dToAN5ZhfTXPW2WIegCKInk0f3koaUoOwuP/O35V1vY7vJbpIjrvdjETpSha?=
- =?us-ascii?Q?in01GgjcusgA1bGEq3fxJQonQTi5OpbPm9L7hetsrHK2dIy9OkwN1VfJ5+YS?=
- =?us-ascii?Q?uG/oCy3b0rCLzgfmlGxR+ZTmGMTZ3c49fybq27ZVZpGNS597lCz9N88QCUkN?=
- =?us-ascii?Q?jwcV1g6errDA4sHog/eGMa4AWtJ2ic9JYmY54zFnIeHJeIGYfA5JfY3jcAw9?=
- =?us-ascii?Q?YNWY/FVFfUBy0idJwh9s1eH7Up/z5JXgpiShIoapa4lEPAjaOhvEAw2e2QcH?=
- =?us-ascii?Q?mP3nhoX5FwsyqsKaoSaH6ZTytsa4jHVH3Jj+suUrJnKT5e+aFpfyTHWT9xIx?=
- =?us-ascii?Q?dVIlndrtTMhF1QeNtk3/GlQCcTg4cP/ASvG0wPw/yuQUTC875y4XeF0HRNWz?=
- =?us-ascii?Q?Ag4537IObVuzo5oExSIg6U5yAU0+rFzNTrQBn0cAGbJSLMd5kXeUw+DF3t5A?=
- =?us-ascii?Q?H5svP7b0AzU4YzKCHsXXM9nbcJ4B7fiIqFYWBCAefze5QSFvvPPRVA2IUEvu?=
- =?us-ascii?Q?ixmvVx7ctK5nMmXJOeYreumfmJBvdeSgQlqOMGKZV+tYOk6DvoCjpTdW39Ty?=
- =?us-ascii?Q?bS8toynL8a29VGyjpanBYgTuF4i0lMUuMPWTMRwZRInAnofoBWA4WMVgvdob?=
- =?us-ascii?Q?3QHLO0OQzkTC6fb2hgVwJQjjTQB/t3IcriQtZCIfSmbcKekCIdKYcTZzWyCR?=
- =?us-ascii?Q?QzsDgCCyYzmlmPf5E/s18jKfCVWvkdIK8ocQ399PVaz6mkCkbQbhEtZKmlEc?=
- =?us-ascii?Q?VLd9Wf3MKCg1fTdoR/hWBu8QK+koR0KmrixoCJlUtsXCp/jAWwVn4dGwrDa1?=
- =?us-ascii?Q?SIEGqIUUm/y2lJuE820SgxOffW+KQ1sH0YI063GAG2CIuraxHha+l5QkB3o/?=
- =?us-ascii?Q?+vDFlJdRUB6K1KiqIhW0q32yaOLGs+d8oZo/vLp+4DbBiwsb3KnxrNhe1oKQ?=
- =?us-ascii?Q?Zkc71KB0Uu2iwFVMWOVdmAxgbFqwfrE8KZC4ut0X37WI193lmu1Qa4N/43OL?=
- =?us-ascii?Q?t1e+kO1KP3gtgeU4Zl1CvEhIfuD25mKYtqaVvFktnVr3jvZ8vpZHoiAjVaka?=
- =?us-ascii?Q?G3Et0DFhG2QlEN0bLWQDozqnkzS24GP7rXMyAQRk+coUAxL05eU/MZlY7zvN?=
- =?us-ascii?Q?9vpuasyNDtVnjq2g5CXuactwxWxjRWkq9kINyVvgrFmJMScMWSOn5IvkrPsA?=
- =?us-ascii?Q?oObKp/eypVOTw0Sp2Y0chEObMIla6pRVyLAws4bdJNNmnB/kCZGiHRoR/l9z?=
- =?us-ascii?Q?zkMAZbYjjhw=3D?=
+	=?us-ascii?Q?Dse24Nx1XL5DkzriVWcOECjtZpdt70wfnck+9AqjsGD6GkPtS3CkjH9OyR0t?=
+ =?us-ascii?Q?C7VHdJh8mVhGbBCbi7ig7ntCmeGCnkijDjMhFygTAPvBgawiO2gehB/hsjQp?=
+ =?us-ascii?Q?gkf/6+YYOOmHEEcRart1MqNxJpAXqyTQisV7O0LRL7z5B9bXWQyU8wOCz4w1?=
+ =?us-ascii?Q?U4Q2QYoAAfq/C8F+7qx/Gq8VuLfhoXK/Wg7OXx1OIMWdk2PBWAA4xmp3M4VY?=
+ =?us-ascii?Q?igVe2wXj4F4vRZtv0ppcqDCUOZsSor510AC6jxioLoH2hwu12GQfflGk2Fec?=
+ =?us-ascii?Q?IQmXFOrnQoRzVstwN13+YNsuGk6T1HmhsLttJNRY85iTjzBKEzHSscas5SUv?=
+ =?us-ascii?Q?q1Asw2njRdtR4jiEOLcJDrn1MEaeQ22pdGBCndm63cnhvgPLAEeJBOJiOV9W?=
+ =?us-ascii?Q?waFrfQYXAjPNx6g6ZOXLuVB1SFnC0AgDibu0rtmjimizePQgWGaAAPFmprzV?=
+ =?us-ascii?Q?zEkDtGrCBJLCYswL0tJFoTsBIUotrdN7RyYY2Y9mZPvTbWNW4ErlEJDHDtmz?=
+ =?us-ascii?Q?CkHwqRKv6tm5og952PPwR3PUNvyc1M/4tRzCYU3dTsjidPetFakbWqGfJxA2?=
+ =?us-ascii?Q?bga52hwR8umRb//3xUNoTPssGPJHpS54aMzOJ9s8W+HTAq+4tiqLs3uQkllG?=
+ =?us-ascii?Q?8EW/fbcEPM8yeyu7BCYRikmQJmilZFKmPzOetzhV6tcHQkPT7rLvBhg9yqRM?=
+ =?us-ascii?Q?Ph1hNiyb+pw8KShQ84TWZ5LMxRtX2RQmr4YPTrcNgw3dBd9hFoo66Wcmu18e?=
+ =?us-ascii?Q?jSKRkJqcgawJvMM15burkQly5NcHZ4YXzzzNnsiRHqgUfSYa9n7mPivJFmWo?=
+ =?us-ascii?Q?TmBlMP6NrpJZ52Hu1bTd8k4JcL4mT27ulhY+C6t7CcvdAi8vePpEmXAVLB5P?=
+ =?us-ascii?Q?qvb/xqc7/veiF5NshwXY66oLTop9FjTaqF8YWqKt+j/oyjYQF9srDJ6Vl3J8?=
+ =?us-ascii?Q?vww2bbj9ePOCqfjDiKdxvtzPgCOqc1mgboBFvSGKZdKr/YrqO2ckt9ExUx6P?=
+ =?us-ascii?Q?GkQMxbptXT/XOWa2X1DMTm1FshkA6IX/lUpIn9sltC2obR0h9u+lrAe7T4qA?=
+ =?us-ascii?Q?6D3C7oeImaGSIFoXQXqGR8qEZbMKWL2anaXS2jjtgK8/FncbvTAgfftEivG3?=
+ =?us-ascii?Q?hr0sHettjGjML26LZZLydqifavrtrMrJrayNpXGpr56OIiR12kqFXjLLHQm6?=
+ =?us-ascii?Q?A3QSZwVTyjR0JbC3joTte7/4fl5uPQOxN/4SQM1VUwi2pv097Pcn/qVWZSBI?=
+ =?us-ascii?Q?Cehdo8Q1DQWfD3RF6cNbDDbGksJQdKbOfqB/HVgAP4PGmYrE+A10sKibCzoR?=
+ =?us-ascii?Q?b7ph5PUR7H7Aeffc2OnMqU2hhaJq8G283ODKFx0QbkNOkJDz9BdGlHqU8IRN?=
+ =?us-ascii?Q?iUGz1e944oG9TRSXYsYNIM+e0AwM7UjzsWuRUGKuDNVP+kB+UJYmoFg3NNHv?=
+ =?us-ascii?Q?90FERGZYxxo=3D?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8P193MB2014.EURP193.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?pK1xAcrZpzhiH6YLT+BLQAY4l4qvzI8G2sMh74p0BfpNHhMUuP+x0Eo7cUO0?=
- =?us-ascii?Q?YU6yEufC5fM4/iYwL41WfJVap/i4hC641mdSxckjOImRjy0CqtCZJu4M8g+V?=
- =?us-ascii?Q?0ZOWZDoBVkk9DQ20/4c4uPPg97DKzZZ1tfDp9Uk2e2Trbe0WTnXjQ4CzxEC/?=
- =?us-ascii?Q?M3/q8oH/TJN4NUynNqNyFnRTU1ApMKKySPIAOMrSRy+FhQkiiTh15+MPFi0I?=
- =?us-ascii?Q?nPh6sx2k9f31+4HQmiKCVTtfnmxJMNbDmAZUpoCpUebVTRDXrDiQo1otFWv1?=
- =?us-ascii?Q?Y77XOr/lokukgLHL9jH5DcBotZgtl3zv+K8ZNcyUIHQkWfEqXqnrnZIshyUc?=
- =?us-ascii?Q?9jXFP1zOZbVVpkiclF0clr7qJ4TOWDDyx4VrhxmGYRcH24m2rmO76KadJQiX?=
- =?us-ascii?Q?lN8mHX+Q28WAyYfs8NIslnGB8NBsuXsTEfE9CxfYJsmBPKmPXqj/vimZ733y?=
- =?us-ascii?Q?DSdIyMEsscPfLo+xQDh9K5IqDTQYTOVfYhda7UL8AslhlpyVipD8aIjx9zaP?=
- =?us-ascii?Q?J18RUy1mTumipXdH8eaoUY12yUEEMugPOiJcSX6RP0en3qK2XdMUfpHICFQT?=
- =?us-ascii?Q?zXz7H/bKjGzDCuQqJXrYXsPpaCRpx6lxLMR0JXaTQWTx0j16m6bnDo6wlpkf?=
- =?us-ascii?Q?/aT1zLTCcI+QMJXjEZpDGNPLLLcAzXGh3LZ8mQBwYhRoBYqDYb1GXafgpMue?=
- =?us-ascii?Q?UApEwoG/O5SLVSg6SM8kL1XRaY3e8u0qA9aPZ8HnCVtAcen1uHRFB+SMCHZ9?=
- =?us-ascii?Q?MxmAaeg7SZcR4VTXXwdvcGdPmRPJVZatCmExaf9BTs0HTh87Z8Xi7ciGSEQq?=
- =?us-ascii?Q?MWVB3IMipzdJtf3emmxBVFkzrmBgcsZsfsliLlb5oTguVhOba1dmeUOzHUjf?=
- =?us-ascii?Q?WG2vADHA7K0hmwXesvgo1e1/fKluPZpfS3d3WPbQrjWG9UIXofaHXafGJmu0?=
- =?us-ascii?Q?fGsOWI7C3aKuQyU4+Jr7zh5KTmlHSKvNWmk/zO/rQHhhyWD1nLfagkdQiVRg?=
- =?us-ascii?Q?v0gRIO7359ZkDY+RZ0l4uVD6urLbALijVdc7yL2IoTk1Jc+mxHKWNmWMpl+q?=
- =?us-ascii?Q?B1LXp4lSRMKrNf5oai32n5FCzea5broklNjUIZW8ZMNt31mACXYq7qOqLCfW?=
- =?us-ascii?Q?Wk/OUKW33nTgCN0JYavjO5Z5Ku9H/bPXE7n9t1DzlxwsHu0BqNbWsFJ17fdD?=
- =?us-ascii?Q?3JQimdQJ7tlJiRlIpY66fURY3FUA9agZieuExU4jF1ezSI6wktUz2LWCExZr?=
- =?us-ascii?Q?VpKthlhd2hVUIXJ6b0JNpjCAw9OobJrqzgxcXctYU9nqLicH/0ETmpopu4Pr?=
- =?us-ascii?Q?KniHdyEOkOtwk60iV1fbPiKeMBhkUWrBQwe8+SlO9291sLkpIkFjyZ7EMpDp?=
- =?us-ascii?Q?cVneQzeor44PvC9S+TyHhhHF28ssMpnBfeyh6WehjzTvilJ9a4bM1cn2ncWN?=
- =?us-ascii?Q?dVsMdTVPvEqgQw8s0AewxtHke1CE6cnNiUROHEPh3+yG2XsrDLotrk38luGU?=
- =?us-ascii?Q?A8DEORkT2iMHdmz0dv3D6MeBOlG2hdy0D9PL0yxkIw1Ed0YAVnqgYF59oaP5?=
- =?us-ascii?Q?L0GQzwYNEEfyNivhTOhKMrk8ZxeFT4P05p12siWcq1GUsPWYb/UF4FKNoMFc?=
- =?us-ascii?Q?Cg=3D=3D?=
+	=?us-ascii?Q?owgMIYxi4VXBlArJCeL+EXYZd7x08sCvXftZfGlCDEWVUgOzjXi7l4+kBkCx?=
+ =?us-ascii?Q?1CJ3H1KDmDAPE9YEJK7TJIfDC3BUZsRtJztUkfRmOIt9NnL50akCw4z0fT0z?=
+ =?us-ascii?Q?AuNxYynJ+Asfs2ALQWKqWSl7I3v4E9K5LDPv82Jl9qFXuL85ZianIOYHHmqU?=
+ =?us-ascii?Q?MRvCGYJUb0GzN++6GrykE2Kij/l0UQx8JbRtZ9FPz7w4/adIErHuQhfef6Th?=
+ =?us-ascii?Q?B+69DZz3T5RYvrxv/8rqSi5BA/Bq+W17nAxRxy4m4IiUF7rSsXOHEljL6MDz?=
+ =?us-ascii?Q?S3AP1XSfrLG4ruONIm+GPgBpE5O0f3GtHG3iCKgXapsU4JBFmr/V9QJEiCS7?=
+ =?us-ascii?Q?YGZwds/pZq7lR6A9jnoyQWNmyStf4LgtE7rlZM847OQiHzbL+BcSnN8o/Pvl?=
+ =?us-ascii?Q?/ko5jouA3I+3vzSMXNs+b1NMvIz0eV8ofjPesRLCcIaHP3ni0Os2nonW5bf7?=
+ =?us-ascii?Q?WB06NPIXn2w1vO3hpMAvuDjLg01gnhH870WU3/dVYXE07xgkf/YIjKRFCzeM?=
+ =?us-ascii?Q?u7b1rl+zH4Len/EpkkmmMvaqAj1InpGXpziJQYTfRiaWlKvyUoSQ//5u6foN?=
+ =?us-ascii?Q?4jpwc6kFPhgEgJoq7+c4kXYJiAv8Jch/MYgmofClImJgMEScgC68RIasKBur?=
+ =?us-ascii?Q?fKODwfIZhHgYxRuEdQhBfDiWaPPPVdxlfD7zT18lE2dC3Y8kEdl9hW6uK3Lq?=
+ =?us-ascii?Q?g9dXsWKOesOLHZBVFkLO7fk0BNTtRjVe+mJxzE79127ZHB3Wt+qesN+gVQIu?=
+ =?us-ascii?Q?EZUUcpJ590IXBXabmGPhccmfRPEdZspmvk3FyL4nmG0KQoxmWh5+pNdnynsx?=
+ =?us-ascii?Q?YqW3GVT53rmtXEJlyqw+f7h0HLxyuRp9OFtbJj2YuTrzZzr7YiPX7keZkMDF?=
+ =?us-ascii?Q?JeFqJe7nRIBOGfvNgw9wocHmzJj8or91VM1CMiIHn0EIKrqTX4oZ5OdGhc2Z?=
+ =?us-ascii?Q?4WjENMmednswYDd7WpswwsJNjauVkR548ffFkakWNmUHcBCe724HoF/3+4/O?=
+ =?us-ascii?Q?dPG+V0Joly8+cq5elch0eN6ee7aw8j+PZdQOrEbRaScEw0SLkG4m5vhE0tx1?=
+ =?us-ascii?Q?SNKxP7wwFe50snSj3f79vSy0iuJgc0oCsSjZKq3hm60Zp1zVzrA4spE4LkpH?=
+ =?us-ascii?Q?irtw/hsh9h5AdgHqpel1ngY2iQXv493pYjMAjhD/jRPluhiDRHRExTuICysV?=
+ =?us-ascii?Q?pYDbesgjprNO4kTjY/EHan6GUS5j471XrpwqA4nifBWPbWzeL879kfc8njjr?=
+ =?us-ascii?Q?2Nz5Iw2kLBlHfVdfvameFYK2nTwh+hNYtc4FvgSEfizdBRA1mnUwX5hli4ks?=
+ =?us-ascii?Q?JLfu4yjFO4v8UtNX1uQzZ0wp6Kwp+62l3jNsOUQ/mRsyfx6MoQ4ayvxT5Cm6?=
+ =?us-ascii?Q?rLfLAsR+mIGVUDDV1ocdCVBwQAom5PXQn95Zu9nAd16s68/dtU5kCbJS4adg?=
+ =?us-ascii?Q?/7l2qJ7zM4jPcI2w8e/R9H1Q6YdkDvjRNQZoNlFusyGWXW8/BPM0F2ciPNZz?=
+ =?us-ascii?Q?zU8t4VIdpYf7gvIotmbnYPvVCO67IsNbvnYN1+OWpie7w68oTmlSHshqKnM+?=
+ =?us-ascii?Q?JGYVmK4QDZ1/d1ub2Fr/EawvuVLhN/44NuQdwfanZrCuqg2ZgHZ+rH6arOmH?=
+ =?us-ascii?Q?KA=3D=3D?=
 X-OriginatorOrg: kvaser.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 21e8608b-5e0f-4f82-6b7a-08ddcb77acb1
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a461db1-be67-4212-e65c-08ddcb77adfd
 X-MS-Exchange-CrossTenant-AuthSource: AS8P193MB2014.EURP193.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2025 12:35:01.7172
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2025 12:35:03.8911
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 73c42141-e364-4232-a80b-d96bd34367f3
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: I6y2dqs0A9FcYJhb2J7SQ9T5Ke1QaLdWMIlNN5iTAtPeQ9rQinnhZBPxNvokoQLTp2fiKRyHzji0hH2LreFwd/8usu52H4TkN6snQs8JOJ8=
+X-MS-Exchange-CrossTenant-UserPrincipalName: mSADfB9KliD/VY15RQC32SRO1c/rp1xBqcCSGfHAqlECoNJuKs/cJR0tdKmCCT7UQ0jkVF99NuisBEvdkKZMntNwCqtrVsb854hYIwYtWtg=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8P193MB1219
 
-Add support to turn on/off CAN LEDs on device.
+Move comment regarding max_tx_urbs, to where the struct member is declared.
 
 Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
 ---
 Changes in v3:
-  - Fix GCC compiler array warning (-Warray-bounds) reported by
-    Simon Horman [1]
   - Add tag Reviewed-by Vincent Mailhol
 
-[1] https://lore.kernel.org/linux-can/aa90e02d-25d5-4f76-bd91-26795825c8a6@wanadoo.fr/T/#m1ea1889968a91b2610990c7f39feab74b72b4850
-
- drivers/net/can/usb/kvaser_usb/kvaser_usb.h   |  9 ++++
- .../net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 53 ++++++++++++++++++
- .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 54 +++++++++++++++++++
- 3 files changed, 116 insertions(+)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
-index f6c77eca9f43..032dc1821f04 100644
+index 032dc1821f04..fba972e7220d 100644
 --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
 +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
-@@ -54,6 +54,11 @@ enum kvaser_usb_leaf_family {
- 	KVASER_USBCAN,
- };
+@@ -101,12 +101,12 @@ struct kvaser_usb {
+ 	struct usb_endpoint_descriptor *bulk_in, *bulk_out;
+ 	struct usb_anchor rx_submitted;
  
-+enum kvaser_usb_led_state {
-+	KVASER_USB_LED_ON = 0,
-+	KVASER_USB_LED_OFF = 1,
-+};
-+
- #define KVASER_USB_HYDRA_MAX_CMD_LEN		128
- struct kvaser_usb_dev_card_data_hydra {
- 	u8 channel_to_he[KVASER_USB_MAX_NET_DEVICES];
-@@ -149,6 +154,7 @@ struct kvaser_usb_net_priv {
-  * @dev_get_software_details:	get software details
-  * @dev_get_card_info:		get card info
-  * @dev_get_capabilities:	discover device capabilities
-+ * @dev_set_led:		turn on/off device LED
-  *
-  * @dev_set_opt_mode:		set ctrlmod
-  * @dev_start_chip:		start the CAN controller
-@@ -176,6 +182,9 @@ struct kvaser_usb_dev_ops {
- 	int (*dev_get_software_details)(struct kvaser_usb *dev);
- 	int (*dev_get_card_info)(struct kvaser_usb *dev);
- 	int (*dev_get_capabilities)(struct kvaser_usb *dev);
-+	int (*dev_set_led)(struct kvaser_usb_net_priv *priv,
-+			   enum kvaser_usb_led_state state,
-+			   u16 duration_ms);
- 	int (*dev_set_opt_mode)(const struct kvaser_usb_net_priv *priv);
- 	int (*dev_start_chip)(struct kvaser_usb_net_priv *priv);
- 	int (*dev_stop_chip)(struct kvaser_usb_net_priv *priv);
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-index 8e88b5917796..a4402b4845c6 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-@@ -12,6 +12,7 @@
-  *    distinguish between ERROR_WARNING and ERROR_ACTIVE.
-  */
++	u32 fw_version;
++	unsigned int nchannels;
+ 	/* @max_tx_urbs: Firmware-reported maximum number of outstanding,
+ 	 * not yet ACKed, transmissions on this device. This value is
+ 	 * also used as a sentinel for marking free tx contexts.
+ 	 */
+-	u32 fw_version;
+-	unsigned int nchannels;
+ 	unsigned int max_tx_urbs;
+ 	struct kvaser_usb_dev_card_data card_data;
  
-+#include <linux/bitfield.h>
- #include <linux/completion.h>
- #include <linux/device.h>
- #include <linux/gfp.h>
-@@ -67,6 +68,8 @@ static const struct kvaser_usb_dev_cfg kvaser_usb_hydra_dev_cfg_rt;
- #define CMD_SET_BUSPARAMS_RESP			85
- #define CMD_GET_CAPABILITIES_REQ		95
- #define CMD_GET_CAPABILITIES_RESP		96
-+#define CMD_LED_ACTION_REQ			101
-+#define CMD_LED_ACTION_RESP			102
- #define CMD_RX_MESSAGE				106
- #define CMD_MAP_CHANNEL_REQ			200
- #define CMD_MAP_CHANNEL_RESP			201
-@@ -217,6 +220,22 @@ struct kvaser_cmd_get_busparams_res {
- 	u8 reserved[20];
- } __packed;
- 
-+/* The device has two LEDs per CAN channel
-+ * The LSB of action field controls the state:
-+ *   0 = ON
-+ *   1 = OFF
-+ * The remaining bits of action field is the LED index
-+ */
-+#define KVASER_USB_HYDRA_LED_IDX_MASK GENMASK(31, 1)
-+#define KVASER_USB_HYDRA_LED_YELLOW_CH0_IDX 3
-+#define KVASER_USB_HYDRA_LEDS_PER_CHANNEL 2
-+struct kvaser_cmd_led_action_req {
-+	u8 action;
-+	u8 padding;
-+	__le16 duration_ms;
-+	u8 reserved[24];
-+} __packed;
-+
- /* Ctrl modes */
- #define KVASER_USB_HYDRA_CTRLMODE_NORMAL	0x01
- #define KVASER_USB_HYDRA_CTRLMODE_LISTEN	0x02
-@@ -299,6 +318,8 @@ struct kvaser_cmd {
- 		struct kvaser_cmd_get_busparams_req get_busparams_req;
- 		struct kvaser_cmd_get_busparams_res get_busparams_res;
- 
-+		struct kvaser_cmd_led_action_req led_action_req;
-+
- 		struct kvaser_cmd_chip_state_event chip_state_event;
- 
- 		struct kvaser_cmd_set_ctrlmode set_ctrlmode;
-@@ -1390,6 +1411,7 @@ static void kvaser_usb_hydra_handle_cmd_std(const struct kvaser_usb *dev,
- 	/* Ignored commands */
- 	case CMD_SET_BUSPARAMS_RESP:
- 	case CMD_SET_BUSPARAMS_FD_RESP:
-+	case CMD_LED_ACTION_RESP:
- 		break;
- 
- 	default:
-@@ -1946,6 +1968,36 @@ static int kvaser_usb_hydra_get_capabilities(struct kvaser_usb *dev)
- 	return 0;
- }
- 
-+static int kvaser_usb_hydra_set_led(struct kvaser_usb_net_priv *priv,
-+				    enum kvaser_usb_led_state state,
-+				    u16 duration_ms)
-+{
-+	struct kvaser_usb *dev = priv->dev;
-+	struct kvaser_cmd *cmd;
-+	size_t cmd_len;
-+	int ret;
-+
-+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
-+	if (!cmd)
-+		return -ENOMEM;
-+
-+	cmd->header.cmd_no = CMD_LED_ACTION_REQ;
-+	cmd_len = kvaser_usb_hydra_cmd_size(cmd);
-+	kvaser_usb_hydra_set_cmd_dest_he(cmd, dev->card_data.hydra.sysdbg_he);
-+	kvaser_usb_hydra_set_cmd_transid(cmd, kvaser_usb_hydra_get_next_transid(dev));
-+
-+	cmd->led_action_req.duration_ms = cpu_to_le16(duration_ms);
-+	cmd->led_action_req.action = state |
-+				     FIELD_PREP(KVASER_USB_HYDRA_LED_IDX_MASK,
-+						KVASER_USB_HYDRA_LED_YELLOW_CH0_IDX +
-+						KVASER_USB_HYDRA_LEDS_PER_CHANNEL * priv->channel);
-+
-+	ret = kvaser_usb_send_cmd(dev, cmd, cmd_len);
-+	kfree(cmd);
-+
-+	return ret;
-+}
-+
- static int kvaser_usb_hydra_set_opt_mode(const struct kvaser_usb_net_priv *priv)
- {
- 	struct kvaser_usb *dev = priv->dev;
-@@ -2149,6 +2201,7 @@ const struct kvaser_usb_dev_ops kvaser_usb_hydra_dev_ops = {
- 	.dev_get_software_details = kvaser_usb_hydra_get_software_details,
- 	.dev_get_card_info = kvaser_usb_hydra_get_card_info,
- 	.dev_get_capabilities = kvaser_usb_hydra_get_capabilities,
-+	.dev_set_led = kvaser_usb_hydra_set_led,
- 	.dev_set_opt_mode = kvaser_usb_hydra_set_opt_mode,
- 	.dev_start_chip = kvaser_usb_hydra_start_chip,
- 	.dev_stop_chip = kvaser_usb_hydra_stop_chip,
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-index 6a45adcc45bd..a67855521ccc 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-@@ -10,6 +10,7 @@
-  * Copyright (C) 2015 Valeo S.A.
-  */
- 
-+#include <linux/bitfield.h>
- #include <linux/completion.h>
- #include <linux/device.h>
- #include <linux/gfp.h>
-@@ -81,6 +82,8 @@
- #define CMD_FLUSH_QUEUE_REPLY		68
- #define CMD_GET_CAPABILITIES_REQ	95
- #define CMD_GET_CAPABILITIES_RESP	96
-+#define CMD_LED_ACTION_REQ		101
-+#define CMD_LED_ACTION_RESP		102
- 
- #define CMD_LEAF_LOG_MESSAGE		106
- 
-@@ -173,6 +176,21 @@ struct kvaser_cmd_busparams {
- 	struct kvaser_usb_busparams busparams;
- } __packed;
- 
-+/* The device has one LED per CAN channel
-+ * The LSB of action field controls the state:
-+ *   0 = ON
-+ *   1 = OFF
-+ * The remaining bits of action field is the LED index
-+ */
-+#define KVASER_USB_LEAF_LED_IDX_MASK GENMASK(31, 1)
-+#define KVASER_USB_LEAF_LED_YELLOW_CH0_IDX 2
-+struct kvaser_cmd_led_action_req {
-+	u8 tid;
-+	u8 action;
-+	__le16 duration_ms;
-+	u8 padding[24];
-+} __packed;
-+
- struct kvaser_cmd_tx_can {
- 	u8 channel;
- 	u8 tid;
-@@ -359,6 +377,8 @@ struct kvaser_cmd {
- 		struct kvaser_cmd_cardinfo cardinfo;
- 		struct kvaser_cmd_busparams busparams;
- 
-+		struct kvaser_cmd_led_action_req led_action_req;
-+
- 		struct kvaser_cmd_rx_can_header rx_can_header;
- 		struct kvaser_cmd_tx_acknowledge_header tx_acknowledge_header;
- 
-@@ -409,6 +429,7 @@ static const u8 kvaser_usb_leaf_cmd_sizes_leaf[] = {
- 	[CMD_ERROR_EVENT]		= kvaser_fsize(u.leaf.error_event),
- 	/* ignored events: */
- 	[CMD_FLUSH_QUEUE_REPLY]		= CMD_SIZE_ANY,
-+	[CMD_LED_ACTION_RESP]		= CMD_SIZE_ANY,
- };
- 
- static const u8 kvaser_usb_leaf_cmd_sizes_usbcan[] = {
-@@ -423,6 +444,8 @@ static const u8 kvaser_usb_leaf_cmd_sizes_usbcan[] = {
- 	[CMD_CAN_ERROR_EVENT]		= kvaser_fsize(u.usbcan.can_error_event),
- 	[CMD_ERROR_EVENT]		= kvaser_fsize(u.usbcan.error_event),
- 	[CMD_USBCAN_CLOCK_OVERFLOW_EVENT] = kvaser_fsize(u.usbcan.clk_overflow_event),
-+	/* ignored events: */
-+	[CMD_LED_ACTION_RESP]		= CMD_SIZE_ANY,
- };
- 
- /* Summary of a kvaser error event, for a unified Leaf/Usbcan error
-@@ -924,6 +947,34 @@ static int kvaser_usb_leaf_get_capabilities_leaf(struct kvaser_usb *dev)
- 	return 0;
- }
- 
-+static int kvaser_usb_leaf_set_led(struct kvaser_usb_net_priv *priv,
-+				   enum kvaser_usb_led_state state,
-+				   u16 duration_ms)
-+{
-+	struct kvaser_usb *dev = priv->dev;
-+	struct kvaser_cmd *cmd;
-+	int ret;
-+
-+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
-+	if (!cmd)
-+		return -ENOMEM;
-+
-+	cmd->id = CMD_LED_ACTION_REQ;
-+	cmd->len = CMD_HEADER_LEN + sizeof(struct kvaser_cmd_led_action_req);
-+	cmd->u.led_action_req.tid = 0xff;
-+
-+	cmd->u.led_action_req.duration_ms = cpu_to_le16(duration_ms);
-+	cmd->u.led_action_req.action = state |
-+				       FIELD_PREP(KVASER_USB_LEAF_LED_IDX_MASK,
-+						  KVASER_USB_LEAF_LED_YELLOW_CH0_IDX +
-+						  priv->channel);
-+
-+	ret = kvaser_usb_send_cmd(dev, cmd, cmd->len);
-+	kfree(cmd);
-+
-+	return ret;
-+}
-+
- static int kvaser_usb_leaf_get_capabilities(struct kvaser_usb *dev)
- {
- 	int err = 0;
-@@ -1638,6 +1689,8 @@ static void kvaser_usb_leaf_handle_command(struct kvaser_usb *dev,
- 		if (dev->driver_info->family != KVASER_LEAF)
- 			goto warn;
- 		break;
-+	case CMD_LED_ACTION_RESP:
-+		break;
- 
- 	default:
- warn:		dev_warn(&dev->intf->dev, "Unhandled command (%d)\n", cmd->id);
-@@ -1927,6 +1980,7 @@ const struct kvaser_usb_dev_ops kvaser_usb_leaf_dev_ops = {
- 	.dev_get_software_details = NULL,
- 	.dev_get_card_info = kvaser_usb_leaf_get_card_info,
- 	.dev_get_capabilities = kvaser_usb_leaf_get_capabilities,
-+	.dev_set_led = kvaser_usb_leaf_set_led,
- 	.dev_set_opt_mode = kvaser_usb_leaf_set_opt_mode,
- 	.dev_start_chip = kvaser_usb_leaf_start_chip,
- 	.dev_stop_chip = kvaser_usb_leaf_stop_chip,
 -- 
 2.49.0
 
