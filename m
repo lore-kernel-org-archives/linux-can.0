@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA2DB2F0055
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9C432F005B
 	for <linux-can@vger.kernel.org>; Fri, 25 Jul 2025 16:13:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753460027; cv=none; b=fLG87zpWRZFWB+3PLSRzUO5PONOUasAPQz4do5XXYBf4mrRCRENz1it8L+XRbhF8Xf52Q2CKHi1TLrVbsd+hPKk/vd3jXebnOQIXZp1aP9pr9YdDqhUlLmAK5j7BCJojso2byXq2hbxka3/6Sgx55S6mTE45uC4fUs9RTRHVazA=
+	t=1753460027; cv=none; b=DOo4gpQ2/syXs/QEUZZlbJlT1pCS1YUaTKvdr1omyEcS2BWz2gX7a1mvBXKvHUx/dTCgABSpQH4k3TQQBLHn+LFBe1/TuSCBSdrr5F9divGDDMIwxNE0Z9dlD5U2zzzcBxz5B0pvosaXdGn4ZNpy1CKpbMGqjLqcxT8EgPZ7FGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1753460027; c=relaxed/simple;
-	bh=BWTeLR4h2tGsxN5RPznOx7QFkkax8BiXRBL/L9vX+PI=;
+	bh=f3Q/xH4hA6jx92kW+wC6xOnFzfU4oJ/vIIwRWD3Rofk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ge2FVKysv0/OjPPJXF/wKZZY9gGt0CtLOSc5cUm2QJ3pJRaEWSB3418Kwa7nFabDxsD77wq/+pJBXZzMj6Gn2ZfaqPxUp+0ec6GEyc2nro0j9t3Whai4U55Vod/AyItsW+IICQfVQ3s42Lmob+X0+qh79hyhoQ6kQma6kwyosZc=
+	 MIME-Version; b=Fl+m3HyUlGMNYoSomRbc2wkKW4DzF+EJl/Ytru7di4mzTJZhnh0YZMCVZlqCwMVAzJ29OIJg4lOreg9DLrZcmUzNpY6gxYX7NOZwS/wQq5RTiHRuhK2l5SKmdz56gKk2ETa0kTC76KDafGyNzK/UiZKi8OzkQrsU3x+ND5LOYDk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,26 +18,26 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1ufL3F-0006jC-3u
+	id 1ufL3F-0006iq-5q
 	for linux-can@vger.kernel.org; Fri, 25 Jul 2025 18:13:41 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1ufL3A-00AFcG-1r
+	id 1ufL3A-00AFbt-1J
 	for linux-can@vger.kernel.org;
 	Fri, 25 Jul 2025 18:13:36 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id 2A07E4498DA
+	by bjornoya.blackshift.org (Postfix) with SMTP id 0F1BF4498D2
 	for <linux-can@vger.kernel.org>; Fri, 25 Jul 2025 16:13:35 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 47C6A449839;
-	Fri, 25 Jul 2025 16:13:31 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id F1EA744982C;
+	Fri, 25 Jul 2025 16:13:30 +0000 (UTC)
 Received: from blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 6169d074;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id c4335483;
 	Fri, 25 Jul 2025 16:13:30 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -48,9 +48,9 @@ Cc: davem@davemloft.net,
 	Jimmy Assarsson <extja@kvaser.com>,
 	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 22/27] can: kvaser_usb: Store the different firmware version components in a struct
-Date: Fri, 25 Jul 2025 18:05:32 +0200
-Message-ID: <20250725161327.4165174-23-mkl@pengutronix.de>
+Subject: [PATCH net-next 17/27] can: kvaser_usb: Add support to control CAN LEDs on device
+Date: Fri, 25 Jul 2025 18:05:27 +0200
+Message-ID: <20250725161327.4165174-18-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250725161327.4165174-1-mkl@pengutronix.de>
 References: <20250725161327.4165174-1-mkl@pengutronix.de>
@@ -68,141 +68,279 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Jimmy Assarsson <extja@kvaser.com>
 
-Store firmware version in kvaser_usb_fw_version struct, specifying the
-different components of the version number.
-And drop debug prinout of firmware version, since later patches will expose
-it via the devlink interface.
+Add support to turn on/off CAN LEDs on device.
 
 Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Signed-off-by: Jimmy Assarsson <extja@kvaser.com>
-Link: https://patch.msgid.link/20250725123452.41-7-extja@kvaser.com
+Link: https://patch.msgid.link/20250725123452.41-2-extja@kvaser.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/kvaser_usb/kvaser_usb.h       | 12 +++++++++++-
- drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c  |  5 -----
- drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c |  6 +++++-
- drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 15 +++++++++++++--
- 4 files changed, 29 insertions(+), 9 deletions(-)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb.h   |  9 ++++
+ .../net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 53 ++++++++++++++++++
+ .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 54 +++++++++++++++++++
+ 3 files changed, 116 insertions(+)
 
 diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
-index fba972e7220d..a36d86494113 100644
+index f6c77eca9f43..032dc1821f04 100644
 --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
 +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
-@@ -47,6 +47,10 @@
- #define KVASER_USB_CAP_EXT_CAP			0x02
- #define KVASER_USB_HYDRA_CAP_EXT_CMD		0x04
- 
-+#define KVASER_USB_SW_VERSION_MAJOR_MASK GENMASK(31, 24)
-+#define KVASER_USB_SW_VERSION_MINOR_MASK GENMASK(23, 16)
-+#define KVASER_USB_SW_VERSION_BUILD_MASK GENMASK(15, 0)
-+
- struct kvaser_usb_dev_cfg;
- 
- enum kvaser_usb_leaf_family {
-@@ -83,6 +87,12 @@ struct kvaser_usb_tx_urb_context {
- 	u32 echo_index;
+@@ -54,6 +54,11 @@ enum kvaser_usb_leaf_family {
+ 	KVASER_USBCAN,
  };
  
-+struct kvaser_usb_fw_version {
-+	u8 major;
-+	u8 minor;
-+	u16 build;
++enum kvaser_usb_led_state {
++	KVASER_USB_LED_ON = 0,
++	KVASER_USB_LED_OFF = 1,
 +};
 +
- struct kvaser_usb_busparams {
- 	__le32 bitrate;
- 	u8 tseg1;
-@@ -101,7 +111,7 @@ struct kvaser_usb {
- 	struct usb_endpoint_descriptor *bulk_in, *bulk_out;
- 	struct usb_anchor rx_submitted;
- 
--	u32 fw_version;
-+	struct kvaser_usb_fw_version fw_version;
- 	unsigned int nchannels;
- 	/* @max_tx_urbs: Firmware-reported maximum number of outstanding,
- 	 * not yet ACKed, transmissions on this device. This value is
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-index 46e6cda0bf8d..2313fbc1a2c3 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-@@ -963,11 +963,6 @@ static int kvaser_usb_probe(struct usb_interface *intf,
- 	if (WARN_ON(!dev->cfg))
- 		return -ENODEV;
- 
--	dev_dbg(&intf->dev, "Firmware version: %d.%d.%d\n",
--		((dev->fw_version >> 24) & 0xff),
--		((dev->fw_version >> 16) & 0xff),
--		(dev->fw_version & 0xffff));
--
- 	dev_dbg(&intf->dev, "Max outstanding tx = %d URBs\n", dev->max_tx_urbs);
- 
- 	err = ops->dev_get_card_info(dev);
+ #define KVASER_USB_HYDRA_MAX_CMD_LEN		128
+ struct kvaser_usb_dev_card_data_hydra {
+ 	u8 channel_to_he[KVASER_USB_MAX_NET_DEVICES];
+@@ -149,6 +154,7 @@ struct kvaser_usb_net_priv {
+  * @dev_get_software_details:	get software details
+  * @dev_get_card_info:		get card info
+  * @dev_get_capabilities:	discover device capabilities
++ * @dev_set_led:		turn on/off device LED
+  *
+  * @dev_set_opt_mode:		set ctrlmod
+  * @dev_start_chip:		start the CAN controller
+@@ -176,6 +182,9 @@ struct kvaser_usb_dev_ops {
+ 	int (*dev_get_software_details)(struct kvaser_usb *dev);
+ 	int (*dev_get_card_info)(struct kvaser_usb *dev);
+ 	int (*dev_get_capabilities)(struct kvaser_usb *dev);
++	int (*dev_set_led)(struct kvaser_usb_net_priv *priv,
++			   enum kvaser_usb_led_state state,
++			   u16 duration_ms);
+ 	int (*dev_set_opt_mode)(const struct kvaser_usb_net_priv *priv);
+ 	int (*dev_start_chip)(struct kvaser_usb_net_priv *priv);
+ 	int (*dev_stop_chip)(struct kvaser_usb_net_priv *priv);
 diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-index a4402b4845c6..388ebf2b1a5b 100644
+index 8e88b5917796..a4402b4845c6 100644
 --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
 +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-@@ -1839,6 +1839,7 @@ static int kvaser_usb_hydra_get_software_details(struct kvaser_usb *dev)
- 	size_t cmd_len;
- 	int err;
- 	u32 flags;
-+	u32 fw_version;
- 	struct kvaser_usb_dev_card_data *card_data = &dev->card_data;
+@@ -12,6 +12,7 @@
+  *    distinguish between ERROR_WARNING and ERROR_ACTIVE.
+  */
  
- 	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
-@@ -1863,7 +1864,10 @@ static int kvaser_usb_hydra_get_software_details(struct kvaser_usb *dev)
- 	if (err)
- 		goto end;
++#include <linux/bitfield.h>
+ #include <linux/completion.h>
+ #include <linux/device.h>
+ #include <linux/gfp.h>
+@@ -67,6 +68,8 @@ static const struct kvaser_usb_dev_cfg kvaser_usb_hydra_dev_cfg_rt;
+ #define CMD_SET_BUSPARAMS_RESP			85
+ #define CMD_GET_CAPABILITIES_REQ		95
+ #define CMD_GET_CAPABILITIES_RESP		96
++#define CMD_LED_ACTION_REQ			101
++#define CMD_LED_ACTION_RESP			102
+ #define CMD_RX_MESSAGE				106
+ #define CMD_MAP_CHANNEL_REQ			200
+ #define CMD_MAP_CHANNEL_RESP			201
+@@ -217,6 +220,22 @@ struct kvaser_cmd_get_busparams_res {
+ 	u8 reserved[20];
+ } __packed;
  
--	dev->fw_version = le32_to_cpu(cmd->sw_detail_res.sw_version);
-+	fw_version = le32_to_cpu(cmd->sw_detail_res.sw_version);
-+	dev->fw_version.major = FIELD_GET(KVASER_USB_SW_VERSION_MAJOR_MASK, fw_version);
-+	dev->fw_version.minor = FIELD_GET(KVASER_USB_SW_VERSION_MINOR_MASK, fw_version);
-+	dev->fw_version.build = FIELD_GET(KVASER_USB_SW_VERSION_BUILD_MASK, fw_version);
- 	flags = le32_to_cpu(cmd->sw_detail_res.sw_flags);
++/* The device has two LEDs per CAN channel
++ * The LSB of action field controls the state:
++ *   0 = ON
++ *   1 = OFF
++ * The remaining bits of action field is the LED index
++ */
++#define KVASER_USB_HYDRA_LED_IDX_MASK GENMASK(31, 1)
++#define KVASER_USB_HYDRA_LED_YELLOW_CH0_IDX 3
++#define KVASER_USB_HYDRA_LEDS_PER_CHANNEL 2
++struct kvaser_cmd_led_action_req {
++	u8 action;
++	u8 padding;
++	__le16 duration_ms;
++	u8 reserved[24];
++} __packed;
++
+ /* Ctrl modes */
+ #define KVASER_USB_HYDRA_CTRLMODE_NORMAL	0x01
+ #define KVASER_USB_HYDRA_CTRLMODE_LISTEN	0x02
+@@ -299,6 +318,8 @@ struct kvaser_cmd {
+ 		struct kvaser_cmd_get_busparams_req get_busparams_req;
+ 		struct kvaser_cmd_get_busparams_res get_busparams_res;
  
- 	if (flags & KVASER_USB_HYDRA_SW_FLAG_FW_BAD) {
++		struct kvaser_cmd_led_action_req led_action_req;
++
+ 		struct kvaser_cmd_chip_state_event chip_state_event;
+ 
+ 		struct kvaser_cmd_set_ctrlmode set_ctrlmode;
+@@ -1390,6 +1411,7 @@ static void kvaser_usb_hydra_handle_cmd_std(const struct kvaser_usb *dev,
+ 	/* Ignored commands */
+ 	case CMD_SET_BUSPARAMS_RESP:
+ 	case CMD_SET_BUSPARAMS_FD_RESP:
++	case CMD_LED_ACTION_RESP:
+ 		break;
+ 
+ 	default:
+@@ -1946,6 +1968,36 @@ static int kvaser_usb_hydra_get_capabilities(struct kvaser_usb *dev)
+ 	return 0;
+ }
+ 
++static int kvaser_usb_hydra_set_led(struct kvaser_usb_net_priv *priv,
++				    enum kvaser_usb_led_state state,
++				    u16 duration_ms)
++{
++	struct kvaser_usb *dev = priv->dev;
++	struct kvaser_cmd *cmd;
++	size_t cmd_len;
++	int ret;
++
++	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
++	if (!cmd)
++		return -ENOMEM;
++
++	cmd->header.cmd_no = CMD_LED_ACTION_REQ;
++	cmd_len = kvaser_usb_hydra_cmd_size(cmd);
++	kvaser_usb_hydra_set_cmd_dest_he(cmd, dev->card_data.hydra.sysdbg_he);
++	kvaser_usb_hydra_set_cmd_transid(cmd, kvaser_usb_hydra_get_next_transid(dev));
++
++	cmd->led_action_req.duration_ms = cpu_to_le16(duration_ms);
++	cmd->led_action_req.action = state |
++				     FIELD_PREP(KVASER_USB_HYDRA_LED_IDX_MASK,
++						KVASER_USB_HYDRA_LED_YELLOW_CH0_IDX +
++						KVASER_USB_HYDRA_LEDS_PER_CHANNEL * priv->channel);
++
++	ret = kvaser_usb_send_cmd(dev, cmd, cmd_len);
++	kfree(cmd);
++
++	return ret;
++}
++
+ static int kvaser_usb_hydra_set_opt_mode(const struct kvaser_usb_net_priv *priv)
+ {
+ 	struct kvaser_usb *dev = priv->dev;
+@@ -2149,6 +2201,7 @@ const struct kvaser_usb_dev_ops kvaser_usb_hydra_dev_ops = {
+ 	.dev_get_software_details = kvaser_usb_hydra_get_software_details,
+ 	.dev_get_card_info = kvaser_usb_hydra_get_card_info,
+ 	.dev_get_capabilities = kvaser_usb_hydra_get_capabilities,
++	.dev_set_led = kvaser_usb_hydra_set_led,
+ 	.dev_set_opt_mode = kvaser_usb_hydra_set_opt_mode,
+ 	.dev_start_chip = kvaser_usb_hydra_start_chip,
+ 	.dev_stop_chip = kvaser_usb_hydra_stop_chip,
 diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-index a67855521ccc..b4f5d4fba630 100644
+index 6a45adcc45bd..a67855521ccc 100644
 --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
 +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-@@ -741,9 +741,13 @@ static int kvaser_usb_leaf_send_simple_cmd(const struct kvaser_usb *dev,
- static void kvaser_usb_leaf_get_software_info_leaf(struct kvaser_usb *dev,
- 						   const struct leaf_cmd_softinfo *softinfo)
+@@ -10,6 +10,7 @@
+  * Copyright (C) 2015 Valeo S.A.
+  */
+ 
++#include <linux/bitfield.h>
+ #include <linux/completion.h>
+ #include <linux/device.h>
+ #include <linux/gfp.h>
+@@ -81,6 +82,8 @@
+ #define CMD_FLUSH_QUEUE_REPLY		68
+ #define CMD_GET_CAPABILITIES_REQ	95
+ #define CMD_GET_CAPABILITIES_RESP	96
++#define CMD_LED_ACTION_REQ		101
++#define CMD_LED_ACTION_RESP		102
+ 
+ #define CMD_LEAF_LOG_MESSAGE		106
+ 
+@@ -173,6 +176,21 @@ struct kvaser_cmd_busparams {
+ 	struct kvaser_usb_busparams busparams;
+ } __packed;
+ 
++/* The device has one LED per CAN channel
++ * The LSB of action field controls the state:
++ *   0 = ON
++ *   1 = OFF
++ * The remaining bits of action field is the LED index
++ */
++#define KVASER_USB_LEAF_LED_IDX_MASK GENMASK(31, 1)
++#define KVASER_USB_LEAF_LED_YELLOW_CH0_IDX 2
++struct kvaser_cmd_led_action_req {
++	u8 tid;
++	u8 action;
++	__le16 duration_ms;
++	u8 padding[24];
++} __packed;
++
+ struct kvaser_cmd_tx_can {
+ 	u8 channel;
+ 	u8 tid;
+@@ -359,6 +377,8 @@ struct kvaser_cmd {
+ 		struct kvaser_cmd_cardinfo cardinfo;
+ 		struct kvaser_cmd_busparams busparams;
+ 
++		struct kvaser_cmd_led_action_req led_action_req;
++
+ 		struct kvaser_cmd_rx_can_header rx_can_header;
+ 		struct kvaser_cmd_tx_acknowledge_header tx_acknowledge_header;
+ 
+@@ -409,6 +429,7 @@ static const u8 kvaser_usb_leaf_cmd_sizes_leaf[] = {
+ 	[CMD_ERROR_EVENT]		= kvaser_fsize(u.leaf.error_event),
+ 	/* ignored events: */
+ 	[CMD_FLUSH_QUEUE_REPLY]		= CMD_SIZE_ANY,
++	[CMD_LED_ACTION_RESP]		= CMD_SIZE_ANY,
+ };
+ 
+ static const u8 kvaser_usb_leaf_cmd_sizes_usbcan[] = {
+@@ -423,6 +444,8 @@ static const u8 kvaser_usb_leaf_cmd_sizes_usbcan[] = {
+ 	[CMD_CAN_ERROR_EVENT]		= kvaser_fsize(u.usbcan.can_error_event),
+ 	[CMD_ERROR_EVENT]		= kvaser_fsize(u.usbcan.error_event),
+ 	[CMD_USBCAN_CLOCK_OVERFLOW_EVENT] = kvaser_fsize(u.usbcan.clk_overflow_event),
++	/* ignored events: */
++	[CMD_LED_ACTION_RESP]		= CMD_SIZE_ANY,
+ };
+ 
+ /* Summary of a kvaser error event, for a unified Leaf/Usbcan error
+@@ -924,6 +947,34 @@ static int kvaser_usb_leaf_get_capabilities_leaf(struct kvaser_usb *dev)
+ 	return 0;
+ }
+ 
++static int kvaser_usb_leaf_set_led(struct kvaser_usb_net_priv *priv,
++				   enum kvaser_usb_led_state state,
++				   u16 duration_ms)
++{
++	struct kvaser_usb *dev = priv->dev;
++	struct kvaser_cmd *cmd;
++	int ret;
++
++	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
++	if (!cmd)
++		return -ENOMEM;
++
++	cmd->id = CMD_LED_ACTION_REQ;
++	cmd->len = CMD_HEADER_LEN + sizeof(struct kvaser_cmd_led_action_req);
++	cmd->u.led_action_req.tid = 0xff;
++
++	cmd->u.led_action_req.duration_ms = cpu_to_le16(duration_ms);
++	cmd->u.led_action_req.action = state |
++				       FIELD_PREP(KVASER_USB_LEAF_LED_IDX_MASK,
++						  KVASER_USB_LEAF_LED_YELLOW_CH0_IDX +
++						  priv->channel);
++
++	ret = kvaser_usb_send_cmd(dev, cmd, cmd->len);
++	kfree(cmd);
++
++	return ret;
++}
++
+ static int kvaser_usb_leaf_get_capabilities(struct kvaser_usb *dev)
  {
-+	u32 fw_version;
- 	u32 sw_options = le32_to_cpu(softinfo->sw_options);
- 
--	dev->fw_version = le32_to_cpu(softinfo->fw_version);
-+	fw_version = le32_to_cpu(softinfo->fw_version);
-+	dev->fw_version.major = FIELD_GET(KVASER_USB_SW_VERSION_MAJOR_MASK, fw_version);
-+	dev->fw_version.minor = FIELD_GET(KVASER_USB_SW_VERSION_MINOR_MASK, fw_version);
-+	dev->fw_version.build = FIELD_GET(KVASER_USB_SW_VERSION_BUILD_MASK, fw_version);
- 	dev->max_tx_urbs = le16_to_cpu(softinfo->max_outstanding_tx);
- 
- 	if (sw_options & KVASER_USB_LEAF_SWOPTION_EXT_CAP)
-@@ -784,6 +788,7 @@ static int kvaser_usb_leaf_get_software_info_inner(struct kvaser_usb *dev)
- {
- 	struct kvaser_cmd cmd;
- 	int err;
-+	u32 fw_version;
- 
- 	err = kvaser_usb_leaf_send_simple_cmd(dev, CMD_GET_SOFTWARE_INFO, 0);
- 	if (err)
-@@ -798,7 +803,13 @@ static int kvaser_usb_leaf_get_software_info_inner(struct kvaser_usb *dev)
- 		kvaser_usb_leaf_get_software_info_leaf(dev, &cmd.u.leaf.softinfo);
+ 	int err = 0;
+@@ -1638,6 +1689,8 @@ static void kvaser_usb_leaf_handle_command(struct kvaser_usb *dev,
+ 		if (dev->driver_info->family != KVASER_LEAF)
+ 			goto warn;
  		break;
- 	case KVASER_USBCAN:
--		dev->fw_version = le32_to_cpu(cmd.u.usbcan.softinfo.fw_version);
-+		fw_version = le32_to_cpu(cmd.u.usbcan.softinfo.fw_version);
-+		dev->fw_version.major = FIELD_GET(KVASER_USB_SW_VERSION_MAJOR_MASK,
-+						  fw_version);
-+		dev->fw_version.minor = FIELD_GET(KVASER_USB_SW_VERSION_MINOR_MASK,
-+						  fw_version);
-+		dev->fw_version.build = FIELD_GET(KVASER_USB_SW_VERSION_BUILD_MASK,
-+						  fw_version);
- 		dev->max_tx_urbs =
- 			le16_to_cpu(cmd.u.usbcan.softinfo.max_outstanding_tx);
- 		dev->cfg = &kvaser_usb_leaf_usbcan_dev_cfg;
++	case CMD_LED_ACTION_RESP:
++		break;
+ 
+ 	default:
+ warn:		dev_warn(&dev->intf->dev, "Unhandled command (%d)\n", cmd->id);
+@@ -1927,6 +1980,7 @@ const struct kvaser_usb_dev_ops kvaser_usb_leaf_dev_ops = {
+ 	.dev_get_software_details = NULL,
+ 	.dev_get_card_info = kvaser_usb_leaf_get_card_info,
+ 	.dev_get_capabilities = kvaser_usb_leaf_get_capabilities,
++	.dev_set_led = kvaser_usb_leaf_set_led,
+ 	.dev_set_opt_mode = kvaser_usb_leaf_set_opt_mode,
+ 	.dev_start_chip = kvaser_usb_leaf_start_chip,
+ 	.dev_stop_chip = kvaser_usb_leaf_stop_chip,
 -- 
 2.47.2
 
