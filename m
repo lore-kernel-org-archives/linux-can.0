@@ -1,71 +1,83 @@
-Received: from mail.capitalcraft.pl (mail.capitalcraft.pl [57.129.67.144])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07C652A1CF
-	for <linux-can@vger.kernel.org>; Thu,  7 Aug 2025 09:11:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=57.129.67.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB2A21940A1;
+	Thu,  7 Aug 2025 16:13:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754557889; cv=none; b=SjKCz4VSSLMMt/s1KukzXmiVawGUJla+/VXMNauwnrQDG/hzgpv9UhoGe722mOs1SzcOld8ETRe1BhCObmrFbcAl2A1ctNUlGThRv0gMid/8n9X/8wmvo+fk2y9e0nH9Gt7cARRdBhS1Uv+vJBB7Pd1sG9GM0c8zLROvFBwBe5s=
+	t=1754583200; cv=none; b=gwiWwVjnrR5/RaSE/Vfg28IZq4AtClj7tJO1XPiRsQ0eKVKe5Ihm6W246uMkAB6rZtOADKlbOe9x5BEJwb5zrQ/7a8A+0Q+f3wKwcBfuzIVTHYaNjkDGgPhOOkeuABwylOCUbqr5OgW8n/RI73+FZjYqAzpSEnl5+oEBllbFIZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754557889; c=relaxed/simple;
-	bh=4udjhVtkPvpeQ4By44W9lTmmyaXV2fwWY0xc+9IIdSA=;
-	h=Message-ID:Date:From:To:Subject:MIME-Version:Content-Type; b=IKZBBC/Lg3eyL9IPtCWuRc1HMMwQzNhIILGE55KztL/dTwpTkSrNIh+96F4SAWRVmExYDIxStKZY89x4vMm7JcrY9cyOCvtsuU9y1sX5Sj14IJBzrLyc988/ci5S1tNfh8+yBg5wnz+0XVP+G6h+hYo9SsmmSAfUlssbB3Lj10k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=capitalcraft.pl; spf=pass smtp.mailfrom=capitalcraft.pl; dkim=pass (2048-bit key) header.d=capitalcraft.pl header.i=@capitalcraft.pl header.b=CmOVbv97; arc=none smtp.client-ip=57.129.67.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=capitalcraft.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=capitalcraft.pl
+	s=arc-20240116; t=1754583200; c=relaxed/simple;
+	bh=IQPqKFUBZOqlBbuHBV2txu01LxbimFRPE66N8YJtaCA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rjhipqpIhhonAjKqR/sptLOczlf+nG1Z0nUPUifgd0X8/wDLmdhEhkNK2SivcRxs7b3utKQ3LARUt8bR840ouZqAsyWhPTVyQOgSpbZUr0yg76KPGDjTZOntcMpQMxdEWtgNi/HLa4ZD+MMeP6z88RL/qicsBIe96ixZ15VcKAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kb8C12SR; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=capitalcraft.pl header.i=@capitalcraft.pl header.b="CmOVbv97"
-Received: by mail.capitalcraft.pl (Postfix, from userid 1002)
-	id 4024A26BCC; Tue,  5 Aug 2025 07:41:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=capitalcraft.pl;
-	s=mail; t=1754379720;
-	bh=4udjhVtkPvpeQ4By44W9lTmmyaXV2fwWY0xc+9IIdSA=;
-	h=Date:From:To:Subject:From;
-	b=CmOVbv97azJhsc3bYAQ7iSxnM2i5rZpN82dWZEv/Ju+v2trzX9+UKwB9dLqf+KKzz
-	 qVbZ0q9DDqlT583QuQepBgW2UmIFzxbqfxws+qGF8N+rINPeufQxvBp2W3O9+6wu6S
-	 Hv65ADJnVvpPgmsWkVX6hW3dA89aC4YUVuNaafGrHwOpIBQcG5aDe8jf9r8h0wvKPQ
-	 9lgLf8E+nSWOTyJQQT/yUib7JhvqUhELMaUQM2VcCcycM81EqC3JbXDCyb/l291XJP
-	 CFNCStpRpznoIJBvM7yb74cDCr5ucSc6hZ57Ydy4pdAEqzovl0Ah/1X9gPcSpbwxJo
-	 pHtuRGpRYOtVg==
-Received: by mail.capitalcraft.pl for <linux-can@vger.kernel.org>; Tue,  5 Aug 2025 07:40:40 GMT
-Message-ID: <20250805064500-0.1.3u.s6i2.0.h4n1sbapnp@capitalcraft.pl>
-Date: Tue,  5 Aug 2025 07:40:40 GMT
-From: "Karolina Dylkiewicz" <karolina.dylkiewicz@capitalcraft.pl>
-To: <linux-can@vger.kernel.org>
-Subject: Prawo pracy - zmiany 
-X-Mailer: mail.capitalcraft.pl
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kb8C12SR"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4429FC4CEEB;
+	Thu,  7 Aug 2025 16:13:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754583196;
+	bh=IQPqKFUBZOqlBbuHBV2txu01LxbimFRPE66N8YJtaCA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Kb8C12SRmA/TCjvwM17rooJf+h6BfX17To5G2qICOvSQ7rgY6iEy5iB2BdNO6I+wg
+	 QtiKQCPlMs2wxf0Fk0XeV8vRqHdGuzaPcWd98lPlVLbDVtFwUNHfQtYctPTwKpYuOn
+	 zHXhgN5/QlqEgt8DAwYUJkk7sppkZBMn31yWzntAkQi8rhE6H6W4pIRZfAZ2Pf6wJx
+	 0RnqGxEA2h3hPkrWxlLGFxkIHy+6sPVXfB9x3J3DiprbAUxRJGPltD8buyC+KpAWeF
+	 AZVKC2TgRR6e6YaEPpN0ELZfPbXVN+bQiEQjyjzftbEkAVp7tQyDsOWE9oh0FhGLRs
+	 yHwPnjRhXpK3Q==
+Date: Thu, 7 Aug 2025 17:13:10 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+	devicetree@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de, linux-can@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-binding: can: m_can: add optional resets
+ property
+Message-ID: <20250807-polar-ruse-b30ef402c9fa@spud>
+References: <20250807-stm32mp15-m_can-add-reset-v2-0-f69ebbfced1f@pengutronix.de>
+ <20250807-stm32mp15-m_can-add-reset-v2-1-f69ebbfced1f@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="95eIz5YQcH/glHyT"
+Content-Disposition: inline
+In-Reply-To: <20250807-stm32mp15-m_can-add-reset-v2-1-f69ebbfced1f@pengutronix.de>
+
+
+--95eIz5YQcH/glHyT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Szanowni Pa=C5=84stwo,
+On Thu, Aug 07, 2025 at 08:09:30AM +0200, Marc Kleine-Budde wrote:
+> The m_can IP core has an external reset line. Add it to the bindings
+> documentation.
+>=20
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-obs=C5=82uga prawna w zakresie prawa pracy to nie tylko dba=C5=82o=C5=9B=C4=
-=87 o dokumenty i zgodno=C5=9B=C4=87 z przepisami. To przede wszystkim re=
-alne wsparcie w codziennym funkcjonowaniu firmy i bezpiecze=C5=84stwo org=
-anizacyjne.
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-W ramach wsp=C3=B3=C5=82pracy oferujemy m.in.:
-=E2=80=A2 przygotowywanie i negocjowanie um=C3=B3w oraz kontrakt=C3=B3w,
-=E2=80=A2 wsparcie przy zatrudnianiu i legalizacji pracy cudzoziemc=C3=B3=
-w,
-=E2=80=A2 doradztwo w procesach restrukturyzacyjnych,
-=E2=80=A2 przeprowadzanie audyt=C3=B3w prawno-pracowniczych (due diligenc=
-e),
-=E2=80=A2 reprezentacj=C4=99 w sporach z ZUS oraz pracownikami.
+--95eIz5YQcH/glHyT
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Dzi=C4=99ki wieloletniemu do=C5=9Bwiadczeniu w obs=C5=82udze firm z podob=
-nej bran=C5=BCy rozumiemy Pa=C5=84stwa potrzeby i proponujemy rozwi=C4=85=
-zania dopasowane do rzeczywistych wyzwa=C5=84 biznesowych.
+-----BEGIN PGP SIGNATURE-----
 
-Z przyjemno=C5=9Bci=C4=85 przedstawi=C4=99 szczeg=C3=B3=C5=82y =E2=80=93 =
-czy znajd=C4=85 Pa=C5=84stwo chwil=C4=99 na rozmow=C4=99 lub spotkanie?
+iHUEABYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCaJTQlgAKCRB4tDGHoIJi
+0kUJAP9nSDad7BkpEvlqTnkas2ereywm7R/blr7FIwjgf3067AEA/KXy2nxKIAPs
+Jh3qLPDZl+RhlWwEh2w4flquuzXXAgU=
+=gIXt
+-----END PGP SIGNATURE-----
 
-
-Pozdrawiam
-Karolina Dylkiewicz
+--95eIz5YQcH/glHyT--
