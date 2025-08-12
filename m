@@ -1,221 +1,151 @@
-Received: from AM0PR02CU008.outbound.protection.outlook.com (mail-westeuropeazon11023078.outbound.protection.outlook.com [52.101.72.78])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 926252E3373;
-	Mon, 11 Aug 2025 21:06:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.72.78
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754946381; cv=fail; b=NV85a706lJv4abbuY22JDNs/DKhZ1lPQL4+Y9JCuCYq8rO8fh2tXKqhwi3T5Yk3SGdmzwSEyd0Sy0y+X9Nhf5PZviqiwjzk8b+9NxB/wsngV81VX2zIFt3KTdxZpU+6fRikHr0ivCJdKe9G8mioe8Y0htI3GZXHeJD8qCJOd6Z8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754946381; c=relaxed/simple;
-	bh=wUlW2Rne+GSQ4vAwlRCI04fhUZBB+7OWApVNmifxJP0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WG8LSZKeBIpYoyBbmS8ZBlTz/2gRhEo5nAYXTgi3E2WTxPqxoJ0KVYfOHMmWTLeO1BnGUfyoYWM1tqBXQ0Z7wg3UjPyI4vrq7wdSkQAW6sH7HI2dohoTBZDDfME96+msMjgjQOmXS1bk9+Deg9vLSdF55G1pHhb1aVls/HmT38Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=esd.eu; spf=pass smtp.mailfrom=esd.eu; dkim=pass (1024-bit key) header.d=esdhannover.onmicrosoft.com header.i=@esdhannover.onmicrosoft.com header.b=uSbGyE9E; arc=fail smtp.client-ip=52.101.72.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=esd.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=esd.eu
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16D662E7BB7
+	for <linux-can@vger.kernel.org>; Tue, 12 Aug 2025 09:11:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1754989884; cv=none; b=bYSYz4c8zMhnlzNtiigAUQoYl0onlswrIV6sxPHAzpcvPxDxpVhfBWh0YPKhphzXY16bQB37smCXbiXPh0Dmf6GWVQDYIraoZGci34ukQkI/ZgUbcoVL6AJg/8jIKlT1L1ST8mbNA/YspAe2EqC1aZTu2xY45eNUPBQm15pKVqc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1754989884; c=relaxed/simple;
+	bh=Tv0AJGiFsCFxKN7gqZSV8dIMDvArAvHyf1Cqo56pK6s=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=kzike7v2Y6ZOlUkdUqanjIqxdZPq1AMX2Y/N2fCrb7qdezd+zkhH8UzyMVEop8+SDCO/Hrh00l3yEdhDn2ol7ASctuNDnxw2s1KJO+GL3fTZCsAwLA5ghYCfYc3+fgWyk/5TEldCUinY/BEoq0Ky/mDqZ5Cv8utUvYljOEP5d/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=u+w9oBSc; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=esdhannover.onmicrosoft.com header.i=@esdhannover.onmicrosoft.com header.b="uSbGyE9E"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ac32AU59aZTONp5qSXT815HaKKB0UdWl9+nFMFbNa+46XTPpooKU6jcwx7iDQLhGwE4BE2NbMSPiY2iILmxCL88h1gfgH1v/0KSVBBBISti/xss94vZrwA3NGshOfU+13XlWGimjErPbiMVPauA+Vy/Z8Gr43JuFDM2y7guBCliten0a9mY+uENZo5uuLnrZLpFgF99qxy7P5mtdAoe8siogPM+2c0C7bNntLLaAx74AeMvK3HSWgqEnn6oLxcKBOVu2/n7o11funQnzv1hMM5km0pTA0BH1Sjp/UyC7VI/kc5/+AWCNBFYPpEhN/LjW+KeMO5mP7dddjtA6vEgFPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=y/b5qKRyhJdxMBfd0NIfsEnPJqi8/JHVaZ0uUnM0dAA=;
- b=PGICMqoRYRwxT+VwwDUjM6MDH5QSlAI9mO48FXtvqNkaYp3CN4GiwWCl7NC5U6pg9B7zekCsR3osx2XFL2Ey+FfebmPSgrCEzXeKm/V9Ssrdb3MhrcuaushHqe/3D9jPK52c61L8VhCD4QxBkhLKau/JTN6Hih5r/LP0QIsIOjzkYj3bkC+QbpOXbQltzRZ6vXFJhtuvFOLC07hIpjBncKsSK3Mf4BQv9BF+pPp8yq3Utk9itSLRqhLTtrM0MU5qA1ygHxj8POQkCW2RfMpIiWanHbRkjOgp5SgBZL4Q6NDKDTzQifhYlpit/kZRyCUfns9oD6b+4L9zqudU7L2PXA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
- is 80.151.164.27) smtp.rcpttodomain=esd.eu smtp.mailfrom=esd.eu; dmarc=fail
- (p=none sp=none pct=100) action=none header.from=esd.eu; dkim=none (message
- not signed); arc=none (0)
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="u+w9oBSc"
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-af922ab4849so788686366b.3
+        for <linux-can@vger.kernel.org>; Tue, 12 Aug 2025 02:11:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=esdhannover.onmicrosoft.com; s=selector1-esdhannover-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y/b5qKRyhJdxMBfd0NIfsEnPJqi8/JHVaZ0uUnM0dAA=;
- b=uSbGyE9E9fh3S6KyzcoZIv0hOVOZCidDTdACk5MkiO2xDlLIjw3h93aOQ/RtDNbzSBELUEshl+w8FX6cz9NMdKob9rjuMLiAFos1+RrHlM0MZKp9p7q+DxMnBDxTAw0JN/XBJ75LBRT2Rk/8s5Aa1jyE4Z0DyTnVP2UF+iakPRQ=
-Received: from PR1P264CA0199.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:34d::18)
- by AS8PR03MB6838.eurprd03.prod.outlook.com (2603:10a6:20b:29b::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9009.18; Mon, 11 Aug
- 2025 21:06:12 +0000
-Received: from AM3PEPF0000A791.eurprd04.prod.outlook.com
- (2603:10a6:102:34d:cafe::6d) by PR1P264CA0199.outlook.office365.com
- (2603:10a6:102:34d::18) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9009.22 via Frontend Transport; Mon,
- 11 Aug 2025 21:06:12 +0000
-X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
- 80.151.164.27) smtp.mailfrom=esd.eu; dkim=none (message not signed)
- header.d=none;dmarc=fail action=none header.from=esd.eu;
-Received-SPF: SoftFail (protection.outlook.com: domain of transitioning esd.eu
- discourages use of 80.151.164.27 as permitted sender)
-Received: from esd-s7.esd (80.151.164.27) by
- AM3PEPF0000A791.mail.protection.outlook.com (10.167.16.120) with Microsoft
- SMTP Server id 15.20.9031.11 via Frontend Transport; Mon, 11 Aug 2025
- 21:06:12 +0000
-Received: from debby.esd.local (jenkins.esd.local [10.0.0.190])
-	by esd-s7.esd (Postfix) with ESMTPS id F2E977C16CC;
-	Mon, 11 Aug 2025 23:06:11 +0200 (CEST)
-Received: by debby.esd.local (Postfix, from userid 2044)
-	id EB24F2EC3E3; Mon, 11 Aug 2025 23:06:11 +0200 (CEST)
-From: =?UTF-8?q?Stefan=20M=C3=A4tje?= <stefan.maetje@esd.eu>
-To: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-	Frank Jungclaus <frank.jungclaus@esd.eu>,
-	linux-can@vger.kernel.org,
-	socketcan@esd.eu
-Cc: Simon Horman <horms@kernel.org>,
-	Olivier Sobrie <olivier@sobrie.be>,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
-	netdev@vger.kernel.org
-Subject: [PATCH 3/6] can: esd_usb: Fix handling of TX context objects
-Date: Mon, 11 Aug 2025 23:06:08 +0200
-Message-Id: <20250811210611.3233202-4-stefan.maetje@esd.eu>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20250811210611.3233202-1-stefan.maetje@esd.eu>
-References: <20250811210611.3233202-1-stefan.maetje@esd.eu>
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1754989880; x=1755594680; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BJC2PHMCZh5uCGWRu2/ONPI2KDseZ4/QrmpZ44TLrNE=;
+        b=u+w9oBScHihJznC/hJ4qLUmelmgT/VGNawDL2Ipg8q7Qe0IxNvji0mnGENVsUtP53V
+         PSdepFVL8HNp/L/qLEYcm+KSujyj2g9C81+jLKIVoBtUU5ar2I0+uqMQWYy56ijUI+WG
+         lelG1znGASr4cyIAE3LU9BfTpolH5+odOlHD7aKTkkg1dWqqMzvmzAMd9iTYiYizSgXV
+         96wfMZ7jp7Zrytp6OdbxSOedUmfUOmEQt8YF4bZFV8Ae7xbiBZp3TtXCWmAFzRk5wGJL
+         CHcHF1hqofQsiOsB9lu235+TnKLkqRBE1JRId500STrpDahiO8ycl/vD7dJLwz6Qk/Iq
+         my+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754989880; x=1755594680;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BJC2PHMCZh5uCGWRu2/ONPI2KDseZ4/QrmpZ44TLrNE=;
+        b=KNSsOTAfQt/xX4Jf3Kd4l3gTe/DMmsnHbC2ZpX8SnvJOmxisIrpuQGVZCpPrJg85LT
+         K3quc5H9PxMIDErsrGCc0JWhhHsWQ7L5xGkmt4AH6cCu7Yh76cDjk4RZgWKKQNv91r43
+         DkiLyiJOzAXZHUI7NYbtydYuTzljOiY6DAm6uRLQlPwVoxx0P5ZpKXmWTrst4GD+NX43
+         bhz4euBDMAGHo64IzFBj52JmE2o7IIioP8P1J39bF5n9vTTU1d5xJdxtlLzOw9kkHkhE
+         L8iafzK4psxD9NF9UECUxJF8KR1KA5/9fpYJn3hNS3Fb9GdalCtRckGCLFGIzM+tjFFK
+         VaoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVtt0EdZCa8410mUp5Zx6usPW+UCky54xuw2DM825zyapYEtWZX0/MF6jb9T5Tw44uwtWkqi6zQDz0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyezhAkIAVRSNXC4bvZezPlUfjdjFKTgVI0R9hyphaujljzwdab
+	/w+8el1ENRcv7IIRzwkK9fMLllzlRr9N9jSpwehaMP5zA+dMOewwt5GPSesg7TymxRY=
+X-Gm-Gg: ASbGnct1SQ6rzvxbLoOXO42V2FHTle73QUmDahtnLHNZuLCEZ2plcqxLifkz8ZJYkwH
+	QItf7lG3eEPxpU+1JWjGBUiD1ftZO6IlpFsTCfMpx9KRw+Ogu7lzlgCZgLEVSkJZHNY7/sD+s/j
+	wEe88Diz+VknzXNCbTE5jUsYOzGxBfbuUP2J1DMvaxqJHdOH3Q9U5xvivu+xgNi8EneJ/92DgZK
+	FgcivJF/oRPmvsVYXt9w0SgmzrGcjbn+4oHTRU3mIyl6NvJtVT7XEKSALw91pkN54Zwt9w0g37/
+	75SMPBenF1q3osRTyiTSghm9w5A63TjiucRdWzaplo/izICBI2R8L154wHAWCl6aEv35pKEo+AU
+	+KBOlqh5tU77Rf7kWMqKcrEAWdIpo
+X-Google-Smtp-Source: AGHT+IHrwvHnT395xLvsUxvtvAA9RVe1fQydx2AltL0VFIKWabbwzUC4skcTIScFssoDO+VytMbrqw==
+X-Received: by 2002:a17:907:9622:b0:af6:a116:f13c with SMTP id a640c23a62f3a-afa1df6fbbcmr220978266b.23.1754989880292;
+        Tue, 12 Aug 2025 02:11:20 -0700 (PDT)
+Received: from localhost ([2001:4090:a244:8691:4b7a:7bbd:bac:c56e])
+        by smtp.gmail.com with UTF8SMTPSA id 4fb4d7f45d1cf-615a8f00252sm19809960a12.8.2025.08.12.02.11.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Aug 2025 02:11:19 -0700 (PDT)
+From: Markus Schneider-Pargmann <msp@baylibre.com>
+Date: Tue, 12 Aug 2025 11:10:22 +0200
+Subject: [PATCH v8 1/4] dt-bindings: can: m_can: Add wakeup properties
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM3PEPF0000A791:EE_|AS8PR03MB6838:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1dac729b-a266-4493-cb11-08ddd91ae6e0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|19092799006|82310400026|376014|1800799024|36860700013;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?L1hJeFF6NEFLTWVsT1RXZ3JWVXdPREc1VStzbU1yV0t0MGVEaG5nNkVnNCs4?=
- =?utf-8?B?cTN4dVpxZUVuM1pJOERuTUo3Tzlpem5QWDY4Umd4UXlaSXZ1M1NKZDlFQW00?=
- =?utf-8?B?U2dINXp6Z3d0NmxyUEpOY3lzamVDdnU3cW1xNVFUOWVrd0s0OHhRNC9PTUxI?=
- =?utf-8?B?UHVmYnVET3dYNUo4cFBZeUhNNnBVUkNtTGw1Z2xkSEE1WFptcUNzZjJOSlhE?=
- =?utf-8?B?UFFQMWZtcWFWelRWVXpVTWNKR2h5dzhSd29YdlZWMGowZlh2VzNpUHFRbWJa?=
- =?utf-8?B?cXBkSFcrVytYVW94ZHg2aVEweWpsSS9qQno2TmsySjhneGlrZTJqNU1rVk1J?=
- =?utf-8?B?UWtyS0ZyQ0lRa3FTNTZEY2FRc3FIZlAxT1FIQ0VpcVZJaUx4Q1RHR0JTN3pq?=
- =?utf-8?B?QzgrMlRHbEFxNUg5K1YwVittcll3OUsxMFBVa25kWFVVN0EySWFyWVpyMEhh?=
- =?utf-8?B?elUzV1NvL1RLWVVDb3VLZ1MvZllWM1poYTM0c2lORnMxODJFenN3bnBkbXdJ?=
- =?utf-8?B?NkVhVnBWY0NrYnN3UGVEVldZRTZmV1pnVStYRUpmOXRPYk1lVnNneWpHL05N?=
- =?utf-8?B?WDRydG1DYU9OSEU1WFpjSHRPMDNISWpSdDgrV2hnSXVuK1BJU1Zvd3FTQ2pO?=
- =?utf-8?B?dVZJcjBWVWFGVWprYkp4MitsNWZwMzRjTUlYVmFvZWhKWjBzaEpWRGJwdVg1?=
- =?utf-8?B?MzFEK2hiK3hXSlBtcjVKSzlkdG9TeTdrWjYvWjVwM0JoRlpTbmR2S1dtR3lh?=
- =?utf-8?B?eW5kUEZQOS9lVDRuK0x3U1RYN1RPQ1pxelg3YXY2dDlhUXlWbXpTOFBIallS?=
- =?utf-8?B?REk3YWNvQmt5aHlwUXV1TFN5WlBJZ0M1QkpWT2kzV1NKSVcxcVp2MDNsb3A2?=
- =?utf-8?B?R3h6VUNybFJmQ2hVVTlmR3VaaG9tWEY2NklZWkd2MXRWVzBHTkhOQUpMaCtL?=
- =?utf-8?B?dnFGVHQ5SDVvd2lPRDhxUkV1YXVjZU5zTEJVQTVjTXdLQUhwRE1TOG1BbTVn?=
- =?utf-8?B?Zm8yMHB5cUZMb3pQMzFYb2dOVFAyN1JMWVdOSm9tU2EyQTBtdFF0cmdMWDE5?=
- =?utf-8?B?ZjJCMFh4bDNweU4zV0E1WTVTeWtVR1lYVGlVZXZvalZyS1lpMndsWXliN1Zu?=
- =?utf-8?B?eGxWVkVPK3hxV0llMm9EaU43eTBJNVJvVVZvbjlQbDlycUdla2M1SVR1LzZt?=
- =?utf-8?B?WjRuQWFaOG8wTXNXdG4xei9MNmFWSnNGTHhHSDdWajc0M09BVDFNUVd2Wm1p?=
- =?utf-8?B?UDczb0NlOWNHeG40cVlNTVlPd2N3TUZmK0lRdEc4OVNYbk9vODIraDFIVzFv?=
- =?utf-8?B?SEtOb0NpN09WeFZCVXhIV2ZyR2FwempiaUcrZFZndnRsenk3VFNDSy9aOVBs?=
- =?utf-8?B?Ym9nR2Q4ZzNhcUpMUThjcmQ5dE5lN21CZXQ5Y2Jkcnc3ODVYL0tLOFV6byth?=
- =?utf-8?B?cnFPUlpucDk5NkhkOVBGSmpCRlhqR2lyZmUwMHhzUkNGb2Z4OTkvSkt4QVJK?=
- =?utf-8?B?bFFOT3J4RkpUWkgvNFpXSVRVN0ZNMDQ1ZjJYanllTzQySGJ6U2hodktzamxt?=
- =?utf-8?B?RTFhUGJMRGxTalNoZS9JY2pJdEY0amllOU9tTGp5TWlGMEI1T2huM3RxNlRM?=
- =?utf-8?B?cG1qdFJGdDJwVDc5aTVVaU9LSUZHSGowWGdNVUdTZHZHNXBHcUhBQWQ5ZERM?=
- =?utf-8?B?V2ZZemw2cDVLMHIyakw3T0JOYXdiTld4RzBFdmd2ejNYdmE4T3NNMUdaY1h2?=
- =?utf-8?B?WUpOdlV5RnMzUDZMaFlwUUExWFNyNmh4NDJ4TEdVZi9tODFSK1VLSy9kU0Vs?=
- =?utf-8?B?bEpaZGQ2OWRGMkl5YnRFZjBvOFJNRlpDUHVSZHdQamlmS3VBdDR5WWdkK21i?=
- =?utf-8?B?WXFtTUxVRnY0UmVPQTVGNVZaWko5QUZRMGZBOUFqZER4eHQrY1RmQUtDTXJT?=
- =?utf-8?B?aDJSRngxNXpRcW9PWEI0Tk5va1Z0NkwrVEVPTUl2NWV6UThlampFVEo3VHFB?=
- =?utf-8?B?M3IyU3EyT0RrRmRmQjRENGtzME1GT3JmcFJhOEgvdFFEVG9xV1lUQjgxWGZl?=
- =?utf-8?Q?/qYdSF?=
-X-Forefront-Antispam-Report:
-	CIP:80.151.164.27;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:esd-s7.esd;PTR:p5097a41b.dip0.t-ipconnect.de;CAT:NONE;SFS:(13230040)(19092799006)(82310400026)(376014)(1800799024)(36860700013);DIR:OUT;SFP:1102;
-X-OriginatorOrg: esd.eu
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2025 21:06:12.1472
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1dac729b-a266-4493-cb11-08ddd91ae6e0
-X-MS-Exchange-CrossTenant-Id: 5a9c3a1d-52db-4235-b74c-9fd851db2e6b
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5a9c3a1d-52db-4235-b74c-9fd851db2e6b;Ip=[80.151.164.27];Helo=[esd-s7.esd]
-X-MS-Exchange-CrossTenant-AuthSource:
-	AM3PEPF0000A791.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR03MB6838
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20250812-topic-mcan-wakeup-source-v6-12-v8-1-6972a810d63b@baylibre.com>
+References: <20250812-topic-mcan-wakeup-source-v6-12-v8-0-6972a810d63b@baylibre.com>
+In-Reply-To: <20250812-topic-mcan-wakeup-source-v6-12-v8-0-6972a810d63b@baylibre.com>
+To: Chandrasekar Ramakrishnan <rcsekar@samsung.com>, 
+ Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Vishal Mahaveer <vishalm@ti.com>, Kevin Hilman <khilman@baylibre.com>, 
+ Dhruva Gole <d-gole@ti.com>, Sebin Francis <sebin.francis@ti.com>, 
+ Kendall Willis <k-willis@ti.com>, Akashdeep Kaur <a-kaur@ti.com>, 
+ Simon Horman <horms@kernel.org>, 
+ Vincent MAILHOL <mailhol.vincent@wanadoo.fr>, linux-can@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Markus Schneider-Pargmann <msp@baylibre.com>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1809; i=msp@baylibre.com;
+ h=from:subject:message-id; bh=Tv0AJGiFsCFxKN7gqZSV8dIMDvArAvHyf1Cqo56pK6s=;
+ b=owGbwMvMwCXWejAsc4KoVzDjabUkhozZrIq7E7VnKvA4bZl5+hK/lvGMbMvtOvpHFm5c5NEtb
+ Jmk/624o5SFQYyLQVZMkaUzMTTtv/zOY8mLlm2GmcPKBDKEgYtTACYSZcbIcO3pho7fc2KmRbw2
+ nnNNtu1gVNe/DVeOCMefcXe1ZQzm3cvwv+iCl0rkPKXyXW+jUtbt+V8wfXHoufM3b882W3i87N0
+ vCyYA
+X-Developer-Key: i=msp@baylibre.com; a=openpgp;
+ fpr=BADD88DB889FDC3E8A3D5FE612FA6A01E0A45B41
 
-For each TX CAN frame submitted to the USB device the driver saves the
-echo skb index in struct esd_tx_urb_context context objects. If the
-driver runs out of free context objects CAN transmission stops.
+The pins associated with m_can have to have a special configuration to
+be able to wakeup the SoC from some system states. This configuration is
+described in the wakeup pinctrl state while the default state describes
+the default configuration.
 
-This patch fixes some spots where such context objects are not freed
-correctly.
+Also m_can can be a wakeup-source if capable of wakeup.
 
-In esd_usb_tx_done_msg() the check for netif_device_present() is moved
-after the identification and release of TX context and the release of
-the echo skb. This is allowed even if netif_device_present() would
-return false because the mentioned operations don't touch the device
-itself but only free local acquired resources. This keeps the context
-handling with the acknowledged TX jobs in sync.
-
-In esd_usb_start_xmit() a check is performed to see whether a context
-object could be allocated. Added a netif_stop_queue() there before the
-function is aborted. This makes sure the network queue is stopped and
-avoids getting tons of log messages in a situation without free TX
-objects. The adjacent log message now also prints the active jobs
-counter making a cross check between active jobs and "no free context"
-condition possible.
-
-In esd_usb_start_xmit() the error handling of usb_submit_urb() missed to
-free the context object together with the echo skb and decreasing the
-job count.
-
-Signed-off-by: Stefan Mätje <stefan.maetje@esd.eu>
+Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
 ---
- drivers/net/can/usb/esd_usb.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ .../devicetree/bindings/net/can/bosch,m_can.yaml   | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
-index dbdfffe3a4a0..fc28fb52564c 100644
---- a/drivers/net/can/usb/esd_usb.c
-+++ b/drivers/net/can/usb/esd_usb.c
-@@ -460,9 +460,6 @@ static void esd_usb_tx_done_msg(struct esd_usb_net_priv *priv,
- 	struct net_device *netdev = priv->netdev;
- 	struct esd_tx_urb_context *context;
+diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+index c4887522e8fe97c3947357b4dbd4ecf20ee8100a..ecba8783198fc1658fcc236d8aa3c89d8c90abbd 100644
+--- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
++++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+@@ -106,6 +106,22 @@ properties:
+         maximum: 32
+     minItems: 1
  
--	if (!netif_device_present(netdev))
--		return;
--
- 	context = &priv->tx_contexts[msg->txdone.hnd & (ESD_USB_MAX_TX_URBS - 1)];
- 
- 	if (!msg->txdone.status) {
-@@ -478,6 +475,9 @@ static void esd_usb_tx_done_msg(struct esd_usb_net_priv *priv,
- 	context->echo_index = ESD_USB_MAX_TX_URBS;
- 	atomic_dec(&priv->active_tx_jobs);
- 
-+	if (!netif_device_present(netdev))
-+		return;
++  pinctrl-0:
++    description: Default pinctrl state
 +
- 	netif_wake_queue(netdev);
- }
++  pinctrl-1:
++    description: Wakeup pinctrl state
++
++  pinctrl-names:
++    description:
++      When present should contain at least "default" describing the default pin
++      states. The second state called "wakeup" describes the pins in their
++      wakeup configuration required to exit sleep states.
++    minItems: 1
++    items:
++      - const: default
++      - const: wakeup
++
+   power-domains:
+     description:
+       Power domain provider node and an args specifier containing
+@@ -122,6 +138,12 @@ properties:
+     minItems: 1
+     maxItems: 2
  
-@@ -961,9 +961,11 @@ static netdev_tx_t esd_usb_start_xmit(struct sk_buff *skb,
- 		}
- 	}
- 
--	/* This may never happen */
-+	/* This should never happen */
- 	if (!context) {
--		netdev_warn(netdev, "couldn't find free context\n");
-+		netdev_warn(netdev, "No free context. Jobs: %d\n",
-+			    atomic_read(&priv->active_tx_jobs));
-+		netif_stop_queue(netdev);
- 		ret = NETDEV_TX_BUSY;
- 		goto releasebuf;
- 	}
-@@ -994,6 +996,8 @@ static netdev_tx_t esd_usb_start_xmit(struct sk_buff *skb,
- 	if (err) {
- 		can_free_echo_skb(netdev, context->echo_index, NULL);
- 
-+		/* Release used context on error */
-+		context->echo_index = ESD_USB_MAX_TX_URBS;
- 		atomic_dec(&priv->active_tx_jobs);
- 		usb_unanchor_urb(urb);
- 
++  wakeup-source:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description:
++      List of phandles to system idle states in which mcan can wakeup the system.
++
++
+ required:
+   - compatible
+   - reg
+
 -- 
-2.34.1
+2.50.1
 
