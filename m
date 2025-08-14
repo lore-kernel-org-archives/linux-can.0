@@ -1,100 +1,105 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59C3F2FC890
-	for <linux-can@vger.kernel.org>; Thu, 14 Aug 2025 12:08:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A7241F8BD6;
+	Thu, 14 Aug 2025 12:28:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755173290; cv=none; b=a46WwauekgQM1Mf15CCF7TXZQEn6ELQWNno8pnK1Oo7YHEeEs4DJ7ExNHvcIxoDpyq9h9yfRPvlW5Ns6FQArHoh9Qnad9v4zd/yX31dW8scWHyoyEzdUDLdvVs+WTpK5KBsIl9Pv0tzXpSL5U1Roi7JMR8C7e57/IKJAR/zLNGE=
+	t=1755174529; cv=none; b=kpPjnK1PjlvfC65DVqvP6xw/5IhgnroNiIjVYFkvtXzI0TMcBR9/JI6ywf04SlTMTINCtb3QdW3z3K5AXW7mBxaTSabO5fEHVvSJarsFHAs4evLVB8Xy6u7NEMO0vUR27L/pg/mumRquFR1r5RYJOU27iO61Db8cnc10F1F0xSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755173290; c=relaxed/simple;
-	bh=uJbiL98Hxq2sC5en0r88AqX/6V4gvyvxAt/f7nCrEZE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nq93A/aDvIX4hRc2yETtJctxbJALw8ls7AomhK4vF9+yI/ukYMZGNMndv1XVsF5IugNnX/FCsYJbGpZSJgrj32AjRyrUX8gch9DidVHCS8yIPPMEdwb7nHrszQ1f0aw6FInua2CgbaVbpKOQyL785+jChpe159dhXf+icH4Rvzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1umWkW-0000al-6f; Thu, 14 Aug 2025 14:08:04 +0200
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1umWkV-000FUo-2A;
-	Thu, 14 Aug 2025 14:08:03 +0200
-Received: from pengutronix.de (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id D024A4576A5;
-	Thu, 14 Aug 2025 11:39:07 +0000 (UTC)
-Date: Thu, 14 Aug 2025 13:39:05 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
-	Biju Das <biju.das.jz@bp.renesas.com>, linux-can@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH] can: rcar_can: Fix s2ram with PSCI
-Message-ID: <20250814-gray-yak-of-happiness-829267-mkl@pengutronix.de>
-References: <699b2f7fcb60b31b6f976a37f08ce99c5ffccb31.1755165227.git.geert+renesas@glider.be>
+	s=arc-20240116; t=1755174529; c=relaxed/simple;
+	bh=QBOu//1MZrp/YChDDR6cXNrrWM9pk5OdZDjgVPQ5HfE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JCUOPbasO9s9n0ZNuBjUxA4AXm05dt1tEYzUv1Fcsx23CXSJmNOBAQAuwRd/aikZ0Gbe/rcV+nPTrGl6uX1kJnlyhy6sSC9QqJmyk5KNfBT3U8ShLwUJ0pUsJ7ejZG3mNLshYRPhTeK+Xx6IR5PceJ3fKzDWlIYNTTprzTbzBFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f51.google.com with SMTP id a1e0cc1a2514c-89019119eeeso517160241.3;
+        Thu, 14 Aug 2025 05:28:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755174526; x=1755779326;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1vqN8ziP+CaJ6pZc8kPYTQ5seD3d677fvNr2+1W2ZV4=;
+        b=IFBj6iLrCAL3hp2G8r9W4t/SjNPxDRRM1A9Tu8oEKAwloDDLug2Wf61mAF3PxW+b//
+         nbdFOAEZdBEJAXMXRJ6lwSo20CimZpY68ECR7jQohO+AkZxcF4k3mQkcnf3pDJCoZhff
+         5UrxEWsdkgqV62Cw+qCD5tk8huFhGYTQpDyAz7lQI6lzkgUaIqkNfCoYC3kRrIjqvJ+x
+         ieEk8+Ks7rTfUYFUpylw5rNALCDt7+y5bA6rj4Rqf5DfVPw5sJ1h/Jy/fgZVJ6hJJr8j
+         BXGqJhDZIfT8VKuriA3ONLtufz007VcAqPU2pSJPLRAlW2/biKszq40Jy1PEj0C/q+Mt
+         oETg==
+X-Forwarded-Encrypted: i=1; AJvYcCUnw6/AyrWVDDZJ7AeUHIOmQOgY7qs3ba05cCyrD5vcHEC9T5H5BiffgvyNbFD3VKYJK4OmE+AO2cs=@vger.kernel.org, AJvYcCVon4mmHBrjxu7TyNS/GHwXWnKBKTXUolsUJvE5Pdo1sNpAeJUsDbYLYaiG6ZIv0g5UM60Ot+i+NJtygprnZ7o98io=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzNvWOoWIBI7Y+hFqE4suwnSmjXitYbYBeokEBF/L1Hx21a5gVP
+	yp+p9LKijGLg0pFQEcntO10SREXv7bdW+qqT2iPLMixwOmzL9KzFSGTlgeNHpJ89
+X-Gm-Gg: ASbGncuv6sTNC9MWrxcG1QxOoT13ceyxIIO82iAQ05y2LlJwD5HcGaTOoiPojjaK6/g
+	dgbFWiZ0aqZ4vbT04rBQiOu3WUdJYFgOlbrSs5pal9wAxKwNDvfLu9w0lx9XcKWLVrlteFnYAQc
+	E5p44ptRMte0oHsHC8jSaPNuV5Nzxfe5M1XjIEqR2fUgvVudERHbo3y3AVN6ODOIsGJ+AZpyao6
+	A+fjpZNs/bDRY/zmt2Sj4nXPpwGooLN1dc8EhjCGDGxFH3DjTTa1TCUOKwppjVoZ4m2DnuY0IcW
+	nki0hxbeRQ28bvlQMmB6mTCMYCHCRVZn8IQsxu0RCnpPBfdHWiA8i4qoz46y7QC7z91k8ZZhqAv
+	E78NV0LgnMfZ6Rc1b95a8O28n7cDNjuhzUZiQw6kfzhoYO4Nj7KXaLz+a45cN
+X-Google-Smtp-Source: AGHT+IE2es+p19C59jHjIOLMUKkrltymQlEVEI4Yn3fBEyp039WN8CrIh3n1BGyPQQZvgFAWGZ209A==
+X-Received: by 2002:a67:e01c:0:10b0:4e5:ac0f:582c with SMTP id ada2fe7eead31-50fe9f7a54dmr752090137.13.1755174526314;
+        Thu, 14 Aug 2025 05:28:46 -0700 (PDT)
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com. [209.85.222.52])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-88e028f6355sm3293078241.12.2025.08.14.05.28.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Aug 2025 05:28:46 -0700 (PDT)
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-890190bee8bso485649241.2;
+        Thu, 14 Aug 2025 05:28:46 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVyHz7qLiuijl6k5z69i3qPRPo8WIcxB/Q60gddX8RHSCM0KTRxlcb+433ZKVTdu48jKFHd2BuyBIN/NHF5zXkaOFQ=@vger.kernel.org, AJvYcCWEY/IWkSkLRipBJX9T7D9/aLuFrPJU6pr074f6jVro4bYDfWeVvI/f0v9pPRWzNjjvyRgDFjMgL04=@vger.kernel.org
+X-Received: by 2002:a05:6102:2c83:b0:4fa:85f:31c0 with SMTP id
+ ada2fe7eead31-50fea3b35e6mr1130342137.19.1755174525882; Thu, 14 Aug 2025
+ 05:28:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vve3lkmbgajkfkqq"
-Content-Disposition: inline
-In-Reply-To: <699b2f7fcb60b31b6f976a37f08ce99c5ffccb31.1755165227.git.geert+renesas@glider.be>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
-
-
---vve3lkmbgajkfkqq
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+References: <699b2f7fcb60b31b6f976a37f08ce99c5ffccb31.1755165227.git.geert+renesas@glider.be>
+ <20250814-gray-yak-of-happiness-829267-mkl@pengutronix.de>
+In-Reply-To: <20250814-gray-yak-of-happiness-829267-mkl@pengutronix.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 14 Aug 2025 14:28:34 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUXBTpPpS6S6=u3N75Ut+NqBJ2Xu1chnYgjK7XBZ5tXYQ@mail.gmail.com>
+X-Gm-Features: Ac12FXwQM796sP80JzLSgKJNMbaVWtSL4dvHeai6KLb764qilCw9cJb1OyfedB8
+Message-ID: <CAMuHMdUXBTpPpS6S6=u3N75Ut+NqBJ2Xu1chnYgjK7XBZ5tXYQ@mail.gmail.com>
 Subject: Re: [PATCH] can: rcar_can: Fix s2ram with PSCI
-MIME-Version: 1.0
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>, Biju Das <biju.das.jz@bp.renesas.com>, 
+	linux-can@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 14.08.2025 13:26:37, Geert Uytterhoeven wrote:
-> On R-Car Gen3 using PSCI, s2ram powers down the SoC.  After resume, the
-> CAN interface no longer works, until it is brought down and up again.
->=20
-> Fix this by calling rcar_can_start() from the PM resume callback, to
-> fully initialize the controller instead of just restarting it.
->=20
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Hi Marc,
 
-Can you add a fixes tag?
+On Thu, 14 Aug 2025 at 14:08, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 14.08.2025 13:26:37, Geert Uytterhoeven wrote:
+> > On R-Car Gen3 using PSCI, s2ram powers down the SoC.  After resume, the
+> > CAN interface no longer works, until it is brought down and up again.
+> >
+> > Fix this by calling rcar_can_start() from the PM resume callback, to
+> > fully initialize the controller instead of just restarting it.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>
+> Can you add a fixes tag?
 
-Marc
+Well, the issue is more like an integration/platform issue: before the
+advent of PSCI system suspend powering down the SoC, s2ram worked fine.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+One might consider the (rudimentary) addition of support for R-Car
+Gen3 to the driver as the first "broken" commit:
+Fixes: e481ab23c57b37c9 ("can: rcar_can: Add r8a7795 support")
+But at that time, Linux didn't even support wake-up from PSCI system
+suspend on R-Car Gen3 systems...
 
---vve3lkmbgajkfkqq
-Content-Type: application/pgp-signature; name="signature.asc"
+Gr{oetje,eeting}s,
 
------BEGIN PGP SIGNATURE-----
+                        Geert
 
-iQEzBAABCgAdFiEEn/sM2K9nqF/8FWzzDHRl3/mQkZwFAmidytYACgkQDHRl3/mQ
-kZyIbAf6A0kvS9nKrd7W2DBUD9M4S1WpAVL4dAvMeRnsPC7E7WcD4mHLRuDpIU50
-7PK8qMevUJSn4VrlVBXt4TEQygpvEhEdIYDeublyBL5PCS9SvxWmsWCWzSTLpzVW
-n1LF46Or7MFVbfEMo+TAGWzwXRG4FgwxRrdcXJ6k+B7s58lBAuZDqvyK4O7O1/1F
-qIcyyKlxsgisrDn/1S1tGlnaCBUkUFs39WxeGsyPcj9Dvm61LDTYmJO1hddUUGGv
-xQSR2r2/gEzvGpmY2/s7aJX/54eolYyGnecafwvb0mjYLdBGhZDeWwwe/ExsgCPE
-zu+lwc5uzeUVAmiYA6aaFs2Dzgxqlw==
-=ZoR1
------END PGP SIGNATURE-----
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
---vve3lkmbgajkfkqq--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
