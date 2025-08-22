@@ -1,116 +1,80 @@
-Received: from mail.bitwise.fi (mail.bitwise.fi [109.204.228.163])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39E8327E041
-	for <linux-can@vger.kernel.org>; Fri, 22 Aug 2025 10:00:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.204.228.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7276F21ABC9;
+	Fri, 22 Aug 2025 10:17:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755856845; cv=none; b=Nn92gJ8ovvUvpI71uce3hq2z0qJWwNVc534tRDeu2TxZrB3VExLr7qU8vydOU6Ycg6R/AfWteDKKQWoaOMo/H8oR3sRxVPjEJTfnZzzZUeZYm83kn7Sid2qOjfg2ezUSIHNVpVABgqpYxn14S33oDSGepmvt+w7366yj3YNxG10=
+	t=1755857839; cv=none; b=rhnwBhE7y/cl/HDKQ1zl1WwgRs2uQhTU55/2WlfRLyCqW3mWbUMB9nWFj0QIDnbFBgheP2wvcHNiFgtJpVfSmunCgrx+yZJCnNEAQmMWWDi5TH5zMjW4vxdeD0+4N+df8racxvUFKqHM1GadgvHORXYapwrL4B2IvaRsdD7uuWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755856845; c=relaxed/simple;
-	bh=4QZgsMDfKg2fwOebUz0gcmy4kqEgEcnfngb+fa1o5kY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VNedSAzevvj0OTxPRAorCtHUFFuJfgd6Xq6HP2XwT4+n6nOfoo7gTj/eRUaq5gOVShBN8VPKHVmHA00cqL6/HQcqwwijxGWsAPdH4CtcJSQEj1ojc4MVkCECZrSEnL/l1aZCcwzKxS2VIikuKh1p+o6pjSX0JYCbWxpZCaYB0DE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bitwise.fi; spf=pass smtp.mailfrom=bitwise.fi; dkim=pass (1024-bit key) header.d=bitwise.fi header.i=@bitwise.fi header.b=cEPwSRjc; arc=none smtp.client-ip=109.204.228.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bitwise.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bitwise.fi
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bitwise.fi header.i=@bitwise.fi header.b="cEPwSRjc"
-Received: from localhost (localhost [127.0.0.1])
-	by mail.bitwise.fi (Postfix) with ESMTP id 57BD1460071;
-	Fri, 22 Aug 2025 12:50:53 +0300 (EEST)
-X-Virus-Scanned: Debian amavis at 
-X-Spam-Flag: NO
-X-Spam-Score: -3.1
-X-Spam-Level:
-Authentication-Results: mustetatti.dmz.bitwise.fi (amavis);
- dkim=pass (1024-bit key) header.d=bitwise.fi
-Received: from mail.bitwise.fi ([127.0.0.1])
- by localhost (mustetatti.dmz.bitwise.fi [127.0.0.1]) (amavis, port 10024)
- with ESMTP id unEs7smQ8VfG; Fri, 22 Aug 2025 12:50:51 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=bitwise.fi; s=mail;
-	t=1755856251; bh=4QZgsMDfKg2fwOebUz0gcmy4kqEgEcnfngb+fa1o5kY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=cEPwSRjc1LbgREqamPAi8UBZXVAeK5EJ/c+d3UFwu0cVPmv1jHV0g74KRhysi+Ll8
-	 Pf46mDPCjXMy0poV8EonM7mJjs65GPePP/PM/EXX1uXRsuzHxKJAu3FQDnwdAky+pZ
-	 0g60SjUsnCPDvDA+lCvT04l5ndcH65kW+A1kDiTQ=
-Received: from localhost.localdomain (fw1.dmz.bitwise.fi [192.168.69.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: anssiha)
-	by mail.bitwise.fi (Postfix) with ESMTPSA id 4AAB1460027;
-	Fri, 22 Aug 2025 12:50:51 +0300 (EEST)
-From: Anssi Hannula <anssi.hannula@bitwise.fi>
-To: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+	s=arc-20240116; t=1755857839; c=relaxed/simple;
+	bh=0PLHotQVwXLk4Ewi6OXeoK4zZqYJ9pazhNDfarc2lyQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VO6OUHSMQQyibXl6cH4+2zYeQqV+y0I81V2aiZM/x2d7HED4C1FT+xY2pkm8btLm1ZEkR0Bck/jZQ8erV3OIAitgbKeylWl21TMHcaQNaeuU/qeQZ6HULDwDE8osMCBlD/PQYgEvQDml0kzCsunrqw0AgWrsnrCK37W8eSY+yj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D25E2C4CEED;
+	Fri, 22 Aug 2025 10:17:17 +0000 (UTC)
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Cc: linux-can@vger.kernel.org,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH] can: xilinx_can: fix use-after-free of transmitted SKB
-Date: Fri, 22 Aug 2025 12:50:02 +0300
-Message-ID: <20250822095002.168389-1-anssi.hannula@bitwise.fi>
-X-Mailer: git-send-email 2.49.0
+	linux-renesas-soc@vger.kernel.org,
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v2 00/11] can: rcar_can: Miscellaneous cleanups and improvements
+Date: Fri, 22 Aug 2025 12:17:01 +0200
+Message-ID: <cover.1755857536.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-can_put_echo_skb() takes ownership of the SKB and it may be freed
-during or after the call.
+	Hi all,
 
-However, xilinx_can xcan_write_frame() keeps using SKB after the call.
+This patch series contains miscellaneous cleanups and improvements for
+the R-Car CAN driver.  I deliberately sent this as a separate series
+from "[PATCH] can: rcar_can: Fix s2ram with PSCI"[1], to avoid blocking
+the latter.  However, this series (in particular [PATCH 3/9]) does
+depend on it.
 
-Fix that by only calling can_put_echo_skb() after the code is done
-touching the SKB.
+Changes compared to v1[2]:
+  - Convert new Runtime PM error messages to %pe,
+  - New patches 10 and 11.
 
-The tx_lock is held for the entire xcan_write_frame() execution and
-also on the can_get_echo_skb() side so the order of operations does not
-matter.
+Thanks for your comments!
 
-An earlier fix 3d3c817c3a40 ("can: xilinx_can: Fix usage of skb memory")
-did not move the can_put_echo_skb() call far enough.
+[1] https://lore.kernel.org/699b2f7fcb60b31b6f976a37f08ce99c5ffccb31.1755165227.git.geert+renesas@glider.be
+[2] https://lore.kernel.org/cover.1755172404.git.geert+renesas@glider.be
 
-Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
-Fixes: 1598efe57b3e ("can: xilinx_can: refactor code in preparation for CAN FD support")
----
- drivers/net/can/xilinx_can.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+Geert Uytterhoeven (11):
+  can: rcar_can: Consistently use ndev for net_device pointers
+  can: rcar_can: Add helper variable dev to rcar_can_probe()
+  can: rcar_can: Convert to Runtime PM
+  can: rcar_can: Convert to BIT()
+  can: rcar_can: Convert to GENMASK()
+  can: rcar_can: CTLR bitfield conversion
+  can: rcar_can: TFCR bitfield conversion
+  can: rcar_can: BCR bitfield conversion
+  can: rcar_can: Mailbox bitfield conversion
+  can: rcar_can: Do not print alloc_candev() failures
+  can: rcar_can: Convert to %pe
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 3f2e378199abb..c14ffbe8e501a 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -690,14 +690,6 @@ static void xcan_write_frame(struct net_device *ndev, struct sk_buff *skb,
- 		dlc |= XCAN_DLCR_EDL_MASK;
- 	}
- 
--	if (!(priv->devtype.flags & XCAN_FLAG_TX_MAILBOXES) &&
--	    (priv->devtype.flags & XCAN_FLAG_TXFEMP))
--		can_put_echo_skb(skb, ndev, priv->tx_head % priv->tx_max, 0);
--	else
--		can_put_echo_skb(skb, ndev, 0, 0);
--
--	priv->tx_head++;
--
- 	priv->write_reg(priv, XCAN_FRAME_ID_OFFSET(frame_offset), id);
- 	/* If the CAN frame is RTR frame this write triggers transmission
- 	 * (not on CAN FD)
-@@ -730,6 +722,14 @@ static void xcan_write_frame(struct net_device *ndev, struct sk_buff *skb,
- 					data[1]);
- 		}
- 	}
-+
-+	if (!(priv->devtype.flags & XCAN_FLAG_TX_MAILBOXES) &&
-+		(priv->devtype.flags & XCAN_FLAG_TXFEMP))
-+		can_put_echo_skb(skb, ndev, priv->tx_head % priv->tx_max, 0);
-+	else
-+		can_put_echo_skb(skb, ndev, 0, 0);
-+
-+	priv->tx_head++;
- }
- 
- /**
+ drivers/net/can/rcar/rcar_can.c | 292 ++++++++++++++++----------------
+ 1 file changed, 149 insertions(+), 143 deletions(-)
+
 -- 
-2.49.0
+2.43.0
 
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
