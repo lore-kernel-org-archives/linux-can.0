@@ -1,106 +1,105 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D2BC2F6593;
-	Tue, 26 Aug 2025 08:38:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D522817332C;
+	Tue, 26 Aug 2025 10:53:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756197500; cv=none; b=R1d/i3ixVkIs+xPF3AlTMtzFWB77p39bxY7Ue2em04br2I2bsW9Tl0khD/yzJJtxpQ81EtMW5vm2uRXT/rYNOeEwppUhrxnXaV+dDIK9orotQHwIEAP+0+b7HQDeKJcSaQdpeEvtXWtDqweUBrbbWW2ah2ayl45ihYNUSQbt/Nc=
+	t=1756205604; cv=none; b=s2jcPWDPU3s1l2eTBZr9y0xI/zZS74xqb+06emApBV6/eh5I7BcspwCjPBeWBvZf+P21xcEPyAxvab7ugAYIWjCscF47BpXPTtcnFOfJA/SOlblhq1zbQMkItL8vYv+HORMzNfBP3NQNLJZv/FGxs1ehrBf9x1S31D5Ogk9QNCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756197500; c=relaxed/simple;
-	bh=E65/gjqtNsdMp9tNjbPt1mcwuhd3WPTzK62QUEL0sL4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BYLOI6svr41I14LIMSud799ug5/2kSsptQexb6vNISB2yuCdM9q5Y+C6isk/JIu+sbPPOF0skjG6TQBWlS1PoTZ9O4W0EutImp7q5NeGwpZ22/lnfg7iqWV4lLvMctZaAuJ5dU0ccDM1bwPSgZghiVOkxdWK4wjjD/9PBLUAv6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fFxPlCPZ; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1756205604; c=relaxed/simple;
+	bh=3+ELfM0epNw1oYJH9C+GvtT6/HvOrgVds/sR7asWJoM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=X9m7na+D1e5N1xpz6bqGe2ZTI8iAufYZGS1QFKXenX9JPFzyUB3+GelmXqa2gqfG/5JtGImpMyko2T6PVFXDYJitl7m00+4fus0ueLOS4OtrynfG7wcqHHKynOMI0bPZM25g4QN2GyS6a5fcS11I6FNi2AOcfYEeMDE/TNZ3w0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZN+mb1zU; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fFxPlCPZ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31DC9C4CEF4;
-	Tue, 26 Aug 2025 08:38:19 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZN+mb1zU"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A65FAC4CEF1;
+	Tue, 26 Aug 2025 10:53:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756197500;
-	bh=E65/gjqtNsdMp9tNjbPt1mcwuhd3WPTzK62QUEL0sL4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=fFxPlCPZCBL8NyDQ6c+osTqPaASXkGti3theq+1zUicxEalwXgy9dSCbawiwWWZGz
-	 NvTC2pu0Y7ShYxosjynL7Ne6Qe3c3VYvBnvlVn2ZyUV0s90mJVi7Xsouc/7k+5wkIW
-	 GjwpxzrHdrRHpofFJS1dbzjLr+cCdy6BZYWyGJm+3O2c8srIdHbijgHRZ6B9RJaT1F
-	 8++RS832UQwwnmGZMWTgAxeq2wIGXV5EJ5BxBGtJT/1J7gFkdd1QFlCbJxCMhG/50G
-	 /4iMVHhQ/47/a4Tv7aS/WnUwTG+qy8ixZcyEnVlQg1wjRP68R17MoSlUSq4rDWRmjH
-	 jPVmXmN0HHQ7g==
-Message-ID: <6b6ba240-e13a-4e99-ae76-500a7b530238@kernel.org>
-Date: Tue, 26 Aug 2025 17:38:17 +0900
+	s=k20201202; t=1756205604;
+	bh=3+ELfM0epNw1oYJH9C+GvtT6/HvOrgVds/sR7asWJoM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ZN+mb1zU42X/nR9y4HzjbelTu48wJ0RCwXKNByFWv7AIZVFYBz8flmL9tf1LlTHUu
+	 i9koUc4xOZWcPvQoGbS2TWAXQ//2SFg2A7tLSEv+/0qyjtJrlgWOAB0y86lFJ7IVMX
+	 XL61ntWCBPq3lees1OgBKW2JF2VzWt1y/dQgw7iBDKajZUUOvho2lzyxyUcHp/spkX
+	 WusYD1Rj9jDYc8Y8h1cY9Y+7a8ipaljgqkVJ8eo8BfdOWvMj7BMeJSS2LN8QSZLofp
+	 keTcFPok00/zlpnaDjyDFIoA9f85dU0Xvv2OCQhZMK6MkP/OUkC0uUTF88xkJBlYEx
+	 /q1tMTs7BjRpg==
+From: mailhol@kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Vincent Mailhol <mailhol@kernel.org>
+Subject: [PATCH] MAINTAINERS: update Vincent Mailhol's email address
+Date: Tue, 26 Aug 2025 19:48:39 +0900
+Message-ID: <20250826105255.35501-2-mailhol@kernel.org>
+X-Mailer: git-send-email 2.49.1
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] can: m_can: use us_to_ktime() in m_can_set_coalesce()
-To: Markus Elfring <Markus.Elfring@web.de>, Xichao Zhao
- <zhao.xichao@vivo.com>, linux-can@vger.kernel.org,
- Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Chandrasekar Ramakrishnan <rcsekar@samsung.com>
-References: <20250826025131.112900-1-zhao.xichao@vivo.com>
- <735d62ba-51b5-4dc2-a8e4-0701ffb01f9a@web.de>
-Content-Language: en-US
-From: Vincent Mailhol <mailhol@kernel.org>
-Autocrypt: addr=mailhol@kernel.org; keydata=
- xjMEZluomRYJKwYBBAHaRw8BAQdAf+/PnQvy9LCWNSJLbhc+AOUsR2cNVonvxhDk/KcW7FvN
- JFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbEBrZXJuZWwub3JnPsKZBBMWCgBBFiEE7Y9wBXTm
- fyDldOjiq1/riG27mcIFAmdfB/kCGwMFCQp/CJcFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcC
- F4AACgkQq1/riG27mcKBHgEAygbvORJOfMHGlq5lQhZkDnaUXbpZhxirxkAHwTypHr4A/joI
- 2wLjgTCm5I2Z3zB8hqJu+OeFPXZFWGTuk0e2wT4JzjgEZx4y8xIKKwYBBAGXVQEFAQEHQJrb
- YZzu0JG5w8gxE6EtQe6LmxKMqP6EyR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDl
- dOjiq1/riG27mcIFAmceMvMCGwwFCQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8V
- zsZwr/S44HCzcz5+jkxnVVQ5LZ4BANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
-In-Reply-To: <735d62ba-51b5-4dc2-a8e4-0701ffb01f9a@web.de>
-Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2219; i=mailhol@kernel.org; h=from:subject; bh=uRq0zsJA2XwNh7TH04cWFbG7PtSA1N3oNyvMqNCeB6g=; b=owGbwMvMwCV2McXO4Xp97WbG02pJDBlrJ7H/mfLwlk92+ZPKn2J7ZOOEtm7ZEa1/+p+Cv2bfX oMXUQatHaUsDGJcDLJiiizLyjm5FToKvcMO/bWEmcPKBDKEgYtTACZSdYThf92sh+4sD++5sGrd fpjfwmsSYLnL9iy75JHe9WcZ5SY3lzMyzNNe68JgtH9nYTFf0KW4Zmb22XwifF7zpe43/XhxZ74 TEwA=
+X-Developer-Key: i=mailhol@kernel.org; a=openpgp; fpr=ED8F700574E67F20E574E8E2AB5FEB886DBB99C2
 Content-Transfer-Encoding: 8bit
 
-On 26/08/2025 at 14:43, Markus Elfring wrote:
->> Replace the if-else statement with a ternary operator to
->> set cdev->irq_timer_wait. Use us_to_ktime() instead of
->> ns_to_ktime() with NSEC_PER_USEC multiplication. Simplify
-> …
-> 
-> You should occasionally use more than 57 characters in text lines
-> of such a change description.
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.17-rc3#n638
-> 
-> 
-> Will an enumeration become helpful here?
-> 
-> 
-> …> +++ b/drivers/net/can/m_can/m_can.c
->> @@ -2211,13 +2211,9 @@ static int m_can_set_coalesce(struct net_device *dev,
-> …> +	cdev->irq_timer_wait = us_to_ktime(cdev->rx_coalesce_usecs_irq ?
->> +					   cdev->rx_coalesce_usecs_irq :
->> +					   cdev->tx_coalesce_usecs_irq);
-> …
-> 
-> I am curious how coding style preferences will evolve further also for
-> the usage of the conditional operator at such a place.
+From: Vincent Mailhol <mailhol@kernel.org>
 
-The preferred style in the kernel is actually to *not* use the conditional
-operator in such case and to use an explicit if/else. I appreciate that the
-conditional operator is more succinct, but squeezing the code is not a goal. The
-priority is readability, and the if/else does a better job at this.
+Now that I have received my kernel.org account, I am changing my email
+address from mailhol.vincent@wanadoo.fr to mailhol@kernel.org. The
+wanadoo.fr address was my first email which I created when I was a kid
+and has a special meaning to me, but it is restricted to a maximum of
+50 messages per hour which starts to be problematic on threads where
+many people are CC-ed.
 
-And I this is not my personnal opinion. For example, see this message from Greg:
+Update all the MAINTAINERS entries accordingly and map the old address
+to the new one.
 
-  https://lore.kernel.org/all/20250311150130.7a875e63@bahia/
+I remain reachable from my old address. The different copyright
+notices mentioning my old address are kept as-is for the moment. I
+will update those one at a time only if I need to touch those files.
 
-TLDR; the v1 was better than the v2. Speaking of the format, the only nitpick I
-might have is that after your change, the code fits in one line without
-exceeding the 80th column:
+Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
+---
+ .mailmap    | 1 +
+ MAINTAINERS | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-	if (cdev->rx_coalesce_usecs_irq)
-		cdev->irq_timer_wait = us_to_ktime(cdev->rx_coalesce_usecs_irq);
- 	else
-		cdev->irq_timer_wait = us_to_ktime(cdev->tx_coalesce_usecs_irq);
-
-
-Yours sincerely,
-Vincent Mailhol
+diff --git a/.mailmap b/.mailmap
+index d9fa1b5551165..ff317a4887e2a 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -813,6 +813,7 @@ Veera Sundaram Sankaran <quic_veeras@quicinc.com> <veeras@codeaurora.org>
+ Veerabhadrarao Badiganti <quic_vbadigan@quicinc.com> <vbadigan@codeaurora.org>
+ Venkateswara Naralasetty <quic_vnaralas@quicinc.com> <vnaralas@codeaurora.org>
+ Vikash Garodia <quic_vgarodia@quicinc.com> <vgarodia@codeaurora.org>
++Vincent Mailhol <mailhol@kernel.org> <mailhol.vincent@wanadoo.fr>
+ Vinod Koul <vkoul@kernel.org> <vinod.koul@intel.com>
+ Vinod Koul <vkoul@kernel.org> <vinod.koul@linux.intel.com>
+ Vinod Koul <vkoul@kernel.org> <vkoul@infradead.org>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index daf520a13bdf6..2b5173d75d376 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5418,7 +5418,7 @@ F:	net/sched/sch_cake.c
+ 
+ CAN NETWORK DRIVERS
+ M:	Marc Kleine-Budde <mkl@pengutronix.de>
+-M:	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
++M:	Vincent Mailhol <mailhol@kernel.org>
+ L:	linux-can@vger.kernel.org
+ S:	Maintained
+ W:	https://github.com/linux-can
+@@ -9069,7 +9069,7 @@ S:	Odd Fixes
+ F:	drivers/net/ethernet/agere/
+ 
+ ETAS ES58X CAN/USB DRIVER
+-M:	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
++M:	Vincent Mailhol <mailhol@kernel.org>
+ L:	linux-can@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/networking/devlink/etas_es58x.rst
+-- 
+2.49.1
 
