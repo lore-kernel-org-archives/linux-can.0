@@ -1,38 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6341A6F53E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6348D29E10B;
 	Fri, 29 Aug 2025 09:20:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756459209; cv=none; b=MOAJYKkv1UjpwQlJ33ws9ZW0w+ODtNhBBKUQranVpST/6v5/VEki7pTpZEKl6eZ7o8iktOil6LciQRVtBugr7Kxa3j6z3ZjBURAaa6mNxOGBhSrmDc/3WgpAjWfc9AsfXAO/phwd4avTmkJA9oXAPw/ITS3vOdJ0WlQJzIa7Z98=
+	t=1756459209; cv=none; b=b6ZpsnuYLKzYoX/7wBM94itlc+IUnwswxKuIHAwWPAf+XrGeYU60qpXJpvJLgBo0PAtKwDkeNhG/BwaR0uOaSA5n0L4FKCB0hsoWKc+g/FJQDU953+Aofa/rGH933rhw0qcew3hUXZF2N5ijJThjyJRBjeOYcL+sXiDQmXY9Qfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1756459209; c=relaxed/simple;
-	bh=XKpDXSN+sByAS9cR9W+5ZzKQ3tc8PFlTmx1lTt++ZzA=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=gQ9Y+SjrReNpTt3kxCU+i2eyhi98XeQ4S+6kZZnPeCQE6MT/pwANI2IiOAaEbZh9gpSPPADMH/NgjHIDkoTZNhJR4xWCynj7MBE+ReCrOoYHGF7WdvDwZ/Zty8mMm81IZ2ogtkom0+9a3z8ePHYAc2G0LytnvosKrIw0H2StOTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GhJRQSm5; arc=none smtp.client-ip=10.30.226.201
+	bh=50TguRS/Evm2Or/dlQlWRsV6e2qqkAlX4YelhUCK/e8=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=N3hqnpuHKWx3J9pI1NTN7qtvI2uPTziZzqaf7/ySmzAcDBDLTILiMVh3ugcP61PFABLzqCWdrdqrWklh9VtOyUsl2MExqNE8oNfATPA9caYBMP1PPrMV4x6UsF4BSEGyFNbyRXALhzmOhz9NefkB4Lp8GkVn0p0zAO+yQYtoRsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kDFRkjSl; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GhJRQSm5"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DFEC1C4CEF0;
-	Fri, 29 Aug 2025 09:20:08 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kDFRkjSl"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0C8FCC4CEF7;
+	Fri, 29 Aug 2025 09:20:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756459208;
-	bh=XKpDXSN+sByAS9cR9W+5ZzKQ3tc8PFlTmx1lTt++ZzA=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=GhJRQSm5FZkI67SZV5HCgiXYa0YHQKtFQebSIMUg5eqmjxC3zbp+GjLnNVxwkVrqX
-	 gbx3q5eb7qxHnoUYuVQq16oHGcpbTfkHAV1BlF5uErfbN+zgJwp4p0hN+OoEwMOge1
-	 7lSbhxfjK1Gj8yTLCeoFUKmQa7V8jJ6O2wW7MiysqEjxA5XYwABsXvLiUdtV6Q2CZ6
-	 qC0T+s4Yh/y5YgEZiZyWAKm0Gl78GNpDQERNZF+vUtRRuhqsbKAsXzrvSkUH6aZgEk
-	 U5qM6HA9nEeHEV/tuxPPm0wd4HB8RGotZBbIu+hbzvvLeDL0T7UhCfHAZZ9ht3uPHC
-	 n8RnCoiobwQzA==
+	s=k20201202; t=1756459209;
+	bh=50TguRS/Evm2Or/dlQlWRsV6e2qqkAlX4YelhUCK/e8=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=kDFRkjSlFhInJWPB8JNZmhVeMSxa3kh7K9Mchd2tbAWySpY/yEeWNBHT1glhHB2Fo
+	 mSYFVuFSl/74YcX2sGGu2jI9SIeH5EFueJ1c3uD4GbP2Hnic3KQBWtVZSegrrLG3jd
+	 5o+6t8OhkYwvI143CjF1SI+3zXrgj4NWHp9t9q9a+eNh59WSp7YymRsEpHE5evVfqR
+	 SP/RddxNklJXxzZsjiGbesj9A9ZURFo349jcdlx3zqwLlsaTBjkF6Vmbv7wlCHQZrh
+	 eZbTcdBwt14gcsfjlKWkDGtYhwjT4Bfff0tyPLCfq1E4D1t4jB4g9AyxJPm7a0xzYK
+	 ogx5Cr+g9O1LQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4D38CA0FF9;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F16AECA0FFF;
 	Fri, 29 Aug 2025 09:20:08 +0000 (UTC)
 From: Dimitri Fedrau via B4 Relay <devnull+dimitri.fedrau.liebherr.com@kernel.org>
-Subject: [PATCH v2 0/2] phy: add basic support for NXPs TJA1145 CAN
+Date: Fri, 29 Aug 2025 11:19:59 +0200
+Subject: [PATCH v2 2/2] phy: add basic support for NXPs TJA1145 CAN
  transceiver
-Date: Fri, 29 Aug 2025 11:19:57 +0200
-Message-Id: <20250829-tja1145-support-v2-0-60997f328979@liebherr.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -41,11 +41,9 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAL1wsWgC/2WNQQ6CMBBFr0JmbQ2tLaIr72FYQGeUMUrJtBIN4
- e5WElcu30v++zNEEqYIx2IGoYkjhyGD2RTg+3a4kmLMDKY0rtybSqVbq7V1Kj7HMUhSWHmP3qL
- Bdgd5NQpd+LUWz03mnmMK8l4PJv21v1b915q0KhV1WNuDRWedP92Zup5Etj48oFmW5QN8iP0Js
- QAAAA==
-X-Change-ID: 20250726-tja1145-support-d6ccdc4d2da3
+Message-Id: <20250829-tja1145-support-v2-2-60997f328979@liebherr.com>
+References: <20250829-tja1145-support-v2-0-60997f328979@liebherr.com>
+In-Reply-To: <20250829-tja1145-support-v2-0-60997f328979@liebherr.com>
 To: Vinod Koul <vkoul@kernel.org>, 
  Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>, 
  Krzysztof Kozlowski <krzk+dt@kernel.org>, 
@@ -55,11 +53,11 @@ Cc: linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
  Dimitri Fedrau <dima.fedrau@gmail.com>, 
  Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1756459207; l=1179;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1756459207; l=7265;
  i=dimitri.fedrau@liebherr.com; s=20241202; h=from:subject:message-id;
- bh=XKpDXSN+sByAS9cR9W+5ZzKQ3tc8PFlTmx1lTt++ZzA=;
- b=uF/G+Ymv8uMPZbfuVrFQ+2Se6z+fKUghr5aAI/7wQ2Jqvwy8CMPBxyHMXi7V8Ws6++kwLMbOL
- JyyXS6qtkYxBJMIeLmWXXO0RgsJxbDJeb2yhKs4Xvij1jn3UavaWpbM
+ bh=QbZwerPtcW9uCm9P1dXPNhN6L03SdF6Z/qVX8cgl44k=;
+ b=OPXUrHIg4Ns6KcYoRRUz/2NeKchkc5B40uYMKPr0c22Ke0Q2vS8ioicdasqNQGXOqOCFngvYf
+ S5rdppcnXXWC/lw4/KfQK5UF/BH8wz2m1eJ/msanOG8lyKzBJACKD6M
 X-Developer-Key: i=dimitri.fedrau@liebherr.com; a=ed25519;
  pk=rT653x09JSQvotxIqQl4/XiI4AOiBZrdOGvxDUbb5m8=
 X-Endpoint-Received: by B4 Relay for dimitri.fedrau@liebherr.com/20241202
@@ -67,34 +65,244 @@ X-Endpoint-Received: by B4 Relay for dimitri.fedrau@liebherr.com/20241202
 X-Original-From: Dimitri Fedrau <dimitri.fedrau@liebherr.com>
 Reply-To: dimitri.fedrau@liebherr.com
 
+From: Dimitri Fedrau <dimitri.fedrau@liebherr.com>
+
 Add basic driver support for NXPs TJA1145 CAN transceiver which brings the
 PHY up/down by switching to normal/standby mode using SPI commands.
 
 Signed-off-by: Dimitri Fedrau <dimitri.fedrau@liebherr.com>
 ---
-Changes in v2:
-- bindings: Change node name in example to can-phy
-- bindings: Fix order of properties, reg property is second
-- bindings: Change compatible to match filename
-- change compatible to nxp,tja1145-can
-- Link to v1: https://lore.kernel.org/r/20250728-tja1145-support-v1-0-ebd8494d545c@liebherr.com
+ drivers/phy/Kconfig           |  10 +++
+ drivers/phy/Makefile          |   1 +
+ drivers/phy/phy-nxp-tja1145.c | 185 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 196 insertions(+)
 
----
-Dimitri Fedrau (2):
-      dt-bindings: phy: add support for NXPs TJA1145 CAN transceiver
-      phy: add basic support for NXPs TJA1145 CAN transceiver
+diff --git a/drivers/phy/Kconfig b/drivers/phy/Kconfig
+index 58c911e1b2d20a0398f02550e938ce62633230d4..c47e2b62fa6279ee610493b028d3c14f6499ca85 100644
+--- a/drivers/phy/Kconfig
++++ b/drivers/phy/Kconfig
+@@ -101,6 +101,16 @@ config PHY_NXP_PTN3222
+ 	  schemes. It supports all three USB 2.0 data rates: Low Speed, Full
+ 	  Speed and High Speed.
+ 
++config PHY_NXP_TJA1145
++	tristate "NXP TJA1145 CAN transceiver PHY"
++	select GENERIC_PHY
++	select REGMAP_SPI
++	depends on SPI
++	help
++	  This option enables support for NXPs TJA1145 CAN transceiver as a PHY.
++	  This driver provides function for putting the transceiver in various
++	  functional modes using SPI commands.
++
+ source "drivers/phy/allwinner/Kconfig"
+ source "drivers/phy/amlogic/Kconfig"
+ source "drivers/phy/broadcom/Kconfig"
+diff --git a/drivers/phy/Makefile b/drivers/phy/Makefile
+index c670a8dac46807863c9ef990beb149082238ad16..16da564c74b0f14befb486366dcd10cd5fc67741 100644
+--- a/drivers/phy/Makefile
++++ b/drivers/phy/Makefile
+@@ -13,6 +13,7 @@ obj-$(CONFIG_PHY_SNPS_EUSB2)		+= phy-snps-eusb2.o
+ obj-$(CONFIG_USB_LGM_PHY)		+= phy-lgm-usb.o
+ obj-$(CONFIG_PHY_AIROHA_PCIE)		+= phy-airoha-pcie.o
+ obj-$(CONFIG_PHY_NXP_PTN3222)		+= phy-nxp-ptn3222.o
++obj-$(CONFIG_PHY_NXP_TJA1145)		+= phy-nxp-tja1145.o
+ obj-y					+= allwinner/	\
+ 					   amlogic/	\
+ 					   broadcom/	\
+diff --git a/drivers/phy/phy-nxp-tja1145.c b/drivers/phy/phy-nxp-tja1145.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..4d3aa5bfcd88d5755fa37e0d42bfa8293dee2155
+--- /dev/null
++++ b/drivers/phy/phy-nxp-tja1145.c
+@@ -0,0 +1,185 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2025 Liebherr-Electronics and Drives GmbH
++ */
++#include <linux/bitfield.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++
++#include <linux/phy/phy.h>
++#include <linux/spi/spi.h>
++
++#define TJA1145_MODE_CTRL		0x01
++#define TJA1145_MODE_CTRL_MC		GENMASK(2, 0)
++#define TJA1145_MODE_CRTL_STBY		BIT(2)
++#define TJA1145_MODE_CRTL_NORMAL	TJA1145_MODE_CTRL_MC
++
++#define TJA1145_CAN_CTRL		0x20
++#define TJA1145_CAN_CTRL_CMC		GENMASK(1, 0)
++#define TJA1145_CAN_CTRL_ACTIVE		BIT(1)
++
++#define TJA1145_IDENT			0x7e
++#define TJA1145_IDENT_TJA1145T		0x70
++
++#define TJA1145_SPI_READ_BIT		BIT(0)
++#define TJA1145T_MAX_BITRATE		1000000
++
++static int tja1145_phy_power_on(struct phy *phy)
++{
++	struct regmap *map = phy_get_drvdata(phy);
++	int ret;
++
++	/*
++	 * Switch operating mode to normal which is the active operating mode.
++	 * In this mode, the device is fully operational.
++	 */
++	ret = regmap_update_bits(map, TJA1145_MODE_CTRL, TJA1145_MODE_CTRL_MC,
++				 TJA1145_MODE_CRTL_NORMAL);
++	if (ret)
++		return ret;
++
++	/*
++	 * Switch to CAN operating mode active where the PHY can transmit and
++	 * receive data.
++	 */
++	return regmap_update_bits(map, TJA1145_CAN_CTRL, TJA1145_CAN_CTRL_CMC,
++				  TJA1145_CAN_CTRL_ACTIVE);
++}
++
++static int tja1145_phy_power_off(struct phy *phy)
++{
++	struct regmap *map = phy_get_drvdata(phy);
++
++	/*
++	 * Switch to operating mode standby, the PHY is unable to transmit or
++	 * receive data in standby mode.
++	 */
++	return regmap_update_bits(map, TJA1145_MODE_CTRL, TJA1145_MODE_CTRL_MC,
++				  TJA1145_MODE_CRTL_STBY);
++}
++
++static const struct phy_ops tja1145_phy_ops = {
++	.power_on = tja1145_phy_power_on,
++	.power_off = tja1145_phy_power_off,
++};
++
++static const struct regmap_range tja1145_wr_holes_ranges[] = {
++	regmap_reg_range(0x00, 0x00),
++	regmap_reg_range(0x02, 0x03),
++	regmap_reg_range(0x05, 0x05),
++	regmap_reg_range(0x0b, 0x1f),
++	regmap_reg_range(0x21, 0x22),
++	regmap_reg_range(0x24, 0x25),
++	regmap_reg_range(0x30, 0x4b),
++	regmap_reg_range(0x4d, 0x60),
++	regmap_reg_range(0x62, 0x62),
++	regmap_reg_range(0x65, 0x67),
++	regmap_reg_range(0x70, 0xff),
++};
++
++static const struct regmap_access_table tja1145_wr_table = {
++	.no_ranges = tja1145_wr_holes_ranges,
++	.n_no_ranges = ARRAY_SIZE(tja1145_wr_holes_ranges),
++};
++
++static const struct regmap_range tja1145_rd_holes_ranges[] = {
++	regmap_reg_range(0x00, 0x00),
++	regmap_reg_range(0x02, 0x02),
++	regmap_reg_range(0x05, 0x05),
++	regmap_reg_range(0x0b, 0x1f),
++	regmap_reg_range(0x21, 0x21),
++	regmap_reg_range(0x24, 0x25),
++	regmap_reg_range(0x30, 0x4a),
++	regmap_reg_range(0x4d, 0x5f),
++	regmap_reg_range(0x62, 0x62),
++	regmap_reg_range(0x65, 0x67),
++	regmap_reg_range(0x70, 0x7d),
++	regmap_reg_range(0x7f, 0xff),
++};
++
++static const struct regmap_access_table tja1145_rd_table = {
++	.no_ranges = tja1145_rd_holes_ranges,
++	.n_no_ranges = ARRAY_SIZE(tja1145_rd_holes_ranges),
++};
++
++
++static const struct regmap_config tja1145_regmap_config = {
++	.reg_bits = 8,
++	.reg_shift = -1,
++	.val_bits = 8,
++	.wr_table = &tja1145_wr_table,
++	.rd_table = &tja1145_rd_table,
++	.read_flag_mask = TJA1145_SPI_READ_BIT,
++	.max_register = TJA1145_IDENT,
++};
++
++static int tja1145_check_ident(struct device *dev, struct regmap *map)
++{
++	unsigned int val;
++	int ret;
++
++	ret = regmap_read(map, TJA1145_IDENT, &val);
++	if (ret)
++		return ret;
++
++	if (val != TJA1145_IDENT_TJA1145T) {
++		dev_err(dev, "Expected device id: 0x%02x, got: 0x%02x\n",
++			TJA1145_IDENT_TJA1145T, val);
++		return -ENODEV;
++	}
++
++	return 0;
++}
++
++static int tja1145_probe(struct spi_device *spi)
++{
++	struct phy_provider *phy_provider;
++	struct device *dev = &spi->dev;
++	struct regmap *map;
++	struct phy *phy;
++	int ret;
++
++	map = devm_regmap_init_spi(spi, &tja1145_regmap_config);
++	if (IS_ERR(map))
++		return dev_err_probe(dev, PTR_ERR(map), "failed to init regmap\n");
++
++	ret = tja1145_check_ident(dev, map);
++	if (ret)
++		return dev_err_probe(dev, ret, "failed to identify device\n");
++
++	phy = devm_phy_create(dev, dev->of_node, &tja1145_phy_ops);
++	if (IS_ERR(phy))
++		return dev_err_probe(dev, PTR_ERR(phy), "failed to create PHY\n");
++
++	phy->attrs.max_link_rate = TJA1145T_MAX_BITRATE;
++	phy_set_drvdata(phy, map);
++	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
++
++	return PTR_ERR_OR_ZERO(phy_provider);
++}
++
++static const struct spi_device_id tja1145_spi_id[] = {
++	{ "tja1145" },
++	{ }
++};
++MODULE_DEVICE_TABLE(spi, tja1145_spi_id);
++
++static const struct of_device_id tja1145_of_match[] = {
++	{ .compatible = "nxp,tja1145-can" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, tja1145_of_match);
++
++static struct spi_driver tja1145_driver = {
++	.driver = {
++		.name = "tja1145",
++		.of_match_table = tja1145_of_match,
++	},
++	.probe = tja1145_probe,
++	.id_table = tja1145_spi_id,
++};
++module_spi_driver(tja1145_driver);
++
++MODULE_DESCRIPTION("NXP TJA1145 CAN transceiver PHY driver");
++MODULE_AUTHOR("Dimitri Fedrau <dimitri.fedrau@liebherr.com>");
++MODULE_LICENSE("GPL");
 
- .../devicetree/bindings/phy/nxp,tja1145-can.yaml   |  79 +++++++++
- drivers/phy/Kconfig                                |  10 ++
- drivers/phy/Makefile                               |   1 +
- drivers/phy/phy-nxp-tja1145.c                      | 185 +++++++++++++++++++++
- 4 files changed, 275 insertions(+)
----
-base-commit: e373c183bc8a4a421f14ea0dd1edf4f8fd79537f
-change-id: 20250726-tja1145-support-d6ccdc4d2da3
-
-Best regards,
 -- 
-Dimitri Fedrau <dimitri.fedrau@liebherr.com>
+2.39.5
 
 
