@@ -1,35 +1,34 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2863C2F3623;
-	Wed,  3 Sep 2025 08:52:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E1FD2F3C0D;
+	Wed,  3 Sep 2025 08:52:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756889536; cv=none; b=ijqRm0wgxORT79n2kKvH9eGywlWHue76mmHKbvb01oVjAjlN4lyyuBfwe/tvHUaq0PrmmWRPBKf4QhoZ6JWhmvKdKyKflzxhpvLn7BBpeJhnbpW8kXkk8gW2B8qe+lEapwBIxOSWI5+SHkKK3wTWOsHCaodaklZcmRLWgT85a18=
+	t=1756889538; cv=none; b=nLdHqarvJ19HFKVsXhCsmz5uFlLch8bFWPaQMqNunrYrFlO6jwTSktmG4+zDSKTa4vlVdOzUTD0Gc1Mu591EXKulwFYWX91UcpCIhuJT6WJpenuklY/wir6XI2zkj1Pe3/qYFvxoi6DldVEZeLFBXPopq08Tc+suCg5C9OytVkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756889536; c=relaxed/simple;
-	bh=mf9LgqcZWpmP7m5KW3Tj2JV0mHkTZDSnwKCnbyNv7/k=;
+	s=arc-20240116; t=1756889538; c=relaxed/simple;
+	bh=PopfJEoHaOSDhL1YVnEW2pslcdJB86v8o2TxUlnq+FI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=HnjdKNktD2i2EM5BkFd7B85rIHOIlR7qtIcULhFw65odVss7UMX6FaBhjOWtkJXyZHh+MfNr4nYY91AzKPUOJkJ5TfNESgMq3Qqfslk7ilxrknKu1fxN1qHhhIB86yNzFuzYPBIrVF9oOH4odKU9qzRFiUbghH7qlK0JJXGuS1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tR7T0d99; arc=none smtp.client-ip=10.30.226.201
+	 In-Reply-To:To:Cc; b=Z6fq8DSkOVBuJO69es83zq2xLK0DHFx2u9XVETPB8P9DaKc5nbeNWjAqqtTIUoDWRcnW5c2WutoX+V6hABT44MCKvOBUcNvOzwQHJlclc4Gb/Yih8LbHa/exFxMEpdB5gjm/8DUy9edtfbpQXFX01KAkDS9funJNtOAVBdq7bWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=REYKqN6n; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tR7T0d99"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69414C4CEF0;
-	Wed,  3 Sep 2025 08:52:12 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="REYKqN6n"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9304EC4CEF1;
+	Wed,  3 Sep 2025 08:52:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756889533;
-	bh=mf9LgqcZWpmP7m5KW3Tj2JV0mHkTZDSnwKCnbyNv7/k=;
+	s=k20201202; t=1756889536;
+	bh=PopfJEoHaOSDhL1YVnEW2pslcdJB86v8o2TxUlnq+FI=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=tR7T0d99DpfD2KCMGz5z2rMWw9qhcRyUglLgGch6JwD0dBc2tiY4Od4bc2LXvM1lm
-	 izOLnvcnl3cayr0h6zxSd23zeVVRcv3RleKmk2lW85bs30UhYHgUt47IZs6l+xTYbi
-	 t0ga5s8sPfeVIa6c61pvqE74QBSkN7kR1l612WBw1Q3TF5nawan6GN5a1wm8hNz35u
-	 oOTM9TFMlYqaLgChDlEH1LjsuabZknkEghGzCCJojvbX7grgIfUunwZBYedf4XHl0Z
-	 0mSMZjyz9SRbtfLypm3/tJT7PvHlCBgAJOIGiAudURiz2eBTqJKWYEf2i6ztXdzGrl
-	 fKEzNNXPLtAog==
+	b=REYKqN6nCOK1gMoxjBQw7FH5p3NE0/RbE9H5EC64T6MY/fjRGSIULAbyiHoafTeRR
+	 6iZ29I64l+3uu8lX7xdJPkcQzj06GTabmRW8koZmydXGcgrvheOiMPu+AdE/DcCVZ2
+	 k1SfmpgIYprokUtP7gU/F6mS3dYyMhjfY3lg3IW3E43ID7ZiRFsYhzA0JcQ9IsHi+R
+	 6uSPpVWo82VTohNK1mgFGPyMaiq/MMQT3gdijDVMgtJ42HJ5tzSUhEeEtpYdQVsqMW
+	 b1MIH2J1so8AAQRe+RsQhMgZUAfyrDImpq1vbgizKBlrAmx1sNtV8zxMo68T8JkZKJ
+	 6rhrHEaXPClxg==
 From: Vincent Mailhol <mailhol@kernel.org>
-Date: Wed, 03 Sep 2025 17:50:08 +0900
-Subject: [PATCH 09/21] can: netlink: remove useless check in
- can_tdc_changelink()
+Date: Wed, 03 Sep 2025 17:50:10 +0900
+Subject: [PATCH 11/21] can: netlink: add can_dtb_changelink()
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -38,7 +37,7 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250903-canxl-netlink-prep-v1-9-904bd6037cd9@kernel.org>
+Message-Id: <20250903-canxl-netlink-prep-v1-11-904bd6037cd9@kernel.org>
 References: <20250903-canxl-netlink-prep-v1-0-904bd6037cd9@kernel.org>
 In-Reply-To: <20250903-canxl-netlink-prep-v1-0-904bd6037cd9@kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>, 
@@ -49,45 +48,215 @@ Cc: Vincent Mailhol <mailhol@kernel.org>,
  Duy Nguyen <duy.nguyen.rh@renesas.com>, linux-can@vger.kernel.org, 
  linux-kernel@vger.kernel.org
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1203; i=mailhol@kernel.org;
- h=from:subject:message-id; bh=mf9LgqcZWpmP7m5KW3Tj2JV0mHkTZDSnwKCnbyNv7/k=;
- b=owGbwMvMwCV2McXO4Xp97WbG02pJDBk7GLt+Lu87zBEx//sLJs3IJypvq7XbOQN42Fsnfi/KZ
- 4p6nGzTUcrCIMbFICumyLKsnJNboaPQO+zQX0uYOaxMIEMYuDgFYCI17gz/PRbM1Ol2mbtuhjl7
- /QJF48/ut9avLeounDNjjfyP3iNXTzMytByeo8Hy/nq19QT7fw8Ed3zfcvtvnojdAu7LrC+XtUv
- lMgMA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6532; i=mailhol@kernel.org;
+ h=from:subject:message-id; bh=PopfJEoHaOSDhL1YVnEW2pslcdJB86v8o2TxUlnq+FI=;
+ b=owGbwMvMwCV2McXO4Xp97WbG02pJDBk7GCcUzZBcXdbSXZKfPPmav/0CU65NClHn5xX96Jrto
+ K/qknSno5SFQYyLQVZMkWVZOSe3Qkehd9ihv5Ywc1iZQIYwcHEKwESy7jEyfLLl3pGdcGhJtKVV
+ /jYBW9lD2sG39xacvdqd/mrrXB/nJIb/iTZGfXfVtLkil1k9tte68Pdz+nG/df8YwibdED+eumg
+ bDwA=
 X-Developer-Key: i=mailhol@kernel.org; a=openpgp;
  fpr=ED8F700574E67F20E574E8E2AB5FEB886DBB99C2
 
-can_tdc_changelink() return -EOPNOTSUPP under this condition:
-
-  !tdc_const || !can_fd_tdc_is_enabled(priv)
-
-But this function is only called if the data[IFLA_CAN_TDC] parameters
-are provided. At this point, can_validate_tdc() already checked that
-either of the tdc auto or tdc manual control modes were provided, that
-is to say, can_fd_tdc_is_enabled(priv) must be true.
-
-Because the right hand operand of this condition is always true,
-remove it.
+Factorise the databittiming parsing out of can_changelink() and move
+it in the new can_dtb_changelink() function. This is a preparation
+patch for the introduction of CAN XL because the databittiming
+changelink logic will be reused later on.
 
 Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
 ---
- drivers/net/can/dev/netlink.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changelog:
+
+RFC -> v1:
+
+  - In the RFC, can_dbt_changelink() required 8 parameters. Instead,
+    just pass a boolean and then get the FD/XL specific parameters in
+    an "if (fd) {} else {}" conditional.
+---
+ drivers/net/can/dev/netlink.c | 152 ++++++++++++++++++++++++------------------
+ 1 file changed, 88 insertions(+), 64 deletions(-)
 
 diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index a7bcb2b0a1c06711601d0bb037c4b998259b5dfd..fcb23df08f7b76f341a298d0bd16ec62e0a98525 100644
+index 1a3389e3880f1c9c57e2e45f4cacc272c260fb07..47c0b88ab2b3b1f6a2b006760124fe0ba4767e42 100644
 --- a/drivers/net/can/dev/netlink.c
 +++ b/drivers/net/can/dev/netlink.c
-@@ -172,7 +172,7 @@ static int can_tdc_changelink(struct can_priv *priv, const struct nlattr *nla,
- 	const struct can_tdc_const *tdc_const = priv->fd.tdc_const;
+@@ -213,12 +213,95 @@ static int can_tdc_changelink(struct data_bittiming_params *dbt_params,
+ 	return 0;
+ }
+ 
++static int can_dbt_changelink(struct net_device *dev, struct nlattr *data[],
++			      bool fd, struct netlink_ext_ack *extack)
++{
++	struct nlattr *data_bittiming, *data_tdc;
++	struct can_priv *priv = netdev_priv(dev);
++	struct data_bittiming_params *dbt_params;
++	struct can_bittiming dbt;
++	bool need_tdc_calc = false;
++	u32 tdc_mask;
++	int err;
++
++	if (fd) {
++		data_bittiming = data[IFLA_CAN_DATA_BITTIMING];
++		data_tdc = data[IFLA_CAN_TDC];
++		dbt_params = &priv->fd;
++		tdc_mask = CAN_CTRLMODE_FD_TDC_MASK;
++	} else {
++		WARN_ON(1); /* Place holder for CAN XL */
++	}
++
++	if (!data_bittiming)
++		return 0;
++
++	/* Do not allow changing bittiming while running */
++	if (dev->flags & IFF_UP)
++		return -EBUSY;
++
++	/* Calculate bittiming parameters based on data_bittiming_const
++	 * if set, otherwise pass bitrate directly via do_set_bitrate().
++	 * Bail out if neither is given.
++	 */
++	if (!dbt_params->data_bittiming_const && !dbt_params->do_set_data_bittiming &&
++	    !dbt_params->data_bitrate_const)
++		return -EOPNOTSUPP;
++
++	memcpy(&dbt, nla_data(data_bittiming), sizeof(dbt));
++	err = can_get_bittiming(dev, &dbt, dbt_params->data_bittiming_const,
++				dbt_params->data_bitrate_const,
++				dbt_params->data_bitrate_const_cnt, extack);
++	if (err)
++		return err;
++
++	if (priv->bitrate_max && dbt.bitrate > priv->bitrate_max) {
++		NL_SET_ERR_MSG_FMT(extack,
++				   "CAN data bitrate %u bps surpasses transceiver capabilities of %u bps",
++				   dbt.bitrate, priv->bitrate_max);
++		return -EINVAL;
++	}
++
++	memset(&dbt_params->tdc, 0, sizeof(dbt_params->tdc));
++	if (data[IFLA_CAN_CTRLMODE]) {
++		struct can_ctrlmode *cm = nla_data(data[IFLA_CAN_CTRLMODE]);
++
++		need_tdc_calc = !(cm->mask & tdc_mask);
++	}
++	if (data_tdc) {
++		/* TDC parameters are provided: use them */
++		err = can_tdc_changelink(dbt_params, data_tdc, extack);
++		if (err) {
++			priv->ctrlmode &= ~tdc_mask;
++			return err;
++		}
++	} else if (need_tdc_calc) {
++		/* Neither of TDC parameters nor TDC flags are provided:
++		 * do calculation
++		 */
++		can_calc_tdco(&dbt_params->tdc, dbt_params->tdc_const, &dbt,
++			      &priv->ctrlmode, priv->ctrlmode_supported);
++	} /* else: both CAN_CTRLMODE_TDC_{AUTO,MANUAL} are explicitly
++	   * turned off. TDC is disabled: do nothing
++	   */
++
++	memcpy(&dbt_params->data_bittiming, &dbt, sizeof(dbt));
++
++	if (dbt_params->do_set_data_bittiming) {
++		/* Finally, set the bit-timing registers */
++		err = dbt_params->do_set_data_bittiming(dev);
++		if (err)
++			return err;
++	}
++
++	return 0;
++}
++
+ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+ 			  struct nlattr *data[],
+ 			  struct netlink_ext_ack *extack)
+ {
+ 	struct can_priv *priv = netdev_priv(dev);
+-	bool fd_tdc_flag_provided = false;
  	int err;
  
--	if (!tdc_const || !can_fd_tdc_is_enabled(priv))
-+	if (!tdc_const)
- 		return -EOPNOTSUPP;
+ 	/* We need synchronization with dev->stop() */
+@@ -266,8 +349,6 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+ 			priv->ctrlmode &= ~CAN_CTRLMODE_FD_TDC_MASK;
+ 			memset(&priv->fd.tdc, 0, sizeof(priv->fd.tdc));
+ 		}
+-
+-		fd_tdc_flag_provided = cm->mask & CAN_CTRLMODE_FD_TDC_MASK;
+ 	}
  
- 	err = nla_parse_nested(tb_tdc, IFLA_CAN_TDC_MAX, nla,
+ 	if (data[IFLA_CAN_BITTIMING]) {
+@@ -340,67 +421,10 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+ 			return err;
+ 	}
+ 
+-	if (data[IFLA_CAN_DATA_BITTIMING]) {
+-		struct can_bittiming dbt;
+-
+-		/* Do not allow changing bittiming while running */
+-		if (dev->flags & IFF_UP)
+-			return -EBUSY;
+-
+-		/* Calculate bittiming parameters based on
+-		 * data_bittiming_const if set, otherwise pass bitrate
+-		 * directly via do_set_bitrate(). Bail out if neither
+-		 * is given.
+-		 */
+-		if (!priv->fd.data_bittiming_const && !priv->fd.do_set_data_bittiming &&
+-		    !priv->fd.data_bitrate_const)
+-			return -EOPNOTSUPP;
+-
+-		memcpy(&dbt, nla_data(data[IFLA_CAN_DATA_BITTIMING]),
+-		       sizeof(dbt));
+-		err = can_get_bittiming(dev, &dbt,
+-					priv->fd.data_bittiming_const,
+-					priv->fd.data_bitrate_const,
+-					priv->fd.data_bitrate_const_cnt,
+-					extack);
+-		if (err)
+-			return err;
+-
+-		if (priv->bitrate_max && dbt.bitrate > priv->bitrate_max) {
+-			NL_SET_ERR_MSG_FMT(extack,
+-					   "CANFD data bitrate %u bps surpasses transceiver capabilities of %u bps",
+-					   dbt.bitrate, priv->bitrate_max);
+-			return -EINVAL;
+-		}
+-
+-		memset(&priv->fd.tdc, 0, sizeof(priv->fd.tdc));
+-		if (data[IFLA_CAN_TDC]) {
+-			/* TDC parameters are provided: use them */
+-			err = can_tdc_changelink(&priv->fd,
+-						 data[IFLA_CAN_TDC], extack);
+-			if (err) {
+-				priv->ctrlmode &= ~CAN_CTRLMODE_FD_TDC_MASK;
+-				return err;
+-			}
+-		} else if (!fd_tdc_flag_provided) {
+-			/* Neither of TDC parameters nor TDC flags are
+-			 * provided: do calculation
+-			 */
+-			can_calc_tdco(&priv->fd.tdc, priv->fd.tdc_const, &dbt,
+-				      &priv->ctrlmode, priv->ctrlmode_supported);
+-		} /* else: both CAN_CTRLMODE_TDC_{AUTO,MANUAL} are explicitly
+-		   * turned off. TDC is disabled: do nothing
+-		   */
+-
+-		memcpy(&priv->fd.data_bittiming, &dbt, sizeof(dbt));
+-
+-		if (priv->fd.do_set_data_bittiming) {
+-			/* Finally, set the bit-timing registers */
+-			err = priv->fd.do_set_data_bittiming(dev);
+-			if (err)
+-				return err;
+-		}
+-	}
++	/* CAN FD */
++	err = can_dbt_changelink(dev, data, true, extack);
++	if (err)
++		return err;
+ 
+ 	if (data[IFLA_CAN_TERMINATION]) {
+ 		const u16 termval = nla_get_u16(data[IFLA_CAN_TERMINATION]);
 
 -- 
 2.49.1
