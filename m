@@ -1,112 +1,139 @@
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC8384E07;
-	Thu,  4 Sep 2025 03:17:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756955841; cv=none; b=GENNSjIKgYTqOEbhmfoNZBw9sfcPsp5d5SXsebJ9YOrZ0EU5AfXsxLQyW3tiLlYkYFvRNKonw/+J7Vc80PL+wDJJd2u2bf0PyzLTpGvVIEMKuoawVNhN/bmHNM3yz7siZGw0w9TVXISYLa3W/hgUvNKet6pDZzBlhwACYjBqYJ4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756955841; c=relaxed/simple;
-	bh=EejBiLCxFjywog9sanmt7MIEAs+lWXOyyyaShAeNxJM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Kjfq3nkujJ7e5vyFtiwr810tEMIXM/K2o0l84VKmKgPQ2PiTMRDQM7Ck6j38AVLTg7mrube3ZH7A9XQ5WIczpsbkyhaRDTxT1zta4nsJe5IEQFu0nN1uzZ9CHN7LlhJcwyk92wFeAVKxITWyfDzImaeLA1aGgDptRhQ1bJhBoaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GQf1d51o; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F5CB27586E;
+	Thu,  4 Sep 2025 06:36:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.50
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756967780; cv=pass; b=cnIN00tCcUcPkFNiZ9bLkgYNXUwqrL+8EVbTOSNICOp+XZ0tIDUYbff28UkY4nnHuZbSoB5cyYOCcnfwtL9/ys/SYE+YESd4TMkdStqRfPPKrQodMb93fztsVuWdtt1eXNQBF3Qry4LyJmVILPDSMkHh9oi02wvr3QlrgVqFL4s=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756967780; c=relaxed/simple;
+	bh=KWfuWOndEi6XDR/nOG2EFgdxEYeuXl+rJvfeJ5e2TEs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MNod7oXX36zPXVlGiIGOI9p3MnwLnJAgdQ0v7O0aYfg3U/CyEVdT1wHK7XhEyfcQCLHtUXZVxh+YS+DOq+OZ54hXyk2yYeY3RG5jwn5GZuw3zLBZRx3dilhchEAjHIPpJ1qBCRLQ2ZTlw0GSNh/e0Rp141QQ1v5gnzD2LVTAOS4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=lr2KS+kO; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=kHdwSRig; arc=pass smtp.client-ip=85.215.255.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GQf1d51o"
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2489acda3bbso4968025ad.1;
-        Wed, 03 Sep 2025 20:17:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756955839; x=1757560639; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CwlGz5VRP5ZkPZgUDr33RtSbQBaIWanoj51psutpytY=;
-        b=GQf1d51o0STNXobnIiFyOeVVBGuohSOGQFoSalQL8qsJGEfthBCSnm1pxFifshmXB8
-         AIrKm7BNHVWTS8UtuJhSkijp1+5ElI5tTe8B7UGRLCO2gGdQOXzjMH+VlCknXXULSdXy
-         PtRZB+ntSweLyyW/WvmwH0amISTJxRwFRzbd/PlYwurpFRT6pL5ZYGNBgwFPWIysBTvz
-         NrSxd3yYnUtJbqG3Dp0ksg4NGfdNGnea4RDys1kERDknlVBKR9RabLkmc1ZboAI609Tq
-         U/TmiVSAiSFB9FMWj92S72vSQn7fsh/o0inf/TtZ/rKQFvzd7AiTFwCeUcXR6CK0dSH3
-         jlng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756955839; x=1757560639;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CwlGz5VRP5ZkPZgUDr33RtSbQBaIWanoj51psutpytY=;
-        b=T4gixqfm/2W33tJM2RpyCvLSFpktXr+PfWOsf8CI/3WNUVnJtJsa7m3IL4hR3+9Dcy
-         sC0s/mdZt6qnUJOW4A697T9FQI90A1krqn0TrHGkD9NVmmpd3ty5FW8AGJslEXnOUX03
-         gLeugLUYomxttORashIyYjX3QxQ+bA9V65af3EseV5z4UW66hwTi53jotAWbnWPiZKA0
-         kNJSrziHtWsbIMbYBT6OutXV2rJVb9IH0GG4Iynccx4gOCd4Cwxd9H4eYsUjfT068qCZ
-         LIYHq5yftBtartEajBdwJeXwuoj5TtyBU0GlkmAxIRG9ADWPyPk8yd2nTuFyjNQi+tvR
-         zkKg==
-X-Forwarded-Encrypted: i=1; AJvYcCU575lFgPmBted81xUZXfBJa4XgefU9/9eYQxqJL3YqETDxhgG3oOzkDWHXXlcHAzyU0zLM87np@vger.kernel.org, AJvYcCUer3NJqdM6j9JwiiX4inOVYL2KeLiUzH2WJsNT7HKGC/YslS1/2bsfmrUkO6IU/tlOHGmMiStxgwpHwhlc@vger.kernel.org, AJvYcCXL+J0/gurKkanJnK9ixU7Mzl8k/YGsQM4eIQlhOrM3fjAmXNaxnxygVJDOxTjwybMt49HGvWsXA1o=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxSmADVXYfNeZkkJSc5I8AeNzDC5tsoj1F9T7jcHJqjsALJVirZ
-	z0Q8qW5vtB4c2yD1VbDLyrxl5lZQXHwjK6BwSYaWoRchowL+rhr+n3+d
-X-Gm-Gg: ASbGncuGqO4A1vWL5gm1k8g2wCJSq4YLAKfP5yYlDNzahrIFjwZG6bs9r+9xyf/4G/T
-	eSmo+k9aVLbRpAXAqNWqpEmnPswI8OBCNRoIqch80uf488h5WCA8MgwGg0hgZKVlECGgtArsvru
-	s3z1f7dfksDonKlGkwYTr5WX6gudWjK8zfyoRdC0YgxwpiKOT7ukV6ZyKyrs+WDD02ZYg3KYg69
-	QyjIKUsvyfORxvq8fa4gzFvFwRLe071cl0tS0zTrUqWV3ck1u893BfjP3+SWPmacu0mR0VF4ssH
-	gnGj0ZRMLIOB+ebRlpqOc20gUQit9WSCH98ATjz6rrwjp1ACaN2dALmvDkbE2Y1spA7Q+KiN9GM
-	jE5ZwOnYHEsLtkPcLc/ebSkwRW/AW4Iw2/qO88Ho+M+M2bsNJ8wJQ
-X-Google-Smtp-Source: AGHT+IGCYG6pexWrVDLMOJuhlbs7lAQKJ4a7SRLhFW234N8oy90hekqLgqNebBrdrdxE6UWCH2y2xw==
-X-Received: by 2002:a17:903:98f:b0:24c:cb6b:105b with SMTP id d9443c01a7336-24ccb6b138cmr8087135ad.25.1756955839363;
-        Wed, 03 Sep 2025 20:17:19 -0700 (PDT)
-Received: from fedora ([172.59.162.44])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24ca63c9e71sm25284835ad.95.2025.09.03.20.17.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Sep 2025 20:17:18 -0700 (PDT)
-From: Alex Tran <alex.t.tran@gmail.com>
-To: socketcan@hartkopp.net
-Cc: mkl@pengutronix.de,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	linux-can@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Alex Tran <alex.t.tran@gmail.com>
-Subject: [PATCH v1] docs: networking: can: change bcm_msg_head frames member to support flexible array
-Date: Wed,  3 Sep 2025 20:17:09 -0700
-Message-ID: <20250904031709.1426895-1-alex.t.tran@gmail.com>
-X-Mailer: git-send-email 2.51.0
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="lr2KS+kO";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="kHdwSRig"
+ARC-Seal: i=1; a=rsa-sha256; t=1756967774; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=C8QI5EsKrAzo5XU+uSLOXRlfbljCWUBlI0LDmUuFYJUUvU2ZydXY/mV0OaEQLuRZwL
+    bJZjfuxcsDc7e3QXn8miwdMOYyGfTsFwbpikd5I3oj+aUffU/s/Ve7abYtAa6hiW0n/o
+    1Bn5yX0YGbKtgUHQ9rM02YuQz4qiVVVa3NDuo69RV0qWxsuqr3/KMAZYyTs19U4HluUn
+    FS2whBq/dxo5ElyCnLwgMPR/Oleg6zbX7Gzr+9tE9mBky/4mKqFuxjp5SQIy0ISbdAjr
+    iMjFQhlOd7v9JnKuquP/5oZ+BCsAwv8GYx6fGyLCY79NTNYRgXtSQWY8EiAzX8AL62Lx
+    Rr7A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1756967774;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=WNLLBL8ARyJnydp9YLJ9ekRET3L+HhY4TBjwGIKOOSE=;
+    b=H95n7BoltTJqbIeY77zMIWi8aKooU3YNLE9cn6Oo30aTf0ftKVGVONFiaW7ofVaB36
+    bSKnak2RqgYJ3VUskg2x1EtpyxwhDje52lnJRKzi+2Hty8TDG0iMoy0vTWyrcRYUouB1
+    ginv/wZpjeIIdOgp+ZfpKIX2IDoxyVq0vAKWFIfZWPeAIlUBcrNvNTv5Lb3oVTOoDLg7
+    /PXe16gzk/7SFG8xqTyW5T+1gQ70E6CgCYmZgImwO82N+PqY4KUcqLy1YSSklC1md/yh
+    XuU+aTP1jq+KeckBPY9sOoRoKeS2d8VmXZ8aHO2NY0RJ2NUiLoEqPJP37xUG8LgCeqpF
+    le3w==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1756967774;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=WNLLBL8ARyJnydp9YLJ9ekRET3L+HhY4TBjwGIKOOSE=;
+    b=lr2KS+kOd5oazMYJLd4G24yqyrebWCkOMqH9Kyd8AURrALRIQvMSkyMOPFlssMuOXz
+    +BpUd1DsFxQLkLQy1/IKhrGCUV4ZFXtgDOQdchcXa0GDHJdxz0/6hqGvZG7hcUjrjQWX
+    glrOtT5FI/U0+nmi6uhbsORSzMzd3XQma/edj41nqGtpToi2kAl7/4GJQnMaMkz8BSnK
+    jIGSQ5CWDqO/JdlLPKOYU5WuekEF7V/tFdC2k0p6wkYB54qWsnATOPinJiIpayn3MM2t
+    2K7hzO3BKuim1l2RLOaMCKGWNa7gUlLYh9zG0kUD4/XOAmKXPZSb0SiuWKfoiBiQHUke
+    A2Fg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1756967774;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=WNLLBL8ARyJnydp9YLJ9ekRET3L+HhY4TBjwGIKOOSE=;
+    b=kHdwSRigsZPrZxHsLnHpP0cxSTqa7xTYf0e+W7Wz2AHr3C9XCycMhofkELsgdB8QuE
+    nD3K/9+HsX37fAluNcCw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bGWj0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::9f3]
+    by smtp.strato.de (RZmta 52.1.2 AUTH)
+    with ESMTPSA id K5d3611846aELiJ
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Thu, 4 Sep 2025 08:36:14 +0200 (CEST)
+Message-ID: <e37c9890-823f-4a38-bdcc-c170dbe67e13@hartkopp.net>
+Date: Thu, 4 Sep 2025 08:36:13 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/21] can: netlink: preparation before introduction of
+ CAN XL step 2/2
+To: Vincent Mailhol <mailhol@kernel.org>,
+ Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: =?UTF-8?Q?St=C3=A9phane_Grosjean?= <stephane.grosjean@hms-networks.com>,
+ Robert Nawrath <mbro1689@gmail.com>, Minh Le <minh.le.aj@renesas.com>,
+ Duy Nguyen <duy.nguyen.rh@renesas.com>, linux-can@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20250903-canxl-netlink-prep-v1-0-904bd6037cd9@kernel.org>
+ <6e4dcab9-d3d7-4c8b-99c1-f472bb7caa07@kernel.org>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <6e4dcab9-d3d7-4c8b-99c1-f472bb7caa07@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-The documentation of the 'bcm_msg_head' struct does not match how
-it is defined in 'bcm.h'. Changed the frames member to a flexible array,
-matching the definition in the header file.
 
-See commit 94dfc73e7cf4 ("treewide: uapi: Replace zero-length arrays with
-flexible-array members")
 
-Bug 217783 <https://bugzilla.kernel.org/show_bug.cgi?id=217783>
+On 03.09.25 11:26, Vincent Mailhol wrote:
+> On 03/09/2025 à 17:49, Vincent Mailhol wrote:
+> 
+> (...)
+> 
+>> The follow up series which introduces CAN XL is nearly completed but
+>> will be sent only once this one is approved: one thing at a time, I do
+>> not want to overwhelm people (including myself).
+> 
+> If you want a preview of the full CAN XL, you can have a look at my work in
+> progress here:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/mailhol/linux.git/
+> log/?h=b4/canxl-netlink
+> https://git.kernel.org/pub/scm/linux/kernel/git/mailhol/iproute2-next.git/log/?h=canxl-netlink
+> 
+> The kernel part is nearly completed, but I am still playing some whack-a-mole to
+> find potential gaps in the configuration validation. I also need to rewrite or
+> fine tune the commit description.
+> 
+> The iproute2 part is still under development. It has the PWM interface but I
+> have not added all the control modes yet.
+> 
 
-Signed-off-by: Alex Tran <alex.t.tran@gmail.com>
----
- Documentation/networking/can.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks Vincent!
 
-diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
-index bc1b585355f7..7650c4b5be5f 100644
---- a/Documentation/networking/can.rst
-+++ b/Documentation/networking/can.rst
-@@ -742,7 +742,7 @@ The broadcast manager sends responses to user space in the same form:
-             struct timeval ival1, ival2;    /* count and subsequent interval */
-             canid_t can_id;                 /* unique can_id for task */
-             __u32 nframes;                  /* number of can_frames following */
--            struct can_frame frames[0];
-+            struct can_frame frames[];
-     };
- 
- The aligned payload 'frames' uses the same basic CAN frame structure defined
--- 
-2.51.0
+The repos are very helpful.
+
+With "missing" control modes you refer to CAN_CTRLMODE_XL_ERR_SIGNAL, 
+CAN_CTRLMODE_XL_RRS and CAN_CTRLMODE_RESTRICTED, right?
+
+Best regards,
+Oliver
+
+> Regardless, the two links above are just an FYI. Beware that there will be some
+> random force pushes without any notice. You can play with it but it is
+> *not* opened for comments until the preparation series is approved.
+> 
+> Looking forward for your comments on this CAN XL preparation series, it took me
+> a fair amount of effort :)
+> 
+> 
+> Yours sincerely,
+> Vincent Mailhol
 
