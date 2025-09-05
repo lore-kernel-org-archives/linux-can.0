@@ -1,82 +1,101 @@
-Received: from proxima.lasnet.de (proxima.lasnet.de [78.47.171.185])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C9822F533F;
-	Fri,  5 Sep 2025 07:54:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.47.171.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 442D52FD1A4
+	for <linux-can@vger.kernel.org>; Fri,  5 Sep 2025 08:29:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757058866; cv=none; b=k+EuadLw7HymtJfWEXB4TILtzNTuM0t286OyYH+0KCntOimnZBwqRYpkTYXKJB+v0rLlbuO7LJVIZqtTwvr8F+phQIozkSA3LKHk+IZficGvVVleKFJ+ytT9KQ8noB9Cx8+ee/jR7CaaJVSzfIASSWtKpjrWbTikT4Akazf8qio=
+	t=1757060992; cv=none; b=bSqC4iVo0VCgGuTTcYiK3D116PXWzz8wgBfcElL3TxWRxeNAl7RcRNhFFt7ul5m/d59keB0ZVgHR5yPsapck/BDQtkINVWpw+2++RjlNXn752Zmt9ANMPKn9HzBOw/nuWG2yT46gFJIzBNbSD8lbo7hM4FCEGbVeVxygDxfo9XY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757058866; c=relaxed/simple;
-	bh=5n9zOkFssy2/AZSlIXFaEwVrcGNJwk6KNmav8dw9FLc=;
-	h=Message-ID:Date:MIME-Version:From:Cc:Subject:To:Content-Type; b=SL72Wq1Q+Aqi23Vy0C9NypgkryEhVvVbTVM3N3UnAEYT9FzB6OGTCxt8O8iOWESbJX27pQhSHaFX9NKYrcYa2DJPGQm8RUiz95QKFDkvY027ViDiMYN3m6jSunFmBOeUTjSnEymqw9lcttmTR7MG0k5DxiG37at5FH/LRnakb2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=datenfreihafen.org; spf=pass smtp.mailfrom=datenfreihafen.org; dkim=pass (2048-bit key) header.d=datenfreihafen.org header.i=@datenfreihafen.org header.b=jkH2JhTl; arc=none smtp.client-ip=78.47.171.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=datenfreihafen.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=datenfreihafen.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=datenfreihafen.org header.i=@datenfreihafen.org header.b="jkH2JhTl"
-Received: from [192.168.2.30] (unknown [45.118.184.53])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: stefan@datenfreihafen.org)
-	by proxima.lasnet.de (Postfix) with ESMTPSA id 0689BC0488;
-	Fri,  5 Sep 2025 09:45:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=datenfreihafen.org;
-	s=2021; t=1757058327;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=xkWeTb8lOsbwxHBNQAiLG/GOYrFmBBfRltFTpI+7WeM=;
-	b=jkH2JhTlc3PgelBVDX5sr4jT/CL6PhAkkZdJOddka0LABnij0/XsXaCjyoUYwP2oOxCc1d
-	zmsfMyOORa3rkDhMHBEvuB6O3NpvP7Iz/RtXddbVPZBceefiFSELJQklV1z7XAx2Pfop4/
-	l87zZcva+wNvTcX7tfeWY12F8AiXZjVm6l8JqoJ95lH3d+QJ3R9CAZOu4uMUJmZYjUnjql
-	WtASpzUH2B9H0/YLmg6Sc0Rg5TXaqAupLnf4UIlGPdNgt32apBXe63tWWIbefHqcM81uUt
-	7oiKJ5dEYEHFIyE7ikB+Ri7wRybfom7u/kRtFNjS84bmkKE2HsMCqz0VQbyP7Q==
-Message-ID: <2a353817-f1da-4e7c-8b2c-0853779ec054@datenfreihafen.org>
-Date: Fri, 5 Sep 2025 09:45:26 +0200
+	s=arc-20240116; t=1757060992; c=relaxed/simple;
+	bh=9rdfJyKG2DUhxz14oH6OZktd5zK8IUdQCnL8L2Q9QpU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QxRVZDpoewRRjXkzNb/c+EphwDBWxGnIq5w7d5CbaIzyLdmmejOkU6t+dvG+8mXkMs38M6L2MYEtoROrndEwBOpvi1RXw5OqVU39P8BlU01OYLScTIP+4TN6dpDY4/mbu/CJzzK2QqehmU3KHDyi/aqfH5tX7Dlmmojbb8BEiN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1uuRpA-0006ET-8M; Fri, 05 Sep 2025 10:29:36 +0200
+Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1uuRp8-003rTW-20;
+	Fri, 05 Sep 2025 10:29:34 +0200
+Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1uuRp8-004GpZ-1T;
+	Fri, 05 Sep 2025 10:29:34 +0200
+Date: Fri, 5 Sep 2025 10:29:34 +0200
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: Robin van der Gracht <robin@protonic.nl>, kernel@pengutronix.de,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Network Development <netdev@vger.kernel.org>,
+	Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Subject: Re: [PATCH] can: j1939: implement NETDEV_UNREGISTER notification
+ handler
+Message-ID: <aLqfbnVEdoS1whkR@pengutronix.de>
+References: <50055a40-6fd9-468f-8e59-26d1b5b3c23d@I-love.SAKURA.ne.jp>
+ <aKg9mTaSxzBVpTVI@pengutronix.de>
+ <bb595640-0597-4d18-a9e1-f6eb8e6bb50e@I-love.SAKURA.ne.jp>
+ <c1e50f41-da30-4cea-859c-05db0ab8040b@I-love.SAKURA.ne.jp>
+ <ac9db9a4-6c30-416e-8b94-96e6559d55b2@I-love.SAKURA.ne.jp>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Stefan Schmidt <stefan@datenfreihafen.org>
-Content-Language: en-US
-Cc: Jan Lubbe <jlu@pengutronix.de>, stefan.schmidt@linaro.org
-Subject: Call for Participation: Embedded & IoT micro-conference at Linux
- Plumbers 2025
-To: linux-arm-kernel@lists.infradead.org, linux-embedded@vger.kernel.org,
- linux-arm-msm@vger.kernel.org,
- "linux-wpan@vger.kernel.org" <linux-wpan@vger.kernel.org>,
- BlueZ development <linux-bluetooth@vger.kernel.org>,
- linux-can <linux-can@vger.kernel.org>,
- devicetree <devicetree@vger.kernel.org>,
- "yocto@lists.yoctoproject.org" <yocto@lists.yoctoproject.org>,
- openembeded-devel <openembedded-devel@lists.openembedded.org>,
- boot-architecture@lists.linaro.org
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ac9db9a4-6c30-416e-8b94-96e6559d55b2@I-love.SAKURA.ne.jp>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-We are happy to announce that the Embedded & IoT micro-conference was
-again accepted for Linux Plumbers this year. Hosted in beautiful Tokyo,
-Japan December 11-13.
-https://lpc.events/event/19/contributions/2005/
+On Mon, Aug 25, 2025 at 11:07:24PM +0900, Tetsuo Handa wrote:
+> syzbot is reporting
+> 
+>   unregister_netdevice: waiting for vcan0 to become free. Usage count = 2
+> 
+> problem, for j1939 protocol did not have NETDEV_UNREGISTER notification
+> handler for undoing changes made by j1939_sk_bind().
+> 
+> Commit 25fe97cb7620 ("can: j1939: move j1939_priv_put() into sk_destruct
+> callback") expects that a call to j1939_priv_put() can be unconditionally
+> delayed until j1939_sk_sock_destruct() is called. But we need to call
+> j1939_priv_put() against an extra ref held by j1939_sk_bind() call
+> (as a part of undoing changes made by j1939_sk_bind()) as soon as
+> NETDEV_UNREGISTER notification fires (i.e. before j1939_sk_sock_destruct()
+> is called via j1939_sk_release()). Otherwise, the extra ref on "struct
+> j1939_priv" held by j1939_sk_bind() call prevents "struct net_device" from
+> dropping the usage count to 1; making it impossible for
+> unregister_netdevice() to continue.
+> 
+> Reported-by: syzbot <syzbot+881d65229ca4f9ae8c84@syzkaller.appspotmail.com>
+> Closes: https://syzkaller.appspot.com/bug?extid=881d65229ca4f9ae8c84
+> Tested-by: syzbot <syzbot+881d65229ca4f9ae8c84@syzkaller.appspotmail.com>
+> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+> Fixes: 25fe97cb7620 ("can: j1939: move j1939_priv_put() into sk_destruct callback")
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-Topics cover all things embedded and IoT. Boot time to kernel size, low
-power communication, telemetry and also RTOS. Devicetree and build
-system have their own MC and we can move sessions between them as needed.
+Tested-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-As with all MC's at Plumbers we are not looking for talks, but rather
-discussing current problems and working towards their solution. If your
-proposal has a specific stakeholder (maintainer, developer, company)
-that would be needed for a fruitful discussion, please mention it in
-your submission.
-
-The CfP is open now and will run until October 3rd. Please do not wait
-until the end with your submissions as we are going to accept good
-proposals even before the end, so the MC might be filled up before 
-October 3rd.
-
-Jan & Stefan
+Thank you!
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
