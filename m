@@ -1,195 +1,182 @@
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 563D1257423
-	for <linux-can@vger.kernel.org>; Tue,  9 Sep 2025 09:01:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757408505; cv=none; b=RgbwmIzlBGUn+8JKVNBkn+8pXjWsyf1BgxYQfPrQcz65SOGboBCnTX7zjXaq1jGC26IMMyVF0CNspT3nTtLOoLpPsqGxEqbUNNl4oOB8uu+q1QSwiLnz7/UngIftCcmjnjfrgZ2Ae6NQMwsvDoVjBYSfg8ze9iYqJhquKFSMAEA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757408505; c=relaxed/simple;
-	bh=SHCuv21a0PmkZ3IqzacqlCUqqBfVHT8ztUt3GyP0Xwk=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=kJPMPHuVDIcfDbNgStPyTC4xLPtWfdcrRMpcyiSgIVXpwCJsm8PWlVdpnHgiTPkM01oxz+i7Lad9yzhwgGvJH+JlKR5NvFDC/ITM4tTdJqGS83Jcddy4NJNhdvBvA5lJbmqkxfckhazyu9nlDvHcu8WR4OxC3ZEXiFY3lAQc+ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=VUzcNvxh; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C07A32D0627
+	for <linux-can@vger.kernel.org>; Tue,  9 Sep 2025 09:24:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.51
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1757409890; cv=pass; b=juyNBnJEOCDojk8poKBknsA9SLikgQX6fKdqKKudXGsWAPbnfnSmbq82bCY6wRcp6oCtv7iTQB4RpOOo3NGSmfrbFb3i9mmLNmSjTb93QmJcSTlT/LYiOBxT0enx26ZzXizoaEHTbQcBJOwcsD0T1WyuolQxBckjXEzMLpj5Lak=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1757409890; c=relaxed/simple;
+	bh=c/GjTu3Al7txsMD1xXNs3vTLSStM1X2JxBJmkasY69s=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=G5B2hcvOi8uvnk/E5hgUrymgUdgzRK0NzbcMQKFdBjngbPVB/nlUhiRf9oUN3UUHrAK5ZjoG9eDjxR0qjY1NzmSypFGS7ta2DMbDvXwFroJzvBXSh+oahe3X/kxx8PaAj3Q0l0YB3SLDIKTrIPNTVAbObre32STIF1G1vZ+c4WQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=ODQEDDdK; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=Pg3xoZH5; arc=pass smtp.client-ip=85.215.255.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="VUzcNvxh"
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-b0428b537e5so854296766b.3
-        for <linux-can@vger.kernel.org>; Tue, 09 Sep 2025 02:01:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1757408501; x=1758013301; darn=vger.kernel.org;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=THgFqyUU6oBIw9DqIC4fFT0Yw2qcAsNwkmGZMvCJdj0=;
-        b=VUzcNvxhoZrp9F7rsT+dnHdJtxcyLZ9l2M2USyzH6zj4HYBdv4PCo8Md5nQSQ0UlfH
-         aiEBWzl0zyTwC1qdejmk6uIDBHuB32cw0HxWIh7jdauVpkS4cKjiETHH1VGcTwMfHY9q
-         AQtaRMxllP46k7ADRrKoMaoHCLKV3Ls9MEQpNsXv2z+RAgBd94saA7X8C9xcuh7G8jSh
-         UpQw4v8IDlA4cmc7pXuFxHiQ5sVhR0Tzsooxvxv9EAfSC8SDUZIXoPdWUrVl73h12vwD
-         AU3fqj+hxGU8gUEWcTcIrAjJYeOsDBluJQI4rKkSC5gX9DiJwHH82PIs4EE4OwuOS/eH
-         39RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757408501; x=1758013301;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=THgFqyUU6oBIw9DqIC4fFT0Yw2qcAsNwkmGZMvCJdj0=;
-        b=d4ikBexbG0OReJlhoJ0jY3377YzyGZHfCXu5wP21QBD5l7yKuDV/sSiYFqWLykuZTb
-         Xf4/amhOYvhPgLaLnKMmUFh7lx+eQ4wWkhsCC8dL0W7xtf4br3GV9GgO9+pHPUIUiemF
-         RvwKshlYI5dm08S1e85tx5ZbgPNlXwBOzzSUfvbGlYaQ/Lq2s5CuXZMbKkdYE+RNkrC4
-         dIUKL1mvmHHtXk012WwvcrZ9Br+H2EkeGRIQqOetn2pAGscJ51yqLdr7nBBKtqgFHMH0
-         H2Jqzsc82xlbn+0RA4NfILKf/flHa3yPLw6JsBCj36EQ+FVrmrTNrbVxXY0jXhWmqL7l
-         eNPA==
-X-Forwarded-Encrypted: i=1; AJvYcCVpiU0juEVRGZl1D0IQDFx/fbpSclb0NspzFun+cwROtBq/Xe4X9AvtkQn0gm/1UWIgokf6LAYdG08=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwDo68C6KQ1AABvNlan+OxlF80divReWBcmbReaoZvITJbEIeiu
-	mFG8lIxC+gv1kFABSEiuD72Yrrir9U5xjobnSN51GGbFtWQirNp4eikOS3njZMWkcuI=
-X-Gm-Gg: ASbGncsF2d5nVMHaJOTZRW3ZIai58KJarf/D3JUPPbaSob2Rqg10WiKxM311dE+OoA7
-	mTtBIfjiT/HB1Y0cOG2KMTmEYqRA43I/4Qti8QdOptHlhul/3e6JMAQfAmPBhsZw1VtvfNI5g7+
-	CMgqqASoBMfZEVUPv+CbcuXdpS90JiwRwTXRhkrhzbqQJHO2A0FfVW5R/rEHnfmcRDt1f1JYnEX
-	ByQXyf35blhTJQXxY467Pa25cNgjqOxYSdEKhuOli+qEc8eouW1oSjJlpz8AvckiT/Y7CIUIwQQ
-	zkFMGamTbb8Pggm6KNieDfJzMGuPCtkKckSpz9lhnsdIeIMS0MoSvigRa9dcjKZ5z+tlnMx+od9
-	cqL33qKTJHNvHGX4guFPtA99ORw==
-X-Google-Smtp-Source: AGHT+IFs9mgyL/udjHjU9D6wDPeoGBJPpea0OrEmcpsbckvBK165wPCTYLCReGQQHbf+rnhXmzr3Dg==
-X-Received: by 2002:a17:907:9955:b0:b07:6537:264c with SMTP id a640c23a62f3a-b076537276cmr224609066b.37.1757408499028;
-        Tue, 09 Sep 2025 02:01:39 -0700 (PDT)
-Received: from localhost ([195.52.61.108])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b04148f95b5sm2222632666b.92.2025.09.09.02.01.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Sep 2025 02:01:38 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="ODQEDDdK";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="Pg3xoZH5"
+ARC-Seal: i=1; a=rsa-sha256; t=1757409879; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=gPgnW/5zZuoj8XdsRCVkGOsjnZgUwARk+RPu336FLpijbYoIvr78jfodM2ueH9He0X
+    EHGN6vkGOinxyU0bbeSFvhloIhpK3UAVrvRF4dsxvbogc8JibRoyJ++jqp39EtNNyEw0
+    eOfBzuhGEmi3xVPTPb9FtkzlzAVyHKapI72g2l7Y17jb3YZhoPmJTuCdsCtcC6bSROAC
+    wHgGC+4WbyMTH/2AEged2/lCkivIkWtCsG8vSGEScE8etW+PqNV/3jB96ya9SDQrJHDe
+    Ptv1v4z7VLnBxRWkaSjNHjALdnrobwL/2pjKooJocS4ug4wZizPiLxvG+oyFB4kB4T1/
+    S7og==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1757409879;
+    s=strato-dkim-0002; d=strato.com;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=I4lTONAQMJP1Pq5z8v3OYlLiggZWW7E7XfM/+z5f4Vk=;
+    b=Yr4wjvBktyU0VjXiNhWGQVzm4o4zQ9Klf7QwCisDW47rkeCXs/mY3z9LXP8iMVigi9
+    M0lWKjvuYmNDvgq9Y28xdKDaMKdpsaAaMPbKVokYn55UFjlcvEcORuZ5UDA29ovaeqCr
+    7Wi282DzB90qApQktWJGezRUS9cyjnPvRyfbbjkuYPGgBy3k3q4cYInmxrUSL2PQlfYJ
+    AAZjIpvU+nIhzW/VrsDfb64xCH3sR5SBHUpSdaglYcEHmsaSlQJbvD618u3doXQ7wF9g
+    pUSsbpsGB+W5/Ise3dyh5TxDNWxMm5+f85RaKzzoRiPazRuTrZkjQN2yHTL4NO3+8Cx7
+    Nx9A==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1757409879;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=I4lTONAQMJP1Pq5z8v3OYlLiggZWW7E7XfM/+z5f4Vk=;
+    b=ODQEDDdK3XPrckAFG64VsmaN0ygarwAxxMy1mzceWXU8G9alfuFXtK2x+hm9yCBS7w
+    b9xwBTiaGHe01wDtdOUyxRpSD27IDqIoRSJAEoFHXdRhueU/k+7O74Ydm7Ui1+SaYjHj
+    6epmJyUzxg2sa0l2yld2zLg/13rUJmlObskHUYiUQUly62KmyQiuIYBrQDA2paF3cNgU
+    e1n89wSIeAFhtQ2v5+/IhdV9tyimsLXQ9WkM3+Xg+RrHxyo+kyW781IxceGB2v284vAL
+    9I6gy5EbSyoPUCGmUPRflLdiunqHx0/PS0KnDdf88ycB/h7zXf53WYbSGjneqXAJVGlm
+    uAAg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1757409879;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=I4lTONAQMJP1Pq5z8v3OYlLiggZWW7E7XfM/+z5f4Vk=;
+    b=Pg3xoZH5eIlVsuKKvpkJsNUmrHLXP2DAtGv+bC1yJ3S7Xqzi+eIoktR3PyfFs6Lklm
+    s82v9BmMCZdnNkojiFAA==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bGWj0Q=="
+Received: from lenov17.lan
+    by smtp.strato.de (RZmta 52.1.2 AUTH)
+    with ESMTPSA id K5d3611899Odf7Y
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Tue, 9 Sep 2025 11:24:39 +0200 (CEST)
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [RFC PATCH v5 2/2] can: reject CAN FD content when disabled on CAN XL interfaces
+Date: Tue,  9 Sep 2025 11:24:33 +0200
+Message-ID: <20250909092433.30546-2-socketcan@hartkopp.net>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20250909092433.30546-1-socketcan@hartkopp.net>
+References: <20250909092433.30546-1-socketcan@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed;
- boundary=8749dbbaa76367b0613af13f6a0ec75df7b6bb443ddc49af7eaba5fedcd3;
- micalg=pgp-sha512; protocol="application/pgp-signature"
-Date: Tue, 09 Sep 2025 11:01:32 +0200
-Message-Id: <DCO5BG5X9CN4.1YYZWJ5FYBLDG@baylibre.com>
-Subject: Re: [PATCH v9 1/4] dt-bindings: can: m_can: Add wakeup properties
-From: "Markus Schneider-Pargmann" <msp@baylibre.com>
-To: "Markus Schneider-Pargmann" <msp@baylibre.com>, "Rob Herring"
- <robh@kernel.org>
-Cc: "Chandrasekar Ramakrishnan" <rcsekar@samsung.com>, "Marc Kleine-Budde"
- <mkl@pengutronix.de>, "Krzysztof Kozlowski" <krzk+dt@kernel.org>, "Conor
- Dooley" <conor+dt@kernel.org>, "Vishal Mahaveer" <vishalm@ti.com>, "Kevin
- Hilman" <khilman@baylibre.com>, "Dhruva Gole" <d-gole@ti.com>, "Sebin
- Francis" <sebin.francis@ti.com>, "Kendall Willis" <k-willis@ti.com>,
- "Akashdeep Kaur" <a-kaur@ti.com>, "Simon Horman" <horms@kernel.org>,
- "Vincent MAILHOL" <mailhol.vincent@wanadoo.fr>,
- <linux-can@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-X-Mailer: aerc 0.20.1
-References: <20250820-topic-mcan-wakeup-source-v6-12-v9-0-0ac13f2ddd67@baylibre.com> <20250820-topic-mcan-wakeup-source-v6-12-v9-1-0ac13f2ddd67@baylibre.com> <20250822143549.GA3664230-robh@kernel.org> <DCD1YPX4T779.ADK4JCGW1MU7@baylibre.com>
-In-Reply-To: <DCD1YPX4T779.ADK4JCGW1MU7@baylibre.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 
---8749dbbaa76367b0613af13f6a0ec75df7b6bb443ddc49af7eaba5fedcd3
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+The CAN XL devices can be configured as CAN XL only with 'xl on fd off'.
+Correctly reject CAN FD frames when FD is disabled for the outgoing CAN XL
+interface.
 
-Hi Rob,
+Virtual CAN interfaces (vcan, vxcan) are not affected as they have no such
+CAN CC/FD/XL content configuration option.
 
-On Wed Aug 27, 2025 at 10:04 AM CEST, Markus Schneider-Pargmann wrote:
-> Hi Rob,
->
-> On Fri Aug 22, 2025 at 4:35 PM CEST, Rob Herring wrote:
->> On Wed, Aug 20, 2025 at 02:42:25PM +0200, Markus Schneider-Pargmann wrot=
-e:
->>> The pins associated with m_can have to have a special configuration to
->>> be able to wakeup the SoC from some system states. This configuration i=
-s
->>> described in the wakeup pinctrl state while the default state describes
->>> the default configuration. Also add the sleep state which is already in
->>> use by some devicetrees.
->>>=20
->>> Also m_can can be a wakeup-source if capable of wakeup.
->>>=20
->>> Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
->>> ---
->>>  .../devicetree/bindings/net/can/bosch,m_can.yaml   | 25 ++++++++++++++=
-++++++++
->>>  1 file changed, 25 insertions(+)
->>>=20
->>> diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml=
- b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
->>> index c4887522e8fe97c3947357b4dbd4ecf20ee8100a..0e00be18a8be681634f2537=
-8bb2cdef034dc4e6b 100644
->>> --- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
->>> +++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
->>> @@ -106,6 +106,26 @@ properties:
->>>          maximum: 32
->>>      minItems: 1
->>> =20
->>> +  pinctrl-0:
->>> +    description: Default pinctrl state
->>> +
->>> +  pinctrl-1:
->>> +    description: Can be Sleep or Wakeup pinctrl state
->>> +
->>> +  pinctrl-2:
->>> +    description: Can be Sleep or Wakeup pinctrl state
->>> +
->>> +  pinctrl-names:
->>> +    description:
->>> +      When present should contain at least "default" describing the de=
-fault pin
->>> +      states. Other states are "sleep" which describes the pinstate wh=
-en
->>> +      sleeping and "wakeup" describing the pins if wakeup is enabled.
->>> +    minItems: 1
->>> +    items:
->>> +      - const: default
->>> +      - const: sleep
->>> +      - const: wakeup
->>
->> This doesn't allow '"default", "wakeup"' which I think you want.
->>
->> "sleep" and "wakeup" seem mutually exclusive and really are just the=20
->> same thing. Both apply to the same mode/state. Whether you can wake from=
-=20
->> it is just an additional property (of the state).=20
->>
->> So I think you want:
->>
->> items:
->>   - const: default
->>   - enum: [ sleep, wakeup ]
->>
->>
->> Or you should just drop 'wakeup' and just support wakeup with 'sleep'=20
->> when 'wakeup-source' is present.
->
-> Thanks for your feedback. I see they seem to be mutually exclusive, but
-> I think they serve different purposes. The sleep state describes the
-> pins when sleeping with wakeup disabled. The wakeup state describes the
-> pins when sleeping or off and wakeup is enabled.
->
-> Only allowing one of the two states or only using the sleep state will
-> enable or disable wakeup statically, there is no way to choose one or
-> the other.
->
-> For my specific setup, the name of a sleep state is also kind of
-> misleading. The SoC is in a poweroff state and sensitive to activity on
-> the pins configured for wakeup. It is not just sleeping, it will do a
-> fresh boot once woken up.=20
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ include/linux/can/dev.h | 12 ++++++++++++
+ net/can/raw.c           | 20 +++++++++++++-------
+ 2 files changed, 25 insertions(+), 7 deletions(-)
 
-Just wanted to ask if this makes sense for you and is OK?
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 9a92cbe5b2cb..9fa139cc793e 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -183,10 +183,22 @@ struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo_skb_max,
+ void free_candev(struct net_device *dev);
+ 
+ /* a candev safe wrapper around netdev_priv */
+ struct can_priv *safe_candev_priv(struct net_device *dev);
+ 
++static inline bool can_dev_ctrlmode_fd_on(struct net_device *dev)
++{
++	struct can_priv *priv = safe_candev_priv(dev);
++
++	/* check ctrlmode on real CAN interfaces */
++	if (priv)
++		return (priv->ctrlmode & CAN_CTRLMODE_FD);
++
++	/* virtual CAN FD/XL interfaces always support CAN FD */
++	return true;
++}
++
+ int open_candev(struct net_device *dev);
+ void close_candev(struct net_device *dev);
+ int can_change_mtu(struct net_device *dev, int new_mtu);
+ int can_eth_ioctl_hwts(struct net_device *netdev, struct ifreq *ifr, int cmd);
+ int can_ethtool_op_get_ts_info_hwts(struct net_device *dev,
+diff --git a/net/can/raw.c b/net/can/raw.c
+index e5e3952b0e09..5ff4ed629499 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -879,24 +879,30 @@ static void raw_put_canxl_vcid(struct raw_sock *ro, struct sk_buff *skb)
+ 		cxl->prio &= CANXL_PRIO_MASK;
+ 		cxl->prio |= ro->tx_vcid_shifted;
+ 	}
+ }
+ 
+-static unsigned int raw_check_txframe(struct raw_sock *ro, struct sk_buff *skb, int mtu)
++static unsigned int raw_check_txframe(struct raw_sock *ro, struct sk_buff *skb,
++				      struct net_device *dev)
+ {
+ 	/* Classical CAN -> no checks for flags and device capabilities */
+ 	if (can_is_can_skb(skb))
+ 		return CAN_MTU;
+ 
+-	/* CAN FD -> needs to be enabled and a CAN FD or CAN XL device */
+-	if (ro->fd_frames && can_is_canfd_skb_mtu_len(skb) &&
+-	    (mtu == CANFD_MTU || can_is_canxl_dev_mtu(mtu)))
+-		return CANFD_MTU;
++	/* CAN FD -> needs to be enabled in a CAN FD or CAN XL device */
++	if (ro->fd_frames && can_is_canfd_skb_mtu_len(skb)) {
++		/* real/virtual CAN FD interface */
++		if (dev->mtu == CANFD_MTU)
++			return CANFD_MTU;
++		if (can_is_canxl_dev_mtu(dev->mtu) &&
++		    can_dev_ctrlmode_fd_on(dev))
++			return CANFD_MTU;
++	}
+ 
+ 	/* CAN XL -> needs to be enabled and a CAN XL device */
+ 	if (ro->xl_frames && can_is_canxl_skb(skb) &&
+-	    can_is_canxl_dev_mtu(mtu))
++	    can_is_canxl_dev_mtu(dev->mtu))
+ 		return CANXL_MTU;
+ 
+ 	return 0;
+ }
+ 
+@@ -948,11 +954,11 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 		goto free_skb;
+ 
+ 	err = -EINVAL;
+ 
+ 	/* check for valid CAN (CC/FD/XL) frame content */
+-	txmtu = raw_check_txframe(ro, skb, dev->mtu);
++	txmtu = raw_check_txframe(ro, skb, dev);
+ 	if (!txmtu)
+ 		goto free_skb;
+ 
+ 	/* only CANXL: clear/forward/set VCID value */
+ 	if (txmtu == CANXL_MTU)
+-- 
+2.47.3
 
-Thanks
-Markus
-
---8749dbbaa76367b0613af13f6a0ec75df7b6bb443ddc49af7eaba5fedcd3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKMEABYKAEsWIQSJYVVm/x+5xmOiprOFwVZpkBVKUwUCaL/s7BsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIRHG1zcEBiYXlsaWJyZS5jb20ACgkQhcFWaZAVSlPb
-MwEA1AUcXz7Q3hxvU+ALV0paJLOFNCB7ZfOzPKKJXRc4XPIA/jm1qqRlS+1YfbLG
-Rx5k/8XUtqoSYSOnxaHZoC2wPKYJ
-=mxfq
------END PGP SIGNATURE-----
-
---8749dbbaa76367b0613af13f6a0ec75df7b6bb443ddc49af7eaba5fedcd3--
