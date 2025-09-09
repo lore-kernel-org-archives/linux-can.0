@@ -1,137 +1,176 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8D32226D1D
-	for <linux-can@vger.kernel.org>; Tue,  9 Sep 2025 14:48:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757429298; cv=none; b=GfXcm5YH+ZsTh7AmddxHIvkAiaPjnxshE9xdsBBuOD1qiDbwE2EH53T/JAqWPQ4j7zgJsHu7saPSDCYTDnC1kiWuaYu2DnZeygoka50mHLttVoml9/JIwzwrAoZMMBj++5dvgLs5/yCrfX7P1lF+jr16XU6z7L+74XAsI3vyxfY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757429298; c=relaxed/simple;
-	bh=XzfVWNSC6ZAx32wU0veENsGQOFRetaqmUgN8wfJrWpc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l/5sWDPYbK0tEfLxPlKSgRI51EhGUGsrLhppuoOW4QZkKeqii9W62wQtfq3o/X/9UIzBgjiLWdYRSX1+RwJBSyc0MuWPO6cpb3ByftBiLZNEoJJIsBJ2dhkJkx2tIUECvc1LGGaI6dTuYQcyuhkwA2y2tb8Crp6XmPY18GjWmQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1uvzdh-00089t-Gk; Tue, 09 Sep 2025 16:48:09 +0200
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1uvzdf-000REu-2H;
-	Tue, 09 Sep 2025 16:48:07 +0200
-Received: from pengutronix.de (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 500A546A1A8;
-	Tue, 09 Sep 2025 14:48:07 +0000 (UTC)
-Date: Tue, 9 Sep 2025 16:48:06 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Markus Schneider-Pargmann <msp@baylibre.com>
-Cc: Chandrasekar Ramakrishnan <rcsekar@samsung.com>, 
-	Vincent Mailhol <mailhol.vincent@wanadoo.fr>, Patrik Flykt <patrik.flykt@linux.intel.com>, 
-	Dong Aisheng <b29396@freescale.com>, Fengguang Wu <fengguang.wu@intel.com>, 
-	Varka Bhadram <varkabhadram@gmail.com>, Wu Bo <wubo.oduw@gmail.com>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	kernel@pengutronix.de
-Subject: Re: [PATCH 4/7] can: m_can: m_can_chip_config(): bring up interface
- in correct state
-Message-ID: <20250909-spiked-adamant-raccoon-90a315-mkl@pengutronix.de>
-References: <20250812-m_can-fix-state-handling-v1-0-b739e06c0a3b@pengutronix.de>
- <20250812-m_can-fix-state-handling-v1-4-b739e06c0a3b@pengutronix.de>
- <DC74S0QJQ0JV.39VRZ1Y5JSEWS@baylibre.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 911A123E34C
+	for <linux-can@vger.kernel.org>; Tue,  9 Sep 2025 16:37:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.218
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1757435835; cv=pass; b=FA/I/w0ci82zPgWdGPkwuWwng2QRc9Im0xlUL5FtPnF2/RGhpzRyWVJJqDwwwMy8NTgOIgipwrpoCz7IxFoVHkzYWoH9/D6Qeh8cuEW60YeqpV5MnjP23cMomBUxtM3PkyC2fF/e0l2NoJ9IU40QA+xRVxQ+Ar5XjQ9amza0978=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1757435835; c=relaxed/simple;
+	bh=dyY9XcwVFebLg+TvXQZ7uTR2rwmywyf/khoypsJ3COw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=D4ZqydgSXwGY7edGc/5VmhjnEsyzV7jrAmOcNPkY2t4GL0b/VXn7OfPpYzcyQ4t+NlruZl6J5+rA5I+KAgWdoz1rYdAntJL5X94LB80VMgEtQiRcGVHW+clGKQU2GDsCNteYVZLPBAClN5Gxg9JHyQBzsYop9Ifa9AnV4ZVdAb8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=CFFzQ7b/; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=c9UcGvET; arc=pass smtp.client-ip=81.169.146.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="CFFzQ7b/";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="c9UcGvET"
+ARC-Seal: i=1; a=rsa-sha256; t=1757435830; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=G/inmS+yn9NyFRKv4N7hq5VQedApSHNYLSr9NlLVqZnHxD/J/WJpZ0Ob4ujGj8k0zh
+    hpG44551CRzD0gfnEJWGQL+q+9xwGDXGWGpqBa/MX0BzZPqdRJ0Xwa06oOmmp+Un90f6
+    AbfiQrLZF46dhu7JFzbZVDewXptyG/wmSetGi2xKxdwKm7leyh0ThmFfLe1Vq7sEwWzb
+    MI33ZQz39+T0AVBuYRd+KHFTbWtZOM+Yq8srVQ/RRdpxowk5l2iaISkvxWUAzNsr+V3e
+    3O7zUCrgiYOlFLM7pNeEP7dJW1HZnEEz9Llfr9HAExpOfbWiVIvfvOSlqE1T3fgU3yrU
+    12eA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1757435830;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=Tq+cCLeue1y6DoQBvC7kgC1lSJlq/g0RcECXJAblGv0=;
+    b=EpQMeJD0NCMiaIenxqXeDSBFAjSX0hspwcKIIaG9ATUs8b7OK/f+6JdBFJ724Qcu7t
+    qNYFwmmZg0jraqjA6sM5dw7oJakIjUPTBLgLEwFs1eCnIuIZQ/l1wtdm/1ERM9AfAmED
+    6+haQwYYVlGxGgSeIC76iP/aosJHuc2ri3I8ERFYGKsIm9g5RMSoca6F6gula+Ut+OgX
+    83ueWMWEKetvPR7a7WCm/fZJyNwvNQbbf/SjTCp09pXcCq41Z/4y0TKly0X4EbCFvFh8
+    huGeNV1P/GWH7sBxBHgAfAp7oQY4JNhfBEqOlJLf+RK3vmJvMUmtOP4Pqblu7VS34exV
+    KOuw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1757435830;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=Tq+cCLeue1y6DoQBvC7kgC1lSJlq/g0RcECXJAblGv0=;
+    b=CFFzQ7b/KOIR0wkinIzViX2LqQYRNEHwFqKwiXvpgz+fC0cEs43FIDz2tRSE3fTLzF
+    wIF+03R+wsogwSBQwSf/vwpD70dpCnZ9V2CTN/Af5yQA7Ynvgvsbbf+JmtPg9WFS8Rbn
+    UFJN2Y1IEYgow6UhB1zZIKzW6+QrcybkkKjz2eFvvfXxmDLsaHhemGxO6uc6WIXrybrO
+    MM4dSV/rU2Awo3KcUVn14fK1ghPpJ/FOn3/lx7MWbLGKOAxuWUl8U5+ruod9X0mGmUhe
+    qGseduukaCJ+SM8pZjw8DqWPJU3yBNicmxGGqzsPXYz1qjJVs+9KfQz0so1FmM4BN9sG
+    2fGw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1757435830;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=Tq+cCLeue1y6DoQBvC7kgC1lSJlq/g0RcECXJAblGv0=;
+    b=c9UcGvET0LudN+qTSlT8nBYFt+5NoT1w7swDQ24cH3uM6pgjA2/EMcecn9uG+EGSX+
+    BRnFeGoOL8FVZLxl3uBQ==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bGWj0Q=="
+Received: from lenov17.lan
+    by smtp.strato.de (RZmta 52.1.2 AUTH)
+    with ESMTPSA id K5d361189GbAhPK
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Tue, 9 Sep 2025 18:37:10 +0200 (CEST)
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [RFC PATCH v6 1/2] can: skb: enforce CANFD_FDF check in can_is_canfd_skb()
+Date: Tue,  9 Sep 2025 18:37:01 +0200
+Message-ID: <20250909163702.17755-1-socketcan@hartkopp.net>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="eda5myf3wxj5q6sz"
-Content-Disposition: inline
-In-Reply-To: <DC74S0QJQ0JV.39VRZ1Y5JSEWS@baylibre.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 
+The check in can_is_canfd_skb() is about a length check of skb->len and
+the CAN FD data length. As a skb length of CANFD_MTU can potentially be
+created with a CAN XL frame with a data length of 60, the length check of
+the CAN FD data length is used to detect CAN XL frames via its CANXL_XLF
+flag which exceeds valid CAN FD data length values.
 
---eda5myf3wxj5q6sz
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 4/7] can: m_can: m_can_chip_config(): bring up interface
- in correct state
-MIME-Version: 1.0
+To make sure the CANFD_FDF flag can be safely used as a marker for CAN FD
+frame skbs the bit is set in can_send() which is used by all PF_CAN
+protocols. In the RX path alloc_canfd_skb() sets the CANFD_FDF flag.
 
-On 20.08.2025 11:00:51, Markus Schneider-Pargmann wrote:
-> > diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_ca=
-n.c
-> > index b485d2f3d971..310a907cbb7e 100644
-> > --- a/drivers/net/can/m_can/m_can.c
-> > +++ b/drivers/net/can/m_can/m_can.c
-> > @@ -1607,6 +1607,7 @@ static int m_can_chip_config(struct net_device *d=
-ev)
-> >  static int m_can_start(struct net_device *dev)
-> >  {
-> >  	struct m_can_classdev *cdev =3D netdev_priv(dev);
-> > +	u32 reg_psr;
-> >  	int ret;
-> > =20
-> >  	/* basic m_can configuration */
-> > @@ -1617,7 +1618,8 @@ static int m_can_start(struct net_device *dev)
-> >  	netdev_queue_set_dql_min_limit(netdev_get_tx_queue(cdev->net, 0),
-> >  				       cdev->tx_max_coalesced_frames);
-> > =20
-> > -	cdev->can.state =3D CAN_STATE_ERROR_ACTIVE;
-> > +	reg_psr =3D m_can_read(cdev, M_CAN_PSR);
-> > +	cdev->can.state =3D m_can_can_state_get_by_psr(reg_psr);
->=20
-> Previous patch makes sense for use here. But how is the state set back
-> in operation after mcan was in an error state? Maybe I missed the path
-> back to CAN_STATE_ERROR_ACTIVE somewhere?
+The enforced CANFD_FDF check in can_is_canfd_skb() clears up the potential
+uncertainty when using the skb->len check with the CANFD_MTU.
 
-Sorry, I don't exactly get what you mean here.
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ include/linux/can/skb.h | 19 +++++++++++++++++--
+ net/can/af_can.c        |  2 +-
+ net/can/raw.c           |  2 +-
+ 3 files changed, 19 insertions(+), 4 deletions(-)
 
-> Also CAN_STATE_ERROR_ACTIVE is set in resume() as well, should that also
-> read the PSR instead?
+diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
+index 1abc25a8d144..09ab4dc83199 100644
+--- a/include/linux/can/skb.h
++++ b/include/linux/can/skb.h
+@@ -107,18 +107,33 @@ static inline bool can_is_can_skb(const struct sk_buff *skb)
+ 
+ 	/* the CAN specific type of skb is identified by its data length */
+ 	return (skb->len == CAN_MTU && cf->len <= CAN_MAX_DLEN);
+ }
+ 
+-static inline bool can_is_canfd_skb(const struct sk_buff *skb)
++static inline bool can_is_canfd_skb_mtu_len(const struct sk_buff *skb)
+ {
+ 	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+ 
+-	/* the CAN specific type of skb is identified by its data length */
++	/* The CAN specific type of skb is identified by its data length.
++	 * A CAN XL frame skb might have a skb->len of CANFD_MTU but the
++	 * skb would have the CANXL_XLF bit set (0x80 = 128) in the
++	 * cfd->len field position which would intentionally break the
++	 * CAN FD length check here.
++	 */
+ 	return (skb->len == CANFD_MTU && cfd->len <= CANFD_MAX_DLEN);
+ }
+ 
++static inline bool can_is_canfd_skb(const struct sk_buff *skb)
++{
++	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
++
++	if (!can_is_canfd_skb_mtu_len(skb))
++		return false;
++
++	return cfd->flags & CANFD_FDF;
++}
++
+ static inline bool can_is_canxl_skb(const struct sk_buff *skb)
+ {
+ 	const struct canxl_frame *cxl = (struct canxl_frame *)skb->data;
+ 
+ 	if (skb->len < CANXL_HDR_SIZE + CANXL_MIN_DLEN || skb->len > CANXL_MTU)
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index b2387a46794a..7fd2ed510440 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -207,11 +207,11 @@ int can_send(struct sk_buff *skb, int loop)
+ 
+ 	if (can_is_canxl_skb(skb)) {
+ 		skb->protocol = htons(ETH_P_CANXL);
+ 	} else if (can_is_can_skb(skb)) {
+ 		skb->protocol = htons(ETH_P_CAN);
+-	} else if (can_is_canfd_skb(skb)) {
++	} else if (can_is_canfd_skb_mtu_len(skb)) {
+ 		struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+ 
+ 		skb->protocol = htons(ETH_P_CANFD);
+ 
+ 		/* set CAN FD flag for CAN FD frames by default */
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 76b867d21def..e5e3952b0e09 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -886,11 +886,11 @@ static unsigned int raw_check_txframe(struct raw_sock *ro, struct sk_buff *skb,
+ 	/* Classical CAN -> no checks for flags and device capabilities */
+ 	if (can_is_can_skb(skb))
+ 		return CAN_MTU;
+ 
+ 	/* CAN FD -> needs to be enabled and a CAN FD or CAN XL device */
+-	if (ro->fd_frames && can_is_canfd_skb(skb) &&
++	if (ro->fd_frames && can_is_canfd_skb_mtu_len(skb) &&
+ 	    (mtu == CANFD_MTU || can_is_canxl_dev_mtu(mtu)))
+ 		return CANFD_MTU;
+ 
+ 	/* CAN XL -> needs to be enabled and a CAN XL device */
+ 	if (ro->xl_frames && can_is_canxl_skb(skb) &&
+-- 
+2.47.3
 
-see next patch :)
-
-> Ans lastly I don't like the function name, because of the repeated can,
-> maybe something like m_can_error_state_by_psr()?
-
-It's m_can_state_get_by_psr() now.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---eda5myf3wxj5q6sz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEn/sM2K9nqF/8FWzzDHRl3/mQkZwFAmjAPiMACgkQDHRl3/mQ
-kZzywAf/WPSc70nEf3JBlQRZpqQaextMDsmozEvirHn9QavcoFM2vbAJFLzpmnFq
-OIcv3o7F78vIm4Odj9FTVZz17lmQa4ObuigCCngm9YWo+jPwODlJbqKllXnGYJrh
-yToNoAsEdp8Yh8U7rrzturX+1o92T69zmZPOW5ESEyJrRGrEmdPUO1ZX+lljMl2r
-wy1uNbW9Z1qFoDGUV7aVJdQh4WffLoPs4ziqR/ZElNM9jWGgv/zhPkvr5Og7X5x2
-nplvFjxfJigip8YA7lFA4uW8swQ7k5Y+fuofchMQMrQPfZq4mgOZQKjJfOr+MGJc
-p8+gTq4TOY97s4bTg9/LthysdECeeg==
-=+ni9
------END PGP SIGNATURE-----
-
---eda5myf3wxj5q6sz--
