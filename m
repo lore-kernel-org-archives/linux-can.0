@@ -1,16 +1,15 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F6435A289
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53FF835A29B
 	for <linux-can@vger.kernel.org>; Tue,  9 Sep 2025 17:53:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757440428; cv=none; b=IGtGLu9BwiBe4wPQSFDk2vRTliJWIGlGO3gX7+Cn5/HxRvNb4QbXYLGP1PufutdirHqFUN7Kyx5G344CQ7WO/lm+Fkv4w7LiiptxdJV5SR7OVt2uF5mTSjDhSfiZ71oDJVdDX3rG6Hgis7rssmC9w704NXX2BHMfxr95vek8QeQ=
+	t=1757440429; cv=none; b=MC3qhcT904SdRWNSuuwMU0zjn2ar46BnDGCB2X66QzhRsOjuUxhNT8U3TZ6M6wIAtW2eW3uEJr8EU67FPne/AbQCVUe2Adyp5IrWm4rA3zbEsWgIlVmxuutRftTms2BWTiuoqvz/cdpFjkmHVRByBxW5Fs4iK+gGuhOJ4w2oVs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757440428; c=relaxed/simple;
-	bh=0byzwlFpX3uUliiyBljE0GoBt/DbYN9wqAMAHOwqTqs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=k+WZaON4Sjisd0TCUpK+0uSRK1/Ndeill1hmJWFjNdCeu+eqp6arCQEfiTbPyAgfZviIGlz0P50WnIUFhIFQ7syQLLlX2OQaurDhyZYZlLYtlALluMiyDZb9lE1N0Nf7qpiF0OXgVTLFqpv2ysj8IakKwOdcxvcJkEopQTTAY6s=
+	s=arc-20240116; t=1757440429; c=relaxed/simple;
+	bh=ZdovXMiSeThfoRNRGSvylnqx77lLh3txUa8eYqsZvKU=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=R0zKEaVEi6Xm0X5IpGVSnJceQxa0YtDA0D87aoxrGeYvptllRNV3302C3KSmMSMH6p6OEhJk2RCu+yD9Irs+sURbIIdgfXJLBolXyKikd5aJ+q/ryd9ACnDRA9lAJfslcHoDSKGT9GT7c+FrmloTDXLsAOqmQMRLa2fX+33IgUE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,30 +17,31 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1uw2XI-0006iB-JW
+	id 1uw2XI-0006he-CJ
 	for linux-can@vger.kernel.org; Tue, 09 Sep 2025 19:53:44 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1uw2XH-000SbO-3B
+	id 1uw2XH-000SbA-2h
 	for linux-can@vger.kernel.org;
-	Tue, 09 Sep 2025 19:53:44 +0200
+	Tue, 09 Sep 2025 19:53:43 +0200
 Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id AB4F546A3D0
+	by bjornoya.blackshift.org (Postfix) with SMTP id 8665C46A3CD
 	for <linux-can@vger.kernel.org>; Tue, 09 Sep 2025 17:53:43 +0000 (UTC)
 Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 2C50246A39B;
-	Tue, 09 Sep 2025 17:53:41 +0000 (UTC)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id E959646A399;
+	Tue, 09 Sep 2025 17:53:40 +0000 (UTC)
 Received: from hardanger.blackshift.org (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3481596a;
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 75e9cefd;
 	Tue, 9 Sep 2025 17:53:40 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Tue, 09 Sep 2025 19:53:18 +0200
-Subject: [PATCH v2 2/7] can: m_can: only handle active interrupts
+Subject: [PATCH v2 0/7] can: m_can: fix pm_runtime and CAN state handling
+Date: Tue, 09 Sep 2025 19:53:16 +0200
+Message-Id: <20250909-m_can-fix-state-handling-v2-0-af9fa240b68a@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -50,9 +50,11 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250909-m_can-fix-state-handling-v2-2-af9fa240b68a@pengutronix.de>
-References: <20250909-m_can-fix-state-handling-v2-0-af9fa240b68a@pengutronix.de>
-In-Reply-To: <20250909-m_can-fix-state-handling-v2-0-af9fa240b68a@pengutronix.de>
+X-B4-Tracking: v=1; b=H4sIAIxpwGgC/3WNzQ6CMBCEX4Xs2TVtUUROvochpj8rbKKFtJVgC
+ O9uJfHo8ZvMfLNApMAUoSkWCDRx5MFnULsCbK99R8guMyihjqKWEp83qz3eecaYdCLMJfdg36E
+ w+mCcrqypCfJ8DJRbm/raZu45piG8t6dJftOfVP2XThIFmlN5JlFZoUtzGcl3rxQGz/PeEbTru
+ n4A6MUsTcUAAAA=
+X-Change-ID: 20250811-m_can-fix-state-handling-0ba4bda6cb8e
 To: Chandrasekar Ramakrishnan <rcsekar@samsung.com>, 
  Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
  Patrik Flykt <patrik.flykt@linux.intel.com>, 
@@ -62,15 +64,15 @@ To: Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
 Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
  kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
 X-Mailer: b4 0.15-dev-e44bb
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1416; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=0byzwlFpX3uUliiyBljE0GoBt/DbYN9wqAMAHOwqTqs=;
- b=owEBbQGS/pANAwAKAQx0Zd/5kJGcAcsmYgBowGmZORUk+vP0SVB8a7q64+4PJf/xTopuCAsch
- 7WBJqhsNbOJATMEAAEKAB0WIQSf+wzYr2eoX/wVbPMMdGXf+ZCRnAUCaMBpmQAKCRAMdGXf+ZCR
- nHg2CACFM6/VGR/XRQV48GV6MRSokJwWaGFtgQxsy+hyV2cyy0+4LzFgiWvAilTY1FnT0kyKav3
- V2/JY5vdf2185Yj43+3KUpAeXcrkyybHEMhxIgv0tAwejkOdCnGcxWuEgqGlwJoKfti0cfoUU6e
- xc1vud4T1XSZNrnS7QdaG2XZX1LGtwBK3OJJoVhLVgh5LrIe6KVCaQhpqKvl/noEk6ej7rz+AkB
- qedYS2zomGWikSUCcHfOmT0X8P559FD2REPAm58q7i4maqL3vX35a8/dlGuZUFjWWgG1nfIcGEI
- wdDB8Nov3O/ar+pP4vuLNQKuKd9LQqXoImQEJC5dIEWQ5PvZ
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2345; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=ZdovXMiSeThfoRNRGSvylnqx77lLh3txUa8eYqsZvKU=;
+ b=owEBbQGS/pANAwAKAQx0Zd/5kJGcAcsmYgBowGmVDD0ID79aIfxKXM/x+bvJmDMsGkm1LbyxX
+ Ut5wg7+1i+JATMEAAEKAB0WIQSf+wzYr2eoX/wVbPMMdGXf+ZCRnAUCaMBplQAKCRAMdGXf+ZCR
+ nEjyCACqJ5vMzoOe2ZDnFijROWH9W3eAIh7fouDf9DSkpbTkUwby/BRvB6VmFq2cD/l3D6fYgOy
+ 3p9MsIKqPaOKFM+na06wLgOhO46tp/zBe84xEtjsduokifoDvyI2gFoFR30Fm6Zc+jjARw1D7iF
+ 8nSAUktWuPZhZf7TROcndYX45MnUU773ucG+cEZv3dazAfilPxQFKNxiy3VHovai8f2hiWfQqDP
+ qVFYEaEPllQOUgaPiFiLKSBKdcFglewLed2J9HDPyu4P4fOvTZU6gGv9/VkcpBG8lHT25E0DMUD
+ TZRl3U4EIGMsO+kHVKp2LLXbvWF7d6NGoIasLjk42NHlS45f
 X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
  fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -78,47 +80,57 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-The M_CAN IP core has an Interrupt Register (IR) and an Interrupt
-Enable (IE) register. An interrupt is triggered if at least 1 bit is
-set in the bitwise and of IR and IE.
+The first patch fixes a pm_runtime imbalance in the m_can_platform
+driver.
 
-Depending on the configuration not all interrupts are enabled in the
-IE register. However the m_can_rx_handler() IRQ handler looks at all
-interrupts not just the enabled ones. This may lead to handling of not
-activated interrupts.
+The rest of this series fixes the CAN state handling in the m_can
+driver:
+- add the missing state transition from from Error Warning back to
+  Error Active (Patches 2+3)
+- address the fact that in some SoCs (observed on the STM32MP15) the
+  M_CAN IP core keeps the CAN state and CAN error counters over an
+  internal reset cycle. Set the correct CAN state during ifup and
+  system resume (Patches 4+5)
+- add support for optional shared external reset, to properly reset
+  the IP core (Patches 6+7)
 
-Fix the problem and mask the irqstatus (IR register) with the
-active_interrupts (cached value of IE register).
+The update of the DT binding for the reset property is upstream:
+https://git.kernel.org/pub/scm/linux/kernel/git/atorgue/stm32.git/commit/?h=stm32-next&id=cfd856da6cf561f7e1dc6b16f3453814cde1058e
 
-Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 3 +++
- 1 file changed, 3 insertions(+)
+Changes in v2:
+- cover: added link to DT bindings update (thanks Philipp)
+- 1: add Markus's R-b
+- 2: always mask active interrupts (thanks Markus)
+- 3: remove not needed comments (thanks Markus)
+- 3: rename m_can_can_state_get_by_psr() -> m_can_state_get_by_psr() (thanks Markus)
+- 3: read PSR inside m_can_state_get_by_psr() (thanks Markus)
+- 5: add Markus's R-b
+- 7: fix typo (thanks Philipp)
+- 7: rename struct m_can_classdev::rsts -> rst (thanks Philipp)
+- Link to v1: https://patch.msgid.link/20250812-m_can-fix-state-handling-v1-0-b739e06c0a3b@pengutronix.de
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index fe74dbd2c966..16b38e6c3985 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1057,6 +1057,7 @@ static int m_can_poll(struct napi_struct *napi, int quota)
- 	u32 irqstatus;
- 
- 	irqstatus = cdev->irqstatus | m_can_read(cdev, M_CAN_IR);
-+	irqstatus &= cdev->active_interrupts;
- 
- 	work_done = m_can_rx_handler(dev, quota, irqstatus);
- 
-@@ -1243,6 +1244,8 @@ static int m_can_interrupt_handler(struct m_can_classdev *cdev)
- 	}
- 
- 	m_can_coalescing_update(cdev, ir);
-+
-+	ir &= cdev->active_interrupts;
- 	if (!ir)
- 		return IRQ_NONE;
- 
+---
+Marc Kleine-Budde (7):
+      can: m_can: m_can_plat_remove(): add missing pm_runtime_disable()
+      can: m_can: only handle active interrupts
+      can: m_can: m_can_handle_state_errors(): fix CAN state transition to Error Active
+      can: m_can: m_can_chip_config(): bring up interface in correct state
+      can: m_can: fix CAN state in system PM
+      can: m_can: m_can_get_berr_counter(): don't wake up controller if interface is down
+      can: m_can: add optional support for reset
 
--- 
-2.51.0
+ drivers/net/can/m_can/m_can.c          | 97 +++++++++++++++++++++++-----------
+ drivers/net/can/m_can/m_can.h          |  1 +
+ drivers/net/can/m_can/m_can_platform.c |  2 +-
+ 3 files changed, 69 insertions(+), 31 deletions(-)
+---
+base-commit: d3b28612bc5500133260aaf36794a0a0c287d61b
+change-id: 20250811-m_can-fix-state-handling-0ba4bda6cb8e
+
+Best regards,
+--  
+Marc Kleine-Budde <mkl@pengutronix.de>
 
 
