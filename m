@@ -1,133 +1,124 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.220])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF6D7345756
-	for <linux-can@vger.kernel.org>; Tue,  9 Sep 2025 16:39:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.220
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757435992; cv=pass; b=InjW88vi3qBnR1aEeWK0/RRHvS0Hqwikpzk6dLnv0AWUCg9RhuTlHk+WtBQ9MqiJlkektxFDm8u73I23KeYj0mfnQDaEYlHdytco51cj1s3qjtiXPJ1ze1ZxCcFAUF/KQg04fvv3YFAQCslucFoylUjpJLESUvMIovDKCOJyNFM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757435992; c=relaxed/simple;
-	bh=QzNPFhyXxSNEgfmR8N/4u1POLT6A0Fll+FYfbI4koAc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=maCJrFkVaNCol0OqoUWDVDnBwrZ1lFWhCgtjqDzreiHRyxw8oRCNm8kyS/NF72CG0DYKlnSLrSlcv6S4ooz3UZHOqZ+2UGckpDaHDn7sPMyhejfL0X6nl7vdFrjR1AI10dUf/e7DtxDE/BfDkQGgwbiKYeK3zVVwLHD/NMJbiBQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=YEx1JCsV; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=IaGNk5vk; arc=pass smtp.client-ip=81.169.146.220
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="YEx1JCsV";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="IaGNk5vk"
-ARC-Seal: i=1; a=rsa-sha256; t=1757435798; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=MySWR1oJR6X78l2NJAHMVRvVQjae1q9LPcgYAO5YsD7ARnIsI/a0H2pQulKLCO0QLt
-    4Bw3nKSjnyazR2TcBspoaQCZHd3V0EAWyXAnOuGvhfeSZWF0MtU554aH88nAmo+iDmWN
-    hqhj5p2WxSX9SbrNfz9gQe4+wYvMJyQ9Z1YijI3UVCw9KaW+EiMfJVSO9Mhv2H1He3PV
-    0etZR4WW8D5FmE0Oj2GPubxcAqbDXCNXALexxppLtchQKpShXsjkY8optb6rhxGD3jmI
-    3ekhUH7j5uJDwxqTrayGT2hjosgD2IYh6ZbdCLO2BScU5lj2w2W3kuimCyyRHEWOyzMJ
-    RHzg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1757435798;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:To:Subject:Date:Message-ID:Cc:Date:From:
-    Subject:Sender;
-    bh=3hT0Nr8fUpTI+H/PAGBABGdugP4gHbFd4vDgSv3KUSc=;
-    b=nNqbkhUJSYT90Pr7mbHsDjhYcib1f96WvIvkPVgXV86gMXZMARXmICjFxJVbGpDv/S
-    c6VseyiIUa4XZQ+tSp2R7+aRkcyndOfshG19FbDnKNee0bcukpoOCDsjtJ1e2OYcZR/v
-    HMFzui54PY9yaOSR8SFR46p8SFHnLlR4Ens7i1hWnmv78BNnngeaUSqHdOLwEDAAOH/F
-    0Bh9NI20XzJ7zw54p2afzpsQrEHmd8vc8wfv84Cnh6ebg5mW4DLoZkyCgPB15nI8KcfC
-    35Ra4Bx0m1nQ4SxTYKfBOy3UaxVzwYNmpGwPXoS6A8XgBQmYWE24xP0nyWGBAgTMDYnL
-    /WqQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1757435798;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:To:Subject:Date:Message-ID:Cc:Date:From:
-    Subject:Sender;
-    bh=3hT0Nr8fUpTI+H/PAGBABGdugP4gHbFd4vDgSv3KUSc=;
-    b=YEx1JCsVwGnURb5faM0IK2Erdk7nXLTNwRWmeZ9JonRqz/CRecWnYVL0SUBKUoQkOs
-    2iZvwi8ay+LLX/GQ65PYA8af/S5adtizgljYrlme57bcF6g24vPi9/DDYNdz2AbMaDy0
-    CE7FFPWZb3dLSf5xViATkQ3hooaxE7DQDYt8Xf4GhjKFpJ0sj4RmX5XgsDWefDt48Z4F
-    8nMdC5MAEq7MgAeQWkdgqdqxUciSo2wFa+Wo3Q1eC8/+bD3z28ovsCGe0OzuWB/YkCph
-    RqiPyJnMjYknX6YTxTBODX11v54BC6hEVGNRw28kXRV528ZZHUHE1f4Qol/umJrYpLzT
-    CXVg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1757435798;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:To:Subject:Date:Message-ID:Cc:Date:From:
-    Subject:Sender;
-    bh=3hT0Nr8fUpTI+H/PAGBABGdugP4gHbFd4vDgSv3KUSc=;
-    b=IaGNk5vkHtXrYX4p3ukNbcZVoaSRI7NK4hSRBBMbL1ayFpBfymAB+YPmyitF4D2e62
-    I/qc4q30gZeFFSCeF0Bw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bGWj0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::9f3]
-    by smtp.strato.de (RZmta 52.1.2 AUTH)
-    with ESMTPSA id K5d361189GachPI
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Tue, 9 Sep 2025 18:36:38 +0200 (CEST)
-Message-ID: <f7b59c7c-30ad-4cf4-ad0e-bff0e39b3337@hartkopp.net>
-Date: Tue, 9 Sep 2025 18:36:31 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F6435A289
+	for <linux-can@vger.kernel.org>; Tue,  9 Sep 2025 17:53:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1757440428; cv=none; b=IGtGLu9BwiBe4wPQSFDk2vRTliJWIGlGO3gX7+Cn5/HxRvNb4QbXYLGP1PufutdirHqFUN7Kyx5G344CQ7WO/lm+Fkv4w7LiiptxdJV5SR7OVt2uF5mTSjDhSfiZ71oDJVdDX3rG6Hgis7rssmC9w704NXX2BHMfxr95vek8QeQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1757440428; c=relaxed/simple;
+	bh=0byzwlFpX3uUliiyBljE0GoBt/DbYN9wqAMAHOwqTqs=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=k+WZaON4Sjisd0TCUpK+0uSRK1/Ndeill1hmJWFjNdCeu+eqp6arCQEfiTbPyAgfZviIGlz0P50WnIUFhIFQ7syQLLlX2OQaurDhyZYZlLYtlALluMiyDZb9lE1N0Nf7qpiF0OXgVTLFqpv2ysj8IakKwOdcxvcJkEopQTTAY6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1uw2XI-0006iB-JW
+	for linux-can@vger.kernel.org; Tue, 09 Sep 2025 19:53:44 +0200
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1uw2XH-000SbO-3B
+	for linux-can@vger.kernel.org;
+	Tue, 09 Sep 2025 19:53:44 +0200
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+	by bjornoya.blackshift.org (Postfix) with SMTP id AB4F546A3D0
+	for <linux-can@vger.kernel.org>; Tue, 09 Sep 2025 17:53:43 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id 2C50246A39B;
+	Tue, 09 Sep 2025 17:53:41 +0000 (UTC)
+Received: from hardanger.blackshift.org (localhost [::1])
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 3481596a;
+	Tue, 9 Sep 2025 17:53:40 +0000 (UTC)
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Tue, 09 Sep 2025 19:53:18 +0200
+Subject: [PATCH v2 2/7] can: m_can: only handle active interrupts
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v5 2/2] can: reject CAN FD content when disabled on
- CAN XL interfaces
-To: Vincent Mailhol <mailhol@kernel.org>, linux-can@vger.kernel.org
-References: <20250909092433.30546-1-socketcan@hartkopp.net>
- <20250909092433.30546-2-socketcan@hartkopp.net>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20250909092433.30546-2-socketcan@hartkopp.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20250909-m_can-fix-state-handling-v2-2-af9fa240b68a@pengutronix.de>
+References: <20250909-m_can-fix-state-handling-v2-0-af9fa240b68a@pengutronix.de>
+In-Reply-To: <20250909-m_can-fix-state-handling-v2-0-af9fa240b68a@pengutronix.de>
+To: Chandrasekar Ramakrishnan <rcsekar@samsung.com>, 
+ Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
+ Patrik Flykt <patrik.flykt@linux.intel.com>, 
+ Dong Aisheng <b29396@freescale.com>, Varka Bhadram <varkabhadram@gmail.com>, 
+ Wu Bo <wubo.oduw@gmail.com>, Markus Schneider-Pargmann <msp@baylibre.com>, 
+ Philipp Zabel <p.zabel@pengutronix.de>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+X-Mailer: b4 0.15-dev-e44bb
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1416; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=0byzwlFpX3uUliiyBljE0GoBt/DbYN9wqAMAHOwqTqs=;
+ b=owEBbQGS/pANAwAKAQx0Zd/5kJGcAcsmYgBowGmZORUk+vP0SVB8a7q64+4PJf/xTopuCAsch
+ 7WBJqhsNbOJATMEAAEKAB0WIQSf+wzYr2eoX/wVbPMMdGXf+ZCRnAUCaMBpmQAKCRAMdGXf+ZCR
+ nHg2CACFM6/VGR/XRQV48GV6MRSokJwWaGFtgQxsy+hyV2cyy0+4LzFgiWvAilTY1FnT0kyKav3
+ V2/JY5vdf2185Yj43+3KUpAeXcrkyybHEMhxIgv0tAwejkOdCnGcxWuEgqGlwJoKfti0cfoUU6e
+ xc1vud4T1XSZNrnS7QdaG2XZX1LGtwBK3OJJoVhLVgh5LrIe6KVCaQhpqKvl/noEk6ej7rz+AkB
+ qedYS2zomGWikSUCcHfOmT0X8P559FD2REPAm58q7i4maqL3vX35a8/dlGuZUFjWWgG1nfIcGEI
+ wdDB8Nov3O/ar+pP4vuLNQKuKd9LQqXoImQEJC5dIEWQ5PvZ
+X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
+ fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Hi Vincent,
+The M_CAN IP core has an Interrupt Register (IR) and an Interrupt
+Enable (IE) register. An interrupt is triggered if at least 1 bit is
+set in the bitwise and of IR and IE.
 
-On 09.09.25 11:24, Oliver Hartkopp wrote:
+Depending on the configuration not all interrupts are enabled in the
+IE register. However the m_can_rx_handler() IRQ handler looks at all
+interrupts not just the enabled ones. This may lead to handling of not
+activated interrupts.
 
+Fix the problem and mask the irqstatus (IR register) with the
+active_interrupts (cached value of IE register).
 
-> -static unsigned int raw_check_txframe(struct raw_sock *ro, struct sk_buff *skb, int mtu)
-> +static unsigned int raw_check_txframe(struct raw_sock *ro, struct sk_buff *skb,
-> +				      struct net_device *dev)
->   {
->   	/* Classical CAN -> no checks for flags and device capabilities */
->   	if (can_is_can_skb(skb))
->   		return CAN_MTU;
->   
-> -	/* CAN FD -> needs to be enabled and a CAN FD or CAN XL device */
-> -	if (ro->fd_frames && can_is_canfd_skb_mtu_len(skb) &&
-> -	    (mtu == CANFD_MTU || can_is_canxl_dev_mtu(mtu)))
-> -		return CANFD_MTU;
-> +	/* CAN FD -> needs to be enabled in a CAN FD or CAN XL device */
-> +	if (ro->fd_frames && can_is_canfd_skb_mtu_len(skb)) {
-> +		/* real/virtual CAN FD interface */
-> +		if (dev->mtu == CANFD_MTU)
-> +			return CANFD_MTU;
-> +		if (can_is_canxl_dev_mtu(dev->mtu) &&
-> +		    can_dev_ctrlmode_fd_on(dev))
-> +			return CANFD_MTU;
-> +	}
+Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/m_can/m_can.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-I've simplified the above code and rewrote the commit message in v6
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index fe74dbd2c966..16b38e6c3985 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1057,6 +1057,7 @@ static int m_can_poll(struct napi_struct *napi, int quota)
+ 	u32 irqstatus;
+ 
+ 	irqstatus = cdev->irqstatus | m_can_read(cdev, M_CAN_IR);
++	irqstatus &= cdev->active_interrupts;
+ 
+ 	work_done = m_can_rx_handler(dev, quota, irqstatus);
+ 
+@@ -1243,6 +1244,8 @@ static int m_can_interrupt_handler(struct m_can_classdev *cdev)
+ 	}
+ 
+ 	m_can_coalescing_update(cdev, ir);
++
++	ir &= cdev->active_interrupts;
+ 	if (!ir)
+ 		return IRQ_NONE;
+ 
 
->   	/* CAN XL -> needs to be enabled and a CAN XL device */
->   	if (ro->xl_frames && can_is_canxl_skb(skb) &&
-> -	    can_is_canxl_dev_mtu(mtu))
-> +	    can_is_canxl_dev_mtu(dev->mtu))
->   		return CANXL_MTU;
-
-We might also discuss if we create a can_dev_ctrlmode_xl_on(dev) 
-function to check if the CAN XL interface has CAN_CTRLMODE_XL enabled.
-
-Currently my patches are based on Linus' rc5 tree where CAN_CTRLMODE_XL 
-is not defined. But I can rebase it on your b4/canxl-netlink branch if 
-you like it.
-
-Best regards,
-Oliver
+-- 
+2.51.0
 
 
