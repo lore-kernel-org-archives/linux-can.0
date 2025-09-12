@@ -1,64 +1,64 @@
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699372FE589
-	for <linux-can@vger.kernel.org>; Fri, 12 Sep 2025 10:47:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B73A2FE078
+	for <linux-can@vger.kernel.org>; Fri, 12 Sep 2025 10:47:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757674064; cv=none; b=R2N8Ekk5idO1ODIIrLgTcIFNQ0+X3xkvlgvGeqHzp4rIUK8BZ3El1k9Y/lc5rZl05GbQ4bCAopKdaS9d7PvxikXXH84HZPeRo0kMMeA0wPR6msssnXbGN8nRQ/aOzQlLgexJVFRjMdX92qz2nA9/J9yERpvlFot3JxR4q+mmlXw=
+	t=1757674065; cv=none; b=jgYJ8LNIGQWdmMZaTCJZuaTufXKsj6y8j0bARujNk5qXdj0ITKi5Ica+IUfhynlESccSjvMWURUVqHn7WeZWFoMpjNto+sJWts1HMlhCmD9533n01K/iYSk7aLBqKwpnpEeY3+5I96wCiq7s7+G+0X2WvC+R3vCYoa8e85pQ5IM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757674064; c=relaxed/simple;
-	bh=3y5nospWONScbR7m+PVwm9tYXQQF75CUI8JLYWPI5SA=;
+	s=arc-20240116; t=1757674065; c=relaxed/simple;
+	bh=OlTOFvKJfT0A22fcOpYTqFab8+1TW6hkZGEds47Z0Qk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZhyYJXzAd36bwqk7ipuvH75SXvhyktmZvn1DSNikp/wFh7WC+OJm8nstFjqJ/tvUEnIL0AS+7S9BN+2JDFykqTsDw3zTHSDdwal9mM2/kIS9oOHdHodPjfeTJqNss8hsiKPguhZlmOpNC5B2zF2S8LBhGKlCvI57JasyPJTfh3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D/Veuhmm; arc=none smtp.client-ip=209.85.128.46
+	 MIME-Version; b=q1x92iFWPRVVSX6bFg1i2xw5p1u5CxQoMU0cw22i6V35TCFw0qdvCsx4MmD0tsjz6PgGYf3ysOO5Ptu4/HiwEVnWFqcySuYeGJy9/BqiPIGIDJvQCvnSSC0O3kyfh6vEEXo31gyABg0Nks0jO28LoZpTDGDkwF4pTfJsTFmZmh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kadm2p5q; arc=none smtp.client-ip=209.85.221.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D/Veuhmm"
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-45dec1ae562so16760975e9.1
-        for <linux-can@vger.kernel.org>; Fri, 12 Sep 2025 03:47:41 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kadm2p5q"
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3e07ffffb87so1006874f8f.2
+        for <linux-can@vger.kernel.org>; Fri, 12 Sep 2025 03:47:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757674059; x=1758278859; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757674058; x=1758278858; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mgzeJKT6W/ji7pCcEejwbhNcI8dE7vQD5tyb3XmbXbI=;
-        b=D/VeuhmmgPnGBEd/uugjhKkG/wBu/MDcXUGXpv6R7fIDDQW5xOY5u/z8N1YM0A4fkq
-         flAzA0ej+bTdX7FVlIs2EFGJwTLZrUePBwlJcn5YxdUSbh32joMyrwn5tl0JwjflxMgb
-         vZoi1uVfw2EopyWR5Z6J/pTKzY6oKZZbP2tneb3WpIEz04DC89tlMrZVeZHW8OrUTFhP
-         EXbF7RwRm95dsE4S3qK+6X1effpMqOrtbqWs0lojgdr0cFItg63S/H1R+WQQcAAepuB6
-         1o3b68dRqBkPzs3vSjxsP+TGPlsW6xds00emoZsowmCy2hZzMCnFHfb4JdwP2n86AEy4
-         CXNQ==
+        bh=fdCzNJXdDljgG/kIDC0Ddrqtrlk8v9FUTdWx7KN6R8Q=;
+        b=Kadm2p5qfS0acoZk72bNm8J+JOBxE0R7+Bcvs9FG+tbZ016dTIwAQbeZsQiS8xyFgV
+         h1Q/jxI+fttRzVRwEwfKHST94fTXOVO8W98tq8ib57K4uuQ8NQLrggbskG3VtHJOON7O
+         vK6hCJdRK686mqtvISA7x4c7lEUtYUBcThvGT/W8QZS45iTTqXjx9QHrdIMnWAuMDu/z
+         VQgToeWaKvG7w+e6x3JzklivpTYbuXDzvfMS/uoMyskOt4FJ+PncHV3U1GTmbtGOU0s0
+         6pgRDh7MCDqnzUoMQU/yNrxKrplGHf0KMxAq+pEB9XvUK5y/115gNItum0561XPT1VaQ
+         xkpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757674059; x=1758278859;
+        d=1e100.net; s=20230601; t=1757674058; x=1758278858;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mgzeJKT6W/ji7pCcEejwbhNcI8dE7vQD5tyb3XmbXbI=;
-        b=oYePial7K6zk6EtC6SiFJ6UVj8eooNMeo0w9PPuSZSXjP1sEzFJNOPmHioXOq8noHm
-         VsOWXTH1mkDyZYd4Uzut26RGbPKIeXhfoVREqkXr1uviRaM1uGTGcoAh5U7qC6y77DV4
-         uSM0jsoKad6/908Bh66JLamLxzAeW0R/xZn+NhMSOqSVEfb/HtPrV2/wJEZIEItuvZVR
-         Pgu31IEjUtU0SeXtbJncQ3sSsA9qnNyd9+C/Y0PyXY4JsXK5PScV8jRj2SJiTkdGxXB+
-         s19sZPt0WksuI8kHuQt/HERh+iiKNkCLhcp/Nb/szJoKa9BLSL+W3rX82LEqGdXAXhFd
-         k3rA==
-X-Forwarded-Encrypted: i=1; AJvYcCW2cQAIiE8HRZJ1IzEof+e8YYxnUPfItXl+ZCxc6VHrHlU1R7hqI1EYqzBNj7AV++Syh+REhtqsXOM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzowdA9Lt41jpdC0QEI8aZmt6FdqBdyCQODh47J8d62ApEIBbfO
-	qqKqMLJaoy6iQlZDQ0k++PejTZjoSzhLliDtaBn7fThw++AB+C9e8FPW
-X-Gm-Gg: ASbGncv4+Ji4tNXXgFiJgJdoNrG74f14E1raGYcMG0yT57QT1BhRqZKx4D28aGAAoqo
-	fBNHjUt6VFhIwIolg896QvsurVeJKPNOp/gzMJrA8mRTwSWcnUPqZ+MRfu8sRmyvqswC0kzEVg4
-	1e2zmLFWINHDsJ+TnVbLrXsYGiXcUlX2XS93mJWr221V7c7a+sycPXgyjuaTeAj5LcOn7M8GPNd
-	CbKdiMH29xFrqb9HY+BLH9bre9Wd7FUL1mDQCv53SZD8Y0f64rX9WAja1xh+LladCRhVWzaZgTA
-	tToInCeD8EmkLpTwLz3Cq2wlTqc/O4GsuNDHN+GR54yY60qC/Qr5bnH2urwgnvnbOS66xpC38uI
-	0duzKYHyxQr4PbwUlf+XWEOtqLP0BoDZaxEuOa/w84wtLDeLJuX/fGGSuT+54BRkBEOmBKGtRRU
-	RoNk8iORI1FiPM
-X-Google-Smtp-Source: AGHT+IEKxNYK+gyPooOCw0AGIOWMAbKnyvpe9JAaTYZFu44awUZ8ihxoSRmKAS28dBPN94ozwkbEzw==
-X-Received: by 2002:a5d:5847:0:b0:3e2:4a3e:d3fc with SMTP id ffacd0b85a97d-3e765a55c3emr2283673f8f.58.1757674059454;
-        Fri, 12 Sep 2025 03:47:39 -0700 (PDT)
+        bh=fdCzNJXdDljgG/kIDC0Ddrqtrlk8v9FUTdWx7KN6R8Q=;
+        b=AzwIJQZ+Qm2gTDnbOkDVx9oCuUq/vGUSWz+hQtB+FEnY5btkP/dfsF459M9T76Uhdo
+         CMeydc1lHpLTf26FEyfUExEvTHIl887/sp3DpGGuKLmG7Ej5T99WSlZMMjWWXcWxPALt
+         jtvvF/dxf07JZ6lskEHARESD/b8HD1bYYq8loIbm8Jppn6CEiXKHm6tJ3HigwsdBdJQY
+         nTax3EGOyXeCCZsWt+mvj3kdnCkSCXn1L2o3+/6pMrviFrw6KyJ9Xxx/QX5nUTFcGwnb
+         8ULrkFqpHR/lAWTFcdH3+4Y2E7utn566Bezj7AwApeVKxxrUMgiKIds99DB0EQsNim6I
+         uYLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWNmABAg7meAxK7VTsDLSCFGqcnmFgsQ4PxwSqu/5uNgA4AK6arV/oGjIsvDONkSlNbuLii4ZdOwB0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyzzMjfktcX0Lkf9xDtdTgEAjhXmD9+4aq0kA0I86xFoUW+MWPq
+	ysvmff8iHL3qY1XJwE7DjOfRIcR7lXpS/HDX5wM6e4NdF4OYLNUqBIwt
+X-Gm-Gg: ASbGncuIiII2GBpSoM+KR0wrMxFq3ZQOmpyde72RvQj7iT7qhfzluZxwLC5iGzELAmR
+	6taz0H8Ej020ITz1Fu3CaHWTkHd6LPLrd9Z1fW7jVVIzk2uOHUYeEZ8wpOSwIt79avzQswcCtyx
+	4iXHIFqTqbZiy29RNQRMRM7xb4nqTRPxkN1gg1lRZlxjrOhV544QWa1OEvX8jPGLn+qOMsayDKu
+	W7Fiu5RbZLGs/0U6LlLWjl6/qszC+u9kFgxJJgHazzaseFpwZN9AePNr8wImP/2230bhBHd3CsT
+	6dS0X6zIcFFo7LU8OkKHb7xWG4z4q4BZWnyBt88sAfX5UX3MII2oFkpBUeyFnqxICFTu7GERMqH
+	GJVPTqyxTh3IQPf41AtqcoXN3gwTfz21YGSkgTs72457/lTnRr9Ij6sqIfYXP6w/ZaHrbqT/vGK
+	K0qw==
+X-Google-Smtp-Source: AGHT+IFX7SP3Nc3fAURuh1zzId9OJYmZNsTdzvaZuLmsYmsYDvGx6+heBUvwIB58UK6jq1AeT+W/1g==
+X-Received: by 2002:a05:6000:1a8c:b0:3df:4fd3:6e95 with SMTP id ffacd0b85a97d-3e765a051b7mr1893543f8f.34.1757674058280;
+        Fri, 12 Sep 2025 03:47:38 -0700 (PDT)
 Received: from biju.lan (host86-139-30-37.range86-139.btcentralplus.com. [86.139.30.37])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3e7607cd329sm6197316f8f.31.2025.09.12.03.47.39
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3e7607cd329sm6197316f8f.31.2025.09.12.03.47.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Sep 2025 03:47:39 -0700 (PDT)
+        Fri, 12 Sep 2025 03:47:38 -0700 (PDT)
 From: Biju <biju.das.au@gmail.com>
 X-Google-Original-From: Biju <biju.das.jz@bp.renesas.com>
 To: Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -71,9 +71,9 @@ Cc: Biju Das <biju.das.jz@bp.renesas.com>,
 	linux-kernel@vger.kernel.org,
 	Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
 	Biju Das <biju.das.au@gmail.com>
-Subject: [PATCH v2 7/7] can: rcar_canfd: Add suspend/resume support
-Date: Fri, 12 Sep 2025 11:47:25 +0100
-Message-ID: <20250912104733.173281-8-biju.das.jz@bp.renesas.com>
+Subject: [PATCH v2 5/7] can: rcar_canfd: Invert CAN clock and close_candev() order
+Date: Fri, 12 Sep 2025 11:47:23 +0100
+Message-ID: <20250912104733.173281-6-biju.das.jz@bp.renesas.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250912104733.173281-1-biju.das.jz@bp.renesas.com>
 References: <20250912104733.173281-1-biju.das.jz@bp.renesas.com>
@@ -87,100 +87,34 @@ Content-Transfer-Encoding: 8bit
 
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-On R-Car Gen3 using PSCI, s2ram powers down the SoC.  After resume, the
-CAN-FD interface no longer works.  Trying to bring it up again fails:
-
-    # ip link set can0 up
-    RTNETLINK answers: Connection timed out
-
-    # dmesg
-    ...
-    channel 0 communication state failed
-
-Fix this by populating the (currently empty) suspend and resume
-callbacks, to stop/start the individual CAN-FD channels, and
-(de)initialize the CAN-FD controller.
+The CAN clock is enabled before calling open_candev(), and disabled
+before calling close_candev().  Invert the order of the latter, to
+restore symmetry.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Tested-by: Biju Das <biju.das.jz@bp.renesas.com>
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
 ---
 v1->v2:
  * Collected tag
- * Fixed the typo in error path of rcar_canfd_resume().
 ---
- drivers/net/can/rcar/rcar_canfd.c | 53 +++++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
+ drivers/net/can/rcar/rcar_canfd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index a0c16a95808c..27301224edd4 100644
+index c26a605659eb..f0dfab177b98 100644
 --- a/drivers/net/can/rcar/rcar_canfd.c
 +++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -2257,11 +2257,64 @@ static void rcar_canfd_remove(struct platform_device *pdev)
- 
- static int rcar_canfd_suspend(struct device *dev)
- {
-+	struct rcar_canfd_global *gpriv = dev_get_drvdata(dev);
-+	int err;
-+	u32 ch;
-+
-+	for_each_set_bit(ch, &gpriv->channels_mask, gpriv->info->max_channels) {
-+		struct rcar_canfd_channel *priv = gpriv->ch[ch];
-+		struct net_device *ndev = priv->ndev;
-+
-+		if (!netif_running(ndev))
-+			continue;
-+
-+		netif_device_detach(ndev);
-+
-+		err = rcar_canfd_close(ndev);
-+		if (err) {
-+			netdev_err(ndev, "rcar_canfd_close() failed %pe\n",
-+				   ERR_PTR(err));
-+			return err;
-+		}
-+
-+		priv->can.state = CAN_STATE_SLEEPING;
-+	}
-+
-+	/* TODO Skip if wake-up (which is not yet supported) is enabled */
-+	rcar_canfd_global_deinit(gpriv, false);
-+
+@@ -1569,8 +1569,8 @@ static int rcar_canfd_close(struct net_device *ndev)
+ 	netif_stop_queue(ndev);
+ 	rcar_canfd_stop(ndev);
+ 	napi_disable(&priv->napi);
+-	clk_disable_unprepare(gpriv->can_clk);
+ 	close_candev(ndev);
++	clk_disable_unprepare(gpriv->can_clk);
+ 	phy_power_off(priv->transceiver);
  	return 0;
  }
- 
- static int rcar_canfd_resume(struct device *dev)
- {
-+	struct rcar_canfd_global *gpriv = dev_get_drvdata(dev);
-+	int err;
-+	u32 ch;
-+
-+	err = rcar_canfd_global_init(gpriv);
-+	if (err) {
-+		dev_err(dev, "rcar_canfd_global_init() failed %pe\n", ERR_PTR(err));
-+		return err;
-+	}
-+
-+	for_each_set_bit(ch, &gpriv->channels_mask, gpriv->info->max_channels) {
-+		struct rcar_canfd_channel *priv = gpriv->ch[ch];
-+		struct net_device *ndev = priv->ndev;
-+
-+		if (!netif_running(ndev))
-+			continue;
-+
-+		err = rcar_canfd_open(ndev);
-+		if (err) {
-+			netdev_err(ndev, "rcar_canfd_open() failed %pe\n",
-+				   ERR_PTR(err));
-+			return err;
-+		}
-+
-+		netif_device_attach(ndev);
-+	}
-+
- 	return 0;
- }
- 
 -- 
 2.43.0
 
