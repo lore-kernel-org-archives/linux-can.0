@@ -1,76 +1,115 @@
-Received: from smtpfb1-g21.free.fr (smtpfb1-g21.free.fr [212.27.42.9])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE88F302151
-	for <linux-can@vger.kernel.org>; Thu, 18 Sep 2025 13:25:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.9
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97C0B31FEE3
+	for <linux-can@vger.kernel.org>; Fri, 19 Sep 2025 17:05:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758201945; cv=none; b=cGzg5b4nzmpMd0x+1pVWyo33/DieuuVMxt4tDShqBFfaLomW9erLyZSB1BI9RTpUuHFi5dbnshzO8X9sqmNdvqN7vapg+ffEi8OXrVkN+wxJtxrtu2b7hu9DXQHMXKa1eNBAM5YCVAZfeMbCp373+DmIs9KC9N9Azc+oN77Ga6w=
+	t=1758301523; cv=none; b=NSc3iiB5Pggeun0NikIfgK/vr/FpJSI9x3GlP+74rv1OpLtwALbPteJQQam5DdeAXsFRRO9vJkqNMqYc2AIWX9kHtlYilDBRMqfYFjGRSflGVwPIJ58D98jgk9I3sylZ0PSjJ7UF0QsCsSekUASwGMBxYTvA9aUhUl7X24pAQRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758201945; c=relaxed/simple;
-	bh=4jq0HeZwzJ9A7i4E6BhF4oqQ0PXhUljO0ZYEXORUXlc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=SA2LIk5mfPe9X0kAxZWBB5bvnEJhsUn4Rk4LmLCMKVb3bXkUo+E8V6Mg9dG1Us2GBw+5xXYFdPlV6vkKXVOIUefNI+TQhOwFdC059+iKZBom4swqofJYG2st+BJRl/lk7D4DyEofZQfvMYVYqxGdIWChEfzR3tCPymO7lQw7Na8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b=XTUHvNZW; arc=none smtp.client-ip=212.27.42.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b="XTUHvNZW"
-Received: from smtp4-g21.free.fr (smtp4-g21.free.fr [212.27.42.4])
-	by smtpfb1-g21.free.fr (Postfix) with ESMTP id 5CFEFDF963C
-	for <linux-can@vger.kernel.org>; Thu, 18 Sep 2025 15:25:33 +0200 (CEST)
-Received: from stf-laptop.. (unknown [IPv6:2a02:8428:60a1:3e01:3bd5:7f5f:ab:b3a6])
-	(Authenticated sender: stephane.grosjean@free.fr)
-	by smtp4-g21.free.fr (Postfix) with ESMTPSA id 8546319F73F;
-	Thu, 18 Sep 2025 15:25:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
-	s=smtp-20201208; t=1758201926;
-	bh=4jq0HeZwzJ9A7i4E6BhF4oqQ0PXhUljO0ZYEXORUXlc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=XTUHvNZWYFX8hjC1Km7sFdk7pyXd438NQBnihiCW6+hfuK2KWJ/z/tRuZooQgSCdp
-	 Hc1N2P5Nba8MBCJeQE902xGGdrn/2tMlf8l5BUhki3Z3iZwiU67pNrBjjCLIEmDArx
-	 h6Os0Hxfe+FWpRMM/ZmyM/a/UYi5PeH5YYfby22HQcBZtXfiEgZCE1pyCPjS+2Gtp0
-	 2zo8AGAUDza7414fLZmdNVO19O3JXqFJoETzqs8LQ+RZnOVmTWZTluHP42niKhW0+5
-	 /mBnT+sQTVD1Yg4usjdHs/a2W2UXeyCWwVhpm5zR3SikATjD9RqKDI1RF6CDiR7ob1
-	 25TdsLcjwSDwg==
-From: =?UTF-8?q?St=C3=A9phane=20Grosjean?= <stephane.grosjean@free.fr>
-To: linux-can Mailing List <linux-can@vger.kernel.org>
-Cc: =?UTF-8?q?St=C3=A9phane=20Grosjean?= <stephane.grosjean@hms-networks.com>
-Subject: [PATCH] can: peak_usb: fix shift-out-of-bounds issue for 32-bit architectures
-Date: Thu, 18 Sep 2025 15:23:57 +0200
-Message-ID: <20250918132413.30071-1-stephane.grosjean@free.fr>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1758301523; c=relaxed/simple;
+	bh=Mvxr5986z8SC05lluub2hgg11scs2HtbyBBn90Ioodg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A/XR/LyNvU64lgcasVgNUS6rlv3+S8xALrijcq8mZyzyzZhjuq5mdQ8njXOuSbq0bCsJB55W9pRYM7kJPaHItNJ3IZBtJRfHNpsToUytYAVY2jVETCbIyzfaenuPXIWs9SPBPxs4p94soRRBZfqisPr9QqEM/x4ZpiV2gvA4Pw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1uzeXP-0001QP-4w; Fri, 19 Sep 2025 19:04:47 +0200
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1uzeXK-0028ck-2G;
+	Fri, 19 Sep 2025 19:04:42 +0200
+Received: from pengutronix.de (ip-185-104-138-125.ptr.icomera.net [185.104.138.125])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id BB2044750C5;
+	Fri, 19 Sep 2025 17:04:40 +0000 (UTC)
+Date: Fri, 19 Sep 2025 19:04:39 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Vincent Mailhol <mailhol@kernel.org>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
+	Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>, Akshay Bhat <akshay.bhat@timesys.com>, 
+	Wolfgang Grandegger <wg@grandegger.com>, Chen-Yu Tsai <wens@csie.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
+	Maxime Ripard <mripard@kernel.org>, Gerhard Bertelsmann <info@gerhard-bertelsmann.de>, 
+	Yasushi SHOJI <yashi@spacecubics.com>, 
+	Remigiusz =?utf-8?B?S2/FgsWCxIV0YWo=?= <remigiusz.kollataj@mobica.com>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH 0/4] can: populate ndo_change_mtu() to prevent buffer
+ overflow
+Message-ID: <20250919-portable-rat-of-dew-32b5e9-mkl@pengutronix.de>
+References: <20250918-can-fix-mtu-v1-0-0d1cada9393b@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="idh7qp6reuygcmse"
+Content-Disposition: inline
+In-Reply-To: <20250918-can-fix-mtu-v1-0-0d1cada9393b@kernel.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
 
-Explicitly uses a 64-bit constant when the number of bits used for its
-shifting is 32 (which is the case for PC CAN FD interfaces supported by
-this driver).
+--idh7qp6reuygcmse
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 0/4] can: populate ndo_change_mtu() to prevent buffer
+ overflow
+MIME-Version: 1.0
 
-Signed-off-by: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
----
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On 18.09.2025 18:00:23, Vincent Mailhol wrote:
+> Four drivers, namely etas_es58x, hi311x, sun4i_can and mcba_usb forgot
+> to populate their net_device_ops->ndo_change_mtu(). Because of that,
+> the user is free to configure any MTU on these interfaces.
+>=20
+> This can be abused by an attacker who could craft some skbs and send
+> them through PF_PACKET to perform a buffer overflow of up to 247 bytes
+> in each of these drivers.
+>=20
+> This series contains four patches, one for each of the drivers, to add
+> the missing ndo_change_mtu() callback. The descriptions contain
+> detailed explanations of how the buffer overflow could be triggered.
+>=20
+> Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index 5a207c96383f..3fb9bd729959 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -111,7 +111,8 @@ void peak_usb_update_ts_now(struct peak_time_ref *time_ref, u32 ts_now)
- 		u64 delta_ts = time_ref->ts_dev_2 - time_ref->ts_dev_1;
- 
- 		if (time_ref->ts_dev_2 < time_ref->ts_dev_1)
--			delta_ts &= (1UL << time_ref->adapter->ts_used_bits) - 1;
-+			delta_ts &=
-+				(1ULL << time_ref->adapter->ts_used_bits) - 1;
- 
- 		time_ref->ts_total += delta_ts;
- 	}
--- 
-2.43.0
+Added to linux-can.
 
+Thanks,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--idh7qp6reuygcmse
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEn/sM2K9nqF/8FWzzDHRl3/mQkZwFAmjNjSQACgkQDHRl3/mQ
+kZybWwf/dkqGg8VI+ORuB/Iv9jFds/SZ0a+AmPu0ZAlenrV4u1OLUBbd2avtEd+T
+KaYO6CuAzlpTZP6vx6S3XQ1M0qy4Z5EtQbgbrVETQ/Z6ZN106WXaOj7iYrGkWc4V
+CvSbll8GBD2cP0qQrR+2DAV27Z7UHty6U1qOfqb8y0afoeqh1Bhq3ODivlAtejuE
+azZd1kmiX5HdWUD2d7GQBiAZ6cBDWH70C5oMYaH7J9kiCiHKt4yqL1R1o2tlc6n7
+WN3xrUIERmq9aM9x7Dh2+67tnEnfZdL10uFxUIq6Z9USZR8hn/oEI/2lOk5Fd3ZK
+inQU0iQq8JWngpplUukaDeiKO/EitA==
+=2zvn
+-----END PGP SIGNATURE-----
+
+--idh7qp6reuygcmse--
