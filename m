@@ -1,96 +1,123 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail-m3271.qiye.163.com (mail-m3271.qiye.163.com [220.197.32.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 086DE27F01E;
-	Mon, 22 Sep 2025 11:14:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF53223E32D;
+	Mon, 22 Sep 2025 11:51:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.32.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758539659; cv=none; b=iC7/jIJCfnarAaXSioxPe5Es9mWUL23cxSpXLDh5cZT1XQZrenuTO3sVM28kY+0alovk0FYOUcsopVB3ZrWHfRHMb8aTU8PcmpPo3fmp+N/9onQEcrA86eWtKS/vRQRTApAckAsg3NQUuDmxhcLDxE+EVk2qu4ZvwATJxVBvRx0=
+	t=1758541919; cv=none; b=PZdOt4xsQHx20IneGMKLPspbBwMWOZjxouGfVIkMjoOO6ZsRhlPG8lkj+sTPJ81XNh21B4SAnpGoW3AzF/n4vLnvSPltH4DYRy/VNZrHz/GJHhEVTVtI2cjHtGmuyrcwZrEoP1gf8GrtkrGl1XPpHeWYluJloqZlnl8kUrs29xQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758539659; c=relaxed/simple;
-	bh=u4tcI81GpcDXlkJJb8q7UShzugaBkMQGQXAKdJvurIc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IGMng4Hi6T3sYYMrnsiwh46XizeKNLFImFPeA0tBWsp14MpPMJZReBGpxgUwugHpKfxMO8KSi6kv971pQnv1aJWjoZHuOSh+0wQyp3kuuFn3xeB6Tj4MKd7FQ0AQ5o1uoeNS1ktkqZh5Fp+v0ngD4JOcqnMfzjgsUyh0zhshY9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cHYFlIrJ; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1758541919; c=relaxed/simple;
+	bh=jGUYp96OUiZR0rWQVpSSIEGvho1XxUO+BLPXG5l9y3A=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jKYOpdSJO/ucdO75bfTWP3A2xXccbjMUPdV1z5MtrQDmLdD7I7xw/w9+gH09jTxFvezNo7Pj3Y9KbLkfE+hR98nIjTs1gMxvb4V7kmpYqpYh7g81j9Wt7nvksORThiE8m3rkRcjfoJzmp8dxWYA27roKenv0KvpwH4kkEIHtbZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=KE7Rv2CE; arc=none smtp.client-ip=220.197.32.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cHYFlIrJ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B76B3C4CEF7;
-	Mon, 22 Sep 2025 11:14:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758539658;
-	bh=u4tcI81GpcDXlkJJb8q7UShzugaBkMQGQXAKdJvurIc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=cHYFlIrJqsbCeX1YcOiVlvJlpup/OFc7Mwy1a9koofui6zy9bE6MzhAYaD5F+v9RV
-	 0mLP1oHoS9tAk4N8/h2rKUS9TYiGmfC5WCuHRuc8HPGVZfh2cRVRUbEGPGWjn0gG7O
-	 cEFy5Ux8DdMPoUdn6OBODFTN+6yKub+JUfjub05vOhvwKtjnWp7iJvYs3RKOXe18y1
-	 St1cv4OLCAC+FGm7OW1L/PhZ+M463TPkf5wR7uTRhW6D4EI5fVE44h+2lc2DQElB6C
-	 FELH5BzMq8UEG3gN+73u3VQsmVw5HxwNIutI+RktfK/7uu/U0cfBKDeOZQbWsX8Om7
-	 us/ka+PlqXlSg==
-Message-ID: <9cfdcf56-2f47-4cfd-9fd6-2c6fa4476752@kernel.org>
-Date: Mon, 22 Sep 2025 20:14:16 +0900
+	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="KE7Rv2CE"
+Received: from rockchip.. (unknown [58.22.7.114])
+	by smtp.qiye.163.com (Hmail) with ESMTP id 239b62a99;
+	Mon, 22 Sep 2025 15:15:45 +0800 (GMT+08:00)
+From: Elaine Zhang <zhangqing@rock-chips.com>
+To: zhangqing@rock-chips.com,
+	mkl@pengutronix.de,
+	kernel@pengutronix.de,
+	mailhol.vincent@wanadoo.fr,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	heiko@sntech.de,
+	cl@rock-chips.com,
+	kever.yang@rock-chips.com
+Cc: linux-can@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH v7 0/4] rockchip: add can for RK3576 Soc
+Date: Mon, 22 Sep 2025 15:15:39 +0800
+Message-Id: <20250922071543.73923-1-zhangqing@rock-chips.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 07/20] can: netlink: refactor
- CAN_CTRLMODE_TDC_{AUTO,MANUAL} flag reset logic
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
- =?UTF-8?Q?St=C3=A9phane_Grosjean?= <stephane.grosjean@hms-networks.com>,
- Robert Nawrath <mbro1689@gmail.com>, Minh Le <minh.le.aj@renesas.com>,
- Duy Nguyen <duy.nguyen.rh@renesas.com>, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250910-canxl-netlink-prep-v2-0-f128d4083721@kernel.org>
- <20250910-canxl-netlink-prep-v2-7-f128d4083721@kernel.org>
- <f9854748-78c1-4852-a610-e839e9c91df3@kernel.org>
- <20250922-amber-spider-of-control-90be7c-mkl@pengutronix.de>
-Content-Language: en-US
-From: Vincent Mailhol <mailhol@kernel.org>
-Autocrypt: addr=mailhol@kernel.org; keydata=
- xjMEZluomRYJKwYBBAHaRw8BAQdAf+/PnQvy9LCWNSJLbhc+AOUsR2cNVonvxhDk/KcW7FvN
- JFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbEBrZXJuZWwub3JnPsKZBBMWCgBBFiEE7Y9wBXTm
- fyDldOjiq1/riG27mcIFAmdfB/kCGwMFCQp/CJcFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcC
- F4AACgkQq1/riG27mcKBHgEAygbvORJOfMHGlq5lQhZkDnaUXbpZhxirxkAHwTypHr4A/joI
- 2wLjgTCm5I2Z3zB8hqJu+OeFPXZFWGTuk0e2wT4JzjgEZx4y8xIKKwYBBAGXVQEFAQEHQJrb
- YZzu0JG5w8gxE6EtQe6LmxKMqP6EyR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDl
- dOjiq1/riG27mcIFAmceMvMCGwwFCQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8V
- zsZwr/S44HCzcz5+jkxnVVQ5LZ4BANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
-In-Reply-To: <20250922-amber-spider-of-control-90be7c-mkl@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-HM-Tid: 0a9970474f0903a3kunm864fae2f2315c8
+X-HM-MType: 1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGkNNTVZMSB1KTkMYGRpPGh1WFRQJFh
+	oXVRMBExYaEhckFA4PWVdZGBILWUFZTkNVSUlVTFVKSk9ZV1kWGg8SFR0UWUFZT0tIVUpLSU9PT0
+	hVSktLVUpCS0tZBg++
+DKIM-Signature: a=rsa-sha256;
+	b=KE7Rv2CE+ZXC/KBCM4fcVt3eygVCR275X14zH9jCE3LBjvNIH1+Z+VnJp4NBuEx5nqV7loP2/xFcQEC09+AopRbniEd2Fe3cEHBsg5a12U/53Yt7KwR2aSZ6/Jrme0a5aQaB1G8wge7jsgPE9J8gU8GiEmhUUwLHuMAto7k/RUo=; c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
+	bh=LfXJiKVd7yQ24BTS+n3MbyE5ZCs02XLEVPDFXxi839A=;
+	h=date:mime-version:subject:message-id:from;
 
-On 22/09/2025 at 18:43, Marc Kleine-Budde wrote:
-> On 20.09.2025 16:24:42, Vincent Mailhol wrote:
+rk3576 can is a new controller,new register layout and Bit position
+definition:
+Support CAN and CANFD protocol.
+Support Dma.
 
-(...)
+There are major differences from the previous rk3568.
+All errata on the rk3568 have been fixed and redesigned.
 
->> @Marc, do you think you can send your next PR to net soonish?
->>
->> I would like to rebase this series and the "rework the CAN MTU logic" series on
->> top of the MTU fix:
->>
->> https://lore.kernel.org/linux-can/20250918-can-fix-mtu-v1-0-0d1cada9393b@kernel.org/
->>
->> But to do so, I first need to wait for the MTU fix to appear on net-next and
->> there is not so much time left before the end of the development windows.
-> 
-> This series looks fine to me. After -rc1, please check for any
-> ndo_change_mtu, because the Nuvoton CAN-FD driver will go mainline, but
-> not via the net-next tree.
+Change in V7:
+[PATCH v7 1/4]: Correction format warning.
+[PATCH v7 2/4]: No change.
+[PATCH v7 3/4]: Correct the writing of some registers and
+		correct the annotations.
+[PATCH v7 4/4]: Optimize the structure parameters and
+		ensure error handling.
 
-Thanks for the head-up!
+Change in V6:
+[PATCH v6 1/4]: Fix dma is support only for rk3576.
+[PATCH v6 2/4]: Fix the compilation warning.
+[PATCH v6 3/4]: Fix the compilation warning.
+[PATCH v6 4/4]: Fix the compilation warning.
 
-At the moment, that driver is in Lee's tree, so I was thinking of directly
-preparing the fix patch and sending it to the netdev team and Lee so that both
-are aware of the upcoming conflict.
-
-I will resend my two series in the next few days as soon as the MTU fix appears
-in net-next.
+Change in V5:
+[PATCH v5 1/4]: Add rk3576 canfd to rockchip,rk3568v2-canfd.yaml, remove
+                rockchip,rk3576-canfd.yaml
+[PATCH v5 2/4]: Encapsulate some hardware operation functions into
+                rkcanfd_devtype_data to provide differentiated
+                implementations for different models
+                (such as RK3568v2/v3)..
+[PATCH v5 3/4]: Add rk3576 canfd,fix the register naming rule,
+                Delete the variables used by rockchip itself.
+[PATCH v5 4/4]: Fix .h sorting.
 
 
-Yours sincerely,
-Vincent Mailhol
+Change in V4:
+[PATCH v4 1/3]: Correct the format and add explanations.
+[PATCH v4 2/3]: No change.
+[PATCH v4 3/3]: No change.
+
+Change in V3:
+[PATCH v3 1/3]: Add documentation for the rk3576 CAN-FD.
+[PATCH v3 2/3]: Adjust the differentiated code section and
+                add dma function.
+[PATCH v3 3/3]: Remove dma, no use dma by default.
+
+Change in V2:
+[PATCH v2 1/2]: remove rk3576_canfd.c, use the rockchip_canfd driver
+[PATCH v2 2/2]: code style.
+
+Elaine Zhang (4):
+  dt-bindings: can: rockchip_canfd: add rk3576 CAN-FD controller
+  net: can: rockchip: Refactor the rkcanfd_devtype_data structure
+  net: can: rockchip: add can for RK3576 Soc
+  net: can: rockchip: support dma for rk3576 rx
+
+ .../net/can/rockchip,rk3568v2-canfd.yaml      |  47 +-
+ .../net/can/rockchip/rockchip_canfd-core.c    | 586 ++++++++++++++++--
+ drivers/net/can/rockchip/rockchip_canfd-rx.c  | 212 +++++++
+ drivers/net/can/rockchip/rockchip_canfd-tx.c  |  20 +
+ drivers/net/can/rockchip/rockchip_canfd.h     | 278 +++++++++
+ 5 files changed, 1095 insertions(+), 48 deletions(-)
+
+-- 
+2.34.1
 
