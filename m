@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 542E23164DF
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5436C3168E0
 	for <linux-can@vger.kernel.org>; Tue, 23 Sep 2025 07:42:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758613379; cv=none; b=XmqXUKp0kolLe7z+blPMlZ3ei272q8OJFSjSjkSN/ZPehD00b3iH/CDRwEJJI9yo+sFgyEAf6Jgt1fZoVtzr5Vr4iuy18cTXTj22IHp1Z73huasA7HHOnM4X7d0Ls+fwV21in70mr5RhnoJMKnm3UcZufpUQmDVdur6YV/XH4DE=
+	t=1758613380; cv=none; b=NoqB/XluK+ykc5rS5M0/fnzFMk5FKPihH+EGfyCvMW8q7CD58koXddXQBbUk50tYxtea8vJWJCmieXj9xt8PPQBrbK20Ec8WxOsBSCi3HPab44OsCImD4TG/rutFCKIYTVKGi3T7TmQ2WvEhiVtMhf9UZUfO39kpobuCTZnCngk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758613379; c=relaxed/simple;
-	bh=JIG2NDbyW90FLXDCM1OZ0h2svt80a7v9EhkWqGRs5/U=;
+	s=arc-20240116; t=1758613380; c=relaxed/simple;
+	bh=3m9eC7t0D0zlyp+Qb62ggaSqoqeHcwSN8r6+vJRKhAI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aFGc456wn4MejfRlwatkv7UMxLlJQhcr0dIoNCtI7+V5QWvUg4i2Hr0a9NBzxjOFQqytwJDRQ5y4nQubU0XTkrJEJa3O6aAhxz8V+V2XiQpiXhlp7heX2ReEZj0tnXdTRzlgSv8UJ3PBR55PPV+gl8NesxSHSrjKnXijgjhXrk4=
+	 MIME-Version; b=bu2lR5ymSNr+gxhyViO4hYiALHdkh9QEKdgmhgS0Cu2Fv/y/q5shB6WZTfCQs6gHLWKBss885m9Qd/eY3MVoI09coTZ6E8fmuwSNmK6mbC6e5LdHkZV2QobAeNqoccWwFsmqmGgxpa0odfGXeKIFhDqs6UbSVfnyf3Ne06qbqU8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,20 +18,20 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v0xfg-0003co-QX; Tue, 23 Sep 2025 09:42:44 +0200
+	id 1v0xfg-0003cf-QX; Tue, 23 Sep 2025 09:42:44 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v0xfg-0003Nj-0M;
-	Tue, 23 Sep 2025 09:42:44 +0200
+	id 1v0xff-0003NR-2D;
+	Tue, 23 Sep 2025 09:42:43 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id E3C29477A89;
-	Tue, 23 Sep 2025 07:34:31 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 19A40477A8D;
+	Tue, 23 Sep 2025 07:34:32 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -40,9 +40,9 @@ Cc: davem@davemloft.net,
 	kernel@pengutronix.de,
 	Vincent Mailhol <mailhol@kernel.org>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 4/7] can: hi311x: populate ndo_change_mtu() to prevent buffer overflow
-Date: Tue, 23 Sep 2025 09:32:50 +0200
-Message-ID: <20250923073427.493034-5-mkl@pengutronix.de>
+Subject: [PATCH net 6/7] can: mcba_usb: populate ndo_change_mtu() to prevent buffer overflow
+Date: Tue, 23 Sep 2025 09:32:52 +0200
+Message-ID: <20250923073427.493034-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250923073427.493034-1-mkl@pengutronix.de>
 References: <20250923073427.493034-1-mkl@pengutronix.de>
@@ -65,7 +65,7 @@ directly reach the xmit() function of a CAN driver. The only check
 which is performed by the PF_PACKET framework is to make sure that
 skb->len fits the interface's MTU.
 
-Unfortunately, because the sun4i_can driver does not populate its
+Unfortunately, because the mcba_usb driver does not populate its
 net_device_ops->ndo_change_mtu(), it is possible for an attacker to
 configure an invalid MTU by doing, for example:
 
@@ -92,46 +92,44 @@ malicious packet is able to go through can_dev_dropped_skb() checks:
 
   2. the length is a valid CAN XL length.
 
-And so, hi3110_hard_start_xmit() receives a CAN XL frame which it is
-not able to correctly handle and will thus misinterpret it as a CAN
-frame. The driver will consume frame->len as-is with no further
-checks.
+And so, mcba_usb_start_xmit() receives a CAN XL frame which it is not
+able to correctly handle and will thus misinterpret it as a CAN frame.
 
-This can result in a buffer overflow later on in hi3110_hw_tx() on
-this line:
+This can result in a buffer overflow. The driver will consume cf->len
+as-is with no further checks on these lines:
 
-	memcpy(buf + HI3110_FIFO_EXT_DATA_OFF,
-	       frame->data, frame->len);
+	usb_msg.dlc = cf->len;
 
-Here, frame->len corresponds to the flags field of the CAN XL frame.
-In our previous example, we set canxl_frame->flags to 0xff. Because
-the maximum expected length is 8, a buffer overflow of 247 bytes
-occurs!
+	memcpy(usb_msg.data, cf->data, usb_msg.dlc);
+
+Here, cf->len corresponds to the flags field of the CAN XL frame. In
+our previous example, we set canxl_frame->flags to 0xff. Because the
+maximum expected length is 8, a buffer overflow of 247 bytes occurs!
 
 Populate net_device_ops->ndo_change_mtu() to ensure that the
 interface's MTU can not be set to anything bigger than CAN_MTU. By
 fixing the root cause, this prevents the buffer overflow.
 
-Fixes: 57e83fb9b746 ("can: hi311x: Add Holt HI-311x CAN driver")
+Fixes: 51f3baad7de9 ("can: mcba_usb: Add support for Microchip CAN BUS Analyzer")
 Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
-Link: https://patch.msgid.link/20250918-can-fix-mtu-v1-2-0d1cada9393b@kernel.org
+Link: https://patch.msgid.link/20250918-can-fix-mtu-v1-4-0d1cada9393b@kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/hi311x.c | 1 +
+ drivers/net/can/usb/mcba_usb.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
-index 96bef8f384c4..963ea8510dd9 100644
---- a/drivers/net/can/spi/hi311x.c
-+++ b/drivers/net/can/spi/hi311x.c
-@@ -799,6 +799,7 @@ static const struct net_device_ops hi3110_netdev_ops = {
- 	.ndo_open = hi3110_open,
- 	.ndo_stop = hi3110_stop,
- 	.ndo_start_xmit = hi3110_hard_start_xmit,
+diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
+index 41c0a1c399bf..1f9b915094e6 100644
+--- a/drivers/net/can/usb/mcba_usb.c
++++ b/drivers/net/can/usb/mcba_usb.c
+@@ -761,6 +761,7 @@ static const struct net_device_ops mcba_netdev_ops = {
+ 	.ndo_open = mcba_usb_open,
+ 	.ndo_stop = mcba_usb_close,
+ 	.ndo_start_xmit = mcba_usb_start_xmit,
 +	.ndo_change_mtu = can_change_mtu,
  };
  
- static const struct ethtool_ops hi3110_ethtool_ops = {
+ static const struct ethtool_ops mcba_ethtool_ops = {
 -- 
 2.51.0
 
