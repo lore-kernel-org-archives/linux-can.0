@@ -1,110 +1,108 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEAC12745E
-	for <linux-can@vger.kernel.org>; Tue, 23 Sep 2025 09:18:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24169320A10;
+	Tue, 23 Sep 2025 09:36:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758619119; cv=none; b=NJqnBCZPh33165djmfe80z6bw1WI1p9GX0zLyLlFz3a2uSv++Blyo8H+lBCjQTnQ6wQJWUOPKC1ex8Ac3ArR8m91aONdmJmKfoeaQgNKkWQi+evY+UH5bphS4+OO21HKoI5sxZ9N/EUWwoOSFk0EYCQMbNXbPje4Gp7Q8tmQrG0=
+	t=1758620204; cv=none; b=CQ5XRsiTc15rNma8ha83j4MAz1P5FJt+pJ2oZiYt6ENHMnL1jaMiFspsvzc0G5OgTT4onNV5S4+nfkSfPQczJGeZdhneYpx1y39NqDKwJagMrkjc9BL6YDk8hhg0Qf4eSEfqNVWJ3jZd63RoZO+qn7MvaH0LIQLfWBjeJs7agak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758619119; c=relaxed/simple;
-	bh=q6vViRSlfIttEHpbJ08wgxm1w4flYky5nmoyGpoOhAU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=KhV4+7qQ4wkxEgML7GIkD5W3jEBzaCSXbNSjhCs1pqFo3Rn+rBsythNQJn1LslQHieTxjV15Twzb/z7mzSOvnqGoZMjPq44mwZyBG2zdfISwYcTD+JtOEFYVvWvhSgw6QXqproVIbFZ+FcO9ZMImP70u2cypPxMIyKX6C8GefWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1v0z9e-0006XY-2d; Tue, 23 Sep 2025 11:17:46 +0200
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1v0z9c-0004AH-1q;
-	Tue, 23 Sep 2025 11:17:44 +0200
-Received: from hardanger.blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 37910477C03;
-	Tue, 23 Sep 2025 09:17:44 +0000 (UTC)
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Tue, 23 Sep 2025 11:17:14 +0200
-Subject: [PATCH v3 1/6] can: m_can: m_can_plat_remove(): add missing
- pm_runtime_disable()
+	s=arc-20240116; t=1758620204; c=relaxed/simple;
+	bh=e8XU199UYL7i9jjXvBMXYaDGxB2cTsLVSLpPL9wMVoU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=idNPRk8MGREC+/1YZAWUpj/67BHcs0SU2soD/t2FLNMXO4QTfBj0utymnUmPCc+8p6DEP1P3fNP+D2pck12E1Yt5QG5PKMrTL1ArLUNHwtZ3L8do2RJY7q9ImXcgws8H5BPqfKZI5foWfdP0aHAiEoslgigH0b3r3K1bAFjnYKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t7V9y+Ic; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t7V9y+Ic"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D552EC116B1;
+	Tue, 23 Sep 2025 09:36:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758620204;
+	bh=e8XU199UYL7i9jjXvBMXYaDGxB2cTsLVSLpPL9wMVoU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=t7V9y+Icc/EBZ1dYb92mcrp9FObovYjl0ahkmEPqliHtpRY06Z7qEH4Krrv+yYOKV
+	 Nq/2kyx4QRTHszTBHLHL34DSjkHAxJmVI6ld0h2p5IFPaYvZXlqwFud3r5yIZU2MOo
+	 aERhnmAZ/SmV8hLm2WRrEq3omolQOXcl2f6Jb1E9j7rf4+2iiMS8YerCCPcTPyxFKK
+	 jpYThqqPP7FoigeqWY+MRfZYTdoNZ9Co7xAT7bifCQO+8cyklEPI1KDACRQT3YSFuq
+	 ltwmpngqZeNmg1JMBrJiKa39fQoYxzLqqCe6wsY66Xr13Hd847B9jcDm8rnm9IxoQZ
+	 ZuAmFA2c3bVPQ==
+Message-ID: <062cee74-2223-4814-bc23-647a2291aa45@kernel.org>
+Date: Tue, 23 Sep 2025 18:36:41 +0900
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 07/20] can: netlink: refactor
+ CAN_CTRLMODE_TDC_{AUTO,MANUAL} flag reset logic
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
+ =?UTF-8?Q?St=C3=A9phane_Grosjean?= <stephane.grosjean@hms-networks.com>,
+ Robert Nawrath <mbro1689@gmail.com>, Minh Le <minh.le.aj@renesas.com>,
+ Duy Nguyen <duy.nguyen.rh@renesas.com>, linux-can@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20250910-canxl-netlink-prep-v2-0-f128d4083721@kernel.org>
+ <20250910-canxl-netlink-prep-v2-7-f128d4083721@kernel.org>
+ <f9854748-78c1-4852-a610-e839e9c91df3@kernel.org>
+ <20250922-amber-spider-of-control-90be7c-mkl@pengutronix.de>
+ <9cfdcf56-2f47-4cfd-9fd6-2c6fa4476752@kernel.org>
+ <20250922-rational-mastodon-of-sufficiency-6b49f1-mkl@pengutronix.de>
+ <2528d3d7-2807-4ef6-8269-5e20de57cc41@kernel.org>
+ <20250923-bald-indigo-coati-2c3613-mkl@pengutronix.de>
+Content-Language: en-US
+From: Vincent Mailhol <mailhol@kernel.org>
+Autocrypt: addr=mailhol@kernel.org; keydata=
+ xjMEZluomRYJKwYBBAHaRw8BAQdAf+/PnQvy9LCWNSJLbhc+AOUsR2cNVonvxhDk/KcW7FvN
+ JFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbEBrZXJuZWwub3JnPsKZBBMWCgBBFiEE7Y9wBXTm
+ fyDldOjiq1/riG27mcIFAmdfB/kCGwMFCQp/CJcFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcC
+ F4AACgkQq1/riG27mcKBHgEAygbvORJOfMHGlq5lQhZkDnaUXbpZhxirxkAHwTypHr4A/joI
+ 2wLjgTCm5I2Z3zB8hqJu+OeFPXZFWGTuk0e2wT4JzjgEZx4y8xIKKwYBBAGXVQEFAQEHQJrb
+ YZzu0JG5w8gxE6EtQe6LmxKMqP6EyR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDl
+ dOjiq1/riG27mcIFAmceMvMCGwwFCQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8V
+ zsZwr/S44HCzcz5+jkxnVVQ5LZ4BANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
+In-Reply-To: <20250923-bald-indigo-coati-2c3613-mkl@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250923-m_can-fix-state-handling-v3-1-06d8baccadbf@pengutronix.de>
-References: <20250923-m_can-fix-state-handling-v3-0-06d8baccadbf@pengutronix.de>
-In-Reply-To: <20250923-m_can-fix-state-handling-v3-0-06d8baccadbf@pengutronix.de>
-To: Chandrasekar Ramakrishnan <rcsekar@samsung.com>, 
- Vincent Mailhol <mailhol@kernel.org>, 
- Patrik Flykt <patrik.flykt@linux.intel.com>, 
- Dong Aisheng <b29396@freescale.com>, Varka Bhadram <varkabhadram@gmail.com>, 
- Wu Bo <wubo.oduw@gmail.com>, Markus Schneider-Pargmann <msp@baylibre.com>, 
- Philipp Zabel <p.zabel@pengutronix.de>
-Cc: linux-can@vger.kernel.org, kernel@pengutronix.de, 
- Marc Kleine-Budde <mkl@pengutronix.de>
-X-Mailer: b4 0.15-dev-e44bb
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1296; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=q6vViRSlfIttEHpbJ08wgxm1w4flYky5nmoyGpoOhAU=;
- b=owEBbQGS/pANAwAKAQx0Zd/5kJGcAcsmYgBo0mWsMnOweCE9ScR3z9LWmW1AxxNxs+39OSBqc
- fl3O733+E6JATMEAAEKAB0WIQSf+wzYr2eoX/wVbPMMdGXf+ZCRnAUCaNJlrAAKCRAMdGXf+ZCR
- nGSTCACTTjrIJp5HBeubVzq1dRU/yUGV/hlWOBJ3P3PsOXLC3V7EoDyeFIeGR/Pj3AdcvruaDwF
- 2JXMLRE71srWOLS3zidm9Tkry/zu+YZ4RzbGZmgo6otVmRqaivg26MhOYd1GyNeQeEjOBB/Ze1U
- SCIMETmr1t5qdU0zXK+Awtf+zdLzGlUHxARYIuRQZusP3o5R2kuYXkBhJwvVCSbuOrPvgLn8sCP
- I7UEkpE1Eo/IdfMVr6SqMHcfEXJCYRVxjViuBJdQRxB81g12u/jR9pCUrtbo/qJxHy3dLmS24Fw
- a4G7n+hTxa41XfcWwgdCLzM6GISFSCX6kQhJxicEcV4Ye0u2
-X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
- fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Commit 227619c3ff7c ("can: m_can: move runtime PM enable/disable to
-m_can_platform") moved the PM runtime enable from the m_can core
-driver into the m_can_platform.
+On 23/09/2025 at 18:08, Marc Kleine-Budde wrote:
+> On 23.09.2025 16:04:41, Vincent Mailhol wrote:
+>>>> I will resend my two series in the next few days as soon as the MTU fix appears
+>>>> in net-next.
+>>>
+>>> I don't know how much time we have between the merge of net into
+>>> net-next and the acceptance of the last PR by the network team for the
+>>> next merge window. We will see.
+>>
+>> With the pull request to net/main being delayed, I decided to finally remove the
+>> patch which was in conflict and send the rest:
+>>
+>> https://lore.kernel.org/linux-can/20250923-can-fix-mtu-v3-0-581bde113f52@kernel.org/
+>>
+>> and:
+>>
+>> https://lore.kernel.org/linux-can/20250923-canxl-netlink-prep-v4-0-e720d28f66fe@kernel.org/
+>>
+>> These are my last two series for this development window (to be applied in order).
+>>
+>> Also, sorry for the noise when sending those twice.
+> 
+> I've merged both series to linux-can-next. Thanks. b4 was a bit
+> confused, it took the canxl-netlink-prep when asked to merge the
+> can-fix-mtu series and it added the prerequisite patches when merging
+> canxl-netlink-prep on top of can-fix-mtu.
 
-That patch forgot to move the pm_runtime_disable() to
-m_can_plat_remove(), so that unloading the m_can_platform driver
-causes an "Unbalanced pm_runtime_enable!" error message.
+Yeh, I also had a lot of trouble on my side as you could see. This is the first
+time I deal with such a complex series, at least, I am happy it is now merge.
 
-Add the missing pm_runtime_disable() to m_can_plat_remove() to fix the
-problem.
+> My next net-next PR is prepared as linux-can-next-for-6.18-20250923. Can
+> you check if I took the correct patches?
 
-Cc: Patrik Flykt <patrik.flykt@linux.intel.com>
-Fixes: 227619c3ff7c ("can: m_can: move runtime PM enable/disable to m_can_platform")
-Reviewed-by: Markus Schneider-Pargmann <msp@baylibre.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/m_can/m_can_platform.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I just checked, everything is there and my WIP CAN XL patches rebase nicely on
+top. All good, thanks!
 
-diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
-index b832566efda0..057eaa7b8b4b 100644
---- a/drivers/net/can/m_can/m_can_platform.c
-+++ b/drivers/net/can/m_can/m_can_platform.c
-@@ -180,7 +180,7 @@ static void m_can_plat_remove(struct platform_device *pdev)
- 	struct m_can_classdev *mcan_class = &priv->cdev;
- 
- 	m_can_class_unregister(mcan_class);
--
-+	pm_runtime_disable(mcan_class->dev);
- 	m_can_class_free_dev(mcan_class->net);
- }
- 
 
--- 
-2.51.0
+Yours sincerely,
+Vincent Mailhol
 
