@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 162932F39B9
-	for <linux-can@vger.kernel.org>; Tue, 23 Sep 2025 09:18:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9506258CF9
+	for <linux-can@vger.kernel.org>; Tue, 23 Sep 2025 09:18:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758619095; cv=none; b=oApsUiU7ITx3sI0EoJlWBU/DeeEhR4iVWHtxg7IkMFrga81HR9CQFAd3AIRbtzdHSrB+A5eBE0H/WgXu/Fr0vAhi5ruEg5XnpRKRv0wocDNfIxhdQJdnaZ7R8Zc1A/NVmZX0WKhojWfi9isDKEevAKYX5DzvF6f7d49FnZCxJBE=
+	t=1758619107; cv=none; b=SRm+/WxRhaUxwP72SGju0TMfmHkEfs3Tsg3gYaSRmMrqv1urdCgLXw3Ni9Fth62dCxf+9Ciy5AWmEVGCfXZKCldFDh3vgkW20pZlZgQvWQSJ7lEwm3hhXuqVLcyxhOkIUDrwz2pBrg/zKZuiMIP9UHPCPQdDzTBZjW6oT06uCkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758619095; c=relaxed/simple;
-	bh=5tnChyATOAZ6OPBt2M66f923GtK0q6/Pk9o3HKF/uDQ=;
+	s=arc-20240116; t=1758619107; c=relaxed/simple;
+	bh=I2XWrrITpsABRWcOX4HPQ5WhyP/KhZxK8Qu44NBDObI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Fz3e8QI776kzjlv5gzAC1dP/AfV3KGcYr8btNWcu7NL7YPaAJI/m+OiroLUeuK6iCdi5m9HDm+1cjZhk9jqjNTB609p3O14rm/or9zyur9bm1ViEpr90lCc4GJjZTPqQeZ4WzQ2GlqBtm+lAv3ZsHDQfW5/snNdnBsC1U9QrN5A=
+	 In-Reply-To:To:Cc; b=Roy0TaIXkaMQBjDpCxJHdvxXYlfM4XNoYnoa2oRh16Arq7Md/YIIGVx8GcGamcvJZGvMu9slEZzljTwa8wXDKwNGaNnGtaCu2LJShwMPL9KnhPYjBEt+ZsRl4K4wnEv9+qHk8qQsFsUFYVzYmxN0zCu6WKnHagtfTtXf3N2M/8k=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,24 +18,23 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v0z9e-0006XZ-2d; Tue, 23 Sep 2025 11:17:46 +0200
+	id 1v0z9e-0006Xd-2d; Tue, 23 Sep 2025 11:17:46 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v0z9c-0004AI-29;
+	id 1v0z9c-0004AQ-2k;
 	Tue, 23 Sep 2025 11:17:44 +0200
 Received: from hardanger.blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 48814477C04;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 91CE0477C08;
 	Tue, 23 Sep 2025 09:17:44 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Tue, 23 Sep 2025 11:17:15 +0200
-Subject: [PATCH v3 2/6] can: m_can: m_can_handle_state_errors(): fix CAN
- state transition to Error Active
+Date: Tue, 23 Sep 2025 11:17:19 +0200
+Subject: [PATCH v3 6/6] can: m_can: add optional support for reset
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -44,7 +43,7 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250923-m_can-fix-state-handling-v3-2-06d8baccadbf@pengutronix.de>
+Message-Id: <20250923-m_can-fix-state-handling-v3-6-06d8baccadbf@pengutronix.de>
 References: <20250923-m_can-fix-state-handling-v3-0-06d8baccadbf@pengutronix.de>
 In-Reply-To: <20250923-m_can-fix-state-handling-v3-0-06d8baccadbf@pengutronix.de>
 To: Chandrasekar Ramakrishnan <rcsekar@samsung.com>, 
@@ -56,15 +55,15 @@ To: Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
 Cc: linux-can@vger.kernel.org, kernel@pengutronix.de, 
  Marc Kleine-Budde <mkl@pengutronix.de>
 X-Mailer: b4 0.15-dev-e44bb
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3833; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=5tnChyATOAZ6OPBt2M66f923GtK0q6/Pk9o3HKF/uDQ=;
- b=owEBbQGS/pANAwAKAQx0Zd/5kJGcAcsmYgBo0mWuiLk0fW/09KaOI1L7o3PsNe5pjogOa3pz0
- onn6wIy2bWJATMEAAEKAB0WIQSf+wzYr2eoX/wVbPMMdGXf+ZCRnAUCaNJlrgAKCRAMdGXf+ZCR
- nCr9B/9G+Ec5EHoBaFazdu5yEOg24FpkZ/lHBJCI06U6T/16cYomCcviYqEmcQVMAWZKwRNO4ih
- cunqzY4f15yTkag6OX6wduTzfpnIZyzBcfLreqKhZ2SqLLgPksJoVVC4JvmrNd/6nuYlekfnpwj
- WbUbrHYlHi2zCxCMUEecyYWVVK9fgk6pwlas9h5aqzVGFLvC2ncIImbsPNGNsbvhLgKdcbnOfeT
- X7xaODQBaIaFLPPyKWtA62fWpEqktaWo8OCnlYt3DYfm4VwVE3MTft4/mWZ1l68kuTc5OufE9sz
- iElu7tSshxFRaR9hvDONweObGgHVOxsGAZV3rrJwjhFGpMoi
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3708; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=I2XWrrITpsABRWcOX4HPQ5WhyP/KhZxK8Qu44NBDObI=;
+ b=owEBbAGT/pANAwAKAQx0Zd/5kJGcAcsmYgBo0mW2Cx8E7vD2SbSFSP70uNJ4IZUx99dHadDgk
+ tbWQHV8NeyJATIEAAEKAB0WIQSf+wzYr2eoX/wVbPMMdGXf+ZCRnAUCaNJltgAKCRAMdGXf+ZCR
+ nEp/B/Y2zsV5LRXl0crc0OIFsWZT2drFFDAfxApLPpb6vnei1lOcz/1b7EHcDLag0VL7UjTiBvX
+ fiEEbSS/N9ZLCHpLxXbiuS3E9mpbYlb+Dta4ukt7wO/4uNi6GeOKJAxvvnc+/hZOgReBpoH8v9b
+ C57ri7fIN9R3qcPmRm9W4wBsPLnEwhB4lzkovxN2N3qvKlfgVKlAt7jbi8NLe+hKQJD3ajM3CUr
+ Uax+1FyRXE6GOReuQteGhEHdNkmGOuHh+G7t3htLRMN9dRDlPtVNj5x7gHazs/W3o5MtN+2EFUD
+ 45ZW7D2qI7n1YN3Z2ag/9khrPbSgJ8Ul0PZUKNeyn9NpeD8=
 X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
  fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -72,115 +71,128 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-The CAN Error State is determined by the receive and transmit error
-counters. The CAN error counters decrease when reception/transmission
-is successful, so that a status transition back to the Error Active
-status is possible. This transition is not handled by
-m_can_handle_state_errors().
+In some SoCs (observed on the STM32MP15) the M_CAN IP core keeps the
+CAN state and CAN error counters over an internal reset cycle. The
+STM32MP15 SoC provides an external reset, which is shared between both
+M_CAN cores.
 
-Add the missing detection of the Error Active state to
-m_can_handle_state_errors() and extend the handling of this state in
-m_can_handle_state_change().
+Add support for an optional external reset. Take care of shared
+resets, de-assert reset during the probe phase in
+m_can_class_register() and while the interface is up, assert the reset
+otherwise.
 
-Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
-Fixes: cd0d83eab2e0 ("can: m_can: m_can_handle_state_change(): fix state change")
-Reviewed-by: Markus Schneider-Pargmann <msp@baylibre.com>
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/m_can/m_can.c | 55 ++++++++++++++++++++++++++-----------------
- 1 file changed, 33 insertions(+), 22 deletions(-)
+ drivers/net/can/m_can/m_can.c | 27 ++++++++++++++++++++++++---
+ drivers/net/can/m_can/m_can.h |  1 +
+ 2 files changed, 25 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index fe74dbd2c966..4826b8dcad0f 100644
+index afbab6ca5833..e6c3b089c368 100644
 --- a/drivers/net/can/m_can/m_can.c
 +++ b/drivers/net/can/m_can/m_can.c
-@@ -812,6 +812,9 @@ static int m_can_handle_state_change(struct net_device *dev,
- 	u32 timestamp = 0;
+@@ -23,6 +23,7 @@
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
++#include <linux/reset.h>
  
- 	switch (new_state) {
-+	case CAN_STATE_ERROR_ACTIVE:
-+		cdev->can.state = CAN_STATE_ERROR_ACTIVE;
-+		break;
- 	case CAN_STATE_ERROR_WARNING:
- 		/* error warning state */
- 		cdev->can.can_stats.error_warning++;
-@@ -841,6 +844,12 @@ static int m_can_handle_state_change(struct net_device *dev,
- 	__m_can_get_berr_counter(dev, &bec);
+ #include "m_can.h"
  
- 	switch (new_state) {
-+	case CAN_STATE_ERROR_ACTIVE:
-+		cf->can_id |= CAN_ERR_CRTL | CAN_ERR_CNT;
-+		cf->data[1] = CAN_ERR_CRTL_ACTIVE;
-+		cf->data[6] = bec.txerr;
-+		cf->data[7] = bec.rxerr;
-+		break;
- 	case CAN_STATE_ERROR_WARNING:
- 		/* error warning state */
- 		cf->can_id |= CAN_ERR_CRTL | CAN_ERR_CNT;
-@@ -877,30 +886,33 @@ static int m_can_handle_state_change(struct net_device *dev,
- 	return 1;
- }
+@@ -1831,6 +1832,7 @@ static int m_can_close(struct net_device *dev)
  
--static int m_can_handle_state_errors(struct net_device *dev, u32 psr)
-+static enum can_state
-+m_can_state_get_by_psr(struct m_can_classdev *cdev)
-+{
-+	u32 reg_psr;
+ 	close_candev(dev);
+ 
++	reset_control_assert(cdev->rst);
+ 	m_can_clk_stop(cdev);
+ 	phy_power_off(cdev->transceiver);
+ 
+@@ -2073,11 +2075,15 @@ static int m_can_open(struct net_device *dev)
+ 	if (err)
+ 		goto out_phy_power_off;
+ 
++	err = reset_control_deassert(cdev->rst);
++	if (err)
++		goto exit_disable_clks;
 +
-+	reg_psr = m_can_read(cdev, M_CAN_PSR);
-+
-+	if (reg_psr & PSR_BO)
-+		return CAN_STATE_BUS_OFF;
-+	if (reg_psr & PSR_EP)
-+		return CAN_STATE_ERROR_PASSIVE;
-+	if (reg_psr & PSR_EW)
-+		return CAN_STATE_ERROR_WARNING;
-+
-+	return CAN_STATE_ERROR_ACTIVE;
-+}
-+
-+static int m_can_handle_state_errors(struct net_device *dev)
- {
- 	struct m_can_classdev *cdev = netdev_priv(dev);
--	int work_done = 0;
-+	enum can_state new_state;
- 
--	if (psr & PSR_EW && cdev->can.state != CAN_STATE_ERROR_WARNING) {
--		netdev_dbg(dev, "entered error warning state\n");
--		work_done += m_can_handle_state_change(dev,
--						       CAN_STATE_ERROR_WARNING);
--	}
-+	new_state = m_can_state_get_by_psr(cdev);
-+	if (new_state == cdev->can.state)
-+		return 0;
- 
--	if (psr & PSR_EP && cdev->can.state != CAN_STATE_ERROR_PASSIVE) {
--		netdev_dbg(dev, "entered error passive state\n");
--		work_done += m_can_handle_state_change(dev,
--						       CAN_STATE_ERROR_PASSIVE);
--	}
--
--	if (psr & PSR_BO && cdev->can.state != CAN_STATE_BUS_OFF) {
--		netdev_dbg(dev, "entered error bus off state\n");
--		work_done += m_can_handle_state_change(dev,
--						       CAN_STATE_BUS_OFF);
--	}
--
--	return work_done;
-+	return m_can_handle_state_change(dev, new_state);
- }
- 
- static void m_can_handle_other_err(struct net_device *dev, u32 irqstatus)
-@@ -1031,8 +1043,7 @@ static int m_can_rx_handler(struct net_device *dev, int quota, u32 irqstatus)
+ 	/* open the can device */
+ 	err = open_candev(dev);
+ 	if (err) {
+ 		netdev_err(dev, "failed to open can device\n");
+-		goto exit_disable_clks;
++		goto out_reset_control_assert;
  	}
  
- 	if (irqstatus & IR_ERR_STATE)
--		work_done += m_can_handle_state_errors(dev,
--						       m_can_read(cdev, M_CAN_PSR));
-+		work_done += m_can_handle_state_errors(dev);
+ 	if (cdev->is_peripheral)
+@@ -2133,6 +2139,8 @@ static int m_can_open(struct net_device *dev)
+ 	else
+ 		napi_disable(&cdev->napi);
+ 	close_candev(dev);
++out_reset_control_assert:
++	reset_control_assert(cdev->rst);
+ exit_disable_clks:
+ 	m_can_clk_stop(cdev);
+ out_phy_power_off:
+@@ -2423,15 +2431,24 @@ int m_can_class_register(struct m_can_classdev *cdev)
+ 		}
+ 	}
  
- 	if (irqstatus & IR_ERR_BUS_30X)
- 		work_done += m_can_handle_bus_errors(dev, irqstatus,
++	cdev->rst = devm_reset_control_get_optional_shared(cdev->dev, NULL);
++	if (IS_ERR(cdev->rst))
++		return dev_err_probe(cdev->dev, PTR_ERR(cdev->rst),
++				     "Failed to get reset line\n");
++
+ 	ret = m_can_clk_start(cdev);
+ 	if (ret)
+ 		return ret;
+ 
++	ret = reset_control_deassert(cdev->rst);
++	if (ret)
++		goto clk_disable;
++
+ 	if (cdev->is_peripheral) {
+ 		ret = can_rx_offload_add_manual(cdev->net, &cdev->offload,
+ 						NAPI_POLL_WEIGHT);
+ 		if (ret)
+-			goto clk_disable;
++			goto out_reset_control_assert;
+ 	}
+ 
+ 	if (!cdev->net->irq) {
+@@ -2460,8 +2477,10 @@ int m_can_class_register(struct m_can_classdev *cdev)
+ 		 KBUILD_MODNAME, cdev->net->irq, cdev->version);
+ 
+ 	/* Probe finished
+-	 * Stop clocks. They will be reactivated once the M_CAN device is opened
++	 * Assert reset and stop clocks.
++	 * They will be reactivated once the M_CAN device is opened
+ 	 */
++	reset_control_assert(cdev->rst);
+ 	m_can_clk_stop(cdev);
+ 
+ 	return 0;
+@@ -2469,6 +2488,8 @@ int m_can_class_register(struct m_can_classdev *cdev)
+ rx_offload_del:
+ 	if (cdev->is_peripheral)
+ 		can_rx_offload_del(&cdev->offload);
++out_reset_control_assert:
++	reset_control_assert(cdev->rst);
+ clk_disable:
+ 	m_can_clk_stop(cdev);
+ 
+diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
+index bd4746c63af3..7b7600697c6b 100644
+--- a/drivers/net/can/m_can/m_can.h
++++ b/drivers/net/can/m_can/m_can.h
+@@ -86,6 +86,7 @@ struct m_can_classdev {
+ 	struct device *dev;
+ 	struct clk *hclk;
+ 	struct clk *cclk;
++	struct reset_control *rst;
+ 
+ 	struct workqueue_struct *tx_wq;
+ 	struct phy *transceiver;
 
 -- 
 2.51.0
