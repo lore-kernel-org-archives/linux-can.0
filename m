@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4EB32248A5
-	for <linux-can@vger.kernel.org>; Wed, 24 Sep 2025 08:21:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E679281371
+	for <linux-can@vger.kernel.org>; Wed, 24 Sep 2025 08:21:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758702103; cv=none; b=LvNZpNqYg8EPdeanDmAhnU1MML1TwtxC9NHsvcei6J5mouT9elGJhe1teA5s2zmqWzaWA3G72i+6mUgqoK6W+93iq2QCz5vwibpcDFy3UeT/ADzQOJukUIdOnUcLXwQ1XtF+evC+9utBJ+wmt8UI6UNrUWlL27gVZYa8Mj0eDiM=
+	t=1758702103; cv=none; b=SF0PUhqc5+PC2ZLEiGIRpJ/OqHVdjEh/uZmnhkYtgQfvudGsSZoBFYVHXobjlNhxc8/iPZ45rwcu24EZKd98br12oISCEZWnR2zVy12ihcsjAfboTdQwOOCwye2di3J/d1A5bwEwWwP53NljjQftSU48MYdJClxik0dBn/6J9go=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758702103; c=relaxed/simple;
-	bh=pYspMo1iFpjtEQKRlBVI2MuFCyVjej6VYZB1DjJQ2ew=;
+	bh=L4kVkseMvnicAWlbMp6SLkaM3wED+vrIdK9517ZqFtk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=krUK0g0wnK/oMvI94brKajKmnkVeRwTjJtpm2sUd7u+DzePdLncsvJ5B7/P24HcoU/79ZGXVadVK/9cD9Bkd/1SQQLea3h0SiK5foMAd7IhnjDyM9PruEkCVUZlxYomKkA9Bf7VUzZP/kWLQIsg1UONVSTfx1hgj3jueuD1Efuo=
+	 MIME-Version; b=PvPl0l/bbXcxUnnQRy8pYs8FxaGNpAs5gWOpToyaGp5nnDWB4JlzyYnDo4gi1MsGGygqCq32g1mMFmGs6nUkh+rqglVhUl6hCOoiLfOdz8uDcmXi/TkEwjl0AQYOZUSlb1b3se4HFBUTpMA+nz+xVVmmrB2kiLg/f9YG/jRiYcM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,31 +18,31 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kkd-0001E0-6j; Wed, 24 Sep 2025 10:21:23 +0200
+	id 1v1Kke-0001FN-Ei; Wed, 24 Sep 2025 10:21:24 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kkc-000DvF-0Q;
-	Wed, 24 Sep 2025 10:21:22 +0200
+	id 1v1Kkd-000Dw5-00;
+	Wed, 24 Sep 2025 10:21:23 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 1168547886B;
-	Wed, 24 Sep 2025 08:21:07 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 8ED6F478886;
+	Wed, 24 Sep 2025 08:21:08 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	=?UTF-8?q?St=C3=A9phane=20Grosjean?= <stephane.grosjean@hms-networks.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 04/48] can: peak: Modification of references to email accounts being deleted
-Date: Wed, 24 Sep 2025 10:06:21 +0200
-Message-ID: <20250924082104.595459-5-mkl@pengutronix.de>
+Subject: [PATCH net-next 17/48] can: rcar_can: Mailbox bitfield conversion
+Date: Wed, 24 Sep 2025 10:06:34 +0200
+Message-ID: <20250924082104.595459-18-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250924082104.595459-1-mkl@pengutronix.de>
 References: <20250924082104.595459-1-mkl@pengutronix.de>
@@ -52,286 +52,66 @@ List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-With the upcoming deletion of @peak-system.com accounts and following
-the acquisition of PEAK-System and its brand by HMS-Networks, this fix
-aims to migrate all address references to @hms-networks.com, as well
-as to map my personal committer addresses to author addresses, while
-taking the opportunity to correct the accent on the first ‘e’ of my
-first name.
+Convert CAN Mailbox Register field accesses to use the FIELD_PREP() and
+FIELD_GET() bitfield access macro.
 
-Signed-off-by: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-Link: https://patch.msgid.link/20250912081820.86314-1-stephane.grosjean@free.fr
+This gets rid of explicit shifts, and keeps a clear separation between
+hardware register layouts and offical CAN definitions.
+
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://patch.msgid.link/c75c7d6ed5929c4becf7c9178cec04a0731e8ab1.1755857536.git.geert+renesas@glider.be
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .mailmap                                      | 2 ++
- drivers/net/can/peak_canfd/peak_canfd.c       | 4 ++--
- drivers/net/can/peak_canfd/peak_canfd_user.h  | 4 ++--
- drivers/net/can/peak_canfd/peak_pciefd_main.c | 6 +++---
- drivers/net/can/sja1000/peak_pci.c            | 6 +++---
- drivers/net/can/sja1000/peak_pcmcia.c         | 8 ++++----
- drivers/net/can/usb/peak_usb/pcan_usb.c       | 6 +++---
- drivers/net/can/usb/peak_usb/pcan_usb_core.c  | 6 +++---
- drivers/net/can/usb/peak_usb/pcan_usb_core.h  | 4 ++--
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c    | 3 ++-
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c   | 4 ++--
- drivers/net/can/usb/peak_usb/pcan_usb_pro.h   | 4 ++--
- include/linux/can/dev/peak_canfd.h            | 4 ++--
- 13 files changed, 32 insertions(+), 29 deletions(-)
+ drivers/net/can/rcar/rcar_can.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/.mailmap b/.mailmap
-index 4a5f2c8deeff..c393045d9361 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -740,6 +740,8 @@ Sriram Yagnaraman <sriram.yagnaraman@ericsson.com> <sriram.yagnaraman@est.tech>
- Stanislav Fomichev <sdf@fomichev.me> <sdf@google.com>
- Stanislav Fomichev <sdf@fomichev.me> <stfomichev@gmail.com>
- Stefan Wahren <wahrenst@gmx.net> <stefan.wahren@i2se.com>
-+Stéphane Grosjean <stephane.grosjean@hms-networks.com> <s.grosjean@peak-system.com>
-+Stéphane Grosjean <stephane.grosjean@hms-networks.com> <stephane.grosjean@free.fr>
- Stéphane Witzmann <stephane.witzmann@ubpmes.univ-bpclermont.fr>
- Stephen Hemminger <stephen@networkplumber.org> <shemminger@linux-foundation.org>
- Stephen Hemminger <stephen@networkplumber.org> <shemminger@osdl.org>
-diff --git a/drivers/net/can/peak_canfd/peak_canfd.c b/drivers/net/can/peak_canfd/peak_canfd.c
-index 77292afaed22..b5bc80ac7876 100644
---- a/drivers/net/can/peak_canfd/peak_canfd.c
-+++ b/drivers/net/can/peak_canfd/peak_canfd.c
-@@ -1,8 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /* Copyright (C) 2007, 2011 Wolfgang Grandegger <wg@grandegger.com>
-- * Copyright (C) 2012 Stephane Grosjean <s.grosjean@peak-system.com>
-  *
-- * Copyright (C) 2016  PEAK System-Technik GmbH
-+ * Copyright (C) 2016-2025 PEAK System-Technik GmbH
-+ * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-  */
+diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
+index 4c5c1f044691..de1829477659 100644
+--- a/drivers/net/can/rcar/rcar_can.c
++++ b/drivers/net/can/rcar/rcar_can.c
+@@ -160,7 +160,8 @@ static const struct can_bittiming_const rcar_can_bittiming_const = {
+ /* Mailbox and Mask Registers bits */
+ #define RCAR_CAN_IDE		BIT(31)		/* ID Extension */
+ #define RCAR_CAN_RTR		BIT(30)		/* Remote Transmission Request */
+-#define RCAR_CAN_SID_SHIFT	18
++#define RCAR_CAN_SID		GENMASK(28, 18)	/* Standard ID */
++#define RCAR_CAN_EID		GENMASK(28, 0)	/* Extended ID */
  
- #include <linux/can.h>
-diff --git a/drivers/net/can/peak_canfd/peak_canfd_user.h b/drivers/net/can/peak_canfd/peak_canfd_user.h
-index a72719dc3b74..60c6542028cf 100644
---- a/drivers/net/can/peak_canfd/peak_canfd_user.h
-+++ b/drivers/net/can/peak_canfd/peak_canfd_user.h
-@@ -1,8 +1,8 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
- /* CAN driver for PEAK System micro-CAN based adapters
-  *
-- * Copyright (C) 2003-2011 PEAK System-Technik GmbH
-- * Copyright (C) 2011-2013 Stephane Grosjean <s.grosjean@peak-system.com>
-+ * Copyright (C) 2003-2025 PEAK System-Technik GmbH
-+ * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-  */
- #ifndef PEAK_CANFD_USER_H
- #define PEAK_CANFD_USER_H
-diff --git a/drivers/net/can/peak_canfd/peak_pciefd_main.c b/drivers/net/can/peak_canfd/peak_pciefd_main.c
-index 1df3c4b54f03..93558e33bc02 100644
---- a/drivers/net/can/peak_canfd/peak_pciefd_main.c
-+++ b/drivers/net/can/peak_canfd/peak_pciefd_main.c
-@@ -1,10 +1,10 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /* Copyright (C) 2007, 2011 Wolfgang Grandegger <wg@grandegger.com>
-- * Copyright (C) 2012 Stephane Grosjean <s.grosjean@peak-system.com>
-  *
-  * Derived from the PCAN project file driver/src/pcan_pci.c:
-  *
-- * Copyright (C) 2001-2006  PEAK System-Technik GmbH
-+ * Copyright (C) 2001-2025 PEAK System-Technik GmbH
-+ * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-  */
+ /* Mailbox Interrupt Enable Register 1 bits */
+ #define RCAR_CAN_MIER1_RXFIE	BIT(28)		/* Receive  FIFO Interrupt Enable */
+@@ -599,9 +600,10 @@ static netdev_tx_t rcar_can_start_xmit(struct sk_buff *skb,
+ 		return NETDEV_TX_OK;
  
- #include <linux/kernel.h>
-@@ -19,7 +19,7 @@
+ 	if (cf->can_id & CAN_EFF_FLAG)	/* Extended frame format */
+-		data = (cf->can_id & CAN_EFF_MASK) | RCAR_CAN_IDE;
++		data = FIELD_PREP(RCAR_CAN_EID, cf->can_id & CAN_EFF_MASK) |
++		       RCAR_CAN_IDE;
+ 	else				/* Standard frame format */
+-		data = (cf->can_id & CAN_SFF_MASK) << RCAR_CAN_SID_SHIFT;
++		data = FIELD_PREP(RCAR_CAN_SID, cf->can_id & CAN_SFF_MASK);
  
- #include "peak_canfd_user.h"
+ 	if (cf->can_id & CAN_RTR_FLAG) { /* Remote transmission request */
+ 		data |= RCAR_CAN_RTR;
+@@ -656,9 +658,9 @@ static void rcar_can_rx_pkt(struct rcar_can_priv *priv)
  
--MODULE_AUTHOR("Stephane Grosjean <s.grosjean@peak-system.com>");
-+MODULE_AUTHOR("Stéphane Grosjean <stephane.grosjean@hms-networks.com>");
- MODULE_DESCRIPTION("Socket-CAN driver for PEAK PCAN PCIe/M.2 FD family cards");
- MODULE_LICENSE("GPL v2");
+ 	data = readl(&priv->regs->mb[RCAR_CAN_RX_FIFO_MBX].id);
+ 	if (data & RCAR_CAN_IDE)
+-		cf->can_id = (data & CAN_EFF_MASK) | CAN_EFF_FLAG;
++		cf->can_id = FIELD_GET(RCAR_CAN_EID, data) | CAN_EFF_FLAG;
+ 	else
+-		cf->can_id = (data >> RCAR_CAN_SID_SHIFT) & CAN_SFF_MASK;
++		cf->can_id = FIELD_GET(RCAR_CAN_SID, data);
  
-diff --git a/drivers/net/can/sja1000/peak_pci.c b/drivers/net/can/sja1000/peak_pci.c
-index da396d641e24..10d88cbda465 100644
---- a/drivers/net/can/sja1000/peak_pci.c
-+++ b/drivers/net/can/sja1000/peak_pci.c
-@@ -1,11 +1,11 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-  * Copyright (C) 2007, 2011 Wolfgang Grandegger <wg@grandegger.com>
-- * Copyright (C) 2012 Stephane Grosjean <s.grosjean@peak-system.com>
-  *
-  * Derived from the PCAN project file driver/src/pcan_pci.c:
-  *
-- * Copyright (C) 2001-2006  PEAK System-Technik GmbH
-+ * Copyright (C) 2001-2025 PEAK System-Technik GmbH
-+ * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-  */
- 
- #include <linux/kernel.h>
-@@ -22,7 +22,7 @@
- 
- #include "sja1000.h"
- 
--MODULE_AUTHOR("Stephane Grosjean <s.grosjean@peak-system.com>");
-+MODULE_AUTHOR("Stéphane Grosjean <stephane.grosjean@hms-networks.com>");
- MODULE_DESCRIPTION("Socket-CAN driver for PEAK PCAN PCI family cards");
- MODULE_LICENSE("GPL v2");
- 
-diff --git a/drivers/net/can/sja1000/peak_pcmcia.c b/drivers/net/can/sja1000/peak_pcmcia.c
-index ce18e9e56059..e1610b527d13 100644
---- a/drivers/net/can/sja1000/peak_pcmcia.c
-+++ b/drivers/net/can/sja1000/peak_pcmcia.c
-@@ -1,10 +1,10 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * Copyright (C) 2010-2012 Stephane Grosjean <s.grosjean@peak-system.com>
-- *
-  * CAN driver for PEAK-System PCAN-PC Card
-  * Derived from the PCAN project file driver/src/pcan_pccard.c
-- * Copyright (C) 2006-2010 PEAK System-Technik GmbH
-+ *
-+ * Copyright (C) 2006-2025 PEAK System-Technik GmbH
-+ * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-  */
- #include <linux/kernel.h>
- #include <linux/module.h>
-@@ -19,7 +19,7 @@
- #include <linux/can/dev.h>
- #include "sja1000.h"
- 
--MODULE_AUTHOR("Stephane Grosjean <s.grosjean@peak-system.com>");
-+MODULE_AUTHOR("Stéphane Grosjean <stephane.grosjean@hms-networks.com>");
- MODULE_DESCRIPTION("CAN driver for PEAK-System PCAN-PC Cards");
- MODULE_LICENSE("GPL v2");
- 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index 6b293a9056c2..9278a1522aae 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -3,8 +3,8 @@
-  * CAN driver for PEAK System PCAN-USB adapter
-  * Derived from the PCAN project file driver/src/pcan_usb.c
-  *
-- * Copyright (C) 2003-2010 PEAK System-Technik GmbH
-- * Copyright (C) 2011-2012 Stephane Grosjean <s.grosjean@peak-system.com>
-+ * Copyright (C) 2003-2025 PEAK System-Technik GmbH
-+ * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-  *
-  * Many thanks to Klaus Hitschler <klaus.hitschler@gmx.de>
-  */
-@@ -919,7 +919,7 @@ static int pcan_usb_init(struct peak_usb_device *dev)
- 					    CAN_CTRLMODE_LOOPBACK;
- 	} else {
- 		dev_info(dev->netdev->dev.parent,
--			 "Firmware update available. Please contact support@peak-system.com\n");
-+			 "Firmware update available. Please contact support.peak@hms-networks.com\n");
- 	}
- 
- 	return 0;
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index 117637b9b995..decbf5ed10bd 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -3,8 +3,8 @@
-  * CAN driver for PEAK System USB adapters
-  * Derived from the PCAN project file driver/src/pcan_usb_core.c
-  *
-- * Copyright (C) 2003-2010 PEAK System-Technik GmbH
-- * Copyright (C) 2010-2012 Stephane Grosjean <s.grosjean@peak-system.com>
-+ * Copyright (C) 2003-2025 PEAK System-Technik GmbH
-+ * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-  *
-  * Many thanks to Klaus Hitschler <klaus.hitschler@gmx.de>
-  */
-@@ -24,7 +24,7 @@
- 
- #include "pcan_usb_core.h"
- 
--MODULE_AUTHOR("Stephane Grosjean <s.grosjean@peak-system.com>");
-+MODULE_AUTHOR("Stéphane Grosjean <stephane.grosjean@hms-networks.com>");
- MODULE_DESCRIPTION("CAN driver for PEAK-System USB adapters");
- MODULE_LICENSE("GPL v2");
- 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-index abab00930b9d..d1c1897d47b9 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-@@ -3,8 +3,8 @@
-  * CAN driver for PEAK System USB adapters
-  * Derived from the PCAN project file driver/src/pcan_usb_core.c
-  *
-- * Copyright (C) 2003-2010 PEAK System-Technik GmbH
-- * Copyright (C) 2010-2012 Stephane Grosjean <s.grosjean@peak-system.com>
-+ * Copyright (C) 2003-2025 PEAK System-Technik GmbH
-+ * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-  *
-  * Many thanks to Klaus Hitschler <klaus.hitschler@gmx.de>
-  */
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index ebefc274b50a..be84191cde56 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -2,7 +2,8 @@
- /*
-  * CAN driver for PEAK System PCAN-USB FD / PCAN-USB Pro FD adapter
-  *
-- * Copyright (C) 2013-2014 Stephane Grosjean <s.grosjean@peak-system.com>
-+ * Copyright (C) 2013-2025 PEAK System-Technik GmbH
-+ * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-  */
- #include <linux/ethtool.h>
- #include <linux/module.h>
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index f736196383ac..7be286293b1a 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -3,8 +3,8 @@
-  * CAN driver for PEAK System PCAN-USB Pro adapter
-  * Derived from the PCAN project file driver/src/pcan_usbpro.c
-  *
-- * Copyright (C) 2003-2011 PEAK System-Technik GmbH
-- * Copyright (C) 2011-2012 Stephane Grosjean <s.grosjean@peak-system.com>
-+ * Copyright (C) 2003-2025 PEAK System-Technik GmbH
-+ * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-  */
- #include <linux/ethtool.h>
- #include <linux/module.h>
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.h b/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
-index 28e740af905d..162c7546d3a8 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
-@@ -3,8 +3,8 @@
-  * CAN driver for PEAK System PCAN-USB Pro adapter
-  * Derived from the PCAN project file driver/src/pcan_usbpro_fw.h
-  *
-- * Copyright (C) 2003-2011 PEAK System-Technik GmbH
-- * Copyright (C) 2011-2012 Stephane Grosjean <s.grosjean@peak-system.com>
-+ * Copyright (C) 2003-2025 PEAK System-Technik GmbH
-+ * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-  */
- #ifndef PCAN_USB_PRO_H
- #define PCAN_USB_PRO_H
-diff --git a/include/linux/can/dev/peak_canfd.h b/include/linux/can/dev/peak_canfd.h
-index f38772fd0c07..d3788a3d0942 100644
---- a/include/linux/can/dev/peak_canfd.h
-+++ b/include/linux/can/dev/peak_canfd.h
-@@ -2,8 +2,8 @@
- /*
-  * CAN driver for PEAK System micro-CAN based adapters
-  *
-- * Copyright (C) 2003-2011 PEAK System-Technik GmbH
-- * Copyright (C) 2011-2013 Stephane Grosjean <s.grosjean@peak-system.com>
-+ * Copyright (C) 2003-2025 PEAK System-Technik GmbH
-+ * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-  */
- #ifndef PUCAN_H
- #define PUCAN_H
+ 	dlc = readb(&priv->regs->mb[RCAR_CAN_RX_FIFO_MBX].dlc);
+ 	cf->len = can_cc_dlc2len(dlc);
 -- 
 2.51.0
 
