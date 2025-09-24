@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61412285073
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63A7D285078
 	for <linux-can@vger.kernel.org>; Wed, 24 Sep 2025 08:21:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758702108; cv=none; b=d7sMQ4D3WiC4gqxW9yOoYGauZgYtox6jUYUbpZFBDx7ivpQ1Sh+Xo6FRXzIoSmYwJ8GRNwNmsnqfw85tQK8UxNJAjlZrFA5fiUAUMaj3raj9bajHPfGRMrvtCjbOsS7pOJKiZ4Hmj0WaMoD7BFjaAINMhmcqBFMLARxpcm7w4VU=
+	t=1758702109; cv=none; b=QXyhoZff4d61eNA7QFEew4hHZPSpABc0/LVrFHvsQv41SXLivkunJCiFdzrtWzf6k/96in+tS7cJP8+sc2Qq/cnY0H/RgA8Ig2QF11lrnO3qtGtGuUDLfh9iDoVE03rBmVWAIS+fx1CSwma/Duv28htJT8kbAvQ3vrOONqB6Vkg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758702108; c=relaxed/simple;
-	bh=bR2u+ioVeca1qbN5tdQpyAoUwN5vWtiGyLDka6Jmh6k=;
+	s=arc-20240116; t=1758702109; c=relaxed/simple;
+	bh=bcH/uHOd9zw7q0y3QEzwVum6jYZiiWlUjxls3Q1qReY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kFCVtXSX/xLVjedcfHTpvGWwSw/ey+4QmApjQKDNuzPlJGTF5szL3/Ltd1b9OFhridmxl4f1Qit9w8+FsOIIZBqsF1B5bDoftbiP2QHZU7zHXAvyRNPwEnyRoEum3GFvDsFdZtLt3WfBNh0gmed2GurGlJuzyYfH3iH/TF/WQgY=
+	 MIME-Version; b=TFUs7h7fjSzTfXBvnzaC49Kh7Wfcb8b4CppnnA6bAUph1SawYl0CTRnEIKKLC9E0WeITDXx2v8UrmO9RTz+too6gR9ZUDhdlWTE5tZWBz/c0qb90WmJq/MUvAGZ0hW66nJlxYwxYH5NNTW4rTi1Zbr8Ywc7FHGw4F8Z/Wrrubuk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,31 +18,32 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kke-0001Fd-Mu; Wed, 24 Sep 2025 10:21:24 +0200
+	id 1v1Kke-0001Ff-Mt; Wed, 24 Sep 2025 10:21:24 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kkc-000Dvz-2s;
-	Wed, 24 Sep 2025 10:21:22 +0200
+	id 1v1Kkd-000DwF-11;
+	Wed, 24 Sep 2025 10:21:23 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 6EE06478896;
-	Wed, 24 Sep 2025 08:21:09 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 9D94B478888;
+	Wed, 24 Sep 2025 08:21:08 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Vincent Mailhol <mailhol@kernel.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Biju Das <biju.das.jz@bp.renesas.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 25/48] can: annotate mtu accesses with READ_ONCE()
-Date: Wed, 24 Sep 2025 10:06:42 +0200
-Message-ID: <20250924082104.595459-26-mkl@pengutronix.de>
+Subject: [PATCH net-next 18/48] can: rcar_can: Do not print alloc_candev() failures
+Date: Wed, 24 Sep 2025 10:06:35 +0200
+Message-ID: <20250924082104.595459-19-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250924082104.595459-1-mkl@pengutronix.de>
 References: <20250924082104.595459-1-mkl@pengutronix.de>
@@ -58,72 +59,33 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol@kernel.org>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-As hinted in commit 501a90c94510 ("inet: protect against too small mtu
-values."), net_device->mtu is vulnerable to race conditions if it is
-written and read without holding the RTNL.
+If alloc_candev() failed due to out-of-memory, the core memory
+allocation code has already printed an error message.
+If alloc_candev() failed for a different reason, alloc_netdev_mqs() has
+already printed an error message.
 
-At the moment, all the writes are done while the interface is down,
-either in the devices' probe() function or in can_changelink(). So
-there are no such issues yet. But upcoming changes will allow to
-modify the MTU while the CAN XL devices are up.
-
-In preparation to the introduction of CAN XL, annotate all the
-net_device->mtu accesses which are not yet guarded by the RTNL with a
-READ_ONCE().
-
-Note that all the write accesses are already either guarded by the
-RTNL or are already annotated and thus need no changes.
-
-Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
-Link: https://patch.msgid.link/20250923-can-fix-mtu-v3-1-581bde113f52@kernel.org
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+Link: https://patch.msgid.link/2d6ad4be211a35492570fd7219ca7a89b384bfad.1755857536.git.geert+renesas@glider.be
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/af_can.c | 2 +-
- net/can/isotp.c  | 2 +-
- net/can/raw.c    | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/can/rcar/rcar_can.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index b2387a46794a..770173d8db42 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -221,7 +221,7 @@ int can_send(struct sk_buff *skb, int loop)
- 	}
+diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
+index de1829477659..51bf8f7e7182 100644
+--- a/drivers/net/can/rcar/rcar_can.c
++++ b/drivers/net/can/rcar/rcar_can.c
+@@ -773,7 +773,6 @@ static int rcar_can_probe(struct platform_device *pdev)
  
- 	/* Make sure the CAN frame can pass the selected CAN netdevice. */
--	if (unlikely(skb->len > skb->dev->mtu)) {
-+	if (unlikely(skb->len > READ_ONCE(skb->dev->mtu))) {
- 		err = -EMSGSIZE;
- 		goto inval_skb;
+ 	ndev = alloc_candev(sizeof(struct rcar_can_priv), RCAR_CAN_FIFO_DEPTH);
+ 	if (!ndev) {
+-		dev_err(dev, "alloc_candev() failed\n");
+ 		err = -ENOMEM;
+ 		goto fail;
  	}
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index dee1412b3c9c..74ee1e52249b 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -1313,7 +1313,7 @@ static int isotp_bind(struct socket *sock, struct sockaddr *uaddr, int len)
- 		err = -ENODEV;
- 		goto out;
- 	}
--	if (dev->mtu < so->ll.mtu) {
-+	if (READ_ONCE(dev->mtu) < so->ll.mtu) {
- 		dev_put(dev);
- 		err = -EINVAL;
- 		goto out;
-diff --git a/net/can/raw.c b/net/can/raw.c
-index bf65d67b5df0..a53853f5e9af 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -961,7 +961,7 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	err = -EINVAL;
- 
- 	/* check for valid CAN (CC/FD/XL) frame content */
--	txmtu = raw_check_txframe(ro, skb, dev->mtu);
-+	txmtu = raw_check_txframe(ro, skb, READ_ONCE(dev->mtu));
- 	if (!txmtu)
- 		goto free_skb;
- 
 -- 
 2.51.0
 
