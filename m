@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AE2C2848B7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C91E2848BA
 	for <linux-can@vger.kernel.org>; Wed, 24 Sep 2025 08:21:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758702105; cv=none; b=m0K/dlvpQpJHr3LSmmbVmzQ5aTf/tmIvfeskSJropjW1PsTy2q7g/wJsT8HEIp+zjqTXp0NoWFveI9s6j1CLwpoJKXWP2hzFZTkBMtvt5eDp/4KQEuBTHKdNxOvUIKT9tTuxtrXsdV1MqSCHrc8p/es3tQZ+j6eLSXuCEKT9XAA=
+	t=1758702105; cv=none; b=UlRkU+lDig9UhRHzfqaeXuFXEwZtvCcpqgWZUyYNB2Gyebj3+k45jC1iqt2iFn2zpuxiloIWOXWwhDyksshQcOBlmbNdSIcr7JdwcQ7IVSPRa8CVvg31q2ynPcmdmavEq9Xre04UeiQkRfg2ye+2OxXQZMzucMgiIOf/l8kPeqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758702105; c=relaxed/simple;
-	bh=6SJo2Zz8xPEFGioLuAOKl0AdN4zsc6eL2RHEmONPV6Q=;
+	bh=4c27n/M/JZ8+J0ZnSCfyPa3zGd4IvMa1U9HhMx82r3c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=h8Y64VKItYDpLtWFxmiAlzB4zq291YlKikUevrbaRtz2u6fQI9GBp3+dtaX2oNcc1umWbZDphJfblE6zJziq0jW/PwP5udWucaLjN9P2Q0OsURBXHRIc2SQ0pToULYKB28B/hd6w3xC24efX80H5Lg6QcUYK4HJAv7x1kDhxq80=
+	 MIME-Version:Content-Type; b=CCiGVWQxHlQKDQxIb+TLbLmbmGoDTUbIdGX94PcOLEMSRtXZHXAn+r2C+vHlLolQZYJC/7RfWIw1/kusz5ZNKbgzLSUbb+aZictkyV/fTWF/CUK497AGSGSKDmn1+nk3ks0HuxS24+pqlhVQikqbxbEhnkR0Ak/w7wtos3Rz3zg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,19 +18,19 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kke-0001Fi-OJ; Wed, 24 Sep 2025 10:21:24 +0200
+	id 1v1Kkf-0001G6-1g; Wed, 24 Sep 2025 10:21:25 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kkc-000Dvp-2i;
-	Wed, 24 Sep 2025 10:21:22 +0200
+	id 1v1Kkd-000Dwp-1b;
+	Wed, 24 Sep 2025 10:21:23 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 5C923478880;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id F071A47888E;
 	Wed, 24 Sep 2025 08:21:08 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -38,11 +38,11 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
+	=?UTF-8?q?Stefan=20M=C3=A4tje?= <stefan.maetje@esd.eu>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 14/48] can: rcar_can: CTLR bitfield conversion
-Date: Wed, 24 Sep 2025 10:06:31 +0200
-Message-ID: <20250924082104.595459-15-mkl@pengutronix.de>
+Subject: [PATCH net-next 21/48] can: esd_usb: Avoid errors triggered from USB disconnect
+Date: Wed, 24 Sep 2025 10:06:38 +0200
+Message-ID: <20250924082104.595459-22-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250924082104.595459-1-mkl@pengutronix.de>
 References: <20250924082104.595459-1-mkl@pengutronix.de>
@@ -52,116 +52,126 @@ List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Stefan Mätje <stefan.maetje@esd.eu>
 
-Convert CAN Control Register field accesses to use the FIELD_PREP()
-bitfield access macro.  Add a few more comments and definitions while at
-it.
+The USB stack calls during disconnect the esd_usb_disconnect() callback.
+esd_usb_disconnect() calls netdev_unregister() for each network which
+in turn calls the net_device_ops::ndo_stop callback esd_usb_close() if
+the net device is up.
 
-This gets rid of explicit (and sometimes confusing) shifts.
+The esd_usb_close() callback tries to disable all CAN Ids and to reset
+the CAN controller of the device sending appropriate control messages.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://patch.msgid.link/077640e31949dc3c9d128a08ade94c9e9cd25672.1755857536.git.geert+renesas@glider.be
+Sending these messages in .disconnect() is moot and always fails because
+either the device is gone or the USB communication is already torn down
+by the USB stack in the course of a rmmod operation.
+
+Move the code that sends these control messages to a new function
+esd_usb_stop() which is approximately the counterpart of
+esd_usb_start() to make code structure less convoluted.
+
+Then change esd_usb_close() not to send the control messages at all if
+the ndo_stop() callback is executed from the USB .disconnect()
+callback. Add a new flag in_usb_disconnect to the struct esd_usb
+device structure to mark this condition which is checked by
+esd_usb_close() whether to skip the send operations in esd_usb_start().
+
+Signed-off-by: Stefan Mätje <stefan.maetje@esd.eu>
+Link: https://patch.msgid.link/20250821143422.3567029-6-stefan.maetje@esd.eu
+[mkl: minor change patch description to imperative language]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rcar/rcar_can.c | 33 ++++++++++++++++++++-------------
- 1 file changed, 20 insertions(+), 13 deletions(-)
+ drivers/net/can/usb/esd_usb.c | 34 ++++++++++++++++++++++++++--------
+ 1 file changed, 26 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
-index 7b94224bbc9b..8b4356fcd7d2 100644
---- a/drivers/net/can/rcar/rcar_can.c
-+++ b/drivers/net/can/rcar/rcar_can.c
-@@ -5,6 +5,7 @@
-  * Copyright (C) 2013 Renesas Solutions Corp.
-  */
+diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
+index 14b5df4d5543..9bc1824d7be6 100644
+--- a/drivers/net/can/usb/esd_usb.c
++++ b/drivers/net/can/usb/esd_usb.c
+@@ -275,6 +275,7 @@ struct esd_usb {
+ 	int net_count;
+ 	u32 version;
+ 	int rxinitdone;
++	int in_usb_disconnect;
+ 	void *rxbuf[ESD_USB_MAX_RX_URBS];
+ 	dma_addr_t rxbuf_dma[ESD_USB_MAX_RX_URBS];
+ };
+@@ -947,9 +948,9 @@ static netdev_tx_t esd_usb_start_xmit(struct sk_buff *skb,
+ 	return ret;
+ }
  
-+#include <linux/bitfield.h>
- #include <linux/bits.h>
- #include <linux/module.h>
- #include <linux/kernel.h>
-@@ -115,16 +116,19 @@ static const struct can_bittiming_const rcar_can_bittiming_const = {
+-static int esd_usb_close(struct net_device *netdev)
++/* Stop interface */
++static int esd_usb_stop(struct esd_usb_net_priv *priv)
+ {
+-	struct esd_usb_net_priv *priv = netdev_priv(netdev);
+ 	union esd_usb_msg *msg;
+ 	int err;
+ 	int i;
+@@ -966,8 +967,10 @@ static int esd_usb_close(struct net_device *netdev)
+ 	for (i = 0; i <= ESD_USB_MAX_ID_SEGMENT; i++)
+ 		msg->filter.mask[i] = 0;
+ 	err = esd_usb_send_msg(priv->usb, msg);
+-	if (err < 0)
+-		netdev_err(netdev, "sending idadd message failed: %pe\n", ERR_PTR(err));
++	if (err < 0) {
++		netdev_err(priv->netdev, "sending idadd message failed: %pe\n", ERR_PTR(err));
++		goto bail;
++	}
  
- /* Control Register bits */
- #define RCAR_CAN_CTLR_BOM	GENMASK(12, 11)	/* Bus-Off Recovery Mode Bits */
--#define RCAR_CAN_CTLR_BOM_ENT	(1 << 11) /* Entry to halt mode */
--					/* at bus-off entry */
-+#define RCAR_CAN_CTLR_BOM_ENT		1	/* Entry to halt mode */
-+						/* at bus-off entry */
- #define RCAR_CAN_CTLR_SLPM	BIT(10)		/* Sleep Mode */
- #define RCAR_CAN_CTLR_CANM	GENMASK(9, 8)	/* Operating Mode Select Bit */
--#define RCAR_CAN_CTLR_CANM_HALT	(1 << 9)
--#define RCAR_CAN_CTLR_CANM_RESET (1 << 8)
--#define RCAR_CAN_CTLR_CANM_FORCE_RESET (3 << 8)
-+#define RCAR_CAN_CTLR_CANM_OPER		0	/* Operation Mode */
-+#define RCAR_CAN_CTLR_CANM_RESET	1	/* Reset Mode */
-+#define RCAR_CAN_CTLR_CANM_HALT		2	/* Halt Mode */
-+#define RCAR_CAN_CTLR_CANM_FORCE_RESET	3	/* Reset Mode (forcible) */
- #define RCAR_CAN_CTLR_MLM	BIT(3)		/* Message Lost Mode Select */
- #define RCAR_CAN_CTLR_IDFM	GENMASK(2, 1)	/* ID Format Mode Select Bits */
--#define RCAR_CAN_CTLR_IDFM_MIXED (1 << 2) /* Mixed ID mode */
-+#define RCAR_CAN_CTLR_IDFM_STD		0	/* Standard ID mode */
-+#define RCAR_CAN_CTLR_IDFM_EXT		1	/* Extended ID mode */
-+#define RCAR_CAN_CTLR_IDFM_MIXED	2	/* Mixed ID mode */
- #define RCAR_CAN_CTLR_MBM	BIT(0)		/* Mailbox Mode select */
+ 	/* set CAN controller to reset mode */
+ 	msg->hdr.len = sizeof(struct esd_usb_set_baudrate_msg) / sizeof(u32); /* # of 32bit words */
+@@ -977,7 +980,23 @@ static int esd_usb_close(struct net_device *netdev)
+ 	msg->setbaud.baud = cpu_to_le32(ESD_USB_NO_BAUDRATE);
+ 	err = esd_usb_send_msg(priv->usb, msg);
+ 	if (err < 0)
+-		netdev_err(netdev, "sending setbaud message failed: %pe\n", ERR_PTR(err));
++		netdev_err(priv->netdev, "sending setbaud message failed: %pe\n", ERR_PTR(err));
++
++bail:
++	kfree(msg);
++
++	return err;
++}
++
++static int esd_usb_close(struct net_device *netdev)
++{
++	struct esd_usb_net_priv *priv = netdev_priv(netdev);
++	int err = 0;
++
++	if (!priv->usb->in_usb_disconnect) {
++		/* It's moot to try this in usb_disconnect()! */
++		err = esd_usb_stop(priv);
++	}
  
- /* Status Register bits */
-@@ -453,16 +457,17 @@ static void rcar_can_start(struct net_device *ndev)
- 	ctlr &= ~RCAR_CAN_CTLR_SLPM;
- 	writew(ctlr, &priv->regs->ctlr);
- 	/* Go to reset mode */
--	ctlr |= RCAR_CAN_CTLR_CANM_FORCE_RESET;
-+	ctlr |= FIELD_PREP(RCAR_CAN_CTLR_CANM, RCAR_CAN_CTLR_CANM_FORCE_RESET);
- 	writew(ctlr, &priv->regs->ctlr);
- 	for (i = 0; i < MAX_STR_READS; i++) {
- 		if (readw(&priv->regs->str) & RCAR_CAN_STR_RSTST)
- 			break;
- 	}
- 	rcar_can_set_bittiming(ndev);
--	ctlr |= RCAR_CAN_CTLR_IDFM_MIXED; /* Select mixed ID mode */
--	ctlr |= RCAR_CAN_CTLR_BOM_ENT;	/* Entry to halt mode automatically */
--					/* at bus-off */
-+	/* Select mixed ID mode */
-+	ctlr |= FIELD_PREP(RCAR_CAN_CTLR_IDFM, RCAR_CAN_CTLR_IDFM_MIXED);
-+	/* Entry to halt mode automatically at bus-off */
-+	ctlr |= FIELD_PREP(RCAR_CAN_CTLR_BOM, RCAR_CAN_CTLR_BOM_ENT);
- 	ctlr |= RCAR_CAN_CTLR_MBM;	/* Select FIFO mailbox mode */
- 	ctlr |= RCAR_CAN_CTLR_MLM;	/* Overrun mode */
- 	writew(ctlr, &priv->regs->ctlr);
-@@ -492,7 +497,9 @@ static void rcar_can_start(struct net_device *ndev)
- 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+ 	priv->can.state = CAN_STATE_STOPPED;
  
- 	/* Go to operation mode */
--	writew(ctlr & ~RCAR_CAN_CTLR_CANM, &priv->regs->ctlr);
-+	ctlr &= ~RCAR_CAN_CTLR_CANM;
-+	ctlr |= FIELD_PREP(RCAR_CAN_CTLR_CANM, RCAR_CAN_CTLR_CANM_OPER);
-+	writew(ctlr, &priv->regs->ctlr);
- 	for (i = 0; i < MAX_STR_READS; i++) {
- 		if (!(readw(&priv->regs->str) & RCAR_CAN_STR_RSTST))
- 			break;
-@@ -553,7 +560,7 @@ static void rcar_can_stop(struct net_device *ndev)
+@@ -985,9 +1004,7 @@ static int esd_usb_close(struct net_device *netdev)
  
- 	/* Go to (force) reset mode */
- 	ctlr = readw(&priv->regs->ctlr);
--	ctlr |= RCAR_CAN_CTLR_CANM_FORCE_RESET;
-+	ctlr |= FIELD_PREP(RCAR_CAN_CTLR_CANM, RCAR_CAN_CTLR_CANM_FORCE_RESET);
- 	writew(ctlr, &priv->regs->ctlr);
- 	for (i = 0; i < MAX_STR_READS; i++) {
- 		if (readw(&priv->regs->str) & RCAR_CAN_STR_RSTST)
-@@ -847,7 +854,7 @@ static int rcar_can_suspend(struct device *dev)
- 	netif_device_detach(ndev);
+ 	close_candev(netdev);
  
- 	ctlr = readw(&priv->regs->ctlr);
--	ctlr |= RCAR_CAN_CTLR_CANM_HALT;
-+	ctlr |= FIELD_PREP(RCAR_CAN_CTLR_CANM, RCAR_CAN_CTLR_CANM_HALT);
- 	writew(ctlr, &priv->regs->ctlr);
- 	ctlr |= RCAR_CAN_CTLR_SLPM;
- 	writew(ctlr, &priv->regs->ctlr);
+-	kfree(msg);
+-
+-	return 0;
++	return err;
+ }
+ 
+ static const struct net_device_ops esd_usb_netdev_ops = {
+@@ -1357,6 +1374,7 @@ static void esd_usb_disconnect(struct usb_interface *intf)
+ 	usb_set_intfdata(intf, NULL);
+ 
+ 	if (dev) {
++		dev->in_usb_disconnect = 1;
+ 		for (i = 0; i < dev->net_count; i++) {
+ 			if (dev->nets[i]) {
+ 				netdev = dev->nets[i]->netdev;
 -- 
 2.51.0
 
