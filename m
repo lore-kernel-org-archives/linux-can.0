@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61D1628935A
-	for <linux-can@vger.kernel.org>; Wed, 24 Sep 2025 08:21:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A17C9288C0E
+	for <linux-can@vger.kernel.org>; Wed, 24 Sep 2025 08:21:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758702116; cv=none; b=P9J+GSZTk6chWcEVTDFFWb4ycSKTKIJ/S9pxoaoj+uegmu+WcYF+UHoBpsVehbHXCJew2SHKkHwvjQ7EL38iz2LlYFluzk94tNp1yMZXaqNn66SPUjWChTmnX91yDYINZhDpJaj930IVC5wxuFivUvK2AqlKz+JxF03RDxrlVpM=
+	t=1758702116; cv=none; b=R1ZEXqbSoBtn+tsFzeE/5L0a0daPlfRrLdKv7zvO74pXaCG30LP43ZWy0LhtKso0ykl6XNEwg6qBzQBk0R9fofVy+56HmYBQk+CffvnKXXltAgukPsV2uboV6jrXT0SrkdfeGOio88RQNq6JbGTGcXRXfmYZ8Iopar8dh3shk2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758702116; c=relaxed/simple;
-	bh=Hlm6MvPcGaZGvcRNztXMXiuxZ89PCTOaxrP2DK5XKdQ=;
+	bh=jASTsnIK7OTgRD4LiCCD2seVMSpdQs0xI3XkrxGHFZ0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Xass1ybzZTZEqDM0cOBdDTafixCwLOtdesIfDlRjmfmaShxBFQcaClme/r4mrM5WhdxOBDNL4O8lIAfiMhuzWZDJtiJEIeeg/tYS3U6baRiwFRDdXJWUp7dHEwTpjCUVt06wyMRzRMkIHo1+TTKpAwkfzdQXDbQK93AURVBi34g=
+	 MIME-Version; b=U0FWTw+xkg3SmE4UU2rJrIO2LkLZPUqC9n/k2zSt0HLUHgqCL8gHMY/bSPipAQDrqClzOK/bkgPszYuiMgyiXinj6dK7Qq7VvkaF5PudPrB2GCzxPDx268E5xgl7TicSkeEKE7BaRuGWbZtQXlV7YQ3OoSoMTPdUbMK2qM9Aei8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,20 +18,20 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kkd-0001EV-S2; Wed, 24 Sep 2025 10:21:23 +0200
+	id 1v1Kkf-0001GN-7f; Wed, 24 Sep 2025 10:21:25 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kkc-000Dvr-2e;
-	Wed, 24 Sep 2025 10:21:22 +0200
+	id 1v1Kkd-000Dwc-1j;
+	Wed, 24 Sep 2025 10:21:23 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 5953F478894;
-	Wed, 24 Sep 2025 08:21:09 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id E4F55478866;
+	Wed, 24 Sep 2025 08:21:06 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -39,11 +39,10 @@ Cc: davem@davemloft.net,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
 	Vincent Mailhol <mailhol@kernel.org>,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 24/48] can: raw: reorder struct raw_sock's members to optimise packing
-Date: Wed, 24 Sep 2025 10:06:41 +0200
-Message-ID: <20250924082104.595459-25-mkl@pengutronix.de>
+Subject: [PATCH net-next 02/48] MAINTAINERS: update Vincent Mailhol's email address
+Date: Wed, 24 Sep 2025 10:06:19 +0200
+Message-ID: <20250924082104.595459-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250924082104.595459-1-mkl@pengutronix.de>
 References: <20250924082104.595459-1-mkl@pengutronix.de>
@@ -61,140 +60,62 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol@kernel.org>
 
-struct raw_sock has several holes. Reorder the fields to save 8 bytes.
+Now that I have received my kernel.org account, I am changing my email
+address from mailhol.vincent@wanadoo.fr to mailhol@kernel.org. The
+wanadoo.fr address was my first email which I created when I was a kid
+and has a special meaning to me, but it is restricted to a maximum of
+50 messages per hour which starts to be problematic on threads where
+many people are CC-ed.
 
-Statistics before:
+Update all the MAINTAINERS entries accordingly and map the old address
+to the new one.
 
-  $ pahole --class_name=raw_sock net/can/raw.o
-  struct raw_sock {
-  	struct sock                sk __attribute__((__aligned__(8))); /*     0   776 */
+I remain reachable from my old address. The different copyright
+notices mentioning my old address are kept as-is for the moment. I
+will update those one at a time only if I need to touch those files.
 
-  	/* XXX last struct has 1 bit hole */
-
-  	/* --- cacheline 12 boundary (768 bytes) was 8 bytes ago --- */
-  	int                        ifindex;              /*   776     4 */
-
-  	/* XXX 4 bytes hole, try to pack */
-
-  	struct net_device *        dev;                  /*   784     8 */
-  	netdevice_tracker          dev_tracker;          /*   792     0 */
-  	struct list_head           notifier;             /*   792    16 */
-  	unsigned int               bound:1;              /*   808: 0  4 */
-  	unsigned int               loopback:1;           /*   808: 1  4 */
-  	unsigned int               recv_own_msgs:1;      /*   808: 2  4 */
-  	unsigned int               fd_frames:1;          /*   808: 3  4 */
-  	unsigned int               xl_frames:1;          /*   808: 4  4 */
-  	unsigned int               join_filters:1;       /*   808: 5  4 */
-
-  	/* XXX 2 bits hole, try to pack */
-  	/* Bitfield combined with next fields */
-
-  	struct can_raw_vcid_options raw_vcid_opts;       /*   809     4 */
-
-  	/* XXX 3 bytes hole, try to pack */
-
-  	canid_t                    tx_vcid_shifted;      /*   816     4 */
-  	canid_t                    rx_vcid_shifted;      /*   820     4 */
-  	canid_t                    rx_vcid_mask_shifted; /*   824     4 */
-  	int                        count;                /*   828     4 */
-  	/* --- cacheline 13 boundary (832 bytes) --- */
-  	struct can_filter          dfilter;              /*   832     8 */
-  	struct can_filter *        filter;               /*   840     8 */
-  	can_err_mask_t             err_mask;             /*   848     4 */
-
-  	/* XXX 4 bytes hole, try to pack */
-
-  	struct uniqframe *         uniq;                 /*   856     8 */
-
-  	/* size: 864, cachelines: 14, members: 20 */
-  	/* sum members: 852, holes: 3, sum holes: 11 */
-  	/* sum bitfield members: 6 bits, bit holes: 1, sum bit holes: 2 bits */
-  	/* member types with bit holes: 1, total: 1 */
-  	/* forced alignments: 1 */
-  	/* last cacheline: 32 bytes */
-  } __attribute__((__aligned__(8)));
-
-...and after:
-
-  $ pahole --class_name=raw_sock net/can/raw.o
-  struct raw_sock {
-  	struct sock                sk __attribute__((__aligned__(8))); /*     0   776 */
-
-  	/* XXX last struct has 1 bit hole */
-
-  	/* --- cacheline 12 boundary (768 bytes) was 8 bytes ago --- */
-  	struct net_device *        dev;                  /*   776     8 */
-  	netdevice_tracker          dev_tracker;          /*   784     0 */
-  	struct list_head           notifier;             /*   784    16 */
-  	int                        ifindex;              /*   800     4 */
-  	unsigned int               bound:1;              /*   804: 0  4 */
-  	unsigned int               loopback:1;           /*   804: 1  4 */
-  	unsigned int               recv_own_msgs:1;      /*   804: 2  4 */
-  	unsigned int               fd_frames:1;          /*   804: 3  4 */
-  	unsigned int               xl_frames:1;          /*   804: 4  4 */
-  	unsigned int               join_filters:1;       /*   804: 5  4 */
-
-  	/* XXX 2 bits hole, try to pack */
-  	/* Bitfield combined with next fields */
-
-  	struct can_raw_vcid_options raw_vcid_opts;       /*   805     4 */
-
-  	/* XXX 3 bytes hole, try to pack */
-
-  	canid_t                    tx_vcid_shifted;      /*   812     4 */
-  	canid_t                    rx_vcid_shifted;      /*   816     4 */
-  	canid_t                    rx_vcid_mask_shifted; /*   820     4 */
-  	can_err_mask_t             err_mask;             /*   824     4 */
-  	int                        count;                /*   828     4 */
-  	/* --- cacheline 13 boundary (832 bytes) --- */
-  	struct can_filter          dfilter;              /*   832     8 */
-  	struct can_filter *        filter;               /*   840     8 */
-  	struct uniqframe *         uniq;                 /*   848     8 */
-
-  	/* size: 856, cachelines: 14, members: 20 */
-  	/* sum members: 852, holes: 1, sum holes: 3 */
-  	/* sum bitfield members: 6 bits, bit holes: 1, sum bit holes: 2 bits */
-  	/* member types with bit holes: 1, total: 1 */
-  	/* forced alignments: 1 */
-  	/* last cacheline: 24 bytes */
-  } __attribute__((__aligned__(8)));
-
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
-Link: https://patch.msgid.link/20250917-can-raw-repack-v2-3-395e8b3a4437@kernel.org
+Link: https://patch.msgid.link/20250826105255.35501-2-mailhol@kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/raw.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .mailmap    | 1 +
+ MAINTAINERS | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 5a5ded519cd1..bf65d67b5df0 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -82,10 +82,10 @@ struct uniqframe {
+diff --git a/.mailmap b/.mailmap
+index aa09e792017f..4a5f2c8deeff 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -816,6 +816,7 @@ Veera Sundaram Sankaran <quic_veeras@quicinc.com> <veeras@codeaurora.org>
+ Veerabhadrarao Badiganti <quic_vbadigan@quicinc.com> <vbadigan@codeaurora.org>
+ Venkateswara Naralasetty <quic_vnaralas@quicinc.com> <vnaralas@codeaurora.org>
+ Vikash Garodia <quic_vgarodia@quicinc.com> <vgarodia@codeaurora.org>
++Vincent Mailhol <mailhol@kernel.org> <mailhol.vincent@wanadoo.fr>
+ Vinod Koul <vkoul@kernel.org> <vinod.koul@intel.com>
+ Vinod Koul <vkoul@kernel.org> <vinod.koul@linux.intel.com>
+ Vinod Koul <vkoul@kernel.org> <vkoul@infradead.org>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index c930a961435e..65c0addba48a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5417,7 +5417,7 @@ F:	net/sched/sch_cake.c
  
- struct raw_sock {
- 	struct sock sk;
--	int ifindex;
- 	struct net_device *dev;
- 	netdevice_tracker dev_tracker;
- 	struct list_head notifier;
-+	int ifindex;
- 	unsigned int bound:1;
- 	unsigned int loopback:1;
- 	unsigned int recv_own_msgs:1;
-@@ -96,10 +96,10 @@ struct raw_sock {
- 	canid_t tx_vcid_shifted;
- 	canid_t rx_vcid_shifted;
- 	canid_t rx_vcid_mask_shifted;
-+	can_err_mask_t err_mask;
- 	int count;                 /* number of active filters */
- 	struct can_filter dfilter; /* default/single filter */
- 	struct can_filter *filter; /* pointer to filter(s) */
--	can_err_mask_t err_mask;
- 	struct uniqframe __percpu *uniq;
- };
+ CAN NETWORK DRIVERS
+ M:	Marc Kleine-Budde <mkl@pengutronix.de>
+-M:	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
++M:	Vincent Mailhol <mailhol@kernel.org>
+ L:	linux-can@vger.kernel.org
+ S:	Maintained
+ W:	https://github.com/linux-can
+@@ -9080,7 +9080,7 @@ S:	Odd Fixes
+ F:	drivers/net/ethernet/agere/
  
+ ETAS ES58X CAN/USB DRIVER
+-M:	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
++M:	Vincent Mailhol <mailhol@kernel.org>
+ L:	linux-can@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/networking/devlink/etas_es58x.rst
 -- 
 2.51.0
 
