@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20D7B28C847
-	for <linux-can@vger.kernel.org>; Wed, 24 Sep 2025 08:21:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E0C28DB71
+	for <linux-can@vger.kernel.org>; Wed, 24 Sep 2025 08:21:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758702118; cv=none; b=Ixuk6aVXYoiJ6JlRAaICepFJp0jVIlbwDWocGVlyjcySuJQqFtwyW66CgWstf4BO+CRl28bYGwoIaHK5l6n3SlKMWzmpXvOlVFdmioOteXpv08bp9NB1hRKs0XQgSRg9PbK24J0d/rp8PVBHLgqa1+fVyJYR4Vte0wIKz/zVIP8=
+	t=1758702119; cv=none; b=REG5VaH2JJmsoEw1NxLxXdz+a/i1sPbHT17quFQ/kxNa5vitG26DSc74J1gYV5A9LQRocGyq65UzjJ63tVCFNjAg8IUXsmdqqD3Drmz7KqVJxce2mA8eazCg4w7qzGFUVtExLMwkppWQCkIiSkHUxTOl/5gphb0TzfE9Id/v7kk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758702118; c=relaxed/simple;
-	bh=M5huFXS+rOI6JV8ouWPN59xaVeBX5UEUQ6RtvoAg2nI=;
+	s=arc-20240116; t=1758702119; c=relaxed/simple;
+	bh=r0K6zBVjEgBYjGTyxzYCSoQVT4JH6TkIW8VXS/p/Id8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VCSjFivPyyXeZ2nUFkgmxWwuxgKYpJ9Ksqgay4FttDVxCs0lRfBYsMD3O3eoRp0y3H15AENjonvPd3etBxwVaWc1PcZYkvseaYLjf8r3p+6zQWcW/XEwo/GbtMqaReZqDb4v+beyZl5YZtRH8AFDrFO4/XsIRRFo9/vKeGqNB1I=
+	 MIME-Version; b=lFCHSGEjVNAQOYhhGDCNA2DOTuHP94v95WOkuvMQ3noxCLk5vCb3j8sVaDllORZ85HEPizq+GEuCVEid9Los8h6R7q05RzW/jT0RRuPlo26lJ+YHPoTvfBcploW/hrumjuWoWbnKb99tn/GtUrBEPTOQrx2jYht12FNmGZRjtWc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,20 +18,20 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kkf-0001G8-0n; Wed, 24 Sep 2025 10:21:25 +0200
+	id 1v1Kkd-0001EW-SC; Wed, 24 Sep 2025 10:21:23 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kkd-000DwG-1Y;
-	Wed, 24 Sep 2025 10:21:23 +0200
+	id 1v1Kkc-000Dvj-2b;
+	Wed, 24 Sep 2025 10:21:22 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 93965478899;
-	Wed, 24 Sep 2025 08:21:09 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 4944E4788C2;
+	Wed, 24 Sep 2025 08:21:11 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -40,9 +40,9 @@ Cc: davem@davemloft.net,
 	kernel@pengutronix.de,
 	Vincent Mailhol <mailhol@kernel.org>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 27/48] can: populate the minimum and maximum MTU values
-Date: Wed, 24 Sep 2025 10:06:44 +0200
-Message-ID: <20250924082104.595459-28-mkl@pengutronix.de>
+Subject: [PATCH net-next 47/48] can: dev: add can_get_ctrlmode_str()
+Date: Wed, 24 Sep 2025 10:07:04 +0200
+Message-ID: <20250924082104.595459-48-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250924082104.595459-1-mkl@pengutronix.de>
 References: <20250924082104.595459-1-mkl@pengutronix.de>
@@ -60,140 +60,86 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol@kernel.org>
 
-By populating:
+In an effort to give more human readable messages when errors occur
+because of conflicting options, it can be useful to convert the CAN
+control mode flags into text.
 
-  net_device->min_mtu
+Add a function which converts the first set CAN control mode into a
+human readable string. The reason to only convert the first one is to
+simplify edge cases: imagine that there are several invalid control
+modes, we would just return the first invalid one to the user, thus
+not having to handle complex string concatenation. The user can then
+solve the first problem, call the netlink interface again and see the
+next issue.
 
-and
-
-  net_device->max_mtu
-
-the net core infrastructure will automatically:
-
-  1. validate that the user's inputs are in range.
-
-  2. report those min and max MTU values through the netlink
-     interface.
-
-Add can_set_default_mtu() which sets the default mtu value as well as
-the minimum and maximum values. The logic for the default mtu value
-remains unchanged:
-
-  - CANFD_MTU if the device has a static CAN_CTRLMODE_FD.
-
-  - CAN_MTU otherwise.
-
-Call can_set_default_mtu() each time the CAN_CTRLMODE_FD is modified.
-This will guarantee that the MTU value is always consistent with the
-control mode flags.
-
-With this, the checks done in can_change_mtu() become fully redundant
-and will be removed in an upcoming change and it is now possible to
-confirm the minimum and maximum MTU values on a physical CAN interface
-by doing:
-
-  $ ip --details link show can0
-
-The virtual interfaces (vcan and vxcan) are not impacted by this
-change.
+People who wish to enumerate all the control modes can still do so by,
+for example, using this new function in a for_each_set_bit() loop.
 
 Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
-Link: https://patch.msgid.link/20250923-can-fix-mtu-v3-3-581bde113f52@kernel.org
+Link: https://patch.msgid.link/20250923-canxl-netlink-prep-v4-19-e720d28f66fe@kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/dev.c     | 21 ++++++++++++++++++---
- drivers/net/can/dev/netlink.c |  9 ++++-----
- include/linux/can/dev.h       |  1 +
- 3 files changed, 23 insertions(+), 8 deletions(-)
+ drivers/net/can/dev/dev.c | 33 +++++++++++++++++++++++++++++++++
+ include/linux/can/dev.h   |  2 ++
+ 2 files changed, 35 insertions(+)
 
 diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
-index 02bfed37cc93..fd72159d3803 100644
+index fd72159d3803..e5a82aa77958 100644
 --- a/drivers/net/can/dev/dev.c
 +++ b/drivers/net/can/dev/dev.c
-@@ -239,11 +239,12 @@ EXPORT_SYMBOL_GPL(can_bus_off);
- void can_setup(struct net_device *dev)
- {
- 	dev->type = ARPHRD_CAN;
--	dev->mtu = CAN_MTU;
- 	dev->hard_header_len = 0;
- 	dev->addr_len = 0;
- 	dev->tx_queue_len = 10;
- 
-+	can_set_default_mtu(dev);
-+
- 	/* New-style flags. */
- 	dev->flags = IFF_NOARP;
- 	dev->features = NETIF_F_HW_CSUM;
-@@ -309,6 +310,21 @@ void free_candev(struct net_device *dev)
+@@ -88,6 +88,39 @@ const char *can_get_state_str(const enum can_state state)
  }
- EXPORT_SYMBOL_GPL(free_candev);
+ EXPORT_SYMBOL_GPL(can_get_state_str);
  
-+void can_set_default_mtu(struct net_device *dev)
++const char *can_get_ctrlmode_str(u32 ctrlmode)
 +{
-+	struct can_priv *priv = netdev_priv(dev);
-+
-+	if (priv->ctrlmode & CAN_CTRLMODE_FD) {
-+		dev->mtu = CANFD_MTU;
-+		dev->min_mtu = CANFD_MTU;
-+		dev->max_mtu = CANFD_MTU;
-+	} else {
-+		dev->mtu = CAN_MTU;
-+		dev->min_mtu = CAN_MTU;
-+		dev->max_mtu = CAN_MTU;
++	switch (ctrlmode & ~(ctrlmode - 1)) {
++	case 0:
++		return "none";
++	case CAN_CTRLMODE_LOOPBACK:
++		return "loopback";
++	case CAN_CTRLMODE_LISTENONLY:
++		return "listen-only";
++	case CAN_CTRLMODE_3_SAMPLES:
++		return "triple-sampling";
++	case CAN_CTRLMODE_ONE_SHOT:
++		return "one-shot";
++	case CAN_CTRLMODE_BERR_REPORTING:
++		return "berr-reporting";
++	case CAN_CTRLMODE_FD:
++		return "fd";
++	case CAN_CTRLMODE_PRESUME_ACK:
++		return "presume-ack";
++	case CAN_CTRLMODE_FD_NON_ISO:
++		return "fd-non-iso";
++	case CAN_CTRLMODE_CC_LEN8_DLC:
++		return "cc-len8-dlc";
++	case CAN_CTRLMODE_TDC_AUTO:
++		return "fd-tdc-auto";
++	case CAN_CTRLMODE_TDC_MANUAL:
++		return "fd-tdc-manual";
++	default:
++		return "<unknown>";
 +	}
 +}
++EXPORT_SYMBOL_GPL(can_get_ctrlmode_str);
 +
- /* changing MTU and control mode for CAN/CANFD devices */
- int can_change_mtu(struct net_device *dev, int new_mtu)
+ static enum can_state can_state_err_to_state(u16 err)
  {
-@@ -361,8 +377,7 @@ int can_set_static_ctrlmode(struct net_device *dev, u32 static_mode)
- 	priv->ctrlmode = static_mode;
- 
- 	/* override MTU which was set by default in can_setup()? */
--	if (static_mode & CAN_CTRLMODE_FD)
--		dev->mtu = CANFD_MTU;
-+	can_set_default_mtu(dev);
- 
- 	return 0;
- }
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index d9f6ab3efb97..248f607e3864 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -223,17 +223,16 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 		priv->ctrlmode &= ~cm->mask;
- 		priv->ctrlmode |= maskedflags;
- 
--		/* CAN_CTRLMODE_FD can only be set when driver supports FD */
--		if (priv->ctrlmode & CAN_CTRLMODE_FD) {
--			dev->mtu = CANFD_MTU;
--		} else {
--			dev->mtu = CAN_MTU;
-+		/* Wipe potential leftovers from previous CAN FD config */
-+		if (!(priv->ctrlmode & CAN_CTRLMODE_FD)) {
- 			memset(&priv->fd.data_bittiming, 0,
- 			       sizeof(priv->fd.data_bittiming));
- 			priv->ctrlmode &= ~CAN_CTRLMODE_FD_TDC_MASK;
- 			memset(&priv->fd.tdc, 0, sizeof(priv->fd.tdc));
- 		}
- 
-+		can_set_default_mtu(dev);
-+
- 		fd_tdc_flag_provided = cm->mask & CAN_CTRLMODE_FD_TDC_MASK;
- 		/* CAN_CTRLMODE_TDC_{AUTO,MANUAL} are mutually
- 		 * exclusive: make sure to turn the other one off
+ 	if (err < CAN_ERROR_WARNING_THRESHOLD)
 diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 5dc58360c2d7..3354f70ed2c6 100644
+index 8e75e9b3830a..a2229a61ccde 100644
 --- a/include/linux/can/dev.h
 +++ b/include/linux/can/dev.h
-@@ -166,6 +166,7 @@ struct can_priv *safe_candev_priv(struct net_device *dev);
+@@ -141,6 +141,8 @@ int can_restart_now(struct net_device *dev);
+ void can_bus_off(struct net_device *dev);
  
- int open_candev(struct net_device *dev);
- void close_candev(struct net_device *dev);
-+void can_set_default_mtu(struct net_device *dev);
- int can_change_mtu(struct net_device *dev, int new_mtu);
- int __must_check can_set_static_ctrlmode(struct net_device *dev,
- 					 u32 static_mode);
+ const char *can_get_state_str(const enum can_state state);
++const char *can_get_ctrlmode_str(u32 ctrlmode);
++
+ void can_state_get_by_berr_counter(const struct net_device *dev,
+ 				   const struct can_berr_counter *bec,
+ 				   enum can_state *tx_state,
 -- 
 2.51.0
 
