@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D36BA284B37
-	for <linux-can@vger.kernel.org>; Wed, 24 Sep 2025 08:21:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCD8528727B
+	for <linux-can@vger.kernel.org>; Wed, 24 Sep 2025 08:21:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758702113; cv=none; b=X+p0+mRLtLgAO5XOrQvsPPM4GCCm3prGGgQmbDizT1HnO/bNEy+w3g2/apHFpSvqCiOQsMLijDY7BZmIpC/pnIxBvAK4objrvgYSQnIFnupDlk/MJWReYzvM0YVDwCc4J7xBeQueLqZFD/iEFgr3BlHFJbZPXI4Wp+SwHpVLADc=
+	t=1758702114; cv=none; b=sbYy0fr3z87OjKGId/K4F7PrifZqsXyrMSG4MjwfkwC0oqGCrl+2yLdchEMzLl2VYGdIJKwTT75OfyDfxn+lsWikSdQ4s4ypS7dC7ktbSC51zfuCLLYxVLmWxWKmJHXpKc/GaPbhUqhKDNy8XRXWWPIEj5MWM0XCqhFnqRyn1VQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758702113; c=relaxed/simple;
-	bh=6MfKNAQhIC0Q77ReZydt3uN1PloOk63arEu8W47bNAA=;
+	s=arc-20240116; t=1758702114; c=relaxed/simple;
+	bh=dLRB8xSJ5Bf8h2CAv6aJzVHTA8Yj8WBCfUiaa37rtFU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WjcWw4YAnA2AWS/osOw0PLsRl3Qkr2GIiDEBP7NeGHERUaZ/a+uofxqMpm3RxJrGbuWZKq1UP7KNYJUXcKrtT3ZJfRVJcN9y5NH9P7FavF8pZA+Ky5KH4kO9L1cLs/J99MMyStA7QrslekX6CmkEwb0/yPfFpWetbzmeGbvbRkw=
+	 MIME-Version; b=fTaURrQeG1l0FyTv0zxALnOtaaTbgQD2Gp1BCvr1CQXDKP540xXElHAkhJsFnR86TI0myiIZyZCJb02W/NNc7+Bvta6u1/u6dVgMJNc+LQfl/OR9Ise2hrjXAC29EK2biGCOT2G3FZg6RlagQHrXLY1t+GZVq9F5EbdYkf+IPUU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,32 +18,31 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kkf-0001GP-5J; Wed, 24 Sep 2025 10:21:25 +0200
+	id 1v1Kke-0001Fo-UI; Wed, 24 Sep 2025 10:21:24 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kkd-000DwW-1t;
+	id 1v1Kkd-000DwI-0u;
 	Wed, 24 Sep 2025 10:21:23 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id D615D478874;
-	Wed, 24 Sep 2025 08:21:07 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id A8B9E47889C;
+	Wed, 24 Sep 2025 08:21:09 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Biju Das <biju.das.jz@bp.renesas.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Vincent Mailhol <mailhol@kernel.org>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 08/48] can: rcar_canfd: Simplify data bit rate config
-Date: Wed, 24 Sep 2025 10:06:25 +0200
-Message-ID: <20250924082104.595459-9-mkl@pengutronix.de>
+Subject: [PATCH net-next 28/48] can: enable CAN XL for virtual CAN devices by default
+Date: Wed, 24 Sep 2025 10:06:45 +0200
+Message-ID: <20250924082104.595459-29-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250924082104.595459-1-mkl@pengutronix.de>
 References: <20250924082104.595459-1-mkl@pengutronix.de>
@@ -59,72 +58,61 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Biju Das <biju.das.jz@bp.renesas.com>
+From: Vincent Mailhol <mailhol@kernel.org>
 
-Introduce rcar_canfd_compute_data_bit_rate_cfg() for simplifying data bit
-rate configuration by replacing function-like macros.
+In commit 97edec3a11cf ("can: enable CAN FD for virtual CAN devices by
+default"), vcan and vxcan default MTU was set to CANFD_MTU by default.
+The reason was that users were confused on how to activate CAN FD on
+virtual interfaces.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-Link: https://patch.msgid.link/20250908120940.147196-5-biju.das.jz@bp.renesas.com
+Following the introduction of CAN XL, the same logic should be
+applied. Set the MTU to CANXL_MTU by default.
+
+The users who really wish to use a Classical CAN only or a CAN FD
+virtual device can do respectively:
+
+  $ ip link set vcan0 mtu 16
+
+or
+
+  $ ip link set vcan0 mtu 72
+
+to force the old behaviour.
+
+Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
+Link: https://patch.msgid.link/20250923-can-fix-mtu-v3-4-581bde113f52@kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rcar/rcar_canfd.c | 28 +++++++++++++++-------------
- 1 file changed, 15 insertions(+), 13 deletions(-)
+ drivers/net/can/vcan.c  | 2 +-
+ drivers/net/can/vxcan.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index 99719c84f452..401505264676 100644
---- a/drivers/net/can/rcar/rcar_canfd.c
-+++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -169,15 +169,7 @@
- #define RCANFD_CERFL_ERR(x)		((x) & (0x7fff)) /* above bits 14:0 */
- 
- /* RSCFDnCFDCmDCFG */
--#define RCANFD_DCFG_DSJW(gpriv, x)	(((x) & ((gpriv)->info->data_bittiming->sjw_max - 1)) << 24)
--
--#define RCANFD_DCFG_DTSEG2(gpriv, x) \
--	(((x) & ((gpriv)->info->data_bittiming->tseg2_max - 1)) << (gpriv)->info->sh->dtseg2)
--
--#define RCANFD_DCFG_DTSEG1(gpriv, x) \
--	(((x) & ((gpriv)->info->data_bittiming->tseg1_max - 1)) << (gpriv)->info->sh->dtseg1)
--
--#define RCANFD_DCFG_DBRP(x)		(((x) & 0xff) << 0)
-+#define RCANFD_DCFG_DBRP		GENMASK(7, 0)
- 
- /* RSCFDnCFDCmFDCFG */
- #define RCANFD_GEN4_FDCFG_CLOE		BIT(30)
-@@ -1401,6 +1393,19 @@ static inline u32 rcar_canfd_compute_nominal_bit_rate_cfg(struct rcar_canfd_chan
- 	return (ntseg1 | ntseg2 | nsjw | nbrp);
- }
- 
-+static inline u32 rcar_canfd_compute_data_bit_rate_cfg(const struct rcar_canfd_hw_info *info,
-+						       u16 tseg1, u16 tseg2, u16 sjw, u16 brp)
-+{
-+	u32 dtseg1, dtseg2, dsjw, dbrp;
-+
-+	dtseg1 = (tseg1 & (info->data_bittiming->tseg1_max - 1)) << info->sh->dtseg1;
-+	dtseg2 = (tseg2 & (info->data_bittiming->tseg2_max - 1)) << info->sh->dtseg2;
-+	dsjw = (sjw & (info->data_bittiming->sjw_max - 1)) << 24;
-+	dbrp = FIELD_PREP(RCANFD_DCFG_DBRP, brp);
-+
-+	return (dtseg1 | dtseg2 | dsjw | dbrp);
-+}
-+
- static void rcar_canfd_set_bittiming(struct net_device *ndev)
+diff --git a/drivers/net/can/vcan.c b/drivers/net/can/vcan.c
+index f67e85807100..fdc662aea279 100644
+--- a/drivers/net/can/vcan.c
++++ b/drivers/net/can/vcan.c
+@@ -156,7 +156,7 @@ static const struct ethtool_ops vcan_ethtool_ops = {
+ static void vcan_setup(struct net_device *dev)
  {
- 	u32 mask = RCANFD_FDCFG_TDCO | RCANFD_FDCFG_TDCE | RCANFD_FDCFG_TDCOC;
-@@ -1430,10 +1435,7 @@ static void rcar_canfd_set_bittiming(struct net_device *ndev)
- 	sjw = dbt->sjw - 1;
- 	tseg1 = dbt->prop_seg + dbt->phase_seg1 - 1;
- 	tseg2 = dbt->phase_seg2 - 1;
--
--	cfg = (RCANFD_DCFG_DTSEG1(gpriv, tseg1) | RCANFD_DCFG_DBRP(brp) |
--	       RCANFD_DCFG_DSJW(gpriv, sjw) | RCANFD_DCFG_DTSEG2(gpriv, tseg2));
--
-+	cfg = rcar_canfd_compute_data_bit_rate_cfg(gpriv->info, tseg1, tseg2, sjw, brp);
- 	writel(cfg, &gpriv->fcbase[ch].dcfg);
+ 	dev->type		= ARPHRD_CAN;
+-	dev->mtu		= CANFD_MTU;
++	dev->mtu		= CANXL_MTU;
+ 	dev->hard_header_len	= 0;
+ 	dev->addr_len		= 0;
+ 	dev->tx_queue_len	= 0;
+diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
+index 99a78a757167..b2c19f8c5f8e 100644
+--- a/drivers/net/can/vxcan.c
++++ b/drivers/net/can/vxcan.c
+@@ -156,7 +156,7 @@ static void vxcan_setup(struct net_device *dev)
+ 	struct can_ml_priv *can_ml;
  
- 	/* Transceiver Delay Compensation */
+ 	dev->type		= ARPHRD_CAN;
+-	dev->mtu		= CANFD_MTU;
++	dev->mtu		= CANXL_MTU;
+ 	dev->hard_header_len	= 0;
+ 	dev->addr_len		= 0;
+ 	dev->tx_queue_len	= 0;
 -- 
 2.51.0
 
