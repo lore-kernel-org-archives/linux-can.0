@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC55328468D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B052A284670
 	for <linux-can@vger.kernel.org>; Wed, 24 Sep 2025 08:21:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758702103; cv=none; b=Gkc+O0DS7Mbz/GGsmA0SUHQY9W4IZuQRWm49986MuKDrKvB1cJRkZ+15RBNBJrWXCNf+cHmIqX1saCtzVK23Y0jXmcW+i8vQQIACZ5sR1ZBiXGjz8LCOxeyDto9cE5GetR9Sr/Y4o6IBvPkydvYPTMG3L/qKI9BOXS9sGIvwmhE=
+	t=1758702103; cv=none; b=HCgG3zToipImTVyj9FVBr4O0Oy1kZq/uZbhLiu9djYldIENNHVEideQQlyAfW5yy6mDPPGbMRaX8uydHsfQu9BApy2L+BqXFWdWvwrZCqA8mNZITPsmxyUks6T0PJSjKRXiARWTE1nXeoBPKIpzT4oSWFU0BDKP8WKRJdDGvqmA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758702103; c=relaxed/simple;
-	bh=mexw+6/QkPDCqTEUy0EXdc2mcDcdrWUzyQaUleqEZ9k=;
+	bh=0NhSBlMJgJLDr7UonSIPqfR92ku9IKOwdbISsJOfkh8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CzFYIS5f/XGCcwNc6fyLs5cFoo6q21dVjOX3aD2jpw4TSc3wEdQU0MUGGTjB6VaMU2h7GV019e2GnzWxK9LKoVieZauhlOyogQnI6lTGDw4B7aFHhQSuJo7Rr1BoWoQT2QvWsvTTT3PGJrUvHCJ/RfYG/UpRKeBhOvC5pIwdyzg=
+	 MIME-Version; b=K5YkqnUsaCjzFUqONIaa7DRzsglVRHYgGbprFwMdiaJWjmeaJtLYQbPC4v0ZNxa3hpa9bqeZ5l4/JVOewZ7p6JZUH8B5l1skSgmMzhdXPocnJsuKizQrHTjo/sFFVMFNSys5MX8n4cjn8KqDGUusQGcflyFt1/Pzq1E6Umhn4Hs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,31 +18,31 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kkd-0001E2-5H; Wed, 24 Sep 2025 10:21:23 +0200
+	id 1v1Kke-0001FZ-LK; Wed, 24 Sep 2025 10:21:24 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kkc-000DvI-0e;
+	id 1v1Kkc-000Dvw-2x;
 	Wed, 24 Sep 2025 10:21:22 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 106244788A2;
-	Wed, 24 Sep 2025 08:21:10 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 6CC62478882;
+	Wed, 24 Sep 2025 08:21:08 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Vincent Mailhol <mailhol@kernel.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 31/48] can: netlink: document which symbols are FD specific
-Date: Wed, 24 Sep 2025 10:06:48 +0200
-Message-ID: <20250924082104.595459-32-mkl@pengutronix.de>
+Subject: [PATCH net-next 15/48] can: rcar_can: TFCR bitfield conversion
+Date: Wed, 24 Sep 2025 10:06:32 +0200
+Message-ID: <20250924082104.595459-16-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250924082104.595459-1-mkl@pengutronix.de>
 References: <20250924082104.595459-1-mkl@pengutronix.de>
@@ -58,69 +58,46 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol@kernel.org>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-The CAN XL netlink interface will also have data bitrate and TDC
-parameters. The current FD parameters do not have a prefix in their
-names to differentiate them.
+Convert CAN Transmit FIFO Control Register field accesses to use the
+FIELD_GET() bitfield access macro.
 
-Because the netlink interface is part of the UAPI, it is unfortunately
-not feasible to rename the existing symbols to add an FD_ prefix. The
-best alternative is to add a comment for each of the symbols to notify
-the reader of which parts are CAN FD specific.
+This gets rid of an explicit shift.
 
-While at it, fix a typo: transiver -> transceiver.
-
-Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
-Link: https://patch.msgid.link/20250923-canxl-netlink-prep-v4-3-e720d28f66fe@kernel.org
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://patch.msgid.link/a8b1dc6f1249a01af9b691ca59e2e5cc2dba6d44.1755857536.git.geert+renesas@glider.be
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- include/uapi/linux/can/netlink.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/net/can/rcar/rcar_can.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
-index 02ec32d69474..ef62f56eaaef 100644
---- a/include/uapi/linux/can/netlink.h
-+++ b/include/uapi/linux/can/netlink.h
-@@ -101,8 +101,8 @@ struct can_ctrlmode {
- #define CAN_CTRLMODE_PRESUME_ACK	0x40	/* Ignore missing CAN ACKs */
- #define CAN_CTRLMODE_FD_NON_ISO		0x80	/* CAN FD in non-ISO mode */
- #define CAN_CTRLMODE_CC_LEN8_DLC	0x100	/* Classic CAN DLC option */
--#define CAN_CTRLMODE_TDC_AUTO		0x200	/* CAN transiver automatically calculates TDCV */
--#define CAN_CTRLMODE_TDC_MANUAL		0x400	/* TDCV is manually set up by user */
-+#define CAN_CTRLMODE_TDC_AUTO		0x200	/* FD transceiver automatically calculates TDCV */
-+#define CAN_CTRLMODE_TDC_MANUAL		0x400	/* FD TDCV is manually set up by user */
+diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
+index 8b4356fcd7d2..6f28dc935451 100644
+--- a/drivers/net/can/rcar/rcar_can.c
++++ b/drivers/net/can/rcar/rcar_can.c
+@@ -145,8 +145,6 @@ static const struct can_bittiming_const rcar_can_bittiming_const = {
+ /* Transmit FIFO Control Register bits */
+ #define RCAR_CAN_TFCR_TFUST	GENMASK(3, 1)	/* Transmit FIFO Unsent Message */
+ 						/* Number Status Bits */
+-#define RCAR_CAN_TFCR_TFUST_SHIFT 1		/* Offset of Transmit FIFO Unsent */
+-						/* Message Number Status Bits */
+ #define RCAR_CAN_TFCR_TFE	BIT(0)		/* Transmit FIFO Enable */
  
- /*
-  * CAN device statistics
-@@ -129,14 +129,14 @@ enum {
- 	IFLA_CAN_RESTART_MS,
- 	IFLA_CAN_RESTART,
- 	IFLA_CAN_BERR_COUNTER,
--	IFLA_CAN_DATA_BITTIMING,
--	IFLA_CAN_DATA_BITTIMING_CONST,
-+	IFLA_CAN_DATA_BITTIMING, /* FD */
-+	IFLA_CAN_DATA_BITTIMING_CONST, /* FD */
- 	IFLA_CAN_TERMINATION,
- 	IFLA_CAN_TERMINATION_CONST,
- 	IFLA_CAN_BITRATE_CONST,
--	IFLA_CAN_DATA_BITRATE_CONST,
-+	IFLA_CAN_DATA_BITRATE_CONST, /* FD */
- 	IFLA_CAN_BITRATE_MAX,
--	IFLA_CAN_TDC,
-+	IFLA_CAN_TDC, /* FD */
- 	IFLA_CAN_CTRLMODE_EXT,
+ #define RCAR_CAN_N_RX_MKREGS1	2		/* Number of mask registers */
+@@ -377,10 +375,9 @@ static void rcar_can_tx_done(struct net_device *ndev)
+ 	u8 isr;
  
- 	/* add new constants above here */
-@@ -145,7 +145,7 @@ enum {
- };
+ 	while (1) {
+-		u8 unsent = readb(&priv->regs->tfcr);
++		u8 unsent = FIELD_GET(RCAR_CAN_TFCR_TFUST,
++			    readb(&priv->regs->tfcr));
  
- /*
-- * CAN FD Transmitter Delay Compensation (TDC)
-+ * CAN FD/XL Transmitter Delay Compensation (TDC)
-  *
-  * Please refer to struct can_tdc_const and can_tdc in
-  * include/linux/can/bittiming.h for further details.
+-		unsent = (unsent & RCAR_CAN_TFCR_TFUST) >>
+-			  RCAR_CAN_TFCR_TFUST_SHIFT;
+ 		if (priv->tx_head - priv->tx_tail <= unsent)
+ 			break;
+ 		stats->tx_packets++;
 -- 
 2.51.0
 
