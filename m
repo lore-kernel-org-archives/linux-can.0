@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44AEE285052
-	for <linux-can@vger.kernel.org>; Wed, 24 Sep 2025 08:21:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D46EB284B37
+	for <linux-can@vger.kernel.org>; Wed, 24 Sep 2025 08:21:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758702108; cv=none; b=LaIAf84Y/pb9lN6dRoFKSXjnIX59y5EWUAbXwTH+1JdEai1mIdY5CPpHvcATGtu7JIKWbzr8inn8RYQIVm8L9a3DCTFCTFhgn51BD5mBQiPmIfCR8b0uqXUoWhS7MKEYcUJcx4pcQklgSGEVqLfVRr9CyQ+PvD/IAgcv+KFwgEU=
+	t=1758702108; cv=none; b=B5EQKSVnY14Zo6Y5KMqzVCNqvKa7dZ+iM+xx/VRESUbOYHTOl0Y72VmlXHtKi/MIodPnUrmd2gwN6IF2YaLG1O8+KaXKQxUJ5Ej3z1XnnjaUb1rTMmy8AZm7BTvogxNYnGlWk9OLMU4A0etHQgLFc8NlXW1As3ADE8X8JVNMphs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758702108; c=relaxed/simple;
-	bh=+1yQOwxQd/GNYq3gvYPG1yvFAgCAbDlUc60igkoTr1k=;
+	bh=ZsRn1kYwmWIpw0KCPyxiPnVwumVZWhRuYbI8+uIPMcM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DN+1e+DduJh0Z/QTDmjcOv2jcsoorzyzEB/j4UAeqzW2iPUfNSDRR1OTLYdmiJWiy/MdC5Arrj+9ohvbVLclqS2xypivPb/EN0Z/ZkccGw3htkYDVuCgPn6I1v9VBf0Uf/YdfNWdJMONiDoxTenDxe7uG+9A0D9q2MQpBoeXH1k=
+	 MIME-Version; b=tVpqJc9DWyLRKhwrx3OJgy4GGKjaRJeNHABsGf5FBmh2o9ZHlxCK29oZdoBVqHxkCN3wdyK8QwynQUBSme8Q2A5AXeiTpvczdhLAPui7wz0CnZqD4mu1IOXP5wRzZzwSc9lodcNzSKuZ244BcY4dM5JllE96yRL4VbvdhyqF0/g=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,20 +18,20 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kkd-0001ET-Sy; Wed, 24 Sep 2025 10:21:23 +0200
+	id 1v1Kkf-0001GS-7v; Wed, 24 Sep 2025 10:21:25 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kkc-000Dvh-2B;
-	Wed, 24 Sep 2025 10:21:22 +0200
+	id 1v1Kkd-000Dwg-1y;
+	Wed, 24 Sep 2025 10:21:23 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 454904788A8;
-	Wed, 24 Sep 2025 08:21:10 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id E166647889E;
+	Wed, 24 Sep 2025 08:21:09 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -40,9 +40,9 @@ Cc: davem@davemloft.net,
 	kernel@pengutronix.de,
 	Vincent Mailhol <mailhol@kernel.org>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 34/48] can: netlink: add can_validate_databittiming()
-Date: Wed, 24 Sep 2025 10:06:51 +0200
-Message-ID: <20250924082104.595459-35-mkl@pengutronix.de>
+Subject: [PATCH net-next 29/48] can: dev: move struct data_bittiming_params to linux/can/bittiming.h
+Date: Wed, 24 Sep 2025 10:06:46 +0200
+Message-ID: <20250924082104.595459-30-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250924082104.595459-1-mkl@pengutronix.de>
 References: <20250924082104.595459-1-mkl@pengutronix.de>
@@ -60,114 +60,71 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol@kernel.org>
 
-Factorise the databittiming validation out of can_validate() and move
-it in the new add can_validate_databittiming() function. Also move
-can_validate()'s comment because it is specific to CAN FD. This is a
-preparation patch for the introduction of CAN XL as this databittiming
-validation will be reused later on.
+In commit b803c4a4f788 ("can: dev: add struct data_bittiming_params to
+group FD parameters"), struct data_bittiming_params was put into
+linux/can/dev.h.
+
+This structure being a collection of bittiming parameters, on second
+thought, bittiming.h is actually a better location. This way, users of
+struct data_bittiming_params will not have to forcefully include
+linux/can/dev.h thus removing some complexity and reducing the risk of
+circular dependencies in headers.
+
+Move struct data_bittiming_params from linux/can/dev.h to
+linux/can/bittiming.h.
 
 Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
-Link: https://patch.msgid.link/20250923-canxl-netlink-prep-v4-6-e720d28f66fe@kernel.org
+Link: https://patch.msgid.link/20250923-canxl-netlink-prep-v4-1-e720d28f66fe@kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/netlink.c | 64 ++++++++++++++++++++++++-----------
- 1 file changed, 44 insertions(+), 20 deletions(-)
+ include/linux/can/bittiming.h | 11 +++++++++++
+ include/linux/can/dev.h       | 11 -----------
+ 2 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 25c08adee9ad..549a2247d847 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -100,10 +100,13 @@ static int can_validate_tdc(struct nlattr *data_tdc,
- 	return 0;
- }
+diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
+index 5dfdbb63b1d5..6572ec1712ca 100644
+--- a/include/linux/can/bittiming.h
++++ b/include/linux/can/bittiming.h
+@@ -114,6 +114,17 @@ struct can_tdc_const {
+ 	u32 tdcf_max;
+ };
  
--static int can_validate(struct nlattr *tb[], struct nlattr *data[],
--			struct netlink_ext_ack *extack)
-+static int can_validate_databittiming(struct nlattr *data[],
-+				      struct netlink_ext_ack *extack,
-+				      int ifla_can_data_bittiming, u32 flags)
- {
--	bool is_can_fd = false;
-+	struct nlattr *data_tdc;
-+	u32 tdc_flags;
-+	bool is_on;
- 	int err;
++struct data_bittiming_params {
++	const struct can_bittiming_const *data_bittiming_const;
++	struct can_bittiming data_bittiming;
++	const struct can_tdc_const *tdc_const;
++	struct can_tdc tdc;
++	const u32 *data_bitrate_const;
++	unsigned int data_bitrate_const_cnt;
++	int (*do_set_data_bittiming)(struct net_device *dev);
++	int (*do_get_auto_tdcv)(const struct net_device *dev, u32 *tdcv);
++};
++
+ #ifdef CONFIG_CAN_CALC_BITTIMING
+ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
+ 		       const struct can_bittiming_const *btc, struct netlink_ext_ack *extack);
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 3354f70ed2c6..c2fe956ab776 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -38,17 +38,6 @@ enum can_termination_gpio {
+ 	CAN_TERMINATION_GPIO_MAX,
+ };
  
- 	/* Make sure that valid CAN FD configurations always consist of
-@@ -113,35 +116,56 @@ static int can_validate(struct nlattr *tb[], struct nlattr *data[],
- 	 * - TDC parameters are coherent (details in can_validate_tdc())
- 	 */
- 
-+	if (ifla_can_data_bittiming == IFLA_CAN_DATA_BITTIMING) {
-+		data_tdc = data[IFLA_CAN_TDC];
-+		tdc_flags = flags & CAN_CTRLMODE_FD_TDC_MASK;
-+		is_on = flags & CAN_CTRLMODE_FD;
-+	} else {
-+		return -EOPNOTSUPP; /* Place holder for CAN XL */
-+	}
-+
-+	if (is_on) {
-+		if (!data[IFLA_CAN_BITTIMING] || !data[ifla_can_data_bittiming])
-+			return -EOPNOTSUPP;
-+	}
-+
-+	if (data[ifla_can_data_bittiming] || data_tdc) {
-+		if (!is_on)
-+			return -EOPNOTSUPP;
-+	}
-+
-+	err = can_validate_bittiming(data, extack, ifla_can_data_bittiming);
-+	if (err)
-+		return err;
-+
-+	err = can_validate_tdc(data_tdc, extack, tdc_flags);
-+	if (err)
-+		return err;
-+
-+	return 0;
-+}
-+
-+static int can_validate(struct nlattr *tb[], struct nlattr *data[],
-+			struct netlink_ext_ack *extack)
-+{
-+	u32 flags = 0;
-+	int err;
-+
- 	if (!data)
- 		return 0;
- 
- 	if (data[IFLA_CAN_CTRLMODE]) {
- 		struct can_ctrlmode *cm = nla_data(data[IFLA_CAN_CTRLMODE]);
- 
--		is_can_fd = cm->flags & cm->mask & CAN_CTRLMODE_FD;
+-struct data_bittiming_params {
+-	const struct can_bittiming_const *data_bittiming_const;
+-	struct can_bittiming data_bittiming;
+-	const struct can_tdc_const *tdc_const;
+-	struct can_tdc tdc;
+-	const u32 *data_bitrate_const;
+-	unsigned int data_bitrate_const_cnt;
+-	int (*do_set_data_bittiming)(struct net_device *dev);
+-	int (*do_get_auto_tdcv)(const struct net_device *dev, u32 *tdcv);
+-};
 -
--		err = can_validate_tdc(data[IFLA_CAN_TDC], extack,
--				       cm->flags & CAN_CTRLMODE_FD_TDC_MASK);
--		if (err)
--			return err;
-+		flags = cm->flags & cm->mask;
- 	}
- 
- 	err = can_validate_bittiming(data, extack, IFLA_CAN_BITTIMING);
- 	if (err)
- 		return err;
- 
--	if (is_can_fd) {
--		if (!data[IFLA_CAN_BITTIMING] || !data[IFLA_CAN_DATA_BITTIMING])
--			return -EOPNOTSUPP;
--	}
--
--	if (data[IFLA_CAN_DATA_BITTIMING] || data[IFLA_CAN_TDC]) {
--		if (!is_can_fd)
--			return -EOPNOTSUPP;
--	}
--
--	err = can_validate_bittiming(data, extack, IFLA_CAN_DATA_BITTIMING);
-+	err = can_validate_databittiming(data, extack,
-+					 IFLA_CAN_DATA_BITTIMING, flags);
- 	if (err)
- 		return err;
- 
+ /*
+  * CAN common private data
+  */
 -- 
 2.51.0
 
