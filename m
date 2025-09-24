@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 458F22820D7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AE2C2848B7
 	for <linux-can@vger.kernel.org>; Wed, 24 Sep 2025 08:21:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758702105; cv=none; b=hs6m0iR8kR/pKJaSLIund43z2NBytvdEA8ElscYbr7onMifqN27JEs4h51pHn9EfiOB1bB9jCsFhriIQXopK4LHJ8pLaYjYXl/qobSf/ww94KDPqSAHgv+Ks6lXeXnIqwh6M3jbzAM+IecQwYvgN9vQ1HLNlnZqtIrYZP21cRno=
+	t=1758702105; cv=none; b=m0K/dlvpQpJHr3LSmmbVmzQ5aTf/tmIvfeskSJropjW1PsTy2q7g/wJsT8HEIp+zjqTXp0NoWFveI9s6j1CLwpoJKXWP2hzFZTkBMtvt5eDp/4KQEuBTHKdNxOvUIKT9tTuxtrXsdV1MqSCHrc8p/es3tQZ+j6eLSXuCEKT9XAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758702105; c=relaxed/simple;
-	bh=a//sQLZz51Y+M3k7aHkH7nytzMli7QEPQmBRLgdfCi8=;
+	bh=6SJo2Zz8xPEFGioLuAOKl0AdN4zsc6eL2RHEmONPV6Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Cy6UqYIHvAZvNdqGHb+e75e5MRtbUf/RSKxKXgZ+gMmh483xA2OMkgiGcu/qUcnzvN6nH40PrvsoJWvX/nqxaAEnq25Nh5J/q4PsWeMw39xqdRZtZhV/aAuQnKb6zFIq/b80TJiMs0lrjasSXSX0MdFxuDiNC3P6QWcCarZniEc=
+	 MIME-Version; b=h8Y64VKItYDpLtWFxmiAlzB4zq291YlKikUevrbaRtz2u6fQI9GBp3+dtaX2oNcc1umWbZDphJfblE6zJziq0jW/PwP5udWucaLjN9P2Q0OsURBXHRIc2SQ0pToULYKB28B/hd6w3xC24efX80H5Lg6QcUYK4HJAv7x1kDhxq80=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,19 +18,19 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kke-0001El-7u; Wed, 24 Sep 2025 10:21:24 +0200
+	id 1v1Kke-0001Fi-OJ; Wed, 24 Sep 2025 10:21:24 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kkd-000Dw3-0A;
-	Wed, 24 Sep 2025 10:21:23 +0200
+	id 1v1Kkc-000Dvp-2i;
+	Wed, 24 Sep 2025 10:21:22 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 7EDEA478884;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 5C923478880;
 	Wed, 24 Sep 2025 08:21:08 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -39,11 +39,10 @@ Cc: davem@davemloft.net,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
 	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Biju Das <biju.das.jz@bp.renesas.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 16/48] can: rcar_can: BCR bitfield conversion
-Date: Wed, 24 Sep 2025 10:06:33 +0200
-Message-ID: <20250924082104.595459-17-mkl@pengutronix.de>
+Subject: [PATCH net-next 14/48] can: rcar_can: CTLR bitfield conversion
+Date: Wed, 24 Sep 2025 10:06:31 +0200
+Message-ID: <20250924082104.595459-15-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250924082104.595459-1-mkl@pengutronix.de>
 References: <20250924082104.595459-1-mkl@pengutronix.de>
@@ -61,53 +60,108 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Convert CAN Bit Configuration Register field accesses to use the
-FIELD_PREP() bitfield access macro.  While at it, fix the misspelling of
-BRP.
+Convert CAN Control Register field accesses to use the FIELD_PREP()
+bitfield access macro.  Add a few more comments and definitions while at
+it.
 
-This gets rid of custom function-like field preparation macros.
+This gets rid of explicit (and sometimes confusing) shifts.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-Link: https://patch.msgid.link/01cfaedba2be22515ba8700893ea7f113df959c0.1755857536.git.geert+renesas@glider.be
+Link: https://patch.msgid.link/077640e31949dc3c9d128a08ade94c9e9cd25672.1755857536.git.geert+renesas@glider.be
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rcar/rcar_can.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ drivers/net/can/rcar/rcar_can.c | 33 ++++++++++++++++++++-------------
+ 1 file changed, 20 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
-index 6f28dc935451..4c5c1f044691 100644
+index 7b94224bbc9b..8b4356fcd7d2 100644
 --- a/drivers/net/can/rcar/rcar_can.c
 +++ b/drivers/net/can/rcar/rcar_can.c
-@@ -152,10 +152,10 @@ static const struct can_bittiming_const rcar_can_bittiming_const = {
- #define RCAR_CAN_N_RX_MKREGS2	8
+@@ -5,6 +5,7 @@
+  * Copyright (C) 2013 Renesas Solutions Corp.
+  */
  
- /* Bit Configuration Register settings */
--#define RCAR_CAN_BCR_TSEG1(x)	(((x) & 0x0f) << 20)
--#define RCAR_CAN_BCR_BPR(x)	(((x) & 0x3ff) << 8)
--#define RCAR_CAN_BCR_SJW(x)	(((x) & 0x3) << 4)
--#define RCAR_CAN_BCR_TSEG2(x)	((x) & 0x07)
-+#define RCAR_CAN_BCR_TSEG1	GENMASK(23, 20)
-+#define RCAR_CAN_BCR_BRP	GENMASK(17, 8)
-+#define RCAR_CAN_BCR_SJW	GENMASK(5, 4)
-+#define RCAR_CAN_BCR_TSEG2	GENMASK(2, 0)
++#include <linux/bitfield.h>
+ #include <linux/bits.h>
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+@@ -115,16 +116,19 @@ static const struct can_bittiming_const rcar_can_bittiming_const = {
  
- /* Mailbox and Mask Registers bits */
- #define RCAR_CAN_IDE		BIT(31)		/* ID Extension */
-@@ -428,9 +428,10 @@ static void rcar_can_set_bittiming(struct net_device *ndev)
- 	struct can_bittiming *bt = &priv->can.bittiming;
- 	u32 bcr;
+ /* Control Register bits */
+ #define RCAR_CAN_CTLR_BOM	GENMASK(12, 11)	/* Bus-Off Recovery Mode Bits */
+-#define RCAR_CAN_CTLR_BOM_ENT	(1 << 11) /* Entry to halt mode */
+-					/* at bus-off entry */
++#define RCAR_CAN_CTLR_BOM_ENT		1	/* Entry to halt mode */
++						/* at bus-off entry */
+ #define RCAR_CAN_CTLR_SLPM	BIT(10)		/* Sleep Mode */
+ #define RCAR_CAN_CTLR_CANM	GENMASK(9, 8)	/* Operating Mode Select Bit */
+-#define RCAR_CAN_CTLR_CANM_HALT	(1 << 9)
+-#define RCAR_CAN_CTLR_CANM_RESET (1 << 8)
+-#define RCAR_CAN_CTLR_CANM_FORCE_RESET (3 << 8)
++#define RCAR_CAN_CTLR_CANM_OPER		0	/* Operation Mode */
++#define RCAR_CAN_CTLR_CANM_RESET	1	/* Reset Mode */
++#define RCAR_CAN_CTLR_CANM_HALT		2	/* Halt Mode */
++#define RCAR_CAN_CTLR_CANM_FORCE_RESET	3	/* Reset Mode (forcible) */
+ #define RCAR_CAN_CTLR_MLM	BIT(3)		/* Message Lost Mode Select */
+ #define RCAR_CAN_CTLR_IDFM	GENMASK(2, 1)	/* ID Format Mode Select Bits */
+-#define RCAR_CAN_CTLR_IDFM_MIXED (1 << 2) /* Mixed ID mode */
++#define RCAR_CAN_CTLR_IDFM_STD		0	/* Standard ID mode */
++#define RCAR_CAN_CTLR_IDFM_EXT		1	/* Extended ID mode */
++#define RCAR_CAN_CTLR_IDFM_MIXED	2	/* Mixed ID mode */
+ #define RCAR_CAN_CTLR_MBM	BIT(0)		/* Mailbox Mode select */
  
--	bcr = RCAR_CAN_BCR_TSEG1(bt->phase_seg1 + bt->prop_seg - 1) |
--	      RCAR_CAN_BCR_BPR(bt->brp - 1) | RCAR_CAN_BCR_SJW(bt->sjw - 1) |
--	      RCAR_CAN_BCR_TSEG2(bt->phase_seg2 - 1);
-+	bcr = FIELD_PREP(RCAR_CAN_BCR_TSEG1, bt->phase_seg1 + bt->prop_seg - 1) |
-+	      FIELD_PREP(RCAR_CAN_BCR_BRP, bt->brp - 1) |
-+	      FIELD_PREP(RCAR_CAN_BCR_SJW, bt->sjw - 1) |
-+	      FIELD_PREP(RCAR_CAN_BCR_TSEG2, bt->phase_seg2 - 1);
- 	/* Don't overwrite CLKR with 32-bit BCR access; CLKR has 8-bit access.
- 	 * All the registers are big-endian but they get byte-swapped on 32-bit
- 	 * read/write (but not on 8-bit, contrary to the manuals)...
+ /* Status Register bits */
+@@ -453,16 +457,17 @@ static void rcar_can_start(struct net_device *ndev)
+ 	ctlr &= ~RCAR_CAN_CTLR_SLPM;
+ 	writew(ctlr, &priv->regs->ctlr);
+ 	/* Go to reset mode */
+-	ctlr |= RCAR_CAN_CTLR_CANM_FORCE_RESET;
++	ctlr |= FIELD_PREP(RCAR_CAN_CTLR_CANM, RCAR_CAN_CTLR_CANM_FORCE_RESET);
+ 	writew(ctlr, &priv->regs->ctlr);
+ 	for (i = 0; i < MAX_STR_READS; i++) {
+ 		if (readw(&priv->regs->str) & RCAR_CAN_STR_RSTST)
+ 			break;
+ 	}
+ 	rcar_can_set_bittiming(ndev);
+-	ctlr |= RCAR_CAN_CTLR_IDFM_MIXED; /* Select mixed ID mode */
+-	ctlr |= RCAR_CAN_CTLR_BOM_ENT;	/* Entry to halt mode automatically */
+-					/* at bus-off */
++	/* Select mixed ID mode */
++	ctlr |= FIELD_PREP(RCAR_CAN_CTLR_IDFM, RCAR_CAN_CTLR_IDFM_MIXED);
++	/* Entry to halt mode automatically at bus-off */
++	ctlr |= FIELD_PREP(RCAR_CAN_CTLR_BOM, RCAR_CAN_CTLR_BOM_ENT);
+ 	ctlr |= RCAR_CAN_CTLR_MBM;	/* Select FIFO mailbox mode */
+ 	ctlr |= RCAR_CAN_CTLR_MLM;	/* Overrun mode */
+ 	writew(ctlr, &priv->regs->ctlr);
+@@ -492,7 +497,9 @@ static void rcar_can_start(struct net_device *ndev)
+ 	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+ 
+ 	/* Go to operation mode */
+-	writew(ctlr & ~RCAR_CAN_CTLR_CANM, &priv->regs->ctlr);
++	ctlr &= ~RCAR_CAN_CTLR_CANM;
++	ctlr |= FIELD_PREP(RCAR_CAN_CTLR_CANM, RCAR_CAN_CTLR_CANM_OPER);
++	writew(ctlr, &priv->regs->ctlr);
+ 	for (i = 0; i < MAX_STR_READS; i++) {
+ 		if (!(readw(&priv->regs->str) & RCAR_CAN_STR_RSTST))
+ 			break;
+@@ -553,7 +560,7 @@ static void rcar_can_stop(struct net_device *ndev)
+ 
+ 	/* Go to (force) reset mode */
+ 	ctlr = readw(&priv->regs->ctlr);
+-	ctlr |= RCAR_CAN_CTLR_CANM_FORCE_RESET;
++	ctlr |= FIELD_PREP(RCAR_CAN_CTLR_CANM, RCAR_CAN_CTLR_CANM_FORCE_RESET);
+ 	writew(ctlr, &priv->regs->ctlr);
+ 	for (i = 0; i < MAX_STR_READS; i++) {
+ 		if (readw(&priv->regs->str) & RCAR_CAN_STR_RSTST)
+@@ -847,7 +854,7 @@ static int rcar_can_suspend(struct device *dev)
+ 	netif_device_detach(ndev);
+ 
+ 	ctlr = readw(&priv->regs->ctlr);
+-	ctlr |= RCAR_CAN_CTLR_CANM_HALT;
++	ctlr |= FIELD_PREP(RCAR_CAN_CTLR_CANM, RCAR_CAN_CTLR_CANM_HALT);
+ 	writew(ctlr, &priv->regs->ctlr);
+ 	ctlr |= RCAR_CAN_CTLR_SLPM;
+ 	writew(ctlr, &priv->regs->ctlr);
 -- 
 2.51.0
 
