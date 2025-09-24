@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E679281371
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC55328468D
 	for <linux-can@vger.kernel.org>; Wed, 24 Sep 2025 08:21:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758702103; cv=none; b=SF0PUhqc5+PC2ZLEiGIRpJ/OqHVdjEh/uZmnhkYtgQfvudGsSZoBFYVHXobjlNhxc8/iPZ45rwcu24EZKd98br12oISCEZWnR2zVy12ihcsjAfboTdQwOOCwye2di3J/d1A5bwEwWwP53NljjQftSU48MYdJClxik0dBn/6J9go=
+	t=1758702103; cv=none; b=Gkc+O0DS7Mbz/GGsmA0SUHQY9W4IZuQRWm49986MuKDrKvB1cJRkZ+15RBNBJrWXCNf+cHmIqX1saCtzVK23Y0jXmcW+i8vQQIACZ5sR1ZBiXGjz8LCOxeyDto9cE5GetR9Sr/Y4o6IBvPkydvYPTMG3L/qKI9BOXS9sGIvwmhE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758702103; c=relaxed/simple;
-	bh=L4kVkseMvnicAWlbMp6SLkaM3wED+vrIdK9517ZqFtk=;
+	bh=mexw+6/QkPDCqTEUy0EXdc2mcDcdrWUzyQaUleqEZ9k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PvPl0l/bbXcxUnnQRy8pYs8FxaGNpAs5gWOpToyaGp5nnDWB4JlzyYnDo4gi1MsGGygqCq32g1mMFmGs6nUkh+rqglVhUl6hCOoiLfOdz8uDcmXi/TkEwjl0AQYOZUSlb1b3se4HFBUTpMA+nz+xVVmmrB2kiLg/f9YG/jRiYcM=
+	 MIME-Version; b=CzFYIS5f/XGCcwNc6fyLs5cFoo6q21dVjOX3aD2jpw4TSc3wEdQU0MUGGTjB6VaMU2h7GV019e2GnzWxK9LKoVieZauhlOyogQnI6lTGDw4B7aFHhQSuJo7Rr1BoWoQT2QvWsvTTT3PGJrUvHCJ/RfYG/UpRKeBhOvC5pIwdyzg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,31 +18,31 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kke-0001FN-Ei; Wed, 24 Sep 2025 10:21:24 +0200
+	id 1v1Kkd-0001E2-5H; Wed, 24 Sep 2025 10:21:23 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kkd-000Dw5-00;
-	Wed, 24 Sep 2025 10:21:23 +0200
+	id 1v1Kkc-000DvI-0e;
+	Wed, 24 Sep 2025 10:21:22 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 8ED6F478886;
-	Wed, 24 Sep 2025 08:21:08 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 106244788A2;
+	Wed, 24 Sep 2025 08:21:10 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Vincent Mailhol <mailhol@kernel.org>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 17/48] can: rcar_can: Mailbox bitfield conversion
-Date: Wed, 24 Sep 2025 10:06:34 +0200
-Message-ID: <20250924082104.595459-18-mkl@pengutronix.de>
+Subject: [PATCH net-next 31/48] can: netlink: document which symbols are FD specific
+Date: Wed, 24 Sep 2025 10:06:48 +0200
+Message-ID: <20250924082104.595459-32-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250924082104.595459-1-mkl@pengutronix.de>
 References: <20250924082104.595459-1-mkl@pengutronix.de>
@@ -58,60 +58,69 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Vincent Mailhol <mailhol@kernel.org>
 
-Convert CAN Mailbox Register field accesses to use the FIELD_PREP() and
-FIELD_GET() bitfield access macro.
+The CAN XL netlink interface will also have data bitrate and TDC
+parameters. The current FD parameters do not have a prefix in their
+names to differentiate them.
 
-This gets rid of explicit shifts, and keeps a clear separation between
-hardware register layouts and offical CAN definitions.
+Because the netlink interface is part of the UAPI, it is unfortunately
+not feasible to rename the existing symbols to add an FD_ prefix. The
+best alternative is to add a comment for each of the symbols to notify
+the reader of which parts are CAN FD specific.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://patch.msgid.link/c75c7d6ed5929c4becf7c9178cec04a0731e8ab1.1755857536.git.geert+renesas@glider.be
+While at it, fix a typo: transiver -> transceiver.
+
+Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
+Link: https://patch.msgid.link/20250923-canxl-netlink-prep-v4-3-e720d28f66fe@kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rcar/rcar_can.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ include/uapi/linux/can/netlink.h | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
-index 4c5c1f044691..de1829477659 100644
---- a/drivers/net/can/rcar/rcar_can.c
-+++ b/drivers/net/can/rcar/rcar_can.c
-@@ -160,7 +160,8 @@ static const struct can_bittiming_const rcar_can_bittiming_const = {
- /* Mailbox and Mask Registers bits */
- #define RCAR_CAN_IDE		BIT(31)		/* ID Extension */
- #define RCAR_CAN_RTR		BIT(30)		/* Remote Transmission Request */
--#define RCAR_CAN_SID_SHIFT	18
-+#define RCAR_CAN_SID		GENMASK(28, 18)	/* Standard ID */
-+#define RCAR_CAN_EID		GENMASK(28, 0)	/* Extended ID */
+diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
+index 02ec32d69474..ef62f56eaaef 100644
+--- a/include/uapi/linux/can/netlink.h
++++ b/include/uapi/linux/can/netlink.h
+@@ -101,8 +101,8 @@ struct can_ctrlmode {
+ #define CAN_CTRLMODE_PRESUME_ACK	0x40	/* Ignore missing CAN ACKs */
+ #define CAN_CTRLMODE_FD_NON_ISO		0x80	/* CAN FD in non-ISO mode */
+ #define CAN_CTRLMODE_CC_LEN8_DLC	0x100	/* Classic CAN DLC option */
+-#define CAN_CTRLMODE_TDC_AUTO		0x200	/* CAN transiver automatically calculates TDCV */
+-#define CAN_CTRLMODE_TDC_MANUAL		0x400	/* TDCV is manually set up by user */
++#define CAN_CTRLMODE_TDC_AUTO		0x200	/* FD transceiver automatically calculates TDCV */
++#define CAN_CTRLMODE_TDC_MANUAL		0x400	/* FD TDCV is manually set up by user */
  
- /* Mailbox Interrupt Enable Register 1 bits */
- #define RCAR_CAN_MIER1_RXFIE	BIT(28)		/* Receive  FIFO Interrupt Enable */
-@@ -599,9 +600,10 @@ static netdev_tx_t rcar_can_start_xmit(struct sk_buff *skb,
- 		return NETDEV_TX_OK;
+ /*
+  * CAN device statistics
+@@ -129,14 +129,14 @@ enum {
+ 	IFLA_CAN_RESTART_MS,
+ 	IFLA_CAN_RESTART,
+ 	IFLA_CAN_BERR_COUNTER,
+-	IFLA_CAN_DATA_BITTIMING,
+-	IFLA_CAN_DATA_BITTIMING_CONST,
++	IFLA_CAN_DATA_BITTIMING, /* FD */
++	IFLA_CAN_DATA_BITTIMING_CONST, /* FD */
+ 	IFLA_CAN_TERMINATION,
+ 	IFLA_CAN_TERMINATION_CONST,
+ 	IFLA_CAN_BITRATE_CONST,
+-	IFLA_CAN_DATA_BITRATE_CONST,
++	IFLA_CAN_DATA_BITRATE_CONST, /* FD */
+ 	IFLA_CAN_BITRATE_MAX,
+-	IFLA_CAN_TDC,
++	IFLA_CAN_TDC, /* FD */
+ 	IFLA_CAN_CTRLMODE_EXT,
  
- 	if (cf->can_id & CAN_EFF_FLAG)	/* Extended frame format */
--		data = (cf->can_id & CAN_EFF_MASK) | RCAR_CAN_IDE;
-+		data = FIELD_PREP(RCAR_CAN_EID, cf->can_id & CAN_EFF_MASK) |
-+		       RCAR_CAN_IDE;
- 	else				/* Standard frame format */
--		data = (cf->can_id & CAN_SFF_MASK) << RCAR_CAN_SID_SHIFT;
-+		data = FIELD_PREP(RCAR_CAN_SID, cf->can_id & CAN_SFF_MASK);
+ 	/* add new constants above here */
+@@ -145,7 +145,7 @@ enum {
+ };
  
- 	if (cf->can_id & CAN_RTR_FLAG) { /* Remote transmission request */
- 		data |= RCAR_CAN_RTR;
-@@ -656,9 +658,9 @@ static void rcar_can_rx_pkt(struct rcar_can_priv *priv)
- 
- 	data = readl(&priv->regs->mb[RCAR_CAN_RX_FIFO_MBX].id);
- 	if (data & RCAR_CAN_IDE)
--		cf->can_id = (data & CAN_EFF_MASK) | CAN_EFF_FLAG;
-+		cf->can_id = FIELD_GET(RCAR_CAN_EID, data) | CAN_EFF_FLAG;
- 	else
--		cf->can_id = (data >> RCAR_CAN_SID_SHIFT) & CAN_SFF_MASK;
-+		cf->can_id = FIELD_GET(RCAR_CAN_SID, data);
- 
- 	dlc = readb(&priv->regs->mb[RCAR_CAN_RX_FIFO_MBX].dlc);
- 	cf->len = can_cc_dlc2len(dlc);
+ /*
+- * CAN FD Transmitter Delay Compensation (TDC)
++ * CAN FD/XL Transmitter Delay Compensation (TDC)
+  *
+  * Please refer to struct can_tdc_const and can_tdc in
+  * include/linux/can/bittiming.h for further details.
 -- 
 2.51.0
 
