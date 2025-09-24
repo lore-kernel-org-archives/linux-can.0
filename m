@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4952F2848B2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 458F22820D7
 	for <linux-can@vger.kernel.org>; Wed, 24 Sep 2025 08:21:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758702105; cv=none; b=XasqsvDO+o1UGXo3sAN0qdQuzLxxFtqmaCj6CaU8RKeEJiNXuhrAHp8pHo36eSkxvER/jTixpdWeK2jlk/UUAhKLNPSxCMMCdu5SzJ/LwZsA+oNA3QqsMaiFZcBY1RCmNAzsgPQ5or0ex2H7WJVDaueipSIxAtPzUy4p6RMmdaA=
+	t=1758702105; cv=none; b=hs6m0iR8kR/pKJaSLIund43z2NBytvdEA8ElscYbr7onMifqN27JEs4h51pHn9EfiOB1bB9jCsFhriIQXopK4LHJ8pLaYjYXl/qobSf/ww94KDPqSAHgv+Ks6lXeXnIqwh6M3jbzAM+IecQwYvgN9vQ1HLNlnZqtIrYZP21cRno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758702105; c=relaxed/simple;
-	bh=TFmehwCjjPT1uv+G/Y+wI/HAxAG1kdYiXPRU/g+zkz0=;
+	bh=a//sQLZz51Y+M3k7aHkH7nytzMli7QEPQmBRLgdfCi8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lLqMs6H7lC5Rc0jPi5SEb8QV0KhCCm3eDUFhwKGvt+O9yzQCSu1xhdy0qij4zOHvJNesq13Y7DfVQ5qTNflY/7tWj5EJncb/geRh7sOrRQ7DU2tNxDJOtKgr7hkPY28c43YqNjWfHClZEuwGFV2mjg3RZK91OhmWI694AO5Puio=
+	 MIME-Version; b=Cy6UqYIHvAZvNdqGHb+e75e5MRtbUf/RSKxKXgZ+gMmh483xA2OMkgiGcu/qUcnzvN6nH40PrvsoJWvX/nqxaAEnq25Nh5J/q4PsWeMw39xqdRZtZhV/aAuQnKb6zFIq/b80TJiMs0lrjasSXSX0MdFxuDiNC3P6QWcCarZniEc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,31 +18,32 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kkd-0001E4-5M; Wed, 24 Sep 2025 10:21:23 +0200
+	id 1v1Kke-0001El-7u; Wed, 24 Sep 2025 10:21:24 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1Kkc-000DvU-1J;
-	Wed, 24 Sep 2025 10:21:22 +0200
+	id 1v1Kkd-000Dw3-0A;
+	Wed, 24 Sep 2025 10:21:23 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 20E8A4788A4;
-	Wed, 24 Sep 2025 08:21:10 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 7EDEA478884;
+	Wed, 24 Sep 2025 08:21:08 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Vincent Mailhol <mailhol@kernel.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Biju Das <biju.das.jz@bp.renesas.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 32/48] can: netlink: refactor can_validate_bittiming()
-Date: Wed, 24 Sep 2025 10:06:49 +0200
-Message-ID: <20250924082104.595459-33-mkl@pengutronix.de>
+Subject: [PATCH net-next 16/48] can: rcar_can: BCR bitfield conversion
+Date: Wed, 24 Sep 2025 10:06:33 +0200
+Message-ID: <20250924082104.595459-17-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250924082104.595459-1-mkl@pengutronix.de>
 References: <20250924082104.595459-1-mkl@pengutronix.de>
@@ -58,89 +59,55 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol@kernel.org>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Whenever can_validate_bittiming() is called, it is always preceded by
-some boilerplate code which was copy pasted all over the place. Move
-that repeated code directly inside can_validate_bittiming().
+Convert CAN Bit Configuration Register field accesses to use the
+FIELD_PREP() bitfield access macro.  While at it, fix the misspelling of
+BRP.
 
-Finally, the mempcy() is not needed: the nla attributes are four bytes
-aligned which is just enough for struct can_bittiming. Add a
-static_assert() to document that the alignment is correct and just use
-the pointer returned by nla_data() as-is.
+This gets rid of custom function-like field preparation macros.
 
-Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
-Link: https://patch.msgid.link/20250923-canxl-netlink-prep-v4-4-e720d28f66fe@kernel.org
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+Link: https://patch.msgid.link/01cfaedba2be22515ba8700893ea7f113df959c0.1755857536.git.geert+renesas@glider.be
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/netlink.c | 36 +++++++++++++++++------------------
- 1 file changed, 17 insertions(+), 19 deletions(-)
+ drivers/net/can/rcar/rcar_can.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 248f607e3864..13555253e789 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -36,13 +36,21 @@ static const struct nla_policy can_tdc_policy[IFLA_CAN_TDC_MAX + 1] = {
- 	[IFLA_CAN_TDC_TDCF] = { .type = NLA_U32 },
- };
+diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
+index 6f28dc935451..4c5c1f044691 100644
+--- a/drivers/net/can/rcar/rcar_can.c
++++ b/drivers/net/can/rcar/rcar_can.c
+@@ -152,10 +152,10 @@ static const struct can_bittiming_const rcar_can_bittiming_const = {
+ #define RCAR_CAN_N_RX_MKREGS2	8
  
--static int can_validate_bittiming(const struct can_bittiming *bt,
--				  struct netlink_ext_ack *extack)
-+static int can_validate_bittiming(struct nlattr *data[],
-+				  struct netlink_ext_ack *extack,
-+				  int ifla_can_bittiming)
- {
-+	struct can_bittiming *bt;
-+
-+	if (!data[ifla_can_bittiming])
-+		return 0;
-+
-+	static_assert(__alignof__(*bt) <= NLA_ALIGNTO);
-+	bt = nla_data(data[ifla_can_bittiming]);
-+
- 	/* sample point is in one-tenth of a percent */
- 	if (bt->sample_point >= 1000) {
- 		NL_SET_ERR_MSG(extack, "sample point must be between 0 and 100%");
--
- 		return -EINVAL;
- 	}
+ /* Bit Configuration Register settings */
+-#define RCAR_CAN_BCR_TSEG1(x)	(((x) & 0x0f) << 20)
+-#define RCAR_CAN_BCR_BPR(x)	(((x) & 0x3ff) << 8)
+-#define RCAR_CAN_BCR_SJW(x)	(((x) & 0x3) << 4)
+-#define RCAR_CAN_BCR_TSEG2(x)	((x) & 0x07)
++#define RCAR_CAN_BCR_TSEG1	GENMASK(23, 20)
++#define RCAR_CAN_BCR_BRP	GENMASK(17, 8)
++#define RCAR_CAN_BCR_SJW	GENMASK(5, 4)
++#define RCAR_CAN_BCR_TSEG2	GENMASK(2, 0)
  
-@@ -105,14 +113,9 @@ static int can_validate(struct nlattr *tb[], struct nlattr *data[],
- 		}
- 	}
+ /* Mailbox and Mask Registers bits */
+ #define RCAR_CAN_IDE		BIT(31)		/* ID Extension */
+@@ -428,9 +428,10 @@ static void rcar_can_set_bittiming(struct net_device *ndev)
+ 	struct can_bittiming *bt = &priv->can.bittiming;
+ 	u32 bcr;
  
--	if (data[IFLA_CAN_BITTIMING]) {
--		struct can_bittiming bt;
--
--		memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
--		err = can_validate_bittiming(&bt, extack);
--		if (err)
--			return err;
--	}
-+	err = can_validate_bittiming(data, extack, IFLA_CAN_BITTIMING);
-+	if (err)
-+		return err;
- 
- 	if (is_can_fd) {
- 		if (!data[IFLA_CAN_BITTIMING] || !data[IFLA_CAN_DATA_BITTIMING])
-@@ -124,14 +127,9 @@ static int can_validate(struct nlattr *tb[], struct nlattr *data[],
- 			return -EOPNOTSUPP;
- 	}
- 
--	if (data[IFLA_CAN_DATA_BITTIMING]) {
--		struct can_bittiming bt;
--
--		memcpy(&bt, nla_data(data[IFLA_CAN_DATA_BITTIMING]), sizeof(bt));
--		err = can_validate_bittiming(&bt, extack);
--		if (err)
--			return err;
--	}
-+	err = can_validate_bittiming(data, extack, IFLA_CAN_DATA_BITTIMING);
-+	if (err)
-+		return err;
- 
- 	return 0;
- }
+-	bcr = RCAR_CAN_BCR_TSEG1(bt->phase_seg1 + bt->prop_seg - 1) |
+-	      RCAR_CAN_BCR_BPR(bt->brp - 1) | RCAR_CAN_BCR_SJW(bt->sjw - 1) |
+-	      RCAR_CAN_BCR_TSEG2(bt->phase_seg2 - 1);
++	bcr = FIELD_PREP(RCAR_CAN_BCR_TSEG1, bt->phase_seg1 + bt->prop_seg - 1) |
++	      FIELD_PREP(RCAR_CAN_BCR_BRP, bt->brp - 1) |
++	      FIELD_PREP(RCAR_CAN_BCR_SJW, bt->sjw - 1) |
++	      FIELD_PREP(RCAR_CAN_BCR_TSEG2, bt->phase_seg2 - 1);
+ 	/* Don't overwrite CLKR with 32-bit BCR access; CLKR has 8-bit access.
+ 	 * All the registers are big-endian but they get byte-swapped on 32-bit
+ 	 * read/write (but not on 8-bit, contrary to the manuals)...
 -- 
 2.51.0
 
