@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC68A2FB975
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 133752FDC5F
 	for <linux-can@vger.kernel.org>; Thu, 25 Sep 2025 12:13:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758802438; cv=none; b=rS2QMox2ufPdeuokxOS/D6vfihFEVWPW26xrL8E4027EKmLiqtk6624eCOMsM8Lr4D9sMHL4sqzxsxjtzmwVuRABRBKzmCKr7VwndlP8sjqNOFGpOrOLwg5cLZNiDfhoUrD3mNg9DC1qsGagN9HULJlZiLdJze88fE3Uy5iJh7Y=
+	t=1758802438; cv=none; b=j9/BmEnb0cOokG2eqj3s5s2EHVesOJnSp/4RO5OYIPBEUGHQeEDFZMSDZM11cScOfRrMGyYmd3YmH2ztGAd3T6EsLf3uE53dzUxCguQWFMewZSsg0vB4qHrjc6d8KmptZOi1W8lZ4pYJ1pfb58yxcWkZag2Dqj+4u1+9Fgiqn+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758802438; c=relaxed/simple;
-	bh=M/ntwWkRcMSeeAuxA1GvbveI4LPTahtD5a0uxKFl5Qk=;
+	bh=0NhSBlMJgJLDr7UonSIPqfR92ku9IKOwdbISsJOfkh8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ly7RS9jNDzw0lGpdTvb4/EnI9+h8gBPnSkiKJnLJp/wrs6ebj68BoPdQiqa/UgrVVN76H5GOspRKL8/Z3A22wbqcKu/LZs4k3cCZJqoLDwSJQYqQ13oz4DricsRwy4kR1tk0F72d3lrl+0C4tKq/++/Tuw6EKMqzONYbJBXNXDA=
+	 MIME-Version; b=tdPVHodKTXaZNT8d4j0xwnkOu63/If1/gKfLlodMXOZIqnvzTl4sGu9JHTnAbwjVkx9dfJpJaMD9m7rm2nqcd1iILjCmWFQxwBUc6wPpxogghRko/uc9upO+93rQz/sisEAfxK1DDEXOoyF8ixopxVYiuUKoJr9QzQhbK41ah8s=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,19 +18,19 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1kqu-0000Vo-Gv; Thu, 25 Sep 2025 14:13:36 +0200
+	id 1v1kqu-0000Vu-I4; Thu, 25 Sep 2025 14:13:36 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1kqt-000PvZ-2i;
-	Thu, 25 Sep 2025 14:13:35 +0200
+	id 1v1kqu-000Pvk-0R;
+	Thu, 25 Sep 2025 14:13:36 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 93B6F479977;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id D7C9447997B;
 	Thu, 25 Sep 2025 12:13:35 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -40,9 +40,9 @@ Cc: davem@davemloft.net,
 	kernel@pengutronix.de,
 	Geert Uytterhoeven <geert+renesas@glider.be>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 11/48] can: rcar_can: Convert to Runtime PM
-Date: Thu, 25 Sep 2025 14:07:48 +0200
-Message-ID: <20250925121332.848157-12-mkl@pengutronix.de>
+Subject: [PATCH net-next 15/48] can: rcar_can: TFCR bitfield conversion
+Date: Thu, 25 Sep 2025 14:07:52 +0200
+Message-ID: <20250925121332.848157-16-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250925121332.848157-1-mkl@pengutronix.de>
 References: <20250925121332.848157-1-mkl@pengutronix.de>
@@ -60,171 +60,44 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-The R-Car CAN module is part of a Clock Domain on all supported SoCs.
-Hence convert its driver from explicit clock management to Runtime PM.
+Convert CAN Transmit FIFO Control Register field accesses to use the
+FIELD_GET() bitfield access macro.
 
-While at it, use %pe to format error codes.
+This gets rid of an explicit shift.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://patch.msgid.link/68bfa5480a79c17c6ceec4fb073f33872e7ff5d0.1755857536.git.geert+renesas@glider.be
+Link: https://patch.msgid.link/a8b1dc6f1249a01af9b691ca59e2e5cc2dba6d44.1755857536.git.geert+renesas@glider.be
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rcar/rcar_can.c | 48 ++++++++++++++++-----------------
- 1 file changed, 24 insertions(+), 24 deletions(-)
+ drivers/net/can/rcar/rcar_can.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
-index 57030992141c..15dbaa52a7b1 100644
+index 8b4356fcd7d2..6f28dc935451 100644
 --- a/drivers/net/can/rcar/rcar_can.c
 +++ b/drivers/net/can/rcar/rcar_can.c
-@@ -16,6 +16,7 @@
- #include <linux/can/dev.h>
- #include <linux/clk.h>
- #include <linux/of.h>
-+#include <linux/pm_runtime.h>
+@@ -145,8 +145,6 @@ static const struct can_bittiming_const rcar_can_bittiming_const = {
+ /* Transmit FIFO Control Register bits */
+ #define RCAR_CAN_TFCR_TFUST	GENMASK(3, 1)	/* Transmit FIFO Unsent Message */
+ 						/* Number Status Bits */
+-#define RCAR_CAN_TFCR_TFUST_SHIFT 1		/* Offset of Transmit FIFO Unsent */
+-						/* Message Number Status Bits */
+ #define RCAR_CAN_TFCR_TFE	BIT(0)		/* Transmit FIFO Enable */
  
- #define RCAR_CAN_DRV_NAME	"rcar_can"
+ #define RCAR_CAN_N_RX_MKREGS1	2		/* Number of mask registers */
+@@ -377,10 +375,9 @@ static void rcar_can_tx_done(struct net_device *ndev)
+ 	u8 isr;
  
-@@ -92,7 +93,6 @@ struct rcar_can_priv {
- 	struct net_device *ndev;
- 	struct napi_struct napi;
- 	struct rcar_can_regs __iomem *regs;
--	struct clk *clk;
- 	struct clk *can_clk;
- 	u32 tx_head;
- 	u32 tx_tail;
-@@ -506,18 +506,17 @@ static int rcar_can_open(struct net_device *ndev)
- 	struct rcar_can_priv *priv = netdev_priv(ndev);
- 	int err;
+ 	while (1) {
+-		u8 unsent = readb(&priv->regs->tfcr);
++		u8 unsent = FIELD_GET(RCAR_CAN_TFCR_TFUST,
++			    readb(&priv->regs->tfcr));
  
--	err = clk_prepare_enable(priv->clk);
-+	err = pm_runtime_resume_and_get(ndev->dev.parent);
- 	if (err) {
--		netdev_err(ndev,
--			   "failed to enable peripheral clock, error %d\n",
--			   err);
-+		netdev_err(ndev, "pm_runtime_resume_and_get() failed %pe\n",
-+			   ERR_PTR(err));
- 		goto out;
- 	}
- 	err = clk_prepare_enable(priv->can_clk);
- 	if (err) {
- 		netdev_err(ndev, "failed to enable CAN clock, error %d\n",
- 			   err);
--		goto out_clock;
-+		goto out_rpm;
- 	}
- 	err = open_candev(ndev);
- 	if (err) {
-@@ -539,8 +538,8 @@ static int rcar_can_open(struct net_device *ndev)
- 	close_candev(ndev);
- out_can_clock:
- 	clk_disable_unprepare(priv->can_clk);
--out_clock:
--	clk_disable_unprepare(priv->clk);
-+out_rpm:
-+	pm_runtime_put(ndev->dev.parent);
- out:
- 	return err;
- }
-@@ -578,7 +577,7 @@ static int rcar_can_close(struct net_device *ndev)
- 	free_irq(ndev->irq, ndev);
- 	napi_disable(&priv->napi);
- 	clk_disable_unprepare(priv->can_clk);
--	clk_disable_unprepare(priv->clk);
-+	pm_runtime_put(ndev->dev.parent);
- 	close_candev(ndev);
- 	return 0;
- }
-@@ -721,12 +720,15 @@ static int rcar_can_get_berr_counter(const struct net_device *ndev,
- 	struct rcar_can_priv *priv = netdev_priv(ndev);
- 	int err;
- 
--	err = clk_prepare_enable(priv->clk);
-+	err = pm_runtime_resume_and_get(ndev->dev.parent);
- 	if (err)
- 		return err;
-+
- 	bec->txerr = readb(&priv->regs->tecr);
- 	bec->rxerr = readb(&priv->regs->recr);
--	clk_disable_unprepare(priv->clk);
-+
-+	pm_runtime_put(ndev->dev.parent);
-+
- 	return 0;
- }
- 
-@@ -770,13 +772,6 @@ static int rcar_can_probe(struct platform_device *pdev)
- 
- 	priv = netdev_priv(ndev);
- 
--	priv->clk = devm_clk_get(dev, "clkp1");
--	if (IS_ERR(priv->clk)) {
--		err = PTR_ERR(priv->clk);
--		dev_err(dev, "cannot get peripheral clock, error %d\n", err);
--		goto fail_clk;
--	}
--
- 	if (!(BIT(clock_select) & RCAR_SUPPORTED_CLOCKS)) {
- 		err = -EINVAL;
- 		dev_err(dev, "invalid CAN clock selected\n");
-@@ -806,16 +801,20 @@ static int rcar_can_probe(struct platform_device *pdev)
- 
- 	netif_napi_add_weight(ndev, &priv->napi, rcar_can_rx_poll,
- 			      RCAR_CAN_NAPI_WEIGHT);
-+
-+	pm_runtime_enable(dev);
-+
- 	err = register_candev(ndev);
- 	if (err) {
- 		dev_err(dev, "register_candev() failed, error %d\n", err);
--		goto fail_candev;
-+		goto fail_rpm;
- 	}
- 
- 	dev_info(dev, "device registered (IRQ%d)\n", ndev->irq);
- 
- 	return 0;
--fail_candev:
-+fail_rpm:
-+	pm_runtime_disable(dev);
- 	netif_napi_del(&priv->napi);
- fail_clk:
- 	free_candev(ndev);
-@@ -829,6 +828,7 @@ static void rcar_can_remove(struct platform_device *pdev)
- 	struct rcar_can_priv *priv = netdev_priv(ndev);
- 
- 	unregister_candev(ndev);
-+	pm_runtime_disable(&pdev->dev);
- 	netif_napi_del(&priv->napi);
- 	free_candev(ndev);
- }
-@@ -852,22 +852,22 @@ static int rcar_can_suspend(struct device *dev)
- 	writew(ctlr, &priv->regs->ctlr);
- 	priv->can.state = CAN_STATE_SLEEPING;
- 
--	clk_disable(priv->clk);
-+	pm_runtime_put(dev);
- 	return 0;
- }
- 
- static int rcar_can_resume(struct device *dev)
- {
- 	struct net_device *ndev = dev_get_drvdata(dev);
--	struct rcar_can_priv *priv = netdev_priv(ndev);
- 	int err;
- 
- 	if (!netif_running(ndev))
- 		return 0;
- 
--	err = clk_enable(priv->clk);
-+	err = pm_runtime_resume_and_get(dev);
- 	if (err) {
--		netdev_err(ndev, "clk_enable() failed, error %d\n", err);
-+		netdev_err(ndev, "pm_runtime_resume_and_get() failed %pe\n",
-+			   ERR_PTR(err));
- 		return err;
- 	}
- 
+-		unsent = (unsent & RCAR_CAN_TFCR_TFUST) >>
+-			  RCAR_CAN_TFCR_TFUST_SHIFT;
+ 		if (priv->tx_head - priv->tx_tail <= unsent)
+ 			break;
+ 		stats->tx_packets++;
 -- 
 2.51.0
 
