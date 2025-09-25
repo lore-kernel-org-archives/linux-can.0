@@ -1,15 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC15D27FB3C
-	for <linux-can@vger.kernel.org>; Thu, 25 Sep 2025 12:13:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A2542FDC49
+	for <linux-can@vger.kernel.org>; Thu, 25 Sep 2025 12:13:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758802431; cv=none; b=NriD2RkhOkU4yonbER0wIT+BKh6E4roFzRq3WwwQE/F0MClUggTN4YZpCudX+YXXpW9ZSPZl/raeb8Mg5UC5QDz82Q5MIIvPTSHt9S+tOqywVKnIvF3GLyj+O978D2UBicrQXi+hBVUM0+vAiuVn+m2gQgSVfwRrPnrJSnVdmLI=
+	t=1758802438; cv=none; b=a1LRPYzEsAq4cLqnDaM6fGyzbEKuBYPzcB77xvIBc4MMYedNDP4OyW4gT+r+GeMXTgmdCWcrXRenHrezWUNB0GFwut4stpqvXySrouWi2S00NwiVAirOzx7JSDXxj8Ps6oujQx78A1cS+jGUwtO5keUJu+xa72osUJorw6WVNbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758802431; c=relaxed/simple;
-	bh=DFdiWmdao7KZo7AIIDbKusbCSJDpJqQ95DfmvrCBdqo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=sxpnXW6l2rQREzUDS4DE+idCrc5WvGgDPCC3JzNZpw7JSxiiqS8ZX133llTWoXp4r+6OPh5ylvjBSCRY59fvs3Vng4NXRmEi09TihrA1EzdZ9vfEsrrgbXceuaea25UccGUpC77QtGROTX8i2d5ToiatZ239QT9Wyi2HU8Nf+gs=
+	s=arc-20240116; t=1758802438; c=relaxed/simple;
+	bh=L4kVkseMvnicAWlbMp6SLkaM3wED+vrIdK9517ZqFtk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=gJp1swAGOmEPqvko7qFYWPUmJ5cuuEiQagMXglposqowmBsmPu5YUKcFLXqyQp5sB89m3m9TIKoka0tjVYBznuYCjAyI6Yn11SbYRJJ4rnB69FigSbJ8H+oqj0hSCkuqfEcWPet1/x5asQ53+6d7+6RxxgDWcm6LsdqFu4naa18=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -17,189 +18,100 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1kqu-0000Vc-BO; Thu, 25 Sep 2025 14:13:36 +0200
+	id 1v1kqu-0000Vv-Hr; Thu, 25 Sep 2025 14:13:36 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1kqt-000Pv7-0h;
-	Thu, 25 Sep 2025 14:13:35 +0200
+	id 1v1kqu-000Pvm-0g;
+	Thu, 25 Sep 2025 14:13:36 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id C523D47996C;
-	Thu, 25 Sep 2025 12:13:34 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id EF72A47997D;
+	Thu, 25 Sep 2025 12:13:35 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
-	kernel@pengutronix.de
-Subject: [PATCH net-next 0/48] pull-request: can-next 2025-09-25
-Date: Thu, 25 Sep 2025 14:07:37 +0200
-Message-ID: <20250925121332.848157-1-mkl@pengutronix.de>
+	kernel@pengutronix.de,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 17/48] can: rcar_can: Mailbox bitfield conversion
+Date: Thu, 25 Sep 2025 14:07:54 +0200
+Message-ID: <20250925121332.848157-18-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20250925121332.848157-1-mkl@pengutronix.de>
+References: <20250925121332.848157-1-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Hello netdev-team,
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-this is a pull request of 48 patches for net-next/main, which
-supersedes tags/linux-can-next-for-6.18-20250923.
+Convert CAN Mailbox Register field accesses to use the FIELD_PREP() and
+FIELD_GET() bitfield access macro.
 
-The 1st patch is by Xichao Zhao and converts ns_to_ktime() to
-us_to_ktime() in the m_can driver.
+This gets rid of explicit shifts, and keeps a clear separation between
+hardware register layouts and offical CAN definitions.
 
-Vincent Mailhol contributes 2 patches: Updating the MAINTAINERS and
-mailmap files to Vincent's new email address and sorting the includes
-in the CAN helper library alphabeticaly.
-
-Stéphane Grosjean's patch modifies all peak CAN drivers and the
-mailmap to reflect Stéphane's new email address.
-
-4 patches by Biju Das update the CAN-FD handling in the rcar_canfd
-driver.
-
-Followed by 11 patches by Geert Uytterhoeven updating and improving
-the rcar_can driver.
-
-Stefan Mätje contributes 2 patches for the esd_usb driver updating the
-error messages.
-
-The next 3 patch series are all by Vincent Mailhol: 3 patches to
-optimize the size of struct raw_sock and struct uniqframe. 4 patches
-which rework the CAN MTU logic as preparation for CAN-XL interfaces.
-And finally 20 patches that prepare and refactor the CAN netlink code
-for the upcoming CAN-XL support.
-
-regards,
-Marc
-
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://patch.msgid.link/c75c7d6ed5929c4becf7c9178cec04a0731e8ab1.1755857536.git.geert+renesas@glider.be
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/rcar/rcar_can.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-The following changes since commit fc006f5478fcf07d79b35e9dcdc51ecd11a6bf82:
+diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
+index 4c5c1f044691..de1829477659 100644
+--- a/drivers/net/can/rcar/rcar_can.c
++++ b/drivers/net/can/rcar/rcar_can.c
+@@ -160,7 +160,8 @@ static const struct can_bittiming_const rcar_can_bittiming_const = {
+ /* Mailbox and Mask Registers bits */
+ #define RCAR_CAN_IDE		BIT(31)		/* ID Extension */
+ #define RCAR_CAN_RTR		BIT(30)		/* Remote Transmission Request */
+-#define RCAR_CAN_SID_SHIFT	18
++#define RCAR_CAN_SID		GENMASK(28, 18)	/* Standard ID */
++#define RCAR_CAN_EID		GENMASK(28, 0)	/* Extended ID */
+ 
+ /* Mailbox Interrupt Enable Register 1 bits */
+ #define RCAR_CAN_MIER1_RXFIE	BIT(28)		/* Receive  FIFO Interrupt Enable */
+@@ -599,9 +600,10 @@ static netdev_tx_t rcar_can_start_xmit(struct sk_buff *skb,
+ 		return NETDEV_TX_OK;
+ 
+ 	if (cf->can_id & CAN_EFF_FLAG)	/* Extended frame format */
+-		data = (cf->can_id & CAN_EFF_MASK) | RCAR_CAN_IDE;
++		data = FIELD_PREP(RCAR_CAN_EID, cf->can_id & CAN_EFF_MASK) |
++		       RCAR_CAN_IDE;
+ 	else				/* Standard frame format */
+-		data = (cf->can_id & CAN_SFF_MASK) << RCAR_CAN_SID_SHIFT;
++		data = FIELD_PREP(RCAR_CAN_SID, cf->can_id & CAN_SFF_MASK);
+ 
+ 	if (cf->can_id & CAN_RTR_FLAG) { /* Remote transmission request */
+ 		data |= RCAR_CAN_RTR;
+@@ -656,9 +658,9 @@ static void rcar_can_rx_pkt(struct rcar_can_priv *priv)
+ 
+ 	data = readl(&priv->regs->mb[RCAR_CAN_RX_FIFO_MBX].id);
+ 	if (data & RCAR_CAN_IDE)
+-		cf->can_id = (data & CAN_EFF_MASK) | CAN_EFF_FLAG;
++		cf->can_id = FIELD_GET(RCAR_CAN_EID, data) | CAN_EFF_FLAG;
+ 	else
+-		cf->can_id = (data >> RCAR_CAN_SID_SHIFT) & CAN_SFF_MASK;
++		cf->can_id = FIELD_GET(RCAR_CAN_SID, data);
+ 
+ 	dlc = readb(&priv->regs->mb[RCAR_CAN_RX_FIFO_MBX].dlc);
+ 	cf->len = can_cc_dlc2len(dlc);
+-- 
+2.51.0
 
-  net: phy: micrel: Update Kconfig help text (2025-09-12 17:34:27 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-6.18-20250924
-
-for you to fetch changes up to 896d52af944107c0644c12378741af9a3834c514:
-
-  Merge patch series "can: netlink: preparation before introduction of CAN XL step 3/3" (2025-09-24 17:10:01 +0200)
-
-----------------------------------------------------------------
-linux-can-next-for-6.18-20250924
-
-----------------------------------------------------------------
-Biju Das (4):
-      can: rcar_canfd: Update bit rate constants for RZ/G3E and R-Car Gen4
-      can: rcar_canfd: Update RCANFD_CFG_* macros
-      can: rcar_canfd: Simplify nominal bit rate config
-      can: rcar_canfd: Simplify data bit rate config
-
-Geert Uytterhoeven (11):
-      can: rcar_can: Consistently use ndev for net_device pointers
-      can: rcar_can: Add helper variable dev to rcar_can_probe()
-      can: rcar_can: Convert to Runtime PM
-      can: rcar_can: Convert to BIT()
-      can: rcar_can: Convert to GENMASK()
-      can: rcar_can: CTLR bitfield conversion
-      can: rcar_can: TFCR bitfield conversion
-      can: rcar_can: BCR bitfield conversion
-      can: rcar_can: Mailbox bitfield conversion
-      can: rcar_can: Do not print alloc_candev() failures
-      can: rcar_can: Convert to %pe
-
-Marc Kleine-Budde (6):
-      Merge patch series "can: rcar_canfd: R-Car CANFD Improvements"
-      Merge patch series "can: rcar_can: Miscellaneous cleanups and improvements"
-      Merge patch series "can: esd_usb: Fixes and improvements"
-      Merge patch series "can: raw: optimize the sizes of struct uniqframe and struct raw_sock"
-      Merge patch series "can: rework the CAN MTU logic (CAN XL preparation step 2/3)"
-      Merge patch series "can: netlink: preparation before introduction of CAN XL step 3/3"
-
-Stefan Mätje (2):
-      can: esd_usb: Rework display of error messages
-      can: esd_usb: Avoid errors triggered from USB disconnect
-
-Stéphane Grosjean (1):
-      can: peak: Modification of references to email accounts being deleted
-
-Vincent Mailhol (29):
-      MAINTAINERS: update Vincent Mailhol's email address
-      can: dev: sort includes by alphabetical order
-      can: raw: reorder struct uniqframe's members to optimise packing
-      can: raw: use bitfields to store flags in struct raw_sock
-      can: raw: reorder struct raw_sock's members to optimise packing
-      can: annotate mtu accesses with READ_ONCE()
-      can: dev: turn can_set_static_ctrlmode() into a non-inline function
-      can: populate the minimum and maximum MTU values
-      can: enable CAN XL for virtual CAN devices by default
-      can: dev: move struct data_bittiming_params to linux/can/bittiming.h
-      can: dev: make can_get_relative_tdco() FD agnostic and move it to bittiming.h
-      can: netlink: document which symbols are FD specific
-      can: netlink: refactor can_validate_bittiming()
-      can: netlink: add can_validate_tdc()
-      can: netlink: add can_validate_databittiming()
-      can: netlink: refactor CAN_CTRLMODE_TDC_{AUTO,MANUAL} flag reset logic
-      can: netlink: remove useless check in can_tdc_changelink()
-      can: netlink: make can_tdc_changelink() FD agnostic
-      can: netlink: add can_dtb_changelink()
-      can: netlink: add can_ctrlmode_changelink()
-      can: netlink: make can_tdc_get_size() FD agnostic
-      can: netlink: add can_data_bittiming_get_size()
-      can: netlink: add can_bittiming_fill_info()
-      can: netlink: add can_bittiming_const_fill_info()
-      can: netlink: add can_bitrate_const_fill_info()
-      can: netlink: make can_tdc_fill_info() FD agnostic
-      can: calc_bittiming: make can_calc_tdco() FD agnostic
-      can: dev: add can_get_ctrlmode_str()
-      can: netlink: add userland error messages
-
-Xichao Zhao (1):
-      can: m_can: use us_to_ktime() where appropriate
-
- .mailmap                                      |   3 +
- MAINTAINERS                                   |   4 +-
- drivers/net/can/dev/calc_bittiming.c          |  10 +-
- drivers/net/can/dev/dev.c                     |  80 +++-
- drivers/net/can/dev/netlink.c                 | 628 ++++++++++++++++----------
- drivers/net/can/m_can/m_can.c                 |   6 +-
- drivers/net/can/peak_canfd/peak_canfd.c       |   4 +-
- drivers/net/can/peak_canfd/peak_canfd_user.h  |   4 +-
- drivers/net/can/peak_canfd/peak_pciefd_main.c |   6 +-
- drivers/net/can/rcar/rcar_can.c               | 290 ++++++------
- drivers/net/can/rcar/rcar_canfd.c             |  84 ++--
- drivers/net/can/sja1000/peak_pci.c            |   6 +-
- drivers/net/can/sja1000/peak_pcmcia.c         |   8 +-
- drivers/net/can/usb/esd_usb.c                 |  64 ++-
- drivers/net/can/usb/peak_usb/pcan_usb.c       |   6 +-
- drivers/net/can/usb/peak_usb/pcan_usb_core.c  |   6 +-
- drivers/net/can/usb/peak_usb/pcan_usb_core.h  |   4 +-
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c    |   3 +-
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c   |   4 +-
- drivers/net/can/usb/peak_usb/pcan_usb_pro.h   |   4 +-
- drivers/net/can/vcan.c                        |   2 +-
- drivers/net/can/vxcan.c                       |   2 +-
- include/linux/can/bittiming.h                 |  48 +-
- include/linux/can/dev.h                       |  66 +--
- include/linux/can/dev/peak_canfd.h            |   4 +-
- include/uapi/linux/can/netlink.h              |  14 +-
- net/can/af_can.c                              |   2 +-
- net/can/isotp.c                               |   2 +-
- net/can/raw.c                                 |  67 +--
- 29 files changed, 848 insertions(+), 583 deletions(-)
