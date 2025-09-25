@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5391E303C87
-	for <linux-can@vger.kernel.org>; Thu, 25 Sep 2025 12:14:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17DC5301701
+	for <linux-can@vger.kernel.org>; Thu, 25 Sep 2025 12:14:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758802452; cv=none; b=iv0ZXIyi97k8kxeSTND87tSWy2kT+QyhtnM4kQBd0DFaOe7Pv2QJxzgGlTR4fsaU67ifHJTkgXD+wbOwUAmeI5LCffyJOUxAyS1JV1NghaqfWiZ63ejJXLmn48b9w8on7JrlnSVQYOVgY/zWDWsw9gSh6OBvVK36xGfqoOU/ing=
+	t=1758802452; cv=none; b=q7ac+HXGQBW6RvI52ZIlp2DYH5m9sNzImhhzg39cnedqmQGJA76K0UGAAjKrSTq3ZZi/63A1Ys8BQ4SHTOVmril3fKJ3PUwzRAtubwfBM54lHc+MbxO3SJOpblBfToE9OF8XHs24q0tD+KFGCL8ZyQ5UxWFcdshQC1WdCiJGiuc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758802452; c=relaxed/simple;
-	bh=ZsRn1kYwmWIpw0KCPyxiPnVwumVZWhRuYbI8+uIPMcM=;
+	bh=jASTsnIK7OTgRD4LiCCD2seVMSpdQs0xI3XkrxGHFZ0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UBBbmZJAdoJIGhs4zKvW4rNVZrHWibyP6ssXhnF+CPjQ5aaVZmoLCbCNr9aHwTvpOmh5hVFo6pQje7+tsYU/sS08MrHoEzu3AG/AZkSkcgYGJwHe7j2SkRWJV6+yChitul+P/eu6k7BYzeCAA6H+XZWQDuxDMnEfSiPV/SmFTgk=
+	 MIME-Version; b=T1pcq1HP4cnmSc6aWAaoQDqDanuZEwDRQPGvmYKbU1zQvLylKbUQW+KNBMQY09Cs8wQMbuFKEX50y7bNyo01Zd04z63MquJrPceCSw/e/jFdWMi+tNnKNlyWn64x4w1lnxJzRdCtdDza3h7AiD8XXsBLc32XC9XOxdhhXuDrkck=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,20 +18,20 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1kqw-0000YJ-DC; Thu, 25 Sep 2025 14:13:38 +0200
+	id 1v1kqu-0000Ve-BN; Thu, 25 Sep 2025 14:13:36 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1kqv-000Pwi-07;
-	Thu, 25 Sep 2025 14:13:37 +0200
+	id 1v1kqt-000Pv9-15;
+	Thu, 25 Sep 2025 14:13:35 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id C6617479989;
-	Thu, 25 Sep 2025 12:13:36 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id EC1D947996E;
+	Thu, 25 Sep 2025 12:13:34 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -40,9 +40,9 @@ Cc: davem@davemloft.net,
 	kernel@pengutronix.de,
 	Vincent Mailhol <mailhol@kernel.org>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 29/48] can: dev: move struct data_bittiming_params to linux/can/bittiming.h
-Date: Thu, 25 Sep 2025 14:08:06 +0200
-Message-ID: <20250925121332.848157-30-mkl@pengutronix.de>
+Subject: [PATCH net-next 02/48] MAINTAINERS: update Vincent Mailhol's email address
+Date: Thu, 25 Sep 2025 14:07:39 +0200
+Message-ID: <20250925121332.848157-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250925121332.848157-1-mkl@pengutronix.de>
 References: <20250925121332.848157-1-mkl@pengutronix.de>
@@ -60,71 +60,62 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol@kernel.org>
 
-In commit b803c4a4f788 ("can: dev: add struct data_bittiming_params to
-group FD parameters"), struct data_bittiming_params was put into
-linux/can/dev.h.
+Now that I have received my kernel.org account, I am changing my email
+address from mailhol.vincent@wanadoo.fr to mailhol@kernel.org. The
+wanadoo.fr address was my first email which I created when I was a kid
+and has a special meaning to me, but it is restricted to a maximum of
+50 messages per hour which starts to be problematic on threads where
+many people are CC-ed.
 
-This structure being a collection of bittiming parameters, on second
-thought, bittiming.h is actually a better location. This way, users of
-struct data_bittiming_params will not have to forcefully include
-linux/can/dev.h thus removing some complexity and reducing the risk of
-circular dependencies in headers.
+Update all the MAINTAINERS entries accordingly and map the old address
+to the new one.
 
-Move struct data_bittiming_params from linux/can/dev.h to
-linux/can/bittiming.h.
+I remain reachable from my old address. The different copyright
+notices mentioning my old address are kept as-is for the moment. I
+will update those one at a time only if I need to touch those files.
 
 Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
-Link: https://patch.msgid.link/20250923-canxl-netlink-prep-v4-1-e720d28f66fe@kernel.org
+Link: https://patch.msgid.link/20250826105255.35501-2-mailhol@kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- include/linux/can/bittiming.h | 11 +++++++++++
- include/linux/can/dev.h       | 11 -----------
- 2 files changed, 11 insertions(+), 11 deletions(-)
+ .mailmap    | 1 +
+ MAINTAINERS | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
-index 5dfdbb63b1d5..6572ec1712ca 100644
---- a/include/linux/can/bittiming.h
-+++ b/include/linux/can/bittiming.h
-@@ -114,6 +114,17 @@ struct can_tdc_const {
- 	u32 tdcf_max;
- };
+diff --git a/.mailmap b/.mailmap
+index aa09e792017f..4a5f2c8deeff 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -816,6 +816,7 @@ Veera Sundaram Sankaran <quic_veeras@quicinc.com> <veeras@codeaurora.org>
+ Veerabhadrarao Badiganti <quic_vbadigan@quicinc.com> <vbadigan@codeaurora.org>
+ Venkateswara Naralasetty <quic_vnaralas@quicinc.com> <vnaralas@codeaurora.org>
+ Vikash Garodia <quic_vgarodia@quicinc.com> <vgarodia@codeaurora.org>
++Vincent Mailhol <mailhol@kernel.org> <mailhol.vincent@wanadoo.fr>
+ Vinod Koul <vkoul@kernel.org> <vinod.koul@intel.com>
+ Vinod Koul <vkoul@kernel.org> <vinod.koul@linux.intel.com>
+ Vinod Koul <vkoul@kernel.org> <vkoul@infradead.org>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index c930a961435e..65c0addba48a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5417,7 +5417,7 @@ F:	net/sched/sch_cake.c
  
-+struct data_bittiming_params {
-+	const struct can_bittiming_const *data_bittiming_const;
-+	struct can_bittiming data_bittiming;
-+	const struct can_tdc_const *tdc_const;
-+	struct can_tdc tdc;
-+	const u32 *data_bitrate_const;
-+	unsigned int data_bitrate_const_cnt;
-+	int (*do_set_data_bittiming)(struct net_device *dev);
-+	int (*do_get_auto_tdcv)(const struct net_device *dev, u32 *tdcv);
-+};
-+
- #ifdef CONFIG_CAN_CALC_BITTIMING
- int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 		       const struct can_bittiming_const *btc, struct netlink_ext_ack *extack);
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 3354f70ed2c6..c2fe956ab776 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -38,17 +38,6 @@ enum can_termination_gpio {
- 	CAN_TERMINATION_GPIO_MAX,
- };
+ CAN NETWORK DRIVERS
+ M:	Marc Kleine-Budde <mkl@pengutronix.de>
+-M:	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
++M:	Vincent Mailhol <mailhol@kernel.org>
+ L:	linux-can@vger.kernel.org
+ S:	Maintained
+ W:	https://github.com/linux-can
+@@ -9080,7 +9080,7 @@ S:	Odd Fixes
+ F:	drivers/net/ethernet/agere/
  
--struct data_bittiming_params {
--	const struct can_bittiming_const *data_bittiming_const;
--	struct can_bittiming data_bittiming;
--	const struct can_tdc_const *tdc_const;
--	struct can_tdc tdc;
--	const u32 *data_bitrate_const;
--	unsigned int data_bitrate_const_cnt;
--	int (*do_set_data_bittiming)(struct net_device *dev);
--	int (*do_get_auto_tdcv)(const struct net_device *dev, u32 *tdcv);
--};
--
- /*
-  * CAN common private data
-  */
+ ETAS ES58X CAN/USB DRIVER
+-M:	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
++M:	Vincent Mailhol <mailhol@kernel.org>
+ L:	linux-can@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/networking/devlink/etas_es58x.rst
 -- 
 2.51.0
 
