@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7292A304BA9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7ED3302CA3
 	for <linux-can@vger.kernel.org>; Thu, 25 Sep 2025 12:14:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758802454; cv=none; b=UUxEKA4WPxMoJjKkKVyMW6BpcSDvnfD4f+OZI1LX1L9J7I8k+JBgyv7SeFB5qgDA0Qab+/IFeo0/h2DG46sVrqgjGTiJn/BVHzQi3aDySqqJiO7z9rnFVbZ4YKGG8Fu4373tM7ZojIxoRIiLHOiqKiNbVSmEJzxVdUw3v5wcdMA=
+	t=1758802455; cv=none; b=XEsjTWwhCSJiAGXkVe+EudABlpRmvi+2LeE1uN3Cy4vo4s3sgKQmwgDazqpNBqgKQG7letqs6HmMJ/Pt4p+H9aGktIZeElzMHdK53SWbU53DHm6bJJcOEY6Yil09tykkzw2b2zzgaHnmqrNtGMJhmGBS9sOi04J7M1ROiTuOaDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758802454; c=relaxed/simple;
-	bh=Hlm6MvPcGaZGvcRNztXMXiuxZ89PCTOaxrP2DK5XKdQ=;
+	s=arc-20240116; t=1758802455; c=relaxed/simple;
+	bh=UKiuZ1yiMgZ8KerYoBjgfjtkA5d9ivFTxANj2+Zaa2c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KrqcZGC4TPJcnxDYK58dQJMcbN+YAAHBrCqFJRDJL0o57YjakyBuDisFKj8jLHFxHO9f/F9Qi5mm5LA74hn/6O1bFHMnIR/I8PIffDWwh5VlL9wf40sev8H8ZRUEEr10xImumFdtsaY2wNh6qO22RThH/GRIBdrKBbIWpCBD2mw=
+	 MIME-Version; b=UaewPQofUfb5uXkg4UNGK0e1Ue9Bk0nrO9W1p5T2alTU4zVsdie23doUqSDVjdbAbGryvVuoDd/pQ4zFO0+CsGZaA2MOk8JhKvVw+8BMf/ZzNPcoQD/lEJ/k1prhKxqbMys6p030hdyF+BtqAf2cQedZL0ibrqezObG7n4RMpr4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,20 +18,20 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1kqv-0000XY-U0; Thu, 25 Sep 2025 14:13:37 +0200
+	id 1v1kqx-0000Z8-EU; Thu, 25 Sep 2025 14:13:39 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1kqu-000PwC-2C;
-	Thu, 25 Sep 2025 14:13:36 +0200
+	id 1v1kqv-000PxI-2P;
+	Thu, 25 Sep 2025 14:13:37 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 62E3D479984;
-	Thu, 25 Sep 2025 12:13:36 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 7DA09479994;
+	Thu, 25 Sep 2025 12:13:37 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -39,11 +39,10 @@ Cc: davem@davemloft.net,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
 	Vincent Mailhol <mailhol@kernel.org>,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 24/48] can: raw: reorder struct raw_sock's members to optimise packing
-Date: Thu, 25 Sep 2025 14:08:01 +0200
-Message-ID: <20250925121332.848157-25-mkl@pengutronix.de>
+Subject: [PATCH net-next 40/48] can: netlink: make can_tdc_get_size() FD agnostic
+Date: Thu, 25 Sep 2025 14:08:17 +0200
+Message-ID: <20250925121332.848157-41-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250925121332.848157-1-mkl@pengutronix.de>
 References: <20250925121332.848157-1-mkl@pengutronix.de>
@@ -61,140 +60,81 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol@kernel.org>
 
-struct raw_sock has several holes. Reorder the fields to save 8 bytes.
+can_tdc_get_size() needs to access can_priv->fd making it specific to
+CAN FD. Change the function parameter from struct can_priv to struct
+data_bittiming_params.
 
-Statistics before:
+can_tdc_get_size() also uses the CAN_CTRLMODE_TDC_MANUAL macro making
+it specific to CAN FD. Add the tdc mask to the function parameter
+list. The value of the tdc manual flag can then be derived from that
+mask and stored in a local variable.
 
-  $ pahole --class_name=raw_sock net/can/raw.o
-  struct raw_sock {
-  	struct sock                sk __attribute__((__aligned__(8))); /*     0   776 */
+This way, the function becomes CAN FD agnostic and can be reused later
+on for the CAN XL TDC.
 
-  	/* XXX last struct has 1 bit hole */
-
-  	/* --- cacheline 12 boundary (768 bytes) was 8 bytes ago --- */
-  	int                        ifindex;              /*   776     4 */
-
-  	/* XXX 4 bytes hole, try to pack */
-
-  	struct net_device *        dev;                  /*   784     8 */
-  	netdevice_tracker          dev_tracker;          /*   792     0 */
-  	struct list_head           notifier;             /*   792    16 */
-  	unsigned int               bound:1;              /*   808: 0  4 */
-  	unsigned int               loopback:1;           /*   808: 1  4 */
-  	unsigned int               recv_own_msgs:1;      /*   808: 2  4 */
-  	unsigned int               fd_frames:1;          /*   808: 3  4 */
-  	unsigned int               xl_frames:1;          /*   808: 4  4 */
-  	unsigned int               join_filters:1;       /*   808: 5  4 */
-
-  	/* XXX 2 bits hole, try to pack */
-  	/* Bitfield combined with next fields */
-
-  	struct can_raw_vcid_options raw_vcid_opts;       /*   809     4 */
-
-  	/* XXX 3 bytes hole, try to pack */
-
-  	canid_t                    tx_vcid_shifted;      /*   816     4 */
-  	canid_t                    rx_vcid_shifted;      /*   820     4 */
-  	canid_t                    rx_vcid_mask_shifted; /*   824     4 */
-  	int                        count;                /*   828     4 */
-  	/* --- cacheline 13 boundary (832 bytes) --- */
-  	struct can_filter          dfilter;              /*   832     8 */
-  	struct can_filter *        filter;               /*   840     8 */
-  	can_err_mask_t             err_mask;             /*   848     4 */
-
-  	/* XXX 4 bytes hole, try to pack */
-
-  	struct uniqframe *         uniq;                 /*   856     8 */
-
-  	/* size: 864, cachelines: 14, members: 20 */
-  	/* sum members: 852, holes: 3, sum holes: 11 */
-  	/* sum bitfield members: 6 bits, bit holes: 1, sum bit holes: 2 bits */
-  	/* member types with bit holes: 1, total: 1 */
-  	/* forced alignments: 1 */
-  	/* last cacheline: 32 bytes */
-  } __attribute__((__aligned__(8)));
-
-...and after:
-
-  $ pahole --class_name=raw_sock net/can/raw.o
-  struct raw_sock {
-  	struct sock                sk __attribute__((__aligned__(8))); /*     0   776 */
-
-  	/* XXX last struct has 1 bit hole */
-
-  	/* --- cacheline 12 boundary (768 bytes) was 8 bytes ago --- */
-  	struct net_device *        dev;                  /*   776     8 */
-  	netdevice_tracker          dev_tracker;          /*   784     0 */
-  	struct list_head           notifier;             /*   784    16 */
-  	int                        ifindex;              /*   800     4 */
-  	unsigned int               bound:1;              /*   804: 0  4 */
-  	unsigned int               loopback:1;           /*   804: 1  4 */
-  	unsigned int               recv_own_msgs:1;      /*   804: 2  4 */
-  	unsigned int               fd_frames:1;          /*   804: 3  4 */
-  	unsigned int               xl_frames:1;          /*   804: 4  4 */
-  	unsigned int               join_filters:1;       /*   804: 5  4 */
-
-  	/* XXX 2 bits hole, try to pack */
-  	/* Bitfield combined with next fields */
-
-  	struct can_raw_vcid_options raw_vcid_opts;       /*   805     4 */
-
-  	/* XXX 3 bytes hole, try to pack */
-
-  	canid_t                    tx_vcid_shifted;      /*   812     4 */
-  	canid_t                    rx_vcid_shifted;      /*   816     4 */
-  	canid_t                    rx_vcid_mask_shifted; /*   820     4 */
-  	can_err_mask_t             err_mask;             /*   824     4 */
-  	int                        count;                /*   828     4 */
-  	/* --- cacheline 13 boundary (832 bytes) --- */
-  	struct can_filter          dfilter;              /*   832     8 */
-  	struct can_filter *        filter;               /*   840     8 */
-  	struct uniqframe *         uniq;                 /*   848     8 */
-
-  	/* size: 856, cachelines: 14, members: 20 */
-  	/* sum members: 852, holes: 1, sum holes: 3 */
-  	/* sum bitfield members: 6 bits, bit holes: 1, sum bit holes: 2 bits */
-  	/* member types with bit holes: 1, total: 1 */
-  	/* forced alignments: 1 */
-  	/* last cacheline: 24 bytes */
-  } __attribute__((__aligned__(8)));
-
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
-Link: https://patch.msgid.link/20250917-can-raw-repack-v2-3-395e8b3a4437@kernel.org
+Link: https://patch.msgid.link/20250923-canxl-netlink-prep-v4-12-e720d28f66fe@kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/raw.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/dev/netlink.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 5a5ded519cd1..bf65d67b5df0 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -82,10 +82,10 @@ struct uniqframe {
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index e1a1767c0a6c..3c0675877f5e 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -472,32 +472,32 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+ 	return 0;
+ }
  
- struct raw_sock {
- 	struct sock sk;
--	int ifindex;
- 	struct net_device *dev;
- 	netdevice_tracker dev_tracker;
- 	struct list_head notifier;
-+	int ifindex;
- 	unsigned int bound:1;
- 	unsigned int loopback:1;
- 	unsigned int recv_own_msgs:1;
-@@ -96,10 +96,10 @@ struct raw_sock {
- 	canid_t tx_vcid_shifted;
- 	canid_t rx_vcid_shifted;
- 	canid_t rx_vcid_mask_shifted;
-+	can_err_mask_t err_mask;
- 	int count;                 /* number of active filters */
- 	struct can_filter dfilter; /* default/single filter */
- 	struct can_filter *filter; /* pointer to filter(s) */
--	can_err_mask_t err_mask;
- 	struct uniqframe __percpu *uniq;
- };
+-static size_t can_tdc_get_size(const struct net_device *dev)
++static size_t can_tdc_get_size(struct data_bittiming_params *dbt_params,
++			       u32 tdc_flags)
+ {
+-	struct can_priv *priv = netdev_priv(dev);
++	bool tdc_manual = tdc_flags & CAN_CTRLMODE_TDC_MANUAL_MASK;
+ 	size_t size;
  
+-	if (!priv->fd.tdc_const)
++	if (!dbt_params->tdc_const)
+ 		return 0;
+ 
+ 	size = nla_total_size(0);			/* nest IFLA_CAN_TDC */
+-	if (priv->ctrlmode_supported & CAN_CTRLMODE_TDC_MANUAL) {
++	if (tdc_manual) {
+ 		size += nla_total_size(sizeof(u32));	/* IFLA_CAN_TDCV_MIN */
+ 		size += nla_total_size(sizeof(u32));	/* IFLA_CAN_TDCV_MAX */
+ 	}
+ 	size += nla_total_size(sizeof(u32));		/* IFLA_CAN_TDCO_MIN */
+ 	size += nla_total_size(sizeof(u32));		/* IFLA_CAN_TDCO_MAX */
+-	if (priv->fd.tdc_const->tdcf_max) {
++	if (dbt_params->tdc_const->tdcf_max) {
+ 		size += nla_total_size(sizeof(u32));	/* IFLA_CAN_TDCF_MIN */
+ 		size += nla_total_size(sizeof(u32));	/* IFLA_CAN_TDCF_MAX */
+ 	}
+ 
+-	if (can_fd_tdc_is_enabled(priv)) {
+-		if (priv->ctrlmode & CAN_CTRLMODE_TDC_MANUAL ||
+-		    priv->fd.do_get_auto_tdcv)
++	if (tdc_flags) {
++		if (tdc_manual || dbt_params->do_get_auto_tdcv)
+ 			size += nla_total_size(sizeof(u32));	/* IFLA_CAN_TDCV */
+ 		size += nla_total_size(sizeof(u32));		/* IFLA_CAN_TDCO */
+-		if (priv->fd.tdc_const->tdcf_max)
++		if (dbt_params->tdc_const->tdcf_max)
+ 			size += nla_total_size(sizeof(u32));	/* IFLA_CAN_TDCF */
+ 	}
+ 
+@@ -541,7 +541,8 @@ static size_t can_get_size(const struct net_device *dev)
+ 		size += nla_total_size(sizeof(*priv->fd.data_bitrate_const) *
+ 				       priv->fd.data_bitrate_const_cnt);
+ 	size += sizeof(priv->bitrate_max);			/* IFLA_CAN_BITRATE_MAX */
+-	size += can_tdc_get_size(dev);				/* IFLA_CAN_TDC */
++	size += can_tdc_get_size(&priv->fd,			/* IFLA_CAN_TDC */
++				 priv->ctrlmode & CAN_CTRLMODE_FD_TDC_MASK);
+ 	size += can_ctrlmode_ext_get_size();			/* IFLA_CAN_CTRLMODE_EXT */
+ 
+ 	return size;
 -- 
 2.51.0
 
