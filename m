@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 956092FF668
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A7672FE596
 	for <linux-can@vger.kernel.org>; Thu, 25 Sep 2025 12:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758802444; cv=none; b=MiRGFiZmCuNHsFxgfB5ny/Oh4xjvCTDWPXjP7O5N1LeUe30I+QDa3WbbmwwZahPi44B3jRW+clutuLwimLwgkUIjaHXlCobAZl+y9XHt6Pbu6IkPnlWG6I0phoMtiw+nsIKBkVoqiptTBWhBOAavvk619pj/LRAtCwzR6fvHmVQ=
+	t=1758802445; cv=none; b=aO4qRmneQ+WhEWlD6bkLynAGu0kkVBNFovUnsH2mpxtao3ISfwkdtCg7Ih5MSE8vWH4ykzpXlrOgj6i6R6HUkSwZvvnlo9Hx4nT8zWs3TUCQeTPqSASdKs5Mm1MWpVoRxqSte/LpTZ/bWcxSj5wGALjkfYDXpdhrZvqxftU9kRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758802444; c=relaxed/simple;
-	bh=CkIj3HLmKf5jbUZiyRR0DSk//7gm34O50sX2+Lqsmvo=;
+	s=arc-20240116; t=1758802445; c=relaxed/simple;
+	bh=3LvWzrpx/vafRuQvjuDqxKt00A0XYzlQWhBOfraj9o4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tBM4+8v6CfiiXOT7mxuCcTWYsNu8gWwctOZz6kVyYn+9tuFROYX0wJXPcjToFEORQpLuLXbvtMrDcLsdxyVQYETwFEAJmiZpaR2dgwvndRbUP53kgUciy12kTIg9U+Mop3njWfVaAIOavrFKyUW/Q/G2Gjny7hKGamCzz8HhqxA=
+	 MIME-Version; b=HoAiJ2RCVqOwNTa6gxxZ/3oksY6yrk2b9kj88CdzSLIwRT8MCBWIl46UvjdVyTdVXDxraBLhZBjHjRwCYm/1/Ag9nLcoXL4PJHqlo27pknoX4LC8rAMBSvnW5Vfly6AQRejXMa9cHxSRInJZ0wjnm/c3OwqUflWaaAbNQtis+y4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,31 +18,32 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1kqw-0000YN-KS; Thu, 25 Sep 2025 14:13:38 +0200
+	id 1v1kqu-0000Vi-Gv; Thu, 25 Sep 2025 14:13:36 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1kqv-000Pwj-0N;
-	Thu, 25 Sep 2025 14:13:37 +0200
+	id 1v1kqt-000PvH-1g;
+	Thu, 25 Sep 2025 14:13:35 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id D5CC147998A;
-	Thu, 25 Sep 2025 12:13:36 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 3DD94479972;
+	Thu, 25 Sep 2025 12:13:35 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Vincent Mailhol <mailhol@kernel.org>,
+	Biju Das <biju.das.jz@bp.renesas.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 30/48] can: dev: make can_get_relative_tdco() FD agnostic and move it to bittiming.h
-Date: Thu, 25 Sep 2025 14:08:07 +0200
-Message-ID: <20250925121332.848157-31-mkl@pengutronix.de>
+Subject: [PATCH net-next 06/48] can: rcar_canfd: Update RCANFD_CFG_* macros
+Date: Thu, 25 Sep 2025 14:07:43 +0200
+Message-ID: <20250925121332.848157-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250925121332.848157-1-mkl@pengutronix.de>
 References: <20250925121332.848157-1-mkl@pengutronix.de>
@@ -58,105 +59,49 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol@kernel.org>
+From: Biju Das <biju.das.jz@bp.renesas.com>
 
-can_get_relative_tdco() needs to access can_priv->fd making it
-specific to CAN FD. Change the function parameter from struct can_priv
-to struct data_bittiming_params. This way, the function becomes CAN FD
-agnostic and can be reused later on for the CAN XL TDC.
+Update RCANFD_CFG_* macros to give a meaning to the magic number using
+GENMASK macro and extract the values using FIELD_PREP macro.
 
-Now that we dropped the dependency on struct can_priv, also move
-can_get_relative_tdco() back to bittiming.h where it was meant to
-belong to.
-
-Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
-Link: https://patch.msgid.link/20250923-canxl-netlink-prep-v4-2-e720d28f66fe@kernel.org
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Link: https://patch.msgid.link/20250908120940.147196-3-biju.das.jz@bp.renesas.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- include/linux/can/bittiming.h | 29 +++++++++++++++++++++++++++++
- include/linux/can/dev.h       | 29 -----------------------------
- 2 files changed, 29 insertions(+), 29 deletions(-)
+ drivers/net/can/rcar/rcar_canfd.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
-index 6572ec1712ca..4d5f7794194a 100644
---- a/include/linux/can/bittiming.h
-+++ b/include/linux/can/bittiming.h
-@@ -160,6 +160,35 @@ int can_get_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 		      const unsigned int bitrate_const_cnt,
- 		      struct netlink_ext_ack *extack);
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index 4185fc5b4a70..8d0d0825cb54 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -103,10 +103,10 @@
+ /* Channel register bits */
  
-+/*
-+ * can_get_relative_tdco() - TDCO relative to the sample point
-+ *
-+ * struct can_tdc::tdco represents the absolute offset from TDCV. Some
-+ * controllers use instead an offset relative to the Sample Point (SP)
-+ * such that:
-+ *
-+ * SSP = TDCV + absolute TDCO
-+ *     = TDCV + SP + relative TDCO
-+ *
-+ * -+----------- one bit ----------+-- TX pin
-+ *  |<--- Sample Point --->|
-+ *
-+ *                         --+----------- one bit ----------+-- RX pin
-+ *  |<-------- TDCV -------->|
-+ *                           |<------------------------>| absolute TDCO
-+ *                           |<--- Sample Point --->|
-+ *                           |                      |<->| relative TDCO
-+ *  |<------------- Secondary Sample Point ------------>|
-+ */
-+static inline s32 can_get_relative_tdco(const struct data_bittiming_params *dbt_params)
-+{
-+	const struct can_bittiming *dbt = &dbt_params->data_bittiming;
-+	s32 sample_point_in_tc = (CAN_SYNC_SEG + dbt->prop_seg +
-+				  dbt->phase_seg1) * dbt->brp;
-+
-+	return (s32)dbt_params->tdc.tdco - sample_point_in_tc;
-+}
-+
- /*
-  * can_bit_time() - Duration of one bit
-  *
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index c2fe956ab776..8e75e9b3830a 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -85,35 +85,6 @@ static inline bool can_fd_tdc_is_enabled(const struct can_priv *priv)
- 	return !!(priv->ctrlmode & CAN_CTRLMODE_FD_TDC_MASK);
- }
+ /* RSCFDnCmCFG - Classical CAN only */
+-#define RCANFD_CFG_SJW(x)		(((x) & 0x3) << 24)
+-#define RCANFD_CFG_TSEG2(x)		(((x) & 0x7) << 20)
+-#define RCANFD_CFG_TSEG1(x)		(((x) & 0xf) << 16)
+-#define RCANFD_CFG_BRP(x)		(((x) & 0x3ff) << 0)
++#define RCANFD_CFG_SJW		GENMASK(25, 24)
++#define RCANFD_CFG_TSEG2	GENMASK(22, 20)
++#define RCANFD_CFG_TSEG1	GENMASK(19, 16)
++#define RCANFD_CFG_BRP		GENMASK(9, 0)
  
--/*
-- * can_get_relative_tdco() - TDCO relative to the sample point
-- *
-- * struct can_tdc::tdco represents the absolute offset from TDCV. Some
-- * controllers use instead an offset relative to the Sample Point (SP)
-- * such that:
-- *
-- * SSP = TDCV + absolute TDCO
-- *     = TDCV + SP + relative TDCO
-- *
-- * -+----------- one bit ----------+-- TX pin
-- *  |<--- Sample Point --->|
-- *
-- *                         --+----------- one bit ----------+-- RX pin
-- *  |<-------- TDCV -------->|
-- *                           |<------------------------>| absolute TDCO
-- *                           |<--- Sample Point --->|
-- *                           |                      |<->| relative TDCO
-- *  |<------------- Secondary Sample Point ------------>|
-- */
--static inline s32 can_get_relative_tdco(const struct can_priv *priv)
--{
--	const struct can_bittiming *dbt = &priv->fd.data_bittiming;
--	s32 sample_point_in_tc = (CAN_SYNC_SEG + dbt->prop_seg +
--				  dbt->phase_seg1) * dbt->brp;
--
--	return (s32)priv->fd.tdc.tdco - sample_point_in_tc;
--}
--
- static inline u32 can_get_static_ctrlmode(struct can_priv *priv)
- {
- 	return priv->ctrlmode & ~priv->ctrlmode_supported;
+ /* RSCFDnCFDCmNCFG - CAN FD only */
+ #define RCANFD_NCFG_NTSEG2(gpriv, x) \
+@@ -1411,8 +1411,8 @@ static void rcar_canfd_set_bittiming(struct net_device *ndev)
+ 		cfg = (RCANFD_NCFG_NTSEG1(gpriv, tseg1) | RCANFD_NCFG_NBRP(brp) |
+ 		       RCANFD_NCFG_NSJW(gpriv, sjw) | RCANFD_NCFG_NTSEG2(gpriv, tseg2));
+ 	} else {
+-		cfg = (RCANFD_CFG_TSEG1(tseg1) | RCANFD_CFG_BRP(brp) |
+-		       RCANFD_CFG_SJW(sjw) | RCANFD_CFG_TSEG2(tseg2));
++		cfg = FIELD_PREP(RCANFD_CFG_TSEG1, tseg1) | FIELD_PREP(RCANFD_CFG_BRP, brp) |
++		      FIELD_PREP(RCANFD_CFG_SJW, sjw) | FIELD_PREP(RCANFD_CFG_TSEG2, tseg2);
+ 	}
+ 
+ 	rcar_canfd_write(priv->base, RCANFD_CCFG(ch), cfg);
 -- 
 2.51.0
 
