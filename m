@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8768C2FF150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AFBD2FF15E
 	for <linux-can@vger.kernel.org>; Thu, 25 Sep 2025 12:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758802443; cv=none; b=ai0o1CF1v8jisTlJf+5m+85k1mrRsxpPiIUd90afFAFB9ooPeRSqMfFeJdhMUxytDGuRmn2L6qAAt7SvnbIn1fc/qKXYpNRkwKhrxEAgMCyTsCzsyF1G5oPIHyx6vEA1yOVo3zyhzxFxUPeiggdU6BydborftRE7RDFH0d9odD4=
+	t=1758802442; cv=none; b=aC3mecefKN8YhAmS+54hRDO0V+5j/zofp4K9eLqiKv7YC5LZPeHNVH9VrnfJ2q6fbBOpdSdRlKXXMTAeNZtgtJyA4qQ3q3/dm3MC6oNMJjI2GomHEewg+/cyyxCOl9S6hcecwvK2GSFurq1pjE6qKplH+hDOgoFwMtGM9iLRaT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758802443; c=relaxed/simple;
-	bh=TID6G+rLF2v38cQ038vN1hh/4REOykjC4eOmkObe34c=;
+	s=arc-20240116; t=1758802442; c=relaxed/simple;
+	bh=AzNE0d1w2Wc3y2liwIAy8mFHJTUYia3+rI0DGSqLVdY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gdkMmQRQKs44FNIepuU84n8SF4BhQ99g8Oy28rKY0kebIOftHLUzoAau/8wmTA+ZZKH+Rt1e6kcr1o9xI1DjqmMNaUz98wJ5K81k5gmVbBqhIF8eaJjL0vnhXWm03vYo5DX1D5UhQLaB8egS1zKEhAZydmuME3OQNGFEjMHPyYA=
+	 MIME-Version; b=ffbZXLC6ozNNM4MtU8uhEPVTzWp/e7bUpQHHh9xX68eBhN9b91Bs6LN3kfBLQj5+d1SReV1mJ1nEFm0008mHI9oTTXBKLpF0C8PXdpTrDPtoASuY7sCb7WajHsG1yp8I1FN6/8V+FtJJNrcjGe9mhF3JhRdMU+VQ8ZDLENJ7kVc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,31 +18,32 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1kqx-0000ZN-MY; Thu, 25 Sep 2025 14:13:39 +0200
+	id 1v1kqu-0000Vd-Dx; Thu, 25 Sep 2025 14:13:36 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1kqv-000PxV-37;
-	Thu, 25 Sep 2025 14:13:37 +0200
+	id 1v1kqt-000Pv8-0p;
+	Thu, 25 Sep 2025 14:13:35 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id BCC79479998;
-	Thu, 25 Sep 2025 12:13:37 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id D534747996D;
+	Thu, 25 Sep 2025 12:13:34 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
+	Xichao Zhao <zhao.xichao@vivo.com>,
 	Vincent Mailhol <mailhol@kernel.org>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 44/48] can: netlink: add can_bitrate_const_fill_info()
-Date: Thu, 25 Sep 2025 14:08:21 +0200
-Message-ID: <20250925121332.848157-45-mkl@pengutronix.de>
+Subject: [PATCH net-next 01/48] can: m_can: use us_to_ktime() where appropriate
+Date: Thu, 25 Sep 2025 14:07:38 +0200
+Message-ID: <20250925121332.848157-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250925121332.848157-1-mkl@pengutronix.de>
 References: <20250925121332.848157-1-mkl@pengutronix.de>
@@ -58,63 +59,41 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol@kernel.org>
+From: Xichao Zhao <zhao.xichao@vivo.com>
 
-Add can_bitrate_const_fill_info() to factorise the logic when filling
-the bitrate constant information for Classical CAN and CAN FD. This
-function will be reused later on for CAN XL.
+The tx_coalesce_usecs_irq are more suitable for using the
+us_to_ktime(). This can make the code more concise and
+enhance readability.
 
-Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
-Link: https://patch.msgid.link/20250923-canxl-netlink-prep-v4-16-e720d28f66fe@kernel.org
+Signed-off-by: Xichao Zhao <zhao.xichao@vivo.com>
+Reviewed-by: Vincent Mailhol <mailhol@kernel.org>
+Link: https://patch.msgid.link/20250825090904.248927-1-zhao.xichao@vivo.com
+[mkl: remove not needed line break]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/netlink.c | 25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
+ drivers/net/can/m_can/m_can.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index fa922a61f75a..9794f283ed58 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -576,6 +576,15 @@ static int can_bittiming_const_fill_info(struct sk_buff *skb,
- 			sizeof(*bittiming_const), bittiming_const);
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index fe74dbd2c966..e1d725979685 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -2213,11 +2213,9 @@ static int m_can_set_coalesce(struct net_device *dev,
+ 	cdev->tx_coalesce_usecs_irq = ec->tx_coalesce_usecs_irq;
+ 
+ 	if (cdev->rx_coalesce_usecs_irq)
+-		cdev->irq_timer_wait =
+-			ns_to_ktime(cdev->rx_coalesce_usecs_irq * NSEC_PER_USEC);
++		cdev->irq_timer_wait = us_to_ktime(cdev->rx_coalesce_usecs_irq);
+ 	else
+-		cdev->irq_timer_wait =
+-			ns_to_ktime(cdev->tx_coalesce_usecs_irq * NSEC_PER_USEC);
++		cdev->irq_timer_wait = us_to_ktime(cdev->tx_coalesce_usecs_irq);
+ 
+ 	return 0;
  }
- 
-+static int can_bitrate_const_fill_info(struct sk_buff *skb,
-+				       int ifla_can_bitrate_const,
-+				       const u32 *bitrate_const, unsigned int cnt)
-+{
-+	return bitrate_const &&
-+		nla_put(skb, ifla_can_bitrate_const,
-+			sizeof(*bitrate_const) * cnt, bitrate_const);
-+}
-+
- static int can_tdc_fill_info(struct sk_buff *skb, const struct net_device *dev)
- {
- 	struct nlattr *nest;
-@@ -686,17 +695,13 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
- 		      priv->termination_const_cnt,
- 		      priv->termination_const))) ||
- 
--	    (priv->bitrate_const &&
--	     nla_put(skb, IFLA_CAN_BITRATE_CONST,
--		     sizeof(*priv->bitrate_const) *
--		     priv->bitrate_const_cnt,
--		     priv->bitrate_const)) ||
-+	    can_bitrate_const_fill_info(skb, IFLA_CAN_BITRATE_CONST,
-+					priv->bitrate_const,
-+					priv->bitrate_const_cnt) ||
- 
--	    (priv->fd.data_bitrate_const &&
--	     nla_put(skb, IFLA_CAN_DATA_BITRATE_CONST,
--		     sizeof(*priv->fd.data_bitrate_const) *
--		     priv->fd.data_bitrate_const_cnt,
--		     priv->fd.data_bitrate_const)) ||
-+	    can_bitrate_const_fill_info(skb, IFLA_CAN_DATA_BITRATE_CONST,
-+					priv->fd.data_bitrate_const,
-+					priv->fd.data_bitrate_const_cnt) ||
- 
- 	    (nla_put(skb, IFLA_CAN_BITRATE_MAX,
- 		     sizeof(priv->bitrate_max),
+
+base-commit: fc006f5478fcf07d79b35e9dcdc51ecd11a6bf82
 -- 
 2.51.0
 
