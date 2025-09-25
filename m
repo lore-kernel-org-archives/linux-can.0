@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FD782FF140
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 787E22FE595
 	for <linux-can@vger.kernel.org>; Thu, 25 Sep 2025 12:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758802443; cv=none; b=rfFJW29/GnMPIX1fwvhXk87jZxODABFVwaDxYD8AA301iQWhGZ/F1CNNfH30Oj1VsnRzSYBxUfpKzOecFZuGzYx5c703omlI6iyhg8+GTwNbnWO/1zRHBlc/yN4bqKYIOL74/zUTXSsuGaAzKYINIv71+N9KonjAFEx8/na1q28=
+	t=1758802445; cv=none; b=U9xd24Lh7bC8pNaix3lTdhaHdrlzi2Ru4hKKk7oomHXOJ3+dKKSRc+w68+7D1v6L5XLfKaTqdNsvva4xUpVV3HCQ3+OTJtXD5n+sT0UfEY/7EFbg3fcdEUBnoPLs6rq7VgJikwHcDrbcJcYPOgKdr7iI9sRJGz5cmbi0hWbgQVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758802443; c=relaxed/simple;
-	bh=Z/pNAdqrWIaqXBTMawOf4mTZoJtBr0M4jIi2iNGtBW4=;
+	s=arc-20240116; t=1758802445; c=relaxed/simple;
+	bh=TFmehwCjjPT1uv+G/Y+wI/HAxAG1kdYiXPRU/g+zkz0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sI2SQxtP/FjevZjJt1IHWMEpnSe6uENbwNpEgFn/x5LAXaPNYffBzPWLSG9FQZq2CDVxkvRLUEZQtomIDdNX2zhAlNx8Z+UEslbyDK4gjBR68altR/0T2BWaeGHBU/TO7aY0rGdOPGgkgMVVRSeTld0VXqjH6NEAYydGCq6JJlc=
+	 MIME-Version; b=ITrtX9/N3frXD3gDWn3nVb8zGzre7MiN9++ogB2psA+Xtn8GMqRrQMFgmlIYG8Bk9lmhdmp720eRB7TqzDh2I/DiOEvbN+acCfmDf/8hjqkZFSXdwdXBST7yMq6j5xGPYQzkbZCMuBaa0rumws7/N6/rdnOzaWO6GWWtFYAA7/A=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,20 +18,20 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1kqx-0000ZM-N1; Thu, 25 Sep 2025 14:13:39 +0200
+	id 1v1kqw-0000YV-RG; Thu, 25 Sep 2025 14:13:38 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1kqv-000PxS-33;
+	id 1v1kqv-000Pwr-0q;
 	Thu, 25 Sep 2025 14:13:37 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id A8601479997;
-	Thu, 25 Sep 2025 12:13:37 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id EE4FA47998C;
+	Thu, 25 Sep 2025 12:13:36 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -40,9 +40,9 @@ Cc: davem@davemloft.net,
 	kernel@pengutronix.de,
 	Vincent Mailhol <mailhol@kernel.org>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 43/48] can: netlink: add can_bittiming_const_fill_info()
-Date: Thu, 25 Sep 2025 14:08:20 +0200
-Message-ID: <20250925121332.848157-44-mkl@pengutronix.de>
+Subject: [PATCH net-next 32/48] can: netlink: refactor can_validate_bittiming()
+Date: Thu, 25 Sep 2025 14:08:09 +0200
+Message-ID: <20250925121332.848157-33-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250925121332.848157-1-mkl@pengutronix.de>
 References: <20250925121332.848157-1-mkl@pengutronix.de>
@@ -60,62 +60,87 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol@kernel.org>
 
-Add function can_bittiming_const_fill_info() to factorise the logic
-when filling the bittiming constant information for Classical CAN and
-CAN FD. This function will be reused later on for CAN XL.
+Whenever can_validate_bittiming() is called, it is always preceded by
+some boilerplate code which was copy pasted all over the place. Move
+that repeated code directly inside can_validate_bittiming().
+
+Finally, the mempcy() is not needed: the nla attributes are four bytes
+aligned which is just enough for struct can_bittiming. Add a
+static_assert() to document that the alignment is correct and just use
+the pointer returned by nla_data() as-is.
 
 Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
-Link: https://patch.msgid.link/20250923-canxl-netlink-prep-v4-15-e720d28f66fe@kernel.org
+Link: https://patch.msgid.link/20250923-canxl-netlink-prep-v4-4-e720d28f66fe@kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/netlink.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ drivers/net/can/dev/netlink.c | 36 +++++++++++++++++------------------
+ 1 file changed, 17 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index bedd2611d358..fa922a61f75a 100644
+index 248f607e3864..13555253e789 100644
 --- a/drivers/net/can/dev/netlink.c
 +++ b/drivers/net/can/dev/netlink.c
-@@ -567,6 +567,15 @@ static int can_bittiming_fill_info(struct sk_buff *skb, int ifla_can_bittiming,
- 		nla_put(skb, ifla_can_bittiming, sizeof(*bittiming), bittiming);
- }
+@@ -36,13 +36,21 @@ static const struct nla_policy can_tdc_policy[IFLA_CAN_TDC_MAX + 1] = {
+ 	[IFLA_CAN_TDC_TDCF] = { .type = NLA_U32 },
+ };
  
-+static int can_bittiming_const_fill_info(struct sk_buff *skb,
-+					 int ifla_can_bittiming_const,
-+					 const struct can_bittiming_const *bittiming_const)
-+{
-+	return bittiming_const &&
-+		nla_put(skb, ifla_can_bittiming_const,
-+			sizeof(*bittiming_const), bittiming_const);
-+}
-+
- static int can_tdc_fill_info(struct sk_buff *skb, const struct net_device *dev)
+-static int can_validate_bittiming(const struct can_bittiming *bt,
+-				  struct netlink_ext_ack *extack)
++static int can_validate_bittiming(struct nlattr *data[],
++				  struct netlink_ext_ack *extack,
++				  int ifla_can_bittiming)
  {
- 	struct nlattr *nest;
-@@ -652,9 +661,8 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
- 	if (can_bittiming_fill_info(skb, IFLA_CAN_BITTIMING,
- 				    &priv->bittiming) ||
++	struct can_bittiming *bt;
++
++	if (!data[ifla_can_bittiming])
++		return 0;
++
++	static_assert(__alignof__(*bt) <= NLA_ALIGNTO);
++	bt = nla_data(data[ifla_can_bittiming]);
++
+ 	/* sample point is in one-tenth of a percent */
+ 	if (bt->sample_point >= 1000) {
+ 		NL_SET_ERR_MSG(extack, "sample point must be between 0 and 100%");
+-
+ 		return -EINVAL;
+ 	}
  
--	    (priv->bittiming_const &&
--	     nla_put(skb, IFLA_CAN_BITTIMING_CONST,
--		     sizeof(*priv->bittiming_const), priv->bittiming_const)) ||
-+	    can_bittiming_const_fill_info(skb, IFLA_CAN_BITTIMING_CONST,
-+					  priv->bittiming_const) ||
+@@ -105,14 +113,9 @@ static int can_validate(struct nlattr *tb[], struct nlattr *data[],
+ 		}
+ 	}
  
- 	    nla_put(skb, IFLA_CAN_CLOCK, sizeof(priv->clock), &priv->clock) ||
- 	    nla_put_u32(skb, IFLA_CAN_STATE, state) ||
-@@ -668,10 +676,8 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
- 	    can_bittiming_fill_info(skb, IFLA_CAN_DATA_BITTIMING,
- 				    &priv->fd.data_bittiming) ||
+-	if (data[IFLA_CAN_BITTIMING]) {
+-		struct can_bittiming bt;
+-
+-		memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
+-		err = can_validate_bittiming(&bt, extack);
+-		if (err)
+-			return err;
+-	}
++	err = can_validate_bittiming(data, extack, IFLA_CAN_BITTIMING);
++	if (err)
++		return err;
  
--	    (priv->fd.data_bittiming_const &&
--	     nla_put(skb, IFLA_CAN_DATA_BITTIMING_CONST,
--		     sizeof(*priv->fd.data_bittiming_const),
--		     priv->fd.data_bittiming_const)) ||
-+	    can_bittiming_const_fill_info(skb, IFLA_CAN_DATA_BITTIMING_CONST,
-+					  priv->fd.data_bittiming_const) ||
+ 	if (is_can_fd) {
+ 		if (!data[IFLA_CAN_BITTIMING] || !data[IFLA_CAN_DATA_BITTIMING])
+@@ -124,14 +127,9 @@ static int can_validate(struct nlattr *tb[], struct nlattr *data[],
+ 			return -EOPNOTSUPP;
+ 	}
  
- 	    (priv->termination_const &&
- 	     (nla_put_u16(skb, IFLA_CAN_TERMINATION, priv->termination) ||
+-	if (data[IFLA_CAN_DATA_BITTIMING]) {
+-		struct can_bittiming bt;
+-
+-		memcpy(&bt, nla_data(data[IFLA_CAN_DATA_BITTIMING]), sizeof(bt));
+-		err = can_validate_bittiming(&bt, extack);
+-		if (err)
+-			return err;
+-	}
++	err = can_validate_bittiming(data, extack, IFLA_CAN_DATA_BITTIMING);
++	if (err)
++		return err;
+ 
+ 	return 0;
+ }
 -- 
 2.51.0
 
