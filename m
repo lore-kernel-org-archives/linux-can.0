@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81A282FF147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E3B82FE59C
 	for <linux-can@vger.kernel.org>; Thu, 25 Sep 2025 12:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758802444; cv=none; b=dK+sPIg/WOAAvSSoBJn2oLLcAJdb+aNacnbn+KhCB51721h4qYMzF5hXP7WMUlGpoS+dpajEtBtukSly5pwCDIR+7vCn4Z/Kx+h4PDuRIgHKWV61teS1Ceupxw6Lk/l4aQtmYN68KCJtEz2sXM7W6Qui5PfI+9GuqtAnLFjZqkI=
+	t=1758802444; cv=none; b=opkXv3xE42svSZqpGh/+pOn9qDSp4FqnCYEo1Kxupq6B6GN2w+CsahozJ2SHNFxwRax+jh9QB5jMOg4AK8/UiZyqjRKovF0cVDs2GdsMUx2etWcaHrjInbeIfuefh/b921JqC02o2zKbb5RluH+AyFJmaozmT/0Abio/T1Og4uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758802444; c=relaxed/simple;
-	bh=/rW5bL4vMzVF+mkyCg921+as0SWv9bxsZhWsypFvWB4=;
+	bh=mexw+6/QkPDCqTEUy0EXdc2mcDcdrWUzyQaUleqEZ9k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UnBHVD5+Bo1i0B8vSFePc0vbTnKurJ+hspeWOtMj54w06gJnXkKkeLN32xaxyMNMxooasDISHS0BBk04s+Me+6nXWiJ6hOrCyMCaK3DWNo+Mm4M00V/yVeOo/g+uXhr1hzGriNpbihessKcWFTH1HJVJm3Xo0BQAFI4TI6tABNo=
+	 MIME-Version; b=RHRzUaMAzpARjyuLMd22cntXlWU0+n0ftp5DQr5m4RzJPlp1KOBQPJa2vugP1tQ0zXzBwC25N8Ud2pe8uf9Q3GwOl6oO9mO+GTH2p6CO6bdmz89IC5BByDWxkl1XTKCX7Poi4TlZqfdI9yrExwehUo8nvDQHiAiAnca3rtCM7Uo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,20 +18,20 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1kqx-0000ZU-Q6; Thu, 25 Sep 2025 14:13:39 +0200
+	id 1v1kqw-0000YQ-Ku; Thu, 25 Sep 2025 14:13:38 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v1kqw-000PxZ-0G;
-	Thu, 25 Sep 2025 14:13:38 +0200
+	id 1v1kqv-000Pwm-0V;
+	Thu, 25 Sep 2025 14:13:37 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id C65E8479999;
-	Thu, 25 Sep 2025 12:13:37 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id E3A8947998B;
+	Thu, 25 Sep 2025 12:13:36 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -40,9 +40,9 @@ Cc: davem@davemloft.net,
 	kernel@pengutronix.de,
 	Vincent Mailhol <mailhol@kernel.org>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 45/48] can: netlink: make can_tdc_fill_info() FD agnostic
-Date: Thu, 25 Sep 2025 14:08:22 +0200
-Message-ID: <20250925121332.848157-46-mkl@pengutronix.de>
+Subject: [PATCH net-next 31/48] can: netlink: document which symbols are FD specific
+Date: Thu, 25 Sep 2025 14:08:08 +0200
+Message-ID: <20250925121332.848157-32-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250925121332.848157-1-mkl@pengutronix.de>
 References: <20250925121332.848157-1-mkl@pengutronix.de>
@@ -60,91 +60,67 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol@kernel.org>
 
-can_tdc_fill_info() depends on some variables which are specific to CAN
-FD. Move these to the function parameters list so that, later on, this
-function can be reused for the CAN XL TDC.
+The CAN XL netlink interface will also have data bitrate and TDC
+parameters. The current FD parameters do not have a prefix in their
+names to differentiate them.
+
+Because the netlink interface is part of the UAPI, it is unfortunately
+not feasible to rename the existing symbols to add an FD_ prefix. The
+best alternative is to add a comment for each of the symbols to notify
+the reader of which parts are CAN FD specific.
+
+While at it, fix a typo: transiver -> transceiver.
 
 Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
-Link: https://patch.msgid.link/20250923-canxl-netlink-prep-v4-17-e720d28f66fe@kernel.org
+Link: https://patch.msgid.link/20250923-canxl-netlink-prep-v4-3-e720d28f66fe@kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/netlink.c | 35 ++++++++++++++++++++++++-----------
- 1 file changed, 24 insertions(+), 11 deletions(-)
+ include/uapi/linux/can/netlink.h | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 9794f283ed58..99038e0fb25f 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -585,21 +585,34 @@ static int can_bitrate_const_fill_info(struct sk_buff *skb,
- 			sizeof(*bitrate_const) * cnt, bitrate_const);
- }
+diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
+index 02ec32d69474..ef62f56eaaef 100644
+--- a/include/uapi/linux/can/netlink.h
++++ b/include/uapi/linux/can/netlink.h
+@@ -101,8 +101,8 @@ struct can_ctrlmode {
+ #define CAN_CTRLMODE_PRESUME_ACK	0x40	/* Ignore missing CAN ACKs */
+ #define CAN_CTRLMODE_FD_NON_ISO		0x80	/* CAN FD in non-ISO mode */
+ #define CAN_CTRLMODE_CC_LEN8_DLC	0x100	/* Classic CAN DLC option */
+-#define CAN_CTRLMODE_TDC_AUTO		0x200	/* CAN transiver automatically calculates TDCV */
+-#define CAN_CTRLMODE_TDC_MANUAL		0x400	/* TDCV is manually set up by user */
++#define CAN_CTRLMODE_TDC_AUTO		0x200	/* FD transceiver automatically calculates TDCV */
++#define CAN_CTRLMODE_TDC_MANUAL		0x400	/* FD TDCV is manually set up by user */
  
--static int can_tdc_fill_info(struct sk_buff *skb, const struct net_device *dev)
-+static int can_tdc_fill_info(struct sk_buff *skb, const struct net_device *dev,
-+			     int ifla_can_tdc)
- {
--	struct nlattr *nest;
- 	struct can_priv *priv = netdev_priv(dev);
--	struct can_tdc *tdc = &priv->fd.tdc;
--	const struct can_tdc_const *tdc_const = priv->fd.tdc_const;
-+	struct data_bittiming_params *dbt_params;
-+	const struct can_tdc_const *tdc_const;
-+	struct can_tdc *tdc;
-+	struct nlattr *nest;
-+	bool tdc_is_enabled, tdc_manual;
-+
-+	if (ifla_can_tdc == IFLA_CAN_TDC) {
-+		dbt_params = &priv->fd;
-+		tdc_is_enabled = can_fd_tdc_is_enabled(priv);
-+		tdc_manual = priv->ctrlmode & CAN_CTRLMODE_TDC_MANUAL;
-+	} else {
-+		return -EOPNOTSUPP; /* Place holder for CAN XL */
-+	}
-+	tdc_const = dbt_params->tdc_const;
-+	tdc = &dbt_params->tdc;
+ /*
+  * CAN device statistics
+@@ -129,14 +129,14 @@ enum {
+ 	IFLA_CAN_RESTART_MS,
+ 	IFLA_CAN_RESTART,
+ 	IFLA_CAN_BERR_COUNTER,
+-	IFLA_CAN_DATA_BITTIMING,
+-	IFLA_CAN_DATA_BITTIMING_CONST,
++	IFLA_CAN_DATA_BITTIMING, /* FD */
++	IFLA_CAN_DATA_BITTIMING_CONST, /* FD */
+ 	IFLA_CAN_TERMINATION,
+ 	IFLA_CAN_TERMINATION_CONST,
+ 	IFLA_CAN_BITRATE_CONST,
+-	IFLA_CAN_DATA_BITRATE_CONST,
++	IFLA_CAN_DATA_BITRATE_CONST, /* FD */
+ 	IFLA_CAN_BITRATE_MAX,
+-	IFLA_CAN_TDC,
++	IFLA_CAN_TDC, /* FD */
+ 	IFLA_CAN_CTRLMODE_EXT,
  
- 	if (!tdc_const)
- 		return 0;
+ 	/* add new constants above here */
+@@ -145,7 +145,7 @@ enum {
+ };
  
--	nest = nla_nest_start(skb, IFLA_CAN_TDC);
-+	nest = nla_nest_start(skb, ifla_can_tdc);
- 	if (!nest)
- 		return -EMSGSIZE;
- 
--	if (priv->ctrlmode_supported & CAN_CTRLMODE_TDC_MANUAL &&
-+	if (tdc_manual &&
- 	    (nla_put_u32(skb, IFLA_CAN_TDC_TDCV_MIN, tdc_const->tdcv_min) ||
- 	     nla_put_u32(skb, IFLA_CAN_TDC_TDCV_MAX, tdc_const->tdcv_max)))
- 		goto err_cancel;
-@@ -611,15 +624,15 @@ static int can_tdc_fill_info(struct sk_buff *skb, const struct net_device *dev)
- 	     nla_put_u32(skb, IFLA_CAN_TDC_TDCF_MAX, tdc_const->tdcf_max)))
- 		goto err_cancel;
- 
--	if (can_fd_tdc_is_enabled(priv)) {
-+	if (tdc_is_enabled) {
- 		u32 tdcv;
- 		int err = -EINVAL;
- 
--		if (priv->ctrlmode & CAN_CTRLMODE_TDC_MANUAL) {
-+		if (tdc_manual) {
- 			tdcv = tdc->tdcv;
- 			err = 0;
--		} else if (priv->fd.do_get_auto_tdcv) {
--			err = priv->fd.do_get_auto_tdcv(dev, &tdcv);
-+		} else if (dbt_params->do_get_auto_tdcv) {
-+			err = dbt_params->do_get_auto_tdcv(dev, &tdcv);
- 		}
- 		if (!err && nla_put_u32(skb, IFLA_CAN_TDC_TDCV, tdcv))
- 			goto err_cancel;
-@@ -707,7 +720,7 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
- 		     sizeof(priv->bitrate_max),
- 		     &priv->bitrate_max)) ||
- 
--	    can_tdc_fill_info(skb, dev) ||
-+	    can_tdc_fill_info(skb, dev, IFLA_CAN_TDC) ||
- 
- 	    can_ctrlmode_ext_fill_info(skb, priv)
- 	    )
+ /*
+- * CAN FD Transmitter Delay Compensation (TDC)
++ * CAN FD/XL Transmitter Delay Compensation (TDC)
+  *
+  * Please refer to struct can_tdc_const and can_tdc in
+  * include/linux/can/bittiming.h for further details.
 -- 
 2.51.0
 
