@@ -1,155 +1,94 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80E59274B40;
-	Sun, 12 Oct 2025 11:24:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EC0A287243
+	for <linux-can@vger.kernel.org>; Sun, 12 Oct 2025 14:28:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760268263; cv=none; b=dWvhztkVX30mvmEA1UxMklMTTq6KbLWqYtpczgbKPa890xQvASU9i/qwu+Qkxnysvk0uGIqJ7FtQQ0AGGFE54kgmXwpGAk4dfGEgkX8Y6N9GtdxRTkzbnSbyoVFgmEYzgsnglxpsq2w3p/RUWwLdrz5XIMu9mMVBIuSZlSJrmJ8=
+	t=1760279329; cv=none; b=ow+EJDwn4D/giQqSSn0Xj/24QB4cLR/7qgWlD4752utUeg/rRC6BbmPPpbBTdA7ty1tbGtdCXun37DHH3DcV2RC5yd2MpPudO7AKgXpZ9fwd/7WpSDrWSXFFdqAbSigUOtqUQKvA3/I77c7COqH7+gKp2g2TqJ+r99DMpqi6zZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760268263; c=relaxed/simple;
-	bh=IF07Mt8rYmUujU1hE7dfnLqFNnP79CelssmnQbjwpiA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=FeskOalqQbOULBKUp14ujBU22+bj85/IRX/i95YFhO76R6kETTxMAMupAoXntnSipR9sK5xCqtVAFFWbNu/6+9wlgV1O02LuX+X6WwuhVH/e5YDNCFlBsXrB6VLLAjPPa1TmLl5l5xPYLPrRg0Vocf0LnCQGVkJtvx3wG6u3jO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qV9gDa84; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qV9gDa84"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80A0CC116D0;
-	Sun, 12 Oct 2025 11:24:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760268263;
-	bh=IF07Mt8rYmUujU1hE7dfnLqFNnP79CelssmnQbjwpiA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=qV9gDa849luF9pS3ep8osjNW551NYhmIU8gnYWTEuQRwQ/xuGF+YZD5XX8UQfNEQ9
-	 smM9sw/fkzd7SIxqr4jlS5WnlB6omrILMlXKXIy6xMjOtLYHRY+XPKg3+c95O7YlvR
-	 gjTmuBGcq5t4X3Z5LPtuR4J16jYYpuLEBJ6ZrS2tT6Xm8oGaQlwjXuWej0D3//nCV7
-	 R11k/0vbDT7q8sPUqcA/f4++RFyyROIYXQDOXTwzINx26ev9J8L/25Q7VhJg241VAI
-	 AC/psM2DDbubL9SDNUQqfXrQcvQ0XSuYAXW3X3U9ZMEKDC84cr0U5ym2t9wB3mFqde
-	 jeOLkUl5aydCA==
-From: Vincent Mailhol <mailhol@kernel.org>
-Date: Sun, 12 Oct 2025 20:23:43 +0900
-Subject: [PATCH 2/2] can: add Transmitter Delay Compensation (TDC)
- documentation
+	s=arc-20240116; t=1760279329; c=relaxed/simple;
+	bh=Og6m1KJ/1oagFeEPSJ3qBstH2NMkDrVm7ArdQVT4A0g=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=tQdrnfz/hUicUPd72hTkcWXMYngtSb27MVXOs2fP0MddjDChunHn1b94kSJwD6F/xpePIcIAdBorL5kFvaDnXj4j4Mbmcm7akswBUivGC8PC3A8QjiqYU1p5dxfu8vo+pS39ZcMa78QYI+LLQFWDz61ijcNbLakAiBK8pXtL43c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1v7x3w-00044l-8V; Sun, 12 Oct 2025 16:28:40 +0200
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1v7x3v-003EUq-1u;
+	Sun, 12 Oct 2025 16:28:39 +0200
+Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 4E436484062;
+	Sun, 12 Oct 2025 14:28:39 +0000 (UTC)
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net,
+	kuba@kernel.org,
+	linux-can@vger.kernel.org,
+	kernel@pengutronix.de,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Markus Schneider-Pargmann <msp@baylibre.com>
+Subject: [PATCH net 5/9] can: m_can: m_can_chip_config(): bring up interface in correct state
+Date: Sun, 12 Oct 2025 16:20:49 +0200
+Message-ID: <20251012142836.285370-6-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20251012142836.285370-1-mkl@pengutronix.de>
+References: <20251012142836.285370-1-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20251012-can-fd-doc-v1-2-86cc7d130026@kernel.org>
-References: <20251012-can-fd-doc-v1-0-86cc7d130026@kernel.org>
-In-Reply-To: <20251012-can-fd-doc-v1-0-86cc7d130026@kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, 
- Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
- Jonathan Corbet <corbet@lwn.net>, Geert Uytterhoeven <geert@linux-m68k.org>, 
- linux-can@vger.kernel.org, netdev@vger.kernel.org, 
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Vincent Mailhol <mailhol@kernel.org>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4110; i=mailhol@kernel.org;
- h=from:subject:message-id; bh=IF07Mt8rYmUujU1hE7dfnLqFNnP79CelssmnQbjwpiA=;
- b=owGbwMvMwCV2McXO4Xp97WbG02pJDBmv++/OuMc0vahLVXWS8lWtGQqlwn+FpEOEorQ+69k0P
- 1jzi3VKRykLgxgXg6yYIsuyck5uhY5C77BDfy1h5rAygQxh4OIUgInsVWL4Z3t+z4eZ882/+cZv
- ui/dtP7XrZwq5gnNR/7cXFQUc2xPRSojw52tB64m8jL/k6ry+HUit2Wrx2G7yCdzXNIlxGtOnJU
- pZQIA
-X-Developer-Key: i=mailhol@kernel.org; a=openpgp;
- fpr=ED8F700574E67F20E574E8E2AB5FEB886DBB99C2
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Back in 2021, support for CAN TDC was added to the kernel in series [1]
-and in iproute2 in series [2]. However, the documentation was never
-updated.
+In some SoCs (observed on the STM32MP15) the M_CAN IP core keeps the
+CAN state and CAN error counters over an internal reset cycle. An
+external reset is not always possible, due to the shared reset with
+the other CAN core. This caused the core not always be in Error Active
+state when bringing up the controller.
 
-Add a new sub-section under CAN-FD driver support to document how to
-configure the TDC using the "ip tool".
+Instead of always setting the CAN state to Error Active in
+m_can_chip_config(), fix this by reading and decoding the Protocol
+Status Regitser (PSR) and set the CAN state accordingly.
 
-[1] add the netlink interface for CAN-FD Transmitter Delay Compensation (TDC)
-Link: https://lore.kernel.org/all/20210918095637.20108-1-mailhol.vincent@wanadoo.fr/
-
-[2] iplink_can: cleaning, fixes and adding TDC support
-Link: https://lore.kernel.org/all/20211103164428.692722-1-mailhol.vincent@wanadoo.fr/
-
-Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
+Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
+Reviewed-by: Markus Schneider-Pargmann <msp@baylibre.com>
+Link: https://patch.msgid.link/20250929-m_can-fix-state-handling-v4-3-682b49b49d9a@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- Documentation/networking/can.rst | 60 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 60 insertions(+)
+ drivers/net/can/m_can/m_can.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
-index 58c026d51d94..de9e7549859f 100644
---- a/Documentation/networking/can.rst
-+++ b/Documentation/networking/can.rst
-@@ -1464,6 +1464,66 @@ Example when 'fd-non-iso on' is added on this switchable CAN FD adapter::
-    can <FD,FD-NON-ISO> state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index ac864183a536..b6db5b57241c 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1617,7 +1617,7 @@ static int m_can_start(struct net_device *dev)
+ 	netdev_queue_set_dql_min_limit(netdev_get_tx_queue(cdev->net, 0),
+ 				       cdev->tx_max_coalesced_frames);
  
+-	cdev->can.state = CAN_STATE_ERROR_ACTIVE;
++	cdev->can.state = m_can_state_get_by_psr(cdev);
  
-+Transmitter Delay Compensation
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+At high bit rates, the propagation delay from the TX pin to the RX pin of
-+the transceiver might become greater than the actual bit time causing
-+measurement errors: the RX pin would still be measuring the previous bit.
-+
-+The Transmitter Delay Compensation (thereafter, TDC) resolves this problem
-+by introducing a Secondary Sample Point (SSP) equal to the distance, in
-+minimum time quantum, from the start of the bit time on the TX pin to the
-+actual measurement on the RX pin. The SSP is calculated as the sum of two
-+configurable values: the TDC Value (TDCV) and the TDC offset (TDCO).
-+
-+TDC, if supported by the device, can be configured together with CAN-FD
-+using the ip tool's "tdc-mode" argument as follow::
-+
-+- **omitted**: when no "tdc-mode" option is provided, the kernel will
-+  automatically decide whether TDC should be turned on, in which case it
-+  will calculate a default TDCO and use the TDCV as measured by the
-+  device. This is the recommended method to use TDC.
-+
-+- **"tdc-mode off"**: TDC is explicitly disabled.
-+
-+- **"tdc-mode auto"**: the user must provide the "tdco" argument. The TDCV
-+  will be automatically calculated by the device. This option is only
-+  available if the device supports the TDC-AUTO CAN controller mode.
-+
-+- **"tdc-mode manual"**: the user must provide both the "tdco" and "tdcv"
-+  arguments. This option is only available if the device supports the
-+  TDC-MANUAL CAN controller mode.
-+
-+Note that some devices may offer an additional parameter: "tdcf" (TDC Filter
-+window). If supported by your device, this can be added as an optional
-+argument to either "tdc-mode auto" or "tdc-mode manual".
-+
-+Example configuring a 500 kbit/s arbitration bitrate, a 5 Mbit/s data
-+bitrate, a TDCO of 15 minimum time quantum and a TDCV automatically measured
-+by the device::
-+
-+    $ ip link set can0 up type can bitrate 500000 \
-+                                   fd on dbitrate 4000000 \
-+				   tdc-mode auto tdco 15
-+    $ ip -details link show can0
-+    5: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 72 qdisc pfifo_fast state UP \
-+             mode DEFAULT group default qlen 10
-+        link/can  promiscuity 0 allmulti 0 minmtu 72 maxmtu 72
-+        can <FD,TDC-AUTO> state ERROR-ACTIVE restart-ms 0
-+          bitrate 500000 sample-point 0.875
-+          tq 12 prop-seg 69 phase-seg1 70 phase-seg2 20 sjw 10 brp 1
-+          ES582.1/ES584.1: tseg1 2..256 tseg2 2..128 sjw 1..128 brp 1..512 \
-+          brp_inc 1
-+          dbitrate 4000000 dsample-point 0.750
-+          dtq 12 dprop-seg 7 dphase-seg1 7 dphase-seg2 5 dsjw 2 dbrp 1
-+          tdco 15 tdcf 0
-+          ES582.1/ES584.1: dtseg1 2..32 dtseg2 1..16 dsjw 1..8 dbrp 1..32 \
-+          dbrp_inc 1
-+          tdco 0..127 tdcf 0..127
-+          clock 80000000
-+
-+
- Supported CAN Hardware
- ----------------------
+ 	m_can_enable_all_interrupts(cdev);
  
-
 -- 
-2.49.1
+2.51.0
 
