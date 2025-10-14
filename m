@@ -1,180 +1,201 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from delivery.antispam.mailspamprotection.com (delivery.antispam.mailspamprotection.com [185.56.87.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F604316182
-	for <linux-can@vger.kernel.org>; Tue, 14 Oct 2025 14:10:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760451037; cv=none; b=qwkupBGycZ+/unu8qMLFHKHK53NNSi5m7P7h2eHEnr9eJhLklwLYwIzCNv6tDDx2cySfDzsSiFZifpk5ADgzaXthp+cnMvHFEOv3mxP4+t3pLt+6zSzo6jQyTOvqnIenDf+SKMW/4Ye48+OtdCKc+38GChruiR9qhWewXFpfjXo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760451037; c=relaxed/simple;
-	bh=zkX2Q58K2Q/Ts4j32RbqD+OkAZHda5+HV3RfXV9Wxpk=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD6AC3009DD;
+	Tue, 14 Oct 2025 16:01:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.56.87.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1760457711; cv=pass; b=NNSX6g4IC4q1fo4lBOJMhLpql1UYbXfcEUEw7MrPoIr2GHtWziYRXdB1YipeGuRS6Gz14kaMzbwmq1BJuWuwJ18VmYOFQqPFg+jKn+U3xLvv6quLQ96dizA86ojxW9POjWp2fNew9n/aB4F11uo2i7+mqFaHO9DWKy+1BrA37SQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1760457711; c=relaxed/simple;
+	bh=qLEHI8X92rzJVvNe3sz2L6E08H2+TevfCQD5cWiQSTY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fDrpNzvGwISC7iD+kwIWLeY2i/mjLRn/vcMvTdbEy/u7gD6N0ZADAovJjwH+8XX15yonLr8HjXQv7PlOrIcUaE0A6lAeGUcqL+ttiaicHj02gNJXY5hfwgfFsKNXT3Qrl2bsvfcM6AjET6g8nBwS4euWezoNHe8gdHPaXV7wBJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1v8fjM-0008IF-0u; Tue, 14 Oct 2025 16:10:24 +0200
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1v8fjK-003ZPr-0O;
-	Tue, 14 Oct 2025 16:10:22 +0200
-Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id BC1F3485F15;
-	Tue, 14 Oct 2025 14:10:21 +0000 (UTC)
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	kuba@kernel.org,
-	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	Celeste Liu <uwu@coelacanthus.name>,
-	Runcheng Lu <runcheng.lu@hpmicro.com>,
-	stable@vger.kernel.org,
-	Vincent Mailhol <mailhol@kernel.org>,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 01/10] can: gs_usb: increase max interface to U8_MAX
-Date: Tue, 14 Oct 2025 14:17:48 +0200
-Message-ID: <20251014122140.990472-2-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251014122140.990472-1-mkl@pengutronix.de>
-References: <20251014122140.990472-1-mkl@pengutronix.de>
+	 MIME-Version:Content-Type; b=biUTxAQ4YcRMfk+jT180kBxx7gBnPlm6hAvwaizFDlK/bU4yt1+kA51AR4WeaULC3Un2RSN4g4l31woRtGvp6DwFnw5lERbzmEIRZn/QUjv6Jy0YxHsarrJtaWXN1Zmd7QLX/Y8GLXRQA5aS0RFdoOajBltXT44lkHcnpOtHodI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=valla.it; spf=pass smtp.mailfrom=valla.it; dkim=pass (1024-bit key) header.d=antispam.mailspamprotection.com header.i=@antispam.mailspamprotection.com header.b=wwjOp8Yv; dkim=pass (1024-bit key) header.d=valla.it header.i=@valla.it header.b=IegT3koj; arc=pass smtp.client-ip=185.56.87.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=valla.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=valla.it
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=antispam.mailspamprotection.com header.i=@antispam.mailspamprotection.com header.b="wwjOp8Yv";
+	dkim=pass (1024-bit key) header.d=valla.it header.i=@valla.it header.b="IegT3koj"
+ARC-Seal: i=1; cv=none; a=rsa-sha256; d=outgoing.instance-europe-west4-s3hj.prod.antispam.mailspamprotection.com; s=arckey; t=1760457710;
+	 b=u+RGO511c/NQC3PQJt93GRy8I5/xVPTZ9Jlh6NTFbw/wMjovJIG8d7o9t97bj6NDZuEM+aH3IS
+	  ouTwBdttLy885Uv02jBz92xZ/NbRmMS9ryxEO53+qqN33jP2Km3XaD7PL5kUCqYQPqKPM5hfLH
+	  hlNHuRLRcJAUxT4uF2lMkLWaZGzMOWH/6fzYifu8HrswqlVOTwWO4blFk/D7aqvPoFfGuwkrUk
+	  1AxOm5PdoKkgNTECc2fKM/cIQGHFoU0n86pfUPWn6Uzz3PhoMZnzgENqapw4027Sj3r/2A4SVP
+	  vBSdRjOL7ablUj7yH7qqPIVJVkSuIWDghUtK4wxeo0Agvg==;
+ARC-Authentication-Results: i=1; outgoing.instance-europe-west4-s3hj.prod.antispam.mailspamprotection.com; smtp.remote-ip=35.214.173.214;
+	iprev=pass (214.173.214.35.bc.googleusercontent.com) smtp.remote-ip=35.214.173.214;
+	auth=pass (LOGIN) smtp.auth=esm19.siteground.biz;
+	dkim=pass header.d=valla.it header.s=default header.a=rsa-sha256;
+	arc=none
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed; d=outgoing.instance-europe-west4-s3hj.prod.antispam.mailspamprotection.com; s=arckey; t=1760457710;
+	bh=qLEHI8X92rzJVvNe3sz2L6E08H2+TevfCQD5cWiQSTY=;
+	h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+	  Message-ID:Date:Subject:Cc:To:From:DKIM-Signature:DKIM-Signature;
+	b=fApZEgvl1k6LUWPcpLTvVDCWsasYxKDNlTua4nad9Zocc9YDYY3gVwUZ3rrwvbh4LFCCSNhuVX
+	  d36sSBLFzj9RlUJF8Uit4E3YG/zTgOLn0u/MJ3tnYBHn2wbYasuFFLbc5HaZLeSnDgAVGt+aEX
+	  YQ6LUnUuDpHjwbOP0IcIx987LJgeSPFmoRvy84BXm4iBlBRideFKcFlA+P6L7YxJuYpuEfTsWX
+	  hbIRq20hhBgfUj+SssY2A2X1StzGXb+0sbZyJhL43MJpT/rvRrhdNwC6+rj+IRtJrY9lQSduFk
+	  5QNG2tOIy4zr23CozSGkm2A3jOS75Ba79SWZENqlA7vEiQ==;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=antispam.mailspamprotection.com; s=default; h=CFBL-Feedback-ID:CFBL-Address
+	:Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	Cc:To:From:Reply-To:List-Unsubscribe;
+	bh=JxnkS9Xl8ClOOgOP8ITCaK9nVGvTdorwPDwhCQjD3DA=; b=wwjOp8YvufxLnVrspryK7V6w7Z
+	V/PGdbm9KGvyg0RifIor2Tbw871hn4gVFtFFc4fnGtOZeqZyxTlVsZKWum4wkkfXNsmxbulxuokTV
+	qoCaJ+xmvWi35omJNlwOwyBdY0ug7N+k383aU5CuZrGboTUzpcxQrAs7MP9aWbBSCTKk=;
+Received: from 214.173.214.35.bc.googleusercontent.com ([35.214.173.214] helo=esm19.siteground.biz)
+	by instance-europe-west4-s3hj.prod.antispam.mailspamprotection.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.98.1)
+	(envelope-from <francesco@valla.it>)
+	id 1v8hT5-00000001rNs-1i14;
+	Tue, 14 Oct 2025 16:01:46 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=valla.it;
+	s=default; h=Date:Subject:Cc:To:From:list-help:list-unsubscribe:
+	list-subscribe:list-post:list-owner:list-archive;
+	bh=JxnkS9Xl8ClOOgOP8ITCaK9nVGvTdorwPDwhCQjD3DA=; b=IegT3kojrdmO1lVOS4CJKRgmIQ
+	Ku/3vNp3AcCq47IJz59MMmZPIzaCehDt/+PZ/E11cYe7tguhrjZY3XhHa6pdoSyBfKB0KFT/RB65g
+	Y/OAPrp5c+DmC+SibBLuNbgYd1/pd88fzBGMutKkhYbE+8pGufNP9zN7A/nlbDbZmzS0=;
+Received: from [87.16.13.60] (port=63204 helo=fedora.fritz.box)
+	by esm19.siteground.biz with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.98.1)
+	(envelope-from <francesco@valla.it>)
+	id 1v8hSW-00000000HlS-1DDE;
+	Tue, 14 Oct 2025 16:01:08 +0000
+From: Francesco Valla <francesco@valla.it>
+To: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Paolo Abeni <pabeni@redhat.com>,
+ Harald Mommer <harald.mommer@opensynergy.com>,
+ Mikhail Golubev-Ciuchea <Mikhail.Golubev-Ciuchea@opensynergy.com>,
+ Wolfgang Grandegger <wg@grandegger.com>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ Damir Shaikhutdinov <Damir.Shaikhutdinov@opensynergy.com>,
+ linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org, virtualization@lists.linux.dev,
+ development@redaril.me
+Subject: Re: [PATCH v5] can: virtio: Initial virtio CAN driver.
+Date: Tue, 14 Oct 2025 18:01:07 +0200
+Message-ID: <1997333.7Z3S40VBb9@fedora.fritz.box>
+In-Reply-To: <aO4isIfRbgKuCvRX@fedora>
+References:
+ <20240108131039.2234044-1-Mikhail.Golubev-Ciuchea@opensynergy.com>
+ <2243144.yiUUSuA9gR@fedora.fritz.box> <aO4isIfRbgKuCvRX@fedora>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - esm19.siteground.biz
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - valla.it
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-SGantispam-id: 17455a6c8a999985856092c8447c12d4
+AntiSpam-DLS: false
+AntiSpam-DLSP: 
+AntiSpam-DLSRS: 
+AntiSpam-TS: 1.0
+CFBL-Address: feedback@antispam.mailspamprotection.com; report=arf
+CFBL-Feedback-ID: 1v8hT5-00000001rNs-1i14-feedback@antispam.mailspamprotection.com
+Authentication-Results: outgoing.instance-europe-west4-s3hj.prod.antispam.mailspamprotection.com;
+	iprev=pass (214.173.214.35.bc.googleusercontent.com) smtp.remote-ip=35.214.173.214;
+	auth=pass (LOGIN) smtp.auth=esm19.siteground.biz;
+	dkim=pass header.d=valla.it header.s=default header.a=rsa-sha256;
+	arc=none
 
-From: Celeste Liu <uwu@coelacanthus.name>
+On Tuesday, 14 October 2025 at 12:15:12 Matias Ezequiel Vara Larsen <mvaralar@redhat.com> wrote:
+> On Thu, Sep 11, 2025 at 10:59:40PM +0200, Francesco Valla wrote:
+> > Hello Mikhail, Harald,
+> > 
+> > hoping there will be a v6 of this patch soon, a few comments:
+> > 
+> > On Monday, 8 January 2024 at 14:10:35 Mikhail Golubev-Ciuchea <Mikhail.Golubev-Ciuchea@opensynergy.com> wrote:
+> > 
+> > [...]
+> > > +
+> > > +/* Compare with m_can.c/m_can_echo_tx_event() */
+> > > +static int virtio_can_read_tx_queue(struct virtqueue *vq)
+> > > +{
+> > > +	struct virtio_can_priv *can_priv = vq->vdev->priv;
+> > > +	struct net_device *dev = can_priv->dev;
+> > > +	struct virtio_can_tx *can_tx_msg;
+> > > +	struct net_device_stats *stats;
+> > > +	unsigned long flags;
+> > > +	unsigned int len;
+> > > +	u8 result;
+> > > +
+> > > +	stats = &dev->stats;
+> > > +
+> > > +	/* Protect list and virtio queue operations */
+> > > +	spin_lock_irqsave(&can_priv->tx_lock, flags);
+> > > +
+> > > +	can_tx_msg = virtqueue_get_buf(vq, &len);
+> > > +	if (!can_tx_msg) {
+> > > +		spin_unlock_irqrestore(&can_priv->tx_lock, flags);
+> > > +		return 0; /* No more data */
+> > > +	}
+> > > +
+> > > +	if (unlikely(len < sizeof(struct virtio_can_tx_in))) {
+> > > +		netdev_err(dev, "TX ACK: Device sent no result code\n");
+> > > +		result = VIRTIO_CAN_RESULT_NOT_OK; /* Keep things going */
+> > > +	} else {
+> > > +		result = can_tx_msg->tx_in.result;
+> > > +	}
+> > > +
+> > > +	if (can_priv->can.state < CAN_STATE_BUS_OFF) {
+> > > +		/* Here also frames with result != VIRTIO_CAN_RESULT_OK are
+> > > +		 * echoed. Intentional to bring a waiting process in an upper
+> > > +		 * layer to an end.
+> > > +		 * TODO: Any better means to indicate a problem here?
+> > > +		 */
+> > > +		if (result != VIRTIO_CAN_RESULT_OK)
+> > > +			netdev_warn(dev, "TX ACK: Result = %u\n", result);
+> > 
+> > Maybe an error frame reporting CAN_ERR_CRTL_UNSPEC would be better?
+> > 
+> I am not sure. In xilinx_can.c, CAN_ERR_CRTL_UNSPEC is indicated during
+> a problem in the rx path and this is the tx path. I think the comment
+> refers to improving the way the driver informs this error to the user
+> but I may be wrong.
+> 
 
-This issue was found by Runcheng Lu when develop HSCanT USB to CAN FD
-converter[1]. The original developers may have only 3 interfaces
-device to test so they write 3 here and wait for future change.
+Since we have no detail of what went wrong here, I suggested
+CAN_ERR_CRTL_UNSPEC as it is "unspecified error", to be coupled with a
+controller error with id CAN_ERR_CRTL; however, a different error might be
+more appropriate.
 
-During the HSCanT development, we actually used 4 interfaces, so the
-limitation of 3 is not enough now. But just increase one is not
-future-proofed. Since the channel index type in gs_host_frame is u8,
-just make canch[] become a flexible array with a u8 index, so it
-naturally constraint by U8_MAX and avoid statically allocate 256
-pointer for every gs_usb device.
+For sure, at least in my experience, having a warn printed to kmsg is *not*
+enough, as the application sending the message(s) would not be able to detect
+the error.
 
-[1]: https://github.com/cherry-embedded/HSCanT-hardware
 
-Fixes: d08e973a77d1 ("can: gs_usb: Added support for the GS_USB CAN devices")
-Reported-by: Runcheng Lu <runcheng.lu@hpmicro.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Vincent Mailhol <mailhol@kernel.org>
-Signed-off-by: Celeste Liu <uwu@coelacanthus.name>
-Link: https://patch.msgid.link/20250930-gs-usb-max-if-v5-1-863330bf6666@coelacanthus.name
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/usb/gs_usb.c | 22 ++++++++++------------
- 1 file changed, 10 insertions(+), 12 deletions(-)
+> > For sure, counting the known errors as valid tx_packets and tx_bytes
+> > is misleading.
+> > 
+> 
+> I'll remove the counters below.
+> 
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index c9482d6e947b..9fb4cbbd6d6d 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -289,11 +289,6 @@ struct gs_host_frame {
- #define GS_MAX_RX_URBS 30
- #define GS_NAPI_WEIGHT 32
- 
--/* Maximum number of interfaces the driver supports per device.
-- * Current hardware only supports 3 interfaces. The future may vary.
-- */
--#define GS_MAX_INTF 3
--
- struct gs_tx_context {
- 	struct gs_can *dev;
- 	unsigned int echo_id;
-@@ -324,7 +319,6 @@ struct gs_can {
- 
- /* usb interface struct */
- struct gs_usb {
--	struct gs_can *canch[GS_MAX_INTF];
- 	struct usb_anchor rx_submitted;
- 	struct usb_device *udev;
- 
-@@ -336,9 +330,11 @@ struct gs_usb {
- 
- 	unsigned int hf_size_rx;
- 	u8 active_channels;
-+	u8 channel_cnt;
- 
- 	unsigned int pipe_in;
- 	unsigned int pipe_out;
-+	struct gs_can *canch[] __counted_by(channel_cnt);
- };
- 
- /* 'allocate' a tx context.
-@@ -599,7 +595,7 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
- 	}
- 
- 	/* device reports out of range channel id */
--	if (hf->channel >= GS_MAX_INTF)
-+	if (hf->channel >= parent->channel_cnt)
- 		goto device_detach;
- 
- 	dev = parent->canch[hf->channel];
-@@ -699,7 +695,7 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
- 	/* USB failure take down all interfaces */
- 	if (rc == -ENODEV) {
- device_detach:
--		for (rc = 0; rc < GS_MAX_INTF; rc++) {
-+		for (rc = 0; rc < parent->channel_cnt; rc++) {
- 			if (parent->canch[rc])
- 				netif_device_detach(parent->canch[rc]->netdev);
- 		}
-@@ -1460,17 +1456,19 @@ static int gs_usb_probe(struct usb_interface *intf,
- 	icount = dconf.icount + 1;
- 	dev_info(&intf->dev, "Configuring for %u interfaces\n", icount);
- 
--	if (icount > GS_MAX_INTF) {
-+	if (icount > type_max(parent->channel_cnt)) {
- 		dev_err(&intf->dev,
- 			"Driver cannot handle more that %u CAN interfaces\n",
--			GS_MAX_INTF);
-+			type_max(parent->channel_cnt));
- 		return -EINVAL;
- 	}
- 
--	parent = kzalloc(sizeof(*parent), GFP_KERNEL);
-+	parent = kzalloc(struct_size(parent, canch, icount), GFP_KERNEL);
- 	if (!parent)
- 		return -ENOMEM;
- 
-+	parent->channel_cnt = icount;
-+
- 	init_usb_anchor(&parent->rx_submitted);
- 
- 	usb_set_intfdata(intf, parent);
-@@ -1531,7 +1529,7 @@ static void gs_usb_disconnect(struct usb_interface *intf)
- 		return;
- 	}
- 
--	for (i = 0; i < GS_MAX_INTF; i++)
-+	for (i = 0; i < parent->channel_cnt; i++)
- 		if (parent->canch[i])
- 			gs_destroy_candev(parent->canch[i]);
- 
+We don't really know what's wrong here - the packet might have been sent and
+and then not ACK'ed, as well as any other error condition (as it happens in the
+reference implementation from the original authors [1]). Echoing the packet
+only "to bring a waiting process in an upper layer to an end" and incrementing
+counters feels wrong, but maybe someone more expert than me can advise better
+here.
 
-base-commit: 2c95a756e0cfc19af6d0b32b0c6cf3bada334998
--- 
-2.51.0
+
+[1] https://github.com/OpenSynergy/qemu/commit/115540168f92ba5351a20b9c62552782ea1e3e04
+
+
+Regards,
+Francesco
+
+
 
