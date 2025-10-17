@@ -1,160 +1,139 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 641CA332916
-	for <linux-can@vger.kernel.org>; Fri, 17 Oct 2025 15:08:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F181B32E143;
+	Fri, 17 Oct 2025 15:30:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760713725; cv=none; b=sfi2PW+Ws61/OQtDI/g76y6DtUAqRN4kNA4DnmyG9oza6suokEm3MPUZoapwc/RNTW+ec3DpSQKe/5YrCNQ+qjk0jguYrV3Blloyv3oKVRyEhoExz98zRl03xIH0dztu1oLwCvq3cuGT0XMeXwqr2UzutT2oaN1rTHv9L7RvEQw=
+	t=1760715049; cv=none; b=Vvi97ovhdTj0MAxCz+5mY9dHiA2ifyy1wdTjT0rNvlTwe3RmRL7zqe5bROfZwZd6lhTBhvaVnOhUXu+qFklrReakCpS63l5KkLIIkOv1xeChQXjiFVEWQ7hk7pKJ1B77xtfFKvkm0/nNqUA75z+YyFs+b4SP4tdmbpAfCX1uVVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760713725; c=relaxed/simple;
-	bh=a+msZ0pa9/9yda317z2tnU0vdFleL6tlGPmpXSXsG1A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=W2PnO/+ut4R2NHW4ld4i8WOmTi4C6Ag1GBlDlYhLncsg3Fq4BlbDwAMu/+VtSkJYExa/mYHWknJMivHVxKgAr6neLRv4lfoLmb+9L9RwM+ol/ohRFokNrKueJ/Fs6lmXBY22ebsA2iVR7c2GFheqJwsmAt1TXMSjHriATH0L12c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1v9m4E-0003NL-Jf; Fri, 17 Oct 2025 17:08:30 +0200
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1v9m4D-00450d-2A;
-	Fri, 17 Oct 2025 17:08:29 +0200
-Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 623324892B6;
-	Fri, 17 Oct 2025 15:08:29 +0000 (UTC)
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	kuba@kernel.org,
-	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	"Markus Schneider-Pargmann (TI.com)" <msp@baylibre.com>,
-	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-	Dhruva Gole <d-gole@ti.com>,
-	Kendall Willis <k-willis@ti.com>,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 05/13] can: m_can: Return ERR_PTR on error in allocation
-Date: Fri, 17 Oct 2025 17:04:13 +0200
-Message-ID: <20251017150819.1415685-6-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251017150819.1415685-1-mkl@pengutronix.de>
-References: <20251017150819.1415685-1-mkl@pengutronix.de>
+	s=arc-20240116; t=1760715049; c=relaxed/simple;
+	bh=p5RguzgCG4T4ocGPMm7TGRJ5ODbYr3O7fxpSuhMK/hE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=K9Dx6i5o8rrsk0joR49jZFC+xG/PC96JUpIJCmKGBNtYAuZeRag0q48V4L5n6JAd9PCFKlY4GOf5lkfI5OcE1Ip7pHgAatsPjBoLzSuMuboNN2sHTpICcJTO1ecBXH4eE4zOA9TBn/CBVyf9vtnFi5wSHQ9c4iB4FfvEzbf1+d4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g+wcOdhZ; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g+wcOdhZ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 768EFC4CEFE;
+	Fri, 17 Oct 2025 15:30:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760715048;
+	bh=p5RguzgCG4T4ocGPMm7TGRJ5ODbYr3O7fxpSuhMK/hE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=g+wcOdhZ5jOfEzg9sMOg90LxWGDWzBVy0v1I7Unq3lR5sE/o66ZUq4FkT808KOXM4
+	 iLTaKQ5k+0ZZD45agd7IHLWZecHpoOIvsXaD5IV//WXCTR7Muppw00eX7ngZ+/yA4Y
+	 DRKk4Hihcfgg0ZwcZDpSHTzLzMpL7/Q4SRhrVUGfFCJKS8jzFsRhHpGeSWaZhiM7qu
+	 pZF1cCYBOgV8XYpdD0IoWDxit+q870hn8JDpY2AjqPhJ6F3cMH1sIHa7ELc/M7JLZY
+	 8oL6fJ4YPo8smfAUZuq3DZ59EoNC6XX+BcH9D2VmyeLdAZ+DV9V6lAIN+wOtGpwVe3
+	 0sRTSbo0NHfTg==
+Message-ID: <00e3d382-99e7-4b64-955a-cceffe9e471f@kernel.org>
+Date: Sat, 18 Oct 2025 00:30:45 +0900
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/9] can: dev: can_dev_dropped_skb: drop CAN FD skbs if FD
+ is off
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
+ =?UTF-8?Q?St=C3=A9phane_Grosjean?= <stephane.grosjean@hms-networks.com>,
+ Robert Nawrath <mbro1689@gmail.com>, Minh Le <minh.le.aj@renesas.com>,
+ Duy Nguyen <duy.nguyen.rh@renesas.com>, linux-can@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20251013-canxl-netlink-v1-0-f422b7e2729f@kernel.org>
+ <20251013-canxl-netlink-v1-1-f422b7e2729f@kernel.org>
+ <20251017-determined-jackdaw-of-painting-e2ff64-mkl@pengutronix.de>
+ <20251017-bizarre-enchanted-quokka-f3c704-mkl@pengutronix.de>
+Content-Language: en-US
+From: Vincent Mailhol <mailhol@kernel.org>
+Autocrypt: addr=mailhol@kernel.org; keydata=
+ xjMEZluomRYJKwYBBAHaRw8BAQdAf+/PnQvy9LCWNSJLbhc+AOUsR2cNVonvxhDk/KcW7FvN
+ JFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbEBrZXJuZWwub3JnPsKZBBMWCgBBFiEE7Y9wBXTm
+ fyDldOjiq1/riG27mcIFAmdfB/kCGwMFCQp/CJcFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcC
+ F4AACgkQq1/riG27mcKBHgEAygbvORJOfMHGlq5lQhZkDnaUXbpZhxirxkAHwTypHr4A/joI
+ 2wLjgTCm5I2Z3zB8hqJu+OeFPXZFWGTuk0e2wT4JzjgEZx4y8xIKKwYBBAGXVQEFAQEHQJrb
+ YZzu0JG5w8gxE6EtQe6LmxKMqP6EyR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDl
+ dOjiq1/riG27mcIFAmceMvMCGwwFCQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8V
+ zsZwr/S44HCzcz5+jkxnVVQ5LZ4BANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
+In-Reply-To: <20251017-bizarre-enchanted-quokka-f3c704-mkl@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: "Markus Schneider-Pargmann (TI.com)" <msp@baylibre.com>
+On 17/10/2025 at 22:27, Marc Kleine-Budde wrote:
+> On 17.10.2025 10:28:38, Marc Kleine-Budde wrote:
+>> On 13.10.2025 20:01:23, Vincent Mailhol wrote:
+>>> Currently, the CAN FD skb validation logic is based on the MTU: the
+>>> interface is deemed FD capable if and only if its MTU is greater or
+>>> equal to CANFD_MTU.
+>>>
+>>> This logic is showing its limit with the introduction of CAN XL. For
+>>> example, consider the two scenarios below:
+>>>
+>>>   1. An interface configured with CAN FD on and CAN XL on
+>>>
+>>>   2. An interface configured with CAN FD off and CAN XL on
+>>>
+>>> In those two scenarios, the interfaces would have the same MTU:
+>>>
+>>>   CANXL_MTU
+>>>
+>>> making it impossible to differentiate which one has CAN FD turned on
+>>> and which one has it off.
+>>>
+>>> Because of the limitation, the only non-UAPI-breaking workaround is to
+>>> do the check at the device level using the can_priv->ctrlmode flags.
+>>> Unfortunately, the virtual interfaces (vcan, vxcan), which do not have
+>>> a can_priv, are left behind.
+>>>
+>>> Add a check on the CAN_CTRLMODE_FD flag in can_dev_dropped_skb() and
+>>> drop FD frames whenever the feature is turned off.
+>>>
+>>> Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
+>>
+>> What about merging both can_dev_dropped_skb() an
+>> can_dropped_invalid_skb() in the skb.c, so that there is no stub in the
+>> header file anymore.
+> 
+> Ouch! Don't do this. We still need can_dropped_invalid_skb() for virtual
+> interfaces. See commit ae64438be192 ("can: dev: fix skb drop check").
 
-We have more detailed error values available, return them in the core
-driver and the calling drivers to return proper errors to callers.
+Exactly!
 
-Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
-Reviewed-by: Kendall Willis <k-willis@ti.com>
-Signed-off-by: Markus Schneider-Pargmann (TI.com) <msp@baylibre.com>
-Link: https://patch.msgid.link/20251001-topic-mcan-wakeup-source-v6-12-v10-3-4ab508ac5d1e@baylibre.com
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/m_can/m_can.c          | 6 +++---
- drivers/net/can/m_can/m_can_pci.c      | 4 ++--
- drivers/net/can/m_can/m_can_platform.c | 4 ++--
- drivers/net/can/m_can/tcan4x5x-core.c  | 4 ++--
- 4 files changed, 9 insertions(+), 9 deletions(-)
+> But then I'm asking: Why is there the difference between virtual and
+> non-virtual interface in the first place? Can we get rid of it?
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index f00bdec3246a..10b5862b4880 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -2408,7 +2408,7 @@ struct m_can_classdev *m_can_class_allocate_dev(struct device *dev,
- 					     sizeof(mram_config_vals) / 4);
- 	if (ret) {
- 		dev_err(dev, "Could not get Message RAM configuration.");
--		goto out;
-+		return ERR_PTR(ret);
- 	}
- 
- 	if (dev->of_node && of_property_read_bool(dev->of_node, "wakeup-source"))
-@@ -2423,7 +2423,7 @@ struct m_can_classdev *m_can_class_allocate_dev(struct device *dev,
- 	net_dev = alloc_candev(sizeof_priv, tx_fifo_size);
- 	if (!net_dev) {
- 		dev_err(dev, "Failed to allocate CAN device");
--		goto out;
-+		return ERR_PTR(-ENOMEM);
- 	}
- 
- 	class_dev = netdev_priv(net_dev);
-@@ -2433,7 +2433,7 @@ struct m_can_classdev *m_can_class_allocate_dev(struct device *dev,
- 
- 	m_can_of_parse_mram(class_dev, mram_config_vals);
- 	spin_lock_init(&class_dev->tx_handling_spinlock);
--out:
-+
- 	return class_dev;
- }
- EXPORT_SYMBOL_GPL(m_can_class_allocate_dev);
-diff --git a/drivers/net/can/m_can/m_can_pci.c b/drivers/net/can/m_can/m_can_pci.c
-index 9ad7419f88f8..eb31ed1f9644 100644
---- a/drivers/net/can/m_can/m_can_pci.c
-+++ b/drivers/net/can/m_can/m_can_pci.c
-@@ -111,8 +111,8 @@ static int m_can_pci_probe(struct pci_dev *pci, const struct pci_device_id *id)
- 
- 	mcan_class = m_can_class_allocate_dev(&pci->dev,
- 					      sizeof(struct m_can_pci_priv));
--	if (!mcan_class)
--		return -ENOMEM;
-+	if (IS_ERR(mcan_class))
-+		return PTR_ERR(mcan_class);
- 
- 	priv = cdev_to_priv(mcan_class);
- 
-diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
-index 4a412add2b8d..56da411878af 100644
---- a/drivers/net/can/m_can/m_can_platform.c
-+++ b/drivers/net/can/m_can/m_can_platform.c
-@@ -87,8 +87,8 @@ static int m_can_plat_probe(struct platform_device *pdev)
- 
- 	mcan_class = m_can_class_allocate_dev(&pdev->dev,
- 					      sizeof(struct m_can_plat_priv));
--	if (!mcan_class)
--		return -ENOMEM;
-+	if (IS_ERR(mcan_class))
-+		return PTR_ERR(mcan_class);
- 
- 	priv = cdev_to_priv(mcan_class);
- 
-diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
-index 39b0b5277b11..31cc9d0abd45 100644
---- a/drivers/net/can/m_can/tcan4x5x-core.c
-+++ b/drivers/net/can/m_can/tcan4x5x-core.c
-@@ -416,8 +416,8 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
- 
- 	mcan_class = m_can_class_allocate_dev(&spi->dev,
- 					      sizeof(struct tcan4x5x_priv));
--	if (!mcan_class)
--		return -ENOMEM;
-+	if (IS_ERR(mcan_class))
-+		return PTR_ERR(mcan_class);
- 
- 	ret = m_can_check_mram_cfg(mcan_class, TCAN4X5X_MRAM_SIZE);
- 	if (ret)
--- 
-2.51.0
+The fact is that:
 
+  - We need a function for the physical interfaces to check the
+    CAN_CTRLMODE_LISTENONLY, i.e. with an access to struct can_priv.
+
+  - We need a similar function but which work for the virtual
+    interfaces which do not have a can_priv member.
+
+So unless we do a major code refactor so that the virtual interfaces,
+I do not see how we could get rid of it.
+
+>> Someone (i.e. me) used can_dropped_invalid_skb() in a driver, that means
+>> the check for CAN_CTRLMODE_LISTENONLY is missing :/ (I'll send a fix).
+
+At least, this does not seem like a security breach like it was the
+case for the missing net_device_ops->ndo_change_mtu().
+
+> These drivers need this fix:
+> 
+> | drivers/net/can/bxcan.c:845:     if (can_dropped_invalid_skb(ndev, skb))
+> | drivers/net/can/esd/esdacc.c:257:        if (can_dropped_invalid_skb(netdev, skb))
+> | drivers/net/can/rockchip/rockchip_canfd-tx.c:75: if (can_dropped_invalid_skb(ndev, skb))
+
+Yeah, I think that this is a pitfall, but at the same time, I do not
+see how to get rid of this can_dev_dropped_skb() and
+can_dropped_invalid_skb() pair. The best I can think of it to be
+careful on this problem doing the code review now that we are aware
+about it.
+
+
+Yours sincerely,
+Vincent Mailhol
