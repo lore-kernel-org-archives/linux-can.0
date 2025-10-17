@@ -1,15 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 943FA33710B
-	for <linux-can@vger.kernel.org>; Fri, 17 Oct 2025 15:08:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51B2732C95E
+	for <linux-can@vger.kernel.org>; Fri, 17 Oct 2025 15:08:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760713716; cv=none; b=qw5mf3V+RstxJ96127CG5TC+SnSqcIeBG5NNA5Ml3+hw1cRz0kmMKxWUJoLqUm7t0x1/iY1u5RQvgPtmqBkUrRMgD97hNcfFhnXqqq1Vlr8WDEi02mS/3t7omB585kc/HMGJi6ZHgqSRX0x6tH2dzm2JbtMmdfq5XLnWK2cGJdE=
+	t=1760713718; cv=none; b=dIbe81yl0sPIbSRXqUqrxXTKiynW5FHTicQo2ByQDYLS86ZhMTY5UmMOUVRDmJsZcmm78EYiW/rODaH4GJYjTPnhwaxEEy6m0/hX/bjyWA40HSV75QAQsmdIsSf1fVJZiu/JCOQzwAEHz9ngXUrtVLizMYrzseHHBpJNDc4JYRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760713716; c=relaxed/simple;
-	bh=usb4dRiFLvjbM3q6c6DenTpAsRJFcg4O5Ag2iVo/emo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nuIz/KBEUPtqAjfa516+vYyT8mVmCH2GNjYFGkHF4TvBniHwOAG0K3KxXLA/aUDF/D8UIO92Eg/pgqIExbo7OJmSDY9R0n01c1IF8gOXbiLPFT9S5QkeZBsT7z8idt+hk5vCqU/ikH67EF1svakoAw+IsAq9GFGfkh4cJXt35sY=
+	s=arc-20240116; t=1760713718; c=relaxed/simple;
+	bh=MqwY1f71HV4MQYkm9sC8OJmjO7tDWOavvgdZJ2JhYGk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=huLZSCC6sM3zHJzYkK58nekfgSZSLyyWQGwHKuEQPj90JkDBHKJs9eo+kiQM9atdObikAELtZ49aEFHWTqg2Hgv+z+tLqgNsTusmgBSnoFRLySSJk8C55+xgm3D6ReL3xQp8sanBwL8Pndu5w1w90UhL4YkWynAim62Ba83Y+HI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -17,30 +18,34 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v9m4E-0003Mv-2Q; Fri, 17 Oct 2025 17:08:30 +0200
+	id 1v9m4E-0003NM-2R; Fri, 17 Oct 2025 17:08:30 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1v9m4D-00450U-0o;
+	id 1v9m4D-00450h-2U;
 	Fri, 17 Oct 2025 17:08:29 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id E97A94892B1;
-	Fri, 17 Oct 2025 15:08:28 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 75B004892B7;
+	Fri, 17 Oct 2025 15:08:29 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
-	kernel@pengutronix.de
-Subject: [PATCH net-next 0/13] pull-request: can-next 2025-10-17
-Date: Fri, 17 Oct 2025 17:04:08 +0200
-Message-ID: <20251017150819.1415685-1-mkl@pengutronix.de>
+	kernel@pengutronix.de,
+	"Markus Schneider-Pargmann (TI.com)" <msp@baylibre.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 06/13] can: m_can: Support pinctrl wakeup state
+Date: Fri, 17 Oct 2025 17:04:14 +0200
+Message-ID: <20251017150819.1415685-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20251017150819.1415685-1-mkl@pengutronix.de>
+References: <20251017150819.1415685-1-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -53,108 +58,144 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Hello netdev-team,
+From: "Markus Schneider-Pargmann (TI.com)" <msp@baylibre.com>
 
-this is a pull request of 13 patches for net-next/main.
+TI AM62x SoC requires a wakeup flag being set in pinctrl when mcan pins
+act as a wakeup source. Add support to select the wakeup state if WOL
+is enabled.
 
-The first patch is by me and adds support for an optional reset to the
-m_can drivers.
-
-Vincent Mailhol's patch targets all drivers and removes the
-can_change_mtu() function, since the netdev's min and max MTU are
-populated.
-
-Markus Schneider-Pargmann contributes 4 patches to the m_can driver to
-add am62 wakeup support.
-
-The last 7 patches are by me and provide various cleanups to the m_can
-driver.
-
-regards,
-Marc
-
+Signed-off-by: Markus Schneider-Pargmann (TI.com) <msp@baylibre.com>
+Link: https://patch.msgid.link/20251001-topic-mcan-wakeup-source-v6-12-v10-4-4ab508ac5d1e@baylibre.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/m_can/m_can.c | 69 ++++++++++++++++++++++++++++++++++-
+ drivers/net/can/m_can/m_can.h |  3 ++
+ 2 files changed, 70 insertions(+), 2 deletions(-)
 
-The following changes since commit 7e0d4c111369ed385ec4aaa6c9c78c46efda54d0:
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 10b5862b4880..8569596ae830 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -2265,7 +2265,26 @@ static int m_can_set_wol(struct net_device *dev, struct ethtool_wolinfo *wol)
+ 		return ret;
+ 	}
+ 
++	if (!IS_ERR_OR_NULL(cdev->pinctrl_state_wakeup)) {
++		if (wol_enable)
++			ret = pinctrl_select_state(cdev->pinctrl, cdev->pinctrl_state_wakeup);
++		else
++			ret = pinctrl_pm_select_default_state(cdev->dev);
++
++		if (ret) {
++			netdev_err(cdev->net, "Failed to select pinctrl state %pE\n",
++				   ERR_PTR(ret));
++			goto err_wakeup_enable;
++		}
++	}
++
+ 	return 0;
++
++err_wakeup_enable:
++	/* Revert wakeup enable */
++	device_set_wakeup_enable(cdev->dev, !wol_enable);
++
++	return ret;
+ }
+ 
+ static const struct ethtool_ops m_can_ethtool_ops_coalescing = {
+@@ -2393,6 +2412,42 @@ int m_can_class_get_clocks(struct m_can_classdev *cdev)
+ }
+ EXPORT_SYMBOL_GPL(m_can_class_get_clocks);
+ 
++static bool m_can_class_wakeup_pinctrl_enabled(struct m_can_classdev *class_dev)
++{
++	return device_may_wakeup(class_dev->dev) && class_dev->pinctrl_state_wakeup;
++}
++
++static int m_can_class_parse_pinctrl(struct m_can_classdev *class_dev)
++{
++	struct device *dev = class_dev->dev;
++	int ret;
++
++	class_dev->pinctrl = devm_pinctrl_get(dev);
++	if (IS_ERR(class_dev->pinctrl)) {
++		ret = PTR_ERR(class_dev->pinctrl);
++		class_dev->pinctrl = NULL;
++
++		if (ret == -ENODEV)
++			return 0;
++
++		return dev_err_probe(dev, ret, "Failed to get pinctrl\n");
++	}
++
++	class_dev->pinctrl_state_wakeup =
++		pinctrl_lookup_state(class_dev->pinctrl, "wakeup");
++	if (IS_ERR(class_dev->pinctrl_state_wakeup)) {
++		ret = PTR_ERR(class_dev->pinctrl_state_wakeup);
++		class_dev->pinctrl_state_wakeup = NULL;
++
++		if (ret == -ENODEV)
++			return 0;
++
++		return dev_err_probe(dev, ret, "Failed to lookup pinctrl wakeup state\n");
++	}
++
++	return 0;
++}
++
+ struct m_can_classdev *m_can_class_allocate_dev(struct device *dev,
+ 						int sizeof_priv)
+ {
+@@ -2434,7 +2489,15 @@ struct m_can_classdev *m_can_class_allocate_dev(struct device *dev,
+ 	m_can_of_parse_mram(class_dev, mram_config_vals);
+ 	spin_lock_init(&class_dev->tx_handling_spinlock);
+ 
++	ret = m_can_class_parse_pinctrl(class_dev);
++	if (ret)
++		goto err_free_candev;
++
+ 	return class_dev;
++
++err_free_candev:
++	free_candev(net_dev);
++	return ERR_PTR(ret);
+ }
+ EXPORT_SYMBOL_GPL(m_can_class_allocate_dev);
+ 
+@@ -2563,7 +2626,8 @@ int m_can_class_suspend(struct device *dev)
+ 		cdev->can.state = CAN_STATE_SLEEPING;
+ 	}
+ 
+-	pinctrl_pm_select_sleep_state(dev);
++	if (!m_can_class_wakeup_pinctrl_enabled(cdev))
++		pinctrl_pm_select_sleep_state(dev);
+ 
+ 	return ret;
+ }
+@@ -2575,7 +2639,8 @@ int m_can_class_resume(struct device *dev)
+ 	struct net_device *ndev = cdev->net;
+ 	int ret = 0;
+ 
+-	pinctrl_pm_select_default_state(dev);
++	if (!m_can_class_wakeup_pinctrl_enabled(cdev))
++		pinctrl_pm_select_default_state(dev);
+ 
+ 	if (netif_running(ndev)) {
+ 		ret = m_can_clk_start(cdev);
+diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
+index 7b7600697c6b..f2f89687bbd2 100644
+--- a/drivers/net/can/m_can/m_can.h
++++ b/drivers/net/can/m_can/m_can.h
+@@ -129,6 +129,9 @@ struct m_can_classdev {
+ 	struct mram_cfg mcfg[MRAM_CFG_NUM];
+ 
+ 	struct hrtimer hrtimer;
++
++	struct pinctrl *pinctrl;
++	struct pinctrl_state *pinctrl_state_wakeup;
+ };
+ 
+ struct m_can_classdev *m_can_class_allocate_dev(struct device *dev, int sizeof_priv);
+-- 
+2.51.0
 
-  Merge branch 'net-macb-various-cleanups' (2025-10-16 16:59:32 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-6.19-20251017
-
-for you to fetch changes up to e41287a079224dcb49da5c8f710e9cb88763a71c:
-
-  Merge patch series "can: m_can: various cleanups" (2025-10-17 15:18:25 +0200)
-
-----------------------------------------------------------------
-linux-can-next-for-6.19-20251017
-
-----------------------------------------------------------------
-Marc Kleine-Budde (10):
-      can: m_can: add support for optional reset
-      Merge patch series "can: m_can: Add am62 wakeup support"
-      can: m_can: m_can_init_ram(): make static
-      can: m_can: hrtimer_callback(): rename to m_can_polling_timer()
-      net: m_can: convert dev_{dbg,info,err} -> netdev_{dbg,info,err}
-      can: m_can: m_can_interrupt_enable(): use m_can_write() instead of open coding it
-      can: m_can: m_can_class_register(): remove error message in case devm_kzalloc() fails
-      can: m_can: m_can_tx_submit(): remove unneeded sanity checks
-      can: m_can: m_can_get_berr_counter(): don't wake up controller if interface is down
-      Merge patch series "can: m_can: various cleanups"
-
-Markus Schneider-Pargmann (TI.com) (4):
-      dt-bindings: can: m_can: Add wakeup properties
-      can: m_can: Map WoL to device_set_wakeup_enable
-      can: m_can: Return ERR_PTR on error in allocation
-      can: m_can: Support pinctrl wakeup state
-
-Vincent Mailhol (1):
-      can: treewide: remove can_change_mtu()
-
- .../devicetree/bindings/net/can/bosch,m_can.yaml   |  25 ++
- drivers/net/can/at91_can.c                         |   1 -
- drivers/net/can/bxcan.c                            |   1 -
- drivers/net/can/c_can/c_can_main.c                 |   1 -
- drivers/net/can/can327.c                           |   1 -
- drivers/net/can/cc770/cc770.c                      |   1 -
- drivers/net/can/ctucanfd/ctucanfd_base.c           |   1 -
- drivers/net/can/dev/dev.c                          |  38 ---
- drivers/net/can/esd/esd_402_pci-core.c             |   1 -
- drivers/net/can/flexcan/flexcan-core.c             |   1 -
- drivers/net/can/grcan.c                            |   1 -
- drivers/net/can/ifi_canfd/ifi_canfd.c              |   1 -
- drivers/net/can/janz-ican3.c                       |   1 -
- drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c |   1 -
- drivers/net/can/m_can/m_can.c                      | 256 +++++++++++++++------
- drivers/net/can/m_can/m_can.h                      |   5 +-
- drivers/net/can/m_can/m_can_pci.c                  |   4 +-
- drivers/net/can/m_can/m_can_platform.c             |   4 +-
- drivers/net/can/m_can/tcan4x5x-core.c              |   4 +-
- drivers/net/can/mscan/mscan.c                      |   1 -
- drivers/net/can/peak_canfd/peak_canfd.c            |   1 -
- drivers/net/can/rcar/rcar_can.c                    |   1 -
- drivers/net/can/rcar/rcar_canfd.c                  |   1 -
- drivers/net/can/rockchip/rockchip_canfd-core.c     |   1 -
- drivers/net/can/sja1000/sja1000.c                  |   1 -
- drivers/net/can/slcan/slcan-core.c                 |   1 -
- drivers/net/can/softing/softing_main.c             |   1 -
- drivers/net/can/spi/hi311x.c                       |   1 -
- drivers/net/can/spi/mcp251x.c                      |   1 -
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c     |   1 -
- drivers/net/can/sun4i_can.c                        |   1 -
- drivers/net/can/ti_hecc.c                          |   1 -
- drivers/net/can/usb/ems_usb.c                      |   1 -
- drivers/net/can/usb/esd_usb.c                      |   1 -
- drivers/net/can/usb/etas_es58x/es58x_core.c        |   1 -
- drivers/net/can/usb/f81604.c                       |   1 -
- drivers/net/can/usb/gs_usb.c                       |   1 -
- drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c   |   1 -
- drivers/net/can/usb/mcba_usb.c                     |   1 -
- drivers/net/can/usb/nct6694_canfd.c                |   1 -
- drivers/net/can/usb/peak_usb/pcan_usb_core.c       |   1 -
- drivers/net/can/usb/ucan.c                         |   1 -
- drivers/net/can/usb/usb_8dev.c                     |   1 -
- drivers/net/can/xilinx_can.c                       |   1 -
- include/linux/can/dev.h                            |   1 -
- 45 files changed, 222 insertions(+), 152 deletions(-)
