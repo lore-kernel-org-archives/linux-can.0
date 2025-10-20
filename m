@@ -1,16 +1,15 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBE96264A97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C1B268C40
 	for <linux-can@vger.kernel.org>; Mon, 20 Oct 2025 15:25:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760973928; cv=none; b=J70LzhEGNrKOCOhu4JnJ92ZpHfjI79cIg4F0gjJmfkl5mdsteeGpxsnRR7TQ3pNBAxVGYuvb8nqTxJyRGRht+P7ky7l97rBAk4BKR5BTWOa2SFLcKPESOO8KAOpz6lz3nnbKRAUG2Eb70Gy+iP///smaVpjep1V0Vh6fw3HN8XY=
+	t=1760973928; cv=none; b=m3glxATxQIGTuF3g9l6bUu4QsMhjyMZsSNGoaIFQCZmfAet4NXL+L0uRhxeJdHWs64w2X4A5tf9W1+PzkJMOJTayOYbpj/2aPiZoULq5UxRCj7ZLdIbPlGLtn8xnx5WrbYff+nFH2PUPCPNiih08XhUeXTIZe/PMryRI8rbik0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1760973928; c=relaxed/simple;
-	bh=1Nc+4T6K74qt1+p9936kzRAIcPBKq/tDZ9neB8aX0s8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=R441eI9Kf5cY9F6/987H8mJu+FjVHMeZZzbQ6KlRb6RxUqq2ZRcpjOe4ZIU0L0RbYjtJ7am/7kDTH3dvehHdBeVEGiPnhedNzPDegUeDOOyMNveyNyTkGYwThO00TDokoK21pbIrwWQILfH//uQJM8Pbat1k/o5JefDk59BTIoA=
+	bh=qxm53sqAQ1YP5kM3q6760h0jQq14Lb5gX9n2ss8yOk0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uGiKGLN87yF9sisxe0rqHgzSeQAWa6WItq4U00r83vVfaUWCR+w/ZtANQ9rHoyO5XthsuY0dUFgDYQNk/UGsRWnrSTOqQR+l7I/k/GT1RrtyyFPLesPbmn49UqiI4Sw7fGrzBH5YYCDJsBaY3rxoc1E2RZvy7JPqdwq0KnYFVzc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,35 +17,30 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vArlC-0005Ah-D7; Mon, 20 Oct 2025 17:25:22 +0200
+	id 1vArlC-0005Ac-8S; Mon, 20 Oct 2025 17:25:22 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vArlB-004ZUN-1i;
+	id 1vArlB-004ZUF-0d;
 	Mon, 20 Oct 2025 17:25:21 +0200
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 4661248B59C;
-	Mon, 20 Oct 2025 15:25:21 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id D7F1A48B598;
+	Mon, 20 Oct 2025 15:25:20 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	stable@vger.kernel.org,
-	Andrei Lalaev <andrey.lalaev@gmail.com>
-Subject: [PATCH net 4/4] can: netlink: can_changelink(): allow disabling of automatic restart
-Date: Mon, 20 Oct 2025 17:22:25 +0200
-Message-ID: <20251020152516.1590553-5-mkl@pengutronix.de>
+	kernel@pengutronix.de
+Subject: [PATCH net 0/4] pull-request: can 2025-10-20
+Date: Mon, 20 Oct 2025 17:22:21 +0200
+Message-ID: <20251020152516.1590553-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251020152516.1590553-1-mkl@pengutronix.de>
-References: <20251020152516.1590553-1-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -59,60 +53,46 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Since the commit c1f3f9797c1f ("can: netlink: can_changelink(): fix NULL
-pointer deref of struct can_priv::do_set_mode"), the automatic restart
-delay can only be set for devices that implement the restart handler struct
-can_priv::do_set_mode. As it makes no sense to configure a automatic
-restart for devices that doesn't support it.
+Hello netdev-team,
 
-However, since systemd commit 13ce5d4632e3 ("network/can: properly handle
-CAN.RestartSec=0") [1], systemd-networkd correctly handles a restart delay
-of "0" (i.e. the restart is disabled). Which means that a disabled restart
-is always configured in the kernel.
+this is a pull request of 4 patches for net/main.
 
-On systems with both changes active this causes that CAN interfaces that
-don't implement a restart handler cannot be brought up by systemd-networkd.
+All patches are by me. The first 3 update the bxcan, esd and rockchip
+driver to drop skbs in xmit of the device is in listen only mode.
 
-Solve this problem by allowing a delay of "0" to be configured, even if the
-device does not implement a restart handler.
+The last patch targets the CAN netlink implementation to allow the
+disabling of automatic restart after Bus-Off, even if the a driver
+doesn't implement that callback.
 
-[1] https://github.com/systemd/systemd/commit/13ce5d4632e395521e6205c954493c7fc1c4c6e0
+regards,
+Marc
 
-Cc: stable@vger.kernel.org
-Cc: Andrei Lalaev <andrey.lalaev@gmail.com>
-Reported-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Closes: https://lore.kernel.org/all/20251020-certain-arrogant-vole-of-sunshine-141841-mkl@pengutronix.de
-Fixes: c1f3f9797c1f ("can: netlink: can_changelink(): fix NULL pointer deref of struct can_priv::do_set_mode")
-Link: https://patch.msgid.link/20251020-netlink-fix-restart-v1-1-3f53c7f8520b@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/netlink.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+The following changes since commit ffff5c8fc2af2218a3332b3d5b97654599d50cde:
 
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 0591406b6f32..6f83b87d54fc 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -452,7 +452,9 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 	}
- 
- 	if (data[IFLA_CAN_RESTART_MS]) {
--		if (!priv->do_set_mode) {
-+		unsigned int restart_ms = nla_get_u32(data[IFLA_CAN_RESTART_MS]);
-+
-+		if (restart_ms != 0 && !priv->do_set_mode) {
- 			NL_SET_ERR_MSG(extack,
- 				       "Device doesn't support restart from Bus Off");
- 			return -EOPNOTSUPP;
-@@ -461,7 +463,7 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 		/* Do not allow changing restart delay while running */
- 		if (dev->flags & IFF_UP)
- 			return -EBUSY;
--		priv->restart_ms = nla_get_u32(data[IFLA_CAN_RESTART_MS]);
-+		priv->restart_ms = restart_ms;
- 	}
- 
- 	if (data[IFLA_CAN_RESTART]) {
--- 
-2.51.0
+  net: phy: realtek: fix rtl8221b-vm-cg name (2025-10-17 16:34:37 -0700)
 
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-6.18-20251020
+
+for you to fetch changes up to 8e93ac51e4c6dc399fad59ec21f55f2cfb46d27c:
+
+  can: netlink: can_changelink(): allow disabling of automatic restart (2025-10-20 17:20:12 +0200)
+
+----------------------------------------------------------------
+linux-can-fixes-for-6.18-20251020
+
+----------------------------------------------------------------
+Marc Kleine-Budde (5):
+      can: bxcan: bxcan_start_xmit(): use can_dev_dropped_skb() instead of can_dropped_invalid_skb()
+      can: esd: acc_start_xmit(): use can_dev_dropped_skb() instead of can_dropped_invalid_skb()
+      can: rockchip-canfd: rkcanfd_start_xmit(): use can_dev_dropped_skb() instead of can_dropped_invalid_skb()
+      Merge patch series "can: drivers: drop skb in xmit if device is in listen only mode"
+      can: netlink: can_changelink(): allow disabling of automatic restart
+
+ drivers/net/can/bxcan.c                      | 2 +-
+ drivers/net/can/dev/netlink.c                | 6 ++++--
+ drivers/net/can/esd/esdacc.c                 | 2 +-
+ drivers/net/can/rockchip/rockchip_canfd-tx.c | 2 +-
+ 4 files changed, 7 insertions(+), 5 deletions(-)
