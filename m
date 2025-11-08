@@ -1,15 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6EC125524C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9584A19D08F
 	for <linux-can@vger.kernel.org>; Sat,  8 Nov 2025 09:01:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762592481; cv=none; b=BE+tOLBIDTINGXFea3Gm6ftGEsWPfG+JRgxn/HvzfSQ/N7oln8ix6G62zIdlkBC0ARc0CqZo8DZb6QKEy5a/K2m1mAM0PILhBTo6VKExXJY2Md7XSSFukrFc3c/OUs+Dac34EmS200sVCa4X7ka7wrBVhAyfe4aHWODD6IW8dHs=
+	t=1762592481; cv=none; b=snEFj1BKr1woMeyToPzeL1wCsNWOwSmBUOWFnDYY7eXK+z2+lEENJQ9UYl4YHumZwMLPpv0KgvVGVYGStiT2HXD80BTt5VN2wr6eHXjyUMp0lIjqpI/BUmJuekHU+zc/s1rPYrFl/9hY8asRo3EgwJHmhlfpqcVRNhffisOePJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1762592481; c=relaxed/simple;
-	bh=Ek2EiErAw6PRGNdh+pk9UEnKLWfCLp3xLu6W1ssyUw8=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=k5Ec9KSRX9G+A/KYJtXdPGdgwpe04hkw52pYSDCRYfhCclSZrXBhzHji4creAmyjp4kL+MqtqpG9GhKLS+H+dN+atW38OtaCALjo1JCXTZyb4Y7qhyiKMCWAZHX7DXyxp9YEgQb/Zj5jCF5bD11lk2eaLj0mHLc01GvKf6ymafA=
+	bh=7fNx/AX63/lcrl0SzWFf1gLEWkW0J5hkOQiArbLfdHc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=r9u6VTxcYeQbeLtuaj9bOi/mw5SxN4ulDNli+Jw2YkkE8iGKLuLS1/+5Kyq3xUk22mCG09Wju6N3/JFkn3s6GqDEmmHxkPY2vchNBj7OeMR4AU1agj79l4+ruVIXsqu1jyPt90d/mP/BKq3ZFnXuR6CysSi7vpOdtLQj0Mfdv1s=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -17,24 +18,24 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vHeor-0004vX-Ss; Sat, 08 Nov 2025 10:01:13 +0100
+	id 1vHeos-0004vs-1d; Sat, 08 Nov 2025 10:01:14 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vHeoq-007fM7-25;
-	Sat, 08 Nov 2025 10:01:12 +0100
+	id 1vHeor-007fMD-2g;
+	Sat, 08 Nov 2025 10:01:13 +0100
 Received: from hardanger.blackshift.org (unknown [IPv6:2a01:4f8:1c1c:29e9:22:41ff:fe00:1400])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id CDBB649A89B;
-	Sat, 08 Nov 2025 09:01:11 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 28FC949A89D;
+	Sat, 08 Nov 2025 09:01:13 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH can 0/3] can: gs_usb: fix USB bulk in and out callbacks
-Date: Sat, 08 Nov 2025 10:01:00 +0100
-Message-Id: <20251108-gs_usb-fix-usb-callbacks-v1-0-8a2534a7ea05@pengutronix.de>
+Date: Sat, 08 Nov 2025 10:01:02 +0100
+Subject: [PATCH can 2/3] can: gs_usb: gs_usb_receive_bulk_callback(): check
+ actual_length before accessing header
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -43,25 +44,24 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAMwGD2kC/x2M0QqDMAxFf0XybMBWinS/MobELGqYdKNBEcR/t
- +7pcODce4BJVjF4VAdk2dT0m4q4ugKeKU2C+i4OvvHBuabDyfrVBhx1x5tMyzIQfwzDSD6G4GP
- kFsr8l6VE/+snMCV4necFxxJfpm8AAAA=
-X-Change-ID: 20251107-gs_usb-fix-usb-callbacks-5fa2955299c3
+Message-Id: <20251108-gs_usb-fix-usb-callbacks-v1-2-8a2534a7ea05@pengutronix.de>
+References: <20251108-gs_usb-fix-usb-callbacks-v1-0-8a2534a7ea05@pengutronix.de>
+In-Reply-To: <20251108-gs_usb-fix-usb-callbacks-v1-0-8a2534a7ea05@pengutronix.de>
 To: Vincent Mailhol <mailhol@kernel.org>, 
  Maximilian Schneider <max@schneidersoft.net>, 
  Wolfgang Grandegger <wg@grandegger.com>
 Cc: kernel@pengutronix.de, linux-can@vger.kernel.org, 
  linux-kernel@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 X-Mailer: b4 0.15-dev-509f5
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1012; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=Ek2EiErAw6PRGNdh+pk9UEnKLWfCLp3xLu6W1ssyUw8=;
- b=owEBbQGS/pANAwAKAQx0Zd/5kJGcAcsmYgBpDwbQVEHziBvS1sLXgHJT1/ntDuNIz+NwauWtu
- Bxai4FGPRCJATMEAAEKAB0WIQSf+wzYr2eoX/wVbPMMdGXf+ZCRnAUCaQ8G0AAKCRAMdGXf+ZCR
- nAh4CACNc+HvpZpZVhdqdC9WV9uuK0nOhIbWEF7hCKYVCO35JhNpBNEf5N1pH9MsC4XvCaab8fc
- i37Lkw8KVXkt2GvyJ3Tbzhm7fTrlqfZtDo7FO9q1fju8zW1A08NPiXDH1ZtMWHgaeioTCBHu3yf
- KyCS/usgtddHSL1JMy9d7SBrhCcjZYfxoC1L4aT/Mhj1Y82NVitqESrXOC08hADwz/tSTT5LisE
- eVBT2boKycnbhJ0lsAtnX/IFRB2SA9dXZF63f+dSfpy6AzfRVt+e7DcJeQ21VfcXkMzIOgnjq/K
- zxjKvscDH0xwE+aW/G62/hx52uiNTqMxByHt21PtkFQSF+Lm
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2432; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=7fNx/AX63/lcrl0SzWFf1gLEWkW0J5hkOQiArbLfdHc=;
+ b=owEBbQGS/pANAwAKAQx0Zd/5kJGcAcsmYgBpDwbTOzrOuARzT/lDlpR+lSbwNflicIZOAXng2
+ H8nFZjrFciJATMEAAEKAB0WIQSf+wzYr2eoX/wVbPMMdGXf+ZCRnAUCaQ8G0wAKCRAMdGXf+ZCR
+ nKJ3CACtLg7J3tsHLkZGor/lgOHPs24LaLTRcR4lK7lOWSvzMnuDz2Nemg+JWBfgksjM276YXDN
+ 3qqOygXrkEZuySWr7vIhMEU3j8AonJ7j6udm16RaF79Ldv1CwtErZlfPkp9YcS0wS+HlLFIc3KJ
+ AYR4GuV4cSJrW60alJ8eQcTUN4SUULnIEQ7VvACfMzWzvMJoc2xDGxtnP7Zv+SOLIyB6uJD+Cef
+ YNCnFMAnNQofz/EPkaw+KjKCXwq/bli0sUrQAtb+aKY8IDTtZmbUitASwOBjsmnlf21vu3PFO2L
+ 7oeSrXDEoOI9Y40U95jQ9W3MVv961yTqUG8SUXOoXGNomm87
 X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
  fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -69,28 +69,84 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-The bulk-out callback gs_usb_xmit_callback() does not take care of the
-cleanup of failed transfers of URBs. The 1st patch adds the missing
-cleanup.
+The driver expects to receive a struct gs_host_frame in
+gs_usb_receive_bulk_callback().
 
-The bulk-in callback gs_usb_receive_bulk_callback() accesses the buffer of
-the URB without checking how much data has actually been received. The last
-2 patches fix this problem.
+Use struct_group to describe the header of the struct gs_host_frame and
+check that we have at least received the header before accessing any
+members of it.
 
+To resubmit the URB, do not dereference the pointer chain
+"dev->parent->hf_size_rx" but use "parent->hf_size_rx" instead. Since
+"urb->context" contains "parent", it is always defined, while "dev" is not
+defined if the URB it too short.
+
+Fixes: d08e973a77d1 ("can: gs_usb: Added support for the GS_USB CAN devices")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
-Marc Kleine-Budde (3):
-      can: gs_usb: gs_usb_xmit_callback(): fix handling of failed transmitted URBs
-      can: gs_usb: gs_usb_receive_bulk_callback(): check actual_length before accessing header
-      can: gs_usb: gs_usb_receive_bulk_callback(): check actual_length before accessing data
+ drivers/net/can/usb/gs_usb.c | 26 +++++++++++++++++++-------
+ 1 file changed, 19 insertions(+), 7 deletions(-)
 
- drivers/net/can/usb/gs_usb.c | 108 +++++++++++++++++++++++++++++++++++++------
- 1 file changed, 94 insertions(+), 14 deletions(-)
----
-base-commit: 74d4432421a3e2669fbccc08c0f4fc2980bf0e39
-change-id: 20251107-gs_usb-fix-usb-callbacks-5fa2955299c3
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index fa9bab8c89ae..51f8d694104d 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -262,13 +262,15 @@ struct canfd_quirk {
+ } __packed;
+ 
+ struct gs_host_frame {
+-	u32 echo_id;
+-	__le32 can_id;
++	struct_group(header,
++		u32 echo_id;
++		__le32 can_id;
+ 
+-	u8 can_dlc;
+-	u8 channel;
+-	u8 flags;
+-	u8 reserved;
++		u8 can_dlc;
++		u8 channel;
++		u8 flags;
++		u8 reserved;
++	);
+ 
+ 	union {
+ 		DECLARE_FLEX_ARRAY(struct classic_can, classic_can);
+@@ -576,6 +578,7 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
+ 	int rc;
+ 	struct net_device_stats *stats;
+ 	struct gs_host_frame *hf = urb->transfer_buffer;
++	unsigned int minimum_length;
+ 	struct gs_tx_context *txc;
+ 	struct can_frame *cf;
+ 	struct canfd_frame *cfd;
+@@ -594,6 +597,15 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
+ 		return;
+ 	}
+ 
++	minimum_length = sizeof(hf->header);
++	if (urb->actual_length < minimum_length) {
++		dev_err_ratelimited(&parent->udev->dev,
++				    "short read (actual_length=%u, minimum_length=%u)\n",
++				    urb->actual_length, minimum_length);
++
++		goto resubmit_urb;
++	}
++
+ 	/* device reports out of range channel id */
+ 	if (hf->channel >= parent->channel_cnt)
+ 		goto device_detach;
+@@ -687,7 +699,7 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
+ resubmit_urb:
+ 	usb_fill_bulk_urb(urb, parent->udev,
+ 			  parent->pipe_in,
+-			  hf, dev->parent->hf_size_rx,
++			  hf, parent->hf_size_rx,
+ 			  gs_usb_receive_bulk_callback, parent);
+ 
+ 	rc = usb_submit_urb(urb, GFP_ATOMIC);
 
-Best regards,
---  
-Marc Kleine-Budde <mkl@pengutronix.de>
+-- 
+2.51.0
 
