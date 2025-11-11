@@ -1,114 +1,211 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D9E62D8DDA
-	for <linux-can@vger.kernel.org>; Tue, 11 Nov 2025 14:35:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762871726; cv=none; b=gbM8M1TCyDupKA0nPvGS8cQNX5dkR01QwVvGFAO3uAOrDGCHQY7M/evm+3ynN78OAw+5XrzMSz7izywFS1l9PHa/DTr4kKtSXjImyI+WzHwYxCkXQ6TNItATMKLnT3nb9e7uFOG4ZIbseAnr3O2/zie8htBTEU/Z883u+ycssSs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762871726; c=relaxed/simple;
-	bh=JTrl+5c+KM67zyb4vk0jknU9NS1WkTcTeyTZ47rmEeg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kRVSLaqCuEbItJ0YAK7ZrH+ukRJL6Li89rX8FyjoQra2bD27GxTjbGL+JoPzNHo0Giiul4bstXcrnTyoUEOIQY8zbbojgE1xVG1nWG7eo7LoNb4YyQC11St8DTwt+KZFqq1yIf8PyYBiz2XlgVDO5ashMqMjtbOyeGnYa3f0dQ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1vIpSn-0004Hl-V1; Tue, 11 Nov 2025 15:35:17 +0100
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1vIpSn-008DbB-0j;
-	Tue, 11 Nov 2025 15:35:17 +0100
-Received: from pengutronix.de (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id BEA5349D0A4;
-	Tue, 11 Nov 2025 13:55:26 +0000 (UTC)
-Date: Tue, 11 Nov 2025 14:55:26 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Henrik Brix Andersen <henrik@brixandersen.dk>
-Cc: Vincent Mailhol <mailhol@kernel.org>, 
-	Maximilian Schneider <max@schneidersoft.net>, Wolfgang Grandegger <wg@grandegger.com>, kernel@pengutronix.de, 
-	linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH can 3/3] can: gs_usb: gs_usb_receive_bulk_callback():
- check actual_length before accessing data
-Message-ID: <20251111-abiding-observant-beetle-e3575f-mkl@pengutronix.de>
-References: <20251108-gs_usb-fix-usb-callbacks-v1-0-8a2534a7ea05@pengutronix.de>
- <20251108-gs_usb-fix-usb-callbacks-v1-3-8a2534a7ea05@pengutronix.de>
- <A5BD68A4-076C-4ADD-B2A8-5D8A128D0473@brixandersen.dk>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D014B3AA19B
+	for <linux-can@vger.kernel.org>; Tue, 11 Nov 2025 18:52:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.219
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1762887130; cv=pass; b=YDqJ4sMejcMPQ0r+UrKHTmlybZC0WMYH78pLA0Aknr4BRNYWkwBQ+LKYcm+KIHOmx7nWMszlwfEiUfaMg0K3tzx7+8W5Q2fZpRNn8+272Uzxa9Y1zb8AwCCRrhb1pDunmgrOEqyeSDcb1nJ1pNQmkMMO8dxw5BQblE5mjzbwALs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1762887130; c=relaxed/simple;
+	bh=/TklQ1tYekzlD3w2l2MHP2TOpfdrh8Z34h++5wcpYHg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qIJVlmMSd/4/WxmpkHCKOALV3Mnm0apQpELm6jwKa5xQMdGDuyjWhWtyflJL5uEmqkO1k3B/I3VsdmFIeR5HB7QK6i48oMuH66UwJe30/uXFug5I+4H36RbH+LXEb/zXdJ00ltEGrCEXQFxiqgCqKyXYWhpEjRT7w5t9WxYyDLw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=FkmGtqth; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=lSnEUm0d; arc=pass smtp.client-ip=81.169.146.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="FkmGtqth";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="lSnEUm0d"
+ARC-Seal: i=1; a=rsa-sha256; t=1762887119; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=E0WdOWxqWpAp1bb2488Q7harhrWFxO4YLJ+BMB4CZHsgl7oXJK0Uwcl1B6qhwlb11H
+    WkS0Ssd3jrPYhqQ+s+VLT8ew4LYnAJLZgxkDkH4NEUqAM6z0vO3wHc7uidkd8TM4cXxf
+    5pMiahBo5rNvFJfuCZExM5F76LVnGv2iYt3s9jpyEpXjNr9XfxwoXduGr0Wo11bfHSpR
+    fAiRTfaqu4/P0d2PtgMzHHiwulScYmXDb2JPhng5fyi4inkFOnI3bK74lsR/YI4DSLLr
+    soSSTLJr3l2LY/hQly1gUrPinh1eQ+/RvGo1+jd41clWsqGm2jSZk8Q9tXTgmRXuWBWj
+    pFdg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1762887119;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=PqVpmc9+mZVLde+iPq15ZWD1VR2gDd9Iok6zWDkOptU=;
+    b=IW37vlcLRmN31Pyq78/e264qq/jzzldPvfnFnj3atO2LgwMo24EQorhDCzIJCvOxlr
+    KWhl8PQu+yCOni0xRYIf7WaTZRnGP03xUVeOTOyhq53B4Wk5iFQRvY3TVWwSK2V9XD3T
+    DWAAnHxgnwQFCIhStv1l25AXGJZ+C3xLAxakTBNzyfQONJw9jyvrC3jHpOLF1icGOjlK
+    TX1ITalayyL7SN/JLfyU5UOVDhSl38N62GcSQr6M1XictiL6s58XyH5XJiNKzcBoAdcQ
+    MC1jzEeBcM5al+AeQLsJbYkvmxYWZ+Z2Hn2FFkWa4NQDPW0oc+w9/DIG6ZHmlYyQhW6q
+    hGog==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1762887119;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=PqVpmc9+mZVLde+iPq15ZWD1VR2gDd9Iok6zWDkOptU=;
+    b=FkmGtqth7fcXg7ZycJ/f/CaK7xDp+dkwryEfOL4j1A51YY9BKPO4OW0jn62Me4p79Z
+    lIV0WzgyCEd9s+qrMRao9lu8McqgOut9pmuDgk5kMRyvqT0QSARNIchB5OwfCYNSy6Lf
+    FwkutQTmFznHCyMO6TveT5Et+Yh9NtkmN+nZJDwk92WclM0eIOiK6cWh4pV39fPnxD6L
+    Y37ekNFNay5KicwLhlWDUWcE/9FsfeExgiRX7uA1wyWGRIop1S+yPwxjRAIeE06/2DZH
+    +RjcHZD/xYAaSiR7Jl/dQbS7sfW971TlsMbyXBu1bdOw7RxoDrjQgvYJeioGMvB239ym
+    66Ww==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1762887119;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=PqVpmc9+mZVLde+iPq15ZWD1VR2gDd9Iok6zWDkOptU=;
+    b=lSnEUm0dNPBmaI98rEsBmDRm2W8eD9khPN7+0YC+oygD8SEbBzEY80ASaoelVHO9S4
+    pbRyIDLOAjZie3BLE1BQ==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bGWj0Q=="
+Received: from lenov17.lan
+    by smtp.strato.de (RZmta 54.0.0 AUTH)
+    with ESMTPSA id Ke2b461ABIpxPiA
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Tue, 11 Nov 2025 19:51:59 +0100 (CET)
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH] can: raw: instantly reject unsupported CAN frames
+Date: Tue, 11 Nov 2025 19:51:52 +0100
+Message-ID: <20251111185152.23193-1-socketcan@hartkopp.net>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="2ki34qkgihig4krx"
-Content-Disposition: inline
-In-Reply-To: <A5BD68A4-076C-4ADD-B2A8-5D8A128D0473@brixandersen.dk>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 
+For real CAN interfaces the CAN_CTRLMODE_FD and CAN_CTRLMODE_XL control
+modes indicate whether an interface can handle those CAN FD/XL frames.
 
---2ki34qkgihig4krx
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH can 3/3] can: gs_usb: gs_usb_receive_bulk_callback():
- check actual_length before accessing data
-MIME-Version: 1.0
+In the case a CAN XL interface is configured in CANXL-only mode with
+disabled error-signalling neither CAN CC nor CAN FD frames can be sent.
 
-On 11.11.2025 13:31:06, Henrik Brix Andersen wrote:
-> > +static unsigned int
-> > +gs_usb_get_minimum_length(const struct gs_can *dev, const struct gs_ho=
-st_frame *hf,
-> > +  unsigned int *data_length_p)
-> > +{
-> > + unsigned int minimum_length, data_length;
-> > +
-> > + /* TX echo only uses the header */
-> > + if (hf->echo_id !=3D GS_HOST_FRAME_ECHO_ID_RX) {
-> > + *data_length_p =3D 0;
-> > + return sizeof(hf->header);
-> > + }
->
-> Is this correct? The embedded timestamp is also used in the
-> gs_usb_get_echo_skb() function.
+The checks are performed on CAN_RAW sockets to give an instant feedback
+to the user when writing unsupported CAN frames to the interface.
 
-Right, will update.
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ include/linux/can/dev.h | 12 +++++++++
+ net/can/raw.c           | 54 +++++++++++++++++++++++++++++++++++------
+ 2 files changed, 58 insertions(+), 8 deletions(-)
 
-regards,
-Marc
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 945c16743702..9c00bfd077bf 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -129,10 +129,22 @@ int can_restart_now(struct net_device *dev);
+ void can_bus_off(struct net_device *dev);
+ 
+ const char *can_get_state_str(const enum can_state state);
+ const char *can_get_ctrlmode_str(u32 ctrlmode);
+ 
++static inline bool can_dev_err_signal_is_disabled(struct can_priv *priv)
++{
++	const u32 mixed_mode = CAN_CTRLMODE_FD | CAN_CTRLMODE_XL;
++
++	/* When CAN XL is enabled but FD is disabled we are running in
++	 * the so-called 'XL-only mode' where the error signalling is
++	 * disabled.
++	 * The so-called CC/FD/XL 'mixed mode' requires error signalling.
++	 */
++	return ((priv->ctrlmode & mixed_mode) == CAN_CTRLMODE_XL);
++}
++
+ /* drop skb if it does not contain a valid CAN frame for sending */
+ static inline bool can_dev_dropped_skb(struct net_device *dev, struct sk_buff *skb)
+ {
+ 	struct can_priv *priv = netdev_priv(dev);
+ 	u32 silent_mode = priv->ctrlmode & (CAN_CTRLMODE_LISTENONLY |
+diff --git a/net/can/raw.c b/net/can/raw.c
+index a53853f5e9af..c7311f27e913 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -890,24 +890,62 @@ static void raw_put_canxl_vcid(struct raw_sock *ro, struct sk_buff *skb)
+ 		cxl->prio &= CANXL_PRIO_MASK;
+ 		cxl->prio |= ro->tx_vcid_shifted;
+ 	}
+ }
+ 
+-static unsigned int raw_check_txframe(struct raw_sock *ro, struct sk_buff *skb, int mtu)
++static inline bool raw_dev_cc_enabled(struct net_device *dev,
++				      struct can_priv *priv)
+ {
+-	/* Classical CAN -> no checks for flags and device capabilities */
+-	if (can_is_can_skb(skb))
++	/* The CANXL-only mode disables error-signalling on the CAN bus
++	 * which is needed to send CAN CC/FD frames
++	 */
++	if (priv)
++		return !can_dev_err_signal_is_disabled(priv);
++
++	/* virtual CAN interfaces always support CAN CC */
++	return true;
++}
++
++static inline bool raw_dev_fd_enabled(struct net_device *dev,
++				      struct can_priv *priv)
++{
++	/* check FD ctrlmode on real CAN interfaces */
++	if (priv)
++		return (priv->ctrlmode & CAN_CTRLMODE_FD);
++
++	/* check MTU for virtual CAN FD interfaces */
++	return (READ_ONCE(dev->mtu) >= CANFD_MTU);
++}
++
++static inline bool raw_dev_xl_enabled(struct net_device *dev,
++				      struct can_priv *priv)
++{
++	/* check XL ctrlmode on real CAN interfaces */
++	if (priv)
++		return (priv->ctrlmode & CAN_CTRLMODE_XL);
++
++	/* check MTU for virtual CAN XL interfaces */
++	return can_is_canxl_dev_mtu(READ_ONCE(dev->mtu));
++}
++
++static unsigned int raw_check_txframe(struct raw_sock *ro, struct sk_buff *skb,
++				      struct net_device *dev)
++{
++	struct can_priv *priv = safe_candev_priv(dev);
++
++	/* Classical CAN */
++	if (can_is_can_skb(skb) && raw_dev_cc_enabled(dev, priv))
+ 		return CAN_MTU;
+ 
+-	/* CAN FD -> needs to be enabled and a CAN FD or CAN XL device */
++	/* CAN FD */
+ 	if (ro->fd_frames && can_is_canfd_skb(skb) &&
+-	    (mtu == CANFD_MTU || can_is_canxl_dev_mtu(mtu)))
++	    raw_dev_fd_enabled(dev, priv))
+ 		return CANFD_MTU;
+ 
+-	/* CAN XL -> needs to be enabled and a CAN XL device */
++	/* CAN XL */
+ 	if (ro->xl_frames && can_is_canxl_skb(skb) &&
+-	    can_is_canxl_dev_mtu(mtu))
++	    raw_dev_xl_enabled(dev, priv))
+ 		return CANXL_MTU;
+ 
+ 	return 0;
+ }
+ 
+@@ -959,11 +997,11 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 		goto free_skb;
+ 
+ 	err = -EINVAL;
+ 
+ 	/* check for valid CAN (CC/FD/XL) frame content */
+-	txmtu = raw_check_txframe(ro, skb, READ_ONCE(dev->mtu));
++	txmtu = raw_check_txframe(ro, skb, dev);
+ 	if (!txmtu)
+ 		goto free_skb;
+ 
+ 	/* only CANXL: clear/forward/set VCID value */
+ 	if (txmtu == CANXL_MTU)
+-- 
+2.47.3
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---2ki34qkgihig4krx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEn/sM2K9nqF/8FWzzDHRl3/mQkZwFAmkTQEsACgkQDHRl3/mQ
-kZxukgf/Q/SYj2Mgk2ee0Hmn5W0aTr8iFN8NbbxbedBErXlMKpihPJBmL+Ypwzjk
-/87YZZymYsYWOZmOpkZgFmqM7Pyhwhpqv837STWQ34Y0eyGn7zeV+vOfAxKh7g/O
-ksI6NT64jV/fPZAhP2YXVZazoRNYV1KGYaMEk6CTKkmOrYjyjMyXhlrrmKQyQFHF
-REBChJ4yHOk2HlKQkk6ITdXzReXWGTl5it7GQInVjN0rnNf8PlaOGwTFe2r9/Axy
-VYK0PgX5tLx3fz5UNL1aTjWEnKEeiAm4aCVQGx51ycQ5mrGiPPK+hKjYGlLcuw2j
-DjkZsK7yVJXjHUXimJQMZgjLFl4Beg==
-=sKdY
------END PGP SIGNATURE-----
-
---2ki34qkgihig4krx--
