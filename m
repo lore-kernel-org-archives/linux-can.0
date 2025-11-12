@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CA082F998D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBC322FF153
 	for <linux-can@vger.kernel.org>; Wed, 12 Nov 2025 09:17:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762939077; cv=none; b=FktdvgmL2zQaTE7yWkW42qYqGMI+jMXzLVcevCenJMDBIWaWb88pkYUwXNCKJ8fzT2t+dhGUo74ovRI1CpzZkC4eNjkHa1wJEVDzjk8awe6t56vpWDmMLDBR5IGQwIMtE+uJXjoyBIUGX937iZ4vcUkXGvYSZNJYRZrqovAkgAU=
+	t=1762939078; cv=none; b=GUuHhBUE0xS7G+2M5jmzF6p3B6+TAG1fB85QB/SdC79C8eAe0m0BkbCs9ie2pQZqvazTl7tRXyCGaclqWdcu7UqiDp11YCW/23V1+FMioa6zhrtP9jQ/ANdAn8vfByiF+0dW6R2iruMaadSt8jH0NNRUSHRaF+G9oDLoCWyABtM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762939077; c=relaxed/simple;
-	bh=6A/DN8kD0NNLG++H+wmaF87Cy+2fXH8nT3xafbXWkTE=;
+	s=arc-20240116; t=1762939078; c=relaxed/simple;
+	bh=ttV04zQsArWRH3tRexUGjN8wwUarfCZf7YZOTNPG7yQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UCRK4ZlrTjM4Qe+9ZO4F/oP9L3DXHxI85SuUv8meLiiYUFSSP8uf1m73fNiQeZQ3Ijcm/4UHDhVwr/lyXZdmT9gRoQqBxvxmQgKvFGO5ZtBK3ouCjHRg33naG38hhgY2n75JuXpXa9nrlP+hKlegMaVIgOdxF4dvAsK2FKXb3Xw=
+	 MIME-Version; b=GOu1znKltVcXbp8JxBixXXNyrww5i/FVTT6upUoqu9DKjmrBPKhsCcN0XOkRzaYhaENwLq8FbqbN1aNcgO2QMDTAoHJlS496aANevLx3mQtwU4xFlEDdGt1Gl6YjmxGPY7BTxu3Rxj7AnGbJIvznJMPO70Wt83B7J/P41LBYEYY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,19 +18,19 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vJ6yw-0007V7-Na; Wed, 12 Nov 2025 10:17:38 +0100
+	id 1vJ6yw-0007V4-Fs; Wed, 12 Nov 2025 10:17:38 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vJ6yv-0003cP-37;
-	Wed, 12 Nov 2025 10:17:38 +0100
+	id 1vJ6yv-0003cK-2V;
+	Wed, 12 Nov 2025 10:17:37 +0100
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 9EFAF49D99C;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 71C9149D999;
 	Wed, 12 Nov 2025 09:17:37 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -38,13 +38,13 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Gregor Herburger <gregor.herburger@ew.tq-group.com>,
-	Viken Dadhaniya <viken.dadhaniya@oss.qualcomm.com>,
-	Manivannan Sadhasivam <mani@kernel.org>
-Subject: [PATCH net-next 05/11] can: mcp251xfd: move chip sleep mode into runtime pm
-Date: Wed, 12 Nov 2025 10:13:45 +0100
-Message-ID: <20251112091734.74315-6-mkl@pengutronix.de>
+	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	Kory Maincent <kory.maincent@bootlin.com>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 02/11] can: peak_canfd: convert to use ndo_hwtstamp callbacks
+Date: Wed, 12 Nov 2025 10:13:42 +0100
+Message-ID: <20251112091734.74315-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251112091734.74315-1-mkl@pengutronix.de>
 References: <20251112091734.74315-1-mkl@pengutronix.de>
@@ -60,225 +60,77 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-This is a preparation patch to add GPIO support.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
 
-Up to now, the Vdd regulator and the clocks have been managed by
-Runtime-PM (on systems without CONFIG_PM these remain permanently
-switched on).
+Convert driver to use ndo_hwtstamp_set()/ndo_hwtstamp_get() callbacks.
+ndo_eth_ioctl handler does nothing after conversion - remove it.
 
-During the mcp251xfd_open() callback the mcp251xfd is powered,
-soft-reset and configured. In mcp251xfd_stop() the chip is shut down
-again. To support the on-chip GPIOs, the chip must be supplied with
-power while GPIOs are being requested, even if the networking
-interface is down.
-
-To support this, move the functions mcp251xfd_chip_softreset() and
-mcp251xfd_chip_clock_init() from mcp251xfd_chip_start() to
-mcp251xfd_runtime_resume(). Instead of setting the controller to sleep
-mode in mcp251xfd_chip_stop(), bring it into configuration mode. This
-way it doesn't take part in bus activity and doesn't enter sleep mode.
-
-Signed-off-by: Gregor Herburger <gregor.herburger@ew.tq-group.com>
-Tested-by: Viken Dadhaniya <viken.dadhaniya@oss.qualcomm.com>
-Signed-off-by: Viken Dadhaniya <viken.dadhaniya@oss.qualcomm.com>
-Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
-Link: https://patch.msgid.link/20251001091006.4003841-2-viken.dadhaniya@oss.qualcomm.com
+Signed-off-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Reviewed-by: Kory Maincent <kory.maincent@bootlin.com>
+Reviewed-by: Vincent Mailhol <mailhol@kernel.org>
+Link: https://patch.msgid.link/20251029231620.1135640-3-vadim.fedorenko@linux.dev
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 99 ++++++++++++-------
- 1 file changed, 61 insertions(+), 38 deletions(-)
+ drivers/net/can/peak_canfd/peak_canfd.c | 35 +++++++++++--------------
+ 1 file changed, 16 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index c0f9d9fed02e..9104561e0995 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -767,21 +767,13 @@ static void mcp251xfd_chip_stop(struct mcp251xfd_priv *priv,
- 	mcp251xfd_chip_interrupts_disable(priv);
- 	mcp251xfd_chip_rx_int_disable(priv);
- 	mcp251xfd_timestamp_stop(priv);
--	mcp251xfd_chip_sleep(priv);
-+	mcp251xfd_chip_set_mode(priv, MCP251XFD_REG_CON_MODE_CONFIG);
+diff --git a/drivers/net/can/peak_canfd/peak_canfd.c b/drivers/net/can/peak_canfd/peak_canfd.c
+index a53c9d347b7b..06cb2629f66a 100644
+--- a/drivers/net/can/peak_canfd/peak_canfd.c
++++ b/drivers/net/can/peak_canfd/peak_canfd.c
+@@ -743,36 +743,33 @@ static netdev_tx_t peak_canfd_start_xmit(struct sk_buff *skb,
+ 	return NETDEV_TX_OK;
  }
  
- static int mcp251xfd_chip_start(struct mcp251xfd_priv *priv)
+-static int peak_eth_ioctl(struct net_device *netdev, struct ifreq *ifr, int cmd)
++static int peak_eth_hwtstamp_get(struct net_device *netdev,
++				 struct kernel_hwtstamp_config *config)
  {
- 	int err;
+-	struct hwtstamp_config hwts_cfg = { 0 };
++	config->tx_type = HWTSTAMP_TX_OFF;
++	config->rx_filter = HWTSTAMP_FILTER_ALL;
  
--	err = mcp251xfd_chip_softreset(priv);
--	if (err)
--		goto out_chip_stop;
--
--	err = mcp251xfd_chip_clock_init(priv);
--	if (err)
--		goto out_chip_stop;
--
- 	err = mcp251xfd_chip_timestamp_init(priv);
- 	if (err)
- 		goto out_chip_stop;
-@@ -1625,8 +1617,11 @@ static int mcp251xfd_open(struct net_device *ndev)
- 		return err;
- 
- 	err = pm_runtime_resume_and_get(ndev->dev.parent);
--	if (err)
-+	if (err) {
-+		if (err == -ETIMEDOUT || err == -ENODEV)
-+			pm_runtime_set_suspended(ndev->dev.parent);
- 		goto out_close_candev;
-+	}
- 
- 	err = mcp251xfd_ring_alloc(priv);
- 	if (err)
-@@ -1907,53 +1902,53 @@ static int mcp251xfd_register(struct mcp251xfd_priv *priv)
- 	struct net_device *ndev = priv->ndev;
- 	int err;
- 
-+	mcp251xfd_register_quirks(priv);
-+
- 	err = mcp251xfd_clks_and_vdd_enable(priv);
- 	if (err)
- 		return err;
- 
-+	err = mcp251xfd_chip_softreset(priv);
-+	if (err == -ENODEV)
-+		goto out_clks_and_vdd_disable;
-+	if (err)
-+		goto out_chip_sleep;
-+
-+	err = mcp251xfd_chip_clock_init(priv);
-+	if (err == -ENODEV)
-+		goto out_clks_and_vdd_disable;
-+	if (err)
-+		goto out_chip_sleep;
-+
- 	pm_runtime_get_noresume(ndev->dev.parent);
- 	err = pm_runtime_set_active(ndev->dev.parent);
- 	if (err)
- 		goto out_runtime_put_noidle;
- 	pm_runtime_enable(ndev->dev.parent);
- 
--	mcp251xfd_register_quirks(priv);
--
--	err = mcp251xfd_chip_softreset(priv);
--	if (err == -ENODEV)
--		goto out_runtime_disable;
--	if (err)
--		goto out_chip_sleep;
--
--	err = mcp251xfd_chip_clock_init(priv);
--	if (err == -ENODEV)
--		goto out_runtime_disable;
--	if (err)
--		goto out_chip_sleep;
--
- 	err = mcp251xfd_register_chip_detect(priv);
- 	if (err)
--		goto out_chip_sleep;
-+		goto out_runtime_disable;
- 
- 	err = mcp251xfd_register_check_rx_int(priv);
- 	if (err)
--		goto out_chip_sleep;
-+		goto out_runtime_disable;
- 
- 	mcp251xfd_ethtool_init(priv);
- 
- 	err = register_candev(ndev);
- 	if (err)
--		goto out_chip_sleep;
-+		goto out_runtime_disable;
- 
- 	err = mcp251xfd_register_done(priv);
- 	if (err)
- 		goto out_unregister_candev;
- 
--	/* Put controller into sleep mode and let pm_runtime_put()
--	 * disable the clocks and vdd. If CONFIG_PM is not enabled,
--	 * the clocks and vdd will stay powered.
-+	/* Put controller into Config mode and let pm_runtime_put()
-+	 * put in sleep mode, disable the clocks and vdd. If CONFIG_PM
-+	 * is not enabled, the clocks and vdd will stay powered.
- 	 */
--	err = mcp251xfd_chip_sleep(priv);
-+	err = mcp251xfd_chip_set_mode(priv, MCP251XFD_REG_CON_MODE_CONFIG);
- 	if (err)
- 		goto out_unregister_candev;
- 
-@@ -1963,12 +1958,13 @@ static int mcp251xfd_register(struct mcp251xfd_priv *priv)
- 
- out_unregister_candev:
- 	unregister_candev(ndev);
--out_chip_sleep:
--	mcp251xfd_chip_sleep(priv);
- out_runtime_disable:
- 	pm_runtime_disable(ndev->dev.parent);
- out_runtime_put_noidle:
- 	pm_runtime_put_noidle(ndev->dev.parent);
-+out_chip_sleep:
-+	mcp251xfd_chip_sleep(priv);
-+out_clks_and_vdd_disable:
- 	mcp251xfd_clks_and_vdd_disable(priv);
- 
- 	return err;
-@@ -1980,10 +1976,12 @@ static inline void mcp251xfd_unregister(struct mcp251xfd_priv *priv)
- 
- 	unregister_candev(ndev);
- 
--	if (pm_runtime_enabled(ndev->dev.parent))
-+	if (pm_runtime_enabled(ndev->dev.parent)) {
- 		pm_runtime_disable(ndev->dev.parent);
--	else
-+	} else {
-+		mcp251xfd_chip_sleep(priv);
- 		mcp251xfd_clks_and_vdd_disable(priv);
-+	}
- }
- 
- static const struct of_device_id mcp251xfd_of_match[] = {
-@@ -2206,16 +2204,41 @@ static void mcp251xfd_remove(struct spi_device *spi)
- 
- static int __maybe_unused mcp251xfd_runtime_suspend(struct device *device)
- {
--	const struct mcp251xfd_priv *priv = dev_get_drvdata(device);
-+	struct mcp251xfd_priv *priv = dev_get_drvdata(device);
- 
-+	mcp251xfd_chip_sleep(priv);
- 	return mcp251xfd_clks_and_vdd_disable(priv);
- }
- 
- static int __maybe_unused mcp251xfd_runtime_resume(struct device *device)
- {
--	const struct mcp251xfd_priv *priv = dev_get_drvdata(device);
-+	struct mcp251xfd_priv *priv = dev_get_drvdata(device);
-+	int err;
- 
--	return mcp251xfd_clks_and_vdd_enable(priv);
-+	err = mcp251xfd_clks_and_vdd_enable(priv);
-+	if (err)
-+		return err;
-+
-+	err = mcp251xfd_chip_softreset(priv);
-+	if (err == -ENODEV)
-+		goto out_clks_and_vdd_disable;
-+	if (err)
-+		goto out_chip_sleep;
-+
-+	err = mcp251xfd_chip_clock_init(priv);
-+	if (err == -ENODEV)
-+		goto out_clks_and_vdd_disable;
-+	if (err)
-+		goto out_chip_sleep;
-+
+-	switch (cmd) {
+-	case SIOCSHWTSTAMP: /* set */
+-		if (copy_from_user(&hwts_cfg, ifr->ifr_data, sizeof(hwts_cfg)))
+-			return -EFAULT;
+-		if (hwts_cfg.tx_type == HWTSTAMP_TX_OFF &&
+-		    hwts_cfg.rx_filter == HWTSTAMP_FILTER_ALL)
+-			return 0;
+-		return -ERANGE;
 +	return 0;
-+
-+out_chip_sleep:
-+	mcp251xfd_chip_sleep(priv);
-+out_clks_and_vdd_disable:
-+	mcp251xfd_clks_and_vdd_disable(priv);
-+
-+	return err;
++}
+ 
+-	case SIOCGHWTSTAMP: /* get */
+-		hwts_cfg.tx_type = HWTSTAMP_TX_OFF;
+-		hwts_cfg.rx_filter = HWTSTAMP_FILTER_ALL;
+-		if (copy_to_user(ifr->ifr_data, &hwts_cfg, sizeof(hwts_cfg)))
+-			return -EFAULT;
++static int peak_eth_hwtstamp_set(struct net_device *netdev,
++				 struct kernel_hwtstamp_config *config,
++				 struct netlink_ext_ack *extack)
++{
++	if (config->tx_type == HWTSTAMP_TX_OFF &&
++	    config->rx_filter == HWTSTAMP_FILTER_ALL)
+ 		return 0;
+ 
+-	default:
+-		return -EOPNOTSUPP;
+-	}
++	NL_SET_ERR_MSG_MOD(extack, "Only RX HWTSTAMP_FILTER_ALL is supported");
++	return -ERANGE;
  }
  
- static const struct dev_pm_ops mcp251xfd_pm_ops = {
+ static const struct net_device_ops peak_canfd_netdev_ops = {
+ 	.ndo_open = peak_canfd_open,
+ 	.ndo_stop = peak_canfd_close,
+-	.ndo_eth_ioctl = peak_eth_ioctl,
+ 	.ndo_start_xmit = peak_canfd_start_xmit,
++	.ndo_hwtstamp_get = peak_eth_hwtstamp_get,
++	.ndo_hwtstamp_set = peak_eth_hwtstamp_set,
+ };
+ 
+ static int peak_get_ts_info(struct net_device *dev,
 -- 
 2.51.0
 
