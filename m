@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A4A346E5D
-	for <linux-can@vger.kernel.org>; Wed, 12 Nov 2025 18:44:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15AC734B1B6
+	for <linux-can@vger.kernel.org>; Wed, 12 Nov 2025 18:44:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762973048; cv=none; b=FilFlwEjRh6d3zxsiU9mEqirXC/BhDEz7VLkLo5k+GqbVFmB3QXHnPHw2Pi10j2kyIFvujQkf3WQ9lGUHjrdXkvTFWpYbQH6IpjP3iQbQ43SsdGmYXVNgjHNHgIU9jIIfejMa3K7cfmTphK2jXCxqtY0/7u8uq/Icyy8p/9aYZ8=
+	t=1762973049; cv=none; b=nJ8qIh3uu1wad84U3rc/IqWXCkQkib7RuLI0NsRJIXQ3dmf5hTYUN+VZT61G1qi6DJyiOtfr5Cb7Fy7Pj2aLj8XT2Dh1eZYn9sv7GK8icqED7LZ9Jk7j2PPiOp6+JUSQgl8M1FBBWGQ79uQxZY09WCPYDLG9eLAnHVJ/lH1b0xU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762973048; c=relaxed/simple;
-	bh=RSKX9pbw/FXVLvD/Gle/jfUCM5raWcnaAXGORtbrJWc=;
+	s=arc-20240116; t=1762973049; c=relaxed/simple;
+	bh=ttV04zQsArWRH3tRexUGjN8wwUarfCZf7YZOTNPG7yQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uLizs1nE5Y9oq4DIk4wpHuPIVIr3un9wJpFK13lVkImwrKZRS67kn4COjB3EHOy5KYmH6Mq/EE2NsdF9tQNYR0rQEQG+ED7nAKP65poxNwXPxyIWBO8z+5rqrzeUWq0uTBcQwAtWZAdLH4oAR30xK8lyGktSudcrpnb5DEmFpJE=
+	 MIME-Version; b=oKCehpsUw1h1/k0GJwMcM2uSUDMm5Q7jYR59UtFNteLdi3P17mMsR2CpmmnTEJLysjF32gg6hx1u5hTw99G8evC8ZVm8He4Om+uZGq5PQ7MvgW+LRP3rJiYFakV4CvNth4/6PBBkf7I7p8+nj6EOhOVMxmz7U8pno+Bvw89gnao=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,19 +18,19 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vJFos-0006tS-Dh; Wed, 12 Nov 2025 19:43:50 +0100
+	id 1vJFor-0006t3-SN; Wed, 12 Nov 2025 19:43:49 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vJFor-0008Cp-2l;
+	id 1vJFor-0008CV-1K;
 	Wed, 12 Nov 2025 19:43:49 +0100
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 9272549E0CB;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 124FB49E0C4;
 	Wed, 12 Nov 2025 18:43:49 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -38,14 +38,13 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Gregor Herburger <gregor.herburger@ew.tq-group.com>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Viken Dadhaniya <viken.dadhaniya@oss.qualcomm.com>,
-	Manivannan Sadhasivam <mani@kernel.org>,
+	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	Kory Maincent <kory.maincent@bootlin.com>,
+	Vincent Mailhol <mailhol@kernel.org>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 09/11] can: mcp251xfd: add gpio functionality
-Date: Wed, 12 Nov 2025 19:40:28 +0100
-Message-ID: <20251112184344.189863-10-mkl@pengutronix.de>
+Subject: [PATCH net-next 02/11] can: peak_canfd: convert to use ndo_hwtstamp callbacks
+Date: Wed, 12 Nov 2025 19:40:21 +0100
+Message-ID: <20251112184344.189863-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251112184344.189863-1-mkl@pengutronix.de>
 References: <20251112184344.189863-1-mkl@pengutronix.de>
@@ -61,234 +60,77 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Gregor Herburger <gregor.herburger@ew.tq-group.com>
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
 
-The mcp251xfd devices allow two pins to be configured as gpio. Add this
-functionality to driver.
+Convert driver to use ndo_hwtstamp_set()/ndo_hwtstamp_get() callbacks.
+ndo_eth_ioctl handler does nothing after conversion - remove it.
 
-Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Signed-off-by: Gregor Herburger <gregor.herburger@ew.tq-group.com>
-Tested-by: Viken Dadhaniya <viken.dadhaniya@oss.qualcomm.com>
-Signed-off-by: Viken Dadhaniya <viken.dadhaniya@oss.qualcomm.com>
-Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
-Link: https://patch.msgid.link/20251001091006.4003841-6-viken.dadhaniya@oss.qualcomm.com
+Signed-off-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Reviewed-by: Kory Maincent <kory.maincent@bootlin.com>
+Reviewed-by: Vincent Mailhol <mailhol@kernel.org>
+Link: https://patch.msgid.link/20251029231620.1135640-3-vadim.fedorenko@linux.dev
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/Kconfig         |   1 +
- .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 160 ++++++++++++++++++
- drivers/net/can/spi/mcp251xfd/mcp251xfd.h     |   2 +
- 3 files changed, 163 insertions(+)
+ drivers/net/can/peak_canfd/peak_canfd.c | 35 +++++++++++--------------
+ 1 file changed, 16 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/Kconfig b/drivers/net/can/spi/mcp251xfd/Kconfig
-index 877e4356010d..7c29846e6051 100644
---- a/drivers/net/can/spi/mcp251xfd/Kconfig
-+++ b/drivers/net/can/spi/mcp251xfd/Kconfig
-@@ -5,6 +5,7 @@ config CAN_MCP251XFD
- 	select CAN_RX_OFFLOAD
- 	select REGMAP
- 	select WANT_DEV_COREDUMP
-+	select GPIOLIB
- 	help
- 	  Driver for the Microchip MCP251XFD SPI FD-CAN controller
- 	  family.
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index 565327bf9c43..5134ebb85880 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -1797,6 +1797,160 @@ static int mcp251xfd_register_check_rx_int(struct mcp251xfd_priv *priv)
- 	return 0;
+diff --git a/drivers/net/can/peak_canfd/peak_canfd.c b/drivers/net/can/peak_canfd/peak_canfd.c
+index a53c9d347b7b..06cb2629f66a 100644
+--- a/drivers/net/can/peak_canfd/peak_canfd.c
++++ b/drivers/net/can/peak_canfd/peak_canfd.c
+@@ -743,36 +743,33 @@ static netdev_tx_t peak_canfd_start_xmit(struct sk_buff *skb,
+ 	return NETDEV_TX_OK;
  }
  
-+static const char * const mcp251xfd_gpio_names[] = { "GPIO0", "GPIO1" };
-+
-+static int mcp251xfd_gpio_request(struct gpio_chip *chip, unsigned int offset)
-+{
-+	struct mcp251xfd_priv *priv = gpiochip_get_data(chip);
-+	u32 pin_mask = MCP251XFD_REG_IOCON_PM(offset);
-+	int ret;
-+
-+	if (priv->rx_int && offset == 1) {
-+		netdev_err(priv->ndev, "Can't use GPIO 1 with RX-INT!\n");
-+		return -EINVAL;
-+	}
-+
-+	ret = pm_runtime_resume_and_get(priv->ndev->dev.parent);
-+	if (ret)
-+		return ret;
-+
-+	return regmap_update_bits(priv->map_reg, MCP251XFD_REG_IOCON, pin_mask, pin_mask);
-+}
-+
-+static void mcp251xfd_gpio_free(struct gpio_chip *chip, unsigned int offset)
-+{
-+	struct mcp251xfd_priv *priv = gpiochip_get_data(chip);
-+
-+	pm_runtime_put(priv->ndev->dev.parent);
-+}
-+
-+static int mcp251xfd_gpio_get_direction(struct gpio_chip *chip,
-+					unsigned int offset)
-+{
-+	struct mcp251xfd_priv *priv = gpiochip_get_data(chip);
-+	u32 mask = MCP251XFD_REG_IOCON_TRIS(offset);
-+	u32 val;
-+	int ret;
-+
-+	ret = regmap_read(priv->map_reg, MCP251XFD_REG_IOCON, &val);
-+	if (ret)
-+		return ret;
-+
-+	if (mask & val)
-+		return GPIO_LINE_DIRECTION_IN;
-+
-+	return GPIO_LINE_DIRECTION_OUT;
-+}
-+
-+static int mcp251xfd_gpio_get(struct gpio_chip *chip, unsigned int offset)
-+{
-+	struct mcp251xfd_priv *priv = gpiochip_get_data(chip);
-+	u32 mask = MCP251XFD_REG_IOCON_GPIO(offset);
-+	u32 val;
-+	int ret;
-+
-+	ret = regmap_read(priv->map_reg, MCP251XFD_REG_IOCON, &val);
-+	if (ret)
-+		return ret;
-+
-+	return !!(mask & val);
-+}
-+
-+static int mcp251xfd_gpio_get_multiple(struct gpio_chip *chip, unsigned long *mask,
-+				       unsigned long *bit)
-+{
-+	struct mcp251xfd_priv *priv = gpiochip_get_data(chip);
-+	u32 val;
-+	int ret;
-+
-+	ret = regmap_read(priv->map_reg, MCP251XFD_REG_IOCON, &val);
-+	if (ret)
-+		return ret;
-+
-+	*bit = FIELD_GET(MCP251XFD_REG_IOCON_GPIO_MASK, val) & *mask;
-+
+-static int peak_eth_ioctl(struct net_device *netdev, struct ifreq *ifr, int cmd)
++static int peak_eth_hwtstamp_get(struct net_device *netdev,
++				 struct kernel_hwtstamp_config *config)
+ {
+-	struct hwtstamp_config hwts_cfg = { 0 };
++	config->tx_type = HWTSTAMP_TX_OFF;
++	config->rx_filter = HWTSTAMP_FILTER_ALL;
+ 
+-	switch (cmd) {
+-	case SIOCSHWTSTAMP: /* set */
+-		if (copy_from_user(&hwts_cfg, ifr->ifr_data, sizeof(hwts_cfg)))
+-			return -EFAULT;
+-		if (hwts_cfg.tx_type == HWTSTAMP_TX_OFF &&
+-		    hwts_cfg.rx_filter == HWTSTAMP_FILTER_ALL)
+-			return 0;
+-		return -ERANGE;
 +	return 0;
 +}
-+
-+static int mcp251xfd_gpio_direction_output(struct gpio_chip *chip,
-+					   unsigned int offset, int value)
-+{
-+	struct mcp251xfd_priv *priv = gpiochip_get_data(chip);
-+	u32 dir_mask = MCP251XFD_REG_IOCON_TRIS(offset);
-+	u32 val_mask = MCP251XFD_REG_IOCON_LAT(offset);
-+	u32 val;
-+
-+	if (value)
-+		val = val_mask;
-+	else
-+		val = 0;
-+
-+	return regmap_update_bits(priv->map_reg, MCP251XFD_REG_IOCON,
-+				  dir_mask | val_mask, val);
-+}
-+
-+static int mcp251xfd_gpio_direction_input(struct gpio_chip *chip,
-+					  unsigned int offset)
-+{
-+	struct mcp251xfd_priv *priv = gpiochip_get_data(chip);
-+	u32 dir_mask = MCP251XFD_REG_IOCON_TRIS(offset);
-+
-+	return regmap_update_bits(priv->map_reg, MCP251XFD_REG_IOCON, dir_mask, dir_mask);
-+}
-+
-+static int mcp251xfd_gpio_set(struct gpio_chip *chip, unsigned int offset, int value)
-+{
-+	struct mcp251xfd_priv *priv = gpiochip_get_data(chip);
-+	u32 val_mask = MCP251XFD_REG_IOCON_LAT(offset);
-+	u32 val;
-+
-+	if (value)
-+		val = val_mask;
-+	else
-+		val = 0;
-+
-+	return regmap_update_bits(priv->map_reg, MCP251XFD_REG_IOCON, val_mask, val);
-+}
-+
-+static int mcp251xfd_gpio_set_multiple(struct gpio_chip *chip, unsigned long *mask,
-+				       unsigned long *bits)
-+{
-+	struct mcp251xfd_priv *priv = gpiochip_get_data(chip);
-+	u32 val;
-+
-+	val = FIELD_PREP(MCP251XFD_REG_IOCON_LAT_MASK, *bits);
-+
-+	return regmap_update_bits(priv->map_reg, MCP251XFD_REG_IOCON,
-+				  MCP251XFD_REG_IOCON_LAT_MASK, val);
-+}
-+
-+static int mcp251fdx_gpio_setup(struct mcp251xfd_priv *priv)
-+{
-+	struct gpio_chip *gc = &priv->gc;
-+
-+	if (!device_property_present(&priv->spi->dev, "gpio-controller"))
-+		return 0;
-+
-+	gc->label = dev_name(&priv->spi->dev);
-+	gc->parent = &priv->spi->dev;
-+	gc->owner = THIS_MODULE;
-+	gc->request = mcp251xfd_gpio_request;
-+	gc->free = mcp251xfd_gpio_free;
-+	gc->get_direction = mcp251xfd_gpio_get_direction;
-+	gc->direction_output = mcp251xfd_gpio_direction_output;
-+	gc->direction_input = mcp251xfd_gpio_direction_input;
-+	gc->get = mcp251xfd_gpio_get;
-+	gc->get_multiple = mcp251xfd_gpio_get_multiple;
-+	gc->set = mcp251xfd_gpio_set;
-+	gc->set_multiple = mcp251xfd_gpio_set_multiple;
-+	gc->base = -1;
-+	gc->can_sleep = true;
-+	gc->ngpio = ARRAY_SIZE(mcp251xfd_gpio_names);
-+	gc->names = mcp251xfd_gpio_names;
-+
-+	return devm_gpiochip_add_data(&priv->spi->dev, gc, priv);
-+}
-+
- static int
- mcp251xfd_register_get_dev_id(const struct mcp251xfd_priv *priv, u32 *dev_id,
- 			      u32 *effective_speed_hz_slow,
-@@ -1930,6 +2084,12 @@ static int mcp251xfd_register(struct mcp251xfd_priv *priv)
  
- 	mcp251xfd_ethtool_init(priv);
+-	case SIOCGHWTSTAMP: /* get */
+-		hwts_cfg.tx_type = HWTSTAMP_TX_OFF;
+-		hwts_cfg.rx_filter = HWTSTAMP_FILTER_ALL;
+-		if (copy_to_user(ifr->ifr_data, &hwts_cfg, sizeof(hwts_cfg)))
+-			return -EFAULT;
++static int peak_eth_hwtstamp_set(struct net_device *netdev,
++				 struct kernel_hwtstamp_config *config,
++				 struct netlink_ext_ack *extack)
++{
++	if (config->tx_type == HWTSTAMP_TX_OFF &&
++	    config->rx_filter == HWTSTAMP_FILTER_ALL)
+ 		return 0;
  
-+	err = mcp251fdx_gpio_setup(priv);
-+	if (err) {
-+		dev_err_probe(&priv->spi->dev, err, "Failed to register gpio-controller.\n");
-+		goto out_runtime_disable;
-+	}
-+
- 	err = register_candev(ndev);
- 	if (err)
- 		goto out_runtime_disable;
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-index bd28510a6583..085d7101e595 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd.h
-@@ -15,6 +15,7 @@
- #include <linux/can/dev.h>
- #include <linux/can/rx-offload.h>
- #include <linux/gpio/consumer.h>
-+#include <linux/gpio/driver.h>
- #include <linux/kernel.h>
- #include <linux/netdevice.h>
- #include <linux/regmap.h>
-@@ -676,6 +677,7 @@ struct mcp251xfd_priv {
+-	default:
+-		return -EOPNOTSUPP;
+-	}
++	NL_SET_ERR_MSG_MOD(extack, "Only RX HWTSTAMP_FILTER_ALL is supported");
++	return -ERANGE;
+ }
  
- 	struct mcp251xfd_devtype_data devtype_data;
- 	struct can_berr_counter bec;
-+	struct gpio_chip gc;
+ static const struct net_device_ops peak_canfd_netdev_ops = {
+ 	.ndo_open = peak_canfd_open,
+ 	.ndo_stop = peak_canfd_close,
+-	.ndo_eth_ioctl = peak_eth_ioctl,
+ 	.ndo_start_xmit = peak_canfd_start_xmit,
++	.ndo_hwtstamp_get = peak_eth_hwtstamp_get,
++	.ndo_hwtstamp_set = peak_eth_hwtstamp_set,
  };
  
- #define MCP251XFD_IS(_model) \
+ static int peak_get_ts_info(struct net_device *dev,
 -- 
 2.51.0
 
