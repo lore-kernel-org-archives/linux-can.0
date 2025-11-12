@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B04E3491CD
-	for <linux-can@vger.kernel.org>; Wed, 12 Nov 2025 18:44:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B327E348899
+	for <linux-can@vger.kernel.org>; Wed, 12 Nov 2025 18:44:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762973047; cv=none; b=a9QlEXnxCMGetd8JPC4TKY2jgtBOkTRyE7PxYgKyYfL3njOHvHPXWWpw/y8F2bmD4Gl251d9eCh7nYMOtv/gJR9BAy1pXbLOdL7qd+LOBKS2hw2zOIG/XuZVDC4ExPeKtPTIG0EA/gNCP0hxRCXQmglm22DGNiJaaK+vMeAKzVs=
+	t=1762973047; cv=none; b=JUKIy2B65W0p73YYuhe4IqXJvbSlMYtMXIEUiXFy+4x4fu0njL+mFRIdnfI2OgGegL9lIPA7rqxDvXfSwAsI0jsd3hWAdOpXjUcW1AX9bu5nL18weLmr84PjoRwKBN2Wn5Qgsf7FsAZVJXADcxegrDt5VBmdXyghT1Wh6L6CYDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1762973047; c=relaxed/simple;
-	bh=AW7kgSmkrxzbFDoWM68dq4FFV6JmO+GBvqwkcwA7z3M=;
+	bh=e9q/DXjN/b4dCjtBvvpqQ1JR+MgtPisyQN5gCDgUTO8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Xd+g+w1jmC1+698JRHA/ZPfQLrtEjk6iZISbC0lHExcXAfky6BINwb3l3Q6etIqzPG2cT8gV8d1TYC5+i6Kjzme/YiFaI706rAuwJd10RWrljcfowe2VVZb7BcFzpqP5OUnlF+zuxvisxfvUUQr/b3PPGUR6pe7lOljtS9a5lLI=
+	 MIME-Version; b=mwhrvJK9d9oL0DVnBAps8KFFX0GTsAmE0FBwj99BdpD4JB17/V+qRJWzxiM0rZXWkD5iQhv2p836ejpxeh0rBttCZ6UjWbPd1dKCrnWs6zyxjxf2An8SvbaxIPX8bzeIcnKBtLAgpmM53qXzLrSprBq4Yt/HohBqgCkdHoQabL0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,19 +18,19 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vJFor-0006t4-SN; Wed, 12 Nov 2025 19:43:49 +0100
+	id 1vJFos-0006t8-Dc; Wed, 12 Nov 2025 19:43:50 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vJFor-0008CY-1c;
+	id 1vJFor-0008Ce-22;
 	Wed, 12 Nov 2025 19:43:49 +0100
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 2175349E0C5;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 5378849E0C8;
 	Wed, 12 Nov 2025 18:43:49 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -38,13 +38,13 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	Kory Maincent <kory.maincent@bootlin.com>,
-	Vincent Mailhol <mailhol@kernel.org>,
+	Gregor Herburger <gregor.herburger@ew.tq-group.com>,
+	Viken Dadhaniya <viken.dadhaniya@oss.qualcomm.com>,
+	Manivannan Sadhasivam <mani@kernel.org>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 03/11] can: peak_usb: convert to use ndo_hwtstamp callbacks
-Date: Wed, 12 Nov 2025 19:40:22 +0100
-Message-ID: <20251112184344.189863-4-mkl@pengutronix.de>
+Subject: [PATCH net-next 06/11] can: mcp251xfd: utilize gather_write function for all non-CRC writes
+Date: Wed, 12 Nov 2025 19:40:25 +0100
+Message-ID: <20251112184344.189863-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251112184344.189863-1-mkl@pengutronix.de>
 References: <20251112184344.189863-1-mkl@pengutronix.de>
@@ -60,77 +60,84 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+From: Gregor Herburger <gregor.herburger@ew.tq-group.com>
 
-Convert driver to use ndo_hwtstamp_set()/ndo_hwtstamp_get() callbacks.
-ndo_eth_ioctl handler does nothing after conversion - remove it.
+This is a preparation patch to add errata workaround for non crc writes.
 
-Signed-off-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Reviewed-by: Kory Maincent <kory.maincent@bootlin.com>
-Reviewed-by: Vincent Mailhol <mailhol@kernel.org>
-Link: https://patch.msgid.link/20251029231620.1135640-4-vadim.fedorenko@linux.dev
+Currently for non-crc writes to the chip can go through the
+.gather_write, .write or the reg_update_bits callback.
+
+To allow the addition of the errata fix at a single location use
+mcp251xfd_regmap_nocrc_gather_write for all non-CRC write instructions,
+similar to the crc regmap.
+
+Signed-off-by: Gregor Herburger <gregor.herburger@ew.tq-group.com>
+Tested-by: Viken Dadhaniya <viken.dadhaniya@oss.qualcomm.com>
+Signed-off-by: Viken Dadhaniya <viken.dadhaniya@oss.qualcomm.com>
+Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
+Link: https://patch.msgid.link/20251001091006.4003841-3-viken.dadhaniya@oss.qualcomm.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 35 +++++++++-----------
- 1 file changed, 16 insertions(+), 19 deletions(-)
+ .../net/can/spi/mcp251xfd/mcp251xfd-regmap.c  | 25 ++++++++++---------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index 94b1d7f15d27..cf48bb26d46d 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -784,36 +784,33 @@ static int peak_usb_set_data_bittiming(struct net_device *netdev)
- 	return 0;
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
+index 8c5be8d1c519..e61cbd209955 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.c
+@@ -12,14 +12,6 @@
+ 
+ static const struct regmap_config mcp251xfd_regmap_crc;
+ 
+-static int
+-mcp251xfd_regmap_nocrc_write(void *context, const void *data, size_t count)
+-{
+-	struct spi_device *spi = context;
+-
+-	return spi_write(spi, data, count);
+-}
+-
+ static int
+ mcp251xfd_regmap_nocrc_gather_write(void *context,
+ 				    const void *reg, size_t reg_len,
+@@ -47,6 +39,15 @@ mcp251xfd_regmap_nocrc_gather_write(void *context,
+ 	return spi_sync_transfer(spi, xfer, ARRAY_SIZE(xfer));
  }
  
--static int peak_eth_ioctl(struct net_device *netdev, struct ifreq *ifr, int cmd)
-+static int peak_hwtstamp_get(struct net_device *netdev,
-+			     struct kernel_hwtstamp_config *config)
- {
--	struct hwtstamp_config hwts_cfg = { 0 };
-+	config->tx_type = HWTSTAMP_TX_OFF;
-+	config->rx_filter = HWTSTAMP_FILTER_ALL;
- 
--	switch (cmd) {
--	case SIOCSHWTSTAMP: /* set */
--		if (copy_from_user(&hwts_cfg, ifr->ifr_data, sizeof(hwts_cfg)))
--			return -EFAULT;
--		if (hwts_cfg.tx_type == HWTSTAMP_TX_OFF &&
--		    hwts_cfg.rx_filter == HWTSTAMP_FILTER_ALL)
--			return 0;
--		return -ERANGE;
-+	return 0;
-+}
- 
--	case SIOCGHWTSTAMP: /* get */
--		hwts_cfg.tx_type = HWTSTAMP_TX_OFF;
--		hwts_cfg.rx_filter = HWTSTAMP_FILTER_ALL;
--		if (copy_to_user(ifr->ifr_data, &hwts_cfg, sizeof(hwts_cfg)))
--			return -EFAULT;
-+static int peak_hwtstamp_set(struct net_device *netdev,
-+			     struct kernel_hwtstamp_config *config,
-+			     struct netlink_ext_ack *extack)
++static int
++mcp251xfd_regmap_nocrc_write(void *context, const void *data, size_t count)
 +{
-+	if (config->tx_type == HWTSTAMP_TX_OFF &&
-+	    config->rx_filter == HWTSTAMP_FILTER_ALL)
- 		return 0;
++	const size_t data_offset = sizeof(__be16);
++
++	return mcp251xfd_regmap_nocrc_gather_write(context, data, data_offset,
++						   data + data_offset, count - data_offset);
++}
++
+ static inline bool
+ mcp251xfd_update_bits_read_reg(const struct mcp251xfd_priv *priv,
+ 			       unsigned int reg)
+@@ -64,6 +65,7 @@ mcp251xfd_update_bits_read_reg(const struct mcp251xfd_priv *priv,
+ 	case MCP251XFD_REG_CON:
+ 	case MCP251XFD_REG_OSC:
+ 	case MCP251XFD_REG_ECCCON:
++	case MCP251XFD_REG_IOCON:
+ 		return true;
+ 	default:
+ 		mcp251xfd_for_each_rx_ring(priv, ring, n) {
+@@ -139,10 +141,9 @@ mcp251xfd_regmap_nocrc_update_bits(void *context, unsigned int reg,
+ 	tmp_le32 = orig_le32 & ~mask_le32;
+ 	tmp_le32 |= val_le32 & mask_le32;
  
--	default:
--		return -EOPNOTSUPP;
--	}
-+	NL_SET_ERR_MSG_MOD(extack, "Only RX HWTSTAMP_FILTER_ALL is supported");
-+	return -ERANGE;
+-	mcp251xfd_spi_cmd_write_nocrc(&buf_tx->cmd, reg + first_byte);
+-	memcpy(buf_tx->data, &tmp_le32, len);
+-
+-	return spi_write(spi, buf_tx, sizeof(buf_tx->cmd) + len);
++	reg += first_byte;
++	mcp251xfd_spi_cmd_write_nocrc(&buf_tx->cmd, reg);
++	return mcp251xfd_regmap_nocrc_gather_write(context, &buf_tx->cmd, 2, &tmp_le32, len);
  }
  
- static const struct net_device_ops peak_usb_netdev_ops = {
- 	.ndo_open = peak_usb_ndo_open,
- 	.ndo_stop = peak_usb_ndo_stop,
--	.ndo_eth_ioctl = peak_eth_ioctl,
- 	.ndo_start_xmit = peak_usb_ndo_start_xmit,
-+	.ndo_hwtstamp_get = peak_hwtstamp_get,
-+	.ndo_hwtstamp_set = peak_hwtstamp_set,
- };
- 
- /* CAN-USB devices generally handle 32-bit CAN channel IDs.
+ static int
 -- 
 2.51.0
 
