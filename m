@@ -1,76 +1,76 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.166])
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.82])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5A132FD68C
-	for <linux-can@vger.kernel.org>; Sat, 15 Nov 2025 16:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.166
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A7A32F2610
+	for <linux-can@vger.kernel.org>; Sat, 15 Nov 2025 16:38:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.82
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763224683; cv=pass; b=e6aoGcgSY5zGFUIvpRR/kxc2FKerid6u7y7RLkvvKb25TpLs875EiWZ/20fLE32/3tCzSa3a2oCsT56BsWcgTipVvd+qMuZHpJb8Vr1m4hg6JsvMxjnTMD1XPWXrmhabFg9wNJA6prW33qdsTbMNU6I0JSHL7yhvHPunzarXUB0=
+	t=1763224684; cv=pass; b=l/Lky3QTE6lN07f6ekWlLLWLY1hfDobDsU7AaMhkhjOzzu+KP6gpoGSUpPe/N4qD+DDoPVPyWDWlpH/jnsc5YOO1/SK+ycObBupr5E6RsAtdFCLZIvLfrkQ9wjct7w2mfDHrX5q4Gf4IxGOZwCGxLGfvVFryrehABoQY1fgD8i4=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763224683; c=relaxed/simple;
-	bh=aNspXQiZIzxG/kECI/BQvFm4gChcnuBouj+OolO50DY=;
+	s=arc-20240116; t=1763224684; c=relaxed/simple;
+	bh=L78qhuU23KCpMFd1QEszq4KJRacqrVFwRVDnqxk+huw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=M2KOnPkuqEtbpI2yutGxBgQp/+o+Ap4PBi0Cv7e+CaZikef85oM46xaWLFDqUWk5Yhx1du4PEITwW5ZTYVECHAzHiKCWd6GgNjRCCpNlgBxtg9c8MZce23iMlYQRqR+cWSC7LwlxtSDABzrqQgDlwYW7PJ+ST5yYPDQMFX0zfFE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=bHn/Nro0; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=Ky9A3VCQ; arc=pass smtp.client-ip=81.169.146.166
+	 MIME-Version:Content-Type; b=otYbunJX4DL3LwAnb3/lkhenVbt0i4y2OvT3ZJkNvUah84bezOWLh+uwC5D3zq543bPrQFKwVLhMM1PThU8+46z8TebP6mAo8OsHeRTMQyVYMxFYE8e9DkC5WKoWe+AqIPVrFGStZ7S7xzPBTp98TkK/Wd+MbndVIgqsfi1i0vE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=Yd4CPqW4; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=T5AC+Y6u; arc=pass smtp.client-ip=85.215.255.82
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="bHn/Nro0";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="Ky9A3VCQ"
-ARC-Seal: i=1; a=rsa-sha256; t=1763224674; cv=none;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="Yd4CPqW4";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="T5AC+Y6u"
+ARC-Seal: i=1; a=rsa-sha256; t=1763224676; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=N2SpIth7PsHY3WxqpC/z2m2Ao+T1w6X8f5BU1z2Df+WGxJhHgZGRHwL1dQUKp3F+JG
-    7liD3vGBBwWVmv0N0ZHyU2INyk5ezYGlbDt1U9ukCAETzBX6qT9H7IO3JF5VnW0TY0Em
-    tg6eDmlCSpBO1BOlVUYwCShQ0BJWoQ6CS18cu7xckDM64wsCGPaEiv9cmky8X33l7s0W
-    v4gWR9gEpA699j4OuRQVTO+VIHu7W8DhPcZhJJ2rimhNq/EHkHPWwqJvkspFe4fuOCFc
-    llkJSOwCl15MMen5h7M+ixSSSVBh46TJSiTD48+4McU0MZSWlRghVIKouUDzUMhxzniI
-    BEPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1763224674;
+    b=UrPj6qKMTJlFF6na9YhV13aDAs91iopCHtsPk8zkNfaWgWpnDM0Os+LEih0iP/g8YR
+    7tl3enKGBlMyvKcX2r2Lyc+m+n/r0du3N3P8+e4YLK+stdbyWMRyvwfEQWjx4kT5G47o
+    9yRSEheAS6KMsc/jMjx0oiNavHDFYzNFyf96b6Eskslwaf18cLb565VNvIBZsKqGhMdQ
+    NKH/RoOSgISKoo96KMpSWCHhpplsPCtMzLrjQ2OzVnvsvyFJnTAVNriaZhTkrkGCHK7i
+    NdVQNp2qgvdHQcSI5j3I3+cXyo6vQ9qi70OAN/DaIC0sY9lh1dlVrCA3uRwFejXPwu0M
+    ldBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1763224676;
     s=strato-dkim-0002; d=strato.com;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=nTtDY9XaKTNTqo2/YNyotzVG20HO00Z5YizB6ADow3Y=;
-    b=eyXF9xbQ3VDF8gSeMrkS3/cQGSaIjD6rumixjaZOKiXJejptsbrtRbafnx00ymcsJV
-    AwlWvATLa7PT7q79ZYM+N/r6aSEjHjR8rdMbbEw1lnI3WuwoMTCe8U5lUXOYVzRA00on
-    +6jH+kWaLiPq6Kum1P8G5cZxuilsM+VihAlzuCHo8nsLnOLvZ/E09VlX4zCPgdGTCo17
-    av/HSWw5r/w/3cT/gJxdAUgSjqieAPTBz0TsFcKDCwUaxvNaC5os3ibaDPQNuSrnEdSw
-    6aLsoqsluzBSc4OEfOG9PGBO9Wm5PJT85RFfFe1A0L6L2r1j3c9ufglmG6/uDLikxAlF
-    RUPA==
+    bh=YJuxFBw88keegOCH87idgfDbzF0yOiJ5oQlW6cWIWsw=;
+    b=WLWEJXCz7737j4I0yKUQmAa9PwwhmkY10JCixkxEvbzqhxB1XbJKWNc5wgwvSx9quB
+    9g1DrgUd2MZjp8LZoJiuigjwFF4gabeQV/DQWWXPSe0grA1HWzyRSCsBDaMxq3eUaKZ5
+    rJL/4zkEXJMFPxhvRundqekPh4wQcN04lLRHdK6I0TJU+2xETqDUT1FJGsfzfBHS8sEa
+    wvYSBj29AQ7tBmArUVx6BPv+aXeficDKR+LNXYbLXr8S0MRLJsht/KZTNS39cj5jqb5A
+    7u4/NA1SZTFyafKGr+Dr3ddbvCiLGF0IlZ5iet8BGn6Zv+ZdvOH/f3wOqMxNWXvg8pkr
+    FceQ==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1763224674;
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1763224676;
     s=strato-dkim-0002; d=hartkopp.net;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=nTtDY9XaKTNTqo2/YNyotzVG20HO00Z5YizB6ADow3Y=;
-    b=bHn/Nro02uJPddbeuX5Ffw98JvAHwTUBAgNv9nJY5S4ha8lIJ5agK9duZFoL2MqMHJ
-    lJOoxo/IP+EjcIJPEdI/Jor9vy8ZqAaEieSl+2lho9rOaCCmsjabMSaKQFVeFWspDsEe
-    mQRHruQSK8FXyU9qAhoygNjHBsBfXGz5sfrCDfief5RJX+CJWvr2WiKKTEW8yk8wNqsx
-    7sm+OfHew0tkir93hFX4GcD+OSf8Fexy8QhAszrZgszyfCFokk1EnD93wP5+u0CUv3WB
-    dltsaSE0GaU3NBEt0soVEkT1zf70XvVX3wjjiV1Cq76j7Tp6mdLiBl200FuoOjd8J5XF
-    RuOg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1763224674;
+    bh=YJuxFBw88keegOCH87idgfDbzF0yOiJ5oQlW6cWIWsw=;
+    b=Yd4CPqW4Rskcp0QRKz3MrCbmEazkGqmIF12fpCmEStA+ijHGRhC8+pUdTnCNplcTpO
+    XYxEzF2Mt2Uebm+UdvgHyOXVWMOCa4px3O2ziUfWoh3jZ8J6WqXa83Yn3G3kDTSwqbQS
+    iy9dTiOx8K36qECbJPoAb7cwNO9fKPlom7yTInV0T8MIOP3iywlW5oOTDw6D1tZeC2Lr
+    PTIPsFMjYzXEoMESaAoxFfOnW8JVRwDboH8NjBqkdWdt9McJO6wEhHFNLuIVFMQeJiLM
+    pd1nxRyVO10of97e/PsYcurxoRaNm0XOgif12eauIU0EhcwBzQxwnekT9X/dDYTdP19R
+    ViRA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1763224676;
     s=strato-dkim-0003; d=hartkopp.net;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=nTtDY9XaKTNTqo2/YNyotzVG20HO00Z5YizB6ADow3Y=;
-    b=Ky9A3VCQPbOFWyG+fOwOeY6gDGb8T1gces7URvbZHhTAcAsuo5zSZiLmD13TnVyZ/D
-    JtR151HlPReyJ0psQ/DA==
+    bh=YJuxFBw88keegOCH87idgfDbzF0yOiJ5oQlW6cWIWsw=;
+    b=T5AC+Y6uQ5x2R0pmc6AOkJS1DivSMcYHWKavlK3MfkZ+0h4d+L/akpkWYDwiBs+SoJ
+    OycWugFDwf7mLr7t83Dg==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bGWj0Q=="
 Received: from lenov17.lan
     by smtp.strato.de (RZmta 54.0.0 AUTH)
-    with ESMTPSA id Ke2b461AFGbseQo
+    with ESMTPSA id Ke2b461AFGbueQw
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Sat, 15 Nov 2025 17:37:54 +0100 (CET)
+    Sat, 15 Nov 2025 17:37:56 +0100 (CET)
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 To: linux-can@vger.kernel.org
 Cc: Vincent Mailhol <mailhol@kernel.org>
-Subject: [canxl v2 05/15] can: netlink: add CAN_CTRLMODE_XL_TMS flag
-Date: Sat, 15 Nov 2025 17:37:30 +0100
-Message-ID: <20251115163740.7875-6-socketcan@hartkopp.net>
+Subject: [canxl v2 13/15] can: calc_bittiming: add can_calc_sample_point_pwm()
+Date: Sat, 15 Nov 2025 17:37:38 +0100
+Message-ID: <20251115163740.7875-14-socketcan@hartkopp.net>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251115163740.7875-1-socketcan@hartkopp.net>
 References: <20251115163740.7875-1-socketcan@hartkopp.net>
@@ -85,181 +85,95 @@ Content-Type: text/plain; charset="us-ascii"
 
 From: Vincent Mailhol <mailhol@kernel.org>
 
-The Transceiver Mode Switching (TMS) indicates whether the CAN XL
-controller shall use the PWM or NRZ encoding during the data phase.
+The optimum sample point value depends on the bit symmetry. The more
+asymmetric the bit is, the more the sample point would be located
+towards the end of the bit. On the contrary, if the transceiver only
+has a small asymmetry, the optimal sample point would be slightly
+after the centre of the bit.
 
-The term "transceiver mode switching" is used in both ISO 11898-1 and
-CiA 612-2 (although only the latter one uses the abbreviation TMS). We
-adopt the same naming convention here for consistency.
+For NRZ encoding (used by Classical CAN, CAN FD and CAN XL with TMS
+off), the optimum sample points values are above 70% as implemented in
+can_calc_sample_point_nrz().
 
-Add the CAN_CTRLMODE_XL_TMS flag to the list of the CAN control modes.
+When TMS is on, CAN XL optimum sample points are near to 50% or
+60% [1]. Add can_calc_sample_point_pwm() which returns a sample point
+which is suitable for PWM encoding. We crafted the formula to make it
+return the same values as below table (source: table 3 of [1]).
 
-Add can_validate_xl_flags() to check the coherency of the TMS flag.
-That function will be reused in upcoming changes to validate the other
-CAN XL flags.
+       Bit rate (Mbits/s)	Sample point
+       -------------------------------------
+         2.0			 51.3%
+         5.0			 53.1%
+         8.0			 55.0%
+        10.0			 56.3%
+        12.3			 53.8%
+        13.3			 58.3%
+        14.5			 54.5%
+        16.0			 60.0%
+        17.7			 55.6%
+        20.0			 62.5%
+
+The calculation simply consists of setting a slightly too high sample
+point and then letting can_update_sample_point() correct the values.
+
+For now, it is just a formula up our sleeves which matches the
+empirical observations of [1]. Once CiA recommendations become
+available, can_calc_sample_point_pwm() should be updated accordingly.
+
+[1] CAN XL system design: Clock tolerances and edge deviations edge
+    deviations
+Link: https://www.can-cia.org/fileadmin/cia/documents/publications/cnlm/december_2024/cnlm_24-4_p18_can_xl_system_design_clock_tolerances_and_edge_deviations_dr_arthur_mutter_bosch.pdf
 
 Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
 ---
- drivers/net/can/dev/dev.c        |  2 ++
- drivers/net/can/dev/netlink.c    | 48 ++++++++++++++++++++++++++++++--
- include/uapi/linux/can/netlink.h |  1 +
- 3 files changed, 48 insertions(+), 3 deletions(-)
+ drivers/net/can/dev/calc_bittiming.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
-index 443692587217..9da3da8c6225 100644
---- a/drivers/net/can/dev/dev.c
-+++ b/drivers/net/can/dev/dev.c
-@@ -121,10 +121,12 @@ const char *can_get_ctrlmode_str(u32 ctrlmode)
- 		return "xl";
- 	case CAN_CTRLMODE_XL_TDC_AUTO:
- 		return "xl-tdc-auto";
- 	case CAN_CTRLMODE_XL_TDC_MANUAL:
- 		return "xl-tdc-manual";
-+	case CAN_CTRLMODE_XL_TMS:
-+		return "xl-tms";
- 	default:
- 		return "<unknown>";
- 	}
- }
- EXPORT_SYMBOL_GPL(can_get_ctrlmode_str);
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 26c25e660e31..5a628c629109 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -179,10 +179,36 @@ static int can_validate_databittiming(struct nlattr *data[],
- 		return err;
+diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/calc_bittiming.c
+index 9b2d0e458518..be6726dcd7e7 100644
+--- a/drivers/net/can/dev/calc_bittiming.c
++++ b/drivers/net/can/dev/calc_bittiming.c
+@@ -20,10 +20,25 @@ static int can_calc_sample_point_nrz(const struct can_bittiming *bt)
+ 		return 800;
  
- 	return 0;
+ 	return 875;
  }
  
-+static int can_validate_xl_flags(struct netlink_ext_ack *extack,
-+				 u32 masked_flags, u32 mask)
++/* Sample points for Pulse-Width Modulation encoding. */
++static int can_calc_sample_point_pwm(const struct can_bittiming *bt)
 +{
-+	if (masked_flags & CAN_CTRLMODE_XL) {
-+		if (masked_flags & CAN_CTRLMODE_XL_TMS) {
-+			const u32 tms_conflicts_mask = CAN_CTRLMODE_FD |
-+				CAN_CTRLMODE_XL_TDC_MASK;
-+			u32 tms_conflicts = masked_flags & tms_conflicts_mask;
++	if (bt->bitrate > 15 * MEGA /* BPS */)
++		return 625;
 +
-+			if (tms_conflicts) {
-+				NL_SET_ERR_MSG_FMT(extack,
-+						   "TMS and %s are mutually exclusive",
-+						   can_get_ctrlmode_str(tms_conflicts));
-+				return -EOPNOTSUPP;
-+			}
-+		}
-+	} else {
-+		if (mask & CAN_CTRLMODE_XL_TMS) {
-+			NL_SET_ERR_MSG(extack, "TMS requires CAN XL");
-+			return -EOPNOTSUPP;
-+		}
-+	}
++	if (bt->bitrate > 9 * MEGA /* BPS */)
++		return 600;
 +
-+	return 0;
++	if (bt->bitrate > 4 * MEGA /* BPS */)
++		return 560;
++
++	return 520;
 +}
 +
- static int can_validate(struct nlattr *tb[], struct nlattr *data[],
- 			struct netlink_ext_ack *extack)
- {
- 	u32 flags = 0;
+ /* Bit-timing calculation derived from:
+  *
+  * Code based on LinCAN sources and H8S2638 project
+  * Copyright 2004-2006 Pavel Pisa - DCE FELK CVUT cz
+  * Copyright 2005      Stanislav Marek
+@@ -90,10 +105,14 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
+ 	u64 v64;
  	int err;
-@@ -199,10 +225,14 @@ static int can_validate(struct nlattr *tb[], struct nlattr *data[],
- 		    (flags & CAN_CTRLMODE_RESTRICTED)) {
- 			NL_SET_ERR_MSG(extack,
- 				       "Listen-only and restricted modes are mutually exclusive");
- 			return -EOPNOTSUPP;
- 		}
+ 
+ 	if (bt->sample_point)
+ 		sample_point = bt->sample_point;
 +
-+		err = can_validate_xl_flags(extack, flags, cm->mask);
-+		if (err)
-+			return err;
- 	}
++	else if (btc == priv->xl.data_bittiming_const &&
++		 (priv->ctrlmode & CAN_CTRLMODE_XL_TMS))
++		sample_point = can_calc_sample_point_pwm(bt);
+ 	else
+ 		sample_point = can_calc_sample_point_nrz(bt);
  
- 	err = can_validate_bittiming(data, extack, IFLA_CAN_BITTIMING);
- 	if (err)
- 		return err;
-@@ -224,11 +254,11 @@ static int can_ctrlmode_changelink(struct net_device *dev,
- 				   struct nlattr *data[],
- 				   struct netlink_ext_ack *extack)
- {
- 	struct can_priv *priv = netdev_priv(dev);
- 	struct can_ctrlmode *cm;
--	u32 ctrlstatic, maskedflags, notsupp, ctrlstatic_missing;
-+	u32 ctrlstatic, maskedflags, deactivated, notsupp, ctrlstatic_missing;
- 
- 	if (!data[IFLA_CAN_CTRLMODE])
- 		return 0;
- 
- 	/* Do not allow changing controller mode while running */
-@@ -236,10 +266,11 @@ static int can_ctrlmode_changelink(struct net_device *dev,
- 		return -EBUSY;
- 
- 	cm = nla_data(data[IFLA_CAN_CTRLMODE]);
- 	ctrlstatic = can_get_static_ctrlmode(priv);
- 	maskedflags = cm->flags & cm->mask;
-+	deactivated = ~cm->flags & cm->mask;
- 	notsupp = maskedflags & ~(priv->ctrlmode_supported | ctrlstatic);
- 	ctrlstatic_missing = (maskedflags & ctrlstatic) ^ ctrlstatic;
- 
- 	if (notsupp) {
- 		NL_SET_ERR_MSG_FMT(extack,
-@@ -257,15 +288,25 @@ static int can_ctrlmode_changelink(struct net_device *dev,
- 				   "missing required %s static control mode",
- 				   can_get_ctrlmode_str(ctrlstatic_missing));
- 		return -EOPNOTSUPP;
- 	}
- 
-+	/* If FD was active and is not turned off, check for XL conflicts */
-+	if (priv->ctrlmode & CAN_CTRLMODE_FD & ~deactivated) {
-+		if (maskedflags & CAN_CTRLMODE_XL_TMS) {
-+			NL_SET_ERR_MSG(extack,
-+				       "TMS can not be activated while CAN FD is on");
-+			return -EOPNOTSUPP;
-+		}
-+	}
-+
- 	/* If a top dependency flag is provided, reset all its dependencies */
- 	if (cm->mask & CAN_CTRLMODE_FD)
- 		priv->ctrlmode &= ~CAN_CTRLMODE_FD_TDC_MASK;
- 	if (cm->mask & CAN_CTRLMODE_XL)
--		priv->ctrlmode &= ~(CAN_CTRLMODE_XL_TDC_MASK);
-+		priv->ctrlmode &= ~(CAN_CTRLMODE_XL_TDC_MASK |
-+				    CAN_CTRLMODE_XL_TMS);
- 
- 	/* clear bits to be modified and copy the flag values */
- 	priv->ctrlmode &= ~cm->mask;
- 	priv->ctrlmode |= maskedflags;
- 
-@@ -393,11 +434,12 @@ static int can_dbt_changelink(struct net_device *dev, struct nlattr *data[],
- 
- 	memset(&dbt_params->tdc, 0, sizeof(dbt_params->tdc));
- 	if (data[IFLA_CAN_CTRLMODE]) {
- 		struct can_ctrlmode *cm = nla_data(data[IFLA_CAN_CTRLMODE]);
- 
--		need_tdc_calc = !(cm->mask & tdc_mask);
-+		if (fd || !(priv->ctrlmode & CAN_CTRLMODE_XL_TMS))
-+			need_tdc_calc = !(cm->mask & tdc_mask);
- 	}
- 	if (data_tdc) {
- 		/* TDC parameters are provided: use them */
- 		err = can_tdc_changelink(dbt_params, data_tdc, extack);
- 		if (err) {
-diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
-index c2c96c5978a8..ebafb091d80f 100644
---- a/include/uapi/linux/can/netlink.h
-+++ b/include/uapi/linux/can/netlink.h
-@@ -105,10 +105,11 @@ struct can_ctrlmode {
- #define CAN_CTRLMODE_TDC_MANUAL		0x400	/* FD TDCV is manually set up by user */
- #define CAN_CTRLMODE_RESTRICTED		0x800	/* Restricted operation mode */
- #define CAN_CTRLMODE_XL			0x1000	/* CAN XL mode */
- #define CAN_CTRLMODE_XL_TDC_AUTO	0x2000	/* XL transceiver automatically calculates TDCV */
- #define CAN_CTRLMODE_XL_TDC_MANUAL	0x4000	/* XL TDCV is manually set up by user */
-+#define CAN_CTRLMODE_XL_TMS		0x8000	/* Transceiver Mode Switching */
- 
- /*
-  * CAN device statistics
-  */
- struct can_device_stats {
+ 	/* tseg even = round down, odd = round up */
+ 	for (tseg = (btc->tseg1_max + btc->tseg2_max) * 2 + 1;
 -- 
 2.47.3
 
