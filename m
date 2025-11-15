@@ -1,123 +1,153 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.25])
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.166])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F62A2222D0;
-	Sat, 15 Nov 2025 11:50:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A76128D83D
+	for <linux-can@vger.kernel.org>; Sat, 15 Nov 2025 11:51:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.166
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763207461; cv=pass; b=jMyi9N3A+dfeZyQIqI6q2k1UcMq2BmLUPdpkf+E0pBSY80bcxJrB/Sw8UVW8q7Br5PmDrtDs8ZOY4KdicVXT2ZZj80Jvw7gH9ybbCAKJWmL5RhFqSIhHYSawcxjsoqeZ5gW5bPhDjnqRpmulWNUEG4iiRRYBF3jsdANd2qMNuU4=
+	t=1763207482; cv=pass; b=jenTqDK4r0uXvCHVCMx97uWn2l60ryDuv0tHKtm8/m5S2GqAuepx6YTj13XXIplf8MY2FrGVutNtZ2bEpJM1By7drDQ+gN+Q0vU/fmkAnIOjEwlJbazggn9gXjeSaIXfJkN+AAVVO344PR9KMhRr9PnqDoJqypG1947uUeDsUGo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763207461; c=relaxed/simple;
-	bh=CwWYuBmqBrQ/gQnkx/bn+UuTCCzM7LeKUoHIEVgGENI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=obcoqGmPcTNVUoK9uDB4uYixedbGvuf+iL3c4fC2UpiAcHFICgxA35Wbp845rb4fOx78haZi/7Sl4mizkERYCIFXJXANcMIVpxSKoK0MFnXRoGJqhYTZpt5uTH9n8+OO3sHLZxVxeSeKb8UqVmaMy/6ztnjJEJ1aNvODg50mCLA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=i7T7SGIP; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=XwuawMuV; arc=pass smtp.client-ip=85.215.255.25
+	s=arc-20240116; t=1763207482; c=relaxed/simple;
+	bh=MuX286oxUZ8YOyZtXuymWdY3UhYrGP2K8lVLc5PFs0k=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=gqIoND6y3dDtKHODp+AAUR9x0K3UOQEtvMCG/FEwQc9vyok+Nm1ZPRs9SyCFcQDZTCVHBs2lWxJRbsirnG2bSG0KEyPPTtOAoA3O4ypHPP4CmmfgK7T94Ae++/4rpkFCZxCX+oI4piso6zAiIElJxrjZm3De7wLKV1A7ROu+xLw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=XyqQdvl+; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=QxJerK4Q; arc=pass smtp.client-ip=81.169.146.166
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="i7T7SGIP";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="XwuawMuV"
-ARC-Seal: i=1; a=rsa-sha256; t=1763207449; cv=none;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="XyqQdvl+";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="QxJerK4Q"
+ARC-Seal: i=1; a=rsa-sha256; t=1763207464; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=ew75ATGTt7MIKFFz0CdraZ4AjYSEyBGvJswYguZH2L00fweaalGRNe1H+FlkNDzB1y
-    f+edgLvhuw1cdH6+oDQCsXoull2FvvxgTBDV8yPBgvyHRxooRch9XzZDvaRAYX1UZHf3
-    TceMxtH4AXH4T5MyVph1y5xozOLz3d0xtXhT7dUuhik8L502ynmHkO5qcwya8oBkqwcf
-    0DdmOSGnyMHV/zsP284PlhHgzpUmrstpUvHEEM5ZsXQmlhcdBe6LVIwAahMeNRs2geUb
-    xvN8jGnB8y9FGyu05bRRR18D7ZzBalAFJdqN5SRHKmBk3KwAQx0eRs42DrzLcMYxlbZG
-    bEww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1763207449;
+    b=nlGN6JHGRI/PvZ2VNO7UD1uJv+3Cf/XqX3aIOSRrRWAjR5s17RfA1ZbdCceRRnaefu
+    CBTOq6UOYO1W1lfnil6S51T+B66rJFzmftw7GCDBAJfdkEWIBcPd6VuACxO4xzD9hX9T
+    YQlnyJK9ZDUWuNz23qHOZqqHtGVy5O9tjwq+1x/LriWGDsCwSH4SCg1P1Z2aPWQhpLMO
+    7eYm8mGiGjXDPmedaxxL8lxg832xKH7yrXqc2ncLYmVpauUtzOqFfAhnlaJtnJSAc0zZ
+    9Adn1uVNCMCSjPZxykZTsyvjw4AbzFsaG5oCKUyC5DGzH5N4SPv17SDU09ECj5kvF4DO
+    L4dw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1763207464;
     s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=CPCJvebnkAlrNzgphNQ0j3IFUOikVqWaBpCC3u6ULrI=;
-    b=f6A5ywP0H1jjScGj6DkP9U2Aiajp5xuJ5vg7sULiVNeDRIFDGSxlhaisxuOO8plQZa
-    Phu5CnBS0iI4OzWYvDybZNQ+eFBC9wceJ5+SsCfSWDD8Ng2eIY1CFpgIPps2gwuPQ+1l
-    RkmZhYfdmax2zQrEjuX+E+dfi/W7YCpmnJTIVq+jfWpFLqWdf3YGG/Lur/jZel3TeTJu
-    Om8etnwVpZP7+vWcnq6y4onyyOYBD7coAN1IJl2JfkDNmyMaNe6oWI/KjnOyjeyeP2UD
-    OgvGUGLT203DCFk06U57BfAAvATCMCFBAULCGb5KYykAWgI4Prs4I96jItUzGv1UJ3G1
-    P+Nw==
+    bh=7CnAUXl77iU3byj1HoDDkLhwM1RRaebYwKbVhgkWJQo=;
+    b=WoePA3OYQ01EsXMtMIoo5U3r5va1AOQLqZ7KtVPDuRPNu8f1sAzokgMs1ZNEAjWxyp
+    RnzaIx0fVH+KNuRDQHNqE9bHbFpPIBb5fiez1oeJYsjbKI9QmTrqFcnZvG7T81VvUBy8
+    +dbINtS5msvxkW8ZhveV6bXb8ECnUMch+h4d+JVnicA3gqv8NQi8jiL6fYt3z1ewT48M
+    /73CUu3wM7ChmsNHuCTy9q+ZZRQrx8E3pSBovGHixlexp+rNjFLuzmnXMpPdHNgd8B4n
+    CUQOBMiEpqrEnrVhfkEKxQGyRSVNJdhb2at2zZ6IKRQoe2lD/r5fEOZTI5fUtGCYdow3
+    7OKQ==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1763207449;
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1763207464;
     s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=CPCJvebnkAlrNzgphNQ0j3IFUOikVqWaBpCC3u6ULrI=;
-    b=i7T7SGIPhS21DSXSXpRs9CEyCE6h4/CT4ycTlEr/BRFJlVWKmxrOKFppFbHJjgh17J
-    3f0CPuXtcsaoB3Mm2ZFe7/L6una4iOFl3aNu34Zd3yxR7Qir5ZlOvJPGj1wzkHJq1fFq
-    bfIskc5RJBaId60pqWBS9gfv+koYqWACwDQyogpfw5X+9jpemzhTh3oXd1/aISj7Gt8k
-    Kmp9yfWC0Z9HPpWva8QYEBuzau9utCX2DPiiO8rFAg411zBkTczpDr23WG1fUwMJS+Kg
-    Lf6fxCYZoluY1uvJ/zOxb7ZcBB3zGPZ4J4kKSyoyhKnjPKE7t/HebevthU85R8P3Fu3H
-    zjfQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1763207449;
+    bh=7CnAUXl77iU3byj1HoDDkLhwM1RRaebYwKbVhgkWJQo=;
+    b=XyqQdvl+l16sEJhKqmp24mO3fPvJmW7cNusKRSZqy5o1UMQd1u0++Y8tFGcRuiis7w
+    h2XHufFYZ6Lm6WeTbx8hG2pCyVASzTgXkBepDQLCPMZRlevDd9ceikmN3DqjU+bvtTTQ
+    7sa3bMKPrb5fRasMUBLc1qsmSz8782gStpud4WdPEl3rSc2HGQsh3195WoS9AZCi7xrG
+    hPDkd06emEeB2Zsyvp/jmOXd4UKgejwvXur6jUohKV3drVSpjz+y+BsyKtBSrf4Tl2H3
+    K2o8zw98wl/KdE2CMaykNP5+MpxoGIxujzMUaSRXcDH6sSmRPYRi3/JveyPGRncaEujE
+    8nzg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1763207464;
     s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=CPCJvebnkAlrNzgphNQ0j3IFUOikVqWaBpCC3u6ULrI=;
-    b=XwuawMuVCzac6iznjNfYcp8TFTbFbQs2nfzKr4wKULmiMot6HMlHyqdFf3QM3dVeNV
-    2qN3QfeqQn8isrU+TcBA==
+    bh=7CnAUXl77iU3byj1HoDDkLhwM1RRaebYwKbVhgkWJQo=;
+    b=QxJerK4QINaKxdxpnxQqv3E+iu6wUS18SLIKQYsoegADLAoHqQL6jWL0TE3AxaQSdw
+    7R4Z/oMDr/Z7S/uF1ZCg==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bGWj0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::9f3]
+Received: from lenov17.lan
     by smtp.strato.de (RZmta 54.0.0 AUTH)
-    with ESMTPSA id Ke2b461AFBondZf
+    with ESMTPSA id Ke2b461AFBp4dZh
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Sat, 15 Nov 2025 12:50:49 +0100 (CET)
-Message-ID: <7e99da1d-3981-46fe-8b64-6ddd3a0c2d58@hartkopp.net>
-Date: Sat, 15 Nov 2025 12:50:43 +0100
+    Sat, 15 Nov 2025 12:51:04 +0100 (CET)
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+To: linux-can@vger.kernel.org
+Cc: Vincent Mailhol <mailhol@kernel.org>
+Subject: [canxl 02/10] can: dev: can_dev_dropped_skb: drop CAN FD skbs if FD is off
+Date: Sat, 15 Nov 2025 12:50:45 +0100
+Message-ID: <20251115115053.72673-2-socketcan@hartkopp.net>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251115115053.72673-1-socketcan@hartkopp.net>
+References: <20251115115053.72673-1-socketcan@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 0/3] can: calc_bittiming: add sample point calculation
- for PWM encoding
-To: Vincent Mailhol <mailhol@kernel.org>,
- Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20251102-pwm_sample_point-v1-0-3bbea180f59e@kernel.org>
- <0065ed0a-8442-4d6d-b132-789add82ebe9@kernel.org>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <0065ed0a-8442-4d6d-b132-789add82ebe9@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 
-Hi Vincent,
+From: Vincent Mailhol <mailhol@kernel.org>
 
-I was not sure when you would show up again and therefore I started to 
-rework the discussed points this morning
+Currently, the CAN FD skb validation logic is based on the MTU: the
+interface is deemed FD capable if and only if its MTU is greater or
+equal to CANFD_MTU.
 
-- error-signalling / mixed-mode / CANXL-only mode
-- restricted mode warning removal
-- TMS as a mandatory setting (now default off)
+This logic is showing its limit with the introduction of CAN XL. For
+example, consider the two scenarios below:
 
-for your convenience and for an inspiration/review.
+  1. An interface configured with CAN FD on and CAN XL on
 
-I'll send the patch set as-is without further documentation.
+  2. An interface configured with CAN FD off and CAN XL on
 
-The PWM sample-point and CAN_RAW changes are missing.
+In those two scenarios, the interfaces would have the same MTU:
 
-Best regards,
-Oliver
+  CANXL_MTU
 
-On 15.11.25 12:17, Vincent Mailhol wrote:
-> On 02/11/2025 at 23:01, Vincent Mailhol wrote:
->> I wrote this series in response to Oliver's feedback in [1]. I am
->> sending this as an RFC based on top of [2] for the moment so that we
->> can discuss this separately. The plan is to merge this to the CAN XL
->> branch once we reach a consensus on this part.
-> 
-> I changed my mind. I will keep this as a separate series. v2 is ready locally, I
-> will share everything together once the next can-xl series is ready.
-> 
-> 
-> Yours sincerely,
-> Vincent Mailhol
-> 
-> 
+making it impossible to differentiate which one has CAN FD turned on
+and which one has it off.
+
+Because of the limitation, the only non-UAPI-breaking workaround is to
+do the check at the device level using the can_priv->ctrlmode flags.
+Unfortunately, the virtual interfaces (vcan, vxcan), which do not have
+a can_priv, are left behind.
+
+Add a check on the CAN_CTRLMODE_FD flag in can_dev_dropped_skb() and
+drop FD frames whenever the feature is turned off.
+
+Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
+---
+ include/linux/can/dev.h | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index bd7410b5d8a6..a7a39a6101d9 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -101,16 +101,24 @@ static inline bool can_dev_dropped_skb(struct net_device *dev, struct sk_buff *s
+ 	struct can_priv *priv = netdev_priv(dev);
+ 
+ 	if (priv->ctrlmode & CAN_CTRLMODE_LISTENONLY) {
+ 		netdev_info_once(dev,
+ 				 "interface in listen only mode, dropping skb\n");
+-		kfree_skb(skb);
+-		dev->stats.tx_dropped++;
+-		return true;
++		goto invalid_skb;
++	}
++
++	if (!(priv->ctrlmode & CAN_CTRLMODE_FD) && can_is_canfd_skb(skb)) {
++		netdev_info_once(dev, "CAN FD is disabled, dropping skb\n");
++		goto invalid_skb;
+ 	}
+ 
+ 	return can_dropped_invalid_skb(dev, skb);
++
++invalid_skb:
++	kfree_skb(skb);
++	dev->stats.tx_dropped++;
++	return true;
+ }
+ 
+ void can_setup(struct net_device *dev);
+ 
+ struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo_skb_max,
+-- 
+2.47.3
 
