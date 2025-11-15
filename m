@@ -1,76 +1,76 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5412D2877CF
-	for <linux-can@vger.kernel.org>; Sat, 15 Nov 2025 11:51:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1637298CC7
+	for <linux-can@vger.kernel.org>; Sat, 15 Nov 2025 11:51:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.80
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763207482; cv=pass; b=J+ecKvAIubgcRTwsTz3MFIfH2Q5hRMrfySuJdSllGFUbBGB3ZwnLBQgkUNS+sNyPgbGgj8TNSMH2zt2ydEbnYPvtwg2hv+wy/9DaMHchVL65ugQXYyOAxCUAiz6Hjy+CaQz3q6ad40i064b4zci2xNOvrQsLNWuB3LCKYA4bWpI=
+	t=1763207482; cv=pass; b=uMcBwqHFzS4ypoVuY5QxXIr0+yyTTbng1GjhEILm9GSvWxrGuBHnzd2+vPba6IDdN5xwKXQzpc+BBikO4UAwVvdbwJMsMELV9ukPG77ylxl+j1FLcgtXBRKLPzML9SgM58L/N2wvQ7x7kXUVPzJDLvZdZNZak9NdBbvzJysYG1s=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1763207482; c=relaxed/simple;
-	bh=h1zodsCt8FnW/6LTnC1sNU3rH5Lvf1cJm4dQkShZS2Y=;
+	bh=QMdyW3zHmZKoiUI7ZBC/gDK98NJt6F86hHvhnD0p9Ro=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dBv7cXmmp/urqj7qb2S0nGR1oxNNKj3SoIIAOJEM9HJNN5hAF6Mrt4W4NPo9onJuQpXGT9o0gmcoNt7l99JAhyxvbPf8dA7uukb3l9B9VibZHkZ4+cNexBowFbiXSyBJywYlAuarLiBtI12s4lRrIh7s5wCmJdPIcFgzlTKvdms=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=N9z49jvH; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=bu6GFO37; arc=pass smtp.client-ip=85.215.255.54
+	 MIME-Version:Content-Type; b=W5A43wTgmlmsU0mhMos+4/6pZDsAzqrplXTACdplCNpRSsOXZacn3rJkLyjdP8hR1ubYUN8b4WBFgyvlpZmXH6RWJgdlbQs/H84Wt9Gw0+EIlIZ0xFOicfY4z/NFtwoL077Sz4eA9rRkhAcH3VZyllvfXdGCEnMoo3enQqxfXQw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=geQvXwsV; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=hf5z7WXp; arc=pass smtp.client-ip=85.215.255.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="N9z49jvH";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="bu6GFO37"
-ARC-Seal: i=1; a=rsa-sha256; t=1763207464; cv=none;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="geQvXwsV";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="hf5z7WXp"
+ARC-Seal: i=1; a=rsa-sha256; t=1763207466; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=P6KD9MIhmRwK7dsJofOdDKWrUkUTqEte0S0zmgDdhRqp0jLBm3mvb51wVhqEPAwZmV
-    6mQOZibzsEd7edJpQh0AKAYOPmn7gmiIyQO1sKpSyR04RlgqmV4n7MrvPgd54WOHRmPh
-    VjxooTmYAbm+wICq5lcMyOQr5L7Y5pGq59ZkmJVkPUBdrChKBZfrdp/oj0WgV/ObAE7c
-    o1EOCHBOaylhU/hz5BvnGxLkY+tBpZAsaCv5kKPN2rqoDvrHOu9+J2/1TDsQN2WYUDBk
-    d5NXAElBWTtp6vXln3B+pi30H6L1+XNbFUpfVEbqX7GcQYq+MvkjKfb3B9ug0gD0dzcn
-    NEcA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1763207464;
+    b=r+j5VDM0N8+ud92+fPI4l6WKC5F9E4G/x898HFD4Wtspr8k3mtyzcvRXK4dZt9tXaj
+    GNVDT3laG86Ekzuuk7Huq85ag2NbyTCG3ELpnVOVIPwzFW9G0G8t3LpjjtpnrhU7UfKk
+    sN3x+vfa/ndVoYpYcVmp6XKFNWdyUgSQAU2b+jNR8lAC8ixOBUm48hW59WHJRPqDbvqN
+    XuPptgeno+sIz7x+glIhEXV192aWTFeN4vgkdk/RESr821JlBnHQhUVYT7u6uG91A6gG
+    VcbVwvROIXz2QzgGaUZRJZ2uULUAWQy+cXpjLDAzMkzzPnoiLfbGNGpesf5clntjY68y
+    rPeQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1763207466;
     s=strato-dkim-0002; d=strato.com;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=WyyPUWR80X0uNtfp8KrWRPR7nNaM0NFNRpxn5S9Yr6k=;
-    b=it+ObgTB1MXKexUUjSN1/qbLZ2ew7hMuPx62Cih0155AEBXhvvzHAdg/j4jPoCjYPq
-    jftORfN7l+YKk1f8Uk36POhSZJlIT7NlrnnbzleTyXcAl6eaV9mQgRErPi8sWEi+nQoG
-    Ud2Rq5941vphhMevo+Wyu2S/bIoQrik7p5v1KLrJQX8CuBKOfQca212ca3jyRhAX5yd8
-    ycMhiptszMbTaUpsDImadcmGr56t2R10ITzeasFD6TK+2awlxJSI6pSLDIy8LbIAjHil
-    /GHLM+YTSDyln6K8+1UC5kP8o/IarylpDrUsbhDC3I8sTGp+SdQXw8YzlMlUvvegkO18
-    8ymA==
+    bh=gt+aLL46waunKdD8iIUU37EI0yTQKZKJb6VNrjK7geU=;
+    b=DZ1EYz1TE2B7+FM26VG5L7Kus6H+FBrN5U8VyItX8aIutRTs8aRhhxeOwuUqDE/NEB
+    klgQzj6ocvsBwXRpcdetltEInRaPkAPJTmy7bVA9ionuuNe9qdl7+z+DTEtNvE9icbev
+    JdKKlT4nZ1wK4puEpVVKuE4QQaHncD2A+pP9jO9dJ+yEHLEJlgbymkxW+fo/cG8/3fK2
+    Wq2Hhj3kbOHKansswqkw9emJaaHRhR/j00HzFZNuXV+F9tWDHx5yDG/mwV3lQhXip7pg
+    GkA/d5CanGPg2aSgwnZT7h6z/Q8LFu7UZGxAPj3K2KFR/I536olpUjiXtlAcKTPDydWi
+    lbug==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1763207464;
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1763207466;
     s=strato-dkim-0002; d=hartkopp.net;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=WyyPUWR80X0uNtfp8KrWRPR7nNaM0NFNRpxn5S9Yr6k=;
-    b=N9z49jvHlSCq6ousfStemBrgOtR8sTiCLZhwNSD9JH3v2ksUxSodzLjfMQ9WHJ6wuY
-    Jkl/p6aTSBlUj6noOPTgS53pxSDSMXQ2SGOKdXlD4c2QEAC3EozMYDrSaVzJoycsww8U
-    aRKI+YGLkJLosHtgFZBgoErkbabs3Wa9fVcuI1E3neiJRM7wJ/4r8VTwqWvzlAez1orw
-    TLivBfLwOWwpAPhEJ8AbnJflw2bPyrNrN6W3ccLP9OH+XKxvpqrkGJCdnhPE8AShcluP
-    1mB00qvLHmBB3Z5PnTSlWvHhSPGKcE3tRz2QA23cL5b0mP/nYgraQkinnZgH01gb5IJ7
-    g/4g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1763207464;
+    bh=gt+aLL46waunKdD8iIUU37EI0yTQKZKJb6VNrjK7geU=;
+    b=geQvXwsVbRDbg6U3JCKdzIrQMGCsUh09oorksqfTf4JdGIwb90HEtfgK/ptIv9tj0K
+    brSV9rjwcQgXaz2DuRJtawS4Kxvu4xkfPtxCCqAErwI9bWs44gcxOLVpfqWiGOTPLFbR
+    g8vGGlo2PNeclVram3BOIucG0ZuvcZWsJ8cXz6K8jcBPgGlaaUqFxjsz4jmt9N1rlIsK
+    iAnzLNEnYlKjy8a/C2vD+hRdMyKiJhhSp9t1TBre+h56/Viul41B0qgr76Hsgi1bsedA
+    9ao3M7yCLglk+TFOl/mQjnVKP5LtHPYUl+pMjx5H3+GbcaJeXRj9ZMJEiF5nv6wLOXqd
+    v4IQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1763207466;
     s=strato-dkim-0003; d=hartkopp.net;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=WyyPUWR80X0uNtfp8KrWRPR7nNaM0NFNRpxn5S9Yr6k=;
-    b=bu6GFO37PzzLSBYGzKTAIwSSriY19UVDiMgeXPtmqGskAKv7Brrk64fzQ8uDnZPoMR
-    Z5Kp16xn7utFeNOV1vCg==
+    bh=gt+aLL46waunKdD8iIUU37EI0yTQKZKJb6VNrjK7geU=;
+    b=hf5z7WXpIwhTC0zYO7NLyLfy/weslhuIhPe1tT466BxqPOZQEnobyD9VzbHq1cprzC
+    HOmY+XtiI3e/YPFTgfBQ==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bGWj0Q=="
 Received: from lenov17.lan
     by smtp.strato.de (RZmta 54.0.0 AUTH)
-    with ESMTPSA id Ke2b461AFBp4dZi
+    with ESMTPSA id Ke2b461AFBp6dZo
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Sat, 15 Nov 2025 12:51:04 +0100 (CET)
+    Sat, 15 Nov 2025 12:51:06 +0100 (CET)
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 To: linux-can@vger.kernel.org
 Cc: Vincent Mailhol <mailhol@kernel.org>
-Subject: [canxl 03/10] can: netlink: add CAN_CTRLMODE_RESTRICTED
-Date: Sat, 15 Nov 2025 12:50:46 +0100
-Message-ID: <20251115115053.72673-3-socketcan@hartkopp.net>
+Subject: [canxl 09/10] can: calc_bittiming: add PWM calculation
+Date: Sat, 15 Nov 2025 12:50:52 +0100
+Message-ID: <20251115115053.72673-9-socketcan@hartkopp.net>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251115115053.72673-1-socketcan@hartkopp.net>
 References: <20251115115053.72673-1-socketcan@hartkopp.net>
@@ -85,165 +85,117 @@ Content-Type: text/plain; charset="us-ascii"
 
 From: Vincent Mailhol <mailhol@kernel.org>
 
-ISO 11898-1:2024 adds a new restricted operation mode. This mode is
-added as a mandatory feature for nodes which support CAN XL and is
-retrofitted as optional for legacy nodes (i.e. the ones which only
-support Classical CAN and CAN FD).
+Perform the PWM calculation according to CiA recommendations.
 
-The restricted operation mode is nearly the same as the listen only
-mode: the node can not send data frames or remote frames and can not
-send dominant bits if an error occurs. The only exception is that the
-node shall still send the acknowledgment bit. A second niche exception
-is that the node may still send a data frame containing a time
-reference message if the node is a primary time provider, but because
-the time provider feature is not yet implemented in the kernel, this
-second exception is not relevant to us at the moment.
+Note that for databitrates greater than 5 MBPS, tqmin is less than
+CAN_PWM_NS_MAX (which is defined to 200 nano seconds), consequently,
+the result of the division:
 
-Add the CAN_CTRLMODE_RESTRICTED control mode flag and update the
-can_dev_dropped_skb() helper function accordingly.
+  DIV_ROUND_UP(xl_ns, CAN_PWM_NS_MAX)
 
-Finally, bail out if both CAN_CTRLMODE_LISTENONLY and
-CAN_CTRLMODE_RESTRICTED are provided.
+is one and thus the for loop automatically stops on the first
+iteration giving a single PWM symbol per bit as expected. Because of
+that, there is no actual need for a separate conditional branch for
+when the databitrate is greater than 5 MBPS.
 
 Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
 ---
- drivers/net/can/dev/dev.c        |  2 ++
- drivers/net/can/dev/netlink.c    |  7 +++++
- include/linux/can/dev.h          | 50 +++++++++++++++++---------------
- include/uapi/linux/can/netlink.h |  1 +
- 4 files changed, 36 insertions(+), 24 deletions(-)
+ drivers/net/can/dev/calc_bittiming.c | 36 ++++++++++++++++++++++++++++
+ include/linux/can/bittiming.h        | 10 ++++++++
+ 2 files changed, 46 insertions(+)
 
-diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
-index 80e1ab18de87..5e24bc332a50 100644
---- a/drivers/net/can/dev/dev.c
-+++ b/drivers/net/can/dev/dev.c
-@@ -113,10 +113,12 @@ const char *can_get_ctrlmode_str(u32 ctrlmode)
- 		return "cc-len8-dlc";
- 	case CAN_CTRLMODE_TDC_AUTO:
- 		return "fd-tdc-auto";
- 	case CAN_CTRLMODE_TDC_MANUAL:
- 		return "fd-tdc-manual";
-+	case CAN_CTRLMODE_RESTRICTED:
-+		return "restricted-operation";
- 	default:
- 		return "<unknown>";
+diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/calc_bittiming.c
+index 394d6974f481..268ec6fa7c49 100644
+--- a/drivers/net/can/dev/calc_bittiming.c
++++ b/drivers/net/can/dev/calc_bittiming.c
+@@ -1,9 +1,10 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /* Copyright (C) 2005 Marc Kleine-Budde, Pengutronix
+  * Copyright (C) 2006 Andrey Volkov, Varma Electronics
+  * Copyright (C) 2008-2009 Wolfgang Grandegger <wg@grandegger.com>
++ * Copyright (C) 2021-2025 Vincent Mailhol <mailhol@kernel.org>
+  */
+ 
+ #include <linux/units.h>
+ #include <linux/can/dev.h>
+ 
+@@ -196,5 +197,40 @@ void can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
+ 			return;
+ 		tdc->tdco = min(sample_point_in_tc, tdc_const->tdco_max);
+ 		*ctrlmode |= tdc_auto;
  	}
  }
- EXPORT_SYMBOL_GPL(can_get_ctrlmode_str);
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 6f83b87d54fc..7cb57b0df726 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -186,10 +186,17 @@ static int can_validate(struct nlattr *tb[], struct nlattr *data[],
- 
- 	if (data[IFLA_CAN_CTRLMODE]) {
- 		struct can_ctrlmode *cm = nla_data(data[IFLA_CAN_CTRLMODE]);
- 
- 		flags = cm->flags & cm->mask;
 +
-+		if ((flags & CAN_CTRLMODE_LISTENONLY) &&
-+		    (flags & CAN_CTRLMODE_RESTRICTED)) {
-+			NL_SET_ERR_MSG(extack,
-+				       "Listen-only and restricted modes are mutually exclusive");
-+			return -EOPNOTSUPP;
-+		}
- 	}
- 
- 	err = can_validate_bittiming(data, extack, IFLA_CAN_BITTIMING);
- 	if (err)
- 		return err;
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index a7a39a6101d9..ab11c0e9111b 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -93,34 +93,10 @@ static inline u32 can_get_static_ctrlmode(struct can_priv *priv)
- static inline bool can_is_canxl_dev_mtu(unsigned int mtu)
- {
- 	return (mtu >= CANXL_MIN_MTU && mtu <= CANXL_MAX_MTU);
- }
- 
--/* drop skb if it does not contain a valid CAN frame for sending */
--static inline bool can_dev_dropped_skb(struct net_device *dev, struct sk_buff *skb)
--{
--	struct can_priv *priv = netdev_priv(dev);
--
--	if (priv->ctrlmode & CAN_CTRLMODE_LISTENONLY) {
--		netdev_info_once(dev,
--				 "interface in listen only mode, dropping skb\n");
--		goto invalid_skb;
--	}
--
--	if (!(priv->ctrlmode & CAN_CTRLMODE_FD) && can_is_canfd_skb(skb)) {
--		netdev_info_once(dev, "CAN FD is disabled, dropping skb\n");
--		goto invalid_skb;
--	}
--
--	return can_dropped_invalid_skb(dev, skb);
--
--invalid_skb:
--	kfree_skb(skb);
--	dev->stats.tx_dropped++;
--	return true;
--}
--
- void can_setup(struct net_device *dev);
- 
- struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo_skb_max,
- 				    unsigned int txqs, unsigned int rxqs);
- #define alloc_candev(sizeof_priv, echo_skb_max) \
-@@ -152,10 +128,36 @@ int can_restart_now(struct net_device *dev);
- void can_bus_off(struct net_device *dev);
- 
- const char *can_get_state_str(const enum can_state state);
- const char *can_get_ctrlmode_str(u32 ctrlmode);
- 
-+/* drop skb if it does not contain a valid CAN frame for sending */
-+static inline bool can_dev_dropped_skb(struct net_device *dev, struct sk_buff *skb)
++int can_calc_pwm(struct net_device *dev, struct netlink_ext_ack *extack)
 +{
 +	struct can_priv *priv = netdev_priv(dev);
-+	u32 silent_mode = priv->ctrlmode & (CAN_CTRLMODE_LISTENONLY |
-+					    CAN_CTRLMODE_RESTRICTED);
++	const struct can_pwm_const *pwm_const = priv->xl.pwm_const;
++	struct can_pwm *pwm = &priv->xl.pwm;
++	u32 xl_tqmin = can_bit_time_tqmin(&priv->xl.data_bittiming);
++	u32 xl_ns = can_tqmin_to_ns(xl_tqmin, priv->clock.freq);
++	u32 nom_tqmin = can_bit_time_tqmin(&priv->bittiming);
++	int pwm_per_bit_max = xl_tqmin / (pwm_const->pwms_min + pwm_const->pwml_min);
++	int pwm_per_bit;
++	u32 pwm_tqmin;
 +
-+	if (silent_mode) {
-+		netdev_info_once(dev, "interface in %s mode, dropping skb\n",
-+				 can_get_ctrlmode_str(silent_mode));
-+		goto invalid_skb;
++	/* For 5 MB/s databitrate or greater, xl_ns < CAN_PWM_NS_MAX
++	 * giving us a pwm_per_bit of 1 and the loop immediately breaks
++	 */
++	for (pwm_per_bit = DIV_ROUND_UP(xl_ns, CAN_PWM_NS_MAX);
++	     pwm_per_bit <= pwm_per_bit_max; pwm_per_bit++)
++		if (xl_tqmin % pwm_per_bit == 0)
++			break;
++
++	if (pwm_per_bit > pwm_per_bit_max) {
++		NL_SET_ERR_MSG_FMT(extack,
++				   "Can not divide the XL data phase's bit time: %u tqmin into multiple PWM symbols",
++				   xl_tqmin);
++		return -EINVAL;
 +	}
 +
-+	if (!(priv->ctrlmode & CAN_CTRLMODE_FD) && can_is_canfd_skb(skb)) {
-+		netdev_info_once(dev, "CAN FD is disabled, dropping skb\n");
-+		goto invalid_skb;
-+	}
++	pwm_tqmin = xl_tqmin / pwm_per_bit;
++	pwm->pwms = DIV_ROUND_UP_POW2(pwm_tqmin, 4);
++	pwm->pwml = pwm_tqmin - pwm->pwms;
++	pwm->pwmo = nom_tqmin % pwm_tqmin;
 +
-+	return can_dropped_invalid_skb(dev, skb);
-+
-+invalid_skb:
-+	kfree_skb(skb);
-+	dev->stats.tx_dropped++;
-+	return true;
++	return 0;
 +}
-+
- void can_state_get_by_berr_counter(const struct net_device *dev,
- 				   const struct can_berr_counter *bec,
- 				   enum can_state *tx_state,
- 				   enum can_state *rx_state);
- void can_change_state(struct net_device *dev, struct can_frame *cf,
-diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
-index ef62f56eaaef..fafd1cce4798 100644
---- a/include/uapi/linux/can/netlink.h
-+++ b/include/uapi/linux/can/netlink.h
-@@ -101,10 +101,11 @@ struct can_ctrlmode {
- #define CAN_CTRLMODE_PRESUME_ACK	0x40	/* Ignore missing CAN ACKs */
- #define CAN_CTRLMODE_FD_NON_ISO		0x80	/* CAN FD in non-ISO mode */
- #define CAN_CTRLMODE_CC_LEN8_DLC	0x100	/* Classic CAN DLC option */
- #define CAN_CTRLMODE_TDC_AUTO		0x200	/* FD transceiver automatically calculates TDCV */
- #define CAN_CTRLMODE_TDC_MANUAL		0x400	/* FD TDCV is manually set up by user */
-+#define CAN_CTRLMODE_RESTRICTED		0x800	/* Restricted operation mode */
+diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
+index 2504fafc72e4..726d909e87ce 100644
+--- a/include/linux/can/bittiming.h
++++ b/include/linux/can/bittiming.h
+@@ -178,10 +178,12 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
+ 		       const struct can_bittiming_const *btc, struct netlink_ext_ack *extack);
  
- /*
-  * CAN device statistics
-  */
- struct can_device_stats {
+ void can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
+ 		   const struct can_bittiming *dbt,
+ 		   u32 tdc_mask, u32 *ctrlmode, u32 ctrlmode_supported);
++
++int can_calc_pwm(struct net_device *dev, struct netlink_ext_ack *extack);
+ #else /* !CONFIG_CAN_CALC_BITTIMING */
+ static inline int
+ can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
+ 		   const struct can_bittiming_const *btc, struct netlink_ext_ack *extack)
+ {
+@@ -193,10 +195,18 @@ static inline void
+ can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
+ 	      const struct can_bittiming *dbt,
+ 	      u32 tdc_mask, u32 *ctrlmode, u32 ctrlmode_supported)
+ {
+ }
++
++static inline int
++can_calc_pwm(struct net_device *dev, struct netlink_ext_ack *extack)
++{
++	NL_SET_ERR_MSG(extack,
++		       "bit-timing calculation not available: manually provide PWML and PWMS\n");
++	return -EINVAL;
++}
+ #endif /* CONFIG_CAN_CALC_BITTIMING */
+ 
+ void can_sjw_set_default(struct can_bittiming *bt);
+ 
+ int can_sjw_check(const struct net_device *dev, const struct can_bittiming *bt,
 -- 
 2.47.3
 
