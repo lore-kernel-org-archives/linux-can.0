@@ -1,65 +1,66 @@
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C03D3559F8
-	for <linux-can@vger.kernel.org>; Wed, 19 Nov 2025 13:50:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FD82328604
+	for <linux-can@vger.kernel.org>; Wed, 19 Nov 2025 13:50:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763560235; cv=none; b=dvZwhK6kAvReiiRqFyMVtBDVwlC2LyBGEUi1u5hKBJb9Vv9DV0tA7STdNnCvdyGc4SvVulymsNgqSQCX/Kint6jNEUXKnDyY2CQyZshdTgv1gAlscq+Ishf7X3PJXGq7ygLoOk9D1M1N7uG7XtQIE60uYHAe9JVJ/BEzJPGj+24=
+	t=1763560236; cv=none; b=U+BgxC8lMtc+3enQVZbQcsiOKNfwJ0GAJH6HKDElQjVev2Iy98gzuYqaKVuA0pee2IIs+8nnd+FDeK9K/95BYLpYv5IEPWANMc1/xoIXZ/gGsGhotqm0lPzpHHTduLohk4iNTIWOj9Z6uRFZ9zis71voG6kEjLBDQ5QcnC67KYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763560235; c=relaxed/simple;
-	bh=g0A1oOjCo8aNYadwxhIdHt+1wsv4bdKMJGzDp8pJbCY=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=eaWIs0cg/tND4vBjmRXBTSK4ggHJFrS3+w+tOVz9GNW15airtYUSRjvI9dXtlApoitS30YOBuAGnB7bIiZKKyOi/Sbos697nJ8CQlVVoa3vIEkNUam/xTKHCOYFHiiVGSQJ0om9qND3NBcNFEiyCIV8HeFZeBiVU81bHTO/d15g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=bZASKZdk; arc=none smtp.client-ip=209.85.208.44
+	s=arc-20240116; t=1763560236; c=relaxed/simple;
+	bh=xrOBH/zqlYxtJPa4oYZinfQykWwnli55FtSZu3cbtZc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=oexWHDygqvelPXBcrKs2gbRutiV8BMHdWdmKy98uRoDUU3ISrHbFZhjxlLWDhmLvpCrdUCXF4vfRglgiNo06pXzPQXoBoFRuZwAUayAk78o6JaVas3sIz+h9omxhk9FjAbpewulvknv/opWol5gnhUVcXK2hkUhBJxTnPjq+ej4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=QQDJInVC; arc=none smtp.client-ip=209.85.208.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="bZASKZdk"
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-641677916b5so11464301a12.0
-        for <linux-can@vger.kernel.org>; Wed, 19 Nov 2025 05:50:31 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="QQDJInVC"
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-64080ccf749so9566951a12.2
+        for <linux-can@vger.kernel.org>; Wed, 19 Nov 2025 05:50:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1763560230; x=1764165030; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qSuvBH/q1X+ha4gPADohZjlga07A5eLYHbT8ry/OBVE=;
-        b=bZASKZdklzu29jO39t4zDx3ZBTBBV3Ga8m0E5kEje0zOHqMAFvWDNx1vS3nLeEZE+U
-         DbFXy2DNDdHW0sLylWK8JVYRpclFYtW6d7C4j7hXDc15UvDmy5pVIx7Fye2Q5U7E367b
-         sCbP97ZDcgddLDheBZhFEu6EWyP/CLlVUJu41HDuolYKaCvX6XlTm5LRDGHiLbVQO4FN
-         GfQu6DDcsDj2rYMMhq3scgXPFPmDTWc6qjerK5ErU00TuwQ0BKZRmGUzTOb/d8fNo44g
-         p3Yx3vJt1sTsrMvuaeOUk090Jq8AHdlYbLwe0wqcS9eU4P0qw+CZCIjn9meYNOKRY8k1
-         P7gQ==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1763560231; x=1764165031; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T+JebhRh5Ge/kjpdhLwoK42CbOPJ05afP64o/Gn1ji4=;
+        b=QQDJInVCNe/IimFd7weJjxsYfzSuvQyyOTtcyYJqkmiBWt+kJf+0Ts8Cv0uoNnr0Pl
+         pC4VfMPz2HBVt3+WrbuwoYFa9uXrxMGX9gYgnysl5EZejNE9P6qg65oTGUznmEUolHBA
+         PHmgXyD3qjg//BShGTle40xnoBWmdc7B39mx0X4AYLofTpIid0Xly0LpUXSBDFHkw9Y4
+         sOyPBaXixmLatuuHPBpVn3gJfiP0uL1IMi3uFBrIB+cE9dlcQTGjHTE9qJRgxBgCdi+O
+         JhxTdu293q5VLh6b04VKFjKA/GcLxqOjlWwODXhRQhSn+p7tqyRp8k4B6DD4f6fvR8on
+         Lqgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763560230; x=1764165030;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qSuvBH/q1X+ha4gPADohZjlga07A5eLYHbT8ry/OBVE=;
-        b=nZruHeKeWC+fQb5c82LXIYMnLfE7+/R1qCB+/8r7unb/k0RM9TBQrTLwAtbnL9c+vu
-         nWScWWDcEUjkyvu3LELQI+bk7T23A3N4dDr1PzpOzVy5uH0sdSZ2jzW7KqDBY1VluU6s
-         +sMR0HbpAltaHEzvgWjQ4ICXQTFi2ZH7hifQr02aiEtOychTnAeJptm392dlKsfT8b/F
-         traGq8EsI4ppCYUyAbTItJf5wjtLJ8J1CjquZY+ZRcMf2VN6SYZxyJGE3nae1LuxfZPh
-         KaIGytm007EMyysAEBO0e7OmyWWJIrRu59wMW3llR0o9H1Yb5EwjXAI+AjeebIIHbIep
-         aypQ==
-X-Gm-Message-State: AOJu0YyJAhAVdCeoecQYCvAIqupymQKvteddNd0Cl/t9Y1++vU/2egiU
-	dcOP1yrp37cPEDQYGuw7uRla0A8EjWswt6ZiqFzxp61q+g98muZzostLEq3yvSxRyWc=
-X-Gm-Gg: ASbGncs32uqdL6ghiR7Atk8412dFZOE03nWyjSnhc2eQacfus3SihjAgG5EJMSOKxxL
-	h6zQtboY14ybP4c4psKvMsBcgzXLRLypbUcPxiq2H7djUx+5uQZpZnrqIKopRb1H1qLxYeB4+v/
-	PBliXEdUvOXrZwTgR6XXSmWbfTqIwUUNwLJmrQ1Zku8qxtIOc74r3LoDc5TDUVhM1bOoXn1Buz1
-	ENQe+g3oBfV1gvqgIdGEtL2mG5K/qio18pxqiO6YS//CQ6hMwjzlpg7eOzeAhfRFjMI8advMohJ
-	cJ/kQvkOo8JUP5OUBzS/c+4nAuhm1ULG+xFcQlRgN0dfqp1pUjrbMx2iMUHhwpMdEa3WpQWfyN0
-	lkswJV6jFKkyZAfHfOVql6OP4y37vIjsn8kMbJkeV1WVPDzeLPde5BhrbDsPljT+/F5AvWfqZEJ
-	shzYWvwR5KTjMoGSP48Q==
-X-Google-Smtp-Source: AGHT+IEXWFU1HVT9ZlNg1U2KW49IA43KXHhGuwY6VcZ+h3T50g+PEU3kKnXR//yGGwTJ/aZhBju8fg==
-X-Received: by 2002:a17:907:720f:b0:b73:5f5e:574d with SMTP id a640c23a62f3a-b7637a47ee8mr273090466b.59.1763560228242;
-        Wed, 19 Nov 2025 05:50:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1763560231; x=1764165031;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=T+JebhRh5Ge/kjpdhLwoK42CbOPJ05afP64o/Gn1ji4=;
+        b=guXWZ4xJqfKMW2RSYm6fEb3fMDUyQP6eJL/6o89TXzzQIoRx3Fxvd9LFWiRwgW3hfh
+         V/By0mi0H+zAYC9k2AzFfN95/SXADImqo1ZOin/PcX8zWaeCnNX/juWzV+EBH02/WbZE
+         +XiXAX4ZbPiY07uBW8tguMpzkOjRT04z6MN/YVuma/W4x31NxEWrgCn0gGYgT++qqiSM
+         kuAC8b9IymPx37Fw3dlWTOkA66gqMEe3eYtM1zPFZy08Mr4X1CzBRnS6opG2Fafp8E1R
+         JqZ91xykiyke7plJbgBaoGxo1LnFmewVwzTGixq6DZ3Jff4LBALkTw0jaqoMh/kR1HNd
+         RP6g==
+X-Gm-Message-State: AOJu0YyESnaXzW3R59kHeG3mQ8nu8I2eepjFM81dnXuPHKhH7BiCD3E+
+	ADCAGsonx/TTfzPh36QICGyG8UFAjxcJeiZLt5vGsLOqEDoUPiMJVSIPkfsOOUxeuPQ=
+X-Gm-Gg: ASbGncthhdB3F88Wb13hetopDTJ8swkA8/XuVS0+qEKfEuqgTLBSeNbYUw9an3m2U7S
+	YQLEnpvEXEjZ64QAS8ErakvxBqCv79aNNUQpPEBNHWpDb6ApN7XwylZfLoazlmbdhCD7S4wEtFD
+	Qt6sO1rpLyYz4gS9CcjzQE2sQyOAfdNWIOaoi0OjUKfExiEwHqwGRw2X5ObDQy3ZTBaLm3rLvb9
+	hq+X2yvfpGwt8oZij7/J8hw/CG3g5D34rrsuRgYx2ZnndJou9k0hnRqSZRhHseErcTAXohC+Rlp
+	23pnxrDF0AZAkkwFSu53J8+obkseL7OBvfiyjpNRx3eQVcwmiGnem/PG0WnfSKBdzZuKN3U8Hia
+	5r+V8wXfBnX5qK3FsKAxg4SXyRZYRGfBKR7KbBsmhDgQyjwrZLZ3ChjyPbDMiNj8cgZUgjpUOu7
+	rrZXA=
+X-Google-Smtp-Source: AGHT+IE9e9WaWGxZrPZZHWXHVaz6tBbhmG2ui7g7HgmdfNb2eRRYqxSIfrAKDTcUtc982g6i84EiwA==
+X-Received: by 2002:a05:6402:50c8:b0:641:3492:723d with SMTP id 4fb4d7f45d1cf-64350e236b2mr19201514a12.11.1763560230504;
+        Wed, 19 Nov 2025 05:50:30 -0800 (PST)
 Received: from localhost ([2001:4090:a247:809c:875a:7c11:12fc:ed9])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b734fed9e9fsm1614859466b.69.2025.11.19.05.50.27
+        by smtp.gmail.com with UTF8SMTPSA id 4fb4d7f45d1cf-6433a3d82cfsm15120007a12.2.2025.11.19.05.50.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Nov 2025 05:50:27 -0800 (PST)
+        Wed, 19 Nov 2025 05:50:30 -0800 (PST)
 From: Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH v2 0/2] MAINTAINERS: Add myself as m_can maintainer
-Date: Wed, 19 Nov 2025 14:50:01 +0100
-Message-Id: <20251119-topic-mcan-reviewer-v6-18-v2-0-f842c3094b18@baylibre.com>
+Date: Wed, 19 Nov 2025 14:50:03 +0100
+Subject: [PATCH v2 2/2] MAINTAINERS: Simplify m_can section
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -68,53 +69,55 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAArLHWkC/42NQQ6CMBBFr0Jm7Rg6tFpdeQ/DAuogkwglLakaw
- t0tnMDl+/n//QUiB+EI12KBwEmi+DEDHQpwfTM+GeWRGagko0oinP0kDgfXjLj1+c0B0wmVRWN
- J63PH1lEFeT8F7uSzu+915l7i7MN3v0pqS/+xJoUKrTXsDOtKX6pb23xf0gY+Oj9Ava7rD4k2M
- bXFAAAA
-X-Change-ID: 20251022-topic-mcan-reviewer-v6-18-582447fe8c23
+Message-Id: <20251119-topic-mcan-reviewer-v6-18-v2-2-f842c3094b18@baylibre.com>
+References: <20251119-topic-mcan-reviewer-v6-18-v2-0-f842c3094b18@baylibre.com>
+In-Reply-To: <20251119-topic-mcan-reviewer-v6-18-v2-0-f842c3094b18@baylibre.com>
 To: Chandrasekar Ramakrishnan <rcsekar@samsung.com>, 
  Marc Kleine-Budde <mkl@pengutronix.de>, 
  Vincent Mailhol <mailhol@kernel.org>
 Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Markus Schneider-Pargmann <msp@baylibre.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=860; i=msp@baylibre.com;
- h=from:subject:message-id; bh=g0A1oOjCo8aNYadwxhIdHt+1wsv4bdKMJGzDp8pJbCY=;
- b=owGbwMvMwCXWejAsc4KoVzDjabUkhkzZ04I2YvozLbn3/Eq+fC1k0kE2re3L1mtky65o3cAZf
- s+n3OpkRykLgxgXg6yYIktnYmjaf/mdx5IXLdsMM4eVCWQIAxenAEzE9STD/5xWm+3FZ+f5vJy6
- 6d6Xm0eX6v1IZ9KYw5GbclT5oZHOjbWMDHM2xn9wucY64/opg00mN5qSRV26pVbtdlOJSrqbHJM
- 2lRsA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1081; i=msp@baylibre.com;
+ h=from:subject:message-id; bh=xrOBH/zqlYxtJPa4oYZinfQykWwnli55FtSZu3cbtZc=;
+ b=owGbwMvMwCXWejAsc4KoVzDjabUkhkzZ07KX7tx2WZb6cO7G0DXd1pHHou/2NO0LS/58Sy0j6
+ kaJGbdcRykLgxgXg6yYIktnYmjaf/mdx5IXLdsMM4eVCWQIAxenAEzkribDP6uNW9/uKspSfZJ7
+ 56hFqWb89ZDEk+sldu6z7HZVSr/+vpDhf1HPlU8Sz8XMOJod52zh/7LtT1KTd9uKXTVb/a48TXl
+ 2jB0A
 X-Developer-Key: i=msp@baylibre.com; a=openpgp;
  fpr=BADD88DB889FDC3E8A3D5FE612FA6A01E0A45B41
 
-Hi,
-
-these two patches are updating the m_can maintainer entry, replacing the
-current maintainer and simplifying the files mentioned.
-
-Best,
-Markus
+Simplify the section by using the whole m_can directory. This includes a
+few new files, e.g. Kconfig, Makefile, m_can_pci.c and tcan4x5x* which
+are all closely coupled to the m_can driver core.
 
 Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
 ---
-Changes in v2:
-- Add myself as maintainer instead of reviewer
-- Add patch to use the m_can directory for the MAINTAINERS entry
-- Link to v1: https://lore.kernel.org/r/20251022-topic-mcan-reviewer-v6-18-v1-1-885ec5e43493@baylibre.com
+ MAINTAINERS | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
----
-Markus Schneider-Pargmann (2):
-      MAINTAINERS: Add myself as m_can maintainer
-      MAINTAINERS: Simplify m_can section
+diff --git a/MAINTAINERS b/MAINTAINERS
+index cb4130f66bf80392ca7a0e77a9b930f32a126af8..0904c2fd6b897d8c984ca7b6c35e7a3e0fb65253 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15392,14 +15392,12 @@ S:	Supported
+ F:	drivers/net/phy/mxl-86110.c
+ F:	drivers/net/phy/mxl-gpy.c
+ 
+-MCAN MMIO DEVICE DRIVER
++MCAN DEVICE DRIVER
+ M:	Markus Schneider-Pargmann <msp@baylibre.com>
+ L:	linux-can@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+-F:	drivers/net/can/m_can/m_can.c
+-F:	drivers/net/can/m_can/m_can.h
+-F:	drivers/net/can/m_can/m_can_platform.c
++F:	drivers/net/can/m_can/
+ 
+ MCBA MICROCHIP CAN BUS ANALYZER TOOL DRIVER
+ R:	Yasushi SHOJI <yashi@spacecubics.com>
 
- MAINTAINERS | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
----
-base-commit: 3a8660878839faadb4f1a6dd72c3179c1df56787
-change-id: 20251022-topic-mcan-reviewer-v6-18-582447fe8c23
-
-Best regards,
 -- 
-Markus Schneider-Pargmann <msp@baylibre.com>
+2.51.0
 
