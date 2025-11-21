@@ -1,76 +1,77 @@
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.83])
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF69830217E
-	for <linux-can@vger.kernel.org>; Fri, 21 Nov 2025 19:35:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.83
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60557302CB2
+	for <linux-can@vger.kernel.org>; Fri, 21 Nov 2025 19:35:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.54
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763753740; cv=pass; b=Ab20x56ksJ0MHT3ts0EMVwaidq8QvWxRrpcw/EUAOvaiWcRdc4wtbxjhJ+C6kYlBsJdxQwH+xAUmjtC8hCM59I3HzllM5D6FzM427PFDjam5akDSqNW/IgZnYOUq6hVr6b9jw4bEFdOQwpS1+qPFzCMpz2SczBFNCdx4pt5M7BU=
+	t=1763753742; cv=pass; b=Nf2ispgQ57maNPV9ooIU0wKGDSM40MasqUtTJHA7sXxnme1dMg4BL411LE3EVU9qf6p4owUUYq9bTbdzgqilrHJL36ruq9VwT+u14z/S0raAz0EaOyAiVLZQUr+Swy7vZjQBEsinD95L8TsAGqj1YTRCg6ir6oAYAxzxATSaGFk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763753740; c=relaxed/simple;
-	bh=kFo+cWd3FsEA77InQXoAwGerQqlnV47knYv1zjqj/9Q=;
+	s=arc-20240116; t=1763753742; c=relaxed/simple;
+	bh=GLYw6DWDt3oePp+8a+BgZIKpOTOFAKzaaYW/2Fjfr0g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QRwIV0DLN0pLwfkrZ0Ax+AXCrOQOgaXfk1fdvqOJ/9whnH0YhC7umnDMa1nqilFHOAlM06O9mp8S21gfSDzK6w2PkmCgkXLsTbOQukIfjYeHAhwwWIGUk6sdTBHg8SDwNGaIj8tlYlemaZWjEMGd2KVW+QN0w2tLXjW8AxXhz6E=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=eiy2PhC5; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=9wYx5WZn; arc=pass smtp.client-ip=85.215.255.83
+	 MIME-Version:Content-Type; b=f5BTQErHKYp9o2URegRmyxw5mtxqyv8SNDOe2O+RD08eZ/6uTbSPzhR5S8BXGqR7h/fGBoqP79cWTT4S+ENZVEF828hmH4aEnRZ1nNhar3XgTxCOWrtAcotTU2vvUQNsV1d1KAmzxOoOm1d0PmrijEZIfX0s5PXpu+G9dE0Pw04=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=gvFk7a4V; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=LzFwRuvI; arc=pass smtp.client-ip=85.215.255.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="eiy2PhC5";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="9wYx5WZn"
-ARC-Seal: i=1; a=rsa-sha256; t=1763753731; cv=none;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="gvFk7a4V";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="LzFwRuvI"
+ARC-Seal: i=1; a=rsa-sha256; t=1763753728; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=K3SMTZEHBnPM3GRC8bNw6Yaa8vXft5e/W3oTIGlVdqoFhYjpxB+2qGUYG+BioOKgXO
-    J9DJTbxjIQy9dTJhksjfh85TQ9oA9pve9N/VBeruhmf3TcrgRrRHsV/HaJGLrArEqN/f
-    tp2tOptW269WMgSW/Cnm7pG+k8uuQabQ7WQRNWvAZp8tidD2Y8AlHXWr/xQE9xCV6lpo
-    Wu7pmGeILhiS5KAuP8mMxqy4hq5/K//FA9+a88pLjGARw79PkEqh4TCmPqhHXLmpobPf
-    M4o/HUXlrp/6Zv7G26BHp6EopJWLXipV0lgQ6ApR/mTUYh0SWhs/GipJObcAMUx+HaOu
-    aiWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1763753731;
+    b=p6uesI28+G7filpWjGXW5/mnAt3aC7IRG0i6dbH8PraHwdMS4PjhAGUgt73DPK1WBw
+    1RObUYOah0ufTg/8r3U1HcFUXtF+Bogw4LLNfSejF8Gs9qzuxK5AUejR1yFkqWFAv5CE
+    cZpq+xSfI/FqjgOWqLNXRwQ93BS4FleR862+5B3m+F0qZ6OBj9VavdTXskiIrTyvVg1j
+    GxAxUZaGPb0yM9lmLWBY64hR1sX77f5WDgkiduQ14xkYd8Y/1QyaAYnPgiqy60jniSFB
+    f+DKgl5oPFpYA8gVtRFvXX4jrs1ZCbcwZ5B/uEfUDjop1wYD/4UX2OJA2LAo8m5iJmUm
+    Gz0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1763753728;
     s=strato-dkim-0002; d=strato.com;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=BVTOWs4g5KEdda5lO51oBHxVDDNtA9WS5KpPLtm1fEc=;
-    b=bdGI3O1qgL2Ip/Ud9FsRL7cpVoUzYEQbmwjzg0Bofrvx0syG8ikvsyaVO8PRasR/G/
-    58jUhj9ICkO3lkwILxtyosLfdEaDcEnHIESS8iBJ/SDdlsJCjYZ1N2A07B+mzv+KVAGH
-    JDKhdrQUKRrkLf1yUJcEYP24lgNSdwXfyjSbPCQ1tDbl2Z/jnvy4usEI525qQ9v+9er0
-    AAGNWCCSopXtvegTncKqh+jRScmfZ/Gqmvu5sog8wtdoI/OlP4zEWRqZm0yUa8GN5x1r
-    ULukWBd4OdbP1uO/V7oJG82tZ7Y1ku2mW6v1o42z/ugP7w8Y8SJPtreG09j7jUF7fT/G
-    YRaA==
+    bh=tFwzf0H47txhVYqX1RnH/isA6GYuE7RxeqKNFJkbEsE=;
+    b=AQ4yk/ElKr2zWNFGmzx8SUw1q3sL3c68mEiHM22nT0sHW3/0GZMInnQdAiWl2agHR0
+    evBb+SkPnWpVPRpJRXMkelKa9kbmus/i5vbXO4AmQm6V8dcNqzaGY5uXEbbTRyyX+U9c
+    FixGu53PyVbsK64YE4ctrByB4i+EX6UDQGuwD8JYKTDgtqRdAv/rRNDqhID2Uf8LLfxI
+    gqkgADVMFKGqJPvO8FGstxs06SnGmYOQQtBJqM2Z8yj7fFVQy0i3py9couVaLGeSewhr
+    mMvKf34qf/f1sJh0Qi5p+DUNFMnCfcRlnOWT9K2n9UuKaLTyhhpQEXymUwBF9IG5Y0KF
+    7zZg==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1763753731;
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1763753728;
     s=strato-dkim-0002; d=hartkopp.net;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=BVTOWs4g5KEdda5lO51oBHxVDDNtA9WS5KpPLtm1fEc=;
-    b=eiy2PhC5zXR5ep4xsZkTsdyAc3gpstnqMgBJDMzqE9sz6d0ulEbR5ghSN8jYdBBC/L
-    QvBQuujLqtkOM5SflMPAZxovOmlLShiR9joVMQUAbOJZV/qu4iOt/GUY7RH0yZXeU5QA
-    n950bnBI0bs4XtFZUerKbl2WBy0tjb98eM0l+Di5+Ka/kW1hlA6t4rQ+CIF8XjEcVYgJ
-    RlaOYe3DoWszurTzWsAmeXLYtWDIltZYnDr5aSW+4+LakqWmQsmK/Kg5Rj1ZAV9SphKe
-    reJYwfG1liQbijgn/FIE2Ywl3hV43s0FT/g6wo34qxGvLvGnKzRqbzdYln97MMCKw/RL
-    r4Og==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1763753731;
+    bh=tFwzf0H47txhVYqX1RnH/isA6GYuE7RxeqKNFJkbEsE=;
+    b=gvFk7a4Vv32i6fwxVCvJHYZ5VnKPBGUpQe8oRlAFykZku961q3s+Fd9oqtLRhT8wk/
+    KMHGXcz8CrJGEiYdD18DRnG57gklMcXQ0wTeS2WqL8YXk31sPOqxjZD2jV0eLGhU320H
+    X6FBoRMXmzxsgvH68XYAtLTyFrlxfK096VjtSbBUI8oSpCcCyKquVl/OP0lMz627cX7l
+    XJlWQGqSlaCcyOG+eeigQhz1GqmD5zraEPzxl9q41+Pqs/dBbh7DL7W59ABRI5zbNiDc
+    a0EULjijPsf47iXrk2zm1ye6wgGXPQivJhQmQH+f1EbLH0lgNozwR64ID1uVwUAcsa67
+    unVQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1763753728;
     s=strato-dkim-0003; d=hartkopp.net;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=BVTOWs4g5KEdda5lO51oBHxVDDNtA9WS5KpPLtm1fEc=;
-    b=9wYx5WZnJt8KvtIwNwb0CZrXFsVngfQ2HHMa2tLIKNzW755IJTc0VK+eGukSGN2ezl
-    CgJq5j9g/h3EX0QR4cCQ==
+    bh=tFwzf0H47txhVYqX1RnH/isA6GYuE7RxeqKNFJkbEsE=;
+    b=LzFwRuvIf9u7jeoz2x9JL77a5EFpN1sbegqu9yxteDaT9XfjG+OBBel9YqvcLyFrFM
+    hF9CkMa8ROQgs9AAwXBw==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bGWj0Q=="
 Received: from lenov17.lan
     by smtp.strato.de (RZmta 54.0.0 AUTH)
-    with ESMTPSA id Ke2b461ALJZUEnH
+    with ESMTPSA id Ke2b461ALJZSEn7
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Fri, 21 Nov 2025 20:35:30 +0100 (CET)
+    Fri, 21 Nov 2025 20:35:28 +0100 (CET)
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [canxl v5 16/17] can: raw: instantly reject unsupported CAN frames
-Date: Fri, 21 Nov 2025 20:35:12 +0100
-Message-ID: <20251121193513.2097-17-socketcan@hartkopp.net>
+Cc: Vincent Mailhol <mailhol@kernel.org>,
+	Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [canxl v5 06/17] can: netlink: add CAN_CTRLMODE_XL_TMS flag
+Date: Fri, 21 Nov 2025 20:35:02 +0100
+Message-ID: <20251121193513.2097-7-socketcan@hartkopp.net>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251121193513.2097-1-socketcan@hartkopp.net>
 References: <20251121193513.2097-1-socketcan@hartkopp.net>
@@ -83,107 +84,184 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="us-ascii"
 
-For real CAN interfaces the CAN_CTRLMODE_FD and CAN_CTRLMODE_XL control
-modes indicate whether an interface can handle those CAN FD/XL frames.
+From: Vincent Mailhol <mailhol@kernel.org>
 
-In the case a CAN XL interface is configured in CANXL-only mode with
-disabled error-signalling neither CAN CC nor CAN FD frames can be sent.
+The Transceiver Mode Switching (TMS) indicates whether the CAN XL
+controller shall use the PWM or NRZ encoding during the data phase.
 
-The checks are performed on CAN_RAW sockets to give an instant feedback
-to the user when writing unsupported CAN frames to the interface.
+The term "transceiver mode switching" is used in both ISO 11898-1 and
+CiA 612-2 (although only the latter one uses the abbreviation TMS). We
+adopt the same naming convention here for consistency.
 
+Add the CAN_CTRLMODE_XL_TMS flag to the list of the CAN control modes.
+
+Add can_validate_xl_flags() to check the coherency of the TMS flag.
+That function will be reused in upcoming changes to validate the other
+CAN XL flags.
+
+Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- net/can/raw.c | 54 +++++++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 46 insertions(+), 8 deletions(-)
+ drivers/net/can/dev/dev.c        |  2 ++
+ drivers/net/can/dev/netlink.c    | 48 ++++++++++++++++++++++++++++++--
+ include/uapi/linux/can/netlink.h |  1 +
+ 3 files changed, 48 insertions(+), 3 deletions(-)
 
-diff --git a/net/can/raw.c b/net/can/raw.c
-index a53853f5e9af..223630f0f9e9 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -890,24 +890,62 @@ static void raw_put_canxl_vcid(struct raw_sock *ro, struct sk_buff *skb)
- 		cxl->prio &= CANXL_PRIO_MASK;
- 		cxl->prio |= ro->tx_vcid_shifted;
+diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
+index dbc9b099b3f9..32db9f69844d 100644
+--- a/drivers/net/can/dev/dev.c
++++ b/drivers/net/can/dev/dev.c
+@@ -121,10 +121,12 @@ const char *can_get_ctrlmode_str(u32 ctrlmode)
+ 		return "XL";
+ 	case CAN_CTRLMODE_XL_TDC_AUTO:
+ 		return "XL-TDC-AUTO";
+ 	case CAN_CTRLMODE_XL_TDC_MANUAL:
+ 		return "XL-TDC-MANUAL";
++	case CAN_CTRLMODE_XL_TMS:
++		return "TMS";
+ 	default:
+ 		return "<unknown>";
  	}
  }
- 
--static unsigned int raw_check_txframe(struct raw_sock *ro, struct sk_buff *skb, int mtu)
-+static inline bool raw_dev_cc_enabled(struct net_device *dev,
-+				      struct can_priv *priv)
- {
--	/* Classical CAN -> no checks for flags and device capabilities */
--	if (can_is_can_skb(skb))
-+	/* The CANXL-only mode disables error-signalling on the CAN bus
-+	 * which is needed to send CAN CC/FD frames
-+	 */
-+	if (priv)
-+		return !can_dev_in_xl_only_mode(priv);
-+
-+	/* virtual CAN interfaces always support CAN CC */
-+	return true;
-+}
-+
-+static inline bool raw_dev_fd_enabled(struct net_device *dev,
-+				      struct can_priv *priv)
-+{
-+	/* check FD ctrlmode on real CAN interfaces */
-+	if (priv)
-+		return (priv->ctrlmode & CAN_CTRLMODE_FD);
-+
-+	/* check MTU for virtual CAN FD interfaces */
-+	return (READ_ONCE(dev->mtu) >= CANFD_MTU);
-+}
-+
-+static inline bool raw_dev_xl_enabled(struct net_device *dev,
-+				      struct can_priv *priv)
-+{
-+	/* check XL ctrlmode on real CAN interfaces */
-+	if (priv)
-+		return (priv->ctrlmode & CAN_CTRLMODE_XL);
-+
-+	/* check MTU for virtual CAN XL interfaces */
-+	return can_is_canxl_dev_mtu(READ_ONCE(dev->mtu));
-+}
-+
-+static unsigned int raw_check_txframe(struct raw_sock *ro, struct sk_buff *skb,
-+				      struct net_device *dev)
-+{
-+	struct can_priv *priv = safe_candev_priv(dev);
-+
-+	/* Classical CAN */
-+	if (can_is_can_skb(skb) && raw_dev_cc_enabled(dev, priv))
- 		return CAN_MTU;
- 
--	/* CAN FD -> needs to be enabled and a CAN FD or CAN XL device */
-+	/* CAN FD */
- 	if (ro->fd_frames && can_is_canfd_skb(skb) &&
--	    (mtu == CANFD_MTU || can_is_canxl_dev_mtu(mtu)))
-+	    raw_dev_fd_enabled(dev, priv))
- 		return CANFD_MTU;
- 
--	/* CAN XL -> needs to be enabled and a CAN XL device */
-+	/* CAN XL */
- 	if (ro->xl_frames && can_is_canxl_skb(skb) &&
--	    can_is_canxl_dev_mtu(mtu))
-+	    raw_dev_xl_enabled(dev, priv))
- 		return CANXL_MTU;
+ EXPORT_SYMBOL_GPL(can_get_ctrlmode_str);
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index fdd1fa7cf93a..b2c24439abba 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -179,10 +179,36 @@ static int can_validate_databittiming(struct nlattr *data[],
+ 		return err;
  
  	return 0;
  }
  
-@@ -959,11 +997,11 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 		goto free_skb;
++static int can_validate_xl_flags(struct netlink_ext_ack *extack,
++				 u32 masked_flags, u32 mask)
++{
++	if (masked_flags & CAN_CTRLMODE_XL) {
++		if (masked_flags & CAN_CTRLMODE_XL_TMS) {
++			const u32 tms_conflicts_mask = CAN_CTRLMODE_FD |
++				CAN_CTRLMODE_XL_TDC_MASK;
++			u32 tms_conflicts = masked_flags & tms_conflicts_mask;
++
++			if (tms_conflicts) {
++				NL_SET_ERR_MSG_FMT(extack,
++						   "TMS and %s are mutually exclusive",
++						   can_get_ctrlmode_str(tms_conflicts));
++				return -EOPNOTSUPP;
++			}
++		}
++	} else {
++		if (mask & CAN_CTRLMODE_XL_TMS) {
++			NL_SET_ERR_MSG(extack, "TMS requires CAN XL");
++			return -EOPNOTSUPP;
++		}
++	}
++
++	return 0;
++}
++
+ static int can_validate(struct nlattr *tb[], struct nlattr *data[],
+ 			struct netlink_ext_ack *extack)
+ {
+ 	u32 flags = 0;
+ 	int err;
+@@ -199,10 +225,14 @@ static int can_validate(struct nlattr *tb[], struct nlattr *data[],
+ 		    (flags & CAN_CTRLMODE_RESTRICTED)) {
+ 			NL_SET_ERR_MSG(extack,
+ 				       "LISTEN-ONLY and RESTRICTED modes are mutually exclusive");
+ 			return -EOPNOTSUPP;
+ 		}
++
++		err = can_validate_xl_flags(extack, flags, cm->mask);
++		if (err)
++			return err;
+ 	}
  
- 	err = -EINVAL;
+ 	err = can_validate_bittiming(data, extack, IFLA_CAN_BITTIMING);
+ 	if (err)
+ 		return err;
+@@ -224,11 +254,11 @@ static int can_ctrlmode_changelink(struct net_device *dev,
+ 				   struct nlattr *data[],
+ 				   struct netlink_ext_ack *extack)
+ {
+ 	struct can_priv *priv = netdev_priv(dev);
+ 	struct can_ctrlmode *cm;
+-	u32 ctrlstatic, maskedflags, notsupp, ctrlstatic_missing;
++	u32 ctrlstatic, maskedflags, deactivated, notsupp, ctrlstatic_missing;
  
- 	/* check for valid CAN (CC/FD/XL) frame content */
--	txmtu = raw_check_txframe(ro, skb, READ_ONCE(dev->mtu));
-+	txmtu = raw_check_txframe(ro, skb, dev);
- 	if (!txmtu)
- 		goto free_skb;
+ 	if (!data[IFLA_CAN_CTRLMODE])
+ 		return 0;
  
- 	/* only CANXL: clear/forward/set VCID value */
- 	if (txmtu == CANXL_MTU)
+ 	/* Do not allow changing controller mode while running */
+@@ -236,10 +266,11 @@ static int can_ctrlmode_changelink(struct net_device *dev,
+ 		return -EBUSY;
+ 
+ 	cm = nla_data(data[IFLA_CAN_CTRLMODE]);
+ 	ctrlstatic = can_get_static_ctrlmode(priv);
+ 	maskedflags = cm->flags & cm->mask;
++	deactivated = ~cm->flags & cm->mask;
+ 	notsupp = maskedflags & ~(priv->ctrlmode_supported | ctrlstatic);
+ 	ctrlstatic_missing = (maskedflags & ctrlstatic) ^ ctrlstatic;
+ 
+ 	if (notsupp) {
+ 		NL_SET_ERR_MSG_FMT(extack,
+@@ -257,15 +288,25 @@ static int can_ctrlmode_changelink(struct net_device *dev,
+ 				   "missing required %s static control mode",
+ 				   can_get_ctrlmode_str(ctrlstatic_missing));
+ 		return -EOPNOTSUPP;
+ 	}
+ 
++	/* If FD was active and is not turned off, check for XL conflicts */
++	if (priv->ctrlmode & CAN_CTRLMODE_FD & ~deactivated) {
++		if (maskedflags & CAN_CTRLMODE_XL_TMS) {
++			NL_SET_ERR_MSG(extack,
++				       "TMS can not be activated while CAN FD is on");
++			return -EOPNOTSUPP;
++		}
++	}
++
+ 	/* If a top dependency flag is provided, reset all its dependencies */
+ 	if (cm->mask & CAN_CTRLMODE_FD)
+ 		priv->ctrlmode &= ~CAN_CTRLMODE_FD_TDC_MASK;
+ 	if (cm->mask & CAN_CTRLMODE_XL)
+-		priv->ctrlmode &= ~(CAN_CTRLMODE_XL_TDC_MASK);
++		priv->ctrlmode &= ~(CAN_CTRLMODE_XL_TDC_MASK |
++				    CAN_CTRLMODE_XL_TMS);
+ 
+ 	/* clear bits to be modified and copy the flag values */
+ 	priv->ctrlmode &= ~cm->mask;
+ 	priv->ctrlmode |= maskedflags;
+ 
+@@ -393,11 +434,12 @@ static int can_dbt_changelink(struct net_device *dev, struct nlattr *data[],
+ 
+ 	memset(&dbt_params->tdc, 0, sizeof(dbt_params->tdc));
+ 	if (data[IFLA_CAN_CTRLMODE]) {
+ 		struct can_ctrlmode *cm = nla_data(data[IFLA_CAN_CTRLMODE]);
+ 
+-		need_tdc_calc = !(cm->mask & tdc_mask);
++		if (fd || !(priv->ctrlmode & CAN_CTRLMODE_XL_TMS))
++			need_tdc_calc = !(cm->mask & tdc_mask);
+ 	}
+ 	if (data_tdc) {
+ 		/* TDC parameters are provided: use them */
+ 		err = can_tdc_changelink(dbt_params, data_tdc, extack);
+ 		if (err) {
+diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
+index c2c96c5978a8..ebafb091d80f 100644
+--- a/include/uapi/linux/can/netlink.h
++++ b/include/uapi/linux/can/netlink.h
+@@ -105,10 +105,11 @@ struct can_ctrlmode {
+ #define CAN_CTRLMODE_TDC_MANUAL		0x400	/* FD TDCV is manually set up by user */
+ #define CAN_CTRLMODE_RESTRICTED		0x800	/* Restricted operation mode */
+ #define CAN_CTRLMODE_XL			0x1000	/* CAN XL mode */
+ #define CAN_CTRLMODE_XL_TDC_AUTO	0x2000	/* XL transceiver automatically calculates TDCV */
+ #define CAN_CTRLMODE_XL_TDC_MANUAL	0x4000	/* XL TDCV is manually set up by user */
++#define CAN_CTRLMODE_XL_TMS		0x8000	/* Transceiver Mode Switching */
+ 
+ /*
+  * CAN device statistics
+  */
+ struct can_device_stats {
 -- 
 2.47.3
 
