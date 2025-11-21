@@ -1,72 +1,72 @@
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.83])
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8A02824A3
-	for <linux-can@vger.kernel.org>; Fri, 21 Nov 2025 09:22:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.83
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A50133F8C9
+	for <linux-can@vger.kernel.org>; Fri, 21 Nov 2025 09:22:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.81
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763716948; cv=pass; b=Wm1Ai6m36Xi1egZzfvX1HxJ4PLgibsRKcKm2VBfguUQF486A2zs2TRk+DXBFmopbWml0LTZezBC/m17Bc2Ss9pipmhZ0+azQEURsSI+cf6k2J+4pM8mImM2kWlz+W/M3/GYqFP13C4k9xyQQNATC8QnsrZFpEXs/lQWR9ddt2fQ=
+	t=1763716986; cv=pass; b=YVg+N+wmBuOWxDiFeg17Nacu6LV469megHS5whkuVP4obdLKGWAGqUzceK3FTu57Pq5DeP3Yg3t+U6ChKolZI3e9NZdenho0HgO+K2GvApS6ixHC2yVEARyByd+grj20amMWntSbaQwijWGOZLGEGZtTQ2xtGvkvB9QunKDYKh0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763716948; c=relaxed/simple;
-	bh=WQlpKuKUkxo4tsYj0z89XB9ktqSP+SGw0ZDg1bQ4F3E=;
+	s=arc-20240116; t=1763716986; c=relaxed/simple;
+	bh=qB5KHt+OI/yRa95U/E8HScVP/9Cm3AISZyWxo7CgQUo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aSZ44m5n8Xf1a1uPL1hw64TsQsou79lAEX/z4pED8qpYM8KeKE0ssQYqfAIVBwPrhZFphTTPT/rMUsHjAyXmI/1SvWAzrSn0IxkyI3k3Is7rhfpC/EqbuzkCbAKdXUXyLVhYt5TWdU8THGyIKtTfXSp8qmN63vN39aIHJMiSQcY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=q8lO1+P9; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=MKKJNAz4; arc=pass smtp.client-ip=85.215.255.83
+	 In-Reply-To:Content-Type; b=Ww9l1I3k97l82kKBLkot1J4YMCEX465nq/WYEgjMEx98VKv+cQBOMrfJHJQTeRcEGUfktpp+wGjkvOPd1c4PDTw+oR3rbp46RstUVCOP+Ccl+CEUZQvXMOIZ3Mf3PHUMlLGxlQpFdtvzAcXSIYAEHuO3iChEWpLVTtUqbKuhAuc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=QQz6QqBU; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=+aTQuyI6; arc=pass smtp.client-ip=85.215.255.81
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="q8lO1+P9";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="MKKJNAz4"
-ARC-Seal: i=1; a=rsa-sha256; t=1763716939; cv=none;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="QQz6QqBU";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="+aTQuyI6"
+ARC-Seal: i=1; a=rsa-sha256; t=1763716785; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=dwmpv1edlyx1M1b/nU/6+BDx1jz2+C5ERMv0uGXLesZJYJpMK6pHff2jjVkmYjBsVS
-    QWQRNL/Vh0OWY/YgYlnEmeHuBgPkreFrD3wLz2/WPTLC1o9I3dObzH9hedojx78pOhZR
-    75/y6Sq7cFef56wd6+Po4kB1IoTn49EabZwsp2BGDYMSkpBLbDkeQVICI2UjPzSwEMQu
-    5DICuBaSCA9eA7N7JyxUfd4VYUpRbQvDdc3P1H3bnnZfgWBm16f2z6ebZIxh+74CIPit
-    ERe/Ctwi4hDznHM+D1VsGGzxWxOe+MzAAxXmgKiURP12Td6bTJlA4j9MlSdPV+/vdKkG
-    r6jA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1763716939;
+    b=QoYO2XT7Ass/YYOEUb/ERAJAT214EAQ/aNjw9sZ9V5dYKcj5JiVdP+Ou+uisBRAFu1
+    1U1v+Is9jEFLjfGxqmzAW0VLnw27H0qWzfQ/wdYX7qTZq5F+R0UBKWncZL0wQ7JLHQ2o
+    fxTrYQkJsZwsAcl4dz2r2DiDJKTaGCsv5fwgIWiAwl+3Xjhvn+GGx9/q6e/s59mdcvVg
+    mcMycT+DcgprYl7PtQkC4VMsLJBfvd6cnHHQoUaiGywAJ04k0iNbn7mA9NNZTQ6FaP0s
+    Y8my+lSKo443rZQt2yQ9uP4N7jl53uYcdIkNpXqPFqJTWLiXa11VPEGa7UaeVI7+sDQu
+    l0PQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1763716785;
     s=strato-dkim-0002; d=strato.com;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=UFUbUTIisF231Y8WLfHyPmF2I5FN96rzzYB3wcurjzc=;
-    b=pBsEm8tRq6h1yXL7zfmSwQ6MOU8UyK9i5IGIEmqL6SEm+TiKQLF3RlWGtUedru88UV
-    Fcmfn6ojTdZRJM9VKWuhVC6VacMgOwyM8p40fLXTONEpzP83WM5lv4n+/eOLLr/eWATP
-    LHDpPF8/ZOTSxK07IToTlv9VUoSuZfPlmuvFS8lViFE/z/noXmbCFIiwODJAZ/+NeO9u
-    eDgQwvzDyNEkrMxb1ZocKaYZp1hT+gDw2Lr3mb4AnhJTmFd6rQR/pUIDFuX8e7/I9YGm
-    j3J6QBMzniz8wuAHlLJ9CEIgfATJnAedeNdsJVue/DRXy4mj3t7q9ZG8KuRuIUTU6Hay
-    cvCA==
+    bh=ygQ/aleTv9uUFHfKKa/8z46x2MkZ9jH7oofzIMzRZ2w=;
+    b=GoRvleDY+HYWG4ybJA6YiwgFmBlGDV/BC0K1lHg4Oxbm2+LhEutfabWkPT9ADJXJit
+    IKj3itu0ZMobgpBESJoo/Og//hSRWzfLs3uNFRiSxGUnwQImfFdqdUC10NDTY/3/+I7q
+    oXzGN8pTBRVFiYFvbckafXcnH9z3TWu6Z7vPKRuk4VYu13eL6JcjLP8J7glpnFgTrCR1
+    Y/EkQP7Fl40xbU+fcgkm/n7JvXaFdDOKLZzMNFLvlz2baDKADxLNMLkxIOHCBSs5YdYT
+    7kug1QH+btCcNAunslrlvpKSkRE/gwKRUw8tzpwVyAMfYjeOJsnKEUfzYUWflkSFIxHC
+    l+qA==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1763716939;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1763716785;
     s=strato-dkim-0002; d=hartkopp.net;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=UFUbUTIisF231Y8WLfHyPmF2I5FN96rzzYB3wcurjzc=;
-    b=q8lO1+P9y2s4oyI0wbqFnuy2mLUmZbws7bVrmS00HFUAMq/EGZGPhtsXGFjCL+THXO
-    7uwjzEnvzP/SQ3vKBXAIFlWnDWJl6Vfouw5rpO9OCyPZwJ007WE2XFV7drsRSUcKd54C
-    R9C07B3R2QkyFnT/AeyVa8VPW0NckXEQBxFnICYy/c1QQfhxmcDzhaQe59IdwOCY2TcE
-    Hm3LBkd/ww8AZf6gIIAMVlsA0AGMkJOUMn/YqfzVT/iUGtFNAaF6gZJvs198OGmRQA2R
-    imG3WLLFco9vMtljJ5J6wjzlYpZ10AxfBN3qYe64VCF/660bc7ksouT7kOO2Hqg223NV
-    z64w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1763716939;
+    bh=ygQ/aleTv9uUFHfKKa/8z46x2MkZ9jH7oofzIMzRZ2w=;
+    b=QQz6QqBUISYROgYXavhAf1zQX01/JnIM9Mq79ZkJlt5o7P31s+Yv7atMSOFNahDDsk
+    iTxdmPzCe+Qm/cLXsOvWgQvY/ZocYDhwtjvLg548N1K+G0FFvnRTJUcAAa6eZGxY7+xo
+    1zLjXgPf4yh/IK0Fn0yQe4FSuMM4N+1Dp9j+O5KA6YeuCxYLybESJa9TBIgAhb6AUrVX
+    578JPGaguxFJiEcIrSHQIz1RbwkENNbOiZm6NrmjG7V+rA0IiW+ZJkNQl31rkZ4iCjBh
+    bcDW5xaa1IqWwDhmbkBpuuhIR5kOeiEW8MWFVQkLDD3S0VOnn8z17B/b8MVCd83RQbov
+    dUzA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1763716785;
     s=strato-dkim-0003; d=hartkopp.net;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=UFUbUTIisF231Y8WLfHyPmF2I5FN96rzzYB3wcurjzc=;
-    b=MKKJNAz4MAQaWXtVCtBfXk+1E6kNBkD6xZRyGmdGVjWCrejxZxZpyhlb8FU7eXZ9OX
-    upmXKEXfVHr23fbN0TAg==
+    bh=ygQ/aleTv9uUFHfKKa/8z46x2MkZ9jH7oofzIMzRZ2w=;
+    b=+aTQuyI62FKm99gxRI98idAI9+ETfs9d+QS8qsqysQxk3+YLulILXvmgg3rvO/sOzq
+    2a2phH6SYG33W4KBpmAQ==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bGWj0Q=="
 Received: from [IPV6:2a00:6020:4a38:6810::9f3]
     by smtp.strato.de (RZmta 54.0.0 AUTH)
-    with ESMTPSA id Ke2b461AL9MJAw9
+    with ESMTPSA id Ke2b461AL9JjAvN
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Fri, 21 Nov 2025 10:22:19 +0100 (CET)
-Message-ID: <5aaf105b-f3be-4b98-a251-c5632448ec8f@hartkopp.net>
-Date: Fri, 21 Nov 2025 10:22:19 +0100
+    Fri, 21 Nov 2025 10:19:45 +0100 (CET)
+Message-ID: <c16bbec8-f4ad-4eb6-9e0f-362c3e6261df@hartkopp.net>
+Date: Fri, 21 Nov 2025 10:19:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -74,83 +74,150 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [canxl v4 17/17] can: dev: print bitrate error with two decimal
- digits
+Subject: Re: [canxl v4 16/17] can: dev: can_get_ctrlmode_str: use capitalized
+ ctrlmode strings
 To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, Vincent Mailhol <mailhol@kernel.org>
+Cc: linux-can@vger.kernel.org,
+ Stephane Grosjean <stephane.grosjean@hms-networks.com>
 References: <20251121083414.3642-1-socketcan@hartkopp.net>
- <20251121083414.3642-18-socketcan@hartkopp.net>
- <20251121-khaki-termite-of-glee-053933-mkl@pengutronix.de>
+ <20251121083414.3642-17-socketcan@hartkopp.net>
+ <20251121-meticulous-authentic-hippo-a88adc-mkl@pengutronix.de>
 Content-Language: en-US
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20251121-khaki-termite-of-glee-053933-mkl@pengutronix.de>
+In-Reply-To: <20251121-meticulous-authentic-hippo-a88adc-mkl@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
-On 21.11.25 10:13, Marc Kleine-Budde wrote:
-> On 21.11.2025 09:34:14, Oliver Hartkopp wrote:
->> Increase the resolution when printing the bitrate error and round-up the
->> value to 0.01% in the case the resolution would still provide values
->> which would lead to 0.00%.
+On 21.11.25 09:47, Marc Kleine-Budde wrote:
+> On 21.11.2025 09:34:13, Oliver Hartkopp wrote:
+>> Unify the ctrlmode related strings to the command line options of the
+>> 'ip' tool from the iproute2 package. The capitalized strings are also
+>> shown when the detailed interface configuration is printed by 'ip'.
 >>
->> Suggested-by: Vincent Mailhol <mailhol@kernel.org>
+>> Suggested-by: Stephane Grosjean <stephane.grosjean@hms-networks.com>
 >> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 >> ---
->>   drivers/net/can/dev/calc_bittiming.c | 15 +++++++++------
->>   1 file changed, 9 insertions(+), 6 deletions(-)
+>>   drivers/net/can/dev/dev.c | 34 +++++++++++++++++-----------------
+>>   1 file changed, 17 insertions(+), 17 deletions(-)
 >>
->> diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/calc_bittiming.c
->> index 0b11c4e98172..103128773a7d 100644
->> --- a/drivers/net/can/dev/calc_bittiming.c
->> +++ b/drivers/net/can/dev/calc_bittiming.c
->> @@ -150,23 +150,26 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
->>   		if (bitrate_error == 0 && sample_point_error == 0)
->>   			break;
->>   	}
+>> diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
+>> index 1de5babcc4f3..32db9f69844d 100644
+>> --- a/drivers/net/can/dev/dev.c
+>> +++ b/drivers/net/can/dev/dev.c
+>> @@ -90,43 +90,43 @@ EXPORT_SYMBOL_GPL(can_get_state_str);
 >>
->>   	if (best_bitrate_error) {
->> -		/* Error in one-tenth of a percent */
->> -		v64 = (u64)best_bitrate_error * 1000;
->> +		/* Error in one-hundredth of a percent */
->> +		v64 = (u64)best_bitrate_error * 10000;
->>   		do_div(v64, bt->bitrate);
->>   		bitrate_error = (u32)v64;
->>   		if (bitrate_error > CAN_CALC_MAX_ERROR) {
->>   			NL_SET_ERR_MSG_FMT(extack,
->> -					   "bitrate error: %u.%u%% too high",
->> -					   bitrate_error / 10, bitrate_error % 10);
->> +					   "bitrate error: %u.%02u%% too high",
->> +					   bitrate_error / 100,
->> +					   bitrate_error % 100);
->>   			return -EINVAL;
->>   		}
+>>   const char *can_get_ctrlmode_str(u32 ctrlmode)
+>>   {
+>>   	switch (ctrlmode & ~(ctrlmode - 1)) {
+>>   	case 0:
+>> -		return "none";
+>> +		return "(none)";
+>>   	case CAN_CTRLMODE_LOOPBACK:
+>> -		return "loopback";
+>> +		return "LOOPBACK";
+>>   	case CAN_CTRLMODE_LISTENONLY:
+>> -		return "listen-only";
+>> +		return "LISTEN-ONLY";
+>>   	case CAN_CTRLMODE_3_SAMPLES:
+>> -		return "triple-sampling";
+>> +		return "TRIPLE-SAMPLING";
+>>   	case CAN_CTRLMODE_ONE_SHOT:
+>> -		return "one-shot";
+>> +		return "ONE-SHOT";
+>>   	case CAN_CTRLMODE_BERR_REPORTING:
+>> -		return "berr-reporting";
+>> +		return "BERR-REPORTING";
+>>   	case CAN_CTRLMODE_FD:
+>> -		return "fd";
+>> +		return "FD";
+>>   	case CAN_CTRLMODE_PRESUME_ACK:
+>> -		return "presume-ack";
+>> +		return "PRESUME-ACK";
+>>   	case CAN_CTRLMODE_FD_NON_ISO:
+>> -		return "fd-non-iso";
+>> +		return "FD-NON-ISO";
+>>   	case CAN_CTRLMODE_CC_LEN8_DLC:
+>> -		return "cc-len8-dlc";
+>> +		return "CC-LEN8-DLC";
+>>   	case CAN_CTRLMODE_TDC_AUTO:
+>> -		return "fd-tdc-auto";
+>> +		return "TDC-AUTO";
+>>   	case CAN_CTRLMODE_TDC_MANUAL:
+>> -		return "fd-tdc-manual";
+>> +		return "TDC-MANUAL";
+>>   	case CAN_CTRLMODE_RESTRICTED:
+>> -		return "restricted-operation";
+>> +		return "RESTRICTED";
+>>   	case CAN_CTRLMODE_XL:
+>> -		return "xl";
+>> +		return "XL";
+>>   	case CAN_CTRLMODE_XL_TDC_AUTO:
+>> -		return "xl-tdc-auto";
+>> +		return "XL-TDC-AUTO";
+>>   	case CAN_CTRLMODE_XL_TDC_MANUAL:
+>> -		return "xl-tdc-manual";
+>> +		return "XL-TDC-MANUAL";
+>>   	case CAN_CTRLMODE_XL_TMS:
+>> -		return "xl-tms";
+>> +		return "TMS";
 > 
-> We already know we have a bitrate error, so we can set it to at least 1:
-> 
->          bitrate_error = max(bitrate_error, 1U);
-> 
-> Please add a comment describe the reasoning.
+> Here the prefix "XL-" is dropped. Was that intentional?
 
-Excellent idea!
+Yes. The patches for iproute2-next and for the kernel are inconsistent.
 
-Will do.
+The command line (and its help text) uses:
+
+[ tms { on | off } ]
+
+The ctrlmode is named:
+
+CAN_CTRLMODE_XL_TMS
+
+And the output of 'ip -det -link show can0' currently prints:
+
+can <XL,XL-TMS> state STOPPED restart-ms 0
+
+Which needs to be changed to <XL,TMS> IMO.
+
+I think 'tms' is better in the command line than xl-tms as it is clear 
+that tms only works with XL-only and if you try it otherwise you get an 
+error.
+
+ >>   	case CAN_CTRLMODE_3_SAMPLES:
+ >> -		return "triple-sampling";
+ >> +		return "TRIPLE-SAMPLING";
+
+There's not always a 1:1 name mapping.
+
+IMO CAN_CTRLMODE_XL_TMS together with "TMS" looks fine for the internal 
+and external representation.
+
+> We should move this patch to the front, so that new members could be
+> added in uppercase from the beginning.
+
+This is a useless effort IMO.
+
+When we decided to unify the capitalization as a clean-up four weeks 
+later (what we did) than the patch sequence would look like this in the 
+tree.
 
 Best regards,
 Oliver
 
 > 
->>   		NL_SET_ERR_MSG_FMT(extack,
->> -				   "bitrate error: %u.%u%%",
->> -				   bitrate_error / 10, bitrate_error % 10);
->> +				   "bitrate error: %u.%02u%%",
->> +				   bitrate_error / 100,
->> +				   ((bitrate_error / 100) || (bitrate_error % 100))?
->> +				   (bitrate_error % 100):1);
-> 
-> So we can avoid this.
-> 
 > Marc
+> 
+>>   	default:
+>>   		return "<unknown>";
+>>   	}
+>>   }
+>>   EXPORT_SYMBOL_GPL(can_get_ctrlmode_str);
+>> --
+>> 2.47.3
+>>
+>>
+>>
 > 
 
