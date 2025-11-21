@@ -1,119 +1,127 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.219])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88308156F45
-	for <linux-can@vger.kernel.org>; Fri, 21 Nov 2025 19:38:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.219
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763753911; cv=pass; b=FbgUyA0GFQ44BLBKewisogIOb/utoq+QPDsn0bKzPOGNWDgoSbqBXGGrh4Fp3GPmLrarZgIXAakN7ZvyYfdPVADl8HLgokmfMNedt3JDCUSlqo/7UD0QUMp4Q0n1D1BXFPyTDrP6kKE14wwU0Qk+9mZn4gsQNGzCRr6dCQpEpRI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763753911; c=relaxed/simple;
-	bh=6mDZVwzEnFJ59N4nY2yC4/tp9eJSSzGFmr8GiPScwII=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=CQVuOkwXrxUGuIHTnWEZvHqGbHuSnBdsJZtsj1bgyaL0zdiifmGmoxLgOncLdnLgRrchz3IFNSbExICDloI2GLpnoaK5iPVI4DNufdfJafBuMe2dsROzdDqa5gnkCHawnDr7fieuMH7rckmjTz0EowNnUh9fnaMhjDHGuTfIli0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=WD+SEtf0; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=tLTdn+pw; arc=pass smtp.client-ip=81.169.146.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="WD+SEtf0";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="tLTdn+pw"
-ARC-Seal: i=1; a=rsa-sha256; t=1763753726; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=YKfl+7XDvmtk2stHNXAwiFtaenNNCALs4I9vZi8MtWvQl0c67HJD8yOLgFZqWxoCip
-    3x+VDBxN+lNZITHZY9Vp28kty4QPgzllnacPSBN0qL4ESdfMXREdq/bdVwx514KWNf4i
-    5iGWi5fMhOwBD8chlNR0N4hzPzHwglMTpZQE51xLJCxql60rVGo92pYA71vsTUoWugA3
-    wXinUzcnavaZ41LPgGxgdilPpdD+aL+S3hP7uuvnVEx5cdBGc/xZtqW1037d2xEEnBlG
-    bzljnnDuXe7PF9DKdfIOZR91tRQa/XvZc9+E6utBp7f5ElyHAIvB8yolRd2B2eMFQWe4
-    rhJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1763753726;
-    s=strato-dkim-0002; d=strato.com;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=Q+mamv5w9FD8TZ90JE8yhuXNRbxExewklWl42wj0/O8=;
-    b=Oy0zsv20Ri6cTOIEM8GJpUk3YgW/BvulixmQZ94uv1BW4jpEV4uC0ieQZkmVJj+1uR
-    t4JdzQFNjkb0pgVPpb5u2aHF/Q6xsxGgm/rq/wG0nlD39tXWSOgWN+KcZ+F+PIZN8Dr9
-    NZRH78zf0AFa4vxHrilPcySPgDbxW9NW/35BpqIHzlG5OXSQINKPS+xhSbzJUA5muSvs
-    3kPxp2LdU5lv3JLYoMBzg0IwvgJfjJyg9xupSz51GEqhssMnzDLJIB/4sfLF3m/9PWB+
-    Go6+DURK2bbUG1qfeNWRty/jfQtJJ0AMAG2BZRPM6NiqdKrqrZtO6ZvEA+Uob4QE2Ihv
-    bh3g==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1763753726;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=Q+mamv5w9FD8TZ90JE8yhuXNRbxExewklWl42wj0/O8=;
-    b=WD+SEtf0HRz18nR4yAYL2hfb4fBkT1fV/H+4r8kXsc7b4kHm2EF6bQDwj0OkNA/Nut
-    Vw9dD6yO9pgZZcw+AYFU9kdFslnGlZlgukqRWKYIauULDfoHlRTdaR697mb382SPmv/Z
-    mwmXwP/SkKF4qmkn18RY5V9W5hv76L8xeFYnu9x6Cw4HIZW0l50HRuE9ZNe1SlYedBrA
-    9xqJ3qRsjPKh3tv8LJf1lybAVm2QGnz2ovrj//wbjtNcADkXZkb3bjRF9vop/qo+n5Pu
-    njHNC1yyq9lHD9UGoUjlQSpXYVGlBZ0HqidlqZxzBzKu6qui0KAwPNE2xW+dz3/edesu
-    QKQg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1763753726;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=Q+mamv5w9FD8TZ90JE8yhuXNRbxExewklWl42wj0/O8=;
-    b=tLTdn+pwaWFp9piVt8N2p01ZrY/He95xCPEXu0PiUy6frH3XqIEngX65cNkn8Q1zVa
-    2xayENg3ZLtzulB5B3DQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bGWj0Q=="
-Received: from lenov17.lan
-    by smtp.strato.de (RZmta 54.0.0 AUTH)
-    with ESMTPSA id Ke2b461ALJZQEn1
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Fri, 21 Nov 2025 20:35:26 +0100 (CET)
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [canxl v5 00/17] CAN XL support for review (full series)
-Date: Fri, 21 Nov 2025 20:34:56 +0100
-Message-ID: <20251121193513.2097-1-socketcan@hartkopp.net>
-X-Mailer: git-send-email 2.47.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E034430499B
+	for <linux-can@vger.kernel.org>; Fri, 21 Nov 2025 19:57:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1763755067; cv=none; b=V9q7aS20OFIOZgFiIbwl5HEt9tjGdA2j9AgoMv+ntDlGS1oVUx+N+pSqmeMzIhMrCiFctqzzeWEMHOFMNJV/vfSmyMUsFI+7EJXWI42177sRix7Hj3BKdpSSLYuRaWzpBzitlSuJ/7olb0rPhVL1kpTTW9ueVNhDq+1s82wx3C8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1763755067; c=relaxed/simple;
+	bh=BDWABv2tmK8d5Iixvp27NVCplot8ZHz3k86e4pbtxB4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=onGqCGfwooTxb4Ul6bZJWPMTW8F6m0qHaBJzJujKcjcb06m6A5k7MbDObe/2pl/JiRVAwa7Dx9DIanY30IMAWMUcvx6UOf+hX64H7pO1hpkzYgqOyUFKk8T5xwJIKj8VvO2NLTjCD9TpIgPpzG12xJOAlEqZ5DE5fHIO04Secn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1vMXGG-000589-Ld; Fri, 21 Nov 2025 20:57:40 +0100
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1vMXGG-001dah-1D;
+	Fri, 21 Nov 2025 20:57:40 +0100
+Received: from pengutronix.de (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 1CBB14A4B8A;
+	Fri, 21 Nov 2025 19:57:40 +0000 (UTC)
+Date: Fri, 21 Nov 2025 20:57:39 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org, Vincent Mailhol <mailhol@kernel.org>
+Subject: Re: [canxl v5 17/17] can: dev: print bitrate error with two decimal
+ digits
+Message-ID: <20251121-judicious-dalmatian-from-hyperborea-085fe4-mkl@pengutronix.de>
+References: <20251121193513.2097-1-socketcan@hartkopp.net>
+ <20251121193513.2097-18-socketcan@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="h6iwozxdrwyrxrsn"
+Content-Disposition: inline
+In-Reply-To: <20251121193513.2097-18-socketcan@hartkopp.net>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Updates according to Marc's feedback from v4 patch set.
 
-Oliver Hartkopp (4):
-  can: dev: can_get_ctrlmode_str: use capitalized ctrlmode strings
-  can: dev: can_dev_dropped_skb: drop CC/FD frames in CANXL-only mode
-  can: raw: instantly reject unsupported CAN frames
-  can: dev: print bitrate error with two decimal digits
+--h6iwozxdrwyrxrsn
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [canxl v5 17/17] can: dev: print bitrate error with two decimal
+ digits
+MIME-Version: 1.0
 
-Vincent Mailhol (13):
-  can: bittiming: apply NL_SET_ERR_MSG() to can_calc_bittiming()
-  can: dev: can_dev_dropped_skb: drop CAN FD skbs if FD is off
-  can: netlink: add CAN_CTRLMODE_RESTRICTED
-  can: netlink: add initial CAN XL support
-  can: netlink: add CAN_CTRLMODE_XL_TMS flag
-  can: bittiming: add PWM parameters
-  can: bittiming: add PWM validation
-  can: calc_bittiming: add PWM calculation
-  can: netlink: add PWM netlink interface
-  can: calc_bittiming: get rid of the incorrect "nominal" word
-  can: calc_bittiming: add can_calc_sample_point_nrz()
-  can: calc_bittiming: add can_calc_sample_point_pwm()
-  can: add dummy_can driver
+On 21.11.2025 20:35:13, Oliver Hartkopp wrote:
+> Increase the resolution when printing the bitrate error and round-up the
+> value to 0.01% in the case the resolution would still provide values
+> which would lead to 0.00%.
+>
+> Suggested-by: Vincent Mailhol <mailhol@kernel.org>
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> ---
+>  drivers/net/can/dev/calc_bittiming.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/c=
+alc_bittiming.c
+> index 0b11c4e98172..71c5ba338f8f 100644
+> --- a/drivers/net/can/dev/calc_bittiming.c
+> +++ b/drivers/net/can/dev/calc_bittiming.c
+> @@ -150,23 +150,26 @@ int can_calc_bittiming(const struct net_device *dev=
+, struct can_bittiming *bt,
+>  		if (bitrate_error =3D=3D 0 && sample_point_error =3D=3D 0)
+>  			break;
+>  	}
+>
+>  	if (best_bitrate_error) {
+> -		/* Error in one-tenth of a percent */
+> -		v64 =3D (u64)best_bitrate_error * 1000;
+> +		/* Error in one-hundredth of a percent */
+> +		v64 =3D (u64)best_bitrate_error * 10000;
+>  		do_div(v64, bt->bitrate);
+>  		bitrate_error =3D (u32)v64;
 
- drivers/net/can/Kconfig              |  17 ++
- drivers/net/can/Makefile             |   1 +
- drivers/net/can/dev/bittiming.c      |  63 ++++++
- drivers/net/can/dev/calc_bittiming.c | 118 +++++++---
- drivers/net/can/dev/dev.c            |  42 ++--
- drivers/net/can/dev/netlink.c        | 319 +++++++++++++++++++++++++--
- drivers/net/can/dummy_can.c          | 285 ++++++++++++++++++++++++
- include/linux/can/bittiming.h        |  81 ++++++-
- include/linux/can/dev.h              |  68 ++++--
- include/uapi/linux/can/netlink.h     |  34 +++
- net/can/raw.c                        |  54 ++++-
- 11 files changed, 991 insertions(+), 91 deletions(-)
- create mode 100644 drivers/net/can/dummy_can.c
+> +		/* print at least 0.01% when the error is smaller */
+                                        ^^^^
+                                        if
+> +		bitrate_error =3D max(bitrate_error, 1U);
 
--- 
-2.47.3
+regards
+Marc
 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--h6iwozxdrwyrxrsn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEn/sM2K9nqF/8FWzzDHRl3/mQkZwFAmkgxDAACgkQDHRl3/mQ
+kZy/CggAj8P78sWeO1ko4Uf6bMrmLpQTA2nGjKqLn4T8Fs5jKyfvhbEL67RzB6Tu
+DEyW3gMyc4X/EDj2HRu6A16d+BVpH8vlB5QGv1jhbEkj2nvGh68wzncSYX19J/g7
+EFsS1pHtD511ev5ExtvHOHctgF9FCU/ZBe2l2S1NIdM4Jkyp0xtN59HuV9QON5Fh
+twn8ZdY96zzbzgddpo25MQO6TesiKaH4vlhjdgQH4alBGnugGZQ24b2OJK4zSAz9
+TaAw024OWac15DBTx6iERpsTESai1NFugPPAJJUubpBiYoqk6Lsc5e1qdqQbkIhr
+1WU3WccMa8qNYvj65LeV5kEaviBEeA==
+=fx7U
+-----END PGP SIGNATURE-----
+
+--h6iwozxdrwyrxrsn--
