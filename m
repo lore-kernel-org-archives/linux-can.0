@@ -1,73 +1,80 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.163])
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC3CD277818
-	for <linux-can@vger.kernel.org>; Fri, 21 Nov 2025 08:34:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EDC227A469
+	for <linux-can@vger.kernel.org>; Fri, 21 Nov 2025 08:34:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.51
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763714076; cv=pass; b=SN/048OA97p3E4Ki/5psOnO0+9IoZWxKVt2y9jfUqlejUYnPhDQi0XPn/P8kG4RHDERx3/HtwmUnzyRixfST2j9t3MXORd6VQOWeJrUdMX/iSTbFhtx2+F7Yl95cTIOAx3QhjP999hHqQyFaqb0kO1uvxI+12O7jto4ecTLW/Jc=
+	t=1763714077; cv=pass; b=C2S5Py9RqI4y2N77aJFql2peS600TewAvLRpL13LABsX2BXxfW601p+Kiv5h2yQJClJNm42gYu2v3g0tvmpg1V6GO1cw1sFtymxT63ZFL46dqJZq4HyhzDShiJ2Sy1gjw4H6/3zNUFHL/doG3hp7SRIypYDCdbCsjEM+ZiCPfJs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763714076; c=relaxed/simple;
-	bh=/cb/pXCXbls6g0rxdF02+r63BQi1Wo7AxY0g03IYT3g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=liip52S+woPc3p0OS1cCGZFaDfPfIR8E7nSszWElLrHeyOO+lhzUSlbWscKugwc/kBfPWSnbacKL1EBeML9mPFvB7AwGqs47k+KCgjL4H7jTEEcborqoTJ2udk4qUrZsb+Gi07LESc8yg94OTv0rBQq0xnOPe760q5bjrYLNI7I=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=LSw+cnEK; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=Z1EgdN8p; arc=pass smtp.client-ip=81.169.146.163
+	s=arc-20240116; t=1763714077; c=relaxed/simple;
+	bh=pO6jymnsRjaRVwATJjlXjF/Ste3DKsRD+lFLlKsKXJw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tH8O8tSPAtsDHBvR3lYuA9d7rytbrzfPEjuh0zgAEha3tCXDynRjzmwqvll0gBCGWq+bdvz4qyTe8U8dIPcG1uFvAE/VTrfQBD+lqhnZkhycDBX4saYnVe7PQb/z0wXfq32+9pbf14fGd6ISHLU6iFyYPpCP65rwdjke7Lr5qYw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=TmkKUImy; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=78pJvZkl; arc=pass smtp.client-ip=85.215.255.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="LSw+cnEK";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="Z1EgdN8p"
-ARC-Seal: i=1; a=rsa-sha256; t=1763714066; cv=none;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="TmkKUImy";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="78pJvZkl"
+ARC-Seal: i=1; a=rsa-sha256; t=1763714069; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=iBdgQ6Gz1D0YCLbFZO+f0kjtU4XGMQcKWfFMbBDqa6OocIXFv+jJHCn9sCEMBqcc4H
-    kzF48eyCgW99q3FKB4GsqbmY6PdFsssJpGKoqlZ8QrQ3zH8WYhqfMxdivitQzqk0vOc5
-    VNmhVnqb8HTpHczbIc5NsjtjwuyRVV0EtYeQDZXpPUq3nI1ZwAzyO+suaK7R/gZxkETS
-    8EqkXFBaYwZMYk+7N66ixchSM3dEdQQHJG8SHkvpE/sxUmkdQFELKm1609gGkzgFPb4e
-    Hk2rmAiqZ6A5iVJ53GBbbzuSHAK3U6KCdtzqJfFiYgYykXTEX6OuOh+Ki9HogRAz4sbd
-    8VJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1763714066;
+    b=n8taDdbi6Tc4PuZqBUYc52lraM06so+nO7UjZrUqoOtfw+vaAk7f4cOqS95l5VaxHE
+    MQDF58yr35JF5CiU5ycTG6/TBFB5ZnO45UcCMurOuLkY8+W0sytdsWChM4n1m/+55WLM
+    Dhy6Hz1e4umMIopnRO+q4pIalBFjQD3/yNiPYlsl1mg/860bHfbrQyUCGQFPYHpBFBNs
+    v+l/tHn5No15tH5ymKqzr7HrbiUtv+8pswtgNHxnEExaqZB26uAZLPC6wjsGPmwyjD1V
+    5cUTm1awvUiSHskJfwlNDgxTqvvV42eDxgc5x3XhtojBQ1OHM7w9FJWCf4RR+WFHzKmW
+    JfVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1763714069;
     s=strato-dkim-0002; d=strato.com;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=8H0BxfgbYnmTVgX9h7J/l7vGCUATKc1fyKbyrsjydRc=;
-    b=f7GfhBMPHU2waAed3aQURd9PnBEmeorQE0nyDJozuqgfXH91Uc8zcVX2jk/que9oEg
-    ct/xnIpb4nrMmr9YKuoTs8Zs2SJgrXVxzWbLhCtFbygEtqP0aAye78NegmGEW2FzZK54
-    pK7FIZQmG/EsqqvG27rxH6A9yp7GdVkUW32elohKFNRY0ZSiC1lpl0s47AcfgL38NkeI
-    cz0APpguYaMmnWxpoDxcn+fBEi/t4Q9wc2Kdp7ChmL6RTZDNDBgG6gxz2hfTHkt3Hj6M
-    tiyWu5/MevpGjOGelwlAgkqlLD1QEBGcTrEcVYCRUSMy2jNK35K1FSax0fby5gIsgUuc
-    sffg==
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=Rdk/brVQz6/Mf3/ryPuE9QCcp0FNo1pVRP0mZsYQTdM=;
+    b=k5o4Y6BoyHib9PvJ4Qft8MjJhcHWf/F9OfWw/9bU/ImBK/dYM9g8WW3/MNIWVne7L0
+    RCVorkD1eXF/EGcJqI6ChPPMffg6gbgACqp19BLbsDZeMjC5pp0GloVX579y5s9+yE5n
+    7kPcnY7Z5n00kv8Zp3wTqUtO5WyhZaKf6OeFVGDWqXP/pAodYF7p9dbLsreY8QEqQEmb
+    YFZ7OZE9Z6M+mB3w7OhH++ZQFzvKd3ba1kfXPz0IjPdjfp+rvj+uNihG+04l2YW96Wd+
+    JYv3vKGe37ukquGqWi/5TZMavMQr2Ro6TJq8AiMU2/C6ZqXKJ63NtrEga97n/Ju7HINM
+    5OmA==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1763714066;
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1763714069;
     s=strato-dkim-0002; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=8H0BxfgbYnmTVgX9h7J/l7vGCUATKc1fyKbyrsjydRc=;
-    b=LSw+cnEKCExE94DKhYuI2Z+a2jXl40/RMuw+5uWnegJCrqFgdQj5CspepqzQTpyYL3
-    yWpLMzlVivBwpdnZXrS/jhpB4SMLh92wGQD+9loJj/GVKBlUHqfr3figfDlDoefp4pBp
-    uKK1ca+peu+N8kqPlZSJA7roYdn35d1bXJoZ/Cz1cvby5FE8kNMd1LCFDMeK2geJdb02
-    5/TR9kol9EoJfdM5VrL2fH6Jg8aNy7dYZncskuUbrnv189Pcycke32XwWzrP2ZKxfcw0
-    ZmUwnBZ/2bxA18IsriC8syZBkCiXQglSKi+78KqMd/q1PhTbpnY9BSshsTG3Qbs3NVOz
-    8rmg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1763714066;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=Rdk/brVQz6/Mf3/ryPuE9QCcp0FNo1pVRP0mZsYQTdM=;
+    b=TmkKUImyla/FFfsbok7YEVg3cfRvX62wMZDd6qZixXb9wJFxtBmCihko+wshjQPaQ8
+    q1aUuXPX4yn04U0bJI9kIaY3h8HipML/xGkF1HG3T4zrqwEj5ZhfVNb+P6/wRD48rzkF
+    6ddGa/M3eW//AW18jOKblpibQHJ3A8GzSoLREKXaw2HDYoBTxXYRfFQp7IjqrbQnF9iQ
+    kFeyWD88/CfDaCU2vbnB2TzaMqcoMilsmYsmFhA9UrIkp24sPk6mL43zn5x9QtYNXGD2
+    KGtzYOUfWwbO6SNfO1ALGNRLFVQ3TP2pzmaCx/iiQWxvQR4P3wEeJQzZCIfEnLYSlgWQ
+    IpUw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1763714069;
     s=strato-dkim-0003; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=8H0BxfgbYnmTVgX9h7J/l7vGCUATKc1fyKbyrsjydRc=;
-    b=Z1EgdN8pjWmCDHhhoCc7WdL+CedKMwkyFaKWUQa4WVIWzCLKgnkM8W+86A8/GO368f
-    yIVsKspOGwRemUoHvcCw==
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=Rdk/brVQz6/Mf3/ryPuE9QCcp0FNo1pVRP0mZsYQTdM=;
+    b=78pJvZklfCxcoh2bFect9urICnNllZ/bIm9wqUkKsbPz/GBxEQBlvyy1Gr/eecdsBM
+    HlDRqq2MrsvwwLixECBQ==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bGWj0Q=="
 Received: from lenov17.lan
     by smtp.strato.de (RZmta 54.0.0 AUTH)
-    with ESMTPSA id Ke2b461AL8YQAfm
+    with ESMTPSA id Ke2b461AL8YTAfu
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Fri, 21 Nov 2025 09:34:26 +0100 (CET)
+    Fri, 21 Nov 2025 09:34:29 +0100 (CET)
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [canxl v4 00/17] CAN XL support for review (full series)
-Date: Fri, 21 Nov 2025 09:33:57 +0100
-Message-ID: <20251121083414.3642-1-socketcan@hartkopp.net>
+Cc: Vincent Mailhol <mailhol@kernel.org>,
+	Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [canxl v4 07/17] can: bittiming: add PWM parameters
+Date: Fri, 21 Nov 2025 09:34:04 +0100
+Message-ID: <20251121083414.3642-8-socketcan@hartkopp.net>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251121083414.3642-1-socketcan@hartkopp.net>
+References: <20251121083414.3642-1-socketcan@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -77,54 +84,110 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="us-ascii"
 
-Same patch set as v3 but I removed an empty line in v3 patch
-"can: calc_bittiming: add can_calc_sample_point_pwm()"
+From: Vincent Mailhol <mailhol@kernel.org>
 
-        if (bt->sample_point)
-                sample_point = bt->sample_point;
+In CAN XL, higher data bit rates require the CAN transceiver to switch
+its operation mode to use Pulse-Width Modulation (PWM) transmission
+mode instead of the classic dominant/recessive transmission mode.
+
+The PWM parameters are:
+
+  - PWMS: pulse width modulation short phase
+  - PWML: pulse width modulation long phase
+  - PWMO: pulse width modulation offset
+
+CiA 612-2 specifies PWMS and PWML to be at least 1 (arguably, PWML
+shall be at least 2 to respect the PWMS < PWML rule). PWMO's minimum
+is expected to always be zero. It is added more for consistency than
+anything else.
+
+Add struct can_pwm_const so that the different devices can provide
+their minimum and maximum values.
+
+When TMS is on, the runtime PWMS, PWML and PWMO are needed (either
+calculated or provided by the user): add struct can_pwm to store
+these.
+
+TDC and PWM can not be used at the same time (TDC can only be used
+when TMS is off and PWM only when TMS is on). struct can_pwm is thus
+put together with struct can_tdc inside a union to save some space.
+
+The netlink logic will be added in an upcoming change.
+
+Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ include/linux/can/bittiming.h | 41 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 39 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
+index b6cd2476ffd7..967d76689c4f 100644
+--- a/include/linux/can/bittiming.h
++++ b/include/linux/can/bittiming.h
+@@ -1,8 +1,8 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ /* Copyright (c) 2020 Pengutronix, Marc Kleine-Budde <kernel@pengutronix.de>
+- * Copyright (c) 2021 Vincent Mailhol <mailhol.vincent@wanadoo.fr>
++ * Copyright (c) 2021-2025 Vincent Mailhol <mailhol@kernel.org>
+  */
+ 
+ #ifndef _CAN_BITTIMING_H
+ #define _CAN_BITTIMING_H
+ 
+@@ -118,15 +118,52 @@ struct can_tdc_const {
+ 	u32 tdco_max;
+ 	u32 tdcf_min;
+ 	u32 tdcf_max;
+ };
+ 
++/*
++ * struct can_pwm - CAN Pulse-Width Modulation (PWM) parameters
++ *
++ * @pwms: pulse width modulation short phase
++ * @pwml: pulse width modulation long phase
++ * @pwmo: pulse width modulation offset
++ */
++struct can_pwm {
++	u32 pwms;
++	u32 pwml;
++	u32 pwmo;
++};
 +
-+       else if (btc == priv->xl.data_bittiming_const &&
-+                (priv->ctrlmode & CAN_CTRLMODE_XL_TMS))
-+               sample_point = can_calc_sample_point_pwm(bt);
-        else
-                sample_point = can_calc_sample_point_nrz(bt);
-
-
-Oliver Hartkopp (4):
-  can: dev: can_dev_dropped_skb: drop CC/FD frames in CANXL-only mode
-  can: raw: instantly reject unsupported CAN frames
-  can: dev: can_get_ctrlmode_str: use capitalized ctrlmode strings
-  can: dev: print bitrate error with two decimal digits
-
-Vincent Mailhol (13):
-  can: bittiming: apply NL_SET_ERR_MSG() to can_calc_bittiming()
-  can: dev: can_dev_dropped_skb: drop CAN FD skbs if FD is off
-  can: netlink: add CAN_CTRLMODE_RESTRICTED
-  can: netlink: add initial CAN XL support
-  can: netlink: add CAN_CTRLMODE_XL_TMS flag
-  can: bittiming: add PWM parameters
-  can: bittiming: add PWM validation
-  can: calc_bittiming: add PWM calculation
-  can: netlink: add PWM netlink interface
-  can: calc_bittiming: get rid of the incorrect "nominal" word
-  can: calc_bittiming: add can_calc_sample_point_nrz()
-  can: calc_bittiming: add can_calc_sample_point_pwm()
-  can: add dummy_can driver
-
- drivers/net/can/Kconfig              |  17 ++
- drivers/net/can/Makefile             |   1 +
- drivers/net/can/dev/bittiming.c      |  63 ++++++
- drivers/net/can/dev/calc_bittiming.c | 118 +++++++---
- drivers/net/can/dev/dev.c            |  42 ++--
- drivers/net/can/dev/netlink.c        | 319 +++++++++++++++++++++++++--
- drivers/net/can/dummy_can.c          | 284 ++++++++++++++++++++++++
- include/linux/can/bittiming.h        |  81 ++++++-
- include/linux/can/dev.h              |  68 ++++--
- include/uapi/linux/can/netlink.h     |  34 +++
- net/can/raw.c                        |  54 ++++-
- 11 files changed, 990 insertions(+), 91 deletions(-)
- create mode 100644 drivers/net/can/dummy_can.c
-
++/*
++ * struct can_pwm - CAN hardware-dependent constants for Pulse-Width
++ *	Modulation (PWM)
++ *
++ * @pwms_min: PWM short phase minimum value. Must be at least 1.
++ * @pwms_max: PWM short phase maximum value
++ * @pwml_min: PWM long phase minimum value. Must be at least 1.
++ * @pwml_max: PWM long phase maximum value
++ * @pwmo_min: PWM offset phase minimum value
++ * @pwmo_max: PWM offset phase maximum value
++ */
++struct can_pwm_const {
++	u32 pwms_min;
++	u32 pwms_max;
++	u32 pwml_min;
++	u32 pwml_max;
++	u32 pwmo_min;
++	u32 pwmo_max;
++};
++
+ struct data_bittiming_params {
+ 	const struct can_bittiming_const *data_bittiming_const;
+ 	struct can_bittiming data_bittiming;
+ 	const struct can_tdc_const *tdc_const;
+-	struct can_tdc tdc;
++	const struct can_pwm_const *pwm_const;
++	union {
++		struct can_tdc tdc;
++		struct can_pwm pwm;
++	};
+ 	const u32 *data_bitrate_const;
+ 	unsigned int data_bitrate_const_cnt;
+ 	int (*do_set_data_bittiming)(struct net_device *dev);
+ 	int (*do_get_auto_tdcv)(const struct net_device *dev, u32 *tdcv);
+ };
 -- 
 2.47.3
 
