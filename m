@@ -1,76 +1,77 @@
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.81])
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C140022DFB8
-	for <linux-can@vger.kernel.org>; Fri, 21 Nov 2025 08:34:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8C702836B5
+	for <linux-can@vger.kernel.org>; Fri, 21 Nov 2025 08:34:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.50
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763714081; cv=pass; b=AuWEx4+VeqCtnNRA7tho49IB8OpqW4/sbkpB0l1LcgMrLmvke2DIzDW4rdZsFwByiJPKAG98DEDnqVSvl92ydAUINbHSAFqvKnAcDWV/GF/O9aBmZw4WHH8B4m1vctyDT4aXVF555mCklbVbsvTyFqOVv2ndmAYsKhfDf1C2kUo=
+	t=1763714085; cv=pass; b=u2OVxRuCCPHtUzyug0HhB0vcQkq8Nbs5U6+xe4DnXuquoHyXaTs7toZTTDCdHZEetTdKdMt2Ut6KjOuLUFHGEKlxBRYESyYM+W8htN1KeW9aJdOkv1NWvz9ArgUNX23oI7ixKswymYqG9WfH8xI15/AYmQFpAFVMZRG1Mc5ODto=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763714081; c=relaxed/simple;
-	bh=kFo+cWd3FsEA77InQXoAwGerQqlnV47knYv1zjqj/9Q=;
+	s=arc-20240116; t=1763714085; c=relaxed/simple;
+	bh=7TQOmpvACKM9dhv3EZGbrAA+qfytcUjxratiPnm89W4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OJWJjdSH/gP3UQlnE2vt/TCiEvysaqTtd994TbfCPl9DulKz2Qv7Yl+DX8t5SMOyEUGj4g3qO2f5sJmV67vEwE5GpStnSwr6nOyWwA0CWJnflEQ2z1HfKhD6bYk5jUNd+YZeGuyHRmdcblmgREEGKB1DmOJXD886ziAbGzfiZI8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=ApybdQxs; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=XsFI4a90; arc=pass smtp.client-ip=85.215.255.81
+	 MIME-Version:Content-Type; b=UJYIzDZ9dcJAyzbCSR4hHigHbHjkXhw6x8Q7VR5XQo+rMGl0+hxKMbLgiR+eSHJmxnY2k/tyDsyMvS9txvwc+xC9zqOaiustXBd+txV/0PD8ayiy2DCcFTTumHp6mbxxWqMxD7RHrgFQhJ7QsqlvLHPzAC/6m1na20gMGg++huw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=KI+qL/Ei; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=AIrPaog9; arc=pass smtp.client-ip=85.215.255.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="ApybdQxs";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="XsFI4a90"
-ARC-Seal: i=1; a=rsa-sha256; t=1763714071; cv=none;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="KI+qL/Ei";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="AIrPaog9"
+ARC-Seal: i=1; a=rsa-sha256; t=1763714070; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=eX2XaJzVnO8xFDdfX5c9kyowT3cHNgjwXXCAAoxLf8LRcExIrNdNSFxaJqLT6sxh3y
-    /fCVfE/yiMGap/oqYxvfWTtruzCCkEYDoCR73tk8RP9++qOIHIiqQgWZfuRKVWqi8K7Z
-    D7e97TQJp6hqszfTCoLFJXsTa1SavEryopdJyuIMAGNgzrDO+mYLRWlxGYHQLAsK2aCc
-    QvYD/jVxASPnSHPHDBDTFlF9f09sduOX4nUqP7AyTQX3GvoppJuL0Bhn5WNKBEvnJvJA
-    pc6k75Rn/W1TMehCK+B4HDnDFDTvNwTai1H/e7tA8erTsmjUnJi+pmMKI952eXzk6G0A
-    YLZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1763714071;
+    b=srK3ZBsgr3H00JwFmqNXDaJsN2hLoB19CyZgkPNft5+X+qYwfgB8Rd8ts72fhRkotl
+    x5V/cJWojXWdwQElsLoejoaxmEXUpgWoD4P6cLRsNmnE3DmbDruxkyFM0KxN6uUqMgYe
+    OvmxCuojNc5vaCDTab6odolUKW+ipBDe6p9rjJEnnfLqOiFGWQ9h+/bsgHce1dv36tMw
+    zSCWbpc3kaNlcSXmVwBZrojNnFwLsukCjSvd5ZNXwd87fbdyKVF+CAnrPv80dahOrvTI
+    JFzvCcmg5RW62sHHR1eKcLXGbPgPOXY6OfhT9P5d0JcSv0xqb52E1tMhicZsoW8561oz
+    O7eQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1763714070;
     s=strato-dkim-0002; d=strato.com;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=BVTOWs4g5KEdda5lO51oBHxVDDNtA9WS5KpPLtm1fEc=;
-    b=KzpsIZJN57cAkx6fGMN0MfAnUvT8fKUlX/9FZJceo9BvY+GZUhXhVj4oDU7zORBKsi
-    jfVLl1+xXKVcqzieMQwFEas65rLrA5eMckRAjYss9bCYuZvVPqiVLb9jw/yw1LNj+gGh
-    P0EE3JP6lhzpBQFH2vdiS5fdLKhLKg0w/QY1zZVxwHIiYynBnH1zY7k74mrRkp8Qv48h
-    zQw27mKXYmkpZX2Gmx4hz5cBlEa4FDTp0Wdaf2hRynhwiDbJQqgMEaiheWk3rc37knww
-    E0nCur//mxjf9mcCquZh8lF9iXsMg/ucm5pl4miqTR+f55+weviamwxFS82XAh/IVXYe
-    L3cg==
+    bh=OecnmCr6VTW3Mcb+HgMmAnPusrZgoIdEFzXPGvhkA40=;
+    b=GSwIpLpFmdJrt9lL0gn0B+FCLwyR0+CqTIkW7B04KjH5nrUoz9RWVd647jOU0pg9vt
+    Wv5V7kGaYseg2Xbc6I/q9OeM5tfCUWQ3yKEeYSTSVhYIXuKyijjxz7KHpaVkI4rDzCOe
+    BDUC3PbXKR4R8Dxvtf4R0YCP5IVpgILdmzu/Py8l80N8shlN1nEufx4YEpuLGOa6aNOF
+    OwN1B82m/ggIFuBbdqrqJKNylzt6vuRFI8RTSHc+QLT3tDjH6ve7kg5GVu4WHRHy7f/9
+    fkcSjPIhFkKNA9bj/q3v59yA1AJmfNL3G2EcuLfmuBChWfWlZy5Yi+xnG3noi7a0y431
+    pQtg==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1763714071;
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1763714070;
     s=strato-dkim-0002; d=hartkopp.net;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=BVTOWs4g5KEdda5lO51oBHxVDDNtA9WS5KpPLtm1fEc=;
-    b=ApybdQxsjrvgd/GEGVWqLUd2kIv7owj44noSM/rWZ3Kgc0FJlFSJEbgNp4YoyzrB32
-    HSCBccHMQlY+P47v/73UyqjBKxyfJeZApInH5qMFFES9nzfB3VbozHBkzFiSRcEi41pQ
-    LkXcK/HiIHwkuZd9VLHyDIwC5yxiXbJ5xYGbSBhJ+TNEKZD6COVOCdH/TJKF4sWIXB7h
-    Q4ZFYi+cY2720XMUGX8vGQ5xbx7Mpr7Y43BNchlPH4yzXG/3yTIAsffRfztDUn0bT0/K
-    u023b3r/EMHbGNcr13HeAteU2CmqTCBXhD5Fa3wJ0jTna/bqT5F/eOUMQTMkej1mHi5b
-    3+CA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1763714071;
+    bh=OecnmCr6VTW3Mcb+HgMmAnPusrZgoIdEFzXPGvhkA40=;
+    b=KI+qL/Ei3GGpQg/hNC+FqS8MJyjCqngeBiz2u43IesIfcROIZEn2hZ+ApfC0k8Ltju
+    G+gZ+BsPPVjko6t6EwF+xXtcdR4Omt0+3dbM1sXNztmorwhmhQr9dpIWXz9lpMfqkxzZ
+    2QOD3LqVmYO+2fvoOf27qSQiZ8UWoSC5U8FHwi7NfIMZOtJogHNAiIp5GfTtXhgJ3Wgw
+    qmQtLv+BQvc15MOWSa52ViGL0sV9oYA3oI/OoKvnWKg1muyE8kWvxwWWMK8VuHajDbkp
+    ka4PCkNqrMMKo8zb8mgcbfE3C/beZ8rjiUNyh4cPXNKT5qgefdDPgJK1f2wnyDbxrTg4
+    SgLw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1763714070;
     s=strato-dkim-0003; d=hartkopp.net;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=BVTOWs4g5KEdda5lO51oBHxVDDNtA9WS5KpPLtm1fEc=;
-    b=XsFI4a90+e5/Yeb7wtt/tQAxocGamzEO8t2RCpcLsSRae447uqFjjWaZgB2FEf942H
-    5/XkkhLDq8pve0bF0uBw==
+    bh=OecnmCr6VTW3Mcb+HgMmAnPusrZgoIdEFzXPGvhkA40=;
+    b=AIrPaog97Pl6QWOS4M/cDil8pw7Cfbqe/iqlJCI6uu2WpGt1Q+4LAQst5ojXZCUdKl
+    54GIlunvqNVzghM14pDw==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bGWj0Q=="
 Received: from lenov17.lan
     by smtp.strato.de (RZmta 54.0.0 AUTH)
-    with ESMTPSA id Ke2b461AL8YVAg3
+    with ESMTPSA id Ke2b461AL8YTAfx
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Fri, 21 Nov 2025 09:34:31 +0100 (CET)
+    Fri, 21 Nov 2025 09:34:29 +0100 (CET)
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [canxl v4 15/17] can: raw: instantly reject unsupported CAN frames
-Date: Fri, 21 Nov 2025 09:34:12 +0100
-Message-ID: <20251121083414.3642-16-socketcan@hartkopp.net>
+Cc: Vincent Mailhol <mailhol@kernel.org>,
+	Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [canxl v4 09/17] can: calc_bittiming: add PWM calculation
+Date: Fri, 21 Nov 2025 09:34:06 +0100
+Message-ID: <20251121083414.3642-10-socketcan@hartkopp.net>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251121083414.3642-1-socketcan@hartkopp.net>
 References: <20251121083414.3642-1-socketcan@hartkopp.net>
@@ -83,107 +84,120 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="us-ascii"
 
-For real CAN interfaces the CAN_CTRLMODE_FD and CAN_CTRLMODE_XL control
-modes indicate whether an interface can handle those CAN FD/XL frames.
+From: Vincent Mailhol <mailhol@kernel.org>
 
-In the case a CAN XL interface is configured in CANXL-only mode with
-disabled error-signalling neither CAN CC nor CAN FD frames can be sent.
+Perform the PWM calculation according to CiA recommendations.
 
-The checks are performed on CAN_RAW sockets to give an instant feedback
-to the user when writing unsupported CAN frames to the interface.
+Note that for databitrates greater than 5 MBPS, tqmin is less than
+CAN_PWM_NS_MAX (which is defined to 200 nano seconds), consequently,
+the result of the division:
 
+  DIV_ROUND_UP(xl_ns, CAN_PWM_NS_MAX)
+
+is one and thus the for loop automatically stops on the first
+iteration giving a single PWM symbol per bit as expected. Because of
+that, there is no actual need for a separate conditional branch for
+when the databitrate is greater than 5 MBPS.
+
+Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- net/can/raw.c | 54 +++++++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 46 insertions(+), 8 deletions(-)
+ drivers/net/can/dev/calc_bittiming.c | 36 ++++++++++++++++++++++++++++
+ include/linux/can/bittiming.h        | 10 ++++++++
+ 2 files changed, 46 insertions(+)
 
-diff --git a/net/can/raw.c b/net/can/raw.c
-index a53853f5e9af..223630f0f9e9 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -890,24 +890,62 @@ static void raw_put_canxl_vcid(struct raw_sock *ro, struct sk_buff *skb)
- 		cxl->prio &= CANXL_PRIO_MASK;
- 		cxl->prio |= ro->tx_vcid_shifted;
+diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/calc_bittiming.c
+index 394d6974f481..268ec6fa7c49 100644
+--- a/drivers/net/can/dev/calc_bittiming.c
++++ b/drivers/net/can/dev/calc_bittiming.c
+@@ -1,9 +1,10 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /* Copyright (C) 2005 Marc Kleine-Budde, Pengutronix
+  * Copyright (C) 2006 Andrey Volkov, Varma Electronics
+  * Copyright (C) 2008-2009 Wolfgang Grandegger <wg@grandegger.com>
++ * Copyright (C) 2021-2025 Vincent Mailhol <mailhol@kernel.org>
+  */
+ 
+ #include <linux/units.h>
+ #include <linux/can/dev.h>
+ 
+@@ -196,5 +197,40 @@ void can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
+ 			return;
+ 		tdc->tdco = min(sample_point_in_tc, tdc_const->tdco_max);
+ 		*ctrlmode |= tdc_auto;
  	}
  }
- 
--static unsigned int raw_check_txframe(struct raw_sock *ro, struct sk_buff *skb, int mtu)
-+static inline bool raw_dev_cc_enabled(struct net_device *dev,
-+				      struct can_priv *priv)
- {
--	/* Classical CAN -> no checks for flags and device capabilities */
--	if (can_is_can_skb(skb))
-+	/* The CANXL-only mode disables error-signalling on the CAN bus
-+	 * which is needed to send CAN CC/FD frames
++
++int can_calc_pwm(struct net_device *dev, struct netlink_ext_ack *extack)
++{
++	struct can_priv *priv = netdev_priv(dev);
++	const struct can_pwm_const *pwm_const = priv->xl.pwm_const;
++	struct can_pwm *pwm = &priv->xl.pwm;
++	u32 xl_tqmin = can_bit_time_tqmin(&priv->xl.data_bittiming);
++	u32 xl_ns = can_tqmin_to_ns(xl_tqmin, priv->clock.freq);
++	u32 nom_tqmin = can_bit_time_tqmin(&priv->bittiming);
++	int pwm_per_bit_max = xl_tqmin / (pwm_const->pwms_min + pwm_const->pwml_min);
++	int pwm_per_bit;
++	u32 pwm_tqmin;
++
++	/* For 5 MB/s databitrate or greater, xl_ns < CAN_PWM_NS_MAX
++	 * giving us a pwm_per_bit of 1 and the loop immediately breaks
 +	 */
-+	if (priv)
-+		return !can_dev_in_xl_only_mode(priv);
++	for (pwm_per_bit = DIV_ROUND_UP(xl_ns, CAN_PWM_NS_MAX);
++	     pwm_per_bit <= pwm_per_bit_max; pwm_per_bit++)
++		if (xl_tqmin % pwm_per_bit == 0)
++			break;
 +
-+	/* virtual CAN interfaces always support CAN CC */
-+	return true;
++	if (pwm_per_bit > pwm_per_bit_max) {
++		NL_SET_ERR_MSG_FMT(extack,
++				   "Can not divide the XL data phase's bit time: %u tqmin into multiple PWM symbols",
++				   xl_tqmin);
++		return -EINVAL;
++	}
++
++	pwm_tqmin = xl_tqmin / pwm_per_bit;
++	pwm->pwms = DIV_ROUND_UP_POW2(pwm_tqmin, 4);
++	pwm->pwml = pwm_tqmin - pwm->pwms;
++	pwm->pwmo = nom_tqmin % pwm_tqmin;
++
++	return 0;
 +}
-+
-+static inline bool raw_dev_fd_enabled(struct net_device *dev,
-+				      struct can_priv *priv)
-+{
-+	/* check FD ctrlmode on real CAN interfaces */
-+	if (priv)
-+		return (priv->ctrlmode & CAN_CTRLMODE_FD);
-+
-+	/* check MTU for virtual CAN FD interfaces */
-+	return (READ_ONCE(dev->mtu) >= CANFD_MTU);
-+}
-+
-+static inline bool raw_dev_xl_enabled(struct net_device *dev,
-+				      struct can_priv *priv)
-+{
-+	/* check XL ctrlmode on real CAN interfaces */
-+	if (priv)
-+		return (priv->ctrlmode & CAN_CTRLMODE_XL);
-+
-+	/* check MTU for virtual CAN XL interfaces */
-+	return can_is_canxl_dev_mtu(READ_ONCE(dev->mtu));
-+}
-+
-+static unsigned int raw_check_txframe(struct raw_sock *ro, struct sk_buff *skb,
-+				      struct net_device *dev)
-+{
-+	struct can_priv *priv = safe_candev_priv(dev);
-+
-+	/* Classical CAN */
-+	if (can_is_can_skb(skb) && raw_dev_cc_enabled(dev, priv))
- 		return CAN_MTU;
+diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
+index 2504fafc72e4..726d909e87ce 100644
+--- a/include/linux/can/bittiming.h
++++ b/include/linux/can/bittiming.h
+@@ -178,10 +178,12 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
+ 		       const struct can_bittiming_const *btc, struct netlink_ext_ack *extack);
  
--	/* CAN FD -> needs to be enabled and a CAN FD or CAN XL device */
-+	/* CAN FD */
- 	if (ro->fd_frames && can_is_canfd_skb(skb) &&
--	    (mtu == CANFD_MTU || can_is_canxl_dev_mtu(mtu)))
-+	    raw_dev_fd_enabled(dev, priv))
- 		return CANFD_MTU;
- 
--	/* CAN XL -> needs to be enabled and a CAN XL device */
-+	/* CAN XL */
- 	if (ro->xl_frames && can_is_canxl_skb(skb) &&
--	    can_is_canxl_dev_mtu(mtu))
-+	    raw_dev_xl_enabled(dev, priv))
- 		return CANXL_MTU;
- 
- 	return 0;
+ void can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
+ 		   const struct can_bittiming *dbt,
+ 		   u32 tdc_mask, u32 *ctrlmode, u32 ctrlmode_supported);
++
++int can_calc_pwm(struct net_device *dev, struct netlink_ext_ack *extack);
+ #else /* !CONFIG_CAN_CALC_BITTIMING */
+ static inline int
+ can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
+ 		   const struct can_bittiming_const *btc, struct netlink_ext_ack *extack)
+ {
+@@ -193,10 +195,18 @@ static inline void
+ can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
+ 	      const struct can_bittiming *dbt,
+ 	      u32 tdc_mask, u32 *ctrlmode, u32 ctrlmode_supported)
+ {
  }
++
++static inline int
++can_calc_pwm(struct net_device *dev, struct netlink_ext_ack *extack)
++{
++	NL_SET_ERR_MSG(extack,
++		       "bit-timing calculation not available: manually provide PWML and PWMS\n");
++	return -EINVAL;
++}
+ #endif /* CONFIG_CAN_CALC_BITTIMING */
  
-@@ -959,11 +997,11 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 		goto free_skb;
+ void can_sjw_set_default(struct can_bittiming *bt);
  
- 	err = -EINVAL;
- 
- 	/* check for valid CAN (CC/FD/XL) frame content */
--	txmtu = raw_check_txframe(ro, skb, READ_ONCE(dev->mtu));
-+	txmtu = raw_check_txframe(ro, skb, dev);
- 	if (!txmtu)
- 		goto free_skb;
- 
- 	/* only CANXL: clear/forward/set VCID value */
- 	if (txmtu == CANXL_MTU)
+ int can_sjw_check(const struct net_device *dev, const struct can_bittiming *bt,
 -- 
 2.47.3
 
