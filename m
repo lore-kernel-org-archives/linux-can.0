@@ -1,77 +1,77 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.166])
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.84])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8CA12BE7C0
-	for <linux-can@vger.kernel.org>; Sat, 22 Nov 2025 09:36:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.166
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91E8F22A4CC
+	for <linux-can@vger.kernel.org>; Sat, 22 Nov 2025 09:36:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.84
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763804184; cv=pass; b=J/cm7HM0gzQJSTjn8BIOdotygOM6CIaF943Wa2GZRoIHQkxFNxFdQ3iovSU6AyCfm/rXFXvVsDaP9upp7VKXYXCi9+LFMnNblmG42CRWLTA7z4EJLS3q63JjZuX5Z0kA1oZHenJgrCJBjNPDsbA06l6bBr++V6094RwPswe4Q7w=
+	t=1763804185; cv=pass; b=VI/ZbEKmF2kgEOYafUcPpc/40opDJ1Y67gY/5Kk820pudbyHl+VY6zxnR0AJgOPg7u2BFDiDBEYqJPMfMxnsmwssr7DvdcJg7OdCwVazhQ4H1dhaWu4ldjcUgOD6Cg4+TvR/UmMo5Y5bJDJXJY5S7eMevmoMPJGPKmjkm3HKnp4=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763804184; c=relaxed/simple;
-	bh=pO6jymnsRjaRVwATJjlXjF/Ste3DKsRD+lFLlKsKXJw=;
+	s=arc-20240116; t=1763804185; c=relaxed/simple;
+	bh=z3MkZh3km6VMazEQJ8VzJBSPTX2VBdzQd7l1oFUGp28=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=airJWqtJg1hrqsxlvtPAxYJKBWrULYfTRj9LeoeXBuPkcs59yfLuwOa41EWXmmWAk1Pz6LHhZT3GKs84aFw/Fh8pXArKzhdxfQftWJhn9tkucUWR4PSCp444eoPwzlyY+kzBQcVFZ44hpwNBLBJOhaM8IdVBDaGBMYVyX/zbC+o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=MZ5W3jFt; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=sewBQO+t; arc=pass smtp.client-ip=81.169.146.166
+	 MIME-Version:Content-Type; b=lN+8BdeMv6AzkUZaG+ewD7sBoa/7TDZIGQkEpF65Rbjw2uSkrtlvH4qgtEBcXgu/n/NTzKE+AGFUoIAXKBgsXcHAlf/aIMxBNr6DIk+VZ/xiMJe4hasVsv7WuwcDLv7fhI9bzlV7y7NaV6Cj5Sm1Ko4ygDMrN5W+XffshloImJY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=j0XyoEwo; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=YuCeKBIA; arc=pass smtp.client-ip=85.215.255.84
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="MZ5W3jFt";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="sewBQO+t"
-ARC-Seal: i=1; a=rsa-sha256; t=1763804170; cv=none;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="j0XyoEwo";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="YuCeKBIA"
+ARC-Seal: i=1; a=rsa-sha256; t=1763804172; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=LzHBqxqBUdkhTy74KldbG/qOreg6iQ3XAr2+xcoqxOKg0QKZSBsWm5qV+dGmBbLMpe
-    dUZSk0ykNbizCGOU+Z3+hbJANmqwZ15J4QlF0wLVtlNBa4t/CAnIf+uXPxkGI/DXCeBR
-    PcDaPs5+idceJPjmK+eHwLVmU95z/2yoeuDDSJpE9nw9NQOEmdjcIxWj9uWQRwHqcHgN
-    EtntLZu+YRQQO9Osm2ReQqTOi29j0ZGgkCELLkqQrAqJYegbHf8QX9vs3HUdhZmGmSEv
-    POLNVYUeREjnSrxZmux8kARhqxJgxrag4JUq7MHT9VAXRPbnOvuTDxTd69oh8rRCNMxN
-    lw4A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1763804170;
+    b=YcnytYXgN2ckRDVTNrZP9XqT+DxBVPj+G5AVQjqlJrHtVNen1BpwSwZZ3722917nkv
+    puxFaX7cs7esd4Njj+iAualVqyw4jzOJvvVzGiufRHwpQeah0vVUkxmEIbSUPeGgDbTp
+    7eZzYd84rnIp6RlTisY8uE0Jx7kemjvnWaVzssuWRJTmUKm2yAhlojvqNWfqKax2cidT
+    sEk0n9tzcDHmIRMzfkN1GZiwfnlw9k+GohGk5AQHLoMGZONWRoV+OZEC9DdwbzzrMWX0
+    wxmg9Wn3VDXolOoUKkKRAMduwLr7k6s/6/0TuMe37cSFfGsu/fz0tFw138WWaul7choi
+    hZqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1763804172;
     s=strato-dkim-0002; d=strato.com;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=Rdk/brVQz6/Mf3/ryPuE9QCcp0FNo1pVRP0mZsYQTdM=;
-    b=IFsgoeDAlIiNAUgHWdb6ORfQDPTRNHGjC49jwrurwyx07hrxZvFo9lRtXGslRKsfMB
-    ZUm2IJAJxICo2sYnIWgKS3QdlIzLvRirqr3LZr8YDoXB2qKKVUDeI3B95U56dpyX9lYw
-    R6P7AlhWRHSD58ssenMIU7Bw1YLxxk/66q7hYMvggQQmsIJpv0SyB8EEr6y+U+Vq8beI
-    K8mtflMqXdMilrBiw+3UsWiUqYQ3hLTXYj2BCS1m1WwvLEnvj/J0xRTJ2fSceiKx0xoD
-    dIxFO1xuu/si+B2CrKVCiFiDOMII583Vby4D72N4J6FwZmWyOy1T0Tssh6ZU/CVN5iNN
-    j/Iw==
+    bh=jXxnQnzbXPA8M93ON7S2p/N4wqNDKwb9J+HxSXciy3A=;
+    b=D3WS5XgeE/nidxX6zIDF4ZWRB1lkZMuzyxU2juNhE3nTuhLe9227bhsW183/FlM2M6
+    +2H9EgqwJNrK4FOVkSOTLp3ZBglUAkjQTZA8LT2Uv+xZ65O7pA9bXz6uvkchxu3fup8O
+    WfEm329JRg+KKOijsKrHv52gibY5q7oYGINi0LIWj5O7MhAkc3EKNemQtAlcL7ex51i+
+    TpHTydmuk34BXRZw3aTUjYQGrGeU07a0p7XU6645i+XO+nSYVnVUTW+Ju6xBOI1Vkm+x
+    Q11cVYAWB4SY8Mz0vjNmWqEi5DQvt578EXVFfcW53LvbyHb7h+mH9pyvQa8QAJfSSfPv
+    wbeQ==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1763804170;
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1763804172;
     s=strato-dkim-0002; d=hartkopp.net;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=Rdk/brVQz6/Mf3/ryPuE9QCcp0FNo1pVRP0mZsYQTdM=;
-    b=MZ5W3jFtjk2mrIgjlPg1a776U7BlIIaCdey6klRJbLYk6UWJ/Ik/2CYdJCwwgl1OYy
-    DuIz11hjFQD0lVBAuWRLncQHo/FoicRDsKLl/7RPZCtN4lRaEcq1x6DNHM2AzVYjit3x
-    sHeTHybYOm9cXA53oYuzK6NvkbUBoD/gghi5yikRHSFxJBdtCyhwrJtGP13wWJ/4/v2I
-    gN27Wh2VJLjOjug+DAghraEebE1pKgYg/v1Dcgc6Qi5gL942f1wUQq8esbuegCLgXsIg
-    u44nX6PTGtyelun7AnxJTHLpaSjMRoqBCI/S6/54yCBXQMUrQdGBUKxaqcgi5qWL9sYd
-    mxOw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1763804170;
+    bh=jXxnQnzbXPA8M93ON7S2p/N4wqNDKwb9J+HxSXciy3A=;
+    b=j0XyoEwobxMtywfk7jlYDUN9rOS5wptwjVQt1ojzt/8zNDCf10TXDwG0GD80QuASXP
+    thipBsa7d6kwhAMZh6j7A4dsyiOuoJPbgFMCU7ncpuiir8YLaPmbcHSWLiUYfQCa5HYN
+    FHSw3VV9IKYGRm18lMTD5f1pNmBuiL1gLIUIURphmg4pb2Ivxsulu95S49Wr4kOh1Rcf
+    znpBHxi5nrgjvfoT58jU3RSzv258seqHcXRPTp1aQUoDcH4L2v7YZGcshDESfMGSz6RS
+    x1C+0GpKqnClKaCCEncM6R/1+Vk/Mh6WJpNJ0fNJspSTP3wGUyNPFKVWtpvq1W9mttUL
+    PK+w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1763804172;
     s=strato-dkim-0003; d=hartkopp.net;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=Rdk/brVQz6/Mf3/ryPuE9QCcp0FNo1pVRP0mZsYQTdM=;
-    b=sewBQO+t3w8drRU8D7MMpdbBfJkOAB1ztblavU77lN4ueIzI2taODBaoZ9yC48pySD
-    Casg1d756xTd+T9xmBDA==
+    bh=jXxnQnzbXPA8M93ON7S2p/N4wqNDKwb9J+HxSXciy3A=;
+    b=YuCeKBIA0WG4eJfwVe9tbMC530B0uHGreUxL6pnkDr8/DgkLfjdVZKOdhKMPU9aGkO
+    rZ9pq2N044s/i11eRPBw==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bGWj0Q=="
 Received: from lenov17.lan
     by smtp.strato.de (RZmta 54.0.0 AUTH)
-    with ESMTPSA id Ke2b461AM9aAFds
+    with ESMTPSA id Ke2b461AM9aBFdw
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Sat, 22 Nov 2025 10:36:10 +0100 (CET)
+    Sat, 22 Nov 2025 10:36:11 +0100 (CET)
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 To: linux-can@vger.kernel.org
 Cc: Vincent Mailhol <mailhol@kernel.org>,
 	Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [canxl v6 08/17] can: bittiming: add PWM parameters
-Date: Sat, 22 Nov 2025 10:35:52 +0100
-Message-ID: <20251122093602.1660-9-socketcan@hartkopp.net>
+Subject: [canxl v6 12/17] can: calc_bittiming: get rid of the incorrect "nominal" word
+Date: Sat, 22 Nov 2025 10:35:56 +0100
+Message-ID: <20251122093602.1660-13-socketcan@hartkopp.net>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251122093602.1660-1-socketcan@hartkopp.net>
 References: <20251122093602.1660-1-socketcan@hartkopp.net>
@@ -86,108 +86,135 @@ Content-Type: text/plain; charset="us-ascii"
 
 From: Vincent Mailhol <mailhol@kernel.org>
 
-In CAN XL, higher data bit rates require the CAN transceiver to switch
-its operation mode to use Pulse-Width Modulation (PWM) transmission
-mode instead of the classic dominant/recessive transmission mode.
+The functions can_update_sample_point() and can_calc_bittiming() are
+generic and meant to be used for both the nominal and the data
+bittiming calculation.
 
-The PWM parameters are:
+However, those functions use terminologies such as "bitrate nominal"
+or "sample point nominal". This is a leftover from when only Classical
+CAN was supported and now became incorrect.
 
-  - PWMS: pulse width modulation short phase
-  - PWML: pulse width modulation long phase
-  - PWMO: pulse width modulation offset
-
-CiA 612-2 specifies PWMS and PWML to be at least 1 (arguably, PWML
-shall be at least 2 to respect the PWMS < PWML rule). PWMO's minimum
-is expected to always be zero. It is added more for consistency than
-anything else.
-
-Add struct can_pwm_const so that the different devices can provide
-their minimum and maximum values.
-
-When TMS is on, the runtime PWMS, PWML and PWMO are needed (either
-calculated or provided by the user): add struct can_pwm to store
-these.
-
-TDC and PWM can not be used at the same time (TDC can only be used
-when TMS is off and PWM only when TMS is on). struct can_pwm is thus
-put together with struct can_tdc inside a union to save some space.
-
-The netlink logic will be added in an upcoming change.
+Remove or replace any occurrences of the word "nominal" with something
+more accurate.
 
 Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- include/linux/can/bittiming.h | 41 +++++++++++++++++++++++++++++++++--
- 1 file changed, 39 insertions(+), 2 deletions(-)
+ drivers/net/can/dev/calc_bittiming.c | 30 +++++++++++++---------------
+ 1 file changed, 14 insertions(+), 16 deletions(-)
 
-diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
-index b6cd2476ffd7..967d76689c4f 100644
---- a/include/linux/can/bittiming.h
-+++ b/include/linux/can/bittiming.h
-@@ -1,8 +1,8 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
- /* Copyright (c) 2020 Pengutronix, Marc Kleine-Budde <kernel@pengutronix.de>
-- * Copyright (c) 2021 Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-+ * Copyright (c) 2021-2025 Vincent Mailhol <mailhol@kernel.org>
+diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/calc_bittiming.c
+index 268ec6fa7c49..46f6f5942abb 100644
+--- a/drivers/net/can/dev/calc_bittiming.c
++++ b/drivers/net/can/dev/calc_bittiming.c
+@@ -22,35 +22,34 @@
+  * registers of the CAN controller. You can find more information
+  * in the header file linux/can/netlink.h.
   */
+ static int
+ can_update_sample_point(const struct can_bittiming_const *btc,
+-			const unsigned int sample_point_nominal, const unsigned int tseg,
++			const unsigned int sp_origin, const unsigned int tseg,
+ 			unsigned int *tseg1_ptr, unsigned int *tseg2_ptr,
+ 			unsigned int *sample_point_error_ptr)
+ {
+ 	unsigned int sample_point_error, best_sample_point_error = UINT_MAX;
+ 	unsigned int sample_point, best_sample_point = 0;
+ 	unsigned int tseg1, tseg2;
+ 	int i;
  
- #ifndef _CAN_BITTIMING_H
- #define _CAN_BITTIMING_H
+ 	for (i = 0; i <= 1; i++) {
+ 		tseg2 = tseg + CAN_SYNC_SEG -
+-			(sample_point_nominal * (tseg + CAN_SYNC_SEG)) /
+-			1000 - i;
++			(sp_origin * (tseg + CAN_SYNC_SEG)) / 1000 - i;
+ 		tseg2 = clamp(tseg2, btc->tseg2_min, btc->tseg2_max);
+ 		tseg1 = tseg - tseg2;
+ 		if (tseg1 > btc->tseg1_max) {
+ 			tseg1 = btc->tseg1_max;
+ 			tseg2 = tseg - tseg1;
+ 		}
  
-@@ -118,15 +118,52 @@ struct can_tdc_const {
- 	u32 tdco_max;
- 	u32 tdcf_min;
- 	u32 tdcf_max;
- };
+ 		sample_point = 1000 * (tseg + CAN_SYNC_SEG - tseg2) /
+ 			(tseg + CAN_SYNC_SEG);
+-		sample_point_error = abs(sample_point_nominal - sample_point);
++		sample_point_error = abs(sp_origin - sample_point);
  
-+/*
-+ * struct can_pwm - CAN Pulse-Width Modulation (PWM) parameters
-+ *
-+ * @pwms: pulse width modulation short phase
-+ * @pwml: pulse width modulation long phase
-+ * @pwmo: pulse width modulation offset
-+ */
-+struct can_pwm {
-+	u32 pwms;
-+	u32 pwml;
-+	u32 pwmo;
-+};
-+
-+/*
-+ * struct can_pwm - CAN hardware-dependent constants for Pulse-Width
-+ *	Modulation (PWM)
-+ *
-+ * @pwms_min: PWM short phase minimum value. Must be at least 1.
-+ * @pwms_max: PWM short phase maximum value
-+ * @pwml_min: PWM long phase minimum value. Must be at least 1.
-+ * @pwml_max: PWM long phase maximum value
-+ * @pwmo_min: PWM offset phase minimum value
-+ * @pwmo_max: PWM offset phase maximum value
-+ */
-+struct can_pwm_const {
-+	u32 pwms_min;
-+	u32 pwms_max;
-+	u32 pwml_min;
-+	u32 pwml_max;
-+	u32 pwmo_min;
-+	u32 pwmo_max;
-+};
-+
- struct data_bittiming_params {
- 	const struct can_bittiming_const *data_bittiming_const;
- 	struct can_bittiming data_bittiming;
- 	const struct can_tdc_const *tdc_const;
--	struct can_tdc tdc;
-+	const struct can_pwm_const *pwm_const;
-+	union {
-+		struct can_tdc tdc;
-+		struct can_pwm pwm;
-+	};
- 	const u32 *data_bitrate_const;
- 	unsigned int data_bitrate_const_cnt;
- 	int (*do_set_data_bittiming)(struct net_device *dev);
- 	int (*do_get_auto_tdcv)(const struct net_device *dev, u32 *tdcv);
- };
+-		if (sample_point <= sample_point_nominal &&
++		if (sample_point <= sp_origin &&
+ 		    sample_point_error < best_sample_point_error) {
+ 			best_sample_point = sample_point;
+ 			best_sample_point_error = sample_point_error;
+ 			*tseg1_ptr = tseg1;
+ 			*tseg2_ptr = tseg2;
+@@ -66,31 +65,31 @@ can_update_sample_point(const struct can_bittiming_const *btc,
+ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
+ 		       const struct can_bittiming_const *btc, struct netlink_ext_ack *extack)
+ {
+ 	struct can_priv *priv = netdev_priv(dev);
+ 	unsigned int bitrate;			/* current bitrate */
+-	unsigned int bitrate_error;		/* difference between current and nominal value */
++	unsigned int bitrate_error;		/* difference between current and calculated value */
+ 	unsigned int best_bitrate_error = UINT_MAX;
+-	unsigned int sample_point_error;	/* difference between current and nominal value */
++	unsigned int sample_point_error;	/* difference between current and calculated value */
+ 	unsigned int best_sample_point_error = UINT_MAX;
+-	unsigned int sample_point_nominal;	/* nominal sample point */
++	unsigned int sample_point;
+ 	unsigned int best_tseg = 0;		/* current best value for tseg */
+ 	unsigned int best_brp = 0;		/* current best value for brp */
+ 	unsigned int brp, tsegall, tseg, tseg1 = 0, tseg2 = 0;
+ 	u64 v64;
+ 	int err;
+ 
+ 	/* Use CiA recommended sample points */
+ 	if (bt->sample_point) {
+-		sample_point_nominal = bt->sample_point;
++		sample_point = bt->sample_point;
+ 	} else {
+ 		if (bt->bitrate > 800 * KILO /* BPS */)
+-			sample_point_nominal = 750;
++			sample_point = 750;
+ 		else if (bt->bitrate > 500 * KILO /* BPS */)
+-			sample_point_nominal = 800;
++			sample_point = 800;
+ 		else
+-			sample_point_nominal = 875;
++			sample_point = 875;
+ 	}
+ 
+ 	/* tseg even = round down, odd = round up */
+ 	for (tseg = (btc->tseg1_max + btc->tseg2_max) * 2 + 1;
+ 	     tseg >= (btc->tseg1_min + btc->tseg2_min) * 2; tseg--) {
+@@ -113,11 +112,11 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
+ 
+ 		/* reset sample point error if we have a better bitrate */
+ 		if (bitrate_error < best_bitrate_error)
+ 			best_sample_point_error = UINT_MAX;
+ 
+-		can_update_sample_point(btc, sample_point_nominal, tseg / 2,
++		can_update_sample_point(btc, sample_point, tseg / 2,
+ 					&tseg1, &tseg2, &sample_point_error);
+ 		if (sample_point_error >= best_sample_point_error)
+ 			continue;
+ 
+ 		best_sample_point_error = sample_point_error;
+@@ -144,13 +143,12 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
+ 				   "bitrate error: %u.%u%%",
+ 				   bitrate_error / 10, bitrate_error % 10);
+ 	}
+ 
+ 	/* real sample point */
+-	bt->sample_point = can_update_sample_point(btc, sample_point_nominal,
+-						   best_tseg, &tseg1, &tseg2,
+-						   NULL);
++	bt->sample_point = can_update_sample_point(btc, sample_point, best_tseg,
++						   &tseg1, &tseg2, NULL);
+ 
+ 	v64 = (u64)best_brp * 1000 * 1000 * 1000;
+ 	do_div(v64, priv->clock.freq);
+ 	bt->tq = (u32)v64;
+ 	bt->prop_seg = tseg1 / 2;
 -- 
 2.47.3
 
