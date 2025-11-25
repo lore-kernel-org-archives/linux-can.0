@@ -1,77 +1,77 @@
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.80])
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25A8330CDAA
-	for <linux-can@vger.kernel.org>; Tue, 25 Nov 2025 12:39:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9441831BCAC
+	for <linux-can@vger.kernel.org>; Tue, 25 Nov 2025 12:39:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.25
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764074372; cv=pass; b=ugqS6hgDObuEDCuUNX3c8SB0XTiKmokGCBzmTHtZZbf8jTuHj5/QhjiJZzAVlT8Dwojqws3IclFZB0q6mo2l9w7xX6p5+pdrB2vOWEpU5IpOsISK8NSq4XuTPi+wUBktMm0mNzO8VBUXQSHyBSJ4d86ENnx6Cf2E4j+knGP/j0c=
+	t=1764074372; cv=pass; b=YuPeLZvM8nuyzvPoydVcpb4gOa4QTiomwbyNPNFzlK4emePerVx18NPBS521L2yZrFsJ5M5Krvo8/4yaPuOlpDnQakVRwB0DTmQEacBUkH1WoOOqHR9Cdmr9pgWy2Iw6kjnWY9MSfCsuTe9GoHn/p3TWO3LaI+RJSpLZTWZ0nUw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1764074372; c=relaxed/simple;
-	bh=0AaIpZeLvXk4TmubDn+FdpydKuHP3+59DDLYTYxLW9Y=;
+	bh=s+lADGieyXp5NWDUjGmEQumpNZetzYKO0b2m4eFKE7o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oPT+puokJWecdJ+jWOsyNSWKmUFzeQR/W7bqgpzI+u/mTIcdY3v2aELFvvzwDu2nTkz42zDYDqBscoCZ2ItTad8zGmbwhj7kYdREwG3Ef/vYrqtWWsmmuQN7m2JOEY2Nv1TcUkYKZIZium2crOGywG8fccR3JF5pQSaqhPMMlCM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=qwxaJMz4; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=Nd6PvMoB; arc=pass smtp.client-ip=85.215.255.80
+	 MIME-Version:Content-Type; b=uPTe6G/ExHqX/yt3wumZjmoRDJRNxm2fRdDuatEBQFyrmJnv8ZuuwwYobil+YuCFnTrXZlimCuroaEnAMXJLVIeVgeBtC4apLnXrWKCTrNhDsmQWKD/X9NmOt5Nmn1cSsNPtdJuOxI0iyQHbiegLubdUDENELF1Z0I5HoWExiac=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=edx7d1PX; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=G7qje0rT; arc=pass smtp.client-ip=85.215.255.25
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="qwxaJMz4";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="Nd6PvMoB"
-ARC-Seal: i=1; a=rsa-sha256; t=1764074356; cv=none;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="edx7d1PX";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="G7qje0rT"
+ARC-Seal: i=1; a=rsa-sha256; t=1764074353; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=V/ycAx2XMWGnFekrzi2908TqhuT884ywENtgA+gPh/uJYcZxErdCC4ptb2VZ3Xzh7f
-    d9yTet12kUFpE7xzrlBOWJkYKE2FKAgCA+7Bqm+S9d1i9U2bzXHaXRoccjZKwdSEsKQY
-    sbMukeWa97yS28nhWJH5MT/ieJMi3JPE4sCdVmaf7uFfIhH9++utb1Kv+C+YA0MfYOYV
-    x/uQUGm5IsBtJmZsG4fTCZebEqsHh/oIYHAyVRXrdc5CSn5Cd9mQ5S7XA/1oqYtNI9cD
-    mUtPquRRcxJmsvkrcztdLDLQGoakbfQaIeTiP2Sd67aEtPNMZYVjQCCINJieF4SQWex4
-    G8xA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1764074356;
+    b=WDAaFwBeO43rS6tv1hhtxYB4Sh8avg63tt5FcndROvLCaW0ta+96RDWa8uiTtUkY7a
+    zJe0Wr8cQIty3woXlZQ84UmJQLvN9SArMv5/cmz+Rt+PLx2OGjJyBi4ikqdUvbg5r3qO
+    WtHP4ZSHAj8Ectgr5Cbtc745QKJNB7rdn/yAt0S/QYaIm2tPU61F1D/7c8AXMeHNGFpy
+    kc2/7wD0yIGV7LI20pBcOXyuD74BVunJzrt8g3/Z8jKV1fPpQmnKozohtHvHSnxjmP2C
+    os9Ah4G+6YeLRUSMQTYSK55+EBIsswbAZOQuzGwb4ry+7MZfEAtRkHXmlDAhhIDCrH/x
+    o7NA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1764074353;
     s=strato-dkim-0002; d=strato.com;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=kjd+hHKGoaYbEP0miptzBTsChrI/eNkwTx1XU2+Zcs0=;
-    b=eMs3YeR05aqgnIZVU86CSGUOG2SUBp5xI/FZYfbh05dY8YFCMpvVK9LAhgkHu9H0jT
-    RnEJ42L3S1Bqbp/RkZj8GV54SMzb2HenShlhoc79NAlZp5oEKOxeh+GIWxhrH+Yf8iUV
-    RT0FGw1FEqVRRJfrwZYxz0sxliir9FxB6+1zstf85kbjHHgQNDqbb5xJSLBA3BjR4VJt
-    VXhSb+MiokpqYTvJ9J6oFUMMKZPtqfb9wqSyo5oju56yUOLbdY0Rf8LRHJ+9SbwW/50r
-    6oxl7QhyVAS+wCG8QpKCdbJaNMMITtenOdyjJXT+NAoAsKysvH+Lp7zTFtnJmACHWCnU
-    ebxw==
+    bh=Vn4gsB8kwb7mn6S98lacK3xTSI77EQiiURCmYom8g/E=;
+    b=Ui9GXHkE6Sh9ub8Uv9RaCzQVYJIQ8kGiBDcjoNbXHnCpl5tTltJmxWjiGi5nBaQzwm
+    dZOrdIiDNIkEHxsUyZ4gT+woCdHhcmdKT5/NQ00sHrjqom8AYYa5w2ce0SXYktdmmSRZ
+    0zjCNFIaldjIGQH8KZ2n9iSH70FJd/eR2dlfbW2ojb8rer8xL06zS9scY1fPTmlJjzt4
+    4BcczwfHohw/8lheMkzAStkX7AOIUs8y6VCuQFo6ut/jGmCjBQ8msJMBUUzwXGcKNT2M
+    EYuAjksMgCJ3o5eJ9QSw8Z1LjHNzDBQb4RVcHizVrCUB0s7mdLXRLX3TR1eyLJSd/31Q
+    uSAw==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1764074356;
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1764074353;
     s=strato-dkim-0002; d=hartkopp.net;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=kjd+hHKGoaYbEP0miptzBTsChrI/eNkwTx1XU2+Zcs0=;
-    b=qwxaJMz4DWbNjz16ujdYpFCdvSszzDUKReOsa8OXrT63UGhLd+NjFpZGv6rh4qgCC8
-    Y0G/AgEnxZeUa2Uobe/b7BXqqSvJ05VJUcd5ljCs9CeDnM29mdNJFiI/ro38BhhTZUvx
-    3bj86N1oY71NqHmdHLyT3Jb2mNt0//TWFa8CdO8Y9uURJ/Hpjv5JFW4JAA7TPVQJfBRs
-    4kvu8KKTtKWWUZEXeIx2xBfKk8hVltCPq6W7k+hwplSH06Of+1wZI3a0OwMbqZ/zFCOH
-    p0TvoG8FPFx+9EC+FsiQE95uD5/4bqaXqXxAKofmOAgUG/GCxxj2v0Xj7hh4wve8EIDE
-    Iowg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1764074356;
+    bh=Vn4gsB8kwb7mn6S98lacK3xTSI77EQiiURCmYom8g/E=;
+    b=edx7d1PXu5q/7YxQE2x0ncZ88K+/7yAlj4gYlZAoHuT6jg87rpkSdZWEye1eGbkC5w
+    cvGi2FYb5+iiRw1inus8UxVslrS4cprHM0uEqYqa3JpfnEBVcJZVNvmoFtxUXUfLQBfM
+    3F+OkkvEO1nKwqD3O7B45qYnwlBE7yKPJOEyLClAkYHsa9r0fMiyafJl9ZP4Jnz9VIW8
+    ufvcFWQNdJYPyD4pPAOugNkYosE74HZbo/cszWnh3Kb2vdLzkLqzVAjnAgd2VAB8WgxW
+    /JTYA9u0cjoFFlhwckO1Zy4j1QoPEZzoZKIlhHWBjvAE48e1VQnanLJTLZPym9LBSLHB
+    Hq0w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1764074353;
     s=strato-dkim-0003; d=hartkopp.net;
     h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=kjd+hHKGoaYbEP0miptzBTsChrI/eNkwTx1XU2+Zcs0=;
-    b=Nd6PvMoBrKFPKndKpMqSjefKO4pu8o0WPnWOdssBMfP0zOi1qh8FGMLAtYe9U9XbrQ
-    UNPJM0CQJwUDHsLmGxBw==
+    bh=Vn4gsB8kwb7mn6S98lacK3xTSI77EQiiURCmYom8g/E=;
+    b=G7qje0rT5UXlYsbBIRECQu1SHqZ1AroWZScurbfT6PlgrY8xPOvjIYIrg9ArtVwiBg
+    jfUyqKK8QMiiOHForsAQ==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bGWj0Q=="
 Received: from lenov17.lan
     by smtp.strato.de (RZmta 54.0.0 AUTH)
-    with ESMTPSA id Ke2b461APCdGT8X
+    with ESMTPSA id Ke2b461APCdDT8M
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Tue, 25 Nov 2025 13:39:16 +0100 (CET)
+    Tue, 25 Nov 2025 13:39:13 +0100 (CET)
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 To: linux-can@vger.kernel.org
 Cc: Vincent Mailhol <mailhol@kernel.org>,
 	Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [canxl v7 13/17] can: calc_bittiming: add can_calc_sample_point_nrz()
-Date: Tue, 25 Nov 2025 13:38:55 +0100
-Message-ID: <20251125123859.3924-14-socketcan@hartkopp.net>
+Subject: [canxl v7 02/17] can: bittiming: apply NL_SET_ERR_MSG() to can_calc_bittiming()
+Date: Tue, 25 Nov 2025 13:38:44 +0100
+Message-ID: <20251125123859.3924-3-socketcan@hartkopp.net>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251125123859.3924-1-socketcan@hartkopp.net>
 References: <20251125123859.3924-1-socketcan@hartkopp.net>
@@ -86,75 +86,37 @@ Content-Type: text/plain; charset="us-ascii"
 
 From: Vincent Mailhol <mailhol@kernel.org>
 
-CAN XL optimal sample point for PWM encoding (when TMS is on) differs
-from the NRZ optimal one. There is thus a need to calculate a
-different sample point depending whether TMS is on or off.
+When CONFIG_CAN_CALC_BITTIMING is disabled, the can_calc_bittiming()
+functions can not be used and the user needs to provide all the
+bittiming parameters.
 
-This is a preparation change: move the sample point calculation from
-can_calc_bittiming() into the new can_calc_sample_point_nrz()
-function.
-
-In an upcoming change, a function will be added to calculate the
-sample point for PWM encoding.
+Currently, can_calc_bittiming() prints an error message to the kernel
+log. Instead use NL_SET_ERR_MSG() to make it return the error message
+through the netlink interface so that the user can directly see it.
 
 Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- drivers/net/can/dev/calc_bittiming.c | 25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
+ include/linux/can/bittiming.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/calc_bittiming.c
-index 46f6f5942abb..35db90be9c9a 100644
---- a/drivers/net/can/dev/calc_bittiming.c
-+++ b/drivers/net/can/dev/calc_bittiming.c
-@@ -8,10 +8,22 @@
- #include <linux/units.h>
- #include <linux/can/dev.h>
+diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
+index d30816dd93c7..3926c78b2222 100644
+--- a/include/linux/can/bittiming.h
++++ b/include/linux/can/bittiming.h
+@@ -139,11 +139,11 @@ void can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
+ #else /* !CONFIG_CAN_CALC_BITTIMING */
+ static inline int
+ can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
+ 		   const struct can_bittiming_const *btc, struct netlink_ext_ack *extack)
+ {
+-	netdev_err(dev, "bit-timing calculation not available\n");
++	NL_SET_ERR_MSG(extack, "bit-timing calculation not available\n");
+ 	return -EINVAL;
+ }
  
- #define CAN_CALC_MAX_ERROR 50 /* in one-tenth of a percent */
- 
-+/* CiA recommended sample points for Non Return to Zero encoding. */
-+static int can_calc_sample_point_nrz(const struct can_bittiming *bt)
-+{
-+	if (bt->bitrate > 800 * KILO /* BPS */)
-+		return 750;
-+
-+	if (bt->bitrate > 500 * KILO /* BPS */)
-+		return 800;
-+
-+	return 875;
-+}
-+
- /* Bit-timing calculation derived from:
-  *
-  * Code based on LinCAN sources and H8S2638 project
-  * Copyright 2004-2006 Pavel Pisa - DCE FELK CVUT cz
-  * Copyright 2005      Stanislav Marek
-@@ -76,21 +88,14 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 	unsigned int best_brp = 0;		/* current best value for brp */
- 	unsigned int brp, tsegall, tseg, tseg1 = 0, tseg2 = 0;
- 	u64 v64;
- 	int err;
- 
--	/* Use CiA recommended sample points */
--	if (bt->sample_point) {
-+	if (bt->sample_point)
- 		sample_point = bt->sample_point;
--	} else {
--		if (bt->bitrate > 800 * KILO /* BPS */)
--			sample_point = 750;
--		else if (bt->bitrate > 500 * KILO /* BPS */)
--			sample_point = 800;
--		else
--			sample_point = 875;
--	}
-+	else
-+		sample_point = can_calc_sample_point_nrz(bt);
- 
- 	/* tseg even = round down, odd = round up */
- 	for (tseg = (btc->tseg1_max + btc->tseg2_max) * 2 + 1;
- 	     tseg >= (btc->tseg1_min + btc->tseg2_min) * 2; tseg--) {
- 		tsegall = CAN_SYNC_SEG + tseg / 2;
+ static inline void
+ can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
 -- 
 2.47.3
 
