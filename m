@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DDD4227B8E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0552EED8
 	for <linux-can@vger.kernel.org>; Wed, 26 Nov 2025 12:01:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764158485; cv=none; b=eWV9Omr6pu0BiXaWYfp4BwxXQkBqdI/fB3ed7NlItbF0A1AIXGMHLaw48t6W2xIRxqZcj1A1sQwbL06+VzeyDefTOZKdDBUibFSrro0+EE8EY7d6MCfmYlO2UTLjcpJ6LTFOJFG4RpcwEfilx1LzD6RSseb2OJ2H+5tzts0Ji3U=
+	t=1764158485; cv=none; b=Lg+kCkG5WBClamqssWd6AeRTGMOvbdUDEePLBZOdA5umkHFmcINXLPy66Nwa3py6997dFYqJ5MXxR7EA4VVOcMA5haDfR4GtnHQ9/Pep3rM8AB44IM3XYOoPvhPTJvv6TR6Py5lu/FBwD/PQa10UICObjW3pde3/CGZbdcapzTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1764158485; c=relaxed/simple;
-	bh=E3D2TDv2bCzdN0F5NMcPT7rVLG9lrhp0P5VJOryu1sQ=;
+	bh=22t6RXS+TurcWtXOmRWHbmVPcBkQ87ouQCkKN3e1X8g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZW8R5RVKRXN+2AF8f3rpAvS61d60cq3vQM4Aw8aLXz7TypAq7gqq/jNjMs7JmlMQIa9TX2dq3XSTcFlIjPRYj8LYUunxobJLjrzypOEj4Pf6C9Syj+G3cDmZk8wm86BbSEcCY6pHoleR0zSpaDKW0ruKdbwL9IUro5nuj4oUwDI=
+	 MIME-Version; b=isWbz1Q6jeOmzhlpZ2G6tGZFXWhgMtqVYMOfaq6Mca1t+Xw2SEdjyzuoSWgkOCUVLz5KxsJFz8JGt3H9WYfMJpXUKZW5HxhxHh7Smh630MI95hKv8tF1nM/zjBGN7dL/n+Ya79SrkAg+wj7WT5waNSsfrBrM+ZIRPxF/Mab9Ntc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,19 +18,19 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vOECs-0004St-Mo; Wed, 26 Nov 2025 13:01:10 +0100
+	id 1vOECs-0004T0-I7; Wed, 26 Nov 2025 13:01:10 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vOECr-002bE8-1T;
-	Wed, 26 Nov 2025 13:01:09 +0100
+	id 1vOECs-002bEO-0H;
+	Wed, 26 Nov 2025 13:01:10 +0100
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 0C2C44A8A8C;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id C3ABA4A8A92;
 	Wed, 26 Nov 2025 12:01:09 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -39,11 +39,10 @@ Cc: davem@davemloft.net,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
 	Oliver Hartkopp <socketcan@hartkopp.net>,
-	Stephane Grosjean <stephane.grosjean@hms-networks.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 01/27] can: dev: can_get_ctrlmode_str: use capitalized ctrlmode strings
-Date: Wed, 26 Nov 2025 12:56:50 +0100
-Message-ID: <20251126120106.154635-2-mkl@pengutronix.de>
+Subject: [PATCH net-next 07/27] can: dev: can_dev_dropped_skb: drop CC/FD frames in CANXL-only mode
+Date: Wed, 26 Nov 2025 12:56:56 +0100
+Message-ID: <20251126120106.154635-8-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251126120106.154635-1-mkl@pengutronix.de>
 References: <20251126120106.154635-1-mkl@pengutronix.de>
@@ -61,66 +60,73 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Unify the ctrlmode related strings to the command line options of the
-'ip' tool from the iproute2 package. The capitalized strings are also
-shown when the detailed interface configuration is printed by 'ip'.
+The error-signalling (ES) is a mandatory functionality for CAN CC and
+CAN FD to report CAN frame format violations by sending an error-frame
+signal on the bus.
 
-Suggested-by: Stephane Grosjean <stephane.grosjean@hms-networks.com>
+A so-called 'mixed-mode' is intended to have (XL-tolerant) CAN FD nodes
+and CAN XL nodes on one CAN segment, where the FD-controllers can talk
+CC/FD and the XL-controllers can talk CC/FD/XL. This mixed-mode
+utilizes the error-signalling for sending CC/FD/XL frames.
+
+The CANXL-only mode disables the error-signalling in the CAN XL
+controller. This mode does not allow CC/FD frames to be sent but
+additionally offers a CAN XL transceiver mode switching (TMS).
+
+Configured with CAN_CTRLMODE_FD and CAN_CTRLMODE_XL this leads to:
+
+FD=0 XL=0 CC-only mode         (ES=1)
+FD=1 XL=0 FD/CC mixed-mode     (ES=1)
+FD=1 XL=1 XL/FD/CC mixed-mode  (ES=1)
+FD=0 XL=1 XL-only mode         (ES=0, TMS optional)
+
+The helper function can_dev_in_xl_only_mode() determines the required
+value to disable error signalling in the CAN XL controller.
+
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://patch.msgid.link/20251126-canxl-v8-1-e7e3eb74f889@pengutronix.de
+Link: https://patch.msgid.link/20251126-canxl-v8-7-e7e3eb74f889@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/dev.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ include/linux/can/dev.h | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
-index 80e1ab18de87..b392483e4499 100644
---- a/drivers/net/can/dev/dev.c
-+++ b/drivers/net/can/dev/dev.c
-@@ -92,29 +92,29 @@ const char *can_get_ctrlmode_str(u32 ctrlmode)
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index f15879bd818d..52c8be5c160e 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -135,6 +135,19 @@ void can_bus_off(struct net_device *dev);
+ const char *can_get_state_str(const enum can_state state);
+ const char *can_get_ctrlmode_str(u32 ctrlmode);
+ 
++static inline bool can_dev_in_xl_only_mode(struct can_priv *priv)
++{
++	const u32 mixed_mode = CAN_CTRLMODE_FD | CAN_CTRLMODE_XL;
++
++	/* When CAN XL is enabled but FD is disabled we are running in
++	 * the so-called 'CANXL-only mode' where the error signalling is
++	 * disabled. This helper function determines the required value
++	 * to disable error signalling in the CAN XL controller.
++	 * The so-called CC/FD/XL 'mixed mode' requires error signalling.
++	 */
++	return ((priv->ctrlmode & mixed_mode) == CAN_CTRLMODE_XL);
++}
++
+ /* drop skb if it does not contain a valid CAN frame for sending */
+ static inline bool can_dev_dropped_skb(struct net_device *dev, struct sk_buff *skb)
  {
- 	switch (ctrlmode & ~(ctrlmode - 1)) {
- 	case 0:
--		return "none";
-+		return "(none)";
- 	case CAN_CTRLMODE_LOOPBACK:
--		return "loopback";
-+		return "LOOPBACK";
- 	case CAN_CTRLMODE_LISTENONLY:
--		return "listen-only";
-+		return "LISTEN-ONLY";
- 	case CAN_CTRLMODE_3_SAMPLES:
--		return "triple-sampling";
-+		return "TRIPLE-SAMPLING";
- 	case CAN_CTRLMODE_ONE_SHOT:
--		return "one-shot";
-+		return "ONE-SHOT";
- 	case CAN_CTRLMODE_BERR_REPORTING:
--		return "berr-reporting";
-+		return "BERR-REPORTING";
- 	case CAN_CTRLMODE_FD:
--		return "fd";
-+		return "FD";
- 	case CAN_CTRLMODE_PRESUME_ACK:
--		return "presume-ack";
-+		return "PRESUME-ACK";
- 	case CAN_CTRLMODE_FD_NON_ISO:
--		return "fd-non-iso";
-+		return "FD-NON-ISO";
- 	case CAN_CTRLMODE_CC_LEN8_DLC:
--		return "cc-len8-dlc";
-+		return "CC-LEN8-DLC";
- 	case CAN_CTRLMODE_TDC_AUTO:
--		return "fd-tdc-auto";
-+		return "TDC-AUTO";
- 	case CAN_CTRLMODE_TDC_MANUAL:
--		return "fd-tdc-manual";
-+		return "TDC-MANUAL";
- 	default:
- 		return "<unknown>";
+@@ -153,6 +166,12 @@ static inline bool can_dev_dropped_skb(struct net_device *dev, struct sk_buff *s
+ 		goto invalid_skb;
  	}
-
-base-commit: ab084f0b8d6d2ee4b1c6a28f39a2a7430bdfa7f0
+ 
++	if (can_dev_in_xl_only_mode(priv) && !can_is_canxl_skb(skb)) {
++		netdev_info_once(dev,
++				 "Error signaling is disabled, dropping skb\n");
++		goto invalid_skb;
++	}
++
+ 	return can_dropped_invalid_skb(dev, skb);
+ 
+ invalid_skb:
 -- 
 2.51.0
 
