@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0552EED8
-	for <linux-can@vger.kernel.org>; Wed, 26 Nov 2025 12:01:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DC4526ED5F
+	for <linux-can@vger.kernel.org>; Wed, 26 Nov 2025 12:01:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764158485; cv=none; b=Lg+kCkG5WBClamqssWd6AeRTGMOvbdUDEePLBZOdA5umkHFmcINXLPy66Nwa3py6997dFYqJ5MXxR7EA4VVOcMA5haDfR4GtnHQ9/Pep3rM8AB44IM3XYOoPvhPTJvv6TR6Py5lu/FBwD/PQa10UICObjW3pde3/CGZbdcapzTY=
+	t=1764158486; cv=none; b=DmH52ohYpRi06qaRIGd8CiVtqCsqxSX0SD35vSKjzE6XnAnF85rjtJPDHisN8qdceTDxXMXzTK2KyxFjCOaN/VdeVlH484x4m/DDNDKxRv0wHZh2xNZyO28/8jER78pahYSERDdjwJVMar2oPmJQ58K8wgPa/tqk+EWCodLqkg0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764158485; c=relaxed/simple;
-	bh=22t6RXS+TurcWtXOmRWHbmVPcBkQ87ouQCkKN3e1X8g=;
+	s=arc-20240116; t=1764158486; c=relaxed/simple;
+	bh=NPDg3uNDgYhh7Ox4l5HPR0swr7EjvK5g0neVGasOI4c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=isWbz1Q6jeOmzhlpZ2G6tGZFXWhgMtqVYMOfaq6Mca1t+Xw2SEdjyzuoSWgkOCUVLz5KxsJFz8JGt3H9WYfMJpXUKZW5HxhxHh7Smh630MI95hKv8tF1nM/zjBGN7dL/n+Ya79SrkAg+wj7WT5waNSsfrBrM+ZIRPxF/Mab9Ntc=
+	 MIME-Version; b=LpYDRtSSGP869fBonI5hHpdj9It6klevm/PZDpxnTAOiIzaJddheBU+G7ns2g/CDRzN9hitAw+GV3Ytvng0mfMmuLi/OjzPFZ1VyZXTHoafGm4EGMe8CsUfEe+UNAG3jscE/MXcC6G1FtC39n8gRa5D4iZO6/OLNH8TbZx479nc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,31 +18,31 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vOECs-0004T0-I7; Wed, 26 Nov 2025 13:01:10 +0100
+	id 1vOECu-0004V8-8t; Wed, 26 Nov 2025 13:01:12 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vOECs-002bEO-0H;
-	Wed, 26 Nov 2025 13:01:10 +0100
+	id 1vOECt-002bFQ-0s;
+	Wed, 26 Nov 2025 13:01:11 +0100
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id C3ABA4A8A92;
-	Wed, 26 Nov 2025 12:01:09 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 0CB084A8AA4;
+	Wed, 26 Nov 2025 12:01:11 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Markus Schneider-Pargmann <msp@baylibre.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 07/27] can: dev: can_dev_dropped_skb: drop CC/FD frames in CANXL-only mode
-Date: Wed, 26 Nov 2025 12:56:56 +0100
-Message-ID: <20251126120106.154635-8-mkl@pengutronix.de>
+Subject: [PATCH net-next 25/27] MAINTAINERS: Add myself as m_can maintainer
+Date: Wed, 26 Nov 2025 12:57:14 +0100
+Message-ID: <20251126120106.154635-26-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251126120106.154635-1-mkl@pengutronix.de>
 References: <20251126120106.154635-1-mkl@pengutronix.de>
@@ -58,75 +58,32 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Markus Schneider-Pargmann <msp@baylibre.com>
 
-The error-signalling (ES) is a mandatory functionality for CAN CC and
-CAN FD to report CAN frame format violations by sending an error-frame
-signal on the bus.
+As I have contributed to the m_can driver over the past years, I would
+like to continue maintaining the driver. As Chandrasekar is currently
+not responsive, I will replace him as the maintainer of the driver.
 
-A so-called 'mixed-mode' is intended to have (XL-tolerant) CAN FD nodes
-and CAN XL nodes on one CAN segment, where the FD-controllers can talk
-CC/FD and the XL-controllers can talk CC/FD/XL. This mixed-mode
-utilizes the error-signalling for sending CC/FD/XL frames.
-
-The CANXL-only mode disables the error-signalling in the CAN XL
-controller. This mode does not allow CC/FD frames to be sent but
-additionally offers a CAN XL transceiver mode switching (TMS).
-
-Configured with CAN_CTRLMODE_FD and CAN_CTRLMODE_XL this leads to:
-
-FD=0 XL=0 CC-only mode         (ES=1)
-FD=1 XL=0 FD/CC mixed-mode     (ES=1)
-FD=1 XL=1 XL/FD/CC mixed-mode  (ES=1)
-FD=0 XL=1 XL-only mode         (ES=0, TMS optional)
-
-The helper function can_dev_in_xl_only_mode() determines the required
-value to disable error signalling in the CAN XL controller.
-
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://patch.msgid.link/20251126-canxl-v8-7-e7e3eb74f889@pengutronix.de
+Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
+Link: https://patch.msgid.link/20251119-topic-mcan-reviewer-v6-18-v2-1-f842c3094b18@baylibre.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- include/linux/can/dev.h | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index f15879bd818d..52c8be5c160e 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -135,6 +135,19 @@ void can_bus_off(struct net_device *dev);
- const char *can_get_state_str(const enum can_state state);
- const char *can_get_ctrlmode_str(u32 ctrlmode);
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e9a8d945632b..92951d196d27 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15413,7 +15413,7 @@ F:	drivers/net/phy/mxl-86110.c
+ F:	drivers/net/phy/mxl-gpy.c
  
-+static inline bool can_dev_in_xl_only_mode(struct can_priv *priv)
-+{
-+	const u32 mixed_mode = CAN_CTRLMODE_FD | CAN_CTRLMODE_XL;
-+
-+	/* When CAN XL is enabled but FD is disabled we are running in
-+	 * the so-called 'CANXL-only mode' where the error signalling is
-+	 * disabled. This helper function determines the required value
-+	 * to disable error signalling in the CAN XL controller.
-+	 * The so-called CC/FD/XL 'mixed mode' requires error signalling.
-+	 */
-+	return ((priv->ctrlmode & mixed_mode) == CAN_CTRLMODE_XL);
-+}
-+
- /* drop skb if it does not contain a valid CAN frame for sending */
- static inline bool can_dev_dropped_skb(struct net_device *dev, struct sk_buff *skb)
- {
-@@ -153,6 +166,12 @@ static inline bool can_dev_dropped_skb(struct net_device *dev, struct sk_buff *s
- 		goto invalid_skb;
- 	}
- 
-+	if (can_dev_in_xl_only_mode(priv) && !can_is_canxl_skb(skb)) {
-+		netdev_info_once(dev,
-+				 "Error signaling is disabled, dropping skb\n");
-+		goto invalid_skb;
-+	}
-+
- 	return can_dropped_invalid_skb(dev, skb);
- 
- invalid_skb:
+ MCAN MMIO DEVICE DRIVER
+-M:	Chandrasekar Ramakrishnan <rcsekar@samsung.com>
++M:	Markus Schneider-Pargmann <msp@baylibre.com>
+ L:	linux-can@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
 -- 
 2.51.0
 
