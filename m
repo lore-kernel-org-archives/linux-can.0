@@ -1,15 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A06D2FF169
-	for <linux-can@vger.kernel.org>; Wed, 26 Nov 2025 15:57:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31C77309DB5
+	for <linux-can@vger.kernel.org>; Wed, 26 Nov 2025 15:57:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764172644; cv=none; b=nlur+u7EtbrXBQd2bwuOnTRDLscGGCdnoxEgeptWFPRV/1dlqLBhcMbj7SXU4Jx6F1NHJSdv3kGfO+SgylClP4Z8M9hHyr0uU6mxb5rxUGcx0Cvji9cjTZEOZ4VNtCf1ijjs8pyuOJQNm/pd9GZ9V/syTTid25/Tn2tcJ+X9PNg=
+	t=1764172645; cv=none; b=Ho8C8lKPvpeeqAAZxTAGkkwz+foqK3gWXD6j6wvXsEp0OpAIYzGKUzxKRhsxAoR7eb7gIDzsO0FSTckWgQMQ03my4Ndq/hl7ZyDgBLf07WP5OQcboWgz7TIy0aYxge80+LWzCK8NqtLPj3hi0KxRiPMfQ+FAQlcspzMA/pWHnV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764172644; c=relaxed/simple;
-	bh=+2IUbJFe90zvO9QyeJeFt5wDFsL5jkdQGMdFqcO7YR8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lgjwaU+zYyHRMWF4RFmhigYoUROrg9DyRo/Y815R4sDinA5i63vZOb4PzLRELUPwSmq0Tu65sh0rfpyybcabKmNl67CBzvzVz0S+dw8zCjUCtd7gbDSYLiOOFAzAbbLLv30wEHy/w3kwXuAPWwEqyPJPC6pgO+ZTo7kOnlGM+cQ=
+	s=arc-20240116; t=1764172645; c=relaxed/simple;
+	bh=a58SFlAO9yhzjDM9ourHVljT7JBIgXlju830I0HuwJo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=IdAxmNonRzrCP6o6wZ6Ny5tab/lccR0a9D1+si2jLbyQhSoWDNFxfrBnJJbX/5OxVBDLuuBC0YdeKxFdum2j0IOXSFAG77mgt0cpfd3NEURS1oRY6XCJ+8o+snvCG8XMci0s+fS+BR/ROxCIc7Wi09fQqxAQ0V8o1KBOQBfYFDw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -17,112 +18,123 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vOHtO-00064y-Fb; Wed, 26 Nov 2025 16:57:18 +0100
+	id 1vOHtO-000652-Fd; Wed, 26 Nov 2025 16:57:18 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vOHtN-002dLc-2g;
-	Wed, 26 Nov 2025 16:57:17 +0100
+	id 1vOHtO-002dLi-0K;
+	Wed, 26 Nov 2025 16:57:18 +0100
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 83BAD4A8E30;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id C32F04A8E34;
 	Wed, 26 Nov 2025 15:57:17 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
-	kernel@pengutronix.de
-Subject: [PATCH net 0/8] pull-request: can 2025-11-26
-Date: Wed, 26 Nov 2025 16:41:10 +0100
-Message-ID: <20251126155713.217105-1-mkl@pengutronix.de>
+	kernel@pengutronix.de,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 4/8] can: gs_usb: gs_usb_receive_bulk_callback(): check actual_length before accessing header
+Date: Wed, 26 Nov 2025 16:41:14 +0100
+Message-ID: <20251126155713.217105-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20251126155713.217105-1-mkl@pengutronix.de>
+References: <20251126155713.217105-1-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Hello netdev-team,
+The driver expects to receive a struct gs_host_frame in
+gs_usb_receive_bulk_callback().
 
-this is a pull request of 8 patches for net/main.
+Use struct_group to describe the header of the struct gs_host_frame and
+check that we have at least received the header before accessing any
+members of it.
 
-Seungjin Bae provides a patch for the kvaser_usb driver to fix a
-potential infinite loop in the USB data stream command parser.
+To resubmit the URB, do not dereference the pointer chain
+"dev->parent->hf_size_rx" but use "parent->hf_size_rx" instead. Since
+"urb->context" contains "parent", it is always defined, while "dev" is not
+defined if the URB it too short.
 
-Thomas Mühlbacher's patch for the sja1000 driver IRQ handler's max
-loop handling, that might lead to unhandled interrupts.
-
-3 patches by me for the gs_usb driver fix handling of failed transmit
-URBs and add checking of the actual length of received URBs before
-accessing the data.
-
-The next patch is by me and is a port of Thomas Mühlbacher's patch
-(fix IRQ handler's max loop handling, that might lead to unhandled
-interrupts.) to the sun4i_can driver.
-
-Biju Das provides a patch for the rcar_canfd driver to fix the CAN-FD
-mode setting.
-
-The last patch is by Shaurya Rane for the em_canid filter to ensure
-that the complete CAN frame is present in the linear data buffer
-before accessing it.
-
-regards,
-Marc
-
+Fixes: d08e973a77d1 ("can: gs_usb: Added support for the GS_USB CAN devices")
+Link: https://patch.msgid.link/20251114-gs_usb-fix-usb-callbacks-v1-2-a29b42eacada@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/usb/gs_usb.c | 26 +++++++++++++++++++-------
+ 1 file changed, 19 insertions(+), 7 deletions(-)
 
-The following changes since commit 5442a9da69789741bfda39f34ee7f69552bf0c56:
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index fa9bab8c89ae..51f8d694104d 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -262,13 +262,15 @@ struct canfd_quirk {
+ } __packed;
+ 
+ struct gs_host_frame {
+-	u32 echo_id;
+-	__le32 can_id;
++	struct_group(header,
++		u32 echo_id;
++		__le32 can_id;
+ 
+-	u8 can_dlc;
+-	u8 channel;
+-	u8 flags;
+-	u8 reserved;
++		u8 can_dlc;
++		u8 channel;
++		u8 flags;
++		u8 reserved;
++	);
+ 
+ 	union {
+ 		DECLARE_FLEX_ARRAY(struct classic_can, classic_can);
+@@ -576,6 +578,7 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
+ 	int rc;
+ 	struct net_device_stats *stats;
+ 	struct gs_host_frame *hf = urb->transfer_buffer;
++	unsigned int minimum_length;
+ 	struct gs_tx_context *txc;
+ 	struct can_frame *cf;
+ 	struct canfd_frame *cfd;
+@@ -594,6 +597,15 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
+ 		return;
+ 	}
+ 
++	minimum_length = sizeof(hf->header);
++	if (urb->actual_length < minimum_length) {
++		dev_err_ratelimited(&parent->udev->dev,
++				    "short read (actual_length=%u, minimum_length=%u)\n",
++				    urb->actual_length, minimum_length);
++
++		goto resubmit_urb;
++	}
++
+ 	/* device reports out of range channel id */
+ 	if (hf->channel >= parent->channel_cnt)
+ 		goto device_detach;
+@@ -687,7 +699,7 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
+ resubmit_urb:
+ 	usb_fill_bulk_urb(urb, parent->udev,
+ 			  parent->pipe_in,
+-			  hf, dev->parent->hf_size_rx,
++			  hf, parent->hf_size_rx,
+ 			  gs_usb_receive_bulk_callback, parent);
+ 
+ 	rc = usb_submit_urb(urb, GFP_ATOMIC);
+-- 
+2.51.0
 
-  veth: more robust handing of race to avoid txq getting stuck (2025-11-14 18:16:53 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-6.18-20251126
-
-for you to fetch changes up to 0c922106d7a58d106c6a5c52a741ae101cfaf088:
-
-  net/sched: em_canid: fix uninit-value in em_canid_match (2025-11-26 16:28:10 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-6.18-20251126
-
-----------------------------------------------------------------
-Biju Das (1):
-      can: rcar_canfd: Fix CAN-FD mode as default
-
-Marc Kleine-Budde (5):
-      can: gs_usb: gs_usb_xmit_callback(): fix handling of failed transmitted URBs
-      can: gs_usb: gs_usb_receive_bulk_callback(): check actual_length before accessing header
-      can: gs_usb: gs_usb_receive_bulk_callback(): check actual_length before accessing data
-      Merge patch series "can: gs_usb: fix USB bulk in and out callbacks"
-      can: sun4i_can: sun4i_can_interrupt(): fix max irq loop handling
-
-Seungjin Bae (1):
-      can: kvaser_usb: leaf: Fix potential infinite loop in command parsers
-
-Shaurya Rane (1):
-      net/sched: em_canid: fix uninit-value in em_canid_match
-
-Thomas Mühlbacher (1):
-      can: sja1000: fix max irq loop handling
-
- drivers/net/can/rcar/rcar_canfd.c                |  53 +++++++-----
- drivers/net/can/sja1000/sja1000.c                |   4 +-
- drivers/net/can/sun4i_can.c                      |   4 +-
- drivers/net/can/usb/gs_usb.c                     | 102 +++++++++++++++++++----
- drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c |   4 +-
- net/sched/em_canid.c                             |   3 +
- 6 files changed, 128 insertions(+), 42 deletions(-)
