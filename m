@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06A7326D77
-	for <linux-can@vger.kernel.org>; Wed, 26 Nov 2025 12:01:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3803E3271F2
+	for <linux-can@vger.kernel.org>; Wed, 26 Nov 2025 12:01:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764158491; cv=none; b=EG1Auu7JTYGe9Z9uOPYEqcRTHlUbK7ZPgamCiA0QYuXfiUh6xk5mP7B0rsWYH/UukR/QvMEW7hd2ae+gKNw9TEk08iNsBMWAs5tsxQFjX9gwsaF9nbrAeIxF29QkVIySEjSP/xwHVzGPfD+5/r1z5GNgPJfzDAtuxiNoN8isdsU=
+	t=1764158491; cv=none; b=ou4a8IZVTkIUNxvBw+9MZ0743P4hOSpmSbBwRz/aYkD2/FiLKJGZRJuP5kn2+Vm9aqX7KzFG09WUJHEL+0tdG4dGtHgyzO8QnaCpQC/MZNJus63vvJnDGj9poGhGZaWIvx9J9SKoHmSbOONvBNHCDMIDb4XXmIWROGbunKmcPFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1764158491; c=relaxed/simple;
-	bh=AhjR1cEo1gE0trlX3twvkLMByno0fGOIVuMG2lixDR8=;
+	bh=aheZxCZaMBbKk92FiVzpN6HMiZ4cIriqzEefRK4+0/s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EOvdsiZ7gqAHeV0Th6cdm1Sfh1YQioqwUd/JycqqCHeEREwIglT8B4OJO5MvtNsYO5gH/YnbX3MGYvMWSwIZvUeayEn4h8yWseimHNzfE6WJ2PxQ2JzfOxfGB5nbFOL6vewnoKio7aeqbMlmFybsgAo1OevX2ev5XPA42RY8hUo=
+	 MIME-Version; b=lSuZPmFoVLRjEh8ai1IJuL00txde7mrAx/2iXDG0+kJLOer2W5qRhovhpHP5O6it7rltx2gOHmaZRSwQcB5cXudTPEJokz1X6jVASN1CEkmKUY9derSwTlp0+NWJwx0mjkU6+CaBNpbmOWg6nEWQN2pd8efDsz3xQUF9KwDJRTs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,32 +18,32 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vOECu-0004VB-Vo; Wed, 26 Nov 2025 13:01:12 +0100
+	id 1vOECs-0004Sv-IA; Wed, 26 Nov 2025 13:01:10 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vOECt-002bFX-1B;
-	Wed, 26 Nov 2025 13:01:11 +0100
+	id 1vOECr-002bEC-21;
+	Wed, 26 Nov 2025 13:01:09 +0100
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 24B894A8AA6;
-	Wed, 26 Nov 2025 12:01:11 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 3B2AE4A8A8E;
+	Wed, 26 Nov 2025 12:01:09 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 27/27] dt-bindings: can: mpfs: document resets
-Date: Wed, 26 Nov 2025 12:57:16 +0100
-Message-ID: <20251126120106.154635-28-mkl@pengutronix.de>
+Subject: [PATCH net-next 03/27] can: dev: can_dev_dropped_skb: drop CAN FD skbs if FD is off
+Date: Wed, 26 Nov 2025 12:56:52 +0100
+Message-ID: <20251126120106.154635-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251126120106.154635-1-mkl@pengutronix.de>
 References: <20251126120106.154635-1-mkl@pengutronix.de>
@@ -59,51 +59,70 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Conor Dooley <conor.dooley@microchip.com>
+From: Vincent Mailhol <mailhol@kernel.org>
 
-The CAN cores on Polarfire SoC both have a reset. The platform firmware
-brings both cores out of reset, but the linux driver must use them
-during normal operation. The resets should have been made required, but
-this is one of the things that can happen when the binding is written
-without driver support.
+Currently, the CAN FD skb validation logic is based on the MTU: the
+interface is deemed FD capable if and only if its MTU is greater or
+equal to CANFD_MTU.
 
-Fixes: c878d518d7b6 ("dt-bindings: can: mpfs: document the mpfs CAN controller")
-Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
-Link: https://patch.msgid.link/20251121-sample-footsore-743d81772efc@spud
+This logic is showing its limit with the introduction of CAN XL. For
+example, consider the two scenarios below:
+
+  1. An interface configured with CAN FD on and CAN XL on
+
+  2. An interface configured with CAN FD off and CAN XL on
+
+In those two scenarios, the interfaces would have the same MTU:
+
+  CANXL_MTU
+
+making it impossible to differentiate which one has CAN FD turned on
+and which one has it off.
+
+Because of the limitation, the only non-UAPI-breaking workaround is to
+do the check at the device level using the can_priv->ctrlmode flags.
+Unfortunately, the virtual interfaces (vcan, vxcan), which do not have
+a can_priv, are left behind.
+
+Add a check on the CAN_CTRLMODE_FD flag in can_dev_dropped_skb() and
+drop FD frames whenever the feature is turned off.
+
+Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://patch.msgid.link/20251126-canxl-v8-3-e7e3eb74f889@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../devicetree/bindings/net/can/microchip,mpfs-can.yaml      | 5 +++++
- 1 file changed, 5 insertions(+)
+ include/linux/can/dev.h | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml b/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml
-index 1219c5cb601f..519a11fbe972 100644
---- a/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml
-+++ b/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml
-@@ -32,11 +32,15 @@ properties:
-       - description: AHB peripheral clock
-       - description: CAN bus clock
- 
-+  resets:
-+    maxItems: 1
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index bd7410b5d8a6..a7a39a6101d9 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -103,12 +103,20 @@ static inline bool can_dev_dropped_skb(struct net_device *dev, struct sk_buff *s
+ 	if (priv->ctrlmode & CAN_CTRLMODE_LISTENONLY) {
+ 		netdev_info_once(dev,
+ 				 "interface in listen only mode, dropping skb\n");
+-		kfree_skb(skb);
+-		dev->stats.tx_dropped++;
+-		return true;
++		goto invalid_skb;
++	}
 +
- required:
-   - compatible
-   - reg
-   - interrupts
-   - clocks
-+  - resets
++	if (!(priv->ctrlmode & CAN_CTRLMODE_FD) && can_is_canfd_skb(skb)) {
++		netdev_info_once(dev, "CAN FD is disabled, dropping skb\n");
++		goto invalid_skb;
+ 	}
  
- additionalProperties: false
+ 	return can_dropped_invalid_skb(dev, skb);
++
++invalid_skb:
++	kfree_skb(skb);
++	dev->stats.tx_dropped++;
++	return true;
+ }
  
-@@ -46,6 +50,7 @@ examples:
-         compatible = "microchip,mpfs-can";
-         reg = <0x2010c000 0x1000>;
-         clocks = <&clkcfg 17>, <&clkcfg 37>;
-+        resets = <&clkcfg 17>;
-         interrupt-parent = <&plic>;
-         interrupts = <56>;
-     };
+ void can_setup(struct net_device *dev);
 -- 
 2.51.0
 
