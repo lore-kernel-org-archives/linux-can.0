@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF915325738
-	for <linux-can@vger.kernel.org>; Wed, 26 Nov 2025 12:01:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 152B1326933
+	for <linux-can@vger.kernel.org>; Wed, 26 Nov 2025 12:01:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764158489; cv=none; b=Zha2V6CAt+nYAnpKjuGd+TiwzVHNLEK6kfosI1pGwOye8jIOvhUfoXLk/aOTkXYpKkosmIYDoVgO3cnZer0BU7pJKVH0OOobkOHrcE5HUOsac6XsGK4StdweSoUKr6tHc/kL7lmd05YNfyxOBML6YmTiUfPxqlTW5B+nu4v3oWY=
+	t=1764158490; cv=none; b=mm2goW2XYSqEso/5I8FmBdxbaXMcgh56zfPMQFde94ntheb9bsfRqZEsVSEJ1y6uw9AqK4KmH7PwzWJIwBE97dKr1EuMvp6cuHXhUQBn4nH5XnbEhDyVgS5K+S39m4w4GmqvdQ/vCF+N6BOXE63EWJaNwgTfPV3hJSJ+5saL43w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764158489; c=relaxed/simple;
-	bh=JJabgDqvlVpnsXoR7q7DhRAq0fUSsY87dBiDTFvMrL4=;
+	s=arc-20240116; t=1764158490; c=relaxed/simple;
+	bh=tNWYgAzCujUZXzOgYrG2ICUQbZeGjfccCgMPv+VBW98=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WfKcHD8GUJ/y/dkOEylbTlEevkgyFnOn5iGUnYjfwVwqozmqsZFdYtgQJ8fbeNfNUnsHlPUEmXp7FcGyi9SvVLq3DCZ2gWMzT1AkByP25CV+iaucJm1QHE2tHBTlj27Ncwq6igK6h+O1lpWKJM0SuNqdDsJ5Y4XSnxuzDgPhSog=
+	 MIME-Version; b=M2CgSzJXMWKqDlgyHVlW1pknwU9JqJBZsUO6NRmWiszQOdhccbEgyLld636F5bjOPrDMRY088PGDJdSD4sUkJPs5zSSLdOWGKgLxN3jsYkX+EpEyLChx3tgdeqLt/R8WCfmGEVomZAPImLOycPBPdUNbS7dTuQ8dWFbD6ZtxXUg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,19 +18,19 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vOECs-0004T1-IB; Wed, 26 Nov 2025 13:01:10 +0100
+	id 1vOECs-0004Sz-ID; Wed, 26 Nov 2025 13:01:10 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vOECs-002bER-0U;
-	Wed, 26 Nov 2025 13:01:10 +0100
+	id 1vOECr-002bEL-37;
+	Wed, 26 Nov 2025 13:01:09 +0100
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id DD7F94A8A93;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id AEA214A8A91;
 	Wed, 26 Nov 2025 12:01:09 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -41,9 +41,9 @@ Cc: davem@davemloft.net,
 	Vincent Mailhol <mailhol@kernel.org>,
 	Oliver Hartkopp <socketcan@hartkopp.net>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 08/27] can: bittiming: add PWM parameters
-Date: Wed, 26 Nov 2025 12:56:57 +0100
-Message-ID: <20251126120106.154635-9-mkl@pengutronix.de>
+Subject: [PATCH net-next 06/27] can: netlink: add CAN_CTRLMODE_XL_TMS flag
+Date: Wed, 26 Nov 2025 12:56:55 +0100
+Message-ID: <20251126120106.154635-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251126120106.154635-1-mkl@pengutronix.de>
 References: <20251126120106.154635-1-mkl@pengutronix.de>
@@ -61,104 +61,152 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol@kernel.org>
 
-In CAN XL, higher data bit rates require the CAN transceiver to switch
-its operation mode to use Pulse-Width Modulation (PWM) transmission
-mode instead of the classic dominant/recessive transmission mode.
+The Transceiver Mode Switching (TMS) indicates whether the CAN XL
+controller shall use the PWM or NRZ encoding during the data phase.
 
-The PWM parameters are:
+The term "transceiver mode switching" is used in both ISO 11898-1 and
+CiA 612-2 (although only the latter one uses the abbreviation TMS). We
+adopt the same naming convention here for consistency.
 
-  - PWMS: pulse width modulation short phase
-  - PWML: pulse width modulation long phase
-  - PWMO: pulse width modulation offset
+Add the CAN_CTRLMODE_XL_TMS flag to the list of the CAN control modes.
 
-CiA 612-2 specifies PWMS and PWML to be at least 1 (arguably, PWML
-shall be at least 2 to respect the PWMS < PWML rule). PWMO's minimum
-is expected to always be zero. It is added more for consistency than
-anything else.
-
-Add struct can_pwm_const so that the different devices can provide
-their minimum and maximum values.
-
-When TMS is on, the runtime PWMS, PWML and PWMO are needed (either
-calculated or provided by the user): add struct can_pwm to store
-these.
-
-TDC and PWM can not be used at the same time (TDC can only be used
-when TMS is off and PWM only when TMS is on). struct can_pwm is thus
-put together with struct can_tdc inside a union to save some space.
-
-The netlink logic will be added in an upcoming change.
+Add can_validate_xl_flags() to check the coherency of the TMS flag.
+That function will be reused in upcoming changes to validate the other
+CAN XL flags.
 
 Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://patch.msgid.link/20251126-canxl-v8-8-e7e3eb74f889@pengutronix.de
+Link: https://patch.msgid.link/20251126-canxl-v8-6-e7e3eb74f889@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- include/linux/can/bittiming.h | 41 +++++++++++++++++++++++++++++++++--
- 1 file changed, 39 insertions(+), 2 deletions(-)
+ drivers/net/can/dev/dev.c        |  2 ++
+ drivers/net/can/dev/netlink.c    | 48 ++++++++++++++++++++++++++++++--
+ include/uapi/linux/can/netlink.h |  1 +
+ 3 files changed, 48 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
-index b6cd2476ffd7..967d76689c4f 100644
---- a/include/linux/can/bittiming.h
-+++ b/include/linux/can/bittiming.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
- /* Copyright (c) 2020 Pengutronix, Marc Kleine-Budde <kernel@pengutronix.de>
-- * Copyright (c) 2021 Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-+ * Copyright (c) 2021-2025 Vincent Mailhol <mailhol@kernel.org>
-  */
+diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
+index bdec2c52c8ec..091f30e94c61 100644
+--- a/drivers/net/can/dev/dev.c
++++ b/drivers/net/can/dev/dev.c
+@@ -123,6 +123,8 @@ const char *can_get_ctrlmode_str(u32 ctrlmode)
+ 		return "XL-TDC-AUTO";
+ 	case CAN_CTRLMODE_XL_TDC_MANUAL:
+ 		return "XL-TDC-MANUAL";
++	case CAN_CTRLMODE_XL_TMS:
++		return "TMS";
+ 	default:
+ 		return "<unknown>";
+ 	}
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index fdd1fa7cf93a..b2c24439abba 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -181,6 +181,32 @@ static int can_validate_databittiming(struct nlattr *data[],
+ 	return 0;
+ }
  
- #ifndef _CAN_BITTIMING_H
-@@ -120,11 +120,48 @@ struct can_tdc_const {
- 	u32 tdcf_max;
- };
++static int can_validate_xl_flags(struct netlink_ext_ack *extack,
++				 u32 masked_flags, u32 mask)
++{
++	if (masked_flags & CAN_CTRLMODE_XL) {
++		if (masked_flags & CAN_CTRLMODE_XL_TMS) {
++			const u32 tms_conflicts_mask = CAN_CTRLMODE_FD |
++				CAN_CTRLMODE_XL_TDC_MASK;
++			u32 tms_conflicts = masked_flags & tms_conflicts_mask;
++
++			if (tms_conflicts) {
++				NL_SET_ERR_MSG_FMT(extack,
++						   "TMS and %s are mutually exclusive",
++						   can_get_ctrlmode_str(tms_conflicts));
++				return -EOPNOTSUPP;
++			}
++		}
++	} else {
++		if (mask & CAN_CTRLMODE_XL_TMS) {
++			NL_SET_ERR_MSG(extack, "TMS requires CAN XL");
++			return -EOPNOTSUPP;
++		}
++	}
++
++	return 0;
++}
++
+ static int can_validate(struct nlattr *tb[], struct nlattr *data[],
+ 			struct netlink_ext_ack *extack)
+ {
+@@ -201,6 +227,10 @@ static int can_validate(struct nlattr *tb[], struct nlattr *data[],
+ 				       "LISTEN-ONLY and RESTRICTED modes are mutually exclusive");
+ 			return -EOPNOTSUPP;
+ 		}
++
++		err = can_validate_xl_flags(extack, flags, cm->mask);
++		if (err)
++			return err;
+ 	}
  
-+/*
-+ * struct can_pwm - CAN Pulse-Width Modulation (PWM) parameters
-+ *
-+ * @pwms: pulse width modulation short phase
-+ * @pwml: pulse width modulation long phase
-+ * @pwmo: pulse width modulation offset
-+ */
-+struct can_pwm {
-+	u32 pwms;
-+	u32 pwml;
-+	u32 pwmo;
-+};
+ 	err = can_validate_bittiming(data, extack, IFLA_CAN_BITTIMING);
+@@ -226,7 +256,7 @@ static int can_ctrlmode_changelink(struct net_device *dev,
+ {
+ 	struct can_priv *priv = netdev_priv(dev);
+ 	struct can_ctrlmode *cm;
+-	u32 ctrlstatic, maskedflags, notsupp, ctrlstatic_missing;
++	u32 ctrlstatic, maskedflags, deactivated, notsupp, ctrlstatic_missing;
+ 
+ 	if (!data[IFLA_CAN_CTRLMODE])
+ 		return 0;
+@@ -238,6 +268,7 @@ static int can_ctrlmode_changelink(struct net_device *dev,
+ 	cm = nla_data(data[IFLA_CAN_CTRLMODE]);
+ 	ctrlstatic = can_get_static_ctrlmode(priv);
+ 	maskedflags = cm->flags & cm->mask;
++	deactivated = ~cm->flags & cm->mask;
+ 	notsupp = maskedflags & ~(priv->ctrlmode_supported | ctrlstatic);
+ 	ctrlstatic_missing = (maskedflags & ctrlstatic) ^ ctrlstatic;
+ 
+@@ -259,11 +290,21 @@ static int can_ctrlmode_changelink(struct net_device *dev,
+ 		return -EOPNOTSUPP;
+ 	}
+ 
++	/* If FD was active and is not turned off, check for XL conflicts */
++	if (priv->ctrlmode & CAN_CTRLMODE_FD & ~deactivated) {
++		if (maskedflags & CAN_CTRLMODE_XL_TMS) {
++			NL_SET_ERR_MSG(extack,
++				       "TMS can not be activated while CAN FD is on");
++			return -EOPNOTSUPP;
++		}
++	}
 +
-+/*
-+ * struct can_pwm - CAN hardware-dependent constants for Pulse-Width
-+ *	Modulation (PWM)
-+ *
-+ * @pwms_min: PWM short phase minimum value. Must be at least 1.
-+ * @pwms_max: PWM short phase maximum value
-+ * @pwml_min: PWM long phase minimum value. Must be at least 1.
-+ * @pwml_max: PWM long phase maximum value
-+ * @pwmo_min: PWM offset phase minimum value
-+ * @pwmo_max: PWM offset phase maximum value
-+ */
-+struct can_pwm_const {
-+	u32 pwms_min;
-+	u32 pwms_max;
-+	u32 pwml_min;
-+	u32 pwml_max;
-+	u32 pwmo_min;
-+	u32 pwmo_max;
-+};
-+
- struct data_bittiming_params {
- 	const struct can_bittiming_const *data_bittiming_const;
- 	struct can_bittiming data_bittiming;
- 	const struct can_tdc_const *tdc_const;
--	struct can_tdc tdc;
-+	const struct can_pwm_const *pwm_const;
-+	union {
-+		struct can_tdc tdc;
-+		struct can_pwm pwm;
-+	};
- 	const u32 *data_bitrate_const;
- 	unsigned int data_bitrate_const_cnt;
- 	int (*do_set_data_bittiming)(struct net_device *dev);
+ 	/* If a top dependency flag is provided, reset all its dependencies */
+ 	if (cm->mask & CAN_CTRLMODE_FD)
+ 		priv->ctrlmode &= ~CAN_CTRLMODE_FD_TDC_MASK;
+ 	if (cm->mask & CAN_CTRLMODE_XL)
+-		priv->ctrlmode &= ~(CAN_CTRLMODE_XL_TDC_MASK);
++		priv->ctrlmode &= ~(CAN_CTRLMODE_XL_TDC_MASK |
++				    CAN_CTRLMODE_XL_TMS);
+ 
+ 	/* clear bits to be modified and copy the flag values */
+ 	priv->ctrlmode &= ~cm->mask;
+@@ -395,7 +436,8 @@ static int can_dbt_changelink(struct net_device *dev, struct nlattr *data[],
+ 	if (data[IFLA_CAN_CTRLMODE]) {
+ 		struct can_ctrlmode *cm = nla_data(data[IFLA_CAN_CTRLMODE]);
+ 
+-		need_tdc_calc = !(cm->mask & tdc_mask);
++		if (fd || !(priv->ctrlmode & CAN_CTRLMODE_XL_TMS))
++			need_tdc_calc = !(cm->mask & tdc_mask);
+ 	}
+ 	if (data_tdc) {
+ 		/* TDC parameters are provided: use them */
+diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
+index c2c96c5978a8..ebafb091d80f 100644
+--- a/include/uapi/linux/can/netlink.h
++++ b/include/uapi/linux/can/netlink.h
+@@ -107,6 +107,7 @@ struct can_ctrlmode {
+ #define CAN_CTRLMODE_XL			0x1000	/* CAN XL mode */
+ #define CAN_CTRLMODE_XL_TDC_AUTO	0x2000	/* XL transceiver automatically calculates TDCV */
+ #define CAN_CTRLMODE_XL_TDC_MANUAL	0x4000	/* XL TDCV is manually set up by user */
++#define CAN_CTRLMODE_XL_TMS		0x8000	/* Transceiver Mode Switching */
+ 
+ /*
+  * CAN device statistics
 -- 
 2.51.0
 
