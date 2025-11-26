@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D78A22EA47C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E82712EACF2
 	for <linux-can@vger.kernel.org>; Wed, 26 Nov 2025 10:17:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764152223; cv=none; b=S5S+/Ma+H/cGlMukL0zMQpWl43/hHmXcHJl/BsupeueWCSVDPTSQOGdFbpIZBojUyOi1r6sCVi76sYel4XEHqNYuUhK/hHoqhYBo3PTQOPHN2WEeYo5Z9Xf5EXi5gxzsQ5tSUvAUK09Yyyirz4Pb5Yr02S7RAIUo0Ms86c6WYic=
+	t=1764152223; cv=none; b=IxojIyvV/9vdBzdfNynkQoJOM2VM211MvvfBQ1pxz2vGC3klFkI3J327rIWoakDd5QZuLwSafzYJ5baDKWOsNEAEvw+efxDDWhDPXsQ4VxbhtOTx9n5a52p1dLxQK4VtLGZIzhVG2/z0T/IvpB+67PPpaP2+tRK8i1XbTrb2img=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1764152223; c=relaxed/simple;
-	bh=M8V6jfE7RgymR7a2gd5FDYaJ9SS0V/zDQuGkP+QUqcs=;
+	bh=U7sHx0JHfit70X87294eNPlexAjBUfBhDOyNYjh1j4M=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=VW2LUQ7C6Ld3gd85rX/ARBLYVwstMDSehXUAxD7+EsDK4qZ780rX5Ofu1xNdOTqfXG+lsDcT7cS373ZQ0WWfgTcExl2UMbNTIZvrPjNoMIZuskEvkpxKqjAHqnXw1Z0H0jtrTaCZ78BELbZcb/Cw7tauk/KifSwEZj8LzgR/IMY=
+	 In-Reply-To:To:Cc; b=UyQre441NfTVV5twnKusQxQ+gtQQf3KXDL/4cOy2qK+RSBHJe70ymHkbnBFrmGE0Zc+TXDPmMWuPdnXAZZEDdbMHopBSpRec2iQBdnl/JOtcEB4fFuOaMgIUpkqXbF5DNg/864uhs4X/L0IG49OhkizTVL3VDrh+0EqtNq6k1hw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,24 +18,24 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vOCZw-0000RW-0r; Wed, 26 Nov 2025 11:16:52 +0100
+	id 1vOCZw-0000Ri-14; Wed, 26 Nov 2025 11:16:52 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vOCZv-002aSx-15;
+	id 1vOCZv-002aT1-1B;
 	Wed, 26 Nov 2025 11:16:51 +0100
 Received: from hardanger.blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 16D954A88DD;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 28AC04A88DF;
 	Wed, 26 Nov 2025 10:16:51 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Wed, 26 Nov 2025 11:16:13 +0100
-Subject: [PATCH can-next v8 12/17] can: calc_bittiming: replace misleading
- "nominal" by "reference"
+Date: Wed, 26 Nov 2025 11:16:15 +0100
+Subject: [PATCH can-next v8 14/17] can: calc_bittiming: add
+ can_calc_sample_point_pwm()
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -44,7 +44,7 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251126-canxl-v8-12-e7e3eb74f889@pengutronix.de>
+Message-Id: <20251126-canxl-v8-14-e7e3eb74f889@pengutronix.de>
 References: <20251126-canxl-v8-0-e7e3eb74f889@pengutronix.de>
 In-Reply-To: <20251126-canxl-v8-0-e7e3eb74f889@pengutronix.de>
 To: Marc Kleine-Budde <mkl@pengutronix.de>, 
@@ -54,15 +54,15 @@ Cc: kernel@pengutronix.de, linux-can@vger.kernel.org,
  linux-kernel@vger.kernel.org, 
  =?utf-8?q?St=C3=A9phane_Grosjean?= <stephane.grosjean@hms-networks.com>
 X-Mailer: b4 0.15-dev-a6db3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4567; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=zfU33+qIh3oomxHhxXPcNk3KNLPMvGySxv+hWnX3g7I=;
- b=owEBbQGS/pANAwAKAQx0Zd/5kJGcAcsmYgBpJtOHbzDxhx+EWLbkJSCzfNeoZI0f8PicE7uS6
- m+qoud6d5qJATMEAAEKAB0WIQSf+wzYr2eoX/wVbPMMdGXf+ZCRnAUCaSbThwAKCRAMdGXf+ZCR
- nJtTCACX+nd0J58YwEE1RF0Hzkw6Ga3Ctpdb7lhxM7/6rW7nXSLu+WKFweIfrBvRPf2Dl/3ORjf
- Efhnmomz6n9ez3QhBbH5rIoUmu5klevtmMn2Lst25yqN5DSONxVG2W9hmu9wlMTY1ogfDMMToN2
- DllCug2iEiq8JIqsCAvTLmMkfOGtsTaY7ynKBk3AlI8QtqTZOkmK+P31NR+pskQ+ga6zqIzu91K
- FD1SBhe4t2mo0OiRIaezbGvHuUHaRR3e89SBJLOju81JOdcI6lrXztwz9Y1f3cqUD3Tu/hQC1uo
- ZoJE9YFyGs9RWKkFkV/4Y7ImhNOZORY6eI85ykK6QkRD+qp+
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3143; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=4a1B/+vlW70I8/v+O7LaVAdKn9ZOfWTl31QbKZLswJo=;
+ b=owEBbQGS/pANAwAKAQx0Zd/5kJGcAcsmYgBpJtOLwFLAKekYMJzcaOaOAr7ufNhmz4nPG+p4r
+ nGoh6MQ80OJATMEAAEKAB0WIQSf+wzYr2eoX/wVbPMMdGXf+ZCRnAUCaSbTiwAKCRAMdGXf+ZCR
+ nMx1B/48pFn2VNEkNqEBUxI/qRg/+LPJbdgdeToVUjsXVtcSaJNKUIGliz4fhF6p7XlOW2cqDqz
+ jW5b37GSmV3W3GF837bmZMz1jjOSbl3QlL9eaYAq5v/Z874LCaCEp+Dd2I5FMlEsrh65fJFLWUC
+ h6IDjY/1wpYO8KRXpUpIrhAFYyIf4ueUdn5X6mWL63ir+AI9KZBwMlheqU+oUVeEPF7KkkSEyBl
+ ma40Hw4+lBoq1WHnwHntEzip7pouwnGiv5anvDINnoN9kkeMZmF4iSw9QjKo/rPLRO/wo307yew
+ IE/EfIp9I2OHOTPTYiy128/FtfLHBQPUIluOWyXh89qy7KrM
 X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
  fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -72,107 +72,87 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Vincent Mailhol <mailhol@kernel.org>
 
-The functions can_update_sample_point() and can_calc_bittiming() are
-generic and meant to be used for both the nominal and the data bittiming
-calculation.
+The optimum sample point value depends on the bit symmetry. The more
+asymmetric the bit is, the more the sample point would be located
+towards the end of the bit. On the contrary, if the transceiver only
+has a small asymmetry, the optimal sample point would be slightly
+after the centre of the bit.
 
-However, those functions use misleading terminologies such as "bitrate
-nominal" or "sample point nominal". Replace all places where the word
-"nominal" appears with "reference" in order to better distinguish it from
-the calculated values.
+For NRZ encoding (used by Classical CAN, CAN FD and CAN XL with TMS
+off), the optimum sample points values are above 70% as implemented in
+can_calc_sample_point_nrz().
+
+When TMS is on, CAN XL optimum sample points are near to 50% or
+60% [1]. Add can_calc_sample_point_pwm() which returns a sample point
+which is suitable for PWM encoding. We crafted the formula to make it
+return the same values as below table (source: table 3 of [1]).
+
+       Bit rate (Mbits/s)	Sample point
+       -------------------------------------
+         2.0			 51.3%
+         5.0			 53.1%
+         8.0			 55.0%
+        10.0			 56.3%
+        12.3			 53.8%
+        13.3			 58.3%
+        14.5			 54.5%
+        16.0			 60.0%
+        17.7			 55.6%
+        20.0			 62.5%
+
+The calculation simply consists of setting a slightly too high sample
+point and then letting can_update_sample_point() correct the values.
+
+For now, it is just a formula up our sleeves which matches the
+empirical observations of [1]. Once CiA recommendations become
+available, can_calc_sample_point_pwm() should be updated accordingly.
+
+[1] CAN XL system design: Clock tolerances and edge deviations edge
+    deviations
+Link: https://www.can-cia.org/fileadmin/cia/documents/publications/cnlm/december_2024/cnlm_24-4_p18_can_xl_system_design_clock_tolerances_and_edge_deviations_dr_arthur_mutter_bosch.pdf
 
 Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/calc_bittiming.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ drivers/net/can/dev/calc_bittiming.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
 diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/calc_bittiming.c
-index 268ec6fa7c49..c8c166b383cd 100644
+index bacdf3b218d3..60a505ce69de 100644
 --- a/drivers/net/can/dev/calc_bittiming.c
 +++ b/drivers/net/can/dev/calc_bittiming.c
-@@ -24,7 +24,7 @@
-  */
- static int
- can_update_sample_point(const struct can_bittiming_const *btc,
--			const unsigned int sample_point_nominal, const unsigned int tseg,
-+			const unsigned int sample_point_reference, const unsigned int tseg,
- 			unsigned int *tseg1_ptr, unsigned int *tseg2_ptr,
- 			unsigned int *sample_point_error_ptr)
- {
-@@ -35,7 +35,7 @@ can_update_sample_point(const struct can_bittiming_const *btc,
+@@ -22,6 +22,21 @@ static int can_calc_sample_point_nrz(const struct can_bittiming *bt)
+ 	return 875;
+ }
  
- 	for (i = 0; i <= 1; i++) {
- 		tseg2 = tseg + CAN_SYNC_SEG -
--			(sample_point_nominal * (tseg + CAN_SYNC_SEG)) /
-+			(sample_point_reference * (tseg + CAN_SYNC_SEG)) /
- 			1000 - i;
- 		tseg2 = clamp(tseg2, btc->tseg2_min, btc->tseg2_max);
- 		tseg1 = tseg - tseg2;
-@@ -46,9 +46,9 @@ can_update_sample_point(const struct can_bittiming_const *btc,
++/* Sample points for Pulse-Width Modulation encoding. */
++static int can_calc_sample_point_pwm(const struct can_bittiming *bt)
++{
++	if (bt->bitrate > 15 * MEGA /* BPS */)
++		return 625;
++
++	if (bt->bitrate > 9 * MEGA /* BPS */)
++		return 600;
++
++	if (bt->bitrate > 4 * MEGA /* BPS */)
++		return 560;
++
++	return 520;
++}
++
+ /* Bit-timing calculation derived from:
+  *
+  * Code based on LinCAN sources and H8S2638 project
+@@ -93,6 +108,9 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
  
- 		sample_point = 1000 * (tseg + CAN_SYNC_SEG - tseg2) /
- 			(tseg + CAN_SYNC_SEG);
--		sample_point_error = abs(sample_point_nominal - sample_point);
-+		sample_point_error = abs(sample_point_reference - sample_point);
- 
--		if (sample_point <= sample_point_nominal &&
-+		if (sample_point <= sample_point_reference &&
- 		    sample_point_error < best_sample_point_error) {
- 			best_sample_point = sample_point;
- 			best_sample_point_error = sample_point_error;
-@@ -68,11 +68,11 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- {
- 	struct can_priv *priv = netdev_priv(dev);
- 	unsigned int bitrate;			/* current bitrate */
--	unsigned int bitrate_error;		/* difference between current and nominal value */
-+	unsigned int bitrate_error;		/* diff between calculated and reference value */
- 	unsigned int best_bitrate_error = UINT_MAX;
--	unsigned int sample_point_error;	/* difference between current and nominal value */
-+	unsigned int sample_point_error;	/* diff between calculated and reference value */
- 	unsigned int best_sample_point_error = UINT_MAX;
--	unsigned int sample_point_nominal;	/* nominal sample point */
-+	unsigned int sample_point_reference;	/* reference sample point */
- 	unsigned int best_tseg = 0;		/* current best value for tseg */
- 	unsigned int best_brp = 0;		/* current best value for brp */
- 	unsigned int brp, tsegall, tseg, tseg1 = 0, tseg2 = 0;
-@@ -81,14 +81,14 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 
- 	/* Use CiA recommended sample points */
- 	if (bt->sample_point) {
--		sample_point_nominal = bt->sample_point;
-+		sample_point_reference = bt->sample_point;
- 	} else {
- 		if (bt->bitrate > 800 * KILO /* BPS */)
--			sample_point_nominal = 750;
-+			sample_point_reference = 750;
- 		else if (bt->bitrate > 500 * KILO /* BPS */)
--			sample_point_nominal = 800;
-+			sample_point_reference = 800;
- 		else
--			sample_point_nominal = 875;
-+			sample_point_reference = 875;
- 	}
- 
- 	/* tseg even = round down, odd = round up */
-@@ -115,7 +115,7 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 		if (bitrate_error < best_bitrate_error)
- 			best_sample_point_error = UINT_MAX;
- 
--		can_update_sample_point(btc, sample_point_nominal, tseg / 2,
-+		can_update_sample_point(btc, sample_point_reference, tseg / 2,
- 					&tseg1, &tseg2, &sample_point_error);
- 		if (sample_point_error >= best_sample_point_error)
- 			continue;
-@@ -146,7 +146,7 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 	}
- 
- 	/* real sample point */
--	bt->sample_point = can_update_sample_point(btc, sample_point_nominal,
-+	bt->sample_point = can_update_sample_point(btc, sample_point_reference,
- 						   best_tseg, &tseg1, &tseg2,
- 						   NULL);
+ 	if (bt->sample_point)
+ 		sample_point_reference = bt->sample_point;
++	else if (btc == priv->xl.data_bittiming_const &&
++		 (priv->ctrlmode & CAN_CTRLMODE_XL_TMS))
++		sample_point_reference = can_calc_sample_point_pwm(bt);
+ 	else
+ 		sample_point_reference = can_calc_sample_point_nrz(bt);
  
 
 -- 
