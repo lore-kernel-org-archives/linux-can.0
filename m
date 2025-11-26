@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 343CE218845
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48C982DF137
 	for <linux-can@vger.kernel.org>; Wed, 26 Nov 2025 10:17:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764152222; cv=none; b=NkZaBNDtmxtlQKOAMpvFdcdKBQvwt+63tAoW0KHBy3a7ixzqnzqrNiZSUKYy1AL0+j8uT/XU12aWYcVPYvshwBbJ12jU8qi0JtugGWj0mLORYCND7cS84nlyYUoJSOXKE5ZdVavUok0Co6O/QA8FR9KnGduOjU9f5TJyzCZ5wpk=
+	t=1764152222; cv=none; b=fuImt8qH7N1m63JAbacD3pW/pgazwdXP7520Sg3lsYgJzSBLtU3bz2eQiIKIUqZEn6LXKtl3k6gOATSNMgSoSW+wLHF5iwIS8jKNsyUih29jeSRrt5U77dF2h/Ol1GO93LaOficJ3pvn3NKRdhdhJCSEN5JkC7bKKXbNMHH2qLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1764152222; c=relaxed/simple;
-	bh=MudyV2+Az6NVUbd0rFJJ79+x63NERXYJcrD/ldU2anA=;
+	bh=MScOCfDrBIGGLEV5Z/jnAJ1aO10K3UXaIkiluDN85BY=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=SHTjw7JvFJEpW+qsBW2LucPo0mWaKSYjVSns5pD8fYhZxLxiUV6e6KdbaZ538NodvfWUygtdRX8XgLUWmnyoL6cqqBgGq6vdd9qQMwKgNUyPTi783EszhnGszRucF8PNh96vLNgbirfgly3P0Ler0+6bWyEDHPbb8Zy0ewt3jao=
+	 In-Reply-To:To:Cc; b=rD3GEiyYUR4aG4ThHs1MDzWryQxaavmm1SIgScnYBLa58hdbkwjpXnc+croqsCmWw6s7EenRTOB+3KHTU7G9auh1jPIMrQHK8V7UVcVPDGn10TDWLrUzDczl8gx9Xwa+wRas5dpMo6EPlTrP07N7CKgitR+rKvAm4kYu8/YqfME=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,24 +18,24 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vOCZv-0000Qj-85; Wed, 26 Nov 2025 11:16:51 +0100
+	id 1vOCZw-0000SI-Cx; Wed, 26 Nov 2025 11:16:52 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vOCZv-002aSd-01;
+	id 1vOCZv-002aTP-26;
 	Wed, 26 Nov 2025 11:16:51 +0100
 Received: from hardanger.blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id B60BD4A88D5;
-	Wed, 26 Nov 2025 10:16:50 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 6D4974A88E1;
+	Wed, 26 Nov 2025 10:16:51 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Wed, 26 Nov 2025 11:16:05 +0100
-Subject: [PATCH can-next v8 04/17] can: netlink: add
- CAN_CTRLMODE_RESTRICTED
+Date: Wed, 26 Nov 2025 11:16:17 +0100
+Subject: [PATCH can-next v8 16/17] can: raw: instantly reject unsupported
+ CAN frames
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -44,7 +44,7 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251126-canxl-v8-4-e7e3eb74f889@pengutronix.de>
+Message-Id: <20251126-canxl-v8-16-e7e3eb74f889@pengutronix.de>
 References: <20251126-canxl-v8-0-e7e3eb74f889@pengutronix.de>
 In-Reply-To: <20251126-canxl-v8-0-e7e3eb74f889@pengutronix.de>
 To: Marc Kleine-Budde <mkl@pengutronix.de>, 
@@ -54,15 +54,15 @@ Cc: kernel@pengutronix.de, linux-can@vger.kernel.org,
  linux-kernel@vger.kernel.org, 
  =?utf-8?q?St=C3=A9phane_Grosjean?= <stephane.grosjean@hms-networks.com>
 X-Mailer: b4 0.15-dev-a6db3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5361; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=vv6La5M2jV8ebLvbWsVz47qHm5ZFMKT4yraL+I9/B4o=;
- b=owEBbAGT/pANAwAKAQx0Zd/5kJGcAcsmYgBpJtN5vlHQdCoZLKWUzHP/d9o6+AHk9+3c2UnmO
- 3CoyzMLPE+JATIEAAEKAB0WIQSf+wzYr2eoX/wVbPMMdGXf+ZCRnAUCaSbTeQAKCRAMdGXf+ZCR
- nIGAB/UbDw91mU3jusTyWgEFXXOTFggA5ZBUPj2rIM7LYHuLHXXWghTumiHoP3AgrjqrvrLfcs5
- V7KCXRJQSmJEjIA+g48MVyLWMccbUkvjQdl0e2YebbsSG7STVUasH12mRqXyjaJgemwa6GXK6fa
- 0FirW9dPeKtKKESWnxdqrkjlOql7alYpmg8XBeGEwtKX/18fOUQufn7gV+pKPvC/ym06T4CvTg6
- kA+TKSWCTeNZU7Abt/dvSGx5yXNsZgYoOLcoig5s9HBIhf7Z5UCQIHBcmrOWKrjtGdWJo7Vk413
- PZYm36oZFSCKLZ4ufolDmIt8oT6UDARlYQiScgJHQkcxn80=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3205; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=Y3SasBv/Q/I8DywbkyCugANDFbbNJUqqKc8k6Nel8BQ=;
+ b=owEBbQGS/pANAwAKAQx0Zd/5kJGcAcsmYgBpJtOOq5kZGxHteFMg9Lyl168pclqxvKiaKm5pW
+ KamL14NMaqJATMEAAEKAB0WIQSf+wzYr2eoX/wVbPMMdGXf+ZCRnAUCaSbTjgAKCRAMdGXf+ZCR
+ nJQJB/9eIG1wvEaC+swgxtejg1VpYunET3OFhxULKYEiWQayN/CEfVfsr3zRZzroLDEkMfYpyqb
+ ZrSyNP/co2DDCqMke+j+xqwGer38ndChMyGeh/UjXSuXbYTQi4Bg/Q8v+Ncozctz2qj5UOmL7K+
+ Kg4pqA2ZNKDW8R5gXRQB7JzK9wuhmM18zIirlj0MeoxtqWuVHSb9GLCDL/BlPFj6KAbvKWJl7uB
+ Qx1X/YyQy9IanvZDHrVLUU5gsuex1a+lTrnjN2umnCDDQPxdqgDV34jYd0ONAaXg1oUAtzimD7W
+ /ev8r8Omp6x6NHrgpfoAlAzi+pYl8BuotetsQ5KASMzTD8w7
 X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
  fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -70,149 +70,102 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Vincent Mailhol <mailhol@kernel.org>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-ISO 11898-1:2024 adds a new restricted operation mode. This mode is
-added as a mandatory feature for nodes which support CAN XL and is
-retrofitted as optional for legacy nodes (i.e. the ones which only
-support Classical CAN and CAN FD).
+For real CAN interfaces the CAN_CTRLMODE_FD and CAN_CTRLMODE_XL control
+modes indicate whether an interface can handle those CAN FD/XL frames.
 
-The restricted operation mode is nearly the same as the listen only
-mode: the node can not send data frames or remote frames and can not
-send dominant bits if an error occurs. The only exception is that the
-node shall still send the acknowledgment bit. A second niche exception
-is that the node may still send a data frame containing a time
-reference message if the node is a primary time provider, but because
-the time provider feature is not yet implemented in the kernel, this
-second exception is not relevant to us at the moment.
+In the case a CAN XL interface is configured in CANXL-only mode with
+disabled error-signalling neither CAN CC nor CAN FD frames can be sent.
 
-Add the CAN_CTRLMODE_RESTRICTED control mode flag and update the
-can_dev_dropped_skb() helper function accordingly.
+The checks are performed on CAN_RAW sockets to give an instant feedback
+to the user when writing unsupported CAN frames to the interface.
 
-Finally, bail out if both CAN_CTRLMODE_LISTENONLY and
-CAN_CTRLMODE_RESTRICTED are provided.
-
-Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/dev.c        |  2 ++
- drivers/net/can/dev/netlink.c    |  7 ++++++
- include/linux/can/dev.h          | 50 +++++++++++++++++++++-------------------
- include/uapi/linux/can/netlink.h |  1 +
- 4 files changed, 36 insertions(+), 24 deletions(-)
+ net/can/raw.c | 54 ++++++++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 46 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
-index b392483e4499..b6980d32e5b4 100644
---- a/drivers/net/can/dev/dev.c
-+++ b/drivers/net/can/dev/dev.c
-@@ -115,6 +115,8 @@ const char *can_get_ctrlmode_str(u32 ctrlmode)
- 		return "TDC-AUTO";
- 	case CAN_CTRLMODE_TDC_MANUAL:
- 		return "TDC-MANUAL";
-+	case CAN_CTRLMODE_RESTRICTED:
-+		return "RESTRICTED";
- 	default:
- 		return "<unknown>";
+diff --git a/net/can/raw.c b/net/can/raw.c
+index f36a83d3447c..be1ef7cf4204 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -892,20 +892,58 @@ static void raw_put_canxl_vcid(struct raw_sock *ro, struct sk_buff *skb)
  	}
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 6f83b87d54fc..87e731527dd7 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -188,6 +188,13 @@ static int can_validate(struct nlattr *tb[], struct nlattr *data[],
- 		struct can_ctrlmode *cm = nla_data(data[IFLA_CAN_CTRLMODE]);
- 
- 		flags = cm->flags & cm->mask;
-+
-+		if ((flags & CAN_CTRLMODE_LISTENONLY) &&
-+		    (flags & CAN_CTRLMODE_RESTRICTED)) {
-+			NL_SET_ERR_MSG(extack,
-+				       "LISTEN-ONLY and RESTRICTED modes are mutually exclusive");
-+			return -EOPNOTSUPP;
-+		}
- 	}
- 
- 	err = can_validate_bittiming(data, extack, IFLA_CAN_BITTIMING);
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index a7a39a6101d9..ab11c0e9111b 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -95,30 +95,6 @@ static inline bool can_is_canxl_dev_mtu(unsigned int mtu)
- 	return (mtu >= CANXL_MIN_MTU && mtu <= CANXL_MAX_MTU);
  }
  
--/* drop skb if it does not contain a valid CAN frame for sending */
--static inline bool can_dev_dropped_skb(struct net_device *dev, struct sk_buff *skb)
--{
--	struct can_priv *priv = netdev_priv(dev);
--
--	if (priv->ctrlmode & CAN_CTRLMODE_LISTENONLY) {
--		netdev_info_once(dev,
--				 "interface in listen only mode, dropping skb\n");
--		goto invalid_skb;
--	}
--
--	if (!(priv->ctrlmode & CAN_CTRLMODE_FD) && can_is_canfd_skb(skb)) {
--		netdev_info_once(dev, "CAN FD is disabled, dropping skb\n");
--		goto invalid_skb;
--	}
--
--	return can_dropped_invalid_skb(dev, skb);
--
--invalid_skb:
--	kfree_skb(skb);
--	dev->stats.tx_dropped++;
--	return true;
--}
--
- void can_setup(struct net_device *dev);
- 
- struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo_skb_max,
-@@ -154,6 +130,32 @@ void can_bus_off(struct net_device *dev);
- const char *can_get_state_str(const enum can_state state);
- const char *can_get_ctrlmode_str(u32 ctrlmode);
- 
-+/* drop skb if it does not contain a valid CAN frame for sending */
-+static inline bool can_dev_dropped_skb(struct net_device *dev, struct sk_buff *skb)
-+{
-+	struct can_priv *priv = netdev_priv(dev);
-+	u32 silent_mode = priv->ctrlmode & (CAN_CTRLMODE_LISTENONLY |
-+					    CAN_CTRLMODE_RESTRICTED);
+-static unsigned int raw_check_txframe(struct raw_sock *ro, struct sk_buff *skb, int mtu)
++static inline bool raw_dev_cc_enabled(struct net_device *dev,
++				      struct can_priv *priv)
+ {
+-	/* Classical CAN -> no checks for flags and device capabilities */
+-	if (can_is_can_skb(skb))
++	/* The CANXL-only mode disables error-signalling on the CAN bus
++	 * which is needed to send CAN CC/FD frames
++	 */
++	if (priv)
++		return !can_dev_in_xl_only_mode(priv);
 +
-+	if (silent_mode) {
-+		netdev_info_once(dev, "interface in %s mode, dropping skb\n",
-+				 can_get_ctrlmode_str(silent_mode));
-+		goto invalid_skb;
-+	}
-+
-+	if (!(priv->ctrlmode & CAN_CTRLMODE_FD) && can_is_canfd_skb(skb)) {
-+		netdev_info_once(dev, "CAN FD is disabled, dropping skb\n");
-+		goto invalid_skb;
-+	}
-+
-+	return can_dropped_invalid_skb(dev, skb);
-+
-+invalid_skb:
-+	kfree_skb(skb);
-+	dev->stats.tx_dropped++;
++	/* virtual CAN interfaces always support CAN CC */
 +	return true;
 +}
 +
- void can_state_get_by_berr_counter(const struct net_device *dev,
- 				   const struct can_berr_counter *bec,
- 				   enum can_state *tx_state,
-diff --git a/include/uapi/linux/can/netlink.h b/include/uapi/linux/can/netlink.h
-index ef62f56eaaef..fafd1cce4798 100644
---- a/include/uapi/linux/can/netlink.h
-+++ b/include/uapi/linux/can/netlink.h
-@@ -103,6 +103,7 @@ struct can_ctrlmode {
- #define CAN_CTRLMODE_CC_LEN8_DLC	0x100	/* Classic CAN DLC option */
- #define CAN_CTRLMODE_TDC_AUTO		0x200	/* FD transceiver automatically calculates TDCV */
- #define CAN_CTRLMODE_TDC_MANUAL		0x400	/* FD TDCV is manually set up by user */
-+#define CAN_CTRLMODE_RESTRICTED		0x800	/* Restricted operation mode */
++static inline bool raw_dev_fd_enabled(struct net_device *dev,
++				      struct can_priv *priv)
++{
++	/* check FD ctrlmode on real CAN interfaces */
++	if (priv)
++		return (priv->ctrlmode & CAN_CTRLMODE_FD);
++
++	/* check MTU for virtual CAN FD interfaces */
++	return (READ_ONCE(dev->mtu) >= CANFD_MTU);
++}
++
++static inline bool raw_dev_xl_enabled(struct net_device *dev,
++				      struct can_priv *priv)
++{
++	/* check XL ctrlmode on real CAN interfaces */
++	if (priv)
++		return (priv->ctrlmode & CAN_CTRLMODE_XL);
++
++	/* check MTU for virtual CAN XL interfaces */
++	return can_is_canxl_dev_mtu(READ_ONCE(dev->mtu));
++}
++
++static unsigned int raw_check_txframe(struct raw_sock *ro, struct sk_buff *skb,
++				      struct net_device *dev)
++{
++	struct can_priv *priv = safe_candev_priv(dev);
++
++	/* Classical CAN */
++	if (can_is_can_skb(skb) && raw_dev_cc_enabled(dev, priv))
+ 		return CAN_MTU;
  
- /*
-  * CAN device statistics
+-	/* CAN FD -> needs to be enabled and a CAN FD or CAN XL device */
++	/* CAN FD */
+ 	if (ro->fd_frames && can_is_canfd_skb(skb) &&
+-	    (mtu == CANFD_MTU || can_is_canxl_dev_mtu(mtu)))
++	    raw_dev_fd_enabled(dev, priv))
+ 		return CANFD_MTU;
+ 
+-	/* CAN XL -> needs to be enabled and a CAN XL device */
++	/* CAN XL */
+ 	if (ro->xl_frames && can_is_canxl_skb(skb) &&
+-	    can_is_canxl_dev_mtu(mtu))
++	    raw_dev_xl_enabled(dev, priv))
+ 		return CANXL_MTU;
+ 
+ 	return 0;
+@@ -961,7 +999,7 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 	err = -EINVAL;
+ 
+ 	/* check for valid CAN (CC/FD/XL) frame content */
+-	txmtu = raw_check_txframe(ro, skb, READ_ONCE(dev->mtu));
++	txmtu = raw_check_txframe(ro, skb, dev);
+ 	if (!txmtu)
+ 		goto free_skb;
+ 
 
 -- 
 2.51.0
