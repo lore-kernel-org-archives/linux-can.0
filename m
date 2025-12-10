@@ -1,164 +1,119 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from flow-b2-smtp.messagingengine.com (flow-b2-smtp.messagingengine.com [202.12.124.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED72F3064BC
-	for <linux-can@vger.kernel.org>; Wed, 10 Dec 2025 08:35:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3FA62E229F;
+	Wed, 10 Dec 2025 09:10:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.137
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765355702; cv=none; b=aABu6z5JbgalXqrdMb3XEgfYwGDEcs2+6N2faHjKxsuZLZHMpgCCjE4WbRQoehxujPG6Qx1vTY8SNI9z+XKqe4x7FZkbCAG7aBw+x58OdYIl7uEw/fRbtZ7saEiSLdlMA2bYCK2iWtKM/40RUEArUBF4apw+6diB7toxJZFwT+U=
+	t=1765357851; cv=none; b=P+KVkrRsgtqrylmAQMvytuBNou4v0Y69QJn+PbPUHz8q+x9Vfba1EZvt5VQ11hf7fmJz6tfKVI6+EC22S/SGkU1BqZ6JeYaCXoE+fwGJQQtzqtr4IeC5QZUn0C+VKk1xXok1FRggYoR8fH0OAF2THbuTthEqf8WZsNhf+sINhHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765355702; c=relaxed/simple;
-	bh=o0capNAfJqtCk2BjzNo4EZWTWOUUc8nBwgQCMyr38nw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mU+YXVU7XxNKftHegQpMYBum/DJxGh1EBYMpN4ng7bsz0JrPRgoaojLA1wxSNgr73ATD0bOe4gcn6PB8BK2yTT6VHgwRhdNmKBKy56yBPmXS6ci2xtGKAxjsdl0CleG/v+WGZ+9JAhguw2yP1HDtaQGM+pjiIa6Wbqx2l/rs7kI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1vTFeu-0007fY-6x; Wed, 10 Dec 2025 09:34:52 +0100
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1vTFes-004vMh-2J;
-	Wed, 10 Dec 2025 09:34:50 +0100
-Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 605114B3B24;
-	Wed, 10 Dec 2025 08:34:50 +0000 (UTC)
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	kuba@kernel.org,
-	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	Arnd Bergmann <arnd@arndb.de>,
-	kernel test robot <lkp@intel.com>,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 1/2] can: fix build dependency
-Date: Wed, 10 Dec 2025 09:32:23 +0100
-Message-ID: <20251210083448.2116869-2-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251210083448.2116869-1-mkl@pengutronix.de>
-References: <20251210083448.2116869-1-mkl@pengutronix.de>
+	s=arc-20240116; t=1765357851; c=relaxed/simple;
+	bh=IMy+644D6GzznKl5SyK98WSeKQJv4NKWmvsjr8Zvb88=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=IHvhAmDAuo3SlEapz8RTYSF/mzrlB+T/uk+2+yn2Yz0yuopyV76Akgy+ZNMuGALSfJWpBSP2h7Dftvh09E5Blbgotl5oy28bdeiSKhgyC0NBm7hKo0z2s97Ll0A/CIVONh96tFSuClS5xyW9k9dQntFX3V3XCboNNtWDhUBgC9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=d0TaE5t/; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=oPijtTlK; arc=none smtp.client-ip=202.12.124.137
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="d0TaE5t/";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="oPijtTlK"
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailflow.stl.internal (Postfix) with ESMTP id 897881300979;
+	Wed, 10 Dec 2025 04:10:47 -0500 (EST)
+Received: from phl-imap-17 ([10.202.2.105])
+  by phl-compute-04.internal (MEProxy); Wed, 10 Dec 2025 04:10:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1765357847;
+	 x=1765365047; bh=XKk/mRH0B0YNo//tXqlC9vkADj3PDAWv8CZ+OAr52xk=; b=
+	d0TaE5t/R4LuqxEm9D7uKQOtHWxUkFqPcPDN8STx137UPSg9xkrerCtoseq6ek+C
+	9PaWMwP0nPQMBgkpsybCJHaVO+MLFqVTDr/DK4eOnIqDA8QZ7UXRxRI5f2h0Y7+H
+	33Ijbb7cujPb+dPIhsiUNYw3hLcHDjEX5SZNyRoBpdsGN81mpH24ExzsGVMKmYvF
+	4u9NBSyP3VN4Bqg6ZJII4EFENgjls76kkQj55+BW3RZvFSg9Ks5REcRahn8doX7B
+	XSLhy6JK0IdHCTPpls2VlX65egax8dkR5K/sNHxuFIk/dU4Hok16liH9tNe4/o78
+	3dW9TkI9XAQdYbqbW71tWA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1765357847; x=
+	1765365047; bh=XKk/mRH0B0YNo//tXqlC9vkADj3PDAWv8CZ+OAr52xk=; b=o
+	PijtTlKgWp8b7BvRweYNV7Cey1J0zK+lUU3Q6PX7jNq1uNUBX5I0qcDiTY7WHIaa
+	TjiEe4YR0ETbENp682wqOeK15aicSvbvLFQHVbHb2Lgj0T/rhTJr0+K3WoBUtrCi
+	J3+Maqe1fiXUQP/JEGwD+nm9RWcDvfLiwcbhgyLezLuTkI1oSpnAnMOOzph0xu+T
+	MF36RW7/mA/AdIBihHlwCCkkHs0dIK+Mnsn6SZF0St8LNWF2TEQfJsTWs+aBxrei
+	7lVOy3w4BXisysVtDncbU9MroJpJgCr9mGDs/65qFfydJBG5PU/5AZwh/GKoTZYV
+	PeZlftS+tMtvGfXH7yOkg==
+X-ME-Sender: <xms:Fzk5aWLhqHOCsxwh8t_nd_j5vD4IsBDcbfD1MG-tSr7Lm2NkZlLW7g>
+    <xme:Fzk5aY_WTJdYmiDX1eiGtIsJpmrPkIBwQpZC8qkm_V4HB5b1ym7_XGAKHeQeUvQzr
+    YbXmUlXzX6ZCgpLShr1hN3sciJLs96dSXucjrYJhFRP0RQtNleX4LI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvvddtgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefoggffhffvvefkjghfufgtgfesthejredtredttdenucfhrhhomhepfdetrhhnugcu
+    uegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtthgvrh
+    hnpefhtdfhvddtfeehudekteeggffghfejgeegteefgffgvedugeduveelvdekhfdvieen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnug
+    esrghrnhgusgdruggvpdhnsggprhgtphhtthhopeejpdhmohguvgepshhmthhpohhuthdp
+    rhgtphhtthhopehsohgtkhgvthgtrghnsehhrghrthhkohhpphdrnhgvthdprhgtphhtth
+    hopegrrhhnugeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhgrihhlhhholheskhgv
+    rhhnvghlrdhorhhgpdhrtghpthhtohepvgigthhjrgeskhhvrghsvghrrdgtohhmpdhrtg
+    hpthhtohepmhhklhesphgvnhhguhhtrhhonhhigidruggvpdhrtghpthhtoheplhhinhhu
+    gidqtggrnhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqd
+    hkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:Fzk5aTxZnpH07bXcdIYYhsSZ7BTilryVU-Cb2uzQIaCoNcmYAaXM6w>
+    <xmx:Fzk5aVVGNeKKgwjGle5WhsiEGlBNm2K7LmWrIcb0rrBLDzq60ElQMQ>
+    <xmx:Fzk5adOrFS68XrSis16z0l-AbuZxREU1qDNJgutnE5rB3nTJ6WyOwg>
+    <xmx:Fzk5afC1hgY58tvrgAoIfQdpSxxV0DH8ZtncJ-JZ2OpR4MeTzBJidA>
+    <xmx:Fzk5aYMnV27v1oFzsUIpzqtdi3TXMYyIAFMM1oGEDJt9OqNe244q8UO_>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 2EEB7C40071; Wed, 10 Dec 2025 04:10:47 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+X-ThreadId: A7rUDe6_ZBCR
+Date: Wed, 10 Dec 2025 10:10:27 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Marc Kleine-Budde" <mkl@pengutronix.de>,
+ "Vincent Mailhol" <mailhol@kernel.org>
+Cc: "Arnd Bergmann" <arnd@kernel.org>,
+ "Oliver Hartkopp" <socketcan@hartkopp.net>,
+ "Jimmy Assarsson" <extja@kvaser.com>, linux-can@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Message-Id: <7427949a-ea7d-4854-9fe4-e01db7d878c7@app.fastmail.com>
+In-Reply-To: 
+ <20251210-imported-pelican-from-tartarus-c1084f-mkl@pengutronix.de>
+References: <20251204100015.1033688-1-arnd@kernel.org>
+ <5de9b33e-6129-4765-95a7-e3e12de1f8cd@kernel.org>
+ <20251210-imported-pelican-from-tartarus-c1084f-mkl@pengutronix.de>
+Subject: Re: [PATCH] net: can: fix build dependency
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Wed, Dec 10, 2025, at 09:16, Marc Kleine-Budde wrote:
+> On 05.12.2025 00:30:14, Vincent Mailhol wrote:
 
-A recent bugfix introduced a new problem with Kconfig dependencies:
+>> >  	  can-dev.> -if CAN_DEV
+>> > +if CAN_DEV && CAN
+>>               ^^^^^^
+>> Is this needed? CAN_DEV depends on CAN, so the condition
+>>
+>>   CAN_DEV && !CAN
+>>
+>> should not be reachable.
+>
+> Removed the '&& CAN' while applying the patch.
 
-WARNING: unmet direct dependencies detected for CAN_DEV
-  Depends on [n]: NETDEVICES [=n] && CAN [=m]
-  Selected by [m]:
-  - CAN [=m] && NET [=y]
+Sorry I forgot to reply here: the '&& CAN' is absolutely
+required here, otherwise you can configure CAN device drivers
+as built-in with CAN_DEV=y CAN=m, and that results in a
+link failure.
 
-Since the CAN core code now links into the CAN device code, that
-particular function needs to be available, though the rest of it
-does not.
-
-Revert the incomplete fix and instead use Makefile logic to avoid
-the link failure.
-
-Fixes: cb2dc6d2869a ("can: Kconfig: select CAN driver infrastructure by default")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202512091523.zty3CLmc-lkp@intel.com/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://patch.msgid.link/20251204100015.1033688-1-arnd@kernel.org
-[mkl: removed module option from CAN_DEV help text (thanks Vincent)]
-[mkl: removed '&& CAN' from Kconfig dependency (thanks Vincent)]
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/Kconfig      | 5 +----
- drivers/net/can/Makefile     | 2 +-
- drivers/net/can/dev/Makefile | 5 ++---
- net/can/Kconfig              | 1 -
- 4 files changed, 4 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-index e15e320db476..460a74ae6923 100644
---- a/drivers/net/can/Kconfig
-+++ b/drivers/net/can/Kconfig
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- 
- menuconfig CAN_DEV
--	tristate "CAN Device Drivers"
-+	bool "CAN Device Drivers"
- 	default y
- 	depends on CAN
- 	help
-@@ -17,9 +17,6 @@ menuconfig CAN_DEV
- 	  virtual ones. If you own such devices or plan to use the virtual CAN
- 	  interfaces to develop applications, say Y here.
- 
--	  To compile as a module, choose M here: the module will be called
--	  can-dev.
--
- if CAN_DEV
- 
- config CAN_VCAN
-diff --git a/drivers/net/can/Makefile b/drivers/net/can/Makefile
-index d7bc10a6b8ea..37e2f1a2faec 100644
---- a/drivers/net/can/Makefile
-+++ b/drivers/net/can/Makefile
-@@ -7,7 +7,7 @@ obj-$(CONFIG_CAN_VCAN)		+= vcan.o
- obj-$(CONFIG_CAN_VXCAN)		+= vxcan.o
- obj-$(CONFIG_CAN_SLCAN)		+= slcan/
- 
--obj-y				+= dev/
-+obj-$(CONFIG_CAN_DEV)		+= dev/
- obj-y				+= esd/
- obj-y				+= rcar/
- obj-y				+= rockchip/
-diff --git a/drivers/net/can/dev/Makefile b/drivers/net/can/dev/Makefile
-index 633687d6b6c0..64226acf0f3d 100644
---- a/drivers/net/can/dev/Makefile
-+++ b/drivers/net/can/dev/Makefile
-@@ -1,9 +1,8 @@
- # SPDX-License-Identifier: GPL-2.0
- 
--obj-$(CONFIG_CAN_DEV) += can-dev.o
--
--can-dev-y += skb.o
-+obj-$(CONFIG_CAN) += can-dev.o
- 
-+can-dev-$(CONFIG_CAN_DEV) += skb.o
- can-dev-$(CONFIG_CAN_CALC_BITTIMING) += calc_bittiming.o
- can-dev-$(CONFIG_CAN_NETLINK) += bittiming.o
- can-dev-$(CONFIG_CAN_NETLINK) += dev.o
-diff --git a/net/can/Kconfig b/net/can/Kconfig
-index e4ccf731a24c..af64a6f76458 100644
---- a/net/can/Kconfig
-+++ b/net/can/Kconfig
-@@ -5,7 +5,6 @@
- 
- menuconfig CAN
- 	tristate "CAN bus subsystem support"
--	select CAN_DEV
- 	help
- 	  Controller Area Network (CAN) is a slow (up to 1Mbit/s) serial
- 	  communications protocol. Development of the CAN bus started in
-
-base-commit: 186468c67fc687650b7fb713d8c627d5c8566886
--- 
-2.51.0
-
+      Arnd
