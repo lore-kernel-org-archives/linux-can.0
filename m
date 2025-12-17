@@ -1,163 +1,162 @@
-Received: from delivery.antispam.mailspamprotection.com (delivery.antispam.mailspamprotection.com [185.56.87.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vs1-f68.google.com (mail-vs1-f68.google.com [209.85.217.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198E62BCF5
-	for <linux-can@vger.kernel.org>; Sun, 14 Dec 2025 19:53:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.56.87.12
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765742031; cv=pass; b=OcyDt7hAqqGUDJ9dWFTvqZR0UcP6/XF/DC/UCapalQQGkMV979oPSNmNoU8IZlTjJJJhV2dbYTB5dg25DYHCMd4s0YRs0mE2Llm1PR8mb1cD/sIsGwKWHR25OlBp89xaVnKgqkTFDxHOu4/MgeQcQgEplbnLuiA1WzysE+sWN0o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765742031; c=relaxed/simple;
-	bh=9U/4H0u7IeO8SK9G+ka43cBTeRHALsUFMjkDklSXq3I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J1Jy7xp2M5Ye/9skZLUBas1ynQ2Me6Ak2Qqf/VyoacK+coJy/To1ecuJFqHqusJv1yCRtiK8pCvwcDl91GznM/UUbXpk3EIyM+WyV0t5qD9mvlDUDEGJ+OUE2U/WMPlC62wsGz8ef/plNAR/WsihtFhVrPJH5T1XZQKL7hLg1cU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=valla.it; spf=pass smtp.mailfrom=valla.it; dkim=pass (1024-bit key) header.d=antispam.mailspamprotection.com header.i=@antispam.mailspamprotection.com header.b=w1cq3jPT; dkim=pass (1024-bit key) header.d=valla.it header.i=@valla.it header.b=LgpazSlO; arc=pass smtp.client-ip=185.56.87.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=valla.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=valla.it
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=antispam.mailspamprotection.com header.i=@antispam.mailspamprotection.com header.b="w1cq3jPT";
-	dkim=pass (1024-bit key) header.d=valla.it header.i=@valla.it header.b="LgpazSlO"
-ARC-Seal: i=1; cv=none; a=rsa-sha256; d=outgoing.instance-europe-west4-swd7.prod.antispam.mailspamprotection.com; s=arckey; t=1765742029;
-	 b=OGikhN3usNJSl0OibyZPBvklusuyFbcr+rr05+VK2r2KUWhdV9hcpkxetJG8H0iNZ35qG7cj/6
-	  iM1VWEV23DY83Y7xCsKtFwzyt0saprTfktbDOu4gj1sfYJWMs6eGLvtijeyaz5V/xe7aLdk5Hk
-	  Nq7HmVQPqmAIhPCbzB4NyYmEnKx4z+q/Myfcg9xvPhxe488CFBBFxj/03vUEknpf1SfzM7OAZX
-	  kQ4gllJF611bqIQ18Ip5CjBCSM+KWl42Sn7vUH67S+LJ6qUzh/vv8hAS3q+XOZU4V+duGMH3L2
-	  2TPX5ypXCUwpvOH5Q2SYvaILRewRAupRqv6cxSrF+RX6rQ==;
-ARC-Authentication-Results: i=1; outgoing.instance-europe-west4-swd7.prod.antispam.mailspamprotection.com; smtp.remote-ip=35.214.173.214;
-	iprev=pass (214.173.214.35.bc.googleusercontent.com) smtp.remote-ip=35.214.173.214;
-	auth=pass (LOGIN) smtp.auth=esm19.siteground.biz;
-	dkim=pass header.d=valla.it header.s=default header.a=rsa-sha256;
-	arc=none
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed; d=outgoing.instance-europe-west4-swd7.prod.antispam.mailspamprotection.com; s=arckey; t=1765742029;
-	bh=9U/4H0u7IeO8SK9G+ka43cBTeRHALsUFMjkDklSXq3I=;
-	h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:
-	  From:Date:DKIM-Signature:DKIM-Signature;
-	b=T59YVB5jcYtbsn1vzyRnkt8U9EA5JwS94sqCkENs1CnGJJDKPsdWmuR7t68UHUqwd7OIpVWTbi
-	  gVxNt1CnUsr5Cv871FCsslQKHSH0naInCISkNMjmZPHnTMz3DS/0ZkpBVkvGVVZvJZc0D4hggD
-	  vmewpmvaa0nkt8JxLU9pOTcSd5PBZF0u6rElwhgbL2SKy1lLhR3x+LXpByncCgiHPNBewkkAiY
-	  eaZkF94uS19VfIgC55Gls4Qcre9raKe6QRjMTYb/4A7gpd4vswzsSZJCoSLLvBTut39Rhns44A
-	  PxBN8etjzSiJz6pbcHs2FgRv64RPUHh4JMzj46fvUe+1oA==;
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=antispam.mailspamprotection.com; s=default; h=CFBL-Feedback-ID:CFBL-Address
-	:Content-Type:MIME-Version:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	List-Unsubscribe:Content-Transfer-Encoding;
-	bh=o+wKOrFZelyH+jQJOnvI/aGEta4ZGrzG5vU+orLBrOc=; b=w1cq3jPTBSkrxgljvMZD+jzkS7
-	w+rpxP+9BjF/hIcK4RPgIRsm912wfBkzRGIPtj3K/Pm+yopQjz3r8bfCR5xgUy+WhCNQjzm9BrvHg
-	ejcFCrRZGCqTDa6jL5ucNGp1CwKuS/Wt/X2YRkbykJ4UTC3KKIxMhWfdVCz2uqlO9xAY=;
-Received: from 214.173.214.35.bc.googleusercontent.com ([35.214.173.214] helo=esm19.siteground.biz)
-	by instance-europe-west4-h9hs.prod.antispam.mailspamprotection.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.98.1)
-	(envelope-from <francesco@valla.it>)
-	id 1vUn1j-00000000vPO-0v8e
-	for linux-can@vger.kernel.org;
-	Sun, 14 Dec 2025 14:24:49 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=valla.it;
-	s=default; h=Subject:Cc:To:From:Date:list-help:list-unsubscribe:
-	list-subscribe:list-post:list-owner:list-archive;
-	bh=o+wKOrFZelyH+jQJOnvI/aGEta4ZGrzG5vU+orLBrOc=; b=LgpazSlOYH6J/Z6Ak0/vT65R7X
-	nENUiSrlgAPkiFlGYqYoZtoIoZaJcxK3E5ElOO4pwurJMRKXZO32ufNpJ9eJML8hP4K0nrzGXs8sx
-	ETxYXpuoDz27BjAm8gG8YpOzLKQ8Y7Mv/892OAxuN2tMx6evxwI3Mi645dcDz58gepFE=;
-Received: from [79.34.194.176] (port=60598 helo=bywater)
-	by esm19.siteground.biz with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.98.1)
-	(envelope-from <francesco@valla.it>)
-	id 1vUn1U-000000006Go-1D9P;
-	Sun, 14 Dec 2025 14:24:32 +0000
-Date: Sun, 14 Dec 2025 15:24:30 +0100
-From: Francesco Valla <francesco@valla.it>
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>,
-	Harald Mommer <harald.mommer@oss.qualcomm.com>,
-	Mikhail Golubev-Ciuchea <mikhail.golubev-ciuchea@oss.qualcomm.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-can@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	Wolfgang Grandegger <wg@grandegger.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Stefano Garzarella <sgarzare@redhat.com>
-Subject: Re: [PATCH v6] can: virtio: Add virtio CAN driver
-Message-ID: <aT7InsN51RIyIeA2@bywater>
-References: <aQJRnX7OpFRY/1+H@fedora>
- <aQkgsuxa2UaL_qdt@bywater>
- <aTw2LORF0QiEcgM1@fedora>
- <20251214022000-mutt-send-email-mst@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 215BE1DF73C
+	for <linux-can@vger.kernel.org>; Wed, 17 Dec 2025 08:15:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.68
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1765959323; cv=none; b=aYYdM4zXj4HofQey4wdWfWZDzNTHg8wTGr5cAF2+WxxVS06I7vIa52oTZui1mbkGSX9T4stbDTYyzI7/Ru/F1Vlkl4K/xMsn4XEHHPg0PEDkuYKiy5F4wgD/rx3mSJq7UHivmdp79gVQqJUbMEroMSGPF+blSHWz1daxPfSU9CE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1765959323; c=relaxed/simple;
+	bh=XjGbtOPnxn5ziPdpc7g6S6MqyGKvLokVPCWE3c8w+yQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=M9R3xq9U0T3mfBta9mcgmViIqlg59KCWRsC7t17mztwot6LNiWzgQlXVBlc8nqh+Udzj7qrNW8igElw+1hxcIqcm41vK54rrBlXeM0vipZloZaQDaF3BarfjxPivGBXf5iPkSX7N6jdfq8JnVPyRm7iBwrUrXVEx7rRB94mnNoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f68.google.com with SMTP id ada2fe7eead31-5dfa9bfa9c7so3893474137.1
+        for <linux-can@vger.kernel.org>; Wed, 17 Dec 2025 00:15:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765959320; x=1766564120;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rym4p+SQ3MsVDrU2KotDsjjR/+PnxDtYr8m/dR/i6BU=;
+        b=pYEnjhbFhho33ifeBKp+JQ4fMpJz4/TbTws2IgIRJLkCH9oKAtZMqs0qttFwCfWJ6m
+         YfvC9cBoU9H+r3AbooS70a3qB4c42R9qnQS97xuT+YoRXgRme6LVwA9eIGv2dZ0hG59W
+         VplhUoQ0YGkEAEU3LHJrefDEZDQCoat9ysL3F3r3Uv2alZYbtg5hd4wGrUgNW285qjYx
+         jEqKMtPsbIESj3foWpUDU2GkMHa02Um9CkO0ZT6dSClcKrInMuIptiz7qwNC5K+RUag+
+         G/0BiiXj3igWQn/zAW7bodLYx54egQTSxwz0BeWN5ni4StITZXls1KR7BkRsQr3tKInt
+         D4fA==
+X-Forwarded-Encrypted: i=1; AJvYcCUc85NNqeVtq9+alOi5iHHhAHFa2AYgEweDkVNMzFJIwAxRzWI0tbCpMXdQE2oUTC2qXj4qccFvV0E=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwAZfLsL19IdLWrt0keVfHujJEUYADLDUSScaU0AzFD/06aJQmA
+	3sAZ4NgYCyV55PuKqI+AJXdFuzHy9vVMkH5PfH6YElRD+GnT+yAoKqbpEKfG02ltmfE=
+X-Gm-Gg: AY/fxX5+HhzrG7rD907RrA9rM3lNQHJO/Hy9RaPA2hoRTLPTItErCjtd3RXv/FhFkwx
+	d4LKb+rTC42HJTsdSlLEfXqvjuEn0C0WTXYWZsGs/ZACAxXLKHVWClHsfaB7n914jsf8X2+4nLJ
+	4IxTXOuxRomqGRJKWvOqOSvLbZgYd56od7TRK060QEE0s7J2CT5ffrAc8MfsJaLMSWTJHnex7ph
+	XknQvXWE+Q8Bwx7YhJoHvzXb9vxr5J65lGCoKXNiqj6JofPz8mbeIPuAYNAFu5yGAhy6pH5Pn3u
+	RFdmof3smkxMB/8dv3Dxuxy1a9BXU9ixMSpCpkC35aHK1D1UYPtyXV1/eTSehQqgNFL9RcRjbOg
+	l4wglKsx5NU9IGHoi9N8ke/Tg7uqSuZwdzqB2n1V/uYsU9Rj+/ybvpYCjQstH/B24PpS+HAsL8c
+	/SlWqHa+DU4/1fadtIUWBtvsf1df2tedHQDhiiS1Cb+T4kwZQO
+X-Google-Smtp-Source: AGHT+IGrtb2YvU4gbTIIh4y+GgCyDDmqLRtU5ABvYOIyzUGZoNtm0BpUSTYbGOO3t+Y5p0OtsIQ3LA==
+X-Received: by 2002:a05:6102:549e:b0:5db:f34e:5fa1 with SMTP id ada2fe7eead31-5e8277e5e6bmr6527147137.33.1765959319807;
+        Wed, 17 Dec 2025 00:15:19 -0800 (PST)
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com. [209.85.222.41])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-93f5aefd79csm6631835241.12.2025.12.17.00.15.18
+        for <linux-can@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Dec 2025 00:15:19 -0800 (PST)
+Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-94121102a54so2953896241.1
+        for <linux-can@vger.kernel.org>; Wed, 17 Dec 2025 00:15:18 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXeEnnvXyp/LQ+C2K2bUBc7Qr9SFLK1kcoqQZV2VEVkRIhUaC4g5ED/EVJYgyzBYxWPE9S5L1MdKtw=@vger.kernel.org
+X-Received: by 2002:a05:6102:1611:b0:5e1:866c:4f7c with SMTP id
+ ada2fe7eead31-5e82781ea47mr5731108137.39.1765959318483; Wed, 17 Dec 2025
+ 00:15:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251214022000-mutt-send-email-mst@kernel.org>
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - esm19.siteground.biz
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - valla.it
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-SGantispam-id: a238fd903fdb5e9513d082e9e3af9394
-AntiSpam-DLS: false
-AntiSpam-DLSP: 
-AntiSpam-DLSRS: 
-AntiSpam-TS: 1.0
-CFBL-Address: feedback@antispam.mailspamprotection.com; report=arf
-CFBL-Feedback-ID: 1vUn1j-00000000vPO-0v8e-feedback@antispam.mailspamprotection.com
-Authentication-Results: outgoing.instance-europe-west4-swd7.prod.antispam.mailspamprotection.com;
-	iprev=pass (214.173.214.35.bc.googleusercontent.com) smtp.remote-ip=35.214.173.214;
-	auth=pass (LOGIN) smtp.auth=esm19.siteground.biz;
-	dkim=pass header.d=valla.it header.s=default header.a=rsa-sha256;
-	arc=none
+References: <20251209162119.2038313-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20251210-mauve-cow-of-hurricane-0f969d-mkl@pengutronix.de>
+ <20251210-persuaded-rewire-8ac93b0cc039@spud> <20251211-wonderful-singing-eel-4e2293-mkl@pengutronix.de>
+In-Reply-To: <20251211-wonderful-singing-eel-4e2293-mkl@pengutronix.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 17 Dec 2025 09:15:07 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXW2iFQO3vTzMg_ydqZ5YC1EPqyNzkpLRfTAkLhmC+K5g@mail.gmail.com>
+X-Gm-Features: AQt7F2oD50PxDosHDFQJjqw3YErV6WFAJtpUaCLTAZeWlqwHnCeiK6ic6sDkf3A
+Message-ID: <CAMuHMdXW2iFQO3vTzMg_ydqZ5YC1EPqyNzkpLRfTAkLhmC+K5g@mail.gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: phy: ti,tcan104x-can: Document TI TCAN1046
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Conor Dooley <conor@kernel.org>, Prabhakar <prabhakar.csengg@gmail.com>, 
+	Vincent Mailhol <mailhol@kernel.org>, Vinod Koul <vkoul@kernel.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Aswath Govindraju <a-govindraju@ti.com>, Frank Li <Frank.li@nxp.com>, linux-can@vger.kernel.org, 
+	linux-phy@lists.infradead.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	Biju Das <biju.das.jz@bp.renesas.com>, 
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, Dec 14, 2025 at 02:20:36AM -0500, Michael S. Tsirkin wrote:
-> On Fri, Dec 12, 2025 at 04:35:08PM +0100, Matias Ezequiel Vara Larsen wrote:
-> > > > +
-> > > > +	priv->can_ctr_msg.cpkt_out.msg_type = cpu_to_le16(msg_type);
-> > > > +	sg_init_one(&sg_out, &priv->can_ctr_msg.cpkt_out,
-> > > > +		    sizeof(priv->can_ctr_msg.cpkt_out));
-> > > > +	sg_init_one(&sg_in, &priv->can_ctr_msg.cpkt_in, sizeof(priv->can_ctr_msg.cpkt_in));
-> > > > +
-> > > > +	err = virtqueue_add_sgs(vq, sgs, 1u, 1u, priv, GFP_ATOMIC);
-> > > > +	if (err != 0) {
-> > > > +		/* Not expected to happen */
-> > > > +		dev_err(dev, "%s(): virtqueue_add_sgs() failed\n", __func__);
-> > > > +		mutex_unlock(&priv->ctrl_lock);
-> > > > +		return VIRTIO_CAN_RESULT_NOT_OK;
-> > > > +	}
-> > > > +
-> > > > +	if (!virtqueue_kick(vq)) {
-> > > > +		/* Not expected to happen */
-> > > > +		dev_err(dev, "%s(): Kick failed\n", __func__);
-> > > > +		mutex_unlock(&priv->ctrl_lock);
-> > > > +		return VIRTIO_CAN_RESULT_NOT_OK;
-> > > > +	}
-> > > > +
-> > > > +	while (!virtqueue_get_buf(vq, &len) && !virtqueue_is_broken(vq))
-> > > > +		wait_for_completion(&priv->ctrl_done);
-> > > > +
-> > > 
-> > > Since the call is synchronous, does can_ctr_msg really need to be part
-> > > of priv? Cannot be it allocated from the stack?
-> > > 
-> > 
-> > I tried to allocate in the stack but the guest blocks when during `ip
-> > link set up can0`, any idea?
-> 
-> you can not DMA to/from the stack, really.
+On Fri, 12 Dec 2025 at 12:22, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 10.12.2025 18:21:34, Conor Dooley wrote:
+> > On Wed, Dec 10, 2025 at 08:52:58AM +0100, Marc Kleine-Budde wrote:
+> > > On 09.12.2025 16:21:19, Prabhakar wrote:
+> > > > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > >
+> > > > Document the TI TCAN1046 automotive CAN transceiver. The TCAN1046 is a
+> > > > dual high-speed CAN transceiver with sleep-mode support and no EN pin,
+> > > > mirroring the behaviour of the NXP TJA1048, which also provides dual
+> > > > channels and STB1/2 sleep-control lines.
+> > > >
+> > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > > ---
+> > > > TCAN 1046, https://www.ti.com/lit/ds/symlink/tcan1046v-q1.pdf?ts=1765297159307&ref_url=https%253A%252F%252Fwww.ti.com%252Fproduct%252FTCAN1046V-Q1
+> > > > NXP TJA1048, https://www.nxp.com/docs/en/data-sheet/TJA1048.pdf
+> > >
+> > > The polarity of the standby line of the chips is different.
+> > >
+> > > You must set the correct active high/low property for the GPIO, as the
+> > > driver uses logical levels.
+> > >
+> > > Reviewed-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> >
+> > What you're saying seems to contradict the tag you've given, is a
+> > fallback really suitable if the standby polarity is not the same?
 >
+> The driver uses _logical_ levels to switch the GPIOs. For example to
+> power on the PHY, it disables the standby GPIO by setting the value to
+> "0".
+>
+> | static int can_transceiver_phy_power_on(struct phy *phy)
+> | {
+> [...]
+> |         gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 0);
+> [...]
+> | }
+>
+> You have to use GPIO_ACTIVE_HIGH/GPIO_ACTIVE_LOW in the DT to configure
+> the actual level of the GPIO.
+>
+> If you connect the PHY's standby input directly to the SoC's GPIO....
+>
+> | TJA1048: HIGH = Normal mode, LOW = Standby mode
+> | TCAN1046: High = Standby mode, Low = Normal Mode
+>
+> ...for the TJA1048 you would use GPIO_ACTIVE_LOW, while for the
+> TCAN1046 you would use GPIO_ACTIVE_HIGH.
 
-Right. Forgot aboud DMA, my bad.
+Exactly.  For most of these CAN transceivers, there are typically two
+almost identical parts (usually differing in the last digit of the part
+number), one with active-high standby, another with active-low standby.
+These differences can be handled perfectly fine using the GPIO_ACTIVE_*
+lags.
 
-> -- 
-> MST
-> 
-> 
+Note that there can be other differences: the RZ/V2H board Prabhakar
+works on actually has TCAN1046V.  The "V" variant differs from TCAN1046
+(and TJA1048) in configuration of the two power supply pins:
+  - TCAN1046 has independent supplies for the two channels,
+  - TCAN1046V has separate logic and I/O supplies for the combined
+    channels.
+Since this difference can be handled through *-supply properties
+(when the need arises, and the driver gains regulator support),
+I don't think separate compatible values are needed for "V" variants.
 
-Regards,
-Francesco
+BTW, how do I know? Because I had started working on adding support
+for TCAN1046V myself, but Prabhakar beat me to sending out patches ;-)
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
