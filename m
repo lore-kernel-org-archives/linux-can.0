@@ -1,171 +1,98 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E61533CE8F;
-	Thu, 18 Dec 2025 10:12:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38EE02EC09F
+	for <linux-can@vger.kernel.org>; Thu, 18 Dec 2025 12:31:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766052765; cv=none; b=RcvR4MPkOzfiVz1SWGWRUr7LMDTrfXckcbWz2H9BmD7vH4cb/EMg6bQi9cvybgpqZEbUafKrNooVmTKmB9LAxfxflgIZ3FRGE1EVbAwWSBE/SabStfPtQ8kbzE8g0DqoC93dMPc3PYMu2EiFiehrQU7loVOhjuGAjRlknZ61WNU=
+	t=1766061106; cv=none; b=JO5oivstu/baFOhwI1twVxGO79iNJ8vantlnMb5NJvLguK724NDe/nlAwv6rG9jkmGFtESut1miAErjd+p7VlGBiibfPrD9OwHnriiNoWblst+XEO+V2DhX1SMfbiQL3brXx/r2xHlOP71DVLNRp/A+MoX2KUvRBYm1FoAMu7o8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766052765; c=relaxed/simple;
-	bh=6dOHEO/ATrDkn+942USvFxLXBlcYFHToHWASbSwab/c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aeIsugzOMUKqM4Ho3CCV4T7OoxI2BxXSnzhcWgW75RhoXHke4olfjFpfbLVha5L41SJSGkciHVqMdfHltQPqOsvlJJpGzewpSSFgNH2kdhrlo2BBCd1UaI/z2wew2EMr+ZY6nj9gUpAWTyN5fAP7N88wsJ+kCH04V72jW8zSaN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ee45dr8W; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ee45dr8W"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57461C4CEFB;
-	Thu, 18 Dec 2025 10:12:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766052764;
-	bh=6dOHEO/ATrDkn+942USvFxLXBlcYFHToHWASbSwab/c=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Ee45dr8WWCZPfh7q/vH11+3IHZH4UbFXSiCss5Y/a45Q22Fy1RjBmpMAxrDRDBfjM
-	 WOyWJmCu90cTRaElaHvfv6EzTwWosJHYCBZjk+rMwOTQxl3cVcIe5+vUZE89sw45v9
-	 u8sACM0BsAHj8NlYxHehm1DiOyKbBBVi5RGgNET/eEsAvks2P2gr1oGnUDZmTDLA7+
-	 bUnVRfSLJLhrv7pr8CapTQc8FLdQ+TSGtQE1YDkh3tPkBmLRAIwDyPUeGiVNbjlIuk
-	 /7rN1Up4Y34iHCQUfNiRJQXQjleO9y+MHOsf99d9F9bW8h5RdDe3VwKpmONllYG5/6
-	 Pa7jOXlzyFfdA==
-Message-ID: <b7fdd6d7-fd56-4e3a-84da-191411f9edd6@kernel.org>
-Date: Thu, 18 Dec 2025 11:12:40 +0100
+	s=arc-20240116; t=1766061106; c=relaxed/simple;
+	bh=ogpn+aQ4VK0e9e2dY//GG2PAfkNqplUhUxYC7DVNeT4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eRamrgMSB1ut1p53rWPkGOL8hA7psSEyhyR3I82F0HLhA/eBJnAbj++0omJmgba0uFG5key7eIVQA+Fd1S2ahDxVAkS5B7k5XFo/GsOuMp4WbjWQAJbL83J+hW06JcsW80XrbC9KJ+qNdee3VHkXDLUxxrRJOVcbOFGRSdYLRRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1vWDAP-0007wM-Tz; Thu, 18 Dec 2025 13:31:37 +0100
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1vWDAO-006HQR-2e;
+	Thu, 18 Dec 2025 13:31:36 +0100
+Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 918914B8270;
+	Thu, 18 Dec 2025 12:31:36 +0000 (UTC)
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net,
+	kuba@kernel.org,
+	linux-can@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: [PATCH net 0/3] pull-request: can 2025-12-18
+Date: Thu, 18 Dec 2025 10:27:16 +0100
+Message-ID: <20251218123132.664533-1-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/10] dt-bindings: net: can: grcan: Convert GRCAN CAN
- controllers binding from txt to YAML
-To: Arun Muthusamy <arun.muthusamy@gaisler.com>
-Cc: robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
- mkl@pengutronix.de, mailhol@kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-can@vger.kernel.org
-References: <20251118092115.3455-1-arun.muthusamy@gaisler.com>
- <20251118092115.3455-3-arun.muthusamy@gaisler.com>
- <c80ff180-b7f1-4f39-b39d-2953ef75a7ad@kernel.org>
- <13d562aa-3425-4753-a78f-dd268dd78794@gaisler.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 a/A=
-In-Reply-To: <13d562aa-3425-4753-a78f-dd268dd78794@gaisler.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-On 11/12/2025 11:11, Arun Muthusamy wrote:
-> Hi Krzysztof,
-> 
-> Thank you for your thorough review. I’d like to clarify a few points 
-> regarding the DT binding and get your guidance.
-> 
-> On 11/18/25 12:01, Krzysztof Kozlowski wrote:
->> On 18/11/2025 10:21, Arun Muthusamy wrote:
->>> +      Fallback on node name matching for systems that don't provide compatible.
->>> +    enum:
->>> +      - GAISLER_GRCAN
->>> +      - 01_03d
->>> +      - GAISLER_GRHCAN
->>> +      - "01_034"
->> This does not really work. Are you really defining here "name" property?
-> 
-> The driver supports two of the platforms which are LEON and NOEL 
+Hello netdev-team,
 
-I don't care much about driver. Please describe here hardware.
+this is a pull request of 3 patches for net/main.
 
-> platforms. PROM-based *LEON* systems identify uses the "node name" 
-> property, while DTS based *NOEL* systems use proper "|compatible"|strings. On LEON (SPARC32), AMBA Plug & Play information creates the DT 
-> properties, and drivers historically match devices based on node names.
-> To reflect this, I updated the $nodename pattern to support LEON-style 
-> node names: properties:
->    $nodename:
->      pattern: "^(GAISLER_GRCAN|01_03d|GAISLER_GRHCAN|01_034)$" I’d 
-> appreciate any suggestions on the preferred way to describe this node 
-> name for PROM-based LEON.
-> 
->>> +
->>> +  reg:
->>> +    maxItems: 1
->>> +
->>> +  interrupts:
->>> +    maxItems: 1
->>> +
->>> +  clocks:
->>> +    maxItems: 1
->>> +
->>> +  freq:
->>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>> +    description: |
->>> +      Frequency of the external oscillator clock in Hz (the frequency of the
->>> +      amba bus in the ordinary case).
->>> +      This property should be used by systems that utilize the common clock
->>> +      framework is not supported.
->> Missing systemid. Your commit msg must explain any changes done to the
->> binding during conversion.
-> 
-> The driver now reads systemid directly from /ambapp0, so the property no 
-> longer needs to be defined in the DTS. The previous documentation was 
-> outdated and should have been updated after commit:
-> 1e93ed26acf0 ("can: grcan: grcan_probe(): fix broken system id check for 
-> errata workaround needs").
+Tetsuo Handa contributes 2 patches to fix race windows in the j1939
+protocol to properly handle disappearing network devices.
 
-Read again what I wrote.
+The last patch is by me, it fixes a build dependency with the CAN
+drivers, that got introduced while fixing a dependency between the CAN
+protocol and CAN device code.
 
-> 
->>> +  - reg
->>> +  - interrupts
->> Where is freq? It was required in the old binding. Again, you need to
->> explain the changes.
-> 
-> LEON: relies on the freq property
-> NOEL: uses a standard clocks binding
-> Because of this dual approach, the freq property is no longer required 
-> in the DTS binding itself as theAMBA Plug & Play creates the DT properties.
+regards,
+Marc
 
+---
 
-Please read my comment carefully: you need to explain the changes. But
-not to me, to everyone in the commit msg.
+The following changes since commit 885bebac9909994050bbbeed0829c727e42bd1b7:
 
-Best regards,
-Krzysztof
+  nfc: pn533: Fix error code in pn533_acr122_poweron_rdr() (2025-12-11 01:40:00 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-6.19-20251218
+
+for you to fetch changes up to 5a5aff6338c0f4164a6a8d8a7eb400c4054df256:
+
+  can: fix build dependency (2025-12-18 09:04:47 +0100)
+
+----------------------------------------------------------------
+linux-can-fixes-for-6.19-20251218
+
+----------------------------------------------------------------
+Marc Kleine-Budde (1):
+      can: fix build dependency
+
+Tetsuo Handa (2):
+      can: j1939: make j1939_session_activate() fail if device is no longer registered
+      can: j1939: make j1939_sk_bind() fail if device is no longer registered
+
+ drivers/net/can/Kconfig   | 2 +-
+ net/can/j1939/socket.c    | 6 ++++++
+ net/can/j1939/transport.c | 2 ++
+ 3 files changed, 9 insertions(+), 1 deletion(-)
