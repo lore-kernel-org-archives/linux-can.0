@@ -1,294 +1,165 @@
-Received: from delivery.antispam.mailspamprotection.com (delivery.antispam.mailspamprotection.com [185.56.87.1])
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.221])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6969B2D6E75
-	for <linux-can@vger.kernel.org>; Fri, 19 Dec 2025 10:49:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.56.87.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B9392475CF;
+	Sat, 20 Dec 2025 09:09:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.221
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766141367; cv=pass; b=Tdzmh1m0P8abA1ZuBxNhccEa45gIY448ocMupqB1v1iznjnCjOeGLxni/+4VQ8pW08xK+bmpGJxvtgJphnNhwd9Q5wFWBJg/WtjMiHjjTl4eVi48L7zv1iXOi+FZU01fqtBa//PrXfZoZB+O3DTIt9SXf5TRquHV4tasvBaOh6U=
+	t=1766221784; cv=pass; b=E7EXzkpbbLAJceC0JQm1FeqAITgVuB/oFusXYub0Qbr7uKCzSynoR/VFCtUDyGoCuPFF/2Kktxigs1kdpLwGJlTin/gPrPdu4+IMvgOcTgGkic6/8sON2H8CTV5IaIE3sTioFKDjMDv4chKgNZhOvjWDsMUna00pYm6nxb4uXkE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766141367; c=relaxed/simple;
-	bh=WIrquFek2qwGJZJw/uuDm3s/AhluUWirf651teSSguk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=chbP45kE6Z6ESy89e2dLokFbLazMGnjESH2cHMS8RSFHUlYDyJMGRcgmhj8axH7UtagRJgVZz+DumJR3TM8BEAU6eIDNQCVu0iWMT3DP5K04wdHBJqvMj6AP2pasfy0PZ2Fq/pEHHM+Xhr2xUJudzvYBWJqtBarsfAECkBq7GQA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=valla.it; spf=pass smtp.mailfrom=valla.it; dkim=pass (1024-bit key) header.d=antispam.mailspamprotection.com header.i=@antispam.mailspamprotection.com header.b=w3/9K/6L; dkim=pass (1024-bit key) header.d=valla.it header.i=@valla.it header.b=O1DCjK9Y; arc=pass smtp.client-ip=185.56.87.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=valla.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=valla.it
+	s=arc-20240116; t=1766221784; c=relaxed/simple;
+	bh=+xYqBQHkOyOeI8mNHLontYHjvXCHHIRJ6MH0GfI7FhE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=rUUrLvFEF208LMwNfVmM+9d0bSQ01Re73POxX0KSxQ4emVBghvAh16CeGgW2dZTacvn13YBUP4fOHFo84Vrtjk8ZTlx5HHo/Sj1s07gN/Z/2YyKyCSpAZoDteGG6XEm9f5DH7T/w/8wzjBWkKr5/wjiSje23OJDodpjTxjrBMmI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=YXonErfA; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=31vLvB+9; arc=pass smtp.client-ip=81.169.146.221
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=antispam.mailspamprotection.com header.i=@antispam.mailspamprotection.com header.b="w3/9K/6L";
-	dkim=pass (1024-bit key) header.d=valla.it header.i=@valla.it header.b="O1DCjK9Y"
-ARC-Seal: i=1; cv=none; a=rsa-sha256; d=outgoing.instance-europe-west4-2f5w.prod.antispam.mailspamprotection.com; s=arckey; t=1766141365;
-	 b=tC9Wz06j+hYgNhbZRJpExcIEhGH8K3vsUeHDOgYlUH7Mpe+4Z0Ha9UMp7kOCAlhVBO0K3Taczc
-	  nzDhiTyAe+YW57LCuN2d1Y2tai5OHZYRH+sSKAbxiLXiRETC/KCwbqI810RUW+nXFy2ZqY/dGF
-	  MQ2LT0mNUkdexirCYG6gbDYRP5PKnXPA/MFnzO9AJUccwGQWjDJKGQuzZ4MsyoIIRD1dY5gxV8
-	  t3sDwectBLee/ztxEbY/fvPFf6PKWtagvHwmFPJ3XYnBLfNH8e31fArwuw/1A70Rg9pbtr4nJ9
-	  BWIkVoLNISN1EKcOn37xkMn6ygRyUrrZ+y9VfMXxGrsXVA==;
-ARC-Authentication-Results: i=1; outgoing.instance-europe-west4-2f5w.prod.antispam.mailspamprotection.com; smtp.remote-ip=35.214.173.214;
-	iprev=pass (214.173.214.35.bc.googleusercontent.com) smtp.remote-ip=35.214.173.214;
-	auth=pass (LOGIN) smtp.auth=esm19.siteground.biz;
-	dkim=pass header.d=valla.it header.s=default header.a=rsa-sha256;
-	arc=none
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed; d=outgoing.instance-europe-west4-2f5w.prod.antispam.mailspamprotection.com; s=arckey; t=1766141365;
-	bh=WIrquFek2qwGJZJw/uuDm3s/AhluUWirf651teSSguk=;
-	h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:
-	  From:Date:DKIM-Signature:DKIM-Signature;
-	b=1P3a9DZpv224NlbbhhFc6aU9BJ0IfTjXIGjQbfQzqn/A5uLXlVJn+W+YIPiFSvuoDEOxQUJfXI
-	  ZH932+bvJ+LetZtEP6BTeoKgyAOyXyRxRQuzLRI7630PupjvwBWmjVc5udl2jS8/+u4EjGLNXT
-	  4gCAYDP7pJM1R0PTuT0jpgYodZvX7APa0+pI+7u8ZIdWqC6u68I9Pvr+NOWjraEf+jL2uFOAYw
-	  HNhAiTCzhRAHituVVUOZPQPicR3vUNKUj9f68O9rl/LlCMQbty+YsOrREi8eI2NV925nrx/UVm
-	  Aps4qocC4mB1rdXlmuQ7iw5LvMWhEdUNcHtr6uXiwr3zwg==;
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=antispam.mailspamprotection.com; s=default; h=CFBL-Feedback-ID:CFBL-Address
-	:Content-Type:MIME-Version:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	List-Unsubscribe:Content-Transfer-Encoding;
-	bh=9eiwpUNfhbsf8LRovY3H100lMJHv4CMAoY/xU9rzgm4=; b=w3/9K/6LuEG0KQXBubLsCpaiCL
-	m4vo0tJ2B873Dk1ZaQfMhfmP7vyj1VwxvhbSykiOldrhRVRepZe4AwR7Iqo4eidIaXlMj3r16q5Hi
-	nOYSPkrF17ykmaPSnS9tMiLhiVkJz0VoatntglXLUkA6INqOzln7F/kIuSSl3QzAVEt0=;
-Received: from 214.173.214.35.bc.googleusercontent.com ([35.214.173.214] helo=esm19.siteground.biz)
-	by instance-europe-west4-2f5w.prod.antispam.mailspamprotection.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.98.1)
-	(envelope-from <francesco@valla.it>)
-	id 1vWN5p-00000005i5E-1mA4
-	for linux-can@vger.kernel.org;
-	Thu, 18 Dec 2025 23:07:36 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=valla.it;
-	s=default; h=Subject:Cc:To:From:Date:list-help:list-unsubscribe:
-	list-subscribe:list-post:list-owner:list-archive;
-	bh=9eiwpUNfhbsf8LRovY3H100lMJHv4CMAoY/xU9rzgm4=; b=O1DCjK9YDTvL21r+OyXSOk+DaW
-	YvLnvSzzRTOLEvhLfXGyTo2F5S7ZyavYHans8W3HKsacal53ZErT9+Em4S09opJj/QiINbycIrPJz
-	sWtX15/oIMsn9H9MVOHRNzXdsoS1Vz9k1n4FC66Sg/kxjXmizGGPThjR0B/lxtQz865c=;
-Received: from [95.248.141.113] (port=64540 helo=bywater)
-	by esm19.siteground.biz with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.98.1)
-	(envelope-from <francesco@valla.it>)
-	id 1vWN5c-00000000LPF-2lUb;
-	Thu, 18 Dec 2025 23:07:20 +0000
-Date: Fri, 19 Dec 2025 00:07:18 +0100
-From: Francesco Valla <francesco@valla.it>
-To: Harald Mommer <harald.mommer@oss.qualcomm.com>
-Cc: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>,
-	Mikhail Golubev-Ciuchea <mikhail.golubev-ciuchea@oss.qualcomm.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-can@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	Wolfgang Grandegger <wg@grandegger.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Stefano Garzarella <sgarzare@redhat.com>
-Subject: Re: [PATCH v6] can: virtio: Add virtio CAN driver
-Message-ID: <aUSJJtRNOJTohjCS@bywater>
-References: <aQJRnX7OpFRY/1+H@fedora>
- <aQkgsuxa2UaL_qdt@bywater>
- <aTsE1VIk4V/A49HE@fedora>
- <aT7XAsTWr0_yyfx_@bywater>
- <23c5df0c-48d1-4d3a-8f25-8249b93c9b60@oss.qualcomm.com>
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="YXonErfA";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="31vLvB+9"
+ARC-Seal: i=1; a=rsa-sha256; t=1766220695; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=GhJ33Ly58NIHzsLZycMsp7neI86ZNNO+x0PWVmnvf5Bqxvlit07OCfdZdfyh5W9gOk
+    aCzyF7E460/tgbXxFE5eKrVJx+xgnO2QEbtrn8LMukLU9wE97lvDYK+8eq80GNSkPPMn
+    E8+v1nqP5EfMMBw16045XSC9PIPZsTD3vEeRtmPR2RNVYRCHO+Zf+zvYTxE/tCi5uSnt
+    qyWisHfMcfzbiRjkJoO2dNzMOydNZ6g5iv11aQOEyXdhmOmgQouHtWF36gk8lM+c3Anw
+    +ND9gugo9/WzYoFKIRERNZdhxqT4oLD+fcY5FTEorvdNSMgyeke3gucSCH+86NHtfDfd
+    s7lA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1766220695;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:To:Subject:Date:Message-ID:Cc:Date:From:
+    Subject:Sender;
+    bh=sKbZgoo15K6tCc2NFlCG0/LydYKvQHd139PxdzHvBU8=;
+    b=iVnU3d0jj246Hlp3xN612PG6zaTn3StmDGJsEcUdRCmQzLBiL8BFLXnkte8tI9eH6j
+    re5u7Q++45WzeiKuFMHpnctlM5mimE3inVGmjkqiZTR1B0IC+zTkyTRc0q2Y7BYZWOKq
+    nQD+Z+EQGxR2bp7qLLw6/PgspPTls2IWFP+rJGfEMsyoDwTz4muM4UY4gxA4cmZElBy+
+    RVABZIwmNGrp5cKmxY/CoZ3BuVIk//zxL5e3knYXfkzxzbLKg4EkiYpp9j2Y3J7hnitv
+    h2ca5kiIWFTDgb7ZA0I5FmfeeHHU0CJYkGPNBoll7+waMs+aXc1WOF+5xtmFmi6UneTb
+    aGaA==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1766220695;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:To:Subject:Date:Message-ID:Cc:Date:From:
+    Subject:Sender;
+    bh=sKbZgoo15K6tCc2NFlCG0/LydYKvQHd139PxdzHvBU8=;
+    b=YXonErfAPi80ef4BKlZNZKSX1aGDtNM1YUNm/zOEKLVgTAhnhCjJ6coLIHme29exId
+    bn45ns+x/h/uY60vWWXRkyg4rru3new7OldoyreViHZoLt9nKQAam3xMYFqjTN4dYL/0
+    DBTxZuBL3o+OQM3mW1vJQB+qx3QX2RoT3A2k+GBgrPMG66IpAdU/U58XlDNUTFVLWcKf
+    11LcyR9g9So6drxWjhh1vreS5crg5h1vnDmR99+MjH76AA15wgZfFVMqhZPjOu7uzJ9x
+    UCqXPqME8Wpipe4HTPTgCsIBwt6HIlzTtBIkSrBFNjgCriDEHcEF0a3WrBIGQKpvOTM9
+    mnHQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1766220695;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:To:Subject:Date:Message-ID:Cc:Date:From:
+    Subject:Sender;
+    bh=sKbZgoo15K6tCc2NFlCG0/LydYKvQHd139PxdzHvBU8=;
+    b=31vLvB+9Fj2WSRLFb3FsoEanbY5GMpVLx8m96/EfmK1e+w856LG/eYdlbrwhQcdxf/
+    4vxXaCJERwhiMBr4i8Dw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bGWj0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::9f3]
+    by smtp.strato.de (RZmta 54.1.0 AUTH)
+    with ESMTPSA id K0e68b1BK8pYBlr
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Sat, 20 Dec 2025 09:51:34 +0100 (CET)
+Message-ID: <380b9c67-dd42-4d3a-9527-63cad648fe43@hartkopp.net>
+Date: Sat, 20 Dec 2025 09:51:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <23c5df0c-48d1-4d3a-8f25-8249b93c9b60@oss.qualcomm.com>
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - esm19.siteground.biz
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - valla.it
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-SGantispam-id: 86303e9571f5e518b75b144e9ade253a
-AntiSpam-DLS: false
-AntiSpam-DLSP: 
-AntiSpam-DLSRS: 
-AntiSpam-TS: 1.0
-CFBL-Address: feedback@antispam.mailspamprotection.com; report=arf
-CFBL-Feedback-ID: 1vWN5p-00000005i5E-1mA4-feedback@antispam.mailspamprotection.com
-Authentication-Results: outgoing.instance-europe-west4-2f5w.prod.antispam.mailspamprotection.com;
-	iprev=pass (214.173.214.35.bc.googleusercontent.com) smtp.remote-ip=35.214.173.214;
-	auth=pass (LOGIN) smtp.auth=esm19.siteground.biz;
-	dkim=pass header.d=valla.it header.s=default header.a=rsa-sha256;
-	arc=none
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [can?] INFO: task hung in cangw_pernet_exit_batch (5)
+To: syzbot <syzbot+6461a4c663b104fd1169@syzkaller.appspotmail.com>,
+ linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, mkl@pengutronix.de,
+ netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <69446029.a70a0220.207337.00f1.GAE@google.com>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <69446029.a70a0220.207337.00f1.GAE@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello Harald,
+Hi all,
 
-On Thu, Dec 18, 2025 at 08:51:41PM +0100, Harald Mommer wrote:
+the syslog for this issue is full of bluetooth error messages that could 
+be related to this recently reverted patch:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth.git/commit/?id=252714f1e8bdd542025b16321c790458014d6880
+
+Therefore I assume the problem not to be related to the CAN subsystem.
+Let's see if after the bluetooth fix another syzbot splat shows up.
+
+Best regards,
+Oliver
+
+On 18.12.25 21:12, syzbot wrote:
 > Hello,
 > 
-> On 12/14/25 16:25, Francesco Valla wrote:
+> syzbot found the following issue on:
 > 
-> >>>> +/* Compare with m_can.c/m_can_echo_tx_event() */
+> HEAD commit:    8f7aa3d3c732 Merge tag 'net-next-6.19' of git://git.kernel..
+> git tree:       net-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=175489b4580000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=9e5198eaf003f1d1
+> dashboard link: https://syzkaller.appspot.com/bug?extid=6461a4c663b104fd1169
+> compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=139e99c2580000
 > 
-> For the question whether some comments were originally more personal notes: Yes!
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/5fe312c4cf90/disk-8f7aa3d3.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/c7a1f54ef730/vmlinux-8f7aa3d3.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/64a3779458bb/bzImage-8f7aa3d3.xz
 > 
-> This applies especially for the ones which state in which already accepted driver(s) was looked to get an idea how things may be expected to be done. Most of those comments should have served their purpose now.
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+6461a4c663b104fd1169@syzkaller.appspotmail.com
 > 
-> >>>> +static int virtio_can_read_tx_queue(struct virtqueue *vq)
-> >>>> +{
-> >>>> +	struct virtio_can_priv *can_priv = vq->vdev->priv;
-> >>>> +	struct net_device *dev = can_priv->dev;
-> >>>> +	struct virtio_can_tx *can_tx_msg;
-> >>>> +	struct net_device_stats *stats;
-> >>>> +	unsigned long flags;
-> >>>> +	unsigned int len;
-> >>>> +	u8 result;
-> >>>> +
-> >>>> +	stats = &dev->stats;
-> >>>> +
-> >>>> +	/* Protect list and virtio queue operations */
-> >>>> +	spin_lock_irqsave(&can_priv->tx_lock, flags);
-> >>>
-> >>> The section below seems a pretty big one to protect behind a spin lock. 
-> >>>
-> >>
-> >> How can I split it? 
-> >>
-> > 
-> > Question here is: what needs to be protected? As far as I can tell, the
-> > only entity needing some kind of locking here is the queue, while both
-> > ida_* and tx_inflight operations are already covered (the former by
-> > design [1], the second because it's implemented using an atomic.
-> > 
-> > If I'm not wrong (but I might be, so please double check) this can be
-> > limited to:
-> > 
-> > 	/* Protect queue operations */
-> > 	scoped_guard(spinlock_irqsave, &priv->tx_lock)
-> > 		err = virtqueue_add_sgs(vq, sgs, 1u, 1u, can_tx_msg, GFP_ATOMIC);
-> > 
-> > 
-> > Maybe the whole locking pattern is a leftover from a previous version, 
-> > where a list of TX messages was kept?
-> 
-> 1.) There is virtqueue_get_buf() => virtqueue_get_buf_ctx() and there is a comment 
-> " * Caller must ensure we don't call this with other virtqueue
->   * operations at the same time (except where noted)."
-> 
-> Are we safe when at the same time in virtio_can_start_xmit() a queue operation is done in parallel?
-> 
-> Locking may or may not be necessary here. I cannot tell in this moment.
-> 
-> 2.) There was once a "list_del(&can_tx_msg->list);" in the code here. 
-> 
-> When in virtio_can_start_xmit() at the same time a list_add_tail() or a list_del() would have been executed we had a garbled linked list.
-> 
-> The linked list now does not exist any more in the newer code base.
-> 
-> => could be that the lock is not needed any more at all
-> => could be that we have to protect only the queue operations now and this would shorten the locking time and simplify the code
-> 
-
-I *think* we can restrict the locking to virtqueue_ operations; in this
-specific case, protecting virtqueue_add_sgs() should be sufficient.
-
-> >>>> +
-> >>>> +	can_tx_msg = virtqueue_get_buf(vq, &len);
-> >>>> +	if (!can_tx_msg) {
-> >>>> +		spin_unlock_irqrestore(&can_priv->tx_lock, flags);
-> >>>> +		return 0; /* No more data */
-> >>>> +	}
-> >>>> +
-> >>>> +	if (unlikely(len < sizeof(struct virtio_can_tx_in))) {
-> >>>> +		netdev_err(dev, "TX ACK: Device sent no result code\n");
-> >>>> +		result = VIRTIO_CAN_RESULT_NOT_OK; /* Keep things going */
-> >>>> +	} else {
-> >>>> +		result = can_tx_msg->tx_in.result;
-> >>>> +	}
-> >>>> +
-> > 
-> > (snip)
-> > 
-> 
-> >>>> +	if (!priv->rpkt) {
-> >>>> +		virtio_can_del_vq(vdev);
-> >>>> +		goto on_failure;
-> >>>> +	}
-> >>>> +	virtio_can_populate_rx_vq(vdev);
-> >>>> +
-> >>>> +	err = register_virtio_can_dev(dev);
-> >>>> +	if (err) {
-> >>>> +		virtio_can_del_vq(vdev);
-> >>>> +		goto on_failure;
-> >>>> +	}
-> >>>> +
-> >>>> +	napi_enable(&priv->napi);
-> >>>> +	napi_enable(&priv->napi_tx);
-> >>>
-> >>> Most of the existing drivers enable the napi(s) during the open() phase,
-> >>> IIUC to avoid scheduling napi operations for devices that might never
-> >>> get used. But here maybe there is a specific reason to do it this way?
-> >>>
-> >>
-> >> I do not have idea. I moved to open() and something stopped to work. I
-> >> am investigating it.
-> >>
-> > 
-> > On a second thought, it may be wiser to have the napis enabled on probe,
-> > to drop the incoming messages even when the interface is brought down.
-> 
-> It's a while since then but I wanted to drop messages not having lurking a 3 hours old cooling water temperature in some virtio message buffer being misinterpreted as an actual value. May have the disadvantage to cause load when the driver is not open-ed. But I see you also thought about 3 hours old outdated values now which may cause trouble.
-> 
-
-I am stil thinking about this. We are sending a ctrl message with
-VIRTIO_CAN_SET_CTRL_MODE_STOP, so new frames shouldn't be arriving while
-the interface is stopped (i.e., once it is brought down). May it be
-sufficient to consume and re-queue all pending vring elements as part of
-virtio_can_stop()?
-
-> > 
-> > (last snip)
-> > 
-> > 
-> > While stress testing this, I noticed that flooding the virtio-can
-> > interface with packets leads to an hang of the interface itself.
-> > I am seeing this issuing, at host side:
-> > 
-> > 	while true; do cansend can0 123#00; done
-> > 
-> > with:
-> > 
-> >  - QEMU: the tip of the master branch plus [2]
-> >  - vhost-device: the tip of the main branch
-> > 
-> > and the following QEMU invocation:
-> > 
-> > qemu-system-x86_64 -serial mon:stdio \
-> >     -m 2G -smp 2 \
-> >     -kernel $(pwd)/BUILD.bin/arch/x86/boot/bzImage \
-> >     -initrd /home/francesco/SRC/LINUX_KERNEL/initramfs.gz \
-> >     -append "loglevel=7 console=ttyS0" \
-> >     -machine memory-backend=pc.ram \
-> >     -object memory-backend-file,id=pc.ram,size=2G,mem-path=/tmp/pc.ram,share=on \
-> >     -chardev socket,id=can0,path=/tmp/sock-can0 \
-> >     -device vhost-user-can-pci,chardev=can0
-> 
-> I had this problem when I enabled the experimental feature late TX ACK on the device side instead of immediately sending the TX ack early even when the CAN message had not yet been transmitted on the (physical) bus. In this case I relied that no ACK message (own sent message received) was lost otherwise I ran out of messages in the transmit queue everything waiting until doomsday for ACKs which would never come.
-> 
-> The problem was that somewhere in the Linux stack those acknowledgements got lost under heavy load on the device side. Workaround was to ack the TX message early (means putting the message immediately back into the used queue when received) in the virtio device. But this is a device thing, the device MUST put back ALL messages back into the used queue not forgetting about some under whatever circumstances otherwise the avail queue will get empty forever.
-> 
-> Besides that I could do what I want stressing the code and it did not stop. But this code was different from what I see now, and the testing environment was also a different one. 
-> 
-
-After further investigations, this seems to be happening under similar
-conditions, i.e., when the backend wants to enqueue a new message into
-the vring but finds no available buffer. I still don't understand why it
-never recovers, though.
-
-> > Restarting the interface (i.e.: ip link set down and the up) does not
-> > fix the situation.
-> > 
-> > I'll try to do some more testing during the next days.
-> Other than fixing the swapped feature flag values for the next release internally I've had not yet the chance to look deeply into all those changes and really to think about them in depth.
+> INFO: task syz.0.17:6104 blocked for more than 148 seconds.
+>        Not tainted syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz.0.17        state:D stack:25440 pid:6104  tgid:6104  ppid:5956   task_flags:0x400140 flags:0x00080002
+> Call Trace:
+>   <TASK>
+>   context_switch kernel/sched/core.c:5256 [inline]
+>   __schedule+0x14bc/0x5000 kernel/sched/core.c:6863
+>   __schedule_loop kernel/sched/core.c:6945 [inline]
+>   schedule+0x165/0x360 kernel/sched/core.c:6960
+>   schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:7017
+>   __mutex_lock_common kernel/locking/mutex.c:692 [inline]
+>   __mutex_lock+0x7e6/0x1350 kernel/locking/mutex.c:776
+>   cangw_pernet_exit_batch+0x20/0x90 net/can/gw.c:1288
+>   ops_exit_list net/core/net_namespace.c:205 [inline]
+>   ops_undo_list+0x525/0x990 net/core/net_namespace.c:252
 > 
 > 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
 > 
-
-Regards,
-Francesco
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+> 
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
+> 
 
