@@ -1,161 +1,183 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7C60352931;
-	Tue, 23 Dec 2025 10:05:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBB7132548A;
+	Tue, 23 Dec 2025 10:56:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766484324; cv=none; b=aqsdDXyQ4C8px2UfF5MlBVZTrADr+V+Wvm0lyyVb0Jou90cRY8CPHje0ga033YyVro4DgTSeC+Entw+Fy2SLLzArC9bhYNXfBO9hlZY5+H1hxTxYlggSggURa/cUKVglbmfEFflc1Y8ChMVDxVRcjiLNcXaZab9Y+k8H6nrNvHw=
+	t=1766487395; cv=none; b=Yimzx1EDM7K82nMszzcinQgwOwfgsasDN0tkqWrsl30R4C4OvS+BbWt3xJAVfO0gpF1pGP2PohKhiFCMPTLEA4h2mRo7XyD5gXDrSH9TRYS3Z78co7OOPMX+CbNUhGVASIQK6ghaizCOLZNfTuBmlSTkx2IVmE8HmEhEqOwQuPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766484324; c=relaxed/simple;
-	bh=QU3vKK3fAi+EkXtG1LRInpCrVPsy7c3PzEqqyr9a60o=;
+	s=arc-20240116; t=1766487395; c=relaxed/simple;
+	bh=rQyHNApVOoEpxecyH2FFCfV+d552z/jncbJWppKJHGo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IdA5SrtfkCxpHaa2QdK0WL+ezeYV6jyq85gDiAwkOeiUm7Le02L6YbnxAEFVEb9Ct5fo0jHeBtZ2M35m/HaSNBejmLOnPIxMYL1CMDHSTV7p745QAyoEZ9W5JX8zF/evHIa8plC1BbNabrwHTmA4TVzENjxWj0m3lkcB0UTEdN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kWaN7fW6; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=misud48Uf4qS/629UkqiKRxoAl4ElTzT2yaQAhE7dofY5VS1qFlbhTASXFlPveM3c6Lec0I75x2CnkJwfDtB99L7pFVsCV5NcnEJFIIwk15NMscU2M8+4czgNJ5GYEMeE3psrQHUnBifqLX8wc8PdArid5bzLIMF2B+i7zzDnig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=fail (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=TKiU4KlE reason="key not found in DNS"; arc=none smtp.client-ip=94.231.106.210
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kWaN7fW6"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E654C113D0;
-	Tue, 23 Dec 2025 10:05:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766484324;
-	bh=QU3vKK3fAi+EkXtG1LRInpCrVPsy7c3PzEqqyr9a60o=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kWaN7fW6DhGsHZ03v0aWutGIXIk0AnySLmLRRXy08kCQ5sLNxBbR8K7QccqCJgaHO
-	 pnmnU/UChzLpi3ly3m1cTygs1eSeFC1u+33Av7XTYHwKxpzFAjQbIa67wVTo4Nk7LD
-	 MbsfhwlUDIXUpVyOMKtAQwnh40FJ1KRsufMlUnPbv+2BBMnnvyznhSaUU0Urev364R
-	 WH7K8wa5OwdqGmzLo88/Xyw4MvAeR4oPbzvqeM4Ydiyc0/jU0MappC8LwZdKavtp8v
-	 WVXRlA6DiNYq7vTbW4wBpB0EDzWo8lZrnOtKPF7FZf/nuhpxwZk9smns9YgKl0TbJ0
-	 IB5IydwAqIlKQ==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-	syzbot <syzbot+881d65229ca4f9ae8c84@syzkaller.appspotmail.com>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Sasha Levin <sashal@kernel.org>,
-	robin@protonic.nl,
-	linux-can@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.18-5.10] can: j1939: make j1939_session_activate() fail if device is no longer registered
-Date: Tue, 23 Dec 2025 05:05:08 -0500
-Message-ID: <20251223100518.2383364-4-sashal@kernel.org>
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="TKiU4KlE"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.simply.com (Simply.com) with ESMTP id 4dbBlC5kylz1DDMp;
+	Tue, 23 Dec 2025 11:56:23 +0100 (CET)
+Received: from d-5xj5g74.got.gaisler.com.com (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
+	by smtp.simply.com (Simply.com) with ESMTPA id 4dbBlC3n1Bz1DDXT;
+	Tue, 23 Dec 2025 11:56:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
+	s=simplycom2; t=1766487383;
+	bh=ovpAxXhMB8R22TCL6fvJYIX2qFtp6RStyBFYmYn5Fbg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=TKiU4KlExh0lcOTsbPBL2013mHdLyxwXJbh7+cSB3xnPTB58mQdLWxmJxL4OwR/S6
+	 REzL1U0y8MJIaJ+YX6zuozM7PnlDXu8Y3xpMPX+Q2DH9K3/6qqS8YCfIxD7Dbyzcvk
+	 kHz49O7a4V1laZ/MmbUUKgX3uWMrDcZDvF1n0SFv6ITWPg8l0WSGrxEdtaBqFyedk4
+	 n3iFeV7nfsZv9TUUwC3At2FSjPITH5k3tnXmavUVNFsGRz+9toPD8qCCDooCecMDzm
+	 xT8qiEPcCwRBehBsFB1Qib8uy9xY9J4wQQ9yKx9XxX8kfALVyq6jqEQUk5xL3U2HFK
+	 reg9OIPh0Sd/Q==
+From: Arun Muthusamy <arun.muthusamy@gaisler.com>
+To: robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	mkl@pengutronix.de,
+	mailhol@kernel.org
+Cc: devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-can@vger.kernel.org,
+	Arun Muthusamy <arun.muthusamy@gaisler.com>
+Subject: [PATCH v2 02/10] dt-bindings: net: can: grcan: Convert GRCAN CAN controllers binding from txt to YAML
+Date: Tue, 23 Dec 2025 11:55:56 +0100
+Message-ID: <20251223105604.12675-3-arun.muthusamy@gaisler.com>
 X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251223100518.2383364-1-sashal@kernel.org>
-References: <20251223100518.2383364-1-sashal@kernel.org>
+In-Reply-To: <20251223105604.12675-1-arun.muthusamy@gaisler.com>
+References: <20251223105604.12675-1-arun.muthusamy@gaisler.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.18.2
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Migrate device tree bindings for Gaisler GRCAN, GRHCAN
+and GRCANFD CAN controllers from a text format to YAML format.
 
-[ Upstream commit 5d5602236f5db19e8b337a2cd87a90ace5ea776d ]
+Additional changes:
+  - Remove stale systemid property
+    removed in commit 1e93ed26acf0 ("can: grcan: grcan_probe():
+    fix broken system id check for errata workaround needs")
+  - Make freq optional
+  - Add clocks
+  - Add compatible
+  - Add example
 
-syzbot is still reporting
-
-  unregister_netdevice: waiting for vcan0 to become free. Usage count = 2
-
-even after commit 93a27b5891b8 ("can: j1939: add missing calls in
-NETDEV_UNREGISTER notification handler") was added. A debug printk() patch
-found that j1939_session_activate() can succeed even after
-j1939_cancel_active_session() from j1939_netdev_notify(NETDEV_UNREGISTER)
-has completed.
-
-Since j1939_cancel_active_session() is processed with the session list lock
-held, checking ndev->reg_state in j1939_session_activate() with the session
-list lock held can reliably close the race window.
-
-Reported-by: syzbot <syzbot+881d65229ca4f9ae8c84@syzkaller.appspotmail.com>
-Closes: https://syzkaller.appspot.com/bug?extid=881d65229ca4f9ae8c84
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://patch.msgid.link/b9653191-d479-4c8b-8536-1326d028db5c@I-love.SAKURA.ne.jp
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Arun Muthusamy <arun.muthusamy@gaisler.com>
 ---
+ .../bindings/net/can/gaisler,grcan.yaml       | 62 +++++++++++++++++++
+ .../devicetree/bindings/net/can/grcan.txt     | 28 ---------
+ 2 files changed, 62 insertions(+), 28 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/gaisler,grcan.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/can/grcan.txt
 
-LLM Generated explanations, may be completely bogus:
-
----
-
-## FINAL ANALYSIS SUMMARY
-
-### What the commit fixes:
-A race condition in the CAN J1939 protocol driver where
-`j1939_session_activate()` can succeed even after
-`j1939_cancel_active_session()` from the NETDEV_UNREGISTER handler has
-completed. This leaves orphaned sessions with references to devices
-being unregistered, causing the "waiting for device to become free"
-hang.
-
-### Why it matters to stable users:
-- **System hang**: The bug can cause network device unregistration to
-  hang indefinitely
-- **Syzbot reproducible**: The bug was found by automated fuzzing,
-  meaning it's triggerable in practice
-- **CAN J1939 users**: Affects automotive and industrial systems using
-  the CAN J1939 protocol
-
-### Stable kernel rule compliance:
-
-| Criterion | Assessment |
-|-----------|------------|
-| Obviously correct | ✅ Yes - simple check using established kernel
-pattern |
-| Fixes real bug | ✅ Yes - syzbot-reported hang |
-| Small and contained | ✅ Yes - 2 lines added, 1 file changed |
-| No new features | ✅ Correct - only adds error path |
-| Tested | ✅ Has Acked-by from maintainer |
-
-### Risk assessment:
-- **Very low risk**: The change only adds a conditional check before
-  adding a session to the active list
-- **Uses established pattern**: `dev->reg_state != NETREG_REGISTERED` is
-  used throughout net/can/raw.c and other networking code
-- **Cannot break existing functionality**: Adds a new error return path
-  that's already properly handled (callers handle error returns)
-
-### Dependencies:
-- The fix is logically independent - it adds a safety check that works
-  regardless of other commits
-- The related commit 93a27b5891b8 is about a different part of the fix
-  (adding missing calls in the unregister handler)
-- Both commits are improvements to the same underlying issue but can be
-  applied separately
-
-### Conclusion:
-This is a textbook example of a good stable backport candidate:
-1. Fixes a real, user-visible bug (system hang)
-2. Minimal change (2 lines)
-3. Uses established kernel patterns
-4. Has proper subsystem maintainer review
-5. Low risk of regression
-
-**YES**
-
- net/can/j1939/transport.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index fbf5c8001c9d..613a911dda10 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -1567,6 +1567,8 @@ int j1939_session_activate(struct j1939_session *session)
- 	if (active) {
- 		j1939_session_put(active);
- 		ret = -EAGAIN;
-+	} else if (priv->ndev->reg_state != NETREG_REGISTERED) {
-+		ret = -ENODEV;
- 	} else {
- 		WARN_ON_ONCE(session->state != J1939_SESSION_NEW);
- 		list_add_tail(&session->active_session_list_entry,
+diff --git a/Documentation/devicetree/bindings/net/can/gaisler,grcan.yaml b/Documentation/devicetree/bindings/net/can/gaisler,grcan.yaml
+new file mode 100644
+index 000000000000..8fea97c7319a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/gaisler,grcan.yaml
+@@ -0,0 +1,62 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/can/gaisler,grcan.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Aeroflex Gaisler GRCAN, GRHCAN and GRCANFD CAN controllers.
++
++description: |
++  GRCAN, GRCANFD, GRHCAN controllers are available in the GRLIB VHDL
++  IP core library.
++  For further information look in the documentation for the GRLIB IP library:
++  https://download.gaisler.com/products/GRLIB/doc/grip.pdf
++
++maintainers:
++  - Arun Muthusamy <arun.muthusamy@gaisler.com>
++  - Andreas Larsson <andreas@gaisler.com>
++
++allOf:
++  - $ref: can-controller.yaml#
++
++properties:
++  compatible:
++    enum:
++      - gaisler,grcan
++      - gaisler,grcanfd
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  freq:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: |
++      Frequency of the external oscillator clock in Hz (the frequency of the
++      AMBA bus in the ordinary case).
++      This property should be used by systems where the common clock
++      framework is not supported.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    can@ff400000 {
++        compatible = "gaisler,grcanfd";
++        clocks = <&sysclock>;
++        reg = <0xff400000 0x400>;
++        interrupt-parent = <&plic0>;
++        interrupts = <6>;
++    };
+diff --git a/Documentation/devicetree/bindings/net/can/grcan.txt b/Documentation/devicetree/bindings/net/can/grcan.txt
+deleted file mode 100644
+index 34ef3498f887..000000000000
+--- a/Documentation/devicetree/bindings/net/can/grcan.txt
++++ /dev/null
+@@ -1,28 +0,0 @@
+-Aeroflex Gaisler GRCAN and GRHCAN CAN controllers.
+-
+-The GRCAN and CRHCAN CAN controllers are available in the GRLIB VHDL IP core
+-library.
+-
+-Note: These properties are built from the AMBA plug&play in a Leon SPARC system
+-(the ordinary environment for GRCAN and GRHCAN). There are no dts files for
+-sparc.
+-
+-Required properties:
+-
+-- name : Should be "GAISLER_GRCAN", "01_03d", "GAISLER_GRHCAN" or "01_034"
+-
+-- reg : Address and length of the register set for the device
+-
+-- freq : Frequency of the external oscillator clock in Hz (the frequency of
+-	the amba bus in the ordinary case)
+-
+-- interrupts : Interrupt number for this device
+-
+-Optional properties:
+-
+-- systemid : If not present or if the value of the least significant 16 bits
+-	of this 32-bit property is smaller than GRCAN_TXBUG_SAFE_GRLIB_VERSION
+-	a bug workaround is activated.
+-
+-For further information look in the documentation for the GLIB IP core library:
+-http://www.gaisler.com/products/grlib/grip.pdf
 -- 
 2.51.0
 
