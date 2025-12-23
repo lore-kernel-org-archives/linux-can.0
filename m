@@ -1,37 +1,37 @@
 Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8505231355C;
-	Tue, 23 Dec 2025 10:56:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A027532B9BD;
+	Tue, 23 Dec 2025 10:56:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766487398; cv=none; b=WMvvzUBbLsq1sMjwjhknqePDbqdt+O4vUU3uxFq2I5wzS9EH//I4PbfmC21Fj/Bq0Gf2lJ13we95juyt6aJGyDQTpXwfGZOCZdQyuRfxdAwTfKHHVxpBt1TNVBsHIVc4taUneHTpWvxzfBEOQ5XZJebjjvz+QnUx7C1eC9jx7m4=
+	t=1766487401; cv=none; b=eGzZLBDVrbvXEFWpmdX6pCxUUQPFkwxKm8zxshJZtrmAavadyG1LGj9R89GZhN80TvCmTjUzOP8+M++zuDmntc/ty5qVulR6IuDmGvcQBlfywfDGa11QQAfPeGOPxJzSSMj5TshJVJsBvsAkjOfuH2CX8jXb6SCImYX8syGlajA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766487398; c=relaxed/simple;
-	bh=5nuYmtDIo1xkP7UImyOsAOk/6W2j04fEWx3lpFIWgw8=;
+	s=arc-20240116; t=1766487401; c=relaxed/simple;
+	bh=V4B81ldGHaQr4Fo6sQ46ag8QdAvOe2EzrCi6sXLaTcA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RPW4yM4gPRkq6IlbOoNcnHoiMcpjvwelXiAK3tACDwHZD8abYWOCLQ/e97luqf8f0VG6nEJETRYkvu8aTRKHUXHm6oBtd8ZYIrYxSKRgPSeGnzokL2XhtHyi/HNzKoxEEKBvvIfxSV5YYgLiJ3iz5XrK+UinhGmQjEiFlZkFqok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=fail (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=hXmrWGYR reason="key not found in DNS"; arc=none smtp.client-ip=94.231.106.210
+	 MIME-Version; b=LeneMRWkdM5Je8xmH+FDo85yew9Hq9Kx1P3qEFNh/IK3wFZsbu3aWHO+tHhX1S0btmiEFzw/OTVpaVGwLcybJ0W9bbP5dfwxSaxHMuItqWDfkIe5DSBHS6aaTK9z8vdDFmc/BxW3HpZjeURGRaNDH2L60sAqtMAVwZrOlYwOi0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=fail (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=TiwklGZP reason="key not found in DNS"; arc=none smtp.client-ip=94.231.106.210
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="hXmrWGYR"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="TiwklGZP"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp.simply.com (Simply.com) with ESMTP id 4dbBlD2VDLz1DHVZ;
-	Tue, 23 Dec 2025 11:56:24 +0100 (CET)
+	by smtp.simply.com (Simply.com) with ESMTP id 4dbBlF3GBfz1DR2l;
+	Tue, 23 Dec 2025 11:56:25 +0100 (CET)
 Received: from d-5xj5g74.got.gaisler.com.com (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
-	by smtp.simply.com (Simply.com) with ESMTPA id 4dbBlD0TJyz1DDgL;
-	Tue, 23 Dec 2025 11:56:24 +0100 (CET)
+	by smtp.simply.com (Simply.com) with ESMTPA id 4dbBlF0qHCz1DHcd;
+	Tue, 23 Dec 2025 11:56:25 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
-	s=simplycom2; t=1766487384;
-	bh=npkggg7tOGIOrWu8aBerGnxSfTPWt4Z7jdrnizYzqoc=;
+	s=simplycom2; t=1766487385;
+	bh=YAYzPUEcArEa3JVRdCueQZUu9bqLktofuk5IHtJ8aTY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=hXmrWGYRIWYiDY6vtkEA7uN6srpPDdSSTh5koRoS9G23Jynng2EiaRuByv8FgVG0E
-	 10SLNEeU7OU6ndr2l8GzqY/KhNuyJ4p0Lgv2ajJVMUhDfJC66IEZry7CXyMnW/vfSr
-	 IRzXHLSbUCMtgH81gtY6q2rDoibJd05Jpz+r2oE0+Z2iNY+r56XAD+r5bLb3jla1wo
-	 f+gHYiH2WUzfUnhE2bYyhTv5pYaBHLG2+tfLCZfn3Vcp4UQx2+6B0oWf4PoYjkd9dw
-	 oEmdMLhJWv6L4gCkE50lFDQG8oIahrPF1v2CASHlDQm44o8ox2jBV/mW7dS7RaUXhv
-	 eDvCv4gZt2HTw==
+	b=TiwklGZPxHszH//2ErVZoOTfU0p6HQBSkdNRNOOYVYMz+XWelVJzvILUDyVkYAYJa
+	 dqJHY091m99dBMa8XBgHMdHqxhvn+RGPlAoNjP3eE9a6WBIY5cdgoC2UxOLfezkj8I
+	 KpRxNOlRcEM+lfZzNb9TJ13SfnZMXNYv73jLz6qdnHI0tJz4R1THtLrI4venXhYj8U
+	 SuVg008cV6u7j7TkmxRVhBgc9a8ZvoiPRWX+1U/O/9u10FAaMcT7huyG7nkZJJ8ORX
+	 YK4Dgz+Utb2Cc0LN+Vgn5oWJhRp4bzAlCDN1jXS8SimxUPHoUNg3LvjggUBEY+PRXO
+	 drIfwqzCXaVxw==
 From: Arun Muthusamy <arun.muthusamy@gaisler.com>
 To: robh@kernel.org,
 	krzk+dt@kernel.org,
@@ -43,9 +43,9 @@ Cc: devicetree@vger.kernel.org,
 	linux-can@vger.kernel.org,
 	Daniel Hellstrom <daniel@gaisler.com>,
 	Arun Muthusamy <arun.muthusamy@gaisler.com>
-Subject: [PATCH v2 04/10] can: grcan: Add clock handling
-Date: Tue, 23 Dec 2025 11:55:58 +0100
-Message-ID: <20251223105604.12675-5-arun.muthusamy@gaisler.com>
+Subject: [PATCH v2 08/10] can: grcan: Add saving and restoring of CAN FD baud-rate registers
+Date: Tue, 23 Dec 2025 11:56:02 +0100
+Message-ID: <20251223105604.12675-9-arun.muthusamy@gaisler.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251223105604.12675-1-arun.muthusamy@gaisler.com>
 References: <20251223105604.12675-1-arun.muthusamy@gaisler.com>
@@ -59,58 +59,48 @@ Content-Transfer-Encoding: 8bit
 
 From: Daniel Hellstrom <daniel@gaisler.com>
 
-Add clock handling and add error messages for missing 'freq' DT property.
+While reset the GRCAN baud-rates are preserved, since GRCANFD has the
+baud-rate in different registers we need to add saving of those
+registers too.
 
 Signed-off-by: Daniel Hellstrom <daniel@gaisler.com>
 Signed-off-by: Arun Muthusamy <arun.muthusamy@gaisler.com>
 ---
- drivers/net/can/grcan.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ drivers/net/can/grcan.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
-index 3b1b09943436..538a9b4f82ab 100644
+index cdb9498cf783..dc14b3145e73 100644
 --- a/drivers/net/can/grcan.c
 +++ b/drivers/net/can/grcan.c
-@@ -34,7 +34,7 @@
- #include <linux/spinlock.h>
- #include <linux/of.h>
- #include <linux/of_irq.h>
--
-+#include <linux/clk.h>
- #include <linux/dma-mapping.h>
+@@ -520,15 +520,27 @@ static void grcan_reset(struct net_device *dev)
+ 	struct grcan_priv *priv = netdev_priv(dev);
+ 	struct grcan_registers __iomem *regs = priv->regs;
+ 	u32 config = grcan_read_reg(&regs->conf);
++	u32 nbtr, fdbtr;
++
++	if (priv->hwcap->fd) {
++		nbtr = grcan_read_reg(&regs->nbtr);
++		fdbtr = grcan_read_reg(&regs->fdbtr);
++	}
  
- #define DRV_NAME	"grcan"
-@@ -1644,6 +1644,7 @@ static int grcan_probe(struct platform_device *ofdev)
- {
- 	struct device_node *np = ofdev->dev.of_node;
- 	struct device_node *sysid_parent;
-+	struct clk *clk;
- 	u32 sysid, ambafreq;
- 	int irq, err;
- 	void __iomem *base;
-@@ -1663,8 +1664,20 @@ static int grcan_probe(struct platform_device *ofdev)
+ 	grcan_set_bits(&regs->ctrl, GRCAN_CTRL_RESET);
+ 	grcan_write_reg(&regs->conf, config);
++	if (priv->hwcap->fd) {
++		grcan_write_reg(&regs->nbtr, nbtr);
++		grcan_write_reg(&regs->fdbtr, fdbtr);
++	}
  
- 	err = of_property_read_u32(np, "freq", &ambafreq);
- 	if (err) {
--		dev_err(&ofdev->dev, "unable to fetch \"freq\" property\n");
--		goto exit_error;
-+		clk = devm_clk_get(&ofdev->dev, NULL);
-+		if (IS_ERR(clk)) {
-+			dev_err_probe(&ofdev->dev, PTR_ERR(clk),
-+				      "Failed both to get \"freq\" property and clock for fallback\n");
-+			err = PTR_ERR(clk);
-+			goto exit_error;
-+		}
-+		if (clk) {
-+			ambafreq = clk_get_rate(clk);
-+			if (!ambafreq) {
-+				dev_err(&ofdev->dev, "Invalid or Uninitialized clock\n");
-+				return -EINVAL;
-+			}
-+		}
- 	}
+ 	priv->eskbp = grcan_read_reg(&regs->txrd);
+ 	priv->can.state = CAN_STATE_STOPPED;
  
- 	base = devm_platform_ioremap_resource(ofdev, 0);
+ 	/* Turn off hardware filtering - regs->rxcode set to 0 by reset */
+ 	grcan_write_reg(&regs->rxmask, 0);
++
++	priv->hwcap->set_bittiming(dev);
+ }
+ 
+ /* stop device without changing any configurations */
 -- 
 2.51.0
 
