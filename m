@@ -1,104 +1,163 @@
-Received: from mail-vs1-f65.google.com (mail-vs1-f65.google.com [209.85.217.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72CF1378D64
-	for <linux-can@vger.kernel.org>; Wed,  7 Jan 2026 16:02:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FC8B35A951
+	for <linux-can@vger.kernel.org>; Wed,  7 Jan 2026 16:14:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767801779; cv=none; b=u5XNEHHE/YsB1JcFQyM7UYahWAWiKIYcIqQZx1nG8bUYEuNg7FmjwTwyIJk7sBsT7xUfO5TIubnLbqkAk4LFhqX01Mx4By2LXYQGLSAreZQoWLSKgfFpSygeHj+Hf3EJmYgHjA3NvuOw+x8IhwRs5KdISMUJjkYTe+OqzoqWRQQ=
+	t=1767802489; cv=none; b=lCTsm3KVkHyTp5WQEmTLdKj1OLXJm2fegU0SIpGnoifYtm1qxr0jvS9vQjcC5wv1LrLuT3nXArDDLghMoSlTJna58TyGf3aHltZsHxmQLPGTcaLGqjxdeK4UwL5WeYm23HxBCJ6VhI3x1R43vwUTpR1t2GyCQjGOSzJwVupP6YY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767801779; c=relaxed/simple;
-	bh=9lIABe66qX5B3ULWKN7dRGrBhHh5eVyA9SZWghC2qpw=;
+	s=arc-20240116; t=1767802489; c=relaxed/simple;
+	bh=4Bf2zwdKuMQPmjyomvCRiDRso9p7R/TYGKy2hGAhLa0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=r8i2GZ+KE6aRUvswaoxOZEb1Wyloh32mZvVJI9g7yJwG3md1JpyuUOlBOXpbRluWpyoIOv3A+YIf6OOvKdGKUbNe1ftDZucfsfaSSNy+GDQ09mQiHu1uorQSAeE99Ie5za6yEotwYFr+6pJ52b9DTR+yAOOQJw5jkWxNIG0cTFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f65.google.com with SMTP id ada2fe7eead31-5deb0b2f685so654203137.0
-        for <linux-can@vger.kernel.org>; Wed, 07 Jan 2026 08:02:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767801767; x=1768406567;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+	 To:Cc:Content-Type; b=PenEbRXXdTpN/zDSXHT0YskXCiJyCId20fUzqURCRppJoN2d+vdehFcS73NsQbcqgNa+uI1xz5QNqnmroUWidBoc8gshxfkpBLfqwXRWYqyIvd9xbfxfcFXuVWM5Mk2JG/e6GDt6+v3BG1xRQ33cvZ5VzMeIurSxLOEnS4EM4TA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SxCDfs0M; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=mEXhK2K5; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SxCDfs0M";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="mEXhK2K5"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1767802480;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y7TulDsUIoUUXsalob4NbrEsky01/JB7jW1KypFdcu0=;
+	b=SxCDfs0MaSPRVkBgkylBrn3/WzvA/+nKSwSbf5BBoNawT7T6Ve+PLEMZitNIzZ6eOLe8nE
+	XmoZs8VPPMgtpqxNHgdMQTR710UZo+AlnYm9Hz5B9jF3oEEBWK4nnCsppgFAJ6/pS0FabQ
+	+8ya04LRQI8f2gtDCj6aUt4LxLYfhKA=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-124-kZaoGD6qO7aDZdkkNr4n0Q-1; Wed, 07 Jan 2026 11:14:39 -0500
+X-MC-Unique: kZaoGD6qO7aDZdkkNr4n0Q-1
+X-Mimecast-MFC-AGG-ID: kZaoGD6qO7aDZdkkNr4n0Q_1767802478
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-b841fc79f3eso226810066b.2
+        for <linux-can@vger.kernel.org>; Wed, 07 Jan 2026 08:14:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1767802478; x=1768407278; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8hrZyBiZ9cPjNxWra6rK3FeRhusMqxhmxYkDFplK87w=;
-        b=ri4WMSPpOQ1h/NkK+6brErgfPcqfIbyJeW3gT2rhV1HITxruVFz+hX7jccyehhbgIk
-         d7QKeUEXBq9pyspPda3wXyX37KyTV0U1eGc9Kqz8xIc7w8Ok/KRaw/ZZ+DUyNTVEEaYd
-         XMMBsMS2wMiNgpxVNBEr6zsVPtFicwKn4SdL5Abf9Bz/jYZsso5+o/8NG95TddiIjdgz
-         zAkoOadv1bugm3wPPFRpFYk4G18odP0UQYudUlIxhML/udc61u+ItA5xVCOjNeRw1yFM
-         gylOA2EVV0OfeF6ChL0rdjf1xMYk8pnMzVFEYNixxPLEhdJ3+4YJZVO22gSpyMacw4ZX
-         2F8g==
-X-Forwarded-Encrypted: i=1; AJvYcCX99371g/QfLwVF3nHuPUex2ZTEfvSQ6VPEUomFQJkl9/0xo/gvOeF2LuYptSvL6JGaIO/8GBANoK4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxZ8Dr9Mb/itqFzQ9DBmQJfzNiIjSy1yGV7T6aDhcD/ALTYlSo7
-	BwmjH+s9h3j7W2gWKKWdDMZtcEh2LMRVbtWbaE0MOZld89+DWz7jMXBis65XLnCBNes=
-X-Gm-Gg: AY/fxX6bYZgTMwcP+gRwkCI1Se5OntBBIMRq3qbXkpS/KusH5bADqqJMN3zD8J8UBDW
-	Fx4jTT6LYOpVhd9CX8GWrC3O7FlMSaCNZW2L2ssdQOGL/kHBT2igAvkLpcUzdgHLIgFBGkTKiJ8
-	dRvCAtLgrdGQ6VaucKiXWVgX0I16H5mv32mUlBGj/sX2SOYGm995d2ZyDaaNOydJ8Po1gheEoow
-	4+yjiLfNqz+rp1oX7tzGJq2+iZs9O4uGK1+KqiLlaoogBcmuUEocqXZCgSKYD9ViN/cmavCuqYA
-	8TQTPLabDOhxPGbD8XTIONNB/1SpROAGsL7EXfcSN8JYSUwSeHB37Kcjv17LKUKuutCZv+J7c1k
-	VGN7Lh2MOZA1IeF9RSDeQsyTKULkggXAyX+phUSFu9P/eNhRQecTGzuVqFDo4kltDadFcEBJpE4
-	1TKCwVPkGnvrB62x7UXYFOSNYKByhVgu9cm1roptMytZTZwYqnVdEZ
-X-Google-Smtp-Source: AGHT+IFRtCCBul4E0Juv23GS8jlFbBDQT0YM8VRY+clvSH458H8XhN+5slEo8qQ2GtQUWLGwL+GpUw==
-X-Received: by 2002:a05:6102:6d0:b0:5d5:f6ae:3914 with SMTP id ada2fe7eead31-5ec8cdfd08bmr1242022137.22.1767801765941;
-        Wed, 07 Jan 2026 08:02:45 -0800 (PST)
-Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com. [209.85.221.179])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-5ec772e3300sm3338946137.14.2026.01.07.08.02.45
-        for <linux-can@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jan 2026 08:02:45 -0800 (PST)
-Received: by mail-vk1-f179.google.com with SMTP id 71dfb90a1353d-55b22d3b2a6so745990e0c.1
-        for <linux-can@vger.kernel.org>; Wed, 07 Jan 2026 08:02:45 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUtEZ5xLwF1HkEglyXCtNvmOW1XVeOPWp5+Bpk8rLYrTZsptbGwSW8UaUuz2gpQff77d7zJC2JE/Y4=@vger.kernel.org
-X-Received: by 2002:a05:6122:3383:b0:55e:82c3:e1fb with SMTP id
- 71dfb90a1353d-563466b1471mr1147392e0c.10.1767801764769; Wed, 07 Jan 2026
- 08:02:44 -0800 (PST)
+        bh=Y7TulDsUIoUUXsalob4NbrEsky01/JB7jW1KypFdcu0=;
+        b=mEXhK2K5LlLKSXoKGwfJqXzJO/k0jIVXTACiCnV99jDYTJSByUjz74tBUhbQl8l7Ik
+         w4PVqAyZ/cf1F7rY5Sr4e1bKwiiyHLCEenvrE189olsUpFfmhZD11oRjFALkkPgrb+WH
+         mStpcQjMIgwzUTq1LvJecf1/SzE1K6X3tg/PgPf1QslyvpnzelLjbqMgHxGPltF+tqVm
+         4mOOASpTpq9Ep6c1QWyWSuxLBbho63RYJXytlNw+YlcKOJ2QCPjomRjZb0vvvnME62CJ
+         0Ye7qsFIbACbO7yWABXc6h0lUaCuhyIJeWZXeDhA7GYwJEe8uf+KgXiQRtKPLFagM14C
+         qh9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767802478; x=1768407278;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=Y7TulDsUIoUUXsalob4NbrEsky01/JB7jW1KypFdcu0=;
+        b=TimiwSBdVJq46DRuITX5LdGxhvlOUtwlSrvNh+TxNMnPHxyIsRDdF7PYUglG2nXgeM
+         36PAuQ26UBvpC/tq5PInHHgYT2R6fXuv6cUD2NK8v/iVxG/4JqbRQqt0hRdePjNEZZl+
+         WItXolFfIJlyfXfIVLki4UskH4xOCqXZel/h1z8DlLb2042zNsRq6R+4rHVAEn+FO1mh
+         GBx5JljNz1tlJyUapDSKCOp/CU3UUJbnrwTr2yoB6mLNYmRqxNqMuZgvHBxuKl83UFnt
+         F1j+qKkWDmF2ImDvPtC+DtXhJKbTYhdFQVjqkTR7i/oenO+s+0HSuVd4/4OkI2Ebe0rZ
+         3Iuw==
+X-Forwarded-Encrypted: i=1; AJvYcCWzTvaJpCxgM+5bGRXM08LnznnOtDRNs5Dh6lq1ZkHdh0HxqOtFyYcv2qhSuiMwn14TXeTZzA3eu5E=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwaBeS+749hhOyofvBaT2PNLWYpyefXoKIRa6LI40ckwHSP1INp
+	Bsiv8P0etK4osPw1s7E7tzYEK2QVUOt3qUZxeqvY9WmTgJ+p5/f6xuXfAy1IWaTWHBuU5Jxhq4y
+	S5aVBsXlCBaVhS1dSi7y9ZgLG5A5H9HXxM1xN1T834/sASvV3DJUiUsrCZ7ZGv8bLCsIztAPm2q
+	ZRmvLzzGALZPgoXneB1zS3iWlOPyaBql3MZNsA
+X-Gm-Gg: AY/fxX4uLEPioULe+ydBQ3AWGE9ezE9zJN/uZALmc0/MaEdkSZQjdf/q09fBadI7KOO
+	EFU+9mO3/QvJ/6o04P238y6GdJDR3XlxMh5mirlnZEm7XPOh6igBCH5Z0k07V5w9YB1A5C/V+TL
+	FDSaxkVkmXqg3PH10F4VV38wvNum35ydzNGrFUstxPM+n2ChARN6gdGiou53c0asVCLtuF0qV5e
+	183ZSNs6LTV0/8X/RGXrOag
+X-Received: by 2002:a17:907:d8e:b0:b7d:266a:7728 with SMTP id a640c23a62f3a-b84453695d3mr284848066b.44.1767802477674;
+        Wed, 07 Jan 2026 08:14:37 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IElzm7zkv7ZclGZmqUlhgAe5G5tLnSradBGNYxt46392ibtMetTmULGCAhQlqjI1V8VHmLYzPP/1+tnQ3XTs/k=
+X-Received: by 2002:a17:907:d8e:b0:b7d:266a:7728 with SMTP id
+ a640c23a62f3a-b84453695d3mr284844566b.44.1767802477239; Wed, 07 Jan 2026
+ 08:14:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251230115814.53536-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20251230115814.53536-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20251230115814.53536-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 7 Jan 2026 17:02:33 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVQeO6NmrCESnKZkpHWLN6CzrWR-q3VNW7gYMePUP37ig@mail.gmail.com>
-X-Gm-Features: AQt7F2q12M6ufG9O3zwEr8RO6qBXtKdp_ZqxDQ3r9v7omAoAEJN2ATl2yMiroJE
-Message-ID: <CAMuHMdVQeO6NmrCESnKZkpHWLN6CzrWR-q3VNW7gYMePUP37ig@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] dt-bindings: can: renesas,rcar-canfd: Document
- RZ/V2H(P) and RZ/V2N SoCs
-To: Prabhakar <prabhakar.csengg@gmail.com>
+References: <aQJRnX7OpFRY/1+H@fedora> <aQkgsuxa2UaL_qdt@bywater>
+ <aTsE1VIk4V/A49HE@fedora> <aT7XAsTWr0_yyfx_@bywater> <aU6lCL_vrF93lpYa@bywater>
+In-Reply-To: <aU6lCL_vrF93lpYa@bywater>
+From: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
+Date: Wed, 7 Jan 2026 17:14:25 +0100
+X-Gm-Features: AQt7F2rxsUoKHks-6LhmwpO5LgspFNWkVaIpGX4dwhn6wdf4jpflCBL5LBTJN7E
+Message-ID: <CAHYGQ0yHSvhOibhvxtFjZ7H3Tczb22JZ1UuaX5kkOtok0JjDgQ@mail.gmail.com>
+Subject: Re: [PATCH v6] can: virtio: Add virtio CAN driver
+To: Francesco Valla <francesco@valla.it>
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
-	linux-can@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+	Harald Mommer <harald.mommer@oss.qualcomm.com>, 
+	Mikhail Golubev-Ciuchea <mikhail.golubev-ciuchea@oss.qualcomm.com>, 
+	"Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-can@vger.kernel.org, 
+	virtualization@lists.linux.dev, Wolfgang Grandegger <wg@grandegger.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Stefano Garzarella <sgarzare@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 30 Dec 2025 at 12:58, Prabhakar <prabhakar.csengg@gmail.com> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Fri, Dec 26, 2025 at 4:09=E2=80=AFPM Francesco Valla <francesco@valla.it=
+> wrote:
 >
-> Document CANFD IP found on the Renesas RZ/V2H(P) (R9A09G057) and RZ/V2N
-> (R9A09G056) SoCs. The CANFD IP on these SoCs are identical to that found
-> on the RZ/G3E (R9A09G047) SoC.
+> Hi,
 >
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> On Sun, Dec 14, 2025 at 04:25:54PM +0100, Francesco Valla wrote:
+> > While stress testing this, I noticed that flooding the virtio-can
+> > interface with packets leads to an hang of the interface itself.
+> > I am seeing this issuing, at host side:
+> >
+> >       while true; do cansend can0 123#00; done
+> >
+> > with:
+> >
+> >  - QEMU: the tip of the master branch plus [2]
+> >  - vhost-device: the tip of the main branch
+> >
+> > and the following QEMU invocation:
+> >
+> > qemu-system-x86_64 -serial mon:stdio \
+> >     -m 2G -smp 2 \
+> >     -kernel $(pwd)/BUILD.bin/arch/x86/boot/bzImage \
+> >     -initrd /home/francesco/SRC/LINUX_KERNEL/initramfs.gz \
+> >     -append "loglevel=3D7 console=3DttyS0" \
+> >     -machine memory-backend=3Dpc.ram \
+> >     -object memory-backend-file,id=3Dpc.ram,size=3D2G,mem-path=3D/tmp/p=
+c.ram,share=3Don \
+> >     -chardev socket,id=3Dcan0,path=3D/tmp/sock-can0 \
+> >     -device vhost-user-can-pci,chardev=3Dcan0
+> >
+> >
+> > Restarting the interface (i.e.: ip link set down and the up) does not
+> > fix the situation.
+> >
+> > I'll try to do some more testing during the next days.
+>
+> After a deep dive, I _think_ the problem actually lies in vhost-device,
+> since it is not there (or al least, it seems so) using an alternative
+> implementation that uses the qemu socketcan support [0] (implementation
+> which builds on top of the work done by Harald and Mikhail):
+>
+> qemu-system-x86_64 -serial mon:stdio \
+>     -m 2G -smp 2 -enable-kvm \
+>     -kernel $(pwd)/BUILD.bin/arch/x86/boot/bzImage \
+>     -initrd /home/francesco/SRC/LINUX_KERNEL/initramfs.gz \
+>     -append "loglevel=3D7 console=3DttyS0" \
+>     -object can-bus,id=3Dcanbus0 -object can-host-socketcan,id=3Dcanhost0=
+,if=3Dvcan0,canbus=3Dcanbus0 \
+>     -device virtio-can-pci,canbus=3Dcanbus0
+>
+> Unfortunately, my Rust knoweledge is not sufficient to understand the
+> vhost-device implementation [1]; the issue seems to be related to the
+> host->guest vring becoming empty and not refilling anymore.
+>
 
-After downloading RZ/V2H Hardware User Manual Rev.1.30, and noticing
-CFDCnNCFG.NSJW = 0 is no longer prohibited:
+Can you try with
+https://github.com/MatiasVara/vhost-device/commits/fix-for-923/?
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Thanks, Matias
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
