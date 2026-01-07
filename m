@@ -1,163 +1,111 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FC8B35A951
-	for <linux-can@vger.kernel.org>; Wed,  7 Jan 2026 16:14:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C62323A9D82
+	for <linux-can@vger.kernel.org>; Wed,  7 Jan 2026 16:37:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767802489; cv=none; b=lCTsm3KVkHyTp5WQEmTLdKj1OLXJm2fegU0SIpGnoifYtm1qxr0jvS9vQjcC5wv1LrLuT3nXArDDLghMoSlTJna58TyGf3aHltZsHxmQLPGTcaLGqjxdeK4UwL5WeYm23HxBCJ6VhI3x1R43vwUTpR1t2GyCQjGOSzJwVupP6YY=
+	t=1767803874; cv=none; b=c7X49h9QJcXmNH3muVGA8Xlw9fSZ3bx8bl+cmPGj+/TveN4qwWUG4XtaKSzljpibCj1Xxyfx+tF1gVhEF5G5SJZ/DbtzL035wVHoASAIB/xz/ROwrGnDynTmER3orRiBjff9fifviPLZD5uonG0MagoOCz01IwtyQktLZSxG5ok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767802489; c=relaxed/simple;
-	bh=4Bf2zwdKuMQPmjyomvCRiDRso9p7R/TYGKy2hGAhLa0=;
+	s=arc-20240116; t=1767803874; c=relaxed/simple;
+	bh=lUkjukYyPvno8s3BJtqS71STl5+uBWJ649WSJU0Z1ms=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PenEbRXXdTpN/zDSXHT0YskXCiJyCId20fUzqURCRppJoN2d+vdehFcS73NsQbcqgNa+uI1xz5QNqnmroUWidBoc8gshxfkpBLfqwXRWYqyIvd9xbfxfcFXuVWM5Mk2JG/e6GDt6+v3BG1xRQ33cvZ5VzMeIurSxLOEnS4EM4TA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SxCDfs0M; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=mEXhK2K5; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SxCDfs0M";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="mEXhK2K5"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1767802480;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Y7TulDsUIoUUXsalob4NbrEsky01/JB7jW1KypFdcu0=;
-	b=SxCDfs0MaSPRVkBgkylBrn3/WzvA/+nKSwSbf5BBoNawT7T6Ve+PLEMZitNIzZ6eOLe8nE
-	XmoZs8VPPMgtpqxNHgdMQTR710UZo+AlnYm9Hz5B9jF3oEEBWK4nnCsppgFAJ6/pS0FabQ
-	+8ya04LRQI8f2gtDCj6aUt4LxLYfhKA=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-124-kZaoGD6qO7aDZdkkNr4n0Q-1; Wed, 07 Jan 2026 11:14:39 -0500
-X-MC-Unique: kZaoGD6qO7aDZdkkNr4n0Q-1
-X-Mimecast-MFC-AGG-ID: kZaoGD6qO7aDZdkkNr4n0Q_1767802478
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-b841fc79f3eso226810066b.2
-        for <linux-can@vger.kernel.org>; Wed, 07 Jan 2026 08:14:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1767802478; x=1768407278; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y7TulDsUIoUUXsalob4NbrEsky01/JB7jW1KypFdcu0=;
-        b=mEXhK2K5LlLKSXoKGwfJqXzJO/k0jIVXTACiCnV99jDYTJSByUjz74tBUhbQl8l7Ik
-         w4PVqAyZ/cf1F7rY5Sr4e1bKwiiyHLCEenvrE189olsUpFfmhZD11oRjFALkkPgrb+WH
-         mStpcQjMIgwzUTq1LvJecf1/SzE1K6X3tg/PgPf1QslyvpnzelLjbqMgHxGPltF+tqVm
-         4mOOASpTpq9Ep6c1QWyWSuxLBbho63RYJXytlNw+YlcKOJ2QCPjomRjZb0vvvnME62CJ
-         0Ye7qsFIbACbO7yWABXc6h0lUaCuhyIJeWZXeDhA7GYwJEe8uf+KgXiQRtKPLFagM14C
-         qh9A==
+	 To:Cc:Content-Type; b=aMSskTVGCpGS2gB7ncMARxfuDoZzXpwXI16aEn0r/KnOa5aQWA3xs7CDK60dVTSMymt50lURDKqateA+tDKE4xIf5NGhioGmDx7eTrxGtGlAM96NbVEoen6tjDc/MWgiaX+3l6UH5UytkaCt0H4SYM9yz4rzNACATd6990776m0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-55b6a66f155so921355e0c.3
+        for <linux-can@vger.kernel.org>; Wed, 07 Jan 2026 08:37:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767802478; x=1768407278;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Y7TulDsUIoUUXsalob4NbrEsky01/JB7jW1KypFdcu0=;
-        b=TimiwSBdVJq46DRuITX5LdGxhvlOUtwlSrvNh+TxNMnPHxyIsRDdF7PYUglG2nXgeM
-         36PAuQ26UBvpC/tq5PInHHgYT2R6fXuv6cUD2NK8v/iVxG/4JqbRQqt0hRdePjNEZZl+
-         WItXolFfIJlyfXfIVLki4UskH4xOCqXZel/h1z8DlLb2042zNsRq6R+4rHVAEn+FO1mh
-         GBx5JljNz1tlJyUapDSKCOp/CU3UUJbnrwTr2yoB6mLNYmRqxNqMuZgvHBxuKl83UFnt
-         F1j+qKkWDmF2ImDvPtC+DtXhJKbTYhdFQVjqkTR7i/oenO+s+0HSuVd4/4OkI2Ebe0rZ
-         3Iuw==
-X-Forwarded-Encrypted: i=1; AJvYcCWzTvaJpCxgM+5bGRXM08LnznnOtDRNs5Dh6lq1ZkHdh0HxqOtFyYcv2qhSuiMwn14TXeTZzA3eu5E=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwaBeS+749hhOyofvBaT2PNLWYpyefXoKIRa6LI40ckwHSP1INp
-	Bsiv8P0etK4osPw1s7E7tzYEK2QVUOt3qUZxeqvY9WmTgJ+p5/f6xuXfAy1IWaTWHBuU5Jxhq4y
-	S5aVBsXlCBaVhS1dSi7y9ZgLG5A5H9HXxM1xN1T834/sASvV3DJUiUsrCZ7ZGv8bLCsIztAPm2q
-	ZRmvLzzGALZPgoXneB1zS3iWlOPyaBql3MZNsA
-X-Gm-Gg: AY/fxX4uLEPioULe+ydBQ3AWGE9ezE9zJN/uZALmc0/MaEdkSZQjdf/q09fBadI7KOO
-	EFU+9mO3/QvJ/6o04P238y6GdJDR3XlxMh5mirlnZEm7XPOh6igBCH5Z0k07V5w9YB1A5C/V+TL
-	FDSaxkVkmXqg3PH10F4VV38wvNum35ydzNGrFUstxPM+n2ChARN6gdGiou53c0asVCLtuF0qV5e
-	183ZSNs6LTV0/8X/RGXrOag
-X-Received: by 2002:a17:907:d8e:b0:b7d:266a:7728 with SMTP id a640c23a62f3a-b84453695d3mr284848066b.44.1767802477674;
-        Wed, 07 Jan 2026 08:14:37 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IElzm7zkv7ZclGZmqUlhgAe5G5tLnSradBGNYxt46392ibtMetTmULGCAhQlqjI1V8VHmLYzPP/1+tnQ3XTs/k=
-X-Received: by 2002:a17:907:d8e:b0:b7d:266a:7728 with SMTP id
- a640c23a62f3a-b84453695d3mr284844566b.44.1767802477239; Wed, 07 Jan 2026
- 08:14:37 -0800 (PST)
+        d=1e100.net; s=20230601; t=1767803866; x=1768408666;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UosJZ8iJR6qWLllsBRVQrPIUMjEsIPO/Cc8wz2jLzzw=;
+        b=Xed63SWYMFMP1GDoe8+4vbBirpfocUMv480L4R1hgwH09vXJ5VBVX0TmvUrzbRMPdN
+         4LFFsKGnYyOVDlTCVFkk5jGR/RloIBRKakN7fEVmksJgvAwizIgvTyDiOAvXL0zZUn57
+         FzzZvhye5IX7L2kyySbDRCBDai6DbCQKWZXtY05aUGau3SuGo4n4cO5+84KPxTBBaWtR
+         lhMul/ZWznAc4UlaYVJR0rGT4mJP6RjukSi3EYGBoTsgpVCrXUAL/9xqXiJR9hZcjo0S
+         WxBqfb7/5lIfHOsQhon23PUf1ey36/g1qNlv0L2xPvHMkcc7Vf7ml719W6RxoEzK6PWi
+         FE1w==
+X-Forwarded-Encrypted: i=1; AJvYcCXM3TNQOnWI82JPKTzwN3j0VeZaE2j1PhA4YI6pfwJY2Ap9+Vy8SGsMcKck+JbesZHsFHvcVKxmBaw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxHshpfpikbpQ2uyTyDzcy96McTwz04SQEIQadPaXHy91v6AJLZ
+	E+CHXxVmnSrIGahgTDpM22/8w1eD2tG0nzKJ2bRs9fjVwLoTNY3gIQhHdgqdf8KB
+X-Gm-Gg: AY/fxX4/x9MJYYqyCejFv4eOI4gwfpSI//cWOVzcb818ydSighzrmXQljFCn60mjgh4
+	HrIDg7hEh9nEfDLkO/6bpZ57roqIA6MXE7ttFivXRmInIP1XPX1/5FxBCn9+dvr1Re9IyIQqwqr
+	iBRvOFRTYTxyd1iZ0NBWLicJDUMo8HJsk+kjoxYtxLJyHCrvfhuOM0i95y6AbIYP4lGIzsRU12s
+	N3BMtozLDMyQFT6OHvbVhNQBVvz9+GQ8LK7EISrA4vxILu9EZng0M0jaFLsXHH9OoXO3ZMFpacy
+	HgS0e1637FQFBH14e5ZLZ6iAgcbuTu0Bi2ldOH3ze4r4urECw0za9JvSmVHqqK5ZUGvZ94jw9O+
+	bNr8jY2wHS4W3H/kqy2EcquTskhmmok+ySqjtFJimpDUFuLGsQPdIgQ2r0Z9jWah9rF52PcxxRu
+	hQy4ICcvJb6pr91JN/081HmUg8ETeKRBFVO0YXz+B33E7g0+E8
+X-Google-Smtp-Source: AGHT+IEdyS+7jFFAfkHQ0RQI5Ja9wp+wy8Bl/+2KL8/Ya9kkeW8mtkV9Ey2+zE30tGnaL0cP+5WirA==
+X-Received: by 2002:a05:6122:18a5:b0:563:5143:e3ec with SMTP id 71dfb90a1353d-5635143e624mr392433e0c.2.1767803865696;
+        Wed, 07 Jan 2026 08:37:45 -0800 (PST)
+Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com. [209.85.217.51])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5633a1ea810sm3382145e0c.5.2026.01.07.08.37.44
+        for <linux-can@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Jan 2026 08:37:45 -0800 (PST)
+Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-5ecb1d9ac1dso629916137.0
+        for <linux-can@vger.kernel.org>; Wed, 07 Jan 2026 08:37:44 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXh2LVztPOzwg9XDHQs0QYPJKB7UcyZAeAY7zhxvneI870vNKP6agGUpvwdUKXjGD22x6kVuUfut+o=@vger.kernel.org
+X-Received: by 2002:a05:6102:9d4:b0:5dd:b2ee:4423 with SMTP id
+ ada2fe7eead31-5ecb1e904bamr1400550137.11.1767803863532; Wed, 07 Jan 2026
+ 08:37:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <aQJRnX7OpFRY/1+H@fedora> <aQkgsuxa2UaL_qdt@bywater>
- <aTsE1VIk4V/A49HE@fedora> <aT7XAsTWr0_yyfx_@bywater> <aU6lCL_vrF93lpYa@bywater>
-In-Reply-To: <aU6lCL_vrF93lpYa@bywater>
-From: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
-Date: Wed, 7 Jan 2026 17:14:25 +0100
-X-Gm-Features: AQt7F2rxsUoKHks-6LhmwpO5LgspFNWkVaIpGX4dwhn6wdf4jpflCBL5LBTJN7E
-Message-ID: <CAHYGQ0yHSvhOibhvxtFjZ7H3Tczb22JZ1UuaX5kkOtok0JjDgQ@mail.gmail.com>
-Subject: Re: [PATCH v6] can: virtio: Add virtio CAN driver
-To: Francesco Valla <francesco@valla.it>
+References: <20251230115814.53536-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20251230115814.53536-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20251230115814.53536-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 7 Jan 2026 17:37:32 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX5_TkFmgqv29Nddo4bZzEWQrL87kwqTdiLwfq+qMtsXg@mail.gmail.com>
+X-Gm-Features: AQt7F2p4l0yE7BHZfa9XEcOswGFhJAJZ7XFevRuwZFhhiVQ4xn01o825gjpFphg
+Message-ID: <CAMuHMdX5_TkFmgqv29Nddo4bZzEWQrL87kwqTdiLwfq+qMtsXg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] can: rcar_canfd: Add RZ/T2H support
+To: Prabhakar <prabhakar.csengg@gmail.com>
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>, 
-	Harald Mommer <harald.mommer@oss.qualcomm.com>, 
-	Mikhail Golubev-Ciuchea <mikhail.golubev-ciuchea@oss.qualcomm.com>, 
-	"Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-can@vger.kernel.org, 
-	virtualization@lists.linux.dev, Wolfgang Grandegger <wg@grandegger.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Stefano Garzarella <sgarzare@redhat.com>
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
+	linux-can@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 26, 2025 at 4:09=E2=80=AFPM Francesco Valla <francesco@valla.it=
-> wrote:
->
-> Hi,
->
-> On Sun, Dec 14, 2025 at 04:25:54PM +0100, Francesco Valla wrote:
-> > While stress testing this, I noticed that flooding the virtio-can
-> > interface with packets leads to an hang of the interface itself.
-> > I am seeing this issuing, at host side:
-> >
-> >       while true; do cansend can0 123#00; done
-> >
-> > with:
-> >
-> >  - QEMU: the tip of the master branch plus [2]
-> >  - vhost-device: the tip of the main branch
-> >
-> > and the following QEMU invocation:
-> >
-> > qemu-system-x86_64 -serial mon:stdio \
-> >     -m 2G -smp 2 \
-> >     -kernel $(pwd)/BUILD.bin/arch/x86/boot/bzImage \
-> >     -initrd /home/francesco/SRC/LINUX_KERNEL/initramfs.gz \
-> >     -append "loglevel=3D7 console=3DttyS0" \
-> >     -machine memory-backend=3Dpc.ram \
-> >     -object memory-backend-file,id=3Dpc.ram,size=3D2G,mem-path=3D/tmp/p=
-c.ram,share=3Don \
-> >     -chardev socket,id=3Dcan0,path=3D/tmp/sock-can0 \
-> >     -device vhost-user-can-pci,chardev=3Dcan0
-> >
-> >
-> > Restarting the interface (i.e.: ip link set down and the up) does not
-> > fix the situation.
-> >
-> > I'll try to do some more testing during the next days.
->
-> After a deep dive, I _think_ the problem actually lies in vhost-device,
-> since it is not there (or al least, it seems so) using an alternative
-> implementation that uses the qemu socketcan support [0] (implementation
-> which builds on top of the work done by Harald and Mikhail):
->
-> qemu-system-x86_64 -serial mon:stdio \
->     -m 2G -smp 2 -enable-kvm \
->     -kernel $(pwd)/BUILD.bin/arch/x86/boot/bzImage \
->     -initrd /home/francesco/SRC/LINUX_KERNEL/initramfs.gz \
->     -append "loglevel=3D7 console=3DttyS0" \
->     -object can-bus,id=3Dcanbus0 -object can-host-socketcan,id=3Dcanhost0=
-,if=3Dvcan0,canbus=3Dcanbus0 \
->     -device virtio-can-pci,canbus=3Dcanbus0
->
-> Unfortunately, my Rust knoweledge is not sufficient to understand the
-> vhost-device implementation [1]; the issue seems to be related to the
-> host->guest vring becoming empty and not refilling anymore.
->
+Hi Prabhakar,
 
-Can you try with
-https://github.com/MatiasVara/vhost-device/commits/fix-for-923/?
+On Tue, 30 Dec 2025 at 12:58, Prabhakar <prabhakar.csengg@gmail.com> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> The CAN-FD IP on the RZ/T2H SoC is similar to R-Car Gen4, but differs in
+> the AFLPN and CFTML bits and supports two channels with eight interrupts.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Thanks, Matias
+Thanks for your patch!
 
+LGTM, so
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+However, compared to other SoCs, CFDCnNCFG.NSJW[6:0] has:
+
+    0x00: Setting prohibited
+
+Perhaps this is a documentation issue, as the same limitation was
+dropped in RZ/V2H Hardware User Manual Rev.1.30?
+Linux also has no can_bittiming_const.sjw_min field.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
