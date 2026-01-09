@@ -1,127 +1,142 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.165])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B073382EF
-	for <linux-can@vger.kernel.org>; Fri,  9 Jan 2026 10:56:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767956203; cv=none; b=rxz4oxQEAjwPdr8OhaLP/2E+XtfFkx9O/VkgopqFZ/e8gSseX7wM4ZQuXkHWE5zk/34CqltsrviBHOCUFgBryMt4Oib/F4XQkmf+x5hOepi8CRsyUM++zJQ8VOihpSR6wQgqRNEl8LWqdui4aj1//gdUYVgXEkxdVD41wGMZwTw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767956203; c=relaxed/simple;
-	bh=J0Sxl4vU8l9+D53XccRv0UWJqsotLxwL/KtSOnsvyqg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E3aBLOc5wEIF6Od50EzfrEjHYlsfZ0oAH2CRlgLfVNLqWNECwFEd0KU6Mzh0a9tsTDbMK0vAO1APkxw+zGaP2N6Xm4ubKJOg5zNIfZp+bZBNarRwmqI43QH5EqBw6ZKamPs96DKdR1BgA6GowpN/ygG7VDwDUns0yhxN46pA7Sg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1veAAU-0008BG-4J; Fri, 09 Jan 2026 11:56:34 +0100
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1veAAS-009pcJ-2B;
-	Fri, 09 Jan 2026 11:56:32 +0100
-Received: from pengutronix.de (unknown [IPv6:2a03:2260:2009::])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id D9ED84C97BD;
-	Fri, 09 Jan 2026 10:56:31 +0000 (UTC)
-Date: Fri, 9 Jan 2026 11:56:31 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Vincent Mailhol <mailhol@kernel.org>
-Cc: Pavel Pisa <pisa@fel.cvut.cz>, Ondrej Ille <ondrej.ille@gmail.com>, 
-	linux-can@vger.kernel.org, David Laight <david.laight.linux@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Andrea Daoud <andreadaoud6@gmail.com>, 
-	Wolfgang Grandegger <wg@grandegger.com>, Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, 
-	Jiri Novak <jnovak@fel.cvut.cz>
-Subject: Re: [PATCH v2] can: ctucanfd: fix SSP_SRC in cases when bit-rate is
- higher than 1 MBit.
-Message-ID: <20260109-meek-dexterous-jaybird-20f9f9-mkl@pengutronix.de>
-References: <20260105111620.16580-1-pisa@fel.cvut.cz>
- <c5851986-837b-4ffb-9bf7-3131cf9c05d1@kernel.org>
- <202601060153.21682.pisa@fel.cvut.cz>
- <c3dd8234-3a7e-4277-89cf-1f4ccb2c0317@kernel.org>
- <20260109-robust-clay-falcon-2f3ecb-mkl@pengutronix.de>
- <25616e3d-9fd9-491e-9a93-fa48d3e7ba2c@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D04371946C8
+	for <linux-can@vger.kernel.org>; Fri,  9 Jan 2026 11:33:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.165
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1767958426; cv=pass; b=rZnYL8ZRcw/GYYfTAmJoSQwgNexsCHUJS8OQg7K8sSjZ14Q2y2QgYOyWv2+nAzATGf60Ud2vJVlQRtE5k5UCoOyW3H3LDKf2awxkClAVkUI32UYz0Mjdfq0o9MdDr/PjpOm3EEwjlJA3VCrDPiat/BQEdpWgU4c/5LEPmuT9EsQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1767958426; c=relaxed/simple;
+	bh=DHEk//GPEn9RhqfvUHYW00lIMQpPl/nBqJ+JUoajz5c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XNL3JT0yvHO9RZscyW4d10b8zLaDKyxQeCha/aq+172a21Rm8tglOMvKmjU+6XvRHbuPAQ2oot6GOHF7QN0+uLWfvsQH+snZF5lFZX7N6sarwXLVOU26RopwOWjAbYZUzZW4QFrJjhEUzQdYOyIxUvWPq6T7LlK4BDyviiMaZT0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=Gig344XN; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=AqxqVXt+; arc=pass smtp.client-ip=81.169.146.165
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="Gig344XN";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="AqxqVXt+"
+ARC-Seal: i=1; a=rsa-sha256; t=1767958413; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=oDj4bduq7ClykWaVms0vSRiaYACAXvX1NgN6BBZdCwKv7il2RvdqfngoI7x8oXdIjJ
+    J4LAzyxWLbcDHjp3rqOKePWVosdK0TUIBuNDu4oGa7ThH8wJrPwSvni5TR+EWqAsAXbG
+    Wibft8jLKZzfcQRrxtweHRI8bs3/9zYWEQBiyJyquI9B3+82uWLxsZvJQADiyc3IxBKD
+    U2mWXGOmoJtF+AOYlON6qcw6f9Y9sIU0w/ROvextvreqdT2VPUm955cZ8Xm4C3S7zZI/
+    x3NjNlErKxMSLAnxDWBT2osjTdKBvbvBUDj04fGV2v6VAm5WHU3Xp9YY6TkfgF3ghonE
+    aBRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1767958413;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=RzAu9dEpqOZxFf28V/PCyoUzOZM5xDlK2sTKu8Z96AQ=;
+    b=g4dq/g64qZc6tpqd/OfhetQCHP5HLf3L4oY60GafA3vRoqsgTKqdhkqlj/M54x99xW
+    fNV68CnRwmpHvtUGF+njEuy/iJs7lVqG39RyQJmwWcqu5Mw7W+1sPwguAf/APe6Hgaxx
+    xuLYA9mvZW+f+r4ZLPFg9adZuCfB9qBZavMmsMFcCskVOHmKoRWe7X5/IvRlvkQU0xm5
+    /aGCNOsZz8MkEd8sHZ4e+bOWpF+0evAwKYnTpIe1fS7Ewe89G/Cm1/pl3AiEPjUeS3KQ
+    JDs6Q8FiZxolIneikv90oXppyvYBcWvuKmbV85qb6qEwrls2OsDHfLVJeIyvBqGEenVp
+    Q0WA==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1767958413;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=RzAu9dEpqOZxFf28V/PCyoUzOZM5xDlK2sTKu8Z96AQ=;
+    b=Gig344XNQ2i0eRI7NM0zM99mTAtdvHiLv5M+T75p8jCfco1X2dPDvVJQZBgaxTfYZi
+    U2bB3+JHm3p8zlykJgtuTgbXnAjkB27VtiuZdOUw3A23+vxsaAqHPW5jF3K4oWLj4yrz
+    1UZd6CCq1eapv9xpqLiRIONXN1pLNZBlnTvr5ev4EaJv6xzN1UWhB7x7sRqmqOa3XdaQ
+    VVDLDt0z9L+s65NTC9SqWCoiiy8H5rRSy4Blu3QNEogFjD7t8AyZ4iqAgA2i4CKaP1Nz
+    awzT0ntsCoChs+n53f8J5bynvmNlHlHShgiXLyYnnWqT/2YC817JOHxwvU/DohchF0X0
+    pn+g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1767958413;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=RzAu9dEpqOZxFf28V/PCyoUzOZM5xDlK2sTKu8Z96AQ=;
+    b=AqxqVXt+Z1y4gT/4mwlHE2Hxpd+ivavNj6M6/pPQSGBM9Sj7z6CfbJELwOPI975GDe
+    GBN5vAn3YZYG8S1yAuCw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bGWj0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::9f3]
+    by smtp.strato.de (RZmta 54.1.0 AUTH)
+    with ESMTPSA id K0e68b209BXWO4W
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Fri, 9 Jan 2026 12:33:32 +0100 (CET)
+Message-ID: <1420bd40-24ed-4bff-9273-7dfb2c8dbbbe@hartkopp.net>
+Date: Fri, 9 Jan 2026 12:33:32 +0100
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="msdgz4pwflqfzkg7"
-Content-Disposition: inline
-In-Reply-To: <25616e3d-9fd9-491e-9a93-fa48d3e7ba2c@kernel.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] can: raw: instantly reject disabled CAN frames
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ Vincent Mailhol <mailhol@kernel.org>
+References: <20260101191330.1836-1-socketcan@hartkopp.net>
+ <20260101191330.1836-3-socketcan@hartkopp.net>
+ <20260109-gainful-sheep-of-promise-5a0721-mkl@pengutronix.de>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <20260109-gainful-sheep-of-promise-5a0721-mkl@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
---msdgz4pwflqfzkg7
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v2] can: ctucanfd: fix SSP_SRC in cases when bit-rate is
- higher than 1 MBit.
-MIME-Version: 1.0
 
-On 09.01.2026 11:50:42, Vincent Mailhol wrote:
-> On 09/01/2026 at 10:29, Marc Kleine-Budde wrote:
-> > On 06.01.2026 23:14:47, Vincent Mailhol wrote:
-> >>> thanks for pointing to Transmission Delay Compensation
-> >>> related code introduced in 5.16 kernel. I have noticed it
-> >>> in the past but not considered it yet and I think
-> >>> that we need minimal fixes to help users and
-> >>> allow change to propagate into stable series now.
-> >
-> > How to proceed. Take this fix now an (hopefully) port to the mainline
-> > TDC framework later?
->
-> While I would definitely prefer to see the TDC framework implementation
-> rather than this quick fix,
+On 09.01.26 11:41, Marc Kleine-Budde wrote:
+> On 01.01.2026 20:13:30, Oliver Hartkopp wrote:
+>> For real CAN interfaces the CAN_CTRLMODE_FD and CAN_CTRLMODE_XL control
+>> modes indicate whether an interface can handle those CAN FD/XL frames.
+>>
+>> In the case a CAN XL interface is configured in CANXL-only mode with
+>> disabled error-signalling neither CAN CC nor CAN FD frames can be sent.
+>>
+>> The checks are now performed on CAN_RAW sockets to give an instant feedback
+>> to the user when writing unsupported CAN frames to the interface or when
+>> the CAN interface is in read-only mode.
+>>
+>> Fixes: 1a620a723853 ("can: raw: instantly reject unsupported CAN frames")
+>> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+>> Cc: Arnd Bergmann <arnd@arndb.de>
+>> Cc: Vincent Mailhol <mailhol@kernel.org>
+>> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+>> ---
+>>   net/can/raw.c | 23 ++++++++++++++---------
+>>   1 file changed, 14 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/net/can/raw.c b/net/can/raw.c
+>> index f36a83d3447c..aa6e8b19be22 100644
+>> --- a/net/can/raw.c
+>> +++ b/net/can/raw.c
+>> @@ -48,11 +48,11 @@
+>>   #include <linux/socket.h>
+>>   #include <linux/if_arp.h>
+>>   #include <linux/skbuff.h>
+>>   #include <linux/can.h>
+>>   #include <linux/can/core.h>
+>> -#include <linux/can/dev.h> /* for can_is_canxl_dev_mtu() */
+>> +#include <linux/can/can-ml.h> /* for can_cap_enabled() */
+> 
+> I think we can remove the comment, please keep the list sorted.
 
-ACK
+Ok. Will do.
 
-> I will also not block it.
+> 
+> otherwise LGTM, thanks
+> Marc
 
-thanks
+Thanks for review!
+Oliver
+> 
+> --
+> Pengutronix e.K.                 | Marc Kleine-Budde          |
+> Embedded Linux                   | https://www.pengutronix.de |
+> Vertretung Nürnberg              | Phone: +49-5121-206917-129 |
+> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-> If you feel confident to continue with that patch, go ahead.
-
-I think the patch has been tested and as far as I understood the patch
-was used internally for some time. So applied to linux-can, added stable
-on Cc and added a fixes tag.
-
-thanks,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---msdgz4pwflqfzkg7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEn/sM2K9nqF/8FWzzDHRl3/mQkZwFAmlg3twACgkQDHRl3/mQ
-kZxNrQgAlk4TzqvrRZWIZparxSLvYu2lqpNS7mlDtHR20ficHdnLG1YyAAbHFVLc
-B68drUCHzjv/QJiZFN2h5I/glUqtnSCzfI0jrEwm5/6staSiBIo7z2cKxiAJPEIo
-ne50o0adNjQ0TspBR7UqSLY8DFwk0OWb+IiZwpHrIC5BaN8Uk/xCVGQigfKX8Gmq
-6TU42TCh+a5eTziaSpq+9NGB5f6Mvnlwwa1jG+L/wnrO9rcnRr1s4GhUIge9LSfH
-9jCazYhhrcD8Uycbvgkci7rpn4RPfolfnANlQ1ZZGmN5Lbi4z6O5ziJ6AVVjyK51
-nCrvEzvNWnCtAHlJYxBgx+VEj3k7YA==
-=6V0j
------END PGP SIGNATURE-----
-
---msdgz4pwflqfzkg7--
