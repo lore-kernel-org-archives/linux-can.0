@@ -1,121 +1,117 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.22])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFC6E30DD2F
-	for <linux-can@vger.kernel.org>; Fri,  9 Jan 2026 14:45:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.22
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767969925; cv=pass; b=kviFKiiFWeVGo89YT1s5GQLBcuRXVoY/dqcGoXsgat56c3nBSd4iASTH7Dj8SKhfurZMD7/lVDJFvgtnQzT1nHhLC/ouSESKxLxF/jHJSLsL2uv4nPtOYi/4gpgxXvgonSasL6bjZxyC8eb+akVE99OWV+7gYQ0BK3vRv7YB81c=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767969925; c=relaxed/simple;
-	bh=x+UYLwaVtZgLID4dhGYmQYQeS3M94whiqJyjC7VTlWQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Y1KdZ5zJYMMzZ3YmMQ6a0rcTfrEdhjWI4lAyZGV60PShiCFaTaJsSxBunt2IyRFJ82L0sacFucwVYrYcKawCAnm2EqZYj9DTiRlwJfNakg8qXkaBSFClxfBZXRI4RDuAZDCCmhojtLd9f3qTYOUaOjc+EE4SCWkIMj+nuQrsQtE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=p2YsF4uM; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=DhseYY84; arc=pass smtp.client-ip=85.215.255.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="p2YsF4uM";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="DhseYY84"
-ARC-Seal: i=1; a=rsa-sha256; t=1767969735; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=Ky4oXJjfqeu27C/Zw6mBdwsMPIGT4788RAZdd070RxQE+xSG4J0efSkNRJkNnoC5a2
-    AhnzghVCcpohv3sL3AbUQ3wHPg+jHb7U6qhDq+4eVDQx58skDxArB6hdUzfJsdGPhbv0
-    p7kc+w1ONcw2mfF1HM23tegTdMmlGKsTtNNp8mvL7lEwChBVbDt1DzzjUbKkBo/5N2qQ
-    dgkT1Apr48hh61JRP8nSZK5GhaDRkd5rd1h2LHGfT3gaib01XH4xYWS9PABHwV6SlTPO
-    XN1dwjesqepaRAbdRRGCfI+a6ylTYuzqsqA6iDRZioFHaRCVm0Hi14PVjOBgrBYMv2Ci
-    JfMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1767969735;
-    s=strato-dkim-0002; d=strato.com;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=5txjQcSZ0dslnm//dJ82gA7TULgJNwlLe02I6ywQKiA=;
-    b=hILmiX/yXv3lCJLqt+VHF8Oen+wRiFRS8YiToZyvBpOcJW2/Ing5VZrPfklJWZcTpI
-    5dnMCQ3RSBWY8ut/JMIlhyUpGDmIThCHMBrDVFFgTQoeaL/FGHe95ghYJerqVo5IUBie
-    KZ7i940SXdVds3Z2A94kKNEU3KhQHa8HKXTtBCe5YsgO7mpfCbjIX4XfUcC17OAeeN8q
-    WS2x1fN+W+MHG+L8ZAwzUlu8Glp9a/AfXOPn/LaUrNGxtyxLw5gNj4qMtTtwNHFm/9YF
-    xwK6VTq9TVqJPRxST2ezKWxxbeKz4J3bOnMU7qyIuVnJjI5Jb/NBYJVE2PjNMf4mkPyT
-    kYxQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1767969735;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=5txjQcSZ0dslnm//dJ82gA7TULgJNwlLe02I6ywQKiA=;
-    b=p2YsF4uMJpmAdwnTHAeKd61jlhE3akndnsbn/gGvdh1HAmc3ICVGgtk95l9Gch2JbN
-    61iOcHud1ms9wYTCwbUhv5fBnvYVuOoLkIU3BfSlfS+6ejbCWZbV+8I2glzXnZjwYm4+
-    LzneEhq7XUDqEcHHJDpDJN8FqsxMMNW0bNXpvu6b/O/u81/Y0LTbwQ3KiQvRNHp8FCJ7
-    7xgAYAN+q7thXArSAzWVVfzWxtnEkVQLGL6P5QW2azgkargHRQlCAVPD7BGDUcCvOtl3
-    BDQ3iM00lGDuWjEjotnlKXlau42ZAfqhZMrYoV0TLM1MtQ+OxbA7KodgGNy3ecTnp829
-    kacA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1767969735;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=5txjQcSZ0dslnm//dJ82gA7TULgJNwlLe02I6ywQKiA=;
-    b=DhseYY84iTp5NZCTblr+mwXw5zxE+tQxG4jn8vNwqmuyhCHTQ0D5i5rFEOLeXmwhaw
-    tgMx6QlUke62ujSWshAQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bGWj0Q=="
-Received: from lenov17.lan
-    by smtp.strato.de (RZmta 54.1.0 AUTH)
-    with ESMTPSA id K0e68b209EgFPL6
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Fri, 9 Jan 2026 15:42:15 +0100 (CET)
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH 0/3] Revert "can: raw: instantly reject unsupported CAN frames"
-Date: Fri,  9 Jan 2026 15:41:32 +0100
-Message-ID: <20260109144135.8495-1-socketcan@hartkopp.net>
-X-Mailer: git-send-email 2.47.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB6E91D5141
+	for <linux-can@vger.kernel.org>; Fri,  9 Jan 2026 15:19:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1767971996; cv=none; b=EvPVh1nRvJTQhLYxX6cXtFMUgdhZGecgoONrzbb27j+KMjxeAiKyLDvOVaVnt7pIC58IHukZsWX1A6jSWK9YroZN1VO6PEIqeIcoCSFpod3QZqtMpWrwqzUxW9slUPo8pL+z9AFndJdoVcQKegwZrAyYA7Bq9OTGzxUum6hBigs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1767971996; c=relaxed/simple;
+	bh=MCbRP2PMPHZIAHR11KScnrIyiLVZrAJDFOWI/+YKKlM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o0HZr4XzSZ3WSyHHYLLtTfMAg0xGCv99IN6tCP57VKpGOHSLT1ECaDPthu0l7VHxaOcR9x1akK4pRjltZhieofiNKS4tjAPrSTXgnvSjm0gtH3jf/aO4t+uuVjJkS5TKONRs6p49x4hZb4yI6ptVEpDzYUFBHAWJQPLNLD8cbIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1veEHG-0003q1-Qz; Fri, 09 Jan 2026 16:19:50 +0100
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1veEHG-009rp6-1h;
+	Fri, 09 Jan 2026 16:19:50 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:2260:2009::])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 2965A4C9AA1;
+	Fri, 09 Jan 2026 15:19:50 +0000 (UTC)
+Date: Fri, 9 Jan 2026 16:19:48 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org
+Subject: Re: [PATCH 0/3] Revert "can: raw: instantly reject unsupported CAN
+ frames"
+Message-ID: <20260109-overjoyed-refreshing-eel-f887b6-mkl@pengutronix.de>
+References: <20260109144135.8495-1-socketcan@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="zxrl2z5c6je6njko"
+Content-Disposition: inline
+In-Reply-To: <20260109144135.8495-1-socketcan@hartkopp.net>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-This reverts commit 1a620a723853a0f49703c317d52dc6b9602cbaa8
 
-and its follow-up fixes for the introduced dependency issues.
+--zxrl2z5c6je6njko
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 0/3] Revert "can: raw: instantly reject unsupported CAN
+ frames"
+MIME-Version: 1.0
 
-commit 1a620a723853 ("can: raw: instantly reject unsupported CAN frames")
-commit cb2dc6d2869a ("can: Kconfig: select CAN driver infrastructure by default")
-commit 6abd4577bccc ("can: fix build dependency")
-commit 5a5aff6338c0 ("can: fix build dependency")
+On 09.01.2026 15:41:32, Oliver Hartkopp wrote:
+> This reverts commit 1a620a723853a0f49703c317d52dc6b9602cbaa8
+>
+> and its follow-up fixes for the introduced dependency issues.
+>
+> commit 1a620a723853 ("can: raw: instantly reject unsupported CAN frames")
+> commit cb2dc6d2869a ("can: Kconfig: select CAN driver infrastructure by d=
+efault")
+> commit 6abd4577bccc ("can: fix build dependency")
+> commit 5a5aff6338c0 ("can: fix build dependency")
+>
+> The reverted patch was accessing CAN device internal data structures
+> from the network layer because it needs to know about the CAN protocol
+> capabilities of the CAN devices.
+>
+> This data access caused build problems between the CAN network and the
+> CAN driver layer which introduced unwanted Kconfig dependencies and fixes.
+>
+> The patches 2 & 3 implement a better approach which makes use of the
+> CAN specific ml_priv data which is accessible from both sides.
+>
+> With this change the CAN network layer can check the required features
+> and the decoupling of the driver layer and network layer is restored.
 
-The reverted patch was accessing CAN device internal data structures
-from the network layer because it needs to know about the CAN protocol
-capabilities of the CAN devices.
+Applied to linux-can.
 
-This data access caused build problems between the CAN network and the
-CAN driver layer which introduced unwanted Kconfig dependencies and fixes.
+Thanks,
+Marc
 
-The patches 2 & 3 implement a better approach which makes use of the
-CAN specific ml_priv data which is accessible from both sides.
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-With this change the CAN network layer can check the required features
-and the decoupling of the driver layer and network layer is restored.
+--zxrl2z5c6je6njko
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Oliver Hartkopp (3):
-  Revert "can: raw: instantly reject unsupported CAN frames"
-  can: propagate CAN device capabilities via ml_priv
-  can: raw: instantly reject disabled CAN frames
+-----BEGIN PGP SIGNATURE-----
 
- drivers/net/can/Kconfig       |  7 +++--
- drivers/net/can/Makefile      |  2 +-
- drivers/net/can/dev/Makefile  |  5 ++--
- drivers/net/can/dev/dev.c     | 27 +++++++++++++++++++
- drivers/net/can/dev/netlink.c |  1 +
- drivers/net/can/vcan.c        | 15 +++++++++++
- drivers/net/can/vxcan.c       | 15 +++++++++++
- include/linux/can/can-ml.h    | 24 +++++++++++++++++
- include/linux/can/dev.h       |  8 +-----
- net/can/raw.c                 | 49 ++++++-----------------------------
- 10 files changed, 100 insertions(+), 53 deletions(-)
+iQEzBAABCgAdFiEEn/sM2K9nqF/8FWzzDHRl3/mQkZwFAmlhHJAACgkQDHRl3/mQ
+kZw6iwf8CgLDUltBp3WLV6ugSxXR5TKunlS9DrzrJJS1y44UUZ9JpTR6qAPcn2o/
++tSnlvGtWbtphcFDk3cQdjJAPIWbaZTJ9aTTRrOSYyimFdQ8rO/MdOtuqCShGfsV
+qdvIAUGIOtKzJ7SLh3+ZsUW4939LoEWzR+OSwi2Xi3y6qcOUrN7/wIFic40Xlnts
+PW+NZPlvtXFwluVeW4JDnyZjC/5eMU/PYdkaiDt8i6i3pN5FJ7gJJgZSv7f1siSf
+9iFXl3nKUnwwyJFAvFWDowIfViYM0qq17OSJv37UFxG6j87WROidge8OihCahY8Y
+kpqS1JsjtK40wGvTt+/bzrjohyyjrA==
+=+rTa
+-----END PGP SIGNATURE-----
 
--- 
-2.47.3
-
+--zxrl2z5c6je6njko--
