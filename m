@@ -1,111 +1,137 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D884133A712
-	for <linux-can@vger.kernel.org>; Fri,  9 Jan 2026 11:53:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC2F333B6ED
+	for <linux-can@vger.kernel.org>; Fri,  9 Jan 2026 12:51:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767959608; cv=none; b=KVBQjBw6SnzKRkxT39x/X/XlKSKbZb9NwMKcNgdA0sLKhnQ6Of/2izRZNoCB9ON0zA1tLesM5aX303GM+mOu00tcsC0icwngcauQOAAzpcViEnQf3iZpOgOOV6aLKgRQ7moojEEqqZy0gddn5ZqUvECUa8GbfZ/PHioqqDY1Nxc=
+	t=1767963096; cv=none; b=d5Ws3tAVjbQQ2q1+4/hE1ga5UFrub+lAYYn65xwLAXCkwhjp/6kOZD8oSRDMulxKJbww8r5rfs8W7eJ/iyqle52sBR39GfYV9zeOMEt2tmnr0+AkSXl46SV1/2as9/8dYwZHREttc/tb1I7LZddXHGRZ4scVYh3YHQJIFkSLb1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767959608; c=relaxed/simple;
-	bh=XPRXGMji5pRW2QZBBLmNds7GwR541r+eFwkIoYa/Ow0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SSOVodjYq1dWMWuRtdOTsrP0p3O8ZNtc+yx8sPxuXqBwJAP75V/VafM/awE6NYrW9PA8SP7Ah7lJHxoHt4wYZl+S3eG//UDIDB8TZu038+zefUd6KcdsKUdYNbI+WZWnRgbCxQJOlVVteC6Kx3hO1LskQK0wPGIjIPmM/Xy9rN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1veB3S-0006QE-01; Fri, 09 Jan 2026 12:53:22 +0100
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1veB3R-009q2q-22;
-	Fri, 09 Jan 2026 12:53:21 +0100
-Received: from pengutronix.de (unknown [IPv6:2a03:2260:2009::])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 2804A4C9851;
-	Fri, 09 Jan 2026 11:53:21 +0000 (UTC)
-Date: Fri, 9 Jan 2026 12:53:18 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
-	Vincent Mailhol <mailhol@kernel.org>
-Subject: Re: [PATCH 2/3] can: propagate CAN device capabilities via ml_priv
-Message-ID: <20260109-discerning-unselfish-spoonbill-99d850-mkl@pengutronix.de>
-References: <20260101191330.1836-1-socketcan@hartkopp.net>
- <20260101191330.1836-2-socketcan@hartkopp.net>
- <20260109-fearless-diamond-gaur-90b52a-mkl@pengutronix.de>
- <a84166a4-7058-4dd9-b633-5c4cd0a48a28@hartkopp.net>
+	s=arc-20240116; t=1767963096; c=relaxed/simple;
+	bh=oMqnKCGvM2MOVWH2H/4ovRIEzkEUK6rGC/U26bZ5M68=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NjT3xtGRd6WRK+Tou+/O44P+AZ4UUWIdQOLjdLjOBA5cG4bXIVqCe+mTS2StPQ3NB5C/KupTCz+lI+AuEeQIv7zKTiZozV1X3VNpOP+gTDI5ASMIoUHv3CzMVFpYBveE2qR3Y8Xvsp2tw7ohBuk/1MwnFVmlK+8eJvjW/XFNIeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jk8xlc0m; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jk8xlc0m"
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-42fb2314f52so2216389f8f.0
+        for <linux-can@vger.kernel.org>; Fri, 09 Jan 2026 04:51:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1767963091; x=1768567891; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hxPhHw80SEFh8tiFPx1w4hrDq9nTnH852UAWj9JfzxM=;
+        b=jk8xlc0m17tWSrwtvET7Dn6Z/FWRdnwmnrHdF9RkpmtdlrE03NyjdxygCkx0DQFsle
+         c1YIhQjOZ/QsTytYGISDp4j3JXva6saOol1fehkGVu+WB4548leUuhgZdx1G1qCDnH/m
+         00wGMuiqVKKQIkLV1apx+UuYnnxyzVIbc2Dn9gB7fEeytd0CkJkWYT1uKT5cYzKKdzwv
+         yZ8WETZrP1qOSXtCsy28KjUSFBPyblGyGmk3ILo93Bv1qxTN+EU76tPIbc0zyap76Un3
+         aPDNkeTijC2CJk4ZUvAF3tjs2lVWtVaTPhjZJMATI6WXZG4YjgNWUfZizwRk4qdbEnK1
+         z48g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767963091; x=1768567891;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hxPhHw80SEFh8tiFPx1w4hrDq9nTnH852UAWj9JfzxM=;
+        b=ZopZsz+YPaYNspJ7DmnwN4nm+ktZei46Xb9pytH5NRBzdkwXCohx1QbhzpI96QbFo/
+         ZhOJ/obprzOatAwDt+lSDB8CGoZKWwWUFYwXFOAvK0tmLD4hIDjZaUdGnsQAp65lAfwI
+         RK8oOKrl2l1ENu5zYGxLktoiZBox9Q11xh/ByLs5JMmW4IhzyyVuTZIBau0KZEnX3Jda
+         j4CPFKo4vqiIzpXbFJ1i3SXymR4qkfBYpmayF3gDLFGsxaV7CFEpLZiBa7Sz/RgPnMPe
+         IG5YTNOScqkD+aeikWMM5YOU2YqagMRf3J44A10EcPdPUZuP/KOE0clwaJIcPyqhl5c+
+         KBhg==
+X-Forwarded-Encrypted: i=1; AJvYcCXb8hTFtYrbAy2u+xUSUBiRfwz2WBHCA1awR7x6ufVjJeX3E59Fbw87QaileObpU21OjgBhpm6STas=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyzCHCIegfdRMsNfw7yg0i1A9ierz8L44umByQTNnmx6re/zAeA
+	PD9E3xKQFOlBt/6h9fGQPmRi5xdCgol5Bvc2Em/cbobpDrNCQnSuW8mE
+X-Gm-Gg: AY/fxX68iLc+VTo9WMK97bNeHHGmYbw07W0xWREtMo/AhcXZ+ZFKf/pjDK/Hk7jp/FY
+	eikn6dsjoFG5l73a61dwuyyWHz3Bb8qlX+Tl5qCn11dSQ38S17TWxB8GuWmuCFG2pn61WboO32P
+	EjwQz6rP0EZmj6Fle4jihdTicLHc7v9TmQT7+ls34JGrobJ1b6gPc1cYhn6c7Ltms52cTWdtDW6
+	8sdBoqONcimmfeHV9d8QZwFMkNBdGZEOlqWctsovVxTjQwKBMWsZGMBTTS1HBl4DM7mkXTMhmES
+	6ucaUnxS3HaiEUEWPMIqRyNiTA2xobxEQ22AX2BsQmUefyukYZr0jeid9/hipKiJRDSaQxBpZwZ
+	v46zzjfuqJMK7G/1MsKnh/7EsOmku4mD7wGI9cxBM2+CVC5N5dzMf8lCrNEclRr7CqlLyQWVp9U
+	m4ny8ZJ5B7X8Iwlrbxu0DfSObvnDEDO7v8NjXkwq6kDUVLaqNSGinykaB35pmuIF0mAIArfiVuj
+	Zz09RzTREiwyohN94oQM9g=
+X-Google-Smtp-Source: AGHT+IFm+Lt3i21xsuQCozdlJluIaSR7hDnRRWusnsKqhRZsf5JKbN09iM9dYvvrnTqLDhayJrBm9A==
+X-Received: by 2002:a05:6000:18a6:b0:431:2b2:9629 with SMTP id ffacd0b85a97d-432c37a6c08mr11093766f8f.51.1767963091223;
+        Fri, 09 Jan 2026 04:51:31 -0800 (PST)
+Received: from iku.Home ([2a06:5906:61b:2d00:3d06:ce2:401e:8cb8])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd0dad8bsm22837291f8f.8.2026.01.09.04.51.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jan 2026 04:51:30 -0800 (PST)
+From: Prabhakar <prabhakar.csengg@gmail.com>
+X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	linux-can@vger.kernel.org,
+	devicetree@vger.kernel.org
+Cc: linux-renesas-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Prabhakar <prabhakar.csengg@gmail.com>,
+	Biju Das <biju.das.jz@bp.renesas.com>,
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v3 0/4] Add CANFD support to R9A09G056/057/077/087 SoCs
+Date: Fri,  9 Jan 2026 12:51:24 +0000
+Message-ID: <20260109125128.2474156-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ryw6oy5zkqq66on7"
-Content-Disposition: inline
-In-Reply-To: <a84166a4-7058-4dd9-b633-5c4cd0a48a28@hartkopp.net>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
---ryw6oy5zkqq66on7
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 2/3] can: propagate CAN device capabilities via ml_priv
-MIME-Version: 1.0
+Hi All,
 
-On 09.01.2026 12:31:08, Oliver Hartkopp wrote:
-> > > +static inline bool can_cap_enabled(struct net_device *dev, u32 cap)
-> > > +{
-> > > +	struct can_ml_priv *can_ml =3D can_get_ml_priv(dev);
-> > > +
-> > > +	if (!can_ml)
-> > > +		return true;
-> >
-> > Why is the capability enabled, if the device doesn't have a CAN ml_priv?
->
-> I have been thought about virtual CAN interfaces first but they also have=
- a
-> can_ml.
->
-> It's just a double-check if we really have a CAN interface here.
-> But returning false would make more sense then. Will change.
+This patch series adds CANFD support to RZ/V2H(P), RZ/V2N, RZ/T2H and
+RZ/N2H SoCs.
+The CANFD controller on RZ/V2H(P) and RZ/V2N SoCs is similar to the one
+on RZ/G3E SoC, while the CANFD controller on RZ/T2H and RZ/N2H SoCs is
+similar to R-Car Gen 4 SoCs but with some differences in terms of
+number of channels and AFLPN and CFTML bits.
 
-=2E..or do we want to just de-ref here, too?
+The patch series includes:
+- Specifying reset-names for RZ/G2L and RZ/G3E CANFD controllers.
+- Documenting the CANFD controller on RZ/V2H(P) and RZ/V2N SoCs.
+- Documenting the CANFD controller on RZ/T2H and RZ/N2H SoCs.
+- Adding RZ/T2H SoC support in the rcar_canfd driver.c file.
 
-Marc
+Note this patch series applies on top of:
+https://lore.kernel.org/all/20251126155911.320563-1-biju.das.jz@bp.renesas.com/
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+v2->v3:
+- Updated commit message to clarify that reset-names existed previously
+  but was dropped for patch 1/4.
+- Grouped single compatible entries into an enum in patch 3/4.
+- Updated commit message about disallowing reset-names property
+  for patch 3/4.
+- Added Acked-by and Reviewed-by tags.
 
---ryw6oy5zkqq66on7
-Content-Type: application/pgp-signature; name="signature.asc"
+v1->v2:
+- Moved reset-names to top-level properties.
 
------BEGIN PGP SIGNATURE-----
+Cheers,
+Prabhakar
 
-iQEzBAABCgAdFiEEn/sM2K9nqF/8FWzzDHRl3/mQkZwFAmlg7CoACgkQDHRl3/mQ
-kZyYeAgAg0iPM+J3up1CXVJ1RBzXZVPU+N5SMET79IF4dDIxVOoXDJ6mpgBMxh4X
-bKJliUpEr9WbjOAdHQumFNkq5y3MLLOiOR3VzY74hRG5A1Db3MyGdlYnhuG/MqtV
-zbQKHMEOnl6P8PrkQK2HT8oYazVIkIsN0gUowpBYwbG4ZQQWFDUu/yHWDUCecVFB
-3PGdawuVjE26C9OA3Sx3tEyN0aaG95fZ0qRdplm48QXvkGi67Qkj/a98Ifrhkmtz
-fDBm9Ij70QPAC1NDhgUC1g9XHLP6AsSNc755yKeVnOyZYR+NouaarIkad3RiFauy
-/c2ayE18D43AXq/8Gc+yI/+tuskEJQ==
-=Jlkz
------END PGP SIGNATURE-----
+Lad Prabhakar (4):
+  dt-bindings: can: renesas,rcar-canfd: Specify reset-names
+  dt-bindings: can: renesas,rcar-canfd: Document RZ/V2H(P) and RZ/V2N
+    SoCs
+  dt-bindings: can: renesas,rcar-canfd: Document RZ/T2H and RZ/N2H SoCs
+  can: rcar_canfd: Add RZ/T2H support
 
---ryw6oy5zkqq66on7--
+ .../bindings/net/can/renesas,rcar-canfd.yaml  | 62 +++++++++++++++----
+ drivers/net/can/rcar/rcar_canfd.c             | 18 ++++++
+ 2 files changed, 67 insertions(+), 13 deletions(-)
+
+-- 
+2.52.0
+
