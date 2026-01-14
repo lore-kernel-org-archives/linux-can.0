@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D9DF396D0F
-	for <linux-can@vger.kernel.org>; Wed, 14 Jan 2026 10:52:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EBB6396D0D
+	for <linux-can@vger.kernel.org>; Wed, 14 Jan 2026 10:52:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768388102; cv=none; b=r03dDyoluusI7llrDPhWHJwclg3/3XpXatnPgWsXRSqMNhWC2r/gJ4L3b3aKztCGmWCZdIDBBrmqZie451gSgmL91yg2ZCrHLM6U3PNC39jxp2J/dLVzRFrGk/Ra/lUvsu0qYGY0tegwLipWtszb4XqtEsT/Q92Q3OeFRBB7IKo=
+	t=1768388132; cv=none; b=Bt//Jtid/+4gw6N4Kbjt8hFF1dNKQn9W62pMu0JgSDDLaVAv0SoHkeJ74ReIpoUyROEFFNz/hzHVywCjpjnr3UOT2GqEEai/wAyUzogALK0o36jcrD5nahYMn3FgGOVzJ1ArO+OQJKIKXPyxvo4Uc8307gzXDFn25xpe421izGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768388102; c=relaxed/simple;
-	bh=9GWOVNEV8br2nTzOP+u78KJ6hDUBtlCnLU8yhBlT8wY=;
+	s=arc-20240116; t=1768388132; c=relaxed/simple;
+	bh=N3Pqqp8dF2+QpK86L3qSSsrFm0cAtWFa+zhTYIkq+kQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JyLR44H2KT8Doc2GQylDKBD8Xe5LEjZebyZn2ghlaaNOAv8F+IHw0cL3Vf3fOsg1hJt2WMgvjlnEPDMpv8SZ6oq8WMSEdNqry7KAOcM3xXIpT7vE7eZhORwzwbwJNgRs3krQfWyd7j387rUIud5i63CRHIN6bfLZuoPUbDn5ZrQ=
+	 MIME-Version; b=bXDgRtyIBMojHi3JLMCR2gYq2DyDTKJl+bkU+R/8xZm1orArEHhAZC0hkNZgZYzOIlLkSNvZw7a664od7EZhq/rV1oOk6BzDs9ry7ujIcbgVqu0vMhfcSwovEatdvpqJZ0FwSIIuKI0CCJfSe1+NBMZVOINHS//Blg7IGs1nw38=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,19 +18,19 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vfyU4-0006p2-5T; Wed, 14 Jan 2026 11:52:16 +0100
+	id 1vfyU4-0006p6-8S; Wed, 14 Jan 2026 11:52:16 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vfyU4-000Zev-0z;
+	id 1vfyU4-000Zf2-1i;
 	Wed, 14 Jan 2026 11:52:15 +0100
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 5054A4CCB68;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 96CA24CCB6B;
 	Wed, 14 Jan 2026 10:52:15 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -38,13 +38,14 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Vincent Mailhol <mailhol@kernel.org>
-Subject: [PATCH net 1/4] Revert "can: raw: instantly reject unsupported CAN frames"
-Date: Wed, 14 Jan 2026 11:45:00 +0100
-Message-ID: <20260114105212.1034554-2-mkl@pengutronix.de>
+	Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+	syzbot <syzbot+881d65229ca4f9ae8c84@syzkaller.appspotmail.com>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	stable@vger.kernel.org,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 4/4] net: can: j1939: j1939_xtp_rx_rts_session_active(): deactivate session upon receiving the second rts
+Date: Wed, 14 Jan 2026 11:45:03 +0100
+Message-ID: <20260114105212.1034554-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260114105212.1034554-1-mkl@pengutronix.de>
 References: <20260114105212.1034554-1-mkl@pengutronix.de>
@@ -60,191 +61,52 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-This reverts commit 1a620a723853a0f49703c317d52dc6b9602cbaa8
+Since j1939_session_deactivate_activate_next() in j1939_tp_rxtimer() is
+called only when the timer is enabled, we need to call
+j1939_session_deactivate_activate_next() if we cancelled the timer.
+Otherwise, refcount for j1939_session leaks, which will later appear as
 
-and its follow-up fixes for the introduced dependency issues.
+| unregister_netdevice: waiting for vcan0 to become free. Usage count = 2.
 
-commit 1a620a723853 ("can: raw: instantly reject unsupported CAN frames")
-commit cb2dc6d2869a ("can: Kconfig: select CAN driver infrastructure by default")
-commit 6abd4577bccc ("can: fix build dependency")
-commit 5a5aff6338c0 ("can: fix build dependency")
+problem.
 
-The entire problem was caused by the requirement that a new network layer
-feature needed to know about the protocol capabilities of the CAN devices.
-Instead of accessing CAN device internal data structures which caused the
-dependency problems a better approach has been developed which makes use of
-CAN specific ml_priv data which is accessible from both sides.
-
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Vincent Mailhol <mailhol@kernel.org>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://patch.msgid.link/20260109144135.8495-2-socketcan@hartkopp.net
+Reported-by: syzbot <syzbot+881d65229ca4f9ae8c84@syzkaller.appspotmail.com>
+Closes: https://syzkaller.appspot.com/bug?extid=881d65229ca4f9ae8c84
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Tested-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Link: https://patch.msgid.link/b1212653-8fa1-44e1-be9d-12f950fb3a07@I-love.SAKURA.ne.jp
+Cc: stable@vger.kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/Kconfig      |  7 +++--
- drivers/net/can/Makefile     |  2 +-
- drivers/net/can/dev/Makefile |  5 ++--
- include/linux/can/dev.h      |  7 -----
- net/can/raw.c                | 54 ++++++------------------------------
- 5 files changed, 17 insertions(+), 58 deletions(-)
+ net/can/j1939/transport.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-index cfaea6178a71..e15e320db476 100644
---- a/drivers/net/can/Kconfig
-+++ b/drivers/net/can/Kconfig
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index 613a911dda10..8656ab388c83 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -1695,8 +1695,16 @@ static int j1939_xtp_rx_rts_session_active(struct j1939_session *session,
  
- menuconfig CAN_DEV
--	bool "CAN Device Drivers"
-+	tristate "CAN Device Drivers"
- 	default y
- 	depends on CAN
- 	help
-@@ -17,7 +17,10 @@ menuconfig CAN_DEV
- 	  virtual ones. If you own such devices or plan to use the virtual CAN
- 	  interfaces to develop applications, say Y here.
+ 		j1939_session_timers_cancel(session);
+ 		j1939_session_cancel(session, J1939_XTP_ABORT_BUSY);
+-		if (session->transmission)
++		if (session->transmission) {
+ 			j1939_session_deactivate_activate_next(session);
++		} else if (session->state == J1939_SESSION_WAITING_ABORT) {
++			/* Force deactivation for the receiver.
++			 * If we rely on the timer starting in j1939_session_cancel,
++			 * a second RTS call here will cancel that timer and fail
++			 * to restart it because the state is already WAITING_ABORT.
++			 */
++			j1939_session_deactivate_activate_next(session);
++		}
  
--if CAN_DEV && CAN
-+	  To compile as a module, choose M here: the module will be called
-+	  can-dev.
-+
-+if CAN_DEV
- 
- config CAN_VCAN
- 	tristate "Virtual Local CAN Interface (vcan)"
-diff --git a/drivers/net/can/Makefile b/drivers/net/can/Makefile
-index 37e2f1a2faec..d7bc10a6b8ea 100644
---- a/drivers/net/can/Makefile
-+++ b/drivers/net/can/Makefile
-@@ -7,7 +7,7 @@ obj-$(CONFIG_CAN_VCAN)		+= vcan.o
- obj-$(CONFIG_CAN_VXCAN)		+= vxcan.o
- obj-$(CONFIG_CAN_SLCAN)		+= slcan/
- 
--obj-$(CONFIG_CAN_DEV)		+= dev/
-+obj-y				+= dev/
- obj-y				+= esd/
- obj-y				+= rcar/
- obj-y				+= rockchip/
-diff --git a/drivers/net/can/dev/Makefile b/drivers/net/can/dev/Makefile
-index 64226acf0f3d..633687d6b6c0 100644
---- a/drivers/net/can/dev/Makefile
-+++ b/drivers/net/can/dev/Makefile
-@@ -1,8 +1,9 @@
- # SPDX-License-Identifier: GPL-2.0
- 
--obj-$(CONFIG_CAN) += can-dev.o
-+obj-$(CONFIG_CAN_DEV) += can-dev.o
-+
-+can-dev-y += skb.o
- 
--can-dev-$(CONFIG_CAN_DEV) += skb.o
- can-dev-$(CONFIG_CAN_CALC_BITTIMING) += calc_bittiming.o
- can-dev-$(CONFIG_CAN_NETLINK) += bittiming.o
- can-dev-$(CONFIG_CAN_NETLINK) += dev.o
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index f6416a56e95d..52c8be5c160e 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -111,14 +111,7 @@ struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo_skb_max,
- void free_candev(struct net_device *dev);
- 
- /* a candev safe wrapper around netdev_priv */
--#if IS_ENABLED(CONFIG_CAN_NETLINK)
- struct can_priv *safe_candev_priv(struct net_device *dev);
--#else
--static inline struct can_priv *safe_candev_priv(struct net_device *dev)
--{
--	return NULL;
--}
--#endif
- 
- int open_candev(struct net_device *dev);
- void close_candev(struct net_device *dev);
-diff --git a/net/can/raw.c b/net/can/raw.c
-index be1ef7cf4204..f36a83d3447c 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -892,58 +892,20 @@ static void raw_put_canxl_vcid(struct raw_sock *ro, struct sk_buff *skb)
+ 		return -EBUSY;
  	}
- }
- 
--static inline bool raw_dev_cc_enabled(struct net_device *dev,
--				      struct can_priv *priv)
-+static unsigned int raw_check_txframe(struct raw_sock *ro, struct sk_buff *skb, int mtu)
- {
--	/* The CANXL-only mode disables error-signalling on the CAN bus
--	 * which is needed to send CAN CC/FD frames
--	 */
--	if (priv)
--		return !can_dev_in_xl_only_mode(priv);
--
--	/* virtual CAN interfaces always support CAN CC */
--	return true;
--}
--
--static inline bool raw_dev_fd_enabled(struct net_device *dev,
--				      struct can_priv *priv)
--{
--	/* check FD ctrlmode on real CAN interfaces */
--	if (priv)
--		return (priv->ctrlmode & CAN_CTRLMODE_FD);
--
--	/* check MTU for virtual CAN FD interfaces */
--	return (READ_ONCE(dev->mtu) >= CANFD_MTU);
--}
--
--static inline bool raw_dev_xl_enabled(struct net_device *dev,
--				      struct can_priv *priv)
--{
--	/* check XL ctrlmode on real CAN interfaces */
--	if (priv)
--		return (priv->ctrlmode & CAN_CTRLMODE_XL);
--
--	/* check MTU for virtual CAN XL interfaces */
--	return can_is_canxl_dev_mtu(READ_ONCE(dev->mtu));
--}
--
--static unsigned int raw_check_txframe(struct raw_sock *ro, struct sk_buff *skb,
--				      struct net_device *dev)
--{
--	struct can_priv *priv = safe_candev_priv(dev);
--
--	/* Classical CAN */
--	if (can_is_can_skb(skb) && raw_dev_cc_enabled(dev, priv))
-+	/* Classical CAN -> no checks for flags and device capabilities */
-+	if (can_is_can_skb(skb))
- 		return CAN_MTU;
- 
--	/* CAN FD */
-+	/* CAN FD -> needs to be enabled and a CAN FD or CAN XL device */
- 	if (ro->fd_frames && can_is_canfd_skb(skb) &&
--	    raw_dev_fd_enabled(dev, priv))
-+	    (mtu == CANFD_MTU || can_is_canxl_dev_mtu(mtu)))
- 		return CANFD_MTU;
- 
--	/* CAN XL */
-+	/* CAN XL -> needs to be enabled and a CAN XL device */
- 	if (ro->xl_frames && can_is_canxl_skb(skb) &&
--	    raw_dev_xl_enabled(dev, priv))
-+	    can_is_canxl_dev_mtu(mtu))
- 		return CANXL_MTU;
- 
- 	return 0;
-@@ -999,7 +961,7 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	err = -EINVAL;
- 
- 	/* check for valid CAN (CC/FD/XL) frame content */
--	txmtu = raw_check_txframe(ro, skb, dev);
-+	txmtu = raw_check_txframe(ro, skb, READ_ONCE(dev->mtu));
- 	if (!txmtu)
- 		goto free_skb;
- 
-
-base-commit: e707c591a139d1bfa4ddc83036fc820ca006a140
 -- 
 2.51.0
 
