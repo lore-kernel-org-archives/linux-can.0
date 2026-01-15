@@ -1,289 +1,77 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9167834678E
-	for <linux-can@vger.kernel.org>; Thu, 15 Jan 2026 09:06:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A022C029D;
+	Thu, 15 Jan 2026 09:09:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768467982; cv=none; b=frui254csKTPIalBSa5iBw5u/IZXZF4e8zTaCZgT7DN3Az54Cb+0+N4IVwsny367lY9bRD1FrjqSSJf3cJO5jWXcWwtRYn02IBIsAktZgJz1MFvxMmMUlk8l6VNF75GBEMfGJYDTxfGiGFe+p0vxtx8TlMhb24zLD5laXEFAGVQ=
+	t=1768468159; cv=none; b=rP/bTKrJWeCT+sLZ9F0pZGiwvAUU4ViCF7X9ISDIKN2tITuRDLfD8uPvliZj8W7w/iC+37+WvZSAw/WjroWHqux51BYL5ebIf6V4ntV3pTHejxCtfknFs8fDeQGdfyF+DarNVUG7JyPXDoZPfWqOYA6O16TgNdbZxdba9sm3Dzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768467982; c=relaxed/simple;
-	bh=dmZ1esgMNgnEFzSBSSQSl82K4WIaVVp+psV9xgR2mOg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SBbXJqfLdhgNGFk9Fs4MzBMlIX7MOfwrU10swbXBQw9ObDrVGDv5GwgVZNoT39WZnFOGKLsZSK9LwvEQhDylpz5m5yus3lJzHq/kGiOtiqJzH0/uUPoqluBeEpFIwg+6SXTvr7Y6FWs8DMfHzYqBMeSYKh9H/vwZvFyGVvUwUZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1vgJIv-0004cR-2T; Thu, 15 Jan 2026 10:06:09 +0100
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1vgJIv-000jGR-1d;
-	Thu, 15 Jan 2026 10:06:08 +0100
-Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 8C7434CD6B1;
-	Thu, 15 Jan 2026 09:06:08 +0000 (UTC)
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	kuba@kernel.org,
-	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Vincent Mailhol <mailhol@kernel.org>
-Subject: [PATCH net 2/4] can: propagate CAN device capabilities via ml_priv
-Date: Thu, 15 Jan 2026 09:57:09 +0100
-Message-ID: <20260115090603.1124860-3-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260115090603.1124860-1-mkl@pengutronix.de>
-References: <20260115090603.1124860-1-mkl@pengutronix.de>
+	s=arc-20240116; t=1768468159; c=relaxed/simple;
+	bh=j2FfIGKRfnEPYzvSe7Oho7jWLI9ZgGOALELDlonxVyY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Dreu132q0k0l9n0Ji8sXyat2yJJ/WyTMhbiDu2M0zb/LbTzsjdONTlJNRv7tJMcaBVAXsHfPLcULnDQ1Lx3a+s1KrH9n3vHx7wJlkibkxRRPXtsQuhMuAQvyLl06rvFO4H1sQc7QLV2Vd8ZvGREKyx+w4IRZKFvKP2FqjzwoDUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U+5YXG2Y; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U+5YXG2Y"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAD16C116D0;
+	Thu, 15 Jan 2026 09:09:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768468159;
+	bh=j2FfIGKRfnEPYzvSe7Oho7jWLI9ZgGOALELDlonxVyY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=U+5YXG2YD4lO08H9gCgLRvr7CTvfb303LA3UgJgfwWWP2hsDddULO/+2c85T8vuBE
+	 3HxubtMNXf+y8MTMYBrMhP3ln5PADGPq+WSVHmaB89/ZngJG/edD3JBeFiHXePoVJK
+	 Ak56Bna8aV+EYuttkD+KPZ5ncgOlQMZXfioWmxR8Zo4zJl8caeFe5zh0eDpkrTUv5R
+	 8FOjEzY/gy6+dr5wSdq2YqEyMsQl3FKB1nH7r3nOmhqzB4kFi5DRD0u7ARZHxedFjH
+	 QRm947rQCPqhFHPkoOSKHqSeHWeyk5AV/dBrHxvJDA4SGgUaU3Vmt03cEbQy/bRIml
+	 sMi8qWC5JDdzA==
+Date: Thu, 15 Jan 2026 10:09:16 +0100
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, 
+	Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, linux-can@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Biju Das <biju.das.jz@bp.renesas.com>, Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH v4 3/4] dt-bindings: can: renesas,rcar-canfd: Document
+ RZ/T2H and RZ/N2H SoCs
+Message-ID: <20260115-premium-piquant-coua-2f7b4e@quoll>
+References: <20260114154525.3169992-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20260114154525.3169992-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260114154525.3169992-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+On Wed, Jan 14, 2026 at 03:45:24PM +0000, Prabhakar wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> 
+> Document the CAN-FD controller used on the RZ/T2H and RZ/N2H SoCs. The
+> CAN-FD IP is largely compatible with the R-Car Gen4 block, but differs
+> in that AFLPN and CFTML are different, there is no reset line for the IP,
+> and it only supports two channels.
+> 
+> Sync the resets and reset-names schema handling with other CAN-FD SoCs so
+> DT validation stays consistent and maintainable.
+> 
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+> v3->v4:
+> - Dropped Reviewed-by from Geert due to below changes.
+> - Updated commit message.
+> - Moved single compatible entries into an enum and to below oneOf.
+> - Synced the resets/reset-names handling with other similar SoCs.
 
-Commit 1a620a723853 ("can: raw: instantly reject unsupported CAN frames")
-caused a sequence of dependency and linker fixes.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
 
-Instead of accessing CAN device internal data structures which caused the
-dependency problems this patch introduces capability information into the
-CAN specific ml_priv data which is accessible from both sides.
-
-With this change the CAN network layer can check the required features and
-the decoupling of the driver layer and network layer is restored.
-
-Fixes: 1a620a723853 ("can: raw: instantly reject unsupported CAN frames")
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Vincent Mailhol <mailhol@kernel.org>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://patch.msgid.link/20260109144135.8495-3-socketcan@hartkopp.net
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/dev/dev.c     | 27 +++++++++++++++++++++++++++
- drivers/net/can/dev/netlink.c |  1 +
- drivers/net/can/vcan.c        | 15 +++++++++++++++
- drivers/net/can/vxcan.c       | 15 +++++++++++++++
- include/linux/can/can-ml.h    | 24 ++++++++++++++++++++++++
- include/linux/can/dev.h       |  1 +
- 6 files changed, 83 insertions(+)
-
-diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
-index 091f30e94c61..7ab9578f5b89 100644
---- a/drivers/net/can/dev/dev.c
-+++ b/drivers/net/can/dev/dev.c
-@@ -375,6 +375,32 @@ void can_set_default_mtu(struct net_device *dev)
- 	}
- }
- 
-+void can_set_cap_info(struct net_device *dev)
-+{
-+	struct can_priv *priv = netdev_priv(dev);
-+	u32 can_cap;
-+
-+	if (can_dev_in_xl_only_mode(priv)) {
-+		/* XL only mode => no CC/FD capability */
-+		can_cap = CAN_CAP_XL;
-+	} else {
-+		/* mixed mode => CC + FD/XL capability */
-+		can_cap = CAN_CAP_CC;
-+
-+		if (priv->ctrlmode & CAN_CTRLMODE_FD)
-+			can_cap |= CAN_CAP_FD;
-+
-+		if (priv->ctrlmode & CAN_CTRLMODE_XL)
-+			can_cap |= CAN_CAP_XL;
-+	}
-+
-+	if (priv->ctrlmode & (CAN_CTRLMODE_LISTENONLY |
-+			      CAN_CTRLMODE_RESTRICTED))
-+		can_cap |= CAN_CAP_RO;
-+
-+	can_set_cap(dev, can_cap);
-+}
-+
- /* helper to define static CAN controller features at device creation time */
- int can_set_static_ctrlmode(struct net_device *dev, u32 static_mode)
- {
-@@ -390,6 +416,7 @@ int can_set_static_ctrlmode(struct net_device *dev, u32 static_mode)
- 
- 	/* override MTU which was set by default in can_setup()? */
- 	can_set_default_mtu(dev);
-+	can_set_cap_info(dev);
- 
- 	return 0;
- }
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index d6b0e686fb11..0498198a4696 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -377,6 +377,7 @@ static int can_ctrlmode_changelink(struct net_device *dev,
- 	}
- 
- 	can_set_default_mtu(dev);
-+	can_set_cap_info(dev);
- 
- 	return 0;
- }
-diff --git a/drivers/net/can/vcan.c b/drivers/net/can/vcan.c
-index fdc662aea279..76e6b7b5c6a1 100644
---- a/drivers/net/can/vcan.c
-+++ b/drivers/net/can/vcan.c
-@@ -130,6 +130,19 @@ static netdev_tx_t vcan_tx(struct sk_buff *skb, struct net_device *dev)
- 	return NETDEV_TX_OK;
- }
- 
-+static void vcan_set_cap_info(struct net_device *dev)
-+{
-+	u32 can_cap = CAN_CAP_CC;
-+
-+	if (dev->mtu > CAN_MTU)
-+		can_cap |= CAN_CAP_FD;
-+
-+	if (dev->mtu >= CANXL_MIN_MTU)
-+		can_cap |= CAN_CAP_XL;
-+
-+	can_set_cap(dev, can_cap);
-+}
-+
- static int vcan_change_mtu(struct net_device *dev, int new_mtu)
- {
- 	/* Do not allow changing the MTU while running */
-@@ -141,6 +154,7 @@ static int vcan_change_mtu(struct net_device *dev, int new_mtu)
- 		return -EINVAL;
- 
- 	WRITE_ONCE(dev->mtu, new_mtu);
-+	vcan_set_cap_info(dev);
- 	return 0;
- }
- 
-@@ -162,6 +176,7 @@ static void vcan_setup(struct net_device *dev)
- 	dev->tx_queue_len	= 0;
- 	dev->flags		= IFF_NOARP;
- 	can_set_ml_priv(dev, netdev_priv(dev));
-+	vcan_set_cap_info(dev);
- 
- 	/* set flags according to driver capabilities */
- 	if (echo)
-diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
-index b2c19f8c5f8e..f14c6f02b662 100644
---- a/drivers/net/can/vxcan.c
-+++ b/drivers/net/can/vxcan.c
-@@ -125,6 +125,19 @@ static int vxcan_get_iflink(const struct net_device *dev)
- 	return iflink;
- }
- 
-+static void vxcan_set_cap_info(struct net_device *dev)
-+{
-+	u32 can_cap = CAN_CAP_CC;
-+
-+	if (dev->mtu > CAN_MTU)
-+		can_cap |= CAN_CAP_FD;
-+
-+	if (dev->mtu >= CANXL_MIN_MTU)
-+		can_cap |= CAN_CAP_XL;
-+
-+	can_set_cap(dev, can_cap);
-+}
-+
- static int vxcan_change_mtu(struct net_device *dev, int new_mtu)
- {
- 	/* Do not allow changing the MTU while running */
-@@ -136,6 +149,7 @@ static int vxcan_change_mtu(struct net_device *dev, int new_mtu)
- 		return -EINVAL;
- 
- 	WRITE_ONCE(dev->mtu, new_mtu);
-+	vxcan_set_cap_info(dev);
- 	return 0;
- }
- 
-@@ -167,6 +181,7 @@ static void vxcan_setup(struct net_device *dev)
- 
- 	can_ml = netdev_priv(dev) + ALIGN(sizeof(struct vxcan_priv), NETDEV_ALIGN);
- 	can_set_ml_priv(dev, can_ml);
-+	vxcan_set_cap_info(dev);
- }
- 
- /* forward declaration for rtnl_create_link() */
-diff --git a/include/linux/can/can-ml.h b/include/linux/can/can-ml.h
-index 8afa92d15a66..1e99fda2b380 100644
---- a/include/linux/can/can-ml.h
-+++ b/include/linux/can/can-ml.h
-@@ -46,6 +46,12 @@
- #include <linux/list.h>
- #include <linux/netdevice.h>
- 
-+/* exposed CAN device capabilities for network layer */
-+#define CAN_CAP_CC BIT(0) /* CAN CC aka Classical CAN */
-+#define CAN_CAP_FD BIT(1) /* CAN FD */
-+#define CAN_CAP_XL BIT(2) /* CAN XL */
-+#define CAN_CAP_RO BIT(3) /* read-only mode (LISTEN/RESTRICTED) */
-+
- #define CAN_SFF_RCV_ARRAY_SZ (1 << CAN_SFF_ID_BITS)
- #define CAN_EFF_RCV_HASH_BITS 10
- #define CAN_EFF_RCV_ARRAY_SZ (1 << CAN_EFF_RCV_HASH_BITS)
-@@ -64,6 +70,7 @@ struct can_ml_priv {
- #ifdef CAN_J1939
- 	struct j1939_priv *j1939_priv;
- #endif
-+	u32 can_cap;
- };
- 
- static inline struct can_ml_priv *can_get_ml_priv(struct net_device *dev)
-@@ -77,4 +84,21 @@ static inline void can_set_ml_priv(struct net_device *dev,
- 	netdev_set_ml_priv(dev, ml_priv, ML_PRIV_CAN);
- }
- 
-+static inline bool can_cap_enabled(struct net_device *dev, u32 cap)
-+{
-+	struct can_ml_priv *can_ml = can_get_ml_priv(dev);
-+
-+	if (!can_ml)
-+		return false;
-+
-+	return (can_ml->can_cap & cap);
-+}
-+
-+static inline void can_set_cap(struct net_device *dev, u32 cap)
-+{
-+	struct can_ml_priv *can_ml = can_get_ml_priv(dev);
-+
-+	can_ml->can_cap = cap;
-+}
-+
- #endif /* CAN_ML_H */
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 52c8be5c160e..6d0710d6f571 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -116,6 +116,7 @@ struct can_priv *safe_candev_priv(struct net_device *dev);
- int open_candev(struct net_device *dev);
- void close_candev(struct net_device *dev);
- void can_set_default_mtu(struct net_device *dev);
-+void can_set_cap_info(struct net_device *dev);
- int __must_check can_set_static_ctrlmode(struct net_device *dev,
- 					 u32 static_mode);
- int can_hwtstamp_get(struct net_device *netdev,
--- 
-2.51.0
+Best regards,
+Krzysztof
 
