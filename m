@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB3793451D4
-	for <linux-can@vger.kernel.org>; Thu, 15 Jan 2026 09:06:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9167834678E
+	for <linux-can@vger.kernel.org>; Thu, 15 Jan 2026 09:06:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768467981; cv=none; b=l0HmHdNPbmmvC3xmSKDw2aTtMaD14xkrTEUuVLUEx964+A/fe51b6dMgq9Bs8pBnz4zDreNOTTg4qEBEolLzkAzuLOT1ssycbxrEKfmiH8+BS9py5fxQ59eS0ERN6meG7X7mrO11FP/T8+1OFSnyvV1n3XtBodWL9RmVGTRx1Hk=
+	t=1768467982; cv=none; b=frui254csKTPIalBSa5iBw5u/IZXZF4e8zTaCZgT7DN3Az54Cb+0+N4IVwsny367lY9bRD1FrjqSSJf3cJO5jWXcWwtRYn02IBIsAktZgJz1MFvxMmMUlk8l6VNF75GBEMfGJYDTxfGiGFe+p0vxtx8TlMhb24zLD5laXEFAGVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768467981; c=relaxed/simple;
-	bh=N3Pqqp8dF2+QpK86L3qSSsrFm0cAtWFa+zhTYIkq+kQ=;
+	s=arc-20240116; t=1768467982; c=relaxed/simple;
+	bh=dmZ1esgMNgnEFzSBSSQSl82K4WIaVVp+psV9xgR2mOg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YXurg/AG5kl8sFPqKpJjpCc0y8vxXuiGjCgT66ReozOcB1AtIjTlnS52bQ3bVr7ulzAATSgmNa1e2XvBgXgFPYuVuN5qoCk0EZvepggICQNAOHUGSZOnB+Jhuuf2QkgYJ174P0T/+KRvywIQQi0utuC0MPEFeevTEmu6zRbTrb4=
+	 MIME-Version; b=SBbXJqfLdhgNGFk9Fs4MzBMlIX7MOfwrU10swbXBQw9ObDrVGDv5GwgVZNoT39WZnFOGKLsZSK9LwvEQhDylpz5m5yus3lJzHq/kGiOtiqJzH0/uUPoqluBeEpFIwg+6SXTvr7Y6FWs8DMfHzYqBMeSYKh9H/vwZvFyGVvUwUZI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,19 +18,19 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vgJIw-0004cZ-NA; Thu, 15 Jan 2026 10:06:10 +0100
+	id 1vgJIv-0004cR-2T; Thu, 15 Jan 2026 10:06:09 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vgJIv-000jGV-22;
-	Thu, 15 Jan 2026 10:06:09 +0100
+	id 1vgJIv-000jGR-1d;
+	Thu, 15 Jan 2026 10:06:08 +0100
 Received: from blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id B128F4CD6B3;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 8C7434CD6B1;
 	Thu, 15 Jan 2026 09:06:08 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -38,14 +38,13 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-	syzbot <syzbot+881d65229ca4f9ae8c84@syzkaller.appspotmail.com>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	stable@vger.kernel.org,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 4/4] net: can: j1939: j1939_xtp_rx_rts_session_active(): deactivate session upon receiving the second rts
-Date: Thu, 15 Jan 2026 09:57:11 +0100
-Message-ID: <20260115090603.1124860-5-mkl@pengutronix.de>
+	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Vincent Mailhol <mailhol@kernel.org>
+Subject: [PATCH net 2/4] can: propagate CAN device capabilities via ml_priv
+Date: Thu, 15 Jan 2026 09:57:09 +0100
+Message-ID: <20260115090603.1124860-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260115090603.1124860-1-mkl@pengutronix.de>
 References: <20260115090603.1124860-1-mkl@pengutronix.de>
@@ -61,52 +60,230 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Since j1939_session_deactivate_activate_next() in j1939_tp_rxtimer() is
-called only when the timer is enabled, we need to call
-j1939_session_deactivate_activate_next() if we cancelled the timer.
-Otherwise, refcount for j1939_session leaks, which will later appear as
+Commit 1a620a723853 ("can: raw: instantly reject unsupported CAN frames")
+caused a sequence of dependency and linker fixes.
 
-| unregister_netdevice: waiting for vcan0 to become free. Usage count = 2.
+Instead of accessing CAN device internal data structures which caused the
+dependency problems this patch introduces capability information into the
+CAN specific ml_priv data which is accessible from both sides.
 
-problem.
+With this change the CAN network layer can check the required features and
+the decoupling of the driver layer and network layer is restored.
 
-Reported-by: syzbot <syzbot+881d65229ca4f9ae8c84@syzkaller.appspotmail.com>
-Closes: https://syzkaller.appspot.com/bug?extid=881d65229ca4f9ae8c84
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Tested-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Link: https://patch.msgid.link/b1212653-8fa1-44e1-be9d-12f950fb3a07@I-love.SAKURA.ne.jp
-Cc: stable@vger.kernel.org
+Fixes: 1a620a723853 ("can: raw: instantly reject unsupported CAN frames")
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Vincent Mailhol <mailhol@kernel.org>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://patch.msgid.link/20260109144135.8495-3-socketcan@hartkopp.net
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/j1939/transport.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/net/can/dev/dev.c     | 27 +++++++++++++++++++++++++++
+ drivers/net/can/dev/netlink.c |  1 +
+ drivers/net/can/vcan.c        | 15 +++++++++++++++
+ drivers/net/can/vxcan.c       | 15 +++++++++++++++
+ include/linux/can/can-ml.h    | 24 ++++++++++++++++++++++++
+ include/linux/can/dev.h       |  1 +
+ 6 files changed, 83 insertions(+)
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 613a911dda10..8656ab388c83 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -1695,8 +1695,16 @@ static int j1939_xtp_rx_rts_session_active(struct j1939_session *session,
- 
- 		j1939_session_timers_cancel(session);
- 		j1939_session_cancel(session, J1939_XTP_ABORT_BUSY);
--		if (session->transmission)
-+		if (session->transmission) {
- 			j1939_session_deactivate_activate_next(session);
-+		} else if (session->state == J1939_SESSION_WAITING_ABORT) {
-+			/* Force deactivation for the receiver.
-+			 * If we rely on the timer starting in j1939_session_cancel,
-+			 * a second RTS call here will cancel that timer and fail
-+			 * to restart it because the state is already WAITING_ABORT.
-+			 */
-+			j1939_session_deactivate_activate_next(session);
-+		}
- 
- 		return -EBUSY;
+diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
+index 091f30e94c61..7ab9578f5b89 100644
+--- a/drivers/net/can/dev/dev.c
++++ b/drivers/net/can/dev/dev.c
+@@ -375,6 +375,32 @@ void can_set_default_mtu(struct net_device *dev)
  	}
+ }
+ 
++void can_set_cap_info(struct net_device *dev)
++{
++	struct can_priv *priv = netdev_priv(dev);
++	u32 can_cap;
++
++	if (can_dev_in_xl_only_mode(priv)) {
++		/* XL only mode => no CC/FD capability */
++		can_cap = CAN_CAP_XL;
++	} else {
++		/* mixed mode => CC + FD/XL capability */
++		can_cap = CAN_CAP_CC;
++
++		if (priv->ctrlmode & CAN_CTRLMODE_FD)
++			can_cap |= CAN_CAP_FD;
++
++		if (priv->ctrlmode & CAN_CTRLMODE_XL)
++			can_cap |= CAN_CAP_XL;
++	}
++
++	if (priv->ctrlmode & (CAN_CTRLMODE_LISTENONLY |
++			      CAN_CTRLMODE_RESTRICTED))
++		can_cap |= CAN_CAP_RO;
++
++	can_set_cap(dev, can_cap);
++}
++
+ /* helper to define static CAN controller features at device creation time */
+ int can_set_static_ctrlmode(struct net_device *dev, u32 static_mode)
+ {
+@@ -390,6 +416,7 @@ int can_set_static_ctrlmode(struct net_device *dev, u32 static_mode)
+ 
+ 	/* override MTU which was set by default in can_setup()? */
+ 	can_set_default_mtu(dev);
++	can_set_cap_info(dev);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index d6b0e686fb11..0498198a4696 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -377,6 +377,7 @@ static int can_ctrlmode_changelink(struct net_device *dev,
+ 	}
+ 
+ 	can_set_default_mtu(dev);
++	can_set_cap_info(dev);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/net/can/vcan.c b/drivers/net/can/vcan.c
+index fdc662aea279..76e6b7b5c6a1 100644
+--- a/drivers/net/can/vcan.c
++++ b/drivers/net/can/vcan.c
+@@ -130,6 +130,19 @@ static netdev_tx_t vcan_tx(struct sk_buff *skb, struct net_device *dev)
+ 	return NETDEV_TX_OK;
+ }
+ 
++static void vcan_set_cap_info(struct net_device *dev)
++{
++	u32 can_cap = CAN_CAP_CC;
++
++	if (dev->mtu > CAN_MTU)
++		can_cap |= CAN_CAP_FD;
++
++	if (dev->mtu >= CANXL_MIN_MTU)
++		can_cap |= CAN_CAP_XL;
++
++	can_set_cap(dev, can_cap);
++}
++
+ static int vcan_change_mtu(struct net_device *dev, int new_mtu)
+ {
+ 	/* Do not allow changing the MTU while running */
+@@ -141,6 +154,7 @@ static int vcan_change_mtu(struct net_device *dev, int new_mtu)
+ 		return -EINVAL;
+ 
+ 	WRITE_ONCE(dev->mtu, new_mtu);
++	vcan_set_cap_info(dev);
+ 	return 0;
+ }
+ 
+@@ -162,6 +176,7 @@ static void vcan_setup(struct net_device *dev)
+ 	dev->tx_queue_len	= 0;
+ 	dev->flags		= IFF_NOARP;
+ 	can_set_ml_priv(dev, netdev_priv(dev));
++	vcan_set_cap_info(dev);
+ 
+ 	/* set flags according to driver capabilities */
+ 	if (echo)
+diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
+index b2c19f8c5f8e..f14c6f02b662 100644
+--- a/drivers/net/can/vxcan.c
++++ b/drivers/net/can/vxcan.c
+@@ -125,6 +125,19 @@ static int vxcan_get_iflink(const struct net_device *dev)
+ 	return iflink;
+ }
+ 
++static void vxcan_set_cap_info(struct net_device *dev)
++{
++	u32 can_cap = CAN_CAP_CC;
++
++	if (dev->mtu > CAN_MTU)
++		can_cap |= CAN_CAP_FD;
++
++	if (dev->mtu >= CANXL_MIN_MTU)
++		can_cap |= CAN_CAP_XL;
++
++	can_set_cap(dev, can_cap);
++}
++
+ static int vxcan_change_mtu(struct net_device *dev, int new_mtu)
+ {
+ 	/* Do not allow changing the MTU while running */
+@@ -136,6 +149,7 @@ static int vxcan_change_mtu(struct net_device *dev, int new_mtu)
+ 		return -EINVAL;
+ 
+ 	WRITE_ONCE(dev->mtu, new_mtu);
++	vxcan_set_cap_info(dev);
+ 	return 0;
+ }
+ 
+@@ -167,6 +181,7 @@ static void vxcan_setup(struct net_device *dev)
+ 
+ 	can_ml = netdev_priv(dev) + ALIGN(sizeof(struct vxcan_priv), NETDEV_ALIGN);
+ 	can_set_ml_priv(dev, can_ml);
++	vxcan_set_cap_info(dev);
+ }
+ 
+ /* forward declaration for rtnl_create_link() */
+diff --git a/include/linux/can/can-ml.h b/include/linux/can/can-ml.h
+index 8afa92d15a66..1e99fda2b380 100644
+--- a/include/linux/can/can-ml.h
++++ b/include/linux/can/can-ml.h
+@@ -46,6 +46,12 @@
+ #include <linux/list.h>
+ #include <linux/netdevice.h>
+ 
++/* exposed CAN device capabilities for network layer */
++#define CAN_CAP_CC BIT(0) /* CAN CC aka Classical CAN */
++#define CAN_CAP_FD BIT(1) /* CAN FD */
++#define CAN_CAP_XL BIT(2) /* CAN XL */
++#define CAN_CAP_RO BIT(3) /* read-only mode (LISTEN/RESTRICTED) */
++
+ #define CAN_SFF_RCV_ARRAY_SZ (1 << CAN_SFF_ID_BITS)
+ #define CAN_EFF_RCV_HASH_BITS 10
+ #define CAN_EFF_RCV_ARRAY_SZ (1 << CAN_EFF_RCV_HASH_BITS)
+@@ -64,6 +70,7 @@ struct can_ml_priv {
+ #ifdef CAN_J1939
+ 	struct j1939_priv *j1939_priv;
+ #endif
++	u32 can_cap;
+ };
+ 
+ static inline struct can_ml_priv *can_get_ml_priv(struct net_device *dev)
+@@ -77,4 +84,21 @@ static inline void can_set_ml_priv(struct net_device *dev,
+ 	netdev_set_ml_priv(dev, ml_priv, ML_PRIV_CAN);
+ }
+ 
++static inline bool can_cap_enabled(struct net_device *dev, u32 cap)
++{
++	struct can_ml_priv *can_ml = can_get_ml_priv(dev);
++
++	if (!can_ml)
++		return false;
++
++	return (can_ml->can_cap & cap);
++}
++
++static inline void can_set_cap(struct net_device *dev, u32 cap)
++{
++	struct can_ml_priv *can_ml = can_get_ml_priv(dev);
++
++	can_ml->can_cap = cap;
++}
++
+ #endif /* CAN_ML_H */
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 52c8be5c160e..6d0710d6f571 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -116,6 +116,7 @@ struct can_priv *safe_candev_priv(struct net_device *dev);
+ int open_candev(struct net_device *dev);
+ void close_candev(struct net_device *dev);
+ void can_set_default_mtu(struct net_device *dev);
++void can_set_cap_info(struct net_device *dev);
+ int __must_check can_set_static_ctrlmode(struct net_device *dev,
+ 					 u32 static_mode);
+ int can_hwtstamp_get(struct net_device *netdev,
 -- 
 2.51.0
 
