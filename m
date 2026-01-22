@@ -1,37 +1,37 @@
 Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45C4331AF1F;
-	Thu, 22 Jan 2026 12:10:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEC9E426EB4;
+	Thu, 22 Jan 2026 12:10:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769083859; cv=none; b=B+Yv4mEP62Ph6QfpV4+TeOnaaFlb8Qy7qHMOeJCohOm78JVqqbnB4h3aDxCnZgaqqJTlLL96yUXfx9hrIOPIeIXSR8XhYJelELC2x8ImXDK+rwlp+J85JYq8WjFhEsOFDp29VuhBGo/rkyrQaUhRjGq+K+6ZQN5Mcs0mUgVNocM=
+	t=1769083861; cv=none; b=Vq9bt1Y6Ajjk2kRAcXw2jDwhqNOe8pBWtL2NqNH4ma0PTJ+aHVwDnEHflCdbrLsIoS9bm6E/6lldWh2MMTTdPD/W/ZQPzl1k1B3eS1XUjQaSRU+8W93wSvi0aRuUYsx7I4BC56xIDmPEshLNWoxmjNejKRS30ujoI9UbCPUHU/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769083859; c=relaxed/simple;
-	bh=0n307RI2osGkwAnwHOdE+jJLyTXApuRW/XscUPfHsXI=;
+	s=arc-20240116; t=1769083861; c=relaxed/simple;
+	bh=r7bUfIsAYLSfpdmydyK3ggHQ+jGjEjFE1oj7Od7EfV8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JlFnyCSvs+v2hZcAVTRJo6Y4IKq5/M8cZEgydTiKcBa5rdXO1JmsdhjCkmG3HkegZT6Iq7vodcIFiN8UTMH3bFvypz0AEKwJjtbE0OjaEeDnSVWEZsfWoddH9Gvc0O1iTENWKNSgVr7HDDVsTW1Gnt1iemeVkyqEoB4oDpttSyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=fail (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=JbeGnaqt reason="key not found in DNS"; arc=none smtp.client-ip=94.231.106.210
+	 MIME-Version; b=Vc0Tj7Q5JQFzgPZRaMz4PnAp/wjlc7z9HUdrXuZKYc9y8oaj9Tg1Dg18TlRInf+98piOh3eA2O9iXaGhceuNkNqHDz2jh6sP2C/bCDqKjrS+3kDeodyXJxopD8NMH11Ua+jiQqU0kxnLTKEhwpFipknxuqM1i/DN8/VLthrkEDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=fail (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=d3OSD8Tq reason="key not found in DNS"; arc=none smtp.client-ip=94.231.106.210
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="JbeGnaqt"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="d3OSD8Tq"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp.simply.com (Simply.com) with ESMTP id 4dxfzC5YMdz1Fgcr;
-	Thu, 22 Jan 2026 13:10:47 +0100 (CET)
+	by smtp.simply.com (Simply.com) with ESMTP id 4dxfzD43b2z1FlXt;
+	Thu, 22 Jan 2026 13:10:48 +0100 (CET)
 Received: from d-5xj5g74.got.gaisler.com.com (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
-	by smtp.simply.com (Simply.com) with ESMTPA id 4dxfzC06VJz1DDC3;
-	Thu, 22 Jan 2026 13:10:46 +0100 (CET)
+	by smtp.simply.com (Simply.com) with ESMTPA id 4dxfzC6yrmz1FgdJ;
+	Thu, 22 Jan 2026 13:10:47 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
-	s=simplycom2; t=1769083847;
-	bh=EMkpJcbf388KKgy3H9YvNKkEn9x2GMeSt2rV8zMvFWg=;
+	s=simplycom2; t=1769083848;
+	bh=WNL2SDl32TrWWln0AQnf0KAmAYNyqjJmTlfmTjZRvt8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=JbeGnaqtxaAb/xcv6B06Sh2OBidUzm2VXi7PO13rhCLg7JADZ5um9XnEko9B1COzR
-	 KcbtEzksiVntGVIXhmcIfeUcf7uqElV/+V+Uw9KHFXRpTarm5AAGryAT/H1KewDJBf
-	 Ach4EGB+Pu1r2Zvmd0qcGEYsmSFrFpriVvHrA6hDFiag+5mtOwfZbdEk4nwWRY93w9
-	 ytKJ6rKt5jWwjMtMuMIhLkRYqF0D64s8cwGF5613Cy+p3J4/bXK0k++fHmSLX7Vmjm
-	 GW+ahqYFRWOjJ6GY2jqa9RPzwQylDYyxCBLUMQiqzYEe6qaQ8stJ2ULw82O2w/LqCk
-	 5i3/HW/I/nbgA==
+	b=d3OSD8TqbuBaVlW2uMrcFidr1T6O2ddGNKOyTro/EExYvbsKSK7ijV/PAFe3UTweH
+	 KrlYCt/nHAVCdQswRoR5tDt6HS1XdzQMaMzNiz1mVz4KGksAhn1Ic8ha861PXvyGNf
+	 hjJIEHE62BCBcvvXsWlMgzLgSKEsmTdr81qOYepIOZdBQ4zrqFytq0qwl+yb3Eg4ik
+	 R2M7azaDrTwNkre/A5a36R0hZ+TtFvWNU/fbhxqp8AucNYNK2qOecZ3wsQp99huoLq
+	 U6W6r1s62/1PjSP9TtXEJ09ySIb+Ar/4lDlxS9LuxX4hyHc0yA2ymBoH4PGRxYzoqn
+	 ajV9B3c0sSF3A==
 From: Arun Muthusamy <arun.muthusamy@gaisler.com>
 To: robh@kernel.org,
 	krzk+dt@kernel.org,
@@ -41,11 +41,11 @@ To: robh@kernel.org,
 Cc: devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-can@vger.kernel.org,
-	Arun Muthusamy <arun.muthusamy@gaisler.com>,
-	Daniel Hellstrom <daniel@gaisler.com>
-Subject: [PATCH v3 06/15] can: grcan: Simplify timing configuration
-Date: Thu, 22 Jan 2026 13:10:29 +0100
-Message-ID: <20260122121038.7910-7-arun.muthusamy@gaisler.com>
+	Daniel Hellstrom <daniel@gaisler.com>,
+	Arun Muthusamy <arun.muthusamy@gaisler.com>
+Subject: [PATCH v3 08/15] can: grcan: optimize DMA by 32-bit accesses
+Date: Thu, 22 Jan 2026 13:10:31 +0100
+Message-ID: <20260122121038.7910-9-arun.muthusamy@gaisler.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260122121038.7910-1-arun.muthusamy@gaisler.com>
 References: <20260122121038.7910-1-arun.muthusamy@gaisler.com>
@@ -57,74 +57,83 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Remove redundant error checks and use FIELD_PREP for bit timing
-assignments to simplify the timing configuration
+From: Daniel Hellstrom <daniel@gaisler.com>
 
-Signed-off-by: Arun Muthusamy <arun.muthusamy@gaisler.com>
+Optimizes DMA transfers in the GRCAN driver by reorganizing
+data handling to use 32-bit accesses instead of individual
+byte accesses.
+
 Signed-off-by: Daniel Hellstrom <daniel@gaisler.com>
+Signed-off-by: Arun Muthusamy <arun.muthusamy@gaisler.com>
 ---
- drivers/net/can/grcan.c | 41 +++++++++++++----------------------------
- 1 file changed, 13 insertions(+), 28 deletions(-)
+ drivers/net/can/grcan.c | 26 ++++++++++----------------
+ 1 file changed, 10 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
-index f34ca558fa5d..5a63d0a0365f 100644
+index 5d09f61a153c..e2415529db45 100644
 --- a/drivers/net/can/grcan.c
 +++ b/drivers/net/can/grcan.c
-@@ -396,41 +396,26 @@ static const struct can_bittiming_const grcan_bittiming_const = {
- static int grcan_set_bittiming(struct net_device *dev)
- {
- 	struct grcan_priv *priv = netdev_priv(dev);
--	struct grcan_registers __iomem *regs = priv->regs;
--	struct can_bittiming *bt = &priv->can.bittiming;
--	u32 timing = 0;
-+	struct grcan_registers __iomem *regs;
- 	int bpr, rsj, ps1, ps2, scaler;
-+	struct can_bittiming *bt;
-+	u32 timing = 0;
+@@ -194,9 +194,6 @@ struct grcan_registers {
+ #define GRCAN_MSG_OFF		0x00000002
+ #define GRCAN_MSG_PASS		0x00000001
  
--	/* Should never happen - function will not be called when
--	 * device is up
--	 */
--	if (grcan_read_bits(&regs->ctrl, GRCAN_CTRL_ENABLE))
--		return -EBUSY;
-+	regs = priv->regs;
-+	bt = &priv->can.bittiming;
- 
- 	bpr = 0; /* Note bpr and brp are different concepts */
- 	rsj = bt->sjw;
- 	ps1 = (bt->prop_seg + bt->phase_seg1) - 1; /* tseg1 - 1 */
- 	ps2 = bt->phase_seg2;
--	scaler = (bt->brp - 1);
--	netdev_dbg(dev, "Request for BPR=%d, RSJ=%d, PS1=%d, PS2=%d, SCALER=%d",
--		   bpr, rsj, ps1, ps2, scaler);
--	if (!(ps1 > ps2)) {
--		netdev_err(dev, "PS1 > PS2 must hold: PS1=%d, PS2=%d\n",
--			   ps1, ps2);
--		return -EINVAL;
--	}
--	if (!(ps2 >= rsj)) {
--		netdev_err(dev, "PS2 >= RSJ must hold: PS2=%d, RSJ=%d\n",
--			   ps2, rsj);
--		return -EINVAL;
--	}
+-#define GRCAN_MSG_DATA_SLOT_INDEX(i) (2 + (i) / 4)
+-#define GRCAN_MSG_DATA_SHIFT(i) ((3 - (i) % 4) * 8)
 -
--	timing |= (bpr << GRCAN_CONF_BPR_BIT) & GRCAN_CONF_BPR;
--	timing |= (rsj << GRCAN_CONF_RSJ_BIT) & GRCAN_CONF_RSJ;
--	timing |= (ps1 << GRCAN_CONF_PS1_BIT) & GRCAN_CONF_PS1;
--	timing |= (ps2 << GRCAN_CONF_PS2_BIT) & GRCAN_CONF_PS2;
--	timing |= (scaler << GRCAN_CONF_SCALER_BIT) & GRCAN_CONF_SCALER;
--	netdev_info(dev, "setting timing=0x%x\n", timing);
-+	scaler = bt->brp - 1;
-+
-+	timing |= FIELD_PREP(GRCAN_CONF_BPR, bpr);
-+	timing |= FIELD_PREP(GRCAN_CONF_RSJ, rsj);
-+	timing |= FIELD_PREP(GRCAN_CONF_PS1, ps1);
-+	timing |= FIELD_PREP(GRCAN_CONF_PS2, ps2);
-+	timing |= FIELD_PREP(GRCAN_CONF_SCALER, scaler);
-+	netdev_dbg(dev, "setting timing=0x%x\n", timing);
- 	grcan_write_bits(&regs->conf, timing, GRCAN_CONF_TIMING);
+ #define GRCAN_BUFFER_ALIGNMENT		1024
+ #define GRCAN_DEFAULT_BUFFER_SIZE	1024
+ #define GRCAN_VALID_TR_SIZE_MASK	0x001fffc0
+@@ -1218,7 +1215,7 @@ static int grcan_receive(struct net_device *dev, int budget)
+ 	struct sk_buff *skb;
+ 	u32 wr, rd, startrd;
+ 	u32 *slot;
+-	u32 i, rtr, eff, j, shift;
++	u32 rtr, eff;
+ 	int work_done = 0;
  
- 	return 0;
+ 	rd = grcan_read_reg(&regs->rxrd);
+@@ -1254,11 +1251,10 @@ static int grcan_receive(struct net_device *dev, int budget)
+ 		if (rtr) {
+ 			cf->can_id |= CAN_RTR_FLAG;
+ 		} else {
+-			for (i = 0; i < cf->len; i++) {
+-				j = GRCAN_MSG_DATA_SLOT_INDEX(i);
+-				shift = GRCAN_MSG_DATA_SHIFT(i);
+-				cf->data[i] = (u8)(slot[j] >> shift);
+-			}
++			if (cf->can_dlc > 0)
++				memcpy(cf->data, &slot[2], sizeof(u32));
++			if (cf->can_dlc > 4)
++				memcpy(cf->data + 4, &slot[3], sizeof(u32));
+ 
+ 			stats->rx_bytes += cf->len;
+ 		}
+@@ -1397,8 +1393,7 @@ static netdev_tx_t grcan_start_xmit(struct sk_buff *skb,
+ 	u32 id, txwr, txrd, space, txctrl;
+ 	int slotindex;
+ 	u32 *slot;
+-	u32 i, rtr, eff, dlc, tmp, err;
+-	int j, shift;
++	u32 rtr, eff, dlc, tmp, err;
+ 	unsigned long flags;
+ 	u32 oneshotmode = priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT;
+ 
+@@ -1451,11 +1446,10 @@ static netdev_tx_t grcan_start_xmit(struct sk_buff *skb,
+ 	slot[1] = ((dlc << GRCAN_MSG_DLC_BIT) & GRCAN_MSG_DLC);
+ 	slot[2] = 0;
+ 	slot[3] = 0;
+-	for (i = 0; i < dlc; i++) {
+-		j = GRCAN_MSG_DATA_SLOT_INDEX(i);
+-		shift = GRCAN_MSG_DATA_SHIFT(i);
+-		slot[j] |= cf->data[i] << shift;
+-	}
++	if (dlc > 0)
++		memcpy(&slot[2], cf->data, sizeof(u32));
++	if (dlc > 4)
++		memcpy(&slot[3], cf->data + 4, sizeof(u32));
+ 
+ 	/* Checking that channel has not been disabled. These cases
+ 	 * should never happen
 -- 
 2.51.0
 
