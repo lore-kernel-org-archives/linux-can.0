@@ -1,37 +1,37 @@
 Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AC4343DA55;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD7443DA59;
 	Thu, 22 Jan 2026 12:10:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769083862; cv=none; b=hpWWxocE9s0e3a2UYIGN87nyhcAW9PyLTDgT+b3TmGOET1FcNVUkmAInAr1vWoYiQsQpetVv7M/BxKJGS+RVHWCAIBnAkfU1ZxVjGUtHb59qjJM0p3X8SWA8Drq4VfN29tuSQGiqraYJktmI0gxsKjYxPHdZRGU263mwmnPyG0Q=
+	t=1769083862; cv=none; b=GDeYB+pSRQpwhAOwpMv6Pkmv/fEaneO9v3sKvzVx601oRpF3GKAwjfn4Cfqa6NlCZ/i2vQ9HCfq1Ym4K1lX7KhfBr18HNGnYGBYwUii33SXShYTtywzchdguexUm1oDNhoq/KgOA7BP4YRVtN55nUlnvcVd1n75cKk23PdUrPcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1769083862; c=relaxed/simple;
-	bh=vd7GadClo/RlrvKYnks9oUL4JQToH3YvUgrlmb9pj/4=;
+	bh=vA7Bn/T3MRsg5KZ3x1qZfVZ2mW8VIC/LyFcEFlwEwvs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MP+Y1/wR++YAo9Zktlo+H77L9G85xD1eGCr2ah544SWCNbO7ZiUXO5T/YXICxJ3iftxlZtrW8zlgbYpO1Cxu6mFS4fjIAVVK8K2sy9lE7Fwrm4bbX9VyHQnR61GkG80x11Q0//NfQ+sKKBbC0iCp93MonttSB94huwr5PScPyVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=fail (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=OHP+mcX/ reason="key not found in DNS"; arc=none smtp.client-ip=94.231.106.210
+	 MIME-Version; b=CpoM+FUkWzuw3SNm9GXeMpWLNBMXB1Lig5e+AygwSDtfp8Gdy+M2gHNbA2TUIwYDtU4lxg3YhvOvWJwulhBsxid1xCVNz+BYjzOmOjqSV7Yw3qvxCVEQznl3pXO0SW0UE2cCnESV1C+xTroyqMFlnRihMDYUni+9d1oA4M8pS3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=fail (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=APk/YhVs reason="key not found in DNS"; arc=none smtp.client-ip=94.231.106.210
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="OHP+mcX/"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="APk/YhVs"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp.simply.com (Simply.com) with ESMTP id 4dxfzD6Mp9z1FlXw;
-	Thu, 22 Jan 2026 13:10:48 +0100 (CET)
+	by smtp.simply.com (Simply.com) with ESMTP id 4dxfzG1Ck6z1FlXv;
+	Thu, 22 Jan 2026 13:10:50 +0100 (CET)
 Received: from d-5xj5g74.got.gaisler.com.com (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
-	by smtp.simply.com (Simply.com) with ESMTPA id 4dxfzD3pm5z1Fgcl;
-	Thu, 22 Jan 2026 13:10:48 +0100 (CET)
+	by smtp.simply.com (Simply.com) with ESMTPA id 4dxfzF5ZxWz1FDXb;
+	Thu, 22 Jan 2026 13:10:49 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
-	s=simplycom2; t=1769083848;
-	bh=LvNXlj/JjGmCmxw9Wh5XNyDZed3gle08v8TWEGLebtQ=;
+	s=simplycom2; t=1769083850;
+	bh=pEzKnxcYuoOsnjOFZzfSF3b1bjVYx5kW8HBT6p9Mnqk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=OHP+mcX/8wsU7uZfHoJY6br9vYqjHV5yKd7fKHb4EFcYD7funhlWy6coRB8gqQ/6z
-	 IE2Z78+maYnHksTCcs/Syy7zb1sD/XeC+NmKwx7P9tIZgB+k38kMBPEE3zdrtmpDWa
-	 slG+8freLPdYTxGVnGclp/xNbpXE0+FMc3hMvEyMrPcaKi05U2NpoRTb3Jjxj0TqBH
-	 F9SOo5cPo+9pBZ5T6+ZK4Dpt39vxb0rQK1vh5DeSS1xwBM+Z9xyOqLBcQa+z1hO8ZE
-	 pce/C0TwpGEsBDfqcf2FQKo62m0GFfTEcTOpqEGytShpf6rqfpRILqsjky4oPTUKZd
-	 gxqWqp8gjuWOQ==
+	b=APk/YhVsH8MD6neQqao1VBk08TH1qmTT7PFXxwv9WR7LI/XndpYVMnAIMK2RHJci1
+	 C1VQpfqbe+wQC6KetoTxy8uNfK1BoN9jlpUpSgOpPWSFgUeUy6/wleu4OCpUwNEuQm
+	 KmR7BamKQKbtdsE8aMQlzsqxGsiFDJVc5t9MJMeqvXqEIREErgD1ReUkoA/p/4IjUP
+	 ADgZWBVrvGQ5FYr3LD0l4dt9jEFggPf2byXJ+EbLK0k1HfzJkV3Utml53kJSP95mwo
+	 Os3+V3AO7GhZ9Dt9I6lbyE871OgX2hqb++SzFoq8HuZGZf36dOkouSj8bXCggxIvaR
+	 CLvM0ZBdMuoig==
 From: Arun Muthusamy <arun.muthusamy@gaisler.com>
 To: robh@kernel.org,
 	krzk+dt@kernel.org,
@@ -41,11 +41,10 @@ To: robh@kernel.org,
 Cc: devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-can@vger.kernel.org,
-	Daniel Hellstrom <daniel@gaisler.com>,
 	Arun Muthusamy <arun.muthusamy@gaisler.com>
-Subject: [PATCH v3 09/15] can: grcan: set DMA mask for GRCAN and GRCANFD to 32-bit
-Date: Thu, 22 Jan 2026 13:10:32 +0100
-Message-ID: <20260122121038.7910-10-arun.muthusamy@gaisler.com>
+Subject: [PATCH v3 12/15] can: grcan: Advertise CANFD capability
+Date: Thu, 22 Jan 2026 13:10:35 +0100
+Message-ID: <20260122121038.7910-13-arun.muthusamy@gaisler.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260122121038.7910-1-arun.muthusamy@gaisler.com>
 References: <20260122121038.7910-1-arun.muthusamy@gaisler.com>
@@ -57,36 +56,33 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Daniel Hellstrom <daniel@gaisler.com>
+Advertise CANFD capability for GRCANFD hardware by enabling
+CAN_CTRLMODE_FD flag and providing CANFD timing operations.
 
-Sets the DMA mask for GRCAN and GRCANFD devices to 32-bit.
-Setting the DMA mask and coherent DMA mask to 32-bit ensures proper
-memory addressing during DMA operations
-
-Signed-off-by: Daniel Hellstrom <daniel@gaisler.com>
 Signed-off-by: Arun Muthusamy <arun.muthusamy@gaisler.com>
 ---
- drivers/net/can/grcan.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/can/grcan.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
-index e2415529db45..a2a5a5c868ff 100644
+index e99a8c2bffc6..9fc18064fab1 100644
 --- a/drivers/net/can/grcan.c
 +++ b/drivers/net/can/grcan.c
-@@ -1747,6 +1747,13 @@ static int grcan_probe(struct platform_device *ofdev)
- 		goto exit_error;
- 	}
+@@ -1656,11 +1656,14 @@ static int grcan_setup_netdev(struct platform_device *ofdev,
+ 	priv->ofdev_dev = &ofdev->dev;
+ 	priv->regs = base;
+ 	priv->can.bittiming_const = hwcap->bt_const;
++	priv->can.fd.data_bittiming_const = hwcap->bt_const;
+ 	priv->can.do_set_mode = grcan_set_mode;
+ 	priv->can.do_get_berr_counter = grcan_get_berr_counter;
+ 	priv->can.clock.freq = ambafreq;
+ 	priv->can.ctrlmode_supported =
+ 		CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_ONE_SHOT;
++	if (hwcap->fd)
++		priv->can.ctrlmode_supported |= CAN_CTRLMODE_FD;
+ 	priv->need_txbug_workaround = txbug;
+ 	priv->hwcap = hwcap;
  
-+	/* On 64-bit systems.. GRCAN and GRCANFD can only address 32-bit */
-+	err = dma_set_mask_and_coherent(&ofdev->dev, DMA_BIT_MASK(32));
-+	if (err) {
-+		dev_err_probe(&ofdev->dev, err, "No usable DMA configuration.\n");
-+		goto exit_error;
-+	}
-+
- 	irq = irq_of_parse_and_map(np, GRCAN_IRQIX_IRQ);
- 	if (!irq) {
- 		dev_err(&ofdev->dev, "no irq found\n");
 -- 
 2.51.0
 
