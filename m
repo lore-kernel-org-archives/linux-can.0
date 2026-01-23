@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E472E06E4
-	for <linux-can@vger.kernel.org>; Fri, 23 Jan 2026 10:15:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6777C30CDB1
+	for <linux-can@vger.kernel.org>; Fri, 23 Jan 2026 10:16:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769163343; cv=none; b=JHJewzDgPxfsfDgl+S5XPVsopFfgA4SvRJL2vP2nf4ySr4EWWg42dwR8xJZUmt0IxwrPmMXJXuEt4zryQcNtHa4dLV9lj8cE7UkuOhBty8PaaNuSgjqNAYF7qn3lIKzUpnYRoPVIKEff42MVJYCJAm+k/ECmNLW3q1AMTXzYlFg=
+	t=1769163405; cv=none; b=f124dbMc8L3gpxdZMldYEQ3ukb4aWVMbtcTOWbymMlHpI9ik0mFBpS0CJUJlubMupHJudcLj602GNGLwlKKYjGPgyu8IFiGMIQFJueUrtriR88hQ9Cx3S+eyniywWfEJcsEPqMZIHAUtuKg4o1Qb05D1XxinIHDHqCyVEIEmVJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769163343; c=relaxed/simple;
-	bh=4Aw18HLBnW2N3rq3/84adKqq2hEoFT9IgzDOyhgVIOQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CCFHWQxYj2diMgqi7No49Gbc886RvANJa1+QkisyYQZY1j+MO+zFZirru48Hr8D2FFBuOtgL+8BeDyzLwNV0EY+qmtpd/l8Str/FrmNPpczJyl0+LrJNDru6dE3VQNL4b3SUCIAeysK7vWEk9d9bQl62Z2TR8Lbvw7xpWLflMDM=
+	s=arc-20240116; t=1769163405; c=relaxed/simple;
+	bh=sSs60YgQd07lmmx5wE4IWKvfl1tMDMVLLadVL6NYN8Y=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=drm1gy3/sFxZ/F2Czbl7++72CqR3QRi8FhfI3MAVjkVe+FPnuEkqEBijRPrAbQ4Fcqp5Cn38/uuup1idvhuX9Hr/QmJkHARl9+oainhNyF1teoey0DVcUw0IfS2mQsZRI5tAF/w3XFXOtYguJwUzrlvh9Dt4ERlpWObA8YYhQPQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,109 +18,112 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vjECU-00062S-Pi; Fri, 23 Jan 2026 11:15:34 +0100
+	id 1vjEDX-0006FX-4L; Fri, 23 Jan 2026 11:16:39 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vjECU-0024ic-2T;
-	Fri, 23 Jan 2026 11:15:34 +0100
-Received: from pengutronix.de (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
+	id 1vjEDX-0024il-1I;
+	Fri, 23 Jan 2026 11:16:38 +0100
+Received: from hardanger.blackshift.org (p54b152ce.dip0.t-ipconnect.de [84.177.82.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id C31AC4D6BBD;
-	Fri, 23 Jan 2026 10:15:33 +0000 (UTC)
-Date: Fri, 23 Jan 2026 11:15:33 +0100
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 8247F4D6BC9;
+	Fri, 23 Jan 2026 10:16:38 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Michael Tretter <m.tretter@pengutronix.de>
-Cc: Vincent Mailhol <mailhol@kernel.org>, linux-can@vger.kernel.org, 
-	kernel@pengutronix.de, Achim Baumgartner <abaumgartner@topcon.com>
-Subject: Re: [PATCH] can: sja1000: use error counter for error state
-Message-ID: <20260123-savvy-active-alligator-aae1e8-mkl@pengutronix.de>
-References: <20260123-can-sja1000-error-passive-v1-1-01e5d454ab5f@pengutronix.de>
+Date: Fri, 23 Jan 2026 11:16:26 +0100
+Subject: [PATCH can-next v2 1/2] can: sja1000: sja1000_err(): make use of
+ sja1000_get_berr_counter() to read error counters
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="sfn7cbapesjeq6qo"
-Content-Disposition: inline
-In-Reply-To: <20260123-can-sja1000-error-passive-v1-1-01e5d454ab5f@pengutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260123-sja1000-state-handling-v2-1-687498087dad@pengutronix.de>
+References: <20260123-sja1000-state-handling-v2-0-687498087dad@pengutronix.de>
+In-Reply-To: <20260123-sja1000-state-handling-v2-0-687498087dad@pengutronix.de>
+To: Vincent Mailhol <mailhol@kernel.org>, 
+ Michael Tretter <m.tretter@pengutronix.de>
+Cc: Achim Baumgartner <abaumgartner@topcon.com>, linux-can@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, kernel@pengutronix.de, 
+ Marc Kleine-Budde <mkl@pengutronix.de>
+X-Mailer: b4 0.15-dev-47773
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1905; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=sSs60YgQd07lmmx5wE4IWKvfl1tMDMVLLadVL6NYN8Y=;
+ b=owEBbQGS/pANAwAKAQx0Zd/5kJGcAcsmYgBpc0p/IYCFPH9YYIW6FL+6adLpgoLWpouoRbURh
+ kv/EDjb19CJATMEAAEKAB0WIQSf+wzYr2eoX/wVbPMMdGXf+ZCRnAUCaXNKfwAKCRAMdGXf+ZCR
+ nDxPCAC3hkiN9C5o6PC7tE4DGciSjdJ2wI66MHYUJCzeuivusXa3kY5Ri9HQ/q6I0HIrGBO42J0
+ mDpTj/qiTwEpokiov2r3EzC8RQ9KJui0LfI+wnm2nwRsONG8QzPpiGqats8JGMH/i4lollHiy0c
+ u8kloW/aBKEmNWBgizO91BP1ggHO/yIauJdSmYGGmEw2OVk0qMcxKJf8zpQqyVzEL7pNgbQSB+/
+ LAFx5Rc91NZpwwOb7VfuxjP3Y0IvrI+t2TrZh0TAwPUKjT4K+nzPeHiHj7HCKkh0O6yWF8B6/Vl
+ 9g4J9WUwIQof8Uyh4atCnubTKvpfQgdAOT9B4ILti62H/Q7S
+X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
+ fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
+This is a preparation patch to make use of can_state_get_by_berr_counter()
+which works on a struct can_berr_counter.
 
---sfn7cbapesjeq6qo
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] can: sja1000: use error counter for error state
-MIME-Version: 1.0
+Reuse the existing function sja1000_get_berr_counter() to read the error
+counters into a struct can_berr_counter.
 
-On 23.01.2026 10:18:33, Michael Tretter wrote:
-> The CAN controller sends the EPI interrupt whenever it reaches the error
-> passive status or enters the error active status from the error passive
-> status.
->
-> Instead of keeping track of the controller status in the driver, read
-> the txerr and rxerr counters to determine the error status of the CAN
-> controller.
->
-> Suggested-by: Achim Baumgartner <abaumgartner@topcon.com>
-> Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
-> ---
->  drivers/net/can/sja1000/sja1000.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/=
-sja1000.c
-> index a8fa0d6516b9..4bd310b0f82a 100644
-> --- a/drivers/net/can/sja1000/sja1000.c
-> +++ b/drivers/net/can/sja1000/sja1000.c
-> @@ -498,10 +498,14 @@ static int sja1000_err(struct net_device *dev, uint=
-8_t isrc, uint8_t status)
->  		/* error passive interrupt */
->  		netdev_dbg(dev, "error passive interrupt\n");
->
-> -		if (state =3D=3D CAN_STATE_ERROR_PASSIVE)
-> -			state =3D CAN_STATE_ERROR_WARNING;
-> -		else
-> -			state =3D CAN_STATE_ERROR_PASSIVE;
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/sja1000/sja1000.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-What about using can_state_get_by_berr_counter()[1] and remove evaluating
-of warning and passive IRQs completely? I've prepared a v2.
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index a8fa0d6516b9..ae3244b63b65 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -411,14 +411,13 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+ 	struct sk_buff *skb;
+ 	enum can_state state = priv->can.state;
+ 	enum can_state rx_state, tx_state;
+-	unsigned int rxerr, txerr;
++	struct can_berr_counter bec;
+ 	uint8_t ecc, alc;
+ 	int ret = 0;
+ 
+ 	skb = alloc_can_err_skb(dev, &cf);
+ 
+-	txerr = priv->read_reg(priv, SJA1000_TXERR);
+-	rxerr = priv->read_reg(priv, SJA1000_RXERR);
++	sja1000_get_berr_counter(dev, &bec);
+ 
+ 	if (isrc & IRQ_DOI) {
+ 		/* data overrun interrupt */
+@@ -455,8 +454,8 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+ 	}
+ 	if (state != CAN_STATE_BUS_OFF && skb) {
+ 		cf->can_id |= CAN_ERR_CNT;
+-		cf->data[6] = txerr;
+-		cf->data[7] = rxerr;
++		cf->data[6] = bec.txerr;
++		cf->data[7] = bec.rxerr;
+ 	}
+ 	if (isrc & IRQ_BEI) {
+ 		/* bus error interrupt */
+@@ -515,8 +514,8 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+ 	}
+ 
+ 	if (state != priv->can.state) {
+-		tx_state = txerr >= rxerr ? state : 0;
+-		rx_state = txerr <= rxerr ? state : 0;
++		tx_state = bec.txerr >= bec.rxerr ? state : 0;
++		rx_state = bec.txerr <= bec.rxerr ? state : 0;
+ 
+ 		can_change_state(dev, cf, tx_state, rx_state);
+ 
 
-[1]
-https://elixir.bootlin.com/linux/v6.18.6/source/drivers/net/can/dev/dev.c#L=
-136
+-- 
+2.51.0
 
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---sfn7cbapesjeq6qo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEn/sM2K9nqF/8FWzzDHRl3/mQkZwFAmlzSkIACgkQDHRl3/mQ
-kZzMvAf/TU1b71m1i2aAeDaXlklE4FkWK247db79RK9mstAQHAOSyaV349y6yTzy
-shL/yWZpe0WfDRSX9tryx9+P+8qciIncI7aMCJLFoCI5d+T30Ar9wPajG5oRCgza
-CylVeu/iIN2MgLXfOtrMNtCt9s61WGkk7s8DinRjr599vRkPs1oClgFgtkghHjE7
-JE/NnaTGl1RhgpTaQbOcvIhNhEIfiQkQgwJwksjbMPCcO/llylZGIaUgd8W7+kGC
-sX2vmd/jpTilzvj8+GCkIz1C96I0ltv2cVEMZFKimCpm0uQb01VKPS6r7DChzSeU
-Ac5hFaZJNJ6q8BHIfNld95SSS73kRw==
-=0vl1
------END PGP SIGNATURE-----
-
---sfn7cbapesjeq6qo--
