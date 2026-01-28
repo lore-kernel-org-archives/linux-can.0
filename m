@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FBD33C51B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F5BF33C188
 	for <linux-can@vger.kernel.org>; Wed, 28 Jan 2026 09:29:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769592569; cv=none; b=miTGMevvuCWIhHrXkGmI1/Y6o6cXJDu2+hP1ANc/GB9keScTyvofF5qsG7rP69FHRB+Iu0hKcXee9SJRV7Cnqnv46oIJVw2cq6Ow8lJgITmbRNz70E5vJGzh3Me6UTLZV53OqVzquzZa6jAWKlQ34kGYSWQKJEtjKn4+Ot+4tr0=
+	t=1769592569; cv=none; b=blydsyfTGICpH4Zg8jZF3vNiktg5JL84xZlMawsZYWzfAidiaui+LRWNs0y2KH4T0GbZsVvpkaai1hQN029bxcgXMSvlrsV65oPW6C2rcAtw4rnFDtO5cUIeZL+4KZy7P9XbMShBI8DCzpRulHRGiH5khdz2v2xra2ryByigSPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1769592569; c=relaxed/simple;
-	bh=6QE6P2emKGdKilTZmin3/Ozf9IWg6pkT0Y+9AlYKLgQ=;
+	bh=WVu8/kqahlNbZGD8WK1R44jw+AVgtyIkl0iWAfZYO74=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=j+XcVX6xKJx/JpU7h/n10jPtZNdHCxx+kap9Xodw/ymh3th1hWJmKv9+FNJh0ky46fpY1P3eE68usb6bYxacnxrSOmQVjNIef2lH7cWtp3v2aDRSUpgxctSWoP8yXhcPU/9CXAZARKqb1pqF3Xnz66jq2seOx2u2po0pp3D+EXo=
+	 In-Reply-To:To:Cc; b=UMD2jN/L2Gf04+5jwzaST27jKdgeVRiav6wx7Cojo5ed8y8yamo4IxNR6xO4cxqQVYD/az8BiVgP//7rBvavCWRVZyMfLokQ1E92ll3M/kBU7bHcAK4z/1YnIVnKbfi4Lya32K8y8GBte1hXCMfaUBlUSEM71D6GNeNU0d6L8/g=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,23 +18,24 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vl1rN-0007xZ-Mw; Wed, 28 Jan 2026 10:29:13 +0100
+	id 1vl1rN-0007xb-Mv; Wed, 28 Jan 2026 10:29:13 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vl1rN-002tQJ-1a;
-	Wed, 28 Jan 2026 10:29:12 +0100
+	id 1vl1rN-002tQM-24;
+	Wed, 28 Jan 2026 10:29:13 +0100
 Received: from hardanger.blackshift.org (p54b15bf8.dip0.t-ipconnect.de [84.177.91.248])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 85B5A4DA02F;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id A32044DA031;
 	Wed, 28 Jan 2026 09:29:12 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Wed, 28 Jan 2026 10:28:56 +0100
-Subject: [PATCH can-next v2 4/6] can: move frame_len to CAN skb extensions
+Date: Wed, 28 Jan 2026 10:28:58 +0100
+Subject: [PATCH can-next v2 6/6] can: gw: use can_gw_hops instead of
+ sk_buff::csum_start
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -43,7 +44,7 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260128-can-skb-ext-v2-4-fe64aa152c8a@pengutronix.de>
+Message-Id: <20260128-can-skb-ext-v2-6-fe64aa152c8a@pengutronix.de>
 References: <20260128-can-skb-ext-v2-0-fe64aa152c8a@pengutronix.de>
 In-Reply-To: <20260128-can-skb-ext-v2-0-fe64aa152c8a@pengutronix.de>
 To: Marc Kleine-Budde <mkl@pengutronix.de>, 
@@ -57,15 +58,15 @@ To: Marc Kleine-Budde <mkl@pengutronix.de>,
 Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
  netdev@vger.kernel.org
 X-Mailer: b4 0.15-dev-47773
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2779; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=geY5hUgKqeV8IUfPzEuc6SQo1DjeohDhEAPDEaY406Q=;
- b=owEBbQGS/pANAwAKAQx0Zd/5kJGcAcsmYgBpedbiVdeZUaGPxfxPb8nFjGAoMfwE9lBc29Az0
- 803HoPP4CSJATMEAAEKAB0WIQSf+wzYr2eoX/wVbPMMdGXf+ZCRnAUCaXnW4gAKCRAMdGXf+ZCR
- nI9DB/4or5E4Dm//ft3Hok3SpDyzv+Ef2jXo5lHI4xKoUNhaiumScoEV9YgtHCVER9nVq6d691k
- NimfdyQBTjl40I3FjTIwyCZdUCxZc9CZWCducEoAhyr0hWaJXipj1GC8KpkRotOdmqjYbW7ajm8
- heU5DIjZjCjDkBtl7BqPSkuI8+aMoLBs0Yto9VnqtxWVelxdHARK92YUqyMbt0iMFz1ooxQpB3K
- rUGTSV9Z5DEzb/IvzX6vMacLAfLeDNTZ74mpWvicwn++3Xk6eYXX5ieIo38vbxAEih0N4lS0a8s
- jCCOrtMUn1Mzn/hZQpJtHppNdByffj8Je3ghPWwOLEliiVPD
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2771; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=PqxHagvAwkQO9Lf5q1TvpNsqgySOE9ALOyhaXCgYc/I=;
+ b=owEBbQGS/pANAwAKAQx0Zd/5kJGcAcsmYgBpedbmnCmd7pg6V2J/gIHUMyhBfsh4BovVkjgIM
+ c/w7R7QCEeJATMEAAEKAB0WIQSf+wzYr2eoX/wVbPMMdGXf+ZCRnAUCaXnW5gAKCRAMdGXf+ZCR
+ nLujB/9ErsWjPCf6h2BvdnHuxENIVNerpNC5grQGH4jEUdKyaLtf4pqeGETqSSAXjg7EfbK70/E
+ 5NrVIPek73IXsSXEmPZxB31kve9dgER6RBf+BYHy2qC8Wc0K6i1Dm8pQePA+YqXRpWu1oESAylS
+ pqsuM6+ufe1IntqdbT0MV54azsqgWXj5tBA5ePAVC5RRut1W0BKB49nNK38NRsfLzPl48mK0Thn
+ SQvzvuB/LcmY4Snj1wSzNw6w3vIpVDdIpf2vligwec6sWz/f3KwzBMSxPbNJrT+UbKJT+DNhLlz
+ FcvKgpSyFDfPmS04Dcdtr86YjFg06MBxV7Mr1rJw62Kut5fk
 X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
  fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -75,84 +76,73 @@ X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-The can_skb_priv::frame_len variable is used to cache a previous
-calculated CAN frame length to be passed to BQL queueing disciplines.
+As CAN skbs don't use IP checksums the skb->csum_start variable was used to
+store the can-gw CAN frame time-to-live counter together with
+skb->ip_summed set to CHECKSUM_UNNECESSARY.
 
-Move the can_skb_priv::frame_len content to can_skb_ext::can_framelen.
+Remove the 'hack' using the skb->csum_start variable and move the content
+to can_skb_ext::can_gw_hops of the CAN skb extensions.
+
+The module parameter 'max_hops' has been reduced to a single byte to fit
+can_skb_ext::can_gw_hops as the maximum value to be stored is 6.
 
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/skb.c | 27 ++++++++++++++++++++-------
- 1 file changed, 20 insertions(+), 7 deletions(-)
+ net/can/gw.c | 23 ++++++-----------------
+ 1 file changed, 6 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-index 470255fe7367..408ee49abce1 100644
---- a/drivers/net/can/dev/skb.c
-+++ b/drivers/net/can/dev/skb.c
-@@ -49,6 +49,7 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 		     unsigned int idx, unsigned int frame_len)
- {
- 	struct can_priv *priv = netdev_priv(dev);
-+	struct can_skb_ext *csx;
+diff --git a/net/can/gw.c b/net/can/gw.c
+index ad89a1913b34..2c134c9e5159 100644
+--- a/net/can/gw.c
++++ b/net/can/gw.c
+@@ -71,8 +71,8 @@ MODULE_ALIAS(CAN_GW_NAME);
+ #define CGW_MAX_HOPS 6
+ #define CGW_DEFAULT_HOPS 1
  
- 	if (idx >= priv->echo_skb_max) {
- 		netdev_err(dev, "%s: BUG! Trying to access can_priv::echo_skb out of bounds (%u/max %u)\n",
-@@ -75,7 +76,9 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 		skb->dev = dev;
+-static unsigned int max_hops __read_mostly = CGW_DEFAULT_HOPS;
+-module_param(max_hops, uint, 0444);
++static unsigned char max_hops __read_mostly = CGW_DEFAULT_HOPS;
++module_param(max_hops, byte, 0444);
+ MODULE_PARM_DESC(max_hops,
+ 		 "maximum " CAN_GW_NAME " routing hops for CAN frames "
+ 		 "(valid values: " __stringify(CGW_MIN_HOPS) "-"
+@@ -480,19 +480,8 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
+ 	/* Do not handle CAN frames routed more than 'max_hops' times.
+ 	 * In general we should never catch this delimiter which is intended
+ 	 * to cover a misconfiguration protection (e.g. circular CAN routes).
+-	 *
+-	 * The Controller Area Network controllers only accept CAN frames with
+-	 * correct CRCs - which are not visible in the controller registers.
+-	 * According to skbuff.h documentation the csum_start element for IP
+-	 * checksums is undefined/unused when ip_summed == CHECKSUM_UNNECESSARY.
+-	 * Only CAN skbs can be processed here which already have this property.
+ 	 */
+-
+-#define cgw_hops(skb) ((skb)->csum_start)
+-
+-	BUG_ON(skb->ip_summed != CHECKSUM_UNNECESSARY);
+-
+-	if (cgw_hops(skb) >= max_hops) {
++	if (csx->can_gw_hops >= max_hops) {
+ 		/* indicate deleted frames due to misconfiguration */
+ 		gwj->deleted_frames++;
+ 		return;
+@@ -532,11 +521,11 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
+ 	}
  
- 		/* save frame_len to reuse it when transmission is completed */
--		can_skb_prv(skb)->frame_len = frame_len;
-+		csx = can_skb_ext_find(skb);
-+		if (csx)
-+			csx->can_framelen = frame_len;
+ 	/* put the incremented hop counter in the cloned skb */
+-	cgw_hops(nskb) = cgw_hops(skb) + 1;
++	ncsx->can_gw_hops = csx->can_gw_hops + 1;
  
- 		if (skb_shinfo(skb)->tx_flags & SKBTX_HW_TSTAMP)
- 			skb_shinfo(skb)->tx_flags |= SKBTX_IN_PROGRESS;
-@@ -112,7 +115,7 @@ __can_get_echo_skb(struct net_device *dev, unsigned int idx,
- 		 * length is supported on both CAN and CANFD frames.
- 		 */
- 		struct sk_buff *skb = priv->echo_skb[idx];
--		struct can_skb_priv *can_skb_priv = can_skb_prv(skb);
-+		struct can_skb_ext *csx;
+ 	/* first processing of this CAN frame -> adjust to private hop limit */
+-	if (gwj->limit_hops && cgw_hops(nskb) == 1)
+-		cgw_hops(nskb) = max_hops - gwj->limit_hops + 1;
++	if (gwj->limit_hops && ncsx->can_gw_hops == 1)
++		ncsx->can_gw_hops = max_hops - gwj->limit_hops + 1;
  
- 		if (skb_shinfo(skb)->tx_flags & SKBTX_IN_PROGRESS)
- 			skb_tstamp_tx(skb, skb_hwtstamps(skb));
-@@ -120,8 +123,13 @@ __can_get_echo_skb(struct net_device *dev, unsigned int idx,
- 		/* get the real payload length for netdev statistics */
- 		*len_ptr = can_skb_get_data_len(skb);
+ 	nskb->dev = gwj->dst.dev;
  
--		if (frame_len_ptr)
--			*frame_len_ptr = can_skb_priv->frame_len;
-+		if (frame_len_ptr) {
-+			csx = can_skb_ext_find(skb);
-+			if (csx)
-+				*frame_len_ptr = csx->can_framelen;
-+			else
-+				*frame_len_ptr = 0;
-+		}
- 
- 		priv->echo_skb[idx] = NULL;
- 
-@@ -181,10 +189,15 @@ void can_free_echo_skb(struct net_device *dev, unsigned int idx,
- 
- 	if (priv->echo_skb[idx]) {
- 		struct sk_buff *skb = priv->echo_skb[idx];
--		struct can_skb_priv *can_skb_priv = can_skb_prv(skb);
-+		struct can_skb_ext *csx;
- 
--		if (frame_len_ptr)
--			*frame_len_ptr = can_skb_priv->frame_len;
-+		if (frame_len_ptr) {
-+			csx = can_skb_ext_find(skb);
-+			if (csx)
-+				*frame_len_ptr = csx->can_framelen;
-+			else
-+				*frame_len_ptr = 0;
-+		}
- 
- 		dev_kfree_skb_any(skb);
- 		priv->echo_skb[idx] = NULL;
 
 -- 
 2.51.0
