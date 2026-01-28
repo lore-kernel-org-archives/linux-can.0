@@ -1,37 +1,37 @@
 Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5165D364EB7;
-	Wed, 28 Jan 2026 14:49:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B6B7350A2C;
+	Wed, 28 Jan 2026 14:49:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769611777; cv=none; b=Yx7oADtnFq/kO2wOT19JX3QjcJwX+LAzt5v+KK2HBNSqyOX9t121H8Em50eosWTISZXyA87sVgGo3JYHY6/XOmoF5BtbpApLIWdOSx1Wk7uACJwge64WuH+BXZ7GGK0FYT88MGl2RrBpq66LfiRfC0YC+g+hYROSrW8BnA5XS34=
+	t=1769611777; cv=none; b=cAVD+z3brPRRgrpEpEQx5elpDI6sT7LdeH9HYYkAQXxPcJ5xsrTtjYLQ+JhgLYuUYundTObZ5XBTFKc1Wn2k+cjMi+RsYtOq2b0b4ZSsqUsT0PRfvTv1CnxDYGlsu+Dcbap67LpfchAlN8ewTO7ZwWW1CZJHVkF6+2yEMSaTA5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1769611777; c=relaxed/simple;
-	bh=F6mmkBeE4aOPMU0lOY0fasf1dzzHl5Jx4qKtzKvLMnI=;
+	bh=2XI+kEnL0TlyTyqFkt/kZCVxZGcDhK23q6AphLO89ME=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KurAY+1FhL/llfcycGmgtEC+0TrKk1LU7/ryGxMVjz2R3l3MOQ5qzC8RcPxLifr3UZhzXPBHSKC/Tv2f2oeeq6+Bo36LteunSSZs5yu/PyT3Nv1ghCn2pCb4EcZH7l4rg2PRmFsIlEzHwPVSY2HWnsiK+T/7gIFjngJQp2kZTGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=fail (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=ShTdkZu7 reason="key not found in DNS"; arc=none smtp.client-ip=94.231.106.210
+	 MIME-Version; b=kI2jvhwgBIlYxHD6EQe1jS3us9xORhyBBhc0b0Vtz7VOU8orGmLqPXeaI3rI3Qotxia6tFT0w+514WsGDFZmnfSMBth1oQRmK//h8P1jQpUg8lH7O4dgRRXh15hEP3nqV7KoqrYn3/Sj1nFjKaylFcj98icB4NVVrkJosaF25UM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=fail (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=Cg5ZeKQO reason="key not found in DNS"; arc=none smtp.client-ip=94.231.106.210
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="ShTdkZu7"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="Cg5ZeKQO"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp.simply.com (Simply.com) with ESMTP id 4f1QCb4w20z1FDXm;
-	Wed, 28 Jan 2026 15:49:31 +0100 (CET)
+	by smtp.simply.com (Simply.com) with ESMTP id 4f1QCc3LZcz1FDXb;
+	Wed, 28 Jan 2026 15:49:32 +0100 (CET)
 Received: from d-5xj5g74.got.gaisler.com.com (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
-	by smtp.simply.com (Simply.com) with ESMTPA id 4f1QCb2V1Hz1FQVR;
+	by smtp.simply.com (Simply.com) with ESMTPA id 4f1QCb6gzGz1FQVl;
 	Wed, 28 Jan 2026 15:49:31 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
-	s=simplycom2; t=1769611771;
-	bh=5z1T/3tk6laeWF5sjShkZPMdQKbinFCwx3rclkgUEAo=;
+	s=simplycom2; t=1769611772;
+	bh=bWrGRAw1Ymt+kLMgEE+iCVDAba/QTAuev1cp5/ho8Jk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ShTdkZu752CuXsOk8RAdGchL4uO0WwUJxi47lzHrYkPYlXXZ4964sjELzjypIFK3B
-	 P2mYvzi+HnHOQwtT69e3z3Gvo6mDGxz9lXJmqx1pI8ox3nndF6VhtzI7MUURQpH6oS
-	 tGuEXLkLtWHUqADMdizeKlHI1BMnDk0TriWTbo75CVp4RRe/qG5wCW1xAa96LasSw5
-	 lFGOKJVkOpo6HeO6YDID0HSoykNgwyeVXnxzA/dEto9X0Vb7yYkN9ihStIax1ozbRX
-	 X53DJ9/yD7gpceJi64dCD985KFRjD/usD46iuAb5p44XeHR9o89JWGZqoL5ndg3Pls
-	 J72nIj3x+lL2A==
+	b=Cg5ZeKQO8JfCKsw83clxCkxnu9n8jmENAfuLZ+LaTduQ8tIrIklq75G7GAhAQAyyk
+	 KJBVbU2yUDn8beBHnEWHA25qw6KlGHddnIBAPC9TqJ3rKTT00UakIjhkG6P+Vl/X1o
+	 Hu0bdTGD0gM2YjfF6sezo1QEIRb62RWCXDMJUNBzkOYKSXkyz5BdRihXerwQ78VvPI
+	 ZClOKpreh0T/jjk/7z/LUGlu+9YSOL+R2Ku2yolZKcU5eperG+n0Z40tJJhPNEyHeH
+	 o+oBB+uJYVbs/jFLtaN6gNzrIlYVlxTKcbavzelktFrQBlol00gMuTkP6uO7xVUhPK
+	 H5GhiFbKLrs0g==
 From: Arun Muthusamy <arun.muthusamy@gaisler.com>
 To: robh@kernel.org,
 	krzk+dt@kernel.org,
@@ -42,9 +42,9 @@ Cc: devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-can@vger.kernel.org,
 	Arun Muthusamy <arun.muthusamy@gaisler.com>
-Subject: [PATCH v4 13/15] can: grcan: Add CANFD RX support alongside legacy CAN
-Date: Wed, 28 Jan 2026 15:49:19 +0100
-Message-ID: <20260128144921.5458-14-arun.muthusamy@gaisler.com>
+Subject: [PATCH v4 15/15] can: grcan: Advertise CANFD capability
+Date: Wed, 28 Jan 2026 15:49:21 +0100
+Message-ID: <20260128144921.5458-16-arun.muthusamy@gaisler.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260128144921.5458-1-arun.muthusamy@gaisler.com>
 References: <20260128144921.5458-1-arun.muthusamy@gaisler.com>
@@ -56,153 +56,33 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Include CANFD RX support with the legacy CAN support, enabling
-support for extended data payloads to provide higher bit rates.
+Advertise CANFD capability for GRCANFD hardware by enabling
+CAN_CTRLMODE_FD flag and providing CANFD timing operations.
 
 Signed-off-by: Arun Muthusamy <arun.muthusamy@gaisler.com>
 ---
- drivers/net/can/grcan.c | 98 +++++++++++++++++++++++++++--------------
- 1 file changed, 65 insertions(+), 33 deletions(-)
+ drivers/net/can/grcan.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
-index da0b5c129aae..d838fb0698f4 100644
+index e6f3cd36ea66..120e722cc59e 100644
 --- a/drivers/net/can/grcan.c
 +++ b/drivers/net/can/grcan.c
-@@ -235,6 +235,9 @@ struct grcan_registers {
- #define GRCAN_TX_BRS  BIT(25)
- #define GRCAN_TX_FDF  BIT(26)
+@@ -1749,11 +1749,14 @@ static int grcan_setup_netdev(struct platform_device *ofdev,
+ 	priv->ofdev_dev = &ofdev->dev;
+ 	priv->regs = base;
+ 	priv->can.bittiming_const = hwcap->bt_const;
++	priv->can.fd.data_bittiming_const = hwcap->bt_const;
+ 	priv->can.do_set_mode = grcan_set_mode;
+ 	priv->can.do_get_berr_counter = grcan_get_berr_counter;
+ 	priv->can.clock.freq = ambafreq;
+ 	priv->can.ctrlmode_supported =
+ 		CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_ONE_SHOT;
++	if (hwcap->fd)
++		priv->can.ctrlmode_supported |= CAN_CTRLMODE_FD;
+ 	priv->need_txbug_workaround = txbug;
+ 	priv->hwcap = hwcap;
 
-+#define GRCAN_RX_BRS  BIT(25)
-+#define GRCAN_RX_FDF  BIT(26)
-+
- /* Hardware capabilities */
- struct grcan_hwcap {
- 	/* CAN-FD capable, indicates GRCANFD IP.
-@@ -1225,18 +1228,22 @@ static int grcan_numbds(int len)
-
- static int grcan_receive(struct net_device *dev, int budget)
- {
-+	struct net_device_stats *stats = &dev->stats;
- 	struct grcan_priv *priv = netdev_priv(dev);
--	struct grcan_registers __iomem *regs = priv->regs;
-+	struct grcan_registers __iomem *regs;
- 	struct grcan_dma *dma = &priv->dma;
--	struct net_device_stats *stats = &dev->stats;
--	struct can_frame *cf;
-+	u32 bds, copy_len, payload_offset;
-+	u32 wr, rd, dlc, startrd;
-+	struct canfd_frame *cf;
-+	int i, work_done = 0;
- 	struct sk_buff *skb;
--	u32 wr, rd, startrd;
--	u32 *slot;
- 	u32 rtr, eff;
--	int work_done = 0;
-+	u32 *slot;
-+	u8 *data;
-
-+	regs = priv->regs;
- 	rd = grcan_read_reg(&regs->rxrd);
-+
- 	startrd = rd;
- 	for (work_done = 0; work_done < budget; work_done++) {
- 		/* Check for packet to receive */
-@@ -1244,43 +1251,68 @@ static int grcan_receive(struct net_device *dev, int budget)
- 		if (rd == wr)
- 			break;
-
--		/* Take care of packet */
--		skb = alloc_can_skb(dev, &cf);
--		if (skb == NULL) {
-+		slot = dma->rx.buf + rd;
-+
-+		if (slot[1] & GRCAN_RX_FDF)
-+			skb = alloc_canfd_skb(dev, &cf);
-+		else
-+			skb = alloc_can_skb(priv->dev, (struct can_frame **)&cf);
-+
-+		if (unlikely(!skb)) {
- 			netdev_err(dev,
- 				   "dropping frame: skb allocation failed\n");
- 			stats->rx_dropped++;
- 			continue;
- 		}
-
--		slot = dma->rx.buf + rd;
--		eff = slot[0] & GRCAN_MSG_IDE;
--		rtr = slot[0] & GRCAN_MSG_RTR;
--		if (eff) {
--			cf->can_id = ((slot[0] & GRCAN_MSG_EID)
--				      >> GRCAN_MSG_EID_BIT);
--			cf->can_id |= CAN_EFF_FLAG;
--		} else {
--			cf->can_id = ((slot[0] & GRCAN_MSG_BID)
--				      >> GRCAN_MSG_BID_BIT);
-+		dlc = FIELD_GET(GRCAN_MSG_DLC_MASK, slot[1]);
-+		if (slot[1] & GRCAN_RX_FDF)
-+			cf->len = can_fd_dlc2len(dlc);
-+		else
-+			cf->len = can_cc_dlc2len(dlc);
-+
-+		bds = grcan_numbds(cf->len);
-+		payload_offset = 0;
-+		data = cf->data;
-+
-+		for (i = 0; i < bds; i++) {
-+			slot = dma->rx.buf + rd;
-+
-+			if (i == 0) {
-+				eff = slot[0] & GRCAN_MSG_IDE;
-+				rtr = slot[0] & GRCAN_MSG_RTR;
-+				if (eff) {
-+					cf->can_id = FIELD_GET(GRCAN_MSG_EID_MASK, slot[0]);
-+					cf->can_id |= CAN_EFF_FLAG;
-+				} else {
-+					cf->can_id = FIELD_GET(GRCAN_MSG_BID_MASK, slot[0]);
-+				}
-+				if (rtr)
-+					cf->can_id |= CAN_RTR_FLAG;
-+
-+				dlc = FIELD_GET(GRCAN_MSG_DLC_MASK, slot[1]);
-+				if (slot[1] & GRCAN_RX_FDF)
-+					cf->len = can_fd_dlc2len(dlc);
-+				else
-+					cf->len = can_cc_dlc2len(dlc);
-+
-+				copy_len = min(cf->len, GRCAN_CLASSIC_DATA_SIZE);
-+				memcpy(data, &slot[2], copy_len);
-+				payload_offset += copy_len;
-+			} else {
-+				copy_len =  min(cf->len - payload_offset, GRCAN_MSG_SIZE);
-+				memcpy(data + payload_offset, slot, copy_len);
-+				payload_offset += copy_len;
-+			}
-+			rd += GRCAN_MSG_SIZE;
-+			if (rd >= dma->rx.size)
-+				rd -= dma->rx.size;
- 		}
--		cf->len = can_cc_dlc2len((slot[1] & GRCAN_MSG_DLC)
--					  >> GRCAN_MSG_DLC_BIT);
--		if (rtr) {
--			cf->can_id |= CAN_RTR_FLAG;
--		} else {
--			if (cf->can_dlc > 0)
--				memcpy(cf->data, &slot[2], sizeof(u32));
--			if (cf->can_dlc > 4)
--				memcpy(cf->data + 4, &slot[3], sizeof(u32));
-
--			stats->rx_bytes += cf->len;
--		}
-+		/* Update statistics and read pointer */
- 		stats->rx_packets++;
--
-+		stats->rx_bytes += cf->len;
- 		netif_receive_skb(skb);
--
--		rd = grcan_ring_add(rd, GRCAN_MSG_SIZE, dma->rx.size);
- 	}
-
- 	/* Make sure everything is read before allowing hardware to
 --
 2.51.0
 
