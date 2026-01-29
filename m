@@ -1,216 +1,366 @@
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61CA433D6D4
-	for <linux-can@vger.kernel.org>; Thu, 29 Jan 2026 16:15:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.167.54
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769703348; cv=pass; b=gFC38QL5iJ3zgU8QEv46k2JtQMJv/SysXZN27DPjD/4GnQLnGVIdFCTGY7iLPCu3YO//ptOZyzRiD8baHRfvT+3Zy0QypvoQELktLuunq60bMfk8L3rtKs7Npf3peHmlVpmY9FEMVt4SPBrIsKP8YCzzim/vcekV0TXrbt5n/1c=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769703348; c=relaxed/simple;
-	bh=1a2qdSYst23Ql9WM1gLQFpUCuswuU/Q+CP4seG8rf9k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gkwpTB2ZB+eCswFQyOcqxYZ7in6qqNx6nmWCCNWT01K1r2AQwVzFORrk0t4eQcKEYJbfu0CgaUfir5iyNC9+mLYLIidG93Wu/BpujC+Q+J26xaOi9HNCyCQ26l2VJflPhe0t73OKURBMbA/n8VEe26itH0m468nJ7+byi1JgA20=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HtWuaZii; arc=pass smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74FCA33DEF5;
+	Thu, 29 Jan 2026 16:29:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1769704193; cv=none; b=OLujKZSKRAR3sVWMVmZS2rpMUwY6I60Fip7wf4GURyrWY67afpAZCtIhYgEiP8ynGntM6esFpMSH4Ra4J9/XAY5qMhbvx2KpjYQZMm16cisjzCSJEMfhUTNhRu4/trX0LDSmTMRVY/T3MOtlsDbq30t8R/Odp065psn1ueHdwMc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1769704193; c=relaxed/simple;
+	bh=wBzmOVxY3Wtx6l4yrJIjYekz9QnP3LMeTGOg3jXQJH0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=soMKC5LAWqjOCyXqJ68vJlC5OwFB13rl3pD9TflLP8fRqrZAK/qr7ixpeOKDikp/d1uer4Q0mHvD67ARIYJED8VbOWUY1VY4nLuvnVBLu/H+HdEn1T86pd9OydbKWwirTh482ZOVl16HMXok9IQblI8NuHUmGP34Z1c5EmlPAM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=czwuYH2N; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HtWuaZii"
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-59de38466c2so1345909e87.0
-        for <linux-can@vger.kernel.org>; Thu, 29 Jan 2026 08:15:45 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1769703343; cv=none;
-        d=google.com; s=arc-20240605;
-        b=IO87drEkynBqEVA0D+Y3YHPrd7WoYDs0LJMed1o75ZTn/8ykJorWDy/9CGMl3J59gQ
-         twK+5eNsutoikp5yzIj9KKtHzTazxDkuFm8y+YdB9D64YhjnWGPKYNVfxWYOYHlCT3+h
-         Qy+93+rGCsf2saeC+GHWy0Std0TEAoATncyt8elXW3NMcMB7sFkadU8HfNO3oRmpQkaY
-         GKeEHaFhgne34gYck8ZrfjPf0eCOkZciyT+4RTAvs/n/i3kiNR90lXgjQfYbWovNHcGj
-         rkwdrxYTotcuB64zyEUcIWwoqlBayW3EopXwGzBjGS3edGp6G+kGaDaO42YDPzFlN42H
-         Yy6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=mcZyL8rlWiol7qHJKX4MkvpKMN+RPE+vXis8g5P5uMA=;
-        fh=X0uJoj6XYfxqkbBt/ODeh1wWNZgLnII8bkmdtdmbNSU=;
-        b=MaBBjIwHaBRqUZR1W+EbUR0rDyh9NAdSNCZWMyUovJvC5x76r6tBM8HnFSFekCJN2k
-         UHqcJJvSpDRhK3BKqobV5PreFUqZ6RLrm9p21xZPNwsfBfVVDJ7IQK0OMzEMus/ES4SO
-         j5h6LX/LiFWG9OomNZ6x3SX6FVBV4kRgEH1LdG6CbyjJlGE/c/Rq0B2N0gFlc1CsfWAt
-         w41xGOP5qOkrIyOQpQPJNU2y6w+pHJCY7Iunk1fdRjt/5PKCfd7Wsik2eKYpQ3DSkMEY
-         oWVvU16krY5KmtbbqNA/AnjHshhsS6mc1kiL3ZygNa4Xq5u07ZLj6JECp7ICGTavYmbD
-         rKiw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1769703343; x=1770308143; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=mcZyL8rlWiol7qHJKX4MkvpKMN+RPE+vXis8g5P5uMA=;
-        b=HtWuaZiiIIttIDYuqQXvc9JwVdhw1g13h/MSl3cj41S1Ogt8ICxBfGSlgrlqdHD960
-         BA4uczgz+WwyE+jKg82BAqrG7+xkY3jnQhPuJcu1EbHIOFz/NefO6ITbSGDtcLkQns0V
-         8NnF7OF/kM498AUmRBINnK6kcgVezpFtE+LVc6uTNltgMhkFWRsaXVde1To+VDiOcaPu
-         qXmRD126R2sDHYcthUEeOtMneu39Rt3sXWal1Ru6EMPB9IE+DrCyQPP4s0ClxvopG0WV
-         7m2sre1fmjyGS/satGxi76j/FH3N2DELjnvIXdj73O6/Y5HuzamIVdXU4VKEhdMFdboG
-         Ugrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769703343; x=1770308143;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mcZyL8rlWiol7qHJKX4MkvpKMN+RPE+vXis8g5P5uMA=;
-        b=oH3yaEUR538Aa7QDcyVnUrxO5lk5wu+Tayxo9bSTqWuRF4yBIevUe1b1InfpvzySCl
-         mOJaIg2yqIF65HGPWUfqtZ/CmP6EyUGofX+JrR5UnOCOudef+sfmpD0V1HPsfVoX4JKL
-         1JCmAYygfwmVUz1XO/zhAR64qxMSBkOk27qW4O9WLMr5aHpOAtAbM3Dh44MxpgBCVIN/
-         +LmRHnYU2nr/+lwjplOVU6FlAoOEO8JpkR8wCSKOQPqKi8K0aSt7XEvHPi9PG+78bU4v
-         z4OuFftVY9TdInh6H9uduU/wlC4HRSdc3NTNss/hwX7+NWmNg78Hu01aQUDvD0h/ZwBn
-         vTtA==
-X-Forwarded-Encrypted: i=1; AJvYcCVQKIdA7+yYahuttAtgs/eQtZellwpAeZxFdMLgStwxIxvLAxhXVSQKSznMdhu8sX0GsKc5jbRNsbA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzv68VrlU1IyT6fJzVn06EK2610qXfubaJER01R+EKNitIpFjcr
-	F4TmrAzS0twFsu+Hel/gteFtynSLQoptdMyBzBPXUo/wV1efqjJnxRKv+kRCvPNNjp9T1yk6NHt
-	pikK8PuuVyydBKjk7Wt6vaV8kocLrxBPPeoGfCn+QPg==
-X-Gm-Gg: AZuq6aJ74V6LJb1pQPGUs/tH0e+nrfWnV0qTmPMb+9RO9tZiNqLLWD+eSb7ed5A5S9m
-	R1Nxvhh8ISFLVu8E5S35Z/d1741zGMx+iMr+MeLFnxp7K7V1NgL84UE2/042ATGY4rauDLkW6DD
-	whj1knxdpGGaN62dX3H8g6IYLGlwrtUqXaBUY0TclanHqN8gyBttwHQQvlxqGAmeF3AK2g14vmy
-	psn+uKORdtVpBtF93LR1zTh8A8+V4GC+4kI8/7U9s9P2iUHuNPRZRe0sgiEp3EKYs7mI2G5
-X-Received: by 2002:a05:6512:1394:b0:59e:15a:d704 with SMTP id
- 2adb3069b0e04-59e04015669mr4368983e87.13.1769703343301; Thu, 29 Jan 2026
- 08:15:43 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="czwuYH2N"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2FCDEC19425;
+	Thu, 29 Jan 2026 16:29:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1769704193;
+	bh=wBzmOVxY3Wtx6l4yrJIjYekz9QnP3LMeTGOg3jXQJH0=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=czwuYH2NJJwFYJ6nuCshgq0JIkBlJBhIGoUgZQn2+SbQsXRTyECg4s/QoF1UKbOnW
+	 yQARQ3BHg7HeWmFL5XOfrRlmG7L9xiHcuXdUN7iC3l/OO5/Xtlu7/T/WMdmoda0Bfd
+	 uGn/coU6ImAwKN9JyR+dlRLobkmnvRQX71dUlvRd1wqb0XVmtny890I7fFIP7HkT6S
+	 Oxo+hH81daLi3gCYp9QFzs715LqhqTnpEZ84Krt/97ipnF1dIZdtKTYvKyj8/06Tj/
+	 ndyVgEfISZQgxlPhRGACe9p92cdhuYzYH0clgWXAocAC8C2ySRYbYCdXG5tC1RBeBl
+	 Sk4oqZi+5AvBg==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FB77D6B08B;
+	Thu, 29 Jan 2026 16:29:53 +0000 (UTC)
+From: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
+Date: Thu, 29 Jan 2026 17:29:07 +0100
+Subject: [PATCH net-next v5 1/6] can: use skb hash instead of private
+ variable in headroom
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260128-rz-sdio-mux-v7-0-92ebb6da0df8@solid-run.com>
-In-Reply-To: <20260128-rz-sdio-mux-v7-0-92ebb6da0df8@solid-run.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Thu, 29 Jan 2026 17:15:06 +0100
-X-Gm-Features: AZwV_Qg3mhJxcxsaaNM16DuqcQOXYrDFWwz2xcBsELVK6E8j4cCnjP0a7TG6aus
-Message-ID: <CAPDyKFp9StNf1eLaSETxC72=7sXYBmGFmHnv0CXysUGcYma5VA@mail.gmail.com>
-Subject: Re: [PATCH v7 0/7] mmc: host: renesas_sdhi_core: support configuring
- an optional sdio mux
-To: Josua Mayer <josua@solid-run.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>, 
-	Vinod Koul <vkoul@kernel.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Peter Rosin <peda@axentia.se>, Aaro Koskinen <aaro.koskinen@iki.fi>, 
-	Andreas Kemnade <andreas@kemnade.info>, Kevin Hilman <khilman@baylibre.com>, 
-	Roger Quadros <rogerq@kernel.org>, Tony Lindgren <tony@atomide.com>, 
-	Janusz Krzysztofik <jmkrzyszt@gmail.com>, Vignesh R <vigneshr@ti.com>, 
-	Andi Shyti <andi.shyti@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	Yazan Shhady <yazan.shhady@solid-run.com>, Jon Nettleton <jon@solid-run.com>, 
-	Mikhail Anikin <mikhail.anikin@solid-run.com>, linux-can@vger.kernel.org, 
-	linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-mmc@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260129-can_skb_ext-v5-1-21252fdc8900@hartkopp.net>
+References: <20260129-can_skb_ext-v5-0-21252fdc8900@hartkopp.net>
+In-Reply-To: <20260129-can_skb_ext-v5-0-21252fdc8900@hartkopp.net>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Vincent Mailhol <mailhol@kernel.org>, 
+ Oliver Hartkopp <socketcan@hartkopp.net>, 
+ Robin van der Gracht <robin@protonic.nl>, 
+ Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Simon Horman <horms@kernel.org>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org
+X-Mailer: b4 0.15-dev-47773
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1769704191; l=9586;
+ i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
+ bh=ycpj2Lq/R9LYWvUoRPGQZfs3eSmw0mCFxXWW+dvgA6w=;
+ b=7qcAzck96Y6O1graJ9HkUIHjBsmSYfF0upsA0dY5OWM94y7cTAhGbf1HgmsDfniLbGGj5HP63
+ CXvU9VvulGFAJH9sGMr7BbZUQCM6g4YGEO6mOYiKvZLNoA83gRUGJK0
+X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
+ pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
+X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
+ auth_id=620
+X-Original-From: Oliver Hartkopp <socketcan@hartkopp.net>
+Reply-To: socketcan@hartkopp.net
 
-On Wed, 28 Jan 2026 at 15:46, Josua Mayer <josua@solid-run.com> wrote:
->
-> Some Renesas SoC based boards mux SD and eMMC on a single sdio
-> controller, exposing user control by dip switch and software control by
-> gpio.
->
-> Purpose is to simplify development and provisioning by selecting boot
-> media at power-on, and again before starting linux.
->
-> Add binding and driver support for linking a (gpio) mux to renesas sdio
-> controller.
->
-> Introduce generic helper functions for getting managed and selected
-> mux-state objects, and switch i2c-omap and phy-can-transceiver drivers.
->
-> Signed-off-by: Josua Mayer <josua@solid-run.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-This series needs to go together in some way. If you like, I can
-funnel it via my mmc tree, unless someone (Wolfram for the i2c part?)
-has objections to this of course.
+The can_skb_priv::skbcnt variable is used to identify CAN skbs in the RX
+path analogue to the skb->hash.
 
-Kind regards
-Uffe
+As the skb hash is not filled in CAN skbs move the private skbcnt value to
+skb->hash and set skb->sw_hash accordingly. The skb->hash is a value used
+for RPS to identify skbs. Use it as intended.
 
-> ---
-> Changes in v7:
-> - picked up reviewed-tags
-> - fix Kconfig change to add the missing prompt for CONFIG_MULTIPLEXER,
->   and enable it by default when COMPILE_TEST is set.
->   (Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>)
-> - fix another kernel build robot warning: undocumented C struct member
-> - Link to v6: https://lore.kernel.org/r/20260121-rz-sdio-mux-v6-0-38aa39527928@solid-run.com
->
-> Changes in v6:
-> - replaced /* with /** for devm_mux_state_state function description.
-> - collected review tags.
-> - fixed checkpatch warnings (space-before-tab, void-return).
->   (Reported-by: Geert Uytterhoeven)
-> - fixed use-after-free in mux core mux_get function.
->   (Reported-by: Geert Uytterhoeven)
-> - fix mux helper error path uninitialised return code variable.
->   (Reported-by: kernel test robot <lkp@intel.com>)
-> - Link to v5: https://lore.kernel.org/r/20260118-rz-sdio-mux-v5-0-3c37e8872683@solid-run.com
->
-> Changes in v5:
-> - implemented automatic mux deselect for devm_*_selected.
->   (Reported-by: Wolfram Sang <wsa+renesas@sang-engineering.com>)
-> - because of semantic changes I dropped reviewed and acks from omap-i2c
->   patch (Andreas Kemnade / Wolfram Sang).
-> - fix invalid return value in void function for mux helper stubs
->   (Reported-by: kernel test robot <lkp@intel.com>)
-> - Link to v4: https://lore.kernel.org/r/20251229-rz-sdio-mux-v4-0-a023e55758fe@solid-run.com
->
-> Changes in v4:
-> - added MULTIPLEXER Kconfig help text.
-> - removed "select MULTIPLEXER" from renesas sdhi Kconfig, as it is
->   not required for all devices using this driver.
-> - added stubs for all symbols exported by mux core.
->   (Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>)
-> - refactored mux core logic to silence ENOENT errors only on optional
->   code paths, keeping error printing unchanged otherwise.
->   (Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>)
-> - picked up various reviewed- and acked-by tags
-> - Link to v3: https://lore.kernel.org/r/20251210-rz-sdio-mux-v3-0-ca628db56d60@solid-run.com
->
-> Changes in v3:
-> - updated omap-i2c and phy-can-transceiver to use new helpers.
-> - created generic helper functions for getting managed optional mux-state.
->   (Reported-by: Rob Herring <robh@kernel.org>)
-> - picked up binding ack by Rob Herring.
-> - replaced use of "SDIO" with "SD/SDIO/eMMC" in binding document and
->   commit descriptions.
->   (Reported-by: Ulf Hansson <ulf.hansson@linaro.org>)
-> - Link to v2: https://lore.kernel.org/r/20251201-rz-sdio-mux-v2-0-bcb581b88dd7@solid-run.com
->
-> Changes in v2:
-> - dropped mux-controller node from dt binding example
->   (Reported-by: Conor Dooley <conor@kernel.org>
->    Reported-by: Krzysztof Kozlowski <krzk@kernel.org>)
-> - Link to v1: https://lore.kernel.org/r/20251128-rz-sdio-mux-v1-0-1ede318d160f@solid-run.com
->
-> ---
-> Josua Mayer (7):
->       phy: can-transceiver: rename temporary helper function to avoid conflict
->       mux: Add helper functions for getting optional and selected mux-state
->       mux: add help text for MULTIPLEXER config option
->       phy: can-transceiver: drop temporary helper getting optional mux-state
->       i2c: omap: switch to new generic helper for getting selected mux-state
->       dt-bindings: mmc: renesas,sdhi: Add mux-states property
->       mmc: host: renesas_sdhi_core: support selecting an optional mux
->
->  .../devicetree/bindings/mmc/renesas,sdhi.yaml      |   6 +
->  drivers/i2c/busses/i2c-omap.c                      |  24 +--
->  drivers/mmc/host/renesas_sdhi_core.c               |   6 +
->  drivers/mux/Kconfig                                |   8 +-
->  drivers/mux/core.c                                 | 178 +++++++++++++++++----
->  drivers/phy/phy-can-transceiver.c                  |  10 --
->  include/linux/mux/consumer.h                       | 108 ++++++++++++-
->  7 files changed, 277 insertions(+), 63 deletions(-)
-> ---
-> base-commit: 8f0b4cce4481fb22653697cced8d0d04027cb1e8
-> change-id: 20251128-rz-sdio-mux-acc5137f1618
->
-> Best regards,
-> --
-> Josua Mayer <josua@solid-run.com>
->
->
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ drivers/net/can/dev/skb.c |  2 --
+ include/linux/can/core.h  |  1 +
+ include/linux/can/skb.h   |  2 --
+ net/can/af_can.c          | 14 +++++++++++---
+ net/can/bcm.c             |  2 --
+ net/can/isotp.c           |  3 ---
+ net/can/j1939/socket.c    |  1 -
+ net/can/j1939/transport.c |  2 --
+ net/can/raw.c             |  7 +++----
+ 9 files changed, 15 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
+index 3ebd4f779b9b..0da615afa04d 100644
+--- a/drivers/net/can/dev/skb.c
++++ b/drivers/net/can/dev/skb.c
+@@ -200,11 +200,10 @@ static void init_can_skb_reserve(struct sk_buff *skb)
+ 	skb_reset_mac_header(skb);
+ 	skb_reset_network_header(skb);
+ 	skb_reset_transport_header(skb);
+ 
+ 	can_skb_reserve(skb);
+-	can_skb_prv(skb)->skbcnt = 0;
+ }
+ 
+ struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf)
+ {
+ 	struct sk_buff *skb;
+@@ -310,11 +309,10 @@ static bool can_skb_headroom_valid(struct net_device *dev, struct sk_buff *skb)
+ 
+ 	/* af_packet does not apply CAN skb specific settings */
+ 	if (skb->ip_summed == CHECKSUM_NONE) {
+ 		/* init headroom */
+ 		can_skb_prv(skb)->ifindex = dev->ifindex;
+-		can_skb_prv(skb)->skbcnt = 0;
+ 
+ 		skb->ip_summed = CHECKSUM_UNNECESSARY;
+ 
+ 		/* perform proper loopback on capable devices */
+ 		if (dev->flags & IFF_ECHO)
+diff --git a/include/linux/can/core.h b/include/linux/can/core.h
+index 5fb8d0e3f9c1..5c382ed61755 100644
+--- a/include/linux/can/core.h
++++ b/include/linux/can/core.h
+@@ -56,8 +56,9 @@ extern void can_rx_unregister(struct net *net, struct net_device *dev,
+ 			      canid_t can_id, canid_t mask,
+ 			      void (*func)(struct sk_buff *, void *),
+ 			      void *data);
+ 
+ extern int can_send(struct sk_buff *skb, int loop);
++extern void can_set_skb_uid(struct sk_buff *skb);
+ void can_sock_destruct(struct sock *sk);
+ 
+ #endif /* !_CAN_CORE_H */
+diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
+index 1abc25a8d144..869ea574a40a 100644
+--- a/include/linux/can/skb.h
++++ b/include/linux/can/skb.h
+@@ -47,17 +47,15 @@ bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb);
+  */
+ 
+ /**
+  * struct can_skb_priv - private additional data inside CAN sk_buffs
+  * @ifindex:	ifindex of the first interface the CAN frame appeared on
+- * @skbcnt:	atomic counter to have an unique id together with skb pointer
+  * @frame_len:	length of CAN frame in data link layer
+  * @cf:		align to the following CAN frame at skb->data
+  */
+ struct can_skb_priv {
+ 	int ifindex;
+-	int skbcnt;
+ 	unsigned int frame_len;
+ 	struct can_frame cf[];
+ };
+ 
+ static inline struct can_skb_priv *can_skb_prv(struct sk_buff *skb)
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index 770173d8db42..70659987ef4d 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -639,10 +639,20 @@ static int can_rcv_filter(struct can_dev_rcv_lists *dev_rcv_lists, struct sk_buf
+ 	}
+ 
+ 	return matches;
+ }
+ 
++void can_set_skb_uid(struct sk_buff *skb)
++{
++	/* create non-zero unique skb identifier together with *skb */
++	while (!(skb->hash))
++		skb->hash = atomic_inc_return(&skbcounter);
++
++	skb->sw_hash = 1;
++}
++EXPORT_SYMBOL(can_set_skb_uid);
++
+ static void can_receive(struct sk_buff *skb, struct net_device *dev)
+ {
+ 	struct can_dev_rcv_lists *dev_rcv_lists;
+ 	struct net *net = dev_net(dev);
+ 	struct can_pkg_stats *pkg_stats = net->can.pkg_stats;
+@@ -650,13 +660,11 @@ static void can_receive(struct sk_buff *skb, struct net_device *dev)
+ 
+ 	/* update statistics */
+ 	atomic_long_inc(&pkg_stats->rx_frames);
+ 	atomic_long_inc(&pkg_stats->rx_frames_delta);
+ 
+-	/* create non-zero unique skb identifier together with *skb */
+-	while (!(can_skb_prv(skb)->skbcnt))
+-		can_skb_prv(skb)->skbcnt = atomic_inc_return(&skbcounter);
++	can_set_skb_uid(skb);
+ 
+ 	rcu_read_lock();
+ 
+ 	/* deliver the packet to sockets listening on all devices */
+ 	matches = can_rcv_filter(net->can.rx_alldev_list, skb);
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index 7eba8ae01a5b..8ed60f18c2ea 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -314,11 +314,10 @@ static void bcm_can_tx(struct bcm_op *op)
+ 	if (!skb)
+ 		goto out;
+ 
+ 	can_skb_reserve(skb);
+ 	can_skb_prv(skb)->ifindex = dev->ifindex;
+-	can_skb_prv(skb)->skbcnt = 0;
+ 
+ 	skb_put_data(skb, cf, op->cfsiz);
+ 
+ 	/* send with loopback */
+ 	skb->dev = dev;
+@@ -1342,11 +1341,10 @@ static int bcm_tx_send(struct msghdr *msg, int ifindex, struct sock *sk,
+ 		kfree_skb(skb);
+ 		return -ENODEV;
+ 	}
+ 
+ 	can_skb_prv(skb)->ifindex = dev->ifindex;
+-	can_skb_prv(skb)->skbcnt = 0;
+ 	skb->dev = dev;
+ 	can_skb_set_owner(skb, sk);
+ 	err = can_send(skb, 1); /* send with loopback */
+ 	dev_put(dev);
+ 
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index ce588b85665a..4bb60b8f9b96 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -228,11 +228,10 @@ static int isotp_send_fc(struct sock *sk, int ae, u8 flowstatus)
+ 		return 1;
+ 	}
+ 
+ 	can_skb_reserve(nskb);
+ 	can_skb_prv(nskb)->ifindex = dev->ifindex;
+-	can_skb_prv(nskb)->skbcnt = 0;
+ 
+ 	nskb->dev = dev;
+ 	can_skb_set_owner(nskb, sk);
+ 	ncf = (struct canfd_frame *)nskb->data;
+ 	skb_put_zero(nskb, so->ll.mtu);
+@@ -778,11 +777,10 @@ static void isotp_send_cframe(struct isotp_sock *so)
+ 		return;
+ 	}
+ 
+ 	can_skb_reserve(skb);
+ 	can_skb_prv(skb)->ifindex = dev->ifindex;
+-	can_skb_prv(skb)->skbcnt = 0;
+ 
+ 	cf = (struct canfd_frame *)skb->data;
+ 	skb_put_zero(skb, so->ll.mtu);
+ 
+ 	/* create consecutive frame */
+@@ -1007,11 +1005,10 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 		goto err_out_drop;
+ 	}
+ 
+ 	can_skb_reserve(skb);
+ 	can_skb_prv(skb)->ifindex = dev->ifindex;
+-	can_skb_prv(skb)->skbcnt = 0;
+ 
+ 	so->tx.len = size;
+ 	so->tx.idx = 0;
+ 
+ 	cf = (struct canfd_frame *)skb->data;
+diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+index ff9c4fd7b433..1589e8ca634e 100644
+--- a/net/can/j1939/socket.c
++++ b/net/can/j1939/socket.c
+@@ -895,11 +895,10 @@ static struct sk_buff *j1939_sk_alloc_skb(struct net_device *ndev,
+ 	if (!skb)
+ 		goto failure;
+ 
+ 	can_skb_reserve(skb);
+ 	can_skb_prv(skb)->ifindex = ndev->ifindex;
+-	can_skb_prv(skb)->skbcnt = 0;
+ 	skb_reserve(skb, offsetof(struct can_frame, data));
+ 
+ 	ret = memcpy_from_msg(skb_put(skb, size), msg, size);
+ 	if (ret < 0)
+ 		goto free_skb;
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index 8656ab388c83..d5d3e5320f7a 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -599,11 +599,10 @@ sk_buff *j1939_tp_tx_dat_new(struct j1939_priv *priv,
+ 		return ERR_PTR(-ENOMEM);
+ 
+ 	skb->dev = priv->ndev;
+ 	can_skb_reserve(skb);
+ 	can_skb_prv(skb)->ifindex = priv->ndev->ifindex;
+-	can_skb_prv(skb)->skbcnt = 0;
+ 	/* reserve CAN header */
+ 	skb_reserve(skb, offsetof(struct can_frame, data));
+ 
+ 	/* skb->cb must be large enough to hold a j1939_sk_buff_cb structure */
+ 	BUILD_BUG_ON(sizeof(skb->cb) < sizeof(*re_skcb));
+@@ -1534,11 +1533,10 @@ j1939_session *j1939_session_fresh_new(struct j1939_priv *priv,
+ 		return NULL;
+ 
+ 	skb->dev = priv->ndev;
+ 	can_skb_reserve(skb);
+ 	can_skb_prv(skb)->ifindex = priv->ndev->ifindex;
+-	can_skb_prv(skb)->skbcnt = 0;
+ 	skcb = j1939_skb_to_cb(skb);
+ 	memcpy(skcb, rel_skcb, sizeof(*skcb));
+ 
+ 	session = j1939_session_new(priv, skb, size);
+ 	if (!session) {
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 12293363413c..fb4f9c854df0 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -74,11 +74,11 @@ MODULE_ALIAS("can-proto-1");
+  * storing the single filter in dfilter, to avoid using dynamic memory.
+  */
+ 
+ struct uniqframe {
+ 	const struct sk_buff *skb;
+-	int skbcnt;
++	u32 hash;
+ 	unsigned int join_rx_count;
+ };
+ 
+ struct raw_sock {
+ 	struct sock sk;
+@@ -162,21 +162,21 @@ static void raw_rcv(struct sk_buff *oskb, void *data)
+ 		}
+ 	}
+ 
+ 	/* eliminate multiple filter matches for the same skb */
+ 	if (this_cpu_ptr(ro->uniq)->skb == oskb &&
+-	    this_cpu_ptr(ro->uniq)->skbcnt == can_skb_prv(oskb)->skbcnt) {
++	    this_cpu_ptr(ro->uniq)->hash == oskb->hash) {
+ 		if (!ro->join_filters)
+ 			return;
+ 
+ 		this_cpu_inc(ro->uniq->join_rx_count);
+ 		/* drop frame until all enabled filters matched */
+ 		if (this_cpu_ptr(ro->uniq)->join_rx_count < ro->count)
+ 			return;
+ 	} else {
+ 		this_cpu_ptr(ro->uniq)->skb = oskb;
+-		this_cpu_ptr(ro->uniq)->skbcnt = can_skb_prv(oskb)->skbcnt;
++		this_cpu_ptr(ro->uniq)->hash = oskb->hash;
+ 		this_cpu_ptr(ro->uniq)->join_rx_count = 1;
+ 		/* drop first frame to check all enabled filters? */
+ 		if (ro->join_filters && ro->count > 1)
+ 			return;
+ 	}
+@@ -956,11 +956,10 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 	if (!skb)
+ 		goto put_dev;
+ 
+ 	can_skb_reserve(skb);
+ 	can_skb_prv(skb)->ifindex = dev->ifindex;
+-	can_skb_prv(skb)->skbcnt = 0;
+ 
+ 	/* fill the skb before testing for valid CAN frames */
+ 	err = memcpy_from_msg(skb_put(skb, size), msg, size);
+ 	if (err < 0)
+ 		goto free_skb;
+
+-- 
+2.51.0
+
+
