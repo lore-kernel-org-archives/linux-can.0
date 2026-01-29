@@ -1,515 +1,230 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C9DE342C9E;
-	Thu, 29 Jan 2026 16:29:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EDEB19F40B
+	for <linux-can@vger.kernel.org>; Thu, 29 Jan 2026 18:13:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769704193; cv=none; b=UAwP2WmtlZOq9wNCb2HPqOjd+bZlOlvSM0u4Wt8MkyQpNREA0ngGqVLdeGh7PQUZ25PuLwcf6aFoJtcGGEhFSJWLT0f1pzyG/uAeyUg74DJIAMdH7wI6BxxDN/5lI8lIsxLmR5biB8V5FhdK2Qm5FOTTIRlE7pRndNyypEs0wf8=
+	t=1769710399; cv=none; b=cYB1bEPdUYZTGhNdFssMjmOnVUgqoYhhl8LIZscFKm9lHdPTk+tcEmVgINEhcVn1AZ3aRMxCHBCwKXnt+q2i1XSB99F+BERR40FhH5SYunL8kmw0V5YT9u/624FIxGVBVjpJEyonBu+tl5osKHJxOg9zCuYG0nMn9ivTWMd7n5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769704193; c=relaxed/simple;
-	bh=8C3pFfQZds1zC7hLKiwrfj9jKp4rBs+tzu7Qk4k0fFc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=e4JUfISJsiZ/wjwwD4U3hXfvBuhCM1J9J8BxJcwzAUFJAP09T58WZFL9MportIS17KroDKUaEG+paqvZtCLH84t0d4ODyrI8hqqeYV56UcN5wgU+OlSuKag3IJ91hCwnm8DHH4wxXe/vKjsh6zMonNXHr3OmrUrtOR2aPlMezsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eY75nCMz; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eY75nCMz"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6B50CC2BCB3;
-	Thu, 29 Jan 2026 16:29:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769704193;
-	bh=8C3pFfQZds1zC7hLKiwrfj9jKp4rBs+tzu7Qk4k0fFc=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=eY75nCMzfRNmaq6wL7ZRch3Qtmj2dmfYGkuQXBdk/Fg67Kt/rd1JzRgMhiaVXtatR
-	 uMStxGPqDWoJQShp6AexkDYEbfP1ows67ecu6pQPjUt2tXYeGdGhuosf+eq2mLaQM3
-	 uW+VLh1yQvXdHZh6VMnahEAEc0rwkzeVJ3cSZsAUQTna7cYwvT1NCqqllOAu7Gjqtn
-	 +3XAqr3q0SwxHHWd4xC7OKFuNrlVeT5Kuz6sZwVsjvsZp3boUu6nf1tspfVBLz5QZg
-	 GPU5akGOSfta4bnVt7X3e8++upg+XBzZiUcAjFxZYxv9/flpHgdFhuBOdyzdN8Du8U
-	 MR6M4QlE/cJ+w==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64A05D6B08C;
-	Thu, 29 Jan 2026 16:29:53 +0000 (UTC)
-From: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
-Date: Thu, 29 Jan 2026 17:29:11 +0100
-Subject: [PATCH net-next v5 5/6] can: remove private CAN skb headroom
- infrastructure
+	s=arc-20240116; t=1769710399; c=relaxed/simple;
+	bh=BmaXlCZ6264fsqvXXrjSoDhWiC9g1X99D6Z7+wsR+aY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cSStuwH2EeW/QV+eIaNunV+tOEJJerWAsSmcAy8vMAvMCBzVjAsxlJ51Qm3rn8N/Gda9RGEG3+HqUVOuerkC37JMgUQWp8bbthU9iSWCi7XWZOYayOUE11aXS38uvHBZDqKrqSZaz+t+qGrOeUxg+MFATK/XcTyd+3qROEHaOmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-563497c549cso670261e0c.3
+        for <linux-can@vger.kernel.org>; Thu, 29 Jan 2026 10:13:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769710397; x=1770315197;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4/B1720oxlP4NMLZCxNr6vg90MXZvyAsBr77z/rjaXw=;
+        b=LVTQUmLcM+PnxCItgyOLIzYBVOZH3rF0SzuMyA0FkOwtBSqr23RhL7C91Bf11Ypm/d
+         gBWXI+4Hm31LG4c10bGLjAym+OP15ofqqikS2Q55pqn3X0u/gQJyh7Gpvtf4B8AHlA6y
+         PZ3+T3J9fZMlUgHURRYuvciAW6gwxiWOpHuTOIK9n0OzsJlQNpj8La/zt1ywYiDyIT2Q
+         gFwss0mu26TtpvuLQPX529r0aTLF2Tly2jb+RMKqPRwPHmkVh62y8KwXjkp9aeS9XQvk
+         BqlSh/xULjcxOkGOycjBDVf7xtIo2cUMDUSAs2llvG2roHHnpVxQSLce0Fkw96kBKMXU
+         i0kQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX8a3Vv+vzck1vVNxOTrAw5XCLckcFpJsayfo0hbSZDpO3/G1AlZ4UPyzD9kFQrOvcVR6KR9gGe2tY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyyqWzp8DKqysqKKufJXvHhKVfN+dqT0Ut6x9e6nVnVNkpJmp7z
+	sikgygGnUC+r9jwmQ7R6BS+7XjP4DeERRXy9IRllHoIbLHb9+IIZn2ffz31ZoK0x
+X-Gm-Gg: AZuq6aKaaSL9tIj3PlP94qcRaEvm61ytIu7ywOqPi82rVnp9aYOdWctbPeowXH8Iwgi
+	cLHLdji4H2SvSHCH8mDAx3UvHLhAurMyfTiMYr0SF5WklTjq7u3yMdKePo0UcW0FylG9QpnXpuU
+	eo06xRJa2KRkuDLUAl70xehuRXrZkKK9hG3Y5GUu8itHifbP7r8J9RbJj5prGq/QuS3kQoYC5gp
+	0lPTX/NvH12t+6avlJDqj157NQ8fRq50+++u8yhidkF69XsD5dqabDCz5zl9YFJoRY/tidM/VnL
+	msuenrJ2alPbf3S7muKmoE8e/OxDa8zE+Yh2wZvei49HkYc53dKynl1WRaB6BXBqFtvukimsKfj
+	JAesjSwKBb93HerLChF5LCD6/mHmHXO3rIbQdChvLtKkrJx0Wyd+L+/dZJg5rev0TnA/05YGwcb
+	DyvSLo6lyfWBs1wIpA2XDnky7fFuPnKxVwCDwT7UrKMXKHlQF9
+X-Received: by 2002:a05:6102:3a12:b0:5ef:15b7:25aa with SMTP id ada2fe7eead31-5f8e2601120mr2654137.22.1769703664456;
+        Thu, 29 Jan 2026 08:21:04 -0800 (PST)
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com. [209.85.217.48])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-5f734f22c2fsm1164973137.14.2026.01.29.08.21.04
+        for <linux-can@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jan 2026 08:21:04 -0800 (PST)
+Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-5eeaae0289bso732891137.2
+        for <linux-can@vger.kernel.org>; Thu, 29 Jan 2026 08:21:04 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW3YyRqs0cR/MtPTa/5mvKEpjYL3jS7mIUiCmJnb+9HX7tJN/Xf+rV9YyTcvKKtlpcQJIqbqlW1JlQ=@vger.kernel.org
+X-Received: by 2002:a05:6102:32d2:b0:5f1:50d0:3797 with SMTP id
+ ada2fe7eead31-5f723937ba5mr3352368137.43.1769703201568; Thu, 29 Jan 2026
+ 08:13:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260129-can_skb_ext-v5-5-21252fdc8900@hartkopp.net>
-References: <20260129-can_skb_ext-v5-0-21252fdc8900@hartkopp.net>
-In-Reply-To: <20260129-can_skb_ext-v5-0-21252fdc8900@hartkopp.net>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, 
- Vincent Mailhol <mailhol@kernel.org>, 
- Oliver Hartkopp <socketcan@hartkopp.net>, 
- Robin van der Gracht <robin@protonic.nl>, 
- Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Simon Horman <horms@kernel.org>
-Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
- netdev@vger.kernel.org
-X-Mailer: b4 0.15-dev-47773
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1769704191; l=12880;
- i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=Ksuovd6DQrwdcbCndfDw+oGa5/YFQ7f2lfWZ17wmJI8=;
- b=j1keo6PnrNVR87w3BNOFO/NrF5pka13HNX2Q7L0pQfkSnWB2Q4mXjz/j5NLZTgEr34xtMai2j
- h9qAq7E4q5DDFiIgfnletV7v2zt04BMcnY8Jy1d8WUoABW9UVnf8N90
-X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
- pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
-X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
- auth_id=620
-X-Original-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Reply-To: socketcan@hartkopp.net
+References: <20260128-rz-sdio-mux-v7-0-92ebb6da0df8@solid-run.com>
+ <20260128-rz-sdio-mux-v7-2-92ebb6da0df8@solid-run.com> <CAPDyKFrBuL+747QUJJUejtcvjm0V7Lt=vHwjvcMdCt_h4=sFwg@mail.gmail.com>
+In-Reply-To: <CAPDyKFrBuL+747QUJJUejtcvjm0V7Lt=vHwjvcMdCt_h4=sFwg@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 29 Jan 2026 17:13:10 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXgLR9yeLa5JKNdAOtNEirJ8263bmn1zRNAnKnmf8F-Sg@mail.gmail.com>
+X-Gm-Features: AZwV_Qhgryuc7jjty9iqHy9zUzs2cyLGoonPOo05F0vrabMAU0UMySZvEVLbN1w
+Message-ID: <CAMuHMdXgLR9yeLa5JKNdAOtNEirJ8263bmn1zRNAnKnmf8F-Sg@mail.gmail.com>
+Subject: Re: [PATCH v7 2/7] mux: Add helper functions for getting optional and
+ selected mux-state
+To: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: Josua Mayer <josua@solid-run.com>, Marc Kleine-Budde <mkl@pengutronix.de>, 
+	Vincent Mailhol <mailhol@kernel.org>, Vinod Koul <vkoul@kernel.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Peter Rosin <peda@axentia.se>, 
+	Aaro Koskinen <aaro.koskinen@iki.fi>, Andreas Kemnade <andreas@kemnade.info>, 
+	Kevin Hilman <khilman@baylibre.com>, Roger Quadros <rogerq@kernel.org>, 
+	Tony Lindgren <tony@atomide.com>, Janusz Krzysztofik <jmkrzyszt@gmail.com>, Vignesh R <vigneshr@ti.com>, 
+	Andi Shyti <andi.shyti@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
+	Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	Yazan Shhady <yazan.shhady@solid-run.com>, Jon Nettleton <jon@solid-run.com>, 
+	Mikhail Anikin <mikhail.anikin@solid-run.com>, linux-can@vger.kernel.org, 
+	linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	linux-mmc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, Dan Carpenter <dan.carpenter@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+On Thu, 29 Jan 2026 at 17:06, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> On Wed, 28 Jan 2026 at 15:46, Josua Mayer <josua@solid-run.com> wrote:
+> >
+> > In-tree phy-can-transceiver driver has already implemented a local
+> > version of devm_mux_state_get_optional.
+> >
+> > The omap-i2c driver gets and selects an optional mux in its probe
+> > function without using any helper.
+> >
+> > Add new helper functions covering both aforementioned use-cases:
+> >
+> > - mux_control_get_optional:
+> >   Get a mux-control if specified in dt, return NULL otherwise.
+> > - devm_mux_state_get_optional:
+> >   Get a mux-state if specified in dt, return NULL otherwise.
+> > - devm_mux_state_get_selected:
+> >   Get and select a mux-state specified in dt, return error otherwise.
+> > - devm_mux_state_get_optional_selected:
+> >   Get and select a mux-state if specified in dt, return error or NULL.
+> >
+> > Existing mux_get helper function is changed to take an extra argument
+> > indicating whether the mux is optional.
+> > In this case no error is printed, and NULL returned in case of ENOENT.
+> >
+> > Calling code is adapted to handle NULL return case, and to pass optional
+> > argument as required.
+> >
+> > To support automatic deselect for _selected helper, a new structure is
+> > created storing an exit pointer similar to clock core which is called on
+> > release.
+> >
+> > To facilitate code sharing between optional/mandatory/selected helpers,
+> > a new internal helper function is added to handle quiet (optional) and
+> > verbose (mandatory) errors, as well as storing the correct callback for
+> > devm release: __devm_mux_state_get
+> >
+> > Due to this structure devm_mux_state_get_*_selected can no longer print
+> > a useful error message when select fails. Instead callers should print
+> > errors where needed.
+> >
+> > Commit e153fdea9db04 ("phy: can-transceiver: Re-instate "mux-states"
+> > property presence check") noted that "mux_get() always prints an error
+> > message in case of an error, including when the property is not present,
+> > confusing the user."
+> >
+> > The first error message covers the case that a mux name is not matched
+> > in dt. The second error message is based on of_parse_phandle_with_args
+> > return value.
+> >
+> > In optional case no error is printed and NULL is returned.
+> > This ensures that the new helper functions will not confuse the user
+> > either.
+> >
+> > With the addition of optional helper functions it became clear that
+> > drivers should compile and link even if CONFIG_MULTIPLEXER was not enabled.
+> > Add stubs for all symbols exported by mux core.
+> >
+> > Signed-off-by: Josua Mayer <josua@solid-run.com>
+> > ---
+> >  drivers/mux/core.c           | 178 ++++++++++++++++++++++++++++++++++++-------
+> >  include/linux/mux/consumer.h | 108 +++++++++++++++++++++++++-
+> >  2 files changed, 253 insertions(+), 33 deletions(-)
+> >
+> > diff --git a/drivers/mux/core.c b/drivers/mux/core.c
+> > index a3840fe0995f..b01ec126caaf 100644
+> > --- a/drivers/mux/core.c
+> > +++ b/drivers/mux/core.c
+>
+> [...]
+>
+> >  static void devm_mux_state_release(struct device *dev, void *res)
+> >  {
+> > -       struct mux_state *mstate = *(struct mux_state **)res;
+> > +       struct devm_mux_state_state *devm_state = res;
+> >
+> > -       mux_state_put(mstate);
+> > +       if (devm_state->exit)
+> > +               devm_state->exit(devm_state->mstate);
+> > +
+> > +       mux_state_put(devm_state->mstate);
+> >  }
+> >
+> >  /**
+> > - * devm_mux_state_get() - Get the mux-state for a device, with resource
+> > - *                       management.
+> > - * @dev: The device that needs a mux-control.
+> > - * @mux_name: The name identifying the mux-control.
+> > + * __devm_mux_state_get() - Get the optional mux-state for a device,
+> > + *                         with resource management.
+> > + * @dev: The device that needs a mux-state.
+> > + * @mux_name: The name identifying the mux-state.
+> > + * @optional: Whether to return NULL and silence errors when mux doesn't exist.
+> > + * @init: Optional function pointer for mux-state object initialisation.
+> > + * @exit: Optional function pointer for mux-state object cleanup on release.
+> >   *
+> >   * Return: Pointer to the mux-state, or an ERR_PTR with a negative errno.
+> >   */
+> > -struct mux_state *devm_mux_state_get(struct device *dev,
+> > -                                    const char *mux_name)
+> > +static struct mux_state *__devm_mux_state_get(struct device *dev, const char *mux_name,
+> > +                                             bool optional,
+> > +                                             int (*init)(struct mux_state *mstate),
+> > +                                             int (*exit)(struct mux_state *mstate))
+> >  {
+> > -       struct mux_state **ptr, *mstate;
+> > +       struct devm_mux_state_state *devm_state;
+> > +       struct mux_state *mstate;
+> > +       int ret;
+> >
+> > -       ptr = devres_alloc(devm_mux_state_release, sizeof(*ptr), GFP_KERNEL);
+> > -       if (!ptr)
+> > +       devm_state = devres_alloc(devm_mux_state_release, sizeof(*devm_state), GFP_KERNEL);
+> > +       if (!devm_state)
+> >                 return ERR_PTR(-ENOMEM);
+> >
+> > -       mstate = mux_state_get(dev, mux_name);
+> > -       if (IS_ERR(mstate)) {
+> > -               devres_free(ptr);
+> > -               return mstate;
+> > +       mstate = mux_state_get(dev, mux_name, optional);
+> > +       if (IS_ERR_OR_NULL(mstate)) {
+> > +               ret = PTR_ERR(mstate);
+>
+> Should this be PTR_ERR_OR_ZERO?
 
-This patch removes struct can_skb_priv which was stored at skb->head and
-the can_skb_reserve() helper which was used to shift skb->head.
+"mux_state_get() never returns NULL"
+https://lore.kernel.org/202601221036.J0kR78Uw-lkp@intel.com
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- drivers/net/can/dev/skb.c | 31 +++++++++----------------------
- include/linux/can/skb.h   | 31 -------------------------------
- net/can/bcm.c             |  7 ++-----
- net/can/isotp.c           | 12 ++++--------
- net/can/j1939/socket.c    |  4 +---
- net/can/j1939/transport.c |  7 ++-----
- net/can/raw.c             |  5 ++---
- 7 files changed, 20 insertions(+), 77 deletions(-)
+>
+> > +               goto err_mux_state_get;
+> >         }
 
-diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-index 408ee49abce1..95fcdc1026f8 100644
---- a/drivers/net/can/dev/skb.c
-+++ b/drivers/net/can/dev/skb.c
-@@ -204,40 +204,33 @@ void can_free_echo_skb(struct net_device *dev, unsigned int idx,
- 	}
- }
- EXPORT_SYMBOL_GPL(can_free_echo_skb);
- 
- /* fill common values for CAN sk_buffs */
--static void init_can_skb_reserve(struct sk_buff *skb)
-+static void init_can_skb(struct sk_buff *skb)
- {
- 	skb->pkt_type = PACKET_BROADCAST;
- 	skb->ip_summed = CHECKSUM_UNNECESSARY;
--
--	skb_reset_mac_header(skb);
--	skb_reset_network_header(skb);
--	skb_reset_transport_header(skb);
--
--	can_skb_reserve(skb);
- }
- 
- struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf)
- {
- 	struct sk_buff *skb;
- 	struct can_skb_ext *csx;
- 
--	skb = netdev_alloc_skb(dev, sizeof(struct can_skb_priv) +
--			       sizeof(struct can_frame));
-+	skb = netdev_alloc_skb(dev, sizeof(struct can_frame));
- 	if (unlikely(!skb))
- 		goto out_error_cc;
- 
- 	csx = can_skb_ext_add(skb);
- 	if (!csx) {
- 		kfree_skb(skb);
- 		goto out_error_cc;
- 	}
- 
- 	skb->protocol = htons(ETH_P_CAN);
--	init_can_skb_reserve(skb);
-+	init_can_skb(skb);
- 	csx->can_iif = dev->ifindex;
- 
- 	*cf = skb_put_zero(skb, sizeof(struct can_frame));
- 
- 	return skb;
-@@ -253,23 +246,22 @@ struct sk_buff *alloc_canfd_skb(struct net_device *dev,
- 				struct canfd_frame **cfd)
- {
- 	struct sk_buff *skb;
- 	struct can_skb_ext *csx;
- 
--	skb = netdev_alloc_skb(dev, sizeof(struct can_skb_priv) +
--			       sizeof(struct canfd_frame));
-+	skb = netdev_alloc_skb(dev, sizeof(struct canfd_frame));
- 	if (unlikely(!skb))
- 		goto out_error_fd;
- 
- 	csx = can_skb_ext_add(skb);
- 	if (!csx) {
- 		kfree_skb(skb);
- 		goto out_error_fd;
- 	}
- 
- 	skb->protocol = htons(ETH_P_CANFD);
--	init_can_skb_reserve(skb);
-+	init_can_skb(skb);
- 	csx->can_iif = dev->ifindex;
- 
- 	*cfd = skb_put_zero(skb, sizeof(struct canfd_frame));
- 
- 	/* set CAN FD flag by default */
-@@ -292,23 +284,22 @@ struct sk_buff *alloc_canxl_skb(struct net_device *dev,
- 	struct can_skb_ext *csx;
- 
- 	if (data_len < CANXL_MIN_DLEN || data_len > CANXL_MAX_DLEN)
- 		goto out_error_xl;
- 
--	skb = netdev_alloc_skb(dev, sizeof(struct can_skb_priv) +
--			       CANXL_HDR_SIZE + data_len);
-+	skb = netdev_alloc_skb(dev, CANXL_HDR_SIZE + data_len);
- 	if (unlikely(!skb))
- 		goto out_error_xl;
- 
- 	csx = can_skb_ext_add(skb);
- 	if (!csx) {
- 		kfree_skb(skb);
- 		goto out_error_xl;
- 	}
- 
- 	skb->protocol = htons(ETH_P_CANXL);
--	init_can_skb_reserve(skb);
-+	init_can_skb(skb);
- 	csx->can_iif = dev->ifindex;
- 
- 	*cxl = skb_put_zero(skb, CANXL_HDR_SIZE + data_len);
- 
- 	/* set CAN XL flag and length information by default */
-@@ -338,18 +329,14 @@ struct sk_buff *alloc_can_err_skb(struct net_device *dev, struct can_frame **cf)
- 	return skb;
- }
- EXPORT_SYMBOL_GPL(alloc_can_err_skb);
- 
- /* Check for outgoing skbs that have not been created by the CAN subsystem */
--static bool can_skb_headroom_valid(struct net_device *dev, struct sk_buff *skb)
-+static bool can_skb_init_valid(struct net_device *dev, struct sk_buff *skb)
- {
- 	struct can_skb_ext *csx = can_skb_ext_find(skb);
- 
--	/* af_packet creates a headroom of HH_DATA_MOD bytes which is fine */
--	if (WARN_ON_ONCE(skb_headroom(skb) < sizeof(struct can_skb_priv)))
--		return false;
--
- 	/* af_packet does not apply CAN skb specific settings */
- 	if (skb->ip_summed == CHECKSUM_NONE || !csx) {
- 		/* init CAN skb content */
- 		if (!csx) {
- 			csx = can_skb_ext_add(skb);
-@@ -403,11 +390,11 @@ bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb)
- 
- 	default:
- 		goto inval_skb;
- 	}
- 
--	if (!can_skb_headroom_valid(dev, skb))
-+	if (!can_skb_init_valid(dev, skb))
- 		goto inval_skb;
- 
- 	return false;
- 
- inval_skb:
-diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
-index 68c0f24e6914..a70a02967071 100644
---- a/include/linux/can/skb.h
-+++ b/include/linux/can/skb.h
-@@ -36,41 +36,10 @@ struct sk_buff *alloc_canxl_skb(struct net_device *dev,
- 				unsigned int data_len);
- struct sk_buff *alloc_can_err_skb(struct net_device *dev,
- 				  struct can_frame **cf);
- bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb);
- 
--/*
-- * The struct can_skb_priv is used to transport additional information along
-- * with the stored struct can(fd)_frame that can not be contained in existing
-- * struct sk_buff elements.
-- * N.B. that this information must not be modified in cloned CAN sk_buffs.
-- * To modify the CAN frame content or the struct can_skb_priv content
-- * skb_copy() needs to be used instead of skb_clone().
-- */
--
--/**
-- * struct can_skb_priv - private additional data inside CAN sk_buffs
-- * @ifindex:	ifindex of the first interface the CAN frame appeared on
-- * @frame_len:	length of CAN frame in data link layer
-- * @cf:		align to the following CAN frame at skb->data
-- */
--struct can_skb_priv {
--	int ifindex;
--	unsigned int frame_len;
--	struct can_frame cf[];
--};
--
--static inline struct can_skb_priv *can_skb_prv(struct sk_buff *skb)
--{
--	return (struct can_skb_priv *)(skb->head);
--}
--
--static inline void can_skb_reserve(struct sk_buff *skb)
--{
--	skb_reserve(skb, sizeof(struct can_skb_priv));
--}
--
- static inline struct can_skb_ext *can_skb_ext_add(struct sk_buff *skb)
- {
- 	struct can_skb_ext *csx = skb_ext_add(skb, SKB_EXT_CAN);
- 
- 	/* skb_ext_add() returns uninitialized space */
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index f102d17e8619..b7324e9c955b 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -310,21 +310,20 @@ static void bcm_can_tx(struct bcm_op *op)
- 	if (!dev) {
- 		/* RFC: should this bcm_op remove itself here? */
- 		return;
- 	}
- 
--	skb = alloc_skb(op->cfsiz + sizeof(struct can_skb_priv), gfp_any());
-+	skb = alloc_skb(op->cfsiz, gfp_any());
- 	if (!skb)
- 		goto out;
- 
- 	csx = can_skb_ext_add(skb);
- 	if (!csx) {
- 		kfree_skb(skb);
- 		goto out;
- 	}
- 
--	can_skb_reserve(skb);
- 	csx->can_iif = dev->ifindex;
- 
- 	skb_put_data(skb, cf, op->cfsiz);
- 
- 	/* send with loopback */
-@@ -1331,22 +1330,20 @@ static int bcm_tx_send(struct msghdr *msg, int ifindex, struct sock *sk,
- 
- 	/* we need a real device to send frames */
- 	if (!ifindex)
- 		return -ENODEV;
- 
--	skb = alloc_skb(cfsiz + sizeof(struct can_skb_priv), GFP_KERNEL);
-+	skb = alloc_skb(cfsiz, GFP_KERNEL);
- 	if (!skb)
- 		return -ENOMEM;
- 
- 	csx = can_skb_ext_add(skb);
- 	if (!csx) {
- 		kfree_skb(skb);
- 		return -ENOMEM;
- 	}
- 
--	can_skb_reserve(skb);
--
- 	err = memcpy_from_msg(skb_put(skb, cfsiz), msg, cfsiz);
- 	if (err < 0) {
- 		kfree_skb(skb);
- 		return err;
- 	}
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 4a6ce6836b24..736078357b5c 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -218,11 +218,11 @@ static int isotp_send_fc(struct sock *sk, int ae, u8 flowstatus)
- 	struct can_skb_ext *csx;
- 	struct canfd_frame *ncf;
- 	struct isotp_sock *so = isotp_sk(sk);
- 	int can_send_ret;
- 
--	nskb = alloc_skb(so->ll.mtu + sizeof(struct can_skb_priv), gfp_any());
-+	nskb = alloc_skb(so->ll.mtu, gfp_any());
- 	if (!nskb)
- 		return 1;
- 
- 	csx = can_skb_ext_add(nskb);
- 	if (!csx) {
-@@ -234,13 +234,11 @@ static int isotp_send_fc(struct sock *sk, int ae, u8 flowstatus)
- 	if (!dev) {
- 		kfree_skb(nskb);
- 		return 1;
- 	}
- 
--	can_skb_reserve(nskb);
- 	csx->can_iif = dev->ifindex;
--
- 	nskb->dev = dev;
- 	can_skb_set_owner(nskb, sk);
- 	ncf = (struct canfd_frame *)nskb->data;
- 	skb_put_zero(nskb, so->ll.mtu);
- 
-@@ -778,11 +776,11 @@ static void isotp_send_cframe(struct isotp_sock *so)
- 
- 	dev = dev_get_by_index(sock_net(sk), so->ifindex);
- 	if (!dev)
- 		return;
- 
--	skb = alloc_skb(so->ll.mtu + sizeof(struct can_skb_priv), GFP_ATOMIC);
-+	skb = alloc_skb(so->ll.mtu, GFP_ATOMIC);
- 	if (!skb) {
- 		dev_put(dev);
- 		return;
- 	}
- 
-@@ -791,11 +789,10 @@ static void isotp_send_cframe(struct isotp_sock *so)
- 		kfree_skb(skb);
- 		netdev_put(dev, NULL);
- 		return;
- 	}
- 
--	can_skb_reserve(skb);
- 	csx->can_iif = dev->ifindex;
- 
- 	cf = (struct canfd_frame *)skb->data;
- 	skb_put_zero(skb, so->ll.mtu);
- 
-@@ -1013,12 +1010,12 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	if (!dev) {
- 		err = -ENXIO;
- 		goto err_out_drop;
- 	}
- 
--	skb = sock_alloc_send_skb(sk, so->ll.mtu + sizeof(struct can_skb_priv),
--				  msg->msg_flags & MSG_DONTWAIT, &err);
-+	skb = sock_alloc_send_skb(sk, so->ll.mtu, msg->msg_flags & MSG_DONTWAIT,
-+				  &err);
- 	if (!skb) {
- 		dev_put(dev);
- 		goto err_out_drop;
- 	}
- 
-@@ -1027,11 +1024,10 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 		kfree_skb(skb);
- 		netdev_put(dev, NULL);
- 		goto err_out_drop;
- 	}
- 
--	can_skb_reserve(skb);
- 	csx->can_iif = dev->ifindex;
- 
- 	so->tx.len = size;
- 	so->tx.idx = 0;
- 
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index f03bae79354e..10014d95c319 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -889,23 +889,21 @@ static struct sk_buff *j1939_sk_alloc_skb(struct net_device *ndev,
- 	int ret;
- 
- 	skb = sock_alloc_send_skb(sk,
- 				  size +
- 				  sizeof(struct can_frame) -
--				  sizeof(((struct can_frame *)NULL)->data) +
--				  sizeof(struct can_skb_priv),
-+				  sizeof(((struct can_frame *)NULL)->data),
- 				  msg->msg_flags & MSG_DONTWAIT, &ret);
- 	if (!skb)
- 		goto failure;
- 
- 	csx = can_skb_ext_add(skb);
- 	if (!csx) {
- 		kfree_skb(skb);
- 		goto failure;
- 	}
- 
--	can_skb_reserve(skb);
- 	csx->can_iif = ndev->ifindex;
- 	skb_reserve(skb, offsetof(struct can_frame, data));
- 
- 	ret = memcpy_from_msg(skb_put(skb, size), msg, size);
- 	if (ret < 0)
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 96e02ad4a726..e63cf79af1c4 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -593,23 +593,21 @@ sk_buff *j1939_tp_tx_dat_new(struct j1939_priv *priv,
- {
- 	struct sk_buff *skb;
- 	struct can_skb_ext *csx;
- 	struct j1939_sk_buff_cb *skcb;
- 
--	skb = alloc_skb(sizeof(struct can_frame) + sizeof(struct can_skb_priv),
--			GFP_ATOMIC);
-+	skb = alloc_skb(sizeof(struct can_frame), GFP_ATOMIC);
- 	if (unlikely(!skb))
- 		return ERR_PTR(-ENOMEM);
- 
- 	csx = can_skb_ext_add(skb);
- 	if (!csx) {
- 		kfree_skb(skb);
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
- 	skb->dev = priv->ndev;
--	can_skb_reserve(skb);
- 	csx->can_iif = priv->ndev->ifindex;
- 	/* reserve CAN header */
- 	skb_reserve(skb, offsetof(struct can_frame, data));
- 
- 	/* skb->cb must be large enough to hold a j1939_sk_buff_cb structure */
-@@ -1535,22 +1533,21 @@ j1939_session *j1939_session_fresh_new(struct j1939_priv *priv,
- 	struct sk_buff *skb;
- 	struct can_skb_ext *csx;
- 	struct j1939_sk_buff_cb *skcb;
- 	struct j1939_session *session;
- 
--	skb = alloc_skb(size + sizeof(struct can_skb_priv), GFP_ATOMIC);
-+	skb = alloc_skb(size, GFP_ATOMIC);
- 	if (unlikely(!skb))
- 		return NULL;
- 
- 	csx = can_skb_ext_add(skb);
- 	if (!csx) {
- 		kfree_skb(skb);
- 		return NULL;
- 	}
- 
- 	skb->dev = priv->ndev;
--	can_skb_reserve(skb);
- 	csx->can_iif = priv->ndev->ifindex;
- 	skcb = j1939_skb_to_cb(skb);
- 	memcpy(skcb, rel_skcb, sizeof(*skcb));
- 
- 	session = j1939_session_new(priv, skb, size);
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 7c89962ec913..d33ce436018f 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -951,22 +951,21 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	if (can_cap_enabled(dev, CAN_CAP_RO)) {
- 		err = -EACCES;
- 		goto put_dev;
- 	}
- 
--	skb = sock_alloc_send_skb(sk, size + sizeof(struct can_skb_priv),
--				  msg->msg_flags & MSG_DONTWAIT, &err);
-+	skb = sock_alloc_send_skb(sk, size, msg->msg_flags & MSG_DONTWAIT,
-+				  &err);
- 	if (!skb)
- 		goto put_dev;
- 
- 	csx = can_skb_ext_add(skb);
- 	if (!csx) {
- 		kfree_skb(skb);
- 		goto put_dev;
- 	}
- 
--	can_skb_reserve(skb);
- 	csx->can_iif = dev->ifindex;
- 
- 	/* fill the skb before testing for valid CAN frames */
- 	err = memcpy_from_msg(skb_put(skb, size), msg, size);
- 	if (err < 0)
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-2.51.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
