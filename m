@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EB9B311967
-	for <linux-can@vger.kernel.org>; Sat, 31 Jan 2026 10:15:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E63533BBD1
+	for <linux-can@vger.kernel.org>; Sat, 31 Jan 2026 10:15:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769854533; cv=none; b=ERyb+zhQGf9ZobmQJ1aG0F6NaqoCpEoZkSGljbxmvBcsYd5iNZWLhYqwUZzjOJEo963zvxsX0YsNej3qPEef2uXCPzgaKDWL8hYWEYp6TegDwPyUEebZBkVEmspnmkuE1QBEwQA7uiGgr0Y2wpaqw0JsXzGHGQuJZqHbgobM0D4=
+	t=1769854533; cv=none; b=HWXxZ8RqddQc4IUXASoMdLXMtwPT6tYJK6+pDe4DMYi5wWhv/GM+AEJVJUVvrSE+q47lH4R/deeDnyB7P2SnVrZ2Q0pGaeHIVsSB484lhSDYGo48i49b4+IQdW5W6LQ6iZuKG5qnK54HDBJVSYWYpPvzLcjvs42A0AGXdr59eyw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1769854533; c=relaxed/simple;
-	bh=Cup4zFbx3452ZfpyZLcl+WDobMKY61gqBfP5GM/9uqY=;
+	bh=Vv4IiphQbKguM28KLcNoTFbFQdKsFQXjOWT6P8dxtDE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SyR/rsZovMk2v46hp5YThCljgisrqQyoQIqIhXarXBJKODMTtOQVn8D39wKyLBtVzv50cfBoy1+aYPSHYIZt8HpcBgXYDKgRQB3hKWFLisyY+Bp36qVvRAMdGn7Hm5dTC/hSpIZjME/VP5upMMLa5TK034pl1WNsAJ3oPAccuW0=
+	 MIME-Version; b=ha4Tf09i1AWoLriSW8or8gONawrjxidVPcRiLuLV6cqCIELqtlM8Jz9fLBoLfclrYAhg4tcIG/8UKV6qiXAW8NEGRphmYkJocpumMq6ZZD9s/eHZwDUacKdisJM9jmnFhGUs/D+7LC4C39ZDoV5zkKnoDI13B2rjRMdMGktq1nU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,19 +18,19 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vm80c-0002QZ-QL; Sat, 31 Jan 2026 11:15:18 +0100
+	id 1vm80b-0002Q0-VE; Sat, 31 Jan 2026 11:15:17 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vm80d-003OWT-0q;
-	Sat, 31 Jan 2026 11:15:18 +0100
+	id 1vm80c-003OWK-1D;
+	Sat, 31 Jan 2026 11:15:17 +0100
 Received: from blackshift.org (unknown [IPv6:2001:67c:1810:f051:d04a:1c63:e2:421c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 056524DC571;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 37EE94DC56E;
 	Sat, 31 Jan 2026 10:15:17 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -38,13 +38,11 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Biju Das <biju.das.jz@bp.renesas.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 4/8] dt-bindings: can: renesas,rcar-canfd: Document RZ/V2H(P) and RZ/V2N SoCs
-Date: Sat, 31 Jan 2026 11:11:45 +0100
-Message-ID: <20260131101512.1958907-5-mkl@pengutronix.de>
+Subject: [PATCH net-next 2/8] can: rcar_canfd: Add support for FD-Only mode
+Date: Sat, 31 Jan 2026 11:11:43 +0100
+Message-ID: <20260131101512.1958907-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260131101512.1958907-1-mkl@pengutronix.de>
 References: <20260131101512.1958907-1-mkl@pengutronix.de>
@@ -60,38 +58,71 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Biju Das <biju.das.jz@bp.renesas.com>
 
-Document CANFD IP found on the Renesas RZ/V2H(P) (R9A09G057) and RZ/V2N
-(R9A09G056) SoCs. The CANFD IP on these SoCs are identical to that found
-on the RZ/G3E (R9A09G047) SoC.
+The RZ/{G2L,G3E} and R-Car Gen4 SoCs support additional CAN FD mode called
+FD-only mode. In this mode, communication in Classical CAN frame format is
+disabled.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://patch.msgid.link/20260114154525.3169992-3-prabhakar.mahadev-lad.rj@bp.renesas.com
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Link: https://patch.msgid.link/20251126155911.320563-3-biju.das.jz@bp.renesas.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../devicetree/bindings/net/can/renesas,rcar-canfd.yaml     | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/can/rcar/rcar_canfd.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-index 9bfd4f44e4d4..fb709cfd26d7 100644
---- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-+++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-@@ -44,6 +44,12 @@ properties:
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index 7895e1fdea1c..4a653d8978ba 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -472,6 +472,7 @@ struct rcar_canfd_global {
+ 	unsigned long channels_mask;	/* Enabled channels mask */
+ 	bool extclk;			/* CANFD or Ext clock */
+ 	bool fdmode;			/* CAN FD or Classical CAN only mode */
++	bool fd_only_mode;		/* FD-Only mode for CAN-FD */
+ 	struct reset_control *rstc1;
+ 	struct reset_control *rstc2;
+ 	const struct rcar_canfd_hw_info *info;
+@@ -829,12 +830,20 @@ static int rcar_canfd_reset_controller(struct rcar_canfd_global *gpriv)
+ 							 RCANFD_GEN4_FDCFG_FDOE);
+ 				rcar_canfd_set_bit_reg(&gpriv->fcbase[ch].cfdcfg,
+ 						       RCANFD_GEN4_FDCFG_CLOE);
++			} else if (gpriv->fd_only_mode) {
++				rcar_canfd_clear_bit_reg(&gpriv->fcbase[ch].cfdcfg,
++							 RCANFD_GEN4_FDCFG_CLOE);
++				rcar_canfd_set_bit_reg(&gpriv->fcbase[ch].cfdcfg,
++						       RCANFD_GEN4_FDCFG_FDOE);
+ 			} else {
+ 				rcar_canfd_clear_bit_reg(&gpriv->fcbase[ch].cfdcfg,
+ 							 RCANFD_GEN4_FDCFG_FDOE);
+ 				rcar_canfd_clear_bit_reg(&gpriv->fcbase[ch].cfdcfg,
+ 							 RCANFD_GEN4_FDCFG_CLOE);
+ 			}
++		} else if (gpriv->fd_only_mode) {
++			rcar_canfd_set_bit_reg(&gpriv->fcbase[ch].cfdcfg,
++					       RCANFD_GEN4_FDCFG_FDOE);
+ 		}
+ 	}
  
-       - const: renesas,r9a09g047-canfd     # RZ/G3E
+@@ -2140,6 +2149,9 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 	gpriv->fdmode = fdmode;
+ 	gpriv->info = info;
  
-+      - items:
-+          - enum:
-+              - renesas,r9a09g056-canfd     # RZ/V2N
-+              - renesas,r9a09g057-canfd     # RZ/V2H(P)
-+          - const: renesas,r9a09g047-canfd
++	if (of_property_read_bool(dev->of_node, "renesas,fd-only"))
++		gpriv->fd_only_mode = true; /* FD-Only mode for CAN-FD */
 +
-   reg:
-     maxItems: 1
+ 	gpriv->rstc1 = devm_reset_control_get_optional_exclusive(dev, "rstp_n");
+ 	if (IS_ERR(gpriv->rstc1))
+ 		return dev_err_probe(dev, PTR_ERR(gpriv->rstc1),
+@@ -2239,7 +2251,7 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, gpriv);
+ 	dev_info(dev, "global operational state (%s clk, %s mode)\n",
+ 		 gpriv->extclk ? "ext" : "canfd",
+-		 gpriv->fdmode ? "fd" : "classical");
++		 gpriv->fdmode ? (gpriv->fd_only_mode ? "fd-only" : "fd") : "classical");
+ 	return 0;
  
+ fail_channel:
 -- 
 2.51.0
 
