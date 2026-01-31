@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F01340DB0
-	for <linux-can@vger.kernel.org>; Sat, 31 Jan 2026 10:15:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10D3134320D
+	for <linux-can@vger.kernel.org>; Sat, 31 Jan 2026 10:15:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769854535; cv=none; b=UyGJtdqKYqDFB19evYvJzMRencpdR3p1agVEf1iqQOGnS/m/8jMxoKFe99il17x7VEvkmSwCMirLmdlmTTcBIdezmHcWR72JWlo6PdaIRGrss4DpFnQ5Zpg85vn0SXJqbXqxoRyUu3zKRaIO74NLlDXPss/WvlFzx/7Mk4T+L0E=
+	t=1769854535; cv=none; b=uwwj79wih+nzNirB7cyfMp3Bx28b4+OlTTBQp3cVZM3oznTiKSu8lg5iNNixp3fBRbkZdmqVMioTzYOAvXgrjmPSz+WpAq5SxvBn+M0kbYikOwiO/HIfNMHlTJ7Jy362k1Jz7tOkCCCTanC96M5ufrlRM0rAquV/JoREWgbdclw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1769854535; c=relaxed/simple;
-	bh=H8njuP2RfdhUVjk6Rcg0JgF3gT7rjkm+xyCc1BnDJNc=;
+	bh=yJEM19TKPK8Lkj2rFjErC95dTA2VwhZ8bpyLwZHtoXc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LIhd2ZyMU4qmzOuJvFS0WRcz1VMO7UFWpWRyIVKRxwM9HuSMGB+ASKghSwbPzjf5Hk7M58QqH4tP5Kns6BjkC9+lwLLVec5zcVQSnweblmU7CfL7t87zMqbtBC/N3cMBwfah/iviPhDQcIbcE/oydRRAaY6FVYcHWW+tPA4gQOI=
+	 MIME-Version; b=IXhzuVVgAYqZ1PWN0XkOeJh+4QXKwWiQPensLdMuGx2Sn7DMVaLHMhSN2UlKubDgOg7hG25w4nzn1QaVXAzTjw/RnKvB0LT5YZM9xvKy5D8z7a1wIrPl5JKIqoX1D5Y+4t8x6YECESry2wff//cRzN4pUtulTaQRlM7K8uaB9pk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,33 +18,32 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vm80c-0002QI-Hb; Sat, 31 Jan 2026 11:15:18 +0100
+	id 1vm80f-0002Sz-Ou; Sat, 31 Jan 2026 11:15:21 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vm80c-003OWN-2Z;
-	Sat, 31 Jan 2026 11:15:18 +0100
+	id 1vm80f-003OWn-1Y;
+	Sat, 31 Jan 2026 11:15:20 +0100
 Received: from blackshift.org (unknown [IPv6:2001:67c:1810:f051:d04a:1c63:e2:421c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 9717E4DC56F;
-	Sat, 31 Jan 2026 10:15:17 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id E0CDF4DC575;
+	Sat, 31 Jan 2026 10:15:19 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Michael Tretter <m.tretter@pengutronix.de>,
+	Achim Baumgartner <abaumgartner@topcon.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 3/8] dt-bindings: can: renesas,rcar-canfd: Specify reset-names
-Date: Sat, 31 Jan 2026 11:11:44 +0100
-Message-ID: <20260131101512.1958907-4-mkl@pengutronix.de>
+Subject: [PATCH net-next 8/8] can: sja1000: sja1000_err(): use error counter for error state
+Date: Sat, 31 Jan 2026 11:11:49 +0100
+Message-ID: <20260131101512.1958907-9-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260131101512.1958907-1-mkl@pengutronix.de>
 References: <20260131101512.1958907-1-mkl@pengutronix.de>
@@ -60,94 +59,98 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Michael Tretter <m.tretter@pengutronix.de>
 
-Specify the expected reset-names for the Renesas CAN-FD controller on
-RZ/G2L and RZ/G3E SoCs.
+The CAN controller sends the EPI interrupt whenever it reaches the error
+passive status or enters the error active status from the error passive
+status.
 
-The reset names rstp_n and rstc_n are defined in the SoC hardware manual
-and are already used by the driver since commit 76e9353a80e9 ("can:
-rcar_canfd: Add support for RZ/G2L family"). The reset-names property
-existed previously but was dropped by commit 466c8ef7b66b ("dt-bindings:
-can: renesas,rcar-canfd: Simplify the conditional schema").
+Instead of keeping track of the controller status in the driver, read the
+txerr and rxerr counters and use can_state_get_by_berr_counter() to
+determine the state of the CAN controller.
 
-Restore and constrain reset-names in the binding so DT schema checks
-match the actual hardware requirements and driver expectations.
-
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://patch.msgid.link/20260114154525.3169992-2-prabhakar.mahadev-lad.rj@bp.renesas.com
+Suggested-by: Achim Baumgartner <abaumgartner@topcon.com>
+Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
+Link: https://patch.msgid.link/20260123-sja1000-state-handling-v2-2-687498087dad@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../bindings/net/can/renesas,rcar-canfd.yaml  | 33 +++++++++++--------
- 1 file changed, 19 insertions(+), 14 deletions(-)
+ drivers/net/can/sja1000/sja1000.c | 33 +++++++------------------------
+ 1 file changed, 7 insertions(+), 26 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-index e129bdceef84..9bfd4f44e4d4 100644
---- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-+++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-@@ -122,6 +122,11 @@ properties:
+diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
+index ae3244b63b65..67fccc15ed20 100644
+--- a/drivers/net/can/sja1000/sja1000.c
++++ b/drivers/net/can/sja1000/sja1000.c
+@@ -407,10 +407,9 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+ {
+ 	struct sja1000_priv *priv = netdev_priv(dev);
+ 	struct net_device_stats *stats = &dev->stats;
++	enum can_state state, rx_state, tx_state;
+ 	struct can_frame *cf;
+ 	struct sk_buff *skb;
+-	enum can_state state = priv->can.state;
+-	enum can_state rx_state, tx_state;
+ 	struct can_berr_counter bec;
+ 	uint8_t ecc, alc;
+ 	int ret = 0;
+@@ -418,6 +417,12 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+ 	skb = alloc_can_err_skb(dev, &cf);
  
-   resets: true
- 
-+  reset-names:
-+    items:
-+      - const: rstp_n
-+      - const: rstc_n
+ 	sja1000_get_berr_counter(dev, &bec);
++	can_state_get_by_berr_counter(dev, &bec, &tx_state, &rx_state);
 +
-   renesas,no-can-fd:
-     $ref: /schemas/types.yaml#/definitions/flag
-     description:
-@@ -195,13 +200,6 @@ allOf:
-           minItems: 2
-           maxItems: 2
- 
--        reset-names:
--          minItems: 2
--          maxItems: 2
--
--      required:
--        - reset-names
--
-   - if:
-       properties:
-         compatible:
-@@ -239,13 +237,6 @@ allOf:
-           minItems: 2
-           maxItems: 2
- 
--        reset-names:
--          minItems: 2
--          maxItems: 2
--
--      required:
--        - reset-names
--
-   - if:
-       properties:
-         compatible:
-@@ -299,6 +290,20 @@ allOf:
-       properties:
-         renesas,no-can-fd: false
- 
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - renesas,r9a09g047-canfd
-+              - renesas,rzg2l-canfd
-+    then:
-+      required:
-+        - reset-names
-+    else:
-+      properties:
-+        reset-names: false
++	if (status & SR_BS)
++		rx_state = CAN_STATE_BUS_OFF;
 +
- unevaluatedProperties: false
++	state = max(tx_state, rx_state);
  
- examples:
+ 	if (isrc & IRQ_DOI) {
+ 		/* data overrun interrupt */
+@@ -440,18 +445,6 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+ 		if (priv->flags & SJA1000_QUIRK_RESET_ON_OVERRUN)
+ 			ret = IRQ_WAKE_THREAD;
+ 	}
+-
+-	if (isrc & IRQ_EI) {
+-		/* error warning interrupt */
+-		netdev_dbg(dev, "error warning interrupt\n");
+-
+-		if (status & SR_BS)
+-			state = CAN_STATE_BUS_OFF;
+-		else if (status & SR_ES)
+-			state = CAN_STATE_ERROR_WARNING;
+-		else
+-			state = CAN_STATE_ERROR_ACTIVE;
+-	}
+ 	if (state != CAN_STATE_BUS_OFF && skb) {
+ 		cf->can_id |= CAN_ERR_CNT;
+ 		cf->data[6] = bec.txerr;
+@@ -493,15 +486,6 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+ 			stats->rx_errors++;
+ 		}
+ 	}
+-	if (isrc & IRQ_EPI) {
+-		/* error passive interrupt */
+-		netdev_dbg(dev, "error passive interrupt\n");
+-
+-		if (state == CAN_STATE_ERROR_PASSIVE)
+-			state = CAN_STATE_ERROR_WARNING;
+-		else
+-			state = CAN_STATE_ERROR_PASSIVE;
+-	}
+ 	if (isrc & IRQ_ALI) {
+ 		/* arbitration lost interrupt */
+ 		netdev_dbg(dev, "arbitration lost interrupt\n");
+@@ -514,9 +498,6 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
+ 	}
+ 
+ 	if (state != priv->can.state) {
+-		tx_state = bec.txerr >= bec.rxerr ? state : 0;
+-		rx_state = bec.txerr <= bec.rxerr ? state : 0;
+-
+ 		can_change_state(dev, cf, tx_state, rx_state);
+ 
+ 		if(state == CAN_STATE_BUS_OFF)
 -- 
 2.51.0
 
