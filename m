@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10D3134320D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE95343D77
 	for <linux-can@vger.kernel.org>; Sat, 31 Jan 2026 10:15:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769854535; cv=none; b=uwwj79wih+nzNirB7cyfMp3Bx28b4+OlTTBQp3cVZM3oznTiKSu8lg5iNNixp3fBRbkZdmqVMioTzYOAvXgrjmPSz+WpAq5SxvBn+M0kbYikOwiO/HIfNMHlTJ7Jy362k1Jz7tOkCCCTanC96M5ufrlRM0rAquV/JoREWgbdclw=
+	t=1769854535; cv=none; b=d/pswxA8ZOmdwgbsQb+fSgUlLVOrnS2hzFOfdYuqcONpsf+2ZTZ0hc2Ju0Z47AlyosQdj8H8PedHQjBr90aRuOUw5mtf6Ggkn+6ZTbMotLSVAS6Y7hRRRg6XuK/2x17gi3HCVWnI0/R5NER3V0IoeSvr27Dbu90UOecMLvMz76Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1769854535; c=relaxed/simple;
-	bh=yJEM19TKPK8Lkj2rFjErC95dTA2VwhZ8bpyLwZHtoXc=;
+	bh=ETqU2646fl+tppqgal1V1Fq1Rl/EUe9oyHek6FJd1As=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IXhzuVVgAYqZ1PWN0XkOeJh+4QXKwWiQPensLdMuGx2Sn7DMVaLHMhSN2UlKubDgOg7hG25w4nzn1QaVXAzTjw/RnKvB0LT5YZM9xvKy5D8z7a1wIrPl5JKIqoX1D5Y+4t8x6YECESry2wff//cRzN4pUtulTaQRlM7K8uaB9pk=
+	 MIME-Version; b=RThYuDnHw8JGh/Lcr7oEou9ormcEDrrI0znotO0weL604T62QYDXigXMGz35T2O8l2MH5B4UlXLwweIhJ6DvgT6K93gdnoreIkKOY7JI3yCUghCcHjTlNQBG9NuuYJFMAi5axXu248G2OsHvEwiYZsrrVgwG041NYWSD0HyRfog=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,32 +18,33 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vm80f-0002Sz-Ou; Sat, 31 Jan 2026 11:15:21 +0100
+	id 1vm80d-0002RC-EM; Sat, 31 Jan 2026 11:15:19 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vm80f-003OWn-1Y;
-	Sat, 31 Jan 2026 11:15:20 +0100
+	id 1vm80d-003OWb-2Q;
+	Sat, 31 Jan 2026 11:15:19 +0100
 Received: from blackshift.org (unknown [IPv6:2001:67c:1810:f051:d04a:1c63:e2:421c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id E0CDF4DC575;
-	Sat, 31 Jan 2026 10:15:19 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 753794DC572;
+	Sat, 31 Jan 2026 10:15:18 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Michael Tretter <m.tretter@pengutronix.de>,
-	Achim Baumgartner <abaumgartner@topcon.com>,
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 8/8] can: sja1000: sja1000_err(): use error counter for error state
-Date: Sat, 31 Jan 2026 11:11:49 +0100
-Message-ID: <20260131101512.1958907-9-mkl@pengutronix.de>
+Subject: [PATCH net-next 5/8] dt-bindings: can: renesas,rcar-canfd: Document RZ/T2H and RZ/N2H SoCs
+Date: Sat, 31 Jan 2026 11:11:46 +0100
+Message-ID: <20260131101512.1958907-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260131101512.1958907-1-mkl@pengutronix.de>
 References: <20260131101512.1958907-1-mkl@pengutronix.de>
@@ -59,98 +60,131 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Michael Tretter <m.tretter@pengutronix.de>
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-The CAN controller sends the EPI interrupt whenever it reaches the error
-passive status or enters the error active status from the error passive
-status.
+Document the CAN-FD controller used on the RZ/T2H and RZ/N2H SoCs. The
+CAN-FD IP is largely compatible with the R-Car Gen4 block, but differs
+in that AFLPN and CFTML are different, there is no reset line for the IP,
+and it only supports two channels.
 
-Instead of keeping track of the controller status in the driver, read the
-txerr and rxerr counters and use can_state_get_by_berr_counter() to
-determine the state of the CAN controller.
+Sync the resets and reset-names schema handling with other CAN-FD SoCs so
+DT validation stays consistent and maintainable.
 
-Suggested-by: Achim Baumgartner <abaumgartner@topcon.com>
-Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
-Link: https://patch.msgid.link/20260123-sja1000-state-handling-v2-2-687498087dad@pengutronix.de
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+Link: https://patch.msgid.link/20260114154525.3169992-4-prabhakar.mahadev-lad.rj@bp.renesas.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/sja1000/sja1000.c | 33 +++++++------------------------
- 1 file changed, 7 insertions(+), 26 deletions(-)
+ .../bindings/net/can/renesas,rcar-canfd.yaml  | 48 +++++++++++++++++--
+ 1 file changed, 44 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index ae3244b63b65..67fccc15ed20 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -407,10 +407,9 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
- {
- 	struct sja1000_priv *priv = netdev_priv(dev);
- 	struct net_device_stats *stats = &dev->stats;
-+	enum can_state state, rx_state, tx_state;
- 	struct can_frame *cf;
- 	struct sk_buff *skb;
--	enum can_state state = priv->can.state;
--	enum can_state rx_state, tx_state;
- 	struct can_berr_counter bec;
- 	uint8_t ecc, alc;
- 	int ret = 0;
-@@ -418,6 +417,12 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
- 	skb = alloc_can_err_skb(dev, &cf);
- 
- 	sja1000_get_berr_counter(dev, &bec);
-+	can_state_get_by_berr_counter(dev, &bec, &tx_state, &rx_state);
+diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+index fb709cfd26d7..b9d9dd7a7967 100644
+--- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
++++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+@@ -12,6 +12,10 @@ maintainers:
+ properties:
+   compatible:
+     oneOf:
++      - enum:
++          - renesas,r9a09g047-canfd        # RZ/G3E
++          - renesas,r9a09g077-canfd        # RZ/T2H
 +
-+	if (status & SR_BS)
-+		rx_state = CAN_STATE_BUS_OFF;
+       - items:
+           - enum:
+               - renesas,r8a774a1-canfd     # RZ/G2M
+@@ -42,14 +46,16 @@ properties:
+               - renesas,r9a07g054-canfd    # RZ/V2L
+           - const: renesas,rzg2l-canfd     # RZ/G2L family
+ 
+-      - const: renesas,r9a09g047-canfd     # RZ/G3E
+-
+       - items:
+           - enum:
+               - renesas,r9a09g056-canfd     # RZ/V2N
+               - renesas,r9a09g057-canfd     # RZ/V2H(P)
+           - const: renesas,r9a09g047-canfd
+ 
++      - items:
++          - const: renesas,r9a09g087-canfd  # RZ/N2H
++          - const: renesas,r9a09g077-canfd
 +
-+	state = max(tx_state, rx_state);
+   reg:
+     maxItems: 1
  
- 	if (isrc & IRQ_DOI) {
- 		/* data overrun interrupt */
-@@ -440,18 +445,6 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
- 		if (priv->flags & SJA1000_QUIRK_RESET_ON_OVERRUN)
- 			ret = IRQ_WAKE_THREAD;
- 	}
--
--	if (isrc & IRQ_EI) {
--		/* error warning interrupt */
--		netdev_dbg(dev, "error warning interrupt\n");
--
--		if (status & SR_BS)
--			state = CAN_STATE_BUS_OFF;
--		else if (status & SR_ES)
--			state = CAN_STATE_ERROR_WARNING;
--		else
--			state = CAN_STATE_ERROR_ACTIVE;
--	}
- 	if (state != CAN_STATE_BUS_OFF && skb) {
- 		cf->can_id |= CAN_ERR_CNT;
- 		cf->data[6] = bec.txerr;
-@@ -493,15 +486,6 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
- 			stats->rx_errors++;
- 		}
- 	}
--	if (isrc & IRQ_EPI) {
--		/* error passive interrupt */
--		netdev_dbg(dev, "error passive interrupt\n");
--
--		if (state == CAN_STATE_ERROR_PASSIVE)
--			state = CAN_STATE_ERROR_WARNING;
--		else
--			state = CAN_STATE_ERROR_PASSIVE;
--	}
- 	if (isrc & IRQ_ALI) {
- 		/* arbitration lost interrupt */
- 		netdev_dbg(dev, "arbitration lost interrupt\n");
-@@ -514,9 +498,6 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
- 	}
+@@ -179,7 +185,6 @@ required:
+   - clocks
+   - clock-names
+   - power-domains
+-  - resets
+   - assigned-clocks
+   - assigned-clock-rates
+   - channel0
+@@ -243,11 +248,25 @@ allOf:
+           minItems: 2
+           maxItems: 2
  
- 	if (state != priv->can.state) {
--		tx_state = bec.txerr >= bec.rxerr ? state : 0;
--		rx_state = bec.txerr <= bec.rxerr ? state : 0;
--
- 		can_change_state(dev, cf, tx_state, rx_state);
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: renesas,r9a09g077-canfd
++    then:
++      properties:
++        interrupts:
++          maxItems: 8
++
++        interrupt-names:
++          maxItems: 8
++
+   - if:
+       properties:
+         compatible:
+           contains:
+             enum:
++              - renesas,r9a09g077-canfd
+               - renesas,rcar-gen3-canfd
+               - renesas,rzg2l-canfd
+     then:
+@@ -296,6 +315,16 @@ allOf:
+       properties:
+         renesas,no-can-fd: false
  
- 		if(state == CAN_STATE_BUS_OFF)
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: renesas,r9a09g077-canfd
++    then:
++      properties:
++        resets: false
++        reset-names: false
++
+   - if:
+       properties:
+         compatible:
+@@ -305,8 +334,19 @@ allOf:
+               - renesas,rzg2l-canfd
+     then:
+       required:
++        - resets
+         - reset-names
+-    else:
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - renesas,rcar-gen3-canfd
++              - renesas,rcar-gen4-canfd
++    then:
++      required:
++        - resets
+       properties:
+         reset-names: false
+ 
 -- 
 2.51.0
 
