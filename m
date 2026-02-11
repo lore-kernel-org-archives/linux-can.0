@@ -1,154 +1,96 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21685309DDC
-	for <linux-can@vger.kernel.org>; Wed, 11 Feb 2026 10:40:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770806441; cv=none; b=cEwVb3mqGOQv/pSckEnE7qt0jWMWCcGC3VjfI3ICw0x5tIr9YzUruWF97ypOztCcqAaB1ve4PovqOAXddZ+p4+RIQBIogRRhf8vYraFKjuhsDDQEPehZ8sBDP44K3F1nsCeHOYjvfsTKKl1QbZG5nDulsL+0CSMLh+f2cJfr9Uk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770806441; c=relaxed/simple;
-	bh=D0RDPWhiYsD3V5Mh38qNbN/nguKX2Lksu+LvsRSov/A=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Oee8idyHsoE/pDloFoGjeH721QvZmQ86ZihwWKJA92y2g/YAIrKgTEITzVB5n3Ww2WUaujbWP60fNGkHEgjZwaqyU/k8U4trSOdBRe//CmNP5aivBOdVnjcSp9AEXOtMo6TpUDWTW7qV6R4Kgpxf7emlOyS6ye9o8DTPenLbzq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=TrUet82u; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=TrUet82u; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6693316195
+	for <linux-can@vger.kernel.org>; Wed, 11 Feb 2026 13:06:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.167.178
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770815196; cv=pass; b=rqVNYSmsCx7Xqwm2PfZRnic5Qepbd8N8WJRO/hHZnx9TZm9U6OopmXkhcx+GHTXPkz77OAwClLPT0lrsxJYNlOtWova6Q84rAaUhFhdAT4xLMnuTF4imtum7CHFWMri/S0XukBEVqDT4TI3s72A2K0zVPOR2TA9F7fAoPmhJ8Tw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770815196; c=relaxed/simple;
+	bh=TFb3czZM4aDFD2j8L5adwaTUwIEAUKxhszw3OcTcRog=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CBSp2ghEOMc3lXfo1ptfI+UWYT9JHQOI7SC6YM5irtrnf+wzxTaJofTRJmeuoTBb/wYtEG4z6sH1+XcrbxzK8rN2grxmug9CNfH8eLaqrIPDZV5I+748O/CkAb+gR5Z+Ma5rbzgy7ZKzHa2CJb5W66o/oqWgL1S4TUUDln5aClE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PshgpcPN; arc=pass smtp.client-ip=209.85.167.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TrUet82u";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TrUet82u"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7E7765BCC6;
-	Wed, 11 Feb 2026 10:40:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770806438; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=CP9q110oDcuSLBo6RpJ+Ygu+0sfHV05K7sd02xWXlCU=;
-	b=TrUet82uHbcQUAaKQ5jsTn0LCZwojoPSCp9iyi/tJrIHlnUj2sT1eXfjtMhG302jGXMMji
-	Gyv6PBg0AJfjweaRfEvSHYC1eSScn/SCB9ibPksUV0HbNlkuebL/ksBPaZHm8FIjKMugtp
-	Vrkb3SIi/YSB+bKOMDrPRNxET+tKqW4=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770806438; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=CP9q110oDcuSLBo6RpJ+Ygu+0sfHV05K7sd02xWXlCU=;
-	b=TrUet82uHbcQUAaKQ5jsTn0LCZwojoPSCp9iyi/tJrIHlnUj2sT1eXfjtMhG302jGXMMji
-	Gyv6PBg0AJfjweaRfEvSHYC1eSScn/SCB9ibPksUV0HbNlkuebL/ksBPaZHm8FIjKMugtp
-	Vrkb3SIi/YSB+bKOMDrPRNxET+tKqW4=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4F16B13A48;
-	Wed, 11 Feb 2026 10:40:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +mYuEqZcjGnZQAAAD6G6ig
-	(envelope-from <oneukum@suse.com>); Wed, 11 Feb 2026 10:40:38 +0000
-From: Oliver Neukum <oneukum@suse.com>
-To: swilczek.lx@gmail.com,
-	mailhol@kernel.org,
-	mkl@pengutronix.de,
-	linux-can@vger.kernel.org
-Cc: Oliver Neukum <oneukum@suse.com>
-Subject: [PATCH] net: can: es58x: fully try proceeding with partial allocations
-Date: Wed, 11 Feb 2026 11:40:29 +0100
-Message-ID: <20260211104029.83860-1-oneukum@suse.com>
-X-Mailer: git-send-email 2.53.0
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PshgpcPN"
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-45c962424daso1950616b6e.2
+        for <linux-can@vger.kernel.org>; Wed, 11 Feb 2026 05:06:34 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1770815193; cv=none;
+        d=google.com; s=arc-20240605;
+        b=UDEoskvxZDsnFaC5XAMAc5t5RpyEm+RUPBSqYNxtr7BvHLS2rQHzBqM5lk/YEh6Ii+
+         Ao8meVJhvo5QQA8zTW1nMjTGDAmIWMtKiTvNGPYLtMjHWM/rrFJ12Y1p3yY5KpMOsG91
+         oqqHZRB5uyCwhq415OHMX09G1Kp2fOLycqVRVGabHH/yZ2QIEOxOmo6zghCefuqwY+Wl
+         hn7oUpl2JpjVXNPjME+pTHLo/Biwy2PJHALJvvl6z69Ba7OgSeEZ/mh4PkoIO2MxcYbb
+         FUQiFl9tk5nN8RNl4uvhCdyxWUaS0lTQDH5e2TOS+C185oLVlONVcaPj3NB4BRkQP4Bp
+         DAfg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=TFb3czZM4aDFD2j8L5adwaTUwIEAUKxhszw3OcTcRog=;
+        fh=dHdZTjTVGnRx+oM4KRmptXagV7dLixF3P0TsuMF/a9I=;
+        b=Nz+k3TPo1QFycU+GxSXHNBMFHmGKyiR2qQEnXlInT625BVZ/mBiPCdDjNpGgDGB6lC
+         x+K13RJ7tZ5qMAhPP9k5XOs9RIzzrxw2CwxvGQwVXaAxb9BGLTNf2Rk/L8JlhBdMU5SJ
+         ACWwYJl7NuELDsbge37t2iDnilY2ZcfBH60Cpgi1kMdGNBy0/HO+eteDtB/SRDqCzDEl
+         8ZhKv4UyNz8Avzy5bOldP4mTzKGIMBnMaolaFlQXjk6wE3dbcCOLoKGcGp1q/1Etaw5o
+         BmhAQF7DdyftTLQPRgjuTRuOmt8A8cInsGbm3ZCIhR3RGtznw5vktNVmoF0f98eT8p8h
+         jXmA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1770815193; x=1771419993; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=TFb3czZM4aDFD2j8L5adwaTUwIEAUKxhszw3OcTcRog=;
+        b=PshgpcPN/EIZNxgV/RPCEnNYdSm4kP0/qiYlxnZqDEjXNbgzJycPMpioWHN72AiExC
+         obgknqQTabvYB9uSqIA1qqyU2++eEbdeApVWIZHLYG/D2NyFUvrZXYsFJkNL/yw3Zfd7
+         iE/L8m7Sf/k14m+QDoKaXS3QVSCQNt+TG6ESQZ4UEG0qLc8FBmUTrpcEcsyzUUM/XCmU
+         YXJHOb+U1WRB0wN4QAMpztHmltEt+05LQY5WJjRLRePltg4pVXNOp19GsE6Qs99L3OM2
+         yEDBkNhb0lH9Xc4ErZXqc+kI4xv+n8x2CzQ7/VbmQvYEaZW5Ox6yQsFAwnyhOrLGgFBP
+         qGZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770815193; x=1771419993;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TFb3czZM4aDFD2j8L5adwaTUwIEAUKxhszw3OcTcRog=;
+        b=IuLtFwhjlFmZMdF3AleEHQsTSgaHBTLvRTTn8nzrcAxZExMquJoRLU4uQHkvhBT3FE
+         5ADMQiBf2kI77QJ1gF9kS355+LqTrkucAYPdi+9KuCh4YeirKeXsPAAWGQx1LJK4Um7d
+         D6NTKDMzyMb2H3oo6J5MGnugOSiDiKBGcUUutwxSoKj97y6nw8CSFA1tdSM3puWfIJ/B
+         uLG77rNNfk3OvMJsvlxPae2HMEOGjhEp0ay/UjotLxxQ2k92qgWCVQ/y0TYyJp/YIgzP
+         27BdmhUnFJSAvO7zPtT2eee3aQZkg1DLMJTPG7xELmP14b46COnYAkjEu8LHkuiofkd2
+         3UWg==
+X-Forwarded-Encrypted: i=1; AJvYcCWamBtHhL6o6+3/5L8pUmhoKQGu72Q6SIc4tPTFjje+mNPWkMQz9DeoYtjpMVOHRUR234Z12EZIRl4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxyWq4Z+gLWQY7Rlwk4SnZfWmNgIu8omQMHOfyuZdpAiMuVq7by
+	G+GZ6AQrMfPXcUSdq+cCxU9qYbH12sG6ffGBtaN6dVpJaD7xLBzWDi2ua0qPWxTznf3kWJ17lHd
+	JTKnlUvDhsHvI7fWRCCZkadjKOwM8prbeX3F6
+X-Gm-Gg: AZuq6aKqVhufaE86nPEpd3+iyhCG31hM2pqf2LrrzmwuRaMZ10n+ff1aEkDoX3wumXG
+	ez4ht0n8IdcfCIuWN6hF/8GeF4N/ZsM8xZLahxGc0AklZ37EBY3MYLJmfmwq0gZwiIGPDxfAyJn
+	lOTPumJJNE6jARzu0vdq1AqM/LuxDI6ahVmdDZJnjDegNJY7vAlftSsipgoEZ3IdgxnddHJvxIM
+	/UhMlvBaXmdtV0Yn14gP4PSiugTfypXvmVlYEuvv+JD38J/zC2rEosI/oipzC5DAM76wo/Xe1zG
+	B4kDBg==
+X-Received: by 2002:a05:6820:1610:b0:662:c3d7:4614 with SMTP id
+ 006d021491bc7-6743b2c813cmr1007189eaf.83.1770815193544; Wed, 11 Feb 2026
+ 05:06:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.30
-X-Spamd-Result: default: False [-1.30 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_RCPT(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,kernel.org,pengutronix.de,vger.kernel.org];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com]
-X-Spam-Level: 
-X-Spam-Flag: NO
+References: <20260211104029.83860-1-oneukum@suse.com>
+In-Reply-To: <20260211104029.83860-1-oneukum@suse.com>
+From: Szymon Wilczek <swilczek.lx@gmail.com>
+Date: Wed, 11 Feb 2026 14:06:22 +0100
+X-Gm-Features: AZwV_Qg7jtsWVMD4PFrJH52i_97vm9GnYI09PxFJhb4tzD9UdByTleZ-HF_GepM
+Message-ID: <CAJRoVwiF4iXSft+8WY_Mm6oZwcNG1Hi3Sx7tGWFVFJS1EBZiuQ@mail.gmail.com>
+Subject: Re: [PATCH] net: can: es58x: fully try proceeding with partial allocations
+To: Oliver Neukum <oneukum@suse.com>
+Cc: mailhol@kernel.org, mkl@pengutronix.de, linux-can@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Since b1979778e985 ("can: etas_es58x: allow partial RX URB
-allocation to succeed") es58x_alloc_rx_urbs() sees a failure
-to allocate and submit the full number of URBs as a success
-and the driver will continue at reduced performance.
+Thanks for catching this and improving the logic. It looks correct to me.
 
-However, if you do so, there is no point in abandoning further
-allocations or submissions, just because an earlier one failed.
-
-Fixes: b1979778e985 ("can: etas_es58x: allow partial RX URB allocation to succeed")
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
----
- drivers/net/can/usb/etas_es58x/es58x_core.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
-index 19fa51821a89..9dc66932267f 100644
---- a/drivers/net/can/usb/etas_es58x/es58x_core.c
-+++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
-@@ -1706,12 +1706,13 @@ static int es58x_alloc_rx_urbs(struct es58x_device *es58x_dev)
- 	u8 *buf;
- 	int i;
- 	int ret = -EINVAL;
-+	int allocated = 0;
- 
- 	for (i = 0; i < param->rx_urb_max; i++) {
- 		ret = es58x_alloc_urb(es58x_dev, &urb, &buf, rx_buf_len,
- 				      GFP_KERNEL);
- 		if (ret)
--			break;
-+			continue;
- 
- 		usb_fill_bulk_urb(urb, es58x_dev->udev, es58x_dev->rx_pipe,
- 				  buf, rx_buf_len, es58x_read_bulk_callback,
-@@ -1723,18 +1724,18 @@ static int es58x_alloc_rx_urbs(struct es58x_device *es58x_dev)
- 			usb_unanchor_urb(urb);
- 			usb_free_coherent(es58x_dev->udev, rx_buf_len,
- 					  buf, urb->transfer_dma);
--			usb_free_urb(urb);
--			break;
-+		} else {
-+			allocated++;
- 		}
- 		usb_free_urb(urb);
- 	}
- 
--	if (i == 0) {
-+	if (allocated == 0) {
- 		dev_err(dev, "%s: Could not setup any rx URBs\n", __func__);
- 		return ret;
- 	}
- 	dev_dbg(dev, "%s: Allocated %d rx URBs each of size %u\n",
--		__func__, i, rx_buf_len);
-+		__func__, allocated, rx_buf_len);
- 
- 	return 0;
- }
--- 
-2.53.0
-
+Acked-by: Szymon Wilczek <swilczek.lx@gmail.com>
