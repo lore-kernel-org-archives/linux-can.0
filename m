@@ -1,37 +1,37 @@
 Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59ADF3112C0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D1B8311583;
 	Mon, 16 Feb 2026 13:54:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771250042; cv=none; b=FAoak61SpQPRskHhkEHWhEnaFFRdR9jwTO5z2No9RfbEfgZxqDr3VlLmdHCDX6lItJ88Lfqk8lVU36aiQl0QEHsFgDM4vQ6FN0jrzvZlS6zcrGgwodeZAyj5UGH4Fmess1e5JXALZl5YyWGKTmPExkTtP+BrkgJ+Kmaeyf8Yk4w=
+	t=1771250042; cv=none; b=c35ecP4bRoP2/BX0T3BOx9rwENGQNqDobiL6fzX5C80+fJMy7JSPM9pZ21GAfVWmDKzPJe/j+K+Vgijgcti7QjN8bNK720lR1nyGVhpEibjuUn+HSJJD3eTg6J4QAKLadcci6GRG2RNBTFn8xTtwtpc0LBK860q1Q0vshWO6Zxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1771250042; c=relaxed/simple;
-	bh=/PGF8n3ZPwg8SvqomUfKuLr0agtqSkts0yZdJBNuDRM=;
+	bh=llM/KzBhmu+L1VSf3YRy2olgNb3GA7BR8+7MG0A3LjY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bQf/HWoLfcaP1obRThz1ATN1ORXPHSjK37MQ0JztUAp5ab80KKdV+lSSgGVPtuhWyzODW9RMaE+QqukvdeilZ5jSf4fVDCDSsbvnmc4zRNazCT2LXT2kUHINfuiHJMhRZk20xZ3dI8oE2mUkIHv9mz5fmCLVzpZch7vslXGifAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=fail (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=NktMD/lf reason="key not found in DNS"; arc=none smtp.client-ip=94.231.106.210
+	 MIME-Version; b=oerw3ctmWCrVOurKPy38sP6YFivvRmj316alhhK8e1X0udyp+eXDISL1ECPyXflNWCeNHTct8cb89/XhlTBJ4n7dzaeHroXmQPkz/k/dNMlCHTKa9HVEEcjh5Q7XBzs4+K6XnouvaEAF8m6B+qYSkXQGnZD3Gynk2bbDXfob0jY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=fail (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=pYRH/vSp reason="key not found in DNS"; arc=none smtp.client-ip=94.231.106.210
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="NktMD/lf"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="pYRH/vSp"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp.simply.com (Simply.com) with ESMTP id 4fF44Z2hFBz1Fbw8;
-	Mon, 16 Feb 2026 14:53:50 +0100 (CET)
+	by smtp.simply.com (Simply.com) with ESMTP id 4fF44b43LCz1Fbwb;
+	Mon, 16 Feb 2026 14:53:51 +0100 (CET)
 Received: from d-5xj5g74.got.gaisler.com.com (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
-	by smtp.simply.com (Simply.com) with ESMTPA id 4fF44Z0X9Cz1Fbw6;
+	by smtp.simply.com (Simply.com) with ESMTPA id 4fF44Z5c4yz1FbwS;
 	Mon, 16 Feb 2026 14:53:50 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
-	s=simplycom2; t=1771250030;
-	bh=n1jitg9yLGLEHU7Ikk+MP1rDLSfLfCDwECBLI2mLq7E=;
+	s=simplycom2; t=1771250031;
+	bh=jXQcjRcxsrRIpmX3uVmGRrYNnSd0R0YaXJGt3CFoZWY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=NktMD/lfC2TYPijvYLlmCzrdXhJ2m0xQ/oDgRl74EL5el26EOdfDGEUdeesaug+c0
-	 xcFpzVvNbELtT/d03xT7YVplJDVrtJjWZ+EXnrjMiem2QwW8PJC91fcdWuDUOYcit0
-	 WkY13VXtwDsvxE0NrloAw/iwlqCZP11k+O36/ZdBu3Vkspg9PKFFXoJd36UuYM3e/B
-	 NoLCxfFf7AEEsT4pE6FAUyzpRqHcQXeKqYJM9HlZSzkGtezwfhp/aUlBDnwilFoiJe
-	 +Xz00zaUX6CsfM9g8J1ZpEtxC2Scs+8mA3FBMrNd/SvgRab+H5VJxC1kY3PukKyGqX
-	 jmZG7QOPH0b4A==
+	b=pYRH/vSptesfA7htlh8anXgejD1p5X2YX2U1xpgucypt1gUq4dgSnAR0LXYL2TCIP
+	 k1wTmj/pTJ0TNUDcp0oZJs38NMg0g+uiMxV/VDW5kc77eNeJcYM4NIU8wRSqHgJwN/
+	 VjcZE5E/Uiheo6JuTJas7+EhcajoWth0F+eVaGSJp7xxtKhp87fVopZdHrkJntz1ZW
+	 SHjPufsHa+dHVPLfIlPao9G2Ch1L/P0QrwcFobHqBcnBZJlIeFU7/UAoZ3d71cubWs
+	 JKLL4EdEdip8en5KL0AY0BQUXLxlV50ocvB0mFAxGMDlZu3CB1s7kSFJRKguLxHfuq
+	 8vtUxDsxBT9eA==
 From: Arun Muthusamy <arun.muthusamy@gaisler.com>
 To: robh@kernel.org,
 	krzk+dt@kernel.org,
@@ -43,9 +43,9 @@ Cc: devicetree@vger.kernel.org,
 	linux-can@vger.kernel.org,
 	Daniel Hellstrom <daniel@gaisler.com>,
 	Arun Muthusamy <arun.muthusamy@gaisler.com>
-Subject: [PATCH v5 08/16] can: grcan: optimize DMA by 32-bit accesses
-Date: Mon, 16 Feb 2026 14:53:36 +0100
-Message-ID: <20260216135344.23246-9-arun.muthusamy@gaisler.com>
+Subject: [PATCH v5 10/16] can: grcan: Add saving and restoring of CAN FD baud-rate registers
+Date: Mon, 16 Feb 2026 14:53:38 +0100
+Message-ID: <20260216135344.23246-11-arun.muthusamy@gaisler.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260216135344.23246-1-arun.muthusamy@gaisler.com>
 References: <20260216135344.23246-1-arun.muthusamy@gaisler.com>
@@ -59,81 +59,29 @@ Content-Transfer-Encoding: 8bit
 
 From: Daniel Hellstrom <daniel@gaisler.com>
 
-Optimizes DMA transfers in the GRCAN driver by reorganizing
-data handling to use 32-bit accesses instead of individual
-byte accesses.
+While reset the GRCAN baud-rates are preserved, since GRCANFD has the
+baud-rate in different registers we need to add saving of those
+registers too.
 
 Signed-off-by: Daniel Hellstrom <daniel@gaisler.com>
 Signed-off-by: Arun Muthusamy <arun.muthusamy@gaisler.com>
 ---
- drivers/net/can/grcan.c | 26 ++++++++++----------------
- 1 file changed, 10 insertions(+), 16 deletions(-)
+ drivers/net/can/grcan.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
-index a752aea51d96..29247e9860c9 100644
+index 13dc4989f067..0ceda12335bc 100644
 --- a/drivers/net/can/grcan.c
 +++ b/drivers/net/can/grcan.c
-@@ -194,9 +194,6 @@ struct grcan_registers {
- #define GRCAN_MSG_OFF		0x00000002
- #define GRCAN_MSG_PASS		0x00000001
+@@ -525,6 +525,8 @@ static void grcan_reset(struct net_device *dev)
  
--#define GRCAN_MSG_DATA_SLOT_INDEX(i) (2 + (i) / 4)
--#define GRCAN_MSG_DATA_SHIFT(i) ((3 - (i) % 4) * 8)
--
- #define GRCAN_BUFFER_ALIGNMENT		1024
- #define GRCAN_DEFAULT_BUFFER_SIZE	1024
- #define GRCAN_VALID_TR_SIZE_MASK	0x001fffc0
-@@ -1217,7 +1214,7 @@ static int grcan_receive(struct net_device *dev, int budget)
- 	struct sk_buff *skb;
- 	u32 wr, rd, startrd;
- 	u32 *slot;
--	u32 i, rtr, eff, j, shift;
-+	u32 rtr, eff;
- 	int work_done = 0;
+ 	/* Turn off hardware filtering - regs->rxcode set to 0 by reset */
+ 	grcan_write_reg(&regs->rxmask, 0);
++
++	priv->hwcap->set_bittiming(dev);
+ }
  
- 	rd = grcan_read_reg(&regs->rxrd);
-@@ -1253,11 +1250,10 @@ static int grcan_receive(struct net_device *dev, int budget)
- 		if (rtr) {
- 			cf->can_id |= CAN_RTR_FLAG;
- 		} else {
--			for (i = 0; i < cf->len; i++) {
--				j = GRCAN_MSG_DATA_SLOT_INDEX(i);
--				shift = GRCAN_MSG_DATA_SHIFT(i);
--				cf->data[i] = (u8)(slot[j] >> shift);
--			}
-+			if (cf->can_dlc > 0)
-+				memcpy(cf->data, &slot[2], sizeof(u32));
-+			if (cf->can_dlc > 4)
-+				memcpy(cf->data + 4, &slot[3], sizeof(u32));
- 
- 			stats->rx_bytes += cf->len;
- 		}
-@@ -1396,8 +1392,7 @@ static netdev_tx_t grcan_start_xmit(struct sk_buff *skb,
- 	u32 id, txwr, txrd, space, txctrl;
- 	int slotindex;
- 	u32 *slot;
--	u32 i, rtr, eff, dlc, tmp, err;
--	int j, shift;
-+	u32 rtr, eff, dlc, tmp, err;
- 	unsigned long flags;
- 	u32 oneshotmode = priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT;
- 
-@@ -1450,11 +1445,10 @@ static netdev_tx_t grcan_start_xmit(struct sk_buff *skb,
- 	slot[1] = ((dlc << GRCAN_MSG_DLC_BIT) & GRCAN_MSG_DLC);
- 	slot[2] = 0;
- 	slot[3] = 0;
--	for (i = 0; i < dlc; i++) {
--		j = GRCAN_MSG_DATA_SLOT_INDEX(i);
--		shift = GRCAN_MSG_DATA_SHIFT(i);
--		slot[j] |= cf->data[i] << shift;
--	}
-+	if (dlc > 0)
-+		memcpy(&slot[2], cf->data, sizeof(u32));
-+	if (dlc > 4)
-+		memcpy(&slot[3], cf->data + 4, sizeof(u32));
- 
- 	/* Checking that channel has not been disabled. These cases
- 	 * should never happen
+ /* stop device without changing any configurations */
 -- 
 2.51.0
 
