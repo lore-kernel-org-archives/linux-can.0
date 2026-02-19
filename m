@@ -1,167 +1,235 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+Received: from MW6PR02CU001.outbound.protection.outlook.com (mail-westus2azon11012054.outbound.protection.outlook.com [52.101.48.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0F5E318EFA;
-	Thu, 19 Feb 2026 20:29:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771532959; cv=none; b=UZgZWeI+mySGvO9EPw4wtYMD3pjJDOWrAoIiT88ZNc/fCxJx/kn/jYmb89naEFa0N/mvhznOjjzdbB4VGX0tnAglWmTQCpkyMjznE2oCPoeJsJRa2rdtlb3picermxFcS0KXDi3EIe+uAVpqQPQiqjzdYTAhJ/kwA4jwPACEdL0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771532959; c=relaxed/simple;
-	bh=O395g583JciclhAYkpkhPwswiSCKjgtzscqic/6jAKw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=shezwgB0ilZR3+kTY6bxO4mMhFkuO8rST4tNqzNIOXhRZYmQiv5PyVrarZjXSXKGxcwcq572hrsU/uS9lWv3wB1bEW2d3XTaHUPu1ZcSQx3SnW+gZcf7q5pg+8uXk7N7PGPEqDj5Lb6Wmyg04Ez4iN5nMxZpVEKmOCuuo5fWpCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=B3Zomwb1; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD81C2820A9;
+	Thu, 19 Feb 2026 20:31:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.48.54
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771533091; cv=fail; b=SRQloZrYJ/bWbf7BJV76ALJNjreFC4CmYWBgSf2OkSRe/swI1l/bNAtVp4YYg1S2UGRfEmpIp7kvBY3/hdcVVlguUAXUhhlz1f9bSiqf4PQRhP67joiFl0863qu1cW5zlx+rSWWOsKEvSuY6o3gFmrig3I9Fu2bMC//Z5d+owJA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771533091; c=relaxed/simple;
+	bh=0VZpfttNJUiL3Ey1f25v1FAikv7aL9fgksUL6TDcEcM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=biGowFzQKlDv3zOiCI5MSi5TtPCahGMgq83Hg+WcdUtYobpolysdC28Gbby2nZPy3fJpHBcHbmRh1fSDqze/Wv0wclODHsZcVok6HO/A7gmc7OahD4CLUAAOhYlvP0fDn3tOBfozslm5ExnzDHNwBTO4QYj43uw8L/hT8lubejU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=nRssySiG; arc=fail smtp.client-ip=52.101.48.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B3Zomwb1"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1771532957; x=1803068957;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=O395g583JciclhAYkpkhPwswiSCKjgtzscqic/6jAKw=;
-  b=B3Zomwb1F5J/tDhTRL+byqr22jxjAcuaM0R2mHeKckq4cC6LtNbCrwKJ
-   U8iU7FnqyCTqWU62o0gYihioZ883iBhX/zBKt7EukmdyLb7f68OGBwnIz
-   3+fR2uge0VJHkGZRGD5FV982UTOkseZZjHA1Tp0mEjkwU/AwVyQHR3UYq
-   jWY9pc1uuQp17TDK97P0YZnVqyoBAbVZ3bmy+ZMVpLchUkkXMtBZCaEFf
-   W7eZpGxSlGUGDTWXy3jEjAgKSCan1p5ZuSAJ05om3FYKNJa2AsuIefjC8
-   /jNBUZ6BdJi1mYryro3BECA9FcVuehvQN9xnnQjqR9UzouRnNXwJvZX0P
-   Q==;
-X-CSE-ConnectionGUID: 0ko//MtySY6UNxMJ4I0cvg==
-X-CSE-MsgGUID: p8/mNKs1T060h1laAfuYHw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11706"; a="72532342"
-X-IronPort-AV: E=Sophos;i="6.21,300,1763452800"; 
-   d="scan'208";a="72532342"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2026 12:29:15 -0800
-X-CSE-ConnectionGUID: HwgZ1UnqRwORsfJSozvKEQ==
-X-CSE-MsgGUID: OKz+UufCT4O4dB1lvn7Oxw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,300,1763452800"; 
-   d="scan'208";a="219183209"
-Received: from black.igk.intel.com ([10.91.253.5])
-  by fmviesa005.fm.intel.com with ESMTP; 19 Feb 2026 12:29:13 -0800
-Received: by black.igk.intel.com (Postfix, from userid 1003)
-	id 035B999; Thu, 19 Feb 2026 21:29:12 +0100 (CET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: linux-can@vger.kernel.org,
-	linux-phy@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 2/4] phy: phy-can-transceiver: Move OF ID table closer to their user
-Date: Thu, 19 Feb 2026 21:26:20 +0100
-Message-ID: <20260219202910.2304440-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20260219202910.2304440-1-andriy.shevchenko@linux.intel.com>
-References: <20260219202910.2304440-1-andriy.shevchenko@linux.intel.com>
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="nRssySiG"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Gr/3YQWJ+HV/vgRRFseQMfW6A8lD+UKLImWIrioDXoxzwIfSJHt3kdekIyM6/q+byFs6yzlKGVl49iwRdjO7yD5ZTpkpcTXjnzlVfnKp/7XgQLzaObWYyBSFVl50h5aWWRYWotQ7I1geAAJOGRvEAdg7MmTc5lWC1DzTXoxQ5UR58M5shsSirJu7FqRgiVXw3lQFSYGy6Z2WuX8INnKmUYIsW9PtOBSJdTVAPk5LMub7ZSw2lX2h1qLVL7t3/8ZBNS26AGeury427EgBXZxnKcNUj1hixAYA04sQpu12//AQkIYbYcrNrpxUIKBXJgZTCPMCh+DFr/LbbrB5bkLAzg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VRf1YGHWe3NZIL2XcHQPI4ThFkqMyy4aVw3nWn1FmJ8=;
+ b=CsiN539NDt6AUUts9M/WVF0rl/bRi0gIbGwp9aZJpir0JAJC852jnfTt1k+ZnLPTszkvBHwZ+jdyFBb3ZWFFWo7CcvJ/xf3HnRPJCq199apd8CX5vkHGwLW5VUcnGA+Y2GF3PGZNUJCvC0spvMaG3uAE3TMI507JsI4C6ac+af7ZHZpOw9jxrIZJ/7qtplpQCPZh+Yes7ZV2tbpkXSmW31KNqvQ6QdqTnBPZ/sexWwn323ohTAl03n/Y9vsOqjWg1SDmpjeo6fUtTm2S4VbCZKePlIndOxHE28Aw5YQHPUP6OGzZCnGqQGg4nbc85bIquxC5RJqeFy3QrpHZHEFbOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 198.47.21.194) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=ti.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VRf1YGHWe3NZIL2XcHQPI4ThFkqMyy4aVw3nWn1FmJ8=;
+ b=nRssySiGimqdvOGOBY5GzBUUimwdP2q4CnD1C7JuWv7otEyKVZg+qU/s8dlY49jnZ1Puh7iinuizvEeiNaHYKXdPt5MopI1C1k49Vr8qBlNbG1Jcdr6a/+rhov8mr1CR3ku1IKMsRmd8rNPtprqVac7pKPCFUPOEH5KwmyKdWTw=
+Received: from SN1PR12CA0092.namprd12.prod.outlook.com (2603:10b6:802:21::27)
+ by DM6PR10MB4121.namprd10.prod.outlook.com (2603:10b6:5:21d::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9632.15; Thu, 19 Feb
+ 2026 20:31:26 +0000
+Received: from SA2PEPF00003F68.namprd04.prod.outlook.com
+ (2603:10b6:802:21:cafe::a1) by SN1PR12CA0092.outlook.office365.com
+ (2603:10b6:802:21::27) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9632.15 via Frontend Transport; Thu,
+ 19 Feb 2026 20:31:24 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.194)
+ smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
+ action=none header.from=ti.com;
+Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
+ 198.47.21.194 as permitted sender) receiver=protection.outlook.com;
+ client-ip=198.47.21.194; helo=flwvzet200.ext.ti.com; pr=C
+Received: from flwvzet200.ext.ti.com (198.47.21.194) by
+ SA2PEPF00003F68.mail.protection.outlook.com (10.167.248.43) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9632.12 via Frontend Transport; Thu, 19 Feb 2026 20:31:25 +0000
+Received: from DFLE206.ent.ti.com (10.64.6.64) by flwvzet200.ext.ti.com
+ (10.248.192.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 19 Feb
+ 2026 14:31:25 -0600
+Received: from DFLE207.ent.ti.com (10.64.6.65) by DFLE206.ent.ti.com
+ (10.64.6.64) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 19 Feb
+ 2026 14:31:24 -0600
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE207.ent.ti.com
+ (10.64.6.65) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
+ Transport; Thu, 19 Feb 2026 14:31:24 -0600
+Received: from [128.247.81.19] (uda0506412.dhcp.ti.com [128.247.81.19])
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 61JKVOUI2694725;
+	Thu, 19 Feb 2026 14:31:24 -0600
+Message-ID: <b330487e-0564-47b8-95a3-c6c207964056@ti.com>
+Date: Thu, 19 Feb 2026 14:31:24 -0600
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] can: m_can: set out-of-band wakeup if wakeup pinctrl
+ exists
+To: Markus Schneider-Pargmann <msp@baylibre.com>, Marc Kleine-Budde
+	<mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>
+CC: <sebin.francis@ti.com>, <d-gole@ti.com>, <vishalm@ti.com>,
+	<linux-can@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20260213-mcan-out-of-band-v1-1-af68d4c570b3@ti.com>
+ <DGI13PI02XEN.3MNAWATF73XVL@baylibre.com>
+Content-Language: en-US
+From: Kendall Willis <k-willis@ti.com>
+In-Reply-To: <DGI13PI02XEN.3MNAWATF73XVL@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF00003F68:EE_|DM6PR10MB4121:EE_
+X-MS-Office365-Filtering-Correlation-Id: 86e03d68-eeed-48c5-1716-08de6ff5da50
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|36860700013|376014|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?dllBWmc5YytSWUdOMkRjUktCMlhXcTlFL052UEVlalJEMHUwcmxiNU8zNGV1?=
+ =?utf-8?B?RkhjbVJPNERvKytFczhSSkZvWGZxcWozMFlpWEY0b2tEWkF4U1FCenREQU9V?=
+ =?utf-8?B?amkyT21OMTVMRnowTkwrOEx2M0JCeEdYVzBudzk3QXJPOU5CR1I1VGNUWUt4?=
+ =?utf-8?B?RXd3OWJVZzJoOVpqRElUY0FnR21wWVFNSjBESWREMXgwWWp0UFlKNW82V3FK?=
+ =?utf-8?B?QlQrU25oRFZYcGRUam1DdVlkdFB6Q2FqamlQM3luaE9JZjZEVjU5dVd5SU0x?=
+ =?utf-8?B?Ty9Ialk3QTNwc1BtamcvcXJHbjR0U3pYMmJsV2dXTzU5YTBHbEFicFRQdEhJ?=
+ =?utf-8?B?dm8ra2xDbW93L040Y2JoNlVuV1dTWnpzODVBZ0h4N1ZiNVBSUERqOE5RV0Js?=
+ =?utf-8?B?b0pDVzdKMnFzRVlPb3dLMHdtd1V3WHVMYzVZakx5WE04WVErMjB1RGZwWVdl?=
+ =?utf-8?B?ZWVpVVl6N2F0U3orWDBvTkFQSDBVclV5RDBLRFZhVUVBanZ2aWFzc1lXd01E?=
+ =?utf-8?B?U3c1ODNVMmdHQnJqUHlBWkdzYmh1S3FSU1B4ODFUc2Y0RWlJNnBpVU01UXZZ?=
+ =?utf-8?B?dkFBN3k5ZGt1TTBJMFAzUGhvOTN0MkE4LzN4MTYxWHpRaFlMS1dRY0xhUDFl?=
+ =?utf-8?B?VjYvMjZUbDhiSVhxTVg2Mk9FeHFHaVJrTHhHOFl1bHZEbFFHdWQrMmdjQVo3?=
+ =?utf-8?B?QmoxVGozeXdwVGN3TGdDUzlsR0w0SWNMNGFGK0UzRG5SM3I3RDV5UlVkMnVm?=
+ =?utf-8?B?bEFDVUp4RktvOTZ5OGRtVDhWZW5RWmlMQjlGMVhxMzBQckJxb2NTUTFuU1Vk?=
+ =?utf-8?B?b2Rqckg0MndSYjN2M2RCTDBtRzJuU1F2RldwZyszR2xYck13NmhJZVNyakwy?=
+ =?utf-8?B?V2IvWlN4dTVZSFVMRUoxOEhIUGgzU0k3cUhTZU1JeGk3R3JJZFJuTnhKRXlw?=
+ =?utf-8?B?VHE4d1FWaDc0OGJYWUxBY2tuZ2l5a3FsZy9mOVRNZkNIZlgxZk5XeGtrbkRP?=
+ =?utf-8?B?TEp5cExJMVhjZ1NTWkRzOGlwV1V4eStubHVRSnkvZ2xXZFErVzg0NnpodlRr?=
+ =?utf-8?B?QzZzcHdGdU1ST1MxdmdRaWhvbmNERlkvOFFhMVJHUkpPMTNYVStJbVptZGsz?=
+ =?utf-8?B?djhHbHNlM1RLV09sR3pod00yblN4OXNNeHllWnJyYjVJNnQvSkN2THlyWDZK?=
+ =?utf-8?B?WkpLOFFZZjB6cnQvakF2ekp4cEQ3Wm5BV3lFT21ES0ozSmhBS2RqcElpdEdE?=
+ =?utf-8?B?RFl6ZTY2SjRiT2srb1NXOHJCcnhSNmVUR0ZYYjJVU0Q1WFJPZDRobHdsTk55?=
+ =?utf-8?B?Mkh5WFU5TjV5NlZldXZOZmpWSE1xS1RPQ1ZrTWRnMER4OUtQSisvTlhlMEF0?=
+ =?utf-8?B?eDErTDZONzl0ajN1bHFCdjUzOVJ0SDV5NWVKK3JRcmlwVHlYQVVDOXp4ZUZX?=
+ =?utf-8?B?V1pPYU1KdEdzZ29qZmd0NERlcGwzM0NGbXpEaE9HZy9ESWtTK1hoZm93Q3Rk?=
+ =?utf-8?B?b2hnNk9YU0c2NDJMUmRIaE1jTGYzNjJTbmtPcGlCZ2NpTVB6MmtqekV6UDVM?=
+ =?utf-8?B?VG1yZmd5amlDUk1aWTFNdGkrVEh2MW1FUGRwV2JwTmRsaDBrSDlEbFZiTWp2?=
+ =?utf-8?B?Wk9yajF0TzIxREk4RHRSeVFSRGZJK01IclpjdDdhK0RsL3pMcER0OTVKM1Jj?=
+ =?utf-8?B?ZWdoU0paaS9XK09DRHNWM1FBdEFqZHNkQ3hMblpFL2RCTTljS2JOaGllOHZU?=
+ =?utf-8?B?MnF2U2s3ZUg3eTZXV1BzRjRGcDBCTEp3U2E2WmZ1ZXZjS3VZb1BqRm03TW10?=
+ =?utf-8?B?UTRGYis1cjhQOEk2WWdURjQ1M0RqNG00RWRNNU52TVpnbFRacWJFNDJYcXNw?=
+ =?utf-8?B?WTMvK1VUQXdrMWJuUVVwc3lxUTN3Vk1ycEYxSE8yTlEwKzF1UlZpMWV0N0Rh?=
+ =?utf-8?B?dFlmd3NSVlB4Z0pFcHhxTmM2bGdxTHhhbkl6MG5GRWVwUzNDRkUrZnFoMHl0?=
+ =?utf-8?B?K01wNnJuUmJ6UHVFek02Mlpvd0c5WUJ0TEdtYUxUUk5Jcy9tNnNQVjdCMUJo?=
+ =?utf-8?B?Ym5qSG5kb1pQdFdCYUh6d0daVGxQVjZCaFR4QWFPVkdkU2pKQ1ZZLzl6cE1U?=
+ =?utf-8?B?b3d0MFFBVTNaVHFmYW9VenU1OHd5cnAzdmdkWVpRN0xJTWduaFN0amNiV1Zh?=
+ =?utf-8?B?WU52NW1wdHNDcjgvQXM3aU40d0pTN2YxWHhJa1lhZmpOOGRDRkF3OHFkSW94?=
+ =?utf-8?B?OUZrM005Rm81WTltT3YvUnEwSnR3PT0=?=
+X-Forefront-Antispam-Report:
+	CIP:198.47.21.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet200.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(82310400026)(36860700013)(376014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	YSy5BWwCstzmPHHSmuwB6ttSnNSboPtiU849vUjn5I9RmMlYqSTA5iPuWDiFsv6sMfVvvbi3M1lV3fO283y6P1vNkFwkKidrRWk5BJbvDNBuC+7V6DQgcLC34lZwegzp42ix5h1xqHPiI+po5DaCvsdmu8/ri16W05pynBmtQ+A0kbvLvtjVp38XEfOtQzJ6z6FNKv80bkBr3PFRDwJuSPdGuwtj2YBvoEJmIIHlOetEYCY4LNefPWc7VU1G43ma0oe2Uble/mJsfYh+Jy2hMr91VZgr/Ao3o4MUYDmc0weUy0iMEIhLOj7+BO1qbkJY4JQSDhPEKpbSXrfJxVTytF5G3V2AHa1cY6iULuOlUSYmE/ZQHGjWvS16ALfXcn6GHW8HaofRF8Zl5EVTLVJ3p//3cSg5A++HuvXbJTY9UdAGdmVZpxkYGzfkxypJNoqu
+X-OriginatorOrg: ti.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2026 20:31:25.2792
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 86e03d68-eeed-48c5-1716-08de6ff5da50
+X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.194];Helo=[flwvzet200.ext.ti.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SA2PEPF00003F68.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB4121
 
-There is no code that uses ID table directly, except the
-struct device_driver at the end of the file. Hence, move
-table closer to its user. It's always possible to access
-them via a pointer.
+Hi Markus,
+On 2/18/26 04:51, Markus Schneider-Pargmann wrote:
+> Hi Kendall,
+> 
+> On Fri Feb 13, 2026 at 7:08 PM CET, Kendall Willis wrote:
+>> In TI AM62X, AM62A, and AM62P SoCs, the m_can pins can act as a wakeup
+>> source in the deepest low power states. However, the m_can pins are a part
+>> of the MCU domain which is OFF in deeper low power states. Since the m_can
+>> pins continue to be ON even if the MCU domain is turned off, set
+>> out-of-band wakeup for CAN device if `wakeup` pinctrl state exists and
+>> device may wakeup.
+> 
+> Thank you for your patch.
+> 
+>>
+>> Signed-off-by: Kendall Willis <k-willis@ti.com>
+>> ---
+>> Tested on CAN IO wakeup from DeepSleep low power mode on AM62P EVM.
+>> ---
+>>   drivers/net/can/m_can/m_can.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+>> index eb856547ae7df27a844b236a0c1d4498cbb8b60f..8b277f5e208ffa634439b9ea8495ed56f12cfccb 100644
+>> --- a/drivers/net/can/m_can/m_can.c
+>> +++ b/drivers/net/can/m_can/m_can.c
+>> @@ -2622,7 +2622,9 @@ int m_can_class_suspend(struct device *dev)
+>>   		cdev->can.state = CAN_STATE_SLEEPING;
+>>   	}
+>>   
+>> -	if (!m_can_class_wakeup_pinctrl_enabled(cdev))
+>> +	if (m_can_class_wakeup_pinctrl_enabled(cdev))
+>> +		device_set_out_band_wakeup(dev);
+> 
+> This will set out of band wakeup for every m_can that has a
+> wakeup-pinctrl set. am62* is currently probably the only platform that
+> uses the wakeup pinctrl setting but that may change at some point in the
+> future. Can we narrow down setting the out of band wakeup to the
+> platforms that support it?
+> 
+> One idea could be to parse the supported system-idle-states from the
+> list of wakeup-sources and see if deep states are supported that would
+> require m_can to be off, e.g. mem-deep, off-wake. I think that would be
+> a clear indicator that out of band wakeups are supported.
+> 
+> For the list of state names you can have a look in the dtschema
+> repository:
+>    https://github.com/devicetree-org/dt-schema/blob/main/dtschema/schemas/system-idle-states.yaml
+> 
+> What do you think?
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/phy/phy-can-transceiver.c | 59 +++++++++++++++----------------
- 1 file changed, 29 insertions(+), 30 deletions(-)
+I agree that we should narrow down setting the out of band wakeup to the 
+platform, but I am unsure of parsing the supported system-idle-states as 
+the solution. Since we don't know how the power domains in other 
+platforms are organized, it would be hard to say that if deeper idle 
+states are supported mcan has out of band wakeup logic. It could be the 
+whole power domain was designed for the deeper power states.
 
-diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
-index f2259af4af8a..dd08faf46837 100644
---- a/drivers/phy/phy-can-transceiver.c
-+++ b/drivers/phy/phy-can-transceiver.c
-@@ -97,35 +97,6 @@ static const struct can_transceiver_data tja1057_drvdata = {
- 	.flags = CAN_TRANSCEIVER_SILENT_PRESENT,
- };
- 
--static const struct of_device_id can_transceiver_phy_ids[] = {
--	{
--		.compatible = "ti,tcan1042",
--		.data = &tcan1042_drvdata
--	},
--	{
--		.compatible = "ti,tcan1043",
--		.data = &tcan1043_drvdata
--	},
--	{
--		.compatible = "nxp,tja1048",
--		.data = &tja1048_drvdata
--	},
--	{
--		.compatible = "nxp,tja1051",
--		.data = &tja1051_drvdata
--	},
--	{
--		.compatible = "nxp,tja1057",
--		.data = &tja1057_drvdata
--	},
--	{
--		.compatible = "nxp,tjr1443",
--		.data = &tcan1043_drvdata
--	},
--	{ }
--};
--MODULE_DEVICE_TABLE(of, can_transceiver_phy_ids);
--
- /* Temporary wrapper until the multiplexer subsystem supports optional muxes */
- static inline struct mux_state *
- devm_mux_state_get_optional(struct device *dev, const char *mux_name)
-@@ -239,6 +210,35 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
- 	return PTR_ERR_OR_ZERO(phy_provider);
- }
- 
-+static const struct of_device_id can_transceiver_phy_ids[] = {
-+	{
-+		.compatible = "ti,tcan1042",
-+		.data = &tcan1042_drvdata
-+	},
-+	{
-+		.compatible = "ti,tcan1043",
-+		.data = &tcan1043_drvdata
-+	},
-+	{
-+		.compatible = "nxp,tja1048",
-+		.data = &tja1048_drvdata
-+	},
-+	{
-+		.compatible = "nxp,tja1051",
-+		.data = &tja1051_drvdata
-+	},
-+	{
-+		.compatible = "nxp,tja1057",
-+		.data = &tja1057_drvdata
-+	},
-+	{
-+		.compatible = "nxp,tjr1443",
-+		.data = &tcan1043_drvdata
-+	},
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, can_transceiver_phy_ids);
-+
- static struct platform_driver can_transceiver_phy_driver = {
- 	.probe = can_transceiver_phy_probe,
- 	.driver = {
-@@ -246,7 +246,6 @@ static struct platform_driver can_transceiver_phy_driver = {
- 		.of_match_table = can_transceiver_phy_ids,
- 	},
- };
--
- module_platform_driver(can_transceiver_phy_driver);
- 
- MODULE_AUTHOR("Faiz Abbas <faiz_abbas@ti.com>");
--- 
-2.50.1
+Additionally, without out of band wakeup for mcan on AM62 devices, mcan 
+can only wakeup from mem-mcu-active idle state, and adding out of band 
+wakeup allows for wakeup from mem idle state and deeper. Checking for 
+mem idle state doesn't seem deep enough to warrant setting out of band 
+wakeup for all platforms since some platforms could have mcan in a power 
+domain that is ON during the mem idle state.
+
+Another idea would be to add some sort of property to the device tree to 
+denote the wakeup source is an out of band wakeup source.
+
+I am good with implementing the idea you suggested, but those were some 
+considerations that I was unsure about for the implementation.
+
+Let me know what you think, and thanks for reviewing!
+
+Best,
+Kendall
+
+> 
+> Best
+> Markus
 
