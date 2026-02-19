@@ -1,49 +1,50 @@
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CCFC311C2D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFE10318BB3;
 	Thu, 19 Feb 2026 20:29:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771532957; cv=none; b=kcOVlktBFOCmmT1r/RNj80QGUQb4xW2OGHxg4m67D74SzB4B8oHuAN7hw90z09kKI8kgUYP03HDnD6QC9A1F+N0Q/wr+CLta5RkgY5b4FLo7a9RXCLqS4QpDMQ8HQT8JyRUcIHvUW6X9bSj5g3CTDJrJlEOuDbV97JkGaUyvHww=
+	t=1771532958; cv=none; b=R88kzyeRJ/+aWHe+U7BN4MmnHydEqfNk+1aiYbYlLw3BA9mfi6CNr1gjjXeuhONiWLjTM/QCd+F3QMH+c9lwq8tMYl4fPiPu64CcCcnx+akdF+bc0avq9pSTDXiAYZV3KopEXlXZ/dlN71LMVnpQD34D/f+OFeRsUVPixEAK5gk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771532957; c=relaxed/simple;
-	bh=UGGpnkOvYPbrXSd8q4HPF1cTvjy9favFkK4diENBEpc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OnEvQ9C2xlps2a1DUAFlfug0liKlDFWDA2SAA1tVsuXuffSGzuA06fK0LP+jIYFBU5iHyNz6Kya2uTfKlbJiAu22XSD1vXaSMy7wlTmB7ZFYt1Ur6zb8V2oYZWNnOoUecyXiDd+x/pscxnCim1SlHB0FbwqCjmUs5XFoepV3LIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZP/N5Lhl; arc=none smtp.client-ip=198.175.65.19
+	s=arc-20240116; t=1771532958; c=relaxed/simple;
+	bh=UVb/lJOOJhogtTXNOnHshhDE7UWpEz6L/FN2AVGtFbY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=CmeFtaAN58GWEJfdEMSNQJU5xiLXMgS0Q89y6g5INOw4SgmnTkO8kP9sID7jCYnjdDkKTTYh7PL6hReOf0aqPdZRREcw94TtSxM9bdPjiKTD5ZfPhmx9XWhcHy9n6NQYXqEBDWdKmXzIGoxVx1vFI8/ZDMGGdEDfoCWdfPQwq2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=m2ZwsOgr; arc=none smtp.client-ip=198.175.65.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZP/N5Lhl"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="m2ZwsOgr"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1771532956; x=1803068956;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=UGGpnkOvYPbrXSd8q4HPF1cTvjy9favFkK4diENBEpc=;
-  b=ZP/N5LhlVQ/9nPQZUBIU8y3h9WL5SQcPRMSpsNa1hX+R5Wnke0euZoAt
-   YybMiAZd134c0l/OIX9UeFKKal7DTWmQ5l0B2KrhBsVjBEn7G9PPr4xVP
-   UK/dqJAHxHO9zsuNoC/N9+DNXSfbcNQSc03YlXdtP+vgN4hUo0/oUzuiD
-   9r2kmrKNWa/5YAOk0kkpuqlRxWNRznvFNy95h/sm1g4HwNIfW49Dh7aqv
-   5k/B7xFDk1q9PLs82fp8qeUAIATZgxXy5iQI1TB3mBpqT8GAAjucZEuBE
-   UnTmSRsmDfoj1T+Sl2oDXwIeCp1hLcD+oxUR/LUn7ihHK/P1iDI1ONbDN
-   g==;
-X-CSE-ConnectionGUID: mfdBqgS3QOibZ/BBrYk6bw==
-X-CSE-MsgGUID: 1xt+YsnCSyOef/6FsEnoyA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11706"; a="72532332"
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=UVb/lJOOJhogtTXNOnHshhDE7UWpEz6L/FN2AVGtFbY=;
+  b=m2ZwsOgrJjFafTPbXZyI0QRqZGjYe5QiOPVDGgZaK7cXmlcJ9DIv3Skr
+   ZwHKSqTYcA4dynqtCIa/R6zMhg4tDyact1yP/FbFEycygLlH7BCKRRn53
+   JMbhKpwvtLcL/2QfbgQgaGlWOhYSPK/2BRNhJKPwkpNcSgB1feuPvTdt4
+   hZ6kztwwrXVhn9zMwPudvBDNYJ/EWbcsqWY4Oj1RoJ75uMFJZ4CxdDNAM
+   tCm0XV1K7d4kJ+2kRpY2KnKQo/436LzYdfawuU2hevUQ5S5CIPjz03BA0
+   JoJYNpavQC1QrBKB1nRuQ0fhv4R54pYiPFhh2U2k+HwL+a1x/k0PvS8WV
+   A==;
+X-CSE-ConnectionGUID: t2tI9dcTSHa6tVIX/XHKyw==
+X-CSE-MsgGUID: Lh7iJsupRbK0bUp1LSDuuw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11706"; a="72532337"
 X-IronPort-AV: E=Sophos;i="6.21,300,1763452800"; 
-   d="scan'208";a="72532332"
+   d="scan'208";a="72532337"
 Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2026 12:29:14 -0800
-X-CSE-ConnectionGUID: 72B2VFTLROqp7e9PeEtwgA==
-X-CSE-MsgGUID: VMf519aCQ8yJ4M8xDzEMcw==
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2026 12:29:15 -0800
+X-CSE-ConnectionGUID: vaxD0SWIR6uxqp1QKPDpbQ==
+X-CSE-MsgGUID: RT6iERWuQCahA0gz9TWgCw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.21,300,1763452800"; 
-   d="scan'208";a="219183207"
+   d="scan'208";a="219183208"
 Received: from black.igk.intel.com ([10.91.253.5])
   by fmviesa005.fm.intel.com with ESMTP; 19 Feb 2026 12:29:13 -0800
 Received: by black.igk.intel.com (Postfix, from userid 1003)
-	id F046B95; Thu, 19 Feb 2026 21:29:11 +0100 (CET)
+	id 076F89B; Thu, 19 Feb 2026 21:29:12 +0100 (CET)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: linux-can@vger.kernel.org,
 	linux-phy@lists.infradead.org,
@@ -53,10 +54,12 @@ Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
 	Vinod Koul <vkoul@kernel.org>,
 	Neil Armstrong <neil.armstrong@linaro.org>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 0/4] phy: phy-can-transceiver: Ad-hoc cleanups and refactoring
-Date: Thu, 19 Feb 2026 21:26:18 +0100
-Message-ID: <20260219202910.2304440-1-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 3/4] phy: phy-can-transceiver: Don't check for specific errors when parsing properties
+Date: Thu, 19 Feb 2026 21:26:21 +0100
+Message-ID: <20260219202910.2304440-4-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.50.1
+In-Reply-To: <20260219202910.2304440-1-andriy.shevchenko@linux.intel.com>
+References: <20260219202910.2304440-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -65,23 +68,50 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The driver does two things that need to be addressed:
-- includes subject to remove gpio.h
-- checks for error code from device property APIs when it can be done in
-  a robust way
+Instead of checking for the specific error codes (that can be considered
+a layering violation to some extent) check for the property existence first
+and then either parse it, or apply a default value.
 
-This series addresses the above and adds a couple of additional refactoring.
+With that, return an error when parsing of the existing property fails.
 
-Andy Shevchenko (4):
-  phy: phy-can-transceiver: Convert to use device property API
-  phy: phy-can-transceiver: Move OF ID table closer to their user
-  phy: phy-can-transceiver: Don't check for specific errors when parsing
-    properties
-  phy: phy-can-transceiver: Drop unused include
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/phy/phy-can-transceiver.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
- drivers/phy/phy-can-transceiver.c | 86 ++++++++++++++++---------------
- 1 file changed, 45 insertions(+), 41 deletions(-)
-
+diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
+index dd08faf46837..ebce48ef217f 100644
+--- a/drivers/phy/phy-can-transceiver.c
++++ b/drivers/phy/phy-can-transceiver.c
+@@ -138,8 +138,9 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
+ 	struct gpio_desc *standby_gpio;
+ 	struct gpio_desc *enable_gpio;
+ 	struct mux_state *mux_state;
+-	u32 max_bitrate = 0;
+ 	int err, i, num_ch = 1;
++	const char *propname;
++	u32 max_bitrate;
+ 
+ 	drvdata = device_get_match_data(dev);
+ 	if (drvdata->flags & CAN_TRANSCEIVER_DUAL_CH)
+@@ -158,8 +159,15 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
+ 
+ 	priv->mux_state = mux_state;
+ 
+-	err = device_property_read_u32(dev, "max-bitrate", &max_bitrate);
+-	if ((err != -EINVAL) && !max_bitrate)
++	propname = "max-bitrate";
++	if (device_property_present(dev, propname)) {
++		err = device_property_read_u32(dev, "max-bitrate", &max_bitrate);
++		if (err)
++			return dev_err_probe(dev, err, "failed to parse %s\n", propname);
++	} else {
++		max_bitrate = 0;
++	}
++	if (!max_bitrate)
+ 		dev_warn(dev, "Invalid value for transceiver max bitrate. Ignoring bitrate limit\n");
+ 
+ 	for (i = 0; i < num_ch; i++) {
 -- 
 2.50.1
 
