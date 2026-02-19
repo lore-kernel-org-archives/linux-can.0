@@ -1,130 +1,132 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07B5134CFB7;
-	Thu, 19 Feb 2026 16:51:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C0C73176E0;
+	Thu, 19 Feb 2026 20:29:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771519909; cv=none; b=T2TI4eTNDABW5727ntw8VeFzheE0uwK3QYbwEwW1XzYpn9J6l794UsCd/r3Xc4ygtSVUAO7uSibel1Ng32K9pcvYNAlLcC2R2R3hM6YlElvbW19MGbYUnO8HhDX2nYpm2ZxWqB9gZnPDxxpIrJjcrn7ko5asqN+67DJ6LtVgyW8=
+	t=1771532956; cv=none; b=fKWHwK2BqfFkhs/LOk4ThmUpdPaMlD8aszfyp1nTkILU2g91zf35A+Vdc48J1ymPLe5C5JHCgDs4HAcuB1egZjt75n7Te2IlD3h8dtNQ7933OwKhAUm79kt1+q2dpMYFMq7WgYwMJ0dn9DazxBUi3YKJXBLg64v5ne6R0AYke7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771519909; c=relaxed/simple;
-	bh=Uk2s+vOYK5R2mgNSWbZlvpy2x63Rk1TzbDHp24TGokg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=HXsJa16BGIno3GWtOsyhpVyeNvh4n0tqAgi6rDfDd/K/s6OMWaAe0YayzcjyVv5kBzjWT100jCXy62dfv6wdWbAMN1dX6cnYqxWRAIf497uzIf/AayqBzjQNC1FbcwW8JkfEZzl+mb2HmGI71w2PZT4h2jbUqg7m+vpLik6Cv58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DFkRFBw6; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1771532956; c=relaxed/simple;
+	bh=hd5cj1VyA/d0T/ntQwiii7GhLKEXsJXcwSYU99VWdng=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=P2hBC4cSJ3J0mcTB+UPjmZpGldEcnVhmqvcm44ool5QOPI3wZYGEQGLRnkuNC9wXFPJADpeVqcX5Gjkm+fu8AALjReAnb2Sr6SEeeL0taS3etmXyDPYGpPAYrEIiNGvoRHGxgNTL06fpPLum1txr75YYRwywZDhSCOoNN2aeSm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CyNquUY/; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DFkRFBw6"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id CD68EC2BC86;
-	Thu, 19 Feb 2026 16:51:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771519908;
-	bh=Uk2s+vOYK5R2mgNSWbZlvpy2x63Rk1TzbDHp24TGokg=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=DFkRFBw6l55/GlYG6JDk22DmNWf6NVPgVWn10YAc19Nv1eUGiStiznbF58+R0z8Nt
-	 U9iVbdT1HmBdUbfUE84ZAThM9c8aAe9UTV3KBb9ckRURuvuxuJhavbwmEpeeUkypPs
-	 +O0anVh4EWgaFRcxN1oN9/KG/kzwkEYgC/3WQLfBGbGrEbDW6FcfBWjqlhLNO9Gqz4
-	 m6FA3Ht9DtP1x0Pn2MLakDZUdjd1x+4ubdpTVpa+/lWQkB4rq8WUtcSdAlsVJ1LJsA
-	 0rBk3xQ0w2nO3b6jb7rW06X6MHAfvYS4EWFN+bdE3N0iiAoZtaL6WXfYLM4v0hwZKu
-	 SZzZLDJ6t5/iQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C271AE9A04E;
-	Thu, 19 Feb 2026 16:51:48 +0000 (UTC)
-From: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
-Date: Thu, 19 Feb 2026 17:51:19 +0100
-Subject: [PATCH v3 3/3] can: statistics: add missing atomic access in hot
- path
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CyNquUY/"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1771532955; x=1803068955;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=hd5cj1VyA/d0T/ntQwiii7GhLKEXsJXcwSYU99VWdng=;
+  b=CyNquUY/+bM4EdqlDwhLWpSzq/m81LMwvuuURce/OODF1HlptpEQmXrQ
+   jjnFJ5MkASqqfurKt0xMt0bBCtmzRJ7JXSTUcw37ZdKKJgPThdQWtPYl5
+   xP7s4Lt+lezeTAxo1r4NdVlxnFzOPWKn2IcZv1LVhftAypYoWiy8yWcxF
+   LUFK0RT4DGSBxq/493k6ugJlK0Qp7Xwp3u3boENjhGVBSOsusIuiCL+xb
+   4K5tNWSazwLIh9LDH/0ylJvv1BjStS7uSvYaOnsrk6dkBhH5cA8vvKXjF
+   T/E2eikdbmGkmJ6DZ3CrCxmKhjm9XAkD36xRQ0Vb/DmXchuiKjEsjYKDs
+   Q==;
+X-CSE-ConnectionGUID: 1QD2piwbRcaSXispmPq0FA==
+X-CSE-MsgGUID: g5o+XwKbRe2/7ZtgZMG6qA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11706"; a="72532327"
+X-IronPort-AV: E=Sophos;i="6.21,300,1763452800"; 
+   d="scan'208";a="72532327"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2026 12:29:14 -0800
+X-CSE-ConnectionGUID: E/tMwy0FQ+eY6JvUZmo1lw==
+X-CSE-MsgGUID: Q0hV3O4bSIi5mewv/TNg3Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,300,1763452800"; 
+   d="scan'208";a="219183206"
+Received: from black.igk.intel.com ([10.91.253.5])
+  by fmviesa005.fm.intel.com with ESMTP; 19 Feb 2026 12:29:13 -0800
+Received: by black.igk.intel.com (Postfix, from userid 1003)
+	id F387298; Thu, 19 Feb 2026 21:29:11 +0100 (CET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: linux-can@vger.kernel.org,
+	linux-phy@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/4] phy: phy-can-transceiver: Convert to use device property API
+Date: Thu, 19 Feb 2026 21:26:19 +0100
+Message-ID: <20260219202910.2304440-2-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.50.1
+In-Reply-To: <20260219202910.2304440-1-andriy.shevchenko@linux.intel.com>
+References: <20260219202910.2304440-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260219-bcm_spin_lock_init-v3-3-c61026740d7b@hartkopp.net>
-References: <20260219-bcm_spin_lock_init-v3-0-c61026740d7b@hartkopp.net>
-In-Reply-To: <20260219-bcm_spin_lock_init-v3-0-c61026740d7b@hartkopp.net>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, 
- "David S. Miller" <davem@davemloft.net>, 
- Urs Thuermann <urs.thuermann@volkswagen.de>, 
- Vincent Mailhol <mailhol@kernel.org>
-Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Oliver Hartkopp <socketcan@hartkopp.net>
-X-Mailer: b4 0.15-dev-47773
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1771519907; l=1840;
- i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=ce7R8+1V1nd+aDx9P0nYxydlLO4gPk56OeKnN14t8O4=;
- b=NI/Zlcw/wCHgSJq9WwYK+uKaDdwN14qJIYw5kqLk0kNHqzTrxm8XvQKSCjFB8zJ9covPS5WHC
- /sU+xTvn5moD1gQqVmrLSWS5mb+oet2z7PmhEIxmXoJ/bW+RIrhnnpP
-X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
- pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
-X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
- auth_id=620
-X-Original-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Reply-To: socketcan@hartkopp.net
+Content-Transfer-Encoding: 8bit
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+It seems the driver is half-moved to use device property APIs.
+Finish that by converting everything to use that.
 
-Commit 80b5f90158d1 ("can: statistics: use atomic access in hot path")
-fixed a KCSAN issue in can_receive() but missed to convert the 'matches'
-variable used in can_rcv_filter().
-
-Fixes: 80b5f90158d1 ("can: statistics: use atomic access in hot path")
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- net/can/af_can.c | 4 ++--
- net/can/af_can.h | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/phy/phy-can-transceiver.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index 22c65a014861..31a5eab3fab3 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -467,11 +467,11 @@ int can_rx_register(struct net *net, struct net_device *dev, canid_t can_id,
- 	dev_rcv_lists = can_dev_rcv_lists_find(net, dev);
- 	rcv_list = can_rcv_list_find(&can_id, &mask, dev_rcv_lists);
- 
- 	rcv->can_id = can_id;
- 	rcv->mask = mask;
--	rcv->matches = 0;
-+	atomic_long_set(&rcv->matches, 0);
- 	rcv->func = func;
- 	rcv->data = data;
- 	rcv->ident = ident;
- 	rcv->sk = sk;
- 
-@@ -571,11 +571,11 @@ void can_rx_unregister(struct net *net, struct net_device *dev, canid_t can_id,
- EXPORT_SYMBOL(can_rx_unregister);
- 
- static inline void deliver(struct sk_buff *skb, struct receiver *rcv)
+diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
+index 330356706ad7..f2259af4af8a 100644
+--- a/drivers/phy/phy-can-transceiver.c
++++ b/drivers/phy/phy-can-transceiver.c
+@@ -5,9 +5,9 @@
+  * Copyright (C) 2021 Texas Instruments Incorporated - https://www.ti.com
+  *
+  */
+-#include <linux/of.h>
+ #include <linux/phy/phy.h>
+ #include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/module.h>
+ #include <linux/gpio.h>
+ #include <linux/gpio/consumer.h>
+@@ -130,7 +130,7 @@ MODULE_DEVICE_TABLE(of, can_transceiver_phy_ids);
+ static inline struct mux_state *
+ devm_mux_state_get_optional(struct device *dev, const char *mux_name)
  {
- 	rcv->func(skb, rcv->data);
--	rcv->matches++;
-+	atomic_long_inc(&rcv->matches);
- }
+-	if (!of_property_present(dev->of_node, "mux-states"))
++	if (!device_property_present(dev, "mux-states"))
+ 		return NULL;
  
- static int can_rcv_filter(struct can_dev_rcv_lists *dev_rcv_lists, struct sk_buff *skb)
- {
- 	struct receiver *rcv;
-diff --git a/net/can/af_can.h b/net/can/af_can.h
-index 22f3352c77fe..87887014f562 100644
---- a/net/can/af_can.h
-+++ b/net/can/af_can.h
-@@ -50,11 +50,11 @@
+ 	return devm_mux_state_get(dev, mux_name);
+@@ -162,7 +162,6 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
+ 	struct can_transceiver_phy *can_transceiver_phy;
+ 	struct can_transceiver_priv *priv;
+ 	const struct can_transceiver_data *drvdata;
+-	const struct of_device_id *match;
+ 	struct phy *phy;
+ 	struct gpio_desc *silent_gpio;
+ 	struct gpio_desc *standby_gpio;
+@@ -171,8 +170,7 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
+ 	u32 max_bitrate = 0;
+ 	int err, i, num_ch = 1;
  
- struct receiver {
- 	struct hlist_node list;
- 	canid_t can_id;
- 	canid_t mask;
--	unsigned long matches;
-+	atomic_long_t matches;
- 	void (*func)(struct sk_buff *skb, void *data);
- 	void *data;
- 	char *ident;
- 	struct sock *sk;
- 	struct rcu_head rcu;
-
+-	match = of_match_node(can_transceiver_phy_ids, pdev->dev.of_node);
+-	drvdata = match->data;
++	drvdata = device_get_match_data(dev);
+ 	if (drvdata->flags & CAN_TRANSCEIVER_DUAL_CH)
+ 		num_ch = 2;
+ 
+@@ -197,7 +195,7 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
+ 		can_transceiver_phy = &priv->can_transceiver_phy[i];
+ 		can_transceiver_phy->priv = priv;
+ 
+-		phy = devm_phy_create(dev, dev->of_node, &can_transceiver_phy_ops);
++		phy = devm_phy_create(dev, NULL, &can_transceiver_phy_ops);
+ 		if (IS_ERR(phy)) {
+ 			dev_err(dev, "failed to create can transceiver phy\n");
+ 			return PTR_ERR(phy);
 -- 
-2.51.0
-
+2.50.1
 
