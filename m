@@ -1,50 +1,50 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C0C73176E0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4A6D26D4F9;
 	Thu, 19 Feb 2026 20:29:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771532956; cv=none; b=fKWHwK2BqfFkhs/LOk4ThmUpdPaMlD8aszfyp1nTkILU2g91zf35A+Vdc48J1ymPLe5C5JHCgDs4HAcuB1egZjt75n7Te2IlD3h8dtNQ7933OwKhAUm79kt1+q2dpMYFMq7WgYwMJ0dn9DazxBUi3YKJXBLg64v5ne6R0AYke7g=
+	t=1771532957; cv=none; b=gSQrXcjQ28k1q7JI9fnEdEJatiMaI91RToLaFzPUSwVCH6Xoc44HSHCJQXQkUUQrSa6Rn/vK+t81MNHhi0sUJFrUureEOuvYD6PBu0Ekl0FrxhC+TxRF1NClDoiNyRR6x+92TIiqLYIhAD1WdXYbT5g2/L/2/7Ve2J9C+sc2S5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771532956; c=relaxed/simple;
-	bh=hd5cj1VyA/d0T/ntQwiii7GhLKEXsJXcwSYU99VWdng=;
+	s=arc-20240116; t=1771532957; c=relaxed/simple;
+	bh=7Yp0Zx6S5q5BQPxgAeuKyYhu3KCC6d9EY3eVALItl74=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=P2hBC4cSJ3J0mcTB+UPjmZpGldEcnVhmqvcm44ool5QOPI3wZYGEQGLRnkuNC9wXFPJADpeVqcX5Gjkm+fu8AALjReAnb2Sr6SEeeL0taS3etmXyDPYGpPAYrEIiNGvoRHGxgNTL06fpPLum1txr75YYRwywZDhSCOoNN2aeSm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CyNquUY/; arc=none smtp.client-ip=198.175.65.19
+	 MIME-Version; b=QwlKgvIrOzhjh0GgvKK2yC41YLMs4iKckqlD+QiSEFWdc/rEEtbBBKb6p2LItta8zBX6woAENivAX/cbHsAie0m8oYCHEaC2Lh00r51mM8nuGdwflcopl6MOZMsjJ8em+k4N5ZCA9w4LBJRtEdaNsjWNtdYfOVn2rYnzLklFB2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=drT4bLNG; arc=none smtp.client-ip=192.198.163.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CyNquUY/"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="drT4bLNG"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1771532955; x=1803068955;
+  t=1771532956; x=1803068956;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=hd5cj1VyA/d0T/ntQwiii7GhLKEXsJXcwSYU99VWdng=;
-  b=CyNquUY/+bM4EdqlDwhLWpSzq/m81LMwvuuURce/OODF1HlptpEQmXrQ
-   jjnFJ5MkASqqfurKt0xMt0bBCtmzRJ7JXSTUcw37ZdKKJgPThdQWtPYl5
-   xP7s4Lt+lezeTAxo1r4NdVlxnFzOPWKn2IcZv1LVhftAypYoWiy8yWcxF
-   LUFK0RT4DGSBxq/493k6ugJlK0Qp7Xwp3u3boENjhGVBSOsusIuiCL+xb
-   4K5tNWSazwLIh9LDH/0ylJvv1BjStS7uSvYaOnsrk6dkBhH5cA8vvKXjF
-   T/E2eikdbmGkmJ6DZ3CrCxmKhjm9XAkD36xRQ0Vb/DmXchuiKjEsjYKDs
-   Q==;
-X-CSE-ConnectionGUID: 1QD2piwbRcaSXispmPq0FA==
-X-CSE-MsgGUID: g5o+XwKbRe2/7ZtgZMG6qA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11706"; a="72532327"
+  bh=7Yp0Zx6S5q5BQPxgAeuKyYhu3KCC6d9EY3eVALItl74=;
+  b=drT4bLNGNf3OV202BrwmjQiB7N0iV0B6t0e6HeoE4vqRl0vh998Puot8
+   gQDTRR9mq+YJxVf0ZF3jkf/8vc6Gbm9d9YKp+ahXrNp+oYgRy12hpVXOf
+   ddPHgmdLCeOK+nSl31ii2griVREYB9Q4C62tJHHpekxfpaq/z4lx6a0lh
+   4st2cDCo9sj+pqmKFlIROKWdpCbOZmHa3ERCqI8mvQlA2ovw0jJ7+tpPc
+   ELfL8i1YJvCMdiMY81CxFsmdvwjnssXM2skUGjECxc97FJi7P4Anz2xLu
+   RmcDdjb4hXgrGdo5EO1tmgr1XYvYwRl92eRmXUKkfSed5Pb6X4mQ7YztL
+   A==;
+X-CSE-ConnectionGUID: U9n/LOnQSDOKwHSNZqAvnw==
+X-CSE-MsgGUID: zocmtTK8TYC+8lZq1VWCVg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11706"; a="71655723"
 X-IronPort-AV: E=Sophos;i="6.21,300,1763452800"; 
-   d="scan'208";a="72532327"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2026 12:29:14 -0800
-X-CSE-ConnectionGUID: E/tMwy0FQ+eY6JvUZmo1lw==
-X-CSE-MsgGUID: Q0hV3O4bSIi5mewv/TNg3Q==
+   d="scan'208";a="71655723"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2026 12:29:15 -0800
+X-CSE-ConnectionGUID: rE357m9XRkqSjIVYVCKtdQ==
+X-CSE-MsgGUID: 8OdFyD4RRn+LKJWZM6YyZg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.21,300,1763452800"; 
-   d="scan'208";a="219183206"
+   d="scan'208";a="214492051"
 Received: from black.igk.intel.com ([10.91.253.5])
-  by fmviesa005.fm.intel.com with ESMTP; 19 Feb 2026 12:29:13 -0800
+  by orviesa009.jf.intel.com with ESMTP; 19 Feb 2026 12:29:13 -0800
 Received: by black.igk.intel.com (Postfix, from userid 1003)
-	id F387298; Thu, 19 Feb 2026 21:29:11 +0100 (CET)
+	id 0B5D09D; Thu, 19 Feb 2026 21:29:12 +0100 (CET)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: linux-can@vger.kernel.org,
 	linux-phy@lists.infradead.org,
@@ -54,9 +54,9 @@ Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
 	Vinod Koul <vkoul@kernel.org>,
 	Neil Armstrong <neil.armstrong@linaro.org>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/4] phy: phy-can-transceiver: Convert to use device property API
-Date: Thu, 19 Feb 2026 21:26:19 +0100
-Message-ID: <20260219202910.2304440-2-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 4/4] phy: phy-can-transceiver: Drop unused include
+Date: Thu, 19 Feb 2026 21:26:22 +0100
+Message-ID: <20260219202910.2304440-5-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20260219202910.2304440-1-andriy.shevchenko@linux.intel.com>
 References: <20260219202910.2304440-1-andriy.shevchenko@linux.intel.com>
@@ -68,65 +68,32 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-It seems the driver is half-moved to use device property APIs.
-Finish that by converting everything to use that.
+This file does not use the symbols from the legacy
+<linux/gpio.h> header, so let's drop it.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/phy/phy-can-transceiver.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ drivers/phy/phy-can-transceiver.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
-index 330356706ad7..f2259af4af8a 100644
+index ebce48ef217f..ba40bad4ccb1 100644
 --- a/drivers/phy/phy-can-transceiver.c
 +++ b/drivers/phy/phy-can-transceiver.c
-@@ -5,9 +5,9 @@
+@@ -5,12 +5,11 @@
   * Copyright (C) 2021 Texas Instruments Incorporated - https://www.ti.com
   *
   */
--#include <linux/of.h>
++#include <linux/gpio/consumer.h>
  #include <linux/phy/phy.h>
  #include <linux/platform_device.h>
-+#include <linux/property.h>
+ #include <linux/property.h>
  #include <linux/module.h>
- #include <linux/gpio.h>
- #include <linux/gpio/consumer.h>
-@@ -130,7 +130,7 @@ MODULE_DEVICE_TABLE(of, can_transceiver_phy_ids);
- static inline struct mux_state *
- devm_mux_state_get_optional(struct device *dev, const char *mux_name)
- {
--	if (!of_property_present(dev->of_node, "mux-states"))
-+	if (!device_property_present(dev, "mux-states"))
- 		return NULL;
+-#include <linux/gpio.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/mux/consumer.h>
  
- 	return devm_mux_state_get(dev, mux_name);
-@@ -162,7 +162,6 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
- 	struct can_transceiver_phy *can_transceiver_phy;
- 	struct can_transceiver_priv *priv;
- 	const struct can_transceiver_data *drvdata;
--	const struct of_device_id *match;
- 	struct phy *phy;
- 	struct gpio_desc *silent_gpio;
- 	struct gpio_desc *standby_gpio;
-@@ -171,8 +170,7 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
- 	u32 max_bitrate = 0;
- 	int err, i, num_ch = 1;
- 
--	match = of_match_node(can_transceiver_phy_ids, pdev->dev.of_node);
--	drvdata = match->data;
-+	drvdata = device_get_match_data(dev);
- 	if (drvdata->flags & CAN_TRANSCEIVER_DUAL_CH)
- 		num_ch = 2;
- 
-@@ -197,7 +195,7 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
- 		can_transceiver_phy = &priv->can_transceiver_phy[i];
- 		can_transceiver_phy->priv = priv;
- 
--		phy = devm_phy_create(dev, dev->of_node, &can_transceiver_phy_ops);
-+		phy = devm_phy_create(dev, NULL, &can_transceiver_phy_ops);
- 		if (IS_ERR(phy)) {
- 			dev_err(dev, "failed to create can transceiver phy\n");
- 			return PTR_ERR(phy);
+ struct can_transceiver_data {
 -- 
 2.50.1
 
