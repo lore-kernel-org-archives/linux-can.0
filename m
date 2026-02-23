@@ -1,179 +1,101 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 709F01096F;
-	Sun, 22 Feb 2026 15:46:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F67535C1B4;
+	Mon, 23 Feb 2026 12:10:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771775182; cv=none; b=D/RqVZylYXFSm0iq/uh4oPlIOzB7XCdnMsePxCRVyTrDOw7XbSKBPyT7VwTMburIfLr9ZFCPIL/7eV2JlDOt0n2Pe8R51p8nKcHmYhzAQKGYq4oNRMqUl5yJZYeCHhG3urd9F909eT83kkj9zjMfCxO+MwqVudHszJ55sB2MjPo=
+	t=1771848648; cv=none; b=US5Gh8s4durnh73hAoPi+eIQK8+0aimhWU4WFRjVl7Cffw2wVJUw9RxhhgWfjFOxj3xFTmaHPK0KJ54H+7CG3Ks7pq5Dkz3Vfo09mpSSIa9h9lJpfLzIao2ozyPWSsk5GtVjSffCQ31RlhIlkThDKmkxuHxWD0O4X5mmbA9GAbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771775182; c=relaxed/simple;
-	bh=vIUFdUFbzD8Je8hr3VYwtDKXRcdTcGR572L6CSWMyHI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IHGSXYuR895gCpzMBLCxAvj5LuJBBDidZ3u+5An91ncBsV6BQDUOB/jE2f0XML5dqfb9wSyOxy3+CHaUOGeD7/qn0TJaVepFfJiSo69VMVtQ0s1KfyjeMW4xr9iOj3xwA/lMpKq+Zca56aGCpgZszBVVMcUEG/o57rajy96Ek6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U60SBA08; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1771848648; c=relaxed/simple;
+	bh=q9FwzgD3ZyquyGEX8dnWP2IWWlN7Y0uatYbBRLdinPE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=s89sHo4By2g3eN+E/YhGNEv+ijW3LbuQ46lBvtRAptcMxcMcmTwk3fIkuHAiTsOWQHw47Pm5s2ohHRw8AJdP8BS4CgWO1/a659pJNJK1tePYaIeH+25nppj6scpjLMKwlYbGcoirkmvgehO2JU4Gz3eB958gXSQbH+qkc7PDEQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=vWoj9RER; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U60SBA08"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CE52C116D0;
-	Sun, 22 Feb 2026 15:46:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771775182;
-	bh=vIUFdUFbzD8Je8hr3VYwtDKXRcdTcGR572L6CSWMyHI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=U60SBA08ppCaVJvw/WA7/KemsXtBbDLDcfGvLI3z9mHJV0X+8Yoafaa4hp/zmmzpc
-	 /lRp8htkM0iZ4EaBdBsttXe+CS4h5Gh1gIYOX+ivaslidPtVETjI8gNt61c163Ha6E
-	 9NmSHJhAv+62dSnh3/4IlzyhE0fG4YOr202HoxC6p5R3qeo5ZFNounQmnXUoB8e99U
-	 KYnngpSLbyXynnPLUbJXRKyIQPuiGjA7MXbHtlXrbPVqDY9IJJqjhI6QRlPFZNmX1v
-	 o6LRfe+LJz/fb+COlOKfedKusjQQvl9d8l5ggsfE3501vk3lve5JOz6uPdZH2oikNe
-	 EmRX68rrLxQrA==
-Message-ID: <e1517670-92f9-405d-934e-b9341bea27ac@kernel.org>
-Date: Sun, 22 Feb 2026 16:46:18 +0100
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="vWoj9RER"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DD42C116C6;
+	Mon, 23 Feb 2026 12:10:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1771848647;
+	bh=q9FwzgD3ZyquyGEX8dnWP2IWWlN7Y0uatYbBRLdinPE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=vWoj9RERPRIVjvYwt/3qiW6Z+RT2xIbVS8ntTCANNg6oCgpfYx+6XxCDwUIS8aYZq
+	 tAqxpfGaI5wDUMi+IZqjvTnN5fAwjduuI2EguhFEKq8dLMB45isszXxB62MdZrS23V
+	 he4opqMyCYd/CiETgsA0nbkk1buZSpmKzvLmTea4=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-can@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Ji-Ze Hong (Peter Hong)" <peter_hong@fintek.com.tw>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	stable <stable@kernel.org>
+Subject: [PATCH 2/3] can: usb: f81604: handle bulk write errors properly
+Date: Mon, 23 Feb 2026 13:10:31 +0100
+Message-ID: <2026022334-slackness-dynamic-9195@gregkh>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <2026022331-opal-evaluator-a928@gregkh>
+References: <2026022331-opal-evaluator-a928@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 12/16] can: grcan: Refactor GRCAN DMA buffer to use
- structured memory layout
-To: Arun Muthusamy <arun.muthusamy@gaisler.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-can@vger.kernel.org, robh@kernel.org, krzk+dt@kernel.org,
- conor+dt@kernel.org, mkl@pengutronix.de
-References: <20260216135344.23246-1-arun.muthusamy@gaisler.com>
- <20260216135344.23246-13-arun.muthusamy@gaisler.com>
-Content-Language: en-US
-From: Vincent Mailhol <mailhol@kernel.org>
-Autocrypt: addr=mailhol@kernel.org; keydata=
- xjMEZluomRYJKwYBBAHaRw8BAQdAf+/PnQvy9LCWNSJLbhc+AOUsR2cNVonvxhDk/KcW7FvN
- JFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbEBrZXJuZWwub3JnPsKZBBMWCgBBFiEE7Y9wBXTm
- fyDldOjiq1/riG27mcIFAmdfB/kCGwMFCQp/CJcFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcC
- F4AACgkQq1/riG27mcKBHgEAygbvORJOfMHGlq5lQhZkDnaUXbpZhxirxkAHwTypHr4A/joI
- 2wLjgTCm5I2Z3zB8hqJu+OeFPXZFWGTuk0e2wT4JzjgEZx4y8xIKKwYBBAGXVQEFAQEHQJrb
- YZzu0JG5w8gxE6EtQe6LmxKMqP6EyR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDl
- dOjiq1/riG27mcIFAmceMvMCGwwFCQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8V
- zsZwr/S44HCzcz5+jkxnVVQ5LZ4BANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
-In-Reply-To: <20260216135344.23246-13-arun.muthusamy@gaisler.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1517; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=q9FwzgD3ZyquyGEX8dnWP2IWWlN7Y0uatYbBRLdinPE=; b=owGbwMvMwCRo6H6F97bub03G02pJDJlznHdV+2i1rL5xPvSk1hL/m09FFKUaLqiJZu34uFiQl aXmt0xCRywLgyATg6yYIsuXbTxH91ccUvQytD0NM4eVCWQIAxenAEwkOYNhwRSWF6Gq8d78cxxC puxO+HWHa91rfoYFzfx6PTpK7MEWckyJX9u1U6ot2w0B
+X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Content-Transfer-Encoding: 8bit
 
-On 16/02/2026 at 14:53, Arun Muthusamy wrote:
->  Introduce a structured layout that accurately represents the hardware memory by using struct grcan_msg_slot.
->  This structure encapsulates the message parameters, including id, dlc, and data.
-> 
-> Signed-off-by: Arun Muthusamy <arun.muthusamy@gaisler.com>
-> ---
->  drivers/net/can/grcan.c | 25 ++++++++++++++++++++-----
->  1 file changed, 20 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
-> index 3104946071dd..28fa219e1c3b 100644
-> --- a/drivers/net/can/grcan.c
-> +++ b/drivers/net/can/grcan.c
-> @@ -174,6 +174,7 @@ struct grcan_registers {
->  #define GRCAN_IRQ_DEFAULT (GRCAN_IRQ_RX | GRCAN_IRQ_TX | GRCAN_IRQ_ERRORS)
->  
->  #define GRCAN_MSG_SIZE		16
-> +#define GRCAN_CLASSIC_DATA_SIZE 8
->  
->  #define GRCAN_MSG_IDE		0x80000000
->  #define GRCAN_MSG_RTR		0x40000000
-> @@ -239,9 +240,23 @@ struct grcan_hwcap {
->  	bool fd;
->  };
->  
-> +union grcan_msg_slot {
-> +	/*  First slot: header + 8 bytes payload */
-> +	struct {
-> +		u32 id;
-> +		u32 ctrl;
-> +		u8  data[GRCAN_CLASSIC_DATA_SIZE];
-                         ^^^^^^^^^^^^^^^^^^^^^^^
+If a write urb fails then more needs to be done other than just logging
+the message, otherwise the transmission could be stalled.  Properly
+increment the error counters and wake up the queues so that data will
+continue to flow.
 
-Remove this GRCAN_CLASSIC_DATA_SIZE macro and instead use CAN_MAX_DLEN.
+Cc: "Ji-Ze Hong (Peter Hong)" <peter_hong@fintek.com.tw>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Vincent Mailhol <mailhol@kernel.org>
+Cc: stable <stable@kernel.org>
+Assisted-by: gkh_clanker_2000
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/net/can/usb/f81604.c | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
-> +	} __packed header;
-> +
-> +	/* Continuation slot: payload only */
-> +	struct {
-> +		u8 data[GRCAN_MSG_SIZE];
-> +	} __packed frags;
-> +} __packed;
-> +
->  struct grcan_dma_buffer {
->  	size_t size;
-> -	void *buf;
-> +	union grcan_msg_slot *msg_slot;
->  	dma_addr_t handle;
->  };
+diff --git a/drivers/net/can/usb/f81604.c b/drivers/net/can/usb/f81604.c
+index c61bd30d1765..a41c6fef2a94 100644
+--- a/drivers/net/can/usb/f81604.c
++++ b/drivers/net/can/usb/f81604.c
+@@ -880,9 +880,27 @@ static void f81604_write_bulk_callback(struct urb *urb)
+ 	if (!netif_device_present(netdev))
+ 		return;
+ 
+-	if (urb->status)
+-		netdev_info(netdev, "%s: Tx URB error: %pe\n", __func__,
++	if (!urb->status)
++		return;
++
++	switch (urb->status) {
++	case -ENOENT:
++	case -ECONNRESET:
++	case -ESHUTDOWN:
++		return;
++	default:
++		break;
++	}
++
++	if (net_ratelimit())
++		netdev_err(netdev, "%s: Tx URB error: %pe\n", __func__,
+ 			    ERR_PTR(urb->status));
++
++	can_free_echo_skb(netdev, 0, NULL);
++	netdev->stats.tx_dropped++;
++	netdev->stats.tx_errors++;
++
++	netif_wake_queue(netdev);
+ }
+ 
+ static void f81604_clear_reg_work(struct work_struct *work)
+-- 
+2.53.0
 
-Nitpick: you can use an anonymous union:
-
-	/*  First slot: header + 8 bytes payload */
-	struct grcan_msg_header {
-		u32 id;
-		u32 ctrl;
-		u8  data[CAN_MAX_DLEN];
-	} __packed;
-
-	/* Continuation slot: payload only */
-	struct grcan_msg_fragment {
-		u8 data[GRCAN_MSG_SIZE];
-	} __packed;
-	
-	struct grcan_dma_buffer {
-		size_t size;
-		void *buf;
-		union {
-			struct grcan_msg_header *header;
-			struct grcan_msg_fragment *frag;
-		};
-		dma_addr_t handle;
-	};
-
-With this, you can do:
-
-	dma->rx->header
-	dma->rx->frag
-
-instead of:
-
-	dma->rx.msg_slot->header
-	dma->rx.msg_slot->frag
-
-> @@ -1019,8 +1034,8 @@ static int grcan_allocate_dma_buffers(struct net_device *dev,
->  	small->handle = large->handle + lsize;
->  	shift = large->handle - dma->base_handle;
->  
-> -	large->buf = dma->base_buf + shift;
-> -	small->buf = large->buf + lsize;
-> +	large->msg_slot = (union grcan_msg_slot *)((u8 *)dma->base_buf + shift);
-> +	small->msg_slot = (union grcan_msg_slot *)((u8 *)large->msg_slot + lsize);
->  
->  	return 0;
->  }
-> @@ -1237,7 +1252,7 @@ static int grcan_receive(struct net_device *dev, int budget)
->  			continue;
->  		}
->  
-> -		slot = dma->rx.buf + rd;
-> +		slot = (u32 *)((u8 *)dma->rx.msg_slot + rd);
->  		eff = slot[0] & GRCAN_MSG_IDE;
->  		rtr = slot[0] & GRCAN_MSG_RTR;
->  		if (eff) {
-> @@ -1418,7 +1433,7 @@ static netdev_tx_t grcan_start_xmit(struct sk_buff *skb,
->  	space = grcan_txspace(dma->tx.size, txwr, priv->eskbp);
->  
->  	slotindex = txwr / GRCAN_MSG_SIZE;
-> -	slot = dma->tx.buf + txwr;
-> +	slot = (u32 *)((u8 *)dma->tx.msg_slot + txwr);
-
-As told in my previous message, refactor the code in this commit.
-
->  	if (unlikely(space == 1))
->  		netif_stop_queue(dev);
-
-
-Yours sincerely,
-Vincent Mailhol
