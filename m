@@ -1,133 +1,142 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC0ED41B370
-	for <linux-can@vger.kernel.org>; Mon,  2 Mar 2026 15:28:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6962541B351
+	for <linux-can@vger.kernel.org>; Mon,  2 Mar 2026 15:52:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772465299; cv=none; b=qC0tu7D50zZhXtv1zXXp/KrCc4S91xbS+kICtFCAq9BLikxZcMt30vx/yP1ExIdEIdSCDzIEm/6UCUfMMAYLiN+nhbs2HhUILXNc76d8N+NxcczhRgTJEruX1Mm9YBdpoMeS0uE/fc8+R+T/16UaWPTCLtAUerUxfJUnSTwo2Nc=
+	t=1772466742; cv=none; b=GEZ0PcXiREXgoqM4CTSB58HtUyRH4EBi91CwJTlSmQHEAVKDj0mCSzLRGh7+3lU3gT9XwYUkFMFtC+nCbqllWQqs/8J1K1b068kN27wATmuOEs1SMxZZbc5ICho5aJHhCl41jrcvzJuhzCezLncgZqXIQCQ5xHvE09dOE0/gPkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772465299; c=relaxed/simple;
-	bh=7A6prLBJfxDSQTw2aC75TrF6vdn2kOhfSGHYl4DSpgk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aWZoYPxejL90SX8Klwb0kc9accpcS8pMRNNTy44atexNyzpS4vRJOrovSsaqLW6BI0+QpgUri8HHhsMoELhLbgm9RPQ7giXEZ/FdXvQyhPaEW2jXuFDLQu8h/9k9gj0nuOiYqLidX51Hia7fPbMFXfIJMVMp7W7nW7r9dPL0rfY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1vx5Bj-0004kR-Gu; Mon, 02 Mar 2026 16:28:03 +0100
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1vx5Bc-003P0x-34;
-	Mon, 02 Mar 2026 16:27:58 +0100
-Received: from blackshift.org (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 0E9DF4F5473;
-	Mon, 02 Mar 2026 15:27:58 +0000 (UTC)
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	kuba@kernel.org,
-	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Ji-Ze Hong (Peter Hong)" <peter_hong@fintek.com.tw>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>,
-	stable@kernel.org
-Subject: [PATCH net 10/12] can: usb: f81604: correctly anchor the urb in the read bulk callback
-Date: Mon,  2 Mar 2026 16:16:16 +0100
-Message-ID: <20260302152755.1700177-11-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260302152755.1700177-1-mkl@pengutronix.de>
-References: <20260302152755.1700177-1-mkl@pengutronix.de>
+	s=arc-20240116; t=1772466742; c=relaxed/simple;
+	bh=hpnlOqrcE6XKQCbvfZC/Jw2+6G9P7VjT8fcJZ6bj9hQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sQFlWXLAiZsWlRl/lmye3LSwBOLFzUOqT/ViF8ECN/t5GKtyQcn8XbknCIrqcAl1ATQ9wYxIFQov5sWVZ+lCyzD+BPuPPIH9yVije9VGzXycLdW38y1TUxzZ4Hu5QphWdXvaFWdw4k6hJHjpH1BNY7hULPWDR0EpZLdBLz4yXy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WQb+rTsN; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=YvU/vct1; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WQb+rTsN";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="YvU/vct1"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1772466739;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CH9mL5pbMrwDtlONtIMgJdUZf3F53m9y7sOyrOwP3i8=;
+	b=WQb+rTsNIkM0kdKzWL51AjDhHiqlgTw6kMhf4scEGvDoR9Lczz1dnvqlHZHYE/vl/GOwrw
+	njEuXH4hT6QApaZJjzLiuaV+xa9D/f2owtK5dOE4a0WEY/oxM/bdni7fACrSkrcHaEU2tc
+	UEEwtqfkTUtUvpLXpiXbrUC5QVoc5AQ=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-85-rrx-Dq2WM6a5tx-XUC3G0w-1; Mon, 02 Mar 2026 10:52:18 -0500
+X-MC-Unique: rrx-Dq2WM6a5tx-XUC3G0w-1
+X-Mimecast-MFC-AGG-ID: rrx-Dq2WM6a5tx-XUC3G0w_1772466737
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4836c819456so31938795e9.3
+        for <linux-can@vger.kernel.org>; Mon, 02 Mar 2026 07:52:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1772466737; x=1773071537; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CH9mL5pbMrwDtlONtIMgJdUZf3F53m9y7sOyrOwP3i8=;
+        b=YvU/vct1xUuLzN5uqPejW2qIKgPJzCPYf+n3o6GP4ngK3gXNlkxHNC4OPjekMYpyIS
+         4H8Q7mB3dG0qcYyQciDZXxNz5MfT1sQlLL+yYSWxCHT11BgIrgQ2D2qVZovfDDzZNGxF
+         5Z+5qoupzZP1N0yebt89E0ftYawejbiZwzX8h8NZdXPqar9pCnbW3TjVOXJ0iwFiBfik
+         BtTBjV6H63H/ob7SUJ/QI4szHEsolSDFtGqxRVDsIvq49PqduUlbgX9ds/l7VoEbnKDw
+         NB3wBLouxIKFFpXRJDZY6C3SQJXsmwg72mcC+WecBOuz7Uddg+lwdlHaNDe5601+fSIJ
+         jEKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772466737; x=1773071537;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CH9mL5pbMrwDtlONtIMgJdUZf3F53m9y7sOyrOwP3i8=;
+        b=p4OOmwTkNw3DD9giBdDL1O+1StEZHehh392a2IHh1DIqNf9XreAgvJiD8eU+4OHECo
+         ggFEujmN5GQ9KE5+z5LAmxiFoSS91VtV51il/CdhioZ/bM7iEDjHYzQZSrIbCECJYVCh
+         ixjJiyhyUlNibRP9hzxqcj1+Mf6620uI0dXjMZ1sMX3uwGKXKrWFDdqiKejjez5A7xUr
+         5uVxrbzB1hqkrXQXpbtkqRSQ2Y0U/d8fa+gvXQUr2ny+qiy6MP+ai2LQjBDbrO3WJ2lQ
+         ZP2BzJP6XmcE0nP27JMe1eftqqtbaa0C79MkUmJTPM9DDzBjLo41Ru/lKaztcgiWQ5DB
+         dc9g==
+X-Forwarded-Encrypted: i=1; AJvYcCU5IRRhjAMS4UYhaBkiDzzn/iDnhUJwLMTdeC22NwSXGwf7Dq7gH4Y4cduar9crQZYZLbuaZSD9CNU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyddAbp9ibVMMyt4xPyG+AgPQowmMLsW8Sijdhx2WZPxX6iPr9a
+	bjab6YNTEJbhJeKy7AR+9ql2/WOSRXWsSGCVN8qazFiRItvAA3Ge6UJmIWQfQZ+8C/Uy4jxSZ/r
+	aucUsDIAs0uWfOjDLFzi7Ghk+rj0soPEm7RL/geWcYFDaSXz4rncJfyjZdJkByg==
+X-Gm-Gg: ATEYQzxrtrjFD0OQ6rUQTCb4qXTHaCcjxrjVePycDu7vsVR1FdWaMjQqdXdm+Z63O0I
+	3e251Zadca19MCNneW1Qnpc343mY9nzUqA+THQXhUUd7bSg8vaKhzdkErAzz21upszH2nj2+uCX
+	rUBJM4u6BUgYqToSna4Zv01+JCJSBRJlTgQZ1K229GdBxqgjETGO7A+nWNvVHul3Rf0DcC5dNJN
+	gtpeBVxIeC7F8nrCfi+FyvTw+CE+0Ne/IHKAJM93P8PNMZ6VUW5G897wHyBZ6xT9Fi2nOnNfL0r
+	8WV5+4c7iIt2yM5lgCBruteFTk50CNBO0n2x5VgzMkezcIBbCtOU70pqC3CXYrg0RmUQLbTY/68
+	Q8CrWudHPixRWToA=
+X-Received: by 2002:a05:600c:64c7:b0:477:9cdb:e337 with SMTP id 5b1f17b1804b1-483c9bc55a1mr224120425e9.7.1772466736850;
+        Mon, 02 Mar 2026 07:52:16 -0800 (PST)
+X-Received: by 2002:a05:600c:64c7:b0:477:9cdb:e337 with SMTP id 5b1f17b1804b1-483c9bc55a1mr224120045e9.7.1772466736375;
+        Mon, 02 Mar 2026 07:52:16 -0800 (PST)
+Received: from fedora ([2a01:e0a:257:8c60:80f1:cdf8:48d0:b0a1])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483bd7030b9sm336188245e9.4.2026.03.02.07.52.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Mar 2026 07:52:15 -0800 (PST)
+Date: Mon, 2 Mar 2026 16:52:13 +0100
+From: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Vincent Mailhol <mailhol@kernel.org>,
+	Harald Mommer <harald.mommer@oss.qualcomm.com>,
+	Mikhail Golubev-Ciuchea <mikhail.golubev-ciuchea@oss.qualcomm.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-can@vger.kernel.org,
+	virtualization@lists.linux.dev,
+	Wolfgang Grandegger <wg@grandegger.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Stefano Garzarella <sgarzare@redhat.com>, francesco@valla.it
+Subject: Re: [PATCH v10] can: virtio: Add virtio CAN driver
+Message-ID: <aaWyLWmqx0KCJvwI@fedora>
+References: <aZRB7Reu/D6HvRcb@fedora>
+ <20260302-mighty-wondrous-seagull-75085c-mkl@pengutronix.de>
+ <20260302-condor-of-nonconcrete-infinity-d3ddbb-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260302-condor-of-nonconcrete-infinity-d3ddbb-mkl@pengutronix.de>
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Mon, Mar 02, 2026 at 02:23:42PM +0100, Marc Kleine-Budde wrote:
+> On 02.03.2026 11:30:34, Marc Kleine-Budde wrote:
+> > > +static int virtio_can_open(struct net_device *ndev)
+> > > +{
+> > > +	virtio_can_start(ndev);
+> > > +
+> > > +	netif_start_queue(ndev);
+> > > +
+> > > +	return 0;
+> > > +}
+> >
+> > Is open_candev() missing? The CAN framework requires drivers to call
+> > open_candev() in their ndo_open handler. open_candev() validates that
+> > bittiming has been configured (returns -EINVAL if bitrate is 0), checks
+> > CAN FD data bitrate requirements, and manages carrier state. Without this
+> > call, can the device be brought up without configuring bitrate? The driver
+> > does call close_candev() in virtio_can_close(), showing awareness of the
+> > CAN lifecycle. Every other CAN driver in the kernel calls open_candev() in
+> > its open function.
+> 
+> This is true for physical CAN devices, so let's clarify things for
+> virtio.
+> 
+> As far as I can see, there's no interface to get/set the bit timing/bit
+> rate from the guest, right?
+> 
+AFAIU there is not such a interface.
 
-When submitting an urb, that is using the anchor pattern, it needs to be
-anchored before submitting it otherwise it could be leaked if
-usb_kill_anchored_urbs() is called.  This logic is correctly done
-elsewhere in the driver, except in the read bulk callback so do that
-here also.
+> You can set bittiming.bitrate to CAN_BITRATE_UNKNOWN, remove the
+> netif_carrier handling from virtio_can_start() and use open_candev().
+> 
+Will do. Thanks!
 
-Cc: Ji-Ze Hong (Peter Hong) <peter_hong@fintek.com.tw>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Vincent Mailhol <mailhol@kernel.org>
-Cc: stable@kernel.org
-Assisted-by: gkh_clanker_2000
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Link: https://patch.msgid.link/2026022334-starlight-scaling-2cea@gregkh
-Fixes: 88da17436973 ("can: usb: f81604: add Fintek F81604 support")
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/usb/f81604.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/can/usb/f81604.c b/drivers/net/can/usb/f81604.c
-index 1cc927d79b6a..f12318268e46 100644
---- a/drivers/net/can/usb/f81604.c
-+++ b/drivers/net/can/usb/f81604.c
-@@ -413,6 +413,7 @@ static void f81604_read_bulk_callback(struct urb *urb)
- {
- 	struct f81604_can_frame *frame = urb->transfer_buffer;
- 	struct net_device *netdev = urb->context;
-+	struct f81604_port_priv *priv = netdev_priv(netdev);
- 	int ret;
- 
- 	if (!netif_device_present(netdev))
-@@ -445,10 +446,15 @@ static void f81604_read_bulk_callback(struct urb *urb)
- 	f81604_process_rx_packet(netdev, frame);
- 
- resubmit_urb:
-+	usb_anchor_urb(urb, &priv->urbs_anchor);
- 	ret = usb_submit_urb(urb, GFP_ATOMIC);
-+	if (!ret)
-+		return;
-+	usb_unanchor_urb(urb);
-+
- 	if (ret == -ENODEV)
- 		netif_device_detach(netdev);
--	else if (ret)
-+	else
- 		netdev_err(netdev,
- 			   "%s: failed to resubmit read bulk urb: %pe\n",
- 			   __func__, ERR_PTR(ret));
-@@ -652,10 +658,15 @@ static void f81604_read_int_callback(struct urb *urb)
- 		f81604_handle_tx(priv, data);
- 
- resubmit_urb:
-+	usb_anchor_urb(urb, &priv->urbs_anchor);
- 	ret = usb_submit_urb(urb, GFP_ATOMIC);
-+	if (!ret)
-+		return;
-+	usb_unanchor_urb(urb);
-+
- 	if (ret == -ENODEV)
- 		netif_device_detach(netdev);
--	else if (ret)
-+	else
- 		netdev_err(netdev, "%s: failed to resubmit int urb: %pe\n",
- 			   __func__, ERR_PTR(ret));
- }
--- 
-2.51.0
+Matias
 
