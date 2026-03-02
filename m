@@ -1,142 +1,130 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6962541B351
-	for <linux-can@vger.kernel.org>; Mon,  2 Mar 2026 15:52:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D3C630BBB8
+	for <linux-can@vger.kernel.org>; Mon,  2 Mar 2026 17:55:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772466742; cv=none; b=GEZ0PcXiREXgoqM4CTSB58HtUyRH4EBi91CwJTlSmQHEAVKDj0mCSzLRGh7+3lU3gT9XwYUkFMFtC+nCbqllWQqs/8J1K1b068kN27wATmuOEs1SMxZZbc5ICho5aJHhCl41jrcvzJuhzCezLncgZqXIQCQ5xHvE09dOE0/gPkM=
+	t=1772474148; cv=none; b=XXKXdBUmg7Mq/gg6YTTmGpxqWnAw+YnK0b9tTFmK9C/Z65ulKFNhp4UZXlhZD3bweDOAaugb6ZuIO0cmQeqr+700fEX0jkIVzBFGik5w9xPNSA3lcABHxzUuuG+jMhUQ9FlKwt1cxORLQLKfNeHWkqQxy49g5pBrrarJEYRn8q4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772466742; c=relaxed/simple;
-	bh=hpnlOqrcE6XKQCbvfZC/Jw2+6G9P7VjT8fcJZ6bj9hQ=;
+	s=arc-20240116; t=1772474148; c=relaxed/simple;
+	bh=peR5Zc8Y4ObVAhfCSybvnP/nGrD+OkxEkgiCzbx1kUY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sQFlWXLAiZsWlRl/lmye3LSwBOLFzUOqT/ViF8ECN/t5GKtyQcn8XbknCIrqcAl1ATQ9wYxIFQov5sWVZ+lCyzD+BPuPPIH9yVije9VGzXycLdW38y1TUxzZ4Hu5QphWdXvaFWdw4k6hJHjpH1BNY7hULPWDR0EpZLdBLz4yXy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WQb+rTsN; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=YvU/vct1; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WQb+rTsN";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="YvU/vct1"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1772466739;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CH9mL5pbMrwDtlONtIMgJdUZf3F53m9y7sOyrOwP3i8=;
-	b=WQb+rTsNIkM0kdKzWL51AjDhHiqlgTw6kMhf4scEGvDoR9Lczz1dnvqlHZHYE/vl/GOwrw
-	njEuXH4hT6QApaZJjzLiuaV+xa9D/f2owtK5dOE4a0WEY/oxM/bdni7fACrSkrcHaEU2tc
-	UEEwtqfkTUtUvpLXpiXbrUC5QVoc5AQ=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-85-rrx-Dq2WM6a5tx-XUC3G0w-1; Mon, 02 Mar 2026 10:52:18 -0500
-X-MC-Unique: rrx-Dq2WM6a5tx-XUC3G0w-1
-X-Mimecast-MFC-AGG-ID: rrx-Dq2WM6a5tx-XUC3G0w_1772466737
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4836c819456so31938795e9.3
-        for <linux-can@vger.kernel.org>; Mon, 02 Mar 2026 07:52:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1772466737; x=1773071537; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CH9mL5pbMrwDtlONtIMgJdUZf3F53m9y7sOyrOwP3i8=;
-        b=YvU/vct1xUuLzN5uqPejW2qIKgPJzCPYf+n3o6GP4ngK3gXNlkxHNC4OPjekMYpyIS
-         4H8Q7mB3dG0qcYyQciDZXxNz5MfT1sQlLL+yYSWxCHT11BgIrgQ2D2qVZovfDDzZNGxF
-         5Z+5qoupzZP1N0yebt89E0ftYawejbiZwzX8h8NZdXPqar9pCnbW3TjVOXJ0iwFiBfik
-         BtTBjV6H63H/ob7SUJ/QI4szHEsolSDFtGqxRVDsIvq49PqduUlbgX9ds/l7VoEbnKDw
-         NB3wBLouxIKFFpXRJDZY6C3SQJXsmwg72mcC+WecBOuz7Uddg+lwdlHaNDe5601+fSIJ
-         jEKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772466737; x=1773071537;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CH9mL5pbMrwDtlONtIMgJdUZf3F53m9y7sOyrOwP3i8=;
-        b=p4OOmwTkNw3DD9giBdDL1O+1StEZHehh392a2IHh1DIqNf9XreAgvJiD8eU+4OHECo
-         ggFEujmN5GQ9KE5+z5LAmxiFoSS91VtV51il/CdhioZ/bM7iEDjHYzQZSrIbCECJYVCh
-         ixjJiyhyUlNibRP9hzxqcj1+Mf6620uI0dXjMZ1sMX3uwGKXKrWFDdqiKejjez5A7xUr
-         5uVxrbzB1hqkrXQXpbtkqRSQ2Y0U/d8fa+gvXQUr2ny+qiy6MP+ai2LQjBDbrO3WJ2lQ
-         ZP2BzJP6XmcE0nP27JMe1eftqqtbaa0C79MkUmJTPM9DDzBjLo41Ru/lKaztcgiWQ5DB
-         dc9g==
-X-Forwarded-Encrypted: i=1; AJvYcCU5IRRhjAMS4UYhaBkiDzzn/iDnhUJwLMTdeC22NwSXGwf7Dq7gH4Y4cduar9crQZYZLbuaZSD9CNU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyddAbp9ibVMMyt4xPyG+AgPQowmMLsW8Sijdhx2WZPxX6iPr9a
-	bjab6YNTEJbhJeKy7AR+9ql2/WOSRXWsSGCVN8qazFiRItvAA3Ge6UJmIWQfQZ+8C/Uy4jxSZ/r
-	aucUsDIAs0uWfOjDLFzi7Ghk+rj0soPEm7RL/geWcYFDaSXz4rncJfyjZdJkByg==
-X-Gm-Gg: ATEYQzxrtrjFD0OQ6rUQTCb4qXTHaCcjxrjVePycDu7vsVR1FdWaMjQqdXdm+Z63O0I
-	3e251Zadca19MCNneW1Qnpc343mY9nzUqA+THQXhUUd7bSg8vaKhzdkErAzz21upszH2nj2+uCX
-	rUBJM4u6BUgYqToSna4Zv01+JCJSBRJlTgQZ1K229GdBxqgjETGO7A+nWNvVHul3Rf0DcC5dNJN
-	gtpeBVxIeC7F8nrCfi+FyvTw+CE+0Ne/IHKAJM93P8PNMZ6VUW5G897wHyBZ6xT9Fi2nOnNfL0r
-	8WV5+4c7iIt2yM5lgCBruteFTk50CNBO0n2x5VgzMkezcIBbCtOU70pqC3CXYrg0RmUQLbTY/68
-	Q8CrWudHPixRWToA=
-X-Received: by 2002:a05:600c:64c7:b0:477:9cdb:e337 with SMTP id 5b1f17b1804b1-483c9bc55a1mr224120425e9.7.1772466736850;
-        Mon, 02 Mar 2026 07:52:16 -0800 (PST)
-X-Received: by 2002:a05:600c:64c7:b0:477:9cdb:e337 with SMTP id 5b1f17b1804b1-483c9bc55a1mr224120045e9.7.1772466736375;
-        Mon, 02 Mar 2026 07:52:16 -0800 (PST)
-Received: from fedora ([2a01:e0a:257:8c60:80f1:cdf8:48d0:b0a1])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483bd7030b9sm336188245e9.4.2026.03.02.07.52.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Mar 2026 07:52:15 -0800 (PST)
-Date: Mon, 2 Mar 2026 16:52:13 +0100
-From: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Vincent Mailhol <mailhol@kernel.org>,
-	Harald Mommer <harald.mommer@oss.qualcomm.com>,
-	Mikhail Golubev-Ciuchea <mikhail.golubev-ciuchea@oss.qualcomm.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-can@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	Wolfgang Grandegger <wg@grandegger.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Stefano Garzarella <sgarzare@redhat.com>, francesco@valla.it
+	 Content-Type:Content-Disposition:In-Reply-To; b=UBdnb1feuC9VUcIFc8/duo9R78m/14N61E6OweRGCri8Yp/29cEPukARlSEqxlSRe0MvzyZtXv3vtOl5A7xYm+lXtb+DxreM5y25nLKGv4oYl8VHhexwLwRow1fFPkaN2ZdywODS23sKlaA3v6FegUZUnCy9D4MQoupJ/DXd2Fs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1vx7UI-0000h1-Lh; Mon, 02 Mar 2026 18:55:22 +0100
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1vx7UE-003Q09-1S;
+	Mon, 02 Mar 2026 18:55:19 +0100
+Received: from pengutronix.de (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 6BD1B4F5684;
+	Mon, 02 Mar 2026 17:55:19 +0000 (UTC)
+Date: Mon, 2 Mar 2026 18:55:19 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
+Cc: Vincent Mailhol <mailhol@kernel.org>, 
+	Harald Mommer <harald.mommer@oss.qualcomm.com>, 
+	Mikhail Golubev-Ciuchea <mikhail.golubev-ciuchea@oss.qualcomm.com>, "Michael S. Tsirkin" <mst@redhat.com>, 
+	Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
+	linux-can@vger.kernel.org, virtualization@lists.linux.dev, 
+	Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>, francesco@valla.it
 Subject: Re: [PATCH v10] can: virtio: Add virtio CAN driver
-Message-ID: <aaWyLWmqx0KCJvwI@fedora>
+Message-ID: <20260302-idealistic-puffin-of-valor-b23733-mkl@pengutronix.de>
+X-AI: stop_reason: "refusal"
 References: <aZRB7Reu/D6HvRcb@fedora>
- <20260302-mighty-wondrous-seagull-75085c-mkl@pengutronix.de>
- <20260302-condor-of-nonconcrete-infinity-d3ddbb-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="7ctag23wbpxqdtfo"
 Content-Disposition: inline
-In-Reply-To: <20260302-condor-of-nonconcrete-infinity-d3ddbb-mkl@pengutronix.de>
+In-Reply-To: <aZRB7Reu/D6HvRcb@fedora>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-On Mon, Mar 02, 2026 at 02:23:42PM +0100, Marc Kleine-Budde wrote:
-> On 02.03.2026 11:30:34, Marc Kleine-Budde wrote:
-> > > +static int virtio_can_open(struct net_device *ndev)
-> > > +{
-> > > +	virtio_can_start(ndev);
-> > > +
-> > > +	netif_start_queue(ndev);
-> > > +
-> > > +	return 0;
-> > > +}
-> >
-> > Is open_candev() missing? The CAN framework requires drivers to call
-> > open_candev() in their ndo_open handler. open_candev() validates that
-> > bittiming has been configured (returns -EINVAL if bitrate is 0), checks
-> > CAN FD data bitrate requirements, and manages carrier state. Without this
-> > call, can the device be brought up without configuring bitrate? The driver
-> > does call close_candev() in virtio_can_close(), showing awareness of the
-> > CAN lifecycle. Every other CAN driver in the kernel calls open_candev() in
-> > its open function.
-> 
-> This is true for physical CAN devices, so let's clarify things for
-> virtio.
-> 
-> As far as I can see, there's no interface to get/set the bit timing/bit
-> rate from the guest, right?
-> 
-AFAIU there is not such a interface.
 
-> You can set bittiming.bitrate to CAN_BITRATE_UNKNOWN, remove the
-> netif_carrier handling from virtio_can_start() and use open_candev().
-> 
-Will do. Thanks!
+--7ctag23wbpxqdtfo
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v10] can: virtio: Add virtio CAN driver
+MIME-Version: 1.0
 
-Matias
+On 17.02.2026 11:24:45, Matias Ezequiel Vara Larsen wrote:
+> +static void virtio_can_start(struct net_device *ndev)
+> +{
+> +	struct virtio_can_priv *priv =3D netdev_priv(ndev);
+> +	u8 result;
+> +
+> +	result =3D virtio_can_send_ctrl_msg(ndev, VIRTIO_CAN_SET_CTRL_MODE_STAR=
+T);
+> +	if (result !=3D VIRTIO_CAN_RESULT_OK)
+> +		netdev_err(ndev, "CAN controller start failed\n");
 
+propagate the error value and evaluate it in the caller
+
+[...]
+
+> +static void virtio_can_stop(struct net_device *ndev)
+> +{
+> +	struct virtio_can_priv *priv =3D netdev_priv(ndev);
+> +	struct device *dev =3D &priv->vdev->dev;
+> +	u8 result;
+> +
+> +	result =3D virtio_can_send_ctrl_msg(ndev, VIRTIO_CAN_SET_CTRL_MODE_STOP=
+);
+> +	if (result !=3D VIRTIO_CAN_RESULT_OK)
+> +		dev_err(dev, "CAN controller stop failed\n");
+
+propagate the error value and evaluate it in the caller
+
+> +
+> +	priv->busoff_pending =3D false;
+> +	priv->can.state =3D CAN_STATE_STOPPED;
+> +
+> +	/* Switch carrier off if device was connected to the bus */
+> +	if (netif_carrier_ok(ndev))
+> +		netif_carrier_off(ndev);
+> +}
+
+regards,
+Marc
+
+--
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--7ctag23wbpxqdtfo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCaaXPBAAKCRDMOmT6rpmt
+0sNKAQDbTjYRHJWn25iPrwKX+WuFCeZM8bwBGFpoul6nh9Za/AD+NP2ZTRereYFv
+vtQKECmg5LxIRzUYoXi14AnYJ7aoNwM=
+=x/53
+-----END PGP SIGNATURE-----
+
+--7ctag23wbpxqdtfo--
