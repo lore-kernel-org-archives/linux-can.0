@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C28411624
-	for <linux-can@vger.kernel.org>; Mon,  2 Mar 2026 15:28:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5BE040B6EA
+	for <linux-can@vger.kernel.org>; Mon,  2 Mar 2026 15:28:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772465293; cv=none; b=DRB1ByqTxyRNgYdDVFe6rcLahqsCm4kx2tuIEk52PtkdMqgyvB2iTUpMsXKJHqGq3RkNMiIBth8RU1PVaEDDjCHvJLWFuUyp086VY1hWLpPeKEb92d4jd4cZHcXDwbp6hN/kbu9SwdIoJscHadf3fd6K1BOAf3kK1XIZOdqKr4g=
+	t=1772465293; cv=none; b=jlz8JB8I861e7cqJfuRhzPVdLmmtk5Yitr1Ju91Z0tcGMBlo3zbIlG2aPEOGHwbw+/buNiWm8s8fU5G74z6KxcHF9X8NcerasmC9iLzlGp7j/6a950atcpbS1pQUKxecu3A8rQz88WjYHu6AZkkNFyXPGljhuY+2W88k+OyHLLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1772465293; c=relaxed/simple;
-	bh=eESALG8Vhe6eR2lflGD4lx4FYXngsDPD93CNWqujpqM=;
+	bh=UX44iS51LpvMCtg5mQsc4i3lOH1BVoiRDQbumEkLrkE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UwrL/iDJvKAWha6P8lb0henTkE6CW7cvMh5de17S0OESUy+TTatv2uphQJ6C16mhCloBZVtkJa3magfocqx8h7kvweXjKzMEPyhTDOFAEl7t7RWoM0TyWh+dnHaYBlSN36zMp7wWS/+KUeN+QqvN2dJBn3dcgKJubCK89SH1b14=
+	 MIME-Version; b=oXNwBn8N57JQ/0HrsLwR8ql1mXNCaxGPovB7uUKp+e4s6ErqLY0ohbgQlef4BpsMuyIlOlqhoTXxXo/BjwYHkQGGG/OJFfUGYE/WCMW/IJtFde2XJ7pOJJ7IdVIdT+jdT1NYCfhiTOnMTgwaVbmynDv6/WcEi1yX23YdkpRMZRg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,19 +18,19 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vx5Be-0004kJ-Oc; Mon, 02 Mar 2026 16:27:58 +0100
+	id 1vx5Be-0004kO-Lt; Mon, 02 Mar 2026 16:27:58 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vx5Bc-003P0a-1O;
-	Mon, 02 Mar 2026 16:27:57 +0100
+	id 1vx5Bc-003P0m-2L;
+	Mon, 02 Mar 2026 16:27:58 +0100
 Received: from blackshift.org (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 7E2494F546B;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id CD3F64F5470;
 	Mon, 02 Mar 2026 15:27:57 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -38,12 +38,13 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Vincent Mailhol <mailhol@kernel.org>,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 02/12] can: dummy_can: dummy_can_init(): fix packet statistics
-Date: Mon,  2 Mar 2026 16:16:08 +0100
-Message-ID: <20260302152755.1700177-3-mkl@pengutronix.de>
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	stable@kernel.org
+Subject: [PATCH net 07/12] can: usb: etas_es58x: correctly anchor the urb in the read bulk callback
+Date: Mon,  2 Mar 2026 16:16:13 +0100
+Message-ID: <20260302152755.1700177-8-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260302152755.1700177-1-mkl@pengutronix.de>
 References: <20260302152755.1700177-1-mkl@pengutronix.de>
@@ -59,38 +60,52 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-The former implementation was only counting the tx_packets value but not
-the tx_bytes as the skb was dropped on driver layer.
+When submitting an urb, that is using the anchor pattern, it needs to be
+anchored before submitting it otherwise it could be leaked if
+usb_kill_anchored_urbs() is called.  This logic is correctly done
+elsewhere in the driver, except in the read bulk callback so do that
+here also.
 
-Enable CAN echo support (IFF_ECHO) in dummy_can_init(), which activates the
-code for setting and retrieving the echo SKB and counts the tx_bytes
-correctly.
-
-Fixes: 816cf430e84b ("can: add dummy_can driver")
 Cc: Vincent Mailhol <mailhol@kernel.org>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: stable@kernel.org
+Assisted-by: gkh_clanker_2000
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Reviewed-by: Vincent Mailhol <mailhol@kernel.org>
-Link: https://patch.msgid.link/20260126104540.21024-1-socketcan@hartkopp.net
-[mkl: make commit message imperative]
+Tested-by: Vincent Mailhol <mailhol@kernel.org>
+Link: https://patch.msgid.link/2026022320-poser-stiffly-9d84@gregkh
+Fixes: 8537257874e9 ("can: etas_es58x: add core support for ETAS ES58X CAN USB interfaces")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dummy_can.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/usb/etas_es58x/es58x_core.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/dummy_can.c b/drivers/net/can/dummy_can.c
-index 41953655e3d3..cd23de488edc 100644
---- a/drivers/net/can/dummy_can.c
-+++ b/drivers/net/can/dummy_can.c
-@@ -241,6 +241,7 @@ static int __init dummy_can_init(void)
+diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
+index 2d248deb69dc..b259f6109808 100644
+--- a/drivers/net/can/usb/etas_es58x/es58x_core.c
++++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
+@@ -1461,12 +1461,18 @@ static void es58x_read_bulk_callback(struct urb *urb)
+ 	}
  
- 	dev->netdev_ops = &dummy_can_netdev_ops;
- 	dev->ethtool_ops = &dummy_can_ethtool_ops;
-+	dev->flags |= IFF_ECHO; /* enable echo handling */
- 	priv = netdev_priv(dev);
- 	priv->can.bittiming_const = &dummy_can_bittiming_const;
- 	priv->can.bitrate_max = 20 * MEGA /* BPS */;
+  resubmit_urb:
++	usb_anchor_urb(urb, &es58x_dev->rx_urbs);
+ 	ret = usb_submit_urb(urb, GFP_ATOMIC);
++	if (!ret)
++		return;
++
++	usb_unanchor_urb(urb);
++
+ 	if (ret == -ENODEV) {
+ 		for (i = 0; i < es58x_dev->num_can_ch; i++)
+ 			if (es58x_dev->netdev[i])
+ 				netif_device_detach(es58x_dev->netdev[i]);
+-	} else if (ret)
++	} else
+ 		dev_err_ratelimited(dev,
+ 				    "Failed resubmitting read bulk urb: %pe\n",
+ 				    ERR_PTR(ret));
 -- 
 2.51.0
 
