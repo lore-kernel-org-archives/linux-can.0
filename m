@@ -1,37 +1,36 @@
 Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E136F3ED10B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 683543EB7EA;
 	Fri,  6 Mar 2026 16:29:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772814597; cv=none; b=d5Rd0OQxD8m6ZHxVhZK22jaglF2aPKg/zQGjtnn2yP6EdnIYDQy0DH571MmuE8v06a3I+Hc+R3y/EntnmofT/rzb5u5tBjcmLYW2bEzmi6qurBGEaX5d/i7gC2BYKSlOEukERy0DfzY0VmV7e4nIMhVDcNjifKRLEEnNuTsRNw0=
+	t=1772814597; cv=none; b=ETuY1fkQow2f0DN0OjTkM5JBAgyGs2zsle22pASZJwGyosQqJw1EZtJKLiWTGifnUSRAYdMv6I/tilh5hEoDfMUhMqLfJwJqr8P4Bsy/FPQOZAoYAroqu5hWStrBsLGud9U+HkSPHZzcPKKCT+/xlcp6cRzYzBQsSTFdhk65BNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1772814597; c=relaxed/simple;
-	bh=pAbE7oUiYBzPGw0DKpSKNoz6vw1tL4Fy7hQ2s129X2w=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jwVfmis60j49o7+K7Qjg6gSmDC+oXg/MfJfOkWfPt52pmZ76732xGsrxOe2+NavSizH/mTxccH/CtaE8aSTILYz9bOPySJR56yUljKzSmmqluIAIOLs9NNv2MhflzjxFffqf709NhJliPhJ0IBBo3F/T5LmXSyIxWJ5dp2PwAVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=fail (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=KRVt+oSw reason="key not found in DNS"; arc=none smtp.client-ip=94.231.106.210
+	bh=Tm+0YBqYQ/pql6jCbOISHN/w/8nBI+5mhZezjkiroVc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MhCuuLd7Cd3rL9ZuKkJ7rY+OpAebxROGGNOs6edpqCJjCBtiaTYq05vIqyGMZObeHYHKlF87rHRu8d4+tTaG5tW/403ThrXQAjR6/b7hp0LPLLxBpianF5E+gwqhOV+EaLDYZ0i754+QJidDRgHMdppo8s4iwR6J7yrZ9t18dS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=fail (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=It8KzpK7 reason="key not found in DNS"; arc=none smtp.client-ip=94.231.106.210
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="KRVt+oSw"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="It8KzpK7"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp.simply.com (Simply.com) with ESMTP id 4fSBh95rdjz1Fljh;
-	Fri,  6 Mar 2026 17:29:45 +0100 (CET)
+	by smtp.simply.com (Simply.com) with ESMTP id 4fSBh85cDRz1Fg9H;
+	Fri,  6 Mar 2026 17:29:44 +0100 (CET)
 Received: from d-5xj5g74.got.gaisler.com.com (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
-	by smtp.simply.com (Simply.com) with ESMTPA id 4fSBh93p7Rz1Fg8v;
-	Fri,  6 Mar 2026 17:29:45 +0100 (CET)
+	by smtp.simply.com (Simply.com) with ESMTPA id 4fSBh83pQvz1DDTQ;
+	Fri,  6 Mar 2026 17:29:44 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
-	s=simplycom2; t=1772814585;
-	bh=IMU/wLjbU6RVE7LY0W7niv61k/USFwtxnDj46IVSkeM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=KRVt+oSw9PnRdqNE569zq+1jM1e//TMrO54VyqnVfcakUnmSoZ+LUZuSuD7wWOJxh
-	 h5j+35jl5M4knvrKJCdHIxQ90Nkadqcx4V1NRfo6y6Hcg/R8wNquIrYia2AS8+VUw8
-	 24thYXBt5Yhc0yeQm8pLt2GZm37PMMVwEiI32B8f1XVtVLJIU0CVbcP5kJ3V+tTZsY
-	 MN+MvWV3fv38HHT/HUHTGn1onNXV/ur9XQl1jrZBKQpJSu+BvSKXpraT5LASbQSysR
-	 FLAKijQdW7Epn3+RhPAfd2SYmDIujfBKCanMVIpeNEVhE99eYJDD8q0Q75qciNoEOU
-	 3uhyeaWIZtlQw==
+	s=simplycom2; t=1772814584;
+	bh=ra9PtKAjEDEq2SILzN4E0t6D3nPs1sA1h7StgLLXUH8=;
+	h=From:To:Cc:Subject:Date;
+	b=It8KzpK7yKui3BloitH9WQE6U2gQbM3l/QhJiBpNn1ORH0r01jQ8lHHtTW89gF8vr
+	 NKkwiEBhg82UGjKoTBMutOEwMMTL4doFTp4bsYIXuOFbDLCflmK/rp2KyZuZPRC0I7
+	 kglDjjzE+KdE11CRzAGLJ5wTuwQmvbNPG2ES4ts6Sh4kiR6AXZ747roX4A6VFWvLq6
+	 GLzRk160PeSm4jdUTLnR1lk3ZlLq+sjer9uELO5yuc2FcpDfcHHKT2hCcRUxtw+wzS
+	 VP4H28PejksrUpka+QMfvl7uPR70C6sxlYx+5iDQXIoKBqdQRp4EaRnVv2Zc3w6dB7
+	 YXn+El8LteFew==
 From: Arun Muthusamy <arun.muthusamy@gaisler.com>
 To: robh@kernel.org,
 	krzk+dt@kernel.org,
@@ -41,14 +40,11 @@ To: robh@kernel.org,
 Cc: devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-can@vger.kernel.org,
-	Daniel Hellstrom <daniel@gaisler.com>,
 	Arun Muthusamy <arun.muthusamy@gaisler.com>
-Subject: [PATCH v6 04/15] can: grcan: Add clock handling
-Date: Fri,  6 Mar 2026 17:29:23 +0100
-Message-ID: <20260306162934.22955-5-arun.muthusamy@gaisler.com>
+Subject: [PATCH v6 00/15] can: grcan: Enhance driver with CANFD Support and Improvements
+Date: Fri,  6 Mar 2026 17:29:19 +0100
+Message-ID: <20260306162934.22955-1-arun.muthusamy@gaisler.com>
 X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260306162934.22955-1-arun.muthusamy@gaisler.com>
-References: <20260306162934.22955-1-arun.muthusamy@gaisler.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -57,59 +53,101 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Daniel Hellstrom <daniel@gaisler.com>
+This patch series updates the GRCAN driver to support the GRCANFD core
+from the GRLIB IP core library.
 
-Add clock handling and add error messages for missing 'freq' DT property.
+In addition to GRCANFD support, the updates include enhancements for
+compatibility with NOEL-V (RISC-V) systems, such as matching drivers
+using the 'compatible' identifier and adding support for reading clock
+frequency via the common clock framework where available. The series
+also includes improvements like functions for configuring
+nominal bit-timing and optimizations for DMA operations.
 
-Signed-off-by: Daniel Hellstrom <daniel@gaisler.com>
-Signed-off-by: Arun Muthusamy <arun.muthusamy@gaisler.com>
----
- drivers/net/can/grcan.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+This series also updates the driver documentation and bindings.
+The old text binding is converted to YAML, a new vendor prefix
+is added to reflect the updated ownership and an entry for the
+driver is added to the MAINTAINERS file.
 
-diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
-index 3b1b09943436..f3821e224f4f 100644
---- a/drivers/net/can/grcan.c
-+++ b/drivers/net/can/grcan.c
-@@ -34,7 +34,7 @@
- #include <linux/spinlock.h>
- #include <linux/of.h>
- #include <linux/of_irq.h>
--
-+#include <linux/clk.h>
- #include <linux/dma-mapping.h>
- 
- #define DRV_NAME	"grcan"
-@@ -1644,6 +1644,7 @@ static int grcan_probe(struct platform_device *ofdev)
- {
- 	struct device_node *np = ofdev->dev.of_node;
- 	struct device_node *sysid_parent;
-+	struct clk *clk;
- 	u32 sysid, ambafreq;
- 	int irq, err;
- 	void __iomem *base;
-@@ -1663,8 +1664,19 @@ static int grcan_probe(struct platform_device *ofdev)
- 
- 	err = of_property_read_u32(np, "freq", &ambafreq);
- 	if (err) {
--		dev_err(&ofdev->dev, "unable to fetch \"freq\" property\n");
--		goto exit_error;
-+		clk = devm_clk_get(&ofdev->dev, NULL);
-+		if (IS_ERR(clk)) {
-+			dev_err_probe(&ofdev->dev, PTR_ERR(clk),
-+				      "Failed both to get \"freq\" property and clock for fallback\n");
-+			err = PTR_ERR(clk);
-+			goto exit_error;
-+		}
-+
-+		ambafreq = clk_get_rate(clk);
-+		if (!ambafreq) {
-+			dev_err(&ofdev->dev, "Invalid or Uninitialized clock\n");
-+			return -EINVAL;
-+		}
- 	}
- 
- 	base = devm_platform_ioremap_resource(ofdev, 0);
--- 
+Arun Muthusamy (10):
+  dt-bindings: net: can: gaisler,grcan: Convert to DT schema
+  MAINTAINERS: Add maintainers for GRCAN CAN network driver
+  can: grcan: Replace bit timing macros with literal values
+  can: grcan: Simplify timing configuration
+  can: grcan: add FD capability detection and nominal bit-timing
+  can: grcan: Refactor GRCAN DMA buffer to use structured memory layout
+  can: grcan: Add CANFD TX support alongside legacy CAN
+  can: grcan: Add CANFD RX support alongside legacy CAN
+  can: grcan: Update echo skb handling to match variable length CANFD
+    frame
+  can: grcan: Advertise CANFD capability
+
+Daniel Hellstrom (4):
+  can: grcan: Add clock handling
+  can: grcan: set DMA mask for GRCAN and GRCANFD to 32-bit
+  can: grcan: Add saving and restoring of CAN FD baud-rate registers
+  can: grcan: Reserve space between cap and next register to align with
+    address layout
+
+Ludwig Rydberg (1):
+  dt-bindings: Add vendor prefix for Frontgrade Gaisler AB
+
+Changes in v6:
+- can: Implemented anonymous unions for cleaner buffer access.
+- can: Removed unnecessary patch.
+- can: Replaced GRCAN_CLASSIC_DATA_SIZE with CAN_MAX_DLEN.
+- Link to v5: https://lore.kernel.org/all/20260216135344.23246-6-arun.muthusamy@gaisler.com/
+
+Changes in v5:
+- can: Removed pointer arithmetic from opaque buffers.
+- can: Refactor GRCAN DMA buffer to use structured memory layout.
+- Link to v4: https://lore.kernel.org/all/20260128144921.5458-13-arun.muthusamy@gaisler.com/
+
+Changes in v4:
+- can: Removed unnecessary saving and restoring of registers.
+- can: Corrected spacing inconsistencies.
+- can: Revised how timing information is logged.
+- can: Eliminated redundant checks for platform data,
+- can: Recalculated the number of descriptors needed for both CAN and
+    CANFD.
+- can: Eliminated multiple independent queue stop conditions.
+- can: Aligned the order of patches.
+- Link to v3: https://lore.kernel.org/all/20260122121038.7910-1-arun.muthusamy@gaisler.com/
+
+Changes in v3:
+- can: Replaced custom bit shifting with FIELD_PREP and GENMASK.
+- can: Factorized common elements of struct canfd_frame and
+    struct can_frame, excluding DLC assignment.
+- can: Split the patch to separate code refactoring from the
+    introduction of the new feature.
+- can: Remove Unused macros
+- Link to v2: https://lore.kernel.org/all/20251223105604.12675-1-arun.muthusamy@gaisler.com/
+
+Changes in v2:
+- bindings: Updated commit message to explain the removal of freq
+  and systemid in the new binding.
+- can: S-o-b is placed last in commit messages.
+- can: Add values are directly added to the struct can_bittiming_const.
+- can: Replaced custom bit shifting with FIELD_PREP and GENMASK for clarity.
+- can: Drop do_set_bittiming() callback
+- can: Remove forward declarations, unnecessary parentheses, redundant comments
+- can: Adjust line breaks according to new character limits
+- can: Eliminating unnecessary defines
+- can: Enhance code efficiency with memcpy, use standard API to fetch device specific data and
+  error handling.
+- Link to v1: https://lore.kernel.org/all/20251118092115.3455-1-arun.muthusamy@gaisler.com/
+
+ .../bindings/net/can/gaisler,grcan.yaml       |  62 +++
+ .../devicetree/bindings/net/can/grcan.txt     |  28 -
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |   8 +
+ drivers/net/can/Kconfig                       |   6 +-
+ drivers/net/can/grcan.c                       | 516 +++++++++++++-----
+ 6 files changed, 445 insertions(+), 177 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/gaisler,grcan.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/can/grcan.txt
+
+
+base-commit: 4001bda0cc911fcdd3dde36963a17f4eac173d7d
+--
 2.51.0
 
