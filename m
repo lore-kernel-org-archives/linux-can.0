@@ -1,37 +1,37 @@
 Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEADC3F23C2;
-	Fri,  6 Mar 2026 16:29:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 263033AA1A6;
+	Fri,  6 Mar 2026 16:30:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772814606; cv=none; b=dY4IiSm41PTd8meCqqulEaF8BdVcUmlSROtC+ww97UrTsUQB6oLAYMS5bCadsjIPtdh3+QZSWUYmWnPe4Vy0YfB0wKKSUTGoKQK4XluzeaO2gzBiZ/nwrwNKyMruc4noUseh1HE9zGZxmD+E9kgwFGYB7mYwXkWlCNkXwKYYNmc=
+	t=1772814607; cv=none; b=nS/kxfd8Lhxq89tBeu/pqMSVjlP6txfUCuVX+hFzoFBAA5j6vAz2K9uxSwZICKJsJW7MX+DNvAQHg5x6zRPXyA3mzSDU0PTC3GkIS0x0nEm5b3CxVk1K6cMAiwz2JSKnibAy143g1L+XuEyJV5p2Y0mNRnDGB/emvEDmKMr3ukQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772814606; c=relaxed/simple;
-	bh=YaHvvfEb88Vi1js3h+ePVjEeBl6EZNzpudqoWSjoSiE=;
+	s=arc-20240116; t=1772814607; c=relaxed/simple;
+	bh=ec9Q8bC+SzrjWd9DEgqt0ENqCEnKlztjG2W/AgncgE8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WxlI6Z55Ar1MpjkW//OSx3l38nQfGDtSHyIebCyinVm3XgUeNRI8VRXqO2u8VFYZ47B9itmKx2uqHkqXuUDdb7ZA7SWK0btEB8mr4nik6FZWhkgUdBflq3g9d5UWU3eI9TF/RMWoaZ8Arcv8ioEz5eQDEQdWOIbAzX+Vfnlv9qg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=fail (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=Sij77XRk reason="key not found in DNS"; arc=none smtp.client-ip=94.231.106.210
+	 MIME-Version; b=KLNBJjuuozUlITy+y0s1fSGf7svGVgTxxlXTsqr7Ik8TlPgRt58m7OWruGQA2Jv3qUfWUZB+pF3tEdUdPf2a/8yqGycYdvAio1qtNM22oP0XwBGCLAdeV+Mm3t/QMjTIDSP6d6SssEpq6huh8xHplJ6snfKRoSrSmZeAgjyZ5/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=fail (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=kFmuM90c reason="key not found in DNS"; arc=none smtp.client-ip=94.231.106.210
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="Sij77XRk"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="kFmuM90c"
 Received: from localhost (localhost [127.0.0.1])
-	by smtp.simply.com (Simply.com) with ESMTP id 4fSBhB3fhkz1Fg8v;
-	Fri,  6 Mar 2026 17:29:46 +0100 (CET)
+	by smtp.simply.com (Simply.com) with ESMTP id 4fSBhC5XRzz1Fljl;
+	Fri,  6 Mar 2026 17:29:47 +0100 (CET)
 Received: from d-5xj5g74.got.gaisler.com.com (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
-	by smtp.simply.com (Simply.com) with ESMTPA id 4fSBhB1nT6z1DDgW;
-	Fri,  6 Mar 2026 17:29:46 +0100 (CET)
+	by smtp.simply.com (Simply.com) with ESMTPA id 4fSBhC3bwBz1DDgW;
+	Fri,  6 Mar 2026 17:29:47 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
-	s=simplycom2; t=1772814586;
-	bh=OaTLEI+yc4RYqeiJU7jtLMAv7/4/hDPDhIWDCpBmibQ=;
+	s=simplycom2; t=1772814587;
+	bh=+Dw6R2enjEsOg8oLAY+9D/rSw/CY/HhSy4Ay5c2tBbM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Sij77XRk5fVBUoMTr+Tff4uBnoK4Drarzw4avkU0MenDEWSZ5PSvOlg/kMP89XPAp
-	 6t4QbepwlwLGCCC8urK+uDHz3gF1NNOZ2qfFASrbDN0Tj+jPfCeSpiKTTLVtuwW0Nj
-	 JaA5Ks+2S4jlLlON5CddDosbBe9GeoYI2jeCJ3HXy0IS1ee3TpIe/uO4obBpnh/D+0
-	 OaQCqfEsj3p15aeqg012QYtNb/KF6/SKiRlxyj7W7ZjDq3m/OW4UpX7nHVGeu3sAT8
-	 m77zvlW3kcreYQdlk1TSRQRUy0TgTc6X+yGBgwTx6REt7qA/X3tAB1I+j64hg94Uxr
-	 QS9kKUyVHh+Ew==
+	b=kFmuM90c4CY6PbYWuNiD1xOlRiU6makX9YAQ+AKggwW3ogMBBQXKqfmNJ0urjuT3p
+	 m+IbBZCNL/TSz8S4aOVl+XXJCBbwlePctbudgdnZzygW+4DjxqOd4MorWsbDxh8VfB
+	 fXAYXjXDuZO359h8Hr9h6mhzSqKqt7tM/3lN2k/SoOwpPWwRKpKATfSvjrZM+K0YeJ
+	 J0OQ7EUTOWFLTsbClEgoX4cueyEVuvmU+XC/jFFoXZ98Lp5aMrQikavq4XAjjHiHOB
+	 SkKFbSic4Xu3kx1I2Z/wDJ0h6o1tBTvfRhaNf101swsEnCoitLtY8jZ3RE1Z2pLTTg
+	 2D6I3lHOFo5QA==
 From: Arun Muthusamy <arun.muthusamy@gaisler.com>
 To: robh@kernel.org,
 	krzk+dt@kernel.org,
@@ -41,11 +41,10 @@ To: robh@kernel.org,
 Cc: devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-can@vger.kernel.org,
-	Arun Muthusamy <arun.muthusamy@gaisler.com>,
-	Daniel Hellstrom <daniel@gaisler.com>
-Subject: [PATCH v6 07/15] can: grcan: add FD capability detection and nominal bit-timing
-Date: Fri,  6 Mar 2026 17:29:26 +0100
-Message-ID: <20260306162934.22955-8-arun.muthusamy@gaisler.com>
+	Arun Muthusamy <arun.muthusamy@gaisler.com>
+Subject: [PATCH v6 12/15] can: grcan: Add CANFD TX support alongside legacy CAN
+Date: Fri,  6 Mar 2026 17:29:31 +0100
+Message-ID: <20260306162934.22955-13-arun.muthusamy@gaisler.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260306162934.22955-1-arun.muthusamy@gaisler.com>
 References: <20260306162934.22955-1-arun.muthusamy@gaisler.com>
@@ -57,275 +56,213 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add capability for the driver to detect CAN FD support
-and adjust accordingly. Introduce structures and functions
-for setting nominal bit-timing for standard CAN FD.
-The `grcan_hwcap` structure defines hardware capabilities like
-CAN FD support and baud-rate options. Additionally, improved
-device tree compatibility by updating the `of_device_id` table
-for better matching of GRCAN and GRCANFD devices. Also update
-Kconfig to mention GRCANFD support.
+Include CANFD TX support with the legacy CAN support, enabling
+support for extended data payloads to provide higher bit rates.
 
-Signed-off-by: Daniel Hellstrom <daniel@gaisler.com>
 Signed-off-by: Arun Muthusamy <arun.muthusamy@gaisler.com>
 ---
- drivers/net/can/Kconfig |   6 +-
- drivers/net/can/grcan.c | 137 +++++++++++++++++++++++++++++++++++-----
- 2 files changed, 125 insertions(+), 18 deletions(-)
+ drivers/net/can/grcan.c | 117 +++++++++++++++++++++++++++++-----------
+ 1 file changed, 87 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-index d43d56694667..96f61b40a898 100644
---- a/drivers/net/can/Kconfig
-+++ b/drivers/net/can/Kconfig
-@@ -133,10 +133,12 @@ config CAN_FLEXCAN
- 	  Say Y here if you want to support for Freescale FlexCAN.
- 
- config CAN_GRCAN
--	tristate "Aeroflex Gaisler GRCAN and GRHCAN CAN devices"
-+	tristate "Aeroflex Gaisler GRCAN(FD) and GRHCAN CAN devices"
- 	depends on OF && HAS_DMA && HAS_IOMEM
- 	help
--	  Say Y here if you want to use Aeroflex Gaisler GRCAN or GRHCAN.
-+	  Say Y here if you want to use Aeroflex Gaisler GRCAN or GRCANFD
-+	  or GRHCAN.
-+
- 	  Note that the driver supports little endian, even though little
- 	  endian syntheses of the cores would need some modifications on
- 	  the hardware level to work.
 diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
-index 4ed0fb1d70b7..a752aea51d96 100644
+index 4c56861e21d7..94af34fbd1fd 100644
 --- a/drivers/net/can/grcan.c
 +++ b/drivers/net/can/grcan.c
-@@ -33,6 +33,7 @@
- #include <linux/platform_device.h>
- #include <linux/spinlock.h>
- #include <linux/of.h>
-+#include <linux/of_device.h>
- #include <linux/of_irq.h>
- #include <linux/clk.h>
- #include <linux/dma-mapping.h>
-@@ -51,7 +52,11 @@ struct grcan_registers {
- 	u32 __reserved1[GRCAN_RESERVE_SIZE(0x08, 0x18)];
- 	u32 smask;	/* 0x18 - CanMASK */
- 	u32 scode;	/* 0x1c - CanCODE */
--	u32 __reserved2[GRCAN_RESERVE_SIZE(0x1c, 0x100)];
-+	u32 __reserved2[GRCAN_RESERVE_SIZE(0x1c, 0x40)];
-+	u32 nbtr;	/* 0x40 */
-+	u32 fdbtr;	/* 0x44 */
-+	u32 tdelay;	/* 0x48 */
-+	u32 __reserved2_[GRCAN_RESERVE_SIZE(0x48, 0x100)];
- 	u32 pimsr;	/* 0x100 */
- 	u32 pimr;	/* 0x104 */
- 	u32 pisr;	/* 0x108 */
-@@ -203,6 +208,39 @@ struct grcan_registers {
- #error "Invalid default buffer size"
- #endif
+@@ -174,6 +174,7 @@ struct grcan_registers {
+ #define GRCAN_IRQ_DEFAULT (GRCAN_IRQ_RX | GRCAN_IRQ_TX | GRCAN_IRQ_ERRORS)
  
-+#define GRCANFD_NBTR_SCALER     GENMASK(23, 16)
-+#define GRCANFD_NBTR_PS1        GENMASK(17, 10)
-+#define GRCANFD_NBTR_PS2        GENMASK(9, 5)
-+#define GRCANFD_NBTR_SJW        GENMASK(4, 0)
-+#define GRCANFD_NBTR_TIMING						\
-+	(GRCANFD_NBTR_SCALER | GRCANFD_NBTR_PS1 | GRCANFD_NBTR_PS2 |	\
-+	 GRCANFD_NBTR_SJW)
-+
-+#define GRCANFD_FDBTR_SCALER 0x00ff0000
-+#define GRCANFD_FDBTR_PS1 0x00003c00
-+#define GRCANFD_FDBTR_PS2 0x000001e0
-+#define GRCANFD_FDBTR_SJW 0x0000000f
-+#define GRCANFD_FDBTR_TIMING						\
-+	(GRCANFD_FDBTR_SCALER | GRCANFD_FDBTR_PS1 | GRCANFD_FDBTR_PS2 |	\
-+	 GRCANFD_FDBTR_SJW)
-+
-+#define GRCANFD_FDBTR_SCALER_BIT 16
-+#define GRCANFD_FDBTR_PS1_BIT 10
-+#define GRCANFD_FDBTR_PS2_BIT 5
-+#define GRCANFD_FDBTR_SJW_BIT 0
-+
-+/* Hardware capabilities */
-+struct grcan_hwcap {
-+	/* CAN-FD capable, indicates GRCANFD IP.
-+	 * The GRCANFD has different baud-rate registers and extended DMA
-+	 * format to also describe FD-frames.
-+	 */
-+	const struct can_bittiming_const *bt_const;
-+	int (*set_bittiming)(struct net_device *dev);
-+	bool txbug_possible;
-+	bool fd;
-+};
-+
- struct grcan_dma_buffer {
- 	size_t size;
- 	void *buf;
-@@ -245,6 +283,7 @@ struct grcan_priv {
- 	struct napi_struct napi;
+ #define GRCAN_MSG_SIZE		16
++#define GRCAN_CLASSIC_DATA_SIZE 8
  
- 	struct grcan_registers __iomem *regs;	/* ioremap'ed registers */
-+	const struct grcan_hwcap *hwcap;
- 	struct grcan_device_config config;
- 	struct grcan_dma dma;
+ #define GRCAN_MSG_IDE		0x80000000
+ #define GRCAN_MSG_RTR		0x40000000
+@@ -195,6 +196,10 @@ struct grcan_registers {
+ #define GRCAN_MSG_OFF		0x00000002
+ #define GRCAN_MSG_PASS		0x00000001
  
-@@ -393,6 +432,19 @@ static const struct can_bittiming_const grcan_bittiming_const = {
- 	.brp_inc	= 1,
- };
- 
-+/* GRCANFD nominal boundaries for baud-rate parameters */
-+static const struct can_bittiming_const grcanfd_bittiming_const = {
-+	.name		= DRV_NAME,
-+	.tseg1_min	= 2,
-+	.tseg1_max	= 63,
-+	.tseg2_min	= 2,
-+	.tseg2_max	= 16,
-+	.sjw_max	= 16,
-+	.brp_min	= 1,
-+	.brp_max	= 256,
-+	.brp_inc	= 1,
-+};
++#define GRCAN_MSG_EID_MASK      GENMASK(28, 0)
++#define GRCAN_MSG_BID_MASK      GENMASK(28, 18)
++#define GRCAN_MSG_DLC_MASK      GENMASK(31, 28)
 +
- static int grcan_set_bittiming(struct net_device *dev)
- {
- 	struct grcan_priv *priv = netdev_priv(dev);
-@@ -421,6 +473,32 @@ static int grcan_set_bittiming(struct net_device *dev)
- 	return 0;
+ #define GRCAN_BUFFER_ALIGNMENT		1024
+ #define GRCAN_DEFAULT_BUFFER_SIZE	1024
+ #define GRCAN_VALID_TR_SIZE_MASK	0x001fffc0
+@@ -227,6 +232,9 @@ struct grcan_registers {
+ #define GRCANFD_FDBTR_PS2_BIT 5
+ #define GRCANFD_FDBTR_SJW_BIT 0
+ 
++#define GRCAN_TX_BRS  BIT(25)
++#define GRCAN_TX_FDF  BIT(26)
++
+ /* Hardware capabilities */
+ struct grcan_hwcap {
+ 	/* CAN-FD capable, indicates GRCANFD IP.
+@@ -434,6 +442,12 @@ grcan_msg_header_at(struct grcan_dma_buffer *dbuf, u32 offset)
+ 	return (struct grcan_msg_header *)((u8 *)dbuf->buf + offset);
  }
  
-+static int grcanfd_set_bittiming(struct net_device *dev)
++static inline struct grcan_msg_fragment *
++grcan_msg_frag_at(struct grcan_dma_buffer *dbuf, u32 offset)
 +{
-+	struct grcan_priv *priv = netdev_priv(dev);
-+	struct grcan_registers __iomem *regs;
-+	int sjw, ps1, ps2, scaler;
-+	struct can_bittiming *bt;
-+	u32 timing = 0;
-+
-+	regs = priv->regs;
-+	bt = &priv->can.bittiming;
-+
-+	sjw = bt->sjw;
-+	ps1 = (bt->prop_seg + bt->phase_seg1);
-+	ps2 = bt->phase_seg2;
-+	scaler = bt->brp - 1;
-+
-+	timing |= FIELD_PREP(GRCANFD_NBTR_SJW, sjw);
-+	timing |= FIELD_PREP(GRCANFD_NBTR_PS1, ps1);
-+	timing |= FIELD_PREP(GRCANFD_NBTR_PS2, ps2);
-+	timing |= FIELD_PREP(GRCANFD_NBTR_SCALER, scaler);
-+	netdev_dbg(dev, "setting timing=0x%x\n", timing);
-+	grcan_write_bits(&regs->nbtr, timing, GRCANFD_NBTR_TIMING);
-+
-+	return 0;
++	return (struct grcan_msg_fragment *)((u8 *)dbuf->buf + offset);
 +}
 +
- static int grcan_get_berr_counter(const struct net_device *dev,
- 				  struct can_berr_counter *bec)
- {
-@@ -1545,7 +1623,8 @@ static const struct ethtool_ops grcan_ethtool_ops = {
- 
- static int grcan_setup_netdev(struct platform_device *ofdev,
- 			      void __iomem *base,
--			      int irq, u32 ambafreq, bool txbug)
-+			      int irq, u32 ambafreq, bool txbug,
-+			      const struct grcan_hwcap *hwcap)
- {
- 	struct net_device *dev;
- 	struct grcan_priv *priv;
-@@ -1568,14 +1647,14 @@ static int grcan_setup_netdev(struct platform_device *ofdev,
- 	priv->dev = dev;
- 	priv->ofdev_dev = &ofdev->dev;
- 	priv->regs = base;
--	priv->can.bittiming_const = &grcan_bittiming_const;
--	priv->can.do_set_bittiming = grcan_set_bittiming;
-+	priv->can.bittiming_const = hwcap->bt_const;
- 	priv->can.do_set_mode = grcan_set_mode;
- 	priv->can.do_get_berr_counter = grcan_get_berr_counter;
- 	priv->can.clock.freq = ambafreq;
- 	priv->can.ctrlmode_supported =
- 		CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_ONE_SHOT;
- 	priv->need_txbug_workaround = txbug;
-+	priv->hwcap = hwcap;
- 
- 	/* Discover if triple sampling is supported by hardware */
- 	regs = priv->regs;
-@@ -1620,22 +1699,29 @@ static int grcan_probe(struct platform_device *ofdev)
- {
- 	struct device_node *np = ofdev->dev.of_node;
- 	struct device_node *sysid_parent;
-+	const struct grcan_hwcap *hwcap;
- 	struct clk *clk;
- 	u32 sysid, ambafreq;
- 	int irq, err;
- 	void __iomem *base;
- 	bool txbug = true;
- 
-+	hwcap = device_get_match_data(&ofdev->dev);
-+
- 	/* Compare GRLIB version number with the first that does not
- 	 * have the tx bug (see start_xmit)
- 	 */
--	sysid_parent = of_find_node_by_path("/ambapp0");
--	if (sysid_parent) {
--		err = of_property_read_u32(sysid_parent, "systemid", &sysid);
--		if (!err && ((sysid & GRLIB_VERSION_MASK) >=
--			     GRCAN_TXBUG_SAFE_GRLIB_VERSION))
--			txbug = false;
--		of_node_put(sysid_parent);
-+	if (!hwcap->txbug_possible) {
-+		txbug = false;
-+	} else {
-+		sysid_parent = of_find_node_by_path("/ambapp0");
-+		if (sysid_parent) {
-+			err = of_property_read_u32(sysid_parent, "systemid", &sysid);
-+			if (!err && ((sysid & GRLIB_VERSION_MASK) >=
-+				     GRCAN_TXBUG_SAFE_GRLIB_VERSION))
-+				txbug = false;
-+			of_node_put(sysid_parent);
-+		}
- 	}
- 
- 	err = of_property_read_u32(np, "freq", &ambafreq);
-@@ -1670,7 +1756,7 @@ static int grcan_probe(struct platform_device *ofdev)
- 
- 	grcan_sanitize_module_config(ofdev);
- 
--	err = grcan_setup_netdev(ofdev, base, irq, ambafreq, txbug);
-+	err = grcan_setup_netdev(ofdev, base, irq, ambafreq, txbug, hwcap);
- 	if (err)
- 		goto exit_dispose_irq;
- 
-@@ -1697,11 +1783,30 @@ static void grcan_remove(struct platform_device *ofdev)
- 	free_candev(dev);
+ /* Configuration parameters that can be set via module parameters */
+ static struct grcan_device_config grcan_module_config =
+ 	GRCAN_DEFAULT_DEVICE_CONFIG;
+@@ -1227,6 +1241,14 @@ static void grcan_transmit_catch_up(struct net_device *dev)
+ 	spin_unlock_irqrestore(&priv->lock, flags);
  }
  
-+static const struct grcan_hwcap grcan_hwcap = {
-+	.fd = false,
-+	.txbug_possible = true,
-+	.bt_const = &grcan_bittiming_const,
-+	.set_bittiming = grcan_set_bittiming,
-+};
++static int grcan_numbds(int len)
++{
++	if (len <= GRCAN_CLASSIC_DATA_SIZE)
++		return 1;
 +
-+static const struct grcan_hwcap grcanfd_hwcap = {
-+	.fd = true,
-+	.txbug_possible = false,
-+	.bt_const = &grcanfd_bittiming_const,
-+	.set_bittiming = grcanfd_set_bittiming,
-+};
++	return 1 + DIV_ROUND_UP(len - GRCAN_CLASSIC_DATA_SIZE, GRCAN_MSG_SIZE);
++}
 +
- static const struct of_device_id grcan_match[] = {
--	{.name = "GAISLER_GRCAN"},
--	{.name = "01_03d"},
--	{.name = "GAISLER_GRHCAN"},
--	{.name = "01_034"},
-+	{.name = "GAISLER_GRCAN", .data = &grcan_hwcap},
-+	{.name = "01_03d", .data = &grcan_hwcap},
-+	{.name = "GAISLER_GRHCAN", .data = &grcan_hwcap},
-+	{.name = "01_034", .data = &grcan_hwcap},
-+	{.compatible = "gaisler,grcan", .data = &grcan_hwcap},
-+	/* GRCANFD */
-+	{.compatible = "gaisler,grcanfd", .data = &grcanfd_hwcap},
-+	{.name = "GAISLER_GRCANFD", .data = &grcanfd_hwcap},
-+	{.name = "01_0b5", .data = &grcanfd_hwcap},
- 	{},
- };
+ static int grcan_receive(struct net_device *dev, int budget)
+ {
+ 	struct grcan_priv *priv = netdev_priv(dev);
+@@ -1413,15 +1435,24 @@ static netdev_tx_t grcan_start_xmit(struct sk_buff *skb,
+ 				    struct net_device *dev)
+ {
+ 	struct grcan_priv *priv = netdev_priv(dev);
+-	struct grcan_registers __iomem *regs = priv->regs;
++	struct grcan_registers __iomem *regs;
++	u32 eff, rtr, dlc, tmp, err, can_id;
+ 	struct grcan_dma *dma = &priv->dma;
+-	struct can_frame *cf = (struct can_frame *)skb->data;
+-	struct grcan_msg_header *hdr;
++	u32 bds, copy_len, payload_offset;
+ 	u32 id, txwr, txrd, space, txctrl;
+-	int slotindex;
+-	u32 rtr, eff, dlc, tmp, err;
++	struct grcan_msg_fragment *frag;
++	struct grcan_msg_header *hdr;
++	struct canfd_frame *cfd;
++	struct can_frame *cf;
+ 	unsigned long flags;
+-	u32 oneshotmode = priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT;
++	u32 oneshotmode;
++	int slotindex;
++	u8 *payload;
++	u8 len;
++	int i;
++
++	regs = priv->regs;
++	oneshotmode = priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT;
  
+ 	if (can_dev_dropped_skb(dev, skb))
+ 		return NETDEV_TX_OK;
+@@ -1432,6 +1463,18 @@ static netdev_tx_t grcan_start_xmit(struct sk_buff *skb,
+ 	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
+ 		return NETDEV_TX_BUSY;
+ 
++	cfd = (struct canfd_frame *)skb->data;
++	len = cfd->len;
++	can_id  = cfd->can_id;
++	payload = cfd->data;
++
++	if (can_is_canfd_skb(skb)) {
++		dlc = can_fd_len2dlc(len);
++	} else {
++		cf = (struct can_frame *)skb->data;
++		dlc = can_get_cc_dlc(cf, priv->can.ctrlmode);
++	}
++
+ 	/* Reads of priv->eskbp and shut-downs of the queue needs to
+ 	 * be atomic towards the updates to priv->eskbp and wake-ups
+ 	 * of the queue in the interrupt handler.
+@@ -1442,40 +1485,55 @@ static netdev_tx_t grcan_start_xmit(struct sk_buff *skb,
+ 	space = grcan_txspace(dma->tx.size, txwr, priv->eskbp);
+ 
+ 	slotindex = txwr / GRCAN_MSG_SIZE;
++	bds = grcan_numbds(len);
+ 
+-	if (unlikely(space == 1))
++	if (unlikely(space < bds)) {
+ 		netif_stop_queue(dev);
++		spin_unlock_irqrestore(&priv->lock, flags);
++		return NETDEV_TX_BUSY;
++	}
+ 
+ 	spin_unlock_irqrestore(&priv->lock, flags);
+ 	/* End of critical section*/
+ 
+-	/* This should never happen. If circular buffer is full, the
+-	 * netif_stop_queue should have been stopped already.
+-	 */
+-	if (unlikely(!space)) {
+-		netdev_err(dev, "No buffer space, but queue is non-stopped.\n");
+-		return NETDEV_TX_BUSY;
+-	}
+-
+ 	hdr = grcan_msg_header_at(&dma->tx, txwr);
+ 	memset(hdr, 0, sizeof(*hdr));
+ 
+-	/* Convert and write CAN message to DMA buffer */
+-	eff = cf->can_id & CAN_EFF_FLAG;
+-	rtr = cf->can_id & CAN_RTR_FLAG;
+-	id = cf->can_id & (eff ? CAN_EFF_MASK : CAN_SFF_MASK);
+-	dlc = cf->len;
+-	if (eff)
+-		tmp = (id << GRCAN_MSG_EID_BIT) & GRCAN_MSG_EID;
+-	else
+-		tmp = (id << GRCAN_MSG_BID_BIT) & GRCAN_MSG_BID;
++	eff = can_id & CAN_EFF_FLAG;
++	rtr = can_id & CAN_RTR_FLAG;
++	id  = can_id & (eff ? CAN_EFF_MASK : CAN_SFF_MASK);
++
++	tmp = eff ? FIELD_PREP(GRCAN_MSG_EID_MASK, id)
++		  : FIELD_PREP(GRCAN_MSG_BID_MASK, id);
++
++	hdr->id = (eff ? GRCAN_MSG_IDE : 0) |
++		  (rtr ? GRCAN_MSG_RTR : 0) |
++		  tmp;
+ 
+-	hdr->id = (eff ? GRCAN_MSG_IDE : 0) | (rtr ? GRCAN_MSG_RTR : 0) | tmp;
++	hdr->ctrl = FIELD_PREP(GRCAN_MSG_DLC_MASK, dlc);
++
++	if (can_is_canfd_skb(skb)) {
++		hdr->ctrl |= GRCAN_TX_FDF;
++		if (cfd->flags & CANFD_BRS)
++			hdr->ctrl |= GRCAN_TX_BRS;
++	}
+ 
+-	hdr->ctrl = ((dlc << GRCAN_MSG_DLC_BIT) & GRCAN_MSG_DLC);
++	copy_len = min_t(u32, len, CAN_MAX_DLEN);
++	memcpy(hdr->data, payload, copy_len);
++	payload_offset = copy_len;
+ 
+-	if (dlc > 0)
+-		memcpy(hdr->data, cf->data, min_t(u32, cf->len, CAN_MAX_DLEN));
++	txwr = grcan_ring_add(txwr, GRCAN_MSG_SIZE, dma->tx.size);
++
++	for (i = 1; i < bds; i++) {
++		frag = grcan_msg_frag_at(&dma->tx, txwr);
++
++		memset(frag, 0, sizeof(*frag));
++		copy_len = min_t(u32, (u32)len - payload_offset, (u32)GRCAN_MSG_SIZE);
++		memcpy(frag->data, payload + payload_offset, copy_len);
++		payload_offset += copy_len;
++
++		txwr = grcan_ring_add(txwr, GRCAN_MSG_SIZE, dma->tx.size);
++	}
+ 
+ 	/* Checking that channel has not been disabled. These cases
+ 	 * should never happen
+@@ -1517,8 +1575,7 @@ static netdev_tx_t grcan_start_xmit(struct sk_buff *skb,
+ 	wmb();
+ 
+ 	/* Update write pointer to start transmission */
+-	grcan_write_reg(&regs->txwr,
+-			grcan_ring_add(txwr, GRCAN_MSG_SIZE, dma->tx.size));
++	grcan_write_reg(&regs->txwr, txwr);
+ 
+ 	return NETDEV_TX_OK;
+ }
 -- 
 2.51.0
 
