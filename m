@@ -1,15 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AE55255F28
-	for <linux-can@vger.kernel.org>; Tue, 10 Mar 2026 10:36:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66CF936EAB2
+	for <linux-can@vger.kernel.org>; Tue, 10 Mar 2026 10:36:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773138961; cv=none; b=Hn48BVi8+W0ZpXtxbasdibcv71b+ZvpEVHwObJ048tww08WAoc+dBmSWvNH8jGJ7adD/qSTboC1M1jFywqZTarXZzqmnWN30SJTxtpz9bVPbvCutWYMi86c3wN0mqb4wTJ3DS4LD1R4+fZOk3Tsp1oyNUJmjyJPW8SHEF3+ORfg=
+	t=1773138963; cv=none; b=HlRzGtcjGkrn88SolA4v891PAQ9xSlZgzMRzf3PbrmNuK2b0r3UWklGW1e31vwlD+SqCFjS46bDzu8C2bF2zaW7+1VpmuUExnKpjnPXon6tdvhmPsyY+xnEF/yEfwRUiTPROiobl6SN8wv2oWe1e7GzFGhoHoQKBUMlrofI0pO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773138961; c=relaxed/simple;
-	bh=zrWMNn/NnSmL4C1as0kAxNg4jV7/eQEEWkOOrniMVbc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YFHOFulzq03JZf+xSN58wIEx7LBYxSQIfqup4Zza887o9M9qeIbVbZZaTwBWzT4BbWs4YmZsdl2t0RV1aJD+BER4Um0ZXus7GEyl8xGJXp5eMrQfJPm/jyYSWB5SlWvNEpMKELmCsT1fR+L2VGZqzscvGFabb3C5UL742VPyO/E=
+	s=arc-20240116; t=1773138963; c=relaxed/simple;
+	bh=NNfQBAczDK2ctlXoMn2m1CGkbV49byIIrJ3oS/Va/vk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=nZj2jJeSHdR9sV7PkjAaGAoFoJLZd1PJh3avZ2x1abxVvahZaJRWF7S5p0BhwtzFUI1b3iH9IOh/s0CGLtA08SjD4Gdt2VnJsNZOi4jgOUTidq+2dqbkGKOhAfI3nPqBLmJy/kYrwFlEsOtuxTmRdmRtLAPM36tvatUV4sMz0Iw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -17,30 +18,34 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vzuRO-0001Kn-Ik; Tue, 10 Mar 2026 11:35:54 +0100
+	id 1vzuRP-0001Kp-6e; Tue, 10 Mar 2026 11:35:55 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1vzuRM-004gN1-0P;
+	id 1vzuRM-004gN4-1F;
 	Tue, 10 Mar 2026 11:35:53 +0100
 Received: from blackshift.org (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 306DB4FD2B0;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 767CC4FD2B2;
 	Tue, 10 Mar 2026 10:35:53 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
-	kernel@pengutronix.de
-Subject: [PATCH net 0/2] pull-request: can 2026-03-10
-Date: Tue, 10 Mar 2026 11:30:33 +0100
-Message-ID: <20260310103547.2299403-1-mkl@pengutronix.de>
+	kernel@pengutronix.de,
+	Wenyuan Li <2063309626@qq.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 2/2] can: hi311x: hi3110_open(): add check for hi3110_power_enable() return value
+Date: Tue, 10 Mar 2026 11:30:35 +0100
+Message-ID: <20260310103547.2299403-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20260310103547.2299403-1-mkl@pengutronix.de>
+References: <20260310103547.2299403-1-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -53,44 +58,46 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Hello netdev-team,
+From: Wenyuan Li <2063309626@qq.com>
 
-this is a pull request of 2 patches for net/main.
+In hi3110_open(), the return value of hi3110_power_enable() is not checked.
+If power enable fails, the device may not function correctly, while the
+driver still returns success.
 
-Haibo Chen's patch fixes the maximum allowed bit rate error, which was
-broken in v6.19.
+Add a check for the return value and propagate the error accordingly.
 
-Wenyuan Li contributes a patch for the hi311x driver that adds missing
-error checking in the caller of the hi3110_power_enable() function,
-hi3110_open().
-
-regards,
-Marc
-
+Signed-off-by: Wenyuan Li <2063309626@qq.com>
+Link: https://patch.msgid.link/tencent_B5E2E7528BB28AA8A2A56E16C49BD58B8B07@qq.com
+Fixes: 57e83fb9b746 ("can: hi311x: Add Holt HI-311x CAN driver")
+[mkl: adjust subject, commit message and jump label]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/spi/hi311x.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-The following changes since commit e3f5e0f22cfc2371e7471c9fd5b4da78f9df7c69:
+diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
+index e00d3dbc4cf4..91b1fa970f8f 100644
+--- a/drivers/net/can/spi/hi311x.c
++++ b/drivers/net/can/spi/hi311x.c
+@@ -755,7 +755,9 @@ static int hi3110_open(struct net_device *net)
+ 		return ret;
+ 
+ 	mutex_lock(&priv->hi3110_lock);
+-	hi3110_power_enable(priv->transceiver, 1);
++	ret = hi3110_power_enable(priv->transceiver, 1);
++	if (ret)
++		goto out_close_candev;
+ 
+ 	priv->force_quit = 0;
+ 	priv->tx_skb = NULL;
+@@ -790,6 +792,7 @@ static int hi3110_open(struct net_device *net)
+ 	hi3110_hw_sleep(spi);
+  out_close:
+ 	hi3110_power_enable(priv->transceiver, 0);
++ out_close_candev:
+ 	close_candev(net);
+ 	mutex_unlock(&priv->hi3110_lock);
+ 	return ret;
+-- 
+2.51.0
 
-  mctp: i2c: fix skb memory leak in receive path (2026-03-10 11:10:55 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-7.0-20260310
-
-for you to fetch changes up to 47bba09b14fa21712398febf36cb14fd4fc3bded:
-
-  can: hi311x: hi3110_open(): add check for hi3110_power_enable() return value (2026-03-10 11:12:52 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-7.0-20260310
-
-----------------------------------------------------------------
-Haibo Chen (1):
-      can: dev: keep the max bitrate error at 5%
-
-Wenyuan Li (1):
-      can: hi311x: hi3110_open(): add check for hi3110_power_enable() return value
-
- drivers/net/can/dev/calc_bittiming.c | 2 +-
- drivers/net/can/spi/hi311x.c         | 5 ++++-
- 2 files changed, 5 insertions(+), 2 deletions(-)
