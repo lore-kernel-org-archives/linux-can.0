@@ -1,50 +1,50 @@
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E716F389E08;
-	Tue, 17 Mar 2026 20:30:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48A9E38A731;
+	Tue, 17 Mar 2026 20:30:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773779428; cv=none; b=P63dQlHA+ShN+JjrPSuhACNRUUN5Ca71LphON/zxzj6UssgulslJAHBrFwZ0twKcBk7vq3iVNEdcLNxtil7hPMnN34aFfTtwNm5JU4zJkmED4iiY8cyS408IHBUZ2MQli+Fq37QZ6frQTVi/gRcEF0h0ZvMxOY97dXvs6pbkUXc=
+	t=1773779428; cv=none; b=qwe+ypFy876sV5HACqXVx7YOBR1xnOspVC39JVAA5nptCnV3FjmWCj8mJMLhQu7ftcNjHRaCOK+3wOvbQuupVLMToBTDozP7n+qeScbrRYb+h36ZCgM+l6Rafe24LUhq5jybKjivZRo70Xe7Sft9D1u5DfUqOIrvZkAj1l+/N+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1773779428; c=relaxed/simple;
-	bh=lNwToLZvGLue8q3lhdy0+QwIrdVuQNDe6ZwtKnIqxrY=;
+	bh=Oq3l+I9h8bxaIHyJ/kIHrAomOtzhSbrAao5gin/3sdQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ENjqi+ma6/L7vy+lOPLfTL65PHELJkc0HSer1BM9DBEUDqo298U1SGAsfFxtXqIKG+P1Z6VdzYSkrbVKqb1xgQSf8/PR31d91v0UI+kA7KAFJ3DS2z9B93l6Ne3uuvy1nChKsbNG2LLUxAfg0C0DzxcYqCmx9IoWnGLUseNgSJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nZ8fSkPX; arc=none smtp.client-ip=192.198.163.13
+	 MIME-Version; b=Ob3SVuN1iWGpdiGyK5dUKwaGdHI3A4VwXRBh8UM9s0Mz9Mg/irt8CCbwraCxAzmsC0dk1JRFj3v2n+dn520P9mXz6nsT18FyAGrDEiawWjKy8E7w4/oq00DswrE6wl/+e/LU98s253Ebd3U4ei67GewAmjYbEHSzi/++kw6lixk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F16QGDjB; arc=none smtp.client-ip=192.198.163.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nZ8fSkPX"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F16QGDjB"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1773779427; x=1805315427;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=lNwToLZvGLue8q3lhdy0+QwIrdVuQNDe6ZwtKnIqxrY=;
-  b=nZ8fSkPXrnziN9QM4nlOd/llasECJlOQ/Ygyh7qjtYzRtx8Opd3jcDX+
-   LIvz39hoCqI7qIPM/2H9hfLMNTqohBAa6pmXUG8ZL5WxlFNpx9FLUmgbl
-   iO6rsx62L+rXNlret8p3N/9MLikIYAfaLfWNNsKuH6IAbbOOIVCG+M+xZ
-   uvZPjuynDaLl60bZjQzVUi8H1pUNq7MPy2PQdDbX0OF+kaFyHDhdX5jh0
-   2DC4WhghhLUWaPXr2kTcWrur3IbLIX4vU1Q4EvGdvWMe3TfkopD1AGwSm
-   HAfL+icMipTOBb3VUlwjJG7d3jnQxAgf9NlqF/fwO1fr93UWUcm5M8l07
+  bh=Oq3l+I9h8bxaIHyJ/kIHrAomOtzhSbrAao5gin/3sdQ=;
+  b=F16QGDjBIEAV5zdPvpi+k3JSEBUCfgy3r2DDAqijkUfshoFyFONWLFkt
+   rowfWvj8Ely9dWHyDI8RHyptuTnlRc9WMlI5DjNKACbVrsjuhta6I5xWA
+   gcGh/P3hmB30NvqA6BMUQhsRO2IF6hyLeuUtK6WFEUGlJmPetvSY51JKJ
+   4jEYhzA0HtcG9VvqFCMES8ePgKDx9Cji0rSjbqDnyf8j/7uWdg8i4bSf7
+   OmwrRn0GfDDSGR+f4Wk1lAk/Qci+NGZ+yHpyuZx4fTc3H6wQz3GG+OHKr
+   3+x8xQ2OH5i3vtrubMsxa0152wih6WYQIiTHvGyw6uMHr/to8cXl4ugOw
    Q==;
-X-CSE-ConnectionGUID: s8UxJvlpTNWK0gkeDYvdqg==
-X-CSE-MsgGUID: 8Nt/hmUSSb+m1a8PDh0wog==
-X-IronPort-AV: E=McAfee;i="6800,10657,11732"; a="77433965"
+X-CSE-ConnectionGUID: o/lWcCvqQH+rH2APEmTntA==
+X-CSE-MsgGUID: zrApQoEwSxSGt6LlVaz+zA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11732"; a="77433972"
 X-IronPort-AV: E=Sophos;i="6.23,126,1770624000"; 
-   d="scan'208";a="77433965"
+   d="scan'208";a="77433972"
 Received: from orviesa008.jf.intel.com ([10.64.159.148])
   by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2026 13:30:24 -0700
-X-CSE-ConnectionGUID: hGu+BYrHQIObg31iB5dGog==
-X-CSE-MsgGUID: LSp8lOVzRw2rYHNNGwI0kQ==
+X-CSE-ConnectionGUID: Xd0iMxh0TtG2dbBYlEslmg==
+X-CSE-MsgGUID: s1IOXLqmTaa7kjpD9F72uQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.23,126,1770624000"; 
-   d="scan'208";a="222434441"
+   d="scan'208";a="222434442"
 Received: from black.igk.intel.com ([10.91.253.5])
   by orviesa008.jf.intel.com with ESMTP; 17 Mar 2026 13:30:22 -0700
 Received: by black.igk.intel.com (Postfix, from userid 1003)
-	id 0D51C9B; Tue, 17 Mar 2026 21:30:20 +0100 (CET)
+	id 094F499; Tue, 17 Mar 2026 21:30:20 +0100 (CET)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: linux-can@vger.kernel.org,
 	linux-phy@lists.infradead.org,
@@ -56,9 +56,9 @@ Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
 	Josua Mayer <josua@solid-run.com>,
 	Ulf Hansson <ulf.hansson@linaro.org>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 3/4] phy: phy-can-transceiver: Don't check for specific errors when parsing properties
-Date: Tue, 17 Mar 2026 21:27:29 +0100
-Message-ID: <20260317203001.2108568-4-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 2/4] phy: phy-can-transceiver: Move OF ID table closer to their user
+Date: Tue, 17 Mar 2026 21:27:28 +0100
+Message-ID: <20260317203001.2108568-3-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20260317203001.2108568-1-andriy.shevchenko@linux.intel.com>
 References: <20260317203001.2108568-1-andriy.shevchenko@linux.intel.com>
@@ -70,50 +70,100 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Instead of checking for the specific error codes (that can be considered
-a layering violation to some extent) check for the property existence first
-and then either parse it, or apply a default value.
-
-With that, return an error when parsing of the existing property fails.
+There is no code that uses ID table directly, except the
+struct device_driver at the end of the file. Hence, move
+table closer to its user. It's always possible to access
+them via a pointer.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/phy/phy-can-transceiver.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/phy/phy-can-transceiver.c | 59 +++++++++++++++----------------
+ 1 file changed, 29 insertions(+), 30 deletions(-)
 
 diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
-index aaed8d08fcf0..21b0406d1a09 100644
+index 80eece74f77d..aaed8d08fcf0 100644
 --- a/drivers/phy/phy-can-transceiver.c
 +++ b/drivers/phy/phy-can-transceiver.c
-@@ -128,8 +128,9 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
- 	struct gpio_desc *standby_gpio;
- 	struct gpio_desc *enable_gpio;
- 	struct mux_state *mux_state;
--	u32 max_bitrate = 0;
- 	int err, i, num_ch = 1;
-+	const char *propname;
-+	u32 max_bitrate;
+@@ -97,35 +97,6 @@ static const struct can_transceiver_data tja1057_drvdata = {
+ 	.flags = CAN_TRANSCEIVER_SILENT_PRESENT,
+ };
  
- 	drvdata = device_get_match_data(dev);
- 	if (drvdata->flags & CAN_TRANSCEIVER_DUAL_CH)
-@@ -148,8 +149,15 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
+-static const struct of_device_id can_transceiver_phy_ids[] = {
+-	{
+-		.compatible = "ti,tcan1042",
+-		.data = &tcan1042_drvdata
+-	},
+-	{
+-		.compatible = "ti,tcan1043",
+-		.data = &tcan1043_drvdata
+-	},
+-	{
+-		.compatible = "nxp,tja1048",
+-		.data = &tja1048_drvdata
+-	},
+-	{
+-		.compatible = "nxp,tja1051",
+-		.data = &tja1051_drvdata
+-	},
+-	{
+-		.compatible = "nxp,tja1057",
+-		.data = &tja1057_drvdata
+-	},
+-	{
+-		.compatible = "nxp,tjr1443",
+-		.data = &tcan1043_drvdata
+-	},
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(of, can_transceiver_phy_ids);
+-
+ static struct phy *can_transceiver_phy_xlate(struct device *dev,
+ 					     const struct of_phandle_args *args)
+ {
+@@ -229,6 +200,35 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
+ 	return PTR_ERR_OR_ZERO(phy_provider);
+ }
  
- 	priv->mux_state = mux_state;
++static const struct of_device_id can_transceiver_phy_ids[] = {
++	{
++		.compatible = "ti,tcan1042",
++		.data = &tcan1042_drvdata
++	},
++	{
++		.compatible = "ti,tcan1043",
++		.data = &tcan1043_drvdata
++	},
++	{
++		.compatible = "nxp,tja1048",
++		.data = &tja1048_drvdata
++	},
++	{
++		.compatible = "nxp,tja1051",
++		.data = &tja1051_drvdata
++	},
++	{
++		.compatible = "nxp,tja1057",
++		.data = &tja1057_drvdata
++	},
++	{
++		.compatible = "nxp,tjr1443",
++		.data = &tcan1043_drvdata
++	},
++	{ }
++};
++MODULE_DEVICE_TABLE(of, can_transceiver_phy_ids);
++
+ static struct platform_driver can_transceiver_phy_driver = {
+ 	.probe = can_transceiver_phy_probe,
+ 	.driver = {
+@@ -236,7 +236,6 @@ static struct platform_driver can_transceiver_phy_driver = {
+ 		.of_match_table = can_transceiver_phy_ids,
+ 	},
+ };
+-
+ module_platform_driver(can_transceiver_phy_driver);
  
--	err = device_property_read_u32(dev, "max-bitrate", &max_bitrate);
--	if ((err != -EINVAL) && !max_bitrate)
-+	propname = "max-bitrate";
-+	if (device_property_present(dev, propname)) {
-+		err = device_property_read_u32(dev, propname, &max_bitrate);
-+		if (err)
-+			return dev_err_probe(dev, err, "failed to parse %s\n", propname);
-+	} else {
-+		max_bitrate = 0;
-+	}
-+	if (max_bitrate == 0)
- 		dev_warn(dev, "Invalid value for transceiver max bitrate. Ignoring bitrate limit\n");
- 
- 	for (i = 0; i < num_ch; i++) {
+ MODULE_AUTHOR("Faiz Abbas <faiz_abbas@ti.com>");
 -- 
 2.50.1
 
