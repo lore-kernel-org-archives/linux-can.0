@@ -1,74 +1,72 @@
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.168])
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.166])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BFFD1DDC2B;
-	Wed, 18 Mar 2026 16:54:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C485130F92E
+	for <linux-can@vger.kernel.org>; Wed, 18 Mar 2026 17:34:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.166
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773852880; cv=pass; b=b4FvXEVqOMaPIt26rlx9t6XRszKLr3pYLXWgdVyTNGUxHzy+y7nBR6Dz9F4OLb6tbz+c+WEGcm6ab4/0PZU72UYTdBohJocKzLT0/c8b0Gn4HIVr/OrqviOXOFUVa8NzXE6tQMin2TDtw7B4SXHlSf9UgwM9vZ3rK2qbbSRRprA=
+	t=1773855267; cv=pass; b=e/N9EABrZoJqf964nKuQv5e+WlyepcW0aiUUQ5AgMNxhImdPxBbQhWje8SFh2TBdVv8o1tG9rjFLxEbZO+6LZWiqllLUEITlImoYZYKBQvAoOjQnb8RR9x8NAToda+L9xOZAD35xRBUPij+7xOikCjXBm9faMISDt0AAJHVj/P0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773852880; c=relaxed/simple;
-	bh=0r3bjBA1FPGil83IoKH01pkuEYwEpG5LS3m+cfIdzPc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BJr+/ad23XYtT6kLIWRfTUUSxhgDe2xlB2IwPbP507dhtVN1PJV3yZpxJOruKSaEUihR0RE17dTAMM4l2Ks2RqclqMgVpPXnjksHeDe7JLFxqZ8+npmpevPMRljshPWwgadoFfcpia8Gp9fCZhHrjEvU2NUfi6+RQIhA1Qj47Z4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=MVfM5SUH; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=NCbOVpo5; arc=pass smtp.client-ip=81.169.146.168
+	s=arc-20240116; t=1773855267; c=relaxed/simple;
+	bh=dLAoRxSCbPire0zXwYPqE+BQ1d+tA7PkHWqDOMTZgJU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=aJq814eUTjDZKo6skrN6MGGEKVgj6WGonqKZz0pZmS8Z33ddxj+cMLFtFE/HRhJfV0T6rLsG//+25/wGGBrOfpaSaqOE4erPyZXBp1hJWUtUnkwjnPXVwJXzK3rA13Y9IUDRLzwlyHNdgXqjaM9dQ0djSXQEVYf9q/mqn+yYZk8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=IB4JbHsB; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=qbA9qZKm; arc=pass smtp.client-ip=81.169.146.166
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="MVfM5SUH";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="NCbOVpo5"
-ARC-Seal: i=1; a=rsa-sha256; t=1773852696; cv=none;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="IB4JbHsB";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="qbA9qZKm"
+ARC-Seal: i=1; a=rsa-sha256; t=1773855261; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=P1cg8wDSp4FLwdLfaHy3m6GveRkNsa4W8col7cR2XEzWWT5sUoEOg8SA13vifTWgfR
-    Ct1XsD+Af4ovI1Fnl1X9VmOkwpXlZIOSkkUra7/TtcuI3Vz8p+oz/ZwqkT9y4Y5Ki3Tf
-    u1gYjxZlNC1uXZHFtU/2V4oE6f9cIS/aUWh9Bpm8YxMVab4bhD4yTbIrI6ezPV6yyLqU
-    56oPbBPpL2EHL+YWmnJu9uLnyblSimzn8DA9pKQdk96/nhlIRuaguzd37OsI/80ZqCK4
-    j9hiY3laExnH4YvbXxDHouhF8XTx6U/W4WO0vJ36Q14R7RGceNIaCl+AzkWPh5CxTyug
-    KF4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1773852696;
+    b=PcmJ1AzbNp5aCGs1i6qXeBGZJbCeW7XOUF3uiLs1d7zwJnyRfpwL1oS9fRBZxmDdbe
+    cQ4LreJC7EFYQlFEbWfzME8Gji+Dj0oi0/7oNyBOTGcm10QwstQKIXpbS+RI/VkQZhtu
+    1JC1pqX9tM4WK5sXiMI3Wn73Zbda8x1Wf251hCjbfZFm3v9p9PYQ6qYdDYW3Bf4bjtbM
+    c4uedAcIGqPKNSQfRsX7GxsotywNFi/TPBbvXhjSL12FwhkdCIVMUpxXwmdG/HA7/X4G
+    CYZHKUcQQvuOfxdFfC9qIYhTThFRLlsHXnOVufyeWjCV6kKqeXJoYPW/k//WLjmv9Rjv
+    2Yfg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1773855261;
     s=strato-dkim-0002; d=strato.com;
     h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=uAW4MClx1aJDjN6ESqo+yTHAchyRZHrRKkV3fAuUJ78=;
-    b=hmU2Q483u5fVI+Pb2+c71R0TF1Oc6OIv2mRVzhObymLl9nzmyXYsd6utNfSli/6qXX
-    wxiYxAssDCaZnXFx3SzguMFqqn2Xo/gsua9JrczdEnGnsIJmHMDcEDqe9LiVyjNNuG71
-    xWWi/6onEZxAw+DnKte31CqZaTbIJmiPWr4oppWrH/d8ZT2c7C7yNslRhsDblwFJZIYn
-    rshgGJ2ziHVCJi/+2d5Fryi5GtQcwtvz5sFSD4naGPq9zDEYAjhCj7OOHAp1UkQ0xfGV
-    NPZrWYoBqmSNlbJ83lGuPZU5NerszQFxBCi1fWJArMKGaYke4X/XS1mHqE5WaLN800Ig
-    Xhdw==
+    bh=K13GPOGK2TPvHMISmizaQcGGMPVSHrkMMqBbdrkpYkw=;
+    b=qgadUiUE+I65bwFboQ95SIm+4+He8RoPRyY1NdTykxg6VSZJZolSgKf1Xg1YeawupE
+    6JndHzyde49gJyB2X9yjlxiojaEbZI3xT6Mh897ZP2ALLC4p8q8SaCzAz48eg+bd96V7
+    jFs24Nll4FNyvmEcyGS8Hqv30KBKXomqVKI2xlVZC78bYZZEtORaFNxqGpHpWMc35vdO
+    wuKFEAWFEI3B05K59GkAwPcFMwyI7JAH3P+MR3esRnG9CABo4ETF9AAXKLC9cWKrVYZp
+    3nFTxrIT17ikc0gd5QLGxLs/ia3+o6y2GmwGQIc88vzj/sNrGQl1LAoqLsu+k6/qEP6L
+    dj8w==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1773852696;
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1773855261;
     s=strato-dkim-0002; d=hartkopp.net;
     h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=uAW4MClx1aJDjN6ESqo+yTHAchyRZHrRKkV3fAuUJ78=;
-    b=MVfM5SUH3VGe4oHQSx+JTFuHXMdNJafRUGcRIr+5eorfvvmuMH8J7gtCBS72bArqM7
-    7eU74iVWPMtZf/ikrbTDZYu6Ka7ZesFrAJVgmvq7YRkY5Tt6I1A7geruC5krJ0+ltpGo
-    c87zY6I4qR1sgK5rAgJ5mqqlIXm0W1LmLk7x98eH+07Am2jpW3472aKXhzpoukyJiFii
-    inNc06bNoiuOk7gnuiIpdrMraHW9Fdjq+RcE8baVdWgl1ULcAogKv9NAdKiK92ExzcNC
-    218qKzTeSNzUnVceMjNgbi8fkLtY0do7moFHbX0hmXUPZDiqpXs8doiwq2WlbI8l5wSr
-    Y/jA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1773852696;
+    bh=K13GPOGK2TPvHMISmizaQcGGMPVSHrkMMqBbdrkpYkw=;
+    b=IB4JbHsBAdUDvObd/7+9gFuvibqnWY7WsiFtmJ5N6M9N9LThJ3Hns2W3R3vSkepxy/
+    Ri25SiGRLs2PXnV/37Xyky4bUDay9dSIz6lSb7bAKXqFeIdjW/sDIgl+YY9dA17a34be
+    kmRoNWMtK9PiOTSYj4ajFm9KLSbAopAQnRmLF4ZcWeutSog72DqESvygKK1MMU4Z2ZUR
+    89bQj9oH/mYsP6UpHAGHVGiq03PPPQTk53tCoI9GDoGxNVXltrAtSll03C8c9WI8djdS
+    ujKcYf09Y6ln3iQVbIhA5N0qN1ijhkWtda/5VbCuMbzGTsihVL2elv3WZiiaXd8eboLa
+    XKBg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1773855261;
     s=strato-dkim-0003; d=hartkopp.net;
     h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=uAW4MClx1aJDjN6ESqo+yTHAchyRZHrRKkV3fAuUJ78=;
-    b=NCbOVpo5P8l62DJF7851HcycOna5IeF0ofWVloDjF7vO+4e63xZuTYADQnssGwwTWQ
-    1ljb69dAr8OF7B7J5+BQ==
+    bh=K13GPOGK2TPvHMISmizaQcGGMPVSHrkMMqBbdrkpYkw=;
+    b=qbA9qZKm/XKOIjoJ7t1n9dKCLWegrnQhXSQPbU5HCqX/VjnMJUt/rOEPZgO++ryF2U
+    ZX2ekygMg4VWc1E0eHCQ==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeFQ7s0ZDT0tksFSR+Aix0esQJVIAlZEg=="
 Received: from lenov17.lan
     by smtp.strato.de (RZmta 55.0.1 AUTH)
-    with ESMTPSA id Kba96d22IGpZozQ
+    with ESMTPSA id Kba96d22IHYLp4G
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Wed, 18 Mar 2026 17:51:35 +0100 (CET)
+    Wed, 18 Mar 2026 18:34:21 +0100 (CET)
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 To: linux-can@vger.kernel.org
-Cc: Ali Norouzi <ali.norouzi@keysight.com>,
-	stable@vger.kernel.org,
-	Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH 1/2] can: gw: fix OOB heap access in cgw_csum_crc8_rel()
-Date: Wed, 18 Mar 2026 17:51:19 +0100
-Message-ID: <20260318165120.17560-1-socketcan@hartkopp.net>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH v2] can: statistics: add missing atomic access in hot path
+Date: Wed, 18 Mar 2026 18:34:13 +0100
+Message-ID: <20260318173413.28235-1-socketcan@hartkopp.net>
 X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
@@ -79,82 +77,82 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="us-ascii"
 
-From: Ali Norouzi <ali.norouzi@keysight.com>
+Commit 80b5f90158d1 ("can: statistics: use atomic access in hot path")
+fixed a KCSAN issue in can_receive() but missed to convert the 'matches'
+variable used in can_rcv_filter().
 
-cgw_csum_crc8_rel() correctly computes bounds-safe indices via calc_idx():
-
-    int from = calc_idx(crc8->from_idx, cf->len);
-    int to   = calc_idx(crc8->to_idx,   cf->len);
-    int res  = calc_idx(crc8->result_idx, cf->len);
-
-    if (from < 0 || to < 0 || res < 0)
-        return;
-
-However, the loop and the result write then use the raw s8 fields directly
-instead of the computed variables:
-
-    for (i = crc8->from_idx; ...)        /* BUG: raw negative index */
-    cf->data[crc8->result_idx] = ...;    /* BUG: raw negative index */
-
-With from_idx = to_idx = result_idx = -64 on a 64-byte CAN FD frame,
-calc_idx(-64, 64) = 0 so the guard passes, but the loop iterates with
-i = -64, reading cf->data[-64], and the write goes to cf->data[-64].
-This write might end up to 56 (7.0-rc) or 40 (<= 6.19) bytes before the
-start of the canfd_frame on the heap.
-
-The companion function cgw_csum_xor_rel() uses `from`/`to`/`res`
-correctly throughout; fix cgw_csum_crc8_rel() to match.
-
-Confirmed with KASAN on linux-7.0-rc2:
-  BUG: KASAN: slab-out-of-bounds in cgw_csum_crc8_rel+0x515/0x5b0
-  Read of size 1 at addr ffff8880076619c8 by task poc_cgw_oob/62
-
-To configure the can-gw crc8 checksums CAP_NET_ADMIN is needed.
-
-Fixes: 456a8a646b25 ("can: gw: add support for CAN FD frames")
-Cc: stable@vger.kernel.org
-Reported-by: Ali Norouzi <ali.norouzi@keysight.com>
-Reviewed-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Ali Norouzi <ali.norouzi@keysight.com>
+Fixes: 80b5f90158d1 ("can: statistics: use atomic access in hot path")
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- net/can/gw.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/can/af_can.c | 4 ++--
+ net/can/af_can.h | 2 +-
+ net/can/proc.c   | 3 ++-
+ 3 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/net/can/gw.c b/net/can/gw.c
-index 8ee4d67a07d3..0ec99f68aa45 100644
---- a/net/can/gw.c
-+++ b/net/can/gw.c
-@@ -373,14 +373,14 @@ static void cgw_csum_crc8_rel(struct canfd_frame *cf,
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index f70e2ba0aadc..7bc86b176b4d 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -467,11 +467,11 @@ int can_rx_register(struct net *net, struct net_device *dev, canid_t can_id,
+ 	dev_rcv_lists = can_dev_rcv_lists_find(net, dev);
+ 	rcv_list = can_rcv_list_find(&can_id, &mask, dev_rcv_lists);
  
- 	if (from < 0 || to < 0 || res < 0)
- 		return;
+ 	rcv->can_id = can_id;
+ 	rcv->mask = mask;
+-	rcv->matches = 0;
++	atomic_long_set(&rcv->matches, 0);
+ 	rcv->func = func;
+ 	rcv->data = data;
+ 	rcv->ident = ident;
+ 	rcv->sk = sk;
  
- 	if (from <= to) {
--		for (i = crc8->from_idx; i <= crc8->to_idx; i++)
-+		for (i = from; i <= to; i++)
- 			crc = crc8->crctab[crc ^ cf->data[i]];
- 	} else {
--		for (i = crc8->from_idx; i >= crc8->to_idx; i--)
-+		for (i = from; i >= to; i--)
- 			crc = crc8->crctab[crc ^ cf->data[i]];
- 	}
+@@ -571,11 +571,11 @@ void can_rx_unregister(struct net *net, struct net_device *dev, canid_t can_id,
+ EXPORT_SYMBOL(can_rx_unregister);
  
- 	switch (crc8->profile) {
- 	case CGW_CRC8PRF_1U8:
-@@ -395,11 +395,11 @@ static void cgw_csum_crc8_rel(struct canfd_frame *cf,
- 		crc = crc8->crctab[crc ^ (cf->can_id & 0xFF) ^
- 				   (cf->can_id >> 8 & 0xFF)];
- 		break;
- 	}
- 
--	cf->data[crc8->result_idx] = crc ^ crc8->final_xor_val;
-+	cf->data[res] = crc ^ crc8->final_xor_val;
+ static inline void deliver(struct sk_buff *skb, struct receiver *rcv)
+ {
+ 	rcv->func(skb, rcv->data);
+-	rcv->matches++;
++	atomic_long_inc(&rcv->matches);
  }
  
- static void cgw_csum_crc8_pos(struct canfd_frame *cf,
- 			      struct cgw_csum_crc8 *crc8)
+ static int can_rcv_filter(struct can_dev_rcv_lists *dev_rcv_lists, struct sk_buff *skb)
+ {
+ 	struct receiver *rcv;
+diff --git a/net/can/af_can.h b/net/can/af_can.h
+index 22f3352c77fe..87887014f562 100644
+--- a/net/can/af_can.h
++++ b/net/can/af_can.h
+@@ -50,11 +50,11 @@
+ 
+ struct receiver {
+ 	struct hlist_node list;
+ 	canid_t can_id;
+ 	canid_t mask;
+-	unsigned long matches;
++	atomic_long_t matches;
+ 	void (*func)(struct sk_buff *skb, void *data);
+ 	void *data;
+ 	char *ident;
+ 	struct sock *sk;
+ 	struct rcu_head rcu;
+diff --git a/net/can/proc.c b/net/can/proc.c
+index 0938bf7dd646..de4d05ae3459 100644
+--- a/net/can/proc.c
++++ b/net/can/proc.c
+@@ -194,11 +194,12 @@ static void can_print_rcvlist(struct seq_file *m, struct hlist_head *rx_list,
+ 		char *fmt = (r->can_id & CAN_EFF_FLAG)?
+ 			"   %-5s  %08x  %08x  %pK  %pK  %8ld  %s\n" :
+ 			"   %-5s     %03x    %08x  %pK  %pK  %8ld  %s\n";
+ 
+ 		seq_printf(m, fmt, DNAME(dev), r->can_id, r->mask,
+-				r->func, r->data, r->matches, r->ident);
++			   r->func, r->data, atomic_long_read(&r->matches),
++			   r->ident);
+ 	}
+ }
+ 
+ static void can_print_recv_banner(struct seq_file *m)
  {
 -- 
 2.51.0
