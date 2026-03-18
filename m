@@ -1,145 +1,174 @@
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.82])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CDD73D523B
-	for <linux-can@vger.kernel.org>; Wed, 18 Mar 2026 12:13:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773836022; cv=none; b=nJf9zSbZMtCTLhaJ1YrfVWXi0EsVzVWBfPj1lMK7KX+r9tM04I8fHu0EgPoHI0EmajYucNWAgN0f757LSxQMhpdKe/qtybNoWGm8vrUUyNrhlHp9lbWUBiKitFLLrqCpAG80j0Y5uFjFBHtL6n8lIsJPOY3qJ0SfSuIMIan9F5I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773836022; c=relaxed/simple;
-	bh=numMzAxjNcq6OV9qlgyBnkx6yP7suc7YAlCHG5Id7UE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rhuRb0WQe4cIz3oNGxmzANs5/9Qxo9bvLSb3B71nHob71wfnea70yYAtn0g2MkI0NC/z9xfQ2w3vG726AUoFZEenqRl1w9yotbes6g3y9sprJ1S7Yz9g4hhdNdb2hskkl2tRmUCxTA7x54T7M92egfKSlIUWsouXvX7Yr+T7T5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=KjnBL3I8; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=jxnMA3Xn; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6F75253359;
+	Wed, 18 Mar 2026 16:54:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.82
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773852880; cv=pass; b=szFuJyOISeMux7KYly87zUnDIanSqYlLSR+L4fwKKzN8l2Y+ayiQXUDA6Jy6DHjF90nS5bLVcJIlFZnHAcQlKpF5ySnJjl0iPKg3IxS8n1hq88MBinKpljh+m5bfAk6qRU0h9ATQOSJOxWfJwbDDRpYEkyKjGsDoANYJrQkUxKg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773852880; c=relaxed/simple;
+	bh=/k9DjZs9HuznrEsEgEnWrtTj3Q7mI6JrR369Z+5naec=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=k61Zonzw9u326w1bzIZ9X0vU3H9XWQVRHQKJRpAYLTnE/Tp+q/LubJxGh/bpb1pGgTavIJEi3gYsCDoXodUEVGVexBBYf3KEbOLfkU5evx55bafvOcQo9Nnvwtd1ga3ucZisuYFfeiulbH3IDQgNgueqswCruF/g5bzGfdrYsX8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=ZZzSVokX; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=YUWujA+T; arc=pass smtp.client-ip=85.215.255.82
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="KjnBL3I8";
-	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="jxnMA3Xn"
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 62I96oAf402541
-	for <linux-can@vger.kernel.org>; Wed, 18 Mar 2026 12:13:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	IlnyTVAErGv3bVCG7sgbXnSAaOD/BICVCDgc2Q22BbY=; b=KjnBL3I8oHrg8aRC
-	QjuheSDKVRjXPSAxFw3zHTtXhELCyUiL2PRoQLMoePi84m89RVjVkRjNuyh6aWfo
-	rHWUkbTIHKR6rNffxWW/MmDJb2WZZd8xLjo/DnsNAgfgcrzQAijZgVDO3unY3Q9O
-	C5ZdDCWBu9HPxR/xXEW329344AN7XiOdUHZPCYcw56QfxSa97RgRouj3oJzv5f7y
-	dN8O9COMWdnC0NpER0c+jUwr3VBSqCp+/UONFCIg3rUaEqHDlrFDpCG7RBY0+93l
-	6l0ooQyo64+2PEQ9qR5MMNNFIXnnsVgGL6yYt0WVW1u3sd76s6aY0FhLElrrL/54
-	MyNMEg==
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4cyc4dunpj-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-can@vger.kernel.org>; Wed, 18 Mar 2026 12:13:40 +0000 (GMT)
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-50906758d71so35045141cf.1
-        for <linux-can@vger.kernel.org>; Wed, 18 Mar 2026 05:13:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1773836020; x=1774440820; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IlnyTVAErGv3bVCG7sgbXnSAaOD/BICVCDgc2Q22BbY=;
-        b=jxnMA3XnCBxPv4nymZvIqQb/wKnWtBPlVT0Bma18g1TGU0Av9hOg8DtuObkKHRtO74
-         agbynJyDIqhqhpkaet7L6YTR1L7VxSMLmabTE2GURIBCpcEGTHM1yoPoaC3Yy7crO/TD
-         6q42GQqEC7DPQvByKznVsBf9FNOsE4BTGyQZ9II3NGJ9zHmA8nH7DlRuUgVIAsuw38cI
-         aw/0pzCAbC9dHRJmgE6Q3jf39f3Asyx4UdbxXtrPqt3lpjDr2tGqx4nudvfpVQpnEUAe
-         vizbdhIGYZzHWjj7j2Sf7KKmwsQ1SwQl3R/j19vzIO5BxRaBjLAgTsersYm6TgH8dL4R
-         nnZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1773836020; x=1774440820;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IlnyTVAErGv3bVCG7sgbXnSAaOD/BICVCDgc2Q22BbY=;
-        b=hoiL5lGo8z10RQboAvFh45Cnt/muj6bEzfWeqwrps7pFnej4y4PF0jbmIwtwVBqLbo
-         TnSNHxTNcT+PREqkRFCo/kHeaYTRjARQG/77JB4EGZmXYGPWmCdA/6T+Dw6CPeZBWStK
-         qCgSBgEgQNsdyAqGjj6BbS/rT3Rws17Djb8zemGBvz8FfEPj9SpluyrBL5pkRy5xllx2
-         A369WZlqPS7YTbBg5Q030SgRPZoF7MiD3siHg3fLIR8eOTHOqL5OhZFbY6YOeAlhXKrn
-         VZeCq4enPX/JCLKZg5+O30h+vsAlfU4qrUbgXjp1Qydha88DI2ZjdGNPZ1YZ8d8yqDas
-         WgJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU3sO3ECvJ8N3BgWEc+VaefHV/90LNhBZcJZyiDBrYMSTiVGsEZ7DtdMzjnczgk3mMEtNqSgdS8q1o=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxJpXqOh5J/fZQ8NlYgSg+f6ng8k2HWaMknxoTizmrRSuiU7CXV
-	yx0ZftUtFYPvvJL/SBpAg3h82y+xWStvsbvNIVwpo4kL9p4wc6jWqHaGQzRcP8RF7AXhIo4rArB
-	ESBmriWSGPHOs2ewNwg4AczrdwdT9h91598Yg8eydPH7E/3yUd6mtbPujgWBx1BI=
-X-Gm-Gg: ATEYQzzsX7vlcLfVZQ858oQmnAFNdmWZ/tV36vhHlNtnbDfJi/09WTZkWusgzwhv6n5
-	IJ8cgd4pwucyj6VydrBLJpUfM0c+QbibBzEC4Fv1rxKFWiO5JGR9+NJBULokS0IizEVZa+nPFzD
-	wu1for/CaDwTTsQJh8trGJOAaTZZxCFspt4wwFrIzRxhfoJeHdiCelbBKqqEGovt5Z6QofUY2a/
-	m6aJ7tEUQxGdohYIN44ANppn8hjD781Rp+d9H43keW9DV1LrXzX0/lcUADRw4UzM7hAinJMLria
-	sV00TiJxzNUn1FwANGdYbf8ccWr42kE/bo2ZDGSCIlg1437ezNRJaFrkDtt6Z/q4sVfdpVLXcH9
-	Xob8Lth4j2agV2T62PqQ9sESckqqmEPNQR/lOC8bQWN53q4tK4COpeUYQZE2WNlaaFI3a0CoWsw
-	shByY=
-X-Received: by 2002:a05:622a:4d1:b0:509:15aa:cf03 with SMTP id d75a77b69052e-50b14864758mr27745971cf.4.1773836019813;
-        Wed, 18 Mar 2026 05:13:39 -0700 (PDT)
-X-Received: by 2002:a05:622a:4d1:b0:509:15aa:cf03 with SMTP id d75a77b69052e-50b14864758mr27745631cf.4.1773836019427;
-        Wed, 18 Mar 2026 05:13:39 -0700 (PDT)
-Received: from [192.168.119.254] (078088045245.garwolin.vectranet.pl. [78.88.45.245])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b97f13ee5c0sm201928566b.5.2026.03.18.05.13.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Mar 2026 05:13:38 -0700 (PDT)
-Message-ID: <a38b6a8d-835d-42b3-aae3-c813f033e100@oss.qualcomm.com>
-Date: Wed, 18 Mar 2026 13:13:36 +0100
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="ZZzSVokX";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="YUWujA+T"
+ARC-Seal: i=1; a=rsa-sha256; t=1773852696; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=YSIIC/WoSwMWsFxSNLtmX0I1EDeCfBNB3I0mKbuuH6eqoDuqAXDlAn8R+Gj/GxMU1c
+    HQDLeqkozuMGt2F0RAPP8KttVTkreoUgQPyuFumu0kjvhLCYyxmDjFKbEyIA5Q+Gw7X+
+    Uc9ou9/3Qo3J54dEOwDD6lvReiAW+dlLIZc+ZVywwms+xOt+SEaEFozE6zj0T/hedvLs
+    mN5csX6wkIQYqkBbDkVycrB0nxy2PbJNuQBrUjskPqs7GfnNJcjrewmDE1PYsIyxqcQ0
+    0gz+TUjBhZzRKzisxcAkCGFbWLqrDZL1duiw144ew39SQGObtvt2K09lQZUIqzyoBrNy
+    TU5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1773852696;
+    s=strato-dkim-0002; d=strato.com;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=OqP7gq/LowT7pcNzuhoIrzO3GvrxyRnB6oXUy5+oLp0=;
+    b=iVsZn0pzjM1KC3+bsRe/O2eKakz65Dubux6/OgMbhXbjz0K3qDGsYNQImdo4GY5E3M
+    lo4ovzQ1tNNff7nXB2ZINzymFhqLhtOri4XN3rXlCjqA9u3/qBipk9Ifo5+zKP8cXcqR
+    THjnrpBrW49BSQ2lnQhazcWitfGU9yJh79xZ4YRcOfRpSs42kzZOHjfBzNJCSO95/23C
+    JhxMA1ssEIVhLaqqKU3JbDD6wdnI+8mUfmQpKLh3MpWSLrfQGjwhUAHp/GNntzTisz42
+    UBmoxxxzZD72Z6oN2/NsK8GRpiQHmdvAN+3SnIPAOJDxFg7mwwTe4KE9ZV0I+OI0aEK7
+    ZlPQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1773852696;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=OqP7gq/LowT7pcNzuhoIrzO3GvrxyRnB6oXUy5+oLp0=;
+    b=ZZzSVokXviTubwTrWtgxM2bANetrRElAzsoELvu+9AuIEYQxNv2trawGq0hOKjI2qt
+    fGtc81xbAjmnfCIFReR2N7yT2AhfBJrqSiNNLOegeUrbO4zxNYGpK2+APmuztQWwa3cT
+    IuEEWbdDn1OH9PB08ixfkUOfrx4zc/ugSpI4WJVI+NNIzqc+bVZDUzvH+udIr5WkOVsA
+    swBIVU0wzUjgf349I0lkhsnN2zJxGxgcMfj73Nw3+r7MCxpdND0TV6OI41qdr5vH3nwB
+    jxYtq0Ge7iTfHIJTEfykMp8xiXVZdTAYUkXoE7HGiCpTzF8b09lN0TeMeZm6ASyZ8MQP
+    sxWQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1773852696;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=OqP7gq/LowT7pcNzuhoIrzO3GvrxyRnB6oXUy5+oLp0=;
+    b=YUWujA+TLl4u7WlB9Gm73Ci0iZo0A9v4BHPwnTLytnMYebMZfz254OI16S3GzdVdof
+    58svQ5HxdWsYDkuL4bAA==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeFQ7s0ZDT0tksFSR+Aix0esQJVIAlZEg=="
+Received: from lenov17.lan
+    by smtp.strato.de (RZmta 55.0.1 AUTH)
+    with ESMTPSA id Kba96d22IGpaozR
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Wed, 18 Mar 2026 17:51:36 +0100 (CET)
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
+	stable@vger.kernel.org,
+	Ali Norouzi <ali.norouzi@keysight.com>
+Subject: [PATCH 2/2] can: isotp: fix tx.buf use-after-free in isotp_sendmsg()
+Date: Wed, 18 Mar 2026 17:51:20 +0100
+Message-ID: <20260318165120.17560-2-socketcan@hartkopp.net>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20260318165120.17560-1-socketcan@hartkopp.net>
+References: <20260318165120.17560-1-socketcan@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: qcs6490-rb3gen2: Enable CAN bus
- controller
-To: Viken Dadhaniya <viken.dadhaniya@oss.qualcomm.com>, mkl@pengutronix.de,
-        mani@kernel.org, thomas.kopp@microchip.com, mailhol@kernel.org,
-        robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
-        andersson@kernel.org, konradybcio@kernel.org,
-        linux-can@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Cc: mukesh.savaliya@oss.qualcomm.com, anup.kulkarni@oss.qualcomm.com
-References: <20260316131950.859748-1-viken.dadhaniya@oss.qualcomm.com>
- <20260316131950.859748-4-viken.dadhaniya@oss.qualcomm.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
-In-Reply-To: <20260316131950.859748-4-viken.dadhaniya@oss.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzE4MDEwMyBTYWx0ZWRfX62ZdX3amJmeB
- xm27Uk66XaTZKi4HfNKLlRrwRbIKT/93uXS6JtgqPFngmSHxWx8ErI5VvRYl5+7CQWnCV7rnLyj
- widRO+MpdVKPA0nFGOp1f0pbHmF6UhmfBGFuYqFMXSpsQT8rdIZdxGtmFNZ0qe5ih2UyuJOOfGQ
- jdXEme/DjiX1HunL1K5kzbD4smz7uQVlGIlQ4TXNqwkzMY/XOorqdNL7QCF1p0hA9ZClFMg4yLI
- ZtRiqaQazxcDxnJvEAbcc5PMrL8xbiRcvYZonkybRqcBH/u6Vp/x5xUh8IjxKhkYx5fyUlElboO
- OEkzkENHvKAypG5B7M0P4irYBBWKeZVnbBheX8py2mR/LNaxAElhE1mq6Y36ZRdpI7BuXFeMwAu
- 9SBxhOrc7pLB9bhKEnOPmnEyfqnnDzKOUmHLgD/aZql6XVrrofpI7wIs1y2geRqvxomwbnTi/gC
- m5FBjUpb6u0oPVsPfxA==
-X-Proofpoint-GUID: 7BNkPonADS_0xXWV6gMqpYbKg7wE8p3z
-X-Authority-Analysis: v=2.4 cv=DfQaa/tW c=1 sm=1 tr=0 ts=69ba96f4 cx=c_pps
- a=WeENfcodrlLV9YRTxbY/uA==:117 a=FpWmc02/iXfjRdCD7H54yg==:17
- a=IkcTkHD0fZMA:10 a=Yq5XynenixoA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=ZpdpYltYx_vBUK5n70dp:22
- a=EUspDBNiAAAA:8 a=vACuA67BaHBskHqVUk8A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
- a=ZXulRonScM0A:10 a=kacYvNCVWA4VmyqE58fU:22
-X-Proofpoint-ORIG-GUID: 7BNkPonADS_0xXWV6gMqpYbKg7wE8p3z
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-03-18_01,2026-03-17_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 suspectscore=0 impostorscore=0 lowpriorityscore=0 adultscore=0
- priorityscore=1501 clxscore=1015 spamscore=0 bulkscore=0 malwarescore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2603050001 definitions=main-2603180103
+Content-Type: text/plain; charset="us-ascii"
 
-On 3/16/26 2:19 PM, Viken Dadhaniya wrote:
-> Enable the MCP2518FD CAN controller on the QCS6490 RB3 Gen2 platform.
-> The controller is connected via SPI3 and uses a 40 MHz oscillator.
-> 
-> The setup was tested with CAN-FD loopback and actual data transfer
-> using an external PCAN-USB FD adapter.
-> 
-> Signed-off-by: Viken Dadhaniya <viken.dadhaniya@oss.qualcomm.com>
-> ---
+isotp_sendmsg() uses only cmpxchg() on so->tx.state to serialize access
+to so->tx.buf. isotp_release() waits for ISOTP_IDLE via
+wait_event_interruptible() and then calls kfree(so->tx.buf).
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
+If a signal interrupts the wait_event_interruptible() inside close()
+while tx.state is ISOTP_SENDING, the loop exits early and release
+proceeds to force ISOTP_SHUTDOWN and continues to kfree(so->tx.buf)
+while sendmsg may still be reading so->tx.buf for the final CAN frame
+in isotp_fill_dataframe().
 
-Konrad
+The so->tx.buf can be allocated once when the standard tx.buf length needs
+to be extended. Move the kfree() of this potentially extended tx.buf to
+sk_destruct time when either isotp_sendmsg() and isotp_release() are done.
+
+Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
+Cc: stable@vger.kernel.org
+Reported-by: Ali Norouzi <ali.norouzi@keysight.com>
+Co-developed-by: Ali Norouzi <ali.norouzi@keysight.com>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ net/can/isotp.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
+
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index da3b72e7afcc..2770f43f4951 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -1246,16 +1246,10 @@ static int isotp_release(struct socket *sock)
+ 	hrtimer_cancel(&so->rxtimer);
+ 
+ 	so->ifindex = 0;
+ 	so->bound = 0;
+ 
+-	if (so->rx.buf != so->rx.sbuf)
+-		kfree(so->rx.buf);
+-
+-	if (so->tx.buf != so->tx.sbuf)
+-		kfree(so->tx.buf);
+-
+ 	sock_orphan(sk);
+ 	sock->sk = NULL;
+ 
+ 	release_sock(sk);
+ 	sock_prot_inuse_add(net, sk->sk_prot, -1);
+@@ -1620,10 +1614,25 @@ static int isotp_notifier(struct notifier_block *nb, unsigned long msg,
+ 	isotp_busy_notifier = NULL;
+ 	spin_unlock(&isotp_notifier_lock);
+ 	return NOTIFY_DONE;
+ }
+ 
++static void isotp_sock_destruct(struct sock *sk)
++{
++	struct isotp_sock *so = isotp_sk(sk);
++
++	/* do the standard CAN sock destruct work */
++	can_sock_destruct(sk);
++
++	/* free potential extended PDU buffers */
++	if (so->rx.buf != so->rx.sbuf)
++		kfree(so->rx.buf);
++
++	if (so->tx.buf != so->tx.sbuf)
++		kfree(so->tx.buf);
++}
++
+ static int isotp_init(struct sock *sk)
+ {
+ 	struct isotp_sock *so = isotp_sk(sk);
+ 
+ 	so->ifindex = 0;
+@@ -1664,10 +1673,13 @@ static int isotp_init(struct sock *sk)
+ 
+ 	spin_lock(&isotp_notifier_lock);
+ 	list_add_tail(&so->notifier, &isotp_notifier_list);
+ 	spin_unlock(&isotp_notifier_lock);
+ 
++	/* re-assign default can_sock_destruct() reference */
++	sk->sk_destruct = isotp_sock_destruct;
++
+ 	return 0;
+ }
+ 
+ static __poll_t isotp_poll(struct file *file, struct socket *sock, poll_table *wait)
+ {
+-- 
+2.51.0
+
