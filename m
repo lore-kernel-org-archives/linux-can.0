@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E5E73CE488
-	for <linux-can@vger.kernel.org>; Thu, 19 Mar 2026 11:56:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BD5F3D47BE
+	for <linux-can@vger.kernel.org>; Thu, 19 Mar 2026 13:23:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773921389; cv=none; b=QLVoxPhBo7GhKnrn8tYo1cG1kMhIOKw4dYDYrhyzrid/YNSuIIqm4RDLbzcjxuDVqtU5Lbloy/G8XdJFMwuolkDcO1aoMjaJ0zyuqcfujuhRtmUfKdjFu2sToDV2zUvtVC1xIEIupZnkwKWuqtJvYJZSKNBSNRi0rUjPH7kcmzU=
+	t=1773926624; cv=none; b=jGYc24mC0wbhAq0reN6b/HHlcKuBMq9fQEP0rTbq0hReO15RTrF3nnZ6yOT5e2Kf5EVthR+d24YtvRVxpW1pbEHDRiHrN1tk/YlA07oNV0RcF3Gtsy5f33cjgrgO0LL8F/FBmcvDmh/kOnSpsMteK6STJDpH9gj/JViDsDfAqPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773921389; c=relaxed/simple;
-	bh=9SAk7s4C28CC0IKD6BObzlcXaILvpHcNKuiTKMAlFxo=;
+	s=arc-20240116; t=1773926624; c=relaxed/simple;
+	bh=uNW6BjilSvE+bR0GNtRXXctuv2crWCYxzr3GteCa+Vs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XyBym38Ul7rwK/os+P09hxYg1wWzIWf1e6ceixUFcMSoOxVcDh12RhItMyRPuDof9i/4BAeWo5ZSmmHuANMVxDRj/qGaz0FQJkF4eUHj2ATS1ThRt+q6tpAEysKk/uuUGR/xEIdS9W/WHGx3VP3oP5aMYUrrCW29edd/1w3mLV8=
+	 Content-Type:Content-Disposition:In-Reply-To; b=j77uqNb43zt69Rlnofqj9YI74iciDaET3nMaUYlLM4wjedXi7Ty0EH/IeVkREyMuwKHXXpJ9/UvjVNlHY1h3m+TRPlcy3hOxhBAQ6ZtLBGVQKJEC2CBETeXkNQxHcQjHcNOPpcueXYxT9YZSPe3jFXuJzljjXf15bEXlg+04xWY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,35 +18,31 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1w3Byv-0001bT-8l; Thu, 19 Mar 2026 12:56:05 +0100
+	id 1w3DLe-0006DC-Ei; Thu, 19 Mar 2026 14:23:38 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1w3Byu-0014ET-1g;
-	Thu, 19 Mar 2026 12:56:04 +0100
+	id 1w3DLd-0015FW-2A;
+	Thu, 19 Mar 2026 14:23:37 +0100
 Received: from pengutronix.de (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 3925E5083C0;
-	Thu, 19 Mar 2026 11:56:04 +0000 (UTC)
-Date: Thu, 19 Mar 2026 12:56:03 +0100
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 6263E5084BE;
+	Thu, 19 Mar 2026 13:23:37 +0000 (UTC)
+Date: Thu, 19 Mar 2026 14:23:37 +0100
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Ciprian Costea <ciprianmarian.costea@oss.nxp.com>
-Cc: Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Frank Li <Frank.Li@nxp.com>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, linux-can@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
-	NXP S32 Linux Team <s32@nxp.com>, Christophe Lizzi <clizzi@redhat.com>, 
-	Alberto Ruiz <aruizrui@redhat.com>, Enric Balletbo <eballetb@redhat.com>, 
-	Eric Chanudet <echanude@redhat.com>
-Subject: Re: [PATCH v2 0/5] can: flexcan: Add NXP S32N79 SoC support
-Message-ID: <20260319-orca-of-legal-science-88e67d-mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org, stable@vger.kernel.org, 
+	Ali Norouzi <ali.norouzi@keysight.com>
+Subject: Re: [PATCH 2/2] can: isotp: fix tx.buf use-after-free in
+ isotp_sendmsg()
+Message-ID: <20260319-upbeat-urban-reindeer-5da5c2-mkl@pengutronix.de>
 X-AI: stop_reason: "refusal"
-References: <20260319094032.427697-1-ciprianmarian.costea@oss.nxp.com>
+References: <20260318165120.17560-1-socketcan@hartkopp.net>
+ <20260318165120.17560-2-socketcan@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -54,60 +50,56 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="xzuitslxiv2ov2za"
+	protocol="application/pgp-signature"; boundary="4nq2tczzse4w3sfi"
 Content-Disposition: inline
-In-Reply-To: <20260319094032.427697-1-ciprianmarian.costea@oss.nxp.com>
+In-Reply-To: <20260318165120.17560-2-socketcan@hartkopp.net>
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 
---xzuitslxiv2ov2za
+--4nq2tczzse4w3sfi
 Content-Type: text/plain; protected-headers=v1; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v2 0/5] can: flexcan: Add NXP S32N79 SoC support
+Subject: Re: [PATCH 2/2] can: isotp: fix tx.buf use-after-free in
+ isotp_sendmsg()
 MIME-Version: 1.0
 
-On 19.03.2026 10:40:27, Ciprian Costea wrote:
-> From: Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>
+On 18.03.2026 17:51:20, Oliver Hartkopp wrote:
+> isotp_sendmsg() uses only cmpxchg() on so->tx.state to serialize access
+> to so->tx.buf. isotp_release() waits for ISOTP_IDLE via
+> wait_event_interruptible() and then calls kfree(so->tx.buf).
 >
-> This patch series adds FlexCAN support for the NXP S32N79 SoC.
+> If a signal interrupts the wait_event_interruptible() inside close()
+> while tx.state is ISOTP_SENDING, the loop exits early and release
+> proceeds to force ISOTP_SHUTDOWN and continues to kfree(so->tx.buf)
+> while sendmsg may still be reading so->tx.buf for the final CAN frame
+> in isotp_fill_dataframe().
 >
-> The S32N79 is an automotive-grade processor from NXP with multiple
-> FlexCAN instances. The FlexCAN IP integration on S32N79 differs from
-> other SoCs in the interrupt routing - it uses two separate interrupt
-> lines:
->   - one interrupt for mailboxes 0-127
->   - one interrupt for bus error detection and device state changes
+> The so->tx.buf can be allocated once when the standard tx.buf length needs
+> to be extended. Move the kfree() of this potentially extended tx.buf to
+> sk_destruct time when either isotp_sendmsg() and isotp_release() are done.
 >
-> The CAN controllers are connected through an irqsteer interrupt
-> controller in the RCU (Resource Control Unit) domain.
->
-> This series:
->   1. Adds dt-bindings documentation for S32N79 FlexCAN
->   2. Introduces FLEXCAN_QUIRK_IRQ_BERR to handle the two-interrupt
->      configuration
->   3. Adds S32N79 device data and compatible string to the driver
->   4. Adds FlexCAN device tree nodes for S32N79 SoC
->   5. Enables FlexCAN devices on the S32N79-RDB board
->
-> Tested on S32N79-RDB board with CAN and CAN FD communication.
+> Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
+> Cc: stable@vger.kernel.org
+> Reported-by: Ali Norouzi <ali.norouzi@keysight.com>
+> Co-developed-by: Ali Norouzi <ali.norouzi@keysight.com>
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
-I think DTS changes go into a separate series.
+AI-bot
 
-Please also have a look at the AI review:
+| https://netdev-ai.bots.linux.dev/ai-review.html?id=3D19f0e15f-5d42-43a4-a=
+9e1-632cf3d9182c
 
-https://sashiko.dev/#/patchset/20260318092215.23505-1-ciprianmarian.costea%=
-40oss.nxp.com
+suggested:
 
-Especially on patch#3.
+Fixes: 96d1c81e6a04 ("can: isotp: add module parameter for maximum pdu size=
+")
 
-I think we should split the main IRQ handler into 3 parts, message buff,
-bus error and state change.
+which makes sense.
 
-regards,
 Marc
 
 --=20
@@ -116,15 +108,15 @@ Embedded Linux                   | https://www.pengutronix.de |
 Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
---xzuitslxiv2ov2za
+--4nq2tczzse4w3sfi
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCabvkUQAKCRDMOmT6rpmt
-0vKUAQDwbFhW/W03Hu77q7GEEYWqTGLJDuJC+wiHZTFx4SO5KgEAuB+vLYvGzlSO
-D4BK9Z3qYaKcq6JxEQhyIMUxoUVA/QQ=
-=vGIE
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCabv41gAKCRDMOmT6rpmt
+0pwpAQDnDRnwd0DUF3Tf0GAN9HmBjoQLHY2lU95VLL9kDWeatgD/Q7RBk8/wlAMa
+j3n++K2IoNZZsM9erIICgFmg9tS0ugE=
+=Vw7Z
 -----END PGP SIGNATURE-----
 
---xzuitslxiv2ov2za--
+--4nq2tczzse4w3sfi--
