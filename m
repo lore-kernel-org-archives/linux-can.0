@@ -1,191 +1,107 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.221])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9477B3BED10;
-	Thu, 19 Mar 2026 13:32:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.221
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773927132; cv=pass; b=tA7Wfcaj6GUmz8Y3YE9CFifDFye6ttuOnuhGMnu8kdBDwuc3KJG8RnDZ5TZ7qEl3vmS9bC1EeMX+PNX+uaZ//1mBH+GLBX4/uc1kCcV/ue9UZglP884KOpYO2gFZNDORse7ssE+bJM1c8okUoHf5Bz8R26XJiZSOSBZoPkkqCLg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773927132; c=relaxed/simple;
-	bh=cJ635i5fm7+9T1qVfaUkixI7IjsOSQDDmfmCY/pNI+Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X/J0CNA7rFYYaBjispROKSKwSJhBsUTnOPS69H5VwMJieYkb1rbTWWTdzz0ONhchIFWdVzfFDEftX0mX1irPovztf17KRbex0LIJqDAGjwkdedxAjoHk7hUVyLDphDMp9jhv9usAbHooXwVng/jAaaqjFKqRiKAnRrKdkE2GrzE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=g/KsOXhF; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=UYPCdI7K; arc=pass smtp.client-ip=81.169.146.221
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="g/KsOXhF";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="UYPCdI7K"
-ARC-Seal: i=1; a=rsa-sha256; t=1773926040; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=rzSuGllwe3v9JEw8Lzo/jwphVDqAN7nAS2AmQf++PkKd/A8LoPZz8k7PRKh2AwDl6g
-    GvCDHbkgJ5YDVxRxrmgbntjxaN+AQ6jkm5A7XkbDNYnBtGbAHrsiAxw+2alTTy2qzwuC
-    lI8sC5P9FFr1Dtb1MV7YCaCNPoFn6/SnHNXw4o+3fsJUr23Y5S/vynANKekYbrp09Xpt
-    bWwIDOmNyoYvNKhNsyYaHoVqN/pt3iyKF0HknBc48C/hjomJu82eNj0Siv8fvk3Bu55g
-    QT+3gKymzre2aO8g0tu1ZOiYtvDoFwgU8ni8g/ri32ox08K7L2gbSfBwjMiIG0mCecqq
-    L0Vw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1773926040;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=qBjyZ7tBlwA5Rs8H7gLo2wC9H1zvpReUog1xQNRuiD4=;
-    b=apoF1jf3VaNKPWf83PJwxnsi8iDqbrcJlc+drWERtNyAg1q1Sgo1niWPqU1BZca3MI
-    hKllx1EkfTxn7QKZbxoV85iXjQ5bB5Xxk/7MU/Tkh7yMzeP0IDH0ANGamxqGJrZU/q72
-    GDOZlaG8/Vb8klV9Cs+04CYFJSqGBqli0VkfynigrY1IvpWEr9UU/3t8yoSWZcIA1NW4
-    tzfaEcwkJMvhnVFeWVYgcMaW/hjpPbZyiCqqKZRKPOA4kAywPf6mXC5+MfUK27QlrzB0
-    BIh0TJCeClQwD7lxjrCpN6PyGEfEF7KXiQHSK5SlpqMDQEQ6VTODYU5pw1KMhteFS/3o
-    ghRw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1773926040;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=qBjyZ7tBlwA5Rs8H7gLo2wC9H1zvpReUog1xQNRuiD4=;
-    b=g/KsOXhFTURhHdBODO6I2djP9srUJOZOknKxXqPn27TIKTpK70f1CN8mm+LjmVoYrp
-    iGXC7KaH33yWioCqq1NaeijDZVd+e3089Y80LRzrcgjZC3pfn/Kz7S6HYuu0kavOgewi
-    ed7FLyXmlwYhHoxEvIj+YMdge+UjxeINZw5/ytH7sz6ggXObGM9b4Hv9KBeJ+Nl9/ZFd
-    4nBJlNLhq7o91/78WGGU8TUhbAQx0aEx0uGxenTSdmBFkWyVH33Aoel0BuUsdS//4hP8
-    vC3RnQ7ntEYqkeRYlloaMFjARdKuzQQR15tNMSZODB7gBg9G8GfMSx5NabAfFwsdxOKB
-    5yug==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1773926040;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=qBjyZ7tBlwA5Rs8H7gLo2wC9H1zvpReUog1xQNRuiD4=;
-    b=UYPCdI7Kw85rfWM0cO4AUVHB4Sf8ueeCkT3xizlAPP9Op21C7b4rHPR4nxxKtksjEm
-    LZ/OIfDUc++dgyXIXcDg==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeFQ7s0ZDT0tksFSR+Aix0esQJVIAlZEg=="
-Received: from [IPV6:2a00:6020:4a38:6800:217d:dfe3:b063:ecb0]
-    by smtp.strato.de (RZmta 55.0.1 AUTH)
-    with ESMTPSA id Kba96d22JDE0s2N
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Thu, 19 Mar 2026 14:14:00 +0100 (CET)
-Message-ID: <c6bb76ce-0f3c-4775-beaf-174e281f991f@hartkopp.net>
-Date: Thu, 19 Mar 2026 14:13:55 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D3F3B19A9
+	for <linux-can@vger.kernel.org>; Thu, 19 Mar 2026 13:33:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773927229; cv=none; b=mC1ZuTbyp7y2a63YC5ThQ9uTAoJ8lA6E7Rel0oJGcF1tdmmf+OZWhghwwyaEPaAFCH0ncAvu+QYK7Zq2WyPklU3GseNKRtSvEnQN5oBFuOWzrymJ6iMXVXen70oLKr/7fpm5vSyOK+MnV0GcbLYwrJrhIGAW7miJICE/eP6bCBg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773927229; c=relaxed/simple;
+	bh=me4ew3vYP1Km2HJVGkhLV8WqvOHHmLBARh6rdtyaeHQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U7EhoHrlcaN7BRCX7o2oQTtpb8axd0N4CVSzLWgj6LBXGS9tbzY+4kCRnMOD1cglb0405x6EGEBK6+flIblSPDAVpxLZKt8nbZA/IoGfpOVrm5xzyLpOpuWWJXCyvlkYOgNJTynrqYHWicde4G1aoE1JHfFrHlJzrLlHku0SR54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1w3DVR-0007dZ-7g; Thu, 19 Mar 2026 14:33:45 +0100
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1w3DVQ-0015Gq-1c;
+	Thu, 19 Mar 2026 14:33:44 +0100
+Received: from pengutronix.de (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 3C1275084D9;
+	Thu, 19 Mar 2026 13:33:44 +0000 (UTC)
+Date: Thu, 19 Mar 2026 14:33:43 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: stable@vger.kernel.org, Ali Norouzi <ali.norouzi@keysight.com>, 
+	linux-can@vger.kernel.org
+Subject: Re: [PATCH 2/2] can: isotp: fix tx.buf use-after-free in
+ isotp_sendmsg()
+Message-ID: <20260319-polar-affable-dolphin-db10fa-mkl@pengutronix.de>
+X-AI: stop_reason: "refusal"
+References: <20260318165120.17560-1-socketcan@hartkopp.net>
+ <20260318165120.17560-2-socketcan@hartkopp.net>
+ <c6bb76ce-0f3c-4775-beaf-174e281f991f@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="pxovnihxj4xs53bw"
+Content-Disposition: inline
+In-Reply-To: <c6bb76ce-0f3c-4775-beaf-174e281f991f@hartkopp.net>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
+
+
+--pxovnihxj4xs53bw
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 Subject: Re: [PATCH 2/2] can: isotp: fix tx.buf use-after-free in
  isotp_sendmsg()
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: stable@vger.kernel.org, Ali Norouzi <ali.norouzi@keysight.com>,
- linux-can@vger.kernel.org
-References: <20260318165120.17560-1-socketcan@hartkopp.net>
- <20260318165120.17560-2-socketcan@hartkopp.net>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20260318165120.17560-2-socketcan@hartkopp.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
 
-Hallo Marc,
+On 19.03.2026 14:13:55, Oliver Hartkopp wrote:
+> Hallo Marc,
+>
+> the AI bot correctly remarked that the Fixes tag points to the wrong comm=
+it
+> I took from Alis original patch.
+>
+> Indeed it has to be
+>
+> Fixes: 96d1c81e6a04 ("can: isotp: add module parameter for maximum pdu
+> size")
+>
+> Can you correct that while applying the patch or should I resend it?
 
-the AI bot correctly remarked that the Fixes tag points to the wrong 
-commit I took from Alis original patch.
+I'll do it. Please ignore my mail stating the same send 10 Minutes after
+yours :)
 
-Indeed it has to be
+Marc
 
-Fixes: 96d1c81e6a04 ("can: isotp: add module parameter for maximum pdu 
-size")
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-Can you correct that while applying the patch or should I resend it?
+--pxovnihxj4xs53bw
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Best regards,
-Oliver
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCabv7NQAKCRDMOmT6rpmt
+0uM6AP9AoSb6cqJ8XKS9yIyFiUYNB9PdYm2Nfvfkd5y6yTZM3AEAuh209Ioombxd
+79m6087FCqNGvDu4VRT32LJ6tl1fewo=
+=wslf
+-----END PGP SIGNATURE-----
 
-On 18.03.26 17:51, Oliver Hartkopp wrote:
-> isotp_sendmsg() uses only cmpxchg() on so->tx.state to serialize access
-> to so->tx.buf. isotp_release() waits for ISOTP_IDLE via
-> wait_event_interruptible() and then calls kfree(so->tx.buf).
-> 
-> If a signal interrupts the wait_event_interruptible() inside close()
-> while tx.state is ISOTP_SENDING, the loop exits early and release
-> proceeds to force ISOTP_SHUTDOWN and continues to kfree(so->tx.buf)
-> while sendmsg may still be reading so->tx.buf for the final CAN frame
-> in isotp_fill_dataframe().
-> 
-> The so->tx.buf can be allocated once when the standard tx.buf length needs
-> to be extended. Move the kfree() of this potentially extended tx.buf to
-> sk_destruct time when either isotp_sendmsg() and isotp_release() are done.
-> 
-> Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
-> Cc: stable@vger.kernel.org
-> Reported-by: Ali Norouzi <ali.norouzi@keysight.com>
-> Co-developed-by: Ali Norouzi <ali.norouzi@keysight.com>
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> ---
->   net/can/isotp.c | 24 ++++++++++++++++++------
->   1 file changed, 18 insertions(+), 6 deletions(-)
-> 
-> diff --git a/net/can/isotp.c b/net/can/isotp.c
-> index da3b72e7afcc..2770f43f4951 100644
-> --- a/net/can/isotp.c
-> +++ b/net/can/isotp.c
-> @@ -1246,16 +1246,10 @@ static int isotp_release(struct socket *sock)
->   	hrtimer_cancel(&so->rxtimer);
->   
->   	so->ifindex = 0;
->   	so->bound = 0;
->   
-> -	if (so->rx.buf != so->rx.sbuf)
-> -		kfree(so->rx.buf);
-> -
-> -	if (so->tx.buf != so->tx.sbuf)
-> -		kfree(so->tx.buf);
-> -
->   	sock_orphan(sk);
->   	sock->sk = NULL;
->   
->   	release_sock(sk);
->   	sock_prot_inuse_add(net, sk->sk_prot, -1);
-> @@ -1620,10 +1614,25 @@ static int isotp_notifier(struct notifier_block *nb, unsigned long msg,
->   	isotp_busy_notifier = NULL;
->   	spin_unlock(&isotp_notifier_lock);
->   	return NOTIFY_DONE;
->   }
->   
-> +static void isotp_sock_destruct(struct sock *sk)
-> +{
-> +	struct isotp_sock *so = isotp_sk(sk);
-> +
-> +	/* do the standard CAN sock destruct work */
-> +	can_sock_destruct(sk);
-> +
-> +	/* free potential extended PDU buffers */
-> +	if (so->rx.buf != so->rx.sbuf)
-> +		kfree(so->rx.buf);
-> +
-> +	if (so->tx.buf != so->tx.sbuf)
-> +		kfree(so->tx.buf);
-> +}
-> +
->   static int isotp_init(struct sock *sk)
->   {
->   	struct isotp_sock *so = isotp_sk(sk);
->   
->   	so->ifindex = 0;
-> @@ -1664,10 +1673,13 @@ static int isotp_init(struct sock *sk)
->   
->   	spin_lock(&isotp_notifier_lock);
->   	list_add_tail(&so->notifier, &isotp_notifier_list);
->   	spin_unlock(&isotp_notifier_lock);
->   
-> +	/* re-assign default can_sock_destruct() reference */
-> +	sk->sk_destruct = isotp_sock_destruct;
-> +
->   	return 0;
->   }
->   
->   static __poll_t isotp_poll(struct file *file, struct socket *sock, poll_table *wait)
->   {
-
+--pxovnihxj4xs53bw--
