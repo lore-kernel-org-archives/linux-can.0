@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1651C38BF92
-	for <linux-can@vger.kernel.org>; Mon, 23 Mar 2026 10:32:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEA9938C40C
+	for <linux-can@vger.kernel.org>; Mon, 23 Mar 2026 10:32:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774261957; cv=none; b=A+Zw0i4oLCABoNNSirR9AEJsys1IIaSl/HYnDJxbBy6tHTQ8PKvHovRUH1QIvtsLcBnFOeGmLjY3yEuK5wEIC501DzJ97t3JBYv2gW80GlQ+Cg0XtjNwoqlVLGIDZKeDjXllpschrmvwA1AiTYcqdQh/r6LBSPUteOWI6YiKviM=
+	t=1774261959; cv=none; b=Anmp05IHVYR6rX7/6nz836+Q6jarKruLBv5j2AG3t+3EaQ+XCBj3SfBDz8NioMbgwiGcnzQPx1CIaI9xZ4ZJVzXvtg+3NSnBd62ZTIF/hl6DUtuYZU6vNrcSSI7dFcvOCQFoeZO9seh327Z74ugtNCJpgkmOBeit10CnaHQXVGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774261957; c=relaxed/simple;
-	bh=fDHrWXDpkRPsmJEbJNpTDh7CHwdncGu6UJRNbda6ZGo=;
+	s=arc-20240116; t=1774261959; c=relaxed/simple;
+	bh=f4uYiZRS5rJBSnw0n4vO5vyskR/+XefydiJ9iEHYU3A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eu2nSbsiUBizCHM2tlXwDFVrBtw+BfKTFN95SggPhA2wHXQ99Q9OEVMWOgl/km0ODDlXo7YEv2+hPfkqx3A66XobAPQVXo3LkIdvQFVF7+gkMxWgNRf+SZIQKOXdh7aDzeefk6SsN7J/GU9CIR/vNKjSyYAi/la5pnEisNUFoRg=
+	 MIME-Version; b=Gq41Z/ZnPf/8MrBbWgrGutxmUn0Tc3jFFjr9cJ5Pl7Zwcw/7QUFb8NmXqYTUjx5PLVkY1gFnNrHLEAIiX4H56dI4/Q7gsDwMGprwYAV0jGMdU/JLRAbEJ1JopJs1IZeSdwo1cddmK+yGV/d4jGgQNPF+vhrzdF2a1ATC+JdLIKQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,33 +18,31 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1w4caC-0008FU-6m; Mon, 23 Mar 2026 11:32:28 +0100
+	id 1w4caE-0008FM-4N; Mon, 23 Mar 2026 11:32:30 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1w4caB-001i5m-1P;
+	id 1w4caB-001i5f-0t;
 	Mon, 23 Mar 2026 11:32:27 +0100
 Received: from blackshift.org (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 203BB50A7C1;
-	Mon, 23 Mar 2026 10:32:27 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id DEE1E50A7BE;
+	Mon, 23 Mar 2026 10:32:26 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
-	stable@vger.kernel.org,
-	Ali Norouzi <ali.norouzi@keysight.com>,
+	Wenyuan Li <2063309626@qq.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 5/5] can: isotp: fix tx.buf use-after-free in isotp_sendmsg()
-Date: Mon, 23 Mar 2026 11:28:01 +0100
-Message-ID: <20260323103224.218099-6-mkl@pengutronix.de>
+Subject: [PATCH net 2/5] can: mcp251x: add error handling for power enable in open and resume
+Date: Mon, 23 Mar 2026 11:27:58 +0100
+Message-ID: <20260323103224.218099-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260323103224.218099-1-mkl@pengutronix.de>
 References: <20260323103224.218099-1-mkl@pengutronix.de>
@@ -60,83 +58,85 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Wenyuan Li <2063309626@qq.com>
 
-isotp_sendmsg() uses only cmpxchg() on so->tx.state to serialize access
-to so->tx.buf. isotp_release() waits for ISOTP_IDLE via
-wait_event_interruptible() and then calls kfree(so->tx.buf).
+Add missing error handling for mcp251x_power_enable() calls in both
+mcp251x_open() and mcp251x_can_resume() functions.
 
-If a signal interrupts the wait_event_interruptible() inside close()
-while tx.state is ISOTP_SENDING, the loop exits early and release
-proceeds to force ISOTP_SHUTDOWN and continues to kfree(so->tx.buf)
-while sendmsg may still be reading so->tx.buf for the final CAN frame
-in isotp_fill_dataframe().
+In mcp251x_open(), if power enable fails, jump to error path to close
+candev without attempting to disable power again.
 
-The so->tx.buf can be allocated once when the standard tx.buf length needs
-to be extended. Move the kfree() of this potentially extended tx.buf to
-sk_destruct time when either isotp_sendmsg() and isotp_release() are done.
+In mcp251x_can_resume(), properly check return values of power enable calls
+for both power and transceiver regulators. If any fails, return the error
+code to the PM framework and log the failure.
 
-Fixes: 96d1c81e6a04 ("can: isotp: add module parameter for maximum pdu size")
-Cc: stable@vger.kernel.org
-Reported-by: Ali Norouzi <ali.norouzi@keysight.com>
-Co-developed-by: Ali Norouzi <ali.norouzi@keysight.com>
-Signed-off-by: Ali Norouzi <ali.norouzi@keysight.com>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://patch.msgid.link/20260319-fix-can-gw-and-can-isotp-v2-2-c45d52c6d2d8@pengutronix.de
+This ensures the driver properly handles power control failures and
+maintains correct device state.
+
+Signed-off-by: Wenyuan Li <2063309626@qq.com>
+Link: https://patch.msgid.link/tencent_F3EFC5D7738AC548857B91657715E2D3AA06@qq.com
+[mkl: fix patch description]
+[mkl: mcp251x_can_resume(): replace goto by return]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/isotp.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+ drivers/net/can/spi/mcp251x.c | 29 ++++++++++++++++++++++++-----
+ 1 file changed, 24 insertions(+), 5 deletions(-)
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index da3b72e7afcc..2770f43f4951 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -1248,12 +1248,6 @@ static int isotp_release(struct socket *sock)
- 	so->ifindex = 0;
- 	so->bound = 0;
+diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
+index bb7782582f40..0d0190ae094a 100644
+--- a/drivers/net/can/spi/mcp251x.c
++++ b/drivers/net/can/spi/mcp251x.c
+@@ -1225,7 +1225,11 @@ static int mcp251x_open(struct net_device *net)
+ 	}
  
--	if (so->rx.buf != so->rx.sbuf)
--		kfree(so->rx.buf);
--
--	if (so->tx.buf != so->tx.sbuf)
--		kfree(so->tx.buf);
--
- 	sock_orphan(sk);
- 	sock->sk = NULL;
+ 	mutex_lock(&priv->mcp_lock);
+-	mcp251x_power_enable(priv->transceiver, 1);
++	ret = mcp251x_power_enable(priv->transceiver, 1);
++	if (ret) {
++		dev_err(&spi->dev, "failed to enable transceiver power: %pe\n", ERR_PTR(ret));
++		goto out_close_candev;
++	}
  
-@@ -1622,6 +1616,21 @@ static int isotp_notifier(struct notifier_block *nb, unsigned long msg,
- 	return NOTIFY_DONE;
- }
- 
-+static void isotp_sock_destruct(struct sock *sk)
-+{
-+	struct isotp_sock *so = isotp_sk(sk);
-+
-+	/* do the standard CAN sock destruct work */
-+	can_sock_destruct(sk);
-+
-+	/* free potential extended PDU buffers */
-+	if (so->rx.buf != so->rx.sbuf)
-+		kfree(so->rx.buf);
-+
-+	if (so->tx.buf != so->tx.sbuf)
-+		kfree(so->tx.buf);
-+}
-+
- static int isotp_init(struct sock *sk)
+ 	priv->force_quit = 0;
+ 	priv->tx_skb = NULL;
+@@ -1272,6 +1276,7 @@ static int mcp251x_open(struct net_device *net)
+ 	mcp251x_hw_sleep(spi);
+ out_close:
+ 	mcp251x_power_enable(priv->transceiver, 0);
++out_close_candev:
+ 	close_candev(net);
+ 	mutex_unlock(&priv->mcp_lock);
+ 	if (release_irq)
+@@ -1516,11 +1521,25 @@ static int __maybe_unused mcp251x_can_resume(struct device *dev)
  {
- 	struct isotp_sock *so = isotp_sk(sk);
-@@ -1666,6 +1675,9 @@ static int isotp_init(struct sock *sk)
- 	list_add_tail(&so->notifier, &isotp_notifier_list);
- 	spin_unlock(&isotp_notifier_lock);
+ 	struct spi_device *spi = to_spi_device(dev);
+ 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
++	int ret = 0;
  
-+	/* re-assign default can_sock_destruct() reference */
-+	sk->sk_destruct = isotp_sock_destruct;
+-	if (priv->after_suspend & AFTER_SUSPEND_POWER)
+-		mcp251x_power_enable(priv->power, 1);
+-	if (priv->after_suspend & AFTER_SUSPEND_UP)
+-		mcp251x_power_enable(priv->transceiver, 1);
++	if (priv->after_suspend & AFTER_SUSPEND_POWER) {
++		ret = mcp251x_power_enable(priv->power, 1);
++		if (ret) {
++			dev_err(dev, "failed to restore power: %pe\n", ERR_PTR(ret));
++			return ret;
++		}
++	}
 +
- 	return 0;
- }
++	if (priv->after_suspend & AFTER_SUSPEND_UP) {
++		ret = mcp251x_power_enable(priv->transceiver, 1);
++		if (ret) {
++			dev_err(dev, "failed to restore transceiver power: %pe\n", ERR_PTR(ret));
++			if (priv->after_suspend & AFTER_SUSPEND_POWER)
++				mcp251x_power_enable(priv->power, 0);
++			return ret;
++		}
++	}
  
+ 	if (priv->after_suspend & (AFTER_SUSPEND_POWER | AFTER_SUSPEND_UP))
+ 		queue_work(priv->wq, &priv->restart_work);
 -- 
 2.53.0
 
