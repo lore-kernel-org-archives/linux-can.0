@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEA9938C40C
-	for <linux-can@vger.kernel.org>; Mon, 23 Mar 2026 10:32:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CEFC38B7D2
+	for <linux-can@vger.kernel.org>; Mon, 23 Mar 2026 10:36:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774261959; cv=none; b=Anmp05IHVYR6rX7/6nz836+Q6jarKruLBv5j2AG3t+3EaQ+XCBj3SfBDz8NioMbgwiGcnzQPx1CIaI9xZ4ZJVzXvtg+3NSnBd62ZTIF/hl6DUtuYZU6vNrcSSI7dFcvOCQFoeZO9seh327Z74ugtNCJpgkmOBeit10CnaHQXVGs=
+	t=1774262200; cv=none; b=Dw/XRJDKF5gXQZ59F1ExGe5QLE1Z1EvPfG8PdeaxWkmCONlOlTEO9T3Waqivq1xujHsZ832CmDw0/cQKZ6GKzpg93Q6R5hgJnqEI7kODZjWM1eIJo6TIdQMoGJlMDU3wX/HhvuWoInxXh95d8YjSx8FwwkZ1BEZ7ElYjD8APiro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774261959; c=relaxed/simple;
-	bh=f4uYiZRS5rJBSnw0n4vO5vyskR/+XefydiJ9iEHYU3A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Gq41Z/ZnPf/8MrBbWgrGutxmUn0Tc3jFFjr9cJ5Pl7Zwcw/7QUFb8NmXqYTUjx5PLVkY1gFnNrHLEAIiX4H56dI4/Q7gsDwMGprwYAV0jGMdU/JLRAbEJ1JopJs1IZeSdwo1cddmK+yGV/d4jGgQNPF+vhrzdF2a1ATC+JdLIKQ=
+	s=arc-20240116; t=1774262200; c=relaxed/simple;
+	bh=84cWpFOEfJUrl7OHPV0gcP7TAT6ro+QeEH6UHJ61bvI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jw3XuhE9CCucGFFizT+mKEfKYq8m7jCX3aHp/guUoKhQnCipj1T/wvvQO9CGoG0CdiVXQp6lK/CmTqsxf80JYQ7K6g54ru14pp+XZJ4STJIOiWd1hfvakYLIeEoIRfzH/kLehas8XzdOd2NGzDq819+oKkePival/axofjKMMqw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,125 +18,154 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1w4caE-0008FM-4N; Mon, 23 Mar 2026 11:32:30 +0100
+	id 1w4cdw-0000dP-Ab; Mon, 23 Mar 2026 11:36:20 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1w4caB-001i5f-0t;
-	Mon, 23 Mar 2026 11:32:27 +0100
-Received: from blackshift.org (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
+	id 1w4cdv-001iAm-1I;
+	Mon, 23 Mar 2026 11:36:19 +0100
+Received: from pengutronix.de (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id DEE1E50A7BE;
-	Mon, 23 Mar 2026 10:32:26 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 114E250A7F9;
+	Mon, 23 Mar 2026 10:36:19 +0000 (UTC)
+Date: Mon, 23 Mar 2026 11:36:18 +0100
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	kuba@kernel.org,
-	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	Wenyuan Li <2063309626@qq.com>,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 2/5] can: mcp251x: add error handling for power enable in open and resume
-Date: Mon, 23 Mar 2026 11:27:58 +0100
-Message-ID: <20260323103224.218099-3-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260323103224.218099-1-mkl@pengutronix.de>
-References: <20260323103224.218099-1-mkl@pengutronix.de>
+To: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
+Cc: Harald Mommer <harald.mommer@oss.qualcomm.com>, 
+	Vincent Mailhol <mailhol@kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>, 
+	Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
+	Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>, linux-can@vger.kernel.org, virtualization@lists.linux.dev, 
+	Mikhail Golubev-Ciuchea <mikhail.golubev-ciuchea@oss.qualcomm.com>, Stefano Garzarella <sgarzare@redhat.com>, francesco@valla.it
+Subject: Re: [PATCH v13] can: virtio: Add virtio CAN driver
+Message-ID: <20260323-hilarious-active-eagle-a0ee74-mkl@pengutronix.de>
+X-AI: stop_reason: "refusal"
+References: <ab2FlQTWUxl0KmlT@fedora>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="zsnxvdx43cvgpphl"
+Content-Disposition: inline
+In-Reply-To: <ab2FlQTWUxl0KmlT@fedora>
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Wenyuan Li <2063309626@qq.com>
 
-Add missing error handling for mcp251x_power_enable() calls in both
-mcp251x_open() and mcp251x_can_resume() functions.
+--zsnxvdx43cvgpphl
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v13] can: virtio: Add virtio CAN driver
+MIME-Version: 1.0
 
-In mcp251x_open(), if power enable fails, jump to error path to close
-candev without attempting to disable power again.
+Hello,
 
-In mcp251x_can_resume(), properly check return values of power enable calls
-for both power and transceiver regulators. If any fails, return the error
-code to the PM framework and log the failure.
+The nipa/ai-review bot found these problems:
 
-This ensures the driver properly handles power control failures and
-maintains correct device state.
+| https://netdev-ai.bots.linux.dev/ai-review.html?id=3Db046d75a-2de1-4063-b=
+b96-8f64abc65e7d
 
-Signed-off-by: Wenyuan Li <2063309626@qq.com>
-Link: https://patch.msgid.link/tencent_F3EFC5D7738AC548857B91657715E2D3AA06@qq.com
-[mkl: fix patch description]
-[mkl: mcp251x_can_resume(): replace goto by return]
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/spi/mcp251x.c | 29 ++++++++++++++++++++++++-----
- 1 file changed, 24 insertions(+), 5 deletions(-)
+commit 0f3cb3b3bc94eaff9b9709b528e498fe6150f9c1
+Author: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
 
-diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index bb7782582f40..0d0190ae094a 100644
---- a/drivers/net/can/spi/mcp251x.c
-+++ b/drivers/net/can/spi/mcp251x.c
-@@ -1225,7 +1225,11 @@ static int mcp251x_open(struct net_device *net)
- 	}
- 
- 	mutex_lock(&priv->mcp_lock);
--	mcp251x_power_enable(priv->transceiver, 1);
-+	ret = mcp251x_power_enable(priv->transceiver, 1);
-+	if (ret) {
-+		dev_err(&spi->dev, "failed to enable transceiver power: %pe\n", ERR_PTR(ret));
-+		goto out_close_candev;
-+	}
- 
- 	priv->force_quit = 0;
- 	priv->tx_skb = NULL;
-@@ -1272,6 +1276,7 @@ static int mcp251x_open(struct net_device *net)
- 	mcp251x_hw_sleep(spi);
- out_close:
- 	mcp251x_power_enable(priv->transceiver, 0);
-+out_close_candev:
- 	close_candev(net);
- 	mutex_unlock(&priv->mcp_lock);
- 	if (release_irq)
-@@ -1516,11 +1521,25 @@ static int __maybe_unused mcp251x_can_resume(struct device *dev)
- {
- 	struct spi_device *spi = to_spi_device(dev);
- 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
-+	int ret = 0;
- 
--	if (priv->after_suspend & AFTER_SUSPEND_POWER)
--		mcp251x_power_enable(priv->power, 1);
--	if (priv->after_suspend & AFTER_SUSPEND_UP)
--		mcp251x_power_enable(priv->transceiver, 1);
-+	if (priv->after_suspend & AFTER_SUSPEND_POWER) {
-+		ret = mcp251x_power_enable(priv->power, 1);
-+		if (ret) {
-+			dev_err(dev, "failed to restore power: %pe\n", ERR_PTR(ret));
-+			return ret;
-+		}
-+	}
-+
-+	if (priv->after_suspend & AFTER_SUSPEND_UP) {
-+		ret = mcp251x_power_enable(priv->transceiver, 1);
-+		if (ret) {
-+			dev_err(dev, "failed to restore transceiver power: %pe\n", ERR_PTR(ret));
-+			if (priv->after_suspend & AFTER_SUSPEND_POWER)
-+				mcp251x_power_enable(priv->power, 0);
-+			return ret;
-+		}
-+	}
- 
- 	if (priv->after_suspend & (AFTER_SUSPEND_POWER | AFTER_SUSPEND_UP))
- 		queue_work(priv->wq, &priv->restart_work);
--- 
-2.53.0
+can: virtio: Add virtio CAN driver
 
+This commit adds a virtio CAN driver implementing a complete CAN bus
+interface over Virtio transport, supporting both CAN Classic and CAN-FD
+frames.
+
+> diff --git a/drivers/net/can/virtio_can.c b/drivers/net/can/virtio_can.c
+> new file mode 100644
+> index 000000000000..57641c3ed6d0
+> --- /dev/null
+> +++ b/drivers/net/can/virtio_can.c
+
+[ ... ]
+
+> +static int __maybe_unused virtio_can_restore(struct virtio_device *vdev)
+> +{
+> +	struct virtio_can_priv *priv =3D vdev->priv;
+> +	struct net_device *ndev =3D priv->dev;
+> +	size_t size;
+> +	int err;
+> +
+> +	napi_enable(&priv->napi);
+> +	napi_enable(&priv->napi_tx);
+> +
+> +	err =3D virtio_can_find_vqs(priv);
+> +	if (err !=3D 0)
+> +		return err;
+
+What happens to the enabled NAPI instances when this error path is taken?
+virtio_can_restore() enables both NAPI instances at the start, but if
+virtio_can_find_vqs() fails here, the function returns without calling
+napi_disable().
+
+The corresponding virtio_can_freeze() function disables both NAPIs before
+returning, so the restore function leaves the NAPI subsystem in an
+inconsistent state on failure.
+
+If the PM framework retries restore after this failure, the second
+napi_enable() call on an already-enabled NAPI will hit the BUG_ON in
+napi_enable_locked():
+
+net/core/dev.c:napi_enable_locked() {
+	BUG_ON(!test_bit(NAPI_STATE_SCHED, &n->state));
+	...
+}
+
+In contrast, virtio_can_probe() enables NAPI only after all setup
+succeeds, avoiding this issue.
+
+> +
+> +	size =3D priv->rpkt_len * priv->vqs[VIRTIO_CAN_QUEUE_RX]->num_free;
+> +	priv->rpkt =3D devm_krealloc(&vdev->dev, priv->rpkt, size, GFP_KERNEL |=
+ __GFP_ZERO);
+> +	if (!priv->rpkt) {
+> +		virtio_can_del_vq(vdev);
+> +		return -ENOMEM;
+> +	}
+
+The same NAPI state issue occurs on this error path.
+
+> +	virtio_can_populate_rx_vq(vdev);
+> +
+> +	if (netif_running(ndev)) {
+> +		err =3D virtio_can_start(ndev);
+> +		if (err) {
+> +			virtio_can_del_vq(vdev);
+> +			return err;
+> +		}
+
+And again on this error path.
+
+Should all three error paths call napi_disable(&priv->napi_tx) and
+napi_disable(&priv->napi) before returning the error code?
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--zsnxvdx43cvgpphl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCacEXoAAKCRDMOmT6rpmt
+0oc0AP4r/E0p8/W4XH5xFsFvHnvCil/2ybFe0uqsmduXn4Gw4QD6A2wQTTGMyyJp
+k6X5ros7i59H9faw/8/FWIR1ffBnmQY=
+=E13T
+-----END PGP SIGNATURE-----
+
+--zsnxvdx43cvgpphl--
