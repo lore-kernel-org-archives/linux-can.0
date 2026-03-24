@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FDA52E040D
-	for <linux-can@vger.kernel.org>; Tue, 24 Mar 2026 13:44:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A4B73FADEC
+	for <linux-can@vger.kernel.org>; Tue, 24 Mar 2026 13:46:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774359874; cv=none; b=n66RmKE+ZDSnreTq9+25g1rCilTjyadmVmwS51bOoEgQcDyprZOMIXq7EVi47YaujctZWFf1p/4PSLnzQEte9NzeGbEaQlXg9XmNWfHkvafsfrwEovkcehgTu2j8zwCB2hPP7Lt1oPNo+TWM579IERBC+uTn0qeLPRCoBMlIRtM=
+	t=1774359996; cv=none; b=ZDQbh96iqi4hU+nAqJ3WKpb9UCxi8F/GNb2S3vN6eIDiITbe2LXFb99IDfypGZmRFhLxbKzDU/TmO2toXJK/hxJHfSy1v4ABDqb3gJHnD0syzZHLWXE+0ASJSzcEArXExNBy6Aj4FMoYeh/dNZtxeO1RZigCS6QcYdVYIl5N6hU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774359874; c=relaxed/simple;
-	bh=ODuucfHqNC/TsGgCiBoIbDGOqb0PBXK6r+a/JlhTvOk=;
+	s=arc-20240116; t=1774359996; c=relaxed/simple;
+	bh=fBXgWlUd0Q99UqszrP5931qrJggaKWXcXSZGkzoMk2k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HnOaah64IwdsorxUoePV7OjVAtqMGnYStyg4poS4ZPWcCQSZzggw6xvc48UA1V3/Nxtq7urqNgdpNa4Unez+qUedLX9wiQymZ0DY7kc99FGJP19l37HoyK5TSxVPSjNyb/Qwm0g4x4mbsFVpcg/kp6iApF4GSmp/xjfWMWYxa8s=
+	 Content-Type:Content-Disposition:In-Reply-To; b=LdslzBH2mpc0S8L8AS/tMwUGsREy8FDb9y/5duI2P5WKSjxrLGateySGTslEnC1xvg9L17ob7S1SbNVOSKnjxJm1hrx1iLjo8UTr+9zDslpvAp7cWHbGjCK1GAaov5yFGGBCOT0qkHlw+FsIQCsh/Pixou8gWZG6++7yWUDIhUU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,23 +18,23 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1w523G-0000hg-I8; Tue, 24 Mar 2026 14:44:10 +0100
+	id 1w525J-0000zN-Th; Tue, 24 Mar 2026 14:46:17 +0100
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1w523G-001uDG-0K;
-	Tue, 24 Mar 2026 14:44:10 +0100
+	id 1w525J-001uDV-1X;
+	Tue, 24 Mar 2026 14:46:17 +0100
 Received: from pengutronix.de (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id BCA0A50BAF9;
-	Tue, 24 Mar 2026 13:44:09 +0000 (UTC)
-Date: Tue, 24 Mar 2026 14:44:09 +0100
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 2235550BAFD;
+	Tue, 24 Mar 2026 13:46:17 +0000 (UTC)
+Date: Tue, 24 Mar 2026 14:46:16 +0100
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>
+To: Ciprian Costea <ciprianmarian.costea@oss.nxp.com>
 Cc: Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>, 
 	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Frank Li <Frank.Li@nxp.com>, 
 	Sascha Hauer <s.hauer@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
@@ -43,14 +43,10 @@ Cc: Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>,
 	NXP S32 Linux Team <s32@nxp.com>, Christophe Lizzi <clizzi@redhat.com>, 
 	Alberto Ruiz <aruizrui@redhat.com>, Enric Balletbo <eballetb@redhat.com>, 
 	Eric Chanudet <echanude@redhat.com>
-Subject: Re: [PATCH v3 1/6] can: flexcan: use dedicated IRQ handlers for
- multi-IRQ platforms
-Message-ID: <20260324-dashing-lush-skink-c194f1-mkl@pengutronix.de>
+Subject: Re: [PATCH v3 0/6] can: flexcan: Add NXP S32N79 SoC support
+Message-ID: <20260324-visionary-vigilant-alpaca-a492d8-mkl@pengutronix.de>
 X-AI: stop_reason: "refusal"
 References: <20260323135827.2129371-1-ciprianmarian.costea@oss.nxp.com>
- <20260323135827.2129371-2-ciprianmarian.costea@oss.nxp.com>
- <20260324-psychedelic-idealistic-dormouse-95b03c-mkl@pengutronix.de>
- <024316c6-aa33-4561-889c-abd9eeb9d83f@oss.nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -58,97 +54,41 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="wxywmcxzkmfggb4a"
+	protocol="application/pgp-signature"; boundary="sfvp3htsx73w2iwa"
 Content-Disposition: inline
-In-Reply-To: <024316c6-aa33-4561-889c-abd9eeb9d83f@oss.nxp.com>
+In-Reply-To: <20260323135827.2129371-1-ciprianmarian.costea@oss.nxp.com>
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 
---wxywmcxzkmfggb4a
+--sfvp3htsx73w2iwa
 Content-Type: text/plain; protected-headers=v1; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v3 1/6] can: flexcan: use dedicated IRQ handlers for
- multi-IRQ platforms
+Subject: Re: [PATCH v3 0/6] can: flexcan: Add NXP S32N79 SoC support
 MIME-Version: 1.0
 
-On 24.03.2026 14:30:50, Ciprian Marian Costea wrote:
-> > Can you take care of the S32G2 which has 2 mailbox IRQs, too? Please in
-> > a separate patch.
-> >
-> > My idea was to take the "irq" argument of the IRQ handler and the quirks
-> > and figure out if you are the first or second mailbox IRQ handler.
-> >
-> > Convert these
-> >
-> > | struct flexcan_priv {
-> > | [...]
-> > | 	u64 rx_mask;
-> > | 	u64 tx_mask;
-> > | [...]
-> > | }
-> >
-> > into a struct and put an array of 2 of these structs into "struct
-> > flexcan_priv". Use correct mask array depending on IRQ handler.
-> >
-> > regards,
-> > Marc
-> >
-> > --
-> > Pengutronix e.K.                 | Marc Kleine-Budde          |
-> > Embedded Linux                   | https://www.pengutronix.de |
-> > Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-> > Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+On 23.03.2026 14:58:21, Ciprian Costea wrote:
+> From: Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>
 >
-> Thanks for your review.
-> I'll add a separate patch implementing per-MB-IRQ mask handling (needed
-> by S32G2) in V4. And thanks for the implementation suggestion. I'll take
-> it into account.
-
-Maybe you can come up with a improved/better solution.
-
-With the potential concurrent mailbox IRQ handlers on the s32g we have a
-problem with the rx-offload infrastructure. After converting it to
-per-CPU lists, we still have to merge the lists to the global one.
-
-The current supported use case is a single IRQ handler that adds all
-received CAN frames (and CAN error frames) sorted to the skb_irq_queue
-list. At the end of the IRQ handler the list is appended to the
-skb_queue and NAPI pushes the CAN frames into the networking stack.
-
-This is done to preserve the order of CAN frames, which is crucial for
-some CAN protocols.
-
-If we have 2 IRQ handlers adding the per-cpu skb_irq_queue to the
-skb_queue might lead to out-of-order reception.
-
-I see 2 options to workaround this:
-- Lock the skb_queue and sort each packet into it.
-  This makes the lock longer and
-  if an IRQ is delayed old packets might already been processed, so
-  out-of-order reception is still possible.
-- Disable mailboxes 1...8 for the s32g and only use the 2nd IRQ handler.
-  This obviously reduces the number of RX mailboxes, this increases the
-  change of RX buffer overflows on systems under high load.
-  On the other hand the driver can be extended to use the mailboxes
-  64...127.
-
-As I don't have a s32g SoC nor a customer using it, I have no time to
-implement this. Maybe you or someone from NXP is willing to do this.
-
-> Now, unrelated to the per-MB-IRQ refactor, one thing I noticed during the
-> IRQ handlers split: dev->stats counters (e.g. rx_fifo_errors) can
-> be incremented concurrently from different IRQ handlers on different CPUs.
+> This patch series adds FlexCAN support for the NXP S32N79 SoC.
 >
-> That said, these are just diagnostic counters and lost increments
-> should be benign. Do you think this warrants any synchronization/locking
-> mechanism, or is the current behavior acceptable?
+> The S32N79 is an automotive-grade processor from NXP with multiple
+> FlexCAN instances. The FlexCAN IP integration on S32N79 differs from
+> other SoCs in the interrupt routing - it uses two separate interrupt
+> lines:
+>   - one interrupt for mailboxes 0-127
+>   - one interrupt for bus error detection and device state changes
 
-There are better ways to do stats, but IMHO for now we can live with the
-problem.
+Can you check if the S32N79 suffers from the
+
+| /* No interrupt for error passive */
+| #define FLEXCAN_QUIRK_BROKEN_PERR_STATE BIT(6)
+
+problem? Maybe everyone just added the FLEXCAN_QUIRK_BROKEN_PERR_STATE
+for the new SoC without actually testing it.
 
 regards,
 Marc
@@ -159,15 +99,15 @@ Embedded Linux                   | https://www.pengutronix.de |
 Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
---wxywmcxzkmfggb4a
+--sfvp3htsx73w2iwa
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCacKVJwAKCRDMOmT6rpmt
-0ny3AP97AOLxQtsjTBYCxlTxLITZgMUMW/Ggdd7EXYi/BhV5ZAD/R+Ywhkah185h
-9ybw30y8qx3GHGBTYUiZJdd3yOVQIww=
-=JAYU
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCacKVpgAKCRDMOmT6rpmt
+0mvRAP9uJpqL920nvKePwYE/f3MF6bgHAVfPT9leEIrGPeVWrAEAycBuPGzDXtPX
+Vo+/Cwt1tfC3N7rC7vFrvinAjPIWBQM=
+=makj
 -----END PGP SIGNATURE-----
 
---wxywmcxzkmfggb4a--
+--sfvp3htsx73w2iwa--
