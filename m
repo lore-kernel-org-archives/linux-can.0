@@ -1,85 +1,138 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2CC7363097;
-	Tue, 24 Mar 2026 11:30:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DF17318EDF
+	for <linux-can@vger.kernel.org>; Tue, 24 Mar 2026 11:57:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774351825; cv=none; b=CiOBsQ8hZ1SyDxQAyIfZIdhg/5iQI5+NC90dBmX1e8uRruGhpBvoHD3t4BQKIdulSY6Q/iF0ZxiGqFzpFhQKCiDfkuRVqjrz8afIqgV86lR0REKtg2NfjssrpkR+Dy75MwzVWnCiAxz+NIgZA7Qc+3wAfU39H6fZDZ5N9H/0rfQ=
+	t=1774353433; cv=none; b=NQqZdw74KyeoQKzkGCcvUh70BV3QMNZP0w2XmOfPj0u04gtMP7r/JpHJMcBqscK2xlaZQY9T3lGXCaBQBx1m7NgJXmw8ucLGq9cdTYK3CZg1efzskP3MCfncal829PcwEt0PCmzvY3EOmCEcWrAH1kwoYxZ9o55UZVTfKYpCq0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774351825; c=relaxed/simple;
-	bh=YC+Fp3qrF99uTNmycP09wPtKPzfClEtMIxUpFDuzuIU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=QlP3K1lq9Kf0P0eplLedLi0dTzvS3s/eUDUJ2KSrKKKBtw8YWxpon9kxAUYtAPLGcOJccqXWmRWBzA3PzFe35664XZC5jDkvf1I8rNqAAXsXEiI7PIaMAhHONmfCOpLB18z7VNF2t+1PE1n5C4Mp6SD7pqF0g+c4JBP6ISSYS78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uq81SL5K; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uq81SL5K"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47AD0C19424;
-	Tue, 24 Mar 2026 11:30:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774351825;
-	bh=YC+Fp3qrF99uTNmycP09wPtKPzfClEtMIxUpFDuzuIU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Uq81SL5KoKGwFJeFD/0mYMA9NlRuqE2mIwd5lYxfsyzUgmkipBV/V1tJMhxyIFAAD
-	 1AvxCJAVs1pGhHN388Xa/K9QfhvTmDMfimwvQTdxq7bh6SqyeB9cT2QC9252YdyT/3
-	 cTQ/WKxvN5ylXOFcSc67q7UZZ/wZQ8Xn5yupwE9SCSg3WTxg2FL44OgN3Cs82+6t8+
-	 NFdzYwjngVUhWGjTuu8iO/ehqvhRMYS+FFVHk7FkSQr0dzfQPwaSajq+UFZJA4J2R+
-	 8jT7BSppNklTxW7an0S//TWeLJFEBtUVwhQUzJYQvCMm/XLTb/DU4BCqAKh2LJ1icl
-	 2BtH53eqvB2HA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7CFEE3808200;
-	Tue, 24 Mar 2026 11:30:14 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1774353433; c=relaxed/simple;
+	bh=nKslBCdry+C9RXG6D44L7TO3CQCPQ3Nbw4p6y0QEsQk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jq3YOotzBzTzC5xpEXixoWsdddXrqwGGlWODOJajpSNy8lLmuKffF0dd6iA2z3WkbT4r6MT1vqAXKITC9GtVhpJZ12JI3p4EpjfCygc3QSdkZ7m4j2V/oNVcH5Pcud3srN9enV7+1K7tqFXlQRuySci4SHdyjkVxDOisRLSrHDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1w50NN-00018O-7O; Tue, 24 Mar 2026 12:56:49 +0100
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1w50NM-001tEm-2a;
+	Tue, 24 Mar 2026 12:56:48 +0100
+Received: from pengutronix.de (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 6A39850B991;
+	Tue, 24 Mar 2026 11:56:48 +0000 (UTC)
+Date: Tue, 24 Mar 2026 12:56:48 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Ciprian Costea <ciprianmarian.costea@oss.nxp.com>
+Cc: Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Frank Li <Frank.Li@nxp.com>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, linux-can@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	NXP S32 Linux Team <s32@nxp.com>, Christophe Lizzi <clizzi@redhat.com>, 
+	Alberto Ruiz <aruizrui@redhat.com>, Enric Balletbo <eballetb@redhat.com>, 
+	Eric Chanudet <echanude@redhat.com>
+Subject: Re: [PATCH v3 1/6] can: flexcan: use dedicated IRQ handlers for
+ multi-IRQ platforms
+Message-ID: <20260324-psychedelic-idealistic-dormouse-95b03c-mkl@pengutronix.de>
+X-AI: stop_reason: "refusal"
+References: <20260323135827.2129371-1-ciprianmarian.costea@oss.nxp.com>
+ <20260323135827.2129371-2-ciprianmarian.costea@oss.nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 1/5] can: netlink: can_changelink(): add missing error
- handling to call can_ctrlmode_changelink()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <177435181329.632762.6895120809485752388.git-patchwork-notify@kernel.org>
-Date: Tue, 24 Mar 2026 11:30:13 +0000
-References: <20260323103224.218099-2-mkl@pengutronix.de>
-In-Reply-To: <20260323103224.218099-2-mkl@pengutronix.de>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
- linux-can@vger.kernel.org, kernel@pengutronix.de, stable@vger.kernel.org
-
-Hello:
-
-This series was applied to netdev/net.git (main)
-by Marc Kleine-Budde <mkl@pengutronix.de>:
-
-On Mon, 23 Mar 2026 11:27:57 +0100 you wrote:
-> In commit e1a5cd9d6665 ("can: netlink: add can_ctrlmode_changelink()") the
-> CAN Control Mode (IFLA_CAN_CTRLMODE) handling was factored out into the
-> can_ctrlmode_changelink() function. But the call to
-> can_ctrlmode_changelink() is missing the error handling.
-> 
-> Add the missing error handling and propagation to the call
-> can_ctrlmode_changelink().
-> 
-> [...]
-
-Here is the summary with links:
-  - [net,1/5] can: netlink: can_changelink(): add missing error handling to call can_ctrlmode_changelink()
-    https://git.kernel.org/netdev/net/c/cadf6019231b
-  - [net,2/5] can: mcp251x: add error handling for power enable in open and resume
-    https://git.kernel.org/netdev/net/c/7a57354756c7
-  - [net,3/5] can: statistics: add missing atomic access in hot path
-    https://git.kernel.org/netdev/net/c/46eee1661aa9
-  - [net,4/5] can: gw: fix OOB heap access in cgw_csum_crc8_rel()
-    https://git.kernel.org/netdev/net/c/b9c310d72783
-  - [net,5/5] can: isotp: fix tx.buf use-after-free in isotp_sendmsg()
-    https://git.kernel.org/netdev/net/c/424e95d62110
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ck7uopz7x4wte3gm"
+Content-Disposition: inline
+In-Reply-To: <20260323135827.2129371-2-ciprianmarian.costea@oss.nxp.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
 
+--ck7uopz7x4wte3gm
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v3 1/6] can: flexcan: use dedicated IRQ handlers for
+ multi-IRQ platforms
+MIME-Version: 1.0
+
+On 23.03.2026 14:58:22, Ciprian Costea wrote:
+> From: Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>
+>
+> On platforms with multiple IRQ lines (S32G2, MCF5441X), all lines are
+> registered to the same flexcan_irq() handler. Since these are distinct IRQ
+> numbers, they can be dispatched concurrently on different CPUs. Both
+> instances then read the same iflag and ESR registers unconditionally,
+> leading to duplicate frame processing.
+>
+> Fix this by splitting the monolithic handler into focused parts:
+> - flexcan_do_mb(): processes mailbox events
+> - flexcan_do_state(): processes device state change events
+> - flexcan_do_berr(): processes bus error events
+>
+> Introduce dedicated IRQ handlers for multi-IRQ platforms:
+> - flexcan_irq_mb(): mailbox-only, used for mb-0, mb-1 IRQ lines
+> - flexcan_irq_boff(): state-change-only, used for boff/state IRQ line
+> - flexcan_irq_berr(): bus-error-only, used for berr IRQ line
+>
+> The combined flexcan_irq() handler is preserved for single-IRQ
+> platforms with no functional change.
+
+Thanks for implementing this.
+
+Can you take care of the S32G2 which has 2 mailbox IRQs, too? Please in
+a separate patch.
+
+My idea was to take the "irq" argument of the IRQ handler and the quirks
+and figure out if you are the first or second mailbox IRQ handler.
+
+Convert these
+
+| struct flexcan_priv {
+| [...]
+| 	u64 rx_mask;
+| 	u64 tx_mask;
+| [...]
+| }
+
+into a struct and put an array of 2 of these structs into "struct
+flexcan_priv". Use correct mask array depending on IRQ handler.
+
+regards,
+Marc
+
+--
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--ck7uopz7x4wte3gm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCacJ7/QAKCRDMOmT6rpmt
+0nmVAQCsuvizei2v5oCSYMhMLFUmUMY9PygO2GRf3HYs+O3V+gD/XJxknnXu0vah
+fU+OKdP8dNkviTfrgYBDkoox8uXOmAs=
+=ZrJk
+-----END PGP SIGNATURE-----
+
+--ck7uopz7x4wte3gm--
