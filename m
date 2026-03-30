@@ -1,33 +1,34 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A0E93BADA0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59FD33B637E;
 	Mon, 30 Mar 2026 10:18:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774865903; cv=none; b=eexX2+nn/EtJX2UC7sMiRZzl5X6KVISIT+kpuImM1zWWZxU4GgXEE5J/C5FffX1z3htcZl6j/2RdATrecbH8rGSRMi4e9aahPvo+pclM1kQ6PkEunq8txXZkaW9YHvHG5FSuJxNkLpVheq/lg62ffyjVT0fmkwoMerxCXnf5Bh4=
+	t=1774865903; cv=none; b=Pgx6dfJp1lROZi3Wa+Y3HxO1mr4JFU+H7jWa8DjQgZRowFjLUeFbsXJTdFZPLwWkHREfFB9s3Y0plcp/c8Uxq6BtBRJsyAiQg4N0RZdEpb9+sHeYYrZ7wA3CjwVU6Siftdn3LYoVxP4fv+k38ZicMPij6rf5VTgVDLFJPBdDos4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1774865903; c=relaxed/simple;
-	bh=wZyJ06Y6S3EL/cP7SE/qvlcEeNLdJbOwV+7fSFN0RTY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ERBvKYzi5eqblwQWe5QCQFDio48pn6cpiji5DC24Cp8h5jF4zanodNhkNNSLrMdam/sfIYMcmskL214Gu5/X72O4S59D7lzwAi8qG2FrNDJv7oIP4rjTyJe9pbQBSQ4xJU/Tx6XB7QgkqlYM27kVcPHV/JXmVEUA8ECKnHyVA70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W80faabM; arc=none smtp.client-ip=10.30.226.201
+	bh=YEp7K+9nwXsbUVpe89cW8Su6LQFrRqXZD7MMhYUb2Cw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=exlpIR9dZzbbm7VACoHdoZ6uPLTl31L7upBHeIgBJvy10UtSwj4ndN1unZSHiFmdIk/oq8YBinBYHb39rPUWyo8M7hjTf27fmqlNUlbIBfQowY87C5o7O/b5VjQn3Dd0lE/HKLO6gS2evQzozYhKdCWq0rkcL4zLyllsqCInGpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DFcEBP9B; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W80faabM"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08EAEC2BC9E;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DFcEBP9B"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08E92C4CEF7;
 	Mon, 30 Mar 2026 10:18:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1774865903;
-	bh=wZyJ06Y6S3EL/cP7SE/qvlcEeNLdJbOwV+7fSFN0RTY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=W80faabMBd1fq0i+4GRIfcKbTCKlY1sP8whCF+LzMHod+vyF3muCxI//WMULotEr1
-	 6Z4YU6iyPyQjD7zILpij9+UJ365XdLeBTw46AsUqe7IeBM/UjaRRH5FwohQDgLhGF8
-	 gx9C/mBzpD70wmn2II4TgdA4/H1rW1fhUbRvYuH0GWaGk+PX4SIukmcdNgsAHjhoqq
-	 +BvESSFtL+yA+iBCfdWSVba2VTYU9X4TAi0WyZQYRM4BWv8/cq8fg1Km7msT/K6eW6
-	 rkvatM9WYr9yzUBKTAmqeA5ySxd+UMokSN0lgbFqtw0aUuUgrrKYzF6uKMiJ1CzJVN
-	 xdJMm6+wa1rzg==
+	bh=YEp7K+9nwXsbUVpe89cW8Su6LQFrRqXZD7MMhYUb2Cw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=DFcEBP9B5Lf4hKg2qyKOORVWYXyB9P0gdirACb/iiYIEXlme8T4v8wmV3w2YaBYgU
+	 P9mi9p0bDTV6p54KEPu4pSRzwDEO58yZulZFopm6lY7r2cmcgfPZYOozLp81B1wiVw
+	 nN5Zq5jMjM88iIwe6l29Yk/ycTl/U+WOR6HNJ6rWA0UQMhplXNmDvU4Jk8MXFFx4OZ
+	 aMuhCWfhJdEyZiRi5KO7nVbSE1cxw6NwWzA+bQ0ByNTBMMyney+8ZGj8iW4kEv7bz9
+	 y9LKNHpTzOMUDR0Y4eHxtHFCsY+JqBbaAVn/Fgf62yTgnOa4ZrjDJLHQpI+zhoxpAV
+	 CUYGCRpXgIGRQ==
 Received: from johan by xi.lan with local (Exim 4.98.2)
 	(envelope-from <johan@kernel.org>)
-	id 1w79hM-00000006z5e-3mHa;
+	id 1w79hM-00000006z5i-3wJx;
 	Mon, 30 Mar 2026 12:18:20 +0200
 From: Johan Hovold <johan@kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -35,10 +36,12 @@ To: Marc Kleine-Budde <mkl@pengutronix.de>,
 Cc: linux-can@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Johan Hovold <johan@kernel.org>
-Subject: [PATCH 0/2] can: refactor USB endpoint lookups
-Date: Mon, 30 Mar 2026 12:18:15 +0200
-Message-ID: <20260330101817.1664787-1-johan@kernel.org>
+Subject: [PATCH 2/2] can: ucan: refactor endpoint lookup
+Date: Mon, 30 Mar 2026 12:18:17 +0200
+Message-ID: <20260330101817.1664787-3-johan@kernel.org>
 X-Mailer: git-send-email 2.52.0
+In-Reply-To: <20260330101817.1664787-1-johan@kernel.org>
+References: <20260330101817.1664787-1-johan@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -47,20 +50,82 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Use the common USB helper for looking up bulk and interrupt endpoints
-instead of open coding.
+Use the common USB helpers for looking up bulk and interrupt endpoints
+(and determining endpoint numbers and max packet sizes) instead of open
+coding.
 
-Johan
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/net/can/usb/ucan.c | 40 +++++++++++---------------------------
+ 1 file changed, 11 insertions(+), 29 deletions(-)
 
-
-Johan Hovold (2):
-  can: kvaser_usb: leaf: refactor endpoint lookup
-  can: ucan: refactor endpoint lookup
-
- .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 25 ++++--------
- drivers/net/can/usb/ucan.c                    | 40 +++++--------------
- 2 files changed, 19 insertions(+), 46 deletions(-)
-
+diff --git a/drivers/net/can/usb/ucan.c b/drivers/net/can/usb/ucan.c
+index ee3c1abbd063..f72e0644c5fd 100644
+--- a/drivers/net/can/usb/ucan.c
++++ b/drivers/net/can/usb/ucan.c
+@@ -1302,13 +1302,12 @@ static int ucan_probe(struct usb_interface *intf,
+ 		      const struct usb_device_id *id)
+ {
+ 	int ret;
+-	int i;
+ 	u32 protocol_version;
+ 	struct usb_device *udev;
+ 	struct net_device *netdev;
+ 	struct usb_host_interface *iface_desc;
+ 	struct ucan_priv *up;
+-	struct usb_endpoint_descriptor *ep;
++	struct usb_endpoint_descriptor *ep_in, *ep_out;
+ 	u16 in_ep_size;
+ 	u16 out_ep_size;
+ 	u8 in_ep_addr;
+@@ -1343,37 +1342,20 @@ static int ucan_probe(struct usb_interface *intf,
+ 	}
+ 
+ 	/* check interface endpoints */
+-	in_ep_addr = 0;
+-	out_ep_addr = 0;
+-	in_ep_size = 0;
+-	out_ep_size = 0;
+-	for (i = 0; i < iface_desc->desc.bNumEndpoints; i++) {
+-		ep = &iface_desc->endpoint[i].desc;
+-
+-		if (((ep->bEndpointAddress & USB_ENDPOINT_DIR_MASK) != 0) &&
+-		    ((ep->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) ==
+-		     USB_ENDPOINT_XFER_BULK)) {
+-			/* In Endpoint */
+-			in_ep_addr = ep->bEndpointAddress;
+-			in_ep_addr &= USB_ENDPOINT_NUMBER_MASK;
+-			in_ep_size = le16_to_cpu(ep->wMaxPacketSize);
+-		} else if (((ep->bEndpointAddress & USB_ENDPOINT_DIR_MASK) ==
+-			    0) &&
+-			   ((ep->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) ==
+-			    USB_ENDPOINT_XFER_BULK)) {
+-			/* Out Endpoint */
+-			out_ep_addr = ep->bEndpointAddress;
+-			out_ep_addr &= USB_ENDPOINT_NUMBER_MASK;
+-			out_ep_size = le16_to_cpu(ep->wMaxPacketSize);
+-		}
+-	}
+-
+-	/* check if interface is sane */
+-	if (!in_ep_addr || !out_ep_addr) {
++	ret = usb_find_common_endpoints_reverse(iface_desc, &ep_in, &ep_out,
++						NULL, NULL);
++	if (ret) {
+ 		dev_err(&udev->dev, "%s: invalid endpoint configuration\n",
+ 			UCAN_DRIVER_NAME);
+ 		goto err_firmware_needs_update;
+ 	}
++
++	in_ep_addr = usb_endpoint_num(ep_in);
++	out_ep_addr = usb_endpoint_num(ep_out);
++	in_ep_size = usb_endpoint_maxp(ep_in);
++	out_ep_size = usb_endpoint_maxp(ep_out);
++
++	/* check if interface is sane */
+ 	if (in_ep_size < sizeof(struct ucan_message_in)) {
+ 		dev_err(&udev->dev, "%s: invalid in_ep MaxPacketSize\n",
+ 			UCAN_DRIVER_NAME);
 -- 
 2.52.0
 
