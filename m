@@ -1,16 +1,15 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 726A717A31C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 727081FE471
 	for <linux-can@vger.kernel.org>; Mon, 20 Apr 2026 15:22:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776698558; cv=none; b=VEw/E34HPo2m8PYPQoqAlI0faLfZk6hlnICHyQNF37b4GPV7togxEyUqCpD807E82fuY+6aq2sIBGul2ODkrsMxSWIxqX2xPZ7TC+zTcV3Q+IzoLAeTP8bYoho2ek8gASxk0VhZSyLlIkJxAD8MQ3UM3sMzsQjWALpREDIS8kgI=
+	t=1776698558; cv=none; b=pQzKw0tZYnVyvJz3vROrz7HQnXEmoxtPAOJd1HkDGjDNGao7ibc0FFYZi7jqwd1bw56Gs2a9yY3/by2yW5CCNCI/oVd/wwoNg3odmPKmdyMcVWujBe/H+pj4kRLLEWv9mjs9HXv3nORTvVKEtBrL+kyZ4MM2mV1HVgJX7MqtffU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1776698558; c=relaxed/simple;
-	bh=q/QVc6ij1mBGLl8lUSqFUGhEz8ttoxN7gPO6+7gXinM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jiCz0cmQ3qtuQiD40sabo1xc3/QbLXSg/Da03AQuGAvKXuiOaboDQsg7FULaZ5m1nsz+PJx8Fuk9xJvA2HNIUkqu0lswFcvd86GsRIeUlpB0pz1w3CwmMZhoIavYR2UEz7btDV0oeWF7Xqb/5z5+BMawCtvqQDVJhr20ErNAMQA=
+	bh=bKbUJziKMlCTqeI5iTH3mMY69zHWVi6WGpg51hCDuT4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XuCl6OfAvIZU8uuQusYrgCSkSbu9XQbunmfHAQ7vb06bsqVIC5ZuoI4YuzPK4TSSaXXe8fPnDUTUl4QZNiBv7mTW+DIEC/i2c4WuaRcCYvjPv85DLEf4s4rZjAGjTAAnvGf4UxpNhXOV27rQgWEdiBZq4F6iZkAiiswq2LLd1Y8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,16 +17,16 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ore@pengutronix.de>)
-	id 1wEqSE-0000be-9b; Mon, 20 Apr 2026 17:22:30 +0200
+	id 1wEqSE-0000ba-7Q; Mon, 20 Apr 2026 17:22:30 +0200
 Received: from dude04.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::ac] helo=dude04)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <ore@pengutronix.de>)
-	id 1wEqSE-006MEy-0B;
-	Mon, 20 Apr 2026 17:22:30 +0200
+	id 1wEqSD-006MEu-32;
+	Mon, 20 Apr 2026 17:22:29 +0200
 Received: from ore by dude04 with local (Exim 4.98.2)
 	(envelope-from <ore@pengutronix.de>)
-	id 1wEqSD-00000002RXt-45So;
+	id 1wEqSD-00000002RWm-3VZK;
 	Mon, 20 Apr 2026 17:22:29 +0200
 From: Oleksij Rempel <o.rempel@pengutronix.de>
 To: Robin van der Gracht <robin@protonic.nl>,
@@ -37,12 +36,10 @@ Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
 	kernel@pengutronix.de,
 	linux-can@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/3] net: can: j1939: move J1939_MIN_NAMELEN to shared header
-Date: Mon, 20 Apr 2026 17:22:26 +0200
-Message-ID: <20260420152228.581421-3-o.rempel@pengutronix.de>
+Subject: [PATCH v1 0/3] net: can: j1939: Add KUnit test infrastructure
+Date: Mon, 20 Apr 2026 17:22:24 +0200
+Message-ID: <20260420152228.581421-1-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260420152228.581421-1-o.rempel@pengutronix.de>
-References: <20260420152228.581421-1-o.rempel@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -55,43 +52,54 @@ X-SA-Exim-Mail-From: ore@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Move J1939_MIN_NAMELEN macro from socket.c to j1939-priv.h to prepare
-for KUnit test infrastructure.
+Hi all,
 
-No functional change.
+After getting one more fix for this stack, I decided to bootstrap a
+KUnit test playground to allow anyone to extend it with minimal effort.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- net/can/j1939/j1939-priv.h | 2 ++
- net/can/j1939/socket.c     | 2 --
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Currently it has minimal coverage and scratches on some of helper
+functions. Better test coverage would be more intrusive - maybe I'll do
+it in a different maintenance window.
 
-diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
-index b82706505103..cf646644f538 100644
---- a/net/can/j1939/j1939-priv.h
-+++ b/net/can/j1939/j1939-priv.h
-@@ -12,6 +12,8 @@
- #include <linux/can/j1939.h>
- #include <net/sock.h>
- 
-+#define J1939_MIN_NAMELEN CAN_REQUIRED_SIZE(struct sockaddr_can, can_addr.j1939)
-+
- /* Timeout to receive the abort signal over loop back. In case CAN
-  * bus is open, the timeout should be triggered.
-  */
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 0502b030d238..2191bfe117dc 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -21,8 +21,6 @@
- 
- #include "j1939-priv.h"
- 
--#define J1939_MIN_NAMELEN CAN_REQUIRED_SIZE(struct sockaddr_can, can_addr.j1939)
--
- /* conversion function between struct sock::sk_priority from linux and
-  * j1939 priority field
-  */
--- 
+The first two patches move some definitions to headers to make them
+accessible for tests. The third patch adds the test infrastructure and
+initial tests.
+
+What's covered so far:
+- Priority conversion between J1939 and sk_priority domains
+- PGN validation and PDU format classification
+- Socket address sanity checking
+- Abort code to errno mapping
+- Control message parsing for TP/ETP protocols
+- Broadcast detection
+- Session matching logic
+
+Run with:
+  ./tools/testing/kunit/kunit.py run --kunitconfig=net/can/j1939/tests
+
+Oleksij Rempel (3):
+  net: can: j1939: move j1939_xtp_abort enum to header
+  net: can: j1939: move J1939_MIN_NAMELEN to shared header
+  net: can: j1939: Add initial KUnit tests for socket and transport
+    layers
+
+ net/can/j1939/Kconfig                |  12 +
+ net/can/j1939/Makefile               |   2 +
+ net/can/j1939/j1939-priv.h           |  94 +++++
+ net/can/j1939/j1939-test.h           |  69 ++++
+ net/can/j1939/socket.c               |  43 ++-
+ net/can/j1939/tests/.kunitconfig     |   5 +
+ net/can/j1939/tests/Makefile         |   4 +
+ net/can/j1939/tests/socket_test.c    | 301 +++++++++++++++
+ net/can/j1939/tests/transport_test.c | 533 +++++++++++++++++++++++++++
+ net/can/j1939/transport.c            | 142 +++----
+ 10 files changed, 1102 insertions(+), 103 deletions(-)
+ create mode 100644 net/can/j1939/j1939-test.h
+ create mode 100644 net/can/j1939/tests/.kunitconfig
+ create mode 100644 net/can/j1939/tests/Makefile
+ create mode 100644 net/can/j1939/tests/socket_test.c
+ create mode 100644 net/can/j1939/tests/transport_test.c
+
+--
 2.47.3
 
