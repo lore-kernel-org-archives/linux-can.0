@@ -1,144 +1,276 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A1B83AE19C;
-	Mon, 20 Apr 2026 13:33:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A822475CF
+	for <linux-can@vger.kernel.org>; Mon, 20 Apr 2026 15:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776691999; cv=none; b=UX6pvKpULNmXvUoF7QwDcWWXUUeDvAxScAmwCYKrlO4UZe9VluW/bFyA7yfoe1q1waMCzetdw/wWReDaFG3csit0j645r2xOI292BKnEenFlOm4qJNYsb25IoU66taMcNY4ZYllwMLCutKw0RcSLFZExsiNm2WcpMtTkZe4J+7Q=
+	t=1776698557; cv=none; b=OuWJSeZVxNU4N9BmWzt5+5lGdt3JZdQxLNIrRsGgwKeYEUCcjIQY1OgddUBrbN74xSErKINRNM0HG2tdxX/3TlST9KkmWrFCrOWmDh3dgmB8+oaevTyLFEui+z8Hijvry59CSg1VXwwIz6FleA5MXDhvwMNOLpeMs5wacsUWxaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776691999; c=relaxed/simple;
-	bh=qDd3lAIGsFZszATwqBgq1hp6evRIXI1W3nzcXU7eI0U=;
+	s=arc-20240116; t=1776698557; c=relaxed/simple;
+	bh=0KaerXIyJN3eXCD1YIorjpzmF1dKF4uSJl0beyOMDpk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=a5pqlcRlKeNhuC6lB1XJKi6uMRrdT84g/ndABm5VeP8Rp+bWDhWsDhOfp4oeJOARISSJq9VP4SzesFvD92BI8w31gU197CM+Sf7akx70lLnAElb8NIFoOAjXvCCvlKoNxtbTgwYebDRA9eq1f9r6lGmRVGmZ13VMGEoduEV5ft8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P87elB+5; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P87elB+5"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D0F9C19425;
-	Mon, 20 Apr 2026 13:33:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776691999;
-	bh=qDd3lAIGsFZszATwqBgq1hp6evRIXI1W3nzcXU7eI0U=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=P87elB+5nwaWzxQ2bEAlrUzMBY40RmvMiFFNkFLoJnxS0iTOycXUMBiorAY7ZoMdC
-	 PEC60+3kZYN61id7e/kPH6rmGvkG0bRwPRJJiBDFVjVE2bYMe3KkDKW0RpvmWPqpcY
-	 jE5gjVMs9+ndp1tezpUVJwSg4+VGdB25LAyW8tUjhVSURUPhiu8D+MNdXC9IzzJgtW
-	 Sa9TMzwAZws6BcQRaoPW8Xu4uh7r8xiHNVLc4DJMA2vYfKwN6KIhi96gpwB3CYBykK
-	 AGP1toCDkwIK8sNvDPrqcAaanGIJiJdRbTiyuEI8/F+XWuLAXaGIH/ZK0hT/9s3x3q
-	 8Kdg61ekiv+Zw==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Wenyuan Li <2063309626@qq.com>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Sasha Levin <sashal@kernel.org>,
-	mailhol@kernel.org,
+	 MIME-Version; b=PlmT8QLijxv7ovhPt9yJpXZFH+SsyQdycRkpqwb3Vy25xJVYbjwTWeDWjMnXHt3Gmtm19Fg/AxOI3/Qxt5JHCwU06pKTWQw4wYQy7QxaBNWOuZ7+JADpq7D73wf78Nf8Ehh0Vk2rJ4iiRk4v0+DU/zVISKzWnuV6EJN67CyGAv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1wEqSE-0000bd-7P; Mon, 20 Apr 2026 17:22:30 +0200
+Received: from dude04.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::ac] helo=dude04)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1wEqSD-006MEv-3D;
+	Mon, 20 Apr 2026 17:22:30 +0200
+Received: from ore by dude04 with local (Exim 4.98.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1wEqSD-00000002RXM-3o1c;
+	Mon, 20 Apr 2026 17:22:29 +0200
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Robin van der Gracht <robin@protonic.nl>,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
+	kernel@pengutronix.de,
 	linux-can@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.18] can: mcp251x: add error handling for power enable in open and resume
-Date: Mon, 20 Apr 2026 09:21:48 -0400
-Message-ID: <20260420132314.1023554-314-sashal@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260420132314.1023554-1-sashal@kernel.org>
-References: <20260420132314.1023554-1-sashal@kernel.org>
+Subject: [PATCH v1 1/3] net: can: j1939: move j1939_xtp_abort enum to header
+Date: Mon, 20 Apr 2026 17:22:25 +0200
+Message-ID: <20260420152228.581421-2-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20260420152228.581421-1-o.rempel@pengutronix.de>
+References: <20260420152228.581421-1-o.rempel@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.18.23
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Wenyuan Li <2063309626@qq.com>
+Move j1939_xtp_abort to j1939-priv.h to allow KUnit tests to reference
+transport abort codes.
 
-[ Upstream commit 7a57354756c7df223abe2c33774235ad70cb4231 ]
+No functional change.
 
-Add missing error handling for mcp251x_power_enable() calls in both
-mcp251x_open() and mcp251x_can_resume() functions.
-
-In mcp251x_open(), if power enable fails, jump to error path to close
-candev without attempting to disable power again.
-
-In mcp251x_can_resume(), properly check return values of power enable calls
-for both power and transceiver regulators. If any fails, return the error
-code to the PM framework and log the failure.
-
-This ensures the driver properly handles power control failures and
-maintains correct device state.
-
-Signed-off-by: Wenyuan Li <2063309626@qq.com>
-Link: https://patch.msgid.link/tencent_F3EFC5D7738AC548857B91657715E2D3AA06@qq.com
-[mkl: fix patch description]
-[mkl: mcp251x_can_resume(): replace goto by return]
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
+ net/can/j1939/j1939-priv.h | 92 ++++++++++++++++++++++++++++++++++++++
+ net/can/j1939/transport.c  | 91 -------------------------------------
+ 2 files changed, 92 insertions(+), 91 deletions(-)
 
-LLM Generated explanations, may be completely bogus:
-
-Error: Failed to generate final synthesis
-
- drivers/net/can/spi/mcp251x.c | 29 ++++++++++++++++++++++++-----
- 1 file changed, 24 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index b46262e791301..5a7aa02092c7e 100644
---- a/drivers/net/can/spi/mcp251x.c
-+++ b/drivers/net/can/spi/mcp251x.c
-@@ -1225,7 +1225,11 @@ static int mcp251x_open(struct net_device *net)
- 	}
+diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
+index 81f58924b4ac..b82706505103 100644
+--- a/net/can/j1939/j1939-priv.h
++++ b/net/can/j1939/j1939-priv.h
+@@ -28,6 +28,98 @@ enum j1939_sk_errqueue_type {
+ 	J1939_ERRQUEUE_RX_ABORT,
+ };
  
- 	mutex_lock(&priv->mcp_lock);
--	mcp251x_power_enable(priv->transceiver, 1);
-+	ret = mcp251x_power_enable(priv->transceiver, 1);
-+	if (ret) {
-+		dev_err(&spi->dev, "failed to enable transceiver power: %pe\n", ERR_PTR(ret));
-+		goto out_close_candev;
-+	}
- 
- 	priv->force_quit = 0;
- 	priv->tx_skb = NULL;
-@@ -1272,6 +1276,7 @@ static int mcp251x_open(struct net_device *net)
- 	mcp251x_hw_sleep(spi);
- out_close:
- 	mcp251x_power_enable(priv->transceiver, 0);
-+out_close_candev:
- 	close_candev(net);
- 	mutex_unlock(&priv->mcp_lock);
- 	if (release_irq)
-@@ -1508,11 +1513,25 @@ static int __maybe_unused mcp251x_can_resume(struct device *dev)
- {
- 	struct spi_device *spi = to_spi_device(dev);
- 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
-+	int ret = 0;
- 
--	if (priv->after_suspend & AFTER_SUSPEND_POWER)
--		mcp251x_power_enable(priv->power, 1);
--	if (priv->after_suspend & AFTER_SUSPEND_UP)
--		mcp251x_power_enable(priv->transceiver, 1);
-+	if (priv->after_suspend & AFTER_SUSPEND_POWER) {
-+		ret = mcp251x_power_enable(priv->power, 1);
-+		if (ret) {
-+			dev_err(dev, "failed to restore power: %pe\n", ERR_PTR(ret));
-+			return ret;
-+		}
-+	}
++/* J1939 Transport Protocol Abort Codes */
++enum j1939_xtp_abort {
++	J1939_XTP_NO_ABORT = 0,
++	J1939_XTP_ABORT_BUSY = 1,
++	/* Already in one or more connection managed sessions and
++	 * cannot support another.
++	 *
++	 * EALREADY:
++	 * Operation already in progress
++	 */
 +
-+	if (priv->after_suspend & AFTER_SUSPEND_UP) {
-+		ret = mcp251x_power_enable(priv->transceiver, 1);
-+		if (ret) {
-+			dev_err(dev, "failed to restore transceiver power: %pe\n", ERR_PTR(ret));
-+			if (priv->after_suspend & AFTER_SUSPEND_POWER)
-+				mcp251x_power_enable(priv->power, 0);
-+			return ret;
-+		}
-+	}
++	J1939_XTP_ABORT_RESOURCE = 2,
++	/* System resources were needed for another task so this
++	 * connection managed session was terminated.
++	 *
++	 * EMSGSIZE:
++	 * The socket type requires that message be sent atomically,
++	 * and the size of the message to be sent made this
++	 * impossible.
++	 */
++
++	J1939_XTP_ABORT_TIMEOUT = 3,
++	/* A timeout occurred and this is the connection abort to
++	 * close the session.
++	 *
++	 * EHOSTUNREACH:
++	 * The destination host cannot be reached (probably because
++	 * the host is down or a remote router cannot reach it).
++	 */
++
++	J1939_XTP_ABORT_GENERIC = 4,
++	/* CTS messages received when data transfer is in progress
++	 *
++	 * EBADMSG:
++	 * Not a data message
++	 */
++
++	J1939_XTP_ABORT_FAULT = 5,
++	/* Maximal retransmit request limit reached
++	 *
++	 * ENOTRECOVERABLE:
++	 * State not recoverable
++	 */
++
++	J1939_XTP_ABORT_UNEXPECTED_DATA = 6,
++	/* Unexpected data transfer packet
++	 *
++	 * ENOTCONN:
++	 * Transport endpoint is not connected
++	 */
++
++	J1939_XTP_ABORT_BAD_SEQ = 7,
++	/* Bad sequence number (and software is not able to recover)
++	 *
++	 * EILSEQ:
++	 * Illegal byte sequence
++	 */
++
++	J1939_XTP_ABORT_DUP_SEQ = 8,
++	/* Duplicate sequence number (and software is not able to
++	 * recover)
++	 */
++
++	J1939_XTP_ABORT_EDPO_UNEXPECTED = 9,
++	/* Unexpected EDPO packet (ETP) or Message size > 1785 bytes
++	 * (TP)
++	 */
++
++	J1939_XTP_ABORT_BAD_EDPO_PGN = 10,
++	/* Unexpected EDPO PGN (PGN in EDPO is bad) */
++
++	J1939_XTP_ABORT_EDPO_OUTOF_CTS = 11,
++	/* EDPO number of packets is greater than CTS */
++
++	J1939_XTP_ABORT_BAD_EDPO_OFFSET = 12,
++	/* Bad EDPO offset */
++
++	J1939_XTP_ABORT_OTHER_DEPRECATED = 13,
++	/* Deprecated. Use 250 instead (Any other reason)  */
++
++	J1939_XTP_ABORT_ECTS_UNXPECTED_PGN = 14,
++	/* Unexpected ECTS PGN (PGN in ECTS is bad) */
++
++	J1939_XTP_ABORT_ECTS_TOO_BIG = 15,
++	/* ECTS requested packets exceeds message size */
++
++	J1939_XTP_ABORT_OTHER = 250,
++	/* Any other reason (if a Connection Abort reason is
++	 * identified that is not listed in the table use code 250)
++	 */
++};
++
+ /* j1939 devices */
+ struct j1939_ecu {
+ 	struct list_head list;
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index df93d57907da..46540da76ca9 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -32,97 +32,6 @@
+ #define J1939_ETP_CMD_EOMA 0x17
+ #define J1939_ETP_CMD_ABORT 0xff
  
- 	if (priv->after_suspend & (AFTER_SUSPEND_POWER | AFTER_SUSPEND_UP))
- 		queue_work(priv->wq, &priv->restart_work);
+-enum j1939_xtp_abort {
+-	J1939_XTP_NO_ABORT = 0,
+-	J1939_XTP_ABORT_BUSY = 1,
+-	/* Already in one or more connection managed sessions and
+-	 * cannot support another.
+-	 *
+-	 * EALREADY:
+-	 * Operation already in progress
+-	 */
+-
+-	J1939_XTP_ABORT_RESOURCE = 2,
+-	/* System resources were needed for another task so this
+-	 * connection managed session was terminated.
+-	 *
+-	 * EMSGSIZE:
+-	 * The socket type requires that message be sent atomically,
+-	 * and the size of the message to be sent made this
+-	 * impossible.
+-	 */
+-
+-	J1939_XTP_ABORT_TIMEOUT = 3,
+-	/* A timeout occurred and this is the connection abort to
+-	 * close the session.
+-	 *
+-	 * EHOSTUNREACH:
+-	 * The destination host cannot be reached (probably because
+-	 * the host is down or a remote router cannot reach it).
+-	 */
+-
+-	J1939_XTP_ABORT_GENERIC = 4,
+-	/* CTS messages received when data transfer is in progress
+-	 *
+-	 * EBADMSG:
+-	 * Not a data message
+-	 */
+-
+-	J1939_XTP_ABORT_FAULT = 5,
+-	/* Maximal retransmit request limit reached
+-	 *
+-	 * ENOTRECOVERABLE:
+-	 * State not recoverable
+-	 */
+-
+-	J1939_XTP_ABORT_UNEXPECTED_DATA = 6,
+-	/* Unexpected data transfer packet
+-	 *
+-	 * ENOTCONN:
+-	 * Transport endpoint is not connected
+-	 */
+-
+-	J1939_XTP_ABORT_BAD_SEQ = 7,
+-	/* Bad sequence number (and software is not able to recover)
+-	 *
+-	 * EILSEQ:
+-	 * Illegal byte sequence
+-	 */
+-
+-	J1939_XTP_ABORT_DUP_SEQ = 8,
+-	/* Duplicate sequence number (and software is not able to
+-	 * recover)
+-	 */
+-
+-	J1939_XTP_ABORT_EDPO_UNEXPECTED = 9,
+-	/* Unexpected EDPO packet (ETP) or Message size > 1785 bytes
+-	 * (TP)
+-	 */
+-
+-	J1939_XTP_ABORT_BAD_EDPO_PGN = 10,
+-	/* Unexpected EDPO PGN (PGN in EDPO is bad) */
+-
+-	J1939_XTP_ABORT_EDPO_OUTOF_CTS = 11,
+-	/* EDPO number of packets is greater than CTS */
+-
+-	J1939_XTP_ABORT_BAD_EDPO_OFFSET = 12,
+-	/* Bad EDPO offset */
+-
+-	J1939_XTP_ABORT_OTHER_DEPRECATED = 13,
+-	/* Deprecated. Use 250 instead (Any other reason)  */
+-
+-	J1939_XTP_ABORT_ECTS_UNXPECTED_PGN = 14,
+-	/* Unexpected ECTS PGN (PGN in ECTS is bad) */
+-
+-	J1939_XTP_ABORT_ECTS_TOO_BIG = 15,
+-	/* ECTS requested packets exceeds message size */
+-
+-	J1939_XTP_ABORT_OTHER = 250,
+-	/* Any other reason (if a Connection Abort reason is
+-	 * identified that is not listed in the table use code 250)
+-	 */
+-};
+-
+ static unsigned int j1939_tp_block = 255;
+ static unsigned int j1939_tp_packet_delay;
+ static unsigned int j1939_tp_padding = 1;
 -- 
-2.53.0
+2.47.3
 
