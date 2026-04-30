@@ -1,219 +1,227 @@
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from AM0PR83CU005.outbound.protection.outlook.com (mail-westeuropeazon11010005.outbound.protection.outlook.com [52.101.69.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A11303EF678
-	for <linux-can@vger.kernel.org>; Thu, 30 Apr 2026 08:55:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777539327; cv=none; b=farDYVu7MMeXNfwPPUBlBy6PIgYhKJCXPZ4YxOlwhsdDFCRRXdKCtM4MZSJ0MwpQC4YmYqt19aMYmv28iZBfCFCwNGEqK4IjL23+DQCJ0idV9s+I300A2ug7NIzI0/KuaPqAHzrGkwbVvqQgjdX2NS+1BC/hv6wVI7mVBJat6kU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777539327; c=relaxed/simple;
-	bh=Pqq8zSAcOFFR5+YaBlC+lfkekk7615G+YO4hKhKWJCU=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=f/C0L0WMwlL3ho7YC6lHLcjBdhU20blx9p92Jns2okucARxl8USdLBoO+RJ4NlSKEINl8VNVHzvzhse1apN3+/maY/DTeKP7c9QnB56atKHRKSfgRimo+/xuTZYYQ51A1tlVkEjL+AVbAfGU5RHwywHV2/NGotHGhJPhrhA4Ke4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b=sG9T6KPC; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F54E19E839;
+	Thu, 30 Apr 2026 11:07:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.69.5
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1777547223; cv=fail; b=q/seDnvYZdhN/9kZlfRRoT47rxh7LrNJ0Q8M8QdhSSDaVi9sT58gZIzbIxMTiOtpMTkyyidIR0i86tSKIr8fg1G+IOGifdIsvUOUy/RvXtMZdl9LIuIfLGRTqYjZipYsXZqZeDV/VTzgRU1Zl6yUK8+Kx3WsEWZsGcVsaTlF3bk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1777547223; c=relaxed/simple;
+	bh=54G7TRODDIJN8SbJYv5ZtcElhkwDxxe+Ks+m6aVW0pg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=lRPdBQYMW/NWoFByx2qpAoQwNrz/85BXjS7eT1ERjO5MQZrzSKbLdIifla4JRbXUNITiZTYc6Ttn2KRXjyMWsZFDAdyqdGCCnFQI/KqWWGEYXZlS6yG/fAK3HqILt2wePCZE3jeeFjUZ3k+0/d+sSPh819x4wmvcAp5chECUK2A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=nxJqJXEF; arc=fail smtp.client-ip=52.101.69.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b="sG9T6KPC"
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-444826c16ffso595372f8f.1
-        for <linux-can@vger.kernel.org>; Thu, 30 Apr 2026 01:55:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20251104.gappssmtp.com; s=20251104; t=1777539323; x=1778144123; darn=vger.kernel.org;
-        h=in-reply-to:references:content-transfer-encoding:to:from:subject:cc
-         :message-id:date:mime-version:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oTklDTNdxgMiOr8HV0Z6gDUQcK4MMB7dBQkYfU4NXYc=;
-        b=sG9T6KPC866Z2GUGB8sKaxyruk7UrFIkcWncaHwiNWzI3GPtrpX2vLWbABrn1zff0C
-         FBCLzqJU+iA18ZKv+bdPJq5sw4Dn6MoQc/5+JUngXqaw0KW4k/wR0EMQdYt1aYIVOurC
-         v+45ReIUit/MbA+ap2CMIyYNoCqEHfO3eohN4LpbRwZTr8NmHUgERO4cbvrB1He995ip
-         oiFRc9o7uAl4CPBh+toq6+zBVycPnPi1kGp+o/HKHsWIy0yMWRB1XekrXSoTl2uUuvm/
-         KRHaaZVUHY7ijfFLaceAQh+Z54wAB1fT5XCgGkLmCWKvO4dpHRS6+zYGagcFmu4JCwTw
-         R09A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777539323; x=1778144123;
-        h=in-reply-to:references:content-transfer-encoding:to:from:subject:cc
-         :message-id:date:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oTklDTNdxgMiOr8HV0Z6gDUQcK4MMB7dBQkYfU4NXYc=;
-        b=AzYTDJW5+b+N+NwPvEzErSPuMxBS8zwyj6Dn7HvtoP4gGr1VImXxubHGbRil2/GVMF
-         fXfL/IGfzc7lzLEi4Hw/Z5krwpRLtDaSA7NbsH/0PrqLhHRnc3V50O2W5ogxwBHS4UEs
-         ABRkEXUyTkeGUAxVfVo6h9Na7i364naVD5r/SeYFxhX7x5LBDHL3HWY5ezHNEQqc3fak
-         twsvWKKf80DTDgv875RyZ35PWy5Bfe+mwhfmK7cBdcF0nToWu9Vs2WF4cVI4swlG1WGm
-         YaU6iWB1HKZj65tKWdOb5TEQrZYHf1b5Mqdb9oliPY84QW88GSiF8yZp4JAOtKzpGq3M
-         c3DA==
-X-Forwarded-Encrypted: i=1; AFNElJ9UU1a9FpbDas+FhNW7sr4jenqk11LTwPG4zwX8l/6vCp4dK1oC+Gh3E36ZdMB1a8Zj9NohXyloBAQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy1YDmt4UF05/vlo7MG5+kydADHh8+AmI4R7YPfpHOGXwvwW1d6
-	ktNZaj5MUZQ1P0Z3VXWoM087+0llCzgUoe8cGPDaW7BPi04mWg9roMFhaJ0tCka3ecY=
-X-Gm-Gg: AeBDietKadMgoiYFRUiqIIFWMf9gx9gmG7zw/JeERGhHOXMzOFdAs7RVbwPtVGfdKsu
-	VWqoD2MtEiPnIvEAUxqX3qDrUuHFljHoMJN4MDTtmKsQgZ81IXvNaSc+M3lfPyp+Op2h2ZNDqS+
-	/87CW40nid/UXLO95U4VT2TPFHx7uP4lZez8k2Z07O4h17R7n28W8/w64a4F/PSfhxY9lV39uWB
-	sVTU1RK5EiH9txuBmb5NGstdz0qLUyGro6+9BDT4epkM15ajcy6Wcd1lzetJk+DIg7+Ffr3iUN4
-	APn32qcsyFXLWw0ficZigu4tWoAeHjASii29X1XachfsBRdNfeGlj+VZcTOQL158ECNW00bpqX5
-	15yPtGdYNjHVGPltjom8xZqvykyASlPodq4sNqvwRZsaMaw2eNFasEMDdU5WOFGgTQiAY4DPu42
-	Vm7mQSzhUqj1NEbwzmqR+IXhQHcd4=
-X-Received: by 2002:a05:6000:26d1:b0:43e:a703:3665 with SMTP id ffacd0b85a97d-4493f42ced4mr3244142f8f.25.1777539322750;
-        Thu, 30 Apr 2026 01:55:22 -0700 (PDT)
-Received: from localhost ([2001:4090:a246:83ca:298c:ceb1:1a:f428])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-447b7ca5fe6sm11988989f8f.32.2026.04.30.01.55.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2026 01:55:21 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="nxJqJXEF"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=DdQIfyoWPcYB6jtqZvwZPYRnIPS/BlBittLu8Im2OOYOwP/0Eh5P9Y/r1tmVIIubdOw+5e1nyI/8TTJPjPHkT19/qTRxHQnwj8060vAad4U6qqcuMvQ4PUyTaLp6fx3toAt6L7PdAcycTShDCSUErFteKM0XsLfIDV3dSMJxGX+TEhy4JGMf0e8/FODSzXnAhro6c+N7G4Wg7xVyHwR7hlewGZgh+Y0W7KR+GafUo4t0F1Ya93JiFrwAmI2jT4XCQVPc4mxqnBRy356OIho46oQNYRiUXHlDgx7jftQDMk4eGRRuwAAFL9uBdcLY14FNJum6zd2HAGlWx9v1UBCHOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jKwE4FvD116+ghF8di6dMrH+jwBPGos7uX0Kschl048=;
+ b=hxXJYTl5wmCfv1EIsYQ2S0KHgt7taYs3PoRhEiXSHhUwpZwKSLFO56l52hbhBBsuRGlaPNT68lpWd1p92zBciiUFeUQkXdNoxhxRjOACgfN+Xzg8na4tQ55RKtZVILndHBuQmrc4BFXQaQBAdjpVqJp61+UqMl6y5Lo3gosAuN2aR+BgxWEgyjUX8PpvTtGye9jBXA2Ooaka6whUnFeAw0/oV2C0VMGmh6HGB/pkVHYWjq0HTZWEvQGHyljqe1rTYaZCs9aLKKzWrh2VMD2hB22/SV0+2B5i0fFLCT27ZXQfZUt2x6kLYVRdBZQ0u7KYVvJ0tSo5GOco9iwYLOzy3w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jKwE4FvD116+ghF8di6dMrH+jwBPGos7uX0Kschl048=;
+ b=nxJqJXEFNKOsHI2AvIlYgLKLU9Wd+6X2TUFgVhcDo0T/DOgmXRkXa8RtBcTnnZjf9hnyDEF5XlmEdTDR+fv9PlToC8XKOWDAfnifCMM8k2SRJRgOJJFe/meWxDer2yCvgsoPxIJqblVFNm09KlwnIWbv7jwleCq71gE5zby8nRJ7oBTtfzhTsF3PYlFQN8ZCtnMPIu76FiF0+xZAIBwwiE3tw7QNr7E5nkTYnySpb8J5DCPKE6rXylqReVJc77CGVhywCOemltbxmdpVDGbYvo+IiXJkkO25gJViX1zZ756ILEzmGO9eM79I+2df/3FZmRFKIBr+KljabefSp64bdw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM9PR04MB8585.eurprd04.prod.outlook.com (2603:10a6:20b:438::13)
+ by GVXPR04MB10609.eurprd04.prod.outlook.com (2603:10a6:150:219::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9870.18; Thu, 30 Apr
+ 2026 11:06:57 +0000
+Received: from AM9PR04MB8585.eurprd04.prod.outlook.com
+ ([fe80::f010:fca8:7ef:62f4]) by AM9PR04MB8585.eurprd04.prod.outlook.com
+ ([fe80::f010:fca8:7ef:62f4%4]) with mapi id 15.20.9846.025; Thu, 30 Apr 2026
+ 11:06:57 +0000
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
+To: linux-phy@lists.infradead.org
+Cc: Vinod Koul <vkoul@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	dri-devel@lists.freedesktop.org,
+	freedreno@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-can@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	linux-ide@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linux-sunxi@lists.linux.dev,
+	linux-tegra@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	netdev@vger.kernel.org,
+	spacemit@lists.linux.dev,
+	UNGLinuxDriver@microchip.com,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Niklas Cassel <cassel@kernel.org>
+Subject: [PATCH v7 phy-next 01/27] ata: add <linux/pm_runtime.h> where missing
+Date: Thu, 30 Apr 2026 14:06:26 +0300
+Message-Id: <20260430110652.558622-2-vladimir.oltean@nxp.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20260430110652.558622-1-vladimir.oltean@nxp.com>
+References: <20260430110652.558622-1-vladimir.oltean@nxp.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR02CA0123.eurprd02.prod.outlook.com
+ (2603:10a6:20b:28c::20) To AM9PR04MB8585.eurprd04.prod.outlook.com
+ (2603:10a6:20b:438::13)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed;
- boundary=49f7733329a22fff4b83a1680bdebfd7a9830dc80234132c7fb08fa112fd;
- micalg=pgp-sha512; protocol="application/pgp-signature"
-Date: Thu, 30 Apr 2026 10:55:14 +0200
-Message-Id: <DI6D3JVJ6JG6.8V4XUVGJA2D4@baylibre.com>
-Cc: "Markus Schneider-Pargmann" <msp@baylibre.com>, "Steffen Klassert"
- <klassert@kernel.org>, "David Dillow" <dave@thedillows.org>, "Ion
- Badulescu" <ionut@badula.org>, "Mark Einon" <mark.einon@gmail.com>, "Rasesh
- Mody" <rmody@marvell.com>, <GR-Linux-NIC-Dev@marvell.com>, "Sudarsana
- Kalluru" <skalluru@marvell.com>, "Manish Chopra" <manishc@marvell.com>,
- "Potnuri Bharat Teja" <bharat@chelsio.com>, "Denis Kirjanov"
- <kirjanov@gmail.com>, "Jijie Shao" <shaojijie@huawei.com>, "Jian Shen"
- <shenjian15@huawei.com>, "Cai Huoqing" <cai.huoqing@linux.dev>, "Fan Gong"
- <gongfan1@huawei.com>, "Tony Nguyen" <anthony.l.nguyen@intel.com>, "Przemek
- Kitszel" <przemyslaw.kitszel@intel.com>, "Tariq Toukan"
- <tariqt@nvidia.com>, "Saeed Mahameed" <saeedm@nvidia.com>, "Leon
- Romanovsky" <leon@kernel.org>, "Mark Bloch" <mbloch@nvidia.com>, "Ido
- Schimmel" <idosch@nvidia.com>, "Petr Machata" <petrm@nvidia.com>, "Yibo
- Dong" <dong100@mucse.com>, "Simon Horman" <horms@kernel.org>, "Heiner
- Kallweit" <hkallweit1@gmail.com>, <nic_swsd@realtek.com>, "Jiri Pirko"
- <jiri@resnulli.us>, "Francois Romieu" <romieu@fr.zoreil.com>, "Daniele
- Venzano" <venza@brownhat.org>, "Samuel Chessman" <chessman@tux.org>,
- "Jiawen Wu" <jiawenwu@trustnetic.com>, "Mengyuan Lou"
- <mengyuanlou@net-swift.com>, "Kevin Curtis" <kevin.curtis@farsite.co.uk>,
- "Arend van Spriel" <arend.vanspriel@broadcom.com>, "Stanislav Yakovlev"
- <stas.yakovlev@gmail.com>, "Richard Cochran" <richardcochran@gmail.com>,
- "Kees Cook" <kees@kernel.org>, "Thomas Gleixner" <tglx@kernel.org>, "Thomas
- Fourier" <fourier.thomas@gmail.com>, "Ingo Molnar" <mingo@kernel.org>,
- "Kory Maincent" <kory.maincent@bootlin.com>, "Zilin Guan"
- <zilin@seu.edu.cn>, "Marco Crivellari" <marco.crivellari@suse.com>, "Vadim
- Fedorenko" <vadim.fedorenko@linux.dev>, "Jacob Keller"
- <jacob.e.keller@intel.com>, "Philipp Stanner" <phasta@kernel.org>, "Bjorn
- Helgaas" <bhelgaas@google.com>, "Yeounsu Moon" <yyyynoom@gmail.com>, "Denis
- Benato" <benato.denis96@gmail.com>, "Peiyang Wang"
- <wangpeiyang1@huawei.com>, "Yonglong Liu" <liuyonglong@huawei.com>, "Andy
- Shevchenko" <andriy.shevchenko@intel.com>, "Yicong Hui"
- <yiconghui@gmail.com>, "Randy Dunlap" <rdunlap@infradead.org>, "MD Danish
- Anwar" <danishanwar@ti.com>, "Nathan Chancellor" <nathan@kernel.org>, "Sai
- Krishna" <saikrishnag@marvell.com>, "Ethan Nelson-Moore"
- <enelsonmoore@gmail.com>, "Larysa Zaremba" <larysa.zaremba@intel.com>, "Joe
- Damato" <joe@dama.to>, "Double Lo" <double.lo@cypress.com>, "Chi-hsien Lin"
- <chi-hsien.lin@cypress.com>, "Colin Ian King" <colin.i.king@gmail.com>,
- <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-can@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
- <intel-wired-lan@lists.osuosl.org>, <linux-rdma@vger.kernel.org>,
- <oss-drivers@corigine.com>, <linux-wireless@vger.kernel.org>,
- <brcm80211@lists.linux.dev>, <brcm80211-dev-list.pdl@broadcom.com>
-Subject: Re: [PATCH net-next] net: Consistently define pci_device_ids using
- named initializers
-From: "Markus Schneider-Pargmann" <msp@baylibre.com>
-To: =?utf-8?b?VXdlIEtsZWluZS1Lw7ZuaWcgKFRoZSBDYXBhYmxlIEh1Yik=?=
- <u.kleine-koenig@baylibre.com>, "Michael Grzeschik"
- <m.grzeschik@pengutronix.de>, "Andrew Lunn" <andrew+netdev@lunn.ch>, "David
- S. Miller" <davem@davemloft.net>, "Eric Dumazet" <edumazet@google.com>,
- "Jakub Kicinski" <kuba@kernel.org>, "Paolo Abeni" <pabeni@redhat.com>,
- "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol"
- <mailhol@kernel.org>, "Krzysztof Halasa" <khc@pm.waw.pl>, "Johannes Berg"
- <johannes@sipsolutions.net>
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: aerc 0.21.0-126-g9e77103592fe
-References: <20260428171845.2288395-2-u.kleine-koenig@baylibre.com>
-In-Reply-To: <20260428171845.2288395-2-u.kleine-koenig@baylibre.com>
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM9PR04MB8585:EE_|GVXPR04MB10609:EE_
+X-MS-Office365-Filtering-Correlation-Id: de4ddc80-8124-438c-4287-08dea6a8983a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|19092799006|376014|7416014|10070799003|1800799024|22082099003|56012099003|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	sEcQvROVo7d0fMsWAsl3bByT62/dYS+K10I+wm51Jxe5dnTidsjxb61xbvxvPgqH268OA70rnfRaFWZqJZzM2aqqbI8ZWhADosUo7zqo8JLbmMyOJiNrE0gNJHrfdarxOvItNyt5MTBohUZ5f9/K2RnYO1LWjRYlVxogj6SNeqqfVVjkxfSIUuIbEJsOP4qCRHnhO60OU6ZaB1H0fW6YNn5xQgSOEZavPYHGyVFS9eoqWoO5j3wzEUN72kef9OHOnFf+D/XE1+8mOsZfmIA44uvAkh+lT7YJXtvri9PnOHUk0nj8GUvIvMeiDUxb8oC+Z3eZTYhDq1+Wm0277cbwPccA141s6w10HViOLKJJhelE5K2Ube6Ko4Pvt/ZeQl7Sz9OFWN0UuwSYhW2//qBQP/AgQOGdB44GQLQ9tDo05m3TK+cnuM1UQokyJaGGXYI2vehqUnJ1PuNNrl6ARUeBWP+jOJDikRMavKBEz+5vWmlFWzNyLUK7K7GLRz2ZF0YRTRoh7bP6Uz7Kx+qI85HDwVN2MUw/25eZWFQjl7zRSLQZ7yx9FWVD/2XwM/r7EfRP/nD170mGkBAyQejUSyGkJA5N4LYOtvw0YIE8sogJaf8E6wQX/dFkq4/WKzzjiRXB5AitlIox4NjeI40wd4gbAcXB2R6HO41Rabw48QOnZUxRdaNtAJgvMBTtvMcz/jVkKiibOExrsvCw9a2upV7yM1SGkBdUjHiuZ5kqNVzpuyc=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8585.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(19092799006)(376014)(7416014)(10070799003)(1800799024)(22082099003)(56012099003)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?P0SOLbTZoYyfdxaZE3qsZ0rI5R5eJBqx4h/ZD7CH+kposvovyzvCCuMmoP4p?=
+ =?us-ascii?Q?+QTaUJuM2rfpUhFeB5lsLQUGl849G9lwKI4xz+4hk8o8bxagK56vGB/zyPLZ?=
+ =?us-ascii?Q?QNCgB8ycTUz3Ff/s9ipqGne11I7vohpFdXt5IoXb1f1S8YrTrZfoG5eKJzu6?=
+ =?us-ascii?Q?8cS4EhrGOQ9O2ItYkaEUP+59OKVcdbUK3dHMbw85Hj+TMi3yRAaL1rlTCOiz?=
+ =?us-ascii?Q?Aelcta1VwuPyeJSBkdE9xMcRl7urYSJhTKtAMRftCIb2rRVhljVBiDgSwuvX?=
+ =?us-ascii?Q?ykTrfY4CWwdmHjmxxxREeDFBpfdkoST8nzw9vFoZdBVcyTEhXdd1IL7K+QX+?=
+ =?us-ascii?Q?fPWxvKIyM06NE7zqD9btG6OaeuDmbbsbb2I3/uA18n0QinicLwoo1PKKg0LZ?=
+ =?us-ascii?Q?IxQKKWQni2k3Or5flIuhLjb+SH59IYVmmByOYCY/x/yPESf5AT/OHUMGhUZp?=
+ =?us-ascii?Q?UAkHrXp93k6oTECFbfk2/dcoY1FbWke8TMeS8LHBVSYFtGMKAAcuKq07r5ur?=
+ =?us-ascii?Q?zkYRU40C+EmYIXK5n54ueYTzCpIIjDSkPU+/cAa+23jnH/kAsPPpZILx4xSf?=
+ =?us-ascii?Q?ymjJOJCFazkfKtho6+bYzgitnYG3lPytG4YFlgjVuuzQlO75ujh9gNHsLp9v?=
+ =?us-ascii?Q?F1Va8qMCcTehVaWI0omUNwHPVeTlWYbLBt/HfGXkuJf+C++xKyKxQ8+ZGyfe?=
+ =?us-ascii?Q?S199DL/cmad2XX9USasaOx7Oa4mGwf0osnR7ukmUxbYVPGYKKJDsYGiGTodO?=
+ =?us-ascii?Q?9UMmfyimjLtRtEEhYBqJkNAvC8xTX+mmVKMk/xGMMe43yOuY2t2Z9ciB9eoh?=
+ =?us-ascii?Q?IAaJ9ABM2fWqCN1UghJYPReJIwC2VtJq7cbKBXBSCwsvwPeKqFfarymNrf+n?=
+ =?us-ascii?Q?xrhDOi6dcuE8TtK9XRcDcZw2WCD0MTIBZelccwHnRt6gCC95qedVMp0y1MBC?=
+ =?us-ascii?Q?RlMIALJ/RL2RYCDtJxim/hJoVsKrNvvNh2uyHCblyxEBe4N8QCfWrlTLflew?=
+ =?us-ascii?Q?SEy+9Aw/L93ZKuOQQInI5UhafHjWfCulFAGiUCv22I4ghi0VXcR49myS+Q04?=
+ =?us-ascii?Q?5xZCxXIf7lI0FTkh+rtlMhMr3Wkb0sGfWz7bALuvSzIc/V5m0B93GUh9bGsw?=
+ =?us-ascii?Q?uX3TeO5V+fvIvjVtKCDdlJNnLHMOvk/fG6Z8R0+sk5oJBFD+AE3Yza3NbRnW?=
+ =?us-ascii?Q?XK81MKVKY2DXr+4nWecn92146H3PDZf39Wb9yeSnbzDjp3iXylHi/9Mt5P5F?=
+ =?us-ascii?Q?BUrxe6BZn+0vDn7zO2R4A5kRQphje7KPEGnixKfByPtaZD6oJ6GCKzUkDINU?=
+ =?us-ascii?Q?LtHXE8MZCnj8dATLanOwm5zIMxPj0F4QD4tvffJW2B/tPJgM966sL9Y6gtpS?=
+ =?us-ascii?Q?6V0ui3NFVkEW5+SpCyhCaRPp9oEPpHOCVjQ6dgg5MsItE8TugQgrFuRmzyqx?=
+ =?us-ascii?Q?x9jM8XIWbR9dYDnw2IED3gmewhjzxDdX/+0E6bXbDTdh4+rgB6abvemWC75G?=
+ =?us-ascii?Q?SPeWvMXCrCcu3gPpwqJlAzZBxLEArZJoxkG0isC/OWiqxw63lAYMnEYz01Oa?=
+ =?us-ascii?Q?MHBNAOswQ06f+31IIA7Qleoea3Dk5DegteQkZQ1KZrzy4D58WEX8+Ioqw2w9?=
+ =?us-ascii?Q?ZfOtj8YJ2rkeDEL1i4o9jXY4bvmmboOKMe9Ou56QtWqsk2rk6Yan1tT7QZTa?=
+ =?us-ascii?Q?xg/L5qU/e2MFDEUml2auCpuRNo6NomCgjtjJ5THcsigb1bzlrsEOKiU/zftP?=
+ =?us-ascii?Q?spAhUgMoSqi55zKl2CSuxU/8BmOoPqrWTkjS7CgeAaiPXqWEBbWi?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: de4ddc80-8124-438c-4287-08dea6a8983a
+X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB8585.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2026 11:06:57.3816
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2NEkdICbkplZeCoO/Rvm+/OYm5Zkf7K+qSqYyoTVhpt7htG3YtPI8OFuZIiAxw169ax55rc20WBHorqr/rF+kA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR04MB10609
 
---49f7733329a22fff4b83a1680bdebfd7a9830dc80234132c7fb08fa112fd
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+It appears that libahci.c, ahci.c as well as the ahci_brcm, ahci_ceva
+and ahci_qoriq drivers are using runtime PM operations without including
+<linux/pm_runtime.h>. This header is somehow being indirectly provided
+by <linux/phy/phy.h>, which would like to drop it (none of the functions
+it exports need it).
 
-Hi Uwe,
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Acked-by: Damien Le Moal <dlemoal@kernel.org>
+---
+Cc: Damien Le Moal <dlemoal@kernel.org>
+Cc: Niklas Cassel <cassel@kernel.org>
 
-On Tue Apr 28, 2026 at 7:18 PM CEST, Uwe Kleine-K=C3=B6nig (The Capable Hub=
-) wrote:
-> ... and PCI device helpers.
->
-> The various struct pci_device_id arrays were initialized mostly by one
-> the PCI_DEVICE macros and then list expressions. The latter isn't easily
-> readable if you're not into PCI. Using named initializers is more
-> explicit and thus easier to parse.
->
-> Also use PCI_DEVICE* helper macros to assign .vendor, .device,
-> .subvendor and .subdevice where appropriate and skip explicit
-> assignments of 0 (which the compiler takes care of).
->
-> The secret plan is to make struct pci_device_id::driver_data an
-> anonymous union (similar to
-> https://lore.kernel.org/all/cover.1776579304.git.u.kleine-koenig@baylibre=
-.com/)
-> and that requires named initializers. But it's also a nice cleanup on
-> its own.
->
-> This change doesn't introduce changes to the compiled pci_device_id
-> arrays. Tested on x86 and arm64.
->
-> Signed-off-by: Uwe Kleine-K=C3=B6nig (The Capable Hub) <u.kleine-koenig@b=
-aylibre.com>
-> ---
-> Hello,
->
-> the mentioned follow-up quest allows to do
->
-> 			PCI_DEVICE(0x1571, 0xa203),
-> 	+		.driver_data =3D (kernel_ulong_t)&card_info_10mbit,
-> 	-		.driver_data_ptr =3D &card_info_10mbit,
->
-> which gets rid of a bunch of casts and so brings a little bit more type
-> safety. This patch is a preparation for that.
->
-> I handled all of drivers/net/ in a single patch, please tell me if I
-> should split by subsystem.
->
-> Best regards
-> Uwe
-> ---
+v2->v7: none
+v1->v2: collect tag
+---
+ drivers/ata/ahci.c       | 1 +
+ drivers/ata/ahci_brcm.c  | 1 +
+ drivers/ata/ahci_ceva.c  | 1 +
+ drivers/ata/ahci_qoriq.c | 1 +
+ drivers/ata/libahci.c    | 1 +
+ 5 files changed, 5 insertions(+)
 
-[...]
+diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
+index 1d73a53370cf..1396a53bd6df 100644
+--- a/drivers/ata/ahci.c
++++ b/drivers/ata/ahci.c
+@@ -26,6 +26,7 @@
+ #include <linux/device.h>
+ #include <linux/dmi.h>
+ #include <linux/gfp.h>
++#include <linux/pm_runtime.h>
+ #include <scsi/scsi_host.h>
+ #include <scsi/scsi_cmnd.h>
+ #include <linux/libata.h>
+diff --git a/drivers/ata/ahci_brcm.c b/drivers/ata/ahci_brcm.c
+index 29be74fedcf0..48460e515722 100644
+--- a/drivers/ata/ahci_brcm.c
++++ b/drivers/ata/ahci_brcm.c
+@@ -16,6 +16,7 @@
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/reset.h>
+ #include <linux/string.h>
+ 
+diff --git a/drivers/ata/ahci_ceva.c b/drivers/ata/ahci_ceva.c
+index 2d6a08c23d6a..3938bf378341 100644
+--- a/drivers/ata/ahci_ceva.c
++++ b/drivers/ata/ahci_ceva.c
+@@ -12,6 +12,7 @@
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/reset.h>
+ #include "ahci.h"
+ 
+diff --git a/drivers/ata/ahci_qoriq.c b/drivers/ata/ahci_qoriq.c
+index 0dec1a17e5b1..409152bfefb6 100644
+--- a/drivers/ata/ahci_qoriq.c
++++ b/drivers/ata/ahci_qoriq.c
+@@ -14,6 +14,7 @@
+ #include <linux/device.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/libata.h>
+ #include "ahci.h"
+ 
+diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
+index c79abdfcd7a9..e0de4703a4f2 100644
+--- a/drivers/ata/libahci.c
++++ b/drivers/ata/libahci.c
+@@ -30,6 +30,7 @@
+ #include <scsi/scsi_cmnd.h>
+ #include <linux/libata.h>
+ #include <linux/pci.h>
++#include <linux/pm_runtime.h>
+ #include "ahci.h"
+ #include "libata.h"
+ 
+-- 
+2.34.1
 
-> diff --git a/drivers/net/can/m_can/m_can_pci.c b/drivers/net/can/m_can/m_=
-can_pci.c
-> index eb31ed1f9644..cb9335c1d3ea 100644
-> --- a/drivers/net/can/m_can/m_can_pci.c
-> +++ b/drivers/net/can/m_can/m_can_pci.c
-> @@ -183,9 +183,9 @@ static SIMPLE_DEV_PM_OPS(m_can_pci_pm_ops,
->  			 m_can_pci_suspend, m_can_pci_resume);
-> =20
->  static const struct pci_device_id m_can_pci_id_table[] =3D {
-> -	{ PCI_VDEVICE(INTEL, 0x4bc1), M_CAN_CLOCK_FREQ_EHL, },
-> -	{ PCI_VDEVICE(INTEL, 0x4bc2), M_CAN_CLOCK_FREQ_EHL, },
-> -	{  }	/* Terminating Entry */
-> +	{ PCI_VDEVICE(INTEL, 0x4bc1), .driver_data =3D M_CAN_CLOCK_FREQ_EHL, },
-> +	{ PCI_VDEVICE(INTEL, 0x4bc2), .driver_data =3D M_CAN_CLOCK_FREQ_EHL, },
-> +	{ }	/* terminating entry */
-
-M_CAN_CLOCK_FREQ_EHL is basically hardcoded for all PCI devices since
-2020. I don't think we need this driver data at all and can just drop it
-and use M_CAN_CLOCK_FREQ_EHL directly in the code for the frequency.
-Once a real new PCI device gets added we can see if and what driver_data
-is needed.
-
-Best
-Markus
-
---49f7733329a22fff4b83a1680bdebfd7a9830dc80234132c7fb08fa112fd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKMEABYKAEsWIQSJYVVm/x+5xmOiprOFwVZpkBVKUwUCafMY8hsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMiwyLDIRHG1zcEBiYXlsaWJyZS5jb20ACgkQhcFWaZAVSlPG
-LAD/fzJVNBHtKblmZr7CitXNgE0iUthbQCQShJJb37V4mMgA/2HCptgFXjEqdTdF
-h7pcmno1RbnSKnZ/TDh+JQ7CnAwN
-=RRmw
------END PGP SIGNATURE-----
-
---49f7733329a22fff4b83a1680bdebfd7a9830dc80234132c7fb08fa112fd--
