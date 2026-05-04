@@ -1,118 +1,120 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE17727057D;
-	Mon,  4 May 2026 06:58:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FD3D4F5E0;
+	Mon,  4 May 2026 07:01:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777877922; cv=none; b=lY8mNfZHJbxUNXE0SVngFVUyR6je9o1A5d0eiSBgdnHEOIsoE63gz0VOp+uL2JjHg+KSMdor6VZcu++f4NPG1aMSUKTju6U2ynYxK4KrQNf09eQ1+4pqGHe9fGwenthSfRDIQdZISHkJ+Ie8MdmBuWp4+XrghzKV0UeFSJFf9HA=
+	t=1777878063; cv=none; b=HM7sPQer+7Xqirp0hlE8DCslF19uqPvcfBGvSMBZsu4/bQZYaCQ3o+cVx1z6GfrpDYCmyTGzeiPz/6Vnf60oGT2WCXA9pRqLBcbxYOiXMmjUuot4/i0zTSTe3ZqYs85PZOFzwphWTEFCQ+0yMkm/pJRtjUlva6jq5bbG3Ipsh6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777877922; c=relaxed/simple;
-	bh=HvE9Ruc8oUHtLsgmJ7bKJpqjHWRjMVBob2gyiyfqOk8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Htnwe5ZddQgJwZ5qTWAxJPI7ENfZvQEpgY8WQFeCq5hT1M7hkQDLP9ifFpxS0edjtEQHdIXtM7uCdITo1hsO5+uhocQ52xu6ONwqs8GQPk5bEXE1yptuwycuwFJYVUH+Ya1xnyvD2WvBy1TzbMlWIl0hj6HT0/TvjQnQN8VfbJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=i0rQvET4; arc=none smtp.client-ip=198.175.65.20
+	s=arc-20240116; t=1777878063; c=relaxed/simple;
+	bh=KxWs9qmEPOEiZlGqedJKlS+its/yHjm1HTMluZhe4cA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=hhX/4p3O3KAjmriG0sNME20uIm7f6GC/kkQ7wajt8McXDO4Yk9Q94WkpfmXUjS5AQgx2Bn0s4XWGzO3HEmzj63ay/0TOS3Hj7DLwbAIYU6EqH78Chub550hjAUI0jBoyiHwnLkjGJNWmJ3wLNj0f7kgJwa1Khc7YAIfwHSQnbVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mDeV+tbd; arc=none smtp.client-ip=192.198.163.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i0rQvET4"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mDeV+tbd"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1777877921; x=1809413921;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HvE9Ruc8oUHtLsgmJ7bKJpqjHWRjMVBob2gyiyfqOk8=;
-  b=i0rQvET45qr0PKjX4VEHe9DZEHSU2Wr6XA5ldfzUym7bvuAx5HdTqfys
-   2air4M/iKSvaPG+CUxbE4y6oSR52QzuXQqhcJv8cCF7TUDbL2vVHFx7Tb
-   EFiG5VxH63/x2x9LOahPzMVmCLuKLQcbR4yRbK28JZnfUY2D+83mqiJQl
-   RD+o8jABU7Kzz0tMwlU0f/eZR3TaXRGQP9MC/qast97FujAnASuzqAC0W
-   EChhB1+Z8TqK9ziGBQh7pK3/RRFdZUvxl8MLmLMSUBgjY/VnySBh9Dlpt
-   xGRnY2X/mUIahV7hSmgUfiZ3cN/rGbV7I8kiWZGCGcg1aQQXvqsF8EZPl
-   w==;
-X-CSE-ConnectionGUID: YrB/Ba1TQQSH88EKr3xHMw==
-X-CSE-MsgGUID: M99etK1pRP2K5n5uML3MTw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11775"; a="78436930"
+  t=1777878062; x=1809414062;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=KxWs9qmEPOEiZlGqedJKlS+its/yHjm1HTMluZhe4cA=;
+  b=mDeV+tbdtQIV6TJO7XLr+x2DycTeB9dZxMTazg3L5Y5Av8br0CmMLXRG
+   GnWjdJ/nwWrS/NPMZ8of0+kQjG3/h222NNRCYHkdtD+/0ZS24eGURszir
+   HcDlUglly5eCIe5QFhdDe/OncPAGcWy+Det2fcNuQe4QMUsjxE1DLzAca
+   LWxCITehSwDVSMurIXm4CfYkU1iL9djA4DYeZ4dUBaWWHNrH8qlMCSoue
+   5ItNcu8GCHdMKRqUsWTEMJQX/GBvknBqTF8oE96AQbl7SwwHqMlVKKE4i
+   S8llv3gkAs5ZSdXXBxahRkbMNeyZJgMfS5UiFYtTEpUKaeTJWFV2PbOof
+   A==;
+X-CSE-ConnectionGUID: K0YQaQ9URKepIFa0r/mMCA==
+X-CSE-MsgGUID: 1YO/cASASji+ZanT1rJO5g==
+X-IronPort-AV: E=McAfee;i="6800,10657,11775"; a="82582122"
 X-IronPort-AV: E=Sophos;i="6.23,215,1770624000"; 
-   d="scan'208";a="78436930"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2026 23:58:41 -0700
-X-CSE-ConnectionGUID: JCXgGk+rR6i2nSfOpMFl2g==
-X-CSE-MsgGUID: DuO2+JgmTzuW74sPUnpvqA==
+   d="scan'208";a="82582122"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2026 00:01:01 -0700
+X-CSE-ConnectionGUID: lFWrn2JwSOmCqoVduvuxxQ==
+X-CSE-MsgGUID: tAtiDNAMTouiBbaFYNoCFg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.23,215,1770624000"; 
-   d="scan'208";a="234578650"
-Received: from hrotuna-mobl2.ger.corp.intel.com (HELO localhost) ([10.245.245.78])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2026 23:58:38 -0700
-Date: Mon, 4 May 2026 09:58:35 +0300
+   d="scan'208";a="239409099"
+Received: from black.igk.intel.com ([10.91.253.5])
+  by orviesa003.jf.intel.com with ESMTP; 04 May 2026 00:00:59 -0700
+Received: by black.igk.intel.com (Postfix, from userid 1003)
+	id 3DFE09D; Mon, 04 May 2026 09:00:58 +0200 (CEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Josua Mayer <josua@solid-run.com>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-	"linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+To: Peng Fan <peng.fan@nxp.com>,
+	linux-can@vger.kernel.org,
+	linux-phy@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>,
 	Neil Armstrong <neil.armstrong@linaro.org>,
-	Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v2 0/4] phy: phy-can-transceiver: Ad-hoc cleanups and
- refactoring
-Message-ID: <afhDm5_ydU83xFKU@ashevche-desk.local>
-References: <20260317203001.2108568-1-andriy.shevchenko@linux.intel.com>
- <ad6KwGIhpJn_2eVz@ashevche-desk.local>
- <7bcb68c4-e4bd-4ad9-bb75-99e0845b204c@solid-run.com>
- <ae9l4n8wocbVegcJ@ashevche-desk.local>
- <5d4c3c95-cbe1-4439-8036-b014264ce8c2@solid-run.com>
- <ae-AJdSrnXiuc1mW@ashevche-desk.local>
+	Josua Mayer <josua@solid-run.com>,
+	Ulf Hansson <ulfh@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 3/4] phy: phy-can-transceiver: Don't check for specific errors when parsing properties
+Date: Mon,  4 May 2026 08:58:54 +0200
+Message-ID: <20260504070054.29508-4-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.50.1
+In-Reply-To: <20260504070054.29508-1-andriy.shevchenko@linux.intel.com>
+References: <20260504070054.29508-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ae-AJdSrnXiuc1mW@ashevche-desk.local>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
- krs, Bertel Jungin Aukio 5, 02600 Espoo
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 27, 2026 at 06:26:34PM +0300, Andy Shevchenko wrote:
-> On Mon, Apr 27, 2026 at 01:41:43PM +0000, Josua Mayer wrote:
-> > Am 27.04.26 um 15:34 schrieb Andy Shevchenko:
-> > > On Mon, Apr 27, 2026 at 11:09:48AM +0000, Josua Mayer wrote:
-> > >> Am 14.04.26 um 20:43 schrieb Andy Shevchenko:
-> > >>> On Tue, Mar 17, 2026 at 09:27:26PM +0100, Andy Shevchenko wrote:
+Instead of checking for the specific error codes (that can be considered
+a layering violation to some extent) check for the property existence first
+and then either parse it, or apply a default value.
 
-...
+With that, return an error when parsing of the existing property fails.
 
-> > >> For unknown reason your patch-set did not arrive in my inbox.
-> > >> Perhaps it went missing for others, too?
-> > > Are you in the MAINTAINERS for this part of the kernel?
-> > > The CAN NETWORK DRIVERS and GENERIC PHY FRAMEWORK do not list your name.
-> > Correct. I touched can phy once related to mux only.
-> > > If you think of mail delivery in general, it's delivered at least to the ML
-> > > https://lore.kernel.org/all/20260317203001.2108568-1-andriy.shevchenko@linux.intel.com/
-> > >
-> > > TBH I don't know what to answer to your question as I don't know your expectations and
-> > > how it should be fulfilled taking into account my above question...
-> > 
-> > Changelog v2:
-> > - Cc'ed to Ulf and Josua due to above
-> > 
-> > This is why I expected it in my inbox.
-> > Usually in this situation I blame my provider.
-> 
-> Ah, blame me then. I most likely missed to add your name to the Cc list.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/phy/phy-can-transceiver.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-Hmm... I have checked and your address is in the Cc for the whole series,
-so I withdraw that I admit earlier that problem is on my side. Please, check
-if everything fine on yours. Note, I'm about to send a v3.
-
-> > > But thanks for the reviewing! I will address the commit message in v3.
-> > Great!
-> 
-> And will try hard to make sure your address will be in the Cc list.
-
+diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
+index 8411d36b463b..238c7963724b 100644
+--- a/drivers/phy/phy-can-transceiver.c
++++ b/drivers/phy/phy-can-transceiver.c
+@@ -128,8 +128,9 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
+ 	struct gpio_desc *standby_gpio;
+ 	struct gpio_desc *enable_gpio;
+ 	struct mux_state *mux_state;
+-	u32 max_bitrate = 0;
+ 	int err, i, num_ch = 1;
++	const char *propname;
++	u32 max_bitrate;
+ 
+ 	drvdata = device_get_match_data(dev);
+ 	if (drvdata->flags & CAN_TRANSCEIVER_DUAL_CH)
+@@ -148,8 +149,15 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
+ 
+ 	priv->mux_state = mux_state;
+ 
+-	err = device_property_read_u32(dev, "max-bitrate", &max_bitrate);
+-	if ((err != -EINVAL) && !max_bitrate)
++	propname = "max-bitrate";
++	if (device_property_present(dev, propname)) {
++		err = device_property_read_u32(dev, propname, &max_bitrate);
++		if (err)
++			return dev_err_probe(dev, err, "failed to parse %s\n", propname);
++	} else {
++		max_bitrate = 0;
++	}
++	if (max_bitrate == 0)
+ 		dev_warn(dev, "Invalid value for transceiver max bitrate. Ignoring bitrate limit\n");
+ 
+ 	for (i = 0; i < num_ch; i++) {
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.50.1
 
