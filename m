@@ -1,139 +1,110 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.220])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C66D83B8BBF
-	for <linux-can@vger.kernel.org>; Wed,  6 May 2026 12:00:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.220
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778068842; cv=pass; b=HA9EeF5JnCnx553onKd8mAoXwgYsblO5MIyla2uzvJUvulbrjYXfvevWcsJQs7UytwVeEGfFg86RBRq7J7RdMagxqInDUwuWjwhVwdrwMrFbJgEeQwy17lfrlviYgJ5tuMYPauX0w6AxznPGynx2CQmXF0v2K5lEvJu7COyzbsE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778068842; c=relaxed/simple;
-	bh=+6sqbU86n7LwqIfq+QjysXnoYvfn+I7mrHomMaLIo6Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YNVNn6fD3awQZ5NzQ9alliuwTJPbWevjuqx5Bg03g3cErgVTkaT/BBkOOOJx0IId66EkWzLMwRT12eSnZ2rFbGbyG8DyIBS8lv+rk1k87NNX8yWfv7jEpw0qqg9YdILc5IKsQ2Lv3ce6QjBBDGTFLePufWq0080HKb8+wwekjdQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=omFzNYJ6; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=It9Hplh9; arc=pass smtp.client-ip=81.169.146.220
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="omFzNYJ6";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="It9Hplh9"
-ARC-Seal: i=1; a=rsa-sha256; t=1778068470; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=DHStDaMOxEbEDnOpudpDEWmeeQYWGBjfd/bR5J/8ALPrFrjicpYvwSwLdCtVVhLAq+
-    /cVJvXuZoOqcO9im/DMf84LyP6ArzOLogbDQgdgC+a26gIKQvZNb+zo4uDaMVJNEgBCJ
-    E+oFrMpHpXhwXDcGvC3JYPw704jaFsKTFkv3bFIM4+zC2Roxf5JWPhb4j3M9YGQikYEB
-    2sHPWlvV2dH0aBG2d9vkKVhkbHQZ+UHRzdeEkW+01vJMQcZg9P9E75sgDMSlTLR499ls
-    N61uluGJZ7Elryq5/kg0OSQAv90O8JSA4pM8aTBLIhNAIWJtOvhIyqXW2vLh5UhDx/4b
-    rt8Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1778068470;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=ve5HqiTXqKKMoX47gbWYDUGjz+JiaCX7/parC47c64c=;
-    b=BSyKUX/EyDLUBiU2YNpIE7XMaYQzWsvb21nYM7yWsOjVlUR/ZdrzsFPU0k7T/bzJ36
-    mo2mi+dyHzJqOlEJ3nW+8ZpUfKaJljxtRcsk0gh3t6Vef1dI8QU/8EUYL9RMeCtWLwWl
-    NQbROuu/SF/l1GKqJqFmJSendXc+f+Re3tIHXtkGRKcnvDjlKFFvE0BxCszAOYp6VJJG
-    +pyiltwjG1/nq8isShMmfI1OQBG/SpPevMVbYCuUlH72R2/ILNROgZR0B4pnCdKE9cwM
-    BWWcpu11dB22XbLlbCxnsQ5ovfETHhr3rHO16Ju0XR7cJ22/Zth7R7HcujYukpGXtDnW
-    IniQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1778068470;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=ve5HqiTXqKKMoX47gbWYDUGjz+JiaCX7/parC47c64c=;
-    b=omFzNYJ6lfVNhBUuSA3UkgOYjuQA37NImHnAeoyb7n0Ege1orPBCJCUHgzIYisqssa
-    eNTaQRsth7TPUhq52vSlz3nRQjLwxXp9NtTS5qQEsvRdHyRRX0mRouaCOH9EbYqLodu4
-    X+ws+zKF08sFXH6ALop9dbkodpwOHGn6AqLIiMb1gDJZZsOH4oYEXhw7qsBsGqmNUXIK
-    06VBScrYWNLRdytX/3C1kQ+5AwuzmxRjqwd4Ki4Nx0a6d+osDO/7zE5OvLqiliUlHaed
-    i2BCcn056hVOazkoINLcfelaVIundrvQbdvez+2KfL/eeENUgdWPSNFQ+AHyTLzLAfcE
-    EGiA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1778068470;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=ve5HqiTXqKKMoX47gbWYDUGjz+JiaCX7/parC47c64c=;
-    b=It9Hplh9KtcCObWLu4USzPKdA0g4ly+Q+BVlJaOXI81qs6W0m4X15aDzjzFaUAx7sT
-    KXNg50z1PjyIXJ0C7rAQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeFQ7s1YTqptmo87qzm6sElmZEI+VN6rw=="
-Received: from [IPV6:2a00:6020:4a38:6800:3499:34c0:1f42:76da]
-    by smtp.strato.de (RZmta 55.0.1 AUTH)
-    with ESMTPSA id Kba96d246BsSVq9
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Wed, 6 May 2026 13:54:28 +0200 (CEST)
-Message-ID: <9110e56c-42e7-4299-963e-2e42f73b0eff@hartkopp.net>
-Date: Wed, 6 May 2026 13:54:23 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B93A44D685
+	for <linux-can@vger.kernel.org>; Wed,  6 May 2026 12:45:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778071521; cv=none; b=jc+FD1HZQYdnZtIkpcpOEORbZWrEcF++sGhDQstWW3jnBY/nMPGUYkcBb1y/r6LV6IfKuIoqMxZhpVfT2ZgmF/jxgkfQpjy/kZ7m2G5p5hMWcvICvsdiK2vxK1yyDVu6UGpcol7S70vdCxaDTa85gqUMZhnBikyiEfQm+9Ct2S8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778071521; c=relaxed/simple;
+	bh=NWovB+LCIxLhpw/65Db564/20c1STyUwksIxlP1/Td8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jyRURsZQaLkJS78+G+F54PsPyRWykxtT7I7GN/uSza5BqpIGHIfD2kEFHsDMd/w5a9JwGtN+27ZkS+fb3PK7VoilUu9brwvKXSSTA70NRnqRPwY1fX9w/Vb7X9DDtqqbke7rwBdQU+wHZhvKPMSdPovhOqsEJddmIvDUOKAjmIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1wKbcq-00034M-Bx; Wed, 06 May 2026 14:45:16 +0200
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1wKbcp-000kJL-2E;
+	Wed, 06 May 2026 14:45:16 +0200
+Received: from pengutronix.de (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id D3E2152F658;
+	Wed, 06 May 2026 12:45:15 +0000 (UTC)
+Date: Wed, 6 May 2026 14:45:15 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Lee Jones <lee@kernel.org>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] can: bcm: prevent thrtimer UAF in rx path by
+ checking RX_NO_AUTOTIMER
+Message-ID: <20260506-hulking-furry-anteater-ca4a04-mkl@pengutronix.de>
+X-AI: stop_reason: "refusal"
+References: <20260422102239.948594-1-lee@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] can: raw: add locking for raw flags bitfield
-To: Vincent Mailhol <mailhol@kernel.org>
-Cc: linux-can@vger.kernel.org, Eulgyu Kim <eulgyukim@snu.ac.kr>,
- Marc Kleine-Budde <mkl@pengutronix.de>
-References: <20260504111928.41856-1-socketcan@hartkopp.net>
- <CAMZ6RqJdF4xit5xvpGy6P9Nkenh6PT0meVpcL3UYZKx01yfQAg@mail.gmail.com>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <CAMZ6RqJdF4xit5xvpGy6P9Nkenh6PT0meVpcL3UYZKx01yfQAg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="e5ekygddi7i4j3qb"
+Content-Disposition: inline
+In-Reply-To: <20260422102239.948594-1-lee@kernel.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-Hello Vincent!
 
-On 06.05.26 12:22, Vincent Mailhol wrote:
-> On Mon. 4 May 2026 at 13:31, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
->> With commit 890e5198a6e5 ("can: raw: use bitfields to store flags in
->> struct raw_sock") the formerly separate integer values have been integrated
->> into a single bitfield. This led to a read-modify-write operation when
->> changing a flag in raw_setsockopt() which now needs a locking to prevent
->> concurrent access.
->>
->> Instead of adding a lock/unlock hell in each of the flag manipulations this
->> patch introduces a wrapper for a new raw_setsockopt_locked() function
->> analogue to the isotp_setsockopt[_locked]() approach in net/can/isotp.c
->>
->> Fixes: 890e5198a6e5 ("can: raw: use bitfields to store flags in struct raw_sock")
-> 
-> Arg, that's my patch, sorry for that!
+--e5ekygddi7i4j3qb
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 1/1] can: bcm: prevent thrtimer UAF in rx path by
+ checking RX_NO_AUTOTIMER
+MIME-Version: 1.0
 
-No problem. I did realize this either o_O
+On 22.04.2026 11:22:38, Lee Jones wrote:
+> Commit f1b4e32aca08 ("can: bcm: use call_rcu() instead of costly
+> synchronize_rcu()") removed the synchronize_rcu() call from
+> bcm_delete_rx_op() and introduced the RX_NO_AUTOTIMER flag to prevent
+> timers from being rearmed during deletion.  However, it only applied
+> this check to op->timer via bcm_rx_starttimer().
+>
+> It missed the fact that op->thrtimer can also be rearmed by an
+> in-flight bcm_rx_handler() (which runs as an RCU reader) via
+> bcm_rx_update_and_send().  This allows op->thrtimer to be queued after
+> bcm_remove_op() has already cancelled it, leading to a use-after-free
+> when the timer fires on the deferred-freed struct bcm_op.
+>
+> Address the omission by checking the RX_NO_AUTOTIMER flag
+> in bcm_rx_update_and_send() before starting op->thrtimer, effectively
+> preventing it from being rearmed concurrently with teardown.
+>
+> Signed-off-by: Lee Jones <lee@kernel.org>
 
->> Reported-by: Eulgyu Kim <eulgyukim@snu.ac.kr>
-> 
-> Maybe add a link to the report?
-> 
-> Link: https://lore.kernel.org/linux-can/20260503112200.22727-1-eulgyukim@snu.ac.kr/
+Applied to linux-can.
 
-Good idea. In fact checkpatch.pl said "Reported-by: should be 
-immediately followed by Closes: with a URL to the report"
+Thanks,
+Marc
 
-So it should be
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-Closes: 
-https://lore.kernel.org/linux-can/20260503112200.22727-1-eulgyukim@snu.ac.kr/
+--e5ekygddi7i4j3qb
+Content-Type: application/pgp-signature; name="signature.asc"
 
->> Tested-by: Eulgyu Kim <eulgyukim@snu.ac.kr>
->> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> 
-> I was able to trigger the bug locally using Eulgyu minimum reproducer
-> and I can confirm that the issue is correctly resolved by this patch.
-> I also think that globally holding the lock simplifies the logic. I
-> tried to think if there were any alternatives (like
-> READ_ONCE()/WRITE_ONCE() or atomic types) but none of these seem
-> applicable here.
-> 
-> Reviewed-by: Vincent Mailhol <mailhol@kernel.org>
-> Tested-by: Vincent Mailhol <mailhol@kernel.org>
+-----BEGIN PGP SIGNATURE-----
 
-Thanks Vincent!
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCafs32QAKCRDMOmT6rpmt
+0i00AP9R3Sc9X+w8rKl8GVKi2NXhM2bbAWHm7qupV67Rd6be3QD+KwIJuQ1k5KSG
+GFlDLPIxzxmgPGm2lDH9nHLH6XQGEAw=
+=PShS
+-----END PGP SIGNATURE-----
 
-Best regards,
-Oliver
+--e5ekygddi7i4j3qb--
