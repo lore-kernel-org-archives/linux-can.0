@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4471C3C345D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 448F93C3BF5
 	for <linux-can@vger.kernel.org>; Thu,  7 May 2026 11:23:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778153015; cv=none; b=gHMbpxGYfu+LGYM5Kqc8OwGD48XLsCZOC0L12a4UNlxXmonQBCrTZkesjkYxL+ejt0P7mV227RkTdX5vTmDiw0VHz0tx4YT6z50HFwyRFVBqbOfyTohtmN7kASG3RdKtQAYCZu6eFW8qgu/VutfW0CXmlw37ucQzpLjiTMhVTVk=
+	t=1778153015; cv=none; b=pPqhCEFFFDinZ67EJlVs6e7DVyMylbXTw9B+sGasvrBkSdE7xmuGIhEEv6pMTMU2OyTGP58856fmxdeDcmDAZHIgzHqtq/BsQmr1H93mnZ/oWCod7qTshbb12b+rYqmCwfgzSWWki6IUaJpaWfWmaoQxcKCTczWiG6hMQS3f8t8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1778153015; c=relaxed/simple;
-	bh=Pkq/BDOjNe9hNPvfxWkn84cA+kV3vsRmaPmix8Qgv5I=;
+	bh=bVYrqeAxyL/Twjn2fFQBa5p1kkETeUtUl9sUV//mpxE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=m4eMa68vhJAbGuJe4PEOo9T8Zs338KGJFNwRi9yutSxXKB9xKIGcXU3mCldaAvIxvzaTy1uJ1io0FkbszbJ5gDrn5AGqIvz2awQb59+zOXzL/kmjjkUKRrRFbQgeYf09KUXYrOiCdiW1zAiwYGsZ8XIufDLylgf/LVLPr6YNsko=
+	 MIME-Version; b=qu/j1v42ODPT6v+Xyb3gzoFzg8Cv7j07+RkAkLgNhqVY83GxdKbyPz8kAQztlpx+9Pv22b550f1nV5SRnJBqGo1hUUWJNGsG37OecECamdEU1weDbjy584RPRxPhpkecKQn7T/6vKssvLixQDZvrZ2wU7L//5aoUgxyDUEOnrfE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,19 +18,19 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1wKwpA-0002vj-69; Thu, 07 May 2026 13:23:24 +0200
+	id 1wKwpB-0002vm-13; Thu, 07 May 2026 13:23:25 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1wKwp8-000ufd-2w;
+	id 1wKwp9-000ufi-0K;
 	Thu, 07 May 2026 13:23:23 +0200
 Received: from blackshift.org (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 096DC530406;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 3A401530409;
 	Thu, 07 May 2026 11:23:23 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -38,13 +38,12 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
-	Eulgyu Kim <eulgyukim@snu.ac.kr>,
-	Vincent Mailhol <mailhol@kernel.org>,
+	Shuhao Fu <sfual@cse.ust.hk>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 1/6] can: raw: add locking for raw flags bitfield
-Date: Thu,  7 May 2026 10:22:23 +0200
-Message-ID: <20260507112321.439968-2-mkl@pengutronix.de>
+Subject: [PATCH net 4/6] can: j1939: fix lockless local-destination check
+Date: Thu,  7 May 2026 10:22:26 +0200
+Message-ID: <20260507112321.439968-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260507112321.439968-1-mkl@pengutronix.de>
 References: <20260507112321.439968-1-mkl@pengutronix.de>
@@ -60,169 +59,76 @@ X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Shuhao Fu <sfual@cse.ust.hk>
 
-With commit 890e5198a6e5 ("can: raw: use bitfields to store flags in
-struct raw_sock") the formerly separate integer values have been integrated
-into a single bitfield. This led to a read-modify-write operation when
-changing a flag in raw_setsockopt() which now needs a locking to prevent
-concurrent access.
+j1939_priv.ents[].nusers is documented as protected by priv->lock, and
+its updates already happen under that lock. j1939_can_recv() also reads
+it under read_lock_bh(). However, j1939_session_skb_queue() and
+j1939_tp_send() still read priv->ents[da].nusers without taking the
+lock.
 
-Instead of adding a lock/unlock hell in each of the flag manipulations this
-patch introduces a wrapper for a new raw_setsockopt_locked() function
-analogue to the isotp_setsockopt[_locked]() approach in net/can/isotp.c
+Those transport-side checks decide whether to set J1939_ECU_LOCAL_DST, so
+they can race with j1939_local_ecu_get() and j1939_local_ecu_put() while
+userspace is binding or releasing sockets concurrently with TP traffic.
+This can misclassify TP/ETP sessions as local or remote and take the wrong
+transport path.
 
-Fixes: 890e5198a6e5 ("can: raw: use bitfields to store flags in struct raw_sock")
-Reported-by: Eulgyu Kim <eulgyukim@snu.ac.kr>
-Closes: https://lore.kernel.org/linux-can/20260503112200.22727-1-eulgyukim@snu.ac.kr/
-Tested-by: Eulgyu Kim <eulgyukim@snu.ac.kr>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Reviewed-by: Vincent Mailhol <mailhol@kernel.org>
-Tested-by: Vincent Mailhol <mailhol@kernel.org>
-Link: https://patch.msgid.link/20260504111928.41856-1-socketcan@hartkopp.net
-[mkl: use Closes tag instead of Link]
+Fix both transport paths by routing the destination-locality check through
+a helper that reads ents[].nusers under read_lock_bh(&priv->lock).
+
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Signed-off-by: Shuhao Fu <sfual@cse.ust.hk>
+Tested-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Link: https://patch.msgid.link/20260419140614.GA4041240@chcpu16
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/raw.c | 66 +++++++++++++++++++++++----------------------------
- 1 file changed, 30 insertions(+), 36 deletions(-)
+ net/can/j1939/transport.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/net/can/raw.c b/net/can/raw.c
-index a26942e78e68..82d9c0499c95 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -562,8 +562,8 @@ static int raw_getname(struct socket *sock, struct sockaddr *uaddr,
- 	return RAW_MIN_NAMELEN;
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index 7ad56b5f17b9..25d96976d9d0 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -351,6 +351,18 @@ static void j1939_session_skb_drop_old(struct j1939_session *session)
+ 	}
  }
  
--static int raw_setsockopt(struct socket *sock, int level, int optname,
--			  sockptr_t optval, unsigned int optlen)
-+static int raw_setsockopt_locked(struct socket *sock, int optname,
-+				 sockptr_t optval, unsigned int optlen)
- {
- 	struct sock *sk = sock->sk;
- 	struct raw_sock *ro = raw_sk(sk);
-@@ -575,9 +575,6 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
- 	int flag;
- 	int err = 0;
- 
--	if (level != SOL_CAN_RAW)
--		return -EINVAL;
--
- 	switch (optname) {
- 	case CAN_RAW_FILTER:
- 		if (optlen % sizeof(struct can_filter) != 0)
-@@ -598,17 +595,11 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
- 				return -EFAULT;
- 		}
- 
--		rtnl_lock();
--		lock_sock(sk);
--
- 		dev = ro->dev;
--		if (ro->bound && dev) {
--			if (dev->reg_state != NETREG_REGISTERED) {
--				if (count > 1)
--					kfree(filter);
--				err = -ENODEV;
--				goto out_fil;
--			}
-+		if (ro->bound && dev && dev->reg_state != NETREG_REGISTERED) {
-+			if (count > 1)
-+				kfree(filter);
-+			return -ENODEV;
- 		}
- 
- 		if (ro->bound) {
-@@ -622,7 +613,7 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
- 			if (err) {
- 				if (count > 1)
- 					kfree(filter);
--				goto out_fil;
-+				return err;
- 			}
- 
- 			/* remove old filter registrations */
-@@ -642,11 +633,6 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
- 		}
- 		ro->filter = filter;
- 		ro->count  = count;
--
-- out_fil:
--		release_sock(sk);
--		rtnl_unlock();
--
- 		break;
- 
- 	case CAN_RAW_ERR_FILTER:
-@@ -658,16 +644,9 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
- 
- 		err_mask &= CAN_ERR_MASK;
- 
--		rtnl_lock();
--		lock_sock(sk);
--
- 		dev = ro->dev;
--		if (ro->bound && dev) {
--			if (dev->reg_state != NETREG_REGISTERED) {
--				err = -ENODEV;
--				goto out_err;
--			}
--		}
-+		if (ro->bound && dev && dev->reg_state != NETREG_REGISTERED)
-+			return -ENODEV;
- 
- 		/* remove current error mask */
- 		if (ro->bound) {
-@@ -676,7 +655,7 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
- 						   err_mask);
- 
- 			if (err)
--				goto out_err;
-+				return err;
- 
- 			/* remove old err_mask registration */
- 			raw_disable_errfilter(sock_net(sk), dev, sk,
-@@ -685,11 +664,6 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
- 
- 		/* link new err_mask to the socket */
- 		ro->err_mask = err_mask;
--
-- out_err:
--		release_sock(sk);
--		rtnl_unlock();
--
- 		break;
- 
- 	case CAN_RAW_LOOPBACK:
-@@ -769,6 +743,26 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
- 	return err;
- }
- 
-+static int raw_setsockopt(struct socket *sock, int level, int optname,
-+			  sockptr_t optval, unsigned int optlen)
++static bool j1939_address_is_local(struct j1939_priv *priv, u8 addr)
 +{
-+	struct sock *sk = sock->sk;
-+	int err;
++	bool local = false;
 +
-+	if (level != SOL_CAN_RAW)
-+		return -EINVAL;
++	read_lock_bh(&priv->lock);
++	if (j1939_address_is_unicast(addr) && priv->ents[addr].nusers)
++		local = true;
++	read_unlock_bh(&priv->lock);
 +
-+	rtnl_lock();
-+	lock_sock(sk);
-+
-+	err = raw_setsockopt_locked(sock, optname, optval, optlen);
-+
-+	release_sock(sk);
-+	rtnl_unlock();
-+
-+	return err;
++	return local;
 +}
 +
- static int raw_getsockopt(struct socket *sock, int level, int optname,
- 			  sockopt_t *opt)
+ void j1939_session_skb_queue(struct j1939_session *session,
+ 			     struct sk_buff *skb)
  {
-
-base-commit: b266bacba796ff5c4dcd2ae2fc08aacf7ab39153
+@@ -359,8 +371,7 @@ void j1939_session_skb_queue(struct j1939_session *session,
+ 
+ 	j1939_ac_fixup(priv, skb);
+ 
+-	if (j1939_address_is_unicast(skcb->addr.da) &&
+-	    priv->ents[skcb->addr.da].nusers)
++	if (j1939_address_is_local(priv, skcb->addr.da))
+ 		skcb->flags |= J1939_ECU_LOCAL_DST;
+ 
+ 	skcb->flags |= J1939_ECU_LOCAL_SRC;
+@@ -2038,8 +2049,7 @@ struct j1939_session *j1939_tp_send(struct j1939_priv *priv,
+ 		return ERR_PTR(ret);
+ 
+ 	/* fix DST flags, it may be used there soon */
+-	if (j1939_address_is_unicast(skcb->addr.da) &&
+-	    priv->ents[skcb->addr.da].nusers)
++	if (j1939_address_is_local(priv, skcb->addr.da))
+ 		skcb->flags |= J1939_ECU_LOCAL_DST;
+ 
+ 	/* src is always local, I'm sending ... */
 -- 
 2.53.0
 
