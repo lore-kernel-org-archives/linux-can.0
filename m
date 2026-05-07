@@ -1,134 +1,98 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 448F93C3BF5
-	for <linux-can@vger.kernel.org>; Thu,  7 May 2026 11:23:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40CA33E9280;
+	Thu,  7 May 2026 12:43:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778153015; cv=none; b=pPqhCEFFFDinZ67EJlVs6e7DVyMylbXTw9B+sGasvrBkSdE7xmuGIhEEv6pMTMU2OyTGP58856fmxdeDcmDAZHIgzHqtq/BsQmr1H93mnZ/oWCod7qTshbb12b+rYqmCwfgzSWWki6IUaJpaWfWmaoQxcKCTczWiG6hMQS3f8t8=
+	t=1778157787; cv=none; b=WpR4bB7uvAoIOqA7YnmPK2xlh/VA7UywnQHNGkob4JyG3/Oc1RMMv38Twle5gM1U64FDCR+jr2SnBQ0i34cbt+D5DVtAjab8N1ww7haBKvdSeZnbtw6k8lIhtULUKINrfETpKdsIZ4Cdtq8hFJBptAfYrCiSIHvjtvquJG/28I0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778153015; c=relaxed/simple;
-	bh=bVYrqeAxyL/Twjn2fFQBa5p1kkETeUtUl9sUV//mpxE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qu/j1v42ODPT6v+Xyb3gzoFzg8Cv7j07+RkAkLgNhqVY83GxdKbyPz8kAQztlpx+9Pv22b550f1nV5SRnJBqGo1hUUWJNGsG37OecECamdEU1weDbjy584RPRxPhpkecKQn7T/6vKssvLixQDZvrZ2wU7L//5aoUgxyDUEOnrfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1wKwpB-0002vm-13; Thu, 07 May 2026 13:23:25 +0200
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1wKwp9-000ufi-0K;
-	Thu, 07 May 2026 13:23:23 +0200
-Received: from blackshift.org (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 3A401530409;
-	Thu, 07 May 2026 11:23:23 +0000 (UTC)
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	kuba@kernel.org,
-	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	Shuhao Fu <sfual@cse.ust.hk>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 4/6] can: j1939: fix lockless local-destination check
-Date: Thu,  7 May 2026 10:22:26 +0200
-Message-ID: <20260507112321.439968-5-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260507112321.439968-1-mkl@pengutronix.de>
-References: <20260507112321.439968-1-mkl@pengutronix.de>
+	s=arc-20240116; t=1778157787; c=relaxed/simple;
+	bh=KcJZ2tQuXM3g8y12mvLrPHW/18cvpRwsmiGbk6LCNUw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KPAkgn822TlgaVoeVSJUj8PyOz6nrWjC6S2EXVaKnLoA7B4w+GN/xOk/1bJ7XbJ/1lMCMlPNTzc2hwtz2S5mEuPLBiUtSVZvMP3HaxTp69l6gbCtKiMydl8afScCpfUA0/J1wj9T5mXnmN4fQ6N2yMYBNyO9ECjgxcHpCX6YbCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ivYdaGlo; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ivYdaGlo"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8C71C2BCB2;
+	Thu,  7 May 2026 12:43:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778157786;
+	bh=KcJZ2tQuXM3g8y12mvLrPHW/18cvpRwsmiGbk6LCNUw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ivYdaGloqHxvmfWXSxe1ELUU+RwECDQ3Ot2aFXb4yrVAQge39ukfDNjlED2qvSaZs
+	 oSt9fjlj41wvhoEbVNAed0bzuECz1Oa95CYmBbYRw0rA0lZ8l9e/vqg/NeLtwbC19N
+	 3hYoFNUyTffpG57XqltsjWbSULV11ZgH5g7UwlzF1x7ugsFp30oZACYww61xrFhatG
+	 KoRJQygv77yLSMgafEG2DAH28LcK6ci1wOLt30Yz6lU12saNClOW9EhizsmcbNgdgT
+	 jT4aUZyOu/eFs9CUbXRH7QpgIJoU/ZtJIIgNJ7J0HyBjmQjfOVOs6ABn8AUS1lo8s4
+	 e7SElQxE0X/ug==
+Message-ID: <fdd6fc14-f607-4186-8db4-25de973ac322@kernel.org>
+Date: Thu, 7 May 2026 22:43:01 +1000
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-can@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 4/4] m68k: coldfire: fix non-standard readX()/writeX()
+ functions
+To: Arnd Bergmann <arnd@kernel.org>, linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-can@vger.kernel.org, linux-spi@vger.kernel.org,
+ Vladimir Oltean <olteanv@gmail.com>,
+ Angelo Dureghello <adureghello@baylibre.com>
+References: <20260506142644.3234270-2-gerg@kernel.org>
+ <20260506142644.3234270-8-gerg@kernel.org>
+ <40aefc39-bd98-460d-8aa7-5dd79f562e0d@app.fastmail.com>
+Content-Language: en-US
+From: Greg Ungerer <gerg@kernel.org>
+In-Reply-To: <40aefc39-bd98-460d-8aa7-5dd79f562e0d@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Shuhao Fu <sfual@cse.ust.hk>
+Hi Arnd,
 
-j1939_priv.ents[].nusers is documented as protected by priv->lock, and
-its updates already happen under that lock. j1939_can_recv() also reads
-it under read_lock_bh(). However, j1939_session_skb_queue() and
-j1939_tp_send() still read priv->ents[da].nusers without taking the
-lock.
+On 7/5/26 05:12, Arnd Bergmann wrote:
+> On Wed, May 6, 2026, at 16:26, Greg Ungerer wrote:
+> 
+>> drivers/dma/mcf-edma-main.c
+>>    Supports big-endian access by setting the big-endian flag of
+>>    the drivers struct fsl_edma_engine. But locally should be using
+>>    ioread32be() and iowrite32be() instead of ioread32() and iowrite32().
+> 
+> I'm still a bit confused about how this works at the moment,
+> since the drivers/dma/fsl-edma-common.h file already contains
+> checks for the edma->big_endian flag, which is set in
+> mcf_edma_probe(). The version after your patch makes sense
+> to me, but it looks like the existing code cannot work.
 
-Those transport-side checks decide whether to set J1939_ECU_LOCAL_DST, so
-they can race with j1939_local_ecu_get() and j1939_local_ecu_put() while
-userspace is binding or releasing sockets concurrently with TP traffic.
-This can misclassify TP/ETP sessions as local or remote and take the wrong
-transport path.
+Yes, it certainly doesn't look right to me either.
 
-Fix both transport paths by routing the destination-locality check through
-a helper that reads ents[].nusers under read_lock_bh(&priv->lock).
+Angelo: you look to be the original author of this driver, can you shed any
+light on its working status in mainline currently?
 
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Shuhao Fu <sfual@cse.ust.hk>
-Tested-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://patch.msgid.link/20260419140614.GA4041240@chcpu16
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- net/can/j1939/transport.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 7ad56b5f17b9..25d96976d9d0 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -351,6 +351,18 @@ static void j1939_session_skb_drop_old(struct j1939_session *session)
- 	}
- }
- 
-+static bool j1939_address_is_local(struct j1939_priv *priv, u8 addr)
-+{
-+	bool local = false;
-+
-+	read_lock_bh(&priv->lock);
-+	if (j1939_address_is_unicast(addr) && priv->ents[addr].nusers)
-+		local = true;
-+	read_unlock_bh(&priv->lock);
-+
-+	return local;
-+}
-+
- void j1939_session_skb_queue(struct j1939_session *session,
- 			     struct sk_buff *skb)
- {
-@@ -359,8 +371,7 @@ void j1939_session_skb_queue(struct j1939_session *session,
- 
- 	j1939_ac_fixup(priv, skb);
- 
--	if (j1939_address_is_unicast(skcb->addr.da) &&
--	    priv->ents[skcb->addr.da].nusers)
-+	if (j1939_address_is_local(priv, skcb->addr.da))
- 		skcb->flags |= J1939_ECU_LOCAL_DST;
- 
- 	skcb->flags |= J1939_ECU_LOCAL_SRC;
-@@ -2038,8 +2049,7 @@ struct j1939_session *j1939_tp_send(struct j1939_priv *priv,
- 		return ERR_PTR(ret);
- 
- 	/* fix DST flags, it may be used there soon */
--	if (j1939_address_is_unicast(skcb->addr.da) &&
--	    priv->ents[skcb->addr.da].nusers)
-+	if (j1939_address_is_local(priv, skcb->addr.da))
- 		skcb->flags |= J1939_ECU_LOCAL_DST;
- 
- 	/* src is always local, I'm sending ... */
--- 
-2.53.0
+>> drivers/spi/spi-fsl-dspi.c
+>>    Setting the regmap format_endian flags to use native endian will
+>>    force driver to use appropriate big or little endian access on
+>>    whatever platform it is built for.
+>>
+>> These drivers have only been compile tested.
+> 
+> I would suggest marking these as explicit BIG_ENDIAN rather than
+> NATIVE_ENDIAN. The effect should be the same since coldfire CPUs
+> cannot run little-endian code, but the way that hardware usually
+> works is that the endianess is fixed at the bus level to one way
+> or the other. NATIVE_ENDIAN to me implies that the registers
+> have configurable endianess that is switched along with the CPU
+> mode.
+
+Ok, will change. I chose native endian in this case since the regmap config
+entry used for the m5441x family is also used by the vf610 devce (which looks
+to be an ARM imx SoC). So it will need a duplicate setup with those endian
+flags set to BIG_ENDIAN. But that is no problem.
+
+Thanks
+Greg
 
