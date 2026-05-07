@@ -1,16 +1,15 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACF99265CDD
-	for <linux-can@vger.kernel.org>; Thu,  7 May 2026 10:57:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA94B37D13E
+	for <linux-can@vger.kernel.org>; Thu,  7 May 2026 11:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778151429; cv=none; b=j3rbcQDpSsQJDjAaBAcu+5szQhfZPmGPAHw7/h1o5eN672HcNhIFexjXWeg5dTK29M/ApQfFBYbZ76W/CMJXVl1YWOMH9FjSIh6q/4MJWjOpqTL3mFBaKTNRPsKv8JdYPffc6Q/BjA1n97eY0V2vr7qBKy9RutMJVZ84jXHmBj8=
+	t=1778153008; cv=none; b=oLeO+XGY8VrFECrbiFAPvoJel2DoP5QnV/fbmY2Pt3JNwc5kJ7ofaoox9tckakx+/L9nj+M9CmxJ27mQdLJKagb//B07Ed+3bQE9UTb10iaCuma9CPLeSFE5fkSXuXMecHISm91LhGiSIqaWX0eVcGfWIihiJme80SKWias7Rys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778151429; c=relaxed/simple;
-	bh=WMCbfhuXrBYuEWLT18FkbVAMISdQACtlTz7psEBX2BA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TEw9qkjQKOG9t+WYieXeHV9r+9BZBzBUDnkn/lRwYqGjjqUnpNC7KWy4LguiPXby3XuSLbumYINCMjDYjKU1GI/GZaM+rcaxUQIfA/e5vN10X+KcKjk4qQtPYfywcpdJAGm6TU8LV/OtCTpFPGQSwgh3RHOPPp77f+v9YRETS5o=
+	s=arc-20240116; t=1778153008; c=relaxed/simple;
+	bh=mUOYDX69Yo2Cey6LzU6C+AKQLmkzTJl6hjB+pZR5lyk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KtR0HEcKc5wSBwKuqZ0/sRHZVpAK6IIafelCmzrX+JZ3kIBUcZ6BcHiaX+fgWux6N63qfFFEdJsszqxURbxHheWTQ+ecLkyDdDlhWwzwg+ZAULOmHROq2DoS9Uvvsc9qH2sUbphGJ/5n/Fht809uFCsmyjIBhOrLHaUlLSz4bPw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,325 +17,119 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1wKwOz-0001uh-6W; Thu, 07 May 2026 12:56:21 +0200
+	id 1wKwp9-0002vi-Kp; Thu, 07 May 2026 13:23:23 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1wKwOQ-000uFj-2Z;
-	Thu, 07 May 2026 12:55:47 +0200
-Received: from pengutronix.de (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
+	id 1wKwp8-000ufc-2Z;
+	Thu, 07 May 2026 13:23:23 +0200
+Received: from blackshift.org (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 2374E5302D0;
-	Thu, 07 May 2026 10:55:46 +0000 (UTC)
-Date: Thu, 7 May 2026 12:55:45 +0200
+	by smtp.blackshift.org (Postfix) with ESMTPSA id F3CCB530405;
+	Thu, 07 May 2026 11:23:22 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig_=28The_Capable_Hub=29?= <u.kleine-koenig@baylibre.com>
-Cc: Michael Grzeschik <mgr@kernel.org>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Vincent Mailhol <mailhol@kernel.org>, 
-	Krzysztof Halasa <khc@pm.waw.pl>, Johannes Berg <johannes@sipsolutions.net>, 
-	Steffen Klassert <klassert@kernel.org>, David Dillow <dave@thedillows.org>, 
-	Ion Badulescu <ionut@badula.org>, Mark Einon <mark.einon@gmail.com>, 
-	Rasesh Mody <rmody@marvell.com>, GR-Linux-NIC-Dev@marvell.com, 
-	Manish Chopra <manishc@marvell.com>, Potnuri Bharat Teja <bharat@chelsio.com>, 
-	Denis Kirjanov <kirjanov@gmail.com>, Jijie Shao <shaojijie@huawei.com>, 
-	Jian Shen <shenjian15@huawei.com>, Cai Huoqing <cai.huoqing@linux.dev>, 
-	Fan Gong <gongfan1@huawei.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Tariq Toukan <tariqt@nvidia.com>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	Mark Bloch <mbloch@nvidia.com>, Ido Schimmel <idosch@nvidia.com>, 
-	Petr Machata <petrm@nvidia.com>, Yibo Dong <dong100@mucse.com>, 
-	Heiner Kallweit <hkallweit1@gmail.com>, nic_swsd@realtek.com, Jiri Pirko <jiri@resnulli.us>, 
-	Francois Romieu <romieu@fr.zoreil.com>, Daniele Venzano <venza@brownhat.org>, 
-	Samuel Chessman <chessman@tux.org>, Jiawen Wu <jiawenwu@trustnetic.com>, 
-	Mengyuan Lou <mengyuanlou@net-swift.com>, Kevin Curtis <kevin.curtis@farsite.co.uk>, 
-	Arend van Spriel <arend.vanspriel@broadcom.com>, Stanislav Yakovlev <stas.yakovlev@gmail.com>, 
-	Richard Cochran <richardcochran@gmail.com>, Kees Cook <kees@kernel.org>, 
-	Aleksandr Loktionov <aleksandr.loktionov@intel.com>, Thomas Gleixner <tglx@kernel.org>, 
-	Jacob Keller <jacob.e.keller@intel.com>, Thomas Fourier <fourier.thomas@gmail.com>, 
-	Ingo Molnar <mingo@kernel.org>, Kory Maincent <kory.maincent@bootlin.com>, 
-	Zilin Guan <zilin@seu.edu.cn>, Vadim Fedorenko <vadim.fedorenko@linux.dev>, 
-	Marco Crivellari <marco.crivellari@suse.com>, Bjorn Helgaas <bhelgaas@google.com>, 
-	David Arinzon <darinzon@amazon.com>, Yeounsu Moon <yyyynoom@gmail.com>, 
-	Denis Benato <benato.denis96@gmail.com>, Yonglong Liu <liuyonglong@huawei.com>, 
-	Andy Shevchenko <andriy.shevchenko@intel.com>, Randy Dunlap <rdunlap@infradead.org>, 
-	Yicong Hui <yiconghui@gmail.com>, MD Danish Anwar <danishanwar@ti.com>, 
-	Nathan Chancellor <nathan@kernel.org>, Ethan Nelson-Moore <enelsonmoore@gmail.com>, 
-	Larysa Zaremba <larysa.zaremba@intel.com>, Ian Lin <ian.lin@infineon.com>, 
-	Colin Ian King <colin.i.king@gmail.com>, Double Lo <double.lo@cypress.com>, 
-	Markus Schneider-Pargmann <msp@baylibre.com>, Simon Horman <horms@kernel.org>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org, oss-drivers@corigine.com, 
-	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com
-Subject: Re: [PATCH net-next v2 1/2] net: Consistently define pci_device_ids
- using named initializers
-Message-ID: <20260507-healthy-gainful-fox-500552-mkl@pengutronix.de>
-X-AI: stop_reason: "refusal"
-References: <cover.1778149923.git.u.kleine-koenig@baylibre.com>
- <76da4f44d48bdde84580963862bf9616bee5c9e9.1778149923.git.u.kleine-koenig@baylibre.com>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net,
+	kuba@kernel.org,
+	linux-can@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: [PATCH net 0/6] pull-request: can 2026-05-07
+Date: Thu,  7 May 2026 10:22:22 +0200
+Message-ID: <20260507112321.439968-1-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="bj6moo23k7mnjddb"
-Content-Disposition: inline
-In-Reply-To: <76da4f44d48bdde84580963862bf9616bee5c9e9.1778149923.git.u.kleine-koenig@baylibre.com>
+Content-Type: text/plain; charset=utf8
+Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
+Hello netdev-team,
 
---bj6moo23k7mnjddb
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH net-next v2 1/2] net: Consistently define pci_device_ids
- using named initializers
-MIME-Version: 1.0
+this is a pull request of 6 patches for net/main.
 
-> diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/=
-plx_pci.c
-> index 08183833c9bc..a03553b80a5d 100644
-> --- a/drivers/net/can/sja1000/plx_pci.c
-> +++ b/drivers/net/can/sja1000/plx_pci.c
-> @@ -272,124 +272,89 @@ static struct plx_pci_card_info plx_pci_card_info_=
-asem_dual_can =3D {
->  static const struct pci_device_id plx_pci_tbl[] =3D {
->  	{
->  		/* Adlink PCI-7841/cPCI-7841 */
-> -		ADLINK_PCI_VENDOR_ID, ADLINK_PCI_DEVICE_ID,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		PCI_CLASS_NETWORK_OTHER << 8, ~0,
-> -		(kernel_ulong_t)&plx_pci_card_info_adlink
-> -	},
-> -	{
-> +		PCI_DEVICE(ADLINK_PCI_VENDOR_ID, ADLINK_PCI_DEVICE_ID),
-> +		.class =3D PCI_CLASS_NETWORK_OTHER << 8,
-> +		.class_mask =3D ~0,
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_adlink,
-> +	}, {
->  		/* Adlink PCI-7841/cPCI-7841 SE */
-> -		ADLINK_PCI_VENDOR_ID, ADLINK_PCI_DEVICE_ID,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		PCI_CLASS_COMMUNICATION_OTHER << 8, ~0,
-> -		(kernel_ulong_t)&plx_pci_card_info_adlink_se
-> -	},
-> -	{
-> +		PCI_DEVICE(ADLINK_PCI_VENDOR_ID, ADLINK_PCI_DEVICE_ID),
-> +		.class =3D PCI_CLASS_COMMUNICATION_OTHER << 8,
-> +		.class_mask =3D ~0,
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_adlink_se,
-> +	}, {
->  		/* esd CAN-PCI/200 */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9050,
-> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI200,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_esd200
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9050,
-> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI200),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd200,
-> +	}, {
->  		/* esd CAN-CPCI/200 */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9030,
-> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_CPCI200,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_esd200
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9030,
-> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_CPCI200),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd200,
-> +	}, {
->  		/* esd CAN-PCI104/200 */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9030,
-> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI104200,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_esd200
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9030,
-> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI104200),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd200,
-> +	}, {
->  		/* esd CAN-PCI/266 */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9056,
-> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI266,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_esd266
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9056,
-> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI266),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd266,
-> +	}, {
->  		/* esd CAN-PMC/266 */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9056,
-> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PMC266,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_esd266
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9056,
-> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PMC266),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd266,
-> +	}, {
->  		/* esd CAN-PCIE/2000 */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9056,
-> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCIE2000,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_esd2000
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9056,
-> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCIE2000),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd2000,
-> +	}, {
->  		/* IXXAT PC-I 04/PCI card */
-> -		IXXAT_PCI_VENDOR_ID, IXXAT_PCI_DEVICE_ID,
-> -		PCI_ANY_ID, IXXAT_PCI_SUB_SYS_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_ixxat
-> -	},
-> -	{
-> +		PCI_DEVICE_SUB(IXXAT_PCI_VENDOR_ID, IXXAT_PCI_DEVICE_ID,
-> +			       PCI_ANY_ID, IXXAT_PCI_SUB_SYS_ID),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_ixxat,
-> +	}, {
->  		/* Marathon CAN-bus-PCI card */
-> -		PCI_VENDOR_ID_PLX, MARATHON_PCI_DEVICE_ID,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_marathon_pci
-> -	},
-> -	{
-> +		PCI_VDEVICE(PLX, MARATHON_PCI_DEVICE_ID),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_marathon_pci,
-> +	}, {
->  		/* Marathon CAN-bus-PCIe card */
-> -		PCI_VENDOR_ID_PLX, MARATHON_PCIE_DEVICE_ID,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_marathon_pcie
-> -	},
-> -	{
-> +		PCI_VDEVICE(PLX, MARATHON_PCIE_DEVICE_ID),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_marathon_pcie,
-> +	}, {
->  		/* TEWS TECHNOLOGIES TPMC810 card */
-> -		TEWS_PCI_VENDOR_ID, TEWS_PCI_DEVICE_ID_TMPC810,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_tews
-> -	},
-> -	{
-> +		PCI_DEVICE(TEWS_PCI_VENDOR_ID, TEWS_PCI_DEVICE_ID_TMPC810),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_tews,
-> +	}, {
->  		/* Connect Tech Inc. CANpro/104-Plus Opto (CRG001) card */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9030,
-> -		PCI_SUBVENDOR_ID_CONNECT_TECH, CTI_PCI_DEVICE_ID_CRG001,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_cti
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9030,
-> +				PCI_SUBVENDOR_ID_CONNECT_TECH, CTI_PCI_DEVICE_ID_CRG001),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_cti,
-> +	}, {
->  		/* Elcus CAN-200-PCI */
-> -		CAN200PCI_VENDOR_ID, CAN200PCI_DEVICE_ID,
-> -		CAN200PCI_SUB_VENDOR_ID, CAN200PCI_SUB_DEVICE_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_elcus
-> -	},
-> -	{
-> +		PCI_DEVICE_SUB(CAN200PCI_VENDOR_ID, CAN200PCI_DEVICE_ID,
-> +			       CAN200PCI_SUB_VENDOR_ID, CAN200PCI_SUB_DEVICE_ID),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_elcus,
-> +	}, {
->  		/* moxa */
-> -		MOXA_PCI_VENDOR_ID, MOXA_PCI_DEVICE_ID,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_moxa
-> -	},
-> -	{
-> +		PCI_DEVICE(MOXA_PCI_VENDOR_ID, MOXA_PCI_DEVICE_ID),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_moxa,
-> +	}, {
->  		/* ASEM Dual CAN raw */
-> -		ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
-> -		ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_asem_dual_can
-> -	},
-> -	{
-> +		PCI_DEVICE_SUB(ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
-> +			       ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_asem_dual_can,
-> +	}, {
->  		/* ASEM Dual CAN raw -new model */
-> -		ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
-> -		ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID_BIS,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_asem_dual_can
-> +		PCI_DEVICE_SUB(ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
-> +			       ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID_BIS),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_asem_dual_can,
->  	},
-> -	{ 0,}
-> +	{ }
+The first patch is by Oliver Hartkopp and adds missing locking to the
+raw_setsockopt() function in the CAN raw protocol.
 
-Nitpick: can you convert the terminating entry to follow the same style
-as the rest of the driver:
+A patch by Lee Jones fixes a hrtimer Use-After-Free in the CAN
+broadcast manager protocol.
 
-diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/pl=
-x_pci.c
-index a03553b80a5d..d69ff0ccfd94 100644
---- a/drivers/net/can/sja1000/plx_pci.c
-+++ b/drivers/net/can/sja1000/plx_pci.c
-@@ -353,8 +353,8 @@ static const struct pci_device_id plx_pci_tbl[] =3D {
-                 PCI_DEVICE_SUB(ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE=
-_ID,
-                                ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SU=
-B_DEVICE_ID_BIS),
-                 .driver_data =3D (kernel_ulong_t)&plx_pci_card_info_asem_d=
-ual_can,
--        },
--        { }
-+        }, {
-+        }
- };
- MODULE_DEVICE_TABLE(pci, plx_pci_tbl);
+Alexander Hölzl's patch fixes the RX timeout for CTS holds messages in
+the CAN J1939 protocol.
 
+Shuhao Fu contributes a patch that adds missing locking to the
+local-destination check in the CAN J1939 protocol.
+
+Stéphane Grosjean's patch updates his email address.
+
+The last patch is by Ciprian Marian Costea and consistently
+disables/enables the all IRQ lines while writing the IRQ enable
+registers.
+
+regards,
 Marc
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+---
 
---bj6moo23k7mnjddb
-Content-Type: application/pgp-signature; name="signature.asc"
+The following changes since commit b266bacba796ff5c4dcd2ae2fc08aacf7ab39153:
 
------BEGIN PGP SIGNATURE-----
+  net: ethernet: cortina: Drop half-assembled SKB (2026-05-06 18:43:41 -0700)
 
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCafxvrQAKCRDMOmT6rpmt
-0pHeAP9XFcWG4TIkfsDgMbSsjB0BDeIaX/oOHy7GN10y7WrRXAD9HGFep6ozobs7
-Ky/tnJ+5OGyoiQeSoshTzXtNkIIEoQA=
-=kV9y
------END PGP SIGNATURE-----
+are available in the Git repository at:
 
---bj6moo23k7mnjddb--
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-7.1-20260507
+
+for you to fetch changes up to f22a636357d5ff4fd2bb10d8079d851ccb320438:
+
+  can: flexcan: disable all IRQ lines in flexcan_chip_interrupts_enable() (2026-05-07 10:05:55 +0200)
+
+----------------------------------------------------------------
+linux-can-fixes-for-7.1-20260507
+
+----------------------------------------------------------------
+Alexander Hölzl (1):
+      can: j1939: fix wrong RX timeout for CTS hold messages
+
+Ciprian Marian Costea (1):
+      can: flexcan: disable all IRQ lines in flexcan_chip_interrupts_enable()
+
+Lee Jones (1):
+      can: bcm: prevent thrtimer UAF in rx path by checking RX_NO_AUTOTIMER
+
+Oliver Hartkopp (1):
+      can: raw: add locking for raw flags bitfield
+
+Shuhao Fu (1):
+      can: j1939: fix lockless local-destination check
+
+Stéphane Grosjean (1):
+      can: peak: Modification of references to email accounts being deleted
+
+ .mailmap                                      |  4 +-
+ drivers/net/can/flexcan/flexcan-core.c        | 14 ++++++
+ drivers/net/can/peak_canfd/peak_canfd.c       |  2 +-
+ drivers/net/can/peak_canfd/peak_canfd_user.h  |  2 +-
+ drivers/net/can/peak_canfd/peak_pciefd_main.c |  4 +-
+ drivers/net/can/sja1000/peak_pci.c            |  4 +-
+ drivers/net/can/sja1000/peak_pcmcia.c         |  4 +-
+ drivers/net/can/usb/peak_usb/pcan_usb.c       |  2 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c  |  4 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h  |  2 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c    |  2 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c   |  2 +-
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.h   |  2 +-
+ include/linux/can/dev/peak_canfd.h            |  2 +-
+ net/can/bcm.c                                 |  6 +++
+ net/can/j1939/transport.c                     | 20 ++++++--
+ net/can/raw.c                                 | 66 ++++++++++++---------------
+ 17 files changed, 83 insertions(+), 59 deletions(-)
