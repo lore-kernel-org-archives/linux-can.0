@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E0873B7B7D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 756103BE178
 	for <linux-can@vger.kernel.org>; Thu,  7 May 2026 11:23:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778153011; cv=none; b=OPtqdjNo4+lE/wMPpK3LoDAEZ/RzMmGS+XEQiJubK4gpyGrXkFvkrMmvcyiQBCF51eOJE9q1K4P4/55XLic9ev7FgF/Z2Ctx/6oQIk2VReeQsy5V+hexFMTC7ozw1nvZSgoIw+qTbrdJC/ei64mFrrYlGyEAvtCGqE4b6NlUrro=
+	t=1778153011; cv=none; b=Q/wpUta0awUIXYI16r2dmp4C8Doh2zzYvgFFzB3XoqgGH+bbLUndjFVEzpZZiAvKPaZlePkcPFzvVVA0nr/Dmy0sen9ctdMvGjQF/o1P7YoYdCUMx6EjKX9f+yNMzvQ8OW6+EStqqowF+FmZ072wUcBYIpHyYtVkI5SZ65J0eZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1778153011; c=relaxed/simple;
-	bh=b5QGLrdMcXO/r/dp1/Y+Gcb8f+3BvNPmsAVZJ++CwT8=;
+	bh=cqQ3bd1BbIIz1RvSUCEvedVw8QOoXwyj7R7QNKLoSpU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GU6ZPdICUV5gnG7r5htGTGjDoascC89qKKHvjcxXIoNXZbeSjBWvmU4AXQRlik/AOekrON1+tqTMHnBLP4Rq+usiWdCM9snInV/nB8ujDvJe7BdpPc2YDcLsFfs5YIuaLuHpXCiqbHgRMYoWUqLtqqUq5wB4oJcJ3aXyrS96OXA=
+	 MIME-Version; b=lZO4OvssWx1+gDPmq627jlCsT3lGOvZ/x3j6xu63vqtHr1G8PWC0YMtssTPJZNRtc836/kjtWsGd5nyK4b6G7SSU0uzCszEbZ8yF2Z4lm68CCJEEEeyGsCJAcqXzlIqfH1sk0jjNxonEgWULhHF3yPfNCDb1mrGX78empToaz+M=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,19 +18,19 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1wKwp9-0002vl-S6; Thu, 07 May 2026 13:23:23 +0200
+	id 1wKwp9-0002vu-Vp; Thu, 07 May 2026 13:23:23 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1wKwp9-000ufg-02;
+	id 1wKwp9-000ufp-0i;
 	Thu, 07 May 2026 13:23:23 +0200
 Received: from blackshift.org (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 2D9AF530408;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 6D0C553040B;
 	Thu, 07 May 2026 11:23:23 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -38,12 +38,11 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	=?UTF-8?q?Alexander=20H=C3=B6lzl?= <alexander.hoelzl@gmx.net>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
+	Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 3/6] can: j1939: fix wrong RX timeout for CTS hold messages
-Date: Thu,  7 May 2026 10:22:25 +0200
-Message-ID: <20260507112321.439968-4-mkl@pengutronix.de>
+Subject: [PATCH net 6/6] can: flexcan: disable all IRQ lines in flexcan_chip_interrupts_enable()
+Date: Thu,  7 May 2026 10:22:28 +0200
+Message-ID: <20260507112321.439968-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260507112321.439968-1-mkl@pengutronix.de>
 References: <20260507112321.439968-1-mkl@pengutronix.de>
@@ -53,49 +52,64 @@ List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Alexander Hölzl <alexander.hoelzl@gmx.net>
+From: Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>
 
-In J1939 segmented transport, a CTS message with data byte 2 set to zero is
-interpreted as a hold message. This instructs the transmitter of the
-segmented message to hold the connection open but to delay sending.
+flexcan_chip_interrupts_enable() disables only the primary IRQ line while
+writing to the IMASK and CTRL registers.
 
-According to the J1939-21 standard, section 5.10.2.4 the timeout T4 after
-which an held open session is invalidated is 1050 ms, not 550 as
-implemented currently. The 550 ms are problematic if a device uses hold
-messages and assumes it can wait for more than 550 ms before it has to
-resend the hold message.
+On multi-IRQ platforms (S32G2, MCF5441X), the additional IRQ lines (boff,
+err, secondary-mb) remain active so their handlers can fire while
+registers are inconsistent.
 
-Fix the RX timeout by changing the T4 timeout from 550 ms to 1050.
+Disable all registered IRQ lines around the IMASK/CTRL writes. This
+also fixes the resume path, which calls this function.
 
-Signed-off-by: Alexander Hölzl <alexander.hoelzl@gmx.net>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://patch.msgid.link/20260421153152.87772-3-alexander.hoelzl@gmx.net
-[mkl: rewrap long lines in patch description, use imperative mood in last section]
+Signed-off-by: Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>
+Link: https://patch.msgid.link/20260326135825.3428856-3-ciprianmarian.costea@oss.nxp.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/j1939/transport.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/flexcan/flexcan-core.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index df93d57907da..7ad56b5f17b9 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -1479,7 +1479,7 @@ j1939_xtp_rx_cts_one(struct j1939_session *session, struct sk_buff *skb)
- 		}
- 	} else {
- 		/* CTS(0) */
--		j1939_tp_set_rxtimeout(session, 550);
-+		j1939_tp_set_rxtimeout(session, 1050);
- 	}
- 	return;
+diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
+index f5d22c61503f..b3bb9acc5a2c 100644
+--- a/drivers/net/can/flexcan/flexcan-core.c
++++ b/drivers/net/can/flexcan/flexcan-core.c
+@@ -1430,14 +1430,28 @@ static void flexcan_chip_interrupts_enable(const struct net_device *dev)
+ {
+ 	const struct flexcan_priv *priv = netdev_priv(dev);
+ 	struct flexcan_regs __iomem *regs = priv->regs;
++	u32 quirks = priv->devtype_data.quirks;
+ 	u64 reg_imask;
  
+ 	disable_irq(dev->irq);
++	if (quirks & FLEXCAN_QUIRK_NR_IRQ_3) {
++		disable_irq(priv->irq_boff);
++		disable_irq(priv->irq_err);
++	}
++	if (quirks & FLEXCAN_QUIRK_SECONDARY_MB_IRQ)
++		disable_irq(priv->irq_secondary_mb);
++
+ 	priv->write(priv->reg_ctrl_default, &regs->ctrl);
+ 	reg_imask = priv->rx_mask | priv->tx_mask;
+ 	priv->write(upper_32_bits(reg_imask), &regs->imask2);
+ 	priv->write(lower_32_bits(reg_imask), &regs->imask1);
+ 	enable_irq(dev->irq);
++	if (quirks & FLEXCAN_QUIRK_SECONDARY_MB_IRQ)
++		enable_irq(priv->irq_secondary_mb);
++	if (quirks & FLEXCAN_QUIRK_NR_IRQ_3) {
++		enable_irq(priv->irq_boff);
++		enable_irq(priv->irq_err);
++	}
+ }
+ 
+ static void flexcan_chip_interrupts_disable(const struct net_device *dev)
 -- 
 2.53.0
 
