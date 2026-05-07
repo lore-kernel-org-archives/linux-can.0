@@ -1,16 +1,16 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A48563BA22C
-	for <linux-can@vger.kernel.org>; Thu,  7 May 2026 11:23:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93FC13B895E
+	for <linux-can@vger.kernel.org>; Thu,  7 May 2026 11:23:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778153013; cv=none; b=H/IMi5uWzAP1dzyS+S4RbySXh8QMrXQ0WBcNU8iASio0zT73LI5pAFsnQOKXYr7y9uTdglyHUGAl2Sglgu6GWTp3CDI9PztZnhuQTPPPtzd6IuECv7enF5Id343Jg7KRkK1SqT/8BNeFM0lVUI31fn37r2FFG392gqFELRkc/c8=
+	t=1778153013; cv=none; b=nUsiAKocuURa29mhmW5GsfOuxSk4+btX1rot4jmTymn7K+wtgnWoKTSbaqkCU9vzgR1dXFY3QrLAvjHQ46b9upv3rbxSRzpBNn4oZjbS50kVy4BSMsSYqw6ysAY9dsUp9+lZfph2YJ2tBbqAtRDzPAM9HoGYy5goKS7JSj3QpY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1778153013; c=relaxed/simple;
-	bh=c7GPDcVSSgvbRhcNH0M+xQn6VuGpQo8M9PZsI0JIB7k=;
+	bh=AXqnKFwPhagRw4/AFW8BZoUlS1dCiO0WVwVT7qeTPFY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RX5PqcFohzcS5kM0G9R2LUC6odMAXRm3IgOEDLHLVBRwj3KTZFr4JSIUZCVO9zazKTf1+I2+knA+heRaIV1S3hD0d4Pnkn7oorXI2mtZ0wAG7kwxOFSRD/ZLvTQ1DIcNYmAFny6ZOSOGhtPFYQdChlo05Tr6Vlq+oTHvrWLUENc=
+	 MIME-Version; b=F/nGSGwNNS8QMIM5+CQgTXoX+JzZWKNNdi2Lc+IMORLIM/ENuNFplVPkviOKtCGJb91woNNsLXb84Ijh+goFOWWvp1CidcL0e8BZTvFW7jYuiH5Z8/Tmo8IBeVMjgAQemKWmVsoMLPf++TiY5byImzFceFUeUtGGAYvj2yE1SKs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -18,19 +18,19 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1wKwpA-0002vo-01; Thu, 07 May 2026 13:23:24 +0200
+	id 1wKwp9-0002vk-NS; Thu, 07 May 2026 13:23:23 +0200
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1wKwp9-000ufl-0X;
+	id 1wKwp8-000ufe-39;
 	Thu, 07 May 2026 13:23:23 +0200
 Received: from blackshift.org (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 51DAB53040A;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 20FB4530407;
 	Thu, 07 May 2026 11:23:23 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -38,11 +38,12 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	=?UTF-8?q?St=C3=A9phane=20Grosjean?= <s.grosjean@peak-system.fr>,
+	Lee Jones <lee@kernel.org>,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 5/6] can: peak: Modification of references to email accounts being deleted
-Date: Thu,  7 May 2026 10:22:27 +0200
-Message-ID: <20260507112321.439968-6-mkl@pengutronix.de>
+Subject: [PATCH net 2/6] can: bcm: prevent thrtimer UAF in rx path by checking RX_NO_AUTOTIMER
+Date: Thu,  7 May 2026 10:22:24 +0200
+Message-ID: <20260507112321.439968-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260507112321.439968-1-mkl@pengutronix.de>
 References: <20260507112321.439968-1-mkl@pengutronix.de>
@@ -52,245 +53,56 @@ List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-can@vger.kernel.org
 
-From: Stéphane Grosjean <s.grosjean@peak-system.fr>
+From: Lee Jones <lee@kernel.org>
 
-Following the sale of PEAK-System France by HMS-Networks, this update is
-intended to change all my @hms-networks.com email addresses to my new
-@peak-system.fr address.
+Commit f1b4e32aca08 ("can: bcm: use call_rcu() instead of costly
+synchronize_rcu()") removed the synchronize_rcu() call from
+bcm_delete_rx_op() and introduced the RX_NO_AUTOTIMER flag to prevent
+timers from being rearmed during deletion.  However, it only applied
+this check to op->timer via bcm_rx_starttimer().
 
-Signed-off-by: Stéphane Grosjean <s.grosjean@peak-system.fr>
-Link: https://patch.msgid.link/20260410124251.40506-1-stephane.grosjean@free.fr
+It missed the fact that op->thrtimer can also be rearmed by an
+in-flight bcm_rx_handler() (which runs as an RCU reader) via
+bcm_rx_update_and_send().  This allows op->thrtimer to be queued after
+bcm_remove_op() has already cancelled it, leading to a use-after-free
+when the timer fires on the deferred-freed struct bcm_op.
+
+Address the omission by checking the RX_NO_AUTOTIMER flag
+in bcm_rx_update_and_send() before starting op->thrtimer, effectively
+preventing it from being rearmed concurrently with teardown.
+
+Signed-off-by: Lee Jones <lee@kernel.org>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Fixes: f1b4e32aca08 ("can: bcm: use call_rcu() instead of costly synchronize_rcu()")
+Link: https://patch.msgid.link/20260422102239.948594-1-lee@kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .mailmap                                      | 4 ++--
- drivers/net/can/peak_canfd/peak_canfd.c       | 2 +-
- drivers/net/can/peak_canfd/peak_canfd_user.h  | 2 +-
- drivers/net/can/peak_canfd/peak_pciefd_main.c | 4 ++--
- drivers/net/can/sja1000/peak_pci.c            | 4 ++--
- drivers/net/can/sja1000/peak_pcmcia.c         | 4 ++--
- drivers/net/can/usb/peak_usb/pcan_usb.c       | 2 +-
- drivers/net/can/usb/peak_usb/pcan_usb_core.c  | 4 ++--
- drivers/net/can/usb/peak_usb/pcan_usb_core.h  | 2 +-
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c    | 2 +-
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c   | 2 +-
- drivers/net/can/usb/peak_usb/pcan_usb_pro.h   | 2 +-
- include/linux/can/dev/peak_canfd.h            | 2 +-
- 13 files changed, 18 insertions(+), 18 deletions(-)
+ net/can/bcm.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/.mailmap b/.mailmap
-index 34acd34bbf9b..9af8e6979164 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -803,8 +803,8 @@ Sriram Yagnaraman <sriram.yagnaraman@ericsson.com> <sriram.yagnaraman@est.tech>
- Stanislav Fomichev <sdf@fomichev.me> <sdf@google.com>
- Stanislav Fomichev <sdf@fomichev.me> <stfomichev@gmail.com>
- Stefan Wahren <wahrenst@gmx.net> <stefan.wahren@i2se.com>
--Stéphane Grosjean <stephane.grosjean@hms-networks.com> <s.grosjean@peak-system.com>
--Stéphane Grosjean <stephane.grosjean@hms-networks.com> <stephane.grosjean@free.fr>
-+Stéphane Grosjean <s.grosjean@peak-system.fr> <s.grosjean@peak-system.com>
-+Stéphane Grosjean <s.grosjean@peak-system.fr> <stephane.grosjean@free.fr>
- Stéphane Witzmann <stephane.witzmann@ubpmes.univ-bpclermont.fr>
- Stephen Hemminger <stephen@networkplumber.org> <shemminger@linux-foundation.org>
- Stephen Hemminger <stephen@networkplumber.org> <shemminger@osdl.org>
-diff --git a/drivers/net/can/peak_canfd/peak_canfd.c b/drivers/net/can/peak_canfd/peak_canfd.c
-index 06cb2629f66a..4fd1aefb780f 100644
---- a/drivers/net/can/peak_canfd/peak_canfd.c
-+++ b/drivers/net/can/peak_canfd/peak_canfd.c
-@@ -2,7 +2,7 @@
- /* Copyright (C) 2007, 2011 Wolfgang Grandegger <wg@grandegger.com>
-  *
-  * Copyright (C) 2016-2025 PEAK System-Technik GmbH
-- * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-+ * Author: Stéphane Grosjean <s.grosjean@peak-system.fr>
-  */
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index a4bef2c48a55..67e5b3149a8f 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -539,6 +539,12 @@ static void bcm_rx_update_and_send(struct bcm_op *op,
+ 	if (hrtimer_active(&op->thrtimer))
+ 		return;
  
- #include <linux/can.h>
-diff --git a/drivers/net/can/peak_canfd/peak_canfd_user.h b/drivers/net/can/peak_canfd/peak_canfd_user.h
-index 60c6542028cf..dc0ecb566a85 100644
---- a/drivers/net/can/peak_canfd/peak_canfd_user.h
-+++ b/drivers/net/can/peak_canfd/peak_canfd_user.h
-@@ -2,7 +2,7 @@
- /* CAN driver for PEAK System micro-CAN based adapters
-  *
-  * Copyright (C) 2003-2025 PEAK System-Technik GmbH
-- * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-+ * Author: Stéphane Grosjean <s.grosjean@peak-system.fr>
-  */
- #ifndef PEAK_CANFD_USER_H
- #define PEAK_CANFD_USER_H
-diff --git a/drivers/net/can/peak_canfd/peak_pciefd_main.c b/drivers/net/can/peak_canfd/peak_pciefd_main.c
-index 93558e33bc02..7c749301ea84 100644
---- a/drivers/net/can/peak_canfd/peak_pciefd_main.c
-+++ b/drivers/net/can/peak_canfd/peak_pciefd_main.c
-@@ -4,7 +4,7 @@
-  * Derived from the PCAN project file driver/src/pcan_pci.c:
-  *
-  * Copyright (C) 2001-2025 PEAK System-Technik GmbH
-- * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-+ * Author: Stéphane Grosjean <s.grosjean@peak-system.fr>
-  */
- 
- #include <linux/kernel.h>
-@@ -19,7 +19,7 @@
- 
- #include "peak_canfd_user.h"
- 
--MODULE_AUTHOR("Stéphane Grosjean <stephane.grosjean@hms-networks.com>");
-+MODULE_AUTHOR("Stéphane Grosjean <s.grosjean@peak-system.fr>");
- MODULE_DESCRIPTION("Socket-CAN driver for PEAK PCAN PCIe/M.2 FD family cards");
- MODULE_LICENSE("GPL v2");
- 
-diff --git a/drivers/net/can/sja1000/peak_pci.c b/drivers/net/can/sja1000/peak_pci.c
-index 4cc4a1581dd1..69c61ccf621d 100644
---- a/drivers/net/can/sja1000/peak_pci.c
-+++ b/drivers/net/can/sja1000/peak_pci.c
-@@ -5,7 +5,7 @@
-  * Derived from the PCAN project file driver/src/pcan_pci.c:
-  *
-  * Copyright (C) 2001-2025 PEAK System-Technik GmbH
-- * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-+ * Author: Stéphane Grosjean <s.grosjean@peak-system.fr>
-  */
- 
- #include <linux/kernel.h>
-@@ -22,7 +22,7 @@
- 
- #include "sja1000.h"
- 
--MODULE_AUTHOR("Stéphane Grosjean <stephane.grosjean@hms-networks.com>");
-+MODULE_AUTHOR("Stéphane Grosjean <s.grosjean@peak-system.fr>");
- MODULE_DESCRIPTION("Socket-CAN driver for PEAK PCAN PCI family cards");
- MODULE_LICENSE("GPL v2");
- 
-diff --git a/drivers/net/can/sja1000/peak_pcmcia.c b/drivers/net/can/sja1000/peak_pcmcia.c
-index 42a77d435b39..c3c2aa21da47 100644
---- a/drivers/net/can/sja1000/peak_pcmcia.c
-+++ b/drivers/net/can/sja1000/peak_pcmcia.c
-@@ -4,7 +4,7 @@
-  * Derived from the PCAN project file driver/src/pcan_pccard.c
-  *
-  * Copyright (C) 2006-2025 PEAK System-Technik GmbH
-- * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-+ * Author: Stéphane Grosjean <s.grosjean@peak-system.fr>
-  */
- #include <linux/kernel.h>
- #include <linux/module.h>
-@@ -19,7 +19,7 @@
- #include <linux/can/dev.h>
- #include "sja1000.h"
- 
--MODULE_AUTHOR("Stéphane Grosjean <stephane.grosjean@hms-networks.com>");
-+MODULE_AUTHOR("Stéphane Grosjean <s.grosjean@peak-system.fr>");
- MODULE_DESCRIPTION("CAN driver for PEAK-System PCAN-PC Cards");
- MODULE_LICENSE("GPL v2");
- 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index 9278a1522aae..8fd058c32856 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -4,7 +4,7 @@
-  * Derived from the PCAN project file driver/src/pcan_usb.c
-  *
-  * Copyright (C) 2003-2025 PEAK System-Technik GmbH
-- * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-+ * Author: Stéphane Grosjean <s.grosjean@peak-system.fr>
-  *
-  * Many thanks to Klaus Hitschler <klaus.hitschler@gmx.de>
-  */
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index cf48bb26d46d..c7933d1acc99 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -4,7 +4,7 @@
-  * Derived from the PCAN project file driver/src/pcan_usb_core.c
-  *
-  * Copyright (C) 2003-2025 PEAK System-Technik GmbH
-- * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-+ * Author: Stéphane Grosjean <s.grosjean@peak-system.fr>
-  *
-  * Many thanks to Klaus Hitschler <klaus.hitschler@gmx.de>
-  */
-@@ -24,7 +24,7 @@
- 
- #include "pcan_usb_core.h"
- 
--MODULE_AUTHOR("Stéphane Grosjean <stephane.grosjean@hms-networks.com>");
-+MODULE_AUTHOR("Stéphane Grosjean <s.grosjean@peak-system.fr>");
- MODULE_DESCRIPTION("CAN driver for PEAK-System USB adapters");
- MODULE_LICENSE("GPL v2");
- 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-index d1c1897d47b9..65999f04f4b7 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
-@@ -4,7 +4,7 @@
-  * Derived from the PCAN project file driver/src/pcan_usb_core.c
-  *
-  * Copyright (C) 2003-2025 PEAK System-Technik GmbH
-- * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-+ * Author: Stéphane Grosjean <s.grosjean@peak-system.fr>
-  *
-  * Many thanks to Klaus Hitschler <klaus.hitschler@gmx.de>
-  */
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index eb4f5884ad73..ef9fd693e9bd 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -3,7 +3,7 @@
-  * CAN driver for PEAK System PCAN-USB FD / PCAN-USB Pro FD adapter
-  *
-  * Copyright (C) 2013-2025 PEAK System-Technik GmbH
-- * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-+ * Author: Stéphane Grosjean <s.grosjean@peak-system.fr>
-  */
- #include <linux/ethtool.h>
- #include <linux/module.h>
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index 4bfa8d0fbb32..aefcded8e12a 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -4,7 +4,7 @@
-  * Derived from the PCAN project file driver/src/pcan_usbpro.c
-  *
-  * Copyright (C) 2003-2025 PEAK System-Technik GmbH
-- * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-+ * Author: Stéphane Grosjean <s.grosjean@peak-system.fr>
-  */
- #include <linux/ethtool.h>
- #include <linux/module.h>
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.h b/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
-index 162c7546d3a8..d669c9e610c7 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.h
-@@ -4,7 +4,7 @@
-  * Derived from the PCAN project file driver/src/pcan_usbpro_fw.h
-  *
-  * Copyright (C) 2003-2025 PEAK System-Technik GmbH
-- * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-+ * Author: Stéphane Grosjean <s.grosjean@peak-system.fr>
-  */
- #ifndef PCAN_USB_PRO_H
- #define PCAN_USB_PRO_H
-diff --git a/include/linux/can/dev/peak_canfd.h b/include/linux/can/dev/peak_canfd.h
-index d3788a3d0942..056e0efa649f 100644
---- a/include/linux/can/dev/peak_canfd.h
-+++ b/include/linux/can/dev/peak_canfd.h
-@@ -3,7 +3,7 @@
-  * CAN driver for PEAK System micro-CAN based adapters
-  *
-  * Copyright (C) 2003-2025 PEAK System-Technik GmbH
-- * Author: Stéphane Grosjean <stephane.grosjean@hms-networks.com>
-+ * Author: Stéphane Grosjean <s.grosjean@peak-system.fr>
-  */
- #ifndef PUCAN_H
- #define PUCAN_H
++	/* bcm_remove_op() may have cancelled thrtimer concurrently with this
++	 * RCU-protected handler; do not rearm it. Mirrors bcm_rx_starttimer().
++	 */
++	if (op->flags & RX_NO_AUTOTIMER)
++		return;
++
+ 	/* first reception with enabled throttling mode */
+ 	if (!op->kt_lastmsg)
+ 		goto rx_changed_settime;
 -- 
 2.53.0
 
