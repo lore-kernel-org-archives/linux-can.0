@@ -1,47 +1,47 @@
-Received: from MM0P280CU009.outbound.protection.outlook.com (mail-swedensouthazon11021139.outbound.protection.outlook.com [52.101.76.139])
+Received: from MM0P280CU009.outbound.protection.outlook.com (mail-swedensouthazon11021092.outbound.protection.outlook.com [52.101.76.92])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 137771B6527;
-	Fri,  8 May 2026 07:01:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.76.139
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8B6834CFD0;
+	Fri,  8 May 2026 07:01:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.76.92
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778223712; cv=fail; b=WAbd1aH588FfZsMzqWaEfYRPMInTe+CN584iNQRwKiTYpJv4Rh78JjN1e58zJWeMPS4s5zJkOG53vJkWndBtPc78oaURedl5noxnecaDVJsMVqt5AVJxF6ZZFLWy+L9QKVwSAJ9QhpGiiGRqCuE5ubQjmJnF+LpqC6r9P+Ze1QQ=
+	t=1778223716; cv=fail; b=qWLqxZpqI9Trt7DfozdoiF5Nkewejw0D+dfbkg7cV8mb4rXltWf6oy0C97SAtuH+0+j50Vxiobdwqyq49kDD8bhHFsthCDo97giVFFE30vv7X15vHhHKynT12sCJeb0Xm2TRN0FNNCFBWg8zEmw1e4xIq5Rre36F+ZvUXJJQa90=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778223712; c=relaxed/simple;
-	bh=Y2YnclN31Y11o/f370dWt2CkcvwhRa1BleFTyaBumFY=;
+	s=arc-20240116; t=1778223716; c=relaxed/simple;
+	bh=fiyZ9WDdUUK9w0iQsAFL7WSxh4bkj+tgZTmyhIzTWw4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=nMaCrBOrsQFoyadLfOASampXWAsWM5GuGwcHjmdKaN5tH3/iVO+q/6VoV8OwEmU5fpgfIUy5NaRhGFsvT7xDpI40QsAPBBHRhkqZU5wL0EzbmNhOJ1E8UvFAdG9w4xSa7ZjMYOqtdjtJLbL2Bi2gG1FoxkYUHIbIkjh8scrBIcc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=permerror header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=pass (2048-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=YHs6haWI; arc=fail smtp.client-ip=52.101.76.139
+	 Content-Type:MIME-Version; b=aIMcOp2lYqXeysOKz9CcaqcDbwbZcNbNB5n2aBCZBEXQ/iEBmtbCIRuq2hBMgbMR7noesm875fAwlTkc5P1f3NwVnIJcS+lUdpCb0aNHQPwbwWvEhhx67sKEui2dTruDx/j6NKZvB32jaKmOrFpz7NlnUC4wO0z9BgCzqWx3+wU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=permerror header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=pass (2048-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=YJeinS9x; arc=fail smtp.client-ip=52.101.76.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=permerror header.from=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="YHs6haWI"
+	dkim=pass (2048-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="YJeinS9x"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=R7oQUiKKxflaQHFR38khyl3nxoFGu+eXDHln0gXgFPhkDIffuIJuMLm0pGWKNUKpJNwPEF49bjRSwImWYZmRKdTNQ9IL5ssqPg1g7vK8BJNPpbE7xkmFaKuazmhhPJSfkumrJqfqS/6AOIZ4aTvMqZ3boG3awu1fMHrf28Fof+APLF0HXw/ZPrXLbXjd45lobnjJFBr4jXsJGdOZHCxj9hDsbpiV/xM9UKFCfGN85D9dDwkhypSmtFxIkEbUIJcfISr/R/PznLoMOD87JFfKxloqMI4s1uy8ofGsXZsmxefhE4mNMUYnS4v//gM39uur6Sjgd4f2aqoMBNrJFTEv/w==
+ b=bK9wXG4jcidxRc+gOPW5/du9okOJa2r2GBsuh1xVSaMrC79F9NTy5drr7p3ZfdDx3YmY2d1ZREFnoxKT8OgELugmaR4xlfW1mGjc5Z/uqS3Zd9g2vLWbRdnoLjm2L1u2rx973BGKv+YRausW5Ih2Xiaq0p9EmJn/InSqD9F/uYeakHmW9oGpyBYjDtXnpnokUfqpCYdvvR1uJle+rPxxRFg5w1VHnFqv4yJnJKjP3mPL7AAez9X8f5r5vZCRxKrRoCyVIfRg8pQuIlN+xFDZGzIvucImepepMnyRuWgu5yoOIMlffhdXTqZDmdyUDUey+0XhlbSf7OnMNW7r4mFxdg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EjezKLMwKyz4V/jypTMtZXeabjB6bJUTtswONRYhbRs=;
- b=jjR3n15AVX8Ht7ACKBh3lAzWeTB65MQoj3BF82wT6XKcJDP7nH124O6uXMx3meI4kRiYPwXDEcSzYq641Zt5Vl75x1srpaE1j9I0uX578x0aVg1Mk+EiIYJsiBlMFNcZeCdWietIv0SgSiBATSs9pWLCpKijcVgkSPkKuYq/nAfDYE/SsO9TpXEh5li++fGidSOr23s/No9WWnGE2CkFhq4X6AJ9vdVx3x+hcze0xeOvyrh/DRwQodzmLSxFSIxdLCqMnyzvMuoG8jH8a0qWsHyjOe2nu+d7DTdDYoa4/x8CJlAa1dpTnRTxH6Ihm5DxHwwoxPTs4EnH2wQnOPa9mg==
+ bh=6Vxflx08YBJ7pIfyfW2fUAN4CLE1+E38zUAj7s/cvsI=;
+ b=roVnfKZoobpYZ1SGXBTA2kdlUcrcJcc4r9x6jp/3g2TQmMEWo7/V43dZ+a67J7jGZtnV5SYLDO3zV9yOMJQwTRxY7H78T6h4IVF1dV1fA3w7AAeurL/CreJCk1y7ohXUWkDtSl3fBlFpe13vHurSlE9pDTrGO8fm/ZFYsV60F4P2ROV6TLvebjVN0y8esfbH+0M8Yo8D2iXYDQMGebxupYxJ7dOZBqZ5CzER5untb5PLuRM5iqxcvwAG50JHdkIMRRv6m9sZbRUcTg3yIskE4ZJ02y2jFqKz/Qkc/EAW4LYqid2ys+mvmFX//MPn61j3Q/y0cP4Vxsl1jORnYu29Sw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=gaisler.com; dmarc=pass action=none header.from=gaisler.com;
  dkim=pass header.d=gaisler.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EjezKLMwKyz4V/jypTMtZXeabjB6bJUTtswONRYhbRs=;
- b=YHs6haWIfB9fyBsFOGJeb+pDyqOjaORFsBRZWVASnXCx6qyojqgiBAcSO1rzgZZndH20fH/CaFdtj/QwkAssgG/3aVrbOCyLdcPD9GjJUhQSnmVaV0Vcxdx6iaXWEodGT9PCQKXY3A3a6+buFlnDDFCBtaVDh0sgMypqM9YLPElGV0iPCNoWNwaJ7b+7Jl9JCYTJqzrFbZgI1uOYGtCbYwoZK7mQ83GVFxo8KG2T0fHiBkMP+DwVVLh8Bps7bU+OO/1edvcaSid5pBsHijfEmFZKT8l0GlMe/zIAyTf4zLYclNxmH1BOA20EQ9xPM7aFrNWRZUxUD+QXzDHiwmskXA==
+ bh=6Vxflx08YBJ7pIfyfW2fUAN4CLE1+E38zUAj7s/cvsI=;
+ b=YJeinS9xVMOsSCyq4bXh1JddRKYL5SKKZbtBf5JVwTyWos0S25ccYFoxzaGuh6T74lmywII91zVhfaq74xfFPPQAPMli+eWzeSQ/lLwvP5pK/7dEo3DYQvy6OmyMzgyae81rVfL1zw8fkawBJHQErdGUKD691Ewqw4crqWW0IZqX7jVtu+LozLb+Plx85Di6hNrzk98vqcw9d3WHDrl4983BYiVq6j3xjimJuNfmiPwVErq45pb+RXGSgfm0FluXlYrsz+mLWCD7do0PIaXExQZFoLNgRRw1za1ZOxrOOeD3vkR4VSQQRme5gtOO/KIw6z6BlYO9imoyRjiTzty9PA==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=gaisler.com;
 Received: from GV3P280MB1530.SWEP280.PROD.OUTLOOK.COM (2603:10a6:150:188::6)
  by GVYP280MB0889.SWEP280.PROD.OUTLOOK.COM (2603:10a6:150:ec::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.19; Fri, 8 May
- 2026 07:01:34 +0000
+ 2026 07:01:37 +0000
 Received: from GV3P280MB1530.SWEP280.PROD.OUTLOOK.COM
  ([fe80::a74c:fd98:dc12:8d1e]) by GV3P280MB1530.SWEP280.PROD.OUTLOOK.COM
  ([fe80::a74c:fd98:dc12:8d1e%6]) with mapi id 15.20.9891.016; Fri, 8 May 2026
- 07:01:34 +0000
+ 07:01:37 +0000
 From: Arun Muthusamy <arun.muthusamy@gaisler.com>
 To: robh@kernel.org,
 	krzk+dt@kernel.org,
@@ -51,11 +51,10 @@ To: robh@kernel.org,
 Cc: devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-can@vger.kernel.org,
-	Arun Muthusamy <arun.muthusamy@gaisler.com>,
-	Daniel Hellstrom <daniel@gaisler.com>
-Subject: [PATCH v7 05/15] can: grcan: Replace bit timing macros with literal values
-Date: Fri,  8 May 2026 09:01:11 +0200
-Message-ID: <20260508070121.6918-6-arun.muthusamy@gaisler.com>
+	Arun Muthusamy <arun.muthusamy@gaisler.com>
+Subject: [PATCH v7 11/15] can: grcan: Refactor GRCAN DMA buffer to use structured memory layout
+Date: Fri,  8 May 2026 09:01:17 +0200
+Message-ID: <20260508070121.6918-12-arun.muthusamy@gaisler.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260508070121.6918-1-arun.muthusamy@gaisler.com>
 References: <20260508070121.6918-1-arun.muthusamy@gaisler.com>
@@ -72,120 +71,240 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: GV3P280MB1530:EE_|GVYP280MB0889:EE_
-X-MS-Office365-Filtering-Correlation-Id: f2f3e324-e151-4968-3592-08deaccfa417
+X-MS-Office365-Filtering-Correlation-Id: 4b389005-fb82-4d00-4465-08deaccfa586
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|376014|366016|52116014|38350700014|22082099003|56012099003|18002099003;
+	BCL:0;ARA:13230040|1800799024|376014|366016|52116014|38350700014|3023799003|22082099003|56012099003|18002099003;
 X-Microsoft-Antispam-Message-Info:
-	TLKJIxnNochP1EBB2UBKYuFVhLIQyRX/AacB7Ew0J0z4040jmxVEA/DdsRGWilgN8lBDgktwmqmibREMsu2W8nYNvsfjy+PXzp2w2fe/mbkniBs5OAxVZbC3rObjG43DGEYmzkmOez4m34wYkdLj7mdxlzU4ywItmL/ciQqhRzbJ530lkVSP5Qk26Cj0+CU5xBUWdSMtcUiVfHzkKjrb8rFJIuVsbk/V5PRuk6ZUGHiPMcFE9zq1BHlQY6ufYALya0ggdGTj3t3rUbg5FnTBm4yDYhgq8mybhJKu/VCeUsgH/7kw7ZVHTyfJE32McyaQoW9kfI4Qq72IZWCzWtsRbRmJr1FzbLGQPkfijS7OiHbVQow6BsXZ4559RiCGoqDXLffqJ9AqveGBr2c26GxMI58iPLKQ/tt/qR7KLWVk+AGl+gsrXebSeX37GgsDSzQSPwQoYF/qsHtU9L85L5XriG1Rmc6i0t+T0GRldUu3tRRbKA4eVG0g25Ii9XmnDJvPOJspoDoSlTU7HjXtuXTcwCw6u1ZJGi+Mu7W3Q22r9vJTFRP3Mba+kzDBJg0GSJO+eaLDqJy6vSaNbSYJOSfqasatQUrFL096a8PkWWrHaBKm/yUJXpbOfxLgTYL2EMOxI7BfCAp+slRuy9sPg9hrv0ZlMyh3+w1zJAFWtHSVuBny9zT41giw924I5YkiyURrusU9dx3dGDcXL91Pfy9z80klmvIWKUh/z/s8DAnB+uhqpFu2BNegp1HBKFfdpIVx
+	2Uo5gB4+7XbMi35sqthfb7Neih5W/JFSR35kYRVjFkoZjh+E5/4dxzAL0vuZs+BkUPiiojSuvr5+dR4ByxPqykm9C1R1F6syHQ1DrXmny704CH0CERK7LcHBZxkaXZvN0bJ2T4Rsw6sQ5sBwf89xqf2tQrkNo+iBhH6w2VuxE9JotYjFYczGX7KU0crOyhXVz5xt4hcuGkBk2RjfYgDBICZgPnJpZAsXWXJXEgPUhvwxAHGhoKCI6LIFvsm5sTI9pYKQJJ84WrbKvKgddKkZxlYWo6rtRnDa2QvNEzB2f8COn+a5FFF1XhOuaFrCMjDxTr/pdfqqHfBjRj3d94l97qjDIBaxDV5eCHBe3J/xHNJJRJWEbiB5M5iuYwpAs5UrczsAdW48qgu63VJpzZSsG/d91E4dsNcEymX5Tlfm9akj3GiWErsCFasKTvanxP/2JKZw7j4XgeXiv57uNKsOc7vAw5lIlu/3OxVToEeMAKHI5SeoJUGbIne/WYDXO+fcLA4D8YggpjWYdSHJrwIsjhoEW3ptoncSRb/7HV4BevXONz+NyiLehO+v3EWZvviVcqaS+LLOIr/8Sy9Y2vGfHLD919y40dMGLZraRXEOaCozQGUk+B+XqBLHXVueWsEyM1pkFub+81f2gxgFWMSlRq4TM5lavlwl2z3zR6h0IQ0Pr6KPf71YtJmBqmBBxCw9SExaah/4Imos1BOfq8LvTyp/C3W1WoH2XYdGOJ0Cc25LQ2ZeTr0KmgcorWetj53S
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV3P280MB1530.SWEP280.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(52116014)(38350700014)(22082099003)(56012099003)(18002099003);DIR:OUT;SFP:1102;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV3P280MB1530.SWEP280.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(52116014)(38350700014)(3023799003)(22082099003)(56012099003)(18002099003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?AjQJHIJ4vrv1BwXA0KwWIcfUD4zKM3jRn9YYwDrt4bJnrpbOz6uLQ45E5WFY?=
- =?us-ascii?Q?k0FO42VQuBteYoQGd4tWImynm0XIWkr9chp7oEC9FDFXEs6Av5qDN8XPINTI?=
- =?us-ascii?Q?KAERY+Am35I/YG4oW3iIAKLLU8HdZTuaz1yqNL4sstjyE8j2xIVMWxQQk3fT?=
- =?us-ascii?Q?/mXkZaoVA1u93vd09zVFCSV22Ww98qfpJDbT3dVYFaeGdIvcq6YlH/jNNtyE?=
- =?us-ascii?Q?FverffAJD9ZZY3fI1rFr1BsFjkKOiDDl/g1ZYrvJRyokGWCTgHM9HXl+raB4?=
- =?us-ascii?Q?QwKhyNXUVa+xKsjMB5qwq7VObcmAXsAquzr5ceZh0WFGs4yyhkQn6R/rON3G?=
- =?us-ascii?Q?/0S1XhcA3EyIopR8gcrXpDVSizHXFiDYkq8MmBFrVnCXRPdffW4PcMYIT0VB?=
- =?us-ascii?Q?cW0mqcq/ArKlpLwvp59IlufNfOSZepqpA24L4DOUu4agRMseTUf9m07Ew2nV?=
- =?us-ascii?Q?ocp5fETiJcg9ACqmHpJtNF8uvUqq7gZeewxqeXE6SMXzJLmabgWcCJqHdPQN?=
- =?us-ascii?Q?LHKpFA5v/FwI3hbnry1TF5zGmi23KdcfKJpBPqw8Ntcd+JIXUhv4kg/YIIrL?=
- =?us-ascii?Q?TSBZjaiWOpALVm2YX0tRAoZ7Z68bhDMiCCaowlP6nCinDIZG/Sn6fnlK36CG?=
- =?us-ascii?Q?7Mt/wXvMAa4Ufw84sn5r2da4j1Ks/ZLjaSVrutzb/XUu5qw+Anh9d1KvZmyF?=
- =?us-ascii?Q?uc2Y6Uvnu/lwlUSx9qq6gozPHQ5ZSwgJnWsWOarWQBYh6+F4GNm1atVx3Un9?=
- =?us-ascii?Q?4KkNc89/sJcrGFtIjVATQwdsXFvbne7+pD2gg1klO4CT+N21O0ghE9+eHysE?=
- =?us-ascii?Q?nS+QO9QvbzRsFrO0erJj91cqasNcLJJ4CIm2rdYmHGf/qYsE9ch+/tVtXKVr?=
- =?us-ascii?Q?Uj9PKuXHd7SPey4qYiX7TlDNOXKN8BUi+m9wjX1TsUk//zKHpx0LjTEPEwPi?=
- =?us-ascii?Q?ZOqAERvJ3H4EHLvrZO2DSFidrnNN2v0M+acrlQoCdrMGoMTPk9w8/cdF7R5e?=
- =?us-ascii?Q?hrAKN+zjKDFLaMRyFxDvt/fDcZpDN8+8jwov1kjjISDD3Dj3yndZOVPnMMUT?=
- =?us-ascii?Q?crr17QJcFZrGCcUSrXuZ0F0OpbscvXjauwVayikx1zOepXwnIO1xlbYBjwPP?=
- =?us-ascii?Q?FBLtI2DU3ZQ99LqxQ14EZ1fvdosUN9laWQX6ZMpaHX220OVsNnKLpVl6wgMC?=
- =?us-ascii?Q?FSch2kavT5RYsTccsvB8IoWLF8ZzeDv9pzQPqVXNHjS3woksQIEBLKwVYKvn?=
- =?us-ascii?Q?ZRAO6f0zAfEL2hO0fA2355VmSUmNwtfHftIIaPdEq9DH4H1Y0abbLvcTuRCP?=
- =?us-ascii?Q?2/ZlFj0C4HocvDsmp/vnrFQDV4W3NEKTTASUkicuJ42rqC3Lh9LOZtFg4nH7?=
- =?us-ascii?Q?Qs1on7pSxUWFZ+UroN6j+C/CL1kvQnsNsAfPo577vQwtSp1f6V0VWHLF15U8?=
- =?us-ascii?Q?ImqTXWmvX1avhi7pil5ewlR1Uo1gM/4uoZJtW++TUP2CauWEO8HYnKFZMyut?=
- =?us-ascii?Q?EtwIk6KJ2VySZctLSnN3YXbM7jN8kDKYg0P/u2uAVt6Ka9YVm+08eDZvH6AI?=
- =?us-ascii?Q?klTfNeSn/TMl8opvztoxFROXbSBo++N6VTOyOGRSUJV3rWAiERO1FesczQ0t?=
- =?us-ascii?Q?NKp4hTQprYGlucYZOdNHCqKOcgHQmRr5M4KN8Cs6kNfXVKhJMXv9G7b4bY5A?=
- =?us-ascii?Q?XEANvFA9idZAR0+f8QK1EwenAv2aGY8fyfELvAygkxF7zv/yqFjU2bR8l8i7?=
- =?us-ascii?Q?wGnaLYskSUp9S8KuryETAdbrg5UCwAs=3D?=
+	=?us-ascii?Q?yNy5Mh343d9TT5cmCWf45SijgQze/ozQwtNcjfeRMiAAZPZXmMoKAv46HMGb?=
+ =?us-ascii?Q?H7JzGWPdAwbcatXblkLBFIVf3GmiX2cF5Q+iJQXp9GoCSOnHIFMtDSxBSZQc?=
+ =?us-ascii?Q?QHgeXZLMQNod03+1jt/LtBFCK25c4ubE44SLH4JzUSaYAIs0RWS2/iA5jNr1?=
+ =?us-ascii?Q?a2vmu746+WesZvMBto5Wv7ur6DrK40Fvg50CkN+ED++xr4cyGdxg3lqovJYX?=
+ =?us-ascii?Q?tdez0GFjqfTw7QSiqrU1hS9PHiz507sh7IMn58JL/DympCg6o5G6OOgOVl1q?=
+ =?us-ascii?Q?X6Mvbi9HPwUZVGvsbcXzfnCJdpMfiiknQE1A47swUQFA8mvDGkqP7ofAFrcH?=
+ =?us-ascii?Q?oEttkcwOC6Nzb1f9rhTtHoEjGf91vIOSUM3vJ5CaR83+R99fgPAhfeXxpt1K?=
+ =?us-ascii?Q?8isKjysbvDHQNHruol9CRd/9AD5oZP80uKdWZBk+q9JOjC4sFsQ01C61c9PD?=
+ =?us-ascii?Q?vFZeSI8IDTeqyTU6KWsAAYdhgHWv4k3RhwLmbaKPBOh7kHSrHT2QpJ9Sainx?=
+ =?us-ascii?Q?36z9zq+aNjv0d4EvtN8L0TDYHTq0rY6/X5Ozujk5coti2hlsEOZWdWbFA2OT?=
+ =?us-ascii?Q?Cjf8HsgpenlNJly/kXC8eAjuuIUpnfQAAmh9XPT2SFeaZRSUzFgESGPdO1kH?=
+ =?us-ascii?Q?b9Z6LXTaF5VR465rKi4VmjMJPYfitpl0bIFccqUzwcL/XxwWlJ2nx99F0tS3?=
+ =?us-ascii?Q?DIB08L0APcG23CiS1aO2ss+NrTusCjlDijDYg5Ik9LDfMJcO8UVYzt55BuP+?=
+ =?us-ascii?Q?LDQCFEyj8sCuBqk2wcyo0qc1q7oDIMi0eHrYEN7PH57uU7BA40aa61iIZPkO?=
+ =?us-ascii?Q?BUpYKK12Kj/zRBQF1npby2tJdHphAA0LAJk6ykc0FCUUQYd+w5jpbf9TLAWR?=
+ =?us-ascii?Q?+pAx5fvHVDvs9UqFDXUzY5yWVnJnYECrv2mWbH3oRbYcrwRMkC3DckXeOFE8?=
+ =?us-ascii?Q?naBcK2pTA++3s9R1Q62lMe+pyywOF72dQb+TlCj2sK5oE3b60Ld3DafcNk/M?=
+ =?us-ascii?Q?ShwckvUiLNzWMdqroF2Hq2zZ7CBOuiSh7dsT8dNI02kPM0nq01CWrqyCnFSD?=
+ =?us-ascii?Q?c/coP2rc+pEaD7tbnpOkF7L4KqsVLbuLvbhgB7arbkj/vkU4fQEw9inyQcsT?=
+ =?us-ascii?Q?bLbKDZbEum51dikHMyhWCMBZU/j58JIfDhmGV+BzaAJq9QaMkIUtAEOEwmbw?=
+ =?us-ascii?Q?czj3zTxdxlw6S7s1m1PJttwwLIZLYvL8iVhXn3hDrSNwKYUHhUhYb8gxva/G?=
+ =?us-ascii?Q?Hec4YsEmDevyvVlC1t3EsCCF84SLc8yA7KPSOJs0eID1ilLM3+VIs5Sxhnrt?=
+ =?us-ascii?Q?JmNk326gZbYf/22da8nFVBhycofu/7FdNv6STJcxXKswa3CFiok/S+ednkZg?=
+ =?us-ascii?Q?22q8SIC7aCb3bUdxFJi94WwU+McOFmWcR9MrbyFuklDCaIwUSbMmxRzBWTNu?=
+ =?us-ascii?Q?6VTzZXn+0qvtzawzTPCOvNQ0ZscrymelILj28UtZW40TKJaLakkRRf/wrWZi?=
+ =?us-ascii?Q?uvai50B+moPc+sh9op8mf0dneGx0FGxH4/E9I0TT5aaaTAsJSS8ycv9vGF3S?=
+ =?us-ascii?Q?cTRY4T7cDKFuElb+39+AyEHJj+PhcDlUoBIiKU3xiesoyTWodOV5w3olODRK?=
+ =?us-ascii?Q?ZedCIEf3NFeZAXHIZeBLrTVJsdTCQUQgoyATcfOyiLtMLLkFmO97Ka6F044/?=
+ =?us-ascii?Q?5ubi5d+p9SYw625s1FtYDG2odKW4MgUkoZmFYLDJ3l6BZJMKJtVi3GpVgPSz?=
+ =?us-ascii?Q?PYFEQjbEeG4f1aKr9l+yMGXSnIFxebw=3D?=
 X-OriginatorOrg: gaisler.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f2f3e324-e151-4968-3592-08deaccfa417
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b389005-fb82-4d00-4465-08deaccfa586
 X-MS-Exchange-CrossTenant-AuthSource: GV3P280MB1530.SWEP280.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2026 07:01:34.5339
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2026 07:01:36.9383
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 91fa4a59-2167-458a-8318-e45d80469d7e
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HyZcU7CsVFdXwZGQIFB6czo+xG7QAQ9EJVilTASoSW/cX6AiXFLqOaZwelKQi4bbET8yBTk38TkHeM/dQnDxBxtpmv9AAnOrVjUvq4qp0XM=
+X-MS-Exchange-CrossTenant-UserPrincipalName: 202xxrDUESumGR6dbn94+RBaKYZtnKceXnNQxgQi0+pIiRRehGpOcAcY2vajVcWKyUP5Zsih28dhBJ1TVp4wZDlnqwqHAAamh25ZDysmESk=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVYP280MB0889
 
-Refactor the bit timing constants in grcan_bittiming_const by replacing
-macros with literal values.
+- Introduce a structured layout to represent hardware memory using
+  struct grcan_msg_header and struct grcan_msg_fragment.
+- Updated the GRCAN receive and transmit functions to utilize this
+  new structured approach.
+- Implemented helper functions grcan_msg_header_at for accessing
+  header structures within DMA buffers.
+- Replaced array and bitwise operations with memcpy for copying
+  between CAN frames and header structures.
 
-Signed-off-by: Daniel Hellstrom <daniel@gaisler.com>
 Signed-off-by: Arun Muthusamy <arun.muthusamy@gaisler.com>
 ---
- drivers/net/can/grcan.c | 27 +++++++++------------------
- 1 file changed, 9 insertions(+), 18 deletions(-)
+ drivers/net/can/grcan.c | 80 +++++++++++++++++++++++++----------------
+ 1 file changed, 49 insertions(+), 31 deletions(-)
 
 diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
-index a5f750d7e2d8..8d7bde1c006f 100644
+index b5527fd9e02e..4921da349a0e 100644
 --- a/drivers/net/can/grcan.c
 +++ b/drivers/net/can/grcan.c
-@@ -36,6 +36,7 @@
- #include <linux/of_irq.h>
- #include <linux/clk.h>
- #include <linux/dma-mapping.h>
-+#include <linux/bitfield.h>
+@@ -195,9 +195,6 @@ struct grcan_registers {
+ #define GRCAN_MSG_OFF		0x00000002
+ #define GRCAN_MSG_PASS		0x00000001
  
- #define DRV_NAME	"grcan"
- 
-@@ -93,16 +94,6 @@ struct grcan_registers {
- 	(GRCAN_CONF_BPR | GRCAN_CONF_RSJ | GRCAN_CONF_PS1		\
- 	 | GRCAN_CONF_PS2 | GRCAN_CONF_SCALER)
- 
--#define GRCAN_CONF_RSJ_MIN	1
--#define GRCAN_CONF_RSJ_MAX	4
--#define GRCAN_CONF_PS1_MIN	1
--#define GRCAN_CONF_PS1_MAX	15
--#define GRCAN_CONF_PS2_MIN	2
--#define GRCAN_CONF_PS2_MAX	8
--#define GRCAN_CONF_SCALER_MIN	0
--#define GRCAN_CONF_SCALER_MAX	255
--#define GRCAN_CONF_SCALER_INC	1
+-#define GRCAN_MSG_DATA_SLOT_INDEX(i) (2 + (i) / 4)
+-#define GRCAN_MSG_DATA_SHIFT(i) ((3 - (i) % 4) * 8)
 -
- #define GRCAN_CONF_BPR_BIT	8
- #define GRCAN_CONF_RSJ_BIT	12
- #define GRCAN_CONF_PS1_BIT	20
-@@ -392,14 +383,14 @@ static struct grcan_device_config grcan_module_config =
- 
- static const struct can_bittiming_const grcan_bittiming_const = {
- 	.name		= DRV_NAME,
--	.tseg1_min	= GRCAN_CONF_PS1_MIN + 1,
--	.tseg1_max	= GRCAN_CONF_PS1_MAX + 1,
--	.tseg2_min	= GRCAN_CONF_PS2_MIN,
--	.tseg2_max	= GRCAN_CONF_PS2_MAX,
--	.sjw_max	= GRCAN_CONF_RSJ_MAX,
--	.brp_min	= GRCAN_CONF_SCALER_MIN + 1,
--	.brp_max	= GRCAN_CONF_SCALER_MAX + 1,
--	.brp_inc	= GRCAN_CONF_SCALER_INC,
-+	.tseg1_min	= 2,
-+	.tseg1_max	= 16,
-+	.tseg2_min	= 2,
-+	.tseg2_max	= 8,
-+	.sjw_max	= 4,
-+	.brp_min	= 1,
-+	.brp_max	= 256,
-+	.brp_inc	= 1,
+ #define GRCAN_BUFFER_ALIGNMENT		1024
+ #define GRCAN_DEFAULT_BUFFER_SIZE	1024
+ #define GRCAN_VALID_TR_SIZE_MASK	0x001fffc0
+@@ -242,9 +239,23 @@ struct grcan_hwcap {
+ 	bool fd;
  };
  
- static int grcan_set_bittiming(struct net_device *dev)
++struct grcan_msg_header {
++	u32 id;
++	u32 ctrl;
++	u8 data[CAN_MAX_DLEN];
++} __packed;
++
++struct grcan_msg_fragment {
++	u8 data[GRCAN_MSG_SIZE];
++} __packed;
++
+ struct grcan_dma_buffer {
+ 	size_t size;
+ 	void *buf;
++	union {
++		struct grcan_msg_header *header;
++		struct grcan_msg_fragment *frag;
++	};
+ 	dma_addr_t handle;
+ };
+ 
+@@ -417,6 +428,12 @@ static inline u32 grcan_txspace(size_t txsize, u32 txwr, u32 eskbp)
+ 	return slots - used;
+ }
+ 
++static inline struct grcan_msg_header *
++grcan_msg_header_at(struct grcan_dma_buffer *dbuf, u32 offset)
++{
++	return (struct grcan_msg_header *)((u8 *)dbuf->buf + offset);
++}
++
+ /* Configuration parameters that can be set via module parameters */
+ static struct grcan_device_config grcan_module_config =
+ 	GRCAN_DEFAULT_DEVICE_CONFIG;
+@@ -1215,11 +1232,11 @@ static int grcan_receive(struct net_device *dev, int budget)
+ 	struct grcan_registers __iomem *regs = priv->regs;
+ 	struct grcan_dma *dma = &priv->dma;
+ 	struct net_device_stats *stats = &dev->stats;
++	struct grcan_msg_header *hdr;
+ 	struct can_frame *cf;
+ 	struct sk_buff *skb;
+ 	u32 wr, rd, startrd;
+-	u32 *slot;
+-	u32 i, rtr, eff, j, shift;
++	u32 rtr, eff;
+ 	int work_done = 0;
+ 
+ 	rd = grcan_read_reg(&regs->rxrd);
+@@ -1239,30 +1256,33 @@ static int grcan_receive(struct net_device *dev, int budget)
+ 			continue;
+ 		}
+ 
+-		slot = dma->rx.buf + rd;
+-		eff = slot[0] & GRCAN_MSG_IDE;
+-		rtr = slot[0] & GRCAN_MSG_RTR;
++		hdr = grcan_msg_header_at(&dma->rx, rd);
++
++		eff = hdr->id & GRCAN_MSG_IDE;
++		rtr = hdr->id & GRCAN_MSG_RTR;
++
+ 		if (eff) {
+-			cf->can_id = ((slot[0] & GRCAN_MSG_EID)
++			cf->can_id = ((hdr->id & GRCAN_MSG_EID)
+ 				      >> GRCAN_MSG_EID_BIT);
+ 			cf->can_id |= CAN_EFF_FLAG;
+ 		} else {
+-			cf->can_id = ((slot[0] & GRCAN_MSG_BID)
++			cf->can_id = ((hdr->id & GRCAN_MSG_BID)
+ 				      >> GRCAN_MSG_BID_BIT);
+ 		}
+-		cf->len = can_cc_dlc2len((slot[1] & GRCAN_MSG_DLC)
+-					  >> GRCAN_MSG_DLC_BIT);
++
++		cf->len = can_cc_dlc2len((hdr->ctrl & GRCAN_MSG_DLC)
++					 >> GRCAN_MSG_DLC_BIT);
++
+ 		if (rtr) {
+ 			cf->can_id |= CAN_RTR_FLAG;
+ 		} else {
+-			for (i = 0; i < cf->len; i++) {
+-				j = GRCAN_MSG_DATA_SLOT_INDEX(i);
+-				shift = GRCAN_MSG_DATA_SHIFT(i);
+-				cf->data[i] = (u8)(slot[j] >> shift);
+-			}
++			if (cf->len > 0)
++				memcpy(cf->data, hdr->data,
++				       min_t(u32, cf->len, CAN_MAX_DLEN));
+ 
+ 			stats->rx_bytes += cf->len;
+ 		}
++
+ 		stats->rx_packets++;
+ 
+ 		netif_receive_skb(skb);
+@@ -1395,11 +1415,10 @@ static netdev_tx_t grcan_start_xmit(struct sk_buff *skb,
+ 	struct grcan_registers __iomem *regs = priv->regs;
+ 	struct grcan_dma *dma = &priv->dma;
+ 	struct can_frame *cf = (struct can_frame *)skb->data;
++	struct grcan_msg_header *hdr;
+ 	u32 id, txwr, txrd, space, txctrl;
+ 	int slotindex;
+-	u32 *slot;
+-	u32 i, rtr, eff, dlc, tmp, err;
+-	int j, shift;
++	u32 rtr, eff, dlc, tmp, err;
+ 	unsigned long flags;
+ 	u32 oneshotmode = priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT;
+ 
+@@ -1422,7 +1441,6 @@ static netdev_tx_t grcan_start_xmit(struct sk_buff *skb,
+ 	space = grcan_txspace(dma->tx.size, txwr, priv->eskbp);
+ 
+ 	slotindex = txwr / GRCAN_MSG_SIZE;
+-	slot = dma->tx.buf + txwr;
+ 
+ 	if (unlikely(space == 1))
+ 		netif_stop_queue(dev);
+@@ -1438,6 +1456,9 @@ static netdev_tx_t grcan_start_xmit(struct sk_buff *skb,
+ 		return NETDEV_TX_BUSY;
+ 	}
+ 
++	hdr = grcan_msg_header_at(&dma->tx, txwr);
++	memset(hdr, 0, sizeof(*hdr));
++
+ 	/* Convert and write CAN message to DMA buffer */
+ 	eff = cf->can_id & CAN_EFF_FLAG;
+ 	rtr = cf->can_id & CAN_RTR_FLAG;
+@@ -1447,16 +1468,13 @@ static netdev_tx_t grcan_start_xmit(struct sk_buff *skb,
+ 		tmp = (id << GRCAN_MSG_EID_BIT) & GRCAN_MSG_EID;
+ 	else
+ 		tmp = (id << GRCAN_MSG_BID_BIT) & GRCAN_MSG_BID;
+-	slot[0] = (eff ? GRCAN_MSG_IDE : 0) | (rtr ? GRCAN_MSG_RTR : 0) | tmp;
+-
+-	slot[1] = ((dlc << GRCAN_MSG_DLC_BIT) & GRCAN_MSG_DLC);
+-	slot[2] = 0;
+-	slot[3] = 0;
+-	for (i = 0; i < dlc; i++) {
+-		j = GRCAN_MSG_DATA_SLOT_INDEX(i);
+-		shift = GRCAN_MSG_DATA_SHIFT(i);
+-		slot[j] |= cf->data[i] << shift;
+-	}
++
++	hdr->id = (eff ? GRCAN_MSG_IDE : 0) | (rtr ? GRCAN_MSG_RTR : 0) | tmp;
++
++	hdr->ctrl = ((dlc << GRCAN_MSG_DLC_BIT) & GRCAN_MSG_DLC);
++
++	if (dlc > 0)
++		memcpy(hdr->data, cf->data, min_t(u32, cf->len, CAN_MAX_DLEN));
+ 
+ 	/* Checking that channel has not been disabled. These cases
+ 	 * should never happen
 -- 
 2.51.0
 
