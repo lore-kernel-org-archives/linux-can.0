@@ -1,47 +1,47 @@
-Received: from MM0P280CU009.outbound.protection.outlook.com (mail-swedensouthazon11021092.outbound.protection.outlook.com [52.101.76.92])
+Received: from MM0P280CU009.outbound.protection.outlook.com (mail-swedensouthazon11021132.outbound.protection.outlook.com [52.101.76.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F97F382289;
-	Fri,  8 May 2026 07:02:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.76.92
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BBBA37F01E;
+	Fri,  8 May 2026 07:02:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.76.132
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778223730; cv=fail; b=dSsAcN6AVZUMF5NCRCc71P4QngN1eKndCJM1Zi4bjQZC5femZgyQcBQuuoWrlpiKlMp+0ywWTocgTzLlkzRt7eDIGuEBnK+DvSdX4dWEbJ/Te+YQpk3W58Y7XIfi40iUSBXBZNSv+UNFa5AnaRf8ybSkxTKh2s+gTtkBbEkw4vc=
+	t=1778223728; cv=fail; b=eItsY1vYjW0uueAHAHN81TTbDrXrW0pspJ5+7x3zw4Lt5ffUVg9IxTkDoJPKBZxtJm9sklJyEkqDRUtibUBeTlrXpTIlLh7LWWQGdkOW1W2d1DIkWPxJ1yYcbdGb61r/I/YbjKaAPGV+HodxDPStewXXeQ1kU0Hos6vJWWGAQAw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778223730; c=relaxed/simple;
-	bh=5zkipCXGag4FuLHwvRv64hDYJvgKefjNobgEY0BNYgE=;
+	s=arc-20240116; t=1778223728; c=relaxed/simple;
+	bh=hNwBCdTFnz+MLuoh7eP1sWn4BlM1TJaKoAAQHhMUUQA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=dhj7mwcFh+Fv6oQysAb5eQtIurLsrRfqqmYZejFaYhEUr4jK1abUwkNYdFvnSneWZyiB4RhmknevtcGiBBl3xGnGeJmJdVwQuR1Lt60apXOIt5KVPZyXbN3e6YodzU0tDlmrT0cDM16GaPs/e3o/9hag+Vrffa1PkgLhbGZY4Ow=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=permerror header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=pass (2048-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=EtmTmwAc; arc=fail smtp.client-ip=52.101.76.92
+	 Content-Type:MIME-Version; b=Gt+tKnMo29scXGWSCGEdFaaebIVH3VoOYYWyXPnzVvHy6008eSFRq2H/3qZbq1iG5zRo9YDrnC2MaxT8Q0IkiDGbT64Tj2RlNnvZt1XSh3LgDTeJJW50jRd8VHgFp5/kwv7nyvbxe+KmcodPXBhRTKWxNRQGYKExrzgOODUvJfs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=permerror header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=pass (2048-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=dxH4i5AO; arc=fail smtp.client-ip=52.101.76.132
 Authentication-Results: smtp.subspace.kernel.org; dmarc=permerror header.from=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="EtmTmwAc"
+	dkim=pass (2048-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="dxH4i5AO"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=twQ0HAAsih38YS/UYW/s3ZWZLwDkSb4UI0xMks6CCbfXlrG2bLtdReCKV4B6x30f9vlzlVrtQ3psvIilTxiZqlw7MKfle5HvxNkCHHzQr4i6ngP15Ag8RkIJ03Zy/UjxxxCkCRkNB0nNOX1m86SFP/o0pWw+bbbuOtTzSaTPRl3x/CvxRuWbmBbbO+h5d9NcrxY0t9IgRTA4FZywHoG2KAyyG4MPJ4Od4xEZbBETzPK8GRj/R4vzN0IjfCjbH3zbA6y+xK0e8nNmmZOH4m2F5KGq3qxHWXMs/rqrd0ipMiaqenwiubxfUKF64KW0U9MqRheWwflkc7VEhbkXTX4s8A==
+ b=LBYNdlstgIv4+Pv9TogMfEvqixCpbKsoLaujbLD1jwOJTdiJXFaRz5V1VqEH0OBY3HWsHOE0tWaMHnoK5IyZiL4P7IMNxEwhDBByBZI4jlI7b82qPEbM2XW9qxBkOhtPADIpd8zkKVZ600WuLCzu7v9hw96bm9C/qltT0PiMoeJaz02BxIv0iUqh9Lvne3q8gwzDDBuhEu/LCLM9NZWOTsIVkuQLrOlwHfiZialnmMo2GlyxlGu66VymUM+SgIbFNe/KuKwGVwvcrJ94NLrfSS4H8PKoDcpTjCPd5ouHpjY3QfF7YNUYBOUucnBeT0P2ycE4R1rYYOIB44T+juKR9w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qojfoq0VJ4RAW1ZLCCwvXPc9MEm2rqjzxKLfmBdADos=;
- b=XKuP52B6HJEfXKAG9UummqfP0J4I8L7s8p0IpS5Mq3FUQFM7SJ2LLdY9XYxWfqahfOBSJFnp0XVwGRXVAqp0MRbGdkpmpxmWzVhMA28fofQdbD8sap9hxteizWHkplkXJ01rh99w7U96Q0oamm27JCAUJJahO1tvf+7R1WyVH4BtDal77v55qPookxK70bEBZiHmi/zX8GZjYtCJX1cm6xsLnapM2tihrEnYciO+rrqEExnWmce2r+qZ7GBy/mZIqoExckykbbq7Lu/Ci0e2pjzbHNPdzsU/VRAqQzG2awkWBGgMbTbyYFXvmEk1X0IX/gXzJ2NpwHSezPECMXoxIw==
+ bh=N6IL80wCwzNe6o5x0Z/HfLS3KMekXH8R3lcu9EH9kiI=;
+ b=xcNLtFEkXSlePU1LLEmJToTOudGDKINGrsBuKMXKY/03yYrTWRbxBg+wqHDgvMTzO8vPBLwfNMRCpI+mvsFNthmgC1Lh3ffDJGs7eviz+iXNcpBL9QmGpMy9LpRaCgY1G94ggExgQLrBGQ388pVlXgs8pKjfmZF+UUaEWRzq6Rqh3GDysw7XUySdL2XQstHE33jdhGRRFwKmAnitJnPa5/AjNlzXH2beD0GhC1AbMV5QkUaFq1KO1m++bKG3LRfZeNj4QpeSBP1vQstByIjXiGCm14KGHCEoFyYVEN56jvmElK7L5fAEYRp/6uGppig6vYW5nZ4wq+KOCyu9kdxEBw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=gaisler.com; dmarc=pass action=none header.from=gaisler.com;
  dkim=pass header.d=gaisler.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qojfoq0VJ4RAW1ZLCCwvXPc9MEm2rqjzxKLfmBdADos=;
- b=EtmTmwAcX53o/I7xzB4MFHeieL0vXTQPMUf7pPSALThcmB1ceF+lRRP7RxJpCVRzzriHNloXYQ9pDqAmGV6jwb4sgTvwGOmWGzjGAUl8+tih35CGqxrkR2VP+sqzWtrosf5DNxrK8oEo01Ywd7iMhgZZmbn+/jkiB4x3/Mr/lLjc5HmUL/3EYcyHbbLWO9yZddH7WKz36O5O6o8+9f5MLJK+ZXaqvzEjDwmKmPX18j/rWPHGByGcrHSXoDO3ce95RPbN1YiLexzQRLlRysVdndUHa+6c6qRTgMS1akODNgVmqXfS4t+p5aBf6JqSITGzLkaMVolP7psQKkkBPf4oIQ==
+ bh=N6IL80wCwzNe6o5x0Z/HfLS3KMekXH8R3lcu9EH9kiI=;
+ b=dxH4i5AOv4omZsAkmSxkb5o3EpAyzKjfGmpghE3o6GkUbPU/QYp3ViD9O3/JsQzeW0SCFxx7V4kQIfnro4bMuyWlMRIJ2sXZdHm91Tgrcnh1n+eF0vpT/FSKTNxlIPGmYOWav69ffU1CmSY6x+D0aMTvLfMTJ/r5n9LdFZd+1tyC6TOXlKIIEmBWEysZp25s8Tr7t1+HfKX5GdGstdOwAwg0V6XLt1m80YXGiQNYXUAmTOsoGN6PVkXN3vKVAbHXIOt/CO0PLoEJcmJet2BQeumivOhgCcxNXPx3MOw+eEQfyAy9ubPOOKDIZM1Q9HtOt+GYxKP21QxGWyA1vhZ5mA==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=gaisler.com;
 Received: from GV3P280MB1530.SWEP280.PROD.OUTLOOK.COM (2603:10a6:150:188::6)
  by GVYP280MB0889.SWEP280.PROD.OUTLOOK.COM (2603:10a6:150:ec::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.19; Fri, 8 May
- 2026 07:01:34 +0000
+ 2026 07:01:39 +0000
 Received: from GV3P280MB1530.SWEP280.PROD.OUTLOOK.COM
  ([fe80::a74c:fd98:dc12:8d1e]) by GV3P280MB1530.SWEP280.PROD.OUTLOOK.COM
  ([fe80::a74c:fd98:dc12:8d1e%6]) with mapi id 15.20.9891.016; Fri, 8 May 2026
- 07:01:33 +0000
+ 07:01:39 +0000
 From: Arun Muthusamy <arun.muthusamy@gaisler.com>
 To: robh@kernel.org,
 	krzk+dt@kernel.org,
@@ -52,9 +52,9 @@ Cc: devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-can@vger.kernel.org,
 	Arun Muthusamy <arun.muthusamy@gaisler.com>
-Subject: [PATCH v7 03/15] MAINTAINERS: Add maintainers for GRCAN CAN network driver
-Date: Fri,  8 May 2026 09:01:09 +0200
-Message-ID: <20260508070121.6918-4-arun.muthusamy@gaisler.com>
+Subject: [PATCH v7 15/15] can: grcan: Advertise CANFD capability
+Date: Fri,  8 May 2026 09:01:21 +0200
+Message-ID: <20260508070121.6918-16-arun.muthusamy@gaisler.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260508070121.6918-1-arun.muthusamy@gaisler.com>
 References: <20260508070121.6918-1-arun.muthusamy@gaisler.com>
@@ -71,88 +71,86 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: GV3P280MB1530:EE_|GVYP280MB0889:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7f67d5a9-316e-4073-afba-08deaccfa3a5
+X-MS-Office365-Filtering-Correlation-Id: c61ecd6a-e858-4bc9-81f2-08deaccfa67f
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230040|1800799024|376014|366016|52116014|38350700014|22082099003|56012099003|18002099003;
 X-Microsoft-Antispam-Message-Info:
-	6E0dya4ZaH1/ap1+s8dgkvl8u6TVYJtRvXIy+eWSrj+wqhH72Mj2bCbHD1OuwBH1itXuhxto6zHn+LO4TqF4EnlTe6wuszwlbQbEa0SFj0iS490OdGfRS9Ekhd9PlnZtyWqK/IJzgOiUNJ3vYrArzqkRpnYn25qJ2uxhV2170iAL9sduIB4uS8d7Ui6BXVDNgTeudBp+Bi7q7UumEQbog1OaL5VbgdoCdrYjDgdcg2iHzeFhY+2BfpMxDgSlWqYtGwXZQsUiDiptcIP/ZvoaraIxCTQCZtBxpOyiXuGy+wDFSPVqQQToPEpxqnhYUNGhfLlwvHaY+uzz1xq1ZMQ2d5qvfsXIII27WGPLFzG8MVqwjCPwlvdhpCwkV5JeN5N1nOh2l82y2U2swEyh1K1GLasaM0r34F7B0HFeE9OH+KjE+g9GVPHs4+buYb3o7UsZTxi8a1upXBLvI3x7MfnvR+noRSLPvaVls/yfvd32S0zRGQz+tmkNyPS35nSImoMoOwTOr8NI4M5zI/pPc7DqrfR6E75pUKYSIkEbuK0jhBDRKOqYIEYB4ZOA53YDvc5DdhvGgrcPBxjwC0bfK12Bg7kNHpFrYU1QSLalB4YzgP122xQh1xj7BXZ3SslBbGcvZGkr9JzLhhEhvwE8jp+r2hqe26TkiLrB4lRlRCoPzDwjwTQdgTDXOssCosr6CSbRAKiDgqUTjspXFEEVM7V5QV7NbFIaaFcT1MdV020DhsDHsNxJBrnILfItoQb6PVCX
+	azRAA4BeDr+tzRmyRwVMNzRU4SYcLghnO6aO+XhlykpvNHS7uW0qebnFnB/Ny2pariocyvCC3uVPT1+HgCwfLXpvvOJMCBo+MHt4wKHf6nyFf3DHphRzqytjRFvyxXMPvkqHKsecNQhxJA9rOnvH8iU+MApPl6DRAs7q0PxSKoNqNg5yIn2POxeYEpi6/7U5DqkCN6IMrApPjNxenKMC+kHsd6bz4DZOVEeuSdwF/NsXbf6uHkzXBut0gKvMIFcTAUD3RXQo7xYKDP1ytjvG9LU0kyh/opQ3YUeQDePwwK/Bcc2vFPKvr+n69xazTOZ5MEBN5dbj2hfkBtgpT3Gm5CtDvFTFZ2W1FuYztvCCCbd7UPfvuwdUHYcC3X4vn5CinZxeTpRsBpLUeW6Oaqt5OwT6uY3JhRAEN7B0S9ODlELB/7Qw6sMWofjmA45uAPlK3z2A0Pt2ywWem77f+4wz0d2QTdHWtZ5+mlKHxaT5IG/us1rfQ8HXEHoxzCYbXBSGgi+WQGmUMa15u66U1os9LhCMsUzrl/z6pn4i7lwxag8134anijhh6S8wXIVIUv9Lj+lNGORNplrOFG161EDFUuflcCtNG4oWpMvoR9bQx4Vu8kmS1ezeqL0zytKwjs8v6sOcU8Ixm6jtpoVdBxDzQFkC8CONI9jcepzzxgKrvLwhuoujCTlVgOQUyonO/LGq47Ts/Nj1IP875S186aoZ8SLmIZttZc9kpbQuw+csIq8QHFLpcyGzXMr0gZNtlGKE
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV3P280MB1530.SWEP280.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(52116014)(38350700014)(22082099003)(56012099003)(18002099003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?nuvyuF/LwzkQcjO8EQ/VmIPUXiGPWzZTUPYxxgYaQcTY0G+c8KCVB615oVtR?=
- =?us-ascii?Q?Im0+dbfyUKBESPRvfDo+78qSzpEQhVMG7PMziYoMtMJUPJbagTmwtNw1EReN?=
- =?us-ascii?Q?449DabrR5JMRLXKsDYXJNMDSofZAy82lCiOJwYGbMi3x5nVmMeQXO4skSV4V?=
- =?us-ascii?Q?nBnklIamQeUa/GtARInvvoBjZHtrdW++a/SzA9QMaBdFUZyvQWeHOZuhLoQC?=
- =?us-ascii?Q?/eryvd47Qs+0oOd1+LVVFXTyuyyMCWYDtaYHXYtugiXYDYeA6IWKFZolRjYu?=
- =?us-ascii?Q?lCYSGODJxXQT7XQ9rPx3wpwPB8aivPcQUVytACZyQ9gJSAZPtOYBWSfyPDtC?=
- =?us-ascii?Q?IBNDD8y1f2rbF+l9tVJxeWL5CAtJQSBxgEuUyw3zIR7XZW8EQDdGFpS3RZxy?=
- =?us-ascii?Q?Ect6ZmuehLLfubsO6L+OHWr51hPaTLqVhCqTK/QlduGVwNK0riD/u4LufXa/?=
- =?us-ascii?Q?puZCyvI1oaS25troyW9kvqcC5U6BEUoE9xzRePwxn/EVk8Bvg6JOqPbu7JAU?=
- =?us-ascii?Q?lgS/PyfeiBLrUpV7Gg1CHHySCFLThcVcfr5lsdNqy3ayphRCuVar15E41ABQ?=
- =?us-ascii?Q?5wo92j8hh9wn4zC7cjdUoHCz0vzJC5+CfAC36Klt7m0bsx0rndiVTthz+PDb?=
- =?us-ascii?Q?41Jm6f0yPfI1VwiUJF3ySM3SO9toTMgJ+C6IORDsWtLDlunv0TvhVesfmT9C?=
- =?us-ascii?Q?0tQJ+rxLZ8NoleMaOJnqLS8/8N7fn6zujOdVq+P5/+hO33s7QQMVgdvjpw+W?=
- =?us-ascii?Q?3Zmeq1ZIxZIYdEPeYFUZSKsxXZd8UqUZ80+4Fs7syTRaLAeegC/d1W1mZJih?=
- =?us-ascii?Q?rV0Y1QRxvuXpkvTtW8yHiWf44grtKmW5AU9tgH7Shyw6ddnYoLF/vL67oF7O?=
- =?us-ascii?Q?9XxIjBYBBk725PncPMcZUWJ0HZRtVSIflEVeeYyTweATXFIRULDXiJYhco8G?=
- =?us-ascii?Q?9BoVqdfp5NuDTEkeXTSpDQNtw+hfCz+y3n6nqPmkW2wSWJJBE2VEKguUSLq3?=
- =?us-ascii?Q?HQJFv5MJchKmnYRIyUyo2lfeX0qv7e00HfZSF+bRUuRZNg4o8LhyIYPkf0zz?=
- =?us-ascii?Q?xmc3yU5sIp0UcLD51Thh6GEhAAEpcombfIiRrzGginV2MLTvXCzJgKOuIYME?=
- =?us-ascii?Q?VCSpxdVB5X4nbnxbdsIHysdrxCQ4dQlfy4whgBJ8JZld6fLgjvQJvEYrbc0b?=
- =?us-ascii?Q?xurjptrZZ/Xkqt5/vRUbnXThbCMW856D1+5eJrDdWsl4Bz1Gx8Ek/aPuVNVE?=
- =?us-ascii?Q?BsKlBlzVcrs7s4XAgTFRCRaZNymk+4QidbXkXZWi+Ii9d8vZAz8AFjqka8Jp?=
- =?us-ascii?Q?7suCTXLKo5TJgIteeLih/Vo7woVbr0Zg9C7ASX2LYpaRv1TKpXtjFFywHhey?=
- =?us-ascii?Q?43l4JuugVGlRd/+N57aFyfARqJvc6eBDHRwCBbudIV2vUKRiL75W3p9c5FWt?=
- =?us-ascii?Q?++MG8NvISTLuaiqsR/IrfPsqDj/UtZDvo2aOuOFF7syID8VVreeTVGFvIyET?=
- =?us-ascii?Q?QO4KGaYEdKTVsnYWoeX5+GP3OB68Uci95zHjbN1ecNhJUEbszEs9XCZBE2j3?=
- =?us-ascii?Q?VNoFqdAW0rMAvtQ2JqZ6s8/Os77dzhpOj9iHh7OwCiepai8quH62IBXJLJnb?=
- =?us-ascii?Q?J8Oyx92mVTIU7jv8WsupWxB68ftQ0G+LQdpB6mCz8ZAV4xye96MSL7N1O3JC?=
- =?us-ascii?Q?FnO2xTknn+EpgKxaAzsh0NPZqQDNFlPagL2dDgXOmUMZwvcsYtb0t2LS+Rzg?=
- =?us-ascii?Q?lo0saHrFRK5e3rQ56evnM39VCKbFLYk=3D?=
+	=?us-ascii?Q?5NQo7dOg9aPr7B8iEWp/Mzp2yvtUnUeR19zXcWhgD4jOjEX5MPfLrDzGEoT2?=
+ =?us-ascii?Q?CCysIZG3muWMbxsK4xAiOMngGIFODqjZLEFaTLwL+XdF1dsXf5YSxKGVffQt?=
+ =?us-ascii?Q?kCtgvuRV+DzQ8xK/w8RU3XsEseizYnRTiuiWjSYGcWdzdm0LTi09MvQnagVj?=
+ =?us-ascii?Q?7Oq1yaro1HwR2wIheWNea1UyiWQo4P1NI8cNoLA0VFxIWAMoZ5DgnYyKiMM2?=
+ =?us-ascii?Q?42s7J0mQVWO4ueg1G62RIY9Xps0SPJgnOOcaP53IMUnvoTBtP6Gd3u08Vv++?=
+ =?us-ascii?Q?nSwWh5E6kr2/vkKhcgZbEsAHQ2fEDP5cXMqdpO3xSgeSKxeo67kqC0kMsk+r?=
+ =?us-ascii?Q?tHIm3NVW/xopLfS52+dwF/wtXomWGbpZWxJ/CoIojVurtUb7bV0Z0gFyAb1Y?=
+ =?us-ascii?Q?w/afDr9d8fpLBvFTIZc9VnvienEAuTY4vX0RPz8oGwmDf3fInmOvcGHcBaKA?=
+ =?us-ascii?Q?dRe2L8UUGmWI8533XGsuFuXYF9elAdLkDfGRfvqYAuXHHhViswObCaxZh8M4?=
+ =?us-ascii?Q?1RVC3Db1RLVpNvHLKb4zNnuY7jQDnC2+538ZUEqNynq+ISQTLH2w/uuggo2l?=
+ =?us-ascii?Q?++A9LYJnHBQUBhRGQy9ODu/nluSIPBpcftRZiRDpRQxY2Mc57E2damohBlVi?=
+ =?us-ascii?Q?gLQAlxbOPa8SVuce+HM8xOIlaxUyx7BqzumI9zTj0Q1MwD0o8Rfx6rdBoEZO?=
+ =?us-ascii?Q?h/m/WzGr10M4u2J1qwr0CvhApXmNJq/3R/fstQJbsWkWBjvFmubvsfD7cD1a?=
+ =?us-ascii?Q?A3CBjge2wY/E5hEtdespQI9YTHn3ZgcvlpeC0y+3964CpbNLjsQj5+44CpjO?=
+ =?us-ascii?Q?/o5qyIpexjM+7J3miV/oFXqS4Xwv6JNAZoiwLUpP+wN8akSuLghSrY1rBWYK?=
+ =?us-ascii?Q?8C2KwpUtHWFVhGdnY+bodayY0CRKPiQLHyRXeH9l9GmduIYZ0ajeRa44zzf/?=
+ =?us-ascii?Q?CauP7E2AGgMnyxVTidOuVe8GnIlXhXJixcIjdxFOLTHRMLt8qtz8Cs4/Hruh?=
+ =?us-ascii?Q?CQxW5AYXm56+qiIxFz5KDGx2LflNjCe4hTaaMa4aWIdmMDQkAJXjfssQIerg?=
+ =?us-ascii?Q?tbx796PCo0UsM6NYg65TC4vYIDWKjjud6SU746u+prSJMWiGqofpCY3xEsmb?=
+ =?us-ascii?Q?t/nqZCKVXCIsPP0irl/ZkHwAV2jjpIqmcw4h/KL3rQnKFOa+7NiRDqDy9hSX?=
+ =?us-ascii?Q?mFYyaZIDpgA8AkQRsH/mGb9byKJkCQEHX6IGHqpjzsXZgvnTopsUTYUHzsCC?=
+ =?us-ascii?Q?FWNsKLhj8ncbTNfRq753VE51ILgXl673LDxuzo06QZjQ5IUNC/KkgWKstjgZ?=
+ =?us-ascii?Q?h2QSMnFAQL5XefoTs6BAqAzhTFhpoEUK4Z6fysqr1AlaJapMlpsZWPaZa9uz?=
+ =?us-ascii?Q?Qbh7zv2drzk541+9wAA48NSHETPmv4NenzdPjb1CbKFBS4Z21JklDbyOCi5S?=
+ =?us-ascii?Q?WV1vw3B8PKCNpgmskr/HAltTD9KgRX7lADujjAqneNJy7eEeLgxlwYjs1mL6?=
+ =?us-ascii?Q?cwvULwJfaIz/KGLbQZyu9JaNXZ2RsJfo4xFjzC846sVsDniR1PZmD/IyGGQq?=
+ =?us-ascii?Q?WoBHRi4L9DulRj4Fmv4+ky/nGCf4VW8kSf0MVMA5po4lLBRlegelMURetmHS?=
+ =?us-ascii?Q?RxpXJjKl2q/TMwYRTroF7Kp1y3UJFREzcp1PmyvuhYlQVJgvs+9ICLnc+M8m?=
+ =?us-ascii?Q?Cq8Xm++gmG7sqUVxzODV0k80LFDzXh2seO4xy6PiAy1AR1XIve1x7+T6M/SL?=
+ =?us-ascii?Q?JUeaIIJcyOH3T66lWWDwajvLFTnQPL0=3D?=
 X-OriginatorOrg: gaisler.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f67d5a9-316e-4073-afba-08deaccfa3a5
+X-MS-Exchange-CrossTenant-Network-Message-Id: c61ecd6a-e858-4bc9-81f2-08deaccfa67f
 X-MS-Exchange-CrossTenant-AuthSource: GV3P280MB1530.SWEP280.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2026 07:01:33.8095
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2026 07:01:38.6108
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 91fa4a59-2167-458a-8318-e45d80469d7e
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bBAUOXC5lJIYbf9HWPT6P5pt0kfIr6BIOfKNluq1gZa+9SfECLsdbsZkoRV5okhEq1tqwXVZeZHc88uvJ1PDyfV+4IkwAnhrsivFm0LKxRQ=
+X-MS-Exchange-CrossTenant-UserPrincipalName: Su4wUuw+nG0zQvXB1PT5W1pHSJzaqLCRM2VEnzgkjOR95da13KF/3MlErhiiAV1TDtllgOmGM3jlU/BvaAvjZwvkxAd11Rub4BLM7JFAbHs=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVYP280MB0889
 
-Add Arun Muthusamy and Andreas Larsson as maintainers for
-the GRCAN CAN network driver, This entry ensures clear
-communication channels for maintaining the Documentation
-and driver code associated with GRCAN.
+Advertise CANFD capability for GRCANFD hardware by enabling
+CAN_CTRLMODE_FD flag and providing CANFD timing operations.
 
 Signed-off-by: Arun Muthusamy <arun.muthusamy@gaisler.com>
 ---
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/net/can/grcan.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7a2ffd9d37d5..60b5d6212207 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10972,6 +10972,14 @@ F:	drivers/gpio/gpiolib-cdev.c
- F:	include/uapi/linux/gpio.h
- F:	tools/gpio/
+diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
+index 06ef081970a2..060031df8192 100644
+--- a/drivers/net/can/grcan.c
++++ b/drivers/net/can/grcan.c
+@@ -1766,11 +1766,14 @@ static int grcan_setup_netdev(struct platform_device *ofdev,
+ 	priv->ofdev_dev = &ofdev->dev;
+ 	priv->regs = base;
+ 	priv->can.bittiming_const = hwcap->bt_const;
++	priv->can.fd.data_bittiming_const = hwcap->bt_const;
+ 	priv->can.do_set_mode = grcan_set_mode;
+ 	priv->can.do_get_berr_counter = grcan_get_berr_counter;
+ 	priv->can.clock.freq = ambafreq;
+ 	priv->can.ctrlmode_supported =
+ 		CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_ONE_SHOT;
++	if (hwcap->fd)
++		priv->can.ctrlmode_supported |= CAN_CTRLMODE_FD;
+ 	priv->need_txbug_workaround = txbug;
+ 	priv->hwcap = hwcap;
  
-+GRCAN CAN NETWORK DRIVER
-+M:	Andreas Larsson <andreas@gaisler.com>
-+M:	Arun Muthusamy <arun.muthusamy@gaisler.com>
-+L:	linux-can@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/net/can/gaisler,grcan.yaml
-+F:	drivers/net/can/grcan.c
-+
- GRETH 10/100/1G Ethernet MAC device driver
- M:	Andreas Larsson <andreas@gaisler.com>
- L:	netdev@vger.kernel.org
 -- 
 2.51.0
 
