@@ -1,47 +1,47 @@
-Received: from MM0P280CU009.outbound.protection.outlook.com (mail-swedensouthazon11021139.outbound.protection.outlook.com [52.101.76.139])
+Received: from GV3P280CU013.outbound.protection.outlook.com (mail-swedencentralazon11020110.outbound.protection.outlook.com [52.101.75.110])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8ECF35F8AB;
-	Fri,  8 May 2026 07:01:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.76.139
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BB2D355F2D;
+	Fri,  8 May 2026 07:01:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.75.110
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778223718; cv=fail; b=F51E4Sr2NGgQiDi1m58N/NYK8jdNwEray80IdN29WDBuZuxeMVvkDtAr8hyXSaehG4Z4Glm4QvX47QAPpiwCStvOT71RqiupHvj1YnAbl3iCtR7oLL5Azgk4TY5aRAnDQpldXSEsk0AlGSH3g0OctD/2c2eSEiXUYvET07VbgS8=
+	t=1778223720; cv=fail; b=jMr1a0VEC1BnwBts80pQDxXMjpuY7MYRA+ppchnoVLYfVO5NU7UxwvKFkPhrMfYmzF/zk9PS3aPsFMjJ2qs0E5192tL0d12BqlPTFtVOZfVHlSaMnso04knd914D/k9mfbSZVGiCG9lgLVGHLG8iuECdwHiTJUtbpUVJEgvRv78=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778223718; c=relaxed/simple;
-	bh=Vf2CBWJY+w8dRaG/8/8xC5f9zZH4W2KXoF870P3Tv4c=;
+	s=arc-20240116; t=1778223720; c=relaxed/simple;
+	bh=bgxiL2CenjSgTX8ZyWNi0qXCIeEd1o7ChPjVwhCLiCc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=rLw5fn/YgFnb5lJFZNlgYM2hTRyrIFVPzQtqQ/Nn0k9irLoB+nvZx17TaxKa/O/ji19nznpyDEDoQwBPXBAYyRo5TPcRlWdtUHinz4X4r/Se1lzB1Ln7+TLWQI6INJe0qE8B8OPqWgxrbVZIn8AeyhaHsN49Oe/3Gp7eT4qfK6I=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=permerror header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=pass (2048-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=PJsupBDY; arc=fail smtp.client-ip=52.101.76.139
+	 Content-Type:MIME-Version; b=YwieXXRmrExHp/y39c5V85f/G21Ps4x9zCic6lBdesXDv2//L+/CNuiBfo2jlYQFjtCnH8pi7XdHZ13EUkL4FxaKO6kJ3UpeXumtNZes0n4REg6BbJOdU6ZgFBadkcigjsFiPToMKOL3JC8L7RWQmsxT9NAj10rqmUdrrqci6jo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=permerror header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=pass (2048-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=J+jJ+cnt; arc=fail smtp.client-ip=52.101.75.110
 Authentication-Results: smtp.subspace.kernel.org; dmarc=permerror header.from=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="PJsupBDY"
+	dkim=pass (2048-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="J+jJ+cnt"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=CgC5BTYoou/GTYqbwiWiwRZ0gOmaG6H24kNjFCtnCQoYyTpUxql4/pfrGEiTeym3wGyt5xFXpltQx5wQI65Rndlj+dMOXJaxTzd7pTfnRv9L3FQWkoia1D/M5r1a/vKESOn6/Iy97hpYG6qkuuVkqBEQuA/SzbYFW03AqqH7nOjQYfmIYHCZEIWHDesb2nw/+zIivOsIQ8s7QmMNRT7XcehmRczAm7SL0jSXwEqEDyfQUgv14ZSf3pb7jRWeAb9xrdWo092gde2rCSS23PUk7EVo3Btg7Do7b/eVh0u3WSlvljdwLT20XlUW+bqmd6YXqtqNyo5CGsxnoi4Q+SOjqg==
+ b=DxaqeMfQtp1g6AVGgeesOr83vBoaJ1OX6I1yXJZ5ukySbomiWPZj+wbE20dtt321hYTRC/BKCcoetCpX1gujS86MMnt2iacWe9rKYkY9VHCblCHQa5iYTLSlKFDVbtEqKo+iuCACdno5gHWxBOIkW6FPFl3KkJrG8DWP1F7D8Ejzp1Vy+CGcz09JAvyjtb3KfAAt+0LIVHkieibY/eknOgbiW3/NhtxyYp684917wj6I8fqmH21KkXv8pEq/k6jN2O1ZmHfa2gSa+1XI8DNXGsE9SssR81ot6Mjygc73J8Bt0XiD7EQ7YuDx58pVC31HqdJJyGL/IRYlXg4GbnkXMw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8glEZ82uZBY1CvyitsTBirLmVTkGitAPrvRmBDFMt+Q=;
- b=byEGuGOys+rtFX408raVJPKmBGpetE7c+wEhy/OUwnROplkpZ+bsllWX4E+AyF0Z1nmgT1G51peYT4i84laC+0V3Ny4KJrCV97PMMbwpr3iHVuHZ6A9asoxV3Gq8rsC4WpoFeNJU2HBhEtSs3xZFCMPckggJku9zhnp5nGJ+F+19867IktgEBa8R6bpgRNVq5U/FSaWiSpIVepE0cMiGwadMLvZGpsDSQbV50BYtpZLpN977FNpcnvQsxG7BHwhSPe5Ghaht9df2HzdH5VextPTShBd1pSINae1J69i+5mvUSQrdzvJdwCAWETIYTY8tZyKH0LO6M9Z2FaMVFwAUTA==
+ bh=sKdKbsysS8VkeCXJuVcT399Xxcd+y14MQjnvsfRAtQA=;
+ b=ypfgrcFTm/Sz+yd31NeZBTxTBdAVoWHdpKDXmT4L8n7Q3jEhrMn83NCa0cSzXm4Jd7bNUbRYnspHpUrP4SkLvfHjCq1dKbfiiplaZp5yA8/A+EoVX7MY5AMy2Xkt+mEeb4AN9qANCDXpyaB35xxgOvQ39QU8JFGI3XiuU2Hcy+5b80HKOdHlRhfE3DU6j88YQa1rgJ2san5NMZayxe1UCcMYP7WLmIPz+1SuGTaoGbWxxyUIsvKKN6AoJLPqqmP4IRiXod1U8zvBXWh3Hvz2c5zNGhGYPgK5e1ZVgHuBND1huPuCMW9SwoJm/1KrjST0KiY/+6qcpTyEWHOj2RHmow==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=gaisler.com; dmarc=pass action=none header.from=gaisler.com;
  dkim=pass header.d=gaisler.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8glEZ82uZBY1CvyitsTBirLmVTkGitAPrvRmBDFMt+Q=;
- b=PJsupBDY9E6QEK+o9xf+GE/zlVEJDEczLeYeZTtaSZ2OwXMpaynrCRTwjveQ2qq7XjJwHPXyNJusninwFfzOHCeMdR75jnK2x9HzsxTIpexhhELLwNDHETY6v734v5gDmZj+30sA4+o21fZyah1hrBh/wVDxOJ2eRnSAz1HLvQBBlh/krbbEgovhMx2jJnxLvhh1G0Bls6n5A4GOWEdrZWTf5W0efqsS0mta7V2u4xRfpOX7UeKPCz7masQFnKiFnqEHsi67NWd1002ZAOYVxGdRmpD2TgMZLBsHpxfReo6p9Q4KIDVIrHxmCImLAT4hmwx7TTFogNyd29HJUAgWaA==
+ bh=sKdKbsysS8VkeCXJuVcT399Xxcd+y14MQjnvsfRAtQA=;
+ b=J+jJ+cntnm4bzQ26BNH3W1WD0KKlqB+k2RrSB5IVp64JsIGZDzhG8pg98rkLTgGFMK7PYiBvSrBWUcUrt8nBY21feff0fO7MQ7eP0QgZo90xQLo3oFwVVHc/udZrimbFZ3A/xsX5R57q6n31X7qsLELr53xJ2AhYmLE8gpyXUgxATV6nWm6Js1/4UyvG4A8OAED8nn54E9dGOa6xaIez0v8zTzXeBl0GeoT8JIWRe1oLw6zkbpeT6jOLUENTb0IHDonrKXFTEIrBOh7biwn9zAzRAets6dsJ17OiveeEg20MLBFhJpeLvWT96OnK2Xwxvj+gLEd8fhLZ1pMwLLAAdQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=gaisler.com;
 Received: from GV3P280MB1530.SWEP280.PROD.OUTLOOK.COM (2603:10a6:150:188::6)
- by GVYP280MB0889.SWEP280.PROD.OUTLOOK.COM (2603:10a6:150:ec::17) with
+ by GVYP280MB1876.SWEP280.PROD.OUTLOOK.COM (2603:10a6:150:24e::7) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.19; Fri, 8 May
- 2026 07:01:36 +0000
+ 2026 07:01:33 +0000
 Received: from GV3P280MB1530.SWEP280.PROD.OUTLOOK.COM
  ([fe80::a74c:fd98:dc12:8d1e]) by GV3P280MB1530.SWEP280.PROD.OUTLOOK.COM
  ([fe80::a74c:fd98:dc12:8d1e%6]) with mapi id 15.20.9891.016; Fri, 8 May 2026
- 07:01:36 +0000
+ 07:01:33 +0000
 From: Arun Muthusamy <arun.muthusamy@gaisler.com>
 To: robh@kernel.org,
 	krzk+dt@kernel.org,
@@ -51,11 +51,10 @@ To: robh@kernel.org,
 Cc: devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-can@vger.kernel.org,
-	Daniel Hellstrom <daniel@gaisler.com>,
 	Arun Muthusamy <arun.muthusamy@gaisler.com>
-Subject: [PATCH v7 09/15] can: grcan: Add saving and restoring of CAN FD baud-rate registers
-Date: Fri,  8 May 2026 09:01:15 +0200
-Message-ID: <20260508070121.6918-10-arun.muthusamy@gaisler.com>
+Subject: [PATCH v7 02/15] dt-bindings: net: can: gaisler,grcan: Convert to DT schema
+Date: Fri,  8 May 2026 09:01:08 +0200
+Message-ID: <20260508070121.6918-3-arun.muthusamy@gaisler.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260508070121.6918-1-arun.muthusamy@gaisler.com>
 References: <20260508070121.6918-1-arun.muthusamy@gaisler.com>
@@ -71,85 +70,183 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: GV3P280MB1530:EE_|GVYP280MB0889:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6164ae91-b6a1-48a6-57b5-08deaccfa502
+X-MS-TrafficTypeDiagnostic: GV3P280MB1530:EE_|GVYP280MB1876:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3961909b-4810-420a-c88c-08deaccfa35c
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|376014|366016|52116014|38350700014|22082099003|56012099003|18002099003;
+	BCL:0;ARA:13230040|52116014|1800799024|366016|376014|38350700014|3023799003|56012099003|18002099003|22082099003;
 X-Microsoft-Antispam-Message-Info:
-	GwBGZudm/hmDtWc42dTC+m0XbfCbp+cQTAO55deNgkGc9MxrYSACJJQ6UtTk38YB+9SzJRCRT1C61lTyjhjhgDetRWlz/nQOmkolVjchW5LSj0QhlW3Yh2POPMh8tBudIYONiIkeRh4GTkENySh0H7Vg7ciO/Gab2QKjXI7i66Gx6aXyJbDKsxFsvO35t56XlSRUuJ1WKd0L4LdjBAiIxIzwGR2N+YnmQw4wDMrw42+rQKkQsbCIvSpsUqUCyWAzFRqYsZkclYNZJbeJbmSOXvCIoOUPd2Ri+n2Z5Jz/ELYvVOWFx5O1wgHO6gqd3QTaKWvhTwIlcl4wUh4fFk7lEAVbegpZZ10RHwW4iB9eTqv9IHJY+pUxl3z/NeY9YBdbyeKA3QYOAOOcP/vMCOqmfH7wpPAuWHenCfJc7WJrzTLcULWfNb6S1ME630hVOeW6MooczfeKY2TIfhW1N+binobzUtpMVzCtQLMlDnEnwJDM0HU6IcUwBabPiFP/ap9RFM2Yqufgpuv5beMCGeU2AfwrIXwRGvxRjAcl/LEgtV/cpyBzolZAhQAGlEb9dEh4XaeJM6PseEtlDszn8sBNFIwvk2s61XvfX3yhJMChIUUMpDfFLFZyMhgRmGqKkM2+KT7XTVeyoOPSnJcDUZ/jdEmckiVAVjqN+z/JbZ6GlRO0Zd6s/KT/QShH+cbgW8FsEh1R78kSD6JJ6uI+Lqi/7BGzwsxp/uy57zCrQjnIIdg=
+	3NHA4MqJmvVqHG5m8b3IGq5TQCsHqmHCE8VQzhouNo3HEtk0jqxBPtdW2Ynu4J9/s9OMVoT78q5vGu1iaamJFhMa/3Mhs4pUcCe6nKDyV6MFPUMRKcsTxBIAdMiviUq6c1RXffjSofr9VO3sAKbhTSlMhNo2QmbeseogTKg2e4HnKqBqvKh5O9Ois1jMXXTSF5mksOg2nrq1qQ+lojNZQ2PqneAaDWG5o0ACHGuZjHABhi+bFHc4aseBROvc9nnpOfq2IZJsCAnO3s7yFQ5p0Kc5qWqfdV0IV8qE6xNqHbGMdvwfyvDbRvR6l8am9+ppyOMMj4YyetsDwsCRxlhJVTlHKhpeqBl4oXcM2iqFdkRX4ffEJna2lLn2dkYYvSVwG3dmJpJlSlsQuZ0el3kiWHAxSBmoAg6wooJzQYjkOCmKdpqmL+buDh2mIRFobYTEFqRCFxuBG0bnsxRKT97S5JXHBu5Y41ttYP6X6qT6Dmpx7xGCWqV5ael/1+ZQh9FB4z2NHh68tpC2AkiYze1v7iuCRaXWMJbnaFStqnladKp2AivkDjd9/dqBjCBnpPpPL0pmhoVZYjZ7xErKoUO9jYO2S560YCynfHturQsk/IIMOmGvkk73vD3KN0srSEJE/10qYlSzgL6wXgfh34ondOu3F8jTtgD5K4NGCxQXScUSC4xPJZeU2sOwjZrp+RcSJoL5iq4zlMMJ7UNKVK20KQ==
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV3P280MB1530.SWEP280.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(52116014)(38350700014)(22082099003)(56012099003)(18002099003);DIR:OUT;SFP:1102;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV3P280MB1530.SWEP280.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(52116014)(1800799024)(366016)(376014)(38350700014)(3023799003)(56012099003)(18002099003)(22082099003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?VxE2OYcq1o2XK3a1McgenttxzCp8jDNe0WJW6Ha5NqwJhem7HVeB83ydez8e?=
- =?us-ascii?Q?uKDY2js74AvqlSgZpWAFsKMAz0t6aU4HMsiHS5Ff3Lfxuk7YRqLYBBhUziz9?=
- =?us-ascii?Q?+CTe4lbMrGS4IJeI2xoY8VtvDRXVCafTmgJ5y4FyCtoo53atyE3BiId0iM2i?=
- =?us-ascii?Q?GddQT/3zu1ohhC1fm+pVCrJY2URNYJzlqgD55NohzHUf3D4EERHwUgOawaNF?=
- =?us-ascii?Q?vzGu6qZeVUnY/mUDqDuwoc9ovf8VQPc5m9ZmdKZT7wDFQmmKgl7b+Rglpwfm?=
- =?us-ascii?Q?A0PnpadsWyZCvt7FS96LR77wqNOlXoeKu7Z71E9vzWs/YkZeZliINAW9/x0x?=
- =?us-ascii?Q?p8zyjkzuElBk4vjfnaUzzg46Cw6j7Hv5JIW33yeNPAxw+2Gf9S3UYJ9cLnz1?=
- =?us-ascii?Q?tWj8qspGXceWu/b4i3LvRdMafSTW4E3WQokApwBHQHiaM/9zr0O8DFlF3XE9?=
- =?us-ascii?Q?/XrO5cgtngBPbVcXubIHmVbqJ2pfrk7zD1jf9PNaz3dAfGk9P8mLvtG+ZOsB?=
- =?us-ascii?Q?ikiX5KRAyWriwoTinxyEO+NY+UcgqS9BdkAQmbWQL9zF8iup9+pJrKLe7YGK?=
- =?us-ascii?Q?svxgrBPgh4aGMhe35N7BRXHqNhwptOy0LyFlh/7/9bIBJCox7s8NvPa6jJ5A?=
- =?us-ascii?Q?pu8JQEO2ZSIeMaA9UNDT1hawisfi2CnHIc3k2lXlL+wBadPwUcGBSFRoIXJ7?=
- =?us-ascii?Q?ZQNkZ+8FhjUXmxotJ9o+BYq14ThKPr+o+/YPqcGns0oQD4aFdaTy1lE6iA2m?=
- =?us-ascii?Q?bt3mCQ9Hj8gpnZbKoe0hJE22HicJkuq1ztCCJr3nvGFXS/OebRl0QyGEofSZ?=
- =?us-ascii?Q?0q1Ut1NR0jkLMBSsLGCBOr0h6SddwhvEDQUyOvKKAoDdSB/Phkxm2wj91CtN?=
- =?us-ascii?Q?mzMIoN4OgWsqp65kJ0G705jPzJ7zU4lZusMynjeGHeFOduMbSZxtA8vK66PV?=
- =?us-ascii?Q?hLDE0ZDJFFlSaVuwfJxsA8mbLi1A8ZNNXygIh9D5Do7PN7lA24CfxU8UOdE4?=
- =?us-ascii?Q?QJq2UrKylEknWsvjY7PEADTzmJZ+cNgUy75gVTQmlB+h2x+EgTbwKWskbAXJ?=
- =?us-ascii?Q?NQK0NiGgsdc4AmaLeXWXqgxJNIm7jE4Wg6Mg/3OsR/tAxZEo9mF04JMLhV5q?=
- =?us-ascii?Q?YT+AaFoNoXrtDMRSElQk385W5qUH+g3/oqWuWk+SeoFFVualXDR9FqebFPay?=
- =?us-ascii?Q?JDyeNKlIGmZMJ4Qg9E1dLvqcufuObrxLN053Asd++u3XUM4YJiSS2k43ygzC?=
- =?us-ascii?Q?HFUP/gX09kpIMXm0wqf4Eao7AG0dgw86e3Q77YILV8uS8RNeu+BYR3t/P6Qg?=
- =?us-ascii?Q?xKID1MFBUaXgWbVk0UbdhujIUJQS8ilF2BYnjvLLY+vQflk2ww0a+g75VEE+?=
- =?us-ascii?Q?4TmPgpIQz/PL7sLEDY5p4YseshbQCwcpXhol/5MSM5WlG/LUEkXMMcceSWsf?=
- =?us-ascii?Q?IvdyJUKZcrrtpfwUHR/XvfLzgXjqFq81V5kOpb2G+szPLip0sixd+HPxt9qu?=
- =?us-ascii?Q?9AO3PA7KDpKt/f9mHsxKCrv55nHvTfSZSjjoCdVhm6/2CbB6n+vXGWi3nyo9?=
- =?us-ascii?Q?xGu/paAQnT6C0oZbrcUYc2qKUfJn6P9ZGlKVX+xud5m7GDka2xYdyJKewwvC?=
- =?us-ascii?Q?7ViyBj7XIotjtlLeYeLJUW3F4wIZR1F9I0EFVTodnpzXThAaAvi2NoANZp8V?=
- =?us-ascii?Q?m4vUkiOurOyQo386FdvgegHPCn1zVb2238SdFB1/VUWQws+G+QWtBxi8p/4R?=
- =?us-ascii?Q?XnHV002F4QJ/RF0zts3Vm0y0at4P+Xg=3D?=
+	=?us-ascii?Q?oKiYHdYQM5qn2Ydq+NH61D0fBLDnpIFyiOLAOkAaNv4lzxHI8ebI5qSRHMdh?=
+ =?us-ascii?Q?2CDJz+CGci0hs7UsyufE6/j17LeyxnkpZrEgpqfAnivMPo/C4H8P5Gw1s0p5?=
+ =?us-ascii?Q?fkwNRB1OBP+1XjiFwjCFXyp5hfuW9hI6RkzzfAmqa703Git5ElEaKZtaJpP4?=
+ =?us-ascii?Q?Z6fUDR5CfAZDOaUSJuro3zEjOkchsxKLdQCSa6MlJ3wndo8yoalGmke9PRj3?=
+ =?us-ascii?Q?OSa/28Z6fbgSoBCdky3jN35dQUxdDG/j3oggblM2z/dr6syUKcUYbFHlRE57?=
+ =?us-ascii?Q?V4I8nbanXgSPbdRHSfRcoRgtj4WEQQq19imS5yk6XspIkH+PWgcIWWgoU1HU?=
+ =?us-ascii?Q?uJDS/SEKGoogb76gEeZ9eSlB8gsRyK3Oip/nvWF5BdLySzQd6qnO+tyMZBw1?=
+ =?us-ascii?Q?2A6Cql/LtjlPsbCHbvL9jR+Vm7yGpcgzE4B2PWLEnFWg9w8jEs/2typdnhTD?=
+ =?us-ascii?Q?qppvrh5BdKvBMq5o2/uLcPdOx//9qA/XBfVbAix5TVcHS+qN3AXfKojKRHbP?=
+ =?us-ascii?Q?I9MTwl91heCxQ/qCk5H3jVQ3M0uETcNeOJwsjKl9D3Qg+yM+evPZwA/HEONX?=
+ =?us-ascii?Q?TZqJ1XrxpgHppQQi6+16vuDyVDLxCl0djjiWo7mpZgBNQQXRwhjE3uJ2mLBW?=
+ =?us-ascii?Q?pSnmpfqWU1VhuZriEdWi+rfFedZFfqR6NXaXqViwf+Y/Nuc/GFsasJv54mI2?=
+ =?us-ascii?Q?Z3gpxyMgUmhmYO40KPSDqJoT9c7UJc2lHR3atpsrOP29m9ndrtlI5R3RLmUJ?=
+ =?us-ascii?Q?kBK2QRqQOw6HLvGSwOFGNAyBfNSD91cb6RL4xfBRW8yaE4WfMmmYm1AByqvu?=
+ =?us-ascii?Q?zr7B13uqFB1ohNSa2OtSh0Ril4aN5fDcdL/9ycB4c4miGCEkqNcQ3tIjLWVN?=
+ =?us-ascii?Q?iwmzmNh+FRcDh7HN8WCqoFYxnlpeSOflmNer31yOUgFSmRaScG309xB0yRCb?=
+ =?us-ascii?Q?SyWz7gMZKx+JxrfbOggNwS0wyOZVA0DwX/ewk7C2SHgrbZbIH0y/lAKr3JcB?=
+ =?us-ascii?Q?n8T0hhDCok27Z+dN5Oxk+XrpzXG0xfHbp9UGIGuG81wLC6LLz2V0cuW3jENB?=
+ =?us-ascii?Q?ZtoyB4wzbE1YPLUfL2pgewO/nNcliG6/63xUCsXkLgSeKSCJIei0zvxg++1F?=
+ =?us-ascii?Q?P63uKdGDcwgYaY6pDd3O3se14wZX4UxHUeHJQmxbSpiDd/tzqaOzy/urwiXY?=
+ =?us-ascii?Q?RHwhG1WB5HwVLnR82jNz2B36nCpvaQUIqI0ELr1uoejkg+O9xXbmvIMzRtse?=
+ =?us-ascii?Q?vxnbu/BvLx5xluhBU9/sIjlrWQUTOEMEVzV3LjOmTbffLEL1T/M5X74rrAQt?=
+ =?us-ascii?Q?VK6UpD2bbHf2pNNFpwWlTFpp0+taazwX2uWir9+QU3R9YUh1/ouf9ZKI+Xnc?=
+ =?us-ascii?Q?2plKDtpa5uOmjj7kWE6mIqoyh7ZEGZcQXkzAJNA0FtoKbG9ZEOQRnVmq0Ff/?=
+ =?us-ascii?Q?bDyo6tNlESViTIuqIzIuRVAo90Nev0Tp/k0f27WOrJWk4GWrksYr66oJjz3/?=
+ =?us-ascii?Q?9BzX8eWhkin11Pe8CxevgRnBLyUKkNuO0zXL3LNafeQzfAL3nzoWLyd7dS8Q?=
+ =?us-ascii?Q?3gJKwd/fWK3u+cVxdybVS+Fr4ovzc+ObSMckPq/mgb4W5inAK2hfsJ+Tfr6t?=
+ =?us-ascii?Q?dOAIt6GrBVdAfg9QTPvGjRMJF3DyZK/rbKbjKSbbFYXx96PXeLFFde8+49XZ?=
+ =?us-ascii?Q?EltLXugxODzs7ePzywjQ96tcepCwj1fPNWZObpJ8CkDYDrniBXTrzYsDwtmh?=
+ =?us-ascii?Q?n8eg1ZNIGbiP2A0OvjFvGXzULsCqSik=3D?=
 X-OriginatorOrg: gaisler.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6164ae91-b6a1-48a6-57b5-08deaccfa502
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3961909b-4810-420a-c88c-08deaccfa35c
 X-MS-Exchange-CrossTenant-AuthSource: GV3P280MB1530.SWEP280.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2026 07:01:36.1229
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2026 07:01:33.3197
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 91fa4a59-2167-458a-8318-e45d80469d7e
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: U1ZenrUPjrbnankXy9qQXLZlbGzL2EBvl8ysJfc6X1rVuyhzghhDq0K/SDomrP74YoyBOQs6tP9uU26IQrGDSmmEXbqnjaV6I9TSToB98Rg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVYP280MB0889
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6rv9U1cfcGXHvMGdAkfP7BaTo6peUwi19pmkeHwym7HapuEfvgdAbSea14TI9EqO0GULER3Rp3GGEkdUqxWJowmzPEc0Xowhy2vuPkfSz8M=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVYP280MB1876
 
-From: Daniel Hellstrom <daniel@gaisler.com>
+Migrate device tree bindings for Gaisler GRCAN, GRHCAN
+and GRCANFD CAN controllers from a text format to YAML format.
 
-While reset the GRCAN baud-rates are preserved, since GRCANFD has the
-baud-rate in different registers we need to add saving of those
-registers too.
+Additional changes:
+  - Remove stale systemid property
+    removed in commit 1e93ed26acf0 ("can: grcan: grcan_probe():
+    fix broken system id check for errata workaround needs")
+  - Make freq optional
+  - Add clocks
+  - Add compatible
+  - Add example
 
-Signed-off-by: Daniel Hellstrom <daniel@gaisler.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Arun Muthusamy <arun.muthusamy@gaisler.com>
 ---
- drivers/net/can/grcan.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../bindings/net/can/gaisler,grcan.yaml       | 62 +++++++++++++++++++
+ .../devicetree/bindings/net/can/grcan.txt     | 28 ---------
+ 2 files changed, 62 insertions(+), 28 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/gaisler,grcan.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/can/grcan.txt
 
-diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
-index 6e0a393785e8..ccf4032ed642 100644
---- a/drivers/net/can/grcan.c
-+++ b/drivers/net/can/grcan.c
-@@ -528,6 +528,8 @@ static void grcan_reset(struct net_device *dev)
- 
- 	/* Turn off hardware filtering - regs->rxcode set to 0 by reset */
- 	grcan_write_reg(&regs->rxmask, 0);
+diff --git a/Documentation/devicetree/bindings/net/can/gaisler,grcan.yaml b/Documentation/devicetree/bindings/net/can/gaisler,grcan.yaml
+new file mode 100644
+index 000000000000..8fea97c7319a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/gaisler,grcan.yaml
+@@ -0,0 +1,62 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/can/gaisler,grcan.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	priv->hwcap->set_bittiming(dev);
- }
- 
- /* stop device without changing any configurations */
++title: Aeroflex Gaisler GRCAN, GRHCAN and GRCANFD CAN controllers.
++
++description: |
++  GRCAN, GRCANFD, GRHCAN controllers are available in the GRLIB VHDL
++  IP core library.
++  For further information look in the documentation for the GRLIB IP library:
++  https://download.gaisler.com/products/GRLIB/doc/grip.pdf
++
++maintainers:
++  - Arun Muthusamy <arun.muthusamy@gaisler.com>
++  - Andreas Larsson <andreas@gaisler.com>
++
++allOf:
++  - $ref: can-controller.yaml#
++
++properties:
++  compatible:
++    enum:
++      - gaisler,grcan
++      - gaisler,grcanfd
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  freq:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: |
++      Frequency of the external oscillator clock in Hz (the frequency of the
++      AMBA bus in the ordinary case).
++      This property should be used by systems where the common clock
++      framework is not supported.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    can@ff400000 {
++        compatible = "gaisler,grcanfd";
++        clocks = <&sysclock>;
++        reg = <0xff400000 0x400>;
++        interrupt-parent = <&plic0>;
++        interrupts = <6>;
++    };
+diff --git a/Documentation/devicetree/bindings/net/can/grcan.txt b/Documentation/devicetree/bindings/net/can/grcan.txt
+deleted file mode 100644
+index 34ef3498f887..000000000000
+--- a/Documentation/devicetree/bindings/net/can/grcan.txt
++++ /dev/null
+@@ -1,28 +0,0 @@
+-Aeroflex Gaisler GRCAN and GRHCAN CAN controllers.
+-
+-The GRCAN and CRHCAN CAN controllers are available in the GRLIB VHDL IP core
+-library.
+-
+-Note: These properties are built from the AMBA plug&play in a Leon SPARC system
+-(the ordinary environment for GRCAN and GRHCAN). There are no dts files for
+-sparc.
+-
+-Required properties:
+-
+-- name : Should be "GAISLER_GRCAN", "01_03d", "GAISLER_GRHCAN" or "01_034"
+-
+-- reg : Address and length of the register set for the device
+-
+-- freq : Frequency of the external oscillator clock in Hz (the frequency of
+-	the amba bus in the ordinary case)
+-
+-- interrupts : Interrupt number for this device
+-
+-Optional properties:
+-
+-- systemid : If not present or if the value of the least significant 16 bits
+-	of this 32-bit property is smaller than GRCAN_TXBUG_SAFE_GRLIB_VERSION
+-	a bug workaround is activated.
+-
+-For further information look in the documentation for the GLIB IP core library:
+-http://www.gaisler.com/products/grlib/grip.pdf
 -- 
 2.51.0
 
