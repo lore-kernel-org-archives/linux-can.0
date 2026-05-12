@@ -1,134 +1,115 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1D43394E91;
-	Tue, 12 May 2026 13:06:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECF483A2E15;
+	Tue, 12 May 2026 13:06:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778591171; cv=none; b=aMYezXwfncFZfGTlcCbwXkjiMnNNcs7/X/JJ83XrdO77j1xSxlR8a43ZsT2yBdoUfhU99teJKAH2WTlptjkWUrkJZomlAeZdLMlW7YZt1OIPhXX4w29K46Kju37mym/bIjasMXVI3Xfkx4JuX/LnAIL+p7GPf/PaInyzaEOI/AQ=
+	t=1778591203; cv=none; b=l86kG6aXy7zV9yk1t9iKr2NMf1aEKstZO0lQihRfZdp6AWgO4kwAC9F6DIKBsU7Wwe29/4xhBqOyaIllLgfBZh5iVP4ZrueZfkDwuvG4n0fx1PXrfTiag0zyTUzMcVvIaROL/qvImdNbq1xb3inlrfjhu1Ex1wy3bVTbbKcr6qc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778591171; c=relaxed/simple;
-	bh=bHWrPhTiJL2fP/DH1DaMkMAaneZI5rRXmH5SsOzULJw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iDf1z6kDJh/QETmY6s1pIpebgiroxYu66Nw9d7sWCzKl78ktJ6BdNOaAsQo3Q0rV9qmTfFuAnP2Ec9Zm2yvH0nVxejmTX1hyNKCXW/gg1iytSy9UcTpHkZq26zk1yQX6TBABM3hiKa0J4VrK9tNRl9/bzMDmjkwaNhyb6YuwqFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ftif8nLZ; arc=none smtp.client-ip=198.175.65.13
+	s=arc-20240116; t=1778591203; c=relaxed/simple;
+	bh=znNkGxCWUoP43q4FZmHtbfCbpkEWJzJh8FmA72szqWY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=O5dXssLQYUqr8qE0UF8byEiYBL2PXJybUBE8VQ8dhn2KfbesSaVgL1RW2FtY/FNa9ZHhmAx9VNbAqo35iz4txjeYkXvMTmeDoDhsrZqZibSx2AGRPRs9gsjrZ9+cYgfAd+OhPZpR8rW9ZDWvmfzIlFXn+kmXrexQ5bxifNsnhDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Yi6jTV6Q; arc=none smtp.client-ip=192.198.163.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ftif8nLZ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Yi6jTV6Q"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1778591170; x=1810127170;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=bHWrPhTiJL2fP/DH1DaMkMAaneZI5rRXmH5SsOzULJw=;
-  b=ftif8nLZqp18Dbb/E4fqH7pPjIqM1sYnotR0C+m2qDx/aAK+flVGCKwG
-   dBHleRpvdEWONw3olHO6bH9Ui0odBCRjinpcD8WFZ9l/4cGsl9DtKd6if
-   i3Q+x7FOPqnx1wTi+iTvNjpSR96aoNj6N+Lf4WhWsA3Q2ncke9LyuYxEh
-   RJj/HyT+hRxWyfRHqXIWAMPGObV/io2Ctku6Dy5yTsir0QYYN/vAQwjLQ
-   zkZAPBZGaHkBP5DY/UCEUzYI/8mz+lybDraQUix/WljCEaMBdolCZWu6q
-   vVHmn4SA7Z6DIP0XlJTLPQJv558yysSacVgcDEZ7gguOaDSN/L7OV0MCH
-   A==;
-X-CSE-ConnectionGUID: bG2iSKb5QwqnTIut/nwiHA==
-X-CSE-MsgGUID: 5m3YPKQtSZ2h+smVYZFsrA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11783"; a="90600384"
+  t=1778591202; x=1810127202;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=znNkGxCWUoP43q4FZmHtbfCbpkEWJzJh8FmA72szqWY=;
+  b=Yi6jTV6Q8um2FJFcKwoXpw9mfErBUJroeKjyTRATKDDWQ/uAbFQVr+19
+   QrjaUSgjrX7NcRuw4eCOtDJaxSbFOzMVg64b4dsTCzKTuWnc35x0mAUUR
+   aUBA2ZaAARF6yK9PeM/FbBlxPPKPwbkcYDhkRZSxjRcbaD+dz/gJmGVSk
+   rJFQ/AP2Ui0iGtvBpTWVJxEfeUjvsA5eHda4QWvcaYGkUsV8aPIQYA9rb
+   3yzT/hcBr/YOJ+nAnBSl/1hWT1SvZi4fKsOLVeW/z/ndYtMeWR9eX88y2
+   EuvxzN0+Fgpd7VmPRoemlN05IP8Zdes2rY0K5AD9d+qmq01NvEyr6XFaQ
+   w==;
+X-CSE-ConnectionGUID: aYGi4YN0SMuAiR/OtExwDA==
+X-CSE-MsgGUID: L7IZ1+8CQCuzaL4dIwb2FA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11783"; a="67026599"
 X-IronPort-AV: E=Sophos;i="6.23,230,1770624000"; 
-   d="scan'208";a="90600384"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2026 06:06:00 -0700
-X-CSE-ConnectionGUID: /mJvE0wNS7anVBFuForJMQ==
-X-CSE-MsgGUID: a2XOIYexRYGNV6ODYrbgFw==
+   d="scan'208";a="67026599"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2026 06:06:38 -0700
+X-CSE-ConnectionGUID: xg/iWjAPSE+p7scyEFDOnA==
+X-CSE-MsgGUID: bP+pSJv1QK6ixYpICKEBqg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.23,230,1770624000"; 
-   d="scan'208";a="233294184"
-Received: from black.igk.intel.com ([10.91.253.5])
-  by fmviesa006.fm.intel.com with ESMTP; 12 May 2026 06:05:56 -0700
-Received: by black.igk.intel.com (Postfix, from userid 1003)
-	id 74E8A9B; Tue, 12 May 2026 15:05:55 +0200 (CEST)
+   d="scan'208";a="235099026"
+Received: from kniemiec-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.112])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2026 06:06:34 -0700
+Date: Tue, 12 May 2026 16:06:31 +0300
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Peng Fan <peng.fan@nxp.com>,
-	linux-can@vger.kernel.org,
-	linux-phy@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
+To: Vinod Koul <vkoul@kernel.org>
+Cc: Peng Fan <peng.fan@nxp.com>, linux-can@vger.kernel.org,
+	linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
 	Vincent Mailhol <mailhol@kernel.org>,
-	Vinod Koul <vkoul@kernel.org>,
 	Neil Armstrong <neil.armstrong@linaro.org>,
-	Josua Mayer <josua@solid-run.com>,
-	Ulf Hansson <ulfh@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v4 2/5] phy: phy-can-transceiver: use device_get_match_data()
-Date: Tue, 12 May 2026 15:01:50 +0200
-Message-ID: <20260512130552.272476-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20260512130552.272476-1-andriy.shevchenko@linux.intel.com>
-References: <20260512130552.272476-1-andriy.shevchenko@linux.intel.com>
+	Josua Mayer <josua@solid-run.com>, Ulf Hansson <ulfh@kernel.org>
+Subject: Re: [PATCH v3 0/4] phy: phy-can-transceiver: Ad-hoc cleanups and
+ refactoring
+Message-ID: <agMl17o5Ti4eSM4P@ashevche-desk.local>
+References: <20260504070054.29508-1-andriy.shevchenko@linux.intel.com>
+ <agBjOmnpKuZoDfWG@vaman>
+ <agB_aj_2hzF3ON2h@ashevche-desk.local>
+ <agIBJsOl4Trk4_KN@vaman>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <agIBJsOl4Trk4_KN@vaman>
+Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
+ krs, Bertel Jungin Aukio 5, 02600 Espoo
 
-Use the generic firmware node interface for retrieving
-device match data instead of the OF-specific one.
+On Mon, May 11, 2026 at 09:47:42PM +0530, Vinod Koul wrote:
+> On 10-05-26, 15:51, Andy Shevchenko wrote:
+> > On Sun, May 10, 2026 at 04:21:38PM +0530, Vinod Koul wrote:
+> > > On 04-05-26, 08:58, Andy Shevchenko wrote:
+> > > > The driver does two things that need to be addressed:
+> > > > - includes subject to remove gpio.h
+> > > > - checks for error code from device property APIs when it can be done in
+> > > >   a robust way
+> > > > 
+> > > > This series addresses the above and adds a couple of additional refactoring.
+> > > 
+> > > Sashiko flagged some issues, some of them not introduced by this, can
+> > > you please check this:
+> > > 
+> > > https://sashiko.dev/#/patchset/20260504070054.29508-1-andriy.shevchenko%40linux.intel.com
+> > 
+> > "Could this result in a null pointer dereference if device_get_match_data()
+> > returns null?"
+> > Yes, it sounds legit but not introduced here.
+> > 
+> > "In the original code, the warning was suppressed when the property was missing
+> > because err evaluated to -EINVAL. Now, if the property is absent, max_bitrate
+> > is explicitly set to 0 in the else block, which then unconditionally triggers
+> > this warning."
+> > True, but I don't know which is better here, I consider that it's
+> > good to inform user about default being used as a fallback. I can change
+> > this back to the original logic. What do you prefer?
+> > 
+> > The third one is the repetition of the first one (see above).
+> > 
+> > TL;DR: The only one legitimated question is about a (new old) warning.
+> 
+> Yeah would be great if we could fix these as well please
 
-While at it, drop unneeded argument to devm_phy_create() which
-extracts device node from the given device by default.
+I just sent a v4:
+20260512130552.272476-1-andriy.shevchenko@linux.intel.com
 
-Reviewed-by: Josua Mayer <josua@solid-run.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/phy/phy-can-transceiver.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
-index 1808f903c057..5cfd09735204 100644
---- a/drivers/phy/phy-can-transceiver.c
-+++ b/drivers/phy/phy-can-transceiver.c
-@@ -5,9 +5,9 @@
-  * Copyright (C) 2021 Texas Instruments Incorporated - https://www.ti.com
-  *
-  */
--#include <linux/of.h>
- #include <linux/phy/phy.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/module.h>
- #include <linux/gpio.h>
- #include <linux/gpio/consumer.h>
-@@ -152,7 +152,6 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
- 	struct can_transceiver_phy *can_transceiver_phy;
- 	struct can_transceiver_priv *priv;
- 	const struct can_transceiver_data *drvdata;
--	const struct of_device_id *match;
- 	struct phy *phy;
- 	struct gpio_desc *silent_gpio;
- 	struct gpio_desc *standby_gpio;
-@@ -161,11 +160,10 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
- 	u32 max_bitrate = 0;
- 	int err, i, num_ch = 1;
- 
--	match = of_match_node(can_transceiver_phy_ids, pdev->dev.of_node);
--	if (!match || !match->data)
-+	drvdata = device_get_match_data(dev);
-+	if (drvdata)
- 		return -ENODEV;
- 
--	drvdata = match->data;
- 	if (drvdata->flags & CAN_TRANSCEIVER_DUAL_CH)
- 		num_ch = 2;
- 
-@@ -190,7 +188,7 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
- 		can_transceiver_phy = &priv->can_transceiver_phy[i];
- 		can_transceiver_phy->priv = priv;
- 
--		phy = devm_phy_create(dev, dev->of_node, &can_transceiver_phy_ops);
-+		phy = devm_phy_create(dev, NULL, &can_transceiver_phy_ops);
- 		if (IS_ERR(phy)) {
- 			dev_err(dev, "failed to create can transceiver phy\n");
- 			return PTR_ERR(phy);
 -- 
-2.50.1
+With Best Regards,
+Andy Shevchenko
+
 
