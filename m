@@ -1,73 +1,68 @@
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3752F349CD2
-	for <linux-can@vger.kernel.org>; Tue, 12 May 2026 10:25:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D4841A267;
+	Tue, 12 May 2026 13:06:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778581536; cv=none; b=R7Zjw0DQTCHAaNpbvro8zlUChs58NW12DDFhhWj6DjBVS9dhlPmEYvqN+jrJ6A71LQ00kPZfCC17p+7sizhz3Tlb6nTuUKTfXPtI8OjKx1Zr9VKiijl5FV8PzYr8pJNAJA1yOswf8zdQ1dMx4xML2aBN10HNg8PCVg7c0sjY5Rw=
+	t=1778591164; cv=none; b=UHO0xzhC8SKkZdKuykgWFqRpAQVFzpvA6MqlIz1ewwll/U4JwrMXSLKcfoeVpl8841cvBfcmaXbjq7UHjiC5hcszD9I4kZrksxa96yHNLckdWuSkrDTr8X7kpSdfd4IcEYwOOYy3z8q6XnkVgwy53cfTPEaPcn+N1JhFP+aroRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778581536; c=relaxed/simple;
-	bh=IhoNvmD9JQin3UMraTdtwtbPSNmcwQ2gPL9MrmHEZHs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AN/iQ9pqYie62iTNxgLI40/d/kNNSHbRa487RYDtqgfxGE8Zxs1SDFIF7HJ7DIBvSAlig1gf79rGakp5HVNCtPZ0SYzmpAf9c8twuoFH8ag60McyEpRG+DDqbExdv9hZiqoVwXhchTg7BicI2Op3AVJUZQM9bIS6n32lywE8Gi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OF/2FFbH; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1778591164; c=relaxed/simple;
+	bh=4qMUuS6h5tFlP1suIW3fbkhM5BGhQH4sMAaS62b/lnw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=oE9NyHpBVm7L2KHkNRape6Kj4rdtaJoDHbvYE/+mD6FVt3Vdyb3/frWvtQqpmDVYPrQUcTXtDEGHHckvk6Ze4k9zQg6bBXvYPSHAN1QWrBUYVhTb6FrtMn2hhQPfWKvcVEbibcoGnTvoerKntxHP3+SWOtcjm7+1OkCCKFyrdWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mEaIEb6y; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OF/2FFbH"
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-367cbac9c37so2140418a91.2
-        for <linux-can@vger.kernel.org>; Tue, 12 May 2026 03:25:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778581534; x=1779186334; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4z7+etNpHPOWPeEaC540614m4lrLw4zEKLTP47movss=;
-        b=OF/2FFbHxe787aONHbSv0oU2QF1sZPl/UdKRsqovoIawN4UrbcladnaQ6qP0GmeGv6
-         gIj+MG1zocJuMlphfU+CH5NYcKCyfmAJAbvJKl9UpmzcX0o/hTfbf7oVm0n5a4opkRcd
-         B8IisjcOBPNkcxiHifGy6o/MINDuKhQjJH6zRy7PTx0YFQ7ra4TBZXqeUn5XamRwFZ3X
-         JmZ+ME2HOJjOmUUlu4RQd991NO14yGfEHknAlOt2GS3vJFEOVHI4CMzBpkFTrbb/jlVR
-         OA3bJYxDVv4uAm18ajSKfqZEM9AyAfKRc/ffMy65J1WyZKCju1zzYOaj6TpUb98+7v4J
-         nbPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778581534; x=1779186334;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4z7+etNpHPOWPeEaC540614m4lrLw4zEKLTP47movss=;
-        b=jw5ck2S+lYKGFT7x8NMVdgj8XpdFepVeqadi9ZoCgn9G60a00EEOWTUkpu+4EKf8q+
-         ZQqIpxUYUu1N3fLJQis2A9ITqsfRR170tZSB3yiWTUft7uXwJYBtJN82xlYrjjwrPG6q
-         sYiEsdcE593Nu4xZIQrCZwxk7lLxmIHkD0sxoNNV9mIe3UsYbZRr4126EOxfsJB5SXsx
-         aMbOS749mBPvgeipMP6axEWx/bCOn84Pr4Y/4+AXbi82jEThurAumB7nEDwpzzb28T11
-         tY4B2SpenoPA2GAt8NFZXZTI2lcNwhF5rpH80uHlRV1Hb/7aGK2Jb1bim9ypzpKuP98+
-         GmCw==
-X-Forwarded-Encrypted: i=1; AFNElJ8ZO978W8za747cJuj6PTpu0eh2tJfisCllgG/zgnajdixM6s7DtNc3QcTpDvOQTkUibO++HzpMzrE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw/4Z7PswWDURQ5qlDXbQzz8GdZV7oiFJDl3m5qalYWY9Tm+iw1
-	EOrnuqcRsMUomBmyo5zPb0rtIDDWhrozbDcLOYTSnEa7LA8WLUx/iqSr
-X-Gm-Gg: Acq92OGHZmLXD7au38oa6KAoKh7BVTszqs6OWvSK2AnvL7XxyDlOh/0piE82CcVX78Y
-	tPfUIkZwoZE0RqMMlwk+vmgYN9rZTxt3jfcuQuWMcH1BUhA6Y7+7ctd5EaQ0FlSjIwI/1yrobMO
-	BIQrJqV7rMTixJhDS0l1zNsxj67d1lO8RU92gr6VDGheHi6/IDotGCwuH78KeCRBmDE703pFv+T
-	gdt+gOHtAJ09RR0s8XHsoKdB0C3g6V4QKwbFbMp52itTRGq94nTL/pyov8VwjJi8jyz98RexNxl
-	8lco1FD/pzgAOA6X3gUMOLuH+LLkejt3I1TKE1Ff4MW1k73aXg0XOKQUj7KzV0TqL94i2WdYicX
-	t4eyMwRtMUEROhm4QscsJIKHhe+Z5wVzi1mpfoEFNFsT677/T5YfymBXIdqvLw+vrT8NlTtRxpi
-	DXk/tS7bPzo3lfn4qY2+49nkPeeZi8/+FhF3exHjemhgbW254UwCzvaWTolw==
-X-Received: by 2002:a17:90b:3f8c:b0:368:85fb:7b8b with SMTP id 98e67ed59e1d1-368b26bfb62mr2613874a91.22.1778581534554;
-        Tue, 12 May 2026 03:25:34 -0700 (PDT)
-Received: from phuc-desktop.. ([183.91.15.56])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-368ac4c3acasm1294457a91.0.2026.05.12.03.25.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2026 03:25:34 -0700 (PDT)
-From: phucduc.bui@gmail.com
-To: msp@baylibre.com
-Cc: mkl@pengutronix.de,
-	mailhol@kernel.org,
-	k-willis@ti.com,
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mEaIEb6y"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1778591163; x=1810127163;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=4qMUuS6h5tFlP1suIW3fbkhM5BGhQH4sMAaS62b/lnw=;
+  b=mEaIEb6y3U27upKE3oH7aIrMCUHhzPbKSLkzCRQs7jTm/yQsaugfGcpw
+   DbNAuguLXlDoFWpakaFbgo1diC3xWE8hbWAfA1aNoJT9+r4ahBazmsYqQ
+   KsJz8s2t5LtZV6s1Qdl9dbGm9DTgZN7VqdSDJ5+m2axH3QrACTQTMJU70
+   6ZTSu+NtOJ9dSdfhBe5FTstZoBzudd9xFWJNrY7S6rDlLht0VWWLLZ8QJ
+   orrjgKtQ1w0Sx2oGar3hPV0OwPb1r6O8T441/A0+lPw4poazyoU2B2hbF
+   /ViocZorOHcc2z8qzzVxfFiO+woyil0ibBCabxcPvJr3pPnoYm1DQzZjz
+   Q==;
+X-CSE-ConnectionGUID: EbeAaGSqQkqmIzktj/WaMw==
+X-CSE-MsgGUID: 50mnGEoGQmqgldKfp7+vnA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11783"; a="83351805"
+X-IronPort-AV: E=Sophos;i="6.23,230,1770624000"; 
+   d="scan'208";a="83351805"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2026 06:06:02 -0700
+X-CSE-ConnectionGUID: RDmrtmE8RCiVomwOCGEuRg==
+X-CSE-MsgGUID: 2anfmBf/T9ul3t+yFab0jw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,230,1770624000"; 
+   d="scan'208";a="236903550"
+Received: from black.igk.intel.com ([10.91.253.5])
+  by orviesa010.jf.intel.com with ESMTP; 12 May 2026 06:05:59 -0700
+Received: by black.igk.intel.com (Postfix, from userid 1003)
+	id 81DBDA1; Tue, 12 May 2026 15:05:55 +0200 (CEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Peng Fan <peng.fan@nxp.com>,
 	linux-can@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bui duc phuc <phucduc.bui@gmail.com>
-Subject: [PATCH v2] can: m_can: Use of_property_present() for wakeup-source
-Date: Tue, 12 May 2026 17:25:18 +0700
-Message-ID: <20260512102518.25471-1-phucduc.bui@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	linux-phy@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Josua Mayer <josua@solid-run.com>,
+	Ulf Hansson <ulfh@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v4 5/5] phy: phy-can-transceiver: Drop unused include
+Date: Tue, 12 May 2026 15:01:53 +0200
+Message-ID: <20260512130552.272476-6-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.50.1
+In-Reply-To: <20260512130552.272476-1-andriy.shevchenko@linux.intel.com>
+References: <20260512130552.272476-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -76,41 +71,33 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: bui duc phuc <phucduc.bui@gmail.com>
+This file does not use the symbols from the legacy
+<linux/gpio.h> header, so let's drop it.
 
-The 'wakeup-source' property is declared as a phandle-array in both YAML
-bindings and Device Tree source files. However, the driver currently
-uses of_property_read_bool() to check for its existence.
-
-According to the function's documentation, usage on non-boolean property
-types is deprecated. Switch to of_property_present() to comply with the
-recommended API for checking the presence of a property.
-
-Fixes: 04d5826b074e ("can: m_can: Map WoL to device_set_wakeup_enable")
-Acked-by: Markus Schneider-Pargmann <msp@baylibre.com>
-Signed-off-by: bui duc phuc <phucduc.bui@gmail.com>
+Reviewed-by: Josua Mayer <josua@solid-run.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
+ drivers/phy/phy-can-transceiver.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Changes in v2:
- - Add Acked-by tag
- - Add Fixes tag
-
- drivers/net/can/m_can/m_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index eb856547ae7d..16f80607e150 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -2464,7 +2464,7 @@ struct m_can_classdev *m_can_class_allocate_dev(struct device *dev,
- 		return ERR_PTR(ret);
- 	}
+diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
+index 973cc7ce651f..534a4fc482aa 100644
+--- a/drivers/phy/phy-can-transceiver.c
++++ b/drivers/phy/phy-can-transceiver.c
+@@ -5,12 +5,11 @@
+  * Copyright (C) 2021 Texas Instruments Incorporated - https://www.ti.com
+  *
+  */
++#include <linux/gpio/consumer.h>
+ #include <linux/phy/phy.h>
+ #include <linux/platform_device.h>
+ #include <linux/property.h>
+ #include <linux/module.h>
+-#include <linux/gpio.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/mux/consumer.h>
  
--	if (dev->of_node && of_property_read_bool(dev->of_node, "wakeup-source"))
-+	if (dev->of_node && of_property_present(dev->of_node, "wakeup-source"))
- 		device_set_wakeup_capable(dev, true);
- 
- 	/* Get TX FIFO size
+ struct can_transceiver_data {
 -- 
-2.43.0
+2.50.1
 
