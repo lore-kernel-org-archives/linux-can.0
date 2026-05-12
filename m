@@ -1,50 +1,50 @@
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92CB03911D5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1D43394E91;
 	Tue, 12 May 2026 13:06:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778591170; cv=none; b=BiJgm79MNxj1h5U679gm5ZFVq/BensD7obUyYlEzJ+pXlrzHpvW87COpnQ63fYMRVWvS0I5WIfTjrQEpyeL3wobbA05Dj0dJZbOqyjJi6+y0fq8c/+ZSEVNx6RgyZ5N2rEhH4BYjuG2oK0W6EC4DuORdawxLr2d0o2/En0nWhW8=
+	t=1778591171; cv=none; b=aMYezXwfncFZfGTlcCbwXkjiMnNNcs7/X/JJ83XrdO77j1xSxlR8a43ZsT2yBdoUfhU99teJKAH2WTlptjkWUrkJZomlAeZdLMlW7YZt1OIPhXX4w29K46Kju37mym/bIjasMXVI3Xfkx4JuX/LnAIL+p7GPf/PaInyzaEOI/AQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778591170; c=relaxed/simple;
-	bh=aWyJaQvi0RjHwj/BHyzTjrlBIlDr2rwbaqRKmtrI03w=;
+	s=arc-20240116; t=1778591171; c=relaxed/simple;
+	bh=bHWrPhTiJL2fP/DH1DaMkMAaneZI5rRXmH5SsOzULJw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Qyepy3LWDbCIwLvOHSTU+SQR7N3ppb/W7tvRMYkv8tYKMmzrbRjo9mUDJG4bllcKBkPWXnnpwLL+Ako8XCWQlaKdCaSNK1hChlmjcIYi01Kaq+uAFq1vpA2ezD/QuTC/SV7I8EspiE0QwTXVklfA/7bOL61KinLmyOMOH6PXc3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fw9pmucW; arc=none smtp.client-ip=198.175.65.13
+	 MIME-Version; b=iDf1z6kDJh/QETmY6s1pIpebgiroxYu66Nw9d7sWCzKl78ktJ6BdNOaAsQo3Q0rV9qmTfFuAnP2Ec9Zm2yvH0nVxejmTX1hyNKCXW/gg1iytSy9UcTpHkZq26zk1yQX6TBABM3hiKa0J4VrK9tNRl9/bzMDmjkwaNhyb6YuwqFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ftif8nLZ; arc=none smtp.client-ip=198.175.65.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fw9pmucW"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ftif8nLZ"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1778591170; x=1810127170;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=aWyJaQvi0RjHwj/BHyzTjrlBIlDr2rwbaqRKmtrI03w=;
-  b=fw9pmucWvHs3dYCdcIcb65Z4AmV4YmlRIiOvewAbkOPOlzxOkb3dpacT
-   LmaVLufeF2CXaRbBOvwZeGRG5biwZBSBeODnOSdBcYHoitUnLlk0bSK+2
-   LTWUoQS7Y10TksCh/D9g7oGOcpiVZI3K65EazTazlvtgaWvA44vf8oOjd
-   3zzJtQ4x9yM30bxnK/PWUgY0V2zY0YGUCndH11jOtCeZZJ3gJkzorAkdC
-   XKeiJWB4iU4rrpfvBEQnWlTUp38Llyln6MB3l8xPPIFm2DJrZdf3ygDWH
-   CYMEyifWBy8Tl/OQbSV+oOjwYAPPNYWNGhZBvYtii1TCGozfY195keAqX
-   w==;
-X-CSE-ConnectionGUID: tztUK6ynSoGSO/x6I4SAWA==
-X-CSE-MsgGUID: Mc3TIszZSmajRcxVvO4Qig==
-X-IronPort-AV: E=McAfee;i="6800,10657,11783"; a="90600382"
+  bh=bHWrPhTiJL2fP/DH1DaMkMAaneZI5rRXmH5SsOzULJw=;
+  b=ftif8nLZqp18Dbb/E4fqH7pPjIqM1sYnotR0C+m2qDx/aAK+flVGCKwG
+   dBHleRpvdEWONw3olHO6bH9Ui0odBCRjinpcD8WFZ9l/4cGsl9DtKd6if
+   i3Q+x7FOPqnx1wTi+iTvNjpSR96aoNj6N+Lf4WhWsA3Q2ncke9LyuYxEh
+   RJj/HyT+hRxWyfRHqXIWAMPGObV/io2Ctku6Dy5yTsir0QYYN/vAQwjLQ
+   zkZAPBZGaHkBP5DY/UCEUzYI/8mz+lybDraQUix/WljCEaMBdolCZWu6q
+   vVHmn4SA7Z6DIP0XlJTLPQJv558yysSacVgcDEZ7gguOaDSN/L7OV0MCH
+   A==;
+X-CSE-ConnectionGUID: bG2iSKb5QwqnTIut/nwiHA==
+X-CSE-MsgGUID: 5m3YPKQtSZ2h+smVYZFsrA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11783"; a="90600384"
 X-IronPort-AV: E=Sophos;i="6.23,230,1770624000"; 
-   d="scan'208";a="90600382"
+   d="scan'208";a="90600384"
 Received: from fmviesa006.fm.intel.com ([10.60.135.146])
   by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2026 06:06:00 -0700
-X-CSE-ConnectionGUID: mRMRMezYS/KqyfWN7E09fw==
-X-CSE-MsgGUID: sf3sO/OxQ06rWeh6Hr3eLA==
+X-CSE-ConnectionGUID: /mJvE0wNS7anVBFuForJMQ==
+X-CSE-MsgGUID: a2XOIYexRYGNV6ODYrbgFw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.23,230,1770624000"; 
-   d="scan'208";a="233294183"
+   d="scan'208";a="233294184"
 Received: from black.igk.intel.com ([10.91.253.5])
   by fmviesa006.fm.intel.com with ESMTP; 12 May 2026 06:05:56 -0700
 Received: by black.igk.intel.com (Postfix, from userid 1003)
-	id 7DD1C9E; Tue, 12 May 2026 15:05:55 +0200 (CEST)
+	id 74E8A9B; Tue, 12 May 2026 15:05:55 +0200 (CEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Peng Fan <peng.fan@nxp.com>,
 	linux-can@vger.kernel.org,
@@ -57,9 +57,9 @@ Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
 	Josua Mayer <josua@solid-run.com>,
 	Ulf Hansson <ulfh@kernel.org>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v4 4/5] phy: phy-can-transceiver: Don't check for specific errors when parsing properties
-Date: Tue, 12 May 2026 15:01:52 +0200
-Message-ID: <20260512130552.272476-5-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v4 2/5] phy: phy-can-transceiver: use device_get_match_data()
+Date: Tue, 12 May 2026 15:01:50 +0200
+Message-ID: <20260512130552.272476-3-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20260512130552.272476-1-andriy.shevchenko@linux.intel.com>
 References: <20260512130552.272476-1-andriy.shevchenko@linux.intel.com>
@@ -71,53 +71,64 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Instead of checking for the specific error codes (that can be considered
-a layering violation to some extent) check for the property existence first
-and then either parse it, or apply a default value.
+Use the generic firmware node interface for retrieving
+device match data instead of the OF-specific one.
 
-With that, return an error when parsing of the existing property fails.
+While at it, drop unneeded argument to devm_phy_create() which
+extracts device node from the given device by default.
 
+Reviewed-by: Josua Mayer <josua@solid-run.com>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/phy/phy-can-transceiver.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ drivers/phy/phy-can-transceiver.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
-index 23655956ace8..973cc7ce651f 100644
+index 1808f903c057..5cfd09735204 100644
 --- a/drivers/phy/phy-can-transceiver.c
 +++ b/drivers/phy/phy-can-transceiver.c
-@@ -128,8 +128,9 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
+@@ -5,9 +5,9 @@
+  * Copyright (C) 2021 Texas Instruments Incorporated - https://www.ti.com
+  *
+  */
+-#include <linux/of.h>
+ #include <linux/phy/phy.h>
+ #include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/module.h>
+ #include <linux/gpio.h>
+ #include <linux/gpio/consumer.h>
+@@ -152,7 +152,6 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
+ 	struct can_transceiver_phy *can_transceiver_phy;
+ 	struct can_transceiver_priv *priv;
+ 	const struct can_transceiver_data *drvdata;
+-	const struct of_device_id *match;
+ 	struct phy *phy;
+ 	struct gpio_desc *silent_gpio;
  	struct gpio_desc *standby_gpio;
- 	struct gpio_desc *enable_gpio;
- 	struct mux_state *mux_state;
--	u32 max_bitrate = 0;
+@@ -161,11 +160,10 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
+ 	u32 max_bitrate = 0;
  	int err, i, num_ch = 1;
-+	const char *propname;
-+	u32 max_bitrate;
  
- 	drvdata = device_get_match_data(dev);
- 	if (drvdata)
-@@ -151,9 +152,17 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
+-	match = of_match_node(can_transceiver_phy_ids, pdev->dev.of_node);
+-	if (!match || !match->data)
++	drvdata = device_get_match_data(dev);
++	if (drvdata)
+ 		return -ENODEV;
  
- 	priv->mux_state = mux_state;
+-	drvdata = match->data;
+ 	if (drvdata->flags & CAN_TRANSCEIVER_DUAL_CH)
+ 		num_ch = 2;
  
--	err = device_property_read_u32(dev, "max-bitrate", &max_bitrate);
--	if ((err != -EINVAL) && !max_bitrate)
--		dev_warn(dev, "Invalid value for transceiver max bitrate. Ignoring bitrate limit\n");
-+	propname = "max-bitrate";
-+	if (device_property_present(dev, propname)) {
-+		err = device_property_read_u32(dev, propname, &max_bitrate);
-+		if (err)
-+			return dev_err_probe(dev, err, "failed to parse %s\n", propname);
-+
-+		if (max_bitrate == 0)
-+			dev_warn(dev, "Invalid value for transceiver max bitrate. Ignoring bitrate limit\n");
-+	} else {
-+		max_bitrate = 0;
-+	}
- 
- 	for (i = 0; i < num_ch; i++) {
+@@ -190,7 +188,7 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
  		can_transceiver_phy = &priv->can_transceiver_phy[i];
+ 		can_transceiver_phy->priv = priv;
+ 
+-		phy = devm_phy_create(dev, dev->of_node, &can_transceiver_phy_ops);
++		phy = devm_phy_create(dev, NULL, &can_transceiver_phy_ops);
+ 		if (IS_ERR(phy)) {
+ 			dev_err(dev, "failed to create can transceiver phy\n");
+ 			return PTR_ERR(phy);
 -- 
 2.50.1
 
