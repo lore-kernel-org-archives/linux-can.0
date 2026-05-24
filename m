@@ -1,306 +1,158 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f78.google.com (mail-ot1-f78.google.com [209.85.210.78])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD53368D7F
-	for <linux-can@vger.kernel.org>; Fri, 22 May 2026 18:08:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.20
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779473308; cv=pass; b=WMwEcc4rETiofxjUbmL40MyRnta0PObKFX3SW5+HN+qf9l/aggIlG/rFOpPCpnFxqC+OeN/s6I6yR/YFWAz8rqJU/ntHZX3n2+vriGmbRBUTJqoxFcsIE5vfuHB0kXs06lr+VL9n4HythGRAyJ3s57SNhd8nfI/pa8ANQZ1hgEA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779473308; c=relaxed/simple;
-	bh=CCr50l498vrPiVDsnQuH/5JEpLVVIEjtnzINCrJWBnQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TX18yAElL+Ui9/TPCtMnItfgPEjDrdf0fHPftAFfjNt7DvEqLwrv/y00VFCjnPour8U0vnZ1rlMFAKEIaiKeOlVnFMxKxGUr0kMuFJDRPgomqyYB3a26PCPIl/QyFRWSzqxlecEcYnJPWLTcb92Akxb6qfYBRGIzM0izCJYPFZs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=Q/Kqqn9A; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=qyBLa2xZ; arc=pass smtp.client-ip=85.215.255.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="Q/Kqqn9A";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="qyBLa2xZ"
-ARC-Seal: i=1; a=rsa-sha256; t=1779473295; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=YyOuVRJZSI9I/IAaV5fD5Es9bH2gABFzAHUtguOXeU8Zl5iP1Iq/rNkpSCMS5DCQmV
-    kmlEDQU1pv/WNVYGcjRUSu7vZoatS9NLWuMAruma9GeDe8DHPcYWhubrcZlUIpg4eHfU
-    WhPryZlgJVtMwmQ1+tvNA8430JigIHACRKl7r3ENLA1s+5oDJwa+g6LNpkUSX1aGgZQO
-    F38E/bRifwZqv/5hnBn0dXl+7fj8BgHk5XAcUuIoCHco42Gxn28MhYvcm7b3J4aJYayD
-    GdZTDvLW/KbRRJwwKYp1EwkdAd4iJlfvGXhmpul9lPmtSwLd/RSBiWuxLuTVL7mBqJxt
-    3YJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1779473295;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=FJ6qRMe2BSap1OSSxkgsQhbZVG3BcTrIPBWMF3X+Mwo=;
-    b=EvH+iRyAJvnunhcAC4Lsq9KVVQaZHoo0BGtNucmDB6t1EU5E4lyjnHwOi03BnitcFa
-    6MqGkfsXQ9jsNimTa9eBMuk7VIXJ9UedlI7HRcqUNIrJZh5rNFQTpPpqkloQfJRNbYFF
-    CM7JJBbnmlASeg2Sj/Am5GpIwQ8FvyKrnjM19RWPoj6oXFTj2+lpW8EAeOQeN6Jm8G5v
-    Flk2iLF9LzyesOv3jy/xpSQuA2aCYHcUC6D66K7musLNZjSURz4yZk+egXk+zbocRgW/
-    aknjO+S8ivsgRutmRVbOxKXIKFqycvZgX6vpWzUyhUw8SUuEGU1txEQ6MIpLV0i1Qk2t
-    +ACQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1779473295;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=FJ6qRMe2BSap1OSSxkgsQhbZVG3BcTrIPBWMF3X+Mwo=;
-    b=Q/Kqqn9AnfeHqfFwX+vBz0Vyzr6eUSK4MxDwJXdTIU1Hw4ef0/1xJBMYlgDxa/RkeQ
-    YFsxUZ5Y/FSl47Ybhh5MzYhjtc/caTAhmfKU8L72IA1ru/XjTM7Qu7dD7aJ7hrs0RnDe
-    DNu4nxyiIpaEwW7kHtYH+zsvHmVcS3+goEldGP5Kf468OKl0UMinq6fZiaC5r3tFPfk1
-    QdAIFlBYCbj5O2+ekTEpC5Wxuk70U+9bx0iVXzgQ/Jya3M2wu+O3qnKD8rVeWCOn14jE
-    W/401nzZSnT/nsfKW3DbSbJlrR45AU92Md7aeqD0O3lzIjpylblsP2JsbDMZzQU2wRqm
-    Q3iw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1779473295;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=FJ6qRMe2BSap1OSSxkgsQhbZVG3BcTrIPBWMF3X+Mwo=;
-    b=qyBLa2xZmgfzLW8MPodw+1NoZlztQV/dKxOgNZdiI6vB/SRoeMscIrRRN8JBvP3iP2
-    zHxJZaYi7H5hQ8hd77Aw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeFQ7s0ZDT0tksFSR+Aix0esQJVIAlZEg=="
-Received: from lenov17.lan
-    by smtp.strato.de (RZmta 55.0.1 AUTH)
-    with ESMTPSA id Kba96d24MI8FUgy
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Fri, 22 May 2026 20:08:15 +0200 (CEST)
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
-	syzbot+75e5e4ae00c3b4bb544e@syzkaller.appspotmail.com
-Subject: [PATCH v2 1/2] can: bcm: add locking when updating filter and timer values
-Date: Fri, 22 May 2026 20:07:57 +0200
-Message-ID: <20260522180758.51128-2-socketcan@hartkopp.net>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260522180758.51128-1-socketcan@hartkopp.net>
-References: <20260522180758.51128-1-socketcan@hartkopp.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5545190473
+	for <linux-can@vger.kernel.org>; Sun, 24 May 2026 00:38:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.78
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779583109; cv=none; b=klGhpgRgTh3BOjsE6Y3BEOjhezMe9nQAd1LwoQKOSPpe9sRPXJiNvg4GHiwvx6nOg4SBttyjdJCs5XGWkNIYIzDJJZtALZEKDlu/vMxmkP9zPxZYt9OrxCY+Cqn7olWNEvNr7osn+dOTORLrXHE70NyFTF6KstbydoSj+q4s7Vc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779583109; c=relaxed/simple;
+	bh=GvkT2b/Lwj7ULEbYXeECYAuzWvpDi+pmm8MUTzAXzGc=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=atyJVfqXCmx1WFlXYtnhDZJdrPO8UTbbmRc3fcjb8nkgrfY/zU6hkcr/j+c4mqzeWLEGNHpX6PBJ2/gMwjYnPzp9bJklriNiuwirmg60q503BE/lhIWishYH0Qte4HqCCFBc3EITxz6Ke/tzXOAKB6tOnpsPxqlW2TFosmWpmdo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.210.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-ot1-f78.google.com with SMTP id 46e09a7af769-7e5e92fbe1fso5118880a34.1
+        for <linux-can@vger.kernel.org>; Sat, 23 May 2026 17:38:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779583106; x=1780187906;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/vugJl2FiEz7KDIUBOUS0iitY4xYJhfPai9Y7x5gRnw=;
+        b=X3b1+URR21HMF4qV9TAODZSwon/sCb0lxjE/kMKQBHSMWLpoWPBjVUWTJ+Ir3glcoI
+         V5GFLyk8eCFwQimHtZe0vgEIGDs3Ya6eY8nbLYbmyj1UJ1bf7UQ2QptXW4S/9W72i+Tt
+         VCvyX78xpwTVO5Xq8SjnNb9Upd1tXKXPjNhhexTT+iRKZ4zVU/qNe40rdYt7C/7Z8HKj
+         fRSjGk/kyMYGAMlu56HatOouNHAk0T1YLV/Bz/ZeONDHA50US9FwknfgqpewP7xeFpmo
+         h92iBM6Az/E6ETWhbU89SB/CeHgsTvpAr71VuWtCMnYsStEsd8UCNClsHG+WaGQysQpS
+         G3YA==
+X-Gm-Message-State: AOJu0Ywu8DCCxPN6qLHkVJfC2cA5qLG7IttoIesJgN63du0njYFAqg2f
+	V7Ga7aIxorkzFtnwBUeqwisOZ77+yXqW+kHlVPHjR49NYkSLVkfC5Hrc5KgSTcu1TRnFhKt6UtI
+	nQp3yKH2+N54+tDKHgHoYXI8h5gVqhsRL8yqGZ+7atp6mI4zQzlLIMIBD3Ug5RQ==
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="us-ascii"
+X-Received: by 2002:a05:6820:8183:b0:69d:8700:c925 with SMTP id
+ 006d021491bc7-69d8700db06mr3822474eaf.8.1779583106781; Sat, 23 May 2026
+ 17:38:26 -0700 (PDT)
+Date: Sat, 23 May 2026 17:38:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6a124882.050a0220.30ba69.0009.GAE@google.com>
+Subject: [syzbot] [can?] general protection fault in can_rx_unregister (2)
+From: syzbot <syzbot+8ed98cbd0161632bce95@syzkaller.appspotmail.com>
+To: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	mkl@pengutronix.de, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-KCSAN detected a simultaneous access to timer values that can be
-overwritten in bcm_rx_setup when updating timer and filter content.
+Hello,
 
-Fix the RX_SETUP update case by protecting the timer and filter updates
-with a spin_lock_bh().
+syzbot found the following issue on:
 
-Fixes: ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol")
-Reported-by: syzbot+75e5e4ae00c3b4bb544e@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/linux-can/6975d5cf.a00a0220.33ccc7.0022.GAE@google.com/
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+HEAD commit:    4b4362973b6f Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=15e86d96580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a834c6344141a58b
+dashboard link: https://syzkaller.appspot.com/bug?extid=8ed98cbd0161632bce95
+compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=111f147e580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17942ac8580000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/f69f86c90ee5/disk-4b436297.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/79fa7b33aaab/vmlinux-4b436297.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ef080156d0de/Image-4b436297.gz.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8ed98cbd0161632bce95@syzkaller.appspotmail.com
+
+bond1: (slave vxcan3): Setting fail_over_mac to active for active-backup mode
+bond1: (slave vxcan3): making interface the new active one
+bond1: (slave vxcan3): Enslaving as an active interface with an up link
+Unable to handle kernel paging request at virtual address dfff800000000005
+KASAN: null-ptr-deref in range [0x0000000000000028-0x000000000000002f]
+Mem abort info:
+  ESR = 0x0000000096000005
+  EC = 0x25: DABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+  FSC = 0x05: level 1 translation fault
+Data abort info:
+  ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
+  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+[dfff800000000005] address between user and kernel address ranges
+Internal error: Oops: 0000000096000005 [#1]  SMP
+Modules linked in:
+CPU: 0 UID: 0 PID: 4947 Comm: syz.0.86 Not tainted syzkaller #0 PREEMPT 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/18/2026
+pstate: 83400005 (Nzcv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
+pc : can_rx_unregister+0x124/0x560 net/can/af_can.c:537
+lr : can_rx_unregister+0x11c/0x560 net/can/af_can.c:531
+sp : ffff800096267a40
+x29: ffff800096267a60 x28: dfff800000000000 x27: ffff700012c4cf5c
+x26: ffff0000d755ae48 x25: ffff0000c5c9ec00 x24: 0000000000000000
+x23: ffff80008597d660 x22: ffff0000d9aa8000 x21: ffff0000cc740000
+x20: 0000000000000028 x19: ffff0000cc740108 x18: 0000000000000000
+x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+x14: 00000000ffff8000 x13: 0000000000000001 x12: 0000000000000004
+x11: ffff700012c4cf30 x10: 0000000000ff0100 x9 : 0000000000000201
+x8 : 0000000000000005 x7 : ffff80008594bef0 x6 : 0000000000000000
+x5 : 0000000000000000 x4 : 0000000000000001 x3 : ffff80008594ba58
+x2 : 0000000000000001 x1 : ffff0000d5110000 x0 : 0000000000000028
+Call trace:
+ can_rx_unregister+0x124/0x560 net/can/af_can.c:531 (P)
+ isotp_release+0x500/0x9d8 net/can/isotp.c:1232
+ __sock_release+0xa0/0x1d4 net/socket.c:722
+ sock_close+0x24/0x38 net/socket.c:1514
+ __fput+0x340/0x744 fs/file_table.c:510
+ ____fput+0x20/0x30 fs/file_table.c:538
+ task_work_run+0x1c4/0x254 kernel/task_work.c:233
+ resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
+ __exit_to_user_mode_loop kernel/entry/common.c:67 [inline]
+ exit_to_user_mode_loop+0x10c/0x17c kernel/entry/common.c:98
+ __exit_to_user_mode_prepare include/linux/irq-entry-common.h:207 [inline]
+ syscall_exit_to_user_mode_prepare include/linux/irq-entry-common.h:230 [inline]
+ arm64_syscall_exit_to_user_mode arch/arm64/kernel/entry-common.c:88 [inline]
+ el0_svc+0x18c/0x260 arch/arm64/kernel/entry-common.c:741
+ el0t_64_sync_handler+0x48/0x148 arch/arm64/kernel/entry-common.c:759
+ el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:594
+Code: aa1803e2 97ffff00 d343fc08 aa0003f4 (387c6908) 
+---[ end trace 0000000000000000 ]---
+----------------
+Code disassembly (best guess):
+   0:	aa1803e2 	mov	x2, x24
+   4:	97ffff00 	bl	0xfffffffffffffc04
+   8:	d343fc08 	lsr	x8, x0, #3
+   c:	aa0003f4 	mov	x20, x0
+* 10:	387c6908 	ldrb	w8, [x8, x28] <-- trapping instruction
+
+
 ---
- net/can/bcm.c | 61 +++++++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 52 insertions(+), 9 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index a4bef2c48a55..dbdf5d4f4ed7 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -123,10 +123,11 @@ struct bcm_op {
- 	struct canfd_frame sframe;
- 	struct canfd_frame last_sframe;
- 	struct sock *sk;
- 	struct net_device *rx_reg_dev;
- 	spinlock_t bcm_tx_lock; /* protect currframe/count in runtime updates */
-+	spinlock_t bcm_rx_update_lock; /* protect filter/timer data updates */
- };
- 
- struct bcm_sock {
- 	struct sock sk;
- 	int bound;
-@@ -616,10 +617,12 @@ static void bcm_rx_starttimer(struct bcm_op *op)
- static enum hrtimer_restart bcm_rx_timeout_handler(struct hrtimer *hrtimer)
- {
- 	struct bcm_op *op = container_of(hrtimer, struct bcm_op, timer);
- 	struct bcm_msg_head msg_head;
- 
-+	spin_lock_bh(&op->bcm_rx_update_lock);
-+
- 	/* if user wants to be informed, when cyclic CAN-Messages come back */
- 	if ((op->flags & RX_ANNOUNCE_RESUME) && op->last_frames) {
- 		/* clear received CAN frames to indicate 'nothing received' */
- 		memset(op->last_frames, 0, op->nframes * op->cfsiz);
- 	}
-@@ -632,10 +635,12 @@ static enum hrtimer_restart bcm_rx_timeout_handler(struct hrtimer *hrtimer)
- 	msg_head.ival1   = op->ival1;
- 	msg_head.ival2   = op->ival2;
- 	msg_head.can_id  = op->can_id;
- 	msg_head.nframes = 0;
- 
-+	spin_unlock_bh(&op->bcm_rx_update_lock);
-+
- 	bcm_send_to_user(op, &msg_head, NULL, 0);
- 
- 	return HRTIMER_NORESTART;
- }
- 
-@@ -680,19 +685,26 @@ static int bcm_rx_thr_flush(struct bcm_op *op)
-  *                      Check for throttled data and send it to the userspace
-  */
- static enum hrtimer_restart bcm_rx_thr_handler(struct hrtimer *hrtimer)
- {
- 	struct bcm_op *op = container_of(hrtimer, struct bcm_op, thrtimer);
-+	enum hrtimer_restart ret;
-+
-+	spin_lock_bh(&op->bcm_rx_update_lock);
- 
- 	if (bcm_rx_thr_flush(op)) {
- 		hrtimer_forward_now(hrtimer, op->kt_ival2);
--		return HRTIMER_RESTART;
-+		ret = HRTIMER_RESTART;
- 	} else {
- 		/* rearm throttle handling */
- 		op->kt_lastmsg = 0;
--		return HRTIMER_NORESTART;
-+		ret = HRTIMER_NORESTART;
- 	}
-+
-+	spin_unlock_bh(&op->bcm_rx_update_lock);
-+
-+	return ret;
- }
- 
- /*
-  * bcm_rx_handler - handle a CAN frame reception
-  */
-@@ -737,10 +749,12 @@ static void bcm_rx_handler(struct sk_buff *skb, void *data)
- 		traffic_flags |= RX_LOCAL;
- 		if (skb->sk == op->sk)
- 			traffic_flags |= RX_OWN;
- 	}
- 
-+	spin_lock_bh(&op->bcm_rx_update_lock);
-+
- 	if (op->flags & RX_FILTER_ID) {
- 		/* the easiest case */
- 		bcm_rx_update_and_send(op, op->last_frames, rxframe,
- 				       traffic_flags);
- 		goto rx_starttimer;
-@@ -772,10 +786,12 @@ static void bcm_rx_handler(struct sk_buff *skb, void *data)
- 		}
- 	}
- 
- rx_starttimer:
- 	bcm_rx_starttimer(op);
-+
-+	spin_unlock_bh(&op->bcm_rx_update_lock);
- }
- 
- /*
-  * helpers for bcm_op handling: find & delete bcm [rx|tx] op elements
-  */
-@@ -1140,10 +1156,12 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 		return -EINVAL;
- 
- 	/* check the given can_id */
- 	op = bcm_find_op(&bo->rx_ops, msg_head, ifindex);
- 	if (op) {
-+		void *new_frames = NULL;
-+
- 		/* update existing BCM operation */
- 
- 		/*
- 		 * Do we need more space for the CAN frames than currently
- 		 * allocated? -> This is a _really_ unusual use-case and
-@@ -1151,33 +1169,53 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 		 */
- 		if (msg_head->nframes > op->nframes)
- 			return -E2BIG;
- 
- 		if (msg_head->nframes) {
--			/* update CAN frames content */
--			err = memcpy_from_msg(op->frames, msg,
-+			/* get new CAN frames content before locking */
-+			new_frames = kmalloc(msg_head->nframes * op->cfsiz,
-+					     GFP_KERNEL);
-+			if (!new_frames)
-+				return -ENOMEM;
-+
-+			err = memcpy_from_msg(new_frames, msg,
- 					      msg_head->nframes * op->cfsiz);
--			if (err < 0)
-+			if (err < 0) {
-+				kfree(new_frames);
- 				return err;
--
--			/* clear last_frames to indicate 'nothing received' */
--			memset(op->last_frames, 0, msg_head->nframes * op->cfsiz);
-+			}
- 		}
- 
-+		spin_lock_bh(&op->bcm_rx_update_lock);
- 		op->nframes = msg_head->nframes;
- 		op->flags = msg_head->flags;
- 
-+		if (msg_head->nframes) {
-+			/* update CAN frames content */
-+			memcpy(op->frames, new_frames,
-+			       msg_head->nframes * op->cfsiz);
-+
-+			/* clear last_frames to indicate 'nothing received' */
-+			memset(op->last_frames, 0,
-+			       msg_head->nframes * op->cfsiz);
-+		}
-+		spin_unlock_bh(&op->bcm_rx_update_lock);
-+
-+		/* free temporary frames / kfree(NULL) is safe */
-+		kfree(new_frames);
-+
- 		/* Only an update -> do not call can_rx_register() */
- 		do_rx_register = 0;
- 
- 	} else {
- 		/* insert new BCM operation for the given can_id */
- 		op = kzalloc(OPSIZ, GFP_KERNEL);
- 		if (!op)
- 			return -ENOMEM;
- 
- 		spin_lock_init(&op->bcm_tx_lock);
-+		spin_lock_init(&op->bcm_rx_update_lock);
- 		op->can_id = msg_head->can_id;
- 		op->nframes = msg_head->nframes;
- 		op->cfsiz = CFSIZ(msg_head->flags);
- 		op->flags = msg_head->flags;
- 
-@@ -1260,26 +1298,31 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 
- 	} else {
- 		if (op->flags & SETTIMER) {
- 
- 			/* set timer value */
-+			spin_lock_bh(&op->bcm_rx_update_lock);
- 			op->ival1 = msg_head->ival1;
- 			op->ival2 = msg_head->ival2;
- 			op->kt_ival1 = bcm_timeval_to_ktime(msg_head->ival1);
- 			op->kt_ival2 = bcm_timeval_to_ktime(msg_head->ival2);
-+			op->kt_lastmsg = 0;
-+			spin_unlock_bh(&op->bcm_rx_update_lock);
- 
- 			/* disable an active timer due to zero value? */
- 			if (!op->kt_ival1)
- 				hrtimer_cancel(&op->timer);
- 
- 			/*
- 			 * In any case cancel the throttle timer, flush
- 			 * potentially blocked msgs and reset throttle handling
- 			 */
--			op->kt_lastmsg = 0;
- 			hrtimer_cancel(&op->thrtimer);
-+
-+			spin_lock_bh(&op->bcm_rx_update_lock);
- 			bcm_rx_thr_flush(op);
-+			spin_unlock_bh(&op->bcm_rx_update_lock);
- 		}
- 
- 		if ((op->flags & STARTTIMER) && op->kt_ival1)
- 			hrtimer_start(&op->timer, op->kt_ival1,
- 				      HRTIMER_MODE_REL_SOFT);
--- 
-2.53.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
