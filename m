@@ -1,174 +1,168 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9D463438A0
-	for <linux-can@vger.kernel.org>; Wed, 10 Jun 2026 16:54:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A89E342C8B
+	for <linux-can@vger.kernel.org>; Wed, 10 Jun 2026 17:25:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781110445; cv=none; b=ppJog2wS1sFhwuiKPVD82VKkQNn2uiE4fv+VR973DpKlOmGXrWj3BJrUcNgW87axJi/uv8alQL+sTJs+3AhVkqvUFPEdf5i+HfFfYbGPs0IYvl6JUOLImQCkmcI1DdNSjuoUaSr/l3kty4ZSaZEm6YOMGJKwY/5Wk7POA8fju3U=
+	t=1781112354; cv=none; b=VSMdLNkMPSnDGBXi8au6KjnShfTGs8SrP3tMSemW/w/tsx6yK3smYbrKa0G6ynpEGvsvqs5ePhwg0zWbrjCLgfQOiIaO2CMtuk1uemS++NH2BaLfiBPxtjHAoHiPJrgvzRH27GPTyQjJsa/kRQd33FQjpNn3u2f191+EhbeemoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781110445; c=relaxed/simple;
-	bh=HDRBlj0iX6HSxBNognSgyhw5V7nAvkLT/7biOE544C4=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=cQ8MMwoWWVXekPXNElLMxQCSEm61BFnt05c2nOg8IqWXCUXmaQDO/id5F4RICFAzuPkqdX42Xm+9ZiNkG3+CvxQuUohGUm2unljRxZ7NBPS0JoAfKFoQfnoBZERogOoeEK6QfVDzZVKOxLoHKTsh+9LAKjIjD1uSaNe1Eyt6BFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=keDdY/eR; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1781112354; c=relaxed/simple;
+	bh=InVedcI/+FDKV2aaM6BGSSMHBkbqktEU0XyYvAiNJTw=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=Ui0aCI7xACoGhIRZ7qWSETSGJGgWGnS9KYyR3GKC4xmyg3C+WIXV3vhxbtcpHX19ggqwlfEGlnUkxAYiPq5FO5x+q7SpDXbzbR8AdnoHOFr51OgXo66FkkDWOp3wwSmyqWnrEF7akQTjGZRloGQYFJ6w2C3XfE68q6CwvPbHqQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FX0HxI/t; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=sHQpFu7w; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="keDdY/eR"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 764431F00893;
-	Wed, 10 Jun 2026 16:54:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781110441;
-	bh=l5LXCLnDhIvnkG/3h2fKaaZbabH+VK+jzbj550cnf64=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=keDdY/eRyYykypCOABsYg+WZFW0KFpRBQe03IWTs6AQuwyAxpPg2gzvpEHHNlPbM+
-	 vId6LRyMA2yIYN/GHXtZf7NsGGi/ZY5Pnqx1newEED/nltIPrvL8LwVMVyLs27AoVd
-	 sjhbWORp504y/m2HZII7MD0xrfvRCVfRN7Z0Bq8RuXTRLHa38KMIfAmM1ImExzfy29
-	 pQX0l28oIwembwrOxcnB1flSzkNyIsSibdinyLuNDOd7EKHa9nQk2yJIWZdPNk48/Y
-	 m1bX0Yjmw3nNBZVNKROiuha8gDYI41dQ8/OSQc5Gah4grGtHbkmxIcbOI+9Rt8t3vB
-	 Rt1Flvy9XP4+w==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v2] can: bcm: fix CAN frame rx/tx statistics
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Oliver Hartkopp" <socketcan@hartkopp.net>
-Cc: "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Marc
- Kleine-Budde" <mkl@pengutronix.de>
-In-Reply-To: <20260610163744.51980-1-socketcan@hartkopp.net>
-References: <20260610163744.51980-1-socketcan@hartkopp.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 10 Jun 2026 16:53:59 +0000
-Message-Id: <20260610165400.764431F00893@smtp.kernel.org>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FX0HxI/t";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="sHQpFu7w"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1781112352;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m4Gt9ZnpRGrdkzXd1xO8NAiKWNA/dH79qAiF/6fH26E=;
+	b=FX0HxI/tgrwZ+L7nCOE0U/stLMPbFyTwWdbqVnFuqWHAvLrPMFn5hbvOpT1+jR67uzb2Xa
+	1Ra+BVpZhg7KFBL1IYHnq69X/DO3bbaheXoUGgz1LagUoQoHQTjdw96fVWRt5Wd3RLQpl6
+	BX/jurm4eHBE+Q4Q5oS7D8B5iByjhsY=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-442-eMOc4h6mPeOa_0o_d78M6w-1; Wed, 10 Jun 2026 13:25:49 -0400
+X-MC-Unique: eMOc4h6mPeOa_0o_d78M6w-1
+X-Mimecast-MFC-AGG-ID: eMOc4h6mPeOa_0o_d78M6w_1781112348
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-91579011fd1so1049308985a.1
+        for <linux-can@vger.kernel.org>; Wed, 10 Jun 2026 10:25:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1781112348; x=1781717148; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m4Gt9ZnpRGrdkzXd1xO8NAiKWNA/dH79qAiF/6fH26E=;
+        b=sHQpFu7wO86J55BIIQ2fgUOJEL0LI/XilXBLj0tzRkldmryUhFW7nG2ssAxM28hIMj
+         wH7OLXxGoxdvqiVs40tEiM1WF7DTQNBwnx4sBGl2cZ3k26loeAXkH0eRMMCh7H9R9chh
+         MzSj3BUqI8SylLhuJMDHKBCXaosuT2wg4C4AUSXtA/hE/DvP77TEusZwJ3Hx7Y25Tr9C
+         r5zEFKpHUm2YjrFczDGKjsGWVzKMZoccvt2lApswpPK9sNySX9Gfz68ntcx5K9FuUc6M
+         f3v8wYCMu2xJMHOk+dLOc895XkBdFgGIJaPWwFJiP/Qs/e/tbq/ezAMRKmsdERDWu5M/
+         M7iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781112348; x=1781717148;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=m4Gt9ZnpRGrdkzXd1xO8NAiKWNA/dH79qAiF/6fH26E=;
+        b=VQKyAhYo7J60+RBZxJNsGsYJVQHjYGyKaIU1sNCtWXYWNFEryduMcyEZU2tfJeckEe
+         8ZtTLkB/WvtBuBNTDIXzzowQtE1m70WnGwKs9N4BXDNqUn03hC76tUGkpEEpXD0snN2E
+         OkKrbqMNHVPAWgVm7OAY0lg34AMtThPCaEoR6k18l2XLOWeITpSLTa/0M/wMutn03CwQ
+         pXQ22Adp6uqSm6dEhlQqxEjY9Hqfhb3DV94MTS0h9picdx/vpxNoXPcGqrFNDMSk5p/O
+         tDmxSIvNfBlYWXGXtvDF/JurQAwabNi0Pl9JdhtypHUnXFf2tt50JEmsmtSOgkBF3JYD
+         ORpA==
+X-Gm-Message-State: AOJu0Yx38psUIGIWpXO2i6OGxf3t4dO07hT4btakIFVhZgU0u/igWWO/
+	4ejybWSLYmQVmiEZLdja+cyCowiBmWVQ5ZgqkaiNwPxh3fwtQ/Zu6WA10MdSti5loPZen4JhdwM
+	QEtJHm4nje6RcR2VoIOeCguqek5CZvSt8pvyXTbmpm/VeLiUA2VQfyGCBDIZi1ZQ4YKVndR/6
+X-Gm-Gg: Acq92OE0dOg4JlqEEjdLs2UZ5pMOxqKGn9pfjn8X2FSyZvS950Dwrjztcfr3QwAIIQE
+	80/bD/Ofvl2np2PU9qo/JqxMhaxVZDlh0oUVAW3zLTpIfYXNt5gagyXxsAuAFQWjvno2upIQkhW
+	8Hn2nV0uTP6qtjyP5T38h7YQ6FREuPUlmWxBO3mQpxohzqWh3LQRWTDJAH0UwTDBcgPe3VfXiel
+	MYTrwom2FfFFo3in4R9GoVDNr9DIstIv5AE1jl9qkrCiVqF7Hwdm4QQv3oueInSfiHL7Lm7qEGL
+	XE1w+Z/R8cy1FJZd56o63RjJUpfXi1vpnNVyvxzvpKKM2932OPTvjHTpXG489/4dVvmblwfdsZ0
+	HT1Nfkk988TAByLqdUKk3/fPGJDNIpb5QEWTxQAcL6CqZrO+sD3okB0z1wmK5j38keFaoGgYPy+
+	0dIaljVoBRDYCo4AAyfOxT8yVKdIJl5dxusPoi
+X-Received: by 2002:a05:620a:28d1:b0:915:4c90:34fc with SMTP id af79cd13be357-915a9c12fd0mr4199906485a.11.1781112348362;
+        Wed, 10 Jun 2026 10:25:48 -0700 (PDT)
+X-Received: by 2002:a05:620a:28d1:b0:915:4c90:34fc with SMTP id af79cd13be357-915a9c12fd0mr4199900185a.11.1781112347793;
+        Wed, 10 Jun 2026 10:25:47 -0700 (PDT)
+Received: from fstornio-thinkpadx1carbongen11.remote.csb (net-93-66-125-181.cust.vodafonedsl.it. [93.66.125.181])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-9158a381abfsm2532946085a.27.2026.06.10.10.25.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jun 2026 10:25:47 -0700 (PDT)
+From: Filippo Storniolo <fstornio@redhat.com>
+Date: Wed, 10 Jun 2026 19:24:44 +0200
+Subject: [PATCH can-next 1/3] af_can: ensure sk_protocol is always set on
+ socket creation
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260610-feat-can-diag-v1-1-021e3f1631a0@redhat.com>
+References: <20260610-feat-can-diag-v1-0-021e3f1631a0@redhat.com>
+In-Reply-To: <20260610-feat-can-diag-v1-0-021e3f1631a0@redhat.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, 
+ Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Robin van der Gracht <robin@protonic.nl>, 
+ Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de, 
+ Urs Thuermann <urs.thuermann@volkswagen.de>, 
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>
+Cc: linux-can@vger.kernel.org, Filippo Storniolo <fstornio@redhat.com>, 
+ Davide Caratti <dcaratti@redhat.com>
+X-Mailer: b4 0.14.2
 
-Thank you for your contribution! Sashiko AI review found 3 potential issue(=
-s) to consider:
+From: Davide Caratti <dcaratti@redhat.com>
 
-New issues:
-- [Medium] Lockless sequential resetting of related statistics creates a ra=
-ce condition leading to invalid procfs output.
+Currently, only j1939 assigns a value to 'sk_protocol'. As a prerequisite
+for the implementation of CAN sockets diagnostics, AF_CAN sockets need an
+easy way to determine which protocol is on top of an existing socket.
 
-Pre-existing issues:
-- [High] Missing synchronize_rcu() in bcm_delete_rx_op() causes Use-After-F=
-ree of bcm_op due to concurrent timer re-arming.
-- [High] Incomplete fix for concurrent rx data races leaves CAN frame paylo=
-ad and timestamps vulnerable to corruption.
---
+POC test using can-tests:
 
-commit da9dc73034abe67929230960f0d96f1b0cc6b4c0
-Author: Oliver Hartkopp <socketcan@hartkopp.net>
+ | # perf probe -m can_j1939 --add "j1939_sk_recvmsg sock->sk->sk_protocol"
+ | # perf record -e probe:j1939_sk_recvmsg -aR -- ./j1939/tst-j1939-ac
+ | [...]
+ | # perf script
+ | tst-j1939-ac  5807 [002] 322767.312599: probe:j1939_sk_recvmsg: (ffffffffc0b29a14) sk_protocol=0x7
+ |  ^^^ 0x7, that's CAN_J1939
 
-can: bcm: fix CAN frame rx/tx statistics
+ | # perf probe -m can_raw --add "raw_recvmsg sock->sk->sk_protocol"
+ | # perf record -e probe:raw_recvmsg -aR ./netlayer/tst-rcv-own-msgs vcan0
+ | # perf script
+ | [...]
+ | tst-rcv-own-msg  5816 [001] 323173.651122: probe:raw_recvmsg: (ffffffffc0b20154) sk_protocol=0x1
+ |  ^^^ 0x1, that's CAN_RAW. It was 0x0 on unpatched kernel
 
-KCSAN detected a data race within the bcm_rx_handler() when two CAN frames
-have been simultaneously received and processed in a single rx op by two
-different CPUs. This patch uses atomic operations with (signed) long data
-types to access the statistics in the hot path.
+Storing the "protocol" value in can_create() fixes the problem. This also
+fixes AF_CAN support for the following system call:
 
-> diff --git a/net/can/bcm.c b/net/can/bcm.c
-> index a4bef2c48a559..e7b1eb61918f5 100644
-> --- a/net/can/bcm.c
-> +++ b/net/can/bcm.c
-[ ... ]
-> @@ -249,9 +252,9 @@ static int bcm_proc_show(struct seq_file *m, void *v)
->  				   (long long)ktime_to_us(op->kt_ival2));
-> =20
->  		seq_printf(m, "# recv %ld (%ld) =3D> reduction: ",
-> -			   op->frames_filtered, op->frames_abs);
-> +			   frames_filtered, frames_abs);
-> =20
-> -		reduction =3D 100 - (op->frames_filtered * 100) / op->frames_abs;
-> +		reduction =3D 100 - (frames_filtered * 100) / frames_abs;
-> =20
->  		seq_printf(m, "%s%ld%%\n",
->  			   (reduction =3D=3D 100) ? "near " : "", reduction);
+ | getsockopt(..., SOL_SOCKET, SO_PROTOCOL, &proto, sizeof(proto))
 
-[Severity: Medium]
-Could this reduction calculation produce a wildly incorrect negative
-percentage if the counters become desynchronized?
+that was assigning 0 to 'proto' since the earliest kernel versions.
 
-[ ... ]
-> @@ -285,6 +289,15 @@ static int bcm_proc_show(struct seq_file *m, void *v)
->  }
->  #endif /* CONFIG_PROC_FS */
-> =20
-> +static void bcm_update_stats(struct bcm_op *op)
-> +{
-> +	/* prevent statistics overflow */
-> +	if (atomic_long_inc_return(&op->frames_abs) > LONG_MAX / 100) {
-> +		atomic_long_set(&op->frames_filtered, 0);
-> +		atomic_long_set(&op->frames_abs, 0);
-> +	}
-> +}
+Fixes: 0d66548a10cb ("[CAN]: Add PF_CAN core module")
+Signed-off-by: Davide Caratti <dcaratti@redhat.com>
+---
+ net/can/af_can.c       | 1 +
+ net/can/j1939/socket.c | 1 -
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
-[Severity: Medium]
-Does sequentially resetting these atomic counters introduce a race window?
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index 7bc86b176b4de32dddeab5a42a420d62434fcd7f..65af259469854fc19cda0d7dd01c7b4da2ec0f4c 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -162,6 +162,7 @@ static int can_create(struct net *net, struct socket *sock, int protocol,
+ 	}
+ 
+ 	sock_init_data(sock, sk);
++	sk->sk_protocol = protocol;
+ 	sk->sk_destruct = can_sock_destruct;
+ 
+ 	if (sk->sk_prot->init)
+diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+index 50a598ef5fd4a5f5e007816a341e04ddbcc724e6..ccd43ff5519c72f209b53bf74b833acd6ffe9728 100644
+--- a/net/can/j1939/socket.c
++++ b/net/can/j1939/socket.c
+@@ -420,7 +420,6 @@ static int j1939_sk_init(struct sock *sk)
+ 	/* j1939_sk_sock_destruct() depends on SOCK_RCU_FREE flag */
+ 	sock_set_flag(sk, SOCK_RCU_FREE);
+ 	sk->sk_destruct = j1939_sk_sock_destruct;
+-	sk->sk_protocol = CAN_J1939;
+ 
+ 	return 0;
+ }
 
-If a thread is preempted between resetting frames_filtered and frames_abs,
-could another thread process numerous CAN frames and increment both counter=
-s,
-leaving frames_filtered at a large value when the delayed thread resumes and
-resets only frames_abs?
+-- 
+2.53.0
 
-[ ... ]
-> @@ -723,7 +733,7 @@ static void bcm_rx_handler(struct sk_buff *skb, void =
-*data)
->  	/* save originator for recvfrom() */
->  	op->rx_ifindex =3D skb->dev->ifindex;
->  	/* update statistics */
-> -	op->frames_abs++;
-> +	bcm_update_stats(op);
-
-[Severity: High]
-This isn't a bug introduced by this patch, but since bcm_rx_handler() can
-execute concurrently on multiple CPUs, does this leave the rest of the
-shared bcm_op state vulnerable?
-
-Concurrent lockless writes to op->rx_stamp and op->rx_ifindex could cause
-torn reads.
-
-Additionally, bcm_rx_update_and_send() performs a non-atomic memcpy()
-to shared memory:
-
-net/can/bcm.c:bcm_rx_update_and_send() {
-	...
-	memcpy(lastdata, rxdata, op->cfsiz);
-	lastdata->flags |=3D (RX_RECV|RX_THR);
-	lastdata->flags |=3D traffic_flags;
-	...
-}
-
-Can this corrupt the CAN frame payload delivered to userspace?
-
-[Severity: High]
-This is a pre-existing issue, but is there a use-after-free risk during
-RX operation removal?
-
-When bcm_delete_rx_op() removes an RX operation, it defers subscriber
-removal to an RCU callback via can_rx_unregister(). It then calls
-bcm_remove_op() which cancels timers and frees the bcm_op via call_rcu()
-without waiting for existing readers:
-
-net/can/bcm.c:bcm_delete_rx_op() {
-	...
-	can_rx_unregister(sock_net(op->sk), NULL, op->can_id,
-			  REGMASK(op->can_id), bcm_rx_handler, op);
-	list_del_rcu(&op->list);
-	bcm_remove_op(op);
-	...
-}
-
-Could a concurrently executing bcm_rx_handler() subsequently call
-bcm_rx_update_and_send(), which unconditionally executes
-hrtimer_start(&op->thrtimer, ...)?
-
-Does this re-arm the timer after it was cancelled, causing a use-after-free
-when the timer fires after the bcm_op memory is freed at the end of the RCU
-grace period?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260610163744.5198=
-0-1-socketcan@hartkopp.net?part=3D1
