@@ -1,167 +1,85 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.20])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84739385D85
-	for <linux-can@vger.kernel.org>; Wed, 10 Jun 2026 07:50:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.20
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781077858; cv=pass; b=KxB0i9CxTW0HStS00T0U9sQP2v5KddVJt6sR0agEKD4+R2AasJlQVwMQoZ5XlP1w446rZYJFMXIkziV8vKTLck8YJ43wfStsbOhAKetss3I/fthfKBhk9JhvzzWJvcqQvoF87gWuVvt9knjg1apERFZ/AGXw5ckLS38PIepITQs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781077858; c=relaxed/simple;
-	bh=cXnNmyH7yb63g8v+SKaecPXaRZ4sGI+/sGEu3BRsXHk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VlSBdVPpyxxR4JROCzVg+tNJqhWcjToLGbmtqhCXinEvbmFTcxcFT+JwU5qN6ordlgUd7KL3K7PZThPHhmnv0kECUCzgcX19O4UlcUwC7hcpsIEEMbWnfBfTmokpLbxDDfhkGs3e4c89kfMHh8yFFrJSZBgspxPg7dDPO6SDgcw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=eeGv2eQv; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=s1UGm8pJ; arc=pass smtp.client-ip=85.215.255.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEA3430676E;
+	Wed, 10 Jun 2026 08:05:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781078736; cv=none; b=GvQO6VVTsge6T4AvqvzGx/MAH2w5e+CJmzTG8YvifSPN0VvGmu6wTqreVezHsdzpCUA8jtCx79Jhy+pdxVYxv/k9vBo4xkZyRg9Lf/E20DZulOrh8j9Z0bHZjeCfwwT4iNneYQgKvkXClgu850DE0cDB5mkQUTMyhtJuB3GzJkY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781078736; c=relaxed/simple;
+	bh=Bku6vmbnfsIPF3upfNi33A0lpAy6UNfcQHI8Xaj7jk8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cGXazB/ZmJHdl5moDoxSYi2yGQSicZfT4rFwIEu4eqxqJyb31Yswt37wHQ7WT6ynDSeihufiF6rETYjkAm+t4Mqzu2z3Ptla/Xsm52naLo8E8LrhDCWBMiW6r8c6aA1ZiQ/ane4uim2EudcUTY5VBn8haStT04eKn2V30CYZ80E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=AVc9mwDe; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="eeGv2eQv";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="s1UGm8pJ"
-ARC-Seal: i=1; a=rsa-sha256; t=1781076414; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=Gxy4dzlXyHjRPdyY6bE5TQH10ucWiNELXWMmzcPMuz/mYAhapeeTWFaklKO5doYZr7
-    nWlZxVDcvvP932pW9qTuNdDoUQwQOSG/+57p1u5uuY9Uy/LANDNrZoFlMzmkYWlH0p1D
-    cCixriDFrR1xfpOzAV2yele9HmHMyJSLk9GZEVzxFv5O4pXlacQXTrv+RGPXmDfGWJCg
-    WeubxnYsS3j3jUvXN5gdSd/FNrbqVFs5WJuGfDJhDrKOj1MsgB0sfeMk3HnMcu+95kum
-    mzxWiwYcepgL0BT4WSUlHu43bp1pFjQgWOtl2glCGMJaPWapHixlf8iAMkMC6YMaF+cJ
-    2QNQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1781076414;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=PUEVtF9ZdOvBdDkK5+Yu4heQXu8CDQpdN613lg05l3Q=;
-    b=N9z6H27HIKOuQMxZaM1C1MAUi+DyxUjqFaEvr6vyVbwMWk+ZwxvE1BBp03pG/byyeq
-    Pyazhue/JXLe/EaQtuXmd1k2EuAIgF8gucLLkhgXNQsgkUA3W9+iEWO3Eh/pCTXK7DJP
-    Ntojoafu5R5ISWtB7WI6BG9cp1lhW03XGLfdFMUjs+M5EtDN4U84fbk55gWOYAvv7JId
-    dnY5SMsDNkX+f0er6zmMRzqCGNv1XZhcoGIQejbVvJIzlmCveHAKdNlYTvM9tGAOAfzp
-    2AlEgiqs+xmvZbwcx1KWvghdiGupHjydVVlEpwrnbm4BphOeIoHWGnZ+DOCf3URUHpRD
-    BTDA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1781076414;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=PUEVtF9ZdOvBdDkK5+Yu4heQXu8CDQpdN613lg05l3Q=;
-    b=eeGv2eQvYWPyOJ4vud4xzIvTECfLNJS3ecjkHZdTYe33KOcN47eAQXmtd3OFyVNYhl
-    cJEijeVO5LYRXitMe4/xwQJRihFDAWOhvGS3oHORodxbe1Z6MutkzvGatsHaqkNGEY2S
-    GnOwzXg0cE40DTi6+31JYjznFUGvIH0ick1UXSMYJaNYHtYBxzO/dUufY8UgN9Bh3f2K
-    pCgEgpkIUMLhXK+MyfRE+uKwcZjbFWdWFRZEVPcZBlwCiYK5K7VLXvARXtBIWia9xsWD
-    DJcwLZSB1m9SDuKjEiJ9SeEbkkOBNCDKFHE372RMfDRAhVIQ4l+OwVi9Ztb3aw/bTCyJ
-    XmVg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1781076414;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=PUEVtF9ZdOvBdDkK5+Yu4heQXu8CDQpdN613lg05l3Q=;
-    b=s1UGm8pJ+bB3sULiY5syRwOpRs/yeZ6MKrgUHb89IriKVZYrM+uWYQzSF2Ezjyh9X8
-    P+Zf80LEF2bMRGIhyUCQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.0.1 AUTH)
-    with ESMTPSA id Kba96d25A7QshHS
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Wed, 10 Jun 2026 09:26:54 +0200 (CEST)
-Message-ID: <62c8fce9-2c38-4d01-b73a-00c063f2f99d@hartkopp.net>
-Date: Wed, 10 Jun 2026 09:26:48 +0200
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="AVc9mwDe"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=SUBiUHt/0iiIKa8WSEzuAV3b4OE0sNSco6iZTF/7BsU=; b=AVc9mwDezYfcqmBMiqIwUCYUoM
+	Q7WdYxiJugJww1//sevc6nVN3YNGEIb1ab91J5FltT9bMo6KZKb9chMrSpLN+21EaPtwzcdK5FJhH
+	+TdA+GLaIdZE928yP4zk/+QF20dc/7uoTpRzXl9spIgb/+zWebK53U5SHIK6LIvjui2E=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1wXDwI-006wZA-Ak; Wed, 10 Jun 2026 10:05:30 +0200
+Date: Wed, 10 Jun 2026 10:05:30 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+	arnd@kernel.org, wei.fang@nxp.com, frank.li@nxp.com,
+	shenwei.wang@nxp.com, imx@lists.linux.dev, netdev@vger.kernel.org,
+	nico@fluxnic.net, adureghello@baylibre.com, ulfh@kernel.org,
+	linux-mmc@vger.kernel.org, linux-can@vger.kernel.org,
+	linux-spi@vger.kernel.org, olteanv@gmail.com
+Subject: Re: [PATCHv2 1/4] net: fec: do not use readl()/writel() for ColdFire
+Message-ID: <caa2a34c-5a73-4075-9f7f-77b30673a4e2@lunn.ch>
+References: <20260609142139.1563360-1-gerg@linux-m68k.org>
+ <20260609142139.1563360-3-gerg@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] can: bcm: add locking when updating filter and
- timer values
-To: sashiko-reviews@lists.linux.dev
-Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
- Vincent Mailhol <mailhol@kernel.org>,
- Oleksij Rempel <o.rempel@pengutronix.de>
-References: <20260522180758.51128-2-socketcan@hartkopp.net>
- <20260609185553.61D621F00893@smtp.kernel.org>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20260609185553.61D621F00893@smtp.kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260609142139.1563360-3-gerg@linux-m68k.org>
 
-The op->flags |= RX_NO_AUTOTIMER issue has been addressed by this patch 
-which needs to be applied before evaluation:
+On Wed, Jun 10, 2026 at 12:12:58AM +1000, Greg Ungerer wrote:
+> Modify the FEC driver to not directly use readl() and writel() to access
+> hardware registers but instead local fec_readl() and fec_writel() methods.
+> This allows for different architecture users of this driver to have
+> different underlying access functions - to support both little and big
+> endian hardware.
+> 
+> The FEC hardware block in ColdFire SoC parts is accessed big-endian.
+> The usual kernel readl()/writel() IO memory access methods are defined to
+> access little endian data. Change access for ColdFire to use __raw_readl()
+> and __raw_writel() access methods - which do not modify or swap bytes
+> on access.
+> 
+> The FEC driver works today because the m68k architecture io.h has a
+> kludge in the definitions of the readl() and writel() functions for
+> ColdFire that allow big-endian access if the address of the register to
+> access is within the SoC's internal peripheral registers. This is being
+> fixed in the near future to define readl() and writel() correctly - with
+> no byte swapping. Thus the motivation for this fix here.
+> 
+> __raw_readl()/__raw_writel() access methods are used instead of the more
+> commonly used ioread32be()/iowrite32be() here because those are broken too,
+> because of the current readl()/writel() kludge. They are implemented in
+> asm-generic/io.h in terms of readl()/writel().
+> 
+> Note that even when readl() and writel() are fixed on ColdFire they will
+> not be the right thing to use within the FEC driver on ColdFire hardware.
+> 
+> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 
-[PATCH v3 1/1] can: bcm: defer rx_op deallocation to workqueue to fix 
-thrtimer UAF
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-https://lore.kernel.org/linux-can/969151cc-5316-472b-970b-c29b8aadc1f9@hartkopp.net/T/#t
-
-
-
-On 09.06.26 20:55, sashiko-bot@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 1 potential issue(s) to consider:
-> 
-> Pre-existing issues:
-> - [High] Concurrent RX_DELETE and CAN frame reception can cause a timer to be armed after it was canceled, leading to a Use-After-Free.
-> --
-> 
-> commit a1560c18e32869b3dc94d859252cf67b537b151d
-> Author: Oliver Hartkopp <socketcan@hartkopp.net>
-> 
-> can: bcm: add locking when updating filter and timer values
-> 
-> KCSAN detected a simultaneous access to timer values that can be
-> overwritten in bcm_rx_setup when updating timer and filter content.
-> 
-> Fix the RX_SETUP update case by protecting the timer and filter updates
-> with a spin_lock_bh().
-> 
-> Link: https://lore.kernel.org/linux-can/6975d5cf.a00a0220.33ccc7.0022.GAE@google.com/
-> 
->> diff --git a/net/can/bcm.c b/net/can/bcm.c
->> index a4bef2c48a559..dbdf5d4f4ed7b 100644
->> --- a/net/can/bcm.c
->> +++ b/net/can/bcm.c
-> 
-> [ ... ]
-> 
->> @@ -774,6 +788,8 @@ static void bcm_rx_handler(struct sk_buff *skb, void *data)
->>   
->>   rx_starttimer:
->>   	bcm_rx_starttimer(op);
->> +
->> +	spin_unlock_bh(&op->bcm_rx_update_lock);
->>   }
-> 
-> [Severity: High]
-> This is a pre-existing issue, but does this still leave a race condition
-> with bcm_delete_rx_op()?
-> 
-> Even with bcm_rx_update_lock held here, bcm_delete_rx_op() modifies
-> op->flags without taking bcm_rx_update_lock:
-> 
-> net/can/bcm.c:bcm_delete_rx_op() {
-> 	...
-> 	/* disable automatic timer on frame reception */
-> 	op->flags |= RX_NO_AUTOTIMER;
-> 	...
-> 	bcm_remove_op(op);
-> }
-> 
-> And bcm_remove_op() cancels the timers and queues the object for RCU freeing:
-> 
-> net/can/bcm.c:bcm_remove_op() {
-> 	hrtimer_cancel(&op->timer);
-> 	hrtimer_cancel(&op->thrtimer);
-> 	call_rcu(&op->rcu, bcm_free_op_rcu);
-> }
-> 
-> If bcm_rx_starttimer() reads the old op->flags value, can it be executed
-> after bcm_remove_op() has already canceled the timers? This would result in
-> the timer being re-armed on a soon-to-be-freed object, potentially leading
-> to a use-after-free when the timer fires.
-> 
-> Should bcm_delete_rx_op() also take bcm_rx_update_lock when updating
-> op->flags?
-> 
-
+    Andrew
