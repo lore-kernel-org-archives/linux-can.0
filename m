@@ -1,86 +1,83 @@
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F3B1344029
-	for <linux-can@vger.kernel.org>; Wed, 10 Jun 2026 17:25:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 818AD34676D
+	for <linux-can@vger.kernel.org>; Wed, 10 Jun 2026 17:25:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781112354; cv=none; b=fs2u2nZHQxHfTMaAA26iQPDj2J8P7R0jSR3IcULmiBt/T6sktxbVWs2H7L/F4+4B4HULJp0Yb/TuUJumxymoe96pWyXclxyXI3Lt9LzlH7doPZx2xKcZRd+GJaRBVrdJEX2D5mrkpnA0jSk3fWzI2IVauQzXPtBgsP46dqju5yc=
+	t=1781112355; cv=none; b=YljY58dX0YZ8PSb0Uh76pMZcGQi/fp5xGLQb4wYQ9l/tDYH1k5tuyFSyxnpYXxPXQkfRtpJyjC4UIsArjUw3n1aPV6BPjOdcjaQgC2SxqGQ1Iz8gGUGBRUIhatdFLOtN8t/kneBVTiKMzqXx0mXTr7Pvv//ulB5e8xQTK7HDsjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781112354; c=relaxed/simple;
-	bh=+9e/Pz1o2bsa0lWwYogk6/aWnufOJjVRb25UEQoVFo4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=sFTZdjGMt0wS+hzd4WYxKgWR2trSgEJ5E6v5SEpyy8GVhX74Hfzp7NBFYu5YAY2ZjcJS8yaDrNJyh50d8RKi5NAglYleVuVb0HQGIr5HQTDjhJJp9GdodMOdodzfB6/9yxWQj1MLHp/4T5JS03i4Vp/y+t4s0q80ISoMRNIGxvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YHE95iQ7; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=bOkLc3Q0; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1781112355; c=relaxed/simple;
+	bh=sKphK5qO0PT5ZVNfxHV9y5CWbBktH7wkhgytnS5nrCE=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=QD9Qz4zIaN9qDhkmbRdbHsXS2hYe4YM8dD6EHTmcyds1FM/DdGAGVOoPyfonijcL3IV5K7UByHadZZnGkn1F0rkQTZD5QESraSr9vAtfnctWAc5CGBc8LnUUF0Rc84kINmjJ8Dd5tSVtZbbxPdwtJQf5sOrKi0gFXhnMC+7YNNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hHinuclF; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=NRZ9uNZR; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YHE95iQ7";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="bOkLc3Q0"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hHinuclF";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="NRZ9uNZR"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1781112352;
+	s=mimecast20190719; t=1781112353;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZjAJ3EDbGUOC/7t8kJuzBXHoOIupKuhiVb6ZzLBlJMk=;
-	b=YHE95iQ7JlOvcx829W4qAx8se7apG0KBm7/gdbWlOAqJkTBZJs3q59HiqOaebNLx5v6hpJ
-	WMzvo4t6sDgVDrWqjuMne62wrmn3R4rgZ3onLvmS/h6Vd9J5GiOEATZE8sOdUTwJbPOrTF
-	yu1rpovKGnZm8r5/CGHvKBLMmXdLY1g=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=2aMSZaCfoqBZzL8F7noAF9g5xEPkxMn+qkDrfHZZKXA=;
+	b=hHinuclFymYWZ465xWTyry/MbvWfpD48RzoBJ51M9pVJ79MkrGBFnGNqoOyiBbD/xxo4m5
+	EOFLb8WUjTO1qgqN66Aw2mbwG/zOr5ZcOGjrSYNwkXFzNCasfBYoUD+faW9aWIYTfXQgZM
+	ueHer8VVwdhn5QKo2AY6FLj+JVvRk1k=
+Received: from mail-vs1-f70.google.com (mail-vs1-f70.google.com
+ [209.85.217.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-390-LZ3ULJC3OsuIBh-GagFOtA-1; Wed, 10 Jun 2026 13:25:51 -0400
-X-MC-Unique: LZ3ULJC3OsuIBh-GagFOtA-1
-X-Mimecast-MFC-AGG-ID: LZ3ULJC3OsuIBh-GagFOtA_1781112350
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-915757be497so1219164985a.2
-        for <linux-can@vger.kernel.org>; Wed, 10 Jun 2026 10:25:51 -0700 (PDT)
+ us-mta-300-AqSJOldYNYaM8tVX-Zbjag-1; Wed, 10 Jun 2026 13:25:47 -0400
+X-MC-Unique: AqSJOldYNYaM8tVX-Zbjag-1
+X-Mimecast-MFC-AGG-ID: AqSJOldYNYaM8tVX-Zbjag_1781112346
+Received: by mail-vs1-f70.google.com with SMTP id ada2fe7eead31-6751c50552dso669988137.2
+        for <linux-can@vger.kernel.org>; Wed, 10 Jun 2026 10:25:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1781112350; x=1781717150; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZjAJ3EDbGUOC/7t8kJuzBXHoOIupKuhiVb6ZzLBlJMk=;
-        b=bOkLc3Q0FrVUThuWmppXWoDIpCjrwarXmwylqHCPxRYxpLjsThuQFvs0yOds4UIk5K
-         d2fQENRNNMm2kTUOnVU9Zw/BjnAT+c/8yekzbYKr2Zb9wAs/MNLH5R9zg6E9qks3P+xm
-         XeuKV/Gp1fRAEGXAWbpckHKzF1oyGL3G5TjUGb8PJpE1Z2R3Gq/KCGXJwGhhj01lBve0
-         eHC9qJlUlgR5mXJtuXoESxkLl21Kz1CudsGjfr1Pw//G2G82iX1Vc5IVjDyPGr1ThQ6M
-         BOiEb+mOeQQx+l7eTfTbTlDWZssBt9QfF1l/U0zNqC7sbsb/vTJOsXDNkrURuUZknR4A
-         vGWQ==
+        d=redhat.com; s=google; t=1781112346; x=1781717146; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2aMSZaCfoqBZzL8F7noAF9g5xEPkxMn+qkDrfHZZKXA=;
+        b=NRZ9uNZR88x5g6NeCC4V37Dsw3bQpr/dxzWAed9lgTfyvD32FoNL2AGDHsjjTzezoA
+         g2IASTxTLVNMmSjFqmz82QryDJA30KhD6RWESFKA0UPh4sNOFh9W1GYUPe9Imwcv6QQL
+         ATlUGMtnCC8jhMQxjEsYNvBehL8wXEE2MHWl1feFRKJ8WiRHw8ZVYitRaSyzo6OLr8rB
+         AtbMMxIfoKXa7r4TWLBDkAp3oxhbrQ3jqKuRdeytwa5s5/IWsxQCIXiEv019hADpSvve
+         ptCkVOJewS6coxDwU6Z4QMlPgpkNsmYZyDMhjyz/PTzFZEwLk88v6ZeTnPgpcwztK65f
+         6Ykw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781112350; x=1781717150;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ZjAJ3EDbGUOC/7t8kJuzBXHoOIupKuhiVb6ZzLBlJMk=;
-        b=SNiZ+Ex6m9tVQdrHp/61NVKUASw8ij0B5QlgkRBgG8yxL4DcJ2fsiIUQ+aG430h1+R
-         uvSX/BwLHerqyij31SgMUm+Cm4hdZ5oNWn+5QDVo396v+xnUWO81YdJmbJnaLcdctLUL
-         Kr1nrE6iXcc37fIeBypkpaYUJHY0M3PhO9U9Uo6oP0q7kF4OJ9pTqEuR3ogc4n0EDoaC
-         qMs6b/9O0RvxM2U9TiUWbyxNI913SxjXUKE9hu8+I9PwI4MTNqeGDaFUiQ6fqed9yFBF
-         5HO0zuB3wfCw4CP/lL9yxeyuXzylQLpgRIf7aeO4FSxSHBWYCf4SBZQdXLQOWITtaSHQ
-         bXFw==
-X-Gm-Message-State: AOJu0Yw+BPM0Dm5rD5S6wF6QbAFLT+LH5T9Y3AsyeA4WuKmcbfmwzjvU
-	7Ms1eObYCL0Xm7cdSdR05nAk/3gdbKnyGxxLn0SeCo70qbjGLZYiWxs15wNuG4UIFN/wDHrCgvc
-	rygrmrw3NsNjpzwXr8visWXqfziZaW73+q6k+4wlBI3qtI1jFGPTYXjjaegyNCg==
-X-Gm-Gg: Acq92OGO0mrWBTCv5cmsoLyPqBVAlrUHxnqlR5pQ7zngFMbDF4h3YLyBF0x25Fo2vAk
-	8/hbJuEUmHdGcLJPnCEotF80xTPviQbqgUsYpQE+Bz91b/zg4SNQ9Aq5VNeeHaTrkdNIS15jc5Y
-	PckkXewubnk4BliM831Gab+Ce/0f6N0ppvZ6vEthbGilOpKyF7thr5NFuIx0S4F5Czo1v6zR5tI
-	fJlAZyLclvrwyKJCX4fqnh0GAickz9qQF2hwI6sYv4hYo86RUdUHBnp7e8C1y+/5U84cL3J0zLW
-	vOBhGUHp+J/SB9bWu2Ox92hd7NGoulnYdkBFhO86Rk/xjGbJFHIlceO9j0nybXRk40M2wTq/FbP
-	alxTt5LhRyZ94taPdFwtfXLninQaEr+YSHgys8mkH0UaOs3iFTlskYE1CEkZGY9yZA/k1aCoeTL
-	3CgVMPm8U5l3km1xJB0Vh8CS8QBGxO+EWHUMQC
-X-Received: by 2002:a05:620a:4009:b0:8da:e62d:888f with SMTP id af79cd13be357-915a9de47e0mr4264511285a.53.1781112350332;
-        Wed, 10 Jun 2026 10:25:50 -0700 (PDT)
-X-Received: by 2002:a05:620a:4009:b0:8da:e62d:888f with SMTP id af79cd13be357-915a9de47e0mr4264503585a.53.1781112349638;
-        Wed, 10 Jun 2026 10:25:49 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1781112346; x=1781717146;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2aMSZaCfoqBZzL8F7noAF9g5xEPkxMn+qkDrfHZZKXA=;
+        b=mv9ZAIjw8KDfzPPsjDfEckzvuFyJuP+kNrhHAnxyGSZr8QBUgdlcwhN9ZqVlD+so0h
+         P25RmchIiLsYa2rcnua+F1KOkihkB7hwlF6Z2g4XpvUJpf786mjgDKBFvAjpzW/eX7OY
+         fjiw1y7Cemvzdbt3z9Le9dDqevASPAZOedKXlryJXTD5A8jP9k6J5aBdJVyW/h4qFBan
+         dWk7n0MkwEKFKE1s0xxsko9HYnqLsDLE52eBZzSu9eCgFD/OBApabSGV+zXWqDZz8nx1
+         XIXJ5RWMeDBJ9MCTz0gCF6FPfBKFBLv5NVx52zXVdmEAnFPppmcQqZA17Wu7ptAMFw4g
+         FMHA==
+X-Gm-Message-State: AOJu0YxmAAnV8yP1sQvwltFBWBWpuXlRhZ5REfTLENRsLxcfC7b/7FT1
+	3kZyw6xVrOS2CKeY7FAe1o8sQ8i1PiUXH7PpeyZ07vUEpGiJ9NP/wvGiNKDlcV2MZxlsTS9sEeI
+	BDLUXOklQ9SfG4r9VmHDZVa2XaWjWihZr1atPOBY4yS7RCSymobA06lZjWIBf0Q==
+X-Gm-Gg: Acq92OFe9b2hw505aZLmAB2B25y6EU3rlgx5J0BWkRAXtRXHgabL3d5C2Or0JrG+ach
+	TW+9nLSfaSPjuELwN6lFGaV6ncpgEQ1jX9/4JEogFrN+Wv/VC4rJKG6MG5V+jkPvEhSlkYLoHbV
+	Ui2aBS7wUCuPip0+/0t0pxQCiJ8eJIyDwjgz3qU4WSmOjg1RHv6ioS1r4v0js5Q2K245p167/8W
+	DK/xwYzeMeASHbkdjQZD6MFTrbA6r26/JJnRw5RUo+hclnAtsaFL5QwN00FTIwq/KdsnJqiUcKa
+	ymIegauSArvrxcmNn5u0X21HWuM0QKGOCcdputMTfhOJqYIPOkNo/L8uN2EuI01ovVvLDEw8pQ6
+	hMaRgE1lEUvDrgMb74QYc2kpaGpz7GdzaFsrfT8m1wyZy8DwsBTLY4JDBMSHyP1LsYEStLbon4I
+	RsvuaasioOmWMOvMudVz5h582BH8NuO2SNwb/I
+X-Received: by 2002:a05:6102:800c:b0:607:798d:8083 with SMTP id ada2fe7eead31-719361e5d88mr6376790137.15.1781112346428;
+        Wed, 10 Jun 2026 10:25:46 -0700 (PDT)
+X-Received: by 2002:a05:6102:800c:b0:607:798d:8083 with SMTP id ada2fe7eead31-719361e5d88mr6376711137.15.1781112345712;
+        Wed, 10 Jun 2026 10:25:45 -0700 (PDT)
 Received: from fstornio-thinkpadx1carbongen11.remote.csb (net-93-66-125-181.cust.vodafonedsl.it. [93.66.125.181])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-9158a381abfsm2532946085a.27.2026.06.10.10.25.48
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-9158a381abfsm2532946085a.27.2026.06.10.10.25.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2026 10:25:49 -0700 (PDT)
+        Wed, 10 Jun 2026 10:25:45 -0700 (PDT)
 From: Filippo Storniolo <fstornio@redhat.com>
-Date: Wed, 10 Jun 2026 19:24:45 +0200
-Subject: [PATCH can-next 2/3] af_can: store socket pointers in struct
- netns_can
+Subject: [PATCH can-next 0/3] Introduce diag support for CAN
+Date: Wed, 10 Jun 2026 19:24:43 +0200
+Message-Id: <20260610-feat-can-diag-v1-0-021e3f1631a0@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -89,200 +86,87 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260610-feat-can-diag-v1-2-021e3f1631a0@redhat.com>
-References: <20260610-feat-can-diag-v1-0-021e3f1631a0@redhat.com>
-In-Reply-To: <20260610-feat-can-diag-v1-0-021e3f1631a0@redhat.com>
+X-B4-Tracking: v=1; b=H4sIANudKWoC/x2MQQqAMAzAviI9W5gFFf2KeKhbN3uZsokI4t+dH
+ gNJbsiSVDKM1Q1JTs26xQJNXYFdOQZBdYWBDHWmpQG98IGWIzrlgK5nu/hWiCxBafYkXq//N8F
+ nRbkOmJ/nBf5UZMBpAAAA
+X-Change-ID: 20260529-feat-can-diag-d7acbf5e22c2
 To: Oliver Hartkopp <socketcan@hartkopp.net>, 
  Marc Kleine-Budde <mkl@pengutronix.de>, 
  Robin van der Gracht <robin@protonic.nl>, 
  Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de, 
  Urs Thuermann <urs.thuermann@volkswagen.de>, 
  Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>
-Cc: linux-can@vger.kernel.org, Filippo Storniolo <fstornio@redhat.com>
+Cc: linux-can@vger.kernel.org, Filippo Storniolo <fstornio@redhat.com>, 
+ Davide Caratti <dcaratti@redhat.com>
 X-Mailer: b4 0.14.2
 
-AF_CAN sockets need to be stored in the netns_can structure
-in order to be retrieved by the CAN diagnostic module when
-a netlink request message is issued by the userspace.
+In the current state of the art, it is not possible for userspace to use
+tool like ss(8) to query open AF_CAN sockets.
 
-On socket creation (`can_create()`), add the pointer to the
-new socket to `netns_can::sk_list`. During socket release
-(`isotp_release()`, `raw_release()`, `j1939_release()`,
-`bcm_release()`), remove the corresponding pointer from
-this list.
+This patch series adds the netlink can_diag interface for AF_CAN. Userspace
+is  now able to send a netlink request to request information about open
+AF_CAN sockets that are retrieved by the can-diag.ko module.
 
-Since this is a prerequisite of the CAN diagnostic module,
-deletes and insert operations are conditioned by
-IS_ENABLED(CONFIG_CAN_DIAG).
+Patch 1 is a fix that is mandatory to the correct behaviour of the diag
+module: the field sk_protocol is not assigned during `can_create()` instead
+of being assigned only in case the CAN socket belong to the j1939 transport
+protocol. This is needed to the correct filtering of the can diag module.
+
+Patch 2 introduces a list per network namespace containing open CAN sockets.
+The list is protected by a mutex.
+CAN sockets are added in `can_create()` to the list and removed from it
+in the `release()` calls defined for each transport protocol.
+
+Patch 3 is the core patch that introduces the userspace structures to query
+and receive netlink messages for CAN sockets and the actual CAN diag module.
+The latter will use the userspace structures defined in <linux/can/diag.h>
+to filter and retrieve open CAN sockets.
+
+In the current implementation, every CAN sockets in the list is
+returned to the userspace, however a filtering could be implemented:
+Userspace could possibly request only bound CAN sockets or CAN sockets
+belonging to a specific transport protocol (raw, iso-tp, j1939, bcm)
+and so on.
+
+---
+Change w.r.t. RFC:
+- header relocation, from linux/can_diag.h to linux/can/diag.h
+  (Oliver Hartkopp)
+- file renaming, from net/can/can-diag.c to net/can/diag.c
+  (Oliver Hartkopp)
+- guard renaming, from _UAPI__CAN_DIAG_H__ to _UAPI_CAN_DIAG_H_
+  (Oliver Hartkopp)
+- handled J1939 addressing in sockaddr_can
+  (Oliver Hartkopp)
 
 Signed-off-by: Filippo Storniolo <fstornio@redhat.com>
+
 ---
- include/linux/can/core.h |  9 +++++++++
- include/net/netns/can.h  |  6 ++++++
- net/can/af_can.c         | 37 +++++++++++++++++++++++++++++++++++++
- net/can/bcm.c            |  2 ++
- net/can/isotp.c          |  2 ++
- net/can/j1939/socket.c   |  2 ++
- net/can/raw.c            |  2 ++
- 7 files changed, 60 insertions(+)
+Davide Caratti (1):
+      af_can: ensure sk_protocol is always set on socket creation
 
-diff --git a/include/linux/can/core.h b/include/linux/can/core.h
-index 3287232e3cad92b8514bdad996fbaa02c8fe53fe..0c658ee4aab286e48eb5815640fedbd98a90b92a 100644
---- a/include/linux/can/core.h
-+++ b/include/linux/can/core.h
-@@ -61,4 +61,13 @@ extern int can_send(struct sk_buff *skb, int loop);
- void can_set_skb_uid(struct sk_buff *skb);
- void can_sock_destruct(struct sock *sk);
- 
-+/* function prototypes for the CAN diag module */
-+#if IS_ENABLED(CONFIG_CAN_DIAG)
-+void can_add_sock_sklist(struct sock *sk);
-+void can_remove_sock_sklist(struct sock *sk);
-+#else
-+#define can_add_sock_sklist(sk)
-+#define can_remove_sock_sklist(sk)
-+#endif
-+
- #endif /* !_CAN_CORE_H */
-diff --git a/include/net/netns/can.h b/include/net/netns/can.h
-index 48b79f7e6236d9b4cf4bd57655f89e161faff05d..bcafff5e66697faf065b4a6b4ab009ce0c62dee7 100644
---- a/include/net/netns/can.h
-+++ b/include/net/netns/can.h
-@@ -36,6 +36,12 @@ struct netns_can {
- 
- 	/* CAN GW per-net gateway jobs */
- 	struct hlist_head cgw_list;
-+
-+#if IS_ENABLED(CONFIG_CAN_DIAG)
-+	/* CAN diag support */
-+	struct mutex		sklist_lock;
-+	struct hlist_head	sklist;
-+#endif
- };
- 
- #endif /* __NETNS_CAN_H__ */
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index 65af259469854fc19cda0d7dd01c7b4da2ec0f4c..8e1be301fa0ca9dba4cbf1bbd27bfc62ddb19f18 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -111,6 +111,32 @@ static inline void can_put_proto(const struct can_proto *cp)
- 	module_put(cp->prot->owner);
- }
- 
-+#if IS_ENABLED(CONFIG_CAN_DIAG)
-+void can_add_sock_sklist(struct sock *sk)
-+{
-+	struct net *net;
-+
-+	net = sock_net(sk);
-+
-+	mutex_lock(&net->can.sklist_lock);
-+	sk_add_node(sk, &net->can.sklist);
-+	mutex_unlock(&net->can.sklist_lock);
-+}
-+EXPORT_SYMBOL(can_add_sock_sklist);
-+
-+void can_remove_sock_sklist(struct sock *sk)
-+{
-+	struct net *net;
-+
-+	net = sock_net(sk);
-+
-+	mutex_lock(&net->can.sklist_lock);
-+	sk_del_node_init(sk);
-+	mutex_unlock(&net->can.sklist_lock);
-+}
-+EXPORT_SYMBOL(can_remove_sock_sklist);
-+#endif
-+
- static int can_create(struct net *net, struct socket *sock, int protocol,
- 		      int kern)
- {
-@@ -174,6 +200,8 @@ static int can_create(struct net *net, struct socket *sock, int protocol,
- 		sock_put(sk);
- 		sock->sk = NULL;
- 	} else {
-+		can_add_sock_sklist(sk);
-+
- 		sock_prot_inuse_add(net, sk->sk_prot, 1);
- 	}
- 
-@@ -821,6 +849,11 @@ static int can_pernet_init(struct net *net)
- 		can_init_proc(net);
- 	}
- 
-+#if IS_ENABLED(CONFIG_CAN_DIAG)
-+	mutex_init(&net->can.sklist_lock);
-+	INIT_HLIST_HEAD(&net->can.sklist);
-+#endif
-+
- 	return 0;
- 
-  out_free_pkg_stats:
-@@ -842,6 +875,10 @@ static void can_pernet_exit(struct net *net)
- 	kfree(net->can.rx_alldev_list);
- 	kfree(net->can.pkg_stats);
- 	kfree(net->can.rcv_lists_stats);
-+
-+#if IS_ENABLED(CONFIG_CAN_DIAG)
-+	WARN_ON_ONCE(!hlist_empty(&net->can.sklist));
-+#endif
- }
- 
- /* af_can module init/exit functions */
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index a4bef2c48a559cf7b0fa1d00d1fb1187e31359d8..63515306f499a602a58f7d1f103ff3a95f239e0a 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -1594,6 +1594,8 @@ static int bcm_release(struct socket *sock)
- 	if (!sk)
- 		return 0;
- 
-+	can_remove_sock_sklist(sk);
-+
- 	net = sock_net(sk);
- 	bo = bcm_sk(sk);
- 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index c48b4a818297e2a1348a2b64016d0f4ff613e683..91736b28e7bfbed3e915666a2ae9d60ac0cec193 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -1201,6 +1201,8 @@ static int isotp_release(struct socket *sock)
- 	so = isotp_sk(sk);
- 	net = sock_net(sk);
- 
-+	can_remove_sock_sklist(sk);
-+
- 	/* wait for complete transmission of current pdu */
- 	while (wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE) == 0 &&
- 	       cmpxchg(&so->tx.state, ISOTP_IDLE, ISOTP_SHUTDOWN) != ISOTP_IDLE)
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index ccd43ff5519c72f209b53bf74b833acd6ffe9728..cbfd0b8887680b48f4b941b851080f69b465433e 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -641,6 +641,8 @@ static int j1939_sk_release(struct socket *sock)
- 	if (!sk)
- 		return 0;
- 
-+	can_remove_sock_sklist(sk);
-+
- 	lock_sock(sk);
- 	jsk = j1939_sk(sk);
- 
-diff --git a/net/can/raw.c b/net/can/raw.c
-index a26942e78e688721c9306f4e3fcbf25cd395a127..6cf47c53eb5336d15b4303612a960a833c62eade 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -418,6 +418,8 @@ static int raw_release(struct socket *sock)
- 	ro = raw_sk(sk);
- 	net = sock_net(sk);
- 
-+	can_remove_sock_sklist(sk);
-+
- 	spin_lock(&raw_notifier_lock);
- 	while (raw_busy_notifier == ro) {
- 		spin_unlock(&raw_notifier_lock);
+Filippo Storniolo (2):
+      af_can: store socket pointers in struct netns_can
+      can: add can diag interface
 
+ MAINTAINERS                   |   1 +
+ include/linux/can/core.h      |   9 +++
+ include/net/netns/can.h       |   6 ++
+ include/uapi/linux/can/diag.h |  55 +++++++++++++
+ net/can/Kconfig               |  10 +++
+ net/can/Makefile              |   3 +
+ net/can/af_can.c              |  38 +++++++++
+ net/can/bcm.c                 |   2 +
+ net/can/diag.c                | 184 ++++++++++++++++++++++++++++++++++++++++++
+ net/can/isotp.c               |   2 +
+ net/can/j1939/socket.c        |   3 +-
+ net/can/raw.c                 |   2 +
+ 12 files changed, 314 insertions(+), 1 deletion(-)
+---
+base-commit: 0cf905cb9a12dbfb5d14896729b74508f83f73df
+change-id: 20260529-feat-can-diag-d7acbf5e22c2
+
+Best regards,
 -- 
-2.53.0
+Filippo Storniolo <fstornio@redhat.com>
 
