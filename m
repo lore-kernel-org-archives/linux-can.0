@@ -1,188 +1,251 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 123A630BF6D;
-	Thu, 11 Jun 2026 13:35:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781184908; cv=none; b=XeyfJa6WLU+VjYgRAKT0cmpol0wYe8mpmOzZ+q7OR072oq2NiON0Z+62qJkfpw/pOA7+bFD+MKXJYNLb6r/u/iNFILUcHuqD8vLcSJR6d4vrC27i30a+ECpYNf+Pi8yG/gUyB1ttYJ1nqaqq0tSLoyaPqlR8V7YcTWkvNf18uZ4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781184908; c=relaxed/simple;
-	bh=FYwxNJ0xHvKX+gcSgo8bX/DOL+pH5bvSGrjcXnMehGI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iQzWyK9XrRVl65OcwOfLz+gGbYcJ63ApchYcBA4KlvvA04P/MJViCCOmoybJJL6WSnCL5UCX6VH7OxBXQP1KyTOW/zj5hO229cGtzixHpS+cbug7kbRbqQwSvWGDsWDE27Qol+AdkwgWcKpT7+b1M0VQuzlK1KUHYoncu04M8Wo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D12831F00893;
-	Thu, 11 Jun 2026 13:35:04 +0000 (UTC)
-Message-ID: <937086f1-5158-41e9-9194-b6d1feaee17f@linux-m68k.org>
-Date: Thu, 11 Jun 2026 23:35:02 +1000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A1D238399C
+	for <linux-can@vger.kernel.org>; Fri, 12 Jun 2026 11:05:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.52
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781262346; cv=pass; b=VfJ6Qdnj6kwodJvi+GT/at+d2NwOF2hKCxtSLcx30nOGKmO2WBbfGvLr2p1VmYsTP2uxYBWAEy4c797vz2cIZqe9BbYaW48n1fu3PRDiOEAOaIio9mHT0+zU9XCBEYior3Dy3QgOcNayxJmqGPAuUOYHxc5Zu1MEnH0SctFC8FQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781262346; c=relaxed/simple;
+	bh=KyOJL+8riywQWwSvms9L2892yHVEpfGvRMNs/APPfzY=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=Mp2cVrQn7DVok7M7j0BvZ4s1denOfiQ3a1MwHfH5E0/6WGNbq0yw1++fBOUM/NLXB4GAs0p7CTFMnXpnYGEFl6DjIgoBEkFLGyijIEAm/ZKq/6F+v+d+N4ucWMaQmzTdtmNzpKtTl1yqzb95tNrsZAwFfkExdPPqU6Ab7L3Vjgk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=UUJDL3Kq; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=0Uifv8QG; arc=pass smtp.client-ip=85.215.255.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="UUJDL3Kq";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="0Uifv8QG"
+ARC-Seal: i=1; a=rsa-sha256; t=1781262336; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=RaXlo9FD9lFbrpJ65AYnfNkYZh7bkM50Kj14Hf7eVVbDfke4uJFkwq8hNpTpTlrJXB
+    lM9pu8BaKaw7DzMwalqlmJNTYJDuv6qtl2jURFWT6K4FzSeQX+qr6RxU2sO/GhhFw/Z2
+    GujWOq+MUEGMn7cKGryXSDd+/fIfdR9/+I1AAyJ38yDwySju+U60l2bnh7cM+I0ZLlVn
+    4VklVhGqopLrr9Ge3ajZ6d3h9qp7MZ1eXxU+qa8ZcYIFMzrfwQob/3LieobHp14A4GJj
+    rKV/NUmqYHBXOSFkLxS/zRU1fwfOnNlGPUM275NoWGjeji8FE5gmkL2q7kzFiKeeM4Ox
+    O3kQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1781262336;
+    s=strato-dkim-0002; d=strato.com;
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=i9suZLtuO5sXh06slJWyr1Vrf05w7Inds+5l25iUY7g=;
+    b=QA/xdZubrETjgTeWKmXKmNM53nulgF0kUG/R/o0sZcp/3c5gSkA9XBoQmvHvFGSwOl
+    4q7/l3OsUaBxphXSK5oNB9OUVgYGm+oI7IisRWrlD177jzefiIHiW/qpmh1hJbtsQaCR
+    /ccqjRXWP+KU0Buj62gOvbBcix1kVLibUBrQwkVRxS1kQH45AKI8We9q6i6N/BwBuEbx
+    lltPW5JjWOswe91hgXKU3A6pXTV5S8iJTvXRN6TI6N+TtxCDZA3dZaIhQJsnO2EDFYpW
+    wm6wV7wjwAFtxj+j/GcEu1+axns5D5jpyZlTVIq/jJR/FQ4c4L+eEdswrvbsdiezS6J5
+    PP+w==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1781262336;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=i9suZLtuO5sXh06slJWyr1Vrf05w7Inds+5l25iUY7g=;
+    b=UUJDL3KqO3AZxas+eP3YmJoufs6RzW7xB2Q7C5Wfmp0AuRwif/ce8R8Vj8Sq0yVykH
+    uxXRjgbTJh/oySpa0WCeN4O5WY6euJGp0mHEi83NTBik0jFiu5WKnIr4Bf9voV0jcBIi
+    YNVm8Xkw1RtThiOH9WeFhiqr/J13s7e0yFTWOdpbUx1m5jm4jxzsooGTdiS1W/y0i3NX
+    y9LzPo+iyEXpBu5iYkQeQhP8D9Tz03/t/5B5AVG7LftlwY0ujcM8pZEkZdWY12ylRyZ9
+    K7AkIF647vGAz9ALhrcKzVNI4S+7V9WJkiunjpDQ3SOtKf9YitqZf2U7QvxTZWLx3l27
+    UOnQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1781262336;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=i9suZLtuO5sXh06slJWyr1Vrf05w7Inds+5l25iUY7g=;
+    b=0Uifv8QG8JjMCB9iZqJ7EFoGT7oVAimLWiS4A9nULkJLctu2OeSlaXazjO/l9XGbVi
+    4O3nwbSSQDcvN9wFghAg==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [127.0.1.1]
+    by smtp.strato.de (RZmta 55.0.1 AUTH)
+    with ESMTPSA id Kba96d25CB5a8w7
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Fri, 12 Jun 2026 13:05:36 +0200 (CEST)
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Date: Fri, 12 Jun 2026 13:05:16 +0200
+Subject: [PATCH 1/5] can: bcm: defer rx_op deallocation to workqueue to fix
+ thrtimer UAF
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv2 4/4] m68k: coldfire: fix non-standard readX()/writeX()
- functions
-To: sashiko-reviews@lists.linux.dev
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
- Vincent Mailhol <mailhol@kernel.org>, linux-can@vger.kernel.org,
- Frank.Li@kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>,
- Marc Kleine-Budde <mkl@pengutronix.de>, imx@lists.linux.dev,
- Angelo Dureghello <adureghello@baylibre.com>
-References: <20260609142139.1563360-6-gerg@linux-m68k.org>
- <20260610142725.031C31F0089A@smtp.kernel.org>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <20260610142725.031C31F0089A@smtp.kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20260612-bcm_fixes-v1-1-ca2fa07ee70f@hartkopp.net>
+References: <20260612-bcm_fixes-v1-0-ca2fa07ee70f@hartkopp.net>
+In-Reply-To: <20260612-bcm_fixes-v1-0-ca2fa07ee70f@hartkopp.net>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
+ Marc Kleine-Budde <mkl@pengutronix.de>, Lee Jones <lee@kernel.org>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1781262336; l=4918;
+ i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
+ bh=87y9klb+KGXDzNFshqV6uGcyXJJleji+c9iIKS9zQrk=;
+ b=WE6DIJuhEFjFZuTQQ3Y3+TvovHdh2b5ffHgprJkBVCIFgVmGwmyd/hyVKHax0y2/PNX2SDW2h
+ K12o4waCPuVDTxiWkS71NJaXF5UZN5C5p/3on0BWJJNDpBvV7N25R0N
+X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
+ pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
 
-Hi Sashiko-bot,
+From: Lee Jones <lee@kernel.org>
 
-On 11/6/26 00:27, sashiko-bot@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 3 potential issue(s) to consider:
-> 
-> New issues:
-> - [High] The transition to asm-generic readX()/writeX() changes the endianness of ColdFire internal IO accesses, breaking unpatched ColdFire drivers.
-> 
-> Pre-existing issues:
-> - [High] Undefined behavior when shifting 1 by 32 or more using `BIT(ch)` in `mcf_edma_tx_handler`.
-> - [High] The error interrupt handler incorrectly skips handling high channels and returns `IRQ_NONE` after servicing low channels.
-> --
-> 
-> commit 25193db3eba89f780b6dc534f2f72e16f3429571
-> Author: Greg Ungerer <gerg@linux-m68k.org>
-> 
-> m68k: coldfire: fix non-standard readX()/writeX() functions
-> 
-> Remove the local ColdFire definitions of readb()/readw()/readl() and
-> writeb()/writew()/writel() and use the asm-generic versions of them.
-> 
->> diff --git a/arch/m68k/include/asm/io_no.h b/arch/m68k/include/asm/io_no.h
->> index 4f0f34b06e37c..2f12f4ed0da54 100644
->> --- a/arch/m68k/include/asm/io_no.h
->> +++ b/arch/m68k/include/asm/io_no.h
-> 
-> [ ... ]
-> 
->> -#define writel writel
->> -static inline void writel(u32 value, volatile void __iomem *addr)
->> -{
->> -	if (cf_internalio(addr))
->> -		__raw_writel(value, addr);
->> -	else
->> -		__raw_writel(swab32(value), addr);
->> -}
-> 
-> [Severity: High]
-> Does replacing the local readX()/writeX() with the asm-generic versions
-> change the endianness of unpatched ColdFire drivers?
-> 
-> The old ColdFire implementation detected internal IO memory using
-> cf_internalio() and bypassed byte-swapping to provide native big-endian
-> access. The asm-generic accessors always assume little-endian devices and
-> perform byte-swapping.
-> 
-> Will unpatched drivers relying on readX()/writeX() for internal IO
-> (such as spi-coldfire-qspi.c, sdhci-esdhc-mcf.c, or fec_main.c) now read
-> and write byte-swapped values and malfunction?
+Commit f1b4e32aca08 ("can: bcm: use call_rcu() instead of costly
+synchronize_rcu()") replaced synchronize_rcu() in bcm_delete_rx_op()
+with call_rcu() and introduced the RX_NO_AUTOTIMER flag.
 
-This is of course a real problem, and much effort has been expended to
-find and fix affected drivers. Specifically here:
+However, this flag check was omitted for thrtimer in the packet rx
+fast-path. During BCM RX operation teardown, a concurrent RCU reader
+(bcm_rx_handler) can race and re-arm thrtimer via
+bcm_rx_update_and_send() after call_rcu() has been scheduled.  Once
+the RCU grace period elapses, bcm_op is freed.  The subsequently
+firing thrtimer then dereferences the deallocated op, causing a UAF.
 
-     patch 1 in this series fixes fec_main.c
-     patch 3 in this series fixes sdhci-esdhc-mcf.c
-     patch 4 (this patch) fixes spi-coldfire-qspi.c with the endian change to spi-fsl-dspi.c
+Adding flag checks to the rx fast-path (bcm_rx_update_and_send) does not
+fully close the TOCTOU race and introduces latency for every CAN frame.
+Conversely, calling hrtimer_cancel() directly inside the RCU callback
+(softirq context) is fatal as hrtimer_cancel() can sleep, triggering
+a "scheduling while atomic" panic.
 
-Not mentioned here, but patch 2 in this series fixes the smc91x driver.
+Resolve this by deferring the timer cancellation and memory free to a
+dedicated unbound workqueue (bcm_wq).  The RCU callback now queues a
+work item to bcm_wq, which safely cancels both timers and deallocates
+memory in sleepable process context.  A dedicated workqueue is used to
+prevent system-wide WQ saturation and is cleanly flushed/destroyed
+on module unload to avoid rmmod page faults.
 
-It is not believed at this time that any other drivers are affected.
+Fixes: f1b4e32aca08 ("can: bcm: use call_rcu() instead of costly synchronize_rcu()")
+Signed-off-by: Lee Jones <lee@kernel.org>
+---
+ net/can/bcm.c | 29 ++++++++++++++++++++++++++---
+ 1 file changed, 26 insertions(+), 3 deletions(-)
 
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index a4bef2c48a55..c49b09f3229f 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -56,10 +56,11 @@
+ #include <linux/can.h>
+ #include <linux/can/core.h>
+ #include <linux/can/skb.h>
+ #include <linux/can/bcm.h>
+ #include <linux/slab.h>
++#include <linux/workqueue.h>
+ #include <linux/spinlock.h>
+ #include <net/can.h>
+ #include <net/sock.h>
+ #include <net/net_namespace.h>
+ 
+@@ -90,10 +91,12 @@ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_AUTHOR("Oliver Hartkopp <oliver.hartkopp@volkswagen.de>");
+ MODULE_ALIAS("can-proto-2");
+ 
+ #define BCM_MIN_NAMELEN CAN_REQUIRED_SIZE(struct sockaddr_can, can_ifindex)
+ 
++static struct workqueue_struct *bcm_wq;
++
+ /*
+  * easy access to the first 64 bit of can(fd)_frame payload. cp->data is
+  * 64 bit aligned so the offset has to be multiples of 8 which is ensured
+  * by the only callers in bcm_rx_cmp_to_index() bcm_rx_handler().
+  */
+@@ -103,10 +106,11 @@ static inline u64 get_u64(const struct canfd_frame *cp, int offset)
+ }
+ 
+ struct bcm_op {
+ 	struct list_head list;
+ 	struct rcu_head rcu;
++	struct work_struct work;
+ 	int ifindex;
+ 	canid_t can_id;
+ 	u32 flags;
+ 	unsigned long frames_abs, frames_filtered;
+ 	struct bcm_timeval ival1, ival2;
+@@ -791,23 +795,34 @@ static struct bcm_op *bcm_find_op(struct list_head *ops,
+ 	}
+ 
+ 	return NULL;
+ }
+ 
+-static void bcm_free_op_rcu(struct rcu_head *rcu_head)
++static void bcm_free_op_work(struct work_struct *work)
+ {
+-	struct bcm_op *op = container_of(rcu_head, struct bcm_op, rcu);
++	struct bcm_op *op = container_of(work, struct bcm_op, work);
++
++	hrtimer_cancel(&op->timer);
++	hrtimer_cancel(&op->thrtimer);
+ 
+ 	if ((op->frames) && (op->frames != &op->sframe))
+ 		kfree(op->frames);
+ 
+ 	if ((op->last_frames) && (op->last_frames != &op->last_sframe))
+ 		kfree(op->last_frames);
+ 
+ 	kfree(op);
+ }
+ 
++static void bcm_free_op_rcu(struct rcu_head *rcu_head)
++{
++	struct bcm_op *op = container_of(rcu_head, struct bcm_op, rcu);
++
++	INIT_WORK(&op->work, bcm_free_op_work);
++	queue_work(bcm_wq, &op->work);
++}
++
+ static void bcm_remove_op(struct bcm_op *op)
+ {
+ 	hrtimer_cancel(&op->timer);
+ 	hrtimer_cancel(&op->thrtimer);
+ 
+@@ -1837,15 +1852,19 @@ static struct notifier_block canbcm_notifier = {
+ 
+ static int __init bcm_module_init(void)
+ {
+ 	int err;
+ 
++	bcm_wq = alloc_workqueue("can-bcm-wq", WQ_UNBOUND, 0);
++	if (!bcm_wq)
++		return -ENOMEM;
++
+ 	pr_info("can: broadcast manager protocol\n");
+ 
+ 	err = register_pernet_subsys(&canbcm_pernet_ops);
+ 	if (err)
+-		return err;
++		goto register_pernet_failed;
+ 
+ 	err = register_netdevice_notifier(&canbcm_notifier);
+ 	if (err)
+ 		goto register_notifier_failed;
+ 
+@@ -1859,17 +1878,21 @@ static int __init bcm_module_init(void)
+ 
+ register_proto_failed:
+ 	unregister_netdevice_notifier(&canbcm_notifier);
+ register_notifier_failed:
+ 	unregister_pernet_subsys(&canbcm_pernet_ops);
++register_pernet_failed:
++	destroy_workqueue(bcm_wq);
+ 	return err;
+ }
+ 
+ static void __exit bcm_module_exit(void)
+ {
+ 	can_proto_unregister(&bcm_can_proto);
+ 	unregister_netdevice_notifier(&canbcm_notifier);
+ 	unregister_pernet_subsys(&canbcm_pernet_ops);
++	rcu_barrier();
++	destroy_workqueue(bcm_wq);
+ }
+ 
+ module_init(bcm_module_init);
+ module_exit(bcm_module_exit);
 
-> [ ... ]
-> 
->> diff --git a/drivers/dma/mcf-edma-main.c b/drivers/dma/mcf-edma-main.c
->> index 9e1c6400c77be..4ed0ce644e37e 100644
->> --- a/drivers/dma/mcf-edma-main.c
->> +++ b/drivers/dma/mcf-edma-main.c
->> @@ -21,9 +21,9 @@ static irqreturn_t mcf_edma_tx_handler(int irq, void *dev_id)
->>   	unsigned int ch;
->>   	u64 intmap;
->>   
->> -	intmap = ioread32(regs->inth);
->> +	intmap = ioread32be(regs->inth);
->>   	intmap <<= 32;
->> -	intmap |= ioread32(regs->intl);
->> +	intmap |= ioread32be(regs->intl);
->>   	if (!intmap)
->>   		return IRQ_NONE;
-> 
-> [Severity: High]
-> This is a pre-existing issue, but does this shift invoke undefined behavior
-> for higher channels?
-> 
-> Looking at the loop immediately following this in mcf_edma_tx_handler():
-> 
-> 	for (ch = 0; ch < mcf_edma->n_chans; ch++) {
-> 		if (intmap & BIT(ch)) {
-> 			...
-> 
-> On a 32-bit architecture like m68k, BIT(ch) expands to a 32-bit unsigned
-> long. Since ch can be up to 64, shifting by 32 or more would be undefined,
-> potentially causing channels 32-63 to be improperly processed or missing
-> their interrupts entirely.
-> 
-> Should this use BIT_ULL(ch) when testing against the 64-bit intmap?
-> 
-> [ ... ]
-> 
->> @@ -43,7 +43,7 @@ static irqreturn_t mcf_edma_err_handler(int irq, void *dev_id)
->>   	struct edma_regs *regs = &mcf_edma->regs;
->>   	unsigned int err, ch;
->>   
->> -	err = ioread32(regs->errl);
->> +	err = ioread32be(regs->errl);
->>   	if (!err)
->>   		return IRQ_NONE;
-> 
-> [Severity: High]
-> This is a pre-existing issue, but does this early return incorrectly skip
-> handling high channels?
-> 
-> If regs->errl is zero, it returns IRQ_NONE immediately, ignoring any errors
-> in regs->errh. This could leave errors in higher channels uncleared.
-> 
-> [ ... ]
-> 
->> @@ -55,7 +55,7 @@ static irqreturn_t mcf_edma_err_handler(int irq, void *dev_id)
->>   		}
->>   	}
->>   
->> -	err = ioread32(regs->errh);
->> +	err = ioread32be(regs->errh);
->>   	if (!err)
->>   		return IRQ_NONE;
-> 
-> [Severity: High]
-> This is a pre-existing issue, but does this return the wrong IRQ status if
-> low channel errors were already handled?
-> 
-> If errl was non-zero (so some errors were handled) but errh is zero,
-> returning IRQ_NONE here instead of IRQ_HANDLED might incorrectly signal
-> to the IRQ subsystem that the interrupt wasn't handled at all.
-
-At casual inspection these may well be real problems. I will have to defer
-to the driver author and current maintainers for them to fix. The changes
-to fix ColdFire readl()/writel() have no effect on these, and are really
-outside of the scope of this series.
-
-Thanks for the review!
-
-Regards
-Greg
-
-
-
+-- 
+2.53.0
 
