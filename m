@@ -1,140 +1,103 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A058A40B6E0
-	for <linux-can@vger.kernel.org>; Tue, 16 Jun 2026 09:07:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 115243451C6
+	for <linux-can@vger.kernel.org>; Tue, 16 Jun 2026 09:17:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781600864; cv=none; b=i+ahORfCzNLL/NfpXKgeWB7BBVNALckq/XAiX19g2IOJf1FE6cHjgRGE/Nzp5t7tpPtqMP7qUSxMyhna09guEejmOIG4tBhBsaOH/mZqNezPrvxyoEooNMYn9SfxwkBxBYJY/5/bT0AOCJ284ebJJvvn1jdXUMAoQ2GxrWw+flo=
+	t=1781601444; cv=none; b=Gzn1qytAHu4z3CsWJi7/YrQCmfNk5i4+yiZE7stYtm8s5DYAD8lca+xYAU7wuAT5FWUpbuBJNDasnDO/ZtGy71UTItSmBT2lYjPqBOh8qovdoDZe01plPTXEJAwa+C8r2Ym9n4s+C4+faxcWvxkAJPYxcpfGb8gqNpSjVZFD7+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781600864; c=relaxed/simple;
-	bh=khNONeL1JU6u26ub/RMJZpgdgupFFV8nzcTh2Igxlok=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=Pl84dNRZlnuZAsim/YDZ0P/W18SzyQByDfwPsKOixDzufva5fD7o/hRJY9zfTIodU0ymEEmXXnx3bYa40+eTIzcbEHrT3BY/4eBydxGlZIhFL4iJ8Ztmpqfg1/eI2TIsZJcUPh8J+cFLA68act+CS3cwjcWxMlu9nyJH4uniIhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TtCRDCO1; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1781601444; c=relaxed/simple;
+	bh=1dpzyOm5MVPnUIKPrLHFxR+H7eT8qMSI/OH6xtJm42A=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=t4KJpMOvYJlJeptCC8v80Ec5r34rRJJk6SKqzp2O+zFEkCwOLfa+DSEo43w3GFc1sTN/YiPNaHh5TdxTZZMrvpVdzAStt17H4MiMB7AOFnxEgeWvr2jF/AemO5xXbmK7zuqdC8qi5Sr8wF3Xv69I8XTVJB2EugF5jmjgg0MyWrA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Q+ZQnjaN; arc=none smtp.client-ip=117.135.210.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TtCRDCO1"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E80BE1F000E9;
-	Tue, 16 Jun 2026 09:07:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781600863;
-	bh=zCJsAHngxISKSVO/nQSAjTsYde3BRpPcyuCiT7FLUlA=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=TtCRDCO1a7w4dOW6hJ8pFknv1U2q26rMybtVAguF1xwgoCm5ecXPtr3tfIxq0R/OV
-	 BNnrNlZzowyDtdn19Bw/bIdyl4CBWowLD/7dIi3pIsik1MdxlhFtETzTwJ78drjK7I
-	 chzWd3kQ9S8YX2q4Ne5en5tj2yUNfo4oVSJuEDX96+/EmE5pP6vmj00lX4UThmQBaM
-	 fbsm4YPS+VBOQ/aOUtL+T3L9kloyGx7KJ7D5Zx7lVVigUalk+QGPVrukMYCTYn8atR
-	 LUTmifJswB2U9mLCrw1C3ucKVkifNK/RAWF6Jj9YKRra/lNOYazMqu0BzKY+Z0IwLZ
-	 8D9v1NpWIDQCg==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v2] can: mcp251xfd: Add ACPI device ID table for
- MCP251XFD
-Reply-To: sashiko-reviews@lists.linux.dev
-To: guoqi0226 <guoqi0226@163.com>
-Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Marc
- Kleine-Budde" <mkl@pengutronix.de>
-In-Reply-To: <20260616085359.89406-2-guoqi0226@163.com>
-References: <20260616085359.89406-2-guoqi0226@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 16 Jun 2026 09:07:42 +0000
-Message-Id: <20260616090742.E80BE1F000E9@smtp.kernel.org>
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Q+ZQnjaN"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=yw
+	z/66YNyoPm79L8m3SWKQCvnWeF0IvPXoHm8ponavE=; b=Q+ZQnjaN67zNgxbsSG
+	bddNL4Cz/CTfADGJFe4G8MAKdWet4GuEGKtDjx6lqYeXDRszdMNoClmWUaxzXfU2
+	Ug1gvJBSK47PkZ4TChwEvbNGHQm/R8qPkgiIMvbFpZoOxO3KILb/eYCJ04O3P3Ru
+	L01j0/x6JD7zMZD/rR0PfmAhk=
+Received: from rlk.localdomain (unknown [])
+	by gzga-smtp-mtada-g0-3 (Coremail) with SMTP id _____wBHTRd6FDFqkneCDw--.45447S3;
+	Tue, 16 Jun 2026 17:16:45 +0800 (CST)
+From: guoqi0226 <guoqi0226@163.com>
+To: sashiko-bot@kernel.org,
+	mkl@pengutronix.de
+Cc: guoqi0226@163.com,
+	linux-can@vger.kernel.org,
+	mailhol@kernel.org,
+	o.rempel@pengutronix.de,
+	sashiko-reviews@lists.linux.dev,
+	socketcan@hartkopp.net
+Subject: [PATCH v3 1/1] can: mcp251xfd: Add ACPI device ID table for MCP251XFD
+Date: Tue, 16 Jun 2026 17:16:40 +0800
+Message-Id: <20260616091640.93275-2-guoqi0226@163.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20260616091640.93275-1-guoqi0226@163.com>
+References: <20260616090742.E80BE1F000E9@smtp.kernel.org>
+ <20260616091640.93275-1-guoqi0226@163.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-
-Thank you for your contribution! Sashiko AI review found 3 potential issue(=
-s) to consider:
-
-New issues:
-- [Medium] Undocumented removal of `netdev_info` print in `mcp251xfd_handle=
-_txatif`.
-
-Pre-existing issues:
-- [High] Infinite loop / interrupt storm in `mcp251xfd_irq` due to unhandle=
-d `TXATIF` interrupt flag.
-- [High] NULL pointer dereference when retrieving match data if the device =
-is bound manually via sysfs `driver_override`.
---
-
-commit ac99a03d44f8633aff78ad69c67bdd4c8da1aa29
-Author: guoqi0226 <guoqi0226@163.com>
-
-can: mcp251xfd: Add ACPI device ID table for MCP251XFD
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wBHTRd6FDFqkneCDw--.45447S3
+X-Coremail-Antispam: 1Uf129KBjvJXoW7tw45tF18urWUJF4kCw48Zwb_yoW8XF1DpF
+	4DtF1qyrW5WF4UWw4rC3WUZa4Yg34DAryIgrWYka4YqryfJw1DZrs293W5Ars8JFW5GF13
+	Zr93JryDG398u37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UU-BiUUUUU=
+X-CM-SenderInfo: 5jxr1xaqsslqqrwthudrp/xtbC4R4Lc2oxFH5i+AAA3s
 
 This patch adds an ACPI match table for the MCP251XFD CAN controller,
 enabling driver binding on ACPI-enumerated SPI platforms.
 
-> diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net=
-/can/spi/mcp251xfd/mcp251xfd-core.c
-> index 92a86083c8962..0319673707289 100644
-> --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-> +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+Signed-off-by: guoqi0226 <guoqi0226@163.com>
+---
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-[ ... ]
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index 92a86083c896..0cde98f51f79 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -20,6 +20,7 @@
+ #include <linux/module.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/property.h>
++#include <linux/acpi.h>
+ 
+ #include "mcp251xfd.h"
+ 
+@@ -2212,6 +2213,14 @@ static const struct spi_device_id mcp251xfd_id_table[] = {
+ };
+ MODULE_DEVICE_TABLE(spi, mcp251xfd_id_table);
+ 
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id mcp251xfd_acpi_match[] = {
++	{ "MCHP15FD", (kernel_ulong_t)&mcp251xfd_devtype_data_mcp251xfd},
++	{ }
++};
++MODULE_DEVICE_TABLE(acpi, mcp251xfd_acpi_match);
++#endif
++
+ static int mcp251xfd_probe(struct spi_device *spi)
+ {
+ 	struct net_device *ndev;
+@@ -2442,6 +2451,7 @@ static struct spi_driver mcp251xfd_driver = {
+ 		.name = DEVICE_NAME,
+ 		.pm = &mcp251xfd_pm_ops,
+ 		.of_match_table = mcp251xfd_of_match,
++		.acpi_match_table = ACPI_PTR(mcp251xfd_acpi_match),
+ 	},
+ 	.probe = mcp251xfd_probe,
+ 	.remove = mcp251xfd_remove,
+-- 
+2.25.1
 
-> @@ -982,7 +983,6 @@ static int mcp251xfd_handle_rxovif(struct mcp251xfd_p=
-riv *priv)
-> =20
->  static int mcp251xfd_handle_txatif(struct mcp251xfd_priv *priv)
->  {
-> -	netdev_info(priv->ndev, "%s\n", __func__);
-> =20
->  	return 0;
->  }
-
-[Severity: Medium]
-Is this removal intentional? The commit message only mentions adding an
-ACPI match table, but this modifies the interrupt handler by removing
-a debug print. If it is intentional, should it be mentioned in the
-commit message?
-
-[Severity: High]
-This is a pre-existing issue, but does this empty function cause an
-infinite interrupt loop?
-
-Because TXATIF is not part of MCP251XFD_REG_INT_IF_CLEARABLE_MASK, the
-hardware flag must be manually cleared in the FIFOSTA register. Since
-mcp251xfd_handle_txatif() returns 0 without clearing the flag, won't
-the do-while loop in mcp251xfd_irq() continually read TXATIF as pending
-and loop infinitely?
-
-[ ... ]
-
-> @@ -2212,6 +2212,14 @@ static const struct spi_device_id mcp251xfd_id_tab=
-le[] =3D {
->  };
->  MODULE_DEVICE_TABLE(spi, mcp251xfd_id_table);
-> =20
-> +#ifdef CONFIG_ACPI
-> +static const struct acpi_device_id mcp251xfd_acpi_match[] =3D {
-> +	{ "MCHP15FD", (kernel_ulong_t)&mcp251xfd_devtype_data_mcp251xfd},
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(acpi, mcp251xfd_acpi_match);
-> +#endif
-> +
->  static int mcp251xfd_probe(struct spi_device *spi)
->  {
->  	struct net_device *ndev;
-
-[Severity: High]
-This is a pre-existing issue, but is it safe to unconditionally
-dereference the match data retrieved in this function?
-
-Later in mcp251xfd_probe(), the driver does:
-
-priv->devtype_data =3D *(struct mcp251xfd_devtype_data *)spi_get_device_mat=
-ch_data(spi);
-
-If the driver is bound manually via the sysfs driver_override attribute
-without matching any table entries, spi_get_device_match_data() will
-return NULL, which would cause a panic when dereferenced. Should there
-be a check for NULL before dereferencing it?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260616085359.8940=
-6-1-guoqi0226@163.com?part=3D1
