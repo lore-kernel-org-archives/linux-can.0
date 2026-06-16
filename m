@@ -1,99 +1,177 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70F47380FCF
-	for <linux-can@vger.kernel.org>; Tue, 16 Jun 2026 03:13:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E9E730CDA2
+	for <linux-can@vger.kernel.org>; Tue, 16 Jun 2026 07:00:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781579613; cv=none; b=uXjI1Mhx6xRUPfMRwb0RtBQ5fbqryLZbtImtlT9VVRyIvjXDnytOAsd8XtE9mi1X+hMZg5WoWXf7FNe7LyfkFC86vs0KzghUMKt8UopbFom2MCIhDbBUoq9RLRYaQtiws6O6X3LVD7DVyfM3woH9auk/8WOwQLxNPk+P6g39CVs=
+	t=1781593208; cv=none; b=QaGomRZndXeAb9zsADAAZPokIrC2XcA4m0uxlNWuTkMBmPt1aMN713rq0bNeFd5AncpkHv4aIICkqECVtYYkW98mz3GyySYHqVW+Q03Ayy2t4n9ZTZ9hBurfDrUqNfOLJdd7RbtB2UlwPnTV4yHbatJDZBppPgsqVfBqgRzz9fc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781579613; c=relaxed/simple;
-	bh=ICnzlxF9kmvuYx9L9b4p6CP/d/o8orKvEowz1HWuzYM=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=jk947OGPdy/hWcGo1iPR9VOjhaXSbfIQ53InFaTBlUGk59gC2WvUM6JqdC2UMSIzO4J2BP9pTkmlFPI3dXAiYpe34YzBPtsIUgoIrT0/tgBEhnNjCh98c0Fd+T7Ywlqmo4+K4qcvlCC+9EwtJ4Sa/lk6eCDz6Bj7ovpp39D7B/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TtYjJlIh; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1781593208; c=relaxed/simple;
+	bh=OZMt6Ts9zT/hcDRIiIWK9dRgogrEeeyNRF/MHqjYDjc=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=krDXTzhsYupA6Pdl2EdamI+cUWOTcSqdJ44ELzP+8ZmbOfODjVnY2u2s+e7DptHCvSmxK25G0lMrFpS1DecHU+CxuiDIcjlX4diiodIOEdJCqAoPpx8WX+ujnFUUYLgboteZcZq0MIo0Xn+HBLhC3/n4Dp84yKWrnGpWeVogd5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ENQZDQmA; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TtYjJlIh"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F34C1F000E9;
-	Tue, 16 Jun 2026 03:13:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781579612;
-	bh=jIWSHjaMbOxEqQ/HjLQD3GSy64J9s8wAApIDhP/8aR0=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=TtYjJlIhVHEYKqrXaB7Y0ha+zIU3/dyk2EqI32ycpZD//ID+7CvhiRP6o3/Fo7WfN
-	 678ZGhtIIgFDDHQmRrT3gEkz1RzyF3Lm8ThdbTx6I5b7uPq0DtY4Mqwsa8n+t2Op8S
-	 avjfVBc8ZUYkczRXWun0MEZfpefbRwZNy4+Ap4cDkfZxQykIm2nCi7YigLi4UfCu4M
-	 7eoQIymNMUfYKud+NEhz18CFxb11Z0nEOp/ooy9dfXKKPOVe3tkgEtf39p4wqCPpdM
-	 jsMXKwMQ8A5iezqSXzAaWBepfMzNq6HGgw+uhYvXzy6oZ1a/l4x6Nb7KxCfAqTxkhz
-	 yUSdvLQXMPxJw==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH 2/2] can: mcp251xfd: Add ACPI device ID table for
- MCP251XFD
-Reply-To: sashiko-reviews@lists.linux.dev
-To: guoqi0226 <guoqi0226@163.com>
-Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-In-Reply-To: <20260616030019.35845-2-guoqi0226@163.com>
-References: <20260616030019.35845-2-guoqi0226@163.com>
-Content-Type: text/plain; charset=utf-8
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ENQZDQmA"
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2bf30d530bdso41539415ad.3
+        for <linux-can@vger.kernel.org>; Tue, 16 Jun 2026 00:00:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1781593206; x=1782198006; darn=vger.kernel.org;
+        h=mime-version:content-transfer-encoding:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zRDuHfS0GYQQ7L7RU0l6AuS4sLuHII8a850qbxuqYr8=;
+        b=ENQZDQmAYcm6mvd3ndMLRlaDzT+MdifQhKI3PF8nbzwehL0pEHZYapO90ep9PYTi+M
+         kmMltzIdItKH41lo5aNZg+kf8rsbU+cT17iIVMmfkJ5ticXos1rolqeeaMb5Y9PQMa8o
+         A9SAlP3lpOSiaV69uAvH9v77Qymt6SUm4sqK34i4Ekwd+o3geFV9LRtpV37+GTyg71cH
+         XsgBXF2SIh0YErgc0U3kZJGjOfjO2+pLCcnBZkPY+/ikTuBsnv4uaoty2FS547nc2OaI
+         e2WY8+jZfkKDrXHKtg+HNzqXMuYMubqIaUEU3+el0feU+eeGMwzgsxMF5ELWEPYPn/tS
+         fECA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781593206; x=1782198006;
+        h=mime-version:content-transfer-encoding:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zRDuHfS0GYQQ7L7RU0l6AuS4sLuHII8a850qbxuqYr8=;
+        b=QYLEVcrv69+i46zgT74LO2Lrh9FkliEONniMsYivEPUGidNdxNRw8Vd98PeGPrgwJx
+         cwONQ8JEu/I3dh+8psOLb0anTagLhqfESpKDoLgXX+wvD8nwZ6eNNid84QgQi46BshJa
+         mpyvbddtBNpxI/K1HR+OfKkqJ2SSvk5r4JG7ooDHkaqTUMvF3bxyVGOb+149aHtxyHlt
+         K/YotChpBBPlxL6ZJwZV1u8TbiBRMXEf5D8glMc6bPbMFh6gFJWoI1FxQOrZIFRejGv9
+         X/MGKsAiaUWRpyZe/U5+2Df0s2RI52rYnomBCMhofjLwOOevWe6fWv2D01R/db7wveRT
+         6udA==
+X-Forwarded-Encrypted: i=1; AFNElJ9wvvVCCQ40zf7qF7MEQsvZQeZPhOzYoV2X9nHQuhy0+73b6qDW0F+oEzZucTimIr2tqRAklWQkbh0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwXPopMOPa/yir5Hk8UZeInsGLI2flhqIuPcSPm2PxnwBTFNvTR
+	RRMbwP6CZa69+MuYmt9NiYmqPd+1PDvR8f89vyLeq7UX/JCegvwa0hdD
+X-Gm-Gg: Acq92OGvQFP/qaCsukPg4G4US4WCJRrbcU954BPD6gEsnneoLK8tddXqsMAuThuqYOe
+	11J9ZllkbBb5jRbcCKtBAMascnbCX6kLZqQb80497El9lIzLsJxbmb4Z1TgFWqUKrVwRHywkaJE
+	HRVXacBHFmIJ3lCrpUT5sMxuadUcOPtPNXYpE0rghN6a0XFBWypchh4VEGBpbzyZONPIQKgaua9
+	IHVC9SONsNUldL4r1lvlRrMqHipDU62Rg1lwqTT+Rct9r4yyU7DebnXviBVgFMdeWGkL+oxes6a
+	pIMywY7bJE0n7vUHGJw6kmtMfivXHT1vKo5GxIA8xYNRElTcxz+IIoOEvZD6RVbczJMqFeAXmLK
+	AqgLnAst7v7MUhaz99g+FryONidI/fpX/MeDZXszwfe16TGQPtAWnejVFTLeRGNw6Dgpb9gUWZZ
+	38nKNvuKpJcqqAU8tq06sPKRyQBsAPzFKm+us9ujI8epQsTSX4
+X-Received: by 2002:a17:902:ce82:b0:2bf:379b:53d2 with SMTP id d9443c01a7336-2c6641bb17amr149611625ad.15.1781593206381;
+        Tue, 16 Jun 2026 00:00:06 -0700 (PDT)
+Received: from csl-conti-dell7858.ntu.edu.sg ([155.69.195.57])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2c42fbb5411sm119032145ad.32.2026.06.16.00.00.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jun 2026 00:00:05 -0700 (PDT)
+From: Maoyi Xie <maoyixie.tju@gmail.com>
+To:
+ Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>
+Cc: =?utf-8?q?St=C3=A9phane?= Grosjean <stephane.grosjean@hms-networks.com>,
+ linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject:
+ peak_usb_start(): double free of RX buffer when usb_submit_urb() fails
+Date: Tue, 16 Jun 2026 15:00:02 +0800
+Message-ID: <178159320216.2154888.16953451793788581739@maoyixie.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 16 Jun 2026 03:13:31 +0000
-Message-Id: <20260616031332.0F34C1F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
-- [Low] The ACPI Hardware ID (HID) 'MCP251XFD' violates the ACPI specificat=
-ion format and length requirements.
---
+Hi all,
 
-commit 1d6ad13eeda40da0f75db78e76e1e476fdd6965b
-Author: guoqi0226 <guoqi0226@163.com>
+I was going over the USB CAN drivers that use URB_FREE_BUFFER after the lan78=
+xx
+double-free fix, and I think peak_usb_start() in
+drivers/net/can/usb/peak_usb/pcan_usb_core.c can free an RX transfer buffer
+twice on the usb_submit_urb() error path. I am not totally sure, so I would
+appreciate it if you could let me know whether you see this as a real problem.
 
-can: mcp251xfd: Add ACPI device ID table for MCP251XFD
+This is the relevant part of the RX URB loop in 7.1-rc7.
 
-This patch adds an ACPI match table for the MCP251XFD CAN controller to
-enable driver binding on ACPI-enumerated SPI platforms.
+	buf =3D kmalloc(dev->adapter->rx_buffer_size, GFP_KERNEL);
+	...
+	usb_fill_bulk_urb(urb, dev->udev,
+		usb_rcvbulkpipe(dev->udev, dev->ep_msg_in),
+		buf, dev->adapter->rx_buffer_size,
+		peak_usb_read_bulk_callback, dev);
 
-> diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net=
-/can/spi/mcp251xfd/mcp251xfd-core.c
-> --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-> +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-[ ... ]
-> @@ -2212,6 +2213,14 @@ static const struct spi_device_id mcp251xfd_id_tab=
-le[] =3D {
->  };
->  MODULE_DEVICE_TABLE(spi, mcp251xfd_id_table);
-> =20
-> +#ifdef CONFIG_ACPI
-> +static const struct acpi_device_id mcp251xfd_acpi_match[] =3D {
-> +	{ "MCP251XFD", (kernel_ulong_t)&mcp251xfd_devtype_data_mcp251xfd},
+	/* ask last usb_free_urb() to also kfree() transfer_buffer */
+	urb->transfer_flags |=3D URB_FREE_BUFFER;
+	usb_anchor_urb(urb, &dev->rx_submitted);
 
-[Severity: Low]
-Does this ACPI Hardware ID violate the ACPI specification length and format
-requirements?
+	err =3D usb_submit_urb(urb, GFP_KERNEL);
+	if (err) {
+		if (err =3D=3D -ENODEV)
+			netif_device_detach(dev->netdev);
 
-According to the ACPI specification, a valid ACPI HID must be exactly 8
-characters long (typically 4 uppercase letters followed by 4 hexadecimal
-digits) or a 7-character PNP ID. The string "MCP251XFD" is 9 characters
-long and does not end in hex digits.
+		usb_unanchor_urb(urb);
+		kfree(buf);
+		usb_free_urb(urb);
+		break;
+	}
 
-Could this be avoided by using the generic "PRP0001" HID in the firmware
-instead?
+URB_FREE_BUFFER is set on the URB before submit, so buf belongs to the URB. W=
+hen
+the URB is finally destroyed, urb_destroy() frees that buffer for us with
 
-By providing the OF compatible string ("microchip,mcp251xfd") via the ACPI
-_DSD table, the existing mcp251xfd_of_match table would handle the
-enumeration without requiring any ACPI-specific driver changes.
+	if (urb->transfer_flags & URB_FREE_BUFFER)
+		kfree(urb->transfer_buffer);
 
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(acpi, mcp251xfd_acpi_match);
-> +#endif
+So in the error path kfree(buf) frees the buffer once, and then usb_free_urb(=
+urb)
+frees the same buffer a second time through urb_destroy(). That looks like a
+double free of the kmalloc'd RX buffer.
 
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260616030019.3584=
-5-1-guoqi0226@163.com?part=3D2
+The error path is taken when usb_submit_urb() returns non-zero, e.g. -ENODEV =
+if
+the device is removed while the CAN interface is being brought up (ip link set
+canX up), or -ENOMEM / endpoint errors. A device that disconnects at the wrong
+moment, or otherwise makes the submit fail, would hit it.
+
+I do not have a PCAN-USB adapter, so I reproduced just the buffer handling on
+7.1-rc7 under KASAN. A small harness replays the exact sequence above
+(URB_FREE_BUFFER set, then kfree(buf), then usb_free_urb(urb)), and KASAN rep=
+orts
+the second free.
+
+  BUG: KASAN: double-free in usb_free_urb.part.0+0x91/0xb0
+  Free of addr ffff8881069ccb80 by task trigger.sh/285
+   kfree+0x113/0x3c0
+   usb_free_urb.part.0+0x91/0xb0          <- second free, via urb_destroy()
+  ...
+  Freed by task 285:
+   kfree+0x137/0x3c0                       <- first free, the explicit kfree(=
+buf)
+  ...
+  The buggy address belongs to the object at ffff8881069ccb80
+   which belongs to the cache kmalloc-64 of size 64
+
+(The harness allocates a 64-byte buffer, which is why KASAN shows kmalloc-64,
+while the real driver allocates dev->adapter->rx_buffer_size.) The first free=
+ is
+the explicit kfree(buf), and the second is usb_free_urb() going through
+urb_destroy() and freeing urb->transfer_buffer because URB_FREE_BUFFER is set.
+
+The smallest fix I could see is to drop the redundant kfree(buf), since
+usb_free_urb() already releases the buffer. This is what commit 03819abbeb11
+("net: usb: lan78xx: Fix double free issue with interrupt buffer allocation")
+did for the same pattern.
+
+	 		usb_unanchor_urb(urb);
+	-		kfree(buf);
+	 		usb_free_urb(urb);
+	 		break;
+
+With that one-line change the same harness frees the buffer exactly once and =
+the
+KASAN report is gone.
+
+It looks like this has been there since the driver was first merged
+(bb4785551f64), so if it is a real bug it would be a stable candidate.
+
+I would appreciate it if you could let me know whether you agree this is a re=
+al
+double free and whether dropping the kfree(buf) is the right fix. I am happy =
+to
+send a proper patch with the reproducer once you confirm.
+
+Thanks,
+Maoyi
+https://maoyixie.com/
