@@ -1,30 +1,30 @@
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 784EB42EEA2;
-	Tue, 16 Jun 2026 10:31:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBF14183BF;
+	Tue, 16 Jun 2026 10:31:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781605866; cv=none; b=B+3YF4FAp400qKBXDsj8BH3gW7MjQx5C9LUEomZevsfSJxKBqkrBOnz7k/wmgg51uNUqMVCQ413acGaDHTVmq1ElY4qm5ddhjhw9YpWxHDYYkcx7xKt6vGkRmiqYE54YBoYmUGzYCHEKKrgFbJVlU9/DpsVTw9XVSmr+lFLM/YQ=
+	t=1781605875; cv=none; b=M2ZSYA1jTC/MVQSymu3nT5HZnVlybvZpZfNIMtA4yV5pwbjiDD3Kh3X4HjMT6I4eQGwiR2Gc0WbL1b/7Ezc5fsW6LNuXagd3v7/EBiPzUHA8KZi3n8KorSNv+jO+Oha9ZYFnwuf+0fJ3605ltMReogZS/4JaK7ijg7GDo92tOJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781605866; c=relaxed/simple;
-	bh=cqOjxDGzVeBxs6zy8kgxNbggYoD47iaMB4/f2gHj0QY=;
+	s=arc-20240116; t=1781605875; c=relaxed/simple;
+	bh=Na/0hInjZlFy+f86HfBHZHKRIRVzmWQctb3rA9JSGr8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=c4NO9yFtkTXIPnHgeL013unZjJub4HBPc9efgKMUA0CPv41rmPWxgzuR+fr6Oxc7FlOY8bzyTGY11PEwwS+SxDcBuqk+I6k5nlUDHOZlAhLb/yO9B3JAQfvLZQ5o3o32SrU6Ihe24HccxGw/C1gX1k01hryNllyO9nwXm/h+6E8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=dChSsKnw; arc=none smtp.client-ip=220.197.31.5
+	 MIME-Version; b=KyiulCbeWpdVspaQxf8mcPeQVuEagh5nTJ3vSV0Oakbyn5CdNz3QSWERK2S4W/mwklEA9yn2Vj8+o5QvVwlF0wgWpd/5+buzDbkbrRM5osnQetrhNdpBN0b6H8mZeg64uwcLiZQjiMYU3wyAKkoLNseIJLAOIL2BnSDx7VtbmGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=KrLLQWKb; arc=none smtp.client-ip=117.135.210.4
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="dChSsKnw"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="KrLLQWKb"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=uB
-	iz5AeQPmYg1Yr33SDLUeePjjMYfAg/rzpbrEhs8HQ=; b=dChSsKnwx3VwTIpIvr
-	v6nLYHg1ZwlNfmyuyj27IOAiGmO5h2Akq9qV/1gDnHInW5DhGjJo0botCKYYiEDe
-	tM2VsVRuZ+PEG2dIq4D5+pU2LRxPvDxLN3P9mRQz7dTR3kJ7yDmRsxeyujGtMNu3
-	Y9cu9EIVCxdNo597qQtQ47fJA=
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=4A
+	lWpfHRD20svlbvEuxneUYoPiBFZmx61S/n6SJjTfA=; b=KrLLQWKbSC4EUqbFNj
+	Une4N1qJJ7UlCGpaaQoNLkaR7OtAatgExQqm2EGXyRuGtlJc4z3cUGqTdjQW7sBq
+	hH43OEKnW+4GiAap1XL10P0ca3PeDNfA0n7Y/TB1peovChqbWGlITU67XYee0ILF
+	8/cliWWjnC+vZGOdcOOA5oK6g=
 Received: from rlk.localdomain (unknown [])
-	by gzga-smtp-mtada-g1-2 (Coremail) with SMTP id _____wDnrK69JTFqGSqCDw--.29972S2;
-	Tue, 16 Jun 2026 18:30:22 +0800 (CST)
+	by gzga-smtp-mtada-g1-2 (Coremail) with SMTP id _____wDnrK69JTFqGSqCDw--.29972S4;
+	Tue, 16 Jun 2026 18:30:29 +0800 (CST)
 From: guoqi0226 <guoqi0226@163.com>
 To: sashiko-bot@kernel.org,
 	mkl@pengutronix.de,
@@ -36,12 +36,13 @@ Cc: guoqi0226@163.com,
 	sashiko-reviews@lists.linux.dev,
 	socketcan@hartkopp.net,
 	linux-spi@vger.kernel.org
-Subject: [PATCH v4 0/2] can: mcp251xfd: Add ACPI device ID table for MCP251XFD
-Date: Tue, 16 Jun 2026 18:30:16 +0800
-Message-Id: <20260616103018.105612-1-guoqi0226@163.com>
+Subject: [PATCH v4 2/2] spi: Add NULL check for spi_get_device_id() in spi_get_device_match_data()
+Date: Tue, 16 Jun 2026 18:30:18 +0800
+Message-Id: <20260616103018.105612-3-guoqi0226@163.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20260616092614.00ED51F00A3D@smtp.kernel.org>
+In-Reply-To: <20260616103018.105612-1-guoqi0226@163.com>
 References: <20260616092614.00ED51F00A3D@smtp.kernel.org>
+ <20260616103018.105612-1-guoqi0226@163.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -49,27 +50,43 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDnrK69JTFqGSqCDw--.29972S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvj4RuXdbDUUUU
-X-CM-SenderInfo: 5jxr1xaqsslqqrwthudrp/xtbC-h5fx2oxJb5aGgAA34
+X-CM-TRANSID:_____wDnrK69JTFqGSqCDw--.29972S4
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Gry5Gry5GFWruF4ftrW7XFb_yoWftFb_ur
+	15ZryxWr1fKr97JF1Fqr1avryfKF4YyrZYvr4vqF9aqws8ur47AFWvvrn8AayDuFy0yr1D
+	WFn3Xay3Ar43ujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUj8pntUUUUU==
+X-CM-SenderInfo: 5jxr1xaqsslqqrwthudrp/xtbC-gVhyWoxJcVajgAA38
 
-hanges in v4:
-- Split into two separate patches:
-  1. SPI core: add internal NULL guard for spi_get_device_match_data()
-  2. mcp251xfd driver: cache and validate match data pointer in probe
-- Remove duplicate spi_get_device_match_data() invocation and unsafe dereference
+Prevent NULL pointer dereference when spi_get_device_id() returns NULL,
+which can happen when using driver_override without matching SPI ID entry.
 
-guoqi0226 (2):
-  can: mcp251xfd: mcp251xfd: Cache and validate match data pointer in
-    probe
-  spi: Add NULL check for spi_get_device_id() in
-    spi_get_device_match_data()
+Signed-off-by: guoqi0226 <guoqi0226@163.com>
+---
+ drivers/spi/spi.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 8 +++++++-
- drivers/spi/spi.c                              | 6 +++++-
- 2 files changed, 12 insertions(+), 2 deletions(-)
-
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 104279858f56..079ac01a2229 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -355,12 +355,16 @@ EXPORT_SYMBOL_GPL(spi_get_device_id);
+ const void *spi_get_device_match_data(const struct spi_device *sdev)
+ {
+ 	const void *match;
++	const struct spi_device_id *id;
+ 
+ 	match = device_get_match_data(&sdev->dev);
+ 	if (match)
+ 		return match;
+ 
+-	return (const void *)spi_get_device_id(sdev)->driver_data;
++	id = spi_get_device_id(sdev);
++	if (!id)
++		return NULL;
++	return (const void *)id->driver_data;
+ }
+ EXPORT_SYMBOL_GPL(spi_get_device_match_data);
+ 
 -- 
 2.25.1
 
