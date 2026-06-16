@@ -1,77 +1,140 @@
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 544F7409608
-	for <linux-can@vger.kernel.org>; Tue, 16 Jun 2026 08:54:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A058A40B6E0
+	for <linux-can@vger.kernel.org>; Tue, 16 Jun 2026 09:07:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781600091; cv=none; b=hGmFt3m4fzcC9VBny4HkOsTowbEsbi1up9ODZd8AQOpXwUv30ur9ENcmef66xZEBkM4wVxlsulaq1+GWic5AsWJcqGQVnP9Lk1ay66JX0YxEJtVjQ8/UoS+GoXQoIsSroqyz+t+UqZArnvJsgLZYhu6H766jLhjdBwlOliXARes=
+	t=1781600864; cv=none; b=i+ahORfCzNLL/NfpXKgeWB7BBVNALckq/XAiX19g2IOJf1FE6cHjgRGE/Nzp5t7tpPtqMP7qUSxMyhna09guEejmOIG4tBhBsaOH/mZqNezPrvxyoEooNMYn9SfxwkBxBYJY/5/bT0AOCJ284ebJJvvn1jdXUMAoQ2GxrWw+flo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781600091; c=relaxed/simple;
-	bh=C9tICqSQnhcG0dcsD7D6jEAO4/apcu/YfiUFPbavmSw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hcYnFoL6g3sQsu87krz5dCEf/WpCZdhg2lUZ5rwBvEdBXZnfruyANPjVl0RLbju0ifLgIwKlHpnV2DbUtmeniLNAjC91BKEfnxpwpMwt601yr7esHKJcdndji5LN0PIItMHalbt9vO+4k4NXr/zgHuFioVkPZsrbc75Nn77ufmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=IOGnqxDr; arc=none smtp.client-ip=220.197.31.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+	s=arc-20240116; t=1781600864; c=relaxed/simple;
+	bh=khNONeL1JU6u26ub/RMJZpgdgupFFV8nzcTh2Igxlok=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=Pl84dNRZlnuZAsim/YDZ0P/W18SzyQByDfwPsKOixDzufva5fD7o/hRJY9zfTIodU0ymEEmXXnx3bYa40+eTIzcbEHrT3BY/4eBydxGlZIhFL4iJ8Ztmpqfg1/eI2TIsZJcUPh8J+cFLA68act+CS3cwjcWxMlu9nyJH4uniIhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TtCRDCO1; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="IOGnqxDr"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=uY
-	5Q5jA4eHj9zzllHhFDtqrHcbMnu37U6FBHIvB8mOw=; b=IOGnqxDrY3QnCJWNUT
-	cWAgYjbnPSGtsKzQBu3Ps8QW3JoH5/S7kU2Cv+qFcSIU+ADQpCO3V1CnO+EIv2Hm
-	votVLxnn0iYvlh2EyuAHHk2G8Zxk/aK5PD7QOYFDUwoBucmiquh8m3QLLNWe0JRz
-	T/Yscm/J/Tt0ZCI9DIdzJ7LQU=
-Received: from rlk.localdomain (unknown [])
-	by gzga-smtp-mtada-g0-1 (Coremail) with SMTP id _____wDnEpYsDzFqEuHvDg--.40923S2;
-	Tue, 16 Jun 2026 16:54:06 +0800 (CST)
-From: guoqi0226 <guoqi0226@163.com>
-To: mkl@pengutronix.de,
-	sashiko-bot@kernel.org
-Cc: cuiguoqi@kylinos.cn,
-	linux-can@vger.kernel.org,
-	mailhol@kernel.org,
-	mani@kernel.org,
-	thomas.kopp@microchip.com,
-	o.rempel@pengutronix.de,
-	sashiko-reviews@lists.linux.dev,
-	socketcan@hartkopp.net,
-	guoqi0226 <guoqi0226@163.com>
-Subject: [PATCH v2 0/1] can: mcp251x: Add ACPI device ID table for MCP2515
-Date: Tue, 16 Jun 2026 16:53:58 +0800
-Message-Id: <20260616085359.89406-1-guoqi0226@163.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20260616031332.0F34C1F000E9@smtp.kernel.org 20260616-teal-wrasse-of-conversion-348af0-mkl@pengutronix.de>
-References: <20260616031332.0F34C1F000E9@smtp.kernel.org 20260616-teal-wrasse-of-conversion-348af0-mkl@pengutronix.de>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TtCRDCO1"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E80BE1F000E9;
+	Tue, 16 Jun 2026 09:07:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1781600863;
+	bh=zCJsAHngxISKSVO/nQSAjTsYde3BRpPcyuCiT7FLUlA=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=TtCRDCO1a7w4dOW6hJ8pFknv1U2q26rMybtVAguF1xwgoCm5ecXPtr3tfIxq0R/OV
+	 BNnrNlZzowyDtdn19Bw/bIdyl4CBWowLD/7dIi3pIsik1MdxlhFtETzTwJ78drjK7I
+	 chzWd3kQ9S8YX2q4Ne5en5tj2yUNfo4oVSJuEDX96+/EmE5pP6vmj00lX4UThmQBaM
+	 fbsm4YPS+VBOQ/aOUtL+T3L9kloyGx7KJ7D5Zx7lVVigUalk+QGPVrukMYCTYn8atR
+	 LUTmifJswB2U9mLCrw1C3ucKVkifNK/RAWF6Jj9YKRra/lNOYazMqu0BzKY+Z0IwLZ
+	 8D9v1NpWIDQCg==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v2] can: mcp251xfd: Add ACPI device ID table for
+ MCP251XFD
+Reply-To: sashiko-reviews@lists.linux.dev
+To: guoqi0226 <guoqi0226@163.com>
+Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>
+In-Reply-To: <20260616085359.89406-2-guoqi0226@163.com>
+References: <20260616085359.89406-2-guoqi0226@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 16 Jun 2026 09:07:42 +0000
+Message-Id: <20260616090742.E80BE1F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDnEpYsDzFqEuHvDg--.40923S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvj4RCsjjDUUUU
-X-CM-SenderInfo: 5jxr1xaqsslqqrwthudrp/xtbC-g61HmoxDy6oXgAA3X
 
-Changes in v2:
-1. MCP2515 is verified, but MCP251XFD has not been tested.
-   When testing MCP2515, MCP251XFD was found missing ACPI support, hence this addition.
-   Reference the validated MCP2515 ACPI node as template:
-   Device(CAN0){
-         Name(_HID, "MCP2515")
-         Name(_UID, 0)
-         Name (_DSD, Package() {
-2. The original 9-character HID "MCP251XFD" violates ACPI format rules; 
-   redefine it to standard compliant ACPI ID MCHP15FD.
+Thank you for your contribution! Sashiko AI review found 3 potential issue(=
+s) to consider:
 
-guoqi0226 (1):
-  can: mcp251xfd: Add ACPI device ID table for MCP251XFD
+New issues:
+- [Medium] Undocumented removal of `netdev_info` print in `mcp251xfd_handle=
+_txatif`.
 
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Pre-existing issues:
+- [High] Infinite loop / interrupt storm in `mcp251xfd_irq` due to unhandle=
+d `TXATIF` interrupt flag.
+- [High] NULL pointer dereference when retrieving match data if the device =
+is bound manually via sysfs `driver_override`.
+--
 
--- 
-2.25.1
+commit ac99a03d44f8633aff78ad69c67bdd4c8da1aa29
+Author: guoqi0226 <guoqi0226@163.com>
 
+can: mcp251xfd: Add ACPI device ID table for MCP251XFD
+
+This patch adds an ACPI match table for the MCP251XFD CAN controller,
+enabling driver binding on ACPI-enumerated SPI platforms.
+
+> diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net=
+/can/spi/mcp251xfd/mcp251xfd-core.c
+> index 92a86083c8962..0319673707289 100644
+> --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+> +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+
+[ ... ]
+
+> @@ -982,7 +983,6 @@ static int mcp251xfd_handle_rxovif(struct mcp251xfd_p=
+riv *priv)
+> =20
+>  static int mcp251xfd_handle_txatif(struct mcp251xfd_priv *priv)
+>  {
+> -	netdev_info(priv->ndev, "%s\n", __func__);
+> =20
+>  	return 0;
+>  }
+
+[Severity: Medium]
+Is this removal intentional? The commit message only mentions adding an
+ACPI match table, but this modifies the interrupt handler by removing
+a debug print. If it is intentional, should it be mentioned in the
+commit message?
+
+[Severity: High]
+This is a pre-existing issue, but does this empty function cause an
+infinite interrupt loop?
+
+Because TXATIF is not part of MCP251XFD_REG_INT_IF_CLEARABLE_MASK, the
+hardware flag must be manually cleared in the FIFOSTA register. Since
+mcp251xfd_handle_txatif() returns 0 without clearing the flag, won't
+the do-while loop in mcp251xfd_irq() continually read TXATIF as pending
+and loop infinitely?
+
+[ ... ]
+
+> @@ -2212,6 +2212,14 @@ static const struct spi_device_id mcp251xfd_id_tab=
+le[] =3D {
+>  };
+>  MODULE_DEVICE_TABLE(spi, mcp251xfd_id_table);
+> =20
+> +#ifdef CONFIG_ACPI
+> +static const struct acpi_device_id mcp251xfd_acpi_match[] =3D {
+> +	{ "MCHP15FD", (kernel_ulong_t)&mcp251xfd_devtype_data_mcp251xfd},
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(acpi, mcp251xfd_acpi_match);
+> +#endif
+> +
+>  static int mcp251xfd_probe(struct spi_device *spi)
+>  {
+>  	struct net_device *ndev;
+
+[Severity: High]
+This is a pre-existing issue, but is it safe to unconditionally
+dereference the match data retrieved in this function?
+
+Later in mcp251xfd_probe(), the driver does:
+
+priv->devtype_data =3D *(struct mcp251xfd_devtype_data *)spi_get_device_mat=
+ch_data(spi);
+
+If the driver is bound manually via the sysfs driver_override attribute
+without matching any table entries, spi_get_device_match_data() will
+return NULL, which would cause a panic when dereferenced. Should there
+be a check for NULL before dereferencing it?
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260616085359.8940=
+6-1-guoqi0226@163.com?part=3D1
