@@ -1,167 +1,230 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3830D438FEE;
-	Tue, 16 Jun 2026 10:58:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B8AD36655D
+	for <linux-can@vger.kernel.org>; Tue, 16 Jun 2026 12:39:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781607512; cv=none; b=WIYcpmVjbmDtHLL9x1shWJZ1aPYs2s9VmsAHOuiRIvYxrf9JA2O0q5UV0TIoWAVgk6EBa+u17B2vryb6Ebd0Br/85h9UGuzaWqk8ohObVcPCzJtGsW6Bdk7C524Pk9wos+y34gDd7CxTOwSWrNdKB/+jPCmlv1HMgfnKRxBRLlU=
+	t=1781613562; cv=none; b=lUsR40/PPRg9Y14oEExr2brP7LC8R6H/l1i1dt/vZu5irQLZHs9fEmrhQqPyTpu3XEvtAsvu8kaG5NnP0D5bbw1vLK1W27P+i7b5Dqh7Iupe3xzM/18uuhSdVqpiXYGhvP1km0juV8q+GbNcOko4JNUKGmUMAsvUXCmSXb+XGac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781607512; c=relaxed/simple;
-	bh=gdQ/OQE4KvajHnBO+LPgKQOhQ4VIJh1CV5auB0zG3+s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rjnFdGfRWb/yTmt2wu20yInHIR5fR0W/mW9sV4EzUBuM4e0vLNjsbhRnZWlFC5TaR41KddaNM6Al+fxm1ZqT6DDgZb5LXZm+xPCZbFvC+kIfE6qstL+fopO4fQo2kYzwJcYeIwwYD3jt8grd6yJTz5KuRtcNwOSzzwwKZ80C7Ws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kkjnEe68; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1781613562; c=relaxed/simple;
+	bh=BL12yBXBr3TLioZUY4WZcarXDT2SWGCLP/PU35haRmw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cCO7T070izufD8+3B1s5tympybuvaovxJv9VyyB9Pcz0FxQsgEZ/fpBErTn5Rskzu1+20+ag9zCJefXCHmJ8nKc8+H0neHpvuMO5zB6pnyvvv7YvEYKAdVS+bhlMvom3++RXrQgVlOkRQp5731z8rGFPqk/M7Df3x1KX9e3oD/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j7k+NpMb; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kkjnEe68"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF7E31F000E9;
-	Tue, 16 Jun 2026 10:58:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781607510;
-	bh=uTtFW87xdgLkBr+tFLMF/ATH9JwQOvw5EFnjNVaZaeU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=kkjnEe68pRqyW5Vg2DRyhbTv0bAP3VC4Ln+Fdw00CeeP9yXeV82Fuvn7Rfulzoam1
-	 +xgCvtGHRykRPjv63eMsIKkOtxWsI3hDi8XLkvMzE4f50xrGfPDROBYuTcBPHSm4Ml
-	 xKKEjGBdNIipHfU3gqfeZpTrtm+GlWMCTNJ+CQERVdDSBd3dZ9F+5RzKhlRoZXMYPt
-	 UN2UH7zFK5f4iWLd3Nsuyf7pnUqpbUyXdth0xrp9r9IqUFad1cqF/5/PfnyoDt9hhf
-	 x0JKvBfj5fpjZkdkW/wNT9Tsi/bpNY/LCCi55fmQUVi9yomogcf75+PjrsJBXsTCe2
-	 lNp4uDCqAPqzg==
-Message-ID: <d4b8d6ed-e3ab-45a4-a278-a2f240425f31@kernel.org>
-Date: Tue, 16 Jun 2026 12:58:27 +0200
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j7k+NpMb"
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-49222fb062bso34972315e9.1
+        for <linux-can@vger.kernel.org>; Tue, 16 Jun 2026 05:39:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1781613559; x=1782218359; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fw2ieZrkwQqUXQY8qPjjxbk4M7EAM2dJsK9vZRK+Hb0=;
+        b=j7k+NpMbEOO0fQTCvbXdbs4NmVeWgr8oZ+MtriFXCzmaaJwhchiNTvG62HJTNIa/PK
+         YMw8tVtPZ2YuOzkESUZ3gnQm76jFZakbMB8hJKmUy+NwKkWYYZUvvrrmov9Oxp3u7Xve
+         5JuonpnESzmg1uWv5QlBzRThF1Zrg2ZyCY2u29McjGCXhxT1hFx8wa9RoVr5TUH8H7wp
+         nmSR+xQ4ieYsethP/KmCAD/xxsFZtjxrH7jxP0r80stweIoANPFpFT9/mVL4GzJTrt1m
+         jAjWBKQGTsUDp5lWAbP0wkcOuaWHwZy8BjhWkXY7qvdfPgHQiUubQG45VXL6DjN4H+bm
+         BfuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781613559; x=1782218359;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fw2ieZrkwQqUXQY8qPjjxbk4M7EAM2dJsK9vZRK+Hb0=;
+        b=g1WnJdCJGYLRuLfXRjwtowGp9l90aOD5mAz43n0aPBXogxRAHNv9y7pXiSj7vq4igy
+         UbXp7vlsF8VWaOszio7nIE+LH56MgkA3EN9W7Wry4ftQc16/08K3Vay1+ADJRfzl4qbl
+         MecbNivOfRBwYHjvyg3xVS4MrW+vFRIy4D1s3Bg/UMOXiuwLvCNp3p3317YIzB3ef7Hh
+         Yp0vaI/0YQfb7zKTy7t1iUXo7NSm3TsRGmK770sG1IngDcdNWHcjTrIijUG2msGthZ62
+         neoaA2/244VZQkanzlXLvWPSAm4kyCQ5iQUHiWsXsopWYo3sXxagagzIgc3SUE7UZPtV
+         r9PQ==
+X-Gm-Message-State: AOJu0Yx542s2aaQd8P0U8J7TCLiAjovUvw2FOTjaR/jl2NfgJC7Lc/qB
+	bAi9yX6qvCT/cLxI3NpH5AAIR/F7TKeyB5DBpi/6qp7SFCx6gQfELpkZgB/5FFnC
+X-Gm-Gg: Acq92OF7zv/GbDUBml1ExtoHFYBlU2Ibc+QMN3zlaBEDnvepDYP899Kl2gIx9/K8Y38
+	dVKBcwaO/rRt/Iqo23aEzy3Q8KlkNv+FI2tIHQ+aUSw1zzdZ3ckRyfke7mrHtt8O++EyuFgoQIG
+	CwSXzg9I0x7+LJPjc/ynAV3uganoGjbC6l6COv0+YW17VkD5Zij4N7u9ayNxEAycoIgWvwTnGfL
+	2Rvar7lMQboccmZcqoorzFnuRsmH/h1OsF7J6YbUWZJS56omGJ5PXk0iO8P3cYA7QEfICG3EHSZ
+	91OU1HD+u7Vs95oPTJmYURSq3wbyGNpBQKy5OEmRmZ+u+MS0XQN+fUV6K6rocHtRunLmwagl+aG
+	SugXMTvKQy+6KPOro2fN2z9q4iIqkYtVn6CLvh3hd3uibnwpxxe1ThqSHFE5pGBUE0Pli4irI5d
+	16a6IxuNtabxB1Zzc9M+EUF9qtS4KtyLzxOh4xhcEJbfG2P3yF3uDuycNFNu2aGNt8sqkDrn84x
+	HKo1d1uPEKVkD9mWvRi
+X-Received: by 2002:a05:600c:8b64:b0:490:e243:4806 with SMTP id 5b1f17b1804b1-4922ff7b8b5mr56395995e9.9.1781613558588;
+        Tue, 16 Jun 2026 05:39:18 -0700 (PDT)
+Received: from valmpani.fritz.box (cgn-195-14-216-63.nc.de. [195.14.216.63])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49230a4f8d7sm61567325e9.5.2026.06.16.05.39.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jun 2026 05:39:18 -0700 (PDT)
+From: Vasileios Almpanis <vasilisalmpanis@gmail.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] can: isotp: hold a reference to the bound netdevice
+Date: Tue, 16 Jun 2026 14:39:04 +0200
+Message-ID: <20260616123915.674534-1-vasilisalmpanis@gmail.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: peak_usb_start(): double free of RX buffer when usb_submit_urb()
- fails
-To: Maoyi Xie <maoyixie.tju@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: =?UTF-8?Q?St=C3=A9phane_Grosjean?= <stephane.grosjean@hms-networks.com>,
- linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <178159320216.2154888.16953451793788581739@maoyixie.com>
-From: Vincent Mailhol <mailhol@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=mailhol@kernel.org; keydata=
- xjMEZluomRYJKwYBBAHaRw8BAQdAf+/PnQvy9LCWNSJLbhc+AOUsR2cNVonvxhDk/KcW7FvN
- JFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbEBrZXJuZWwub3JnPsKZBBMWCgBBFiEE7Y9wBXTm
- fyDldOjiq1/riG27mcIFAmdfB/kCGwMFCQp/CJcFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcC
- F4AACgkQq1/riG27mcKBHgEAygbvORJOfMHGlq5lQhZkDnaUXbpZhxirxkAHwTypHr4A/joI
- 2wLjgTCm5I2Z3zB8hqJu+OeFPXZFWGTuk0e2wT4JzjgEZx4y8xIKKwYBBAGXVQEFAQEHQJrb
- YZzu0JG5w8gxE6EtQe6LmxKMqP6EyR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDl
- dOjiq1/riG27mcIFAmceMvMCGwwFCQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8V
- zsZwr/S44HCzcz5+jkxnVVQ5LZ4BANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
-In-Reply-To: <178159320216.2154888.16953451793788581739@maoyixie.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 16/06/2026 at 09:00, Maoyi Xie wrote:
-> Hi all,
-> 
-> I was going over the USB CAN drivers that use URB_FREE_BUFFER after the lan78xx
-> double-free fix, and I think peak_usb_start() in
-> drivers/net/can/usb/peak_usb/pcan_usb_core.c can free an RX transfer buffer
-> twice on the usb_submit_urb() error path. I am not totally sure, so I would
-> appreciate it if you could let me know whether you see this as a real problem.
-> 
-> This is the relevant part of the RX URB loop in 7.1-rc7.
-> 
-> 	buf = kmalloc(dev->adapter->rx_buffer_size, GFP_KERNEL);
-> 	...
-> 	usb_fill_bulk_urb(urb, dev->udev,
-> 		usb_rcvbulkpipe(dev->udev, dev->ep_msg_in),
-> 		buf, dev->adapter->rx_buffer_size,
-> 		peak_usb_read_bulk_callback, dev);
-> 
-> 	/* ask last usb_free_urb() to also kfree() transfer_buffer */
-> 	urb->transfer_flags |= URB_FREE_BUFFER;
-> 	usb_anchor_urb(urb, &dev->rx_submitted);
-> 
-> 	err = usb_submit_urb(urb, GFP_KERNEL);
-> 	if (err) {
-> 		if (err == -ENODEV)
-> 			netif_device_detach(dev->netdev);
-> 
-> 		usb_unanchor_urb(urb);
-> 		kfree(buf);
-> 		usb_free_urb(urb);
-> 		break;
-> 	}
-> 
-> URB_FREE_BUFFER is set on the URB before submit, so buf belongs to the URB. When
-> the URB is finally destroyed, urb_destroy() frees that buffer for us with
-> 
-> 	if (urb->transfer_flags & URB_FREE_BUFFER)
-> 		kfree(urb->transfer_buffer);
-> 
-> So in the error path kfree(buf) frees the buffer once, and then usb_free_urb(urb)
-> frees the same buffer a second time through urb_destroy(). That looks like a
-> double free of the kmalloc'd RX buffer.
-> 
-> The error path is taken when usb_submit_urb() returns non-zero, e.g. -ENODEV if
-> the device is removed while the CAN interface is being brought up (ip link set
-> canX up), or -ENOMEM / endpoint errors. A device that disconnects at the wrong
-> moment, or otherwise makes the submit fail, would hit it.
-> 
-> I do not have a PCAN-USB adapter, so I reproduced just the buffer handling on
-> 7.1-rc7 under KASAN. A small harness replays the exact sequence above
-> (URB_FREE_BUFFER set, then kfree(buf), then usb_free_urb(urb)), and KASAN reports
-> the second free.
-> 
->   BUG: KASAN: double-free in usb_free_urb.part.0+0x91/0xb0
->   Free of addr ffff8881069ccb80 by task trigger.sh/285
->    kfree+0x113/0x3c0
->    usb_free_urb.part.0+0x91/0xb0          <- second free, via urb_destroy()
->   ...
->   Freed by task 285:
->    kfree+0x137/0x3c0                       <- first free, the explicit kfree(buf)
->   ...
->   The buggy address belongs to the object at ffff8881069ccb80
->    which belongs to the cache kmalloc-64 of size 64
-> 
-> (The harness allocates a 64-byte buffer, which is why KASAN shows kmalloc-64,
-> while the real driver allocates dev->adapter->rx_buffer_size.) The first free is
-> the explicit kfree(buf), and the second is usb_free_urb() going through
-> urb_destroy() and freeing urb->transfer_buffer because URB_FREE_BUFFER is set.
-> 
-> The smallest fix I could see is to drop the redundant kfree(buf), since
-> usb_free_urb() already releases the buffer. This is what commit 03819abbeb11
-> ("net: usb: lan78xx: Fix double free issue with interrupt buffer allocation")
-> did for the same pattern.
-> 
-> 	 		usb_unanchor_urb(urb);
-> 	-		kfree(buf);
-> 	 		usb_free_urb(urb);
-> 	 		break;
-> 
-> With that one-line change the same harness frees the buffer exactly once and the
-> KASAN report is gone.
-> 
-> It looks like this has been there since the driver was first merged
-> (bb4785551f64), so if it is a real bug it would be a stable candidate.
-> 
-> I would appreciate it if you could let me know whether you agree this is a real
-> double free and whether dropping the kfree(buf) is the right fix. I am happy to
-> send a proper patch with the reproducer once you confirm.
+isotp_release() looked up the bound netdevice with
+dev_get_by_index(so->ifindex) and only unregistered the socket's CAN
+receivers if that lookup succeeded. This is unreliable while the device
+is going away: unregister_netdevice_many() removes the device from the
+ifindex hash before the NETDEV_UNREGISTER notifier is fired, with a
+synchronize_net() in between.
 
-Thanks for the well written report. I looked at the code, and I can
-confirm that usb_free_urb() calls usb_destroy() if no one is using the
-urb anymore. And finally usb_destroy() calls
+A close() that runs in that window first removes the socket from
+isotp_notifier_list, so the pending notifier no longer sees it, and then
+gets NULL back from dev_get_by_index() and skips the unregister. The two
+struct receiver entries that were allocated by can_rx_register() in
+isotp_bind() (the rx filter and the tx echo filter) are then never freed
+and leak once the device is destroyed.
 
-  kfree(urb->transfer_buffer);
+Fix it the same way can-raw already does: keep a tracked reference to the
+bound device in so->dev and unregister through it, and take rtnl_lock()
+in isotp_bind() and isotp_release() to serialise against the
+NETDEV_UNREGISTER notifier. The dev_get_by_index() lookup in the release
+path is dropped.
 
-leading in the double free.
+Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
+Cc: stable@vger.kernel.org
+Reported-by: syzbot+24201717ed2da31b8fae@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?id=58676a0f698531996a42612c552e894a55b9732b
+Signed-off-by: Vasileios Almpanis <vasilisalmpanis@gmail.com>
+---
+ net/can/isotp.c | 48 +++++++++++++++++++++++++++---------------------
+ 1 file changed, 27 insertions(+), 21 deletions(-)
 
-So, same conclusion as you. You can send a patch. Now that you sent a
-report, don't forget to add the Closes tag to your patch:
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index c48b4a818297..308d18040b6d 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -69,6 +69,7 @@
+ #include <linux/can/skb.h>
+ #include <linux/can/isotp.h>
+ #include <linux/slab.h>
++#include <linux/rtnetlink.h>
+ #include <net/can.h>
+ #include <net/sock.h>
+ #include <net/net_namespace.h>
+@@ -152,6 +153,8 @@ struct isotp_sock {
+ 	struct sock sk;
+ 	int bound;
+ 	int ifindex;
++	struct net_device *dev;
++	netdevice_tracker dev_tracker;
+ 	canid_t txid;
+ 	canid_t rxid;
+ 	ktime_t tx_gap;
+@@ -1219,27 +1222,22 @@ static int isotp_release(struct socket *sock)
+ 	list_del(&so->notifier);
+ 	spin_unlock(&isotp_notifier_lock);
+ 
++	rtnl_lock();
+ 	lock_sock(sk);
+ 
+ 	/* remove current filters & unregister */
+-	if (so->bound) {
+-		if (so->ifindex) {
+-			struct net_device *dev;
+-
+-			dev = dev_get_by_index(net, so->ifindex);
+-			if (dev) {
+-				if (isotp_register_rxid(so))
+-					can_rx_unregister(net, dev, so->rxid,
+-							  SINGLE_MASK(so->rxid),
+-							  isotp_rcv, sk);
+-
+-				can_rx_unregister(net, dev, so->txid,
+-						  SINGLE_MASK(so->txid),
+-						  isotp_rcv_echo, sk);
+-				dev_put(dev);
+-				synchronize_rcu();
+-			}
+-		}
++	if (so->bound && so->dev) {
++		if (isotp_register_rxid(so))
++			can_rx_unregister(net, so->dev, so->rxid,
++					  SINGLE_MASK(so->rxid),
++					  isotp_rcv, sk);
++
++		can_rx_unregister(net, so->dev, so->txid,
++				  SINGLE_MASK(so->txid),
++				  isotp_rcv_echo, sk);
++		netdev_put(so->dev, &so->dev_tracker);
++		so->dev = NULL;
++		synchronize_rcu();
+ 	}
+ 
+ 	hrtimer_cancel(&so->txfrtimer);
+@@ -1253,6 +1251,7 @@ static int isotp_release(struct socket *sock)
+ 	sock->sk = NULL;
+ 
+ 	release_sock(sk);
++	rtnl_unlock();
+ 	sock_prot_inuse_add(net, sk->sk_prot, -1);
+ 	sock_put(sk);
+ 
+@@ -1303,6 +1302,7 @@ static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int l
+ 	if (!addr->can_ifindex)
+ 		return -ENODEV;
+ 
++	rtnl_lock();
+ 	lock_sock(sk);
+ 
+ 	if (so->bound) {
+@@ -1347,16 +1347,20 @@ static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int l
+ 	can_rx_register(net, dev, tx_id, SINGLE_MASK(tx_id),
+ 			isotp_rcv_echo, sk, "isotpe", sk);
+ 
+-	dev_put(dev);
+-
+ 	/* switch to new settings */
+ 	so->ifindex = ifindex;
+ 	so->rxid = rx_id;
+ 	so->txid = tx_id;
+ 	so->bound = 1;
+ 
++	so->dev = dev;
++	netdev_hold(dev, &so->dev_tracker, GFP_KERNEL);
++
++	dev_put(dev);
++
+ out:
+ 	release_sock(sk);
++	rtnl_unlock();
+ 
+ 	if (notify_enetdown) {
+ 		sk->sk_err = ENETDOWN;
+@@ -1559,7 +1563,7 @@ static void isotp_notify(struct isotp_sock *so, unsigned long msg,
+ 	if (!net_eq(dev_net(dev), sock_net(sk)))
+ 		return;
+ 
+-	if (so->ifindex != dev->ifindex)
++	if (so->dev != dev)
+ 		return;
+ 
+ 	switch (msg) {
+@@ -1575,10 +1579,12 @@ static void isotp_notify(struct isotp_sock *so, unsigned long msg,
+ 			can_rx_unregister(dev_net(dev), dev, so->txid,
+ 					  SINGLE_MASK(so->txid),
+ 					  isotp_rcv_echo, sk);
++			netdev_put(dev, &so->dev_tracker);
+ 		}
+ 
+ 		so->ifindex = 0;
+ 		so->bound  = 0;
++		so->dev = NULL;
+ 		release_sock(sk);
+ 
+ 		sk->sk_err = ENODEV;
+-- 
+2.47.3
 
-Closes: https://lore.kernel.org/linux-can/178159320216.2154888.16953451793788581739@maoyixie.com/T/#u
-
-Not sure that you need to include the full reproducer in your patch
-message. The BUG: KASAN log is enough. But if you want, you can still
-post your reproducer in this thread.
-
-
-Yours sincerely,
-Vincent Mailhol
