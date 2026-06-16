@@ -1,161 +1,92 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ABCF47CC71
-	for <linux-can@vger.kernel.org>; Tue, 16 Jun 2026 18:25:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 185C7388394;
+	Tue, 16 Jun 2026 20:16:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781634358; cv=none; b=Hq7lqDWNmFFvtM1mwuqOIFLpBpjdzIfgiSPqXuE5h3oKxfrzFlZwB96PBzcayNL9/Fr9dDfIJXcoBNn3TmQpQABdenRaXuCogdumLcpK8zVw1sZniTyHkcJq+i0xj3gLydzkpZ+CwqV5jKNQ5wErR1G+BYOU46smPG8eOj87IY0=
+	t=1781640973; cv=none; b=Uiu9eKYKUWQ62cw4LVkByi5WiLhKPuQp1ltxI/50MIbOX4+eOt924R0QRY1P/ssBzdONHMU2GCmbs9C1RF2/K2H98YN3/yAfhvFN3GRx7wGsIJv/2sv/hCI/1z7whS4ADW+RbuQ/89+ohDfhsm/4+emvgKa1rcqz1lv/qASeEgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781634358; c=relaxed/simple;
-	bh=ZjvKw+nv+EfzNhnXcVTNH9GVXNuzmw/pSRMAqExXlEA=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=tjyhIScZzXkEf36dgFE5N29J8wn66wbymj+z3VYFv97StQ+Tq6I/Id74FmNmdI/7JnmisSaRvCOzTkhHWc5ao34vKytW94UO60qsBg+BcKQaM6K4ruvRufk3SApwE4l3pyIc2xe4HrcGhOyR0XLf3BJUrDwLor7x0EG8nWBD8+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=boBLu1Bh; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1781640973; c=relaxed/simple;
+	bh=MiyHaVoYM36jGVvr1HpDgeUEp3ZSjXc6ebH04dh1oh0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=F0Ewga6N2ttfkkz7fRIPZvG8YbJA/dcGwoptvDaKj9V/fHkKfP8q09/jQEpZvzIgFFO3mZH+SEVMO0i20wKmwYY/MEDJ2W4aULBEBJYT91bLOlTRKWbd6V1MRoUuGIdECnSzUMCpVY+Y/owvEhTXbU1qfwbl9Z9uDvLxIkP+j7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a1Cz+Jqu; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="boBLu1Bh"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6AB31F00A3D;
-	Tue, 16 Jun 2026 18:25:56 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a1Cz+Jqu"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09F9D1F000E9;
+	Tue, 16 Jun 2026 20:16:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781634357;
-	bh=PYiRqhCf8uhnynMdh4zYJm3HZ1p53UDY9BVtbn7+Bas=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=boBLu1Bhuo/3P+KW/qg9455D7myqQ1Nvgqz/yyHWen/hMzX1nUl5ktZ5y+zshkDkT
-	 Jmqrv+QL11GHhB+2kudhncY5VShyNNDNExLyV5s+2f16niMVwtqKGQBavhXeygvFim
-	 ydkuL8z+nXiYwyJdREMyR59I5ulHK/Oi9qQJwRIsReDlzfqsPcJoTWpqXiTLCKjCNS
-	 KBboleek7MWkPau7FXXxUvbCP87f4J1aV3ZGwEzHypA1ndvXvNbMZmecKv5AKNW5tt
-	 iWgKrMHYumOzm9i4hcN7bUZBgaUCu2bUWdkOeHH3xn3NXLBW5jaD57VC5zi1YaPmWN
-	 4cj303KyIXvdQ==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net] can: peak_usb: fix double free of transfer buffer
- on URB submit error
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Maoyi Xie" <maoyixie.tju@gmail.com>
-Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org
-In-Reply-To: <178163373110.2507866.216458825145756798@maoyixie.com>
-References: <178163373110.2507866.216458825145756798@maoyixie.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 16 Jun 2026 18:25:56 +0000
-Message-Id: <20260616182556.D6AB31F00A3D@smtp.kernel.org>
+	s=k20260515; t=1781640971;
+	bh=8+v9Dbv/3TyO6lr898JnUR3kpS6EIon21NDBuak9sZU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=a1Cz+Jquuyw72Ph2PjH9Gh6XvWf8EwDkHIM01kVAXsJaZ2haitq7hTT+X64ze/DjH
+	 RM1YrqG8+Ed6Kf896cpoP2anpEXGaEgyVn9vm+sQx4RXRUA57vby596qtSBN3sqY/+
+	 NCyBm1rcOV0xSzzuMNUYj0b60VYbo3moWCIKQ2tuAQZjiMI0bg041+6Y8CZUELMgE1
+	 eLe68S+c9fEAns/yYAADTdJ7bR867g8g0QhDZVS2FSHUAJNuXJCWBBKMkSKkbN5mpz
+	 bYja6riC+M2pLpg1V1qEHuUW2yrX2ndN/8IKQtu5LwhAsbm9LMpWueUdCF6Nck5IMk
+	 J3kymvHKoa8vQ==
+Message-ID: <153c3871-9759-4566-9424-56dc67a080fe@kernel.org>
+Date: Tue, 16 Jun 2026 22:16:07 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] can: peak_usb: fix double free of transfer buffer on
+ URB submit error
+To: Maoyi Xie <maoyixie.tju@gmail.com>, Marc Kleine-Budde
+ <mkl@pengutronix.de>, =?UTF-8?Q?St=C3=A9phane_Grosjean?=
+ <stephane.grosjean@hms-networks.com>
+Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>, linux-can@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <178163373110.2507866.216458825145756798@maoyixie.com>
+From: Vincent Mailhol <mailhol@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=mailhol@kernel.org; keydata=
+ xjMEZluomRYJKwYBBAHaRw8BAQdAf+/PnQvy9LCWNSJLbhc+AOUsR2cNVonvxhDk/KcW7FvN
+ JFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbEBrZXJuZWwub3JnPsKZBBMWCgBBFiEE7Y9wBXTm
+ fyDldOjiq1/riG27mcIFAmdfB/kCGwMFCQp/CJcFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcC
+ F4AACgkQq1/riG27mcKBHgEAygbvORJOfMHGlq5lQhZkDnaUXbpZhxirxkAHwTypHr4A/joI
+ 2wLjgTCm5I2Z3zB8hqJu+OeFPXZFWGTuk0e2wT4JzjgEZx4y8xIKKwYBBAGXVQEFAQEHQJrb
+ YZzu0JG5w8gxE6EtQe6LmxKMqP6EyR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDl
+ dOjiq1/riG27mcIFAmceMvMCGwwFCQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8V
+ zsZwr/S44HCzcz5+jkxnVVQ5LZ4BANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
+In-Reply-To: <178163373110.2507866.216458825145756798@maoyixie.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Thank you for your contribution! Sashiko AI review found 2 potential issue(=
-s) to consider:
+On 16/06/2026 at 20:15, Maoyi Xie wrote:
+> In peak_usb_start(), each RX URB transfer buffer is allocated with kmalloc()
+> and the URB is flagged URB_FREE_BUFFER so that the final usb_free_urb() also
+> frees the transfer buffer.
+> 
+> If usb_submit_urb() fails, the error path frees the buffer explicitly with
+> kfree(buf) and then calls usb_free_urb(urb). Because URB_FREE_BUFFER is set,
+> usb_free_urb() -> urb_destroy() frees the same buffer a second time, a double
+> free of the transfer buffer.
+> 
+>   BUG: KASAN: double-free in usb_free_urb.part.0+0x91/0xb0
+>   Free of addr ffff8881069ccb80 by task trigger.sh/285
+> 
+>   Call Trace:
+>    kfree+0x113/0x3c0
+>    usb_free_urb.part.0+0x91/0xb0
+> 
+> Drop the redundant kfree(buf); usb_free_urb() already releases the transfer
+> buffer. This mirrors commit 03819abbeb11 ("net: usb: lan78xx: Fix double free
+> issue with interrupt buffer allocation").
+> 
+> Fixes: bb4785551f64 ("can: usb: PEAK-System Technik USB adapters driver core")
+> Closes: https://lore.kernel.org/linux-can/178159320216.2154888.16953451793788581739@maoyixie.com/T/#u
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Maoyi Xie <maoyixie.tju@gmail.com>
 
-Pre-existing issues:
-- [High] In-flight TX URBs and their transfer buffers are permanently leake=
-d when the CAN interface is brought down.
-- [High] If `peak_usb_start()` fails to allocate the full set of TX URBs, u=
-ninitialized contexts cause a NULL pointer dereference in `peak_usb_ndo_sta=
-rt_xmit()`.
---
-
-commit 940b179b096bd59f1b3c9ac845bb1de2207ae9fa
-Author: Maoyi Xie <maoyixie.tju@gmail.com>
-
-can: peak_usb: fix double free of transfer buffer on URB submit error
-
-This commit removes a redundant explicit free of the transfer buffer in
-the error path of peak_usb_start() because usb_free_urb() already handles
-it when URB_FREE_BUFFER is set.
-
-Closes: https://lore.kernel.org/linux-can/178159320216.2154888.169534517937=
-88581739@maoyixie.com/T/#u
-Cc: stable@vger.kernel.org
-
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/c=
-an/usb/peak_usb/pcan_usb_core.c
-> index cf48bb26d46d2..079b23dd74f04 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> @@ -470,7 +470,6 @@ static int peak_usb_start(struct peak_usb_device *dev)
->  				netif_device_detach(dev->netdev);
-> =20
->  			usb_unanchor_urb(urb);
-> -			kfree(buf);
->  			usb_free_urb(urb);
->  			break;
->  		}
-
-[Severity: High]
-This is a pre-existing issue, but does this driver leak in-flight TX URBs
-and their transfer buffers when the CAN interface is brought down?
-
-When the interface is stopped, peak_usb_ndo_stop() calls
-peak_usb_unlink_all_urbs() to clean up. This function iterates over the
-pre-allocated TX URBs but explicitly skips freeing any URB that is
-currently in-flight:
-
-drivers/net/can/usb/peak_usb/pcan_usb_core.c:peak_usb_unlink_all_urbs() {
-        if (!urb ||
-            dev->tx_contexts[i].echo_index !=3D PCAN_USB_MAX_TX_URBS) {
-                /*
-                 * this urb is already released or always submitted,
-                 * let usb core free by itself
-                 */
-                continue;
-        }
-
-        usb_free_urb(urb);
-        dev->tx_contexts[i].urb =3D NULL;
-}
-
-While usb_kill_anchored_urbs() will abort the submitted URBs and cause the
-USB core to drop its submission reference, the driver's original allocation
-reference is never dropped because of the continue statement above.
-
-When the interface is subsequently restarted, peak_usb_start()
-unconditionally allocates new URBs, overwriting the context pointers
-and permanently leaking the old URBs.
+Reviewed-by: Vincent Mailhol <mailhol@kernel.org>
 
 
-[Severity: High]
-This isn't a bug introduced by this patch, but could this code path cause
-a NULL pointer dereference in peak_usb_ndo_start_xmit() if the driver fails
-to allocate the full set of TX URBs?
+Yours sincerely,
+Vincent Mailhol
 
-Later in peak_usb_start(), if memory allocation fails for a TX context after
-at least one context is successfully allocated, the driver issues a warning
-and proceeds:
-
-drivers/net/can/usb/peak_usb/pcan_usb_core.c:peak_usb_start() {
-        /* warn if we were not able to allocate enough tx contexts */
-        if (i < PCAN_USB_MAX_TX_URBS) {
-                if (i =3D=3D 0) {
-                        netdev_err(netdev, "couldn't setup any tx URB\n");
-                        goto err_tx;
-                }
-
-                netdev_warn(netdev, "tx performance may be slow\n");
-        }
-        ...
-        return 0;
-}
-
-The unallocated contexts retain a NULL urb pointer and their echo_index=20
-is set to PCAN_USB_MAX_TX_URBS, marking them as available.
-
-However, peak_usb_ndo_start_xmit() only stops the netdev TX queue when the
-total number of active URBs reaches PCAN_USB_MAX_TX_URBS. If the number
-of concurrent transmissions exceeds the number of successfully allocated
-contexts, it can select an unallocated context and blindly dereference it:
-
-drivers/net/can/usb/peak_usb/pcan_usb_core.c:peak_usb_ndo_start_xmit() {
-        if (!context) {
-                /* should not occur except during restart */
-                return NETDEV_TX_BUSY;
-        }
-
-        urb =3D context->urb;
-        obuf =3D urb->transfer_buffer;
-}
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/178163373110.250786=
-6.216458825145756798@maoyixie.com?part=3D1
