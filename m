@@ -1,83 +1,144 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32B5C42B74A;
-	Tue, 16 Jun 2026 10:35:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87E3A436355
+	for <linux-can@vger.kernel.org>; Tue, 16 Jun 2026 10:45:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781606148; cv=none; b=uRYZmykZJ/zQPI94sSc9S3sZEQAGASmwG4g1UnU16HMn0Ct/en4IxUbvG2XxvQT/tjWyNlehB9aQXjkd+6h5x0l2T07NHKe1VP33h2V/qGbfrlAdSIxpyfPbTAUThvRjYGv09UHRUUh1MHrcD53HgyWeo9AopGaomraMTRFi+Xs=
+	t=1781606714; cv=none; b=mvEQysSGWA40auiaEZAgsPRtpIyZ8GGPwYKVySkbLJn8Aa6qL8DJH/PEKnkZ8zv7XrCBD9CUlUSKhcWTk2AbkZ7BqxiqUuU7jECm2iTgas34IF/OpUpVukhIkCUEgnLvI7V0Ji6lAwJ/PzHOh70Ns4nU0dkPfzN4MpdKM8UDfuQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781606148; c=relaxed/simple;
-	bh=q6GMZ8l6dmAW9qA/mMYBaPem5kkLiWzFwyAP7rClnxk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uQTfO9MhJg9ygkJTWW4ppg2KAGZ8NjDKcG3XlCEyuO7hm273L8529U0l0RRW4aDWHpM2vSxPnKixg2kaDWO4jSSH0d1/+xcC8iGhJYEUtyb7hmdJ/+Hbuqwe+vxGN5IWCxI4Of/66ZLy+KhC8shEtG7QYBwGAmdEcnsWvYtg7QI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gZKvuAqm; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1781606714; c=relaxed/simple;
+	bh=HbW/qKvcdJKFpTvsPemnC3kIBCto7kYcyRbwG+4WS/c=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=o3zsHUuaKy823bnqG80kYNrd5MHBh1lgeJGKhR8BJxf6dNEu3J0FjkGrzA0MrolSuG3PgFxU/xcdYwC7ERRuggS43fxm/spCFuLwHcwtyBtYkTp3G4nX4wuWWhjQ7AqB33G69kzKRnrx7smcl1uhCEBF+l7uqRMxijpJW+rOA9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ffII+9Rf; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gZKvuAqm"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 295AB1F000E9;
-	Tue, 16 Jun 2026 10:35:45 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ffII+9Rf"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD9CC1F000E9;
+	Tue, 16 Jun 2026 10:45:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781606146;
-	bh=XJRIemPytV1aguctNVZZ7Efd5w5Kogtqo/i30RRjt0Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=gZKvuAqmubQT8pWMQdfmuJz4HqNW46GbKO74ppRYG1KaAyHsYESgJkp+o7Lt81Dk5
-	 +0BIplzvolOB85QK49K9ssXVvKuw58FJdV4nVX+0bVj8zBeJwL6pNmvd1czu8SFTgc
-	 5mE9eu7fqqdcIBtA5qLVJ++3ywCKFnDkNikUSXIEcfIsYrSVoyWUNol18qik7xmIRQ
-	 m57AWP8eLozyWm5SSQ/CaNkLL+Qr+VtZZEh8tGPQIxCKnb+1+I2rEs/v/Zi4f9prOn
-	 6HOIpCcb730w/dH52JS6ZbP5qdDYp4iOJ7cWYIwVz9cb8W73F2uPn+X1h77fl5SXOk
-	 uXE/umqtZ96bA==
-Date: Tue, 16 Jun 2026 11:35:42 +0100
-From: Mark Brown <broonie@kernel.org>
+	s=k20260515; t=1781606712;
+	bh=s/NR1/fjjUagXpC9XjYkgwsoAANXNtKJG3eP+Uv1XVE=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=ffII+9Rf1L9oGxCJ9aGk6l+PXgnm2HoPC79pJmy9Y3L78IQmStKHk7aUP++zt2urJ
+	 RasHSVbBHB+mE4bl3R0EYxGbl7Z+5CI1qeXAD0R1NL8BsZSujvA7eVx/6/oMKVhE6q
+	 2m3gOowGLPX+vmI3nOq6WapWF/ZuJkBU5Y9sVcrXuf4mWvgaE4p/Sh967hYuJQxWK7
+	 t6xlOxG+Aua1FuoLHdkMXLxJaPWzak9ZnpHWeBoSTIhBOFcIeEoyqeLo6aP65gGCOK
+	 JcgQYE0ko2bDlafvjrfVMSYOZcseBDmrgCCUq4EUc/rvn0JucqJDLpMmvi9QZTRn0r
+	 Ue5zIAmLtrolA==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v4 2/2] spi: Add NULL check for spi_get_device_id() in
+ spi_get_device_match_data()
+Reply-To: sashiko-reviews@lists.linux.dev
 To: guoqi0226 <guoqi0226@163.com>
-Cc: sashiko-bot@kernel.org, mkl@pengutronix.de, linux-can@vger.kernel.org,
-	mailhol@kernel.org, o.rempel@pengutronix.de,
-	sashiko-reviews@lists.linux.dev, socketcan@hartkopp.net,
-	linux-spi@vger.kernel.org
-Subject: Re: [PATCH v4 0/2] can: mcp251xfd: Add ACPI device ID table for
- MCP251XFD
-Message-ID: <997991e6-0e09-47eb-a6ac-5f455ddc250a@sirena.org.uk>
-References: <20260616092614.00ED51F00A3D@smtp.kernel.org>
- <20260616103018.105612-1-guoqi0226@163.com>
+Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org
+In-Reply-To: <20260616103018.105612-3-guoqi0226@163.com>
+References: <20260616103018.105612-3-guoqi0226@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 16 Jun 2026 10:45:11 +0000
+Message-Id: <20260616104511.DD9CC1F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="yFb1XlutYJnaVOoW"
-Content-Disposition: inline
-In-Reply-To: <20260616103018.105612-1-guoqi0226@163.com>
-X-Cookie: Password:
 
+Thank you for your contribution! Sashiko AI review found 3 potential issue(=
+s) to consider:
 
---yFb1XlutYJnaVOoW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Pre-existing issues:
+- [High] spi_get_device_id() unconditionally dereferences a potentially NUL=
+L id_table pointer
+- [High] Direct callers of spi_get_device_id() unconditionally dereference =
+its result
+- [High] Callers of the patched spi_get_device_match_data() unconditionally=
+ dereference its NULL return value
+--
 
-On Tue, Jun 16, 2026 at 06:30:16PM +0800, guoqi0226 wrote:
-> hanges in v4:
-> - Split into two separate patches:
->   1. SPI core: add internal NULL guard for spi_get_device_match_data()
->   2. mcp251xfd driver: cache and validate match data pointer in probe
-> - Remove duplicate spi_get_device_match_data() invocation and unsafe dereference
+commit 7e155f379f89eda6ab91795ac56410fd02c722be
+Author: guoqi0226 <guoqi0226@163.com>
 
-Why is this a series, are there any dependencies between these two
-patches?
+spi: Add NULL check for spi_get_device_id() in spi_get_device_match_data()
 
---yFb1XlutYJnaVOoW
-Content-Type: application/pgp-signature; name="signature.asc"
+Prevent NULL pointer dereference when spi_get_device_id() returns NULL,
+which can happen when using driver_override without matching SPI ID entry.
 
------BEGIN PGP SIGNATURE-----
+> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+> index 104279858f567..079ac01a2229d 100644
+> --- a/drivers/spi/spi.c
+> +++ b/drivers/spi/spi.c
+> @@ -355,12 +355,16 @@ EXPORT_SYMBOL_GPL(spi_get_device_id);
+>  const void *spi_get_device_match_data(const struct spi_device *sdev)
+>  {
+>  	const void *match;
+> +	const struct spi_device_id *id;
+> =20
+>  	match =3D device_get_match_data(&sdev->dev);
+>  	if (match)
+>  		return match;
+> =20
+> -	return (const void *)spi_get_device_id(sdev)->driver_data;
+> +	id =3D spi_get_device_id(sdev);
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmoxJv0ACgkQJNaLcl1U
-h9BVAQf+LlIoxb9QviU7zuSrpS6s2Qar3R7TbO12N2S/XcjwYnU7kEYRqBCgYaxh
-2SGHOFcfkUu7pmIVDHXFA0K2DX0BDHDoah3LPH5CtfCHU8XJfWoqu5YMlk5P5eni
-wSyc/IlDO02PzXAIwFXN2i3fcqtmtBLD1Gn1UHtyrmtT5fcN+VNXK+dczDuOxH6g
-fpT+WZfpz/Zq0E/FOmTgk2Ntf27kyzHuHWSd3/AdFYCPrZ01RQJVIOtuvJVCaoF8
-NTViKsVfgcm9KNAloZlXuM5ZiaDTEAkwjrj50w+VQOuwCxCIBcTDGnxSLN2Uk20m
-gR1vF+4R+QjFa7fmWiXoKub3WThYRQ==
-=nd1y
------END PGP SIGNATURE-----
+[Severity: High]
+This is a pre-existing issue, but can spi_get_device_id() itself crash
+if sdrv->id_table is NULL?
 
---yFb1XlutYJnaVOoW--
+If a spi driver only provides a device tree or acpi match table and lacks
+an id_table, sdrv->id_table will evaluate to NULL. When spi_get_device_id()
+is called, it passes this NULL pointer to spi_match_id():
+
+drivers/spi/spi.c:spi_get_device_id() {
+    ...
+    return spi_match_id(sdrv->id_table, sdev->modalias);
+}
+
+spi_match_id() then unconditionally evaluates id->name[0] in its while loop:
+
+drivers/spi/spi.c:spi_match_id() {
+    ...
+    while (id->name[0]) {
+    ...
+}
+
+Would this result in a NULL pointer dereference when driver_override is use=
+d?
+
+[Severity: High]
+This is also a pre-existing issue, but do many direct callers of
+spi_get_device_id() unconditionally dereference its result?
+
+For example, in drivers/iio/adc/max1118.c:max1118_probe():
+
+    indio_dev->name =3D spi_get_device_id(spi)->name;
+
+If driver_override is used to force a bind to a device whose modalias
+does not match the driver's id_table, spi_get_device_id() can return NULL.
+Does this mean individual spi drivers might immediately crash if they
+don't check the return value?
+
+> +	if (!id)
+> +		return NULL;
+
+[Severity: High]
+This isn't a bug introduced by this patch, but will returning NULL here just
+shift the crash to callers that don't check the return value?
+
+For example, in drivers/gpu/drm/tiny/sharp-memory.c:sharp_memory_probe():
+
+    smd->mode =3D spi_get_device_match_data(spi);
+    ...
+    smd->pitch =3D (SHARP_ADDR_PERIOD + smd->mode->hdisplay + ...) / 8;
+
+If spi_get_device_match_data() returns NULL when driver_override is used,
+will callers unconditionally dereference it and still cause a kernel panic?
+
+> +	return (const void *)id->driver_data;
+>  }
+>  EXPORT_SYMBOL_GPL(spi_get_device_match_data);
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260616103018.1056=
+12-1-guoqi0226@163.com?part=3D2
