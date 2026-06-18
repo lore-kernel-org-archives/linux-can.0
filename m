@@ -1,100 +1,130 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0BFE40BCB6;
-	Wed, 17 Jun 2026 13:38:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F5538F253
+	for <linux-can@vger.kernel.org>; Thu, 18 Jun 2026 08:27:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781703533; cv=none; b=X3pHlE9PhHEeUJNsUHks9yIuGhYplFymjD4RGotE4j2ZFm38INGHhfnA+owT7dZUpd7XSjcEtPsXLDer1W5U/0GjCbsEcq0UZQyCcFy52ebXKHo+9wERaipZMfmJxHjt2+pfOUVOtXKt68tRFHI4W0Cj8gDe1CPqSNgd8kB5j84=
+	t=1781771266; cv=none; b=kt1qQyzW+biXl/qwAq2UI0fzrN+8ofukGuqNrw7j1+AG25Q72Yl/ZzYBkAdDTxP/ucpf5Y57C7Ti9MZewduRwOTmjNdTGEbmlF3AT4S1e7yns98TOOTix9XLlWni8eEJdEktxc76qg2NTk9PP82zmWEFquTtqfcNHw0FUTKbTIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781703533; c=relaxed/simple;
-	bh=R7Bf4XwxXcBmoaEbPhDRg6MQURq+Gk+znSviWBXEyQw=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=NnA7H1NyKjvaba2wCZXAaJQNz4AmfTfRqBe//MPawLNEhKIBZCZFqoeyz2HKPQXWGA6Mg76jboV1EadDRM3x8Y21G4z/lqoKXFXOEYoOYJh0I1RXW9q2lQfJB2JshvBHLhgQXvZUB0237HY56aN3fsGeVI/cw+HMmNRSX27C1wU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d4F9EuMb; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1781771266; c=relaxed/simple;
+	bh=8PdXD+yuoAVL6mUGWXUeJPZSHrNQNr364FRH/Wwxs+8=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=rgGDItRYyUZVGiqJma8iT+QvDQraKMDHwiXXEEyGpIj6En6MjwybFbh1lRDzLMME4Hny07K9PySX2prHJlH0oOpAbEYSb7+M8An4rEEJv9wFB7xKbLpWIyrg6C8KH9q+LR8gVuV2CIo2FOTjgP4pXs6A4ljbrz1zu1EDNUlPhyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GPCRee7v; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d4F9EuMb"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C36C1F000E9;
-	Wed, 17 Jun 2026 13:38:49 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GPCRee7v"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9613C1F000E9;
+	Thu, 18 Jun 2026 08:27:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781703531;
-	bh=6Mni33sR6cHey5x/QsVXQJR7xUylFERVrUN1i7Rxnlk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=d4F9EuMbrV/i2sSK9xruPZf2fv91FBo+13vupEFiOdzgkCLngt+zveNQtyNW2Xy/f
-	 Idt2z5pqd+UpKznJJgANkebVyPdf/DJKtQ8ob0uMa4w8alHi0byu/JkekaNgiMojb/
-	 ndiP51tpZrWMPdz3ZELHHWH/sU02Fh0Vq7Pf4AsZZnCRCM+kVkkJBk6nwNVbZHnCZQ
-	 jXDHiiDKfB5dINdxAHpBKKRU86Md6avppLLBJ0VuBTuz0hdEiNMOTSA457iBivZm1a
-	 Fmw/axUBoUQga0/DqtOQL7MpbMDwslPl2IGnpArHrdyu6qva4K6gQd3DEzGWCjmgWj
-	 OM2h2VsPz72rA==
-From: Mark Brown <broonie@kernel.org>
-To: sashiko-bot@kernel.org, mkl@pengutronix.de, 
- guoqi0226 <guoqi0226@163.com>
-Cc: linux-can@vger.kernel.org, mailhol@kernel.org, o.rempel@pengutronix.de, 
- sashiko-reviews@lists.linux.dev, socketcan@hartkopp.net, 
- linux-spi@vger.kernel.org
-In-Reply-To: <20260616103018.105612-1-guoqi0226@163.com>
-References: <20260616103018.105612-1-guoqi0226@163.com>
-Subject: Re: (subset) [PATCH v4 0/2] can: mcp251xfd: Add ACPI device ID
- table for MCP251XFD
-Message-Id: <178160960261.55685.12204073262177758524.b4-ty@b4>
-Date: Tue, 16 Jun 2026 12:33:22 +0100
+	s=k20260515; t=1781771264;
+	bh=leO6DzvsaKBwty+1Fw4OuUYYbgaiurBnWnqM0gWRBDM=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=GPCRee7vH51MK7DiHW0i71hlJlmloRyLJCsBo6S1GS3wQGypYrGsvafAZmJ4043Fz
+	 GrfVugpM7GAvCblhwrtUNWPsqP2QsHrE2fG6FIp7g5Iksuf+nG4jCuPr0/jnziMTIy
+	 7kI96v3KnO4HxUl3555Pc6jtdQ1IGBoHamNn5/RZgFN1iteuH6REdm2P+tTyYITY9J
+	 KmvHQ+dCCmxpENeMjL4uFmr2hsRle72g6t6ObnqBZ+ivUu+tjd9T53CXpglSmLXORt
+	 bbTex/wLxlVWEG6wn+TTku3T+q+c3/HNlJIeJE4HqpjMy2o9bsaHBq4Emz46h6DTAZ
+	 QbWVvrNYZ9vlw==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH 6.6.y] net: add missing ns_capable check for peer netns
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Maximilian Heyne" <mheyne@amazon.de>
+Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent
+ Mailhol" <mailhol@kernel.org>
+In-Reply-To: <20260617-sprain-dye-86c242ac@mheyne-amazon>
+References: <20260617-sprain-dye-86c242ac@mheyne-amazon>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 18 Jun 2026 08:27:44 +0000
+Message-Id: <20260618082744.9613C1F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.16-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1442; i=broonie@kernel.org;
- h=from:subject:message-id; bh=R7Bf4XwxXcBmoaEbPhDRg6MQURq+Gk+znSviWBXEyQw=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBqMqNojnRhzxjoez7sJ17/WcSoAw7IeDPvoQS4P
- N7+hgrD4UqJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCajKjaAAKCRAk1otyXVSH
- 0ACHB/47jaoMxZ3OmOPDU34TqWyD/r1iVbq6ZZQPi9fHJpRoZkyweLi5DYfiGPxNYsdub9jUBTb
- K6fRkifC0Jr/l6WOjjynDkkifvk/nfAXv2d1B+MwaL3oYC53jAQWyYi8M8A4oh+1koFyy9IfoIh
- AmfY1yGFRcm01xSn8XwaP43NgcvrkdTIGI1YSwn7SrOhtDCH/WKDf3kIuCn+4onSEBATGH0UTUY
- fbqTdi9dXfKW0VdW1lRCe5qTxD3Qkf1wao+UT3YybjCFCRb/mxhT1ZKl8bY3/XVmjJSTFvfI0co
- Y1vB9QJWjH1fkKQ8igbizYnoKVJ6W1OElj/oVDTfoz8QCnmJ
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 
-On Tue, 16 Jun 2026 18:30:16 +0800, guoqi0226 wrote:
-> can: mcp251xfd: Add ACPI device ID table for MCP251XFD
-> 
-> hanges in v4:
-> - Split into two separate patches:
->   1. SPI core: add internal NULL guard for spi_get_device_match_data()
->   2. mcp251xfd driver: cache and validate match data pointer in probe
-> - Remove duplicate spi_get_device_match_data() invocation and unsafe dereference
-> 
-> [...]
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+s) to consider:
+- [High] Using `ns_capable()` instead of `netlink_ns_capable()` bypasses fi=
+le descriptor capability checks, leaving the kernel vulnerable to confused =
+deputy privilege escalation attacks via netlink fd passing.
+--
 
-Applied to
+commit 7cb10271bfe1888c97bd5ddcadbd3ed1e69fb9b0
+Author: Maximilian Heyne <mheyne@amazon.de>
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-7.2
+net: add missing ns_capable check for peer netns
 
-Thanks!
+This commit attempts to fix CVE-2026-31692 by approximating the=20
+netlink_ns_capable() check with ns_capable() directly in the respective=20
+interface types. It assumes that because the newlink operation is=20
+synchronous, this will result in the same behavior.
 
-[2/2] spi: Add NULL check for spi_get_device_id() in spi_get_device_match_data()
-      https://git.kernel.org/broonie/spi/c/0f82535b5537
+> diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
+> index 98c669ad51414..da4affff65476 100644
+> --- a/drivers/net/can/vxcan.c
+> +++ b/drivers/net/can/vxcan.c
+> @@ -211,6 +211,11 @@ static int vxcan_newlink(struct net *net, struct net=
+_device *dev,
+>  	if (IS_ERR(peer_net))
+>  		return PTR_ERR(peer_net);
+> =20
+> +	if (!ns_capable(peer_net->user_ns, CAP_NET_ADMIN)) {
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+[Severity: High]
+Does using ns_capable() instead of netlink_ns_capable() leave the kernel
+vulnerable to confused deputy attacks via file descriptor passing?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Because ns_capable() only evaluates current_cred(), an unprivileged
+attacker could create a netlink socket, craft an RTM_NEWLINK payload,
+and pass the socket fd (e.g., via SCM_RIGHTS) to a privileged process.
+When the privileged deputy writes to the socket, this ns_capable() check
+would succeed using the deputy's credentials, ignoring the fact that the
+socket was opened by an unprivileged user.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+netlink_ns_capable() explicitly checks both the socket opener
+(file_ns_capable) and the sender (ns_capable) to prevent exactly this
+scenario. Could this approach be revised to ensure the socket opener's
+credentials are also verified?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> +		put_net(peer_net);
+> +		return -EPERM;
+> +	}
+> +
+>  	peer =3D rtnl_create_link(peer_net, ifname, name_assign_type,
+>  				&vxcan_link_ops, tbp, extack);
 
-Thanks,
-Mark
+[ ... ]
 
+> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+> index 2b3b0beb55c88..ba4ca6c6bc9d8 100644
+> --- a/drivers/net/veth.c
+> +++ b/drivers/net/veth.c
+> @@ -1857,6 +1857,11 @@ static int veth_newlink(struct net *src_net, struc=
+t net_device *dev,
+>  	if (IS_ERR(net))
+>  		return PTR_ERR(net);
+> =20
+> +	if (!ns_capable(net->user_ns, CAP_NET_ADMIN)) {
+
+[Severity: High]
+Would this ns_capable() check in veth_newlink() similarly bypass the
+socket opener credential check?
+
+As with vxcan_newlink(), using ns_capable() alone seems to bypass the
+file descriptor capability checks that netlink_ns_capable() provides,
+potentially allowing privilege escalation if the netlink fd is passed
+to a more privileged process.
+
+> +		put_net(net);
+> +		return -EPERM;
+> +	}
+> +
+>  	peer =3D rtnl_create_link(net, ifname, name_assign_type,
+>  				&veth_link_ops, tbp, extack);
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260617-sprain-dye=
+-86c242ac@mheyne-amazon?part=3D1
