@@ -1,216 +1,122 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 712DB384235
-	for <linux-can@vger.kernel.org>; Wed, 24 Jun 2026 06:02:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 719223955EC;
+	Wed, 24 Jun 2026 09:53:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782280939; cv=none; b=GjQpdWTtq0PuiOIbM4UpWATOW70cV7Q5XiCJQGPl54PFuHjuXoEYn746myyaYGPQ2Zi6AUNmfsLUHGf43YERm2P0DXlTyaDG15ImOm2c2a16O7JxWOmKbjlYpLgkiqvTm1PEbEufshg2AE9JaFSjOKy+Kckp8t+h1ota5tmftnI=
+	t=1782294829; cv=none; b=Oki60Ck5eQ7UpLMJ8VqkUY4tAfFT+x4dwdZEBIzBj2M1zpeSJ1qHatk1Otv+dxNsTA0HeegoKEbpW5ndj/DVevc2nPufwlFtATfroL5vEU5kg5p8XCteysBBY/oi1T/JL90Bb+9WCIRy2dr56F5yu71Yu8YncnnTBAoBaEWYSIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782280939; c=relaxed/simple;
-	bh=I9SviO8ZF0iKrg9Msa+xs5O7rsXezDHZUbausoqqpFk=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=N0Bp+wSUKGioNcNbWSqgEli+g7eeukJ2TXJ2nA08vDeTs7/06ykIfdvPt0Be2DvUR5EpqWNZv0li/HZYWjZnA6S23HDtFjok6Dv+OkLfCM86tANPrvfELR+ifPuU4raWLKMwv14JHSjFu1iiOkeS9Pfqcf1Z3KdO0xCDJKRw/OU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZzTMKRLf; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1782294829; c=relaxed/simple;
+	bh=C+WGFWNaIaf45gBRKxMcdv1jaLYDMF+6mUqNylPCqKc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=m3Ue9mqqIXfG5x0ZEI1nmE5y04LTnnUpJZZH650YRgAzN6A9ijzBesrnZe96riGW6a+HJkiwVpaltnKh6Cxg6sjezsl4ldc2GMoAcUUmrZy2lsayK1oj+vPqXQASndNHUdkP7Yr2mhmw2RWytl7w91c3cYbULPx1DIlakrtfLY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FzsFuxhT; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZzTMKRLf"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5EBD1F000E9;
-	Wed, 24 Jun 2026 06:02:17 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FzsFuxhT"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79FA11F000E9;
+	Wed, 24 Jun 2026 09:53:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782280938;
-	bh=7nCx1o7jRPe4/qD2fnnOxXqEKnnRT0Yn3ejRWPLSoaQ=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=ZzTMKRLfD8vlls3g0lBDxQmrIVSnuDm4kP+QINb8KCD42tbQcSd8P8f2HmwdpORH4
-	 0njTUFo0BfuYARniW4kRxbnVcGUMAyiEIaNCdKh/+ifHbr8D36cJDeYan2Z87pEnpT
-	 hQgyll7/eD5wmyHRFJLecFC81m0LNo/aXteSpHwLZWGdfnjoyTahZ79zyCAZ/lNtf+
-	 HMlGSBpFqAaDhaWzo6AV0wGXRgrPUPKKXqDxmkwgWmN6PiLM97i1yk/294fQOTxAyb
-	 CmAWSamfJ+cWxJts4SFEkgb66eE2FQNSCEI5P+63Pyoq1Tl6Be889xvlcLhmakhZWe
-	 vbC8/ZY0Y13xA==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH] can: rockchip_canfd: Propagate reset failures on start
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Pengpeng Hou" <pengpeng@iscas.ac.cn>
-Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent
- Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>
-In-Reply-To: <20260624055026.24789-1-pengpeng@iscas.ac.cn>
-References: <20260624055026.24789-1-pengpeng@iscas.ac.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 24 Jun 2026 06:02:17 +0000
-Message-Id: <20260624060217.D5EBD1F000E9@smtp.kernel.org>
+	s=k20260515; t=1782294828;
+	bh=iNEBuHDtj3lw/hGAa3SXTCH0KqgqOiZ/1oH84U6cl3Q=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=FzsFuxhTNDoWI7G5HrhUua+dDvXmv8lRiO+gb/pKymxdOegQLr4wG4d6KxVWIvxBu
+	 5F1WtFtCBm6Qgg0YS6eKrvsJwISsAu/tP4kv/6cJsX2wEbKk8aNvu9/yFUM81vcbdf
+	 RuBtxaN++5alyp6neuwQTOC09Tc6hLbeSNDz87rbSiiKiDi9DK6ZeCO/GvotwwTPJQ
+	 8c/6em1fy9i5LGlN8nmrqNALbBXc0/os7uyX+WMgk+lBQOMreFiryn8aG10tMRPu2R
+	 tWplzI6wSuPAgUNFjbyx5luuggBY9RhkULcXrXCZYGM+WDs0441MOHOz9w0wYimMF4
+	 b4Jx4bn0XucZg==
+Message-ID: <76288461-98f7-4c72-9d97-3589d301cd9e@kernel.org>
+Date: Wed, 24 Jun 2026 11:53:45 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] can: c_can: Use platform id data when OF data is absent
+To: Pengpeng Hou <pengpeng@iscas.ac.cn>,
+ Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20260624054927.22851-1-pengpeng@iscas.ac.cn>
+From: Vincent Mailhol <mailhol@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=mailhol@kernel.org; keydata=
+ xjMEZluomRYJKwYBBAHaRw8BAQdAf+/PnQvy9LCWNSJLbhc+AOUsR2cNVonvxhDk/KcW7FvN
+ JFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbEBrZXJuZWwub3JnPsKZBBMWCgBBFiEE7Y9wBXTm
+ fyDldOjiq1/riG27mcIFAmdfB/kCGwMFCQp/CJcFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcC
+ F4AACgkQq1/riG27mcKBHgEAygbvORJOfMHGlq5lQhZkDnaUXbpZhxirxkAHwTypHr4A/joI
+ 2wLjgTCm5I2Z3zB8hqJu+OeFPXZFWGTuk0e2wT4JzjgEZx4y8xIKKwYBBAGXVQEFAQEHQJrb
+ YZzu0JG5w8gxE6EtQe6LmxKMqP6EyR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDl
+ dOjiq1/riG27mcIFAmceMvMCGwwFCQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8V
+ zsZwr/S44HCzcz5+jkxnVVQ5LZ4BANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
+In-Reply-To: <20260624054927.22851-1-pengpeng@iscas.ac.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Thank you for your contribution! Sashiko AI review found 4 potential issue(=
-s) to consider:
+On 24/06/2026 at 07:49, Pengpeng Hou wrote:
+> The platform driver keeps controller metadata in both the OF match table
+> and the platform id table.  Probe reads the metadata with
+> device_get_match_data(), which does not fall back to platform id-table
+> driver_data.
+> 
+> When the device is matched through the platform id table, drvdata can
+> therefore be NULL before it is dereferenced for msg_obj_num and the
+> controller type.  Fall back to platform_get_device_id() when firmware
+> match data is not available.
 
-New issues:
-- [High] Unsafe reset error handling introduces bus faults and incomplete t=
-eardown.
+So, you are telling me that this patch fixes a NULL pointer
+dereference? In that case, it needs to be backported. Please add a
+Fixes: tag.
 
-Pre-existing issues:
-- [High] Missing can_rx_offload_disable() in rkcanfd_open() error path caus=
-es BUG_ON panic.
-- [High] Asynchronous pm_runtime_put() races with pm_runtime_disable() duri=
-ng device removal.
-- [High] Calling non-atomic reset control APIs from the hardirq handler cau=
-ses a panic.
---
+Fixes: 5e6c3454b405 ("net: can: Use device_get_match_data()")
 
-commit a6e0fcd15347d005fd23e1237e5a026a9096879a
-Author: Pengpeng Hou <pengpeng@iscas.ac.cn>
-
-can: rockchip_canfd: Propagate reset failures on start
-
-The Rockchip CAN-FD driver requires a reset controller, but
-rkcanfd_chip_set_reset_mode() ignores reset assert/deassert failures.
-This patch returns reset errors from the reset/start helpers and propagates
-them before enabling RX offload, requesting the IRQ, or starting the netdev
-queue.
-
-> diff --git a/drivers/net/can/rockchip/rockchip_canfd-core.c b/drivers/net=
-/can/rockchip/rockchip_canfd-core.c
-> index 29de0c01e4edc..89bc402b76e85 100644
-> --- a/drivers/net/can/rockchip/rockchip_canfd-core.c
-> +++ b/drivers/net/can/rockchip/rockchip_canfd-core.c
-[ ... ]
-> @@ -102,13 +102,23 @@ static const struct can_bittiming_const rkcanfd_dat=
-a_bittiming_const =3D {
->  	.brp_inc =3D 2,	/* value from data sheet x2 */
->  };
-> =20
-> -static void rkcanfd_chip_set_reset_mode(const struct rkcanfd_priv *priv)
-> +static int rkcanfd_chip_set_reset_mode(const struct rkcanfd_priv *priv)
->  {
-> -	reset_control_assert(priv->reset);
-> +	int err;
+> Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
+> ---
+>  drivers/net/can/c_can/c_can_platform.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
+> index 19c86b94a40e..564c9e5b4c2c 100644
+> --- a/drivers/net/can/c_can/c_can_platform.c
+> +++ b/drivers/net/can/c_can/c_can_platform.c
+> @@ -263,9 +263,17 @@ static int c_can_plat_probe(struct platform_device *pdev)
+>  	int irq;
+>  	struct clk *clk;
+>  	const struct c_can_driver_data *drvdata;
+> +	const struct platform_device_id *id;
+>  	struct device_node *np = pdev->dev.of_node;
+>  
+>  	drvdata = device_get_match_data(&pdev->dev);
+> +	if (!drvdata) {
+> +		id = platform_get_device_id(pdev);
+> +		if (!id)
+> +			return -ENODEV;
 > +
-> +	err =3D reset_control_assert(priv->reset);
-> +	if (err)
-> +		return err;
+> +		drvdata = (const struct c_can_driver_data *)id->driver_data;
+> +	}
 
-[Severity: High]
-This is a pre-existing issue, but does calling reset_control_assert() from
-this context cause a scheduling while atomic panic?
+Reduce the visibility of id:
 
-If a state error occurs on the bus, the hardirq handler rkcanfd_irq()
-calls rkcanfd_handle_state_error_int() which initiates a stop:
+	if (!drvdata) {
+		const struct platform_device_id *id;
 
-rkcanfd_handle_state_error_int()
-    rkcanfd_chip_stop()
-        __rkcanfd_chip_stop()
-            rkcanfd_chip_set_reset_mode()
-                reset_control_assert()
+		id = platform_get_device_id(pdev);
+		if (!id)
+			return -ENODEV;
 
-Since this reset control uses a mutex internally, can this sleep in interru=
-pt
-context?
+		drvdata = (const struct c_can_driver_data *)id->driver_data;
+	}
 
-[Severity: High]
-If reset_control_assert() fails, we return early. Does this skip the
-fallback software reset and leave the controller active on the CAN bus?
+>  
+>  	/* get the appropriate clk */
+>  	clk = devm_clk_get(&pdev->dev, NULL);
 
-Previously, this function would fall back to software reset:
-    rkcanfd_write(priv, RKCANFD_REG_MODE, 0x0);
+With the Fixes: tag added and above nitpick addressed:
 
-With the early return, the controller might still be active while the driver
-considers it stopped.
+Reviewed-by: Vincent Mailhol <mailhol@kernel.org>
 
->  	udelay(2);
-> -	reset_control_deassert(priv->reset);
-> +
-> +	err =3D reset_control_deassert(priv->reset);
-> +	if (err)
-> +		return err;
-> =20
->  	rkcanfd_write(priv, RKCANFD_REG_MODE, 0x0);
-> +
-> +	return 0;
->  }
-[ ... ]
-> @@ -309,13 +322,16 @@ static void rkcanfd_chip_start(struct rkcanfd_priv =
-*priv)
-> =20
->  	netdev_dbg(priv->ndev, "%s: reg_mode=3D0x%08x\n", __func__,
->  		   rkcanfd_read(priv, RKCANFD_REG_MODE));
-> +
-> +	return 0;
->  }
-> =20
->  static void __rkcanfd_chip_stop(struct rkcanfd_priv *priv, const enum ca=
-n_state state)
->  {
->  	priv->can.state =3D state;
-> =20
-> -	rkcanfd_chip_set_reset_mode(priv);
-> +	if (rkcanfd_chip_set_reset_mode(priv))
-> +		netdev_err(priv->ndev, "Failed to reset CAN-FD controller\n");
->  	rkcanfd_chip_interrupts_disable(priv);
 
-[Severity: High]
-If reset_control_deassert() fails in rkcanfd_chip_set_reset_mode(), the
-controller is left actively held in reset.
-
-Will calling rkcanfd_chip_interrupts_disable() immediately after cause a
-synchronous external abort (bus fault)?
-
-Accessing MMIO of a peripheral currently held in reset on Rockchip SoCs
-typically causes a kernel panic.
-
->  }
-[ ... ]
-> @@ -719,7 +739,10 @@ static int rkcanfd_open(struct net_device *ndev)
->  	if (err)
->  		goto out_close_candev;
-> =20
-> -	rkcanfd_chip_start(priv);
-> +	err =3D rkcanfd_chip_start(priv);
-> +	if (err)
-> +		goto out_runtime_put;
-> +
->  	can_rx_offload_enable(&priv->offload);
-> =20
->  	err =3D request_irq(ndev->irq, rkcanfd_irq, IRQF_SHARED, ndev->name, pr=
-iv);
-> @@ -734,6 +757,7 @@ static int rkcanfd_open(struct net_device *ndev)
-> =20
->  out_rkcanfd_chip_stop:
->  	rkcanfd_chip_stop_sync(priv, CAN_STATE_STOPPED);
-
-[Severity: High]
-This isn't a bug introduced by this patch, but if request_irq() fails,
-does this error path miss calling can_rx_offload_disable()?
-
-A subsequent attempt to open the interface will call can_rx_offload_enable()
-again, which calls napi_enable() on an already-enabled NAPI context.
-
-Could this trigger a BUG_ON(!test_bit(NAPI_STATE_SCHED, &n->state)) in
-net/core/dev.c?
-
-> +out_runtime_put:
->  	pm_runtime_put(ndev->dev.parent);
-
-[Severity: High]
-This is a pre-existing issue, but does using the asynchronous
-pm_runtime_put() here and in rkcanfd_stop() race with pm_runtime_disable()
-during device removal?
-
-When the device is unregistered, rkcanfd_unregister() calls
-unregister_candev() which stops the interface, queueing an asynchronous
-suspend via pm_runtime_put().
-
-Immediately after, rkcanfd_unregister() calls pm_runtime_disable() which
-cancels the pending async idle/suspend work.
-
-Could this leave the hardware permanently powered on? Would using
-pm_runtime_put_sync() ensure the suspend completes?
-
->  out_close_candev:
->  	close_candev(ndev);
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260624055026.2478=
-9-1-pengpeng@iscas.ac.cn?part=3D1
+Yours sincerely,
+Vincent Mailhol
