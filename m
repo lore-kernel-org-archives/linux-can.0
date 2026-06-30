@@ -1,183 +1,176 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DA8637187B
-	for <linux-can@vger.kernel.org>; Tue, 30 Jun 2026 14:06:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C471F3BED19
+	for <linux-can@vger.kernel.org>; Tue, 30 Jun 2026 16:43:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782828391; cv=none; b=P4AM+I7pciKLv8Xs12eId/GEbbWAgaxSFWWUAhs8OVStzrxgRu8acuumjLIoOC9t3S9m4akbKBKhaj/YuMiNjCewfTOgiAXr8u3AKClwhVzXc0iI7RLSzPAW72AhhqZwjpaSG9Qb8uMjYGtn2D5iamw7K3l7YOMIaaAMVe6RJPQ=
+	t=1782837830; cv=none; b=uPGGZ+hbJN+XW5TvoZCyqG7dK+3h8tl9wpLSmyppNSDZl6RxF6tlAbyIothXyQfljouIexl3lTQoqJJ9gP+O6yDfSOB4Ycsg60mlbUsow6nfaapNuDbwNjaHK9s67cXQm5CfuXA1Os9GJ1JIjZfQlaR1VsMb+IukKsC9OSqqmwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782828391; c=relaxed/simple;
-	bh=9z7h++GiPXAwJrdJKNDyjU4L1ae9M/fTOkcW3k9fRgs=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=uyc8MbtneO4ICOjnLejPUWyEXQo07wDlJurZflJdHDMMx0U2xYSsrJMxeAnqb/5qpLDf0eY/tOYT0ZngFiQNCilzyZbr6GHMdJp1gf9/qBqC2vYgkwo8p0TBF+6cu8E7Tbw1M86Ga0BEvMjOJC6uNFEtT+I9PqLtk2QaBK1Pytc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XHiQRwYS; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1782837830; c=relaxed/simple;
+	bh=p2PeC0nQIU8XGKa3S/8y6V/3/TZusI1x27XJWhQGfSA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UC3InY6rghqIwa0C05ZMmrxAfB5IstuQ+RXtWVZR+WtsDIvca+9o091Or+OZaNkiwH0qfTVTdsW/fJqtuUQXrkHVr2t61PHKYqd1rtoPfKBVwuTJNMEV4dk3XtYp2ZP9RZqQYzX3nNcz9f0SxbJG5tsmme/tfIbDDFLuSGdWhH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=EQ0HU7Vf; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XHiQRwYS"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5065C1F00A3A;
-	Tue, 30 Jun 2026 14:06:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782828389;
-	bh=vTxDjnGV0gACVf171wIVgEHNw3wvryUkv4Xe8/+PT08=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=XHiQRwYSQiGxCVyPIe4OlvO4FfKF3KQI2g121t78fTZ39cGWMHTZLAE6cIlIJZEBN
-	 KpV4mCWPmgudRSjFuIzGNY0TvImZoHdEXgTpanXPeDh0rMEXFzCWGzN+EaqobBq/UX
-	 7sR5bAJRFO/p2yfoo0wWv5nj/Q/9hX0KhPHAEvVBy1iywil/rFJns56zqlO10ldMa7
-	 VS8NxDiUapQuiJjh9dcE1j+Gult7W26g94Rw0y/CGzIM1ykdNkbUTglsp2OXPdzhwn
-	 juQ8F6djpPtQt85GoZOUYGcmk0RVmi21eV6wdfBJG5IQCHJ9sB3CknVUm5HIXGBg7Z
-	 LAICJjvl2wqKQ==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH 2/3] can: rcar_canfd: Fix double-cleanup and unclocked
- register access on init failure
-Reply-To: sashiko-reviews@lists.linux.dev
-To: Biju <biju.das.au@gmail.com>
-Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent
- Mailhol" <mailhol@kernel.org>, wsa+renesas@sang-engineering.com, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org
-In-Reply-To: <20260630135119.104774-3-biju.das.jz@bp.renesas.com>
-References: <20260630135119.104774-1-biju.das.jz@bp.renesas.com>
- <20260630135119.104774-3-biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 30 Jun 2026 14:06:28 +0000
-Message-Id: <20260630140629.5065C1F00A3A@smtp.kernel.org>
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="EQ0HU7Vf"
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-493be1b9564so1457705e9.2
+        for <linux-can@vger.kernel.org>; Tue, 30 Jun 2026 09:43:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre.com; s=google; t=1782837826; x=1783442626; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uGD+GAgzuwfHMyCvb0nP+s7ICmE38JS3rDHMHE5/jc0=;
+        b=EQ0HU7Vfu2P0a4q0Xlu2Yl4zBmffwyGvvYkhZ5fRBTokS52WI1kaCFeNc3WoyZkN4y
+         yh0Bqp6yvIXYu9zF0mkI5wzXMlhUYUWuTdaQs3UYBHa8LK84Iz7UslbUsmgoQGpK1b08
+         H/3X9X9544cClBvnbs1Au//xr0SFKqG18a05whZUHBIvv47C0qYbzSYMH6X8Fiv9aoEM
+         90WvKezdE0Deu6joBjQpbhfhrzXHnaw+biA7OcP8BDThVRQbABVU8SnmqySGzOvolwG0
+         JZk1UkKH7rxI3IMXkhVPAS1q7QMDOEchT7R5+4BejVBuhwiPZKKpBTmIEQi1e9aho50T
+         cRNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1782837826; x=1783442626;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uGD+GAgzuwfHMyCvb0nP+s7ICmE38JS3rDHMHE5/jc0=;
+        b=rSH3yKLsUxgByiQX9QvKs2gDK1CVGAgDyQA4vz4LI0DYO0F26xwS0wXJb0/wVG1L5X
+         fyFE/utJe7nZsLl6r0Rc4/dfOcVNYUP7GIldNzB4rGZvC03SyW3vaLE2VzsL76uyvU7v
+         w0rrFY49ck3mYW0bCGT0mTkRcmPpxx82mTrsznDFGQp8hVu2xNAy++JcvjQqsCKm7dkm
+         9w4vcuJjCDJRPuPC3uyyER/Xw5nes8qNH9St95k/AJeMwjNFzvr1xVfP765mSYvaSZGD
+         dWjydm/Xt3Y1KIPvDN8tpgzeiPkOb4EqLxgRGQTu2lfGHQJLIdw9l24IyHnfhiSciu7h
+         PBLw==
+X-Forwarded-Encrypted: i=1; AFNElJ8XU47/QobORy75eqmXd+qAHjTKyht+XI8Ul2vCcSci6eeS4iAGCzj0SA/w8YqvtVsT1PwON6GuCBA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzradvaHHFa4V6GerGvdpE7gBp3Y87MK7oWleVzBm7d6+dbskxh
+	SYxW1jfZd8deFNEznXgsuNcQ1lSMs7EgkohP6PLT9RjBj76+K82rEmpeHAg0TUwnc2A=
+X-Gm-Gg: AfdE7ckltZilUEJOJIWakLgnzxE+07WawtzjVEikgVjaL4dW9nIFwyT5ubR/a0Xbw7E
+	9+7s/47UX1VJot26lozZsObx7hq6DJZCevtrkOmQY8dVwn4/AiljC/IZFqatIauYwMzCpI7s1nW
+	qGuCRtoRgu8Gr5nHTQonOMFZA3nM50bWoR7qCl/yr06IlgTcsSR+Rr+1d9RM4HDM9C3myogZM4j
+	N83AzMr5yTXDsCzz4QT4PFsUd135G4Z/mir4O3wRumigPY2iqpOtgF9/EuT2ypdvojmo62ukluf
+	Bm0SZBgtRjtkJuKxcm+QlmaUcrSaGKYtGtrT1TBDEgHR8WPC1TkYcxmlgPTc1B+u++U2+uPabAw
+	7fOydrWXaPiXAKvxXnVuxOsMw8eo/gg3EPSnWg8zijmZIcv7C3EYHEEc8ekqCGH+OUYHL9sCrwk
+	DFADl5vtfZwJ6HDbfsxuQ+cVayWWNJRXcJEW0cEoL1RXORuFSGOrgeasaoM72OiHQQ9iI5vlPsa
+	c0V09e8WVSjvN4=
+X-Received: by 2002:a05:600c:3acf:b0:493:be37:df11 with SMTP id 5b1f17b1804b1-493be37e0bamr9516005e9.16.1782837826181;
+        Tue, 30 Jun 2026 09:43:46 -0700 (PDT)
+Received: from localhost (p200300f65f47db042a9b551def0a6b94.dip0.t-ipconnect.de. [2003:f6:5f47:db04:2a9b:551d:ef0a:6b94])
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-493be4c8080sm9026455e9.1.2026.06.30.09.43.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jun 2026 09:43:45 -0700 (PDT)
+Date: Tue, 30 Jun 2026 18:43:43 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>
+To: Pengpeng Hou <pengpeng@iscas.ac.cn>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, 
+	Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>, linux-can@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2] can: c_can: Use platform id data when OF data is
+ absent
+Message-ID: <akPwf-nq2vTAlITA@monoceros>
+References: <20260624054927.22851-1-pengpeng@iscas.ac.cn>
+ <20260625054152.68413-1-pengpeng@iscas.ac.cn>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="6qvnggh7oh747mz6"
+Content-Disposition: inline
+In-Reply-To: <20260625054152.68413-1-pengpeng@iscas.ac.cn>
 
-Thank you for your contribution! Sashiko AI review found 4 potential issue(=
-s) to consider:
 
-New issues:
-- [High] Use-after-free read on the error path of rcar_canfd_channel_probe(=
-).
-- [High] The CAN network device is registered and exposed to userspace befo=
-re its global and shared interrupts are requested, introducing a race condi=
-tion.
+--6qvnggh7oh747mz6
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2] can: c_can: Use platform id data when OF data is
+ absent
+MIME-Version: 1.0
 
-Pre-existing issues:
-- [High] Use-After-Free vulnerability in error and removal paths due to mis=
-matched devm-managed interrupt lifetimes and dangling pointers.
-- [High] Incorrect clearing of W0C (Write-0-To-Clear) hardware status regis=
-ters can silently drop concurrent interrupts.
---
+Hello,
 
-commit a601711f6b0c8a2b4d0262288f6d110cc98b8332
-Author: Biju Das <biju.das.jz@bp.renesas.com>
-
-can: rcar_canfd: Fix double-cleanup and unclocked register access on init f=
-ailure
-
-In rcar_canfd_probe(), if rcar_canfd_global_init() encounters an error,
-it disables the clocks and asserts the resets before returning. However,
-the probe function then jumps to the fail_mode label and unconditionally
-calls rcar_canfd_global_deinit(), which writes to hardware registers and
-causes a synchronous external abort. This commit makes the failure path
-jump directly to fail_dev, skipping the redundant global_deinit() call.
-
-> diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rca=
-r_canfd.c
-> index 5aafbab85da67..1f3dc4b354f87 100644
-> --- a/drivers/net/can/rcar/rcar_canfd.c
-> +++ b/drivers/net/can/rcar/rcar_canfd.c
-> @@ -2257,7 +2257,7 @@ static int rcar_canfd_probe(struct platform_device =
-*pdev)
+On Thu, Jun 25, 2026 at 01:41:52PM +0800, Pengpeng Hou wrote:
+> The platform driver keeps controller metadata in both the OF match table
+> and the platform id table. Probe reads the metadata with
+> device_get_match_data(), which does not fall back to platform id-table
+> driver_data.
+>=20
+> When the device is matched through the platform id table, drvdata can
+> therefore be NULL before it is dereferenced for msg_obj_num and the
+> controller type. Fall back to platform_get_device_id() when firmware
+> match data is not available.
+>=20
+> Fixes: 5e6c3454b405 ("net: can: Use device_get_match_data()")
+> Cc: stable@vger.kernel.org
+> Reviewed-by: Vincent Mailhol <mailhol@kernel.org>
+> Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
+> ---
+> Changes in v2:
+> - Add the Fixes tag requested by Vincent.
+> - Scope the platform id variable inside the fallback block.
+> - Carry Vincent's Reviewed-by for the requested v2 shape.
+>=20
+>  drivers/net/can/c_can/c_can_platform.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>=20
+> diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_c=
+an/c_can_platform.c
+> index 19c86b94a40e..8a0c88839d24 100644
+> --- a/drivers/net/can/c_can/c_can_platform.c
+> +++ b/drivers/net/can/c_can/c_can_platform.c
+> @@ -267,6 +267,14 @@ static int c_can_plat_probe(struct platform_device *=
+pdev)
+>  	struct device_node *np =3D pdev->dev.of_node;
 > =20
->  	err =3D rcar_canfd_global_init(gpriv);
->  	if (err)
-> -		goto fail_mode;
-> +		goto fail_dev;
-> =20
->  	for_each_set_bit(ch, &gpriv->channels_mask, info->max_channels) {
-
-[Severity: High]
-Could this code expose the network interface to userspace before its interr=
-upts
-are fully set up?
-
-The loop registers the channels via rcar_canfd_channel_probe(), which calls
-register_candev(). However, the shared global interrupts (ch_irq, g_irq) are
-not requested via devm_request_irq() until after the channel loop completes.
-
-If a userspace process (e.g., systemd-networkd) brings the interface UP
-immediately upon registration, could rcar_canfd_open() start the hardware a=
-nd
-enable interrupts before the OS has registered the IRQ handlers, leading to
-unhandled interrupts?
-
->  		err =3D rcar_canfd_channel_probe(gpriv, ch, fcan_freq,
->  					       transceivers[ch]);
-[ ... ]
-> @@ -2275,7 +2275,7 @@ static int rcar_canfd_probe(struct platform_device =
-*pdev)
->  fail_channel:
->  	for_each_set_bit(ch, &gpriv->channels_mask, info->max_channels)
->  		rcar_canfd_channel_remove(gpriv, ch);
-
-[Severity: High]
-This is a pre-existing issue, but is there a use-after-free vulnerability
-here due to mismatched interrupt lifetimes?
-
-When rcar_canfd_channel_remove() frees the network device and its inline
-private data priv via free_candev(priv->ndev), the devm_request_irq()
-shared interrupt handlers remain active until devres cleanup runs after
-probe() or remove() returns.
-
-If a shared interrupt fires during this window, wouldn't the handler
-(e.g., rcar_canfd_global_interrupt()) execute and unconditionally
-dereference gpriv->ch[ch]->base, accessing the freed priv memory?
-
-> -fail_mode:
+>  	drvdata =3D device_get_match_data(&pdev->dev);
+> +	if (!drvdata) {
+> +		const struct platform_device_id *id;
 > +
->  	rcar_canfd_global_deinit(gpriv, false);
->  fail_dev:
->  	return err;
+> +		id =3D platform_get_device_id(pdev);
+> +		if (!id)
+> +			return -ENODEV;
+> +		drvdata =3D (const struct c_can_driver_data *)id->driver_data;
+> +	}
 
+Given that there are no devices probed via the platform_driver's
+id_table (or my grep misses it:
 
-I also noticed a few other issues in this file:
+	$ git grep -E '"(c_can_platform|c_can|d_can)"'
+	drivers/net/can/c_can/c_can_platform.c:         .name =3D "c_can",
+	drivers/net/can/c_can/c_can_platform.c:         .name =3D "d_can",
+)
 
-[Severity: High]
-This is a pre-existing issue, but won't the driver incorrectly clear
-W0C (Write-0-To-Clear) hardware status registers?
+just do:
 
-In functions like rcar_canfd_tx_done(), rcar_canfd_rx_poll(), and
-rcar_canfd_global_error(), the driver reads the status register into sts
-and writes back sts & ~FLAG:
+	if (!drvdata)
+		return -ENODEV;
 
-drivers/net/can/rcar/rcar_canfd.c:rcar_canfd_tx_done() {
-    ...
-    rcar_canfd_write(priv->base, RCANFD_CFSTS(gpriv, ch, RCANFD_CFFIFO_IDX),
-                     sts & ~RCANFD_CFSTS_CFTXIF);
-    ...
-}
+and drop c_can_id_table[].
 
-Because this bitwise operation leaves 0s in bit positions that were
-originally 0, won't writing 0 inadvertently clear any flag that was
-asserted by the hardware after the register was initially read, leading to
-silent loss of hardware interrupts and dropped packets?
+An error message would be nice, but the other error exits don't have one
+either.
 
+Unless I missed something a backport to stable isn't needed then,
+either.
 
-[Severity: High]
-Is there a use-after-free read in the error path of rcar_canfd_channel_prob=
-e()?
+Best regards
+Uwe
 
-When device registration fails, the error path calls free_candev(ndev)
-which frees the net_device and its inline private data priv:
+--6qvnggh7oh747mz6
+Content-Type: application/pgp-signature; name="signature.asc"
 
-drivers/net/can/rcar/rcar_canfd.c:rcar_canfd_channel_probe() {
-    ...
-fail:
-	free_candev(ndev);
-	gpriv->ch[priv->channel] =3D NULL;
-	return err;
-}
+-----BEGIN PGP SIGNATURE-----
 
-Immediately following the free, the code attempts to nullify the global
-pointer array using priv->channel. Since priv has already been freed,
-isn't this a use-after-free read?
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmpD8jsACgkQj4D7WH0S
+/k6YJgf+PebwvZJFAFdp9ZHI6Q+yYUJRHUrdUo3ouDB/rABWQQhmiHzuIcHqqFYU
+cKvY/0eH+Fjp0C7wlSGYvbItKyefUNEXT7w+FvkBQVZR4saZw1v2AS8un3YBWq1c
+dtkYlQkOizhIHNXtHW/CdBsfjggE66fwWlIL4kLmf/yNdqMNwnVYlWII008iDxFW
+lr7ytQPRaoo7DU3pmQcEq86dzTbW4SBZaZocVRznSgl3JI8WWQkDlyYzzIpP+lYp
+hVvA4Szln0XbvaHwsX0Ln//Ni9nioUhJby97P74yCkQX7ioGjp6MK1OUsIqQD+ve
+rs49kviGKJ/3AGJSjPoajmGNct3/lQ==
+=68X8
+-----END PGP SIGNATURE-----
 
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260630135119.1047=
-74-1-biju.das.jz@bp.renesas.com?part=3D2
+--6qvnggh7oh747mz6--
