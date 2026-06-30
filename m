@@ -1,167 +1,213 @@
-Received: from cstnet.cn (smtp25.cstnet.cn [159.226.251.25])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 657B9EEC0;
-	Tue, 30 Jun 2026 07:30:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B19A040B383
+	for <linux-can@vger.kernel.org>; Tue, 30 Jun 2026 12:28:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782804625; cv=none; b=M13SEjAyf5tnNueMaB5laMEroQNSDDy4aYGZ60LaF8iVEFoRd1Ys48qitm4H9lilh15zVshG6QuiHwn442n4DcZ9eYR7O4jGhWw8o9R9CzOoioC/elAbjXq+J0Ku9CNjg/ueJrUrbeqHrUNSabYMULkLlD1jb2MGBkC4F+2lC+M=
+	t=1782822542; cv=none; b=uzLYZTryyu9lp/bBIsxpb3qr2fGcb/fC7yG5AqfSAk25q6aYpNi69VTM02B2Ou715/HRr0TSyYvT+kjZ76stdOC5F7HDckzsxzoUNiplCw7Bp2ALIKYDEm31r+Ew5cE3zsqDJIp5z3aE2YNuhYRkhRU4Mj9hRgliu/X2m/iR1Zw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782804625; c=relaxed/simple;
-	bh=VI5GG3z/60fSJn2ej1NgW9bkKNYuR3yXnDzKAMgshMk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=EkGBfiEM78nTwVukq01FxajPLDlWLEn+v4IBqzneGx+n/A4faqKyn42GmLaxP3MgwMs7y+sxBgSyVJG7IOsQbhmIElfZ4budzLtAEuRvHALPPfqJJmqiMxE1s9nJ6FgyHM1g2i7EsvHIf6Y715FDwjX+YKWZFxH8ieKo5bqobqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from 0042-can-gw-validate-checksum-indices-against-frame-length.eml (unknown [111.196.245.140])
-	by APP-05 (Coremail) with SMTP id zQCowAAXYMOGcENqV6gkFg--.11658S2;
-	Tue, 30 Jun 2026 15:30:14 +0800 (CST)
-From: Pengpeng Hou <pengpeng@iscas.ac.cn>
-To: Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Pengpeng Hou <pengpeng@iscas.ac.cn>
-Subject: [PATCH] can: gw: validate checksum indices against frame length
-Date: Tue, 30 Jun 2026 15:29:14 +0800
-Message-ID: <2026063009033007.3-ccfa108-0042-can-gw-validate-checksum-in-pengpeng@iscas.ac.cn>
+	s=arc-20240116; t=1782822542; c=relaxed/simple;
+	bh=5K4d3a9c2RvkGp+kQqvLMHZ2Bt/PjI5n/G2uKInObac=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=nk3wVj4VSxynI7k6rx4yWAV4tc3u+5+G4swuqmG+hmyyXWI+ElE7gBj/ggogcwPulW+cB//iBk5Y8/8z8VeGMPQ+/dqVMWaXMGadIlMDMegIjToO+vnfQIqfYYDNwBdpviP8Oick4GdJR9vTiRyArMhH01KvtgGg0A+yiU+TWJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=HF5xdtt5; arc=none smtp.client-ip=185.246.85.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="HF5xdtt5"
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 2D1C24E40BAE;
+	Tue, 30 Jun 2026 12:28:58 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id E730E6025A;
+	Tue, 30 Jun 2026 12:28:57 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id BF6B9106F17B5;
+	Tue, 30 Jun 2026 14:28:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1782822536; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=oNGP3sotdTmFK6A7nU9ncpG1ZNmDDoUD7AUxOXF4ib4=;
+	b=HF5xdtt5CnsXpRvkJRSEkWxTm+7LOvlvuahtWUHVT6H6ITA4Fm/z2tOTeePwOy0bIan7yN
+	Rarubp69V8BnNPsSU0yYZ8NiFiVzPKCv+S3pwkQq+v1u37buOW7Cmi41ZEyB2YAS79dIpY
+	PK2crJNBg5oEQkNlt9vPrtAV8xxQSfr1SJwHnMzWpKWeIgFM38AFLMmq6kaTBPSWw97l9D
+	gHJgmftbNn2yw3NKsF5hU14Gw9QLpqiseQEQxTNQC5nJqL3AfcvrtMm9nhYf9+zkkDfv8N
+	WdMmOQIoejK0N9e0cyNJbaJUPm57dX1O728T3g5cUkBRLwcUUfPpbPnY91Ph9w==
+From: "Thomas Richard (TI)" <thomas.richard@bootlin.com>
+Date: Tue, 30 Jun 2026 14:28:46 +0200
+Subject: [PATCH] phy: phy-can-transceiver: Add suspend operation for
+ tcan1043
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zQCowAAXYMOGcENqV6gkFg--.11658S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWw1kAr43AF15CF13uFWfZrb_yoW5uw45pa
-	y5AFyY9FWkJrWfJrs2yw48Z3y5Aw48J3Z7G3sxK34UAry7ta4DJF17G34SvF18KF4kCr4a
-	9rZ0yF4DGFyDZa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWUAVWU
-	twCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
-	1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
-	64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr
-	0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF
-	0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUxcTPUUUUU=
-X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260630-phy-can-transceiver-suspend-resume-support-v1-1-6842c2d697e4@bootlin.com>
+X-B4-Tracking: v=1; b=H4sIAH62Q2oC/y3NMQ7CMAyF4atUnrHUBlEFroIYQuJQD6TBTqqiq
+ ncnAsbvDe/fQEmYFC7dBkILK8+pYTh04CeXHoQcmsH0ZuzHwWKe3uhdwiIuqSdeSFCrZkoBhbQ
+ +qTHnWQoGOsejsScT7xbaYRaKvH5j19vPQq/amuU/7vsHXyPrKpEAAAA=
+X-Change-ID: 20260618-phy-can-transceiver-suspend-resume-support-de9f32852fb8
+To: Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Vincent Mailhol <mailhol@kernel.org>, Vinod Koul <vkoul@kernel.org>, 
+ Neil Armstrong <neil.armstrong@linaro.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>, richard.genoud@bootlin.com, 
+ Udit Kumar <u-kumar1@ti.com>, Abhash Kumar <a-kumar2@ti.com>, 
+ linux-can@vger.kernel.org, linux-phy@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, 
+ "Thomas Richard (TI)" <thomas.richard@bootlin.com>
+X-Mailer: b4 0.14.3
+X-Last-TLS-Session-Version: TLSv1.3
 
-CAN gateway checksum parameters are validated against the maximum Classic
-CAN or CAN FD payload size when the route is configured.  At runtime,
-however, an individual frame may carry a shorter payload.
+Add suspend operation for tcan1043. It switches the PHY in Sleep mode, the
+lowest power mode of the device. If a bus wake-up pattern or a local
+wake-up event occurs, the PHY transitions to Standby mode, set its internal
+WAKERQ flag and set the INH output high. In Sleep mode INH is floating.
 
-The checksum helpers use from_idx, to_idx and result_idx to read and
-write cf->data[], and the CRC8 16U8 profile additionally reads
-cf->data[1].  A configuration that fits the maximum frame size can
-therefore still access bytes outside the current frame's valid payload.
+The WAKERQ flag prevents transition to Go-to-Sleep mode. The only way to
+clear it is to switch to Normal mode. So to reach Sleep mode, we firstly
+switch to Normal mode, then to Go-to-Sleep mode.
 
-Validate checksum source and result indices against the current
-cf->len, and require byte 1 to be present before using the CRC8 16U8
-profile selector.
+Suspend sequence (PHY is off):
 
-Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
+    Standby -> Normal -> Go-to-Sleep -> Sleep
+
+Suspend sequence (PHY is on):
+
+    Normal -> Go-to-Sleep -> Sleep
+
+Signed-off-by: Thomas Richard (TI) <thomas.richard@bootlin.com>
 ---
- net/can/gw.c | 35 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+ drivers/phy/phy-can-transceiver.c | 56 ++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 49 insertions(+), 7 deletions(-)
 
-diff --git a/net/can/gw.c b/net/can/gw.c
-index 0ec99f6..5911afb 100644
---- a/net/can/gw.c
-+++ b/net/can/gw.c
-@@ -318,6 +318,19 @@ static inline int calc_idx(int idx, int rx_len)
- 		return idx;
+diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
+index 75dc49e75ca0..2bca1a173fcc 100644
+--- a/drivers/phy/phy-can-transceiver.c
++++ b/drivers/phy/phy-can-transceiver.c
+@@ -5,6 +5,7 @@
+  * Copyright (C) 2021 Texas Instruments Incorporated - https://www.ti.com
+  *
+  */
++#include <linux/delay.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/phy/phy.h>
+ #include <linux/platform_device.h>
+@@ -12,25 +13,28 @@
+ #include <linux/module.h>
+ #include <linux/mux/consumer.h>
+ 
++struct can_transceiver_phy {
++	struct phy *generic_phy;
++	struct gpio_desc *silent_gpio;
++	struct gpio_desc *standby_gpio;
++	struct gpio_desc *enable_gpio;
++	struct can_transceiver_priv *priv;
++};
++
+ struct can_transceiver_data {
+ 	u32 flags;
+ #define CAN_TRANSCEIVER_STB_PRESENT	BIT(0)
+ #define CAN_TRANSCEIVER_EN_PRESENT	BIT(1)
+ #define CAN_TRANSCEIVER_DUAL_CH		BIT(2)
+ #define CAN_TRANSCEIVER_SILENT_PRESENT	BIT(3)
++	int	(*suspend)(struct can_transceiver_phy *phy);
+ };
+ 
+-struct can_transceiver_phy {
+-	struct phy *generic_phy;
+-	struct gpio_desc *silent_gpio;
+-	struct gpio_desc *standby_gpio;
+-	struct gpio_desc *enable_gpio;
+-	struct can_transceiver_priv *priv;
+-};
+ 
+ struct can_transceiver_priv {
+ 	struct mux_state *mux_state;
+ 	int num_ch;
++	const struct can_transceiver_data *data;
+ 	struct can_transceiver_phy can_transceiver_phy[] __counted_by(num_ch);
+ };
+ 
+@@ -76,12 +80,28 @@ static const struct phy_ops can_transceiver_phy_ops = {
+ 	.owner		= THIS_MODULE,
+ };
+ 
++static int tcan1043_suspend(struct can_transceiver_phy *phy)
++{
++	/* Switch to Normal mode, it clears WAKERQ */
++	gpiod_set_value_cansleep(phy->standby_gpio, 0);
++	gpiod_set_value_cansleep(phy->enable_gpio, 1);
++
++	/* Switch to Go-to-Sleep mode */
++	gpiod_set_value_cansleep(phy->standby_gpio, 1);
++
++	/* Wait transition to Sleep mode */
++	fsleep(5);
++
++	return 0;
++}
++
+ static const struct can_transceiver_data tcan1042_drvdata = {
+ 	.flags = CAN_TRANSCEIVER_STB_PRESENT,
+ };
+ 
+ static const struct can_transceiver_data tcan1043_drvdata = {
+ 	.flags = CAN_TRANSCEIVER_STB_PRESENT | CAN_TRANSCEIVER_EN_PRESENT,
++	.suspend = tcan1043_suspend,
+ };
+ 
+ static const struct can_transceiver_data tja1048_drvdata = {
+@@ -115,6 +135,26 @@ static struct phy *can_transceiver_phy_xlate(struct device *dev,
+ 	return priv->can_transceiver_phy[idx].generic_phy;
  }
  
-+static bool cgw_csum_idx_valid(const struct canfd_frame *cf, int idx)
++static int can_transceiver_phy_suspend(struct device *dev)
 +{
-+	return idx >= 0 && idx < cf->len;
++	struct can_transceiver_priv *priv = dev_get_drvdata(dev);
++	const struct can_transceiver_data *data = priv->data;
++	int ret, i;
++
++	for (i = 0; i < priv->num_ch; i++) {
++		if (data->suspend) {
++			ret = data->suspend(&priv->can_transceiver_phy[i]);
++			if (ret)
++				return ret;
++		}
++	}
++
++	return 0;
 +}
 +
-+static bool cgw_csum_range_valid(const struct canfd_frame *cf,
-+				 int from, int to, int res)
-+{
-+	return cgw_csum_idx_valid(cf, from) &&
-+	       cgw_csum_idx_valid(cf, to) &&
-+	       cgw_csum_idx_valid(cf, res);
-+}
++static DEFINE_SIMPLE_DEV_PM_OPS(can_transceiver_phy_pm_ops,
++				can_transceiver_phy_suspend, NULL);
 +
- static void cgw_csum_xor_rel(struct canfd_frame *cf, struct cgw_csum_xor *xor)
+ static int can_transceiver_phy_probe(struct platform_device *pdev)
  {
- 	int from = calc_idx(xor->from_idx, cf->len);
-@@ -326,7 +339,7 @@ static void cgw_csum_xor_rel(struct canfd_frame *cf, struct cgw_csum_xor *xor)
- 	u8 val = xor->init_xor_val;
- 	int i;
+ 	struct phy_provider *phy_provider;
+@@ -145,6 +185,7 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
  
--	if (from < 0 || to < 0 || res < 0)
-+	if (!cgw_csum_range_valid(cf, from, to, res))
- 		return;
+ 	priv->num_ch = num_ch;
++	priv->data = drvdata;
+ 	platform_set_drvdata(pdev, priv);
  
- 	if (from <= to) {
-@@ -345,6 +358,10 @@ static void cgw_csum_xor_pos(struct canfd_frame *cf, struct cgw_csum_xor *xor)
- 	u8 val = xor->init_xor_val;
- 	int i;
+ 	mux_state = devm_mux_state_get_optional(dev, NULL);
+@@ -247,6 +288,7 @@ static struct platform_driver can_transceiver_phy_driver = {
+ 	.driver = {
+ 		.name = "can-transceiver-phy",
+ 		.of_match_table = can_transceiver_phy_ids,
++		.pm = pm_sleep_ptr(&can_transceiver_phy_pm_ops),
+ 	},
+ };
  
-+	if (!cgw_csum_range_valid(cf, xor->from_idx, xor->to_idx,
-+				  xor->result_idx))
-+		return;
-+
- 	for (i = xor->from_idx; i <= xor->to_idx; i++)
- 		val ^= cf->data[i];
- 
-@@ -356,6 +373,10 @@ static void cgw_csum_xor_neg(struct canfd_frame *cf, struct cgw_csum_xor *xor)
- 	u8 val = xor->init_xor_val;
- 	int i;
- 
-+	if (!cgw_csum_range_valid(cf, xor->from_idx, xor->to_idx,
-+				  xor->result_idx))
-+		return;
-+
- 	for (i = xor->from_idx; i >= xor->to_idx; i--)
- 		val ^= cf->data[i];
- 
-@@ -371,7 +392,10 @@ static void cgw_csum_crc8_rel(struct canfd_frame *cf,
- 	u8 crc = crc8->init_crc_val;
- 	int i;
- 
--	if (from < 0 || to < 0 || res < 0)
-+	if (!cgw_csum_range_valid(cf, from, to, res))
-+		return;
-+
-+	if (crc8->profile == CGW_CRC8PRF_16U8 && cf->len < 2)
- 		return;
- 
- 	if (from <= to) {
-@@ -406,6 +430,13 @@ static void cgw_csum_crc8_pos(struct canfd_frame *cf,
- 	u8 crc = crc8->init_crc_val;
- 	int i;
- 
-+	if (!cgw_csum_range_valid(cf, crc8->from_idx, crc8->to_idx,
-+				  crc8->result_idx))
-+		return;
-+
-+	if (crc8->profile == CGW_CRC8PRF_16U8 && cf->len < 2)
-+		return;
-+
- 	for (i = crc8->from_idx; i <= crc8->to_idx; i++)
- 		crc = crc8->crctab[crc ^ cf->data[i]];
- 
-@@ -433,6 +464,13 @@ static void cgw_csum_crc8_neg(struct canfd_frame *cf,
- 	u8 crc = crc8->init_crc_val;
- 	int i;
- 
-+	if (!cgw_csum_range_valid(cf, crc8->from_idx, crc8->to_idx,
-+				  crc8->result_idx))
-+		return;
-+
-+	if (crc8->profile == CGW_CRC8PRF_16U8 && cf->len < 2)
-+		return;
-+
- 	for (i = crc8->from_idx; i >= crc8->to_idx; i--)
- 		crc = crc8->crctab[crc ^ cf->data[i]];
- 
+
+---
+base-commit: a25d586f7f9e7f22e7e0350053c15924d28ed6ee
+change-id: 20260618-phy-can-transceiver-suspend-resume-support-de9f32852fb8
+
+Best regards,
+-- 
+Thomas Richard (TI) <thomas.richard@bootlin.com>
 
