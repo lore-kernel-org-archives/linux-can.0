@@ -1,236 +1,143 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.20])
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 622D13B9DA6;
-	Wed,  1 Jul 2026 07:34:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.20
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782891262; cv=pass; b=AskkfLM9VHm+Tzyqso1iA4Xw1F+OMJ5ILb4rhfSVu7fE1Qphi6hrQmoOtHqHTGRzod5p+S0BA/Ph+ExFGl/cJbD3q7Pzidaa3B+kn/KsCQlPA26RDJDR+fcu/zWYVUS22ONS0oe6lIcOR70PvWTR7myVdFgIDFHgr7vRM+4h+nk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782891262; c=relaxed/simple;
-	bh=zdngiYe3hiGuB/DLkOqIeGMaVFY/0fAWBToeALIgXOk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eU2B1bKNrEAOar2zFKamHpNHiqFq9RJGCLytqfZGy5nrg5ttHg6awWNw0OHQbeCTbyKq/H1lhDqCrY0LZh+hR+Y8IfHBRzh1o+shUpR+K35f/uDK8Ww8j9fbLibvOPHLPVlKxIpZ4+fB2m9L8krR/1H4GOTVN80WGMCMYbMsBGo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=OLHxW+yj; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=UePeuVdw; arc=pass smtp.client-ip=85.215.255.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA99A3FFAC6;
+	Wed,  1 Jul 2026 09:55:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1782899767; cv=none; b=Y1m3YeXYaxghBrjyxmnSpC6fFx4tWPRYI6+Z7i1x6NdLbdgE6mErXX0b/jnSuLkfP1IKurrAw74t6Bt9LlpUtN44cqZCEu4W/UTTU0tETizJMCOc9FkJIOh7Q16KQ7qKZVpQYliSQ7vDTijep48+WyXNNZfaauTNJWW67pwWZ6Q=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1782899767; c=relaxed/simple;
+	bh=Y6FebpXTbt55poJocQkLDY6wwdF36SH6ugjS6chVRFA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LT4k6OFl/uTbrE8OCbRw4osaCsA+66qTzRbVlqRWsVj1OF2kFlzkMfhXNg64GQhNMb0rN5FnKQb8ch9Opj6AWG35PafDdhcrhqKgMIRod0OcrFH05b4BNUcZhVIG3A+C22V82kjTbIIQclhFLaDQDGCN+/SNPG4Wo+vgtTk7xQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; dkim=pass (2048-bit key) header.d=sntech.de header.i=@sntech.de header.b=CBFCH8L3; arc=none smtp.client-ip=185.11.138.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="OLHxW+yj";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="UePeuVdw"
-ARC-Seal: i=1; a=rsa-sha256; t=1782890537; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=PKisPJSX+3JiBW+nLGaBqudExXDV0Q8c+Q3OGjBdPsHW11jw4Gv0rKPvGzAO4Ovrlc
-    m/V94J1Ehy2x14I62eO48Y/5AIlyjGFCj64nfrBKT8oFMUnYzJGl310t+xr6/SsVbOfH
-    og5obMJN1wb5Ygt6zFK860A7ZrPY8qbv6zoZrro/UfoqslgZQ15mnKCtBi9jLDj/r3N0
-    BuEvXHR/Ls+K5hcVrpsfVoSn+FaL9eEMje5OSHozJqQvtC/1ukLVyd0lkRFH4zNAXYeM
-    4GYQtGrsIh1gxR/dbPXr5m8d0mlprEa9lS/qzWuHjsU8s9WIGkr2SWOd0ZvOKHH2HzjD
-    YtAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1782890537;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=7lyqMtp60uZ9+hRYovTWLV7HZ6UlWlv6eCjV9bfXWDg=;
-    b=dfwVgPrZgpCFhQ80LCtvX9FslVN4djgY+wRWnl3b/8APHBola2AkOf7/L1rs+FrFgp
-    tjmS+CsN8WzUnQovIC050vflmizWbE22FwSW8BKERqIolOJ8pUcviGeEvR1mZu+P37jo
-    XzJJkLTCCc9MOHzAPKLSUljzWFgOIpmEPEp6A+zb6ZyN+Es1hPoqppbj0J2lfsEaY7gE
-    8eHPzw3+mjzfoupfqtk3CaimEk4IMPEoFjWKjgs4HMWfPezK/u8Ow/4lPICMVSC5U9cq
-    9RE78PKbBm3g5OOKf19cyshhgMd0hzIIXdzH8AnDfNrqTEHupGqPMTLknN40dbHTb1X4
-    TzwA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1782890537;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=7lyqMtp60uZ9+hRYovTWLV7HZ6UlWlv6eCjV9bfXWDg=;
-    b=OLHxW+yjSHXNWMk4vuoAIDSqD/5Usp8/Gv1P5qHJNVmIKQZfR1ZZU2g41S9wtIuSTY
-    M5zumz2t6cKtLzl+EprX5bX8L9fEHdx7ksEzQr+tVGBsVWhfDwAUTYO6MCFWJgm/DKBd
-    a1bNYtdBhYDdXQrTcRKe4WrN8b94Y0MTEAeQ+Jds6ZFcDWQGA5G0xYKuG9gEkLMdj2YZ
-    whmxgXWHrLXaUsc3R51soABvZXVsGu61ioSfp6dBpI1mWbAu9zUpGHGKCnHjszxtY/Dg
-    Q9ZyehhjfTI6LoI3+R6/kCcUQl6pcg8Yfj2A6UhAZzHpb8BE3FbJVu/wj5DcKO4uPqL1
-    NOqA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1782890537;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=7lyqMtp60uZ9+hRYovTWLV7HZ6UlWlv6eCjV9bfXWDg=;
-    b=UePeuVdwfqVUR+4CI9tBy5xsj/voNQBER0A2/mjZ7KJHFL/0u/sdJ1QxyvF0STJS1q
-    BUWB8gpMCeqC2ApgXTBg==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tRkI16oOSW1Ti/f4PoH8="
-Received: from [192.168.20.111]
-    by smtp.strato.de (RZmta 55.5.6 DYNA|AUTH)
-    with ESMTPSA id Ka9fdb2617MGtG5
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Wed, 1 Jul 2026 09:22:16 +0200 (CEST)
-Message-ID: <0212a7f9-b26e-4c15-984d-066ca87fd85e@hartkopp.net>
-Date: Wed, 1 Jul 2026 09:22:09 +0200
+	dkim=pass (2048-bit key) header.d=sntech.de header.i=@sntech.de header.b="CBFCH8L3"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=sntech.de;
+	s=gloria202408; h=Content-Type:Content-Transfer-Encoding:MIME-Version:
+	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Reply-To;
+	bh=YXbWsJdVyrdyTG0h5l7l2loSKTm6mVXPsPtw2ami5dk=; b=CBFCH8L3XGKiP/K1ZN7vVXVeHO
+	TYkbcdRb7HG3F74/uf8JkzcO+CYf/pQ8hVd/bQW64Ez2rZ4zxcV4TD0jnnJseomf1envfpC8mnB+Q
+	AXx+xHjOmIhyrn9yFTao5hqiJWjmm1v9eFQzdTye49MOlx8QrLadNqQKz4MVVq9UicyCi7m9t222i
+	SUAkN9B4gjxbnt2lMrxs+JROzdPZgH7xqe3MBWAMt+K5c4hXSLlrlhoQtMTZaYHbAKEzBypRxVrM4
+	X4p3CoGibwpF2ye7JhDmqplKnFc8fTDvLGL3P4wY8T7vuXpwFxPsznPvG3gb2gCl+RTv1YHEL7YtO
+	PBd3NovA==;
+From: Heiko =?UTF-8?B?U3TDvGJuZXI=?= <heiko@sntech.de>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
+ 1579567540@qq.com
+Cc: Vincent Mailhol <mailhol@kernel.org>, kernel@pengutronix.de,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org, luch00 <1579567540@qq.com>
+Subject: Re: [PATCH 2/3] can: rockchip: add RK3588 CAN-FD support
+Date: Wed, 01 Jul 2026 11:55:39 +0200
+Message-ID: <2064877.jZfb76A358@diego>
+In-Reply-To: <tencent_124D6134EB32480979234201E688087E5408@qq.com>
+References:
+ <20260701070128.2096267-1-1579567540@qq.com>
+ <tencent_124D6134EB32480979234201E688087E5408@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] can: gw: validate checksum indices against frame length
-To: Pengpeng Hou <pengpeng@iscas.ac.cn>,
- Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <2026063009033007.3-ccfa108-0042-can-gw-validate-checksum-in-pengpeng@iscas.ac.cn>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <2026063009033007.3-ccfa108-0042-can-gw-validate-checksum-in-pengpeng@iscas.ac.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 
-Hello PengPeng,
+Hi,
 
-many thanks for your contribution!
+Am Mittwoch, 1. Juli 2026, 09:01:27 Mitteleurop=C3=A4ische Sommerzeit schri=
+eb 1579567540@qq.com:
+> From: luch00 <1579567540@qq.com>
 
-On 30.06.26 09:29, Pengpeng Hou wrote:
-> CAN gateway checksum parameters are validated against the maximum Classic
-> CAN or CAN FD payload size when the route is configured.  At runtime,
-> however, an individual frame may carry a shorter payload.
+please use a real name, not an alias.
 
-Right! I definitely get your point.
 
-But the cf->len has to be seen as a magnifying glass when looking at the 
-resulting CAN(FD) frame content.
+> Add support for the RK3588v2 CAN-FD controller by introducing a
+> dedicated model ID and OF match entry.
+>=20
+> The block is closely related to the existing RK3568 variants, but it
+> cannot reuse their match data unchanged. In particular, RK3588v2
+> encodes RX_FIFO_CNT in bits 7:5 instead of 6:4, so the RX path needs
+> SoC-specific handling.
+>=20
+> Validation on RK3588v2 also shows that its observed errata profile does
+> not fully match rk3568v2/rk3568v3, so keep a dedicated devtype for this
+> variant instead of relying on an rk3568 fallback.
 
-With the modification rules AND,OR,XOR,SET always the entire(!) CAN 
-frame content is modified - no matter what the cf->len is.
-So it is possible that content is changed that is 'behind' cf->len.
+=46unnily enough, we seem to have worked on the same topic
+at the same time :-)
 
-Simple approach: As long as it fits to the CAN(FD) frame data structure 
-the modification is applied.
+https://lore.kernel.org/lkml/20260630164336.3444550-1-heiko@sntech.de/
 
-Same applies to the XOR/CRC8 modification rules.
-
-With your patch this simplicity would be removed without adding a new 
-benefit. When the creator of the modification rule created an 
-insufficient rule he will get an insufficient result.
-
-With your patch the result will still be insufficient - but with 
-different (insufficient) resulting content as you stop the processing at 
-a different point.
-
-As there is no qualitative improvement for the implemented functionality 
-the patch finally would only add complexity, sorry.
-
-Many thanks anyway and best regards,
-Oliver
-
-> 
-> The checksum helpers use from_idx, to_idx and result_idx to read and
-> write cf->data[], and the CRC8 16U8 profile additionally reads
-> cf->data[1].  A configuration that fits the maximum frame size can
-> therefore still access bytes outside the current frame's valid payload.
-> 
-> Validate checksum source and result indices against the current
-> cf->len, and require byte 1 to be present before using the CRC8 16U8
-> profile selector.
-> 
-> Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
+> Signed-off-by: luch00 <1579567540@qq.com>
 > ---
->   net/can/gw.c | 35 ++++++++++++++++++++++++++++++++++-
->   1 file changed, 34 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/can/gw.c b/net/can/gw.c
-> index 0ec99f6..5911afb 100644
-> --- a/net/can/gw.c
-> +++ b/net/can/gw.c
-> @@ -318,6 +318,19 @@ static inline int calc_idx(int idx, int rx_len)
->   		return idx;
->   }
->   
-> +static bool cgw_csum_idx_valid(const struct canfd_frame *cf, int idx)
-> +{
-> +	return idx >= 0 && idx < cf->len;
-> +}
+>  drivers/net/can/rockchip/rockchip_canfd-core.c | 14 ++++++++++++++
+>  drivers/net/can/rockchip/rockchip_canfd-rx.c   |  5 ++++-
+>  drivers/net/can/rockchip/rockchip_canfd.h      | 12 +++++++++++-
+>  3 files changed, 29 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/net/can/rockchip/rockchip_canfd-core.c b/drivers/net=
+/can/rockchip/rockchip_canfd-core.c
+> index 29de0c01e..3c2480785 100644
+> --- a/drivers/net/can/rockchip/rockchip_canfd-core.c
+> +++ b/drivers/net/can/rockchip/rockchip_canfd-core.c
+> @@ -50,6 +50,15 @@ static const struct rkcanfd_devtype_data rkcanfd_devty=
+pe_data_rk3568v3 =3D {
+>  		RKCANFD_QUIRK_CANFD_BROKEN,
+>  };
+> =20
+> +/* Tests on the rk3588v2 reproduce Erratum 5, but not
+> + * Erratum 6 or the special CAN-FD frames that trigger Error Interrupts
+> + * on rk3568v2/rk3568v3.
+> + */
+
+Here I could reproduce erratum 6 though:
+https://lore.kernel.org/lkml/20260630164336.3444550-4-heiko@sntech.de/
+
+
+[...]
+
+> diff --git a/drivers/net/can/rockchip/rockchip_canfd-rx.c b/drivers/net/c=
+an/rockchip/rockchip_canfd-rx.c
+> index 475c0409e..fe64db373 100644
+> --- a/drivers/net/can/rockchip/rockchip_canfd-rx.c
+> +++ b/drivers/net/can/rockchip/rockchip_canfd-rx.c
+> @@ -281,7 +281,10 @@ rkcanfd_rx_fifo_get_len(const struct rkcanfd_priv *p=
+riv)
+>  {
+>  	const u32 reg =3D rkcanfd_read(priv, RKCANFD_REG_RX_FIFO_CTRL);
+> =20
+> -	return FIELD_GET(RKCANFD_REG_RX_FIFO_CTRL_RX_FIFO_CNT, reg);
+> +	if (priv->devtype_data.model =3D=3D RKCANFD_MODEL_RK3588V2)
+> +		return FIELD_GET(RKCANFD_REG_RX_FIFO_CTRL_RX_FIFO_CNT_RK3588, reg);
 > +
-> +static bool cgw_csum_range_valid(const struct canfd_frame *cf,
-> +				 int from, int to, int res)
-> +{
-> +	return cgw_csum_idx_valid(cf, from) &&
-> +	       cgw_csum_idx_valid(cf, to) &&
-> +	       cgw_csum_idx_valid(cf, res);
-> +}
-> +
->   static void cgw_csum_xor_rel(struct canfd_frame *cf, struct cgw_csum_xor *xor)
->   {
->   	int from = calc_idx(xor->from_idx, cf->len);
-> @@ -326,7 +339,7 @@ static void cgw_csum_xor_rel(struct canfd_frame *cf, struct cgw_csum_xor *xor)
->   	u8 val = xor->init_xor_val;
->   	int i;
->   
-> -	if (from < 0 || to < 0 || res < 0)
-> +	if (!cgw_csum_range_valid(cf, from, to, res))
->   		return;
->   
->   	if (from <= to) {
-> @@ -345,6 +358,10 @@ static void cgw_csum_xor_pos(struct canfd_frame *cf, struct cgw_csum_xor *xor)
->   	u8 val = xor->init_xor_val;
->   	int i;
->   
-> +	if (!cgw_csum_range_valid(cf, xor->from_idx, xor->to_idx,
-> +				  xor->result_idx))
-> +		return;
-> +
->   	for (i = xor->from_idx; i <= xor->to_idx; i++)
->   		val ^= cf->data[i];
->   
-> @@ -356,6 +373,10 @@ static void cgw_csum_xor_neg(struct canfd_frame *cf, struct cgw_csum_xor *xor)
->   	u8 val = xor->init_xor_val;
->   	int i;
->   
-> +	if (!cgw_csum_range_valid(cf, xor->from_idx, xor->to_idx,
-> +				  xor->result_idx))
-> +		return;
-> +
->   	for (i = xor->from_idx; i >= xor->to_idx; i--)
->   		val ^= cf->data[i];
->   
-> @@ -371,7 +392,10 @@ static void cgw_csum_crc8_rel(struct canfd_frame *cf,
->   	u8 crc = crc8->init_crc_val;
->   	int i;
->   
-> -	if (from < 0 || to < 0 || res < 0)
-> +	if (!cgw_csum_range_valid(cf, from, to, res))
-> +		return;
-> +
-> +	if (crc8->profile == CGW_CRC8PRF_16U8 && cf->len < 2)
->   		return;
->   
->   	if (from <= to) {
-> @@ -406,6 +430,13 @@ static void cgw_csum_crc8_pos(struct canfd_frame *cf,
->   	u8 crc = crc8->init_crc_val;
->   	int i;
->   
-> +	if (!cgw_csum_range_valid(cf, crc8->from_idx, crc8->to_idx,
-> +				  crc8->result_idx))
-> +		return;
-> +
-> +	if (crc8->profile == CGW_CRC8PRF_16U8 && cf->len < 2)
-> +		return;
-> +
->   	for (i = crc8->from_idx; i <= crc8->to_idx; i++)
->   		crc = crc8->crctab[crc ^ cf->data[i]];
->   
-> @@ -433,6 +464,13 @@ static void cgw_csum_crc8_neg(struct canfd_frame *cf,
->   	u8 crc = crc8->init_crc_val;
->   	int i;
->   
-> +	if (!cgw_csum_range_valid(cf, crc8->from_idx, crc8->to_idx,
-> +				  crc8->result_idx))
-> +		return;
-> +
-> +	if (crc8->profile == CGW_CRC8PRF_16U8 && cf->len < 2)
-> +		return;
-> +
->   	for (i = crc8->from_idx; i >= crc8->to_idx; i--)
->   		crc = crc8->crctab[crc ^ cf->data[i]];
->   
-> 
+> +	return FIELD_GET(RKCANFD_REG_RX_FIFO_CTRL_RX_FIFO_CNT_RK3568, reg);
+>  }
+> =20
+>  int rkcanfd_handle_rx_int(struct rkcanfd_priv *priv)
+> diff --git a/drivers/net/can/rockchip/rockchip_canfd.h b/drivers/net/can/=
+rockchip/rockchip_canfd.h
+> index 93131c7d7..f6105b904 100644
+> --- a/drivers/net/can/rockchip/rockchip_canfd.h
+> +++ b/drivers/net/can/rockchip/rockchip_canfd.h
+> @@ -214,7 +214,8 @@
+>  #define RKCANFD_REG_TXEVENT_FIFO_CTRL_TXE_FIFO_ENABLE BIT(0)
+> =20
+>  #define RKCANFD_REG_RX_FIFO_CTRL 0x118
+> -#define RKCANFD_REG_RX_FIFO_CTRL_RX_FIFO_CNT GENMASK(6, 4)
+> +#define RKCANFD_REG_RX_FIFO_CTRL_RX_FIFO_CNT_RK3568 GENMASK(6, 4)
+> +#define RKCANFD_REG_RX_FIFO_CTRL_RX_FIFO_CNT_RK3588 GENMASK(7, 5)
+
+Oh, didn't see this when doing my variant of the support, so cool that you
+found this.
+
+
+Heiko
+
 
