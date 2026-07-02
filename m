@@ -1,76 +1,107 @@
-Received: from out203-205-221-191.mail.qq.com (out203-205-221-191.mail.qq.com [203.205.221.191])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7EF747ECE6;
-	Thu,  2 Jul 2026 12:46:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B5B54A2E01
+	for <linux-can@vger.kernel.org>; Thu,  2 Jul 2026 13:56:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782996411; cv=none; b=h/FlKdh0+jShIAnK+ZQjrfQU2H8kf02v7/hmddcf2SYxIyhhL4iuSRrZX0e/NsSsQDS+jW4wFoWDlQaZ66801IwWeOUpCTeNbAQmB+or0t7jJPnQBQr89woWVkTqgza2m4z7XaoeiiIyi0NTypXgdmYzEUDvdviuylfct1oy1ww=
+	t=1783000563; cv=none; b=TbQQ6mAVZsCicXfVydF8bu1Aw8JIc1NFRVTNC3ppubEG9Qudm8bByO9e45sQunOoN9jwp5A3MOyXRLxY4wOVHrlrZ8MyqRUokgzWk41fU6cQAtbDiSwlZh5evpUrnTcTZGXSNdd4i1Sx+MZjb442/ymDgSluYYz1L+pA9WrfqVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782996411; c=relaxed/simple;
-	bh=cZ82wpzG4dEDpgB0onYrYhbBV1XpTLYDCKUM8jFjHJ8=;
-	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID; b=b/Lh3JRpg9zQ64dx/iQAbOxq828oBBBEZyICOEWbWjFTOLGXFjFhE1w8Jds81L7QCHpa3e9A29X62iBEv0gT0mbgJ/tB2MkzU/CztDmbr3dbgvRQZd2G0q+cVxoIadf5yLeAwECB5bsyM+pEAdyoFTSDQaIwQol9QKFzXQD6wIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=azV2hz4t; arc=none smtp.client-ip=203.205.221.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="azV2hz4t"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1782996401; bh=cZ82wpzG4dEDpgB0onYrYhbBV1XpTLYDCKUM8jFjHJ8=;
-	h=From:To:Cc:Subject:Date;
-	b=azV2hz4tgzVRPzqUT1cmejO8zhXMUF+PRp5a0TeWOS3nj3nJsAknPEBmkV5OcSaza
-	 tYWDF9PoWx2dX14KRA/UHEOCKBwVCZ5bWPc52ThbhhOaXk8Rm5agePaGLplcsDS7Em
-	 7kAYtamYNHRiwhXD7rahRxO1sCW4NaNaqmnXH1iE=
-X-QQ-XMRINFO: MSVp+SPm3vtSI1QTLgDHQqIV1w2oNKDqfg==
-X-QQ-XMAILINFO: McF9JvsryK5JD7mWECZX57rL5Rprn8Mk7XTA5UJtsp7kYfow6fxNMQoWuwoNn4
-	 tVNny0O4V2vpwvGzR8je738IRA73nQ9hA5I5rcMIdTzKVx9EGI1zSQxUlfeg6uNX6coG0Lu0rFrZM
-	 Gc2hC1WBmGJS+vZOXQnEEGnrm3PJhaq8gTjLC79BGpyYMM6oSPKeefpCufewFwvgu816KhSivasKC
-	 68Zm4+ENlNp2iAdgXSsvyjHmLAhVgSS5v5+CYo38hQpEHAmCY2sDnrhqddBJdT7NNRIGbixFpLUjD
-	 7NjyU0kZnFNrO+mnW28uCsZf5ezJwS7kFne5/aQb7ulFhvU9VtxmokbMXBZtQmtMjKf/CtnlPUcRc
-	 QMa8jw7A4oA0xECBhNx5+oZqpPVFqOX7uBs1MkcJqDhCl+1pA8y129xhO6bP4x+iCk+kkoh1P70/Y
-	 xflsNu4w6e6HRkDFDjzwxHKVdlW7H9IoqWwEslXZxxqYOOnqe3SyMTwZNW3w0CVtKtToykPYHT0Yn
-	 kLqkw4s2narZarifHngjrPdFqkge1/1F5HLpjdTxMC2oE3M49xXGn/5M4203ckggz17/d+QEl7IGX
-	 mO1VZSp2i1skxVN+4QK+AgcRnH+1jGkdpv8yh4aBSkxfrcn2MMaYhahjahYtxpyrmR8ZovLKRFd3q
-	 Gw+/UVFPGGE0JAqe1dLgGYJRRDaCe14wQdiBGlCfzqsqN18MDsA3EU33ecHvh6ggTce5K1E5sLzNB
-	 lcvu2q5VJ08cW4lhqGpEchzKAobjVkEltnK4ZZozgEzKxT3UaHIpH2OBBXolwM6/U/m/lp4VJJq8y
-	 2tzifYVJXW9X/BPK6fNpVd7iiMmbIrOYzhtAmTETMByvXutnrPpEJ02/pu3/sUS6wB0iW0B/MbO1c
-	 OKm6WYyr4dBRmA7AMjJtV/fifAnIdaE8R9gqLQPfD/nqsI2TxO2XU1iRkEeiMQ9JwlJB2QEIgdVWh
-	 ix/6ITZu4TUSDeQcfFBcwXRnTzupl1aSIoKu0GS6FBL8kFlI3DzzZBijXcnkyg4in4sDL6FxBxPT5
-	 ddNgfrREJIzrdxV1gFatoJa7EzOOHwf6iAM/phNxLQMe3rNzg+YD+R9SdvA==
-From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
-To: "=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?=" <mkl@pengutronix.de>
-Cc: "=?utf-8?B?aGVpa28=?=" <heiko@sntech.de>, "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?bWFpbGhvbA==?=" <mailhol@kernel.org>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?cm9iaA==?=" <robh@kernel.org>, "=?utf-8?B?a3J6aytkdA==?=" <krzk+dt@kernel.org>, "=?utf-8?B?Y29ub3IrZHQ=?=" <conor+dt@kernel.org>, "=?utf-8?B?ZGV2aWNldHJlZQ==?=" <devicetree@vger.kernel.org>, "=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, "=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/3] can: rockchip: add RK3588 CAN-FD support
+	s=arc-20240116; t=1783000563; c=relaxed/simple;
+	bh=T3uuF/8A51Bmk9D48setsl9wX+g7FZ8fCWHxRhZEuBM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NUeyH0Zfuhv53zARzErfW+I+eZ/fLrx8RQ+7SEc0lHGlVqtgBYP27CgFgGTi00k6X3mmPVeG6Esr7UjiUICb/McGo/7fjA3w6P5RlRRzf/m8FotJ2NfVZWfPZS+kF80KNZeZlS2suGIXVmf5/EQR8B0piZ7YrNC0Ly7mn54EPd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id ADE9320262F;
+	Thu, 02 Jul 2026 15:55:58 +0200 (CEST)
+Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1wfHtW-005kqn-21;
+	Thu, 02 Jul 2026 15:55:58 +0200
+Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.98.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1wfHtW-0000000DQBM-2Cbn;
+	Thu, 02 Jul 2026 15:55:58 +0200
+Date: Thu, 2 Jul 2026 15:55:58 +0200
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: linux-can@vger.kernel.org, Robin van der Gracht <robin@protonic.nl>,
+	kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH v2 (repost)] can: j1939: use netdevice_tracker for
+ j1939_{priv,session,ecu} tracking
+Message-ID: <akZt7t2aLfnf1Yk6@pengutronix.de>
+References: <2bc332e0-b250-4679-a075-1c413ad843ce@I-love.SAKURA.ne.jp>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Date: Thu, 2 Jul 2026 20:45:27 +0800
-X-Priority: 3
-Message-ID: <tencent_2AA2119D8067447DBFA826619A5419878407@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-X-QQ-mid: xmsezb41-0t1782996327t5ajzis1k
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2bc332e0-b250-4679-a075-1c413ad843ce@I-love.SAKURA.ne.jp>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
 
-SGkgTWFyYywKCnRoYW5rcyBmb3IgdGhlIGZlZWRiYWNrLgoKPiBUaGVuIENBTi1GRCBpcyBi
-cm9rZW4uIDovCj4KPiBNYXliZSBpbiBhIGxhdGVyIHBhdGNoIHdlIGNhbiBoYWNrIHNvbWV0
-aGluZywgdG8gYWxsb3cgd29ya2luZwo+IGNvbmZpZ3VyYXRpb25zLgoKVW5kZXJzdG9vZC4g
-SSB3aWxsIGtlZXAgQ0FOLUZEIGRpc2FibGVkIGZvciBSSzM1ODggaW4gdjIuCgpJIHdpbGwg
-YWxzbyB0cnkgdG8gaW52ZXN0aWdhdGUgd2hldGhlciB0aGUgZmFpbGluZyBCUlMvZGF0YS1w
-aGFzZSBzZXR1cApjYW4gYmUgZml4ZWQuIElmIEkgY2FuIGZpbmQgYSBwcm9wZXIgZml4LCBJ
-IHdpbGwgc2VuZCBpdCBhcyBhIGZvbGxvdy11cApwYXRjaCBpbnN0ZWFkIG9mIG1peGluZyBp
-dCBpbnRvIHRoaXMgdjIgc2VyaWVzLgoKPiBDYW4geW91IHVwZGF0ZSB0aGUgZGVzY3JpcHRp
-b24gb2YgdGhlIHF1aXJrIGZvciB0aGUgcmszNTg4IGFuZCBhZGQgaG93Cj4gdG8gcmVwcm9k
-dWNlIGl0PwoKWWVzLiBJIHdpbGwgdXBkYXRlIHRoZSBSSzM1ODggcXVpcmsgZGVzY3JpcHRp
-b24gYW5kIGFkZCB0aGUgcmVwcm9kdWNlCnN0ZXBzIGZvciB0aGUgQlJTL2RhdGEgYml0cmF0
-ZSBpc3N1ZS4KCj4gUGxlYXNlIGtlZXAgaXQgZGlzYWJsZWQgZm9yIG5vdy4KCkkgd2lsbCBr
-ZWVwIFJLQ0FORkRfUVVJUktfQ0FORkRfQlJPS0VOIGVuYWJsZWQgZm9yIFJLMzU4OCBpbiB2
-Miwgc28KQ0FOLUZEIHN0YXlzIGRpc2FibGVkIGZvciBub3cuCgpUaGFua3MsCkN1bmhhbyBM
-dQ==
+On Fri, May 29, 2026 at 10:31:22AM +0900, Tetsuo Handa wrote:
+> syzbot is still reporting
+> 
+>   unregister_netdevice: waiting for vcan0 to become free. Usage count = 2
+> 
+> problem. A debug printk() patch in linux-next-20260508 identified that
+> there is dev_hold()/dev_put() imbalance in j1939_priv management.
+> 
+>   Call trace for vcan0[26] +4 at
+>      __dev_hold include/linux/netdevice.h:4470 [inline]
+>      netdev_hold include/linux/netdevice.h:4513 [inline]
+>      dev_hold include/linux/netdevice.h:4536 [inline]
+>      j1939_priv_create net/can/j1939/main.c:140 [inline]
+>      j1939_netdev_start+0x36b/0xc10 net/can/j1939/main.c:268
+>      j1939_sk_bind+0x853/0xb30 net/can/j1939/socket.c:506
+>      __sys_bind_socket net/socket.c:1948 [inline]
+>      __sys_bind+0x2e9/0x410 net/socket.c:1979
+> 
+>   Call trace for vcan0[28] -3 at
+>      __dev_put include/linux/netdevice.h:4456 [inline]
+>      netdev_put include/linux/netdevice.h:4523 [inline]
+>      dev_put include/linux/netdevice.h:4548 [inline]
+>      __j1939_priv_release net/can/j1939/main.c:166 [inline]
+>      kref_put include/linux/kref.h:65 [inline]
+>      j1939_priv_put+0x128/0x270 net/can/j1939/main.c:172
+>      j1939_sk_sock_destruct+0x52/0x90 net/can/j1939/socket.c:388
+>      __sk_destruct+0x8d/0x9d0 net/core/sock.c:2352
+>      rcu_do_batch kernel/rcu/tree.c:2617 [inline]
+>      rcu_core kernel/rcu/tree.c:2869 [inline]
+>      rcu_cpu_kthread+0x99e/0x1470 kernel/rcu/tree.c:2957
+>      smpboot_thread_fn+0x541/0xa50 kernel/smpboot.c:160
+>      kthread+0x388/0x470 kernel/kthread.c:436
+>      ret_from_fork+0x514/0xb70 arch/x86/kernel/process.c:158
+>      ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+> 
+> This refcount leak in j1939_priv might be caused by a refcount leak in
+> j1939_{session,ecu} because j1939_{session,ecu} holds a ref on j1939_priv.
+> For further investigation using upstream kernels, enable netdevice_tracker
+> in j1939_{priv,session,ecu} management.
+> 
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+
+Thank you!
+
+Best Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
