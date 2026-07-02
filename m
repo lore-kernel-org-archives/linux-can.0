@@ -1,104 +1,74 @@
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D76830C16C;
-	Thu,  2 Jul 2026 16:02:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB8763AA4F6
+	for <linux-can@vger.kernel.org>; Thu,  2 Jul 2026 16:32:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783008159; cv=none; b=LMRCXuNHAC3X/6934MWOBRCcxZluzGdnCC7HHEi8WQU0xrGkiG0BN1OOf2yDFQHmk67TCnS86ciDzOoYkRI1zDcxNUd68yMP9TGkbI1OUVRCsK1RAyc0KRbQ914MV90f/gUGKK1qsI19gqR9ULW4+oeOggc2ULMrcwIInQKyejQ=
+	t=1783009959; cv=none; b=K01fl0DSpHLmYWqiF0NDkJjDjh435DDckepz4snNoQztqMmfPbGPkfldLyPnQyMgbhebtTR3VGgbf3d4zAfWSH66Hg1hnXu/Xm8xfynI9FUSjFT0BuRlOHN0ivHjTtF/dYs/xabx9yazsfR8ZbkErsXzeSpNilk/S38GE/Hdbws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783008159; c=relaxed/simple;
-	bh=Om1A/qUPAE+RvRc9QOCiGXLsDeJqGK2rZLRnc+C2LPU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=J/Rw/DGodzGCsy3VqeTK5NaSVGxAdAdPGXs3o44ECbr5KdVjxCFfz2JUy/7/elxNHTPqZn9nB7b3pLQR1QIEssAX1iB3/TXN3PMOukKPxlz3Zl6uNFAwWjp7kN1BQVp3OiA2mXNFHRqRSLsmDgnhzB9OsjNa3uyUYp+B4LKYt98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; dkim=pass (2048-bit key) header.d=sntech.de header.i=@sntech.de header.b=PRBdzR5F; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+	s=arc-20240116; t=1783009959; c=relaxed/simple;
+	bh=OnW870l0yC9mr/LlBv2UdLFBV+iCbhzmV8aj4QwT7js=;
+	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
+	 References:In-Reply-To; b=hYZVf2hs5AIRLzxlpU5w6WfkYqlw9mzSJhRb8MVqbFKYxE3+QPCIPO1aFBPywyQiHD5gNK/0r37qRPBS5uGtFHKawcaTKoWzKq/tIhKwjgp8B0reDX6LLfC8AMTWV/udZ3l9a7UtMUGUO00v1YocKi6XIyOWNa6qwiJ79K4lhkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=j4hFMk1N; arc=none smtp.client-ip=43.163.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sntech.de header.i=@sntech.de header.b="PRBdzR5F"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=sntech.de;
-	s=gloria202408; h=Content-Type:Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Reply-To;
-	bh=Om1A/qUPAE+RvRc9QOCiGXLsDeJqGK2rZLRnc+C2LPU=; b=PRBdzR5FrpwlcK69ZWsZm+uEdL
-	nHKCecM0P3uNqXRCLMZ4e5saOl2fHva7y6aB+iizLxJ5rSNgl5cLsYRc0MP0jZAYG+N+CjwDIgtxL
-	USbLfTdmx6Go5xHgm3Ipn5r7o5/8WqscetSYzfLsvbrSPKvFHmkkKDVmWzlG9b6RaTXch9YGUM1Q3
-	Ur2Z4NKK4n23iEY5JG53LPPskGXXTH1TmsI9rZHpC69Dlef40qlEKq2in+xLCMAfe13uQdC9ZkdSu
-	/l1MX/nAJ99AAxxsxM3aUZKNdzDMiY8kZ94gMFC+yP6rx8IQJFfjZdKMaozCb4Y1ML/fMYOQgbeWa
-	yQ4zqj/Q==;
-From: Heiko =?UTF-8?B?U3TDvGJuZXI=?= <heiko@sntech.de>
-To: Marc Kleine-Budde <mkl@pengutronix.de>,
- linux-can <linux-can@vger.kernel.org>, 1579567540@qq.com
-Cc: Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, kernel <kernel@pengutronix.de>,
- Conor Dooley <conor+dt@kernel.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Shengjiu Wang <shengjiu.wang@nxp.com>, Pengpeng Hou <pengpeng@iscas.ac.cn>,
- Russell King <rmk+kernel@armlinux.org.uk>,
- Eric Biggers <ebiggers@kernel.org>,
- Mario Limonciello <mario.limonciello@amd.com>,
- Karl Mehltretter <kmehltretter@gmail.com>, Yixun Lan <dlan@kernel.org>,
- Stephen Boyd <sboyd@kernel.org>, devicetree <devicetree@vger.kernel.org>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
- linux-rockchip <linux-rockchip@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>, Cunhao Lu <1579567540@qq.com>,
- Heiko Stuebner <heiko.stuebner@cherry.de>
-Subject: Re: [PATCH v2 2/4] can: rockchip: add RK3588 CAN support
-Date: Thu, 02 Jul 2026 18:02:25 +0200
-Message-ID: <3527453.usfYGdeWWP@diego>
-In-Reply-To: <tencent_F077D309CDB6CC4802CC086D8009E29BDF06@qq.com>
-References:
- <20260702140654.2961561-1-1579567540@qq.com>
- <tencent_F077D309CDB6CC4802CC086D8009E29BDF06@qq.com>
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="j4hFMk1N"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1783009948; bh=OnW870l0yC9mr/LlBv2UdLFBV+iCbhzmV8aj4QwT7js=;
+	h=From:To:Cc:Subject:Date:References:In-Reply-To;
+	b=j4hFMk1N/h3OTU0UVYZO+w0N33E6MBV+2FQA7+4IbqJknmcGOL8gFBY0byucW2pHL
+	 kt+7W+0wZRfj5KA+mNc+NVTwucs2WLVAANHI76ZEtPKCNPr0YsevP4CUCdJmDf8Arh
+	 dH9yZjfYc3jGPgzKamYGee0d5BrLs6KxdoIR+YY4=
+X-QQ-XMRINFO: NS+P29fieYNwqS3WCnRCOn9D1NpZuCnCRA==
+X-QQ-XMAILINFO: McF9JvsryK5J2MbxooxpFinMQvrcWw5im6o2Q6S6gW5u3vK+e7cbb8hasHzSKI
+	 bcHTBt+6j2qlIdyMSYAtV4T4FkElEeOkhPgUjutEqxSZlE9pwpXcmYwVL07UwlPWfKyDB/k7yJPCd
+	 O/FwzzTIDfS6OMkFEs9WAYsIQIOWNO+byR197KMqoN69geEX3QNLF4uCZeS9sssoBvgUbE7eHtJ73
+	 uLxAtB59HYqah38S61HXgi7+ecvVPE2eAoocyRHDXxtREgZE4n9kB0+cKPWhgzNQ+RcWfexXszztR
+	 KKTxN+RDMYhH2tZox94LMxZO0QxJbV5OWgEt4ZPNBgosE6wmjyU/kWY/ynBS9NjV4CrEGBhpP8pgE
+	 kKrx5xDLW7Ylf7x0n03qpySTyuk/y0P5ENgh4lsbd6nCPP2SjYirm2UbNATs1ARVThiRQAHR7xeCH
+	 RjHXuoZE4ISLTI5Hnyca1FBFBMtv+PU1e+c/xx10pOFi/TwkxfRYWjFHw50+m0Okder38GSiOXR1F
+	 NQn9PFhTcEYqsMInYAQKW6uXJqoaqRpX0Li+7TJ9wk4jjsiOMq5Z7AApJpHGDojBEsJt7QXt74oS/
+	 BveXTjV0ZYpWevj3fD4aDytAo018wnoFb86DPsGuqMP2/bcOtManjx+CPn20yxVDKYJh3s+HrgNiA
+	 XG9+uNODenrAhEugrR4mfA7ABssjjmXFuMCrO4RILgfAhB1ODwR5n9ZyAJK2AY+egS64dNI/yBh35
+	 dWDV/jSUyjbuGIj7bWQsbElPpuRt3+IsuVqI/yeyc2TPQBlIx2msP+v0VbJ76S8MUsWMCakJIAh3/
+	 E/ae8K8VWzdLV9aTnQbFO9FZC+kCGg3TrgUdiIeMs6ZTDxVMNskXs0B0FRJzhkYWMO29QCZyU9B1Z
+	 bZL4rWB///fCE/W1WnSv9GkSXF0IJaInY+mpYt2RpXvX3E5R7vbjg4jDjvJjCGiaxvjx3rJUSXJin
+	 U8zbkaK2CTClnmuU97UpOUqyzo4h+otk3jvZMDkV6x7EOylkMw1ZhITE52UobaUR1DcJqfl/BRLS3
+	 hqOio78a22z1UZ2t25FSQnHF27mNnp4CrZgQK4EAhmPoLjDt9DfTyU0c6vQ==
+From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
+To: "=?utf-8?B?SGVpa28gU3TDvGJuZXI=?=" <heiko@sntech.de>, "=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?=" <mkl@pengutronix.de>, "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>
+Cc: "=?utf-8?B?VmluY2VudCBNYWlsaG9s?=" <mailhol@kernel.org>, "=?utf-8?B?Um9iIEhlcnJpbmc=?=" <robh@kernel.org>, "=?utf-8?B?S3J6eXN6dG9mIEtvemxvd3NraQ==?=" <krzk+dt@kernel.org>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?Q29ub3IgRG9vbGV5?=" <conor+dt@kernel.org>, "=?utf-8?B?RG1pdHJ5IFRvcm9raG92?=" <dmitry.torokhov@gmail.com>, "=?utf-8?B?U2hlbmdqaXUgV2FuZw==?=" <shengjiu.wang@nxp.com>, "=?utf-8?B?UGVuZ3BlbmcgSG91?=" <pengpeng@iscas.ac.cn>, "=?utf-8?B?UnVzc2VsbCBLaW5n?=" <rmk+kernel@armlinux.org.uk>, "=?utf-8?B?RXJpYyBCaWdnZXJz?=" <ebiggers@kernel.org>, "=?utf-8?B?TWFyaW8gTGltb25jaWVsbG8=?=" <mario.limonciello@amd.com>, "=?utf-8?B?S2FybCBNZWhsdHJldHRlcg==?=" <kmehltretter@gmail.com>, "=?utf-8?B?WWl4dW4gTGFu?=" <dlan@kernel.org>, "=?utf-8?B?U3RlcGhlbiBCb3lk?=" <sboyd@kernel.org>, 
+	"=?utf-8?B?ZGV2aWNldHJlZQ==?=" <devicetree@vger.kernel.org>, "=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, "=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/4] dt-bindings: can: rockchip: add rk3588 CAN-FD compatible
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Date: Fri, 3 Jul 2026 00:32:26 +0800
+X-Priority: 3
+Message-ID: <tencent_E65CC81827F48E7C0708213AFA3934F9D00A@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
+References: <20260702140654.2961561-1-1579567540@qq.com>
+ <tencent_3B2B6003D1DE4FB7A984665A062581766405@qq.com>
+	<2459655.BjyWNHgNrj@diego>
+In-Reply-To: <2459655.BjyWNHgNrj@diego>
+X-QQ-mid: xmsezb41-0t1783009946tqms5g9r6
 
-Am Donnerstag, 2. Juli 2026, 16:06:52 Mitteleurop=C3=A4ische Sommerzeit sch=
-rieb 1579567540@qq.com:
-> From: Cunhao Lu <1579567540@qq.com>
->=20
-> Add support for the RK3588 CAN controller by introducing a dedicated
-> model ID and OF match entry.
->=20
-> The block is closely related to the existing RK3568 variants, but it
-> cannot reuse their match data unchanged. In particular, RK3588
-> encodes RX_FIFO_CNT in bits 7:5 instead of 6:4, so the RX path needs
-> SoC-specific handling.
->=20
-> The RX FIFO count bitfield difference was found by comparing Rockchip's
-> vendor kernel 6.1 CAN support for RK3568 and RK3588. Runtime testing on
-> RK3588 also confirms that bits 7:5 are needed.
->=20
-> Enable the existing erratum 5 empty-FIFO workaround for RK3588.
-> Heiko reproduced erratum 6 on RK3588, so enable that workaround as
-> well.
->=20
-> Keep RKCANFD_QUIRK_CANFD_BROKEN enabled for RK3588, so CAN-FD stays
-> disabled for now. Local testing did not reproduce the two known CAN-FD
-> trigger frames that cause Error Interrupts on RK3568 variants. Instead,
-> RK3588 shows a different CAN-FD failure mode: CAN-FD frames without BRS
-> work in this setup, but BRS with a data bitrate different from the
-> nominal bitrate immediately drives the controller bus-off.
->=20
-> Reported-by: Heiko Stuebner <heiko.stuebner@cherry.de>
-> Link: https://lore.kernel.org/lkml/20260630164336.3444550-4-heiko@sntech.=
-de/
-
-I think you might want to drop that above. If anything a Co-developed-by
-would be applicable, but from the (small) size of the change, that also
-isn't really necessary for me :-)
-
-
-> Signed-off-by: Cunhao Lu <1579567540@qq.com>
-
-Tested-by: Heiko Stuebner <heiko@sntech.de>
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
-
-
-
+PiBhZnRlcsKgZml4aW5nwqDCoEtyenlzenRvZidzwqBjb21tZW50Ogo+IFJldmlld2VkLWJ5
+OsKgSGVpa2/CoFN0dWVibmVywqA8aGVpa29Ac250ZWNoLmRlPgo+Cj4gYW5kwqBkb2luZ8Kg
+ZHRic2NoZWNrwqBvZsKgdGhlwqBiaW5kaW5nwqBhZ2FpbnN0wqB0aGXCoGR0LXBhdGNoZXM6
+Cj4gVGVzdGVkLWJ5OsKgSGVpa2/CoFN0dWVibmVywqA8aGVpa29Ac250ZWNoLmRlPgoKSGkg
+SGVpa28sCgpUaGFua3MgZm9yIHRoZSByZXZpZXcgYW5kIHRlc3RpbmcuCgpJIHdpbGwgYWRk
+IHlvdXIgUmV2aWV3ZWQtYnkgYW5kIFRlc3RlZC1ieSB0YWdzIGluIHYzLgoKQmVzdCByZWdh
+cmRzLApDdW5oYW8KCgoKCgo=
 
