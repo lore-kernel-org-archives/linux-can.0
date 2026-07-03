@@ -1,111 +1,69 @@
-Received: from out203-205-221-239.mail.qq.com (out203-205-221-239.mail.qq.com [203.205.221.239])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86E7C344DA2;
-	Fri,  3 Jul 2026 05:42:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.239
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6421D32AAAB;
+	Fri,  3 Jul 2026 06:39:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783057326; cv=none; b=rqSoEPn9hIW/63HgITjZtOo6wcuONaMKveOowdMoY9tO2o8IHVQwdtmePtZU1FtFoJa3rMoeF9YpBOyEZFPk3jgecEo2+6dL5Eu0qvZ/AZ+SLCWxJAd/UqK2g1d+oE0V4Lk4acql8h6lPjVBXDgOvYPUjcbyQA39Jr/+yun7kKY=
+	t=1783060756; cv=none; b=h7rHzaoiDeN960/8YQs/iyFXStYy75YFPVg3YzoZny9Qq3rVfCGNDpM64BWa2caU7CHORlNNQLXqe6dnid7FsfpgdepMktTLodqjLLmGGPOZQPOLfQJ8p2afvUevFr3rkPO7wv5F++pydXnp0ACT2g0h5yy0KYizHkejofpl7ZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783057326; c=relaxed/simple;
-	bh=ViqeHQLIZm0HWnSQexz4QSSM3m74KlPcBjrXGGI/Zew=;
-	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
-	 References:In-Reply-To; b=u/OuaMFzFCUnDfnCVUhJ7QJvZ7L55O8ZplY8V4dv2ZFHTgR5Njm7sfTwEoNT761S2VyWx3dUalItmQHoeLA/xktgVdxCv1NbbnWhHoWK+vYq3ErGmahwsNbzzFQlu8AWeClrI5pZrJuRFOh1II0bxbsSq/hu+nIi73gTFSLh4vI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=CQWXqKrY; arc=none smtp.client-ip=203.205.221.239
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	s=arc-20240116; t=1783060756; c=relaxed/simple;
+	bh=6BxbcMdOIcZsfnhqpZbwKAM6k2MH606Q9Oi22O3Jxpk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ev0gerzOIyCrUm6UXcYucH3MaQiOx9UIc31GtaIn39M2SbVJRrQTBbfAp62XXXflA5hY8yROInMOK/qg9+5PFBkOFy+bXJtfDsUPquNVKDOepq3+DNxZ/ZuvniFrkGByUN8P/XUNlZx6vmx18VFoHxtOdUnGBX9OYVQ+WQ7jlF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DXA1EWj8; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="CQWXqKrY"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1783057321; bh=ViqeHQLIZm0HWnSQexz4QSSM3m74KlPcBjrXGGI/Zew=;
-	h=From:To:Cc:Subject:Date:References:In-Reply-To;
-	b=CQWXqKrY4WQhgdQBLj533cjlb+QPOFKlA+nk7B29YRJpZHOzSGQ5UwbsSvwogneYp
-	 QCxKZhizxjkhHXVSQQn7BGj3npq5XMTr0FiJeiTUN3gvWB/7SWdGdefwMlEM3HiwBX
-	 Wx6E7mvv1ZbTej5eiu2+j4EF/yjJtMc168HVlB8I=
-X-QQ-XMRINFO: NS+P29fieYNwqS3WCnRCOn9D1NpZuCnCRA==
-X-QQ-XMAILINFO: NBGkhoQ8491PceFq1cOFzrfl6cKUIB8C33gPhPjpIur5KR6W4qQ36+vEohq5KR
-	 bGdPokva9jQxNFgyFb/Zf7kJsbkoCTODLj1Ke5p61gsjsGiPaOtkQRAoy8rTCxyxhTQBeyF4FyekY
-	 73uyxaZdMdqFI7Jl2f5fEXgEpQ7iHLRhj8RYcUPHTcgRxcUeW9fRW1PTfkFEyRana+WCTkY59rzDR
-	 g6UrARgeeGGpdn0MnE2YlkwPNTAlY00I+LWHGJ8px+WsUjOPZ6HWKHOgVfP+IMuX6uf3BE2sFRvGS
-	 neN000bWmA4Wij4iPe40l6Ws6vXyQdJb7uXiXK0oHo95zQX8OdXrnfPkwiKtZPPJqZHlMckh01EYC
-	 ucInO8HwwMzap+1YxiYdIn/7045WcXw10f4K5giaLoQYOuV3+jRo4yvqGQn1gFQR99zcY66QLSFE7
-	 20jumZIl0hj9PZAaROjipkFpJkO7egEuVUYVCqwn/tT6XaohVH7uEHQz9CiGMSBpNfNnIBB2ui0qs
-	 cmPeL91PvOzPlTzOvm1c3pTE1WPFRkQxoYaOM8KAuaLlasY5ka+a1wUZYLZ4HTr3PDAF5DLZ1MBtm
-	 kinXWMzb/vk70AAncpcacO2fP3L+Dik6eoFOqOiCbrvATDNGMnyx2IjidKt9zDNNte8Iz3+QXQY9n
-	 sbBZKvq4koPVTzwCrQRVxMa3SYIbrnm239E5uLbcUoHZ0p58gIzrNbHhTSI8yEsbzKzmEHcPETB6r
-	 4IxMDbcPNnMViUec9Imsp3INKPJB0XILlV1tJNTuPSK/FPLdRr61NRuQ8JxE8lO1mFqy7AZ8ZaLi2
-	 0Ot49k1RHzqYSc3R/6sINM4QRtUCHGVuwiKecEBQnJr9LbmuHAsSy0MR1UEO/IYSg0lCjGNaoHQIf
-	 VWzhEtLME08xFBylTHtFCPSVjlwDAgUZFE3oON548mTfQM+pznObBLQqvf8hz1zOYNsnwG879O6Mc
-	 zByhMCrKwY0j6yEU/5C3APaP83efQcIBh2A3clfa5z//GdGkpYRLoWoQ5gdDWMCXVXxZERPF9nvnL
-	 1eNJgVWsctkAx9cQxC9j3D9aeYihMb7ZVDXIg
-From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
-To: "=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?=" <mkl@pengutronix.de>, "=?utf-8?B?aGVpa28=?=" <heiko@sntech.de>
-Cc: "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?bWFpbGhvbA==?=" <mailhol@kernel.org>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?cm9iaA==?=" <robh@kernel.org>, "=?utf-8?B?a3J6aytkdA==?=" <krzk+dt@kernel.org>, "=?utf-8?B?Y29ub3IrZHQ=?=" <conor+dt@kernel.org>, "=?utf-8?B?ZGV2aWNldHJlZQ==?=" <devicetree@vger.kernel.org>, "=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, "=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/3] can: rockchip: add RK3588 CAN-FD support
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DXA1EWj8"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 174F01F000E9;
+	Fri,  3 Jul 2026 06:39:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783060755;
+	bh=D3QWF9QEhp1MYt6N9b3KeNj8xni59MRNrkc85etaxMw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=DXA1EWj8RozS1lVUZfUQ23DjASd/q3OBgJzO5YP2g4jyXPNQCs2o6DbpQW/QPcp5p
+	 oX/s40PFzy+bCCx+bhYnj4pJqp/dpRESOObhZWyuVu2gM3D4vtIpg7b9QjUZIO5zxk
+	 1Fr6yQ7Z4LBDHHnP6hu3jGySPxnj/ldwDQRU7450Q6AUmlJPE0OdNE8BcknEv1fJx+
+	 MlVyumgmQvVzDCerFheHXCqJHXblkynw5hbXXvPnP+yOOnok0xcKArkv4sZU9hZMSn
+	 HL3o2SARmYIJ9/8YDk4Tjz7crpUW7oWgNCqnMhVEtv0ZY/vxfrfGN5sXs2dc+aVmGp
+	 WPspsgTGVzUDw==
+Date: Fri, 3 Jul 2026 08:39:11 +0200
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Cunhao Lu <1579567540@qq.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, kernel@pengutronix.de, 
+	Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Heiko Stuebner <heiko@sntech.de>, linux-can@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] dt-bindings: can: rockchip: add rk3588 CAN-FD
+ compatible
+Message-ID: <20260703-truthful-aardwolf-of-spirit-b6bafc@quoll>
+References: <20260703-master-v3-0-6d56de6fd2f3@qq.com>
+ <tencent_3E31CBEFAE0986665A26322171642BC00B05@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Date: Fri, 3 Jul 2026 13:41:59 +0800
-X-Priority: 3
-Message-ID: <tencent_358CC86827C08D8405142316F9053629D00A@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <tencent_C422347432620914231601BC882C7E604D08@qq.com>
-	<20260702-accelerated-shoebill-of-elevation-76f536-mkl@pengutronix.de>
-In-Reply-To: <20260702-accelerated-shoebill-of-elevation-76f536-mkl@pengutronix.de>
-X-QQ-mid: xmsezb41-0t1783057319tq7q6pl5z
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <tencent_3E31CBEFAE0986665A26322171642BC00B05@qq.com>
 
-SGkgTWFyYywKCj4gVGhlbiBDQU4tRkQgaXMgYnJva2VuLiA6Lwo+Cj4gTWF5YmUgaW4gYSBs
-YXRlciBwYXRjaCB3ZSBjYW4gaGFjayBzb21ldGhpbmcsIHRvIGFsbG93IHdvcmtpbmcKPiBj
-b25maWd1cmF0aW9ucy4KCkkgZGlkIHNvbWUgbW9yZSB0ZXN0cyBhbmQgZm91bmQgdGhhdCB0
-aGUgaW1tZWRpYXRlIGJ1cy1vZmYgd2l0aCBCUlMgaXMKcmVsYXRlZCB0byB0aGUgdHJhbnNt
-aXQgZGVsYXkgY29tcGVuc2F0aW9uIHNldHRpbmcuCgpBZnRlciBzZXR0aW5nIFJLQ0FORkRf
-UkVHX1RSQU5TTUlUX0RFTEFZX0NPTVBFTlNBVElPTiB0byAwLCBpLmUuCmRpc2FibGluZyBU
-REMsIENBTi1GRCB3aXRoIEJSUyB3b3JrcyBvbiBSSzM1ODggaW4gbXkgc2V0dXAuIEkgdGVz
-dGVkIHRoZQpzYW1lIGNvbW1hbmQgd2l0aCA1MDAga2JpdC9zIGFyYml0cmF0aW9uIGJpdHJh
-dGUgYW5kIDEsIDMgYW5kIDUgTWJpdC9zCmRhdGEgYml0cmF0ZS4KClRoZSA1IE1iaXQvcyBk
-YXRhIHBoYXNlIHRlc3Qgc2V0dXAgd2FzOgoKICBDQU4gY2xvY2s6IDMwMCBNSHoKICBjYW4w
-IDwtPiBjYW4xIGRpcmVjdGx5IGNvbm5lY3RlZAogIG5vIG90aGVyIGRldmljZXMgb24gdGhl
-IGJ1cwogIGJ1cyB0ZXJtaW5hdGlvbjogNjAgT2htCgogIGlwIGxpbmsgc2V0IGNhbjAgdHlw
-ZSBjYW4gYml0cmF0ZSA1MDAwMDAgc2FtcGxlLXBvaW50IDAuOCBkYml0cmF0ZSA1MDAwMDAw
-IGRzYW1wbGUtcG9pbnQgMC44IGZkIG9uIGJlcnItcmVwb3J0aW5nIG9uCiAgaXAgbGluayBz
-ZXQgY2FuMSB0eXBlIGNhbiBiaXRyYXRlIDUwMDAwMCBzYW1wbGUtcG9pbnQgMC44IGRiaXRy
-YXRlIDUwMDAwMDAgZHNhbXBsZS1wb2ludCAwLjggZmQgb24gYmVyci1yZXBvcnRpbmcgb24K
-CiAgY2FuZ2VuIGNhbjAgLUkgMiAtTGkgLURpIC1wIDEwIC1mIC1nIDEgLWMzMiAtYgogIGNh
-bnNlcXVlbmNlIC1ydiBjYW4xIC1mCgpUaGUgdGVzdCByYW4gZm9yIDE1IG1pbnV0ZXMuIFRo
-ZSByZWNlaXZlciByZXBvcnRlZCBjb250aW51b3VzIHNlcXVlbmNlCndyYXAtYXJvdW5kIG1l
-c3NhZ2VzLCBlLmcuOgoKICBzZXF1ZW5jZSB3cmFwIGFyb3VuZCAoMCkKICBzZXF1ZW5jZSB3
-cmFwIGFyb3VuZCAoMSkKICAuLi4KICBzZXF1ZW5jZSB3cmFwIGFyb3VuZCAoMzcyMTgpCiAg
-c2VxdWVuY2Ugd3JhcCBhcm91bmQgKDM3MjE5KQoKVGhlIGludGVyZmFjZSBzdGF0aXN0aWNz
-IGFmdGVyIHRoZSB0ZXN0IHdlcmU6CgogIGNhbjA6CiAgICAgICAgICAgIHJlLXN0YXJ0ZWQg
-YnVzLWVycm9ycyBhcmJpdC1sb3N0IGVycm9yLXdhcm4gZXJyb3ItcGFzcyBidXMtb2ZmCiAg
-ICAgICAgICAgIDAgICAgICAgICAgMCAgICAgICAgICAwICAgICAgICAgIDAgICAgICAgICAg
-MCAgICAgICAgICAwCiAgICAgIFJYOiAgYnl0ZXMgcGFja2V0cyBlcnJvcnMgZHJvcHBlZCAg
-bWlzc2VkICAgbWNhc3QKICAgICAgIDE1MDY2NzM1NiA5NTI4Mzc3ICAgICAgMCAgICAgICAw
-ICAgICAgIDAgICAgICAgMAogICAgICBUWDogIGJ5dGVzIHBhY2tldHMgZXJyb3JzIGRyb3Bw
-ZWQgY2FycmllciBjb2xsc25zCiAgICAgICAxNTA2NjczNTYgOTUyODM3NyAgICAgIDAgICAg
-ICAgMCAgICAgICAwICAgICAgIDAKCiAgY2FuMToKICAgICAgICAgICAgcmUtc3RhcnRlZCBi
-dXMtZXJyb3JzIGFyYml0LWxvc3QgZXJyb3Itd2FybiBlcnJvci1wYXNzIGJ1cy1vZmYKICAg
-ICAgICAgICAgMCAgICAgICAgICAwICAgICAgICAgIDAgICAgICAgICAgMCAgICAgICAgICAw
-ICAgICAgICAgIDAKICAgICAgUlg6ICBieXRlcyBwYWNrZXRzIGVycm9ycyBkcm9wcGVkICBt
-aXNzZWQgICBtY2FzdAogICAgICAgMTUwNjY3MzU2IDk1MjgzNzcgICAgICAwICAgICAgIDAg
-ICAgICAgMCAgICAgICAwCiAgICAgIFRYOiAgYnl0ZXMgcGFja2V0cyBlcnJvcnMgZHJvcHBl
-ZCBjYXJyaWVyIGNvbGxzbnMKICAgICAgICAgICAgICAgMCAgICAgICAwICAgICAgMCAgICAg
-ICAwICAgICAgIDAgICAgICAgMAoKVGhlcmUgd2VyZSBubyBidXMgZXJyb3JzIGFuZCBubyBi
-dXMtb2ZmIGV2ZW50cyBpbiB0aGlzIHRlc3QuCgo+IENhbiB5b3UgdXBkYXRlIHRoZSBkZXNj
-cmlwdGlvbiBvZiB0aGUgcXVpcmsgZm9yIHRoZSByazM1ODggYW5kIGFkZCBob3cKPiB0byBy
-ZXByb2R1Y2UgaXQ/CgpXaXRoIFREQyBkaXNhYmxlZCBJIGNhbm5vdCByZXByb2R1Y2UgdGhl
-IEJSUyBidXMtb2ZmIHByb2JsZW0gYW55bW9yZS4KVGhpcyBhbHNvIGxvb2tzIGRpZmZlcmVu
-dCBmcm9tIFJLQ0FORkRfUVVJUktfQ0FORkRfQlJPS0VOLCBzbyBJIGRvIG5vdAp0aGluayBS
-SzM1ODggc2hvdWxkIHVzZSB0aGF0IHF1aXJrLgoKPiBQbGVhc2Uga2VlcCBpdCBkaXNhYmxl
-ZCBmb3Igbm93LgoKR2l2ZW4gdGhlIG5ldyB0ZXN0IHJlc3VsdCwgSSBwbGFuIHRvIHNlbmQg
-djQgd2l0aCB0aGUgUkszNTg4IFREQyByZWdpc3RlcgpzZXQgdG8gMCBhbmQgQ0FOLUZEIGVu
-YWJsZWQgZm9yIFJLMzU4OC4KClJlZ2FyZHMsCkN1bmhhbw==
+On Fri, Jul 03, 2026 at 10:35:40AM +0800, Cunhao Lu wrote:
+> RK3588 integrates a Rockchip CAN-FD controller variant that is not
+> fully compatible with RK3568v2. The RX FIFO count register field is
+> encoded in bits 7:5 on RK3588, while RK3568v2 uses bits 6:4.
+> 
+> Add a dedicated rockchip,rk3588-canfd compatible to describe this
+> variant. Do not use rockchip,rk3568v2-canfd as a fallback, because that
+> would describe a register layout that does not match the hardware.
+> 
+> Signed-off-by: Cunhao Lu <1579567540@qq.com>
+> Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+> ---
+
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+
+Best regards,
+Krzysztof
 
