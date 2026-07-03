@@ -1,69 +1,77 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from out203-205-221-205.mail.qq.com (out203-205-221-205.mail.qq.com [203.205.221.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6421D32AAAB;
-	Fri,  3 Jul 2026 06:39:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBD3C1F94F;
+	Fri,  3 Jul 2026 06:49:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783060756; cv=none; b=h7rHzaoiDeN960/8YQs/iyFXStYy75YFPVg3YzoZny9Qq3rVfCGNDpM64BWa2caU7CHORlNNQLXqe6dnid7FsfpgdepMktTLodqjLLmGGPOZQPOLfQJ8p2afvUevFr3rkPO7wv5F++pydXnp0ACT2g0h5yy0KYizHkejofpl7ZY=
+	t=1783061383; cv=none; b=OPHsmqzfYrxLgQPBN1CAqftFim6JrAhFgtuFOUkhJzirsbmq6Tsuuaq+tETOKXEnokBjy1zeZM7zm7XpGGlxG5zskRiQWVIJe4Tpm0WM+S+MtWJGaHlxrii5ZM6A4s7qUV9tTlZ2XvaAibDo2fQefN2vrOwhFboDj3sTbFrwPiE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783060756; c=relaxed/simple;
-	bh=6BxbcMdOIcZsfnhqpZbwKAM6k2MH606Q9Oi22O3Jxpk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ev0gerzOIyCrUm6UXcYucH3MaQiOx9UIc31GtaIn39M2SbVJRrQTBbfAp62XXXflA5hY8yROInMOK/qg9+5PFBkOFy+bXJtfDsUPquNVKDOepq3+DNxZ/ZuvniFrkGByUN8P/XUNlZx6vmx18VFoHxtOdUnGBX9OYVQ+WQ7jlF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DXA1EWj8; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1783061383; c=relaxed/simple;
+	bh=Qv1kwRVPne2QFB3ONtm+QRoyPApM0HbetYISv2n4VLw=;
+	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
+	 References:In-Reply-To; b=aDmdLhpBtsIzJu3uhd4dg1vJpRNbPO9C0ln4nSTxQ2MLZ1sLhhQmgWcY+DrApds9fYX/8my5ovTdufOxJsmtl0IOLAd+36ldLg2d3V4AfqFFSeATRtBWsjMl7yECK9gpDLugZbaCqLytBksmnAuSixz0Tlu1r6i/CiiR/qzcfOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=kvUuuDkK; arc=none smtp.client-ip=203.205.221.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DXA1EWj8"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 174F01F000E9;
-	Fri,  3 Jul 2026 06:39:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783060755;
-	bh=D3QWF9QEhp1MYt6N9b3KeNj8xni59MRNrkc85etaxMw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=DXA1EWj8RozS1lVUZfUQ23DjASd/q3OBgJzO5YP2g4jyXPNQCs2o6DbpQW/QPcp5p
-	 oX/s40PFzy+bCCx+bhYnj4pJqp/dpRESOObhZWyuVu2gM3D4vtIpg7b9QjUZIO5zxk
-	 1Fr6yQ7Z4LBDHHnP6hu3jGySPxnj/ldwDQRU7450Q6AUmlJPE0OdNE8BcknEv1fJx+
-	 MlVyumgmQvVzDCerFheHXCqJHXblkynw5hbXXvPnP+yOOnok0xcKArkv4sZU9hZMSn
-	 HL3o2SARmYIJ9/8YDk4Tjz7crpUW7oWgNCqnMhVEtv0ZY/vxfrfGN5sXs2dc+aVmGp
-	 WPspsgTGVzUDw==
-Date: Fri, 3 Jul 2026 08:39:11 +0200
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Cunhao Lu <1579567540@qq.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, kernel@pengutronix.de, 
-	Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Heiko Stuebner <heiko@sntech.de>, linux-can@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] dt-bindings: can: rockchip: add rk3588 CAN-FD
- compatible
-Message-ID: <20260703-truthful-aardwolf-of-spirit-b6bafc@quoll>
-References: <20260703-master-v3-0-6d56de6fd2f3@qq.com>
- <tencent_3E31CBEFAE0986665A26322171642BC00B05@qq.com>
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="kvUuuDkK"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1783061377; bh=Qv1kwRVPne2QFB3ONtm+QRoyPApM0HbetYISv2n4VLw=;
+	h=From:To:Cc:Subject:Date:References:In-Reply-To;
+	b=kvUuuDkKdzTrkPPO1YPK9DXkjA4NuEuyzkwQuj8K0IZwuyjVQzvb+83Ej0G4F5txT
+	 rWSla6W2W/0Yg7tgi0MSZbucQFxi2jUqQwWr0HHzaICkr42ZxgAQ7NrMlkfP93MOGy
+	 ytFokcv7bozfGmDfm4a0BgqW7ddebbQTw52Ah9Gk=
+X-QQ-XMRINFO: OWPUhxQsoeAVwkVaQIEGSKwwgKCxK/fD5g==
+X-QQ-XMAILINFO: NkQGnmzToUyFLGGtLNE6QEPHM00sgpR9dNAuu4hfh6sERgH6gk4Tonpk04ALFS
+	 HtjVpORe/iBRufuyFzPu5nHHeRVELJVboNLswoK5HE5TdRkrdniQExTX9ckxEDRSCUjcV/Rnof9Pa
+	 xgyIoM8IEBYYOPOwKEgH1S9ILeAOKdvETpxmfZvEZfFcPDmgDHva1WvDBkrzZe8sRDF0ZNaqjYHN6
+	 c6McCT1CU75io6M/hUMavvtv3pXYZgNp/J3/CO5LXQYvXs7c+CIr/V1Q8UnM7ApcnZ359JIjlqqMW
+	 xo/mh7IW+f4rmxM3mf5QKLheAQEbv73PDcdp//DhNpLyp6v45O8FZ7aOZa4rnJQF4/zgxZEVmtWqv
+	 vTRZJ/sL1V+H/XwIP7ix7kY76UcuR99lnYDDktPDFvW+lazcgjoD3FRavOnRGfdZWB2FMz/HWupFb
+	 tQZ274RK+uwmLn1+cr2fVNEsFtOPcGhL60N6GfmbogQbaJBDV80aKcLoqPspE/b7xBgHJPLRknyj+
+	 YhwDJokHTjCs1JbrULSJCYQVlhnvKjqdmKGDCu32mwTrXbKMu/RlFL4fEn0xFYSvNmFINWjjd9WGI
+	 pWRDjImr08Pu+0i5K26SbTRJLKstMNY3OLuGyngE1H50yWje9f5AoSZ8ZbHw8Y6s/NTIuYs2E01cb
+	 e06aeBk56bPzL9W+4XBLWMPys+GLc7JTXBpav1F24LlgAwz9OoknJtxj0EBolisb9nLCppWvKYo6w
+	 CP6woF8jVw/ak4JdOQwLCRmQNAXpxNm0/HhPciclGgk01qMEWBn0gyfGrlMVa49yG7k4vZWJ+UsGM
+	 WnchtsJQSaJyeydhNP+7w5CQOJl3GvKf7dhoSiivo7n03Gb+f5+smJti73b6XCRoOlHEE2OYrMsdD
+	 V9yNelAEWtAM+qnfTTUpX9xWeakHte6zbUatoViEIC+tVUXUjlS36batqB68RnuKygFqOWxCQ1oID
+	 otWG/pH9lB4KmMsi5Dut/0CRo85CcnxFVtZOOOu7IK3ESqc+nVs9R5dP8mk0o5qf1TxrZkfPGwe5S
+	 GPX3nXV01/hx2uBToFEj0mnu5aWon/ZONAGbZBfLcCIRPclg=
+From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
+To: "=?utf-8?B?S3J6eXN6dG9mIEtvemxvd3NraQ==?=" <krzk@kernel.org>
+Cc: "=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?=" <mkl@pengutronix.de>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?VmluY2VudCBNYWlsaG9s?=" <mailhol@kernel.org>, "=?utf-8?B?Um9iIEhlcnJpbmc=?=" <robh@kernel.org>, "=?utf-8?B?S3J6eXN6dG9mIEtvemxvd3NraQ==?=" <krzk+dt@kernel.org>, "=?utf-8?B?Q29ub3IgRG9vbGV5?=" <conor+dt@kernel.org>, "=?utf-8?B?SGVpa28gU3R1ZWJuZXI=?=" <heiko@sntech.de>, "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?ZGV2aWNldHJlZQ==?=" <devicetree@vger.kernel.org>, "=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, "=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/4] dt-bindings: can: rockchip: add rk3588 CAN-FD compatible
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <tencent_3E31CBEFAE0986665A26322171642BC00B05@qq.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Date: Fri, 3 Jul 2026 14:49:35 +0800
+X-Priority: 3
+Message-ID: <tencent_EE004447BFA326179A1419A784CC91B48007@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
+References: <20260703-master-v3-0-6d56de6fd2f3@qq.com>
+ <tencent_3E31CBEFAE0986665A26322171642BC00B05@qq.com>
+	<20260703-truthful-aardwolf-of-spirit-b6bafc@quoll>
+In-Reply-To: <20260703-truthful-aardwolf-of-spirit-b6bafc@quoll>
+X-QQ-mid: xmsezb41-0t1783061375tpzojrz7q
 
-On Fri, Jul 03, 2026 at 10:35:40AM +0800, Cunhao Lu wrote:
-> RK3588 integrates a Rockchip CAN-FD controller variant that is not
-> fully compatible with RK3568v2. The RX FIFO count register field is
-> encoded in bits 7:5 on RK3588, while RK3568v2 uses bits 6:4.
-> 
-> Add a dedicated rockchip,rk3588-canfd compatible to describe this
-> variant. Do not use rockchip,rk3568v2-canfd as a fallback, because that
-> would describe a register layout that does not match the hardware.
-> 
-> Signed-off-by: Cunhao Lu <1579567540@qq.com>
-> Reviewed-by: Heiko Stuebner <heiko@sntech.de>
-> ---
-
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
-
-Best regards,
-Krzysztof
+SGkgS3J6eXN6dG9mLAoKPsKgPsKgQWRkwqBhwqBkZWRpY2F0ZWTCoHJvY2tjaGlwLHJrMzU4
+OC1jYW5mZMKgY29tcGF0aWJsZcKgdG/CoGRlc2NyaWJlwqB0aGlzCj7CoD7CoHZhcmlhbnQu
+wqBEb8Kgbm90wqB1c2XCoHJvY2tjaGlwLHJrMzU2OHYyLWNhbmZkwqBhc8KgYcKgZmFsbGJh
+Y2sswqBiZWNhdXNlwqB0aGF0Cj7CoD7CoHdvdWxkwqBkZXNjcmliZcKgYcKgcmVnaXN0ZXLC
+oGxheW91dMKgdGhhdMKgZG9lc8Kgbm90wqBtYXRjaMKgdGhlwqBoYXJkd2FyZS4KPsKgPgo+
+wqA+wqBTaWduZWQtb2ZmLWJ5OsKgQ3VuaGFvwqBMdcKgPDE1Nzk1Njc1NDBAcXEuY29tPgo+
+wqA+wqBSZXZpZXdlZC1ieTrCoEhlaWtvwqBTdHVlYm5lcsKgPGhlaWtvQHNudGVjaC5kZT4K
+PsKgPsKgLS0tCj4KPsKgQWNrZWQtYnk6wqBLcnp5c3p0b2bCoEtvemxvd3NracKgPGtyenlz
+enRvZi5rb3psb3dza2lAb3NzLnF1YWxjb21tLmNvbT4KClRoYW5rcyBmb3IgdGhlIGFjay4g
+SSB3aWxsIGFkZCB5b3VyIEFja2VkLWJ5IHRhZyB0byB0aGUgYmluZGluZyBwYXRjaAppbiB2
+NC4KCkJlc3QgcmVnYXJkcywKQ3VuaGFv
 
