@@ -1,139 +1,108 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 742C82EBDDE
-	for <linux-can@vger.kernel.org>; Mon,  6 Jul 2026 22:58:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D7F318EE1
+	for <linux-can@vger.kernel.org>; Tue,  7 Jul 2026 05:46:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783378706; cv=none; b=uvkxd07Ir2dLODzaTfxNMxvil/JYgGkjkZLKBr+WUM1XotaYKY0hos84AtEBXUYLW3Z2h8QlrS2whRpV3dr7k3gfL+ypcGC5J1rKQwM7KBKqpfyU46c8hwc8LCg1Zn8x6pU7A15IOWrsPZY51Vl0GsVa/51PXWEBEH2FVOV1NSI=
+	t=1783403174; cv=none; b=F7G5nXg8ucOW83sw7vwhLQ/zYh8JREkR3Or5yPXeoyldAVxU/Dof0b8qHoUXMtKS1KIe6N+IYzP3QMvkyE36wrkm19LdW1XtALmfIZ+wo+NmU2BmYHHh+H40bFTPfFS5B8P442DqTmm4qqo+pyN6FqY/owWlYnYzWGyJ2VHMUF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783378706; c=relaxed/simple;
-	bh=PBFw+QpPUgs3r+cNCqDkxyp6h0a1Elth6TcS2KHj9W0=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=Bxgs7pSRjb1v0aKA8d2QinxT0rw6oHxvCLKqdQZP2phYKYk7SEIVgsnKeQRgeTwsnVIkhHFQSHsUO9GA84E8w0CoAr/YgHUtzs9LFVBuNwHpousnq/1LBm3VCimMQtcQ3Wch7GAR/4/OfL7zAb6aplN4WLJaFhOl/QHO8eyE6QM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YJRnNPgG; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1783403174; c=relaxed/simple;
+	bh=4HPhfOG3J+AvG0gshIvUmJB9sKoFyNn5WUNK/lApVnk=;
+	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:Cc:To; b=eZjkrw6wWcPO+9Gu1w/emwWtFLqoXLFiD7XPyc3xq7hzI+afsZ58wpkyyYzj+YmLkDk7X96rZrmcBQMpEK6cGnEmi+elx5dU/dAKj8SorbfmTfg08TgrX0dwTmQUBBSdS7RD4I/KJe74C80XpAMLNzZmgGU2kw2ZMMQUgqgJk1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dynetrex.com; spf=pass smtp.mailfrom=dynetrex.com; dkim=pass (2048-bit key) header.d=dynetrex.com header.i=@dynetrex.com header.b=JZMDFh3k; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dynetrex.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dynetrex.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YJRnNPgG"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED6EB1F000E9;
-	Mon,  6 Jul 2026 22:58:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783378705;
-	bh=Do1L/oX4PFzY5m0KboU5zR7bxQrf3M4nCqc8hU7OTEo=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=YJRnNPgG+3sgmHzZcg2CbR/s6T2RdVDagCUcLQo0hPmEwjKPOBaqt8ZqhRSB8vumn
-	 BLoD4iPxmuj8GfZAzfCRd+2XPEgzLdtkY1issIDKURs8j5Rfe7TYJjwZ4Kp/7e96Dq
-	 gJ00qtV80xe6JbmTli8eJPM7TT/4vw+5QJ+UxOc0geZlvFzZLQCUYAd0hw9lnTE/5x
-	 2+2/zVJUO602PXpHIGYbo5+YAWqqQZxIvc1L15/F02jSVfm93iel1KuOdOprLzPqv+
-	 7M2YH5fkVmx90Z2ZMaNl5c4aNOvHW8eY3idFUzTPhHgMRQzoFuXOOoxO4IFcHDzVmY
-	 iLFdEP/yK3H7Q==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v4 1/3] j1939: restrict amount of consecutive
- retransmission requests
-Reply-To: sashiko-reviews@lists.linux.dev
-To: =?utf-8?b?QWxleGFuZGVyIEjDtmx6bA==?= <alexander.hoelzl@gmx.net>
-Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent
- Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org
-In-Reply-To: <20260706224548.100451-1-alexander.hoelzl@gmx.net>
-References: <20260706224548.100451-1-alexander.hoelzl@gmx.net>
-Content-Type: text/plain; charset=utf-8
+	dkim=pass (2048-bit key) header.d=dynetrex.com header.i=@dynetrex.com header.b="JZMDFh3k"
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-845c92bc464so2695745b3a.2
+        for <linux-can@vger.kernel.org>; Mon, 06 Jul 2026 22:46:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dynetrex.com; s=google; t=1783403172; x=1784007972; darn=vger.kernel.org;
+        h=to:cc:date:message-id:subject:mime-version
+         :content-transfer-encoding:content-type:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=4HPhfOG3J+AvG0gshIvUmJB9sKoFyNn5WUNK/lApVnk=;
+        b=JZMDFh3kpGLPHRBp9VBMsARSCoWugReTaRb9GlP9teXxcQtPJs4C7PwQM83u9htXyn
+         QH1J1KbqGsjayU6yJt6fwVvhbNUkpsUHkBzmtscsZuku7bnc6KsNMoa97lNY4tpaYYdB
+         z4h4MjhKL87wt8NFZeM394z+qVoFRKvT30pgXyPXy9esbPfmktHKJ3mryyvq4j+8DYpJ
+         IZIvJ8Cgi2VBSWK6KDFOUmzXML2enTv6Ow+wfU1tGHoGkivR2tMD5KBnAZAY5RLSUIbY
+         M9eKPijBT3Mr+ED6B2PostArUALcusZ3clRePgE8JLLLrABVPI13LC9n2zrL0J0zUH2L
+         5CGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783403172; x=1784007972;
+        h=to:cc:date:message-id:subject:mime-version
+         :content-transfer-encoding:content-type:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=4HPhfOG3J+AvG0gshIvUmJB9sKoFyNn5WUNK/lApVnk=;
+        b=eFXuCc0cOHCZN8miKEVqJENrDahNhk+Oah8Am3O12IOXl0i6sqgI/TW3krSxYd6xQH
+         a06Lni1LT0vRZ/Jn6qu+OSn0/0jKX02dCa3uyw6hmzZ5doxuFo/3NcsXoK7sQhLmNc/W
+         zVbKBzyEI45oKKFZKhZffkdQi4Xu8mGgTjVApdRT4KdWdHyKMoON6rKrhImO2PoqQ9EW
+         c5OnEIEz2+sxM5t3mc1OhIf/KJHVXFgeoNKqAZF1kLRYyKDSKw3YWgTCRQQ9lag0345B
+         MfrOgN39KtAjHsVlLR723O6JUwVdHMO3uxV3p/wlUDs/vGKWn9tKOOJ23UvEAQwlzsRz
+         h6Aw==
+X-Gm-Message-State: AOJu0YyP/gHtWeEXloI1wAv6BmGvjIQneCcz/F3x9ENS19rcj31ERdDm
+	bapXdseDM4PU9xLPu3iWFNzEYV9meLyQRVDqmkAvA5ncvDizMPlNwJnZAruUCx8TDCxf7BJqPbU
+	g7FrhyAhpo7nRTBRaO8i/hQ71GNwLoVKV64QQNA8ZckehpNHATmoClXL0D0WPqRiiSkE+uXdvI3
+	ay/wJmj3naRUGR/PhZw0Gaxl7jgBx9adz5JARY91ZLJfcHstk=
+X-Gm-Gg: AfdE7cnTOaiK4mM6zX06SddNCxthqa1EyUHEIRrgRWkSgidJzTRrPy8SDM8mPIruB89
+	BW/Cfj/pO/Wbqp4GHEAPbar0pXeP8YTbxHmj1spj1YfxwcZKZj/0xiYIO1ObUrW43AN5yhTU2rf
+	gxhmAfmGRs87R4hTSWXiX43Bq+wPDK8f0yb7Xw5LPvNuVP219bYbX/T2+3DvibqiPadwCNEVXlm
+	vNTMeDM1fLHuQ2gs4W7u3KPIMUCjNcq0wqQLMqB3TtCaqBqG58Tk4WKOwcwJKmtx0MIcNcI7jNW
+	TIwxjGpg4LcpQi5C3n200mACtTZLIZ40qUwwg3q0/g0UkloLOTZxeeBTo/6qnt353rpmoc0WZ9Q
+	vyhebu1PbjmZRMQOCTSEVtogFYn7+SjhnFefEVxs8K8PXlxvW2SeSZD3nAQZF1JF60Rm9To2bQT
+	8eHdlf2MF4IjWRPLHlsnP98JKGKtsf
+X-Received: by 2002:a05:6a00:2e08:b0:845:e04b:565f with SMTP id d2e1a72fcca58-84826cc57damr3429141b3a.14.1783403172200;
+        Mon, 06 Jul 2026 22:46:12 -0700 (PDT)
+Received: from smtpclient.apple ([170.203.201.208])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-847f6bd1078sm4766048b3a.24.2026.07.06.22.46.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 06 Jul 2026 22:46:11 -0700 (PDT)
+From: "Dynetrex, Admin" <admin@dynetrex.com>
+Content-Type: text/plain;
+	charset=us-ascii
 Content-Transfer-Encoding: quoted-printable
-Date: Mon, 06 Jul 2026 22:58:24 +0000
-Message-Id: <20260706225824.ED6EB1F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
+Subject: [REGRESSION] can: usb: f81604: TX broken with "short int URB: 9 < 12" 
+Message-Id: <A3834A07-5639-4779-844F-C5843DFC3928@dynetrex.com>
+Date: Mon, 6 Jul 2026 22:46:00 -0700
+Cc: gregkh@linuxfoundation.org,
+ peter_hong@fintek.com.tw,
+ mkl@pengutronix.de,
+ mailhol@kernel.org,
+ stable@kernel.org
+To: linux-can@vger.kernel.org
+X-Mailer: Apple Mail (2.3774.300.61.1.2)
 
-Thank you for your contribution! Sashiko AI review found 2 potential issue(=
-s) to consider:
-- [High] Flawed retransmit tracking logic causes both spurious connection a=
-borts and counter resets.
-- [High] CTS hold messages bypass the retransmit limit, enabling indefinite=
- connection persistence (DoS).
---
+Hello,
 
---- Patch [1]: [PATCH v4 1/3] j1939: restrict amount of consecutive retrans=
-mission requests ---
-commit e2e0a35fca4d64ebcdd174aa2094ae405f7ecced
-Author: Alexander H=C3=B6lzl <alexander.hoelzl@gmx.net>
+I found an issue with a patch applied to the can/usb/f81604 driver on =
+2026-02-23.
 
-j1939: restrict amount of consecutive retransmission requests
+https://git.kernel.org/stable/c/36ead57443146e6b730ce1f48ca3e9b17e19a3d2
 
-This commit introduces a retransmit counter and aborts the segmented
-data transfer if the retransmit limit is reached.
+The patch added a check to make sure urb->actual_length is not less than =
+sizeof(struct f81604_int_data). The issue is that the interrupt data =
+from the device is 9 bytes, but sizeof(struct f81604_int_data) returns =
+12 because the struct is marked __aligned(4).
 
-> diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
-> index 81f58924b4acd..16867d8030922 100644
-> --- a/net/can/j1939/j1939-priv.h
-> +++ b/net/can/j1939/j1939-priv.h
-[ ... ]
-> @@ -285,6 +285,8 @@ struct j1939_session {
->  		unsigned int block;
->  		/* dpo - ETP.CM_DPO, Data Packet Offset */
->  		unsigned int dpo;
-> +		/* retransmits - amount of received retransmit requests (including hol=
-ds) */
-> +		unsigned int retransmits;
+This causes valid interrupt URBs to be rejected. After this patch, CAN =
+frames no longer transmit successfully, while before the patch they =
+transmitted without issue.
 
-[Severity: High]
-If this counter is intended to include holds, will they actually be counted?
+Each transmit attempt logs the following in dmesg:
 
-Looking at j1939_xtp_rx_cts_one() in transport.c, if j1939_cts_is_hold(skb)
-is true, the function sets the hold timeout and returns early:
+f81604_read_int_callback: short int URB: 9 < 12
 
-	if (j1939_cts_is_hold(skb)) {
-		...
-		j1939_tp_set_rxtimeout(session, J1939_CTS_HOLD_TIMEOUT_MS);
-		return;
-	}
+Please consider either removing the __aligned(4) attribute from struct =
+f81604_int_data, or using a constant for the actual wire packet length =
+when checking urb->actual_length.
 
-Because this early return bypasses the new retransmits tracking logic,
-could a peer keep a session open indefinitely by continuously sending
-CTS hold messages?
-
->  	} pkt;
->  	struct hrtimer txtimer, rxtimer;
->  };
-> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index df93d57907da7..6f999b18bbca5 100644
-> --- a/net/can/j1939/transport.c
-> +++ b/net/can/j1939/transport.c
-[ ... ]
-> @@ -1457,6 +1465,19 @@ j1939_xtp_rx_cts_one(struct j1939_session *session=
-, struct sk_buff *skb)
->  	else if (dat[1] > session->pkt.block /* 0xff for etp */)
->  		goto out_session_cancel;
-> =20
-> +	/* If the 'next packet number to be sent' in the CTS is smaller or
-> +	 * equal to an already sent packet it is a retransmit request.
-> +	 */
-> +	if (session->pkt.tx >=3D pkt) {
-> +		session->pkt.retransmits++;
-
-[Severity: High]
-Does this logic reliably track retransmits, given that session->pkt.tx
-is updated asynchronously by txtimer?
-
-If a peer drops a packet and requests the next one (forward progress),
-but txtimer has already sent past that requested packet number, wouldn't
-session->pkt.tx >=3D pkt evaluate to true? This seems like it could
-spuriously increment the counter and abort valid transfers over lossy links.
-
-Conversely, if a peer sends a duplicate CTS request before txtimer has sent
-the newly requested packet, session->pkt.tx would still be pkt - 1. Wouldn't
-that evaluate to false and cause the else block to reset the retransmits
-counter to 0?
-
-> +		if (session->pkt.retransmits >=3D J1939_CTS_MAX_NUM_TRANSMITS) {
-> +			err =3D J1939_XTP_ABORT_FAULT;
-> +			goto out_session_cancel;
-> +		}
-> +	} else {
-> +		session->pkt.retransmits =3D 0;
-> +	}
-> +
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260706224548.1004=
-51-1-alexander.hoelzl@gmx.net?part=3D1
+Kind regards,
+Alex=
