@@ -1,121 +1,120 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.20])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA001320CD9
-	for <linux-can@vger.kernel.org>; Tue,  7 Jul 2026 08:36:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.20
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783413363; cv=pass; b=Vu56dY1NNRIn1xF3pER75cbMMEx4oIPELPNxbrd58Wsd6b4ZF7pGwwfL5A3/jwuiQvoLiAuKMHrPfL2bTUtDVJsZld05+47QuCGEnqnxZ93IJiDh4QQ/t0GB0Q+sa0mAafywxKf4vQeFyew1XIP/92HjVBMOD7hn6K5DddokqlU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783413363; c=relaxed/simple;
-	bh=Eaf9cQHSN7GlXS8abqr+3zTC2XbDvJphG489LZls/K0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=YSjQ3rFb6+T1l7MYnadmSTyv9dCrH4qMVwIzsRuHnqqbFc5blVZhHHZuNpWA3qu/lGac88nqpFIU5FBzSZRS2/jLIJCmJjSuqqA6Lcd7JlNadcyfpZ/E2Cgl0zNx5zEywcP9baqjYKTJwQ54IPqa+jMkK7+eW56iosg6tpcCSUA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=BpPv2bmC; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=v3HSpbmO; arc=pass smtp.client-ip=85.215.255.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 293F222D7A9
+	for <linux-can@vger.kernel.org>; Tue,  7 Jul 2026 08:37:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783413435; cv=none; b=UQyGDjSszHKPrhTZJ2IPzT6xWQS4wOXwf3ljnZF/mQEiYgRhQXyUvloPWWvFllZYTT7g+Ab2KXgp7p+lfdtej8H604cMEjsE02qbVirZM0oLbh7s2dFTsZui3sBVhSEEo3VH7e6yO5Pi6WZbTLTWUkD2q1VeVi0VoqYs6Pfnz6k=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783413435; c=relaxed/simple;
+	bh=3AhsJCTycbD2pZpBs8wjfwaJVm3VD++H9iYkttSQm+A=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=fExLKGbV2bABsyLDLxH83zsLfTDQSJXlYMrqnx9vyOCfOzK9dV6kU3l7ywUZL763N1wv3xW+VqV/vSrp+dzr76qDv2sL3kLGB0edjeSNHS8mr2tikb8XUsMsl6G3fERCrjPz0UaAFpXC/9hXEO1s0PzZ+hC4cnoNLKhpLyF6uhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B4Zs0E2X; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="BpPv2bmC";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="v3HSpbmO"
-ARC-Seal: i=1; a=rsa-sha256; t=1783413172; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=PlzL3fpEC0MONxAqeXZlyl47MLCKiMVeUDyw16kteypU9ehmkW4RAHFXtEuK94qAt/
-    yhKpgr3VyuxoUIPU3WekR2qr7Ph9D+DlE4i6DzkGnqaPLpLVPaAwBYTvUu9xe+W51dCA
-    CsAhpJlHN3K8qQo/F0UT35DvbWvGUpjJ7KrneFjMaqZLj/Eavlh7lp1RqKsYdgJ7PLPX
-    qlSwYklKzYFFsjw1tK0xPBxX9X39Gc0TmgNQxjGSh7NP6hP2esQTjNtuapbazj0so2Q3
-    CAL9EAvFXaPSYPZcsdsrmRDLLFDEn2DQWwl4j5M2kq6cEbKdCAXzKePrjiuOVLKn84Ia
-    2DAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1783413172;
-    s=strato-dkim-0002; d=strato.com;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=1Y462xLZBMkfRXHyQMCplbxVmwrDTOCYDqlRLB3eTh0=;
-    b=tu9ODVIQHZbY5xV+GSs9+eUaf7EaO42vKI3K5q2ZYKeHYx1njIBbTDo1k4HAPJYvjD
-    dVbapUvowHq5Xk/EBYQoxA3PuRHQ4MAaxMnEjFuc80V3YS9cN58kpynhjukjSIULQO8N
-    eIC7B+T6UVEW+tsTc5h46Eid96Egf41KyIl6eZo7MCdHTv2+kt/qIJ97F9qx56fgpAjN
-    jdJI2+cjWKVsJhsvKE0Me3Oxm0kAUMtdJMz29CVgLYt0dW7MMyFPrKBf5fuHsBhXgPQW
-    GfxiPIPoWboMgUl3TaPBPbVbm3MifulWzXITaoWC20h0lsvFxxsj9IMFuSqaC2mTLn78
-    3CqQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1783413172;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=1Y462xLZBMkfRXHyQMCplbxVmwrDTOCYDqlRLB3eTh0=;
-    b=BpPv2bmCZppOxeQqQHsX+w4b2G4b1k5S0dwxYeAxrJUkC7pnMwYeylPZMrd1faMAgM
-    xUaae5iK6UAOq85vF7zn0/w3fDoCmrjjcvHHQrVL02nYU/Y2z9qGeR4OwDtcULqMLDs5
-    gSzISWKJZWrT8uS+C9Vqb3R5np6VGKoSYR1gGXY2Ziu+F0ILwW/p80zLwn8c4fPtd5AG
-    MqY2hPq1J6tmoJh/rvdQ2u8BEzE6Wxsb7Wdqv3wFi1ZIHNPEwhRWXyTlWXln6YX16Pyb
-    CVE/Oy5XWqoTWhCzLVry68CPo+q9XKxjixFUSJiCnDRKOjB0B58SZx8d9/qNIafNxt4X
-    MouA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1783413172;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=1Y462xLZBMkfRXHyQMCplbxVmwrDTOCYDqlRLB3eTh0=;
-    b=v3HSpbmO3+xzQZfdB8QwTxLArT4/XVJLyFflYAFarfOemHpSpjBTCpDLEuS0oFl9FK
-    yaOJAJQAhC+q/3QEohCw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tRkI16oOSW1Ti/f4PoH8="
-Received: from vivo.lan
-    by smtp.strato.de (RZmta 55.5.6 DYNA|AUTH)
-    with ESMTPSA id Ka9fdb2678WqQPM
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Tue, 7 Jul 2026 10:32:52 +0200 (CEST)
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
-	Nico Yip <zdi-disclosures@trendmicro.com>
-Subject: [PATCH] can: isotp: add missing synchronize_rcu() in isotp_notify()
-Date: Tue,  7 Jul 2026 10:32:28 +0200
-Message-ID: <20260707083228.47629-1-socketcan@hartkopp.net>
-X-Mailer: git-send-email 2.53.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B4Zs0E2X"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A8561F000E9;
+	Tue,  7 Jul 2026 08:37:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783413433;
+	bh=FlHiWiD6R9IelqhKbJIYMDd9a3RvOhhf9p3iUlcNZ44=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=B4Zs0E2XkLQoYByL9kCI121MXjYMeD53tNdx27SxxQjsOXFlih/XbWQXLslzQqov1
+	 ZUP5vO6JhUR7eWWhDCli4pLk1Y05yMmRe+QSe4OuuwGx4cPKOtvkPUgyXP95TDZFQe
+	 XtglhqvW5QM4LlvWoPKVsxdCYL0pIKt3ZQVpLJJDnQdnAopvJrkOaJhP84BTvA9xwv
+	 DTEBqRtPofwCT6yxW3mfKLWMP2sit+eGZfyYiLNMSWNZnf8JvCGjnD3AEHDPMFfmRq
+	 MxuTRaP2HL+tsT2pIVgkdFvbTd34gXKU/J+OdW7Y2BC4k9VQiGuw3UG6OehWP41QFm
+	 w5HfkHwtrEnDg==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v2 4/6] can: bcm: fix CAN frame rx/tx statistics
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Oliver Hartkopp" <socketcan@hartkopp.net>
+Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Oliver Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+In-Reply-To: <20260707-bcm_fixes-v2-4-96620c534b75@hartkopp.net>
+References: <20260707-bcm_fixes-v2-0-96620c534b75@hartkopp.net>
+ <20260707-bcm_fixes-v2-4-96620c534b75@hartkopp.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 07 Jul 2026 08:37:13 +0000
+Message-Id: <20260707083713.8A8561F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="us-ascii"
 
-isotp_notify() unregisters the (RCU) CAN filters via can_rx_unregister()
-and clears so->bound without waiting for a grace period. isotp_release()
-uses so->bound to decide whether it needs to call synchronize_rcu()
-before cancelling so->rxtimer, so when NETDEV_UNREGISTER runs first it
-skips that synchronize_rcu() and can cancel the timer while an
-in-flight isotp_rcv() is still executing and about to re-arm it via
-isotp_send_fc(), leading to a use-after-free timer callback on the
-freed socket.
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+s) to consider:
 
-Fixes: 14a4696bc311 ("can: isotp: isotp_release(): omit unintended hrtimer restart on socket release")
-Reported-by: Nico Yip <zdi-disclosures@trendmicro.com> (ZDI-CAN-31764)
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- net/can/isotp.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Pre-existing issues:
+- [High] Concurrent execution of bcm_rx_handler() leads to unprotected data=
+ races and potential 64-bit torn writes on op->rx_stamp and op->rx_ifindex,=
+ causing metadata corruption.
+--
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index c48b4a818297..008cee547213 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -1573,10 +1573,17 @@ static void isotp_notify(struct isotp_sock *so, unsigned long msg,
- 						  isotp_rcv, sk);
- 
- 			can_rx_unregister(dev_net(dev), dev, so->txid,
- 					  SINGLE_MASK(so->txid),
- 					  isotp_rcv_echo, sk);
-+
-+			/* wait for in-flight isotp_rcv() callers to finish
-+			 * before clearing so->bound, so that isotp_release()
-+			 * cannot observe so->bound == 0 and skip its own
-+			 * synchronize_rcu() while a callback is still running
-+			 */
-+			synchronize_rcu();
- 		}
- 
- 		so->ifindex = 0;
- 		so->bound  = 0;
- 		release_sock(sk);
--- 
-2.53.0
+--- Patch [4]: [PATCH v2 4/6] can: bcm: fix CAN frame rx/tx statistics ---
+commit c40daefa12b560d84d208b978162b5b62f34aade
+Author: Oliver Hartkopp <socketcan@hartkopp.net>
 
+can: bcm: fix CAN frame rx/tx statistics
+
+This commit fixes a KCSAN-detected data race in bcm_rx_handler() when multi=
+ple
+CAN frames are processed concurrently. It transitions the statistics counte=
+rs
+to atomic long operations and consolidates overflow checking into a new
+bcm_update_stats() function.
+
+> diff --git a/net/can/bcm.c b/net/can/bcm.c
+> --- a/net/can/bcm.c
+> +++ b/net/can/bcm.c
+
+[ ... ]
+
+> @@ -742,7 +752,7 @@ static void bcm_rx_handler(struct sk_buff *skb, void =
+*data)
+>  	/* save originator for recvfrom() */
+>  	op->rx_ifindex =3D skb->dev->ifindex;
+
+[Severity: High]
+This is a pre-existing issue, but can concurrent execution of bcm_rx_handle=
+r()
+lead to unprotected data races on op->rx_stamp and op->rx_ifindex here?
+
+If an application creates a BCM socket listening on all interfaces (ifindex=
+=3D0),
+and multiple CAN frames arrive concurrently from different interfaces match=
+ing
+the same bcm_op, bcm_rx_handler() can be invoked concurrently on multiple C=
+PUs.
+
+CPU A and CPU B could both write op->rx_stamp and op->rx_ifindex outside of
+any lock. If CPU A then acquires the lock and reads these values later in
+bcm_send_to_user():
+
+net/can/bcm.c:bcm_send_to_user() {
+    ...
+		/* restore rx timestamp */
+		skb->tstamp =3D op->rx_stamp;
+    ...
+	addr->can_ifindex =3D op->rx_ifindex;
+    ...
+}
+
+Could CPU A pick up CPU B's ifindex or a torn timestamp? This might lead to
+CAN frames being delivered to userspace with mismatched interface indices or
+corrupted 64-bit timestamps on 32-bit systems, potentially breaking
+time-sensitive control loops.
+
+>  	/* update statistics */
+> -	op->frames_abs++;
+> +	bcm_update_stats(op);
+> =20
+>  	/* snapshot the flag under lock: op->flags/op->frames may be updated
+>  	 * concurrently by bcm_rx_setup(). Do not call bcm_can_tx() while
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260707-bcm_fixes-=
+v2-0-96620c534b75@hartkopp.net?part=3D4
