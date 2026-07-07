@@ -1,114 +1,257 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DF0B33291F;
-	Tue,  7 Jul 2026 16:16:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C106B43B6FD
+	for <linux-can@vger.kernel.org>; Tue,  7 Jul 2026 18:00:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783441011; cv=none; b=E1aRAOyw8nwr9pgcj1OvNHRCYuWkMrph1rsRgo0qrl9P/r2dLBk1lBo3edcH5V0eOikI33YFEzTqQEVFXNpRDbafbBOEVhwB0OTXxLEzVcLiZMDOVRmv49X8zEC/0rLXg/+uzWyx2ogQ7EEWpV9Fg740RR53/7d3WwWt8gjkZ8k=
+	t=1783447248; cv=none; b=A1fvi1sk3lCOsBTtuRXERkJVHlcc6GOSTaUIWZ0mdEtZhLwuq25uweRR1y1Cd9Zau5Cnckbj2MvAuGjs2onShEUZxoG7ISwOzVvs+3ASDrIGsXPzcN8rwkAMW9Wq3wbkzs2OdpyQJt73tzDBlzbYeM+JttJCTktWxyG5qYwzqIs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783441011; c=relaxed/simple;
-	bh=eJkZScH+2tUpPvrz10Rhvl4xlNR1MRvbgEd4Iyhc5xE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s7bnFToITRAk7uaPu81fT9UjOtkBeoLcPw4qT3IGBDpdE0pDoZRfmBXdSDoB9JVkGNXe7omHk+3KMzxiHwcKbd1dP+TNjXd7aBVYLZkp3D4BklxrlJnSsE/oUxB6fypOq2blXRkz92hJObDurpd++CO/X5tDHZOPsKmmGUAqbds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YwHp8YDU; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1783447248; c=relaxed/simple;
+	bh=vyDpIvGMtSuO4b8yiKAlf9ZWcvHqk8HTccvlmE8+ZuY=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=NeqQTp+6hCGjcomVfJh+0+WMwpLHmRE7onQqidqWaqPlCSTpHA+EyBc13dpRCP5CWfGX1O+PNc3o8bJs5kvCT0Qu2TxHQ3W7i2jgUjcjdpsZzO1jBqYKHSAqm6H5UwuTAX9s0UCbem7smxNfWVsoCZEuIarUHZvBfbUg/zWsqdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AEX/oXFK; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YwHp8YDU"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 212CE1F000E9;
-	Tue,  7 Jul 2026 16:16:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783441009;
-	bh=BRTWTtCF/TnwArUxZSwcgJyax6Qi1uu00oQiI0rI0uc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=YwHp8YDUX9RDnLOs9agp75luftXSWn5gLU2QXfbsH+X7GpQ4Akn0Whoa/lIll7mng
-	 rberCHmBpbbxHdA9O6ymUFiO3sjiIJ8VgT0L1xCVJaL+40L7QtfTD8yOxRvssSrMW7
-	 f80sfKLKngKZIGr2LM8yc6+E72ncSVvMcAP0mriNv0GB8Zk1O/XqmDyDA1glIUR1Uy
-	 GDC+3vKq9mynsZR1NbiVDqsTIgtVOkYIz5Q50e2iyBUiPMnaS2/ydZ6A5YkzlrowdU
-	 2pJTjxji3/LVIjffS2qm9k3st5RwrpD06LPyu7mV27X4SrMORN8qTU8bg2LlJAm64y
-	 qnGpwyMWz+k2A==
-Date: Tue, 7 Jul 2026 17:16:44 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Claudiu Beznea <claudiu.beznea+renesas@tuxon.dev>
-Cc: mkl@pengutronix.de, mailhol@kernel.org, robh@kernel.org,
-	krzk+dt@kernel.org, conor+dt@kernel.org, geert+renesas@glider.be,
-	magnus.damm@gmail.com, mturquette@baylibre.com, sboyd@kernel.org,
-	bmasney@redhat.com, biju.das.jz@bp.renesas.com,
-	tu.nguyen.xg@renesas.com, fabrizio.castro.jz@renesas.com,
-	claudiu.beznea@tuxon.dev, linux-can@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: Re: [PATCH 2/8] dt-bindings: can: renesas,rcar-canfd: Document
- RZ/G3S SoC
-Message-ID: <20260707-suffice-panorama-7083120803cc@spud>
-References: <20260707102418.1646159-1-claudiu.beznea+renesas@tuxon.dev>
- <20260707102418.1646159-3-claudiu.beznea+renesas@tuxon.dev>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AEX/oXFK"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 727F4C2BCC9;
+	Tue,  7 Jul 2026 18:00:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1783447248;
+	bh=vyDpIvGMtSuO4b8yiKAlf9ZWcvHqk8HTccvlmE8+ZuY=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=AEX/oXFK1md2T/BlWpO8p8c2ml2azYA6UCrc5kAjnrzjqV2VkTQW5UMOTb1VCL6SQ
+	 283RTsrjB5Q7oXt+nQddV4ixiLtPCgXXd5TfnujlRaCwZNDzxQyuPNb+IoORQWZiYv
+	 KyWnc5DFM0DUFZ6wiW9G3GMtn/78RbmvMlWIV8RkZEc4Td0YF8wdUbMdBM2v7h8rMo
+	 +iPgntY3Z/lQl/WZV8WIQBQADDU/rjZLn6H6kOuUoT9hum00LIddHeXd/f3idYcyBS
+	 FfZCymWLijsmpMD+5qMUGnD/g2mQE9Aclfxe4qcoyZYJ3E5hmynprpphAv1rAdw1Xa
+	 rOuRps4y2e94Q==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54EB3C44501;
+	Tue,  7 Jul 2026 18:00:48 +0000 (UTC)
+From: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
+Date: Tue, 07 Jul 2026 20:00:37 +0200
+Subject: [PATCH v5 1/8] can: bcm: defer rx_op deallocation to workqueue to
+ fix thrtimer UAF
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="9vvr7ueiVvdUxT5x"
-Content-Disposition: inline
-In-Reply-To: <20260707102418.1646159-3-claudiu.beznea+renesas@tuxon.dev>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260707-bcm_fixes-v5-1-c3c74f8d8ff7@hartkopp.net>
+References: <20260707-bcm_fixes-v5-0-c3c74f8d8ff7@hartkopp.net>
+In-Reply-To: <20260707-bcm_fixes-v5-0-c3c74f8d8ff7@hartkopp.net>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
+ Marc Kleine-Budde <mkl@pengutronix.de>, Lee Jones <lee@kernel.org>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783447246; l=6362;
+ i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
+ bh=LvHzSBao5ZZ0HPAsffICKuvHTJLuMxkgthIxqpwQTeE=;
+ b=HHbNfZYLjEJ80MTH4LiZBQ8ltMx2/o374FCsauGUpgGDeYBMN2RJLAizvPbpCpWxdZGpFbecJ
+ 0Lk7RBuZ6ltDTiBFwMIijaPkQxPv37nmI8oQzJxp9xNBf9Hnfah2MuA
+X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
+ pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
+X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
+ auth_id=620
+X-Original-From: Oliver Hartkopp <socketcan@hartkopp.net>
+Reply-To: socketcan@hartkopp.net
 
---9vvr7ueiVvdUxT5x
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+From: Lee Jones <lee@kernel.org>
 
-On Tue, Jul 07, 2026 at 01:24:12PM +0300, Claudiu Beznea wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->=20
-> The CAN FD controller found on the Renesas RZ/G3S SoC is largely compatib=
-le
-> with the variant present on the RZ/G3E SoC. The main differences are:
-> - the RZ/G3S provides only two CAN FD channels
-> - the RZ/G3S supports only CAN FD operation; the Channel n CAN FD
->   Configuration Register does not implement the bits used to select
->   classical CAN-only mode (bit 30) or CAN FD-only mode (bit 28);
->   consequently, bit 31 (CAN FD Frame Distinction Enable) of the same
->   register is also not implemented
-> - some bits in several registers (mainly reserved or status bits) are
->   read-write on the RZ/G3S but read-only on the RZ/G3E; their behavior is
->   otherwise identical: the bits read back as 0 on both SoCs and software
->   is allowed to write only 0 to them on the RZ/G3S
-> - the RZ/G3S provides 128 acceptance filters, compared to 64 on the
->   RZ/G3E
-> - the RZ/G3S can use PCLK clock as the CAN FD clock source through an
->   internal clock divider, while also supporting an external CAN FD clock
->   source
->=20
-> Since:
-> - the SoC clock generator provides to the CAN IP only the peripheral and
->   the RAM clocks
-> - when sourced from the peripheral clock, the CAN-FD clock is obtained
->   inside the IP itself by dividing the peripheral clock
-> - the assigned-clocks and assigned-clock-rates properties are specific to
->   the CAN-FD clock
-> the assigned-clocks and assigned-clock-rates properties were dropped from
-> the required properties list of the Renesas RZ/G3S SoC.
->=20
-> Add documentation for the Renesas RZ/G3S SoC.
->=20
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Commit f1b4e32aca08 ("can: bcm: use call_rcu() instead of costly
+synchronize_rcu()") replaced synchronize_rcu() in bcm_delete_rx_op()
+with call_rcu() and introduced the RX_NO_AUTOTIMER flag.
 
-No idea if patchwork will pick up the response to Sashiko, but the thing
-it raises about the fd properties seems valid.
-pw-bot: changes-requested
+However, this flag check was omitted for thrtimer in the packet rx
+fast-path. During BCM RX operation teardown, a concurrent RCU reader
+(bcm_rx_handler) can race and re-arm thrtimer via
+bcm_rx_update_and_send() after call_rcu() has been scheduled.  Once
+the RCU grace period elapses, bcm_op is freed.  The subsequently
+firing thrtimer then dereferences the deallocated op, causing a UAF.
+
+Adding flag checks to the rx fast-path (bcm_rx_update_and_send) does not
+fully close the TOCTOU race and introduces latency for every CAN frame.
+Conversely, calling hrtimer_cancel() directly inside the RCU callback
+(softirq context) is fatal as hrtimer_cancel() can sleep, triggering
+a "scheduling while atomic" panic.
+
+Resolve this by deferring the timer cancellation and memory free to a
+dedicated unbound workqueue (bcm_wq).  The RCU callback now queues a
+work item to bcm_wq, which safely cancels both timers and deallocates
+memory in sleepable process context.  A dedicated workqueue is used to
+prevent system-wide WQ saturation and is cleanly flushed/destroyed
+on module unload to avoid rmmod page faults.
+
+Since the deferred work can now outlive the calling context by an
+unbounded amount, also take a reference on op->sk when it is assigned
+and drop it only once the deferred work has cancelled both timers, so a
+socket can no longer be freed out from under a still-armed timer whose
+callback (bcm_send_to_user()) dereferences op->sk.
+
+Fixes: f1b4e32aca08 ("can: bcm: use call_rcu() instead of costly synchronize_rcu()")
+Signed-off-by: Lee Jones <lee@kernel.org>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ net/can/bcm.c | 37 ++++++++++++++++++++++++++++++++++---
+ 1 file changed, 34 insertions(+), 3 deletions(-)
+
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index a4bef2c48a55..bdf53241bd7b 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -56,10 +56,11 @@
+ #include <linux/can.h>
+ #include <linux/can/core.h>
+ #include <linux/can/skb.h>
+ #include <linux/can/bcm.h>
+ #include <linux/slab.h>
++#include <linux/workqueue.h>
+ #include <linux/spinlock.h>
+ #include <net/can.h>
+ #include <net/sock.h>
+ #include <net/net_namespace.h>
+ 
+@@ -90,10 +91,12 @@ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_AUTHOR("Oliver Hartkopp <oliver.hartkopp@volkswagen.de>");
+ MODULE_ALIAS("can-proto-2");
+ 
+ #define BCM_MIN_NAMELEN CAN_REQUIRED_SIZE(struct sockaddr_can, can_ifindex)
+ 
++static struct workqueue_struct *bcm_wq;
++
+ /*
+  * easy access to the first 64 bit of can(fd)_frame payload. cp->data is
+  * 64 bit aligned so the offset has to be multiples of 8 which is ensured
+  * by the only callers in bcm_rx_cmp_to_index() bcm_rx_handler().
+  */
+@@ -103,10 +106,11 @@ static inline u64 get_u64(const struct canfd_frame *cp, int offset)
+ }
+ 
+ struct bcm_op {
+ 	struct list_head list;
+ 	struct rcu_head rcu;
++	struct work_struct work;
+ 	int ifindex;
+ 	canid_t can_id;
+ 	u32 flags;
+ 	unsigned long frames_abs, frames_filtered;
+ 	struct bcm_timeval ival1, ival2;
+@@ -791,23 +795,40 @@ static struct bcm_op *bcm_find_op(struct list_head *ops,
+ 	}
+ 
+ 	return NULL;
+ }
+ 
+-static void bcm_free_op_rcu(struct rcu_head *rcu_head)
++static void bcm_free_op_work(struct work_struct *work)
+ {
+-	struct bcm_op *op = container_of(rcu_head, struct bcm_op, rcu);
++	struct bcm_op *op = container_of(work, struct bcm_op, work);
++
++	hrtimer_cancel(&op->timer);
++	hrtimer_cancel(&op->thrtimer);
+ 
+ 	if ((op->frames) && (op->frames != &op->sframe))
+ 		kfree(op->frames);
+ 
+ 	if ((op->last_frames) && (op->last_frames != &op->last_sframe))
+ 		kfree(op->last_frames);
+ 
++	/* the last possible access to op->timer/op->thrtimer has now
++	 * happened above via hrtimer_cancel() - op->sk is no longer
++	 * needed by any pending timer callback, so drop our reference
++	 */
++	sock_put(op->sk);
++
+ 	kfree(op);
+ }
+ 
++static void bcm_free_op_rcu(struct rcu_head *rcu_head)
++{
++	struct bcm_op *op = container_of(rcu_head, struct bcm_op, rcu);
++
++	INIT_WORK(&op->work, bcm_free_op_work);
++	queue_work(bcm_wq, &op->work);
++}
++
+ static void bcm_remove_op(struct bcm_op *op)
+ {
+ 	hrtimer_cancel(&op->timer);
+ 	hrtimer_cancel(&op->thrtimer);
+ 
+@@ -1058,10 +1079,11 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 		/* tx_ops never compare with previous received messages */
+ 		op->last_frames = NULL;
+ 
+ 		/* bcm_can_tx / bcm_tx_timeout_handler needs this */
+ 		op->sk = sk;
++		sock_hold(sk);
+ 		op->ifindex = ifindex;
+ 
+ 		/* initialize uninitialized (kzalloc) structure */
+ 		hrtimer_setup(&op->timer, bcm_tx_timeout_handler, CLOCK_MONOTONIC,
+ 			      HRTIMER_MODE_REL_SOFT);
+@@ -1219,10 +1241,11 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 			}
+ 		}
+ 
+ 		/* bcm_can_tx / bcm_tx_timeout_handler needs this */
+ 		op->sk = sk;
++		sock_hold(sk);
+ 		op->ifindex = ifindex;
+ 
+ 		/* ifindex for timeout events w/o previous frame reception */
+ 		op->rx_ifindex = ifindex;
+ 
+@@ -1837,15 +1860,19 @@ static struct notifier_block canbcm_notifier = {
+ 
+ static int __init bcm_module_init(void)
+ {
+ 	int err;
+ 
++	bcm_wq = alloc_workqueue("can-bcm-wq", WQ_UNBOUND, 0);
++	if (!bcm_wq)
++		return -ENOMEM;
++
+ 	pr_info("can: broadcast manager protocol\n");
+ 
+ 	err = register_pernet_subsys(&canbcm_pernet_ops);
+ 	if (err)
+-		return err;
++		goto register_pernet_failed;
+ 
+ 	err = register_netdevice_notifier(&canbcm_notifier);
+ 	if (err)
+ 		goto register_notifier_failed;
+ 
+@@ -1859,17 +1886,21 @@ static int __init bcm_module_init(void)
+ 
+ register_proto_failed:
+ 	unregister_netdevice_notifier(&canbcm_notifier);
+ register_notifier_failed:
+ 	unregister_pernet_subsys(&canbcm_pernet_ops);
++register_pernet_failed:
++	destroy_workqueue(bcm_wq);
+ 	return err;
+ }
+ 
+ static void __exit bcm_module_exit(void)
+ {
+ 	can_proto_unregister(&bcm_can_proto);
+ 	unregister_netdevice_notifier(&canbcm_notifier);
+ 	unregister_pernet_subsys(&canbcm_pernet_ops);
++	rcu_barrier();
++	destroy_workqueue(bcm_wq);
+ }
+ 
+ module_init(bcm_module_init);
+ module_exit(bcm_module_exit);
+
+-- 
+2.53.0
 
 
---9vvr7ueiVvdUxT5x
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCak0mbAAKCRB4tDGHoIJi
-0rtdAQCT+LGnXwr1M/rIKrgiH02r2W9lRu1Yof4RbsBDQnSnTQEAjPWj+nHIbYt/
-ry4uBSNCnAZDQFSiCGgSrRzEw/pN4Ak=
-=4Yrq
------END PGP SIGNATURE-----
-
---9vvr7ueiVvdUxT5x--
