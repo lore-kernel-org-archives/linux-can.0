@@ -1,116 +1,138 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D02BA34E74D
-	for <linux-can@vger.kernel.org>; Tue,  7 Jul 2026 14:54:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88A563DDAFA;
+	Tue,  7 Jul 2026 16:15:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783436075; cv=none; b=un89VOpI+OQTsg43xfxMYqqvJnRYd6gWLEGegwSogpj8VfQxyzOvIrBJcK/1WMNnFXgi/faBwJ05DEVUYhrWXFHifY6/O/XCuh7RcisdTXJVe0diMi3lTPtYm6jXPyWUOYijGZjdJIphf4niuNpSzPjNKrSf3hpNjSz7TkLOsLI=
+	t=1783440927; cv=none; b=jMR9OhCJ/12mpVseWrX6u3GUNhSMiXPjM6HT7uYuMWGnd0T0JT7D7KG5SfVXYg846G7b9rslgtOeTGN3bPWAy3YKw9zYVimeoEIJhAXr6VPgyXwkk9XeiOxZtj2EsFucy8Rrw0yDTr8yH0sGtMBPOawbcX+0iLkGwm6mX3WdwUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783436075; c=relaxed/simple;
-	bh=1iFHXRLMhClWhYAZV6swbTtGZsewk6gAzqtbkjRwRVc=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=RhBK9AglfIfWIN/7KDP32tm638TR9wx2nqGR0cSb2nfQq2Kih4kC0Y4cYHduB5SWgJaJANZuNtV8kD8t1ccIWZVLcd5Pe2LVoc2n+CA+t/Gj2/BEu/pvecLnkT19d7oGY4lG/zUnWO2DcNZIZzYCxXlq2ugmMfyEiAoCcYhOh5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kGVIP0Zg; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1783440927; c=relaxed/simple;
+	bh=Pc06K2SlUk5TraOO1/tPbU4hMOOHHM4Jhv+0aavFKpU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rydYRO0/u7wYlVc9T3B8GUsg6c12MHUmKMbVp7y37VuHoVcD4vEY3snimGaj/aU8On5/FJ3PdRdBp+2mnoyBJoo4TgMBMF+7BRXGJnECpxfz//agBtsP2PiEbLVCRlMCqYCsPIyz2zm3WmzoA9ng6vsiK9lfxQP4+cQUqChQXT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mxeLlqQg; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kGVIP0Zg"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2410F1F000E9;
-	Tue,  7 Jul 2026 14:54:34 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mxeLlqQg"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52B0D1F000E9;
+	Tue,  7 Jul 2026 16:15:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783436074;
-	bh=0CyFQ4adERS/94CpBpZ0O3TO3oJxghZ8Xt4/yzpP9Hs=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=kGVIP0ZgjN5GzKMqHIhI6MiCfoX+FyJSh6y3GD8yJgEhFu0g3UCOv73t1Y9h0VA6u
-	 w1DV0U/oMfeCQg2usOhiTwrpG+a0sk/kKCaIzblcM/585inlY5NotzTGtPbdElnz5D
-	 w6Cge+Zjy0T8kIWiVjY/SqM67mINTRF8VO75VkCjt/H98qH7/SmGGsltJtse6O4xA2
-	 wFjOJz6WeBzoLZzwWqY2w24aZHd+JIL4CuG4Kuu/YAYQmEbHsQG+EHk4jh9EaLneBB
-	 uI/CS9IGmXlfTw5ZMMw1PxEa3+UWKDBC3+EOB2kIZLFef/C7cmuL6mLPeND7CalqWe
-	 hHVWIgIvwB7/g==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v4 4/7] can: bcm: fix CAN frame rx/tx statistics
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Oliver Hartkopp" <socketcan@hartkopp.net>
-Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Vincent
- Mailhol" <mailhol@kernel.org>
-In-Reply-To: <20260707-bcm_fixes-v4-4-aa87b8b9d33f@hartkopp.net>
-References: <20260707-bcm_fixes-v4-0-aa87b8b9d33f@hartkopp.net>
- <20260707-bcm_fixes-v4-4-aa87b8b9d33f@hartkopp.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 07 Jul 2026 14:54:33 +0000
-Message-Id: <20260707145434.2410F1F000E9@smtp.kernel.org>
+	s=k20260515; t=1783440926;
+	bh=F88R+S6rc7ozRNA3csjjQyY6uBLsx6oJBsOm6HnxlVI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=mxeLlqQgkUFmpcfOoqyQSFbZyVtpHEFjAMv8Nm8L+DzAf7ALh5doUFKHJjjVay6BR
+	 M4/Jt4bLqGyK+6fpOiy2DIayCTAmloBFpa0p2CJccTOPcY0exHeKYeNyQaMrXG93M4
+	 3P30RhjZGXrcE3ajE+HtEbsAczQqCu6cxVx/S41tKdZN67m5eAN8PoKhB5S59Wa9GR
+	 e426MmpdRW13uxgfp88ucE/UOH3j71g0Jn3UqdZuEYCtdH1s7PgFlA1V4NVrXxlP25
+	 TD89gMVwe9Sg1OfNWvggUjVryIZ1pSKp/i7XlsUBIxNZ+b2Pc8PR3xuBF4MeabSCzu
+	 pU076qe6GVx7A==
+Date: Tue, 7 Jul 2026 17:15:22 +0100
+From: Conor Dooley <conor@kernel.org>
+To: sashiko-reviews@lists.linux.dev
+Cc: Claudiu Beznea <claudiu.beznea+renesas@tuxon.dev>,
+	Marc Kleine-Budde <mkl@pengutronix.de>, robh@kernel.org,
+	conor+dt@kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>, linux-can@vger.kernel.org,
+	devicetree@vger.kernel.org, wsa+renesas@sang-engineering.com,
+	Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH 2/8] dt-bindings: can: renesas,rcar-canfd: Document
+ RZ/G3S SoC
+Message-ID: <20260707-hypnotist-portly-46b580fb922f@spud>
+References: <20260707102418.1646159-1-claudiu.beznea+renesas@tuxon.dev>
+ <20260707102418.1646159-3-claudiu.beznea+renesas@tuxon.dev>
+ <20260707103040.021DE1F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="eeSkgMZVqTITsw8c"
+Content-Disposition: inline
+In-Reply-To: <20260707103040.021DE1F000E9@smtp.kernel.org>
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
+--eeSkgMZVqTITsw8c
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Pre-existing issues:
-- [High] Missing RCU memory barriers when inserting new bcm_op entries into=
- rx_ops and tx_ops, and incorrect list traversal macro for tx_ops in a lock=
-less reader.
---
+On Tue, Jul 07, 2026 at 10:30:39AM +0000, sashiko-bot@kernel.org wrote:
+> Thank you for your contribution! Sashiko AI review found 1 potential issu=
+e(s) to consider:
+> - [Medium] The schema fails to forbid the `renesas,no-can-fd` and `renesa=
+s,fd-only` properties for the RZ/G3S (`renesas,r9a08g045-canfd`) SoC, allow=
+ing unsupported hardware configurations to pass schema validation.
+> --
+>=20
+> --- Patch [2]: [PATCH 2/8] dt-bindings: can: renesas,rcar-canfd: Document=
+ RZ/G3S SoC ---
+> commit fc07d92ff1acfa102fb8f08fa8b6ff1a0537c592
+> Author: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>=20
+> dt-bindings: can: renesas,rcar-canfd: Document RZ/G3S SoC
+>=20
+> This commit documents the CAN FD controller found on the Renesas RZ/G3S S=
+oC.
+> It updates the bindings since the RZ/G3S provides only two channels, supp=
+orts
+> only CAN FD operation, and does not require assigned-clocks properties.
+>=20
+> > diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-can=
+fd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> > index b9d9dd7a79676..f8b4d3dd54afc 100644
+> > --- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> > +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+>=20
+> [ ... ]
+>=20
+> > @@ -350,6 +352,17 @@ allOf:
+> >        properties:
+> >          reset-names: false
+> > =20
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          not:
+> > +            contains:
+> > +              const: renesas,r9a08g045-canfd
+> > +    then:
+> > +      required:
+> > +        - assigned-clocks
+> > +        - assigned-clock-rates
+> > +
+>=20
+> [Severity: Medium]
+> Since the commit message states that the RZ/G3S supports only CAN FD oper=
+ation,
+> should the schema also explicitly forbid the renesas,no-can-fd and
+> renesas,fd-only properties for the renesas,r9a08g045-canfd compatible?
+>=20
+> Without an if-then block restricting these properties to false, the schema
+> will incorrectly validate device trees that specify these unsupported mod=
+es.
 
---- Patch [4]: [PATCH v4 4/7] can: bcm: fix CAN frame rx/tx statistics ---
-commit 55dc712979cc536660202ae53cf4b6529bfdf948
-Author: Oliver Hartkopp <socketcan@hartkopp.net>
+This looks like a reasonable request.
+pw-bot: changes-requested
 
-can: bcm: fix CAN frame rx/tx statistics
+>=20
+> >  unevaluatedProperties: false
+> > =20
+> >  examples:
+>=20
+> --=20
+> Sashiko AI review =B7 https://sashiko.dev/#/patchset/20260707102418.16461=
+59-1-claudiu.beznea+renesas@tuxon.dev?part=3D2
 
-This commit fixes a data race detected by KCSAN in bcm_rx_handler by
-using atomic types for frame statistics, and adds a lock-protected
-helper for updates to avoid races during resets.
+--eeSkgMZVqTITsw8c
+Content-Type: application/pgp-signature; name=signature.asc
 
-> --- a/net/can/bcm.c
-> +++ b/net/can/bcm.c
-> @@ -229,10 +229,13 @@ static int bcm_proc_show(struct seq_file *m, void *=
-v)
-> =20
->  	list_for_each_entry_rcu(op, &bo->rx_ops, list) {
+-----BEGIN PGP SIGNATURE-----
 
-[Severity: High]
-This isn't a bug introduced by this patch, but there appears to be a
-missing RCU barrier when traversing and modifying the bcm_op lists.
+iHUEABYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCak0mGQAKCRB4tDGHoIJi
+0smlAP9UYunv9LVF33FRMLSiU4bEBUtL6EvRW2JTroFv3tLtCAEA6h+w8g1PiuZU
+ghWJyI2ucpzNdWcEz6s7IlGuVON7SQU=
+=119l
+-----END PGP SIGNATURE-----
 
-Can the lockless reader in bcm_proc_show() observe uninitialized memory
-here?
-
-While the reader correctly uses list_for_each_entry_rcu() for rx_ops, the
-writer in bcm_rx_setup() adds new entries using the non-RCU list_add():
-
-net/can/bcm.c:bcm_rx_setup() {
-    ...
-    list_add(&op->list, &bo->rx_ops);
-    ...
-}
-
-Without list_add_rcu(), the CPU could reorder the initialization of the
-bcm_op struct to occur after the node becomes visible in the list.
-
-Similarly, does the tx_ops list traversal lack both writer and reader
-RCU protection?
-
-net/can/bcm.c:bcm_tx_setup() {
-    ...
-    list_add(&op->list, &bo->tx_ops);
-    ...
-}
-
-And later in bcm_proc_show():
-
-net/can/bcm.c:bcm_proc_show() {
-    ...
-    list_for_each_entry(op, &bo->tx_ops, list) {
-    ...
-}
-
-Should these lists be updated to use list_add_rcu() and
-list_for_each_entry_rcu() to ensure safe concurrent iteration via procfs?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260707-bcm_fixes-=
-v4-0-aa87b8b9d33f@hartkopp.net?part=3D4
+--eeSkgMZVqTITsw8c--
