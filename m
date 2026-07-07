@@ -1,156 +1,121 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54F3B3CF026
-	for <linux-can@vger.kernel.org>; Tue,  7 Jul 2026 10:37:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 848FC3DA7F8
+	for <linux-can@vger.kernel.org>; Tue,  7 Jul 2026 10:42:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783420636; cv=none; b=a6IDe8VrfQcEfl/+06pnqhIXPzllUd2nwCj1W8+C36RoRUmHgtM7vHh+TZ9wufG6yZmNohaUEq9AyXFN42bKqKqRwySeMyI+VNPMMIcCYUtMPvNUFDDLLpMgKIjpe/AjxSZtCW9bRllmoDrk0rj/EB9Bez4w7G/okcW3ldUp1II=
+	t=1783420972; cv=none; b=iEpf5huVCjnZLJSEQ/iwh9qqs/84W4vB9EipT3ode88oaVdK0HYYWPBk/FIavnP5QFqxWUQ0e4/V76rL3Lw+JasCKw5k7pjUoGxEozLrK4zqpdjxIcVdaoQ8Upc+WEMsHG/YcAPvEtpYh3ITWKl2BCd1aL6h4+j/fXOwbVK/nEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783420636; c=relaxed/simple;
-	bh=OAcMJ5pIshBmGiJvWWCJnIYYmlmZqTHWKDm/msO7TZA=;
+	s=arc-20240116; t=1783420972; c=relaxed/simple;
+	bh=BDveb5kexBdcvG/N0fqIBzfZ1VoTJ3gdOzFqTvc+dIo=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=EGRxQu86jAfX5Xn/CHPSjdGahazh4JOKJMw+vNmLzHEXl4WlallOxR7f78Xf+++iD37lJivtqM34JvBz65eS5VyWsrPqDG7DockQOLvtmHe2al4GegFy7hgYe978NM1WoEbnCsV9ppYgs8Lz35I3f0nfKhM/GNYmVCPOuGZ2OO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y0oj62nz; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=kCo+8UggMAJG/Zd7jVIOyJPtqZAnQYGs7kbj8F454VWmwp2OCxOZi2uSLAjVhja8wMLzzxMaQmfnCPPiex6XYx/bdHoMOq6GuEdwYfAQTZf7p4NMWtb0aAFgnvjJjAaBHtfTmdJkaeV0AacNwPDOGygyxKkHMUIi7ehSbW8uTLw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UXFFhOOV; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y0oj62nz"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A6AB1F000E9;
-	Tue,  7 Jul 2026 10:37:14 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UXFFhOOV"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEE571F00AC4;
+	Tue,  7 Jul 2026 10:42:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783420635;
-	bh=bzeGEUhZPsj5uV51ISn8wDaV2BLtbx4sh0TzaUn4zvg=;
+	s=k20260515; t=1783420971;
+	bh=+FhMZZ/zRKMJaaRa5wy591xZ6coP05DeQ6w7+rVbCBY=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=Y0oj62nzDl65AxIIWKQPpxPy7ezLjvumSXPPnNVeRrXQxsFk0VMzONZUEgz7AVJcB
-	 X+152lVITWNvHpQrtpd3tdjvMheoY7X1B+7U/Jytj6vBSrc46138qk2wkmYwH3AZAO
-	 ksyVEkDTIqSey11LD5ax6Rhs6SxS6q5REH/wj83LQ6RB/6X/Vcr4j6vY93xSu/gaVa
-	 WWVQdvO++NIiDX3OOFMBY3/KVeKqw2l3biFqicDDh6ifSjVZ49wlQa9riZH74PSWXg
-	 5iBBbRPG+SO+N5L5zv21UFP8k/L30A2k6n5aQ+j38bMKNMcugfRti2uo/Rkf+0qvnm
-	 9KClfiTtzLRZQ==
+	b=UXFFhOOVTmLE1Sj54r7F8xX7z+pkpOPETHQGshnAIZawrhkJyQFUjQlYVRE0IDerO
+	 d4lflEd765T3IJaakHN5/nZeopooQw8nwHq+wFuBwKnkxTgp03FBH5sOeI8Xpkncp1
+	 A668wJQctorqgBuiXRj9KN65M5eDbloFvVaF8Y4uulpW4vYY5WhMDIyAAiWW8vU6Wk
+	 kTgr9q0yJZCbDqUiJcVp417sC9sSFIxsdB+t53QAiDb7qD+GfOX9ME8rYHrjMqzLx4
+	 q82Bfikv7EzUHSP3mL5IKXQw6IctiwlYw6is7KFBZo3npdegrTbdFic7CfdzkuaOmp
+	 a27/dW34dZsjg==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v3 4/7] can: bcm: fix CAN frame rx/tx statistics
+Subject: Re: [PATCH v3 5/7] can: bcm: add missing rcu list annotations and
+ operations
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Oliver Hartkopp" <socketcan@hartkopp.net>
-Cc: "Vincent Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Marc
- Kleine-Budde" <mkl@pengutronix.de>
-In-Reply-To: <20260707-bcm_fixes-v3-4-84600ca6d889@hartkopp.net>
+Cc: linux-can@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Vincent
+ Mailhol" <mailhol@kernel.org>
+In-Reply-To: <20260707-bcm_fixes-v3-5-84600ca6d889@hartkopp.net>
 References: <20260707-bcm_fixes-v3-0-84600ca6d889@hartkopp.net>
- <20260707-bcm_fixes-v3-4-84600ca6d889@hartkopp.net>
+ <20260707-bcm_fixes-v3-5-84600ca6d889@hartkopp.net>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 07 Jul 2026 10:37:14 +0000
-Message-Id: <20260707103714.9A6AB1F000E9@smtp.kernel.org>
+Date: Tue, 07 Jul 2026 10:42:50 +0000
+Message-Id: <20260707104250.BEE571F00AC4@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
-Thank you for your contribution! Sashiko AI review found 2 potential issue(=
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
 
-New issues:
-- [Medium] A Time-Of-Check to Time-Of-Use (TOCTOU) race during statistics r=
-eset can permanently break the invariant `frames_filtered <=3D frames_abs`.
-
 Pre-existing issues:
-- [High] Missing RCU publish/subscribe barriers for lockless list operation=
-s, risking uninitialized memory reads in procfs.
+- [High] Lockless reads of 64-bit ktime_t values and TOCTOU races on op->co=
+unt in bcm_tx_timeout_handler
 --
 
---- Patch [4]: [PATCH v3 4/7] can: bcm: fix CAN frame rx/tx statistics ---
-commit faeade145d2ba64627aca2f6af5f2b0b8ad0d933
+--- Patch [5]: [PATCH v3 5/7] can: bcm: add missing rcu list annotations an=
+d operations ---
+commit 8310d786e9cc8e49f889c95c47438e852dd137cc
 Author: Oliver Hartkopp <socketcan@hartkopp.net>
 
-can: bcm: fix CAN frame rx/tx statistics
+can: bcm: add missing rcu list annotations and operations
 
-KCSAN detected a data race within the bcm_rx_handler() when two CAN frames
-have been simultaneously received and processed in a single rx op by two
-different CPUs. Use atomic operations with (signed) long data types to
-access the statistics in the hot path.
+This commit moves list_add_rcu() calls to the end of the setup code to cover
+initial settings and fixes the missing list_del_rcu() before bcm_remove_op()
+in bcm_release().
+
+Link: https://lore.kernel.org/linux-can/20260610094654.A1FFE1F00893@smtp.ke=
+rnel.org/
 
 > diff --git a/net/can/bcm.c b/net/can/bcm.c
-> index fd548c6eaa913..0378e31ea10ed 100644
+> index 0378e31ea10ed..f21d48d99aab6 100644
 > --- a/net/can/bcm.c
 > +++ b/net/can/bcm.c
 [ ... ]
-> @@ -280,7 +283,8 @@ static int bcm_proc_show(struct seq_file *m, void *v)
->  			seq_printf(m, "t2=3D%lld ",
->  				   (long long)ktime_to_us(op->kt_ival2));
-> =20
-> -		seq_printf(m, "# sent %ld\n", op->frames_abs);
-> +		seq_printf(m, "# sent %ld\n",
-> +			   atomic_long_read(&op->frames_abs));
+> @@ -1159,6 +1159,10 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_h=
+ead, struct msghdr *msg,
+>  		op->flags |=3D TX_ANNOUNCE;
 >  	}
+> =20
+> +	/* add this bcm_op to the list of the tx_ops? */
+> +	if (add_op_to_list)
+> +		list_add_rcu(&op->list, &bo->tx_ops);
+> +
 
 [Severity: High]
-This is a pre-existing issue, but does this function safely traverse
-the lockless tx_ops list?
+This is a pre-existing issue, but I have a question about concurrent access
+to the timer and count values in bcm_tx_timeout_handler().
 
-bcm_proc_show() traverses bo->tx_ops via list_for_each_entry() instead of
-list_for_each_entry_rcu(), which lacks the necessary subscribe barriers.
+When a userspace application continuously updates a BCM TX op via TX_SETUP,
+bcm_tx_setup() updates the op's timer and count values.
 
-Additionally, neither bcm_tx_setup() nor bcm_rx_setup() use list_add_rcu()
-when inserting into these lists:
+Concurrently, if the timer fires, bcm_tx_timeout_handler() reads them
+locklessly in softirq context:
 
-bcm_tx_setup()
-    list_add(&op->list, &bo->tx_ops);
+net/can/bcm.c:bcm_tx_timeout_handler() {
+    ...
+    if (op->kt_ival1 && (op->count > 0)) {
+        bcm_can_tx(op, NULL);
+        if (!op->count && (op->flags & TX_COUNTEVT)) {
+    ...
+}
 
-bcm_rx_setup()
-    list_add(&op->list, &bo->rx_ops);
+Can this lead to torn reads on 64-bit ktime_t variables (kt_ival1, kt_ival2)
+on 32-bit platforms, resulting in a bogus timeout value that breaks cyclic
+CAN frame transmission?
 
-Could reading /proc/net/can/bcm/<inode> while another thread concurrently
-sets up a BCM message on the same socket result in traversing uninitialized
-memory due to missing RCU publish/subscribe barriers?
+Additionally, could a TOCTOU race on op->count cause the handler to
+incorrectly miss sending a TX_EXPIRED notification to userspace?
 
->  	seq_putc(m, '\n');
-> =20
-> @@ -290,6 +294,15 @@ static int bcm_proc_show(struct seq_file *m, void *v)
->  }
->  #endif /* CONFIG_PROC_FS */
-> =20
-> +static void bcm_update_stats(struct bcm_op *op)
-> +{
-> +	/* prevent statistics overflow */
-> +	if (atomic_long_inc_return(&op->frames_abs) > LONG_MAX / 100) {
-> +		atomic_long_set(&op->frames_filtered, 0);
-> +		atomic_long_set(&op->frames_abs, 0);
-> +	}
-> +}
+It appears a similar issue for RX_SETUP was previously addressed by adding
+locking in commit "can: bcm: add locking when updating filter and timer
+values", but the TX_SETUP side might still be exposed.
 
-[Severity: Medium]
-Could this non-atomic reset allow other threads to interleave their
-increments and permanently break the statistic invariant?
-
-If Thread A hits the LONG_MAX / 100 threshold and begins resetting the stat=
-s:
-
-Thread A
-bcm_update_stats()
-    atomic_long_set(&op->frames_filtered, 0);
-    atomic_long_set(&op->frames_abs, 0);
-
-And Thread B is concurrently processing bcm_rx_changed():
-
-Thread B
-bcm_rx_changed()
-    if (atomic_long_read(&op->frames_abs))
-        atomic_long_inc(&op->frames_filtered);
-
-If Thread B reads a non-zero frames_abs, then Thread A resets both to 0,
-and finally Thread B increments frames_filtered, wouldn't frames_filtered
-become 1 while frames_abs is 0?
-
-This would leave frames_filtered greater than frames_abs, causing the procfs
-output to display negative reduction percentages.
-
-> +
->  /*
->   * bcm_can_tx - send the (next) CAN frame to the appropriate CAN interfa=
-ce
->   *              of the given bcm tx op
-[ ... ]
+>  	if (op->flags & TX_ANNOUNCE)
+>  		bcm_can_tx(op, NULL);
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260707-bcm_fixes-=
-v3-0-84600ca6d889@hartkopp.net?part=3D4
+v3-0-84600ca6d889@hartkopp.net?part=3D5
