@@ -1,212 +1,102 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 331044252A2;
-	Tue,  7 Jul 2026 14:32:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8290942A151
+	for <linux-can@vger.kernel.org>; Tue,  7 Jul 2026 14:38:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783434740; cv=none; b=PVcDwnHPybsEGLlbhK4YMU18F7C+oJKHi2KnNL+y7yLmuM+clvULC3wg3djjrmtRpDxTkffcL0azcd8u1lBhZ3Xtw2hMXx2WwXkRaAxjk2wf2oq9ZxQwYFNzPNPqrMCD1ovYy9nBbmY0GoRdKgv79j9a1Sx2mbiAwjJxjiTenvw=
+	t=1783435134; cv=none; b=Ga3KZ+iMUDr2dqYw1LWOnEGpCfJXrvBU2s/y2NpODuaoKReQd64lTrVeA+TvV8zXmC3kv93wSYC7pdA+aRcIF7TvW/DAbSTbNIdY85oOuP+qyF+YuA7fkqwm2IdiE2ANrKKWwMxuTsgShpj7wgatGrYZ3iJGU+NnzO1F/q0FvhA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783434740; c=relaxed/simple;
-	bh=ycBO1r5ck2A+x1WN2wpltuPl1P//H+iRDYz9uHDgSPg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=g7xsp6KPXdgnPm6xUbIAxbQ6Gsn3Dawofrzmt5wtLn98UBdRWr+atmlysBiPsjuSTl/P5u7Zo7tkMHu/725/La8H+5blHO0D7/7cu7C0G+A0scbI63Wzi79zRhfJ5EuLMoXQjSpTPpvTxzPK+2Y3ZWjMqOY4/99EPwjHrkzQ5AM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J2YZPsYq; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J2YZPsYq"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DBDB5C2BCF6;
-	Tue,  7 Jul 2026 14:32:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1783434739;
-	bh=ycBO1r5ck2A+x1WN2wpltuPl1P//H+iRDYz9uHDgSPg=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=J2YZPsYqYktMrmbtXivOIdZNZ8Mf+1m/6eKOLcwIV0xJ0aopkVKRfq7wXiLKIX7BK
-	 SHAwqZjZ+BxwyZy+prTBMz/Q4BwBBspdvUQakMWMWPWDHOg5R3LDfe9jCzdPBN3vRX
-	 OXbKovBBH0TDcGQAPztc/4qKwKRTVckH5VVZhaFrzN/RC2B3g2gqPxAYTHtClcPEnC
-	 ddlTT7JgW+8gMr/05J7TgBjHb31hUb0iSoA4TIVkFUW0dWEhtYBR/AuNoeortwtt8H
-	 48UjnufffT3Iy42xHtehWc9X0nUkj5q3EATIUEITyVydY2EV0brTze1rU4LIEJh2ri
-	 FrgCPGO+e15Vw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB91AC43458;
-	Tue,  7 Jul 2026 14:32:19 +0000 (UTC)
-From: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
-Date: Tue, 07 Jul 2026 16:32:17 +0200
-Subject: [PATCH v4 5/7] can: bcm: add missing rcu list annotations and
- operations
+	s=arc-20240116; t=1783435134; c=relaxed/simple;
+	bh=5Y0OPEMWm/GmNtMQmTEV/oB6MF5OuOALUtsyLmBM9Aw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YU2ueM6vU4nIEbWIixh8Yn5myF/0AqZvUTEZbRGl1G2GSog2DsuiV1Q8PLXzqgoqtx6zT/99rmF8UpCogNM+hdHiiu5IYGMjNRrNx7/cuF/siZuvn5abh4ZXBJ3Y5bRO92uN7ZIWlzWk398MnuJcedGS6EQngwmNBscINX7TivU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 459BE201CD7;
+	Tue, 07 Jul 2026 16:38:49 +0200 (CEST)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1wh6wj-000bCL-0c;
+	Tue, 07 Jul 2026 16:38:49 +0200
+Received: from pengutronix.de (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id E8D0D5625E5;
+	Tue, 07 Jul 2026 14:38:48 +0000 (UTC)
+Date: Tue, 7 Jul 2026 16:38:48 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
+Cc: linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH v4 6/7] can: bcm: extend bcm_tx_lock usage for data and
+ timer updates
+Message-ID: <20260707-legendary-beagle-of-joy-6ab722-mkl@pengutronix.de>
+References: <20260707-bcm_fixes-v4-0-aa87b8b9d33f@hartkopp.net>
+ <20260707-bcm_fixes-v4-6-aa87b8b9d33f@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260707-bcm_fixes-v4-5-aa87b8b9d33f@hartkopp.net>
-References: <20260707-bcm_fixes-v4-0-aa87b8b9d33f@hartkopp.net>
-In-Reply-To: <20260707-bcm_fixes-v4-0-aa87b8b9d33f@hartkopp.net>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
- Marc Kleine-Budde <mkl@pengutronix.de>, sashiko-reviews@lists.linux.dev
-X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1783434738; l=5017;
- i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=+7viSVkHaYLUtpL3B12ohX+d0K4aqI5r+wgllgDbJA0=;
- b=Q0t7uQrDqm7OVy+Bs+mc/V0p3v7gGVQP5jcHoQ2U5XJD+nokUIizwebwcMCpXWEJFvsW5xgME
- 3PKLJnrLiKeBZTWqjrkTEGG2iHghEKOhRs0J9Eug75VnByI0jubJ6VG
-X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
- pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
-X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
- auth_id=620
-X-Original-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Reply-To: socketcan@hartkopp.net
-
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-
-sashiko-bot remarked the missing use of list_add_rcu() in
-bcm_[rx|tx]_setup() to have a proper initialized bcm_op structure
-when bcm_proc_show() traverses the bcm_op's under rcu_read_lock().
-
-To cover all initial settings of the bcm_op's the list_add_rcu() calls
-are moved to the end of the setup code.
-
-While at it, also fix the mirroring removal side: bcm_release() called
-bcm_remove_op() - which frees the op via call_rcu() - on ops that were
-still linked in bo->tx_ops/bo->rx_ops, without list_del_rcu() first.
-Unlink each op with list_del_rcu() before handing it to bcm_remove_op(),
-matching the existing pattern in bcm_delete_tx_op()/bcm_delete_rx_op().
-
-Reported-by: sashiko-reviews@lists.linux.dev
-Closes: https://lore.kernel.org/linux-can/20260610094654.A1FFE1F00893@smtp.kernel.org/
-Fixes: dac5e6249159 ("can: bcm: add missing rcu read protection for procfs content")
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- net/can/bcm.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
-
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 0b53dbb64dd1..5ca684cd0819 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -263,11 +263,11 @@ static int bcm_proc_show(struct seq_file *m, void *v)
- 
- 		seq_printf(m, "%s%ld%%\n",
- 			   (reduction == 100) ? "near " : "", reduction);
- 	}
- 
--	list_for_each_entry(op, &bo->tx_ops, list) {
-+	list_for_each_entry_rcu(op, &bo->tx_ops, list) {
- 
- 		seq_printf(m, "tx_op: %03X %s ", op->can_id,
- 			   bcm_proc_getifname(net, ifname, op->ifindex));
- 
- 		if (op->flags & CAN_FD_FRAME)
-@@ -1000,10 +1000,11 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 			int ifindex, struct sock *sk)
- {
- 	struct bcm_sock *bo = bcm_sk(sk);
- 	struct bcm_op *op;
- 	struct canfd_frame *cf;
-+	bool add_op_to_list = false;
- 	unsigned int i;
- 	int err;
- 
- 	/* we need a real device to send frames */
- 	if (!ifindex)
-@@ -1141,12 +1142,11 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 
- 		/* currently unused in tx_ops */
- 		hrtimer_setup(&op->thrtimer, hrtimer_dummy_timeout, CLOCK_MONOTONIC,
- 			      HRTIMER_MODE_REL_SOFT);
- 
--		/* add this bcm_op to the list of the tx_ops */
--		list_add(&op->list, &bo->tx_ops);
-+		add_op_to_list = true;
- 
- 	} /* if ((op = bcm_find_op(&bo->tx_ops, msg_head->can_id, ifindex))) */
- 
- 	if (op->flags & SETTIMER) {
- 		/* set timer values */
-@@ -1164,10 +1164,14 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 		hrtimer_cancel(&op->timer);
- 		/* spec: send CAN frame when starting timer */
- 		op->flags |= TX_ANNOUNCE;
- 	}
- 
-+	/* add this bcm_op to the list of the tx_ops? */
-+	if (add_op_to_list)
-+		list_add_rcu(&op->list, &bo->tx_ops);
-+
- 	if (op->flags & TX_ANNOUNCE)
- 		bcm_can_tx(op, NULL);
- 
- 	if (op->flags & STARTTIMER)
- 		bcm_tx_start_timer(op);
-@@ -1348,13 +1352,10 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 		hrtimer_setup(&op->timer, bcm_rx_timeout_handler, CLOCK_MONOTONIC,
- 			      HRTIMER_MODE_REL_SOFT);
- 		hrtimer_setup(&op->thrtimer, bcm_rx_thr_handler, CLOCK_MONOTONIC,
- 			      HRTIMER_MODE_REL_SOFT);
- 
--		/* add this bcm_op to the list of the rx_ops */
--		list_add(&op->list, &bo->rx_ops);
--
- 		/* call can_rx_register() */
- 		do_rx_register = 1;
- 
- 	} /* if ((op = bcm_find_op(&bo->rx_ops, msg_head->can_id, ifindex))) */
- 
-@@ -1422,14 +1423,16 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 			err = can_rx_register(sock_net(sk), NULL, op->can_id,
- 					      REGMASK(op->can_id),
- 					      bcm_rx_handler, op, "bcm", sk);
- 		if (err) {
- 			/* this bcm rx op is broken -> remove it */
--			list_del_rcu(&op->list);
- 			bcm_remove_op(op);
- 			return err;
- 		}
-+
-+		/* add this bcm_op to the list of the rx_ops */
-+		list_add_rcu(&op->list, &bo->rx_ops);
- 	}
- 
- 	return msg_head->nframes * op->cfsiz + MHSIZ;
- }
- 
-@@ -1759,12 +1762,14 @@ static int bcm_release(struct socket *sock)
- 	/* remove procfs entry */
- 	if (net->can.bcmproc_dir && bo->bcm_proc_read)
- 		remove_proc_entry(bo->procname, net->can.bcmproc_dir);
- #endif /* CONFIG_PROC_FS */
- 
--	list_for_each_entry_safe(op, next, &bo->tx_ops, list)
-+	list_for_each_entry_safe(op, next, &bo->tx_ops, list) {
-+		list_del_rcu(&op->list);
- 		bcm_remove_op(op);
-+	}
- 
- 	list_for_each_entry_safe(op, next, &bo->rx_ops, list) {
- 		/*
- 		 * Don't care if we're bound or not (due to netdev problems)
- 		 * can_rx_unregister() is always a save thing to do here.
-@@ -1791,12 +1796,14 @@ static int bcm_release(struct socket *sock)
- 
- 	}
- 
- 	synchronize_rcu();
- 
--	list_for_each_entry_safe(op, next, &bo->rx_ops, list)
-+	list_for_each_entry_safe(op, next, &bo->rx_ops, list) {
-+		list_del_rcu(&op->list);
- 		bcm_remove_op(op);
-+	}
- 
- 	/* remove device reference */
- 	if (bo->bound) {
- 		WRITE_ONCE(bo->bound, 0);
- 		bo->ifindex = 0;
-
--- 
-2.53.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ome6wnqeesdjuldg"
+Content-Disposition: inline
+In-Reply-To: <20260707-bcm_fixes-v4-6-aa87b8b9d33f@hartkopp.net>
 
 
+--ome6wnqeesdjuldg
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v4 6/7] can: bcm: extend bcm_tx_lock usage for data and
+ timer updates
+MIME-Version: 1.0
+
+On 07.07.2026 16:32:18, Oliver Hartkopp via B4 Relay wrote:
+> From: Oliver Hartkopp <socketcan@hartkopp.net>
+>
+> Stage new CAN frame content for an existing tx op into a kmalloc()'d
+> buffer and validate it there, mirroring the approach already used in
+> bcm_rx_setup(). Only copy the validated data into op->frames while
+> holding op->bcm_tx_lock, so bcm_can_tx() and bcm_tx_timeout_handler()
+> can no longer observe a partially updated or unvalidated frame.
+>
+> Add a missing error path for memcpy_from_msg() when copying CAN frame
+> data from userspace.
+>
+> Also move the kt_ival1/kt_ival2/ival1/ival2 updates in bcm_tx_setup()
+> under op->bcm_tx_lock, and read kt_ival1/kt_ival2/count under the same
+> lock in bcm_tx_set_expiry() and bcm_tx_timeout_handler(), closing the
+> torn 64-bit ktime_t read on 32-bit platforms.
+
+Can you please update the comment for struct bcm_op::bcm_tx_lock, it
+still reads: /* protect currframe/count in runtime updates */
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--ome6wnqeesdjuldg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCak0PdgAKCRDMOmT6rpmt
+0qSbAP41DUEixUi0h5GqssyZ+sd/grM142T3wVCGUAqVhcVOBQEAimQR0RmEV0aY
+rypbH8m18f4Ml6M6uTRELsbVNcnuiwU=
+=B2RA
+-----END PGP SIGNATURE-----
+
+--ome6wnqeesdjuldg--
