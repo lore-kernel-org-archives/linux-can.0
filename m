@@ -1,158 +1,121 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF47713A86C
-	for <linux-can@vger.kernel.org>; Tue,  7 Jul 2026 08:28:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783412940; cv=none; b=jYo8Q4B5mH/37H0+nvgdJ6hl/qBxOtLLPSxEE381GVtuIGTAyQtd13J0SRDly2iC4TeKfQbGPDoc4nc3hcGXtJ6KfQ85iZKOgzfn32s6uFsYja1Kt7JNmfsbYwnDovN69ZiJwLi0izy5fkNw5eRYrir6pIfLK9y3a6CcL6PKnMk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783412940; c=relaxed/simple;
-	bh=hPX8iZRcMUMPDER5GTeQe5IFInl/tdn8V7m7qxSjISI=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=U6cAPNOAWecdkl44K4oBMh2qOCWAEUzv6KiEhm+MhsKs/IGxEXpzhU0BBl4yzjcDlutqIf1uOfu7Gz2mEyiOmKuG5aRZ2zESCbf5+/oGdB/ATKcS3uQn7w3DYIcZDMwBpTCLYeCdJTu3JIvSRzoXLYFxEfxgxCFOqIudVnWFMSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S3B3Vy0l; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA001320CD9
+	for <linux-can@vger.kernel.org>; Tue,  7 Jul 2026 08:36:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.20
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783413363; cv=pass; b=Vu56dY1NNRIn1xF3pER75cbMMEx4oIPELPNxbrd58Wsd6b4ZF7pGwwfL5A3/jwuiQvoLiAuKMHrPfL2bTUtDVJsZld05+47QuCGEnqnxZ93IJiDh4QQ/t0GB0Q+sa0mAafywxKf4vQeFyew1XIP/92HjVBMOD7hn6K5DddokqlU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783413363; c=relaxed/simple;
+	bh=Eaf9cQHSN7GlXS8abqr+3zTC2XbDvJphG489LZls/K0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=YSjQ3rFb6+T1l7MYnadmSTyv9dCrH4qMVwIzsRuHnqqbFc5blVZhHHZuNpWA3qu/lGac88nqpFIU5FBzSZRS2/jLIJCmJjSuqqA6Lcd7JlNadcyfpZ/E2Cgl0zNx5zEywcP9baqjYKTJwQ54IPqa+jMkK7+eW56iosg6tpcCSUA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=BpPv2bmC; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=v3HSpbmO; arc=pass smtp.client-ip=85.215.255.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S3B3Vy0l"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25DC51F00A3A;
-	Tue,  7 Jul 2026 08:28:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783412939;
-	bh=v4wyhhvNdY1i74fhHedvNHReN6e1CodZqhuk6kg0dSo=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=S3B3Vy0laZVcy5C4bEy0EY99it2D/9q1ziAR74riCCpFXl7GIjx2dYeHVkuK71+dB
-	 r07zmKO4EQ9nArN6jxnkqCvSCTF+pfSf5NH2dhaJIAJPwLsWr9WeBvbWSD7wUpgltt
-	 c4KU7LzQVTEpDE+ZVTGnD8MdOVUw2AHQZHe6U1Ho+C6mFEhlhw+kquR/5P8fq8f4fk
-	 v9c20LRodGCIXIvkujJotctrdUg05nQNgow2dgB3dhATw+tFBku/X1uXhIKEqCoXXn
-	 U4mybBw4AtknkQTqrlOqO4VY8E9t4/N73f0S7uNoRL285m4s0rfDcw81kATY/5Zyp/
-	 B8RH5q62qoAyg==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v2 3/6] can: bcm: add locking when updating filter and
- timer values
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Oliver Hartkopp" <socketcan@hartkopp.net>
-Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org
-In-Reply-To: <20260707-bcm_fixes-v2-3-96620c534b75@hartkopp.net>
-References: <20260707-bcm_fixes-v2-0-96620c534b75@hartkopp.net>
- <20260707-bcm_fixes-v2-3-96620c534b75@hartkopp.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 07 Jul 2026 08:28:58 +0000
-Message-Id: <20260707082859.25DC51F00A3A@smtp.kernel.org>
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="BpPv2bmC";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="v3HSpbmO"
+ARC-Seal: i=1; a=rsa-sha256; t=1783413172; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=PlzL3fpEC0MONxAqeXZlyl47MLCKiMVeUDyw16kteypU9ehmkW4RAHFXtEuK94qAt/
+    yhKpgr3VyuxoUIPU3WekR2qr7Ph9D+DlE4i6DzkGnqaPLpLVPaAwBYTvUu9xe+W51dCA
+    CsAhpJlHN3K8qQo/F0UT35DvbWvGUpjJ7KrneFjMaqZLj/Eavlh7lp1RqKsYdgJ7PLPX
+    qlSwYklKzYFFsjw1tK0xPBxX9X39Gc0TmgNQxjGSh7NP6hP2esQTjNtuapbazj0so2Q3
+    CAL9EAvFXaPSYPZcsdsrmRDLLFDEn2DQWwl4j5M2kq6cEbKdCAXzKePrjiuOVLKn84Ia
+    2DAg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1783413172;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=1Y462xLZBMkfRXHyQMCplbxVmwrDTOCYDqlRLB3eTh0=;
+    b=tu9ODVIQHZbY5xV+GSs9+eUaf7EaO42vKI3K5q2ZYKeHYx1njIBbTDo1k4HAPJYvjD
+    dVbapUvowHq5Xk/EBYQoxA3PuRHQ4MAaxMnEjFuc80V3YS9cN58kpynhjukjSIULQO8N
+    eIC7B+T6UVEW+tsTc5h46Eid96Egf41KyIl6eZo7MCdHTv2+kt/qIJ97F9qx56fgpAjN
+    jdJI2+cjWKVsJhsvKE0Me3Oxm0kAUMtdJMz29CVgLYt0dW7MMyFPrKBf5fuHsBhXgPQW
+    GfxiPIPoWboMgUl3TaPBPbVbm3MifulWzXITaoWC20h0lsvFxxsj9IMFuSqaC2mTLn78
+    3CqQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1783413172;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=1Y462xLZBMkfRXHyQMCplbxVmwrDTOCYDqlRLB3eTh0=;
+    b=BpPv2bmCZppOxeQqQHsX+w4b2G4b1k5S0dwxYeAxrJUkC7pnMwYeylPZMrd1faMAgM
+    xUaae5iK6UAOq85vF7zn0/w3fDoCmrjjcvHHQrVL02nYU/Y2z9qGeR4OwDtcULqMLDs5
+    gSzISWKJZWrT8uS+C9Vqb3R5np6VGKoSYR1gGXY2Ziu+F0ILwW/p80zLwn8c4fPtd5AG
+    MqY2hPq1J6tmoJh/rvdQ2u8BEzE6Wxsb7Wdqv3wFi1ZIHNPEwhRWXyTlWXln6YX16Pyb
+    CVE/Oy5XWqoTWhCzLVry68CPo+q9XKxjixFUSJiCnDRKOjB0B58SZx8d9/qNIafNxt4X
+    MouA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1783413172;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=1Y462xLZBMkfRXHyQMCplbxVmwrDTOCYDqlRLB3eTh0=;
+    b=v3HSpbmO3+xzQZfdB8QwTxLArT4/XVJLyFflYAFarfOemHpSpjBTCpDLEuS0oFl9FK
+    yaOJAJQAhC+q/3QEohCw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tRkI16oOSW1Ti/f4PoH8="
+Received: from vivo.lan
+    by smtp.strato.de (RZmta 55.5.6 DYNA|AUTH)
+    with ESMTPSA id Ka9fdb2678WqQPM
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Tue, 7 Jul 2026 10:32:52 +0200 (CEST)
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
+	Nico Yip <zdi-disclosures@trendmicro.com>
+Subject: [PATCH] can: isotp: add missing synchronize_rcu() in isotp_notify()
+Date: Tue,  7 Jul 2026 10:32:28 +0200
+Message-ID: <20260707083228.47629-1-socketcan@hartkopp.net>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 
-Thank you for your contribution! Sashiko AI review found 2 potential issue(=
-s) to consider:
+isotp_notify() unregisters the (RCU) CAN filters via can_rx_unregister()
+and clears so->bound without waiting for a grace period. isotp_release()
+uses so->bound to decide whether it needs to call synchronize_rcu()
+before cancelling so->rxtimer, so when NETDEV_UNREGISTER runs first it
+skips that synchronize_rcu() and can cancel the timer while an
+in-flight isotp_rcv() is still executing and about to re-arm it via
+isotp_send_fc(), leading to a use-after-free timer callback on the
+freed socket.
 
-Pre-existing issues:
-- [High] The TX timeout handler reads 64-bit ktime_t variables and 32-bit s=
-tate variables locklessly, creating data races that can lead to torn ktime_=
-t reads and erratic timer behavior.
-- [High] The CAN frame payload on the transmission side is copied into the =
-SKB locklessly, allowing a concurrent update from userspace to overwrite th=
-e frame while it is being transmitted, resulting in torn CAN frames.
---
+Fixes: 14a4696bc311 ("can: isotp: isotp_release(): omit unintended hrtimer restart on socket release")
+Reported-by: Nico Yip <zdi-disclosures@trendmicro.com> (ZDI-CAN-31764)
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ net/can/isotp.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- Patch [3]: [PATCH v2 3/6] can: bcm: add locking when updating filter an=
-d timer values ---
-commit 5cea5eef9652435aa644979477f4e925e5e24c8f
-Author: Oliver Hartkopp <socketcan@hartkopp.net>
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index c48b4a818297..008cee547213 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -1573,10 +1573,17 @@ static void isotp_notify(struct isotp_sock *so, unsigned long msg,
+ 						  isotp_rcv, sk);
+ 
+ 			can_rx_unregister(dev_net(dev), dev, so->txid,
+ 					  SINGLE_MASK(so->txid),
+ 					  isotp_rcv_echo, sk);
++
++			/* wait for in-flight isotp_rcv() callers to finish
++			 * before clearing so->bound, so that isotp_release()
++			 * cannot observe so->bound == 0 and skip its own
++			 * synchronize_rcu() while a callback is still running
++			 */
++			synchronize_rcu();
+ 		}
+ 
+ 		so->ifindex = 0;
+ 		so->bound  = 0;
+ 		release_sock(sk);
+-- 
+2.53.0
 
-can: bcm: add locking when updating filter and timer values
-
-This commit adds a new per-op bcm_rx_update_lock to protect timer and
-filter data updates in the RX handlers against concurrent execution. It
-also addresses an RTR flag clearing race by normalizing the frame content
-during initial preparation instead of modifying the live frame.
-
-Link: https://lore.kernel.org/linux-can/6975d5cf.a00a0220.33ccc7.0022.GAE@g=
-oogle.com/
-
-> diff --git a/net/can/bcm.c b/net/can/bcm.c
-> index b612135b017d1..1eabacad0b001 100644
-> --- a/net/can/bcm.c
-> +++ b/net/can/bcm.c
-> @@ -293,22 +294,23 @@ static int bcm_proc_show(struct seq_file *m, void *=
-v)
->   * bcm_can_tx - send the (next) CAN frame to the appropriate CAN interfa=
-ce
->   *              of the given bcm tx op
->   */
-> -static void bcm_can_tx(struct bcm_op *op)
-> +static void bcm_can_tx(struct bcm_op *op, struct canfd_frame *cf)
->  {
->  	struct sk_buff *skb;
->  	struct can_skb_ext *csx;
->  	struct net_device *dev;
-> -	struct canfd_frame *cf;
->  	int err;
-> =20
->  	/* no target device? =3D> exit */
->  	if (!op->ifindex)
->  		return;
-> =20
-> -	/* read currframe under lock protection */
-> -	spin_lock_bh(&op->bcm_tx_lock);
-> -	cf =3D op->frames + op->cfsiz * op->currframe;
-> -	spin_unlock_bh(&op->bcm_tx_lock);
-> +	if (!cf) {
-> +		/* read currframe under lock protection */
-> +		spin_lock_bh(&op->bcm_tx_lock);
-> +		cf =3D op->frames + op->cfsiz * op->currframe;
-> +		spin_unlock_bh(&op->bcm_tx_lock);
-> +	}
-
-[Severity: High]
-This isn't a bug introduced by this patch, but can this lead to torn CAN
-frames during transmission?
-
-While the bcm_tx_lock protects the calculation of the cf pointer here, the
-lock is dropped before calling skb_put_data(skb, cf, op->cfsiz) further
-down in bcm_can_tx().
-
-Concurrently, bcm_tx_setup() can overwrite the active op->frames buffer
-using memcpy_from_msg() directly from userspace locklessly:
-
-net/can/bcm.c:bcm_tx_setup() {
-    ...
-    cf =3D op->frames + op->cfsiz * i;
-    err =3D memcpy_from_msg((u8 *)cf, msg, op->cfsiz);
-    ...
-}
-
-Could this allow a partially updated CAN frame to be copied into the skb and
-transmitted onto the network while the data is being mutated?
-
-[ ... ]
-> @@ -461,7 +463,7 @@ static enum hrtimer_restart bcm_tx_timeout_handler(st=
-ruct hrtimer *hrtimer)
->  	struct bcm_msg_head msg_head;
-> =20
->  	if (op->kt_ival1 && (op->count > 0)) {
-
-[Severity: High]
-This is a pre-existing issue, but can the lockless read of op->kt_ival1
-result in a torn read on 32-bit platforms?
-
-In bcm_tx_setup(), the 64-bit ktime_t variables kt_ival1 and kt_ival2 can
-be updated concurrently from user space data. Evaluating these values
-in bcm_tx_timeout_handler() and bcm_tx_set_expiry() without holding
-bcm_tx_lock could yield arbitrary timer intervals.
-
-Could this cause the hrtimer to stall indefinitely or fire in an immediate
-tight loop?
-
-> -		bcm_can_tx(op);
-> +		bcm_can_tx(op, NULL);
->  		if (!op->count && (op->flags & TX_COUNTEVT)) {
-> =20
->  			/* create notification to user */
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260707-bcm_fixes-=
-v2-0-96620c534b75@hartkopp.net?part=3D3
