@@ -1,201 +1,102 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.164])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72AB13FF1AC
-	for <linux-can@vger.kernel.org>; Tue,  7 Jul 2026 12:26:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.164
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783427215; cv=pass; b=rvxIyoin38Nnj8kd1l9xlfY6UpX6tvaycVdvs0/mTFFztjNrSvI/OHC9L3RX9jXB/Qu9gtPtLhFKQ2baXcmcWCYZfr3BfQGX1lYzBxgFECFnBe8LuU9eXz8m2wYBXX2xxAvQkNuySG/8dK25NhqV8jXWWuZRf/qM/agplWyO9bk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783427215; c=relaxed/simple;
-	bh=uW3L9D1LjITsjuGOS0+yoTYtaO4LQhiM71qcWZaD9WQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OIrfUPfEu/qUBiQwL6WjpTJKKL6pWQKpX5649VO8ThCejEpfZ0pKY+bfB9SEWU8Jb1wwFJeAzmQsJY5J0vYHX3GlrBBdK2fZa4i+kD11SZszPjZdFgFJJVcXlsHIlvh42M1QCnTcl9t90W2HzVGUeWRQpObin2Tg8scln+jCZoQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=kZ1pYNtA; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=FbmrGRnw; arc=pass smtp.client-ip=81.169.146.164
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="kZ1pYNtA";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="FbmrGRnw"
-ARC-Seal: i=1; a=rsa-sha256; t=1783427029; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=P9lio/RFBCaeREOBdGVox4VATevIS8tzkLt/KUdY49nQgAqyDL2FyvohDxcTuBaJPW
-    HZ+CNE8IOHdsYXfFCwGpTBISKBzr3POssWLvUUUZTI0qFAmtxkFL4yqpleJF7D6iZFzp
-    Tnf2MfLxbR/frjdp9IpJiLyKO566v/5QCHp6Vmgcq3O8L5dJnQd26hWUycW50zlj5QTa
-    FrpEnoSdCVjD7piIl5aACZKb+Dzd4Z9Ok5fMWLT+OLMLUUJ85DsUDl3WNckbtTxJn4iM
-    I/Gjz0zDg8lWmiDHj6tq2U0mx/21J7ryIX8d3rW6qaPbkrLZtQKXOx9HVkEydmEFNv3+
-    z/Wg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1783427029;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=8b0tkocE/IM9WIjFd3EHZ5WIFmbn4qTdDJaLiGlXZ/M=;
-    b=d/QFSlpmTMl+PZpJHp2yASkKtuSFSoKKr37pFVB+NIHPvn5t9FILxsjsVFhfDewBuO
-    SSy0JYxNEjGGM4xSfXdntNYxGeFxqiLKM+MjB99wytVgoi17H9iEE5FZ1Af1nT1Gt26p
-    HrsWQC672fg3wt2UZSOGOgVuI235YRgREISJKDEYY8M9ZtLbqVKZXMRIsos/ci41fKgp
-    MIxsEdlPVW5nI82w+ZoN8ofCKIm45cbnBlBSPELJXV4vxWfPTW2FTE40PwBmczG3mZPw
-    nrB/q3yDfxRAcmn6ZtyGA/bV5tjTWdNCRq4UmEQIjAPsVcTDqTqeLat/enmqc96gy2uU
-    /35w==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1783427029;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=8b0tkocE/IM9WIjFd3EHZ5WIFmbn4qTdDJaLiGlXZ/M=;
-    b=kZ1pYNtAz+RH2LHg46WLkcx4wu9Xg6mclSyf8rhIbEB7QSVK/BjkimcEkHnKUKGpGE
-    H8mLZ9hLIIvsqcU7ZqLq0gg59ths09r0b1ZGJUIRBYJ5xFsftUkuPOmjHVNmup/eb0GO
-    F1z1br9IAVJYuh4LeUn7kKwV2NEkphqUByWt1QcvRT75wMCbAEhgkrPmCSsjkeA0CN23
-    9GpksY+Iouo0isr86UqzGREa6fcfHnpvidZ3h79tb35mX1/X59ikvFicX9w6k2d7FGPM
-    ZMQe+qfEndupcYdEYUlEz5oTWYAQi+TLqGJUgyRgpPOtdc9z9bXpLVSSVD2eIERu6WlE
-    pPJg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1783427029;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=8b0tkocE/IM9WIjFd3EHZ5WIFmbn4qTdDJaLiGlXZ/M=;
-    b=FbmrGRnwCyObukvqwvtwFwQ+3LI4IrTnKmWX1A1CSKWi7bBMSHjngEBAac022nCuzC
-    v5o7Zh9ISqZ+ZINbS/Cw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tRkI16oOSW1Ti/f4PoH8="
-Received: from [192.168.20.154]
-    by smtp.strato.de (RZmta 55.5.6 DYNA|AUTH)
-    with ESMTPSA id Ka9fdb267CNmTQU
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Tue, 7 Jul 2026 14:23:48 +0200 (CEST)
-Message-ID: <cf9d0adf-62c8-4bfa-8cfd-304d22c05e7d@hartkopp.net>
-Date: Tue, 7 Jul 2026 14:23:48 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5876440A94D
+	for <linux-can@vger.kernel.org>; Tue,  7 Jul 2026 12:33:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783427641; cv=none; b=s6O9nyXE7GSBl95PPkhrQmzk4zU1jY0ureOBdQU1xh5b1C7vP59VvF3cuRmBGgU2mLamCtfRTTuO5nb9HTLtQge1dLFWpnq1ud6KA3sP7LGwND1j6o39Ec6R+VyQVANTDV4m6DB9oYbexXbSSRtH2C+S/ZWeXPKOf6RLpN+zgDY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783427641; c=relaxed/simple;
+	bh=ojnKP+omkT+7pDzc1+VWtlREBemEjiYeqydLbtI83YE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c8XpRCrSnYiB68eiHFeVnr7qsThJ+ONOs1v8X3P9xQbvESLnXiRoD/MT2eqTX4K8UsvhuORyNQth1ZS923MqANurIGUstBmbbnEIugV16yXZm3DtcVmNlQ8231rVV0vVmgYseTlSP/w+cRpVd7CnnMIC2HwuEV0wwD0mSthKAg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id E863C2025F3;
+	Tue, 07 Jul 2026 14:33:49 +0200 (CEST)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1wh4zl-000a2m-2g;
+	Tue, 07 Jul 2026 14:33:49 +0200
+Received: from pengutronix.de (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 893A5562467;
+	Tue, 07 Jul 2026 12:33:49 +0000 (UTC)
+Date: Tue, 7 Jul 2026 14:33:47 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
+Cc: linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH v3 6/7] can: bcm: extend bcm_tx_lock usage for data and
+ timer updates
+Message-ID: <20260707-nocturnal-jellyfish-of-destiny-201f7d-mkl@pengutronix.de>
+X-AI: stop_reason: "refusal"
+References: <20260707-bcm_fixes-v3-0-84600ca6d889@hartkopp.net>
+ <20260707-bcm_fixes-v3-6-84600ca6d889@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/7] can: bcm: fix CAN frame rx/tx statistics
-To: sashiko-reviews@lists.linux.dev
-Cc: Vincent Mailhol <mailhol@kernel.org>, linux-can@vger.kernel.org,
- Oleksij Rempel <o.rempel@pengutronix.de>,
- Marc Kleine-Budde <mkl@pengutronix.de>
-References: <20260707-bcm_fixes-v3-0-84600ca6d889@hartkopp.net>
- <20260707-bcm_fixes-v3-4-84600ca6d889@hartkopp.net>
- <20260707103714.9A6AB1F000E9@smtp.kernel.org>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20260707103714.9A6AB1F000E9@smtp.kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="2jngkjfgc6v2kueb"
+Content-Disposition: inline
+In-Reply-To: <20260707-bcm_fixes-v3-6-84600ca6d889@hartkopp.net>
 
 
+--2jngkjfgc6v2kueb
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v3 6/7] can: bcm: extend bcm_tx_lock usage for data and
+ timer updates
+MIME-Version: 1.0
 
-On 07.07.26 12:37, sashiko-bot@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 2 potential issue(s) to consider:
-> 
-> New issues:
-> - [Medium] A Time-Of-Check to Time-Of-Use (TOCTOU) race during statistics reset can permanently break the invariant `frames_filtered <= frames_abs`.
+On 07.07.2026 12:16:13, Oliver Hartkopp via B4 Relay wrote:
+> From: Oliver Hartkopp <socketcan@hartkopp.net>
+>
+> Stage new CAN frame content for an existing tx op into a kmalloc()'d
+> buffer and validate it there, mirroring the approach already used in
+> bcm_rx_setup(). Only copy the validated data into op->frames while
+> holding op->bcm_tx_lock, so bcm_can_tx() and bcm_tx_timeout_handler()
+> can no longer observe a partially updated or unvalidated frame.
+>
+> Also move the kt_ival1/kt_ival2/ival1/ival2 updates in bcm_tx_setup()
+> under op->bcm_tx_lock, and read kt_ival1/kt_ival2/count under the same
+> lock in bcm_tx_set_expiry() and bcm_tx_timeout_handler(), closing the
+> torn 64-bit ktime_t read on 32-bit platforms.
 
-Fixed in V4
-> 
-> Pre-existing issues:
-> - [High] Missing RCU publish/subscribe barriers for lockless list operations, risking uninitialized memory reads in procfs.
+Can you update the comment in struct bcm_op::bcm_tx_lock accordingly?
 
+Marc
 
-Fixed in patch 5:
-https://lore.kernel.org/linux-can/20260707-bcm_fixes-v3-5-84600ca6d889@hartkopp.net/
+> Fixes: c2aba69d0c36 ("can: bcm: add locking for bcm_op runtime updates")
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
-> --
-> 
-> --- Patch [4]: [PATCH v3 4/7] can: bcm: fix CAN frame rx/tx statistics ---
-> commit faeade145d2ba64627aca2f6af5f2b0b8ad0d933
-> Author: Oliver Hartkopp <socketcan@hartkopp.net>
-> 
-> can: bcm: fix CAN frame rx/tx statistics
-> 
-> KCSAN detected a data race within the bcm_rx_handler() when two CAN frames
-> have been simultaneously received and processed in a single rx op by two
-> different CPUs. Use atomic operations with (signed) long data types to
-> access the statistics in the hot path.
-> 
->> diff --git a/net/can/bcm.c b/net/can/bcm.c
->> index fd548c6eaa913..0378e31ea10ed 100644
->> --- a/net/can/bcm.c
->> +++ b/net/can/bcm.c
-> [ ... ]
->> @@ -280,7 +283,8 @@ static int bcm_proc_show(struct seq_file *m, void *v)
->>   			seq_printf(m, "t2=%lld ",
->>   				   (long long)ktime_to_us(op->kt_ival2));
->>   
->> -		seq_printf(m, "# sent %ld\n", op->frames_abs);
->> +		seq_printf(m, "# sent %ld\n",
->> +			   atomic_long_read(&op->frames_abs));
->>   	}
-> 
-> [Severity: High]
-> This is a pre-existing issue, but does this function safely traverse
-> the lockless tx_ops list?
-> 
-> bcm_proc_show() traverses bo->tx_ops via list_for_each_entry() instead of
-> list_for_each_entry_rcu(), which lacks the necessary subscribe barriers.
-> 
-> Additionally, neither bcm_tx_setup() nor bcm_rx_setup() use list_add_rcu()
-> when inserting into these lists:
-> 
-> bcm_tx_setup()
->      list_add(&op->list, &bo->tx_ops);
-> 
-> bcm_rx_setup()
->      list_add(&op->list, &bo->rx_ops);
-> 
-> Could reading /proc/net/can/bcm/<inode> while another thread concurrently
-> sets up a BCM message on the same socket result in traversing uninitialized
-> memory due to missing RCU publish/subscribe barriers?
-> 
->>   	seq_putc(m, '\n');
->>   
->> @@ -290,6 +294,15 @@ static int bcm_proc_show(struct seq_file *m, void *v)
->>   }
->>   #endif /* CONFIG_PROC_FS */
->>   
->> +static void bcm_update_stats(struct bcm_op *op)
->> +{
->> +	/* prevent statistics overflow */
->> +	if (atomic_long_inc_return(&op->frames_abs) > LONG_MAX / 100) {
->> +		atomic_long_set(&op->frames_filtered, 0);
->> +		atomic_long_set(&op->frames_abs, 0);
->> +	}
->> +}
-> 
-> [Severity: Medium]
-> Could this non-atomic reset allow other threads to interleave their
-> increments and permanently break the statistic invariant?
-> 
-> If Thread A hits the LONG_MAX / 100 threshold and begins resetting the stats:
-> 
-> Thread A
-> bcm_update_stats()
->      atomic_long_set(&op->frames_filtered, 0);
->      atomic_long_set(&op->frames_abs, 0);
-> 
-> And Thread B is concurrently processing bcm_rx_changed():
-> 
-> Thread B
-> bcm_rx_changed()
->      if (atomic_long_read(&op->frames_abs))
->          atomic_long_inc(&op->frames_filtered);
-> 
-> If Thread B reads a non-zero frames_abs, then Thread A resets both to 0,
-> and finally Thread B increments frames_filtered, wouldn't frames_filtered
-> become 1 while frames_abs is 0?
-> 
-> This would leave frames_filtered greater than frames_abs, causing the procfs
-> output to display negative reduction percentages.
-> 
->> +
->>   /*
->>    * bcm_can_tx - send the (next) CAN frame to the appropriate CAN interface
->>    *              of the given bcm tx op
-> [ ... ]
-> 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
+--2jngkjfgc6v2kueb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCakzyKAAKCRDMOmT6rpmt
+0vryAP497Qu3bFgNAdKqa8gb92wJmhD92iYM9Mbd5jTGQWSJhgD/e9n1Tw6eVG14
+gv+2p8Te7cGi5q7ISlnVLpHcdNiFswY=
+=A1qD
+-----END PGP SIGNATURE-----
+
+--2jngkjfgc6v2kueb--
