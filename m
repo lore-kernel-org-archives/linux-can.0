@@ -1,72 +1,72 @@
 Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0723C3E6383
-	for <linux-can@vger.kernel.org>; Tue,  7 Jul 2026 11:33:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D55D30D407
+	for <linux-can@vger.kernel.org>; Tue,  7 Jul 2026 12:26:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.167
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783423989; cv=pass; b=l25xkJw+cThq/wjbHqkdUa0/3SfF09GSpk2xTt06A19Oc9sXCCocIhnp9Qknt4Boj9RCiqp59GaDYQBMRYBvJF+KLLrM5p56gXLo4wZzYzDXzgCHzdNR0YDEV+TyrfqmIE1T9hrvSn/Okw7M2dvni4coCcXsBybTdfHY4yfiFfg=
+	t=1783427206; cv=pass; b=I3M6uJrZafiy9UCRUdTqOEKg8JEiPNXxyyQLWcYUFCYSVBaSwrRWy3y1N1GTdttB+FyCtE5Wrks8XMIDjd8S9VHRAZkjPWnWfwbxYbD4uq+b2a7C8f2J+OUGHzFz0BNG2bsUXUr+EVFaOWqvUe/nOF0qiSwffGL+pfWQHqdRRUs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783423989; c=relaxed/simple;
-	bh=wS/J0Nbi93oH1TFz0RrqSQaENoKnBheUpQQSDF7bGCE=;
+	s=arc-20240116; t=1783427206; c=relaxed/simple;
+	bh=gliTLLYedljJc4FRxomtiKotRi00Uow2q3LJI+cD26o=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mrKbGx41QgQf/QQdkT8EaPBJW79r4D/Ioch7O7Q5kcjdu4cOf6MpyQeHMYbVBRMCDrg5Gf9+lxOlJ4paiSlDcTkwh7hM5QalPtgEEsMz42pxeuHkBalLrYjI5+Lr3lLrMCnb33d5NHvgp2U5FmJHB76FqotXhDv9EsiSE0O6eFg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=Gkf0cJaI; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=2EcsMNbw; arc=pass smtp.client-ip=81.169.146.167
+	 In-Reply-To:Content-Type; b=e/n3h0WWa1Cuuz/ux4ryyjQihBxHMug1Fh55ssLSG1KDnIBFP2RULfQwL2gj6HMizq1CSYyclTjh5HH4GL+VdM0aISX5otoRIVi0x+MZ6dlbL+gT5jiEW6cxQaOSPQDFDRhcCQT0zp9RrwRJg+GVVrIRMWG9h4TIkwhBG9qqzns=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=cnP6MREG; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=/hnyQDwS; arc=pass smtp.client-ip=81.169.146.167
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="Gkf0cJaI";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="2EcsMNbw"
-ARC-Seal: i=1; a=rsa-sha256; t=1783423978; cv=none;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="cnP6MREG";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="/hnyQDwS"
+ARC-Seal: i=1; a=rsa-sha256; t=1783427193; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=AuJ12quyEN/NA6s5bhh70B5AVP83sEu35yn76fnuTZeAWJIJa1qXM2dgLBm9S9apyY
-    wWZJ5fVkDHMDpnGdqkvm9MCWAnPoHVy1h7i08j5o0QuW9HD3MnyqLw3lNEuZ89fGRnXD
-    yGwGlwm0x6und7bbLkOyrqkmxnIkfl3YI+zOa/8l4rI3NvX83g9mZvdfI9zwdASw3kQq
-    woRVPnN8o0+cF62r1AMxaIksvlRoWaX/dv1QIt8Mvb1zgTVNnXyWSYFjpnjWSwj5UkKD
-    YVoDbpHMql/jr0VPTm5i/vUocaSLkCcyedkfXAloEhdjulTVd1L8nsFPNGYeO/usclTd
-    qg4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1783423978;
+    b=X3V1xgyB3A1Dwi/l2d3jXbl8vowm5pFFPZqu7rXlCC6JzxIrUDKhDXE6HRnnrt+kfc
+    hDj2QgIfPq0haO9xCskijMsqXMhvGm5ih7YcWduUfK4FfwmpJLe8HJYBqGLKT2jS6dJV
+    e8xnGeH6fZvUaI754lQap/HoDWy+QuyIGwVB1Rv9Y/teNAwO6XAj2DwvHWiABLyg91ez
+    OcKj+y2CEuXX6VD75xKriE67Ep4y70qwDEk53UHopOAGQJ9TbQxfDcRuEhud/bz4ei8s
+    rJ35E/TkzDC7r1yML/n5eFK3UbDPeE2H7WaX69LOadwbMvWx+WvNiGuYvB8yVdvKnTcq
+    Oi3Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1783427193;
     s=strato-dkim-0002; d=strato.com;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=T4Vv+CHRYPL/lz5GPxGyVBrz8JFS2hOWlz0sl1GEEA0=;
-    b=SVQgp7rS8OTNFwQQk3r3I3tH/wMaa19E+m259/0dVAxXDkGl2P1H2NtLkBzT4tWZn+
-    /Lx/O2Y4D0wQA58Mc0dlD/IWVpQct0EadZ6HtwCHelfu5OYUrq502lQ6QXdRZL/HhIeb
-    t5aHvdpsaqa0d9IYI0FFEmr5HTxAaz7O49PVveFMBAlL+1JsY/DEhrSQojWqB+JQczH0
-    A50lyo47O/E5vJAeEzi4V1l4OQeUlQKf6V5/NHW9d4kI6otm9rssdrOai6eRiL1moKx8
-    BxF1OXqmFDe6HHqZye01wdJAsa4WNuMa6yiWHPuAkV6OWn1IZorXymYFVbjDqQShiNHU
-    yCMw==
+    bh=FNMWDUzgZmiq1suTeYc9IjjM5TKoT5Okj/bgFPcVwKQ=;
+    b=Rq+QPBYy2xnMJ7zKQcVmq+Q+B33q5T8f+mAqZltgEJKwBKPlxzCe9kK8hWRpJFuPtx
+    CTzfyaU5thFRwKAEgjk7oJ61fU9QI1+54OmNYdF8a+gkYFRSmyEF3KtkkpBdhksGKVdq
+    /qV63MuHzMxQeUYKO/T2wri/psy+vMVy5STOdhjg3V2bOIrSy3x/mE/qV2FjH/WgQAnl
+    bbJsdJJuuWq/L4JVdjd/AtIdAETaqH8lMakUbdHmDVykc3gcClY0uzMLxKebziMP9sOk
+    FAkxa+msbHCjKc97R11Oui3Xo9TUDeMn+Pyi3Y4/2zYbiB63HEFoQp3h+jxKvwzt9L25
+    iZ6g==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1783423978;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1783427193;
     s=strato-dkim-0002; d=hartkopp.net;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=T4Vv+CHRYPL/lz5GPxGyVBrz8JFS2hOWlz0sl1GEEA0=;
-    b=Gkf0cJaI4yFVXb6ZVP+BLF5pafwkF/yRbmBE30x9YjSL4PGzm+fb3W7ttrGaZ/pVE9
-    nKma7uDIH4TwR0VlIFH5Hj1ps5mRmbbHAgdyMM2La5dnuVBs/qMg1GiiJd8UhEia5s1c
-    Ia/VIfR0j/jZbeHDVy7mn697TqCFk7nMc3/TgX/cKMGWO5Rt8nWAwGPJXBhwQVtPrTuH
-    Ow0wotkZK9cJ/6r3AGjKv2zNQf1yx8nm574ouW3NGOSHC6Se4GesaLgH0W0jP0OzxAPj
-    VkCv9LVe3QH+qHMHTDNvkimpOf70VqA081boOUPW0+AGxILXstb0W8Gp6WuPnVdQ66DS
-    YJLQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1783423978;
+    bh=FNMWDUzgZmiq1suTeYc9IjjM5TKoT5Okj/bgFPcVwKQ=;
+    b=cnP6MREGkIjTrf9U9fEWsJYCfFU5tvDKAZrmihoNySZucVmGPQKL8ieW7At44C+DUO
+    oWg961JrjUcN583frIqVQlVXT7h8i7BwEyJdx+M1T9+thwNOpHXrXPSN25DvULI4ghvJ
+    TVQcElJUBrrIrefj2uc9lR3Fg1gFQNjgIXPzKOW+QYb+Sh8sCVH7V5iYWs1XGbPykhNt
+    oXLZlXG64eXeQPblOiFApgWUYFxgv7odFYH/Ck+nUGCz3EQFai1IoxvFJgHYn4YhPgNV
+    6I2M5TJIaHGxnPu7YkzTBrMvgTrPvviFU/XtLUrpqQmm7/FMO19fczqRVc4KlH/5qEdK
+    ZTMQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1783427193;
     s=strato-dkim-0003; d=hartkopp.net;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=T4Vv+CHRYPL/lz5GPxGyVBrz8JFS2hOWlz0sl1GEEA0=;
-    b=2EcsMNbw1yoQPdEf/Rf5qVhv7eknK80bcHdhjBpiL+QBPLHDH8nGkpXvRlheTIIr8W
-    mMlT7yUHuX3ZyVKmUbBg==
+    bh=FNMWDUzgZmiq1suTeYc9IjjM5TKoT5Okj/bgFPcVwKQ=;
+    b=/hnyQDwS7p84q56Xfjg19aXPipdsSU6+6f7GlpwhGomLjUPj9QVfYZ0oimOjsHSV4Z
+    Bd40BX2W2vr/MNbeJnCA==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tRkI16oOSW1Ti/f4PoH8="
 Received: from [192.168.20.154]
     by smtp.strato.de (RZmta 55.5.6 DYNA|AUTH)
-    with ESMTPSA id Ka9fdb267BWwSp3
+    with ESMTPSA id Ka9fdb267CQXTRQ
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Tue, 7 Jul 2026 13:32:58 +0200 (CEST)
-Message-ID: <916beff4-bd6f-45d6-a8d3-4801278596b8@hartkopp.net>
-Date: Tue, 7 Jul 2026 13:32:58 +0200
+    Tue, 7 Jul 2026 14:26:33 +0200 (CEST)
+Message-ID: <465316b7-4019-42a8-8704-e36954615f10@hartkopp.net>
+Date: Tue, 7 Jul 2026 14:26:32 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -74,181 +74,92 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/7] can: bcm: add locking when updating filter and
- timer values
+Subject: Re: [PATCH v3 5/7] can: bcm: add missing rcu list annotations and
+ operations
 To: sashiko-reviews@lists.linux.dev
-Cc: Vincent Mailhol <mailhol@kernel.org>, linux-can@vger.kernel.org,
- Marc Kleine-Budde <mkl@pengutronix.de>,
- Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+ Oleksij Rempel <o.rempel@pengutronix.de>,
+ Vincent Mailhol <mailhol@kernel.org>
 References: <20260707-bcm_fixes-v3-0-84600ca6d889@hartkopp.net>
- <20260707-bcm_fixes-v3-3-84600ca6d889@hartkopp.net>
- <20260707103500.6898B1F000E9@smtp.kernel.org>
+ <20260707-bcm_fixes-v3-5-84600ca6d889@hartkopp.net>
+ <20260707104250.BEE571F00AC4@smtp.kernel.org>
 Content-Language: en-US
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20260707103500.6898B1F000E9@smtp.kernel.org>
+In-Reply-To: <20260707104250.BEE571F00AC4@smtp.kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
-On 07.07.26 12:35, sashiko-bot@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 2 potential issue(s) to consider:
+On 07.07.26 12:42, sashiko-bot@kernel.org wrote:
+> Thank you for your contribution! Sashiko AI review found 1 potential issue(s) to consider:
 > 
 > Pre-existing issues:
-> - [High] Concurrent timer updates lead to hrtimer_forward_now being called with a zero interval, triggering a WARN_ON.
+> - [High] Lockless reads of 64-bit ktime_t values and TOCTOU races on op->count in bcm_tx_timeout_handler
+> --
 
-Will be fixed in V4
-
-> - [High] Missing locking in the TX path leads to data races and torn reads for CAN frames and timer values.
 
 Fixed in patch 6:
 https://lore.kernel.org/linux-can/20260707-bcm_fixes-v3-6-84600ca6d889@hartkopp.net/
 
-> --
+
 > 
-> --- Patch [3]: [PATCH v3 3/7] can: bcm: add locking when updating filter and timer values ---
-> commit 29dee20a547c38c99b2b856375f9e172e6a33181
+> --- Patch [5]: [PATCH v3 5/7] can: bcm: add missing rcu list annotations and operations ---
+> commit 8310d786e9cc8e49f889c95c47438e852dd137cc
 > Author: Oliver Hartkopp <socketcan@hartkopp.net>
 > 
->      can: bcm: add locking when updating filter and timer values
+> can: bcm: add missing rcu list annotations and operations
 > 
->      KCSAN detected a simultaneous access to timer values that can be
->      overwritten in bcm_rx_setup() when updating timer and filter content
->      while bcm_rx_handler(), bcm_rx_timeout_handler() or bcm_rx_thr_handler()
->      run concurrently on incoming CAN traffic.
+> This commit moves list_add_rcu() calls to the end of the setup code to cover
+> initial settings and fixes the missing list_del_rcu() before bcm_remove_op()
+> in bcm_release().
 > 
->      Closes: https://lore.kernel.org/linux-can/6975d5cf.a00a0220.33ccc7.0022.GAE@google.com/
+> Link: https://lore.kernel.org/linux-can/20260610094654.A1FFE1F00893@smtp.kernel.org/
 > 
 >> diff --git a/net/can/bcm.c b/net/can/bcm.c
->> index b612135b017d1..fd548c6eaa913 100644
+>> index 0378e31ea10ed..f21d48d99aab6 100644
 >> --- a/net/can/bcm.c
 >> +++ b/net/can/bcm.c
->> @@ -293,22 +294,26 @@ static int bcm_proc_show(struct seq_file *m, void *v)
->>    * bcm_can_tx - send the (next) CAN frame to the appropriate CAN interface
->>    *              of the given bcm tx op
->>    */
->> -static void bcm_can_tx(struct bcm_op *op)
->> +static void bcm_can_tx(struct bcm_op *op, struct canfd_frame *cf)
->>   {
->>   	struct sk_buff *skb;
->>   	struct can_skb_ext *csx;
->>   	struct net_device *dev;
->> -	struct canfd_frame *cf;
->> +	struct canfd_frame cframe;
->>   	int err;
->>   
->>   	/* no target device? => exit */
->>   	if (!op->ifindex)
->>   		return;
->>   
->> -	/* read currframe under lock protection */
->> -	spin_lock_bh(&op->bcm_tx_lock);
->> -	cf = op->frames + op->cfsiz * op->currframe;
->> -	spin_unlock_bh(&op->bcm_tx_lock);
->> +	if (!cf) {
->> +		/* read currframe under lock protection */
->> +		spin_lock_bh(&op->bcm_tx_lock);
->> +		memcpy(&cframe, op->frames + op->cfsiz * op->currframe,
->> +		       op->cfsiz);
->> +		cf = &cframe;
->> +		spin_unlock_bh(&op->bcm_tx_lock);
->> +	}
-> 
-> [Severity: High]
-> This isn't a bug introduced by this patch, but does bcm_tx_lock actually
-> prevent concurrent overwrites by bcm_tx_setup()?
-> 
-> The commit message claims to "take a lock-protected snapshot of the currframe
-> in bcm_can_tx() to avoid partly overwrites by content updates in
-> bcm_tx_setup()".
-> 
-> However, looking at bcm_tx_setup(), it appears to copy user data directly into
-> op->frames without holding bcm_tx_lock:
-> 
-> net/can/bcm.c:bcm_tx_setup() {
->      ...
->      for (i = 0; i < msg_head->nframes; i++) {
->          cf = op->frames + op->cfsiz * i;
->          err = memcpy_from_msg((u8 *)cf, msg, op->cfsiz);
->      ...
-> }
-> 
-> If the writer never acquires the lock (since memcpy_from_msg() can sleep),
-> doesn't this lock in bcm_can_tx() remain ineffective against races?
-> 
 > [ ... ]
-> 
->> @@ -461,7 +466,7 @@ static enum hrtimer_restart bcm_tx_timeout_handler(struct hrtimer *hrtimer)
->>   	struct bcm_msg_head msg_head;
->>   
->>   	if (op->kt_ival1 && (op->count > 0)) {
-> 
-> [Severity: High]
-> This is a pre-existing issue, but is this lockless read of kt_ival1 vulnerable
-> to torn reads on 32-bit systems?
-> 
-> bcm_tx_setup() appears to update kt_ival1 and kt_ival2 locklessly, and this
-> handler reads them locklessly. Could this cause the timer to fire at
-> unintended intervals if a 64-bit ktime_t is partially updated while being read?
-> 
->> -		bcm_can_tx(op);
->> +		bcm_can_tx(op, NULL);
->>   		if (!op->count && (op->flags & TX_COUNTEVT)) {
-> 
-> [ ... ]
-> 
->> @@ -686,15 +695,22 @@ static int bcm_rx_thr_flush(struct bcm_op *op)
->>   static enum hrtimer_restart bcm_rx_thr_handler(struct hrtimer *hrtimer)
->>   {
->>   	struct bcm_op *op = container_of(hrtimer, struct bcm_op, thrtimer);
->> +	enum hrtimer_restart ret;
->> +
->> +	spin_lock_bh(&op->bcm_rx_update_lock);
->>   
->>   	if (bcm_rx_thr_flush(op)) {
->>   		hrtimer_forward_now(hrtimer, op->kt_ival2);
-> 
-> [Severity: High]
-> This is a pre-existing issue, but could hrtimer_forward_now() be called with a
-> zero interval, triggering a WARN_ON_ONCE?
-> 
-> If a user updates an RX operation with msg_head->nframes == 0 and ival2 == 0,
-> bcm_rx_setup() updates op->kt_ival2 = 0 but does not clear op->last_frames.
-> It drops the lock before cancelling the timer:
-> 
-> net/can/bcm.c:bcm_rx_setup() {
->      ...
->      spin_lock_bh(&op->bcm_rx_update_lock);
->      op->ival2 = msg_head->ival2;
->      op->kt_ival2 = bcm_timeval_to_ktime(msg_head->ival2);
->      ...
->      spin_unlock_bh(&op->bcm_rx_update_lock);
-> 
->      /* disable an active timer due to zero value? */
->      if (!op->kt_ival1)
->          hrtimer_cancel(&op->timer);
-> 
->      hrtimer_cancel(&op->thrtimer);
->      ...
-> }
-> 
-> Because hrtimer_cancel(&op->thrtimer) is called without the
-> bcm_rx_update_lock held, could a concurrently expiring bcm_rx_thr_handler()
-> acquire the lock, flush the still-throttled frame, and call
-> hrtimer_forward_now(hrtimer, op->kt_ival2) with an interval of 0?
-> 
->> -		return HRTIMER_RESTART;
->> +		ret = HRTIMER_RESTART;
->>   	} else {
->>   		/* rearm throttle handling */
->>   		op->kt_lastmsg = 0;
->> -		return HRTIMER_NORESTART;
->> +		ret = HRTIMER_NORESTART;
+>> @@ -1159,6 +1159,10 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+>>   		op->flags |= TX_ANNOUNCE;
 >>   	}
+>>   
+>> +	/* add this bcm_op to the list of the tx_ops? */
+>> +	if (add_op_to_list)
+>> +		list_add_rcu(&op->list, &bo->tx_ops);
 >> +
->> +	spin_unlock_bh(&op->bcm_rx_update_lock);
->> +
->> +	return ret;
->>   }
+> 
+> [Severity: High]
+> This is a pre-existing issue, but I have a question about concurrent access
+> to the timer and count values in bcm_tx_timeout_handler().
+> 
+> When a userspace application continuously updates a BCM TX op via TX_SETUP,
+> bcm_tx_setup() updates the op's timer and count values.
+> 
+> Concurrently, if the timer fires, bcm_tx_timeout_handler() reads them
+> locklessly in softirq context:
+> 
+> net/can/bcm.c:bcm_tx_timeout_handler() {
+>      ...
+>      if (op->kt_ival1 && (op->count > 0)) {
+>          bcm_can_tx(op, NULL);
+>          if (!op->count && (op->flags & TX_COUNTEVT)) {
+>      ...
+> }
+> 
+> Can this lead to torn reads on 64-bit ktime_t variables (kt_ival1, kt_ival2)
+> on 32-bit platforms, resulting in a bogus timeout value that breaks cyclic
+> CAN frame transmission?
+> 
+> Additionally, could a TOCTOU race on op->count cause the handler to
+> incorrectly miss sending a TX_EXPIRED notification to userspace?
+> 
+> It appears a similar issue for RX_SETUP was previously addressed by adding
+> locking in commit "can: bcm: add locking when updating filter and timer
+> values", but the TX_SETUP side might still be exposed.
+> 
+>>   	if (op->flags & TX_ANNOUNCE)
+>>   		bcm_can_tx(op, NULL);
 > 
 
