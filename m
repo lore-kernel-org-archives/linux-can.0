@@ -1,249 +1,215 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 380E02F7F11
-	for <linux-can@vger.kernel.org>; Tue,  7 Jul 2026 07:14:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0E813FB7E7
+	for <linux-can@vger.kernel.org>; Tue,  7 Jul 2026 07:27:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783408452; cv=none; b=WH1bxpx5xTgQd7i8o+3Z1mMIWbseSY4SDhZe+DSZmM8RzJH3uB5Ez/0ACf6F3qP+sSczn2sJn8gq5rhFCDHE5brAWOoltoor0wxLVBsi7E67ipx2n2Ano1Oq5oB5/5f0qUsd2sJtm7AbOIHoO1IAW4nJdH954fjDgUEmiafCA0I=
+	t=1783409250; cv=none; b=M1DP+S4NIQtfS6d7qZpeHzuwMKErIjr8PP+fTPKjSDNh4EHdmcR9KuckEImXg4RoKT4ah6BsCzy4bdxum5KwT9ZD07NzcLo/rHgZ01CHIRhh5f5wOqQYJwyu30u8xpq6Robjuc7zf3v/BY6ji0oPDFgAptWSKYM3bjITzkkd0g4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783408452; c=relaxed/simple;
-	bh=tpibC/dhgcFTndFu9hH3fT+X5JVYcqt+pHl9keKp4Ek=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=EAcBGFXw835LtWKjeO6h/70qZ4069PqRKwQRG+D548U9El3vz/Q/t7swUarla4nbhd2AFU41NeRRptTvL6W9vvL82/F+UlKIHT2n/ycUj9yTkDRZuNeObgteWbjaxFzPrs5j8TRb/tVeRPm2nuxQ/0liedUYte0PxA/XFh5cGc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DAjC4j4b; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1783409250; c=relaxed/simple;
+	bh=8vIzorEoOVSmbXAwGjcmen4TGL7Z8rskVlJzNSqUXus=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=GarIA55tlm54DnOrsPpZfh7kw8KsdvDY13aVwq8JxhyS23lhjom2B+lyHHWeqFbxqBfrLCaHWFsfj/be+B9oEngBqEKGg5g85hgV9qndiZJCd98mLw5IiTliFwIfXLZyNzBB2XWxZBcZq58yepw8dg0QaCnI1veushw/qA0vpk8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NKC9PSUF; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DAjC4j4b"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84BF21F000E9;
-	Tue,  7 Jul 2026 07:14:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783408450;
-	bh=14sHTISe7QByYEWKLioWZ1xaAYuNwXDuYEVQx1wByHE=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=DAjC4j4bttYOx1fB9gYFOkewQmj95kZbO7O3nj8gitL18DmFnjOxRjFkOtzIZeVz4
-	 ymBmT/ICA2Kj+lwdSb/w1vKGKNn4qHpSzwHYPvi5OO39Ta1Rw2TFa4iX6k80UCs+CX
-	 RY8DimhuCuelbyzurCS4F4J/1O3hNxYD1w0HjR4D5dvSOSKVUZ2cRFa6967459Hg/A
-	 mI2rG37uRLpJHSKvPupAji69I0mOE6u4TtR3//Os8t9sPC313WZVk7YpmLTSWwhRqZ
-	 5W5R+Uh0xxtBrScszC/JPlg+04cgO1qHGCVWQ/6p9kKHXu71rC0i/pKC/kpblx5DzR
-	 BkkyQ/vmJwfxw==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v4 2/2] can: loongson_canfd: Add RXDMA support
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Binbin Zhou" <zhoubinbin@loongson.cn>
-Cc: linux-can@vger.kernel.org, "Vincent Mailhol" <mailhol@kernel.org>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <f46c0a1607cac2d8bad84f62707ef4e07fe0b2fa.1783391759.git.zhoubinbin@loongson.cn>
-References: <cover.1783391759.git.zhoubinbin@loongson.cn>
- <f46c0a1607cac2d8bad84f62707ef4e07fe0b2fa.1783391759.git.zhoubinbin@loongson.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 07 Jul 2026 07:14:10 +0000
-Message-Id: <20260707071410.84BF21F000E9@smtp.kernel.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NKC9PSUF"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2DBF0C2BCFB;
+	Tue,  7 Jul 2026 07:27:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1783409249;
+	bh=8vIzorEoOVSmbXAwGjcmen4TGL7Z8rskVlJzNSqUXus=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=NKC9PSUFFJ9TWIk1mHMAKMJMkmM2SCqXjL0McJTU4N1l1D6yZ/SZBdGpoZG3CXzE1
+	 +XNVwr7Td2dhXwrCvbyRUhpekRDIJL3ny8rhxrD8gJ0BkaMguNI7+OTb+u5VlCCPVH
+	 yoyVSEcIvIXJi93RlcOLgymQ50a3w6jhv6A+99nLOkduwJoWHEXkb5KkXhcCr0QGbz
+	 XfhLn2He5KFA570z7I9RAXd4Q79eSGMse8tIywSurINsFsp4Jd2ahCAW+yT6Nrpn4q
+	 /fUd7APKRu8N5qnBF/uhvG9S/0PZD9PRnhB1lAUelO7doaQwvL8BMRmQ5wy3NfhQYS
+	 ERomwIWdyAzcQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B5C4C43458;
+	Tue,  7 Jul 2026 07:27:29 +0000 (UTC)
+From: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
+Date: Tue, 07 Jul 2026 09:27:14 +0200
+Subject: [PATCH v2 4/6] can: bcm: fix CAN frame rx/tx statistics
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260707-bcm_fixes-v2-4-96620c534b75@hartkopp.net>
+References: <20260707-bcm_fixes-v2-0-96620c534b75@hartkopp.net>
+In-Reply-To: <20260707-bcm_fixes-v2-0-96620c534b75@hartkopp.net>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
+ Marc Kleine-Budde <mkl@pengutronix.de>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783409247; l=4794;
+ i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
+ bh=yDM0Y8LCOwsmKcHgeC/TNL6Hl2O2QmSfGrjNC+9i+nU=;
+ b=KfwwAtbtB1YNadlt+/SjCyjdoH9v7Bv/0A+2+164GLij3sIu+zeM36TDvK/1pEMYjg4kh0Svj
+ azIgfgMSzf2BtjrIfawK0EmXfh5TAzxux2HPzf4kwvYnrLJomfdqKh3
+X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
+ pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
+X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
+ auth_id=620
+X-Original-From: Oliver Hartkopp <socketcan@hartkopp.net>
+Reply-To: socketcan@hartkopp.net
 
-Thank you for your contribution! Sashiko AI review found 8 potential issue(=
-s) to consider:
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-New issues:
-- [High] The CPU reads ahead of the DMA write pointer, leading to frame cor=
-ruption and ring buffer desynchronization.
-- [High] A DMA status error causes an infinite NAPI polling loop, leading t=
-o a soft lockup.
-- [High] Failure of `loongson_canfd_rxdma_init` leads to a double free of t=
-he DMA buffer and completely breaks the RX path.
-- [Medium] Kconfig dependency strictly requires the Loongson DMA controller=
-, breaking the driver for polling mode users.
-- [Medium] The network device is leaked if `dma_request_chan()` returns `-E=
-PROBE_DEFER`.
-- [Low] Build failure due to undeclared variable 'cf'.
-- [Low] Improper internal access of `dma_chan->cookie` field violates the D=
-MA engine API.
+KCSAN detected a data race within the bcm_rx_handler() when two CAN frames
+have been simultaneously received and processed in a single rx op by two
+different CPUs.
 
-Pre-existing issues:
-- [High] An SKB allocation failure in `loongson_canfd_rx` leaves payload da=
-ta in the buffer, permanently desynchronizing the RX stream.
---
+Use atomic operations with (signed) long data types to access the
+statistics in the hot path to fix the KCSAN complaint.
 
---- Patch [2]: [PATCH v4 2/2] can: loongson_canfd: Add RXDMA support ---
-commit 1ade4f6818d2a045c4fbf2074c44add29566cfc4
-Author: Binbin Zhou <zhoubinbin@loongson.cn>
-Subject: can: loongson_canfd: Add RXDMA support
+Additionally simplify the update and check of statistics overflow by
+using the atomic operations in a separate bcm_update_stats() function.
 
-This commit adds optional DMA engine support for the receive path in the
-Loongson CAN-FD driver. It configures a cyclic DMA transfer to continuously
-fill a ring buffer, falling back to polling if DMA is unavailable.
+Fixes: ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol")
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ net/can/bcm.c | 38 ++++++++++++++++++++++++--------------
+ 1 file changed, 24 insertions(+), 14 deletions(-)
 
-> diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-> --- a/drivers/net/can/Kconfig
-> +++ b/drivers/net/can/Kconfig
-> @@ -191,7 +191,7 @@ config CAN_KVASER_PCIEFD
-> =20
->  config CAN_LOONGSON_CANFD
->  	tristate "Loongson CAN-FD controller"
-> -	depends on HAS_IOMEM
-> +	depends on HAS_IOMEM && (LOONGSON2_APB_CMC_DMA || COMPILE_TEST)
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index 1eabacad0b00..20b1bdc87414 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -110,11 +110,11 @@ struct bcm_op {
+ 	struct rcu_head rcu;
+ 	struct work_struct work;
+ 	int ifindex;
+ 	canid_t can_id;
+ 	u32 flags;
+-	unsigned long frames_abs, frames_filtered;
++	atomic_long_t frames_abs, frames_filtered;
+ 	struct bcm_timeval ival1, ival2;
+ 	struct hrtimer timer, thrtimer;
+ 	ktime_t rx_stamp, kt_ival1, kt_ival2, kt_lastmsg;
+ 	int rx_ifindex;
+ 	int cfsiz;
+@@ -227,14 +227,17 @@ static int bcm_proc_show(struct seq_file *m, void *v)
+ 
+ 	rcu_read_lock();
+ 
+ 	list_for_each_entry_rcu(op, &bo->rx_ops, list) {
+ 
+-		unsigned long reduction;
++		long reduction, frames_filtered, frames_abs;
++
++		frames_filtered = atomic_long_read(&op->frames_filtered);
++		frames_abs = atomic_long_read(&op->frames_abs);
+ 
+ 		/* print only active entries & prevent division by zero */
+-		if (!op->frames_abs)
++		if (!frames_abs)
+ 			continue;
+ 
+ 		seq_printf(m, "rx_op: %03X %-5s ", op->can_id,
+ 			   bcm_proc_getifname(net, ifname, op->ifindex));
+ 
+@@ -252,13 +255,13 @@ static int bcm_proc_show(struct seq_file *m, void *v)
+ 		if (op->kt_ival2)
+ 			seq_printf(m, "thr=%lld ",
+ 				   (long long)ktime_to_us(op->kt_ival2));
+ 
+ 		seq_printf(m, "# recv %ld (%ld) => reduction: ",
+-			   op->frames_filtered, op->frames_abs);
++			   frames_filtered, frames_abs);
+ 
+-		reduction = 100 - (op->frames_filtered * 100) / op->frames_abs;
++		reduction = 100 - (frames_filtered * 100) / frames_abs;
+ 
+ 		seq_printf(m, "%s%ld%%\n",
+ 			   (reduction == 100) ? "near " : "", reduction);
+ 	}
+ 
+@@ -278,20 +281,30 @@ static int bcm_proc_show(struct seq_file *m, void *v)
+ 
+ 		if (op->kt_ival2)
+ 			seq_printf(m, "t2=%lld ",
+ 				   (long long)ktime_to_us(op->kt_ival2));
+ 
+-		seq_printf(m, "# sent %ld\n", op->frames_abs);
++		seq_printf(m, "# sent %ld\n",
++			   atomic_long_read(&op->frames_abs));
+ 	}
+ 	seq_putc(m, '\n');
+ 
+ 	rcu_read_unlock();
+ 
+ 	return 0;
+ }
+ #endif /* CONFIG_PROC_FS */
+ 
++static void bcm_update_stats(struct bcm_op *op)
++{
++	/* prevent statistics overflow */
++	if (atomic_long_inc_return(&op->frames_abs) > LONG_MAX / 100) {
++		atomic_long_set(&op->frames_filtered, 0);
++		atomic_long_set(&op->frames_abs, 0);
++	}
++}
++
+ /*
+  * bcm_can_tx - send the (next) CAN frame to the appropriate CAN interface
+  *              of the given bcm tx op
+  */
+ static void bcm_can_tx(struct bcm_op *op, struct canfd_frame *cf)
+@@ -339,11 +352,11 @@ static void bcm_can_tx(struct bcm_op *op, struct canfd_frame *cf)
+ 
+ 	/* update currframe and count under lock protection */
+ 	spin_lock_bh(&op->bcm_tx_lock);
+ 
+ 	if (!err)
+-		op->frames_abs++;
++		bcm_update_stats(op);
+ 
+ 	op->currframe++;
+ 
+ 	/* reached last frame? */
+ 	if (op->currframe >= op->nframes)
+@@ -492,16 +505,13 @@ static enum hrtimer_restart bcm_tx_timeout_handler(struct hrtimer *hrtimer)
+  */
+ static void bcm_rx_changed(struct bcm_op *op, struct canfd_frame *data)
+ {
+ 	struct bcm_msg_head head;
+ 
+-	/* update statistics */
+-	op->frames_filtered++;
+-
+-	/* prevent statistics overflow */
+-	if (op->frames_filtered > ULONG_MAX/100)
+-		op->frames_filtered = op->frames_abs = 0;
++	/* update statistics (frames_filtered <= frames_abs) */
++	if (atomic_long_read(&op->frames_abs))
++		atomic_long_inc(&op->frames_filtered);
+ 
+ 	/* this element is not throttled anymore */
+ 	data->flags &= ~RX_THR;
+ 
+ 	memset(&head, 0, sizeof(head));
+@@ -740,11 +750,11 @@ static void bcm_rx_handler(struct sk_buff *skb, void *data)
+ 	/* save rx timestamp */
+ 	op->rx_stamp = skb->tstamp;
+ 	/* save originator for recvfrom() */
+ 	op->rx_ifindex = skb->dev->ifindex;
+ 	/* update statistics */
+-	op->frames_abs++;
++	bcm_update_stats(op);
+ 
+ 	/* snapshot the flag under lock: op->flags/op->frames may be updated
+ 	 * concurrently by bcm_rx_setup(). Do not call bcm_can_tx() while
+ 	 * holding bcm_rx_update_lock: CAN loopback on echo-capable
+ 	 * interfaces (e.g. vcan) can deliver the transmitted skb back into
 
-[Severity: Medium]
-The commit message notes that DMA is optional and the driver will fall back
-to poll mode. Does modifying the Kconfig to strictly depend on
-LOONGSON2_APB_CMC_DMA prevent users from building the driver on platforms
-where they only want polling mode?
+-- 
+2.53.0
 
-> diff --git a/drivers/net/can/loongson_canfd.c b/drivers/net/can/loongson_=
-canfd.c
-> --- a/drivers/net/can/loongson_canfd.c
-> +++ b/drivers/net/can/loongson_canfd.c
-[ ... ]
-> +static bool loongson_canfd_get_rxbuf_empty_in_dma(struct loongson_canfd_=
-priv *priv)
-> +{
-> +	struct dma_tx_state state;
-> +	enum dma_status status;
-> +
-> +	status =3D dmaengine_tx_status(priv->rx_ch, priv->rx_ch->cookie, &state=
-);
 
-[Severity: Low]
-Is it safe to directly access the internal cookie field of the dma_chan
-structure? The DMA engine API typically requires clients to track the cookie
-returned by dmaengine_submit() rather than dereferencing the internal
-framework structures.
-
-> +
-> +	return priv->last_res =3D=3D (state.residue / DMA_SLAVE_BUSWIDTH_4_BYTE=
-S) &&
-> +	       (status =3D=3D DMA_IN_PROGRESS);
-> +}
-
-[Severity: High]
-Could this empty check cause the CPU to read ahead of the DMA write pointer?
-
-In loongson_canfd_rx_napi(), the buffer is considered non-empty as soon as
-the DMA engine transfers a single word (since last_res will no longer equal
-the residue calculation).=20
-
-When NAPI calls loongson_canfd_rx(), it unconditionally reads multiple words
-for the header and payload. Since the DMA engine might have only written one
-word so far, does this consume stale data and corrupt the stream?
-
-[Severity: High]
-What happens if the DMA engine status is not DMA_IN_PROGRESS due to a
-hardware error or a halted transfer?=20
-
-This function will return false, indicating the buffer is not empty. The NA=
-PI
-loop in loongson_canfd_rx_napi() will continuously poll loongson_canfd_rx()=
-.=20
-
-Because the empty check evaluates to false, it skips napi_complete_done()
-and the networking stack instantly reschedules NAPI. Does this lead to an
-infinite loop and a CPU soft lockup?
-
-[ ... ]
-> +static int loongson_canfd_rxdma_init(struct net_device *ndev)
-> +{
-[ ... ]
-> +	/* Push current dma transaction in the pending queue */
-> +	ret =3D dma_submit_error(dmaengine_submit(desc));
-> +	if (ret) {
-> +		dmaengine_terminate_sync(priv->rx_ch);
-> +		goto err_config;
-> +	}
-> +
-> +	/* Issue pending DMA requests */
-> +	dma_async_issue_pending(priv->rx_ch);
-> +
-> +	return 0;
-> +
-> +err_config:
-> +	loongson_canfd_rxdma_free(priv, dev);
-> +	return ret;
-> +}
-
-[Severity: High]
-If dmaengine_slave_config or dmaengine_prep_dma_cyclic fails, this calls
-loongson_canfd_rxdma_free() but leaves priv->rx_ch pointing to the freed
-channel.=20
-
-Since the probe function ignores the error to fall back to poll mode, will
-loongson_canfd_chip_start() mistakenly enable the DMADI interrupt instead
-of RBNEI because priv->rx_ch is not NULL?=20
-
-Furthermore, when the driver is removed, loongson_canfd_rxdma_remove() chec=
-ks
-priv->rx_ch and calls loongson_canfd_rxdma_free() again. Does this result in
-a fatal double-free?
-
-[ ... ]
-> @@ -1028,7 +1171,7 @@ static int loongson_canfd_rx(struct net_device *nde=
-v)
-[ ... ]
->  	if (is_can_fd) {
->  		skb =3D alloc_canfd_skb(ndev, &cfd);
->  	} else {
->  		skb =3D alloc_can_skb(ndev, &ccf);
->  		cfd =3D (struct canfd_frame *)ccf;
->  	}
-> =20
->  	if (unlikely(!skb))
->  		return 0;
-
-[Severity: High]
-This is a pre-existing issue, but if alloc_canfd_skb() or alloc_can_skb()
-fails in loongson_canfd_rx(), the function returns 0 immediately.=20
-
-It has already consumed the meta0 and meta1 headers but skips consuming the
-payload words. Since these unread words remain in the hardware FIFO or DMA
-buffer, will the next RX interrupt misinterpret them as the headers of the
-next frame, permanently desynchronizing the stream?
-
-[ ... ]
->  	/* Data Length Code */
->  	dlc =3D FIELD_GET(REG_FRAME_META1_DLC, meta1);
->  	if (is_can_fd)
->  		cfd->len =3D can_fd_dlc2len(dlc);
->  	else
->  		can_frame_set_cc_len(ccf, dlc, priv->can.ctrlmode);
-> =20
->  	/* Data */
->  	for (unsigned int i =3D 0; i < cfd->len; i +=3D LOONGSON_CANFD_DW_BYTE)
-> -		regmap_read(priv->regmap, LOONGSON_CANFD_RX_DATA, (u32 *)(cfd->data + =
-i));
-> +		*(u32 *)(cf->data + i) =3D priv->get_rx_data(priv);
-
-[Severity: Low]
-Does this cause a build failure? The variable cf is not declared in
-loongson_canfd_rx() (the available pointers are cfd and ccf). Writing to
-cf->data seems to be a typo that prevents the driver from compiling.
-
-[ ... ]
-> @@ -1635,6 +1779,24 @@ static int loongson_canfd_probe(struct platform_de=
-vice *pdev)
-[ ... ]
->  	ndev->netdev_ops =3D &loongson_canfd_netdev_ops;
->  	ndev->ethtool_ops =3D &loongson_canfd_ethtool_ops;
->  	SET_NETDEV_DEV(ndev, dev);
-> =20
-> +	priv->get_rx_data =3D loongson_canfd_get_rxdata_in_poll;
-> +	priv->get_rxbuf_empty =3D loongson_canfd_get_rxbuf_empty_in_poll;
-> +
-> +	priv->rx_ch =3D dma_request_chan(dev, "rx");
-> +	if (PTR_ERR(priv->rx_ch) =3D=3D -EPROBE_DEFER)
-> +		return -EPROBE_DEFER;
-
-[Severity: Medium]
-If dma_request_chan() returns -EPROBE_DEFER, this immediately returns the
-error code without jumping to the error handling path.=20
-
-Since alloc_candev() was successfully called earlier in the probe function,
-does returning directly here permanently leak the net_device and priv
-structures?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/cover.1783391759.gi=
-t.zhoubinbin@loongson.cn?part=3D2
