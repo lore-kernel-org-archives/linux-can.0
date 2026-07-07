@@ -1,164 +1,112 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29D233E2768;
-	Tue,  7 Jul 2026 10:25:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D14153E1231
+	for <linux-can@vger.kernel.org>; Tue,  7 Jul 2026 10:27:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783419902; cv=none; b=Lc3ssc97N5GHW3y2NrtVRcbPTOO2MduN/PxfWidfHEP7fUArypsfj/e7dbAQ9X8AsPV9+8RJIGLeWJdZUTtKeknlC8hABxL+dTHW7LFeG4Q7YvbrPukZ4Ldy9ewJBDT1wXnp2di1Jivh0DfJNhawhIfyykuY42fn9hA7IHEIaYA=
+	t=1783420076; cv=none; b=NDfZqxklm81xDQV5Ni5Te0zEHxO2cAm+BdjNbNAga+e3fFn9D9PuizOb6qwZ/kHWHzMk7/cwk1PdxdCJvDNrHzKU5xRN9Nh/SbKOiGqsNr7EZQhqI6aJk3E3PwxxAGGuax0TX1B5QMCPe/lbKWJTH31KiqIbnWDXoVr6UJEO3D0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783419902; c=relaxed/simple;
-	bh=Bf9n4g7Nb0yfZEVNcSCDaR0vz5U63uuyFbZ9NcNtKOI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZAXPdcv0kSwox5sdeNqescpcBNWNvI3su4rNnqwnLjDKPOEr1mvFTQaDmD4R1l1xq075dh6HG6zXwM32XeibodqsbmwPh6B1MeB9E0hiRfv00Xuhmn9E/7gN5sB0OvKAJkJeWlBT8xmrXqyZHtu/DLolfiNhpHgFICgGnhJWRV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E14571F000E9;
-	Tue,  7 Jul 2026 10:24:56 +0000 (UTC)
-From: Claudiu Beznea <claudiu.beznea+renesas@tuxon.dev>
-To: mkl@pengutronix.de,
-	mailhol@kernel.org,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	geert+renesas@glider.be,
-	magnus.damm@gmail.com,
-	mturquette@baylibre.com,
-	sboyd@kernel.org,
-	bmasney@redhat.com,
-	biju.das.jz@bp.renesas.com,
-	tu.nguyen.xg@renesas.com,
-	fabrizio.castro.jz@renesas.com
-Cc: claudiu.beznea@tuxon.dev,
-	linux-can@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH 8/8] arm64: dts: renesas: rzg3s-smarc: Enable CAN-FD
-Date: Tue,  7 Jul 2026 13:24:18 +0300
-Message-ID: <20260707102418.1646159-9-claudiu.beznea+renesas@tuxon.dev>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260707102418.1646159-1-claudiu.beznea+renesas@tuxon.dev>
-References: <20260707102418.1646159-1-claudiu.beznea+renesas@tuxon.dev>
+	s=arc-20240116; t=1783420076; c=relaxed/simple;
+	bh=LT4JexTw9RF6fA3JVJz6fc3PYHT0yZO841OHi/qXCI8=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=FEIbR+IfPdFsk/1nPOqZGBQhznySUei2B0gfoyfnroh31Z3gcREcxwtPLiWh+Uj52oDOGrPlLeyt4KNMQ+oYBx4mCVSywzoNQkfbntzXhf60VP3c9+a7KDSbaP+3qx0/gYmUJGKCAqNiK7wqwcxZkw5FlzIt4gjHEXdVqtVoh0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=im2qm5QY; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="im2qm5QY"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DF871F000E9;
+	Tue,  7 Jul 2026 10:27:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783420072;
+	bh=jA1rpmgWie+ABL+ABK6G4pVMUjcBsZFET3ueG07c8j4=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=im2qm5QYbMLOmI0p7Q/WOqxuwxXtW2to7bINdWk2N0s3lg7bYyraRsYnIZ5Ey8mj8
+	 p0Z41Dz55XVvC37SZCzunc95FMhccDz7nnN4c63cCiMcjIV7UdNpPsMz4wZB8n87Qz
+	 kVmUXk/6M+XYGK1GKfsJw+i12Uh08Rgi2hFOqZxzyCvS0ey499eyWKM049RpqVySe/
+	 VPRxsGUU82lzhvmuEMLfO71eZLwnCUFCUQSKRQUYzshO5ouCxVtI7kt1EQ/bAIW8he
+	 GUglc6JPdMdFoLLLRkOdJ2ZM6DW/BWgSve/YjnN/BH7O+p5bjhrlRcBgur74RZcQRH
+	 VST7EY3pJ49Gw==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v3 1/7] can: bcm: defer rx_op deallocation to workqueue
+ to fix thrtimer UAF
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Oliver Hartkopp" <socketcan@hartkopp.net>
+Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org
+In-Reply-To: <20260707-bcm_fixes-v3-1-84600ca6d889@hartkopp.net>
+References: <20260707-bcm_fixes-v3-0-84600ca6d889@hartkopp.net>
+ <20260707-bcm_fixes-v3-1-84600ca6d889@hartkopp.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 07 Jul 2026 10:27:52 +0000
+Message-Id: <20260707102752.8DF871F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+s) to consider:
 
-The two CAN FD channels available on the Renesas RZ/G3S SoC are routed
-through the Renesas SMARC Carrier II board when used with the Renesas
-RZ/G3S SMARC Module.
+Pre-existing issues:
+- [High] Missing list_add_rcu and list_for_each_entry_rcu for BCM operation=
+s lists.
+--
 
-The CAN transceiver on the Carrier II board has its standby pins connected
-to GPIOs that are selected through the SW_GPIO_CAN_PMOD switches. By
-default, these switches route the GPIOs to the PMOD interfaces.
+--- Patch [1]: [PATCH v3 1/7] can: bcm: defer rx_op deallocation to workque=
+ue to fix thrtimer UAF ---
+commit 3bf6c2fae3452e20dc5bcc0bb3d49f9026358964
+Author: Lee Jones <lee@kernel.org>
 
-Enable the CAN FD controller and its two available channels.
+can: bcm: defer rx_op deallocation to workqueue to fix thrtimer UAF
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
----
- .../boot/dts/renesas/rzg3s-smarc-switches.h   | 12 +++++
- arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi  | 46 +++++++++++++++++++
- 2 files changed, 58 insertions(+)
+This commit replaces direct hrtimer cancellation in softirq context with
+a deferred workqueue approach for BCM rx_op deallocation. It queues a work
+item from the RCU callback and holds a socket reference until timers are
+fully cancelled to avoid a sleep-in-atomic panic.
 
-diff --git a/arch/arm64/boot/dts/renesas/rzg3s-smarc-switches.h b/arch/arm64/boot/dts/renesas/rzg3s-smarc-switches.h
-index bbf908a5322c..198874ad9a65 100644
---- a/arch/arm64/boot/dts/renesas/rzg3s-smarc-switches.h
-+++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc-switches.h
-@@ -37,4 +37,16 @@
-  */
- #define SW_OPT_MUX4	SW_ON
- 
-+/*
-+ * SW_GPIO_CAN_PMOD[x] switches' states:
-+ * @SW_GPIO_CAN_PMOD1:
-+ *	SW_OFF - GPIO8 connected to CAN0_STB (position 1-2)
-+ *	SW_ON  - GPIO8 connected to PMOD1 (position 2-3)
-+ * @SW_GPIO_CAN_PMOD2:
-+ *	SW_OFF - GPIO9 connected to CAN1_STB (position 4-5)
-+ *	SW_ON  - GPIO9 connected to PMOD1 (position 5-6)
-+ */
-+#define SW_GPIO_CAN_PMOD1	SW_ON
-+#define SW_GPIO_CAN_PMOD2	SW_ON
-+
- #endif /* __RZG3S_SMARC_SWITCHES_H__ */
-diff --git a/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi b/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
-index 70af605168b0..2be684f55914 100644
---- a/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
-+++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
-@@ -68,6 +68,24 @@ codec_dai: simple-audio-card,codec {
- 		};
- 	};
- 
-+	can_transceiver0: can-phy0 {
-+		compatible = "ti,tcan1042";
-+		#phy-cells = <0>;
-+		max-bitrate = <8000000>;
-+#if SW_GPIO_CAN_PMOD1 == SW_OFF
-+		standby-gpios = <&pinctrl RZG2L_GPIO(13, 0) GPIO_ACTIVE_HIGH>;
-+#endif
-+	};
-+
-+	can_transceiver1: can-phy1 {
-+		compatible = "ti,tcan1042";
-+		#phy-cells = <0>;
-+		max-bitrate = <8000000>;
-+#if SW_GPIO_CAN_PMOD2 == SW_OFF
-+		standby-gpios = <&pinctrl RZG2L_GPIO(13, 1) GPIO_ACTIVE_HIGH>;
-+#endif
-+	};
-+
- 	vcc_sdhi1: regulator-vcc-sdhi1 {
- 		compatible = "regulator-fixed";
- 		regulator-name = "SDHI1 Vcc";
-@@ -92,6 +110,22 @@ &audio_clk2 {
- 	clock-frequency = <12288000>;
- };
- 
-+&canfd {
-+	pinctrl-0 = <&canfd_pins>;
-+	pinctrl-names = "default";
-+	status = "okay";
-+
-+	channel0 {
-+		phys = <&can_transceiver0>;
-+		status = "okay";
-+	};
-+
-+	channel1 {
-+		phys = <&can_transceiver1>;
-+		status = "okay";
-+	};
-+};
-+
- &ehci0 {
- 	dr_mode = "otg";
- 	status = "okay";
-@@ -171,6 +205,18 @@ audio_clock_pins: audio-clock {
- 		input-enable;
- 	};
- 
-+	canfd_pins: canfd {
-+		can0_pins: can0 {
-+			pinmux = <RZG2L_PORT_PINMUX(6, 1, 3)>, /* CAN0_TX */
-+				 <RZG2L_PORT_PINMUX(6, 2, 3)>; /* CAN0_RX */
-+		};
-+
-+		can1_pins: can1 {
-+			pinmux = <RZG2L_PORT_PINMUX(17, 0, 3)>, /* CAN1_TX */
-+				 <RZG2L_PORT_PINMUX(17, 1, 3)>; /* CAN1_RX */
-+		};
-+	};
-+
- 	key-1-gpio-hog {
- 		gpio-hog;
- 		gpios = <RZG2L_GPIO(18, 0) GPIO_ACTIVE_LOW>;
--- 
-2.43.0
+> diff --git a/net/can/bcm.c b/net/can/bcm.c
+> index a4bef2c48a559..bdf53241bd7b3 100644
+> --- a/net/can/bcm.c
+> +++ b/net/can/bcm.c
 
+[ ... ]
+
+> @@ -1060,6 +1081,7 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_he=
+ad, struct msghdr *msg,
+> =20
+>  		/* bcm_can_tx / bcm_tx_timeout_handler needs this */
+>  		op->sk =3D sk;
+> +		sock_hold(sk);
+>  		op->ifindex =3D ifindex;
+> =20
+>  		/* initialize uninitialized (kzalloc) structure */
+
+[Severity: High]
+This is a pre-existing issue, but since this patch modifies the BCM op
+initialization, I noticed a potential race condition with lockless readers.
+
+Later in bcm_tx_setup() and bcm_rx_setup(), the code adds the newly
+initialized op to the socket's operation lists using the standard list API:
+
+    list_add(&op->list, &bo->tx_ops);
+
+Similarly, bcm_proc_show() iterates over bo->tx_ops locklessly using the
+standard list_for_each_entry() macro:
+
+    list_for_each_entry(op, &bo->tx_ops, list) {
+
+Because list_add() does not provide smp_store_release() semantics, could a
+CPU reorder the initialization of the op's fields or its next pointer?
+
+If this happens, could a concurrent reader in bcm_proc_show() observe a NULL
+next pointer or uninitialized object data, potentially causing a crash when
+the procfs file is read?
+
+Would it be safer to use list_add_rcu() here and list_for_each_entry_rcu()
+for the lockless readers to ensure correct dependency barriers?
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260707-bcm_fixes-=
+v3-0-84600ca6d889@hartkopp.net?part=3D1
