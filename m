@@ -1,153 +1,115 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4728F3D45E5;
-	Tue,  7 Jul 2026 10:49:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E48E337C109;
+	Tue,  7 Jul 2026 10:53:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783421356; cv=none; b=javJqbjvpmsIXAumyRSf0MKcCQQ2vOglOhTWHKNDA8k7kQIdpG0KskysLexThR0cgwaYzpgGPFwa/s5elLvATJ+w7IO+t6gPQe7IDNKV5nNowpV7ZKBHOhGk/yIkafTWhn3UlB9fSVOPxOiZposQhIECRu80uu6TUk2sBwEZRjo=
+	t=1783421627; cv=none; b=R3KWMIRhpZR1Qpc9tx3i59tVcOUulxrP4Iitr42WOIwkpIqECeqNyaYONEU0bbhKyWNFlqi1Wke0oBpQSluxnZ962o9qbMInFBhKQ83Sf1lF25/+MaQ73iIG7PnOgYvT8Gnype0/6DjL/wraLELSlV4sj6mo1P/bMzrbr+XHoIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783421356; c=relaxed/simple;
-	bh=VIQYHGXNl4JrcNHeGdN3pisSGnJloaOCMG7ehAaKqs4=;
+	s=arc-20240116; t=1783421627; c=relaxed/simple;
+	bh=9J8UYNBGF/VxF6Ff0H7J/FxVFWIzrwVd2lppfmoEWaY=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=FNa195RkpXEF76sjXqripe1Vrz0XzfLtNV6uBi1PzhF0YLDTo4PdQPAGCQhAR1tnSmW74JyWKYNNh3zHn4H5fw9WznPjVDMk1imMIDS6Pg+QO17JirT2ibk3lVWJ2xdTn5tYsR+OgZG0RDvcgr202HBv8yyZyyvvLapVxrmpyYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TY5FmQSN; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=tirnnOSQnScuy6QQ157uvZGeTZB/fkI4ova3ANfuXtchzk5eBltrW8tkiQiE6NgTUHmD6YM7zdbexviQQ5NXo2jQV0o7TPE49kBubwvjgfmuOVRopDpF1j5O3LhI+586k0xYPgqtgJW2cLXgqYP+Cjyb+HNzNOPJ/wEFPJn5wxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LNQOUKBq; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TY5FmQSN"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60FBD1F000E9;
-	Tue,  7 Jul 2026 10:49:14 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LNQOUKBq"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA5DD1F000E9;
+	Tue,  7 Jul 2026 10:53:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783421354;
-	bh=w8mNu35jn6zKtvNzIwFMdXHyMkBEaKY/eVEkl2PXay0=;
+	s=k20260515; t=1783421625;
+	bh=odUeIgLWqjof69zpVeV99PEY6uCX61l3cDe1zfwmvzQ=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=TY5FmQSNMw8lGbulhnB9N3AwwDIlkE8Xr59juJg/KmTBdh+ngJWsuV0f3JjlYgAzC
-	 asMJVIXHfUDTerlaAyKDwpB+GeTCY7l6dNE0NtJ7fe+dmVARAzWsPXA+misvt1Vv/a
-	 dVXs12xMJQDdH07c8S0xbC+QGHe0mS503D7B9b3UnsscaQW4jLlvVg300ViuVECxFm
-	 1qepqOu8r0ruJAgxgttY+v4dULjw2qM0wIj8nqapaSMGv90SEeKvQ2ekFsffuc3L16
-	 yTOuatyk2nvM9Hb+ZNwrtGH9hujWKNuBs7kaVAZUa0EFFQdfgRYb8II4x1uPesOHln
-	 fe/VOZaXcnNLw==
+	b=LNQOUKBq6EOR44opAtf39HGruMQEQzSYSDOBA53Ixkd5PFAvRU4ao02kRo9v0Q+x0
+	 aWgLWI2GqpIYpDHhDT2HPPewt0yZ6Y++VTLAJbVlEXw02nTi+DZWskRxCxIjXTtiOb
+	 hHN9WZMKW5o26RnkDciGv8L9FZdTI8Y4N5nNh8kZ7kpdLLLrWzuTTq4DrrzhjU+lbI
+	 bxZW1EXKq8tp8/Q3eZbYeaOUvoJG9FxUc8MrbE4yqyajR/hQWg80RZ4FRY7Af4Tr+C
+	 ixo38xN9t4A4sWFHP2b/2BqwU/FiAA3evgudO1LN3FYz5x7/Ot2XLm9elykHs3qD98
+	 xOxsJBK3wUIrA==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH 6/8] can: rcar_canfd: Add support for Renesas RZ/G3S
+Subject: Re: [PATCH 5/8] can: rcar_canfd: Do not set registers selecting the
+ CAN mode
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Claudiu Beznea" <claudiu.beznea+renesas@tuxon.dev>
-Cc: robh@kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent
- Mailhol" <mailhol@kernel.org>, conor+dt@kernel.org, wsa+renesas@sang-engineering.com, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org, devicetree@vger.kernel.org, "Oleksij
- Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20260707102418.1646159-7-claudiu.beznea+renesas@tuxon.dev>
+Cc: devicetree@vger.kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, robh@kernel.org, conor+dt@kernel.org, wsa+renesas@sang-engineering.com, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>
+In-Reply-To: <20260707102418.1646159-6-claudiu.beznea+renesas@tuxon.dev>
 References: <20260707102418.1646159-1-claudiu.beznea+renesas@tuxon.dev>
- <20260707102418.1646159-7-claudiu.beznea+renesas@tuxon.dev>
+ <20260707102418.1646159-6-claudiu.beznea+renesas@tuxon.dev>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 07 Jul 2026 10:49:13 +0000
-Message-Id: <20260707104914.60FBD1F000E9@smtp.kernel.org>
+Date: Tue, 07 Jul 2026 10:53:44 +0000
+Message-Id: <20260707105344.EA5DD1F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
-Thank you for your contribution! Sashiko AI review found 2 potential issue(=
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
-- [High] Missing enforcement of CAN-FD mode when hardware does not support =
-classical CAN mode.
-- [High] The variable `fcan_freq` is used uninitialized when clock fallback=
- branches fail.
+- [Medium] The patch adds the `mode_select_na` flag to support the RZ/G3S S=
+oC, but fails to provide the RZ/G3S hardware info structure with the flag s=
+et, rendering the logic as dead code.
 --
 
---- Patch [6]: [PATCH 6/8] can: rcar_canfd: Add support for Renesas RZ/G3S =
----
-commit cd9e80c9be5a9e3af3e5266e74d95204fb8cf5b3
+--- Patch [5]: [PATCH 5/8] can: rcar_canfd: Do not set registers selecting =
+the CAN mode ---
+commit c89aa117ce922f6dfb13d5f51bb4146e8af1be2c
 Author: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-    can: rcar_canfd: Add support for Renesas RZ/G3S
+can: rcar_canfd: Do not set registers selecting the CAN mode
 
-This commit adds CAN-FD support for the Renesas RZ/G3S controller. It
-configures the hardware info struct to reflect the controller's capabilitie=
-s,
-including its lack of support for classical CAN mode and its internal clock
-divider.
+This patch adds the mode_select_na flag to struct rcar_canfd_hw_info to avo=
+id
+writing to unavailable CAN mode bits on the Renesas RZ/G3S SoC. The flag is
+initialized to 0 for existing hardware structures, and a conditional check
+is added in the controller reset path to skip mode selection if the flag is
+set.
+
+Link: https://lore.kernel.org/all/1d9719e3-10ff-4cd8-b729-55fea93c37ce@wana=
+doo.fr
 
 > diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rca=
 r_canfd.c
-> index 7f01afe60a4c2..6d6b2d999b782 100644
+> index 6ec2d7a031238..7f01afe60a4c2 100644
 > --- a/drivers/net/can/rcar/rcar_canfd.c
 > +++ b/drivers/net/can/rcar/rcar_canfd.c
-> @@ -661,6 +661,25 @@ static const struct rcar_canfd_hw_info rzg2l_hw_info=
- =3D {
+> @@ -445,6 +445,7 @@ struct rcar_canfd_hw_info {
+>  	unsigned shared_can_regs:1;	/* Has shared classical can registers */
+>  	unsigned external_clk:1;	/* Has external clock */
+>  	unsigned fcan_pclk:1;		/* Has fcan sourced from pclk. */
+> +	unsigned mode_select_na:1;	/* Has no bits for selecting the mode. */
+>  };
+> =20
+>  /* Channel priv data */
+
+[Severity: Medium]
+Was the RZ/G3S hardware info structure missing from this patch series?
+
+The commit message mentions adding this flag to cover the RZ/G3S SoC, but
+all existing structures are updated to set this flag to 0, and no new
+structure is added that sets it to 1.
+
 [ ... ]
-> +static const struct rcar_canfd_hw_info r9a08g045_hw_info =3D {
-> +	.nom_bittiming =3D &rcar_canfd_gen4_nom_bittiming_const,
-> +	.data_bittiming =3D &rcar_canfd_gen4_data_bittiming_const,
-> +	.tdc_const =3D &rcar_canfd_gen4_tdc_const,
-> +	.regs =3D &rcar_gen4_regs,
-> +	.sh =3D &rcar_gen4_shift_data,
-> +	.rnc_field_width =3D 16,
-> +	.max_aflpn =3D 127,
-> +	.max_cftml =3D 31,
-> +	.max_channels =3D 2,
-> +	.postdiv =3D 2,
-> +	.multi_channel_irqs =3D 1,
-> +	.ch_interface_mode =3D 1,
-> +	.shared_can_regs =3D 1,
-> +	.external_clk =3D 1,
-> +	.fcan_pclk =3D 1,
-> +	.mode_select_na =3D 1,
 
-[Severity: High]
-Since this hardware sets .mode_select_na =3D 1 because it does not support
-classical CAN mode, could there be a mismatch if the device tree contains t=
-he
-"renesas,no-can-fd" property?
-
-In rcar_canfd_probe(), we set the software mode to classical CAN if this
-property is present:
-
-drivers/net/can/rcar/rcar_canfd.c:rcar_canfd_probe() {
-	if (of_property_read_bool(dev->of_node, "renesas,no-can-fd"))
-		fdmode =3D false;			/* Classical CAN only mode */
-    ...
-}
-
-Since the hardware configuration bits are bypassed by .mode_select_na =3D 1,
-would this leave the hardware in CAN-FD mode while the software driver allo=
-cates
-MTU and payload sizes for classical CAN frames?
-
-[Severity: High]
-While reviewing the clock configuration related to .postdiv =3D 2 and
-.fcan_pclk =3D 1, I noticed a potential regression in the clock fallback lo=
-gic
-that might affect older platforms.
-
-In rcar_canfd_probe(), if "can_clk" and "canfd" clocks are missing from the
-device tree, devm_clk_get_optional() returns NULL instead of an error, which
-skips the error path but leaves gpriv->can_clk as NULL:
-
-drivers/net/can/rcar/rcar_canfd.c:rcar_canfd_probe() {
-	...
-	gpriv->can_clk =3D devm_clk_get_optional(dev, "canfd");
-	if (IS_ERR(gpriv->can_clk))
-		return dev_err_probe(...);
-
-	if (gpriv->can_clk)
-		fcan_freq =3D clk_get_rate(gpriv->can_clk);
-	else if (info->fcan_pclk)
-		fcan_freq =3D clk_get_rate(gpriv->clkp);
-
-	/* CANFD clock may be further divided within the IP */
-	fcan_freq /=3D info->postdiv;
-	...
-}
-
-If info->fcan_pclk is 0 (which is the case for Gen3/Gen4 platforms), does
-this mean fcan_freq is used uninitialized when calculating the CAN bit timi=
-ng?
-Can this lead to unstable or non-functional CAN buses on those platforms?
-
-> +};
+> @@ -846,6 +852,9 @@ static int rcar_canfd_reset_controller(struct rcar_ca=
+nfd_global *gpriv)
+>  		}
+> =20
+>  		/* Set the controller into appropriate mode */
+> +		if (gpriv->info->mode_select_na)
+> +			continue;
 > +
+>  		if (gpriv->info->ch_interface_mode) {
+>  			/* Do not set CLOE and FDOE simultaneously */
+>  			if (!gpriv->fdmode) {
+
+[Severity: Medium]
+Since mode_select_na is never set to 1 anywhere in the driver, doesn't this
+conditional evaluate to false for all devices, resulting in dead code?
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260707102418.1646=
-159-1-claudiu.beznea+renesas@tuxon.dev?part=3D6
+159-1-claudiu.beznea+renesas@tuxon.dev?part=3D5
