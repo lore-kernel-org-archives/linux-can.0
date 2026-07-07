@@ -1,38 +1,37 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555CF34CFAB
-	for <linux-can@vger.kernel.org>; Tue,  7 Jul 2026 10:16:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55683381AEF;
+	Tue,  7 Jul 2026 10:16:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783419377; cv=none; b=mMzZ4eOMmkRt8Chji+IXRv+3smtPxI3dKRzCugdxcZ11QAPCTqb+XIJLd65hDptKsXjz27Pymk4JM37FFBGM8z5hLwOR95iUXziFHg+VPz6cHzrNeF6jL99hwL2j9DIYPGvvFpQhD/aL52iuy0V67ixWwcEfMXuNE4n8+Lz3tyw=
+	t=1783419377; cv=none; b=ha6v9z2LiCRoYy5/W6wAGLsp0bYlKUVWMDx9yIs4ArZ++HthvnkRudmTWEmoykLzGcRKZKRLCQHRvaokGiLGiZCXV//r6FTAfkgYQ9FI4ffBjUzyH6b02s6KwCmsc6j0S5moX6rDRzxwnx4W3majW+32JQgtfSpWMz2+W1XliKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1783419377; c=relaxed/simple;
-	bh=H4LT5OPHq9Tfizk7QxJahORBjO8XLDxDFxmL8kGuhFg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=b8o8LyWnGLvaV3qv5EIqQsC/jofT2cGPeXi9+oPdezTBrLcC8kGHgir6k7AZvsaqcIJVbRp9r/9JeXKkazKZaomy/ZQsimJEn4VR8RDXJn+QmbHbkkT7+Ju6t0Dv3CA+i7z5WLtFphWuDYU1gTh1b29fPMG7iZ2j032v4KsFkn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hGgkv0ur; arc=none smtp.client-ip=10.30.226.201
+	bh=y2H9QtAl1+vBSs56o1KfjI/JrbU58kVjOgl4MWaQQAE=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=XQIe/DO+1uD4Hk+LPO2iwVMsz1PmJQY796fFKlAq95S4nZLdj6cpxix7T2YU5yt2x0vHkYkIh882isGBSkGnGpM7SF4mRDqoAcSUFCpR+EKic57kexrU9gM5HeTAvxxUCBfS402d0j0aOQJhGL9206YiuKhZxv1apuWf0raIwWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R9S+bt6s; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hGgkv0ur"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 22253C2BCB9;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R9S+bt6s"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 05860C2BCB8;
 	Tue,  7 Jul 2026 10:16:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1783419377;
-	bh=H4LT5OPHq9Tfizk7QxJahORBjO8XLDxDFxmL8kGuhFg=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=hGgkv0urpJ57HZ8ZQfmXwf54QgE/UduKCovalYq5Yi/3pFEEF2qxSK7qqaS+WlZgK
-	 kXCZ6UeEBCnSg8caDqDbTFU/1lHywaraPyGbxFH/9dkai1g51mkOJbAotWagSWY8HC
-	 bUT3iWjOyYdWAgUyuWuNE1pV49BYrbwgo3DzgnUsitNk94hVKFt3eHwNwmlk1P6pLy
-	 mQdgtfRk2+i9hLLoYDKqvAxUHQaz6edwoMvTqCHGroo/ZnSsPtTo4HDhuMG1MzHIQc
-	 jWlERzXOz1bx5yeoU7rhzegz7T4uQ4ufRd83uxQQl0DrD/Wskkz5WBeCi4IZz1wE99
-	 b7DQ2+v4Si5CQ==
+	bh=y2H9QtAl1+vBSs56o1KfjI/JrbU58kVjOgl4MWaQQAE=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=R9S+bt6snBJzkyUgIN6CNt9oCO2OsZTleuyubv4zSKMLHqnCaSFdKHkPufGQuix1Q
+	 M244fIa/GPVIJuBf2KfVZtZXgn8jRUis/60Jb1vN2F7b8dDBQl2gUOR2oCF5+6eEdW
+	 ui1w+Aax/7gXE6HrUpfTF9e3pkcltBvOvRtH+gFAEpsankECXPoJ/VuNbnQY9B1QKR
+	 FnKn+rgpCANdtKuXxJpS+G7rvsCCyFtP0HRkCLzSa2c/iPrYQBKXcDYaYuYkqa2NTy
+	 vIFdgb5O8wwh4cdGFFEovucGEXIBVi5V1a7RxskpZfMedk1sIsmYJRqGfP/FhuKHgV
+	 8CiXagDuVJC5g==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02340C44501;
-	Tue,  7 Jul 2026 10:16:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5BACC43602;
+	Tue,  7 Jul 2026 10:16:16 +0000 (UTC)
 From: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
-Date: Tue, 07 Jul 2026 12:16:09 +0200
-Subject: [PATCH v3 2/7] can: bcm: fix lockless bound/ifindex race and
- silent RX_SETUP failure
+Subject: [PATCH v3 0/7] can: bcm: collected fixes
+Date: Tue, 07 Jul 2026 12:16:07 +0200
+Message-Id: <20260707-bcm_fixes-v3-0-84600ca6d889@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -41,18 +40,23 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260707-bcm_fixes-v3-2-84600ca6d889@hartkopp.net>
-References: <20260707-bcm_fixes-v3-0-84600ca6d889@hartkopp.net>
-In-Reply-To: <20260707-bcm_fixes-v3-0-84600ca6d889@hartkopp.net>
+X-B4-Tracking: v=1; b=H4sIAOfRTGoC/22NQQ7CIBBFr9KwFkOnLVhX3sMYAzhYNLYNINE0v
+ btQFxrj8mfeezMRj86iJ9tiIg6j9Xbo06hWBdGd7M9I7SltAgw44yVQpW9HYx/o6aY2qpayraQ
+ GkvjR4XJI+P7w3v6uLqhDDmSisz4M7rk8i2Xm/nVjSRnVEoxkAlEws+ukC9dhHNc9BpLTET6yY
+ OJbhiS3nAPTTVUr0fzI8zy/ACbJo2n0AAAA
+X-Change-ID: 20260612-bcm_fixes-84fb4aa93ac2
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
- Marc Kleine-Budde <mkl@pengutronix.de>, Ginger <ginger.jzllee@gmail.com>
+ Marc Kleine-Budde <mkl@pengutronix.de>, Lee Jones <lee@kernel.org>, 
+ Ginger <ginger.jzllee@gmail.com>, 
+ syzbot+75e5e4ae00c3b4bb544e@syzkaller.appspotmail.com, 
+ sashiko-reviews@lists.linux.dev
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1783419375; l=6264;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783419375; l=1700;
  i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=+xnLOux3truzcT7oFJFYpPMF/LHoGp/rehTSc8S5r5A=;
- b=vj8YUVDxPeuq20BfdXYcfJjsiImhsVhFy3UWnEFa9kqm49P2ys+lNcksQxMrko7J5ivHuwmU4
- E+dESsNh019BSkmSLWjP+W+AXxJwxXnksS9lyvhQ7gsb1vkECjwVYYS
+ bh=y2H9QtAl1+vBSs56o1KfjI/JrbU58kVjOgl4MWaQQAE=;
+ b=CSfirpZaCUrg5h2n3eQ9Ka3Vpmiqc+gDhsROMlw1ui9v1/VjK4MfKGMVKvms5cYeLiQxrMBx6
+ mUvbUWF2dO2A5IcMQj2u2Srw5Y+LCrypDCCVqYlEteyN34NPqBfH58E
 X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
  pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
 X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
@@ -60,213 +64,51 @@ X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
 X-Original-From: Oliver Hartkopp <socketcan@hartkopp.net>
 Reply-To: socketcan@hartkopp.net
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+Hi Marc,
 
-bcm_sendmsg() reads bo->ifindex and checks bo->bound before taking
-lock_sock(), while bcm_notify(), bcm_connect() and bcm_release() all
-mutate both fields under that same lock. Because the lockless reads
-and the locked writes are unordered with respect to each other, a
-racing bcm_notify() (device unregister) or bcm_connect() (concurrent
-bind on another thread sharing the socket) can make bcm_sendmsg()
-observe an inconsistent combination, e.g. a stale bound=1 together
-with the now-cleared ifindex=0, silently turning a socket bound to a
-specific CAN interface into one that also matches "any" interface.
+as there were different patches flying arround to fix CAN_BCM issues and
+AI assisted stuff pop's up again and again, I've created this collection
+to be applied.
 
-Keep the lockless bo->bound check purely as a fast-path reject, and
-move the ifindex read (and a bo->bound re-check) into the locked
-section, where every writer already serializes. This removes the
-possibility of observing the two fields torn against each other,
-rather than trying to fix it with more READ_ONCE()/WRITE_ONCE() pairs
-on two independently updated fields. Annotate the now-purely-lockless
-bo->bound accesses consistently across all its write sites.
+I'm not sure whether sashiko-bot takes the sequence of this series into
+account when checking the last patches. So let's see.
 
-Also fix bcm_rx_setup() silently returning success when the target
-device disappears concurrently instead of reporting -ENODEV, so a
-broken RX op is no longer left registered as if it had succeeded.
+Best regards,
+Oliver
 
-Reported-by: Ginger <ginger.jzllee@gmail.com>
-Closes: https://lore.kernel.org/linux-can/CAGp+u1aBK8QVjsvAxM2Ldzep4rEbsP9x_pV3At4g=h1kVEtyhA@mail.gmail.com/
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- net/can/bcm.c | 65 ++++++++++++++++++++++++++++++++++++++++++++++-------------
- 1 file changed, 51 insertions(+), 14 deletions(-)
+Changes in v3:
+- incorporated more sashiko-bot concerns from v2
+- patch 3: make snapshot of currframe
+- patch 6: add error patch for memcpy_from_msg()
+- patch 7: new RTR-reply validation in bcm_rx_setup() from bcm_tx_setup() 
+- Link to v2: https://patch.msgid.link/20260707-bcm_fixes-v2-0-96620c534b75@hartkopp.net
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index bdf53241bd7b..b612135b017d 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -1321,10 +1321,15 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 						      bcm_rx_handler, op,
- 						      "bcm", sk);
- 
- 				op->rx_reg_dev = dev;
- 				dev_put(dev);
-+			} else {
-+				/* the requested device is gone - do not
-+				 * silently succeed without registering
-+				 */
-+				err = -ENODEV;
- 			}
- 
- 		} else
- 			err = can_rx_register(sock_net(sk), NULL, op->can_id,
- 					      REGMASK(op->can_id),
-@@ -1394,16 +1399,17 @@ static int bcm_tx_send(struct msghdr *msg, int ifindex, struct sock *sk,
-  */
- static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- {
- 	struct sock *sk = sock->sk;
- 	struct bcm_sock *bo = bcm_sk(sk);
--	int ifindex = bo->ifindex; /* default ifindex for this bcm_op */
-+	int ifindex;
- 	struct bcm_msg_head msg_head;
- 	int cfsiz;
- 	int ret; /* read bytes or error codes as return value */
- 
--	if (!bo->bound)
-+	/* Lockless fast-path check for bound socket */
-+	if (!READ_ONCE(bo->bound))
- 		return -ENOTCONN;
- 
- 	/* check for valid message length from userspace */
- 	if (size < MHSIZ)
- 		return -EINVAL;
-@@ -1415,43 +1421,65 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 
- 	cfsiz = CFSIZ(msg_head.flags);
- 	if ((size - MHSIZ) % cfsiz)
- 		return -EINVAL;
- 
-+	lock_sock(sk);
-+
-+	/* Re-validate under the socket lock: a concurrent bcm_notify()
-+	 * may have unbound this socket (device removal) after the
-+	 * lockless fast-path check above. bo->ifindex is only ever
-+	 * mutated under lock_sock(), so reading it here - instead of
-+	 * before taking the lock - guarantees it can't be observed
-+	 * torn against bo->bound.
-+	 */
-+	if (!bo->bound) {
-+		ret = -ENOTCONN;
-+		goto out_release;
-+	}
-+
-+	/* default ifindex for this bcm_op */
-+	ifindex = bo->ifindex;
-+
- 	/* check for alternative ifindex for this bcm_op */
- 
- 	if (!ifindex && msg->msg_name) {
- 		/* no bound device as default => check msg_name */
- 		DECLARE_SOCKADDR(struct sockaddr_can *, addr, msg->msg_name);
- 
--		if (msg->msg_namelen < BCM_MIN_NAMELEN)
--			return -EINVAL;
-+		if (msg->msg_namelen < BCM_MIN_NAMELEN) {
-+			ret = -EINVAL;
-+			goto out_release;
-+		}
- 
--		if (addr->can_family != AF_CAN)
--			return -EINVAL;
-+		if (addr->can_family != AF_CAN) {
-+			ret = -EINVAL;
-+			goto out_release;
-+		}
- 
- 		/* ifindex from sendto() */
- 		ifindex = addr->can_ifindex;
- 
- 		if (ifindex) {
- 			struct net_device *dev;
- 
- 			dev = dev_get_by_index(sock_net(sk), ifindex);
--			if (!dev)
--				return -ENODEV;
-+			if (!dev) {
-+				ret = -ENODEV;
-+				goto out_release;
-+			}
- 
- 			if (dev->type != ARPHRD_CAN) {
- 				dev_put(dev);
--				return -ENODEV;
-+				ret = -ENODEV;
-+				goto out_release;
- 			}
- 
- 			dev_put(dev);
- 		}
- 	}
- 
--	lock_sock(sk);
--
- 	switch (msg_head.opcode) {
- 
- 	case TX_SETUP:
- 		ret = bcm_tx_setup(&msg_head, msg, ifindex, sk);
- 		break;
-@@ -1497,10 +1525,11 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	default:
- 		ret = -EINVAL;
- 		break;
- 	}
- 
-+out_release:
- 	release_sock(sk);
- 
- 	return ret;
- }
- 
-@@ -1533,11 +1562,16 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
- 			if (sock_net(sk)->can.bcmproc_dir && bo->bcm_proc_read) {
- 				remove_proc_entry(bo->procname, sock_net(sk)->can.bcmproc_dir);
- 				bo->bcm_proc_read = NULL;
- 			}
- #endif
--			bo->bound   = 0;
-+			/* Paired with the lockless fast-path check in
-+			 * bcm_sendmsg(); bo->ifindex itself is only ever
-+			 * accessed under lock_sock() so it needs no
-+			 * annotation.
-+			 */
-+			WRITE_ONCE(bo->bound, 0);
- 			bo->ifindex = 0;
- 			notify_enodev = 1;
- 		}
- 
- 		release_sock(sk);
-@@ -1674,11 +1708,11 @@ static int bcm_release(struct socket *sock)
- 	list_for_each_entry_safe(op, next, &bo->rx_ops, list)
- 		bcm_remove_op(op);
- 
- 	/* remove device reference */
- 	if (bo->bound) {
--		bo->bound   = 0;
-+		WRITE_ONCE(bo->bound, 0);
- 		bo->ifindex = 0;
- 	}
- 
- 	sock_orphan(sk);
- 	sock->sk = NULL;
-@@ -1744,11 +1778,14 @@ static int bcm_connect(struct socket *sock, struct sockaddr_unsized *uaddr, int
- 			goto fail;
- 		}
- 	}
- #endif /* CONFIG_PROC_FS */
- 
--	bo->bound = 1;
-+	/* bo->ifindex above is fully assigned before this point; pairs
-+	 * with the lockless fast-path check in bcm_sendmsg()
-+	 */
-+	WRITE_ONCE(bo->bound, 1);
- 
- fail:
- 	release_sock(sk);
- 
- 	return ret;
+Changes in v2:
+- incorporated all sashiko-bot concerns from v1
+- Link to v1: https://patch.msgid.link/20260612-bcm_fixes-v1-0-ca2fa07ee70f@hartkopp.net
 
--- 
-2.53.0
+---
+Lee Jones (1):
+      can: bcm: defer rx_op deallocation to workqueue to fix thrtimer UAF
+
+Oliver Hartkopp (6):
+      can: bcm: fix lockless bound/ifindex race and silent RX_SETUP failure
+      can: bcm: add locking when updating filter and timer values
+      can: bcm: fix CAN frame rx/tx statistics
+      can: bcm: add missing rcu list annotations and operations
+      can: bcm: extend bcm_tx_lock usage for data and timer updates
+      can: bcm: validate frame length in bcm_rx_setup() for RTR replies
+
+ net/can/bcm.c | 416 ++++++++++++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 314 insertions(+), 102 deletions(-)
+---
+base-commit: 665159e246749578d4e4bfe106ee3b74edcdab18
+change-id: 20260612-bcm_fixes-84fb4aa93ac2
+
+Best regards,
+--  
+Oliver Hartkopp <socketcan@hartkopp.net>
 
 
