@@ -1,130 +1,260 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57BA5373C00
-	for <linux-can@vger.kernel.org>; Wed,  8 Jul 2026 15:48:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BFF936212C
+	for <linux-can@vger.kernel.org>; Wed,  8 Jul 2026 17:27:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783525704; cv=none; b=qkgaqIPs/KUKiiXcB0zzWmL1qV6gg+8TCvpk6sz8OJhNGbJicYj4cyA7DwZVL+VjMaAFS0RnCKGyxM3EDl4Qh5Hcla7C1GZNntjHOK6Bp2KOEp5Bm0X3124bI66U1MXSGTck/IwbEfyeZiiv1WgLGMf/GmwmjnW0lSeLSivdHyo=
+	t=1783531625; cv=none; b=bzICtxaUBEFRqar6Cj59Zy7SvMUvdzMI1q3E7i4BPcN2QQyym+ac2vhjkbQKVz/+4kuXVzt7wyOLHW/IGXiNtTNNj1dNyjpITnouaevXb0zK+IVaj+0cfrUwWjhD18LMKxKjk/Pr0gR/8JoWwvKwTlfeDKtVG9Bk86+lPxKPwgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783525704; c=relaxed/simple;
-	bh=IyWRay6bOg1aYF8WQW8h2z/kF4qR4q+nLamjDfjPcFM=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=AXHUjsF4j4BaXw58Slzjw4EBvZHhpWs7b7KAr/38ZVJZKjMTEpwu3yRZeC9/zAs3SLBGjXN3Nm2Kf+RRj+ZPcYFHwOoYfhPMbz3TNv2RxMrE13oIt9uybyAPyNuo1XyRGVlmqkOb/G/da6e0afa0wsVoNM42ApPJI2A5Top51q8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fypmfYNI; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1783531625; c=relaxed/simple;
+	bh=b0VHGNfSKkdaRe44rgMgbVJ3bvrqgw1UMcsUmFbBiQY=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=OMfzGNMQDId8LLKDR2f33robcw9xijkQVvD+5l9BsQFT1/Y9js4hAOQ2gqmFTgeRsKYMDci230N1pHmEVRnTjd9hGQ32o/82XTlnC2L5258cdO2SuhgG7pfIZzpfsTxVpEAIJmFCL0/QX/IS7XXnrix/xu2lCWcFiVtCFQz91FM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MhHuBCBJ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fypmfYNI"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F8F51F000E9;
-	Wed,  8 Jul 2026 15:48:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783525703;
-	bh=9hifNDXOXjzX/pjjHzFgyUGRIi5OxCQPzstBNRrFi4w=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=fypmfYNItK8O9htL9QFBQUQpvMqiyW1wAYU1P703vrlu9p/omDK5UszLUvcLyQ72E
-	 RZO2nA8Le1o3txjh9Q4xgJNKPlHVMPA8P5OFyRr5mfsOrUliuoqyoZvXWeHXRoBywE
-	 b3GyJJwRFsIGKROWDVPDwPAaAvbAijz4cOvX5KaWjpedg3+GdTMMmQosgScjO+Bhsl
-	 p/6BTFxL1PcMgmR099ti1UjDrsWiY7b1ST8LE5/xq6dZ3QZ4iYxeJYmvpwUVkDG5wz
-	 cxrhNBwnui9xW2tpCRtwRLlW5lsFjejMebA4uXkUfToYG3ufkUPVA5wCswLNnglOV7
-	 4eyEQCfiIyltQ==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v7 10/10] can: bcm: fix data race on rx_stamp/rx_ifindex
- in bcm_rx_handler()
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Oliver Hartkopp" <socketcan@hartkopp.net>
-Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, "Marc Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org
-In-Reply-To: <20260708-bcm_fixes-v7-10-c78896b342e4@hartkopp.net>
-References: <20260708-bcm_fixes-v7-0-c78896b342e4@hartkopp.net>
- <20260708-bcm_fixes-v7-10-c78896b342e4@hartkopp.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 08 Jul 2026 15:48:22 +0000
-Message-Id: <20260708154822.9F8F51F000E9@smtp.kernel.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MhHuBCBJ"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0F072C2BCB3;
+	Wed,  8 Jul 2026 17:27:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1783531625;
+	bh=b0VHGNfSKkdaRe44rgMgbVJ3bvrqgw1UMcsUmFbBiQY=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=MhHuBCBJmeaEVAmHcbTXVMERkeyHuW/gLscrEd5ii7oIzrJM6sC6k+kq1nB4wdB9B
+	 r5ULlNBdH5CcGusD2RxOd7yPQB5qhc8FRZjbhvC45PqROFrOGhrxseNUelfqdqueg1
+	 Wtjgt8H/hfkeE9mSq4Mfya6eKRqiN93lwhYjtdd+tfDYO7NDpG/PqJvKaJzlxrFrTE
+	 zr3dRf9X9BfrnrUgrRvLD9MsxXqSh3FCfkrCQG3WVDuZGMngnBEN3iAKrPvdgtX+71
+	 xK9+tSqU5JdEGfe9ONRiy0TJwD5tKjFKTcNzmvRYXpdw4nJJ0XXm9TJwQhhJU/d/+N
+	 UKQM921i9ToGg==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4283C44503;
+	Wed,  8 Jul 2026 17:27:04 +0000 (UTC)
+From: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
+Date: Wed, 08 Jul 2026 19:26:58 +0200
+Subject: [PATCH v8 01/10] can: bcm: defer rx_op deallocation to workqueue
+ to fix thrtimer UAF
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260708-bcm_fixes-v8-1-8c2f5f3bc212@hartkopp.net>
+References: <20260708-bcm_fixes-v8-0-8c2f5f3bc212@hartkopp.net>
+In-Reply-To: <20260708-bcm_fixes-v8-0-8c2f5f3bc212@hartkopp.net>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
+ Marc Kleine-Budde <mkl@pengutronix.de>, Lee Jones <lee@kernel.org>, 
+ Feng Xue <feng.xue@outlook.com>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783531623; l=6459;
+ i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
+ bh=HLu6KLqysIbTcTJRJ9fWwVQaVrLBGRp/BcX5+2NtnEw=;
+ b=eNx5K7tmJJq2R/r4JFQpltn64HTyf+uCU+Z2PJGeToK3zHOu0uhG1USkRLukYToqAaRLLVTNZ
+ jVJBtY/yTuLBS/8PuOeSUt2cHC1vyFkBxX3RSBiwVRhVUFlC2X0R2Iy
+X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
+ pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
+X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
+ auth_id=620
+X-Original-From: Oliver Hartkopp <socketcan@hartkopp.net>
+Reply-To: socketcan@hartkopp.net
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
+From: Lee Jones <lee@kernel.org>
 
-Pre-existing issues:
-- [High] Multiplexed or throttled CAN frames share a single global `rx_stam=
-p` and `rx_ifindex`, which are overwritten by rejected or unrelated multipl=
-ex frames, causing metadata corruption when sending throttled frames to use=
-rspace.
---
+Commit f1b4e32aca08 ("can: bcm: use call_rcu() instead of costly
+synchronize_rcu()") replaced synchronize_rcu() in bcm_delete_rx_op()
+with call_rcu() and introduced the RX_NO_AUTOTIMER flag.
 
---- Patch [10]: [PATCH v7 10/10] can: bcm: fix data race on rx_stamp/rx_ifi=
-ndex in bcm_rx_handler() ---
-commit 981b0672b1caa15044dae2fc2e2b6c5ccb8394f9
-Author: Oliver Hartkopp <socketcan@hartkopp.net>
+However, this flag check was omitted for thrtimer in the packet rx
+fast-path. During BCM RX operation teardown, a concurrent RCU reader
+(bcm_rx_handler) can race and re-arm thrtimer via
+bcm_rx_update_and_send() after call_rcu() has been scheduled.  Once
+the RCU grace period elapses, bcm_op is freed.  The subsequently
+firing thrtimer then dereferences the deallocated op, causing a UAF.
 
-can: bcm: fix data race on rx_stamp/rx_ifindex in bcm_rx_handler()
+Adding flag checks to the rx fast-path (bcm_rx_update_and_send) does not
+fully close the TOCTOU race and introduces latency for every CAN frame.
+Conversely, calling hrtimer_cancel() directly inside the RCU callback
+(softirq context) is fatal as hrtimer_cancel() can sleep, triggering
+a "scheduling while atomic" panic.
 
-This commit moves the updates to op->rx_stamp and op->rx_ifindex inside
-the bcm_rx_update_lock section to prevent data races. It also notes that
-metadata is bundled correctly when running concurrently on different CPUs
-for wildcard interface subscriptions.
+Resolve this by deferring the timer cancellation and memory free to a
+dedicated unbound workqueue (bcm_wq).  The RCU callback now queues a
+work item to bcm_wq, which safely cancels both timers and deallocates
+memory in sleepable process context.  A dedicated workqueue is used to
+prevent system-wide WQ saturation and is cleanly flushed/destroyed
+on module unload to avoid rmmod page faults.
 
-Link: https://lore.kernel.org/linux-can/20260707145135.5BC831F00A3A@smtp.ke=
-rnel.org/
+Since the deferred work can now outlive the calling context by an
+unbounded amount, also take a reference on op->sk when it is assigned
+and drop it only once the deferred work has cancelled both timers, so a
+socket can no longer be freed out from under a still-armed timer whose
+callback (bcm_send_to_user()) dereferences op->sk.
 
-> diff --git a/net/can/bcm.c b/net/can/bcm.c
-> --- a/net/can/bcm.c
-> +++ b/net/can/bcm.c
-[ ... ]
-> @@ -805,6 +800,14 @@ static void bcm_rx_handler(struct sk_buff *skb, void=
- *data)
-> =20
->  	spin_lock_bh(&op->bcm_rx_update_lock);
-> =20
-> +	/* save rx timestamp and originator for recvfrom() under lock.
-> +	 * For an op subscribed on all interfaces (ifindex =3D=3D 0)
-> +	 * bcm_rx_handler() can run concurrently on different CPUs so
-> +	 * the CAN content and the meta data must be bundled correctly.
-> +	 */
-> +	op->rx_stamp =3D skb->tstamp;
-> +	op->rx_ifindex =3D skb->dev->ifindex;
-> +
+Fixes: f1b4e32aca08 ("can: bcm: use call_rcu() instead of costly synchronize_rcu()")
+Tested-by: Feng Xue <feng.xue@outlook.com>
+Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Lee Jones <lee@kernel.org>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ net/can/bcm.c | 37 ++++++++++++++++++++++++++++++++++---
+ 1 file changed, 34 insertions(+), 3 deletions(-)
 
-[Severity: High]
-This is a pre-existing issue, but by updating op->rx_stamp and
-op->rx_ifindex unconditionally here before checking the multiplex mask,
-are we risking metadata corruption for throttled frames?
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index a4bef2c48a55..bdf53241bd7b 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -56,10 +56,11 @@
+ #include <linux/can.h>
+ #include <linux/can/core.h>
+ #include <linux/can/skb.h>
+ #include <linux/can/bcm.h>
+ #include <linux/slab.h>
++#include <linux/workqueue.h>
+ #include <linux/spinlock.h>
+ #include <net/can.h>
+ #include <net/sock.h>
+ #include <net/net_namespace.h>
+ 
+@@ -90,10 +91,12 @@ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_AUTHOR("Oliver Hartkopp <oliver.hartkopp@volkswagen.de>");
+ MODULE_ALIAS("can-proto-2");
+ 
+ #define BCM_MIN_NAMELEN CAN_REQUIRED_SIZE(struct sockaddr_can, can_ifindex)
+ 
++static struct workqueue_struct *bcm_wq;
++
+ /*
+  * easy access to the first 64 bit of can(fd)_frame payload. cp->data is
+  * 64 bit aligned so the offset has to be multiples of 8 which is ensured
+  * by the only callers in bcm_rx_cmp_to_index() bcm_rx_handler().
+  */
+@@ -103,10 +106,11 @@ static inline u64 get_u64(const struct canfd_frame *cp, int offset)
+ }
+ 
+ struct bcm_op {
+ 	struct list_head list;
+ 	struct rcu_head rcu;
++	struct work_struct work;
+ 	int ifindex;
+ 	canid_t can_id;
+ 	u32 flags;
+ 	unsigned long frames_abs, frames_filtered;
+ 	struct bcm_timeval ival1, ival2;
+@@ -791,23 +795,40 @@ static struct bcm_op *bcm_find_op(struct list_head *ops,
+ 	}
+ 
+ 	return NULL;
+ }
+ 
+-static void bcm_free_op_rcu(struct rcu_head *rcu_head)
++static void bcm_free_op_work(struct work_struct *work)
+ {
+-	struct bcm_op *op = container_of(rcu_head, struct bcm_op, rcu);
++	struct bcm_op *op = container_of(work, struct bcm_op, work);
++
++	hrtimer_cancel(&op->timer);
++	hrtimer_cancel(&op->thrtimer);
+ 
+ 	if ((op->frames) && (op->frames != &op->sframe))
+ 		kfree(op->frames);
+ 
+ 	if ((op->last_frames) && (op->last_frames != &op->last_sframe))
+ 		kfree(op->last_frames);
+ 
++	/* the last possible access to op->timer/op->thrtimer has now
++	 * happened above via hrtimer_cancel() - op->sk is no longer
++	 * needed by any pending timer callback, so drop our reference
++	 */
++	sock_put(op->sk);
++
+ 	kfree(op);
+ }
+ 
++static void bcm_free_op_rcu(struct rcu_head *rcu_head)
++{
++	struct bcm_op *op = container_of(rcu_head, struct bcm_op, rcu);
++
++	INIT_WORK(&op->work, bcm_free_op_work);
++	queue_work(bcm_wq, &op->work);
++}
++
+ static void bcm_remove_op(struct bcm_op *op)
+ {
+ 	hrtimer_cancel(&op->timer);
+ 	hrtimer_cancel(&op->thrtimer);
+ 
+@@ -1058,10 +1079,11 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 		/* tx_ops never compare with previous received messages */
+ 		op->last_frames = NULL;
+ 
+ 		/* bcm_can_tx / bcm_tx_timeout_handler needs this */
+ 		op->sk = sk;
++		sock_hold(sk);
+ 		op->ifindex = ifindex;
+ 
+ 		/* initialize uninitialized (kzalloc) structure */
+ 		hrtimer_setup(&op->timer, bcm_tx_timeout_handler, CLOCK_MONOTONIC,
+ 			      HRTIMER_MODE_REL_SOFT);
+@@ -1219,10 +1241,11 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 			}
+ 		}
+ 
+ 		/* bcm_can_tx / bcm_tx_timeout_handler needs this */
+ 		op->sk = sk;
++		sock_hold(sk);
+ 		op->ifindex = ifindex;
+ 
+ 		/* ifindex for timeout events w/o previous frame reception */
+ 		op->rx_ifindex = ifindex;
+ 
+@@ -1837,15 +1860,19 @@ static struct notifier_block canbcm_notifier = {
+ 
+ static int __init bcm_module_init(void)
+ {
+ 	int err;
+ 
++	bcm_wq = alloc_workqueue("can-bcm-wq", WQ_UNBOUND, 0);
++	if (!bcm_wq)
++		return -ENOMEM;
++
+ 	pr_info("can: broadcast manager protocol\n");
+ 
+ 	err = register_pernet_subsys(&canbcm_pernet_ops);
+ 	if (err)
+-		return err;
++		goto register_pernet_failed;
+ 
+ 	err = register_netdevice_notifier(&canbcm_notifier);
+ 	if (err)
+ 		goto register_notifier_failed;
+ 
+@@ -1859,17 +1886,21 @@ static int __init bcm_module_init(void)
+ 
+ register_proto_failed:
+ 	unregister_netdevice_notifier(&canbcm_notifier);
+ register_notifier_failed:
+ 	unregister_pernet_subsys(&canbcm_pernet_ops);
++register_pernet_failed:
++	destroy_workqueue(bcm_wq);
+ 	return err;
+ }
+ 
+ static void __exit bcm_module_exit(void)
+ {
+ 	can_proto_unregister(&bcm_can_proto);
+ 	unregister_netdevice_notifier(&canbcm_notifier);
+ 	unregister_pernet_subsys(&canbcm_pernet_ops);
++	rcu_barrier();
++	destroy_workqueue(bcm_wq);
+ }
+ 
+ module_init(bcm_module_init);
+ module_exit(bcm_module_exit);
 
-If a valid multiplexed frame is received and throttled, its payload is
-buffered. If another frame with the same CAN ID but a non-matching
-multiplex ID (or on a different interface) arrives while the throttle
-timer is running, we reach this code and overwrite the global op->rx_stamp
-and op->rx_ifindex.
+-- 
+2.53.0
 
-When the timer later expires, bcm_rx_thr_flush() flushes all pending
-throttled MUX frames using the shared overwritten metadata:
 
-net/can/bcm.c:bcm_rx_thr_flush() {
-    ...
-    for (i =3D 1; i < op->nframes; i++)
-        updated +=3D bcm_rx_do_flush(op, i);
-    ...
-}
-
-Which propagates to bcm_rx_changed():
-
-net/can/bcm.c:bcm_rx_changed() {
-    ...
-    bcm_send_to_user(op, &head, data, 1);
-    ...
-}
-
-Could this cause applications to respond on the wrong CAN bus interface if
-recvfrom() returns the incorrectly overwritten ifindex?
-
->  	if (op->flags & RX_FILTER_ID) {
->  		/* the easiest case */
->  		bcm_rx_update_and_send(op, op->last_frames, rxframe,
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260708-bcm_fixes-=
-v7-0-c78896b342e4@hartkopp.net?part=3D10
