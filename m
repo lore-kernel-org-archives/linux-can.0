@@ -1,124 +1,156 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 228032EDD70
-	for <linux-can@vger.kernel.org>; Wed,  8 Jul 2026 09:49:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1C59233947
+	for <linux-can@vger.kernel.org>; Wed,  8 Jul 2026 13:02:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783504175; cv=none; b=QuAgvifbKqAFuF4WjhDKhqgNaCKjgCVvpubQ6G/EB10pNEEyfE3OOu/vbrYdRUZG8ALUdz7DenKV+2Fd97X3T4gPVU9itWJcbQXnOWTQS0umebtcwQ8h8npzupJfqnR8YGA4znHE3AQgrW7feRs5yim6GAMaVjOoymnohAOnzms=
+	t=1783515724; cv=none; b=XvJJlC2kNVgWvAZE8PLjuhxVuZp8PFY3Jn0+k5OUlIOAEPZ08OdVFKoY/Ta1OIqT89Of4Zy/cr4u8nt5wgYmvKSw6wepu4K/l1VC5IMbuQ3OPpZmT+kyjdXSVtq6cKdGLJjgXtslULMJGD6ly+ZdzJxtJ1KCLOwmhS84ht5bkas=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783504175; c=relaxed/simple;
-	bh=SzaNlb8jnO46v6Bm+uaNUgz6EhfAWaG2Zbdz7b6VUPo=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=oRLgqGRgkX9Hm9Me4XCfdrnQcsHzNXY7/keiDUZmQFXozCWlatv9PgrGpgybThbwaWz2PdjDXevpBmdL9rNFlj+8pcTqDh3MFFtYXm+6ol09vtXuP4ULFUPQLT5P+MjIz/S/0UFFAYBhwmx8y8afFuGY66gKZS6T3cbHGXnYLLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I5ZJB/vV; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1783515724; c=relaxed/simple;
+	bh=4JU2q3mtR2wS+Nw1c00/a25L1KenoBvbQ0NlzwKTufk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=DU3E5AJvsDCVZ6H0TNHhhoWKcMuI1Zl/Fp61T32NAYyI0+S6IOHiHw3WAvmRSdt8yRueYkaalaDJwxejnvN8FN8mPVH1lV0F0rBvQ+flY+d9ZaeCv258LJq1TLV5WFk067TwFPZj59qXlsEgjpApRMFU471GEL9NwqFV4CYUVJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GU7+/CQq; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I5ZJB/vV"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7151C1F000E9;
-	Wed,  8 Jul 2026 09:49:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783504173;
-	bh=dcXpjqCGIgp8q5P5H4o2Xh6TbPeYhJNTalWwi79fIYg=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=I5ZJB/vVnnU+VWUc75VyMrl1mxf3gttH6IOVi8PA9Zm2VLUlrhXD22p4Gfo4/49l4
-	 cBb0vHut71YKFDrlMtmMrDBF/4IKyOdBUTbx8scv1N9SiU5rYarO8j03gNgadiUR4e
-	 J9X8NN4B5yHSBLBInqCa80llJ3QxOp3HQTthQ3bgvyO5YGzHXeGcYH+aXQSiKAOUVC
-	 o0pEuDmjDV8UO9vSYl1uQ+pYnpmB97JvgcpDmoi92Hbgjldoomigy+VaiXlhLNSVx8
-	 MKXiMf0ugmVuqBrT1UQ+6WezSMl9Km+XZOEWxolW8Jzc0SuNO6guCsKeMm0RPSbEKb
-	 HyeXPLZE9R/Cw==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v6 9/9] can: bcm: fix data race on rx_stamp/rx_ifindex
- in bcm_rx_handler()
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Oliver Hartkopp" <socketcan@hartkopp.net>
-Cc: "Vincent Mailhol" <mailhol@kernel.org>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org
-In-Reply-To: <20260708-bcm_fixes-v6-9-80710a2bc398@hartkopp.net>
-References: <20260708-bcm_fixes-v6-0-80710a2bc398@hartkopp.net>
- <20260708-bcm_fixes-v6-9-80710a2bc398@hartkopp.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 08 Jul 2026 09:49:32 +0000
-Message-Id: <20260708094933.7151C1F000E9@smtp.kernel.org>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GU7+/CQq"
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2cc7e86e7aeso7136265ad.2
+        for <linux-can@vger.kernel.org>; Wed, 08 Jul 2026 06:02:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1783515722; x=1784120522; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=PHqORVTQXLEwN5n2TZklcKo7QLlfA8Vtj176/nlR0Hc=;
+        b=GU7+/CQqwWGeLuYhrbqORtLE8LNngUlrujiB/6tJcqOiJ6d4Ct/KlSbxJ2gFDBmuSY
+         JndJ+7yTbhqXZgPUTUUVOpxjjAxtRNHqddIEjvmfrQH7hfaFURRmZp13ygPC5ksDu7IX
+         j9RZp/x62K3nJuE9hywnjXpUCnfSr3wX3xeYZzRznahF+fEgf47ad4qWXs1blKclIlHn
+         cg/EI/mav+gI0fxU1SgdZF0b+qAovkIsj/bMfEzidkel3p/Zkto+ksNpeydntyLW9E5g
+         n2XE+l6UOqMTs3GZSV6c1kcOhVsitaC/2qKy0QFzDhVh4U/jyEvXO1XzkT7fzHQXF25r
+         hrYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783515722; x=1784120522;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=PHqORVTQXLEwN5n2TZklcKo7QLlfA8Vtj176/nlR0Hc=;
+        b=kQPTH5QFSRxMRzNF/o2vXpyX/ZNh3i6HtGC2mAJm4YSmHLtnzOr8197ZhEe37R/M3q
+         AP/cUrtGtJjXCdFsT7VLK6O/pOsegAZwrqR/KT8dvj05SAtXIcB/z2Ln0a3tK4SU7w3g
+         7Gkm9Wpfg0/NFdWXAb8eSQYPj9YeWjyBgxAsFOcP24OjF6Usf2UGT5kaSOMl5Rvsh4sS
+         +DSP+EeNt1+TN58l9CkJ0AsLRvBR9UK7PsROUB/KEpGVivl2k3FbSQwEe+uEXPptcHzP
+         r10f6AT/IXCisXin3IyexcSgyek1ggd5abFTdWUqcJnFziT+iX4Kj16jeYcQJatBpogl
+         MYAA==
+X-Forwarded-Encrypted: i=1; AHgh+RqqHt1vMiEoOUfcgcuX4rJaTjTm8nqFeGpVlyu1Q3qpXH9nm9czjUPXdztpFz2xhz/gWKBDHSWxQcY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxTyMkzsRBNVw1mPAMiEAByarSx5UZjdwTTywBvfMoOFRGlb1qt
+	Zk13qrLjCxr4XcLhS67lSAhIbWmjjOyTai1etbbEqcsSh74zEEzQMkSQ
+X-Gm-Gg: AfdE7cntGyExedtHbuS4CS63IPR+6m0w+0Jq6ARwuX9anQfpBvr2ZsXsxfGduS6bLAq
+	xIykfL50ZM/48VqHkC8Qo2tZjtZSQmtkOaWcjBTMUyeXSAiOnSzHcJg2iiiNoGnyZfvEMJw+nsW
+	/kLJWLI95UXYj0tuT+Awi4PgdmBe6/XyRDyzjLNuSwTWn3sPBfKVZOsjD0aqoDZJ5/5TbZasVEB
+	OajOtMV0U/UgtzcUJovRcw73BzkoxWTMOmP04ClFObnS12u46nOgbS8YpMwLuO1WUChscz6jyE3
+	R1Af0Y/cnSYzlbN+e+PcpbxZbDqynGsLFYHZr0dI7ezbcT2LdQzH9mLSBDtVGTJF6oKAXv4NL/u
+	GGrDf7KBejdvnsqG7CCSnR5B3QmDfrRVkDvfGFc03+GUB7JQD75Uo/3wVT4GIE2vKXtP9pAE=
+X-Received: by 2002:a17:902:ef4d:b0:2c8:2808:3ec9 with SMTP id d9443c01a7336-2ccea36556dmr22451975ad.12.1783515722124;
+        Wed, 08 Jul 2026 06:02:02 -0700 (PDT)
+Received: from lgs.. ([2001:250:5800:1000::f280])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ccc9d3da55sm27783045ad.71.2026.07.08.06.01.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jul 2026 06:02:01 -0700 (PDT)
+From: Guangshuo Li <lgs201920130244@gmail.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Guangshuo Li <lgs201920130244@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Wolfgang Grandegger <wg@grandegger.com>,
+	Sebastian Haas <haas@ems-wuensche.com>,
+	linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] can: ems_usb: validate received CAN message payloads
+Date: Wed,  8 Jul 2026 20:59:49 +0800
+Message-ID: <20260708125949.765815-1-lgs201920130244@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
+ems_usb_read_bulk_callback() validates that the fixed CPC message header
+fits in the received USB buffer before dispatching the message to a
+handler.
 
-Pre-existing issues:
-- [High] Ignored CAN frames incorrectly overwrite the `rx_stamp` and `rx_if=
-index` of pending throttled frames, leading to incorrect metadata delivery =
-to userspace.
---
+That is not enough for messages with payloads. The CAN frame handler
+reads the CAN id, DLC and data bytes from the variable payload area. A
+malformed device can place a CPC message header at the end of the
+received buffer so that the fixed header check succeeds, but the CAN
+payload read by ems_usb_rx_can_msg() extends past the actual USB data.
 
---- Patch [9]: [PATCH v6 9/9] can: bcm: fix data race on rx_stamp/rx_ifinde=
-x in bcm_rx_handler() ---
-commit 1f01914b41bcf86b5db9980430a19a39e9075e09
-Author: Oliver Hartkopp <socketcan@hartkopp.net>
+The post-dispatch length check is too late because the handler has
+already read the payload by then. Also, the number of CAN data bytes read
+by ems_usb_rx_can_msg() is derived from the CAN DLC field, so it must be
+validated against the received CPC payload length as well.
 
-can: bcm: fix data race on rx_stamp/rx_ifindex in bcm_rx_handler()
+Validate the complete CPC payload before dispatching the message, and
+make sure CAN frame messages contain the bytes required by their DLC.
 
-This commit fixes a data race on op->rx_stamp and op->rx_ifindex by moving
-their assignment inside the bcm_rx_update_lock critical section. It also
-stops updating them for RTR-request frames.
+Fixes: 702171adeed3 ("ems_usb: Added support for EMS CPC-USB/ARM7 CAN/USB interface")
+Signed-off-by: Guangshuo Li <lgs201920130244@gmail.com>
+---
+ drivers/net/can/usb/ems_usb.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-Link: https://lore.kernel.org/linux-can/20260707145135.5BC831F00A3A@smtp.ke=
-rnel.org/
+diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
+index 9b25dda7c183..f72e36fdf788 100644
+--- a/drivers/net/can/usb/ems_usb.c
++++ b/drivers/net/can/usb/ems_usb.c
+@@ -409,6 +409,28 @@ static void ems_usb_rx_err(struct ems_usb *dev, struct ems_cpc_msg *msg)
+ 		netif_rx(skb);
+ }
+ 
++static bool ems_usb_msg_valid(struct ems_cpc_msg *msg)
++{
++	u8 can_len;
++
++	switch (msg->type) {
++	case CPC_MSG_TYPE_CAN_FRAME:
++	case CPC_MSG_TYPE_EXT_CAN_FRAME:
++		if (msg->length < CPC_CAN_MSG_MIN_SIZE)
++			return false;
++
++		can_len = can_cc_dlc2len(msg->msg.can_msg.length & 0xf);
++		return msg->length >= CPC_CAN_MSG_MIN_SIZE + can_len;
++
++	case CPC_MSG_TYPE_RTR_FRAME:
++	case CPC_MSG_TYPE_EXT_RTR_FRAME:
++		return msg->length >= CPC_CAN_MSG_MIN_SIZE;
++
++	default:
++		return true;
++	}
++}
++
+ /*
+  * callback for bulk IN urb
+  */
+@@ -452,6 +474,16 @@ static void ems_usb_read_bulk_callback(struct urb *urb)
+ 
+ 			msg = (struct ems_cpc_msg *)&ibuf[start];
+ 
++			if (msg->length > urb->actual_length - start -
++			    CPC_MSG_HEADER_LEN) {
++				netdev_err(netdev, "format error\n");
++				break;
++			}
++			if (!ems_usb_msg_valid(msg)) {
++				netdev_err(netdev, "format error\n");
++				break;
++			}
++
+ 			switch (msg->type) {
+ 			case CPC_MSG_TYPE_CAN_STATE:
+ 				/* Process CAN state changes */
+-- 
+2.43.0
 
-> diff --git a/net/can/bcm.c b/net/can/bcm.c
-> index 4bdca72f9327f..73e3a5fc4342f 100644
-> --- a/net/can/bcm.c
-> +++ b/net/can/bcm.c
-[ ... ]
-> @@ -805,6 +800,14 @@ static void bcm_rx_handler(struct sk_buff *skb, void=
- *data)
-> =20
->  	spin_lock_bh(&op->bcm_rx_update_lock);
-> =20
-> +	/* save rx timestamp and originator for recvfrom() under lock.
-> +	 * For an op subscribed on all interfaces (ifindex =3D=3D 0)
-> +	 * bcm_rx_handler() can run concurrently on different CPUs so
-> +	 * the CAN content and the meta data must be bundled correctly.
-> +	 */
-> +	op->rx_stamp =3D skb->tstamp;
-> +	op->rx_ifindex =3D skb->dev->ifindex;
-
-[Severity: High]
-This is a pre-existing issue, but does unconditionally overwriting these
-fields corrupt the metadata for pending throttled frames?
-
-If a user configures a BCM socket with a filter (e.g., multiplex nframes > =
-1),
-bound to all interfaces (ifindex =3D=3D 0), with a throttle timer:
-
-1. A frame arrives on vcan0, matches a mask, and is throttled.
-   op->rx_ifindex becomes vcan0.
-2. A subsequent frame arrives on vcan1 but does not match any multiplex mas=
-k.
-
-Since bcm_rx_handler() unconditionally updates op->rx_ifindex here before
-applying the filters, doesn't it overwrite the metadata with vcan1 even
-though the frame is ignored?
-
-When the throttle timer expires, bcm_send_to_user() will use this corrupted
-op->rx_ifindex to deliver the throttled frame from vcan0, making it appear =
-as
-if it came from vcan1.
-
-Also, since the bcm_op struct only has one rx_stamp and rx_ifindex field,
-doesn't this mean it structurally lacks the capacity to store independent
-metadata per multiplex mask if multiple multiplexed frames are throttled
-simultaneously?
-
-> +
->  	if (op->flags & RX_FILTER_ID) {
->  		/* the easiest case */
->  		bcm_rx_update_and_send(op, op->last_frames, rxframe,
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260708-bcm_fixes-=
-v6-0-80710a2bc398@hartkopp.net?part=3D9
