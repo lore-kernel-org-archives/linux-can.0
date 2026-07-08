@@ -1,126 +1,232 @@
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24C362147F9
-	for <linux-can@vger.kernel.org>; Wed,  8 Jul 2026 03:05:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8A4440861B
+	for <linux-can@vger.kernel.org>; Wed,  8 Jul 2026 09:22:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783479933; cv=none; b=LiBlz0FLN9LaMIe1O/kXBgVI9qHkwhV8Q2SIoTc67zFrhmQiylWteNqdwOPdNmZrJIxLPfe7P/3YKzAbs595CO2Fw9WBUKXcE/OTlNqcuXc2R8+YsX2caQpkiTZiuePCmyBnmBhT0/WDWJFhrVCYrTSlHZehDjF6iiFriJwslos=
+	t=1783502569; cv=none; b=cHUIpqV/HPtBKPFiy8ZXj8xf6LUjlzW7YvYHBOPqz6wmM0xlLUZ2fl8gUwR02vFrKowyHTgLRC/xfg1E1yqj+HM2a/4gcOBmHOo7AuZM5fLileeYeExAqPAk36uujj1DY/RXFUiFtpI6HlqF/d3o6v3ulnmDnyAz4uB0h+5P4wg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783479933; c=relaxed/simple;
-	bh=RDjNVBHsJeP5xhO7Wyb7fa29u/GNUNTqbCtElT40KWc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jSRIk4jy7zMLW4Xd/67orKigLITsc45vlJbkFys2pEnhBLab18ufHBncO3OrpL1EnohxJzl5imfSn2qxuz+lI2LmMW1aJmI0P3a7fjgMEZOSnnHhFLdsyUjgP0tVbPEKrr4t4c5SZhhxYTSq6U+K2oVxjMaxxkUsFRgYjrgmBe0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jckxlL8s; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1783502569; c=relaxed/simple;
+	bh=rTeKvi/x5lpPfyC60LCTF21rSAlwk23x5rWgAPAFjFI=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=SyncgJm44LAzLSKRWA5CnxN44ia+rnJIiQRClMU7FFeaLZ2nK2xfazvq4JR1kY87R/erQqtRTFj4T8+oja3D9AP0XiloOW9NUS1XpLlgMmcpyAYwaWvTXZkhYJKzvyu3ZePIHKwDT0GXqb/bcECHVvHASeCn/5ARsoqau3eAHys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pTu6uIQL; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jckxlL8s"
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2cc7ef7ec27so3382795ad.1
-        for <linux-can@vger.kernel.org>; Tue, 07 Jul 2026 20:05:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783479931; x=1784084731; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=fxkLrYr5aWISG484jr5FD5Wa9ToyrlfnhtwYV/kULB8=;
-        b=jckxlL8sluSO9pZ0nEwj3yGnwpn0Qk8DbDBmAazAyOxRfbMtdQ+n+OxbIRbYB+ISm4
-         XH500hWIBq3/xu9zdSwms6FSb7Sv5U0XI/Bzs4Yb+zEMQ1Oa25ZBCY9nuMxZL668jeA2
-         9MXvqFDHi4OEZwOlYHmG3CAIc1ziFWckmlmuYwhUGDTQQNrNXYHOkup6RxR2gG5kYrcK
-         y+gudrp75q7B4pBx5/Lrwab2MTgLCvZND5n1Q9ziAQ9CWKoMpIUu8U2pvl3YCW81nUVp
-         voZk4ZEdFhjP0bv7VYc7lWAKVVZWQAjn1YcLvgAhQlGjZ6eM9DnPts8QaEbdgTmvh4ak
-         KgbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783479931; x=1784084731;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=fxkLrYr5aWISG484jr5FD5Wa9ToyrlfnhtwYV/kULB8=;
-        b=cpXZgaLx7DWPg3A70sMydeCm9aYXfhNdXrxshTAVE2O1nFF+pth7+nkJ13nbwkPwl7
-         Z8OnQUi1E3Mc+VNxPt50ESuu9SPKF7tGHFk6fu4TYjScA3N9IqMCLfpnkIYqIvPStJ2Y
-         AJq6DehEY/ozoE8KUXyj7nZiIg+9amojjrQbyxvEuY0W0pYjvEUtTWqQYoYdjp9kaDsY
-         6zXXWmGzTvBsCv0GiPVKS4Ig80g3Lrx+2M4TGkdfqKhpSDUFhNU3BhRIR3OphpSH9TCD
-         x73vuhCWyCLWxQUu/NzQdBNbLDbnQwfAtYaTgMSP5MNhA4NN6BmZWOZbDUb6lZ3OGQ2B
-         Zp1A==
-X-Forwarded-Encrypted: i=1; AHgh+Roh+bbLdW8Sgk+ymwPRf5V2TPY+A+FcNEPN2s/QWXMxlB9NG0xayZe0+bmpsfg/1YOU9MusVVMQyes=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzZy1GPNXLIWzs90uDCdVhEWduMqmqjeE8UC2xg03tpSZqZfk5k
-	3XTX6WEzxpjTrqpq8syXYQHu3YhBZBAYmD51/52/Jm4UxP+Dx19RmkBd
-X-Gm-Gg: AfdE7cnuDDeccAl7aPh33RjK5vmttp2l89W0/1606rqDQqzJYvcRsyJEPG2KA/cL4gT
-	ViN2/XRYs/p5DH+M5zPsEy3n8tPo6/6/Je04m3wQ0kReHybtTwYGwC96yEq9MV1n5Z8CfTmLHZy
-	tRhdnWuqtMUXATl8EeN/ZlboxzrGgm2DMmDO6zfNgmvsv/EPuoonBdNx0+bkOhcZIWKi02An12E
-	oUbc02KkNtVIcw2SeX/0ZCnV4sWqibTjgEMuMMBWPZJU4lkw/8L6furd7G8Ih+sVdSngDKtT8g3
-	GoIlAPJYwyWgEeTJwHL+j6BrHTAieIqqF/enr+pCpeUIZOmOYuKWnpPyTP+wYZIdMjj9r4e5CJ/
-	zbt9zIgUGsyXqbecJBXfb3PguJIUO2d2r3skPjcDPHE/QLz1acTQ8ZeuB35GI+sBCGwwnBZK1tl
-	02/Tt+ypFfdbDA2f68mKugQH2tJk1147kqj9P4mGZHGSZsqvfBZYvOPO6daw==
-X-Received: by 2002:a17:903:1a87:b0:2cc:e620:e307 with SMTP id d9443c01a7336-2ccea3b0e71mr6494625ad.20.1783479931549;
-        Tue, 07 Jul 2026 20:05:31 -0700 (PDT)
-Received: from phuc-desktop.. ([183.91.15.56])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ccc9d3d45csm20099865ad.62.2026.07.07.20.05.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2026 20:05:31 -0700 (PDT)
-From: phucduc.bui@gmail.com
-To: Markus Schneider-Pargmann <msp@baylibre.com>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>
-Cc: Kendall Willis <k-willis@ti.com>,
-	linux-can@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bui duc phuc <phucduc.bui@gmail.com>
-Subject: [PATCH v3] can: m_can: Use of_property_present() for wakeup-source
-Date: Wed,  8 Jul 2026 10:05:12 +0700
-Message-ID: <20260708030512.8570-1-phucduc.bui@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pTu6uIQL"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 952D4C2BCFB;
+	Wed,  8 Jul 2026 09:22:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1783502569;
+	bh=rTeKvi/x5lpPfyC60LCTF21rSAlwk23x5rWgAPAFjFI=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=pTu6uIQL3aRmDa9VX+szRlCsWoHMSqDnxcYPSjcdOtcxKVuO2vGv4bnViU3AMnI60
+	 aPjTw/2GjHSd9T73KBK/OOI/xjnJasQe/1GuPG0HUo7rjuzLvCkSsoQWOnHzLCA/9G
+	 j7WZFeG6fzr4b/Sr93tbht50+kVhz1Mm0iZ5EbKiMCD5lM8HrqkDbEGRmXgJv0JApQ
+	 tISbrj2vEIVDUoOtlkBvNl8ziYtL3tNpHfjH9/gi+zWkPbd5SyQG7nN7rwhCOM40Ps
+	 Z8V43T0i0AqDVzdqwHV81AJ3Yesg1hi5dcqn6Ij5pIeISpzoIPTlY8s/2i8BsvSVqC
+	 kMZYBTxHyDkqg==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82799C44503;
+	Wed,  8 Jul 2026 09:22:49 +0000 (UTC)
+From: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
+Date: Wed, 08 Jul 2026 11:22:30 +0200
+Subject: [PATCH v6 4/9] can: bcm: fix CAN frame rx/tx statistics
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260708-bcm_fixes-v6-4-80710a2bc398@hartkopp.net>
+References: <20260708-bcm_fixes-v6-0-80710a2bc398@hartkopp.net>
+In-Reply-To: <20260708-bcm_fixes-v6-0-80710a2bc398@hartkopp.net>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
+ Marc Kleine-Budde <mkl@pengutronix.de>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783502567; l=5246;
+ i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
+ bh=9nUyZLVL8gRmQOXh/UV97B3g1LLHaQafpLp/e7ndSOQ=;
+ b=qp4GbhpIEYXnSHbzTGMQoYiat/jCBvBLgaXST9slX5zjqo7lkVwth18+1basbjxrQC1NLGxYa
+ v0vC9E0SrfhB0/ZJuP6hCwWz1rk+RIrOrhqx0jZ6wCzSnx+U3wPjVEV
+X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
+ pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
+X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
+ auth_id=620
+X-Original-From: Oliver Hartkopp <socketcan@hartkopp.net>
+Reply-To: socketcan@hartkopp.net
 
-From: bui duc phuc <phucduc.bui@gmail.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-The 'wakeup-source' property is declared as a phandle-array in both YAML
-bindings and Device Tree source files. However, the driver currently
-uses of_property_read_bool() to check for its existence.
+KCSAN detected a data race within the bcm_rx_handler() when two CAN frames
+have been simultaneously received and processed in a single rx op by two
+different CPUs.
 
-According to the function's documentation, usage on non-boolean property
-types is deprecated. Switch to of_property_present() to comply with the
-recommended API for checking the presence of a property.
+Use atomic operations with (signed) long data types to access the
+statistics in the hot path to fix the KCSAN complaint.
 
-Fixes: 04d5826b074e ("can: m_can: Map WoL to device_set_wakeup_enable")
-Reviewed-by: Kendall Willis <k-willis@ti.com>
-Acked-by: Markus Schneider-Pargmann <msp@baylibre.com>
-Signed-off-by: bui duc phuc <phucduc.bui@gmail.com>
+Additionally simplify the update and check of statistics overflow by
+using the atomic operations in a separate bcm_update_stats() function and
+put this function under bcm_rx_update_lock to prevent races when resetting
+the counters.
+
+Fixes: ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol")
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
+ net/can/bcm.c | 47 ++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 30 insertions(+), 17 deletions(-)
 
-Note:
-It was originally posted in May and has already received both 
-Reviewed-by and Acked-by tags. I'm resending it to bring it back 
-to attention in case it was overlooked.
-
-Changes in v3:
- - Add Reviewed-by tag
- - Resend.
-Changes in v2:
- - Add Acked-by tag
- - Add Fixes tag
-
-
- drivers/net/can/m_can/m_can.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index eb856547ae7d..16f80607e150 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -2464,7 +2464,7 @@ struct m_can_classdev *m_can_class_allocate_dev(struct device *dev,
- 		return ERR_PTR(ret);
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index af4bb4182bc2..340b7fc89744 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -110,11 +110,11 @@ struct bcm_op {
+ 	struct rcu_head rcu;
+ 	struct work_struct work;
+ 	int ifindex;
+ 	canid_t can_id;
+ 	u32 flags;
+-	unsigned long frames_abs, frames_filtered;
++	atomic_long_t frames_abs, frames_filtered;
+ 	struct bcm_timeval ival1, ival2;
+ 	struct hrtimer timer, thrtimer;
+ 	ktime_t rx_stamp, kt_ival1, kt_ival2, kt_lastmsg;
+ 	int rx_ifindex;
+ 	int cfsiz;
+@@ -227,14 +227,17 @@ static int bcm_proc_show(struct seq_file *m, void *v)
+ 
+ 	rcu_read_lock();
+ 
+ 	list_for_each_entry_rcu(op, &bo->rx_ops, list) {
+ 
+-		unsigned long reduction;
++		long reduction, frames_filtered, frames_abs;
++
++		frames_filtered = atomic_long_read(&op->frames_filtered);
++		frames_abs = atomic_long_read(&op->frames_abs);
+ 
+ 		/* print only active entries & prevent division by zero */
+-		if (!op->frames_abs)
++		if (!frames_abs)
+ 			continue;
+ 
+ 		seq_printf(m, "rx_op: %03X %-5s ", op->can_id,
+ 			   bcm_proc_getifname(net, ifname, op->ifindex));
+ 
+@@ -252,13 +255,13 @@ static int bcm_proc_show(struct seq_file *m, void *v)
+ 		if (op->kt_ival2)
+ 			seq_printf(m, "thr=%lld ",
+ 				   (long long)ktime_to_us(op->kt_ival2));
+ 
+ 		seq_printf(m, "# recv %ld (%ld) => reduction: ",
+-			   op->frames_filtered, op->frames_abs);
++			   frames_filtered, frames_abs);
+ 
+-		reduction = 100 - (op->frames_filtered * 100) / op->frames_abs;
++		reduction = 100 - (frames_filtered * 100) / frames_abs;
+ 
+ 		seq_printf(m, "%s%ld%%\n",
+ 			   (reduction == 100) ? "near " : "", reduction);
  	}
  
--	if (dev->of_node && of_property_read_bool(dev->of_node, "wakeup-source"))
-+	if (dev->of_node && of_property_present(dev->of_node, "wakeup-source"))
- 		device_set_wakeup_capable(dev, true);
+@@ -278,20 +281,30 @@ static int bcm_proc_show(struct seq_file *m, void *v)
  
- 	/* Get TX FIFO size
+ 		if (op->kt_ival2)
+ 			seq_printf(m, "t2=%lld ",
+ 				   (long long)ktime_to_us(op->kt_ival2));
+ 
+-		seq_printf(m, "# sent %ld\n", op->frames_abs);
++		seq_printf(m, "# sent %ld\n",
++			   atomic_long_read(&op->frames_abs));
+ 	}
+ 	seq_putc(m, '\n');
+ 
+ 	rcu_read_unlock();
+ 
+ 	return 0;
+ }
+ #endif /* CONFIG_PROC_FS */
+ 
++static void bcm_update_stats(struct bcm_op *op)
++{
++	/* prevent statistics overflow */
++	if (atomic_long_inc_return(&op->frames_abs) > LONG_MAX / 100) {
++		atomic_long_set(&op->frames_filtered, 0);
++		atomic_long_set(&op->frames_abs, 0);
++	}
++}
++
+ /*
+  * bcm_can_tx - send the (next) CAN frame to the appropriate CAN interface
+  *              of the given bcm tx op
+  */
+ static void bcm_can_tx(struct bcm_op *op, struct canfd_frame *cf)
+@@ -342,11 +355,11 @@ static void bcm_can_tx(struct bcm_op *op, struct canfd_frame *cf)
+ 
+ 	/* update currframe and count under lock protection */
+ 	spin_lock_bh(&op->bcm_tx_lock);
+ 
+ 	if (!err)
+-		op->frames_abs++;
++		bcm_update_stats(op);
+ 
+ 	op->currframe++;
+ 
+ 	/* reached last frame? */
+ 	if (op->currframe >= op->nframes)
+@@ -495,16 +508,13 @@ static enum hrtimer_restart bcm_tx_timeout_handler(struct hrtimer *hrtimer)
+  */
+ static void bcm_rx_changed(struct bcm_op *op, struct canfd_frame *data)
+ {
+ 	struct bcm_msg_head head;
+ 
+-	/* update statistics */
+-	op->frames_filtered++;
+-
+-	/* prevent statistics overflow */
+-	if (op->frames_filtered > ULONG_MAX/100)
+-		op->frames_filtered = op->frames_abs = 0;
++	/* update statistics (frames_filtered <= frames_abs) */
++	if (atomic_long_read(&op->frames_abs))
++		atomic_long_inc(&op->frames_filtered);
+ 
+ 	/* this element is not throttled anymore */
+ 	data->flags &= ~RX_THR;
+ 
+ 	memset(&head, 0, sizeof(head));
+@@ -746,20 +756,23 @@ static void bcm_rx_handler(struct sk_buff *skb, void *data)
+ 
+ 	/* save rx timestamp */
+ 	op->rx_stamp = skb->tstamp;
+ 	/* save originator for recvfrom() */
+ 	op->rx_ifindex = skb->dev->ifindex;
+-	/* update statistics */
+-	op->frames_abs++;
+ 
+-	/* snapshot the flag under lock: op->flags/op->frames may be updated
+-	 * concurrently by bcm_rx_setup().
++	/* snapshot RTR content under lock: op->flags/op->frames may be
++	 * updated concurrently by bcm_rx_setup().
+ 	 */
+ 	spin_lock_bh(&op->bcm_rx_update_lock);
++
++	/* update statistics with lock analogue to bcm_rx_changed() callers */
++	bcm_update_stats(op);
++
+ 	rtr_frame = op->flags & RX_RTR_FRAME;
+ 	if (rtr_frame)
+ 		memcpy(&rtrframe, op->frames, op->cfsiz);
++
+ 	spin_unlock_bh(&op->bcm_rx_update_lock);
+ 
+ 	if (rtr_frame) {
+ 		/* send reply for RTR-request (placed in op->frames[0]) */
+ 		bcm_can_tx(op, &rtrframe);
+
 -- 
-2.43.0
+2.53.0
+
 
