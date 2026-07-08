@@ -1,168 +1,114 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.163])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABC9D4C8FEB
-	for <linux-can@vger.kernel.org>; Wed,  8 Jul 2026 18:39:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.163
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783535955; cv=pass; b=YCJu65znUDWbEKsrRKugeJuoj9s9I1OcK89DTp+vE6ri8iHRQfb+PfOey2kPl9dtczImfGtY7QQFOBXZ5WJkcb1q71Ie20wlxm8jU0P+5hduGYqOiEW0WZXrtAwjee8bTjtapHzcdhI6KGezGHyRq90Yxt+h8mihOxydmbYjJhU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783535955; c=relaxed/simple;
-	bh=JqSZMk/JOzEFo99YttxIslaIu2KxIZ+skJ7k66ej0Hg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FnAZeWf9RLRLAeIDLap9mdyZzrzTkK3GfB5Lx7NIIlnCB0bbEHs4U39o9ugLB5bL7aM5JBqT8aCXcVvwOjQk80sM5V1TT2GfLGDoxaCUFbdl+fRPh/wYN2cdAgRWO5et3E/JMEHTUIy3Q/VZxr987d6mlUNRJyt4ofT8Z5NK1NQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=FaRrDs1v; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=g0j0CVE3; arc=pass smtp.client-ip=81.169.146.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="FaRrDs1v";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="g0j0CVE3"
-ARC-Seal: i=1; a=rsa-sha256; t=1783535935; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=SJ/uCHYFzOmt+NUpAUngLbv5aYReFFAxZsPnkbGO31Hm3iNsf1X+4AAYO4M/xiDa0c
-    hGV4LNEb40M6gPUw2rtDg/2An8q7EAEbhp1H0eYGAhLq0qRg4RV6suOY3fEWHpg6ddsy
-    zze6I4LRpeZkw/3J2hh7C/waavSyr5xwCw6MsNm7Hl9ITSYTQjvizu+2+IpIRVGSTi7M
-    wwuN/4HRUxz6Yb7bDTfok+K/erwUnlliIKpvFV3tBp2tXCuyoZJAbJGEyITkv4ODNvfv
-    f+o593JzT0YG3eRpQXStY6fpMg3OsV4NFbgX14oeTcND3vfgyI62YR+DrTWSntzXFIEX
-    5KHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1783535935;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=Q8pUHmnsTXeXsNoc413CAFMsuf5gLD+T/mfEMPovwCc=;
-    b=ou/I3FbJ2uNYHj+HTftaVSs4BNwn9X0xNIaVNjGoeubtu8odUpfrsN0wqSfdGGEpxO
-    S/anK6KA5tOwR0YAPhD3ochVF5xrAlAEnrcI/fIcfnipBxR4nVhU8t+gOrUKK/ApFETr
-    HtW7jHuK5XUPd59HmMI6mLKQhJtx5L2HVU+XeenT64e6CfVJjwy/vAlKerLNJlK2+REs
-    U02sdlTpo3PrSi3cWF9n4emw/DHgekmkT0pGmSWdttN3iLiux+NiL4Mq8xABn3dLWkTZ
-    3QY2FKraU78nT7sdYlDPzeKIhvIb10pnHXtQye5U6TEtvWL4yquLubaIhE0Ksc2GwQyD
-    ACMg==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1783535935;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=Q8pUHmnsTXeXsNoc413CAFMsuf5gLD+T/mfEMPovwCc=;
-    b=FaRrDs1vm6+ug2B00ddtCdWKYf4gdJpfPUTma+6C8gsMTmYgOYiTZtO0HEUNWqLU/u
-    8sPWQKa63M/D78Vm9AtKJxAsTKxJA0ClU5Cxt8DkSasllc0ApBUzliYZl12CeY7SLmPh
-    GcJRs6DSmTvhIVl1T/+fSSO0gYGUS3ldJ07CHVfmPTTYKBNk2xmTUtkuVoTcRyVy2kr0
-    ygaVpbNMCAlJKRYnrlBUrSycUIF0uPzA7AzRwTtxM/FV59AOhy94l2pPv34sEBPEVAmZ
-    KkcO6YN4B0m/O+9xBHWAl6MHMcHKXuIAhHM/bRQcavVw9I2JwazeqJrwhTfXDeEAmY1J
-    QsrA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1783535935;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=Q8pUHmnsTXeXsNoc413CAFMsuf5gLD+T/mfEMPovwCc=;
-    b=g0j0CVE3CrOu7h5ukfSINGUjUMkTTwqZ8GxVGvgO3/zjciUUkVlLHXo06I7zF7Ef/c
-    r2dZEs8caGPGM/DX12Dw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tRkI16oOSW1Ti/f4PoH8="
-Received: from [192.168.20.236]
-    by smtp.strato.de (RZmta 55.5.6 DYNA|AUTH)
-    with ESMTPSA id Ka9fdb268Ictg3J
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Wed, 8 Jul 2026 20:38:55 +0200 (CEST)
-Message-ID: <a365adf7-62a6-4d13-a2d5-918d67952486@hartkopp.net>
-Date: Wed, 8 Jul 2026 20:38:49 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDBF43CF047
+	for <linux-can@vger.kernel.org>; Wed,  8 Jul 2026 21:23:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783545820; cv=none; b=uYJ8/kJo0unwFX5+ORMwZdnrD5vUe80E4v8VbMb2R98PH9CiyEFsS42yP2TKafxo076Xdsi+iUkeey1z9aalC28YK0xkNOgN8OUIjx9aCI2ZxDauNZqjnT7r9wgWnDXObSj2DPIhT2i+oV1SS4xYXlcaeK0Vzt66VEX4wk46tfY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783545820; c=relaxed/simple;
+	bh=eu5r14aI1UZ0FL/xOs/wfwgC18msXYaO7E/szCnC6+o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LVCXIux8SVKH9wNmW3+rJb1I3nx6MiGuFqC1WegM90y/fK5U5fT1WYtT9lRI/dNhowf1MiJJ2sVh0DA/E3wmnOVho9d8/fsHOTSw1ZbcBx2PlETBXrUZ8UPtkFQFrAOwh6cB58fYcWTLkOYMZWOuWb+aoimhz8No6yayqAAlrbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 9BA5A202752;
+	Wed, 08 Jul 2026 23:23:29 +0200 (CEST)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1whZjt-000oRJ-1i;
+	Wed, 08 Jul 2026 23:23:29 +0200
+Received: from pengutronix.de (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 40769563784;
+	Wed, 08 Jul 2026 21:23:29 +0000 (UTC)
+Date: Wed, 8 Jul 2026 23:23:28 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
+Cc: linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, 
+	Lee Jones <lee@kernel.org>, Feng Xue <feng.xue@outlook.com>, 
+	Ginger <ginger.jzllee@gmail.com>, syzbot+75e5e4ae00c3b4bb544e@syzkaller.appspotmail.com, 
+	sashiko-reviews@lists.linux.dev, sashiko-bot@kernel.org
+Subject: Re: [PATCH v8 00/10] can: bcm: collected fixes - final3 :-/
+Message-ID: <20260708-beige-tarsier-of-mastery-b73d0d-mkl@pengutronix.de>
+References: <20260708-bcm_fixes-v8-0-8c2f5f3bc212@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 10/10] can: bcm: fix data race on rx_stamp/rx_ifindex
- in bcm_rx_handler()
-To: sashiko-reviews@lists.linux.dev
-Cc: linux-can@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>,
- Vincent Mailhol <mailhol@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>
-References: <20260708-bcm_fixes-v8-0-8c2f5f3bc212@hartkopp.net>
- <20260708-bcm_fixes-v8-10-8c2f5f3bc212@hartkopp.net>
- <20260708174739.7E1111F000E9@smtp.kernel.org>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20260708174739.7E1111F000E9@smtp.kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="mxrwfzzced3a2duc"
+Content-Disposition: inline
+In-Reply-To: <20260708-bcm_fixes-v8-0-8c2f5f3bc212@hartkopp.net>
 
 
+--mxrwfzzced3a2duc
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v8 00/10] can: bcm: collected fixes - final3 :-/
+MIME-Version: 1.0
 
-On 08.07.26 19:47, sashiko-bot@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 1 potential issue(s) to consider:
-> 
-> Pre-existing issues:
-> - [High] This problem wasn't introduced by this patch, but the patch fails to fully resolve the issue it claims to fix: Metadata mismatch for delayed/throttled CAN frames. `op->rx_stamp` and `op->rx_ifindex` are overwritten by subsequent frames, causing delayed frames to be delivered with incorrect timestamps and originator ifindexes.
-> --
-> 
-> --- Patch [10]: [PATCH v8 10/10] can: bcm: fix data race on rx_stamp/rx_ifindex in bcm_rx_handler() ---
-> commit 1903094034673eeaf05aa58b49f4d0ff45d06795
-> Author: Oliver Hartkopp <socketcan@hartkopp.net>
-> 
-> can: bcm: fix data race on rx_stamp/rx_ifindex in bcm_rx_handler()
-> 
-> This commit addresses data races and torn stores on rx_stamp and rx_ifindex
-> by moving their assignment inside the bcm_rx_update_lock section in
-> bcm_rx_handler(). It ensures CAN content and metadata are bundled correctly.
-> 
-> Link: https://lore.kernel.org/linux-can/20260707145135.5BC831F00A3A@smtp.kernel.org/
-> 
->> diff --git a/net/can/bcm.c b/net/can/bcm.c
->> index 66dd8789843b5..1986d33a7d279 100644
->> --- a/net/can/bcm.c
->> +++ b/net/can/bcm.c
-> 
-> [ ... ]
-> 
->> @@ -805,6 +800,14 @@ static void bcm_rx_handler(struct sk_buff *skb, void *data)
->>   
->>   	spin_lock_bh(&op->bcm_rx_update_lock);
->>   
->> +	/* save rx timestamp and originator for recvfrom() under lock.
->> +	 * For an op subscribed on all interfaces (ifindex == 0)
->> +	 * bcm_rx_handler() can run concurrently on different CPUs so
->> +	 * the CAN content and the meta data must be bundled correctly.
->> +	 */
->> +	op->rx_stamp = skb->tstamp;
->> +	op->rx_ifindex = skb->dev->ifindex;
-> 
-> [Severity: High]
-> This isn't a bug introduced by this patch, but does this fully resolve the
-> metadata mismatch for delayed or throttled CAN frames?
-> 
-> Since op->rx_stamp and op->rx_ifindex are unconditionally updated here, will
-> they overwrite the metadata corresponding to pending throttled frames?
-> 
-> If an application configures a BCM socket with a throttle timer (kt_ival2 > 0)
-> and a frame is marked for delayed delivery, a subsequent frame arriving before
-> the timer expires will overwrite this global metadata.
-> 
-> When the timer expires and the delayed frame is eventually flushed to user
-> space via bcm_send_to_user(), it will be sent with the clobbered
-> op->rx_ifindex rather than the interface it originally arrived on. Could this
-> lead to the user application receiving an incorrect source interface and
-> potentially responding on the wrong CAN bus?
-> 
+On 08.07.2026 19:26:57, Oliver Hartkopp via B4 Relay wrote:
+> Hi Marc,
+>
+> as there were different patches flying arround to fix CAN_BCM issues and
+> AI assisted stuff pop's up again and again, I've created this collection
+> to be applied.
+>
+> The patch series fixes ALL issues reported by ALL kind of AI bots involved
+> and the fixes were assisted by claude code and later rephrased and shorte=
+ned
+> by myself.
+>
+> Inserted a new patch 9 that addresses a late sashiko-bot report fixing so=
+me
+> stale rx/tx ops behaviour after device removal.
+>
+> Btw. I added a bug when reworking the patch that sashiko-bot found.
+>
+> So the potential new AI reports on this patch set report problems that are
+> solved later in the series. This can not be resolved.
 
-Good finding!
+What about the issues that, according to the Sashiko bot, are supposed
+to occur in Patch 4:
 
-Using the ANY CAN device for bcm rx_ops is a corner case anyway that has 
-been allowed for completeness. So when a specific CAN ID is configured 
-with ANY CAN device as a rx_op the meta data might become unreliable 
-when this same CAN ID shows up on different interfaces in the throttle mode.
+New issues:
+- [Medium] `bcm_update_stats()` can be executed concurrently from
+  different lock domains, contradicting the commit's claim of preventing
+  races during counter reset.
+- [Medium] TX operations incorrectly inherit the RX-specific statistics
+  cap, causing premature zeroing of the TX frame counter.
 
-There is no known use-case for the throttle mode together with ANYDEV as 
-the throttle mode is intended and designed to throttle a single(!) data 
-source. Not multiple. So we can change the 20 y/o API and throw an error 
-when someone configures a throttle mode together with ANYDEV. Or we can 
-leave it as-is to maintain some auto-detect functionality that e.g. the 
-interface is not needed to be provided.
+regards,
+Marc
 
->> +
->>   	if (op->flags & RX_FILTER_ID) {
->>   		/* the easiest case */
->>   		bcm_rx_update_and_send(op, op->last_frames, rxframe,
-> 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
+--mxrwfzzced3a2duc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCak6/zgAKCRDMOmT6rpmt
+0sg6AP4/LU6iPtFDPllxsNJgGXD21yfW+9YLFCJ0F6d426SDTAD+IEjwRD2/9o2j
+81pw+2DRq6tyIhAtKlAAdJ2GQFQnlw8=
+=8IOm
+-----END PGP SIGNATURE-----
+
+--mxrwfzzced3a2duc--
