@@ -1,37 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0283F37C0E5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 029B63BB9EB
 	for <linux-can@vger.kernel.org>; Thu,  9 Jul 2026 08:16:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783584969; cv=none; b=DzznpHBK7MkVHoYS+nVbul2hYkGGgKna3RndO1wastSGlWHZ4NHQHZPTECgmIGniBXOUXOwidUTTGjdOTPNgq0im1Xy7T81nun1O1jeJ47nqHobqI1wmjijc3fWjSdSV9KuOSGRmcTc9iTHYlriA93kVs2O8JnGrD+b/DHJKcJ8=
+	t=1783584969; cv=none; b=htTttZzv1a924dGe6bUKZkLebERQMEklxJea8rzgsx7VLVQ9ZkC0pfHLALDHnTJP8ONWQFLnOllZWFyTJIiulPXwBpnX1OQnksUz5p2dO9Jlty6b+m3E6D55WUxPGuOmP3LXP0fM4/mCFy7lHy9eD93bo68k0fI4x7JHwu0vcbM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1783584969; c=relaxed/simple;
-	bh=kwbu0QASqGIWWWjcnuvtcz1YToVZ4hA+G5Ckol+wvwo=;
+	bh=b0VHGNfSKkdaRe44rgMgbVJ3bvrqgw1UMcsUmFbBiQY=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=S+aYx4A2pt3C2G41Dy4qs/PqF1iogrqlRWRsycMA7d2AYDzdZkb1th1XhchGHeT/y5u78jFaKrN0JmVKEXsiP9Eedydp1EXxf3OVKGOtyZCEgV4fubbTe0diripue3qWEurTqhw4FI/vliU6e+DPUpVUxZI6nmJepPkCanYxip0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ER5rVxHn; arc=none smtp.client-ip=10.30.226.201
+	 In-Reply-To:To:Cc; b=EiZ0nzuALiNaSz1w2wvxSuHeq7zk555T9r7BQVHqutYqZtNakbbzSgZ04JCpd0Gjn4lRYpueTf30kqzBWd1q8JHhayGa7Gie+Noiw+YO2w7esJfC+VN/af85rcpTJ1ezqMHRzLk6/1Gsjd1DoDM+dC+cthIkYrLp+yuXjGbOo0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=el2H8ygJ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ER5rVxHn"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D749DC2BCFB;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="el2H8ygJ"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B5A1CC2BCC7;
 	Thu,  9 Jul 2026 08:16:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1783584968;
-	bh=kwbu0QASqGIWWWjcnuvtcz1YToVZ4hA+G5Ckol+wvwo=;
+	bh=b0VHGNfSKkdaRe44rgMgbVJ3bvrqgw1UMcsUmFbBiQY=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=ER5rVxHnQpZzg8r3DIftkKCJ/rynxglnZ8mvOKOLKxcOXx4WRYwYBoVIsYBpxSMDB
-	 Dc7Kln8H12C9BoG6bHPl8zQQpW1FmDcpb6nsdB2UXslKchUTEGvZnA5Q7JgmukU3LU
-	 NTJYP0NldsqHUHkH+3BE3TiF0Ob2hA+JQdJIU12ynCWy/yN55kJdX50Ibu3yCvFywI
-	 XR0BX7bIq84utFge0Z/BkysQIqZnNdbsmz01FRFBDgxgqo8F2+Ns+sSWNu+3O7bPGP
-	 esUM1ADZFawRB0+aL67SPjL/2Ws7I8F0/os2LiKNaH02gM8lMmJbGQKXJmh9bKSLtY
-	 o4HpGSuhTZWqA==
+	b=el2H8ygJw8NHJ9aF+RgMu7p3Om4fuw5xDVNR/3vZqY91GjqRTTN9GHijXO7Sdk6hi
+	 HYjhRojHTnOAQTM3hoQRotBtz8ZZmRdjCfVDHTvcolAEDVL+r+gBY6kZYImozlX5gU
+	 iMMBgCzbr2kKfNr75ldX2qFGPbWTOeeTWley5NVaUGAvKIPstE+KYR2RevD91zJXhZ
+	 GSGcr903W48a4vT+1feMNh/zMm1TxWyv/k/YJlNnDV4JMtcKZd/lJpgHkyZD9w0vbc
+	 iJVYyQft08iuRc8dwkMz5qS7f4WVMTydhFVys3biGn6fYXDeROlEVQx/JeL4CyML+n
+	 NCTjf/pcgQiUQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C11A8C44508;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96C9AC44501;
 	Thu,  9 Jul 2026 08:16:08 +0000 (UTC)
 From: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
-Date: Thu, 09 Jul 2026 10:16:06 +0200
-Subject: [PATCH v9 04/10] can: bcm: fix CAN frame rx/tx statistics
+Date: Thu, 09 Jul 2026 10:16:03 +0200
+Subject: [PATCH v9 01/10] can: bcm: defer rx_op deallocation to workqueue
+ to fix thrtimer UAF
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -40,18 +41,19 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260709-bcm_fixes-v9-4-6eebb78ccfb2@hartkopp.net>
+Message-Id: <20260709-bcm_fixes-v9-1-6eebb78ccfb2@hartkopp.net>
 References: <20260709-bcm_fixes-v9-0-6eebb78ccfb2@hartkopp.net>
 In-Reply-To: <20260709-bcm_fixes-v9-0-6eebb78ccfb2@hartkopp.net>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
- Marc Kleine-Budde <mkl@pengutronix.de>
+ Marc Kleine-Budde <mkl@pengutronix.de>, Lee Jones <lee@kernel.org>, 
+ Feng Xue <feng.xue@outlook.com>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1783584967; l=5897;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783584967; l=6459;
  i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=QpQoH5NlkXdS7idcNsT8qsMuCvJl/KwWNKPLu5Mg2Jw=;
- b=B9IzWb0ik9KAu0vYdEtDw75ksa/PHcFIp9waoOymZ7t4uFs23UTlTedIgolpPeXdJVXl1y9iz
- WsjkfR8cHkWBvzcKVqaG06wAfnCmOz2ySk3v8/XPxWhW/YNm+tDwaFJ
+ bh=HLu6KLqysIbTcTJRJ9fWwVQaVrLBGRp/BcX5+2NtnEw=;
+ b=BuaTWmifPRZod/HoJQj9Icz9V3dl7NZQg0t+mnOIzYgvvYw8BN3TBNUr4gSPRtDGj3wgEUGPm
+ eskQFV7amEdB/1144W6+vGBQf/qHqGlY2n2OhTkpzz1coBLgmLiPitQ
 X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
  pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
 X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
@@ -59,186 +61,198 @@ X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
 X-Original-From: Oliver Hartkopp <socketcan@hartkopp.net>
 Reply-To: socketcan@hartkopp.net
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Lee Jones <lee@kernel.org>
 
-KCSAN detected a data race within the bcm_rx_handler() when two CAN frames
-have been simultaneously received and processed in a single rx op by two
-different CPUs.
+Commit f1b4e32aca08 ("can: bcm: use call_rcu() instead of costly
+synchronize_rcu()") replaced synchronize_rcu() in bcm_delete_rx_op()
+with call_rcu() and introduced the RX_NO_AUTOTIMER flag.
 
-Use atomic operations with (signed) long data types to access the
-statistics in the hot path to fix the KCSAN complaint.
+However, this flag check was omitted for thrtimer in the packet rx
+fast-path. During BCM RX operation teardown, a concurrent RCU reader
+(bcm_rx_handler) can race and re-arm thrtimer via
+bcm_rx_update_and_send() after call_rcu() has been scheduled.  Once
+the RCU grace period elapses, bcm_op is freed.  The subsequently
+firing thrtimer then dereferences the deallocated op, causing a UAF.
 
-Additionally simplify the update and check of statistics overflow by
-using the atomic operations in separate bcm_update_[rx|tx]_stats()
-functions. The rx variant runs under bcm_rx_update_lock to prevent
-races when resetting the two rx counters; the tx variant runs under
-bcm_tx_lock and only needs to guard its own counter's overflow.
+Adding flag checks to the rx fast-path (bcm_rx_update_and_send) does not
+fully close the TOCTOU race and introduces latency for every CAN frame.
+Conversely, calling hrtimer_cancel() directly inside the RCU callback
+(softirq context) is fatal as hrtimer_cancel() can sleep, triggering
+a "scheduling while atomic" panic.
 
-As the rx path resets its values already at LONG_MAX / 100, there is
-no conflict between the two locking domains (bcm_rx_update_lock vs.
-bcm_tx_lock) even for ops that use both paths.
+Resolve this by deferring the timer cancellation and memory free to a
+dedicated unbound workqueue (bcm_wq).  The RCU callback now queues a
+work item to bcm_wq, which safely cancels both timers and deallocates
+memory in sleepable process context.  A dedicated workqueue is used to
+prevent system-wide WQ saturation and is cleanly flushed/destroyed
+on module unload to avoid rmmod page faults.
 
-Fixes: ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol")
+Since the deferred work can now outlive the calling context by an
+unbounded amount, also take a reference on op->sk when it is assigned
+and drop it only once the deferred work has cancelled both timers, so a
+socket can no longer be freed out from under a still-armed timer whose
+callback (bcm_send_to_user()) dereferences op->sk.
+
+Fixes: f1b4e32aca08 ("can: bcm: use call_rcu() instead of costly synchronize_rcu()")
+Tested-by: Feng Xue <feng.xue@outlook.com>
+Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Lee Jones <lee@kernel.org>
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- net/can/bcm.c | 56 +++++++++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 39 insertions(+), 17 deletions(-)
+ net/can/bcm.c | 37 ++++++++++++++++++++++++++++++++++---
+ 1 file changed, 34 insertions(+), 3 deletions(-)
 
 diff --git a/net/can/bcm.c b/net/can/bcm.c
-index af4bb4182bc2..1623a402600c 100644
+index a4bef2c48a55..bdf53241bd7b 100644
 --- a/net/can/bcm.c
 +++ b/net/can/bcm.c
-@@ -110,11 +110,11 @@ struct bcm_op {
+@@ -56,10 +56,11 @@
+ #include <linux/can.h>
+ #include <linux/can/core.h>
+ #include <linux/can/skb.h>
+ #include <linux/can/bcm.h>
+ #include <linux/slab.h>
++#include <linux/workqueue.h>
+ #include <linux/spinlock.h>
+ #include <net/can.h>
+ #include <net/sock.h>
+ #include <net/net_namespace.h>
+ 
+@@ -90,10 +91,12 @@ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_AUTHOR("Oliver Hartkopp <oliver.hartkopp@volkswagen.de>");
+ MODULE_ALIAS("can-proto-2");
+ 
+ #define BCM_MIN_NAMELEN CAN_REQUIRED_SIZE(struct sockaddr_can, can_ifindex)
+ 
++static struct workqueue_struct *bcm_wq;
++
+ /*
+  * easy access to the first 64 bit of can(fd)_frame payload. cp->data is
+  * 64 bit aligned so the offset has to be multiples of 8 which is ensured
+  * by the only callers in bcm_rx_cmp_to_index() bcm_rx_handler().
+  */
+@@ -103,10 +106,11 @@ static inline u64 get_u64(const struct canfd_frame *cp, int offset)
+ }
+ 
+ struct bcm_op {
+ 	struct list_head list;
  	struct rcu_head rcu;
- 	struct work_struct work;
++	struct work_struct work;
  	int ifindex;
  	canid_t can_id;
  	u32 flags;
--	unsigned long frames_abs, frames_filtered;
-+	atomic_long_t frames_abs, frames_filtered;
+ 	unsigned long frames_abs, frames_filtered;
  	struct bcm_timeval ival1, ival2;
- 	struct hrtimer timer, thrtimer;
- 	ktime_t rx_stamp, kt_ival1, kt_ival2, kt_lastmsg;
- 	int rx_ifindex;
- 	int cfsiz;
-@@ -227,14 +227,17 @@ static int bcm_proc_show(struct seq_file *m, void *v)
- 
- 	rcu_read_lock();
- 
- 	list_for_each_entry_rcu(op, &bo->rx_ops, list) {
- 
--		unsigned long reduction;
-+		long reduction, frames_filtered, frames_abs;
-+
-+		frames_filtered = atomic_long_read(&op->frames_filtered);
-+		frames_abs = atomic_long_read(&op->frames_abs);
- 
- 		/* print only active entries & prevent division by zero */
--		if (!op->frames_abs)
-+		if (!frames_abs)
- 			continue;
- 
- 		seq_printf(m, "rx_op: %03X %-5s ", op->can_id,
- 			   bcm_proc_getifname(net, ifname, op->ifindex));
- 
-@@ -252,13 +255,13 @@ static int bcm_proc_show(struct seq_file *m, void *v)
- 		if (op->kt_ival2)
- 			seq_printf(m, "thr=%lld ",
- 				   (long long)ktime_to_us(op->kt_ival2));
- 
- 		seq_printf(m, "# recv %ld (%ld) => reduction: ",
--			   op->frames_filtered, op->frames_abs);
-+			   frames_filtered, frames_abs);
- 
--		reduction = 100 - (op->frames_filtered * 100) / op->frames_abs;
-+		reduction = 100 - (frames_filtered * 100) / frames_abs;
- 
- 		seq_printf(m, "%s%ld%%\n",
- 			   (reduction == 100) ? "near " : "", reduction);
+@@ -791,23 +795,40 @@ static struct bcm_op *bcm_find_op(struct list_head *ops,
  	}
  
-@@ -278,20 +281,39 @@ static int bcm_proc_show(struct seq_file *m, void *v)
- 
- 		if (op->kt_ival2)
- 			seq_printf(m, "t2=%lld ",
- 				   (long long)ktime_to_us(op->kt_ival2));
- 
--		seq_printf(m, "# sent %ld\n", op->frames_abs);
-+		seq_printf(m, "# sent %ld\n",
-+			   atomic_long_read(&op->frames_abs));
- 	}
- 	seq_putc(m, '\n');
- 
- 	rcu_read_unlock();
- 
- 	return 0;
+ 	return NULL;
  }
- #endif /* CONFIG_PROC_FS */
  
-+static void bcm_update_rx_stats(struct bcm_op *op)
-+{
-+	/* prevent overflow of the reduction% calculation in bcm_proc_show() */
-+	if (atomic_long_inc_return(&op->frames_abs) > LONG_MAX / 100) {
-+		atomic_long_set(&op->frames_filtered, 0);
-+		atomic_long_set(&op->frames_abs, 0);
-+	}
-+}
-+
-+static void bcm_update_tx_stats(struct bcm_op *op)
-+{
-+	/* tx_op has no reduction% calculation - use the full range and
-+	 * just keep the displayed counter non-negative on overflow
-+	 */
-+	if (atomic_long_inc_return(&op->frames_abs) == LONG_MAX)
-+		atomic_long_set(&op->frames_abs, 0);
-+}
-+
- /*
-  * bcm_can_tx - send the (next) CAN frame to the appropriate CAN interface
-  *              of the given bcm tx op
-  */
- static void bcm_can_tx(struct bcm_op *op, struct canfd_frame *cf)
-@@ -342,11 +364,11 @@ static void bcm_can_tx(struct bcm_op *op, struct canfd_frame *cf)
- 
- 	/* update currframe and count under lock protection */
- 	spin_lock_bh(&op->bcm_tx_lock);
- 
- 	if (!err)
--		op->frames_abs++;
-+		bcm_update_tx_stats(op);
- 
- 	op->currframe++;
- 
- 	/* reached last frame? */
- 	if (op->currframe >= op->nframes)
-@@ -495,16 +517,13 @@ static enum hrtimer_restart bcm_tx_timeout_handler(struct hrtimer *hrtimer)
-  */
- static void bcm_rx_changed(struct bcm_op *op, struct canfd_frame *data)
+-static void bcm_free_op_rcu(struct rcu_head *rcu_head)
++static void bcm_free_op_work(struct work_struct *work)
  {
- 	struct bcm_msg_head head;
- 
--	/* update statistics */
--	op->frames_filtered++;
--
--	/* prevent statistics overflow */
--	if (op->frames_filtered > ULONG_MAX/100)
--		op->frames_filtered = op->frames_abs = 0;
-+	/* update statistics (frames_filtered <= frames_abs) */
-+	if (atomic_long_read(&op->frames_abs))
-+		atomic_long_inc(&op->frames_filtered);
- 
- 	/* this element is not throttled anymore */
- 	data->flags &= ~RX_THR;
- 
- 	memset(&head, 0, sizeof(head));
-@@ -746,20 +765,23 @@ static void bcm_rx_handler(struct sk_buff *skb, void *data)
- 
- 	/* save rx timestamp */
- 	op->rx_stamp = skb->tstamp;
- 	/* save originator for recvfrom() */
- 	op->rx_ifindex = skb->dev->ifindex;
--	/* update statistics */
--	op->frames_abs++;
- 
--	/* snapshot the flag under lock: op->flags/op->frames may be updated
--	 * concurrently by bcm_rx_setup().
-+	/* snapshot RTR content under lock: op->flags/op->frames may be
-+	 * updated concurrently by bcm_rx_setup().
- 	 */
- 	spin_lock_bh(&op->bcm_rx_update_lock);
+-	struct bcm_op *op = container_of(rcu_head, struct bcm_op, rcu);
++	struct bcm_op *op = container_of(work, struct bcm_op, work);
 +
-+	/* update statistics with lock analogue to bcm_rx_changed() callers */
-+	bcm_update_rx_stats(op);
-+
- 	rtr_frame = op->flags & RX_RTR_FRAME;
- 	if (rtr_frame)
- 		memcpy(&rtrframe, op->frames, op->cfsiz);
-+
- 	spin_unlock_bh(&op->bcm_rx_update_lock);
++	hrtimer_cancel(&op->timer);
++	hrtimer_cancel(&op->thrtimer);
  
- 	if (rtr_frame) {
- 		/* send reply for RTR-request (placed in op->frames[0]) */
- 		bcm_can_tx(op, &rtrframe);
+ 	if ((op->frames) && (op->frames != &op->sframe))
+ 		kfree(op->frames);
+ 
+ 	if ((op->last_frames) && (op->last_frames != &op->last_sframe))
+ 		kfree(op->last_frames);
+ 
++	/* the last possible access to op->timer/op->thrtimer has now
++	 * happened above via hrtimer_cancel() - op->sk is no longer
++	 * needed by any pending timer callback, so drop our reference
++	 */
++	sock_put(op->sk);
++
+ 	kfree(op);
+ }
+ 
++static void bcm_free_op_rcu(struct rcu_head *rcu_head)
++{
++	struct bcm_op *op = container_of(rcu_head, struct bcm_op, rcu);
++
++	INIT_WORK(&op->work, bcm_free_op_work);
++	queue_work(bcm_wq, &op->work);
++}
++
+ static void bcm_remove_op(struct bcm_op *op)
+ {
+ 	hrtimer_cancel(&op->timer);
+ 	hrtimer_cancel(&op->thrtimer);
+ 
+@@ -1058,10 +1079,11 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 		/* tx_ops never compare with previous received messages */
+ 		op->last_frames = NULL;
+ 
+ 		/* bcm_can_tx / bcm_tx_timeout_handler needs this */
+ 		op->sk = sk;
++		sock_hold(sk);
+ 		op->ifindex = ifindex;
+ 
+ 		/* initialize uninitialized (kzalloc) structure */
+ 		hrtimer_setup(&op->timer, bcm_tx_timeout_handler, CLOCK_MONOTONIC,
+ 			      HRTIMER_MODE_REL_SOFT);
+@@ -1219,10 +1241,11 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 			}
+ 		}
+ 
+ 		/* bcm_can_tx / bcm_tx_timeout_handler needs this */
+ 		op->sk = sk;
++		sock_hold(sk);
+ 		op->ifindex = ifindex;
+ 
+ 		/* ifindex for timeout events w/o previous frame reception */
+ 		op->rx_ifindex = ifindex;
+ 
+@@ -1837,15 +1860,19 @@ static struct notifier_block canbcm_notifier = {
+ 
+ static int __init bcm_module_init(void)
+ {
+ 	int err;
+ 
++	bcm_wq = alloc_workqueue("can-bcm-wq", WQ_UNBOUND, 0);
++	if (!bcm_wq)
++		return -ENOMEM;
++
+ 	pr_info("can: broadcast manager protocol\n");
+ 
+ 	err = register_pernet_subsys(&canbcm_pernet_ops);
+ 	if (err)
+-		return err;
++		goto register_pernet_failed;
+ 
+ 	err = register_netdevice_notifier(&canbcm_notifier);
+ 	if (err)
+ 		goto register_notifier_failed;
+ 
+@@ -1859,17 +1886,21 @@ static int __init bcm_module_init(void)
+ 
+ register_proto_failed:
+ 	unregister_netdevice_notifier(&canbcm_notifier);
+ register_notifier_failed:
+ 	unregister_pernet_subsys(&canbcm_pernet_ops);
++register_pernet_failed:
++	destroy_workqueue(bcm_wq);
+ 	return err;
+ }
+ 
+ static void __exit bcm_module_exit(void)
+ {
+ 	can_proto_unregister(&bcm_can_proto);
+ 	unregister_netdevice_notifier(&canbcm_notifier);
+ 	unregister_pernet_subsys(&canbcm_pernet_ops);
++	rcu_barrier();
++	destroy_workqueue(bcm_wq);
+ }
+ 
+ module_init(bcm_module_init);
+ module_exit(bcm_module_exit);
 
 -- 
 2.53.0
