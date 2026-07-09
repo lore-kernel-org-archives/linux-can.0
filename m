@@ -1,301 +1,99 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC589422556
-	for <linux-can@vger.kernel.org>; Thu,  9 Jul 2026 15:45:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB97042A149
+	for <linux-can@vger.kernel.org>; Thu,  9 Jul 2026 15:52:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783611916; cv=none; b=WEX3BCD0oyBDiAA0CVYKBKLFtHjlCyZlv90RK3eX848xXxszQDN+R7vfhldhncFRr+YDg3aHKL/Jc4E/qg3c7y5EGCQBvdd8lmKaV8IK/WMkHl9vlfeeflY2IzfQvhkRH1GORFrowVVufnELuqhVWQlTstsqCtuOc+aA7DwE/IM=
+	t=1783612373; cv=none; b=IopBv3qbpxyedcp96v+HV1khi0UmWwQeeV52oetjT9cw28uBrXJ3LbQWjbNCBXouUzaI7K0Q7Dl8JXeNgcPOO0AMlkxHdS7hXhWFY4ulSpVk3DLhC6FruSD8wdN/0eAbGqdI87FPUVfU6YIElND9UISVjfVJfXuoQqUnIMGtvIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783611916; c=relaxed/simple;
-	bh=Uy5/aFNTupZm2f20r7gZHepQ99icGwvFsU34CA6G8GQ=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=iR579MTdoWuZwErRffhEzRpZw2Kz952TFcA3bA2zZem/vYugnekHZ/HFFs34qxriIqCUbnx8do1qM73kTR85Ag+KXwAgEmqNREzW0LuAL6c94yD1VS115mp1Xr3VO82ux59R63gGiQHvg1NfwtRrJKWP7bNU6ony1rWqrGMJTWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QOX9aPxK; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QOX9aPxK"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 846831F000E9;
-	Thu,  9 Jul 2026 15:45:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783611914;
-	bh=fotpBwHTxjg8BLDnsFXXftsOOyFS/TrfM2tvQg5x2/A=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=QOX9aPxKXM1tq1Ks5ACTVvh0C4Tb/swBjEjr4BGFx0YhOValiGWVidzAzWTArwgHW
-	 xw20SpYcOa3vPZO2UONZL0sJQqtCHpQAESsBu+/Lm4NAsgda0a1QzS8w18DYwbGtXE
-	 9HfvWR7BKb3bpWuYd/tdk7swlh7IEJUXSsz1k+mwh0/r7kkdvjqs2QmyzYljittFl9
-	 AwCjO5QX18rjs18P0i5OBcIKnpj0VQOwVzNERMnvtVl61bg3/PA52pwBF9MGEYenet
-	 IRHV038E+bnWjM3q60LG1uPPz1Ce3+XBadoVpMX9boHcWuSWZwyNjNH/tVPgx9nXvC
-	 Lr3WFczcYQdOA==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH can-next] can: m_can: switch to rx-offload
- implementation
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Marc Kleine-Budde" <mkl@pengutronix.de>
-Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org, "Marc
- Kleine-Budde" <mkl@pengutronix.de>
-In-Reply-To: <20260709-m_can-rx-offload-v1-1-af3efa8e4272@pengutronix.de>
-References: <20260709-m_can-rx-offload-v1-1-af3efa8e4272@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 09 Jul 2026 15:45:14 +0000
-Message-Id: <20260709154514.846831F000E9@smtp.kernel.org>
+	s=arc-20240116; t=1783612373; c=relaxed/simple;
+	bh=FK7tiZEI0WffDbTlu07kAZuJRwj0uLdhH15mcZOjFjk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PV9R+V66Z4Zy1jU37AafXPhyl7zqxMhU9hS10w29w3aUie9tvtkPlLgQtwdUiJNDZGrSXwDD2OrjQQK9lba27/UJ86X2uXx97iOf8/bcyvmAtsFNJuUvjAURm4+C75If8zPAr6taPCuicCg2xnpJrS4TkkxrWnF4Lo04xx9ieXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-7eb787dec99so23411a34.0
+        for <linux-can@vger.kernel.org>; Thu, 09 Jul 2026 08:52:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783612371; x=1784217171;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=iqrcHFDoPWS2t5kW57shcQV+qLcmaCnZOWUcXcNxWfY=;
+        b=QTmPnGKYyo6L94d/Sl+ztCb6+32b5GZwWkusqV0n327KSLSfI50rj/tVBDulguX60u
+         MC2DZotR2Hw62XymIxPCrNyydHAfkK9PLXb2qUIBQdEqWTflLni2CkPm5LuUO3kUs3UA
+         9O08YugQNi0+qMUepiQnVpxZ5NYW79nQWeEvZRk7+ia3qAqLnuDpVeBf1i+YmGmyWDhR
+         bcMHDpr6dVPycJukeD8ukYF+5U97QK91fVD6I5y9ooEkhO0leQqj9X32u+oYDSj7mL3X
+         WfRbAZNyKXMS3z+dJtMmfj2/siLzPjKhMn8yZilTJ4ylULj3ZZH75H97tnDvSfCiz5Ml
+         FzaA==
+X-Forwarded-Encrypted: i=1; AFNElJ+RWRW5qiMMrDZ9SlM6KTG1qvL+IwoIbBQJbMELn8h8FhyK957KRxNKidoPvP4xQX2d9O0SfE38M6Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyQWPsI1OxhHdqg5zKDforBhHKDC0qne2IDiiHyaJV5DSwWNLgy
+	4VM5axwAL7MF43S7zuZ45e/SRO6Ym6yis8oWfxuzz6TXY0PALojfQN6GWyt2XaYR/7Q=
+X-Gm-Gg: AfdE7ckrrth2MMQikvZhYKAqttUY2SSJwJpX04rSpsMeD4JtE5NX87hkg8zd6/B+k6c
+	Oes+Tk3adSAK6RqpDCNP+dCFE0rphU/+Lbna7m1yWl7DqsTJK5zg0b+t6TtrCZKiLGho15WnTcq
+	1VqodzOnXo1pSn9PYycSwCUzyR8ZmX4n7dMFzM+SDJMqCS/sHYYMdMrPLx+J8TdTi0BhGmP32Lc
+	/63GXxWVCsZPhykwau4X9tkgb5X1WbaQFA4Qr1m4gM1TliXDdtEQDuQHoSW6dAGpwNFYpJUQkvF
+	V3bgVX3md21WRCdk4ukuHMQwqzUFll2NqKP6IK43yFAG2wyYR5ER8h00gItmFebzyVnuhpXH+CC
+	+Sp3GZGMBzyHni4JG2A3lxSscTDScWyNPsu38gliU9KfgtxOoHf6RLOAv+ZatYgo8y7zPlLAouC
+	NDa2v0Oc7RH/k+4CyWctaTGDJOsO8HyubZQhT9tMZmStY8dUgjbg==
+X-Received: by 2002:a05:6830:a8f:b0:7e7:aac:4cc9 with SMTP id 46e09a7af769-7ebcff35968mr6263555a34.3.1783612370719;
+        Thu, 09 Jul 2026 08:52:50 -0700 (PDT)
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com. [209.85.210.43])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7ebcae1ddb8sm4489622a34.6.2026.07.09.08.52.50
+        for <linux-can@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Jul 2026 08:52:50 -0700 (PDT)
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-7e6128bd9b3so14000a34.1
+        for <linux-can@vger.kernel.org>; Thu, 09 Jul 2026 08:52:50 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ9CWhTgh6jngwh3BOTsQOtyS3mkoTJtxwRhpB2ywxFTGjqTQAI6aJkRQdxRYBbIQwhNOE5Csc/LnrQ=@vger.kernel.org
+X-Received: by 2002:a05:6102:f8b:b0:6c2:e290:cc69 with SMTP id
+ ada2fe7eead31-744e01021e1mr4657081137.23.1783611946911; Thu, 09 Jul 2026
+ 08:45:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20260707102418.1646159-1-claudiu.beznea+renesas@tuxon.dev> <20260707102418.1646159-2-claudiu.beznea+renesas@tuxon.dev>
+In-Reply-To: <20260707102418.1646159-2-claudiu.beznea+renesas@tuxon.dev>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 9 Jul 2026 17:45:35 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUEQVN7VqsmQ6EKWxazrFyQdY4edaHyt8pPFEaJfGgbpQ@mail.gmail.com>
+X-Gm-Features: AUfX_mz8Do1OkGKS8SDkGEbLBy8tojYuESbee1M6XmgysSPwrDRBiIuowYvmngs
+Message-ID: <CAMuHMdUEQVN7VqsmQ6EKWxazrFyQdY4edaHyt8pPFEaJfGgbpQ@mail.gmail.com>
+Subject: Re: [PATCH 1/8] clk: r9a08g045-cpg: Add clocks and resets for CAN-FD
+To: Claudiu Beznea <claudiu.beznea+renesas@tuxon.dev>
+Cc: mkl@pengutronix.de, mailhol@kernel.org, robh@kernel.org, 
+	krzk+dt@kernel.org, conor+dt@kernel.org, magnus.damm@gmail.com, 
+	mturquette@baylibre.com, sboyd@kernel.org, bmasney@redhat.com, 
+	biju.das.jz@bp.renesas.com, tu.nguyen.xg@renesas.com, 
+	fabrizio.castro.jz@renesas.com, claudiu.beznea@tuxon.dev, 
+	linux-can@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-clk@vger.kernel.org, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Thank you for your contribution! Sashiko AI review found 6 potential issue(=
-s) to consider:
+On Tue, 7 Jul 2026 at 12:24, Claudiu Beznea
+<claudiu.beznea+renesas@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> Renesas RZ/G3S SoC has a CAN-FD IP. Add clocks and resets for it.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-New issues:
-- [High] Double counting of received packets and bytes, alongside a data ra=
-ce on network statistics between HardIRQ and SoftIRQ contexts.
-- [High] Processing RX frames directly in hardirq with a strict, non-replen=
-ishable quota can leave packets stranded indefinitely in the hardware FIFO.
-- [Low] The napi_struct is no longer used but was left in struct m_can_clas=
-sdev.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v7.3.
 
-Pre-existing issues:
-- [High] The driver teardown path uses the non-blocking `hrtimer_try_to_can=
-cel()` to stop the polling/coalescing timer, leading to unclocked hardware =
-accesses and Use-After-Free vulnerabilities.
-- [High] The teardown sequence in m_can_close leaks socket buffers and crea=
-tes a guaranteed NULL pointer dereference when flushing the transmission wo=
-rkqueue.
-- [High] Uninitialized stack variable `frame_len` corrupts Byte Queue Limit=
-s (BQL) accounting.
---
+Gr{oetje,eeting}s,
 
---- Patch [1]: [PATCH can-next] can: m_can: switch to rx-offload implementa=
-tion ---
-commit 7f375f1ac288dad1360ddf2dd262a4c708abc626
-Author: Marc Kleine-Budde <mkl@pengutronix.de>
+                        Geert
 
-can: m_can: switch to rx-offload implementation
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-This patch converts the m_can driver to unconditionally use rx-offload
-for all devices, calling m_can_rx_handler() directly from the IRQ
-handler instead of using NAPI.
-
-> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-> index eb856547ae7df..8175b030257b4 100644
-> --- a/drivers/net/can/m_can/m_can.c
-> +++ b/drivers/net/can/m_can/m_can.c
-> @@ -530,26 +530,17 @@ static void m_can_clean(struct net_device *net)
-[ ... ]
->  static void m_can_receive_skb(struct m_can_classdev *cdev,
->  			      struct sk_buff *skb,
->  			      u32 timestamp)
->  {
-> -	if (cdev->is_peripheral) {
-> -		struct net_device_stats *stats =3D &cdev->net->stats;
-> -		int err;
-> +	struct net_device_stats *stats =3D &cdev->net->stats;
-> +	int err;
-> =20
-> -		err =3D can_rx_offload_queue_timestamp(&cdev->offload, skb,
-> -						     timestamp);
-> -		if (err)
-> -			stats->rx_fifo_errors++;
-> -	} else {
-> -		netif_receive_skb(skb);
-> -	}
-> +	err =3D can_rx_offload_queue_timestamp(&cdev->offload, skb,
-> +					     timestamp);
-
-[Severity: High]
-Does this change introduce a data race and double counting for network stat=
-s?
-
-When the mmio devices are switched to use rx-offload, m_can_read_fifo()
-manually increments the stats in hardirq context before calling
-m_can_receive_skb():
-
-m_can_read_fifo()
-  stats->rx_bytes +=3D cf->len;
-  stats->rx_packets++;
-  m_can_receive_skb(..., skb, ...);
-
-The SKB is then queued to the offload queue. When the rx-offload NAPI poll
-runs in softirq context, it unconditionally increments the exact same
-counters again:
-
-can_rx_offload_napi_poll()
-  stats->rx_packets++;
-  stats->rx_bytes +=3D cf->len;
-
-Does this completely inflate the RX statistics, as well as cause a concurre=
-nt
-data race between hardirq and softirq contexts updating dev->stats?
-
-Additionally, wouldn't TX echo packets queued via
-can_rx_offload_get_echo_skb_queue_timestamp() also be dequeued by the poll
-routine, erroneously counting transmitted frames as RX packets?
-
-[ ... ]
-> @@ -1065,32 +1052,6 @@ static int m_can_rx_handler(struct net_device *dev=
-, int quota, u32 irqstatus)
-[ ... ]
->  static unsigned int m_can_tx_update_stats(struct m_can_classdev *cdev,
->  					  unsigned int msg_mark, u32 timestamp)
->  {
-> @@ -1098,14 +1059,11 @@ static unsigned int m_can_tx_update_stats(struct =
-m_can_classdev *cdev,
->  	struct net_device_stats *stats =3D &dev->stats;
->  	unsigned int frame_len;
-> =20
-> -	if (cdev->is_peripheral)
-> -		stats->tx_bytes +=3D
-> -			can_rx_offload_get_echo_skb_queue_timestamp(&cdev->offload,
-> -								    msg_mark,
-> -								    timestamp,
-> -								    &frame_len);
-> -	else
-> -		stats->tx_bytes +=3D can_get_echo_skb(dev, msg_mark, &frame_len);
-> +	stats->tx_bytes +=3D
-> +		can_rx_offload_get_echo_skb_queue_timestamp(&cdev->offload,
-> +							    msg_mark,
-> +							    timestamp,
-> +							    &frame_len);
-> =20
->  	stats->tx_packets++;
-> =20
->  	return frame_len;
-
-[Severity: High]
-This is a pre-existing issue, but is it possible for an uninitialized stack
-variable to corrupt BQL accounting?
-
-In m_can_tx_update_stats(), frame_len is passed by reference to
-can_rx_offload_get_echo_skb_queue_timestamp(). If the echo SKB is missing
-or invalid, the helper function returns 0 immediately and does not initiali=
-ze
-frame_len.
-
-Will this return uninitialized stack garbage that gets passed to
-netdev_completed_queue() in m_can_finish_tx(), potentially stalling the TX
-queue by corrupting Byte Queue Limits accounting?
-
-[ ... ]
-> @@ -1265,21 +1223,10 @@ static int m_can_interrupt_handler(struct m_can_c=
-lassdev *cdev)
-[ ... ]
->  	if (ir & (IR_RF0N | IR_RF0W | IR_ERR_ALL_30X)) {
-> -		cdev->irqstatus =3D ir;
-> -		if (!cdev->is_peripheral) {
-> -			m_can_disable_all_interrupts(cdev);
-> -			napi_schedule(&cdev->napi);
-> -		} else {
-> -			ret =3D m_can_rx_handler(dev, NAPI_POLL_WEIGHT, ir);
-> -			if (ret < 0)
-> -				return ret;
-> -		}
-> +		ret =3D m_can_rx_handler(dev, NAPI_POLL_WEIGHT, ir);
-> +		if (ret < 0)
-> +			return ret;
->  	}
-
-[Severity: High]
-Could directly calling m_can_rx_handler() from the hardirq handler cause
-packets to be stranded indefinitely?
-
-The handler is now called with a strict quota of NAPI_POLL_WEIGHT. If the F=
-IFO
-contains more messages than the remaining quota (which can shrink if work_d=
-one
-is consumed by state errors), the read loop in m_can_do_rx_poll() breaks
-early.
-
-Because the IR_RF0N hardware interrupt is edge-triggered (only set when a n=
-ew
-message is written) and the NAPI automatic rescheduling is removed, will the
-remaining packets sit in the hardware FIFO indefinitely until another frame
-happens to arrive on the bus?
-
-[ ... ]
-> @@ -1846,11 +1791,10 @@ static int m_can_close(struct net_device *dev)
->  	if (cdev->is_peripheral) {
->  		destroy_workqueue(cdev->tx_wq);
->  		cdev->tx_wq =3D NULL;
-> -		can_rx_offload_disable(&cdev->offload);
-> -	} else {
-> -		napi_disable(&cdev->napi);
->  	}
-
-[Severity: High]
-This is a pre-existing issue, but can the teardown sequence in m_can_close()
-trigger a null pointer dereference?
-
-During m_can_close(), m_can_clean() iterates through the tx_ops and sets
-the skb pointers to NULL:
-
-m_can_clean()
-  cdev->tx_ops[i].skb =3D NULL;
-
-Immediately after, destroy_workqueue(cdev->tx_wq) is called, which drains t=
-he
-queue and executes pending tasks. When the flushed m_can_tx_work_queue() ta=
-sk
-runs, it passes the nullified skb pointer to the tx handler:
-
-m_can_tx_work_queue()
-  struct sk_buff *skb =3D op->skb;
-  m_can_tx_handler(cdev, skb);
-
-Will this result in a null pointer dereference since the tx handler
-unconditionally accesses skb->data? Also, is there a memory leak since
-m_can_clean() clears the pointer without freeing the SKB memory?
-
-[Severity: High]
-This is a pre-existing issue, but does the teardown path safely stop the
-polling timer?
-
-Looking at the teardown sequence in m_can_close(), the interface is shut
-down and interrupts are disabled, which relies on hrtimer_try_to_cancel() in
-m_can_disable_all_interrupts():
-
-m_can_close()
-  m_can_stop()
-    m_can_disable_all_interrupts()
-      hrtimer_try_to_cancel(&cdev->hrtimer);
-
-If the timer callback is actively running on another CPU,
-hrtimer_try_to_cancel() returns -1 without waiting for the callback to fini=
-sh.
-The teardown path then continues to free data structures, disable hardware
-clocks, and power off the PHY.
-
-Could this lead to a use-after-free and synchronous bus fault when the
-concurrently executing timer callback accesses unmapped or unclocked MMIO
-regions?
-
-Also, m_can_class_unregister() appears to lack explicit timer teardown, whi=
-ch
-might leave the timer active during module unload.
-
-[ ... ]
-> diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
-> index 4743342b2fba3..ca5833650dbfb 100644
-> --- a/drivers/net/can/m_can/m_can.h
-> +++ b/drivers/net/can/m_can/m_can.h
-> @@ -96,7 +96,6 @@ struct m_can_classdev {
->  	const struct m_can_ops *ops;
-> =20
->  	int version;
-> -	u32 irqstatus;
-> =20
->  	int pm_clock_support;
->  	int pm_wake_source;
-
-[Severity: Low]
-Is it intentional to keep the napi structure in m_can_classdev?
-
-The patch removes all manual napi handling from the driver, but it looks li=
-ke
-struct napi_struct napi; is still present in the struct.
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260709-m_can-rx-o=
-ffload-v1-1-af3efa8e4272@pengutronix.de?part=3D1
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
