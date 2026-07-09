@@ -1,45 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ABBA4DB572
-	for <linux-can@vger.kernel.org>; Thu,  9 Jul 2026 18:38:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E91913DDAE
+	for <linux-can@vger.kernel.org>; Thu,  9 Jul 2026 18:39:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783622314; cv=none; b=CGPFBpPzj53llaYTHKPp+lVZ7n7YUk6HiTNMMqvDh3MIQIq75X+K0dc36KzcwfjBfxA86TsajNSoyA1UG0735lfYtaKM2J81UaODW0Fai0Q7v8skESK8L9vqMFA6wfSIb4I8WrhY42FPMDAMj409X/TSwYkO3KTU7KCkiVxjJFE=
+	t=1783622348; cv=none; b=iRury/EME6oVpR3Cq0kfcqqoW+c1qVrojkHdbCu+mHOo8MCFnn6UH601TiMySA+6fpDf0WolmCBVy9wQ28e72XghiMwgPYYwlwFAh7XSneWbSF7mMsc86zOvbSq2YQV/IbyN8OqrJ5Uk0Tm1fYkoLwYdBThfOzkCuLdz09MeuTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783622314; c=relaxed/simple;
-	bh=VoI6QBB1ms3u096FaHhmeIA4sw4rkprCpVMpkJVxrag=;
+	s=arc-20240116; t=1783622348; c=relaxed/simple;
+	bh=CVdHvaRG3kVVBcy3ug/9NxIb8SzzIVbn/jKrCXJJUt0=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=XxHPt56EZoB+w614YmmrhVcTANsPvyHIlFJbzriAAUZUjehNdhl/BCsDJJKoO18kZgSLJ35GsiBi90nJmudYI0Q0bHyZuKKFZ6kGbyKu489Ka8qXO3wJquu5Obhf4QtGJ4AP4732bsoMt7QWM0GAFYMJU4d7x0ghp39MhIAqA6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=khAZxsUm; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=tkKdsm4E67Y77EMgixfnfC1H9DUZyyfh8DX/bBDrgjzj9DjgrwG/A0sxQ/a/aKGuULdQIX0ICFSaEW90LuSwesRDvOlg1H3vilFNEFcPSlGo8yklP4lsdmwpEnzzD3rZCxwhsLVdyJX7lebzIA85RiW8OBrLuSuagqwjAepR4NY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eG62Z3Vz; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="khAZxsUm"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E22521F000E9;
-	Thu,  9 Jul 2026 18:38:30 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eG62Z3Vz"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E99A31F000E9;
+	Thu,  9 Jul 2026 18:39:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783622311;
-	bh=7+mHsds+4ppVUIu5p3fBC7L1SRY0ulpQRBrl7GMEzAs=;
+	s=k20260515; t=1783622347;
+	bh=0SxICYg+N9O1xe6K5wwLnNNNtyyl7H0BsRdM72K7dec=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=khAZxsUm4ITyCNHyqoXjDoY4wZ9joyvSRcIOlCHJDmIB2onCP0YMu5WmF150CmRSu
-	 9DT6pQuDf1HSLSz+MGDNKHWI+xoR6AqSCrIdmm9prmqQrdph+XUiQfxPUaM7hm91bV
-	 17VDRjm7p95Whxuu847x7+VLCVcr0fiKWPA0YBV6ktDw+o1tPqxvjupt/DKQI8G5L/
-	 2a57U5LVMmRWBIBsaBgUKxggTSyZ5krR67USb4aJRnWTWm5ftzpJlKUZtnwA0hOnwW
-	 xiIwsAT/c2UNg0sF5h+y8xUe7AcNkdERsVeJyyFxZEYKWAN6G9cfT0iC6PBDatGfC1
-	 s56tKo2iREkJg==
+	b=eG62Z3VzhT/YaDvEuMEastJZ72zegiIDquJ7DcZBTkVqn/Q2gbvEcLBGCBv1FunfR
+	 YM8vdBfyvZ76/221IczcOKyNdESJvbbL9+iNY7Xfo2WNmXGPZAOTz2/8bs7y/PoLAH
+	 sD+CupXgATcfUI9T7FEwrPTkw0BMj0mviR/7gRR/fulYfg/IoMHmisKUf28I4hoYrZ
+	 xa/vF/rIXLI+Fo7GKxgDJhrBoWEm0E9VyLVDNJj3t+hhvtKe5sarZeVA3Pri7lasr2
+	 PT97e0I6IU9gqBnRO9C996ApQ3z4lk0TmLk3zgfvnCZvY9bx7cfPqSxdlnRhXml727
+	 0jd8+HXAMy7yQ==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v11 10/11] can: bcm: fix data race on
- rx_stamp/rx_ifindex in bcm_rx_handler()
+Subject: Re: [PATCH v11 09/11] can: bcm: fix stale rx/tx ops after device
+ removal
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Oliver Hartkopp" <socketcan@hartkopp.net>
-Cc: "Vincent Mailhol" <mailhol@kernel.org>, "Marc Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>
-In-Reply-To: <20260709-bcm_fixes-v11-10-067ba11bec5c@hartkopp.net>
+Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org
+In-Reply-To: <20260709-bcm_fixes-v11-9-067ba11bec5c@hartkopp.net>
 References: <20260709-bcm_fixes-v11-0-067ba11bec5c@hartkopp.net>
- <20260709-bcm_fixes-v11-10-067ba11bec5c@hartkopp.net>
+ <20260709-bcm_fixes-v11-9-067ba11bec5c@hartkopp.net>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 09 Jul 2026 18:38:30 +0000
-Message-Id: <20260709183830.E22521F000E9@smtp.kernel.org>
+Date: Thu, 09 Jul 2026 18:39:06 +0000
+Message-Id: <20260709183906.E99A31F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -50,78 +50,86 @@ Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
 
 Pre-existing issues:
-- [High] Unconditional overwrite of `op->rx_stamp` corrupts timestamp metad=
-ata for throttled or multiplexed CAN frames.
+- [High] Data race on op->rx_stamp and op->rx_ifindex in bcm_rx_handler cau=
+ses incorrect metadata to be delivered to userspace.
 --
 
---- Patch [10]: [PATCH v11 10/11] can: bcm: fix data race on rx_stamp/rx_if=
-index in bcm_rx_handler() ---
-commit 962a73c290cc743e31470d3c9ed820b166d58a79
+--- Patch [9]: [PATCH v11 09/11] can: bcm: fix stale rx/tx ops after device=
+ removal ---
+commit ef4eaedce01b041fb9a737217fc61cc4150a0e37
 Author: Oliver Hartkopp <socketcan@hartkopp.net>
 
-can: bcm: fix data race on rx_stamp/rx_ifindex in bcm_rx_handler()
+can: bcm: fix stale rx/tx ops after device removal
 
-This commit moves the update of rx_stamp and rx_ifindex under the
-bcm_rx_update_lock to prevent concurrent writers from racing each
-other, avoiding torn stores on 32-bit platforms. It also ensures
-metadata is bundled correctly with the frame content delivered to
-userspace.
+This commit fixes issues with stale rx and tx operations after a CAN device
+is removed. It ensures rx operations are re-registered if they were torn
+down by a concurrent NETDEV_UNREGISTER, and cancels the hrtimer for tx
+operations to prevent runaway timers.
 
-Link: https://lore.kernel.org/linux-can/20260707145135.5BC831F00A3A@smtp.ke=
+Link: https://lore.kernel.org/linux-can/20260708094536.DDF821F00A3A@smtp.ke=
+rnel.org/
+Link: https://lore.kernel.org/linux-can/20260708154039.347ED1F000E9@smtp.ke=
 rnel.org/
 
 > diff --git a/net/can/bcm.c b/net/can/bcm.c
-> index fbf1cbb7c99fe..10a883b50fc63 100644
+> index 5660165cdf0eb..fbf1cbb7c99fe 100644
 > --- a/net/can/bcm.c
 > +++ b/net/can/bcm.c
 
 [ ... ]
 
-> @@ -815,6 +810,14 @@ static void bcm_rx_handler(struct sk_buff *skb, void=
- *data)
->  			traffic_flags |=3D RX_OWN;
->  	}
+> @@ -1714,11 +1735,19 @@ static void bcm_notify(struct bcm_sock *bo, unsig=
+ned long msg,
+>  	case NETDEV_UNREGISTER:
+>  		lock_sock(sk);
 > =20
-> +	/* save rx timestamp and originator for recvfrom() under lock.
-> +	 * For an op subscribed on all interfaces (ifindex =3D=3D 0)
-> +	 * bcm_rx_handler() can run concurrently on different CPUs so
-> +	 * the CAN content and the meta data must be bundled correctly.
-> +	 */
-> +	op->rx_stamp =3D skb->tstamp;
-> +	op->rx_ifindex =3D skb->dev->ifindex;
+> -		/* remove device specific receive entries */
+> +		/* rx_ops: remove device specific receive entries */
+>  		list_for_each_entry(op, &bo->rx_ops, list)
+>  			if (op->rx_reg_dev =3D=3D dev)
+>  				bcm_rx_unreg(dev, op);
 
 [Severity: High]
-This is a pre-existing issue, but does this unconditional update of
-op->rx_stamp corrupt the timestamp metadata for throttled or multiplexed
-CAN frames?
+This is a pre-existing issue, but is there a data race on op->rx_stamp and
+op->rx_ifindex in bcm_rx_handler() that causes incorrect metadata to be
+delivered to userspace?
 
-The commit message states that bcm_send_to_user() must report the timestamp
-and ifindex of the very same frame whose content it is delivering. However,=
- if
-a BCM RX op is configured with a throttle timer, a CAN frame might match a
-mask and get queued by the timer. If a second CAN frame arrives on the same
-interface, it will unconditionally overwrite the shared op->rx_stamp here
-before checking if the frame matches any multiplex index or if it will be
-throttled.
+If a CAN frame matching the same ANYDEV filter is received concurrently on
+different interfaces, bcm_rx_handler() can execute simultaneously on
+different CPUs. Could both CPUs write to the shared op->rx_stamp and
+op->rx_ifindex without holding a lock?
 
-When the throttle timer later flushes the first frame:
+net/can/bcm.c:bcm_rx_handler() {
+	/* save rx timestamp */
+	op->rx_stamp =3D skb->tstamp;
+	/* save originator for recvfrom() */
+	op->rx_ifindex =3D skb->dev->ifindex;
 
-net/can/bcm.c:bcm_rx_thr_flush() {
-    ...
-    for (i =3D 1; i < op->nframes; i++)
-        updated +=3D bcm_rx_do_flush(op, i);
-    ...
+	/* op->flags/op->frames may be updated concurrently by bcm_rx_setup() */
+	spin_lock_bh(&op->bcm_rx_update_lock);
 }
 
-will all notifications use the single, overwritten op->rx_stamp from the
-subsequent frame, rather than the timestamp of the frame actually being
-delivered?
+When CPU 1 subsequently acquires op->bcm_rx_update_lock and calls
+bcm_send_to_user(), will it read the values overwritten by CPU 2?
 
-> +
->  	if (op->flags & RX_FILTER_ID) {
->  		/* the easiest case */
->  		bcm_rx_update_and_send(op, op->last_frames, rxframe,
+net/can/bcm.c:bcm_send_to_user() {
+	if (has_timestamp) {
+		/* restore rx timestamp */
+		skb->tstamp =3D op->rx_stamp;
+	}
+
+	/* ... */
+
+	addr =3D (struct sockaddr_can *)skb->cb;
+	memset(addr, 0, sizeof(*addr));
+	addr->can_family  =3D AF_CAN;
+	addr->can_ifindex =3D op->rx_ifindex;
+}
+
+For ANYDEV sockets, the ifindex returned in sockaddr_can is the sole source
+of truth for identifying the origin bus, and delivering the wrong ifindex
+can cause userspace gateway applications to misroute CAN frames.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260709-bcm_fixes-=
-v11-0-067ba11bec5c@hartkopp.net?part=3D10
+v11-0-067ba11bec5c@hartkopp.net?part=3D9
