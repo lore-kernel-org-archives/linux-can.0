@@ -1,226 +1,109 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F2613EBF3D
-	for <linux-can@vger.kernel.org>; Thu,  9 Jul 2026 08:16:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43ECC3EFFDB
+	for <linux-can@vger.kernel.org>; Thu,  9 Jul 2026 08:31:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783584969; cv=none; b=Y+789J3P00yUbfkxcEgoSeeATfczJPkMu0KvyOKSidyGlauv+RDewjwiMcUraM6AqSZtN3pkun8YcuEuxfMKYQpAJtn9zJAkdyS8U+LJ3Ef/3nRHTc20W1UKEonPjRV5+zIJWID6/0VCdBkUKluOmD5LCHp8GzsJ0klK5wIgFN4=
+	t=1783585868; cv=none; b=s71vBHuvbXGIbmoCu/4SeQMNliWv+mllWxti5lNOM367PwZDXXNvqC9EYF7lRj3/G9FXnsSWM2mFcV9t5dG6p67XXLKfpczSOtBMLeuGIsGqVfi3nGCPtrLxahtEh1cFNqCxg5RagfR4pMx+a+0tKBxOwRP+tmUcLAbTlwkgTR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783584969; c=relaxed/simple;
-	bh=bBBwXp/4vtiWgfwbM/a7idnNo/gHXTtJ5jKCqfFLB0Y=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=e+NkD4IdKRYyDq0VPcq9KEw8r0EqpyvIHPXJGzhxbpFHuXEoUiX+FkbfpswwzhPBhnwmY4tlmZbMU+w+TsMCvaj6xqXc0sXWxcAJZbrQQxE4R2wXKwv0LCoz8huRMJpJ+uL87VCuhjKCn/ylLFYOIAbrtWG0c1/GPqgq/zQA2lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jFYZT09g; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1783585868; c=relaxed/simple;
+	bh=2wNAEJNdIIVtHsTEdmTXTc43MQad3CQmgeEdZU+JjYQ=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=JjQ404afLUUCqkFJ1U4keK8UVXxYLZooux2W0oY/uagbQ16lmxElwzw71SdAtmALdwSCoXLAwM1MUtVT6Id9aH1wpo5FSXrmXX9K43QfFViSgeC38/L95yHWwicck3AYbBAHb3u0YvykOQAXSlfPUtV3jRHGBIhFjCJ0yK/cPgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZEZ+9/Ir; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jFYZT09g"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1AEC7C2BCFD;
-	Thu,  9 Jul 2026 08:16:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1783584969;
-	bh=bBBwXp/4vtiWgfwbM/a7idnNo/gHXTtJ5jKCqfFLB0Y=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=jFYZT09gWxStgFVhj5RsB74JT67HqTPAanZb5KNGoYLzLL/JWaHHcTckVvCE4dBCh
-	 MDadHJHjfbSHcKKiMratth8Ag0avXT6DdQs5zI3ahyqWWcskoInUlQs6Zafcc791Fg
-	 9ANoJu+5HyfU3i2wbQPS4vUTJEN047IQvzOytXBwWH2ZftzVzPhWEGnKM90aX88sl4
-	 RCPcpIOSb+IyxbRX5ptsYeFG6zJQg8vEIy/8NTZzgvaoWPYu5DmCvKLqfFWgT27BvI
-	 JiR9UMu6+/kOdcoMvO4tu2LKkJe4q60ClnyvWqIcHU0MEQHZAlYnA/DHYnF0SIigpZ
-	 eEH/SNKZKjBEg==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BCF0C43458;
-	Thu,  9 Jul 2026 08:16:09 +0000 (UTC)
-From: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
-Date: Thu, 09 Jul 2026 10:16:11 +0200
-Subject: [PATCH v9 09/10] can: bcm: fix stale rx/tx ops after device
- removal
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZEZ+9/Ir"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E0901F000E9;
+	Thu,  9 Jul 2026 08:31:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783585866;
+	bh=90R0JYPLmPLGiXqQkvx+2bnj7Y/7Y6ARBzsEU1S7+WE=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=ZEZ+9/IrK2EVrBd+BjY6oVCxnCYhJTclbCRywFCdDn5lAkhXNh4wczojGUCB4EoEr
+	 /uUaGjEpr6cRsO8o67lRJJZ/dupzZkms86nMaHeUSabZp21vdNrwGReADzooDdI3ZT
+	 kSRjR/ei9SH0skVP/6IMOEQ+7bmbA988ehPBpR3SSmpiYi0RyjAJhk3HCf7/zc5Fy4
+	 dRE8XFs3Aaz2fzFpmRVqv8w0u5+dDP+mlSlhGpyZTtnll1ItLsOTSs2NGbJ00ZYNo/
+	 /fVko1l5e9yeqPMSk8tkzkKF8gXZqM5+X0W+PazfCrQMkA2IXGbJj/w5fBPLEzw5yr
+	 u+J9pfWtvo0nw==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v9 03/10] can: bcm: add locking when updating filter and
+ timer values
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Oliver Hartkopp" <socketcan@hartkopp.net>
+Cc: "Vincent Mailhol" <mailhol@kernel.org>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>
+In-Reply-To: <20260709-bcm_fixes-v9-3-6eebb78ccfb2@hartkopp.net>
+References: <20260709-bcm_fixes-v9-0-6eebb78ccfb2@hartkopp.net>
+ <20260709-bcm_fixes-v9-3-6eebb78ccfb2@hartkopp.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 09 Jul 2026 08:31:06 +0000
+Message-Id: <20260709083106.7E0901F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260709-bcm_fixes-v9-9-6eebb78ccfb2@hartkopp.net>
-References: <20260709-bcm_fixes-v9-0-6eebb78ccfb2@hartkopp.net>
-In-Reply-To: <20260709-bcm_fixes-v9-0-6eebb78ccfb2@hartkopp.net>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
- Marc Kleine-Budde <mkl@pengutronix.de>, sashiko-bot@kernel.org
-X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1783584967; l=6122;
- i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=sSqKIV/7zoX+UfmBaAXq2cIMxzVJQFP2/d2TIA2AwZw=;
- b=9UDBql6ACLSjR1YqIYUAQu0GXp+RvLl3XRBDm+PFwINEsKFUK0vderNKuQk3rpWV5wPhw6jr8
- gEpHTADBsSaArbAw7RSEavWDMNue8qIlndDRVY6HzaijtjhUvAB/hP0
-X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
- pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
-X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
- auth_id=620
-X-Original-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Reply-To: socketcan@hartkopp.net
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+s) to consider:
 
-RX: an RX_SETUP update(!) for an existing op skipped can_rx_register()
-unconditionally, even when a concurrent NETDEV_UNREGISTER had already
-torn down its registration (op->rx_reg_dev == NULL). This silently
-did not re-enable frame delivery for that updated filter. bcm_rx_setup()
-now re-registers in that case, while leaving rx_ops with ifindex = 0
-(all CAN devices) which never carry a tracked rx_reg_dev registered as-is.
+Pre-existing issues:
+- [Medium] Lockless updates of RX metadata (`rx_stamp`, `rx_ifindex`, `fram=
+es_abs`) lead to torn reads, lost increments, and corrupted timestamps.
+--
 
-TX: bcm_notify() only handled bo->rx_ops on NETDEV_UNREGISTER, leaving
-tx_ops with an active cyclic transmission re-arming its hrtimer
-indefinitely to execute bcm_tx_timeout_handler(). Cancelling the hrtimer
-prevents the runaway timer and any injection into a later reused ifindex,
-since nothing else calls bcm_can_tx() for the op until an explicit
-TX_SETUP update re-arms it.
+--- Patch [3]: [PATCH v9 03/10] can: bcm: add locking when updating filter =
+and timer values ---
+commit 10b4ca432b89b6bdfb7aab7948a13f81a6bc41ed
+Author: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Unlike bcm_rx_unreg(), which clears the tracked rx_reg_dev for rx_ops,
-the ifindex is intentionally left unchanged for tx_ops. bcm_tx_setup()
-always rejects ifindex 0, so clearing it would strand the op: neither a
-later TX_SETUP (bcm_find_op()) nor TX_DELETE (bcm_delete_tx_op()) could
-ever find it again, since both require an exact ifindex match.
+can: bcm: add locking when updating filter and timer values
 
-Reported-by: sashiko-bot@kernel.org
-Link: https://lore.kernel.org/linux-can/20260708094536.DDF821F00A3A@smtp.kernel.org/
-Link: https://lore.kernel.org/linux-can/20260708154039.347ED1F000E9@smtp.kernel.org/
-Fixes: ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol")
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- net/can/bcm.c | 47 ++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 38 insertions(+), 9 deletions(-)
+This commit introduces bcm_rx_update_lock to protect the filter and timer
+configurations of a bcm_op structure from concurrent accesses. It ensures
+that updates via bcm_rx_setup and usages in Rx and timeout handlers do not
+race.
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 61725c20f087..19e10b0d729b 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -1263,10 +1263,11 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 			int ifindex, struct sock *sk)
- {
- 	struct bcm_sock *bo = bcm_sk(sk);
- 	struct bcm_op *op;
- 	int do_rx_register;
-+	int new_op = 0;
- 	int err = 0;
- 
- 	if ((msg_head->flags & RX_FILTER_ID) || (!(msg_head->nframes))) {
- 		/* be robust against wrong usage ... */
- 		msg_head->flags |= RX_FILTER_ID;
-@@ -1339,12 +1340,19 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 		spin_unlock_bh(&op->bcm_rx_update_lock);
- 
- 		/* free temporary frames / kfree(NULL) is safe */
- 		kfree(new_frames);
- 
--		/* Only an update -> do not call can_rx_register() */
--		do_rx_register = 0;
-+		/* Don't register a new CAN filter for the rx_op update unless
-+		 * a concurrent NETDEV_UNREGISTER notifier already tore down
-+		 * the previous registration. In this case the receiver needs
-+		 * to be re-registered here so that this update doesn't
-+		 * silently stop delivering frames for the given ifindex.
-+		 * Ops with ifindex = 0 (all CAN interfaces) never carry a
-+		 * tracked rx_reg_dev and stay registered as-is.
-+		 */
-+		do_rx_register = (ifindex && !op->rx_reg_dev) ? 1 : 0;
- 
- 	} else {
- 		/* insert new BCM operation for the given can_id */
- 		op = kzalloc(OPSIZ, GFP_KERNEL);
- 		if (!op)
-@@ -1407,10 +1415,11 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 		hrtimer_setup(&op->thrtimer, bcm_rx_thr_handler, CLOCK_MONOTONIC,
- 			      HRTIMER_MODE_REL_SOFT);
- 
- 		/* call can_rx_register() */
- 		do_rx_register = 1;
-+		new_op = 1;
- 
- 	} /* if ((op = bcm_find_op(&bo->rx_ops, msg_head->can_id, ifindex))) */
- 
- 	/* check flags */
- 
-@@ -1448,11 +1457,14 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 		if ((op->flags & STARTTIMER) && op->kt_ival1)
- 			hrtimer_start(&op->timer, op->kt_ival1,
- 				      HRTIMER_MODE_REL_SOFT);
- 	}
- 
--	/* now we can register for can_ids, if we added a new bcm_op */
-+	/* now we can register for can_ids, if we added a new bcm_op
-+	 * or need to re-register after a NETDEV_UNREGISTER tore down
-+	 * the previous registration of an existing op
-+	 */
- 	if (do_rx_register) {
- 		if (ifindex) {
- 			struct net_device *dev;
- 
- 			dev = dev_get_by_index(sock_net(sk), ifindex);
-@@ -1480,22 +1492,31 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 				 * silently succeed without registering
- 				 */
- 				err = -ENODEV;
- 			}
- 
--		} else
-+		} else {
- 			err = can_rx_register(sock_net(sk), NULL, op->can_id,
- 					      REGMASK(op->can_id),
- 					      bcm_rx_handler, op, "bcm", sk);
-+		}
-+
- 		if (err) {
--			/* this bcm rx op is broken -> remove it */
--			bcm_remove_op(op);
-+			/* newly created bcm rx op is broken -> remove it */
-+			if (new_op)
-+				bcm_remove_op(op);
-+
-+			/* an existing op just stays unregistered until the
-+			 * next successful RX_SETUP - it is already part of
-+			 * bo->rx_ops and must not be freed here
-+			 */
- 			return err;
- 		}
- 
--		/* add this bcm_op to the list of the rx_ops */
--		list_add_rcu(&op->list, &bo->rx_ops);
-+		/* add a new bcm_op to the list of the rx_ops */
-+		if (new_op)
-+			list_add_rcu(&op->list, &bo->rx_ops);
- 	}
- 
- 	return msg_head->nframes * op->cfsiz + MHSIZ;
- 
- free_op:
-@@ -1711,15 +1732,23 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
- 	switch (msg) {
- 
- 	case NETDEV_UNREGISTER:
- 		lock_sock(sk);
- 
--		/* remove device specific receive entries */
-+		/* rx_ops: remove device specific receive entries */
- 		list_for_each_entry(op, &bo->rx_ops, list)
- 			if (op->rx_reg_dev == dev)
- 				bcm_rx_unreg(dev, op);
- 
-+		/* tx_ops: stop device specific cyclic transmissions on the
-+		 * vanishing ifindex. Cancelling the timer is enough to stop
-+		 * cyclic bcm_can_tx() calls as there is no re-arming.
-+		 */
-+		list_for_each_entry(op, &bo->tx_ops, list)
-+			if (op->ifindex == dev->ifindex)
-+				hrtimer_cancel(&op->timer);
-+
- 		/* remove device reference, if this is our bound device */
- 		if (bo->bound && bo->ifindex == dev->ifindex) {
- #if IS_ENABLED(CONFIG_PROC_FS)
- 			if (sock_net(sk)->can.bcmproc_dir && bo->bcm_proc_read) {
- 				remove_proc_entry(bo->procname, sock_net(sk)->can.bcmproc_dir);
+Link: https://lore.kernel.org/linux-can/6975d5cf.a00a0220.33ccc7.0022.GAE@g=
+oogle.com/
 
--- 
-2.53.0
+> diff --git a/net/can/bcm.c b/net/can/bcm.c
+> index b612135b017d1..af4bb4182bc29 100644
+> --- a/net/can/bcm.c
+> +++ b/net/can/bcm.c
 
+[ ... ]
 
+> @@ -729,9 +751,18 @@ static void bcm_rx_handler(struct sk_buff *skb, void=
+ *data)
+>  	/* update statistics */
+>  	op->frames_abs++;
+> =20
+> -	if (op->flags & RX_RTR_FRAME) {
+> +	/* snapshot the flag under lock: op->flags/op->frames may be updated
+> +	 * concurrently by bcm_rx_setup().
+> +	 */
+> +	spin_lock_bh(&op->bcm_rx_update_lock);
+
+[Severity: Medium]
+This is a pre-existing issue, but should the update to op->frames_abs be
+protected by the new bcm_rx_update_lock?
+
+If a bcm_op is configured to listen on all interfaces (ifindex =3D=3D 0) and
+receives frames concurrently on multiple CAN interfaces, bcm_rx_handler()
+can execute simultaneously on different CPUs.
+
+Because op->frames_abs is updated outside the lock, concurrent writes can
+occur, potentially leading to lost statistical increments. Additionally, on
+32-bit systems, concurrent writes to 64-bit metadata fields like
+op->rx_stamp could lead to torn reads when userspace retrieves them.
+
+Could these metadata fields be moved inside the lock to prevent data
+races?
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260709-bcm_fixes-=
+v9-0-6eebb78ccfb2@hartkopp.net?part=3D3
