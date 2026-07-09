@@ -1,167 +1,179 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8873B4DB54F;
-	Thu,  9 Jul 2026 18:24:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D39C2DA75C;
+	Thu,  9 Jul 2026 18:35:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783621454; cv=none; b=dzrSdkuHz/wSZzCU3ve6eK+U+bkZV/CkrZuBjfVHun7l0/7QGBuRAqzWHh48FlzozRPLFVLvwBNqAfn4RLW5TMhzk58tBK40xXQfYCKsB5jd4Cty/MkajJKQQv6Z+7qEwhz9yCHnlZ2mXjOitntSU7tjGIG5JD4OFtBx1WFcvRM=
+	t=1783622130; cv=none; b=rMTmi9XIaWzI2nMDis0cn9LSwelIdV36O22fk6C6QKEBOq7or0bFstr8YLuwZN/vGUWWFEaBJGfrzRAjPZhoxPX9mvSXuWZa76qG4Xsu+G68qIsriXCU9AJfi51kiH9jVt0m0FzNjFt/UNemiF61Ls5ecnLi6YIOvcPzvPlh9yw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783621454; c=relaxed/simple;
-	bh=FFrCCJIMXixu6s/pgno5wc6JZRQ7VmLYX+OtFZr6yBY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KC8JA+kbrCj/cCS/b5xPemTSciS7DYua1+t8G9NPqOhs+qCoJEqnoobDOiQE7GsrQ/6IryatuI2U3Eq6B0vjb9ZH4rzOPKGLGYeTgU/+7ANHE+xGg6rOFxmaV+R5h1lFLIHUwOb9G3NDjya28fmb8cAFoKkSpvYPBT57XLwu6n4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 921241F00A3A;
-	Thu,  9 Jul 2026 18:24:09 +0000 (UTC)
-From: Claudiu Beznea <claudiu.beznea+renesas@tuxon.dev>
-To: mkl@pengutronix.de,
-	mailhol@kernel.org,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	geert+renesas@glider.be,
-	magnus.damm@gmail.com,
-	mturquette@baylibre.com,
-	sboyd@kernel.org,
-	bmasney@redhat.com,
-	biju.das.jz@bp.renesas.com,
-	claudiu.beznea.uj@bp.renesas.com,
-	fabrizio.castro.jz@renesas.com
-Cc: claudiu.beznea@tuxon.dev,
-	linux-can@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-clk@vger.kernel.org
-Subject: [PATCH v2 8/8] arm64: dts: renesas: rzg3s-smarc: Enable CAN-FD
-Date: Thu,  9 Jul 2026 21:23:32 +0300
-Message-ID: <20260709182332.876408-9-claudiu.beznea+renesas@tuxon.dev>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260709182332.876408-1-claudiu.beznea+renesas@tuxon.dev>
+	s=arc-20240116; t=1783622130; c=relaxed/simple;
+	bh=bGfG1R9tGv1X9oJXk+3B01J3EtPcQKdVt5vrlOs3Mzg=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=HQBw+llZ7bXZbzZTWKDEgY8UZRNgDdhTGiCZizQc1frZVZJmdrO+vRnbYIcH4Ow//uNtjYMcDD+a2fnmbkIqWp+5R9SU1yGRClP6LGyARN6by0aJOxqWlIPoDGrCVHiZ2R64zCpL7O7W89MNeTJM2bgk+EcwDiqvh3C0ERAOixc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JlyQdMR9; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JlyQdMR9"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACCB81F000E9;
+	Thu,  9 Jul 2026 18:35:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783622129;
+	bh=muZKBxbTDNcwDwKPshS+loxZreKpCDhK1Bft7STGHqg=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=JlyQdMR9Dg10Ny40XsRF3Ut3qnA55AXuVCKWzSySwJ9T+yhPWjbHPGxrtNedG6x6a
+	 GBRDlZY/oCCpR8ID4OHumxNYbEHhnx8Mq6S6xnqQHPYYpVNz53PkoYX0IguRRVohPQ
+	 PK8djsefnEZbNTCBepfGCv4zHv4cm1MXo1kTlpyVQ63dAPVdDVUdQTzK3DPzRMs15c
+	 EU1OfcsmjR8Mtpz52eyh4KUucM/sBfDRkYTV/YqO5j7FrE0x7cGbUo2txF2OXS3cEJ
+	 zJhq0QjU8XL8L59GHFpuE98D34+clDStbW40eIagR23tVaZe9D6E9UvMxzoBu6dR8e
+	 ayZmFpmULST/Q==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v2 4/8] can: rcar_canfd: Allow the CAN FD clock to be
+ sourced from fck
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Claudiu Beznea" <claudiu.beznea+renesas@tuxon.dev>
+Cc: linux-can@vger.kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>, wsa+renesas@sang-engineering.com, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>, "Marc Kleine-Budde" <mkl@pengutronix.de>, conor+dt@kernel.org, devicetree@vger.kernel.org, robh@kernel.org, "Vincent
+ Mailhol" <mailhol@kernel.org>
+In-Reply-To: <20260709182332.876408-5-claudiu.beznea+renesas@tuxon.dev>
 References: <20260709182332.876408-1-claudiu.beznea+renesas@tuxon.dev>
+ <20260709182332.876408-5-claudiu.beznea+renesas@tuxon.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 09 Jul 2026 18:35:28 +0000
+Message-Id: <20260709183528.ACCB81F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Thank you for your contribution! Sashiko AI review found 2 potential issue(=
+s) to consider:
 
-The two CAN FD channels available on the Renesas RZ/G3S SoC are routed
-through the Renesas SMARC Carrier II board when used with the Renesas
-RZ/G3S SMARC Module.
+New issues:
+- [High] Unhandled ERR_PTR dereference leading to kernel panic in clock API.
 
-The CAN transceiver on the Carrier II board has its standby pins connected
-to GPIOs that are selected through the SW_GPIO_CAN_PMOD switches. By
-default, these switches route the GPIOs to the PMOD interfaces.
+Pre-existing issues:
+- [High] Use-After-Free and Double Free on probe error path.
+--
 
-Enable the CAN FD controller and its two available channels.
+--- Patch [4]: [PATCH v2 4/8] can: rcar_canfd: Allow the CAN FD clock to be=
+ sourced from fck ---
+commit 4210af3a91e163ec149ddcdedbbe130decc7d427
+Author: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
----
+can: rcar_canfd: Allow the CAN FD clock to be sourced from fck
 
-Changes in v2:
-- collected tags
+Adjust the existing canfd clock handling code to support the RZ/G3S CAN.
+When fck is used, it is divided internally by the CAN FD controller.
 
- .../boot/dts/renesas/rzg3s-smarc-switches.h   | 12 +++++
- arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi  | 46 +++++++++++++++++++
- 2 files changed, 58 insertions(+)
+Link: https://lore.kernel.org/all/1d9719e3-10ff-4cd8-b729-55fea93c37ce@wana=
+doo.fr
 
-diff --git a/arch/arm64/boot/dts/renesas/rzg3s-smarc-switches.h b/arch/arm64/boot/dts/renesas/rzg3s-smarc-switches.h
-index bbf908a5322c..198874ad9a65 100644
---- a/arch/arm64/boot/dts/renesas/rzg3s-smarc-switches.h
-+++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc-switches.h
-@@ -37,4 +37,16 @@
-  */
- #define SW_OPT_MUX4	SW_ON
- 
-+/*
-+ * SW_GPIO_CAN_PMOD[x] switches' states:
-+ * @SW_GPIO_CAN_PMOD1:
-+ *	SW_OFF - GPIO8 connected to CAN0_STB (position 1-2)
-+ *	SW_ON  - GPIO8 connected to PMOD1 (position 2-3)
-+ * @SW_GPIO_CAN_PMOD2:
-+ *	SW_OFF - GPIO9 connected to CAN1_STB (position 4-5)
-+ *	SW_ON  - GPIO9 connected to PMOD1 (position 5-6)
-+ */
-+#define SW_GPIO_CAN_PMOD1	SW_ON
-+#define SW_GPIO_CAN_PMOD2	SW_ON
-+
- #endif /* __RZG3S_SMARC_SWITCHES_H__ */
-diff --git a/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi b/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
-index 70af605168b0..2be684f55914 100644
---- a/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
-+++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
-@@ -68,6 +68,24 @@ codec_dai: simple-audio-card,codec {
- 		};
- 	};
- 
-+	can_transceiver0: can-phy0 {
-+		compatible = "ti,tcan1042";
-+		#phy-cells = <0>;
-+		max-bitrate = <8000000>;
-+#if SW_GPIO_CAN_PMOD1 == SW_OFF
-+		standby-gpios = <&pinctrl RZG2L_GPIO(13, 0) GPIO_ACTIVE_HIGH>;
-+#endif
-+	};
-+
-+	can_transceiver1: can-phy1 {
-+		compatible = "ti,tcan1042";
-+		#phy-cells = <0>;
-+		max-bitrate = <8000000>;
-+#if SW_GPIO_CAN_PMOD2 == SW_OFF
-+		standby-gpios = <&pinctrl RZG2L_GPIO(13, 1) GPIO_ACTIVE_HIGH>;
-+#endif
-+	};
-+
- 	vcc_sdhi1: regulator-vcc-sdhi1 {
- 		compatible = "regulator-fixed";
- 		regulator-name = "SDHI1 Vcc";
-@@ -92,6 +110,22 @@ &audio_clk2 {
- 	clock-frequency = <12288000>;
- };
- 
-+&canfd {
-+	pinctrl-0 = <&canfd_pins>;
-+	pinctrl-names = "default";
-+	status = "okay";
-+
-+	channel0 {
-+		phys = <&can_transceiver0>;
-+		status = "okay";
-+	};
-+
-+	channel1 {
-+		phys = <&can_transceiver1>;
-+		status = "okay";
-+	};
-+};
-+
- &ehci0 {
- 	dr_mode = "otg";
- 	status = "okay";
-@@ -171,6 +205,18 @@ audio_clock_pins: audio-clock {
- 		input-enable;
- 	};
- 
-+	canfd_pins: canfd {
-+		can0_pins: can0 {
-+			pinmux = <RZG2L_PORT_PINMUX(6, 1, 3)>, /* CAN0_TX */
-+				 <RZG2L_PORT_PINMUX(6, 2, 3)>; /* CAN0_RX */
-+		};
-+
-+		can1_pins: can1 {
-+			pinmux = <RZG2L_PORT_PINMUX(17, 0, 3)>, /* CAN1_TX */
-+				 <RZG2L_PORT_PINMUX(17, 1, 3)>; /* CAN1_RX */
-+		};
-+	};
-+
- 	key-1-gpio-hog {
- 		gpio-hog;
- 		gpios = <RZG2L_GPIO(18, 0) GPIO_ACTIVE_LOW>;
--- 
-2.43.0
+> diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rca=
+r_canfd.c
+> index b40ae5998c1da..0283620ebcf8d 100644
+> --- a/drivers/net/can/rcar/rcar_canfd.c
+> +++ b/drivers/net/can/rcar/rcar_canfd.c
+[ ... ]
+> @@ -2190,13 +2196,19 @@ static int rcar_canfd_probe(struct platform_devic=
+e *pdev)
+>  	 */
+>  	gpriv->can_clk =3D devm_clk_get(dev, "can_clk");
+>  	if (IS_ERR(gpriv->can_clk) || (clk_get_rate(gpriv->can_clk) =3D=3D 0)) {
+> -		gpriv->can_clk =3D devm_clk_get(dev, "canfd");
+> -		if (IS_ERR(gpriv->can_clk))
+> -			return dev_err_probe(dev, PTR_ERR(gpriv->can_clk),
+> -					     "cannot get canfd clock\n");
+> +		if (info->fcan_pclk) {
+> +			fcan_freq =3D clk_get_rate(gpriv->clkp);
+> +		} else {
 
+[Severity: High]
+If info->fcan_pclk is true and can_clk is not present, gpriv->can_clk
+retains an ERR_PTR value here.
+
+When the interface is brought up later, rcar_canfd_open() calls
+clk_prepare_enable(gpriv->can_clk):
+
+drivers/net/can/rcar/rcar_canfd.c:rcar_canfd_open() {
+    ...
+	/* Peripheral clock is already enabled in probe */
+	err =3D clk_prepare_enable(gpriv->can_clk);
+	if (err) {
+    ...
+}
+
+Because clk_prepare_enable() checks for NULL but not for IS_ERR(), will
+this dereference the error pointer and cause a kernel panic? Should
+gpriv->can_clk be explicitly set to NULL when using the fcan_pclk fallback?
+
+> +			gpriv->can_clk =3D devm_clk_get(dev, "canfd");
+> +			if (IS_ERR(gpriv->can_clk))
+> +				return dev_err_probe(dev, PTR_ERR(gpriv->can_clk),
+> +						     "cannot get canfd clock\n");
+> +
+> +			fcan_freq =3D clk_get_rate(gpriv->can_clk);
+> +		}
+> =20
+>  		/* CANFD clock may be further divided within the IP */
+> -		fcan_freq =3D clk_get_rate(gpriv->can_clk) / info->postdiv;
+> +		fcan_freq /=3D info->postdiv;
+>  	} else {
+>  		fcan_freq =3D clk_get_rate(gpriv->can_clk);
+>  		gpriv->extclk =3D gpriv->info->external_clk;
+
+[Severity: High]
+This is a pre-existing issue, but there is a use-after-free and double
+free on the probe error path.
+
+In rcar_canfd_channel_probe():
+
+drivers/net/can/rcar/rcar_canfd.c:rcar_canfd_channel_probe() {
+    ...
+	gpriv->ch[priv->channel] =3D priv;
+	err =3D register_candev(ndev);
+	if (err) {
+		dev_err(dev, "register_candev() failed: %pe\n", ERR_PTR(err));
+		goto fail_candev;
+	}
+    ...
+fail_candev:
+	netif_napi_del(&priv->napi);
+fail:
+	free_candev(ndev);
+	return err;
+}
+
+If register_candev() fails, ndev (which contains priv) is freed via
+free_candev(), but the global pointer gpriv->ch[priv->channel] is not
+cleared.
+
+Then in the parent rcar_canfd_probe(), the error handler cleans up:
+
+drivers/net/can/rcar/rcar_canfd.c:rcar_canfd_probe() {
+    ...
+fail_channel:
+	for_each_set_bit(ch, &gpriv->channels_mask, info->max_channels)
+		rcar_canfd_channel_remove(gpriv, ch);
+    ...
+}
+
+And rcar_canfd_channel_remove() bypasses the NULL check:
+
+drivers/net/can/rcar/rcar_canfd.c:rcar_canfd_channel_remove() {
+	struct rcar_canfd_channel *priv =3D gpriv->ch[ch];
+
+	if (priv) {
+		unregister_candev(priv->ndev);
+		netif_napi_del(&priv->napi);
+		free_candev(priv->ndev);
+	}
+}
+
+Will this cause unregister_candev() to be called on an already freed device,
+followed by a second free_candev()?
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260709182332.8764=
+08-1-claudiu.beznea+renesas@tuxon.dev?part=3D4
