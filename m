@@ -1,37 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 027B9233944;
-	Thu,  9 Jul 2026 08:16:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02A7C3D3326
+	for <linux-can@vger.kernel.org>; Thu,  9 Jul 2026 08:16:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783584969; cv=none; b=GBToN2g+Rut+qI6ktA+0ZK9rdtweiysfaAqOLjrc7yE3B3A/pRIAFkHarOkDP5MhsoJmTl9bM0U7wk8D26Pbh0p1J2Ia5TLd35kufRg/lwN1jZS609qw7SYi4az7XSvElJn9YGMYk3xYutQGmXttt2XCySh4OaUOBsmON01y67A=
+	t=1783584969; cv=none; b=KiGTOxFOig5Mue+B7a/r4XUb7EqRv0znnKfjAESUlIseyTZRG9A80kawOd0cHXq+OrEebIG5xWBbnXKDU7IfwiWgg3QIbeS0/bBzUyuEZStlGO5efsz3qAat2dMzZpmM7uYipRYNWSKxlqVMrki15DvH5IKlEARuumsenKKm8P8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1783584969; c=relaxed/simple;
-	bh=tBUThDu5CaTPWaHWJiu5cC0qeSJ7u/IUCg6a1W45sIU=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=iOtQbhfSW8V690fjpM77GK91SiQAwWbmxQRbXkmOfi9u5+FBvsgEsEm35zc5A+yNQSReBxfUF+Brt8vlTwqCQnrbHN/8N/bojmPkfeTscRDJ0lqmXmVhqXnoFl69VEy7nv5zLwb7LVZFSiqDojgU8pDnKzDP7ZiUNjhVkiZRuvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P5YguEjb; arc=none smtp.client-ip=10.30.226.201
+	bh=v6YnQG8nUSoIpLEYRW6LIrzMthBSQ3xv7yoTh6/yXmk=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=L98NawwT9tUcvGsVZlREEWebuJ1OK+xSOvs+iPbZIPQmnPYrIEyFCnjREfdO1atYTFVJji5viTftU3etV0iB0p3QVUeipv/aQPW1lVfokC+z0CIlr25FydsvHCs1leeM6bJtzZ5kwIZxUsidY6bU/Gy6ezxbSiyES4+YyO4npuM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cLUCmULM; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P5YguEjb"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id AB22DC2BCB7;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cLUCmULM"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CEEF1C2BCF5;
 	Thu,  9 Jul 2026 08:16:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1783584968;
-	bh=tBUThDu5CaTPWaHWJiu5cC0qeSJ7u/IUCg6a1W45sIU=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=P5YguEjb5peh5yFjGYdHm3Noa275oaLw4kj+4Z2AoBkli45VN5lWHXZpoplpyZ5JN
-	 tvfG9RGchUmSuPuObuTU1Hu6CqLDjggz6MnXI7ktaTWiCAPhCVe/+Edw0brSvKWwSs
-	 ZV3egLrJK8cpKxHxW5wSnG4fIAYgeBXHJyGD+1Afg/4c8udQ7hOId+MZaYkJbUgtDe
-	 Ghw70GiyBSIB+iViMOv+zoI1pqvORiNtAE9vHR8IpMcvcnHsVaTww9G/v7DxeXzmmx
-	 K0KPM6OIGCIATees+Q9cPV8LWsP4Z/gxw1p6ujPlSqiTnVrcmJeS+I2jLDCx1dFgI0
-	 u2A4qAbh//u/Q==
+	bh=v6YnQG8nUSoIpLEYRW6LIrzMthBSQ3xv7yoTh6/yXmk=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=cLUCmULMb0WOGYJRW4Wkyd5SMNn75l4smHbYr3uxuTrl9wkzULKG2lx0LABYQ9mHS
+	 3GGp7Hr8ZuAYps+vmChyEwnNcU9I+FyAokfhHmo8U34vc0OklkNllyPhJLh1SxSCwt
+	 6Hsj8GrAXXbFlmfjsQq0Xy9xzl+k4Jm968j3a7CILajIVoaqsHB49Y7lLfk4JWyLx2
+	 YJWfWmHmJ2as6hB32vr1Vmz2RMFXFBnuKFOkeJ3AFweanExgZ/DJ/Egfo6GjPviRru
+	 GFuKWSVsFoWIQQNYhWVD8xK/TA+/rH+zyDCQphw70uIgPfrp8e9MMwRs9od1HtFlGf
+	 ne6C8nNanI8WQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8575CC43458;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B494CC44503;
 	Thu,  9 Jul 2026 08:16:08 +0000 (UTC)
 From: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
-Subject: [PATCH v9 00/10] can: bcm: collected fixes - final4 :-O
-Date: Thu, 09 Jul 2026 10:16:02 +0200
-Message-Id: <20260709-bcm_fixes-v9-0-6eebb78ccfb2@hartkopp.net>
+Date: Thu, 09 Jul 2026 10:16:05 +0200
+Subject: [PATCH v9 03/10] can: bcm: add locking when updating filter and
+ timer values
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -40,25 +41,19 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAMJYT2oC/3XPy07FIBAG4Fc5YW0NHSgzuPI9jDFAwaKxbUptN
- Cd9d+G4sDF0OZn/m8uVJb9En9jD5coWv8UUpzEX+u7C3GDGV9/EPtcMOCiuWmis+3gJ8cunhmS
- w0hgtjAOW8/Pib40cf3r+rdOnffNuLQNKYohpnZbv27KtLbna3K1teOMMBMPRe+ThcTDL+j7N8
- /3oV1ZGb/CHkeMRQ8ZaKeCuE9JiV8HiFIuMSSrOnVE9ka5geYplxsYQWrK6F6J2dneKu/KzcCg
- D9RQCVrA6YjpiVc7m2HID1glNFYynGMtmzM8qKyR4WcF0iqlsdhC6IKyDFv7hfd9/AKZWX4hiA
- gAA
-X-Change-ID: 20260612-bcm_fixes-84fb4aa93ac2
+Message-Id: <20260709-bcm_fixes-v9-3-6eebb78ccfb2@hartkopp.net>
+References: <20260709-bcm_fixes-v9-0-6eebb78ccfb2@hartkopp.net>
+In-Reply-To: <20260709-bcm_fixes-v9-0-6eebb78ccfb2@hartkopp.net>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
- Marc Kleine-Budde <mkl@pengutronix.de>, Lee Jones <lee@kernel.org>, 
- Feng Xue <feng.xue@outlook.com>, Ginger <ginger.jzllee@gmail.com>, 
- syzbot+75e5e4ae00c3b4bb544e@syzkaller.appspotmail.com, 
- sashiko-reviews@lists.linux.dev, sashiko-bot@kernel.org
+ Marc Kleine-Budde <mkl@pengutronix.de>, 
+ syzbot+75e5e4ae00c3b4bb544e@syzkaller.appspotmail.com
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1783584967; l=4137;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783584967; l=14124;
  i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=tBUThDu5CaTPWaHWJiu5cC0qeSJ7u/IUCg6a1W45sIU=;
- b=P4RxTpSA1mv+sfwOBVUW9c8Bx037viPFQyAY8+k9hs2KooqFg67RFRNI1GcYLOrtsQbOjjsNy
- m4+DLoCdZixBkc/lgD78qKmG4LfhJsjVtzmt+3PkNBYzC77OlIWxuaY
+ bh=voE+F3FTBpyL1Fv55YkPQlN5de9SfeMhnblL1BhvrJQ=;
+ b=d7mLWNco9VMawfyn/efMfOLNIbjon5JFn/Mpo0KQGz4/9NURCXkst+kJfcg3J6LQ7vCbMWO+w
+ swGxk7TQKdsBaTZtb8MUXBa652z+5ae8MRwwG1FwA4yFm2lurF7I2Nd
 X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
  pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
 X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
@@ -66,97 +61,436 @@ X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
 X-Original-From: Oliver Hartkopp <socketcan@hartkopp.net>
 Reply-To: socketcan@hartkopp.net
 
-Hi Marc,
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-as there were different patches flying arround to fix CAN_BCM issues and
-AI assisted stuff pop's up again and again, I've created this collection
-to be applied.
+KCSAN detected a simultaneous access to timer values that can be
+overwritten in bcm_rx_setup() when updating timer and filter content
+while bcm_rx_handler(), bcm_rx_timeout_handler() or bcm_rx_thr_handler()
+run concurrently on incoming CAN traffic.
 
-Fixed the new issues in patch 4
+Protect the timer (ival1/ival2/kt_ival1/kt_ival2/kt_lastmsg) and filter
+(nframes/flags/frames/last_frames) updates in bcm_rx_setup() with a new
+per-op bcm_rx_update_lock, taken with the matching scope in the RX
+handlers. memcpy_from_msg() is staged into a temporary buffer before the
+lock is taken, since it can sleep and must not run under a spinlock.
 
-- [Medium] `bcm_update_stats()` can be executed concurrently from
-  different lock domains, contradicting the commit's claim of preventing
-  races during counter reset.
-- [Medium] TX operations incorrectly inherit the RX-specific statistics
-  cap, causing premature zeroing of the TX frame counter.
-  
-Best regards,
-Oliver
+hrtimer_cancel() is always called without bcm_rx_update_lock held, since
+bcm_rx_timeout_handler()/bcm_rx_thr_handler() take the same lock and a
+running callback would otherwise deadlock against the canceller.
 
+Also close a related race: bcm_rx_setup() cleared the RTR flag in the
+stored reply frame's can_id as a separate, unprotected step after the
+frame content was already installed, so a concurrent bcm_rx_handler()
+could transmit a stale reply with CAN_RTR_FLAG still set. Fold that
+normalization into the initial frame preparation instead (on the staged
+buffer for updates, directly on op->frames pre-registration for new
+ops), so the installed frame is always atomically self-consistent.
+
+bcm_rx_handler()'s RX_RTR_FRAME check now takes a lock-protected
+snapshot of op->flags before deciding whether to call bcm_can_tx(),
+but does not hold the lock across that call.
+
+Also take a lock-protected snapshot of the currframe in bcm_can_tx()
+to avoid partly overwrites by content updates in bcm_tx_setup().
+
+Omit calling hrtimer_forward() with zero interval in bcm_rx_thr_handler().
+kt_ival2 may have been concurrently cleared by bcm_rx_setup() before it
+cancels this timer, so check kt_ival2 inside the bcm_rx_update_lock.
+
+Fixes: c2aba69d0c36 ("can: bcm: add locking for bcm_op runtime updates")
+Reported-by: syzbot+75e5e4ae00c3b4bb544e@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/linux-can/6975d5cf.a00a0220.33ccc7.0022.GAE@google.com/
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
-Changes in v9:
-- patch 4: fixed two issues reported by sashiko-bot and mkl
-  https://lore.kernel.org/linux-can/20260708173935.10D021F000E9@smtp.kernel.org/
-  https://lore.kernel.org/linux-can/20260708-beige-tarsier-of-mastery-b73d0d-mkl@pengutronix.de/
-- Link to v8: https://patch.msgid.link/20260708-bcm_fixes-v8-0-8c2f5f3bc212@hartkopp.net
+ net/can/bcm.c | 136 ++++++++++++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 104 insertions(+), 32 deletions(-)
 
-Changes in v8:
-- patch 9: fixed two issues reported by sashiko-bot:
-  https://lore.kernel.org/linux-can/20260708154039.347ED1F000E9@smtp.kernel.org/
-- Link to v7: https://patch.msgid.link/20260708-bcm_fixes-v7-0-c78896b342e4@hartkopp.net
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index b612135b017d..af4bb4182bc2 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -127,10 +127,11 @@ struct bcm_op {
+ 	struct canfd_frame sframe;
+ 	struct canfd_frame last_sframe;
+ 	struct sock *sk;
+ 	struct net_device *rx_reg_dev;
+ 	spinlock_t bcm_tx_lock; /* protect currframe/count in runtime updates */
++	spinlock_t bcm_rx_update_lock; /* protect filter/timer data updates */
+ };
+ 
+ struct bcm_sock {
+ 	struct sock sk;
+ 	int bound;
+@@ -291,26 +292,30 @@ static int bcm_proc_show(struct seq_file *m, void *v)
+ 
+ /*
+  * bcm_can_tx - send the (next) CAN frame to the appropriate CAN interface
+  *              of the given bcm tx op
+  */
+-static void bcm_can_tx(struct bcm_op *op)
++static void bcm_can_tx(struct bcm_op *op, struct canfd_frame *cf)
+ {
+ 	struct sk_buff *skb;
+ 	struct can_skb_ext *csx;
+ 	struct net_device *dev;
+-	struct canfd_frame *cf;
++	struct canfd_frame cframe;
+ 	int err;
+ 
+ 	/* no target device? => exit */
+ 	if (!op->ifindex)
+ 		return;
+ 
+-	/* read currframe under lock protection */
+-	spin_lock_bh(&op->bcm_tx_lock);
+-	cf = op->frames + op->cfsiz * op->currframe;
+-	spin_unlock_bh(&op->bcm_tx_lock);
++	if (!cf) {
++		/* read currframe under lock protection */
++		spin_lock_bh(&op->bcm_tx_lock);
++		memcpy(&cframe, op->frames + op->cfsiz * op->currframe,
++		       op->cfsiz);
++		cf = &cframe;
++		spin_unlock_bh(&op->bcm_tx_lock);
++	}
+ 
+ 	dev = dev_get_by_index(sock_net(op->sk), op->ifindex);
+ 	if (!dev) {
+ 		/* RFC: should this bcm_op remove itself here? */
+ 		return;
+@@ -459,11 +464,11 @@ static enum hrtimer_restart bcm_tx_timeout_handler(struct hrtimer *hrtimer)
+ {
+ 	struct bcm_op *op = container_of(hrtimer, struct bcm_op, timer);
+ 	struct bcm_msg_head msg_head;
+ 
+ 	if (op->kt_ival1 && (op->count > 0)) {
+-		bcm_can_tx(op);
++		bcm_can_tx(op, NULL);
+ 		if (!op->count && (op->flags & TX_COUNTEVT)) {
+ 
+ 			/* create notification to user */
+ 			memset(&msg_head, 0, sizeof(msg_head));
+ 			msg_head.opcode  = TX_EXPIRED;
+@@ -476,11 +481,11 @@ static enum hrtimer_restart bcm_tx_timeout_handler(struct hrtimer *hrtimer)
+ 
+ 			bcm_send_to_user(op, &msg_head, NULL, 0);
+ 		}
+ 
+ 	} else if (op->kt_ival2) {
+-		bcm_can_tx(op);
++		bcm_can_tx(op, NULL);
+ 	}
+ 
+ 	return bcm_tx_set_expiry(op, &op->timer) ?
+ 		HRTIMER_RESTART : HRTIMER_NORESTART;
+ }
+@@ -620,10 +625,12 @@ static void bcm_rx_starttimer(struct bcm_op *op)
+ static enum hrtimer_restart bcm_rx_timeout_handler(struct hrtimer *hrtimer)
+ {
+ 	struct bcm_op *op = container_of(hrtimer, struct bcm_op, timer);
+ 	struct bcm_msg_head msg_head;
+ 
++	spin_lock_bh(&op->bcm_rx_update_lock);
++
+ 	/* if user wants to be informed, when cyclic CAN-Messages come back */
+ 	if ((op->flags & RX_ANNOUNCE_RESUME) && op->last_frames) {
+ 		/* clear received CAN frames to indicate 'nothing received' */
+ 		memset(op->last_frames, 0, op->nframes * op->cfsiz);
+ 	}
+@@ -636,10 +643,12 @@ static enum hrtimer_restart bcm_rx_timeout_handler(struct hrtimer *hrtimer)
+ 	msg_head.ival1   = op->ival1;
+ 	msg_head.ival2   = op->ival2;
+ 	msg_head.can_id  = op->can_id;
+ 	msg_head.nframes = 0;
+ 
++	spin_unlock_bh(&op->bcm_rx_update_lock);
++
+ 	bcm_send_to_user(op, &msg_head, NULL, 0);
+ 
+ 	return HRTIMER_NORESTART;
+ }
+ 
+@@ -684,30 +693,43 @@ static int bcm_rx_thr_flush(struct bcm_op *op)
+  *                      Check for throttled data and send it to the userspace
+  */
+ static enum hrtimer_restart bcm_rx_thr_handler(struct hrtimer *hrtimer)
+ {
+ 	struct bcm_op *op = container_of(hrtimer, struct bcm_op, thrtimer);
++	enum hrtimer_restart ret;
++
++	spin_lock_bh(&op->bcm_rx_update_lock);
+ 
+-	if (bcm_rx_thr_flush(op)) {
++	/* kt_ival2 may have been concurrently cleared by bcm_rx_setup()
++	 * before it cancels this timer - never forward with a zero
++	 * interval in that case.
++	 */
++	if (bcm_rx_thr_flush(op) && op->kt_ival2) {
+ 		hrtimer_forward_now(hrtimer, op->kt_ival2);
+-		return HRTIMER_RESTART;
++		ret = HRTIMER_RESTART;
+ 	} else {
+ 		/* rearm throttle handling */
+ 		op->kt_lastmsg = 0;
+-		return HRTIMER_NORESTART;
++		ret = HRTIMER_NORESTART;
+ 	}
++
++	spin_unlock_bh(&op->bcm_rx_update_lock);
++
++	return ret;
+ }
+ 
+ /*
+  * bcm_rx_handler - handle a CAN frame reception
+  */
+ static void bcm_rx_handler(struct sk_buff *skb, void *data)
+ {
+ 	struct bcm_op *op = (struct bcm_op *)data;
+ 	const struct canfd_frame *rxframe = (struct canfd_frame *)skb->data;
++	struct canfd_frame rtrframe;
+ 	unsigned int i;
+ 	unsigned char traffic_flags;
++	bool rtr_frame;
+ 
+ 	if (op->can_id != rxframe->can_id)
+ 		return;
+ 
+ 	/* make sure to handle the correct frame type (CAN / CAN FD) */
+@@ -727,13 +749,22 @@ static void bcm_rx_handler(struct sk_buff *skb, void *data)
+ 	/* save originator for recvfrom() */
+ 	op->rx_ifindex = skb->dev->ifindex;
+ 	/* update statistics */
+ 	op->frames_abs++;
+ 
+-	if (op->flags & RX_RTR_FRAME) {
++	/* snapshot the flag under lock: op->flags/op->frames may be updated
++	 * concurrently by bcm_rx_setup().
++	 */
++	spin_lock_bh(&op->bcm_rx_update_lock);
++	rtr_frame = op->flags & RX_RTR_FRAME;
++	if (rtr_frame)
++		memcpy(&rtrframe, op->frames, op->cfsiz);
++	spin_unlock_bh(&op->bcm_rx_update_lock);
++
++	if (rtr_frame) {
+ 		/* send reply for RTR-request (placed in op->frames[0]) */
+-		bcm_can_tx(op);
++		bcm_can_tx(op, &rtrframe);
+ 		return;
+ 	}
+ 
+ 	/* compute flags to distinguish between own/local/remote CAN traffic */
+ 	traffic_flags = 0;
+@@ -741,10 +772,12 @@ static void bcm_rx_handler(struct sk_buff *skb, void *data)
+ 		traffic_flags |= RX_LOCAL;
+ 		if (skb->sk == op->sk)
+ 			traffic_flags |= RX_OWN;
+ 	}
+ 
++	spin_lock_bh(&op->bcm_rx_update_lock);
++
+ 	if (op->flags & RX_FILTER_ID) {
+ 		/* the easiest case */
+ 		bcm_rx_update_and_send(op, op->last_frames, rxframe,
+ 				       traffic_flags);
+ 		goto rx_starttimer;
+@@ -776,10 +809,12 @@ static void bcm_rx_handler(struct sk_buff *skb, void *data)
+ 		}
+ 	}
+ 
+ rx_starttimer:
+ 	bcm_rx_starttimer(op);
++
++	spin_unlock_bh(&op->bcm_rx_update_lock);
+ }
+ 
+ /*
+  * helpers for bcm_op handling: find & delete bcm [rx|tx] op elements
+  */
+@@ -1114,11 +1149,11 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 		/* spec: send CAN frame when starting timer */
+ 		op->flags |= TX_ANNOUNCE;
+ 	}
+ 
+ 	if (op->flags & TX_ANNOUNCE)
+-		bcm_can_tx(op);
++		bcm_can_tx(op, NULL);
+ 
+ 	if (op->flags & STARTTIMER)
+ 		bcm_tx_start_timer(op);
+ 
+ 	return msg_head->nframes * op->cfsiz + MHSIZ;
+@@ -1128,10 +1163,28 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 		kfree(op->frames);
+ 	kfree(op);
+ 	return err;
+ }
+ 
++static void bcm_rx_setup_rtr_check(struct bcm_msg_head *msg_head,
++				   struct bcm_op *op, void *new_frames)
++{
++	/* funny feature in RX(!)_SETUP only for RTR-mode:
++	 * copy can_id into frame BUT without RTR-flag to
++	 * prevent a full-load-loopback-test ... ;-]
++	 * normalize this on the staged buffer, before it is
++	 * ever installed into op->frames.
++	 */
++	if (msg_head->flags & RX_RTR_FRAME) {
++		struct canfd_frame *frame0 = new_frames;
++
++		if ((msg_head->flags & TX_CP_CAN_ID) ||
++		    frame0->can_id == op->can_id)
++			frame0->can_id = op->can_id & ~CAN_RTR_FLAG;
++	}
++}
++
+ /*
+  * bcm_rx_setup - create or update a bcm rx op (for bcm_sendmsg)
+  */
+ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 			int ifindex, struct sock *sk)
+@@ -1162,10 +1215,12 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 		return -EINVAL;
+ 
+ 	/* check the given can_id */
+ 	op = bcm_find_op(&bo->rx_ops, msg_head, ifindex);
+ 	if (op) {
++		void *new_frames = NULL;
++
+ 		/* update existing BCM operation */
+ 
+ 		/*
+ 		 * Do we need more space for the CAN frames than currently
+ 		 * allocated? -> This is a _really_ unusual use-case and
+@@ -1173,33 +1228,55 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 		 */
+ 		if (msg_head->nframes > op->nframes)
+ 			return -E2BIG;
+ 
+ 		if (msg_head->nframes) {
+-			/* update CAN frames content */
+-			err = memcpy_from_msg(op->frames, msg,
++			/* get new CAN frames content before locking */
++			new_frames = kmalloc(msg_head->nframes * op->cfsiz,
++					     GFP_KERNEL);
++			if (!new_frames)
++				return -ENOMEM;
++
++			err = memcpy_from_msg(new_frames, msg,
+ 					      msg_head->nframes * op->cfsiz);
+-			if (err < 0)
++			if (err < 0) {
++				kfree(new_frames);
+ 				return err;
++			}
+ 
+-			/* clear last_frames to indicate 'nothing received' */
+-			memset(op->last_frames, 0, msg_head->nframes * op->cfsiz);
++			bcm_rx_setup_rtr_check(msg_head, op, new_frames);
+ 		}
+ 
++		spin_lock_bh(&op->bcm_rx_update_lock);
+ 		op->nframes = msg_head->nframes;
+ 		op->flags = msg_head->flags;
+ 
++		if (msg_head->nframes) {
++			/* update CAN frames content */
++			memcpy(op->frames, new_frames,
++			       msg_head->nframes * op->cfsiz);
++
++			/* clear last_frames to indicate 'nothing received' */
++			memset(op->last_frames, 0,
++			       msg_head->nframes * op->cfsiz);
++		}
++		spin_unlock_bh(&op->bcm_rx_update_lock);
++
++		/* free temporary frames / kfree(NULL) is safe */
++		kfree(new_frames);
++
+ 		/* Only an update -> do not call can_rx_register() */
+ 		do_rx_register = 0;
+ 
+ 	} else {
+ 		/* insert new BCM operation for the given can_id */
+ 		op = kzalloc(OPSIZ, GFP_KERNEL);
+ 		if (!op)
+ 			return -ENOMEM;
+ 
+ 		spin_lock_init(&op->bcm_tx_lock);
++		spin_lock_init(&op->bcm_rx_update_lock);
+ 		op->can_id = msg_head->can_id;
+ 		op->nframes = msg_head->nframes;
+ 		op->cfsiz = CFSIZ(msg_head->flags);
+ 		op->flags = msg_head->flags;
+ 
+@@ -1237,10 +1314,12 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 				if (op->last_frames != &op->last_sframe)
+ 					kfree(op->last_frames);
+ 				kfree(op);
+ 				return err;
+ 			}
++
++			bcm_rx_setup_rtr_check(msg_head, op, op->frames);
+ 		}
+ 
+ 		/* bcm_can_tx / bcm_tx_timeout_handler needs this */
+ 		op->sk = sk;
+ 		sock_hold(sk);
+@@ -1264,45 +1343,38 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 	} /* if ((op = bcm_find_op(&bo->rx_ops, msg_head->can_id, ifindex))) */
+ 
+ 	/* check flags */
+ 
+ 	if (op->flags & RX_RTR_FRAME) {
+-		struct canfd_frame *frame0 = op->frames;
+-
+ 		/* no timers in RTR-mode */
+ 		hrtimer_cancel(&op->thrtimer);
+ 		hrtimer_cancel(&op->timer);
+-
+-		/*
+-		 * funny feature in RX(!)_SETUP only for RTR-mode:
+-		 * copy can_id into frame BUT without RTR-flag to
+-		 * prevent a full-load-loopback-test ... ;-]
+-		 */
+-		if ((op->flags & TX_CP_CAN_ID) ||
+-		    (frame0->can_id == op->can_id))
+-			frame0->can_id = op->can_id & ~CAN_RTR_FLAG;
+-
+ 	} else {
+ 		if (op->flags & SETTIMER) {
+ 
+ 			/* set timer value */
++			spin_lock_bh(&op->bcm_rx_update_lock);
+ 			op->ival1 = msg_head->ival1;
+ 			op->ival2 = msg_head->ival2;
+ 			op->kt_ival1 = bcm_timeval_to_ktime(msg_head->ival1);
+ 			op->kt_ival2 = bcm_timeval_to_ktime(msg_head->ival2);
++			op->kt_lastmsg = 0;
++			spin_unlock_bh(&op->bcm_rx_update_lock);
+ 
+ 			/* disable an active timer due to zero value? */
+ 			if (!op->kt_ival1)
+ 				hrtimer_cancel(&op->timer);
+ 
+ 			/*
+ 			 * In any case cancel the throttle timer, flush
+ 			 * potentially blocked msgs and reset throttle handling
+ 			 */
+-			op->kt_lastmsg = 0;
+ 			hrtimer_cancel(&op->thrtimer);
++
++			spin_lock_bh(&op->bcm_rx_update_lock);
+ 			bcm_rx_thr_flush(op);
++			spin_unlock_bh(&op->bcm_rx_update_lock);
+ 		}
+ 
+ 		if ((op->flags & STARTTIMER) && op->kt_ival1)
+ 			hrtimer_start(&op->timer, op->kt_ival1,
+ 				      HRTIMER_MODE_REL_SOFT);
 
-Changes in v7:
-- patch 9: new: fix stale rx/tx ops after device removal reported by
-  sashiko-bot: https://lore.kernel.org/linux-can/20260708094536.DDF821F00A3A@smtp.kernel.org/
-- patch 10: formerly patch 9 as new patch 8 & 9 belong together 
-- Link to v6: https://patch.msgid.link/20260708-bcm_fixes-v6-0-80710a2bc398@hartkopp.net
-
-Changes in v6:
-- patch 1: added Tested-by: tags
-- patch 3: changed commit message and comment regarding a wrong claim
-  about synchronous delivery from dev_queue_xmit() as remarked by
-  https://netdev-ai.bots.linux.dev/ai-review.html?id=6105ebab-87ef-43db-a085-7c190b9f119f
-- patch 4: rebased patch 3 comment
-- patch 9: new: fix data race on rx_stamp/rx_ifindex in bcm_rx_handler()
-  reported by sashiko-bot: https://lore.kernel.org/linux-can/20260707145135.5BC831F00A3A@smtp.kernel.org/
-- Link to v5: https://patch.msgid.link/20260707-bcm_fixes-v5-0-c3c74f8d8ff7@hartkopp.net
-
-Changes in v5:
-- patch 6: changed comment for bcm_op::bcm_tx_lock (mkl)
-- patch 8: new: add missing device refcount for CAN filter removal
-- Link to v4: https://patch.msgid.link/20260707-bcm_fixes-v4-0-aa87b8b9d33f@hartkopp.net
-
-Changes in v4:
-- incorporated more sashiko-bot concerns from v3
-- patch 3: omit hrtimer_forward with zero interval
-- patch 4: put bcm_update_stats() under bcm_rx_update_lock
-- Link to v3: https://patch.msgid.link/20260707-bcm_fixes-v3-0-84600ca6d889@hartkopp.net
-
-Changes in v3:
-- incorporated more sashiko-bot concerns from v2
-- patch 3: make snapshot of currframe
-- patch 6: add error patch for memcpy_from_msg()
-- patch 7: new RTR-reply validation in bcm_rx_setup() from bcm_tx_setup() 
-- Link to v2: https://patch.msgid.link/20260707-bcm_fixes-v2-0-96620c534b75@hartkopp.net
-
-Changes in v2:
-- incorporated all sashiko-bot concerns from v1
-- Link to v1: https://patch.msgid.link/20260612-bcm_fixes-v1-0-ca2fa07ee70f@hartkopp.net
-
----
-Lee Jones (1):
-      can: bcm: defer rx_op deallocation to workqueue to fix thrtimer UAF
-
-Oliver Hartkopp (9):
-      can: bcm: fix lockless bound/ifindex race and silent RX_SETUP failure
-      can: bcm: add locking when updating filter and timer values
-      can: bcm: fix CAN frame rx/tx statistics
-      can: bcm: add missing rcu list annotations and operations
-      can: bcm: extend bcm_tx_lock usage for data and timer updates
-      can: bcm: validate frame length in bcm_rx_setup() for RTR replies
-      can: bcm: add missing device refcount for CAN filter removal
-      can: bcm: fix stale rx/tx ops after device removal
-      can: bcm: fix data race on rx_stamp/rx_ifindex in bcm_rx_handler()
-
- net/can/bcm.c | 536 +++++++++++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 400 insertions(+), 136 deletions(-)
----
-base-commit: 0e35b9b6ec0ffcc5e23cbdec09f5c622ad532b53
-change-id: 20260612-bcm_fixes-84fb4aa93ac2
-
-Best regards,
---  
-Oliver Hartkopp <socketcan@hartkopp.net>
+-- 
+2.53.0
 
 
