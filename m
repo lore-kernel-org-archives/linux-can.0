@@ -1,37 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B264DB540
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 389244DA55C
 	for <linux-can@vger.kernel.org>; Thu,  9 Jul 2026 17:56:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783619782; cv=none; b=TKdRspkYtJU6848hORip2kX/UxJSONSgRiGyCYEnEUx68qCLlxq0etUBubXgUrB/EewIcz/tGhS0CIx0RIYx2kKpX783WGnOtL42dEIBlE5/4M1xlz/r5flgIjEWoMoSDjbHYc9KzXTVP2bNMAAuApLlfXbOtdwdaw+5cqDKh/8=
+	t=1783619782; cv=none; b=BeAoygon5er+iz12FLp8prixX9BHmHVlnlunsLM+JFecSqdRoRAVi0iUcKVufCRKHOI7qpdBEyPUJvIkuhFkAkc5Cq6ZPr8rIcnNzc4vaVDgsboaUgP1EjUuS6SV+RQn5JGCUY5F76nGbBAha+Vxvy0g59bY32sNJAS6bDs1/P0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1783619782; c=relaxed/simple;
-	bh=skHptEFpwfVP275LM9ouL+tpWsFlIHCbtFDpBRdQAQw=;
+	bh=N6IRfAhSRTf9fvNTpE0sRBO4gANfqERYL1AuQuhpH8k=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=mY+9aDMdalqVuUmuYUFHiB8sZo8nxjF9QnhsVWbxwy5NOnlltBIvxTyC63DCGE1d1q8Z2HcESELWl/ax+xiBWJDQD9LS9e3jshGEA7tA1DtjFu6UnxsHe4GufBPaBVK9PftWgZJN3uJ0Au53ntDDfekFw3OnSPvvL46zo0V6+8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OXJGJXIi; arc=none smtp.client-ip=10.30.226.201
+	 In-Reply-To:To:Cc; b=T0UjhQlmdP+7K7plcbbuOWMjiTNIsSqsokzc08mbdSP2hbmZrsLk2pI7kYPyMDreBpO7UlywAxrSAwlwKDNilTDX1f/Q/zMiN3j6qtekjlsS6X3hjTfdXpp608Qo/ZLgycCsNuLUOBLPvn93tR289fTHiBR8wnZ8e3rlAoJOQ3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zpbc29zq; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OXJGJXIi"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 00289C2BCF7;
-	Thu,  9 Jul 2026 17:56:22 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zpbc29zq"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E2482C2BCF4;
+	Thu,  9 Jul 2026 17:56:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1783619782;
-	bh=skHptEFpwfVP275LM9ouL+tpWsFlIHCbtFDpBRdQAQw=;
+	s=k20201202; t=1783619781;
+	bh=N6IRfAhSRTf9fvNTpE0sRBO4gANfqERYL1AuQuhpH8k=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=OXJGJXIil/It8fzi9HoS/Qw7AvGb7Gi+T6EI9qkPH0chH4CXmmnlInMFi75eEklCK
-	 8i3Rx6uXlUw10GRM4USPiQXaQxjofhlQCNNMYDIakB7tlkKyN1FiS4uWvjQKWDKerY
-	 /BT6XH0ocnYzR3gKUAuEXJqklk/1c4COH0HOCF5l0ADViCRrgyAt7n4/+8yrymb3G0
-	 g5jVF4/xBE5xJRZb6wZtxty1wGEIOF983cQWUhgzZp4+PCagqo05h1MxB1EdtnkYWq
-	 f0dzs0VnmzwKMm3KcSvH2K9aE6gcC4WDJUgWAAso4sgHgVpe5D57o/3vIfwBPt/bMn
-	 u+Luty2hQHiug==
+	b=Zpbc29zq8VoY0FfeuJPXj1w7D32NhUcdGHkjanjhfs6NN8hVVkL0WE0sYGBMujIYW
+	 lNgvF7Mdye5WjY/J+no6UM3SgvWoaOwmVtdkZ9gpuyOP+w3ST1dQlh6BziB7lkXOwv
+	 ZSgOF8Ebu2Q+5/CzywS3PiviRULsETF/SK2YeLN0gwQeqgFyTDGfsUlLStg+Wt9xkU
+	 eun2OttqARoyjCStWOc6updn18lAQzAijZuQzYMm6LKgqiLbanEfx6Fkwy45665xtA
+	 W6iuWdFevZ15WGl21OuAIn8jSsSik7wG9rtRtQ6hwnqzlEBtooblDa+0OgSE43BufF
+	 JNQ02jQgg1ONA==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD20DC44507;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3023C43458;
 	Thu,  9 Jul 2026 17:56:21 +0000 (UTC)
 From: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
-Date: Thu, 09 Jul 2026 19:56:18 +0200
-Subject: [PATCH v11 04/11] can: bcm: fix CAN frame rx/tx statistics
+Date: Thu, 09 Jul 2026 19:56:16 +0200
+Subject: [PATCH v11 02/11] can: bcm: fix lockless bound/ifindex race and
+ silent RX_SETUP failure
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -40,18 +41,18 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260709-bcm_fixes-v11-4-067ba11bec5c@hartkopp.net>
+Message-Id: <20260709-bcm_fixes-v11-2-067ba11bec5c@hartkopp.net>
 References: <20260709-bcm_fixes-v11-0-067ba11bec5c@hartkopp.net>
 In-Reply-To: <20260709-bcm_fixes-v11-0-067ba11bec5c@hartkopp.net>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
- Marc Kleine-Budde <mkl@pengutronix.de>
+ Marc Kleine-Budde <mkl@pengutronix.de>, Ginger <ginger.jzllee@gmail.com>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1783619780; l=7349;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783619780; l=6333;
  i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=K6dfLEs4RcXL27mb5H/vPbye8YP10QHD5BDrc/+ouJ4=;
- b=i0EIu4hqzstUgVLUnut8nYlIu2RmUDNkh7rwtYUBvsr1izVtckNo7ReLADipfkG+mdkRqHsdT
- Rdi4hQKo2SHCvssDOdl80E3Gv0whnqK1+nggq/M3SAk3PUg/mWHAJjA
+ bh=HIW+pKj5D5r7xsCPM7j7rI6N34B4YynpNZPg4LXJ6YI=;
+ b=USCb0fYr9JmPOC0SMJks6NZ1MK5FNSPOjqsnG4eVNXcvHQWBkwtR8lQtKebsaOl1jYVUFzyqy
+ MVBszeoiPnKDmHqMaKhIYzinFipSX6wAMaXGq7cLKjiDH2kRxIy2ols
 X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
  pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
 X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
@@ -61,220 +62,210 @@ Reply-To: socketcan@hartkopp.net
 
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-KCSAN detected a data race within the bcm_rx_handler() when two CAN frames
-have been simultaneously received and processed in a single rx op by two
-different CPUs.
+bcm_sendmsg() reads bo->ifindex and checks bo->bound before taking
+lock_sock(), while bcm_notify(), bcm_connect() and bcm_release() all
+mutate both fields under that same lock. Because the lockless reads
+and the locked writes are unordered with respect to each other, a
+racing bcm_notify() (device unregister) or bcm_connect() (concurrent
+bind on another thread sharing the socket) can make bcm_sendmsg()
+observe an inconsistent combination, e.g. a stale bound=1 together
+with the now-cleared ifindex=0, silently turning a socket bound to a
+specific CAN interface into one that also matches "any" interface.
 
-Use atomic operations with (signed) long data types to access the
-statistics in the hot path to fix the KCSAN complaint.
+Keep the lockless bo->bound check purely as a fast-path reject, and
+move the ifindex read (and a bo->bound re-check) into the locked
+section, where every writer already serializes. This removes the
+possibility of observing the two fields torn against each other,
+rather than trying to fix it with more READ_ONCE()/WRITE_ONCE() pairs
+on two independently updated fields. Annotate the now-purely-lockless
+bo->bound accesses consistently across all its write sites.
 
-Additionally simplify the update and check of statistics overflow by
-using the atomic operations in separate bcm_update_[rx|tx]_stats()
-functions. The rx variant runs under bcm_rx_update_lock to prevent
-races when resetting the two rx counters; the tx variant runs under
-bcm_tx_lock and only needs to guard its own counter's overflow.
-
-As the rx path resets its values already at LONG_MAX / 100, there is
-no conflict between the two locking domains (bcm_rx_update_lock vs.
-bcm_tx_lock) even for ops that use both paths.
-
-The rx statistics update and the frames_filtered update in
-bcm_rx_changed() were previously performed in two separate
-bcm_rx_update_lock sections. For an rx op subscribed on all interfaces
-(ifindex == 0), bcm_rx_handler() can run concurrently on different
-CPUs, so a counter reset by one CPU between these two sections could
-leave frames_filtered larger than frames_abs on another CPU, producing
-a bogus (even negative) reduction percentage in procfs. Update the
-statistics in the same critical section as bcm_rx_changed() to close
-this gap, which also removes the now unneeded extra lock/unlock pair
-around the traffic_flags calculation.
+Also fix bcm_rx_setup() silently returning success when the target
+device disappears concurrently instead of reporting -ENODEV, so a
+broken RX op is no longer left registered as if it had succeeded.
 
 Fixes: ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol")
+Reported-by: Ginger <ginger.jzllee@gmail.com>
+Closes: https://lore.kernel.org/linux-can/CAGp+u1aBK8QVjsvAxM2Ldzep4rEbsP9x_pV3At4g=h1kVEtyhA@mail.gmail.com/
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- net/can/bcm.c | 69 +++++++++++++++++++++++++++++++++++++++--------------------
- 1 file changed, 46 insertions(+), 23 deletions(-)
+ net/can/bcm.c | 65 ++++++++++++++++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 51 insertions(+), 14 deletions(-)
 
 diff --git a/net/can/bcm.c b/net/can/bcm.c
-index af4bb4182bc2..38c3f690c1cd 100644
+index bdf53241bd7b..b612135b017d 100644
 --- a/net/can/bcm.c
 +++ b/net/can/bcm.c
-@@ -110,11 +110,11 @@ struct bcm_op {
- 	struct rcu_head rcu;
- 	struct work_struct work;
- 	int ifindex;
- 	canid_t can_id;
- 	u32 flags;
--	unsigned long frames_abs, frames_filtered;
-+	atomic_long_t frames_abs, frames_filtered;
- 	struct bcm_timeval ival1, ival2;
- 	struct hrtimer timer, thrtimer;
- 	ktime_t rx_stamp, kt_ival1, kt_ival2, kt_lastmsg;
- 	int rx_ifindex;
+@@ -1321,10 +1321,15 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 						      bcm_rx_handler, op,
+ 						      "bcm", sk);
+ 
+ 				op->rx_reg_dev = dev;
+ 				dev_put(dev);
++			} else {
++				/* the requested device is gone - do not
++				 * silently succeed without registering
++				 */
++				err = -ENODEV;
+ 			}
+ 
+ 		} else
+ 			err = can_rx_register(sock_net(sk), NULL, op->can_id,
+ 					      REGMASK(op->can_id),
+@@ -1394,16 +1399,17 @@ static int bcm_tx_send(struct msghdr *msg, int ifindex, struct sock *sk,
+  */
+ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ {
+ 	struct sock *sk = sock->sk;
+ 	struct bcm_sock *bo = bcm_sk(sk);
+-	int ifindex = bo->ifindex; /* default ifindex for this bcm_op */
++	int ifindex;
+ 	struct bcm_msg_head msg_head;
  	int cfsiz;
-@@ -227,14 +227,17 @@ static int bcm_proc_show(struct seq_file *m, void *v)
+ 	int ret; /* read bytes or error codes as return value */
  
- 	rcu_read_lock();
+-	if (!bo->bound)
++	/* Lockless fast-path check for bound socket */
++	if (!READ_ONCE(bo->bound))
+ 		return -ENOTCONN;
  
- 	list_for_each_entry_rcu(op, &bo->rx_ops, list) {
+ 	/* check for valid message length from userspace */
+ 	if (size < MHSIZ)
+ 		return -EINVAL;
+@@ -1415,43 +1421,65 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
  
--		unsigned long reduction;
-+		long reduction, frames_filtered, frames_abs;
+ 	cfsiz = CFSIZ(msg_head.flags);
+ 	if ((size - MHSIZ) % cfsiz)
+ 		return -EINVAL;
+ 
++	lock_sock(sk);
 +
-+		frames_filtered = atomic_long_read(&op->frames_filtered);
-+		frames_abs = atomic_long_read(&op->frames_abs);
++	/* Re-validate under the socket lock: a concurrent bcm_notify()
++	 * may have unbound this socket (device removal) after the
++	 * lockless fast-path check above. bo->ifindex is only ever
++	 * mutated under lock_sock(), so reading it here - instead of
++	 * before taking the lock - guarantees it can't be observed
++	 * torn against bo->bound.
++	 */
++	if (!bo->bound) {
++		ret = -ENOTCONN;
++		goto out_release;
++	}
++
++	/* default ifindex for this bcm_op */
++	ifindex = bo->ifindex;
++
+ 	/* check for alternative ifindex for this bcm_op */
  
- 		/* print only active entries & prevent division by zero */
--		if (!op->frames_abs)
-+		if (!frames_abs)
- 			continue;
+ 	if (!ifindex && msg->msg_name) {
+ 		/* no bound device as default => check msg_name */
+ 		DECLARE_SOCKADDR(struct sockaddr_can *, addr, msg->msg_name);
  
- 		seq_printf(m, "rx_op: %03X %-5s ", op->can_id,
- 			   bcm_proc_getifname(net, ifname, op->ifindex));
+-		if (msg->msg_namelen < BCM_MIN_NAMELEN)
+-			return -EINVAL;
++		if (msg->msg_namelen < BCM_MIN_NAMELEN) {
++			ret = -EINVAL;
++			goto out_release;
++		}
  
-@@ -252,13 +255,13 @@ static int bcm_proc_show(struct seq_file *m, void *v)
- 		if (op->kt_ival2)
- 			seq_printf(m, "thr=%lld ",
- 				   (long long)ktime_to_us(op->kt_ival2));
+-		if (addr->can_family != AF_CAN)
+-			return -EINVAL;
++		if (addr->can_family != AF_CAN) {
++			ret = -EINVAL;
++			goto out_release;
++		}
  
- 		seq_printf(m, "# recv %ld (%ld) => reduction: ",
--			   op->frames_filtered, op->frames_abs);
-+			   frames_filtered, frames_abs);
+ 		/* ifindex from sendto() */
+ 		ifindex = addr->can_ifindex;
  
--		reduction = 100 - (op->frames_filtered * 100) / op->frames_abs;
-+		reduction = 100 - (frames_filtered * 100) / frames_abs;
+ 		if (ifindex) {
+ 			struct net_device *dev;
  
- 		seq_printf(m, "%s%ld%%\n",
- 			   (reduction == 100) ? "near " : "", reduction);
+ 			dev = dev_get_by_index(sock_net(sk), ifindex);
+-			if (!dev)
+-				return -ENODEV;
++			if (!dev) {
++				ret = -ENODEV;
++				goto out_release;
++			}
+ 
+ 			if (dev->type != ARPHRD_CAN) {
+ 				dev_put(dev);
+-				return -ENODEV;
++				ret = -ENODEV;
++				goto out_release;
+ 			}
+ 
+ 			dev_put(dev);
+ 		}
  	}
  
-@@ -278,20 +281,39 @@ static int bcm_proc_show(struct seq_file *m, void *v)
+-	lock_sock(sk);
+-
+ 	switch (msg_head.opcode) {
  
- 		if (op->kt_ival2)
- 			seq_printf(m, "t2=%lld ",
- 				   (long long)ktime_to_us(op->kt_ival2));
- 
--		seq_printf(m, "# sent %ld\n", op->frames_abs);
-+		seq_printf(m, "# sent %ld\n",
-+			   atomic_long_read(&op->frames_abs));
+ 	case TX_SETUP:
+ 		ret = bcm_tx_setup(&msg_head, msg, ifindex, sk);
+ 		break;
+@@ -1497,10 +1525,11 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 	default:
+ 		ret = -EINVAL;
+ 		break;
  	}
- 	seq_putc(m, '\n');
  
- 	rcu_read_unlock();
++out_release:
+ 	release_sock(sk);
  
- 	return 0;
+ 	return ret;
  }
+ 
+@@ -1533,11 +1562,16 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
+ 			if (sock_net(sk)->can.bcmproc_dir && bo->bcm_proc_read) {
+ 				remove_proc_entry(bo->procname, sock_net(sk)->can.bcmproc_dir);
+ 				bo->bcm_proc_read = NULL;
+ 			}
+ #endif
+-			bo->bound   = 0;
++			/* Paired with the lockless fast-path check in
++			 * bcm_sendmsg(); bo->ifindex itself is only ever
++			 * accessed under lock_sock() so it needs no
++			 * annotation.
++			 */
++			WRITE_ONCE(bo->bound, 0);
+ 			bo->ifindex = 0;
+ 			notify_enodev = 1;
+ 		}
+ 
+ 		release_sock(sk);
+@@ -1674,11 +1708,11 @@ static int bcm_release(struct socket *sock)
+ 	list_for_each_entry_safe(op, next, &bo->rx_ops, list)
+ 		bcm_remove_op(op);
+ 
+ 	/* remove device reference */
+ 	if (bo->bound) {
+-		bo->bound   = 0;
++		WRITE_ONCE(bo->bound, 0);
+ 		bo->ifindex = 0;
+ 	}
+ 
+ 	sock_orphan(sk);
+ 	sock->sk = NULL;
+@@ -1744,11 +1778,14 @@ static int bcm_connect(struct socket *sock, struct sockaddr_unsized *uaddr, int
+ 			goto fail;
+ 		}
+ 	}
  #endif /* CONFIG_PROC_FS */
  
-+static void bcm_update_rx_stats(struct bcm_op *op)
-+{
-+	/* prevent overflow of the reduction% calculation in bcm_proc_show() */
-+	if (atomic_long_inc_return(&op->frames_abs) > LONG_MAX / 100) {
-+		atomic_long_set(&op->frames_filtered, 0);
-+		atomic_long_set(&op->frames_abs, 0);
-+	}
-+}
-+
-+static void bcm_update_tx_stats(struct bcm_op *op)
-+{
-+	/* tx_op has no reduction% calculation - use the full range and
-+	 * just keep the displayed counter non-negative on overflow
+-	bo->bound = 1;
++	/* bo->ifindex above is fully assigned before this point; pairs
++	 * with the lockless fast-path check in bcm_sendmsg()
 +	 */
-+	if (atomic_long_inc_return(&op->frames_abs) == LONG_MAX)
-+		atomic_long_set(&op->frames_abs, 0);
-+}
-+
- /*
-  * bcm_can_tx - send the (next) CAN frame to the appropriate CAN interface
-  *              of the given bcm tx op
-  */
- static void bcm_can_tx(struct bcm_op *op, struct canfd_frame *cf)
-@@ -342,11 +364,11 @@ static void bcm_can_tx(struct bcm_op *op, struct canfd_frame *cf)
++	WRITE_ONCE(bo->bound, 1);
  
- 	/* update currframe and count under lock protection */
- 	spin_lock_bh(&op->bcm_tx_lock);
+ fail:
+ 	release_sock(sk);
  
- 	if (!err)
--		op->frames_abs++;
-+		bcm_update_tx_stats(op);
- 
- 	op->currframe++;
- 
- 	/* reached last frame? */
- 	if (op->currframe >= op->nframes)
-@@ -495,16 +517,13 @@ static enum hrtimer_restart bcm_tx_timeout_handler(struct hrtimer *hrtimer)
-  */
- static void bcm_rx_changed(struct bcm_op *op, struct canfd_frame *data)
- {
- 	struct bcm_msg_head head;
- 
--	/* update statistics */
--	op->frames_filtered++;
--
--	/* prevent statistics overflow */
--	if (op->frames_filtered > ULONG_MAX/100)
--		op->frames_filtered = op->frames_abs = 0;
-+	/* update statistics (frames_filtered <= frames_abs) */
-+	if (atomic_long_read(&op->frames_abs))
-+		atomic_long_inc(&op->frames_filtered);
- 
- 	/* this element is not throttled anymore */
- 	data->flags &= ~RX_THR;
- 
- 	memset(&head, 0, sizeof(head));
-@@ -746,38 +765,42 @@ static void bcm_rx_handler(struct sk_buff *skb, void *data)
- 
- 	/* save rx timestamp */
- 	op->rx_stamp = skb->tstamp;
- 	/* save originator for recvfrom() */
- 	op->rx_ifindex = skb->dev->ifindex;
--	/* update statistics */
--	op->frames_abs++;
- 
--	/* snapshot the flag under lock: op->flags/op->frames may be updated
--	 * concurrently by bcm_rx_setup().
--	 */
-+	/* op->flags/op->frames may be updated concurrently by bcm_rx_setup() */
- 	spin_lock_bh(&op->bcm_rx_update_lock);
-+
- 	rtr_frame = op->flags & RX_RTR_FRAME;
--	if (rtr_frame)
-+	if (rtr_frame) {
-+		bcm_update_rx_stats(op);
-+		/* snapshot RTR content under lock */
- 		memcpy(&rtrframe, op->frames, op->cfsiz);
--	spin_unlock_bh(&op->bcm_rx_update_lock);
-+		spin_unlock_bh(&op->bcm_rx_update_lock);
- 
--	if (rtr_frame) {
- 		/* send reply for RTR-request (placed in op->frames[0]) */
- 		bcm_can_tx(op, &rtrframe);
- 		return;
- 	}
- 
-+	/* update statistics in the same critical section as bcm_rx_changed()
-+	 * below: frames_filtered must never be checked/incremented against a
-+	 * frames_abs snapshot from a concurrent bcm_rx_handler() call on
-+	 * another CPU for the same (wildcard) op, or frames_filtered can end
-+	 * up larger than frames_abs.
-+	 */
-+	bcm_update_rx_stats(op);
-+
- 	/* compute flags to distinguish between own/local/remote CAN traffic */
- 	traffic_flags = 0;
- 	if (skb->sk) {
- 		traffic_flags |= RX_LOCAL;
- 		if (skb->sk == op->sk)
- 			traffic_flags |= RX_OWN;
- 	}
- 
--	spin_lock_bh(&op->bcm_rx_update_lock);
--
- 	if (op->flags & RX_FILTER_ID) {
- 		/* the easiest case */
- 		bcm_rx_update_and_send(op, op->last_frames, rxframe,
- 				       traffic_flags);
- 		goto rx_starttimer;
+ 	return ret;
 
 -- 
 2.53.0
