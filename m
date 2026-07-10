@@ -1,82 +1,66 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.20])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66B343F6C39
-	for <linux-can@vger.kernel.org>; Fri, 10 Jul 2026 08:54:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.20
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783673654; cv=pass; b=e/DAu8N45ZxKi2/yNGtxBcD0qDx7BxMFyJ0CX2qlHHUJOu/TNT6phSj2hiEnFS0C/Z3OzE5imEnXsTaJGpY7fm0Q5CTBF2inXoPXkfDTPcbiXg7rGy10O6yxa+i7qevPaXH3LkMqPK9NAbKzod2Gy72j7/X7NGSHMt/jFaAIXqY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783673654; c=relaxed/simple;
-	bh=1IREWZ2p51JNnzO6MoSgtFmp+pJYtVzZqc8P7Tmxf+c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KfTg32z0G9+U4qXK8k1z9MW1rJb7RsSDaYX8ivjAbSYbAAgsWXyn88ORUZK0mMQ9xPcTCe+mGB7evDROTKOgTRcqPgGUmSnwdOMRGcuvTTOxJCx/JrmQRkuIiWsdjIC6R+22TFI8qs2xzrTxRf/4brVVFYJJLcz2etxORAE5Ab4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=SrVmDKaS; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=Y8jVIjMA; arc=pass smtp.client-ip=85.215.255.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 735223F54C3
+	for <linux-can@vger.kernel.org>; Fri, 10 Jul 2026 09:32:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783675971; cv=none; b=eESfg/hDY3yLHKVF3vD7vDdcqbX89D3krR7Hz3qAvExWDBFZRTR+khaQZ+7AtMghhLs3PwNwHZL6XU3po1D6MaXp49xnuQo5+I+7aoFPYq1oItvhJXoUdG00j+EV5RBRNVbeGLlaJS8DtktVV4BLCpgY5MiC+VazB3FDnx99rdU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783675971; c=relaxed/simple;
+	bh=IYf8Uug9yv3Ggo7jyUW3hQZUDvKQ+c6mK2ueL5jc6rg=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=jm6Hmf/GkW6RCEsO61n7gNGd5PtOTnqCL9V9+lE7xTJ/M1cR7p31Io0E1fLT5bVY0dsHil01Z6gWUguuDfNBFxJch4HvnXWn05Mc3md52re2VR4FzOipMqJinMMlsS1CA95CtimrdwXSnS316FU8f54IRNbqbrrP/jbBeMuiXec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HIVrLe3a; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="SrVmDKaS";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="Y8jVIjMA"
-ARC-Seal: i=1; a=rsa-sha256; t=1783673286; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=dVT+IqDmE4Da0cZu94Vz3kNxboTTF4j0iDZnxTqgCOAKyDI5sz9NQ9UPqP/1cEhTuU
-    /rkIwSF/YwozqCqSIyQRo+sPem4m2NQu2QydKjuEF44ma1Iwela09CF3YwdtO3W6Dq/r
-    b/vt4aUQadEjKnkaWGSgpV8fS7kI5lHt9Cj36Plc5rpeclcngTHxkyNaVInWNwvoRxkM
-    JD6z4e6zY/hyLf/ZnSMYHUueo/H5s8syk91ffDwkpF9f0zUGDNNDJDK/+giV4lMAigmp
-    ERvXqAXTFKooJfQb/NiZkh5ArbjdIcmZc8zUxvZkThl3i5ZzU52gcEK8NXMGdWB1YuWA
-    TCyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1783673286;
-    s=strato-dkim-0002; d=strato.com;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=9qYrAyahVQm+QCACc0bP3MsU8p5taox40VDtVUaWnZw=;
-    b=ohWcN2Pgz04gXXLcfyePsJJVpcH0IV3pjF1TUzVqY8Tco960nxamxCh68uOLhh72Mu
-    Vqw4YSpYGj2KPWqm51BN74CeTFEgxiHWLobSZTMwT1WkyHS4bYjyX2ujQOl1lupRsa3s
-    qSwjFqQCE5+vcXT2TxmErXsWE8aM0S/SWorCqCeHSNSq3icQjwlZbbuSy3/0gQkpvuDk
-    h4aDSb63i79aEhhbxJw9EnA93fILLbTApKixujg6zboaCZ3W7cwJTw15gwVCG+3dGk+O
-    R3TBZx7hbCWlUyzoUnxA9vuo6OVh3aOKVqYxSzPaifu/27Rsv5xkHhth9LP2mowdQ/NM
-    46wQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1783673286;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=9qYrAyahVQm+QCACc0bP3MsU8p5taox40VDtVUaWnZw=;
-    b=SrVmDKaSHfFRIKIp+HrxSH9LTxyUT6ByIrwzuKo5K1bjKWJr4cqqcvELSswgY+KDFX
-    d8KZNzppPCysynYVsZ7pZq/aEtbojKYodAboeWhf7Z4dFmHiJaraAS4a+bO2GQzvv0mv
-    2GS6xLyRoJaeIC99U9qpQ/w0KruAkaJ+TYqwVbLAMowo3fi70fgqKzSyF0ePe7z2ClKP
-    0sPzBvC+BbSu+uaXXDuk9LqPOgY6j6uxu/tdGtyCZ3h0ggedqBDIKVIMfGIYD0A/2PzF
-    4WDlZrKBV0M/yo0HvDkZtoVGx2a1N4w+sXIiwXCnV9V3cRKidhAY9MWt9ySj0kelVrVT
-    JYyQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1783673286;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=9qYrAyahVQm+QCACc0bP3MsU8p5taox40VDtVUaWnZw=;
-    b=Y8jVIjMApYk/vWjpFWWi70ddgLChXIVwbhPM6Obwn1S/7fFwz39u96Q0ccj7HNrOPe
-    FVbdnUTB3wMbfrtTvdBQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tRkI16oOSW1Ti/f4PoH8="
-Received: from vivo.lan
-    by smtp.strato.de (RZmta 55.5.6 DYNA|AUTH)
-    with ESMTPSA id Ka9fdb26A8m65au
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Fri, 10 Jul 2026 10:48:06 +0200 (CEST)
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
-	sashiko-bot@kernel.org
-Subject: [PATCH] can: isotp: fix use-after-free race with concurrent NETDEV_UNREGISTER
-Date: Fri, 10 Jul 2026 10:47:51 +0200
-Message-ID: <20260710084751.73057-1-socketcan@hartkopp.net>
-X-Mailer: git-send-email 2.53.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HIVrLe3a"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 22B55C2BCF4;
+	Fri, 10 Jul 2026 09:32:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1783675971;
+	bh=IYf8Uug9yv3Ggo7jyUW3hQZUDvKQ+c6mK2ueL5jc6rg=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=HIVrLe3aCjN/IUSw7iKtKhwMUHNwgDrfF7JIP/y+94jmrpgMuX2P6rZZi0PVFt4li
+	 H5lFZ4WBz4dFGe36iZvzflePtefkDOon9GINcIMGB8SN5MHbZ72WzFRpGJ6/+Z79At
+	 7p9v6AhjQmb9b4ZBe9bR18mOe/vEpGr6CC4Gb0alsCGUrs479kasEINQfB0ARLe+MN
+	 7L5RXI8D9wQFgoQnzQy3uC3MUFwwgBH+uqSQ5xvRbr+t3mAcr+Z/t4YYGT2ogFsVT8
+	 ASjeX3v3/MVaPg3g4B1WVjgUn0IPZQR8VwWq6dRilRxjY4ReI4Mb2Nf63O21f8kxhA
+	 fJ7fzfB939BnQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03F6DC44507;
+	Fri, 10 Jul 2026 09:32:51 +0000 (UTC)
+From: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
+Date: Fri, 10 Jul 2026 11:32:45 +0200
+Subject: [PATCH 2/2] can: isotp: fix use-after-free race with concurrent
+ NETDEV_UNREGISTER
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260710-isotp-fixes-v1-2-75a1d11d7df9@hartkopp.net>
+References: <20260710-isotp-fixes-v1-0-75a1d11d7df9@hartkopp.net>
+In-Reply-To: <20260710-isotp-fixes-v1-0-75a1d11d7df9@hartkopp.net>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
+ Marc Kleine-Budde <mkl@pengutronix.de>, sashiko-bot@kernel.org
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783675969; l=6661;
+ i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
+ bh=oX14QXhaq5QLxkUtXOXynJx/mftbrg+b/2bmyGlYVzE=;
+ b=tQmi/liEF47gVAMn6TmjyYt4TmejOka09r5NmajZwQZPtQzoMhfXH79kbEo+1Wj1OXHl/syk8
+ 4X9wmycPLE5BQzxfQkAvpHZxSubuxqS9Y1w4Ws1vhThF1MLTqeprOS+
+X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
+ pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
+X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
+ auth_id=620
+X-Original-From: Oliver Hartkopp <socketcan@hartkopp.net>
+Reply-To: socketcan@hartkopp.net
+
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
 isotp_release() looked up the bound network device via dev_get_by_index()
 using the stored ifindex. During device unregistration the device is
@@ -102,7 +86,7 @@ Reported-by: sashiko-bot@kernel.org
 Link: https://lore.kernel.org/linux-can/20260707101420.47F261F000E9@smtp.kernel.org/
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- net/can/isotp.c | 68 +++++++++++++++++++++++++++++--------------------
+ net/can/isotp.c | 68 +++++++++++++++++++++++++++++++++------------------------
  1 file changed, 40 insertions(+), 28 deletions(-)
 
 diff --git a/net/can/isotp.c b/net/can/isotp.c
@@ -296,6 +280,8 @@ index d30937345bcd..9db8f9f12a0d 100644
  	so->opt.ext_address = CAN_ISOTP_DEFAULT_EXT_ADDRESS;
  	so->opt.rx_ext_address = CAN_ISOTP_DEFAULT_EXT_ADDRESS;
  	so->opt.rxpad_content = CAN_ISOTP_DEFAULT_PAD_CONTENT;
+
 -- 
 2.53.0
+
 
