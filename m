@@ -1,38 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D664A43D4F4
-	for <linux-can@vger.kernel.org>; Fri, 10 Jul 2026 16:47:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B628936F438
+	for <linux-can@vger.kernel.org>; Fri, 10 Jul 2026 16:47:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783702073; cv=none; b=PhjwNqh230eYCmS4T8OqrBjrTDi3C0wmdxyqqd//75VvBACZG+ttB+YoGiXtSD3PJyhKmtNqzP5faMvA4SvUJhWceBW+7inFETLMV0/IkxyopbWiWB9qqaRtZKi1yjHezF4TcD2Mjp4kGFsTm6M6zLdshREfEJIKOOh7g0Pc+Xw=
+	t=1783702073; cv=none; b=L8tJlHkl3FrIoeqNcqWcilIyZerug8vr8Tjeqjm1O+R6ZiI1YnQBpy8LxcZ1rUjY69yr023RU+ey8hwlj6gRYpfWHj5QaqXAVJGN3mEyHHo5IPXhGvKnvso9VUGk3eePD13FroXj+MNeJcUkSlZC4DKTBOzFFWTYnp6sVHB2R24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1783702073; c=relaxed/simple;
-	bh=QIVVJ3xPl5t6i2QKFLQ+uM6jU813WstzCDRFzTXZuFg=;
+	bh=5L3mAcagnL0+8aSyeBPF8CQYmv8aKGeLMmTY7K5YV2s=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=a32R1y4Tc9rlGrUb/BvfnQESDa9lxEYTGcOuwxIGPOU7JbOdh/w/gL2sk+PgvImHD26+VKvCuDCF8vIHQS1VrB1ij1/lcjWYq8X67PFKpD8g+h4JxrtfRISQfz93mBEAXvVn2JzQID1uSMGoISqHUjXIVwkJImgDtYCib66qohA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tbK+nAzg; arc=none smtp.client-ip=10.30.226.201
+	 In-Reply-To:To:Cc; b=esq9zxWhjZGbnPwPImTFX94KtJ75wGVm4a95RrHxU8jPUP8+9bwjzrL7ToO7hSaH1pZ7CYTvExk+DYhrVzU1FQE5lAHnd+JOrRGpyEzGIclwgIC1dZIrbHAVKn0AkrFfIERVn3Xi+NCK08dzzW/3lvjH1qvZ3MzFkIwr5RMDKZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ImRXovEl; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tbK+nAzg"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D2908C2BCF7;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ImRXovEl"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BFBB6C2BCC7;
 	Fri, 10 Jul 2026 16:47:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1783702071;
-	bh=QIVVJ3xPl5t6i2QKFLQ+uM6jU813WstzCDRFzTXZuFg=;
+	bh=5L3mAcagnL0+8aSyeBPF8CQYmv8aKGeLMmTY7K5YV2s=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=tbK+nAzgtOxrNsGDsEYgkZ5IV9WwRwRA/mvci4KHUG9ZewRymyqjHB9lYOh5I/eQw
-	 YenmogCZ/qXkDddlOrtKqoe7MoqT5aznjL+E3FG8c0T7kJp/K6ktX6YxsL/ZP2pRZ3
-	 3KLK899BUwLhrYhpl/QP6A+Pb9HDpcV7fgrDHLZ9Fk4b6OjiOzez49CJ0rRHm5cSca
-	 RlVC+zdpmQ8uXk+wV75I2zk1cBOlmPHfecSc4VL/64uHfxhkmuzdWW1wOC5dIrG9gV
-	 ieCoSLh9LQ+YKM3kZtH/2Z9JNDa2MuLeYws3/jn86yQ2vjdGwD/hwFRJJlZSkXUWb6
-	 fSoaqx5XhcVdQ==
+	b=ImRXovElMkeZHw4biqepNXpKygIhCjwHEafZ/BhFKb7eCjsuttFHyd8hkAQLSABBv
+	 X/gpwT41m1o7jmyySuLLJU21QCl5j1x2iNbglGNpXKYOvya5lNSCPE5K758rwuTqnc
+	 zR1HZm/1OUWIYW77gpqwMNxmSh6uxLk+FmRW2DzMPNiqyxEV4Hxg9R0VRDttiCmZ9q
+	 dQHpCURZv2XESzw1Un2+P/T1jrorreS/L34A3i7jBg/qvxbyTPodJZs4+HPKzEk+qY
+	 CG/DNeIBf4wF4RwsMj46va32xW8ELj7N3q6A5CZVZPXGfKmMQnyrHxrEOA7A0Tv0ze
+	 WZscINn16FwxA==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C01A0C4450D;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7246C4450F;
 	Fri, 10 Jul 2026 16:47:51 +0000 (UTC)
 From: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
-Date: Fri, 10 Jul 2026 18:47:44 +0200
-Subject: [PATCH v5 3/4] can: isotp: fix race between RX timer and
- consecutive frame reception
+Date: Fri, 10 Jul 2026 18:47:43 +0200
+Subject: [PATCH v5 2/4] can: isotp: fix use-after-free race with concurrent
+ NETDEV_UNREGISTER
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -41,18 +41,18 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260710-isotp-fixes-v5-3-15174d82d6f1@hartkopp.net>
+Message-Id: <20260710-isotp-fixes-v5-2-15174d82d6f1@hartkopp.net>
 References: <20260710-isotp-fixes-v5-0-15174d82d6f1@hartkopp.net>
 In-Reply-To: <20260710-isotp-fixes-v5-0-15174d82d6f1@hartkopp.net>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
  Marc Kleine-Budde <mkl@pengutronix.de>, sashiko-bot@kernel.org
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1783702070; l=1756;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783702070; l=8204;
  i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=ZtDFm0eMta+8u2hxg7eL80U5RKwqAeV4A09IBs3aU1Y=;
- b=NBZ8tfJPnfkpR3s5HTGnJgJZm+54yAWYEjswCX9smXx1SdLZ0A/ja7TykZjLlcc24IDf3UTXr
- WiOqmIxdWyRA33RCTYWmAlS/EHcOMBBqU4ofdaku3WqvXl17jaK56bF
+ bh=5LtoUZHf4UuMy+tKs6dfm9V1uT5BWBks88hxu/fgJMY=;
+ b=Izzt+qQmRB4f7cvF4mxywSZuRibhBRLEEyVvbNv49O1Ms9s6UN8rCEW5VGrvymd/Qx8afj4sE
+ +h0MZp4lJAlAu4MtDecSX3KOn8qoq3P+PG9cBWySj/sIaYbpj7KP6fa
 X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
  pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
 X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
@@ -62,50 +62,267 @@ Reply-To: socketcan@hartkopp.net
 
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-When receiving a Consecutive Frame (CF), hrtimer_cancel() is called to stop
-the RX timer. However, if the timer handler (isotp_rx_timer_handler) has
-already fired and is running concurrently on another CPU, hrtimer_cancel()
-will wait for it to finish.
+isotp_release() looked up the bound network device via dev_get_by_index()
+using the stored ifindex. During device unregistration the device is
+unlisted from the ifindex hash before the NETDEV_UNREGISTER notifier
+chain runs, so a concurrent isotp_release() could find no device, skip
+can_rx_unregister() entirely, and still proceed to free the socket.
+Since isotp_release() had already removed itself from the isotp
+notifier list at that point, isotp_notify() would never get a chance to
+clean up either, leaving a stale CAN filter that keeps pointing at the
+freed socket.
 
-By the time it returns, the timer handler might have already reported an
-ETIMEDOUT error and reset the RX state machine. If we blindly continue
-processing the CF, we corrupt the newly reset or idle state.
+Fix this the same way raw.c already does: hold a tracked reference to
+the bound net_device in the socket (so->dev/so->dev_tracker) from
+bind() onward instead of re-resolving it from the ifindex, and
+serialize bind()/release() with rtnl_lock() so that so->dev is always
+consistent with what the NETDEV_UNREGISTER notifier sees. so->dev
+stays valid regardless of ifindex-hash unlisting, and is only ever
+cleared by whichever of isotp_release()/isotp_notify() gets there
+first, so the filter is always removed exactly once.
 
-Fix this by verifying that the state is still ISOTP_WAIT_DATA after
-canceling the hrtimer. If it changed, the reception has already timed out,
-so we drop the frame.
+isotp_bind() now rejects a (re)bind with -EAGAIN while so->tx.state
+isn't ISOTP_IDLE yet, so a timer left running by a prior
+NETDEV_UNREGISTER can't act on a newly bound so->ifindex. Both checks
+share the same lock_sock() section, so there is no window in which a
+concurrent isotp_notify() clearing so->bound could be missed.
 
 Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
 Reported-by: sashiko-bot@kernel.org
-Link: https://lore.kernel.org/linux-can/20260710142146.BDAE61F000E9@smtp.kernel.org/
+Link: https://lore.kernel.org/linux-can/20260707101420.47F261F000E9@smtp.kernel.org/
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- net/can/isotp.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ net/can/isotp.c | 87 ++++++++++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 59 insertions(+), 28 deletions(-)
 
 diff --git a/net/can/isotp.c b/net/can/isotp.c
-index e7597ca3e140..c0edbd35516c 100644
+index d30937345bcd..e7597ca3e140 100644
 --- a/net/can/isotp.c
 +++ b/net/can/isotp.c
-@@ -575,10 +575,18 @@ static int isotp_rcv_cf(struct sock *sk, struct canfd_frame *cf, int ae,
- 		so->lastrxcf_tstamp = skb->tstamp;
+@@ -150,10 +150,12 @@ struct tpcon {
+ 
+ struct isotp_sock {
+ 	struct sock sk;
+ 	int bound;
+ 	int ifindex;
++	struct net_device *dev;
++	netdevice_tracker dev_tracker;
+ 	canid_t txid;
+ 	canid_t rxid;
+ 	ktime_t tx_gap;
+ 	ktime_t lastrxcf_tstamp;
+ 	struct hrtimer rxtimer, txtimer, txfrtimer;
+@@ -976,10 +978,18 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 		err = wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
+ 		if (err)
+ 			goto err_event_drop;
  	}
  
++	/* so->bound is only checked once above - a wakeup may have
++	 * unbound/rebound the socket meanwhile, so re-validate it
++	 */
++	if (!so->bound) {
++		err = -EADDRNOTAVAIL;
++		goto err_out_drop;
++	}
++
+ 	/* PDU size > default => try max_pdu_size */
+ 	if (size > so->tx.buflen && so->tx.buflen < max_pdu_size) {
+ 		u8 *newbuf = kmalloc(max_pdu_size, GFP_KERNEL);
+ 
+ 		if (newbuf) {
+@@ -1217,32 +1227,34 @@ static int isotp_release(struct socket *sock)
+ 		spin_lock(&isotp_notifier_lock);
+ 	}
+ 	list_del(&so->notifier);
+ 	spin_unlock(&isotp_notifier_lock);
+ 
++	rtnl_lock();
+ 	lock_sock(sk);
+ 
+-	/* remove current filters & unregister */
+-	if (so->bound) {
+-		if (so->ifindex) {
+-			struct net_device *dev;
+-
+-			dev = dev_get_by_index(net, so->ifindex);
+-			if (dev) {
+-				if (isotp_register_rxid(so))
+-					can_rx_unregister(net, dev, so->rxid,
+-							  SINGLE_MASK(so->rxid),
+-							  isotp_rcv, sk);
+-
+-				can_rx_unregister(net, dev, so->txid,
+-						  SINGLE_MASK(so->txid),
+-						  isotp_rcv_echo, sk);
+-				dev_put(dev);
+-			}
+-		}
++	/* remove current filters & unregister
++	 * tracked reference so->dev is taken at bind() time with rtnl_lock
++	 */
++	if (so->bound && so->dev) {
++		if (isotp_register_rxid(so))
++			can_rx_unregister(net, so->dev, so->rxid,
++					  SINGLE_MASK(so->rxid),
++					  isotp_rcv, sk);
++
++		can_rx_unregister(net, so->dev, so->txid,
++				  SINGLE_MASK(so->txid),
++				  isotp_rcv_echo, sk);
++		netdev_put(so->dev, &so->dev_tracker);
+ 	}
+ 
++	so->ifindex = 0;
++	so->bound = 0;
++	so->dev = NULL;
++
++	rtnl_unlock();
++
+ 	/* Always wait for a grace period before touching the timers below.
+ 	 * A concurrent NETDEV_UNREGISTER may have already unregistered our
+ 	 * filters and cleared so->bound in isotp_notify() without waiting
+ 	 * for in-flight isotp_rcv() callers to finish, so this call must not
+ 	 * be skipped just because so->bound is already 0 here.
+@@ -1251,13 +1263,10 @@ static int isotp_release(struct socket *sock)
+ 
+ 	hrtimer_cancel(&so->txfrtimer);
+ 	hrtimer_cancel(&so->txtimer);
  	hrtimer_cancel(&so->rxtimer);
  
-+	/* isotp_rx_timer_handler() may have raced us for so->rx.state
-+	 * while hrtimer_cancel() above waited for it to finish, already
-+	 * reporting ETIMEDOUT and resetting the reception; don't process
-+	 * this CF into a reassembly that has already been given up on.
-+	 */
-+	if (so->rx.state != ISOTP_WAIT_DATA)
-+		return 1;
-+
- 	/* CFs are never longer than the FF */
- 	if (cf->len > so->rx.ll_dl)
- 		return 1;
+-	so->ifindex = 0;
+-	so->bound = 0;
+-
+ 	sock_orphan(sk);
+ 	sock->sk = NULL;
  
- 	/* CFs have usually the LL_DL length */
+ 	release_sock(sk);
+ 	sock_prot_inuse_add(net, sk->sk_prot, -1);
+@@ -1308,17 +1317,29 @@ static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int l
+ 	}
+ 
+ 	if (!addr->can_ifindex)
+ 		return -ENODEV;
+ 
++	rtnl_lock();
+ 	lock_sock(sk);
+ 
+ 	if (so->bound) {
+ 		err = -EINVAL;
+ 		goto out;
+ 	}
+ 
++	/* A transmission that outlived a previous binding (unbound by
++	 * NETDEV_UNREGISTER) may still be draining; the FC/echo watchdog
++	 * timers bound how long this takes. Checked together with
++	 * so->bound in the same lock_sock() section above, so there is no
++	 * window in which a concurrent isotp_notify() could be missed.
++	 */
++	if (so->tx.state != ISOTP_IDLE) {
++		err = -EAGAIN;
++		goto out;
++	}
++
+ 	/* ensure different CAN IDs when the rx_id is to be registered */
+ 	if (isotp_register_rxid(so) && rx_id == tx_id) {
+ 		err = -EADDRNOTAVAIL;
+ 		goto out;
+ 	}
+@@ -1327,18 +1348,16 @@ static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int l
+ 	if (!dev) {
+ 		err = -ENODEV;
+ 		goto out;
+ 	}
+ 	if (dev->type != ARPHRD_CAN) {
+-		dev_put(dev);
+ 		err = -ENODEV;
+-		goto out;
++		goto out_put_dev;
+ 	}
+ 	if (READ_ONCE(dev->mtu) < so->ll.mtu) {
+-		dev_put(dev);
+ 		err = -EINVAL;
+-		goto out;
++		goto out_put_dev;
+ 	}
+ 	if (!(dev->flags & IFF_UP))
+ 		notify_enetdown = 1;
+ 
+ 	ifindex = dev->ifindex;
+@@ -1352,20 +1371,29 @@ static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int l
+ 
+ 	/* register for echo skb's */
+ 	can_rx_register(net, dev, tx_id, SINGLE_MASK(tx_id),
+ 			isotp_rcv_echo, sk, "isotpe", sk);
+ 
+-	dev_put(dev);
+-
+ 	/* switch to new settings */
+ 	so->ifindex = ifindex;
+ 	so->rxid = rx_id;
+ 	so->txid = tx_id;
+ 	so->bound = 1;
+ 
++	/* bind() ok -> hold a reference for so->dev so that isotp_release()
++	 * can safely reach the device later, even if a concurrent
++	 * NETDEV_UNREGISTER has already unlisted it by ifindex.
++	 */
++	so->dev = dev;
++	netdev_hold(so->dev, &so->dev_tracker, GFP_KERNEL);
++
++out_put_dev:
++	/* remove potential reference from dev_get_by_index() */
++	dev_put(dev);
+ out:
+ 	release_sock(sk);
++	rtnl_unlock();
+ 
+ 	if (notify_enetdown) {
+ 		sk->sk_err = ENETDOWN;
+ 		if (!sock_flag(sk, SOCK_DEAD))
+ 			sk_error_report(sk);
+@@ -1564,11 +1592,11 @@ static void isotp_notify(struct isotp_sock *so, unsigned long msg,
+ 	struct sock *sk = &so->sk;
+ 
+ 	if (!net_eq(dev_net(dev), sock_net(sk)))
+ 		return;
+ 
+-	if (so->ifindex != dev->ifindex)
++	if (so->dev != dev)
+ 		return;
+ 
+ 	switch (msg) {
+ 	case NETDEV_UNREGISTER:
+ 		lock_sock(sk);
+@@ -1580,14 +1608,16 @@ static void isotp_notify(struct isotp_sock *so, unsigned long msg,
+ 						  isotp_rcv, sk);
+ 
+ 			can_rx_unregister(dev_net(dev), dev, so->txid,
+ 					  SINGLE_MASK(so->txid),
+ 					  isotp_rcv_echo, sk);
++			netdev_put(so->dev, &so->dev_tracker);
+ 		}
+ 
+ 		so->ifindex = 0;
+ 		so->bound  = 0;
++		so->dev = NULL;
+ 		release_sock(sk);
+ 
+ 		sk->sk_err = ENODEV;
+ 		if (!sock_flag(sk, SOCK_DEAD))
+ 			sk_error_report(sk);
+@@ -1643,10 +1673,11 @@ static int isotp_init(struct sock *sk)
+ {
+ 	struct isotp_sock *so = isotp_sk(sk);
+ 
+ 	so->ifindex = 0;
+ 	so->bound = 0;
++	so->dev = NULL;
+ 
+ 	so->opt.flags = CAN_ISOTP_DEFAULT_FLAGS;
+ 	so->opt.ext_address = CAN_ISOTP_DEFAULT_EXT_ADDRESS;
+ 	so->opt.rx_ext_address = CAN_ISOTP_DEFAULT_EXT_ADDRESS;
+ 	so->opt.rxpad_content = CAN_ISOTP_DEFAULT_PAD_CONTENT;
 
 -- 
 2.53.0
