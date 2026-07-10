@@ -1,38 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB91443DA21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D664A43D4F4
 	for <linux-can@vger.kernel.org>; Fri, 10 Jul 2026 16:47:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783702073; cv=none; b=EI8pbmWZAGxUrgv3ivHawNf/7T7ntNheSRR5wOGjVX2s9EHP8jEg1GKeWKlkAODcsxRQXwO1fIVp9pEqPKyEmQA2/12ncMMvQZp/DL54mMEcJgdVE1A/asuegmztLEBFXjhQaQLAY2ZjbkHxn8WXE/yImhzw8Ny/WwZ0LnuIT5M=
+	t=1783702073; cv=none; b=PhjwNqh230eYCmS4T8OqrBjrTDi3C0wmdxyqqd//75VvBACZG+ttB+YoGiXtSD3PJyhKmtNqzP5faMvA4SvUJhWceBW+7inFETLMV0/IkxyopbWiWB9qqaRtZKi1yjHezF4TcD2Mjp4kGFsTm6M6zLdshREfEJIKOOh7g0Pc+Xw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1783702073; c=relaxed/simple;
-	bh=VQe/jgFFTN7W5Ep2gIvymZ3dZ87mYZKX5LamygCl/20=;
+	bh=QIVVJ3xPl5t6i2QKFLQ+uM6jU813WstzCDRFzTXZuFg=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=VU43Ld2THq1jFqHrTQS9qDeE0QW2g/nQkzFXqGE63ZkhSA92i01Fm0YNEW54++uHGGmkZSZVLG9lR0Am7AzyP3zQr/bCFd3YrgkwELo9FVJqjhGzuH+AB/y5wgeIJ8CSApgcKAvOUEa1iW+HNuXF75g2q5hPDW42JEsiAep+o78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o7Cb3t83; arc=none smtp.client-ip=10.30.226.201
+	 In-Reply-To:To:Cc; b=a32R1y4Tc9rlGrUb/BvfnQESDa9lxEYTGcOuwxIGPOU7JbOdh/w/gL2sk+PgvImHD26+VKvCuDCF8vIHQS1VrB1ij1/lcjWYq8X67PFKpD8g+h4JxrtfRISQfz93mBEAXvVn2JzQID1uSMGoISqHUjXIVwkJImgDtYCib66qohA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tbK+nAzg; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o7Cb3t83"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id AB9CDC2BCB8;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tbK+nAzg"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D2908C2BCF7;
 	Fri, 10 Jul 2026 16:47:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1783702071;
-	bh=VQe/jgFFTN7W5Ep2gIvymZ3dZ87mYZKX5LamygCl/20=;
+	bh=QIVVJ3xPl5t6i2QKFLQ+uM6jU813WstzCDRFzTXZuFg=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=o7Cb3t834XW/7VzDF6SQ97phKePbXIy1TiZunbnhjtKaQMnh198+E2/w65HmCtNeQ
-	 EPu+LoQ97Yx7y1zCd9FOTbcT6WE37I4UMRR/nvrwZfPTQQFHFSBLOlKHk78BFog/5I
-	 LI4u1P8U1nFtuT08ppDpYVJMU+iC4hUkLAMqRzRYyUar8Srvnehvpx1QE9i4j9FdIn
-	 FSTm91n5Ou1AaUnZDAnZW7Za7U9IZnPOjW1FhG7D0Uzt3vTMSMbRR//G/RUJESv33u
-	 bmiopK4NRUrt8nrtJp263d7cBgrpcX/Yn0ZhixCqKP+YDVvBtf1cjpdJslyec97oWh
-	 0xh+z3cxj3Q3w==
+	b=tbK+nAzgtOxrNsGDsEYgkZ5IV9WwRwRA/mvci4KHUG9ZewRymyqjHB9lYOh5I/eQw
+	 YenmogCZ/qXkDddlOrtKqoe7MoqT5aznjL+E3FG8c0T7kJp/K6ktX6YxsL/ZP2pRZ3
+	 3KLK899BUwLhrYhpl/QP6A+Pb9HDpcV7fgrDHLZ9Fk4b6OjiOzez49CJ0rRHm5cSca
+	 RlVC+zdpmQ8uXk+wV75I2zk1cBOlmPHfecSc4VL/64uHfxhkmuzdWW1wOC5dIrG9gV
+	 ieCoSLh9LQ+YKM3kZtH/2Z9JNDa2MuLeYws3/jn86yQ2vjdGwD/hwFRJJlZSkXUWb6
+	 fSoaqx5XhcVdQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88ED1C44510;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C01A0C4450D;
 	Fri, 10 Jul 2026 16:47:51 +0000 (UTC)
 From: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
-Date: Fri, 10 Jul 2026 18:47:42 +0200
-Subject: [PATCH v5 1/4] can: isotp: use unconditional synchronize_rcu() in
- isotp_release()
+Date: Fri, 10 Jul 2026 18:47:44 +0200
+Subject: [PATCH v5 3/4] can: isotp: fix race between RX timer and
+ consecutive frame reception
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -41,19 +41,18 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260710-isotp-fixes-v5-1-15174d82d6f1@hartkopp.net>
+Message-Id: <20260710-isotp-fixes-v5-3-15174d82d6f1@hartkopp.net>
 References: <20260710-isotp-fixes-v5-0-15174d82d6f1@hartkopp.net>
 In-Reply-To: <20260710-isotp-fixes-v5-0-15174d82d6f1@hartkopp.net>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
- Marc Kleine-Budde <mkl@pengutronix.de>, 
- Nico Yip <zdi-disclosures@trendmicro.com>
+ Marc Kleine-Budde <mkl@pengutronix.de>, sashiko-bot@kernel.org
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1783702070; l=2234;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783702070; l=1756;
  i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=cSnqoBGcs6wuKBDxRmdL8uS6RqC/TXOr+Os8bOLeol4=;
- b=macVHCWFM9RU6PIYD6969JJoJ+FdnbYAYiXLYITOohM/2raAsgiCX6AQjpfUKQF/0kTFYPCGF
- gsLWAgZpz5/BVl/7ZmRd2p26iHfHbs06P2EVLWEt25bkRAave+pctZb
+ bh=ZtDFm0eMta+8u2hxg7eL80U5RKwqAeV4A09IBs3aU1Y=;
+ b=NBZ8tfJPnfkpR3s5HTGnJgJZm+54yAWYEjswCX9smXx1SdLZ0A/ja7TykZjLlcc24IDf3UTXr
+ WiOqmIxdWyRA33RCTYWmAlS/EHcOMBBqU4ofdaku3WqvXl17jaK56bF
 X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
  pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
 X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
@@ -63,58 +62,50 @@ Reply-To: socketcan@hartkopp.net
 
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-isotp_notify() unregisters the (RCU) CAN filters via can_rx_unregister()
-and clears so->bound without waiting for a grace period. isotp_release()
-uses so->bound to decide whether it needs to call synchronize_rcu()
-before cancelling so->rxtimer, so when NETDEV_UNREGISTER runs first it
-skips that synchronize_rcu() and can cancel the timer while an
-in-flight isotp_rcv() is still executing and about to re-arm it via
-isotp_send_fc(), leading to a use-after-free timer callback on the
-freed socket.
+When receiving a Consecutive Frame (CF), hrtimer_cancel() is called to stop
+the RX timer. However, if the timer handler (isotp_rx_timer_handler) has
+already fired and is running concurrently on another CPU, hrtimer_cancel()
+will wait for it to finish.
 
-sakisho-bot remarked a problem with rtnl_lock held in isotp_notify(),
-therefore make isotp_release() always call synchronize_rcu() before
-cancelling the timers, regardless of so->bound. This still closes the
-original race (isotp_notify() clearing so->bound without waiting for
-in-flight isotp_rcv() callers before isotp_release() cancels the RX
-timer) without adding any RCU wait to the netdevice notifier path.
+By the time it returns, the timer handler might have already reported an
+ETIMEDOUT error and reset the RX state machine. If we blindly continue
+processing the CF, we corrupt the newly reset or idle state.
 
-Fixes: 14a4696bc311 ("can: isotp: isotp_release(): omit unintended hrtimer restart on socket release")
-Closes: https://lore.kernel.org/linux-can/20260707085210.6B6C01F000E9@smtp.kernel.org/
-Reported-by: Nico Yip <zdi-disclosures@trendmicro.com> (ZDI-CAN-31764)
+Fix this by verifying that the state is still ISOTP_WAIT_DATA after
+canceling the hrtimer. If it changed, the reception has already timed out,
+so we drop the frame.
+
+Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
+Reported-by: sashiko-bot@kernel.org
+Link: https://lore.kernel.org/linux-can/20260710142146.BDAE61F000E9@smtp.kernel.org/
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- net/can/isotp.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ net/can/isotp.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/net/can/isotp.c b/net/can/isotp.c
-index c48b4a818297..d30937345bcd 100644
+index e7597ca3e140..c0edbd35516c 100644
 --- a/net/can/isotp.c
 +++ b/net/can/isotp.c
-@@ -1235,15 +1235,22 @@ static int isotp_release(struct socket *sock)
- 
- 				can_rx_unregister(net, dev, so->txid,
- 						  SINGLE_MASK(so->txid),
- 						  isotp_rcv_echo, sk);
- 				dev_put(dev);
--				synchronize_rcu();
- 			}
- 		}
+@@ -575,10 +575,18 @@ static int isotp_rcv_cf(struct sock *sk, struct canfd_frame *cf, int ae,
+ 		so->lastrxcf_tstamp = skb->tstamp;
  	}
  
-+	/* Always wait for a grace period before touching the timers below.
-+	 * A concurrent NETDEV_UNREGISTER may have already unregistered our
-+	 * filters and cleared so->bound in isotp_notify() without waiting
-+	 * for in-flight isotp_rcv() callers to finish, so this call must not
-+	 * be skipped just because so->bound is already 0 here.
-+	 */
-+	synchronize_rcu();
-+
- 	hrtimer_cancel(&so->txfrtimer);
- 	hrtimer_cancel(&so->txtimer);
  	hrtimer_cancel(&so->rxtimer);
  
- 	so->ifindex = 0;
++	/* isotp_rx_timer_handler() may have raced us for so->rx.state
++	 * while hrtimer_cancel() above waited for it to finish, already
++	 * reporting ETIMEDOUT and resetting the reception; don't process
++	 * this CF into a reassembly that has already been given up on.
++	 */
++	if (so->rx.state != ISOTP_WAIT_DATA)
++		return 1;
++
+ 	/* CFs are never longer than the FF */
+ 	if (cf->len > so->rx.ll_dl)
+ 		return 1;
+ 
+ 	/* CFs have usually the LL_DL length */
 
 -- 
 2.53.0
