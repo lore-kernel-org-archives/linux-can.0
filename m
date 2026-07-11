@@ -1,37 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D1923921E7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF1A38AC83
 	for <linux-can@vger.kernel.org>; Sat, 11 Jul 2026 12:07:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783771636; cv=none; b=NGzxlUx5odivbsyCq38Jcn31kfBmv0MFWdbSPa8t66k6PXLztsNPy1EH+W6PBMrcxD6FbIBPmS70kA+ZgqtaAXSF124KWWhmEgSETVreiiCGbukMUw/TZZjjfySWb0HsJ2VxjpwLLANpCYo6oeY7VfgdbNjHeB2ONMujyX9tzlY=
+	t=1783771636; cv=none; b=HGsP5pP2xp8J7fDAN4o+1YnZ8blW31pRbWpq43bd1joq8KeZchZD0yMO+E89Fg4y1tmtVay41LrtP1lNDWkZHeRXpwYYwJZ+PdD8c9Vl8/r98U261fKLdvfRuFX5SXj2MQ6NDPE2n9J779bzuenVY76pi+IUVf1KkYh6kv2wgXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1783771636; c=relaxed/simple;
-	bh=cifrS8XB2M5Sb7Mga4Ht3Xqhy5uFkAiqFJeObjOwE/8=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=KPkppkw9VSoAH/PNqP7z9zgFxH9Qw1fRD0W0GADPGJgsC+EqRoV5jDIsIYYuzvVHEaY4uEKsrICm0S7bTtkuN33kwDGDzJ0FJRYO6hSjcVnXjI3DAEdJN9yszHzq+kJKU0tZu9U3EjvJxctM6PCHBmB5IPCwLF8aoBm3C8tD79w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rk/jUg9O; arc=none smtp.client-ip=10.30.226.201
+	bh=IvodxcRlklD6YJY3tUH9UB/7Q3X8cXVhAo3+PsLSN90=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=OTs5PzjCS6X7ep1mvz5l/v7jq0aouDKO9kIS3F2oqPfWR5j7zNe1KNbVEFzE6vmq2rhetBhKMu0PMGj9tXTYVlQSFYlSSsBq84s8paDaaJ9Wx/dN5iR90d4nwdgc32/rg/lEKGi9b2hSHNDOIQgahZgtKZL/0D+vhWhrl4pNrVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WkdRguuU; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rk/jUg9O"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E7342C2BCB3;
-	Sat, 11 Jul 2026 12:07:15 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WkdRguuU"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1DAE8C2BCF6;
+	Sat, 11 Jul 2026 12:07:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1783771636;
-	bh=cifrS8XB2M5Sb7Mga4Ht3Xqhy5uFkAiqFJeObjOwE/8=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=Rk/jUg9OaYWYPf3QPSboPO5MZlneWzFvykCVvETHBPUpL6JGQsWUUNwV4uWrn2lrM
-	 Q5Q2Wc8E0XlH6VH7p+cBvkwpttuAGnxMfZKrPVeIc5UdspLzCfxhexHJyZfarZvDq9
-	 v62oOdKPf9FefX6QuOXFn59xWHSXZr5kD0tfXY7GZhRKig4ItW7rAno9CWgHGHv4R2
-	 1lB0Dw80aqkfpbJfdYpznA7f0rNNyxdc8wo+d1J6K/LYstcGHyttbz6kgbFVyPYrnb
-	 UfGqHg9ebeFtKfUmPP0xZbV9BUBHlqa//PYIwGSvZwEmyL02c9+ZkX6LjXUXC23/vU
-	 5tQe9LUusyO2g==
+	bh=IvodxcRlklD6YJY3tUH9UB/7Q3X8cXVhAo3+PsLSN90=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=WkdRguuU/aCrhEY6wDfCz208MYw+TqcSaQwUnFhBqJ83rme1g/iBR7w2v+H7PuyTJ
+	 Lue4+oXAqanJrPbF7IFNUHsnxJdER06Y6kCeCbwKyahN0D0S01OA3ix451DGwvt8Zt
+	 Wzm0hBhA45BlzLfTyEFdrBpbNbUM6hXOeKaIgsAAMh2SciV/F1NK/VCsmqgLDPva+a
+	 zm5hPGSErETWOdk1y+aAj7ftyUb3Rc6WXuwRclTNpw1xv8NzlxbUoPQrUYC5iX6AKf
+	 ajwk28dH9C1rjlnQb2qTsKHhMuBtdTyrbDHcyF96ftmtmXSl0fYFKYUEWmpYGDbYKJ
+	 agpOhXR2EMz1A==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5871C43458;
-	Sat, 11 Jul 2026 12:07:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0415AC44506;
+	Sat, 11 Jul 2026 12:07:16 +0000 (UTC)
 From: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
-Subject: [PATCH v7 0/5] net: can: isotp-fixes
-Date: Sat, 11 Jul 2026 14:07:11 +0200
-Message-Id: <20260711-isotp-fixes-v7-0-f03af24d8397@hartkopp.net>
+Date: Sat, 11 Jul 2026 14:07:14 +0200
+Subject: [PATCH v7 3/5] can: isotp: fix race between RX/TX timers and frame
+ reception
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -40,22 +41,18 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAO8xUmoC/33NTWrDMBAF4KsEraui0a+dVe8RupA8o1ot2MZyT
- Urw3SunuyK0fMz73jxYpjVRZtfLg620p5zmqQT3cmHD6KcP4glLZlJIKxwInvK8LTymO2VOHp3
- uBFoXIitiWel5KOD2/pfzd/ikYTsnzsaY8javP893O5y9+vIOXHBnPCAAOoz92+jX7WtelteJN
- naO77LBZeFhMI6kNb0OssJVg6vCRYfBdiQdilDhusF14dJrH7Vy0UKNmwY3hYMBp7GTaCNUuG1
- wW7gHNUijetEr/MeP4/gFvgg5ifYBAAA=
-X-Change-ID: 20260710-isotp-fixes-ead7480d67bf
+Message-Id: <20260711-isotp-fixes-v7-3-f03af24d8397@hartkopp.net>
+References: <20260711-isotp-fixes-v7-0-f03af24d8397@hartkopp.net>
+In-Reply-To: <20260711-isotp-fixes-v7-0-f03af24d8397@hartkopp.net>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
- Marc Kleine-Budde <mkl@pengutronix.de>, 
- Nico Yip <zdi-disclosures@trendmicro.com>, sashiko-bot@kernel.org
+ Marc Kleine-Budde <mkl@pengutronix.de>, sashiko-bot@kernel.org
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1783771634; l=2690;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783771634; l=7226;
  i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=cifrS8XB2M5Sb7Mga4Ht3Xqhy5uFkAiqFJeObjOwE/8=;
- b=UT4NjMaFQBDQ49o54nSwMvUrf98o2pyFhcyyYMwXrpMmIXyEgUSG9nNU1K2oxExKtYFj0/m4V
- dz+gDyMNSrJCxRrhH/YiOdHAu/fc5ppd9DwcAuwUBeT8FNrnybr8dnI
+ bh=g5Q4jzJmCFa2+qxJr3RmgfEOzAHC1nAZx/SokfGpgfI=;
+ b=bnoo2OCjwXO6b8QbW5K11GB+H3cFmZ1UWGzDtH+E3brMfL1OSyUHlxkK12VzsTJPPqvM4YKmX
+ QcLs0LwXQwnC87vDzfWN4SXUrLR34rUagXrQKxgI5vnqJ2nbIPM3JW/
 X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
  pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
 X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
@@ -63,62 +60,198 @@ X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
 X-Original-From: Oliver Hartkopp <socketcan@hartkopp.net>
 Reply-To: socketcan@hartkopp.net
 
-As sashiko-bot was not able to check the second patch this bundle is
-re-posted with b4 preparation.
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Fixed the remarks reported by sashiko-bot of V6 patchset.
+When receiving a Consecutive Frame, Flow Control frame, or local echo
+frame, hrtimer_cancel() is called to stop the corresponding watchdog
+timer. If the timer handler was already running concurrently on another
+CPU, hrtimer_cancel() waits for it to finish.
 
+By the time it returns, the timer handler may have already reported a
+timeout error and reset the state machine. Blindly continuing corrupts
+the newly reset or idle state, and can let a concurrent sendmsg() claim
+the same IDLE state at the same time.
+
+Fix this by re-checking the state right after canceling the timer in all
+three call sites (isotp_rcv_cf(), isotp_rcv_fc(), isotp_rcv_echo()). If
+the state changed, the transfer has already timed out, so drop the frame
+instead of resuming it.
+
+However, the state check alone cannot tell a genuinely resumed transfer
+from a new one: while hrtimer_cancel() waits, a concurrent sendmsg()
+could claim ISOTP_IDLE and start a new transfer that happens to reach
+the very same state again. so->tx_gen, bumped each time sendmsg() claims
+a new transfer, disambiguates the two and is checked alongside the state.
+
+For the same reason, isotp_sendmsg()'s err_event_drop path must cancel
+so->txfrtimer/txtimer before setting so->tx.state to ISOTP_IDLE, not
+after: otherwise a concurrent sendmsg() could claim ISOTP_SENDING and
+start filling so->tx.buf while a still-armed timer from the aborted
+transfer fires and sends a stale frame from it.
+
+Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
+Reported-by: sashiko-bot@kernel.org
+Link: https://lore.kernel.org/linux-can/20260710142146.BDAE61F000E9@smtp.kernel.org/
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
-Changes in v7:
-- patch 3: add helper so->tx_gen to monitor new ISOTP_SENDING attempts
-- patch 4: prevent missasignment of sk_err report with new so->tx_gen
-- Link to v6: https://patch.msgid.link/20260710-isotp-fixes-v6-0-a13c2539093d@hartkopp.net
+ net/can/isotp.c | 51 +++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 47 insertions(+), 4 deletions(-)
 
-Changes in v6:
-- patch 2: check for rx state and tx state to be IDLE in isotp_bind() (sashiko-bot)
-- patch 3: double check rx/tx states after all hrtimer_cancel() calls (sashiko-bot)
-           move ISOTP_IDLE in err_event_drop for the same reason
-- patch 4: use READ_ONCE() to prevent compiler load tearing as remarked by sashiko-bot
-- Link to v5: https://patch.msgid.link/20260710-isotp-fixes-v5-0-15174d82d6f1@hartkopp.net
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index 44c044eb83e1..f05703ddd2ea 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -164,10 +164,11 @@ struct isotp_sock {
+ 	struct can_isotp_ll_options ll;
+ 	u32 frame_txtime;
+ 	u32 force_tx_stmin;
+ 	u32 force_rx_stmin;
+ 	u32 cfecho; /* consecutive frame echo tag */
++	u32 tx_gen; /* generation, bumped per new tx transfer */
+ 	struct tpcon rx, tx;
+ 	struct list_head notifier;
+ 	wait_queue_head_t wait;
+ 	spinlock_t rx_lock; /* protect single thread state machine */
+ };
+@@ -369,17 +370,27 @@ static int check_pad(struct isotp_sock *so, struct canfd_frame *cf,
+ static void isotp_send_cframe(struct isotp_sock *so);
+ 
+ static int isotp_rcv_fc(struct isotp_sock *so, struct canfd_frame *cf, int ae)
+ {
+ 	struct sock *sk = &so->sk;
++	u32 gen = READ_ONCE(so->tx_gen);
+ 
+ 	if (so->tx.state != ISOTP_WAIT_FC &&
+ 	    so->tx.state != ISOTP_WAIT_FIRST_FC)
+ 		return 0;
+ 
+ 	hrtimer_cancel(&so->txtimer);
+ 
++	/* hrtimer_cancel() may have let isotp_tx_timer_handler() give up on
++	 * this job (state changed) or a new sendmsg() claim and reach the
++	 * same state again (tx_gen changed) - either way this FC is stale.
++	 */
++	if ((so->tx.state != ISOTP_WAIT_FC &&
++	     so->tx.state != ISOTP_WAIT_FIRST_FC) ||
++	    READ_ONCE(so->tx_gen) != gen)
++		return 1;
++
+ 	if ((cf->len < ae + FC_CONTENT_SZ) ||
+ 	    ((so->opt.flags & ISOTP_CHECK_PADDING) &&
+ 	     check_pad(so, cf, ae + FC_CONTENT_SZ, so->opt.rxpad_content))) {
+ 		/* malformed PDU - report 'not a data message' */
+ 		sk->sk_err = EBADMSG;
+@@ -575,10 +586,18 @@ static int isotp_rcv_cf(struct sock *sk, struct canfd_frame *cf, int ae,
+ 		so->lastrxcf_tstamp = skb->tstamp;
+ 	}
+ 
+ 	hrtimer_cancel(&so->rxtimer);
+ 
++	/* isotp_rx_timer_handler() may have raced us for so->rx.state
++	 * while hrtimer_cancel() above waited for it to finish, already
++	 * reporting ETIMEDOUT and resetting the reception; don't process
++	 * this CF into a reassembly that has already been given up on.
++	 */
++	if (so->rx.state != ISOTP_WAIT_DATA)
++		return 1;
++
+ 	/* CFs are never longer than the FF */
+ 	if (cf->len > so->rx.ll_dl)
+ 		return 1;
+ 
+ 	/* CFs have usually the LL_DL length */
+@@ -868,10 +887,11 @@ static void isotp_create_fframe(struct canfd_frame *cf, struct isotp_sock *so,
+ static void isotp_rcv_echo(struct sk_buff *skb, void *data)
+ {
+ 	struct sock *sk = (struct sock *)data;
+ 	struct isotp_sock *so = isotp_sk(sk);
+ 	struct canfd_frame *cf = (struct canfd_frame *)skb->data;
++	u32 gen = READ_ONCE(so->tx_gen);
+ 
+ 	/* only handle my own local echo CF/SF skb's (no FF!) */
+ 	if (skb->sk != sk || so->cfecho != *(u32 *)cf->data)
+ 		return;
+ 
+@@ -879,10 +899,18 @@ static void isotp_rcv_echo(struct sk_buff *skb, void *data)
+ 	hrtimer_cancel(&so->txtimer);
+ 
+ 	/* local echo skb with consecutive frame has been consumed */
+ 	so->cfecho = 0;
+ 
++	/* hrtimer_cancel() may have let isotp_tx_timer_handler() give up
++	 * on this job (state changed) or a new sendmsg() claim and reach
++	 * ISOTP_SENDING again (tx_gen changed) - either way this echo is
++	 * stale.
++	 */
++	if (so->tx.state != ISOTP_SENDING || READ_ONCE(so->tx_gen) != gen)
++		return;
++
+ 	if (so->tx.idx >= so->tx.len) {
+ 		/* we are done */
+ 		so->tx.state = ISOTP_IDLE;
+ 		wake_up_interruptible(&so->wait);
+ 		return;
+@@ -960,10 +988,11 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 	int ae = (so->opt.flags & CAN_ISOTP_EXTEND_ADDR) ? 1 : 0;
+ 	int wait_tx_done = (so->opt.flags & CAN_ISOTP_WAIT_TX_DONE) ? 1 : 0;
+ 	s64 hrtimer_sec = ISOTP_ECHO_TIMEOUT;
+ 	int off;
+ 	int err;
++	u32 my_gen;
+ 
+ 	if (!so->bound || so->tx.state == ISOTP_SHUTDOWN)
+ 		return -EADDRNOTAVAIL;
+ 
+ 	while (cmpxchg(&so->tx.state, ISOTP_IDLE, ISOTP_SENDING) != ISOTP_IDLE) {
+@@ -978,10 +1007,17 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 		err = wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
+ 		if (err)
+ 			goto err_event_drop;
+ 	}
+ 
++	/* new transfer: bump generation and drop any echo tag left behind
++	 * by a previously aborted transfer
++	 */
++	my_gen = so->tx_gen + 1;
++	WRITE_ONCE(so->tx_gen, my_gen);
++	so->cfecho = 0;
++
+ 	/* so->bound is only checked once above - a wakeup may have
+ 	 * unbound/rebound the socket meanwhile, so re-validate it
+ 	 */
+ 	if (!so->bound) {
+ 		err = -EADDRNOTAVAIL;
+@@ -1141,17 +1177,24 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 	}
+ 
+ 	return size;
+ 
+ err_event_drop:
+-	/* got signal: force tx state machine to be idle */
+-	so->tx.state = ISOTP_IDLE;
++	/* got signal: cancel timers before touching state, so a concurrent
++	 * sendmsg() can't claim ISOTP_SENDING while a stale timer is armed
++	 */
+ 	hrtimer_cancel(&so->txfrtimer);
+ 	hrtimer_cancel(&so->txtimer);
+ err_out_drop:
+-	/* drop this PDU and unlock a potential wait queue */
+-	so->tx.state = ISOTP_IDLE;
++	/* drop this PDU and unlock a potential wait queue, but only if no
++	 * concurrent sendmsg() has since claimed the socket for a new
++	 * transfer while we were cancelling timers above
++	 */
++	if (READ_ONCE(so->tx_gen) == my_gen) {
++		so->cfecho = 0;
++		so->tx.state = ISOTP_IDLE;
++	}
+ 	wake_up_interruptible(&so->wait);
+ 
+ 	return err;
+ }
+ 
 
-Changes in v5:
-- patch 3: new: state change re-check after hrtimer_cancel()
-- patch 4: new: handle state transistion with cmpxchg()
-- Link to v4: https://patch.msgid.link/20260710-isotp-fixes-v4-0-2a4af437f61b@hartkopp.net
-
-Changes in v4:
-- patch 2: use a simpler method to reject a re-binding that can be implemented
-  inside the lock: No waitqueue waiting just exit.
-- Link to v3: https://patch.msgid.link/20260710-isotp-fixes-v3-0-08db68e27d0b@hartkopp.net
-
-Changes in v3:
-- patch 2: go back to initial idea without hard resetting the state machine and
-  timers but let these come to a graceful end. Even a new bind() at netdev
-  shutdown now leads to this graceful statemachine shutdown via the wait queue.
-- Link to v2: https://patch.msgid.link/20260710-isotp-fixes-v2-0-bc57e26594b2@hartkopp.net
-
-Changes in v2:
-- patch 2: shutdown state machine to fix sashiko-bot complains
-  Link: https://lore.kernel.org/linux-can/20260710094807.A50DD1F000E9@smtp.kernel.org/
-- Link to v1: https://patch.msgid.link/20260710-isotp-fixes-v1-0-75a1d11d7df9@hartkopp.net
-
----
-Oliver Hartkopp (5):
-      can: isotp: use unconditional synchronize_rcu() in isotp_release()
-      can: isotp: fix use-after-free race with concurrent NETDEV_UNREGISTER
-      can: isotp: fix race between RX/TX timers and frame reception
-      can: isotp: fix lock-free state transition in tx timer handler
-      can: isotp: fix state machine corruption on signal interruption
-
- net/can/isotp.c | 176 +++++++++++++++++++++++++++++++++++++++++++-------------
- 1 file changed, 135 insertions(+), 41 deletions(-)
----
-base-commit: a635d6748234582ea287c5ffeae28b9b23f91c7e
-change-id: 20260710-isotp-fixes-ead7480d67bf
-
-Best regards,
---  
-Oliver Hartkopp <socketcan@hartkopp.net>
+-- 
+2.53.0
 
 
