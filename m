@@ -1,37 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5471E39656D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5468337475B
 	for <linux-can@vger.kernel.org>; Sun, 12 Jul 2026 13:44:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783863847; cv=none; b=q837V6nrs57Ut169wdNnZ71rI4YAjGP2+uY1P5o7pz6ESgMpx8RhpTJ46+fZHFxo7OxJVu4VrYCnIbOmbIH5UgV5Sq0A0csNMplk7FaJIIv1wn0wrIO9rjWOcWtiP/lKHJFXlObSwvlznMQwfrcwM13uGNtTMaV/O7pqUdsNdgQ=
+	t=1783863847; cv=none; b=MCWglpc8s0NtnrvRkUc0iUdR3bFTevm3dlBvAOby2DwZui+eIqx5v797pEw6EatLmzW5JUCEb2XIj8v9ONUpjhIGoibGB4XpFs6+JyKpu8ItCG+4+OfgOh+1Bu1Ds0cnSgEe19sqNSx8asOnCok1BtSWeDaLsHj7lz5elssQ2bg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1783863847; c=relaxed/simple;
-	bh=FSrfVZrwwzE15HNSz1SU20TdCyh17KljLIlTF9UHTbE=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=K+Hw091NaRx0kk+iROGCpJ3eqYA7S3ZPFxjO13CpBGvnW2JoCuXl412rkWpecrrKN1aDloWUTwIKsa9FfHVdLmgGw/fUiSOCBfIB9xfNMXZb8GVyQW9eRxlZlHBg9PR1zYZnK9MFevj/CExfk8GEBHa10tHmkvSPwXF6rAToxYA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=onCqd9GC; arc=none smtp.client-ip=10.30.226.201
+	bh=biod0OVlTx/fjaWC0HtwR9/fMc8WRBWVtIAgX2owies=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=I154Cl+tDkEZZ79DaYBorGGaSW5wAUrGvB63oaNMGgDSt9fNe8frGSQ+q4TF6Tt8OfQY0nndDVUG7vs/eVV/06DZI5tpZRSrkBJGZCUmR3cmNR5DWzmbZshLxwnWkPsZSInA15vovsSkMT8ilsOlxcbP8nhtZVtHt0k7ROkr9xI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l/6PY8z0; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="onCqd9GC"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E62E6C2BCB9;
-	Sun, 12 Jul 2026 13:44:06 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l/6PY8z0"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 223D2C2BCF6;
+	Sun, 12 Jul 2026 13:44:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1783863847;
-	bh=FSrfVZrwwzE15HNSz1SU20TdCyh17KljLIlTF9UHTbE=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=onCqd9GC63vGbLBKRRhs0BVn/s7j+rHGi9iwP6av3jsujf7PkWr68tDZne4qUXeXB
-	 xYtiSroRMYn0EGHcuZ3h8Amb40bWIqQlGWqPWMKzv71VRZKA5+3Eve4kjqt+m1Z9MK
-	 rkc2glmrdjrts441JyngmScb3ybe9u33yVcyBd1g8fyH1TEIeab1yuV5Vv/RZ36Z9B
-	 fl47Xq3OQoASWPjayppyXDCO1mYZfwhLzPwBT7Bki7p6U0Oya8a9OfBJnMYOHgum45
-	 3wQas9QzuJMEqXl2vBfIAbtVu4ZMZmMLHMvZMS0jdxQ1gAZmzXfyOa2lvf4n0kPs62
-	 hjPi3hLVhCJkg==
+	bh=biod0OVlTx/fjaWC0HtwR9/fMc8WRBWVtIAgX2owies=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=l/6PY8z02wNHPAlS7lUeGXqALD1Gbq1UM+vAxDn95S7G6whu/qP6EE0N3EvJrHodh
+	 ARG9p6ytUL+hRdr3sF4HsXw2M3KujcIcNurOlIo40/9hx+ZbMyihjfINkg9MoPAWw+
+	 liv4CqMFMKKNwmm90Fw6aDyaqlCm81LkQYBNOUr4PJt1htc0ZwC8Ezbg+xMGBoWq0P
+	 FVLSDMl26YdriXXfN+nCxcb9Xj8sHZYa/2zKn9wRFnz08hlGWcfkVjUeeyuNKrbqHN
+	 yeG5GCw/hLSPex4YPQm9QGO3cypotxey5OfcdAVe987MCy3M+EnIaeFrm+FmFrykZq
+	 0adohsQl/K66A==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3ED5C43458;
-	Sun, 12 Jul 2026 13:44:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DB8FC43458;
+	Sun, 12 Jul 2026 13:44:07 +0000 (UTC)
 From: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
-Subject: [PATCH v9 0/4] net: can: isotp-fixes
-Date: Sun, 12 Jul 2026 15:44:04 +0200
-Message-Id: <20260712-isotp-fixes-v9-0-137840d7f0f4@hartkopp.net>
+Date: Sun, 12 Jul 2026 15:44:08 +0200
+Subject: [PATCH v9 4/4] can: isotp: fix state machine corruption on signal
+ interruption
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -40,23 +41,18 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIACSaU2oC/33QTWrEMAwF4KsMXtfFlv/iWfUepQs7lhu3MAlxG
- lqG3L3KdDNTTJYP6XsCXVnFuWBl59OVzbiWWsYLBf90Yv0QLu/IS6LMQIAVTgpe6rhMPJdvrBx
- DcroTybqYGYlpxtuAwOvbX65f8QP7Za/YN4ZSl3H+uZ1b5b7Xbl4lF9yZIJOUyaXsX4YwL5/jN
- D1fcGF7+QoHHIjH3jgEa7yO0ODqgCviokvRdgguidjg+oBr4hB0yFq5bGWLmwNuiEsjnU4dJJt
- lg9sDbokHqXowyguvUoO7ey4fuSOehQoZ6L7yrsG7ew6PvCPeKw8ggkat/39+27ZfSGedWnQCA
- AA=
-X-Change-ID: 20260710-isotp-fixes-ead7480d67bf
+Message-Id: <20260712-isotp-fixes-v9-4-137840d7f0f4@hartkopp.net>
+References: <20260712-isotp-fixes-v9-0-137840d7f0f4@hartkopp.net>
+In-Reply-To: <20260712-isotp-fixes-v9-0-137840d7f0f4@hartkopp.net>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
- Marc Kleine-Budde <mkl@pengutronix.de>, 
- Nico Yip <zdi-disclosures@trendmicro.com>, sashiko-bot@kernel.org
+ Marc Kleine-Budde <mkl@pengutronix.de>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1783863845; l=3097;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783863845; l=1269;
  i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=FSrfVZrwwzE15HNSz1SU20TdCyh17KljLIlTF9UHTbE=;
- b=NO8cVjPYDJjJe5Qz+w19UqMbK9acC3YKyA0cbydraN5d/zpfKIBJS1mTfMTX8QU7Z2N8ommAN
- eAa46JuYYMfAPrhF07Q5GZ7TopsPNgUpIIw0vLGT49L+Y+e5gmxb0y4
+ bh=pr0FYrc5dBkkqbDmu8I+qeB4zl8MV6JSiRwmhz8cpRM=;
+ b=F80SS06/98NmLno1nmfJXjWljKnI0nwa72BG8TZHWoGLtoW6HIu0L2lVNeQb3gQSzZjPAxK5u
+ G+PmtB4mG7/B/tDCSIdxJm7xyJXEAyuGMHp1t88digrc7nBklDCW/6q
 X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
  pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
 X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
@@ -64,71 +60,40 @@ X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
 X-Original-From: Oliver Hartkopp <socketcan@hartkopp.net>
 Reply-To: socketcan@hartkopp.net
 
-As sashiko-bot was not able to check the second patch this bundle is
-re-posted with b4 preparation.
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Fixed the remarks reported by sashiko-bot of V8 patchset.
+If a thread blocked in isotp_sendmsg() waiting for a previous transfer
+to finish is interrupted by a signal, jumping to the cleanup labels
+incorrectly cancels active timers and forces 'so->tx.state' back to
+ISOTP_IDLE. Since this thread never owned the active transmission, it
+abruptly aborts another thread's legitimate transfer, so return the
+interruption error directly.
 
+Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
-Changes in v9:
-- patch 3: fix two reported issues and explain why issue 3&4 (-ECOMM sk_err
-  handling) will not be changed
-- Link to v8: https://patch.msgid.link/20260712-isotp-fixes-v8-0-c39220a4e442@hartkopp.net
+ net/can/isotp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes in v8:
-- patch 3: properly terminate the former transmission before starting
-- patch 4: formerly patch 5 as the former patch 4 is squashed into patch 3
-- Link to v7: https://patch.msgid.link/20260711-isotp-fixes-v7-0-f03af24d8397@hartkopp.net
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index c4ca8a64e7ce..56618ea1dae4 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -1045,11 +1045,11 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 			return -EADDRNOTAVAIL;
+ 
+ 		/* wait for complete transmission of current pdu */
+ 		err = wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
+ 		if (err)
+-			goto err_event_drop;
++			return err;
+ 	}
+ 
+ 	/* new transfer: bump the generation (gen is used below and by
+ 	 * isotp_tx_timeout()/isotp_rcv_echo()) and drain the old one -
+ 	 * cancel its timers ourselves in case one is still concurrently
 
-Changes in v7:
-- patch 3: add helper so->tx_gen to monitor new ISOTP_SENDING attempts
-- patch 4: prevent missasignment of sk_err report with new so->tx_gen
-- Link to v6: https://patch.msgid.link/20260710-isotp-fixes-v6-0-a13c2539093d@hartkopp.net
-
-Changes in v6:
-- patch 2: check for rx state and tx state to be IDLE in isotp_bind() (sashiko-bot)
-- patch 3: double check rx/tx states after all hrtimer_cancel() calls (sashiko-bot)
-           move ISOTP_IDLE in err_event_drop for the same reason
-- patch 4: use READ_ONCE() to prevent compiler load tearing as remarked by sashiko-bot
-- Link to v5: https://patch.msgid.link/20260710-isotp-fixes-v5-0-15174d82d6f1@hartkopp.net
-
-Changes in v5:
-- patch 3: new: state change re-check after hrtimer_cancel()
-- patch 4: new: handle state transistion with cmpxchg()
-- Link to v4: https://patch.msgid.link/20260710-isotp-fixes-v4-0-2a4af437f61b@hartkopp.net
-
-Changes in v4:
-- patch 2: use a simpler method to reject a re-binding that can be implemented
-  inside the lock: No waitqueue waiting just exit.
-- Link to v3: https://patch.msgid.link/20260710-isotp-fixes-v3-0-08db68e27d0b@hartkopp.net
-
-Changes in v3:
-- patch 2: go back to initial idea without hard resetting the state machine and
-  timers but let these come to a graceful end. Even a new bind() at netdev
-  shutdown now leads to this graceful statemachine shutdown via the wait queue.
-- Link to v2: https://patch.msgid.link/20260710-isotp-fixes-v2-0-bc57e26594b2@hartkopp.net
-
-Changes in v2:
-- patch 2: shutdown state machine to fix sashiko-bot complains
-  Link: https://lore.kernel.org/linux-can/20260710094807.A50DD1F000E9@smtp.kernel.org/
-- Link to v1: https://patch.msgid.link/20260710-isotp-fixes-v1-0-75a1d11d7df9@hartkopp.net
-
----
-Oliver Hartkopp (4):
-      can: isotp: use unconditional synchronize_rcu() in isotp_release()
-      can: isotp: fix use-after-free race with concurrent NETDEV_UNREGISTER
-      can: isotp: fix race between RX/TX timers and frame reception
-      can: isotp: fix state machine corruption on signal interruption
-
- net/can/isotp.c | 286 +++++++++++++++++++++++++++++++++++++++++++-------------
- 1 file changed, 220 insertions(+), 66 deletions(-)
----
-base-commit: dd3210c47e8d3ac6b4e9141fc68acc03b38c0ba3
-change-id: 20260710-isotp-fixes-ead7480d67bf
-
-Best regards,
---  
-Oliver Hartkopp <socketcan@hartkopp.net>
+-- 
+2.53.0
 
 
