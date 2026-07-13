@@ -1,47 +1,46 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 858133DC4D9;
-	Mon, 13 Jul 2026 09:08:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4998E3CAE84;
+	Mon, 13 Jul 2026 09:18:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783933685; cv=none; b=BioKK2TLv7jD4CpJF9J8paTaYjAF89s2D1U4m/bUjVCLbMPfddZMm1TJ1Qbt++PZ4B47NDLBgAtUVq/ocknQ1W2XOedAgk2Nub7Pv4hUWucchT1ofJCjQiadBzjAq2fTDHLhIKoPQE6WLG4sbh827ssG1SFs3J4LlrCt+l9miIU=
+	t=1783934323; cv=none; b=SWmNBK2tQSI2nUhbfrWDprRntahkdaiHabnUtSsCIBJyTV6D8QGjK62sjwO2oFSJlC98aHg5CEw6MXDj52aKMF8PHZPY8CeWUlEPuVPIFRIbNLvrIR6oDp5z0e2UU7/xmnQykCRliiasEZA3IEbK9iGvHU9Ohixbu4lfbnzfzkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783933685; c=relaxed/simple;
-	bh=WXdQ64FnbvMK/zCMnFDlvGEKEG8Kd/9OYVw/hEnpGKU=;
+	s=arc-20240116; t=1783934323; c=relaxed/simple;
+	bh=HoGudEA3/UGPUFZeHBs0goYGBX0tK9K3/9aUbf9KZA8=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=shaEt2A75QXprFpUW6F6I1aE+4qpNesG86WtroFqfR6bB6MyYMOqJl2zdYsi0eY6d2JpJZ3rvUST1+0fccl/Bq9Nijtu4bWxzXQ++Lp2D2+iC2NHFiOhkULUqO20XmfqcxmgaFYXEkeFfEeDw7bKLgg64j+FojhMdEqRmECUWAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NRKVU4lD; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=jehnsFIXUt8dRsGmwjBdzVxVp8mJsHr5PXjMMO/lLg3N8Aw+KiZyynA2313vcLwJSBwBxOHpjghW8HVKJ7YyOp5cRYWY1qQ0zK3y1mqGb9c9KAG7a3dHmqZTwFegbOHWX53mWc04EjDkKUKhGNXbRHuojyYmkHx9sqL0E2JFTIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TpQpTRfj; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NRKVU4lD"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCE2E1F000E9;
-	Mon, 13 Jul 2026 09:08:03 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TpQpTRfj"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 322D11F000E9;
+	Mon, 13 Jul 2026 09:18:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783933684;
-	bh=oG8N0x2HPr/aG7utMltCOwMhDrp7w9Ua/DIi3vGNREY=;
+	s=k20260515; t=1783934321;
+	bh=6yqUSN/e8kq6AbWr6U2lgOTKcyCUso6Rbl9W/U1G0ww=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=NRKVU4lDTAG13uBxLNMIOa2xDZ66PfQW0QX483bgZrl3Jr/baoSnzi2U4ivVZnP7m
-	 /Hmf4k/UAS7MzkgVgCGUgQOIQTnI7xx0ALwgD8tb5J/qssG6+6jaenNSczd2c2yuyG
-	 XI18fgSv6vwJbMwHcziY6vTv1vuxhS5zKEVSdLaxHtXpsrGO74N+HEIIlpq604kF/Z
-	 g1vqe2aRqNFjWK4pQu5Qkzkd05Aohpn0fmWbde5wbX8SccFO9MhQOY/Djyas/0rOV0
-	 KjdD7YP6QOHX205k5gVsK5ml3mawFVJRKgxdLtNDPB8zaPO4OgufwPKinicvslaCsG
-	 zvi46uNH7llAA==
+	b=TpQpTRfjeYU/avUD7cnPNJJB/8l7CdtQfFZzQH3GwW3QOGs28gjAVKYdbb4eE+XCW
+	 D78SlD22VMFZSXS16jJIa3OYYxtccp+uC2ndx62ZxF6OQV0euSgDATK1RRRNPjzRP7
+	 3tzqmOlvAw45eb/GNBvpeYPR3mfXu9H/TLSOYS+7N0swX3BH+HwfBwQv6sqPZ2Eiy9
+	 Bf9NGCRM2Nnl8bpGmUYXkp4atp/hF8pCNENPj1b7bTa6YLWY10ftIFn/THuwkT4pnR
+	 DWxYJ8O934L1pdk7ksvOT53RvZuIQhH+355DYF7dbDM6pVK1I5Dm8ymuzKcOWDGCWm
+	 mQwDjmXVzl6xg==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v6 3/6] can: flexcan: split rx/tx masks per mailbox IRQ
- line
+Subject: Re: [PATCH v6 4/6] dt-bindings: can: fsl,flexcan: add NXP S32N79
+ SoC support
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Ciprian Costea" <ciprianmarian.costea@oss.nxp.com>
-Cc: robh@kernel.org, conor+dt@kernel.org, Frank.Li@kernel.org, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, imx@lists.linux.dev, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
- Mailhol" <mailhol@kernel.org>, devicetree@vger.kernel.org
-In-Reply-To: <20260713085306.2643794-4-ciprianmarian.costea@oss.nxp.com>
+Cc: "Vincent Mailhol" <mailhol@kernel.org>, robh@kernel.org, devicetree@vger.kernel.org, Frank.Li@kernel.org, linux-can@vger.kernel.org, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, "Oleksij Rempel" <o.rempel@pengutronix.de>, imx@lists.linux.dev, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, conor+dt@kernel.org
+In-Reply-To: <20260713085306.2643794-5-ciprianmarian.costea@oss.nxp.com>
 References: <20260713085306.2643794-1-ciprianmarian.costea@oss.nxp.com>
- <20260713085306.2643794-4-ciprianmarian.costea@oss.nxp.com>
+ <20260713085306.2643794-5-ciprianmarian.costea@oss.nxp.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Mon, 13 Jul 2026 09:08:03 +0000
-Message-Id: <20260713090803.CCE2E1F000E9@smtp.kernel.org>
+Date: Mon, 13 Jul 2026 09:18:39 +0000
+Message-Id: <20260713091840.322D11F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -50,82 +49,45 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
 Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
-
-Pre-existing issues:
-- [High] Concurrent execution of multiple flexcan IRQ handlers causes lockl=
-ess list corruption in the can_rx_offload queue.
+- [Medium] The flexcan driver fails to claim the newly added 'nxp,s32n79-fl=
+excan' compatible string.
 --
 
---- Patch [3]: [PATCH v6 3/6] can: flexcan: split rx/tx masks per mailbox I=
-RQ line ---
-commit 9f143e05fb5957d463ce1d05d4126d168798b0d8
+--- Patch [4]: [PATCH v6 4/6] dt-bindings: can: fsl,flexcan: add NXP S32N79=
+ SoC support ---
+commit 81a73119cf0179abcfa99d350e69491bfd8303b6
 Author: Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>
 
-can: flexcan: split rx/tx masks per mailbox IRQ line
+dt-bindings: can: fsl,flexcan: add NXP S32N79 SoC support
 
-This commit updates flexcan to process split rx/tx masks based on the
-mailbox IRQ line for platforms like S32G2. It introduces MB0 and MB1 masks
-and passes them to flexcan_do_mb() to only process the relevant mailbox
-range for each IRQ.
+This commit adds the NXP S32N79 SoC compatible string and interrupt propert=
+ies
+to the FlexCAN device tree binding. On this platform, the IP uses separate
+interrupt lines for mailboxes and bus errors.
 
-> diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/fle=
-xcan/flexcan-core.c
-> --- a/drivers/net/can/flexcan/flexcan-core.c
-> +++ b/drivers/net/can/flexcan/flexcan-core.c
+> diff --git a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml b=
+/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
+> index f81d56f7c12a5..d098a44c2b9c2 100644
+> --- a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
+> +++ b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
+> @@ -26,6 +26,7 @@ properties:
+>            - fsl,ls1021ar2-flexcan
+>            - fsl,lx2160ar1-flexcan
+>            - nxp,s32g2-flexcan
+> +          - nxp,s32n79-flexcan
+
+[Severity: Medium]
+Does the flexcan driver need to be updated to claim this new compatible
+string?
+
+Because the binding does not provide a fallback compatible string, devices
+using nxp,s32n79-flexcan will fail to probe unless flexcan_of_match in
+drivers/net/can/flexcan/flexcan-core.c is also updated to include it. Is th=
+ere
+a companion patch planned to update the driver's match table?
 
 [ ... ]
 
-> @@ -1244,8 +1255,14 @@ static irqreturn_t flexcan_irq_mb(int irq, void *d=
-ev_id)
->  	struct net_device *dev =3D dev_id;
->  	struct flexcan_priv *priv =3D netdev_priv(dev);
->  	irqreturn_t handled;
-> +	u64 mb_mask =3D ~0ULL;
-> +
-> +	if (priv->devtype_data.quirks & FLEXCAN_QUIRK_SECONDARY_MB_IRQ)
-> +		mb_mask =3D (irq =3D=3D priv->irq_secondary_mb) ?
-> +			  FLEXCAN_SECONDARY_MB_IRQ_MB1_MASK :
-> +			  FLEXCAN_SECONDARY_MB_IRQ_MB0_MASK;
-> =20
-> -	handled =3D flexcan_do_mb(dev);
-> +	handled =3D flexcan_do_mb(dev, mb_mask);
-> =20
->  	if (handled)
->  		can_rx_offload_irq_finish(&priv->offload);
-
-[Severity: High]
-This is a pre-existing issue, but does this concurrent execution risk
-corrupting the lockless rx-offload queues?
-
-Since the primary and secondary mailbox IRQs are separate lines (e.g., on
-S32G2), they can be dispatched concurrently on different CPUs when frames
-arrive simultaneously for both mailbox groups.
-
-If both IRQs execute at the same time:
-
-CPU1
-flexcan_irq_mb()
-   flexcan_do_mb()
-      can_rx_offload_irq_offload_timestamp()
-         __skb_queue_add_sort(&offload->skb_irq_queue, ...)
-
-CPU2
-flexcan_irq_mb()
-   flexcan_do_mb()
-      can_rx_offload_irq_offload_timestamp()
-         __skb_queue_add_sort(&offload->skb_irq_queue, ...)
-
-Or if CPU2 reaches the finish step while CPU1 is still adding:
-
-CPU2
-flexcan_irq_mb()
-   can_rx_offload_irq_finish()
-      skb_queue_splice_tail_init(&offload->skb_irq_queue, ...)
-
-Since __skb_queue_add_sort() and skb_queue_splice_tail_init() operate
-locklessly on offload->skb_irq_queue, could this lead to corrupted linked
-list next/prev pointers or infinite loops during list traversal?
-
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260713085306.2643=
-794-1-ciprianmarian.costea@oss.nxp.com?part=3D3
+794-1-ciprianmarian.costea@oss.nxp.com?part=3D4
