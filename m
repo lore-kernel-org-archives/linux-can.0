@@ -1,46 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4998E3CAE84;
-	Mon, 13 Jul 2026 09:18:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6B213D0914;
+	Mon, 13 Jul 2026 09:19:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783934323; cv=none; b=SWmNBK2tQSI2nUhbfrWDprRntahkdaiHabnUtSsCIBJyTV6D8QGjK62sjwO2oFSJlC98aHg5CEw6MXDj52aKMF8PHZPY8CeWUlEPuVPIFRIbNLvrIR6oDp5z0e2UU7/xmnQykCRliiasEZA3IEbK9iGvHU9Ohixbu4lfbnzfzkk=
+	t=1783934392; cv=none; b=fqiTi3cizPmTlkIh3lcBWqx4CyVANpTXHklhOuW997m/OnUPvohrhbGH7agazeJGVNUmcjslP5ssyXv1Xi7riYMR50rjkMRtzRqvkT1+f9QxqqgR9SsI8GsLaMm1NQ+USjc32ti7BtZrRzopltoRDoDo0vVgOhuhWLjj4PxsY0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783934323; c=relaxed/simple;
-	bh=HoGudEA3/UGPUFZeHBs0goYGBX0tK9K3/9aUbf9KZA8=;
+	s=arc-20240116; t=1783934392; c=relaxed/simple;
+	bh=ouTRcIFjz+QYZNuSX6uuuPwKcabd7zspmQIFbqeA7Rs=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=jehnsFIXUt8dRsGmwjBdzVxVp8mJsHr5PXjMMO/lLg3N8Aw+KiZyynA2313vcLwJSBwBxOHpjghW8HVKJ7YyOp5cRYWY1qQ0zK3y1mqGb9c9KAG7a3dHmqZTwFegbOHWX53mWc04EjDkKUKhGNXbRHuojyYmkHx9sqL0E2JFTIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TpQpTRfj; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=X1yZxMscnvF0osZtzcLS+S3IkXij4AttVe/MAeXMTB0Sto5mQwggf51tpbxOTWlU+CKpfPr1bSEosIpE0NucdQ6ssuSYkrZIWW3WjsPQXZiFQifU/mWD4J7jkTQw9GD53OKJXOY7xb21W5CqgVgPnvQGJ1JRPKgjGjURR0rAj5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L1aSuhNZ; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TpQpTRfj"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 322D11F000E9;
-	Mon, 13 Jul 2026 09:18:40 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L1aSuhNZ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 047A01F00A3A;
+	Mon, 13 Jul 2026 09:19:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783934321;
-	bh=6yqUSN/e8kq6AbWr6U2lgOTKcyCUso6Rbl9W/U1G0ww=;
+	s=k20260515; t=1783934391;
+	bh=b80d1FGTgriFwEBTyhkzxIjSntfSE9mLoTvcQaX991I=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=TpQpTRfjeYU/avUD7cnPNJJB/8l7CdtQfFZzQH3GwW3QOGs28gjAVKYdbb4eE+XCW
-	 D78SlD22VMFZSXS16jJIa3OYYxtccp+uC2ndx62ZxF6OQV0euSgDATK1RRRNPjzRP7
-	 3tzqmOlvAw45eb/GNBvpeYPR3mfXu9H/TLSOYS+7N0swX3BH+HwfBwQv6sqPZ2Eiy9
-	 Bf9NGCRM2Nnl8bpGmUYXkp4atp/hF8pCNENPj1b7bTa6YLWY10ftIFn/THuwkT4pnR
-	 DWxYJ8O934L1pdk7ksvOT53RvZuIQhH+355DYF7dbDM6pVK1I5Dm8ymuzKcOWDGCWm
-	 mQwDjmXVzl6xg==
+	b=L1aSuhNZA9IZ78B8MXNOSqdtXdo50nqUqs8DtmOUNUlI7H4S+6tBA265drxJPFssa
+	 fvB1LZqx+LmHoIAtVC1byWB+r6D3nOSnjKseQ/fITyP/vMIZ3XptJHHdj1XX5mmD7+
+	 y7vmuTBHVYjXBW6HLjwgDMH5fndi6u/evZq4DfhohwuvWwK4bXPGQ7BSFBrl3EPIUL
+	 GKdraD47xhl0IanmUr7NVcJlWNo+XaHIi5hDP1DsSXoi4Q1bu6KDWSNk7Kwo8HGH+S
+	 i2NSZq9TOPUXPs8/NGEz2KsM5dV07zlhPRjCp7uJw7Gg1WFqeoM1T43m80T3DocX2n
+	 UDHajYThuYSng==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v6 4/6] dt-bindings: can: fsl,flexcan: add NXP S32N79
- SoC support
+Subject: Re: [PATCH v6 5/6] can: flexcan: add FLEXCAN_QUIRK_IRQ_BERR quirk
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Ciprian Costea" <ciprianmarian.costea@oss.nxp.com>
-Cc: "Vincent Mailhol" <mailhol@kernel.org>, robh@kernel.org, devicetree@vger.kernel.org, Frank.Li@kernel.org, linux-can@vger.kernel.org, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, "Oleksij Rempel" <o.rempel@pengutronix.de>, imx@lists.linux.dev, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, conor+dt@kernel.org
-In-Reply-To: <20260713085306.2643794-5-ciprianmarian.costea@oss.nxp.com>
+Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, robh@kernel.org, imx@lists.linux.dev, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org, devicetree@vger.kernel.org, conor+dt@kernel.org, Frank.Li@kernel.org
+In-Reply-To: <20260713085306.2643794-6-ciprianmarian.costea@oss.nxp.com>
 References: <20260713085306.2643794-1-ciprianmarian.costea@oss.nxp.com>
- <20260713085306.2643794-5-ciprianmarian.costea@oss.nxp.com>
+ <20260713085306.2643794-6-ciprianmarian.costea@oss.nxp.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Mon, 13 Jul 2026 09:18:39 +0000
-Message-Id: <20260713091840.322D11F000E9@smtp.kernel.org>
+Date: Mon, 13 Jul 2026 09:19:50 +0000
+Message-Id: <20260713091951.047A01F00A3A@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -49,45 +48,82 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
 Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
-- [Medium] The flexcan driver fails to claim the newly added 'nxp,s32n79-fl=
-excan' compatible string.
+
+Pre-existing issues:
+- [High] Concurrent execution of separate hardware interrupt handlers (`dev=
+->irq` and `priv->irq_err`) modifies the lockless `can_rx_offload` IRQ queu=
+e (`skb_irq_queue`), leading to list corruption.
 --
 
---- Patch [4]: [PATCH v6 4/6] dt-bindings: can: fsl,flexcan: add NXP S32N79=
- SoC support ---
-commit 81a73119cf0179abcfa99d350e69491bfd8303b6
+--- Patch [5]: [PATCH v6 5/6] can: flexcan: add FLEXCAN_QUIRK_IRQ_BERR quir=
+k ---
+commit 97d482f1edd202225930276cf268822cd49ea3d2
 Author: Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>
 
-dt-bindings: can: fsl,flexcan: add NXP S32N79 SoC support
+can: flexcan: add FLEXCAN_QUIRK_IRQ_BERR quirk
 
-This commit adds the NXP S32N79 SoC compatible string and interrupt propert=
-ies
-to the FlexCAN device tree binding. On this platform, the IP uses separate
-interrupt lines for mailboxes and bus errors.
+Introduce FLEXCAN_QUIRK_IRQ_BERR quirk to handle hardware integration
+where the FlexCAN module has a dedicated interrupt line for signaling
+bus errors and device state changes. This adds the flexcan_irq_esr() handler
+and is required for NXP S32N79 SoC support.
 
-> diff --git a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml b=
-/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-> index f81d56f7c12a5..d098a44c2b9c2 100644
-> --- a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-> +++ b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-> @@ -26,6 +26,7 @@ properties:
->            - fsl,ls1021ar2-flexcan
->            - fsl,lx2160ar1-flexcan
->            - nxp,s32g2-flexcan
-> +          - nxp,s32n79-flexcan
+> diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/fle=
+xcan/flexcan-core.c
+> index 8b70952f7f05d..e7e3fb41f55e7 100644
+> --- a/drivers/net/can/flexcan/flexcan-core.c
+> +++ b/drivers/net/can/flexcan/flexcan-core.c
+> @@ -1300,6 +1300,22 @@ static irqreturn_t flexcan_irq_boff(int irq, void =
+*dev_id)
+>  	return handled;
+>  }
+> =20
+> +/* Combined bus error and state change IRQ handler */
+> +static irqreturn_t flexcan_irq_esr(int irq, void *dev_id)
+> +{
+> +	struct net_device *dev =3D dev_id;
+> +	struct flexcan_priv *priv =3D netdev_priv(dev);
+> +	irqreturn_t handled;
+> +
+> +	handled =3D flexcan_do_state(dev);
+> +	handled |=3D flexcan_do_berr(dev);
+> +
+> +	if (handled)
+> +		can_rx_offload_irq_finish(&priv->offload);
+> +
+> +	return handled;
+> +}
 
-[Severity: Medium]
-Does the flexcan driver need to be updated to claim this new compatible
-string?
+[Severity: High]
+This is a pre-existing issue, but could this lead to list corruption
+if these separate IRQs run concurrently on different CPUs?
 
-Because the binding does not provide a fallback compatible string, devices
-using nxp,s32n79-flexcan will fail to probe unless flexcan_of_match in
-drivers/net/can/flexcan/flexcan-core.c is also updated to include it. Is th=
-ere
-a companion patch planned to update the driver's match table?
+Since flexcan_irq_esr() and flexcan_irq_mb() are registered as separate
+interrupts, they might fire at the same time. If flexcan_irq_esr()
+processes a bus error and flexcan_irq_mb() processes a mailbox interrupt,
+they both end up modifying the lockless offload->skb_irq_queue.
 
-[ ... ]
+CPU1 handling dev->irq (flexcan_irq_mb):
+flexcan_irq_mb()
+  can_rx_offload_irq_offload_timestamp()
+    __skb_queue_add_sort(&offload->skb_irq_queue, ...)
+
+CPU2 handling priv->irq_err (flexcan_irq_esr):
+flexcan_irq_esr()
+  flexcan_do_berr()
+    flexcan_irq_bus_err()
+      can_rx_offload_queue_timestamp()
+        __skb_queue_add_sort(&offload->skb_irq_queue, ...)
+
+Furthermore, both handlers unconditionally call can_rx_offload_irq_finish(),
+which locklessly splices the skb_irq_queue list:
+
+can_rx_offload_irq_finish()
+  skb_queue_splice_tail_init(&offload->skb_irq_queue, ...)
+
+Are there existing synchronization mechanisms preventing these IRQ
+handlers from running simultaneously and corrupting the lockless
+skb_irq_queue list pointers?
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260713085306.2643=
-794-1-ciprianmarian.costea@oss.nxp.com?part=3D4
+794-1-ciprianmarian.costea@oss.nxp.com?part=3D5
