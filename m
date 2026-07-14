@@ -1,146 +1,175 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.163])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 719AD3126B9;
-	Tue, 14 Jul 2026 17:54:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784051675; cv=none; b=koWWaoHSlQflPeuX9L+mMd8ANOMkuZrcQqG/QgJYUodWaLvQJPKW5EI2on/V3JjhFrYWMcq9E4C6ObH+uRU96SoiS61epmtefLW1lZN6Pkb0yZlK3LXABoCveBAO5Mm0fctuStkfDS3+NgU7xLN/tfm/1V9sYdxnczDOdzbb0AQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784051675; c=relaxed/simple;
-	bh=Dx+e7T9cCahtkQxpXJNSLJzuwCfMpSxdd/xgu4/IuBs=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=hrL8Kehe4rTTHILOwNk3oAzn2FltLJnuSfhmJrTJljEIcUrj/IHUWnaDPVQIS3j6+CtXup6J2UPjk0oMBjlpb7VD/6RIZY2DRFjEBs+n7HoHnnOTPgS9hCv9wS0MOBP4lwRA66kEKrZikd0NCZ+mEMrMrgzkiETk0KUvJfL6kR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uw9eIzi3; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 877F6481241
+	for <linux-can@vger.kernel.org>; Tue, 14 Jul 2026 18:53:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.163
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1784055224; cv=pass; b=EQKI1Ew/frWtQkd2A4LnDIMmN1l5VrWRlOv1tXvO33xIWVewNmo8YFuRU59aLGkv7ZEtOQUUGa0eBRPTo9qVSmmjHJm6JVAdci0yHuXJrQ/nYrXkxJQq6ODJMprI49kwUs/EMLFFKEs4HPyD+dBSHKXpMACwH9KcwmJLS7h46xU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1784055224; c=relaxed/simple;
+	bh=e690s6MK1WDXrJg2xgQiUh1+TQ7Mzwks2eIlFIjzZwU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TvNmSa3lOV9WSNCdhGqR3c/Q2R6B57CErlbm/2DqI9VYyLy1T+H9ajATOKDoY4f6kGddXZ20IbvseNydyti6VGKT1adQ+prqnMvI4FbGnOc6aZQPWGejvzq1WhLumXzTBaQPXw5udZ5D+swUvHbLrcBY9C6Cmh3iRCIN4VxnJHE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=S3TiRwGz; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=VGzye6s2; arc=pass smtp.client-ip=81.169.146.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uw9eIzi3"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27DC51F000E9;
-	Tue, 14 Jul 2026 17:54:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784051672;
-	bh=XPewxuZRF9z4S+ro9YDZUHdmLCkNKtkTf8oxTucxc8U=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=Uw9eIzi3qXKLSMXlywsvS3mZ0ZjwluGvoOphnYVP0+Idc0Soj/LmVvInxYOiOJlxy
-	 BdAZrHTpfHLA61JpfEylilG0IvOAfq/SPYtCJoUTNm+ut/RAaZZA3tUW51wsLMUzD+
-	 cXQ6yQtMF5pAzrZvcPu6Gv7vSWR42/E+hXx8lcxWgIRF5JNLrmEmfcEgHsdJVRw7KE
-	 kw33jNAxiECYByzTw2n0m+yHtXe1VgRZPv367pVdRThUyd68mD0EVACw5Y59S7y0qu
-	 fm7602Q4gYPssarH6qxUJBF1C+6rIjVqN5dqGjOOmoDRdNOmKB/KehIAaMoUI53s7w
-	 3/9g+vLq+9tmg==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v3 8/8] arm64: dts: renesas: rzg3s-smarc: Enable CAN-FD
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Claudiu Beznea" <claudiu.beznea+renesas@tuxon.dev>
-Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, robh@kernel.org, devicetree@vger.kernel.org, conor+dt@kernel.org, "Vincent
- Mailhol" <mailhol@kernel.org>, "Oliver Hartkopp" <socketcan@hartkopp.net>, wsa+renesas@sang-engineering.com
-In-Reply-To: <20260714173315.1981708-9-claudiu.beznea+renesas@tuxon.dev>
-References: <20260714173315.1981708-1-claudiu.beznea+renesas@tuxon.dev>
- <20260714173315.1981708-9-claudiu.beznea+renesas@tuxon.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 14 Jul 2026 17:54:31 +0000
-Message-Id: <20260714175432.27DC51F000E9@smtp.kernel.org>
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="S3TiRwGz";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="VGzye6s2"
+ARC-Seal: i=1; a=rsa-sha256; t=1784055175; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=OyClI9EWxaZByspCku2DOo9DGLwN/ClNC2rvLqawDAEC30Vz5vmiK+4J62DhQQBHnS
+    W6EatJhR1WP5dluDH91fs/+c/RfO+VzVBltMR+gSOev5/tXS+isdZs9VNjgOQRGuNYXD
+    1NC0GGP4zYeLEcdaQBtmgmKsCHsPNAu7sieXyfias/k4qWVOZQtwhm1DknV/3VdiQhfH
+    y/dHiBnaESreIv7Yri+4M1OoRHMwlCrjrDgDHSLuY7t8W+y/5WBXOkdUp4Lu8dumXGeI
+    wXr8TyX+HMXwGKRgGmo3mCn251XNMiFDgL/wBhltzoOCgg5QVrjEcxOnx85mNLhzCez/
+    HRPg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1784055175;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=m0jUCdpxm05YpRidOhrc19eE+bnyWajWRrQLHcifxxs=;
+    b=qpyy9QLpelYGTa6+hUSXv7PHQZwf5dXqNv14yEuuyx7yJfW/puifN/Bgoi4jIe7TRt
+    1XsLxOQqGHVp0Ad1T0BjKTvrwiDY5tHgp7fE8C28oaKjT/UYTgHPDwnSWOIlnvmIkwcc
+    hvEbakPqTMU38aHVQXii49sa5VZQO1jQCYKVm5bT+BCGrlZyJ4Gwe71aLmBAlsIPaFT9
+    dlM7bDWgml3y13hQX9rMRhmJwJrnX5OmD9HW3gzzpIgB/U6OE6y8CIUdTv1PTj8SvhdI
+    VT9Ndbobm9glM7nX30tcMwFD0Zfs3LCllZmdMUqWVytennnTuY8BQTfHiEJcYGJC+Fdh
+    eQUw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1784055175;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=m0jUCdpxm05YpRidOhrc19eE+bnyWajWRrQLHcifxxs=;
+    b=S3TiRwGzlCAsnzE09e/M4HTW6IHwT80x0tZParJNlktL0ODEx8jq7yK7OHM4E+PaYH
+    KzJ3WY1rNHTgsQcNxqTkCvMen1LEq1QzlH3OwhsupgdmKks+zhYI740mZj0mapYXTZz/
+    4gLLyA039qbGPFnVgBpigSbUKu5dwqMeWC1XhzZSlwrBBwl2z5HGB5ffSJpgIN6+vrD6
+    z/aZ9zVvpKTR2sTkpoz3C3+dq9t61RdH/ivce+JFgwPvGjwi8lwN+6QqXdgo+fUryGGq
+    orkXH6A/wdKYsKcM76B7kdAadagGiaj8EEsJmujXfpixSwxOoJirC2X6UeclY4XmqAcy
+    VMfw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1784055175;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=m0jUCdpxm05YpRidOhrc19eE+bnyWajWRrQLHcifxxs=;
+    b=VGzye6s2JdnNL2Ui2EamqBOiB7/HOhxy81exgU1ERa4UsJZkeNO3V7ll4h6c0brKwY
+    4TO02QRdbYd7fv/gKqDw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tRkI16oOSW1Ti/f4PoH8="
+Received: from [192.168.20.190]
+    by smtp.strato.de (RZmta 55.5.6 DYNA|AUTH)
+    with ESMTPSA id Ka9fdb26EIqtmPa
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Tue, 14 Jul 2026 20:52:55 +0200 (CEST)
+Message-ID: <b5b49ad6-c7e4-4971-83dd-8a0f8214e8c2@hartkopp.net>
+Date: Tue, 14 Jul 2026 20:52:55 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v15 05/11] can: bcm: add missing rcu list annotations and
+ operations
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, Vincent Mailhol <mailhol@kernel.org>,
+ Oleksij Rempel <o.rempel@pengutronix.de>, sashiko-reviews@lists.linux.dev
+References: <20260714-bcm_fixes-v15-0-562f7e3e42da@hartkopp.net>
+ <20260714-bcm_fixes-v15-5-562f7e3e42da@hartkopp.net>
+ <20260714170429.6F2FA1F000E9@smtp.kernel.org>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <20260714170429.6F2FA1F000E9@smtp.kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
-- [Medium] CAN-FD channels are enabled unconditionally despite their transc=
-eivers being physically hardwired to standby mode by default.
---
 
---- Patch [8]: [PATCH v3 8/8] arm64: dts: renesas: rzg3s-smarc: Enable CAN-=
-FD ---
-commit 63f365e669fda8daca391467cd1aa1fe6a6efb02
-Author: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-arm64: dts: renesas: rzg3s-smarc: Enable CAN-FD
+On 14.07.26 19:04, sashiko-bot@kernel.org wrote:
+> Thank you for your contribution! Sashiko AI review found 2 potential issue(s) to consider:
+> - [Critical] Unconditional `list_add_rcu()` on the success path in `bcm_rx_setup()` corrupts the list for existing operations.
+> - [Critical] Removing `list_del_rcu()` from the registration error path in `bcm_rx_setup()` causes a Use-After-Free for existing operations.
+> --
+> 
 
-This commit enables the two CAN FD channels available on the Renesas RZ/G3S
-SoC, routing them through the SMARC Carrier II board. It adds nodes for the
-transceivers and configures pinmuxing, noting that the standby pins share
-GPIOs with PMOD interfaces via hardware switches.
+Great!
 
-> diff --git a/arch/arm64/boot/dts/renesas/rzg3s-smarc-switches.h b/arch/ar=
-m64/boot/dts/renesas/rzg3s-smarc-switches.h
-> --- a/arch/arm64/boot/dts/renesas/rzg3s-smarc-switches.h
-> +++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc-switches.h
+This is a correct fix. Nothing to do here.
 
-[ ... ]
+The other problems related to this review are fixed in patch 9.
 
-> +/*
-> + * SW_GPIO_CAN_PMOD[x] switches' states:
-> + * @SW_GPIO_CAN_PMOD1:
-> + *	SW_OFF - GPIO8 connected to CAN0_STB (position 1-2)
-> + *	SW_ON  - GPIO8 connected to PMOD1 (position 2-3)
-> + * @SW_GPIO_CAN_PMOD2:
-> + *	SW_OFF - GPIO9 connected to CAN1_STB (position 4-5)
-> + *	SW_ON  - GPIO9 connected to PMOD1 (position 5-6)
-> + */
-> +#define SW_GPIO_CAN_PMOD1	SW_ON
-> +#define SW_GPIO_CAN_PMOD2	SW_ON
-> +
->  #endif /* __RZG3S_SMARC_SWITCHES_H__ */
+Only the sashiko-bot review 7 queue is stuck but had not problems in V14.
 
-[ ... ]
+=> no potential regressions
 
-> diff --git a/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi b/arch/arm64/bo=
-ot/dts/renesas/rzg3s-smarc.dtsi
-> --- a/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
-> +++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
+https://sashiko.dev/#/patchset/20260714-bcm_fixes-v15-0-562f7e3e42da%40hartkopp.net
 
-[ ... ]
+Best regards,
+Oliver
 
-> +	can_transceiver0: can-phy0 {
-> +		compatible =3D "ti,tcan1042";
-> +		#phy-cells =3D <0>;
-> +		max-bitrate =3D <8000000>;
-> +#if SW_GPIO_CAN_PMOD1 =3D=3D SW_OFF
-> +		standby-gpios =3D <&pinctrl RZG2L_GPIO(13, 0) GPIO_ACTIVE_HIGH>;
-> +#endif
-> +	};
-> +
-> +	can_transceiver1: can-phy1 {
-> +		compatible =3D "ti,tcan1042";
-> +		#phy-cells =3D <0>;
-> +		max-bitrate =3D <8000000>;
-> +#if SW_GPIO_CAN_PMOD2 =3D=3D SW_OFF
-> +		standby-gpios =3D <&pinctrl RZG2L_GPIO(13, 1) GPIO_ACTIVE_HIGH>;
-> +#endif
-> +	};
+> --- Patch [5]: [PATCH v15 05/11] can: bcm: add missing rcu list annotations and operations ---
+> commit 493e1bc1997871e18b09125c187a88444720b12c
+> Author: Oliver Hartkopp <socketcan@hartkopp.net>
+> 
+> can: bcm: add missing rcu list annotations and operations
+> 
+> This commit updates the broadcast manager (BCM) to use proper RCU list
+> operations when adding and removing operations. It addresses missing
+> list_add_rcu() calls in setup functions and ensures ops are unlinked
+> before being handed to bcm_remove_op().
+> 
+> Closes: https://lore.kernel.org/linux-can/20260610094654.A1FFE1F00893@smtp.kernel.org/
+> 
+>> diff --git a/net/can/bcm.c b/net/can/bcm.c
+>> index 03c98e4cc677d..5c1e83eeb4ff3 100644
+>> --- a/net/can/bcm.c
+>> +++ b/net/can/bcm.c
+> [ ... ]
+>> @@ -1449,10 +1450,12 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+>>   					      bcm_rx_handler, op, "bcm", sk);
+>>   		if (err) {
+>>   			/* this bcm rx op is broken -> remove it */
+>> -			list_del_rcu(&op->list);
+>>   			bcm_remove_op(op);
+>>   			return err;
+>>   		}
+> 
+> [Severity: Critical]
+> Does removing this list_del_rcu() cause a use-after-free for existing
+> operations?
+> 
+> If a user updates an existing BCM RX operation for a specific device that
+> was unregistered, the op remains in the list but op->rx_reg_dev is cleared.
+> 
+> If the update occurs and the interface is gone, dev_get_by_index() fails,
+> and this error path is taken.
+> 
+> Since bcm_remove_op() frees the operation via call_rcu(), removing
+> list_del_rcu() leaves a freed operation linked in bo->rx_ops. Any
+> subsequent operation traversing the list, such as bcm_release() or procfs
+> reads, would then dereference freed memory.
+> 
+>> +
+>> +		/* add this bcm_op to the list of the rx_ops */
+>> +		list_add_rcu(&op->list, &bo->rx_ops);
+>>   	}
+> 
+> [Severity: Critical]
+> Could this unconditional list_add_rcu() corrupt the list if the operation
+> is already linked?
+> 
+> When updating an existing operation that needs to be re-registered (for
+> example, if the interface was unregistered and a new device reuses the
+> ifindex), do_rx_register will be 1 for an operation that is already linked
+> in bo->rx_ops.
+> 
+> Calling list_add_rcu() on a node that is already part of the list corrupts
+> the list pointers, which could lead to an infinite loop or panic during RCU
+> traversal.
+> 
 
-[ ... ]
-
-> +&canfd {
-> +	pinctrl-0 =3D <&canfd_pins>;
-> +	pinctrl-names =3D "default";
-> +	status =3D "okay";
-> +
-> +	channel0 {
-> +		phys =3D <&can_transceiver0>;
-> +		status =3D "okay";
-> +	};
-> +
-> +	channel1 {
-> +		phys =3D <&can_transceiver1>;
-> +		status =3D "okay";
-> +	};
-> +};
-
-[Severity: Medium]
-Since SW_GPIO_CAN_PMOD1 and SW_GPIO_CAN_PMOD2 default to SW_ON, the
-standby-gpios nodes are omitted for the transceivers.
-
-Does unconditionally setting status =3D "okay" here expose broken CAN inter=
-faces
-to userspace by default? If the transceivers fall back to internal pull-ups=
- and
-enter standby mode, won't any transmission attempt blackhole and result in
-immediate bus-off errors?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260714173315.1981=
-708-1-claudiu.beznea+renesas@tuxon.dev?part=3D8
