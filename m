@@ -1,163 +1,137 @@
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4352843FD29
-	for <linux-can@vger.kernel.org>; Tue, 14 Jul 2026 09:30:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BB23AD24
+	for <linux-can@vger.kernel.org>; Tue, 14 Jul 2026 10:01:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.218
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784021445; cv=pass; b=YwXLp0hpUHgQnInPRJFzWK+/KkU4uhdrcyTGSmLnynIjSXqIn1Hkwy+5CGg0v6e2NeB6S1Jw/EVRpraaT/qxsjNfFw6lHsTREHtksV+eTTWL1NgBygxCMFPuT9+h1CpCP9ij0DAsj+B9/nM/myW6YmOhgwQRLY3L4r05bC0cFR0=
+	t=1784023301; cv=pass; b=swzgnLVRV2otKpU+L0t9iL6mc9306b/oSobRzGA63ATThAS3FejoMGPNXOToIyWzuS8O+GDLEUNd2ESH5KFZV/6DVpyCEpR/sHOBmGhCBYTqYhzyGCbEFE3gGVYFMIcGe7rOthKcXH5GC8Ri/g7Yg1/pIVc/ebGm5rIgrnbeyCY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784021445; c=relaxed/simple;
-	bh=I6G3Q+FXZ5EmFID/Q3+wjhwXv5YFhtj8kbKtXbaP7aQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W6j6LehYiVxSm6JJ8f1vBhIZKkj5TzWLUOkcANGHAL/T/PcBegy3WcRAq7Rh38h3Oq21/gIYf4xMFQABZOpX4SPs9tv3U+R76rLUL0xy3XiGZiLqCPunGnotA0G37GR0YFiSv8WvdHvzK6Hk43gtAmhgRR0+3tzCGRSXWC83uvU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RQ9z0SVj; arc=pass smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1784023301; c=relaxed/simple;
+	bh=Z3vQxfNikZHHrwR+Vvdlin4IX6P5NXXoTFF3I5PV2c4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=C2S1wb7W5Ed6Dr3kMBVTBR93uP8ROViXJfOXMEds6hHc7tZMXKFtluSI6tUQygEHG1UpySwbSczKAraH2e4ky2DewvZmu2Pcp8bothwMq+4ObI9kPKECPnwdnY5hMLsu+uqPrF0JtlOvBt7rOMgoCkIZ0hVy1tpwSGfeBwyY4Kk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=fRLzbWHa; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=GGxolC4W; arc=pass smtp.client-ip=81.169.146.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RQ9z0SVj"
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2ccf2360620so5674585ad.3
-        for <linux-can@vger.kernel.org>; Tue, 14 Jul 2026 02:30:36 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1784021434; cv=none;
-        d=google.com; s=arc-20260327;
-        b=YGBNiu64oUodB9FQlDTrXqItOjucBNwbio05FxUINhdWBPLSMfpkyrpf33Um8Fhyrv
-         0PIWXcfuijm/Q/DXORua0dO5f9mqy4Q3odNSiDt9ssyNXtL0Y2+Qdz3SwsI5Lq20c/by
-         1F7dE/ZrQrqvKnZmPVK+iJ0Ub5hnY2Hts7YY+Q6t4pR3jXVySkcAHVgu87dTXaeqsCmV
-         0BlHq5lOp2yglD2gLzrPCyb166Uu6jAl2DGdaXX9Vv9m8tAGonhakk/IJxKhEZMXZpHy
-         7TTny0uuQq4A5fymgt74Znpd1TKrDe2YOjDjWMG4r5tSlLCw+I/aP71HgaEh1XXgzrxa
-         J1wQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=v+QJ/aXOEJkF1qKOqd78f73WO0NWahWbfl7RnnArRcg=;
-        fh=jS/YI/Tewnon624mR5EIfNxFcW1cTt2WGRTuRCSiNJw=;
-        b=DmvcrX12iz8f07ZRPeOK813/nwPsjr5AczqzEKOI2BsQjf6lUpD2Fepg/4B3pOoVM/
-         rjCA3UVow430J2FJ3oA6ckMlBFOpZ2UsBY+rdoFA6rtxJwFkUTvmNLQ/iTs6dHjUOPPF
-         /9/FkSEvCQj4NFouPyaw+TAkJUfdHIVM0Kh7iBXOR52opjHritcHa//PVop0ckt1QR5T
-         GSvE9scTX0tXKv8T2r3BsO23PHx25X+JxI2H8W/WewZr1HG5850sfdKjnZRih1pXG+A+
-         uztEbAGkkqoehJkrvT6u3pkGw54gDHH4TUaNvamFCWKw48xtLSDzufbpnHtlucAZbwkz
-         UGNg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1784021434; x=1784626234; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=v+QJ/aXOEJkF1qKOqd78f73WO0NWahWbfl7RnnArRcg=;
-        b=RQ9z0SVjugQWrjanJyVeYWyyRbW7XZuMgu6dWwjoUT6Wcu2/ZLrcNobRLKz0xYWp4e
-         qpC9mYeIDoWpDh4f3rgPKRHs9dQoKggdu/3Dv80UiOxOU6BRdacWRD5jCFJ9lI2Y+8d3
-         +ZHcqwDBXctxjfo9O2F8U0DHR/5KDG/vEzXINfpzl0CiLUmtJWKPsRlaOVvcMBMfLfbS
-         KOoIpnnDq8tIr1ZT1HyvSiQ6o2XvpirvpjLvBdArNAPxyZkDF+0HvKTbgPO3j832bHa5
-         0Diw/Kh3uylwcNH5UtZFKBE5dQC6g90VeACD7JDEwC/vzdIG0Nxt5/Kt4j6YMF8INStU
-         VNcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784021434; x=1784626234;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=v+QJ/aXOEJkF1qKOqd78f73WO0NWahWbfl7RnnArRcg=;
-        b=OT22VTPt7uKc+9wBwTggS89S53xw92P4oqi6Vwge5vERzuEVlBoYkkFmAgfUkUiDHj
-         xTfP6vMamzSJDfxN8xfUCq/5wq67DClY5M8B5m0Jcz5dZXwfw3ozvxgFzh6EiDAj3MFw
-         1bpmc0nphaOjIuJLF3oZ1DQoXkFz6c/nwrPBfegsc6VdZ9x9ZFWlX5eiKxGTOVSVJzxH
-         mGfHMFWnoTgSHahZCbhChInrQfG548FQ+AvVgTRwJFm0PCgg1cuP/m86fOqXg2KLvzJH
-         wmxIO8yqxnlMWNfFuO7ceVU3eBYhSOhfAClmJAH0ddP0ARuTxWNJe1VBmTWvVoZkBC4i
-         RWCQ==
-X-Forwarded-Encrypted: i=1; AHgh+RrdwKQwMnrUUz396VtqDAsL7focZ6xgv2/0/RGc6V4yT9A5AaCpYiR+PgZmPBCUBrrRPJgxVNndjzE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxr1gCelrYUCcwOSXccFmIRNw9uBiFZnymyN9hLzllN+zq7GFHp
-	3DEJZQJSn5WxQdZF3pVPllSNYhyapEpbuy1FOgQO2wyOQyh5tfiiuFe3QGBE/mSJtgEDQfMa2lb
-	qSP2fuDolzlQNnt7OnJ7yvf7VS7MQTysj2GyukHct
-X-Gm-Gg: AfdE7ckY6/XwZ0I+Aj+OX4AVTxCp0n8uL+3B/cbObqNbPqRV9s/dyafGW02O2ufmJMy
-	HQL8Hhkc4L+D2dW+6EZyU+PhMfeR8geajpRzF01IBuM5VWe3diTky8AC0NBDk6PhbelFYmWr/lf
-	FHoko9UFpQXVArZcYkH5vXpkNm556/REAEIoEsRtcpMXYvEAoVP4wLiaebDiMiyQ6hMv2OniKbs
-	XpMVHiniygxpWzgdB99VcgBa+YFzhDykCIst5MNJ7R+8UxGjTSKEDnFfL0Fp9pWIsedEbNSM3OM
-	Q9xsFmoBlPdK5S0ctI+KqVhg81CJweYBeyrKtTHje3b4PYRescB6l9qS4HNE5oP/UyWyTfoqz7B
-	R6dGERqd3GEE=
-X-Received: by 2002:a05:6a21:496:b0:3a2:d79c:416c with SMTP id
- adf61e73a8af0-3c110a0ec3dmr14089180637.32.1784021433321; Tue, 14 Jul 2026
- 02:30:33 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="fRLzbWHa";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="GGxolC4W"
+ARC-Seal: i=1; a=rsa-sha256; t=1784023290; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=BYkY0pYRJ9jbEa4yeTmWcQ5da1CzXgjH534w/6LqvziRf+VWC9FfiT4LYvju4OGslV
+    jIVUCqDaVt9kAp+V/22Z95gnBEzPd0c00h7inGEZluSy6cHz6CiXi0A4mnoqoln5PQUp
+    VWD0xZFyqa6JZdAXLv4W4bD2YjC+zCQqX3BdLKqHh7ov1Wi0yHqf0eRz4oTfj5gzhQhr
+    f0jv7w+Yp24/Y5CEbK+bZB/1kR6iCLE+jKJtJOje/XUMUQCqx5GY+2X1H/ZeeFsEff1s
+    6jdFw/UVIgT4p7OFkrFDxz2CyjJb6GFUagKlJ7SQVjaHgmspO25O+3w04dgZYp0lHvau
+    jNJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1784023290;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=67OIDJ+L8Mu0SAsWs2LCHyg/5xxRCXs8h0e0b0JDy68=;
+    b=QvYlxPFa7mdXa92ZBFtK+cT5jZL/KUH0Or6Iu4XdY0scc/SJCGFBwheLvPvmpNL567
+    F5GQxa2rKVfIKxIc9WHwrhFPHlat4ce65yed5o/WXwiV+XolhFL+FuG+mNPZWSP87nzH
+    tuocgjRQqf5+3F1/pTjlKKWT3AUnenh575X0xgCa1wIGC85uThSn6SfT8HtKRktvsYGf
+    IBSIEPsde0F2iZT/1mbZzww0eGKnszVFRNjK9DCEkZlF6hlRztYlkwx2GsM7Q49DbTnV
+    bSr5xZZVj5OVWqBs87D4ajpWsXjJ2P97SdLyBeNbmNeYhUyQIDCAGg6dnQsUoIJ65S2b
+    X7uQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1784023290;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=67OIDJ+L8Mu0SAsWs2LCHyg/5xxRCXs8h0e0b0JDy68=;
+    b=fRLzbWHaxmYjY8jVjxNZgeurNZ982xQxLU6O5nFsjtle0WEygZhMh5ayggifIk5GcQ
+    oe8jKjz5iHSK8gRdHcLOTjsMPXQQuYibwNIeppk+sj0iOZz04pDCSVwXZ8JQH4B6zoh/
+    plFdM5NtX0TKW8UKdFghK5VNSUEvxSD4kk2D7QtbYsZlW+2FrADIlJNcPApIwArDtwtm
+    ajWwnyZr5C6KGHvixCPpSMvchIHrLb5chaWI7aj4skYvm5OyBHcJUg5OuQOut/eqRZYO
+    JJkocYmZ042XZW0hqCeEWAwexNxwhoT+44QAziS+L93mIV+kRvGmouJppxUgC8gE/lNs
+    SY2Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1784023290;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=67OIDJ+L8Mu0SAsWs2LCHyg/5xxRCXs8h0e0b0JDy68=;
+    b=GGxolC4W63OFMpxDgw5MB5aargUPga11nxbRAvi18C3AKI6kJLy+pTDh0AtAJ+q3uj
+    QfBMNBkQt5PyP9gSnGAQ==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tRkI16oOSW1Ti/f4PoH8="
+Received: from [192.168.20.190]
+    by smtp.strato.de (RZmta 55.5.6 DYNA|AUTH)
+    with ESMTPSA id Ka9fdb26EA1Uimt
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Tue, 14 Jul 2026 12:01:30 +0200 (CEST)
+Message-ID: <10179a2c-c8fd-428d-a918-955b6412e712@hartkopp.net>
+Date: Tue, 14 Jul 2026 12:01:25 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260712212113.181121-1-kuniyu@google.com> <20260712213422.DB1111F000E9@smtp.kernel.org>
- <a2afe72f-5098-4a6f-9df7-b993f186337a@hartkopp.net>
-In-Reply-To: <a2afe72f-5098-4a6f-9df7-b993f186337a@hartkopp.net>
-From: Kuniyuki Iwashima <kuniyu@google.com>
-Date: Tue, 14 Jul 2026 11:30:21 +0200
-X-Gm-Features: AVVi8Cdpr6dJWdakTie8bvgkbftvPiYnlf1nFXm4YqURw-4ZDxBH3T29_IrQQKQ
-Message-ID: <CAAVpQUBy2Ws8iuvv4WBBcCHQkkQLL5E2Nu=_dnvxR=ehN6gXkg@mail.gmail.com>
-Subject: Re: [PATCH v1] vxcan: Support per-netns device unregistration.
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: sashiko-reviews@lists.linux.dev, linux-can@vger.kernel.org, 
-	Oleksij Rempel <o.rempel@pengutronix.de>, Marc Kleine-Budde <mkl@pengutronix.de>, 
-	Vincent Mailhol <mailhol@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: Weekly net upstream? - Re: [PATCH] vxcan: fix Kconfig description
+ stating no local echo provided
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: mailhol@kernel.org, linux-can@vger.kernel.org,
+ =?UTF-8?Q?Alexander_H=C3=B6lzl?= <alexander.hoelzl@gmx.net>
+References: <20260619090035.17769-1-alexander.hoelzl@gmx.net>
+ <1f3a3c0d-71a6-4c7d-9e08-5e19f1999af2@hartkopp.net>
+ <ef991c9b-276d-44e9-a48c-7bf52f69ea0a@hartkopp.net>
+ <20260714-vole-of-sheer-leadership-1bf399-mkl@pengutronix.de>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <20260714-vole-of-sheer-leadership-1bf399-mkl@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jul 13, 2026 at 9:57=E2=80=AFAM Oliver Hartkopp <socketcan@hartkopp=
-.net> wrote:
-> On 12.07.26 23:34, sashiko-bot@kernel.org wrote:
-> > Thank you for your contribution! Sashiko AI review found 1 potential is=
-sue(s) to consider:
-> > - [Low] The patch calls the undefined function `unregister_netdevice_qu=
-eue_net()`, resulting in a compilation error.
-> > --
-> >
-> > --- Patch [1]: [PATCH v1] vxcan: Support per-netns device unregistratio=
-n. ---
-> > commit 882fcd31630d9ce6b0a57cc99738c2ad0579763f
-> > Author: Kuniyuki Iwashima <kuniyu@google.com>
-> >
-> > vxcan: Support per-netns device unregistration.
-> >
-> > This commit updates vxcan_dellink() to unregister local and peer device=
-s
-> > safely across different namespaces by using xchg(). The change aims to
-> > prevent double-queuing of device destruction when RTNL is removed.
-> >
-> >> diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
-> >> --- a/drivers/net/can/vxcan.c
-> >> +++ b/drivers/net/can/vxcan.c
-> >
-> > [ ... ]
-> >
-> >> @@ -281,24 +284,25 @@ static int vxcan_newlink(struct net_device *dev,
-> >>
-> >>   static void vxcan_dellink(struct net_device *dev, struct list_head *=
-head)
-> >>   {
-> >
-> > [ ... ]
-> >
-> >>      unregister_netdevice_queue(dev, head);
-> >>
-> >> -    if (peer) {
-> >> -            priv =3D netdev_priv(peer);
-> >> -            RCU_INIT_POINTER(priv->peer, NULL);
-> >> -            unregister_netdevice_queue(peer, head);
-> >> -    }
-> >> +    priv =3D netdev_priv(peer);
-> >> +    dev =3D unrcu_pointer(xchg(&priv->peer, NULL));
-> >> +    if (dev)
-> >> +            unregister_netdevice_queue_net(dev_net(dev), peer, head);
-> >
-> > [Severity: Low]
-> > Is this missing a prerequisite patch? It appears that
-> > unregister_netdevice_queue_net() is not defined anywhere in the kernel
-> > tree, which leads to a compilation error when building vxcan.c.
->
-> The referenced veth.c patch was applied to net-next:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commi=
-t/?id=3Dd7fda2c776b2a969b9d78c5ad00e30824df43add
->
-> where also unregister_netdevice_queue_net() exists.
->
-> So this is a net-next resp. can-next patch.
 
-Yes, I meant this is for can-next, but I was not sure how frequently
-the tree is synced against net-next and what's the best approach here.
+
+On 14.07.26 10:51, Marc Kleine-Budde wrote:
+> On 14.07.2026 08:55:32, Oliver Hartkopp wrote:
+>> I would be glad if you could upstream this patch together with the now
+>> sashiko-approved fixes for can-bcm and can-isotp:
+>>
+>> https://lore.kernel.org/linux-can/20260712-isotp-fixes-v10-0-793a1b1ce17f@hartkopp.net/
+> 
+> If I understand you correctly, you say that the issue sashiko claims to
+> be in patch 3 (mid:20260712181155.B42EA1F000E9@smtp.kernel.org):
+> 
+>>> [High] Lockless state transition in the timeout handler creates a
+>>> race condition that causes timeout errors to be silently dropped or
+>>> misattributed, leading sendmsg() to erroneously return success for
+>>> timed-out transfers.
+> 
+> is a preexisting problem?
+
+Yes. Always broken for years but nobody ever complained as the pattern 
+that would lead to this problem is not used.
+
+The core issues with concurrent execution UFA and probable stalls are 
+fixed within the patch set. Fixing the in rare cases wrong (and unused) 
+error attribution would be a huge effort.
+
+So it would be something for can-next or wont-fix.
+
+> 
+>> https://lore.kernel.org/linux-can/20260709-bcm_fixes-v12-0-61c06291bf1c@hartkopp.net/
+> 
+> Can you clarify these claims:
+> 
+> https://lore.kernel.org/all/20260709203552.D473D1F00A3D@smtp.kernel.org/
+
+Fixed in patch 9.
+
+> https://lore.kernel.org/all/20260709204058.5BEED1F000E9@smtp.kernel.org/
+
+Oh, this was really an open point that I have overlooked.
+
+Will send a V13 asap.
+
+Best regards,
+Oliver
+
