@@ -1,19 +1,19 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EE2230214B;
-	Tue, 14 Jul 2026 17:33:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A621F30214B;
+	Tue, 14 Jul 2026 17:33:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784050432; cv=none; b=Fw5Skaj6CA/dM3p9VykygiJeOOWxYL5SUF4fflcZFJC1702vSGBfuCpFiwUjRy7Axwu/mbX5qMuj9V/dsnMuv6ISd8RS6EdtIkPtC3tidxEk2X8TkdSQw8VXSMoKsw3JnJr/fY6RRdfRXaRS8vUbLosfY/wUyU0rKXvUzRa7OhI=
+	t=1784050436; cv=none; b=ozZdXWXwoSnkQIQgb7qHYiHQWvAUngJ/fKgh4ajqX38O0n1vgTUjpHtG2UR0pxtpUCdm5DXfy8/TAROmFFriFBpCDNb/SxDTJEHXkwLMrbbJqphU+u87NpE58RIvUkbnQV2o0HRc2ujD9eAljus2QGrvIGmndcYL0QbLILMJXzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784050432; c=relaxed/simple;
-	bh=cyreKOa5S4fRT0pSZLRECO69cQw7bxhM+Z2w0N+B8jE=;
+	s=arc-20240116; t=1784050436; c=relaxed/simple;
+	bh=+TGsxrTN5qKYKi2IrMeJvVe0ZSdFGNfOPw/BA7opNmE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KxBIgJ6SzU8zT368apbSB7m2MO7OulOmDXXddFAGSgZR+PYb1/DSSYevtskjAe8kSwuu03EgLL2vVezp+oYeCVJYI8/2mlIQC2WRMJVD3CR1SJLMJbec49VQf3r/QKhqr6viTwtBRP5SJCIZQoCbQB9MNBWnOToMEAJh7eBFpmc=
+	 MIME-Version; b=lKkRSCBGGhJGF0/KjKjxGePMy6NPulFvWBOI4KcAkFp45mSsQwk1kytDszLJ6hWyOLXf/BHzJwYgq/hFWPRKZqbpZTdSa49oX8u5c0ojBND+ZZc+bLN3ApgZF+w9J1HWgUL2zNooRXoNipit9c3Hwz94H/afyR9rQb+6h8PWwgQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5416E1F00A3A;
-	Tue, 14 Jul 2026 17:33:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 901291F000E9;
+	Tue, 14 Jul 2026 17:33:51 +0000 (UTC)
 From: Claudiu Beznea <claudiu.beznea+renesas@tuxon.dev>
 To: mkl@pengutronix.de,
 	mailhol@kernel.org,
@@ -34,9 +34,9 @@ Cc: claudiu.beznea@tuxon.dev,
 	linux-kernel@vger.kernel.org,
 	linux-clk@vger.kernel.org,
 	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH v3 5/8] can: rcar_canfd: Do not set registers selecting the CAN mode
-Date: Tue, 14 Jul 2026 20:33:12 +0300
-Message-ID: <20260714173315.1981708-6-claudiu.beznea+renesas@tuxon.dev>
+Subject: [PATCH v3 6/8] can: rcar_canfd: Add support for Renesas RZ/G3S
+Date: Tue, 14 Jul 2026 20:33:13 +0300
+Message-ID: <20260714173315.1981708-7-claudiu.beznea+renesas@tuxon.dev>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260714173315.1981708-1-claudiu.beznea+renesas@tuxon.dev>
 References: <20260714173315.1981708-1-claudiu.beznea+renesas@tuxon.dev>
@@ -50,97 +50,75 @@ Content-Transfer-Encoding: 8bit
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-The bits 30 (classical CAN-only mode) and 28 (FD-only enable) of the
-Channel n CAN-FD Configuration Register of the Renesas RZ/G3S SoC are not
-available. The IP supports only CAN-FD mode. RZ/G3S HW manual (revision
-1.30) specify the bits are read as zero and the write value should always
-be zero.
+Add support for Renesas RZ/G3S
 
-Add the mode_select_na flag in struct rcar_canfd_hw_info to cover RZ/G3S
-and avoid writing to unavailable bits.
+The Renesas RZ/G3S CAN-FD controller is largely compatible with the
+variant found on the Renesas RZ/G3E. The main differences are:
+- the RZ/G3S provides 16 AFL pages
+- the RZ/G3S supports only two channels
+- the RZ/G3S supports only CAN-FD operation and does not implement the
+  bits used to select between classical CAN-only and CAN FD-only modes.
+- the RZ/G3S includes an internal divider that allows the peripheral
+  clock to be used as the CAN FD clock source.
 
-The existing struct rcar_canfd_hw_info instances were updated to address
-the request in the Link discussion.
+Add support for the Renesas RZ/G3S.
 
-Commit prepares for the addition of the Renesas RZ/G3S SoC.
-
-Link: https://lore.kernel.org/all/1d9719e3-10ff-4cd8-b729-55fea93c37ce@wanadoo.fr
 Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 ---
 
 Changes in v3:
-- none
+- updated max_aflpn as it refers to the number of available pages
+  that could be used to access the acceptance filters; updated the
+  patch description for this change
 
 Changes in v2:
-- collected the tags
-- updated patch description to reflect this is a preparatory commit
+- initialized shared_global_irqs = 0 for RZ/G3S, to follow the request
+  from https://lore.kernel.org/all/1d9719e3-10ff-4cd8-b729-55fea93c37ce@wanadoo.fr
+- collected tags
 
- drivers/net/can/rcar/rcar_canfd.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/net/can/rcar/rcar_canfd.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
 diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index 7fa9cbbf8dde..8ba8905c965a 100644
+index 8ba8905c965a..d858778ff002 100644
 --- a/drivers/net/can/rcar/rcar_canfd.c
 +++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -445,6 +445,7 @@ struct rcar_canfd_hw_info {
- 	unsigned shared_can_regs:1;	/* Has shared classical can registers */
- 	unsigned external_clk:1;	/* Has external clock */
- 	unsigned fcan_pclk:1;		/* Has fcan sourced from pclk. */
-+	unsigned mode_select_na:1;	/* Has no bits for selecting the mode. */
+@@ -661,6 +661,26 @@ static const struct rcar_canfd_hw_info rzg2l_hw_info = {
+ 	.mode_select_na = 0,
  };
  
- /* Channel priv data */
-@@ -619,6 +620,7 @@ static const struct rcar_canfd_hw_info rcar_gen3_hw_info = {
- 	.shared_can_regs = 0,
- 	.external_clk = 1,
- 	.fcan_pclk = 0,
-+	.mode_select_na = 0,
- };
- 
- static const struct rcar_canfd_hw_info rcar_gen4_hw_info = {
-@@ -637,6 +639,7 @@ static const struct rcar_canfd_hw_info rcar_gen4_hw_info = {
- 	.shared_can_regs = 1,
- 	.external_clk = 1,
- 	.fcan_pclk = 0,
-+	.mode_select_na = 0,
- };
- 
- static const struct rcar_canfd_hw_info rzg2l_hw_info = {
-@@ -655,6 +658,7 @@ static const struct rcar_canfd_hw_info rzg2l_hw_info = {
- 	.shared_can_regs = 0,
- 	.external_clk = 1,
- 	.fcan_pclk = 0,
-+	.mode_select_na = 0,
- };
- 
- static const struct rcar_canfd_hw_info r9a09g047_hw_info = {
-@@ -673,6 +677,7 @@ static const struct rcar_canfd_hw_info r9a09g047_hw_info = {
- 	.shared_can_regs = 1,
- 	.external_clk = 0,
- 	.fcan_pclk = 0,
-+	.mode_select_na = 0,
- };
- 
- static const struct rcar_canfd_hw_info r9a09g077_hw_info = {
-@@ -691,6 +696,7 @@ static const struct rcar_canfd_hw_info r9a09g077_hw_info = {
- 	.shared_can_regs = 1,
- 	.external_clk = 1,
- 	.fcan_pclk = 0,
-+	.mode_select_na = 0,
- };
- 
- /* Helper functions */
-@@ -846,6 +852,9 @@ static int rcar_canfd_reset_controller(struct rcar_canfd_global *gpriv)
- 		}
- 
- 		/* Set the controller into appropriate mode */
-+		if (gpriv->info->mode_select_na)
-+			continue;
++static const struct rcar_canfd_hw_info r9a08g045_hw_info = {
++	.nom_bittiming = &rcar_canfd_gen4_nom_bittiming_const,
++	.data_bittiming = &rcar_canfd_gen4_data_bittiming_const,
++	.tdc_const = &rcar_canfd_gen4_tdc_const,
++	.regs = &rcar_gen4_regs,
++	.sh = &rcar_gen4_shift_data,
++	.rnc_field_width = 16,
++	.max_aflpn = 15,
++	.max_cftml = 31,
++	.max_channels = 2,
++	.postdiv = 2,
++	.shared_global_irqs = 0,
++	.multi_channel_irqs = 1,
++	.ch_interface_mode = 1,
++	.shared_can_regs = 1,
++	.external_clk = 1,
++	.fcan_pclk = 1,
++	.mode_select_na = 1,
++};
 +
- 		if (gpriv->info->ch_interface_mode) {
- 			/* Do not set CLOE and FDOE simultaneously */
- 			if (!gpriv->fdmode) {
+ static const struct rcar_canfd_hw_info r9a09g047_hw_info = {
+ 	.nom_bittiming = &rcar_canfd_gen4_nom_bittiming_const,
+ 	.data_bittiming = &rcar_canfd_gen4_data_bittiming_const,
+@@ -2384,6 +2404,7 @@ static DEFINE_SIMPLE_DEV_PM_OPS(rcar_canfd_pm_ops, rcar_canfd_suspend,
+ 
+ static const __maybe_unused struct of_device_id rcar_canfd_of_table[] = {
+ 	{ .compatible = "renesas,r8a779a0-canfd", .data = &rcar_gen4_hw_info },
++	{ .compatible = "renesas,r9a08g045-canfd", .data = &r9a08g045_hw_info },
+ 	{ .compatible = "renesas,r9a09g047-canfd", .data = &r9a09g047_hw_info },
+ 	{ .compatible = "renesas,r9a09g077-canfd", .data = &r9a09g077_hw_info },
+ 	{ .compatible = "renesas,rcar-gen3-canfd", .data = &rcar_gen3_hw_info },
 -- 
 2.43.0
 
