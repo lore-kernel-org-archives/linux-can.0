@@ -1,38 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AF274DC53F;
-	Tue, 14 Jul 2026 16:55:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54D084DC54D
+	for <linux-can@vger.kernel.org>; Tue, 14 Jul 2026 16:55:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784048128; cv=none; b=Zk+KD1kHqlcvTzlkjV/bkZ/IzZYJfh1HI3CE5QjdS4Fba/DJOL5ZZ6C5hkENgq+LFdpXpNdWF44VEAzwSkJm9WKico2yxKKL66phtGO68M37B1V+H/VwvEeJtr7Rr6VEE0uuUvBbHCA5po+ht480sf1B5M3VDXmUvGJJUN19RBw=
+	t=1784048128; cv=none; b=pQOZ4vSpmGdzebOCB7wrF9kTYCHwwxnD09ZOmRrsOizeQronPc1j7ISXiT+dCXU4j8Pcbi22QRq42Sh1zzWkBYNcjzYrEZZnFFHk4PrgBrYChcIQiVFP8xvhovCuY7KzYndy55Rdraj2H0nNM7ycvb9PQEjH/Pvvx+KGCaO7D2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1784048128; c=relaxed/simple;
-	bh=hpjmRKO0Jw82UOXi5VO/PomczoA97sffNW7H3u55JoM=;
+	bh=B456DsgIm5B1e942zaPWO2m/3JK/v0e8ciUugabXu/E=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=N5qd4j2PooTFq2VCTZZaDDwmguVlP5/GwxZfIzF1nK2PZUSvzkoQtfFI1LBbUXs4XUdWbeYo4BEYsfe7Zb1IxBfEwGxzuXQrP3NR3PG3HQskkwhvgAIHaWc2e09VLT3OQSKKFvpM53vP43cU5Oia/6jkxSGzna4eQdXXCweEnWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EWE3sX6U; arc=none smtp.client-ip=10.30.226.201
+	 In-Reply-To:To:Cc; b=crdWDKckH/CA5+KQzZPrBqfoOpoHJROnJ4qeQaGyVNvv2S0FIQ2S7qqy0F6JqZlW2zXkBn+tzQaeEDiXDypqxUx5Oxei3Q3KzSiBvq8qWsqPDedzwFJlG9rId9U0iwQc5hTj2tEzFj/c2zoA/B+L6M+UCq0xn/EKbHl9GUqZ/gs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QiOTDVTu; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EWE3sX6U"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 00490C2BCFC;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QiOTDVTu"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1B172C2BCFB;
 	Tue, 14 Jul 2026 16:55:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1784048128;
-	bh=hpjmRKO0Jw82UOXi5VO/PomczoA97sffNW7H3u55JoM=;
+	bh=B456DsgIm5B1e942zaPWO2m/3JK/v0e8ciUugabXu/E=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=EWE3sX6U5uN2CysVcEyFpG7i812kKbUaXYgI1YpcStZ7eruW7kPsjqysfxSwLKkkH
-	 o99QcEUHZTT/wP4YcUfUvojFs+gjk8+Sw2QXjOQhy9FDOeB4dUfD6WIpALThp4r8tA
-	 W0Zqi9Z+PLJCK/ZJsadjKqRa63ih5lyESsfqqpy5HGTVaLmXS5bnCohI9HUPGr4g5K
-	 eIbW0pjINd2v1jtFVTFCcokpTReto/pZ5HsQL3ZRtGcJUB2Hv/F1Yi7fGekH0iLDIM
-	 MC+gs7u0GNsKnBcAX+jqrCNWhF5N+wXNaIjzi7+tBDflxJXYOD9HH6soKwXW7tL6o2
-	 OaZTQ79j1Nhog==
+	b=QiOTDVTuqzYQplEnuYDasifOdTJukxKf4w4WTL5r5+0Qq4ddi8ES/JdGUVCA3ggeF
+	 IqD/H66qeX5TCs0IEFMfOdqouLjFWVA8xI1RZk5L+VpNsV+kgOv4n9AVQ4WGmqaDWO
+	 Cbvd3cl6Xz4QILI9HePiscNtFDvslOA9BQdMvC+khsahpL2ygYW0eN3/trm1Jx8Gj2
+	 AIbpxPD7I7hU5O9GPZox8IUfy98Gmsss6Nqsg0ccWxvT9SYy/dnhtaLavb5jpHBRjF
+	 pALb5t8Jn9eAQG0YVrTiDeUxLldG/yAlK4mm8wpkicmgCC/7x6GerjedHLvLaOqRIp
+	 b3ZRAHS8PRS7Q==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E428BC44501;
-	Tue, 14 Jul 2026 16:55:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AFF1C4450B;
+	Tue, 14 Jul 2026 16:55:28 +0000 (UTC)
 From: Oliver Hartkopp via B4 Relay <devnull+socketcan.hartkopp.net@kernel.org>
-Date: Tue, 14 Jul 2026 18:55:27 +0200
-Subject: [PATCH v15 05/11] can: bcm: add missing rcu list annotations and
- operations
+Date: Tue, 14 Jul 2026 18:55:29 +0200
+Subject: [PATCH v15 07/11] can: bcm: validate frame length in
+ bcm_rx_setup() for RTR replies
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -41,18 +41,18 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260714-bcm_fixes-v15-5-562f7e3e42da@hartkopp.net>
+Message-Id: <20260714-bcm_fixes-v15-7-562f7e3e42da@hartkopp.net>
 References: <20260714-bcm_fixes-v15-0-562f7e3e42da@hartkopp.net>
 In-Reply-To: <20260714-bcm_fixes-v15-0-562f7e3e42da@hartkopp.net>
 To: linux-can@vger.kernel.org
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
- Marc Kleine-Budde <mkl@pengutronix.de>, sashiko-reviews@lists.linux.dev
+ Marc Kleine-Budde <mkl@pengutronix.de>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1784048126; l=5017;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1784048126; l=3930;
  i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=apLzsCFpEKeyUULoC6Ljp8/T59MVF6crR19M608FE7A=;
- b=kGrBjW9Xn7w3EI+foIZUv91kftnw6EBmqtOXHDTWo0YdTBdbb6BWeiC0pABct6wFopoTxfUJW
- UXXJSxM5GyxAaVRxaBr9MwsPOGdEWu/yUCNAPMn9/7BtctQK/j7ngRb
+ bh=4IyZCJqwK61p6Zao8bZNz3Pb+zTGVGJ+Lwh3fpvwsX8=;
+ b=SQCXNWay9e5B8CEez/cVcwjvGvzpGvSDm54B3YMgyzpWnrst18nqLdrL4/nud0oOb66hTVlQw
+ Ki/DemWKUU9DRD44MmbZ+B8l1rGlMsYrhg1cxWjbc2PFos2aC9r8nm1
 X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
  pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
 X-Endpoint-Received: by B4 Relay for socketcan@hartkopp.net/20260128 with
@@ -62,149 +62,133 @@ Reply-To: socketcan@hartkopp.net
 
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-sashiko-bot remarked the missing use of list_add_rcu() in
-bcm_[rx|tx]_setup() to have a proper initialized bcm_op structure
-when bcm_proc_show() traverses the bcm_op's under rcu_read_lock().
+bcm_tx_setup() validates cf->len against the CAN/CAN FD DLC limits
+before installing frames for TX_SETUP, but bcm_rx_setup() never did
+the same for the RTR-reply frame configured via RX_SETUP with
+RX_RTR_FRAME.
 
-To cover all initial settings of the bcm_op's the list_add_rcu() calls
-are moved to the end of the setup code.
-
-While at it, also fix the mirroring removal side: bcm_release() called
-bcm_remove_op() - which frees the op via call_rcu() - on ops that were
-still linked in bo->tx_ops/bo->rx_ops, without list_del_rcu() first.
-Unlink each op with list_del_rcu() before handing it to bcm_remove_op(),
-matching the existing pattern in bcm_delete_tx_op()/bcm_delete_rx_op().
-
-Reported-by: sashiko-reviews@lists.linux.dev
-Closes: https://lore.kernel.org/linux-can/20260610094654.A1FFE1F00893@smtp.kernel.org/
-Fixes: dac5e6249159 ("can: bcm: add missing rcu read protection for procfs content")
+Fixes: ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol")
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- net/can/bcm.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+ net/can/bcm.c | 59 +++++++++++++++++++++++++++++++++++++++++------------------
+ 1 file changed, 41 insertions(+), 18 deletions(-)
 
 diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 03c98e4cc677..5c1e83eeb4ff 100644
+index 68a62f605432..2d9c9cd74536 100644
 --- a/net/can/bcm.c
 +++ b/net/can/bcm.c
-@@ -263,11 +263,11 @@ static int bcm_proc_show(struct seq_file *m, void *v)
+@@ -1244,26 +1244,41 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 		kfree(op->frames);
+ 	kfree(op);
+ 	return err;
+ }
  
- 		seq_printf(m, "%s%ld%%\n",
- 			   (reduction == 100) ? "near " : "", reduction);
- 	}
- 
--	list_for_each_entry(op, &bo->tx_ops, list) {
-+	list_for_each_entry_rcu(op, &bo->tx_ops, list) {
- 
- 		seq_printf(m, "tx_op: %03X %s ", op->can_id,
- 			   bcm_proc_getifname(net, ifname, op->ifindex));
- 
- 		if (op->flags & CAN_FD_FRAME)
-@@ -1015,10 +1015,11 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 			int ifindex, struct sock *sk)
+-static void bcm_rx_setup_rtr_check(struct bcm_msg_head *msg_head,
+-				   struct bcm_op *op, void *new_frames)
++static int bcm_rx_setup_rtr_check(struct bcm_msg_head *msg_head,
++				  struct bcm_op *op, void *new_frames)
  {
- 	struct bcm_sock *bo = bcm_sk(sk);
- 	struct bcm_op *op;
- 	struct canfd_frame *cf;
-+	bool add_op_to_list = false;
- 	unsigned int i;
- 	int err;
- 
- 	/* we need a real device to send frames */
- 	if (!ifindex)
-@@ -1156,12 +1157,11 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 
- 		/* currently unused in tx_ops */
- 		hrtimer_setup(&op->thrtimer, hrtimer_dummy_timeout, CLOCK_MONOTONIC,
- 			      HRTIMER_MODE_REL_SOFT);
- 
--		/* add this bcm_op to the list of the tx_ops */
--		list_add(&op->list, &bo->tx_ops);
-+		add_op_to_list = true;
- 
- 	} /* if ((op = bcm_find_op(&bo->tx_ops, msg_head->can_id, ifindex))) */
- 
- 	if (op->flags & SETTIMER) {
- 		/* set timer values */
-@@ -1179,10 +1179,14 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 		hrtimer_cancel(&op->timer);
- 		/* spec: send CAN frame when starting timer */
- 		op->flags |= TX_ANNOUNCE;
- 	}
- 
-+	/* add this bcm_op to the list of the tx_ops? */
-+	if (add_op_to_list)
-+		list_add_rcu(&op->list, &bo->tx_ops);
++	struct canfd_frame *frame0 = new_frames;
 +
- 	if (op->flags & TX_ANNOUNCE)
- 		bcm_can_tx(op, NULL);
++	if (!(msg_head->flags & RX_RTR_FRAME))
++		return 0;
++
++	/* this frame is sent out as-is by bcm_can_tx() whenever a matching
++	 * remote request is received, so validate its length the same way
++	 * bcm_tx_setup() validates TX_SETUP frames before installing it
++	 */
++	if (msg_head->flags & CAN_FD_FRAME) {
++		if (frame0->len > 64)
++			return -EINVAL;
++	} else {
++		if (frame0->len > 8)
++			return -EINVAL;
++	}
++
+ 	/* funny feature in RX(!)_SETUP only for RTR-mode:
+ 	 * copy can_id into frame BUT without RTR-flag to
+ 	 * prevent a full-load-loopback-test ... ;-]
+ 	 * normalize this on the staged buffer, before it is
+ 	 * ever installed into op->frames.
+ 	 */
+-	if (msg_head->flags & RX_RTR_FRAME) {
+-		struct canfd_frame *frame0 = new_frames;
++	if ((msg_head->flags & TX_CP_CAN_ID) ||
++	    frame0->can_id == op->can_id)
++		frame0->can_id = op->can_id & ~CAN_RTR_FLAG;
  
- 	if (op->flags & STARTTIMER)
- 		bcm_tx_start_timer(op);
-@@ -1371,13 +1375,10 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 		hrtimer_setup(&op->timer, bcm_rx_timeout_handler, CLOCK_MONOTONIC,
- 			      HRTIMER_MODE_REL_SOFT);
- 		hrtimer_setup(&op->thrtimer, bcm_rx_thr_handler, CLOCK_MONOTONIC,
- 			      HRTIMER_MODE_REL_SOFT);
+-		if ((msg_head->flags & TX_CP_CAN_ID) ||
+-		    frame0->can_id == op->can_id)
+-			frame0->can_id = op->can_id & ~CAN_RTR_FLAG;
+-	}
++	return 0;
+ }
  
--		/* add this bcm_op to the list of the rx_ops */
--		list_add(&op->list, &bo->rx_ops);
--
- 		/* call can_rx_register() */
- 		do_rx_register = 1;
+ /*
+  * bcm_rx_setup - create or update a bcm rx op (for bcm_sendmsg)
+  */
+@@ -1322,11 +1337,15 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 			if (err < 0) {
+ 				kfree(new_frames);
+ 				return err;
+ 			}
  
- 	} /* if ((op = bcm_find_op(&bo->rx_ops, msg_head->can_id, ifindex))) */
- 
-@@ -1447,14 +1448,16 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 			err = can_rx_register(sock_net(sk), NULL, op->can_id,
- 					      REGMASK(op->can_id),
- 					      bcm_rx_handler, op, "bcm", sk);
- 		if (err) {
- 			/* this bcm rx op is broken -> remove it */
--			list_del_rcu(&op->list);
- 			bcm_remove_op(op);
- 			return err;
+-			bcm_rx_setup_rtr_check(msg_head, op, new_frames);
++			err = bcm_rx_setup_rtr_check(msg_head, op, new_frames);
++			if (err < 0) {
++				kfree(new_frames);
++				return err;
++			}
  		}
-+
-+		/* add this bcm_op to the list of the rx_ops */
-+		list_add_rcu(&op->list, &bo->rx_ops);
+ 
+ 		spin_lock_bh(&op->bcm_rx_update_lock);
+ 		op->nframes = msg_head->nframes;
+ 		op->flags = msg_head->flags;
+@@ -1395,20 +1414,16 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 		}
+ 
+ 		if (msg_head->nframes) {
+ 			err = memcpy_from_msg(op->frames, msg,
+ 					      msg_head->nframes * op->cfsiz);
+-			if (err < 0) {
+-				if (op->frames != &op->sframe)
+-					kfree(op->frames);
+-				if (op->last_frames != &op->last_sframe)
+-					kfree(op->last_frames);
+-				kfree(op);
+-				return err;
+-			}
++			if (err < 0)
++				goto free_op;
+ 
+-			bcm_rx_setup_rtr_check(msg_head, op, op->frames);
++			err = bcm_rx_setup_rtr_check(msg_head, op, op->frames);
++			if (err < 0)
++				goto free_op;
+ 		}
+ 
+ 		/* bcm_can_tx / bcm_tx_timeout_handler needs this */
+ 		op->sk = sk;
+ 		sock_hold(sk);
+@@ -1503,10 +1518,18 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 		/* add this bcm_op to the list of the rx_ops */
+ 		list_add_rcu(&op->list, &bo->rx_ops);
  	}
  
  	return msg_head->nframes * op->cfsiz + MHSIZ;
++
++free_op:
++	if (op->frames != &op->sframe)
++		kfree(op->frames);
++	if (op->last_frames != &op->last_sframe)
++		kfree(op->last_frames);
++	kfree(op);
++	return err;
  }
  
-@@ -1784,12 +1787,14 @@ static int bcm_release(struct socket *sock)
- 	/* remove procfs entry */
- 	if (net->can.bcmproc_dir && bo->bcm_proc_read)
- 		remove_proc_entry(bo->procname, net->can.bcmproc_dir);
- #endif /* CONFIG_PROC_FS */
- 
--	list_for_each_entry_safe(op, next, &bo->tx_ops, list)
-+	list_for_each_entry_safe(op, next, &bo->tx_ops, list) {
-+		list_del_rcu(&op->list);
- 		bcm_remove_op(op);
-+	}
- 
- 	list_for_each_entry_safe(op, next, &bo->rx_ops, list) {
- 		/*
- 		 * Don't care if we're bound or not (due to netdev problems)
- 		 * can_rx_unregister() is always a save thing to do here.
-@@ -1816,12 +1821,14 @@ static int bcm_release(struct socket *sock)
- 
- 	}
- 
- 	synchronize_rcu();
- 
--	list_for_each_entry_safe(op, next, &bo->rx_ops, list)
-+	list_for_each_entry_safe(op, next, &bo->rx_ops, list) {
-+		list_del_rcu(&op->list);
- 		bcm_remove_op(op);
-+	}
- 
- 	/* remove device reference */
- 	if (bo->bound) {
- 		WRITE_ONCE(bo->bound, 0);
- 		bo->ifindex = 0;
+ /*
+  * bcm_tx_send - send a single CAN frame to the CAN interface (for bcm_sendmsg)
+  */
 
 -- 
 2.53.0
