@@ -1,19 +1,19 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF6D83644AF;
-	Tue, 14 Jul 2026 17:33:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 001B04156CC;
+	Tue, 14 Jul 2026 17:33:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784050420; cv=none; b=m81SzcLXG7ErClT+blbY0LuFTRi1YkcvHPWxJ7bsI1G3itIqKwJyVytrJ4isC0smk6ekGCywHiGO7S0f00c/KS87MJV89p+jqvVqL1KzhnLuRseQIwtPjY8OJn8FRk97M8K58rFLHiP6XbnkiZmmeyRdKsmHgyiYGOX4njooEDw=
+	t=1784050424; cv=none; b=cldy0w2+FBZ+4d1LZH82gPAaeMw5bHWR6QuKNqGeTKGwHs32uvgF+oDNO8i67lzd4UMkZDrurz0npk3iJpKVSsD1S0BnsQGJejGLubXImcrXoQvh9AZCoYLmLphRtO7018nMvRGy85/aiQ1UvHPJvi2yG48s+pS/pgz2Bk/WsWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784050420; c=relaxed/simple;
-	bh=dififgWOK3PWSQubZAj5C5b8QiytMc/6UcgNO63ndD0=;
+	s=arc-20240116; t=1784050424; c=relaxed/simple;
+	bh=jxkwVsHs3W4Putzopxt0rSxixe4whDDMZvaz6fq5ED0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uoHrsZmgMvnOQU2vUFNscdEnuUmoNmU+/pyx9Nudyo4xanoaHHcT+5/pn/CPV5jITPUarY80rEw5QcstyArLs9Cg1+o3r4RoVscYEVDkydlR5Bkxc+e7HEc3Cl/yOqW0kfqTOZOFxEymWlpeASRqOH36ohPIAyL2cVId41i4Nlo=
+	 MIME-Version; b=dNIzj0kd9uTh8CS8NzKhJJi1rOWRKE2TQIQt7KF43ptK44KDs+AoXNHRVPpP+xQ8a2DSuHWKpM1C1vi6lt+qur7GPfb5j+VjxzapMwrN22izqmiaODjXHbA6eryZC+vdm/LlGcDUzgkuOtdcJRSUxEcTwvvvztRxWS5fHxyJPCM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8ED0C1F000E9;
-	Tue, 14 Jul 2026 17:33:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E78E51F00A3A;
+	Tue, 14 Jul 2026 17:33:38 +0000 (UTC)
 From: Claudiu Beznea <claudiu.beznea+renesas@tuxon.dev>
 To: mkl@pengutronix.de,
 	mailhol@kernel.org,
@@ -34,9 +34,9 @@ Cc: claudiu.beznea@tuxon.dev,
 	linux-kernel@vger.kernel.org,
 	linux-clk@vger.kernel.org,
 	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH v3 2/8] dt-bindings: can: renesas,rcar-canfd: Document RZ/G3S SoC
-Date: Tue, 14 Jul 2026 20:33:09 +0300
-Message-ID: <20260714173315.1981708-3-claudiu.beznea+renesas@tuxon.dev>
+Subject: [PATCH v3 3/8] can: rcar_canfd: Fix typos in macro names
+Date: Tue, 14 Jul 2026 20:33:10 +0300
+Message-ID: <20260714173315.1981708-4-claudiu.beznea+renesas@tuxon.dev>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260714173315.1981708-1-claudiu.beznea+renesas@tuxon.dev>
 References: <20260714173315.1981708-1-claudiu.beznea+renesas@tuxon.dev>
@@ -50,117 +50,66 @@ Content-Transfer-Encoding: 8bit
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-The CAN FD controller found on the Renesas RZ/G3S SoC is largely compatible
-with the variant present on the RZ/G3E SoC. The main differences are:
-- the RZ/G3S provides only two CAN FD channels
-- the RZ/G3S supports only CAN FD operation; the Channel n CAN FD
-  Configuration Register does not implement the bits used to select
-  classical CAN-only mode (bit 30) or CAN FD-only mode (bit 28);
-  consequently, bit 31 (CAN FD Frame Distinction Enable) of the same
-  register is also not implemented
-- some bits in several registers (mainly reserved or status bits) are
-  read-write on the RZ/G3S but read-only on the RZ/G3E; their behavior is
-  otherwise identical: the bits read back as 0 on both SoCs and software
-  is allowed to write only 0 to them on the RZ/G3S
-- the RZ/G3S provides 256 acceptance filters, compared to 768 on the
-  RZ/G3E
-- the RZ/G3S can use PCLK clock as the CAN FD clock source through an
-  internal clock divider, while also supporting an external CAN FD clock
-  source
+The bits 1..0 of the Channel n Control Register are named CHMDC (Channel
+Mode select). Fix typos in macro names by replacing DMC with MDC.
 
-Since:
-- the SoC clock generator provides to the CAN IP only the peripheral and
-  the RAM clocks
-- when sourced from the peripheral clock, the CAN-FD clock is obtained
-  inside the IP itself by dividing the peripheral clock
-- the assigned-clocks and assigned-clock-rates properties are specific to
-  the CAN-FD clock
-the assigned-clocks and assigned-clock-rates properties were dropped from
-the required properties list of the Renesas RZ/G3S SoC.
-
-Add documentation for the Renesas RZ/G3S SoC.
-
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 ---
 
 Changes in v3:
-- updated the patch description to reflect RZ/G3S has 256 acceptance
-  filters and RZ/G3E has 768 acceptance filters
-- kept compatibles alphanumerically sorted
+- none
 
 Changes in v2:
-- forbid renesas,no-can-fd and renesas,fd-only since the IP supports
-  only CAN-FD; for this didn't collect Biju's tag
+- collected tags
 
- .../bindings/net/can/renesas,rcar-canfd.yaml  | 20 +++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ drivers/net/can/rcar/rcar_canfd.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-index b9d9dd7a7967..bbaaef8f4282 100644
---- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-+++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-@@ -13,6 +13,7 @@ properties:
-   compatible:
-     oneOf:
-       - enum:
-+          - renesas,r9a08g045-canfd        # RZ/G3S
-           - renesas,r9a09g047-canfd        # RZ/G3E
-           - renesas,r9a09g077-canfd        # RZ/T2H
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index 4ee108abffb8..879f31c97276 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -132,9 +132,9 @@
+ #define RCANFD_CCTR_BEIE		BIT(8)
+ #define RCANFD_CCTR_CSLPR		BIT(2)
+ #define RCANFD_CCTR_CHMDC_MASK		(0x3)
+-#define RCANFD_CCTR_CHDMC_COPM		(0x0)
+-#define RCANFD_CCTR_CHDMC_CRESET	(0x1)
+-#define RCANFD_CCTR_CHDMC_CHLT		(0x2)
++#define RCANFD_CCTR_CHMDC_COPM		(0x0)
++#define RCANFD_CCTR_CHMDC_CRESET	(0x1)
++#define RCANFD_CCTR_CHMDC_CHLT		(0x2)
  
-@@ -185,8 +186,6 @@ required:
-   - clocks
-   - clock-names
-   - power-domains
--  - assigned-clocks
--  - assigned-clock-rates
-   - channel0
-   - channel1
+ /* RSCFDnCFDCmSTS / RSCFDnCmSTS */
+ #define RCANFD_CSTS_COMSTS		BIT(7)
+@@ -828,7 +828,7 @@ static int rcar_canfd_reset_controller(struct rcar_canfd_global *gpriv)
  
-@@ -198,6 +197,7 @@ allOf:
-         compatible:
-           contains:
-             enum:
-+              - renesas,r9a08g045-canfd
-               - renesas,rzg2l-canfd
-     then:
-       properties:
-@@ -266,6 +266,7 @@ allOf:
-         compatible:
-           contains:
-             enum:
-+              - renesas,r9a08g045-canfd
-               - renesas,r9a09g077-canfd
-               - renesas,rcar-gen3-canfd
-               - renesas,rzg2l-canfd
-@@ -330,6 +331,7 @@ allOf:
-         compatible:
-           contains:
-             enum:
-+              - renesas,r9a08g045-canfd
-               - renesas,r9a09g047-canfd
-               - renesas,rzg2l-canfd
-     then:
-@@ -350,6 +352,20 @@ allOf:
-       properties:
-         reset-names: false
+ 		rcar_canfd_update_bit(gpriv->base, RCANFD_CCTR(ch),
+ 				      RCANFD_CCTR_CHMDC_MASK,
+-				      RCANFD_CCTR_CHDMC_CRESET);
++				      RCANFD_CCTR_CHMDC_CRESET);
  
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: renesas,r9a08g045-canfd
-+    then:
-+      properties:
-+        renesas,no-can-fd: false
-+        renesas,fd-only: false
-+    else:
-+      required:
-+        - assigned-clocks
-+        - assigned-clock-rates
-+
- unevaluatedProperties: false
+ 		/* Ensure Channel reset mode */
+ 		err = readl_poll_timeout((gpriv->base + RCANFD_CSTS(ch)), sts,
+@@ -1504,7 +1504,7 @@ static int rcar_canfd_start(struct net_device *ndev)
  
- examples:
+ 	/* Set channel to Operational mode */
+ 	rcar_canfd_update_bit(priv->base, RCANFD_CCTR(ch),
+-			      RCANFD_CCTR_CHMDC_MASK, RCANFD_CCTR_CHDMC_COPM);
++			      RCANFD_CCTR_CHMDC_MASK, RCANFD_CCTR_CHMDC_COPM);
+ 
+ 	/* Verify channel mode change */
+ 	err = readl_poll_timeout((priv->base + RCANFD_CSTS(ch)), sts,
+@@ -1578,7 +1578,7 @@ static void rcar_canfd_stop(struct net_device *ndev)
+ 
+ 	/* Transition to channel reset mode  */
+ 	rcar_canfd_update_bit(priv->base, RCANFD_CCTR(ch),
+-			      RCANFD_CCTR_CHMDC_MASK, RCANFD_CCTR_CHDMC_CRESET);
++			      RCANFD_CCTR_CHMDC_MASK, RCANFD_CCTR_CHMDC_CRESET);
+ 
+ 	/* Check Channel reset mode */
+ 	err = readl_poll_timeout((priv->base + RCANFD_CSTS(ch)), sts,
 -- 
 2.43.0
 
