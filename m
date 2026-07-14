@@ -1,19 +1,19 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D2E412BED;
-	Tue, 14 Jul 2026 17:33:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BFC9412BED;
+	Tue, 14 Jul 2026 17:34:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784050441; cv=none; b=e0IKx9ugDW6TebSDA0L3XfKEsNeLlrGcx3km0yNHFwj+d5ajIKZw3HAj5hk1vez+PirwJcdJKtWBa1GtsimaO/5vORXlSpFL5wjPnTEagaJqgwi9e0KGakHVHW2bWzFL+sSWx7ULfcuLfsQRQ2bx1kperMnXMnHe8CPi4l6xR6g=
+	t=1784050445; cv=none; b=ZhJlE8LnTdPOSKZRPEt0K/CCqYwPMOcUaH45RA0kl9gMrMRNAa0RUhroGWHTBZDpePLSGJpSKGpmLbwM5Ce+4lz2PuTEFKSLsSz+UfF8EdjDGKVf/EyLjwCADu3BdhJ+etHvKVqFfCmrmQlOMwrgNY1/WUaihW4guq5TfVoom64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784050441; c=relaxed/simple;
-	bh=tUkFIuFgLfdWDV6zFJ62wA8JOettaHfNX/xL5WYvroI=;
+	s=arc-20240116; t=1784050445; c=relaxed/simple;
+	bh=kpsV++C9WrOZZ5JntFDCjSPIbIlEv7orzSyhCEFAjF8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=M5zLHAqHR2mbiLa5QjhzmmMGH3y+rZRZh9Jk1Sp4B80YH+798DABGHMaL3xglf8UksyF/czFq7VchmB57QwllQVWeF1OLQFnKFyu0hGvb8DCt35pYdrjKBxRv2PxjKoaplBBQeHlk08EoExJebBYxA74uetex1kZhjUqt1zrMkI=
+	 MIME-Version; b=se7NHaPMxy9OM/kYp8u24SrO7inoWVr4B1V4ZGj5aRpJurGDMjP145iPToPGEWpfps5kocBy4dLp86t0lGFsdY+Ipp19x2vx0JSLKkMHHR+htB1M2723jNOccNZsUu3NZ63eSttPLCpMbIMpDcrEeq6RF085nTK6v4kN+rExV5Q=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2C981F00A3A;
-	Tue, 14 Jul 2026 17:33:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DD461F000E9;
+	Tue, 14 Jul 2026 17:34:00 +0000 (UTC)
 From: Claudiu Beznea <claudiu.beznea+renesas@tuxon.dev>
 To: mkl@pengutronix.de,
 	mailhol@kernel.org,
@@ -34,9 +34,9 @@ Cc: claudiu.beznea@tuxon.dev,
 	linux-kernel@vger.kernel.org,
 	linux-clk@vger.kernel.org,
 	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH v3 7/8] arm64: dts: renesas: r9a08g045: Add CAN-FD node
-Date: Tue, 14 Jul 2026 20:33:14 +0300
-Message-ID: <20260714173315.1981708-8-claudiu.beznea+renesas@tuxon.dev>
+Subject: [PATCH v3 8/8] arm64: dts: renesas: rzg3s-smarc: Enable CAN-FD
+Date: Tue, 14 Jul 2026 20:33:15 +0300
+Message-ID: <20260714173315.1981708-9-claudiu.beznea+renesas@tuxon.dev>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260714173315.1981708-1-claudiu.beznea+renesas@tuxon.dev>
 References: <20260714173315.1981708-1-claudiu.beznea+renesas@tuxon.dev>
@@ -50,8 +50,15 @@ Content-Transfer-Encoding: 8bit
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-The Renesas RZ/G3S SoC includes a CAN-FD controller with two channels.
-Add the corresponding device tree node.
+The two CAN FD channels available on the Renesas RZ/G3S SoC are routed
+through the Renesas SMARC Carrier II board when used with the Renesas
+RZ/G3S SMARC Module.
+
+The CAN transceiver on the Carrier II board has its standby pins connected
+to GPIOs that are selected through the SW_GPIO_CAN_PMOD switches. By
+default, these switches route the GPIOs to the PMOD interfaces.
+
+Enable the CAN FD controller and its two available channels.
 
 Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
@@ -63,66 +70,102 @@ Changes in v3:
 Changes in v2:
 - collected tags
 
- arch/arm64/boot/dts/renesas/r9a08g045.dtsi | 39 ++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ .../boot/dts/renesas/rzg3s-smarc-switches.h   | 12 +++++
+ arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi  | 46 +++++++++++++++++++
+ 2 files changed, 58 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/renesas/r9a08g045.dtsi b/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
-index 3a69bb246bab..fe46f3d9c7cc 100644
---- a/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
-@@ -29,6 +29,13 @@ audio_clk2: audio2-clk {
- 		clock-frequency = <0>;
+diff --git a/arch/arm64/boot/dts/renesas/rzg3s-smarc-switches.h b/arch/arm64/boot/dts/renesas/rzg3s-smarc-switches.h
+index bbf908a5322c..198874ad9a65 100644
+--- a/arch/arm64/boot/dts/renesas/rzg3s-smarc-switches.h
++++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc-switches.h
+@@ -37,4 +37,16 @@
+  */
+ #define SW_OPT_MUX4	SW_ON
+ 
++/*
++ * SW_GPIO_CAN_PMOD[x] switches' states:
++ * @SW_GPIO_CAN_PMOD1:
++ *	SW_OFF - GPIO8 connected to CAN0_STB (position 1-2)
++ *	SW_ON  - GPIO8 connected to PMOD1 (position 2-3)
++ * @SW_GPIO_CAN_PMOD2:
++ *	SW_OFF - GPIO9 connected to CAN1_STB (position 4-5)
++ *	SW_ON  - GPIO9 connected to PMOD1 (position 5-6)
++ */
++#define SW_GPIO_CAN_PMOD1	SW_ON
++#define SW_GPIO_CAN_PMOD2	SW_ON
++
+ #endif /* __RZG3S_SMARC_SWITCHES_H__ */
+diff --git a/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi b/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
+index 70af605168b0..2be684f55914 100644
+--- a/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
++++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
+@@ -68,6 +68,24 @@ codec_dai: simple-audio-card,codec {
+ 		};
  	};
  
-+	can_clk: can-clk {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		/* This value must be overridden by boards that provide it. */
-+		clock-frequency = <0>;
++	can_transceiver0: can-phy0 {
++		compatible = "ti,tcan1042";
++		#phy-cells = <0>;
++		max-bitrate = <8000000>;
++#if SW_GPIO_CAN_PMOD1 == SW_OFF
++		standby-gpios = <&pinctrl RZG2L_GPIO(13, 0) GPIO_ACTIVE_HIGH>;
++#endif
 +	};
 +
- 	cluster0_opp: opp-table-0 {
- 		compatible = "operating-points-v2";
- 		opp-shared;
-@@ -498,6 +505,38 @@ ssi3: ssi@100a8c00 {
- 			status = "disabled";
- 		};
- 
-+		canfd: can@100c0000 {
-+			compatible = "renesas,r9a08g045-canfd";
-+			reg = <0 0x100c0000 0 0x20000>;
-+			interrupts = <GIC_SPI 373 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 374 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 377 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 375 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 379 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 378 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 376 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 380 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "g_err", "g_recc",
-+					  "ch0_err", "ch0_rec", "ch0_trx",
-+					  "ch1_err", "ch1_rec", "ch1_trx";
-+			clocks = <&cpg CPG_MOD R9A08G045_CANFD_PCLK>,
-+				 <&cpg CPG_MOD R9A08G045_CANFD_CLK_RAM>,
-+				 <&can_clk>;
-+			clock-names = "fck", "ram_clk", "can_clk";
-+			resets = <&cpg R9A08G045_CANFD_RSTP_N>,
-+				 <&cpg R9A08G045_CANFD_RSTC_N>;
-+			reset-names = "rstp_n", "rstc_n";
-+			power-domains = <&cpg>;
-+			status = "disabled";
++	can_transceiver1: can-phy1 {
++		compatible = "ti,tcan1042";
++		#phy-cells = <0>;
++		max-bitrate = <8000000>;
++#if SW_GPIO_CAN_PMOD2 == SW_OFF
++		standby-gpios = <&pinctrl RZG2L_GPIO(13, 1) GPIO_ACTIVE_HIGH>;
++#endif
++	};
 +
-+			channel0 {
-+				status = "disabled";
-+			};
-+			channel1 {
-+				status = "disabled";
-+			};
+ 	vcc_sdhi1: regulator-vcc-sdhi1 {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "SDHI1 Vcc";
+@@ -92,6 +110,22 @@ &audio_clk2 {
+ 	clock-frequency = <12288000>;
+ };
+ 
++&canfd {
++	pinctrl-0 = <&canfd_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	channel0 {
++		phys = <&can_transceiver0>;
++		status = "okay";
++	};
++
++	channel1 {
++		phys = <&can_transceiver1>;
++		status = "okay";
++	};
++};
++
+ &ehci0 {
+ 	dr_mode = "otg";
+ 	status = "okay";
+@@ -171,6 +205,18 @@ audio_clock_pins: audio-clock {
+ 		input-enable;
+ 	};
+ 
++	canfd_pins: canfd {
++		can0_pins: can0 {
++			pinmux = <RZG2L_PORT_PINMUX(6, 1, 3)>, /* CAN0_TX */
++				 <RZG2L_PORT_PINMUX(6, 2, 3)>; /* CAN0_RX */
 +		};
 +
- 		cpg: clock-controller@11010000 {
- 			compatible = "renesas,r9a08g045-cpg";
- 			reg = <0 0x11010000 0 0x10000>;
++		can1_pins: can1 {
++			pinmux = <RZG2L_PORT_PINMUX(17, 0, 3)>, /* CAN1_TX */
++				 <RZG2L_PORT_PINMUX(17, 1, 3)>; /* CAN1_RX */
++		};
++	};
++
+ 	key-1-gpio-hog {
+ 		gpio-hog;
+ 		gpios = <RZG2L_GPIO(18, 0) GPIO_ACTIVE_LOW>;
 -- 
 2.43.0
 
