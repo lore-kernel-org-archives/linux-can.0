@@ -1,36 +1,36 @@
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0489F41DEFA;
-	Thu, 16 Jul 2026 15:56:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 732593F54AE;
+	Thu, 16 Jul 2026 15:56:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784217410; cv=none; b=uRIRmk9AuuA3cUWhgNVQ1VIXSBBtrBmpXkOn+NF86kIlpopG60TM7i7z4kXXrMpyb580wfXUYDS8UwR83yl8/+8MrsLSZgS3gfMyuigJQvR8w0kA7Wu01BkqaUO6NmD6JDMPTpfkUVhNMk8UN4BnLwm2CmKdNtffEg9fi5+iYOk=
+	t=1784217411; cv=none; b=QxMsm51hPHdynF4qbE8KUCHxPcMFOh/l+kv3uG+8QkFam2bq1wx1kwE0cwt8jqjJvu7EmWnuaYVYm26t7hB44UDgOl0Ti1/ugQRGmTqskBIaI9NtsxkjSEbqn6WC2WXSi+Vuz3kXdoRsLZ5bwbYgQfc3u0a+stLoxbeYVBR1K60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784217410; c=relaxed/simple;
-	bh=sM22F5q+xmvXn24mjoZtAMl5X2WPzbGXbyDqld0VtxY=;
+	s=arc-20240116; t=1784217411; c=relaxed/simple;
+	bh=su8cSw53AkFNbdQsEmUisJTsHuWROEJ+0e4euFWTsls=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gpxQoRJTjPuVMLS6hO5pPjIp7XLtjZIjg5/gazt2Rg/GMEYtAal+OD4fAld+sMQa6LTR2m9oWIL69eu537KyPiCgNm2FSRbKMKyTzYhW7/43m1c/DyhIVXzLx+EbsVgawcCnf8h2lj7iVX+leM4Sc5ObcICxp6803xip3Rz/ZDw=
+	 MIME-Version; b=UiGC25jT05zYDZgNPns8CxZOJm6bSj7/6pvS4A9TaF6roPXCpMC9lKvk+6CQsrKAeEhts7Pes6zEK2l0HEKyJrPQ8GoO7E7XTf4rEhOgbTJFr9g/i0iMByG5Xh1E9JRlmt1hXhJFOZ+nU1uBYuqM7+xLX66waVKTbSaTJbw631A=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 9A16220228A;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 9740D202289;
 	Thu, 16 Jul 2026 17:56:24 +0200 (CEST)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1wkORk-0027ox-16;
+	id 1wkORk-0027ot-14;
 	Thu, 16 Jul 2026 17:56:24 +0200
 Received: from blackshift.org (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 9A5E556C3F6;
-	Thu, 16 Jul 2026 15:55:32 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 9DBC856C3DD;
+	Thu, 16 Jul 2026 15:55:31 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -38,12 +38,12 @@ Cc: davem@davemloft.net,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
 	Oliver Hartkopp <socketcan@hartkopp.net>,
-	sashiko-bot@kernel.org,
+	Ginger <ginger.jzllee@gmail.com>,
 	stable@kernel.org,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 19/19] can: isotp: serialize TX state transitions under so->rx_lock
-Date: Thu, 16 Jul 2026 17:47:44 +0200
-Message-ID: <20260716155528.809908-20-mkl@pengutronix.de>
+Subject: [PATCH net 07/19] can: bcm: fix lockless bound/ifindex race and silent RX_SETUP failure
+Date: Thu, 16 Jul 2026 17:47:32 +0200
+Message-ID: <20260716155528.809908-8-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260716155528.809908-1-mkl@pengutronix.de>
 References: <20260716155528.809908-1-mkl@pengutronix.de>
@@ -57,428 +57,184 @@ Content-Transfer-Encoding: 8bit
 
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-The TX state machine (so->tx.state) is driven from three contexts:
-sendmsg() claiming and progressing a transfer, the RX path consuming
-Flow Control/echo frames, and two hrtimers timing out a stalled
-transfer. Mixing a lock-free cmpxchg() claim in sendmsg() with
-hrtimer_cancel() calls made under so->rx_lock elsewhere left windows
-where a frame or timer callback could act on a state that had already
-moved on, corrupting an unrelated transfer.
+bcm_sendmsg() reads bo->ifindex and checks bo->bound before taking
+lock_sock(), while bcm_notify(), bcm_connect() and bcm_release() all
+mutate both fields under that same lock. Because the lockless reads
+and the locked writes are unordered with respect to each other, a
+racing bcm_notify() (device unregister) or bcm_connect() (concurrent
+bind on another thread sharing the socket) can make bcm_sendmsg()
+observe an inconsistent combination, e.g. a stale bound=1 together
+with the now-cleared ifindex=0, silently turning a socket bound to a
+specific CAN interface into one that also matches "any" interface.
 
-so->rx_lock now covers the full lifecycle of a TX claim: sendmsg()
-takes it to check so->tx.state is ISOTP_IDLE, switch it to
-ISOTP_SENDING, bump so->tx_gen and drain the previous transfer's
-timers - all as one critical section. isotp_rcv_fc()/isotp_rcv_cf()
-already run under this lock via isotp_rcv(), and isotp_rcv_echo() now
-takes it itself, so none of them can ever observe a transfer mid-claim.
-This also means a transfer can no longer be handed to sendmsg()'s
-cleanup paths (signal or send error) while another thread is
-concurrently claiming or finishing it, so those paths can cancel
-timers and reset the state unconditionally.
+Keep the lockless bo->bound check purely as a fast-path reject, and
+move the ifindex read (and a bo->bound re-check) into the locked
+section, where every writer already serializes. This removes the
+possibility of observing the two fields torn against each other,
+rather than trying to fix it with more READ_ONCE()/WRITE_ONCE() pairs
+on two independently updated fields. Annotate the now-purely-lockless
+bo->bound accesses consistently across all its write sites.
 
-isotp_release() claims the socket the same way, so a racing sendmsg()
-sees a consistent ISOTP_SHUTDOWN and skips arming its timer or sending.
+Also fix bcm_rx_setup() silently returning success when the target
+device disappears concurrently instead of reporting -ENODEV, so a
+broken RX op is no longer left registered as if it had succeeded.
 
-Only the hrtimer callbacks stay outside so->rx_lock, since they run
-under so->rx_lock's cancellation elsewhere and taking it themselves
-would deadlock. so->tx_gen lets them recognize whether the transfer
-they timed out is still the one currently active, so they don't
-report an error against a transfer that has since completed or been
-superseded.
-
-Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
-Reported-by: sashiko-bot@kernel.org
-Closes: https://lore.kernel.org/linux-can/20260710142146.BDAE61F000E9@smtp.kernel.org/
+Fixes: ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol")
+Reported-by: Ginger <ginger.jzllee@gmail.com>
+Closes: https://lore.kernel.org/linux-can/CAGp+u1aBK8QVjsvAxM2Ldzep4rEbsP9x_pV3At4g=h1kVEtyhA@mail.gmail.com/
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://patch.msgid.link/20260712-isotp-fixes-v10-3-793a1b1ce17f@hartkopp.net
+Link: https://patch.msgid.link/20260714-bcm_fixes-v15-2-562f7e3e42da@hartkopp.net
 Cc: stable@kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/isotp.c | 202 ++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 160 insertions(+), 42 deletions(-)
+ net/can/bcm.c | 65 ++++++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 51 insertions(+), 14 deletions(-)
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 44c044eb83e1..54becaf6898f 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -158,7 +158,7 @@ struct isotp_sock {
- 	canid_t rxid;
- 	ktime_t tx_gap;
- 	ktime_t lastrxcf_tstamp;
--	struct hrtimer rxtimer, txtimer, txfrtimer;
-+	struct hrtimer rxtimer, txtimer, txfrtimer, echotimer;
- 	struct can_isotp_options opt;
- 	struct can_isotp_fc_options rxfc, txfc;
- 	struct can_isotp_ll_options ll;
-@@ -166,6 +166,7 @@ struct isotp_sock {
- 	u32 force_tx_stmin;
- 	u32 force_rx_stmin;
- 	u32 cfecho; /* consecutive frame echo tag */
-+	u32 tx_gen; /* generation, bumped per new tx transfer */
- 	struct tpcon rx, tx;
- 	struct list_head notifier;
- 	wait_queue_head_t wait;
-@@ -378,6 +379,15 @@ static int isotp_rcv_fc(struct isotp_sock *so, struct canfd_frame *cf, int ae)
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index bdf53241bd7b..b612135b017d 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -1323,6 +1323,11 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
  
- 	hrtimer_cancel(&so->txtimer);
+ 				op->rx_reg_dev = dev;
+ 				dev_put(dev);
++			} else {
++				/* the requested device is gone - do not
++				 * silently succeed without registering
++				 */
++				err = -ENODEV;
+ 			}
  
-+	/* isotp_tx_timeout() may have given up on this job while
-+	 * hrtimer_cancel() above waited for it to finish; so->rx_lock
-+	 * (held by our caller isotp_rcv()) rules out a concurrent claim,
-+	 * so a plain recheck is enough here.
-+	 */
-+	if (so->tx.state != ISOTP_WAIT_FC &&
-+	    so->tx.state != ISOTP_WAIT_FIRST_FC)
-+		return 1;
-+
- 	if ((cf->len < ae + FC_CONTENT_SZ) ||
- 	    ((so->opt.flags & ISOTP_CHECK_PADDING) &&
- 	     check_pad(so, cf, ae + FC_CONTENT_SZ, so->opt.rxpad_content))) {
-@@ -424,7 +434,7 @@ static int isotp_rcv_fc(struct isotp_sock *so, struct canfd_frame *cf, int ae)
- 		so->tx.bs = 0;
- 		so->tx.state = ISOTP_SENDING;
- 		/* send CF frame and enable echo timeout handling */
--		hrtimer_start(&so->txtimer, ktime_set(ISOTP_ECHO_TIMEOUT, 0),
-+		hrtimer_start(&so->echotimer, ktime_set(ISOTP_ECHO_TIMEOUT, 0),
- 			      HRTIMER_MODE_REL_SOFT);
- 		isotp_send_cframe(so);
- 		break;
-@@ -577,6 +587,14 @@ static int isotp_rcv_cf(struct sock *sk, struct canfd_frame *cf, int ae,
- 
- 	hrtimer_cancel(&so->rxtimer);
- 
-+	/* isotp_rx_timer_handler() may have raced us for so->rx.state
-+	 * while hrtimer_cancel() above waited for it to finish, already
-+	 * reporting ETIMEDOUT and resetting the reception; don't process
-+	 * this CF into a reassembly that has already been given up on.
-+	 */
-+	if (so->rx.state != ISOTP_WAIT_DATA)
-+		return 1;
-+
- 	/* CFs are never longer than the FF */
- 	if (cf->len > so->rx.ll_dl)
- 		return 1;
-@@ -872,20 +890,36 @@ static void isotp_rcv_echo(struct sk_buff *skb, void *data)
- 	struct canfd_frame *cf = (struct canfd_frame *)skb->data;
- 
- 	/* only handle my own local echo CF/SF skb's (no FF!) */
--	if (skb->sk != sk || so->cfecho != *(u32 *)cf->data)
-+	if (skb->sk != sk)
- 		return;
- 
-+	/* unlike isotp_rcv_fc()/isotp_rcv_cf(), not already under so->rx_lock
-+	 * (no isotp_rcv() caller here), so take it ourselves
-+	 */
-+	spin_lock(&so->rx_lock);
-+
-+	/* so->cfecho may since belong to a new transfer; recheck under lock */
-+	if (so->cfecho != *(u32 *)cf->data)
-+		goto out_unlock;
-+
- 	/* cancel local echo timeout */
--	hrtimer_cancel(&so->txtimer);
-+	hrtimer_cancel(&so->echotimer);
- 
- 	/* local echo skb with consecutive frame has been consumed */
- 	so->cfecho = 0;
- 
-+	/* claiming a transfer also takes so->rx_lock, so a plain recheck
-+	 * is enough: so->tx.state can't have flipped to ISOTP_SENDING for
-+	 * a new claim while we're still in here
-+	 */
-+	if (so->tx.state != ISOTP_SENDING)
-+		goto out_unlock;
-+
- 	if (so->tx.idx >= so->tx.len) {
- 		/* we are done */
- 		so->tx.state = ISOTP_IDLE;
- 		wake_up_interruptible(&so->wait);
--		return;
-+		goto out_unlock;
- 	}
- 
- 	if (so->txfc.bs && so->tx.bs >= so->txfc.bs) {
-@@ -893,53 +927,83 @@ static void isotp_rcv_echo(struct sk_buff *skb, void *data)
- 		so->tx.state = ISOTP_WAIT_FC;
- 		hrtimer_start(&so->txtimer, ktime_set(ISOTP_FC_TIMEOUT, 0),
- 			      HRTIMER_MODE_REL_SOFT);
--		return;
-+		goto out_unlock;
- 	}
- 
- 	/* no gap between data frames needed => use burst mode */
- 	if (!so->tx_gap) {
- 		/* enable echo timeout handling */
--		hrtimer_start(&so->txtimer, ktime_set(ISOTP_ECHO_TIMEOUT, 0),
-+		hrtimer_start(&so->echotimer, ktime_set(ISOTP_ECHO_TIMEOUT, 0),
- 			      HRTIMER_MODE_REL_SOFT);
- 		isotp_send_cframe(so);
--		return;
-+		goto out_unlock;
- 	}
- 
- 	/* start timer to send next consecutive frame with correct delay */
- 	hrtimer_start(&so->txfrtimer, so->tx_gap, HRTIMER_MODE_REL_SOFT);
-+
-+out_unlock:
-+	spin_unlock(&so->rx_lock);
- }
- 
--static enum hrtimer_restart isotp_tx_timer_handler(struct hrtimer *hrtimer)
-+/* shared by so->txtimer's and so->echotimer's callbacks. Both timers get
-+ * cancelled under so->rx_lock elsewhere, so this must stay lock-free to
-+ * avoid deadlocking with that; uses so->tx_gen instead to avoid tainting
-+ * a new transfer with an error from the one that just timed out.
-+ */
-+static enum hrtimer_restart isotp_tx_timeout(struct isotp_sock *so)
+ 		} else
+@@ -1396,12 +1401,13 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
  {
--	struct isotp_sock *so = container_of(hrtimer, struct isotp_sock,
--					     txtimer);
- 	struct sock *sk = &so->sk;
-+	u32 gen = READ_ONCE(so->tx_gen);
-+	u32 old_state = READ_ONCE(so->tx.state);
+ 	struct sock *sk = sock->sk;
+ 	struct bcm_sock *bo = bcm_sk(sk);
+-	int ifindex = bo->ifindex; /* default ifindex for this bcm_op */
++	int ifindex;
+ 	struct bcm_msg_head msg_head;
+ 	int cfsiz;
+ 	int ret; /* read bytes or error codes as return value */
  
- 	/* don't handle timeouts in IDLE or SHUTDOWN state */
--	if (so->tx.state == ISOTP_IDLE || so->tx.state == ISOTP_SHUTDOWN)
-+	if (old_state == ISOTP_IDLE || old_state == ISOTP_SHUTDOWN)
-+		return HRTIMER_NORESTART;
+-	if (!bo->bound)
++	/* Lockless fast-path check for bound socket */
++	if (!READ_ONCE(bo->bound))
+ 		return -ENOTCONN;
+ 
+ 	/* check for valid message length from userspace */
+@@ -1417,17 +1423,38 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 	if ((size - MHSIZ) % cfsiz)
+ 		return -EINVAL;
+ 
++	lock_sock(sk);
 +
-+	/* only claim the timeout if the state is still unchanged */
-+	if (cmpxchg(&so->tx.state, old_state, ISOTP_IDLE) != old_state)
- 		return HRTIMER_NORESTART;
- 
- 	/* we did not get any flow control or echo frame in time */
- 
--	/* report 'communication error on send' */
--	sk->sk_err = ECOMM;
--	if (!sock_flag(sk, SOCK_DEAD))
--		sk_error_report(sk);
-+	if (READ_ONCE(so->tx_gen) == gen) {
-+		/* report 'communication error on send' */
-+		sk->sk_err = ECOMM;
-+		if (!sock_flag(sk, SOCK_DEAD))
-+			sk_error_report(sk);
++	/* Re-validate under the socket lock: a concurrent bcm_notify()
++	 * may have unbound this socket (device removal) after the
++	 * lockless fast-path check above. bo->ifindex is only ever
++	 * mutated under lock_sock(), so reading it here - instead of
++	 * before taking the lock - guarantees it can't be observed
++	 * torn against bo->bound.
++	 */
++	if (!bo->bound) {
++		ret = -ENOTCONN;
++		goto out_release;
 +	}
- 
--	/* reset tx state */
--	so->tx.state = ISOTP_IDLE;
- 	wake_up_interruptible(&so->wait);
- 
- 	return HRTIMER_NORESTART;
- }
- 
-+/* so->txtimer: fires when a Flow Control frame does not arrive in time */
-+static enum hrtimer_restart isotp_tx_timer_handler(struct hrtimer *hrtimer)
-+{
-+	struct isotp_sock *so = container_of(hrtimer, struct isotp_sock,
-+					     txtimer);
 +
-+	return isotp_tx_timeout(so);
-+}
++	/* default ifindex for this bcm_op */
++	ifindex = bo->ifindex;
 +
-+/* so->echotimer: fires when a sent CF/SF's local echo does not arrive */
-+static enum hrtimer_restart isotp_echo_timer_handler(struct hrtimer *hrtimer)
-+{
-+	struct isotp_sock *so = container_of(hrtimer, struct isotp_sock,
-+					     echotimer);
-+
-+	return isotp_tx_timeout(so);
-+}
-+
- static enum hrtimer_restart isotp_txfr_timer_handler(struct hrtimer *hrtimer)
- {
- 	struct isotp_sock *so = container_of(hrtimer, struct isotp_sock,
- 					     txfrtimer);
+ 	/* check for alternative ifindex for this bcm_op */
  
- 	/* start echo timeout handling and cover below protocol error */
--	hrtimer_start(&so->txtimer, ktime_set(ISOTP_ECHO_TIMEOUT, 0),
-+	hrtimer_start(&so->echotimer, ktime_set(ISOTP_ECHO_TIMEOUT, 0),
- 		      HRTIMER_MODE_REL_SOFT);
+ 	if (!ifindex && msg->msg_name) {
+ 		/* no bound device as default => check msg_name */
+ 		DECLARE_SOCKADDR(struct sockaddr_can *, addr, msg->msg_name);
  
- 	/* cfecho should be consumed by isotp_rcv_echo() here */
-@@ -960,13 +1024,24 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	int ae = (so->opt.flags & CAN_ISOTP_EXTEND_ADDR) ? 1 : 0;
- 	int wait_tx_done = (so->opt.flags & CAN_ISOTP_WAIT_TX_DONE) ? 1 : 0;
- 	s64 hrtimer_sec = ISOTP_ECHO_TIMEOUT;
-+	struct hrtimer *tx_hrt = &so->echotimer;
-+	u32 new_state = ISOTP_SENDING;
- 	int off;
- 	int err;
+-		if (msg->msg_namelen < BCM_MIN_NAMELEN)
+-			return -EINVAL;
++		if (msg->msg_namelen < BCM_MIN_NAMELEN) {
++			ret = -EINVAL;
++			goto out_release;
++		}
  
- 	if (!so->bound || so->tx.state == ISOTP_SHUTDOWN)
- 		return -EADDRNOTAVAIL;
+-		if (addr->can_family != AF_CAN)
+-			return -EINVAL;
++		if (addr->can_family != AF_CAN) {
++			ret = -EINVAL;
++			goto out_release;
++		}
  
--	while (cmpxchg(&so->tx.state, ISOTP_IDLE, ISOTP_SENDING) != ISOTP_IDLE) {
-+	/* claim the socket under so->rx_lock: this serializes the claim
-+	 * with the RX path and with sendmsg()'s own error paths below, so
-+	 * none of them can ever see a transfer mid-claim
-+	 */
-+	for (;;) {
-+		spin_lock_bh(&so->rx_lock);
-+		if (READ_ONCE(so->tx.state) == ISOTP_IDLE)
-+			break;
-+		spin_unlock_bh(&so->rx_lock);
-+
- 		/* we do not support multiple buffers - for now */
- 		if (msg->msg_flags & MSG_DONTWAIT)
- 			return -EAGAIN;
-@@ -975,11 +1050,23 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 			return -EADDRNOTAVAIL;
+ 		/* ifindex from sendto() */
+ 		ifindex = addr->can_ifindex;
+@@ -1436,20 +1463,21 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 			struct net_device *dev;
  
- 		/* wait for complete transmission of current pdu */
--		err = wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
-+		err = wait_event_interruptible(so->wait,
-+					       so->tx.state == ISOTP_IDLE);
- 		if (err)
--			goto err_event_drop;
-+			return err;
- 	}
+ 			dev = dev_get_by_index(sock_net(sk), ifindex);
+-			if (!dev)
+-				return -ENODEV;
++			if (!dev) {
++				ret = -ENODEV;
++				goto out_release;
++			}
  
-+	/* new transfer: bump so->tx_gen and drain the old one's timers,
-+	 * still under the so->rx_lock we just claimed the socket with
-+	 */
-+	WRITE_ONCE(so->tx.state, ISOTP_SENDING);
-+	WRITE_ONCE(so->tx_gen, READ_ONCE(so->tx_gen) + 1);
-+	hrtimer_cancel(&so->txtimer);
-+	hrtimer_cancel(&so->echotimer);
-+	hrtimer_cancel(&so->txfrtimer);
-+	so->cfecho = 0;
-+	spin_unlock_bh(&so->rx_lock);
-+
- 	/* so->bound is only checked once above - a wakeup may have
- 	 * unbound/rebound the socket meanwhile, so re-validate it
- 	 */
-@@ -1096,18 +1183,33 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 			so->cfecho = *(u32 *)cf->data;
- 		} else {
- 			/* standard flow control check */
--			so->tx.state = ISOTP_WAIT_FIRST_FC;
-+			new_state = ISOTP_WAIT_FIRST_FC;
+ 			if (dev->type != ARPHRD_CAN) {
+ 				dev_put(dev);
+-				return -ENODEV;
++				ret = -ENODEV;
++				goto out_release;
+ 			}
  
- 			/* start timeout for FC */
- 			hrtimer_sec = ISOTP_FC_TIMEOUT;
-+			tx_hrt = &so->txtimer;
- 
- 			/* no CF echo tag for isotp_rcv_echo() (FF-mode) */
- 			so->cfecho = 0;
+ 			dev_put(dev);
  		}
  	}
  
--	hrtimer_start(&so->txtimer, ktime_set(hrtimer_sec, 0),
-+	spin_lock_bh(&so->rx_lock);
-+	if (so->tx.state == ISOTP_SHUTDOWN) {
-+		/* isotp_release() has since taken over and already drained
-+		 * our timers - don't send into a socket that's going away
-+		 */
-+		spin_unlock_bh(&so->rx_lock);
-+		kfree_skb(skb);
-+		dev_put(dev);
-+		wake_up_interruptible(&so->wait);
-+		return -EADDRNOTAVAIL;
-+	}
-+	/* WAIT_FIRST_FC for standard FF, else stays ISOTP_SENDING */
-+	so->tx.state = new_state;
-+	hrtimer_start(tx_hrt, ktime_set(hrtimer_sec, 0),
- 		      HRTIMER_MODE_REL_SOFT);
-+	spin_unlock_bh(&so->rx_lock);
- 
- 	/* send the first or only CAN frame */
- 	cf->flags = so->ll.tx_flags;
-@@ -1120,13 +1222,10 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 		pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
- 			       __func__, ERR_PTR(err));
- 
-+		spin_lock_bh(&so->rx_lock);
- 		/* no transmission -> no timeout monitoring */
--		hrtimer_cancel(&so->txtimer);
+-	lock_sock(sk);
 -
--		/* reset consecutive frame echo tag */
--		so->cfecho = 0;
--
--		goto err_out_drop;
-+		hrtimer_cancel(tx_hrt);
-+		goto err_out_drop_locked;
+ 	switch (msg_head.opcode) {
+ 
+ 	case TX_SETUP:
+@@ -1499,6 +1527,7 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 		break;
  	}
  
- 	if (wait_tx_done) {
-@@ -1142,14 +1241,21 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
++out_release:
+ 	release_sock(sk);
  
- 	return size;
+ 	return ret;
+@@ -1535,7 +1564,12 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
+ 				bo->bcm_proc_read = NULL;
+ 			}
+ #endif
+-			bo->bound   = 0;
++			/* Paired with the lockless fast-path check in
++			 * bcm_sendmsg(); bo->ifindex itself is only ever
++			 * accessed under lock_sock() so it needs no
++			 * annotation.
++			 */
++			WRITE_ONCE(bo->bound, 0);
+ 			bo->ifindex = 0;
+ 			notify_enodev = 1;
+ 		}
+@@ -1676,7 +1710,7 @@ static int bcm_release(struct socket *sock)
  
-+err_out_drop:
-+	/* claimed but nothing sent yet - no timer to cancel */
-+	spin_lock_bh(&so->rx_lock);
-+	goto err_out_drop_locked;
- err_event_drop:
--	/* got signal: force tx state machine to be idle */
--	so->tx.state = ISOTP_IDLE;
-+	/* interrupted waiting on our own transfer - drain its timers */
-+	spin_lock_bh(&so->rx_lock);
- 	hrtimer_cancel(&so->txfrtimer);
- 	hrtimer_cancel(&so->txtimer);
--err_out_drop:
--	/* drop this PDU and unlock a potential wait queue */
-+	hrtimer_cancel(&so->echotimer);
-+err_out_drop_locked:
-+	/* release the claim; so->rx_lock still held from above */
-+	so->cfecho = 0;
- 	so->tx.state = ISOTP_IDLE;
-+	spin_unlock_bh(&so->rx_lock);
- 	wake_up_interruptible(&so->wait);
+ 	/* remove device reference */
+ 	if (bo->bound) {
+-		bo->bound   = 0;
++		WRITE_ONCE(bo->bound, 0);
+ 		bo->ifindex = 0;
+ 	}
  
- 	return err;
-@@ -1211,13 +1317,20 @@ static int isotp_release(struct socket *sock)
- 	so = isotp_sk(sk);
- 	net = sock_net(sk);
+@@ -1746,7 +1780,10 @@ static int bcm_connect(struct socket *sock, struct sockaddr_unsized *uaddr, int
+ 	}
+ #endif /* CONFIG_PROC_FS */
  
--	/* wait for complete transmission of current pdu */
--	while (wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE) == 0 &&
--	       cmpxchg(&so->tx.state, ISOTP_IDLE, ISOTP_SHUTDOWN) != ISOTP_IDLE)
-+	/* best-effort: wait for a running pdu to finish, but don't block on
-+	 * it forever - give up after the first signal
+-	bo->bound = 1;
++	/* bo->ifindex above is fully assigned before this point; pairs
++	 * with the lockless fast-path check in bcm_sendmsg()
 +	 */
-+	while (so->tx.state != ISOTP_IDLE &&
-+	       wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE) == 0)
- 		;
++	WRITE_ONCE(bo->bound, 1);
  
--	/* force state machines to be idle also when a signal occurred */
-+	/* claim the socket under so->rx_lock like sendmsg() does, so its
-+	 * claim can't race the forced ISOTP_SHUTDOWN below; force it
-+	 * unconditionally, even when a signal cut the wait above short
-+	 */
-+	spin_lock_bh(&so->rx_lock);
- 	so->tx.state = ISOTP_SHUTDOWN;
-+	spin_unlock_bh(&so->rx_lock);
- 	so->rx.state = ISOTP_IDLE;
- 
- 	spin_lock(&isotp_notifier_lock);
-@@ -1263,6 +1376,7 @@ static int isotp_release(struct socket *sock)
- 
- 	hrtimer_cancel(&so->txfrtimer);
- 	hrtimer_cancel(&so->txtimer);
-+	hrtimer_cancel(&so->echotimer);
- 	hrtimer_cancel(&so->rxtimer);
- 
- 	sock_orphan(sk);
-@@ -1702,10 +1816,14 @@ static int isotp_init(struct sock *sk)
- 	so->rx.buflen = ARRAY_SIZE(so->rx.sbuf);
- 	so->tx.buflen = ARRAY_SIZE(so->tx.sbuf);
- 
--	hrtimer_setup(&so->rxtimer, isotp_rx_timer_handler, CLOCK_MONOTONIC, HRTIMER_MODE_REL_SOFT);
--	hrtimer_setup(&so->txtimer, isotp_tx_timer_handler, CLOCK_MONOTONIC, HRTIMER_MODE_REL_SOFT);
--	hrtimer_setup(&so->txfrtimer, isotp_txfr_timer_handler, CLOCK_MONOTONIC,
--		      HRTIMER_MODE_REL_SOFT);
-+	hrtimer_setup(&so->rxtimer, isotp_rx_timer_handler,
-+		      CLOCK_MONOTONIC, HRTIMER_MODE_REL_SOFT);
-+	hrtimer_setup(&so->txtimer, isotp_tx_timer_handler,
-+		      CLOCK_MONOTONIC, HRTIMER_MODE_REL_SOFT);
-+	hrtimer_setup(&so->echotimer, isotp_echo_timer_handler,
-+		      CLOCK_MONOTONIC, HRTIMER_MODE_REL_SOFT);
-+	hrtimer_setup(&so->txfrtimer, isotp_txfr_timer_handler,
-+		      CLOCK_MONOTONIC, HRTIMER_MODE_REL_SOFT);
- 
- 	init_waitqueue_head(&so->wait);
- 	spin_lock_init(&so->rx_lock);
+ fail:
+ 	release_sock(sk);
 -- 
 2.53.0
 
