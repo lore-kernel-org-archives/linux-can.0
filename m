@@ -1,48 +1,49 @@
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BCDD3F9A05;
-	Thu, 16 Jul 2026 15:56:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 659583F58E0;
+	Thu, 16 Jul 2026 15:56:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784217406; cv=none; b=rZhbXEUhf4N7PZj3vO50W3psIh0JyEFsMBQmtjToEjU1Vh2sVYr0vWmKdfDWZZiN+f68+d7nc0mz1YqRAjo5636jIo8nRSbzipZha7DdQ6kVHDYpfiZYExjSIwY45T16oy9Dtg7tX54V8JAyqRizf8b5eI/I8OoiBIAgbcoHzDw=
+	t=1784217407; cv=none; b=KNIOiMROBkpCsw6oPRYZr5RZodRWQ67nC9I9FeiJyGrZL05TmgfBvSGPsh8PeNWR+xz8867LmSya10fFqDmmxXnqyXrrUZZ84oGjt0IQk7GV8/NimjdhGWFO4TUveC9xVIKzw8OmdgmxsXDL4ICiL6KuzS4YcQ9JhtjJmp3TiWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784217406; c=relaxed/simple;
-	bh=Kg2KZmHxnn/+rUzlmB7HnjsT5mNZ/CfG/M24/lqwbDk=;
+	s=arc-20240116; t=1784217407; c=relaxed/simple;
+	bh=bX5rJiY2l+LytfxWQ68ADwdqLZzTj+WE8aeF05I2eYk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eHvwTcVFzpyzBoFOWnc82W5jJBZs4jnkA9obX9jkVS/5EsZ9r+cPLiZ2mKqlxuC5F5YmgJuBJhk7fyDqv/wN6p82WHlQoW7cJz2ncMW15uqyl0grpq26nHuDTDpHVD76yIVMCUUIex/cpqaIe5J+kDheZcO5Fnq1MXXgl1niQuY=
+	 MIME-Version; b=ktzh1V0VsykVg5ZFw6vLLBTmHcasmAp0sSfJ1N11X8V3JoUJcnxb9tyyyc//K/PNuxZfN0pkIW9rzfJi+i4hUmN3nUgPzWUvJXO6pN0sLrpHv+ZZ+8o6fFLbKV/DAR2wxyaxSzJvKVjPz5xWGsk7LJW3gwAa5liJm1O1wVyr3Tg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 5649820227F;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 6B3BD20225D;
 	Thu, 16 Jul 2026 17:56:24 +0200 (CEST)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1wkORj-0027ol-3D;
+	id 1wkORk-0027om-0C;
 	Thu, 16 Jul 2026 17:56:24 +0200
 Received: from blackshift.org (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 688F556C3D7;
-	Thu, 16 Jul 2026 15:55:31 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 6513C56C3F2;
+	Thu, 16 Jul 2026 15:55:32 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Shuhao Fu <sfual@cse.ust.hk>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Nico Yip <zdi-disclosures@trendmicro.com>,
+	stable@kernel.org,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 04/19] can: j1939: fix lockless local-destination check
-Date: Thu, 16 Jul 2026 17:47:29 +0200
-Message-ID: <20260716155528.809908-5-mkl@pengutronix.de>
+Subject: [PATCH net 17/19] can: isotp: use unconditional synchronize_rcu() in isotp_release()
+Date: Thu, 16 Jul 2026 17:47:42 +0200
+Message-ID: <20260716155528.809908-18-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260716155528.809908-1-mkl@pengutronix.de>
 References: <20260716155528.809908-1-mkl@pengutronix.de>
@@ -54,76 +55,59 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Shuhao Fu <sfual@cse.ust.hk>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-j1939_priv.ents[].nusers is documented as protected by priv->lock, and
-its updates already happen under that lock. j1939_can_recv() also reads
-it under read_lock_bh(). However, j1939_session_skb_queue() and
-j1939_tp_send() still read priv->ents[da].nusers without taking the
-lock.
+isotp_notify() unregisters the (RCU) CAN filters via can_rx_unregister()
+and clears so->bound without waiting for a grace period. isotp_release()
+uses so->bound to decide whether it needs to call synchronize_rcu()
+before cancelling so->rxtimer, so when NETDEV_UNREGISTER runs first it
+skips that synchronize_rcu() and can cancel the timer while an
+in-flight isotp_rcv() is still executing and about to re-arm it via
+isotp_send_fc(), leading to a use-after-free timer callback on the
+freed socket.
 
-Those transport-side checks decide whether to set J1939_ECU_LOCAL_DST, so
-they can race with j1939_local_ecu_get() and j1939_local_ecu_put() while
-userspace is binding or releasing sockets concurrently with TP traffic.
-This can misclassify TP/ETP sessions as local or remote and take the wrong
-transport path.
+sakisho-bot remarked a problem with rtnl_lock held in isotp_notify(),
+therefore make isotp_release() always call synchronize_rcu() before
+cancelling the timers, regardless of so->bound. This still closes the
+original race (isotp_notify() clearing so->bound without waiting for
+in-flight isotp_rcv() callers before isotp_release() cancels the RX
+timer) without adding any RCU wait to the netdevice notifier path.
 
-Fix both transport paths by routing the destination-locality check through
-a helper that reads ents[].nusers under read_lock_bh(&priv->lock).
-
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Shuhao Fu <sfual@cse.ust.hk>
-Tested-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://patch.msgid.link/20260419140614.GA4041240@chcpu16
+Fixes: 14a4696bc311 ("can: isotp: isotp_release(): omit unintended hrtimer restart on socket release")
+Closes: https://lore.kernel.org/linux-can/20260707085210.6B6C01F000E9@smtp.kernel.org/
+Reported-by: Nico Yip <zdi-disclosures@trendmicro.com>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://patch.msgid.link/20260712-isotp-fixes-v10-1-793a1b1ce17f@hartkopp.net
+Cc: stable@kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/j1939/transport.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ net/can/isotp.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index df93d57907da..8a31cb23bc76 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -351,6 +351,18 @@ static void j1939_session_skb_drop_old(struct j1939_session *session)
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index c48b4a818297..d30937345bcd 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -1237,11 +1237,18 @@ static int isotp_release(struct socket *sock)
+ 						  SINGLE_MASK(so->txid),
+ 						  isotp_rcv_echo, sk);
+ 				dev_put(dev);
+-				synchronize_rcu();
+ 			}
+ 		}
  	}
- }
  
-+static bool j1939_address_is_local(struct j1939_priv *priv, u8 addr)
-+{
-+	bool local = false;
++	/* Always wait for a grace period before touching the timers below.
++	 * A concurrent NETDEV_UNREGISTER may have already unregistered our
++	 * filters and cleared so->bound in isotp_notify() without waiting
++	 * for in-flight isotp_rcv() callers to finish, so this call must not
++	 * be skipped just because so->bound is already 0 here.
++	 */
++	synchronize_rcu();
 +
-+	read_lock_bh(&priv->lock);
-+	if (j1939_address_is_unicast(addr) && priv->ents[addr].nusers)
-+		local = true;
-+	read_unlock_bh(&priv->lock);
-+
-+	return local;
-+}
-+
- void j1939_session_skb_queue(struct j1939_session *session,
- 			     struct sk_buff *skb)
- {
-@@ -359,8 +371,7 @@ void j1939_session_skb_queue(struct j1939_session *session,
- 
- 	j1939_ac_fixup(priv, skb);
- 
--	if (j1939_address_is_unicast(skcb->addr.da) &&
--	    priv->ents[skcb->addr.da].nusers)
-+	if (j1939_address_is_local(priv, skcb->addr.da))
- 		skcb->flags |= J1939_ECU_LOCAL_DST;
- 
- 	skcb->flags |= J1939_ECU_LOCAL_SRC;
-@@ -2038,8 +2049,7 @@ struct j1939_session *j1939_tp_send(struct j1939_priv *priv,
- 		return ERR_PTR(ret);
- 
- 	/* fix DST flags, it may be used there soon */
--	if (j1939_address_is_unicast(skcb->addr.da) &&
--	    priv->ents[skcb->addr.da].nusers)
-+	if (j1939_address_is_local(priv, skcb->addr.da))
- 		skcb->flags |= J1939_ECU_LOCAL_DST;
- 
- 	/* src is always local, I'm sending ... */
+ 	hrtimer_cancel(&so->txfrtimer);
+ 	hrtimer_cancel(&so->txtimer);
+ 	hrtimer_cancel(&so->rxtimer);
 -- 
 2.53.0
 
