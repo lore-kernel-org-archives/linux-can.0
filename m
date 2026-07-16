@@ -1,151 +1,163 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.218])
+Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7A03175A8D
-	for <linux-can@vger.kernel.org>; Thu, 16 Jul 2026 06:21:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.218
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784182871; cv=pass; b=t18Z6s4kMSjdFikuMdzp6hTGWS0SRTPwfYFpnAgO0bED+Z5gF7KzulrXNQZcqW3UzVZOwFzeZJDaB7YaRbWjrU1ApYHJhalNbwhIJdrEqrV97bBgegZndwEdwEn9HKAX3C/saxdxOZL5xjDMDh0CNI+By3Xj0GhYbzZQehY1x7Q=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784182871; c=relaxed/simple;
-	bh=1TfowDYYnSEUJOcg8/XAffNtOkl1RNC1yDqsdw75BLo=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=fVLokoGPlI/AjhjdtYV+LyzAbiHMQI12xLZQ8pQ64elLpsyveACmFo83OfrL4a66gsC6v5rFyCHtFeRr+7jwSesIUtbxVUHycm1L4cabIau0wIAOVjAkLJA0nVKoBNAGmLcMmhr1JxIpkVBPb6lD2auRoJD7Uwd7jl2CzbrAZ0c=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=p9t7U4qe; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=cEyKt1PC; arc=pass smtp.client-ip=81.169.146.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFC28326951;
+	Thu, 16 Jul 2026 06:47:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.166.238
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1784184480; cv=none; b=nYoMVvtmS+QUPI2p2Z0z3ZGedrAIDWoxoLkPwq+JAftxii5GMH/ae5leAJbj6r/BtPrjjbaacMv2MNqglfMyDJTgfaMb+89ZKNgUo8r1R5B3V72YDqhOr1as+kCTfCvYZAOWKCFwHKfEja3D2xTmJb1TiZXPP5t65mZUrjiSgW0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1784184480; c=relaxed/simple;
+	bh=iL6rcBDj4YdEG+BrlZUbA2p1B/PZEivfghYAT9zVSAc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=B5v4dRWlIHD3njhGQC+jfz7yzGdol5fAXL4JytlS9KS5yn+o18Y2i5mY9569iYWMqbE7Sozioc0nzN6emVhxG4SB4KakeAE5N354Ty5lw4TG+GHBh0ClN5zm9gK7MbSZyDWBRfWI6TvRwRFLVdBQbH/JHEVAlHsmMcW2y1mExoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b=UYC63Mg3; arc=none smtp.client-ip=205.220.166.238
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="p9t7U4qe";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="cEyKt1PC"
-ARC-Seal: i=1; a=rsa-sha256; t=1784182680; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=JoWHQbZ9A6urS/MeToLglUacHLFJnJrl26ae7E0x6TfGD7xiJ8pxnJKCE+Tz674SSD
-    BY3JYbkxKGuwgdwoD8yNp0+QH3YbKhPV3rwfeb8e4cGxKGy1xUv6NWW6k6d8JNFLa+rJ
-    Xp9rH09slAY/XHGEjIO3XVU/+uN7/B8fnYIwlK953Sz6a03ZSN7vdpJ4hNGZgfuksj3x
-    8rpHKLvMKAXndL/6ag6ZwBROl/FIwBQBROtOcxU0dTEzKZbAVd2Q9bbTW3hQStaKd37a
-    XX5lYZXFvMghHIpkC21jTmQ/Ap6y7sbaqDzQ2PFzHytoySpl5gLatglMJAcvLhW3Yzc4
-    0qxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1784182680;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Cc:To:From:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=98DXqy1A9WIVTG8tdZOKK+0Vj6vZ+g3DfMhxy1VLlpY=;
-    b=gjaYPEckUjtwmCiyzwPNXU5L6n3BBREiucimJN7pWY4c7s5oy2oFIquFOGqOONcVJU
-    Sv1/EAD7JBp4tkB0yVFnQHdCh2sH61X1Zw3pb63tae7VD+toVsknLxJhjHy6+e6REz92
-    SVyyet3uPAScn0kbpJ+JzAMj9cFkITjHjZm3rL3qCFMUpX+pOj7jBdLtms5Mq/iJEZJH
-    C6+RtWK8BZ+rXKpdSsGyU6kN4/rycGgJz3X0Oa0RtA0Pue+1BqylWnL59eu+d5Zu0K/w
-    A/PbzrqsBXEM4roNRWuLPyzjlr+PpQefrh4e+utc1NQd8tPi6bNSKl0Ne7Fr0cyDCzCl
-    8Nlg==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1784182680;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:References:Cc:To:From:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=98DXqy1A9WIVTG8tdZOKK+0Vj6vZ+g3DfMhxy1VLlpY=;
-    b=p9t7U4qedV9AfvUFtMNW0vUQaVzx9OlUYA4cUaXiiki/n8+O7bJFbup7PgEWsw/GgF
-    5t65SH9pPnEzKzpQGSR3eAUpUXgJaKwAg2uSlZzMJqNzzVuBUMaRbhqK+lgR3zakr43D
-    NDYqyO5IqU6gabIXEP05Q+IkOIjoZosc6hr01LSajMF/WNU4cO37hH6/JudnyGQrBR5b
-    PXJ5ove2arRiO17p6oqW/WhZ43EWl44+2FDo3rwusU31gB9/vmWX80y3kMdKyuy1FLhK
-    iAXEwiOWWB2tXivEFGlHxD1oiMFQa6m9n1ko221G/mvr/2QrE1GI7hrA+uMjKsFiMVVu
-    LGWA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1784182680;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:References:Cc:To:From:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=98DXqy1A9WIVTG8tdZOKK+0Vj6vZ+g3DfMhxy1VLlpY=;
-    b=cEyKt1PCQryOp9f17GS/4lmudgdR9SnEUDOuofFiISI5se3YyS7mb1AQ8u3vwVlMxT
-    mBJQybto+gPRPFtelAAQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tRkI16oOSW1Ti/f4PoH8="
-Received: from [192.168.20.178]
-    by smtp.strato.de (RZmta 55.5.6 DYNA|AUTH)
-    with ESMTPSA id Ka9fdb26G6I0EvN
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Thu, 16 Jul 2026 08:18:00 +0200 (CEST)
-Message-ID: <489966a6-6105-46c3-8a7f-61fb6b5825aa@hartkopp.net>
-Date: Thu, 16 Jul 2026 08:17:53 +0200
+	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="UYC63Mg3"
+Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 66G3xpLF1818358;
+	Wed, 15 Jul 2026 23:47:24 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
+	 h=cc:content-transfer-encoding:content-type:date:from
+	:message-id:mime-version:subject:to; s=PPS06212021; bh=KcqFdEGx9
+	ifEWgTpQXC0YvaTEiljkyZSuvr3aBIsijQ=; b=UYC63Mg3xVXlLU0a47kKYIQkQ
+	MM8WxhWvv/uqAKK1vhY+XJlY2j3VKeBHLeuj+fcJ5+Vk94ayQ8PCvqh0KEkffDaT
+	LMP9Lhow5UtcgfMKwzh+yC8u3qFCpKWrsPkXZ21xN/C6mtE4mIZr7/OG/GJRz2g+
+	N0KV+zsCyULgbfuRkntCS9OM/mhuTfUerIolvz8+X9FE258fcMolcodjhgE//693
+	zbtG0pBvOXNRqQ9cKOdEYDP/lCyQjzZk4mh0t5izxI20GxfNxkTOCETkuNKhyuei
+	ZOiCS8lSh3IBJeKc65VJ1bELpDDz6+bLxQsKaFkb5GtnB+lZ0ENIKeaE3PxDQ==
+Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [128.224.246.36])
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 4fbnbdqdf4-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Wed, 15 Jul 2026 23:47:24 -0700 (PDT)
+Received: from ala-exchng01.corp.ad.wrs.com (10.11.224.121) by
+ ala-exchng01.corp.ad.wrs.com (10.11.224.121) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.61; Wed, 15 Jul 2026 23:47:23 -0700
+Received: from pek-yzhou-d3.wrs.com (10.11.232.110) by
+ ala-exchng01.corp.ad.wrs.com (10.11.224.121) with Microsoft SMTP Server id
+ 15.1.2507.61 via Frontend Transport; Wed, 15 Jul 2026 23:47:20 -0700
+From: Yun Zhou <yun.zhou@windriver.com>
+To: <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>,
+        <socketcan@hartkopp.net>
+CC: <linux-serial@vger.kernel.org>, <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <horms@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yun.zhou@windriver.com>
+Subject: [PATCH] tty: ldisc: fix deadlock between ldisc_sem and rtnl_mutex
+Date: Thu, 16 Jul 2026 14:47:19 +0800
+Message-ID: <20260716064719.1401892-1-yun.zhou@windriver.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Weekly net upstream? - Re: [PATCH] vxcan: fix Kconfig description
- stating no local echo provided
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: mailhol@kernel.org, linux-can@vger.kernel.org,
- =?UTF-8?Q?Alexander_H=C3=B6lzl?= <alexander.hoelzl@gmx.net>
-References: <20260619090035.17769-1-alexander.hoelzl@gmx.net>
- <1f3a3c0d-71a6-4c7d-9e08-5e19f1999af2@hartkopp.net>
- <ef991c9b-276d-44e9-a48c-7bf52f69ea0a@hartkopp.net>
- <20260714-vole-of-sheer-leadership-1bf399-mkl@pengutronix.de>
- <10179a2c-c8fd-428d-a918-955b6412e712@hartkopp.net>
-Content-Language: en-US
-In-Reply-To: <10179a2c-c8fd-428d-a918-955b6412e712@hartkopp.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzE2MDA2OCBTYWx0ZWRfX58xN8djre09Q
+ zr5VpvCs8KUcyiUjl+Bjag27Agv1RIO0YAy++uCmjqIGzPnXuKyKCxo3xQI4nnteKOC3uZNA05R
+ Jz4G+vGFrSGnh/t1QTFVYIFsEgamSdLCuBdFjk/WwhPRPOjmtSoysxUwZMdd+REn6pd0eB7oHBF
+ iT1M2xB7s3yNTd94xloZP4/Z9+s2cPoptQoCP3h4S6SpX92jEd9r/eUx0Kdn+VDZXkzBL/ruq08
+ YFWzwaGrjItugoITRKOni+/FTyX2TpHct6i3nxD9YUi+l1O55A20SJQwXFM2A8rjsN0R4RSLjMz
+ qpVD8iZm+r2WO+rfRIW0ez7qEX2Tms4dP4UeX+L5Vacvmbu64psbdFQK+uC3A87TwPowTyKJLx3
+ fmovg7MB6xBSaYQIUW8H0U91IaViM+WQObqGDBy95OxjkkIC/JlQNJhXCtOBoz667KuiwEOBpDz
+ ji6dLvQEy4m33wC3+ng==
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzE2MDA2OCBTYWx0ZWRfX1Z6lCq0sTljt
+ OPg0Z4/0sbqIsGd/aFOqQAdwijUcilcFWX7g9BfjCIQ8cLcSDbuOEGJ3F8gO1pGdHRJgwoOe8PI
+ 8oYRhbHnl5MLwKvQooUHjWKmFAOr7c9zpgDWSFGCKJvgIDnYoZxb
+X-Authority-Analysis: v=2.4 cv=VI/tWdPX c=1 sm=1 tr=0 ts=6a587e7c cx=c_pps
+ a=AbJuCvi4Y3V6hpbCNWx0WA==:117 a=AbJuCvi4Y3V6hpbCNWx0WA==:17
+ a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=bi6dqmuHe4P4UrxVR6um:22
+ a=iKiJcTA2PjBS6x5JeXcw:22 a=edf1wS77AAAA:8 a=hSkVLCK3AAAA:8 a=t7CeM3EgAAAA:8
+ a=ORBgStWXSJTWfv0flmAA:9 a=DcSpbTIhAlouE1Uv7lRv:22 a=cQPPKAXgyycSBL8etih5:22
+ a=FdTzh2GWekK77mhwV6Dw:22
+X-Proofpoint-ORIG-GUID: Uq9SEa6k71S2RHdgtp84X9B7pJGvpY_l
+X-Proofpoint-GUID: Uq9SEa6k71S2RHdgtp84X9B7pJGvpY_l
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-07-16_02,2026-07-15_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 impostorscore=0 clxscore=1011 lowpriorityscore=0
+ spamscore=0 suspectscore=0 malwarescore=0 bulkscore=0 phishscore=0
+ adultscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
+ definitions=main-2607160068
 
-Hi Marc,
+syzbot reported a circular lock dependency involving tty ldisc_sem and
+the networking rtnl_mutex. The full chain is:
 
-just in the case you didn't see my (hopefully really) final bcm patch set:
+  rtnl_mutex --> nft_commit_mutex --> ... --> ep->mtx --> ldisc_sem --> rtnl_mutex
 
-https://lore.kernel.org/linux-can/b5b49ad6-c7e4-4971-83dd-8a0f8214e8c2@hartkopp.net/
+The last edge (ldisc_sem -> rtnl_mutex) is created because tty line
+discipline .open() callbacks (slcan, slip) call register_netdev() which
+acquires rtnl_mutex, and .open() runs under ldisc_sem write lock in
+tty_set_ldisc().
 
-Best regards,
-Oliver
+Fix by moving the .open() call outside the ldisc_sem write lock. The
+ldisc .open() is initialization of the NEW discipline after the old one
+has been closed - there is no need for ldisc_sem protection at this
+point since:
 
-On 14.07.26 12:01, Oliver Hartkopp wrote:
-> 
-> 
-> On 14.07.26 10:51, Marc Kleine-Budde wrote:
->> On 14.07.2026 08:55:32, Oliver Hartkopp wrote:
->>> I would be glad if you could upstream this patch together with the now
->>> sashiko-approved fixes for can-bcm and can-isotp:
->>>
->>> https://lore.kernel.org/linux-can/20260712-isotp-fixes- 
->>> v10-0-793a1b1ce17f@hartkopp.net/
->>
->> If I understand you correctly, you say that the issue sashiko claims to
->> be in patch 3 (mid:20260712181155.B42EA1F000E9@smtp.kernel.org):
->>
->>>> [High] Lockless state transition in the timeout handler creates a
->>>> race condition that causes timeout errors to be silently dropped or
->>>> misattributed, leading sendmsg() to erroneously return success for
->>>> timed-out transfers.
->>
->> is a preexisting problem?
-> 
-> Yes. Always broken for years but nobody ever complained as the pattern 
-> that would lead to this problem is not used.
-> 
-> The core issues with concurrent execution UFA and probable stalls are 
-> fixed within the patch set. Fixing the in rare cases wrong (and unused) 
-> error attribution would be a huge effort.
-> 
-> So it would be something for can-next or wont-fix.
-> 
->>
->>> https://lore.kernel.org/linux-can/20260709-bcm_fixes- 
->>> v12-0-61c06291bf1c@hartkopp.net/
->>
->> Can you clarify these claims:
->>
->> https://lore.kernel.org/all/20260709203552.D473D1F00A3D@smtp.kernel.org/
-> 
-> Fixed in patch 9.
-> 
->> https://lore.kernel.org/all/20260709204058.5BEED1F000E9@smtp.kernel.org/
-> 
-> Oh, this was really an open point that I have overlooked.
-> 
-> Will send a V13 asap.
-> 
-> Best regards,
-> Oliver
-> 
+ - tty_lock is held throughout, preventing concurrent tty_set_ldisc,
+   hangup, or close
+ - tty->ldisc is set to NULL during the window, so concurrent readers
+   (tty_ldisc_ref, tty_ldisc_ref_wait) see NULL and return immediately,
+   which callers already handle as a hangup condition
+ - tty buffer data stays queued until the ldisc is installed
+
+The sequence becomes:
+  1. Hold ldisc_sem(write): close old ldisc, set tty->ldisc = NULL
+  2. Release ldisc_sem(write)
+  3. Call new_ldisc->ops->open() without ldisc_sem
+  4. Re-acquire ldisc_sem(write): install new ldisc (or restore old)
+  5. Release ldisc_sem(write)
+
+Reported-by: syzbot+de610eeef174bd59a8a3@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=de610eeef174bd59a8a3
+Signed-off-by: Yun Zhou <yun.zhou@windriver.com>
+---
+ drivers/tty/tty_ldisc.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/tty/tty_ldisc.c b/drivers/tty/tty_ldisc.c
+index 27fe8236f662..248a6995cc53 100644
+--- a/drivers/tty/tty_ldisc.c
++++ b/drivers/tty/tty_ldisc.c
+@@ -556,15 +556,28 @@ int tty_set_ldisc(struct tty_struct *tty, int disc)
+ 	/* Shutdown the old discipline. */
+ 	tty_ldisc_close(tty, old_ldisc);
+ 
+-	/* Now set up the new line discipline. */
+-	tty->ldisc = new_ldisc;
++	/* Clear tty->ldisc so concurrent readers back off during transition */
++	tty->ldisc = NULL;
+ 	tty_set_termios_ldisc(tty, disc);
++	tty_ldisc_unlock(tty);
+ 
++	/*
++	 * Open the new discipline outside ldisc_sem. The ldisc .open()
++	 * may acquire locks (e.g., rtnl_mutex) that would create circular
++	 * dependencies if taken under ldisc_sem. tty_lock is still held,
++	 * preventing concurrent ldisc changes and hangup.
++	 */
+ 	retval = tty_ldisc_open(tty, new_ldisc);
++
++	tty_ldisc_lock(tty, MAX_SCHEDULE_TIMEOUT);
++
+ 	if (retval < 0) {
+ 		/* Back to the old one or N_TTY if we can't */
+ 		tty_ldisc_put(new_ldisc);
+ 		tty_ldisc_restore(tty, old_ldisc);
++	} else {
++		/* Success - install new ldisc */
++		tty->ldisc = new_ldisc;
+ 	}
+ 
+ 	if (tty->ldisc->ops->num != old_ldisc->ops->num && tty->ops->set_ldisc) {
+-- 
+2.43.0
 
