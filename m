@@ -1,89 +1,170 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39D47397E73;
-	Fri, 17 Jul 2026 10:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD19CE54B
+	for <linux-can@vger.kernel.org>; Fri, 17 Jul 2026 16:45:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784285603; cv=none; b=oddA6HTU0Y07vc2q5tgSqRx00EfQQBx5uFW03mZxsWkPaFkjh/SNCnKiFeN1OmHSeXWGu+ZJjEJToVb88yp8hviWbffTZoHJ0hnk1F/H0dbk1TPItbxAWRpS5cd5EcaWzTYl9NqAI8FY++5no7cYknForO5rnQa5Aw+ePfhyCtE=
+	t=1784306755; cv=none; b=b57Ob8c7ujf/dJJTrpdHfcPvHrDS0kkLXkt7j76cK3v6Y9K0nvCTqKlz6fiYcTe/7Ipnts77Gyj+USEnknhceJi5vgOm3HO8uVZ/eAqEdlrM5yTcJDsHsXJcxBXp4nu6rsDCf/ypRqAOHXDo5Wxy4aTOpgyPPfLCXE4EHzlPfms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784285603; c=relaxed/simple;
-	bh=GKN5VVcuBqCXrjhhKcfbQ84IekZUa2rtK02AObXtkmo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IPFbTI8qbFSwQtL0U8JGLOVFIcnEymvAzRj41r9P8tnOMRLzK6n8QtS87wqWKQzc70EsCtvN0yopaDAW2EoJuT/uptn/y3To4dZpAn/Q2wvygs7YIArUiRfy3Qv7lL6Bo7G34x1EXyYZU4sOqLxtWs0NqSV4DgeKnQr8VEHLAUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=FdX8dyO2; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1784306755; c=relaxed/simple;
+	bh=BPcgmLOwQCfNTJa4Nf1jIOGXW/rtktjr3ehPMvVAy1k=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=OAWJWBC/WnSEyTOH3Bu2+padeFqxE/6ko/iZxuuT0/EhmfiaMNhBRuDV+6dqKzQJ3IS6b2VJ30xg6EB7LF4UII61T9KRmtAqAKEXU3CKqz5qfmtEFDC4PBiG0XxSWtvAethYtSgfp6on/tDdWfiqAtOQmtSnLgq+cDzbv0SMq40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZhbCEdx0; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="FdX8dyO2"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 629F71F000E9;
-	Fri, 17 Jul 2026 10:53:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxfoundation.org;
-	s=korg; t=1784285601;
-	bh=40g+KPjHxOh7egIEMtuae1UAJa3qXshJTrSRlAwhF14=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=FdX8dyO2DkaWQE9CrHUdUw3/9wu+4qHTLjBi1FSGOv1bWvGW46gc8xnG5TdU7wN5G
-	 3Mmviy46CxGwLXYyYoSbnHyJRTOioD0kJ4unfD/eABnq9W/zbfHc25i7kveVNxUq5Q
-	 vr6oVCrSU6/0Lk2ccPiD5pnlGtsUTwaV3G48iL3s=
-Date: Fri, 17 Jul 2026 12:53:14 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Yun Zhou <yun.zhou@windriver.com>
-Cc: jirislaby@kernel.org, socketcan@hartkopp.net,
-	linux-serial@vger.kernel.org, mkl@pengutronix.de,
-	linux-can@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tty: ldisc: fix deadlock between ldisc_sem and rtnl_mutex
-Message-ID: <2026071718-yearbook-bloated-48ce@gregkh>
-References: <20260716064719.1401892-1-yun.zhou@windriver.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZhbCEdx0"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12AD41F00A3A;
+	Fri, 17 Jul 2026 16:45:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1784306754;
+	bh=zEPWcUZ4RbbRnMGBrmyjIq+dski+QBrncZ10aJlCylY=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=ZhbCEdx0dfIQTtgD7DQE08KRmXU8qYywh4ps8sNOW+bpn97NbRfh/9BEri9ryXeu5
+	 xpexei8wchnizbOHx574n/oowlE1xqeL7+o++PPtZR2H9QAsMsgubAimIR0il5zB0s
+	 o+LeYxGn97+fNnYtIsg7BfH22rDrXXkvgHX+y49N6zgXAdjduEuzGN4hTVYovwQPUM
+	 QFctbWzGe60lQkg6DukwHYum2hVHD479lbxa8Ig2LunzGpkMdIobSpYi2h7XCAJUCL
+	 jN5QWhxOweU+j4NQkCW7tA97LwH72s2Z1AA9VjDTvcthpQocwon7QnRfMGRkfg0JKG
+	 q38zXan3hcsTg==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH net 06/19] can: bcm: defer rx_op deallocation to
+ workqueue to fix thrtimer UAF
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Marc Kleine-Budde" <mkl@pengutronix.de>
+Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
+ Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>
+In-Reply-To: <20260716155528.809908-7-mkl@pengutronix.de>
+References: <20260716155528.809908-1-mkl@pengutronix.de>
+ <20260716155528.809908-7-mkl@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 17 Jul 2026 16:45:53 +0000
+Message-Id: <20260717164554.12AD41F00A3A@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260716064719.1401892-1-yun.zhou@windriver.com>
 
-On Thu, Jul 16, 2026 at 02:47:19PM +0800, Yun Zhou wrote:
-> syzbot reported a circular lock dependency involving tty ldisc_sem and
-> the networking rtnl_mutex. The full chain is:
-> 
->   rtnl_mutex --> nft_commit_mutex --> ... --> ep->mtx --> ldisc_sem --> rtnl_mutex
-> 
-> The last edge (ldisc_sem -> rtnl_mutex) is created because tty line
-> discipline .open() callbacks (slcan, slip) call register_netdev() which
-> acquires rtnl_mutex, and .open() runs under ldisc_sem write lock in
-> tty_set_ldisc().
-> 
-> Fix by moving the .open() call outside the ldisc_sem write lock. The
-> ldisc .open() is initialization of the NEW discipline after the old one
-> has been closed - there is no need for ldisc_sem protection at this
-> point since:
-> 
->  - tty_lock is held throughout, preventing concurrent tty_set_ldisc,
->    hangup, or close
->  - tty->ldisc is set to NULL during the window, so concurrent readers
->    (tty_ldisc_ref, tty_ldisc_ref_wait) see NULL and return immediately,
->    which callers already handle as a hangup condition
->  - tty buffer data stays queued until the ldisc is installed
+Thank you for your contribution! Sashiko AI review found 4 potential issue(=
+s) to consider:
 
-Ah, but look at the review at:
-	https://sashiko.dev/#/patchset/20260716064719.1401892-1-yun.zhou@windriver.com
-which says:
-	Does unlocking the semaphore while the ldisc pointer is NULL introduce a UAPI
-	break for concurrent operations?
+Pre-existing issues:
+- [High] Unprotected concurrent modification of `op->frames` in `bcm_tx_set=
+up` can lead to corrupted or torn CAN frames being transmitted.
+- [High] Unprotected modification of `op->frames` and `op->flags` in `bcm_r=
+x_setup` races with `bcm_rx_handler` in softirq context.
+- [High] The `tx_ops` and `rx_ops` lists are updated without RCU list primi=
+tives, creating a data race with concurrent readers in `bcm_proc_show()`.
+- [Medium] Concurrent execution of `bcm_rx_handler` on multiple CPUs causes=
+ data corruption for `op->last_frames` and statistics.
+--
 
-	If a concurrent process calls read(), write(), or poll() during this unlocked
-	window, it can enter tty_ldisc_ref_wait() in drivers/tty/tty_io.c. Because the
-	semaphore was unlocked here, tty_ldisc_ref_wait() will successfully acquire
-	the read lock but observe tty->ldisc as NULL.
+--- Patch [6]: [PATCH net 06/19] can: bcm: defer rx_op deallocation to work=
+queue to fix thrtimer UAF ---
+commit 542011e18159cf5ca68d911f15d0136be9c07cb9
+Author: Lee Jones <lee@kernel.org>
+Subject: can: bcm: defer rx_op deallocation to workqueue to fix thrtimer UAF
 
-	This causes the reader to immediately return EOF or -EIO, potentially
-	aborting userspace applications unexpectedly during a line discipline
-	transition.
+This commit resolves a use-after-free by deferring timer cancellation and=20
+memory deallocation to a dedicated unbound workqueue. It also takes a=20
+reference on op->sk to ensure the socket is not freed while timers are=20
+still armed.
 
-Is that not true?
+Link: https://patch.msgid.link/20260714-bcm_fixes-v15-1-562f7e3e42da@hartko=
+pp.net
 
-thanks,
+> diff --git a/net/can/bcm.c b/net/can/bcm.c
+> index a4bef2c48a559..bdf53241bd7b3 100644
+> --- a/net/can/bcm.c
+> +++ b/net/can/bcm.c
+[ ... ]
+> @@ -1060,6 +1081,7 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_he=
+ad, struct msghdr *msg,
+> =20
+>  		/* bcm_can_tx / bcm_tx_timeout_handler needs this */
+>  		op->sk =3D sk;
+> +		sock_hold(sk);
+>  		op->ifindex =3D ifindex;
 
-greg k-h
+[Severity: High]
+This isn't a bug introduced by this patch, but does the unprotected=20
+modification of op->frames in bcm_tx_setup() allow torn CAN frames to be=20
+transmitted?
+
+When updating an existing operation, the code copies data from userspace:
+
+bcm_tx_setup() {
+    ...
+    err =3D memcpy_from_msg((u8 *)cf, msg, op->cfsiz);
+    ...
+}
+
+Could a concurrent bcm_can_tx() executed by the TX timer read from=20
+op->frames while the copy is happening, since the timer drops the=20
+bcm_tx_lock before calling skb_put_data(skb, cf, op->cfsiz)?
+
+[Severity: High]
+This is a pre-existing issue, but does adding new elements to the ops=20
+lists create a data race with concurrent readers?
+
+When adding a new element, the setup functions call list_add():
+
+bcm_tx_setup() {
+    ...
+    list_add(&op->list, &bo->tx_ops);
+    ...
+}
+
+Since list_add() lacks RCU write barriers, could concurrent readers in=20
+bcm_proc_show() observe torn list pointers when iterating over tx_ops=20
+under rcu_read_lock()?
+
+[ ... ]
+> @@ -1221,6 +1243,7 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_he=
+ad, struct msghdr *msg,
+> =20
+>  		/* bcm_can_tx / bcm_tx_timeout_handler needs this */
+>  		op->sk =3D sk;
+> +		sock_hold(sk);
+>  		op->ifindex =3D ifindex;
+
+[Severity: High]
+This is a pre-existing issue, but can bcm_rx_setup() race with=20
+bcm_rx_handler() in softirq context when modifying op->frames?
+
+When bcm_rx_setup() updates an existing operation, it copies frame data:
+
+bcm_rx_setup() {
+    ...
+    err =3D memcpy_from_msg(op->frames, msg, msg_head->nframes * op->cfsiz);
+    ...
+}
+
+Since this is only protected by lock_sock() and not serialized against=20
+softirq, could an incoming CAN frame trigger bcm_rx_handler()=20
+concurrently, leading to inconsistent filter configurations and=20
+out-of-bounds array accesses when op->nframes changes?
+
+[Severity: Medium]
+This isn't a bug introduced by this patch, but are the shared RX=20
+statistics and op->last_frames vulnerable to data corruption?
+
+If bcm_rx_handler() runs concurrently on multiple CPUs for the same=20
+bcm_op, it performs non-atomic updates:
+
+bcm_rx_handler() {
+    ...
+    op->frames_abs++;
+    ...
+    bcm_rx_update_and_send(op, op->last_frames, rxframe, traffic_flags);
+    ...
+}
+
+Does modifying op->last_frames and op->frames_abs without holding a=20
+spinlock allow torn writes and lost increments?
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260716155528.8099=
+08-1-mkl@pengutronix.de?part=3D6
