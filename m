@@ -1,211 +1,132 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD70B43F0A9
-	for <linux-can@vger.kernel.org>; Fri, 17 Jul 2026 16:45:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 960A543F0A9
+	for <linux-can@vger.kernel.org>; Fri, 17 Jul 2026 16:45:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784306758; cv=none; b=f25rwBLskSE1dHLpfiDiqpS5K/i2s3emKG8GzJgg/oFOXPFcctfSeDf0pEznZ2DX+mmJiOxqqQAnS5uztfVe7Atkktwm6Ib0y8lp3sOMtzv9K417WVU/YHb5Yw6merPVzc0v+8uEOemYrLi+iuIQAsZ5fLsMJARtJaX2EbmykDk=
+	t=1784306760; cv=none; b=SGcHeBuo9s6wKtYEP099k0FkpAyMxRROK1r+elbSHrqUNwU06CBX8dTyXL6neARbBSx5/AZHhQ9u9Vw3ouSl6U1pcsHzCweAsBoPFt2INsCqIe4DD7dL2naIi9PZPpLsyEWVewkEcPxLFGb1DLxjzGUrf90ku35pQqgq9QSJDcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784306758; c=relaxed/simple;
-	bh=J15VnpN7m7PFy+n97fFQdsXGBG+iAZNHn9WNAPi7f5o=;
+	s=arc-20240116; t=1784306760; c=relaxed/simple;
+	bh=GjHpBzGtod54sMkyXvvE5SB2kooJNXIjFbFOpent/J0=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=Cw8IRLTBRUo8on7e949zcibSvUA6x7VKXZCssDzygzqqjbGXXpmb4uqa6KpDxN5aK6+k885YZSbAOsUQz5hKPYySB1d/Q+z4rlw8lBrl0hNjgoET2Am67J2m/RffoFQ5nOZybySjJrC1wrrZNiE3Mh2UWZBk/Oy6aHbg8/d178I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lXDz/uhX; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=izMNA2Tlg2J8HZRJOY91/Utse+uQm863Fx1PleRs7U9IhVfPntpiEMSp8nQqEoEMHB3XiQC3v5L1hSK/zhEDjsDepRiDL652dkXdyTiz9uRfKa0+yrCymo+Wv5MOnHB8UHkr3Ol+dtMRWZC/Hqw/e0W+txaBg40UNtDns7o1+KM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k85FbS6r; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lXDz/uhX"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 120711F000E9;
-	Fri, 17 Jul 2026 16:45:56 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k85FbS6r"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1C0D1F00A3A;
+	Fri, 17 Jul 2026 16:45:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784306757;
-	bh=MX6KxliItbT8+bpGmuRWKfS2e03ftu61nSzri3CMwS8=;
+	s=k20260515; t=1784306759;
+	bh=8CscWFAP/aEdaVZwXyJcDhTcZQrC0eJXekM3wATVcb8=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=lXDz/uhX13ZB0nLORrAD+LGdRfqYgPyHznHVKwVYL2Xl/jE98n6gc0EJGZW3xnwt6
-	 gi8WHsjikVE7BGZmswNxm0i9d3KtKbl8632xyrnhoVJT5W/0DK5P9gs03yYECYccEH
-	 SrcJa/+0EEfjNTYiJECgfeUgXLygl9CrEZzUIOtSZaVsv/3jT/yIpVj5pcsoOYSu+T
-	 N+WUlr0syHAaWFc+dTbGP7JdyktScuXL/0EaOmtwVbgrU0dAV741V7v9khSV0ju9YW
-	 vH5cVJ2RUN9KY17cywKc0GLOHuGKrKILkSzKZx/1HDD04S1TjAp8qdorma8xU9vzfo
-	 KxGb3HhZ4OJxA==
+	b=k85FbS6rXtcepEVn82sfdS/cKWqIeZn4IPwJTdSf3QjJuozVj3eRAy/tFuJQA751l
+	 lUkMeB1DUs2oxuKsVhSKyxdveahDa9FdTtDGEzZbBXTftFeRXgkDOVqnlIQ6kkzq5P
+	 RBudSAlcKdMwlVB2kA5GPBLjtIg3ScLiFLclkB/lbWrku4sunHS66n/XI4huCUPQFu
+	 K7wO9O7yvMOQUjOx6j9hivTPfk15JDPCbQsUNTO2FUKF7PrOUPxSvTDTSjFXFNiaYr
+	 ufS4fFxgKQ8g9iOaApcGg3x+EGnU2JmhBR29XSsqKNIznExAXL/I5mcLcnHgr6s0Dy
+	 VwBEz3X7pKKTw==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net 08/19] can: bcm: add locking when updating filter
- and timer values
+Subject: Re: [PATCH net 03/19] can: raw: add locking for raw flags bitfield
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Marc Kleine-Budde" <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, "Vincent Mailhol" <mailhol@kernel.org>, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20260716155528.809908-9-mkl@pengutronix.de>
+Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>, "Marc Kleine-Budde" <mkl@pengutronix.de>
+In-Reply-To: <20260716155528.809908-4-mkl@pengutronix.de>
 References: <20260716155528.809908-1-mkl@pengutronix.de>
- <20260716155528.809908-9-mkl@pengutronix.de>
+ <20260716155528.809908-4-mkl@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Fri, 17 Jul 2026 16:45:56 +0000
-Message-Id: <20260717164557.120711F000E9@smtp.kernel.org>
+Date: Fri, 17 Jul 2026 16:45:58 +0000
+Message-Id: <20260717164558.E1C0D1F00A3A@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
-Thank you for your contribution! Sashiko AI review found 3 potential issue(=
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
-
-New issues:
-- [Medium] A race condition in bcm_can_tx's new heuristic skips the first f=
-rame of a restarted multi-frame sequence if the concurrent transmission hap=
-pens to be at index 0.
-
-Pre-existing issues:
-- [High] Missing payload length validation for RX_RTR_FRAME operations allo=
-ws out-of-bounds memory reads when transmitting replies.
-- [High] Modifying the CAN_FD_FRAME flag on an existing BCM RX operation cr=
-eates a mismatch between op->flags and op->cfsiz, leading to out-of-bounds =
-reads and an information leak.
+- [High] Holding `rtnl_lock()` across user-space memory copies enables a sy=
+stem-wide Denial of Service.
 --
 
---- Patch [8]: [PATCH net 08/19] can: bcm: add locking when updating filter=
- and timer values ---
-commit c6674a9f75532d12e818868002b6c50a902d8b3e
+--- Patch [3]: [PATCH net 03/19] can: raw: add locking for raw flags bitfie=
+ld ---
+commit 64cfa8c3c841a4b23931e54d2dfb767381bcd986
 Author: Oliver Hartkopp <socketcan@hartkopp.net>
 
-can: bcm: add locking when updating filter and timer values
+can: raw: add locking for raw flags bitfield
 
-This patch introduces a new per-op lock (bcm_rx_update_lock) to protect
-concurrent accesses to timer and filter data during CAN traffic reception.
-It also addresses race conditions related to modifying frames and ensures
-consistent RTR frame preparation.
+This commit integrates separate integer values into a single bitfield and
+adds locking to prevent concurrent access during read-modify-write
+operations in raw_setsockopt. It introduces a raw_setsockopt_locked
+function wrapped by a new raw_setsockopt to handle the locking.
 
-Link: https://patch.msgid.link/20260714-bcm_fixes-v15-3-562f7e3e42da@hartko=
-pp.net
+Closes: https://lore.kernel.org/linux-can/20260503112200.22727-1-eulgyukim@=
+snu.ac.kr/
+Link: https://patch.msgid.link/20260504111928.41856-1-socketcan@hartkopp.net
 
-> diff --git a/net/can/bcm.c b/net/can/bcm.c
-> index b612135b017d1..1e5f8d65d351b 100644
-> --- a/net/can/bcm.c
-> +++ b/net/can/bcm.c
-
-[ ... ]
-
-> @@ -341,14 +348,20 @@ static void bcm_can_tx(struct bcm_op *op)
->  	if (!err)
->  		op->frames_abs++;
-> =20
-> -	op->currframe++;
-> +	/* only advance the cyclic sequence if nothing reset currframe while
-> +	 * we were sending - a concurrent TX_RESET_MULTI_IDX means this
-> +	 * frame's bookkeeping belongs to a sequence that no longer exists
-> +	 */
-> +	if (!cyclic || op->currframe =3D=3D idx) {
-> +		op->currframe++;
-
-[Severity: Medium]
-Does this new heuristic skip the first frame of a restarted multi-frame
-sequence if the concurrent transmission happens to be at index 0?
-
-If a concurrent bcm_tx_setup() resets the sequence by setting
-op->currframe =3D 0 while bcm_can_tx() is actively transmitting frame
-index 0 (where idx =3D=3D 0), the condition will evaluate to true.
-This would increment op->currframe to 1, causing the newly configured
-sequence to incorrectly skip the first frame.
-
-> -	/* reached last frame? */
-> -	if (op->currframe >=3D op->nframes)
-> -		op->currframe =3D 0;
-> +		/* reached last frame? */
-> +		if (op->currframe >=3D op->nframes)
-> +			op->currframe =3D 0;
+> diff --git a/net/can/raw.c b/net/can/raw.c
+> index a26942e78e688..82d9c0499c95f 100644
+> --- a/net/can/raw.c
+> +++ b/net/can/raw.c
 
 [ ... ]
 
-> @@ -1130,6 +1173,24 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_h=
-ead, struct msghdr *msg,
+> @@ -769,6 +743,26 @@ static int raw_setsockopt(struct socket *sock, int l=
+evel, int optname,
 >  	return err;
 >  }
 > =20
-> +static void bcm_rx_setup_rtr_check(struct bcm_msg_head *msg_head,
-> +				   struct bcm_op *op, void *new_frames)
+> +static int raw_setsockopt(struct socket *sock, int level, int optname,
+> +			  sockptr_t optval, unsigned int optlen)
 > +{
-> +	/* funny feature in RX(!)_SETUP only for RTR-mode:
-> +	 * copy can_id into frame BUT without RTR-flag to
-> +	 * prevent a full-load-loopback-test ... ;-]
-> +	 * normalize this on the staged buffer, before it is
-> +	 * ever installed into op->frames.
-> +	 */
-> +	if (msg_head->flags & RX_RTR_FRAME) {
+> +	struct sock *sk =3D sock->sk;
+> +	int err;
+> +
+> +	if (level !=3D SOL_CAN_RAW)
+> +		return -EINVAL;
+> +
+> +	rtnl_lock();
+> +	lock_sock(sk);
+> +
+> +	err =3D raw_setsockopt_locked(sock, optname, optval, optlen);
 
 [Severity: High]
-This is a pre-existing issue, but does bcm_rx_setup_rtr_check() fail to
-validate the len field of the user-supplied RTR frame?
+Does holding rtnl_lock() across raw_setsockopt_locked() allow a system-wide
+Denial of Service?
 
-If a user configures an RX_RTR_FRAME operation without providing a valid
-len field (for example, passing a payload length larger than the CAN limits
-of 8 or 64), it appears the length goes unchecked before installation.
-When a matching RTR request is received, bcm_rx_handler() will trigger
-bcm_can_tx() to send this stored frame. The underlying CAN driver might
-then trust the user-supplied length to read the payload from the buffer,
-which could result in an out-of-bounds memory read.
+Inside raw_setsockopt_locked(), user-space memory copies are performed
+before rtnl_lock() was historically taken:
 
-> +		struct canfd_frame *frame0 =3D new_frames;
+	case CAN_RAW_FILTER:
+		...
+		if (count > 1) {
+			filter =3D memdup_sockptr(optval, optlen);
+			...
+		} else if (count =3D=3D 1) {
+			if (copy_from_sockptr(&sfilter, optval, sizeof(sfilter)))
+				...
+		}
+
+Could a local user pass a memory pointer backed by userfaultfd or a slow FU=
+SE
+mount, intentionally stalling the page fault during memdup_sockptr() or
+copy_from_sockptr(), and freeze network configuration for the whole system =
+by
+holding the global rtnl_lock?
+
+It seems the isotp.c example cited in the commit message only takes
+lock_sock() in its wrapper, not rtnl_lock().
+
 > +
-> +		if ((msg_head->flags & TX_CP_CAN_ID) ||
-> +		    frame0->can_id =3D=3D op->can_id)
-> +			frame0->can_id =3D op->can_id & ~CAN_RTR_FLAG;
-> +	}
+> +	release_sock(sk);
+> +	rtnl_unlock();
+> +
+> +	return err;
 > +}
-
-[ ... ]
-
-> @@ -1175,19 +1238,48 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_=
-head, struct msghdr *msg,
->  			return -E2BIG;
-> =20
->  		if (msg_head->nframes) {
-> -			/* update CAN frames content */
-> -			err =3D memcpy_from_msg(op->frames, msg,
-> +			/* get new CAN frames content before locking */
-> +			new_frames =3D kmalloc(msg_head->nframes * op->cfsiz,
-> +					     GFP_KERNEL);
-> +			if (!new_frames)
-> +				return -ENOMEM;
-> +
-> +			err =3D memcpy_from_msg(new_frames, msg,
->  					      msg_head->nframes * op->cfsiz);
-> -			if (err < 0)
-> +			if (err < 0) {
-> +				kfree(new_frames);
->  				return err;
-> +			}
-> =20
-> -			/* clear last_frames to indicate 'nothing received' */
-> -			memset(op->last_frames, 0, msg_head->nframes * op->cfsiz);
-> +			bcm_rx_setup_rtr_check(msg_head, op, new_frames);
->  		}
-> =20
-> +		spin_lock_bh(&op->bcm_rx_update_lock);
->  		op->nframes =3D msg_head->nframes;
->  		op->flags =3D msg_head->flags;
-
-[Severity: High]
-This is a pre-existing issue, but can updating an existing operation's
-flags create a dangerous mismatch between op->flags and op->cfsiz?
-
-By overwriting op->flags with the newly supplied flags while leaving
-op->cfsiz at its previously configured value, the CAN_FD_FRAME state can
-diverge from its statically determined allocation size.
-
-For instance, if a user modifies an existing standard operation to include
-the CAN_FD_FRAME flag, later checks like the one in bcm_rx_cmp_to_index()
-might assume a larger layout and perform an out-of-bounds read past the
-end of the heap-allocated op->frames buffer. Conversely, dropping the flag
-could cause functions like bcm_rx_update_and_send() to copy an excessive
-number of bytes from a smaller SKB buffer.
-
-> +		if (msg_head->nframes) {
-> +			/* update CAN frames content */
-> +			memcpy(op->frames, new_frames,
-> +			       msg_head->nframes * op->cfsiz);
-
-[ ... ]
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260716155528.8099=
-08-1-mkl@pengutronix.de?part=3D8
+08-1-mkl@pengutronix.de?part=3D3
