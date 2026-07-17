@@ -1,144 +1,144 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.164])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2157C29B8E1
-	for <linux-can@vger.kernel.org>; Fri, 17 Jul 2026 06:48:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784270891; cv=none; b=FNW7Njj5UPb+kxSTXNRyufsT7JPxL01yjJGGQZp1rNCMKtlDQTydmTukHmagqLsR7ifvtLl7uezLYYv+3VyDfc9jjt6kOqfuIbUMjFmkFGIm9zAdil1Onk0Fa//fR3ZGuARr6oKxw/8gAPGpgskYiBiVXFWMfE8XGFbqyO8dff0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784270891; c=relaxed/simple;
-	bh=tM5EPRszyDhBbQQcFRcRgKZI19b4xN7G/Ac5Yzaq/dg=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=BgAPiw12BQvN2vjWgiaulyONt+deR9bCZxCwqNfSKf9HW3xEjEaVWV8n4gY4an34oLZznsq9aRFrtAIruAXJT8dMU+KwfqfIBi3Ee6vMhSjIgcrgSGWztzyNL8sNSeiEomASgsFkOhHCIa+2YAm3kDRA8o0csvbFVXnGHpv7Wig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fhMkCugt; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DF373438BB;
+	Fri, 17 Jul 2026 06:54:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.164
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1784271251; cv=pass; b=UAEdIwz9/wwEEQEvPclNHS8+EiKh4pQ2fVSfwsK5hvMhw788482x0uF2GoG7OpcNGAXYUxp6/fCp4RTWowRKzKHRjF2ngNws55CNSpahKwa6MqjOm1zY35JK4Ypa8GXFrbhTAysXrKAc3XyQScT4U7xkBOaOCB69av4o+CpQyHA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1784271251; c=relaxed/simple;
+	bh=2PmlOybW3VfZTf6u81JCqtoo0275M1CdG9Jt6WbnSZw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qHqzxq9omoML3d8t16juWQs8qKVcLwBrRkwVhweF/aypMpWxT6EORyW+WSSa+8T/CjC04QZODCIVE4NIZBqjLM1EjBD/DOWdYCA+9STAohEGgVyxbZWMPltjk63v9ECT4Bwy8oWReo7L+wDGu1teu5O8hERY43q2qtt9LWFMi08=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=sPdVD19/; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=+IoWEPO3; arc=pass smtp.client-ip=81.169.146.164
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fhMkCugt"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D025B1F000E9;
-	Fri, 17 Jul 2026 06:48:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784270886;
-	bh=bXpOnGf/lifGpuouRI3RQDk034nF804bTTsVg7gzK0o=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=fhMkCugtMxiXrG7o/IClkHsniM8jYjbKNbbMZfXk6vJkd2OzSKxvo+H4NiZlvz/vC
-	 OhNomXjh1YhONuW7CGz9yjl5uE9N6CKrQBuUtxXS9BDJbLV2Ve9tu9GrD2Cnn7jjvx
-	 S8sK7kp3KzQxT8mDf5q1eBA5nbq7ET4zaIK4co/+ux39e+QqI21mSqo5W9F2oQswYn
-	 CFCAnNbu7ShJlXePLj1aHujP0iF5QpOWGskSqjTr0tz+Qng1OkIAlhpVfFFPwP1/oe
-	 Kh8DBWRIQD/IbZ8FyFbmz9r92ZLtc+ZRLvCiVrNH8CjypBuhmyiMRgNCOBDgy5HfD/
-	 LZl6XBfsPqDDQ==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH] tty: ldisc: fix deadlock between ldisc_sem and
- rtnl_mutex
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Yun Zhou" <yun.zhou@windriver.com>
-Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org
-In-Reply-To: <20260716064719.1401892-1-yun.zhou@windriver.com>
-References: <20260716064719.1401892-1-yun.zhou@windriver.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 17 Jul 2026 06:48:05 +0000
-Message-Id: <20260717064805.D025B1F000E9@smtp.kernel.org>
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="sPdVD19/";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="+IoWEPO3"
+ARC-Seal: i=1; a=rsa-sha256; t=1784271058; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=Dh9S1Qq4nACZNj6Npjw82vetEvWb3trMxrlPDW5vPE55WcPkR9DYo6vuQuShGrEgyk
+    FGoLugiB2G4x9Qql6gLzMENyY8EWXkwRBctO0sDg0jhJBqIWh6AP94csylSYXuWmtZlS
+    CGx+uB3vGxGJgGJZ/wYsbajiLUDdX+59UU6OvJ8/x3ikUab9cpEoOVs/83Xoa6Xo7PrS
+    V7wKfFsmFREbg4VyhUF6xN8X/FzMFmr++v4mvtvX9mM9+zTcDAO2xSelOIuv5IC84YWw
+    X34ZN6gyUA30sX0r6VZ4+26Yn+NgY0D73LnYGDSLAUS1L/x6gKt9JMSkQvB3vR7SgdCZ
+    9W3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1784271058;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=ZXf+a4kYu3/g6axU2DMWLRarZagNiTvcRnNPWRuNmE8=;
+    b=FIb3c0mTZ+iWdFWjoSKfahRD0NcxAcMl+l6t/aGQweNZaNnRF48QpXPA6y1gp4RMXB
+    PNj+jkTKh6k1v9sVNNWCwTCedCsuopvKxL6iNmeAR1rWPxdz8qFic7czlzw0nXJqjRCm
+    8AWdKTlzX5r0gzw0cXAWOaYfTeWOItuh+gHKmYx6XF5K4FLqguK+OPfx4PjLpHxoTaNs
+    x4+YqQd/15rDEpGK16Nw0Q/8XJ4IhVbtlGnOqv8tP/y0CM4REMVyEBgbnC/rjnaAPR4g
+    bHWKpJ+puv92bfEAU8Jl37bag/+weH4FN4ripEbE94lyC+l7maiYH6MuqqpdcCyQOSDH
+    hi3Q==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1784271058;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=ZXf+a4kYu3/g6axU2DMWLRarZagNiTvcRnNPWRuNmE8=;
+    b=sPdVD19/kDGx2Tt9ELvqRZvTbr22FoeaLZFRD9r8XdjV7ffO8mZeaRLA2/MMXWnVWR
+    dYVEFVvD1hcMA+Id9WAi9khoE7LvIWFdorNedXn1hy1uGdx80ocf7UmyEU5jVhzGdykf
+    gnRtxCPUb6FqS0P5fFH3BHNK6bCA9///h/XQZVo5ow0hdKbyq/ReAxIbFMvmXkvj0IPI
+    +6IRxR876rEp60Z0unpsLUngtYguUbPuCWCE6QagDJBkTylgpn6IE+gzG6iRzAPa7XPe
+    6b3FaY1XhjM3pueD6yr9qG6owLghQKGY0e4hEuKvdEO2RlL1yRvnaaD3kb9DnYBcG60y
+    4A7A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1784271058;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=ZXf+a4kYu3/g6axU2DMWLRarZagNiTvcRnNPWRuNmE8=;
+    b=+IoWEPO300wU5Kjg/UcLiHyJmUK9yBQ1KQa+B5hXCZ76VEiS9SdbUuWAlVaOCIDup1
+    Af65EF3y2S78bVwpcRCw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tRkI16oOSW1Ti/f4PoH8="
+Received: from [192.168.20.147]
+    by smtp.strato.de (RZmta 55.5.6 DYNA|AUTH)
+    with ESMTPSA id Ka9fdb26H6osL6V
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Fri, 17 Jul 2026 08:50:54 +0200 (CEST)
+Message-ID: <4f1e340c-2abb-4e1d-bb10-7a6d88ddb6fa@hartkopp.net>
+Date: Fri, 17 Jul 2026 08:50:49 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tty: ldisc: fix deadlock between ldisc_sem and rtnl_mutex
+To: "Zhou, Yun" <yun.zhou@windriver.com>,
+ "Jagielski, Jedrzej" <jedrzej.jagielski@intel.com>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "jirislaby@kernel.org" <jirislaby@kernel.org>, sdf.kernel@gmail.com
+Cc: "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+ "mkl@pengutronix.de" <mkl@pengutronix.de>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+ "davem@davemloft.net" <davem@davemloft.net>,
+ "edumazet@google.com" <edumazet@google.com>,
+ "kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com"
+ <pabeni@redhat.com>, "horms@kernel.org" <horms@kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20260716064719.1401892-1-yun.zhou@windriver.com>
+ <PH0PR11MB5902C0DC3D8407F2701948C1F0C72@PH0PR11MB5902.namprd11.prod.outlook.com>
+ <70f854e7-b066-4f30-8ebf-71abdece45c2@windriver.com>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <70f854e7-b066-4f30-8ebf-71abdece45c2@windriver.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Thank you for your contribution! Sashiko AI review found 2 potential issue(=
-s) to consider:
 
-New issues:
-- [High] Concurrent read/write/poll system calls spuriously return EOF or E=
-IO during line discipline transitions, breaking UAPI.
+>>>
+>>> +      /*
+>>
+>> this blank line is redundant i believe
+>>
+> 
+> Isn't it common practice to leave the first line of a multi-line comment 
+> blank? Does it violate the coding style guidelines?
+> 
 
-Pre-existing issues:
-- [High] The circular lock dependency between ldisc_sem and rtnl_mutex is n=
-ot fully resolved, remaining on the error handling and hangup paths.
---
+You are right.
 
---- Patch [1]: [PATCH] tty: ldisc: fix deadlock between ldisc_sem and rtnl_=
-mutex ---
-commit bb627a1c685e7cab3f8500d0d87506f028ebe9fe
-Author: Yun Zhou <yun.zhou@windriver.com>
+The non-blank first comment line is only common for networking but you 
+posted a patch for the tty subsystem and not for networking.
 
-tty: ldisc: fix deadlock between ldisc_sem and rtnl_mutex
+Documentation/Codingstyle explains that:
 
-This commit aims to fix a circular lock dependency between the tty ldisc_sem
-and the networking rtnl_mutex. It does this by modifying tty_set_ldisc() to
-call the line discipline open() callback outside of the ldisc_sem write loc=
-k.
+     The preferred style for long (multi-line) comments is:
 
-Closes: https://syzkaller.appspot.com/bug?extid=3Dde610eeef174bd59a8a3
+         /*
+          * This is the preferred style for multi-line
+          * comments in the Linux kernel source code.
+          * Please use it consistently.
+          *
+          * Description:  A column of asterisks on the left side,
+          * with beginning and ending almost-blank lines.
+          */
 
-> diff --git a/drivers/tty/tty_ldisc.c b/drivers/tty/tty_ldisc.c
-> index 27fe8236f6623..248a6995cc53a 100644
-> --- a/drivers/tty/tty_ldisc.c
-> +++ b/drivers/tty/tty_ldisc.c
-> @@ -556,15 +556,28 @@ int tty_set_ldisc(struct tty_struct *tty, int disc)
->  	/* Shutdown the old discipline. */
->  	tty_ldisc_close(tty, old_ldisc);
-> =20
-> -	/* Now set up the new line discipline. */
-> -	tty->ldisc =3D new_ldisc;
-> +	/* Clear tty->ldisc so concurrent readers back off during transition */
-> +	tty->ldisc =3D NULL;
->  	tty_set_termios_ldisc(tty, disc);
-> +	tty_ldisc_unlock(tty);
+     For files in net/ and drivers/net/ the preferred style for long 
+(multi-line)
+     comments is a little different.
 
-[Severity: High]
-Does unlocking the semaphore while the ldisc pointer is NULL introduce a UA=
-PI
-break for concurrent operations?
+         /* The preferred comment style for files in net/ and drivers/net
+          * looks like this.
+          *
+          * It is nearly the same as the generally preferred comment style,
+          * but there is no initial almost-blank line.
+          */
 
-If a concurrent process calls read(), write(), or poll() during this unlock=
-ed
-window, it can enter tty_ldisc_ref_wait() in drivers/tty/tty_io.c. Because =
-the
-semaphore was unlocked here, tty_ldisc_ref_wait() will successfully acquire
-the read lock but observe tty->ldisc as NULL.
+Source: https://lwn.net/Articles/694755/
 
-This causes the reader to immediately return EOF or -EIO, potentially
-aborting userspace applications unexpectedly during a line discipline
-transition.
+Best regards,
+Oliver
 
-> +
-> +	/*
-> +	 * Open the new discipline outside ldisc_sem. The ldisc .open()
-> +	 * may acquire locks (e.g., rtnl_mutex) that would create circular
-> +	 * dependencies if taken under ldisc_sem. tty_lock is still held,
-> +	 * preventing concurrent ldisc changes and hangup.
-> +	 */
->  	retval =3D tty_ldisc_open(tty, new_ldisc);
-> +
-> +	tty_ldisc_lock(tty, MAX_SCHEDULE_TIMEOUT);
-> +
->  	if (retval < 0) {
->  		/* Back to the old one or N_TTY if we can't */
->  		tty_ldisc_put(new_ldisc);
->  		tty_ldisc_restore(tty, old_ldisc);
-
-[Severity: High]
-This is a pre-existing issue, but does this fully resolve the circular lock
-dependency?
-
-If tty_ldisc_open() fails above, the error path calls tty_ldisc_restore(),
-which eventually calls tty_ldisc_failto(). Inside tty_ldisc_failto(),
-tty_ldisc_open() is called while the ldisc_sem write lock is held.
-
-Similarly, during hangup processing, tty_ldisc_reinit() calls tty_ldisc_ope=
-n()
-while holding the ldisc_sem write lock.
-
-If the restored or reinitialized discipline acquires rtnl_mutex on these pa=
-ths,
-it appears the lock inversion and potential deadlock would still occur.
-
-> +	} else {
-> +		/* Success - install new ldisc */
-> +		tty->ldisc =3D new_ldisc;
->  	}
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260716064719.1401=
-892-1-yun.zhou@windriver.com?part=3D1
