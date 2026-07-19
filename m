@@ -1,189 +1,114 @@
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D0B879DA
-	for <linux-can@vger.kernel.org>; Sun, 19 Jul 2026 03:00:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9002A14ABE
+	for <linux-can@vger.kernel.org>; Sun, 19 Jul 2026 03:13:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784430035; cv=none; b=LLASvUwKpah4DBlkPjmpLSqBRUeHCZGWfw7NePSRCJ5fHvXQfzNBEmrR1DRRW11eKB+RTrZGHw9zcngSeRqi/AQ11Pi4vvOnjpONJQnBg77tZNwGLYZTgZEKWzWr/0wSswVyBexnZ6/Egc4u6tmQo5zNVtEr6dRpzPMFFzN8+2I=
+	t=1784430831; cv=none; b=HmWb+zqKhfcV/1fUIO04HPsrv6PO2NKqPUgFYA2pZkmZT8t5n9HW8AH414Lkkgc26fU6BbCNzVbPvVxGvYQP78joC7DRH2/zxOmvQgSTOLDijvjp4x+39o0TkYtRoAsWghoflXgpJs4R5J9k6WfWocOUU+4uSBHqUvnW+BNbozk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784430035; c=relaxed/simple;
-	bh=Jn33P+/6FTfvH5tB+4YcYehstSunwoyd5SiHVTVlZz8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MCI4/caFxZBnOO/MSeQsS/HVncqqAs9t4OMsxW7KQn+kZCfb9ttFrXAOo/+C5UUIez7PUVWUgHDcnEAR42hvqifO05oBqG6bXNHQYPddbT2l7ZUHwmArd1RJWfAAoDhcnRKIpXBWAA2aBriVu3C3B+YEIiIlXiN1M18aPwmA2bE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lI8NQ+Rr; arc=none smtp.client-ip=209.85.160.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1784430831; c=relaxed/simple;
+	bh=SiNXG/EaRaCgAi7xM/fjGRsrKl14/i03ba0wVIWHewo=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=i77gZe/2UOMqj0l+vKC3JfLtNHCAeWAf0q7CSajWT9pVDzeeph/E1XADwibQzX+s+coxUcVrPFQPqlFnk8XLoBnn2sFIGhghds9ttJRi9Q5ECCnOTv130/4TCedY8ZRpzlz+sqwhuan2XHI4Es5G6/3eHf/INDnx6jl6xNEmtBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DhkyKSx6; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lI8NQ+Rr"
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-51c01089e8aso40802871cf.2
-        for <linux-can@vger.kernel.org>; Sat, 18 Jul 2026 20:00:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1784430031; x=1785034831; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=8VKY6n6oODsytlm7jYrsNeF3Lue+neWZnZVfcsQNCPs=;
-        b=lI8NQ+Rrnf8oYxMmCdApHmFEb48jlzs0LGnVeIjLNjlsDTJAa5bdBfkZ6QR6ZY5C8b
-         pXto3JwD1OFkVOEc9DrNlMuM08uxAUDjJaQ8E6TvnMPDLOsdgLmUmOt5U09PUWlANSNs
-         sFCjGuGPHLm7YkpwuYsUkN74Flnow14E4YaCyJVqM18a/9oELx9o4J25l8fDZCeYrz4Q
-         98ZB6fGUJ2joROmVyIv+4gvJQMrYPkp5onykkeROLla5yeVCENZbxyF47eINYGksBaEb
-         IESWxv6bIZnqcfVLMIUC6pXI0l0rgVaO1XIvPaFItnbuvI9YJmQjitWMx4HG1zmM2ICe
-         5ZCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784430031; x=1785034831;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=8VKY6n6oODsytlm7jYrsNeF3Lue+neWZnZVfcsQNCPs=;
-        b=cIAk3SXe+U7fjoplwKIjing4tw4EsV9JI7sz4xEsxH2fxXlWhlg0JaDhLCEMY9RPdn
-         TdK+kg3HPRa1HU6IrrVwCmHkW02SxDgPSwfRkYXk+69ld8Y49v98FnmsTlNAOjrlWEp4
-         QGfSiRwmnECgAFC0XqMIjttmk3E2nBcaNCG7jso7cx6BoDAO1BB/Ssd73GKN82XzyNx9
-         MReXneDEbQEA6PmWD5tVf7vMhhdkVXCqflghWfGfTYUoLFH71rbRP5zmJ0k4Uknw58Qd
-         ezA2MFnDozxntVqNORDufNjOqbFuPe3pEsRXRvPKV0AH36jljs0zjvayHvYHEB++6QCW
-         o3Jg==
-X-Forwarded-Encrypted: i=1; AHgh+RoxTaFUveDlFp/SPKfaTYoYAc4piIV/KRW3mDCk2JlQW/vi9m+UPkczjCZAX5TAxFr9JAhTvVY0caU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyMXsKRDHGlHxFo213buajVns5T37CpyPGMBCNmCJOA5lXyJB2n
-	dkE1q4N+MPlef9cXUT/fKpSWzHJbJJArGKTDCI1Khd9juZIXQNDF7RZ5
-X-Gm-Gg: AfdE7cm+8EKxf4BGHXfKEgTWXTkxWBtcWaIpzxkQpq1R1UF3vhZBVQt9nmvYcatqkL3
-	2/vVJCDVtooWnYcmJS25mf6lnZhgS7SFX1JZyTCjQmIZDAhUnBmc2LN9EVl2y7hv764v92syPq7
-	yQZTWqvTj7WY4i9oFYEltkfcCwbgYChqo9hYHHG3zaPRJ9sBnEtBmurb+w4O11JaXoKl+qoEEpP
-	qusBSotBo4huWk0Ijv6A9yirkLUJUh3itvEieXHu/ChluGoMMla+/MaqIpXck0ZPsDlMWil1gwC
-	fwoTvfkrIZQ/FMtpRY/RWCBeMBCf/Kh7GfuhpKJneIazMVhtkS+A/33GfhBe7J3y9phvqw4Uq70
-	/R79bdclsrov5NDJkswYUDoyxFYxeweCUm2rkhaNlmSyU/Yfi5e0GN0/EJxk4JwvABcaPDzqFaH
-	/zQf1mnWEu7rv2fmzFgUk4HgV45s9wsJQ=
-X-Received: by 2002:ac8:5e49:0:b0:51c:7b12:1202 with SMTP id d75a77b69052e-5213f36fceamr85793061cf.80.1784430031320;
-        Sat, 18 Jul 2026 20:00:31 -0700 (PDT)
-Received: from i4-l-hqh5357-03.ad.psu.edu ([130.203.139.71])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5214f01654fsm44853871cf.19.2026.07.18.20.00.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Jul 2026 20:00:30 -0700 (PDT)
-From: Shuangpeng Bai <shuangpeng.kernel@gmail.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>
-Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	Celeste Liu <uwu@coelacanthus.name>,
-	Kees Cook <kees@kernel.org>,
-	linux-can@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Shuangpeng Bai <shuangpeng.kernel@gmail.com>,
-	stable@vger.kernel.org
-Subject: [PATCH can v2] can: gs_usb: fix hardware timestamp state for mixed channels
-Date: Sat, 18 Jul 2026 23:00:00 -0400
-Message-ID: <20260719030000.3667449-1-shuangpeng.kernel@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260718052815.2507496-1-shuangpeng.kernel@gmail.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DhkyKSx6"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD0CA1F000E9;
+	Sun, 19 Jul 2026 03:13:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1784430830;
+	bh=fu0Ka3ow6eMEOx+FU5Ra73V634z0qwpJOlyI7Ea+nak=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=DhkyKSx696jFg3LDEQ1nb+WieQs3DWM/AbCWOIkiW5IujkUQDoGdmYxaXqU+6xV2R
+	 LSyQnfzN12kp2gn1mqQF1kTMctGs000BKtmnVcqhh4VGkSS/H7//3VbPsZZDyRlmOc
+	 jDC2AoepBTT0PmyQJBp+vIMa7W+g7Z83VC7tj6khDamXIUw+8uIQX2H0g6YLip5V42
+	 QIielxUiV8jj2O3EsKNm0SxORDiMhLiIQ6FcnTzkMnDc0U2BjsilRkrD9NZ4C0WT09
+	 aN2DBUIzyBwJ5LW9LplQ+UQLdOif6x7EW880yujZmVhS7Vs8ApT0KLpwY9BsthUu5i
+	 ougRjPJXWxkzQ==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH can v2] can: gs_usb: fix hardware timestamp state for
+ mixed channels
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Shuangpeng Bai" <shuangpeng.kernel@gmail.com>
+Cc: "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+In-Reply-To: <20260719030000.3667449-1-shuangpeng.kernel@gmail.com>
 References: <20260718052815.2507496-1-shuangpeng.kernel@gmail.com>
+ <20260719030000.3667449-1-shuangpeng.kernel@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Sun, 19 Jul 2026 03:13:49 +0000
+Message-Id: <20260719031349.BD0CA1F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-The hardware timestamp state is shared by struct gs_usb, but gs_can_open()
-and gs_can_close() tie its initialization and teardown to active_channels
-and to the feature bits of the channel being opened or closed.
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+s) to consider:
+- [High] Data race and lock corruption due to unprotected initialization of=
+ shared timestamp lock
+--
 
-This is wrong for mixed-channel devices in both directions. If a
-non-timestamp channel opens first, a later timestamp-capable channel does
-not initialize the shared cyclecounter/timecounter because active_channels
-is already non-zero. Timestamp RX then calls timecounter_cyc2time() with
-parent->tc.cc unset.
+--- Patch [1]: [PATCH can v2] can: gs_usb: fix hardware timestamp state for=
+ mixed channels ---
+commit 5294b98eba495191f8e49a8e183658cbb1702465
+Author: Shuangpeng Bai <shuangpeng.kernel@gmail.com>
 
-Conversely, if a timestamp-capable channel opens first and starts the
-shared delayed work, then closes while a non-timestamp channel remains
-active, disconnect may close the non-timestamp channel last. The old
-teardown check skips gs_usb_timestamp_stop() in that case and frees
-struct gs_usb while the delayed work timer is still queued.
+can: gs_usb: fix hardware timestamp state for mixed channels
 
-Count the number of active timestamp-capable channels. Start the shared
-timestamp worker when the first such channel opens, stop it when the last
-such channel closes, and unwind the count if open fails.
+This patch decouples the hardware timestamp state from active_channels. It
+tracks timestamp-capable channels separately to fix initialization for
+mixed-channel devices.
 
-Fixes: 45dfa45f52e6 ("can: gs_usb: add RX and TX hardware timestamp support")
-Cc: stable@vger.kernel.org
-Suggested-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Signed-off-by: Shuangpeng Bai <shuangpeng.kernel@gmail.com>
----
-Changes in v2:
-- Count active timestamp-capable channels instead of tracking only whether
-  the shared timestamp worker has been started.
-- Stop the shared timestamp worker when the last timestamp-capable channel
-  closes, even if non-timestamp channels remain open.
-- Unwind the timestamp-capable channel count on gs_can_open() failures.
+> diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+> index ec9a7cbbbc696..9cc197803e0d7 100644
+> --- a/drivers/net/can/usb/gs_usb.c
+> +++ b/drivers/net/can/usb/gs_usb.c
+[ ... ]
+> @@ -980,10 +981,13 @@ static int gs_can_open(struct net_device *netdev)
+> =20
+>  	can_rx_offload_enable(&dev->offload);
+> =20
+> -	if (!parent->active_channels) {
+> -		if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
+> +	if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP) {
+> +		if (!parent->active_timestamp_channels)
+>  			gs_usb_timestamp_init(parent);
+> +		parent->active_timestamp_channels++;
+> +	}
+> =20
+> +	if (!parent->active_channels) {
+>  		for (i =3D 0; i < GS_MAX_RX_URBS; i++) {
+>  			u8 *buf;
 
- drivers/net/can/usb/gs_usb.c | 28 ++++++++++++++++++----------
- 1 file changed, 18 insertions(+), 10 deletions(-)
+[Severity: High]
+Can this corrupt the tc_lock spinlock if an RX callback executes concurrent=
+ly?
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index ec9a7cbbbc69..9cc197803e0d 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -337,6 +337,7 @@ struct gs_usb {
- 
- 	unsigned int hf_size_rx;
- 	u8 active_channels;
-+	u8 active_timestamp_channels;
- 	u8 channel_cnt;
- 
- 	unsigned int pipe_in;
-@@ -980,10 +981,13 @@ static int gs_can_open(struct net_device *netdev)
- 
- 	can_rx_offload_enable(&dev->offload);
- 
--	if (!parent->active_channels) {
--		if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
-+	if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP) {
-+		if (!parent->active_timestamp_channels)
- 			gs_usb_timestamp_init(parent);
-+		parent->active_timestamp_channels++;
-+	}
- 
-+	if (!parent->active_channels) {
- 		for (i = 0; i < GS_MAX_RX_URBS; i++) {
- 			u8 *buf;
- 
-@@ -1094,13 +1098,15 @@ static int gs_can_open(struct net_device *netdev)
- out_usb_free_urb:
- 	usb_free_urb(urb);
- out_usb_kill_anchored_urbs:
--	if (!parent->active_channels) {
--		usb_kill_anchored_urbs(&parent->rx_submitted);
--
--		if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
-+	if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP) {
-+		parent->active_timestamp_channels--;
-+		if (!parent->active_timestamp_channels)
- 			gs_usb_timestamp_stop(parent);
- 	}
- 
-+	if (!parent->active_channels)
-+		usb_kill_anchored_urbs(&parent->rx_submitted);
-+
- 	can_rx_offload_disable(&dev->offload);
- 	close_candev(netdev);
- 
-@@ -1152,13 +1158,15 @@ static int gs_can_close(struct net_device *netdev)
- 
- 	/* Stop polling */
- 	parent->active_channels--;
--	if (!parent->active_channels) {
--		usb_kill_anchored_urbs(&parent->rx_submitted);
--
--		if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
-+	if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP) {
-+		parent->active_timestamp_channels--;
-+		if (!parent->active_timestamp_channels)
- 			gs_usb_timestamp_stop(parent);
- 	}
- 
-+	if (!parent->active_channels)
-+		usb_kill_anchored_urbs(&parent->rx_submitted);
-+
- 	/* Stop sending URBs */
- 	usb_kill_anchored_urbs(&dev->tx_submitted);
- 	atomic_set(&dev->active_tx_urbs, 0);
--- 
-2.43.0
+Since gs_usb_timestamp_init() is now called independently of
+!parent->active_channels, it can execute while RX URBs are already polling =
+(if
+a non-timestamp channel was opened first).
+
+gs_usb_timestamp_init() re-initializes the lock and timecounter:
+
+    spin_lock_init(&parent->tc_lock);
+    spin_lock_bh(&parent->tc_lock);
+    timecounter_init(&parent->tc, &parent->cc, ktime_get_real_ns());
+
+If a USB device injects an RX frame during this window, the active RX URB
+completion handler (gs_usb_receive_bulk_callback) can process it. Because
+__dev_open() sets __LINK_STATE_START before calling ndo_open(), the
+netif_running() check in the callback will pass, and
+gs_usb_skb_set_timestamp() could attempt to acquire parent->tc_lock at the
+same time it is being re-initialized.
+
+Is there a way to safely initialize this lock before URBs are active, or
+initialize it only once during device probe?
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260719030000.3667=
+449-1-shuangpeng.kernel@gmail.com?part=3D1
