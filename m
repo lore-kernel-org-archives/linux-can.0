@@ -1,187 +1,255 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5143E42B32D
-	for <linux-can@vger.kernel.org>; Mon, 20 Jul 2026 14:09:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2918D3DCDAB
+	for <linux-can@vger.kernel.org>; Mon, 20 Jul 2026 14:10:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784556588; cv=none; b=iKRwMavdj39lNcaH+o7m9d25gHg6A/Wmb3eTEbffHf/plPG3ixd+3yyQy6Gyl8n70i6sYmb8M3q9DGZCSpAVy/zhwoC7f5MTd13aINOoty+FhvFkpFRkicM/TrIWdmqJoYdwHBQjSSf6pI3UEMTSsKPqbndGSm7c4fENiaN5Thg=
+	t=1784556620; cv=none; b=L4t9lDLEyVdnVYeq8PYY2B/Ov4RLWMvSCSxFaQyGoVvBDTcgXEJAYqGVFpMuOnO3L+wEEogRsMrstwSuB6IANchsDSs97lCGpvhsTki6zFS4+YfHzc/5txvRyuk2wIz7a78EmqOrUAbvaBJq+9xYLeXp3wbS6fTxfcoLE9eX/84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784556588; c=relaxed/simple;
-	bh=Hr7fa9C7cb5+P5d07vx2NB+CpsyiPk8tubQPNDPClZY=;
+	s=arc-20240116; t=1784556620; c=relaxed/simple;
+	bh=HRYedK8UHw5oc/e7jWzLbk6HGMt+cAJzbzT0AVKkSmU=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=DQ+0PTm+XjxETR30CAI71uONMraOiAgzRjeyAPO7uIBZY0Q8LmibdT5HANqg63+IxobKFm46V+t6YVDM3XNDKSjMJvzkoHuZmrwCYE6J2heeuqMQolNoh7NrJVmGsh5iMBwlGbV3MVBSNwMbctPtacrHScJwI7aD3RlSuh2trAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hP50gSrW; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=Fwx/v82ExFZ6scuio3h41Sy4/FXQzxc+hOMtsS3eZTkP5KlhC9x5aWyZtp8Xoa52PO8YAYEwFDYmBZbdWVAU4i1fEgSEUB+lqyP5fSUj0oDmhh+fLt/6HzjOitx0qAWfESQqS5WQLK7hPGhg7yqwVdjEiO0Dv53+3dit9/kx9ic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bYEOijb0; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hP50gSrW"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A91E71F000E9;
-	Mon, 20 Jul 2026 14:09:46 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bYEOijb0"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 753741F000E9;
+	Mon, 20 Jul 2026 14:10:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784556587;
-	bh=Y11dnrOrZlvHdx2ZjfTyJZb7gijNqt7GenSZRlZi68M=;
+	s=k20260515; t=1784556618;
+	bh=1oMH73Ix1Y3EHDcEQ9QnHGtcmCFsBt9aLqoqCl3GgcY=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=hP50gSrWNf9FCZaGbfA7aFffDkGLvFHZJQQrZcWeTpoeuoF8t93EVd0i0CIaWe87T
-	 HL5OkOwoiM9B9YJZ6Bd8j2nDjnvwzsvqhAj/fRckxdn+4Uichsi7q44WIALDvtXFv1
-	 MogmsBd06M3ymWS41oflDYUgj8ZgZM8L+Lbo4+ukSDs1Q1qJXpT0y8+iNTYCkSB+aH
-	 nejD/gO6tbgJTOcJpthsij4WelieNg39aDI+sQL64PBKpx6PFBEN4fw+sPIdF4b0Vj
-	 r3S14gtAIvvxsPL9Qt6XEmnRhTwAsSwVcdEXu5VWpwns5B1UReCSjYObB2951R+84T
-	 4p74hvRqODHlQ==
+	b=bYEOijb0BN1zK5jyArH0N2Um5AjhIf81wg5UGNnhWKy0ihaJbdo3WaHkYpQLcc1UQ
+	 6FxpvZCEwkM68CByrZELzqgz5JqC5GxjvNH9YoGdIGckofipnlGQpPZxsJa5kQaRpe
+	 K5zE1KcxJbWV624nZH8ozzCBg3wVY5YKeJfScXNEvuce3fx6n/4rU1QPnECTEzseIw
+	 SC88Fm5kVeQS+y3XOxBeN8OjfOGyM/73WDJFuEdzJ1JKp+vwAEWWQ40SHvBMn2xnLm
+	 ObA+fcw/DVKR3byWL/Zn8KfulMlPACSZOcYpfUzwG8QBsHlEcgDngCLxHKAGaKV+f0
+	 gwA+kh0dmYC1Q==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v2] can: isotp: fix timer drain order, wakeup handling
- and tx_gen ordering
+Subject: Re: [PATCH can-next 08/13] can: gs_usb: gs_update_state(): convert
+ CAN state handling to can_change_state()
 Reply-To: sashiko-reviews@lists.linux.dev
-To: "Oliver Hartkopp" <socketcan@hartkopp.net>
-Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
+To: "Marc Kleine-Budde" <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
  Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20260720135701.124633-1-socketcan@hartkopp.net>
-References: <20260720135701.124633-1-socketcan@hartkopp.net>
+In-Reply-To: <20260720-gs_usb-new-features-v1-8-427a8013c380@pengutronix.de>
+References: <20260720-gs_usb-new-features-v1-0-427a8013c380@pengutronix.de>
+ <20260720-gs_usb-new-features-v1-8-427a8013c380@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Mon, 20 Jul 2026 14:09:46 +0000
-Message-Id: <20260720140946.A91E71F000E9@smtp.kernel.org>
+Date: Mon, 20 Jul 2026 14:10:18 +0000
+Message-Id: <20260720141018.753741F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
-Thank you for your contribution! Sashiko AI review found 2 potential issue(=
+Thank you for your contribution! Sashiko AI review found 6 potential issue(=
 s) to consider:
 
+New issues:
+- [High] The CAN_ERR_RESTARTED flag is unconditionally stripped from cf->ca=
+n_id before being evaluated, completely ignoring firmware-signaled restart =
+events.
+- [High] CAN_ERR_RESTARTED frames are incorrectly dropped by gs_usb_should_=
+handle_can_error() if they do not coincide with a CAN state change.
+- [High] Dropping redundant CAN error frames silently bypasses the hardware=
+-level RX overflow check and offload irq finish.
+- [Medium] Early return in gs_update_state() leaves CAN_ERR_CRTL cleared, h=
+iding RX/TX overflow errors from userspace.
+- [Medium] Parsing CAN error states directly from the USB host frame reads =
+uninitialized memory if the device sends a short error frame.
+
 Pre-existing issues:
-- [High] A stale local echo from an interrupted transfer can prematurely co=
-mplete a new transfer if their first 3 payload bytes match.
-- [Medium] Missing READ_ONCE()/WRITE_ONCE() for lock-free accesses to `so->=
-cfecho` causes data races.
+- [High] Failing to allocate an SKB causes the driver to return directly wi=
+thout resubmitting the URB, starving the RX pipeline.
 --
 
---- Patch [1]: [PATCH v2] can: isotp: fix timer drain order, wakeup handlin=
-g and tx_gen ordering ---
-commit f9db7885e3deec5f74c17326758f7a0025ece72d
-Author: Oliver Hartkopp <socketcan@hartkopp.net>
+--- Patch [8]: [PATCH can-next 08/13] can: gs_usb: gs_update_state(): conve=
+rt CAN state handling to can_change_state() ---
+commit 0f07f8fda15070cb595e00084e739e3a1240c93b
+Author: Marc Kleine-Budde <mkl@pengutronix.de>
 
-can: isotp: fix timer drain order, wakeup handling and tx_gen ordering
-   =20
-This patch is a follow-up to commit cf070fe33bfb ("can: isotp: serialize
-TX state transitions under so->rx_lock") which addresses following
-sashiko-bot findings:
+can: gs_usb: gs_update_state(): convert CAN state handling to can_change_st=
+ate()
 
-[ ... ]
+The gs_usb compatible firmware signals CAN state changes via CAN error
+frames to the kernel. This commit converts the driver to make use of the
+can_change_state() helper. It also implements functions to extract CAN
+state and drop redundant CAN state error frames.
 
-> diff --git a/net/can/isotp.c b/net/can/isotp.c
-> index 54becaf6898f1..ff6299f5c4a0b 100644
-> --- a/net/can/isotp.c
-> +++ b/net/can/isotp.c
-> @@ -899,32 +901,32 @@ static void isotp_rcv_echo(struct sk_buff *skb, voi=
-d *data)
->  	spin_lock(&so->rx_lock);
+> diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+> index 473f125e20d8a..e41f91b56ab82 100644
+> --- a/drivers/net/can/usb/gs_usb.c
+> +++ b/drivers/net/can/usb/gs_usb.c
+> @@ -529,29 +529,31 @@ static void gs_usb_timestamp_stop(struct gs_usb *pa=
+rent)
+>  	cancel_delayed_work_sync(&parent->timestamp);
+>  }
 > =20
->  	/* so->cfecho may since belong to a new transfer; recheck under lock */
-> -	if (so->cfecho !=3D *(u32 *)cf->data)
-> +	if (READ_ONCE(so->cfecho) !=3D *(u32 *)cf->data)
->  		goto out_unlock;
-
-[Severity: High]
-This is a pre-existing issue, but can a stale local echo prematurely comple=
-te
-a new transfer if their first 4 payload bytes match?
-
-If a transmission (SF or CF-broadcast) is interrupted by a signal,
-isotp_sendmsg() cancels timers, sets the state to IDLE, and returns, leaving
-a pending loopback echo in the network queue.=20
-
-If the user immediately retries sendmsg with the exact same payload, won't
-this stale echo be processed by isotp_rcv_echo() and match the new so->cfec=
-ho
-tag, since the tag is derived solely from the first 4 bytes of the CAN fram=
-e?
-
-This seems like it could cause the sender to falsely believe the transfer is
-complete while it may still be in progress, violating the
-CAN_ISOTP_WAIT_TX_DONE guarantee.
-
+> -static void gs_update_state(struct gs_can *dev, struct can_frame *cf)
+> +static void gs_update_state(struct gs_can *dev, struct can_frame *cf,
+> +			    enum can_state tx_state, enum can_state rx_state)
+>  {
+>  	struct can_device_stats *can_stats =3D &dev->can.can_stats;
 > =20
->  	/* cancel local echo timeout */
->  	hrtimer_cancel(&so->echotimer);
-> =20
->  	/* local echo skb with consecutive frame has been consumed */
-> -	so->cfecho =3D 0;
-> +	WRITE_ONCE(so->cfecho, 0);
-
-[ ... ]
-
-> @@ -1046,29 +1052,32 @@ static int isotp_sendmsg(struct socket *sock, str=
-uct msghdr *msg, size_t size)
->  		if (msg->msg_flags & MSG_DONTWAIT)
->  			return -EAGAIN;
-> =20
-> -		if (so->tx.state =3D=3D ISOTP_SHUTDOWN)
-> +		if (READ_ONCE(so->tx.state) =3D=3D ISOTP_SHUTDOWN)
->  			return -EADDRNOTAVAIL;
-> =20
->  		/* wait for complete transmission of current pdu */
->  		err =3D wait_event_interruptible(so->wait,
-> -					       so->tx.state =3D=3D ISOTP_IDLE);
-> +					       READ_ONCE(so->tx.state) =3D=3D ISOTP_IDLE ||
-> +					       READ_ONCE(so->tx.state) =3D=3D ISOTP_SHUTDOWN);
->  		if (err)
->  			return err;
->  	}
-> =20
-> -	/* new transfer: bump so->tx_gen and drain the old one's timers,
-> -	 * still under the so->rx_lock we just claimed the socket with
-> -	 */
-> -	WRITE_ONCE(so->tx.state, ISOTP_SENDING);
-> -	WRITE_ONCE(so->tx_gen, READ_ONCE(so->tx_gen) + 1);
-> +	/* txfrtimer's callback re-arms echotimer lock-free: drain it first */
-> +	hrtimer_cancel(&so->txfrtimer);
->  	hrtimer_cancel(&so->txtimer);
->  	hrtimer_cancel(&so->echotimer);
-> -	hrtimer_cancel(&so->txfrtimer);
-> -	so->cfecho =3D 0;
+> -	if (cf->can_id & CAN_ERR_RESTARTED) {
+> -		dev->can.state =3D CAN_STATE_ERROR_ACTIVE;
+> +	/* clear CAN state information, will be set consistently by can_change_=
+state() below */
+> +	cf->can_id &=3D ~(CAN_ERR_CRTL | CAN_ERR_BUSOFF | CAN_ERR_RESTARTED);
+> +	cf->data[1] &=3D ~(CAN_ERR_CRTL_RX_WARNING | CAN_ERR_CRTL_TX_WARNING |
+> +			 CAN_ERR_CRTL_RX_PASSIVE | CAN_ERR_CRTL_TX_PASSIVE |
+> +			 CAN_ERR_CRTL_ACTIVE);
 > +
-> +	/* new transfer: increment so->tx_gen and set tx.state after barrier */
-> +	my_gen =3D READ_ONCE(so->tx_gen) + 1;
-> +	WRITE_ONCE(so->tx_gen, my_gen);
-> +	smp_wmb(); /* pairs with the cmpxchg() in isotp_tx_timeout() */
-> +	WRITE_ONCE(so->tx.state, ISOTP_SENDING);
-> +	WRITE_ONCE(so->cfecho, 0);
+> +	const enum can_state new_state =3D max(rx_state, tx_state);
+> +
+> +	if (new_state =3D=3D dev->can.state)
+> +		return;
 
 [Severity: Medium]
-This is a pre-existing issue, but does this miss some READ_ONCE() and
-WRITE_ONCE() annotations for lock-free accesses to so->cfecho in
-isotp_sendmsg() and isotp_bind()?
+Does returning early here hide RX/TX overflow errors from userspace? Since
+CAN_ERR_CRTL is cleared from cf->can_id just above, if there is no state
+change but data[1] contains an overflow error (like CAN_ERR_CRTL_RX_OVERFLO=
+W),
+the frame goes to userspace without the CAN_ERR_CRTL bit set, causing
+userspace to silently ignore the valid error flags.
 
-While the patch aligns many accesses, isotp_sendmsg() sets the transmission
-state to ISOTP_SENDING before so->cfecho is initialized and written for
-SF-mode and CF-broadcast. Because the state is already ISOTP_SENDING, a
-concurrently arriving stale echo can trigger isotp_rcv_echo(), which reads
-so->cfecho via READ_ONCE().=20
+> +
+> +	/* some firmware does automatically CAN bus off recovery, account for t=
+his */
+> +	if (cf->can_id & CAN_ERR_RESTARTED ||
 
-However, isotp_sendmsg() still performs plain reads and writes later in the
-function:
+[Severity: High]
+Will this check for CAN_ERR_RESTARTED ever evaluate to true? The
+CAN_ERR_RESTARTED flag is unconditionally cleared from cf->can_id at the st=
+art
+of this function, so it appears this will silently ignore firmware-signaled
+restart events.
 
-    if (so->cfecho)
-        pr_notice_once("can-isotp: uninit cfecho %08X\n", so->cfecho);
+> +	    (dev->can.state =3D=3D CAN_STATE_BUS_OFF && new_state < CAN_STATE_B=
+US_OFF)) {
+>  		can_stats->restarts++;
 
-    /* ... */
-    so->cfecho =3D *(u32 *)cf->data;
+[ ... ]
 
-Similarly, isotp_bind() performs a plain write to so->cfecho =3D 0; while
-isotp_rcv_echo() could still be processing an in-flight echo.=20
+> +static void
+> +gs_usb_state_get_by_hf(const struct gs_can *dev, const struct gs_host_fr=
+ame *hf,
+> +		       enum can_state *tx_state_p, enum can_state *rx_state_p)
+> +{
+> +	enum can_state tx_state, rx_state;
+> +
+> +	/* extract CAN state from frame */
+> +	if (hf->can_id & cpu_to_le32(CAN_ERR_CRTL | CAN_ERR_BUSOFF)) {
+> +		const u8 err_crtl =3D hf->classic_can->data[1];
 
-Could this lead to data races or torn reads?
+[Severity: Medium]
+Could this read uninitialized memory if the device sends a short error fram=
+e?
+If the USB device sends an error frame with a payload smaller than 2 bytes,
+this unconditionally reads from the URB buffer, which might contain stale d=
+ata
+from previous USB transfers.
 
->  	spin_unlock_bh(&so->rx_lock);
+> +
+> +		if (hf->can_id & cpu_to_le32(CAN_ERR_BUSOFF)) {
+> +			tx_state =3D CAN_STATE_BUS_OFF;
+
+[ ... ]
+
+> +static bool
+> +gs_usb_should_handle_can_error(const struct gs_can *dev, const struct gs=
+_host_frame *hf,
+> +			       enum can_state *tx_state_p, enum can_state *rx_state_p)
+> +{
+> +	gs_usb_state_get_by_hf(dev, hf, tx_state_p, rx_state_p);
+> +
+> +	/* If the CAN error counters are not 0, some firmware repeatedly send C=
+AN state error
+> +	 * frames, even if the CAN state does not change. Handle changed CAN st=
+ates.
+> +	 */
+> +	const enum can_state new_state =3D max(*tx_state_p, *rx_state_p);
+> +
+> +	if (new_state !=3D dev->can.state)
+> +		return true;
+> +
+> +	/* handle RX and TX overflow */
+> +	const u8 err_crtl =3D hf->classic_can->data[1];
+> +
+> +	if ((hf->can_id & cpu_to_le32(CAN_ERR_CRTL)) &&
+> +	    err_crtl & (CAN_ERR_CRTL_RX_OVERFLOW | CAN_ERR_CRTL_TX_OVERFLOW))
+> +		return true;
+> +
+> +	/* handle TX timeout */
+> +	if (hf->can_id & cpu_to_le32(CAN_ERR_TX_TIMEOUT))
+> +		return true;
+> +
+> +	/* handle CAN bus errors */
+> +	if (hf->can_id & cpu_to_le32(CAN_ERR_LOSTARB | CAN_ERR_PROT | CAN_ERR_T=
+RX | CAN_ERR_ACK))
+> +		return true;
+> +
+> +	return false;
+
+[Severity: High]
+Are CAN_ERR_RESTARTED frames mistakenly dropped here? If a frame has
+CAN_ERR_RESTARTED set but no state change, it falls through to this point.
+Since CAN_ERR_RESTARTED is absent from the hardcoded list of accepted error
+flags, it seems these frames will be discarded entirely.
+
+> +}
+> +
+>  static void gs_usb_receive_bulk_callback(struct urb *urb)
+>  {
+
+[ ... ]
+
+> @@ -719,8 +790,13 @@ static void gs_usb_receive_bulk_callback(struct urb =
+*urb)
 > =20
->  	/* so->bound is only checked once above - a wakeup may have
-> -	 * unbound/rebound the socket meanwhile, so re-validate it
-> +	 * unbound/rebound the socket meanwhile =3D> recheck
->  	 */
->  	if (!so->bound) {
->  		err =3D -EADDRNOTAVAIL;
+>  			memcpy(cfd->data, hf->canfd->data, data_length);
+>  		} else {
+> +			enum can_state tx_state, rx_state;
+>  			struct can_frame *cf;
+> =20
+> +			if (hf->can_id & cpu_to_le32(CAN_ERR_FLAG) &&
+> +			    !gs_usb_should_handle_can_error(dev, hf, &tx_state, &rx_state))
+> +				goto resubmit_urb;
+
+[Severity: High]
+Does jumping to resubmit_urb here bypass the hardware RX overflow checks? T=
+he
+check for hf->flags & GS_CAN_FLAG_OVERFLOW and the call to
+can_rx_offload_irq_finish() happen later in this function, so dropping
+redundant CAN error frames this way appears to silently lose piggybacked
+hardware overflow events and delay offload processing.
+
+> +
+>  			skb =3D alloc_can_skb(netdev, &cf);
+>  			if (!skb)
+>  				return;
+
+[Severity: High]
+This isn't a bug introduced by this patch, but doesn't an early return here
+leak the URB structure? If alloc_can_skb() fails to allocate memory, the
+driver executes an immediate return instead of resubmitting the URB. This
+bypasses usb_submit_urb() and depletes the active RX URB pool, which could
+permanently stall the RX pipeline.
+
+> @@ -732,7 +808,7 @@ static void gs_usb_receive_bulk_callback(struct urb *=
+urb)
+> =20
+>  			/* ERROR frames tell us information about the controller */
+>  			if (le32_to_cpu(hf->can_id) & CAN_ERR_FLAG)
+> -				gs_update_state(dev, cf);
+> +				gs_update_state(dev, cf, tx_state, rx_state);
+>  		}
 
 --=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260720135701.1246=
-33-1-socketcan@hartkopp.net?part=3D1
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260720-gs_usb-new=
+-features-v1-0-427a8013c380@pengutronix.de?part=3D8
