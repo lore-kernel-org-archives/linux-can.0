@@ -1,141 +1,95 @@
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35CA23B5820
-	for <linux-can@vger.kernel.org>; Mon, 20 Jul 2026 13:43:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 434603C4B8D;
+	Mon, 20 Jul 2026 13:48:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784555002; cv=none; b=nnbg5EW9d8hE05N64IKzcw720hKuq0T83aVPdyERcyErotdM9P9RPj9zpQ6msz45uuhona/Yi3dXpAcJqL8334nenFacJQ8+ETvXlFmAmbKgmWHLNhN0us6j3lVHTqX5jif4nERJlTy1Ri/uGkAs3vviMB2UIof7IqQHZ+Hh/2c=
+	t=1784555314; cv=none; b=iidTcMiYV0c5oXDQOmFz4deqkR2hKJ095+pqDkFl/QXHbepAqs2FAj9mE84n51nDdZKVr03fQZIt34Qdo+pws0+wTu16UJvnvh5DWwG/LjnS2qn2nhuj6X+DpDZJryjK31aS6a3EDXYiUqqNuyr4Mm2DR8IiH01gwl0FFAV2xy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784555002; c=relaxed/simple;
-	bh=zmBJ/0A84g3rungkV5GDtUzaTyuvksj0gerDJWlqPf4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LIUQlYXo16EpCFseuAhTadMnMeDNaMZCX5mr/MxJcRCd+ZC33MYOHI8sSjvdpLcykPKgSdiM1kFKDNF61+k5I016Y6XQ/kFgE01mC/DHo9o2NAr7wds5Q4BSRY1TNeOyp7itwgLecmVxAoerAb3OC+3QjVBLmyYzISdkMHD+MPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=VKYXOJaV; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="VKYXOJaV"
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-49558ce01afso11956685e9.1
-        for <linux-can@vger.kernel.org>; Mon, 20 Jul 2026 06:43:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre.com; s=google; t=1784554991; x=1785159791; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=zmBJ/0A84g3rungkV5GDtUzaTyuvksj0gerDJWlqPf4=;
-        b=VKYXOJaVwdS5a7a7y6wBBKng3z/GnWsWuT2JM1MfuuAMLeAxGdBHSBCenrxfPufAF1
-         GqAEHI/WxWcA596B5Nv7+cqksIzfsrmT/ZZEqHLM3XZVgQa4XN5WFIh4ixNZX9u2QaOH
-         ydBjJ2EEUUCu/N43q5U1B2XW8wst8vR6EMidnNp6P+RbFJ+4cu4m8+ArRva3K1XF3DxE
-         M8MmtNpQu7KorhGx6QINqnrQUiKkgpLXdg5FZxEbpoyzRwdHQhWhIUTvcO/LkvA2p+V/
-         8vgFaCDDYdDTCC941DdsPdKJsVbaPUt3iNXY64T3DMqvotyHcenbPO5UeeXKXHp35CaS
-         QXUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784554991; x=1785159791;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=zmBJ/0A84g3rungkV5GDtUzaTyuvksj0gerDJWlqPf4=;
-        b=lh9UfCqsuIm8/TVjCEAbPBSLk4zct3nVcu+qcwccXwS8f9uc4ZgEGMAvq6udViYSEF
-         tzaujS3N5gFDBuz7RwrjL1c7zrq9zCvSCtGhUzt71Y++wARwBe4iFbI/qUHCn04UFtyi
-         0OBsHxEOEKIfjz0XibYupG5dFmaZcRKlM2OT7BVfyMqRkeQ6+rnTOoTGdC3Yy4mymVkB
-         cXSIYJQli+XwQubScyY+vUm2cwCwRai3QSpM5pyqDZXYvImlZDAnOaDcNQ7T8wU1HNzT
-         fdGPU1Wwwlkg4Jbb5fYMMWEJ7v/gj0zLjDBhWoSr2leWibcEpox2VvViIQWXKj9PsVf9
-         VDmg==
-X-Forwarded-Encrypted: i=1; AHgh+RrNCUiW5rv7QqLmNfVcSyY/N+fgPqtNbmalkBTyvKJ9r0k3/745PEGZIhccfFLpdaAUm6EQoZZooKU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxUm4TaBi7Cu07SiEFtR75yqXdX5zDdpg9HJTAa9XXzMMwSuAFf
-	g7MZQdabQSQw+LhGTcKsMpFJd825Z4CrsHjrM4ewTxs3GbswXQb2S+6x061e/muG3HdbWNml3PK
-	bYQrp
-X-Gm-Gg: AfdE7cn/CIi0uBTfRudgAhSxgerb8pLdc805ug58QmORxkssWt+udJ1DLPedlqBK6ew
-	NfUY6hS9+Suavz9VRiOE8YHSopd5iQrQH9y20lHYBDcSlQmN+0L8MTjPLe2VhHALAxGL7/DL99O
-	soHAZdee5fKZDi5EZcv/ggU/1FgMY9BoUchowmSDWwq+Z8gVYhYIlfwuYE2v9mIh0nXbrHJeKb+
-	vu9OEz7PsePj93c3447vnxqRWi7rTs9jK3VC+gxUuJlGJujJ+TwhdOZKMSogqg+u+S8oDengOdh
-	hwa/B3ONT83d+jQnL+qIWi8oZQ2XxrPu35whXIH7TVeWi2s0LqE753Y2196Llt2hzuBXJ645FCi
-	nLhO4h3uDTIq63ymZkOzSNFEKSMr3uBcTJ9VGatIDnjv/WhLFWHXHcz14i9Q1ehfmADfF0IwTIt
-	M/EgubTGnqwyssIadT6Es94TsqSZ0t5BOW3JVFWXvpAw+HQj2HV/23qCww6uUopHt3yg==
-X-Received: by 2002:a05:600c:4685:b0:495:3f99:849c with SMTP id 5b1f17b1804b1-4954a3f48ebmr182901205e9.15.1784554989689;
-        Mon, 20 Jul 2026 06:43:09 -0700 (PDT)
-Received: from localhost (p200300f65f47db048587886ecb5b26b2.dip0.t-ipconnect.de. [2003:f6:5f47:db04:8587:886e:cb5b:26b2])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-4954a2e83ddsm273264985e9.10.2026.07.20.06.43.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2026 06:43:08 -0700 (PDT)
-Date: Mon, 20 Jul 2026 15:43:07 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig_=28The_Capable_Hub=29?= <u.kleine-koenig@baylibre.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, 
-	Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>
-Cc: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>, 
-	linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH net] can: flexcan: Fix probing for m68k/coldfire
-Message-ID: <al4lxVud4_6NTZQG@monoceros>
-References: <20260618140147.142489-2-u.kleine-koenig@baylibre.com>
- <akfoYuyHMAxIfalD@monoceros>
+	s=arc-20240116; t=1784555314; c=relaxed/simple;
+	bh=678Zr/WIWFbbaCsHD037iimVE7jfgcIpGLsxityWbN0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Cpy48LMoFw77de9OF8TldFqIMd9ddc4nE2fDkI/Yia0F65yGHESSOrbDD28Fau4+W4Vo1dWM7t+6oV6HrxiF/7S13FnMPt8NpmCpDpZkimuYo5Roh378eKp6XMCm+0WdZH+HkSMUG1WYsv/GDEFHZeVw7ppNnDLOSaZKU6d0baM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id ADA9E2028C9;
+	Mon, 20 Jul 2026 15:48:25 +0200 (CEST)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1wloM5-000PmR-1z;
+	Mon, 20 Jul 2026 15:48:25 +0200
+Received: from hardanger.blackshift.org (unknown [IPv6:2001:678:ed0:ff00::a])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 1841D56E51D;
+	Mon, 20 Jul 2026 13:48:25 +0000 (UTC)
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH can-next 00/13] can: gs_usb: implement new features
+ recently added to candleLight firmware
+Date: Mon, 20 Jul 2026 15:48:01 +0200
+Message-Id: <20260720-gs_usb-new-features-v1-0-427a8013c380@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="7gz5gbihnzriqixc"
-Content-Disposition: inline
-In-Reply-To: <akfoYuyHMAxIfalD@monoceros>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yWM0QrCMBAEf6XcswdNLUb9FRFJ0m09H6LkElso/
+ XejPg67MyspkkDp3KyU8BaVZ6xgdg2Fu4sTWIbK1LXdobXmyJPeinqOmHmEyyVB2SGYYe+tPZm
+ eqvlKGGX5VS8UXKzvJdP1v2jxD4T8jdK2fQDwkAywgQAAAA==
+X-Change-ID: 20260718-gs_usb-new-features-aec1d3b77914
+To: Vincent Mailhol <mailhol@kernel.org>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1668; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=678Zr/WIWFbbaCsHD037iimVE7jfgcIpGLsxityWbN0=;
+ b=owGbwMvMwCV2xirl17qZay8xnlZLYsiKUxe9s1Mqos7lZt0fbtOGu2FJ33n5ps9ROcM0q3BK+
+ YEXC3pzO0pZGMS4GGTFFFmW/jihKBDoUNr7MmESzBxWJpAhDFycAjAR4Q5Ghi9qixQc3s07f0Te
+ fWvZ98rHqyff6vw2yf3e5byQ6ap6rasZGc5VLd/RM2fnj5iguaYGhg3ngqcs+Ohss7Vh09tty4y
+ n3GAHAA==
+X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
+ fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 
+The candleLight firmware was updated to include support for Transceiver
+Delay Compensation (TDC) configuration and CAN bus off recovery. This
+series adds supports for this.
 
---7gz5gbihnzriqixc
-Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH net] can: flexcan: Fix probing for m68k/coldfire
-MIME-Version: 1.0
+Link: https://github.com/candle-usb/candleLight_fw/pull/317
+Link: https://github.com/candle-usb/candleLight_fw/pull/318
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+Marc Kleine-Budde (13):
+      can: gs_usb: remove unused define GS_CAN_MODE_NORMAL
+      can: gs_usb: replace all GS_CAN_MODE_* by GS_CAN_FEATURE_*
+      can: gs_usb: update USB protocol definitions contributed by Elmue firmware
+      can: gs_usb: document GS_CAN_FEATURE_FILTER
+      can: gs_usb: gs_make_candev(): reduce scope of variable bt_const_extended
+      can: gs_usb: gs_make_candev(): sort evaluation of device features
+      can: gs_usb: gs_usb_receive_bulk_callback(): reduce scope of several variables
+      can: gs_usb: gs_update_state(): convert CAN state handling to can_change_state()
+      can: gs_usb: gs_usb_state_get_by_hf(): optionally print recived CAN error frames
+      can: gs_usb: gs_update_state(): set CAN_ERR_CNT if device sends CAN error counters
+      can: gs_usb: implement CAN_CTRLMODE_BERR_REPORTING for devices without native support
+      can: gs_usb: implement Transceiver Delay Compensation
+      can: gs_usb: implement CAN bus off recovery
 
-Hello,
+ drivers/net/can/usb/gs_usb.c | 441 +++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 365 insertions(+), 76 deletions(-)
+---
+base-commit: 298bb2b8903323f6ef2eab4819a2e477765f0ff1
+change-id: 20260718-gs_usb-new-features-aec1d3b77914
 
-On Fri, Jul 03, 2026 at 06:53:16PM +0200, Uwe Kleine-K=F6nig (The Capable H=
-ub) wrote:
-> On Thu, Jun 18, 2026 at 04:01:47PM +0200, Uwe Kleine-K=F6nig (The Capable=
- Hub) wrote:
-> > When determining the device details was reworked in commit 5e6c3454b405
-> > ("net: can: Use device_get_match_data()") there was no replacement for
-> > the previous handling of non-of instantiated devices via the device's
-> > id_entry which then results in a NULL pointer exception. The only
-> > in-tree provider of such a device is arch/m68k/coldfire/device.c.
-> >=20
-> > Given the id_table only contains a single entry just hardcode the result
-> > of `platform_get_device_id(pdev)->driver_data` and drop the unused
-> > assignment to .driver_data from the table.
-> >=20
-> > While touching the id table, drop the unusual comma after the terminator
-> > entry.
-> >=20
-> > Fixes: 5e6c3454b405 ("net: can: Use device_get_match_data()")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Uwe Kleine-K=F6nig (The Capable Hub) <u.kleine-koenig@ba=
-ylibre.com>
->=20
-> Given this fixes a crash (NULL pointer exception), it would be great to
-> get this applied. The issue is already old (Sept 2023, v6.8-rc1), so
-> there is probably no urge to get this in before 7.2, but getting it into
-> next and then 7.3-rc1 would be good.
+Best regards,
+--  
+Marc Kleine-Budde <mkl@pengutronix.de>
 
-This still stands. Marc, do you have this patch still on your radar?
-
-Best regards
-Uwe
-
---7gz5gbihnzriqixc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmpeJegACgkQj4D7WH0S
-/k48MAf8CwYvCoFTxvTNVmeMwQ+UhSiB1fZhEmppRaXZ2vbqFGkPOjgM+F0G4QFS
-Y/GxMzMygtEeCe/rv2ucw5+rB0pWJE7hoCmCsClXHTsMKzb8MPxZxVypHSVoRMlj
-MVC+5Y0r/9ZrfW5W5iFV5Y43SzmDutjkvF8mbFI/1Zrs3n6/nH3mxNRjGL/1A5CA
-oA0bOtkd6lOHVyU4s/lZFfji4Tg3Q0X9Fgs3tmA/5Ev82QhVnW3spANA/U7x9jhM
-OzBD9sDszUbJFf0GdA3DG7jZ3dsePRePy7EfPs+rT1QHbxiLjFTcAY/CyyH07MMj
-RgTX4AWpQlxwcMSuOeP7UvJmtyGjxQ==
-=sovE
------END PGP SIGNATURE-----
-
---7gz5gbihnzriqixc--
