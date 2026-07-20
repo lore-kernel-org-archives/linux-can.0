@@ -1,135 +1,111 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0A9B3B5DED
-	for <linux-can@vger.kernel.org>; Mon, 20 Jul 2026 14:19:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 834CA42B30D
+	for <linux-can@vger.kernel.org>; Mon, 20 Jul 2026 14:28:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784557177; cv=none; b=rMdxvekww0Qry992N+S9IDQ0benBuvHaDvgVw8wwt3XcfWOkHwBo0Jt6CPGsXH5CRDZNbDwKtITe3yzqHEL7EaDGhTxeVgXJJrQZhVwoRuBvmlC4y0CRdT5z/fpqtGp07d9UQ1Avm7TgNDv0eITEFCnsL/6pZlp084XnhhMBSwA=
+	t=1784557713; cv=none; b=s8YNREbXC3Za193OmSFAlm5JSwI/VWcVHD1rK8l6BHqFubN1nXEYYJ6njWk1B1tJZAaz4y3LvypegciM6W+m1e534PKe4PwGBos+0XCHqgwVcMsLF7U6oP+3MjvaQclDE1pTV8Z5C2P6+4AcV7ZzBlshIwIdK5L91UzRdrRH92c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784557177; c=relaxed/simple;
-	bh=WcTPqq0RfSrAzC6GAsw+Lwf3URyT0VLBs+3YuB0yu+g=;
+	s=arc-20240116; t=1784557713; c=relaxed/simple;
+	bh=vIgjC1R1im03YPHX9UXxHQ1SllpnnPn7w0sHGnY32hw=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=hEjbfD0jJNzFqq/W8uITn6gYajB+K+AlUzsarXjtPKgr+0wNInloVcHcsGUea2MDw/CtZME+H1IcXqrhwRDfWrqLGRDh7bMUU8IpN88EbUvzzlgvAu0OtDabq20PGfio4u9LVlJJaMwaZiOM4wW9OPODLwUjY60cTETbsC8GeUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B9SPVapA; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=szaS2YzX92Xr4vdRDUjgM8VKumacF4tENHRH7k7C2259Nb2PG3o+qALMLR1TakrAHWYjGst23yXeqotHf+U0kYvEPo2F4hWzq9d7xF11mA4Rwcspu9RPYFKrifQU/v+VJuVvZxD1rPjclAnUu5wu97L6c73ZWHBWl8jiFPBKHdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ok85aKqF; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B9SPVapA"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8827E1F000E9;
-	Mon, 20 Jul 2026 14:19:35 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ok85aKqF"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B766D1F000E9;
+	Mon, 20 Jul 2026 14:28:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784557175;
-	bh=zHshlMYkJP0GVe/CfEw36HPMktx5j1KOsndPWi5vGtM=;
+	s=k20260515; t=1784557712;
+	bh=YVQMxXs3QGvFi4c9rmi4SS3xblcBtXl/MorE/MTWO1w=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=B9SPVapAuBqTrshPrfPEfxFLaIChp/g6EXlkH00hB11H8aPdK1aGgHU+csUgEeQan
-	 3SztQgzkOBrwRWf7lyzL3AOaiJNCickH4OUrFv1RWaMmSdd5P7QIk4GVgLx3YkjzKp
-	 /Y8gdaYZk2kIXwzNEUz8EE4K9q1C9zwTN33jGP/Cn+XCsuQ5weV732AvjhE1utlXZs
-	 lOajVNq9rg1rXpC0WTYvaQLGiKyKlWB9V5ImyD5WaCRO4YFW+TCO9SiLMb0S6s2ERD
-	 OYQbaRGIIJsIqD6upbjXstq22Urs+Vd80Vr8Ab7zQwfrfpAUUfg4eb6hvX/tcxiZIs
-	 YmLmheIn0eseQ==
+	b=Ok85aKqFbXyrVLMk5EZmSvkO1aOsecj77wKt4TQU7xmkK+MSFmTiU1iATBqy5/D61
+	 gB90IO0dIv5qvVrBCQ5PXLvGixzb1PCJKkI9BSwPeP++4yOquRrNsoh/S9wxMryX67
+	 4FStE8aVOLMsi36pTEbiWRAd/wOyRJ06CEfX/WPpNQ6kyizt4b55fDxmYnEGqoS/x0
+	 ApmJJMgfwa1Iq082L9AwiQwZSdLKZyAgy1gCGQ3kQYZrfEpV5E5FFGyNwKn3VboVgp
+	 yEBHyeK4UgBcoPkUrws8v0cdUsi55t4ygmdgjJu5wEQsb0IDNnj3zO0i1RqRJsM6rT
+	 CWc8OWcCDCPsQ==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH can-next 11/13] can: gs_usb: implement
- CAN_CTRLMODE_BERR_REPORTING for devices without native support
+Subject: Re: [PATCH can-next 13/13] can: gs_usb: implement CAN bus off
+ recovery
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Marc Kleine-Budde" <mkl@pengutronix.de>
-Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Vincent
- Mailhol" <mailhol@kernel.org>, "Oliver Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-In-Reply-To: <20260720-gs_usb-new-features-v1-11-427a8013c380@pengutronix.de>
+Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Marc Kleine-Budde" <mkl@pengutronix.de>
+In-Reply-To: <20260720-gs_usb-new-features-v1-13-427a8013c380@pengutronix.de>
 References: <20260720-gs_usb-new-features-v1-0-427a8013c380@pengutronix.de>
- <20260720-gs_usb-new-features-v1-11-427a8013c380@pengutronix.de>
+ <20260720-gs_usb-new-features-v1-13-427a8013c380@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Mon, 20 Jul 2026 14:19:34 +0000
-Message-Id: <20260720141935.8827E1F000E9@smtp.kernel.org>
+Date: Mon, 20 Jul 2026 14:28:31 +0000
+Message-Id: <20260720142831.B766D1F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
-Thank you for your contribution! Sashiko AI review found 4 potential issue(=
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
-
-New issues:
-- [High] Out-of-bounds read and use of uninitialized heap memory when proce=
-ssing CAN error frames with missing data payload.
-- [High] The CAN error filtering logic silently drops CAN_ERR_RESTARTED fra=
-mes if they lack a state change flag.
-- [Medium] The new CAN error filtering logic drops hardware RX overflow eve=
-nts by bypassing the overflow check.
-
-Pre-existing issues:
-- [High] Failing to allocate an SKB drops the USB RX URB permanently, event=
-ually halting reception.
+- [Medium] The CAN_ERR_RESTARTED bit check in gs_update_state() is always f=
+alse because the bit is unconditionally cleared at the beginning of the fun=
+ction.
 --
 
---- Patch [11]: [PATCH can-next 11/13] can: gs_usb: implement CAN_CTRLMODE_=
-BERR_REPORTING for devices without native support ---
-commit 53e85c22d303a201e9d9f47a5e3240bd4a9af629
+--- Patch [13]: [PATCH can-next 13/13] can: gs_usb: implement CAN bus off r=
+ecovery ---
+commit 7b5dd8a47b695ccb806d9d65e91f427368f07215
 Author: Marc Kleine-Budde <mkl@pengutronix.de>
 
-can: gs_usb: implement CAN_CTRLMODE_BERR_REPORTING for devices without nati=
-ve support
+can: gs_usb: implement CAN bus off recovery
 
-This commit implements software filtering for CAN bus errors when hardware
-support for disabling bus error reporting is unavailable. It adds a check in
-the bulk receive callback to drop bus error frames if reporting is disabled,
-while still processing CAN state changes. It also unconditionally advertises
-bus error reporting support in ctrlmode_supported.
+This patch implements manual CAN bus off recovery for gs_usb devices that
+support the GS_CAN_FEATURE_BUS_OFF_RECOVERY feature. It allows the USB host
+to control bus off recovery instead of relying on the hardware's automatic
+recovery.
 
-Link: https://github.com/candle-usb/candleLight_fw/pull/303
+Link: https://github.com/candle-usb/candleLight_fw/pull/317
 
 > diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-> index 186abc95c9774..bc69e6b3c512c 100644
 > --- a/drivers/net/can/usb/gs_usb.c
 > +++ b/drivers/net/can/usb/gs_usb.c
-> @@ -724,7 +724,8 @@ gs_usb_should_handle_can_error(const struct gs_can *d=
-ev, const struct gs_host_fr
->  		return true;
-> =20
->  	/* handle CAN bus errors */
-> -	if (hf->can_id & cpu_to_le32(CAN_ERR_LOSTARB | CAN_ERR_PROT | CAN_ERR_T=
-RX | CAN_ERR_ACK))
-> +	if (dev->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING &&
-> +	    hf->can_id & cpu_to_le32(CAN_ERR_LOSTARB | CAN_ERR_PROT | CAN_ERR_T=
-RX | CAN_ERR_ACK))
->  		return true;
-> =20
->  	return false;
 
-[Severity: High]
-If a frame only contains CAN_ERR_RESTARTED but no state change flag, this
-appears to fall through and return false. Does this silently drop the
-automatic bus-off recovery frame, preventing gs_update_state() from handling
-it and leaving the interface stuck in the BUS_OFF state?
+[ ... ]
+
+> @@ -573,14 +579,22 @@ static void gs_update_state(struct gs_can *dev, str=
+uct can_frame *cf,
+>  		return;
+> =20
+>  	/* some firmware does automatically CAN bus off recovery, account for t=
+his */
+> -	if (cf->can_id & CAN_ERR_RESTARTED ||
+> -	    (dev->can.state =3D=3D CAN_STATE_BUS_OFF && new_state < CAN_STATE_B=
+US_OFF)) {
+> +	if (!(dev->feature & GS_CAN_FEATURE_BUS_OFF_RECOVERY) &&
+> +	    (cf->can_id & CAN_ERR_RESTARTED ||
+> +	     (dev->can.state =3D=3D CAN_STATE_BUS_OFF && new_state < CAN_STATE_=
+BUS_OFF))) {
 
 [Severity: Medium]
-When this returns false, gs_usb_receive_bulk_callback() executes a goto to
-resubmit_urb. Does this bypass the hardware overflow check
-if (hf->flags & GS_CAN_FLAG_OVERFLOW) at the end of the function,
-causing the driver to silently drop hardware RX queue overflow notification=
-s?
+Will the check for CAN_ERR_RESTARTED ever evaluate to true in this
+condition?
 
-[Severity: High]
-If the USB transfer is shorter than the expected payload (e.g. can_dlc is 0=
-),
-minimum_length allows processing just the header. Does accessing
-hf->classic_can->data[1] during the state check in gs_usb_state_get_by_hf()
-read out-of-bounds or use uninitialized heap memory from the URB buffer sin=
-ce
-it bypasses the padding and zeroing that alloc_can_skb() used to provide?
+Looking earlier in gs_update_state(), the CAN_ERR_RESTARTED bit is
+unconditionally cleared from cf->can_id:
 
-[Severity: High]
-This is a pre-existing issue, but returning directly in
-gs_usb_receive_bulk_callback() when alloc_can_skb() fails leaks the URB:
+	cf->can_id &=3D ~(CAN_ERR_CRTL | CAN_ERR_BUSOFF | CAN_ERR_RESTARTED);
 
-gs_usb_receive_bulk_callback()
-    skb =3D alloc_can_skb(netdev, &cf);
-    if (!skb)
-        return;
+Because of this, the check for CAN_ERR_RESTARTED here appears to be
+structurally guaranteed to be false. Could this cause the driver to miss
+bus-off restart events if the cached state was not already CAN_STATE_BUS_OF=
+F?
 
-Can this lead to permanent loss of RX URBs if memory allocation fails,
-eventually halting CAN reception until the interface is reset?
+>  		can_stats->restarts++;
+>  		/* some firmware doesn't set CAN_ERR_RESTARTED, fixup */
+>  		cf->can_id |=3D CAN_ERR_RESTARTED;
+>  	}
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260720-gs_usb-new=
--features-v1-0-427a8013c380@pengutronix.de?part=3D11
+-features-v1-0-427a8013c380@pengutronix.de?part=3D13
