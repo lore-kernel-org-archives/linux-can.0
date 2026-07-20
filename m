@@ -1,206 +1,177 @@
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazon11012062.outbound.protection.outlook.com [40.93.195.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 438911BF33
-	for <linux-can@vger.kernel.org>; Sun, 19 Jul 2026 14:01:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784469713; cv=none; b=ux00eBaE1OhIFgtDoMPFzJsvz97e9ssw7jajPyopDbg1YVZxleDveTVq8hNJYeWcMC+r0WZw6dCmd5kqrhr/Fy7tPiprvKxI/TZ31wyIw7RI7cmP4Xek+wxacnjALTchdaIJxFViQelv7ERro+/mY950dxkXeBrjKrrt69OVeuQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784469713; c=relaxed/simple;
-	bh=AvLin6EDY6264ybOlhKWfxnfgaO9Sorakm1LZ4HBTD0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Zq43EfnUr2EDevoB5MKgX6Zw2jBf1bb+g7LONhhQAQJ8hKjunemsJsKa2bZhevkFS6PxieLBauOUbTCHyToc0y1l/hLuqPK5SXBoQrtZrQkd+ZEwa3Mazsb+nlzRuztsWFXaMqJXhWxup/oUFH1hwD506rWBR5wGDv01seLXRkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fl/2JaTn; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B6003ACF0C;
+	Mon, 20 Jul 2026 05:52:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.195.62
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1784526781; cv=fail; b=cTl9xPAfq7+1/xRef92TpMoKNKriSMAkFPF58V8HIKhwGf6QvMOuZsHmHARTzah9el7Yp3V6M75fVN63hZXoJ+bBLElV6NDP39ujKBxra4og8P1a/3YcSHzBao2rBxvGIgy0PFCi8gxMqd8xx/m6wklhv6ygfnK2nrTdcGkn51Y=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1784526781; c=relaxed/simple;
+	bh=6er2C/aAzp5rfp5m3/4JLrrzaLVuEirfOCEY1fyiix4=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=WLydRdouXT4NcDY1Y6DqPVKx1NQK41UVCDq36pB6lZf9tnuYNT8hVEU0wPKecKLodBhpb2oOEPVUqfjvaUPEyDW0naWa4lbxqaFU2bwCVf5zx8kNNGQjUruM21WQPSZK4oSJGKONo7BWicKO7pg6RFI8ZFLyDfVcE71ASUHR62w=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=f00FGQA0; arc=fail smtp.client-ip=40.93.195.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fl/2JaTn"
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-47ddf7b09aaso6124167f8f.3
-        for <linux-can@vger.kernel.org>; Sun, 19 Jul 2026 07:01:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1784469710; x=1785074510; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=Zxf1Fi8GIcPdFPVfUhThJUmBpCeIaz9jG77yqiqq2HI=;
-        b=Fl/2JaTnsZU0tVwKPFdr5hQziVDSGRhYMESekf8AmrPLyq4FookF/NjV7mCPCjVhz2
-         i2Cwy8g7Y6d+lSc/BZtyRtaCyPER1P2qHOy8QSn4fd4asoU0EWlri+q4tOjJbfRjIE/P
-         MK/3s9fioA4/Snwv3lGxJ97xQk6FReHwNy4VIP106NsAWqxiK7dPm+R3j9j/6Om0v9wT
-         5twKnY81MMQu7Lpx4OejhPOOBihWyi+boYlQLuhR1KEoTzxRmBmHRoUsYU3TLJEaqblE
-         JveKBfmbh0She1YegLjnAe/F9EtZSadN7Qjgbz+Q34wynqGKfW9A15hgMR7JxM15dv0d
-         wknw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784469710; x=1785074510;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=Zxf1Fi8GIcPdFPVfUhThJUmBpCeIaz9jG77yqiqq2HI=;
-        b=hlSUhOlFKd/N6MaPWQ/LDgfUeUqzhbinko8nRtXEWDzFwX2rQhcRVdINjsOrizH5YG
-         glQCbCsXTQCclbfnlnh1JLHQJrtYQZa0tBuopRrufT49yhQiS3kUDhUZafD2qL7R3Hxk
-         bS6bFL6KqBesB909EhZgCtlsAcMSEZEUXC5oPW+xHZ2cP54/JkiNlTLfp+bSf+ZZDxYw
-         xV7oME0+YB3g0zyKbpsVu+5U38lRmFN47YEY7F1fRtlbybtD3Ypua6Uod4+xva+VFLxA
-         Na4KpcX58FUnCfOJSR7nmxRDH9Zo1eX7uS+Q0w1LqSXqGhRDKwbVSqzQRXkgOJ0aPkw5
-         k7MA==
-X-Forwarded-Encrypted: i=1; AHgh+Rrxs4VUX583qeKeJ2Q9RomDU7oFmbFsPhYltf/7EE7yxzUj33UJQV3caKPUBxWRYv/TnfiER/b4eXU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxpLE8tHb5SwuejNkH6LJIqMoYjGDCZG1VkFBqGIm2O7ZJoxaJe
-	CkKmOiGnp64Oib9Ul899CAI5hO4D5EuKR1b5dUqCKLieltHz8zIP0tnW
-X-Gm-Gg: AfdE7ckp9R1rSIKQHxc1COj/McKFl6+KgPqz2oUVMliOC9ev7Jew7sYq87HpJtsk3oG
-	4viumQHUrQFwFM45rNQjOgs5+8bS+7F+1SyezlcMs1NGm1tCOVq1yHrxxP1SADa0qVkloAuPnur
-	frTnN9WqCnW3kENsegfVWabmCsFbkXDrVUcueLd2vHwdx1ZIO/WXJz1ww2iS1a9tOOpjzt2tIJI
-	QRR8mryIVW6nd1uL/a/lgP/FOVOnqvDweIw4JEdew0kDeRfItz44ehJj/0RP+3kg8NkcBIuL2f+
-	YQB4MMTX2ocnk1yRAVXldXe3QQvXtWcmcOCLHznFlOwgVHSh9RKshn5dNp8ijuT/IgzBJOGx2l4
-	unIc0c2lFOfdLPsq/qcLa2rCG8jML8vuzxgSJcpgpR/sCeMHI7pJQOSFUl+N88BTww+PnefvqBU
-	bw2tGu/QEz3R78hZi7KwWZVlYglLGbfb7X3YSLKTBblxzF
-X-Received: by 2002:adf:f604:0:b0:475:f0f0:9ef6 with SMTP id ffacd0b85a97d-47f6233f338mr9270742f8f.59.1784469710353;
-        Sun, 19 Jul 2026 07:01:50 -0700 (PDT)
-Received: from localhost.localdomain ([188.26.50.240])
-        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-47f63e49ce4sm21657818f8f.8.2026.07.19.07.01.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Jul 2026 07:01:49 -0700 (PDT)
-From: Eduard Bostina <egbostina@gmail.com>
-To: Conor Dooley <conor+dt@kernel.org>,
-	devicetree@vger.kernel.org,
-	Eduard Bostina <egbostina@gmail.com>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	linux-can@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Rob Herring <robh@kernel.org>,
-	Vincent Mailhol <mailhol@kernel.org>
-Cc: daniel.baluta@nxp.com,
-	simona.toaca@nxp.com,
-	goledhruva@gmail.com,
-	m-chawdhry@ti.com
-Subject: [PATCH] dt-bindings: net: can: Convert TI HECC to DT schema
-Date: Sun, 19 Jul 2026 14:01:27 +0000
-Message-ID: <20260719140127.3558941-1-egbostina@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="f00FGQA0"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=RAMyGmT1NT9JyNQ2bt22SRk6VOguFzhMe8YKwqt3eotOXfm+U8A8SonMVpUBtkKIuPm0uanZG2IZr2BIhZAmbVqBLe27gb1gP7gzf/QaxbBRF8YPGNllTxovFSyEYCz26wiKpbNRk+xUE8BCxawtdmFt68Ak5N5Y184Ebv6el2XNA/wTN+54Wt44arX47fxVO1G0tAWfWro7aXlSxZwXbdK7LCRrTdh7/2UYiD7VjlOJAuIdlyPfvcJd8A4oOKATVlchUSgGMkNOmVrhq2UcaNiDxx2VxkR4mOAWN0L/tPPbLDUqnJ69UmQfkUFQsoyxd+rPLLaftq8Buv7vtfpDRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=g8x/x6wj1EIFH9JMaE6eiwXWpPDi9GJ0kCiBgWEdhTM=;
+ b=SrD1Otp8w/tKWnN+yayhV+go2XumtnM/6ibwbUj/2F+vW5VAz/wDgF6bEn18rPZLj4ooFswuoT2P4RktWS4ssyrZ4D7pHV+UjY+hFI/rIrR/Hqm+ApN5zh4yA3exvkiW7GbQErJRGVDjeQP8exrF21fgdDCTJOPe+BbMJgaTUKxOEOmOtPI/oEKBGQOKrMM5LwgVcvCQdN7oXrcMaQyt65hzyGyKLzjNsiCnBx79hdPi4hqnGKnwstERR4pWz15Kwqo+CLU6ZP8uOijoQy2y43QPmXrUKelP2zaLLT5aB9n5ZltlKxSCDWz/WElOgwtbj2nKxsQWg2AFjz8RDGqhKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=g8x/x6wj1EIFH9JMaE6eiwXWpPDi9GJ0kCiBgWEdhTM=;
+ b=f00FGQA0wwil9SLxilYTdp0PtFwd700MHPAKw0NvlV8pU9K2KweWQ4JXGCp/ONOdzBLwe70BkGyZDO4yZ5ZY0ORRdEoKRR1J0W4gNex0WDvvSmbHwa9IQa31VGIhZeNEeTjh6v1i+olXwLCPpAw7n2umJ+i8DWe1nD3y5mCce9A=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SJ2PR12MB8847.namprd12.prod.outlook.com (2603:10b6:a03:546::19)
+ by SA0PR12MB7463.namprd12.prod.outlook.com (2603:10b6:806:24b::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.223.15; Mon, 20 Jul
+ 2026 05:52:28 +0000
+Received: from SJ2PR12MB8847.namprd12.prod.outlook.com
+ ([fe80::a5b3:669b:dfa5:14ca]) by SJ2PR12MB8847.namprd12.prod.outlook.com
+ ([fe80::a5b3:669b:dfa5:14ca%3]) with mapi id 15.21.0223.011; Mon, 20 Jul 2026
+ 05:52:28 +0000
+Message-ID: <9e8d97b3-8c21-497b-9d02-39a21834493e@amd.com>
+Date: Mon, 20 Jul 2026 11:22:20 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] MAINTAINERS: Replace maintainer for Xilinx CAN driver
+To: Harini T <harini.t@amd.com>, mkl@pengutronix.de, mailhol@kernel.org,
+ robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
+ michal.simek@amd.com
+Cc: linux-can@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20260717021415.2234865-1-harini.t@amd.com>
+ <20260717021415.2234865-2-harini.t@amd.com>
+Content-Language: en-US
+From: "Rao, Appana Durga Kedareswara" <appana.durga.kedareswara.rao@amd.com>
+In-Reply-To: <20260717021415.2234865-2-harini.t@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN4PR01CA0047.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:279::9) To SJ2PR12MB8847.namprd12.prod.outlook.com
+ (2603:10b6:a03:546::19)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR12MB8847:EE_|SA0PR12MB7463:EE_
+X-MS-Office365-Filtering-Correlation-Id: c2238144-665d-4bc9-176f-08dee62314b3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|23010399003|1800799024|376014|366016|18002099003|22082099003|56012099006|4143699003|11063799006|10067099003;
+X-Microsoft-Antispam-Message-Info:
+	/yeJvRb3eGjZ5vxHp5n8oErG22iHCrh9r+M0QFzjT0H7Vie5R8Y04D2LvAjPXKuDfaFJF3bJ+UudOq4b/wBDYbOvzWZPFtqKpJ1BwRFpNz1iGMuA0VjsFoiimsp1S6O+9xBoSsX5AadOvvTKXenyY4NgLTwv7gR0T5xZIFM5L+lbK5oHOt1z9h4LWup4sUwrLIrZyqnXVxTHTy2ZSEW74auzOodlU+BBUlhXgyMK3T8BEDK3jWVEnPxPft6Estc/4yQkTMNmlMiBI2pui8O/PTfpZ+6FfQ0vhwGaSPtG4gi8Ow5jhcpgZYfiaA2DHNHCCko/0x8AGHgqfKjtifnpoQ/Y0y/VLqvOqeABnNaGev80NTorO6vaRzvg2YDrPqB3ypyx8YkjUx/mwNPJjMgoctFxwSvBX0/k3upUJ4HC9IqIA3ypC3+Htx9MdDZ2Fsfoqbssj7/1u0x6xCktzcxXw3l3EEdBMNCFyLGBxxMPoab8DIUNW/xlAoDOfoD6S1blYQhcTfFZjC8mh8kYNYXGH+bdKp6PlD2e/ibmW4kkS2exksAjcnggJ3YvfopIhCm+6WqPaXUoTohI8AKcYsbU9N7AwAPbLDN0SXfFKV17NNtqo12cM+MSdTPkeH/yftASYW7X9EfI49jyb4l4PXK80HRl6UBYZSSFUS1Hma0lMzs=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR12MB8847.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(1800799024)(376014)(366016)(18002099003)(22082099003)(56012099006)(4143699003)(11063799006)(10067099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?d3RieEVGTUxROXNXRlhMN0Jrc013akVOZENXUnowNkcwRFNzOHYrczZZVE1U?=
+ =?utf-8?B?czlabTVwWGpGMWpOMElmL2RPL3UxU3hXb0hYMXoxQmttSWhqd2dFVUVlVGx0?=
+ =?utf-8?B?TlhJaUtpRWhMWGNWK2krc0ZaYlhTTkRwZFdDMTRGSG11TkNnbUl6TTNzVURy?=
+ =?utf-8?B?dndGWllEOFpqbk9vdmJqMUJnUHR4bmRBNERQMEJEM3pWTkVEUjlMK1lnZjJj?=
+ =?utf-8?B?Nm5aTCsyU3I5RzdzQklTSlA2MjM4UXdOSmFmTjliSEdOUGJxTEM5cnpKZVB5?=
+ =?utf-8?B?ZU4zRjloMkhNSWgvSVl3K0UzNjFDZW5xeXVkQndFVXVCbXhLc0wvNnlsdStL?=
+ =?utf-8?B?WWI3VnVRdFZKNHp6UjY5VkQyV2swdFBPSDVxak1iU1I3QzdoNDN4TWdoY0Mz?=
+ =?utf-8?B?TnNFRVNoNkFidkFwcVRnYTgzbGQrN3lhWWt0ZFhVcUxLQS9Jc3JCQXgweC8x?=
+ =?utf-8?B?S1JhM1pwalRIYWdUTys1T1dFOG1rakdrTlhLK2txay9HVEtXUVRiQXUwOVFJ?=
+ =?utf-8?B?YnRlQzdITmZaTWlpM3RvNnN1OFZtazVBQ0NMYnduVVR5UnlsNmo0ZllVNXNG?=
+ =?utf-8?B?OUFqYVlHeGc3MzVZRWpMdVdjQkl4VXN5dnBGUUJ0bXNFcUU0c2d0WmtMU3Z1?=
+ =?utf-8?B?RjVsSExoYnpGa1NwRWpMR1dFNXA4cVhjQTNFaTErWlNmTHlzTEVncll3Qnll?=
+ =?utf-8?B?K2pYMy9aQmZsM2hJaks4M1ZuQi9HNWFzc25vRUlYaWJXYzJkM1pUOWw1RzBK?=
+ =?utf-8?B?ZHU2YldnS3dsWkNab2RNcGtzdjhGeDl2ZzQrVUJrRzV3TkVKZUEvc1lucTVZ?=
+ =?utf-8?B?M0Z6KzVtMUw1N09kM1FYcjJycGhuRDBTaTREckFYbS9uYlJzWjErcTlnbTBO?=
+ =?utf-8?B?ZzB5QTNvVmNFTW9zd2tCRE0wTkRtOWNiMm1VUWtKeEJaSXZaejdPV2x4YTBz?=
+ =?utf-8?B?enRuWnZIckNpVVRLcW8xbDlNNFNscXIyWXhjSXVJRWsyQlVKZENmaGQwZnN4?=
+ =?utf-8?B?YWtvSSt1MlVsVFFFS05oWmJIUUhUMnlXZm8vcG5zeGR3bzd0aUhTbEZOcjhS?=
+ =?utf-8?B?VkJmaHFMRkZUL1hGV3grZTdSSUVLR2o0b2dQTFhnWDVEZGw3UWtmS3BZcmNn?=
+ =?utf-8?B?K09qN1hSby9DU0NpZmdGRC9pVXJCbDlLRUk5UmZSV3lvSTBSSHZRTStZMjNO?=
+ =?utf-8?B?Rmh2QS9HeHZFeTJPSHcwVTJNSjR0YUxCelh4QWh4WlZwUkR6SmRtVlJVVGFT?=
+ =?utf-8?B?ZWRVUnBmMFlvZis1am95Y29vb1VWYmZBMEtGTDlhcnlyMDN1ZTJEYkd5MEdW?=
+ =?utf-8?B?RnVRRjFxTlRhekFQTXlCN0hmQmdadVVGWHN5eHVUTC9HNUhvOURQUVc3cVRm?=
+ =?utf-8?B?YmJEWnFtaU9xWGh0NXR5NG0wUUpQMlpYR2FFVmVlbEpSZjR0Ty85c1Z5dXpI?=
+ =?utf-8?B?UnBEc09yelZrOWEvcjA5M2x5ZW90NnJlV0VmY0Y1blIrRmNQb3l1YlQ2NHU2?=
+ =?utf-8?B?THp3U3plNXVCdEh0bFZLSHJMZk8vR1V4aEw3TndrSEdGTnZWZmV0Mk81cDNH?=
+ =?utf-8?B?NEloak5SbmFEOXpaQmVFL0lhcTZSR05IazFkYXI2MCtlaWN1VzdQdlBXbW1w?=
+ =?utf-8?B?ZjdzWWJPZm80ejZQaXRWaUU1R21xeDh5c0hlZzVmRVVRdFNGY0dmWG9pcnhN?=
+ =?utf-8?B?dllRUXQ4dEVwRDNBR3ZPbGhVcG9vbC90RWVKeS9lY1YzRkJtUFh1aGtJRGN2?=
+ =?utf-8?B?Q2RVTm94dGh4UkdOdHdmdHlIN210eHplZlBOL0lFbi94TmVzUzJ5d2lDQlhS?=
+ =?utf-8?B?MUp1QWVOWVhsUUlqUktLSGRKbDRHZmhsNzF5V2VncTIwTVNZb1dOWTI2NEhL?=
+ =?utf-8?B?dzBsdkt1MXFLRWJDSDZ1VExrcXdKaU5UcFZHTFRCS0VKN3B5K24rRW9VRVg2?=
+ =?utf-8?B?Z005MkxKL3NUaTBPVTdTUFB2V0hNejh2YnhrSFlVbHZaTlQrOHVYUnk2cWFG?=
+ =?utf-8?B?NGJvVFVrc2RJbmtyd2FwTWszNk9DYTNzVms3TDg5YmkwdWM2ZkZNblQ5d2dP?=
+ =?utf-8?B?UTA0VitGSzNKWjRGSUN4YXlyZlFGQkowRm9Cb0JlY2s1aTRIZzJlazA5dzZ0?=
+ =?utf-8?B?aS9RS2VRZzZ1V3dFSDQ5S1dUWkVBbUlpNGxvdXp4cEFZWDhGM1VJaGFRdjRI?=
+ =?utf-8?B?emJndlJFMUhySTYzeDdUYlltd2lGYVFvcEYzNkpXQ3hoU1ZWTUxCY0RUSU9W?=
+ =?utf-8?B?VWZ5NmRPU0dqWTFrZ25xa3RGRjRESHl5WmxGVWJlU244bEE1Q2hpRkY0MlFk?=
+ =?utf-8?Q?Kjlqb02DAr17jzJo1V?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c2238144-665d-4bc9-176f-08dee62314b3
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR12MB8847.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2026 05:52:28.2380
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: s59gTCm9TLPJvsTx9lgsXOJSmZ/OngJ7McAgXtCsu19SN9jntIk62YKiP+euWSiH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB7463
 
-Convert the Texas Instruments High End CAN Controller (HECC) bindings
-to DT schema.
 
-Signed-off-by: Eduard Bostina <egbostina@gmail.com>
----
- .../bindings/net/can/ti,am3517-hecc.yaml      | 64 +++++++++++++++++++
- .../devicetree/bindings/net/can/ti_hecc.txt   | 32 ----------
- 2 files changed, 64 insertions(+), 32 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/ti,am3517-hecc.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/can/ti_hecc.txt
 
-diff --git a/Documentation/devicetree/bindings/net/can/ti,am3517-hecc.yaml b/Documentation/devicetree/bindings/net/can/ti,am3517-hecc.yaml
-new file mode 100644
-index 000000000000..7874e9e49224
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/ti,am3517-hecc.yaml
-@@ -0,0 +1,64 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/can/ti,am3517-hecc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Texas Instruments High End CAN Controller (HECC)
-+
-+maintainers:
-+  - Eduard Bostina <egbostina@gmail.com>
-+
-+allOf:
-+  - $ref: can-controller.yaml#
-+
-+properties:
-+  compatible:
-+    const: ti,am3517-hecc
-+
-+  reg:
-+    maxItems: 3
-+
-+  reg-names:
-+    items:
-+      - const: hecc
-+      - const: hecc-ram
-+      - const: mbx
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  ti,use-hecc1int:
-+    type: boolean
-+    description:
-+      If provided, configures HECC to produce all interrupts on the
-+      HECC1INT interrupt line. By default, the HECC0INT interrupt line
-+      will be used.
-+    default: false
-+
-+  xceiver-supply:
-+    description: Regulator that powers the CAN transceiver.
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - interrupts
-+  - clocks
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    can@5c050000 {
-+        compatible = "ti,am3517-hecc";
-+        reg = <0x5c050000 0x80>,
-+              <0x5c053000 0x180>,
-+              <0x5c052000 0x200>;
-+        reg-names = "hecc", "hecc-ram", "mbx";
-+        interrupts = <24>;
-+        clocks = <&hecc_ck>;
-+    };
-diff --git a/Documentation/devicetree/bindings/net/can/ti_hecc.txt b/Documentation/devicetree/bindings/net/can/ti_hecc.txt
-deleted file mode 100644
-index e0f0a7cfe329..000000000000
---- a/Documentation/devicetree/bindings/net/can/ti_hecc.txt
-+++ /dev/null
-@@ -1,32 +0,0 @@
--Texas Instruments High End CAN Controller (HECC)
--================================================
--
--This file provides information, what the device node
--for the hecc interface contains.
--
--Required properties:
--- compatible: "ti,am3517-hecc"
--- reg: addresses and lengths of the register spaces for 'hecc', 'hecc-ram'
--       and 'mbx'
--- reg-names :"hecc", "hecc-ram", "mbx"
--- interrupts: interrupt mapping for the hecc interrupts sources
--- clocks: clock phandles (see clock bindings for details)
--
--Optional properties:
--- ti,use-hecc1int: if provided configures HECC to produce all interrupts
--		   on HECC1INT interrupt line. By default HECC0INT interrupt
--		   line will be used.
--- xceiver-supply: regulator that powers the CAN transceiver
--
--Example:
--
--For am3517evm board:
--	hecc: can@5c050000 {
--		compatible = "ti,am3517-hecc";
--		reg = <0x5c050000 0x80>,
--		      <0x5c053000 0x180>,
--		      <0x5c052000 0x200>;
--		reg-names = "hecc", "hecc-ram", "mbx";
--		interrupts = <24>;
--		clocks = <&hecc_ck>;
--	};
--- 
-2.43.0
+On 7/17/2026 7:44 AM, Harini T wrote:
+> Replace Appana Durga Kedareswara rao with Harini T as the maintainer
+> of the Xilinx CAN driver. Kedar is no longer maintaining it.
+> 
+> Signed-off-by: Harini T <harini.t@amd.com>
+> ---
+>   Documentation/devicetree/bindings/net/can/xilinx,can.yaml | 2 +-
+>   MAINTAINERS                                               | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/can/xilinx,can.yaml b/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
+> index 40835497050a..e705c719f7b5 100644
+> --- a/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
+> +++ b/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
+> @@ -8,7 +8,7 @@ title:
+>     Xilinx CAN and CANFD controller
+>   
+>   maintainers:
+> -  - Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+> +  - Harini T <harini.t@amd.com>
+>   
+>   properties:
+>     compatible:
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 7a2ffd9d37d5..db619dcaddbf 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -28874,7 +28874,7 @@ F:	Documentation/devicetree/bindings/net/xlnx,axi-ethernet.yaml
+>   F:	drivers/net/ethernet/xilinx/xilinx_axienet*
+>   
+>   XILINX CAN DRIVER
+> -M:	Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+> +M:	Harini T <harini.t@amd.com>
+>   L:	linux-can@vger.kernel.org
+>   S:	Maintained
+>   F:	Documentation/devicetree/bindings/net/can/xilinx,can.yaml
+
+Acked-by: Appana Durga Kedareswara rao 
+<appana.durga.kedareswara.rao@amd.com>
+
+Regards,
+Kedar
 
