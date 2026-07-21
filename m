@@ -1,213 +1,221 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EAB4432BD3
-	for <linux-can@vger.kernel.org>; Tue, 21 Jul 2026 07:42:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BAE93BF680;
+	Tue, 21 Jul 2026 08:51:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.166.238
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784619773; cv=none; b=bgSbG7tnAWmCnTQqg3qh2Vgrw0lo9vZK+97aKE4rJcrLTj5o9lG8EqjPX9MC8x8Z9c5ExozV1xgGwGBaZEVIbXZ363NTetWF14VPmzoirYuWTKpmXdS2PSACKKjm92KfGC5H2uyqPKKBM0j8tQHOekoOX7acD06mDp6JcpDSRYQ=
+	t=1784623914; cv=none; b=sOZSUFv2vrbH21eB9USoIof8Aj5W5sJsq0xqrwx9ZSOHUsFIusChFPi6QrYILHvWPbqiEuLwMgr6G5MvV5jlOHzETv8dYkujoYrb6fJdwuH3ProvVtwZ82f+0Ddvep4/uj2LjAonC9W7dcPhAK8+J/62bZmEL7H1DsE4wpUjqcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784619773; c=relaxed/simple;
-	bh=fSq42Rb9Olx5FkFMFnIPJuv0Dbm0E9xhaH8OXFl8Sy4=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=YBWjMndj5mY3pokyk3vglnTjqPrSUKTm+c5iQKOJoufqEMPLjPAPmXm3lv4luB7nI7VMrW3Wsi9rf8aI0KMcGRcsPoWyOdKtyVbMqAsjv2mNgRUjG3ttwa4d8GNFfaaBJcWRJRakkkRSxyplTS+qdj8A+AGhdMDCPTLSJ1Y3VB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f4xdwfG3; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1784623914; c=relaxed/simple;
+	bh=SoLBNynEe6RP6GZr/WGkFJTkIsQZTYJOqotDsMfN56I=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Q+mDGMslZhRFJkgwnqWReRrCJeL5iRRe9ZvpWnJnVpCAjMzzo44EmagLt2CTUzInGPWRxaGIg63rm6kZdc5uUG3UyUyCsfSwOiX9TH10n8T5GMFJ3kuUV44q+CT+IRX/iRn1FhpkMX+Jsj1aWa+e+x1iOlUUU84uaDPFLZTsT5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b=cYDp0lLx; arc=none smtp.client-ip=205.220.166.238
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f4xdwfG3"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FE041F000E9;
-	Tue, 21 Jul 2026 07:42:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784619771;
-	bh=NDcgTdMq0JoKMVxZv3nEFG5lpBPksV8xALDOFhAml6s=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=f4xdwfG3rXELPHdLl7PoR+uMsUxuqaOoSldPDtdXVbqTd/sBRjFCK5ff8tb6ou4Lz
-	 dtaKQkydho51rnxo1FeF2s6WOZ/OpXGgCTyXOsjoiI/LG6TaAOrh74m9WV5yfhfUVl
-	 MNSGzvcsIxpTICg4DdtdNJSbYFvhfi3rmoplA5kRLF8XUsiVQIk7cPl4JSr5Ud27en
-	 nkqRgqquVIxi5GeNUGzUqLXT/OxKeFvAvA4OAZYWgV+tkRO9TTI9jO3AMJ9H7VRO2k
-	 BJ11QJz/A7F7j0HA3Ih8Z1FiP7Un+9lf6L/M0eMiDvFPceQPm3ysU5vjv9wfRtP97z
-	 PKRWWVJKHFDCw==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v5] can: isotp: fix timer drain order, wakeup handling
- and tx_gen ordering
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Oliver Hartkopp" <socketcan@hartkopp.net>
-Cc: "Vincent Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20260721073156.10767-1-socketcan@hartkopp.net>
-References: <20260721073156.10767-1-socketcan@hartkopp.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 21 Jul 2026 07:42:50 +0000
-Message-Id: <20260721074251.4FE041F000E9@smtp.kernel.org>
+	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="cYDp0lLx"
+Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 66L8j8qW2119679;
+	Tue, 21 Jul 2026 01:50:40 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
+	 h=cc:content-transfer-encoding:content-type:date:from
+	:message-id:mime-version:subject:to; s=PPS06212021; bh=FWA+m5ggl
+	nbyMH2Qe8AaTEJPWm8abKUsVXByjjyNNQI=; b=cYDp0lLxk82s1Gj1eYcTIxODh
+	T5Zs23876QDRzaNraXnHmzPw81CJmFk3KSoWwBS05RzNUrktEggqbPiHgmzwrXl+
+	tzJevAcqfRPbj18aI/vyLWcuwAlqP4mJXP5hyVGS4Wi9k7R7SsYKJw9tLHBp4Uvi
+	s1YfcKFP2/QATXfxD8mEdK5LJe2X5f/4s8gQEej3c3clb+loTRYPHqeXlOecWsf/
+	VuYe4YD159ca5cc1rculW6/UJ1ovwrx1EFj2DM2K3NJl3YZxYNxkLnMAfFICvnpD
+	6xgzQg2D7+SU8+DXMSgw1+ud8tqpz+/ssSZ6g+N1oPYNTpDci7wbY46k+jh5Q==
+Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [128.224.246.37])
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 4fg90cv3r3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Tue, 21 Jul 2026 01:50:39 -0700 (PDT)
+Received: from ALA-EXCHNG02.corp.ad.wrs.com (10.11.224.122) by
+ ALA-EXCHNG02.corp.ad.wrs.com (10.11.224.122) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.61; Tue, 21 Jul 2026 01:50:39 -0700
+Received: from pek-yzhou-d3.wrs.com (10.11.232.110) by
+ ALA-EXCHNG02.corp.ad.wrs.com (10.11.224.122) with Microsoft SMTP Server id
+ 15.1.2507.61 via Frontend Transport; Tue, 21 Jul 2026 01:50:36 -0700
+From: Yun Zhou <yun.zhou@windriver.com>
+To: <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>,
+        <socketcan@hartkopp.net>
+CC: <linux-serial@vger.kernel.org>, <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <horms@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yun.zhou@windriver.com>
+Subject: [PATCH v2] tty: ldisc: fix deadlock between ldisc_sem and rtnl_mutex
+Date: Tue, 21 Jul 2026 16:50:35 +0800
+Message-ID: <20260721085035.2485657-1-yun.zhou@windriver.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: -shmOVSADsceu_kZVrR9YOdRW5jNLI51
+X-Proofpoint-GUID: -shmOVSADsceu_kZVrR9YOdRW5jNLI51
+X-Authority-Analysis: v=2.4 cv=AOkSgtoa c=1 sm=1 tr=0 ts=6a5f32df cx=c_pps
+ a=Lg6ja3A245NiLSnFpY5YKQ==:117 a=Lg6ja3A245NiLSnFpY5YKQ==:17
+ a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=bi6dqmuHe4P4UrxVR6um:22
+ a=iKiJcTA2PjBS6x5JeXcw:22 a=edf1wS77AAAA:8 a=hSkVLCK3AAAA:8 a=t7CeM3EgAAAA:8
+ a=9RZP_3u8z-ZScuIyL4gA:9 a=DcSpbTIhAlouE1Uv7lRv:22 a=cQPPKAXgyycSBL8etih5:22
+ a=FdTzh2GWekK77mhwV6Dw:22
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzIxMDA5MiBTYWx0ZWRfXwRTDOgvl04jm
+ r/Q35WoMz7xywkeDyKWu4wubhVPpb7rAUDq3yLrab2rAcsL/7SaQvBhxmCubQNQm0o4114vEInm
+ yDBi2jk4rM6J0AUPv95UacHR02d5oVgTAdxx22HVmvOe7oHi56tN
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzIxMDA5MiBTYWx0ZWRfXxsw2uMeEE20J
+ C2v4aaY6IqhD3xigZqhGrIrZhOLx4vrZSnbOJOAi+J5Qzmz04XvUxCtZoK/VApBgAx5zWXGXirm
+ teN5SVv9YcCdZFLUWZkW5fnX5Mx+Y7fzg8nnu7/w44yGTQD59k9PIqIMcpzgRLlgFUGeX0cWB/o
+ bdFX0HK0oI+6ZbeKhL6RtS1OEmHw4fSzCM6SN2RpqN22PeS+tTNdx4gAF6LGI7rA6DwJBvsoKYk
+ W3XAcfaoCEYqH2cwQNm/OnLHEp2LtizG7sGy3aHZwhCavUzuJPDUFqL1fhLazo8aKscXlDT3gZe
+ vFKY5f1aq3U54kkxWfnIRsgXWRToCDowtWz5L5+PGKXMYb27J4KBv0yvz+elrhQSfQd6uiQlp+i
+ 4+pVNAVb9QENKT2VsSykw0hY64jF21IciAHGushy5z0FMe/cJOZpB7Agh39TBL3+4cv0IHPEzW3
+ kwYuuBYqgJup6nXXvSA==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-07-20_06,2026-07-20_03,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ malwarescore=0 spamscore=0 clxscore=1015 adultscore=0 priorityscore=1501
+ impostorscore=0 phishscore=0 bulkscore=0 lowpriorityscore=0 suspectscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2607210092
 
-Thank you for your contribution! Sashiko AI review found 2 potential issue(=
-s) to consider:
+syzbot reported a circular lock dependency involving tty ldisc_sem and
+the networking rtnl_mutex. The full chain is:
 
-New issues:
-- [High] A race condition in the timeout handler silently suppresses a vali=
-d timeout error for a completed transfer.
+  rtnl_mutex --> nft_commit_mutex --> ... --> ep->mtx --> ldisc_sem --> rtnl_mutex
 
-Pre-existing issues:
-- [High] Error code stealing between concurrent sendmsg calls leads to swap=
-ped return values.
---
+The last edge (ldisc_sem -> rtnl_mutex) is created because tty line
+discipline .open() callbacks (slcan, slip) call register_netdev() which
+acquires rtnl_mutex, and .open() runs under ldisc_sem write lock in
+tty_set_ldisc().
 
---- Patch [1]: [PATCH v5] can: isotp: fix timer drain order, wakeup handlin=
-g and tx_gen ordering ---
-commit 3fafdb07c28c3f6c6f73c64d5f303f8fe37e64b0
-Author: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: can: isotp: fix timer drain order, wakeup handling and tx_gen orde=
-ring
+Fix by moving the .open() call outside the ldisc_sem write lock. The
+ldisc .open() is initialization of the NEW discipline after the old one
+has been closed - there is no need for ldisc_sem protection at this
+point since:
 
-This commit addresses several findings related to timer drain order, wakeup
-handling, and TX generation ordering in isotp_sendmsg(). It serializes state
-transitions under the rx_lock and prevents stale callbacks from re-arming
-timers.
+ - tty_lock is held throughout, preventing concurrent tty_set_ldisc,
+   hangup, or close
+ - tty->ldisc is set to NULL during the window. tty_ldisc_ref_wait()
+   waits for the transition to complete. tty_ldisc_ref() returns NULL
+   which callers already handle.
+ - tty buffer data stays queued until the ldisc is installed
 
-> diff --git a/net/can/isotp.c b/net/can/isotp.c
-> index 54becaf6898f1..4a5897cc21030 100644
-> --- a/net/can/isotp.c
-> +++ b/net/can/isotp.c
+The sequence becomes:
+  1. Hold ldisc_sem(write): close old ldisc, set tty->ldisc = NULL
+  2. Release ldisc_sem(write)
+  3. Call new_ldisc->ops->open() without ldisc_sem
+  4. Re-acquire ldisc_sem(write): install new ldisc (or restore old)
+  5. Release ldisc_sem(write)
 
-[ ... ]
+Reported-by: syzbot+de610eeef174bd59a8a3@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=de610eeef174bd59a8a3
+Signed-off-by: Yun Zhou <yun.zhou@windriver.com>
+---
+v2:
+ - Keep user-visible behavior unchanged: tty_ldisc_ref_wait() now waits
+   for the ldisc transition to complete instead of returning NULL (which
+   would cause spurious EOF/-EIO to concurrent readers).
+ - Fix a race between tty_ldisc_ref_wait() and __tty_hangup() where a
+   reader could block forever if it observed ldisc==NULL before
+   TTY_HUPPED was set. Add wake_up() after set_bit(TTY_HUPPED).
 
-> @@ -965,10 +1007,9 @@ static enum hrtimer_restart isotp_tx_timeout(struct=
- isotp_sock *so)
->  	if (cmpxchg(&so->tx.state, old_state, ISOTP_IDLE) !=3D old_state)
->  		return HRTIMER_NORESTART;
-> =20
-> -	/* we did not get any flow control or echo frame in time */
-> -
-> +	/* detected timeout: report 'communication error on send' */
->  	if (READ_ONCE(so->tx_gen) =3D=3D gen) {
-> -		/* report 'communication error on send' */
-> +		WRITE_ONCE(so->tx_result, isotp_pack_tx_result(gen, ECOMM));
->  		sk->sk_err =3D ECOMM;
+ drivers/tty/tty_io.c    |  7 +++++++
+ drivers/tty/tty_ldisc.c | 34 +++++++++++++++++++++++++++++++---
+ 2 files changed, 38 insertions(+), 3 deletions(-)
 
-[Severity: High]
-Is there a race condition here that could silently suppress a valid timeout
-error for a completed transfer?
+diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+index 6b283fd03ff8..e2f82e80f397 100644
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -649,6 +649,13 @@ static void __tty_hangup(struct tty_struct *tty, int exit_session)
+ 	 */
+ 	set_bit(TTY_HUPPED, &tty->flags);
+ 	clear_bit(TTY_HUPPING, &tty->flags);
++
++	/*
++	 * Wake up readers blocked in tty_ldisc_ref_wait() that may have
++	 * seen ldisc == NULL but not yet TTY_HUPPED.
++	 */
++	wake_up(&tty->read_wait);
++
+ 	tty_unlock(tty);
+ 
+ 	if (f)
+diff --git a/drivers/tty/tty_ldisc.c b/drivers/tty/tty_ldisc.c
+index 27fe8236f662..bd94a1f13c44 100644
+--- a/drivers/tty/tty_ldisc.c
++++ b/drivers/tty/tty_ldisc.c
+@@ -242,8 +242,20 @@ struct tty_ldisc *tty_ldisc_ref_wait(struct tty_struct *tty)
+ 
+ 	ldsem_down_read(&tty->ldisc_sem, MAX_SCHEDULE_TIMEOUT);
+ 	ld = tty->ldisc;
+-	if (!ld)
++	if (!ld) {
+ 		ldsem_up_read(&tty->ldisc_sem);
++
++		/* ldisc may be NULL during a discipline switch; wait and retry */
++		if (!test_bit(TTY_HUPPED, &tty->flags)) {
++			wait_event(tty->read_wait,
++				   READ_ONCE(tty->ldisc) != NULL ||
++				   test_bit(TTY_HUPPED, &tty->flags));
++			ldsem_down_read(&tty->ldisc_sem, MAX_SCHEDULE_TIMEOUT);
++			ld = tty->ldisc;
++			if (!ld)
++				ldsem_up_read(&tty->ldisc_sem);
++		}
++	}
+ 	return ld;
+ }
+ EXPORT_SYMBOL_GPL(tty_ldisc_ref_wait);
+@@ -556,15 +568,28 @@ int tty_set_ldisc(struct tty_struct *tty, int disc)
+ 	/* Shutdown the old discipline. */
+ 	tty_ldisc_close(tty, old_ldisc);
+ 
+-	/* Now set up the new line discipline. */
+-	tty->ldisc = new_ldisc;
++	/* Clear tty->ldisc so concurrent readers back off during transition */
++	tty->ldisc = NULL;
+ 	tty_set_termios_ldisc(tty, disc);
++	tty_ldisc_unlock(tty);
+ 
++	/*
++	 * Open the new discipline outside ldisc_sem. The ldisc .open()
++	 * may acquire locks (e.g., rtnl_mutex) that would create circular
++	 * dependencies if taken under ldisc_sem. tty_lock is still held,
++	 * preventing concurrent ldisc changes and hangup.
++	 */
+ 	retval = tty_ldisc_open(tty, new_ldisc);
++
++	tty_ldisc_lock(tty, MAX_SCHEDULE_TIMEOUT);
++
+ 	if (retval < 0) {
+ 		/* Back to the old one or N_TTY if we can't */
+ 		tty_ldisc_put(new_ldisc);
+ 		tty_ldisc_restore(tty, old_ldisc);
++	} else {
++		/* Success - install new ldisc */
++		tty->ldisc = new_ldisc;
+ 	}
+ 
+ 	if (tty->ldisc->ops->num != old_ldisc->ops->num && tty->ops->set_ldisc) {
+@@ -584,6 +609,9 @@ int tty_set_ldisc(struct tty_struct *tty, int disc)
+ out:
+ 	tty_ldisc_unlock(tty);
+ 
++	/* Wake up readers waiting for the ldisc transition to complete */
++	wake_up(&tty->read_wait);
++
+ 	/*
+ 	 * Restart the work queue in case no characters kick it off. Safe if
+ 	 * already running
+-- 
+2.43.0
 
-In isotp_tx_timeout(), the socket state is locklessly transitioned to
-ISOTP_IDLE via cmpxchg(). If a concurrent sendmsg() thread observes the
-ISOTP_IDLE state at this exact moment, it could claim the socket and increm=
-ent
-so->tx_gen.
-
-When the timeout handler resumes and evaluates:
-    if (READ_ONCE(so->tx_gen) =3D=3D gen)
-
-The condition would evaluate to false because the generation was bumped. Th=
-is
-aborts the handler without recording the error in tx_result or sk_err. The
-original transferring thread then wakes up, finds no error recorded, and
-returns success despite the timeout, leading to silent data loss.
-
-The commit message mentions that the race that can suppress a valid ECOMM
-entry is intentionally left for a later change, but since no subsequent pat=
-ch
-is included to fix this, is this safe to leave as-is?
-
-[ ... ]
-
-> @@ -1223,17 +1273,58 @@ static int isotp_sendmsg(struct socket *sock, str=
-uct msghdr *msg, size_t size)
->  			       __func__, ERR_PTR(err));
-> =20
->  		spin_lock_bh(&so->rx_lock);
-> +
-> +		/* new claimed transfer due to a stuck can_send() ? */
-> +		if (READ_ONCE(so->tx_gen) !=3D my_gen) {
-> +			/* don't touch timers and state of the new transfer */
-> +			spin_unlock_bh(&so->rx_lock);
-> +			return err;
-> +		}
-> +
->  		/* no transmission -> no timeout monitoring */
->  		hrtimer_cancel(tx_hrt);
->  		goto err_out_drop_locked;
->  	}
-> =20
->  	if (wait_tx_done) {
-> -		/* wait for complete transmission of current pdu */
-> -		err =3D wait_event_interruptible(so->wait, so->tx.state =3D=3D ISOTP_I=
-DLE);
-> +		/* wake up for:
-> +		 * - concurrent sendmsg() claiming a new transfer
-> +		 * - complete transmission of current PDU
-> +		 * - shutdown state change in isotp_release()
-> +		 */
-> +		err =3D wait_event_interruptible(so->wait,
-> +					       READ_ONCE(so->tx_gen) !=3D my_gen ||
-> +					       READ_ONCE(so->tx.state) =3D=3D ISOTP_IDLE ||
-> +					       READ_ONCE(so->tx.state) =3D=3D ISOTP_SHUTDOWN);
->  		if (err)
->  			goto err_event_drop;
-> =20
-> +		if (READ_ONCE(so->tx_gen) !=3D my_gen) {
-> +			/* a new transfer has since been claimed - so->tx.state
-> +			 * already belongs to it, but so->tx_result still
-> +			 * carries our own completion status, unless a second
-> +			 * transfer has since completed and overwritten it too
-> +			 */
-> +			u32 result =3D READ_ONCE(so->tx_result);
-> +			int tx_err =3D 0;
-> +
-> +			if (isotp_get_tx_gen(result) =3D=3D my_gen)
-> +				tx_err =3D isotp_get_tx_err(result);
-> +
-> +			/* drain sk_err and select return value */
-> +			err =3D sock_error(sk);
-> +			if (!tx_err && err)
-> +				tx_err =3D -err;
-> +
-> +			return tx_err ? -tx_err : size;
-> +		}
-> +
-> +		if (READ_ONCE(so->tx.state) =3D=3D ISOTP_SHUTDOWN) {
-> +			/* isotp_release() has taken over the claim */
-> +			err =3D -EADDRNOTAVAIL;
-> +			goto err_event_drop;
-> +		}
-> +
->  		err =3D sock_error(sk);
->  		if (err)
->  			return err;
-
-[Severity: High]
-This is a pre-existing issue, but does this error checking path lead to
-swapped return values between concurrent sendmsg() calls?
-
-If Thread 1 completes a successful transfer but is delayed from waking up,
-Thread 2 can claim the socket, start a new transfer, time out, and set
-sk->sk_err =3D ECOMM.
-
-When Thread 1 then wakes up, it sees its generation no longer matches
-(so->tx_gen !=3D my_gen), and it calls sock_error(sk) in the fallback block:
-
-    err =3D sock_error(sk);
-    if (!tx_err && err)
-        tx_err =3D -err;
-
-Because sock_error() internally consumes the error via xchg(), Thread 1
-effectively steals Thread 2's error and incorrectly returns -ECOMM.
-
-Later, when Thread 2 wakes up and calls sock_error(sk) on the normal
-error checking path:
-
-    err =3D sock_error(sk);
-    if (err)
-        return err;
-
-It gets 0, leading it to falsely return success for its failed transfer.
-Could this corrupt the application's view of the network state?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260721073156.1076=
-7-1-socketcan@hartkopp.net?part=3D1
