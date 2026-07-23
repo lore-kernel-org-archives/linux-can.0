@@ -1,945 +1,114 @@
-Received: from smtpfb2-g21.free.fr (smtpfb2-g21.free.fr [212.27.42.10])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66B763546DE
-	for <linux-can@vger.kernel.org>; Thu, 23 Jul 2026 07:39:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.10
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCD643DAABE
+	for <linux-can@vger.kernel.org>; Thu, 23 Jul 2026 07:44:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784792372; cv=none; b=IUpkmwnnRoZzxWEwyVEjgzdLUYPcutLjTgEfSQzGHekfcS1yo7LXCIpahmo/ezZfGhcL8h1D4E9fadWnwj51iXGf/WMqHRSIoIBX/9mXWnRXDXQNnH9Ek0ot109Sxl4/EHngE/v9dCaLlPF4bc3j55nPF2V9hUQ8YBSrHpkr9lM=
+	t=1784792651; cv=none; b=UKtFYsLh3Qig9L6eyWpbKUZaD8MQy2NQc/bR7e1bY6AmVDDVxqjvSlei8gC2yzEZJ/iuR21NgT9Z0J1Rpl0PIdMB0/HoJHLi0ANPzeRJynb6lXSHeoNPeJPUFQRxgeZTjpJzg4z0o9DD28IsuvCKx8GHPPO3LZT0l7yZncU6ZZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784792372; c=relaxed/simple;
-	bh=Dd6i2gWyZ84d0kUcpNT0w731FTX4EgjAhVkO0Y/CoQQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=t2tmhldT+SyIVmblajdSFtReiVA0Zi8NnWKKk3tzwSldpzKMTUUtJ4Dk2Fn0h9BHQs93uegJT3meTJLX+WYz/EooB07UEKpUHTZ3VkdCQOo1foTc+T1SX0cqfT0i0iXCV6/JvLNlkhrRWXniT6H29ncMz53SUFHan+Noib47oxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b=Ycv3+SMX; arc=none smtp.client-ip=212.27.42.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
+	s=arc-20240116; t=1784792651; c=relaxed/simple;
+	bh=gLQ4S20QbAFSS87VViitTilsh4wYPJVg2NOW9XEM2mc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ka5AB6iSYt3kakBekyHI1SkmSAqJeevNJMksmF5xSH2uHOeDk5rCQ1Omvq1KmxIIfm23AmgprZBwXANvVccv7jqTlKQVPsOvutCp88yQjqOCD4I2GiMR1ToGAkSIzfxxveAMlJLbYi8y9iQ3o5i63va/+GEHd+v+rEavjrg8nd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=qUL7lDPk; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b="Ycv3+SMX"
-Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
-	by smtpfb2-g21.free.fr (Postfix) with ESMTP id E1C4D4D96A
-	for <linux-can@vger.kernel.org>; Thu, 23 Jul 2026 09:30:31 +0200 (CEST)
-Received: from stf-laptop (unknown [IPv6:2a02:8428:60a1:3e01:76e8:6ddc:7f18:a4b2])
-	(Authenticated sender: stephane.grosjean@free.fr)
-	by smtp2-g21.free.fr (Postfix) with ESMTPSA id B3E1A2003A4;
-	Thu, 23 Jul 2026 09:30:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
-	s=smtp-20201208; t=1784791823;
-	bh=Dd6i2gWyZ84d0kUcpNT0w731FTX4EgjAhVkO0Y/CoQQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ycv3+SMXmMFnUxvyHL6MyEexmOWSPA9iLe2kiP76QTznzdRB2ObgL9sBwJ234ZdPN
-	 yFcgTSB+ZNpfwE3Yb05kJnJJ+bYDnk56mPUqqY9VOma4/dvI1QVG6Hd/9b6at5aOPx
-	 5S8hA939Ubx5v2bMPf4Icf2cOcqihWuEv8C8PA45Qo0wHNEkH7AWdzXblsEjZ0MPYa
-	 sx/GY3nahFPZAwzgTp+pthsY2iOidtlhs8HYiKbLJWTi15ZAesHqnJlGOFxO0KuMuS
-	 OWTsXkabVJRSOvVLKhXEMU20Ucol1q0NoOWJdL+LV0jl+c3v4U+5cO3klhSfFLnKCZ
-	 t7fF9Uw4wK8mA==
-From: =?UTF-8?q?St=C3=A9phane=20Grosjean?= <stephane.grosjean@free.fr>
-To: linux-can Mailing List <linux-can@vger.kernel.org>
-Cc: =?UTF-8?q?St=C3=A9phane=20Grosjean?= <s.grosjean@peak-system.fr>
-Subject: [PATCH 1/4] can: usb: ixxat_usb: add shared header
-Date: Thu, 23 Jul 2026 09:29:36 +0200
-Message-ID: <20260723072955.32575-2-stephane.grosjean@free.fr>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260723072955.32575-1-stephane.grosjean@free.fr>
-References: <20260723072955.32575-1-stephane.grosjean@free.fr>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qUL7lDPk"
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4954c0833b4so2011435e9.1
+        for <linux-can@vger.kernel.org>; Thu, 23 Jul 2026 00:44:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1784792648; x=1785397448; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=MblM2TM8BGuW7T2s+VRM2b21exbLaiD9GJmSPm/AYxg=;
+        b=qUL7lDPk08pqlgzPfwR4/UdJzpOjVIdf13U8DJEBV2Y6CQsnxwKeX9NsW50FwuauPw
+         6VZZHIfciXdM74QA0kgxZF/Mx59ybcl/f30GY7HdFBdI8DrUbm8Bep/rNn1mXkUzZu0T
+         coKMq7ubbRftnBnpHmsvTdm4thQcT61AJuemauqy4y1KiXlqHE1AgA944YC7DacadL0k
+         hR03vMAY87UKIgXraj8Ea73SxTVRJlhSoCKgM+PHl21x68u97I7jA2NJfqjEj39F/+DH
+         R90N8qwlbUr5sMZPhZDCbbBMqpafE1IASg8f7kSGCejPkd2T07AjKtzJHHLFpn4kHvGJ
+         M10g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1784792648; x=1785397448;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=MblM2TM8BGuW7T2s+VRM2b21exbLaiD9GJmSPm/AYxg=;
+        b=HkbumJd4Linxa1UpNvhijTVqts4j/BfWvj5dKhvcp4JCyf/Ko8l7be8BnXyXaWWZj3
+         iZSfa8cKRnQ6zXC6kAuA8phqDeIbJz743vEUke7I50JEaTd/OUKysj8Ty4wfipOCNJKI
+         MP2zbcorYmxjTBinESzyLrW0UlJOGV5HlZwoHwgqkjJNeEvlBwioMbv8GEIi8cZ27GMh
+         6Ceqs2iyp/sG7JhND309jmg/4b+wxMZ9RkKD3tJpKJUPRGj45Bogz7Tb25GtLNCA/aK9
+         RizoJl0pF5mmZkYSTQmrIB4XAuq7Cfzmle/hkPkuS8p9cKAzLXX14bK/KQUFpequmfTo
+         3nxg==
+X-Gm-Message-State: AOJu0Yy3Wlu3sSIaQu/V3z1x6hwKQZ7HLihOl64aIR8HcDctfbWp+smM
+	iHjjJEJz4nllxnLAip8FRVSJ12UDxLu0gPs9CgjwfWvdSZbZwLgTfGuE/KUrxlfVMLpc/Q==
+X-Gm-Gg: AR+sD13UlhlKMqFpXvHmeUd/EhYmbif9vS9nVAbIJIWU6u8s6ttApIvvtBXKb+//Vx7
+	pKaVq0cEEfPvhYvXvXIWqKJoQAjoACBt2PDIkp8cL/xJv+EMbefVXKvZFt1JTPnvPIFmdgM7W0l
+	JMEkUvsaHbgpMWgEuxJj+L2g1xhyNth57CwjQhpe+cToF4eV+AajNMZpNIki2zIBjjnqm7GIg4r
+	Q9biyqTcrpgXV1ZaRxzM8lbNlh3Su8MB8vwy1MoFEv1KG+1Ei8j6TPVUabsx2YXy8nBqEyXUJLm
+	8bPWtAlb9E+vbbvWjluAjIk2PN5SpMRFxpzn6SFktCphz2PusAbIkhIyYW79oEvZ/xIsk0jVV10
+	DxpDi7QACeHkTAAj9KlYrKHdMiJY1P4FVqyegUWujeca41DUrotJuOzPpMB6ZZORBilRV3wWOGN
+	m3+ThtZvvdglX+FiS9eRbDnoHyVgc=
+X-Received: by 2002:a7b:c443:0:b0:493:c84c:2b57 with SMTP id 5b1f17b1804b1-49573d2068bmr12443275e9.29.1784792647703;
+        Thu, 23 Jul 2026 00:44:07 -0700 (PDT)
+Received: from LAPTOP-AVI.taile24b5.ts.net ([2a00:a040:1b7:4f41:2931:f9dc:7c7e:1085])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47f85a2573csm12333857f8f.0.2026.07.23.00.44.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2026 00:44:07 -0700 (PDT)
+From: Avi Weiss <thnkslprpt@gmail.com>
+To: linux-can@vger.kernel.org
+Cc: Pavel Pisa <pisa@cmp.felk.cvut.cz>,
+	Ondrej Ille <ondrej.ille@gmail.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Martin Jerabek <martin.jerabek01@gmail.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Avi Weiss <thnkslprpt@gmail.com>
+Subject: [PATCH net] can: ctucanfd: handle bus error interrupts
+Date: Thu, 23 Jul 2026 10:44:03 +0300
+Message-ID: <20260723074403.131575-1-thnkslprpt@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Stéphane Grosjean <s.grosjean@peak-system.fr>
+Include REG_INT_STAT_BEI in the top-level error interrupt condition.
 
-Add ixxat_usb_core.h, which defines the data structures, constants and
-USB wire-protocol layouts shared by all three IXXAT USB communication
-layers (CL1, CL2 and CAN IDM).
+BEI is enabled when CAN_CTRLMODE_BERR_REPORTING is requested and
+ctucan_err_interrupt() already handles it. Without checking and
+clearing BEI in the top-level handler, bus error interrupts are not
+handled or acknowledged.
 
-Included in this header:
-  - USB vendor and product IDs for all supported devices
-  - On-wire message structures for CL1 and CL2 (ixxat_can_msg_cl1,
-    ixxat_can_msg_cl2) including the 64-byte CAN FD payload variant
-  - Command/response structures for device init, start, stop, reset,
-    bittiming (ixxat_canbtp), capabilities (ixxat_cancaps2) and
-    firmware version queries
-  - Per-channel runtime state (struct ixxat_usb_candevice) and per-adapter
-    descriptor (struct ixxat_usb_adapter) with bittiming constants,
-    supported control modes and USB endpoint layout
-
-Signed-off-by: Stéphane Grosjean <s.grosjean@peak-system.fr>
+Fixes: 2dcb8e8782d8 ("can: ctucanfd: add support for CTU CAN FD open-source IP core - bus independent part.")
+Signed-off-by: Avi Weiss <thnkslprpt@gmail.com>
 ---
- .../net/can/usb/ixxat_usb/ixxat_usb_core.h    | 862 ++++++++++++++++++
- 1 file changed, 862 insertions(+)
- create mode 100644 drivers/net/can/usb/ixxat_usb/ixxat_usb_core.h
+ drivers/net/can/ctucanfd/ctucanfd_base.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/usb/ixxat_usb/ixxat_usb_core.h b/drivers/net/can/usb/ixxat_usb/ixxat_usb_core.h
-new file mode 100644
-index 000000000000..62799d8040b1
---- /dev/null
-+++ b/drivers/net/can/usb/ixxat_usb/ixxat_usb_core.h
-@@ -0,0 +1,862 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* CAN driver base for IXXAT USB-to-CAN
-+ *
-+ * Copyright (C) 2018-2024 HMS Industrial Networks <socketcan@hms-networks.de>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License as published
-+ * by the Free Software Foundation; version 2 of the License.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ */
-+
-+#ifndef IXXAT_USB_CORE_H
-+#define IXXAT_USB_CORE_H
-+
-+/* vendor ids used by IXXAT devices */
-+#define IXXAT_USB_VENDOR_ID_LEGACY		0x08d8
-+#define IXXAT_USB_VENDOR_ID			0x08db
-+
-+/* supported device ids: CL1 */
-+#define USB2CAN_V2_COMPACT_PRODUCT_ID		0x0008
-+#define USB2CAN_V2_EMBEDDED_PRODUCT_ID		0x0009
-+#define USB2CAN_V2_PROFESSIONAL_PRODUCT_ID	0x000A
-+#define USB2CAN_V2_AUTOMOTIVE_PRODUCT_ID	0x000B
-+#define USB2CAN_V2_PLUGIN_PRODUCT_ID		0x001F
-+
-+/* supported device ids: CL2 */
-+#define USB2CAN_FD_COMPACT_PRODUCT_ID		0x0014
-+#define USB2CAN_FD_EMBEDDED_PRODUCT_ID		0x0015
-+#define USB2CAN_FD_AUTOMOTIVE_PRODUCT_ID	0x0017
-+#define USB2CAN_FD_PCIE_MINI_PRODUCT_ID		0x001B
-+#define USB2CAR_PRODUCT_ID			0x001C
-+#define CAN_IDM101_PRODUCT_ID			0xFF12
-+#define CAN_IDM200_PRODUCT_ID			0xFF13
-+
-+/* supported device ids: CL2 */
-+#define USB2CAN_FD_PRO_PRODUCT_ID		0x0010
-+#define USB2CAN_FD_STANDARD_PRODUCT_ID		0x0011
-+#define USB2CAN_FD_STANDARD_CARD_PRODUCT_ID	0x0012
-+#define USB2CAN_FD_PRO_MODULE_PRODUCT_ID	0x0013
-+#define USB2CAN_FD_STANDARD_MODULE_PRODUCT_ID	0x0014
-+
-+#define IXXAT_USB_BUS_CAN			1
-+
-+#define IXXAT_USB_BUS_TYPE(type)		((u8)(((type) >> 8) & 0x00FF))
-+
-+#define IXXAT_USB_STATE_CONNECTED		BIT(0)
-+#define IXXAT_USB_STATE_STARTED			BIT(1)
-+
-+#define IXXAT_USB_FREE_ENTRY			0xFFFF
-+
-+#define IXXAT_USB_MAX_CHANNEL			5
-+#define IXXAT_USB_MAX_TYPES			32
-+#define IXXAT_USB_MAX_RX_URBS			4
-+#define IXXAT_USB_MAX_TX_URBS			10
-+
-+#define IXXAT_USB_DEV_FWTYPE_BAL		3	/* BAL conform FW */
-+#define IXXAT_USB_DEV_FWTYPE_BMG		4	/* BMG conform FW */
-+
-+#define IXXAT_USB_OPMODE_STANDARD		BIT(0)
-+#define IXXAT_USB_OPMODE_EXTENDED		BIT(1)
-+#define IXXAT_USB_OPMODE_ERRFRAME		BIT(2)
-+#define IXXAT_USB_OPMODE_LISTONLY		BIT(3)
-+
-+#define IXXAT_USB_EXMODE_EXTDATA		BIT(0)
-+#define IXXAT_USB_EXMODE_FASTDATA		BIT(1)
-+#define IXXAT_USB_EXMODE_ISOFD			BIT(2)
-+
-+#define IXXAT_USB_BTMODE_NAT			BIT(0)
-+#define IXXAT_USB_BTMODE_TSM			BIT(1)
-+
-+#define IXXAT_USB_STOP_ACTION_CLEARALL		3
-+
-+/* ctrltype values are split into upper/lower half:
-+ * Bit 15..8 : bus type (0 is reserved)
-+ * Bit  7..0 : controller type
-+ */
-+#define IXXAT_USB_BUSTYPE_RES			0
-+#define IXXAT_USB_BUSTYPE_CAN			1
-+#define IXXAT_USB_BUSTYPE_LIN			2
-+
-+#define IXXAT_USB_GET_BUSTYPE(ctrltype)		(((ctrltype) >> 8) & 0x00FF)
-+#define IXXAT_USB_GET_CTRLTYPE(ctrltype)	((ctrltype) & 0x00FF)
-+
-+#define IXXAT_USB_CAN_CTRL_UNKNOWN		0x00 /* unknown CAN controller */
-+#define IXXAT_USB_CAN_CTRL_INTEL_82527		0x01
-+#define IXXAT_USB_CAN_CTRL_INTEL_82C200		0x02
-+#define IXXAT_USB_CAN_CTRL_INTEL_81C90		0x03
-+#define IXXAT_USB_CAN_CTRL_INTEL_81C92		0x04
-+#define IXXAT_USB_CAN_CTRL_PHILIPS_SJA1000	0x05
-+#define IXXAT_USB_CAN_CTRL_INFINEON_82C900	0x06 /* TwinCAN */
-+#define IXXAT_USB_CAN_CTRL_MOTOROLA_TOUCAN	0x07
-+#define IXXAT_USB_CAN_CTRL_FREESCALE_STAR12_MSCAN	0x08
-+#define IXXAT_USB_CAN_CTRL_FREESCALE_COLDFIRE_FLEXCAN	0x09
-+#define IXXAT_USB_CAN_CTRL_IFI_CAN		0x0A /* IFI-CAN ( ALTERA FPGA CAN ) */
-+#define IXXAT_USB_CAN_CTRL_BOSCH_CCAN		0x0B /* CCAN ( Bosch C_CAN ) */
-+#define IXXAT_USB_CAN_CTRL_ST_BXCAN		0x0C /* ST BX_CAN */
-+#define IXXAT_USB_CAN_CTRL_IFI_CANFD		0x0D /* IFI-CANFD ( ALTERA FPGA CAN ) */
-+#define IXXAT_USB_CAN_CTRL_MCAN			0x0E /* MCAN (Bosch M_CAN version A) */
-+
-+/*
-+ * Values up to 0x3F are reserved for CAN-only and legacy CAN FD
-+ * controllers. The values for new CAN FD controllers are in the
-+ * range from 0x40 to 0x7F. The values in the range from 0x80 to
-+ * 0xFF are reserved for future extensions.
-+ */
-+
-+#define IXXAT_USB_CAN_CTRL_GENERIC_CANFD	0x40 /* generic CAN FD controller */
-+#define IXXAT_USB_CAN_CTRL_IFI_CANFD2		0x41 /* IFI-CANFD */
-+#define IXXAT_USB_CAN_CTRL_BOSCH_MCAN_VERSION_B	0x42 /* MCAN (Bosch M_CAN version B) */
-+
-+/* CAN controller feature flags */
-+#define IXXAT_USB_CAN_FEATURE_STDOREXT		0x00000001  /* 11 OR 29 bit (exclusive) */
-+#define IXXAT_USB_CAN_FEATURE_STDANDEXT		0x00000002  /* 11 AND 29 bit (simultaneous) */
-+#define IXXAT_USB_CAN_FEATURE_RMTFRAME		0x00000004  /* reception of remote frames */
-+#define IXXAT_USB_CAN_FEATURE_ERRFRAME		0x00000008  /* reception of error frames */
-+#define IXXAT_USB_CAN_FEATURE_BUSLOAD		0x00000010  /* bus load measurement */
-+#define IXXAT_USB_CAN_FEATURE_IDFILTER		0x00000020  /* exact message filter */
-+#define IXXAT_USB_CAN_FEATURE_LISTONLY		0x00000040  /* listen only mode */
-+#define IXXAT_USB_CAN_FEATURE_SCHEDULER		0x00000080  /* cyclic message scheduler */
-+#define IXXAT_USB_CAN_FEATURE_GENERRFRM		0x00000100  /* error frame generation */
-+#define IXXAT_USB_CAN_FEATURE_DELAYEDTX		0x00000200  /* delayed message transmitter */
-+#define IXXAT_USB_CAN_FEATURE_SSM		0x00000400  /* single shot mode */
-+#define IXXAT_USB_CAN_FEATURE_HI_PRIO		0x00000800  /* high priority message */
-+
-+#define IXXAT_USB_CAN_FEATURE_EXTDATA		0x00001000  /* extended data length (CAN FD) */
-+#define IXXAT_USB_CAN_FEATURE_FASTDATA		0x00002000  /* fast data bit rate (CAN FD) */
-+
-+#define IXXAT_USB_CAN_FEATURE_CLRTX		0x00004000  /* single tx try msg with ack error */
-+
-+#define IXXAT_USB_CAN_FEATURE_ISOFD		0x00008000  /* i: ISO CAN FD */
-+#define IXXAT_USB_CAN_FEATURE_NONISOFD		0x00010000  /* i: non-ISO CAN FD */
-+
-+#define IXXAT_USB_CAN_FEATURE_AUTOBAUD		0x00020000  /* automatic bit rate detection */
-+
-+#define IXXAT_USB_CAN_FEATURE_TXSELFACK		0x00040000  /* transmit self acknowledge */
-+#define IXXAT_USB_CAN_FEATURE_TXDELAYSEL	0x00080000  /* transmit delay mode selection */
-+
-+#define IXXAT_USB_CAN_BUSC_UNDEFINED		0x0000
-+#define IXXAT_USB_CAN_BUSC_LOWSPEED		0x0001
-+#define IXXAT_USB_CAN_BUSC_HIGHSPEED		0x0002
-+
-+#define IXXAT_USB_CAN_DATA			0x00
-+#define IXXAT_USB_CAN_INFO			0x01
-+#define IXXAT_USB_CAN_ERROR			0x02
-+#define IXXAT_USB_CAN_STATUS			0x03
-+#define IXXAT_USB_CAN_WAKEUP			0x04
-+#define IXXAT_USB_CAN_TIMEOVR			0x05
-+#define IXXAT_USB_CAN_TIMERST			0x06
-+
-+#define IXXAT_USB_CAN_STATUS_OK			0x00000000
-+#define IXXAT_USB_CAN_STATUS_OVERRUN		0x00000002
-+#define IXXAT_USB_CAN_STATUS_ERRLIM		0x00000004
-+#define IXXAT_USB_CAN_STATUS_BUSOFF		0x00000008
-+#define IXXAT_USB_CAN_STATUS_ERR_PAS		0x00002000
-+
-+#define IXXAT_USB_CAN_ERROR_LEN			5
-+
-+#define IXXAT_USB_CAN_ERROR_CODE		0
-+#define IXXAT_USB_CAN_ERROR_COUNTER_RX		3
-+#define IXXAT_USB_CAN_ERROR_COUNTER_TX		4
-+
-+#define IXXAT_USB_CAN_ERROR_STUFF		1
-+#define IXXAT_USB_CAN_ERROR_FORM		2
-+#define IXXAT_USB_CAN_ERROR_ACK			3
-+#define IXXAT_USB_CAN_ERROR_BIT			4
-+#define IXXAT_USB_CAN_ERROR_CRC			6
-+
-+#define IXXAT_USB_MSG_FLAGS_TYPE		0x000000FF
-+#define IXXAT_USB_MSG_FLAGS_DLC			0x000F0000
-+#define IXXAT_USB_MSG_FLAGS_OVR			0x00100000
-+#define IXXAT_USB_MSG_FLAGS_SRR			0x00200000
-+#define IXXAT_USB_MSG_FLAGS_RTR			0x00400000
-+#define IXXAT_USB_MSG_FLAGS_EXT			0x00800000
-+
-+#define IXXAT_USB_DECODE_DLC(flags)		\
-+				(((flags) & IXXAT_USB_MSG_FLAGS_DLC) >> 16)
-+
-+#define IXXAT_USB_ENCODE_DLC(len)		\
-+				(((len) << 16) & IXXAT_USB_MSG_FLAGS_DLC)
-+
-+#define IXXAT_USB_MSG_FLAGS_SINGLESHOT		0x00000100
-+#define IXXAT_USB_MSG_FLAGS_HIPRIORITY		0x00000200
-+
-+#define IXXAT_USB_MSG_FLAGS_TXDELAYMODE		0x00002000
-+#define IXXAT_USB_MSG_FLAGS_TXDELAYMODE_PRE	0x00000000
-+#define IXXAT_USB_MSG_FLAGS_TXDELAYMODE_POST	IXXAT_USB_MSG_FLAGS_TXDELAYMODE
-+
-+#define IXXAT_USB_FDMSG_FLAGS_EDL		0x00000400
-+#define IXXAT_USB_FDMSG_FLAGS_FDR		0x00000800
-+#define IXXAT_USB_FDMSG_FLAGS_ESI		0x00001000
-+
-+/* USB command timeout values  */
-+/* for IXXAT_USB_BRD_CMD_POWER (wakeup/sleep) */
-+#define IXXAT_USB_POWER_CMD_TIMEOUT		500
-+
-+/* for other commands */
-+#define IXXAT_USB_CMD_TIMEOUT			100
-+
-+/* port/socket index to address board functionality */
-+#define IXXAT_USB_BRD_PORT			0xffff
-+#define IXXAT_USB_BRD_SOCKET			0xffff
-+
-+/* CAN related commands*/
-+#define IXXAT_USB_CAN_CMD_START			0x326
-+#define IXXAT_USB_CAN_CMD_STOP			0x327
-+#define IXXAT_USB_CAN_CMD_RESET			0x328
-+
-+/* board related commands */
-+#define IXXAT_USB_BRD_CMD_GET_FWINFO		0x400
-+#define IXXAT_USB_BRD_CMD_GET_DEVCAPS		0x401
-+#define IXXAT_USB_BRD_CMD_GET_DEVINFO		0x402
-+#define IXXAT_USB_BRD_CMD_GET_FWINFO2		0x403
-+#define IXXAT_USB_BRD_CMD_POWER			0x421
-+
-+/* struct ixxat_can_msg_base - IXXAT CAN message base (CL1/CL2)
-+ * @size: Message size (this field excluded)
-+ * @time: Message timestamp
-+ * @msg_id: Message ID
-+ * @flags: Message flags
-+ *
-+ * Contains the common fields of an IXXAT CAN message on both CL1 and CL2
-+ * devices
-+ */
-+struct ixxat_can_msg_base {
-+	u8 size;
-+	__le32 time;
-+	__le32 msg_id;
-+	__le32 flags;
-+} __packed;
-+
-+/* struct ixxat_can_msg_cl1 - IXXAT CAN message (CL1)
-+ * @data: Message data (standard CAN frame)
-+ *
-+ * Contains the fields of an IXXAT CAN message on CL1 devices
-+ */
-+struct ixxat_can_msg_cl1 {
-+	u8 data[CAN_MAX_DLEN];
-+} __packed;
-+
-+/* struct ixxat_can_msg_cl2 - IXXAT CAN message (CL2)
-+ * @client_id: Client ID
-+ * @data: Message data (CAN FD frame)
-+ *
-+ * Contains the fields of an IXXAT CAN message on CL2 devices
-+ */
-+struct ixxat_can_msg_cl2 {
-+	__le32 client_id;
-+	u8 data[CANFD_MAX_DLEN];
-+} __packed;
-+
-+/* struct ixxat_can_msg - IXXAT CAN message
-+ * @base: Base message
-+ * @cl1: Cl1 message
-+ * @cl2: Cl2 message
-+ *
-+ * Contains an IXXAT CAN message
-+ */
-+struct ixxat_can_msg {
-+	struct ixxat_can_msg_base base;
-+	union {
-+		struct ixxat_can_msg_cl1 cl1;
-+		struct ixxat_can_msg_cl2 cl2;
-+	};
-+} __packed;
-+
-+/* struct ixxat_dev_caps - Device capabilities
-+ * @bus_ctrl_count: Stores the bus controller counter
-+ * @bus_ctrl_types: Stores the bus controller types
-+ *
-+ * Contains the device capabilities
-+ */
-+struct ixxat_dev_caps {
-+	__le16 bus_ctrl_count;
-+	__le16 bus_ctrl_types[IXXAT_USB_MAX_TYPES];
-+} __packed;
-+
-+/* struct ixxat_canbtp Bittiming parameters (CL2)
-+ * @mode: Operation mode
-+ * @bps: Bits per second
-+ * @ts1: First time segment
-+ * @ts2: Second time segment
-+ * @sjw: Synchronization jump width
-+ * @tdo: Transmitter delay offset
-+ *
-+ * Bittiming parameters of a CL2 initialization request
-+ */
-+struct ixxat_canbtp {
-+	__le32 mode;
-+	__le32 bps;
-+	__le16 ts1;
-+	__le16 ts2;
-+	__le16 sjw;
-+	__le16 tdo;
-+} __packed;
-+
-+/* struct ixxat_dev_info IXXAT USB device information
-+ * @device_name: Name of the device
-+ * @device_id: Device identification (unique device id)
-+ * @device_version: Device version (0, 1, ...)
-+ * @device_fpga_version: Version of FPGA design
-+ *
-+ * Contains device information of IXXAT USB devices
-+ */
-+struct ixxat_dev_info {
-+	char device_name[16];
-+	char device_id[16];
-+	__le16 device_version;
-+	__le32 device_fpga_version;
-+} __packed;
-+
-+/* struct ixxat_fw_info IXXAT USB device firmware information
-+ * @firmware_type: type of currently running firmware
-+ * @major_version: major firmware version number
-+ * @minor_version: minor firmware version number
-+ * @build_version: build firmware version number
-+ *
-+ * Contains device information of IXXAT USB devices
-+ */
-+struct ixxat_fw_info {
-+	__le32 firmware_type;
-+	__le16 res;
-+	__le16 major_version;
-+	__le16 minor_version;
-+	__le16 build_version;
-+} __packed;
-+
-+/* struct ixxat_fw_info2 IXXAT USB device firmware information
-+ * @firmware_type: type of currently running firmware
-+ * @major_version: major firmware version number
-+ * @minor_version: minor firmware version number
-+ * @build_version: build firmware version number
-+ * @revision     : revision number
-+ *
-+ * Contains device information of IXXAT USB devices
-+ */
-+struct ixxat_fw_info2 {
-+	__le32 firmware_type;
-+	__le16 res;
-+	__le16 major_version;
-+	__le16 minor_version;
-+	__le16 build_version;
-+	__le16 revision;
-+} __packed;
-+
-+/* struct ixxat_cancaps CAN controller capabilities
-+ * ctrltype;		Type of CAN controller (see IXXAT_USB_CAN_CTRL_ const)
-+ * buscoupling;		Type of Bus coupling (see IXXAT_USB_CAN_BUSC_ const)
-+ * features;		supported features (see IXXAT_USB_CAN_FEATURE_ constants)
-+ * can_clock_freq:	clock frequency of the primary counter in Hz
-+ * ts_clock_divisor:	divisor for the message time stamp counter
-+ * cms_clock_divisor:	divisor for the cyclic message scheduler
-+ * cms_max_ticks:	maximum tick count value of the cyclic message
-+ *			scheduler
-+ * dtx_clock_divisor:	divisor for the delayed message transmitter
-+ * dtx_max_ticks:	maximum tick count value of the delayed
-+ *			message transmitter
-+ *
-+ * Contains CAN controller capabilities information
-+ */
-+struct ixxat_cancaps {
-+	__le16 ctrltype;
-+	__le16 buscoupling;
-+	__le32 features;
-+	__le32 can_clock_freq;
-+	__le32 ts_clock_divisor;
-+	__le32 cms_clock_divisor;
-+	__le32 cms_max_ticks;
-+	__le32 dtx_clock_divisor;
-+	__le32 dtx_max_ticks;
-+} __packed;
-+
-+/* struct ixxat_cancaps2 CANFD controller capabilities
-+ * ctrltype;		Type of CAN controller (see IXXAT_USB_CAN_CTRL_ const)
-+ * buscoupling;		Type of Bus coupling (see IXXAT_USB_CAN_BUSC_ const)
-+ * features;		supported features (see IXXAT_USB_CAN_FEATURE_ constants)
-+ * can_clock_freq:	CAN clock frequency in Hz (16/2 MHz for SJA1000)
-+ * sdr_range_min;	minimum bit timing values for standard bit rate
-+ * sdr_range_max;	maximum bit timing values for standard bit rate
-+ * fdr_range_min;	minimum bit timing values for fast data bit rate
-+ * fdr_range_max;	maximum bit timing values for fast data bit rate
-+ * ts_clock_freq;	clock frequency of the time stamp counter [Hz]
-+ * ts_clock_divisor;	divisor for the message time stamp counter
-+ * cms_clock_freq;	clock frequency of cyclic message scheduler [Hz]
-+ * cms_clock_divisor;	divisor for the cyclic message scheduler
-+ * cms_max_ticks;	maximum tick count value of the cyclic message
-+ *			scheduler
-+ * dtx_clock_freq;	clock frequency of the delayed message transmitter [Hz]
-+ * dtx_clock_divisor;	divisor for the delayed message transmitter
-+ * dtx_max_ticks;	maximum tick count value of the delayed
-+ *			message transmitter
-+ *
-+ * Contains CANFD controller capabilities information
-+ */
-+struct ixxat_cancaps2 {
-+	__le16 ctrltype;
-+	__le16 buscoupling;
-+	__le32 features;
-+	__le32 can_clock_freq;
-+	struct ixxat_canbtp sdr_range_min;
-+	struct ixxat_canbtp sdr_range_max;
-+	struct ixxat_canbtp fdr_range_min;
-+	struct ixxat_canbtp fdr_range_max;
-+	__le32 ts_clock_freq;
-+	__le32 ts_clock_divisor;
-+	__le32 cms_clock_freq;
-+	__le32 cms_clock_divisor;
-+	__le32 cms_max_ticks;
-+	__le32 dtx_clock_freq;
-+	__le32 dtx_clock_divisor;
-+	__le32 dtx_max_ticks;
-+} __packed;
-+
-+/* Device timestamps
-+ *
-+ * Every device maintains an internal clock used for message timestamps.
-+ * The resolution of the clock is reported by the controller capabilities and
-+ * denotes the resolution of one clock tick by the two values:
-+ * ts_clock_freq/ts_clock_divisor
-+ * The following timeline occurs during the operation of a controller:
-+ *
-+ *         t_start                                      t_stop
-+ *     <------------>                               <------------>
-+ *
-+ *     A            B           D                   E            F          H
-+ *     |            |           |                   |            |          |
-+ *     v            v           v                   v            v          v
-+ *  ---------------------------------~  ...  ~----------------------------------> t
-+ *           ^                                            ^
-+ *           |                                            |
-+ *           C                                            G
-+ *
-+ * A: controller start command (request) is sent to the device
-+ * B: controller start command (response) returns from device and returns device
-+ *    time stamp of C
-+ * C: assumed CAN controller start time stamp, it is assumed to be in the middle
-+ *     between A and B (A + (t_start/2))
-+ * D: controller start info message arrives over the message fifo, it contains
-+ *    the device time stamp of C, too
-+ * E: controller stop command (request) is sent to the device
-+ * F: controller stop command (response) returns
-+ * G: assumed CAN controller stop time stamp, it is assumed to be in the middle
-+ *    between E and F (E + (t_stop/2))
-+ * H: controller stop info message arrives over the message fifo, it contains
-+ *    the device time stamp of G
-+ *
-+ * To correlate the start timestamp to the host clock we determine:
-+ *
-+ *     t_host_C = (t_host_B + t_host_A) / 2
-+ *              = t_host_A + ((t_host_A - t_host_B) / 2)
-+ *
-+ * t_C_host then corresponds to the device clock tick at C (t_C_device).
-+ * The current time stamp correlated to the host clock (t_current_host) can then
-+ * be determined via
-+ *
-+ *     t_host_current = t_host_C + conv_to_nsec(t_dev_current - t_dev_C)
-+ *
-+ * struct ixxat_time_ref Time reference
-+ * tick_multiplier:	used to convert ticks to ns
-+ * tick_divider:	used to convert ticks to ns
-+ * @ts_overrun_ticks:	number of timer overruns since start
-+ *
-+ * Contains time references of the device and the host
-+ */
-+struct ixxat_time_ref {
-+	u64 tick_multiplier;
-+	u64 tick_divider;
-+	u64 ts_overrun_ticks;
-+};
-+
-+/* struct ixxat_tx_urb_context URB content for transmission
-+ * @dev: pointer to the IXXAT USB CAN device
-+ * @urb: USB request block
-+ * @urb_index: index of this URB (used to mark the context as occupied)
-+ * @msg_index: index of message (client_id)
-+ * @msg_packet_len: Data length code (only used if no loopback is enabled)
-+ * @msg_packet_no: number of packets (only used if no loopback is enabled)
-+ *
-+ * Contains content for USB request block transmissions
-+ */
-+struct ixxat_tx_urb_context {
-+	struct ixxat_usb_candevice *dev;
-+	struct urb *urb;
-+	u16  urb_index;
-+	u16  msg_index;
-+};
-+
-+/* struct ixxat_usb_candevice IXXAT USB CAN device
-+ * @can: CAN common private data
-+ * @adapter: USB network descriptor
-+ * @udev: USB device
-+ * @netdev: Net_device
-+ * @active_tx_urbs: Active tx urbs
-+ * @tx_anchor: Submitted tx USB anchor
-+ * @tx_contexts: Buffer for tx contexts
-+ * @rx_anchor: Submitted rx USB anchor
-+ * @msgs: store to set the used message indexes
-+ * @msg_lastindex: last index which was set
-+ * @loopback:  global loopback
-+ * @state: Device state
-+ * @ctrl_index: Controller index
-+ * @ep_msg_in: USB endpoint for incoming messages
-+ * @ep_msg_out: USB endpoint for outgoing messages
-+ * @prev_dev: Previous opened device
-+ * @time_ref: Time reference
-+ * @dev_info: Device information
-+ * @bec: CAN error counter
-+ *
-+ * IXXAT USB based CAN device
-+ */
-+struct ixxat_usb_candevice {
-+	struct can_priv can;
-+	const struct ixxat_usb_adapter *adapter;
-+	struct usb_device *udev;
-+	struct net_device *netdev;
-+
-+	atomic_t active_tx_urbs;
-+	struct usb_anchor tx_anchor;
-+	struct ixxat_tx_urb_context tx_contexts[IXXAT_USB_MAX_TX_URBS];
-+
-+	struct usb_anchor rx_anchor;
-+	void  *rx_buf[IXXAT_USB_MAX_RX_URBS];
-+
-+	u32 msgs;
-+	u32 msg_lastindex;
-+
-+	bool loopback;
-+	u32 state;
-+	u16 ctrl_index;
-+
-+	u8 ep_msg_in;
-+	u8 ep_msg_out;
-+
-+	/* This lock prevents a race condition between xmit and receive. */
-+	spinlock_t dev_lock;
-+
-+	/* pointer to shared USB device data  */
-+	struct ixxat_usb_device_data *shareddata;
-+
-+	/* used to link can devices together */
-+	struct ixxat_usb_candevice *prev_dev;
-+
-+	struct ixxat_time_ref time_ref;
-+
-+	struct can_berr_counter bec;
-+};
-+
-+/* struct ixxat_usb_dal_req IXXAT device request block
-+ * @size: Request size
-+ * @port: Request port
-+ * @socket: Request socket
-+ * @code: Request code
-+ *
-+ * IXXAT device request block
-+ */
-+struct ixxat_usb_dal_req {
-+	__le32 size;
-+	__le16 port;
-+	__le16 socket;
-+	__le32 code;
-+} __packed;
-+
-+/* struct ixxat_usb_dal_res IXXAT device response block
-+ * @res_size: Expected response size
-+ * @ret_size: Actual response size
-+ * @code: Return code
-+ *
-+ * IXXAT device response block
-+ */
-+struct ixxat_usb_dal_res {
-+	__le32 res_size;
-+	__le32 ret_size;
-+	__le32 code;
-+} __packed;
-+
-+/* struct ixxat_usb_dal_cmd IXXAT device command
-+ * @req: Request block
-+ * @req: Response block
-+ *
-+ * IXXAT device command
-+ */
-+struct ixxat_usb_dal_cmd {
-+	struct ixxat_usb_dal_req req;
-+	struct ixxat_usb_dal_res res;
-+} __packed;
-+
-+/* struct ixxat_usb_caps_cmd Device capabilities command
-+ * @req: Request block
-+ * @res: Response block
-+ * @caps: Device capabilities
-+ *
-+ * Can be sent to a device to request its capabilities
-+ */
-+struct ixxat_usb_caps_cmd {
-+	struct ixxat_usb_dal_req req;
-+	struct ixxat_usb_dal_res res;
-+	struct ixxat_dev_caps caps;
-+	__le16 rsvd;
-+} __packed;
-+
-+/* struct ixxat_usb_init_cl1_cmd Initialization command (CL1)
-+ * @req: Request block
-+ * @mode: Operation mode
-+ * @btr0: Bittiming register 0
-+ * @btr1: Bittiming register 1
-+ * @padding: 1 byte padding
-+ * @res: Response block
-+ *
-+ * Can be sent to a CL1 device to initialize it
-+ */
-+struct ixxat_usb_init_cl1_cmd {
-+	struct ixxat_usb_dal_req req;
-+	u8 mode;
-+	u8 btr0;
-+	u8 btr1;
-+	u8 padding;
-+	struct ixxat_usb_dal_res res;
-+} __packed;
-+
-+/* struct ixxat_usb_init_cl2_cmd Initialization command (CL2)
-+ * @req: Request block
-+ * @opmode: Operation mode
-+ * @exmode: Extended mode
-+ * @sdr: Standard bittiming parameters
-+ * @fdr: Fast data bittiming parameters
-+ * @_padding: 2 bytes padding
-+ * @res: Response block
-+ *
-+ * Can be sent to a CL2 device to initialize it
-+ */
-+struct ixxat_usb_init_cl2_cmd {
-+	struct ixxat_usb_dal_req req;
-+	u8 opmode;
-+	u8 exmode;
-+	struct ixxat_canbtp sdr;
-+	struct ixxat_canbtp fdr;
-+	__le16 _padding;
-+	struct ixxat_usb_dal_res res;
-+} __packed;
-+
-+/* struct ixxat_usb_getcaps_cl1_cmd Controller read capabilities
-+ * @req: Request block
-+ * @res: Response block
-+ * @caps: Controller capabilities
-+ *
-+ * Can be sent to a device to get the controller capabilities
-+ */
-+struct ixxat_usb_getcaps_cl1_cmd {
-+	struct ixxat_usb_dal_req req;
-+	struct ixxat_usb_dal_res res;
-+	struct ixxat_cancaps caps;
-+} __packed;
-+
-+/* struct ixxat_usb_getcaps_cl2_cmd Controller read capabilities
-+ * @req: Request block
-+ * @res: Response block
-+ * @caps: Controller capabilities
-+ *
-+ * Can be sent to a device to get the controller capabilities
-+ */
-+struct ixxat_usb_getcaps_cl2_cmd {
-+	struct ixxat_usb_dal_req req;
-+	struct ixxat_usb_dal_res res;
-+	struct ixxat_cancaps2 caps;
-+} __packed;
-+
-+/* struct ixxat_usb_start_cmd Controller start command
-+ * @req: Request block
-+ * @res: Response block
-+ * @time: Timestamp
-+ *
-+ * Can be sent to a device to start its controller
-+ */
-+struct ixxat_usb_start_cmd {
-+	struct ixxat_usb_dal_req req;
-+	struct ixxat_usb_dal_res res;
-+	__le32 time;
-+} __packed;
-+
-+/* struct ixxat_usb_stop_cmd Controller stop command
-+ * @req: Request block
-+ * @action: Stop action
-+ * @res: Response block
-+ *
-+ * Can be sent to a device to start its controller
-+ */
-+struct ixxat_usb_stop_cmd {
-+	struct ixxat_usb_dal_req req;
-+	__le32 action;
-+	struct ixxat_usb_dal_res res;
-+} __packed;
-+
-+/* struct ixxat_usb_power_cmd Power command
-+ * @req: Request block
-+ * @mode: Power mode
-+ * @_padding1: 1 byte padding
-+ * @_padding2: 2 byte padding
-+ * @res: Response block
-+ *
-+ * Can be sent to a device to set its power mode
-+ */
-+struct ixxat_usb_power_cmd {
-+	struct ixxat_usb_dal_req req;
-+	u8 mode;
-+	u8 _padding1;
-+	__le16 _padding2;
-+	struct ixxat_usb_dal_res res;
-+} __packed;
-+
-+/* struct ixxat_usb_info_cmd Device information command
-+ * @req: Request block
-+ * @res: Response block
-+ * @info: Device information
-+ *
-+ * Can be sent to a device to request its device information
-+ */
-+struct ixxat_usb_info_cmd {
-+	struct ixxat_usb_dal_req req;
-+	struct ixxat_usb_dal_res res;
-+	struct ixxat_dev_info info;
-+	__le16 rsvd;
-+} __packed;
-+
-+/* struct ixxat_usb_fwinfo_cmd Firmware information command
-+ * @req: Request block
-+ * @res: Response block
-+ * @info: Firmware information
-+ *
-+ * Can be sent to a device to request its firmware information
-+ */
-+struct ixxat_usb_fwinfo_cmd {
-+	struct ixxat_usb_dal_req req;
-+	struct ixxat_usb_dal_res res;
-+	struct ixxat_fw_info info;
-+} __packed;
-+
-+/* struct ixxat_usb_fwinfo2_cmd Firmware information command
-+ * @req: Request block
-+ * @res: Response block
-+ * @info: Firmware information
-+ *
-+ * Can be sent to a device to request its firmware information
-+ */
-+struct ixxat_usb_fwinfo2_cmd {
-+	struct ixxat_usb_dal_req req;
-+	struct ixxat_usb_dal_res res;
-+	struct ixxat_fw_info2 info;
-+} __packed;
-+
-+/* USB command buffer */
-+union ixxat_usb_cmd {
-+	struct ixxat_usb_caps_cmd caps;
-+	struct ixxat_usb_info_cmd info;
-+	struct ixxat_usb_fwinfo_cmd fwinfo;
-+	struct ixxat_usb_fwinfo2_cmd fwinfo2;
-+	struct ixxat_usb_start_cmd start;
-+	struct ixxat_usb_stop_cmd stop;
-+	struct ixxat_usb_power_cmd power;
-+	struct ixxat_usb_dal_cmd dal;
-+
-+	struct ixxat_usb_init_cl1_cmd cl1;
-+	struct ixxat_usb_getcaps_cl1_cmd caps_cl1;
-+
-+	struct ixxat_usb_init_cl2_cmd cl2;
-+	struct ixxat_usb_getcaps_cl2_cmd caps_cl2;
-+};
-+
-+/* struct ixxat_usb_device_data IXXAT USB device data
-+ * @timeref_valid: Time reference valid
-+ * @kt_host_start: Host start time
-+ * @ts_dev_start: Device start time
-+ */
-+struct ixxat_usb_device_data {
-+	/* used to lock write access to the device members */
-+	spinlock_t access_lock;
-+
-+	/* lock access to command channel on endpoint 0 */
-+	struct mutex cmd_channel_lock;
-+
-+	/* device and firmware info */
-+	struct ixxat_dev_info dev_info;
-+	struct ixxat_fw_info2 fw_info;
-+
-+	/* controller capabilities */
-+	struct ixxat_cancaps2 caps;
-+
-+	/* time reference of first controller start */
-+	bool    timeref_valid;
-+	ktime_t kt_host_start;
-+	u32     ts_dev_start;
-+
-+	/* USB commands buffer */
-+	union ixxat_usb_cmd *cmdbuf;
-+};
-+
-+/* struct ixxat_usb_adapter IXXAT USB device adapter
-+ * @clock: Clock frequency
-+ * @bt: Bittiming constants
-+ * @btd: Data bittiming constants
-+ * @modes: Supported modes
-+ * @buffer_size_rx: Buffer size for receiving
-+ * @buffer_size_tx: Buffer size for transfer
-+ * @ep_msg_in: USB endpoint buffer for incoming messages
-+ * @ep_msg_out: USB endpoint buffer for outgoing messages
-+ * @ep_offs: Endpoint offset (device depended)
-+ *
-+ * Device Adapter for IXXAT USB devices
-+ */
-+struct ixxat_usb_adapter {
-+	const u32 modes;
-+	const u32 clock;
-+	const struct can_bittiming_const *bt;
-+	const struct can_bittiming_const *btd;
-+	const u16 buffer_size_rx;
-+	const u16 buffer_size_tx;
-+	const u8 ep_msg_in[IXXAT_USB_MAX_CHANNEL];
-+	const u8 ep_msg_out[IXXAT_USB_MAX_CHANNEL];
-+	const u8 ep_offs;
-+
-+	int (*get_ctrl_caps)(struct ixxat_usb_candevice *dev,
-+			     struct ixxat_cancaps2 *caps);
-+	int (*init_ctrl)(struct ixxat_usb_candevice *dev);
-+};
-+
-+extern const struct ixxat_usb_adapter usb2can_cl1;
-+extern const struct ixxat_usb_adapter usb2can_v2;
-+extern const struct ixxat_usb_adapter usb2can_fd;
-+extern const struct ixxat_usb_adapter can_fd_idm;
-+
-+/* ixxat_usb_setup_cmd() - Setup a device command
-+ * @req: Request block
-+ * @res: Response block
-+ *
-+ * This function sets the default values in the request and the response block
-+ * of a device command
-+ */
-+void ixxat_usb_setup_cmd(struct ixxat_usb_dal_req *req,
-+			 struct ixxat_usb_dal_res *res);
-+
-+/* ixxat_usb_send_cmd() - Send a command to the device
-+ * @dev: pointer to the IXXAT USB CAN device
-+ * @dev: pointer to the USB device
-+ * @devdata: pointer to the IXXAT USB device data
-+ * @port: port number to send the command to
-+ * @req: pointer to the request structure
-+ * @req_size: size of the request structure
-+ * @res: pointer to the response structure
-+ * @res_size: size of the response structure
-+ * @cmd_delay: delay in milliseconds to wait for a response
-+ *
-+ * This function sends a specific command to the device
-+ *
-+ * Return: Negative error code or zero on success
-+ */
-+int ixxat_usb_send_cmd(struct ixxat_usb_candevice *dev, const u16 port,
-+		       void *req, const u16 req_size, void *res,
-+		       const u16 res_size, const unsigned long cmd_delay);
-+
-+#endif /* IXXAT_USB_CORE_H */
+diff --git a/drivers/net/can/ctucanfd/ctucanfd_base.c b/drivers/net/can/ctucanfd/ctucanfd_base.c
+index 0ea1ff28dfce..0cd2d428c1f1 100644
+--- a/drivers/net/can/ctucanfd/ctucanfd_base.c
++++ b/drivers/net/can/ctucanfd/ctucanfd_base.c
+@@ -1136,8 +1136,12 @@ static irqreturn_t ctucan_interrupt(int irq, void *dev_id)
+ 		/* Error interrupts */
+ 		if (FIELD_GET(REG_INT_STAT_EWLI, isr) ||
+ 		    FIELD_GET(REG_INT_STAT_FCSI, isr) ||
+-		    FIELD_GET(REG_INT_STAT_ALI, isr)) {
+-			icr = isr & (REG_INT_STAT_EWLI | REG_INT_STAT_FCSI | REG_INT_STAT_ALI);
++		    FIELD_GET(REG_INT_STAT_ALI, isr) ||
++		    FIELD_GET(REG_INT_STAT_BEI, isr)) {
++			icr = isr & (REG_INT_STAT_EWLI |
++				     REG_INT_STAT_FCSI |
++				     REG_INT_STAT_ALI |
++				     REG_INT_STAT_BEI);
+ 
+ 			ctucan_netdev_dbg(ndev, "some ERR interrupt: clearing 0x%08x\n", icr);
+ 			ctucan_write32(priv, CTUCANFD_INT_STAT, icr);
 -- 
-2.53.0
+2.43.0
 
