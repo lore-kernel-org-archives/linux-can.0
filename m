@@ -1,277 +1,122 @@
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtpx.fel.cvut.cz (smtpx.feld.cvut.cz [147.32.210.153])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932FE23393C;
-	Thu, 23 Jul 2026 10:05:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A27B40B115;
+	Thu, 23 Jul 2026 10:17:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.32.210.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784801146; cv=none; b=fxD8r6LHKVFHhjo1RayWe6OvEWnGUkosXydO0D33o4MDTRo7g/woke5uxKEBtv/GWJwzgPbwq5ucx679HAevBBEo3CQMVTSrOX8LXgVGlwthIt4he/Xhwd+PPtHxV6/9PRDj8WL/k2bSee92XWNPAShD5MJCSSpFBVlkzXoacfM=
+	t=1784801857; cv=none; b=TEwS+Ev3cOfuO1kmEmBK93e4vJDk/CzYhyIIBD8cflEQ6iu/KseMzMf4V0v1ws8sv17T7WhnLd3NQWjGwiXLKQvmLqi6Yfe3lY2Re+TdpdyDhiu/9yy4WEeWB1h+fKgAfn3s2kq7L4U9+ms1s4tPcvN2691CtX/4yfcLn5er3VI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784801146; c=relaxed/simple;
-	bh=cGglKTVxub8fpqSlz6JJI47B+oqgmdmim1g0fVnb5Dg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BPHfdY5F5o0x6JUj7BQedJ7CNdC/lpAzy1aONAId6SK5gRRB/kJi+6El30q7vW5kYYRLsryH1C4WaotsDo7AKPZVnMcS7iMymZkc2+aIRbOL7wIenmia+nskyJ/c0glGar28UilDev+CppgyPrAcUJI5hdlj8lu9caM0LDtpFBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qfYfG9cO; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1784801857; c=relaxed/simple;
+	bh=IMyHJ1uCYih5VupCBflOXNUl9xjAdtK0OfsHz3oABDw=;
+	h=From:To:Subject:Date:Cc:References:In-Reply-To:MIME-Version:
+	 Content-Type:Content-Disposition:Message-Id; b=lHGx1DbuhNuzIyysnnXrsu/pgMQHt/NIz2c5qVMPNEWo5u6WbNroSBj46P/LVAdwbvQ+hvzkr8l1z0oHlN0oc6v8nIpnoPljEJ/ncrYONXKiyL3k8swA3500CcmKAR78e1cHFN5TyauhWn6imxf3HdL5rMTX9cMua3ANeamxu4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fel.cvut.cz; spf=pass smtp.mailfrom=fel.cvut.cz; dkim=pass (2048-bit key) header.d=fel.cvut.cz header.i=@fel.cvut.cz header.b=PjgLa8uI; arc=none smtp.client-ip=147.32.210.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fel.cvut.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fel.cvut.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qfYfG9cO"
-Message-ID: <7ced0697-e968-4e4f-b529-e333eae764f9@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1784801142;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/ADYPGwARCkWXKejUcBpoZqxXd5DnABnAkLDFbqIshw=;
-	b=qfYfG9cOu4lz4rB96rwO9oBKCsH/GEfSQCUeXHNEKWBy5s/OaU5pwdjGFZZ2xHzzXdNX2C
-	uyBNJ+n6bO/XO+3HioRyX6EIe8gwcQWTYGpg9dIT4UQtHWvsYiH3qWjTIKN2z8F3T9Tagw
-	izWgLDuBuJ1qPKIdjyaIpLcMEIAT7/I=
-Date: Thu, 23 Jul 2026 11:05:38 +0100
+	dkim=pass (2048-bit key) header.d=fel.cvut.cz header.i=@fel.cvut.cz header.b="PjgLa8uI"
+Received: from localhost (unknown [192.168.200.27])
+	by smtpx.fel.cvut.cz (Postfix) with ESMTP id 386D32673A;
+	Thu, 23 Jul 2026 12:17:32 +0200 (CEST)
+X-Virus-Scanned: IMAP STYX AMAVIS
+Received: from smtpx.fel.cvut.cz ([192.168.200.2])
+ by localhost (cerokez-250.feld.cvut.cz [192.168.200.27]) (amavis, port 10060)
+ with ESMTP id 8UcYJU-EzeEI; Thu, 23 Jul 2026 12:17:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fel.cvut.cz;
+	s=felmail; t=1784801850;
+	bh=vx1PC/Q+ixT2juZRzVWK5XW8N1zhU5lePLgiFnqWY2Q=;
+	h=From:To:Subject:Date:Cc:References:In-Reply-To:From;
+	b=PjgLa8uIk7Pls5pNygNdUNNz/1lIAHUz+4y0eNQGRPls5zjODlzPWx06Ye53ujLjG
+	 aYGPi6pAesNnoCLUHq3Xar0Qx+n0W8gwBxn3YfljuRl8yt3RtqVEbRljpOHCMdGhNt
+	 S5+bZ2DvP2RHyzkWd+tB5uFv0BfamMimyTCkQszv9xy1FbsCwDCBlJszRuYRlN0inh
+	 +jFANgarwSb//dswhZ06d1WGlJYArYPJCoMZInRyhIEk1D5xiyBz6Mn3rtYRH+bfYB
+	 m/30XZE8hTaM7xqvmXK9ofmfxBVennm1XFgcrNzrVNQKUnaoPBZCeBdt9BFffPbH/p
+	 c7DSBjT+BoW4w==
+Received: from [147.32.86.199] (unknown [147.32.86.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pisa)
+	by smtpx.fel.cvut.cz (Postfix) with ESMTPSA id 3D093264DE;
+	Thu, 23 Jul 2026 12:17:29 +0200 (CEST)
+From: Pavel Pisa <pisa@fel.cvut.cz>
+To: Avi Weiss <thnkslprpt@gmail.com>
+Subject: Re: [PATCH net] can: ctucanfd: unmap BAR0 using base address
+Date: Thu, 23 Jul 2026 12:17:28 +0200
+User-Agent: KMail/1.9.10
+Cc: linux-can@vger.kernel.org,
+ Ondrej Ille <ondrej.ille@gmail.com>,
+ "Marc Kleine-Budde" <mkl@pengutronix.de>,
+ Vincent Mailhol <mailhol@kernel.org>,
+ Martin Jerabek <martin.jerabek01@gmail.com>,
+ netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20260723095934.181042-1-thnkslprpt@gmail.com>
+In-Reply-To: <20260723095934.181042-1-thnkslprpt@gmail.com>
+X-KMail-QuotePrefix: > 
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH can v3] can: gs_usb: fix hardware timestamp state for
- mixed channels
-To: Shuangpeng <shuangpeng.kernel@gmail.com>
-Cc: mkl@pengutronix.de, mailhol@kernel.org, uwu@coelacanthus.name,
- kees@kernel.org, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-References: <20260720184042.1712217-1-shuangpeng.kernel@gmail.com>
- <da89a51e-3e42-4bcb-8e80-c992b1887ac8@linux.dev>
- <97232020-922B-42BE-B050-A42B6FF40B85@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <97232020-922B-42BE-B050-A42B6FF40B85@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: Text/Plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Disposition: inline
+Message-Id: <202607231217.28574.pisa@fel.cvut.cz>
 
-On 23/07/2026 06:17, Shuangpeng wrote:
-> 
-> 
->> On Jul 20, 2026, at 18:35, Vadim Fedorenko <vadim.fedorenko@linux.dev> wrote:
->>
->> On 20.07.2026 19:40, Shuangpeng Bai wrote:
->>> The hardware timestamp state is shared by struct gs_usb, but
->>> gs_can_open() and gs_can_close() tie its initialization and teardown to
->>> active_channels and to the feature bits of the channel being opened or
->>> closed.
->>> This is wrong for mixed-channel devices in both directions. If a
->>> non-timestamp channel opens first, a later timestamp-capable channel does
->>> not initialize the shared cyclecounter/timecounter because active_channels
->>> is already non-zero. Timestamp RX then calls timecounter_cyc2time() with
->>> parent->tc.cc unset.
->>> Conversely, if a timestamp-capable channel opens first and starts the
->>> shared delayed work, then closes while a non-timestamp channel remains
->>> active, disconnect may close the non-timestamp channel last. The old
->>> teardown check skips gs_usb_timestamp_stop() in that case and frees
->>> struct gs_usb while the delayed work timer is still queued.
->>> Count the number of active timestamp-capable channels instead. Start the
->>> shared timestamp state when the first such channel opens, stop it when the
->>> last such channel closes, and unwind the count if open fails.
->>> Initialize the shared timestamp lock and delayed work once during probe.
->>> The first timestamp-capable channel may be opened while RX URBs are
->>> already active, so guard the count and timecounter access with the same
->>> lock. Keep the count zero until timecounter_init() completes, and make RX
->>> and delayed work skip the timecounter while the count is zero.
->>> Fixes: 45dfa45f52e6 ("can: gs_usb: add RX and TX hardware timestamp support")
->>> Cc: stable@vger.kernel.org
->>> Signed-off-by: Shuangpeng Bai <shuangpeng.kernel@gmail.com>
->>> ---
->>> Changes in v3:
->>> - Drop Suggested-by tag.
->>> - Move active_timestamp_channels management into the timestamp init/stop
->>>    helpers.
->>> - Protect active_timestamp_channels with tc_lock, and keep it zero until
->>>    timecounter_init() has completed.
->>> - Make RX timestamp conversion and the delayed work skip the timecounter
->>>    while no timestamp-capable channel is active.
->>> - Initialize the shared timestamp lock and delayed work once during probe.
->>> Changes in v2:
->>> - Count active timestamp-capable channels instead of tracking only whether
->>>    the shared timestamp worker has been started.
->>> - Stop the shared timestamp worker when the last timestamp-capable channel
->>>    closes, even if non-timestamp channels remain open.
->>> - Unwind the timestamp-capable channel count on gs_can_open() failures.
->>>   drivers/net/can/usb/gs_usb.c | 81 ++++++++++++++++++++++++------------
->>>   1 file changed, 54 insertions(+), 27 deletions(-)
->>> diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
->>> index ec9a7cbbbc69..be25d82cedcb 100644
->>> --- a/drivers/net/can/usb/gs_usb.c
->>> +++ b/drivers/net/can/usb/gs_usb.c
->>> @@ -337,6 +337,7 @@ struct gs_usb {
->>>      unsigned int hf_size_rx;
->>>    u8 active_channels;
->>> + u8 active_timestamp_channels;
->>>    u8 channel_cnt;
->>>      unsigned int pipe_in;
->>> @@ -447,14 +448,20 @@ static void gs_usb_timestamp_work(struct work_struct *work)
->>>   {
->>>    struct delayed_work *delayed_work = to_delayed_work(work);
->>>    struct gs_usb *parent;
->>> + bool active;
->>>      parent = container_of(delayed_work, struct gs_usb, timestamp);
->>>    spin_lock_bh(&parent->tc_lock);
->>> - timecounter_read(&parent->tc);
->>> + active = parent->active_timestamp_channels;
->>> + if (active) {
->>> + timecounter_read(&parent->tc);
->>> + active = parent->active_timestamp_channels;
->>> + }
->>>    spin_unlock_bh(&parent->tc_lock);
->>>   - schedule_delayed_work(&parent->timestamp,
->>> -       GS_USB_TIMESTAMP_WORK_DELAY_SEC * HZ);
->>> + if (active)
->>> + schedule_delayed_work(&parent->timestamp,
->>> +       GS_USB_TIMESTAMP_WORK_DELAY_SEC * HZ);
->>>   }
->>>     static void gs_usb_skb_set_timestamp(struct gs_can *dev,
->>> @@ -465,6 +472,11 @@ static void gs_usb_skb_set_timestamp(struct gs_can *dev,
->>>    u64 ns;
->>>      spin_lock_bh(&parent->tc_lock);
->>> + if (!parent->active_timestamp_channels) {
->>> + spin_unlock_bh(&parent->tc_lock);
->>> + return;
->>> + }
->>> +
->>>    ns = timecounter_cyc2time(&parent->tc, timestamp);
->>>    spin_unlock_bh(&parent->tc_lock);
->>>   @@ -474,25 +486,40 @@ static void gs_usb_skb_set_timestamp(struct gs_can *dev,
->>>   static void gs_usb_timestamp_init(struct gs_usb *parent)
->>>   {
->>>    struct cyclecounter *cc = &parent->cc;
->>> + bool first = false;
->>>   - cc->read = gs_usb_timestamp_read;
->>> - cc->mask = CYCLECOUNTER_MASK(32);
->>> - cc->shift = 32 - bits_per(NSEC_PER_SEC / GS_USB_TIMESTAMP_TIMER_HZ);
->>> - cc->mult = clocksource_hz2mult(GS_USB_TIMESTAMP_TIMER_HZ, cc->shift);
->>> -
->>> - spin_lock_init(&parent->tc_lock);
->>>    spin_lock_bh(&parent->tc_lock);
->>> - timecounter_init(&parent->tc, &parent->cc, ktime_get_real_ns());
->>> + if (!parent->active_timestamp_channels) {
->>> + cc->read = gs_usb_timestamp_read;
->>> + cc->mask = CYCLECOUNTER_MASK(32);
->>> + cc->shift = 32 - bits_per(NSEC_PER_SEC /
->>> +       GS_USB_TIMESTAMP_TIMER_HZ);
->>> + cc->mult = clocksource_hz2mult(GS_USB_TIMESTAMP_TIMER_HZ,
->>> +        cc->shift);
->>> +
->>> + timecounter_init(&parent->tc, &parent->cc,
->>> +  ktime_get_real_ns());
->>> + first = true;
->>> + }
->>> + parent->active_timestamp_channels++;
->>>    spin_unlock_bh(&parent->tc_lock);
->>>   - INIT_DELAYED_WORK(&parent->timestamp, gs_usb_timestamp_work);
->>> - schedule_delayed_work(&parent->timestamp,
->>> -       GS_USB_TIMESTAMP_WORK_DELAY_SEC * HZ);
->>> + if (first)
->>> + schedule_delayed_work(&parent->timestamp,
->>> +       GS_USB_TIMESTAMP_WORK_DELAY_SEC * HZ);
->>>   }
->>>     static void gs_usb_timestamp_stop(struct gs_usb *parent)
->>>   {
->>> - cancel_delayed_work_sync(&parent->timestamp);
->>> + bool last;
->>> +
->>> + spin_lock_bh(&parent->tc_lock);
->>> + parent->active_timestamp_channels--;
->>> + last = !parent->active_timestamp_channels;
->>> + spin_unlock_bh(&parent->tc_lock);
->>> +
->>> + if (last)
->>> + cancel_delayed_work_sync(&parent->timestamp);
->>>   }
->>>   
->>
->> tc_lock serializes active_timestamp_channels updates, but this work manipulation
->> is not protected. Imagine CPU0 doing gs_usb_timestamp_stop while CPU1 is doing
->> gs_can_open:
->>
->>     CPU0     CPU1
->>
->> gs_usb_timestamp_stop() gs_usb_timestamp_init()
->>   spin_lock_bh(&tc_lock);
->>   active_timestamp_channels--
->>   last = true
->>   spin_unlock_bh(&tc_lock);
->> ... spin_lock_bh(&tc_lock)
->> ...   timecounter_init()
->> ...   first = true;
->> ... spin_unlock_bh(&tc_lock)
->> ... schedule_delayed_work()
->>   cancel_delayed_work_sync()
->>
->> And the device will have no worker while active_timestamp_channels is not 0.
->>
->> I think we have to find another way of synchronization here.
->>
-> 
-> Thanks for your check.
-> 
-> I thought these paths were already serialized by RTNL through
-> ndo_open/ndo_stop. If additional synchronization is needed,
-> do you have any suggestions?
+Hello Avi,
 
-Ok, fair, but we are slowly moving towards per-device locks. May need to
-revisit this part later.
+thanks for correction.
 
-Reviewed-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+On Thursday 23 of July 2026 11:59:34 Avi Weiss wrote:
+> BAR0 is mapped into bar0_base, while cra_addr points to an offset
+> within that mapping and is used for other purposes.
+>
+> Pass bar0_base to pci_iounmap(), instead of cra_addr, on the probe error
+> path so the address returned by pci_iomap() is used for unmapping.
+>
+> Fixes: 792a5b678e81 ("can: ctucanfd: CTU CAN FD open-source IP core - PCI
+> bus support.") Signed-off-by: Avi Weiss <thnkslprpt@gmail.com>
+> ---
+>  drivers/net/can/ctucanfd/ctucanfd_pci.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/can/ctucanfd/ctucanfd_pci.c
+> b/drivers/net/can/ctucanfd/ctucanfd_pci.c index 625788fa8976..f845951c5d51
+> 100644
+> --- a/drivers/net/can/ctucanfd/ctucanfd_pci.c
+> +++ b/drivers/net/can/ctucanfd/ctucanfd_pci.c
+> @@ -194,7 +194,7 @@ static int ctucan_pci_probe(struct pci_dev *pdev,
+>  	pci_set_drvdata(pdev, NULL);
+>  	kfree(bdata);
+>  err_pci_iounmap_bar0:
+> -	pci_iounmap(pdev, cra_addr);
+> +	pci_iounmap(pdev, bar0_base);
+>  err_pci_iounmap_bar1:
+>  	pci_iounmap(pdev, addr);
+>  err_release_regions:
 
-> 
->>
->>>   static void gs_update_state(struct gs_can *dev, struct can_frame *cf)
->>> @@ -980,10 +1007,10 @@ static int gs_can_open(struct net_device *netdev)
->>>      can_rx_offload_enable(&dev->offload);
->>>   - if (!parent->active_channels) {
->>> - if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
->>> - gs_usb_timestamp_init(parent);
->>> + if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
->>> + gs_usb_timestamp_init(parent);
->>>   + if (!parent->active_channels) {
->>>    for (i = 0; i < GS_MAX_RX_URBS; i++) {
->>>    u8 *buf;
->>>   @@ -1094,12 +1121,11 @@ static int gs_can_open(struct net_device *netdev)
->>>   out_usb_free_urb:
->>>    usb_free_urb(urb);
->>>   out_usb_kill_anchored_urbs:
->>> - if (!parent->active_channels) {
->>> - usb_kill_anchored_urbs(&parent->rx_submitted);
->>> + if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
->>> + gs_usb_timestamp_stop(parent);
->>>   - if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
->>> - gs_usb_timestamp_stop(parent);
->>> - }
->>> + if (!parent->active_channels)
->>> + usb_kill_anchored_urbs(&parent->rx_submitted);
->>>      can_rx_offload_disable(&dev->offload);
->>>    close_candev(netdev);
->>> @@ -1152,12 +1178,11 @@ static int gs_can_close(struct net_device *netdev)
->>>      /* Stop polling */
->>>    parent->active_channels--;
->>> - if (!parent->active_channels) {
->>> - usb_kill_anchored_urbs(&parent->rx_submitted);
->>> + if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
->>> + gs_usb_timestamp_stop(parent);
->>>   - if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
->>> - gs_usb_timestamp_stop(parent);
->>> - }
->>> + if (!parent->active_channels)
->>> + usb_kill_anchored_urbs(&parent->rx_submitted);
->>>      /* Stop sending URBs */
->>>    usb_kill_anchored_urbs(&dev->tx_submitted);
->>> @@ -1577,6 +1602,8 @@ static int gs_usb_probe(struct usb_interface *intf,
->>>    parent->channel_cnt = icount;
->>>      init_usb_anchor(&parent->rx_submitted);
->>> + spin_lock_init(&parent->tc_lock);
->>> + INIT_DELAYED_WORK(&parent->timestamp, gs_usb_timestamp_work);
->>>      usb_set_intfdata(intf, parent);
->>>    parent->udev = udev;
-> 
-> 
+Acked-by: Pavel Pisa <pisa@fel.cvut.cz>
+
+CRA has been on the start in initial PCIe integrated
+version and when it has been shifted the switch
+of the name has been done incorrectly for pci_iounmap
+
+Best wishes,
+
+                Pavel Pisa
+    phone:      +420 603531357
+    e-mail:     pisa@cmp.felk.cvut.cz
+    Department of Control Engineering FEE CVUT
+    Karlovo namesti 13, 121 35, Prague 2
+    university: http://control.fel.cvut.cz/
+    personal:   http://cmp.felk.cvut.cz/~pisa
+    social:     https://social.kernel.org/ppisa
+    projects:   https://www.openhub.net/accounts/ppisa
+    CAN related:http://canbus.pages.fel.cvut.cz/
+    RISC-V education: https://comparch.edu.cvut.cz/
+    Open Technologies Research Education and Exchange Services
+    https://gitlab.fel.cvut.cz/otrees/org/-/wikis/home
