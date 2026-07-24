@@ -1,220 +1,201 @@
-Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F5063C870E;
-	Fri, 24 Jul 2026 08:47:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C337C3F1ABD
+	for <linux-can@vger.kernel.org>; Fri, 24 Jul 2026 09:08:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784882874; cv=none; b=P2Clr+FnmRdviJOewuaKieqkLC465ZavzAgLCaf99B+oAZXnh+jTAtEsrAhlRdaOhYq8weTjuK6NY+e721sxpVnOWr9QcZBdpNOpT+SV55iGACdKFgRYd19eHa6eeoTYabl1+nIy/No7XpHfRre4d9gFLfhVq1fiOW8iBmHarg8=
+	t=1784884100; cv=none; b=p+0FDD/Sjyhg1ckGYVKMIPIz9i91KeKc1F395czH5FQpAZb82oAPHi2gyuDvjBz1RjEArcOmx2pK0UzyZoZHe0H+xZWZ6jKoJSTPD9s3f2VFDycCjNWcjFNlGtYz6SzxZjSbiI1HEjNWmWeFjMSE2rTSoBzygOjlr80osU/iolM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784882874; c=relaxed/simple;
-	bh=h3NDiqX+rGNiXkzjGF9eTlJaijNZG4QBavzJjFgAaZc=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pUxVCU4MlH4d7Bvi1BGU6yNxVyGsdlZp0o1ip+Jh0EWj8f69nyPq61UhOuuf5igslc4IRGmmY7BZSL3AzdHjWsOg+78pVPyo+vYnjaaP5LITNF0I5j8o2Bz0/sYDKr7Vw5KD6khTqZ6rm+0VbAhdctzJxL1ae0pu35//Det+1Cg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=fail smtp.mailfrom=windriver.com; dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b=D36sMkOD; arc=none smtp.client-ip=205.220.178.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=windriver.com
+	s=arc-20240116; t=1784884100; c=relaxed/simple;
+	bh=HghB87T9wuVK0V8ssQsbWKMB0URUxQqrvPe+4/pIBD4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bM9Rb+ubYCKX5R50BE2ssktep7AG25ONGD2WAHhV3nxDySK9m2JK69QqFaMX3vLnbqtIs2a8EONlRAKjUDgTSL2vFAgqgZxB0cv28oh75nZgucgpIyUPCVEQmjsa+djJe/+BiEdKy2s8qiXPEF4FXDEWqtFUcg1DBVnXdI196XY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b0FGlJmo; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="D36sMkOD"
-Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 66O6oJfv1326143;
-	Fri, 24 Jul 2026 08:46:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-	 h=cc:content-transfer-encoding:content-type:date:from
-	:message-id:mime-version:subject:to; s=PPS06212021; bh=bFjm9iSZE
-	fLquS44SuJeUnoXzQySb3+Is/c2MrJyP2w=; b=D36sMkODn1BW5Dd+9gR0+WGz7
-	kqT+zhLnkTZ7z8Haq0+m72EZYlrjQ8jUMP4gi/A9zp1L9oYXnE9hq+GSl220rL2U
-	qwmhqyN5crkSGVJZNs0Kityh9Lk7EqLIAwk3O7Mx1eNwyvQzfhp4y0ToXdjGSv6R
-	Hi49ZFcl8DkOcjsdUAghRGUaspujDKetadVcfj7+ioWLPwj002sxNum+1PwJsar4
-	Um7/iXXcIfXkMxhNw1IxZWVssmfV87HwqNFHHNTAbJH/auma+sDpFiM4s7Q4dU0H
-	no4qIMrvEs1w52l+wRPHqHf66u2QeNwWg5pymDRvynZSiUtGydOG7BRZZJb9Q==
-Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [128.224.246.37])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 4fkdfsaabv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Fri, 24 Jul 2026 08:46:54 +0000 (GMT)
-Received: from ala-exchng01.corp.ad.wrs.com (10.11.224.121) by
- ALA-EXCHNG02.corp.ad.wrs.com (10.11.224.122) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.61; Fri, 24 Jul 2026 01:46:52 -0700
-Received: from pek-yzhou-d3.wrs.com (10.11.232.110) by
- ala-exchng01.corp.ad.wrs.com (10.11.224.121) with Microsoft SMTP Server id
- 15.1.2507.61 via Frontend Transport; Fri, 24 Jul 2026 01:46:49 -0700
-From: Yun Zhou <yun.zhou@windriver.com>
-To: <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>,
-        <socketcan@hartkopp.net>
-CC: <linux-serial@vger.kernel.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <horms@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yun.zhou@windriver.com>
-Subject: [PATCH v3] tty: ldisc: fix deadlock between ldisc_sem and rtnl_mutex
-Date: Fri, 24 Jul 2026 16:46:48 +0800
-Message-ID: <20260724084648.3879356-1-yun.zhou@windriver.com>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b0FGlJmo"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C0671F00ADB
+	for <linux-can@vger.kernel.org>; Fri, 24 Jul 2026 09:08:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1784884096;
+	bh=p3A/4pifL2L3HVg1ufHCi9uHYCA1/oVSrgNwE9h/on0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=b0FGlJmoxLUWAbL5EySvN/iorG54cNgcEbPcOopN1zxTkSOQM7iS6Y5GebEXE8tuo
+	 i2AAT0nyMYutEohZDbHYiKqj4scpCbnNH5ZnmuNrIhqM6TDmkoLTrX9iUFTs6rNkTL
+	 xBuEyHohtFe2axC1uWt92aaOSyR3AyHHhpHTEg0IC9LFLCpJ8UmXEfJfc8aGwhWAgW
+	 4KJ46Hu1Zv0NxhQmAvFVll4yba08ty8pd5oOCt6shiXDJoquZqSpSYdqVZdc6YupjC
+	 jmZieSrU7Hc8Ix23o4jdBahuSrzTNbd67pIjXOJXCvX1/eQsz2odlVCAKKrQNPCRtR
+	 m8Srnh0BEz9PQ==
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-6984169c126so335770a12.1
+        for <linux-can@vger.kernel.org>; Fri, 24 Jul 2026 02:08:16 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AHgh+Rr1veHPqcQSLoRvcOz+UNXna0mFyzxGovxaQ76eLRuVWFH2zpQDlgiAG4x408eXCfm22AQ9HV4dwDY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzGGLpFqpFkCAe0IdUPZiuvFo0JJwhEicqPlKe5y8ucA9ArW5zx
+	u+exvQa3aKV8wYeM0BfE1ywKNcQD8lefTdaPduJH/PY/FUeeO7PQ2ufdlCKZmmlcXqS6QuXTzqR
+	bNjFAiTSEhwHG16NTi3UNzd09K8hx24M=
+X-Received: by 2002:a05:6402:13cd:b0:69e:9b48:f3db with SMTP id
+ 4fb4d7f45d1cf-69f6c70e467mr2950108a12.29.1784884094973; Fri, 24 Jul 2026
+ 02:08:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNzI0MDA3OSBTYWx0ZWRfX/hsjabw3FN3L
- FI7UtUV+iDaklPsF3ADXhodYWwPNqSTDVIO/N8x5bGuILOIabmFV/gJEPQRYhGtPbYNIqhI2nyT
- gi1OkQ3tbNkcse0Jz0GiJN64f3l7B8yvrH1dKpT0WB3dzQcuUQdF
-X-Authority-Analysis: v=2.4 cv=EKE2FVZC c=1 sm=1 tr=0 ts=6a63267e cx=c_pps
- a=Lg6ja3A245NiLSnFpY5YKQ==:117 a=Lg6ja3A245NiLSnFpY5YKQ==:17
- a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=bi6dqmuHe4P4UrxVR6um:22
- a=klDOsUkWDRETUCZYPvoE:22 a=edf1wS77AAAA:8 a=hSkVLCK3AAAA:8 a=t7CeM3EgAAAA:8
- a=Hu20QylcDlXMs8uSXQcA:9 a=DcSpbTIhAlouE1Uv7lRv:22 a=cQPPKAXgyycSBL8etih5:22
- a=FdTzh2GWekK77mhwV6Dw:22
-X-Proofpoint-ORIG-GUID: RP-VCYcV9A6QGH1hvMP68CROYlIKbXM5
-X-Proofpoint-GUID: RP-VCYcV9A6QGH1hvMP68CROYlIKbXM5
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzI0MDA3OSBTYWx0ZWRfX1rYkdmNupDAz
- sl2N09jtM8A234nJFJS68kGD0SRtvqjKVFo0dIm2ePwRHp5zM7Mh7jI78/qLo3RlJkA6aXKTe9o
- QFRCSb3JO74S9RwDIPHvKpxyDMxOKwE86+BtZ6MYRV24MoQsHw6vcv15bcOp5B57RV5QX0GVSkG
- O/ZqfYmq0X+JoupnZhrlANsECB2m2McV/+lxZZWO3CqtlPwMoIHFpq11MnogXtErTP13ZVasdf7
- 7Hm4m7QKOXvwbiHEeIX9pAi9OD/EkKTTHNQ5P3qBPOCoUnEeR+FtzzAIjDhnUgZDkhLiiI4wUZh
- xUhZNRw31P3EGXE47YFbYCg87Ahz5vU5KYeVQJySvd4jl8LVREX0+r2OOFQf0YBPyXjPqr8e80I
- tnj1eZvYb6kjL0ISST3dOSqIjWgb5i6iz3v7xJxseSJFZddJd/f2YNBygpU/CZNNu85rNHsvVy7
- 5u15XrODOKt+HJ9cpbw==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-07-24_01,2026-07-22_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 bulkscore=0 lowpriorityscore=0 suspectscore=0
- malwarescore=0 clxscore=1015 spamscore=0 impostorscore=0 phishscore=0
- adultscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
- definitions=main-2607240079
+References: <cover.1784597141.git.zhoubinbin@loongson.cn>
+In-Reply-To: <cover.1784597141.git.zhoubinbin@loongson.cn>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Fri, 24 Jul 2026 17:08:40 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H65TkXw-Vbh_uJ3=EwObzrvMohzVEJR2hi+4Z-3RQ==+Q@mail.gmail.com>
+X-Gm-Features: AUfX_mwyj_QkLtDGP2oQlcn51XkEJOg4fpVQhWZEemOZS0A9nc_n_x6jlaC2KvQ
+Message-ID: <CAAhV-H65TkXw-Vbh_uJ3=EwObzrvMohzVEJR2hi+4Z-3RQ==+Q@mail.gmail.com>
+Subject: Re: [PATCH v6 0/2] Add Loongson CAN-FD controller driver
+To: Binbin Zhou <zhoubinbin@loongson.cn>
+Cc: Binbin Zhou <zhoubb.aaron@gmail.com>, Huacai Chen <chenhuacai@loongson.cn>, 
+	Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>, 
+	Bingxiong Li <libingxiong@loongson.cn>, Xuerui Wang <kernel@xen0n.name>, loongarch@lists.linux.dev, 
+	linux-can@vger.kernel.org, jeffbai@aosc.io
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-syzbot reported a circular lock dependency involving tty ldisc_sem and
-the networking rtnl_mutex. The full chain is:
+For the whole series:
 
-  rtnl_mutex --> nft_commit_mutex --> ... --> ep->mtx --> ldisc_sem --> rtnl_mutex
+Reviewed-by: Huacai Chen <chenhuacai@loongson.cn>
 
-The last edge (ldisc_sem -> rtnl_mutex) is created because tty line
-discipline .open() callbacks (slcan, slip) call register_netdev() which
-acquires rtnl_mutex, and .open() runs under ldisc_sem write lock in
-tty_set_ldisc().
-
-Fix by moving the .open() call outside the ldisc_sem write lock. The
-ldisc .open() is initialization of the NEW discipline after the old one
-has been closed - there is no need for ldisc_sem protection at this
-point since:
-
- - tty_lock is held throughout, preventing concurrent tty_set_ldisc,
-   hangup, or close
- - tty->ldisc is set to NULL during the window. tty_ldisc_ref_wait()
-   waits for the transition to complete. tty_ldisc_ref() returns NULL
-   which callers already handle.
- - tty buffer data stays queued until the ldisc is installed
-
-The sequence becomes:
-  1. Hold ldisc_sem(write): close old ldisc, set tty->ldisc = NULL
-  2. Release ldisc_sem(write)
-  3. Call new_ldisc->ops->open() without ldisc_sem
-  4. Re-acquire ldisc_sem(write): install new ldisc (or restore old)
-  5. Release ldisc_sem(write)
-
-Reported-by: syzbot+de610eeef174bd59a8a3@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=de610eeef174bd59a8a3
-Signed-off-by: Yun Zhou <yun.zhou@windriver.com>
----
-v3:
- - Use a while loop in tty_ldisc_ref_wait() to handle consecutive ldisc
-   switches where a reader could see NULL again after being woken up.
-v2:
- - Keep user-visible behavior unchanged: tty_ldisc_ref_wait() now waits
-   for the ldisc transition to complete instead of returning NULL (which
-   would cause spurious EOF/-EIO to concurrent readers).
- - Fix a race between tty_ldisc_ref_wait() and __tty_hangup() where a
-   reader could block forever if it observed ldisc==NULL before
-   TTY_HUPPED was set. Add wake_up() after set_bit(TTY_HUPPED).
-
- drivers/tty/tty_io.c    |  7 +++++++
- drivers/tty/tty_ldisc.c | 30 ++++++++++++++++++++++++++++--
- 2 files changed, 35 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
-index 6b283fd03ff8..e2f82e80f397 100644
---- a/drivers/tty/tty_io.c
-+++ b/drivers/tty/tty_io.c
-@@ -649,6 +649,13 @@ static void __tty_hangup(struct tty_struct *tty, int exit_session)
- 	 */
- 	set_bit(TTY_HUPPED, &tty->flags);
- 	clear_bit(TTY_HUPPING, &tty->flags);
-+
-+	/*
-+	 * Wake up readers blocked in tty_ldisc_ref_wait() that may have
-+	 * seen ldisc == NULL but not yet TTY_HUPPED.
-+	 */
-+	wake_up(&tty->read_wait);
-+
- 	tty_unlock(tty);
- 
- 	if (f)
-diff --git a/drivers/tty/tty_ldisc.c b/drivers/tty/tty_ldisc.c
-index 27fe8236f662..6ec93e6b8498 100644
---- a/drivers/tty/tty_ldisc.c
-+++ b/drivers/tty/tty_ldisc.c
-@@ -242,6 +242,16 @@ struct tty_ldisc *tty_ldisc_ref_wait(struct tty_struct *tty)
- 
- 	ldsem_down_read(&tty->ldisc_sem, MAX_SCHEDULE_TIMEOUT);
- 	ld = tty->ldisc;
-+	while (!ld && !test_bit(TTY_HUPPED, &tty->flags)) {
-+		ldsem_up_read(&tty->ldisc_sem);
-+
-+		/* ldisc may be NULL during a discipline switch; wait and retry */
-+		wait_event(tty->read_wait,
-+			   READ_ONCE(tty->ldisc) != NULL ||
-+			   test_bit(TTY_HUPPED, &tty->flags));
-+		ldsem_down_read(&tty->ldisc_sem, MAX_SCHEDULE_TIMEOUT);
-+		ld = tty->ldisc;
-+	}
- 	if (!ld)
- 		ldsem_up_read(&tty->ldisc_sem);
- 	return ld;
-@@ -556,15 +566,28 @@ int tty_set_ldisc(struct tty_struct *tty, int disc)
- 	/* Shutdown the old discipline. */
- 	tty_ldisc_close(tty, old_ldisc);
- 
--	/* Now set up the new line discipline. */
--	tty->ldisc = new_ldisc;
-+	/* Clear tty->ldisc so concurrent readers back off during transition */
-+	tty->ldisc = NULL;
- 	tty_set_termios_ldisc(tty, disc);
-+	tty_ldisc_unlock(tty);
- 
-+	/*
-+	 * Open the new discipline outside ldisc_sem. The ldisc .open()
-+	 * may acquire locks (e.g., rtnl_mutex) that would create circular
-+	 * dependencies if taken under ldisc_sem. tty_lock is still held,
-+	 * preventing concurrent ldisc changes and hangup.
-+	 */
- 	retval = tty_ldisc_open(tty, new_ldisc);
-+
-+	tty_ldisc_lock(tty, MAX_SCHEDULE_TIMEOUT);
-+
- 	if (retval < 0) {
- 		/* Back to the old one or N_TTY if we can't */
- 		tty_ldisc_put(new_ldisc);
- 		tty_ldisc_restore(tty, old_ldisc);
-+	} else {
-+		/* Success - install new ldisc */
-+		tty->ldisc = new_ldisc;
- 	}
- 
- 	if (tty->ldisc->ops->num != old_ldisc->ops->num && tty->ops->set_ldisc) {
-@@ -584,6 +607,9 @@ int tty_set_ldisc(struct tty_struct *tty, int disc)
- out:
- 	tty_ldisc_unlock(tty);
- 
-+	/* Wake up readers waiting for the ldisc transition to complete */
-+	wake_up(&tty->read_wait);
-+
- 	/*
- 	 * Restart the work queue in case no characters kick it off. Safe if
- 	 * already running
--- 
-2.43.0
-
+On Tue, Jul 21, 2026 at 7:44=E2=80=AFPM Binbin Zhou <zhoubinbin@loongson.cn=
+> wrote:
+>
+> Hi all:
+>
+> This patchset adds support for the CAN-FD controller found on Loongson
+> CPUs.
+>
+> Patch 1 introduces the basic CAN-FD controller driver with support
+> for classic CAN and CAN FD, including bit timing, error handling,
+> NAPI-based RX, and multiple TX buffers.
+>
+> Patch 2 adds optional DMA support for RX path using the Loongson APB
+> CMC DMA engine, which significantly reduces CPU load under high
+> receive throughput.
+>
+> The driver has been tested on Loongson-2K3000 platforms with various
+> CAN/CAN FD traffic patterns.
+>
+> Finally, I'd like to thank Bingxiong, the original author of this driver,
+> for his efforts in working on the patch.
+>
+> Thanks.
+> Binbin
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D
+> V6:
+> - Rebase on linux-can/master;
+> Patch (1/2):
+>  - Drop CAN_CTRLMODE_3_SAMPLES ctrlmode;
+>  - Replace kfree_skb() with dev_kfree_skb_any();
+>  - Drop REG_CMD_ERCRST operation;
+>  - Rewrite `loongson_canfd_tx_interrupt()` to prevent duplicate handling
+>    of TX completion';
+> Patch (2/2):
+>  - Added a fallback to true when dmaengine_tx_status() returns an error;
+>  - Replaced all direct regmap_read() from LOONGSON_CANFD_RX_DATA with
+>    the priv->get_rx_data() callback;
+>  - Release the DMA channel and clear priv->rx_ch on dma_alloc_coherent()
+>    failure;
+>
+> Link to V5:
+> https://lore.kernel.org/all/cover.1783670733.git.zhoubinbin@loongson.cn/
+>
+> V5:
+> Patch (1/2):
+>  - Fix tseg1_max const value;
+>  - Empty FIFO when SKB allocate failed.
+>  - Use REG_FRAME_META1_RWCNT as the playload read count value;
+>  - Only clean processed interrupt flags in
+>    loongson_canfd_err_interrupt();
+>  - Refact loongson_canfd_tx_interrupt();
+>  - Add LOONGSON_CANFD_TRV_DLY into loongson_canfd_volatile_reg();
+> Patch (2/2):
+>  - Fix dma_request_chan() error path;
+>  - Fix build error;
+>  - Fix loongson_canfd_rxdma_init() error path;
+>
+> Link to V4:
+> https://lore.kernel.org/all/cover.1783391759.git.zhoubinbin@loongson.cn/
+>
+> V4:
+> - Fix some issues from sashiko.
+> Patch (1/2):
+>  - Update commit message;
+>  - Use common APIs to calculate DLC;
+>  - Correct CAN_RTR_FLAG judgement;
+>  - Add skb check for CAN_STATE_ERROR_ACTIVE case;
+>  - Use regmap_write() rather than regmap_update_bits() to
+>    disable all interrupts;
+>  - Add napi_disable() in error paths;
+>  - Add `clock-frequency` return value check;
+>  - More comments for macros.
+>
+> Link to V3:
+> https://lore.kernel.org/all/cover.1782787997.git.zhoubinbin@loongson.cn/
+>
+> V3:
+> Patch (1/2):
+>  - Replace the switch-case statement with a calculated mask in
+>    `loongson_canfd_get_txbuf_sts()`;
+>  - Change `loongson_canfd_reset()` return type to `void`;
+>  - Drop old code in `loongson_canfd_set_btr()`;
+>  - Rename `loongson_canfd_set_mode()` to `loongson_canfd_set_conf_mode()`=
+;
+>  - Drop `cf->__res*` usage;
+>  - Drop unnecessary macro definitions;
+>  - Add `netif_napi_del()` in probe error route path;
+>  - Replace ternary operator with `if-else`;
+>  - Drop stats->rx_packets and stats->rx_bytes count in CAN error frames;
+>  - Add ethtool_ops;
+>  - Add CAN_CTRLMODE_CC_LEN8_DLC;
+>
+> Patch (2/2):
+>  - Fix W=3D2 warning;
+>  - Rename get_rx_frc() -> get_rxbuf_empty();
+>  - Put `loongson_canfd_rxdma_remove()` before free_candev();
+>  - Adjust the RXDMA probe process.
+>
+> Link to V2:
+> https://lore.kernel.org/all/cover.1780908445.git.zhoubinbin@loongson.cn/
+>
+> V2:
+> Patch (1/2):
+>  - Put all code into one file;
+>  - Add COMPILE_TEST Kconfig option;
+>  - Rewrite Kconfig description;
+>  - Use `regmap_test_bits()` to simplify bit field checks;
+>  - Drop odd FIELD_GET() usage;
+>  - Don't use FIELD_GET() for a single bit;
+>  - Use an if/else instead of the ternary operator;
+>  - Use the CAN TDC framework to get the SSP value;
+>  - Use guard(spinlock)/scoped_guard(spinlock);
+>  - Use netdev_debug() to be less verboss;
+>  - Check for memory allocation failure;
+>  - Add CAN_ERR_CNT flag;
+>  - Drop unused REG_DATA_xx_yy_W_DATA_yy definition;
+>  - Add more function comment;
+>
+> Link to V1:
+> https://lore.kernel.org/all/cover.1777273055.git.zhoubinbin@loongson.cn/
+>
+> Binbin Zhou (2):
+>   can: Add Loongson CAN-FD controller driver
+>   can: loongson_canfd: Add RXDMA support
+>
+>  MAINTAINERS                      |    7 +
+>  drivers/net/can/Kconfig          |   11 +
+>  drivers/net/can/Makefile         |    1 +
+>  drivers/net/can/loongson_canfd.c | 1877 ++++++++++++++++++++++++++++++
+>  4 files changed, 1896 insertions(+)
+>  create mode 100644 drivers/net/can/loongson_canfd.c
+>
+>
+> base-commit: 1cb8553c02e93e5a150cebd42f9ee3db0ece4707
+> --
+> 2.52.0
+>
