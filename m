@@ -1,129 +1,69 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 606412110E
-	for <linux-can@vger.kernel.org>; Sat, 25 Jul 2026 12:31:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 821F32931FC
+	for <linux-can@vger.kernel.org>; Sat, 25 Jul 2026 12:40:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784982693; cv=none; b=So66K4zhmgsr+8Z6lHcLiplcNjh/6URUZEKStzwHlwiWmrnL6CgcNjrpQDCvrXTO8szKUihq0Z6nvejEm5CWC+TI9ySkZ8P0fnkzWR+nzvdfsqIgDc3xYxwLrQIarbqSVzgvOAm67AMSM5KOnPNSJtL7+EVCkxREBoSW3fNGJTU=
+	t=1784983237; cv=none; b=RZs3EErUYG97hqFUY04qebZ9PRQxQ9rf10CfI5XQS/Yzrj+Bg52Pf5SQFrP9zybLuQM1Crhplh1nrFki0TlGF86/oUt0FwwoXkS2wUHhpQTc77SCnlD3W2npijV82Wvox7JKV7IBodp9DQHqCBjEd00ejtzrbDiQ7nORydx/kVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784982693; c=relaxed/simple;
-	bh=4eByYShlaH9viDBu4yN4EpiFfSe0VfSpMvIS9JzjNzw=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=uLBPNdDvB45Df4LCjR21ayBzcBPvFgqbffZoSvKEB0qQ1vo9zXMFykHtdfZWb+DwPkkgX2P0YrBZ0/2KoRzm/j6K0+b32KL2z5qmpU4QFoLvPdhrBDqCXx2GXncL1PWD5k3OcBKqGNb/r1g2mcRfQE0bEidhYpmaEnuAk0D9w+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gvu2IlZS; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gvu2IlZS"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87BA71F000E9;
-	Sat, 25 Jul 2026 12:31:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784982691;
-	bh=wr3L4/DeR1KACoUeOJcKlH3cUBK8HG3F2JO4j58Zh88=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=gvu2IlZSTaHM/Ws3Odgq8rooWKlayDM3eiR86Y95YoLwOv3+YvfYeG4NjLKOX+kSG
-	 rDfEJ+Cs30BOrNjuc96iM1GQmZ9LWxXWQDENbvnitkkhubhrdNkBYbDmKN+JqB+6d9
-	 Q5By1mngvYeQzd1xActDpIiOaVTEBcbIiUJ9lxGflu+3Hk6kWUsk4RJ5vuSrbjasuU
-	 VIH3X2a4uSQEvT4k83XvHUtU3x+2IGzPXAM4Xx8rdOMXHyP/EhSAfL6OpKjqWRmqcR
-	 +LOz67UTgRdz8L/ZQ7i7koCNOSf9K8ceyAV6b7Va6ovnk+c9KKON4b1eDu8HF2Y86b
-	 aYLMI+IKor0Bw==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH can test v11a] can: isotp: fix timer drain order, wakeup
- handling and tx_gen ordering
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Oliver Hartkopp" <socketcan@hartkopp.net>
-Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org
-In-Reply-To: <20260725122136.5032-1-socketcan@hartkopp.net>
-References: <20260725122136.5032-1-socketcan@hartkopp.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Sat, 25 Jul 2026 12:31:31 +0000
-Message-Id: <20260725123131.87BA71F000E9@smtp.kernel.org>
+	s=arc-20240116; t=1784983237; c=relaxed/simple;
+	bh=XipGNt4Z+Dge6vmWRcoltCFBNRYVLXA4JuqVuYW3Njs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JP8VuMD/wpJvS5Q/oPr1AemxQ20aRLnvyNY2aDAq1mNOV7Jz4poPCY8h4SzW8DKTuVttXFKT5vDzEHO7h7ELjfxVwn96X+Y+zcRvUMFRBQZclT3oKxoYZ+g0ogr4cFpoM3ejmZDra+qib5/h4HJz/XeWEeGOLCaAK4z6D+eYOIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 66PCe5Wd037892;
+	Sat, 25 Jul 2026 21:40:05 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from [192.168.1.6] (M106072072000.v4.enabler.ne.jp [106.72.72.0])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 66PCe528037889
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Sat, 25 Jul 2026 21:40:05 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <25ea4702-6198-4cf3-b2ab-ef2865cb1177@I-love.SAKURA.ne.jp>
+Date: Sat, 25 Jul 2026 21:40:04 +0900
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 (repost)] can: j1939: use netdevice_tracker for
+ j1939_{priv,session,ecu} tracking
+To: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: linux-can@vger.kernel.org, Robin van der Gracht <robin@protonic.nl>,
+        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+References: <2bc332e0-b250-4679-a075-1c413ad843ce@I-love.SAKURA.ne.jp>
+ <akZt7t2aLfnf1Yk6@pengutronix.de>
+Content-Language: en-US
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <akZt7t2aLfnf1Yk6@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Virus-Status: clean
+X-Anti-Virus-Server: fsav105.rs.sakura.ne.jp
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
-- [High] Silent loss of asynchronous RX socket errors (e.g., timeouts, malf=
-ormed PDUs) due to unconditionally draining `sk->sk_err` and discarding its=
- value in the `wait_tx_done` path.
---
+On 2026/07/02 22:55, Oleksij Rempel wrote:
+> On Fri, May 29, 2026 at 10:31:22AM +0900, Tetsuo Handa wrote:
+>> syzbot is still reporting
+>>
+>>   unregister_netdevice: waiting for vcan0 to become free. Usage count = 2
+>>
+>> problem. A debug printk() patch in linux-next-20260508 identified that
+>> there is dev_hold()/dev_put() imbalance in j1939_priv management.
+>>
+(...snipped...)
+>>
+>> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> 
+> Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> 
 
---- Patch [1]: [PATCH can test v11a] can: isotp: fix timer drain order, wak=
-eup handling and tx_gen ordering ---
-commit d4df2bcefe9b5fda40207ed871b332c12c05bd52
-Author: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: can: isotp: fix timer drain order, wakeup handling and tx_gen orde=
-ring
+Who is supposed to send this patch to linux-next.git tree?
 
-This commit addresses several issues in the CAN ISOTP subsystem including t=
-imer
-drain ordering, wakeup handling on shutdown, and tx_gen checking. It introd=
-uces
-a generation-tagged result slot system to safely record transfer results.
-
-> diff --git a/net/can/isotp.c b/net/can/isotp.c
-> --- a/net/can/isotp.c
-> +++ b/net/can/isotp.c
-[ ... ]
-> @@ -1223,20 +1321,49 @@ static int isotp_sendmsg(struct socket *sock, str=
-uct msghdr *msg, size_t size)
-[ ... ]
->  	if (wait_tx_done) {
-> -		/* wait for complete transmission of current pdu */
-> -		err =3D wait_event_interruptible(so->wait, so->tx.state =3D=3D ISOTP_I=
-DLE);
-> +		/* wake up for:
-> +		 * - concurrent sendmsg() claiming a new transfer
-> +		 * - complete transmission of current PDU
-> +		 * - shutdown state change in isotp_release()
-> +		 * isotp_tx_gen_done() uses common tx.state/tx_gen read sequence
-> +		 */
-> +		err =3D wait_event_interruptible(so->wait,
-> +					       isotp_tx_gen_done(so, my_gen));
->  		if (err)
->  			goto err_event_drop;
-> =20
-> -		err =3D sock_error(sk);
-> -		if (err)
-> -			return err;
-> +		/* still our claim, but isotp_release() force-shut it down */
-> +		if (smp_load_acquire(&so->tx.state) =3D=3D ISOTP_SHUTDOWN &&
-> +		    READ_ONCE(so->tx_gen) =3D=3D my_gen) {
-> +			err =3D -EADDRNOTAVAIL;
-> +			goto err_event_drop;
-> +		}
-> +
-> +		/* own completion, or tx_gen moved on - either way this is
-> +		 * what isotp_get_tx_result() recorded for my_gen
-> +		 */
-> +		err =3D isotp_get_tx_result(so, my_gen);
-> +
-> +		/* drain to avoid stale error for a later poll()/SO_ERROR */
-> +		sock_error(sk);
-> +
-> +		return err ? err : size;
-
-[Severity: High]
-Does discarding the return value of sock_error() here silently drop
-asynchronous RX socket errors?
-
-If a concurrent RX timeout or malformed PDU sets sk->sk_err to ETIMEDOUT
-or EBADMSG, calling sock_error(sk) will unconditionally clear it to 0. Since
-the returned value is ignored and the function prioritizes returning the TX
-result or size, it seems the application will never be notified of these RX
-failures via sendmsg(), poll(), or getsockopt(SO_ERROR).
-
-Should we preserve or return this error if no TX error occurred?
-
->  	}
-> =20
->  	return size;
-[ ... ]
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260725122136.5032=
--1-socketcan@hartkopp.net?part=3D1
