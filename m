@@ -1,54 +1,52 @@
-Received: from out203-205-221-205.mail.qq.com (out203-205-221-205.mail.qq.com [203.205.221.205])
+Received: from out162-62-57-137.mail.qq.com (out162-62-57-137.mail.qq.com [162.62.57.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F2103176EF;
-	Sat, 25 Jul 2026 07:06:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D83D175A99;
+	Sat, 25 Jul 2026 07:07:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.137
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784963208; cv=none; b=nik3Gy5qgc0HffPxlfsRaTo1qAnIei51lFBne7S79kfjmnRy9VdquCmbm3R2LL8Iq0dlTfkpM5IOACYKFDk+7wstMNCar1zn15Bl0bGv88km5SnjA9tN0Iy9RgvU3R+aAdKzc8/SgO+0/gIxxNPkFhZ9KSXRHXRgaA5RQG/fQr0=
+	t=1784963271; cv=none; b=umL1mNj53E6Hqy+XQFJhcNT/035t0PK4npM9J5uHc04lbDMoYvLoquSXZV5EBS/mO0VdJaTuciho713fzbLnJbujKTfmXGNhE4IUsTTH+o/CvQ53DzY6rwJM3xvEm7eXUgSUrNW2F5RzDEiSDnHjQsLmFaAsxNIC6Hwp3rmtOoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784963208; c=relaxed/simple;
-	bh=DX+szNrz7DTLcMXoXNU6DNJcfUI4KfQcHuk1pG+QKxw=;
+	s=arc-20240116; t=1784963271; c=relaxed/simple;
+	bh=484To6++ZT/hLUM2setPu5cCnJ+O6aptvtwaDSXebbk=;
 	h=Message-ID:From:Date:Subject:MIME-Version:Content-Type:References:
-	 In-Reply-To:To:Cc; b=PKoyoakfF7JujQH2XWk0fnsHrJoLzLY/Bk5/xO6VqjyICGdFAMpmC8W0lxT5ff4a0xf/Qo1nHT3cOg2Z+qwLmMD1VrpjQV+hkpX9UHlQTFpL56YB4nXQjtuClW00tlt9AFRQAV4pY3+Dviazv3y/S6wkHhNm99cQUpg6T8RY+a0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=XWf8dGWa; arc=none smtp.client-ip=203.205.221.205
+	 In-Reply-To:To:Cc; b=SFi/7fF/jlMK+XgsKOAR4iEeniKIrzSamCK9ed8kwyMGhAUvEyXR4yRSHVqRxUlbOXN99/29JxhodTCe7M0fvR4HSkzNTQfEgFGsvD0jM+newW66QaQJ4rgElmCnc9ii/mR7vnVtAIHHJeb+ea5WNoRRRFTQNY9TVo8GsBr3K6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=m6hNMp36; arc=none smtp.client-ip=162.62.57.137
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="XWf8dGWa"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="m6hNMp36"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1784963197; bh=L3LDk1ob8lSeDF4p3l0ihZVgutygUEgJnbVoCOXhudc=;
+	t=1784963265; bh=USSiH9JuC1v5AlfxBel9Z2zX+IhkFx2Yg0F4916TwD4=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=XWf8dGWaqENWJRpUNGuwCb21rKHWpa/CJRRpSK+m7Rfq4ZdUNAoFFCSNyD9ZbGAj3
-	 QrG1PxwZekOUlBe3z2IYs795Kcr6qUCWTw1tng7coAXX1CwkBq3mXzSak6NKI7PGb+
-	 Uo+rWo+bRlW4EqwGF5T6sRnaafpFBSdkTD4RYc7c=
+	b=m6hNMp36ulqTa94hIKc5F6x9A0ivoXXPcrYPOBUF/8lSO9OUxackI5hnE6vjbH+vs
+	 OH/OIRvmln7Hs0frNqVJCseefxafsUtCyx/+5MSYCV9Drj73iP7FR2GWNdqk3Uo9Sf
+	 ECLPaMMa5Y3gxoYfDYNcXuNka7XdozYhaFID8Sh4=
 Received: from ubuntu2204.localdomain ([2409:8d20:22b:54c:9e54:40ff:fe02:3f0f])
 	by newxmesmtplogicsvrszc50-0.qq.com (NewEsmtp) with SMTP
 	id 19989659; Sat, 25 Jul 2026 15:06:25 +0800
-X-QQ-mid: xmsmtpt1784963194t29xv9a84
-Message-ID: <tencent_8E35228F9F4F133FCDBCCC4902F6887D0006@qq.com>
-X-QQ-XMAILINFO: N2ZoPGp9lKFW6O+7p5ZF8g+DCHmxkQcPFO9v1rbFeYY0V7uOwLUPdFrXOHVysY
-	 piP0nwKdWprL4pEiZgFSN9bI0pG9g1C1nkheUdlHLBxmvve8zKbtzGCuvvopyXnQP+6soTSEhh6D
-	 Kk9OLi1vKr0lK+OjJ6PU66i55uSLgIXsLZsA9GueukkLYEdM5MkFjR7RJv551QUWoi1ZqkvcWJU4
-	 t/TTw9riTDgt2E8QFLIxQOiTQZ2OoEUIUW7hvk8fBOBErUUZNLM+eZoEbJdb2O7o/UsAv+XOdc4b
-	 9QOfCKE36W5ub9smZwb2VUGld4c8NchI5JqEwYkpwlYkGux7XASFxGoH1Y54drfstuWxj3JKNSst
-	 XgIIf7CKk14Pui6+dearVzb+77RazXLx+uf/KEvOL8lBkp0CfCooXjk3wLEFyQwmM8vHhXRuv+O5
-	 oCzOuOpWZ4cMlocWw4mg5aIt2sZxjMIglU6HSmqBU62PoSuNt1TBXjGGW2RRsxXwRxwHn+IEBV4H
-	 ewOIMb4epPaRDxD9c8Ye0506mKxlBRRjKojQ/EJTpJPUtGzDmEy5T2xRfDuYLwRjpQPhygOxrJ6G
-	 f/QDXRPc1YBHYUhD8Xf8UKxCVhCBOpM69wr2wnAhuYnUIPhMz+EnZCwyWYVUN72iaR5Ebqo8dyJK
-	 5QA/p4aES+TgJyTSUbDEKrtwU11zE4FBRoKK+7ORqjpD6Z294xCmusITWozh78s2GLQVAwa0ifFZ
-	 2rVYD8Bnuw/31XoQ7pssED7UxKBw4OPhTkhMC43Q075u1SDlAWu/vqhqJggrfzUDEU9H6QLvkN6k
-	 KW7btVpLcJ4DmAmhete/Tyg0AagMqf+ydoSdLU2O6EJLJ8JXkfkMWFYuBVisbxD9ppW247IVdVMC
-	 lAiJ1eUQqbF7GzFz86UGy4195Y6d9f7zDP+6UetApcYOlv78jabYoLcREt20buAYXa8J8Ydx7txV
-	 2bd3XgxnL2eIHtrZBvCUTFchUMt1TSEIc7Y2SOMLcyCsnz4pLXa0EVma8HXpZEi1z48TDJF87N0d
-	 nONVjvlY+F+H43JoXG2wnBH8UxNPo4x31GVUikMVMAr+oNdbZaC/HxXVQBmdGaVUu2EaVoHxGFYO
-	 atnmVshJZUg+YTvNoAY2hecZaLhCfCsb79UdnnBOdrCBN3l9O6zUQmnuApXlNgYh9hai3u+f4umT
-	 tr/i0m8HcaT+9Um0L6rsD+YOlgUtkTcXn50tA=
+X-QQ-mid: xmsmtpt1784963192tfxjfozrp
+Message-ID: <tencent_BE229ADF4693078DBBCC6C02CC0855C01E06@qq.com>
+X-QQ-XMAILINFO: NMiAo2azIaDA6K4Ssw4mZvYLnQmxw5sFN+oDeTXrEqi10F2itRfr7TxhEpJhe1
+	 7AfIE3/f6vGpevpjcilErr/3QxEswqzxT6RSPaLAEXrMK8IKfCoAtevQ3qEvMV/G7uRDgoblFtaZ
+	 ZaCZVmhla7wdhBDgG2mZlndAoLxn/RXV/enXjX3+IgdeAqit1BDtsGewKW34sDruFmj+vImMfX18
+	 psLaeiYlvXYp647ZVzbeVbr1ndojlGHluo1maXA1NMxAddj9ucNCqFSOm+auRmIRniNxSEDwmeSp
+	 yTlJdC0j9k1+6/TP4+/xRtLJvXSAlTFIHmlKwrZuGeM3FuGc+UTxhobMrOWyqz63vCSTmqZr9dFZ
+	 F+XCXSVsspPPXH37yZFpYEk3m3tCtyqkrS7lA3BZCIUKKpBy9jEDnHyZKTy7EU5pqboKwEqjnSbK
+	 1d6N9HNeGbByIbwaLFgTgWgBHDrsaby17gB/f1MTevk0GWET2EgMt/9RozC0MXHsqB+5B1GPBG5N
+	 BGBgzAI+TypmN0u1/G8634ZIHofn+Asxs9R5c4c8zK036nB5SkRteqhAZJnUKuo2BHDkl8+5lPt+
+	 /Vw81lZDlNO5dOpfqA7JIEpjwi1QtTKgfyErbe41IIUPEDRsmtwHflj3t4ZH8qBd3W7nHM9mJbYH
+	 76JLJe4QobHMBtvj/1odSOOaO0/oktcArkBf2XwntTSx0EmovMYnOt12IK5faHmT51H2CK4Hv/lM
+	 NrOHgTd82wPnXatnGCk32RJGNGlOwi+GhzBNxYMTARULoTTjwGaL7XIbBem3Nd8OCqlmzQynN4fd
+	 FsoRdZ70eYQFkByLdlB+aXb12hVZpuimvbx1OedgRAJ8c2uVkbUizX0YFIAtzuxIdshoR3JwzJLw
+	 d3swhGzL7+GP/G/d8NlP24dwkdngieJJQDeuZCV4z/Rt0tzH40mWZlwgbEg9A/+Gfwg6YFibnLHS
+	 WVTszTm2gs7K4N7WtZ+iyKS/6bfdTXHmSPWylzJ1CjKx6m5oKBZ3LpPnaa2tRYJ9SYZ9JwPRJnbH
+	 vJh7H5+vZllNj5BSNeFffsoimBYX3sQfke8nOQPcIkY9lLZ4NWG/j9u2bCEuxojOrc5jjOu92rT8
+	 q5LI9t/7ZhQN56fe+wL8DYOjj/Ic4f2drHVkhowxhycSwWTrT/OHu1Xmhg4W86wxt9/1SN
 X-QQ-XMRINFO: Mp0Kj//9VHAxzExpfF+O8yhSrljjwrznVg==
 From: Cunhao Lu <1579567540@qq.com>
-Date: Sat, 25 Jul 2026 15:03:34 +0800
-Subject: [PATCH v5 4/4] arm64: dts: rockchip: Enable CAN controller on
- RK3588-Tiger-Haikou
+Date: Sat, 25 Jul 2026 15:03:33 +0800
+Subject: [PATCH v5 3/4] arm64: dts: rockchip: add CAN-FD nodes for RK3588
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -57,7 +55,7 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-OQ-MSGID: <20260725-master-v5-4-75da459d2b93@qq.com>
+X-OQ-MSGID: <20260725-master-v5-3-75da459d2b93@qq.com>
 References: <20260725-master-v5-0-75da459d2b93@qq.com>
 In-Reply-To: <20260725-master-v5-0-75da459d2b93@qq.com>
 To: Marc Kleine-Budde <mkl@pengutronix.de>, kernel@pengutronix.de, 
@@ -67,42 +65,81 @@ To: Marc Kleine-Budde <mkl@pengutronix.de>, kernel@pengutronix.de,
 Cc: linux-can@vger.kernel.org, devicetree@vger.kernel.org, 
  linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
  linux-kernel@vger.kernel.org, Cunhao Lu <1579567540@qq.com>, 
- Heiko Stuebner <heiko.stuebner@cherry.de>
+ Heiko Stuebner <heiko.stuebner@cherry.de>, 
+ Quentin Schulz <quentin.schulz@cherry.de>
 X-Mailer: b4 0.15.2
 
-From: Heiko Stuebner <heiko.stuebner@cherry.de>
+Describe the three CAN-FD controllers integrated in RK3588 in the base
+SoC .dtsi.
 
-CAN0 is piped through the Q7-connector to the CAN-Header on the Haikou
-base-board, so enable support for it there.
+Add CAN0, CAN1 and CAN2 nodes with their register ranges, interrupts,
+clocks and resets, and keep them disabled by default so board DTS files
+can enable them as needed.
 
-At least on RK3588-Tiger, the CAN clocks default to 99MHz, limiting
-usable CAN bitrates without skew. Errata documentation mentions
-300MHz as the default frequency on RK3568, so replicate this here
-to allow more bitrates.
-
+Co-developed-by: Heiko Stuebner <heiko.stuebner@cherry.de>
 Signed-off-by: Heiko Stuebner <heiko.stuebner@cherry.de>
 Signed-off-by: Cunhao Lu <1579567540@qq.com>
+Reviewed-by: Quentin Schulz <quentin.schulz@cherry.de>
 ---
- arch/arm64/boot/dts/rockchip/rk3588-tiger-haikou.dts | 6 ++++++
- 1 file changed, 6 insertions(+)
+v4 -> v5:
+- Collect Quentin's Reviewed-by tag
+v2 -> v3:
+- Use Co-developed-by for Heiko's RK3588 contributions and add his
+  Signed-off-by
+---
+ arch/arm64/boot/dts/rockchip/rk3588-base.dtsi | 39 +++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588-tiger-haikou.dts b/arch/arm64/boot/dts/rockchip/rk3588-tiger-haikou.dts
-index 873fbeb8daa1..6273e695b039 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588-tiger-haikou.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3588-tiger-haikou.dts
-@@ -155,6 +155,12 @@ vddd_audio_1v6: regulator-vddd-audio-1v6 {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588-base.dtsi b/arch/arm64/boot/dts/rockchip/rk3588-base.dtsi
+index fc1fdbfd3162..b340973775c5 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588-base.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3588-base.dtsi
+@@ -2648,6 +2648,45 @@ dmac1: dma-controller@fea30000 {
+ 		#dma-cells = <1>;
  	};
- };
  
-+&can0 {
-+	assigned-clocks = <&cru CLK_CAN0>;
-+	assigned-clock-rates = <300000000>;
-+	status = "okay";
-+};
++	can0: can@fea50000 {
++		compatible = "rockchip,rk3588-canfd";
++		reg = <0x0 0xfea50000 0x0 0x1000>;
++		interrupts = <GIC_SPI 341 IRQ_TYPE_LEVEL_HIGH 0>;
++		clocks = <&cru CLK_CAN0>, <&cru PCLK_CAN0>;
++		clock-names = "baud", "pclk";
++		resets = <&cru SRST_CAN0>, <&cru SRST_P_CAN0>;
++		reset-names = "core", "apb";
++		pinctrl-names = "default";
++		pinctrl-0 = <&can0m0_pins>;
++		status = "disabled";
++	};
 +
- &combphy2_psu {
- 	status = "okay";
- };
++	can1: can@fea60000 {
++		compatible = "rockchip,rk3588-canfd";
++		reg = <0x0 0xfea60000 0x0 0x1000>;
++		interrupts = <GIC_SPI 342 IRQ_TYPE_LEVEL_HIGH 0>;
++		clocks = <&cru CLK_CAN1>, <&cru PCLK_CAN1>;
++		clock-names = "baud", "pclk";
++		resets = <&cru SRST_CAN1>, <&cru SRST_P_CAN1>;
++		reset-names = "core", "apb";
++		pinctrl-names = "default";
++		pinctrl-0 = <&can1m0_pins>;
++		status = "disabled";
++	};
++
++	can2: can@fea70000 {
++		compatible = "rockchip,rk3588-canfd";
++		reg = <0x0 0xfea70000 0x0 0x1000>;
++		interrupts = <GIC_SPI 343 IRQ_TYPE_LEVEL_HIGH 0>;
++		clocks = <&cru CLK_CAN2>, <&cru PCLK_CAN2>;
++		clock-names = "baud", "pclk";
++		resets = <&cru SRST_CAN2>, <&cru SRST_P_CAN2>;
++		reset-names = "core", "apb";
++		pinctrl-names = "default";
++		pinctrl-0 = <&can2m0_pins>;
++		status = "disabled";
++	};
++
+ 	i2c1: i2c@fea90000 {
+ 		compatible = "rockchip,rk3588-i2c", "rockchip,rk3399-i2c";
+ 		reg = <0x0 0xfea90000 0x0 0x1000>;
 
 -- 
 2.34.1
