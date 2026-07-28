@@ -1,113 +1,83 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FAA1224234
-	for <linux-can@vger.kernel.org>; Tue, 28 Jul 2026 03:20:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A96C3AD510;
+	Tue, 28 Jul 2026 05:58:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785208813; cv=none; b=BrLp8/7UQglI+Gg7gjsJb7vDUJO1utHHdK3pPPuPPjmEtLGh+oelhMQFzDp9QMrSWimGaPaJnlKgsOZrTXVNkdD3ouEwrYrB42kL9jT309VqiIWULiIWQBVTynP5iiB31LX48350YfZo1h5mdGS/JL0Vo4ARwK5VSvk8xdFd8Xc=
+	t=1785218330; cv=none; b=EpkegMVfdU/4a5w2ROqYemhjT2QSOD6tP4ggO8peWAcJKwZyUxhI01a66TjHQ4gu5F3oQXf0VUb2lgA9mC4UjqHEAZtcaZbIGDhtH1Dkx40vKhO3Od9jdRDuWFh/BlKjfvrqprtnBN2alMqZOpHQ6cbZw5R/aNcFbeVycnlRLsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785208813; c=relaxed/simple;
-	bh=HAHWn1OF6QsPy+razmbuM3FSGHyelPkTNv3wCgyB4uE=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=fvlNS16DLeRAQNdJjeBLV0DA05bQadHyCheiPTqZ2SOdI6+I30TF1QVc+wImmXfgx/RNkkn3GzolDaI/q0f1jCZreuCXtZ3FGesDwJn+k2xobGr7SkKtKdEcaS1T7xfz8fyClBdxf+on4Uj2NOx0oT1rmEkNllt8cF7aTYua2K8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HkRDhUZR; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HkRDhUZR"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF7241F000E9;
-	Tue, 28 Jul 2026 03:20:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785208812;
-	bh=F5z3tvwEriD744uzV8mn09yR9fiawLiWCN3BlDe5fpA=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=HkRDhUZRbHrbP74PvlhS80lWoo6EJuisXqCNXHdxLbd6WU6UqUReqJhuaJ9prQGzJ
-	 yCoNlBNTT2BVVl23jtQKeh3MGeo3oXzMbPEi8oID+uMaaHca6Of5HcQ960teHISRY8
-	 wtws1cy0Vl6DF86dkMRfh8NtZKBoq3wkFlzReNSEvvBVyY4tNGxSVKsKypYdnFWvtF
-	 K9XZ9S9fh/ycrIxbYlg10gBLoDiGq43v704HvSQxkFbWoEPKkG9TNqemOwESe1hFL2
-	 W5e3XQJWeSNtGklwM14r7C3V64TZXv9FUh23MRV0QQb/HNZVwaF5rrq6f/4PGmZeyM
-	 Ntv2u/goS1Dww==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net] can: isotp: check register_netdevice_notifier()
- error in module init
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Minhong He" <heminhong@kylinos.cn>
-Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org, "Vincent
- Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>
-In-Reply-To: <20260728031038.76524-1-heminhong@kylinos.cn>
-References: <20260728031038.76524-1-heminhong@kylinos.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 28 Jul 2026 03:20:11 +0000
-Message-Id: <20260728032011.CF7241F000E9@smtp.kernel.org>
+	s=arc-20240116; t=1785218330; c=relaxed/simple;
+	bh=uIXU/sTXEy+EQfQEM8xcADzD2FRvWbwxkyQDBFQi5R4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Wxpp3GX+7fIh1oc8xvRuR+B5G36qAxPx2xgInZqqg5HyrspJ4O/BqGKZjgKvGRQwCK4v4IJrV3xqUtp8bkKBl3GrrtrSLsZSd28VcI3Uv9Ue5MMhP2+KUpHvxDpjBngDI2Zs7jXUXa1gsUnIsv3puVVvHEURBcukFMwE5aHJSZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 32EED20298B;
+	Tue, 28 Jul 2026 07:58:37 +0200 (CEST)
+Received: from dude04.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::ac] helo=dude04)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1woapp-001feI-0F;
+	Tue, 28 Jul 2026 07:58:37 +0200
+Received: from ore by dude04 with local (Exim 4.98.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1woapp-00000004pe8-00Hu;
+	Tue, 28 Jul 2026 07:58:37 +0200
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Robin van der Gracht <robin@protonic.nl>,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
+	Ji'an Zhou <eilaimemedsnaimel@gmail.com>,
+	kernel@pengutronix.de,
+	linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v1 can 2/2] can: j1939: transport: initialize receive buffer
+Date: Tue, 28 Jul 2026 07:58:35 +0200
+Message-ID: <20260728055835.1151785-3-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20260728055835.1151785-1-o.rempel@pengutronix.de>
+References: <20260728055835.1151785-1-o.rempel@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
-- [High] Registering the CAN protocol before completing all fallible initia=
-lization steps creates a race window leading to a Use-After-Free crash if i=
-nitialization fails.
+Zero the allocated buffer in j1939_session_fresh_new() to ensure it
+contains no residual data.
+
+While there is a potential performance impact if users allocate maximum
+sized ETP buffers, most real-world use cases are not noticeably affected
+since the maximum known buffer size is typically around 65K.
+
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Reported-by: Ji'an Zhou <eilaimemedsnaimel@gmail.com>
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ net/can/j1939/transport.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index 98f96362b20f..8fcfd13e5e6f 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -1581,7 +1581,7 @@ j1939_session *j1939_session_fresh_new(struct j1939_priv *priv,
+ 	}
+
+ 	/* alloc data area */
+-	skb_put(skb, size);
++	skb_put_zero(skb, size);
+ 	/* skb is recounted in j1939_session_new() */
+ 	return session;
+ }
 --
+2.47.3
 
---- Patch [1]: [PATCH net] can: isotp: check register_netdevice_notifier() =
-error in module init ---
-commit 5f2f7a58360e9a2c18b5d6a9a724f468f79227d1
-Author: Minhong He <heminhong@kylinos.cn>
-
-can: isotp: check register_netdevice_notifier() error in module init
-
-This commit adds a check for the return value of register_netdevice_notifie=
-r()
-in the isotp module initialization. If the notifier registration fails, it
-now unregisters the CAN protocol and returns the error.
-
-> diff --git a/net/can/isotp.c b/net/can/isotp.c
-> index 54becaf6898f1..65e890cafd7a9 100644
-> --- a/net/can/isotp.c
-> +++ b/net/can/isotp.c
-> @@ -1908,12 +1908,18 @@ static __init int isotp_module_init(void)
->  	pr_info("can: isotp protocol (max_pdu_size %d)\n", max_pdu_size);
-> =20
->  	err =3D can_proto_register(&isotp_can_proto);
-> -	if (err < 0)
-> +	if (err < 0) {
->  		pr_err("can: registration of isotp protocol failed %pe\n", ERR_PTR(err=
-));
-> -	else
-> -		register_netdevice_notifier(&canisotp_notifier);
-> +		return err;
-> +	}
-> =20
-> -	return err;
-> +	err =3D register_netdevice_notifier(&canisotp_notifier);
-> +	if (err) {
-> +		can_proto_unregister(&isotp_can_proto);
-> +		return err;
-> +	}
-
-[Severity: High]
-Does this error path introduce a use-after-free risk if userspace creates a
-socket before the module initialization completes?
-
-If can_proto_register() succeeds, the protocol is immediately exposed to
-userspace. If a concurrent thread creates an ISOTP socket before
-register_netdevice_notifier() fails, the socket will hold pointers to the
-module's protocol operations.
-
-When the module initialization aborts and returns an error, the kernel will
-free the module memory. While can_proto_unregister() removes the protocol
-from the registry, it does not revoke already-created sockets. As a result,
-any subsequent operations on the existing socket will dereference freed
-module memory.
-
-Would it be safer to move the fallible register_netdevice_notifier() before
-can_proto_register() to avoid exposing the protocol before initialization
-is guaranteed to succeed?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260728031038.7652=
-4-1-heminhong@kylinos.cn?part=3D1
