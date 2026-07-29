@@ -1,92 +1,126 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Received: from mx.swemel.ru (mx.swemel.ru [95.143.211.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF4E2F0C74
-	for <linux-can@vger.kernel.org>; Tue, 28 Jul 2026 13:06:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6D3D4908DE;
+	Wed, 29 Jul 2026 00:40:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.143.211.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785243992; cv=none; b=rZoGVPAVMNCr2Fd8+Eeuc+JAWV+RKCQbE5LG33bOSF/j0/uMJ22Y646eOO9xgB6Pcsuyjy/P635NvOM+ZNk0StToVjmkP735XHKzi491tiLhdQg4Ryx22VadZI/RFNr+y3gG5DRsXua8GzC9bkHlvwoL5+SmSxoQrF8tx9en684=
+	t=1785285654; cv=none; b=pmT9yWSFkIW//zQxuUYUF7o3eqaU0gxaXs80mBEMhG3XOn4Jj6B3ooszi3ZQVUnZ6dlj89YGyMkEl1CbVTOEOG6W5+ktPapdalG3bIYGld7lMg0QEqlX0omHMv8jJ6kV75vUOtqWPBNgLh+SHPqlHltR18oQ4N0lI6E8EhQDB/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785243992; c=relaxed/simple;
-	bh=q5/mIDzzWiyKLYNcj8FB/fEEAWtgq+fxrHFY/wntuLE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ETtIBfctyaAlBjpPBo0KL+ldlZgpgKzpEIojHHDPYyEB+jK7WclpGEtwr2nug9F4a0owP65Nq9H9jTCRSA9ir8HQmxBOjZqDhztTqFd+9oESOlStp1doDks+bqvMFvNuB0B3sTkNCaug7pjxKfYsw4tuJGDC1mkq3vXv/5gf3xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 7E4602029DD;
-	Tue, 28 Jul 2026 15:06:24 +0200 (CEST)
-Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1wohVo-001ivV-1O;
-	Tue, 28 Jul 2026 15:06:24 +0200
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.98.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1wohVo-00000009qr6-1Nua;
-	Tue, 28 Jul 2026 15:06:24 +0200
-Date: Tue, 28 Jul 2026 15:06:24 +0200
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: sashiko-reviews@lists.linux.dev
-Cc: Vincent Mailhol <mailhol@kernel.org>,
-	Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH can v1 1/2] can: j1939: use netdevice_tracker for
- j1939_{priv,session,ecu} tracking
-Message-ID: <amipUDANStLdpEYW@pengutronix.de>
-References: <20260728055835.1151785-1-o.rempel@pengutronix.de>
- <20260728055835.1151785-2-o.rempel@pengutronix.de>
- <20260728061338.9A6711F000E9@smtp.kernel.org>
+	s=arc-20240116; t=1785285654; c=relaxed/simple;
+	bh=A60+ic9XZRw92ehwx9OPHj0EOLYP4/NIVI51+H1+fvE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UEdSFbYwDCTilY6cvUBI7rLqnc+g8RKKkeMlZt5wRduSAb2Nlh5HOmKslz9H7A5JatE/kJ1CSaO6s5I3LXVJNq4f0TpjSqGiK29sx/5N2/cdM2GeAZ2EBRkvtWjXVj0q3tW7wxmXngzPfPjD2ygLCPon0YyZp0ynP6+RS2c4A5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=swemel.ru; spf=pass smtp.mailfrom=swemel.ru; dkim=pass (1024-bit key) header.d=swemel.ru header.i=@swemel.ru header.b=Ym+VI77J; arc=none smtp.client-ip=95.143.211.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=swemel.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=swemel.ru
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=swemel.ru header.i=@swemel.ru header.b="Ym+VI77J"
+Message-ID: <2ec41792-d40f-4b11-ac87-6174780f8a08@swemel.ru>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=swemel.ru; s=mail;
+	t=1785285636;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=X1j9tEVwNukiUf0NLNWnvvjFUUnS8IQBqim45lx+0LE=;
+	b=Ym+VI77JNeXdV+/f8yRq1yMhTKsIlfvRyg4LGwbCN0Ly9Ur267kRh5B97nI1o+9l97TerT
+	slnnuJn48m3oRcu7RUz/qYHW0vhmtenm2Bn/I+WV7+BrtXFc26296hRRdWl87SzS12Xx4D
+	E44oa68SCWk4PHjq0AHZGutM4thVQvE=
+Date: Wed, 29 Jul 2026 03:40:34 +0300
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20260728061338.9A6711F000E9@smtp.kernel.org>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
+Subject: Re: [PATCH 6.12.y] net: add missing ns_capable check for peer netns
+Content-Language: en-US
+To: stable@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
+ Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Nikolay Aleksandrov <razor@blackwall.org>,
+ "Eric W. Biederman" <ebiederm@aristanetworks.com>,
+ linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ Maximilian Heyne <mheyne@amazon.de>, Greg KH <gregkh@linuxfoundation.org>,
+ Kuniyuki Iwashima <kuniyu@google.com>
+References: <20260617-pats-coif-316245c6@mheyne-amazon>
+ <2026062556-residue-anybody-e756@gregkh>
+From: Konstantin Andreev <andreev@swemel.ru>
+In-Reply-To: <2026062556-residue-anybody-e756@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-OriginalArrivalTime: 29 Jul 2026 00:40:35.0882 (UTC) FILETIME=[DEBCD8A0:01DD1EF2]
 
-On Tue, Jul 28, 2026 at 06:13:38AM +0000, sashiko-bot@kernel.org wrote:
-> --- Patch [1]: [PATCH can v1 1/2] can: j1939: use netdevice_tracker for j1939_{priv,session,ecu} tracking ---
-> commit fa6ae711cbc8e468a294fc1a54de5efa19c0b5b3
-> Author: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Greg KH, Jun 25, 2026:
+> On Wed, Jun 17, 2026 at 08:25:31AM +0000, Maximilian Heyne wrote:
+>> The upstream commit 7b735ef81286 ("rtnetlink: add missing
+>> netlink_ns_capable() check for peer netns") doesn't apply on older
+>> stable kernels due to refactoring. Therefore, this patch is an attempt
+>> to implement the same capability check just directly in the respective
+>> interface types.
 > 
-> can: j1939: use netdevice_tracker for j1939_{priv,session,ecu} tracking
->     
-> This patch enables netdevice_tracker for j1939_priv, j1939_session, and
-> j1939_ecu structures. It aims to help identify the source of refcount
-> leaks reported by syzbot during unregister_netdevice().
-> 
-> > diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
-> > index dc374286eeb6e..cdc3c0a719379 100644
-> > --- a/net/can/j1939/bus.c
-> > +++ b/net/can/j1939/bus.c
-> > @@ -20,6 +20,7 @@ static void __j1939_ecu_release(struct kref *kref)
-> >  	struct j1939_priv *priv = ecu->priv;
-> >  
-> >  	list_del(&ecu->list);
-> 
-> [Severity: High]
-> This is a pre-existing issue, but is it safe to modify priv->ecus here without
-> holding priv->lock?
-> 
-> If a process unbinds a socket and drops its ECU reference concurrently with the
-> network receive path processing a packet:
+> Why can't we take the full series of patches instead?  Otherwise this is
+> going to be a pain over time for any other fixes/updates in this area,
+> right?
 
-Ack - we will keep it mind. This is not blocker for current patch set.
+The patches that produced net/core/rtnetlink.c:rtnl_get_peer_net(),
+being fixed in 6.18-7.0, are not a refactoring.
 
-Best Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Actually, rtnl_get_peer_net() almost literally
+replicates the “peer net” management code that can be found
+in vxcan_newlink(), netkit_new_link(), and veth_newlink().
+
+These patches are part of a larger new feature series:
+"rtnetlink: Convert rtnl_newlink() to per-netns RTNL"
+From: Kuniyuki Iwashima, 2024-11-07
+Link: https://lore.kernel.org/all/20241108004823.29419-1-kuniyu@amazon.com/
+
+These patches in the series
+v
+¦     In git log order:
+¦
+¦   636af13f213b ("rtnetlink: Register rtnl_dellink() and rtnl_setlink() with RTNL_FLAG_DOIT_PERNET_WIP")
+¦   d91191ffe23f ("rtnetlink: Convert RTM_NEWLINK to per-netns RTNL")
+├─> fefd5d082172 ("netkit: Set IFLA_NETKIT_PEER_INFO to netkit_link_ops.peer_type")
+├─> 6b84e558e95d ("vxcan: Set VXCAN_INFO_PEER to vxcan_link_ops.peer_type")
+├─> 0eb87b02a705 ("veth: Set VETH_INFO_PEER to veth_link_ops.peer_type")
+└─> 28690e5361c0 ("rtnetlink: Add peer_type in struct rtnl_link_ops")
+     cbaaa6326bc5 ("rtnetlink: Introduce struct rtnl_nets and helpers")
+     68297dbb967f ("rtnetlink: Remove __rtnl_link_register()")
+     6b57ff21a310 ("rtnetlink: Protect link_ops by mutex")
+     d5ec8d91f82e ("rtnetlink: Remove __rtnl_link_unregister()")
+
+At the time, rtnl_get_peer_net() was named rtnl_add_peer_net().
+
+Having common “peer net” management code in rtnl_get_peer_net()
+made it possible to “add missing netlink_ns_capable()”
+in a single location.
+
+If the series is to be backported to 6.12.y
+then the following commits must be backported as well,
+because they fix bugs introduced by that series:
+
+48327566769a ("rtnetlink: fix double call of rtnl_link_get_net_ifla()")
+954a2b40719a ("rtnetlink: Try the outer netns attribute in rtnl_get_peer_net()")
+
+Commit-by-commit replication of the evolution of
+rtnl_get_peer_net(), vxcan_newlink(), netkit_new_link(),
+and veth_newlink() means backporting a new feature,
+introducing and fixing bugs.
+
+It seems reasonable to avoid "introduce and fix bugs" roundtrip
+during backport, but then we miss commit-by-commit replication.
+
+As we miss replication, we may also discard
+the “new feature” commits as well.
+
+Cutting these out leaves us with a targeted re-implementation of
+the CVE fix. IMO, that's exactly what Maximilian Heyne's patch does.
+
+Regards,
+Konstantin
