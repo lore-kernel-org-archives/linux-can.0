@@ -1,113 +1,154 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF16739EB47
-	for <linux-can@vger.kernel.org>; Wed, 29 Jul 2026 09:13:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D505C3F4822;
+	Wed, 29 Jul 2026 10:29:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785316428; cv=none; b=C33xwek62Ufp1U3OpNdLDxY8lpXaCRP4dHhAWXD1qDE3gIJxV6PepCrsKwYpO//IGVJw1t9GoFxuf7fXGTdhoBeN5TcdJAhqpnxcb8UdYAO5W5VplTy+DLnUCO0UBJJrWSpCmcIad7ZkI3VOM1hz8ew6DhkofzxKw1uDK19remo=
+	t=1785320970; cv=none; b=tCgoJcEr3YV/fltPZZRTXbdbMcOcmW8VMBkzBwAOFpAKE8z7WScb8x121Tu3QvXzyGfbRrZo5CB/a4VH51L+lBZS4ei4ShEyapQEgoUcIDKSwstXZEP3rkq9IFM6NENtCRCjY9NLg8Hag602IXEUhjs/urhuccgIyFa7ngEWVGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785316428; c=relaxed/simple;
-	bh=NcWCCVsgK4L6L9PwEMlB+ktS5AIDdtSLs259y4lJoZI=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=emvEZzPBNHS3ENKahWEgxas3TY56lBBc6iBFynUWEjbrA1bavTR8bWD2A02lbzXAR9hQynWIH21fAQ4BY8/E6YNGKoMjmMVwhIJQ6XSKFQKPrx15SBXYwlt9LwmxnGAMUENAwIH8oKRudUaMCVE3YN8/mCFpUpiApt+6oD9j7Ds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cfHzN/Ij; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cfHzN/Ij"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D865D1F000E9;
-	Wed, 29 Jul 2026 09:13:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785316427;
-	bh=CjO81RgJRXSH2cgBHHrDdKQ+UB9AHNKvWfPzOd1tdkQ=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=cfHzN/IjdAtdJPGHfq0pSGEfddc5XCM0UlA2keLpEZwqrBcg1uj9e+3h7VKyeV0lc
-	 yIAeonuWjuasw3Zf7xYY5kUWyH7m2LDvpJHJHwVZuS0jyDeYts0SAzNlA41dRyimsd
-	 M5iynmAgXdvJGKtBY6yEvsJSEH/ZGnievDBV8i2+pcqC3M4cWoujj77eka2Lr00Z9t
-	 7LFbKQoASyj96J9QK/f7tvv+Ei0vJUXNWnznFaywmn57FXSr31hbYEc87j7Q7BQA8Q
-	 UEh4If1UusOPNtlrI1vUUyQar4v3HVeKhNhQSA+fncEkiMeYG6Yiu4IseoCk920RGK
-	 Eq/HdKz+bMWcQ==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net v2] can: isotp: check register_netdevice_notifier()
- error in module init
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Minhong He" <heminhong@kylinos.cn>
-Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20260729085656.134523-1-heminhong@kylinos.cn>
-References: <20260728031038.76524-1-heminhong@kylinos.cn>
- <20260729085656.134523-1-heminhong@kylinos.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 29 Jul 2026 09:13:46 +0000
-Message-Id: <20260729091346.D865D1F000E9@smtp.kernel.org>
+	s=arc-20240116; t=1785320970; c=relaxed/simple;
+	bh=b39/whaeh4iT8w6BfCJhWUVT0ZUiCc8Gifio0tZV4vg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=GO+n8+Kwhkwggy62l6lYWAk6AYIl5yzMs2BPCAKW5hnTnUVZckDJ1qmxg96EQA05vimU5xIrUDQBJNykH9sQHGwS5JeVUHB9tKhlagEQVo1giue936ZoxGw8RW1bT8dt3xF3yfiQuKJ6xM9RjH1lJR9T+ZMhpDtkdoHEL4SppTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id E4C86202B58;
+	Wed, 29 Jul 2026 12:29:25 +0200 (CEST)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1wp1XR-001rmu-26;
+	Wed, 29 Jul 2026 12:29:25 +0200
+Received: from blackshift.org (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 3E1AD575DCF;
+	Wed, 29 Jul 2026 10:28:11 +0000 (UTC)
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net,
+	kuba@kernel.org,
+	linux-can@vger.kernel.org,
+	kernel@pengutronix.de,
+	Pengpeng Hou <pengpeng@iscas.ac.cn>,
+	stable@vger.kernel.org,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net 12/20] can: peak_usb: validate uCAN receive record lengths
+Date: Wed, 29 Jul 2026 12:12:52 +0200
+Message-ID: <20260729102802.505168-13-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260729102802.505168-1-mkl@pengutronix.de>
+References: <20260729102802.505168-1-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
+From: Pengpeng Hou <pengpeng@iscas.ac.cn>
 
-Pre-existing issues:
-- [High] Missing error checks for can_rx_register() in isotp_bind().
---
+pcan_usb_fd_decode_buf() walks uCAN records packed in one USB
+receive buffer.
 
---- Patch [1]: [PATCH net v2] can: isotp: check register_netdevice_notifier=
-() error in module init ---
-commit 059042597b87e317cf8905dce3a8140167d9528a
-Author: Minhong He <heminhong@kylinos.cn>
+Require each record to contain the fixed header for its type, and verify
+CAN payload bytes before copying them into the skb.
 
-can: isotp: check register_netdevice_notifier() error in module init
+Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
+Link: https://patch.msgid.link/20260706092836.79754-1-pengpeng@iscas.ac.cn
+Fixes: 0a25e1f4f185 ("can: peak_usb: add support for PEAK new CANFD USB adapters")
+Cc: stable@vger.kernel.org
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 40 +++++++++++++++++++++-
+ 1 file changed, 39 insertions(+), 1 deletion(-)
 
-This commit registers the netdevice notifier before calling
-can_proto_register() and checks its return value. If the protocol
-registration fails, it properly unregisters the notifier before
-returning the error.
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+index ef9fd693e9bd..0d46f4ce5dca 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+@@ -566,6 +566,13 @@ static int pcan_usb_fd_decode_canmsg(struct pcan_usb_fd_if *usb_if,
+ 				     dev->can.ctrlmode);
+ 	}
+ 
++	if (!(rx_msg_flags & PUCAN_MSG_RTR) &&
++	    le16_to_cpu(rx_msg->size) - offsetof(struct pucan_rx_msg, d) <
++	    cfd->len) {
++		kfree_skb(skb);
++		return -EBADMSG;
++	}
++
+ 	cfd->can_id = le32_to_cpu(rm->can_id);
+ 
+ 	if (rx_msg_flags & PUCAN_MSG_EXT_ID)
+@@ -714,6 +721,24 @@ static void pcan_usb_fd_decode_ts(struct pcan_usb_fd_if *usb_if,
+ 		peak_usb_set_ts_now(&usb_if->time_ref, le32_to_cpu(ts->ts_low));
+ }
+ 
++static size_t pcan_usb_fd_rx_msg_min_size(u16 rx_msg_type)
++{
++	switch (rx_msg_type) {
++	case PUCAN_MSG_CAN_RX:
++		return offsetof(struct pucan_rx_msg, d);
++	case PCAN_UFD_MSG_CALIBRATION:
++		return sizeof(struct pcan_ufd_ts_msg);
++	case PUCAN_MSG_ERROR:
++		return sizeof(struct pucan_error_msg);
++	case PUCAN_MSG_STATUS:
++		return sizeof(struct pucan_status_msg);
++	case PCAN_UFD_MSG_OVERRUN:
++		return sizeof(struct pcan_ufd_ovr_msg);
++	default:
++		return sizeof(struct pucan_msg);
++	}
++}
++
+ /* callback for bulk IN urb */
+ static int pcan_usb_fd_decode_buf(struct peak_usb_device *dev, struct urb *urb)
+ {
+@@ -728,6 +753,12 @@ static int pcan_usb_fd_decode_buf(struct peak_usb_device *dev, struct urb *urb)
+ 	msg_end = urb->transfer_buffer + urb->actual_length;
+ 	for (; msg_ptr < msg_end;) {
+ 		u16 rx_msg_type, rx_msg_size;
++		size_t rx_msg_min_size;
++
++		if (msg_end - msg_ptr < sizeof(*rx_msg)) {
++			err = -EBADMSG;
++			break;
++		}
+ 
+ 		rx_msg = (struct pucan_msg *)msg_ptr;
+ 		if (!rx_msg->size) {
+@@ -739,13 +770,20 @@ static int pcan_usb_fd_decode_buf(struct peak_usb_device *dev, struct urb *urb)
+ 		rx_msg_type = le16_to_cpu(rx_msg->type);
+ 
+ 		/* check if the record goes out of current packet */
+-		if (msg_ptr + rx_msg_size > msg_end) {
++		if (rx_msg_size > msg_end - msg_ptr) {
+ 			netdev_err(netdev,
+ 				   "got frag rec: should inc usb rx buf sze\n");
+ 			err = -EBADMSG;
+ 			break;
+ 		}
+ 
++		rx_msg_min_size = pcan_usb_fd_rx_msg_min_size(rx_msg_type);
++		if (rx_msg_size < rx_msg_min_size) {
++			netdev_err(netdev, "got short rec\n");
++			err = -EBADMSG;
++			break;
++		}
++
+ 		switch (rx_msg_type) {
+ 		case PUCAN_MSG_CAN_RX:
+ 			err = pcan_usb_fd_decode_canmsg(usb_if, rx_msg);
+-- 
+2.53.0
 
-> diff --git a/net/can/isotp.c b/net/can/isotp.c
-> index 54becaf6898f1..ae6260e98a7a6 100644
-> --- a/net/can/isotp.c
-> +++ b/net/can/isotp.c
-
-[ ... ]
-
-This is a pre-existing issue, but I noticed a potential problem in
-isotp_bind() when reviewing this file:
-
-net/can/isotp.c:isotp_bind() {
-	...
-	if (isotp_register_rxid(so))
-		can_rx_register(net, dev, rx_id, SINGLE_MASK(rx_id),
-				isotp_rcv, sk, "isotp", sk);
-
-	/* no consecutive frame echo skb in flight */
-	so->cfecho =3D 0;
-
-	/* register for echo skb's */
-	can_rx_register(net, dev, tx_id, SINGLE_MASK(tx_id),
-			isotp_rcv_echo, sk, "isotpe", sk);
-
-	/* switch to new settings */
-	so->ifindex =3D ifindex;
-	...
-}
-
-[Severity: High]
-Does this code silently ignore the return values of can_rx_register()?
-
-If an unprivileged user inside a container calls bind() under memory
-pressure, can_rx_register() could fail and return -ENOMEM. Because the
-error is not handled, the socket would proceed to be marked as bound.
-
-Later during close, isotp_release() calls can_rx_unregister()
-unconditionally. Since the receiver was never successfully registered, this
-would trigger the pr_warn("can: receive list entry not found...") inside
-af_can.c.
-
-Could a user repeatedly trigger this to generate unbounded kernel log spam,
-creating a denial of service vector?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260729085656.1345=
-23-1-heminhong@kylinos.cn?part=3D1
