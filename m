@@ -1,144 +1,122 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18D843BB9F8
-	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 10:29:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 484CB3DDAFC
+	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 10:29:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785407396; cv=none; b=J3yz2Qu7ymVCl5c7/cRVMhcsCDj804AKBnQUC4FWRZ3bbwg7Ou/yPROIG8gV72rYBtWmkoVMLt6pEnKKBCG60Wwrav+3WKW9tLJyk86Fe4AFJEXLJLmuLXPD6aoAKQW1vvnUyJPaeO4HyKnwMl04jfb0ZsQZZZk6Ure3ABdcC98=
+	t=1785407397; cv=none; b=dSm3Lyl/PJG9wBkOEdHSSNFHzsFvv/INx5zYBIgJrdk8luFk2SXaivDi0eXIT235YneGRTBjDY2xu4ezssdWoE5y9pOlASVwDESCTPK6DPQrv0MYqBkvznDE/Yq6HeCMmCEMVi+zPrEX42ncOCvTR1qVJKuWWRzDQ58zsDc5H0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785407396; c=relaxed/simple;
-	bh=GXl2CHz+sJcnzYcAEKSAAz2lAZoPdZHwMhJu+CD1CqM=;
+	s=arc-20240116; t=1785407397; c=relaxed/simple;
+	bh=XADRYSkxJzl1Ooq6X9Bd4G4EVyKsFd2aDaZxnlFqHp0=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=jZoUYtG2NNZPczKmGh6zp8um4vRluckuHn8QhOjiVLieHB7okMX62jiJYlCLblcPpApZYdfKYTqgebCj0NYJrlYPijGeBYKCCeT25mxYeA8YC0j8FhSdWlEyab5iM9v3meF1eUNHxNXLfF5U9EZXo600g+eopdUdq7/YO1fMBnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eOx8q6gw; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=cgndKtgPf4prEWy6hNNPmyLS5SxVysKOD/mLJLsQjeiq3twZaybvMfEZxW84QnVRf76RyrEizq9bQh3C3r9zriTBbKvrfyM4PpLtFjXuKsLVXXP3XjHZg5rm7a4WDmnXcrEjqG/q7gEAV3qPOWLVc5T7vYTcRVW6fvtLTrdu4GM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=haMwH9VB; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eOx8q6gw"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 925EC1F00A3A;
-	Thu, 30 Jul 2026 10:29:54 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="haMwH9VB"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACD311F00A3D;
+	Thu, 30 Jul 2026 10:29:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785407394;
-	bh=wkbO2hTu6MV1c8Ilwx9yuqRm/8s24krmcfaxcHIS1vE=;
+	s=k20260515; t=1785407396;
+	bh=zwx+KKhRSGs8dqoXMqeUwb1DyAj7ZRjkTYR47ZoZ3HM=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=eOx8q6gwS45KUYXthwRg397nmEPIshM4ptLDmRiQVxUA5UUOyphNzcPXdAxCdS9td
-	 Fbx9w0gAkPlaeTuSnJmaHRzgafnwUOzvLu46rOfwnbCOEBtcbQhqX8YvQlLVLApP/F
-	 xIQIWS8Ggs3/ws4tPkcesChHVvRsh7gacgSNZ/MDmtVs4N1k0R1kK3LzNcyTE+sN77
-	 GtNkQBqnpLc1PEImLv01tf0mtyYjMESV3XJxU+ABMcPPpjr+nfIAO4zbhxwfnoHbWf
-	 /v+gKX1BLN0OV+EODgdE+ooqih9lE2bAF3BbNpCsj+G4z9xOW7fktYWxqJp/C+cBT4
-	 l32yvsHcDmaJg==
+	b=haMwH9VB1b36Tz3zFB1/dqHehR5DOqa8EPMfzDrui21nWgOHaRUqNrsDjWK02ORmm
+	 4AyPCGkXXqywAfq+0YmF4Dn28D1OMpiLWIBX2rEObJ9rcbMpYWUzkfsNcfWFVf2B3X
+	 wJUb32sL0gEIl7l224e8vXIOcb16UUJsMIqfaXKuXIWgEaR+mVuwNd39Q/990hksWO
+	 jRT8zXRVba6tdfv3mPbvf0Ow63h+PvgOCAXlJG/b/uQuxCIobsdMXdLg92q4HsbySZ
+	 hZQnZSgmDL4djiN1PHNFPodzJbD6lsfCx86EDfJ5dyyLTX8/3RNw46gcKX+YD8dVcb
+	 DqqGYHivR3DFg==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net 12/20] can: peak_usb: validate uCAN receive record
- lengths
+Subject: Re: [PATCH net 14/20] can: kvaser_usb_leaf:
+ kvaser_usb_leaf_wait_cmd(): validate received command extents
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Marc Kleine-Budde" <mkl@pengutronix.de>
-Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20260729102802.505168-13-mkl@pengutronix.de>
+Cc: "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>
+In-Reply-To: <20260729102802.505168-15-mkl@pengutronix.de>
 References: <20260729102802.505168-1-mkl@pengutronix.de>
- <20260729102802.505168-13-mkl@pengutronix.de>
+ <20260729102802.505168-15-mkl@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 30 Jul 2026 10:29:54 +0000
-Message-Id: <20260730102954.925EC1F00A3A@smtp.kernel.org>
+Date: Thu, 30 Jul 2026 10:29:55 +0000
+Message-Id: <20260730102955.ACD311F00A3D@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
-Thank you for your contribution! Sashiko AI review found 2 potential issue(=
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
 
-New issues:
-- [High] The new buffer length check prevents graceful loop termination for=
- valid 4-byte padding records, leading to severe log spam.
-
 Pre-existing issues:
-- [Critical] Missing NULL check for uninitialized channel devices leads to =
-a NULL pointer dereference.
+- [High] Processing a zero-length extended command or encountering a bulk e=
+ndpoint with a zero wMaxPacketSize causes an infinite loop and CPU soft loc=
+kup.
 --
 
---- Patch [12]: [PATCH net 12/20] can: peak_usb: validate uCAN receive reco=
-rd lengths ---
-commit ae45d78fc07951e0485a1ba7921e266e598fe209
+--- Patch [14]: [PATCH net 14/20] can: kvaser_usb_leaf: kvaser_usb_leaf_wai=
+t_cmd(): validate received command extents ---
+commit ad6fd8163961ebd7ee69b192c06c6c10803d720a
 Author: Pengpeng Hou <pengpeng@iscas.ac.cn>
+Subject: can: kvaser_usb_leaf: kvaser_usb_leaf_wait_cmd(): validate receive=
+d command extents
 
-can: peak_usb: validate uCAN receive record lengths
+The wait and bulk receive paths walk variable-length commands from a
+USB buffer. A nonzero command shorter than CMD_HEADER_LEN can still be
+dispatched, and the wait path copies a matching command into a fixed
+caller-owned struct kvaser_cmd using the device-provided length.
 
-This patch validates the length of uCAN receive records before copying
-their payloads into socket buffers. It requires each record to contain
-the fixed header for its type and verifies CAN payload bytes.
+Link: https://patch.msgid.link/20260722042221.44066-1-pengpeng@iscas.ac.cn
 
-Link: https://patch.msgid.link/20260706092836.79754-1-pengpeng@iscas.ac.cn
-
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can=
-/usb/peak_usb/pcan_usb_fd.c
-> index ef9fd693e9bd3..0d46f4ce5dca7 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-> @@ -566,6 +566,13 @@ static int pcan_usb_fd_decode_canmsg(struct pcan_usb=
-_fd_if *usb_if,
->  				     dev->can.ctrlmode);
->  	}
+> diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/n=
+et/can/usb/kvaser_usb/kvaser_usb_leaf.c
+> index df737cfc5ea0c..a876c7819b81c 100644
+> --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
+> +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
+> @@ -691,13 +691,22 @@ static int kvaser_usb_leaf_wait_cmd(const struct kv=
+aser_usb *dev, u8 id,
+>  				continue;
+>  			}
 > =20
-> +	if (!(rx_msg_flags & PUCAN_MSG_RTR) &&
-> +	    le16_to_cpu(rx_msg->size) - offsetof(struct pucan_rx_msg, d) <
-> +	    cfd->len) {
-> +		kfree_skb(skb);
-> +		return -EBADMSG;
-> +	}
-> +
+> -			if (pos + tmp->len > actual_len) {
+> +			if (tmp->len < CMD_HEADER_LEN ||
+> +			    tmp->len > actual_len - pos) {
 
-[Severity: Critical]
-This is a pre-existing issue, but is there a missing NULL pointer check when
-extracting the channel device in this function?
+[Severity: High]
+This isn't a bug introduced by this patch, but might the logic directly abo=
+ve
+this bounds check still allow an infinite loop?
 
-In pcan_usb_fd_decode_canmsg(), the channel index is checked against the
-array size:
+If a USB device provides a bulk IN endpoint with wMaxPacketSize =3D=3D 0, t=
+he check
+for tmp->len =3D=3D 0 behaves as follows:
 
-        if (pucan_msg_get_channel(rm) >=3D ARRAY_SIZE(usb_if->dev))
-                return -ENOMEM;
+			if (tmp->len =3D=3D 0) {
+				pos =3D round_up(pos + 1,
+					       le16_to_cpu
+						(dev->bulk_in->wMaxPacketSize));
+				continue;
+			}
 
-        dev =3D usb_if->dev[pucan_msg_get_channel(rm)];
-        netdev =3D dev->netdev;
+Here, round_up(pos + 1, 0) evaluates to 0, which resets pos to 0. Since this
+executes before the new tmp->len < CMD_HEADER_LEN check, the loop would fai=
+l to
+advance and hang the process.
 
-For single-channel adapters, usb_if->dev[1] is never initialized and remains
-NULL. If a malicious or malfunctioning USB device sends a CAN RX message
-specifying channel 1, will the driver fetch the NULL pointer and immediately
-dereference it when accessing dev->netdev?
+This same pattern appears in kvaser_usb_leaf_read_bulk_callback() modified
+later in this patch.
 
-This same pattern appears to be present in pcan_usb_fd_decode_status(),
-pcan_usb_fd_decode_error(), and pcan_usb_fd_decode_overrun().
+Additionally, a similar pre-existing issue seems to be present in the
+kvaser_usb_hydra driver variant. In kvaser_usb_hydra_wait_cmd() and
+kvaser_usb_hydra_read_bulk_callback(), if an extended command specifies a l=
+ength
+of 0, kvaser_usb_hydra_cmd_size() returns 0. The loop then increments pos b=
+y 0,
+failing to advance and causing a soft lockup.
 
 [ ... ]
 
-> @@ -728,6 +753,12 @@ static int pcan_usb_fd_decode_buf(struct peak_usb_de=
-vice *dev, struct urb *urb)
->  	msg_end =3D urb->transfer_buffer + urb->actual_length;
->  	for (; msg_ptr < msg_end;) {
->  		u16 rx_msg_type, rx_msg_size;
-> +		size_t rx_msg_min_size;
-> +
-> +		if (msg_end - msg_ptr < sizeof(*rx_msg)) {
-> +			err =3D -EBADMSG;
-> +			break;
-> +		}
-
-[Severity: High]
-Will this check fail on valid 4-byte null tags used for padding at the end
-of a transfer buffer?
-
-If the hardware or driver uses a 4-byte null tag to mark the end of valid
-records (where size =3D 0), this check for a full 12-byte struct pucan_msg=
-=20
-will evaluate to true.=20
-
-This breaks the loop with err =3D -EBADMSG, which triggers the fail path and
-calls pcan_dump_mem(). Because pcan_dump_mem() uses un-ratelimited logging,
-could this result in severe kernel log spam for every receive transfer that
-ends in 4-byte padding?
-
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260729102802.5051=
-68-1-mkl@pengutronix.de?part=3D12
+68-1-mkl@pengutronix.de?part=3D14
