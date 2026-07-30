@@ -1,113 +1,89 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD4C6449B24
-	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 16:16:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD083446BEB;
+	Thu, 30 Jul 2026 16:20:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785428221; cv=none; b=uliZHKEq5WFlKFQr78bZCOpX7sp/6JCLWBjhgMfaM/n1IFN+paplhkJ40WluS4q9RqL6lUDm7Fam8CMqFwrKP42l/sZU72VxcLph9dQgfz/J+fHrT6h5JNfrqLPwQQooDLjm23BHbGi/Bsp5QWqGwHOV+6USSFuVPSYUCZakkhM=
+	t=1785428427; cv=none; b=ttU3e5Ki8jpKyay1E5rHQkGlETMKt3YIm3NsGqej5RoNYTDrAHIFkH6XJ39Qiu4D6xVHlFGfpaHNclRsYSrKZatMKvusKS6+tGtfypGr+MmQt5sQpGoV43H5vK8KsYCCdLMJ+JuDO6VdWaFLVAkA/oEMvAMBefcpHs1p6QFEaJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785428221; c=relaxed/simple;
-	bh=yU+F7j/xXbq3ELLaHoVePWj58cpGAU1tMvCs1ttY2+g=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=UnyXIuTzlA9X9ZETkF1VAU3abes6rhXT/1RuZfkt7GS1g4swHEoBYsbjoVP8h4iNeSUbsocJO1EBrGpimDaYJZQ1Unan4gisjvA8IMPP8BlFyArZs+yNwGrBhl4hodQ2s2bgkjCi5hzEi8tG1/D3ApU/LwdMVjTwqd6yGMTScPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uy8uLpIF; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1785428427; c=relaxed/simple;
+	bh=7kQaVcZWAjdDsBUtk2x0Tjc/P794gFThT6IdoYljb4I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bAin1hiPghWxKqiXx4a8N5+WURdX9hdnk43IcJEU19VFuMg+BsTrMf06JL5m1qyOOdXR1TiNhDwxCnJuBjfCBSk/RgDd2AbXuZFGrjiq90lkJEBFkXaI1mjASN4VOhGYaN/y6Rn4qpV3/4mGLfuZKmsrM4PiTrJCQDhDXiWsTeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=z5kdi3HH; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uy8uLpIF"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C2131F00A3A;
-	Thu, 30 Jul 2026 16:16:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785428215;
-	bh=fypdSgpVDwAUJjPqDVppNq0Y3ZoM3cr28G0wxoJ3y5M=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=Uy8uLpIFRMabjCA9FIKQgKy4dVIPAp3GinWCrA7cUocwclGzzuwDSJ5Ma4LcabaaX
-	 7JEu3SEWfp2zRFfdS+xtLjUU4n80e9GE9jDCLbTcIFdFXDERIhFwb5s2YCOiBOOLa7
-	 ec0rA3fLs5tvktq3R7VIcFwcIJiLBNBmLlXg7TUPZwq1Q/v9tbJwhccJNJMG4slpEz
-	 lWZXbaAtZheQqss4VQXaLG8BhE2FVMOP3HZdd09NARhYWVTLTdqggC3gJmSElzwvJs
-	 4ew22tcp66dDBqH82cn0gO7cLAyz1UCTPt3DaLGUnHrFQehAhdkNRhDdYKd8hD2ALz
-	 l9+YktBFoyqiA==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v4 3/3] can: rockchip_canfd: serialize TX state and
- command writes
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Cunhao Lu" <1579567540@qq.com>
-Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
- Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org, "Marc
- Kleine-Budde" <mkl@pengutronix.de>
-In-Reply-To: <tencent_9BBC002BC4013FA9A6559A771980048B9107@qq.com>
-References: <20260730-master-v4-0-07f7952f761d@qq.com>
- <tencent_9BBC002BC4013FA9A6559A771980048B9107@qq.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 30 Jul 2026 16:16:54 +0000
-Message-Id: <20260730161655.5C2131F00A3A@smtp.kernel.org>
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="z5kdi3HH"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C24211F000E9;
+	Thu, 30 Jul 2026 16:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxfoundation.org;
+	s=korg; t=1785428426;
+	bh=/4oNgarC/98qWuR+AyyaCO3AdfMypG6g5lOZJYx7xdU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=z5kdi3HHzVN7keKI/1OQL1XgX8LCdqgEaENqjpq716OxVTwgbG+4EVwLa1Tfy2E2c
+	 Cn/aRwi5BlSI9R5T9egDLSXXiQJs2M+5Uh+UrnhtMUUDuWleaD3wn6VdSVOM4rdFYi
+	 7M3k5kR1xynJir3FheJW+1dMiSQowz8kvwJZDkHE=
+Date: Thu, 30 Jul 2026 16:50:42 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Yun Zhou <yun.zhou@windriver.com>
+Cc: jirislaby@kernel.org, socketcan@hartkopp.net,
+	linux-serial@vger.kernel.org, mkl@pengutronix.de,
+	linux-can@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] tty: ldisc: fix deadlock between ldisc_sem and
+ rtnl_mutex
+Message-ID: <2026073027-nervy-imposing-0068@gregkh>
+References: <20260724084648.3879356-1-yun.zhou@windriver.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260724084648.3879356-1-yun.zhou@windriver.com>
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
-- [High] Hardware FIFO and software state desynchronization when can_put_ec=
-ho_skb fails.
---
+On Fri, Jul 24, 2026 at 04:46:48PM +0800, Yun Zhou wrote:
+> syzbot reported a circular lock dependency involving tty ldisc_sem and
+> the networking rtnl_mutex. The full chain is:
+> 
+>   rtnl_mutex --> nft_commit_mutex --> ... --> ep->mtx --> ldisc_sem --> rtnl_mutex
+> 
+> The last edge (ldisc_sem -> rtnl_mutex) is created because tty line
+> discipline .open() callbacks (slcan, slip) call register_netdev() which
+> acquires rtnl_mutex, and .open() runs under ldisc_sem write lock in
+> tty_set_ldisc().
+> 
+> Fix by moving the .open() call outside the ldisc_sem write lock. The
+> ldisc .open() is initialization of the NEW discipline after the old one
+> has been closed - there is no need for ldisc_sem protection at this
+> point since:
+> 
+>  - tty_lock is held throughout, preventing concurrent tty_set_ldisc,
+>    hangup, or close
+>  - tty->ldisc is set to NULL during the window. tty_ldisc_ref_wait()
+>    waits for the transition to complete. tty_ldisc_ref() returns NULL
+>    which callers already handle.
+>  - tty buffer data stays queued until the ldisc is installed
+> 
+> The sequence becomes:
+>   1. Hold ldisc_sem(write): close old ldisc, set tty->ldisc = NULL
+>   2. Release ldisc_sem(write)
+>   3. Call new_ldisc->ops->open() without ldisc_sem
+>   4. Re-acquire ldisc_sem(write): install new ldisc (or restore old)
+>   5. Release ldisc_sem(write)
+> 
+> Reported-by: syzbot+de610eeef174bd59a8a3@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=de610eeef174bd59a8a3
+> Signed-off-by: Yun Zhou <yun.zhou@windriver.com>
+> ---
 
---- Patch [3]: [PATCH v4 3/3] can: rockchip_canfd: serialize TX state and c=
-ommand writes ---
-commit ab677d838393ae26a8c9bbe2590b03c3dd72671f
-Author: Cunhao Lu <1579567540@qq.com>
+Sashiko has some comments:
+	https://sashiko.dev/#/patchset/20260724084648.3879356-1-yun.zhou@windriver.com
+are they correct?
 
-can: rockchip_canfd: serialize TX state and command writes
+thanks,
 
-This commit adds a tx_lock to serialize TX state and command writes in the=
-=20
-Rockchip CAN FD driver. It addresses races between the transmit and complet=
-ion=20
-paths, as well as an erratum 12 workaround bypass.
-
-> diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/c=
-an/rockchip/rockchip_canfd-tx.c
-> index 2b5cd6aab31b6..c311b6990bc9e 100644
-> --- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
-> +++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
-
-[ ... ]
-
-> @@ -124,8 +138,11 @@ netdev_tx_t rkcanfd_start_xmit(struct sk_buff *skb, =
-struct net_device *ndev)
->  			      *(u32 *)(cfd->data + i));
-> =20
->  	frame_len =3D can_skb_get_frame_len(skb);
-> +	spin_lock_irqsave(&priv->tx_lock, flags);
->  	err =3D can_put_echo_skb(skb, ndev, tx_head, frame_len);
->  	if (err) {
-> +		spin_unlock_irqrestore(&priv->tx_lock, flags);
-> +
->  		ndev->stats.tx_dropped++;
->  		return NETDEV_TX_OK;
->  	}
-
-[Severity: High]
-Does this error path leave the software and hardware out of sync?
-
-If can_put_echo_skb() fails, the driver returns early from rkcanfd_start_xm=
-it().
-
-However, the frame data has already been written to the memory-mapped FIFO
-input port just before this code block. Because the error path skips
-advancing tx_head and issuing the TX command, it consumes a hardware buffer
-slot and causes the software and hardware pointers to become permanently
-out of sync.
-
-On the next transmission, a new frame is pushed to the hardware, but the
-un-advanced tx_head command is issued, which transmits the previously dropp=
-ed
-frame instead.
-
-Should the driver only write to the hardware registers after
-can_put_echo_skb() succeeds?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260730-master-v4-=
-0-07f7952f761d@qq.com?part=3D3
+greg k-h
