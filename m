@@ -1,150 +1,180 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41A5D3D9DDF
-	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 10:29:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE8813F822B
+	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 10:29:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785407399; cv=none; b=Xb5b1bRjMaDXWdCuD40TPBXproh3n4FLRY+ae928ZEK8ciRlx9GN4VGABYkzElRAJqu6x5zq5c/aa6vE1P4j8ns3sj1PV4knf/ZdcDIcCuB63acaVLXiq67iZFGn67g/iqI8JAsxycmnlBCJFbctTjBqz3Yps9QtUCARpQgGDvE=
+	t=1785407401; cv=none; b=koWr0IxECd/VQw1xGwK3Qkzq7FAMpffX4kZdiQEzmNXoy7OmyEbK5/u4lfK1IAkfVoT7mH/CHldPqBz7Hz4nPxYg+1dQZpdkmvwXT7feE0vgB/Q7lj5K4mJmnyRVoB7i+WmWg4U+696ylyuiXZCwXzVzFmSPfsQDWSuK4EpPvU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785407399; c=relaxed/simple;
-	bh=I6bfxhfxUEMC5x5e+aRVMpTq39ymomS0ysIZnZVFEOQ=;
+	s=arc-20240116; t=1785407401; c=relaxed/simple;
+	bh=e9Rg1J8cInYQosOEiajWdY+WWMQHJzl5HeWfS7/yZn4=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=jMv2bRFZKH4ISPEN2leY3IDZuFw66r6Ac0LXPpGOlKgJ9FkU79PuSGsJFVToW7aHBWVgXr79wfOOVDYTKpSaKLpuNpwu4zFI17lVloxpdg/8LUBjAFolx3ON9T2XDvkylEkaWG/XH2YVF76NZ3YTP/JaG2MLPKcQsTnGLV95Sc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D/LFWbWI; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=b11ALCW56cVzw2uUfN6j5xK8VYRl/ScxcJ1GGkluNPTGnhtwZ/n+BVGZeTOaw/wl8VHErHNki7lNVF8oLHQ7juWHFpYGsZcNaduPLnOLjHG8MU4V+TIqsPBjLt3y5kY9SaSvVv49jX2mUwP80zle+GtG1MyqMStKXFV8LjmqxC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gHWdg/qn; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D/LFWbWI"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50B9D1F00A3A;
-	Thu, 30 Jul 2026 10:29:57 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gHWdg/qn"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 396DF1F00A3D;
+	Thu, 30 Jul 2026 10:29:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785407397;
-	bh=7z/HUDbkSDHeLW5wEV+wJB9GV4BARSJ2wh7ISMv7X18=;
+	s=k20260515; t=1785407399;
+	bh=cR62ffhUDEM0mlpuR2oJLy3llw2hZMWbI3CHRGEaMHw=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=D/LFWbWIvoVcHb3A50klFIVmDXlR2t5qsj0HsLSuAW8jt8JQnGjuDV+Xi0dqpPh6y
-	 02gD8vXhedmFZZzQ1j/iwABSM3E2T5jsAClmz/CiMTrX/eTBCjm9I/gfozPbJMCk46
-	 2SwDT6G01CcDXK0Oe6BZP5N3JYm+JrCaGjnJPydKNzKbqZKSIWexzFKyuCcmI2uN2w
-	 tWrf08UYusnn9wTpeSE1td4SQW+Q5WEAzf1oe+h5TI7VSUw/iJ5dsRuDKPSZWGKchH
-	 tt5zoEaLMVupe7Ce0dBlom0+0uvHm4sMmqLgm8VVQN7HBnm6eRmZbBgBnsPIrZHL2F
-	 WsPH5B7yBg+Ag==
+	b=gHWdg/qnza/iJGRQDZXdt1IOmtbC94vUIaoUFpG6poObyz7UJsFIQi7ipRyqAwvlK
+	 /QbYBap+usshvRFXZlPOZqr70p+EAsjkPUzPvxeLpfQbUeQZ+c6K8XCt4BuzhdanG+
+	 +iq9ZGkeSiExKLvMxhExBC+kwOraobASq7X7qFssv3LJfxO1n8lAIY3V3rK7J/Ra22
+	 jYv3e3/SmM6Z7rq8p6Kt6sW+1ycHOo5m0pqvR5ddob7m1C4kbdIOiHJYF4O+7JI7NQ
+	 4EtafNxYTEE4X3gtXH+0ZYNqkYEqYS1Qndiqfa1EIcjtL+nFYwFYT/3gqCQ4OS5moK
+	 eTpndlGTMFI2g==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net 15/20] can: rcar_canfd: change the initializing flow
- for clocks and resets
+Subject: Re: [PATCH net 16/20] can: softing: fw_parse(): validate firmware
+ record spans
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Marc Kleine-Budde" <mkl@pengutronix.de>
-Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org, "Vincent
- Mailhol" <mailhol@kernel.org>
-In-Reply-To: <20260729102802.505168-16-mkl@pengutronix.de>
+Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>
+In-Reply-To: <20260729102802.505168-17-mkl@pengutronix.de>
 References: <20260729102802.505168-1-mkl@pengutronix.de>
- <20260729102802.505168-16-mkl@pengutronix.de>
+ <20260729102802.505168-17-mkl@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 30 Jul 2026 10:29:56 +0000
-Message-Id: <20260730102957.50B9D1F00A3A@smtp.kernel.org>
+Date: Thu, 30 Jul 2026 10:29:58 +0000
+Message-Id: <20260730102959.396DF1F00A3D@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
-Thank you for your contribution! Sashiko AI review found 2 potential issue(=
+Thank you for your contribution! Sashiko AI review found 3 potential issue(=
 s) to consider:
 
 Pre-existing issues:
-- [High] If `rcar_canfd_global_init()` fails, `rcar_canfd_probe()` incorrec=
-tly calls `rcar_canfd_global_deinit()`, causing a kernel panic from accessi=
-ng registers with disabled clocks, followed by a double-disable of clocks a=
-nd double-assertion of resets.
-- [High] If `register_candev()` fails during channel probe, the network dev=
-ice is freed, but the global context retains a dangling pointer to it, whic=
-h is subsequently dereferenced and double-freed during the driver probe err=
-or teardown.
+- [High] Unaligned memory dereference in `fw_parse()` triggers alignment fa=
+ults.
+- [High] Truncated or malformed firmware causes silent failure by returning=
+ 0 on error paths.
+- [High] Unaligned MMIO accesses to DPRAM via `iowrite32` cause hardware ex=
+ceptions.
 --
 
---- Patch [15]: [PATCH net 15/20] can: rcar_canfd: change the initializing =
-flow for clocks and resets ---
-commit 4a859a221c1b4bd83a846c702809583b08a6af18
-Author: Tu Nguyen <tu.nguyen.xg@renesas.com>
+--- Patch [16]: [PATCH net 16/20] can: softing: fw_parse(): validate firmwa=
+re record spans ---
+commit dd9e23c1084e29145c02ec85df264fc5faf868da
+Author: Pengpeng Hou <pengpeng@iscas.ac.cn>
 
-can: rcar_canfd: change the initializing flow for clocks and resets
+can: softing: fw_parse(): validate firmware record spans
 
-This patch updates the initialization order for clocks and resets to match
-the hardware manual, ensuring clocks are supplied before resets are
-deasserted. It also updates the teardown path in rcar_canfd_global_deinit()
-to mirror this new init ordering.
+This commit improves bounds checking when parsing softing firmware records
+to prevent out-of-bounds reads and writes. It passes the firmware end to
+the parser and validates the source record length before doing DPRAM staging
+copies.
 
-Link: https://patch.msgid.link/20260625135216.130450-1-biju.das.jz@bp.renes=
-as.com
+Link: https://patch.msgid.link/20260722044347.2708-1-pengpeng@iscas.ac.cn
 
-> --- a/drivers/net/can/rcar/rcar_canfd.c
-> +++ b/drivers/net/can/rcar/rcar_canfd.c
+> diff --git a/drivers/net/can/softing/softing_fw.c b/drivers/net/can/softi=
+ng/softing_fw.c
+> index 721df91cdbfbc..282570daf3efe 100644
+> --- a/drivers/net/can/softing/softing_fw.c
+> +++ b/drivers/net/can/softing/softing_fw.c
+
 [ ... ]
-> @@ -2068,14 +2068,14 @@ static int rcar_canfd_global_init(struct rcar_can=
-fd_global *gpriv)
+
+> @@ -114,14 +114,21 @@ static int fw_parse(const uint8_t **pmem, uint16_t =
+*ptype, uint32_t *paddr,
+>  	 * endianness & alignment.
+>  	 */
+>  	mem =3D *pmem;
+> +	/* A record needs an 8-byte prefix and a 2-byte checksum. */
+> +	if (mem > limit || limit - mem < 10)
+> +		return -EINVAL;
+> +
+>  	*ptype =3D le16_to_cpup((void *)&mem[0]);
+>  	*paddr =3D le32_to_cpup((void *)&mem[2]);
+>  	*plen =3D le16_to_cpup((void *)&mem[6]);
+
+[Severity: High]
+This is a pre-existing issue, but does using le16_to_cpup() and
+le32_to_cpup() on an unaligned byte stream cause alignment faults?
+
+Firmware records are packed without padding, meaning mem could rest on an o=
+dd
+address. The leXX_to_cpup functions directly dereference the pointer, which
+can trigger a fatal alignment fault exception (kernel oops) on architectures
+that lack hardware unaligned access support. Should fw_parse() use
+get_unaligned_le16() and get_unaligned_le32() here instead?
+
+> +	if (*plen > limit - mem - 10)
+> +		return -EINVAL;
+> +
+>  	*pdat =3D &mem[8];
+>  	/* verify checksum */
+> -	end =3D &mem[8 + *plen];
+> -	checksum[0] =3D le16_to_cpup((void *)end);
+> -	for (checksum[1] =3D 0; mem < end; ++mem)
+> +	record_end =3D &mem[8 + *plen];
+> +	checksum[0] =3D le16_to_cpup((void *)record_end);
+> +	for (checksum[1] =3D 0; mem < record_end; ++mem)
+>  		checksum[1] +=3D *mem;
+
+[ ... ]
+
+> @@ -279,6 +291,12 @@ int softing_load_app_fw(const char *file, struct sof=
+ting *card)
+>  		/* work in 16bit (target) */
+>  		sum &=3D 0xffff;
 > =20
->  fail_mode:
->  	rcar_canfd_disable_global_interrupts(gpriv);
-[ ... ]
-> +fail_ram_clk:
-> +	clk_disable_unprepare(gpriv->clk_ram);
-> +fail_clk:
-> +	clk_disable_unprepare(gpriv->clkp);
->  	return err;
->  }
+> +		if (card->pdat->app.offs > card->dpram_size ||
+> +		    len > card->dpram_size - card->pdat->app.offs) {
+> +			ret =3D -EINVAL;
+> +			goto failed;
+> +		}
+> +
+>  		memcpy_toio(&card->dpram[card->pdat->app.offs], dat, len);
+>  		iowrite32(card->pdat->app.offs + card->pdat->app.addr,
+>  				&card->dpram[DPRAM_COMMAND + 2]);
 
 [Severity: High]
-This isn't a bug introduced by this patch, but does the probe error path
-cause a panic and double-disable of clocks here?
+This is a pre-existing issue, but does using iowrite32() on unaligned
+offsets cause hardware exceptions?
 
-When rcar_canfd_global_init() fails, it correctly cleans up its state and
-disables the clocks. However, in rcar_canfd_probe(), the failure jumps to
-the fail_mode label:
-
-rcar_canfd_probe() {
-    ...
-    err =3D rcar_canfd_global_init(gpriv);
-    if (err)
-        goto fail_mode;
-    ...
-fail_mode:
-    rcar_canfd_global_deinit(gpriv, false);
-    ...
-}
-
-Since the clocks were already disabled by the initialization failure path,
-calling rcar_canfd_global_deinit() will access hardware registers with
-disabled clocks via rcar_canfd_disable_global_interrupts(). Can this trigger
-a precise or imprecise external abort? It also looks like it will redundant=
-ly
-assert the resets and disable the clocks a second time.
+These iowrite32() calls target DPRAM addresses shifted by unaligned offsets
+like DPRAM_COMMAND + 2 and DPRAM_COMMAND + 6. Standard 32-bit I/O accessors
+mandate 4-byte alignment on the target memory address. Executing an
+unaligned MMIO write triggers a hardware alignment fault or bus error on
+non-x86 architectures. Should these operations be split into sequential
+16-bit writes using iowrite16()?
 
 [Severity: High]
-This is also a pre-existing issue, but could this probe error cleanup seque=
-nce
-trigger a double-free on a channel probe failure?
+This is a pre-existing issue, but does a truncated or malformed firmware
+blob cause a silent failure by returning 0?
 
-In rcar_canfd_channel_probe(), the device pointer is saved to the global
-array before registration:
+In both softing_load_fw() and softing_load_app_fw(), if the firmware blob
+does not contain an EOF record or an entrypoint record, the parsing loop
+terminates without encountering an error:
 
-rcar_canfd_channel_probe() {
+softing_fw.c:softing_load_app_fw() {
     ...
-    gpriv->ch[priv->channel] =3D priv;
-    err =3D register_candev(ndev);
-    if (err) {
+    while (mem < end) {
+        ret =3D fw_parse(&mem, end, &type, &addr, &len, &dat);
+        if (ret)
+            goto failed;
         ...
-        goto fail_candev;
     }
+    if (!type_end || !type_entrypoint)
+        goto failed;
     ...
-fail:
-    free_candev(ndev);
+failed:
+    ...
+    return ret;
 }
 
-If register_candev() fails, the memory is freed but the dangling pointer
-remains in the global array. Back in rcar_canfd_probe(), the error is caught
-and rcar_canfd_channel_remove() is called for all channels in the mask. Does
-the cleanup loop find this dangling pointer and try to operate on the
-already-freed network device, causing a use-after-free and double-free?
+Because fw_parse() returns 0 on success, ret is left at 0 when the loop
+finishes naturally. The code then detects the missing record and jumps to
+the failed label, but since ret is 0, it incorrectly returns success to
+the caller. This leaves the device uninitialized. Could ret be set to an
+error code like -EINVAL before the goto?
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260729102802.5051=
-68-1-mkl@pengutronix.de?part=3D15
+68-1-mkl@pengutronix.de?part=3D16
