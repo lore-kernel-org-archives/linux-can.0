@@ -1,95 +1,113 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E316411691
-	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 16:14:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD4C6449B24
+	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 16:16:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785428053; cv=none; b=sM1De3u0e+hK/nLT5Xh9Qk1V6wrtgppunaD/mfmnwgDh5mrIS6dT8nhGusJY6/ioBXIWrK59rEInoyb0JsaUso9jWgJAxsauAjRI5YbeMHmqUQ16uKJdT1+MGj34AkTrCv/CyNJ2n33Y0oM7s1Rza5dMgDR/5QXf9HZfTzBwtRU=
+	t=1785428221; cv=none; b=uliZHKEq5WFlKFQr78bZCOpX7sp/6JCLWBjhgMfaM/n1IFN+paplhkJ40WluS4q9RqL6lUDm7Fam8CMqFwrKP42l/sZU72VxcLph9dQgfz/J+fHrT6h5JNfrqLPwQQooDLjm23BHbGi/Bsp5QWqGwHOV+6USSFuVPSYUCZakkhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785428053; c=relaxed/simple;
-	bh=lq0ZQop5uWHeKrka0zWnetjzeh0ojChl6t0oFIEuZw0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m/QLDGGF9GBTwSOtrXv5Ru4nhAqlotVyWJil/Bb0eUKXoWJhLIcQ5A97EGIS+6WBo5hBc/wlEA2c44aLSInV8j07z076pA9jkC28Hq3cIw9LwhPxoEqSF2+peemtVyGIW/X/SaoD8j2QcHsQETjBmoZhJqHvkCylsQgZTq1MfVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GKiILvcP; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1785428221; c=relaxed/simple;
+	bh=yU+F7j/xXbq3ELLaHoVePWj58cpGAU1tMvCs1ttY2+g=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=UnyXIuTzlA9X9ZETkF1VAU3abes6rhXT/1RuZfkt7GS1g4swHEoBYsbjoVP8h4iNeSUbsocJO1EBrGpimDaYJZQ1Unan4gisjvA8IMPP8BlFyArZs+yNwGrBhl4hodQ2s2bgkjCi5hzEi8tG1/D3ApU/LwdMVjTwqd6yGMTScPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uy8uLpIF; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GKiILvcP"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A9761F00A3D
-	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 16:14:12 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uy8uLpIF"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C2131F00A3A;
+	Thu, 30 Jul 2026 16:16:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785428052;
-	bh=UiD/QWdym9NjT5dGSlgoWYwu8vBcbIdq6wH+JV80kWw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=GKiILvcPJ8KEFglfwJpAHdZQbQa3I3y2b63uGAgz9Vsa0UOEPRwhqdZv9NlJkaBuw
-	 qr4TAmJBYyJHK9wpHYKiBiaMzdPyhfl1R+F4AEpX+Bgil0FyWLICUAd7En7dpPNzIf
-	 8lzd0ZMAZ75CETnMSw1hq3nYtJbf3uJCIrdNtPTJf1pkPP8sS/fYWzWVvqNSfgQqSP
-	 kM4U5vw2aH9hMWmbYgsULTFnVyHe+AYl17rFDhYA2ZFS4EKqNvEdWDHz8VtpgfY47J
-	 2rEYuAdjqXye5dFebeSrIpwtuIu4abBqw52Ds8qP2Vtu4kMR26VwTD164hDMeSl8ou
-	 hXcepKkcGeY1Q==
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-c1600d040e4so138379866b.1
-        for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 09:14:12 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+RpwaCcEC2hOD2JkmqLnXPeUcSawVy8ERIC1fAOPJo9qi1ktnP1ZKgsxqoQefhP2Y/zOvMjx9Jbd3sU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx1HwKdHDtCsAKTkWKw1dh6J9WF4BtSL78UnLomLSfPZNySKvZk
-	ZUmLf76QSFiCPU0rpkDE8TJ/s15dVrGznONitXGWwbmOtrhU/DAHgQ0NX4HbH6Ma9M/akKh+eLT
-	okMx+8TDoIFHzbqxWUOuIFdOAC0OwxnU=
-X-Received: by 2002:a17:906:af4d:b0:c1c:2c32:1159 with SMTP id
- a640c23a62f3a-c1fbd95431bmr37684966b.26.1785428051242; Thu, 30 Jul 2026
- 09:14:11 -0700 (PDT)
+	s=k20260515; t=1785428215;
+	bh=fypdSgpVDwAUJjPqDVppNq0Y3ZoM3cr28G0wxoJ3y5M=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=Uy8uLpIFRMabjCA9FIKQgKy4dVIPAp3GinWCrA7cUocwclGzzuwDSJ5Ma4LcabaaX
+	 7JEu3SEWfp2zRFfdS+xtLjUU4n80e9GE9jDCLbTcIFdFXDERIhFwb5s2YCOiBOOLa7
+	 ec0rA3fLs5tvktq3R7VIcFwcIJiLBNBmLlXg7TUPZwq1Q/v9tbJwhccJNJMG4slpEz
+	 lWZXbaAtZheQqss4VQXaLG8BhE2FVMOP3HZdd09NARhYWVTLTdqggC3gJmSElzwvJs
+	 4ew22tcp66dDBqH82cn0gO7cLAyz1UCTPt3DaLGUnHrFQehAhdkNRhDdYKd8hD2ALz
+	 l9+YktBFoyqiA==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v4 3/3] can: rockchip_canfd: serialize TX state and
+ command writes
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Cunhao Lu" <1579567540@qq.com>
+Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
+ Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>
+In-Reply-To: <tencent_9BBC002BC4013FA9A6559A771980048B9107@qq.com>
+References: <20260730-master-v4-0-07f7952f761d@qq.com>
+ <tencent_9BBC002BC4013FA9A6559A771980048B9107@qq.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 30 Jul 2026 16:16:54 +0000
+Message-Id: <20260730161655.5C2131F00A3A@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <tencent_944DADCC4B42C8484EC01DA2B15F42132906@qq.com>
-In-Reply-To: <tencent_944DADCC4B42C8484EC01DA2B15F42132906@qq.com>
-From: Vincent Mailhol <mailhol@kernel.org>
-Date: Thu, 30 Jul 2026 18:13:58 +0200
-X-Gmail-Original-Message-ID: <CAMZ6RqK4CAtqAxHFS2a4e+kwJvRYyeo9EOM+_fV=n1Yjrcj3ug@mail.gmail.com>
-X-Gm-Features: AUfX_mzL6HsQQwCG3cXWhI4j1UtKfXOw3JIBuG1alrBD8PgmPX2kBP54BAGXlpM
-Message-ID: <CAMZ6RqK4CAtqAxHFS2a4e+kwJvRYyeo9EOM+_fV=n1Yjrcj3ug@mail.gmail.com>
-Subject: Re: [PATCH] can: dev: can_put_echo_skb(): free skb on invalid echo index
-To: Cunhao Lu <1579567540@qq.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
-On Thu. 30 juil. 2026 at 17:03, Cunhao Lu <1579567540@qq.com> wrote:
->
-> can_put_echo_skb() consumes the skb on all paths except when the echo index
-> is out of bounds. This leaves ownership with the caller on -EINVAL, unlike
-> the other error paths, and can leak the skb if the caller expects
-> consistent semantics.
->
-> Free the skb before returning -EINVAL so that all return paths consume it.
->
-> Fixes: 6411959c10fe ("can: dev: can_put_echo_skb(): don't crash kernel if can_priv::echo_skb is accessed out of bounds")
-> Cc: stable@vger.kernel.org
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+s) to consider:
+- [High] Hardware FIFO and software state desynchronization when can_put_ec=
+ho_skb fails.
+--
 
-This branch is just a safety net meant to never be reached. While the
-fix logically makes sense, this doesn't strictly require a backport.
-That said, I am not against this being backported if the stable team
-is fine with it.
+--- Patch [3]: [PATCH v4 3/3] can: rockchip_canfd: serialize TX state and c=
+ommand writes ---
+commit ab677d838393ae26a8c9bbe2590b03c3dd72671f
+Author: Cunhao Lu <1579567540@qq.com>
 
-> Signed-off-by: Cunhao Lu <1579567540@qq.com>
+can: rockchip_canfd: serialize TX state and command writes
 
-Reviewed-by: Vincent Mailhol <mailhol@kernel.org>
+This commit adds a tx_lock to serialize TX state and command writes in the=
+=20
+Rockchip CAN FD driver. It addresses races between the transmit and complet=
+ion=20
+paths, as well as an erratum 12 workaround bypass.
 
-> ---
->  drivers/net/can/dev/skb.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-> index 95fcdc1026f8..44ebeba99837 100644
-> --- a/drivers/net/can/dev/skb.c
-> +++ b/drivers/net/can/dev/skb.c
-> @@ -54,6 +54,7 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
->         if (idx >= priv->echo_skb_max) {
->                 netdev_err(dev, "%s: BUG! Trying to access can_priv::echo_skb out of bounds (%u/max %u)\n",
->                            __func__, idx, priv->echo_skb_max);
-> +               kfree_skb(skb);
->                 return -EINVAL;
->         }
+> diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/c=
+an/rockchip/rockchip_canfd-tx.c
+> index 2b5cd6aab31b6..c311b6990bc9e 100644
+> --- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
+> +++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
 
-Yours sincerely,
-Vincent Mailhol
+[ ... ]
+
+> @@ -124,8 +138,11 @@ netdev_tx_t rkcanfd_start_xmit(struct sk_buff *skb, =
+struct net_device *ndev)
+>  			      *(u32 *)(cfd->data + i));
+> =20
+>  	frame_len =3D can_skb_get_frame_len(skb);
+> +	spin_lock_irqsave(&priv->tx_lock, flags);
+>  	err =3D can_put_echo_skb(skb, ndev, tx_head, frame_len);
+>  	if (err) {
+> +		spin_unlock_irqrestore(&priv->tx_lock, flags);
+> +
+>  		ndev->stats.tx_dropped++;
+>  		return NETDEV_TX_OK;
+>  	}
+
+[Severity: High]
+Does this error path leave the software and hardware out of sync?
+
+If can_put_echo_skb() fails, the driver returns early from rkcanfd_start_xm=
+it().
+
+However, the frame data has already been written to the memory-mapped FIFO
+input port just before this code block. Because the error path skips
+advancing tx_head and issuing the TX command, it consumes a hardware buffer
+slot and causes the software and hardware pointers to become permanently
+out of sync.
+
+On the next transmission, a new frame is pushed to the hardware, but the
+un-advanced tx_head command is issued, which transmits the previously dropp=
+ed
+frame instead.
+
+Should the driver only write to the hardware registers after
+can_put_echo_skb() succeeds?
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260730-master-v4-=
+0-07f7952f761d@qq.com?part=3D3
