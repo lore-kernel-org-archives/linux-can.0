@@ -1,45 +1,46 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E71EC3F86E6
-	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 10:34:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34459403E88
+	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 10:50:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785407680; cv=none; b=S1Jq0VAIbZo3EUqRVWge/tnNDm9wUQfzIKlUgbrbbzXnXU2WbjtqsJcHDh8/jIbcCfr/SmXNpxSg2kEBKLFAlismX94KkqZiAqEEMfulS9JJ727cxvdfAu7ycX50vhTMRb94GYXIEp6Qszd3WH7Odm+et8Upe03ng4s3V9R9reE=
+	t=1785408649; cv=none; b=PJqFgNS7VFa3MKkQLsqC15/egbDtW16A1f6gDd2VzfyqpGF09aM6fiymhaxmiqsACJ5sdp9GC0iWEm34xFNMiLdAt21iysFpsq09dHX3qvQx++jSNNmXX+fcQF+HwqLNtOm3CvEvt9w4/JGXMHVAjHitjIMD4lN0rgF3kPcI+bs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785407680; c=relaxed/simple;
-	bh=XJe/gFnxx4J+2r/BnG4CVJTZ9NrL3wfHYKKHKx3IWQs=;
+	s=arc-20240116; t=1785408649; c=relaxed/simple;
+	bh=V2MB2NYbtBl+QcSx74LS6TCJeG+ol9dHQJh4BXRKuFY=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=NR30XPdk5IelONHhAvycUZq5xmYYXnGFFDLn17GJz/ali0vUllQfqQ+eoaROdvc84DZ/rUzUf/b6TZFI0/LiAO+Xas/qbr0ZUTgoodR4I6PUrjaeH6QJyLv+YKgEfkaKSNtgCRAtWkKvPDw/QhAOHxo+UOemtWWVIgqlOV0bcpQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LiYXiFWb; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=lDGMC4tsfRG8ctmNACZp9W/ODvB1/p+ImaOULRoqJMdH6EsY7oZ9pHC6bxNv9e3m6P1m0ogqgnBBQwJAQA9kZLtnAPYMMVHTVgM8QfEHHfBR0l3AHtPXZ4V/bpF7dWwIeyK13w8Sg0UFgylJtPoW8W7O4bAVpfmLs/Fq8IhcolA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gOaaQxgx; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LiYXiFWb"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59C321F000E9;
-	Thu, 30 Jul 2026 10:34:38 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gOaaQxgx"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51EC21F000E9;
+	Thu, 30 Jul 2026 10:50:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785407678;
-	bh=kUIfKAMkxeNRbUNkFQ5ikrODxag7SW93NH2wW2z5TEM=;
+	s=k20260515; t=1785408647;
+	bh=B236ooxY/xBh9tefumOz4g8Y8yKvO31/7dKDPzG8Q78=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=LiYXiFWb0ttOZi7/5ABuFLMq9ml0MBGeuMXeG3Ob4EWUzbQIb8fRksnDgcQTflCWZ
-	 4AgI+2gQJbm+vnUCFx6Vm8JJatHDVXIG4C6yMmYgGpbcbAXT2qEoDR/Sx1ttvlkWVL
-	 OabUZn+8PTrnsvUEkz2L56jwftxtcHwZrjPXshgky9yr4HvwgYPyxjF/xvxnsF2qbw
-	 p7GMKoIEWlYOALMkHfaOPjMuTpt9yN352e1hkVTCxEAAKtAXLVVMMkzrDCUq1swdrX
-	 plwkGXFLScnozO6TqdauUC58paYkSf97iarFp3JUDj0H3z9lYDTt9flV165SUswYuO
-	 NTBWRhph4x49g==
+	b=gOaaQxgxiSMUdcYKkSK8dl8Ltv2mNOO8Ej0+d5zXJDX2j1re6abCcJe57JFuFirvo
+	 YedxpcSV+NfOeNmAGDxDusqpRqaLw4jOOIrNpF/H6aLjjigThJjHdt67oJ2LwHnyOV
+	 nBeyD9BeZgT1cjtVxqE2d9iYa4Z1KRL8vkGJPxtqcWnJbg+w/qHvkQ4RXz6IVCAZ2u
+	 MREbCClaSD1vbGfiEr6NDkmlVDTT9DEFiSml2sN7QGuYSZeYbgpDqjsChDp5LkFcfc
+	 ekMdgq1C3CijUw6P4mpKTk5qmvkhOqKU4sUSr4bzr+EALkPSwmY1Kn1E6U6D1dUYDf
+	 wOvTY1U+cdvjA==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v2 2/3] can: rockchip_canfd: retry the outstanding TX
- buffer
+Subject: Re: [PATCH v2 3/3] can: rockchip_canfd: serialize TX state and
+ command writes
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Cunhao Lu" <1579567540@qq.com>
-Cc: "Vincent Mailhol" <mailhol@kernel.org>, "Oliver Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, "Oleksij Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <tencent_9A8D6405DC23EAFB7D35E9D09CC93424F00A@qq.com>
+Cc: "Vincent Mailhol" <mailhol@kernel.org>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>
+In-Reply-To: <tencent_73A6685E6540120E468C02F21189FCE69A09@qq.com>
 References: <20260730-master-v2-0-572974052400@qq.com>
- <tencent_9A8D6405DC23EAFB7D35E9D09CC93424F00A@qq.com>
+ <tencent_73A6685E6540120E468C02F21189FCE69A09@qq.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 30 Jul 2026 10:34:38 +0000
-Message-Id: <20260730103438.59C321F000E9@smtp.kernel.org>
+Date: Thu, 30 Jul 2026 10:50:46 +0000
+Message-Id: <20260730105047.51EC21F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -50,81 +51,78 @@ Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
 
 Pre-existing issues:
-- [High] TOCTOU race in `rkcanfd_tx_tail_is_eff()` causes spurious NULL poi=
-nter errors in the kernel log and a Use-After-Free vulnerability.
+- [High] The `tx_lock` fails to fully serialize `RKCANFD_REG_MODE` writes a=
+gainst the interrupt path, leaving a race that can break the bus-off state.
 --
 
---- Patch [2]: [PATCH v2 2/3] can: rockchip_canfd: retry the outstanding TX=
- buffer ---
-commit 5e421e7397d8c64fe895d386c02cbed045a1e541
+--- Patch [3]: [PATCH v2 3/3] can: rockchip_canfd: serialize TX state and c=
+ommand writes ---
+commit 2a5b1a8235e0f295b950d48868b11a6ee290c521
 Author: Cunhao Lu <1579567540@qq.com>
 
-can: rockchip_canfd: retry the outstanding TX buffer
+can: rockchip_canfd: serialize TX state and command writes
 
-rkcanfd_xmit_retry() originally operated with a TX FIFO depth of one. At
-that depth, the masked head and tail indices both select buffer 0, so using
-tx_head happened to select the correct buffer.
+This patch adds a TX state lock to protect tx_head, tx_tail, and the
+echo skb ring. It also serializes the MODE/CMD/MODE sequence between
+the transmit and interrupt paths to address errata 6 and 12.
 
-After the FIFO depth was increased to two, tx_head instead identifies the
-next free buffer when one frame is outstanding. The erratum 6 workaround
-therefore requests transmission from the wrong buffer, leaving the
-outstanding echo entry incomplete and the netdev TX queue stopped.
-
-Use tx_tail to select the outstanding buffer for retransmission.
+Fixes: ae002cc32ec4 ("can: rockchip_canfd: prepare to use full TX-FIFO dept=
+h")
+Fixes: 83f9bd6bf39d ("can: rockchip_canfd: implement workaround for erratum=
+ 12")
+Cc: stable@vger.kernel.org
+Signed-off-by: Cunhao Lu <1579567540@qq.com>
 
 > diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/c=
 an/rockchip/rockchip_canfd-tx.c
-> index d2cbe25c46d6c..c4ecdc9411cc6 100644
+> index c4ecdc9411cc6..c3811d3179b61 100644
 > --- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
 > +++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
-> @@ -57,8 +57,8 @@ static void rkcanfd_start_xmit_write_cmd(const struct r=
-kcanfd_priv *priv,
-> =20
->  void rkcanfd_xmit_retry(struct rkcanfd_priv *priv)
->  {
-> -	const unsigned int tx_head =3D rkcanfd_get_tx_head(priv);
-> -	const u32 reg_cmd =3D RKCANFD_REG_CMD_TX_REQ(tx_head);
-> +	const unsigned int tx_tail =3D rkcanfd_get_tx_tail(priv);
-> +	const u32 reg_cmd =3D RKCANFD_REG_CMD_TX_REQ(tx_tail);
+
+[ ... ]
+
+> @@ -141,6 +158,7 @@ netdev_tx_t rkcanfd_start_xmit(struct sk_buff *skb, s=
+truct net_device *ndev)
+>  	WRITE_ONCE(priv->tx_head, priv->tx_head + 1);
 > =20
 >  	rkcanfd_start_xmit_write_cmd(priv, reg_cmd);
->  }
+> +	spin_unlock_irqrestore(&priv->tx_lock, flags);
 
 [Severity: High]
-This is a pre-existing issue, but does the lockless access to tx_tail and
-echo_skb in rkcanfd_tx_tail_is_eff() introduce a race condition?
+This is a pre-existing issue and was not introduced by this patch, but sinc=
+e=20
+the commit message mentions using tx_lock to serialize the MODE/CMD/MODE=20
+sequence between the transmit and interrupt paths, does this leave a race w=
+ith=20
+the bus-off error handler?
 
-drivers/net/can/rockchip/rockchip_canfd-tx.c:rkcanfd_tx_tail_is_eff() {
-...
-	tx_tail =3D rkcanfd_get_tx_tail(priv);
-	skb =3D priv->can.echo_skb[tx_tail];
-	if (!skb) {
-		netdev_err(priv->ndev,
-			   "%s: echo_skb[%u]=3DNULL tx_head=3D0x%08x tx_tail=3D0x%08x\n",
-			   __func__, tx_tail,
-			   priv->tx_head, priv->tx_tail);
+Looking at rkcanfd_chip_set_reset_mode() in=20
+drivers/net/can/rockchip/rockchip_canfd-core.c, it places the controller in=
+=20
+reset during a bus-off event by writing 0x0 to RKCANFD_REG_MODE, but it doe=
+s=20
+so without holding tx_lock.
 
-		return false;
-	}
+If a bus-off event occurs concurrently with a packet transmission, could th=
+e=20
+following sequence occur?
 
-	cfd =3D (struct canfd_frame *)skb->data;
+CPU1 (Interrupt path):
+rkcanfd_irq() -> rkcanfd_handle_state_error_int() -> rkcanfd_chip_stop() ->=
+=20
+rkcanfd_chip_set_reset_mode()
+    rkcanfd_write(priv, RKCANFD_REG_MODE, 0x0);
 
-	return cfd->can_id & CAN_EFF_FLAG;
-}
+CPU2 (TX path, holding tx_lock):
+rkcanfd_start_xmit_write_cmd()
+    rkcanfd_write(priv, RKCANFD_REG_MODE, priv->reg_mode_default);
 
-The transmit path holds netif_tx_lock, which disables softirqs but leaves
-hardirqs enabled.
-
-If a hardware RX interrupt fires concurrently, it can process the loopback
-frame, free the echo_skb (setting it to NULL), and increment tx_tail.
-
-If the interrupt fires between reading tx_tail and accessing the array,
-could this read NULL and spuriously flood the kernel log with netdev_err?
-
-If the interrupt fires after the skb pointer is read but before skb->data
-is accessed, could the SKB be freed before it is used, leading to a
-use-after-free when evaluating cfd->can_id & CAN_EFF_FLAG?
+Could this overwrite the bus-off reset mode and bring the controller back o=
+ut=20
+of reset prematurely, potentially causing the node to continuously disrupt =
+the=20
+CAN bus?
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260730-master-v2-=
-0-572974052400@qq.com?part=3D2
+0-572974052400@qq.com?part=3D3
