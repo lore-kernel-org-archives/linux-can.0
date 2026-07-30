@@ -1,210 +1,191 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D5E943E9F9;
-	Thu, 30 Jul 2026 14:29:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.19
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785421784; cv=fail; b=ZmosKO77uh+g3hZYuhj29FTPtbIw0YNGpBw8zZJs5PIJzuJFLt8QAMt22njjeiOfsxrLdXOsqGbU3TEjGWhGTEQMVsWeyXzfUhUczANHNIugUh4Oq/5lzZJULRNyKU3nukFWS3PulsZryTBkhD+hHlwkWMspHJRbiYrng3MxQSE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785421784; c=relaxed/simple;
-	bh=rhT7B9M0uDr2p0te1ZUe0niZnPGvDkPQpMja2TIA9/o=;
-	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=LWt7Yw9uTQ3UPNNsBTltcq4fk6Ydx6BH11QxlnzVLCNcjfL8737tJlNxZAqyXIHiGtIERH89+O+s01cYfkz7nhW1WSrSTv6iBcxrPXXi/a+lJ25UO8ACSIo7v2mqfMvBp+50gYpFkoBf38hU8dhIrwJb91eeGrCols2AnpZ7ylo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I5Rtwh6X; arc=fail smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0994A429802;
+	Thu, 30 Jul 2026 14:34:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.49
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1785422102; cv=none; b=qTGmDCvur0GK1c1lt+NSnbkVGEQcRFimK0GeExRi+c00gk0yReLJ46OW9S+YHDs9R09kbjkh3KP2msjV+085Pamn6hDdeRdUMB0qLyejjsoT2LgTqtfQTN65E/gmjmQfXDjpWN4xp2eJPOeA/j3SbsR+MBveaZ6LWHSODamKVeM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1785422102; c=relaxed/simple;
+	bh=cc6pgEg0QvUNMzrqGggBt02+UTZclIkmEsDyTO/5sl4=;
+	h=Message-ID:From:Subject:Date:MIME-Version:Content-Type:To:Cc; b=NK117m9wn3sL4wsxUN2FM0EypPK4LojaLzx3i8FhXEBxCJ4FmjecNwJ/B2zgMGzNAEFMtVoW8n8q+Y05fYlq/XyPBgV+j+tJYxakC0OwmQZKKUxehMCEPjpeu3kcg0rpuIonP6LlaKeP5vvtUum4RnqJ4q1LClYEliaLZCr5veA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=HXJJmJ8G; arc=none smtp.client-ip=43.163.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I5Rtwh6X"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1785421780; x=1816957780;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   mime-version;
-  bh=rhT7B9M0uDr2p0te1ZUe0niZnPGvDkPQpMja2TIA9/o=;
-  b=I5Rtwh6XPhifjeCSIsardzMPaJW+We5SABnN7iOfmzRCqP5Lb4wvaAh1
-   y3lFRcl2rp1f2ZRXZ33g8dfmO3pE1Zc6MWvgAuehpYXRQ153iBfVXkn1z
-   nep1Roo7mA6Ked3aM95nvRgoKCG+WFkTTY0IGsA6D9wAkRXiDs6UJQndZ
-   HPwAmeyFrl2qf7J75wrw5bN9fFgUWHmMAv/5g8w6Mq6SVzTi2QklnTjui
-   xadqA5GbbHh6lPyvLyYFohMtlRBESDsGwXHkvZwYAklUmnm/P6R/fLnkM
-   p3XAPeZuLru9tJafYKGEpX3fZhttEXyfsfufplxh9NQp0tHPnDYUGcwZk
-   A==;
-X-CSE-ConnectionGUID: 6bG999FpScG1Rv8NSW0P9w==
-X-CSE-MsgGUID: NDMyMSS/Q3u58U7iEivAjQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11860"; a="85016934"
-X-IronPort-AV: E=Sophos;i="6.25,194,1779174000"; 
-   d="scan'208";a="85016934"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2026 07:29:39 -0700
-X-CSE-ConnectionGUID: Viyn/s3URY6P5yGDnS5wuA==
-X-CSE-MsgGUID: XGrixU1eTGO7INjMWbhT8A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.25,194,1779174000"; 
-   d="scan'208";a="258534427"
-Received: from fmsmsx902.amr.corp.intel.com ([10.18.126.91])
-  by orviesa006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2026 07:29:39 -0700
-Received: from FMSMSX902.amr.corp.intel.com (10.18.126.91) by
- fmsmsx902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.45; Thu, 30 Jul 2026 07:29:38 -0700
-Received: from fmsedg903.ED.cps.intel.com (10.1.192.145) by
- FMSMSX902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.45 via Frontend Transport; Thu, 30 Jul 2026 07:29:38 -0700
-Received: from CH1PR05CU001.outbound.protection.outlook.com (52.101.193.13) by
- edgegateway.intel.com (192.55.55.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.45; Thu, 30 Jul 2026 07:29:38 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=BUMOnvkUla+gX1uhqRP54gS20+zOFqhvXuoiV6U0+qBs1EahqSYLdNMKbf2I9XVVasxTbXr1qENQuixMiugwIUNvlE6crJhJONDBI88fLPSd2Rbw2SxCVIW2UhvvyE3hY+QtD6MmA0882S8tFLmCND82gvYhsC+zn8PbMmkXPHkRfTj+n3mGK5C5CB4uMXFZuqjA4zdF9JuR5VR04sQPW0kghyGW+H6JaavcBsfFDcHcYne0dx7NjB2u81Xb2TRJeGj/tFfp46If+4E0G/tFNvj+7JG7ZOVIm/uXQ9atsTmG1IUu9X7xurME5F4vYCF/lWDpyOpO8USessnz81zoDw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XCiT3XNe9NZKvjhW0rx0McStUNJI9sOkXUo5Ig1VB0U=;
- b=NuKsnjy8WY6rRwnzLHpq55QpZu5CPb9wNgL8/DIpNk/QBAagCkvxJg/GdeCqwL1A4O9uCRtinjRFMI4J9YthSTBgRU/FpZBMyxwxuLTr4LAL9kFPsNPyAX6BPHCHT7EOwxYUxj/kCJURJceobuXZuiXlyTApY+eeUbGxz9cf/W3ca+bkODiVb23Q4YcP9srIE28HmOo6jklek5HaEQSoOP1AAxuwjIQwqLSewktO8j9sYvXpxaK/pcFL6oOeDaCLEP76vV1VZnc92zkFUetSjzVdUIjvcxhjNWeerO9vkSf2WVxLn6fM64YvNxhIzkCsCs6BN3UKy8cs8V9Gh4CclQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH0PR11MB5832.namprd11.prod.outlook.com (2603:10b6:510:141::7)
- by DM4PR11MB7758.namprd11.prod.outlook.com (2603:10b6:8:101::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.270.15; Thu, 30 Jul
- 2026 14:29:33 +0000
-Received: from PH0PR11MB5832.namprd11.prod.outlook.com
- ([fe80::106e:78dd:4c96:d707]) by PH0PR11MB5832.namprd11.prod.outlook.com
- ([fe80::106e:78dd:4c96:d707%5]) with mapi id 15.21.0270.009; Thu, 30 Jul 2026
- 14:29:33 +0000
-Date: Thu, 30 Jul 2026 22:29:20 +0800
-From: kernel test robot <oliver.sang@intel.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>,
-	<linux-atm-general@lists.sourceforge.net>, <netdev@vger.kernel.org>,
-	<linux-can@vger.kernel.org>, <linux-sctp@vger.kernel.org>, "David S. Miller"
-	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Herbert Xu
-	<herbert@gondor.apana.org.au>, Jakub Kicinski <kuba@kernel.org>, "Kuniyuki
- Iwashima" <kuniyu@google.com>, Marc Kleine-Budde <mkl@pengutronix.de>,
-	"Marcelo Ricardo Leitner" <marcelo.leitner@gmail.com>, Neal Cardwell
-	<ncardwell@google.com>, Oliver Hartkopp <socketcan@hartkopp.net>, Paolo Abeni
-	<pabeni@redhat.com>, Remi Denis-Courmont <courmisch@gmail.com>, Simon Horman
-	<horms@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, "Willem
- de Bruijn" <willemdebruijn.kernel@gmail.com>, Xin Long
-	<lucien.xin@gmail.com>, Petr Mladek <pmladek@suse.com>, Thomas
- =?iso-8859-1?Q?Wei=DFschuh?= <thomas.weissschuh@linutronix.de>, Kees Cook
-	<kees@kernel.org>, <oliver.sang@intel.com>
-Subject: Re: [PATCH net-next v2] net: Replace %pK output with 0
-Message-ID: <202607301617.b436a538-lkp@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20260720144031.oU6azheV@linutronix.de>
-X-ClientProxiedBy: SI2PR02CA0015.apcprd02.prod.outlook.com
- (2603:1096:4:194::16) To PH0PR11MB5832.namprd11.prod.outlook.com
- (2603:10b6:510:141::7)
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="HXJJmJ8G"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1785422095; bh=wCfvL8EiUbPUR9soYjWwjuZEDl9DDwTqiLOrLKAPRp4=;
+	h=From:Subject:Date:To:Cc;
+	b=HXJJmJ8Gslxg6Zer0c/vO5daApBITwXcExtAQkUPEwA+rlBbycM4EkmlE4pMHcy7w
+	 J2++2631iEnD4NudaV61vXk6TO+cBxtkRHp4pC317y3xMXDSKojp1hl2ZG4Pp8bAjm
+	 YP0BtL4D43s5YNLjcwi0aaaj33uKSP6XY56qvLQQ=
+Received: from ubuntu2204.localdomain ([2409:8d20:22b:54c:9e54:40ff:fe02:3f0f])
+	by newxmesmtplogicsvrszc56-0.qq.com (NewEsmtp) with SMTP
+	id 8B38245A; Thu, 30 Jul 2026 22:34:51 +0800
+X-QQ-mid: xmsmtpt1785422091tq8yny41d
+Message-ID: <tencent_7BAA0052C402BFFD26291A64198084E39107@qq.com>
+X-QQ-XMAILINFO: NQQUvflVuqBOL3+Hgkhuy1UC34W10feVP2QXMNiogXwMs6YFQvY98RKf7wCo3O
+	 o1ZTZ2yRvTfcdBSG2GUn0WfYlmGgsqT/MBgLes3yJ3LiXh7Km9ec4IRrYFy5zEWBwEqEtXcGfvZO
+	 BUmfXQPSRBdIuKMKUMq4Npx8tXLIDzPoBduye2WFoLPyNr5sGlcyDJbFttdIGFFAi/Bo8KZFWz+M
+	 rAFgl1dL5sy7L5IdcwmeWn9PXCLGFymHXB08iv2AJMNHfpew2l2DHR8ziD26ylfX7DK/uoCo24c0
+	 uMnTtknte0dhMNoECaRtC6Rkk40qfH8FjFZmNfp/PGYYwwiJy9FGDClHNgEHhbLE2lhZxjFjW+uM
+	 TDkcdAyrSl9sjVcRJmY4EowCX2JTaUsiwyuh1RuuflFVAMiZOCKLyBVvrOO+hKErxZBGrwfGdGAM
+	 tTMLG7SBrAiFVkToKpEdzxIiLVINCJQxjJ4SSHWmIaCX86TEOfX+bPfIz04YhsKJgZBm6iSiaGkF
+	 qdOod1VHWwqz/Z19kJU8+fTPtxxA2Y8Y+y62mSRmq/LQiqF6YRiiamkJlKZmEeSFTTA+umMdqEj8
+	 HBz1FP8uaT6mzWyCqNwYcO5Zx0Bbgl0BHnrsXGIjMBecGWeCKnsV5LFhcVt1joMpj/X5eDTrHdfb
+	 B4UmSUYE2rtzHXmvkeU8+qKNOPymuX/WC/b6LDs76ep4A+/EaRktCkcT+VbPUuQ5sl+CUzbXYtq4
+	 1J6iz8OIUFDNc3z8KCuz4HozY/PjtdOgRsJDtB87nTP4t2IiuHOnO0rKwTyWsaEApNTTFO3VTDJW
+	 nt+jgqdY2Ntcpx0wvSIsL+UuTWthT9wTBhUzexdrjVQ/yXI2xwoTUgWNe9qOgspwYnr7YxCzAaEw
+	 3KHUv+gdzhKAlQ1VQdgcbd66D56Z29lX65ZF1ROt7HoqnDGhBJGLk4dskoudhPDIbXSPZp/lQD5W
+	 QsvOnFDt8aOLDUjgx1lyqUj4mwOYKaex2r0Z8lVdCoVPMiM3QJgh3yXwezvc/IxypllOlqW78Hpi
+	 18tIN3ovUPs/4GmmQqbpEc6bGk/z7GUAzc4Ik4gXMbfiblkYFt9vX2CV9PtKJLHHPfX0hea0z3RM
+	 qrNn/q1Nthwda9dNQPMuUgl+YXcSggP6W6M54EhtjRpaa7YLzq0jpMbsf2XZQOtwU5ThUiFRhot8
+	 pgQPbHnAnitEOPkTmts8NsxKaUpw3i3vs1aH4=
+X-QQ-XMRINFO: MPJ6Tf5t3I/ylTmHUqvI8+Wpn+Gzalws3A==
+From: Cunhao Lu <1579567540@qq.com>
+Subject: [PATCH v6 0/4] can: rockchip: add RK3588 CAN support
+Date: Thu, 30 Jul 2026 22:34:01 +0800
+X-OQ-MSGID: <20260730-master-v6-0-dfb63e234775@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR11MB5832:EE_|DM4PR11MB7758:EE_
-X-MS-Office365-Filtering-Correlation-Id: 99d80531-04ef-419b-e43b-08deee46f931
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|7416014|23010399003|1800799024|56012099006|11063799006|10067099003|3023799007|22082099003|18002099003;
-X-Microsoft-Antispam-Message-Info: yBHEtP1F/udE1DwsLvuEIhdlwVfWSXcZphilYj7432gj10SIGPu+zrXgpCGBdSFpHd1qbLeLGvQdxMNsug7wSrBKz0O63uBhFXt8CYbOOhAsXmtEw6syIfUnAq+SoccO4nUoRUVTfeNb51zJlTxr2x+pBJPFCbyE3o+oUKcfAm9YHzoH4XE2vcydHfPz8vX5D2J0rKH9tNIoXDrR71QcgrGgUjy0xp4UU+UtzTtzUNTE4amxifuy9nwitTcLVIc/QNNTncUkcHKWew4TDgJNzG5Zb3D6Pdh4BqRXRuQab554tfRfKtwJeiasIt6npUhUmWXuVpWm/G/w2i8EmxKRM9mSXbzBgsG9BKMOy8m39b7iI0Rxxzv11LOXvA3w43wotJtFyBkuHw43EbAQGJFG5w824whFBC2NQ3CGMPHzWuJs4UWxu4aF1D6rU+a+6Hej9qLjw4mGZUlPsissmL4jThmxHiSjSvFMrOruayF5N5PnZW9+6r/Ml9/p426WmuiCEa/f32EJG3X0Se97Eq6pgJvv2CrFr1r5I9ti/uJl3R6h+XiUdwDwrNUVgGydEpUS4M8W0U1XLKO3Dib3wtP81M7EGTDoDqAKq15p0SGEQGCt8e0ne+1PaL5bDSq1TKoy
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5832.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(23010399003)(1800799024)(56012099006)(11063799006)(10067099003)(3023799007)(22082099003)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/Tt3WX13+uD8D2UL3olB4NMQ0s0oJ0p9M3K13RY+JTIpuOQ3PRMSa5g5TKDb?=
- =?us-ascii?Q?zQWaPXZHzzYcPqL+5NjlfTYOulFLr0d31jIYbAsvgP/FDUx97oXEj9ik2AsV?=
- =?us-ascii?Q?1TusxUyOyQsenaEEmQDxz4BTgJ5W9QVUvoyyceyRP5hVnjNXUe4koyYabktw?=
- =?us-ascii?Q?nxOUnia5Tl+q+3YWxIVxbKOSlSBiSqIcWNvhsvCaQwZwW6x+HkhRQSAgV6xQ?=
- =?us-ascii?Q?Mj9Vm8M9+Oj48AAZi134IxISasCmXmGx2H1pbqzLk9wd9n0Nx3MVjO82nPmW?=
- =?us-ascii?Q?dzEmThnHcNzzTEp+hw8jQh6cqc3ntp3ybQ3/nb0gthyY+LWSNLmF+3Xa+9sA?=
- =?us-ascii?Q?X8HJdjiqoxQMLQMOHz2ixv1KUVUNoLlT771eXWJN8brN10szVOorOLC5WxJ4?=
- =?us-ascii?Q?QVtY6kPqCFVPYKB8eYKR+UhKJLjxnjBiZ1ZD2IReobS225C5Om84ihtKpJXw?=
- =?us-ascii?Q?VxMOB2uWXH4SzcV4ZYzaUYzflkAuRoKrNXzB8OAiOvTTyXuSGcJJVz382skt?=
- =?us-ascii?Q?V9zjTHUkbIFaVM6kaytgZCF57lgVGIt2avw3xZ6yfybTouS3pnVLSdjS5o3I?=
- =?us-ascii?Q?RuA6wngr05DDZy4tfXsBQHOJlVF2vMMjeTdiaYBMcWJyEmA4iV/iKFwNPC1K?=
- =?us-ascii?Q?+9oUfgtDHgsZBG0CQWYAmjOeGYcDMv9rNQ0WcBDzepgxAygZwOu/U0zjjHg4?=
- =?us-ascii?Q?8w5FLoLBYetq7+zW+krl0tgkkXAkLWSbvLxm8fJV43doGiS3oSHXKbVCO4X+?=
- =?us-ascii?Q?FNpvXpTeVSopNIA9cmClwXk07G+bH/O9lkrNAY0C106MvzPMruP3xXFWWbPH?=
- =?us-ascii?Q?am1YMl8FIdeYdjGlkqBeo7v9wAUUgzeqvCN+av5zwqDaYHjcSl/eH9eB4AjP?=
- =?us-ascii?Q?xHVfNIPhdqt8JnNU6yBCsMuS5MrzXboYbEeDgswhSdxL6rPC3RMFkvJzcZLl?=
- =?us-ascii?Q?zdezg16lP6TdqzMfScw1hLTEYsWGtz10QTbWS92mHTXP0+QSTC85Q6BhqcZN?=
- =?us-ascii?Q?+m/UQHRcwctEa+Dn32daYK7PbCi2uBN0kDTE1RzcG1MsY7rs3JMwKxovhzZ1?=
- =?us-ascii?Q?ubHrvfHpim3hThBZIejNAJDV0CFCU0ZRVxh+/5foEW8vL2vb7k39RgQP+a7G?=
- =?us-ascii?Q?DdQMFNXIuL9ZElN33vXOE4yVGyCxGqFqmWLBRUprywGOyWCtcti+BXFhZFZq?=
- =?us-ascii?Q?Ktp9gdr02NGREE96yVsjMbaiiO4KhJ7D2XhyD2KR9r2cePwBgo1j/dOeB3PK?=
- =?us-ascii?Q?zUNgBiUtf9+qoGTBdkyJ874islvuvu/qjFsjrSn1WiDmxna8kl6cz/udVESs?=
- =?us-ascii?Q?i6P1M2+o83JgPFJIxIxfr1bQhCYV/KS9ZknW3VW2epcuOmeSIbNHSDT9q1n5?=
- =?us-ascii?Q?CcPAKiH69TEMj1eF1bENDJWJWK60w5rc2YSaHwMcQL6QTmxMmXd2lPz8fOfo?=
- =?us-ascii?Q?712/IkYkMOyLYoHhDsv1O67YHHfIXHqZOTAZdepThsh2n5KaS4uL/853qGSW?=
- =?us-ascii?Q?hQyGBlWMpmBVaY4RtidT7RypNMOafIIbc6Y8X1B2KtQHMb8b1yXKJyc5FVsL?=
- =?us-ascii?Q?xk1vgJDI9CoiSfiTX2iQCS9/8fkFW1Mcxy9idd3rgGbjRnJ0XwnN6jhKoxPo?=
- =?us-ascii?Q?Z9Khd1vsgmKkfaNWQ2/UKrDPmtFWmn1oxkWf0dxWtPY4FCkdFMSD8adPpHxa?=
- =?us-ascii?Q?E9rYeEXDE00LBFvhS1VCZjYCDErB0smIWEahYjTcvfquoLfaz4oWNLJr7c44?=
- =?us-ascii?Q?5TmggpMGVg=3D=3D?=
-X-Exchange-RoutingPolicyChecked: gEAXPo4xOJGuL0FxRVY26F09YXfZ1JRGDWYddyOe82yeOA+Ug362hAutJr0nK4L18ujDAmqYbzUDESmYWKXaAkLeq5XsHgugTaSWSh1u/xLKBiKJW63CpHLmO6ZLwV0lyQBYxuC/9DxAgHbZqran5+Y+QCxqbxyqUwEaGbGagWoUSM53+CACYn6gpEnjRTG2Npn3On55bAFGABqExqx1cBGG1+/hObgxCdFCjwkqyQABEwf0V6MLqhtlY5SHtotJ6GmV9qckwdecsjCsrsXWSVCEjulsoMCYGYTAt5+3J6TkhliCJa8rj3k1njzsw751lQoRF9NsoQcweTw+ocNsBQ==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99d80531-04ef-419b-e43b-08deee46f931
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5832.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2026 14:29:33.0966
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qYc+EyPcIxzzaxxuUQNeKM2/Ax3bKvNHYMh+SsVk5v31pindEEasOZA6UvDvzWkheDfeeOy3nVT25IIfa5GjYw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB7758
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANlga2oC/22NywrCMBQFf6VkbSTk1daV/yEukubGRqi1SQ1K6
+ b+bVOoDXA6cmTOhAN5BQLtiQh6iC66/JJCbAjWtupwAO5MYUUIlKQnFnQojeFw1gmqoaqqYRWl
+ 89WDdfQkdji8ON32GZsx2XrQujL1/LE+R5d0aZWs0MkywNEIakNZQy/bDsG36DuVi5P8dnhxeG
+ k60tsIa9eOIL4eKtyOSUwqjuKgN1fXnZ57nJ/+PAocTAQAA
+X-Change-ID: 20260702-master-8c52be892a3f
+To: Marc Kleine-Budde <mkl@pengutronix.de>, kernel@pengutronix.de, 
+ Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
+Cc: Cunhao Lu <1579567540@qq.com>, linux-can@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>, 
+ Heiko Stuebner <heiko.stuebner@cherry.de>, 
+ Quentin Schulz <quentin.schulz@cherry.de>
+X-Mailer: b4 0.15.2
 
+Add support for the RK3588 CAN controller.
 
-Hello,
+RK3588 integrates three CAN-FD controllers that are closely related to
+the existing Rockchip CAN-FD IP already supported in the kernel. The
+RK3588 variant is not fully compatible with RK3568v2 because the RX
+FIFO count register field has a different layout.
 
-kernel test robot noticed "kselftests.proc.setns-dcache.fail" on:
+This series therefore:
 
-commit: 811e528547c505ab0de53847067208692ea8b974 ("[PATCH net-next v2] net: Replace %pK output with 0")
-url: https://github.com/intel-lab-lkp/linux/commits/Sebastian-Andrzej-Siewior/net-Replace-pK-output-with-0/20260720-233043
-base: https://git.kernel.org/cgit/linux/kernel/git/davem/net-next.git 298bb2b8903323f6ef2eab4819a2e477765f0ff1
-patch link: https://lore.kernel.org/all/20260720144031.oU6azheV@linutronix.de/
-patch subject: [PATCH net-next v2] net: Replace %pK output with 0
+- extends the existing Rockchip CAN-FD binding with the
+  rockchip,rk3588-canfd compatible
+- adds a dedicated RK3588 match entry and devtype in the driver
+- describes the three CAN controller nodes in rk3588-base.dtsi
+- enables CAN on the RK3588 Tiger Haikou board
 
-in testcase: kselftests
-version: kselftests-x86_64-502d801f0ab0-1_20260623
-with following parameters:
+RK3588 encodes RX_FIFO_CNT in bits 7:5 instead of 6:4. This
+difference was found by comparing Rockchip's vendor kernel 6.1 CAN
+support for RK3568 and RK3588, and was also confirmed by runtime
+testing.
 
-	group: proc
+RK3588 uses the existing erratum 5 empty-FIFO workaround. Based on
+Heiko's testing, this series also enables the erratum 6 workaround for
+extended frames being transmitted as standard frames.
 
+CAN-FD is enabled for RK3588. The BRS bus-off issue seen in earlier
+testing was caused by the transmit delay compensation setting. With
+RKCANFD_REG_TRANSMIT_DELAY_COMPENSATION programmed to 0 on RK3588,
+CAN-FD with BRS works in local testing.
 
+Tested on an embedfire,rk3588-lubancat-5io board with can0/can1
+directly connected, no other device on the bus, 60 Ohm bus
+termination, and a 300 MHz CAN clock. The test used 500 kbit/s
+arbitration bitrate and 1, 3 and 5 Mbit/s data bitrates. The 5 Mbit/s
+data phase test ran for 15 minutes with:
 
-config: x86_64-rhel-9.4-kselftests
-compiler: gcc-14
-test machine: 16 threads Intel(R) Core(TM) i7-13620H (Raptor Lake) with 32G memory
+  ip link set can0 type can bitrate 500000 sample-point 0.8 dbitrate 5000000 dsample-point 0.8 fd on berr-reporting on
+  ip link set can1 type can bitrate 500000 sample-point 0.8 dbitrate 5000000 dsample-point 0.8 fd on berr-reporting on
+  cangen can0 -I 2 -Li -Di -p 10 -f -g 1 -c32 -b
+  cansequence -rv can1 -f
 
-(please refer to attached dmesg/kmsg for entire log/backtrace)
+The receiver reported continuous sequence wrap-around messages up to
+sequence wrap around (37219). Both interfaces reported 9528377 packets
+and 150667356 bytes, with 0 bus-errors, 0 error-warn, 0 error-pass and
+0 bus-off events.
 
+Signed-off-by: Cunhao Lu <1579567540@qq.com>
+---
+v5 -> v6:
+- Move the CAN0 assigned clock properties from the Haikou carrier board
+  DTS to the Tiger SoM DTSI, as suggested by Quentin.
+- Collect Quentin's Tested-by tag for the RK3588 CAN controller nodes.
+- Link to v5: https://lore.kernel.org/lkml/tencent_AE0DC47B3FBB26371A1699AC849811AD8007@qq.com
+v4 -> v5:
+- collect Quentin's Reviewed-by tag for the RK3588 CAN controller nodes
+- Link to v4: https://lore.kernel.org/lkml/tencent_42B49B0E68A8659A13EC46A402E41133FC09@qq.com
+v3 -> v4:
+- disable TDC on RK3588 by programming
+  RKCANFD_REG_TRANSMIT_DELAY_COMPENSATION to 0
+- drop RKCANFD_QUIRK_CANFD_BROKEN for RK3588 and enable CAN-FD support
+- document successful RK3588 CAN-FD/BRS testing at 500 kbit/s
+  arbitration bitrate and 1, 3 and 5 Mbit/s data bitrates
+- collect Krzysztof's Acked-by tag for the binding patch
+- Link to v3: https://lore.kernel.org/lkml/tencent_AA108D2806AC225EF9553469D218C8C0260A@qq.com
+v2 -> v3:
+- Move the Changelog below ---
+- Collect Heiko's Reviewed-by and the driver patch Tested-by tag
+- Use Co-developed-by for Heiko's RK3588 contributions and add his
+  Signed-off-by
+- Link to v2: https://lore.kernel.org/lkml/tencent_87CB2824608F3C06B4229EF99D3609D00C0A@qq.com
+v1 -> v2:
+- use real author name
+- fold the single-compatible entries into an enum, as suggested by Krzysztof
+- enable the erratum 6 workaround for RK3588 based on Heiko's testing
+- add Heiko's RK3588 Tiger Haikou CAN enablement patch
+- keep RKCANFD_QUIRK_CANFD_BROKEN enabled for RK3588 so CAN-FD stays disabled
+- document the RK3588 CAN-FD/BRS bus-off failure mode
+- Link to v1: https://lore.kernel.org/lkml/tencent_1A4614039A100DFD8A9AE2692865FE126009@qq.com
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202607301617.b436a538-lkp@intel.com
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: kernel@pengutronix.de
+To: Vincent Mailhol <mailhol@kernel.org>
+To: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzk+dt@kernel.org>
+To: Conor Dooley <conor+dt@kernel.org>
+To: Heiko Stuebner <heiko@sntech.de>
+Cc: linux-can@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-rockchip@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
 
+---
+Cunhao Lu (3):
+      dt-bindings: can: rockchip: add rk3588 CAN-FD compatible
+      can: rockchip: add RK3588 CAN support
+      arm64: dts: rockchip: add CAN-FD nodes for RK3588
 
-# timeout set to 300
-# selftests: proc: setns-dcache
-# setns-dcache: setns-dcache.c:124: main: Assertion `rv == strlen(S)' failed.
-# Aborted
-not ok 21 selftests: proc: setns-dcache # exit=134
+Heiko Stuebner (1):
+      arm64: dts: rockchip: Enable CAN controller on RK3588-Tiger-Haikou
 
+ .../bindings/net/can/rockchip,rk3568v2-canfd.yaml  |  4 ++-
+ arch/arm64/boot/dts/rockchip/rk3588-base.dtsi      | 39 ++++++++++++++++++++++
+ .../boot/dts/rockchip/rk3588-tiger-haikou.dts      |  4 +++
+ arch/arm64/boot/dts/rockchip/rk3588-tiger.dtsi     |  5 +++
+ drivers/net/can/rockchip/rockchip_canfd-core.c     | 17 ++++++++++
+ drivers/net/can/rockchip/rockchip_canfd-rx.c       |  5 ++-
+ drivers/net/can/rockchip/rockchip_canfd.h          | 14 +++++++-
+ 7 files changed, 85 insertions(+), 3 deletions(-)
+---
+base-commit: 0ce37745d4bfbc493f718169c3974898ffec8ee7
+change-id: 20260702-master-8c52be892a3f
 
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20260730/202607301617.b436a538-lkp@intel.com
-
-
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Best regards,
+--  
+Cunhao Lu <1579567540@qq.com>
 
