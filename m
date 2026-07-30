@@ -1,147 +1,95 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE4444AB84
-	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 16:12:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E316411691
+	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 16:14:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785427943; cv=none; b=P1ff1VyeWxYPyN8wrLXAiKohO0Sekl65lyx4E+wLcIDZRQZFxb2DBaTpTydFq9TNn4DBEFirtBoqp3A8yIONQYARPomRJoANEg9RjOIxpCSAA9PiTQMrff6gZICUS+jvjzXypVW6uu3Ub8JTZa9Wk3ZMg+/Ns3zb/lP95gHT56I=
+	t=1785428053; cv=none; b=sM1De3u0e+hK/nLT5Xh9Qk1V6wrtgppunaD/mfmnwgDh5mrIS6dT8nhGusJY6/ioBXIWrK59rEInoyb0JsaUso9jWgJAxsauAjRI5YbeMHmqUQ16uKJdT1+MGj34AkTrCv/CyNJ2n33Y0oM7s1Rza5dMgDR/5QXf9HZfTzBwtRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785427943; c=relaxed/simple;
-	bh=yoesZhfEnFdrMt+rXHDXiCHVJatMauLn/plTqCYnOns=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=R4EtdGz3xzjHb5C8csO7ri/q6B3BOHkItjhhHLhyqHrUF9pkkIb9UWVtOunauRP9S65o5sU714c1SK5OcEeqWU8FYRvcV+fslrf+ikqgEK4T5Z6d30SHX+O4wMKX+YXwsyxceDkBUsSPtLivmw7NITGnROc9vG/Pr8vJsmeYL8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MusRBn+v; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1785428053; c=relaxed/simple;
+	bh=lq0ZQop5uWHeKrka0zWnetjzeh0ojChl6t0oFIEuZw0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=m/QLDGGF9GBTwSOtrXv5Ru4nhAqlotVyWJil/Bb0eUKXoWJhLIcQ5A97EGIS+6WBo5hBc/wlEA2c44aLSInV8j07z076pA9jkC28Hq3cIw9LwhPxoEqSF2+peemtVyGIW/X/SaoD8j2QcHsQETjBmoZhJqHvkCylsQgZTq1MfVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GKiILvcP; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MusRBn+v"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4CB11F00A3A;
-	Thu, 30 Jul 2026 16:12:20 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GKiILvcP"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A9761F00A3D
+	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 16:14:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785427941;
-	bh=49bZ02BzD44qcnYJgV+SP4XkP6b+LYP9RQRGE0652co=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=MusRBn+vbEYZANq51LFD0RqKyFXsu66WKd2IHOurCm8cvuKCZZksF54oiXAH6Uola
-	 ypKcnaIjrLcgUQPwpa6zALnzGZ9fB1eB6FIRHWA/d79WTRzefxflHvsegPAF1iG8Q+
-	 ZmIfKoUkstRT5MJ5Now2EvoQvzN7DaOhS+KoBt6tDlzgcPRCemWB9o/qcLFkaWsncQ
-	 t9ricS2xeuG3onG6LOLMyRrfkZgb+8pq9A4rkVE42stJ+hzw4guT80D/wKh/fmdnR/
-	 tDGGe5Gs8lf3Fugdx5BQ7p/Mr90LQarYJCLqevbkSQn+eX+hZ0wfslP6Zvu4PuJ/5T
-	 J3DKhE/TM80JQ==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v4 2/3] can: rockchip_canfd: retry the outstanding TX
- buffer
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Cunhao Lu" <1579567540@qq.com>
-Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Marc Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org
-In-Reply-To: <tencent_BD7611A1FCC89A34685A64621292464E0209@qq.com>
-References: <20260730-master-v4-0-07f7952f761d@qq.com>
- <tencent_BD7611A1FCC89A34685A64621292464E0209@qq.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 30 Jul 2026 16:12:20 +0000
-Message-Id: <20260730161220.A4CB11F00A3A@smtp.kernel.org>
+	s=k20260515; t=1785428052;
+	bh=UiD/QWdym9NjT5dGSlgoWYwu8vBcbIdq6wH+JV80kWw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=GKiILvcPJ8KEFglfwJpAHdZQbQa3I3y2b63uGAgz9Vsa0UOEPRwhqdZv9NlJkaBuw
+	 qr4TAmJBYyJHK9wpHYKiBiaMzdPyhfl1R+F4AEpX+Bgil0FyWLICUAd7En7dpPNzIf
+	 8lzd0ZMAZ75CETnMSw1hq3nYtJbf3uJCIrdNtPTJf1pkPP8sS/fYWzWVvqNSfgQqSP
+	 kM4U5vw2aH9hMWmbYgsULTFnVyHe+AYl17rFDhYA2ZFS4EKqNvEdWDHz8VtpgfY47J
+	 2rEYuAdjqXye5dFebeSrIpwtuIu4abBqw52Ds8qP2Vtu4kMR26VwTD164hDMeSl8ou
+	 hXcepKkcGeY1Q==
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-c1600d040e4so138379866b.1
+        for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 09:14:12 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AHgh+RpwaCcEC2hOD2JkmqLnXPeUcSawVy8ERIC1fAOPJo9qi1ktnP1ZKgsxqoQefhP2Y/zOvMjx9Jbd3sU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx1HwKdHDtCsAKTkWKw1dh6J9WF4BtSL78UnLomLSfPZNySKvZk
+	ZUmLf76QSFiCPU0rpkDE8TJ/s15dVrGznONitXGWwbmOtrhU/DAHgQ0NX4HbH6Ma9M/akKh+eLT
+	okMx+8TDoIFHzbqxWUOuIFdOAC0OwxnU=
+X-Received: by 2002:a17:906:af4d:b0:c1c:2c32:1159 with SMTP id
+ a640c23a62f3a-c1fbd95431bmr37684966b.26.1785428051242; Thu, 30 Jul 2026
+ 09:14:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <tencent_944DADCC4B42C8484EC01DA2B15F42132906@qq.com>
+In-Reply-To: <tencent_944DADCC4B42C8484EC01DA2B15F42132906@qq.com>
+From: Vincent Mailhol <mailhol@kernel.org>
+Date: Thu, 30 Jul 2026 18:13:58 +0200
+X-Gmail-Original-Message-ID: <CAMZ6RqK4CAtqAxHFS2a4e+kwJvRYyeo9EOM+_fV=n1Yjrcj3ug@mail.gmail.com>
+X-Gm-Features: AUfX_mzL6HsQQwCG3cXWhI4j1UtKfXOw3JIBuG1alrBD8PgmPX2kBP54BAGXlpM
+Message-ID: <CAMZ6RqK4CAtqAxHFS2a4e+kwJvRYyeo9EOM+_fV=n1Yjrcj3ug@mail.gmail.com>
+Subject: Re: [PATCH] can: dev: can_put_echo_skb(): free skb on invalid echo index
+To: Cunhao Lu <1579567540@qq.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Thank you for your contribution! Sashiko AI review found 2 potential issue(=
-s) to consider:
+On Thu. 30 juil. 2026 at 17:03, Cunhao Lu <1579567540@qq.com> wrote:
+>
+> can_put_echo_skb() consumes the skb on all paths except when the echo index
+> is out of bounds. This leaves ownership with the caller on -EINVAL, unlike
+> the other error paths, and can leak the skb if the caller expects
+> consistent semantics.
+>
+> Free the skb before returning -EINVAL so that all return paths consume it.
+>
+> Fixes: 6411959c10fe ("can: dev: can_put_echo_skb(): don't crash kernel if can_priv::echo_skb is accessed out of bounds")
+> Cc: stable@vger.kernel.org
 
-Pre-existing issues:
-- [High] The hardware is not configured for strict FIFO transmission order,=
- which breaks the RXSTX (self-reception) completion logic and can permanent=
-ly stall the TX queue.
-- [High] Dereferencing the SKB in `rkcanfd_tx_tail_is_eff()` without protec=
-tion leads to a Use-After-Free on SMP systems.
---
+This branch is just a safety net meant to never be reached. While the
+fix logically makes sense, this doesn't strictly require a backport.
+That said, I am not against this being backported if the stable team
+is fine with it.
 
---- Patch [2]: [PATCH v4 2/3] can: rockchip_canfd: retry the outstanding TX=
- buffer ---
-commit ef53444fe266d2fe80406b3bc81b10580a7299c4
-Author: Cunhao Lu <1579567540@qq.com>
+> Signed-off-by: Cunhao Lu <1579567540@qq.com>
 
-can: rockchip_canfd: retry the outstanding TX buffer
+Reviewed-by: Vincent Mailhol <mailhol@kernel.org>
 
-rkcanfd_xmit_retry() originally operated with a TX FIFO depth of one. At
-that depth, the masked head and tail indices both select buffer 0, so using
-tx_head happened to select the correct buffer.
+> ---
+>  drivers/net/can/dev/skb.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
+> index 95fcdc1026f8..44ebeba99837 100644
+> --- a/drivers/net/can/dev/skb.c
+> +++ b/drivers/net/can/dev/skb.c
+> @@ -54,6 +54,7 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+>         if (idx >= priv->echo_skb_max) {
+>                 netdev_err(dev, "%s: BUG! Trying to access can_priv::echo_skb out of bounds (%u/max %u)\n",
+>                            __func__, idx, priv->echo_skb_max);
+> +               kfree_skb(skb);
+>                 return -EINVAL;
+>         }
 
-After the FIFO depth was increased to two, tx_head instead identifies the
-next free buffer when one frame is outstanding. The erratum 6 workaround
-therefore requests transmission from the wrong buffer, leaving the
-outstanding echo entry incomplete and the netdev TX queue stopped.
-
-Use tx_tail to select the outstanding buffer for retransmission.
-
-> diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/c=
-an/rockchip/rockchip_canfd-tx.c
-> index b1954b72560cf..2b5cd6aab31b6 100644
-> --- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
-> +++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
-
-[ ... ]
-
-[Severity: High]
-This is a pre-existing issue, but does the hardware configuration here brea=
-k the TX completion logic?
-
-drivers/net/can/rockchip/rockchip_canfd-core.c:rkcanfd_chip_start() {
-...
-	priv->reg_mode_default =3D reg |
-		RKCANFD_REG_MODE_CAN_FD_MODE_ENABLE |
-		RKCANFD_REG_MODE_AUTO_RETX_MODE |
-		RKCANFD_REG_MODE_COVER_MODE |
-		RKCANFD_REG_MODE_RXSTX_MODE |
-		RKCANFD_REG_MODE_WORK_MODE;
-...
-}
-
-Without RKCANFD_REG_MODE_TXORDER_MODE to enforce strict FIFO order, could t=
-he controller arbitrate pending TX buffers based on CAN ID priority instead=
-?=20
-
-If a higher-priority frame is queued after a lower-priority frame when TXFI=
-FO_DEPTH > 1, the hardware would send the higher-priority frame first.=20
-
-Since the self-reception handler (rkcanfd_rxstx_filter) assumes strict FIFO=
- order and compares the received echo against the oldest pending TX frame, =
-would this out-of-order transmission fail the comparison? This seems like i=
-t would leave tx_tail unadvanced and eventually stall the TX queue permanen=
-tly.
-
-[Severity: High]
-This isn't a bug introduced by this patch, but can dereferencing the skb he=
-re cause a use-after-free on SMP systems?
-
-drivers/net/can/rockchip/rockchip_canfd-tx.c:rkcanfd_tx_tail_is_eff() {
-...
-	tx_tail =3D rkcanfd_get_tx_tail(priv);
-	skb =3D priv->can.echo_skb[tx_tail];
-	if (!skb) {
-		netdev_err(priv->ndev,
-			   "%s: echo_skb[%u]=3DNULL tx_head=3D0x%08x tx_tail=3D0x%08x\n",
-			   __func__, tx_tail,
-			   priv->tx_head, priv->tx_tail);
-
-		return false;
-	}
-
-	cfd =3D (struct canfd_frame *)skb->data;
-
-	return cfd->can_id & CAN_EFF_FLAG;
-...
-}
-
-Since this is called from ndo_start_xmit without disabling hardware IRQs, a=
- TX completion interrupt could fire on another CPU immediately after the sk=
-b pointer is fetched.=20
-
-The hard IRQ handler would then set priv->can.echo_skb[tx_tail] to NULL and=
- queue the skb to NAPI, which could consume and free the skb on the remote =
-CPU before the original CPU dereferences skb->data.
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260730-master-v4-=
-0-07f7952f761d@qq.com?part=3D2
+Yours sincerely,
+Vincent Mailhol
