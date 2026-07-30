@@ -1,83 +1,159 @@
-Received: from out203-205-221-164.mail.qq.com (out203-205-221-164.mail.qq.com [203.205.221.164])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0DA343A80C;
-	Thu, 30 Jul 2026 14:04:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.164
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7643E346771
+	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 14:05:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785420296; cv=none; b=o74luMppjgnqRaELRbrmnCQiXOQNC0JnZBGeWzByTlmzaE6Aw9Bp0A/Htu5NQoSVZMJZYSakCLcCYUlMJ+sN+p/qOjMlP0KVzFu3Kzby2Fr1GPOcHThtHc07qZ47I8f1HjplwVT5JaQ1K6v6w4mKOIkolhaO0hYi4saA88+wBx4=
+	t=1785420316; cv=none; b=SDkDaUMRR1RBriQP53aQc9c7llbdOgNvjKef0dC/5iQ2LD15R67gVlQ6hLxGWHsEPi5tGhZf1J754dYRRQimKOh0WEM0k+WNLonZblNdk2/0cYJPs752eFSrBfW1RdYlEFypvtvOwNHS2E+kDWx3ec0hZsBG78Ud1dxLe5ppSwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785420296; c=relaxed/simple;
-	bh=tGTkNpzchZNpj9HV/ywwb5I5HWM8o4egLfUtXR/eyws=;
-	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
-	 References:In-Reply-To; b=qu1ZXMVaEHKurulk11uLvSnBiqxRM+fgH7sVfDXMNOHjFlzra7t0JZ7oFhcWGSTO8E0SHTOnFvHgOTeC/F9WC/1WZh6GRBw91Q+lyhd557GjqwRX0+7lVwx3rzie1+FNsZvFfTXs0w/mSh/km/41aodAtGEeFRHo3xopaydeZjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=k4Rkd8v5; arc=none smtp.client-ip=203.205.221.164
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	s=arc-20240116; t=1785420316; c=relaxed/simple;
+	bh=lXDashfQtKoGvyrr9CCg8Gv2Fj/SNBl02KVVUa/936g=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=j2d55Jk0Yfy+9Xks5UzV/IKMeGXXLy+9I7PZRnPY6CeBLnTkQu8TEoPWhk4wi72n36E1Giyp50Y1xRKVK2beavXYpiZBPJjH544bFuMe/5Culi8xjGB3G7jdRW7ECnxFSEkaE7eqWF1iurtX/8dWbJ7zGXSSDIiyQtORuYWv26I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FYRdoud/; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="k4Rkd8v5"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1785420285; bh=tGTkNpzchZNpj9HV/ywwb5I5HWM8o4egLfUtXR/eyws=;
-	h=From:To:Cc:Subject:Date:References:In-Reply-To;
-	b=k4Rkd8v5CBpNWsHys2gIx7tEERm/Gg2BZm6q6Q9XXLbVLW/O08S9tD+I2YavdOcUD
-	 LYNHIAU6PG0tGn9BBCyr166QNRNvZvqHMeEYxl8gV3FOIsjMQOdH/4ncpbuT/t8/S3
-	 Dp1wPH1cGn2x42uHEHHHA3efA0eQoj0jwtE+11aw=
-X-QQ-XMRINFO: Mp0Kj//9VHAxzExpfF+O8yhSrljjwrznVg==
-X-QQ-XMAILINFO: OSDxAxedUaWCj2nTIt4SlIaffdcH5TQCRrGH0D8KpcaLyWVb1AwgKVCVXs2DWK
-	 LNtUkzL9ckzg8n/vwGTDh37CuOMJ/jk8m5P2ov6ji0h8i0yEPAD6g8f13u6Wzvf8NQWblMCL6tdi8
-	 n84Y8Gd93c6wwHxiY2CzcTWxSFpNxquPtjltH5Gohg78FP8n2Rgses0ZLPqL+q1jBmr4BUGRRWLoJ
-	 mzgRxKscnUWbxpcbn90kGBkb8Zk4nJEs9avZKYXhgZ40ZW3D6TNOdTT0iHsTcVifVYbgKcEkwwxsi
-	 XVASX+rDPXebyz8IBUKXCDZrgCTDTXsx/RsXySzy16SymfY2jx/UuPWOhpcFLmkjk5rHciEsLMV32
-	 GlsyqsInI/qWW+vp5H3gPDkqmQcMOpqwSCY0tO5mpzeDFr74EmfKcCjnBQG8PDP5pwpTdwxRm1gQn
-	 IFxpqjvHYIOiImt4hWSx3Cicy4n7csvilLZDluDJIozh1MPeazckTOZvaTWi+1ApHoWAeXUTX1yGy
-	 mXtwgxV5S52elwF8LB5VUw9AjdSlcvI7bcDD6QURAcB87LS4+vaoa+eT557/Ytw+7yf5i5m2aGKXd
-	 OJcssUEls/O2bkeVxtHV0SIqwQ0KCDKzj1Bxhmz+WbArbmARae7VtMQtTyrkeTZuNNHqng7pioyRY
-	 Q26hUwSyXzU6RQyZnYoWfS/Xgu0G5AjrAiBno6ow+d1FRZnmI05yA9uj/yX04MS3HCso5Hr480RX3
-	 iFx6FDfaGiUZJ4bCZRgw4wJMK7iYXxOo6LAsYriEOg0nVcdNmqfqMgnDg0FzvXLxb7sOYcuHPTYt+
-	 1jz/U2htRblg2PcEVv54uyluXpuCBQfzZp2IRSWKaG6miMeP2sAtZYSu5V/34MSg9AbfxxqGvCBT6
-	 V7aoav8ab4frjDX4Zg8Zjs42YbdzPme6ruHELpPa9dlB2XegZjQ9DxJCoKA57zh2gwGn1tHa/8OSv
-	 mUcin/yiwLi889aRRZonur5oBq8pv8DnHV8CC8LQUTA7Hb1X2GPnsBQGD1VrIKZzbVIXcDBSQseUc
-	 7Tn2yI4ueKfxmtSocjSKhS0ut9haSKXoBYqzznJ/1nIhbHa8z51U+xFdNBfQr6fNBT2q1XzWMHrrl
-	 TcdV4PWUzIr3nQ==
-From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
-To: "=?utf-8?B?UXVlbnRpbiBTY2h1bHo=?=" <quentin.schulz@cherry.de>, "=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?=" <mkl@pengutronix.de>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?VmluY2VudCBNYWlsaG9s?=" <mailhol@kernel.org>, "=?utf-8?B?Um9iIEhlcnJpbmc=?=" <robh@kernel.org>, "=?utf-8?B?S3J6eXN6dG9mIEtvemxvd3NraQ==?=" <krzk+dt@kernel.org>, "=?utf-8?B?Q29ub3IgRG9vbGV5?=" <conor+dt@kernel.org>, "=?utf-8?B?SGVpa28gU3R1ZWJuZXI=?=" <heiko@sntech.de>
-Cc: "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?ZGV2aWNldHJlZQ==?=" <devicetree@vger.kernel.org>, "=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, "=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, "=?utf-8?B?SGVpa28gU3R1ZWJuZXI=?=" <heiko.stuebner@cherry.de>
-Subject: Re: [PATCH v5 4/4] arm64: dts: rockchip: Enable CAN controller on RK3588-Tiger-Haikou
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FYRdoud/"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E80F01F000E9;
+	Thu, 30 Jul 2026 14:05:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1785420315;
+	bh=u1Yl2akkxCDLxXFVNwlBpqel8c/e+pSyYCJzvekliTA=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=FYRdoud/eJmgdybOjPAxLJ2bRmMQGbzJ9dSO4xhd0RyyDrnMfRVA6fuZLqLbKHpg1
+	 yLdVYiKPveQj/4iUUgDkWG1oebHI2ifX/h3io75PuhTXyM5nR9fQ0Va/zI2qTA9Wjt
+	 CZbC+dywBS6KSvWlG6DwI5dsfvN/R804CsBHz54guIPCbIsXSTRAt0w9P2JCeKM9hB
+	 nlrbGv9Fa+gFD9rrLb5jAVfjvRqNbFDQSLGDeMly24Rn5yypUgpA7BG6Yo3j6Tntbp
+	 8zGtbVoR7CQIihPzBOLgIWecCrpMQ7f/vVZ0dir+5JsQ8d4/rPNYYgfV5pNU4dgLro
+	 u1coxKFCKLF2g==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v3 2/3] can: rockchip_canfd: retry the outstanding TX
+ buffer
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Cunhao Lu" <1579567540@qq.com>
+Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org, "Vincent
+ Mailhol" <mailhol@kernel.org>
+In-Reply-To: <tencent_A7CBE824C48D68057C23BAF8E1355DD0BC0A@qq.com>
+References: <20260730-master-v3-0-91cf030c337d@qq.com>
+ <tencent_A7CBE824C48D68057C23BAF8E1355DD0BC0A@qq.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 30 Jul 2026 14:05:14 +0000
+Message-Id: <20260730140514.E80F01F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Date: Thu, 30 Jul 2026 22:04:43 +0800
-X-Priority: 3
-Message-ID: <tencent_34D00CC80826788DD404902246F9ED36E10A@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <20260725-master-v5-0-75da459d2b93@qq.com>
- <tencent_8E35228F9F4F133FCDBCCC4902F6887D0006@qq.com>
-	<7628bc49-b4e7-4716-9579-022c20bbf134@cherry.de>
-In-Reply-To: <7628bc49-b4e7-4716-9579-022c20bbf134@cherry.de>
-X-QQ-mid: xmsezb41-0t1785420283tmh58ymmo
 
-SGkgUXVlbnRpbiwKCj4gQ2FuIHlvdSBwbGVhc2UgbW92ZSB0aGUgYXNzaWduZWQtY2xvY2tz
-KiBwcm9wZXJ0aWVzIHRvIHJrMzU4OC10aWdlci5kdHNpCj4gaW5zdGVhZD8gUkszNTg4IFRp
-Z2VyIGlzIGEgU09NIGFuZCBIYWlrb3UgaXMgYSBjYXJyaWVyYm9hcmQuIFRoZQo+IGNhcnJp
-ZXJib2FyZCB0YWtlcyB0aGUgc2lnbmFsIGRpcmVjdGx5IGZyb20gdGhlIFNvQyBhbmQgcm91
-dGUgdGhvc2UgdG8gYQo+IHRyYW5zY2VpdmVyLiBJJ20gYXNzdW1pbmcgYWxsIGNhcnJpZXJi
-b2FyZHMgZm9yIFRpZ2VyIHdpbGwgbmVlZCB0aG9zZQo+IHR3byBwcm9wZXJ0aWVzLCBzbyBi
-ZXR0ZXIgaGF2ZSB0aGVtIGluIHRoZSBTb00gRFRTSS4KPgo+IG9uIHRvcCBvZiB0aGlzIHBh
-dGNoIGFuZCBzcXVhc2ggYW5kIHdlJ2xsIGhhdmUgd2hhdCBJIHdvdWxkIGxpa2UgdG8gaGF2
-ZS4KPgo+IElmIHRoZXJlJ3Mgbm8gbmVlZCBmb3IgYSB2NiwgSSdtIGFzc3VtaW5nIEhlaWtv
-IGNhbiBzaW1wbHkgZml4IHRoYXQgd2hlbgo+IGFwcGx5aW5nIGFuZCB0aHVzIHRoZXJlIG1h
-eSBiZSBubyBuZWVkIHRvIHNlbmQgYSB2NiBqdXN0IGZvciB0aGF0IChidXQKPiBpZiB5b3Ug
-bmVlZCB0byBzZW5kIGEgdjYsIHBsZWFzZSBjb25zaWRlciBkb2luZyB0aGUgc3VnZ2VzdGVk
-IGNoYW5nZXMKPiBhYm92ZSkuCgpJIHdpbGwgbW92ZSB0aGUgYXNzaWduZWQtY2xvY2tzIGFu
-ZCBhc3NpZ25lZC1jbG9jay1yYXRlcyBwcm9wZXJ0aWVzIHRvCnJrMzU4OC10aWdlci5kdHNp
-LiBJIGFtIHByZXBhcmluZyB2NiBub3cgYW5kIHdpbGwgcG9zdCBpdApzaG9ydGx5IHdpdGgg
-dGhlc2UgY2hhbmdlcy4KClRoYW5rcywKQ3VuaGFv
+Thank you for your contribution! Sashiko AI review found 2 potential issue(=
+s) to consider:
 
+Pre-existing issues:
+- [High] Concurrent MMIO accesses to RKCANFD_REG_MODE from softirq and hard=
+irq contexts without locking defeat the Erratum 12 workaround.
+- [High] Lockless update of `tx_head` lacks memory barriers, risking a NULL=
+ pointer dereference when the RX IRQ handler reads `echo_skb`.
+--
+
+--- Patch [2]: [PATCH v3 2/3] can: rockchip_canfd: retry the outstanding TX=
+ buffer ---
+commit c91fe3adb2c3d0a63ee8904bebefd12fa1335d29
+Author: Cunhao Lu <1579567540@qq.com>
+
+can: rockchip_canfd: retry the outstanding TX buffer
+
+This patch modifies rkcanfd_xmit_retry to use tx_tail instead of tx_head
+to select the outstanding buffer for retransmission. This corrects an issue
+introduced when the TX FIFO depth was increased to two.
+
+> diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/c=
+an/rockchip/rockchip_canfd-tx.c
+> index b1954b72560cf..2b5cd6aab31b6 100644
+> --- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
+> +++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
+> @@ -57,8 +57,8 @@ static void rkcanfd_start_xmit_write_cmd(const struct r=
+kcanfd_priv *priv,
+> =20
+>  void rkcanfd_xmit_retry(struct rkcanfd_priv *priv)
+>  {
+> -	const unsigned int tx_head =3D rkcanfd_get_tx_head(priv);
+> -	const u32 reg_cmd =3D RKCANFD_REG_CMD_TX_REQ(tx_head);
+> +	const unsigned int tx_tail =3D rkcanfd_get_tx_tail(priv);
+
+[Severity: High]
+This is a pre-existing issue, but does the lockless update of tx_head lack
+memory barriers, risking a NULL pointer dereference when the RX IRQ handler
+reads echo_skb?
+
+In rkcanfd_start_xmit(), the CPU populates priv->can.echo_skb[tx_head]
+locklessly via can_put_echo_skb() and then increments tx_head:
+
+	err =3D can_put_echo_skb(skb, ndev, tx_head, frame_len);
+	if (err) {
+		ndev->stats.tx_dropped++;
+		return NETDEV_TX_OK;
+	}
+	netdev_sent_queue(priv->ndev, frame_len);
+
+	WRITE_ONCE(priv->tx_head, priv->tx_head + 1);
+
+Because there is no memory barrier separating these operations,
+weakly-ordered architectures can reorder the store to tx_head to become
+visible before the store to echo_skb.
+
+A concurrent hardware interrupt on another CPU executing
+rkcanfd_handle_rx_int_one() could read the updated tx_head and attempt to
+read echo_skb[tx_tail] in rkcanfd_rxstx_filter():
+
+	tx_tail =3D rkcanfd_get_tx_tail(priv);
+	skb =3D priv->can.echo_skb[tx_tail];
+	if (!skb) {
+		netdev_err(priv->ndev,
+			   "%s: echo_skb[%u]=3DNULL tx_head=3D0x%08x tx_tail=3D0x%08x\n",
+			   __func__, tx_tail,
+			   priv->tx_head, priv->tx_tail);
+		return -ENOMSG;
+
+Lacking a paired acquire barrier, it may read a NULL pointer.
+This would terminate the RX FIFO processing loop prematurely,
+leaving frames in the hardware FIFO. Should there be memory barriers ensuri=
+ng
+the echo_skb store completes before tx_head is incremented?
+
+> +	const u32 reg_cmd =3D RKCANFD_REG_CMD_TX_REQ(tx_tail);
+> =20
+>  	rkcanfd_start_xmit_write_cmd(priv, reg_cmd);
+
+[Severity: High]
+This isn't a bug introduced by this patch, but does calling
+rkcanfd_start_xmit_write_cmd() from both softirq and hardirq contexts
+without locking defeat the Erratum 12 workaround?
+
+The rkcanfd_start_xmit() function running in NET_TX_SOFTIRQ context calls
+rkcanfd_start_xmit_write_cmd() to execute a non-atomic read-modify-write
+sequence on RKCANFD_REG_MODE:
+
+static void rkcanfd_start_xmit_write_cmd(...)
+{
+	if (priv->devtype_data.quirks & RKCANFD_QUIRK_RK3568_ERRATUM_12)
+		rkcanfd_write(priv, RKCANFD_REG_MODE, priv->reg_mode_default |
+			      RKCANFD_REG_MODE_SPACE_RX_MODE);
+
+If a hardware interrupt occurs immediately after the softirq sets
+RKCANFD_REG_MODE_SPACE_RX_MODE, the hardirq handler rkcanfd_irq() can run.
+It can call rkcanfd_xmit_retry(), which also executes
+rkcanfd_start_xmit_write_cmd(), restoring RKCANFD_REG_MODE to
+priv->reg_mode_default on exit.
+
+When the softirq resumes, it proceeds to write to RKCANFD_REG_CMD but
+RKCANFD_REG_MODE is now back in its default state, meaning the required
+Erratum 12 workaround is missing. Could this silent bypass cause incorrect
+CAN bus behavior or TX stalls?
+
+>  }
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260730-master-v3-=
+0-91cf030c337d@qq.com?part=3D2
