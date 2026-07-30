@@ -1,159 +1,148 @@
-Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazon11012008.outbound.protection.outlook.com [52.101.66.8])
+Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 518F3443A89;
-	Thu, 30 Jul 2026 15:21:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.66.8
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785424905; cv=fail; b=D3siD/nWBRey4ZP05m6HjChKpvVb8P/N9fnJb1cKtvYHjYNabHs25Id96yVaG6MLWYIGoLf64MeWfd5WfyIVNSb0zB9eL+rJuJ9ZcMtuLM470xiScRhc0SROGaVdfZqJ88nbvlaLeJDlubXvluH24bZ621ntH7/Q0IXOw62r3vo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785424905; c=relaxed/simple;
-	bh=y28s1iOsNXaYCSbNSlhvYcaQGjp7lzg9049LZOzK1PQ=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=r9tQAbTQkg9MqFqVMWtAsqIDQwRIS9nXaKQFKQM/JPgCOCa7OnGCoNsP8UFGBIdnsekUF4Uv+VUipflnrYMknFU7GB0f3hbZq5YgfxQkIvCQTPv8m7HUZspKxAZAYiDUqZQgBpcnefxUNtuKJVSMX1g2Vv4AVncB1FW36ry++2Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cherry.de; spf=pass smtp.mailfrom=cherry.de; dkim=pass (1024-bit key) header.d=cherry.de header.i=@cherry.de header.b=QF2z09a1; arc=fail smtp.client-ip=52.101.66.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cherry.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cherry.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 943AE3451B3;
+	Thu, 30 Jul 2026 15:57:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1785427036; cv=none; b=qMLTTgDRT+7+JQB9k2enncsVRrAGi8UA6Cb9RvJyZGF0P2+bQbh7jWr7mSHNnJWD5Q3zUViCBUrQzqx8Ko4Kzy8ptXkJgGOD7EwxZtBjd29nZzdVSoPmntcIgjDS+Wx/XPg5QLtk/jEyw9tnX6szh8Qfdi7VBIsqSIwbN3X4HLA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1785427036; c=relaxed/simple;
+	bh=jcsiCulJsHRj8wcRKWpZFET7IsuN9op3m08A6CTX81E=;
+	h=Message-ID:From:Subject:Date:MIME-Version:Content-Type:To:Cc; b=Khxp3RN7mhJjqzZmqwhes3Ze6zYqcKwjfBJLQcHzhv7qTNpX/pymBN9NRnVO0j5wXOs2tfcfnR8LSjdeY6Kh2bcNiI5gXDn4ALePsnqtQcrMt2gulOyDYptPbGDLYP9z6qgmDylmybGwSyOAyZTREHhlYpbqmK0TV3theObIhxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=mdEoECxd; arc=none smtp.client-ip=43.163.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=cherry.de header.i=@cherry.de header.b="QF2z09a1"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=hfKtTjcDtrnQDGMHn5iadomKUFFFKBuyjlfQcIRXM+vbubPdHg4m/q9j0CxIRQChKkh7HKqcFvsBUIfTh74oMMhHsVSa40oJDvnaizpG7lZC083NZ3uBzi+hmc/dXfTbQYedFxYX+FfvHekjZR7fspQD82cKcB4AWZyZwXlKWXi7/e8S+wqw0zCfUYU4KPsDELBkO7jK/BDIUCcfyvyG5PtbQl54YbIeVECjzmH94azX5AslnNnetU1AZJx+7qe6b3B+6/fLnRdyL6tmHFGyrhvZScdhydgS+DZ5kJO5LZYmwsxe20wB9zg6q4Syqx7GZqktL4wE2myb9KSebdKwrA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gurVjpa+FxGcc5JDGH4iqrszVOvSbB78c2N1hLBEYJ0=;
- b=KtEZmhPc9AHHF+7grFrPRS7Byg6JwjVBRVhcJVrXod7DdxD4dWDFrncRkE9xcIavOGk8EDpsjUIWjYLbNy1Q18/zjrQ1FlhjyxWbY5ka4otHfEuVCk1v85ZKDvj7crItgfpEtr/vZk5vIdLYsCGChjy5rp1TTM8SL6ysJnv0W0dpYp9H+pl/07dfZ4i2qbLbqqfeg8KDA8X4XrOOgSRrzU2noWiBG1ijQwc6bIBoXXXIhqx/L5VcHe37mFQeCVlTFqwRJW1EAnSJYXzgaJsZffuJPSClWJzbUV1ofcda5iSkSBkcIyFYOI9YDrxsW57DQfz+wRTwqYFZIbKDaV6fqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cherry.de; dmarc=pass action=none header.from=cherry.de;
- dkim=pass header.d=cherry.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cherry.de;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gurVjpa+FxGcc5JDGH4iqrszVOvSbB78c2N1hLBEYJ0=;
- b=QF2z09a1EBYquni5w+6oOo1nYtJeE/LOGJvc4gjZwMTdLYsLgNY1RbAIR9oiVAq7KjvibfxmXAo25rc9t/XppzG/lYGo4GBUsL0ke7TW5RjuZkzQlmF/Jcv4zND4g8p96rgVWbPAOH5yuGQibS3jb5aZjRDFeHKx0afclbw4NfY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=cherry.de;
-Received: from PA4PR04MB7743.eurprd04.prod.outlook.com (2603:10a6:102:b8::20)
- by GV1PR04MB10558.eurprd04.prod.outlook.com (2603:10a6:150:20f::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.270.15; Thu, 30 Jul
- 2026 15:21:36 +0000
-Received: from PA4PR04MB7743.eurprd04.prod.outlook.com
- ([fe80::9a4e:252f:2fd:97b7]) by PA4PR04MB7743.eurprd04.prod.outlook.com
- ([fe80::9a4e:252f:2fd:97b7%6]) with mapi id 15.21.0270.012; Thu, 30 Jul 2026
- 15:21:36 +0000
-Message-ID: <d83d2d39-7c58-44e6-9454-6d8e38511bf5@cherry.de>
-Date: Thu, 30 Jul 2026 17:21:35 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 4/4] arm64: dts: rockchip: Enable CAN controller on
- RK3588-Tiger-Haikou
-To: Cunhao Lu <1579567540@qq.com>, Marc Kleine-Budde <mkl@pengutronix.de>,
- kernel@pengutronix.de, Vincent Mailhol <mailhol@kernel.org>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Cc: linux-can@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org, Heiko Stuebner <heiko.stuebner@cherry.de>
-References: <20260730-master-v6-0-dfb63e234775@qq.com>
- <tencent_A982C9885A401DE2AB5F405336CDA14C7C06@qq.com>
-Content-Language: en-US
-From: Quentin Schulz <quentin.schulz@cherry.de>
-In-Reply-To: <tencent_A982C9885A401DE2AB5F405336CDA14C7C06@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0P309CA0028.EURP309.PROD.OUTLOOK.COM
- (2603:10a6:20b:28f::6) To PA4PR04MB7743.eurprd04.prod.outlook.com
- (2603:10a6:102:b8::20)
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="mdEoECxd"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1785427027; bh=q78/UjlAUyOdIvmwtJY1CrRorkmEitpUjVSQ8zAALmw=;
+	h=From:Subject:Date:To:Cc;
+	b=mdEoECxdXg09eX8wSc9FdBwA8UnsM1ovAyRF3W+tDzJXCUtaCrIPYLiz+yHigLO2q
+	 F/tSDIiC9iSVA6FDz9bI/VDFH3l+5vk/iLMEK6Ueg4n/ty3FIlT8Xt9mLaWIo2P1JN
+	 ee/amaL9SkeIPg6Ad5j2uS/Eay9UxjfPCrbIPj44=
+Received: from ubuntu2204.localdomain ([2409:8d20:22b:54c:9e54:40ff:fe02:3f0f])
+	by newxmesmtplogicsvrszb51-1.qq.com (NewEsmtp) with SMTP
+	id E4428204; Thu, 30 Jul 2026 23:57:04 +0800
+X-QQ-mid: xmsmtpt1785427024td63bdj6y
+Message-ID: <tencent_929320CDB8CC5402DD486A402122B7DF5606@qq.com>
+X-QQ-XMAILINFO: MGlHWIisM7RbuSFKYH1fLZRtLWiNpvemqdP4tfN2ZZ51uPENTg42exjqwpw4cN
+	 uquE3tAkCPyVli7u7GkAzZEYOs/zxTj/xDF9vKQie2kh6SRqHsG6r7xWc1essq5H31303wDNhNb6
+	 r6DnLd0epZFPZqXBw+iasY2msMnG5C+BnGyi+StaoUh9v1Gge6cBnLt0oHwFBA7WtEQS5EvLiy6Z
+	 GuqVlVu/aNHD0kU5EXZQU0TNIWrZhkYGO4qBNCDfTciLuMhTUoVlp3nr7o8+Trf+GLil3Ne7pDMi
+	 U8hJHS//NxAIw8vS3xlQKY/W3fYBh+VQvE2A/hsTB5SKUxHFcEh8F74sEQuQGjXRmZS1C8CNdAZB
+	 g+7ADJb+TrPAYjpY9jTdLnE+E0Dus7vnK4sNRLUW4RsPVim5+BSypqo8XdFjxHvlnXPHXBHzMBrA
+	 Xa+FKv0v4mzyTBzvIBLuHEU5/DCbGOZxOjdaJGQA4h/Bjx6ICK1QdkFdxkN5x+gT10jSL3MS14/b
+	 P9e4RCoyWpnx6ScfdGIS+FDO7mWwJ1COnbGfk7UWvWbJb2M9hC+0r227lf70KtT2xxdVXgvEz0mx
+	 pJFfauWZ23kYXFAUzp3jOnZSuvYTTfXfTtij/98Wt+q0pqrp2Y5GokqrJ9+psV48Tn68m7r9xBUB
+	 K1atEPalrpjqdWgQ/MS5Dgszzxkw7QRvGRvoCXz8olig0UGdX4beWkZ+a+K1rYx49k8Lx12xt58w
+	 B8cGTA2Ixq7fEJCcVbl2KxtdzGWAZ7khAn2zYYdo4823LiotIBkjRsSDWkvTc0+EFpq8Bk1tcPMn
+	 InTXkHGzJPKbwnlLXg2TJKcBc+F63iMoHvKK5QZJsCbwEIKu3mgCroNzFmzgUlO3pnYzIOkzictS
+	 yFcl4ZmOgwBQGNTPOpbDl2ykacmM0eelYbYSICBwsmEE1mcabvZxOkDabtIjrez3uG9syeQEXMhk
+	 5UmsUNkhT3vz/UfdQzXA+Jx2rEz+ukneFnaLNx0hkZ8Q/O5vAJDTXiqyhEZGOPkezsOHfN1yPPYM
+	 0bLEx9HQ0spjMiwIhmI8DKmyG13HhCAIJAw+wmSY1FifTi6uH5XF0uTXKJknM63aNjDMxFD9kspc
+	 m+6wbm0fBa7Glk+96MhFOEINVf6H5qjwn9IzZDBT+qyPH6j+Rbx+qLyhSa1ejiCPgZzB7JQXUDCS
+	 c+vj73jjHyOWzxb/sMtabMh/rPYdCBigJYHUmcg9lUiMpbHQ==
+X-QQ-XMRINFO: OWPUhxQsoeAVwkVaQIEGSKwwgKCxK/fD5g==
+From: Cunhao Lu <1579567540@qq.com>
+Subject: [PATCH v4 0/3] can: rockchip_canfd: fix TX stalls and races
+Date: Thu, 30 Jul 2026 23:50:40 +0800
+X-OQ-MSGID: <20260730-master-v4-0-07f7952f761d@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR04MB7743:EE_|GV1PR04MB10558:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3717e1d6-5921-40b7-f494-08deee4e3eec
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|23010399003|1800799024|376014|7416014|10067099003|4143699003|11063799006|6133799003|56012099006|18002099003|22082099003;
-X-Microsoft-Antispam-Message-Info:
-	QNa3dnXJ2BwR0OnRaQ2ilFqYnVT9rpynNo/1Yx7r5+212hXVgFkemQrXXEa7qX5ssm+uw/pMbDYzsWLGuQOh08xVpF9LzUFYO6hm/L8p8On4WrXkDKWFNVUyh/IBA74wS6vEv00YxxmLSNlGDdas/aA9xqy1HYNFopmeolZReaCZlDmQ8+ulvNPa3tOFiqmNQu6C7Zsnea5yvUGKuCfzlplAfssAcme55x5lE3Ui2pDP7fyLUaX2AeHeJBJ+ymgejE2dh2VTRJFnEqH7PDVCEO/697U1fIpVuTchwzqfWG6+UvoTUmJdCSbEtnB3KTitBFfOQfpc9PBuZOvDqG4REeuQAnqbgTnKe9HJRPv8RQbawEPCBz/vnMhdcaAmnPX2kMw0x0YqQJ2/pYxqkpBzeCp9EHHUXbl3YOg2owqn0qtNgAECPnrYqthrQ4A+AVBu9a8uJ1upR77bNtdBScD/EMjqmVCA/8qg7QQObhDRP93hpAN1qH5HEWt3RTfMQ/cO9Px3s3A0xrkBxlda+/NTv41BdyyZVULTEAz4lND8/YIvpYk4zcDuaFk5KEWjC6pHXXdtagmaIrfaCqD4bzGU5SJpHpvLzNTRm00MstZWWh59bo+WD/+aS7qT/nFxYBUNL/f3FQMNTu8/YkCr6TkAbL9GH+c9cqqa7zxiU3+xTqo=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7743.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(23010399003)(1800799024)(376014)(7416014)(10067099003)(4143699003)(11063799006)(6133799003)(56012099006)(18002099003)(22082099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?VW9jZzQ5T0NQWDZIcTdvUU9POTRqRDBjb3R1dVg3RlltQW9PalBFOWhjODRo?=
- =?utf-8?B?QjErZ3JZb3o3VWE4OWhmU0dkaTliTHgwY0RyUUkzalh5ZFFOcDA4aGl1UHJV?=
- =?utf-8?B?Q0tudFJtaGdVVW5tQTAySFQ3QjlzVlRmekxVVCtsc2JQMFNESmg3ekhYbTBh?=
- =?utf-8?B?RElHNHFwRTRuN21VeXRKM3dKUHd1L09sclVrY1ZkZmhBTnBzMUd0NFJGeXIw?=
- =?utf-8?B?M0JtM3dISmNQYmJxSjVyeG1XYzV4MmVQVkVkZjM2ZWdXbjQxYnR6YUdwODlL?=
- =?utf-8?B?VGdCM2YxLzJWYkM2cDBXcmorUHUyZ1AyU3hyRk5nWVNVem82d0ZtRWtmSVho?=
- =?utf-8?B?UEZSM25QNmE5QmgwcnRta3hZUUc3THFQK09NcjVwQ01ROGozYk9YeU1UdUNa?=
- =?utf-8?B?Z0lFdjZPZTVQVlcyR0FES0tONjJqRjFGWjRsWTV1YU5ZVmlxSDBjN3BPQVp0?=
- =?utf-8?B?Z3U5R0JTWGFVV2IrRlYwM1lyUm5ONm9ILzU4WU5zUlRuVVBDUTY2ZHgwMloy?=
- =?utf-8?B?Y1FVeTk1NXF3TitSMWNsYmpXYWg0THVvQ0kyMWdiSDVtMTJQbUJJY0x3dmFo?=
- =?utf-8?B?Zmt2ODBtUkh1a1gwTWUzN0dQck9Lbk5RYStnQnBwVnJjSFVFSnY3ZTIybmNl?=
- =?utf-8?B?MlJsZkszb1Y0SzNjN3dsV3crb0NIZmQ0b0dNTnQ1MUhlTUs3SmtOclNNMXZC?=
- =?utf-8?B?bFQ4a1kxZnJKeHptWUNjWmpIT0I5UmxmZmczdUJLK0lzVXZxVDBmeU1LR2cx?=
- =?utf-8?B?bnRtWGtZOGYyUXBMQVlNTnFwOGh6YXRuTS9oWk5QOTEvQ0IzUy80QVhPN2V4?=
- =?utf-8?B?T1g3ZmsyWEtyRHZVN2FpRE9jay9VaFR6SHhzZFhjdEFSWXJlME9QbnRuV1Uz?=
- =?utf-8?B?SVVpTHpkSkhESUhoTVhuR3RiaHRRYjRhVXRXdDlGdXB2RlhEYmh0a3BKMFNV?=
- =?utf-8?B?a0dUMk5HSXlLVXBPOXl3VFZVZ3VZZ2JMa292WkVkeDdEZEtNMGxWbTVIR0I3?=
- =?utf-8?B?NHE1eEVhK3E2KzlaYndvM1NPUEF0UlIxNHk3dnFiUGlQeXB2MkgxeElGbTNt?=
- =?utf-8?B?cUhyYUJWQmt5TU1idHF3c1ZGNmRBb1loL3FZOWdxenk0aWMvSEZtRHEwWlZO?=
- =?utf-8?B?WHVXUDNPbWp5UG96TFRzYW5SNlQrTUZmcVVwZitqKzlkUVd1THd4ak13ZjhL?=
- =?utf-8?B?c1QxMEtxeEozMm9xUEJmcEduN0FqNkw4aEtQMW1uVmkrS2x2UExlNjhwOXpP?=
- =?utf-8?B?ZCt2TVkwNkNiT01VNHhCZms2ankvTDcrY05JWVlzbENTNDdCZHBCVHVDdmJG?=
- =?utf-8?B?d3QyYlkxVFl2Ylk2RG9OYkp1c3Rtdzh4VE0rQytQS1phN21KQndQVGk2V0Q1?=
- =?utf-8?B?NDRDQ0tkUTZUTkJtRVZXMW1keXdxM2tSc3F0alMwck9FR24zOEVWS3J0cE9v?=
- =?utf-8?B?bC9QVjgvOWREUVhWMWRxbGNxRnJLeHc2VGdIc1dMWHc5MjlZOWpJbmluMmRw?=
- =?utf-8?B?dUZRa09vMVIxYWRITCtUQU9hQkJxV2l2ZmxVTE5WeWRLT3Y0SXdDMndMMjJi?=
- =?utf-8?B?TUZZWnRqK0ZtYUxCTVBVN1Z4cXd1MCtFVzdEMkNCMHZ6OXJNQ3dLblhlSjU1?=
- =?utf-8?B?Qnp5dk94d3lqK3puOHlHekpJMS9ETFNwNVZFblN1Rll1bmpFNzh5YWpnNit4?=
- =?utf-8?B?UGpTSkhoWkMvRDZLSHRITlQweUtWYVVlSk9NYXpwTWZoN1dmWXQyK3FHOVJD?=
- =?utf-8?B?NkJESkJCVG12em1rVStaVlJXUnNVcUt6RDVrTEpwNDBXeHdBMzlWL09sNU1T?=
- =?utf-8?B?Yk54TlZPM2pXODh0OWdTWnh4T29WQU4xL0Nja1M3TWhTbjluYi9FVVVXT0sv?=
- =?utf-8?B?WkVqQS9yQkdOMk83eWNjaDhZQVJFb1I4SXV3N0V0dlVXaHEvNmpDWjdMNFVX?=
- =?utf-8?B?b1ByRTVrSE1NU1FRUnU2ZEgzRGk5ejkwTndoMU8ydk1hODRISytwMHFTZUxC?=
- =?utf-8?B?SmVKbFRScm8vK3J0ZlZZQnAwQkRTQlg0VUJXRjNORklkcDVaWmxRVlNQblNp?=
- =?utf-8?B?UXVYZzQ0bnZKOWxoRUVmMVpJSGxRd21FMDd4ZUhFRTByMkk1bW9EQzBPZnNT?=
- =?utf-8?B?Zy9vSVhyNjhyS3g1b0lWaXZKbVR4eVpJVmZZSCtVWTJSM3dTbXhxemRSTk83?=
- =?utf-8?B?NitpYzlGOExKQTg5RFMxT1VFZWxTZzRzT2ZwTEt2Mm1KYWVQeDdaT0RUeEx1?=
- =?utf-8?B?bmFPODJzL3R1RlNES2VVRHdDL0ZnWkQzSVFSZ083S25HYjF1YU00dEVjSlIr?=
- =?utf-8?B?WFEvWnY1czhBODNCdThlM0hlTkVoNC9TWnBISEV0WkJLOTl2YXpNZz09?=
-X-OriginatorOrg: cherry.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3717e1d6-5921-40b7-f494-08deee4e3eec
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7743.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2026 15:21:36.7018
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5e0e1b52-21b5-4e7b-83bb-514ec460677e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LOkG2YI2QZQe3bUpgYJ/m/4YoTg3h+/YILTqr2QVv3zi7l4NCvaZe2EZKYLVusgzg7niXgTctJF+PJ9uyVenBzGBMQNGF0ApZ7zIaFI1P+o=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR04MB10558
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANBya2oC/23NSwrCMBgE4KuUrI38eTXUlfcQF2keNkKtTWpQS
+ u9uUkEQuxyYb2ZG0QZvIzpUMwo2+eiHWw58VyHdqdvFYm9yRhRoDZIB7lWcbMCKtIK3TDuhAOX
+ yPVjnn+vQ6fzJ8dFerZ6KLo3Ox2kIr/UpkdL7G00EA64bLpwx3IFzx3Hc66FHZTHRbUOzEZI2k
+ oOgHODHsG3DsmmIdsBAMybN1yzL8gYu1ZChEwEAAA==
+X-Change-ID: 20260730-master-a1b54b3cf5a0
+To: Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Vincent Mailhol <mailhol@kernel.org>, kernel@pengutronix.de, 
+ Heiko Stuebner <heiko@sntech.de>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+ stable@vger.kernel.org, Cunhao Lu <1579567540@qq.com>
+X-Mailer: b4 0.15.2
 
-Hi Cunhao,
+While running CAN traffic on an RK3588 system, the driver repeatedly
+reported an inconsistent TX echo state:
 
-On 7/30/26 4:34 PM, Cunhao Lu wrote:
-> From: Heiko Stuebner <heiko.stuebner@cherry.de>
-> 
-> CAN0 is piped through the Q7 connector to the CAN header on the Haikou
-> baseboard, so enable support for it there.
-> 
-> At least on RK3588 Tiger, the CAN clocks default to 99 MHz, limiting
-> usable CAN bitrates without skew. The RK3568 errata documentation
-> mentions 300 MHz as the default frequency, so request the same rate to
-> allow more bitrates.
-> 
-> The CAN clock setup is common to the Tiger SoM regardless of which
-> carrier board exposes CAN0, so place it in rk3588-tiger.dtsi. Keep CAN0
-> disabled by default and enable it in rk3588-tiger-haikou.dts, where the
-> carrier board routes it to a transceiver.
-> 
+  rockchip_canfd fea60000.can can0: rkcanfd_tx_tail_is_eff:
+  echo_skb[0]=NULL tx_head=0x00060f7d tx_tail=0x00060f7c
 
-Reviewed-by: Quentin Schulz <quentin.schulz@cherry.de>
+The Rockchip CAN-FD driver completes transmissions by matching
+self-received frames with entries in the echo skb ring. A race between its
+transmit and completion paths can expose a partially updated echo entry,
+dereference an skb queued for NAPI, or stop the TX queue without a later
+completion to wake it.
 
-Thanks!
-Quentin
+The series aborts transmission when echo skb installation fails, retries the
+outstanding hardware buffer, and serializes the TX head, tail, echo ring,
+and command register sequence.
+
+The final series was tested on an RK3588 rev2.2 at 1 Mbit/s with 100,000
+extended CAN frames. The run triggered 138 erratum 6 retries and completed
+without drops, queue stalls or driver warnings. RK3588 does not enable
+erratum 12, so this test does not exercise that hardware workaround.
+
+---
+Changes in v4:
+- Split the can_put_echo_skb() ownership fix into a standalone patch outside
+  this series.
+- Use reverse Christmas tree order for the new local variables.
+- Use the same _unmasked suffix for the tx_head and tx_tail snapshots.
+- Link to v3: https://patch.msgid.link/20260730-master-v3-0-91cf030c337d@qq.com
+
+The standalone CAN core patch required by patch 1 was posted at:
+https://lore.kernel.org/linux-can/tencent_944DADCC4B42C8484EC01DA2B15F42132906@qq.com
+
+The v4 functional design and hardware test results are unchanged from v3.
+
+Changes in v3:
+- Make can_put_echo_skb() consume the skb on every error path and remove the
+  Rockchip-specific -EINVAL free.
+- Drop the redundant error message from rkcanfd_start_xmit().
+- Link to v2:
+  https://lore.kernel.org/linux-can/tencent_D802EB485A801362BF9F54130C0D990C6206@qq.com
+
+Changes in v2:
+- Document that the TX lock also serializes the erratum 12 MODE/CMD/MODE
+  sequence.
+- Add the erratum 12 commit to the Fixes tags of patch 3.
+- Add RK3588 extended-frame stress-test results.
+- Link to v1:
+  https://lore.kernel.org/linux-can/tencent_0E5C2332F801372DD0D4CB4C25B88C18040@qq.com
+
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Vincent Mailhol <mailhol@kernel.org>
+To: kernel@pengutronix.de
+To: Heiko Stuebner <heiko@sntech.de>
+Cc: linux-can@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-rockchip@lists.infradead.org
+
+---
+Cunhao Lu (3):
+      can: rockchip_canfd: prevent TX stall on echo skb failure
+      can: rockchip_canfd: retry the outstanding TX buffer
+      can: rockchip_canfd: serialize TX state and command writes
+
+ drivers/net/can/rockchip/rockchip_canfd-core.c |  1 +
+ drivers/net/can/rockchip/rockchip_canfd-rx.c   | 31 +++++++++++++++------
+ drivers/net/can/rockchip/rockchip_canfd-tx.c   | 37 +++++++++++++++++++++-----
+ drivers/net/can/rockchip/rockchip_canfd.h      |  4 ++-
+ 4 files changed, 57 insertions(+), 16 deletions(-)
+---
+base-commit: 11028ab62899e4191e074ee364c712b77823a9c4
+change-id: 20260730-master-a1b54b3cf5a0
+
+Best regards,
+--  
+Cunhao Lu <1579567540@qq.com>
+
