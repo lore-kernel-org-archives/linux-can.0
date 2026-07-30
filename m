@@ -1,45 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DA993AFAEB
-	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 10:30:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E71EC3F86E6
+	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 10:34:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785407404; cv=none; b=HaRYJ+80vqS1p9Fwjc5OkhhLKGXVkTRblBnor+lPa0L5vGb5ETR3VqKQ7MFLIZXqMJ9Ze3SoqYs/JP+TdhClHZhOqXxv/4r3i8zgo5LrKigUyn6u19YHrusZAJUvOoVAHuW2v5tQzbTY+Ma5zeKwqYrtrNWyj8bKhEfGzzoeKTk=
+	t=1785407680; cv=none; b=S1Jq0VAIbZo3EUqRVWge/tnNDm9wUQfzIKlUgbrbbzXnXU2WbjtqsJcHDh8/jIbcCfr/SmXNpxSg2kEBKLFAlismX94KkqZiAqEEMfulS9JJ727cxvdfAu7ycX50vhTMRb94GYXIEp6Qszd3WH7Odm+et8Upe03ng4s3V9R9reE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785407404; c=relaxed/simple;
-	bh=m2S50Rcz8v8aEad7m8sPn7qP4Iues+B6PAcsYLgf/iY=;
+	s=arc-20240116; t=1785407680; c=relaxed/simple;
+	bh=XJe/gFnxx4J+2r/BnG4CVJTZ9NrL3wfHYKKHKx3IWQs=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=RV6K/IovgsSEVEzwSCO4qwGrQgeraCZ2atNYoJZJnH5cfmskyvWYmEpx0a6G5czYpGT+jlpc1uMtMK9SqeyCli9xBP/zkep2qFaHKcEmY/Y5sW9U9Y6f4ysFpt34KL3KuaNhTaOw9lmARUX3XQRJbQUCnGdHo3Tk8AJF4qwASYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D1HY7r/T; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=NR30XPdk5IelONHhAvycUZq5xmYYXnGFFDLn17GJz/ali0vUllQfqQ+eoaROdvc84DZ/rUzUf/b6TZFI0/LiAO+Xas/qbr0ZUTgoodR4I6PUrjaeH6QJyLv+YKgEfkaKSNtgCRAtWkKvPDw/QhAOHxo+UOemtWWVIgqlOV0bcpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LiYXiFWb; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D1HY7r/T"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B04DA1F00A3D;
-	Thu, 30 Jul 2026 10:30:02 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LiYXiFWb"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59C321F000E9;
+	Thu, 30 Jul 2026 10:34:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785407403;
-	bh=3FmpBJ43aHHgs4pVaYJPzilWRmYLmUpvBDqK9Tke+xw=;
+	s=k20260515; t=1785407678;
+	bh=kUIfKAMkxeNRbUNkFQ5ikrODxag7SW93NH2wW2z5TEM=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=D1HY7r/TrK4pOLLQgmdimG87zi2hg/tx7TM/V2cbh2W0C8vFCcYgnqhjX90zjo3/w
-	 Q4aIbk/RmwaANG+nU+tn+bHl/oS2Wwx1Ns9KMNRNwmxN20s0+gUh3/J5kZZ9FvEam0
-	 MRrVBRLLP0JJrYiKpLBgyVpQth6NRhm1CP9cBTF8/IZ43FUJHhZJXb7tL0c0fOBUeQ
-	 YJXfnp2jCABt+opfZbx6rcwGoT3KfaDhUtG6ZpOUEre4dTuP6VVtzts6YEgN0iYLwT
-	 Co736IqA/46Ubi+fvMBK/h0JGttCeofvs72qcEP4q9WGP+EU3kjvr2sAb1zr1B9Ggv
-	 FxXq5o7g+5NFg==
+	b=LiYXiFWb0ttOZi7/5ABuFLMq9ml0MBGeuMXeG3Ob4EWUzbQIb8fRksnDgcQTflCWZ
+	 4AgI+2gQJbm+vnUCFx6Vm8JJatHDVXIG4C6yMmYgGpbcbAXT2qEoDR/Sx1ttvlkWVL
+	 OabUZn+8PTrnsvUEkz2L56jwftxtcHwZrjPXshgky9yr4HvwgYPyxjF/xvxnsF2qbw
+	 p7GMKoIEWlYOALMkHfaOPjMuTpt9yN352e1hkVTCxEAAKtAXLVVMMkzrDCUq1swdrX
+	 plwkGXFLScnozO6TqdauUC58paYkSf97iarFp3JUDj0H3z9lYDTt9flV165SUswYuO
+	 NTBWRhph4x49g==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net 20/20] can: ems_usb: validate CPC message lengths
+Subject: Re: [PATCH v2 2/3] can: rockchip_canfd: retry the outstanding TX
+ buffer
 Reply-To: sashiko-reviews@lists.linux.dev
-To: "Marc Kleine-Budde" <mkl@pengutronix.de>
-Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Marc
- Kleine-Budde" <mkl@pengutronix.de>
-In-Reply-To: <20260729102802.505168-21-mkl@pengutronix.de>
-References: <20260729102802.505168-1-mkl@pengutronix.de>
- <20260729102802.505168-21-mkl@pengutronix.de>
+To: "Cunhao Lu" <1579567540@qq.com>
+Cc: "Vincent Mailhol" <mailhol@kernel.org>, "Oliver Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, "Oleksij Rempel" <o.rempel@pengutronix.de>
+In-Reply-To: <tencent_9A8D6405DC23EAFB7D35E9D09CC93424F00A@qq.com>
+References: <20260730-master-v2-0-572974052400@qq.com>
+ <tencent_9A8D6405DC23EAFB7D35E9D09CC93424F00A@qq.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 30 Jul 2026 10:30:02 +0000
-Message-Id: <20260730103002.B04DA1F00A3D@smtp.kernel.org>
+Date: Thu, 30 Jul 2026 10:34:38 +0000
+Message-Id: <20260730103438.59C321F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -50,51 +50,81 @@ Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
 
 Pre-existing issues:
-- [High] TX context leak in ems_usb_start_xmit() error path.
+- [High] TOCTOU race in `rkcanfd_tx_tail_is_eff()` causes spurious NULL poi=
+nter errors in the kernel log and a Use-After-Free vulnerability.
 --
 
---- Patch [20]: [PATCH net 20/20] can: ems_usb: validate CPC message length=
-s ---
-commit 2db7f239e46ba1c12e2761c8d9fa8b163a632adc
-Author: Pengpeng Hou <pengpeng@iscas.ac.cn>
+--- Patch [2]: [PATCH v2 2/3] can: rockchip_canfd: retry the outstanding TX=
+ buffer ---
+commit 5e421e7397d8c64fe895d386c02cbed045a1e541
+Author: Cunhao Lu <1579567540@qq.com>
 
-can: ems_usb: validate CPC message lengths
+can: rockchip_canfd: retry the outstanding TX buffer
 
-ems_usb_read_bulk_callback() walks CPC messages packed in one USB
-receive buffer. Check that each declared message fits in the URB payload
-and require type-specific payloads to cover the fields used by handlers.
+rkcanfd_xmit_retry() originally operated with a TX FIFO depth of one. At
+that depth, the masked head and tail indices both select buffer 0, so using
+tx_head happened to select the correct buffer.
 
-Link: https://patch.msgid.link/20260706092752.79600-1-pengpeng@iscas.ac.cn
+After the FIFO depth was increased to two, tx_head instead identifies the
+next free buffer when one frame is outstanding. The erratum 6 workaround
+therefore requests transmission from the wrong buffer, leaving the
+outstanding echo entry incomplete and the netdev TX queue stopped.
 
-> diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-> index 9b25dda7c1838..24cf8f651f8f1 100644
-> --- a/drivers/net/can/usb/ems_usb.c
-> +++ b/drivers/net/can/usb/ems_usb.c
+Use tx_tail to select the outstanding buffer for retransmission.
 
-[ ... ]
-
-While reviewing this patch, I noticed a pre-existing issue in the
-ems_usb_start_xmit() error path:
-
-drivers/net/can/usb/ems_usb.c:ems_usb_start_xmit()
->	err =3D usb_submit_urb(urb, GFP_ATOMIC);
->	if (unlikely(err)) {
->		can_free_echo_skb(netdev, context->echo_index, NULL);
->
->		usb_unanchor_urb(urb);
->		usb_free_coherent(dev->udev, size, buf, urb->transfer_dma);
->
->		atomic_dec(&dev->active_tx_urbs);
+> diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/c=
+an/rockchip/rockchip_canfd-tx.c
+> index d2cbe25c46d6c..c4ecdc9411cc6 100644
+> --- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
+> +++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
+> @@ -57,8 +57,8 @@ static void rkcanfd_start_xmit_write_cmd(const struct r=
+kcanfd_priv *priv,
+> =20
+>  void rkcanfd_xmit_retry(struct rkcanfd_priv *priv)
+>  {
+> -	const unsigned int tx_head =3D rkcanfd_get_tx_head(priv);
+> -	const u32 reg_cmd =3D RKCANFD_REG_CMD_TX_REQ(tx_head);
+> +	const unsigned int tx_tail =3D rkcanfd_get_tx_tail(priv);
+> +	const u32 reg_cmd =3D RKCANFD_REG_CMD_TX_REQ(tx_tail);
+> =20
+>  	rkcanfd_start_xmit_write_cmd(priv, reg_cmd);
+>  }
 
 [Severity: High]
-This isn't a bug introduced by this patch, but does this error path
-permanently leak the transmission context slot?
+This is a pre-existing issue, but does the lockless access to tx_tail and
+echo_skb in rkcanfd_tx_tail_is_eff() introduce a race condition?
 
-If usb_submit_urb() fails here, it cleans up the URB and echo_skb, but
-doesn't reset context->echo_index to MAX_TX_URBS. After enough failures,
-could this cause context allocations to fail and wedge the transmission path
-indefinitely, causing the driver to always return NETDEV_TX_BUSY?
+drivers/net/can/rockchip/rockchip_canfd-tx.c:rkcanfd_tx_tail_is_eff() {
+...
+	tx_tail =3D rkcanfd_get_tx_tail(priv);
+	skb =3D priv->can.echo_skb[tx_tail];
+	if (!skb) {
+		netdev_err(priv->ndev,
+			   "%s: echo_skb[%u]=3DNULL tx_head=3D0x%08x tx_tail=3D0x%08x\n",
+			   __func__, tx_tail,
+			   priv->tx_head, priv->tx_tail);
+
+		return false;
+	}
+
+	cfd =3D (struct canfd_frame *)skb->data;
+
+	return cfd->can_id & CAN_EFF_FLAG;
+}
+
+The transmit path holds netif_tx_lock, which disables softirqs but leaves
+hardirqs enabled.
+
+If a hardware RX interrupt fires concurrently, it can process the loopback
+frame, free the echo_skb (setting it to NULL), and increment tx_tail.
+
+If the interrupt fires between reading tx_tail and accessing the array,
+could this read NULL and spuriously flood the kernel log with netdev_err?
+
+If the interrupt fires after the skb pointer is read but before skb->data
+is accessed, could the SKB be freed before it is used, leading to a
+use-after-free when evaluating cfd->can_id & CAN_EFF_FLAG?
 
 --=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260729102802.5051=
-68-1-mkl@pengutronix.de?part=3D20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260730-master-v2-=
+0-572974052400@qq.com?part=3D2
