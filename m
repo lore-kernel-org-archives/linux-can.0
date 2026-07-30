@@ -1,45 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A43193AF660
-	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 06:25:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 196483AEF55
+	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 06:26:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785392758; cv=none; b=LUIBVQXwzsfC9ja75d887XywYyQMU994G+Gpb9Z7hbeEoE4/UeuGxOD8BSpvW74LE/PIJ3H309YpfB1MB9EfRGDSNXmfaLJ++oHWhaEcELyb66fTt0SvUlkU8ZBxWysSHA0PyYIZx9xvl+aUuplc1ngdwXXHDFLtJVcED6RV2AU=
+	t=1785392794; cv=none; b=eBfGAtNIWYRzIUrYsXW5yxJHv7lSF3hBlaWQfD359UDQSKFRU4ackNj3KZevktPrVocU6hxT3ZBCxRLeLyC52PAljthSxaKu1vtnbqoOhU/V6SMTTbCOnLFnuKOoJzlzWfbCSt+yqN+Ktyy6qUdQ7JdiguFYHy0gxgSt3FzARNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785392758; c=relaxed/simple;
-	bh=52ehOqQTTcW2K3sJO7YbebhMqCwgQ6SjwmFxr4ITIyo=;
+	s=arc-20240116; t=1785392794; c=relaxed/simple;
+	bh=msb4YsztBdQg9IrNHC7LUkdbs97rzQ2yV6L2nHL/RIo=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=swU0Agobf8Ch0kMBBu/Es63BXzLT07f3RslV+PkqiUAPEbugNErw7zsquvH7lDjf4J5Jb9MTWb3lKobo7grKJHNpnaM6TvJ+fSwazGyZrcL63Eu5Klgg4G5RIAJQFJR9BTdk6B4iLgwF21Hsmb+QrJHEiZ1hFLsz7MWZ23T1p/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CRaRX2gw; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=C9MpmdYzew6Wpdg6a7/OcwtOwdCV8EUfhXznDsmRzTtAh4iam3qLpC/gUh5XMWnnQil8Z9tDEY+Mh/kKZ0/C/DcO/KCULL5gx2zo6fGXVRS7egTBCX/S8tAOZNBNrNUUBVwdv2JhUo7FlDlFFf7hqfNCAaG+Khgslm/5n1i1i3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JcXW2VsQ; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CRaRX2gw"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D32E31F000E9;
-	Thu, 30 Jul 2026 06:25:55 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JcXW2VsQ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DF4E1F000E9;
+	Thu, 30 Jul 2026 06:26:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785392756;
-	bh=ITFMDokrhlt4AknnvFXpUWua2q1mjG/w4z/zcFLd2rU=;
+	s=k20260515; t=1785392792;
+	bh=yrFozQtGXs1usd56LHVAk2wnCiJRoDtWX8jNfp+KGvE=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=CRaRX2gwrFIRkLM+4/LDa6KqRFTwNjm8QdWpIwiqLw//m80vmHLQhOg+yN02VDP77
-	 q1e1PF4PKut8E3YuEq/u5GHTEKbCd4yGyoCz4vwIF6uYWZ7V1Q+734j7zDMg3ufaOm
-	 nt4S2TQx9kSo8uPCk4hyRJkX5xhv236OdHXRX6PFFedhOENXHS7yHPrUA8OtpmJzeH
-	 7UBfWp7Jb5HnSu2k3D87PkdUiiY7mNiAqDtJjItge3ugV0ixluF6b9xGiMGYBrPsGC
-	 2R5iacD41gCWDhYtzuHZyDi3HNbY8Cy0EEKWe8czNXdy9KiTuHOXpI7zogqXANORB9
-	 k8Ic65F/SZp2A==
+	b=JcXW2VsQQjBkjgcHVBCq557MmoK0aVJjkgUqm1gb021ETuvChXNW3ZK5FRKBIvISg
+	 d+/gQTLbW163wDjlZFsazn2tpx9TW8Oa2IV2AwuKqKSpQdvUWRy0PZ9jNt/4e7UlZA
+	 pcCBZAJG9L5Igd7U4yypZi6pSn0/mse7dIIMG6p1WRbmNVUF73hrN9IGljAL4+0fqg
+	 pbWKtOSTaoOzbjVK3ct3p9Gwkjhge4fhbWd31+GbTKp/jr+OlvNkihdvf9GbqCnz7D
+	 vA6RAiEY/t6maEAi8rue7UGlFLpYI5J/Wp25h7lgDvVknimCrG8KRiGqMBiVCMNa+u
+	 GednoxqdhYqgA==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH 1/3] can: rockchip_canfd: prevent TX stall on echo skb
- failure
+Subject: Re: [PATCH 2/3] can: rockchip_canfd: retry the outstanding TX
+ buffer
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Cunhao Lu" <1579567540@qq.com>
-Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, "Marc Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org
-In-Reply-To: <tencent_D2D30ECD988C5C82D18863401362835F7606@qq.com>
+Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+In-Reply-To: <tencent_803FA8A6621A5D198504BC91BE003D442007@qq.com>
 References: <20260730-master-v1-0-6945fdd4f0ff@qq.com>
- <tencent_D2D30ECD988C5C82D18863401362835F7606@qq.com>
+ <tencent_803FA8A6621A5D198504BC91BE003D442007@qq.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 30 Jul 2026 06:25:55 +0000
-Message-Id: <20260730062555.D32E31F000E9@smtp.kernel.org>
+Date: Thu, 30 Jul 2026 06:26:31 +0000
+Message-Id: <20260730062632.6DF4E1F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -50,83 +50,57 @@ Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
 
 Pre-existing issues:
-- [High] Concurrent access to `echo_skb` in `rkcanfd_tx_tail_is_eff()` with=
-out locking leads to a Use-After-Free when the IRQ handler frees the SKB.
+- [High] This problem wasn't introduced by this patch, but there is a data =
+race on hardware registers RKCANFD_REG_MODE and RKCANFD_REG_CMD in rkcanfd_=
+start_xmit_write_cmd() between softirq and hard IRQ contexts.
 --
 
---- Patch [1]: [PATCH 1/3] can: rockchip_canfd: prevent TX stall on echo sk=
-b failure ---
-commit dae5727dde941410ecb97f7ed728561d5c939a22
+--- Patch [2]: [PATCH 2/3] can: rockchip_canfd: retry the outstanding TX bu=
+ffer ---
+commit 008079a4d397736133d0b75cae9351b6c5be751d
 Author: Cunhao Lu <1579567540@qq.com>
 
-can: rockchip_canfd: prevent TX stall on echo skb failure
+can: rockchip_canfd: retry the outstanding TX buffer
 
-rkcanfd_start_xmit() advances tx_head and requests transmission even when
-can_put_echo_skb() fails. This creates a pending TX entry without the echo
-skb that the RXSTX completion path needs to match the self-received frame.
-The entry cannot be completed, and the netdev TX queue can remain stopped
-after the two-entry software FIFO fills.
-
-Do not advance tx_head or request transmission if the echo skb cannot be
-installed. Account the frame as dropped and report the error. The
--ENOMEM and -EBUSY paths have already consumed the skb; explicitly free
-it on -EINVAL, where ownership remains with the caller.
+After the FIFO depth was increased to two, tx_head selects the next
+free buffer instead of the outstanding one, breaking the erratum 6
+workaround. This patch fixes the issue by using tx_tail to select
+the outstanding buffer for retransmission.
 
 > diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/c=
 an/rockchip/rockchip_canfd-tx.c
-> index 12200dcfd3389..d2cbe25c46d6c 100644
+> index d2cbe25c46d6c..c4ecdc9411cc6 100644
 > --- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
 > +++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
-> @@ -125,8 +125,18 @@ netdev_tx_t rkcanfd_start_xmit(struct sk_buff *skb, =
-struct net_device *ndev)
+> @@ -57,8 +57,8 @@ static void rkcanfd_start_xmit_write_cmd(const struct r=
+kcanfd_priv *priv,
 > =20
->  	frame_len =3D can_skb_get_frame_len(skb);
->  	err =3D can_put_echo_skb(skb, ndev, tx_head, frame_len);
-> -	if (!err)
-> -		netdev_sent_queue(priv->ndev, frame_len);
-> +	if (err) {
-> +		if (err =3D=3D -EINVAL)
-> +			dev_kfree_skb_any(skb);
-> +
-> +		ndev->stats.tx_dropped++;
-> +		if (net_ratelimit())
-> +			netdev_err(ndev, "%s: failed to put echo skb: %pe\n",
-> +				   __func__, ERR_PTR(err));
-> +
-> +		return NETDEV_TX_OK;
-> +	}
-> +	netdev_sent_queue(priv->ndev, frame_len);
+>  void rkcanfd_xmit_retry(struct rkcanfd_priv *priv)
+>  {
+> -	const unsigned int tx_head =3D rkcanfd_get_tx_head(priv);
+> -	const u32 reg_cmd =3D RKCANFD_REG_CMD_TX_REQ(tx_head);
+> +	const unsigned int tx_tail =3D rkcanfd_get_tx_tail(priv);
+> +	const u32 reg_cmd =3D RKCANFD_REG_CMD_TX_REQ(tx_tail);
+> =20
+>  	rkcanfd_start_xmit_write_cmd(priv, reg_cmd);
 
 [Severity: High]
-This is a pre-existing issue, but I noticed a potential use-after-free
-related to echo_skb accesses in rkcanfd_tx_tail_is_eff() when called from
-rkcanfd_start_xmit() via rkcanfd_get_effective_tx_free().
+This isn't a bug introduced by this patch, but does this call expose a race
+condition on the hardware registers between softirq and hardirq contexts?
 
-Does rkcanfd_tx_tail_is_eff() need locking to safely access echo_skb?
+rkcanfd_start_xmit() runs in softirq context and calls
+rkcanfd_start_xmit_write_cmd(), which performs non-atomic register writes
+to RKCANFD_REG_MODE. If a hardware RX interrupt preempts execution between
+these writes, rkcanfd_irq() (hardirq) will call rkcanfd_xmit_retry()
+which also calls rkcanfd_start_xmit_write_cmd().
 
-drivers/net/can/rockchip/rockchip_canfd-tx.c:rkcanfd_tx_tail_is_eff() {
-    ...
-	tx_tail =3D rkcanfd_get_tx_tail(priv);
-	skb =3D priv->can.echo_skb[tx_tail];
-	if (!skb) {
-        ...
-	}
+The hardirq will restore priv->reg_mode_default, so when the softirq
+resumes, RKCANFD_REG_CMD is written without the required SPACE_RX_MODE
+bit set, bypassing the RK3568 Erratum 12 workaround. Could this lead to
+hardware misbehavior under heavy load?
 
-	cfd =3D (struct canfd_frame *)skb->data;
-    ...
-}
-
-If a concurrent TX completion interrupt on another CPU executes
-rkcanfd_rxstx_filter() and rkcanfd_handle_tx_done_one(), wouldn't it
-consume this same SKB and set echo_skb[tx_tail] to NULL?
-
-If the SKB is then queued to the NAPI offload subsystem and immediately
-processed and freed on the remote CPU, could the original thread continue
-and dereference the now-freed SKB when accessing skb->data?
-
-> =20
->  	WRITE_ONCE(priv->tx_head, priv->tx_head + 1);
+>  }
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260730-master-v1-=
-0-6945fdd4f0ff@qq.com?part=3D1
+0-6945fdd4f0ff@qq.com?part=3D2
