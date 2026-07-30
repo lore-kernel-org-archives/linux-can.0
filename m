@@ -1,180 +1,124 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE8813F822B
-	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 10:29:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42E2A3D3486
+	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 10:30:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785407401; cv=none; b=koWr0IxECd/VQw1xGwK3Qkzq7FAMpffX4kZdiQEzmNXoy7OmyEbK5/u4lfK1IAkfVoT7mH/CHldPqBz7Hz4nPxYg+1dQZpdkmvwXT7feE0vgB/Q7lj5K4mJmnyRVoB7i+WmWg4U+696ylyuiXZCwXzVzFmSPfsQDWSuK4EpPvU8=
+	t=1785407403; cv=none; b=DCw1DCu4YUBmqUTNGmUYnzOVUjwuYrxPEa8nAG2YNgD337Q0lAU5PKix47IFghZA4oabX4ViItsvfF95x3LIkIVK5gsMHBBY6hE363iLDTBJnp6redoPgKj/mWulQoP18kZtfbTrdzPvk9wXDyfAYST1pfLAiZYnRrLDP8894DI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785407401; c=relaxed/simple;
-	bh=e9Rg1J8cInYQosOEiajWdY+WWMQHJzl5HeWfS7/yZn4=;
+	s=arc-20240116; t=1785407403; c=relaxed/simple;
+	bh=uBDGqqK8DDeK2+vYhsKNRLpIv4O8adU9OisiyP2w9Ls=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=b11ALCW56cVzw2uUfN6j5xK8VYRl/ScxcJ1GGkluNPTGnhtwZ/n+BVGZeTOaw/wl8VHErHNki7lNVF8oLHQ7juWHFpYGsZcNaduPLnOLjHG8MU4V+TIqsPBjLt3y5kY9SaSvVv49jX2mUwP80zle+GtG1MyqMStKXFV8LjmqxC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gHWdg/qn; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=hTAiy9aZiZOYWCMIATzzy0xZbnVTS2g5mXDCrUFZwixdEmJuetTCdEGIbnIl2bsy++M70utYqAYkxjs6zx6gY5xzFBzADm2w11CP0IAZQ6oJogW40VbbdVoSfXpnFMz5TKsZ0PzPB+wlqm9D7DTYRufqKQgBlx7Xy0V0FDIrFtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IvmJu9Y5; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gHWdg/qn"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 396DF1F00A3D;
-	Thu, 30 Jul 2026 10:29:59 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IvmJu9Y5"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A55EC1F00A3A;
+	Thu, 30 Jul 2026 10:30:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785407399;
-	bh=cR62ffhUDEM0mlpuR2oJLy3llw2hZMWbI3CHRGEaMHw=;
+	s=k20260515; t=1785407401;
+	bh=F3V3DS6jcjr8RwVcizQNAanOsdmz6BbTu2Ajr2vkNqQ=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=gHWdg/qnza/iJGRQDZXdt1IOmtbC94vUIaoUFpG6poObyz7UJsFIQi7ipRyqAwvlK
-	 /QbYBap+usshvRFXZlPOZqr70p+EAsjkPUzPvxeLpfQbUeQZ+c6K8XCt4BuzhdanG+
-	 +iq9ZGkeSiExKLvMxhExBC+kwOraobASq7X7qFssv3LJfxO1n8lAIY3V3rK7J/Ra22
-	 jYv3e3/SmM6Z7rq8p6Kt6sW+1ycHOo5m0pqvR5ddob7m1C4kbdIOiHJYF4O+7JI7NQ
-	 4EtafNxYTEE4X3gtXH+0ZYNqkYEqYS1Qndiqfa1EIcjtL+nFYwFYT/3gqCQ4OS5moK
-	 eTpndlGTMFI2g==
+	b=IvmJu9Y5qLRgSya6dlZTAkosFavo/Lmwkxv+JGLq18LI9jdwJbbTnJANv7TAYAA33
+	 jgdBFR4jg3dBYRGacfRKxm3jsDp9HdlPkAo4tg27mzFAniW/8ax1KsczSN3owu+Ydj
+	 3BegxoodGPeur0TC4cTU1awqcnJsTY2J2lvYEpvBUS6vepPJ2nrMuara1sM8xpK/DV
+	 oCtI+iAbz5ith6EbNR2BmZ88CTsTMMQy0VRS7RX7kVEYiKy0IvHkno0VstPrZKhulN
+	 YNhhIEwlmAK5bBJfELsKnCSHsvH6xSiPgXU8SD4cTFiOUx6gzm4ZidcRMuyF8eM6B8
+	 F8pY9P2EIKz7g==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net 16/20] can: softing: fw_parse(): validate firmware
- record spans
+Subject: Re: [PATCH net 17/20] can: c_can: c_can_chip_config(): keep
+ controller in init mode until bittiming is configured
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Marc Kleine-Budde" <mkl@pengutronix.de>
-Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>
-In-Reply-To: <20260729102802.505168-17-mkl@pengutronix.de>
+Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org
+In-Reply-To: <20260729102802.505168-18-mkl@pengutronix.de>
 References: <20260729102802.505168-1-mkl@pengutronix.de>
- <20260729102802.505168-17-mkl@pengutronix.de>
+ <20260729102802.505168-18-mkl@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 30 Jul 2026 10:29:58 +0000
-Message-Id: <20260730102959.396DF1F00A3D@smtp.kernel.org>
+Date: Thu, 30 Jul 2026 10:30:00 +0000
+Message-Id: <20260730103000.A55EC1F00A3A@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
-Thank you for your contribution! Sashiko AI review found 3 potential issue(=
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
 
 Pre-existing issues:
-- [High] Unaligned memory dereference in `fw_parse()` triggers alignment fa=
-ults.
-- [High] Truncated or malformed firmware causes silent failure by returning=
- 0 on error paths.
-- [High] Unaligned MMIO accesses to DPRAM via `iowrite32` cause hardware ex=
-ceptions.
+- [High] c_can_set_bittiming() inadvertently resets C_CAN_TEST_REG, breakin=
+g loopback and listen-only modes.
 --
 
---- Patch [16]: [PATCH net 16/20] can: softing: fw_parse(): validate firmwa=
-re record spans ---
-commit dd9e23c1084e29145c02ec85df264fc5faf868da
-Author: Pengpeng Hou <pengpeng@iscas.ac.cn>
+--- Patch [17]: [PATCH net 17/20] can: c_can: c_can_chip_config(): keep con=
+troller in init mode until bittiming is configured ---
+commit 43c179b24ec630378edf5e7aee260bd073975b00
+Author: Lucas Martins Alves <lucas.alves@lumal21.com.br>
 
-can: softing: fw_parse(): validate firmware record spans
+can: c_can: c_can_chip_config(): keep controller in init mode until bittimi=
+ng is configured
 
-This commit improves bounds checking when parsing softing firmware records
-to prevent out-of-bounds reads and writes. It passes the firmware end to
-the parser and validates the source record length before doing DPRAM staging
-copies.
+c_can_chip_config() was programming C_CAN_CTRL_REG without CONTROL_INIT,
+which may allow the controller to become active before
+c_can_set_bittiming() finishes.
 
-Link: https://patch.msgid.link/20260722044347.2708-1-pengpeng@iscas.ac.cn
+Link: https://patch.msgid.link/20260714164839.771123-1-lucas.alves@lumal21.=
+com.br
 
-> diff --git a/drivers/net/can/softing/softing_fw.c b/drivers/net/can/softi=
-ng/softing_fw.c
-> index 721df91cdbfbc..282570daf3efe 100644
-> --- a/drivers/net/can/softing/softing_fw.c
-> +++ b/drivers/net/can/softing/softing_fw.c
-
-[ ... ]
-
-> @@ -114,14 +114,21 @@ static int fw_parse(const uint8_t **pmem, uint16_t =
-*ptype, uint32_t *paddr,
->  	 * endianness & alignment.
->  	 */
->  	mem =3D *pmem;
-> +	/* A record needs an 8-byte prefix and a 2-byte checksum. */
-> +	if (mem > limit || limit - mem < 10)
-> +		return -EINVAL;
-> +
->  	*ptype =3D le16_to_cpup((void *)&mem[0]);
->  	*paddr =3D le32_to_cpup((void *)&mem[2]);
->  	*plen =3D le16_to_cpup((void *)&mem[6]);
-
-[Severity: High]
-This is a pre-existing issue, but does using le16_to_cpup() and
-le32_to_cpup() on an unaligned byte stream cause alignment faults?
-
-Firmware records are packed without padding, meaning mem could rest on an o=
-dd
-address. The leXX_to_cpup functions directly dereference the pointer, which
-can trigger a fatal alignment fault exception (kernel oops) on architectures
-that lack hardware unaligned access support. Should fw_parse() use
-get_unaligned_le16() and get_unaligned_le32() here instead?
-
-> +	if (*plen > limit - mem - 10)
-> +		return -EINVAL;
-> +
->  	*pdat =3D &mem[8];
->  	/* verify checksum */
-> -	end =3D &mem[8 + *plen];
-> -	checksum[0] =3D le16_to_cpup((void *)end);
-> -	for (checksum[1] =3D 0; mem < end; ++mem)
-> +	record_end =3D &mem[8 + *plen];
-> +	checksum[0] =3D le16_to_cpup((void *)record_end);
-> +	for (checksum[1] =3D 0; mem < record_end; ++mem)
->  		checksum[1] +=3D *mem;
-
-[ ... ]
-
-> @@ -279,6 +291,12 @@ int softing_load_app_fw(const char *file, struct sof=
-ting *card)
->  		/* work in 16bit (target) */
->  		sum &=3D 0xffff;
+> diff --git a/drivers/net/can/c_can/c_can_main.c b/drivers/net/can/c_can/c=
+_can_main.c
+> index 3702cac7fbf0f..b3b321d9ce68d 100644
+> --- a/drivers/net/can/c_can/c_can_main.c
+> +++ b/drivers/net/can/c_can/c_can_main.c
+> @@ -597,20 +597,20 @@ static int c_can_chip_config(struct net_device *dev)
+>  		return err;
 > =20
-> +		if (card->pdat->app.offs > card->dpram_size ||
-> +		    len > card->dpram_size - card->pdat->app.offs) {
-> +			ret =3D -EINVAL;
-> +			goto failed;
-> +		}
-> +
->  		memcpy_toio(&card->dpram[card->pdat->app.offs], dat, len);
->  		iowrite32(card->pdat->app.offs + card->pdat->app.addr,
->  				&card->dpram[DPRAM_COMMAND + 2]);
+>  	/* enable automatic retransmission */
+> -	priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_ENABLE_AR);
+> +	priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_ENABLE_AR | CONTROL_INIT);
+> =20
+>  	if ((priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY) &&
+>  	    (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK)) {
+>  		/* loopback + silent mode : useful for hot self-test */
+> -		priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_TEST);
+> +		priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_TEST | CONTROL_INIT);
+>  		priv->write_reg(priv, C_CAN_TEST_REG, TEST_LBACK | TEST_SILENT);
+>  	} else if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK) {
+>  		/* loopback mode : useful for self-test function */
+> -		priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_TEST);
+> +		priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_TEST | CONTROL_INIT);
+>  		priv->write_reg(priv, C_CAN_TEST_REG, TEST_LBACK);
+>  	} else if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY) {
+>  		/* silent mode : bus-monitoring mode */
+> -		priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_TEST);
+> +		priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_TEST | CONTROL_INIT);
+>  		priv->write_reg(priv, C_CAN_TEST_REG, TEST_SILENT);
+>  	}
+> =20
 
 [Severity: High]
-This is a pre-existing issue, but does using iowrite32() on unaligned
-offsets cause hardware exceptions?
+This isn't a bug introduced by this patch, but doesn't the subsequent call =
+to
+c_can_set_bittiming() at the end of c_can_chip_config() unconditionally cle=
+ar
+the CONTROL_TEST bit?
 
-These iowrite32() calls target DPRAM addresses shifted by unaligned offsets
-like DPRAM_COMMAND + 2 and DPRAM_COMMAND + 6. Standard 32-bit I/O accessors
-mandate 4-byte alignment on the target memory address. Executing an
-unaligned MMIO write triggers a hardware alignment fault or bus error on
-non-x86 architectures. Should these operations be split into sequential
-16-bit writes using iowrite16()?
+c_can_set_bittiming() executes this:
+	priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_CCE | CONTROL_INIT);
 
-[Severity: High]
-This is a pre-existing issue, but does a truncated or malformed firmware
-blob cause a silent failure by returning 0?
+Because this write does not include CONTROL_TEST, it gets cleared. Accordin=
+g to
+the Bosch C_CAN hardware manual, clearing the Test bit instantly resets the
+Test Register to its default value (0x00).
 
-In both softing_load_fw() and softing_load_app_fw(), if the firmware blob
-does not contain an EOF record or an entrypoint record, the parsing loop
-terminates without encountering an error:
-
-softing_fw.c:softing_load_app_fw() {
-    ...
-    while (mem < end) {
-        ret =3D fw_parse(&mem, end, &type, &addr, &len, &dat);
-        if (ret)
-            goto failed;
-        ...
-    }
-    if (!type_end || !type_entrypoint)
-        goto failed;
-    ...
-failed:
-    ...
-    return ret;
-}
-
-Because fw_parse() returns 0 on success, ret is left at 0 when the loop
-finishes naturally. The code then detects the missing record and jumps to
-the failed label, but since ret is 0, it incorrectly returns success to
-the caller. This leaves the device uninitialized. Could ret be set to an
-error code like -EINVAL before the goto?
+Does this silently erase the loopback and listen-only modes configured here,
+causing the controller to incorrectly operate in normal mode and potentially
+cause active disruption on a live CAN bus?
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260729102802.5051=
-68-1-mkl@pengutronix.de?part=3D16
+68-1-mkl@pengutronix.de?part=3D17
