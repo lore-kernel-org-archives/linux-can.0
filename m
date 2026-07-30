@@ -1,120 +1,191 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CE123B27FA
-	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 10:29:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC7403F822B
+	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 10:29:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785407392; cv=none; b=ttBjv9Xze5t5esVo3IOkbe7MELdEsXwVTp7JtTJWAsjuGBQK24weSJL2dzX9VmWMRXoeYrSxhCVpm4DwIdz+qQkL+XnLFHADdas9SLO8Dbv93EefIxZoVL23XLU97L/EkrjpCIlXdJatFlng5KcXK8rfvQoLjRVpjCR8sgw/xWg=
+	t=1785407393; cv=none; b=AuXVwdpEto3Zl8V9QJFsBC5rYHp16GzalnPDMH0h9P7lk2MY9ajoozMdGrJcRFe41Hg9Du7RyLFN7nhCSNIt/KoClNMLtlwPhsjsrlvTb/1pW5DTbJQxeKlMbkjpUDoeznv8Esky+UEoh+mmq1L5F3HPw0GintTR7DN8+IK2CGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785407392; c=relaxed/simple;
-	bh=fn6KzkaDth5+Me5LsFf4BDdnWknoEs2hvXPsSfD0aok=;
+	s=arc-20240116; t=1785407393; c=relaxed/simple;
+	bh=1WGt0JIlf0i6dygolFGVsjtZh3HOA0YI8lQVdUUQE+I=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=mAygVgNjEipnN9KXRv+tFpdQDk9sVnPM0BG1JDNGVxlUNggBQA8xkAX9qFAoiztKw9dHLjhOWIJgek4vQP9rI+KSKpwKnyI8Rb4wXgOu1Hd8EjRLXXm/kQalcdR3J7G08OdLPkEuIIoPRQdlusccCtDgQZOgL2n1dVO65mKYEyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CrMglCH/; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=Rf8jQFdQg+9778oBkejdNEYPYBGg3s+jMIc/TAVPpkyxCL+6kRrc9R6OQc7c3f1/j/k3P4uA/iT0FvbCROm9+9vS5yzZHsr4HHQNjTusDpF4vd1LMldjlfceRO3W1NF+rNZH69oeHl60pfZslr0crbilsCwjT/VUn7PCOREaHLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hNtw+RAG; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CrMglCH/"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 110641F00A3F;
-	Thu, 30 Jul 2026 10:29:51 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hNtw+RAG"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DF481F00A3A;
+	Thu, 30 Jul 2026 10:29:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785407391;
-	bh=r7/fn/nDyoyXZ18NHpqEe5BinctKJW3NQy2cKObxARE=;
+	s=k20260515; t=1785407392;
+	bh=+9uGFadWFevcn4o6OMNdTtunvNS80NaIO904twLnMwk=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=CrMglCH/OgIiG8ceQZf1vqQJ3rbbF32ms/IJtI9ZAH99F8n/tPoFL/9Md0+9uvv+N
-	 e25gx9CJ8MSgPqfQZycb1P8kA7nTnFATROAyCUI3jBMlTLvMc958xpN4Q2UZnckxJb
-	 OqKsIrhqD54hAL/JyxOOfkxZ76WR/1KnZR1IRWs6TZl9ov0q1V0i+H/PsWE3uNCwxT
-	 PMdzFkhXN/I/Gwwxb6zqjx+aROSUCUIJzagYRxAa45w9LvS+F3rDs2ZMJbzYwy0M8t
-	 Ut5OxWM2sVH7OPuDWIKCuLhG3EYjjuSHCRKvwrRN6EFt/dtsZYc+Fx1ju3OnOhJgS9
-	 9zQg1gkS7Z9bA==
+	b=hNtw+RAGRwjRxl3buXIKHqdbUxMxyviZH7lGjgf0sG9RUV+NtOJP++NENoBlEq0jf
+	 61UGcEKM3ZBP8MB7J3nI8wTrgZc7W33j76TQRjMxMnEmXqzKxUDeP4DQwfyMRauas2
+	 fQQ/zpTAKsigMBvzDz4VY3c9yXxDxvAj+6BpCpvrSdilNcdYayVoQxLTyzCcZuhxDi
+	 YuGKoDJVHFn5oukIqBcvG42SfVCw3oqcqxxmSI0DJglHO1uc5yuLgwEQYgd4pI6vL8
+	 JXbXre7AyuxxXJF3hiN6yY5T+SkIdmExl5Stq/eIFGyGa3JdKkO3Oxp8806XhW3xEJ
+	 Yp/XLuCMi1yGw==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net 08/20] can: ctucanfd: use self-test mode for
- PRESUME_ACK
+Subject: Re: [PATCH net 10/20] can: peak_usb: add bounds check for USB
+ channel index
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Marc Kleine-Budde" <mkl@pengutronix.de>
-Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20260729102802.505168-9-mkl@pengutronix.de>
+Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>
+In-Reply-To: <20260729102802.505168-11-mkl@pengutronix.de>
 References: <20260729102802.505168-1-mkl@pengutronix.de>
- <20260729102802.505168-9-mkl@pengutronix.de>
+ <20260729102802.505168-11-mkl@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 30 Jul 2026 10:29:50 +0000
-Message-Id: <20260730102951.110641F00A3F@smtp.kernel.org>
+Date: Thu, 30 Jul 2026 10:29:51 +0000
+Message-Id: <20260730102952.3DF481F00A3A@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+Thank you for your contribution! Sashiko AI review found 3 potential issue(=
 s) to consider:
 
 Pre-existing issues:
-- [High] NAPI poll loop permanently deadlocks on SKB allocation failure bec=
-ause it returns less than `quota` without calling `napi_complete_done()`.
+- [High] Unvalidated CAN payload length from the USB packet causes a heap b=
+uffer overflow when copying data into the SKB and reading from the URB buff=
+er.
+- [High] Inadequate bounds checking allows a NULL pointer dereference of un=
+initialized channel device pointers.
+- [High] Race condition during probe exposes the network interface before d=
+river initialization is complete, leading to a NULL pointer dereference.
 --
 
---- Patch [8]: [PATCH net 08/20] can: ctucanfd: use self-test mode for PRES=
-UME_ACK ---
-commit 2ad480a34ed756c09679dabe564744f0df8a351d
-Author: Avi Weiss <thnkslprpt@gmail.com>
+--- Patch [10]: [PATCH net 10/20] can: peak_usb: add bounds check for USB c=
+hannel index ---
+commit bda9ca94a61ede6bd59945cb6b8e4a5d2a8b5017
+Author: James Gao <jamesgao5@outlook.com>
 
-can: ctucanfd: use self-test mode for PRESUME_ACK
+can: peak_usb: add bounds check for USB channel index
 
-Use self-test mode for CAN_CTRLMODE_PRESUME_ACK so transmitted
-frames can complete without receiving an ACK.
+The channel control index ctrl_idx is derived from rx->len which comes
+directly from a device USB payload. The mask 0x0f allows values 0-15, but
+the array size of usb_if->dev[] is only 2. Values 2-15 cause heap
+out-of-bounds read, eventually causing kernel panic in the IRQ context.
 
-ACK forbidden mode prevents the controller from acknowledging
-received frames and does not implement the presume-ack behavior.
+Link: https://patch.msgid.link/TYWPR01MB8559DBAAAA6A7F410400329CF0012@TYWPR=
+01MB8559.jpnprd01.prod.outlook.com
 
-Link: https://patch.msgid.link/20260722192726.230729-1-thnkslprpt@gmail.com
-
-> diff --git a/drivers/net/can/ctucanfd/ctucanfd_base.c b/drivers/net/can/c=
-tucanfd/ctucanfd_base.c
-> index 10ebcc13ea656..07d4aa43c700a 100644
-> --- a/drivers/net/can/ctucanfd/ctucanfd_base.c
-> +++ b/drivers/net/can/ctucanfd/ctucanfd_base.c
-> @@ -340,8 +340,8 @@ static void ctucan_set_mode(struct ctucan_priv *priv,=
- const struct can_ctrlmode
->  			(mode_reg & ~REG_MODE_FDE);
+> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/ca=
+n/usb/peak_usb/pcan_usb_pro.c
+> index aefcded8e12a8..b6be8c19e537f 100644
+> --- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
+> @@ -534,12 +534,18 @@ static int pcan_usb_pro_handle_canmsg(struct pcan_u=
+sb_pro_interface *usb_if,
+>  				      struct pcan_usb_pro_rxmsg *rx)
+>  {
+>  	const unsigned int ctrl_idx =3D (rx->len >> 4) & 0x0f;
+> -	struct peak_usb_device *dev =3D usb_if->dev[ctrl_idx];
+> -	struct net_device *netdev =3D dev->netdev;
+> +	struct peak_usb_device *dev;
+> +	struct net_device *netdev;
+>  	struct can_frame *can_frame;
+>  	struct sk_buff *skb;
+>  	struct skb_shared_hwtstamps *hwts;
 > =20
->  	mode_reg =3D (mode->flags & CAN_CTRLMODE_PRESUME_ACK) ?
-> -			(mode_reg | REG_MODE_ACF) :
-> -			(mode_reg & ~REG_MODE_ACF);
-> +			(mode_reg | REG_MODE_STM) :
-> +			(mode_reg & ~REG_MODE_STM);
-> =20
->  	mode_reg =3D (mode->flags & CAN_CTRLMODE_FD_NON_ISO) ?
->  			(mode_reg | REG_MODE_NISOFD) :
+> +	if (ctrl_idx >=3D ARRAY_SIZE(usb_if->dev))
+> +		return -EINVAL;
+> +
+> +	dev =3D usb_if->dev[ctrl_idx];
+> +	netdev =3D dev->netdev;
 
 [Severity: High]
-This is a pre-existing issue, but I noticed a potential napi deadlock in
-ctucan_rx_poll() when reviewing this file.
+This isn't a bug introduced by this patch, but does checking against
+ARRAY_SIZE() fully protect against NULL pointer dereferences here?
 
-If skb allocation fails due to memory pressure, ctucan_rx() returns 0:
+If a single-channel adapter is used, usb_if->dev[1] might be left
+uninitialized (NULL). If a device sends URBs for channel 1, wouldn't it
+bypass the ARRAY_SIZE() check and cause a kernel panic when dereferencing
+dev->netdev?
 
-drivers/net/can/ctucanfd/ctucanfd_base.c:ctucan_rx_poll() {
-	while (framecnt && work_done < quota && res > 0) {
-		res =3D ctucan_rx(ndev);
-		work_done++;
-		framecnt =3D FIELD_GET(REG_RX_STATUS_RXFRC, ctucan_read32(priv, CTUCANFD_=
-RX_STATUS));
-	}
+There appears to be an identical inadequate bounds check in the FD variant
+of the driver at pcan_usb_fd_decode_canmsg().
+
+[Severity: High]
+This is a pre-existing issue, but does this code overflow can_frame->data[]
+when copying the payload?
+
+Looking further down in pcan_usb_pro_handle_canmsg():
+
+    can_frame->len =3D rx->len & 0x0f;
+    ...
+    } else {
+        memcpy(can_frame->data, rx->data, can_frame->len);
+    }
+
+Since rx->len & 0x0f allows values up to 15, and can_frame->data[] is only =
+an
+8-byte array, could a malicious device send an oversized payload length and
+overflow can_frame->data[]?
+
+> +
+>  	skb =3D alloc_can_skb(netdev, &can_frame);
+>  	if (!skb)
+>  		return -ENOMEM;
+
 [ ... ]
-	if (!framecnt && res !=3D 0) {
-		if (napi_complete_done(napi, work_done)) {
-[ ... ]
 
-When res is 0, the loop breaks early and work_done is less than quota. Howe=
-ver,
-because res is 0, the check if (!framecnt && res !=3D 0) evaluates to false,
-which prevents napi_complete_done() from being called.
+> @@ -573,14 +579,20 @@ static int pcan_usb_pro_handle_error(struct pcan_us=
+b_pro_interface *usb_if,
+>  {
+>  	const u16 raw_status =3D le16_to_cpu(er->status);
+>  	const unsigned int ctrl_idx =3D (er->channel >> 4) & 0x0f;
+> -	struct peak_usb_device *dev =3D usb_if->dev[ctrl_idx];
+> -	struct net_device *netdev =3D dev->netdev;
+> +	struct peak_usb_device *dev;
+> +	struct net_device *netdev;
+>  	struct can_frame *can_frame;
+>  	enum can_state new_state =3D CAN_STATE_ERROR_ACTIVE;
+>  	u8 err_mask =3D 0;
+>  	struct sk_buff *skb;
+>  	struct skb_shared_hwtstamps *hwts;
+> =20
+> +	if (ctrl_idx >=3D ARRAY_SIZE(usb_if->dev))
+> +		return -EINVAL;
+> +
+> +	dev =3D usb_if->dev[ctrl_idx];
+> +	netdev =3D dev->netdev;
+> +
+>  	/* nothing should be sent while in BUS_OFF state */
+>  	if (dev->can.state =3D=3D CAN_STATE_BUS_OFF)
+>  		return 0;
 
-Does this leave the napi instance in the scheduled state without being
-on the core's poll list, permanently deadlocking the receive path until the
-interface is restarted?
+[Severity: High]
+This is a pre-existing issue, but is there a race condition during probe
+that could expose the network interface before driver initialization is
+complete?
+
+In peak_usb_create_dev(), register_candev() is called before the interface
+is fully initialized:
+
+drivers/net/can/usb/peak_usb/pcan_usb_core.c:peak_usb_create_dev() {
+    ...
+    err =3D register_candev(netdev);
+    ...
+}
+
+If userspace immediately brings the interface up (e.g., via udev),
+pcan_usb_pro_start() is called and dereferences pdev->usb_if:
+
+drivers/net/can/usb/peak_usb/pcan_usb_pro.c:pcan_usb_pro_start() {
+    ...
+    if (pdev->usb_if->dev_opened_count =3D=3D 0) {
+    ...
+}
+
+Since pdev->usb_if is only allocated and assigned later in
+pcan_usb_pro_init(), wouldn't this cause a NULL pointer dereference?
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260729102802.5051=
-68-1-mkl@pengutronix.de?part=3D8
+68-1-mkl@pengutronix.de?part=3D10
