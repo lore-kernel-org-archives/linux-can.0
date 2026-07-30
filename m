@@ -1,99 +1,80 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Received: from out162-62-57-64.mail.qq.com (out162-62-57-64.mail.qq.com [162.62.57.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21EE238DC5E;
-	Thu, 30 Jul 2026 12:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF64642DA48;
+	Thu, 30 Jul 2026 12:39:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785414876; cv=none; b=X0MfSL//XWsnX3vWJtx+YlW+ZbWnjqeGRCLmTJdHCD/OMpt4dR0oNwPXoaQto6gZbOSi6VaY0d43KkPKzAsZOCh6/ySsRas/8SlklPQBGy0q7vIaP+VScLgOw4iepKMn24zt2+KxGJWiF42JLHPGP1LSDzGTGg/1QHiijbCi2dU=
+	t=1785415213; cv=none; b=fIsxe4PVHYEtNpc666hjDUEk86pKBmCPhIPbSUAJAwbMld0knqW86Gtr0dZ3gXcRXlGx9FBwHq7qWnZLFkNIhyu+IzOdUkKefzfrZEnO4knrVEXnpZvohT4FrSpmYWobEFgZBSv6/TjI/hf1ZU0rgzoMndD03u1r2lMdI5WdgcA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785414876; c=relaxed/simple;
-	bh=RFrp0RayYwYqGCQBvirrb0HTb8/I5e+z34dfu08+4Hg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kZB0JZ2ZgLbDp4JC/jYCtws/avIfMey93dUY8EU7Thu3Ocx/tdSwzNgvoQOUsdulXJhtIgyiUqUY4aElKtgSJKl+HKSLd/xbRhIGpOzwuxjEC72LAlxZsDJJyrsRbzAhrsXq84NEMIP5F9MJPyEJNE7vjGOxkZ2C8oSHZOa7i8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 256F52028A8;
-	Thu, 30 Jul 2026 14:34:30 +0200 (CEST)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1wpPy2-00232R-07;
-	Thu, 30 Jul 2026 14:34:30 +0200
-Received: from pengutronix.de (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id C48E5576F25;
-	Thu, 30 Jul 2026 12:34:29 +0000 (UTC)
-Date: Thu, 30 Jul 2026 14:34:29 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Michel Alex <Alex.Michel@wiedemann-group.com>
-Cc: "mailhol@kernel.org" <mailhol@kernel.org>, 
-	"linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] can: flexcan: honor Device Tree alias for CAN netdev
- index
-Message-ID: <20260730-black-rat-of-tempest-408383-mkl@pengutronix.de>
-References: <PR3P250MB0308352F7BC03C6D0AC7E7E6A9C92@PR3P250MB0308.EURP250.PROD.OUTLOOK.COM>
+	s=arc-20240116; t=1785415213; c=relaxed/simple;
+	bh=6dOH+TfUL4DYiYVvqDYePxfLIBEPe3+uTngEu84Kchk=;
+	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
+	 References:In-Reply-To; b=uPQqUZfYL7tI3PR+HjOtE1hc5f24zb1uW8rzYjH1oCozQBEsRN99slRj4aiZUY27KWMiDrYCeoC35i1y+nsgu8FZaBucj9HFnsb/xTMYBUESqvsWTztuJObU+Qgi8eAgPvXejNsQLfbTlKUHnkaXANiY6Zd7whGm4pf8V0nZ7J0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=UlhsuYmv; arc=none smtp.client-ip=162.62.57.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="UlhsuYmv"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1785415183; bh=6dOH+TfUL4DYiYVvqDYePxfLIBEPe3+uTngEu84Kchk=;
+	h=From:To:Cc:Subject:Date:References:In-Reply-To;
+	b=UlhsuYmv7yMEsXAjFGqZvjpxJnFEwFt9j+nfSea9QinpemgyNX/cjEiot/npVW9SA
+	 aAbW7RoVc6xBv+GGuVvTACLhO6Tu60safPmEgojc9RH6g0RqCzkA3LTlh1VpO6psd9
+	 5zhO8DhlP9ZSWJeMagYStYPnse3UWGre7nR53p9c=
+X-QQ-XMRINFO: Mp0Kj//9VHAxzExpfF+O8yhSrljjwrznVg==
+X-QQ-XMAILINFO: M6SBtOKpYQFc6/SqSlCZJwcYFzT17HCWNyXinNYju8qs0SlvZX+Vow8Wou8P/B
+	 BVi0NjpUPuMcEMI3NPrlFWiFKtEAKiF952iP22L6OGSyRrY4O2D/onys8rXUaCse6x7Vuih2KYWhm
+	 JB1QY7Lxlgb/5wZKbkQv0FJiKKUDIU+wuLtPZBayz+5nG9SEFL7cntbOHyXTBBej1c3Qe0vlndSQX
+	 xwfuCiDWzfSy8lXryy9gNLKywzZ/sO85s4vTZYH/1lAEdLWo+J6UyAWAqvV6wn35WAIIi0QLuNatm
+	 XflhByjDnvdMfN7qb4rrPeSQTS5RwB8V0JSk4IR5r+kDQ/7ScFcnwTZzgqcD2TUFMVyIuKnWSprqE
+	 ZsFaHR79tIhOrqcS+fl8UTvv6dTVj/4JV+66hrdKceFXjJfJOeGqbGn6/tzOzDyLfbWSFZYOsTEdH
+	 p83g/8dEWM/pW1FpIj8LJ6WRZ6C+PTQe0W6rqQ305FIE3HehRaz8bjCDamK7NQWrVoMlJdtvhTm8T
+	 ZaYSHZ4YmzvSnhTZdiP8GH7EaCgOdKtJUOucFOCNuChu46gKeiA+hNJpPLiDXkhIOIsiodUZKKhgt
+	 RX8d40jWyekDvwzafNjtmbgi5TDW9A7G8x9m1qF9VTMMa3C/LurOHw/XIX2f8ObJubBpsejXMFWzE
+	 vwl6Vt6WjPc6mjYyRIT8c/WV+D5kc61VN7QB5L9HZ7b5RiXMqsj22loXXib1b11itU+B9zJYHFb8M
+	 7zeFBJEO9wLFyfq53N60R2sOSPjX+VF77pWmWOZRexnA31kqgJnsc7OQBNxfYvc54ingPmP0/iJqs
+	 wkf66Mmu8bJvH4gYSEO8BqJdTjlIhgv7rXubAoNA/gPvHdmUU9HA19MIvg22mWXLoOcDqA+cQ/Ykx
+	 +vtNbHTrQYwnDygjzrq2YmVN502ONS5rjUCfrnzI/L2b6PEihDASyiclcXTL9Bvfh/g8DzRpqw64A
+	 FJVHHi0Wc1g3Ypr0eWRL5+p3XO1AEzyDmg6rlpYwznGzHcil3zPaMbNHPzZnUtBLu9J2UfYhvJhib
+	 hPS6aUkAOZM27Aq+Qc8cjo7emGA==
+From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
+To: "=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?=" <mkl@pengutronix.de>
+Cc: "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?VmluY2VudCBNYWlsaG9s?=" <mailhol@kernel.org>, "=?utf-8?B?SGVpa28gU3R1ZWJuZXI=?=" <heiko@sntech.de>, "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, "=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, "=?utf-8?B?c3RhYmxl?=" <stable@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] can: rockchip_canfd: prevent TX stall on echo skb failure
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ph4iustrdthgx54c"
-Content-Disposition: inline
-In-Reply-To: <PR3P250MB0308352F7BC03C6D0AC7E7E6A9C92@PR3P250MB0308.EURP250.PROD.OUTLOOK.COM>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Date: Thu, 30 Jul 2026 20:39:42 +0800
+X-Priority: 3
+Message-ID: <tencent_31EFA63F9A19198A04D8919580584442BF07@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
+References: <tencent_D802EB485A801362BF9F54130C0D990C6206@qq.com>
+ <tencent_5E44473FC626379A34998A84DF11E6000807@qq.com>
+	<20260730-secret-soft-swallow-4da108-mkl@pengutronix.de>
+In-Reply-To: <20260730-secret-soft-swallow-4da108-mkl@pengutronix.de>
+X-QQ-mid: xmsezb41-0t1785415182tuairg04l
 
+SGkgTWFyYywKCk9uIDMwLjA3LjIwMjYsIE1hcmMgS2xlaW5lLUJ1ZGRlIHdyb3RlOgo+IENh
+biB5b3UgdXBkYXRlIGNhbl9wdXRfZWNob19za2IoKSB0byBhbHdheXMgZnJlZSB0aGUgc2ti
+IGluIHRoZSBlcnJvciBjYXNlPwoKWWVzLiBJbiB2MywgSSB3aWxsIHVwZGF0ZSBjYW5fcHV0
+X2VjaG9fc2tiKCkgdG8gYWxzbyBmcmVlIHRoZSBza2Igb24KLUVJTlZBTCwgc28gdGhhdCBp
+dCBjb25zaXN0ZW50bHkgY29uc3VtZXMgdGhlIHNrYiBvbiBldmVyeSBlcnJvciBwYXRoLgpJ
+IHdpbGwgcmVtb3ZlIHRoZSBjb3JyZXNwb25kaW5nIC1FSU5WQUwgc3BlY2lhbCBjYXNlIGZy
+b20gdGhlIFJvY2tjaGlwCkNBTi1GRCBkcml2ZXIuCgo+IElzIHRoaXMgZXJyb3IgbWVzc2Fn
+ZSBuZWVkZWQ/IEluIHRoZSAtRUlOVkFMIGNhc2UgY2FuX3B1dF9lY2hvX3NrYigpCj4gYWxy
+ZWFkeSBlbWl0cyBhbiBlcnJvci4gSWYgc2tiIGFsbG9jYXRpb24gSSB0aGluayBpbiAtRU5P
+TUVNIGNhc2UgdGhlCj4ga2VybmVsIGFscmVhZHkgdGhyb3dzIGFuIGVycm9yLCByaWdodD8K
+CkFncmVlZC4gVGhlIGFkZGl0aW9uYWwgZHJpdmVyIGVycm9yIG1lc3NhZ2UgaXMgcmVkdW5k
+YW50LiBJIHdpbGwgcmVtb3ZlCml0IGluIHYzIGFuZCByZXRhaW4gb25seSB0aGUgZHJvcHBl
+ZC1mcmFtZSBhY2NvdW50aW5nIGFuZCBlcnJvciBoYW5kbGluZy4KClRoYW5rcyBmb3IgdGhl
+IHJldmlldy4KCkJlc3QgcmVnYXJkcywKQ3VuaGFv
 
---ph4iustrdthgx54c
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] can: flexcan: honor Device Tree alias for CAN netdev
- index
-MIME-Version: 1.0
-
-On 30.07.2026 14:24:16, Michel Alex wrote:
-> The FlexCAN driver currently relies on dynamic netdev numbering when
-> registering CAN interfaces. This makes board-level name assignment
-> difficult when users want stable or swapped interface names (for example,
-> mapping physical CAN1 to can0 and CAN0 to can1).
->
-> Read the DT alias ID with of_alias_get_id(np, "can") during probe and,
-> when present, pre-set the netdev name to can%d before
-> register_candev(). This lets the existing Linux alias mechanism drive
-> the final interface name.
->
-> With this change, systems can control naming from DT aliases, while
-> keeping existing behavior unchanged when no CAN alias is provided.
-
-NAK, please use udev/systemd/... to give networking devices stables names.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---ph4iustrdthgx54c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCamtE0wAKCRDMOmT6rpmt
-0m6VAPoDOxPQYxt1IPpOtFea13IpYnLmMUQ0q6pIQRNmQx7sVgD9Hs5sr8Pc/gmR
-mBaoIw9aNaQ3pMqq0QunXsYX6n/BgwQ=
-=+8Ll
------END PGP SIGNATURE-----
-
---ph4iustrdthgx54c--
