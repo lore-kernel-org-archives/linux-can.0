@@ -1,122 +1,150 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 484CB3DDAFC
-	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 10:29:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41A5D3D9DDF
+	for <linux-can@vger.kernel.org>; Thu, 30 Jul 2026 10:29:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785407397; cv=none; b=dSm3Lyl/PJG9wBkOEdHSSNFHzsFvv/INx5zYBIgJrdk8luFk2SXaivDi0eXIT235YneGRTBjDY2xu4ezssdWoE5y9pOlASVwDESCTPK6DPQrv0MYqBkvznDE/Yq6HeCMmCEMVi+zPrEX42ncOCvTR1qVJKuWWRzDQ58zsDc5H0U=
+	t=1785407399; cv=none; b=Xb5b1bRjMaDXWdCuD40TPBXproh3n4FLRY+ae928ZEK8ciRlx9GN4VGABYkzElRAJqu6x5zq5c/aa6vE1P4j8ns3sj1PV4knf/ZdcDIcCuB63acaVLXiq67iZFGn67g/iqI8JAsxycmnlBCJFbctTjBqz3Yps9QtUCARpQgGDvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785407397; c=relaxed/simple;
-	bh=XADRYSkxJzl1Ooq6X9Bd4G4EVyKsFd2aDaZxnlFqHp0=;
+	s=arc-20240116; t=1785407399; c=relaxed/simple;
+	bh=I6bfxhfxUEMC5x5e+aRVMpTq39ymomS0ysIZnZVFEOQ=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=cgndKtgPf4prEWy6hNNPmyLS5SxVysKOD/mLJLsQjeiq3twZaybvMfEZxW84QnVRf76RyrEizq9bQh3C3r9zriTBbKvrfyM4PpLtFjXuKsLVXXP3XjHZg5rm7a4WDmnXcrEjqG/q7gEAV3qPOWLVc5T7vYTcRVW6fvtLTrdu4GM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=haMwH9VB; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=jMv2bRFZKH4ISPEN2leY3IDZuFw66r6Ac0LXPpGOlKgJ9FkU79PuSGsJFVToW7aHBWVgXr79wfOOVDYTKpSaKLpuNpwu4zFI17lVloxpdg/8LUBjAFolx3ON9T2XDvkylEkaWG/XH2YVF76NZ3YTP/JaG2MLPKcQsTnGLV95Sc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D/LFWbWI; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="haMwH9VB"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACD311F00A3D;
-	Thu, 30 Jul 2026 10:29:55 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D/LFWbWI"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50B9D1F00A3A;
+	Thu, 30 Jul 2026 10:29:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785407396;
-	bh=zwx+KKhRSGs8dqoXMqeUwb1DyAj7ZRjkTYR47ZoZ3HM=;
+	s=k20260515; t=1785407397;
+	bh=7z/HUDbkSDHeLW5wEV+wJB9GV4BARSJ2wh7ISMv7X18=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=haMwH9VB1b36Tz3zFB1/dqHehR5DOqa8EPMfzDrui21nWgOHaRUqNrsDjWK02ORmm
-	 4AyPCGkXXqywAfq+0YmF4Dn28D1OMpiLWIBX2rEObJ9rcbMpYWUzkfsNcfWFVf2B3X
-	 wJUb32sL0gEIl7l224e8vXIOcb16UUJsMIqfaXKuXIWgEaR+mVuwNd39Q/990hksWO
-	 jRT8zXRVba6tdfv3mPbvf0Ow63h+PvgOCAXlJG/b/uQuxCIobsdMXdLg92q4HsbySZ
-	 hZQnZSgmDL4djiN1PHNFPodzJbD6lsfCx86EDfJ5dyyLTX8/3RNw46gcKX+YD8dVcb
-	 DqqGYHivR3DFg==
+	b=D/LFWbWIvoVcHb3A50klFIVmDXlR2t5qsj0HsLSuAW8jt8JQnGjuDV+Xi0dqpPh6y
+	 02gD8vXhedmFZZzQ1j/iwABSM3E2T5jsAClmz/CiMTrX/eTBCjm9I/gfozPbJMCk46
+	 2SwDT6G01CcDXK0Oe6BZP5N3JYm+JrCaGjnJPydKNzKbqZKSIWexzFKyuCcmI2uN2w
+	 tWrf08UYusnn9wTpeSE1td4SQW+Q5WEAzf1oe+h5TI7VSUw/iJ5dsRuDKPSZWGKchH
+	 tt5zoEaLMVupe7Ce0dBlom0+0uvHm4sMmqLgm8VVQN7HBnm6eRmZbBgBnsPIrZHL2F
+	 WsPH5B7yBg+Ag==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net 14/20] can: kvaser_usb_leaf:
- kvaser_usb_leaf_wait_cmd(): validate received command extents
+Subject: Re: [PATCH net 15/20] can: rcar_canfd: change the initializing flow
+ for clocks and resets
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Marc Kleine-Budde" <mkl@pengutronix.de>
-Cc: "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>
-In-Reply-To: <20260729102802.505168-15-mkl@pengutronix.de>
+Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org, "Vincent
+ Mailhol" <mailhol@kernel.org>
+In-Reply-To: <20260729102802.505168-16-mkl@pengutronix.de>
 References: <20260729102802.505168-1-mkl@pengutronix.de>
- <20260729102802.505168-15-mkl@pengutronix.de>
+ <20260729102802.505168-16-mkl@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 30 Jul 2026 10:29:55 +0000
-Message-Id: <20260730102955.ACD311F00A3D@smtp.kernel.org>
+Date: Thu, 30 Jul 2026 10:29:56 +0000
+Message-Id: <20260730102957.50B9D1F00A3A@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+Thank you for your contribution! Sashiko AI review found 2 potential issue(=
 s) to consider:
 
 Pre-existing issues:
-- [High] Processing a zero-length extended command or encountering a bulk e=
-ndpoint with a zero wMaxPacketSize causes an infinite loop and CPU soft loc=
-kup.
+- [High] If `rcar_canfd_global_init()` fails, `rcar_canfd_probe()` incorrec=
+tly calls `rcar_canfd_global_deinit()`, causing a kernel panic from accessi=
+ng registers with disabled clocks, followed by a double-disable of clocks a=
+nd double-assertion of resets.
+- [High] If `register_candev()` fails during channel probe, the network dev=
+ice is freed, but the global context retains a dangling pointer to it, whic=
+h is subsequently dereferenced and double-freed during the driver probe err=
+or teardown.
 --
 
---- Patch [14]: [PATCH net 14/20] can: kvaser_usb_leaf: kvaser_usb_leaf_wai=
-t_cmd(): validate received command extents ---
-commit ad6fd8163961ebd7ee69b192c06c6c10803d720a
-Author: Pengpeng Hou <pengpeng@iscas.ac.cn>
-Subject: can: kvaser_usb_leaf: kvaser_usb_leaf_wait_cmd(): validate receive=
-d command extents
+--- Patch [15]: [PATCH net 15/20] can: rcar_canfd: change the initializing =
+flow for clocks and resets ---
+commit 4a859a221c1b4bd83a846c702809583b08a6af18
+Author: Tu Nguyen <tu.nguyen.xg@renesas.com>
 
-The wait and bulk receive paths walk variable-length commands from a
-USB buffer. A nonzero command shorter than CMD_HEADER_LEN can still be
-dispatched, and the wait path copies a matching command into a fixed
-caller-owned struct kvaser_cmd using the device-provided length.
+can: rcar_canfd: change the initializing flow for clocks and resets
 
-Link: https://patch.msgid.link/20260722042221.44066-1-pengpeng@iscas.ac.cn
+This patch updates the initialization order for clocks and resets to match
+the hardware manual, ensuring clocks are supplied before resets are
+deasserted. It also updates the teardown path in rcar_canfd_global_deinit()
+to mirror this new init ordering.
 
-> diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/n=
-et/can/usb/kvaser_usb/kvaser_usb_leaf.c
-> index df737cfc5ea0c..a876c7819b81c 100644
-> --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-> +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-> @@ -691,13 +691,22 @@ static int kvaser_usb_leaf_wait_cmd(const struct kv=
-aser_usb *dev, u8 id,
->  				continue;
->  			}
+Link: https://patch.msgid.link/20260625135216.130450-1-biju.das.jz@bp.renes=
+as.com
+
+> --- a/drivers/net/can/rcar/rcar_canfd.c
+> +++ b/drivers/net/can/rcar/rcar_canfd.c
+[ ... ]
+> @@ -2068,14 +2068,14 @@ static int rcar_canfd_global_init(struct rcar_can=
+fd_global *gpriv)
 > =20
-> -			if (pos + tmp->len > actual_len) {
-> +			if (tmp->len < CMD_HEADER_LEN ||
-> +			    tmp->len > actual_len - pos) {
+>  fail_mode:
+>  	rcar_canfd_disable_global_interrupts(gpriv);
+[ ... ]
+> +fail_ram_clk:
+> +	clk_disable_unprepare(gpriv->clk_ram);
+> +fail_clk:
+> +	clk_disable_unprepare(gpriv->clkp);
+>  	return err;
+>  }
 
 [Severity: High]
-This isn't a bug introduced by this patch, but might the logic directly abo=
-ve
-this bounds check still allow an infinite loop?
+This isn't a bug introduced by this patch, but does the probe error path
+cause a panic and double-disable of clocks here?
 
-If a USB device provides a bulk IN endpoint with wMaxPacketSize =3D=3D 0, t=
-he check
-for tmp->len =3D=3D 0 behaves as follows:
+When rcar_canfd_global_init() fails, it correctly cleans up its state and
+disables the clocks. However, in rcar_canfd_probe(), the failure jumps to
+the fail_mode label:
 
-			if (tmp->len =3D=3D 0) {
-				pos =3D round_up(pos + 1,
-					       le16_to_cpu
-						(dev->bulk_in->wMaxPacketSize));
-				continue;
-			}
+rcar_canfd_probe() {
+    ...
+    err =3D rcar_canfd_global_init(gpriv);
+    if (err)
+        goto fail_mode;
+    ...
+fail_mode:
+    rcar_canfd_global_deinit(gpriv, false);
+    ...
+}
 
-Here, round_up(pos + 1, 0) evaluates to 0, which resets pos to 0. Since this
-executes before the new tmp->len < CMD_HEADER_LEN check, the loop would fai=
-l to
-advance and hang the process.
+Since the clocks were already disabled by the initialization failure path,
+calling rcar_canfd_global_deinit() will access hardware registers with
+disabled clocks via rcar_canfd_disable_global_interrupts(). Can this trigger
+a precise or imprecise external abort? It also looks like it will redundant=
+ly
+assert the resets and disable the clocks a second time.
 
-This same pattern appears in kvaser_usb_leaf_read_bulk_callback() modified
-later in this patch.
+[Severity: High]
+This is also a pre-existing issue, but could this probe error cleanup seque=
+nce
+trigger a double-free on a channel probe failure?
 
-Additionally, a similar pre-existing issue seems to be present in the
-kvaser_usb_hydra driver variant. In kvaser_usb_hydra_wait_cmd() and
-kvaser_usb_hydra_read_bulk_callback(), if an extended command specifies a l=
-ength
-of 0, kvaser_usb_hydra_cmd_size() returns 0. The loop then increments pos b=
-y 0,
-failing to advance and causing a soft lockup.
+In rcar_canfd_channel_probe(), the device pointer is saved to the global
+array before registration:
 
-[ ... ]
+rcar_canfd_channel_probe() {
+    ...
+    gpriv->ch[priv->channel] =3D priv;
+    err =3D register_candev(ndev);
+    if (err) {
+        ...
+        goto fail_candev;
+    }
+    ...
+fail:
+    free_candev(ndev);
+}
+
+If register_candev() fails, the memory is freed but the dangling pointer
+remains in the global array. Back in rcar_canfd_probe(), the error is caught
+and rcar_canfd_channel_remove() is called for all channels in the mask. Does
+the cleanup loop find this dangling pointer and try to operate on the
+already-freed network device, causing a use-after-free and double-free?
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260729102802.5051=
-68-1-mkl@pengutronix.de?part=3D14
+68-1-mkl@pengutronix.de?part=3D15
