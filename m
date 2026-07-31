@@ -1,128 +1,160 @@
-Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.48])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 483742DC79F;
-	Fri, 31 Jul 2026 13:17:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD68C416856
+	for <linux-can@vger.kernel.org>; Fri, 31 Jul 2026 13:28:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785503841; cv=none; b=BwBY/xrLQyE5jGA5Xp/h2FXyPw+1r2FxakxEStnyNxJaUzBl+ifOQVkhptUCE8JstWoCrti6nlydkajeHHRzz2ScV0kwQZwq4720DkrJanzdRWKfDdvN8bm+TrYT4PcrWkIZeDnsL2PQ28kRznNLd+PSosNgytFD2VTtJJS6b+E=
+	t=1785504502; cv=none; b=R6RRMwg/vVyBv5L1IGrWk4PqJkfqJ/nYja2OKqz1CeM7znOFc8b5T+VZZ5UYKY+cN1K+zUOBjz0fgiwt1TqLhFYh+EBB3IWYUh8+SH0mxT4X1KDQE4P6Uolq/9QFPiLb0xbbr9TOuOfx1M9JRQMBUW5lPctP6eFkOyBim9DMq0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785503841; c=relaxed/simple;
-	bh=gW+tvRQPk481HdTwPz8zkkWSMpWsfa6tS8dyetXXOrU=;
-	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
-	 References:In-Reply-To; b=Azw91NbN15UMqic5Wp2K10zR2RsNNhHCpdetryRMsdtroeczP1kZmMEbIcLOw3xznRKqlWV3h3WgclcN4OGAag7HWqsb3HOXT2pDrFIaYqgmpSFJ3wpR5YWwwqvhK9cg4iwMqbvdD2JHyR58B/smC8+wY8Zho+C01uc4yoDxvSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=ewV+8ARl; arc=none smtp.client-ip=43.163.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	s=arc-20240116; t=1785504502; c=relaxed/simple;
+	bh=fpcaIxPuVrxf2SXLLcU8HIJp4tjJOQ8yjUS2gHayy4U=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=L3w1xsz6bzgC8s2++Cj8Ybl3AIxHKh1jUvtw/ZzCW66tevsv3o9FcC56UBE3xmtwsQ7ydso06JqEW0hZjwaisGt5zl1QUXIaKrv45/0+aHNjQV6jPFuyAr69xLrpfc2RU8WHc7P8NFsURBevpwKhkB295nJh4LGwxmsbcMmCoMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KQY65muR; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="ewV+8ARl"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1785503832; bh=gW+tvRQPk481HdTwPz8zkkWSMpWsfa6tS8dyetXXOrU=;
-	h=From:To:Cc:Subject:Date:References:In-Reply-To;
-	b=ewV+8ARlCn7ZAMKcE79lizjisbfeU2oczTzpc0TFED9y8m2W5Q9/Sq0Wrs36zYZrc
-	 3KprUZeCURqox5ekUEh57UwE1pr//ENACRGlP1R3xkcvtfF4RxWEQf78d4TQIyv10p
-	 oIpqCvlVFU1JsSWvz2CdzmS/FEQOpiNblyhtLYfI=
-X-QQ-XMRINFO: OD9hHCdaPRBwH5bRRRw8tsiH4UAatJqXfg==
-X-QQ-XMAILINFO: MhgqsjsLyB9lgglpvTRWkq4RtQwA360U8xUnh2PTRxSK+CQBsNgNq1J1FIRxgq
-	 r218z1HFIuJ9IRcNN5zmmaMt/+Swh/pTr+m/FmKmAGPYysj39rXWqFCEG9LDTiz/QS0L5Mt5TDq12
-	 hK8AZIhchdjCP3Y10d3BrioMfVynEtIteUUrAJiEbx36wL1yuA4tr38v1xSg9J7UUf1Ph5rDVJocu
-	 S6a9oD38B8YhsvvwpOCwbJ0ru4XfWofU59ZHPAeP6AylfuSJ12t2gbay4LCiC8XwWLe+g6Vi2xqdn
-	 JYy2A4ISNpdjEcdoKmWT2gTo9aKVmZ3rNFqtnFOd015HhD8uqW/btnIuxVBiaBD1fK3slEOiya8QP
-	 /Os9yMk4OvS+HTRwyI/WWIf+GQ8vyyt8p/gOiAimMRtVh6g0oOztKvqd/VlWM+hxGtpglIfa9U7aa
-	 7Q0AoYrM0EzA9A0jqNO9IFtTr+m6ZzpV40hmGYh06zr49fvC+ri5ridNtnHELqCFSf1YxxZWNzx4t
-	 1s/g6FdM8Mj7tzrqc5yKJJMu9TSMyFUCcme2wdjPZoHq2vZw2zgq01YMDjKrR/KLF9Ijm5V7WuaCq
-	 fW04sxTl5GSnFtdwlK/6uRAx/UkQwWDt+GqomKu8rjDu59JJPVRTbcLP5kLn1q2/TzuVyL0XnVBJe
-	 9rfEdH/l1xFLif18WpiWQXP4mvFIdnR60a7wrKY+xZ0M5pV74OBX4QC6nP5H8L1E8Y7FB4EB6lrk+
-	 HmMzyPoe8rq+3thLJUbXhMtf87Ho+akGM06EE0d/kC52iRq/pEmQmwyupb7BTcMlD31DNapja5TPH
-	 8LFV1Eg/QqmyhzBhJUSuSN6ZpLJEzgUN5s3Ex7lbSNBJmrrJHS4P1ewnVzJHkxck0rrHt7r/p4d9G
-	 kERH+8anl8MLPpkrwcCnsS/tdDnL9YXtZEDChwvx3W+p1rxxb3DUG9GNrlvp+w9GJxSOU4cGxAa4Q
-	 O1wHEbJ4Q29JHduTzjfV24N/6YaJc5OAzeS490Y2lDYDP/jXcAq6Jh3Dbn3iyP9uOWHRUZDUFFKvy
-	 vzpgMqmCwmtuZWjMOuk/9eRMhA9ajLpmh5waTNNmqut1OxsvFQDd0YfNaVutwqokygINboFFp86cn
-	 9D8=
-From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
-To: "=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?=" <mkl@pengutronix.de>
-Cc: "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?VmluY2VudCBNYWlsaG9s?=" <mailhol@kernel.org>, "=?utf-8?B?Um9iIEhlcnJpbmc=?=" <robh@kernel.org>, "=?utf-8?B?S3J6eXN6dG9mIEtvemxvd3NraQ==?=" <krzk+dt@kernel.org>, "=?utf-8?B?Q29ub3IgRG9vbGV5?=" <conor+dt@kernel.org>, "=?utf-8?B?SGVpa28gU3R1ZWJuZXI=?=" <heiko@sntech.de>, "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?ZGV2aWNldHJlZQ==?=" <devicetree@vger.kernel.org>, "=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, "=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, "=?utf-8?B?SGVpa28gU3R1ZWJuZXI=?=" <heiko.stuebner@cherry.de>
-Subject: Re: [PATCH v6 2/4] can: rockchip: add RK3588 CAN support
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KQY65muR"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 905A01F000E9;
+	Fri, 31 Jul 2026 13:28:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1785504501;
+	bh=cuONB14UTucuWfW40owyzEC0QS9bS3FtyMWrU0eWAjs=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To;
+	b=KQY65muRGOOXISmvBOn4jIhMHgrqLhgyO/xNlqPzzJ4yuV6xJ/Yk0zMuB7AcQG5PD
+	 moPooY2XdFYoFd+2nNcXkdtdUzFlQPvFUzYvEl2zWSyBzhX7a9ihOwQ+rip1iNBUHh
+	 2pTYMbqk73VMobBnyBmSq1xWBQnBasoI/dHF7bxn/zH16pEKQppeAVugwjnJZAm7tg
+	 2k1m5FV4jAqUnPxDQN1rZwGaj+sUX7H47rh+pU/mMq3gQnYdlLoS8WucBLarI0hnUq
+	 y5jC7Ohbcemzj++XgvYWQ/tAugIpj7tw8ihwcBt6ho4TMqsy7NrqnBJC1zkVPs1oWw
+	 b3A4AVCx65Kqw==
+Message-ID: <eef5b125-b229-4579-aec5-026755c60132@kernel.org>
+Date: Fri, 31 Jul 2026 15:28:18 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Date: Fri, 31 Jul 2026 21:17:10 +0800
-X-Priority: 3
-Message-ID: <tencent_5AC853C017A2AE1F5B13110D854C79C2FF06@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <tencent_7BAA0052C402BFFD26291A64198084E39107@qq.com>
- <tencent_207E464D12344B3228096E23A001D6882508@qq.com>
- <20260731-tall-camouflaged-earthworm-e1a7d0-mkl@pengutronix.de>
- <tencent_A3698A465C4621E164443B0005D1CC6FAE05@qq.com>
-	<20260731-precise-functional-lobster-cd779f-mkl@pengutronix.de>
-In-Reply-To: <20260731-precise-functional-lobster-cd779f-mkl@pengutronix.de>
-X-QQ-mid: xmsezb41-0t1785503830tg7jpmm29
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: CAN-XL frame to not CAN-XL enabled interface
+From: Vincent Mailhol <mailhol@kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>, linux-can@vger.kernel.org,
+ Oliver Hartkopp <socketcan@hartkopp.net>, sashiko-bot@kernel.org
+References: <20260731-agile-electric-cockatrice-295bb8-mkl@pengutronix.de>
+ <345456c4-907e-4d2f-bb24-4023d2898c94@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=mailhol@kernel.org; keydata=
+ xjMEZluomRYJKwYBBAHaRw8BAQdAf+/PnQvy9LCWNSJLbhc+AOUsR2cNVonvxhDk/KcW7FvN
+ JFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbEBrZXJuZWwub3JnPsKZBBMWCgBBFiEE7Y9wBXTm
+ fyDldOjiq1/riG27mcIFAmdfB/kCGwMFCQp/CJcFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcC
+ F4AACgkQq1/riG27mcKBHgEAygbvORJOfMHGlq5lQhZkDnaUXbpZhxirxkAHwTypHr4A/joI
+ 2wLjgTCm5I2Z3zB8hqJu+OeFPXZFWGTuk0e2wT4JzjgEZx4y8xIKKwYBBAGXVQEFAQEHQJrb
+ YZzu0JG5w8gxE6EtQe6LmxKMqP6EyR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDl
+ dOjiq1/riG27mcIFAmceMvMCGwwFCQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8V
+ zsZwr/S44HCzcz5+jkxnVVQ5LZ4BANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
+In-Reply-To: <345456c4-907e-4d2f-bb24-4023d2898c94@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-SGkgTWFyYywKCj4gPsKgPsKgQ2FuwqB5b3XCoGF0dGFjaMKgdGhlwqBUREPCoHRvwqB0aGXC
-oENBTsKgZnJhbWV3b3JrP8KgU2VlwqBjb21taXTCoDVlMTY2MzgxMGUxMQo+ID7CoD7CoCgi
-Y2FuOsKgbWNwMjUxeGZkOsKgZml4wqBUREPCoHNldHRpbmfCoGZvcsKgbG93wqBkYXRhwqBi
-aXTCoHJhdGVzIikuwqBBbmTCoGNoZWNrwqBpZgo+ID7CoD7CoENBTi1GRMKgd29ya3PCoG9u
-wqB0aGXCoHJrMzU4OMKgd29ya3M/Cj4gPgo+ID7CoENvdWxkwqB3ZcKgbGVhdmXCoHRoZcKg
-UkszNTg4wqBUREPCoHN1cHBvcnTCoG91dMKgb2bCoHRoaXPCoHBhdGNowqBzZXJpZXPCoGZv
-csKgbm93Pwo+IAo+IC4uYW5kwqBtYXJrwqB0aGXCoHJrMzU4OMKgYXPCoFJLQ0FORkRfUVVJ
-UktfQ0FORkRfQlJPS0VOwqBmb3LCoG5vdz/CoEZpbmXCoHdpdGjCoG1lLgoKSSBoYXZlIGZp
-bmlzaGVkIHRlc3RpbmcgdGhlIENBTi1GRCBUREMgaW50ZWdyYXRpb24gb24gUkszNTg4LgoK
-RW5hYmxpbmcgVERDIG1ha2VzIHRoZSB0cmFuc21pdHRlciBlbnRlciBidXMtb2ZmIGZvciBl
-dmVyeSBURENPIHZhbHVlCnRlc3RlZC4gVGhpcyBpbmNsdWRlcyB0aGUgZnJhbWV3b3JrIHZh
-bHVlIChURENPPTQ4KSwgVERDTz0wLCBhbmQgdGhlCm5vbi16ZXJvIHZhbHVlcyAxLCA4LCAx
-NiwgMjQsIDMyLCA0MCwgNDggYW5kIDU2LiBXaXRoIFREQ089NjMsIG9ubHkgb25lCmZyYW1l
-IHdhcyByZWNlaXZlZCBkdXJpbmcgYSAxMCBzZWNvbmQgdGVzdCwgc28gdGhhdCBzZXR0aW5n
-IGlzIG5vdCB1c2FibGUuCgpJIGNoZWNrZWQgdGhlIHJlZ2lzdGVyIGRlZmluaXRpb24gYWdh
-aW5zdCBSb2NrY2hpcCBSSzM1ODggVFJNClYxLjAtUGFydDEtMjAyMjAzMDkucGRmLiBUaGUg
-ZHJpdmVyIHVzZXMgQ0FOX1RSQU5TTUlUX0RFTEFZX0NPTVBFTlNBVElPTiBhdApvZmZzZXQg
-MHgxMDgsIHdpdGggdGRjX29mZnNldCBpbiBiaXRzIDY6MSBhbmQgdGRjX2VuYWJsZSBpbiBi
-aXQgMCwgd2hpY2gKbWF0Y2hlcyB0aGUgVFJNLiBUaHVzLCB0aGUgZmFpbHVyZSBpcyBub3Qg
-ZXhwbGFpbmVkIGJ5IGFuIGluY29ycmVjdCByZWdpc3RlcgphZGRyZXNzIG9yIGZpZWxkIGRl
-ZmluaXRpb24uCgpUaGUgdGVzdCBzZXR1cCB3YXM6CgogIEJvYXJkOiAgICAgICAgICAgICBl
-bWJlZGZpcmUscmszNTg4LWx1YmFuY2F0LTVpbwogIENBTiBjbG9jazogICAgICAgICAzMDAg
-TUh6CiAgTm9taW5hbCBiaXRyYXRlOiAgIDUwMCBrYml0L3MKICBEYXRhIGJpdHJhdGU6ICAg
-ICAgNSBNYml0L3MKICBTYW1wbGUgcG9pbnRzOiAgICAgODAlIG5vbWluYWwsIDgwJSBkYXRh
-CiAgQnVzOiAgICAgICAgICAgICAgIGNhbjAgYW5kIGNhbjEgZGlyZWN0bHkgY29ubmVjdGVk
-LCA2MCBPaG0gdGVybWluYXRpb24KCldpdGggVERDIGRpc2FibGVkLCBhYm91dCAyOSw3NzUg
-ZnJhbWVzIHdlcmUgcmVjZWl2ZWQgaW4gdGhyZWUgc2Vjb25kcyB3aXRoCm5vIGJ1cyBlcnJv
-cnMuIFdpdGggVERDIGVuYWJsZWQsIGNhbjAgdHlwaWNhbGx5IHJlYWNoZWQgYnVzLW9mZiBh
-ZnRlciBhYm91dAoxNS0zMSBidXMgZXJyb3JzLgoKVGhpcyBpcyBhIHByZWxpbWluYXJ5IGlu
-ZGljYXRpb24gb2YgYSBwcm9ibGVtIGluIHRoZSBSSzM1ODggQ0FOIElQIFREQwpwYXRoLCBh
-bHRob3VnaCBpdCBpcyBub3Qgc3VmZmljaWVudCB0byBwcm92ZSBhIHNpbGljb24gZGVmZWN0
-LiBJbgpwYXJ0aWN1bGFyLCB0aGUgaGFyZHdhcmUtbWVhc3VyZWQgdHJhbnNtaXR0ZXIgZGVs
-YXkgKFREQ1YpIGlzIG5vdCBvYnNlcnZhYmxlCnRocm91Z2ggdGhlIHJlZ2lzdGVycyBkZXNj
-cmliZWQgYnkgdGhlIFRSTSwgc28gdGhlIFREQyBvZmZzZXQgc2VtYW50aWNzCnN0aWxsIG5l
-ZWQgdG8gYmUgdmVyaWZpZWQgaW5kZXBlbmRlbnRseS4KClREQyBpcyBub3QgYSBtYW5kYXRv
-cnkgZmVhdHVyZSBmb3IgYSBDQU4tRkQgaW1wbGVtZW50YXRpb24uIEl0IGNvbXBlbnNhdGVz
-CnRoZSBUWC10by1SWCBsb29wIGRlbGF5IHdoZW4gdGhhdCBkZWxheSB3b3VsZCBvdGhlcndp
-c2UgY29uc3VtZSB0aGUgdGltaW5nCm1hcmdpbiBiZWZvcmUgdGhlIG5vcm1hbCBzYW1wbGUg
-cG9pbnQuIFdoZXRoZXIgaXQgbXVzdCBiZSBlbmFibGVkIGRlcGVuZHMgb24KdGhlIGNvbXBs
-ZXRlIGhhcmR3YXJlIHBhdGgsIGluY2x1ZGluZyB0aGUgY29udHJvbGxlciwgdHJhbnNjZWl2
-ZXIsIFBDQiBhbmQKYnVzLiBJdCBpcyB0aGVyZWZvcmUgbm90IHJlcXVpcmVkIHNvbGVseSBi
-ZWNhdXNlIENBTi1GRCBvciBhIHBhcnRpY3VsYXIKZGF0YSBiaXRyYXRlIGlzIHVzZWQuCgpP
-biB0aGUgYm9hcmQgdXNlZCBmb3IgdGhpcyB0ZXN0LCBDQU4tRkQgcnVucyByZWxpYWJseSBh
-dCA1IE1iaXQvcyB3aXRoIFREQwpkaXNhYmxlZCBhbmQgbm8gbG9zdCBmcmFtZXMuIFRoaXMg
-ZGVtb25zdHJhdGVzIHRoYXQgUkszNTg4IHN1cHBvcnRzIENBTi1GRCwKd2hpbGUgdGhlIG1h
-eGltdW0gdXNhYmxlIGRhdGEgYml0cmF0ZSBzdGlsbCBkZXBlbmRzIG9uIHRoZSBib2FyZCBk
-ZXNpZ24gYW5kCml0cyBUWC10by1SWCBkZWxheS4gQm9hcmRzIHdpdGggYSBsb25nZXIgZGVs
-YXkgbWF5IG5lZWQgYSBsb3dlciBkYXRhIGJpdHJhdGUsCmp1c3QgYXMgZGlmZmVyZW50IENB
-TiB0cmFuc2NlaXZlcnMgaGF2ZSBkaWZmZXJlbnQgbWF4aW11bSBkYXRhLXJhdGUKc3BlY2lm
-aWNhdGlvbnMgKGZvciBleGFtcGxlLCA4IE1iaXQvcyBmb3Igc29tZSBkZXZpY2VzIGFuZCA1
-IE1iaXQvcyBmb3IKb3RoZXJzKS4KCkluIG15IG9waW5pb24sIGVuYWJsaW5nIENBTi1GRCBz
-dXBwb3J0IG9uIFJLMzU4OCBpcyBpbmRlcGVuZGVudCBvZiBUREMuClREQyBpcyBhbiBvcHRp
-bWl6YXRpb24gZm9yIGhhcmR3YXJlIHBhdGhzIHRoYXQgbmVlZCBhZGRpdGlvbmFsIFRYLXRv
-LVJYCmRlbGF5IGNvbXBlbnNhdGlvbiwgcmF0aGVyIHRoYW4gYSBwcmVyZXF1aXNpdGUgZm9y
-IENBTi1GRCBvcGVyYXRpb24uIEkgd291bGQKdGhlcmVmb3JlIHN0aWxsIGxpa2UgdG8gZW5h
-YmxlIENBTi1GRCBzdXBwb3J0IGZvciBSSzM1ODggaW4gdGhpcyBzZXJpZXMgd2hpbGUKa2Vl
-cGluZyBUREMgZGlzYWJsZWQuIFREQyBzdXBwb3J0IGNhbiBiZSBpbnZlc3RpZ2F0ZWQgc2Vw
-YXJhdGVseSBpbiBhCmZvbGxvdy11cCBwYXRjaCBvbmNlIGl0cyBiZWhhdmlvciBoYXMgYmVl
-biB1bmRlcnN0b29kLgoKQmVzdCByZWdhcmRzLApDdW5oYW8K
+On 31/07/2026 at 14:55, Vincent Mailhol wrote:
+> On 31/07/2026 at 13:02, Marc Kleine-Budde wrote:
+>> Vincent,
+>>
+>> does the current code check if you send a CAN XL frame to a CAN XL
+>> enabled interface?
+>>
+>> On 31.07.2026 10:54:02, sashiko-bot@kernel.org wrote:
+>>> This is a pre-existing issue, but does this code properly handle CAN XL frames?
+>>>
+>>> If an ETH_P_CANXL frame is sent via AF_PACKET, can_dev_dropped_skb() currently
+>>> lacks a check to drop CAN XL frames for devices that don't support CAN XL.
+>>> When such a frame enters rkcanfd_start_xmit(), can_is_canfd_skb() returns
+>>> false, causing the driver to treat it as a Classic CAN frame.
+>>
+>>> Sashiko AI review · https://sashiko.dev/#/patchset/20260731-master-v5-0-5b27029dee20@qq.com?part=1
+> 
+> The logic is for checking an ETH_P_CANXL frame is:
+> 
+>   - When sending a packet (even with PF_PACKET) the only check which
+>     is performed is to check that the skb len is not above
+>     net_device->mtu. So, if the device is not CAN XL capable, anything
+>     about CANFD_MTU (72 bytes) is dropped.
+> 
+>   - In the driver, can_dev_dropped_skb() calls
+>     can_dropped_invalid_skb() which then call can_is_canxl_skb() which
+>     validate that the skb length is within the range
+> 
+>       [CANXL_HDR_SIZE + CANXL_MIN_DLEN, skb->len > CANXL_MTU]
+> 
+>     that is to say 13 and 2060. But we already establish that the
+>     maximum length is 72 at this time.
+> 
+> So, yes, it seems that an ETH_P_CANXL frame with a length between 13
+> and 72 will pass the can_dev_dropped_skb() check. And because
+> CANXL_XLF must be set at this point, the driver sees a can_frame->len
+> of at least 128 bytes (and up to 255).
+> 
+> Until now, I was convinced in my mind that can_is_canxl_skb() rejected
+> frames with a length below CANXL_MIN_MTU which would have prevented
+> the issue. And I wrote the implementation under this false assumption
+> without double checking.
+> 
+> 
+> Here is a potential fix:
+> 
+> ---8<---
+> diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+> index 6d0710d6f571..88dec0f91d71 100644
+> --- a/include/linux/can/dev.h
+> +++ b/include/linux/can/dev.h
+> @@ -152,6 +152,7 @@ static inline bool can_dev_in_xl_only_mode(struct can_priv *priv)
+>  /* drop skb if it does not contain a valid CAN frame for sending */
+>  static inline bool can_dev_dropped_skb(struct net_device *dev, struct sk_buff *skb)
+>  {
+> +       const struct canxl_frame *cxl = (struct canxl_frame *)skb->data;
+>         struct can_priv *priv = netdev_priv(dev);
+>         u32 silent_mode = priv->ctrlmode & (CAN_CTRLMODE_LISTENONLY |
+>                                             CAN_CTRLMODE_RESTRICTED);
+> @@ -167,6 +168,11 @@ static inline bool can_dev_dropped_skb(struct net_device *dev, struct sk_buff *s
+>                 goto invalid_skb;
+>         }
+>  
+> +       if (!(priv->ctrlmode & CAN_CTRLMODE_XL) && cxl->flags & CANXL_XLF) {
+> +               netdev_info_once(dev, "CAN XL is disabled, dropping skb\n");
+> +               goto invalid_skb;
+> +       }
+> +
+>         if (can_dev_in_xl_only_mode(priv) && !can_is_canxl_skb(skb)) {
+>                 netdev_info_once(dev,
+>                                  "Error signaling is disabled, dropping skb\n");
+> ---8<---
+
+On second thought, maybe this is an even better fix:
+
+---8<---
+diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
+index 95fcdc1026f8..9846989d4960 100644
+--- a/drivers/net/can/dev/skb.c
++++ b/drivers/net/can/dev/skb.c
+@@ -384,7 +384,7 @@ bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb)
+                break;
+ 
+        case ETH_P_CANXL:
+-               if (!can_is_canxl_skb(skb))
++               if (!can_cap_enabled(dev, CAN_CAP_XL) || !can_is_canxl_skb(skb))
+                        goto inval_skb;
+                break;
+---8<---
+
+> The cxl->flags & CANXL_XLF doesn't catch everything by itself, but
+> once we know that this flag is off, can_is_canxl_skb() will reject the
+> frame later on. So this should be the minimum fix
+> (can_dev_dropped_skb() is an inline function in the hot path, so any
+> trick is welcome here, I think).
+> 
+> Does this make sense?
+
+
+Yours sincerely,
+Vincent Mailhol
 
