@@ -1,52 +1,53 @@
-Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
+Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEFF92FD665;
-	Fri, 31 Jul 2026 09:45:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86DAB3B7742;
+	Fri, 31 Jul 2026 09:45:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785491117; cv=none; b=o8EyYEhfibvkQhS8F4BP9TwEBMn3h83NBFZ5jPRNuB2ScZEVsgllla0Rhvysv9IO7NERchFzI2NMSRZhmM6SWroIFDgxE3mOyz8BEXi1OdgGzHQlg3j/Z55seuriIwsGZ2Z26nRq+f2h1nEks+v18etGydoVVmGfqBbeGroKTPI=
+	t=1785491124; cv=none; b=YaDueEhxfjkRgbI/49h5Oz/ALUwCdgWYNl9YIzathXjgb3Lk+/J+74OyitoAQEODq3etAYGK6eCBs5YMwd6FBkM1nZ4ZYL39wv/4C4P2FeRmhO0Q5PwSv0PyWe9LWoqwGfkX6CcpT+O+scBSg53nKKObeS3wrYWXejnbdGNJYZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785491117; c=relaxed/simple;
-	bh=0dbXPAmpOvKPTg21AyLMdN+GdvMcbiW0jFOCa4uMP5I=;
+	s=arc-20240116; t=1785491124; c=relaxed/simple;
+	bh=JI3hwQZG9O+wVX41sbs8+Np1ov5ehOcvZtKBDgg+Tow=;
 	h=Message-ID:From:Date:Subject:MIME-Version:Content-Type:References:
-	 In-Reply-To:To:Cc; b=ZQX6/4TNMI/Z9YEMwdDzVfLLg6WnJZNsRBFKWsXdqlg06SLcoR6vMT0bl96fkjlg8PqsjeRFQOEZc8MjhgEDefRcZuF5T7h34v5/mCgB3D4jSEwqiC5kh5G0jsLobfciTqxkOz/TtObzPxPK1sbWtPK5xZhGPdk+S+U3ANC6zS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=b+HSqDDt; arc=none smtp.client-ip=162.62.57.252
+	 In-Reply-To:To:Cc; b=ZDt/BTjQvmeYk4KHQqPV0vJiY4VPNVpa+MBWTTTijDwMCur6++OIOqCQZ4bYGyuR+8YxGVWq/9MNWMlXjw3YcIIpsTRITMDKx+bm3FvW5vlTOGoFTKPTQvn/7OcvEXy3mFgKDq/JXNoSwaX5y62XknImlfSBKPICCHA/bme/oBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=fb+mWE2n; arc=none smtp.client-ip=43.163.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="b+HSqDDt"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="fb+mWE2n"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1785491109; bh=/Ck80FOGA6ogSTY3SG8TMdbFAQItmNACdduHpi0HVFg=;
+	t=1785491111; bh=ISmSHUnxFfQoUpZFO1QyXg4OFEW5rbqFD96jqZMmjj0=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=b+HSqDDtczFQKHBb4B/c0dECF1d1C+mvz3rlNzoy8ZGAu4uW/HU47h/iG7PQzXKvT
-	 Q/hCn1Fmi0bYqY9+hTj2o55uvnPwkUf9kDVeVAvebrSerC+lZp2AwJUEfZcspmQOpc
-	 8QJNa5hNVGnTp7dP//PGMYGFb9ulPS9767qnf9FA=
+	b=fb+mWE2nw+Z9jYLI0z3doQ3+l03FiNFInuPVfIGokwyL+HN9FeEuAy08X5YHQ24ac
+	 mooQJJ8Vh4YZv9B3Lo46A1bfo4YpL7RwpEgNyWuBcrypQ5ij6q0jC09X6alMn+QAbe
+	 cI82BDxLqRnHtloP31jaMPznh0w2bSpGnuEs1P6M=
 Received: from ubuntu2204.localdomain ([2409:8d20:22b:54c:9e54:40ff:fe02:3f0f])
 	by newxmesmtplogicsvrszb51-1.qq.com (NewEsmtp) with SMTP
 	id B4623E87; Fri, 31 Jul 2026 17:45:06 +0800
-X-QQ-mid: xmsmtpt1785491107tj5yvbrnh
-Message-ID: <tencent_E84809CF236D0137885E7E4E4D58340B3208@qq.com>
-X-QQ-XMAILINFO: MRMtjO3A6C9X6+tuUJ4xiCMOyIng2rpDc3xPa5v5rladyD3lXEPI3W+zjW1LrI
-	 THBa/qFrH6l6opz1gmmlUaZLm5RJ6jmA1Nud7TWaadEYWUGSFg4KVzWmSqsAlYluka4XPuoaaENj
-	 Fu7rB4Aotfs451kASmM/T4aavN2rttFVrYPLMpu4pQpxiCFYiGCIgJ0ae6YhYgLHqYAWnD1BIdlq
-	 W2eE5pk8o8h3qdt+3sFkhBYf/PkoYh+6VOH7TwdFBvMdMUPektHG4Rw7UyAG+DkpXj4i7LXfhRha
-	 q8Q48Jlz6ln8wObBA+ukoT63Y3RekX0pniWcmICcC9XNWr8+UFjQYYI0VFdgcEYZ+gAEtlhZickv
-	 q/EPbuWxD13WR9GTqsod1aTOG/MilajYnu27TUub+z4C+jqgS+DtRjAGGxZ5H2U8njOSy+LcNLNO
-	 oEJGaQxk+g71XivjiMcypAjG7HzrE98qoL4xymjEdAI7LDMXKzb3O3Lb0pm7hCh5VVdBWWaoCqHG
-	 k4KOUYGC/fmcbs1Vz9C13JLYbOEbEi5AQtdNHSdc0507V/59fgTO7txU4GYPhWvherI2PeqYZpNq
-	 ExzxhWIqHxNmkEh8njgfEX5Z5heC5o0kUzCHXge1ya8eqQ2KYRCH8nM94VCs1zlwY55qmaFz2hZD
-	 ADybPRcANwQ6vm0fK6VgEgrrwHGkz4GVRTkc9yUdpTeEy2IGqQQvacJnhv2IwIYcI6/CJq72NzMh
-	 QXyBLNJfPplvC4VxwPfnxGljIwRxJuM8RDhJtwELrV3VQfAGCBnaYvCe0k4u5WqLJI2QOpYno6po
-	 mN7JAuW2j+N4r8qS+whmTUiNnZ8/rNlT0FC1ADLZPfOd+Jo7QluEmNG4km2csbnp7xfxFGtsn1Hn
-	 FEdWDozLVI7MkX4nyAsN2qjHrUMUbVFmOiURivnYqNH1Rbkmhxj2gscNKjeOvet5lfcXZtMla9CG
-	 Jq2qns3RX+UXdfCi/7hj52aeHANrZFPh88LOCfExKsRbCTo6rKrPRUYBf/ZgJPHST7oAn3xLYGft
-	 yYbz5/bjwElRVmZeHcnYNmPkVNCJpCa1BsDp/22ejoE76XoKr4the1cbEaA2Qw+W+T1KQ7kA==
-X-QQ-XMRINFO: M/715EihBoGS47X28/vv4NpnfpeBLnr4Qg==
+X-QQ-mid: xmsmtpt1785491108tdqxs9959
+Message-ID: <tencent_C825C17D442F801351CE2FBC4984064B4605@qq.com>
+X-QQ-XMAILINFO: NX3IH4pixvQAx2COF1gCU6EIJLauzWo3Kt7+E3SrVC7av0c18336ZgsQ8B9RIJ
+	 Rboj+DKm5ui5eqI9NC1iBawuWNKlI87ky/4DOjmNeq/P3NAWBTxOlXyfiy7ua0MQ6JAjbNo4/bJV
+	 TP93Y4IwWOg/fO9VUSLFgFaautwsCcawst1iduEXUXyXnkY8Vj0yvD9Un7jeye8L/3qVvdI7aneL
+	 BJgDipkTp/4qmB1ykxK/faNuYYzfdzGXdsb9UJxL4xaAKMGtmAHLsbIa5Fbv3WhTAJgXgeSMUCgc
+	 HDf6Qoe/SO5xB9KoUNGJ8s0+C8cV4B4lRYLikS1AbYrn+cs5LLNu12MiRtVy2PVuyD7w5uYWduTP
+	 p+DEqEbwORY70LF0BBqi5PP85VivI6e9WUQM6A6jto6+c63JiyOqgPkCwiv/k8v70Tr/pmMddpSf
+	 RXPNAhc1osYaNvDkw/uq33f3GZTY5o7QFfuAjK0RwnKYYdT/2kCHtIrt4t9qW8UVG8YoJ3F3TEli
+	 ktXmYaMavtEkHdM4kCV/j+eJWBj3FQSIwf4QkL3ZIOB3mh0nMaTvkwBmqKwyhRjnAo8fELuSeVgf
+	 NzUXNyTU3AtTn/OYuO8JckJ6hHwQxUKrlXqip2GE3mFNenHU22+TZEbfSfCVDEMcysZVDv3knpwr
+	 TIYIjMiob+YZxAJpAxLoakqtcPNl0CetHiaQrEaCOF07jm2PTFUrgDOrlVv3LIJLNIdOwPbfqLmE
+	 p5Cbii0gQz/HnvoE2GxlN1zsHYTuYzk/Tq7aCoX1yQPFUt4rn5luL5uPiJY4+W6yv9FrrBwQTf3l
+	 5K2tI9erjUobmZQ3isLqcnlyCnSJ4PgCYE+derN+1mMebZI06gdmVvwTce+bXYVEDhv+tbWb8lIJ
+	 yt7cR+opgMAB8nCoDd89x9gKGRNkeaUQ0X3d3Su5Pbt03pi6sia9LrG2qv10TI+kU9ZWaCNaGbCN
+	 0cZzFtkimoJkLWWoqN9c88j7Xv5x8kzdMEymnIswF0fdNq1NXmaGBjiW4B7E7rFm6vnh1UlQCKaI
+	 bweNBP2S3Isa/GC2CZ/LR414xQV4mWA/cZJl5Cs9Kgnu88MbdHUIlTvMeCHrEMyxNAlRhLM61t6P
+	 qNqNFu
+X-QQ-XMRINFO: OD9hHCdaPRBwH5bRRRw8tsiH4UAatJqXfg==
 From: Cunhao Lu <1579567540@qq.com>
-Date: Fri, 31 Jul 2026 17:45:00 +0800
-Subject: [PATCH v3 1/3] can: skb: make echo skb freeing safe in any IRQ
- context
+Date: Fri, 31 Jul 2026 17:45:01 +0800
+Subject: [PATCH v3 2/3] can: skb: make CAN skb allocation failure paths
+ IRQ-safe
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -55,74 +56,59 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-OQ-MSGID: <20260731-master-v3-1-b56cd1e8d675@qq.com>
+X-OQ-MSGID: <20260731-master-v3-2-b56cd1e8d675@qq.com>
 References: <20260731-master-v3-0-b56cd1e8d675@qq.com>
 In-Reply-To: <20260731-master-v3-0-b56cd1e8d675@qq.com>
 To: Marc Kleine-Budde <mkl@pengutronix.de>, 
  Vincent Mailhol <mailhol@kernel.org>
 Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Cunhao Lu <1579567540@qq.com>
+ Cunhao Lu <1579567540@qq.com>, stable@vger.kernel.org
 X-Mailer: b4 0.15.2
 
-can_put_echo_skb() can be called with hardware interrupts disabled. Its
-direct drop paths use kfree_skb(), while can_create_echo_skb() uses
-kfree_skb() when cloning fails and consume_skb() after a successful clone.
-None of these helpers is safe in every IRQ context.
+The CAN skb allocation helpers are used from hardware interrupt receive
+handlers. If can_skb_ext_add() fails, they release the newly allocated skb
+with kfree_skb(), which is not safe in hardware interrupt context.
 
-Use dev_kfree_skb_any() for all drop paths and dev_consume_skb_any() when
-consuming a successfully cloned skb. This preserves the respective skb drop
-and consumed semantics regardless of the caller IRQ context.
+Use dev_kfree_skb_any() for the allocation failure paths in
+alloc_can_skb(), alloc_canfd_skb(), and alloc_canxl_skb().
 
+Fixes: 96ea3a1e2d31 ("can: add CAN skb extension infrastructure")
+Cc: stable@vger.kernel.org
 Signed-off-by: Cunhao Lu <1579567540@qq.com>
 ---
-Changes in v3:
-- Cover can_create_echo_skb() clone failure and successful-clone consume
-  paths with IRQ-context-independent helpers.
----
- drivers/net/can/dev/skb.c | 4 ++--
- include/linux/can/skb.h   | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/can/dev/skb.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-index 95fcdc1026f8..d7b5a5d17ff2 100644
+index d7b5a5d17ff2..d34d3e7d4c9f 100644
 --- a/drivers/net/can/dev/skb.c
 +++ b/drivers/net/can/dev/skb.c
-@@ -62,7 +62,7 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 	    (skb->protocol != htons(ETH_P_CAN) &&
- 	     skb->protocol != htons(ETH_P_CANFD) &&
- 	     skb->protocol != htons(ETH_P_CANXL))) {
+@@ -223,7 +223,7 @@ struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf)
+ 
+ 	csx = can_skb_ext_add(skb);
+ 	if (!csx) {
 -		kfree_skb(skb);
 +		dev_kfree_skb_any(skb);
- 		return 0;
+ 		goto out_error_cc;
  	}
  
-@@ -90,7 +90,7 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 	} else {
- 		/* locking problem with netif_stop_queue() ?? */
- 		netdev_err(dev, "%s: BUG! echo_skb %d is occupied!\n", __func__, idx);
+@@ -254,7 +254,7 @@ struct sk_buff *alloc_canfd_skb(struct net_device *dev,
+ 
+ 	csx = can_skb_ext_add(skb);
+ 	if (!csx) {
 -		kfree_skb(skb);
 +		dev_kfree_skb_any(skb);
- 		return -EBUSY;
+ 		goto out_error_fd;
  	}
  
-diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
-index a70a02967071..78c5870e2f9a 100644
---- a/include/linux/can/skb.h
-+++ b/include/linux/can/skb.h
-@@ -76,12 +76,12 @@ static inline struct sk_buff *can_create_echo_skb(struct sk_buff *skb)
+@@ -292,7 +292,7 @@ struct sk_buff *alloc_canxl_skb(struct net_device *dev,
  
- 	nskb = skb_clone(skb, GFP_ATOMIC);
- 	if (unlikely(!nskb)) {
+ 	csx = can_skb_ext_add(skb);
+ 	if (!csx) {
 -		kfree_skb(skb);
 +		dev_kfree_skb_any(skb);
- 		return NULL;
+ 		goto out_error_xl;
  	}
- 
- 	can_skb_set_owner(nskb, skb->sk);
--	consume_skb(skb);
-+	dev_consume_skb_any(skb);
- 	return nskb;
- }
  
 
 -- 
