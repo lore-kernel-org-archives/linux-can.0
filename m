@@ -1,147 +1,219 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00743468C1E
-	for <linux-can@vger.kernel.org>; Fri, 31 Jul 2026 16:45:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4AB23612CF
+	for <linux-can@vger.kernel.org>; Fri, 31 Jul 2026 23:17:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785516331; cv=none; b=F694mxZB4+frIbmZIw8++ikHXFUK54n/zUVbV5Z8OIEvpI80dSNU2TzzsQiDBk3E9376/vI6jmhfOkj+/WYP+2WzVA8uWiq3ntkBBo5V3B5LI3BWjMAvuY6/TN+WwdHi0z8hEgXfcawU/HOela1HcpEpjeAOoDKGiNzaaq5qjP0=
+	t=1785539879; cv=none; b=rS1Z5ofAYAWwFZxWLQ2ANWafpgmS1i258ibAcUez9ofb1lV56XunocFlVDSEfmBay9tHAWeHkrRgK6OtnXkcjilfFH6YJbCSxwYqAC6xpeyikLzj2fDWIl8ug2qHJDIW3cEO2AgIs3JoGZgAbX4ALcS5h3rI5UP5upR6yGnzLZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785516331; c=relaxed/simple;
-	bh=p7+bX/WJesJrNb5L+a1NZMfB7UU55LNF2i9QWGBRmo8=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=TWKm8xt0lygjfBx6p0ywOY62vo7IQSsRqFtdnKRdPmtapRB7lh6plRydO9yLiFAU0RwrQDHkgQSfjVVvG+1NqFWvSx05GBe3p+SPQoj8ogO6fqP7QbVgXgABA8SzjfaZEM/CdSJmZ98EtB0PZJ/vjvnWc4VSkFMuUJHsvl6YmXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mfqOphlU; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1785539879; c=relaxed/simple;
+	bh=2J74l0n/n8xU/ZTfvTlyhrO3owtDtIFNJ6tx4xfBGTY=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=nC8Xr0OliVbCSj/gMYzJHWIAOQ88qvM16XcxhWcWR+ttdQbAQzxLdQFoQdp9b7vEKd0Y3k8w7fvUKODUKC+r6AFWgCF8o6shv4Zr3jhnLtT9LC10/kFwzuM3JuRPQ0G0Q5qktXFaHYBPoighCZjM2RZSr7zX9Zv8mwcuOmoiofM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PZ1ulG0+; arc=none smtp.client-ip=209.85.214.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mfqOphlU"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 500821F00AC4;
-	Fri, 31 Jul 2026 16:45:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785516329;
-	bh=KRkNNUVRWM3hjD3eJxxV/8cYjWNu7xthiOvCMR964rA=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=mfqOphlUeCoasvAfEGhG3m1iRC2wUbTvK9LOnvvTp687mAVa6D1lD2XmyBr1V2TU1
-	 fnQO/2hUT5NteeZmGSO62vtB8ysAWcsNdEAFMNu0gnjTR/uKTk6+mCONx6LzDJ1MLJ
-	 +Dn7FQp6H3z2cFk+oG6bj1pD/YkO7wbfrmZkMN21l/nyAItBhpZvjy5ZL5wORGMcky
-	 OMbzYXSZ8m+0UNRjsNoSiQP/nxVTC4PuRNTk5zagE7SCdzbhlGfahJpHzuDNkle6od
-	 +pB52g3IyG9jdDwuSzhChpcELBwyCtpz8GmZ5hYCSBQyVm+sOTimPb7yrtHAwxwFjM
-	 OuWYxc7x3lLvQ==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH] can: dev: can_dropped_invalid_skb: drop CAN XL frames
- on non-CAN XL devices
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Vincent Mailhol" <mailhol@kernel.org>
-Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Marc
- Kleine-Budde" <mkl@pengutronix.de>
-In-Reply-To: <20260731-drop_canxl_frames-v1-1-7387b70353b3@kernel.org>
-References: <20260731-drop_canxl_frames-v1-1-7387b70353b3@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 31 Jul 2026 16:45:28 +0000
-Message-Id: <20260731164529.500821F00AC4@smtp.kernel.org>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PZ1ulG0+"
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-2cc7e86e7c5so28025835ad.3
+        for <linux-can@vger.kernel.org>; Fri, 31 Jul 2026 16:17:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1785539877; x=1786144677; darn=vger.kernel.org;
+        h=content-type:cc:to:from:subject:message-id:mime-version:date:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=2Ud6J+POpBAx8mNcaRij0vS2ZuUm8caJUzPhHe6iuIY=;
+        b=PZ1ulG0+89fWxps3dQFQ2xA1+q902gQzOeefgGzVjIPzOyTRbcocLzmlUWc5xHmbdk
+         601fBUQfCZ2l7aNVTormWd1Z4itIn82Oxm1YAI2tsqEo/+AjBiS7AKVyI89a6U+vcXSx
+         ldgX6lXrpEWbnRaCxZP03g5usAoFfX2MfyjLooriDlEkNknKXRc2GkhgEt5qfSU+/a0e
+         RSJ8fR9ir6kTVjtbTZ0uPJj+w5i0cs6hL5ugCOiP0wa6qY79fzohYpYsby/InL8qxBwY
+         rqG0RHkWKIsmcrEaPBVwjy5kgkXlpjuIH7FzW2CPu3CDtVDxeRfupENTWd1zBr862dAy
+         W3Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1785539877; x=1786144677;
+        h=content-type:cc:to:from:subject:message-id:mime-version:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=2Ud6J+POpBAx8mNcaRij0vS2ZuUm8caJUzPhHe6iuIY=;
+        b=E3uBSDcTW0kYM8B60G/3ZtW6gLMSB0oL76bW73izzOjbXQhLSdypi9aET6iXVd/vZ+
+         BoKMdRh39F004B+VLkw21x75memEFJ4OFo2fQ9bghXwbTQsE+WULZYP+4BDoFyeYWWGv
+         pOjcG8whQQ75lfb4uzTOahLqP9A9EA/XUyZgXzd49jcDQYWi+ylgeq/rjIKwFlYXu2G0
+         qhnPy/y6tkcg+seytoMfN2hRlj5HuqwPXR1i1lHQNfGkpRH2HXvH4wAhIKvYAXgnaZoj
+         zBGM8c9FYdZemX7d3wvj6barUjwCxBjzgVkl3/jGTx+XmdWrmtFfolpilOCFl11cpnC5
+         KHEA==
+X-Forwarded-Encrypted: i=1; AHgh+Rq+iQnyjZLMBBq2Zyf8Tz4fm2S0N2aSAEniwO5DHf/SQqJr8eWHrn1M2e+3RL8p33RA6CkuRsNMa7c=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw/jOiZA4kpS9VZj2QqrZYUpQIXfNKxvPh1kKQoVcoXgx/Ns2Y0
+	13pUk4e3rD0mJcw3tf0XrJ+iWyAgkM3SfVO2tl3UlhtTf5fxaeQ/59+2y7/ABDoA4FQxC7hsqYP
+	+KfiS5w==
+X-Received: from pjuu7.prod.google.com ([2002:a17:90b:5867:b0:38d:f003:cd24])
+ (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:53c7:b0:380:105f:8ffd
+ with SMTP id 98e67ed59e1d1-38fbc48b61emr1386129a91.16.1785539876973; Fri, 31
+ Jul 2026 16:17:56 -0700 (PDT)
+Date: Fri, 31 Jul 2026 23:17:53 +0000
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.55.0.571.g244d577d93-goog
+Message-ID: <20260731231755.2474376-1-kuniyu@google.com>
+Subject: [PATCH RESEND v1] vxcan: Support per-netns device unregistration.
+From: Kuniyuki Iwashima <kuniyu@google.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, 
+	Vincent Mailhol <mailhol@kernel.org>
+Cc: Kuniyuki Iwashima <kuniyu@google.com>, Kuniyuki Iwashima <kuni1840@gmail.com>, linux-can@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
+Currently, vxcan_dellink() unregisters both local and peer devices
+synchronously under RTNL.
 
-Pre-existing issues:
-- [High] `can_skb_init_valid()` directly modifies `skb->data` without check=
-ing if the SKB is cloned or shared, violating SKB shared buffer rules and c=
-ausing data corruption.
---
+Once RTNL is removed, it can be called concurrently from different
+netns.
 
---- Patch [1]: [PATCH] can: dev: can_dropped_invalid_skb: drop CAN XL frame=
-s on non-CAN XL devices ---
-commit 4602c4bbb604b601116708346040725e0603f25d
-Author: Vincent Mailhol <mailhol@kernel.org>
+Let's use xchg() and unregister_netdevice_queue_net() to support
+per-netns device unregistration.
 
-can: dev: can_dropped_invalid_skb: drop CAN XL frames on non-CAN XL devices
+This way, each device is queued for destruction only once by
+the winner of the race.
 
-Sending a PF_PACKET bypasses the CAN framework logic and can directly
-reach a CAN driver's xmit() function. The PF_PACKET framework only
-checks that skb->len does not exceed the net_device MTU.
+Note that the extra netdev_hold() ensures that @peer obtained by
+the first xchg() is not freed during the subsequent access to
+netdev_priv(peer).  The 2nd xchg() overwrites @dev to balance
+the refcount.
 
-For a CAN device that is not CAN XL capable, anything above CANFD_MTU
-(72 bytes) is therefore dropped before it reaches the driver. However,
-CAN XL frames are variable length. can_is_canxl_skb() accepts lengths in
-the range CANXL_HDR_SIZE + CANXL_MIN_DLEN up to CANXL_MTU, i.e. 13 to
-2060 bytes.
+Tested:
 
-As a result, an ETH_P_CANXL skb with a length between 13 and 72 bytes
-can pass both the MTU and the can_dropped_invalid_skb() checks.
+1. Create two vxcan pairs (vxcan1-2, vxcan3-4) between two netns
+   (ns1 & ns2).
 
-A driver that does not support CAN XL will interpret canxl_frame->flags
-as a length because of the overlap with can_frame->len. And because
-CANXL_XLF is set, the resulting length is between 128 and 255. For
-drivers that do not check can_frame->len before copying can_frame->data,
-as most drivers do, this results in a buffer overflow of up to 247
-bytes.
+  # ip netns add ns1
+  # ip netns add ns2
+  # ip -n ns1 link add vxcan1 type vxcan peer vxcan2 netns ns2
+  # ip -n ns1 link add vxcan3 type vxcan peer vxcan4 netns ns2
 
-Drop ETH_P_CANXL skbs if the device does not have the CAN_CAP_XL
-capability. Keep can_is_canxl_skb() for the validation of CAN XL skbs.
+2. Run bpftrace to check if the same process does NOT
+   unregister the paired vxcan devices
 
-Closes: https://sashiko.dev/#/patchset/20260731-master-v5-0-5b27029dee20@qq=
-.com?part=3D1
-Fixes: fb08cba12b52 ("can: canxl: update CAN infrastructure for CAN XL fram=
-es")
+  # bpftrace -e '#include <linux/netdevice.h>
+  kprobe:free_netdev {
+      $dev = (struct net_device *)arg0;
+      printf("PID: %d | DEV: %s%s\n", pid, $dev->name, kstack());
+  }'
 
-> diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-> index 95fcdc1026f80..4f7a189de265d 100644
-> --- a/drivers/net/can/dev/skb.c
-> +++ b/drivers/net/can/dev/skb.c
+3. Remove vxcan2 in ns2 and check bpftrace output
 
-[ ... ]
+  # ip -n ns2 link del vxcan2
 
-> @@ -384,7 +385,7 @@ bool can_dropped_invalid_skb(struct net_device *dev, =
-struct sk_buff *skb)
->  		break;
-> =20
->  	case ETH_P_CANXL:
-> -		if (!can_is_canxl_skb(skb))
-> +		if (!can_cap_enabled(dev, CAN_CAP_XL) || !can_is_canxl_skb(skb))
->  			goto inval_skb;
->  		break;
+  PID: 1524 | DEV: vxcan2
+          free_netdev+5
+          netdev_run_todo+4798
+          rtnl_dellink+1507
+          rtnetlink_rcv_msg+1791
+          netlink_rcv_skb+504
+  ...
+  PID: 453 | DEV: vxcan1
+          free_netdev+5
+          netdev_run_todo+4798
+          process_scheduled_works+2538
+          worker_thread+1906
+          kthread+806
+          ret_from_fork+805
+          ret_from_fork_asm+17
 
-[Severity: High]
-This isn't a bug introduced by this patch, but looking at can_skb_init_vali=
-d()
-which is called right after this switch statement:
+4. Remove ns2 (thus vxcan4) and check bpftrace output
 
-drivers/net/can/dev/skb.c:can_skb_init_valid() {
-    ...
-		/* set CANFD_FDF flag for CAN FD frames */
-		if (can_is_canfd_skb(skb)) {
-			struct canfd_frame *cfd;
+  # ip netns del ns2
 
-			cfd =3D (struct canfd_frame *)skb->data;
-			cfd->flags |=3D CANFD_FDF;
-		}
-    ...
-}
+  PID: 12 | DEV: vxcan4
+          free_netdev+5
+          netdev_run_todo+4798
+          default_device_exit_batch+2271
+          ops_undo_list+993
+          cleanup_net+1122
+          process_scheduled_works+2538
+          worker_thread+1906
+          kthread+806
+          ret_from_fork+805
+          ret_from_fork_asm+17
+  ...
+  PID: 462 | DEV: vxcan3
+          free_netdev+5
+          netdev_run_todo+4798
+          process_scheduled_works+2538
+          worker_thread+1906
+          kthread+806
+          ret_from_fork+805
+          ret_from_fork_asm+17
 
-Can this modification of skb->data happen without ensuring exclusive owners=
-hip
-via skb_unshare() or skb_cow_head()?
+Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
+---
+This mirros commit d7fda2c776b2 ("veth: Support per-netns device
+unregistration.").
+---
+ drivers/net/can/vxcan.c | 26 +++++++++++++++-----------
+ 1 file changed, 15 insertions(+), 11 deletions(-)
 
-If a local user constructs a linear CANFD packet via AF_PACKET, which is th=
-en
-cloned (e.g., via TC mirred or BPF redirect) and queued to a CAN interface,=
- it
-seems can_skb_init_valid() will directly modify cfd->flags in the shared da=
-ta
-buffer.
+diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
+index e882250180ef..b7efed1226d8 100644
+--- a/drivers/net/can/vxcan.c
++++ b/drivers/net/can/vxcan.c
+@@ -33,6 +33,7 @@ MODULE_ALIAS_RTNL_LINK(DRV_NAME);
+ 
+ struct vxcan_priv {
+ 	struct net_device __rcu	*peer;
++	netdevice_tracker	peer_tracker;
+ };
+ 
+ static netdev_tx_t vxcan_xmit(struct sk_buff *oskb, struct net_device *dev)
+@@ -268,9 +269,11 @@ static int vxcan_newlink(struct net_device *dev,
+ 	/* cross link the device pair */
+ 	priv = netdev_priv(dev);
+ 	rcu_assign_pointer(priv->peer, peer);
++	netdev_hold(peer, &priv->peer_tracker, GFP_KERNEL);
+ 
+ 	priv = netdev_priv(peer);
+ 	rcu_assign_pointer(priv->peer, dev);
++	netdev_hold(dev, &priv->peer_tracker, GFP_KERNEL);
+ 
+ 	return 0;
+ 
+@@ -281,24 +284,25 @@ static int vxcan_newlink(struct net_device *dev,
+ 
+ static void vxcan_dellink(struct net_device *dev, struct list_head *head)
+ {
++	netdevice_tracker *peer_tracker;
+ 	struct vxcan_priv *priv;
+ 	struct net_device *peer;
+ 
+ 	priv = netdev_priv(dev);
+-	peer = rtnl_dereference(priv->peer);
++	peer_tracker = &priv->peer_tracker;
++	peer = unrcu_pointer(xchg(&priv->peer, NULL));
++	if (!peer)
++		return;
+ 
+-	/* Note : dellink() is called from default_device_exit_batch(),
+-	 * before a rcu_synchronize() point. The devices are guaranteed
+-	 * not being freed before one RCU grace period.
+-	 */
+-	RCU_INIT_POINTER(priv->peer, NULL);
+ 	unregister_netdevice_queue(dev, head);
+ 
+-	if (peer) {
+-		priv = netdev_priv(peer);
+-		RCU_INIT_POINTER(priv->peer, NULL);
+-		unregister_netdevice_queue(peer, head);
+-	}
++	priv = netdev_priv(peer);
++	dev = unrcu_pointer(xchg(&priv->peer, NULL));
++	if (dev)
++		unregister_netdevice_queue_net(dev_net(dev), peer, head);
++
++	netdev_put(peer, peer_tracker);
++	netdev_put(dev, &priv->peer_tracker);
+ }
+ 
+ static const struct nla_policy vxcan_policy[VXCAN_INFO_MAX + 1] = {
+-- 
+2.55.0.571.g244d577d93-goog
 
-Since the network core's validate_xmit_skb() does not unclone an already-li=
-near
-SKB, could this corrupt other users of the same buffer data and lead to sil=
-ent
-data corruption in unrelated code paths?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260731-drop_canxl=
-_frames-v1-1-7387b70353b3@kernel.org?part=3D1
