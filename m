@@ -1,137 +1,124 @@
-Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.47])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B3CC3F12C8;
-	Fri, 31 Jul 2026 10:39:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 549C841D4EA
+	for <linux-can@vger.kernel.org>; Fri, 31 Jul 2026 10:54:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785494382; cv=none; b=DS04ec41iWYqNXSaRVsfRcgDf2mEeo8dsksik4T7tYnfdJs2l7domkjv2KtNHpyBON4XE/t1GFq2bcP7BqvZR6WUaXkU7RTx5SY6Hr//9wWms86Px0CBw7fDR9HuiACn5E96ZAGducWosSAWiLRH+KMIajOiVnzjL0C4pLkAPmE=
+	t=1785495251; cv=none; b=aOhLT9MhIwroiPwocoUZ/gn1RCvn0UiO8VzcbqZntaCslkabjn6UOJ+bVbERbWlzGDTaChXo+M1oNx3MvzXsWMgb8mjXNKjrNHsxUGK9m8nYeQhrAvBh2jrZUg+piFsswbFCEoztErLTo3hcVJB8aEZhyHI1O2BFL3v+9TkHAyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785494382; c=relaxed/simple;
-	bh=ymmYIt4w0NwA8n/+Fhp8T42/fjndZ2N5zfQ+aZGLc1s=;
-	h=Message-ID:From:Date:Subject:MIME-Version:Content-Type:References:
-	 In-Reply-To:To:Cc; b=Q4hzC9/gV5wR4uhN6mY+ETYaUVJSFUswfQSlthsIjwTvS7dUCRfgce3taikmzaF1M2c0iDdilx65GhCEpxeeL2JEbAntCDT7wDTFYkGjfu9NtcpPRrTuaEqzrCxECzLJ9WZCC01QA/gZumb5pr08q675Ayn7zwUv3E9xNh0+BjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=nM3gX43O; arc=none smtp.client-ip=43.163.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	s=arc-20240116; t=1785495251; c=relaxed/simple;
+	bh=DIqn5ESwDxO6gVGYZZ/1P2KuY1m7HI825T5REOQUAMo=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=bczR3ZMbqIk4H7Dy8hBm5CGf/DcVaqQ9t/x2VlB8nW+9BL6iWFcssPnMTwkW/KMDB1e9DKa9YciM51I/2ikUEA5dYAWJtKh8/ub9SZtQ1BszkvLGWRBlZIuhvPsAvWpZjAR6Cs8fh05zGFfF5ozC8uMQj7RTLVQHyoApwHtkJ6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aT+SQokf; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="nM3gX43O"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1785494354; bh=m7qxUfNuNYwHLukQ/v7wucFmPYkJnNgWcHS1M9XrEsU=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=nM3gX43OQYGpPrbi+jc9/p9TtaRTAjubxcDis8p1PThEW3aJd0jdv8FNd9eNckNQJ
-	 yUhEXiaNXuT2CyEVMc/ur/FLYGe5QKcMyrSbDbP3V3Vmwe6yW+HaKjLNjImxvseo1v
-	 8a0VNDrEftsNUn0qhUKyAN8dBvIwHBY6dDaPcRVo=
-Received: from ubuntu2204.localdomain ([2409:8d20:22b:54c:9e54:40ff:fe02:3f0f])
-	by newxmesmtplogicsvrszb51-0.qq.com (NewEsmtp) with SMTP
-	id 9C92DE69; Fri, 31 Jul 2026 18:39:09 +0800
-X-QQ-mid: xmsmtpt1785494351tx3mh9mqp
-Message-ID: <tencent_C82C09E7235101CC88A97E154D2534183208@qq.com>
-X-QQ-XMAILINFO: MllZffuBkEb541XAeqd43cOdeeHJFxxvmwp8y4jTE0nEspTojKTJ+gYXgKdzpH
-	 ADS6Fgpgss50hz0G/FZuFM7F7Qyw/0v5lEuWyl5ECnImL64fZHcljs9Ul/qjUaPUkjb5S25+z3eS
-	 3GKdYgkXALJgui7F5NNVpRPe2ssZntf1Nfyv3Om0QYIRegohB4IK1ZC/Xgynd5foe5d1OO7aaji4
-	 m6nnPDtlCz0KtXYHFbBIheo8P6LEbLu31FtP8Yts7WiGKG5+ta/GKUj3cL7+JwS9k/E5fxiOaYW2
-	 ADc7J/Xf0Cvec5P384xEU7eLzpeIBWUTVj73QnoJfQ8Cmy1aim1Tx5VYrAxTz+Q129LUz4zaXGTH
-	 OiagMwtXRaOf+IzOx0EqLKlL1p9WGH6/hxJHv6rVTACLGnW2T7+OLyt40PoPCXjGa2y2Wk/haWFL
-	 YiB6X/+Yj2KJ8CPEy4dLKVRtgkOgfatkxGtkucAB3QOHUKLsAIzlyEe2qOCfS47WZIvWrXsx3FaI
-	 FsSFAU9UtsQpN/ac3tLS3+vYIbdtXCRlMB2b/AGPYOYfIyAzZhf5Gag9a+TElWH6qOdhOnV2z6U3
-	 h/pYLQfSwK2rC0gRYmhk27Y/FuuDDGF931tk0fulYENUhyqJia86M5fT/rY/RxSkLJOvW0AcC+YY
-	 uE0QlfZzTEgH+QRnynPmluKksqz1+4KJGfFDhraLnTD3nPFP2H96ejKKHdV1S3xuQjCAKBrEvgmz
-	 7jeanJ4XqHPSk7mEyPfjs4ZIelmrFnp665iwyHsCpVqoPJVi1qPH3VrXPiT3dCM0MLf9qChce5pU
-	 bi8VFxV2K+31bTIFga7VHPHn0AQXZ/lGnL9c+p2Q9BLWNPhfGDxVL+zvhRU3qrvDilNdy2aIzS0F
-	 gH2LrdiDQxALDh2ozH9lx8Bv8K1jvLbS+cn3wvqC2EdxPlpaiJK7K/5jFjNv3G8agEs+xQc2emBd
-	 cN+fpXQJAlApAWfo4qNQVvpdh797/SpglyqvSZJTpsbiS7zQlsvWmgc5QGlAKOBJFKQfZ5uzLo5u
-	 y42nJSbY1WBLD+5yXY+J9+EaNQ2Yg1zsuignSLtMleX+/6CSO6bu2jRQCRKSCgsytk49V3GAwujo
-	 jlAhIWE5T0B8n9tQw=
-X-QQ-XMRINFO: NI4Ajvh11aEjEMj13RCX7UuhPEoou2bs1g==
-From: Cunhao Lu <1579567540@qq.com>
-Date: Fri, 31 Jul 2026 18:39:03 +0800
-Subject: [PATCH v5 1/3] can: rockchip_canfd: prevent TX stall on echo skb
- failure
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aT+SQokf"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7A451F000E9;
+	Fri, 31 Jul 2026 10:54:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1785495243;
+	bh=xaqxjYJIRjPKtGsUfl8eEcVNPJa3wJiic4eXmUWauY4=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=aT+SQokfyn9zqebAPgN/zQynzKoiQSHT5ecna7DFhHnkqvEtRsgQpAA95Az2+UENj
+	 ob+P2i7229dJa359tXJKfW9/VaL38F4UEwJesPaSSiL83qj1BwbwgcmhwCxnrQjNzt
+	 dcbd+vCSm8WsDXaQYaw1IO8G2hx7KEYaXHahlbZOyE23QNHsDyvEYnt94v1kXborUg
+	 A7Jco+/pX6DBs5dKwPSZeaKT3PqqQkq/nRsrYtQO8yvMRut1IcZaYV3vV7owsB2DNB
+	 u0SG4b+C+gWY1Z7Qayrxwc1cRkzIDHQxR8UjDpm2KAQLhFLlKuYYSvObihJgx/+5YR
+	 cCtdwzyGtoJdw==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v5 1/3] can: rockchip_canfd: prevent TX stall on echo
+ skb failure
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Cunhao Lu" <1579567540@qq.com>
+Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>
+In-Reply-To: <tencent_C82C09E7235101CC88A97E154D2534183208@qq.com>
+References: <20260731-master-v5-0-5b27029dee20@qq.com>
+ <tencent_C82C09E7235101CC88A97E154D2534183208@qq.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 31 Jul 2026 10:54:02 +0000
+Message-Id: <20260731105402.B7A451F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-OQ-MSGID: <20260731-master-v5-1-5b27029dee20@qq.com>
-References: <20260731-master-v5-0-5b27029dee20@qq.com>
-In-Reply-To: <20260731-master-v5-0-5b27029dee20@qq.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, 
- Vincent Mailhol <mailhol@kernel.org>, kernel@pengutronix.de, 
- Heiko Stuebner <heiko@sntech.de>
-Cc: Cunhao Lu <1579567540@qq.com>, linux-can@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-rockchip@lists.infradead.org, stable@vger.kernel.org
-X-Mailer: b4 0.15.2
 
-rkcanfd_start_xmit() advances tx_head and requests transmission even when
-can_put_echo_skb() fails. This creates a pending TX entry without the echo
-skb that the RXSTX completion path needs to match the self-received frame.
-The entry cannot be completed, and the netdev TX queue can remain stopped
-after the two-entry software FIFO fills.
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+s) to consider:
 
-Install the echo skb before loading the hardware TX buffer. If installation
-fails, account the frame as dropped and leave both the hardware FIFO and
-software TX state unchanged. After the echo skb is installed, use the
-stored echo skb as the source for the hardware frame data.
+Pre-existing issues:
+- [High] Out-of-bounds read and hardware register out-of-bounds write due t=
+o CAN XL frame mishandling.
+--
 
-This depends on the standalone can_put_echo_skb() ownership fix. It makes
-the remaining -EINVAL path consume the skb and was posted at:
+--- Patch [1]: [PATCH v5 1/3] can: rockchip_canfd: prevent TX stall on echo=
+ skb failure ---
+commit 8df8ef3a7e1e7414d8117605f2f14ed295ef9ad1
+Author: Cunhao Lu <1579567540@qq.com>
 
-Link: https://lore.kernel.org/linux-can/tencent_944DADCC4B42C8484EC01DA2B15F42132906@qq.com
-Fixes: b6661d73290c ("can: rockchip_canfd: add TX PATH")
-Cc: stable@vger.kernel.org
-Signed-off-by: Cunhao Lu <1579567540@qq.com>
----
- drivers/net/can/rockchip/rockchip_canfd-tx.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+can: rockchip_canfd: prevent TX stall on echo skb failure
 
-diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/can/rockchip/rockchip_canfd-tx.c
-index 12200dcfd338..86fa8f2e1c8b 100644
---- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
-+++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
-@@ -88,7 +88,16 @@ netdev_tx_t rkcanfd_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 		return NETDEV_TX_BUSY;
- 	}
- 
--	cfd = (struct canfd_frame *)skb->data;
-+	tx_head = rkcanfd_get_tx_head(priv);
-+	frame_len = can_skb_get_frame_len(skb);
-+	err = can_put_echo_skb(skb, ndev, tx_head, frame_len);
-+	if (err) {
-+		ndev->stats.tx_dropped++;
-+		return NETDEV_TX_OK;
-+	}
-+
-+	skb = priv->can.echo_skb[tx_head];
-+	cfd = (const struct canfd_frame *)skb->data;
- 
- 	if (cfd->can_id & CAN_EFF_FLAG) {
- 		reg_frameinfo = RKCANFD_REG_FD_FRAMEINFO_FRAME_FORMAT;
-@@ -114,7 +123,6 @@ netdev_tx_t rkcanfd_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 					    cfd->len);
- 	}
- 
--	tx_head = rkcanfd_get_tx_head(priv);
- 	reg_cmd = RKCANFD_REG_CMD_TX_REQ(tx_head);
- 
- 	rkcanfd_write(priv, RKCANFD_REG_FD_TXFRAMEINFO, reg_frameinfo);
-@@ -123,10 +131,7 @@ netdev_tx_t rkcanfd_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 		rkcanfd_write(priv, RKCANFD_REG_FD_TXDATA0 + i,
- 			      *(u32 *)(cfd->data + i));
- 
--	frame_len = can_skb_get_frame_len(skb);
--	err = can_put_echo_skb(skb, ndev, tx_head, frame_len);
--	if (!err)
--		netdev_sent_queue(priv->ndev, frame_len);
-+	netdev_sent_queue(priv->ndev, frame_len);
- 
- 	WRITE_ONCE(priv->tx_head, priv->tx_head + 1);
- 
+This patch prevents a TX stall by installing the echo skb before loading
+the hardware TX buffer. If installation fails, it drops the frame and leaves
+the hardware FIFO and software TX state unchanged. It correctly relies on t=
+he
+echo skb as the source for hardware frame data after it is installed.
 
--- 
-2.34.1
+Link: https://lore.kernel.org/linux-can/tencent_944DADCC4B42C8484EC01DA2B15=
+F42132906@qq.com
 
+> diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/c=
+an/rockchip/rockchip_canfd-tx.c
+> index 12200dcfd3389..86fa8f2e1c8ba 100644
+> --- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
+> +++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
+[ ... ]
+> @@ -114,7 +123,6 @@ netdev_tx_t rkcanfd_start_xmit(struct sk_buff *skb, s=
+truct net_device *ndev)
+>  					    cfd->len);
+>  	}
+> =20
+> -	tx_head =3D rkcanfd_get_tx_head(priv);
+>  	reg_cmd =3D RKCANFD_REG_CMD_TX_REQ(tx_head);
+> =20
+>  	rkcanfd_write(priv, RKCANFD_REG_FD_TXFRAMEINFO, reg_frameinfo);
+> @@ -123,10 +131,7 @@ netdev_tx_t rkcanfd_start_xmit(struct sk_buff *skb, =
+struct net_device *ndev)
+>  		rkcanfd_write(priv, RKCANFD_REG_FD_TXDATA0 + i,
+>  			      *(u32 *)(cfd->data + i));
+> =20
+
+[Severity: High]
+This is a pre-existing issue, but does this code properly handle CAN XL fra=
+mes?
+
+If an ETH_P_CANXL frame is sent via AF_PACKET, can_dev_dropped_skb() curren=
+tly
+lacks a check to drop CAN XL frames for devices that don't support CAN XL.
+When such a frame enters rkcanfd_start_xmit(), can_is_canfd_skb() returns
+false, causing the driver to treat it as a Classic CAN frame.
+
+The driver reads cfd->len from offset 4, which in a canxl_frame corresponds=
+ to
+the user-controlled flags field. Because valid CAN XL frames require CANXL_=
+XLF
+(0x80) to be set, cfd->len is evaluated as at least 128.
+
+Could a minimally sized CAN XL frame trigger a loop of 32 iterations here,
+leading to an out-of-bounds read from cfd->data and an out-of-bounds write
+to device memory at RKCANFD_REG_FD_TXDATA0 + i?
+
+> -	frame_len =3D can_skb_get_frame_len(skb);
+> -	err =3D can_put_echo_skb(skb, ndev, tx_head, frame_len);
+> -	if (!err)
+> -		netdev_sent_queue(priv->ndev, frame_len);
+> +	netdev_sent_queue(priv->ndev, frame_len);
+> =20
+>  	WRITE_ONCE(priv->tx_head, priv->tx_head + 1);
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260731-master-v5-=
+0-5b27029dee20@qq.com?part=3D1
