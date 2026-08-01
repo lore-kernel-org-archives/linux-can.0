@@ -1,88 +1,168 @@
-Received: from mx-8.mail.web4u.cz (smtp7.web4u.cz [81.91.87.87])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D810D3E3DBC;
-	Sat,  1 Aug 2026 11:02:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=81.91.87.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FCF526A0B9
+	for <linux-can@vger.kernel.org>; Sat,  1 Aug 2026 13:43:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785582148; cv=none; b=KcDOsmLx0JiIQkGYRWkMk11RR3MW7R7CRoxCxH6e+BKPi1jYUoTR7krY1RUDg08JoWZFSgqBpVv9EBNjekSta2JwKz/R/xzF7vdiLaoeC1QX4ZO2dDX2F3Xas2lfbauevzYJztCXKo73FHcp6/cwFCP1QJ1Y7eQzyX8xU4ocQoo=
+	t=1785591797; cv=none; b=NxuK5IJvxoXl9JdmDO1RWp6taCsvcM236WXUdjULBPpcfw6qUKxIHqOe3aw/5JoKpr44wJgMLskLbdV7WQTm8MLyiRDjp2mRrTFx3qp9sKIoFOaViqtuB1gwyzxtCY5C9eSGEhIsd+NYYmx6IprsW81a9VuKVELCeKaMLWrO2aY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785582148; c=relaxed/simple;
-	bh=diTGh9pGYI+gWDvk3pLllvaE0gYZHY05lhYAOIA8QlU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=M+TAdtXBZoV+C/L4iue4U3v5Bf/I18/BsKESo6ue6768WScIh4lswBmk7iIRxvL1dRsUXjphmFEG0BMPob/aXv9Lmn/olDF1Ks2rldMslM6gUpMXHng/2U1uo9+v8IsA7UXKNtx5to3gsYnk/xHDkDERaOeyhl721UitdjVgByo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pikron.com; spf=pass smtp.mailfrom=pikron.com; dkim=pass (2048-bit key) header.d=pikron.com header.i=@pikron.com header.b=yK085N9C; arc=none smtp.client-ip=81.91.87.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pikron.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pikron.com
+	s=arc-20240116; t=1785591797; c=relaxed/simple;
+	bh=EI/u70y8gtAvBSo65ZENXEQdWC3euJsSXXJqLR8S46U=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=PyhkAlp8e9CV8c8q0U09DPNHYRrZpbUnUjPjdmrvNIZXzk7IfZ4KHcExIijXdBC27hkSEff+8X62Hq2Wio64XwKNXgnvTrvTrHJmwf/VSMLBhEYMitGMMbAJvbmIT04BDbrFNZEy+TuoO2iMujxOAnXx/t3GGPwWRvF31WowM2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=albWTtqQ; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pikron.com header.i=@pikron.com header.b="yK085N9C"
-Received: from mx-8.mail.web4u.cz (localhost [127.0.0.1])
-	by mx-8.mail.web4u.cz (Postfix) with ESMTP id BC2C92024E8;
-	Sat,  1 Aug 2026 12:56:34 +0200 (CEST)
-Received: from baree.pikron.com (unknown [84.242.78.234])
-	(Authenticated sender: ppisa@pikron.com)
-	by mx-8.mail.web4u.cz (Postfix) with ESMTPA id 65FD820247E;
-	Sat,  1 Aug 2026 12:56:34 +0200 (CEST)
-From: Pavel Pisa <ppisa@pikron.com>
-To: linux-can@vger.kernel.org,
-	Linux Documentation <linux-doc@vger.kernel.org>,
-	"Marc Kleine-Budde" <mkl@pengutronix.de>,
-	Randy Dunlap <rdunlap@infradead.org>
-Cc: Ondrej Ille <ondrej.ille@gmail.com>,
-	Jiri Novak <jnovak@fel.cvut.cz>,
-	Pavel Pisa <ppisa@pikron.com>
-Subject: [PATCH 1/1] docs: ctucanfd: fix swapped colors in legend for TX buffer FSM of CTU CAN FD
-Date: Sat,  1 Aug 2026 12:55:52 +0200
-Message-ID: <d775feefa1c16d7ea7f42482483c81491f75ce6c.1785574572.git.pisa@cmp.felk.cvut.cz>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <cover.1785574572.git.pisa@cmp.felk.cvut.cz>
-References: <cover.1785574572.git.pisa@cmp.felk.cvut.cz>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="albWTtqQ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 929641F00AC4;
+	Sat,  1 Aug 2026 13:43:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1785591795;
+	bh=/a0HBDNs1Hu4SY+fNre865AXVNBC6r/K3FLUdxtR/JA=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=albWTtqQFNSorQdYtGcV8cIH4qbNHXjY1/CSCk3AREeJTI5zS6fVXAMi5GJSnlBQM
+	 UqoN+Zu+NaktA5CZc1L67t+upWFD18M4nvQgXqZ5ukZisBlLH//sY4AzRF2jUpfAX6
+	 NBFE3sVLCEPMiX42TW1yX9OF0C0RGP+AARsxUSiENrhaFwcgmB3KYXh2gORDY6h7LX
+	 co2x2wrNHDZoY/BctKFUjSVhzt9fZCR6f4FEHV6JlHL24lbZXkTj8pr2IHWSYBZg2N
+	 J2VGxmqUxJDlqCR/eWaephktM0jynqK7T3ynI8CJVxZYFuzl2cXzY4VpC927p3HXi2
+	 A3L914yG1N/hw==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH net] can: j1939: avoid address-claim timer deadlock
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Felix Hoffmann" <f3lix.dev@gmx.de>
+Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>
+In-Reply-To: <20260731134255.1002902-1-f3lix.dev@gmx.de>
+References: <20260731134255.1002902-1-f3lix.dev@gmx.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Sat, 01 Aug 2026 13:43:15 +0000
+Message-Id: <20260801134315.929641F00AC4@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Pylter4U-dkim-type: user
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=pikron.com;
-	i=@pikron.com; q=dns/txt; s=w4u; t=1785581794; h=from : date : to :
-	subject; bh=diTGh9pGYI+gWDvk3pLllvaE0gYZHY05lhYAOIA8QlU=;
-	b=yK085N9Cu469XSjKLvEXIf6vHyvL+UDvrhiJ3sgiuzrFLwEmmdUL+cgLwsAMRdmVGccrF
-	K3BAq3+g5HMN9cku4WKFE5pyFQ/piHu/r01J3EgC6bAbb6ABx202aXuSwR2eomHwK9mtMaf
-	Io33/d1ghl71oufrbSvibs5CLAeNSOCMJOfQiLlFRoFBW7vw0JpY2Y4XbzfeXZCQ53jFvKN
-	F+aBbPg31XJ3mX6d0h4ny9iBiSBQbIPXb2cesUVj8dQqdDG5tbvCFrZ0OuBhq2KTFCtcxqM
-	kjcrFTpcNVvgUerOKLZcG6i5KYd9NqLfZfvMKU8QqAoxGmZv6Ng2LPOdCxjA==
-X-W4U-Auth: 5acbfc1bafd0ba02eddfa61b9e33c05656a20c63
 
-The Inaccessible and Accessible legend colors has been swapped
-for many years. As I have helped to clean the CTU CAN FD section
-of official documentation for mass produced silicon (multiple
-models of microcontrollers) with the company representatives,
-I have found the problem and propagate correction bask to
-the primary CTU CAN FD sources.
+Thank you for your contribution! Sashiko AI review found 4 potential issue(=
+s) to consider:
 
-Signed-off-by: Pavel Pisa <ppisa@pikron.com>
----
- .../networking/device_drivers/can/ctu/fsm_txt_buffer_user.svg | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Pre-existing issues:
+- [High] Use-after-free on `priv->lock` during ECU timer completion.
+- [High] Data race and unprotected `list_del()` causing list corruption on =
+ECU release.
+- [Medium] Memory leak of unmapped ECUs and `j1939_priv` due to missing tim=
+er cancellation.
+- [Medium] Logic Bug: Resurrecting lost address claim contention.
+--
 
-diff --git a/Documentation/networking/device_drivers/can/ctu/fsm_txt_buffer_user.svg b/Documentation/networking/device_drivers/can/ctu/fsm_txt_buffer_user.svg
-index 381323423b4c..c8cf0bc49b69 100644
---- a/Documentation/networking/device_drivers/can/ctu/fsm_txt_buffer_user.svg
-+++ b/Documentation/networking/device_drivers/can/ctu/fsm_txt_buffer_user.svg
-@@ -93,9 +93,9 @@
-    <ellipse cx="144.827" cy="159.143" rx="10.8866" ry="4.39308"/>
-    <ellipse cx="59.4364" cy="142.823" rx="7.36455" ry="4.39308"/>
-    <ellipse cx="144.827" cy="129.196" rx="10.8866" ry="4.39308"/>
--   <ellipse cx="143.077" cy="180.53" rx="10.8866" ry="4.39308"/>
-   </g>
--  <ellipse cx="110.386" cy="180.53" rx="10.8866" ry="4.39308" fill="#ffcb35" stroke="#000" stroke-linecap="square" stroke-width=".499999"/>
-+  <ellipse cx="110.386" cy="180.53" rx="10.8866" ry="4.39308" fill="#28a4ff" stroke="#000" stroke-linecap="square" stroke-width=".499999"/>
-+  <ellipse cx="143.077" cy="180.53" rx="10.8866" ry="4.39308" fill="#ffcb35" stroke="#000" stroke-linecap="square" stroke-width=".499999"/>
-   <text x="110.90907" y="179.42688" font-size="3.175px" xml:space="preserve"><tspan x="110.90907" y="179.42688" dy="0.60000002" text-align="center" text-anchor="middle">Accessible</tspan><tspan x="110.90907" y="183.39563"><tspan font-size="3.175px" text-align="center" text-anchor="middle">for S</tspan>W</tspan></text>
-   <text x="143.5869" y="179.52795" xml:space="preserve"><tspan x="143.5869" y="179.52795" dy="1 0 0 0 0 0" font-family="sans-serif" font-size="2.82222px" text-align="center" text-anchor="middle" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal">Inaccessible</tspan><tspan x="143.5869" y="183.36786" font-size="3.175px"><tspan font-size="3.175px" text-align="center" text-anchor="middle">for S</tspan>W</tspan></text>
-   <g font-size="3.175px">
--- 
-2.47.3
+--- Patch [1]: [PATCH net] can: j1939: avoid address-claim timer deadlock -=
+--
+commit a5db6a778fcc4768a707910335bdf934adc29468
+Author: Felix Hoffmann <f3lix.dev@gmx.de>
 
+can: j1939: avoid address-claim timer deadlock
+
+j1939_ac_process() holds priv->lock while synchronously canceling an
+ECU's address-claim hrtimer. The timer callback takes the same lock. If the
+callback starts on another CPU after the receive path takes the lock, the
+callback waits for priv->lock while hrtimer_cancel() waits for the callback
+to finish. This deadlocks both CPUs and makes the system unresponsive.
+
+> diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
+> index cdc3c0a719379..ac654dc8872e6 100644
+> --- a/net/can/j1939/bus.c
+> +++ b/net/can/j1939/bus.c
+> @@ -131,7 +131,17 @@ static enum hrtimer_restart j1939_ecu_timer_handler(=
+struct hrtimer *hrtimer)
+>  		container_of(hrtimer, struct j1939_ecu, ac_timer);
+>  	struct j1939_priv *priv =3D ecu->priv;
+> =20
+> -	write_lock_bh(&priv->lock);
+> +	/*
+> +	 * j1939_ac_process() cancels this timer while holding priv->lock.
+> +	 * Don't block here, otherwise the timer and receive paths can deadlock
+
+[Severity: Medium]
+This isn't a bug introduced by this patch, but does j1939_ac_process() alwa=
+ys
+cancel the timer?
+
+If a new address claim takes precedence over an existing claimant (prev),
+prev is evicted via j1939_ecu_unmap_locked(prev). However, it appears its
+pending ac_timer is not cancelled.
+
+If the winning ECU vacates the address before prev's timer expires, could t=
+he
+address slot become free, allowing prev's timer to fire and blindly re-map
+itself without broadcasting an Address Claim message?
+
+> +	 * waiting for each other on different CPUs. Retry shortly if address
+> +	 * claim processing currently owns the lock.
+> +	 */
+> +	if (!write_trylock(&priv->lock)) {
+> +		hrtimer_forward_now(hrtimer, ms_to_ktime(1));
+> +		return HRTIMER_RESTART;
+> +	}
+> +
+>  	/* TODO: can we test if ecu->addr is unicast before starting
+>  	 * the timer?
+>  	 */
+>  	j1939_ecu_map_locked(ecu);
+
+[Severity: Medium]
+This is a pre-existing issue, but can this lead to a memory leak when an
+interface goes down?
+
+When a network interface goes down, j1939_ecu_unmap_all() clears the ECU
+entries from priv->ents. If it fails to cancel the pending ac_timer for the
+ECUs, could this handler execute and call j1939_ecu_map_locked(ecu)?
+
+Since the slot was cleared, the ECU would be successfully re-mapped and its
+reference count incremented, potentially leaving it leaked along with the
+j1939_priv object since the interface is already down.
+
+> =20
+>  	/* The corresponding j1939_ecu_get() is in
+>  	 * j1939_ecu_timer_start().
+>  	 */
+>  	j1939_ecu_put(ecu);
+> -	write_unlock_bh(&priv->lock);
+> +	write_unlock(&priv->lock);
+
+[Severity: High]
+This isn't a bug introduced by this patch, but could this write_unlock()
+trigger a use-after-free?
+
+If the timer holds the last reference to the ECU, j1939_ecu_put(ecu) drops =
+its
+refcount to 0, invoking __j1939_ecu_release(). This in turn calls
+j1939_priv_put(priv).
+
+If this drops the final reference to the j1939_priv structure (e.g., after a
+network interface teardown dropped the base reference), priv is synchronous=
+ly
+freed via kfree(). Immediately after j1939_ecu_put() returns, the handler
+dereferences the freed memory by calling write_unlock(&priv->lock).
+
+[Severity: High]
+This is also a pre-existing issue, but is there a risk of list corruption
+when j1939_ecu_put() drops the final reference without priv->lock being held
+in other contexts?
+
+While priv->lock is held here, j1939_ecu_put() is called from functions
+like j1939_ac_recv() in address-claim.c without holding this lock.
+
+If j1939_ecu_put() drops the final reference, __j1939_ecu_release() executes
+list_del(&ecu->list), which assumes priv->lock is held for safe modification
+of priv->ecus. Could concurrent operations trigger this and silently corrupt
+the list?
+
+> =20
+>  	return HRTIMER_NORESTART;
+>  }
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260731134255.1002=
+902-1-f3lix.dev@gmx.de?part=3D1
