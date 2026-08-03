@@ -1,156 +1,114 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41FA230EF95;
-	Mon,  3 Aug 2026 06:18:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E85B3BB135
+	for <linux-can@vger.kernel.org>; Mon,  3 Aug 2026 09:14:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785737902; cv=none; b=EnF+T38aY1EqyLHL49yGsnytXFqiYdkG7qYiDZjTiwj6JG+sxmiduDlp50fN3fUV5NvpXRPVmt98X7XuS8kaoBHC+7cC0oD/pyF28fdnYfWlgvkOmGs38+Oqac+0fk3NkX1gBm3JD4+Z968Dt22uoEOcqFnpgPs28vjNIRVY9ww=
+	t=1785748486; cv=none; b=HLfHNlZtRcwXeGmDXVtgk95IDJV+Nm5yGuf5kuE3M+R/U698OboKdJAx712MxrRkQPYpF9cRJqm/8EZ284QIDp6rVmQiMmEIP2rWqTI0gritpmv8uf/SCjBPGRaWkcgzbtCZcTizqAydm4EMSSLJP/brjK5pbVeqGuGQ35Y6Yug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785737902; c=relaxed/simple;
-	bh=dzrM7n778qw7znQknhNG1qeX3Oay+eQFuKXPntCG/qg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OX8C8DqfLh10wNSHm9RM563zTZ4J976LuBfrflJf3fFPNpwrdB8Nc5/deEUEiJe2JK8kWE7icdaW3qvOaMXwtHy7IzzP+WEFCZgdB6/S1iLKfRMALE3FUrExjDUVJz9tcZWXD0zuAyqmUT+7FUFXMXjhWCt0A62eGE8MfgzA4jA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 0DB5320044D;
-	Mon, 03 Aug 2026 08:18:11 +0200 (CEST)
-Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1wqm02-002eFV-38;
-	Mon, 03 Aug 2026 08:18:10 +0200
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.98.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1wqm02-00000007isp-3duW;
-	Mon, 03 Aug 2026 08:18:10 +0200
-Date: Mon, 3 Aug 2026 08:18:10 +0200
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Felix Hoffmann <f3lix.dev@gmx.de>
-Cc: linux-can@vger.kernel.org, Robin van der Gracht <robin@protonic.nl>,
-	netdev@vger.kernel.org, kernel@pengutronix.de,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] can: j1939: avoid address-claim timer deadlock
-Message-ID: <anAyok4pycHDiaLi@pengutronix.de>
-References: <20260731134255.1002902-1-f3lix.dev@gmx.de>
+	s=arc-20240116; t=1785748486; c=relaxed/simple;
+	bh=RNbayJ7BiYPsSATeDTDF5Fcz1ooDst05MNn0R3F5YAY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RelJLcXNAo/wzp1q8H/G4TtcminIikRh6EWKXfwQ1PNiuL1iepFh4Qnc3qw21DMFRETa15QUBK1vkJj92i1IIfqVtQuLLgo9//W1FU9pY3JXNf++cnZdZvZvUXZujv/XkrUfd06tJ0RB4ocYxHhVHTZkfKZg9Zu4NNrZTSuJMRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sl+h8ZFy; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sl+h8ZFy"
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2d02b4c3601so34434255ad.3
+        for <linux-can@vger.kernel.org>; Mon, 03 Aug 2026 02:14:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1785748481; x=1786353281; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=OCqAMzusK2ktygAt8T0k7wPs6+VubJNUB0NzLquWhiI=;
+        b=Sl+h8ZFyjtSufO+Cyo9PN2QvQJsOZtTOqqZjs5qfo5eVaOS0i9zB/d/J1dvpXJRsQg
+         qAeG1bprsEIdUMGULRxeQDYJtW9Hax/z5Py+aM+VqtO9NHp/gZNtIhdKL1bdRcOLxKzf
+         EsJ0pS1sRN1F31zNx1NjPRpCGH01CewxC+sBOQO9Q7y+58iRKDrLoEr4ciAezQXFBQRC
+         MjYHdhAOtdIusB8Ngx66uaM/mWKiLawuxqoeUjN4cRb8tam0u9DsQZ9Tlv0C9ewcEpHm
+         TdVH7vuyqdVUWY5cUYXaj37gaK+zHweMcy38DHo5xDOjE0wEd9pbLA2OAuhkMi3Kql+1
+         gi+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1785748481; x=1786353281;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=OCqAMzusK2ktygAt8T0k7wPs6+VubJNUB0NzLquWhiI=;
+        b=ag1aU5z/l9Yc/6ZKjtWEGlofrolm1kEylPA0mCPzJfiRux/iBl317YgF0fm3kYCzUj
+         uFWhEYipvQ0mnIC5A/CBC22cDX3y1JDA2F98IOG90V7pSoC3UF0b6wUUkwIl7+lg8AZr
+         2WWQKUDlywvrcuHGHVqBPuYqsmvL2DjemxpWW0JPzJI6zWcDRUs3qByZX4SgdA7eJHVN
+         VLTzehFbFekSHPbZIj7VMd54p/fGVdhLXclTVFRCdZVne5vMcWXwSTogYjIzeZ25KDp1
+         7UcZIwl6/NSneT6dS7IGJyARSezDpd9xN4XnA04YcRCCuZFTtEq9RlM8c0Xtm7NeAIeC
+         osXA==
+X-Forwarded-Encrypted: i=1; AHgh+Rp4oy8mj7ZapbaOkRxU37E7JvqnTzCrLgAeq1CCUguCXHA7BYB+dgAnePa90b5K0Lh7RVBEh5sx5lk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxkY3wQH5WljfDmdw6+553hoiD9NYmjkrpxbvYo5VoYi+DXBGOg
+	CvMAMykkoGHUyRxfEnlrLUfT4/tKNQP9mGT25AUzalayPgcM9XgetnL0
+X-Gm-Gg: AR+sD10gvbgj7WOVy49Q4x0CTQZ9hzhCcNs1NzFIq34pThw71Ai/fgjPawxhrRJ8OWx
+	86velV+E9MpqpXoUPXRzqfC+Ut1IQ56zigqXSZzHTGrRJPlJV4WJFC5N/m5C45mb36J4CDamdFT
+	QVEPnI3XDPJEmzsF8gSGtM7mc021I7BknUOWhwZ8KpF24QFpCrxLZO2WAKtZDpzEbyRFLzctBby
+	zikak7w/MHKuA/2mF2EsBsHYEUxWMZkBlBPCNce0S/+rCQh1Hr/UsMO5DF4XXQBhtFbzveZ41+5
+	f+9s5T9AkQFEXmOJxrPscdSv5RXY7zFkcmNpF9B6wp3lcl7sa1flaJ52Ri6Dj/mhPm+NIRcl0rk
+	Z4Vxdup1zh+H7h4e0d1Ag4UnrVt6po0aVLNrxw2l6+bRtfBzcTVbGPJsqQQ2+dPMKyRyrUItLSP
+	p4QJ0Pgom5uT2s9syh/6W0npVamhWgJ992FVFsM4u6t8kI6+7GMwVBcfT/R3Je+jZWo/jfBZF5u
+	b4LMY7VrxPTDJrMOpm40VsL1y+v4TeKpNziWvM8Mtdlnby/YTFWfw==
+X-Received: by 2002:a17:902:dac4:b0:2cf:8131:75e8 with SMTP id d9443c01a7336-2d05221d386mr91231755ad.13.1785748481490;
+        Mon, 03 Aug 2026 02:14:41 -0700 (PDT)
+Received: from C-PF5A3Z8J.nsn-intra.net ([167.103.78.203])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2d04b0eb7b7sm34546515ad.39.2026.08.03.02.14.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Aug 2026 02:14:40 -0700 (PDT)
+From: Sureshkumar S <ssureshmsd7@gmail.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
+	linux-can@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Sureshkumar S <ssureshmsd7@gmail.com>
+Subject: [PATCH net 0/2] can: bittiming: fix two defects in the userspace bitrate conversion
+Date: Mon,  3 Aug 2026 09:14:24 +0000
+Message-ID: <20260803091426.29050-1-ssureshmsd7@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20260731134255.1002902-1-f3lix.dev@gmx.de>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Hi Felix,
+can_calc_bittiming() converts a userspace supplied bitrate into hardware
+timing parameters. Two defects in that conversion are fixed here, both
+reachable through IFLA_CAN_BITTIMING on any CAN device that provides a
+bittiming_const, and both caused by 32 bit arithmetic on a value that
+userspace fully controls.
 
-Please do not send CAN related patches to the netdev list, and please
-use [PATCH can] tag instead.
+Patch 1 fixes a divide-by-zero. The 32 bit tsegall * bt->bitrate product
+wraps to zero for bitrates carrying enough factors of two, and the
+following division faults. A bitrate of 16777216 is already enough,
+which is below the 20 Mbit/s CAN XL data bitrate ceiling.
 
-On Fri, Jul 31, 2026 at 03:42:55PM +0200, Felix Hoffmann wrote:
-> j1939_ac_process() holds priv->lock while synchronously canceling an
-> ECU's address-claim hrtimer. The timer callback takes the same lock. If the
-> callback starts on another CPU after the receive path takes the lock, the
-> callback waits for priv->lock while hrtimer_cancel() waits for the callback
-> to finish. This deadlocks both CPUs and makes the system unresponsive.
-> 
-> Do not wait for priv->lock from the soft hrtimer callback. If
-> address-claim processing currently owns it, move the expiry forward by 1 ms
-> and restart the timer. This lets a concurrent hrtimer_cancel() finish and
-> remove the requeued timer. Without a cancellation, mapping is retried
-> shortly.
-> 
-> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-> Cc: stable@vger.kernel.org
-> Assisted-by: Codex:GPT5.6-Sol
-> Signed-off-by: Felix Hoffmann <f3lix.dev@gmx.de>
-> ---
-> 
-> The deadlock was reproduced three times on a 2-vCPU kernel with KASAN
-> and lockdep. Cross-CPU GDB stacks showed hrtimer_cancel() and the timer
-> callback waiting on the same j1939_priv lock and hrtimer.
-> 
-> With this change, the reproducer completed 420 stress rounds, and the
-> patched CAN J1939 syzkaller campaign remained operational. The trigger
-> drops to UID and GID 65534 before opening its CAN sockets. A minimal
-> reproducer and the complete stack capture are available privately on
-> request.
-> 
->  net/can/j1939/bus.c | 14 ++++++++++++--
->  1 file changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
-> index cdc3c0a71937..ac654dc8872e 100644
-> --- a/net/can/j1939/bus.c
-> +++ b/net/can/j1939/bus.c
-> @@ -131,7 +131,17 @@ static enum hrtimer_restart j1939_ecu_timer_handler(struct hrtimer *hrtimer)
->  		container_of(hrtimer, struct j1939_ecu, ac_timer);
->  	struct j1939_priv *priv = ecu->priv;
->  
-> -	write_lock_bh(&priv->lock);
-> +	/*
-> +	 * j1939_ac_process() cancels this timer while holding priv->lock.
-> +	 * Don't block here, otherwise the timer and receive paths can deadlock
-> +	 * waiting for each other on different CPUs. Retry shortly if address
-> +	 * claim processing currently owns the lock.
-> +	 */
-> +	if (!write_trylock(&priv->lock)) {
+Patch 2 fixes the candidate rating, which applies abs() to an unsigned
+subtraction. A wrapped difference is read back as a small error, so a
+bitrate far outside what the controller can reach passes the 5% gate and
+is silently accepted instead of rejected.
 
-write_trylock() will not take a lock even if read lock is taken on the
-receive path. Means, this operation will be delayed not only by the rare
-address claim frames, but also by any frame on the bus.
+Both were found with a netlink fuzzer against dummy_can and verified
+under KASAN in QEMU. Testing covered the unpatched tree, patch 1 alone
+and the full series: bitrates from 125 kbit/s to 10 Mbit/s produce
+byte-identical bittiming at every step, patch 1 alone removes the oops,
+and patch 2 turns the silently accepted out-of-range bitrates into
+-EINVAL.
 
-Since, the problem is real, and this fix is good enough for stable, i'm
-ok with it + some nit picks.
+Sureshkumar S (2):
+  can: bittiming: fix divide-by-zero in can_calc_bittiming()
+  can: bittiming: fix bitrate error calculation on unsigned operands
 
-Update the comment and commit message to something like this:
-        /* j1939_ac_process() cancels this timer while holding priv->lock.
-         * Don't block here, otherwise the timer and receive paths can
-         * deadlock waiting for each other on different CPUs. Retry shortly
-         * if the lock is held, by the address claim writer or by a reader
-         * on the receive path.
-         */
+ drivers/net/can/dev/calc_bittiming.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-> +		hrtimer_forward_now(hrtimer, ms_to_ktime(1));
 
-Please add a define for 1 ms retry. No magic numbers.
-
-If the bus load will really hit us so strong that we will retry for
-too long, it will be good to have some rate limited warning after ~5
-retries. Also comment on that 5 retires is not spec related, it is more
-"seems to be reasonable" number.
-
-> +		return HRTIMER_RESTART;
-> +	}
-> +
->  	/* TODO: can we test if ecu->addr is unicast before starting
->  	 * the timer?
->  	 */
-> @@ -141,7 +151,7 @@ static enum hrtimer_restart j1939_ecu_timer_handler(struct hrtimer *hrtimer)
->  	 * j1939_ecu_timer_start().
->  	 */
->  	j1939_ecu_put(ecu);
-> -	write_unlock_bh(&priv->lock);
-> +	write_unlock(&priv->lock);
-
-Please explain in the commit message, why changing write_*_bh() to write_*()
-is a safe option.
-
-Best Regards,
-Oleksij
+base-commit: af39eb111ce6b5eba9c08513b62c4868eb7e7fd5
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.43.0
+
