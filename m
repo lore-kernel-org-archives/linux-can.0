@@ -1,158 +1,98 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8194B3242A4;
-	Mon,  3 Aug 2026 15:17:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADB442F8EB0;
+	Mon,  3 Aug 2026 15:21:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785770279; cv=none; b=k3L1Dryr5l0h8m7qQG1twDlTePNJqN9yezXbPFPfxhevUDr8roxPP2emYjYQ7UI9+GDMtJq/VtNRxRY67Gd71yDz+SFycuoD52WY1WE7t7dKB9kutlCwiTmea5+YNLAMIeF1utBWbka4PjeNC+wWlrm4c8/7K791tf3fTi4YLX8=
+	t=1785770501; cv=none; b=dGQxlgHEdBbDJOXPeg9G+gKe9BzZwVowQ32d9EfbQLw6GFKOemzeNX9SE1ZS5vt5rhXsQNmhIuvD2IFt0MzanDx8FeKLXdLgyZquauSU2G0ocezoRrQzBn4Y0YUzsB+2p9CGhTKPDmU1i8pzTk0LBtxt0czElSomFTeRlq5DTcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785770279; c=relaxed/simple;
-	bh=soSEqzDnwQ1aex2KUZpN+z6bYr4irSG1QXDqt7TlF7A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=J6s1JphhLpzk+vv3OJEJtrfbWPMWxKbnJ4F1mgMAt3j/52vh0iPg3VY+dj5/mhsTostb637i6ut/it9F/fC6e8Q0x0CIncnw+/1f+4iTTwgwoTOB8yBtLDVmpEB0Exufflyv7raWmoTFMp9w0QvYssgUMXmJJn0zYDv9GtoXDAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UAo7ptbf; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UAo7ptbf"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D5FF1F00A3A;
-	Mon,  3 Aug 2026 15:17:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785770278;
-	bh=TNA7GdkAswJiqC3JDVltfJ/np3RxwXSiqHv7NKRjLLU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=UAo7ptbf/DNg1ropP/nHqdL8ytmjkZv630Ohkx0gfsuDrmk6hEK+D2BWwMz12JXeA
-	 8Z4KVXPkCZSnVHqewCytLlJmdW3pNsrzt5AB+OykrHKFEwdZ4lEXP+8FC4jZNELMhl
-	 JzPs/Q6dYLjoFpTavsm/aYIDM3VHHoLy/+0B7RYU/64xGejrgKj5D7Rc4k+QKv8OOP
-	 Z2+Vw6Qm37K04RNDKaSMYlrF1VyT4QfGvapEM2JAxKcvboN6hsFdmllZjsAbudIV+X
-	 wCxRe4NYHQPbvYrLJMvRtpjXvW/T1w0ijeXUxwoJlGKpxzk5zDvKYeDOmrOB16A4nS
-	 h3LdbaNyWOFlg==
-Message-ID: <b79be791-8e11-4891-93c5-0e9c51397b08@kernel.org>
-Date: Mon, 3 Aug 2026 17:17:51 +0200
+	s=arc-20240116; t=1785770501; c=relaxed/simple;
+	bh=kRrDqUYJu4CYLa0dhwgk0z3PDbZ9Xk86ftvpTUYNG84=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=JELEiE5QHwnU70cCPMB4/A0/qtxv78DyZC2kP+BgBcguByfSoV41iokO6iO7BcYaIt0W2fbg9lFDvMW/11tNbKJosdwVLejuBn+Y2lKMj2Y5JQhTISh65V87o2yB7trFvvDAQDxvDnTe1rGzIasiAZgm7A/kbyThU2ld5hQ5IGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from [IPv6:2a0a:edc0:0:900:1d::4e] (lupine.office.stw.pengutronix.de [IPv6:2a0a:edc0:0:900:1d::4e])
+	(Authenticated sender: pza@pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 4821D200048;
+	Mon, 03 Aug 2026 17:21:31 +0200 (CEST)
+Message-ID: <156581f4ba49cdae4ff1a19767eb32ffa64ec900.camel@pengutronix.de>
+Subject: Re: [PATCH 2/2] can: arasan-canfd: add driver for arasan CAN-FD
+ controller
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: Jisheng Zhang <jszhang@kernel.org>, Marc Kleine-Budde
+ <mkl@pengutronix.de>,  Vincent Mailhol <mailhol@kernel.org>, Rob Herring
+ <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,  Conor Dooley
+ <conor+dt@kernel.org>
+Cc: linux-can@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Date: Mon, 03 Aug 2026 17:21:31 +0200
+In-Reply-To: <20260803140531.12692-3-jszhang@kernel.org>
+References: <20260803140531.12692-1-jszhang@kernel.org>
+	 <20260803140531.12692-3-jszhang@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2-0+deb13u1 
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: can: add arasan canfd controller
-To: Jisheng Zhang <jszhang@kernel.org>, Marc Kleine-Budde
- <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>
-Cc: linux-can@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20260803140531.12692-1-jszhang@kernel.org>
- <20260803140531.12692-2-jszhang@kernel.org>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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
-In-Reply-To: <20260803140531.12692-2-jszhang@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 03/08/2026 16:05, Jisheng Zhang wrote:
-> Add documentation for the arasan canfd controller.
-
-Here goes hardware description. What is arasan canfd?
-
-> 
+On Mo, 2026-08-03 at 22:05 +0800, Jisheng Zhang wrote:
+> Add driver for the arasan CAN-FD controller.
+>=20
 > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 > ---
->  .../bindings/net/can/arasan,canfd.yaml        | 63 +++++++++++++++++++
->  1 file changed, 63 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/can/arasan,canfd.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/net/can/arasan,canfd.yaml b/Documentation/devicetree/bindings/net/can/arasan,canfd.yaml
+>  drivers/net/can/Kconfig        |    6 +
+>  drivers/net/can/Makefile       |    1 +
+>  drivers/net/can/arasan-canfd.c | 1057 ++++++++++++++++++++++++++++++++
+>  3 files changed, 1064 insertions(+)
+>  create mode 100644 drivers/net/can/arasan-canfd.c
+>=20
+[...]
+> diff --git a/drivers/net/can/arasan-canfd.c b/drivers/net/can/arasan-canf=
+d.c
 > new file mode 100644
-> index 000000000000..a120c11ce304
+> index 000000000000..63a6191f84f6
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/can/arasan,canfd.yaml
-> @@ -0,0 +1,63 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/can/arasan,canfd.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +++ b/drivers/net/can/arasan-canfd.c
+> @@ -0,0 +1,1057 @@
+[...]
+> +static int arasan_canfd_probe(struct platform_device *pdev)
+> +{
+> +	struct net_device *ndev;
+> +	struct arasan_canfd_priv *priv;
+> +	struct phy *transceiver;
+> +	void __iomem *addr;
+> +	int ret;
 > +
-> +title:
-> +  Arasan CAN-FD controller
+> +	addr =3D devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(addr))
+> +		return PTR_ERR(addr);
 > +
-> +maintainers:
-> +  - Jisheng Zhang <jszhang@kernel.org>
+> +	ndev =3D alloc_candev(sizeof(struct arasan_canfd_priv), CAN_MAX_TX_QUEU=
+E);
+> +	if (!ndev)
+> +		return -ENOMEM;
+> +	priv =3D netdev_priv(ndev);
 > +
-> +allOf:
-> +  - $ref: can-controller.yaml#
+> +	priv->sys_rst =3D devm_reset_control_get(&pdev->dev, "sys");
+> +	if (IS_ERR(priv->sys_rst)) {
+> +		dev_err(&pdev->dev, "failed to get sys reset\n");
+> +		ret =3D PTR_ERR(priv->sys_rst);
+> +		goto err_free;
+> +	}
+> +	reset_control_assert(priv->sys_rst);
+> +	reset_control_deassert(priv->sys_rst);
 > +
-> +properties:
-> +  compatible:
-> +    const: arasan,canfd
+> +	priv->can_rst =3D devm_reset_control_get(&pdev->dev, "can");
 
-This is way too generic. Why isn't there any integration compatible?
-
-Please follow writing bindings.
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 2
-
-Instead list and describe items
-
-> +
-> +  clock-names:
-> +    items:
-> +      - const: can
-
-can is too generic, not really useful. Same for resets.
+Please use devm_reset_control_get_exclusive() directly.
 
 
-Best regards,
-Krzysztof
+regards
+Philipp
