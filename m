@@ -1,106 +1,84 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Received: from stravinsky.debian.org (stravinsky.debian.org [82.195.75.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30EAC2F25F5;
-	Tue,  4 Aug 2026 07:12:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C7083BBFA5;
+	Tue,  4 Aug 2026 08:22:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.195.75.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785827553; cv=none; b=svAknXCIRmPywCuveINA0wjKwxUOtnaFVYKoGVqRbefUag2BQOTL3i+3yViBlfWrf1qQtT2USw8l89peqFD1ydClHxfSBM0ouzziVS+Z4n3yxyxjjN4E6/S8sVYx7zZo7anKh+bw0/5ujoBbeEF87MORqP2WTVZMxu25w6pLbE8=
+	t=1785831731; cv=none; b=BXX1GxR0rvvor1ZoJLQMicQBYlIrsnksyG/vpj6OsHpjlyBRbfxY+/bPSkgXEeoYAUXhWCkG1jz31W4vXKX10zCvYeIPDeMpONSC8tlVtaEshScSFhbcQtEOXAaCwG0m6xauHzsYuvzie2adEGacug4Is9ilHbatSm8ZKCmf5wQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785827553; c=relaxed/simple;
-	bh=8CHNoOjRnk4MkVbqj2nQ2c72oMZS36O4d55n1hfiQQ4=;
+	s=arc-20240116; t=1785831731; c=relaxed/simple;
+	bh=+CkWgQjsxoTX2+XgqYkbp284y8hZozLyYGa5JL/9Jg8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u8UBvmsGIdFpognyKIJyHsf/O5IsYibZvzowZF3L+uOWdGStDYCKvBijA+MLCPzoBDrzEdBqT+mVHx8I/gGUIAFL1fs9BwJ6d8yFbfmstHNHZRpOA4CDlHQFup0oC97Z6FO+tCQhh+xhVorTFD2NbSwrqK2foOGwdncVNXpTOpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 32011200048;
-	Tue, 04 Aug 2026 09:12:21 +0200 (CEST)
-Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	 Content-Type:Content-Disposition:In-Reply-To; b=C8JFn5Nym1smYp6CYfHS4uNW3QaO4C87UIeKZvWT5aYpT378W5EB8vrlVOyBWOkCdk9XqGPK2+2VCnZLSMCWI4UcskwYNJjMLujOLRyWV91ya5PNHrs4t4b+ZKjrOu7OtoDlcHKEV54boLAqsI80nEy6qCk7hELqm7A4daBjFA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=debian.org; dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b=ijTyWJG2; arc=none smtp.client-ip=82.195.75.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=debian.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b="ijTyWJG2"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
+	s=smtpauto.stravinsky; h=X-Debian-User:In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=DX7WKE6ZUQAMmQ1KtJTF0rbSJXIx9fEZBDRmpQHqr6Q=; b=ijTyWJG2QfSTQuuUodDQgGIVDz
+	YwyEJ05aJg0aOoJArTWlFZU/R6R69N/5Lt4mQewrfwAuj7ndv87Qr+SK/llYbUDfu8T1p9MJGVqrB
+	VKH+52xOP+0Shr190McefEEh26agYFdHp2BLOuEOWv1uCudWOvBPpZTQizFJiC64BcNyssknxZ5lg
+	Sz/oJmN2IAnZGtpzyKfTqLMFKLC7W5Eo/b5THb2lu+ezwtZ9sXdLYQoUaLnA3YhDIFTOYiSQ6q2fB
+	kRz7nIZ/UFcaM2HM3sUkUkmNk3D4Uq14WGWTxsReWcqGn7AV9RMuhpncPlterjcPvfywia6pJt47W
+	Bn7rNrGw==;
+Received: from authenticated-user
+	by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1wr9K1-002p8Y-0O;
-	Tue, 04 Aug 2026 09:12:21 +0200
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.98.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1wr9K1-0000000AMxv-02Eb;
-	Tue, 04 Aug 2026 09:12:21 +0200
-Date: Tue, 4 Aug 2026 09:12:20 +0200
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Felix Hoffmann <f3lix.dev@gmx.de>
-Cc: linux-can@vger.kernel.org, Robin van der Gracht <robin@protonic.nl>,
-	kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH can v2] can: j1939: avoid address-claim timer deadlock
-Message-ID: <anGQ1Bx5OsMV7nAu@pengutronix.de>
-References: <20260731134255.1002902-1-f3lix.dev@gmx.de>
- <20260803101503.21023-1-f3lix.dev@gmx.de>
+	(envelope-from <leitao@debian.org>)
+	id 1wrAPS-00D0V6-1H;
+	Tue, 04 Aug 2026 08:22:02 +0000
+Date: Tue, 4 Aug 2026 01:21:57 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Robin van der Gracht <robin@protonic.nl>, 
+	Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de, Marc Kleine-Budde <mkl@pengutronix.de>, 
+	linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH net-next 2/2] can: isotp: convert to getsockopt_iter
+Message-ID: <anGg-CeHzKdYvbqb@gmail.com>
+References: <20260507-getsock_two_can-v1-0-3c2ae9edfadc@debian.org>
+ <20260507-getsock_two_can-v1-2-3c2ae9edfadc@debian.org>
+ <14d3ad71-ade2-4d2b-8a67-b0fda3eef2b7@hartkopp.net>
+ <aiAcRJ8TBjWhlKhQ@gmail.com>
+ <f83e25e1-b9f5-4810-bbd6-fdb8d2a10c8e@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260803101503.21023-1-f3lix.dev@gmx.de>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
+In-Reply-To: <f83e25e1-b9f5-4810-bbd6-fdb8d2a10c8e@hartkopp.net>
+X-Debian-User: leitao
 
-Hi Felix,
-
-Please send next patch stand alone, not in replay to the previous patch
-or discussion.
-
-On Mon, Aug 03, 2026 at 12:15:03PM +0200, Felix Hoffmann wrote:
-> j1939_ac_process() holds priv->lock while synchronously canceling an
-> ECU's address-claim hrtimer. The timer callback takes the same lock. If the
-> callback starts on another CPU after the receive path takes the lock, the
-> callback waits for priv->lock while hrtimer_cancel() waits for the callback
-> to finish. This deadlocks both CPUs and makes the system unresponsive.
+On Wed, Jun 03, 2026 at 02:50:51PM +0200, Oliver Hartkopp wrote:
+> > > 
+> > > Same pattern as in net/can/raw.c that had slipped in via net-next last time
+> > > ;-)
+> > > 
+> > > Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> > > 
+> > > Thanks Breno!
+> > 
+> > Thanks for the review!
+> > 
+> > I haven't seen this on linux-next yet. Please let me know if there is any
+> > update that is expected from my side.
 > 
-> Replace the callback's blocking lock acquisition with write_trylock(). If
-> the lock is busy, move the expiry forward and restart the timer. This lets
-> a concurrent hrtimer_cancel() observe the callback finish and remove the
-> requeued timer. Without a cancellation, address mapping is retried shortly.
+> This patch will likely go upstream via can-next.
 > 
-> The failed write trylock does not necessarily mean that the address-claim
-> writer owns priv->lock. Receive processing also takes its read side for
-> other frames, and an active reader prevents write_trylock() from
-> succeeding. Document both the address-claim writer and receive-path readers
-> as possible sources of contention.
-> 
-> Name the 1 ms retry interval J1939_ECU_TIMER_RETRY_DELAY_MS instead of
-> using a literal in the callback. Track consecutive failures per ECU, reset
-> the counter when its timer starts, and emit a warning guarded by
-> net_ratelimit() on the fifth retry. Five is a pragmatic threshold for
-> detecting unusual delay; it is not specified by J1939.
-> 
-> The timer uses HRTIMER_MODE_REL_SOFT, so its callback runs from
-> HRTIMER_SOFTIRQ with bottom halves already disabled. write_trylock() does
-> not change bottom-half state and must therefore pair with write_unlock() on
-> success. The write_lock_bh()/write_unlock_bh() pair is unnecessary in this
-> context.
-> 
-> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-> Cc: stable@vger.kernel.org
-> Assisted-by: Codex:GPT5.6-Sol
-> Signed-off-by: Felix Hoffmann <f3lix.dev@gmx.de>
+> Marc currently seems to be busy.
 
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Hello, any chance that Marc is not busy anymore?
 
-Thank you!
+This is the last leaf nodes that is missing in this conversion now.
 
-Best Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+https://lore.kernel.org/all/20260708-getsockopt_phase3-v1-0-d8394f2fc554@debian.org/
+
+Thanks,
+--breno
