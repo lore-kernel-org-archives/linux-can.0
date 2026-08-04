@@ -1,124 +1,135 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mail-106113.protonmail.ch (mail-106113.protonmail.ch [79.135.106.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D157439F68
-	for <linux-can@vger.kernel.org>; Tue,  4 Aug 2026 09:15:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 220E12F8E95
+	for <linux-can@vger.kernel.org>; Tue,  4 Aug 2026 11:30:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785834904; cv=none; b=lpH38MCM77bEXgVBwn4nSiLOVhYP0lUO4oHpPx/vgrE99C/xjhcIvkRnW16Co8KuC2deJ2kcvRtU6pCEUSc5fRt2i2za3bwXRAhDxLKx/OQtIXUszxvavQUocdduEfHBEG+0Zdz60ShLNWNZcxFUMYL2W1jMLARdPiFcpqsbaq8=
+	t=1785843049; cv=none; b=rDu9ndA7+9d163U31Opj+iO9NhSBgAYGEr9AW+EdcdhP3PY6wyUILoj5QyXgkX07wD7bVqxWKbVnLlhB81q7RzuXpYSxQxxsF1lmXqai2sxGYWhLT3IXyz9rVAQznaNJf6lm2Go+iado4ftSZIvUFO7jfNTLA3mHx760841LNbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785834904; c=relaxed/simple;
-	bh=huTxS21pMk7tG+YqYPqKpBPbMIZAWy7vsSmDdEx3dmo=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=l24CuzgR7JeZzjJ53b4vbYe1XB8+bHDHTjbCY3MoIZHz7fPX9E1TTcdL76+fRVAYmOm54A6plNkULqD/7jjAgf9Q0bEr9ogagvPYxUGVDhM678u5/hilA3p1f+IHGq4oGjyjmEOi5BF8YRTpxTUaoAnUIUDlx/dfXZUbgMD0+zQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c2REy2TT; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1785843049; c=relaxed/simple;
+	bh=zq86qxopQMpcraFTy6ZUhSDsrSiCtxIGWnKx5869zYs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dhJA6698lK7f9jX6IIqpf9y0n6EI6A6aE/5GmAOwmZa88sNZwI4GpC+s0ds4rpk9/a8PD2fn1IBXRgvQZlsTFPBSIPDhF2pjjeGXasC77h9tjlSMbb1o5Qg+POoghVihCJfVs1kx9Ahotgby2+rGo4lIBaLPEnxXx9MQpgSvPWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=UKHutCH+; arc=none smtp.client-ip=79.135.106.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=geanix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c2REy2TT"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A40441F00A3A;
-	Tue,  4 Aug 2026 09:15:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785834903;
-	bh=VucWOV0aXTOtRkf/0z1TUme+m8wGw/QJS7J0ayyztRk=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=c2REy2TTiPU84Diepe8VmqVFZC2ILgXgKWY9qdAIWShhMnsNL1ALNkyntRLphv73Y
-	 tfek3EkGpvEHrd4Thz3P3frdiKHHiJIsJWoO0D21MZYRmovGqV6HqOCEVFZ2DUXGHq
-	 0IZLRW+raH+sQz/SENJDeGwNppT8RYPMhkPPXKCTE72d6g7UN79N18zjemsMMOJ2pX
-	 5MBzVYkzj5CBle2NbVJ8hhDz6q7Sl5kCB6j9XR8fcDabWjiHgME6Vwa2QXZEGbyDS3
-	 PnB4tTrP0Hl2AcdtM2/8A8e3KBGOJ0yxVh+EvF8WYTznoH7S6BCPq90blgw9dsAjpY
-	 WaYLbHZJqSfug==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net 1/2] can: bittiming: fix divide-by-zero in
- can_calc_bittiming()
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Sureshkumar S" <ssureshmsd7@gmail.com>
-Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Vincent
- Mailhol" <mailhol@kernel.org>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>
-In-Reply-To: <20260803091426.29050-2-ssureshmsd7@gmail.com>
-References: <20260803091426.29050-1-ssureshmsd7@gmail.com>
- <20260803091426.29050-2-ssureshmsd7@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 04 Aug 2026 09:15:02 +0000
-Message-Id: <20260804091502.A40441F00A3A@smtp.kernel.org>
+	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="UKHutCH+"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=geanix.com;
+	s=protonmail3; t=1785843036; x=1786102236;
+	bh=1G66GPrCnpAIzYjzEt47hlig23TELeV03/YZ0MKwmZs=;
+	h=From:To:Cc:Subject:Date:Message-ID:From:To:Cc:Date:Subject:
+	 Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=UKHutCH+W9NIrN7V/ElACsi6R5czdqWv2VDx0eJYKSE6W4QP29yVm2ZARpdADQ79j
+	 KrA1HFYQyFeAWdjowXE++VzWL/EFPw5SihG+vvV6ZudQnZvkP3vrlb+pPkUBWiDiZu
+	 zgsRrAHFTkhCeq7B3pmv1YuZS8POmvXnmXYGU9IglPESCAYSYhg2Ek/mACMqOKlh3r
+	 NdwVbsToaW1L7LWk3t00p2Awe1q740VezB4427t8Y8bX9lJyQeLuyxbuqlt1lnkZht
+	 CoC727c9TxrVM4Pw0D45c3wWFGzvTwhgWZF6lHC/iH2Zey52wlJZE+H1p14CMxW56Z
+	 /m3k3M49rZZMw==
+X-Pm-Submission-Id: 4hDrvH0pXBz1DDLm
+From: Sean Nyekjaer <sean@geanix.com>
+To: Markus Schneider-Pargmann <msp@baylibre.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>
+Cc: Sean Nyekjaer <sean@geanix.com>,
+	linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v4] can: tcan4x5x: put tcan into sleep when removing driver
+Date: Tue,  4 Aug 2026 13:30:26 +0200
+Message-ID: <20260804113027.1626442-1-sean@geanix.com>
+X-Mailer: git-send-email 2.55.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Thank you for your contribution! Sashiko AI review found 2 potential issue(=
-s) to consider:
+Put the tcan4x5x transceiver into sleep mode when the driver is
+removed, instead of leaving it in its current operating mode.
+This reduces power consumption(3mA@12V) once the driver is
+no longer bound to the device.
 
-Pre-existing issues:
-- [High] Missing validation for hardware-provided bit-timing constants `brp=
-_inc` and `brp_min` allows malicious or misbehaving CAN devices to trigger =
-divide-by-zero kernel panics.
-- [High] A 32-bit integer overflow in the `brp * tsegall` calculation can w=
-rap to zero, causing a divide-by-zero kernel panic.
---
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+---
+Changes since v1:
+ - Moved enter sleep mode into tcan4x5x_power_enable()
 
---- Patch [1]: [PATCH net 1/2] can: bittiming: fix divide-by-zero in can_ca=
-lc_bittiming() ---
-commit 1d93cc0a0370ce5feb4636b0a8c6900dd609c628
-Author: Sureshkumar S <ssureshmsd7@gmail.com>
+Changes since v2:
+ - Added comment about RST pin
+ - Fixed all calls to tcan4x5x_power_enable()
 
-can: bittiming: fix divide-by-zero in can_calc_bittiming()
+Changes since v3:
+ - When powering off, always put the device into sleep mode (if the RST pin is
+   present). This will ensure the device is in sleep mode even if the
+   power regulator is shared.
 
-This commit patches a potential divide-by-zero in can_calc_bittiming() when
-calculating the prescaler. It uses 64-bit math to prevent the 32-bit integer
-multiplication of tsegall and bitrate from wrapping to zero for large bitra=
-tes.
+ drivers/net/can/m_can/tcan4x5x-core.c | 29 +++++++++++++++++++++++----
+ 1 file changed, 25 insertions(+), 4 deletions(-)
 
-> diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/c=
-alc_bittiming.c
-> index 42498e9d3f38d..4809f5e0c96e9 100644
-> --- a/drivers/net/can/dev/calc_bittiming.c
-> +++ b/drivers/net/can/dev/calc_bittiming.c
-> @@ -119,8 +119,12 @@ int can_calc_bittiming(const struct net_device *dev,=
- struct can_bittiming *bt,
->  	     tseg >=3D (btc->tseg1_min + btc->tseg2_min) * 2; tseg--) {
->  		tsegall =3D CAN_SYNC_SEG + tseg / 2;
-> =20
-> -		/* Compute all possible tseg choices (tseg=3Dtseg1+tseg2) */
-> -		brp =3D priv->clock.freq / (tsegall * bt->bitrate) + tseg % 2;
-> +		/* Compute all possible tseg choices (tseg=3Dtseg1+tseg2).
-> +		 * A 32 bit tsegall * bt->bitrate can wrap to zero for large
-> +		 * userspace bitrates, so compute the product in 64 bit.
-> +		 */
-> +		brp =3D div64_u64(priv->clock.freq,
-> +				mul_u32_u32(tsegall, bt->bitrate)) + tseg % 2;
-> =20
->  		/* choose brp step which is possible in system */
->  		brp =3D (brp / btc->brp_inc) * btc->brp_inc;
+diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
+index 31cc9d0abd45..d8fd219a27cc 100644
+--- a/drivers/net/can/m_can/tcan4x5x-core.c
++++ b/drivers/net/can/m_can/tcan4x5x-core.c
+@@ -211,8 +211,29 @@ static int tcan4x5x_write_fifo(struct m_can_classdev *cdev,
+ 	return regmap_bulk_write(priv->regmap, TCAN4X5X_MRAM_START + addr_offset, val, val_count);
+ }
+ 
+-static int tcan4x5x_power_enable(struct regulator *reg, int enable)
++static int tcan4x5x_power_enable(struct tcan4x5x_priv *priv, int enable)
+ {
++	struct regulator *reg = priv->power;
++	int ret;
++
++	/*
++	 * Put the device into sleep mode if the RST pin is available,
++	 * since a wake-up event, RST pin toggle, or power cycle are the only
++	 * ways to exit sleep mode.
++	 * Redundant if the regulator is exclusive to this device, but that
++	 * can't be determined here.
++	 *
++	 * Datasheet: TCAN4550, section "8.4.3 Sleep Mode"
++	 * https://www.ti.com/lit/gpn/tcan4550
++	 */
++	if (priv->reset_gpio && !enable) {
++		ret = regmap_update_bits(priv->regmap, TCAN4X5X_CONFIG,
++					 TCAN4X5X_MODE_SEL_MASK,
++					 TCAN4X5X_MODE_SLEEP);
++		if (ret)
++			return ret;
++	}
++
+ 	if (IS_ERR_OR_NULL(reg))
+ 		return 0;
+ 
+@@ -476,7 +497,7 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+ 		goto out_m_can_class_free_dev;
+ 	}
+ 
+-	ret = tcan4x5x_power_enable(priv->power, 1);
++	ret = tcan4x5x_power_enable(priv, 1);
+ 	if (ret) {
+ 		dev_err(&spi->dev, "Enabling regulator failed %pe\n",
+ 			ERR_PTR(ret));
+@@ -531,7 +552,7 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
+ 	return 0;
+ 
+ out_power:
+-	tcan4x5x_power_enable(priv->power, 0);
++	tcan4x5x_power_enable(priv, 0);
+  out_m_can_class_free_dev:
+ 	m_can_class_free_dev(mcan_class->net);
+ 	return ret;
+@@ -543,7 +564,7 @@ static void tcan4x5x_can_remove(struct spi_device *spi)
+ 
+ 	m_can_class_unregister(&priv->cdev);
+ 
+-	tcan4x5x_power_enable(priv->power, 0);
++	tcan4x5x_power_enable(priv, 0);
+ 
+ 	m_can_class_free_dev(priv->cdev.net);
+ }
+-- 
+2.55.0
 
-[Severity: High]
-This is a pre-existing issue, but missing validation for hardware-provided
-bit-timing constants might allow a divide-by-zero here.
-
-If a misbehaving or malicious USB adapter (like gs_usb) provides 0 for
-btc->brp_inc, won't this division directly panic the kernel when a user with
-CAP_NET_ADMIN configures the interface?
-
->  		if (brp < btc->brp_min || brp > btc->brp_max)
->  			continue;
-> =20
->  		bitrate =3D priv->clock.freq / (brp * tsegall);
-
-[Severity: High]
-This isn't a bug introduced by this patch, but doesn't this calculation have
-the exact same 32-bit overflow vulnerability that the patch fixes above?
-
-Since both brp and tsegall are 32-bit unsigned integers, couldn't their pro=
-duct
-wrap to zero for large values derived from untrusted hardware limits, causi=
-ng a
-divide-by-zero panic on this line?
-
-Additionally, if the hardware provides a btc->brp_min of 0, the bounds
-check above allows brp to evaluate to 0. Wouldn't that also result in a
-divide-by-zero here?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260803091426.2905=
-0-1-ssureshmsd7@gmail.com?part=3D1
