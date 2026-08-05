@@ -1,112 +1,143 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1BFE3DE430;
-	Wed,  5 Aug 2026 07:25:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A3033E2752;
+	Wed,  5 Aug 2026 07:31:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785914719; cv=none; b=nEu5AaKIX08izI1Rr1iUF1VjejL7xQo3RUB33Jvg7N19BPcqGJ4PK165LLV2bt2dvuH+onuZyeKue3nB7z/GcxLfLnVjsmAv4DPpe6trJ7DWTwSgFWIoxT0HL9gekjt6iq/F9l3GDN8I3EXuoVuZIL9z5iKm0/dm8liSGcw97a8=
+	t=1785915113; cv=none; b=IE0JjL23NOH/8XI1T1eF2iiQ9DfnwFtpYUjyNBDAbD2sipT6PUXIVlnJaEWbIPo9ba8aLyj2U+3b0R1mwVxkn/L+ony8CVX/6gpgWdDdiR7hGqxDVrzlnW3F2LwcngF3nJJd/QZzEXGfmlPi1pyVtjsdmxd0SFcHYs3ONFJ/HoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785914719; c=relaxed/simple;
-	bh=5EF6EV/tsqzKGbl4N2bJCPF2Wm6ztEK+sT4UWsUUBQw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tm3Roq0jgabDG+IgflI3QN3o+iudFMcJ0UI4h3l/Sr3trqXNOV9nWyYTc5mREwSY6lubgcQD6266y6C6YGM7YEXTpCsISHIsPkfM5AT8XO/lEzbSl26S1R4xoNZOnGULHg5xCxrEGGzsRg39z78EVMrk1jinDOeGm/LNYRQ7jZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YG2PZcJC; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YG2PZcJC"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 964C41F000E9;
-	Wed,  5 Aug 2026 07:25:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785914718;
-	bh=Hu45KECkLQs+f+gz8d9sG9BTY9WBaw/7df1poFW/VAE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=YG2PZcJCZxJiUWiTyY8JjsLGRKZj5EOkaq9Ej83qTyf3bJpM1/yJZOHvhh4MT/LKL
-	 TBoJSCPR7IAQF6X8rtS3+ibXFAb4k+OEa/YxJ09TjrJPJyK+1i0+f4KIdvin9wImmD
-	 gG29h1dvnPKCiYN2o/Q8thxO2DIC1bquQXpKpFxVdj1NrDW8yzHtvkIf5HxifPcL+Q
-	 lP0c6/2oGkiNXvHiG8Y267kCOe6ucLE/bunGHSKH1AHOGnNJAX7bnqbRbmc/6g2QRA
-	 NwXdPNNXRwlgCR3HbIjHS95EDMUhSqJfMLaObcnekQxiMy532Hy14qfd9a8TdsRQnk
-	 liXNtnDIJlw1A==
-Message-ID: <6800934d-2da2-4eeb-8514-3978f4c7b307@kernel.org>
-Date: Wed, 5 Aug 2026 09:25:15 +0200
+	s=arc-20240116; t=1785915113; c=relaxed/simple;
+	bh=CotV+uXs4pLOgXcJbw4/X0DmR00g6ebRtb8WNRjxxeU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EApzFrqvDnPSJiVHdPFZtr1/7J/cW0ntzx/ftN+qzmtUFUWMC/1UTXKZS2+DA/p1DgwagVlPxWmIzuxQiY00TpiG0UrWdzSzqm+QTYzfvdrj0lwBu+ZLA6wBpND9FEaJtc6yMLBovStefW/ljf94DVw8PkH9Kg13oEu5QNXxk3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 3803F200048;
+	Wed, 05 Aug 2026 09:31:41 +0200 (CEST)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1wrW6H-0034JZ-0J;
+	Wed, 05 Aug 2026 09:31:41 +0200
+Received: from pengutronix.de (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id C34F257BE80;
+	Wed, 05 Aug 2026 07:31:40 +0000 (UTC)
+Date: Wed, 5 Aug 2026 09:31:40 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Sean Nyekjaer <sean@geanix.com>
+Cc: Markus Schneider-Pargmann <msp@baylibre.com>, 
+	Vincent Mailhol <mailhol@kernel.org>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] can: tcan4x5x: put tcan into sleep when removing
+ driver
+Message-ID: <20260805-prophetic-flounder-of-judgment-5fd269-mkl@pengutronix.de>
+References: <20260804113027.1626442-1-sean@geanix.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/4] can: automate IFF_ECHO flag for generic echo skbs
-To: Oliver Hartkopp <socketcan@hartkopp.net>,
- Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20260804-automate_iff_echo_flag-v1-0-26f06ff0f8bc@kernel.org>
- <395d9b68-2527-47d6-a6a0-74569d27b734@hartkopp.net>
-From: Vincent Mailhol <mailhol@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=mailhol@kernel.org; keydata=
- xjMEZluomRYJKwYBBAHaRw8BAQdAf+/PnQvy9LCWNSJLbhc+AOUsR2cNVonvxhDk/KcW7FvN
- JFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbEBrZXJuZWwub3JnPsKZBBMWCgBBFiEE7Y9wBXTm
- fyDldOjiq1/riG27mcIFAmdfB/kCGwMFCQp/CJcFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcC
- F4AACgkQq1/riG27mcKBHgEAygbvORJOfMHGlq5lQhZkDnaUXbpZhxirxkAHwTypHr4A/joI
- 2wLjgTCm5I2Z3zB8hqJu+OeFPXZFWGTuk0e2wT4JzjgEZx4y8xIKKwYBBAGXVQEFAQEHQJrb
- YZzu0JG5w8gxE6EtQe6LmxKMqP6EyR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDl
- dOjiq1/riG27mcIFAmceMvMCGwwFCQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8V
- zsZwr/S44HCzcz5+jkxnVVQ5LZ4BANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
-In-Reply-To: <395d9b68-2527-47d6-a6a0-74569d27b734@hartkopp.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-On 05/08/2026 at 08:29, Oliver Hartkopp wrote:
-> On 04.08.26 21:55, Vincent Mailhol wrote:
->> Most CAN drivers allocate echo skb slots through alloc_candev() or
->> alloc_candev_mqs(), but still have to manually set IFF_ECHO to tell
->> PF_CAN that the driver handles local echo itself. This creates
->> boilerplate and makes it easy for drivers to forget one half of the
->> setup.
-> 
-> No one ever "forgot" this flag.
-> 
->> A recent example is commit c77bfbdd6aac ("can: dummy_can:
->> dummy_can_init(): fix packet statistics"), where dummy_can was already
->> using the generic echo skb helpers but needed an explicit IFF_ECHO
->> assignment to make tx_bytes accounting work.
-> 
-> But you (ok us) :-D
-
-Yes, this is the hidden motivation of this series. I did this mistake
-and I was thinking if there were any way to prevent this from happening
-again in the future.
-
-But has a matter of fact, I am not the only one as the ucan driver also
-omitted to set its IFF_ECHO (c.f. the note in Patch #3 message). And no
-one noticed this one.
-
-> To me this patch set does not really bring an improvement.
-> You are now hiding the setting of this bit.
-> 
-> Today it is very transparent visible inside each drivers initialization
-> section whether it supports IFF_ECHO or not. And e.g. vcan.c can also
-> switch this feature with a module parameter.
-> 
-> I prefer this conscious setting in the driver setup. We should better
-> add proper comments in drivers that do not set the flag, e.g. in slcan.c
-> there's no hint that the af_can.c echo feature is used.
-
-Then, what about setting IFF_ECHO for *all* drivers by default in
-can_setup() and let the ones which have a special need to opt-out:
-
-  dev->flags &= ~IFF_ECHO;
-
-This way it remains transparent which one support IFF_ECHO or not. It is
-also more important to highlight when things are done differently
-(IFF_ECHO off) than when things go the normal case (IFF_ECHO on).
-
-And this is more aligned with IFF_NOARP (c.f. you other message) in the
-sense that both flags would now be set by default by the framework. It
-looks odd to me that IFF_NOARP should be set by default by the framework
-but not IFF_ECHO.
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="uh4fwku6cpvhwkyw"
+Content-Disposition: inline
+In-Reply-To: <20260804113027.1626442-1-sean@geanix.com>
 
 
-Yours sincerely,
-Vincent Mailhol
+--uh4fwku6cpvhwkyw
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v4] can: tcan4x5x: put tcan into sleep when removing
+ driver
+MIME-Version: 1.0
 
+On 04.08.2026 13:30:26, Sean Nyekjaer wrote:
+> Put the tcan4x5x transceiver into sleep mode when the driver is
+> removed, instead of leaving it in its current operating mode.
+> This reduces power consumption(3mA@12V) once the driver is
+> no longer bound to the device.
+>
+> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+> ---
+> Changes since v1:
+>  - Moved enter sleep mode into tcan4x5x_power_enable()
+>
+> Changes since v2:
+>  - Added comment about RST pin
+>  - Fixed all calls to tcan4x5x_power_enable()
+>
+> Changes since v3:
+>  - When powering off, always put the device into sleep mode (if the RST p=
+in is
+>    present). This will ensure the device is in sleep mode even if the
+>    power regulator is shared.
+>
+>  drivers/net/can/m_can/tcan4x5x-core.c | 29 +++++++++++++++++++++++----
+>  1 file changed, 25 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_ca=
+n/tcan4x5x-core.c
+> index 31cc9d0abd45..d8fd219a27cc 100644
+> --- a/drivers/net/can/m_can/tcan4x5x-core.c
+> +++ b/drivers/net/can/m_can/tcan4x5x-core.c
+> @@ -211,8 +211,29 @@ static int tcan4x5x_write_fifo(struct m_can_classdev=
+ *cdev,
+>  	return regmap_bulk_write(priv->regmap, TCAN4X5X_MRAM_START + addr_offse=
+t, val, val_count);
+>  }
+>
+> -static int tcan4x5x_power_enable(struct regulator *reg, int enable)
+> +static int tcan4x5x_power_enable(struct tcan4x5x_priv *priv, int enable)
+>  {
+> +	struct regulator *reg =3D priv->power;
+> +	int ret;
+> +
+> +	/*
+> +	 * Put the device into sleep mode if the RST pin is available,
+> +	 * since a wake-up event, RST pin toggle, or power cycle are the only
+> +	 * ways to exit sleep mode.
+> +	 * Redundant if the regulator is exclusive to this device, but that
+> +	 * can't be determined here.
+> +	 *
+> +	 * Datasheet: TCAN4550, section "8.4.3 Sleep Mode"
+> +	 * https://www.ti.com/lit/gpn/tcan4550
+> +	 */
+> +	if (priv->reset_gpio && !enable) {
+> +		ret =3D regmap_update_bits(priv->regmap, TCAN4X5X_CONFIG,
+> +					 TCAN4X5X_MODE_SEL_MASK,
+> +					 TCAN4X5X_MODE_SLEEP);
+> +		if (ret)
+> +			return ret;
+
+As sashiko pointed out, maybe only log a error here and continue.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--uh4fwku6cpvhwkyw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCanLm2QAKCRDMOmT6rpmt
+0jBLAQC205D/V7kKsnaYfslHDmb6Z/q0bHJGCqHuhvAV4+AxgwD/cjpNu6r46Q8z
+iDRp1Oh20hdEF4A/sZl8cRrM7f1i0QU=
+=4EO5
+-----END PGP SIGNATURE-----
+
+--uh4fwku6cpvhwkyw--
