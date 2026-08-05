@@ -1,143 +1,210 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A3033E2752;
-	Wed,  5 Aug 2026 07:31:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81F373EDE43
+	for <linux-can@vger.kernel.org>; Wed,  5 Aug 2026 08:56:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785915113; cv=none; b=IE0JjL23NOH/8XI1T1eF2iiQ9DfnwFtpYUjyNBDAbD2sipT6PUXIVlnJaEWbIPo9ba8aLyj2U+3b0R1mwVxkn/L+ony8CVX/6gpgWdDdiR7hGqxDVrzlnW3F2LwcngF3nJJd/QZzEXGfmlPi1pyVtjsdmxd0SFcHYs3ONFJ/HoQ=
+	t=1785920176; cv=none; b=sF5CQ0UBcQG55li3C4Z2FElfTs1Y9MLxp5wl3Pidk3tM44qZbzsuvIHkJBWZV/WuzfbA0yIGAGzpGYXnecXoiSJBPPwAQMnASNO1FM4/uLT2a+LN8eOH9aIfXrEl+TUDcDFIFdVUsfcbfpe6CiwcG3gkogcSWIbB4g+PWB1czqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785915113; c=relaxed/simple;
-	bh=CotV+uXs4pLOgXcJbw4/X0DmR00g6ebRtb8WNRjxxeU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EApzFrqvDnPSJiVHdPFZtr1/7J/cW0ntzx/ftN+qzmtUFUWMC/1UTXKZS2+DA/p1DgwagVlPxWmIzuxQiY00TpiG0UrWdzSzqm+QTYzfvdrj0lwBu+ZLA6wBpND9FEaJtc6yMLBovStefW/ljf94DVw8PkH9Kg13oEu5QNXxk3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 3803F200048;
-	Wed, 05 Aug 2026 09:31:41 +0200 (CEST)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1wrW6H-0034JZ-0J;
-	Wed, 05 Aug 2026 09:31:41 +0200
-Received: from pengutronix.de (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id C34F257BE80;
-	Wed, 05 Aug 2026 07:31:40 +0000 (UTC)
-Date: Wed, 5 Aug 2026 09:31:40 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Sean Nyekjaer <sean@geanix.com>
-Cc: Markus Schneider-Pargmann <msp@baylibre.com>, 
-	Vincent Mailhol <mailhol@kernel.org>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] can: tcan4x5x: put tcan into sleep when removing
- driver
-Message-ID: <20260805-prophetic-flounder-of-judgment-5fd269-mkl@pengutronix.de>
-References: <20260804113027.1626442-1-sean@geanix.com>
+	s=arc-20240116; t=1785920176; c=relaxed/simple;
+	bh=X8yL8WBXjzzjl6iNDF7cgzVuh1gZRuFW6Gd6wNHPAQg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HFeNitaqY5f6H8lMprisFCe3BgwvC27SpRcJPg7w46ZPMfr94CYOtLOmRfZVzAqRR5pXYGuYgXRUn3uOsr45ZurztnA7omS9xU591tuaTZW5BZ3/6qIgSXL9/NmSveGp53cfHtmBGpEj5oOKTNUomBXsKhLEYCkLID4S0k2yc0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [223.64.68.205])
+	by gateway (Coremail) with SMTP id _____8BxuKCr+nJqZpcKAA--.10802S3;
+	Wed, 05 Aug 2026 16:56:11 +0800 (CST)
+Received: from kernelserver (unknown [223.64.68.205])
+	by front1 (Coremail) with SMTP id qMiowJAxTsWo+nJq4YckAA--.1238S2;
+	Wed, 05 Aug 2026 16:56:09 +0800 (CST)
+From: Binbin Zhou <zhoubinbin@loongson.cn>
+To: Binbin Zhou <zhoubb.aaron@gmail.com>,
+	Huacai Chen <chenhuacai@loongson.cn>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Bingxiong Li <libingxiong@loongson.cn>
+Cc: Huacai Chen <chenhuacai@kernel.org>,
+	linux-can@vger.kernel.org,
+	jeffbai@aosc.io,
+	Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: [PATCH v7 0/2] Add Loongson CAN-FD controller driver
+Date: Wed,  5 Aug 2026 16:55:58 +0800
+Message-ID: <cover.1785898181.git.zhoubinbin@loongson.cn>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="uh4fwku6cpvhwkyw"
-Content-Disposition: inline
-In-Reply-To: <20260804113027.1626442-1-sean@geanix.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:qMiowJAxTsWo+nJq4YckAA--.1238S2
+X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/1tbiAQEKCGpyudEA2gACsq
+X-Coremail-Antispam: 1Uk129KBj93XoWxCryDuFWkGr47KF18trW5urX_yoW7GryrpF
+	WrC3srur1DKr48Zrs3JayrCr15A3WfJr1fWFZxAw10kas8Zw12g3ySk3W5urWUurZ5CF4I
+	vrWruFW0ka45uFXCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
+	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
+	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0x
+	vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
+	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+	kF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j1WlkUUUUU=
+
+Hi all:
+
+This patchset adds support for the CAN-FD controller found on Loongson
+CPUs.
+
+Patch 1 introduces the basic CAN-FD controller driver with support
+for classic CAN and CAN FD, including bit timing, error handling,
+NAPI-based RX, and multiple TX buffers.
+
+Patch 2 adds optional DMA support for RX path using the Loongson APB
+CMC DMA engine, which significantly reduces CPU load under high
+receive throughput.
+
+The driver has been tested on Loongson-2K3000 platforms with various
+CAN/CAN FD traffic patterns.
+
+Finally, I'd like to thank Bingxiong, the original author of this driver,
+for his efforts in working on the patch.
+
+Thanks.
+Binbin
+
+=========
+V7:
+Patch (1/2):
+ - Fix can_bittiming_const->tseg1_max;
+ - Fix TX buffer id in loongson_canfd_start_xmit();
+ - Add rwcnt checking in loongson_canfd_rx()
+ - Add netdev stats spinlock;
+ - Add net_ratelimit() to control log output in
+   loongson_canfd_err_interrupt);
+ - Rewrite `loongson_canfd_rx_napi()` to clearly distinguish between the
+   two scenarios: "no more data to process" and "quota exhausted".
+
+Patch (2/2):
+ - Put dmaengine_terminate_sync() before loongson_canfd_rxdma_free();
+
+Link to V6:
+https://lore.kernel.org/all/cover.1784597141.git.zhoubinbin@loongson.cn/
+
+V6:
+- Rebase on linux-can/master;
+Patch (1/2):
+ - Drop CAN_CTRLMODE_3_SAMPLES ctrlmode;
+ - Replace kfree_skb() with dev_kfree_skb_any();
+ - Drop REG_CMD_ERCRST operation;
+ - Rewrite `loongson_canfd_tx_interrupt()` to prevent duplicate handling
+   of TX completion';
+Patch (2/2):
+ - Added a fallback to true when dmaengine_tx_status() returns an error;
+ - Replaced all direct regmap_read() from LOONGSON_CANFD_RX_DATA with
+   the priv->get_rx_data() callback;
+ - Release the DMA channel and clear priv->rx_ch on dma_alloc_coherent()
+   failure;
+
+Link to V5:
+https://lore.kernel.org/all/cover.1783670733.git.zhoubinbin@loongson.cn/
+
+V5:
+Patch (1/2):
+ - Fix tseg1_max const value;
+ - Empty FIFO when SKB allocate failed.
+ - Use REG_FRAME_META1_RWCNT as the playload read count value;
+ - Only clean processed interrupt flags in
+   loongson_canfd_err_interrupt();
+ - Refact loongson_canfd_tx_interrupt();
+ - Add LOONGSON_CANFD_TRV_DLY into loongson_canfd_volatile_reg();
+Patch (2/2):
+ - Fix dma_request_chan() error path;
+ - Fix build error;
+ - Fix loongson_canfd_rxdma_init() error path;
+
+Link to V4:
+https://lore.kernel.org/all/cover.1783391759.git.zhoubinbin@loongson.cn/
+
+V4:
+- Fix some issues from sashiko.
+Patch (1/2):
+ - Update commit message;
+ - Use common APIs to calculate DLC;
+ - Correct CAN_RTR_FLAG judgement;
+ - Add skb check for CAN_STATE_ERROR_ACTIVE case;
+ - Use regmap_write() rather than regmap_update_bits() to
+   disable all interrupts;
+ - Add napi_disable() in error paths;
+ - Add `clock-frequency` return value check;
+ - More comments for macros.
+
+Link to V3:
+https://lore.kernel.org/all/cover.1782787997.git.zhoubinbin@loongson.cn/
+
+V3:
+Patch (1/2):
+ - Replace the switch-case statement with a calculated mask in
+   `loongson_canfd_get_txbuf_sts()`;
+ - Change `loongson_canfd_reset()` return type to `void`;
+ - Drop old code in `loongson_canfd_set_btr()`;
+ - Rename `loongson_canfd_set_mode()` to `loongson_canfd_set_conf_mode()`;
+ - Drop `cf->__res*` usage;
+ - Drop unnecessary macro definitions;
+ - Add `netif_napi_del()` in probe error route path;
+ - Replace ternary operator with `if-else`;
+ - Drop stats->rx_packets and stats->rx_bytes count in CAN error frames;
+ - Add ethtool_ops;
+ - Add CAN_CTRLMODE_CC_LEN8_DLC;
+
+Patch (2/2):
+ - Fix W=2 warning;
+ - Rename get_rx_frc() -> get_rxbuf_empty();
+ - Put `loongson_canfd_rxdma_remove()` before free_candev();
+ - Adjust the RXDMA probe process.
+
+Link to V2:
+https://lore.kernel.org/all/cover.1780908445.git.zhoubinbin@loongson.cn/
+
+V2:
+Patch (1/2):
+ - Put all code into one file;
+ - Add COMPILE_TEST Kconfig option;
+ - Rewrite Kconfig description;
+ - Use `regmap_test_bits()` to simplify bit field checks;
+ - Drop odd FIELD_GET() usage;
+ - Don't use FIELD_GET() for a single bit;
+ - Use an if/else instead of the ternary operator;
+ - Use the CAN TDC framework to get the SSP value;
+ - Use guard(spinlock)/scoped_guard(spinlock);
+ - Use netdev_debug() to be less verboss;
+ - Check for memory allocation failure;
+ - Add CAN_ERR_CNT flag;
+ - Drop unused REG_DATA_xx_yy_W_DATA_yy definition;
+ - Add more function comment;
+
+Link to V1:
+https://lore.kernel.org/all/cover.1777273055.git.zhoubinbin@loongson.cn/
+
+Binbin Zhou (2):
+  can: Add Loongson CAN-FD controller driver
+  can: loongson_canfd: Add RXDMA support
+
+ MAINTAINERS                      |    7 +
+ drivers/net/can/Kconfig          |   11 +
+ drivers/net/can/Makefile         |    1 +
+ drivers/net/can/loongson_canfd.c | 1913 ++++++++++++++++++++++++++++++
+ 4 files changed, 1932 insertions(+)
+ create mode 100644 drivers/net/can/loongson_canfd.c
 
 
---uh4fwku6cpvhwkyw
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v4] can: tcan4x5x: put tcan into sleep when removing
- driver
-MIME-Version: 1.0
+base-commit: 3bd438a58e910db5dc369aa25dfed1fc95f1b596
+-- 
+2.52.0
 
-On 04.08.2026 13:30:26, Sean Nyekjaer wrote:
-> Put the tcan4x5x transceiver into sleep mode when the driver is
-> removed, instead of leaving it in its current operating mode.
-> This reduces power consumption(3mA@12V) once the driver is
-> no longer bound to the device.
->
-> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-> ---
-> Changes since v1:
->  - Moved enter sleep mode into tcan4x5x_power_enable()
->
-> Changes since v2:
->  - Added comment about RST pin
->  - Fixed all calls to tcan4x5x_power_enable()
->
-> Changes since v3:
->  - When powering off, always put the device into sleep mode (if the RST p=
-in is
->    present). This will ensure the device is in sleep mode even if the
->    power regulator is shared.
->
->  drivers/net/can/m_can/tcan4x5x-core.c | 29 +++++++++++++++++++++++----
->  1 file changed, 25 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_ca=
-n/tcan4x5x-core.c
-> index 31cc9d0abd45..d8fd219a27cc 100644
-> --- a/drivers/net/can/m_can/tcan4x5x-core.c
-> +++ b/drivers/net/can/m_can/tcan4x5x-core.c
-> @@ -211,8 +211,29 @@ static int tcan4x5x_write_fifo(struct m_can_classdev=
- *cdev,
->  	return regmap_bulk_write(priv->regmap, TCAN4X5X_MRAM_START + addr_offse=
-t, val, val_count);
->  }
->
-> -static int tcan4x5x_power_enable(struct regulator *reg, int enable)
-> +static int tcan4x5x_power_enable(struct tcan4x5x_priv *priv, int enable)
->  {
-> +	struct regulator *reg =3D priv->power;
-> +	int ret;
-> +
-> +	/*
-> +	 * Put the device into sleep mode if the RST pin is available,
-> +	 * since a wake-up event, RST pin toggle, or power cycle are the only
-> +	 * ways to exit sleep mode.
-> +	 * Redundant if the regulator is exclusive to this device, but that
-> +	 * can't be determined here.
-> +	 *
-> +	 * Datasheet: TCAN4550, section "8.4.3 Sleep Mode"
-> +	 * https://www.ti.com/lit/gpn/tcan4550
-> +	 */
-> +	if (priv->reset_gpio && !enable) {
-> +		ret =3D regmap_update_bits(priv->regmap, TCAN4X5X_CONFIG,
-> +					 TCAN4X5X_MODE_SEL_MASK,
-> +					 TCAN4X5X_MODE_SLEEP);
-> +		if (ret)
-> +			return ret;
-
-As sashiko pointed out, maybe only log a error here and continue.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---uh4fwku6cpvhwkyw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCanLm2QAKCRDMOmT6rpmt
-0jBLAQC205D/V7kKsnaYfslHDmb6Z/q0bHJGCqHuhvAV4+AxgwD/cjpNu6r46Q8z
-iDRp1Oh20hdEF4A/sZl8cRrM7f1i0QU=
-=4EO5
------END PGP SIGNATURE-----
-
---uh4fwku6cpvhwkyw--
