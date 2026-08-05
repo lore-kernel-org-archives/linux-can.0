@@ -1,72 +1,33 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.50])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AAE73DB333;
-	Wed,  5 Aug 2026 06:29:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.50
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785911354; cv=pass; b=ivh133Me1cXWSJORros7OCYt+pYW3qtk7DcUP+p4lr3VDaFXggk0IJSda3NNDWRtgwtDs7tlo8dTzMBFDjaZKWxIULQ3YA3m3WX6bLVR0QduPKvEpoI8rPD/H69yVH6Mx/HDO2k717mZhsHMStIWGD51UbZHtjOCc/SJspdh0uI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785911354; c=relaxed/simple;
-	bh=i+zDhQwA8aAMnkuZxMcN8brLmH1Qhl9BLYEOTJObYXg=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1BFE3DE430;
+	Wed,  5 Aug 2026 07:25:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1785914719; cv=none; b=nEu5AaKIX08izI1Rr1iUF1VjejL7xQo3RUB33Jvg7N19BPcqGJ4PK165LLV2bt2dvuH+onuZyeKue3nB7z/GcxLfLnVjsmAv4DPpe6trJ7DWTwSgFWIoxT0HL9gekjt6iq/F9l3GDN8I3EXuoVuZIL9z5iKm0/dm8liSGcw97a8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1785914719; c=relaxed/simple;
+	bh=5EF6EV/tsqzKGbl4N2bJCPF2Wm6ztEK+sT4UWsUUBQw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hXrX5QX+i9zdqsi5Q/9lBU49qxU89UFpypxXLjQ8bm7FmiMINIAfXbE866P0ER0ZYaivuS6SaX8qBjN/Hp2bA8MC1IENyJko5kE1k1s47ty2MR2bR/T36UonnlyKntnlVYNJvRqWZQG8LprfHTvfXYjqkHGrQAcWuecbkdifa3U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=erWoh07O; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=d2Kdf/my; arc=pass smtp.client-ip=85.215.255.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	 In-Reply-To:Content-Type; b=tm3Roq0jgabDG+IgflI3QN3o+iudFMcJ0UI4h3l/Sr3trqXNOV9nWyYTc5mREwSY6lubgcQD6266y6C6YGM7YEXTpCsISHIsPkfM5AT8XO/lEzbSl26S1R4xoNZOnGULHg5xCxrEGGzsRg39z78EVMrk1jinDOeGm/LNYRQ7jZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YG2PZcJC; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="erWoh07O";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="d2Kdf/my"
-ARC-Seal: i=1; a=rsa-sha256; t=1785911344; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=V8Z31XIakTMwe9gRp/N512vkuGoLj6j/N5bGg1sOgpoEt8Po/esAK91hO/XjT4E178
-    H7t4br4AKhXeCVPkU6MNjzQF1GT/UWZLEjQQ0aPF8/mdKDSoWrFqeQywdqYrg3rn+eDQ
-    Ebt7A8M2Ur8FPdbq7vDvftSA7bg8oKw8TaFseZbgVFg7WpqjxpbtOV/1MgFdNZiduj4R
-    NrscuCkDHvLwt4ECm2T1Kul+vLgaVdvDBbL3XT62GiiFbKj+FqkI/5yEhNdV9dKWNzyc
-    Jrf3/6x8idaGiEC2gpbYodMOnMTcxpUKw1uFcIhCZwF7Vj2IZcmAC0aMIczqg1NrkW6i
-    JX8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1785911344;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=txMKWtDmH4idU6FWMakg1pkj6yFJPfmI6+Wf54umNUg=;
-    b=swo3huioZUaW+f3vswf5fbAJM8pkt7KeB79XiJ3YhAvbtk3adORhKxxO63TVF7ovqz
-    LTdpxj9YDe6q1NgkA21FC500JY0HBPkuJmZIR0mo65PYqWiaofWn7AALOVEFzuHas1wj
-    izuEYOGyrwTWchZsauCIEuWw17eE15elvFU+ySi/eFEhkkZDWYqzBB1guB8/B1NtAKOy
-    sRQZ9ctO138iOmIxrJHUsvpe6OVMu782qT6R2UEVRbfb/uG8phsoW50cvJg0mLQVAjSG
-    X0BLB+zBBL26orxhxVcW0jxWAnIyrOMogouijGO1qWKN8HGAtsup542qqabiDd/rtfZ7
-    KRFw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1785911344;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=txMKWtDmH4idU6FWMakg1pkj6yFJPfmI6+Wf54umNUg=;
-    b=erWoh07OaTotS0GQeWC5HnPRDDDSWfOJZNc3ynijEvWZNKM1Pk3UOcMK3LX0ehXTTR
-    WOngwKgdyYtNOKVnUj2t3MAmO7H5RXKN/VzDe0LEfZYg416y4NIMpj6+y/6K/V4ZeoC2
-    DPp1KtpLECUxZ4A9q8ihoKMAjmqUq1RYCIV6VKVBfGcJsl8NDIq0hqI0TjhfcwaLWEBd
-    E1IA+Rg+rwvT/+6JTABh0TqumcKb107+7TFaMJjb8aVP5qJ7/HBhBN8Foe5/A+beYxKU
-    y+q0Je0nZERfglYp+pAxU81TOJSi+UerQ0pIQ8t8BAExsipJKjNIcDi4MlnvtFHDR9jg
-    5Xag==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1785911344;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=txMKWtDmH4idU6FWMakg1pkj6yFJPfmI6+Wf54umNUg=;
-    b=d2Kdf/myO14mec0QrWMKa0EOEadN3e9wonY18gwXnMazr+5zgyCbd5pAQHHGT24/0i
-    kYVoPc/oIGmyNi3QsODQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tRkI16oOSW1Ti/f4PoH8="
-Received: from [192.168.20.231]
-    by smtp.strato.de (RZmta 55.5.6 DYNA|AUTH)
-    with ESMTPSA id K528192756T41Ay
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Wed, 5 Aug 2026 08:29:04 +0200 (CEST)
-Message-ID: <395d9b68-2527-47d6-a6a0-74569d27b734@hartkopp.net>
-Date: Wed, 5 Aug 2026 08:29:03 +0200
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YG2PZcJC"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 964C41F000E9;
+	Wed,  5 Aug 2026 07:25:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1785914718;
+	bh=Hu45KECkLQs+f+gz8d9sG9BTY9WBaw/7df1poFW/VAE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=YG2PZcJCZxJiUWiTyY8JjsLGRKZj5EOkaq9Ej83qTyf3bJpM1/yJZOHvhh4MT/LKL
+	 TBoJSCPR7IAQF6X8rtS3+ibXFAb4k+OEa/YxJ09TjrJPJyK+1i0+f4KIdvin9wImmD
+	 gG29h1dvnPKCiYN2o/Q8thxO2DIC1bquQXpKpFxVdj1NrDW8yzHtvkIf5HxifPcL+Q
+	 lP0c6/2oGkiNXvHiG8Y267kCOe6ucLE/bunGHSKH1AHOGnNJAX7bnqbRbmc/6g2QRA
+	 NwXdPNNXRwlgCR3HbIjHS95EDMUhSqJfMLaObcnekQxiMy532Hy14qfd9a8TdsRQnk
+	 liXNtnDIJlw1A==
+Message-ID: <6800934d-2da2-4eeb-8514-3978f4c7b307@kernel.org>
+Date: Wed, 5 Aug 2026 09:25:15 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -75,110 +36,77 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 0/4] can: automate IFF_ECHO flag for generic echo skbs
-To: Vincent Mailhol <mailhol@kernel.org>,
+To: Oliver Hartkopp <socketcan@hartkopp.net>,
  Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20260804-automate_iff_echo_flag-v1-0-26f06ff0f8bc@kernel.org>
+ <395d9b68-2527-47d6-a6a0-74569d27b734@hartkopp.net>
+From: Vincent Mailhol <mailhol@kernel.org>
 Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20260804-automate_iff_echo_flag-v1-0-26f06ff0f8bc@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Autocrypt: addr=mailhol@kernel.org; keydata=
+ xjMEZluomRYJKwYBBAHaRw8BAQdAf+/PnQvy9LCWNSJLbhc+AOUsR2cNVonvxhDk/KcW7FvN
+ JFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbEBrZXJuZWwub3JnPsKZBBMWCgBBFiEE7Y9wBXTm
+ fyDldOjiq1/riG27mcIFAmdfB/kCGwMFCQp/CJcFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcC
+ F4AACgkQq1/riG27mcKBHgEAygbvORJOfMHGlq5lQhZkDnaUXbpZhxirxkAHwTypHr4A/joI
+ 2wLjgTCm5I2Z3zB8hqJu+OeFPXZFWGTuk0e2wT4JzjgEZx4y8xIKKwYBBAGXVQEFAQEHQJrb
+ YZzu0JG5w8gxE6EtQe6LmxKMqP6EyR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDl
+ dOjiq1/riG27mcIFAmceMvMCGwwFCQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8V
+ zsZwr/S44HCzcz5+jkxnVVQ5LZ4BANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
+In-Reply-To: <395d9b68-2527-47d6-a6a0-74569d27b734@hartkopp.net>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-
-
-On 04.08.26 21:55, Vincent Mailhol wrote:
-> Most CAN drivers allocate echo skb slots through alloc_candev() or
-> alloc_candev_mqs(), but still have to manually set IFF_ECHO to tell
-> PF_CAN that the driver handles local echo itself. This creates
-> boilerplate and makes it easy for drivers to forget one half of the
-> setup.
-
-No one ever "forgot" this flag.
-
-> A recent example is commit c77bfbdd6aac ("can: dummy_can:
-> dummy_can_init(): fix packet statistics"), where dummy_can was already
-> using the generic echo skb helpers but needed an explicit IFF_ECHO
-> assignment to make tx_bytes accounting work.
-
-But you (ok us) :-D
-
-To me this patch set does not really bring an improvement.
-You are now hiding the setting of this bit.
-
-Today it is very transparent visible inside each drivers initialization 
-section whether it supports IFF_ECHO or not. And e.g. vcan.c can also 
-switch this feature with a module parameter.
-
-I prefer this conscious setting in the driver setup. We should better 
-add proper comments in drivers that do not set the flag, e.g. in 
-slcan.c there's no hint that the af_can.c echo feature is used.
-
-Best regards,
-Oliver
-
-
-> Patch #1 cleans up slcan, which does not use the generic echo skb
-> helpers and therefore should not allocate echo slots. Patch #2 fixes a
-> small inaccuracy in the can.rst documentation in regard to the IFF_ECHO
-> flag. Patch #3 sets IFF_ECHO automatically when echo skb slots are
-> requested. And Patch #4, the final one, removes the now redundant
-> IFF_ECHO assignments from drivers which are covered by alloc_candev()
-> with a non-zero echo_skb_max.
+On 05/08/2026 at 08:29, Oliver Hartkopp wrote:
+> On 04.08.26 21:55, Vincent Mailhol wrote:
+>> Most CAN drivers allocate echo skb slots through alloc_candev() or
+>> alloc_candev_mqs(), but still have to manually set IFF_ECHO to tell
+>> PF_CAN that the driver handles local echo itself. This creates
+>> boilerplate and makes it easy for drivers to forget one half of the
+>> setup.
 > 
-> The remaining explicit IFF_ECHO assignments are special cases with
-> custom or virtual echo handling.
+> No one ever "forgot" this flag.
 > 
-> Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
-> ---
-> Vincent Mailhol (4):
->        can: slcan: do not allocate unused echo skb
->        can: fix IFF_ECHO example in documentation
->        can: dev: set IFF_ECHO when allocating echo skbs
->        can: treewide: remove redundant IFF_ECHO assignments
+>> A recent example is commit c77bfbdd6aac ("can: dummy_can:
+>> dummy_can_init(): fix packet statistics"), where dummy_can was already
+>> using the generic echo skb helpers but needed an explicit IFF_ECHO
+>> assignment to make tx_bytes accounting work.
 > 
->   Documentation/networking/can.rst                   | 7 +++++--
->   drivers/net/can/at91_can.c                         | 1 -
->   drivers/net/can/bxcan.c                            | 1 -
->   drivers/net/can/c_can/c_can_main.c                 | 1 -
->   drivers/net/can/cc770/cc770.c                      | 2 --
->   drivers/net/can/ctucanfd/ctucanfd_base.c           | 1 -
->   drivers/net/can/dev/dev.c                          | 1 +
->   drivers/net/can/dummy_can.c                        | 1 -
->   drivers/net/can/esd/esd_402_pci-core.c             | 1 -
->   drivers/net/can/flexcan/flexcan-core.c             | 1 -
->   drivers/net/can/ifi_canfd/ifi_canfd.c              | 1 -
->   drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c | 1 -
->   drivers/net/can/m_can/m_can.c                      | 1 -
->   drivers/net/can/mscan/mscan.c                      | 2 --
->   drivers/net/can/peak_canfd/peak_canfd.c            | 1 -
->   drivers/net/can/rcar/rcar_can.c                    | 1 -
->   drivers/net/can/rcar/rcar_canfd.c                  | 1 -
->   drivers/net/can/rockchip/rockchip_canfd-core.c     | 1 -
->   drivers/net/can/sja1000/sja1000.c                  | 1 -
->   drivers/net/can/slcan/slcan-core.c                 | 2 +-
->   drivers/net/can/softing/softing_main.c             | 1 -
->   drivers/net/can/spi/hi311x.c                       | 1 -
->   drivers/net/can/spi/mcp251x.c                      | 1 -
->   drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c     | 1 -
->   drivers/net/can/sun4i_can.c                        | 1 -
->   drivers/net/can/ti_hecc.c                          | 1 -
->   drivers/net/can/usb/ems_usb.c                      | 2 --
->   drivers/net/can/usb/esd_usb.c                      | 2 --
->   drivers/net/can/usb/etas_es58x/es58x_core.c        | 1 -
->   drivers/net/can/usb/f81604.c                       | 1 -
->   drivers/net/can/usb/gs_usb.c                       | 1 -
->   drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c   | 2 --
->   drivers/net/can/usb/mcba_usb.c                     | 2 --
->   drivers/net/can/usb/nct6694_canfd.c                | 1 -
->   drivers/net/can/usb/peak_usb/pcan_usb_core.c       | 2 --
->   drivers/net/can/usb/usb_8dev.c                     | 2 --
->   drivers/net/can/virtio_can.c                       | 1 -
->   drivers/net/can/xilinx_can.c                       | 2 --
->   38 files changed, 7 insertions(+), 47 deletions(-)
-> ---
-> base-commit: 828c4a5a9518117f9f7bdc445a7eeca85fc91bf8
-> change-id: 20260804-automate_iff_echo_flag-6ddd7f4def7a
+> But you (ok us) :-D
+
+Yes, this is the hidden motivation of this series. I did this mistake
+and I was thinking if there were any way to prevent this from happening
+again in the future.
+
+But has a matter of fact, I am not the only one as the ucan driver also
+omitted to set its IFF_ECHO (c.f. the note in Patch #3 message). And no
+one noticed this one.
+
+> To me this patch set does not really bring an improvement.
+> You are now hiding the setting of this bit.
 > 
-> Best regards,
+> Today it is very transparent visible inside each drivers initialization
+> section whether it supports IFF_ECHO or not. And e.g. vcan.c can also
+> switch this feature with a module parameter.
+> 
+> I prefer this conscious setting in the driver setup. We should better
+> add proper comments in drivers that do not set the flag, e.g. in slcan.c
+> there's no hint that the af_can.c echo feature is used.
+
+Then, what about setting IFF_ECHO for *all* drivers by default in
+can_setup() and let the ones which have a special need to opt-out:
+
+  dev->flags &= ~IFF_ECHO;
+
+This way it remains transparent which one support IFF_ECHO or not. It is
+also more important to highlight when things are done differently
+(IFF_ECHO off) than when things go the normal case (IFF_ECHO on).
+
+And this is more aligned with IFF_NOARP (c.f. you other message) in the
+sense that both flags would now be set by default by the framework. It
+looks odd to me that IFF_NOARP should be set by default by the framework
+but not IFF_ECHO.
+
+
+Yours sincerely,
+Vincent Mailhol
 
