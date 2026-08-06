@@ -1,146 +1,172 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Received: from MRWPR03CU001.outbound.protection.outlook.com (mail-francesouthazon11011032.outbound.protection.outlook.com [40.107.130.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AF072F7EF1
-	for <linux-can@vger.kernel.org>; Thu,  6 Aug 2026 16:41:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786034477; cv=none; b=B3jJqdS1Nkhl+wpzuul+UvSgCh363lQ1sEJ2Rpk8MdIUCNmlndSFn2oZRnJodhHn2TjwJOuDJ3KGO2I74KLDKhYKzRDYjtfWy0a+Sm0KRFJA2HFJ7aZe4HYmA+VyOJcNCMGYKmDiNFx35jOSHSGCLDoh9TWvNOGREK9zm5hWarI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786034477; c=relaxed/simple;
-	bh=Smmd+DtH0WdGJlocGNWlidjBgEDwCa2wP+60+Coyu8I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vC5GCeE7wUlsNKpVMW6Y/3ibKakOcLTvWDk5OkZRBlMEQswb5f2Zo3Dcn6ZM84UApU6i+Bu8Y3oxFxIhtTuXhgOvGwWK2MVLv05b8LRsGn8TVLxgYJXN2woFJqWAfe+CDBOqCdIPXB+FgYFT4rc7Utn6wWRNKr+xl4HaVRE7jiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 2C8F6201FAA;
-	Thu, 06 Aug 2026 18:41:08 +0200 (CEST)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1ws19Y-0007VL-0F;
-	Thu, 06 Aug 2026 18:41:08 +0200
-Received: from pengutronix.de (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id BEC0557D323;
-	Thu, 06 Aug 2026 16:41:07 +0000 (UTC)
-Date: Thu, 6 Aug 2026 18:41:07 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Filippo Storniolo <fstornio@redhat.com>, 
-	Robin van der Gracht <robin@protonic.nl>, Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de, 
-	Urs Thuermann <urs.thuermann@volkswagen.de>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	linux-can@vger.kernel.org
-Subject: Re: [PATCH can-next v2 2/3] af_can: store socket pointers in struct
- netns_can
-Message-ID: <20260806-rebel-debonair-teal-254bbd-mkl@pengutronix.de>
-References: <20260806-feat-can-diag-v2-0-832597ee4cb9@redhat.com>
- <20260806-feat-can-diag-v2-2-832597ee4cb9@redhat.com>
- <20260806-eminent-shark-of-patience-1f612d-mkl@pengutronix.de>
- <f89084c5-b98d-442c-8f70-59f07e3b926c@hartkopp.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D80A248F83A;
+	Thu,  6 Aug 2026 20:07:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.130.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1786046874; cv=fail; b=Ne8VANQH69tuAzz/XC8UnuvU+84UXm/Cpr8EdyCgTtDcNa3lHaASfsSak2N/wSfqhbXao785bq2ME58zteMNFm9HEcsS7xD+zqldPqO2g/XVJKiAYGvFMrXyYbdJ/1PcSflSoaBb9xp9zPc3Hc9Os6uKdewXB/jEZj2Clhx0i9w=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1786046874; c=relaxed/simple;
+	bh=NVJEUYkwCBrtANqYGuE8YqSI0WBcH/xgh5Gk5q8oMRI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=m+admm13PvaHybXhr3Gsj+9QjMiNSMtShL8szP7UfyAy8QsYE74jOCVrKX9E/QX4+cqoT5xs6MppUJz67XodZ4EHgodGb1sfMuwu8kWgBfTysm1kwK8vj5ZU3rNlQRoMkhSSxlT1/Rj8Yb1b5zb9vGLr4mG17TFRBzqbpS+PgD0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (2048-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=R4O0xU2S; arc=fail smtp.client-ip=40.107.130.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="R4O0xU2S"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=If2FTL95hOjIAcMjH6a3GHwyr42n0z4k57RC1XTAUW3CjYQPy0cERKMl/mtL+/SssY0Lvd6fAWlfb2TTSiArVCsrx2HqQKPh60tqK5AJrgS7+yyj466hJhrPzmkUyBCQ0kgh0Yqn8Ib58vikIl3sVe7yofjx85p7BrCAxv49XtFZthMPFYTGOhIVtaJcUnXRGnpTyynvCQAgfariGtfcsJroPOan3/00rz8LpIp/FEBKxXfxLIZZMbGWoXgcv/kvrRKfUBVboroONKqGSG4/mcGYq2Swg/Zwk0f7Yuz/PsmbEMk3ZI7Za2kFlwnj0++MJ41umke5YHIDhaQcy/awwQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=79M1gwo70h2R1pbW4dk8OHTqnkhNC1Hehr1kfuE/rYg=;
+ b=OLpOIvdrf+qEmDp8M3KWyBvowchkBfEIrG0BxR1qFr6yQoa/aLR7GazVFS2dOfy5r5RWACCK77N6PBDMuxV4NCUXkr0GsP/01+H+beDT1UMyjycljP4/RiHGiQlgQjjH6dMpSciKsB0577WxpxmDnD109J1OxwsQPrwa2rVCNKvBdizj6JR8/IJCeZLV4j8bB5e5rEFrqbQyZJklyX234mBhnCX4BYlCpDGG5qInMKcCAo3o/8Iupz24AM4/0Qebx4xQn672zo6FkDb5qDMbWkyeH28wDJYpvaCRvsDL6cvAYpLCNHYidaq2WaQVvdGIJ8xbKUzA3bTYPAhud2AlfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector1-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=79M1gwo70h2R1pbW4dk8OHTqnkhNC1Hehr1kfuE/rYg=;
+ b=R4O0xU2SyNQKBtdFQZue66uzsUiGghtwH5RZvXwMmQlQMKDZo4elu3P9YeQZ1cciMN8C4w4uGA4NGb6G5knD0wWGzRcTUpkD55MKqG8zAE1WLc13Y1gYJQk1S9qvlTF6uxbAQdPFCVo8rf6ZtydM0CLuBJKB3pijcahuVuyFCoqfh89ETejeBCrNO12W8gXf6FwNk8Cbfhg4P/90O4rcMhf3I4GTOFt743ZAWXn8E5NhxCT8IHGCwYnuOk22PrJecCOfBVnA3Ozd/JPlQ4oME+Y10BgRPP31OQEmYfz9DEAKhOBiScJA5lGEZ7F/GCU/jrftFKAlWXCC56DrmEqBig==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from GV2PR04MB11799.eurprd04.prod.outlook.com (2603:10a6:150:2cf::9)
+ by AM0PR04MB12002.eurprd04.prod.outlook.com (2603:10a6:20b:742::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.292.21; Thu, 6 Aug
+ 2026 20:07:46 +0000
+Received: from GV2PR04MB11799.eurprd04.prod.outlook.com
+ ([fe80::2146:83a2:5329:b7c]) by GV2PR04MB11799.eurprd04.prod.outlook.com
+ ([fe80::2146:83a2:5329:b7c%7]) with mapi id 15.21.0292.018; Thu, 6 Aug 2026
+ 20:07:46 +0000
+From: Frank.Li@oss.nxp.com
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	haibo.chen@oss.nxp.com
+Cc: Frank Li <Frank.Li@nxp.com>,
+	linux-can@vger.kernel.org,
+	linux-phy@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	Haibo Chen <haibo.chen@nxp.com>,
+	qijian.guo@nxp.com
+Subject: Re: (subset) [PATCH 0/3] arm64: dts: imx95-15x15-frdm: support CAN transceivers sharing a silent GPIO
+Date: Thu,  6 Aug 2026 16:07:36 -0400
+Message-ID: <178604677653.439551.7004828276697704665.b4-ty@b4>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260730-can-share-silent-v1-0-63fd603f943d@nxp.com>
+References: <20260730-can-share-silent-v1-0-63fd603f943d@nxp.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PH7P220CA0001.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:510:326::35) To GV2PR04MB11799.eurprd04.prod.outlook.com
+ (2603:10a6:150:2cf::9)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="lh6actqe2l64w6h2"
-Content-Disposition: inline
-In-Reply-To: <f89084c5-b98d-442c-8f70-59f07e3b926c@hartkopp.net>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: GV2PR04MB11799:EE_|AM0PR04MB12002:EE_
+X-MS-Office365-Filtering-Correlation-Id: b8463260-b2be-40ad-b678-08def3f661cc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|19092799006|366016|23010399003|376014|7416014|1800799024|921020|11063799006|56012099006|10067099003|18002099003|22082099003;
+X-Microsoft-Antispam-Message-Info:
+	l8JW7Pc4uAObFl4EQOd/aw7ZVWlKiqLaBvi/1+LQROYb4HC8SVgboxAkMrBEOrdY/VVoRm3kc2R8JAj3UMajzXk1QqM0oX9czgPGhEwTlTEH+8Tj+pBBP6ducaCu6gqrkbgjChk1ef3Rm+sVkd8h7Y4jFT1HK5usdFdxvwo2Wcynsscl8uMs43njVG3/1ZpEpxUQZ14m7TV9WeTHv/4bxf0Pw+7fcWmkBLBliFMPO0OFytNueqErXYBlsf84xW9qWT12QncqUmOvpvK635RjB4VvkZ0ZMUUg9NVPOXI2KnI3OAwfViHYd+r2D7BgbJUYnngLgfWrAoLX55xPXUb6nRl+bXZ3XSm0DbzMWTiUPgXqRcU4T0RQnzWEAxZUqw2nZsGZbUVtFIg+omf1cJjI2YfnqIzlExBysJEM+qohWy9wCXz/fw0Tfs1HaQF3VX7TmRcITmjMqOJpayEQOwiXMCmRQwOBgO5QOcqb9gRGLZf2wovwLIbznv3GQyygUwHno3IVb4xbqqar293PuGbi8yOOZ/KqGuj5uxrpomp47zUinx4LRIGGw0iIfsCrLsEBOMxaP7co7TxCR8SkLUH/tHoX5nmPQlKQMOQrvEfBkc+g9axJJp/k4aGcaebvpXNro9Rh9vFhSk2C660HYzt6haKQfvYBW+sXc2xjCNarcbQqh0zBr89erHKhL1oQbQ+7BJ+Jw80e7XmeFONM3macSA==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV2PR04MB11799.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(366016)(23010399003)(376014)(7416014)(1800799024)(921020)(11063799006)(56012099006)(10067099003)(18002099003)(22082099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?U29JS1NyWFdJRWxpM0FnT0ZXSU9oTHVzUTFaTEdGRHdXUWxHLzlvMjcwMG45?=
+ =?utf-8?B?VWxJelc3dFpxQlUxUlNseEJ2SktYUXBBOW9ZYWEvRXZvOE9HSCt2SVc4Z2RW?=
+ =?utf-8?B?Umc0TGU5MkQ2TjdQeGl6WEtORmNNSGdtVW9UOVZPZ3RleUNxazQ2MUE5V1VP?=
+ =?utf-8?B?R3FEMUc1aUVGaUhzWEhVVzZjTEhLOUEvaTdpZGsyTlJwK1l4WHBHU1ArYmtR?=
+ =?utf-8?B?RFZwWUVXR1gzbk5CWVdrcHF1eld4ZWkyaTRGYk1OY2VSUWZIbFFtZjJnMU15?=
+ =?utf-8?B?ZFdZbHM0VnE3K05HaWNNNFE3cTBtUHdaaUhlWTM1K1BpdXMwQmJXSXpkMDhu?=
+ =?utf-8?B?Rno1c2wvSFV3NGg4b1JYazNPQUdjRExvZTAyTHpLRENSc0I4czZqTWZZNGh6?=
+ =?utf-8?B?STRjTnRFMmJFL2dlN01xQkZuaEVid0pib2hRZUlrS2pSS3VrOGFkcHZWR216?=
+ =?utf-8?B?YUxwOURuUEtxUmltS0ZYQkhxaEgya2JBbjlocGRIUFUxTi80a1BleFNHR2Zs?=
+ =?utf-8?B?Ry9sVlJqL2IvcEt6ODFPTnJ3S1NteCtFQks1V29QU2RnZUVTbFNoRFZsZHFY?=
+ =?utf-8?B?MFZNaG5oUEtjakxleVVLZkFMV1lOUU0rMEtrVkNxWXRqeHIyNmI1YWxXVmhV?=
+ =?utf-8?B?THhySno3Y0VsMkNHdm1sNzVVRDRIUEorNjhVYnRkMTFrZVAreGFTbUV4d0Vn?=
+ =?utf-8?B?Tlc2VW05T3lNaXhmMjl6Mm1FWUJ1dDU4WnNmRmU5THo3aGEvSjRkSmpZU3U2?=
+ =?utf-8?B?UnBhYkt5Wnl2UVRFQjg1Vk9tbWN3cWdlaXBzOThFVWthWDlwV2NzQnFJTlcz?=
+ =?utf-8?B?Wjd4Y2huMVo0aFloS3padDd6NFRNOTRqMjZTd3Z3Y0hJZnM5UytIOGMzd09y?=
+ =?utf-8?B?RS9zaHpMN1N2MUczOWltNXZyUk9ybmE0YlJsaG9oVTFWWk9MeElBb1N6RXlO?=
+ =?utf-8?B?QXduR0VzUDlnamRJQnh3SExYdWZGbGVoRjFxbU5vajlJMXZ4UnZjK3lQZlNU?=
+ =?utf-8?B?QlV2SWg5dG9lWkN4a3RndVZjVjdvMVBJMTgyRlIxM0phTGRTU1BhbDZmMkt1?=
+ =?utf-8?B?cDZSQ1B0ODdjYzh2MTV6L3poNWl3bjlCZ1JPQ3JsTnlwSWlhR2NmV2phRE9E?=
+ =?utf-8?B?czNObWkwOXhOSWYxdllEL2NmM1NwUUdoR0h6YWM5b2JGY0JQSTJHQy82VTkx?=
+ =?utf-8?B?TzlQN0NuamdIcGRvR1FxdnhUdFdDZzltck9EWjJHS3Vua010NklrQ1RFTTZ3?=
+ =?utf-8?B?QnZ2elRNWkxjYmxpV1VyZnFMZ1o0WTVIY2ppa1ljK3RzQVBBVENoSDRneVMr?=
+ =?utf-8?B?bmNqWFBNZENTc0VWNVBWTzlIQ29GMWZDWHNvOTFKOGpEK2krUktZVW9SU244?=
+ =?utf-8?B?eGk4OVdMa29WSytETDcyTDJIYlkzekRNQVJhSGk4cUdhKy9tdDJPZ3VIMDFB?=
+ =?utf-8?B?NHJod2pPai8xVHZJaFB2cFN2TXFwWkZtZGdpWEN1NDZuenlKYklramd4TFlS?=
+ =?utf-8?B?T0JjQkxveTAwNUd5TXdxSHQxcHhOTGxlV1ZRUXRvRG9JcHBDZE91NEFhK0dF?=
+ =?utf-8?B?MlZVOG1RY3REMUhNMjJsVDh3THRhd21ZSVpNclROWFdybmI3cmxpZkJpVW9n?=
+ =?utf-8?B?SkFhMkI2bUhoSnRvU2o1WHdvemRjSkdqQldDVWRlQ1ZjOUcwN2NYbFNPMjlw?=
+ =?utf-8?B?SXlRczFyam9reWFmZ3hMSlU3MVNDTXpmWjJvc0NyYndyeDhOdHM0TDBxMzUy?=
+ =?utf-8?B?WGN0clFMWGFqRXUxeG5DaFJFQ0VBU1JhdXhCM1NUNTN2Um1yZUxjRGltcHpk?=
+ =?utf-8?B?SVlkZmR3SGZCM3lOc2dLTkwxczJvV0Q2RGhGTDgrUE91VFpuaTl1aHRzenlk?=
+ =?utf-8?B?Z0Y3aXdOakVFOENDL1dBMjBHUFV2aUM5OHpqcWtRWXUxVThwTDJkSmFKVi9M?=
+ =?utf-8?B?TU1TbDRxSjUxbXFweEdHeHF5VktZT0tXbk5GZS93OVVYV2pOQnNtemJPOWIw?=
+ =?utf-8?B?dW5PNVlaUG5pak92Zm0ydFdybURrTitZeGtvcVY2bS9LTXphbWs4SDdQbEZt?=
+ =?utf-8?B?eHFvc2RERE05OWRxa2VaTjQ0VVFJQWZ5K29Ld25QSXBaYzVwbUpuLzVHbTN3?=
+ =?utf-8?B?aU5YcFk1NktIWnhRT01pY0hRWVNKbmFUV2JXNll6NWFJeGhndUwzKzh5anRo?=
+ =?utf-8?B?eFBkY2RjcFRVZjVxVzJCZWZRTkQ4QVZuSWN0T2dOUC9mbTF6YzFkbHNTWk9E?=
+ =?utf-8?B?OWoxMkdqRkxQUXhtTE9iejd5NkI1ZWtERUV4Znk4N1dhcFdnSGhsbzNmNVhO?=
+ =?utf-8?B?bitzMVZWdk41Mjg0SWg4MlFQWTEzTVVMNHhPWTN2M1FsZVpSaUsyNHQ1bTJY?=
+ =?utf-8?Q?SlxVd0c0gQinLy7rl0o6QeFZ4odwIAeDfD2co?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b8463260-b2be-40ad-b678-08def3f661cc
+X-MS-Exchange-CrossTenant-AuthSource: GV2PR04MB11799.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2026 20:07:46.2922
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rWXumWxEoc8huvH/I2T2pQdi2j6KggaCdQj1/jRmBKos0IqibKc+BlFcy4W9gHa2ijJ3gyC3+iDWYkPImaAHb58ilw+Kh5lfHBFScLLHe0lVCmjpiLemn0kCwuSe0wFf
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB12002
+
+From: Frank Li <Frank.Li@nxp.com>
 
 
---lh6actqe2l64w6h2
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH can-next v2 2/3] af_can: store socket pointers in struct
- netns_can
-MIME-Version: 1.0
-
-On 06.08.2026 17:15:51, Oliver Hartkopp wrote:
+On Thu, 30 Jul 2026 12:33:25 +0800, haibo.chen@oss.nxp.com wrote:
+> On the i.MX95 15x15 FRDM board the two CAN transceivers (attached to
+> flexcan2 and flexcan5) share a single "silent" control pin, which is
+> routed through the on-board PCAL6524 GPIO expander. Both transceiver PHY
+> nodes therefore reference the same GPIO line for their silent-gpios
+> property.
 >
+> This series makes that sharing work correctly and puts the transceivers
+> into the proper default state:
 >
-> On 06.08.26 16:16, Marc Kleine-Budde wrote:
-> > On 06.08.2026 15:14:14, Filippo Storniolo wrote:
-> > > AF_CAN sockets need to be stored in the netns_can structure
-> > > in order to be retrieved by the CAN diagnostic module when
-> > > a netlink request message is issued by the userspace.
-> > >
-> > > On socket creation (`can_create()`), add the pointer to the
-> > > new socket to `netns_can::sk_list`. During socket release
-> > > (`isotp_release()`, `raw_release()`, `j1939_release()`,
-> > > `bcm_release()`), remove the corresponding pointer from
-> > > this list.
-> > >
-> > > Since this is a prerequisite of the CAN diagnostic module,
-> > > deletes and insert operations are conditioned by
-> > > IS_ENABLED(CONFIG_CAN_DIAG).
-> > >
-> > > Signed-off-by: Filippo Storniolo <fstornio@redhat.com>
-> > > ---
-> > >   include/linux/can/core.h | 11 +++++++++++
-> > >   include/net/netns/can.h  |  6 ++++++
-> > >   net/can/af_can.c         | 50 +++++++++++++++++++++++++++++++++++++=
-+++++++++++
-> > >   net/can/bcm.c            |  2 ++
-> > >   net/can/isotp.c          |  2 ++
-> > >   net/can/j1939/socket.c   |  2 ++
-> > >   net/can/raw.c            |  2 ++
-> > >   7 files changed, 75 insertions(+)
-> > >
-> > > diff --git a/include/linux/can/core.h b/include/linux/can/core.h
-> > > index 3287232e3cad..5132f5c89b7c 100644
-> > > --- a/include/linux/can/core.h
-> > > +++ b/include/linux/can/core.h
-> > > @@ -61,4 +61,15 @@ extern int can_send(struct sk_buff *skb, int loop);
-> > >   void can_set_skb_uid(struct sk_buff *skb);
-> > >   void can_sock_destruct(struct sock *sk);
-> > >
-> > > +/* function prototypes for the CAN diag module */
-> > > +#if IS_ENABLED(CONFIG_CAN_DIAG)
-> > > +void lock_can_diag_mutex(struct net *net);
-> > > +void unlock_can_diag_mutex(struct net *net);
-> > > +void can_add_sock_sklist(struct sock *sk);
-> > > +void can_remove_sock_sklist(struct sock *sk);
-> > > +#else
-> > > +#define can_add_sock_sklist(sk)
-> > > +#define can_remove_sock_sklist(sk)
-> >
-> > Please add static inline functions for these.
->
-> AFAIK "inline" is not wanted anymore and checkpatch complains about it.
+> [...]
 
-I'm only talking about the no-op functions. no-op functions must be
-"static inline".
+Applied to (imx/dt-indend), thanks!
 
-With defines we don't have any type checking, with static inline no-ops,
-we do.
+[3/3] arm64: dts: imx95-15x15-frdm: fix duplicated can-phy node names
+      commit: 7a6460ea60c5dff7240c6e3bc307aee252fe0483
 
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---lh6actqe2l64w6h2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCanS5IQAKCRDMOmT6rpmt
-0sq3AQCEtewzGNZDFKlO7lY4HjcjRJJI/uvuz+GhKzKKRUpc4wEAnfzve5nl56bP
-6y0jzKbw3bCzhdjQ1mLkN6KlZdBLxAw=
-=b67K
------END PGP SIGNATURE-----
-
---lh6actqe2l64w6h2--
+Best regards,
+--
+Frank Li <Frank.Li@nxp.com>
