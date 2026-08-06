@@ -1,178 +1,81 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA82341B8D5
-	for <linux-can@vger.kernel.org>; Thu,  6 Aug 2026 15:16:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.53
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786029364; cv=pass; b=eHQM1f34sksUSZ0k6sL9AFapr8o3r37mRusacEDRQ4sJunezrG64yF9vTHQq/nrWgg89QgGUsMSp3k4OAA6ODP372cWjRkwghOrxDZDAOMYYE48g1AUAIeGaAGdvU717+jwt0oH6Vcg+EhhU6qNrZuAGKD0Io2rK5hD8C9YDb5E=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786029364; c=relaxed/simple;
-	bh=Zy1eOSJNc5zllNCY1ethRIjKCgVLQKpzZ/QOA+3PPEQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HGlRWJGgmMN6sIhJh6/zbGZPdqChJuqwRuqZDgcGx+VFASGcJHistygaedD1a52SWl3I2b9e6t5p3ogmigrSPZaA5VLsBjt01eIo39mq9NxGAPI0DavAHhEhviiqWdK+Su5WihQ1cpij9Yntpw/PrSImp1KcsNBp6juG3VmhS4Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=ht1/B+SK; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=vdGYlWE9; arc=pass smtp.client-ip=85.215.255.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CDBF483BEF;
+	Thu,  6 Aug 2026 16:26:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1786033602; cv=none; b=f6mY3isBi1KmCuPZc/Oymrlsxv6SYB3h9unF6Q/BL/nFu1f3zwzCmlzsOXHeZejjnFowgQDM/tSGCkChUIfxWazfhb5g0w2WI3PMN0oIecDHNyuKEIRGnlv95RVC/OKN3Hzz4AwerHpROfTi0udd7vBWRSjHwPjd+xBhYsNA1sY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1786033602; c=relaxed/simple;
+	bh=T0VPQvTvxTwSb7LVPQVSD8L/B+RvfcK9IIREKofM3LA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=NP19vMBdMiidu2Z3hGkiaUcsWgMAGRuR+QJan/xQQsWH7EIdptTt35YHFeqIqzjxzYkbuSDcK/dNr3cmOaHPENusoz1y6wRg50BS2Ym2RTeAnbwLVgLLQhZVw6eIFa13pQMieeOoH+2xjkdqPoPxv+9NczLEU+BqHxFszfsN3ho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l3NwEX/z; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="ht1/B+SK";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="vdGYlWE9"
-ARC-Seal: i=1; a=rsa-sha256; t=1786029357; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=Q4ttwxUW0TkRoO3WwaNWazCfQzMbEmZt0e4eFWdUHo3dgBITTyiRO6s3Hckx9L5Ra8
-    V0E0A499YbvtFybbDP84h0KaQVXqL0bFXK4ylCTN3lID1rMheU7PKpI1Ubb4Xk4lKJMh
-    Q09mg9XZK86/OkLv8L9Zc8waQV0FnxydURHYqRokFw02up4YjdVcGw5qnEjV7nvcBSYT
-    nHTeNJmkrBota1fA31NwWQofPx0kkacF5rh5Q35ZqeooMkcXeg0dwXQDAqQKmDSW2yF5
-    Z74kqQawH8WTrWF+L6GYgWI9SMvkNEm2BK69uVyIPpPsRTcdfvfIEKflyPMUtfOrEgft
-    LqEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1786029357;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=ED0Su14fqB7C6rmTrqW2lwiqn4X/2JTVsuJBYEa6UhQ=;
-    b=Z8l7i+w43C7GI7Ulc2/10gsyk8YUKCSOWqoSxJhdQGJWZeZswGd3TPe6X6KVzecbcj
-    rEh8+4KgCxRAhP3wopnB/vvbDr6OkrdtHhp2gJeEFfyeEMvZzF7FSfeXC9L4QMdty/EI
-    hMfcwBjmJHnFr0s7wj3VwsmDGy7I9oKu2tXu3PsaxL9ZCVcCEizOQzoqIO7LtHN2x5pQ
-    ifycRNBecPfqu16aEAi00pF2eZlzwKLSGt7XbJZjjSpECoTwCKfDb7JYb5B0A2tegxfn
-    63Osr1dgvAwg7ndNKFjQhS9Zyl0igePW3ruxYFgm89xaPHyZGWZ79zNpZhtWv9WCltl8
-    BwNw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1786029357;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=ED0Su14fqB7C6rmTrqW2lwiqn4X/2JTVsuJBYEa6UhQ=;
-    b=ht1/B+SKWfrdBDRqDuiHUFEuV/8SKL5kvwwEAxrx0m6Z8faqOtL6m1Z4HNI5iZgSow
-    IV18IB62NjRZplGygRRlkkL3g9QagvmSg4B8tQA3QoWcL1gXfWZ3uag29XTMtA2YpJKi
-    bv84DwaG9DJam2+spYNqC1UqkVvDKqbbnT4CpFXf1D1NzU26Dv4gNFRAuWlKGV3cSv9a
-    qcIbu2BrUWt4/4ZlTIx3G83IdjWQt2Ip4rJ1C6WxLiXvjksEpA9RpkeERYTrQRRYEbIj
-    ZhaeOEWziAWjUjCQ5YYkHc9qEpEqaVOOpoGb/u92/oQ5xDoFjIQTGDPZ8R0g5M1WoEAG
-    O6ZQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1786029357;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=ED0Su14fqB7C6rmTrqW2lwiqn4X/2JTVsuJBYEa6UhQ=;
-    b=vdGYlWE9SUjEmmwolpmMbFHrK0U2wb6jssh/lw0km8+CdeXkGaZms4j+z1rcVjTFjL
-    Q17NYppR+sAfNmp5VaCA==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tRkI16oOSW1Ti/f4PoH8="
-Received: from [192.168.20.231]
-    by smtp.strato.de (RZmta 55.5.6 DYNA|AUTH)
-    with ESMTPSA id K52819276FFuBe4
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Thu, 6 Aug 2026 17:15:56 +0200 (CEST)
-Message-ID: <f89084c5-b98d-442c-8f70-59f07e3b926c@hartkopp.net>
-Date: Thu, 6 Aug 2026 17:15:51 +0200
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l3NwEX/z"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 049671F00A3D;
+	Thu,  6 Aug 2026 16:26:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1786033600;
+	bh=XllXt40MUZTpJoHsg0rQ8AaWK9M0xp6NH1sMMydFWzY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date;
+	b=l3NwEX/z5skYEOOPYlbVrKK/LpoDHH26KZvyAzb+p0dwEpi2yA4MOzDaeePfICbpz
+	 2o+0GqyrFuK3bGQ2xUpuhS0qbz69MNtN+ETiaumch3AEp1MCCraAVcFRIKRfr8eI05
+	 1NlZxgNGX3JuOIRmRZWiP8JXT9GpXqz/y5pRNXFWYKZpD45OOWknZ/c7ominD3VDzr
+	 KNrTgADqCkgRW+Z42vUNBy8ZFhar3DjydPyM/idNnkHxV/3HDAqY7b6qLsCHILywAi
+	 OsIAumKY4cwrSXt1/ksHedWBwwxCJc4/i29zo78kxSukK4TeeDgfzOdoIMDPPtzruX
+	 KqOWNB/67eyiw==
+From: Vinod Koul <vkoul@kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Vincent Mailhol <mailhol@kernel.org>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, 
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Frank Li <Frank.Li@nxp.com>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>, haibo.chen@oss.nxp.com
+Cc: linux-can@vger.kernel.org, linux-phy@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ devicetree@vger.kernel.org, imx@lists.linux.dev, 
+ Haibo Chen <haibo.chen@nxp.com>, qijian.guo@nxp.com
+In-Reply-To: <20260730-can-share-silent-v1-0-63fd603f943d@nxp.com>
+References: <20260730-can-share-silent-v1-0-63fd603f943d@nxp.com>
+Subject: Re: (subset) [PATCH 0/3] arm64: dts: imx95-15x15-frdm: support CAN
+ transceivers sharing a silent GPIO
+Message-Id: <178603359460.674490.14449067344629912709.b4-ty@kernel.org>
+Date: Thu, 06 Aug 2026 21:56:34 +0530
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH can-next v2 2/3] af_can: store socket pointers in struct
- netns_can
-To: Marc Kleine-Budde <mkl@pengutronix.de>,
- Filippo Storniolo <fstornio@redhat.com>
-Cc: Robin van der Gracht <robin@protonic.nl>,
- Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
- Urs Thuermann <urs.thuermann@volkswagen.de>, Paolo Abeni
- <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- linux-can@vger.kernel.org
-References: <20260806-feat-can-diag-v2-0-832597ee4cb9@redhat.com>
- <20260806-feat-can-diag-v2-2-832597ee4cb9@redhat.com>
- <20260806-eminent-shark-of-patience-1f612d-mkl@pengutronix.de>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20260806-eminent-shark-of-patience-1f612d-mkl@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13.0
 
 
-
-On 06.08.26 16:16, Marc Kleine-Budde wrote:
-> On 06.08.2026 15:14:14, Filippo Storniolo wrote:
->> AF_CAN sockets need to be stored in the netns_can structure
->> in order to be retrieved by the CAN diagnostic module when
->> a netlink request message is issued by the userspace.
->>
->> On socket creation (`can_create()`), add the pointer to the
->> new socket to `netns_can::sk_list`. During socket release
->> (`isotp_release()`, `raw_release()`, `j1939_release()`,
->> `bcm_release()`), remove the corresponding pointer from
->> this list.
->>
->> Since this is a prerequisite of the CAN diagnostic module,
->> deletes and insert operations are conditioned by
->> IS_ENABLED(CONFIG_CAN_DIAG).
->>
->> Signed-off-by: Filippo Storniolo <fstornio@redhat.com>
->> ---
->>   include/linux/can/core.h | 11 +++++++++++
->>   include/net/netns/can.h  |  6 ++++++
->>   net/can/af_can.c         | 50 ++++++++++++++++++++++++++++++++++++++++++++++++
->>   net/can/bcm.c            |  2 ++
->>   net/can/isotp.c          |  2 ++
->>   net/can/j1939/socket.c   |  2 ++
->>   net/can/raw.c            |  2 ++
->>   7 files changed, 75 insertions(+)
->>
->> diff --git a/include/linux/can/core.h b/include/linux/can/core.h
->> index 3287232e3cad..5132f5c89b7c 100644
->> --- a/include/linux/can/core.h
->> +++ b/include/linux/can/core.h
->> @@ -61,4 +61,15 @@ extern int can_send(struct sk_buff *skb, int loop);
->>   void can_set_skb_uid(struct sk_buff *skb);
->>   void can_sock_destruct(struct sock *sk);
->>
->> +/* function prototypes for the CAN diag module */
->> +#if IS_ENABLED(CONFIG_CAN_DIAG)
->> +void lock_can_diag_mutex(struct net *net);
->> +void unlock_can_diag_mutex(struct net *net);
->> +void can_add_sock_sklist(struct sock *sk);
->> +void can_remove_sock_sklist(struct sock *sk);
->> +#else
->> +#define can_add_sock_sklist(sk)
->> +#define can_remove_sock_sklist(sk)
+On Thu, 30 Jul 2026 12:33:25 +0800, haibo.chen@oss.nxp.com wrote:
+> On the i.MX95 15x15 FRDM board the two CAN transceivers (attached to
+> flexcan2 and flexcan5) share a single "silent" control pin, which is
+> routed through the on-board PCAL6524 GPIO expander. Both transceiver PHY
+> nodes therefore reference the same GPIO line for their silent-gpios
+> property.
 > 
-> Please add static inline functions for these.
+> This series makes that sharing work correctly and puts the transceivers
+> into the proper default state:
+> 
+> [...]
 
-AFAIK "inline" is not wanted anymore and checkpatch complains about it.
+Applied, thanks!
+
+[1/3] phy: phy-can-transceiver: default silent GPIO to high during probe
+      commit: c3b0bb15ef001703b00d79bc4928e7421e24280d
 
 Best regards,
-Oliver
+-- 
+~Vinod
 
-> 
->> +#endif
->> +
->>   #endif /* !_CAN_CORE_H */
->> diff --git a/include/net/netns/can.h b/include/net/netns/can.h
->> index 48b79f7e6236..bcafff5e6669 100644
->> --- a/include/net/netns/can.h
->> +++ b/include/net/netns/can.h
->> @@ -36,6 +36,12 @@ struct netns_can {
->>
->>   	/* CAN GW per-net gateway jobs */
->>   	struct hlist_head cgw_list;
->> +
->> +#if IS_ENABLED(CONFIG_CAN_DIAG)
->> +	/* CAN diag support */
->> +	struct mutex		sklist_lock;
->> +	struct hlist_head	sklist;
-> 
-> nitpick:
-> Please indent with only 1 space as in the rest of this struct.
-> 
-> regards,
-> Marc
-> 
-> --
-> Pengutronix e.K.                 | Marc Kleine-Budde          |
-> Embedded Linux                   | https://www.pengutronix.de |
-> Vertretung Nürnberg              | Phone: +49-5121-206917-129 |
-> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
