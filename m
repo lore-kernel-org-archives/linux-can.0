@@ -1,108 +1,117 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9567B3A7D63;
-	Thu,  6 Aug 2026 14:07:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2A813909A5
+	for <linux-can@vger.kernel.org>; Thu,  6 Aug 2026 14:13:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786025261; cv=none; b=glvkV16wFCFp5HEDiKFg1gQPJNfiP8V8JrqyXTCbhUJWb1P3EATDcEK/A4YRD4oSKGFoRJXiWZJP67siUV9x3uaiSt//3s0o4x3rt9eeZ807u18uvEpvPFV0CT9CRf0+XoA+H9zIiG8/GYW+yccHbEyt69U7rus9q4JplNthUFg=
+	t=1786025637; cv=none; b=Ee6RMR4pa872qNcqVCWoL+o/aXX/gZZ/4fLAp23MukHqM3284vz2jVK/Y705imvHw8vtiYJUkrlMtJTgJu2VanO28jozDNlbuoyHbAUy2But8tBzc6IN7DeEJmS0c9uBcoVxBJ7VIcNo4HWTK4OTF+TOq8whcWRaELVK8xJNtxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786025261; c=relaxed/simple;
-	bh=UeLdz+oh4/Ouq2b671/Zz13/poHqfAdkoa1CMYxxFXs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=b6zoDeIf3+yu5UnySMyE9HmpY6JF5RwjM86llbWzVsoQv7pGdIc68I+F+Px7+FnfUrbpyPR1B6T7UgcLflDOgllRmFm90jeGjZywocga63zMe8UVQ2arTsPNCs4bH+lEYwzEYDhuf/SaiKzu4KfA2hBVqQEWz9NnSXi4kwYzaBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id A8773201FA9;
-	Thu, 06 Aug 2026 16:07:32 +0200 (CEST)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1wryku-0006X4-1v;
-	Thu, 06 Aug 2026 16:07:32 +0200
-Received: from hardanger.blackshift.org (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 52BA957D131;
-	Thu, 06 Aug 2026 14:07:32 +0000 (UTC)
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Thu, 06 Aug 2026 16:07:29 +0200
-Subject: [PATCH] can: ctucanfd: ctucan_err_interrupt(): do not emit info
+	s=arc-20240116; t=1786025637; c=relaxed/simple;
+	bh=OBKl+RDJajCxqaLXJFiTOBtbx3Vhbz6logjkB6l1H48=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=ZXCskVlNYk06U3+Z3KqsOf+ETFiJonlMJ3blDajKbI3ThyYYSp7RVshv1lyFCDJvcCS6tgIDAwJaiUx2p+lmW78KLRrwPylaHV0KJ3G3olFrRzYK6pRwaBxOkIAyzR/W6ZvTQSMKjVdGUblXjDBwwrWaaH3oukPQl9rEni5qagc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kf2CeJ2w; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kf2CeJ2w"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC92A1F00A3A;
+	Thu,  6 Aug 2026 14:13:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1786025633;
+	bh=nO2w6c0BHXTBMZBjWkljQzMouvNsWTq8PrUMp7QeE5s=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=kf2CeJ2wvqo8DpHhjlq/zvcddJCDlKocOnLKQ2+XL/XhdegXdftlLX2CDMzG91xRd
+	 +Xbls8lHWYERFCrw0CoSj/bbmWeGLl8eqBng/w+fPznvPdSJ8UQHrtCycO1D4PcPTm
+	 UDywlC7VEBNLfSM54H5xOCU8+32c4L64HCL1PHMejxzNFKnNZ/H/AzR2QQNlcTzPtZ
+	 QgPyYOFPzb6qFKyjFcRqtdUGcKHPZbJ4YLE5N1rfi/+Op/R6jvUnoUaFjgQkxOqSPC
+	 4BYRKB8lI0mARxHe34OG8gy04EwOlpXt+Ed5+6ejwf17JNmYbJyIlLd8mb+mrMmiSH
+	 zqjGclxA99ipg==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH] can: ctucanfd: ctucan_err_interrupt(): do not emit info
  messages on Arbitration Lost or CAN Bus Error IRQs
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Marc Kleine-Budde" <mkl@pengutronix.de>
+Cc: "Vincent Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>
+In-Reply-To: <20260806-ctucanfd-silence-can-bus-error-messages-v1-1-70eff67debfd@pengutronix.de>
+References: <20260806-ctucanfd-silence-can-bus-error-messages-v1-1-70eff67debfd@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 06 Aug 2026 14:13:52 +0000
+Message-Id: <20260806141352.BC92A1F00A3A@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260806-ctucanfd-silence-can-bus-error-messages-v1-1-70eff67debfd@pengutronix.de>
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yXNwQrCMAyA4VcZORuog5biq4iHLk1nRDtJVhHG3
- t2qx+/y/xsYq7DBadhA+SUmS+04Hgaga6ozo+RuGN0YXHQeaW2UaslocudKjF04NUNWXRQfbJZ
- mNvTkJ8ohBlci9NpTucj7dzpf/rY23ZjWbx72/QMK93l/iwAAAA==
-X-Change-ID: 20260805-ctucanfd-silence-can-bus-error-messages-5c5bcd6860f8
-To: Pavel Pisa <pisa@cmp.felk.cvut.cz>, Ondrej Ille <ondrej.ille@gmail.com>, 
- Vincent Mailhol <mailhol@kernel.org>, Avi Weiss <thnkslprpt@gmail.com>
-Cc: Pavel Pisa <pisa@fel.cvut.cz>, linux-can@vger.kernel.org, 
- linux-kernel@vger.kernel.org, kernel@pengutronix.de, 
- Marc Kleine-Budde <mkl@pengutronix.de>
-X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1626; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=UeLdz+oh4/Ouq2b671/Zz13/poHqfAdkoa1CMYxxFXs=;
- b=owGbwMvMwCV2xirl17qZay8xnlZLYsgqmar07lz3jzA1NV/1sHP2ghrz/wjP1nC+tSqiIkPjx
- g7mnKifHaUsDGJcDLJiiixLf5xQFAh0KO19mTAJZg4rE8gQBi5OAZiI2w5Ghhtp9pu4L3YfP9N+
- sUXFM7va61vthzfH3kx4F/xyp5YZlznDPwumeGluhd2V4l9TD/l+ZHh/d//yOu758om1F37f/5R
- 3lxkA
-X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
- fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 
-Since commit e74bae899529 ("can: ctucanfd: handle bus error interrupts")
-CAN bus error interrupts are properly handled.
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+s) to consider:
 
-With activated CAN Bus Error reporting, Arbitration Lost (ALI) and Bus Error
-(BEI) interrupts are enabled. These can occur at a very high rate (~10kHz).
+Pre-existing issues:
+- [High] Unconditional evaluation of the global `net_ratelimit()` in a high=
+-frequency (10kHz) interrupt handler exhausts the global network ratelimit =
+token bucket and causes lock contention, effectively silencing rate-limited=
+ messages across the entire networking subsystem. Furthermore, the generic =
+`netdev_info` print at the top of the function still executes for these noi=
+sy interrupts, meaning the patch fails to completely fix the log flooding i=
+t aimed to resolve.
+--
 
-To avoid flooding the system, don't emit a netdev_info() for these.
+--- Patch [1]: [PATCH] can: ctucanfd: ctucan_err_interrupt(): do not emit i=
+nfo messages on Arbitration Lost or CAN Bus Error IRQs ---
+commit 5e775ed40c20c9c562c6441b9b627d0ada3f07fd
+Author: Marc Kleine-Budde <mkl@pengutronix.de>
 
-Fixes: e74bae899529 ("can: ctucanfd: handle bus error interrupts")
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/ctucanfd/ctucanfd_base.c | 3 ---
- 1 file changed, 3 deletions(-)
+can: ctucanfd: ctucan_err_interrupt(): do not emit info messages on Arbitra=
+tion Lost or CAN Bus Error IRQs
 
-diff --git a/drivers/net/can/ctucanfd/ctucanfd_base.c b/drivers/net/can/ctucanfd/ctucanfd_base.c
-index 07d4aa43c700..9aec18681fc5 100644
---- a/drivers/net/can/ctucanfd/ctucanfd_base.c
-+++ b/drivers/net/can/ctucanfd/ctucanfd_base.c
-@@ -884,8 +884,6 @@ static void ctucan_err_interrupt(struct net_device *ndev, u32 isr)
- 
- 	/* Check for Arbitration Lost interrupt */
- 	if (FIELD_GET(REG_INT_STAT_ALI, isr)) {
--		if (dologerr)
--			netdev_info(ndev, "arbitration lost\n");
- 		priv->can.can_stats.arbitration_lost++;
- 		if (skb) {
- 			cf->can_id |= CAN_ERR_LOSTARB;
-@@ -895,7 +893,6 @@ static void ctucan_err_interrupt(struct net_device *ndev, u32 isr)
- 
- 	/* Check for Bus Error interrupt */
- 	if (FIELD_GET(REG_INT_STAT_BEI, isr)) {
--		netdev_info(ndev, "bus error\n");
- 		priv->can.can_stats.bus_error++;
- 		stats->rx_errors++;
- 		if (skb) {
+With CAN Bus Error reporting enabled, Arbitration Lost and Bus Error
+interrupts can occur at a very high rate (~10kHz). To avoid flooding the
+system, this commit stops emitting specific netdev_info messages for these
+interrupts.
 
----
-base-commit: cd0784790d921ff4f7438d3b7ccda86068c8b766
-change-id: 20260805-ctucanfd-silence-can-bus-error-messages-5c5bcd6860f8
+> diff --git a/drivers/net/can/ctucanfd/ctucanfd_base.c b/drivers/net/can/c=
+tucanfd/ctucanfd_base.c
+> index 07d4aa43c700a..9aec18681fc54 100644
+> --- a/drivers/net/can/ctucanfd/ctucanfd_base.c
+> +++ b/drivers/net/can/ctucanfd/ctucanfd_base.c
+> @@ -884,8 +884,6 @@ static void ctucan_err_interrupt(struct net_device *n=
+dev, u32 isr)
 
-Best regards,
---  
-Marc Kleine-Budde <mkl@pengutronix.de>
+[Severity: High]
+This isn't a bug introduced by this patch, but does calling net_ratelimit()
+unconditionally at the top of this function exhaust the global rate limit
+token bucket?
 
+Looking at ctucan_err_interrupt() earlier in this file:
+
+	int dologerr =3D net_ratelimit();
+
+	ctucan_get_rec_tec(priv, &bec);
+	state =3D ctucan_read_fault_state(priv);
+	err_capt_alc =3D ctucan_read32(priv, CTUCANFD_ERR_CAPT);
+
+	if (dologerr)
+		netdev_info(ndev, "%s: ISR =3D 0x%08x...
+
+Since ALI and BEI interrupts can still occur at ~10kHz and trigger this
+handler, won't this still drain the shared ratelimit budget and cause lock
+contention on net_ratelimit_state.lock for the rest of the networking
+subsystem?
+
+Also, since the generic netdev_info log statement above is still executed
+for these noisy interrupts, does this patch completely fix the log flooding
+it aims to resolve?
+
+> =20
+>  	/* Check for Arbitration Lost interrupt */
+>  	if (FIELD_GET(REG_INT_STAT_ALI, isr)) {
+> -		if (dologerr)
+> -			netdev_info(ndev, "arbitration lost\n");
+>  		priv->can.can_stats.arbitration_lost++;
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260806-ctucanfd-s=
+ilence-can-bus-error-messages-v1-1-70eff67debfd@pengutronix.de?part=3D1
