@@ -1,320 +1,150 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3684134E74B
-	for <linux-can@vger.kernel.org>; Wed, 12 Aug 2026 20:23:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786566186; cv=none; b=tCTE9gM/m17eYOGJetMz5k33FB4ZAN9OJsgRX8enBFH+n6RyHcWXqrqOISh0fvBalumTvEF/910Km+ZvWxDun3t0vF76jMb09hTja8kJ0flQ0vis8Vf2iBI4ri5wHb4R6suvTck6PSVRWVJ7nHVZ6yGGmx/9d/7gtAUMhfI80vM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786566186; c=relaxed/simple;
-	bh=7QXTc6OOuX5B9/13ksacRMufoTCw9ULv5h7n1QLqDs0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YwukiJDB5AKjC9CJWDySSOCHA7fMmepybrg+cMOq6Qx4jW6wFDOcc0CySkJ/aHUyqH9dY+88kvC8kE2ILmg0QovJ6HkZ8zhRuugPr67VV1G7aU8HjRRCukLx///QasyJ6hvGP8OJ3hYVEBngH0kiQYoSDHNVcA1QjPXnWBItTdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jMh3G1OI; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F2851F4631
+	for <linux-can@vger.kernel.org>; Wed, 12 Aug 2026 23:57:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.216.48
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1786579078; cv=pass; b=p2L6X6Ft8hK9MHim2nY9MvYw/oYovJCdJ0judrtMQUf8uNVteuTncDJHwW8R/2v3ey7WablJaoMA5vDW+I78aFouhQtd8xEpGovobgmnTqNNljh3rIEhl++LKJh6ggvdsH2MnSIu3t64pGO/wmTiLWEAnwrmv2591YrOtiBvhTQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1786579078; c=relaxed/simple;
+	bh=cEq8LZFX9K3CVkTE7BIlhTH+Btyzmu+U8WtD1Pcj9Hc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kq68vg+83DgL5NgDdPKaAXQLtP71I3Ivzbr52kcFNNdDX36na5xqlp8plPp8n9qlRoXdBOn+BPVdS5hsbIIUpnHLA/WD9zon6e3WC+OOS2mHNriykrLCDRjz7AFDJlYuyzWHwVC0m5LE5moFqLu9jYr4N4LT4jyg3Cyf4AmLpGU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asu.edu; spf=pass smtp.mailfrom=asu.edu; dkim=pass (2048-bit key) header.d=asu.edu header.i=@asu.edu header.b=hHI13FZq; arc=pass smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asu.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=asu.edu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jMh3G1OI"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C6381F000E9;
-	Wed, 12 Aug 2026 20:23:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786566183;
-	bh=HHFOld3gKdtBesEH7b8TvN6SS0xvzDOqz54/bveI+nM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=jMh3G1OIrAEu2drBYBhT73b2TlxcEq+nkeuI71ZyEz/b8aZkjHakCxV/X7kMpgrhE
-	 PXpEXJ8Ec3tor1czjfmbSfaQps2vNNr2YjntZGZpKJu/gXkFfOE8hKES2LVSXxTpaa
-	 KvQXNLJbjcoC5Wmct0lHaYyVpufYzU2G0qdEFNsfEr31/fSrWM37qCdwsIndPqP8tt
-	 MrIS5tlDHbniV1KB5oW1rh4hUKeDPhIYNF/llvDQIwCZ4CaP6g2EQvAvLaH00vjPDN
-	 xkP9+Ye7+TZe1d6/+LKi093zqBnvfxh4XWHNnruQJ6SgBeLXCHZu2OKzuPScHltIcv
-	 CnCQMfiL0jndw==
-Message-ID: <5ff4d3ca-0c28-4c8b-8122-f7f6c782fb62@kernel.org>
-Date: Wed, 12 Aug 2026 22:23:00 +0200
+	dkim=pass (2048-bit key) header.d=asu.edu header.i=@asu.edu header.b="hHI13FZq"
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-383b4a3755fso1685350a91.3
+        for <linux-can@vger.kernel.org>; Wed, 12 Aug 2026 16:57:56 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1786579076; cv=none;
+        d=google.com; s=arc-20260327;
+        b=TeOnrZXpPM1WKPaZkH1QPROir0aPGSOyK3eNt0k2MvLJNacrp7ZRshDw2EzceV+Un3
+         pPT+xlxY531aQe+pNBa2gTPTGrLgpd+jftTEwjsNFduuGtW6hpTg1xqWxP7lheUHpxl1
+         jKvvFo0AD/yqLIZWMrgsu1mFiNqaDetu1SEbKOyBXQjAJVvrbIYdljltuEMRKTqkrKSe
+         WqtYGiwrW8yfmYcfBELyacJuotxcanL690I+PuvYDORBq0DCf5mmmFEUd0yIh/0co4hR
+         8EP3/TnrXYtjCma+gK3P8lxlAmqGWd2ZRFkrT4agx8lvdO8pbxwxi3GCMYs6/0+quDoG
+         etag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=BF3EIGfmKfNca6MaV9gZAoGmEk3w7RQtA/KxT1S0FcE=;
+        fh=mn2OEbEQjSxsOAKpTVSoUkZAprVtgfRJxk95cXXuLmY=;
+        b=nVnOJulUY0520Z1f7mX3lkN3PHKLtnnEw4l0EWxqNNPuK2djeFpmnwmTfw/nPzwERn
+         GlewnTspwvADWdBds9nDJwve1xLRu053VgRFjr5ZZj7sWoH00HkW8nFO69bfndHUO9ht
+         1xiE28gWCQ8/i7R2BKIj1Q/rz89vH+8u+ad18/KuKXC9npMCS8ifDzBQ1GikmuSqC1i0
+         aR3VKA3wq8jW2Mua4r+FoHUdAHfKeT9CxUvoDarkygKq3+TwqzCKHhyXFi6EuldZWhBU
+         YgcPiNT5RLbwrJ1nDhoIR/2RORf3Ag+lWqO0gs6J73zGDPcR6wpajQiL3vdJJdR9vsnI
+         wxYg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=asu.edu; s=google; t=1786579076; x=1787183876; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=BF3EIGfmKfNca6MaV9gZAoGmEk3w7RQtA/KxT1S0FcE=;
+        b=hHI13FZqt5SFzECh+6s/7rLO15zCyMRY4BQjnSvrSd3f/IZ8+tnxPIRrQMtDeYv1A1
+         Bp7A2xFy6uAd2jRuIwM4sRFWr5S6nfEFrpgCzdtIMQ97RTdUdRcMWMger+8utzLmU8MP
+         3Ud+PQln6yHDSG0cZfEqm63NOoYydE5rAntd/QlVN3IZToIIMDitL7odwvcD23Nf3hbz
+         4MXSCm4ifUdEeHLMs9Ov6oD6/YeLIy+Lv67QDxDNPIc0uW6f7k06noM1fGyQLRuUwHbZ
+         ul4qClal/jXnOGfZ0iW9VWu0ERu+kZHG/sX22WsAj2yptoyRja9cyIOLslLF8XVYwg84
+         tGbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1786579076; x=1787183876;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=BF3EIGfmKfNca6MaV9gZAoGmEk3w7RQtA/KxT1S0FcE=;
+        b=EkLbyAIW9nS168uLHJBXsMQujYGpUxZHrVsADBAYgoV5V5g0GhYsZ4Epbd4jZ+8mHa
+         hoiEutK4aLfJYmhVRsl0hEIY1k+qLvc1vlGnKwaOczXLFIAT10r0ZKYGhXYGIVN7/sF/
+         vZHRysmFD3WS7lQbZcaalGutS9Fou49OBWU7NEd7vL+vA2cZsmFlk4wUyrYvaf2szLvt
+         8jLIdf/3CyMtvPtTLckJLPTVnfcgsLAC2xRwgvkDn+Q5xQTk4HdKKdr1i8YIHsqVRQPQ
+         irOWTghvo6lbOXPUei/Gtv7ZQPLC1n4YkRYkAsc5/LX75GJuPBeeoEdvUQGpFCoGdy0u
+         yYvQ==
+X-Gm-Message-State: AOJu0YxbivBh9OsrPHWrZ5xtttmS/FvH2fcUETDd76zQ2MpTnBrhhVxK
+	ZvF/Tr8Gj5p2+9SzrzK2NlawJhR0eeACDBvq+jviJsiMNsLEUsrS5VZbdstpWKlLunb6Y/43BLx
+	iW1JiaYgOODEbFDYDTFmCBIKa30Cwq/ZlBYkznIQ1
+X-Gm-Gg: AR+sD12Mg30L6J5pIhhYX1bq7xWfhgDYdYA+GaIAnDylzSR6Y9pjTFkSBtlrroV4zJw
+	TaW4y91ZAixwNAeba6YB6NbPaNfYZFy/4HTigu/hHuZg8IpoOziBOwHpnge5S+NMBNZ/MQC07iD
+	q8IY5vDE/IBQuTxhqmvJtZRdItZpsKqpRxbGYcjllYuUpuQa3CwGCy2yStwmIYuCYNE6qRrBvcu
+	7hFFQXY7itLpRlPDnaXtUS+ZyuHzBIMHSvb9/EvIrEP/wfE57XvFrHAiU5DjGOsgTWksLz72eiA
+	yov1ziwsUVYHHo25TmopcaPN/p3gXoKG9rTd8u4xrajm09pKe9M=
+X-Received: by 2002:a17:90b:46:b0:36d:b424:4f17 with SMTP id
+ 98e67ed59e1d1-3931dfdd5bdmr2330073a91.1.1786579075840; Wed, 12 Aug 2026
+ 16:57:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/4] can: automate IFF_ECHO flag for generic echo skbs
-To: Oliver Hartkopp <socketcan@hartkopp.net>,
- Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
-References: <20260804-automate_iff_echo_flag-v1-0-26f06ff0f8bc@kernel.org>
- <395d9b68-2527-47d6-a6a0-74569d27b734@hartkopp.net>
- <6800934d-2da2-4eeb-8514-3978f4c7b307@kernel.org>
- <c487793e-df15-4b32-9cfd-dd72648a8af2@hartkopp.net>
- <95290e92-68c4-4ce7-8a1a-7d23b0a268d5@kernel.org>
- <d045b536-efd0-40a6-8357-e04c9db9236b@hartkopp.net>
- <40d8a352-2bfa-417a-bb20-5d28df90069a@kernel.org>
- <721fe2dd-9f42-41e2-a040-3575fb65613e@hartkopp.net>
- <854c0428-b317-429a-9054-67d467a3d817@kernel.org>
- <607de787-e0f2-4872-8021-05431b0e106c@hartkopp.net>
-From: Vincent Mailhol <mailhol@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=mailhol@kernel.org; keydata=
- xjMEZluomRYJKwYBBAHaRw8BAQdAf+/PnQvy9LCWNSJLbhc+AOUsR2cNVonvxhDk/KcW7FvN
- JFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbEBrZXJuZWwub3JnPsKZBBMWCgBBFiEE7Y9wBXTm
- fyDldOjiq1/riG27mcIFAmdfB/kCGwMFCQp/CJcFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcC
- F4AACgkQq1/riG27mcKBHgEAygbvORJOfMHGlq5lQhZkDnaUXbpZhxirxkAHwTypHr4A/joI
- 2wLjgTCm5I2Z3zB8hqJu+OeFPXZFWGTuk0e2wT4JzjgEZx4y8xIKKwYBBAGXVQEFAQEHQJrb
- YZzu0JG5w8gxE6EtQe6LmxKMqP6EyR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDl
- dOjiq1/riG27mcIFAmceMvMCGwwFCQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8V
- zsZwr/S44HCzcz5+jkxnVVQ5LZ4BANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
-In-Reply-To: <607de787-e0f2-4872-8021-05431b0e106c@hartkopp.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20260706011131.2445034-1-xmei5@asu.edu>
+In-Reply-To: <20260706011131.2445034-1-xmei5@asu.edu>
+From: Xiang Mei <xmei5@asu.edu>
+Date: Wed, 12 Aug 2026 16:57:45 -0700
+X-Gm-Features: AUfX_myX2iACpKBbzVSLqTzJI60tqaosc49vHTA4DIPHYNuyc9ot4HnrxoY8CLs
+Message-ID: <CAPpSM+Sn2vOg3xQBBRBvt8m-cvW5-f27xPL=N32yiwT5Nqb0Jw@mail.gmail.com>
+Subject: Re: [PATCH net] can: j1939: zero the reassembly buffer to avoid
+ uninitialized slab leak
+To: Robin van der Gracht <robin@protonic.nl>, Oleksij Rempel <o.rempel@pengutronix.de>, 
+	Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, kernel@pengutronix.de
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bestswngs@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 10/08/2026 at 20:07, Oliver Hartkopp wrote:
-> On 07.08.26 13:52, Vincent Mailhol wrote:
->> On 07/08/2026 at 12:56, Oliver Hartkopp wrote:
->>> On 06.08.26 22:55, Vincent Mailhol wrote:
->>>> On 06/08/2026 at 14:01, Oliver Hartkopp wrote:> On 05.08.26 23:06,
->>>> Vincent Mailhol wrote:
->>>>>> On 05/08/2026 at 18:17, Oliver Hartkopp wrote:
->>>>>
->>>>>>> IMO it's the right approach that alloc_candev_mqs() sets the
->>>>>>> IFF_ECHO
->>>>>>> flag and the default queue len.
->>>>>>
->>>>>> For IFF_ECHO, this is exactly what this series does!
->>>>>
->>>>> I just wanted to second you. This does not mean that I fully
->>>>> support the
->>>>> way it is implemented.
->>>>>
->>>>>> For the default queue len, why not. I have not study this particular
->>>>>> topic. But I think the IFF_ECHO and the queue len should be in
->>>>>> separate
->>>>>> series.
->>>>>
->>>>> My patch does not even compile. I just wanted to lead the dicsussion
->>>>> into a direction to find a more versatile solution that covers virtual
->>>>> CAN interfaces, non-echo CAN interfaces and full featured
->>>>> (echo'ing) CAn
->>>>> interfaces.
->>>>>
->>>>>>> What puzzles me is that the slcan driver is something in between
->>>>>>> which
->>>>>>> is neither a real CAN hardware nor a virtual CAN interface.
->>>>>>
->>>>>> My understanding it that devices which do not have a TX completion
->>>>>> handler (like slcan or can327) have no benefits to implement the
->>>>>> echo_skb framework and can instead simply rely on the PF_CAN core.
->>>>>
->>>>> Right.
->>>>>
->>>>>>> My idea would be to use alloc_candev() (-> alloc_candev_mqs()) only
->>>>>>> for
->>>>>>> real CAN hardware devices and open code slcan and the virtual CAN
->>>>>>> drivers ... which goes into the direction below.
->>>>>>>
->>>>>>> Any thoughts?
->>>>>>
->>>>>> The logic I tried to follow in this series is that
->>>>>> alloc_candev{,_mqs}()
->>>>>> has two arguments:
->>>>>>
->>>>>>      1. one for the priv structure
->>>>>>
->>>>>>      2. one for the number of echo_skb
->>>>>>
->>>>>> But then, when 2. is zero:
->>>>>>
->>>>>>      alloc_candev{,_mqs}(..., 0)
->>>>>>
->>>>>> means to me: give me all the features expect from the echo_skb.
->>>>>>
->>>>>> With the above, there is no anomalies to see the slcan do:
->>>>>>
->>>>>>      dev = alloc_candev(sizeof(*sl), 0);
->>>>>>
->>>>>> So I don't see the point to open code the allocations in slcan. After
->>>>>> patch #1 which corrects the echo skb count, the code describes
->>>>>> correctly
->>>>>> the behaviour.
->>>>>
->>>>> To me ", 0);" is a silent switch which does not make clear that slcan
->>>>> and can327 do something different here.
->>>>>
->>>>> We have 4 features:
->>>>>
->>>>> - support of IFF_ECHO mode using echo_skb's
->>>>> - support setting of bitrates via netlink
->>>>> - support setting of whatever via ethtool
->>>>> - use of TX queues (tx_queue_len != 0)
->>>>>
->>>>> And I would like these features to be separately selected to be
->>>>> transparent about what the CAN driver needs and supports.
->>>>>
->>>>> E.g. by defining a wrapper/define
->>>>>
->>>>> dev = alloc_non_echo_candev(sizeof(*sl));
->>>>>
->>>>> which calls
->>>>>
->>>>> dev = alloc_candev(sizeof(*sl), 0);
->>>>
->>>> Going this way, it should be the other way around. Have:
->>>>
->>>>     alloc_candev(sizeof(*foo));
->>>>
->>>> which just does the basic things and then:
->>>>
->>>>     alloc_candev_echo_skb(sizeof(*bar), 0);
->>>>
->>>> which allocate the echo skbs on top of the basic things.
->>>>
->>>> To me, the alloc_non_echo_candev() feels a bit like my previous
->>>>
->>>>     dev->flags &= ~IFF_ECHO;
->>>>
->>>> in the sense that it is not additive but subtractive.
->>>>
->>>>> And the same applies to the other features.
->>>>
->>>> But then, you reach a problem. If you do the Cartesian product of all
->>>> the 4 features, you end up with 2^4 = 16 combinations.
->>>>
->>>> Of course, some of the combinations will not be used.
->>>
->>> You likely got me wrong.
->>>
->>> We still have only about 3 cases that use those 4+ features:
->>>
->>> - support of IFF_ECHO mode using echo_skb's
->>> - support setting of bitrates via netlink
->>> - support setting of whatever via ethtool
->>> - use of TX queues (tx_queue_len != 0)
->>>
->>> My idea would be to have different functions to make clear what each of
->>> these drivers use. And not hide flags based on the number of echo skbs
->>> or shrink the number of helper functions by adding parameters.
->>>
->>> E.g.
->>>
->>> vcan calls:
->>>
->>> /* sizeof(struct can_ml_priv) is defined in vcan_link_ops */
->>> can_set_ml_priv(dev, netdev_priv(dev));
->>> can_setup(dev, (echo)?IFF_ECHO:0);
->>> vcan_set_mtu_info(dev);
->>> vcan_set_cap_info(dev);
->>> dev->tx_queue_len = 0;
->>>
->>> slcan calls:
->>>
->>> dev = alloc_candev(sizeof(struct slcan_priv));
->>> can_setup(dev, 0);
->>> slcan_set_mtu_info(dev);
->>> slcan_set_cap_info(dev);
->>> dev->tx_queue_len = CAN_TX_QUEUE_LEN;
->>>
->>>
->>> m_can calls:
->>>
->>> dev = alloc_candev_echo_skb(sizeof(struct m_can_priv), 4);
->>> can_setup(dev, IFF_ECHO);
->>> m_can_set_mtu_info(dev);
->>> m_can_set_cap_info(dev);
->>> dev->tx_queue_len = CAN_TX_QUEUE_LEN;
->>>
->>>
->>> This is what I meant with transparency and code deduplication.
->>> E.g. where can_setup() has an extra_flags parameter which is simply
->>> or'ed to IFF_NOARP.
->>
->> Now I understand. But I don't like the idea. If I understand correctly,
->> for the average driver, we will replace one call to:
->>
->>    alloc_candev_echo_skb()
->>
->> into roughly four calls.
->>
->> My goal in this series was to reduce boiler plate while making the
->> framework more robust. Your proposal increases the boilerplate and
->> reduces the robustest. Forgetting any one of these setup function is
->> also a potential security issue.
->>
->> As a concrete example, this already occurred in the past with several
->> drivers which forget to populate their MTU, for example: commit
->> 17c8d794527f ("can: mcba_usb: populate ndo_change_mtu() to prevent
->> buffer overflow").
->>
->> I modified the framework so that the MTU is now correctly set by default
->> in commit 23049938605b ("can: populate the minimum and maximum MTU
->> values") so that today, it is now impossible for a driver to incorrectly
->> set its MTU.
->>
->> Introducing a m_can_set_mtu_info() would be going backward to me. We
->> would open back the gate for a kind of bug which is today closed.
->>
->> And yes, the v(x)can remains special case which need to open code the
->> MTU, which is fine as these are really special. But for the majority, it
->> is a winning choice to "hide" it in the framework rather than take the
->> risk to trust the drivers to do the right thing.
-> 
-> Yes. I understand.
-> 
-> So having
-> 
-> - alloc_candev_echo_skb()
-> - alloc_candev()
-> 
-> or maybe even better
-> 
-> - alloc_candev(sizeof(..), num_skbs)
-> - alloc_candev_no_echo(sizeof(..)) /* for slcan / can327 */
-> 
-> make sense.
+Hi maintainers,
 
-But then, what do we do for the grcan and the janz-ican3 which rely on
-the device for the echo skb handling and thus do not allocate any echo
-skb through the framework?
+Just a reminder to avoid spending time on this. A recent commit fixes
+this issue:
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=
+=3Deb96c5890792
 
-Should these two call alloc_candev(sizeof(..), 0) or
-alloc_candev_no_echo(sizeof(..))? And why?
+Xiang
 
-> And with these different names the EFF_ECHO setting is not really hidden
-> anymore, which was my concern.
-
-I am still not convinced. If the goal is transparency, I would rather do
-it through explicit comments.
-
-In can327 and slcan:
-
-  /* No echo skb: the device has no TX completion handler. Rely on the
-   * PF_CAN core for the echo */
-  alloc_candev(sizeof(..), 0);
-
-In grcan and janz-ican3:
-
-  /* The device has it own echo skb mechanism, don't use the framework
-   * echo skb. */
-  alloc_candev(sizeof(..), 0);
-  dev->flags |= IFF_ECHO;
-
-And that is what I would call transparent.
-
-The IFF_ECHO works in pair with the echo skb. Drivers should either take
-the full set or nothing.
-
-Having a alloc_candev(sizeof(..), 0) share a different semantic than
-alloc_candev_no_echo(sizeof(..)) is the opposite of transparency. Where
-is it hinted in the name that one would set IFF_ECHO and not the other?
-
-> Btw. although v(x)can are different I would be interested in some
-> can_setup() function that sets the some common CAN device specific
-> values (like IFF_NOARP, default MTUs, etc) that are shared between all
-> kinds of CAN interfaces.
-
-But that goes back to the previous problem: this increases the
-boilerplate for most of the drivers. I don't mind having some setup
-functions shared between the v(x)can, but adding one more call to
-can_setup() to the existing drivers is IMHO a step backward.
-
-> And the reason to have it in dev.h was that this would not trigger some
-> additional code compilation for v(x)can (beyond today's usage).
-
-Yours sincerely,
-Vincent Mailhol
-
+On Sun, Jul 5, 2026 at 6:11=E2=80=AFPM Xiang Mei <xmei5@asu.edu> wrote:
+>
+> j1939_session_fresh_new() allocates the reassembly buffer with alloc_skb(=
+)
+> and exposes its whole data area via skb_put(skb, size) without zeroing it=
+.
+>
+> For non-ETP sessions j1939_xtp_rx_rts_session_new() sets pkt.total from a=
+n
+> attacker-controlled byte of the RTS/BAM frame (session->pkt.total =3D
+> dat[3]); a mismatch only warns and does not abort. A small pkt.total mark=
+s
+> the message complete after only a few bytes are copied, and
+> j1939_sk_recvmsg() delivers the full skb->len, leaking the untouched tail
+> of the buffer as uninitialized slab memory.
+>
+> Zero the data area with skb_put_zero().
+>
+> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+> Reported-by: Weiming Shi <bestswngs@gmail.com>
+> Signed-off-by: Xiang Mei <xmei5@asu.edu>
+> Assisted-by: Claude:claude-opus-4-8
+> ---
+>  net/can/j1939/transport.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> index df93d57907da..2e062f7d277d 100644
+> --- a/net/can/j1939/transport.c
+> +++ b/net/can/j1939/transport.c
+> @@ -1568,7 +1568,7 @@ j1939_session *j1939_session_fresh_new(struct j1939=
+_priv *priv,
+>         }
+>
+>         /* alloc data area */
+> -       skb_put(skb, size);
+> +       skb_put_zero(skb, size);
+>         /* skb is recounted in j1939_session_new() */
+>         return session;
+>  }
+> --
+> 2.43.0
+>
