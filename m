@@ -1,75 +1,94 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C27F0411F8D;
-	Thu, 13 Aug 2026 06:29:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D06F380FEC;
+	Thu, 13 Aug 2026 16:49:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786602597; cv=none; b=Gekcueg+Bd3ypdZ4OBf5gLyPXD+0//4l8TdSYgT2e2CsmAiw9syX+CTmnmVWwnyXDUb1copYgM/NLfgxr+ikuOYADF9VsSBfVp95Al5lVXLHBmmYdTQSk2DiJqc2Vz03uJPonlwTWJbuUy0mFE14JSQCdEED9GPPS8+13S+npWw=
+	t=1786639784; cv=none; b=rPCxg2dr8kkUGZDLzOBxEBEY+/iRx3IviwGaPx8+Hnfmtd2gSxhDiabFyYWQ85fCtpE9lFMyVAt6okU2m/oQzpshOwYv/lWJ3cgdHkSzFRjUarzigBYDkfbTBkVm/+T7cL060evXxWaIDfCOdDcN8NNR6wumNYQCveZSgME68oo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786602597; c=relaxed/simple;
-	bh=TAw0zEN+ks++dfKGePCUTj2CnfJxDSpmI34j7HBNcoI=;
+	s=arc-20240116; t=1786639784; c=relaxed/simple;
+	bh=lBoN8LZr7USo6wsCmncxwNdxRlJ/IqqsuOKtiqx1pQQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jAwmMQdi/W87B8+ZTe/8rvk0g6VUBzyYLu4QEp35DVdObC+t6rl0jtqD2j3W8S+3VnWtagcQG/1GhrnP+oLMRzRaxH7BsRkPcXYptghpQrQZlhlxLZSHZXbC3h8sSCJoQwtbT0u11uFvp7dHQh9YRpjr7S6MvoAikgqr5ZTrP7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 33FE12006E0;
-	Thu, 13 Aug 2026 08:29:52 +0200 (CEST)
-Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1wuOwq-001Ewh-0Q;
-	Thu, 13 Aug 2026 08:29:52 +0200
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.98.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1wuOwq-0000000GWEQ-05u3;
-	Thu, 13 Aug 2026 08:29:52 +0200
-Date: Thu, 13 Aug 2026 08:29:51 +0200
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Xiang Mei <xmei5@asu.edu>
-Cc: Robin van der Gracht <robin@protonic.nl>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=AjJOVkertuBgxOb6pLSPK2c1YtRJC6ttecTaCVnVX9CE6w3t96uByDcILWaXV/e3Y8djrqrH5gVF98Z3Ly2rNRkX7G5sTmyaRkUslfn9qrjxUWRR6mOiC9qmD83ezbgqstXmyshRtWL66Ed2Xnug6J5RI1DKJGH7c4T+1PSt/CQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GRSGVXHq; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GRSGVXHq"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51AAA1F000E9;
+	Thu, 13 Aug 2026 16:49:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1786639783;
+	bh=2i7/Mi/2ScY3ECi/mayRtWV4BESZL62I9XwQ0I+ivFg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=GRSGVXHqds/t3EhBOJk6qaNKzeiOgS4+50Q2tm6ausN88Q5l6JmJ7qyAYfu7opuvA
+	 QCwhzeabiExWNdVPr95cnbtf8HyuH9GlZ7Mgktht4xegPAfpKNxZ9RL8NS6lKvS5vB
+	 6VohVgOAYAUe9aHz6vw9Lec8CUjYgyD7a5NNCCUZ+d7/FVh7UJTeTqzTOUPjF09oru
+	 pn0k2QbODcF116bXa2WAylIZXs8m9/sCvXa6TkDJZVKA9YUViTRO/2Hro7q+Zcph3P
+	 Jz8EBoAbApB/htOdjUVfzD7x9g8VrvgXfDqpi615fIREhV2MzRuhqCaOg9fUjbvg0q
+	 eMkVXCAqv9vVw==
+Date: Thu, 13 Aug 2026 09:49:43 -0700
+From: Kees Cook <kees@kernel.org>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: linux-atm-general@lists.sourceforge.net, linux-can@vger.kernel.org,
+	linux-sctp@vger.kernel.org, netdev@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Kuniyuki Iwashima <kuniyu@google.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+	Neal Cardwell <ncardwell@google.com>,
 	Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>, kernel@pengutronix.de,
-	linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bestswngs@gmail.com
-Subject: Re: [PATCH net] can: j1939: zero the reassembly buffer to avoid
- uninitialized slab leak
-Message-ID: <an1kX7DUTYsRSGAo@pengutronix.de>
-References: <20260706011131.2445034-1-xmei5@asu.edu>
- <CAPpSM+Sn2vOg3xQBBRBvt8m-cvW5-f27xPL=N32yiwT5Nqb0Jw@mail.gmail.com>
+	Paolo Abeni <pabeni@redhat.com>,
+	Remi Denis-Courmont <courmisch@gmail.com>,
+	Simon Horman <horms@kernel.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Xin Long <lucien.xin@gmail.com>, Petr Mladek <pmladek@suse.com>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas.weissschuh@linutronix.de>
+Subject: Re: [PATCH net-next v3] net: Replace %pK output with 0
+Message-ID: <202608130949.A391CBF6@keescook>
+References: <20260812110531.ITPqiY2O@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPpSM+Sn2vOg3xQBBRBvt8m-cvW5-f27xPL=N32yiwT5Nqb0Jw@mail.gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
+In-Reply-To: <20260812110531.ITPqiY2O@linutronix.de>
 
-Hi Xiang Mei,
-
-On Wed, Aug 12, 2026 at 04:57:45PM -0700, Xiang Mei wrote:
-> Hi maintainers,
+On Wed, Aug 12, 2026 at 01:05:31PM +0200, Sebastian Andrzej Siewior wrote:
+> Commit 71338aa7d050c ("net: convert %p usage to %pK") which is from
+> 2011 and changed the %p annotation for pointer to %pK. Back then the
+> default behaviour for %p was to print the pointer. The %pK modifier was
+> introduced to able to control the behaviour of specific pointer values
+> without changing the behaviour of %p for everyone. It was dedicated to
+> avoid leaking pointers via /proc.
 > 
-> Just a reminder to avoid spending time on this. A recent commit fixes
-> this issue:
-> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=eb96c5890792
+> There was also the idea to remove the check from formatting the string
+> and move to the open callback with some helpers but this did not happen.
+> 
+> Things changed over time. The default behaviour for %p is now to print a
+> hash pointer which does not leak the address but allows to correlate if
+> two pointers are equal.
+> The policy on %p is to not introduce new ones. This is somehow in
+> between since it already exists. The pointer are usually socket pointers
+> and I don't see any value in exposing them. Therefore I am following the
+> recommendation of removing them. Since their usage in /proc/ can be
+> considered ABI I replace the pointer with a 0.
+> 
+> Replace the %pK annotation with 0 value. Correct the spacing for the
+> cases where pointer is at the beginning. Use %ps in CAN where the read
+> callback is used.
+> 
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-Thank you for your feedback!
+I love this kind of replacement. :)
 
-Best Regards,
-Oleksij
+Reviewed-by: Kees Cook <kees@kernel.org>
+
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Kees Cook
