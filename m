@@ -1,247 +1,197 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtpx.fel.cvut.cz (smtpx.feld.cvut.cz [147.32.210.153])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DFAB3CD8A4
-	for <linux-can@vger.kernel.org>; Fri, 14 Aug 2026 18:21:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 974E43E1718;
+	Fri, 14 Aug 2026 23:10:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.32.210.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786731681; cv=none; b=oIZjWQKXNbXInaAan7vuCdIplebGUgTwGWmMPq7brKG3AIBmejnSlfaa4BOHmXNjXo97tFJBiUS1qbchLrztxERXQhIeff+IuoJ3ebr/xpGD0vALoH034yXpSDyISu+c80AvgEN4bHraZWJGJMHiV0bIT3dCwCURsCgjotWNKeg=
+	t=1786749009; cv=none; b=sxl7iELAZJCF3lTGfm3IV7whjcAqJvH2FBxOZSeHHuBO4yIYL6k+1oyvt6ew4Zf3Y4YXWT+A2iJlWQqvCD5tUd7gx3Mdflaw1Q1GZCAdzBzRdqijF9msa8eBseHU6ahOqoKAmnUVX2F5UA4bATysVhifSXJ1FFBL4vgn9sd1Vhg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786731681; c=relaxed/simple;
-	bh=cKtP/jXfgwKDZeiGHr9FzjisM/brCiA7ruDy0Ngww+4=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=qa7t1k9Y9MXEFa5IJyXcYwkz9Xcrj3osIPmB5qtl9wgVRNI3JdzZgsWEpnVSXeMYg9+DQb2tPi4l1SIagQIME8M8RIDULsfMPF1Z8ttj6KH0XaY2oFL19s3LYidAzoLU5xRDVuDEVISUtSySE5W/Jb7SNiWFzsBnE32BgJdJu8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZdS84gqh; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1786749009; c=relaxed/simple;
+	bh=ZNbllbu/uvvHWBkqbdX41mxx8Z/L3Ys2dZK5L+MNaQg=;
+	h=From:To:Subject:Date:Cc:References:In-Reply-To:MIME-Version:
+	 Content-Type:Content-Disposition:Message-Id; b=HoA2pzAJkDIAgeXpXVAHTFdKJQ/XOtj0yB0h3iT8UbBF8ipyDldGi+SLHscWWag2q60HG6ptpdwFyXiKeZhypAku4DlXu2hM2o+DbNgSoRJW/U/SehvLn5sF2w9hM+YbhITo8s+YOLk31s1ercDiuhj6pajplrVQIeFf4OfQ+ss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fel.cvut.cz; spf=pass smtp.mailfrom=fel.cvut.cz; dkim=pass (2048-bit key) header.d=fel.cvut.cz header.i=@fel.cvut.cz header.b=c5MyYi+N; arc=none smtp.client-ip=147.32.210.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fel.cvut.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fel.cvut.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZdS84gqh"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 990D61F00A3A;
-	Fri, 14 Aug 2026 18:21:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786731679;
-	bh=xYmBhikQF5olaZbnSHCZNAB2nr0kK4Ap1azuPAOWwNw=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=ZdS84gqh0iKtDPDLR4ISANkXSSmNRa6gtc0Ni9N71+SM3n/EqJ9b52MHoAszxdtAd
-	 +hxucD5ZaX+8OB5mZlTLoGHbX970vP7Z/gG3q9HOPlAcKkiBR/gnoN7Yqumb1R0yam
-	 FP+0pIQWTnSLs7o1ujIESfWFwBmvwiS0+ItTLv3Q8CNi0bHsABhenkS+KRpEBUpSqJ
-	 MjTOp0GKsp0wTWfeMnr8m3+iI28ky690lwkaflhp2s7WFLY84/vEHQj2FzUONN53qS
-	 bLGjuMYtQ/u4r/T9IVGCNC4BbecyxvHoEq6vYX0+WN5QAUn29rWWhJzB2/cS7N1adc
-	 kiG+mb1+vOiRg==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH 2/2] can: kvaser_usb_hydra: reject too-short commands in
- the receive path
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Yiran Qiu" <eritque-arcus@ikuyo.dev>
-Cc: linux-can@vger.kernel.org, "Vincent Mailhol" <mailhol@kernel.org>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Marc
- Kleine-Budde" <mkl@pengutronix.de>
-In-Reply-To: <20260815-can-esd-hydra-fixes-v1-2-de644cbeaec2@ikuyo.dev>
-References: <20260815-can-esd-hydra-fixes-v1-0-de644cbeaec2@ikuyo.dev>
- <20260815-can-esd-hydra-fixes-v1-2-de644cbeaec2@ikuyo.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 14 Aug 2026 18:21:19 +0000
-Message-Id: <20260814182119.990D61F00A3A@smtp.kernel.org>
+	dkim=pass (2048-bit key) header.d=fel.cvut.cz header.i=@fel.cvut.cz header.b="c5MyYi+N"
+Received: from localhost (unknown [192.168.200.27])
+	by smtpx.fel.cvut.cz (Postfix) with ESMTP id C312A3FB86;
+	Sat, 15 Aug 2026 01:02:38 +0200 (CEST)
+X-Virus-Scanned: IMAP STYX AMAVIS
+Authentication-Results: cerokez-250.feld.cvut.cz (amavis);
+ dkim=pass (2048-bit key) header.d=fel.cvut.cz
+Received: from smtpx.fel.cvut.cz ([192.168.200.2])
+ by localhost (cerokez-250.feld.cvut.cz [192.168.200.27]) (amavis, port 10060)
+ with ESMTP id xJC9GaeWoVDK; Sat, 15 Aug 2026 01:02:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fel.cvut.cz;
+	s=felmail; t=1786748556;
+	bh=km3K6GyEBKdpJ/SSffDc/KIh6ea/9zdWGAXqMaPphnw=;
+	h=From:To:Subject:Date:Cc:References:In-Reply-To:From;
+	b=c5MyYi+Nq9NkkWVyvfMux2woqIVf46OdQ79v3hGvXIFicBDN92k7vqlqlePsU6g4b
+	 Vp5hYIAWhD2FPf13REcf5yxW8agXC7zgIvk94vb2YX7I66l22p4rYCvbznK1zJjtV8
+	 7wpPx7IfuzsM1Spx22XfHC2h5SvtNnmyqlAnlItidjPost5bC34yOGiWk3XAJ3b8lE
+	 RDCDnfhktmE7aCXIJLf6pFbERFSgkmYHFRtzptSkeEh6ByItkIOWRd1RFgOcMJlcsF
+	 KoQ7lfi0QAIQb3T+MorS7IrRkQFuUKToTAXrafhh3BX7xmvOeDhlsCDcegK6rcoNNO
+	 JMNnUeBSlAWdQ==
+Received: from baree.pikron.com (static-84-242-78-234.bb.vodafone.cz [84.242.78.234])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pisa)
+	by smtpx.fel.cvut.cz (Postfix) with ESMTPSA id AECFC3FA30;
+	Sat, 15 Aug 2026 01:02:36 +0200 (CEST)
+From: Pavel Pisa <pisa@fel.cvut.cz>
+To: "Marc Kleine-Budde" <mkl@pengutronix.de>
+Subject: Re: [PATCH] can: ctucanfd: ctucan_err_interrupt(): do not emit info messages on Arbitration Lost or CAN Bus Error IRQs
+Date: Sat, 15 Aug 2026 01:02:34 +0200
+User-Agent: KMail/1.9.10
+Cc: Ondrej Ille <ondrej.ille@gmail.com>,
+ Vincent Mailhol <mailhol@kernel.org>,
+ Avi Weiss <thnkslprpt@gmail.com>,
+ linux-can@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ kernel@pengutronix.de,
+ Jiri Novak <jnovak@fel.cvut.cz>
+References: <20260806-ctucanfd-silence-can-bus-error-messages-v1-1-70eff67debfd@pengutronix.de>
+In-Reply-To: <20260806-ctucanfd-silence-can-bus-error-messages-v1-1-70eff67debfd@pengutronix.de>
+X-KMail-QuotePrefix: > 
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <202608150102.34461.pisa@fel.cvut.cz>
 
-Thank you for your contribution! Sashiko AI review found 6 potential issue(=
-s) to consider:
+Hello Marc,
 
-Pre-existing issues:
-- [Critical] Processing an unexpected or duplicate TX acknowledge command c=
-auses an out-of-bounds array access, leading to memory corruption.
-- [High] kvaser_usb_hydra_cmd_size() reads the command length from the URB =
-buffer without verifying sufficient data is available, and the patch's newl=
-y added minimum length check is insufficient to prevent out-of-bounds acces=
-ses during command dispatch.
-- [High] The patch fails to validate command lengths in the leftover buffer=
- path, leading to an integer underflow, and an error path fails to reset th=
-e leftover length, permanently wedging the receive path.
-- [High] The dev_get_berr_counter implementation synchronously transmits a =
-USB command using GFP_KERNEL allocations while running inside an RCU read-s=
-ide critical section.
-- [High] The driver blindly copies CAN frame payload data based on the devi=
-ce-supplied DLC without verifying that the command length is large enough, =
-leading to a heap information leak.
-- [High] The patch fixes an infinite loop in the URB completion callback bu=
-t leaves the exact same vulnerability in the synchronous command wait funct=
-ion.
---
+On Thursday 06 of August 2026 16:07:29 Marc Kleine-Budde wrote:
+> Since commit e74bae899529 ("can: ctucanfd: handle bus error interrupts")
+> CAN bus error interrupts are properly handled.
+>
+> With activated CAN Bus Error reporting, Arbitration Lost (ALI) and Bus
+> Error (BEI) interrupts are enabled. These can occur at a very high rate
+> (~10kHz).
+>
+> To avoid flooding the system, don't emit a netdev_info() for these.
+>
+> Fixes: e74bae899529 ("can: ctucanfd: handle bus error interrupts")
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>  drivers/net/can/ctucanfd/ctucanfd_base.c | 3 ---
+>  1 file changed, 3 deletions(-)
+>
+> diff --git a/drivers/net/can/ctucanfd/ctucanfd_base.c
+> b/drivers/net/can/ctucanfd/ctucanfd_base.c index 07d4aa43c700..9aec18681fc5
+> 100644
+> --- a/drivers/net/can/ctucanfd/ctucanfd_base.c
+> +++ b/drivers/net/can/ctucanfd/ctucanfd_base.c
+> @@ -884,8 +884,6 @@ static void ctucan_err_interrupt(struct net_device
+> *ndev, u32 isr)
+>
+>  	/* Check for Arbitration Lost interrupt */
+>  	if (FIELD_GET(REG_INT_STAT_ALI, isr)) {
+> -		if (dologerr)
+> -			netdev_info(ndev, "arbitration lost\n");
+>  		priv->can.can_stats.arbitration_lost++;
+>  		if (skb) {
+>  			cf->can_id |= CAN_ERR_LOSTARB;
+> @@ -895,7 +893,6 @@ static void ctucan_err_interrupt(struct net_device
+> *ndev, u32 isr)
+>
+>  	/* Check for Bus Error interrupt */
+>  	if (FIELD_GET(REG_INT_STAT_BEI, isr)) {
+> -		netdev_info(ndev, "bus error\n");
+>  		priv->can.can_stats.bus_error++;
+>  		stats->rx_errors++;
+>  		if (skb) {
+>
+> ---
+> base-commit: cd0784790d921ff4f7438d3b7ccda86068c8b766
+> change-id: 20260805-ctucanfd-silence-can-bus-error-messages-5c5bcd6860f8
 
---- Patch [2]: [PATCH 2/2] can: kvaser_usb_hydra: reject too-short commands=
- in the receive path ---
-commit c7aa22e9c2e49b7c5c3858b9afe989871f77d49c
-Author: Yiran Qiu <eritque-arcus@ikuyo.dev>
+Acked-by: Pavel Pisa <pisa@fel.cvut.cz>
 
-can: kvaser_usb_hydra: reject too-short commands in the receive path
+In the fact, I am in doubts if ALI Arbitration lost interrupt
+should be enabled even by CAN_CTRLMODE_BERR_REPORTING unconditionally.
+There are lot of situations when error reporting is valuable
+but overhead of arbitration lost could load system quite lot.
+But on the other hand SocketCAN does not provide separate
+reporting option to enable can_stats.arbitration_lost
+updates so current code in ctucan_chip_start is proper option
 
-This commit fixes an infinite loop in the URB-completion softirq caused by
-extended commands with a length of zero. It adds a minimum-length check bef=
-ore
-dispatching commands.
 
-Cc: stable@vger.kernel.org
+	if (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING) {
+		int_ena |= REG_INT_STAT_ALI |
+			   REG_INT_STAT_BEI;
+	}
 
-> diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/=
-net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-> index efbb7bed34c9d..d44f9875fbe2f 100644
-> --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-> +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-> @@ -2156,6 +2156,15 @@ static void kvaser_usb_hydra_read_bulk_callback(st=
-ruct kvaser_usb *dev,
-> =20
->  		cmd_len =3D kvaser_usb_hydra_cmd_size(cmd);
-> =20
+PS1: I have been on vacations without e-mail and I will be next
+week too, so sorry for possible delays and these PSs to
+wrap up quickly what seems on hold before my leave. 
 
-[Severity: High]
-This isn't a bug introduced by this patch, but does the call to
-kvaser_usb_hydra_cmd_size() read the command length from the URB buffer
-without verifying sufficient data is available?
+PS2: Marc and others, please, can you confirm if my patch
+"docs: ctucanfd: fix swapped colors in legend for TX buffer FSM of CTU CAN FD"
+https://lore.kernel.org/linux-can/d775feefa1c16d7ea7f42482483c81491f75ce6c.1785574572.git.pisa@cmp.felk.cvut.cz/
+is on the right track or if I should repost it to somebody
+other than Randy Dunlap and linux-doc to reach right
+documentation maintainers.
 
-If a malicious device sends an extended command split across URBs, or one w=
-ith
-a length of 4 or 5 bytes, kvaser_usb_hydra_cmd_size() reads the 16-bit leng=
-th
-field at offset 4:
+PS3: Marc, please, have you received my question about problems
+with CAN FD on iMX8plus CompuLab's IOT-DIN-IMX8PLUS.
+Even manual specifies it as Std CAN only... Can it be
+related to some SoC problems, even much lowered speeds
+do not help so probably not transceiver HW, may be missing
+information for TDC in DTS???
 
-kvaser_usb_hydra_cmd_size()
-    ret =3D le16_to_cpu(((struct kvaser_cmd_ext *)cmd)->len);
+PS4: LPC and Open Source Summit Europe will be held in Prague.
+Our submissions to OSSE have not been accepted, one
+is on wait list still. Price is too high for my budget
+when I bring open technology to others. I am not sure about LPC,
+I consider to pay for Real-Time and Scheduling microconference
+or something like that. I could presnet something about our mainline
+and RT CAN latency testing or our other RT, RISC-V embedded
+knowledge if there is interest and suggestion for miniconference, BoF,
+so then I would be allowed. Anyway if you have interest to meet,
+I will be in Prague and when not teaching, I will be happy to
+reserve time. There would be real local enthusiast, free community
+and access conference before these Linux Foundation ones
 
-This occurs without checking if the buffer has enough data, leading to an
-out-of-bounds read.
+https://www.linuxdays.cz/2026/
 
-> +		/* An extended command carries a device-supplied length; a
-> +		 * command shorter than the command header would never advance
-> +		 * @pos and would spin this URB-completion softirq forever.
-> +		 */
-> +		if (cmd_len < sizeof(struct kvaser_cmd_header)) {
-> +			dev_err(&dev->intf->dev, "Format error\n");
-> +			break;
-> +		}
-> +
+I expect to show our HW ZOO there on the booth there as usual
+so you can visit us at our university ground.
 
-[Severity: High]
-This is a pre-existing issue, but is the validation check added here
-sufficient to prevent out-of-bounds accesses during command dispatch?
+If there is interest in some community open and free access
+meeting then I can negotiate lecture hall, computer rooms etc.
+at our faculty when they are not used for teaching or other
+events. For something relay interesting which fits in weekend
+October 3-4, I would consider even abandon part pr whole of my
+LinuxDays presence. No chance to meet during weekend after LPC
+and next days, I have already taken these by Apache/NuttX conference
+in Glasgow where we present our projects including Matlab Simulink
+target for NuttX (and Linux).
 
-Since a command length of 4 or 5 passes this check, it allows
-kvaser_usb_hydra_handle_cmd_ext() to be called. That function then reads
-cmd_no_ext at offset 6:
+Best wishes,
 
-kvaser_usb_hydra_handle_cmd_ext()
-    switch (cmd->cmd_no_ext) {
+                Pavel
 
-Could this lead to an out-of-bounds array access on the URB buffer and
-corrupted command processing?
-
->  		if (pos + cmd_len > len) {
->  			/* We got first part of a command */
->  			int leftover_bytes;
-
-[Severity: High]
-This isn't a bug introduced by this patch, but earlier in
-kvaser_usb_hydra_read_bulk_callback(), does the leftover buffer path fail to
-validate command lengths?
-
-If the leftover buffer evaluates cmd_len to 0, cmd_len - usb_rx_leftover_len
-underflows to a massive unsigned integer. Once usb_rx_leftover_len
-accumulates past 128 bytes, the driver prints an error and returns:
-
-kvaser_usb_hydra_read_bulk_callback()
-    if (remaining_bytes + usb_rx_leftover_len >
-                                    KVASER_USB_HYDRA_MAX_CMD_LEN) {
-            dev_err(&dev->intf->dev, "Format error\n");
-            spin_unlock_irqrestore(usb_rx_leftover_lock, irq_flags);
-            return;
-    }
-
-Crucially, it fails to reset usb_rx_leftover_len to 0. Would every subseque=
-nt
-URB immediately hit this exact overflow condition and be dropped, permanent=
-ly
-wedging the device receive path?
-
-[Severity: High]
-This is a pre-existing issue, but does kvaser_usb_hydra_wait_cmd() contain =
-the
-exact same infinite loop vulnerability that this patch fixes?
-
-kvaser_usb_hydra_wait_cmd() iterates over incoming USB data using a similar
-loop. A malicious device could send an extended command with length 0, caus=
-ing
-cmd_len to evaluate to 0:
-
-kvaser_usb_hydra_wait_cmd()
-    pos +=3D cmd_len;
-
-Since the command is not the expected response, the loop adds 0 to pos and
-spins forever without advancing. Will this lock up the kernel during device
-probe or configuration?
-
-[Severity: High]
-This isn't a bug introduced by this patch, but does the
-dev_get_berr_counter implementation synchronously transmit a USB command
-using GFP_KERNEL allocations while running inside an RCU read-side critical
-section?
-
-The callback is invoked by can_fill_info() when responding to netlink
-RTM_GETLINK dumps, which execute under rcu_read_lock(). Inside this RCU
-critical section, kvaser_usb_hydra_get_berr_counter() dynamically allocates
-memory with GFP_KERNEL and calls wait_for_completion_timeout() to submit a
-synchronous URB:
-
-kvaser_usb_hydra_get_berr_counter()
-    err =3D kvaser_usb_hydra_send_simple_cmd(priv->dev,
-                                           CMD_GET_CHIP_STATE_REQ,
-                                           priv->channel);
-
-Could this violate core kernel locking rules, leading to sleeping in atomic
-context, lockdep splats, and potential RCU stalls?
-
-[Severity: High]
-This is a pre-existing issue, but does the driver blindly copy CAN frame
-payload data based on the device-supplied DLC without verifying the command
-length?
-
-In kvaser_usb_hydra_rx_msg_ext(), the driver extracts the DLC and converts =
-it
-to a payload length. It then blindly copies cf->len bytes from the URB buff=
-er:
-
-kvaser_usb_hydra_rx_msg_ext()
-    memcpy(cf->data, cmd->rx_can.kcan_payload, cf->len);
-
-If a malicious device sends an extended command with a small USB transfer
-length but a large DLC, will the driver read out-of-bounds past the end of
-the USB transfer buffer, and leak kernel heap memory to userspace?
-
-[Severity: Critical]
-This isn't a bug introduced by this patch, but does processing an
-unexpected or duplicate TX acknowledge command cause an out-of-bounds array
-access?
-
-When processing a duplicate TX ACK, context->echo_index is reset to
-dev->max_tx_urbs, which matches the size of the echo_skb array. The driver
-directly accesses priv->can.echo_skb[context->echo_index] without bounds
-checking:
-
-kvaser_usb_hydra_tx_acknowledge()
-    skb =3D priv->can.echo_skb[context->echo_index];
-    if (skb)
-            skb_hwtstamps(skb)->hwtstamp =3D
-                               kvaser_usb_hydra_ktime_from_cmd(dev->cfg, cm=
-d);
-
-This accesses exactly one element past the end of the dynamically allocated
-echo_skb array. If the out-of-bounds memory contains a non-zero value, it is
-treated as a valid sk_buff pointer, and an 8-byte timestamp is written to i=
-t.
-Could this lead to wild pointer writes and exploitable kernel memory
-corruption?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260815-can-esd-hy=
-dra-fixes-v1-0-de644cbeaec2@ikuyo.dev?part=3D2
+                Pavel Pisa
+    phone:      +420 603531357
+    e-mail:     pisa@cmp.felk.cvut.cz
+    Department of Control Engineering FEE CVUT
+    Karlovo namesti 13, 121 35, Prague 2
+    university: http://control.fel.cvut.cz/
+    personal:   http://cmp.felk.cvut.cz/~pisa
+    social:     https://social.kernel.org/ppisa
+    projects:   https://www.openhub.net/accounts/ppisa
+    CAN related:http://canbus.pages.fel.cvut.cz/
+    RISC-V education: https://comparch.edu.cvut.cz/
+    Open Technologies Research Education and Exchange Services
+    https://gitlab.fel.cvut.cz/otrees/org/-/wikis/home
