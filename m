@@ -1,210 +1,247 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1B363CD8A4
-	for <linux-can@vger.kernel.org>; Fri, 14 Aug 2026 18:16:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DFAB3CD8A4
+	for <linux-can@vger.kernel.org>; Fri, 14 Aug 2026 18:21:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786731379; cv=none; b=fEWZon3BDzHUz8XhqYmsF9qCQyKbc1GidCkafoa/YgVpxCTv/CCyncnKZV2vz2owTU8vE01Mia5g5RzztgT6T2T+XVYiXMKXi8mViEOnRELV4FY8uKe4PJVouW9mJMX8R4bQj1mwzPTRlep96LctdehJw5AqkfbKSLaBW+5QhCA=
+	t=1786731681; cv=none; b=oIZjWQKXNbXInaAan7vuCdIplebGUgTwGWmMPq7brKG3AIBmejnSlfaa4BOHmXNjXo97tFJBiUS1qbchLrztxERXQhIeff+IuoJ3ebr/xpGD0vALoH034yXpSDyISu+c80AvgEN4bHraZWJGJMHiV0bIT3dCwCURsCgjotWNKeg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786731379; c=relaxed/simple;
-	bh=DWpcn6hZm/S8a9ZdhR0xIocTvdVdIEAWyEHNsLH/rN0=;
+	s=arc-20240116; t=1786731681; c=relaxed/simple;
+	bh=cKtP/jXfgwKDZeiGHr9FzjisM/brCiA7ruDy0Ngww+4=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=P5XC20NvkT5UnFrp14yWk6aFtgec3d/FKkNjBdy7QfROqNdGXiXd2wG2vNeDfvBkYqXW/sEb7zbtN1miZxReNhtAlIZ8q7dbQW6FE0uO37DOQGY600NoSL8wqIfOfxDqEXZSgVzwvBllF/rhJ1F/S0mqWOBfJnftbLWrf/aXIRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UZfl9jI4; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=qa7t1k9Y9MXEFa5IJyXcYwkz9Xcrj3osIPmB5qtl9wgVRNI3JdzZgsWEpnVSXeMYg9+DQb2tPi4l1SIagQIME8M8RIDULsfMPF1Z8ttj6KH0XaY2oFL19s3LYidAzoLU5xRDVuDEVISUtSySE5W/Jb7SNiWFzsBnE32BgJdJu8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZdS84gqh; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UZfl9jI4"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E6B61F000E9;
-	Fri, 14 Aug 2026 18:16:17 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZdS84gqh"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 990D61F00A3A;
+	Fri, 14 Aug 2026 18:21:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786731377;
-	bh=pIQj2+wN4qJYo2b1PclPHIRr+vIjA/ghjrXhw7t7eZI=;
+	s=k20260515; t=1786731679;
+	bh=xYmBhikQF5olaZbnSHCZNAB2nr0kK4Ap1azuPAOWwNw=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=UZfl9jI4HDI7N6CMGaBIGDJPNNO7JibdsxN5xUmNaoKQ3iMSSy2Bp2LuNiRIGVe7b
-	 yhOn/OIpti6TVpTqRFbEcIfxgXleJ6+teReeGfbEJ/T1GnZtiqU/hQXbwSpzpeySzV
-	 AKuJwhUaitRXEzWof8AxBBWQVicKKqi0HJiDDHd8JKoohcfch8CWKj3znRQH+56p+z
-	 +mRxxrypLQ2wekyts4wsUHEnKfaWYYncs4afwlj4d/a4jUnBs58TlYZ9aWRFHgFzHe
-	 ohO2An9cxbVP9UgtuF0NXnyqZNHrm93v5clJRDgorVBaGdU8CI8eMBkKrcy09I7YQ7
-	 FkFgQAk8qP7ig==
+	b=ZdS84gqh0iKtDPDLR4ISANkXSSmNRa6gtc0Ni9N71+SM3n/EqJ9b52MHoAszxdtAd
+	 +hxucD5ZaX+8OB5mZlTLoGHbX970vP7Z/gG3q9HOPlAcKkiBR/gnoN7Yqumb1R0yam
+	 FP+0pIQWTnSLs7o1ujIESfWFwBmvwiS0+ItTLv3Q8CNi0bHsABhenkS+KRpEBUpSqJ
+	 MjTOp0GKsp0wTWfeMnr8m3+iI28ky690lwkaflhp2s7WFLY84/vEHQj2FzUONN53qS
+	 bLGjuMYtQ/u4r/T9IVGCNC4BbecyxvHoEq6vYX0+WN5QAUn29rWWhJzB2/cS7N1adc
+	 kiG+mb1+vOiRg==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH 1/2] can: esd_usb: validate received message length
- before use
+Subject: Re: [PATCH 2/2] can: kvaser_usb_hydra: reject too-short commands in
+ the receive path
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Yiran Qiu" <eritque-arcus@ikuyo.dev>
-Cc: "Vincent Mailhol" <mailhol@kernel.org>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Oliver
- Hartkopp" <socketcan@hartkopp.net>
-In-Reply-To: <20260815-can-esd-hydra-fixes-v1-1-de644cbeaec2@ikuyo.dev>
+Cc: linux-can@vger.kernel.org, "Vincent Mailhol" <mailhol@kernel.org>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>
+In-Reply-To: <20260815-can-esd-hydra-fixes-v1-2-de644cbeaec2@ikuyo.dev>
 References: <20260815-can-esd-hydra-fixes-v1-0-de644cbeaec2@ikuyo.dev>
- <20260815-can-esd-hydra-fixes-v1-1-de644cbeaec2@ikuyo.dev>
+ <20260815-can-esd-hydra-fixes-v1-2-de644cbeaec2@ikuyo.dev>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Fri, 14 Aug 2026 18:16:16 +0000
-Message-Id: <20260814181617.4E6B61F000E9@smtp.kernel.org>
+Date: Fri, 14 Aug 2026 18:21:19 +0000
+Message-Id: <20260814182119.990D61F00A3A@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
-Thank you for your contribution! Sashiko AI review found 3 potential issue(=
+Thank you for your contribution! Sashiko AI review found 6 potential issue(=
 s) to consider:
 
 Pre-existing issues:
-- [High] Unvalidated interface count from device causes heap buffer overflo=
-w during probe.
-- [High] Dereferencing uninitialized network interfaces from USB messages c=
-auses kernel panic.
-- [High] Spurious TX_DONE messages decrement inactive contexts causing acti=
-ve_tx_jobs underflow.
+- [Critical] Processing an unexpected or duplicate TX acknowledge command c=
+auses an out-of-bounds array access, leading to memory corruption.
+- [High] kvaser_usb_hydra_cmd_size() reads the command length from the URB =
+buffer without verifying sufficient data is available, and the patch's newl=
+y added minimum length check is insufficient to prevent out-of-bounds acces=
+ses during command dispatch.
+- [High] The patch fails to validate command lengths in the leftover buffer=
+ path, leading to an integer underflow, and an error path fails to reset th=
+e leftover length, permanently wedging the receive path.
+- [High] The dev_get_berr_counter implementation synchronously transmits a =
+USB command using GFP_KERNEL allocations while running inside an RCU read-s=
+ide critical section.
+- [High] The driver blindly copies CAN frame payload data based on the devi=
+ce-supplied DLC without verifying that the command length is large enough, =
+leading to a heap information leak.
+- [High] The patch fixes an infinite loop in the URB completion callback bu=
+t leaves the exact same vulnerability in the synchronous command wait funct=
+ion.
 --
 
---- Patch [1]: [PATCH 1/2] can: esd_usb: validate received message length b=
-efore use ---
-commit 38efd7f38912ccfd78688896fcdf77da350528fd
+--- Patch [2]: [PATCH 2/2] can: kvaser_usb_hydra: reject too-short commands=
+ in the receive path ---
+commit c7aa22e9c2e49b7c5c3858b9afe989871f77d49c
 Author: Yiran Qiu <eritque-arcus@ikuyo.dev>
-Date:   Fri Aug 14 18:05:46 2026 +0000
 
-    can: esd_usb: validate received message length before use
-   =20
-    esd_usb_read_bulk_callback() walks a sequence of variable-length
-    messages out of the RX URB buffer. The only length check,
-    "pos > urb->actual_length", runs *after* the current message has been
-    dispatched and after @pos has been advanced, so it can neither protect
-    the message being processed nor stop the loop:
-   =20
-    Validate the header and the declared message length before dispatch:
-    reject a message whose header is not fully present, whose length is
-    zero, or which extends past the received data, and advance @pos by the
-    validated length. Pass the validated length to the message handlers so
-    they can confirm that the fields they read (and the payload they copy)
-    were actually received.
+can: kvaser_usb_hydra: reject too-short commands in the receive path
 
-> diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
-> index f41d4a0d140f7..13356e68f3f60 100644
-> --- a/drivers/net/can/usb/esd_usb.c
-> +++ b/drivers/net/can/usb/esd_usb.c
+This commit fixes an infinite loop in the URB-completion softirq caused by
+extended commands with a length of zero. It adds a minimum-length check bef=
+ore
+dispatching commands.
 
-[ ... ]
+Cc: stable@vger.kernel.org
 
-> @@ -455,7 +479,7 @@ static void esd_usb_rx_can_msg(struct esd_usb_net_pri=
-v *priv,
->  }
+> diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/=
+net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+> index efbb7bed34c9d..d44f9875fbe2f 100644
+> --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+> +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+> @@ -2156,6 +2156,15 @@ static void kvaser_usb_hydra_read_bulk_callback(st=
+ruct kvaser_usb *dev,
 > =20
->  static void esd_usb_tx_done_msg(struct esd_usb_net_priv *priv,
-> -				union esd_usb_msg *msg)
-> +				union esd_usb_msg *msg, unsigned int msg_len)
->  {
->  	struct net_device_stats *stats =3D &priv->netdev->stats;
->  	struct net_device *netdev =3D priv->netdev;
-> @@ -464,6 +488,9 @@ static void esd_usb_tx_done_msg(struct esd_usb_net_pr=
-iv *priv,
->  	if (!netif_device_present(netdev))
->  		return;
+>  		cmd_len =3D kvaser_usb_hydra_cmd_size(cmd);
 > =20
-> +	if (msg_len < offsetofend(struct esd_usb_tx_done_msg, hnd))
-> +		return;
-> +
->  	context =3D &priv->tx_contexts[msg->txdone.hnd & (ESD_USB_MAX_TX_URBS -=
- 1)];
-> =20
->  	if (!msg->txdone.status) {
 
 [Severity: High]
-This is a pre-existing issue, but can spurious TX_DONE messages decrement
-inactive contexts and cause the active_tx_jobs counter to underflow?
+This isn't a bug introduced by this patch, but does the call to
+kvaser_usb_hydra_cmd_size() read the command length from the URB buffer
+without verifying sufficient data is available?
 
-In esd_usb_tx_done_msg(), the context identified by msg->txdone.hnd is acce=
-ssed
-without checking if it is actually active (e.g. echo_index !=3D
-ESD_USB_MAX_TX_URBS). If a malicious device sends spurious TX_DONE messages,
-this will unconditionally execute atomic_dec(&priv->active_tx_jobs).=20
+If a malicious device sends an extended command split across URBs, or one w=
+ith
+a length of 4 or 5 bytes, kvaser_usb_hydra_cmd_size() reads the 16-bit leng=
+th
+field at offset 4:
 
-When the queue eventually fills up with real packets, esd_usb_start_xmit()
-won't stop the queue because active_tx_jobs is negative, returning
-NETDEV_TX_BUSY. Returning NETDEV_TX_BUSY without stopping the queue causes =
+kvaser_usb_hydra_cmd_size()
+    ret =3D le16_to_cpu(((struct kvaser_cmd_ext *)cmd)->len);
+
+This occurs without checking if the buffer has enough data, leading to an
+out-of-bounds read.
+
+> +		/* An extended command carries a device-supplied length; a
+> +		 * command shorter than the command header would never advance
+> +		 * @pos and would spin this URB-completion softirq forever.
+> +		 */
+> +		if (cmd_len < sizeof(struct kvaser_cmd_header)) {
+> +			dev_err(&dev->intf->dev, "Format error\n");
+> +			break;
+> +		}
+> +
+
+[Severity: High]
+This is a pre-existing issue, but is the validation check added here
+sufficient to prevent out-of-bounds accesses during command dispatch?
+
+Since a command length of 4 or 5 passes this check, it allows
+kvaser_usb_hydra_handle_cmd_ext() to be called. That function then reads
+cmd_no_ext at offset 6:
+
+kvaser_usb_hydra_handle_cmd_ext()
+    switch (cmd->cmd_no_ext) {
+
+Could this lead to an out-of-bounds array access on the URB buffer and
+corrupted command processing?
+
+>  		if (pos + cmd_len > len) {
+>  			/* We got first part of a command */
+>  			int leftover_bytes;
+
+[Severity: High]
+This isn't a bug introduced by this patch, but earlier in
+kvaser_usb_hydra_read_bulk_callback(), does the leftover buffer path fail to
+validate command lengths?
+
+If the leftover buffer evaluates cmd_len to 0, cmd_len - usb_rx_leftover_len
+underflows to a massive unsigned integer. Once usb_rx_leftover_len
+accumulates past 128 bytes, the driver prints an error and returns:
+
+kvaser_usb_hydra_read_bulk_callback()
+    if (remaining_bytes + usb_rx_leftover_len >
+                                    KVASER_USB_HYDRA_MAX_CMD_LEN) {
+            dev_err(&dev->intf->dev, "Format error\n");
+            spin_unlock_irqrestore(usb_rx_leftover_lock, irq_flags);
+            return;
+    }
+
+Crucially, it fails to reset usb_rx_leftover_len to 0. Would every subseque=
+nt
+URB immediately hit this exact overflow condition and be dropped, permanent=
+ly
+wedging the device receive path?
+
+[Severity: High]
+This is a pre-existing issue, but does kvaser_usb_hydra_wait_cmd() contain =
 the
-network stack to infinitely retry, softlocking the CPU.
+exact same infinite loop vulnerability that this patch fixes?
 
-[ ... ]
+kvaser_usb_hydra_wait_cmd() iterates over incoming USB data using a similar
+loop. A malicious device could send an extended command with length 0, caus=
+ing
+cmd_len to evaluate to 0:
 
-> @@ -507,8 +534,27 @@ static void esd_usb_read_bulk_callback(struct urb *u=
-rb)
-> =20
->  	while (pos < urb->actual_length) {
->  		union esd_usb_msg *msg;
-> +		unsigned int msg_len;
-> +
-> +		/* The header must be fully present before hdr.len / hdr.cmd
-> +		 * (and the net index below) are read.
-> +		 */
-> +		if (pos + sizeof(struct esd_usb_header_msg) > urb->actual_length) {
-> +			dev_err(dev->udev->dev.parent, "format error\n");
-> +			break;
-> +		}
-> =20
->  		msg =3D (union esd_usb_msg *)(urb->transfer_buffer + pos);
-> +		msg_len =3D msg->hdr.len * sizeof(u32); /* convert to # of bytes */
-> +
-> +		/* A zero-length message would never advance @pos and would
-> +		 * spin this URB-completion softirq forever; a message must
-> +		 * also fit within the received data.
-> +		 */
-> +		if (msg->hdr.len =3D=3D 0 || msg_len > urb->actual_length - pos) {
-> +			dev_err(dev->udev->dev.parent, "format error\n");
-> +			break;
-> +		}
-> =20
->  		switch (msg->hdr.cmd) {
->  		case ESD_USB_CMD_CAN_RX:
-> @@ -517,7 +563,7 @@ static void esd_usb_read_bulk_callback(struct urb *ur=
-b)
->  				break;
->  			}
-> =20
-> -			esd_usb_rx_can_msg(dev->nets[msg->rx.net], msg);
-> +			esd_usb_rx_can_msg(dev->nets[msg->rx.net], msg, msg_len);
+kvaser_usb_hydra_wait_cmd()
+    pos +=3D cmd_len;
+
+Since the command is not the expected response, the loop adds 0 to pos and
+spins forever without advancing. Will this lock up the kernel during device
+probe or configuration?
 
 [Severity: High]
-This isn't a bug introduced by this patch, but does this loop properly hand=
-le
-uninitialized network interfaces?
+This isn't a bug introduced by this patch, but does the
+dev_get_berr_counter implementation synchronously transmit a USB command
+using GFP_KERNEL allocations while running inside an RCU read-side critical
+section?
 
-If esd_usb_probe_one_net() fails for one of the interfaces during
-esd_usb_probe(), it leaves dev->nets[index] as NULL. A malicious USB device=
- can
-then send ESD_USB_CMD_CAN_RX messages with the index of the failed interfac=
-e,
-which is passed unconditionally to esd_usb_rx_can_msg() resulting in a NULL
-pointer dereference.
+The callback is invoked by can_fill_info() when responding to netlink
+RTM_GETLINK dumps, which execute under rcu_read_lock(). Inside this RCU
+critical section, kvaser_usb_hydra_get_berr_counter() dynamically allocates
+memory with GFP_KERNEL and calls wait_for_completion_timeout() to submit a
+synchronous URB:
+
+kvaser_usb_hydra_get_berr_counter()
+    err =3D kvaser_usb_hydra_send_simple_cmd(priv->dev,
+                                           CMD_GET_CHIP_STATE_REQ,
+                                           priv->channel);
+
+Could this violate core kernel locking rules, leading to sleeping in atomic
+context, lockdep splats, and potential RCU stalls?
 
 [Severity: High]
-This is also a pre-existing issue, but does msg->rx.net >=3D dev->net_count
-properly protect against out-of-bounds array access for dev->nets[]?
+This is a pre-existing issue, but does the driver blindly copy CAN frame
+payload data based on the device-supplied DLC without verifying the command
+length?
 
-A malicious USB device can return an arbitrarily large number of interfaces=
- in
-the version reply message. In esd_usb_probe(), this is directly assigned to
-dev->net_count without validating it against ESD_USB_MAX_NETS (2), which can
-corrupt adjacent heap memory when writing to dev->nets[index]. Furthermore,
-since dev->net_count can be larger than ESD_USB_MAX_NETS, the check
-msg->rx.net >=3D dev->net_count above does not prevent dev->nets[msg->rx.ne=
-t]
-from going out of bounds here.
+In kvaser_usb_hydra_rx_msg_ext(), the driver extracts the DLC and converts =
+it
+to a payload length. It then blindly copies cf->len bytes from the URB buff=
+er:
 
->  			break;
-> =20
->  		case ESD_USB_CMD_CAN_TX:
-> @@ -527,16 +573,11 @@ static void esd_usb_read_bulk_callback(struct urb *=
-urb)
->  			}
-> =20
->  			esd_usb_tx_done_msg(dev->nets[msg->txdone.net],
-> -					    msg);
-> +					    msg, msg_len);
->  			break;
->  		}
+kvaser_usb_hydra_rx_msg_ext()
+    memcpy(cf->data, cmd->rx_can.kcan_payload, cf->len);
+
+If a malicious device sends an extended command with a small USB transfer
+length but a large DLC, will the driver read out-of-bounds past the end of
+the USB transfer buffer, and leak kernel heap memory to userspace?
+
+[Severity: Critical]
+This isn't a bug introduced by this patch, but does processing an
+unexpected or duplicate TX acknowledge command cause an out-of-bounds array
+access?
+
+When processing a duplicate TX ACK, context->echo_index is reset to
+dev->max_tx_urbs, which matches the size of the echo_skb array. The driver
+directly accesses priv->can.echo_skb[context->echo_index] without bounds
+checking:
+
+kvaser_usb_hydra_tx_acknowledge()
+    skb =3D priv->can.echo_skb[context->echo_index];
+    if (skb)
+            skb_hwtstamps(skb)->hwtstamp =3D
+                               kvaser_usb_hydra_ktime_from_cmd(dev->cfg, cm=
+d);
+
+This accesses exactly one element past the end of the dynamically allocated
+echo_skb array. If the out-of-bounds memory contains a non-zero value, it is
+treated as a valid sk_buff pointer, and an 8-byte timestamp is written to i=
+t.
+Could this lead to wild pointer writes and exploitable kernel memory
+corruption?
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260815-can-esd-hy=
-dra-fixes-v1-0-de644cbeaec2@ikuyo.dev?part=3D1
+dra-fixes-v1-0-de644cbeaec2@ikuyo.dev?part=3D2
