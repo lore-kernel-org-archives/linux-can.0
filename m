@@ -1,171 +1,81 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.50])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B753349B19;
-	Fri, 14 Aug 2026 13:57:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.50
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786715865; cv=pass; b=LtJ/zlUGrFKavXAJZgQ36frOVjXHAzL4/OLjAccpcqpxtrn0g9DhZpsx7MiEYc3Vwyyaf+a0SqUC5VhfqiRBR2Mw28EoDgZsquRM8XyrmonsLa+sNbKz1CPZs4uUkjWhBljVS/uyitYZuLSiVnKRvWU4OxNvC2XqR22RVB/oUFA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786715865; c=relaxed/simple;
-	bh=o1Db18j81xA4/xwGnSukztQQZFiMVFxCTOZEv3/22u4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bTwCVBN0Yfy+WdSbkEVwVRHwFqPhXr6cIL6lRb5qdKEdmsijXaWp71Rp+AuSJuWAAMidL3RCN3XzBJn4aezBVfiPc7VZ3xdKxi4b0PCUqdxdvdpTfZWZOoENpa3Qk9byztXtzK0DrYuKQC6wCgjB0zFiubAX2IYIyuZYHhzyqCI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=dekO12xW; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=9t0pH4d7; arc=pass smtp.client-ip=85.215.255.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 744F2381E98;
+	Fri, 14 Aug 2026 14:02:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1786716142; cv=none; b=dTUwYHH8WGvHHZJWocGc6oAz4jASwiBmniHBMHwS7CkDEZ0jWRSd874BWt9ZymrnDUltEXP0V0vbLVYF9swnok3D6oejaZ6T5DEfoepUEybimVaOdNf/Wf7DGMoF//a3t1oDFIKYFPEhihWDpmMdo58BNJUqGr8nPV3Eu5PnEWo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1786716142; c=relaxed/simple;
+	bh=67r/AqcycdlDys69xSZ4xb9Ja9P0s0WOwGxcmYtAlW4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NW84525xXoC27XATSWVTXbO2eRKls740+R+Ezv5Gw82qOku0mR+uCGuVKM5JaRchoVNIf4ATeEqbIAXtpBPRo8UG5nrfJs2XeOPVkkiuQLtpDvF6/eDkoUmagQxKIt4VIX6Qa+rkP3DCt22B9Hudnh7/PSuOEATi3QBDzl0MoL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=r5n+KV2X; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=mQBc+/lZ; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="dekO12xW";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="9t0pH4d7"
-ARC-Seal: i=1; a=rsa-sha256; t=1786715855; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=JvkAPr8+gnqAY3e3TkQIFX3/Y+80TJRpyCSNlTJMiMXw3lImY75T1yVdw7+GQNs2Gc
-    7DJRIVmaW/6oTWonrIGzpeYhaXZ4dajsF2VGc3tHfxL5RjDb8adnl5YMpCWb/n06V+d8
-    ZK4KuC6/j7RZRKj2defdUCZYvVqTtDLTK5z6CTpCq9W8Rukf2PpRmOZtMcgD8v4svLMB
-    INmOCVSIn6pWx7SR22TmWqF0Y5puQH6X+CKCJZVu+5uejpfGumBPEnHLIceOStxnbbDe
-    ZpGKyaAgMSKq9yaBz3G72t7+2dyVhqVs/wk5tTYgvNE106/ID8YIxaXCBAMAKKHT7mHG
-    RQmA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1786715855;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=cFE+OBmuV+KjANFVwFc82zAOyA8fBUyjee5TS9Uuotw=;
-    b=cDc/id/CaZYIpZH2okQ99rl7x09p5wmixC8ljPy13kioaQo3qBb/OjhYSX5B6nBu4B
-    mmOpMklcp6NUjZXCAWyaVESA97tFSoBr4fa6LyOnvAiEp6T9k3ffyGbvOrmzt9KdRZeg
-    6lfKIUfN7FogXyb9HEOMB6EfBHgluCmFT8NF6iIbZ0Db2iL3/MCta84hC3mvw+VHtF1u
-    u2/G6OxZDvYxczyGHwqENpSOZVngJXx9rh+vBq7MjduPRcXHmaXuloNgo9hJkaSlE9Q5
-    /XcO1kl0d/rAHFLGGDCIGCElXbZpMR2Jm9xYH/7d/9T9pkDujZU8tNXH5xzSzMrVpWEz
-    w73g==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1786715855;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=cFE+OBmuV+KjANFVwFc82zAOyA8fBUyjee5TS9Uuotw=;
-    b=dekO12xWtCc0NYaZSUce4qsa+jy0gcqkw99svupGfztNkNJ2fqEQkBaE0/lg+Y4PVS
-    zIzBjFpVu5C1TDhtlQlK9OoHnnmezvtlBcdbXcYxCOkBQTnk2uwlNIbcB1Mv/An+hgVx
-    To/w1S095IOjn9kTmQ40bl2WPS6LvTXmzXyPpKbCOyBgtGfhIFET00nkynB8CuE8cnMS
-    NutJTXXI6KJ5gNOp+dR+VJ3rU7OErcxOHm+nZqO1u4KY3rJtf9swpXlo9E73dPA97YyZ
-    /ZhFDPOxc7zc8Xvn/qseP3iwHHPVl/ZalLXmKZG4Ea+XoygZk0aMmpAdRH3rQVhMYrsm
-    JOJg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1786715855;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=cFE+OBmuV+KjANFVwFc82zAOyA8fBUyjee5TS9Uuotw=;
-    b=9t0pH4d79/73TOkjylw/K0/R13FSuyWMQtkGT9lJfshIhTRiX4rZRv6Qyu3+S6Te2C
-    6m/BBZsse5QCf1dQooCQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.2 AUTH)
-    with ESMTPSA id K171b727EDvZ3TC
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Fri, 14 Aug 2026 15:57:35 +0200 (CEST)
-Message-ID: <23ad673f-9622-42c6-afcb-1aeacbe6d733@hartkopp.net>
-Date: Fri, 14 Aug 2026 15:57:35 +0200
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="r5n+KV2X";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="mQBc+/lZ"
+Date: Fri, 14 Aug 2026 16:02:15 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1786716136;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4Bvm8EgqIy6wMJqZSSvNDQXj5/Ed3LjcyKq5hAnk8AA=;
+	b=r5n+KV2XiYnll9YkNCzSmGIWh4K8YLFMUzsyE/Ehy+L0cMXpL59F0aE89e2wEYeFcgAIg7
+	N4jx0xad/8QrJuPIznLbcyRc93SIVS7LfRiMmPDXHnMFp4my1iDvOB6GTCiW76HwkMJqpf
+	wAd8HKIPXftUXaQdo7k35YsQH2nerSt3twLW9P7zOR72e+aUGi0cGg+YWNgrEQoV9Frzbr
+	XydA9PgvmKY2ZHUfdUqE37Da+LpZdpLGUVMLAbarRPWZ0I7ejLaBhVR+m791u+bsW+DXmi
+	9Qn4dHRdp7g+pSfCLi4ejnFmcz794edCqgY1QP2z7G70voY5pM+KOryfC4ZJPw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1786716136;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4Bvm8EgqIy6wMJqZSSvNDQXj5/Ed3LjcyKq5hAnk8AA=;
+	b=mQBc+/lZl7s1j9G4DnAv9OGwsnOYKGdaM+xF7DorWNlZQ/UtdekpIQl4/eszNeKelVYT92
+	Ulbad86DEHq0H/DA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: kees@kernel.org, linux-atm-general@lists.sourceforge.net,
+	linux-can@vger.kernel.org, linux-sctp@vger.kernel.org,
+	netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+	herbert@gondor.apana.org.au, kuniyu@google.com, mkl@pengutronix.de,
+	marcelo.leitner@gmail.com, ncardwell@google.com,
+	socketcan@hartkopp.net, pabeni@redhat.com, courmisch@gmail.com,
+	horms@kernel.org, steffen.klassert@secunet.com,
+	willemdebruijn.kernel@gmail.com, lucien.xin@gmail.com,
+	pmladek@suse.com, thomas.weissschuh@linutronix.de
+Subject: Re: [PATCH net-next v3] net: Replace %pK output with 0
+Message-ID: <20260814140215.jJ71m_Pw@linutronix.de>
+References: <20260812110531.ITPqiY2O@linutronix.de>
+ <20260814015800.2837019-2-kuba@kernel.org>
+ <20260814105812.mwsdgu5m@linutronix.de>
+ <20260814065542.64696672@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [can-next] can: proc: remove pointers from CAN specific proc
- output
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org
-References: <20260814105438.49657-1-socketcan@hartkopp.net>
- <20260814123141.opZ1ZwYC@linutronix.de>
- <7b538342-0914-409c-a679-87a567d4150e@hartkopp.net>
- <20260814135248.OO4H1uIt@linutronix.de>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20260814135248.OO4H1uIt@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260814065542.64696672@kernel.org>
 
-
-
-On 14.08.26 15:52, Sebastian Andrzej Siewior wrote:
-> On 2026-08-14 15:36:03 [+0200], Oliver Hartkopp wrote:
->>>> --- a/Documentation/networking/can.rst
->>>> +++ b/Documentation/networking/can.rst
->>>> @@ -1040,19 +1040,19 @@ As described in :ref:`socketcan-receive-lists` the SocketCAN core uses several f
->>>>    lists to deliver received CAN frames to CAN protocol modules. These
->>>>    receive lists, their filters and the count of filter matches can be
->>>>    checked in the appropriate receive list. All entries contain the
->>>>    device and a protocol module identifier::
->>>> -    foo@bar:~$ cat /proc/net/can/rcvlist_all
->>>> +    foo@bar:~$ cat /proc/net/can/rcvlist_fil
->>>
->>> Is this _fil a typo?
->>
->> No, it's a slightly different example.
-> okay then.
+On 2026-08-14 06:55:42 [-0700], Jakub Kicinski wrote:
+> Not my expertise, TBH, I'd err on the side of caution since these are
+> security/hardening measures. IDK how much this all matters, or if
+> anyone uses !kallsym. 
 > 
->>>> diff --git a/net/can/proc.c b/net/can/proc.c
->>>> index de4d05ae3459..b7858fb66178 100644
->>>> --- a/net/can/proc.c
->>>> +++ b/net/can/proc.c
->>>> @@ -189,30 +189,35 @@ static void can_print_rcvlist(struct seq_file *m, struct hlist_head *rx_list,
->>>>    			      struct net_device *dev)
->>>>    {
->>>>    	struct receiver *r;
->>>>    	hlist_for_each_entry_rcu(r, rx_list, list) {
->>>> -		char *fmt = (r->can_id & CAN_EFF_FLAG)?
->>>> -			"   %-5s  %08x  %08x  %pK  %pK  %8ld  %s\n" :
->>>> -			"   %-5s     %03x    %08x  %pK  %pK  %8ld  %s\n";
->>>> +		char *fmt;
->>>> +#if IS_ENABLED(CONFIG_KALLSYMS)
->>>
->>> Please don't. I fix %ps and then there is no leak. There will be then
->>> the 0 and everything will be fine.
->>>
->>
->> I can wait for your changes before the v2 posting.
->>
->> Btw. do you think "0" is a good return value, when people expect a function
->> name?
->>
->> What about "(unknown)" or something similar?
+> Note that any rework has a solid chance of missing 7.3.
 > 
-> Yeah, that '(unknown)' looks slightly better.
-> 
->>>> +		fmt = (r->can_id & CAN_EFF_FLAG)?
->>>> +			"  %6s  %08x  %08x  %8ld  %016llx  %ps\n" :
->>>> +			"  %6s     %03x    %08x  %8ld  %016llx  %ps\n";
->>>>    		seq_printf(m, fmt, DNAME(dev), r->can_id, r->mask,
->>>> -			   r->func, r->data, atomic_long_read(&r->matches),
->>>> -			   r->ident);
->>>> +			   atomic_long_read(&r->matches), r->ino, r->func);
->>>> +#else
->>>> +		fmt = (r->can_id & CAN_EFF_FLAG)?
->>>> +			"  %6s  %08x  %08x  %8ld  %016llx  (unknown)\n" :
->>>> +			"  %6s     %03x    %08x  %8ld  %016llx  (unknown)\n";
->>>> +		seq_printf(m, fmt, DNAME(dev), r->can_id, r->mask,
->>>> +			   atomic_long_read(&r->matches), r->ino);
->>>> +#endif
->>>>    	}
->>>>    }
->>> …
->>>
->>> So if you do this now, then I probably should remove that hunk from my
->>> patch.
->>
->> IMHO these /proc/net/can changes go far beyond replacing the pointer values
->> with "0".
->>
->> I hope the
->> Suggested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
->> is ok for your attribution?!?
-> 
-> That is fine. I just mean I should drop that hunk and repost to avoid
-> the pointless collision here.
+> It should be most expedient to take the controversial part out and
+> repost. Or we can ask Kees for a recommendation?
 
-Yep. Thanks!
+I dropped the can bits in the meantime since Oliver posted his rework
+already. So I would repost it if it is okay. If you say it will miss
+7.3 anyway then can of course wait until net-next opens again.
 
-
+Sebastian
