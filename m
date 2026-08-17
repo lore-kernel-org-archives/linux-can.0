@@ -1,222 +1,235 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.164])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A058E31F9A6;
-	Sat, 15 Aug 2026 15:54:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.164
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786809281; cv=pass; b=YcxbcX0xlSWaazXZq4spTUVGx4uIBqit3MjTKb2mV4KXJVFSb853FZQ3igJ5Xfcr4GJIOKxDzoO1RmFnAdaCrhr8kMT/pfkW9zMq3ML/Zc+7ntOoLZrj7c/+Ffm0Cy7P/jUpFdsKBBuftY3j1tXdVpYpFfu0pTkN3G+q5uCf0YY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786809281; c=relaxed/simple;
-	bh=9GJ8tebMbhbs/xYEkTi97YFbN65MILp5d2ztt/Z+SoQ=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ALLAvUMmaaVqSUnFvQ56cv13r/Ae+3SBgl7fcGwzItrs2vgY+gM8iYypq6Qkf5jaI0X2cyU8DceGAop3dAQV0jrpRW5QeCDkDVbNpXh+aDBkwCptValL0hmXixdtxCY991jJJQEEvHTHvp+PFsV7aSnXX4hK7bmxG3SwUP6trgc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=pO4XLcAf; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=hLI/MpTj; arc=pass smtp.client-ip=81.169.146.164
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 285C21A683A
+	for <linux-can@vger.kernel.org>; Mon, 17 Aug 2026 01:38:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1786930682; cv=none; b=k1qG7iHneWxGsRDBraASFtoAn0goRF1+lXdy2+junTeHKMxEymc0pU3g0z6akM+HzhyO3+YzWpDSBgb0ZdNZfPeXW7JUI7bNwAi4aK5mwIWgfjNlm7IGHk+5o4H39SaLtllU0yjT8529inWfvmd176hN+tt3em/FEyZ8ccz7dII=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1786930682; c=relaxed/simple;
+	bh=WGZhX3UNcSru063oe0/KPOEzdlRjCev1RZjHtYjB1g8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cjIjt2WzvFknqB0ZU6Nbo3P6nYicpLMUjtHNJCjdU/DREZ7sYUDFlrMZaUYNDigelrg+cTL70fQm0n1OcmcLyLUoBtpeaNXrq/FBg08MQrP7ycFWSDmnyP3ZOaIFgkUGnLzFtQ0WPUsFgoA/qF3SYsG9qrGUOpyMFYkuAgVh+q8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=qkuDeXow; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="pO4XLcAf";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="hLI/MpTj"
-ARC-Seal: i=1; a=rsa-sha256; t=1786809274; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=TDp1XVVFdnfK9POk4POsHjPIp9+rHro20D40mYP5EAc7FhD0CY0zgdS2m2VC1gGIZj
-    hjzSXdUF3HOGF9VElBly6P4RaOcgUbnCCFmQzUKU1rydeE+8a5hBIVxgyPt+FBFdGimO
-    h/2DIyXliWpzswBT6PbO42r/nu/C7BhsDrne09bOvmrWSdVv+QYQl25jkrtLpAsOgiNI
-    b58oRKO4OpmWlXnBKCc4CY0CZN7vUUTwtKpk+VOoTZrKwQGfWYVthyy/r0S12LHnQDOE
-    kYdA6Y+/bmSrVz6X8Rm7sm116qZDFgdrXSLz/ch0gUvK9CCo//nikCP/MP2OnCR+zXcq
-    o4ag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1786809274;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Cc:To:From:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=0iJym6nLHti7SC43dxpp2QmBrc16a5SRi5DRHMoc8cE=;
-    b=T60e4sm5ilCSyqTFauhtMtKUHiig8DsqGaGW3zD2YtNigCncM/06Y9DSvKxFRl4tgE
-    WZKK716/3/P2UyOgtxZqdJzsKj1rCjRX352k0lEHvIn49bAz0eZlhCGG6ato5f1tZR8o
-    8koaNwU00MDVLLdrb0RaPgBf8CHO80PF2t/75a2e2/Ln9H+I3tIr5wzuexznWOdrjIWI
-    rtDEeb3YMsksev3pUOawapyqLjrOe/wl8piYpKnIiZT3+PDhxfNu6Fn7OyDyQNnrUxDg
-    3QVMbMx+Nfr8KPHDYf3FZ1/B+XiUUdfh1g0S4sVYjI5eaxiUt8Od2kLSCmJo9vrpXywR
-    fUPw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1786809274;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:References:Cc:To:From:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=0iJym6nLHti7SC43dxpp2QmBrc16a5SRi5DRHMoc8cE=;
-    b=pO4XLcAfdkve0VR5ISM6wltmxd05FdosRJLcDL8Qd0koFpXf71mF7twYK2JnPmb/rz
-    Y5chiDhoYfRc23JUJG0V928IC6SywqHSQJjd013xgjC0klz9nDPos5lcCRV8V5tY7pPh
-    jFjuoWwO5vTfszScH6v4pBfYSS0snXfOHdlu7dKffy7eJl/9JWR94/6RFZ04eKLmh2qh
-    io90vAMwCilizVSEaIQLPtZv78G9WT1+NeM9R0dzEGHtQ0LuBNsfeTy0sc+Foe4P1Nfq
-    GVXEMOzaSIF6olysFsdfZEw/zYReGkJxjPl+CPHbzTmjx+iHCbnmnsOLrW9OqdAwUqka
-    A9qQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1786809274;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:References:Cc:To:From:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=0iJym6nLHti7SC43dxpp2QmBrc16a5SRi5DRHMoc8cE=;
-    b=hLI/MpTjX4TA74P8p4iNQRledtSQsOIdyxgV1yYNGwX43MwPEd+wwjDmLShCrpSXwC
-    czKm1fPJYGuAsadV39Aw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeFQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6800::989]
-    by smtp.strato.de (RZmta 55.6.2 AUTH)
-    with ESMTPSA id K171b727FFsX6K9
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Sat, 15 Aug 2026 17:54:33 +0200 (CEST)
-Message-ID: <4375eab3-b112-47ad-a499-4467c91b98b8@hartkopp.net>
-Date: Sat, 15 Aug 2026 17:54:28 +0200
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qkuDeXow"
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-38dcbade417so2820959a91.1
+        for <linux-can@vger.kernel.org>; Sun, 16 Aug 2026 18:38:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1786930679; x=1787535479; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=eY8RYhguruvb++TRBB7XQhOx6d1wihTPxhfFylErixw=;
+        b=qkuDeXowmk3gWc3wF44DlHxFGXuuE7FyKsA7tAfDvSwPHlmYvP256iynWaFs5SsGSt
+         QOkVRcqV9y2celUDvb1Cn8aZBj5iQ3MTh/6NM5Dz5z5JMJgptIa6L1z8j44b0aKjeI/l
+         4A4o3fgXRXhkgKzAyJ/G5slBdRBT1wPzQDhy7rNMOzQiLtocQ/MsxjnjWgGpixrMMsLB
+         WeMabSXi4HJtwiVO+YddUd8xaXSLlW2r3iOunGh983/E/xFWJ6IxfPEorVM/19uW9cHB
+         pe8SITuuiQB2pVWabWNmPKg56ZD3XD1NQxJzcCI7AJRadIRMR6FBQNvHNF8/V04jskd1
+         I2SQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1786930679; x=1787535479;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=eY8RYhguruvb++TRBB7XQhOx6d1wihTPxhfFylErixw=;
+        b=gUaYDSZFJC/9yDLnzIpLmrzhhuUzL4L2U2xCi4sJEUB8UQLBfYAvXCA92n+hDpFaUO
+         mVUVJTpcKOIearudAZrTcuYG86h3AEt8mMfrxCp+/Xw8GOD13+2h/5NY6wV2shpSjFqY
+         59XHLNEVbpj+lcvtMx2zUFCUNQAhSW3YwUY3j+YnXTgOBnxuHwR5aBo2A8zBtc6yS/wc
+         K00Zj0LMYCuI7EKsj6y97+OcV8xtL8yYyTCK33zB8yt/4UGf2vhJr52nHo4A2ieDfdk9
+         i+iyWx1cuXRXpagHcECKLxOnjK64X3B+hZgRCR5SAaxz71RJCom+QALd4c6h2nIZcJ4w
+         mP9Q==
+X-Gm-Message-State: AOJu0YxeqJ8i+5+/H5jXIGGTu7j980wu35bjlQSPvOAF+6CZCQVBiebN
+	bNgd1rLp+9d7W/kQAKUC7SlwvmEkPd2/NmpDdz+r5TnUYCbGBw6jRxvg
+X-Gm-Gg: AR+sD10GQkuHBphrC0x4qwejKlTmPmEikM+NYxG6Uz9yppFk1zM3uvwiOR7YscqsUbi
+	DsibLGGrF6QoAjvwiuJXy37k+7dQHiPM1UBdMFgReh7noBhsuoc78N9z/YmYgUX0YXdYVOfKMq9
+	el1MlDcu7l9esO0Gmmr2+hgVhRFFYYDFbiynA1SCkM1lBorn4dNJquXzJZ8atvmm9gnGxLvZQYg
+	AXulC1OaFJA1d0CUDsYCbI3sN2iDc9Rv//Zn/jED6tFCkgW9N/rKrgiEXBArem5cTtOkf88y80N
+	TNYnKiamsI6tWoQ1GVRur/ZCV+yuesgrlpeuA7Ro74y4CBTMUQ70f9HjSmAeay/6irH8mV3KQcm
+	b5dpUx8zUFaCfAUkWA0uRizSdsQDxnUYoydAa60cyWDKvCms63TGF2Q4MknY+n3RUvuGIQs2AHN
+	vCw1AyxcrrHRiA7YvmHAfMUqOLPhYNMV6CHSNoy2HxTy6TubwpKR6VMW3P2jhNcNrW5bykyEjL
+X-Received: by 2002:a17:90b:224a:b0:38f:837e:fc5d with SMTP id 98e67ed59e1d1-3933b786507mr20975985a91.3.1786930679299;
+        Sun, 16 Aug 2026 18:37:59 -0700 (PDT)
+Received: from localhost.localdomain ([120.236.7.85])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3954d3d2adcsm222657a91.17.2026.08.16.18.37.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Aug 2026 18:37:58 -0700 (PDT)
+From: Cheng Liu <chengliu480@gmail.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-can@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Elaine Zhang <zhangqing@rock-chips.com>,
+	Cheng Liu <chengliu480@gmail.com>
+Subject: [PATCH can] can: rockchip: rk3576: fix rtnl_lock deadlock during interface down under bus traffic
+Date: Mon, 17 Aug 2026 09:37:50 +0800
+Message-Id: <20260817013750.1836064-1-chengliu480@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] team: reject CAN and IEEE 802.15.4 devices in
- team_port_add
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-To: jiale yao <19888972804@163.com>, Jiri Pirko <jiri@resnulli.us>,
- Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-References: <20260728151240.89434-1-yaojiale02@163.com>
- <amnESUrOtl0dXaXk@FV6GYCPJ69>
- <4d056e9f.8019.19fadc9deb5.Coremail.19888972804@163.com>
- <23268b84-a1c5-4551-91ba-0a596cff21a1@hartkopp.net>
-Content-Language: en-US
-In-Reply-To: <23268b84-a1c5-4551-91ba-0a596cff21a1@hartkopp.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
+When bringing the CAN interface down (via `ip link set can0 down`) while
+there is heavy incoming CAN traffic or continuous hardware error frames,
+the system hangs and deadlocks. Existing and new networking operations
+(such as `ifconfig`, SSH logins, Socket operations) hang indefinitely
+waiting for `rtnl_lock`.
 
+The deadlock occurs because `rk3576_canfd_close()` calls `napi_disable()`
+before `rk3576_canfd_stop()`. Since hardware interrupts are still
+active, incoming CAN frames and error interrupts continuously trigger
+`napi_schedule()`, preventing `napi_disable()` from seeing the
+`NAPI_STATE_SCHED` bit cleared and causing it to loop infinitely in
+`msleep(1)`. Because `dev_close()` holds the global `rtnl_lock`, the
+entire networking subsystem deadlocks:
 
-On 14.08.26 16:45, Oliver Hartkopp wrote:
-> +CC: linux-can ML
-> 
-> On 29.07.26 14:11, jiale yao wrote:
->> How about adding a helper in include/linux/if_arp.h, similar to 
->> dev_is_mac_header_xmit()? Perhaps
->> something like dev_is_can_or_ieee802154()?
->>
-> 
-> Good idea.
-> 
-> But I would rather suggest some
-> 
-> static inline bool netdev_has_ml_priv(struct net_device *dev)
-> 
-> in
-> 
-> include/linux/netdevice.h
-> 
-> next to
-> 
-> netdev_set_ml_priv() / netdev_get_ml_priv()
-> 
-> Currently only the CAN subsystem properly handles the dev->ml_priv_type 
-> to make sure the correct "user" of the ml_priv pointer:
-> 
-> /* Specifies the type of the struct net_device::ml_priv pointer */
-> enum netdev_ml_priv_type {
->      ML_PRIV_NONE,
->      ML_PRIV_CAN,
-> }
-> 
-> There are some other ethernet adapters of dev->ml_priv beyond 
-> ARPHRD_IEEE802154, and ARPHRD_IEEE802154_MONITOR. Not sure if those 
-> adapters need to be fixed.
-> 
-> But to be sure we don't run into problems with bonding or teaming we 
-> should probably simply check for (dev->ml_priv != NULL) to reject them.
-> No matter which netdev_ml_priv_type is set.
-> 
-> static inline bool netdev_has_ml_priv(struct net_device *dev) {
-> 
->      return (dev->ml_priv != NULL);
-> }
-> 
-> Would you like to provide a patch introducing this helper and directly 
-> use it for bonding/team (with some updated comments, as the problem is 
-> not related to CAN and IEEE 802.15.4 devices but to the use of ml_priv)?
+Call trace:
+  __switch_to+0xdc/0x120
+  __schedule+0x2ac/0x840
+  schedule+0x54/0xe0
+  schedule_hrtimeout_range_clock+0x98/0x134
+  usleep_range_state+0x7c/0xb0
+  napi_disable+0xc0/0x110
+  rk3576_canfd_close+0x44/0xd0
+  __dev_close_many+0xb0/0x14c
+  dev_change_flags+0x28/0x64
+  do_setlink+0x618/0xe2c
+  rtnetlink_rcv_msg+0x2a8/0x380
 
-I've sent my idea of a combined patch fixing either the bonding and the 
-teaming sides by checking the use of ml_priv here:
+Fix this by:
+1. Reordering `rk3576_canfd_close()` to call `rk3576_canfd_stop()` before
+   `napi_disable()`, ensuring interrupts are disabled and controller is
+   in reset mode before waiting for NAPI to complete.
+2. Standardizing `rk3576_canfd_rx_poll()` to respect the NAPI
+   quota/budget and properly complete NAPI polling via
+   `napi_complete_done()`.
+3. Guarding against NULL pointer dereference in `rk3576_canfd_err()` when
+   `alloc_can_err_skb()` fails, and calling `can_bus_off()` upon bus-off.
 
-https://lore.kernel.org/netdev/20260815153938.187073-1-socketcan@hartkopp.net/
+Signed-off-by: Cheng Liu <chengliu480@gmail.com>
+---
+ drivers/net/can/rockchip/rk3576_canfd.c | 61 +++++++++++++------------
+ 1 file changed, 32 insertions(+), 29 deletions(-)
 
-Many thanks and best regards,
-Oliver
-
-> 
-> 
->>
->> At 2026-07-29 17:15:06, "Jiri Pirko" <jiri@resnulli.us> wrote:
->>> Tue, Jul 28, 2026 at 05:12:40PM +0200, yaojiale02@163.com wrote:
->>>> Enslaving a CAN or IEEE 802.15.4 device (e.g. vxcan, wpan0) to a
->>>> team master triggers a NULL pointer dereference because these
->>>> device types use different Layer 2 architectures from Ethernet and
->>>> the team driver never initializes their private mid-layer data
->>>> structures.
->>>>
->>>> Reject ARPHRD_CAN, ARPHRD_IEEE802154, and ARPHRD_IEEE802154_MONITOR
->>>> devices in team_port_add(), mirroring the existing CAN check already
->>>> present in the bonding driver since commit 8ba68464e478 ("bonding:
->>>> refuse to enslave CAN devices").
->>>
->>> Can we perhaps have a unified helper for the check?
->>>
->>>
->>>>
->>>> Link: https://lore.kernel.org/all/b58d98e0-8fe3-4e4e-b8a5- 
->>>> c1c7e647ccca@hartkopp.net/
->>>> Fixes: 1d76efe1577b ("team: add support for non-ethernet devices")
->>>> Assisted-by: Claude:deepseek-v4-pro
->>>
->>> Looks your ai gone a bit wild here...
->>>
->>>
->>>> Signed-off-by: Jiale Yao <yaojiale02@163.com>
->>>> ---
->>>> V1 -> V2: Extended check to also reject ARPHRD_IEEE802154 and
->>>>   ARPHRD_IEEE802154_MONITOR devices per review feedback
->>>> ---
->>>> drivers/net/team/team_core.c | 11 +++++++++++
->>>> 1 file changed, 11 insertions(+)
->>>>
->>>> diff --git a/drivers/net/team/team_core.c b/drivers/net/team/ 
->>>> team_core.c
->>>> index feaa75fbf8fc..d8c46105fc8b 100644
->>>> --- a/drivers/net/team/team_core.c
->>>> +++ b/drivers/net/team/team_core.c
->>>> @@ -1224,6 +1224,17 @@ static int team_port_add(struct team *team, 
->>>> struct net_device *port_dev,
->>>>         return -EINVAL;
->>>>     }
->>>>
->>>> +        if (port_dev->type == ARPHRD_CAN ||
->>>> +            port_dev->type == ARPHRD_IEEE802154 ||
->>>> +            port_dev->type == ARPHRD_IEEE802154_MONITOR) {
->>>> +            NL_SET_ERR_MSG(extack,
->>>> +                       "CAN and IEEE 802.15.4 devices can't be 
->>>> added as a team port");
->>>> +            netdev_err(dev, "Device %s is CAN or IEEE 802.15.4. 
->>>> These device types can't be added as a team port\n",
->>>> +                   portname);
->>>> +            return -EINVAL;
->>>> +        }
->>>> +    }
->>>> +
->>>>     if (netif_is_team_port(port_dev)) {
->>>>         NL_SET_ERR_MSG(extack, "Device is already a port of a team 
->>>> device");
->>>>         netdev_err(dev, "Device %s is already a port "
->>>> -- 
->>>> 2.34.1
->>>>
-> 
+diff --git a/drivers/net/can/rockchip/rk3576_canfd.c b/drivers/net/can/rockchip/rk3576_canfd.c
+index 2c0d7f056..d0f581bce 100644
+--- a/drivers/net/can/rockchip/rk3576_canfd.c
++++ b/drivers/net/can/rockchip/rk3576_canfd.c
+@@ -859,31 +859,28 @@ static int rk3576_canfd_rx_poll(struct napi_struct *napi, int quota)
+ {
+ 	struct net_device *ndev = napi->dev;
+ 	struct rk3576_canfd *rcan = netdev_priv(ndev);
+-	int work_done = 0, cnt = 0;
++	int work_done = 0;
++	u32 frames_avail;
+ 
+ 	if (rcan->use_dma) {
+-		while (work_done < rcan->quota)
++		while (work_done < rcan->quota && work_done < quota)
+ 			work_done += rk3576_canfd_rx(ndev, work_done);
+ 
+-		if (work_done <= rcan->rx_fifo_depth) {
+-			napi_complete_done(napi, work_done);
+-			rk3576_canfd_write(rcan, CANFD_INT_MASK, INT_ENABLE);
++		if (work_done < quota) {
++			if (napi_complete_done(napi, work_done))
++				rk3576_canfd_write(rcan, CANFD_INT_MASK, INT_ENABLE);
+ 		}
+ 	} else {
+-		quota = (rk3576_canfd_read(rcan, CANFD_STR_STATE) & rcan->rx_fifo_mask) >>
+-			rcan->rx_fifo_shift;
+-		quota = quota / rcan->rx_max_data;
+-		cnt = (rk3576_canfd_read(rcan, CANFD_STR_STATE) & INTM_CNT_MASK) >> INTM_CNT_SHIFT;
+-		if (quota != cnt)
+-			quota = ((rk3576_canfd_read(rcan, CANFD_STR_STATE) & rcan->rx_fifo_mask) >>
+-				rcan->rx_fifo_shift) / rcan->rx_max_data;
+-
+-		while (work_done < quota)
++		frames_avail = (rk3576_canfd_read(rcan, CANFD_STR_STATE) & rcan->rx_fifo_mask) >>
++			       rcan->rx_fifo_shift;
++		frames_avail = frames_avail / rcan->rx_max_data;
++
++		while (work_done < frames_avail && work_done < quota)
+ 			work_done += rk3576_canfd_rx(ndev, CANFD_RXFRD);
+ 
+-		if (work_done <= rcan->rx_fifo_depth) {
+-			napi_complete_done(napi, work_done);
+-			rk3576_canfd_write(rcan, CANFD_INT_MASK, INT_ENABLE);
++		if (work_done < quota) {
++			if (napi_complete_done(napi, work_done))
++				rk3576_canfd_write(rcan, CANFD_INT_MASK, INT_ENABLE);
+ 		}
+ 	}
+ 	return work_done;
+@@ -926,7 +923,7 @@ static int rk3576_canfd_err(struct net_device *ndev, u32 isr)
+ {
+ 	struct rk3576_canfd *rcan = netdev_priv(ndev);
+ 	struct net_device_stats *stats = &ndev->stats;
+-	struct can_frame *cf;
++	struct can_frame *cf = NULL;
+ 	struct sk_buff *skb;
+ 	unsigned int rxerr, txerr;
+ 	u32 sta_reg;
+@@ -945,17 +942,21 @@ static int rk3576_canfd_err(struct net_device *ndev, u32 isr)
+ 	if (isr & BUS_OFF_INT) {
+ 		rcan->can.state = CAN_STATE_BUS_OFF;
+ 		rcan->can.can_stats.bus_off++;
+-		cf->can_id |= CAN_ERR_BUSOFF;
++		can_bus_off(ndev);
++		if (skb)
++			cf->can_id |= CAN_ERR_BUSOFF;
+ 	} else if (isr & PASSIVE_ERR_INT) {
+ 		rcan->can.can_stats.error_passive++;
+ 		rcan->can.state = CAN_STATE_ERROR_PASSIVE;
+ 		/* error passive state */
+-		cf->can_id |= CAN_ERR_CRTL;
+-		cf->data[1] = (txerr > rxerr) ?
+-					CAN_ERR_CRTL_TX_WARNING :
+-					CAN_ERR_CRTL_RX_WARNING;
+-		cf->data[6] = txerr;
+-		cf->data[7] = rxerr;
++		if (skb) {
++			cf->can_id |= CAN_ERR_CRTL;
++			cf->data[1] = (txerr > rxerr) ?
++						CAN_ERR_CRTL_TX_WARNING :
++						CAN_ERR_CRTL_RX_WARNING;
++			cf->data[6] = txerr;
++			cf->data[7] = rxerr;
++		}
+ 	}
+ 	if (sta_reg & ERR_WARNING_STATE) {
+ 		rcan->can.can_stats.error_warning++;
+@@ -984,9 +985,11 @@ static int rk3576_canfd_err(struct net_device *ndev, u32 isr)
+ 		can_free_echo_skb(ndev, 0, NULL);
+ 		netif_start_queue(ndev);
+ 	}
+-	stats->rx_packets++;
+-	stats->rx_bytes += cf->can_dlc;
+-	netif_rx(skb);
++	if (skb) {
++		stats->rx_packets++;
++		stats->rx_bytes += cf->can_dlc;
++		netif_rx(skb);
++	}
+ 
+ 	return 0;
+ }
+@@ -1070,8 +1073,8 @@ static int rk3576_canfd_close(struct net_device *ndev)
+ 	struct rk3576_canfd *rcan = netdev_priv(ndev);
+ 
+ 	netif_stop_queue(ndev);
+-	napi_disable(&rcan->napi);
+ 	rk3576_canfd_stop(ndev);
++	napi_disable(&rcan->napi);
+ 	close_candev(ndev);
+ 	pm_runtime_put(rcan->dev);
+ 
+-- 
+2.34.1
 
