@@ -1,60 +1,62 @@
 Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 285C21A683A
-	for <linux-can@vger.kernel.org>; Mon, 17 Aug 2026 01:38:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 388A727CCE0
+	for <linux-can@vger.kernel.org>; Mon, 17 Aug 2026 02:31:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786930682; cv=none; b=k1qG7iHneWxGsRDBraASFtoAn0goRF1+lXdy2+junTeHKMxEymc0pU3g0z6akM+HzhyO3+YzWpDSBgb0ZdNZfPeXW7JUI7bNwAi4aK5mwIWgfjNlm7IGHk+5o4H39SaLtllU0yjT8529inWfvmd176hN+tt3em/FEyZ8ccz7dII=
+	t=1786933879; cv=none; b=CLd+nJ0uA6JR4knzZqKQZHiizbPikuftZ1tDnATSfAEKcP6TtmnKKTTX3BA7K9L9fEYHM/J9NZKiv70NgBEm3QJJAumaJ5rHnI2jYGAmqAgMQwI7Rp7+N9rROL87nVWV2mq34072ybLmqtZjvEOYLorJqw3bZzWxsLp4ySJo8Nw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786930682; c=relaxed/simple;
-	bh=WGZhX3UNcSru063oe0/KPOEzdlRjCev1RZjHtYjB1g8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cjIjt2WzvFknqB0ZU6Nbo3P6nYicpLMUjtHNJCjdU/DREZ7sYUDFlrMZaUYNDigelrg+cTL70fQm0n1OcmcLyLUoBtpeaNXrq/FBg08MQrP7ycFWSDmnyP3ZOaIFgkUGnLzFtQ0WPUsFgoA/qF3SYsG9qrGUOpyMFYkuAgVh+q8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=qkuDeXow; arc=none smtp.client-ip=209.85.216.42
+	s=arc-20240116; t=1786933879; c=relaxed/simple;
+	bh=RIdT78GVIOU79dvwJtmny4FuRS/G6OQEjs1Q0z+8uD8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Vfx7PXloGpsXfXz4G1znZvEW6K/gr7de/u7AHiuMNzCAdGlVZyZVDjEdpnP/go4YVSgU4/ETarlEYK8xCPUgymBGJ7oWjtwFJ/NmtUIVqnhrVcm3HiKcns3Lz846U1yzvMfjeSUiqY48GIVkez+Iqc3FOY/weYViHzQ4B2xi4I0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ajUo7GjO; arc=none smtp.client-ip=209.85.216.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qkuDeXow"
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-38dcbade417so2820959a91.1
-        for <linux-can@vger.kernel.org>; Sun, 16 Aug 2026 18:38:00 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ajUo7GjO"
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-38e42560ebcso2300741a91.1
+        for <linux-can@vger.kernel.org>; Sun, 16 Aug 2026 19:31:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1786930679; x=1787535479; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=eY8RYhguruvb++TRBB7XQhOx6d1wihTPxhfFylErixw=;
-        b=qkuDeXowmk3gWc3wF44DlHxFGXuuE7FyKsA7tAfDvSwPHlmYvP256iynWaFs5SsGSt
-         QOkVRcqV9y2celUDvb1Cn8aZBj5iQ3MTh/6NM5Dz5z5JMJgptIa6L1z8j44b0aKjeI/l
-         4A4o3fgXRXhkgKzAyJ/G5slBdRBT1wPzQDhy7rNMOzQiLtocQ/MsxjnjWgGpixrMMsLB
-         WeMabSXi4HJtwiVO+YddUd8xaXSLlW2r3iOunGh983/E/xFWJ6IxfPEorVM/19uW9cHB
-         pe8SITuuiQB2pVWabWNmPKg56ZD3XD1NQxJzcCI7AJRadIRMR6FBQNvHNF8/V04jskd1
-         I2SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786930679; x=1787535479;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20251104; t=1786933877; x=1787538677; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=eY8RYhguruvb++TRBB7XQhOx6d1wihTPxhfFylErixw=;
-        b=gUaYDSZFJC/9yDLnzIpLmrzhhuUzL4L2U2xCi4sJEUB8UQLBfYAvXCA92n+hDpFaUO
-         mVUVJTpcKOIearudAZrTcuYG86h3AEt8mMfrxCp+/Xw8GOD13+2h/5NY6wV2shpSjFqY
-         59XHLNEVbpj+lcvtMx2zUFCUNQAhSW3YwUY3j+YnXTgOBnxuHwR5aBo2A8zBtc6yS/wc
-         K00Zj0LMYCuI7EKsj6y97+OcV8xtL8yYyTCK33zB8yt/4UGf2vhJr52nHo4A2ieDfdk9
-         i+iyWx1cuXRXpagHcECKLxOnjK64X3B+hZgRCR5SAaxz71RJCom+QALd4c6h2nIZcJ4w
-         mP9Q==
-X-Gm-Message-State: AOJu0YxeqJ8i+5+/H5jXIGGTu7j980wu35bjlQSPvOAF+6CZCQVBiebN
-	bNgd1rLp+9d7W/kQAKUC7SlwvmEkPd2/NmpDdz+r5TnUYCbGBw6jRxvg
-X-Gm-Gg: AR+sD10GQkuHBphrC0x4qwejKlTmPmEikM+NYxG6Uz9yppFk1zM3uvwiOR7YscqsUbi
-	DsibLGGrF6QoAjvwiuJXy37k+7dQHiPM1UBdMFgReh7noBhsuoc78N9z/YmYgUX0YXdYVOfKMq9
-	el1MlDcu7l9esO0Gmmr2+hgVhRFFYYDFbiynA1SCkM1lBorn4dNJquXzJZ8atvmm9gnGxLvZQYg
-	AXulC1OaFJA1d0CUDsYCbI3sN2iDc9Rv//Zn/jED6tFCkgW9N/rKrgiEXBArem5cTtOkf88y80N
-	TNYnKiamsI6tWoQ1GVRur/ZCV+yuesgrlpeuA7Ro74y4CBTMUQ70f9HjSmAeay/6irH8mV3KQcm
-	b5dpUx8zUFaCfAUkWA0uRizSdsQDxnUYoydAa60cyWDKvCms63TGF2Q4MknY+n3RUvuGIQs2AHN
-	vCw1AyxcrrHRiA7YvmHAfMUqOLPhYNMV6CHSNoy2HxTy6TubwpKR6VMW3P2jhNcNrW5bykyEjL
-X-Received: by 2002:a17:90b:224a:b0:38f:837e:fc5d with SMTP id 98e67ed59e1d1-3933b786507mr20975985a91.3.1786930679299;
-        Sun, 16 Aug 2026 18:37:59 -0700 (PDT)
+        bh=r5/OtHgevkIAK5SI9bRivZoT+Oh1LU2NNLDc67pJhOs=;
+        b=ajUo7GjOvOZ1qLkEoFucBCOlTSFPEndsQsry9GpVZW/QutTJmD9iCpeLvcVMSJEzED
+         z3+h2RH+QpJCAppya786mVZD7PKJQaOhKNXtfPDUyjyg3BUJJkwK8kBmqv50FnBfiTVQ
+         WTCkMEO/S0mRLmTagFPM5Vu2DhsIRQi9g7OlEPllJshpvhQntQ+po9o1s9zbRaSmeVI6
+         6zBFpHZwLVK9GZgaGVuZOrbT2bb9y1dUqvP3tLUSJ6xx65malB7gOFbNh30JzHvcyHe/
+         TLZb+b+tBqhbZJopAvqraRo1P8V+PTTwm/xwdgCm/FfRjGE0+SGLpeWso/0CBorUuO5h
+         z2Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1786933877; x=1787538677;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=r5/OtHgevkIAK5SI9bRivZoT+Oh1LU2NNLDc67pJhOs=;
+        b=OXesxyz2Zgzx9hb8QW+XxpIA6ZXe6gWD7Z6HHWkmLdOLYenDDUENxq9rgfrBiZ7pi7
+         28GlGAp5xh2d0R/hQndyHJz86ClYeYqTQa9MOXCZl+y7MmT+vxo4bgHEigXrnd6wBX6C
+         49PktPLbLyhFdVlxY2ES9JmyeHA2hA8KVF2JO/XUcO05WzOXgQwu5Sw34NTniw5/s0wh
+         L/vQcD5Zn4UpE2v1+qDfjkAdvW28aIRYyOewBAmwS0qsnWytJ77gU90YDElXU0s1V+00
+         pxHzcoOOklBBSKjN/2XNwYL1YxSFv/9KLmCbTh8JsrNkIdB3e+vnhWofLvJN2WrbScoS
+         nSFw==
+X-Gm-Message-State: AOJu0Yy3bDMOZGSBN7+Fe7oiBZPHuh62PMwf8ipSZKb5XDj03S8nlpAi
+	gkwvnKY/y6PPuM7Ngx2KWX2qP05byZyr1tQzNVzz0z/5m6f4vYPjcttt
+X-Gm-Gg: AR+sD13P58/cY4ykaahiyGmKWFcfiKdhA347WQ65YDrzOSKfJYPeXZ/tWFwUCAiD8Zf
+	j1iirj7nwNDRcp0jxjMQCC+0BAdjpYBhrRiBWs/RCJv3ktzqfzFcFE3WtRG9rzimJ8Gkq1msPHt
+	qneBAJbdVlcBOKi8+P3bJpVFzwLFwRze5BNPXXh3h41kLFAcj884g+/WIVnn6S+uRuFyqbZyZcO
+	7ZfSsJap1qzdhuDMfz5F5Q7z1UhNbcJ6Y49fYiO4KYWC0etTGAkGA/IhWtSgqI8NWMVl174w2Wp
+	Ir/9Hzrhya6UuJ41wMiv3OSfX7al3fvhany8i+hPhSUT/9LSSdY0m/v6ca24TEEhboAzEbrX2hf
+	6HNP0iF1YH/slmU70DzA/P6KCXroPuYANwSUzdv+ilqmjflVngld8wgi1bD+zxCv17vom2dsQGd
+	+LRaRQXMOnFPhd9pNTy0Kp4AUOPKW+9FyQJOuPCc6KYjjz6QdZspxPYeyR9ot5ZxDdayrnqskm
+X-Received: by 2002:a17:90b:5606:b0:38e:c232:9d3f with SMTP id 98e67ed59e1d1-3933b81d0aemr21565647a91.5.1786933877299;
+        Sun, 16 Aug 2026 19:31:17 -0700 (PDT)
 Received: from localhost.localdomain ([120.236.7.85])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3954d3d2adcsm222657a91.17.2026.08.16.18.37.56
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39531ff679fsm2916875a91.14.2026.08.16.19.31.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Aug 2026 18:37:58 -0700 (PDT)
+        Sun, 16 Aug 2026 19:31:16 -0700 (PDT)
 From: Cheng Liu <chengliu480@gmail.com>
 To: Marc Kleine-Budde <mkl@pengutronix.de>,
 	Wolfgang Grandegger <wg@grandegger.com>
@@ -63,10 +65,12 @@ Cc: linux-can@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Elaine Zhang <zhangqing@rock-chips.com>,
 	Cheng Liu <chengliu480@gmail.com>
-Subject: [PATCH can] can: rockchip: rk3576: fix rtnl_lock deadlock during interface down under bus traffic
-Date: Mon, 17 Aug 2026 09:37:50 +0800
-Message-Id: <20260817013750.1836064-1-chengliu480@gmail.com>
+Subject: Re: [PATCH can] can: rockchip: rk3576: fix rtnl_lock deadlock during interface down under bus traffic
+Date: Mon, 17 Aug 2026 10:31:08 +0800
+Message-Id: <20260817023108.1854647-1-chengliu480@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20260817013750.1836064-1-chengliu480@gmail.com>
+References: <20260817013750.1836064-1-chengliu480@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -75,161 +79,207 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When bringing the CAN interface down (via `ip link set can0 down`) while
-there is heavy incoming CAN traffic or continuous hardware error frames,
-the system hangs and deadlocks. Existing and new networking operations
-(such as `ifconfig`, SSH logins, Socket operations) hang indefinitely
-waiting for `rtnl_lock`.
+Hi Marc, Elaine, and linux-can community,
 
-The deadlock occurs because `rk3576_canfd_close()` calls `napi_disable()`
-before `rk3576_canfd_stop()`. Since hardware interrupts are still
-active, incoming CAN frames and error interrupts continuously trigger
-`napi_schedule()`, preventing `napi_disable()` from seeing the
-`NAPI_STATE_SCHED` bit cleared and causing it to loop infinitely in
-`msleep(1)`. Because `dev_close()` holds the global `rtnl_lock`, the
-entire networking subsystem deadlocks:
+To help anyone easily reproduce and verify this deadlock scenario on
+RV1126B / RK3576, below is the full standalone Python SocketCAN test
+script used to trigger the race condition:
 
-Call trace:
-  __switch_to+0xdc/0x120
-  __schedule+0x2ac/0x840
-  schedule+0x54/0xe0
-  schedule_hrtimeout_range_clock+0x98/0x134
-  usleep_range_state+0x7c/0xb0
-  napi_disable+0xc0/0x110
-  rk3576_canfd_close+0x44/0xd0
-  __dev_close_many+0xb0/0x14c
-  dev_change_flags+0x28/0x64
-  do_setlink+0x618/0xe2c
-  rtnetlink_rcv_msg+0x2a8/0x380
+```python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+reproduce_can_deadlock.py
 
-Fix this by:
-1. Reordering `rk3576_canfd_close()` to call `rk3576_canfd_stop()` before
-   `napi_disable()`, ensuring interrupts are disabled and controller is
-   in reset mode before waiting for NAPI to complete.
-2. Standardizing `rk3576_canfd_rx_poll()` to respect the NAPI
-   quota/budget and properly complete NAPI polling via
-   `napi_complete_done()`.
-3. Guarding against NULL pointer dereference in `rk3576_canfd_err()` when
-   `alloc_can_err_skb()` fails, and calling `can_bus_off()` upon bus-off.
+Constructs a concurrent kernel-level deadlock scenario:
+1. Blocking sender threads: deep sleep wait in can_send() waiting for TX FIFO.
+2. Error frame receiver: setsockopt(CAN_RAW_ERR_FILTER) to receive all error frames.
+3. Socket churn: rapid open/bind/send/close.
+4. Down/up interrupt loop: calls `ip link set can0 down` during active traffic.
+"""
 
-Signed-off-by: Cheng Liu <chengliu480@gmail.com>
----
- drivers/net/can/rockchip/rk3576_canfd.c | 61 +++++++++++++------------
- 1 file changed, 32 insertions(+), 29 deletions(-)
+import os
+import sys
+import time
+import socket
+import struct
+import threading
+import subprocess
 
-diff --git a/drivers/net/can/rockchip/rk3576_canfd.c b/drivers/net/can/rockchip/rk3576_canfd.c
-index 2c0d7f056..d0f581bce 100644
---- a/drivers/net/can/rockchip/rk3576_canfd.c
-+++ b/drivers/net/can/rockchip/rk3576_canfd.c
-@@ -859,31 +859,28 @@ static int rk3576_canfd_rx_poll(struct napi_struct *napi, int quota)
- {
- 	struct net_device *ndev = napi->dev;
- 	struct rk3576_canfd *rcan = netdev_priv(ndev);
--	int work_done = 0, cnt = 0;
-+	int work_done = 0;
-+	u32 frames_avail;
- 
- 	if (rcan->use_dma) {
--		while (work_done < rcan->quota)
-+		while (work_done < rcan->quota && work_done < quota)
- 			work_done += rk3576_canfd_rx(ndev, work_done);
- 
--		if (work_done <= rcan->rx_fifo_depth) {
--			napi_complete_done(napi, work_done);
--			rk3576_canfd_write(rcan, CANFD_INT_MASK, INT_ENABLE);
-+		if (work_done < quota) {
-+			if (napi_complete_done(napi, work_done))
-+				rk3576_canfd_write(rcan, CANFD_INT_MASK, INT_ENABLE);
- 		}
- 	} else {
--		quota = (rk3576_canfd_read(rcan, CANFD_STR_STATE) & rcan->rx_fifo_mask) >>
--			rcan->rx_fifo_shift;
--		quota = quota / rcan->rx_max_data;
--		cnt = (rk3576_canfd_read(rcan, CANFD_STR_STATE) & INTM_CNT_MASK) >> INTM_CNT_SHIFT;
--		if (quota != cnt)
--			quota = ((rk3576_canfd_read(rcan, CANFD_STR_STATE) & rcan->rx_fifo_mask) >>
--				rcan->rx_fifo_shift) / rcan->rx_max_data;
--
--		while (work_done < quota)
-+		frames_avail = (rk3576_canfd_read(rcan, CANFD_STR_STATE) & rcan->rx_fifo_mask) >>
-+			       rcan->rx_fifo_shift;
-+		frames_avail = frames_avail / rcan->rx_max_data;
-+
-+		while (work_done < frames_avail && work_done < quota)
- 			work_done += rk3576_canfd_rx(ndev, CANFD_RXFRD);
- 
--		if (work_done <= rcan->rx_fifo_depth) {
--			napi_complete_done(napi, work_done);
--			rk3576_canfd_write(rcan, CANFD_INT_MASK, INT_ENABLE);
-+		if (work_done < quota) {
-+			if (napi_complete_done(napi, work_done))
-+				rk3576_canfd_write(rcan, CANFD_INT_MASK, INT_ENABLE);
- 		}
- 	}
- 	return work_done;
-@@ -926,7 +923,7 @@ static int rk3576_canfd_err(struct net_device *ndev, u32 isr)
- {
- 	struct rk3576_canfd *rcan = netdev_priv(ndev);
- 	struct net_device_stats *stats = &ndev->stats;
--	struct can_frame *cf;
-+	struct can_frame *cf = NULL;
- 	struct sk_buff *skb;
- 	unsigned int rxerr, txerr;
- 	u32 sta_reg;
-@@ -945,17 +942,21 @@ static int rk3576_canfd_err(struct net_device *ndev, u32 isr)
- 	if (isr & BUS_OFF_INT) {
- 		rcan->can.state = CAN_STATE_BUS_OFF;
- 		rcan->can.can_stats.bus_off++;
--		cf->can_id |= CAN_ERR_BUSOFF;
-+		can_bus_off(ndev);
-+		if (skb)
-+			cf->can_id |= CAN_ERR_BUSOFF;
- 	} else if (isr & PASSIVE_ERR_INT) {
- 		rcan->can.can_stats.error_passive++;
- 		rcan->can.state = CAN_STATE_ERROR_PASSIVE;
- 		/* error passive state */
--		cf->can_id |= CAN_ERR_CRTL;
--		cf->data[1] = (txerr > rxerr) ?
--					CAN_ERR_CRTL_TX_WARNING :
--					CAN_ERR_CRTL_RX_WARNING;
--		cf->data[6] = txerr;
--		cf->data[7] = rxerr;
-+		if (skb) {
-+			cf->can_id |= CAN_ERR_CRTL;
-+			cf->data[1] = (txerr > rxerr) ?
-+						CAN_ERR_CRTL_TX_WARNING :
-+						CAN_ERR_CRTL_RX_WARNING;
-+			cf->data[6] = txerr;
-+			cf->data[7] = rxerr;
-+		}
- 	}
- 	if (sta_reg & ERR_WARNING_STATE) {
- 		rcan->can.can_stats.error_warning++;
-@@ -984,9 +985,11 @@ static int rk3576_canfd_err(struct net_device *ndev, u32 isr)
- 		can_free_echo_skb(ndev, 0, NULL);
- 		netif_start_queue(ndev);
- 	}
--	stats->rx_packets++;
--	stats->rx_bytes += cf->can_dlc;
--	netif_rx(skb);
-+	if (skb) {
-+		stats->rx_packets++;
-+		stats->rx_bytes += cf->can_dlc;
-+		netif_rx(skb);
-+	}
- 
- 	return 0;
- }
-@@ -1070,8 +1073,8 @@ static int rk3576_canfd_close(struct net_device *ndev)
- 	struct rk3576_canfd *rcan = netdev_priv(ndev);
- 
- 	netif_stop_queue(ndev);
--	napi_disable(&rcan->napi);
- 	rk3576_canfd_stop(ndev);
-+	napi_disable(&rcan->napi);
- 	close_candev(ndev);
- 	pm_runtime_put(rcan->dev);
- 
--- 
-2.34.1
+AF_CAN = getattr(socket, "AF_CAN", 29)
+PF_CAN = AF_CAN
+CAN_RAW = getattr(socket, "CAN_RAW", 1)
+SOL_CAN_BASE = 100
+CAN_RAW_FILTER = 1
+CAN_RAW_ERR_FILTER = 2
+CAN_RAW_LOOPBACK = 3
+CAN_RAW_RECV_OWN_MSGS = 4
+CAN_RAW_FD_FRAMES = 5
 
+CAN_ERR_MASK = 0x1FFFFFFF
+
+INTERFACE = "can0"
+STOP_EVENT = threading.Event()
+DEADLOCK_DETECTED = threading.Event()
+
+def build_can_frame(can_id, data):
+    can_dlc = len(data)
+    data = data.ljust(8, b'\x00')
+    return struct.pack("=IB3x8s", can_id, can_dlc, data)
+
+def build_canfd_frame(can_id, data, flags=0):
+    length = len(data)
+    data = data.ljust(64, b'\x00')
+    return struct.pack("=IBB2x64s", can_id, length, flags, data)
+
+def sender_thread(thread_id, is_fd=False):
+    sock = socket.socket(PF_CAN, socket.SOCK_RAW, CAN_RAW)
+    try:
+        if is_fd:
+            try:
+                sock.setsockopt(SOL_CAN_BASE, CAN_RAW_FD_FRAMES, 1)
+            except Exception:
+                pass
+        sock.bind((INTERFACE,))
+        sock.setblocking(True)
+    except Exception:
+        sock.close()
+        return
+
+    frame_data = b'\x11\x22\x33\x44\x55\x66\x77\x88'
+    can_id = 0x100 + thread_id
+    frame = build_can_frame(can_id, frame_data)
+
+    while not STOP_EVENT.is_set():
+        try:
+            sock.send(frame)
+        except socket.error:
+            time.sleep(0.001)
+        except Exception:
+            break
+    sock.close()
+
+def receiver_thread():
+    try:
+        sock = socket.socket(PF_CAN, socket.SOCK_RAW, CAN_RAW)
+        sock.setsockopt(SOL_CAN_BASE, CAN_RAW_ERR_FILTER, CAN_ERR_MASK)
+        sock.bind((INTERFACE,))
+        sock.settimeout(0.1)
+    except Exception:
+        return
+
+    while not STOP_EVENT.is_set():
+        try:
+            _ = sock.recv(72)
+        except socket.timeout:
+            continue
+        except Exception:
+            time.sleep(0.01)
+    sock.close()
+
+def socket_churn_thread():
+    while not STOP_EVENT.is_set():
+        try:
+            s = socket.socket(PF_CAN, socket.SOCK_RAW, CAN_RAW)
+            s.bind((INTERFACE,))
+            s.setblocking(False)
+            frame = build_can_frame(0x200, b'\xaa\xbb\xcc\xdd')
+            try:
+                s.send(frame)
+            except Exception:
+                pass
+            s.close()
+        except Exception:
+            pass
+        time.sleep(0.002)
+
+def main():
+    if os.geteuid() != 0:
+        print("[-] Please run as root: sudo python3 reproduce_can_deadlock.py")
+        sys.exit(1)
+
+    print("=" * 65)
+    print("Starting SocketCAN deadlock reproduction tool")
+    print("=" * 65)
+
+    subprocess.run(["ip", "link", "set", INTERFACE, "down"], stderr=subprocess.DEVNULL)
+    time.sleep(0.3)
+    subprocess.run(["ip", "link", "set", INTERFACE, "txqueuelen", "1"], check=False)
+    subprocess.run([
+        "ip", "link", "set", INTERFACE, "up", "type", "can",
+        "bitrate", "500000", "dbitrate", "500000", "fd", "on", "restart-ms", "100"
+    ], check=False)
+
+    threads = []
+    for i in range(3):
+        t = threading.Thread(target=sender_thread, args=(i, i % 2 == 0), daemon=True)
+        t.start()
+        threads.append(t)
+
+    t_recv = threading.Thread(target=receiver_thread, daemon=True)
+    t_recv.start()
+    threads.append(t_recv)
+
+    t_churn = threading.Thread(target=socket_churn_thread, daemon=True)
+    t_churn.start()
+    threads.append(t_churn)
+
+    loop_count = 0
+    try:
+        while True:
+            loop_count += 1
+            now_str = time.strftime("%H:%M:%S")
+            sys.stdout.write(f"[{now_str}] Loop {loop_count:5d}: Bringing can0 down... ")
+            sys.stdout.flush()
+
+            t0 = time.time()
+            p_down = subprocess.Popen(["ip", "link", "set", INTERFACE, "down"],
+                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            try:
+                p_down.communicate(timeout=4.0)
+                down_cost = time.time() - t0
+                sys.stdout.write(f"Done ({down_cost*1000:.1f}ms) -> Bringing can0 up... ")
+                sys.stdout.flush()
+            except subprocess.TimeoutExpired:
+                print("\n" + "!" * 65)
+                print("Captured deadlock! `ip link set can0 down` hung > 4s!")
+                print("Kernel rtnl_lock is deadlocked!")
+                print("!" * 65)
+                DEADLOCK_DETECTED.set()
+                break
+
+            t1 = time.time()
+            p_up = subprocess.Popen(["ip", "link", "set", INTERFACE, "up"],
+                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            try:
+                p_up.communicate(timeout=4.0)
+                up_cost = time.time() - t1
+                sys.stdout.write(f"Done ({up_cost*1000:.1f}ms)\n")
+                sys.stdout.flush()
+            except subprocess.TimeoutExpired:
+                print("\n" + "!" * 65)
+                print("Captured deadlock! `ip link set can0 up` hung > 4s!")
+                print("!" * 65)
+                DEADLOCK_DETECTED.set()
+                break
+
+            time.sleep(0.005)
+
+    except KeyboardInterrupt:
+        print("\n[*] Exiting test...")
+    finally:
+        STOP_EVENT.set()
+        if not DEADLOCK_DETECTED.is_set():
+            subprocess.run(["ip", "link", "set", INTERFACE, "down"], stderr=subprocess.DEVNULL)
+        print(f"[*] Completed {loop_count} loops.")
+
+if __name__ == "__main__":
+    main()
+```
+
+Also, if maintainers prefer this fix to be split into separate smaller
+atomic patches (e.g. 1. close deadlock fix, 2. NAPI budget handling, 3. error
+handling NULL check), please let me know and I will gladly send a v2 patch series!
+
+Best regards,
+Cheng Liu
