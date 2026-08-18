@@ -1,154 +1,128 @@
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.enpas.org (lighthouse.enpas.org [46.38.232.102])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20E10238C2A
-	for <linux-can@vger.kernel.org>; Tue, 18 Aug 2026 22:18:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67EA033F8A1;
+	Tue, 18 Aug 2026 22:18:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.38.232.102
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787091505; cv=none; b=P50qiKu6a9vJqOLjf9InDcpOBGqHRk9asMdx3/48ogF29nrWwopStKjQmgz7zBaxYPzcGHl/GFRASP8oy9HAOVmOqkLTrXVi8sp2ZndZrcUC3bNoBsYwwmBX0CWnFpaDFyVQlSh44coG6G+rnHScLI14RcI8vm3iXBCr5CAcsuw=
+	t=1787091520; cv=none; b=bDnXoA9mqL8lSLCxOIYFsLBbXWlrplmpTbOPlkAMuAVtMUl7UtPkDowBglebAyPTz+He/HrLVuTW2Oh38rK5x/1TjnFe60T/is+FR/ESOemgc+OpDG6/bDiUo61aEoBu+C/THdpMeWEckPnbZnjkaR3sChYVVzuUcWQyYb5RMFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787091505; c=relaxed/simple;
-	bh=xeb+tFMObI7h3eVoQvB19uHowJe0ECQUjezaWgqLXiE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SWswKvK6ttu+IQktGWuuHp2CTl9uERaMHxXHlVXpxdEMyO+fnk1+iooQQ7ub/CuEt3dBa3n8TKPEm7Clpc+JFkoSO2Q+WU94M5GAuly2bmT+AfsSSnD44bv2gKaMamOb5ztWIjW2BZE9hdsx5Wep7OPA3ZTn8WKR7cuEg7SO+9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xbow.com; spf=pass smtp.mailfrom=xbow.com; dkim=pass (2048-bit key) header.d=xbow.com header.i=@xbow.com header.b=lUISu/hH; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xbow.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xbow.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=xbow.com header.i=@xbow.com header.b="lUISu/hH"
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-38759bcd877so552515a91.2
-        for <linux-can@vger.kernel.org>; Tue, 18 Aug 2026 15:18:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=xbow.com; s=google; t=1787091503; x=1787696303; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=d0XU4Swy3+99fCdFDFJ5dFoqIG7hfBf1CedXoWdbxRw=;
-        b=lUISu/hH9KlXRzeS7bl8bHNUc/F828y8S70xyKZYg5ur0/gHx1w7/SDkYPgvAOf/qn
-         QCBN9NrIeRR4DzKawhwzII0RVeusMrw+z39qgMrxVMqqI8s61hb/mrBvlLREVaVN83O8
-         mOrpMi6yYge/c+zU/dF0TJDuvAalQ9FtCJ0/x8PnvPhGlqqjsShr2tpEw0GmGI120yWv
-         UbMBmWLLW9AC5RFNIzPocMGjGus1w0U/iCNwN3Dlhr2dLFuEhTUyCZ46uqOVIvFbfB/g
-         VghPYclYMyyph6vuDXdIqapTHEdn47gBzorSEvn97+hcP+51N/vzq/4hEZeFnDovAnbu
-         1FZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787091503; x=1787696303;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=d0XU4Swy3+99fCdFDFJ5dFoqIG7hfBf1CedXoWdbxRw=;
-        b=dF4S1eCfBwv/9QywPiHKM2i5L1zUl6NsG/kh+RndmTVbwLECEUQLcf4IdDtFBBT8QB
-         NXH91r14D5i8m5NAxAQkPXY9C5Ri8Gk49cTXUzRB90TYmC1/RJoX7jl2n2LBcm6EF5dd
-         qguYUczWzw7Z7D28GkMCpgaPaGN7Ay2gJ+IJltVM2suVQzBVB5UKWPYkRtbw1oNeAPdf
-         xKfFKkBalLiP5AqoiL7n3C+GZHw9BU2sGC6rkUEK9FWenF6bjgLtawz8F9NHhaAh39mA
-         8j5etQV4VZ8fP9q8wRyopuuIL3+DpV2FJajjWlApdToi6b6r5cpKhQK6YKBmBR46hagC
-         alnw==
-X-Gm-Message-State: AOJu0Yxn6WhLDg5qu64GRrzpDZqXu2vUPvW2g0KxMEg5zQnSD1EHZ8UI
-	9DjYckvd7a9aVGTx6u9r1UxLOzU9g0ILp8CyOuKUxtiNjCN1Tprr9PH6hx0hCZX7Lso=
-X-Gm-Gg: AR+sD13SklcmylkjYpoAhbSCAcQpvQpFGljIp3fVL5BIi/XnuHEMYJ71Jd/VQ74ZIEM
-	++WON/LUaytfheJyqIXzHLm3HAMMxSPgp9FWihduLTSivVi2PyjoYEQRNZk6MNQBGueyEzqxLFC
-	R+zfGeTsjKp+nUp01HIIY8HWr5Qw3z3gLsyR/hgHwhhXRzukyMJ1x5VscMWv7KhtSw/ymC6N3/R
-	Gni2a8hiUI2U/srU5s7b0tv7bm49XKhjZOnOwtcQuTBRMZY5NnwD/rqL7c50+PYd0CJ7/t6n0mh
-	nPMRn8Zex/WpKjyjmLzjoe9aXMXogSViWIFeRjxc+yf9rVCb3XrJ5eNMAYuAGrQhIPYBd6tFLk4
-	iTofHaY6J32JByKsA3tvBXlC0OrYwps/pHyLGbY2iAQn6d80naEBv4K0lV+oFPOkCnQdUGGCtym
-	KmjbiAP5c98497AZzjXPbuFAHBN5QVuay8P6PzRjU49uGlPhRMrTZUay80GvrdWq8U1MIhZnxvt
-	UEJvYoErXbcrSXJ7ouj0t3OrK3F
-X-Received: by 2002:a17:90a:d604:b0:38e:97f0:aa4b with SMTP id 98e67ed59e1d1-3958127a5aamr68823a91.13.1787091503346;
-        Tue, 18 Aug 2026 15:18:23 -0700 (PDT)
-Received: from Mac.lan ([125.128.148.126])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3957fbbf8a7sm187194a91.16.2026.08.18.15.18.21
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 18 Aug 2026 15:18:22 -0700 (PDT)
-From: Baul Lee <baul.lee@xbow.com>
-To: max@enpas.org,
-	mkl@pengutronix.de,
-	mailhol@kernel.org
-Cc: linux-can@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	federico.kirschbaum@xbow.com
-Subject: [PATCH net v2] can: can327: Fix out-of-bounds write in can327_parse_frame()
-Date: Wed, 19 Aug 2026 07:18:18 +0900
-Message-ID: <20260818221818.49430-1-baul.lee@xbow.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1787091520; c=relaxed/simple;
+	bh=xkgvjwqhtzZowHr3E4WBASUzNwYBBZ2cC2fkpRTpCV8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=T+zCbaJ74xupVQR7dmlGVxG/cSaWv7GnzJ70qnfvVzQ3HZxQFdH3Xl7XKaYVLG1hgf4UiBJIFRenaA27c24Y37UFyg8UpJo7q8cs29iVx/hhFVf9/5EnRuQfsJ87gMmgMy0QpSqJZHTI+Di8D/j14VijaT1I5KecPt8qQllMafw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enpas.org; spf=pass smtp.mailfrom=enpas.org; arc=none smtp.client-ip=46.38.232.102
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enpas.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=enpas.org
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	by mail.enpas.org (Postfix) with ESMTPSA id 683D41046AB;
+	Tue, 18 Aug 2026 22:11:42 +0000 (UTC)
+Message-ID: <e8a837d2-0c2e-4588-8adf-ef05cd936028@enpas.org>
+Date: Wed, 19 Aug 2026 07:11:38 +0900
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] can: can327: Fix out-of-bounds write in
+ can327_parse_frame()
+Content-Language: en-US
+To: Baul Lee <baul.lee@xbow.com>, mkl@pengutronix.de, mailhol@kernel.org
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+ federico.kirschbaum@xbow.com
+References: <20260818215029.47758-1-baul.lee@xbow.com>
+From: Max Staudt <max@enpas.org>
+Autocrypt: addr=max@enpas.org; keydata=
+ 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
+ 1Nk4wgjdif6n69chAwuDQyOfWdz/dQ==
+In-Reply-To: <20260818215029.47758-1-baul.lee@xbow.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-can327_parse_frame() assigns the CAN payload length from the DLC nibble
-of the adapter's ASCII frame line, hex_to_bin(elm->rxbuf[datastart - 2]),
-without validating it. A standard-format line only has to satisfy
-rxbuf[3] == ' ' and rxbuf[5] == ' ', so the DLC nibble rxbuf[4] can be a
-space, for which hex_to_bin() returns -1, and that becomes 255 in the u8
-frame->len. A hex nibble of 9 to f is not rejected either, while
-CAN_MAX_DLEN is 8.
+Baul, thank you so much finding and patching this!
 
-frame->data[] is the 8-byte payload of the 16-byte struct can_frame
-returned by alloc_can_skb(), so the data-nibble loop writes up to 255
-device-controlled bytes, 247 of them past the frame and over the
-trailing skb_shared_info. The length check before the loop only requires
-the line to be frame->len * 3 + datastart bytes, which a long enough
-line of hex and spaces satisfies. Freeing the corrupted skb then faults:
+This should *really* go into the -stable trees as well. Can you please 
+amend the commit to include the following three lines and then re-send it?
 
-  pc : skb_release_data+0xf4/0x200
-  Call trace:
-   skb_release_data+0xf4/0x200 (P)
-   sk_skb_reason_drop+0x40/0xa4
-   can_rcv+0x6c/0xbc
-   __netif_receive_skb_one_core+0x40/0x4c
-   can327_ldisc_rx+0xc8/0x140
-   tty_ldisc_receive_buf+0x48/0x60
-   flush_to_ldisc+0xdc/0x1b0
-  Kernel panic - not syncing: Oops: Fatal exception in interrupt
 
-Reject the line when the nibble is not a hex digit or exceeds
-CAN_MAX_DLEN, as the parser already does for other malformed lines.
-
-Attaching the N_CAN327 line discipline requires CAP_NET_ADMIN, but the
-frame lines then come from the ELM327 device, so a malicious adapter
-reaches this path with device-controlled data.
-
-Discovered by XBOW, triaged by Baul Lee <baul.lee@xbow.com>
-
-Fixes: 43da2f07622f ("can: can327: CAN/ldisc driver for ELM327 based OBD-II adapters")
+Fixes: 43da2f07622f ("can: can327: CAN/ldisc driver for ELM327 based 
+OBD-II adapters")
 Cc: stable@vger.kernel.org
-Signed-off-by: Baul Lee <baul.lee@xbow.com>
 Reviewed-by: Max Staudt <max@enpas.org>
----
-v2: add Cc: stable and Max's Reviewed-by, as requested in review of v1
-    (https://lore.kernel.org/linux-can/20260818215029.47758-1-baul.lee@xbow.com/).
-    No change to the code.
 
- drivers/net/can/can327.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/can327.c b/drivers/net/can/can327.c
-index 90f5e35f3c8f..c76a6378d4d6 100644
---- a/drivers/net/can/can327.c
-+++ b/drivers/net/can/can327.c
-@@ -395,6 +395,7 @@ static int can327_parse_frame(struct can327 *elm, size_t len)
- 	struct sk_buff *skb;
- 	int hexlen;
- 	int datastart;
-+	int dlc;
- 	int i;
- 
- 	lockdep_assert_held(&elm->lock);
-@@ -460,7 +461,13 @@ static int can327_parse_frame(struct can327 *elm, size_t len)
- 	 */
- 
- 	/* Read CAN data length */
--	frame->len = (hex_to_bin(elm->rxbuf[datastart - 2]) << 0);
-+	dlc = hex_to_bin(elm->rxbuf[datastart - 2]);
-+	if (dlc < 0 || dlc > CAN_MAX_DLEN) {
-+		/* Not a hex digit, or more than CAN_MAX_DLEN bytes. */
-+		kfree_skb(skb);
-+		return -ENODATA;
-+	}
-+	frame->len = dlc;
- 
- 	/* Read CAN ID */
- 	if (frame->can_id & CAN_EFF_FLAG) {
--- 
-2.50.1
+
+Thank you!
+
+Max
 
