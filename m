@@ -1,62 +1,61 @@
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 335D223ED5E
-	for <linux-can@vger.kernel.org>; Tue, 18 Aug 2026 21:50:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20E10238C2A
+	for <linux-can@vger.kernel.org>; Tue, 18 Aug 2026 22:18:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787089838; cv=none; b=ZDwg/vxpOcNn5tyEZYEK/DjxqBygkbDVhiDDm0AhkAkP8YkMyvf/YQxKVBp/hwcGgArnGj+fDiWRdefWNWv1V/97h+SezfIHhzP8aHgkpiGkr6Vg/G6AeCfGTKKJQnw9vgPOk6rbsCa7PLq2Avu1+KV0pSppef0SCppeBnE0a7Q=
+	t=1787091505; cv=none; b=P50qiKu6a9vJqOLjf9InDcpOBGqHRk9asMdx3/48ogF29nrWwopStKjQmgz7zBaxYPzcGHl/GFRASP8oy9HAOVmOqkLTrXVi8sp2ZndZrcUC3bNoBsYwwmBX0CWnFpaDFyVQlSh44coG6G+rnHScLI14RcI8vm3iXBCr5CAcsuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787089838; c=relaxed/simple;
-	bh=LbviQGy33/VrflqEdGmEC31Fge9f4eLgCpK74UV/Mto=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hm4QQmVtmG9rWtLJ2cOi0fkZIW9qujtRX7qHhLh3B5jGzb6SPrvY9P0N3HhMD/7nRDRrjtmY5giUjm9OxoAM66AqtgEjrtNP5wEhiobwccZvy05Rc2MIHdNkKSc0OiSNh1MitLodDyxind7BseA1hFuD+vjyKGEXXSKYuFErxR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xbow.com; spf=pass smtp.mailfrom=xbow.com; dkim=pass (2048-bit key) header.d=xbow.com header.i=@xbow.com header.b=LbWe7fNv; arc=none smtp.client-ip=209.85.216.52
+	s=arc-20240116; t=1787091505; c=relaxed/simple;
+	bh=xeb+tFMObI7h3eVoQvB19uHowJe0ECQUjezaWgqLXiE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SWswKvK6ttu+IQktGWuuHp2CTl9uERaMHxXHlVXpxdEMyO+fnk1+iooQQ7ub/CuEt3dBa3n8TKPEm7Clpc+JFkoSO2Q+WU94M5GAuly2bmT+AfsSSnD44bv2gKaMamOb5ztWIjW2BZE9hdsx5Wep7OPA3ZTn8WKR7cuEg7SO+9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xbow.com; spf=pass smtp.mailfrom=xbow.com; dkim=pass (2048-bit key) header.d=xbow.com header.i=@xbow.com header.b=lUISu/hH; arc=none smtp.client-ip=209.85.216.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xbow.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xbow.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=xbow.com header.i=@xbow.com header.b="LbWe7fNv"
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-38759bcd877so528139a91.2
-        for <linux-can@vger.kernel.org>; Tue, 18 Aug 2026 14:50:35 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=xbow.com header.i=@xbow.com header.b="lUISu/hH"
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-38759bcd877so552515a91.2
+        for <linux-can@vger.kernel.org>; Tue, 18 Aug 2026 15:18:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=xbow.com; s=google; t=1787089834; x=1787694634; darn=vger.kernel.org;
+        d=xbow.com; s=google; t=1787091503; x=1787696303; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=nB44X2BHNRtk2rWj3ofb0fstOoc1QxVcXE0ahPC36tk=;
-        b=LbWe7fNvj+ltC538owXMeJyCdjc4RjHgMl8nm9qBk3Z0yzDKbw1HxXZBO/UhbDeSXg
-         6HHUAEDv7RFEBwITlcrXOtX0u9IbIXmCxaj/9YZxO8pnmrKTBKDp2b1pqNnl/omK3TCw
-         TxwyxAIyJVCyJ6Nr64BIbFBiMkc6dEB8jQv/Nx99bKzEEMoONJp0LU7Mqx2kTnOCAuip
-         XKXaSFmvzaB3nJZksgla5aKG/maXScVXJoe8RbijisTCuWBUL8KnbxIfsHx4XFQHHFCk
-         6f6CXJ338/lyJrwBgZ284TJGEeHRWY9oKMIkUkf3QbPP1KvSSDyIxGE2r/X8zBMbOEa8
-         KCXA==
+        bh=d0XU4Swy3+99fCdFDFJ5dFoqIG7hfBf1CedXoWdbxRw=;
+        b=lUISu/hH9KlXRzeS7bl8bHNUc/F828y8S70xyKZYg5ur0/gHx1w7/SDkYPgvAOf/qn
+         QCBN9NrIeRR4DzKawhwzII0RVeusMrw+z39qgMrxVMqqI8s61hb/mrBvlLREVaVN83O8
+         mOrpMi6yYge/c+zU/dF0TJDuvAalQ9FtCJ0/x8PnvPhGlqqjsShr2tpEw0GmGI120yWv
+         UbMBmWLLW9AC5RFNIzPocMGjGus1w0U/iCNwN3Dlhr2dLFuEhTUyCZ46uqOVIvFbfB/g
+         VghPYclYMyyph6vuDXdIqapTHEdn47gBzorSEvn97+hcP+51N/vzq/4hEZeFnDovAnbu
+         1FZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787089834; x=1787694634;
+        d=1e100.net; s=20251104; t=1787091503; x=1787696303;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=nB44X2BHNRtk2rWj3ofb0fstOoc1QxVcXE0ahPC36tk=;
-        b=o1GbW1Y40EcNy4tfNwB9iAB444qLkFSpY3kGLtX3qboKXVz7SoCtPIjR4a32l7Viy4
-         w0M1bAF4wOCof4+kukYnZqoCEuwrd58Q8jvYNnrHmRJLqA4i1D5/EDcp/mGLas+9N7Dx
-         zgeiWPPPCl5W59qdfJ9kN6HyKEY8UdvmcEgrjzPRynZJxY56KE8csPjqAABaxYhDIS5i
-         mJGACTtmSvPzzOqOnojb7bArzrpcM7UkS8q361KsoaewIPriorlfjjWOZDs7VrHdQOBF
-         U63/HwDiGPVvaM8NHCzgrddfoV2gKetQ6J5b2z7DCq26CpG51HhgejXJ8xh8YDvpjvuA
-         GITQ==
-X-Gm-Message-State: AOJu0YzNx8Iuo8JR+tAPhBSqlxzkcQL8S0CdZQu0DaVf+pHDUHWfla/I
-	tEGNfB3pLYJMqiz3ON+GDaSqfM+Vdjp2yGZ6Iu8Hb+/SMFddQhRB5gyhxQeLzAvmgmIk8XKhzQ9
-	KZgoc
-X-Gm-Gg: AR+sD13KfLAmlRMpXlNTUlOAtSJewfoswUZL9uhCLkl3NHjmmCqPIkYaFvfcPWw038l
-	R0tsyQ56gO4+lurrEpF/VXxlV/rgnQwZEbZ5hzV75k0AUfVIUycTZ/ljpeUJm5K+fQ/qqWpxcE4
-	vBUOiRGj2EhXHgQLPhgJqodUEQ4vdw4f/FXteFpPYDPL1zMoHKHrN7JfMq5mL75llxFqcbPRo9p
-	6Yv2OmAHZ4AB8/W71a+Ph9T0XIFg7s8nFZ6vvpmRAWeekUi3oslmrmG4j4ognlxjaWhUZjBVHer
-	K6dvxHmsZR/f7ZZA/Mlh/Q9gpg6IJbqr5mv5F5ifXC1pzNowvkf6nGL0Sx1eiIj4a0BD09NLGy+
-	jHxNJocabaSbqxtzdPGS2gW8H6CVWn10GQwqIo5tu2T5TVIR9bmeWX5SIgqCZgNgeWvohBLnn9V
-	P2n7FVpWUDAXNOvZ1XPlwz6nlLBqCBgQh8kYUyxUw54V8jsn5yHrLeRR4vqEJUU9kkalit8dloQ
-	Ckm9Ex8dfXbcJfrKt+gvwSk6g00
-X-Received: by 2002:a17:90a:da84:b0:38e:97f0:aa4b with SMTP id 98e67ed59e1d1-3957b38f768mr1186311a91.13.1787089834370;
-        Tue, 18 Aug 2026 14:50:34 -0700 (PDT)
+        bh=d0XU4Swy3+99fCdFDFJ5dFoqIG7hfBf1CedXoWdbxRw=;
+        b=dF4S1eCfBwv/9QywPiHKM2i5L1zUl6NsG/kh+RndmTVbwLECEUQLcf4IdDtFBBT8QB
+         NXH91r14D5i8m5NAxAQkPXY9C5Ri8Gk49cTXUzRB90TYmC1/RJoX7jl2n2LBcm6EF5dd
+         qguYUczWzw7Z7D28GkMCpgaPaGN7Ay2gJ+IJltVM2suVQzBVB5UKWPYkRtbw1oNeAPdf
+         xKfFKkBalLiP5AqoiL7n3C+GZHw9BU2sGC6rkUEK9FWenF6bjgLtawz8F9NHhaAh39mA
+         8j5etQV4VZ8fP9q8wRyopuuIL3+DpV2FJajjWlApdToi6b6r5cpKhQK6YKBmBR46hagC
+         alnw==
+X-Gm-Message-State: AOJu0Yxn6WhLDg5qu64GRrzpDZqXu2vUPvW2g0KxMEg5zQnSD1EHZ8UI
+	9DjYckvd7a9aVGTx6u9r1UxLOzU9g0ILp8CyOuKUxtiNjCN1Tprr9PH6hx0hCZX7Lso=
+X-Gm-Gg: AR+sD13SklcmylkjYpoAhbSCAcQpvQpFGljIp3fVL5BIi/XnuHEMYJ71Jd/VQ74ZIEM
+	++WON/LUaytfheJyqIXzHLm3HAMMxSPgp9FWihduLTSivVi2PyjoYEQRNZk6MNQBGueyEzqxLFC
+	R+zfGeTsjKp+nUp01HIIY8HWr5Qw3z3gLsyR/hgHwhhXRzukyMJ1x5VscMWv7KhtSw/ymC6N3/R
+	Gni2a8hiUI2U/srU5s7b0tv7bm49XKhjZOnOwtcQuTBRMZY5NnwD/rqL7c50+PYd0CJ7/t6n0mh
+	nPMRn8Zex/WpKjyjmLzjoe9aXMXogSViWIFeRjxc+yf9rVCb3XrJ5eNMAYuAGrQhIPYBd6tFLk4
+	iTofHaY6J32JByKsA3tvBXlC0OrYwps/pHyLGbY2iAQn6d80naEBv4K0lV+oFPOkCnQdUGGCtym
+	KmjbiAP5c98497AZzjXPbuFAHBN5QVuay8P6PzRjU49uGlPhRMrTZUay80GvrdWq8U1MIhZnxvt
+	UEJvYoErXbcrSXJ7ouj0t3OrK3F
+X-Received: by 2002:a17:90a:d604:b0:38e:97f0:aa4b with SMTP id 98e67ed59e1d1-3958127a5aamr68823a91.13.1787091503346;
+        Tue, 18 Aug 2026 15:18:23 -0700 (PDT)
 Received: from Mac.lan ([125.128.148.126])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3957fbbf8a7sm127600a91.16.2026.08.18.14.50.32
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3957fbbf8a7sm187194a91.16.2026.08.18.15.18.21
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 18 Aug 2026 14:50:33 -0700 (PDT)
+        Tue, 18 Aug 2026 15:18:22 -0700 (PDT)
 From: Baul Lee <baul.lee@xbow.com>
 To: max@enpas.org,
 	mkl@pengutronix.de,
@@ -64,9 +63,9 @@ To: max@enpas.org,
 Cc: linux-can@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	federico.kirschbaum@xbow.com
-Subject: [PATCH net] can: can327: Fix out-of-bounds write in can327_parse_frame()
-Date: Wed, 19 Aug 2026 06:50:29 +0900
-Message-ID: <20260818215029.47758-1-baul.lee@xbow.com>
+Subject: [PATCH net v2] can: can327: Fix out-of-bounds write in can327_parse_frame()
+Date: Wed, 19 Aug 2026 07:18:18 +0900
+Message-ID: <20260818221818.49430-1-baul.lee@xbow.com>
 X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
@@ -112,8 +111,14 @@ reaches this path with device-controlled data.
 Discovered by XBOW, triaged by Baul Lee <baul.lee@xbow.com>
 
 Fixes: 43da2f07622f ("can: can327: CAN/ldisc driver for ELM327 based OBD-II adapters")
+Cc: stable@vger.kernel.org
 Signed-off-by: Baul Lee <baul.lee@xbow.com>
+Reviewed-by: Max Staudt <max@enpas.org>
 ---
+v2: add Cc: stable and Max's Reviewed-by, as requested in review of v1
+    (https://lore.kernel.org/linux-can/20260818215029.47758-1-baul.lee@xbow.com/).
+    No change to the code.
+
  drivers/net/can/can327.c | 9 ++++++++-
  1 file changed, 8 insertions(+), 1 deletion(-)
 
