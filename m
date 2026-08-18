@@ -1,105 +1,174 @@
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [52.237.72.81])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E62C176026;
-	Tue, 18 Aug 2026 06:40:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.237.72.81
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A2833ADB3
+	for <linux-can@vger.kernel.org>; Tue, 18 Aug 2026 06:53:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787035212; cv=none; b=GtOwRgS1WX3xKGgerHmNkvoYg3vPqQ9xHgiRVq1rUbplGJNTM+jv8xXVzVwCngB1x/nvTKDRbsAmsZYIeVsdWGIr3dLvu1Q7N/kCv0XwnnXgsA8b8pEmiXDL1gKclOfTsknXYvE/pnn+srwsWW6AdIVlSlK6wZ79jmFFV2SqfvU=
+	t=1787036037; cv=none; b=qRN1aHFWoI7E71/sK/USnkvsw5FN6req1QwdZkMY6udXgk1ktF2kff7cVDY0/ISegq0mPHoJQsMMNMAwkAHj5QjpNpAfUM+o31yPHXEGaFR8pMN7Ft9o3KM8GYGsfA5JQGtxHuJVtFLf/8BS72xv6ei3RbFs9pUVV2H8bfpv+Co=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787035212; c=relaxed/simple;
-	bh=OaAR/3tnIIqHDn4LW0gta2OryXk9M+Y0mBqwD8TRKlc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Q9VZFpL27kDvBK4Nkk8J0qCD8A66ZDYo2gQ/AF+0cZIuvxghV97oG4OgTV+s3sizarL8XOJzfxPFZ33zMzOtPwjkT57+wTywphZbZh5fBLdOgKW+LD5R0d+Q2wdMZlJ266rSqH8aiJX/S1St2ChP9CeHzPV6LVcH8wIJJy2CM9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=52.237.72.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from zju.edu.cn (unknown [10.98.66.117])
-	by mtasvr (Coremail) with SMTP id _____wDnOGQ7_oNqgZGiAA--.26236S3;
-	Tue, 18 Aug 2026 14:39:56 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.98.66.117])
-	by mail-app2 (Coremail) with SMTP id zC_KCgAXY8c1_oNqZ0L4Aw--.23563S2;
-	Tue, 18 Aug 2026 14:39:55 +0800 (CST)
-From: Fan Wu <fanwu01@zju.edu.cn>
-To: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>,
-	Mark Brown <broonie@kernel.org>,
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	Fan Wu <fanwu01@zju.edu.cn>
-Subject: [PATCH] can: kvaser_pciefd: fix use-after-free in bec poll timer
-Date: Tue, 18 Aug 2026 06:38:32 +0000
-Message-Id: <20260818063832.383829-1-fanwu01@zju.edu.cn>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1787036037; c=relaxed/simple;
+	bh=Cta+ohfuvrRxhMB3h+l+r29PYyRIhBF3sNkyBpfvNP4=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=UzrGs70nyO6uWWMDpX/qdgW7S9CDZ134unmuyMQZinFOaBhcrnTwkjZQ3PNMKEG3YOtyiaGqqRUIaGQrFKTLFqrHik0maIdlskERf5IC2MZUUQ6bws02UBbDseePQyk12tyF9Sp6JYu/5rpenw4qcTeIl2DOUpIyq01RchZ51Jk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Our3SUsu; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Our3SUsu"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56F761F000E9;
+	Tue, 18 Aug 2026 06:53:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1787036035;
+	bh=xgQS0aOASbAdV+2hKX8RDaS9yZlIOENpvhObnOimZSM=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=Our3SUsuz9jYP0kvzRGdBOouzV3i6mBPxXju2ZJb6ymjaELOAJxkAQ8m84Y0Njuvn
+	 T60YsDBzy2ymPQL234ThzY0RpFE+w89ROtL2+aU6OdRrXdz2pwESLIJrX/yYvuYUyM
+	 RPHc+0pPGdGl1yVGg90Ig9DGyQQSlAakGEyX5nsoW6bObdT7aM3yhZvDLRH5POZqQb
+	 P5DGF2cvaka9nJ99GgAchttwOmI3NkCKHGj5m3Lne/RfvqW2/UKQsO7GzUqoWfnjs2
+	 BkfuBI6+cowoBuxUVVDGNu5XamrTtiuXyDiJ67HSFv56cQ6OzYtscPlwaGU755SS6O
+	 kYSiv94tZslqQ==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH] can: kvaser_pciefd: fix use-after-free in bec poll
+ timer
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Fan Wu" <fanwu01@zju.edu.cn>
+Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>
+In-Reply-To: <20260818063832.383829-1-fanwu01@zju.edu.cn>
+References: <20260818063832.383829-1-fanwu01@zju.edu.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 18 Aug 2026 06:53:54 +0000
+Message-Id: <20260818065355.56F761F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zC_KCgAXY8c1_oNqZ0L4Aw--.23563S2
-X-CM-SenderInfo: qrstjiaswqq6lmxovvfxof0/
-X-CM-DELIVERINFO: =?B?rJhsWwXKKxbFmtjJiESix3B1w3vZ3A9ovKVTomAyoQazvoRs/NHSP8GI2EvgeEEW7R
-	sfncGSG+szpQCInt5Y8rbJUI0osi4h2mLwQPBhTJ8YXMPOr9JId3qYK5paZlKljE4n/w+A
-	61bmZQQFyu0z6rowZYLN5RPxYw6l01w8CbPzC/8w
-X-Coremail-Antispam: 1Uk129KBj93XoW7Ww15tF4DJw1kWw1UKrWkXwc_yoW8AF4kpr
-	s8KF47Aryvvr4Y9w17uF4kZFyUZw13Crs7u34xt3y5uF4Svr1UJFyY9ay3WFWakr4vvFy3
-	ZF4UZwn8Ar98ArgCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUU9lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6x
-	kI12xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v2
-	6r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2
-	Ij64vIr41lF7xvr2IYc2Ij64vIr40E4x8a64kEw24l42xK82IYc2Ij64vIr41l4I8I3I0E
-	4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
-	WUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
-	Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rV
-	WUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4U
-	JbIYCTnIWIevJa73UjIFyTuYvjxU7gAwDUUUU
 
-The bec poll timer is rearmed from the interrupt handler, so the
-timer_delete() call in kvaser_pciefd_remove() neither waits for a
-callback that is already running nor stops the handler from rearming
-the timer until the interrupt is freed later in the same function.
-The timer can therefore still be pending or running when free_candev()
-frees the CAN device, causing a use-after-free in
-kvaser_pciefd_bec_poll_timer().
+Thank you for your contribution! Sashiko AI review found 3 potential issue(=
+s) to consider:
 
-Use timer_shutdown_sync() instead, which waits for a running callback
-and makes a later rearm a no-op.  Also drain the timer in
-kvaser_pciefd_teardown_can_ctrls(), which frees the CAN devices on the
-probe error paths.
+Pre-existing issues:
+- [High] The driver uses non-synchronous `timer_delete()` when stopping the=
+ device or initializing the bus, allowing the timer callback to execute con=
+currently with hardware teardown/startup.
+- [High] The sequence counter `can->cmd_seq` is incremented concurrently fr=
+om hardirq, softirq, and process contexts without any synchronization or at=
+omic types, leading to data corruption.
+- [Medium] Error handling in `kvaser_pciefd_setup_can_ctrls()` calls `kvase=
+r_pciefd_devlink_port_unregister()` on a port that failed to register, trig=
+gering a debug splat on uninitialized delayed work.
+--
 
-This issue was found by an in-house static analysis tool.
+--- Patch [1]: [PATCH] can: kvaser_pciefd: fix use-after-free in bec poll t=
+imer ---
+commit b386356ff6c7a43deaac5d1df270183cf372b998
+Author: Fan Wu <fanwu01@zju.edu.cn>
 
-Fixes: 26ad340e582d ("can: kvaser_pciefd: Add driver for Kvaser PCIEcan devices")
-Cc: stable@vger.kernel.org
-Assisted-by: Codex:gpt-5.6
-Signed-off-by: Fan Wu <fanwu01@zju.edu.cn>
----
- drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c | 1 +1 +
- 1 file changed, 2 insertions(+), 1 deletions(-)
+can: kvaser_pciefd: fix use-after-free in bec poll timer
 
-diff --git a/drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c b/drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c
-index d8c9bfb20..a0597db72 100644
-@@ -1739,6 +1739,7 @@
- 			iowrite32(0, can->reg_base + KVASER_PCIEFD_KCAN_IEN_REG);
- 			kvaser_pciefd_pwm_stop(can);
- 			kvaser_pciefd_devlink_port_unregister(can);
-+			timer_shutdown_sync(&can->bec_poll_timer);
- 			free_candev(can->can.dev);
- 		}
- 	}
-@@ -1879,7 +1880,7 @@
- 		struct kvaser_pciefd_can *can = pcie->can[i];
- 
- 		unregister_candev(can->can.dev);
--		timer_delete(&can->bec_poll_timer);
-+		timer_shutdown_sync(&can->bec_poll_timer);
- 		kvaser_pciefd_pwm_stop(can);
- 		kvaser_pciefd_devlink_port_unregister(can);
- 	}
+This patch replaces timer_delete() with timer_shutdown_sync() during
+device teardown to prevent a use-after-free if the bec poll timer is
+concurrently re-arming or running. It also adds the timer shutdown to
+the probe error path.
 
+> diff --git a/drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c b/drivers=
+/net/can/kvaser_pciefd/kvaser_pciefd_core.c
+> index d8c9bfb202304..a0597db720864 100644
+> --- a/drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c
+> +++ b/drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c
+> @@ -1739,6 +1739,7 @@ static void kvaser_pciefd_teardown_can_ctrls(struct=
+ kvaser_pciefd *pcie)
+>  			iowrite32(0, can->reg_base + KVASER_PCIEFD_KCAN_IEN_REG);
+>  			kvaser_pciefd_pwm_stop(can);
+>  			kvaser_pciefd_devlink_port_unregister(can);
+
+[Severity: Medium]
+This is a pre-existing issue, but since we are modifying this error path,
+could this unregister call trigger a debug splat on uninitialized delayed
+work?
+
+If kvaser_pciefd_devlink_port_register() fails in
+kvaser_pciefd_setup_can_ctrls():
+
+kvaser_pciefd_setup_can_ctrls() {
+    ...
+    pcie->can[i] =3D can;
+    kvaser_pciefd_pwm_start(can);
+    ret =3D kvaser_pciefd_devlink_port_register(can);
+    if (ret)
+        goto err;
+    ...
+err:
+    kvaser_pciefd_teardown_can_ctrls(pcie);
+}
+
+Since pcie->can[i] is already populated, teardown unconditionally calls
+kvaser_pciefd_devlink_port_unregister(can) on the failed port.
+
+> +			timer_shutdown_sync(&can->bec_poll_timer);
+>  			free_candev(can->can.dev);
+>  		}
+>  	}
+> @@ -1879,7 +1880,7 @@ static void kvaser_pciefd_remove(struct pci_dev *pd=
+ev)
+>  		struct kvaser_pciefd_can *can =3D pcie->can[i];
+> =20
+>  		unregister_candev(can->can.dev);
+> -		timer_delete(&can->bec_poll_timer);
+> +		timer_shutdown_sync(&can->bec_poll_timer);
+
+[Severity: High]
+This isn't a bug introduced by this patch, but since we are fixing the
+timer cancellation here, are there similar concurrent execution risks in
+other parts of the driver?
+
+The driver still uses non-synchronous timer_delete() when initializing
+the bus and stopping the device:
+
+kvaser_pciefd_bus_on() {
+    ...
+    timer_delete(&can->bec_poll_timer);
+    ...
+}
+
+kvaser_pciefd_stop() {
+    ...
+    timer_delete(&can->bec_poll_timer);
+    ...
+}
+
+If the interface is brought down (triggering kvaser_pciefd_stop) while
+polling is active, could the callback still execute concurrently and
+re-arm the timer or modify hardware registers out of order?
+
+>  		kvaser_pciefd_pwm_stop(can);
+>  		kvaser_pciefd_devlink_port_unregister(can);
+>  	}
+
+[ ... ]
+
+[Severity: High]
+This is also a pre-existing issue not directly related to the lines changed
+in this patch, but does the sequence counter increment in
+kvaser_pciefd_send_kcan_cmd() need synchronization?
+
+kvaser_pciefd_send_kcan_cmd() {
+    ...
+    FIELD_PREP(KVASER_PCIEFD_KCAN_CMD_SEQ_MASK, ++can->cmd_seq),
+    ...
+}
+
+If a hardware status packet arrives (triggering
+kvaser_pciefd_handle_status_packet() from the hardirq handler) while
+kvaser_pciefd_bec_poll_timer() is polling from softirq, both invoke
+kvaser_pciefd_send_kcan_cmd().
+
+Since they increment can->cmd_seq without taking can->lock, could
+concurrent read-modify-write operations lose increments or tear,
+resulting in mismatched responses and state machine hangs?
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260818063832.3838=
+29-1-fanwu01@zju.edu.cn?part=3D1
