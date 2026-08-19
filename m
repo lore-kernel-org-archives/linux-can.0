@@ -1,156 +1,141 @@
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7558C3C13FE;
-	Wed, 19 Aug 2026 03:14:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B031E3C98A2
+	for <linux-can@vger.kernel.org>; Wed, 19 Aug 2026 05:42:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787109268; cv=none; b=u7VTc4Buc+UfM340bXeKTbOy2UsasgPQfHlTrEPH1o5JCAXzghKhT1pOweLNVt20s6Wjm68wnaMyzgkY/5rFXLLvepDQja5FsllhBLGYf4MbwfwkixrC03RdgZ/8aBDEjPVCIaBhNR9NAL5weIXYAOtIDG5D+Ll4hdNvWKvu8Nw=
+	t=1787118128; cv=none; b=H1rwBOg6aTrzLIiZadfMgN23LSW9weJLnHvlqv7BigvVR/duNp/LELXOP0esMH+N6DGKLym5c5DwkkXZiSYD+oL/pPlYcVfzYB26F+NmxDSOs0HOyoauYpaiY99qwWKsjwvLVnac2wECz7M/BTfkxvZyMyR6HMPvDbAUQ0re/I4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787109268; c=relaxed/simple;
-	bh=Ii1mnAQIk3JxKPtw1+lNgA5Zgg05+1uKMZeaIO1HU7o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=HZ5/z9kx4+ZupMrphUqDsWsQkULTgZBO0pms6cJWM4TvBNiGykqrZvjcDh9xYcTrosKNvrH0CSGTihxPr27CQU2u1wNzsmn+fK5tiU04xrvcxmFu+S1OQUOB326E/XSBJceyTYROkKmIP3Cy9uyR4ELKrBHhNvBQ9LUYSyHukfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=BnEUPud8; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+	s=arc-20240116; t=1787118128; c=relaxed/simple;
+	bh=QE9C4a2SKiQIF9oFg+qY0uuRyvsD4L7tCcsdTejkaDw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AkfjTWIPvO+f2pfU2vzRHTt/E5XikSFA7gihOAJI26BYCThPsWnZvI+elRz3Afgc5bHaAL5YSRIp2gndOoWqNcURbGYpawy1nJP9J3T0tFcN0oKDivePiOT0Vu50sg0t78omkVJaKWtQ8elDuocMI/NnrdsSRvUeLPSHBb+YFQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xbow.com; spf=pass smtp.mailfrom=xbow.com; dkim=pass (2048-bit key) header.d=xbow.com header.i=@xbow.com header.b=k3f6v7MP; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xbow.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xbow.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="BnEUPud8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1787109266; x=1818645266;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Ii1mnAQIk3JxKPtw1+lNgA5Zgg05+1uKMZeaIO1HU7o=;
-  b=BnEUPud80n1F2dPN1NLQ070xyUUTak4Tm3SLMXRI+g1q7X17MnSj4jtq
-   rVtG+Fjt3X2GNrVVMydgg7UY2bP3tl3c9fDCdBN7xZBp44KicJk1NlXp4
-   LU4LnzsjE1mPvw3TVtuIbEEAArywR3mGzj6NNfh8NUlwWkVU6rCRnouUo
-   0ieusWcGM/kv+wKkpwf74qIwxGbhTWOe7s0dPYmfGPFBY6J25wC8DpaIv
-   6uumRqwTEUN2L8I7nLN9+n3F/7UId525RyPnLKWZDropnLMzbz4x8K2GW
-   4lHud9vA4ha7iwEnAmMPW9F3Veg9H9dYw5Ial/fG/zUBHn24VnMQsrNrq
-   Q==;
-X-CSE-ConnectionGUID: J864rs4URjeHfXVvhbskAA==
-X-CSE-MsgGUID: IZR9RznkR1GhxX1awoXUaA==
-X-IronPort-AV: E=Sophos;i="6.25,231,1779174000"; 
-   d="scan'208";a="72077587"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2026 20:14:19 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.87.152) by
- chn-vm-ex2.mchp-main.com (10.10.87.31) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.2562.45; Tue, 18 Aug 2026 20:14:19 -0700
-Received: from [10.40.24.197] (10.10.85.11) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.2507.58 via Frontend
- Transport; Tue, 18 Aug 2026 20:14:11 -0700
-Message-ID: <93f0727f-0b25-4374-9a6c-ad3799006440@microchip.com>
-Date: Wed, 19 Aug 2026 08:44:10 +0530
+	dkim=pass (2048-bit key) header.d=xbow.com header.i=@xbow.com header.b="k3f6v7MP"
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-84e0688b7e8so572952b3a.1
+        for <linux-can@vger.kernel.org>; Tue, 18 Aug 2026 22:42:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=xbow.com; s=google; t=1787118126; x=1787722926; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=6YEZkr3wdZlff5LqCyllrwAL2QGPkgIQWwMDmAIlEzc=;
+        b=k3f6v7MPG6K2pG45d3myTJYp5fBNj5uPw8igl3GuM5uf8+imxyoY87YSqptOkaR3bR
+         EXyuoBvzQMHPZnw4nm8PveUCTHD0k3xVuYtixblfAgHOiy6SBF7Efb6fl09tQx8m/NbW
+         bfhP6RN4z+F+HWYyxz/61x6BUSKRttaj1Rf2nC4Pi3gKDoGUD1lWDxGZtFGu31dZZmDm
+         /WKO041JmS+GByugrMIc0eMyt4LTqrDWszfZaO/6/uzEHdoI0q6Bip/Qjft/4JyHxxdO
+         V6OzH0R5pOsZJta/oYymvwL8jGPTnDkYmwd/9eTHHbnPFL3IxvPIKI7mcKlVcwYdbOJj
+         id+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787118126; x=1787722926;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=6YEZkr3wdZlff5LqCyllrwAL2QGPkgIQWwMDmAIlEzc=;
+        b=YWleZzols/G5AY2jvFyK4v9MayoaiHtuHO8dniAmmkRRgAty9uUIqVdZwIPYAWWG8E
+         lD9OQoM4CjFj328+qyDgMWyCOOMGQJ5h/zyxfsugCAL20NGvu5FFIT9Wa2QsOZsXeMjL
+         v/gVE+nYTkfHTTUa5bCUqu7L75fhQsEVwXfgmwRiXW7f0hrfReUOKPlgQL3LMpNnIsSW
+         G1ixraQ2e8FioI6keWQ2gold0t0NMjQs37Y55rxn6TA0stDpeluxfn/9eiyJLT6mSs+q
+         T7ET1f+28yg5shcJCOa+pRUw4BlH9bXpyvTFAfVujMAj/t99hlJijRV2iTn2ES3EhIeL
+         cGmA==
+X-Gm-Message-State: AOJu0Ywhh4/I9TyB0VIH7YyILauALsn/0EeiQZT6My7RR1O/axJXH50M
+	QSTLdu7zuPTImhJZeX0loiR8/1d10Z61ZylnhhLsIE2eKJCyRjuUELU2We4Ta1Gr9xQ=
+X-Gm-Gg: AR+sD112LlPThqJNtFd0teJUPxP6+S7dYiAdiJSLgd9Q3PbrJBRpMgH5nDR14P5NmS/
+	mlpxRmu1GQOE+9ybZrUW4Un2nRnanVQLNTgw19RU+EHIBjf4weiYl4/6VKfdSBnLRJmgzMRoAwk
+	nvxg1bNlidaY6ACWVTOJfZRAi3ny01oiQO7qc7f0xrLGr4lSaoHakQl6pY7jKsJGy0iwpPAI5Hd
+	KyQbkTrQrR/zbouwPLV7nPAv5fHwwYbEbmCMeB1awtSjIVhPRJ8bdZv+Hh4FmshwHE9wKHdXSvt
+	/gxiXY39eHDU5MpIt6dQTsptTJsAf0SxGpTFnlaFxIKiDdoUbfXY5sxaT1RUknZNebLangsVhLl
+	oEGx4yYfsaZUE8a1X5R1p4DwlWkL9JxO39F3tq4Qk9IIWD/areip6UToRwHWTZf4Kuy9TDV5ZfG
+	EOq+7K1MVxh+WgJKMogBWopV87nuAnm2YUVkd+n2FvvLeFq52qfECf4wO4qjQWyLyPI7hCmSzgL
+	smTdQ8bSCDort65MzLddtZFW6SN
+X-Received: by 2002:a05:6a00:179c:b0:848:2b8f:c9d7 with SMTP id d2e1a72fcca58-851d3a87889mr3230385b3a.18.1787118125727;
+        Tue, 18 Aug 2026 22:42:05 -0700 (PDT)
+Received: from Mac.lan ([125.128.148.126])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-851d3389fcfsm214485b3a.18.2026.08.18.22.42.03
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Tue, 18 Aug 2026 22:42:05 -0700 (PDT)
+From: Baul Lee <baul.lee@xbow.com>
+To: max@enpas.org,
+	mkl@pengutronix.de,
+	mailhol@kernel.org
+Cc: linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	federico.kirschbaum@xbow.com
+Subject: [PATCH net] can: can327: Fix stack out-of-bounds write in can327_handle_prompt()
+Date: Wed, 19 Aug 2026 14:42:01 +0900
+Message-ID: <20260819054201.67294-1-baul.lee@xbow.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 4/4] arm64: dts: freescale: Add chargebyte Charge
- Control Y
-To: Stefan Wahren <wahrenst@gmx.net>, Selvamani Rajagopal
-	<Selvamani.Rajagopal@onsemi.com>, Ciprian Regus <ciprian.regus@analog.com>
-CC: <imx@lists.linux.dev>, Oliver Hartkopp <socketcan@hartkopp.net>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, <vkoul@kernel.org>, <olteanv@gmail.com>,
-	<devicetree@vger.kernel.org>, <conor+dt@kernel.org>, <Frank.Li@kernel.org>,
-	Marc Kleine-Budde <mkl@pengutronix.de>, <linux-can@vger.kernel.org>,
-	<neil.armstrong@linaro.org>, Vincent Mailhol <mailhol@kernel.org>,
-	<robh@kernel.org>, <linux-phy@lists.infradead.org>,
-	<sashiko-reviews@lists.linux.dev>, David Tumma - M78440
-	<David.Tumma@microchip.com>, Roland Trissl - M21193
-	<Roland.Trissl@microchip.com>
-References: <20260818091701.6441-1-wahrenst@gmx.net>
- <20260818091701.6441-5-wahrenst@gmx.net>
- <20260818093147.E556C1F000E9@smtp.kernel.org>
- <89573332-94a0-4fc9-b4b4-be100a97de6e@gmx.net>
-Content-Language: en-US
-From: Parthiban Veerasooran <parthiban.veerasooran@microchip.com>
-In-Reply-To: <89573332-94a0-4fc9-b4b4-be100a97de6e@gmx.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Hi Stefan,
+can327_handle_prompt() hexdumps the frame queued for transmission, two
+hex characters per payload byte, into an 18-byte on-stack buffer sized
+for a classical 8-byte payload. The loop runs frame->len times without a
+clamp, and frame is a struct can_frame copied verbatim from the skb
+passed to can327_netdev_start_xmit().
 
-On 18/08/26 7:10 pm, Stefan Wahren wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
-> the content is safe
-> 
-> Hi Parthiban,
-> hi Selvamani,
-> hi Ciprian,
-> 
-> Am 18.08.26 um 11:31 schrieb sashiko-bot@kernel.org:
->> Thank you for your contribution! Sashiko AI review found 4 potential 
->> issue(s) to consider:
->> - [Medium] The LAN8651 ethernet device is missing its hardware reset 
->> configuration, leaving the `X_nRST_LAN` pin unmanaged.
->> - [Medium] The SD card slot power/reset pin (`SD2_nRESET`) is named in 
->> `gpio-line-names` but is not associated with any regulator or reset 
->> control.
->> - [Low] The GPIO label `X_LAN_nCS` is incorrectly placed at index 0 of 
->> `&gpio2`'s `gpio-line-names` array, but the `lan8651` chip select is 
->> actually wired to index 8.
->> - [Low] The `ti,leds-polarity` property used in both Ethernet PHY 
->> nodes is undocumented, invalid, and will cause `dtbs_check` validation 
->> errors.
->> -- 
->>
->> --- Patch [4]: [PATCH RFC 4/4] arm64: dts: freescale: Add chargebyte 
->> Charge Control Y ---
->> commit a177a5e0acba62156876ea6dc84457789786bfb8
->> Author: Stefan Wahren <wahrenst@gmx.net>
-> ...
->> +/* MCS Ethernet SPI */
->> +&lpspi3 {
->> +     pinctrl-names = "default";
->> +     pinctrl-0 = <&pinctrl_lpspi3>;
->> +     num-cs = <1>;
->> +     cs-gpios = <&gpio2 8 GPIO_ACTIVE_LOW>;
->> +     status = "okay";
->> +
->> +     lan8651: ethernet@0 {
->> +             compatible = "microchip,lan8651", "microchip,lan8650";
->> +             reg = <0>;
->> +             interrupt-parent = <&gpio2>;
->> +             interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
->> +             spi-max-frequency = <25000000>;
->> +
->> +             nvmem-cells = <&eth2_mac_address 0>;
->> +             nvmem-cell-names = "mac-address";
->> +     };
->> +};
->> [Severity: Medium]
->> The pin X_nRST_LAN is labeled in the gpio1 node, but this ethernet node
->> doesn't seem to configure a reset mechanism. Does the LAN8651 need a 
->> reset
->> control or gpio-hog to ensure the pin is driven and not left floating?
-> according to the current DT binding of LAN8651 there is no reset
-> control, but the chip has a reset line and its wired on our board.
-> 
-> Are there any plans to implement reset control for OA TC6 or LAN8651?
-Yes, we have recently completed the implementation for handling reset 
-GPIO, as well as recoverable and non-recoverable error handling. We are 
-currently preparing for the internal review process, which is expected 
-to begin shortly.
+A CAN XL frame aliases struct can_frame such that canxl_frame.flags,
+which must carry CANXL_XLF, overlaps can_frame.len, so it arrives with
+frame->len == 0x80. can327 is a classical CAN device, but
+can_dev_dropped_skb() only rejects CAN FD for a non-FD device; for
+ETH_P_CANXL, can_dropped_invalid_skb() checks only that the frame is a
+well-formed CAN XL frame, not that the device supports one. The smallest
+such frame, CANXL_HDR_SIZE + CANXL_MIN_DLEN, is 13 bytes, so it also
+passes the MTU check on a CAN_MTU device. CAN_RAW rejects it, as
+raw_check_txframe() requires CAN_CAP_XL, but an AF_PACKET SOCK_RAW
+socket does not go through that check.
 
-At this point, I’m unable to commit to an exact timeline for the 
-completion of the internal review and when the changes will be merged 
-into the mainline. However, we are making every effort to complete the 
-process as quickly as possible.
+The loop then writes 128 hex pairs over the buffer and past the end of
+the stack frame:
 
-In the meantime, if you are interested, I would recommend using our 
-early version, which already includes support for these features and is 
-available to customers. Please reach out to Roland Trissl 
-(Roland.Trissl@microchip.com), our Technical/Application Support 
-Engineer, and we will be happy to assist you further.
+  BUG: KASAN: stack-out-of-bounds in vsnprintf+0x550/0x83c
+  Write of size 1 at addr ffff800085407a32 by task kworker/u18:0/36
+  Call trace:
+   vsnprintf+0x550/0x83c
+   snprintf+0xa4/0xe0
+   can327_handle_prompt+0x5c4/0x69c
+   can327_parse_rxbuf+0x618/0xb50
+   can327_ldisc_rx+0x118/0x1c0
+   tty_ldisc_receive_buf+0xc0/0xe0
+   flush_to_ldisc+0x11c/0x278
+  This frame has 1 object:
+   [32, 50) 'local_txbuf'
+  Kernel panic - not syncing: stack-protector: Kernel stack is corrupted
+  in: can327_handle_prompt+0x66c/0x69c
 
-Best regards,
-Parthiban V>
-> Best regards
+Clamp the dump to CAN_MAX_DLEN, which is what the buffer is sized for.
+
+Discovered by XBOW, triaged by Baul Lee <baul.lee@xbow.com>
+
+Fixes: fb08cba12b52 ("can: canxl: update CAN infrastructure for CAN XL frames")
+Signed-off-by: Baul Lee <baul.lee@xbow.com>
+---
+ drivers/net/can/can327.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/can/can327.c b/drivers/net/can/can327.c
+index 90f5e35f3c8f..396db56775a6 100644
+--- a/drivers/net/can/can327.c
++++ b/drivers/net/can/can327.c
+@@ -624,9 +624,10 @@ static void can327_handle_prompt(struct can327 *elm)
+ 			snprintf(local_txbuf, sizeof(local_txbuf), "ATRTR\r");
+ 		} else {
+ 			/* Send a regular CAN data frame */
++			int dlc = min_t(int, frame->len, CAN_MAX_DLEN);
+ 			int i;
+ 
+-			for (i = 0; i < frame->len; i++) {
++			for (i = 0; i < dlc; i++) {
+ 				snprintf(&local_txbuf[2 * i],
+ 					 sizeof(local_txbuf), "%02X",
+ 					 frame->data[i]);
+-- 
+2.50.1
 
