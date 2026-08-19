@@ -1,141 +1,124 @@
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B031E3C98A2
-	for <linux-can@vger.kernel.org>; Wed, 19 Aug 2026 05:42:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 166403CCFB0;
+	Wed, 19 Aug 2026 05:52:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787118128; cv=none; b=H1rwBOg6aTrzLIiZadfMgN23LSW9weJLnHvlqv7BigvVR/duNp/LELXOP0esMH+N6DGKLym5c5DwkkXZiSYD+oL/pPlYcVfzYB26F+NmxDSOs0HOyoauYpaiY99qwWKsjwvLVnac2wECz7M/BTfkxvZyMyR6HMPvDbAUQ0re/I4=
+	t=1787118781; cv=none; b=OM35r1WBYOGP5FobLcOvbPjONhqQOxB2EwK1oLM44TRyOGPirjxcdyMW74q3auet0wr2BpgaJa7j/ODT4pf+0UDL4JCBn4nO6gf3qOnLwTRqcRpi+dnXwwUV7tR6L6O1ZKsecplWUtPCDgdGCcfsXuUEUrGWtkYdLXecVAbndxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787118128; c=relaxed/simple;
-	bh=QE9C4a2SKiQIF9oFg+qY0uuRyvsD4L7tCcsdTejkaDw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AkfjTWIPvO+f2pfU2vzRHTt/E5XikSFA7gihOAJI26BYCThPsWnZvI+elRz3Afgc5bHaAL5YSRIp2gndOoWqNcURbGYpawy1nJP9J3T0tFcN0oKDivePiOT0Vu50sg0t78omkVJaKWtQ8elDuocMI/NnrdsSRvUeLPSHBb+YFQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xbow.com; spf=pass smtp.mailfrom=xbow.com; dkim=pass (2048-bit key) header.d=xbow.com header.i=@xbow.com header.b=k3f6v7MP; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xbow.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xbow.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=xbow.com header.i=@xbow.com header.b="k3f6v7MP"
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-84e0688b7e8so572952b3a.1
-        for <linux-can@vger.kernel.org>; Tue, 18 Aug 2026 22:42:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=xbow.com; s=google; t=1787118126; x=1787722926; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=6YEZkr3wdZlff5LqCyllrwAL2QGPkgIQWwMDmAIlEzc=;
-        b=k3f6v7MPG6K2pG45d3myTJYp5fBNj5uPw8igl3GuM5uf8+imxyoY87YSqptOkaR3bR
-         EXyuoBvzQMHPZnw4nm8PveUCTHD0k3xVuYtixblfAgHOiy6SBF7Efb6fl09tQx8m/NbW
-         bfhP6RN4z+F+HWYyxz/61x6BUSKRttaj1Rf2nC4Pi3gKDoGUD1lWDxGZtFGu31dZZmDm
-         /WKO041JmS+GByugrMIc0eMyt4LTqrDWszfZaO/6/uzEHdoI0q6Bip/Qjft/4JyHxxdO
-         V6OzH0R5pOsZJta/oYymvwL8jGPTnDkYmwd/9eTHHbnPFL3IxvPIKI7mcKlVcwYdbOJj
-         id+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787118126; x=1787722926;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=6YEZkr3wdZlff5LqCyllrwAL2QGPkgIQWwMDmAIlEzc=;
-        b=YWleZzols/G5AY2jvFyK4v9MayoaiHtuHO8dniAmmkRRgAty9uUIqVdZwIPYAWWG8E
-         lD9OQoM4CjFj328+qyDgMWyCOOMGQJ5h/zyxfsugCAL20NGvu5FFIT9Wa2QsOZsXeMjL
-         v/gVE+nYTkfHTTUa5bCUqu7L75fhQsEVwXfgmwRiXW7f0hrfReUOKPlgQL3LMpNnIsSW
-         G1ixraQ2e8FioI6keWQ2gold0t0NMjQs37Y55rxn6TA0stDpeluxfn/9eiyJLT6mSs+q
-         T7ET1f+28yg5shcJCOa+pRUw4BlH9bXpyvTFAfVujMAj/t99hlJijRV2iTn2ES3EhIeL
-         cGmA==
-X-Gm-Message-State: AOJu0Ywhh4/I9TyB0VIH7YyILauALsn/0EeiQZT6My7RR1O/axJXH50M
-	QSTLdu7zuPTImhJZeX0loiR8/1d10Z61ZylnhhLsIE2eKJCyRjuUELU2We4Ta1Gr9xQ=
-X-Gm-Gg: AR+sD112LlPThqJNtFd0teJUPxP6+S7dYiAdiJSLgd9Q3PbrJBRpMgH5nDR14P5NmS/
-	mlpxRmu1GQOE+9ybZrUW4Un2nRnanVQLNTgw19RU+EHIBjf4weiYl4/6VKfdSBnLRJmgzMRoAwk
-	nvxg1bNlidaY6ACWVTOJfZRAi3ny01oiQO7qc7f0xrLGr4lSaoHakQl6pY7jKsJGy0iwpPAI5Hd
-	KyQbkTrQrR/zbouwPLV7nPAv5fHwwYbEbmCMeB1awtSjIVhPRJ8bdZv+Hh4FmshwHE9wKHdXSvt
-	/gxiXY39eHDU5MpIt6dQTsptTJsAf0SxGpTFnlaFxIKiDdoUbfXY5sxaT1RUknZNebLangsVhLl
-	oEGx4yYfsaZUE8a1X5R1p4DwlWkL9JxO39F3tq4Qk9IIWD/areip6UToRwHWTZf4Kuy9TDV5ZfG
-	EOq+7K1MVxh+WgJKMogBWopV87nuAnm2YUVkd+n2FvvLeFq52qfECf4wO4qjQWyLyPI7hCmSzgL
-	smTdQ8bSCDort65MzLddtZFW6SN
-X-Received: by 2002:a05:6a00:179c:b0:848:2b8f:c9d7 with SMTP id d2e1a72fcca58-851d3a87889mr3230385b3a.18.1787118125727;
-        Tue, 18 Aug 2026 22:42:05 -0700 (PDT)
-Received: from Mac.lan ([125.128.148.126])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-851d3389fcfsm214485b3a.18.2026.08.18.22.42.03
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 18 Aug 2026 22:42:05 -0700 (PDT)
-From: Baul Lee <baul.lee@xbow.com>
-To: max@enpas.org,
-	mkl@pengutronix.de,
-	mailhol@kernel.org
-Cc: linux-can@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	federico.kirschbaum@xbow.com
-Subject: [PATCH net] can: can327: Fix stack out-of-bounds write in can327_handle_prompt()
-Date: Wed, 19 Aug 2026 14:42:01 +0900
-Message-ID: <20260819054201.67294-1-baul.lee@xbow.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1787118781; c=relaxed/simple;
+	bh=Bbewlk3dMzOJSN24IHNYqFjqfc1SMKDL6h4dpgYiL70=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OpRWmGvWzQd3h4aEdoUh3f8JGNR5nzkYdC1fsRx/g3NHOy02y/3k8FgYRzcSEKxQHJFRcrq4c/8I2PiFXH0HR6NDNY1RrJ7ns0LjGGFSfzPZKzQ3zY0Ylsx/8STLqiblyZYTSuQbqTjv/sjjuUbaqyfonSRyWdZuyYrmEIdY91w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 58C90201AC8;
+	Wed, 19 Aug 2026 07:52:50 +0200 (CEST)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1wwZEI-002FAX-0s;
+	Wed, 19 Aug 2026 07:52:50 +0200
+Received: from pengutronix.de (unknown [89.207.172.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 770AA585FF8;
+	Wed, 19 Aug 2026 05:52:49 +0000 (UTC)
+Date: Wed, 19 Aug 2026 07:52:48 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Baul Lee <baul.lee@xbow.com>
+Cc: max@enpas.org, mailhol@kernel.org, linux-can@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, federico.kirschbaum@xbow.com
+Subject: Re: [PATCH net] can: can327: Fix out-of-bounds write in
+ can327_parse_frame()
+Message-ID: <20260819-shapeless-peculiar-mosquito-891494-mkl@pengutronix.de>
+References: <20260818215029.47758-1-baul.lee@xbow.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="aotvdy4oyhpinnkw"
+Content-Disposition: inline
+In-Reply-To: <20260818215029.47758-1-baul.lee@xbow.com>
 
-can327_handle_prompt() hexdumps the frame queued for transmission, two
-hex characters per payload byte, into an 18-byte on-stack buffer sized
-for a classical 8-byte payload. The loop runs frame->len times without a
-clamp, and frame is a struct can_frame copied verbatim from the skb
-passed to can327_netdev_start_xmit().
 
-A CAN XL frame aliases struct can_frame such that canxl_frame.flags,
-which must carry CANXL_XLF, overlaps can_frame.len, so it arrives with
-frame->len == 0x80. can327 is a classical CAN device, but
-can_dev_dropped_skb() only rejects CAN FD for a non-FD device; for
-ETH_P_CANXL, can_dropped_invalid_skb() checks only that the frame is a
-well-formed CAN XL frame, not that the device supports one. The smallest
-such frame, CANXL_HDR_SIZE + CANXL_MIN_DLEN, is 13 bytes, so it also
-passes the MTU check on a CAN_MTU device. CAN_RAW rejects it, as
-raw_check_txframe() requires CAN_CAP_XL, but an AF_PACKET SOCK_RAW
-socket does not go through that check.
+--aotvdy4oyhpinnkw
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH net] can: can327: Fix out-of-bounds write in
+ can327_parse_frame()
+MIME-Version: 1.0
 
-The loop then writes 128 hex pairs over the buffer and past the end of
-the stack frame:
+On 19.08.2026 06:50:29, Baul Lee wrote:
+> can327_parse_frame() assigns the CAN payload length from the DLC nibble
+> of the adapter's ASCII frame line, hex_to_bin(elm->rxbuf[datastart - 2]),
+> without validating it. A standard-format line only has to satisfy
+> rxbuf[3] =3D=3D ' ' and rxbuf[5] =3D=3D ' ', so the DLC nibble rxbuf[4] c=
+an be a
+> space, for which hex_to_bin() returns -1, and that becomes 255 in the u8
+> frame->len. A hex nibble of 9 to f is not rejected either, while
+> CAN_MAX_DLEN is 8.
+>
+> frame->data[] is the 8-byte payload of the 16-byte struct can_frame
+> returned by alloc_can_skb(), so the data-nibble loop writes up to 255
+> device-controlled bytes, 247 of them past the frame and over the
+> trailing skb_shared_info. The length check before the loop only requires
+> the line to be frame->len * 3 + datastart bytes, which a long enough
+> line of hex and spaces satisfies. Freeing the corrupted skb then faults:
+>
+>   pc : skb_release_data+0xf4/0x200
+>   Call trace:
+>    skb_release_data+0xf4/0x200 (P)
+>    sk_skb_reason_drop+0x40/0xa4
+>    can_rcv+0x6c/0xbc
+>    __netif_receive_skb_one_core+0x40/0x4c
+>    can327_ldisc_rx+0xc8/0x140
+>    tty_ldisc_receive_buf+0x48/0x60
+>    flush_to_ldisc+0xdc/0x1b0
+>   Kernel panic - not syncing: Oops: Fatal exception in interrupt
+>
+> Reject the line when the nibble is not a hex digit or exceeds
+> CAN_MAX_DLEN, as the parser already does for other malformed lines.
+>
+> Attaching the N_CAN327 line discipline requires CAP_NET_ADMIN, but the
+> frame lines then come from the ELM327 device, so a malicious adapter
+> reaches this path with device-controlled data.
+>
+> Discovered by XBOW, triaged by Baul Lee <baul.lee@xbow.com>
 
-  BUG: KASAN: stack-out-of-bounds in vsnprintf+0x550/0x83c
-  Write of size 1 at addr ffff800085407a32 by task kworker/u18:0/36
-  Call trace:
-   vsnprintf+0x550/0x83c
-   snprintf+0xa4/0xe0
-   can327_handle_prompt+0x5c4/0x69c
-   can327_parse_rxbuf+0x618/0xb50
-   can327_ldisc_rx+0x118/0x1c0
-   tty_ldisc_receive_buf+0xc0/0xe0
-   flush_to_ldisc+0x11c/0x278
-  This frame has 1 object:
-   [32, 50) 'local_txbuf'
-  Kernel panic - not syncing: stack-protector: Kernel stack is corrupted
-  in: can327_handle_prompt+0x66c/0x69c
+Assuming XBOW is some kind of LLM/Agent/..., you can convert this into:
 
-Clamp the dump to CAN_MAX_DLEN, which is what the buffer is sized for.
+Assisted-by: AGENT_NAME:MODEL_VERSION [TOOL1] [TOOL2]
 
-Discovered by XBOW, triaged by Baul Lee <baul.lee@xbow.com>
+regards,
+Marc
 
-Fixes: fb08cba12b52 ("can: canxl: update CAN infrastructure for CAN XL frames")
-Signed-off-by: Baul Lee <baul.lee@xbow.com>
----
- drivers/net/can/can327.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-diff --git a/drivers/net/can/can327.c b/drivers/net/can/can327.c
-index 90f5e35f3c8f..396db56775a6 100644
---- a/drivers/net/can/can327.c
-+++ b/drivers/net/can/can327.c
-@@ -624,9 +624,10 @@ static void can327_handle_prompt(struct can327 *elm)
- 			snprintf(local_txbuf, sizeof(local_txbuf), "ATRTR\r");
- 		} else {
- 			/* Send a regular CAN data frame */
-+			int dlc = min_t(int, frame->len, CAN_MAX_DLEN);
- 			int i;
- 
--			for (i = 0; i < frame->len; i++) {
-+			for (i = 0; i < dlc; i++) {
- 				snprintf(&local_txbuf[2 * i],
- 					 sizeof(local_txbuf), "%02X",
- 					 frame->data[i]);
--- 
-2.50.1
+--aotvdy4oyhpinnkw
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCaoVErAAKCRDMOmT6rpmt
+0uPRAQDk/Eay7rLlEZFkkYHhuYi7EyiQencLuwhFbH2LjjDzcQEA5owffihFN36S
+bscdNrWlLlyTjxiR0uoeo95AkzZC0gA=
+=L8vv
+-----END PGP SIGNATURE-----
+
+--aotvdy4oyhpinnkw--
