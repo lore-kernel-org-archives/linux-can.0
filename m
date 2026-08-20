@@ -1,88 +1,138 @@
-Received: from mail-m155101.qiye.163.com (mail-m155101.qiye.163.com [101.71.155.101])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58453339375;
-	Thu, 20 Aug 2026 02:06:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=101.71.155.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DD05345EAE
+	for <linux-can@vger.kernel.org>; Thu, 20 Aug 2026 02:20:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787191612; cv=none; b=JLw2xkUIl8DDtWSCc2djggIz9bquuHjtwSysMGv7slMMf4w8qx3pdbZkpIaO42viatadZZC7YqVaoGoj1KZrt+l4lJy/qDB1n5uE0PnlMuCDYOkwfq+826R1e1n45DbkxlXQYbRqFF75fvZ9HwYeOyh/NsE1IBDWkdP2mmNppRo=
+	t=1787192423; cv=none; b=ftLXIHBXAzd20HKsVl/WO+al4iYMWOo7f0EzRz5K+BDrswAoDc0p//xJyswb/lstTaiqb46x12e4ObvI37Kn1Uhavu4HQHaRJZIaYYK22v8qP/jAG3Kb7Nk2juNqSUD5szjXlPCerec7Vkwcwv7VB4sj0KjMKp2jkWO3jpM5K+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787191612; c=relaxed/simple;
-	bh=89NUllVuLa13zA0UwZL5QumunVeP1IB2K3Tss1SVSSw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IC97ZHwgHme/KL0NHUJrQL8jV1GmQRqRwrugTihJp7X2LrlK1A3uZ0cq9+WIrzAyDj3WS8JIAxJKK3WWFK3J4c4fEFr6vLAEmQjP1gyZkwFAuAPaVHO4qCGRN+o2y7PmkBcVlI5/56w8eF1pqqcti+o3d23NzGyxszAjgmiagdY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=seu.edu.cn; spf=pass smtp.mailfrom=seu.edu.cn; dkim=pass (1024-bit key) header.d=seu.edu.cn header.i=@seu.edu.cn header.b=PymFJ986; arc=none smtp.client-ip=101.71.155.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=seu.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=seu.edu.cn
+	s=arc-20240116; t=1787192423; c=relaxed/simple;
+	bh=8B50Wuj9kRFWD0XUf0BQOWRLRTpcl8InsLiJ5eJUzJo=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=N/wbMa7F2Jg7fHbYMmMPSBA4t3ltjEfQ+srO0phvPP4Z2Nsm/CUHMAxq0OjDdFMUcKgclzQ1Vfg5ukGUUkX/Cm1RzR6d3IlS9ETh9tIDbZZ8pBxLJfhBoNRtURB7RWreQGvLrQdt4Co4KWnbnNcicz74fWUygbtUzssWALb/79E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BaVJL5Jq; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=seu.edu.cn header.i=@seu.edu.cn header.b="PymFJ986"
-Received: from PC-202605011814.localdomain (unknown [58.241.16.34])
-	by smtp.qiye.163.com (Hmail) with ESMTP id 4aa175c1e;
-	Thu, 20 Aug 2026 10:06:41 +0800 (GMT+08:00)
-From: Runyu Xiao <runyu.xiao@seu.edu.cn>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Vincent Mailhol <mailhol@kernel.org>,
-	linux-can@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	Runyu Xiao <runyu.xiao@seu.edu.cn>,
-	Jianhao Xu <jianhao.xu@seu.edu.cn>
-Subject: [PATCH] can: hi311x: drop hi3110_lock before free_irq() on open failure
-Date: Thu, 20 Aug 2026 10:06:31 +0800
-Message-Id: <20260820020631.316418-1-runyu.xiao@seu.edu.cn>
-X-Mailer: git-send-email 2.34.1
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BaVJL5Jq"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70B381F000E9;
+	Thu, 20 Aug 2026 02:20:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1787192421;
+	bh=r5Je99qnoX3gECZoe+aar1uFM1WHB0c69PR55efisZQ=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=BaVJL5JqVVzCu/EYAgHCwXm5J005wId/4ZACpHkdLcWbBibj0YgukJtjaZHwtpKaO
+	 ggLBhWv6aIxTbnIJWrCLk1E4eQUx1of9WsXpagIyUd08qSrlNqSFMEkbGC/3R4UNJ6
+	 HaVulFZAWRnqn2EeU1BkkwYLIeSRIX4bgrFSSnONk32OuVz+rkdO6HisGuIYu9UqAE
+	 b/DekiNZthlmyx9JTHE+NwMGdQP78vJqet0ZpcIkTKVJ0kpeXWHWksQjYbsmwF4hzc
+	 FF53za+YWMQ4IZMfq+xQTQrxXxU2RxhOQW+ICf5narSAJCzvVvQ0BhSbppjNqDayyi
+	 5VEB7AeXmp57w==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH] can: hi311x: drop hi3110_lock before free_irq() on open
+ failure
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Runyu Xiao" <runyu.xiao@seu.edu.cn>
+Cc: linux-can@vger.kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>
+In-Reply-To: <20260820020631.316418-1-runyu.xiao@seu.edu.cn>
+References: <20260820020631.316418-1-runyu.xiao@seu.edu.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 20 Aug 2026 02:20:20 +0000
+Message-Id: <20260820022021.70B381F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Tid: 0aa01ceba98e03a1kunmb6d33aac1563dd
-X-HM-MType: 10
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFITzdXWRgWCB1ZQUpXWS1ZQUlXWQ8JGhUIEh9ZQVkaGh9JVklIQksdSRhMHUpDHlYeHw
-	5VEwETFhoSFyQUDg9ZV1kYEgtZQVlOQ1VJT0pVSk1VSE9ZV1kWGg8SFR0UWUFZT0tIVUpLSEpPSE
-	xVSktLVUpCS0tZBg++
-DKIM-Signature: a=rsa-sha256;
-	b=PymFJ986qleGOpBYPed/cM+5dYgQXnWXvEiWMVaM3QPB4Bf/gIqYl2n7cUv38UnLive0Y4RpjkA01wzoJkZRWksf5CXQmlIq7sc6Pnb+luGYVp4YnAQJja7C5NLOm/tXYNuo+4W4pFn6AR2tW807STUpfrnSlEpbdLn1bO+brIQ=; c=relaxed/relaxed; s=default; d=seu.edu.cn; v=1;
-	bh=hLCx9DuAdssfq5Iq39uofghTJ6JX1al4g3GpOnyZgdw=;
-	h=date:mime-version:subject:message-id:from;
 
-hi3110_open() requests a threaded IRQ and then performs hardware
-setup while holding priv->hi3110_lock. If reset, setup, or
-normal-mode entry fails, the error path calls free_irq() while still
-holding that mutex.
+Thank you for your contribution! Sashiko AI review found 2 potential issue(=
+s) to consider:
 
-The threaded handler takes priv->hi3110_lock before checking
-force_quit, while free_irq() waits for the threaded handler to finish.
-That can deadlock the open() rollback path against a pending IRQ
-thread.
+Pre-existing issues:
+- [High] Concurrent execution of `hi3110_clean` due to a missing lock in `h=
+i3110_do_set_mode` can lead to a double-free (use-after-free) of `priv->tx_=
+skb`.
+- [High] The driver fails to cancel pending works in `hi3110_stop` and `hi3=
+110_can_remove`, allowing deferred I/O on stopped or powered-off hardware.
+--
 
-Set force_quit, drop hi3110_lock before free_irq(), and take the
-mutex again for the remaining hardware cleanup.
+--- Patch [1]: [PATCH] can: hi311x: drop hi3110_lock before free_irq() on o=
+pen failure ---
+commit d2d3a5df6413395872456083be56586448f72c40
+Author: Runyu Xiao <runyu.xiao@seu.edu.cn>
 
-Fixes: 57e83fb9b746 ("can: hi311x: Add Holt HI-311x CAN driver")
+can: hi311x: drop hi3110_lock before free_irq() on open failure
+
+hi3110_open() requests a threaded IRQ and then performs hardware setup
+while holding priv->hi3110_lock. The patch fixes a deadlock by dropping
+the lock before free_irq() in the open rollback path.
+
 Cc: stable@vger.kernel.org
-Signed-off-by: Runyu Xiao <runyu.xiao@seu.edu.cn>
----
- drivers/net/can/spi/hi311x.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
-index ae90e6716de5..2be851e8907d 100644
---- a/drivers/net/can/spi/hi311x.c
-+++ b/drivers/net/can/spi/hi311x.c
-@@ -787,7 +787,10 @@ static int hi3110_open(struct net_device *net)
- 	return 0;
- 
-  out_free_irq:
-+	priv->force_quit = 1;
-+	mutex_unlock(&priv->hi3110_lock);
- 	free_irq(spi->irq, priv);
-+	mutex_lock(&priv->hi3110_lock);
- 	hi3110_hw_sleep(spi);
-  out_close:
- 	hi3110_power_enable(priv->transceiver, 0);
--- 
-2.34.1
+> diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
+> index ae90e6716de5b..2be851e8907d0 100644
+> --- a/drivers/net/can/spi/hi311x.c
+> +++ b/drivers/net/can/spi/hi311x.c
 
+[ ... ]
+
+[Severity: High]
+This is a pre-existing issue, but can this lead to a double-free of
+priv->tx_skb?
+
+If hi3110_do_set_mode() is called (e.g. via netlink for manual bus-off
+recovery), it unconditionally calls hi3110_clean() without acquiring
+priv->hi3110_lock:
+
+drivers/net/can/spi/hi311x.c:hi3110_do_set_mode() {
+	...
+	case CAN_MODE_START:
+		hi3110_clean(net);
+	...
+}
+
+Concurrently, hi3110_tx_work_handler() can access and free priv->tx_skb
+under the lock:
+
+drivers/net/can/spi/hi311x.c:hi3110_tx_work_handler() {
+	...
+	frame =3D (struct can_frame *)priv->tx_skb->data;
+	...
+}
+
+Since hi3110_clean() frees priv->tx_skb unconditionally without the lock,
+could both threads attempt to process and free the exact same sk_buff
+simultaneously?
+
+[Severity: High]
+This isn't a bug introduced by this patch, but is there a risk of running
+deferred I/O on stopped or powered-off hardware?
+
+In hi3110_stop(), the device state is torn down without cancelling
+pending works like priv->restart_work and priv->tx_work:
+
+drivers/net/can/spi/hi311x.c:hi3110_stop() {
+	struct hi3110_priv *priv =3D netdev_priv(net);
+	...
+}
+
+Furthermore, during driver unbind, hi3110_can_remove() disables hardware
+power before destroying the workqueue:
+
+drivers/net/can/spi/hi311x.c:hi3110_can_remove() {
+	...
+	unregister_candev(net);
+
+	hi3110_power_enable(priv->power, 0);
+
+	destroy_workqueue(priv->wq);
+	...
+}
+
+Since destroy_workqueue() flushes pending works, could this cause the works
+to execute on powered-off hardware and unregistered netdevs?
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260820020631.3164=
+18-1-runyu.xiao@seu.edu.cn?part=3D1
