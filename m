@@ -1,163 +1,88 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
+Received: from mail-m155101.qiye.163.com (mail-m155101.qiye.163.com [101.71.155.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EC623BF677
-	for <linux-can@vger.kernel.org>; Wed, 19 Aug 2026 17:06:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.53
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787159171; cv=pass; b=Ehh1mjB85MPtBXjRjPaN2JykTlPbkEON112eqxntVe+2fd4KKtggfMI9HqrYi/zgPg4wVqTnqKlwQGnI+gYG3+drJfBLmh4v/DycFelcIxqa5Zqv4IIVa/i8kzV9UeZ6bAmCw5Q8T8y6dLN9Dr8mYBPWbbW8OoXlFu0aOfBbj/M=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787159171; c=relaxed/simple;
-	bh=XZKDG5oRID/PK9mkYKTUI0I6iYxS7XDXpjoDeuHAFC8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pRzIXSxjzcwBWbNFplRoKNYxCMvUFM+8AxhJtdiCkTd3APx9Cb0VdE7HzDvRe+vnZvfE8ZYdEYRy9YmJ1QZS3EHCe5TIfvuSaJ5HXRON1RMuThYL7SNr3sYMBeFQBHHPoqvj/ko+EvUWcZ0yuS3OQOEUvYoC4fps0MUWoKbXpiw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=klJxMM6o; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=zoIjzOai; arc=pass smtp.client-ip=85.215.255.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58453339375;
+	Thu, 20 Aug 2026 02:06:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=101.71.155.101
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1787191612; cv=none; b=JLw2xkUIl8DDtWSCc2djggIz9bquuHjtwSysMGv7slMMf4w8qx3pdbZkpIaO42viatadZZC7YqVaoGoj1KZrt+l4lJy/qDB1n5uE0PnlMuCDYOkwfq+826R1e1n45DbkxlXQYbRqFF75fvZ9HwYeOyh/NsE1IBDWkdP2mmNppRo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1787191612; c=relaxed/simple;
+	bh=89NUllVuLa13zA0UwZL5QumunVeP1IB2K3Tss1SVSSw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IC97ZHwgHme/KL0NHUJrQL8jV1GmQRqRwrugTihJp7X2LrlK1A3uZ0cq9+WIrzAyDj3WS8JIAxJKK3WWFK3J4c4fEFr6vLAEmQjP1gyZkwFAuAPaVHO4qCGRN+o2y7PmkBcVlI5/56w8eF1pqqcti+o3d23NzGyxszAjgmiagdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=seu.edu.cn; spf=pass smtp.mailfrom=seu.edu.cn; dkim=pass (1024-bit key) header.d=seu.edu.cn header.i=@seu.edu.cn header.b=PymFJ986; arc=none smtp.client-ip=101.71.155.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=seu.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=seu.edu.cn
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="klJxMM6o";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="zoIjzOai"
-ARC-Seal: i=1; a=rsa-sha256; t=1787159150; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=pLpFwDJQhmteyu6JBvBlORGODRkRCPctPQSFi07HQd8XxJ/6zkz8Z/cNmmLQEWeUHg
-    lUYnk41NqISmc7BpvGiZxzWMD+MM31CI98CmvvnuVfu1HgtaK3UyO9dcORfyAKkktG19
-    DSKtg/i0SVKmPeiaZiU4VnZn8/dDAIlXZ8psLp5/NqyFlIOhce70S9TQ9wyusnEsUYKC
-    6DPfbet/vPJpLx2SDX39uCaOYXM2eXlGTsaSL5S2nnoEBgSWjp1yP2djcbjXZpzsDf89
-    43uVjzG7BVs6c4tmjSz9tmY0Egn3GZalYr6vDjXD8XlYOSQKZvwl6T04dZK33iIg66aq
-    yWjw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1787159150;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=2/C/k4fm6iI42koNfQq1rvPva+OpRt+uiPHdqxxkqfo=;
-    b=TSBHECkMCsoMqr7AuQsnp0iV55tgISJvv4KT+j9EIPcdTPDE+KoXjuHfsyavabH9KT
-    ZIDFCnbCGIA4Bkbj90CH/QtNkzIn6r06cYX7DTQKbvOt/a9b9d9gSZ0I+aV/wuA3B6X9
-    qGz5BcUIKOYZN0JHkXnKREXCn96H4Vg4BdrvGoZInWXtKDlJ8wvekr80kyYlelzNGPtS
-    qMMf7gS8nM3ctjSOaoR0BPiKqSc1vRr1/INqGyX+s51I/DfXGIsoF6IK/4KIvmY9NNE2
-    aMv2JnWjSJmigdvwb6shEn5O0IXGin7EoQapyMuXaAd2zaYThVFpvatGnnyOneKbek60
-    2GFA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1787159150;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=2/C/k4fm6iI42koNfQq1rvPva+OpRt+uiPHdqxxkqfo=;
-    b=klJxMM6oQ7MetJwQ5n/jZBHDuosiDdsQzFrmjrGlTh4nvFsmUT4bLqB+/2Nc4YK86K
-    t3W0+JhTaY218pJbbBR3w9mv9ljW+zKSZI/8hnao7ZjbSDXtANJ73ZLdi1Q3BCVF7ki/
-    Eq9UpBn2rBLPcRpzJfLHUuFAffPZrfLgsb4b+tnHTYYp0cfDyRR6hQt9S0ezRsA8weiy
-    9i6X8wEyp27FNSoyBd1oa35IPZyXNs5x9zGLFek4QphJqR1TzPJPc0ti+vBvTOmhKu06
-    c92aRXj+ClKnhHJ+vpzvQ6Yx38u+AMlEr5wQRC/STTTtIKJI3EZ64IgW+6u0D7qc0yv5
-    qeCA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1787159150;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=2/C/k4fm6iI42koNfQq1rvPva+OpRt+uiPHdqxxkqfo=;
-    b=zoIjzOaiU4bCNXQm66KFYB4T50NC9at8+afHjYJuwJKL++5JLJPf4g8wFOKG+T2C5V
-    sD2q0CO7QxIMHwuHcICg==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.2 AUTH)
-    with ESMTPSA id K171b727JH5nMgH
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Wed, 19 Aug 2026 19:05:49 +0200 (CEST)
-Message-ID: <140b6ce8-d920-46c4-a83c-0d52b8f1c653@hartkopp.net>
-Date: Wed, 19 Aug 2026 19:05:44 +0200
+	dkim=pass (1024-bit key) header.d=seu.edu.cn header.i=@seu.edu.cn header.b="PymFJ986"
+Received: from PC-202605011814.localdomain (unknown [58.241.16.34])
+	by smtp.qiye.163.com (Hmail) with ESMTP id 4aa175c1e;
+	Thu, 20 Aug 2026 10:06:41 +0800 (GMT+08:00)
+From: Runyu Xiao <runyu.xiao@seu.edu.cn>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Vincent Mailhol <mailhol@kernel.org>,
+	linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Runyu Xiao <runyu.xiao@seu.edu.cn>,
+	Jianhao Xu <jianhao.xu@seu.edu.cn>
+Subject: [PATCH] can: hi311x: drop hi3110_lock before free_irq() on open failure
+Date: Thu, 20 Aug 2026 10:06:31 +0800
+Message-Id: <20260820020631.316418-1-runyu.xiao@seu.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] can: convert unreliable ARPHRD_CAN type checks to robust
- can_get_ml_priv()
-To: sashiko-reviews@lists.linux.dev
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
- Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
- Vincent Mailhol <mailhol@kernel.org>
-References: <20260819160822.8256-1-socketcan@hartkopp.net>
- <20260819162609.2EF0E1F000E9@smtp.kernel.org>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20260819162609.2EF0E1F000E9@smtp.kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-HM-Tid: 0aa01ceba98e03a1kunmb6d33aac1563dd
+X-HM-MType: 10
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWRgWCB1ZQUpXWS1ZQUlXWQ8JGhUIEh9ZQVkaGh9JVklIQksdSRhMHUpDHlYeHw
+	5VEwETFhoSFyQUDg9ZV1kYEgtZQVlOQ1VJT0pVSk1VSE9ZV1kWGg8SFR0UWUFZT0tIVUpLSEpPSE
+	xVSktLVUpCS0tZBg++
+DKIM-Signature: a=rsa-sha256;
+	b=PymFJ986qleGOpBYPed/cM+5dYgQXnWXvEiWMVaM3QPB4Bf/gIqYl2n7cUv38UnLive0Y4RpjkA01wzoJkZRWksf5CXQmlIq7sc6Pnb+luGYVp4YnAQJja7C5NLOm/tXYNuo+4W4pFn6AR2tW807STUpfrnSlEpbdLn1bO+brIQ=; c=relaxed/relaxed; s=default; d=seu.edu.cn; v=1;
+	bh=hLCx9DuAdssfq5Iq39uofghTJ6JX1al4g3GpOnyZgdw=;
+	h=date:mime-version:subject:message-id:from;
 
+hi3110_open() requests a threaded IRQ and then performs hardware
+setup while holding priv->hi3110_lock. If reset, setup, or
+normal-mode entry fails, the error path calls free_irq() while still
+holding that mutex.
 
+The threaded handler takes priv->hi3110_lock before checking
+force_quit, while free_irq() waits for the threaded handler to finish.
+That can deadlock the open() rollback path against a pending IRQ
+thread.
 
-On 19.08.26 18:26, sashiko-bot@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 1 potential issue(s) to consider:
-> 
-> Pre-existing issues:
-> - [High] Data modification of shared/cloned SKBs in `can_send()` causes payload corruption for concurrent users.
-> --
-> 
-> --- Patch [1]: [PATCH] can: convert unreliable ARPHRD_CAN type checks to robust can_get_ml_priv() ---
-> commit 57320b2cc995d1852816aaacf79460f42c05858d
-> Author: Oliver Hartkopp <socketcan@hartkopp.net>
-> 
-> can: convert unreliable ARPHRD_CAN type checks to robust can_get_ml_priv()
-> 
-> This commit updates the CAN subsystem to use can_get_ml_priv() for
-> identifying valid CAN devices instead of relying on ARPHRD_CAN. This
-> prevents issues with TUN/TAP devices that might overwrite their hardware
-> type without properly initializing the midlayer private data.
-> 
-> Cc: stable@kernel.org
-> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-> 
->> diff --git a/net/can/af_can.c b/net/can/af_can.c
->> index 7bc86b176b4de..ef435f22ac933 100644
->> --- a/net/can/af_can.c
->> +++ b/net/can/af_can.c
->> @@ -226,7 +226,7 @@ int can_send(struct sk_buff *skb, int loop)
->>   		goto inval_skb;
->>   	}
->>   
-> 
-> [Severity: High]
-> This is a pre-existing issue, but can modifying the SKB payload here cause
-> data corruption for concurrent receivers?
-> 
-> Earlier in can_send(), the SKB data is directly modified without checking if
-> it is shared:
-> 
-> 	} else if (can_is_canfd_skb(skb)) {
-> 		struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
-> 
-> 		skb->protocol = htons(ETH_P_CANFD);
-> 
-> 		/* set CAN FD flag for CAN FD frames by default */
-> 		cfd->flags |= CANFD_FDF;
-> 
-> When routing frames without data modifications, can_can_gw_rcv() creates
-> a cloned SKB using skb_clone() and passes it to can_send():
-> 
-> net/can/gw.c:can_can_gw_rcv() {
-> 	...
-> 	nskb = skb_clone(skb, GFP_ATOMIC);
-> 	...
-> 	can_send(nskb, gwj->limit_hops);
-> }
-> 
-> Since skb_clone() shares the underlying data buffer, wouldn't modifying
-> cfd->flags directly in can_send() corrupt the payload for other concurrent
-> users of the original SKB?
-> 
+Set force_quit, drop hi3110_lock before free_irq(), and take the
+mutex again for the remaining hardware cleanup.
 
-This is a common remark from Sashiko-bot when looking at this code.
+Fixes: 57e83fb9b746 ("can: hi311x: Add Holt HI-311x CAN driver")
+Cc: stable@vger.kernel.org
+Signed-off-by: Runyu Xiao <runyu.xiao@seu.edu.cn>
+---
+ drivers/net/can/spi/hi311x.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-No problem here.
-
->> -	if (unlikely(skb->dev->type != ARPHRD_CAN)) {
->> +	if (unlikely(!can_get_ml_priv(skb->dev))) {
->>   		err = -EPERM;
->>   		goto inval_skb;
->>   	}
-> 
+diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
+index ae90e6716de5..2be851e8907d 100644
+--- a/drivers/net/can/spi/hi311x.c
++++ b/drivers/net/can/spi/hi311x.c
+@@ -787,7 +787,10 @@ static int hi3110_open(struct net_device *net)
+ 	return 0;
+ 
+  out_free_irq:
++	priv->force_quit = 1;
++	mutex_unlock(&priv->hi3110_lock);
+ 	free_irq(spi->irq, priv);
++	mutex_lock(&priv->hi3110_lock);
+ 	hi3110_hw_sleep(spi);
+  out_close:
+ 	hi3110_power_enable(priv->transceiver, 0);
+-- 
+2.34.1
 
