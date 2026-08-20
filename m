@@ -1,138 +1,74 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DD05345EAE
-	for <linux-can@vger.kernel.org>; Thu, 20 Aug 2026 02:20:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A92073358B0
+	for <linux-can@vger.kernel.org>; Thu, 20 Aug 2026 14:27:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787192423; cv=none; b=ftLXIHBXAzd20HKsVl/WO+al4iYMWOo7f0EzRz5K+BDrswAoDc0p//xJyswb/lstTaiqb46x12e4ObvI37Kn1Uhavu4HQHaRJZIaYYK22v8qP/jAG3Kb7Nk2juNqSUD5szjXlPCerec7Vkwcwv7VB4sj0KjMKp2jkWO3jpM5K+Q=
+	t=1787236058; cv=none; b=fej2P8yytn4NNuJv9qMgz4styQVC1Qqa1giqrbnZeFPg6m3uYmzDWk3g4i0ra++MO41m7knYbzyZH5/pAa5/5PyaJ6jCN4S5wiBlIW/RKmSU7CSPG7P4gADS0n+NjOoN3hF1jnnSKBiBkxCLlMCNbxeQbAe9wofTA62B/0ciSUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787192423; c=relaxed/simple;
-	bh=8B50Wuj9kRFWD0XUf0BQOWRLRTpcl8InsLiJ5eJUzJo=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=N/wbMa7F2Jg7fHbYMmMPSBA4t3ltjEfQ+srO0phvPP4Z2Nsm/CUHMAxq0OjDdFMUcKgclzQ1Vfg5ukGUUkX/Cm1RzR6d3IlS9ETh9tIDbZZ8pBxLJfhBoNRtURB7RWreQGvLrQdt4Co4KWnbnNcicz74fWUygbtUzssWALb/79E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BaVJL5Jq; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1787236058; c=relaxed/simple;
+	bh=vQA0r5yrcTneX0AORiBmIrZuk6hYJ+zgTzfFMcT4djE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aSh8qnunhZLqAvrgY+q6XKQB+HADbj6uhZVThTgIeoun9MV0FQ+6KBn8AzUuXCm/17xVXWHKl9Ni5UMVLP1EQxM1MiW93LQP/jNsoZc7lhEGY5kjpCl7IBJzppUYbe7Hme9fTwAFVLBfrjjcAoTR8bAqRDLRO9krg8kIsyBFSz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=24FOXVKQ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TAsyqIJA; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BaVJL5Jq"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70B381F000E9;
-	Thu, 20 Aug 2026 02:20:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1787192421;
-	bh=r5Je99qnoX3gECZoe+aar1uFM1WHB0c69PR55efisZQ=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=BaVJL5JqVVzCu/EYAgHCwXm5J005wId/4ZACpHkdLcWbBibj0YgukJtjaZHwtpKaO
-	 ggLBhWv6aIxTbnIJWrCLk1E4eQUx1of9WsXpagIyUd08qSrlNqSFMEkbGC/3R4UNJ6
-	 HaVulFZAWRnqn2EeU1BkkwYLIeSRIX4bgrFSSnONk32OuVz+rkdO6HisGuIYu9UqAE
-	 b/DekiNZthlmyx9JTHE+NwMGdQP78vJqet0ZpcIkTKVJ0kpeXWHWksQjYbsmwF4hzc
-	 FF53za+YWMQ4IZMfq+xQTQrxXxU2RxhOQW+ICf5narSAJCzvVvQ0BhSbppjNqDayyi
-	 5VEB7AeXmp57w==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH] can: hi311x: drop hi3110_lock before free_irq() on open
- failure
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Runyu Xiao" <runyu.xiao@seu.edu.cn>
-Cc: linux-can@vger.kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Marc
- Kleine-Budde" <mkl@pengutronix.de>
-In-Reply-To: <20260820020631.316418-1-runyu.xiao@seu.edu.cn>
-References: <20260820020631.316418-1-runyu.xiao@seu.edu.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 20 Aug 2026 02:20:20 +0000
-Message-Id: <20260820022021.70B381F000E9@smtp.kernel.org>
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="24FOXVKQ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TAsyqIJA"
+Date: Thu, 20 Aug 2026 16:27:34 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1787236056;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PvfFiI0tLBTSTHL+Uqey1FuM01x9Oh+1UNKqdBw+wHM=;
+	b=24FOXVKQihVu7PqE+aK3LAsy94xTJQClHqzyPjMQo9vQyj9Dbiq3oFauz2pcDgkzOxs+VF
+	tY7dxgRB+hGg1Ehze7QZ5whWag6zr08T2MHenMzQbqadO9uAtBkBeCx9nbBtoD3mjMBUhb
+	44e7wZCLqONKMnT+l5lszXA6yKdbCJ6xyhUWpuLZSujVW+ij7eLuvQtdarXzkgvQEWT39S
+	jFi585/uzaABvKUOk1vA/DqUZ3MUR3Eg/YoI3b2w+XbhkKJ5SNbmSEGg+SNBA5pXOCCRcU
+	oCFEtCNenaYRpXfAHKmPhTmxx0VLxsqHqA/WmesC0cM7+pO3rM6TocqMrAOVeg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1787236056;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PvfFiI0tLBTSTHL+Uqey1FuM01x9Oh+1UNKqdBw+wHM=;
+	b=TAsyqIJAscK+rgbMARUee9KwBP/K9/NR7dDHK2/enFQ2Xy6DwvLL/DYLA1SSLmnd7uexWB
+	CfmmcVgaW7G8OXDQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org
+Subject: Re: [can-next v2] can: proc: remove pointers from CAN specific proc
+ output
+Message-ID: <20260820142734.NuRnRMV9@linutronix.de>
+References: <20260815103400.117175-1-socketcan@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260815103400.117175-1-socketcan@hartkopp.net>
 
-Thank you for your contribution! Sashiko AI review found 2 potential issue(=
-s) to consider:
+On 2026-08-15 12:34:00 [+0200], Oliver Hartkopp wrote:
+> The proc content in /proc/net/can/ and /proc/net/can-bcm/ is intended to
+> check the internal filter lists (af_can, can_raw) and the efficiency and
+> functionality of can_bcm jobs. While it was ok to leak kernel internal
+> addresses at time of writing the times have changed and multiple attempts
+> have been taken to hash or remove such now sensible data.
+> 
+> This patch removes the disclosure of pointers and instead provides the
+> function names and sock inode numbers when available. As there's no known
+> tooling around the CAN specific proc output breaking the ABI with this
+> rework creates no issue.
+> 
+> Suggested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Pre-existing issues:
-- [High] Concurrent execution of `hi3110_clean` due to a missing lock in `h=
-i3110_do_set_mode` can lead to a double-free (use-after-free) of `priv->tx_=
-skb`.
-- [High] The driver fails to cancel pending works in `hi3110_stop` and `hi3=
-110_can_remove`, allowing deferred I/O on stopped or powered-off hardware.
---
+Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
---- Patch [1]: [PATCH] can: hi311x: drop hi3110_lock before free_irq() on o=
-pen failure ---
-commit d2d3a5df6413395872456083be56586448f72c40
-Author: Runyu Xiao <runyu.xiao@seu.edu.cn>
-
-can: hi311x: drop hi3110_lock before free_irq() on open failure
-
-hi3110_open() requests a threaded IRQ and then performs hardware setup
-while holding priv->hi3110_lock. The patch fixes a deadlock by dropping
-the lock before free_irq() in the open rollback path.
-
-Cc: stable@vger.kernel.org
-
-> diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
-> index ae90e6716de5b..2be851e8907d0 100644
-> --- a/drivers/net/can/spi/hi311x.c
-> +++ b/drivers/net/can/spi/hi311x.c
-
-[ ... ]
-
-[Severity: High]
-This is a pre-existing issue, but can this lead to a double-free of
-priv->tx_skb?
-
-If hi3110_do_set_mode() is called (e.g. via netlink for manual bus-off
-recovery), it unconditionally calls hi3110_clean() without acquiring
-priv->hi3110_lock:
-
-drivers/net/can/spi/hi311x.c:hi3110_do_set_mode() {
-	...
-	case CAN_MODE_START:
-		hi3110_clean(net);
-	...
-}
-
-Concurrently, hi3110_tx_work_handler() can access and free priv->tx_skb
-under the lock:
-
-drivers/net/can/spi/hi311x.c:hi3110_tx_work_handler() {
-	...
-	frame =3D (struct can_frame *)priv->tx_skb->data;
-	...
-}
-
-Since hi3110_clean() frees priv->tx_skb unconditionally without the lock,
-could both threads attempt to process and free the exact same sk_buff
-simultaneously?
-
-[Severity: High]
-This isn't a bug introduced by this patch, but is there a risk of running
-deferred I/O on stopped or powered-off hardware?
-
-In hi3110_stop(), the device state is torn down without cancelling
-pending works like priv->restart_work and priv->tx_work:
-
-drivers/net/can/spi/hi311x.c:hi3110_stop() {
-	struct hi3110_priv *priv =3D netdev_priv(net);
-	...
-}
-
-Furthermore, during driver unbind, hi3110_can_remove() disables hardware
-power before destroying the workqueue:
-
-drivers/net/can/spi/hi311x.c:hi3110_can_remove() {
-	...
-	unregister_candev(net);
-
-	hi3110_power_enable(priv->power, 0);
-
-	destroy_workqueue(priv->wq);
-	...
-}
-
-Since destroy_workqueue() flushes pending works, could this cause the works
-to execute on powered-off hardware and unregistered netdevs?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260820020631.3164=
-18-1-runyu.xiao@seu.edu.cn?part=3D1
+Sebastian
