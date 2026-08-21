@@ -1,113 +1,96 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D56F13612ED;
-	Fri, 21 Aug 2026 03:45:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F79A3AD529
+	for <linux-can@vger.kernel.org>; Fri, 21 Aug 2026 08:24:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787283952; cv=none; b=m8rqfh0OmAvmoD+1wEvZ2w5f8hF02E7XLEy22Oiy/jeKee88m/XcOuikswh6qeG6Y9yL/tm7C+rLxgF/F+FmL7QNlUxBqnaF9GEbCuxkSudCtmC22+KYdxRpZNfLKZl6qkNdHXxbIyqiaYUqnHKmPVVjzMXhlWCPcMJdqhNxANM=
+	t=1787300679; cv=none; b=QYqOJ1uIAcH0kC7lPN5CPFgRsX24Tpw3dWYvmRS42PiFEttsPlrmsZRrXqznMgJxd5tdmutwH3tWeY2Ma2PyC9JJkSg4K0cVIreFfOH4Fy4GH4YWrasOhqZ+wdlEg3eaKRPfMMLWzZ65iK3i/k9oAlXESyQ4hRpFXgnqNaBOvZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787283952; c=relaxed/simple;
-	bh=0Vydrt3ssMF7WVBka/76aNk8/QWPspNQVrPsn9wKnUA=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=HmaOvGWgxs+LizGo/NZyyZO/74BMnCsOjCOzrfm5hELn7H8YGYVDZQb6ZfKVazzIZYmTTATLnlDJLKbrcykPjaetvtPC6PwWniiet3seFUzieGBMNd7niEEh+lopBZ5lhVzWMVdGVd1I+8T421KmvJXfZKeYhfx70qpOs2ktAWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P+ektRG3; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P+ektRG3"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9FDD1F00A3A;
-	Fri, 21 Aug 2026 03:45:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1787283951;
-	bh=pnHNL/K5OV3I+LBVvnHcJhb+X7M7xDnIDuy7LRzAooQ=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=P+ektRG3HRUo/AtCh5nFdXi9yhlhJzqOHapzTPIb7UZ0KNDtmeZ2XznSS1YLV0UQI
-	 jvEAuu93yP3hwxvPGDSnRp+lMBpfP54VHhdouNSYkDREh05sKW/Po1A23AlsIC+FBj
-	 FhEk0gRNonRd9V61YXUMaX4nY0sbND9xe00A6luxDageDmoxGsl5iJH/nQBYAIaAqg
-	 l3NTSZhVrPBFHi5tchJ+BPqL5H4ao9cfDjU0ezSYAJIPgE5nPwv3+CZknbT1G8qNQ3
-	 RCWNDTgMHEQLBKtSVbICk4Q5U8Pt6crXdXMjOQekJN5UGqUGxD6R8ytf4oqixBzlaB
-	 IQU7anY6cFhUw==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v7 01/10] mfd: nct6694: Move module type macros to
- shared header
-Reply-To: sashiko-reviews@lists.linux.dev
-To: a0282524688@gmail.com
-Cc: linux-watchdog@vger.kernel.org, lee@kernel.org, linux-hwmon@vger.kernel.org, linux-can@vger.kernel.org, linux-rtc@vger.kernel.org, "Vincent
- Mailhol" <mailhol@kernel.org>, "Marc Kleine-Budde" <mkl@pengutronix.de>, mfd@lists.linux.dev, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, "Alexandre Belloni" <alexandre.belloni@bootlin.com>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>
-In-Reply-To: <20260821033505.4017901-2-a0282524688@gmail.com>
-References: <20260821033505.4017901-1-a0282524688@gmail.com>
- <20260821033505.4017901-2-a0282524688@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 21 Aug 2026 03:45:50 +0000
-Message-Id: <20260821034550.D9FDD1F00A3A@smtp.kernel.org>
+	s=arc-20240116; t=1787300679; c=relaxed/simple;
+	bh=YpxlG0B+wKngu8vICvtLg4grodoKRvc+ttY9uwk8Tjo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IChOQ2XaV5ZMgDlmaDN0gJKKl/WuZ0uqb5cBOtRcG0Tj4TwiXsQjF3bw91yOrl5Cw5zU7Hdt55xok1fDuyK9ntAw7qSCljTu1CFez7Q+RaI6hVIGxi25I7ePfYu+mZcDVBfgZRpHjAGoJM16Ts60hlKXviunKux4vcSlWHkeV7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 6D207201BD1;
+	Fri, 21 Aug 2026 10:24:25 +0200 (CEST)
+Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1wxKY5-002amg-1A;
+	Fri, 21 Aug 2026 10:24:25 +0200
+Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.98.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1wxKY5-00000002syr-12dj;
+	Fri, 21 Aug 2026 10:24:25 +0200
+Date: Fri, 21 Aug 2026 10:24:25 +0200
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: Robin van der Gracht <robin@protonic.nl>, kernel@pengutronix.de,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Subject: Re: [PATCH] can: j1939: j1939_sk_bind(): fix j1939_ecu leak when
+ re-bind failed
+Message-ID: <aogLOf_0rctRWYN3@pengutronix.de>
+References: <8063b5c1-6171-4350-a7d1-6ccd079fb0ff@I-love.SAKURA.ne.jp>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <8063b5c1-6171-4350-a7d1-6ccd079fb0ff@I-love.SAKURA.ne.jp>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
-- [Medium] Moving driver-specific macros into a global header that facilita=
-tes bespoke parent-child accessors.
---
+On Fri, Aug 21, 2026 at 01:28:13AM +0900, Tetsuo Handa wrote:
+> syzbot is reporting "struct j1939_ecu" refcount leak, which occurs when
+> netdev_hold() is called during ECU creation but the corresponding
+> netdev_put() is never executed because the parent "struct j1939_ecu"
+> object is leaked.
+> 
+....
+> 
+> The root cause lies in the error handling of j1939_sk_bind() during a
+> re-bind operation (binding an already bound socket to the same interface).
+> Currently, the function prematurely drops the old ECU references by calling
+> j1939_local_ecu_put() before verifying whether the new configuration can be
+> successfully acquired via j1939_local_ecu_get().
+> 
+> If j1939_local_ecu_get() subsequently fails, the function unconditionally
+> calls j1939_netdev_stop() and clears jsk->priv. This leaves the socket in a
+> half-broken state where the old ECU's refcount has already been decremented
+> incompletely, but the socket destruct pathway (j1939_sk_sock_destruct) can
+> no longer perform proper cleanup because jsk->priv is NULL. As a result,
+> the old "struct j1939_ecu" remains orphaned on the priv->ecus list,
+> permanently leaking both the ECU object and the net_device reference held
+> inside it.
+> 
+> Fix this by deferring the removal and release of the old ECU references
+> until after j1939_local_ecu_get() has successfully acquired the new
+> resources. As a side effect of this change, the socket's state no longer
+> changes when the re-bind operation failed.
+> 
+> Reported-by: syzbot+e2af46126e0644cbebdd@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=e2af46126e0644cbebdd
+> Analyzed-by: AI Mode in Google Search (no mail address)
+> Fixes: f214744c8a27 ("can: j1939: j1939_sk_bind(): call j1939_priv_put() immediately when j1939_local_ecu_get() failed")
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
---- Patch [1]: [PATCH v7 01/10] mfd: nct6694: Move module type macros to sh=
-ared header ---
-commit ddd165427cd793b4dafe2d040a37ea0bf7d0d5fc
-Author: Ming Yu <a0282524688@gmail.com>
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-mfd: nct6694: Move module type macros to shared header
-
-This commit moves module type macros from individual sub-device drivers int=
-o the
-global MFD header include/linux/mfd/nct6694.h. The commit message states th=
-is
-is a prerequisite for supporting multiple transport interfaces without
-duplicating these definitions.
-
-> This is a prerequisite for supporting multiple transport interfaces
-> (USB, HIF) without duplicating these definitions.
-
-[Severity: Medium]
-Is it accurate that multiple transport interfaces use these definitions?
-
-Since these module ID macros appear to be used exclusively by their respect=
-ive
-child drivers, shouldn't they remain local to those drivers rather than bei=
-ng
-centralized to prevent duplicated definitions?
-
-[ ... ]
-
-> diff --git a/include/linux/mfd/nct6694.h b/include/linux/mfd/nct6694.h
-> index 6eb9be2cd4a01..3c683e317aa32 100644
-> --- a/include/linux/mfd/nct6694.h
-> +++ b/include/linux/mfd/nct6694.h
-> @@ -8,6 +8,15 @@
->  #ifndef __MFD_NCT6694_H
->  #define __MFD_NCT6694_H
-> =20
-> +#define NCT6694_HWMON_MOD	0x00
-> +#define NCT6694_PWM_MOD		0x01
-> +#define NCT6694_I2C_MOD		0x03
-> +#define NCT6694_CANFD_MOD	0x05
-> +#define NCT6694_WDT_MOD		0x07
-> +#define NCT6694_RTC_MOD		0x08
-> +#define NCT6694_RPT_MOD		0xFF
-> +#define NCT6694_GPIO_MOD	NCT6694_RPT_MOD
-
-[Severity: Medium]
-Does centralizing these macros here violate the MFD subsystem guidelines?
-
-The guidelines state that driver-specific definitions should not be placed =
-in
-the global include/linux/mfd/ directory if they are only used by the parent
-and its immediate children. Keeping them local to drivers/mfd/ or the
-individual sub-devices is preferred.
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260821033505.4017=
-901-1-a0282524688@gmail.com?part=3D1
+Thank you!
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
