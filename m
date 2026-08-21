@@ -1,96 +1,68 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F79A3AD529
-	for <linux-can@vger.kernel.org>; Fri, 21 Aug 2026 08:24:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A209823AE87
+	for <linux-can@vger.kernel.org>; Fri, 21 Aug 2026 11:16:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787300679; cv=none; b=QYqOJ1uIAcH0kC7lPN5CPFgRsX24Tpw3dWYvmRS42PiFEttsPlrmsZRrXqznMgJxd5tdmutwH3tWeY2Ma2PyC9JJkSg4K0cVIreFfOH4Fy4GH4YWrasOhqZ+wdlEg3eaKRPfMMLWzZ65iK3i/k9oAlXESyQ4hRpFXgnqNaBOvZA=
+	t=1787311020; cv=none; b=J1DHrGsqVuF2Eoe+CkObcyZNbKfkk2nTMO53l+FpY+aU8n2NxIaiDpuQFZXDJjAj54Pmx4iLOrJmpxI1YWBiioEoo6dXvjmlfn25Z5cXQNEbhFijUBHaFBIxZn+yNZI5bagGc/RDIh2gTVaB1mGm7sN20pk0s3/Iu2E4l7/rw98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787300679; c=relaxed/simple;
-	bh=YpxlG0B+wKngu8vICvtLg4grodoKRvc+ttY9uwk8Tjo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IChOQ2XaV5ZMgDlmaDN0gJKKl/WuZ0uqb5cBOtRcG0Tj4TwiXsQjF3bw91yOrl5Cw5zU7Hdt55xok1fDuyK9ntAw7qSCljTu1CFez7Q+RaI6hVIGxi25I7ePfYu+mZcDVBfgZRpHjAGoJM16Ts60hlKXviunKux4vcSlWHkeV7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 6D207201BD1;
-	Fri, 21 Aug 2026 10:24:25 +0200 (CEST)
-Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1wxKY5-002amg-1A;
-	Fri, 21 Aug 2026 10:24:25 +0200
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.98.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1wxKY5-00000002syr-12dj;
-	Fri, 21 Aug 2026 10:24:25 +0200
-Date: Fri, 21 Aug 2026 10:24:25 +0200
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Robin van der Gracht <robin@protonic.nl>, kernel@pengutronix.de,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Subject: Re: [PATCH] can: j1939: j1939_sk_bind(): fix j1939_ecu leak when
- re-bind failed
-Message-ID: <aogLOf_0rctRWYN3@pengutronix.de>
-References: <8063b5c1-6171-4350-a7d1-6ccd079fb0ff@I-love.SAKURA.ne.jp>
+	s=arc-20240116; t=1787311020; c=relaxed/simple;
+	bh=Z3H9fLbAPne5B2Pq0yO3so/Ji8jAUMnmA+pauLz1FfQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cETFqP3+xJyc8opPo1Dnz4rbUuiUgkwa+3qxmio03oiQEKF8Xv4TXvdrKJln2YcUbbsualSfe9qqs6WTCCKLhCzeNzxZJGVKaiW8RUOMnBPRRI7j7Oo/7oxKdFCv9r2tOx/LOJ7yI6wdyHiJ4a4uxClLTrV6hJ07+yP0yqzsSjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 67LBGU4c083540;
+	Fri, 21 Aug 2026 20:16:30 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from [192.168.1.6] (M106072072000.v4.enabler.ne.jp [106.72.72.0])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 67LBGUre083537
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Fri, 21 Aug 2026 20:16:30 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <df552dd8-105f-40fc-8c71-3065198d71f0@I-love.SAKURA.ne.jp>
+Date: Fri, 21 Aug 2026 20:16:29 +0900
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8063b5c1-6171-4350-a7d1-6ccd079fb0ff@I-love.SAKURA.ne.jp>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] can: j1939: j1939_sk_bind(): fix j1939_ecu leak when
+ re-bind failed
+To: sashiko-reviews@lists.linux.dev
+Cc: Vincent Mailhol <mailhol@kernel.org>, linux-can@vger.kernel.org,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+References: <8063b5c1-6171-4350-a7d1-6ccd079fb0ff@I-love.SAKURA.ne.jp>
+ <20260820164024.DA7891F000E9@smtp.kernel.org>
+Content-Language: en-US
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <20260820164024.DA7891F000E9@smtp.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Virus-Status: clean
+X-Anti-Virus-Server: fsav303.rs.sakura.ne.jp
 
-On Fri, Aug 21, 2026 at 01:28:13AM +0900, Tetsuo Handa wrote:
-> syzbot is reporting "struct j1939_ecu" refcount leak, which occurs when
-> netdev_hold() is called during ECU creation but the corresponding
-> netdev_put() is never executed because the parent "struct j1939_ecu"
-> object is leaked.
-> 
-....
-> 
-> The root cause lies in the error handling of j1939_sk_bind() during a
-> re-bind operation (binding an already bound socket to the same interface).
-> Currently, the function prematurely drops the old ECU references by calling
-> j1939_local_ecu_put() before verifying whether the new configuration can be
-> successfully acquired via j1939_local_ecu_get().
-> 
-> If j1939_local_ecu_get() subsequently fails, the function unconditionally
-> calls j1939_netdev_stop() and clears jsk->priv. This leaves the socket in a
-> half-broken state where the old ECU's refcount has already been decremented
-> incompletely, but the socket destruct pathway (j1939_sk_sock_destruct) can
-> no longer perform proper cleanup because jsk->priv is NULL. As a result,
-> the old "struct j1939_ecu" remains orphaned on the priv->ecus list,
-> permanently leaking both the ECU object and the net_device reference held
-> inside it.
-> 
-> Fix this by deferring the removal and release of the old ECU references
-> until after j1939_local_ecu_get() has successfully acquired the new
-> resources. As a side effect of this change, the socket's state no longer
-> changes when the re-bind operation failed.
-> 
-> Reported-by: syzbot+e2af46126e0644cbebdd@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=e2af46126e0644cbebdd
-> Analyzed-by: AI Mode in Google Search (no mail address)
-> Fixes: f214744c8a27 ("can: j1939: j1939_sk_bind(): call j1939_priv_put() immediately when j1939_local_ecu_get() failed")
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Hello, sashiko.
 
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+On 2026/08/21 1:40, sashiko-bot@kernel.org wrote:
+> Thank you for your contribution! Sashiko AI review found 1 potential issue(s) to consider:
+> 
+> Pre-existing issues:
+> - [High] Netdevice refcount leak due to a race condition where the unregister notifier misses a socket during bind or re-bind list manipulations.
+> --
 
-Thank you!
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Thanks for the comment. However, I consider this is a false positive and won't cause a permanent
+hang. If j1939_netdev_stop() is temporarily skipped because a socket is missing from the list
+during a re-bind window, priv->rx_kref remains non-zero. This prevents __j1939_rx_release() from
+clearing the netdev mapping (j1939_priv_set(priv->ndev, NULL)). Since the netdev core repeatedly
+retries NETDEV_UNREGISTER notifications as long as references exist, the next retry window will
+successfully capture the returned socket on the list and execute j1939_netdev_stop() properly.
+
