@@ -1,283 +1,308 @@
-Received: from mail-oi1-f205.google.com (mail-oi1-f205.google.com [209.85.167.205])
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AD6913CF82
-	for <linux-can@vger.kernel.org>; Sat, 22 Aug 2026 00:10:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD61E36F426
+	for <linux-can@vger.kernel.org>; Sat, 22 Aug 2026 07:47:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787357432; cv=none; b=XnjaQ3aougLHzomf/NyDBig5XaQqGou6ZEK2wsPqFVKR1+F+dcVQ8HH26rsnow+l/yxyAh/krBPFZvYed9FT9EmPjBcp6HpZeprkE8yP2ikmqGGUWUnORdCuaKVxVPXVNO80BEhrWwAwtTBwVRDTTqZDgcPq9Z6VSiz6gmoTUIA=
+	t=1787384873; cv=none; b=ULbxWIXjkGoGkiF/K4JoHMgMa/75hdu8zBBEvYP3sQw8DRyooda6kZ/2IgmHqkqHuUnZbulRzM1bKIyQUzgAPwoeS2n62dZfzYbn2DlJPyrujmlbOHPaYld4oR0lg13sDSROIwS2sS9ZUP4dnLIq6TkkeFI4HleRFNm0tZ1bC3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787357432; c=relaxed/simple;
-	bh=FVN2LMF/FK+Aeu6PGpLb3LXWKmQlQh1FX1F6t8vu+84=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=K2HLbb0M3v0IHwLs4StIp8XgZOlrH1bE3ICG3dNaOkUBcd2+uJdJlaYFGl0btYOzqof0vm3JpZRdKKV+AM2KkQeyUAIiEAe+2+KAbqpXSy7lh6w/Hqa6LCpjU3FsQpS+klRQtxtOiKTGcXIuDqT7O09dhPLpOZJs63CC1FcaeKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.167.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oi1-f205.google.com with SMTP id 5614622812f47-4b2fb8f0df0so1390624b6e.0
-        for <linux-can@vger.kernel.org>; Fri, 21 Aug 2026 17:10:30 -0700 (PDT)
+	s=arc-20240116; t=1787384873; c=relaxed/simple;
+	bh=RP6GVWvaxPIJVaaSKZkxtQFEcOy88IrS8GIzqXHMG04=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ut8KVJJjjMdldWGVxsRFTFPFmO1tLWT6VPnFZimUH9NrwFzBRD6sh1hKsyPexTzz8yOBZwaBOUjY72ld8l+HWGm+/ggicpV5HQqblOJfYhe26K1zbdcvV7IAFqEdZmn3Z8PzxVX/Vl2p88UQKMvGtTJ1e+7lT9RMAHSGXxHGwdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B/0hLPBe; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B/0hLPBe"
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-cc11a905ba5so1314322a12.2
+        for <linux-can@vger.kernel.org>; Sat, 22 Aug 2026 00:47:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1787384871; x=1787989671; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=NiALqZOnRMSeRuHym28ZXhm8elis69XtxfrRz6r8iys=;
+        b=B/0hLPBecePV5sT21W378EbMMl3Lu2T7JS9zggNshGjMgiXvrmV5XtDPIk3tGoboDt
+         yH0hi2hafynC1rCAHquEMgnN8fTGc7Y72IsE5ICCUNrcMTJHBmtDaW8SvzDazcbPu3qR
+         FgwBWLeNwVDXqB5P/xcOZQM9ValBdKVr7+zZ5SfJLxsfN2gg9ipCOAYj3Woq2DLigCX1
+         WHkUcIs/dpv+D6/Z8791ppe/ueZswqV1UukA72xtj1sllfw2R88XqJ5mm89TG6da2MAr
+         svzSpHHbEKe0XglsaWsm8O7EBZxTmlS0BFOquGiRkuGFK/vY2DnVBwn88G4jDw0C3DV4
+         OoeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787357429; x=1787962229;
-        h=content-type:to:from:subject:message-id:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=rbWxMz1Ymw+pqOlRPvrjueGbvxjNk5Dz1beiKhLDvzc=;
-        b=aqqEF+1kx79+rhjysPkzg4aLKo4Fx7+8NbFJGnEol/vd5+C+/HksnREgj7BeHvihDb
-         DtWGknrvfRa65MG/D09xSm+xHPLmjGg+NQGlsjZ/zPUAElf/jcJ8Ick7r9k7IugiTFNL
-         eQI/W2afG35ZKBQj+Nv2jfVJRE6NQabdg4jSGw9e3bFDe5AnbtJK9cW9eTzJRO98qnwZ
-         NjAxIWvO5hhCaKMpVKol8op0E8DVhHl6AwTY/mucUzsWivUsNi7XFnGRg1qLJ/Iuumtu
-         P4boTDknV5BbWiALHnmX/w0rX8ir7RHEEJBUwPWo6uJU07SX73D+3ktPmaUJDA7ijahd
-         I8kg==
-X-Forwarded-Encrypted: i=1; AHgh+RpbL7YbS8PRgvGf4MONw07rBmXOb46PAkFbz+uzSWBbx5cIYLgh3jFG2sh6aiNYvbSRYg2JKuvRV/E=@vger.kernel.org
-X-Gm-Message-State: AFuF++lhdx+9LCGkSEagCyyYk2N7rSXK+UD81J8ub0obJqF4ZA6zfBH8
-	B+Nj4Y3emWBF/utdArpt8wGmy2go2tuBqPDCV6tEfE01aHA5sIAw+RsQREw1/DNeL4eYSfIr0Qu
-	yflk5bPhaf0YkT4TkXgS2otjjdXEFVhh/a0XGrOpOBjSuwNhuZ6Jgek80YkU=
+        d=1e100.net; s=20251104; t=1787384871; x=1787989671;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=NiALqZOnRMSeRuHym28ZXhm8elis69XtxfrRz6r8iys=;
+        b=Z41IlcFz0lGju4bEzwDQ+DyvbJ5FApMey0yHIWOptDA+sNpSLoN9BFvjEBsbbLiwYM
+         t6eXboMzreQLSSjJbGb6CzCSmIST9JK6xXfxMsuVELBOy7DZygtkaHIW8TTL6W3XqSnl
+         YfPSpFa1OLnO6kctsNzbhP16fh2b0Dgx69gKkIx72uHTSL30LkZGDkGDP/1cQT3aV9mh
+         fWg7hO4SdeD02o6Luc4vtfMqvIXxAZ56DDuZCkprtLrrX2IQ42l7Vlnc7iFEVSjzd0bq
+         /Hd+OE6sU2AgBGXrUFq9s5TUe0WF2Zn0xDvQFzHM7okNOwCx8gtldqviehJRRcdRnnS+
+         51eQ==
+X-Forwarded-Encrypted: i=1; AHgh+RqLd8ncG4+kgEL7WgmvyGj/7r8GOcX94Qz0TtL72qSfRokGezMp2qqKmpHh0i6lFx1RmZCwwKSKZFg=@vger.kernel.org
+X-Gm-Message-State: AFuF++lkVhYtAEB4Z3OpzJAcGQ9Ov7GVhp70JWlk4u6ZtDK3/vO7sy3D
+	1aGnesfaikpYCHbF5P074Cp0i8fS/Vu+u8q/kF6qh6nIJtW9ASLZuIw=
+X-Gm-Gg: AR+sD13oC5SpyaQEcyla+j58ctZLtnNk38uiBcjvaODQrk/cNk+COpa6AARmWVsUeH2
+	jhG+KPAPDUUdhzSpzLOt5qIftEk2TiFKyP6e1PCtPSdWmxxP4t71e4JqMKJcKJ1e5mZJWdqyNJf
+	oZqrHgDMhpKuBxsnR+Kl3bnAUM5F3Y8FkFMwAjjEG5pqXXo/gpNXatrN9WWOKEhI2tKdPTs87C9
+	Q4Z32ZnljsNfuptno/Pow+XBu7Ke0kAtGn4DQ2KtgCre0fFkIg3USyW2bj0bB9N/z/UbKTc2Rs6
+	ccSgTRt6G5G14+/0D1N/yViOXyJuFIvtGYxjHkHuY1Nqpbsd89IR/vo2HirxMj3a5auL9vGgr23
+	q9bVDT+FdBni/L2QRPaEYGv2MNkCcwN5kbSjphVAdrulREN4HT05wzZ90fmaRu04yvQ4Wvr6hJR
+	pUehrhkwi6jYvRADrOyGdeGutj/DwCyZgIvuFerZqlb52+Zm4tSSnWAiHrwqB9jkcPXUtAtiL4H
+	Xf2SBdyNKL+6rz3I1UEAMCQttk5IyHkqFmxESzfa2uJMR1cH3W+zpBCK5JI24UeurJFxrVv3sYY
+	zFE=
+X-Received: by 2002:a05:6a20:394a:b0:3b3:d0f:7883 with SMTP id adf61e73a8af0-3cd2fea4c45mr19321557637.7.1787384871064;
+        Sat, 22 Aug 2026 00:47:51 -0700 (PDT)
+Received: from codespaces-2db70c.ktkhmpmw22vebpok31ngjx2qsb.ix.internal.cloudapp.net ([23.97.62.119])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-cc1593060e8sm3616213a12.32.2026.08.22.00.47.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 Aug 2026 00:47:50 -0700 (PDT)
+From: Triet Hoang <triet.hoang.dev@gmail.com>
+To: mkl@pengutronix.de
+Cc: mailhol@kernel.org,
+	linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Triet Hoang <triet.hoang.dev@gmail.com>
+Subject: [PATCH] net: can: Convert to DEFINE_SIMPLE_DEV_PM_OPS()
+Date: Sat, 22 Aug 2026 07:47:01 +0000
+Message-ID: <20260822074701.22856-1-triet.hoang.dev@gmail.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:4487:b0:4a4:adaf:5576 with SMTP id
- 5614622812f47-4b2ef0d4439mr12974564b6e.4.1787357429494; Fri, 21 Aug 2026
- 17:10:29 -0700 (PDT)
-Date: Fri, 21 Aug 2026 17:10:29 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6a88e8f5.91706f20.16b6e3.02ac.GAE@google.com>
-Subject: [syzbot] [can?] memory leak in j1939_netdev_start (2)
-From: syzbot <syzbot+489e907b2a026a6f5fa0@syzkaller.appspotmail.com>
-To: kernel@pengutronix.de, linux-can@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de, 
-	robin@protonic.nl, socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Convert the deprecated SIMPLE_DEV_PM_OPS to DEFINE_SIMPLE_DEV_PM_OPS
+and pm_sleep_ptr().
 
-syzbot found the following issue on:
+This lets us drop the __maybe_unused annotations from the suspend 
+and resume callbacks, also reduces kernel size in case CONFIG_PM 
+or CONFIG_PM_SLEEP is disabled.
 
-HEAD commit:    8d3ae59288f1 Linux 7.2
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14728679580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=11ad91fcc8fa7933
-dashboard link: https://syzkaller.appspot.com/bug?extid=489e907b2a026a6f5fa0
-compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=165f3949580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c8b6c6580000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/735a458674ac/disk-8d3ae592.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/fbf50adb0745/vmlinux-8d3ae592.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6effa5f7f690/bzImage-8d3ae592.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+489e907b2a026a6f5fa0@syzkaller.appspotmail.com
-
-BUG: memory leak
-unreferenced object 0xffff88812c9ca000 (size 8192):
-  comm "syz.0.17", pid 6047, jiffies 4294942443
-  hex dump (first 32 bytes):
-    c0 36 87 2e 81 88 ff ff c0 36 87 2e 81 88 ff ff  .6.......6......
-    00 00 00 00 00 00 00 00 00 80 77 2e 81 88 ff ff  ..........w.....
-  backtrace (crc d013ab57):
-    kmemleak_alloc_recursive include/linux/kmemleak.h:44 [inline]
-    slab_post_alloc_hook mm/slub.c:4597 [inline]
-    slab_alloc_node mm/slub.c:4917 [inline]
-    __kmalloc_cache_noprof+0x356/0x440 mm/slub.c:5485
-    _kmalloc_noprof include/linux/slab.h:988 [inline]
-    _kzalloc_noprof include/linux/slab.h:1309 [inline]
-    j1939_priv_create net/can/j1939/main.c:131 [inline]
-    j1939_netdev_start+0x168/0x710 net/can/j1939/main.c:268
-    j1939_sk_bind+0x223/0x5a0 net/can/j1939/socket.c:506
-    __sys_bind_socket net/socket.c:1920 [inline]
-    __sys_bind_socket net/socket.c:1912 [inline]
-    __sys_bind+0x131/0x160 net/socket.c:1951
-    __do_sys_bind net/socket.c:1956 [inline]
-    __se_sys_bind net/socket.c:1954 [inline]
-    __x64_sys_bind+0x1c/0x30 net/socket.c:1954
-    do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-    do_syscall_64+0xf8/0x610 arch/x86/entry/syscall_64.c:94
-    entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-BUG: memory leak
-unreferenced object 0xffff88812e8736c0 (size 192):
-  comm "syz.0.17", pid 6047, jiffies 4294942443
-  hex dump (first 32 bytes):
-    00 a0 9c 2c 81 88 ff ff 00 a0 9c 2c 81 88 ff ff  ...,.......,....
-    08 07 06 05 04 03 02 01 20 00 00 00 00 00 00 00  ........ .......
-  backtrace (crc 2ba0e4b2):
-    kmemleak_alloc_recursive include/linux/kmemleak.h:44 [inline]
-    slab_post_alloc_hook mm/slub.c:4597 [inline]
-    slab_alloc_node mm/slub.c:4917 [inline]
-    __kmalloc_cache_noprof+0x356/0x440 mm/slub.c:5485
-    _kmalloc_noprof include/linux/slab.h:988 [inline]
-    _kzalloc_noprof include/linux/slab.h:1309 [inline]
-    j1939_ecu_create_locked+0x5c/0x200 net/can/j1939/bus.c:155
-    j1939_local_ecu_get+0x102/0x140 net/can/j1939/bus.c:293
-    j1939_sk_bind+0x38c/0x5a0 net/can/j1939/socket.c:529
-    __sys_bind_socket net/socket.c:1920 [inline]
-    __sys_bind_socket net/socket.c:1912 [inline]
-    __sys_bind+0x131/0x160 net/socket.c:1951
-    __do_sys_bind net/socket.c:1956 [inline]
-    __se_sys_bind net/socket.c:1954 [inline]
-    __x64_sys_bind+0x1c/0x30 net/socket.c:1954
-    do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-    do_syscall_64+0xf8/0x610 arch/x86/entry/syscall_64.c:94
-    entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-BUG: memory leak
-unreferenced object 0xffff88812c9c8000 (size 8192):
-  comm "syz.0.24", pid 6048, jiffies 4294942445
-  hex dump (first 32 bytes):
-    40 ab e4 12 81 88 ff ff 40 ab e4 12 81 88 ff ff  @.......@.......
-    00 00 00 00 00 00 00 00 00 80 77 2e 81 88 ff ff  ..........w.....
-  backtrace (crc da7feccc):
-    kmemleak_alloc_recursive include/linux/kmemleak.h:44 [inline]
-    slab_post_alloc_hook mm/slub.c:4597 [inline]
-    slab_alloc_node mm/slub.c:4917 [inline]
-    __kmalloc_cache_noprof+0x356/0x440 mm/slub.c:5485
-    _kmalloc_noprof include/linux/slab.h:988 [inline]
-    _kzalloc_noprof include/linux/slab.h:1309 [inline]
-    j1939_priv_create net/can/j1939/main.c:131 [inline]
-    j1939_netdev_start+0x168/0x710 net/can/j1939/main.c:268
-    j1939_sk_bind+0x223/0x5a0 net/can/j1939/socket.c:506
-    __sys_bind_socket net/socket.c:1920 [inline]
-    __sys_bind_socket net/socket.c:1912 [inline]
-    __sys_bind+0x131/0x160 net/socket.c:1951
-    __do_sys_bind net/socket.c:1956 [inline]
-    __se_sys_bind net/socket.c:1954 [inline]
-    __x64_sys_bind+0x1c/0x30 net/socket.c:1954
-    do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-    do_syscall_64+0xf8/0x610 arch/x86/entry/syscall_64.c:94
-    entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-BUG: memory leak
-unreferenced object 0xffff888112e4ab40 (size 192):
-  comm "syz.0.24", pid 6048, jiffies 4294942445
-  hex dump (first 32 bytes):
-    00 80 9c 2c 81 88 ff ff 00 80 9c 2c 81 88 ff ff  ...,.......,....
-    08 07 06 05 04 03 02 01 20 00 00 00 00 00 00 00  ........ .......
-  backtrace (crc 73ecd91d):
-    kmemleak_alloc_recursive include/linux/kmemleak.h:44 [inline]
-    slab_post_alloc_hook mm/slub.c:4597 [inline]
-    slab_alloc_node mm/slub.c:4917 [inline]
-    __kmalloc_cache_noprof+0x356/0x440 mm/slub.c:5485
-    _kmalloc_noprof include/linux/slab.h:988 [inline]
-    _kzalloc_noprof include/linux/slab.h:1309 [inline]
-    j1939_ecu_create_locked+0x5c/0x200 net/can/j1939/bus.c:155
-    j1939_local_ecu_get+0x102/0x140 net/can/j1939/bus.c:293
-    j1939_sk_bind+0x38c/0x5a0 net/can/j1939/socket.c:529
-    __sys_bind_socket net/socket.c:1920 [inline]
-    __sys_bind_socket net/socket.c:1912 [inline]
-    __sys_bind+0x131/0x160 net/socket.c:1951
-    __do_sys_bind net/socket.c:1956 [inline]
-    __se_sys_bind net/socket.c:1954 [inline]
-    __x64_sys_bind+0x1c/0x30 net/socket.c:1954
-    do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-    do_syscall_64+0xf8/0x610 arch/x86/entry/syscall_64.c:94
-    entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-BUG: memory leak
-unreferenced object 0xffff88812c9d6000 (size 8192):
-  comm "syz.0.25", pid 6050, jiffies 4294942445
-  hex dump (first 32 bytes):
-    80 3d 69 13 81 88 ff ff 80 3d 69 13 81 88 ff ff  .=i......=i.....
-    00 00 00 00 00 00 00 00 00 80 77 2e 81 88 ff ff  ..........w.....
-  backtrace (crc cb2b95df):
-    kmemleak_alloc_recursive include/linux/kmemleak.h:44 [inline]
-    slab_post_alloc_hook mm/slub.c:4597 [inline]
-    slab_alloc_node mm/slub.c:4917 [inline]
-    __kmalloc_cache_noprof+0x356/0x440 mm/slub.c:5485
-    _kmalloc_noprof include/linux/slab.h:988 [inline]
-    _kzalloc_noprof include/linux/slab.h:1309 [inline]
-    j1939_priv_create net/can/j1939/main.c:131 [inline]
-    j1939_netdev_start+0x168/0x710 net/can/j1939/main.c:268
-    j1939_sk_bind+0x223/0x5a0 net/can/j1939/socket.c:506
-    __sys_bind_socket net/socket.c:1920 [inline]
-    __sys_bind_socket net/socket.c:1912 [inline]
-    __sys_bind+0x131/0x160 net/socket.c:1951
-    __do_sys_bind net/socket.c:1956 [inline]
-    __se_sys_bind net/socket.c:1954 [inline]
-    __x64_sys_bind+0x1c/0x30 net/socket.c:1954
-    do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-    do_syscall_64+0xf8/0x610 arch/x86/entry/syscall_64.c:94
-    entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-BUG: memory leak
-unreferenced object 0xffff888113693d80 (size 192):
-  comm "syz.0.25", pid 6050, jiffies 4294942445
-  hex dump (first 32 bytes):
-    00 60 9d 2c 81 88 ff ff 00 60 9d 2c 81 88 ff ff  .`.,.....`.,....
-    08 07 06 05 04 03 02 01 20 00 00 00 00 00 00 00  ........ .......
-  backtrace (crc 35e45c5a):
-    kmemleak_alloc_recursive include/linux/kmemleak.h:44 [inline]
-    slab_post_alloc_hook mm/slub.c:4597 [inline]
-    slab_alloc_node mm/slub.c:4917 [inline]
-    __kmalloc_cache_noprof+0x356/0x440 mm/slub.c:5485
-    _kmalloc_noprof include/linux/slab.h:988 [inline]
-    _kzalloc_noprof include/linux/slab.h:1309 [inline]
-    j1939_ecu_create_locked+0x5c/0x200 net/can/j1939/bus.c:155
-    j1939_local_ecu_get+0x102/0x140 net/can/j1939/bus.c:293
-    j1939_sk_bind+0x38c/0x5a0 net/can/j1939/socket.c:529
-    __sys_bind_socket net/socket.c:1920 [inline]
-    __sys_bind_socket net/socket.c:1912 [inline]
-    __sys_bind+0x131/0x160 net/socket.c:1951
-    __do_sys_bind net/socket.c:1956 [inline]
-    __se_sys_bind net/socket.c:1954 [inline]
-    __x64_sys_bind+0x1c/0x30 net/socket.c:1954
-    do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-    do_syscall_64+0xf8/0x610 arch/x86/entry/syscall_64.c:94
-    entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-BUG: memory leak
-unreferenced object 0xffff88812c9d4000 (size 8192):
-  comm "syz.0.26", pid 6051, jiffies 4294942446
-  hex dump (first 32 bytes):
-    c0 e3 ed 12 81 88 ff ff c0 e3 ed 12 81 88 ff ff  ................
-    00 00 00 00 00 00 00 00 00 80 77 2e 81 88 ff ff  ..........w.....
-  backtrace (crc eb403d26):
-    kmemleak_alloc_recursive include/linux/kmemleak.h:44 [inline]
-    slab_post_alloc_hook mm/slub.c:4597 [inline]
-    slab_alloc_node mm/slub.c:4917 [inline]
-    __kmalloc_cache_noprof+0x356/0x440 mm/slub.c:5485
-    _kmalloc_noprof include/linux/slab.h:988 [inline]
-    _kzalloc_noprof include/linux/slab.h:1309 [inline]
-    j1939_priv_create net/can/j1939/main.c:131 [inline]
-    j1939_netdev_start+0x168/0x710 net/can/j1939/main.c:268
-    j1939_sk_bind+0x223/0x5a0 net/can/j1939/socket.c:506
-    __sys_bind_socket net/socket.c:1920 [inline]
-    __sys_bind_socket net/socket.c:1912 [inline]
-    __sys_bind+0x131/0x160 net/socket.c:1951
-    __do_sys_bind net/socket.c:1956 [inline]
-    __se_sys_bind net/socket.c:1954 [inline]
-    __x64_sys_bind+0x1c/0x30 net/socket.c:1954
-    do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-    do_syscall_64+0xf8/0x610 arch/x86/entry/syscall_64.c:94
-    entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-connection error: failed to recv *flatrpc.ExecutorMessageRawT: EOF
-
-
+Signed-off-by: Triet Hoang <triet.hoang.dev@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/net/can/bxcan.c                      | 8 ++++----
+ drivers/net/can/ctucanfd/ctucanfd.h          | 4 ++--
+ drivers/net/can/ctucanfd/ctucanfd_pci.c      | 4 ++--
+ drivers/net/can/ctucanfd/ctucanfd_platform.c | 4 ++--
+ drivers/net/can/m_can/m_can_pci.c            | 8 ++++----
+ drivers/net/can/spi/hi311x.c                 | 8 ++++----
+ drivers/net/can/spi/mcp251x.c                | 8 ++++----
+ 7 files changed, 22 insertions(+), 22 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/net/can/bxcan.c b/drivers/net/can/bxcan.c
+index baf494d20bef..b2a0ff8c033c 100644
+--- a/drivers/net/can/bxcan.c
++++ b/drivers/net/can/bxcan.c
+@@ -1042,7 +1042,7 @@ static void bxcan_remove(struct platform_device *pdev)
+ 	free_candev(ndev);
+ }
+ 
+-static int __maybe_unused bxcan_suspend(struct device *dev)
++static int bxcan_suspend(struct device *dev)
+ {
+ 	struct net_device *ndev = dev_get_drvdata(dev);
+ 	struct bxcan_priv *priv = netdev_priv(ndev);
+@@ -1059,7 +1059,7 @@ static int __maybe_unused bxcan_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int __maybe_unused bxcan_resume(struct device *dev)
++static int bxcan_resume(struct device *dev)
+ {
+ 	struct net_device *ndev = dev_get_drvdata(dev);
+ 	struct bxcan_priv *priv = netdev_priv(ndev);
+@@ -1076,7 +1076,7 @@ static int __maybe_unused bxcan_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static SIMPLE_DEV_PM_OPS(bxcan_pm_ops, bxcan_suspend, bxcan_resume);
++static DEFINE_SIMPLE_DEV_PM_OPS(bxcan_pm_ops, bxcan_suspend, bxcan_resume);
+ 
+ static const struct of_device_id bxcan_of_match[] = {
+ 	{.compatible = "st,stm32f4-bxcan"},
+@@ -1087,7 +1087,7 @@ MODULE_DEVICE_TABLE(of, bxcan_of_match);
+ static struct platform_driver bxcan_driver = {
+ 	.driver = {
+ 		.name = KBUILD_MODNAME,
+-		.pm = &bxcan_pm_ops,
++		.pm = pm_sleep_ptr(&bxcan_pm_ops),
+ 		.of_match_table = bxcan_of_match,
+ 	},
+ 	.probe = bxcan_probe,
+diff --git a/drivers/net/can/ctucanfd/ctucanfd.h b/drivers/net/can/ctucanfd/ctucanfd.h
+index 0e9904f6a05d..7dcd7dc507e4 100644
+--- a/drivers/net/can/ctucanfd/ctucanfd.h
++++ b/drivers/net/can/ctucanfd/ctucanfd.h
+@@ -76,7 +76,7 @@ int ctucan_probe_common(struct device *dev, void __iomem *addr,
+ 			void (*set_drvdata_fnc)(struct device *dev,
+ 						struct net_device *ndev));
+ 
+-int ctucan_suspend(struct device *dev) __maybe_unused;
+-int ctucan_resume(struct device *dev) __maybe_unused;
++int ctucan_suspend(struct device *dev);
++int ctucan_resume(struct device *dev);
+ 
+ #endif /*__CTUCANFD__*/
+diff --git a/drivers/net/can/ctucanfd/ctucanfd_pci.c b/drivers/net/can/ctucanfd/ctucanfd_pci.c
+index 4b6db28f7b67..9c9c41c3058c 100644
+--- a/drivers/net/can/ctucanfd/ctucanfd_pci.c
++++ b/drivers/net/can/ctucanfd/ctucanfd_pci.c
+@@ -259,7 +259,7 @@ static void ctucan_pci_remove(struct pci_dev *pdev)
+ 	kfree(bdata);
+ }
+ 
+-static SIMPLE_DEV_PM_OPS(ctucan_pci_pm_ops, ctucan_suspend, ctucan_resume);
++static DEFINE_SIMPLE_DEV_PM_OPS(ctucan_pci_pm_ops, ctucan_suspend, ctucan_resume);
+ 
+ static const struct pci_device_id ctucan_pci_tbl[] = {
+ 	{PCI_DEVICE_DATA(TEDIA, CTUCAN_VER21,
+@@ -273,7 +273,7 @@ static struct pci_driver ctucan_pci_driver = {
+ 	.id_table = ctucan_pci_tbl,
+ 	.probe = ctucan_pci_probe,
+ 	.remove = ctucan_pci_remove,
+-	.driver.pm = &ctucan_pci_pm_ops,
++	.driver.pm = pm_sleep_ptr(&ctucan_pci_pm_ops),
+ };
+ 
+ module_pci_driver(ctucan_pci_driver);
+diff --git a/drivers/net/can/ctucanfd/ctucanfd_platform.c b/drivers/net/can/ctucanfd/ctucanfd_platform.c
+index 70e2577c8541..4962b00ee8ac 100644
+--- a/drivers/net/can/ctucanfd/ctucanfd_platform.c
++++ b/drivers/net/can/ctucanfd/ctucanfd_platform.c
+@@ -99,7 +99,7 @@ static void ctucan_platform_remove(struct platform_device *pdev)
+ 	free_candev(ndev);
+ }
+ 
+-static SIMPLE_DEV_PM_OPS(ctucan_platform_pm_ops, ctucan_suspend, ctucan_resume);
++static DEFINE_SIMPLE_DEV_PM_OPS(ctucan_platform_pm_ops, ctucan_suspend, ctucan_resume);
+ 
+ /* Match table for OF platform binding */
+ static const struct of_device_id ctucan_of_match[] = {
+@@ -114,7 +114,7 @@ static struct platform_driver ctucanfd_driver = {
+ 	.remove = ctucan_platform_remove,
+ 	.driver	= {
+ 		.name = DRV_NAME,
+-		.pm = &ctucan_platform_pm_ops,
++		.pm = pm_sleep_ptr(&ctucan_platform_pm_ops),
+ 		.of_match_table	= ctucan_of_match,
+ 	},
+ };
+diff --git a/drivers/net/can/m_can/m_can_pci.c b/drivers/net/can/m_can/m_can_pci.c
+index d11a7c88fc32..d31179312026 100644
+--- a/drivers/net/can/m_can/m_can_pci.c
++++ b/drivers/net/can/m_can/m_can_pci.c
+@@ -169,17 +169,17 @@ static void m_can_pci_remove(struct pci_dev *pci)
+ 	pci_free_irq_vectors(pci);
+ }
+ 
+-static __maybe_unused int m_can_pci_suspend(struct device *dev)
++static int m_can_pci_suspend(struct device *dev)
+ {
+ 	return m_can_class_suspend(dev);
+ }
+ 
+-static __maybe_unused int m_can_pci_resume(struct device *dev)
++static int m_can_pci_resume(struct device *dev)
+ {
+ 	return m_can_class_resume(dev);
+ }
+ 
+-static SIMPLE_DEV_PM_OPS(m_can_pci_pm_ops,
++static DEFINE_SIMPLE_DEV_PM_OPS(m_can_pci_pm_ops,
+ 			 m_can_pci_suspend, m_can_pci_resume);
+ 
+ static const struct pci_device_id m_can_pci_id_table[] = {
+@@ -195,7 +195,7 @@ static struct pci_driver m_can_pci_driver = {
+ 	.remove = m_can_pci_remove,
+ 	.id_table = m_can_pci_id_table,
+ 	.driver = {
+-		.pm = &m_can_pci_pm_ops,
++		.pm = pm_sleep_ptr(&m_can_pci_pm_ops),
+ 	},
+ };
+ 
+diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
+index ae90e6716de5..076a3efa1bff 100644
+--- a/drivers/net/can/spi/hi311x.c
++++ b/drivers/net/can/spi/hi311x.c
+@@ -972,7 +972,7 @@ static void hi3110_can_remove(struct spi_device *spi)
+ 	free_candev(net);
+ }
+ 
+-static int __maybe_unused hi3110_can_suspend(struct device *dev)
++static int hi3110_can_suspend(struct device *dev)
+ {
+ 	struct spi_device *spi = to_spi_device(dev);
+ 	struct hi3110_priv *priv = spi_get_drvdata(spi);
+@@ -1002,7 +1002,7 @@ static int __maybe_unused hi3110_can_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int __maybe_unused hi3110_can_resume(struct device *dev)
++static int hi3110_can_resume(struct device *dev)
+ {
+ 	struct spi_device *spi = to_spi_device(dev);
+ 	struct hi3110_priv *priv = spi_get_drvdata(spi);
+@@ -1022,13 +1022,13 @@ static int __maybe_unused hi3110_can_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static SIMPLE_DEV_PM_OPS(hi3110_can_pm_ops, hi3110_can_suspend, hi3110_can_resume);
++static DEFINE_SIMPLE_DEV_PM_OPS(hi3110_can_pm_ops, hi3110_can_suspend, hi3110_can_resume);
+ 
+ static struct spi_driver hi3110_can_driver = {
+ 	.driver = {
+ 		.name = DEVICE_NAME,
+ 		.of_match_table = hi3110_of_match,
+-		.pm = &hi3110_can_pm_ops,
++		.pm = pm_sleep_ptr(&hi3110_can_pm_ops),
+ 	},
+ 	.id_table = hi3110_id_table,
+ 	.probe = hi3110_can_probe,
+diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
+index 0d0190ae094a..d971890487b6 100644
+--- a/drivers/net/can/spi/mcp251x.c
++++ b/drivers/net/can/spi/mcp251x.c
+@@ -1490,7 +1490,7 @@ static void mcp251x_can_remove(struct spi_device *spi)
+ 	free_candev(net);
+ }
+ 
+-static int __maybe_unused mcp251x_can_suspend(struct device *dev)
++static int mcp251x_can_suspend(struct device *dev)
+ {
+ 	struct spi_device *spi = to_spi_device(dev);
+ 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
+@@ -1517,7 +1517,7 @@ static int __maybe_unused mcp251x_can_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int __maybe_unused mcp251x_can_resume(struct device *dev)
++static int mcp251x_can_resume(struct device *dev)
+ {
+ 	struct spi_device *spi = to_spi_device(dev);
+ 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
+@@ -1551,14 +1551,14 @@ static int __maybe_unused mcp251x_can_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static SIMPLE_DEV_PM_OPS(mcp251x_can_pm_ops, mcp251x_can_suspend,
++static DEFINE_SIMPLE_DEV_PM_OPS(mcp251x_can_pm_ops, mcp251x_can_suspend,
+ 	mcp251x_can_resume);
+ 
+ static struct spi_driver mcp251x_can_driver = {
+ 	.driver = {
+ 		.name = DEVICE_NAME,
+ 		.of_match_table = mcp251x_of_match,
+-		.pm = &mcp251x_can_pm_ops,
++		.pm = pm_sleep_ptr(&mcp251x_can_pm_ops),
+ 	},
+ 	.id_table = mcp251x_id_table,
+ 	.probe = mcp251x_can_probe,
+-- 
+2.53.0
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
