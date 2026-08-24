@@ -1,88 +1,92 @@
-Received: from ag.fintek.com.tw (mail.fintek.com.tw [59.120.186.242])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF1093EFD04
-	for <linux-can@vger.kernel.org>; Mon, 24 Aug 2026 09:03:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=59.120.186.242
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D348394780;
+	Mon, 24 Aug 2026 09:08:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787562239; cv=none; b=C/jutBtIEIl58giZq3Aa32sM9Te23ipgIy7SmYSn7pR4SjdnUSBATJdjbD5rp1M9J+1fW8gE04mlTUX6Dx0MRVSoHQLl4pzTxU5+Xre0LOUwif4oqzimXrf9mF3CPtr9MP1Hy1etyQbI3tFtPznZY6k+8BV4cSWb3p0kxWxIbyY=
+	t=1787562511; cv=none; b=XRNxyAqWtpzmm7ziOIPYATE0THLpWlEOcl4BEVMjVe4f5qKPDJfOWeXOsKQ65GvtvUAbeVo+YQqXu3CQwmf6swwQ11VR1gs5H64TG6FxAapRESZYNxkYccdoEfNnspJjTBlDRWHWSj2Xr4FsPrYXQfE4hTftKXSFbR8wcB9NQTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787562239; c=relaxed/simple;
-	bh=JqdK3P4SbvGogEAI6INI00gm7WSlj6+2xsSn1HZ/6Lg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IqerVg2Ru64SdoZlP6Qo3Xn9tlVWBxeBV23Yvnxf/IJflLAoJ63+YBWGKfJruesLVwirpWIx+Mm7OskReIhRa8AUfTqEs+8Ut7m2lROR7RNfMWo6QfVq+ByUyC4AjCihEP7i+NCEt2BJ3Q8ayg8WJUaKwHCgjf3kRQh5kN00QYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintek.com.tw; spf=pass smtp.mailfrom=fintek.com.tw; arc=none smtp.client-ip=59.120.186.242
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintek.com.tw
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintek.com.tw
-Authenticated-By: peter_hong
-X-SpamFilter-By: ArmorX SpamTrap 5.80 with qID 67O90sKR21557877, This message is accepted by code: ctloc85258
-Received: from localhost ([192.168.1.128])
-	(authenticated bits=0)
-	by ag.fintek.com.tw (8.15.2/3.29/5.94) with ESMTPSA id 67O90sKR21557877
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-	Mon, 24 Aug 2026 17:00:55 +0800
-From: "=?UTF-8?B?UFMxMCBQRVRFUiBIT05HIOa0que5vOa+pA==?="<peter_hong@fintek.com.tw>
-To: mkl@pengutronix.de, mailhol@kernel.org, gregkh@linuxfoundation.org
-Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-        admin@dynetrex.com, Ji-Ze Hong <peter_hong@fintek.com.tw>,
-        stable@vger.kernel.org
-Subject: [PATCH] can: usb: f81604: fix struct f81604_int_data size mismatch
-Date: Mon, 24 Aug 2026 16:27:58 +0800
-Message-Id: <20260824082758.9118-1-peter_hong@fintek.com.tw>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1787562511; c=relaxed/simple;
+	bh=xYlN+BQiSCEP/YmLmt+emSNBrS476R6sosyRg5P6iWY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uxNJT5RyildKKF0qMCpv7CuVGN/pcQ+pTeWF+8gVMWmyniuMgekm9kIsY4ibwr2nCfZCzU2CljgwemT/SpuiaAT+t7OxdOUg7U30LQla+J+RfnQvOJfBnJ3jSsWyCfdhsGSiUI1c7m2l9bRhP9k04TuQMD7+Tp5qLnYGiyfD0CM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=cqAmlN0P; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="cqAmlN0P"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F4D11F000E9;
+	Mon, 24 Aug 2026 09:08:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxfoundation.org;
+	s=korg; t=1787562509;
+	bh=2K+Z9E7RdHbfP5pu8VbkTIPP9jDKEATsTJt9frfx9iA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=cqAmlN0PWX9QM1hprXCxu8UnQl6HQPd806EZtEOyT7nj87J5I2e22SeuAAmTFd38f
+	 LGMtN6ga4leg+bPeLkS0Hx50lK4XrGQChq3VTzzAysiWBDMP4j9EU9vFW1v6SOUv5x
+	 whRD7qC6dM7hgfBLYioFxaRWjqRq2sbos03RwgxA=
+Date: Mon, 24 Aug 2026 11:08:25 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: PS10 PETER HONG =?utf-8?B?5rSq57m85r6k?= <peter_hong@fintek.com.tw>
+Cc: mkl@pengutronix.de, mailhol@kernel.org, linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org, admin@dynetrex.com,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] can: usb: f81604: fix struct f81604_int_data size
+ mismatch
+Message-ID: <2026082433-dynamic-overspend-8f32@gregkh>
+References: <20260824082758.9118-1-peter_hong@fintek.com.tw>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260824082758.9118-1-peter_hong@fintek.com.tw>
 
-The struct f81604_int_data defines 9 bytes of interrupt data:
-- Byte 0: Status register (sr)
-- Byte 1: Interrupt register (isrc)
-- Byte 2: Interrupt enable register (ier)
-- Byte 3: Arbitration lost capture (alc)
-- Byte 4: Error code capture (ecc)
-- Byte 5: Error warning limit register (ewlr)
-- Byte 6: RX error counter (rxerr)
-- Byte 7: TX error counter (txerr)
-- Byte 8: Reserved (val)
+On Mon, Aug 24, 2026 at 04:27:58PM +0800, PS10 PETER HONG 洪繼澤 wrote:
+> The struct f81604_int_data defines 9 bytes of interrupt data:
+> - Byte 0: Status register (sr)
+> - Byte 1: Interrupt register (isrc)
+> - Byte 2: Interrupt enable register (ier)
+> - Byte 3: Arbitration lost capture (alc)
+> - Byte 4: Error code capture (ecc)
+> - Byte 5: Error warning limit register (ewlr)
+> - Byte 6: RX error counter (rxerr)
+> - Byte 7: TX error counter (txerr)
+> - Byte 8: Reserved (val)
+> 
+> The hardware sends exactly 9 bytes for the interrupt endpoint.
+> However, the struct was defined with __aligned(4) attribute which
+> caused the compiler to pad the struct to 12 bytes.
+> 
+> This causes a problem in f81604_read_int_callback() where the short
+> URB check compares urb->actual_length against sizeof(*data). When
+> sizeof(struct f81604_int_data) is 12 but the hardware only sends 9
+> bytes, the check fails and valid interrupt messages are discarded.
+> 
+> This results in the driver only being able to transmit once because
+> the TX complete interrupt is never processed.
+> 
+> Fix this by removing the __aligned(4) attribute so the struct size
+> matches the actual hardware data size of 9 bytes.
+> 
+> Fixes: 88da17436973 ("can: usb: f81604: add Fintek F81604 support")
+> Fixes: 7299b1b39a25 ("can: usb: f81604: handle short interrupt urb messages properly")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Ji-Ze Hong (Peter Hong) <peter_hong@fintek.com.tw>
 
-The hardware sends exactly 9 bytes for the interrupt endpoint.
-However, the struct was defined with __aligned(4) attribute which
-caused the compiler to pad the struct to 12 bytes.
+Nit, doesn't match the From: line :(
 
-This causes a problem in f81604_read_int_callback() where the short
-URB check compares urb->actual_length against sizeof(*data). When
-sizeof(struct f81604_int_data) is 12 but the hardware only sends 9
-bytes, the check fails and valid interrupt messages are discarded.
+Also, the first Fixes: tag isn't correct, it's the second one that
+matters.
 
-This results in the driver only being able to transmit once because
-the TX complete interrupt is never processed.
+And wasn't this reported by someone already:
+	https://lore.kernel.org/r/A3834A07-5639-4779-844F-C5843DFC3928@dynetrex.com
+?
 
-Fix this by removing the __aligned(4) attribute so the struct size
-matches the actual hardware data size of 9 bytes.
+And yes, this patch does look correct.
 
-Fixes: 88da17436973 ("can: usb: f81604: add Fintek F81604 support")
-Fixes: 7299b1b39a25 ("can: usb: f81604: handle short interrupt urb messages properly")
-Cc: stable@vger.kernel.org
-Signed-off-by: Ji-Ze Hong (Peter Hong) <peter_hong@fintek.com.tw>
----
- drivers/net/can/usb/f81604.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+thanks,
 
-diff --git a/drivers/net/can/usb/f81604.c b/drivers/net/can/usb/f81604.c
-index f12318268e46..4c147b9d6d69 100644
---- a/drivers/net/can/usb/f81604.c
-+++ b/drivers/net/can/usb/f81604.c
-@@ -169,7 +169,7 @@ struct f81604_int_data {
- 	u8 rxerr;
- 	u8 txerr;
- 	u8 val;
--} __packed __aligned(4);
-+} __packed;
- 
- struct f81604_sff {
- 	__be16 id;
---
-2.43.0
+greg k-h
