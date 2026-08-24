@@ -1,125 +1,58 @@
-Received: from smtpx.fel.cvut.cz (smtpx.feld.cvut.cz [147.32.210.153])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4AE13F12C4;
-	Mon, 24 Aug 2026 09:15:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.32.210.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00C413EA97A;
+	Mon, 24 Aug 2026 09:38:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787562909; cv=none; b=EREUTsAywQBUH3Kle1Wqkas3Q8qH8gmrBA+qM8z5I0JR+BYtXrGGZ4KiwfPYFzNRRX4ra7bmOaMK0+e/UrbuUc6fhvFtEu/0T3tj4xN0gPTi4L47XUJM8Vis48PVyqIL9Z3rGJQMXWl3H62mlRHg2p1SFWOYek/VGosVZ+rgbvM=
+	t=1787564303; cv=none; b=SKUuzaY0ZZ7Qo+ZnOOP5SE495xOIo4YcrV7SqeadW8bt7vdj71ythy/7u0oDiNskTrVsnyOF/Cv0XxG8bD2/sbcTO45penEPrrcr/bveriKgCi2YuhFIQN2MEJCoWBYGohJQK9/F7ti4x9tMJ9Kpe+u4XBvqOV8RHFSd5AjvPP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787562909; c=relaxed/simple;
-	bh=/VAlzpsOFvTEr4V/kawfjFo1pm2ftQS+N4SsjtDhRaI=;
-	h=From:To:Subject:Date:Cc:References:In-Reply-To:MIME-Version:
-	 Content-Type:Content-Disposition:Message-Id; b=OmfYgW2EGNtDt2lBV88awB/yibwlZINC5ct4glBlL8Cg2SKOr55OzqJ0Qiotp/zGl016rGn8l6qtBBKaGy+uL2tAnCLvJNHpCZKeiz2/EHs3YrgdN13aVHKxbeHOXk+xc9SReU/+eNB/StsXyTTnGR+lGIMa880Inw442lKZcpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fel.cvut.cz; spf=pass smtp.mailfrom=fel.cvut.cz; dkim=pass (2048-bit key) header.d=fel.cvut.cz header.i=@fel.cvut.cz header.b=TN2uRTdu; arc=none smtp.client-ip=147.32.210.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fel.cvut.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fel.cvut.cz
+	s=arc-20240116; t=1787564303; c=relaxed/simple;
+	bh=9ZX9lErtm1dnL8LYPDEHzMJJTBB7cYtGKgCB+2huD98=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T3YsfQkdRV3YGo+zkTz/ciaPVeJaK4KhsOvPcT3T9xTgq+jJbYN+aB9AEyV4FzXDV5MckMvPXpJakb6wT9u28FOe2+x5rHIccI6PU+jo/iu76ZDXHZaVyAe3V9bPTWbrnQJHnxIiBJfZmSF5ZvKpx0yd/vm4MeBPekM1T+jdN/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=sNLETQHx; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fel.cvut.cz header.i=@fel.cvut.cz header.b="TN2uRTdu"
-Received: from localhost (unknown [192.168.200.27])
-	by smtpx.fel.cvut.cz (Postfix) with ESMTP id A588024E42;
-	Mon, 24 Aug 2026 11:05:25 +0200 (CEST)
-X-Virus-Scanned: IMAP STYX AMAVIS
-Authentication-Results: cerokez-250.feld.cvut.cz (amavis);
- dkim=pass (2048-bit key) header.d=fel.cvut.cz
-Received: from smtpx.fel.cvut.cz ([192.168.200.2])
- by localhost (cerokez-250.feld.cvut.cz [192.168.200.27]) (amavis, port 10060)
- with ESMTP id vIjbhkWAe2xb; Mon, 24 Aug 2026 11:05:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fel.cvut.cz;
-	s=felmail; t=1787562324;
-	bh=0A8sVhPDx6u5+aFDevt2uo+o3yVl789Ty5qY4ZXnS5g=;
-	h=From:To:Subject:Date:Cc:References:In-Reply-To:From;
-	b=TN2uRTdulu6Dfw1xnDbwrPmQHQTtA0mXQKgAgEpo402btMMUdbF6JQOI0wFj0zFVj
-	 lOlI12FKBL1ucvwobzCNLJtyx+DG6UMPONIvMKGqhJXg2kivTDhjDnM3iu7rSyUUgK
-	 5fVoaASiunKNNKUEXw8OLLcVY8ol36ZUt12xzBCaJwqyw4vpaynC9A00Wt7Jf0Ni6T
-	 d6KlV8VdBvgCzsOTLddloDqwFnIBpX/eYHyeUn4P6N2mKBH626cgqY7UgS9u+xKPO5
-	 nf3uuQohUBqGWGOUy7TIaSTs0DcJAtFib2i8wJLPRNrWBBF1YKhbv8Jr9xsiHppSCk
-	 AH3HqLHfSS1xg==
-Received: from baree.pikron.com (static-84-242-78-234.bb.vodafone.cz [84.242.78.234])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pisa)
-	by smtpx.fel.cvut.cz (Postfix) with ESMTPSA id 0756B24E41;
-	Mon, 24 Aug 2026 11:05:23 +0200 (CEST)
-From: Pavel Pisa <pisa@fel.cvut.cz>
-To: "Marc Kleine-Budde" <mkl@pengutronix.de>
-Subject: Re: LinuxDays 2026 October 3 and 4 in Prague was: can: ctucanfd: ctucan_err_interrupt()
-Date: Mon, 24 Aug 2026 11:05:23 +0200
-User-Agent: KMail/1.9.10
-Cc: Ondrej Ille <ondrej.ille@gmail.com>,
- Vincent Mailhol <mailhol@kernel.org>,
- Avi Weiss <thnkslprpt@gmail.com>,
- linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- kernel@pengutronix.de,
- Jiri Novak <jnovak@fel.cvut.cz>
-References: <20260806-ctucanfd-silence-can-bus-error-messages-v1-1-70eff67debfd@pengutronix.de> <202608150102.34461.pisa@fel.cvut.cz> <20260818-optimistic-woodlouse-of-cookies-972baa-mkl@pengutronix.de>
-In-Reply-To: <20260818-optimistic-woodlouse-of-cookies-972baa-mkl@pengutronix.de>
-X-KMail-QuotePrefix: > 
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="sNLETQHx"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37A4D1F000E9;
+	Mon, 24 Aug 2026 09:38:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxfoundation.org;
+	s=korg; t=1787564301;
+	bh=whRaf89LfdoLj802Q5NG9+203DhxvWBYpS03UuIROgY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=sNLETQHxs5rq73ZTYMq5ETvx6QFp/0+Z80nNeoLnteWkdMS7Mpi7tRUbD7/WZBRDn
+	 4l/WRipDus+wsYK/fYXb4XXGYFFE5zvsQLzxeIYIE88CpbTS1mUURYkIAJRPJThA+Q
+	 Mbo2OKAqzVJ+6YdcyLgNLeluIVZOVcUaRm8IFWK4=
+Date: Mon, 24 Aug 2026 11:38:18 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: "Dynetrex, Admin" <admin@dynetrex.com>
+Cc: PS10 PETER HONG =?utf-8?B?5rSq57m85r6k?= <peter_hong@fintek.com.tw>,
+	mkl@pengutronix.de, mailhol@kernel.org, linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] can: usb: f81604: fix struct f81604_int_data size
+ mismatch
+Message-ID: <2026082401-letdown-fervor-ed79@gregkh>
+References: <20260824082758.9118-1-peter_hong@fintek.com.tw>
+ <2026082433-dynamic-overspend-8f32@gregkh>
+ <597D8628-7241-47FA-B692-FEB66360EF3D@dynetrex.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <202608241105.23402.pisa@fel.cvut.cz>
+In-Reply-To: <597D8628-7241-47FA-B692-FEB66360EF3D@dynetrex.com>
 
-Hello Marc and others,
+On Mon, Aug 24, 2026 at 02:14:26AM -0700, Dynetrex, Admin wrote:
+> Hey Greg, 
+> 
+> This issue was reported by me about a month and a half ago, however, I did not have an environment setup for kernel development in order to submit a patch.
 
-and thanks for support of our HW as well as CAN and Linux
-in general.
+Great, a reported-by: line would be great to have added here to capture
+that.
 
-On Tuesday 18 of August 2026 11:54:01 Marc Kleine-Budde wrote:
-> On 15.08.2026 01:02:34, Pavel Pisa wrote:
-...
-> > Anyway if you have interest to meet,
-> > I will be in Prague and when not teaching, I will be happy to
-> > reserve time. There would be real local enthusiast, free community
-> > and access conference before these Linux Foundation ones
-> >
-> > https://www.linuxdays.cz/2026/
-> >
-> > I expect to show our HW ZOO there on the booth there as usual
-> > so you can visit us at our university ground.
->
-> I will arrive on Sunday, but I haven't booked a train yet. When does the
-> conference close on Sunday?
+thanks,
 
-For this year, the program is not finalized yet, but the closing
-session was on Sunday at 16:00 last year. The LinuxDays conference
-
-  https://www.linuxdays.cz/
-
-has a majority of talks in the Czech language (it is mainly local event).
-Still, some are in English, and it is a place where a lot of local
-hackerspaces and other groups (often including SUSE, Fedora, etc)
-present projects. Sometimes, even advanced ones like 400G Traffic
-Monitoring FPGA hardware by CESNET, some links are there
-
-  https://ieeexplore.ieee.org/document/10035175
-  https://github.com/CESNET/ndk-fpga
-  https://github.com/CESNET/ipfixprobe
-
-usually lot of embedded HW, Linux based,
-retro HW etc.
-   
-Best wishes,
-
-                Pavel Pisa
-    phone:      +420 603531357
-    e-mail:     pisa@cmp.felk.cvut.cz
-    Department of Control Engineering FEE CVUT
-    Karlovo namesti 13, 121 35, Prague 2
-    university: http://control.fel.cvut.cz/
-    personal:   http://cmp.felk.cvut.cz/~pisa
-    social:     https://social.kernel.org/ppisa
-    projects:   https://www.openhub.net/accounts/ppisa
-    CAN related:http://canbus.pages.fel.cvut.cz/
-    RISC-V education: https://comparch.edu.cvut.cz/
-    Open Technologies Research Education and Exchange Services
-    https://gitlab.fel.cvut.cz/otrees/org/-/wikis/home
+greg k-h
