@@ -1,114 +1,164 @@
-Received: from forward101a.mail.yandex.net (forward101a.mail.yandex.net [178.154.239.84])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 645C3370D57
-	for <linux-can@vger.kernel.org>; Mon, 24 Aug 2026 15:54:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 872DE4334CD
+	for <linux-can@vger.kernel.org>; Mon, 24 Aug 2026 16:08:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787586882; cv=none; b=uKIlXVuJtOjsklaDBjW1gCtyJ8Cp1txsd1VZAY0wsRe5Ozlix9g7Z72AzqNgbJ8xYziCx87ibn43KtgPOXUG6aMkDqW1bDnHndoBCkH+FInp+4r6oc0doNez0C0V3pVMj5tP/IcQlGAsb8U+bR92mIsRJwe6Cv6r4uOeyqJrsv4=
+	t=1787587728; cv=none; b=qdICFwi+fyP/QerNLhzPvfDY0LTycl5mHCBin3SbXhUHV1MmElhJ2XjsHGtWDh1QqlyrJkE1L1Gc43Fa9JcOBWqrmINkqt1tEUMM1bBKWjfLK5l/3mmHfaIQXiBJ1W9rJG7PlwsbHYfZXjWeRMtiNqzlDeqxy2Soanj18ypfN2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787586882; c=relaxed/simple;
-	bh=yAvnRQyIPvA54bmvsYKKwhQKK4BNthe9HXj476db3hg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rEyyefTjy9n+6HM5WZe7P/7RDv2sT5350YOeWVvsG1X2XWlBR5VV0HN02RJCJdt3Ow9PkvXr1g8VdhIA1MO3ODwHaGgbnckveFJAlcjt3gzhvC2FVpajJafdAw5AbpeGlMvFKCeekYeFR4/BX6auDjYixu9jDpVDoBxFisB8lXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=inp2k25G; arc=none smtp.client-ip=178.154.239.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
+	s=arc-20240116; t=1787587728; c=relaxed/simple;
+	bh=6n/Fu+nymvc2WKO+YU7uzEtuPHAz/bNYpvJ5Zm+Y1CA=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=rNq1fsGjvU5KYR0NbE4b3Bu/qAwGydD4puGYlEVEUdkpdVb3w6tP+W88p30hIN87EpMDuuZBM/iWmi04/dt3ugXZGBhc511c6Nz1sSp5lp9eOmFnYUSPM/yGfB4qs4LBfszl9hEH6H+R7iKD16HlFo0JOljQPvDzwHeAXmQjD6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BACG9lN3; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="inp2k25G"
-Received: from mail-nwsmtp-smtp-production-main-95.vla.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-95.vla.yp-c.yandex.net [IPv6:2a02:6b8:c15:340d:0:640:ad51:0])
-	by forward101a.mail.yandex.net (postfix) with ESMTPS id DB04080ED3;
-	Mon, 24 Aug 2026 18:54:35 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-95.vla.yp-c.yandex.net (smtp) with ESMTPSA id XsdEgXsf7eA0-SR7oE8dr;
-	Mon, 24 Aug 2026 18:54:35 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1787586875; bh=L72NSXK77MjiwvMh/bmR7dsD6sMGDhRYVY397cKNHg8=;
-	h=Message-ID:Date:Cc:Subject:To:From;
-	b=inp2k25Gyzq+99+bwLiAEhf4pXp+Kx6y+skooSYB9Y1jXjN2OrqcU7pGHLiA+5CBU
-	 GuSS6j7OWGjpTw6VtHURyXoLGM5U1gcM/XrjlhE73VNS7uxsyotQLxj24QbKqBKr/8
-	 SW5pUYmU8SQiNqsff9PGKz/Ip/QGnxY3ey6iTmQo=
-Authentication-Results: mail-nwsmtp-smtp-production-main-95.vla.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-From: Dmitry Antipov <dmantipov@yandex.ru>
-To: Robin van der Gracht <robin@protonic.nl>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	Dmitry Antipov <dmantipov@yandex.ru>,
-	syzbot+489e907b2a026a6f5fa0@syzkaller.appspotmail.com
-Subject: [PATCH] can: j1939: cancel all pending ECUs on device stop
-Date: Mon, 24 Aug 2026 18:54:06 +0300
-Message-ID: <20260824155406.246942-1-dmantipov@yandex.ru>
-X-Mailer: git-send-email 2.55.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BACG9lN3"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FBFF1F000E9;
+	Mon, 24 Aug 2026 16:08:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1787587724;
+	bh=KtOIgD6dK9Ul0ZJRXRz5/NUj1C/jerAlgeiBcvBOGIw=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=BACG9lN3V6bQ2/PbdkuFTZjwcO+pADq3y+/Inbotl1+WTHzztJoLLjnFkKHs+BpzB
+	 YlbhXp2bUKIv3Bmp5/xQQU6BcyLQdWUIcR0+KoWmQlFqpeiCke2gZz4L5obzp0gLYj
+	 ydVKQ10a5XrPPS3CqSvGCY7ZTxoMg9GJImtG6oEWHBEbjE9A596TMas9SmqB4yokL1
+	 qt1tiOWqC2B5gNKdmfwfaDdIs/kCv9UNWeE01B8YLhARlF2XUeLDMcUSfHu7V1/s5G
+	 sZdqEItQe9dnw2Rf0iPqd+4gDIXdDTap1P4ZSoT2/QJpflKg+BdVQykXYKQ7VLQ6Qi
+	 bMz0EycSVupSw==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH] can: j1939: cancel all pending ECUs on device stop
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Dmitry Antipov" <dmantipov@yandex.ru>
+Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>
+In-Reply-To: <20260824155406.246942-1-dmantipov@yandex.ru>
+References: <20260824155406.246942-1-dmantipov@yandex.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 24 Aug 2026 16:08:43 +0000
+Message-Id: <20260824160844.4FBFF1F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Cancel all pending ECUs in 'j1939_netdev_stop()'. This is needed
-to prevent the case when stopped device no longer processes ECUs
-and, since ECU holds the reference to 'struct j1939_priv', the
-latter (and ECU itself) is never freed.
+Thank you for your contribution! Sashiko AI review found 3 potential issue(=
+s) to consider:
 
+New issues:
+- [High] AB-BA deadlock between `priv->lock` and `hrtimer_cancel()` when st=
+opping the device.
+- [High] Unconditional cancellation of all ECUs on any socket closure break=
+s address claiming for the entire CAN interface.
+
+Pre-existing issues:
+- [Critical] Unlocked list deletion in `__j1939_ecu_release()` leads to lis=
+t corruption.
+--
+
+--- Patch [1]: [PATCH] can: j1939: cancel all pending ECUs on device stop -=
+--
+commit f80db37c4e58ab7d9daa72ce8c93a7552521ee48
+Author: Dmitry Antipov <dmantipov@yandex.ru>
+
+can: j1939: cancel all pending ECUs on device stop
+   =20
+This patch modifies the device stop routine to cancel all pending ECU
+timers to prevent a situation where an ECU continues holding a reference
+to the private data structure after the device stops processing.
+   =20
 Reported-by: syzbot+489e907b2a026a6f5fa0@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=489e907b2a026a6f5fa0
+Closes: https://syzkaller.appspot.com/bug?extid=3D489e907b2a026a6f5fa0
 Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
----
- net/can/j1939/bus.c        | 10 ++++++++++
- net/can/j1939/j1939-priv.h |  1 +
- net/can/j1939/main.c       |  1 +
- 3 files changed, 12 insertions(+)
 
-diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
-index cdc3c0a71937..a180bbdb3790 100644
---- a/net/can/j1939/bus.c
-+++ b/net/can/j1939/bus.c
-@@ -96,6 +96,16 @@ void j1939_ecu_unmap(struct j1939_ecu *ecu)
- 	write_unlock_bh(&ecu->priv->lock);
- }
- 
-+void j1939_ecu_cancel_all(struct j1939_priv *priv)
-+{
-+	struct j1939_ecu *ecu, *tmp;
-+
-+	write_lock_bh(&priv->lock);
-+	list_for_each_entry_safe(ecu, tmp, &priv->ecus, list)
-+		j1939_ecu_timer_cancel(ecu);
-+	write_unlock_bh(&priv->lock);
-+}
-+
- void j1939_ecu_unmap_all(struct j1939_priv *priv)
- {
- 	int i;
-diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
-index cf26352d1d8c..37a245ef9b73 100644
---- a/net/can/j1939/j1939-priv.h
-+++ b/net/can/j1939/j1939-priv.h
-@@ -204,6 +204,7 @@ struct j1939_ecu *j1939_ecu_create_locked(struct j1939_priv *priv, name_t name);
- 
- void j1939_ecu_timer_start(struct j1939_ecu *ecu);
- void j1939_ecu_timer_cancel(struct j1939_ecu *ecu);
-+void j1939_ecu_cancel_all(struct j1939_priv *priv);
- void j1939_ecu_unmap_all(struct j1939_priv *priv);
- 
- struct j1939_priv *j1939_netdev_start(struct net_device *ndev);
-diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
-index 5e5e6c228f22..1f68ba803700 100644
---- a/net/can/j1939/main.c
-+++ b/net/can/j1939/main.c
-@@ -306,6 +306,7 @@ struct j1939_priv *j1939_netdev_start(struct net_device *ndev)
- 
- void j1939_netdev_stop(struct j1939_priv *priv)
- {
-+	j1939_ecu_cancel_all(priv);
- 	kref_put_mutex(&priv->rx_kref, __j1939_rx_release, &j1939_netdev_lock);
- 	j1939_priv_put(priv);
- }
--- 
-2.55.0
+> diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
+> --- a/net/can/j1939/bus.c
+> +++ b/net/can/j1939/bus.c
+> @@ -96,6 +96,16 @@ void j1939_ecu_unmap(struct j1939_ecu *ecu)
+>  	write_unlock_bh(&ecu->priv->lock);
+>  }
+> =20
+> +void j1939_ecu_cancel_all(struct j1939_priv *priv)
+> +{
+> +	struct j1939_ecu *ecu, *tmp;
+> +
+> +	write_lock_bh(&priv->lock);
+> +	list_for_each_entry_safe(ecu, tmp, &priv->ecus, list)
+> +		j1939_ecu_timer_cancel(ecu);
 
+[Severity: High]
+Could this introduce an AB-BA deadlock with the timer callback?
+
+The loop holds the lock while cancelling the timer:
+
+write_lock_bh(&priv->lock);
+list_for_each_entry_safe(ecu, tmp, &priv->ecus, list)
+        j1939_ecu_timer_cancel(ecu);
+
+If j1939_ecu_timer_handler() is currently executing on another CPU, it
+will unconditionally attempt to acquire the exact same lock:
+
+net/can/j1939/bus.c:j1939_ecu_timer_handler() {
+    ...
+    write_lock_bh(&priv->lock);
+    ...
+}
+
+Would this cause hrtimer_cancel() to spin waiting for the callback to
+finish, while the callback waits for the lock held by this thread?
+
+[Severity: Critical]
+This isn't a bug introduced by this patch, but iterating this list might
+expose a pre-existing list corruption issue.
+
+When j1939_ecu_timer_cancel() drops the reference via j1939_ecu_put(), or
+when a temporary reference is dropped in j1939_ac_recv(), it can trigger
+the final release:
+
+net/can/j1939/bus.c:__j1939_ecu_release() {
+    ...
+    list_del(&ecu->list);
+    ...
+}
+
+The list_del() executes without holding priv->lock. If this happens
+concurrently while another thread is iterating priv->ecus (like the loop
+introduced here), could it corrupt the list and cause a use-after-free or
+kernel panic?
+
+> +	write_unlock_bh(&priv->lock);
+> +}
+> +
+>  void j1939_ecu_unmap_all(struct j1939_priv *priv)
+
+[ ... ]
+
+> diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
+> --- a/net/can/j1939/main.c
+> +++ b/net/can/j1939/main.c
+> @@ -306,6 +306,7 @@ struct j1939_priv *j1939_netdev_start(struct net_devi=
+ce *ndev)
+> =20
+>  void j1939_netdev_stop(struct j1939_priv *priv)
+>  {
+> +	j1939_ecu_cancel_all(priv);
+
+[Severity: High]
+Does unconditionally cancelling all ECUs here break address claiming for
+the shared interface?
+
+It appears j1939_netdev_stop() is called whenever any local user closes
+a J1939 socket, but the CAN interface itself might still be in use by
+other sockets. Calling j1939_ecu_cancel_all() before checking the shared
+rx_kref count could disrupt network management for those remaining users.
+
+>  	kref_put_mutex(&priv->rx_kref, __j1939_rx_release, &j1939_netdev_lock);
+>  	j1939_priv_put(priv);
+>  }
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260824155406.2469=
+42-1-dmantipov@yandex.ru?part=3D1
