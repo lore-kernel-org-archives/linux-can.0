@@ -1,184 +1,300 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DE953E7BBD;
-	Mon, 24 Aug 2026 10:16:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59F9B41D21F
+	for <linux-can@vger.kernel.org>; Mon, 24 Aug 2026 12:54:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787566605; cv=none; b=E3aRamWYP9LbxEQ+5FKv0EpdUkz3Xn9xRz4gNdnQaaaG58Hr3XLwrV/QRmvbGCI4qoSrHYR8jCbNyoOCRCVBX71UtT06lMYB9KgGOvYlFCQ2pX7yGV1SgHGioullryQ6usbtP9QcEhTqbD1PkyU+faQr+3eIX98FlbofLyFLRpc=
+	t=1787576044; cv=none; b=f+CREDASrUuFwYCMK68W4RuY2yh81Y92zJKtlVoYoYO6ItyAZqjTi7vJ4dTonMCdFEQkcioLTrRLw0RFyx3UyOZugt/c9o806uDnoEF7b5RSef31gMV/EDJGQWb7SYmGzt6FFvJgQFw2NbFd8lui4wo7yFMsI2R4EFve2lZse10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787566605; c=relaxed/simple;
-	bh=NGwBWQrSn1f/7ALE6N0sk7ApTNXlY6dyMDSj+LRH1gA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e1UBOdFGaP4Vk+6wnhgvaYuEywgw8RqHzfrEzL/Vc/sKkg3X/JokszjrqtRBuMRMGOjPXxNiiAqiFMvAEPiPhTv3CsoTMRLeQ5JVgRKZYw2p6U1sfN+hMwIiiJXpDUU1P71tIOy5JbJt+xgkIAwCKwPbCO8vHwDqwJpXudxq4yM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 25F9F2010D6;
-	Mon, 24 Aug 2026 12:16:40 +0200 (CEST)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1wyRjL-0035Xp-3B;
-	Mon, 24 Aug 2026 12:16:40 +0200
-Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id A796258B268;
-	Mon, 24 Aug 2026 10:16:39 +0000 (UTC)
-Date: Mon, 24 Aug 2026 12:16:39 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Bough Chen <haibo.chen@oss.nxp.com>
-Cc: sashiko-reviews@lists.linux.dev, 
-	Ciprian Costea <ciprianmarian.costea@oss.nxp.com>, robh@kernel.org, conor+dt@kernel.org, Frank.Li@kernel.org, 
-	Oleksij Rempel <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, imx@lists.linux.dev, 
-	Oliver Hartkopp <socketcan@hartkopp.net>, Vincent Mailhol <mailhol@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 3/6] can: flexcan: split rx/tx masks per mailbox IRQ
- line
-Message-ID: <20260824-mustang-of-original-fame-4b3a91-mkl@pengutronix.de>
-References: <20260713085306.2643794-1-ciprianmarian.costea@oss.nxp.com>
- <20260713085306.2643794-4-ciprianmarian.costea@oss.nxp.com>
- <20260713090803.CCE2E1F000E9@smtp.kernel.org>
- <20260824101241.ysq45swzx4ihctel@shlinux89>
+	s=arc-20240116; t=1787576044; c=relaxed/simple;
+	bh=g5Gjw3IzAe7/knSsX/zuM7s6pCoTujnIsNbK8G68sFo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QfdEPijuBmiyAkl2E0+cVymLCuF5CxstM+uzLi7Eg9lJ1DeYHLwH+AiFk1aOITEZyod3So3cdmGPl055xkxeNS3OwDkY9TRd3vvDYAdhrCYM0dor74sj6Cu6nlDi4rB0/7fEPyNsq93+IYeKIDrdJI79tp98nEJjmNd8ERNg5vY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EgagS3YX; arc=none smtp.client-ip=209.85.215.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EgagS3YX"
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-cbedda4c154so2047542a12.1
+        for <linux-can@vger.kernel.org>; Mon, 24 Aug 2026 05:54:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1787576040; x=1788180840; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=V8/sUQGbhm0rzxqY2kDdfzdZpT2sKv66wG53evR61DI=;
+        b=EgagS3YX2esp64X56Rf7Pg7U5Z/m0Z3qQFiGAzWd+d78Eu5p1neqFuqPm4tZU1Nsh8
+         MDZPKVmoIY9YLTofbe4pFDVRSI7NsujplQE5lQjqdE9tKLcgQ23tZ9Ck5KWkAvU7zgRD
+         TEf1cmL7/wy1G5jZhdDJb2+Ak7VhpFSaKc7WBCwHTggYHvhSXpKCcZ0a3oS1gLRvdEX8
+         hYy6VkgAUh5lr1m8afcnmSBQNVzvaqtokZ/gqsl27SIFA8fZ18TRS8XxTOkzMUuLtI0w
+         /p18cI4cV2GPJmrFUVg7yeLUR1xSRFmMAa3Dx/ebwSvfOF4QDL+dHnH5YPStypYIuYEq
+         VCCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787576040; x=1788180840;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=V8/sUQGbhm0rzxqY2kDdfzdZpT2sKv66wG53evR61DI=;
+        b=TplkPf5n2Zl9xqeYyEdEPcKQ5AnDwPcGM6LJR8KMFPBwxFMyvV5oQc4WTDmJYuJxXw
+         wgyup4uL8oe++wEhx1C0rBb10OFolcdeanK0wtJNeeoIi6G7HlsA8v4Z1k2HbmZmsrWW
+         QK2ZzcX4XYv7oIzJ2kgC+QIVScjDYbpWrx0125SDS8kZpfHHQWfao+3+sSXzfCpN9aJZ
+         wlzQDJfEIPtHcpn94lpfPdzuvF8dhHOiLus/NIp6bdIsap6SIkCyrrETITI4nXgEqsHG
+         iJMAi8woAY4vQ12HqyseuS8TUkVL5K/FlNvj2zCzc5qUAfChZ1Va6KCDzXOhYPr+5Dul
+         GtHg==
+X-Gm-Message-State: AFuF++nsmWalJeExu/li5aChNeHsx4cuFyR7jUYelQnUWrVxXd2I9uWU
+	zx9SOxZhYJ5wKle4C+ENCmXEnZdA/zqoeWBMsf3LH1AbzgpH3ZwVA4OC4/oayhMx
+X-Gm-Gg: AR+sD12paXjOyXNoJsOVRyPLncp1BEcECEGImLozPhAfuw/Xsdte29R7qmo3t/vYtoo
+	AF6p+8GE79VhTCgqmet88+IbV8H1cFAeCw4uHTkqm/njQaponEUJL6CybgWn2c264gQCIPfk7Pk
+	8nF7LzRQGA7hLLs6L2rJsC5FtqHHhV0ZHO+qatPE0ZbviYObJhc6wzw0UPljDDKj6anNpp7yDnb
+	YjUm8g7xAGZC6dp22HaKMc1fTywkGEqMfr3Dvixjn8LZYAsqsBwYVU5ZBvJODIZ9uAJJX08bOrJ
+	dovlbu3iTXGKyClQ9L3xFmskc/xVX7Zwb+WEV1UQuOljyM1q6p7ho6zuQQrnDWbm8Q9Mmk5sTMD
+	8umIk5He8uzu4pm/LrNQOHl2JCBF7JFWyl0/oV89HFA7PFDDzj1tcfI5pj7iVmG2Ms6/h0/6jP5
+	HWpxKVzvLZR0+ct3lP8wGJse4zL1ZpWYdqtcjKabd7e9pKeonLGOYzWuklvoc8Pwin/YRwZ3gQi
+	s1bCQ3IndG8BT1+AvetE0OktA==
+X-Received: by 2002:a17:90a:c88b:b0:38e:6a44:671b with SMTP id 98e67ed59e1d1-395c2f4b17emr51268255a91.0.1787576040330;
+        Mon, 24 Aug 2026 05:54:00 -0700 (PDT)
+Received: from mi-ThinkStation-K.mioffice.cn ([43.224.245.235])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-395c8e0ebbfsm4179719a91.0.2026.08.24.05.53.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Aug 2026 05:53:59 -0700 (PDT)
+From: yewentian395 <yewentian395@gmail.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	yewentian395 <yewentian395@gmail.com>
+Subject: [PATCH] qcan: isotp: implement N_Ar timeout handling for FC transmission
+Date: Mon, 24 Aug 2026 20:53:43 +0800
+Message-Id: <20260824125343.2700828-1-yewentian395@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="23nbqcy73hx4u2kj"
-Content-Disposition: inline
-In-Reply-To: <20260824101241.ysq45swzx4ihctel@shlinux89>
+Content-Transfer-Encoding: 8bit
 
+Add N_Ar (ISO 15765-2) timeout logic to detect FC frame transmission
+failures on the receiver side. Previously, isotp_send_fc() fired the
+FC and immediately started the N_Cr timer (rxtimer) without confirming
+that the FC was actually transmitted onto the CAN bus.
 
---23nbqcy73hx4u2kj
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v6 3/6] can: flexcan: split rx/tx masks per mailbox IRQ
- line
-MIME-Version: 1.0
+Introduce ISOTP_WAIT_FC_TX_CONFIRM state and fc_artimer to implement
+a two-phase approach:
 
-On 24.08.2026 18:12:41, Bough Chen wrote:
-> On Mon, Jul 13, 2026 at 09:08:03AM +0000, sashiko-bot@kernel.org wrote:
-> > Thank you for your contribution! Sashiko AI review found 1 potential is=
-sue(s) to consider:
-> >
-> > Pre-existing issues:
-> > - [High] Concurrent execution of multiple flexcan IRQ handlers causes l=
-ockless list corruption in the can_rx_offload queue.
-> > --
-> >
-> > --- Patch [3]: [PATCH v6 3/6] can: flexcan: split rx/tx masks per mailb=
-ox IRQ line ---
-> > commit 9f143e05fb5957d463ce1d05d4126d168798b0d8
-> > Author: Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>
-> >
-> > can: flexcan: split rx/tx masks per mailbox IRQ line
-> >
-> > This commit updates flexcan to process split rx/tx masks based on the
-> > mailbox IRQ line for platforms like S32G2. It introduces MB0 and MB1 ma=
-sks
-> > and passes them to flexcan_do_mb() to only process the relevant mailbox
-> > range for each IRQ.
-> >
-> > > diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can=
-/flexcan/flexcan-core.c
-> > > --- a/drivers/net/can/flexcan/flexcan-core.c
-> > > +++ b/drivers/net/can/flexcan/flexcan-core.c
-> >
-> > [ ... ]
-> >
-> > > @@ -1244,8 +1255,14 @@ static irqreturn_t flexcan_irq_mb(int irq, voi=
-d *dev_id)
-> > >  	struct net_device *dev =3D dev_id;
-> > >  	struct flexcan_priv *priv =3D netdev_priv(dev);
-> > >  	irqreturn_t handled;
-> > > +	u64 mb_mask =3D ~0ULL;
-> > > +
-> > > +	if (priv->devtype_data.quirks & FLEXCAN_QUIRK_SECONDARY_MB_IRQ)
-> > > +		mb_mask =3D (irq =3D=3D priv->irq_secondary_mb) ?
-> > > +			  FLEXCAN_SECONDARY_MB_IRQ_MB1_MASK :
-> > > +			  FLEXCAN_SECONDARY_MB_IRQ_MB0_MASK;
-> > >
-> > > -	handled =3D flexcan_do_mb(dev);
-> > > +	handled =3D flexcan_do_mb(dev, mb_mask);
-> > >
-> > >  	if (handled)
-> > >  		can_rx_offload_irq_finish(&priv->offload);
-> >
-> > [Severity: High]
-> > This is a pre-existing issue, but does this concurrent execution risk
-> > corrupting the lockless rx-offload queues?
-> >
-> > Since the primary and secondary mailbox IRQs are separate lines (e.g., =
-on
-> > S32G2), they can be dispatched concurrently on different CPUs when fram=
-es
-> > arrive simultaneously for both mailbox groups.
-> >
-> > If both IRQs execute at the same time:
-> >
-> > CPU1
-> > flexcan_irq_mb()
-> >    flexcan_do_mb()
-> >       can_rx_offload_irq_offload_timestamp()
-> >          __skb_queue_add_sort(&offload->skb_irq_queue, ...)
-> >
-> > CPU2
-> > flexcan_irq_mb()
-> >    flexcan_do_mb()
-> >       can_rx_offload_irq_offload_timestamp()
-> >          __skb_queue_add_sort(&offload->skb_irq_queue, ...)
-> >
-> > Or if CPU2 reaches the finish step while CPU1 is still adding:
-> >
-> > CPU2
-> > flexcan_irq_mb()
-> >    can_rx_offload_irq_finish()
-> >       skb_queue_splice_tail_init(&offload->skb_irq_queue, ...)
-> >
-> > Since __skb_queue_add_sort() and skb_queue_splice_tail_init() operate
-> > locklessly on offload->skb_irq_queue, could this lead to corrupted link=
-ed
-> > list next/prev pointers or infinite loops during list traversal?
->
-> Hi Ciprian Costea,
->
-> Please double check whether S32 can generate these two mb interrupt at
-> the same time, if not, no need change, just comment this feature, if
-> yes, then need to add lock.
+  1. N_Ar phase: after can_send(FC), wait for local echo confirmation
+  2. N_Cr phase: after echo arrives, start rxtimer to wait for next CF
 
-If the IRQ is delayed for some reason, mailboxes 7 (associated with
-mb-0) and 8 (associated with mb-1) might be pending at the same time.
+Key design points:
 
-I assume that both IRQs will fire. One workaround would be to only use
-the mb-1 IRQ until the rx-offloading has been fixed.
+- fc_artimer and rxtimer are mutually exclusive (never both active)
+- Timer handler uses guard condition (no spinlock) to avoid deadlock
+  with hrtimer_cancel() callers, following isotp_rx_timer_handler pattern
+- CF arrival during WAIT_FC_TX_CONFIRM acts as implicit FC confirmation
+  (CF from remote proves FC was transmitted successfully)
+- New FF/SF arrival during WAIT_FC_TX_CONFIRM cancels fc_artimer
+- ISOTP_FC_OVFLW does not enter N_Ar phase (fire-and-forget)
+- can_send() failure triggers immediate rollback
 
-regards,
-Marc
+State machine extension (RX path only):
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+  WAIT_DATA -> isotp_send_fc(CTS) -> WAIT_FC_TX_CONFIRM
+  WAIT_FC_TX_CONFIRM -> FC echo / CF arrival -> WAIT_DATA
+  WAIT_FC_TX_CONFIRM -> fc_artimer timeout -> IDLE (ECOMM)
+  WAIT_FC_TX_CONFIRM -> new FF/SF -> IDLE (reset)
 
---23nbqcy73hx4u2kj
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: yewentian395 <yewentian395@gmail.com>
+---
+ net/can/isotp.c | 93 ++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 80 insertions(+), 13 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index 1efa377f002e..2bdedfc1d1f8 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -125,12 +125,14 @@ MODULE_PARM_DESC(max_pdu_size, "maximum isotp pdu size (default "
+ 
+ #define ISOTP_FC_TIMEOUT 1	/* 1 sec */
+ #define ISOTP_ECHO_TIMEOUT 2	/* 2 secs */
++#define ISOTP_FC_AR_TIMEOUT 1	/* 1 sec - N_Ar timeout for FC tx confirm */
+ 
+ enum {
+ 	ISOTP_IDLE = 0,
+ 	ISOTP_WAIT_FIRST_FC,
+ 	ISOTP_WAIT_FC,
+ 	ISOTP_WAIT_DATA,
++	ISOTP_WAIT_FC_TX_CONFIRM,	/* RX: waiting for local FC echo */
+ 	ISOTP_SENDING,
+ 	ISOTP_SHUTDOWN,
+ };
+@@ -155,7 +157,7 @@ struct isotp_sock {
+ 	canid_t rxid;
+ 	ktime_t tx_gap;
+ 	ktime_t lastrxcf_tstamp;
+-	struct hrtimer rxtimer, txtimer, txfrtimer;
++	struct hrtimer rxtimer, txtimer, txfrtimer, fc_artimer;
+ 	struct can_isotp_options opt;
+ 	struct can_isotp_fc_options rxfc, txfc;
+ 	struct can_isotp_ll_options ll;
+@@ -210,6 +212,25 @@ static enum hrtimer_restart isotp_rx_timer_handler(struct hrtimer *hrtimer)
+ 	return HRTIMER_NORESTART;
+ }
+ 
++static enum hrtimer_restart isotp_fc_ar_timer_handler(struct hrtimer *hrtimer)
++{
++	struct isotp_sock *so = container_of(hrtimer, struct isotp_sock,
++					     fc_artimer);
++	struct sock *sk = &so->sk;
++
++	if (so->rx.state != ISOTP_WAIT_FC_TX_CONFIRM)
++		return HRTIMER_NORESTART;
++
++	so->rx.state = ISOTP_IDLE;
++	so->rx.len = 0;
++
++	sk->sk_err = ECOMM;
++	if (!sock_flag(sk, SOCK_DEAD))
++		sk_error_report(sk);
++
++	return HRTIMER_NORESTART;
++}
++
+ static int isotp_send_fc(struct sock *sk, int ae, u8 flowstatus)
+ {
+ 	struct net_device *dev;
+@@ -256,22 +277,37 @@ static int isotp_send_fc(struct sock *sk, int ae, u8 flowstatus)
+ 
+ 	ncf->flags = so->ll.tx_flags;
+ 
+-	can_send_ret = can_send(nskb, 1);
+-	if (can_send_ret)
+-		pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
+-			       __func__, ERR_PTR(can_send_ret));
+-
+-	dev_put(dev);
+-
+ 	/* reset blocksize counter */
+ 	so->rx.bs = 0;
+ 
+ 	/* reset last CF frame rx timestamp for rx stmin enforcement */
+ 	so->lastrxcf_tstamp = ktime_set(0, 0);
+ 
+-	/* start rx timeout watchdog */
+-	hrtimer_start(&so->rxtimer, ktime_set(ISOTP_FC_TIMEOUT, 0),
+-		      HRTIMER_MODE_REL_SOFT);
++	if (flowstatus == ISOTP_FC_CTS) {
++		/* cancel rxtimer before entering N_Ar phase */
++		hrtimer_cancel(&so->rxtimer);
++
++		/* enter N_Ar confirmation phase */
++		so->rx.state = ISOTP_WAIT_FC_TX_CONFIRM;
++		hrtimer_start(&so->fc_artimer,
++			      ktime_set(ISOTP_FC_AR_TIMEOUT, 0),
++			      HRTIMER_MODE_REL_SOFT);
++	}
++
++	can_send_ret = can_send(nskb, 1);
++	if (can_send_ret) {
++		pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
++			       __func__, ERR_PTR(can_send_ret));
++		if (flowstatus == ISOTP_FC_CTS) {
++			hrtimer_cancel(&so->fc_artimer);
++			so->rx.state = ISOTP_IDLE;
++			so->rx.len = 0;
++		}
++		dev_put(dev);
++		return 1;
++	}
++
++	dev_put(dev);
+ 	return 0;
+ }
+ 
+@@ -447,6 +483,9 @@ static int isotp_rcv_sf(struct sock *sk, struct canfd_frame *cf, int pcilen,
+ 	struct isotp_sock *so = isotp_sk(sk);
+ 	struct sk_buff *nskb;
+ 
++	if (so->rx.state == ISOTP_WAIT_FC_TX_CONFIRM)
++		hrtimer_cancel(&so->fc_artimer);
++
+ 	hrtimer_cancel(&so->rxtimer);
+ 	so->rx.state = ISOTP_IDLE;
+ 
+@@ -481,6 +520,9 @@ static int isotp_rcv_ff(struct sock *sk, struct canfd_frame *cf, int ae)
+ 	int off;
+ 	int ff_pci_sz;
+ 
++	if (so->rx.state == ISOTP_WAIT_FC_TX_CONFIRM)
++		hrtimer_cancel(&so->fc_artimer);
++
+ 	hrtimer_cancel(&so->rxtimer);
+ 	so->rx.state = ISOTP_IDLE;
+ 
+@@ -554,6 +596,13 @@ static int isotp_rcv_cf(struct sock *sk, struct canfd_frame *cf, int ae,
+ 	struct sk_buff *nskb;
+ 	int i;
+ 
++	if (so->rx.state == ISOTP_WAIT_FC_TX_CONFIRM) {
++		hrtimer_cancel(&so->fc_artimer);
++		so->rx.state = ISOTP_WAIT_DATA;
++		hrtimer_start(&so->rxtimer, ktime_set(ISOTP_FC_TIMEOUT, 0),
++			      HRTIMER_MODE_REL_SOFT);
++	}
++
+ 	if (so->rx.state != ISOTP_WAIT_DATA)
+ 		return 0;
+ 
+@@ -855,9 +904,22 @@ static void isotp_rcv_echo(struct sk_buff *skb, void *data)
+ 	struct sock *sk = (struct sock *)data;
+ 	struct isotp_sock *so = isotp_sk(sk);
+ 	struct canfd_frame *cf = (struct canfd_frame *)skb->data;
++	int ae = (so->opt.flags & CAN_ISOTP_EXTEND_ADDR) ? 1 : 0;
+ 
+-	/* only handle my own local echo CF/SF skb's (no FF!) */
+-	if (skb->sk != sk || so->cfecho != *(u32 *)cf->data)
++	if (skb->sk != sk)
++		return;
++
++	/* FC echo handling: confirm FC was transmitted (N_Ar) */
++	if (so->rx.state == ISOTP_WAIT_FC_TX_CONFIRM &&
++	    (cf->data[ae] & 0xF0) == N_PCI_FC) {
++		hrtimer_cancel(&so->fc_artimer);
++		so->rx.state = ISOTP_WAIT_DATA;
++		hrtimer_start(&so->rxtimer, ktime_set(ISOTP_FC_TIMEOUT, 0),
++			      HRTIMER_MODE_REL_SOFT);
++		return;
++	}
++
++	if (so->cfecho != *(u32 *)cf->data)
+ 		return;
+ 
+ 	/* cancel local echo timeout */
+@@ -1225,6 +1287,7 @@ static int isotp_release(struct socket *sock)
+ 	hrtimer_cancel(&so->txfrtimer);
+ 	hrtimer_cancel(&so->txtimer);
+ 	hrtimer_cancel(&so->rxtimer);
++	hrtimer_cancel(&so->fc_artimer);
+ 
+ 	so->ifindex = 0;
+ 	so->bound = 0;
+@@ -1563,6 +1626,8 @@ static void isotp_notify(struct isotp_sock *so, unsigned long msg,
+ 					  isotp_rcv_echo, sk);
+ 		}
+ 
++		hrtimer_cancel(&so->fc_artimer);
++		so->rx.state = ISOTP_IDLE;
+ 		so->ifindex = 0;
+ 		so->bound  = 0;
+ 		release_sock(sk);
+@@ -1639,6 +1704,8 @@ static int isotp_init(struct sock *sk)
+ 	hrtimer_setup(&so->txtimer, isotp_tx_timer_handler, CLOCK_MONOTONIC, HRTIMER_MODE_REL_SOFT);
+ 	hrtimer_setup(&so->txfrtimer, isotp_txfr_timer_handler, CLOCK_MONOTONIC,
+ 		      HRTIMER_MODE_REL_SOFT);
++	hrtimer_setup(&so->fc_artimer, isotp_fc_ar_timer_handler, CLOCK_MONOTONIC,
++		      HRTIMER_MODE_REL_SOFT);
+ 
+ 	init_waitqueue_head(&so->wait);
+ 	spin_lock_init(&so->rx_lock);
+-- 
+2.43.0
 
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCaowaBQAKCRDMOmT6rpmt
-0sLJAQDgj+mugeJoBBdtCb4CiLYS3Z0HoOdnlZYJjWCglth7ZQEA2FFoB0ldtyha
-tL8E40aGkK00bWNAggsJSF+pLhnLgQc=
-=Z2Sp
------END PGP SIGNATURE-----
-
---23nbqcy73hx4u2kj--
