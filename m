@@ -1,80 +1,61 @@
-Received: from mail-yx1-f41.google.com (mail-yx1-f41.google.com [74.125.224.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from canpmsgout02.his.huawei.com (canpmsgout02.his.huawei.com [113.46.200.217])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73D793254A0
-	for <linux-can@vger.kernel.org>; Tue, 25 Aug 2026 02:50:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC3193F3284;
+	Tue, 25 Aug 2026 09:53:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787626216; cv=none; b=h8yKSezC01xDz2OzcwR1eWywZbWOP1C3yefiogDvsuttMLRxivrbAG6hDNcyyziyOGgbXHFB2+66r5aphVGfoABdq1998W/wtZmPguG/LIOhfFhGU68roPAYM1NnvVNC884dLzdn4cjy5EL5tFvGDhlN1zmGCA+lSVmv9VESxig=
+	t=1787651632; cv=none; b=Y3VncoQoLhRiJsjH+rp/hjOXrg/tUioo39ouL4RRp+YeFsrmi7sYREobU50eax4W+cTlzAhiZhD6ActO7UJKm9J8YXJNOhCP8aYbzmMiZy9YD3UBKqk2Sxwj3JO2m+IlhGJNqZC+aRfzZTgd5AZHp2OQ49XHJIbRtATMbbelQc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787626216; c=relaxed/simple;
-	bh=VZGv3nP8pjnZdO2V6lGttvQqZy/jkYuM5+4UwJWTg/A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=J2gS2nISuDKCsNuWUsFAI7rM3BJ90ktud3Y748KqmJfEvFaJ4xpDwMAMl0ztxxt/MF7C/VAbGAPU+D4uTVdoODF6gAn2xbbbAGoJUpIEWMwtHjrcdbInVCDYnYmz/jOniHwvsCDRWfSQmaK+D55qK4aoq0cZcV12geL3surOyUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Li9AQ1xl; arc=none smtp.client-ip=74.125.224.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1787651632; c=relaxed/simple;
+	bh=z0BxniLfOKINc495SO6dIMOCxgc3oRBRylFOj3iSnqw=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=gBnJs6GgP4ec7KyCS9Zjxi3X3IwVL5GTR5BmNsllpAzXOZV3dlnxDxZR9QH+9WFFQ3XhBSLq99nR/OHV9odlYDM6eqFKuWRhAQl6LDC7sK0Rq5s7My8KztRKy85OKcsqv8ikNBXN46dKGnOLpC2cpVWbTxsYg+/AoBuZhyDldwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=DhkTcSxB; arc=none smtp.client-ip=113.46.200.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Li9AQ1xl"
-Received: by mail-yx1-f41.google.com with SMTP id 956f58d0204a3-66c70f69d3fso4695676d50.1
-        for <linux-can@vger.kernel.org>; Mon, 24 Aug 2026 19:50:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1787626214; x=1788231014; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=VZGv3nP8pjnZdO2V6lGttvQqZy/jkYuM5+4UwJWTg/A=;
-        b=Li9AQ1xl9rRWAXtiRb7rn2OIS4axYHuqp0n39q2xx6fYGTp3FRB+tQ3Rf5h3FTsZ+r
-         Yi4GiqxewggxUNLANeIqa0CB5OUL6M3TLygS7TrG3iiARoRihWSQS0jPmsp7oIk/6kau
-         IPZDCOfnskSWp1gSVuKNDToDhIF4Rhbi2MOep8paU+fWz9aWMyFuGLz58Xaablpn/VXu
-         2yKBgRjcKg3iclcCVSiigXAycy7WeM70HBGSeQqsR6BAmnxziyRY8WOrTTCJAYBUGeUs
-         dOWCOdSWGQUAoxERM+F7Wg3zqqcy+oJMsOYnmbiQxh3KfNhDC1akQDsUB0sqtfphAleZ
-         r+BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787626214; x=1788231014;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=VZGv3nP8pjnZdO2V6lGttvQqZy/jkYuM5+4UwJWTg/A=;
-        b=O95gXl7LeOkhE2tZvaqk8VQdW70FNKLjXJ5zIJdf2M1a3lSoE3OqkHBWy50YqldY3W
-         6rmeRI12Cg5iKGR0U1qgMWRdc9hlEYn+j55x1Lw/xOgLw2t8mJHJLGhifKt4EzoChneU
-         Kv7uAIM+dy1u7DKTQNlO+7hQoQoz9Kj7ZQHZkFdRh0miazG9ppToZgGVeoJILfM9uVAE
-         KoE2OgrquegFkwiXMtIoY/BAixgrsyo1CGxZv4PiS4ktg/izRv/8UP1sh5Lv7RiSn84c
-         F9mJigVcSSPOyh45nm0c4swNoogVbIxq8xNsHkn8zzyn3BxzcohbFHoNTcDuDu/ELYjy
-         7ijg==
-X-Forwarded-Encrypted: i=1; AHgh+RrcuX/R3J6Kb6uUFMLg1Pgs/rXg7/XkNxBp2F2UNAKrXYDrFWilnvSo/s6Em5TYRrFqgH4WrIEWTqw=@vger.kernel.org
-X-Gm-Message-State: AFuF++n5JiMBb+qyEe4FxYDKuEhOXctJi9J+bLzO1a3SHI1YCi8qHgo6
-	6WBvkKwroju6cGXTbGJqtMKoXO4orQRQH8aeCeZOx4NWpBwJuox0xATY
-X-Gm-Gg: AR+sD12jan3xL1UhcVs7r3JxkihxGh493l77onX7XsTjTIeCsqggx/twPfEZXFLKYK/
-	aQNx9ORdwwB43Gq3qTlNMAtb0eTscvoY1lkBn4yEaTiKUSrbqWRUXfvVX/sjRDBR6dDK2+9su3o
-	/U21vKQoNdwKSaUTcQPKaxzNPkcwbM1FMLTIplB26KFqavu9qCPXbfBuxlkQRI77QjGfQBZJEUo
-	gSr03ZfWan0oVrOO266EXlN8zKpkdJm24mjNA2dhB8cugj3PJjBsW7wt+zFAgaMdePStYRive1c
-	H8m8RUllTbqc705jpnEp2yv0N3L/sfoMOSGbsTAD+3/J22JQuDmjMqPU3btFhXoUALMbbiBzHsF
-	iYmJHfta8EeOfPkKUIejudPqGbYax4b2e2rq7MQ9LwNQRmYLw8XkGpMqs2rim2gXB2ep/mxnxUu
-	LpSehzwopsL2IlDPn4nJdOxf+KK1OPXqjOmAnz1mLRuqHKQtNjdn3JCzc3jonJLTX2D9s=
-X-Received: by 2002:a05:690c:c6d3:b0:854:5db3:4ed0 with SMTP id 00721157ae682-854783a0e38mr15676447b3.31.1787626214359;
-        Mon, 24 Aug 2026 19:50:14 -0700 (PDT)
-Received: from mac.lan ([136.55.173.105])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-84cabe2570fsm42799507b3.38.2026.08.24.19.50.13
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 24 Aug 2026 19:50:13 -0700 (PDT)
-From: "Cen Zhang (Microsoft)" <blbllhy@gmail.com>
-To: blbllhy@gmail.com
-Cc: AutonomousCodeSecurity@microsoft.com,
-	linux-can@vger.kernel.org,
-	mailhol@kernel.org,
-	mkl@pengutronix.de,
-	o.rempel@pengutronix.de,
-	sashiko-bot@kernel.org,
-	sashiko-reviews@lists.linux.dev,
-	socketcan@hartkopp.net,
-	xmei5@asu.edu
-Subject: Re: [PATCH net v2] can: kvaser_usb: validate command format before parsing in hydra receive path
-Date: Mon, 24 Aug 2026 22:50:11 -0400
-Message-ID: <20260825025011.13898-1-blbllhy@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260825024110.12021-1-blbllhy@gmail.com>
-References: <20260825024110.12021-1-blbllhy@gmail.com>
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="DhkTcSxB"
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=HgTAudJq8eHX15OWks05AWG/aS/PTGI/7ZST00bOn60=;
+	b=DhkTcSxBxG6+QuFui1fAbXzMpP7OAunc0olvkVUBNqDQ6v01S+pCZQp8+ee2Q3wY1ABG4SW1x
+	FGSDXE4D0XfgyxUvepAYHy5UmZZHnKo62+r7rU1wzucBTt6Y1Nw9GWce/qqKj4qMZTTCpbFWZ2i
+	E1GaE6D5I7SSj8wsc7h/iqQ=
+Received: from mail.maildlp.com (unknown [172.19.163.104])
+	by canpmsgout02.his.huawei.com (SkyGuard) with ESMTPS id 4hTjWj5vKxzcb0T;
+	Tue, 25 Aug 2026 17:43:13 +0800 (CST)
+Received: from dggpemf500011.china.huawei.com (unknown [7.185.36.131])
+	by mail.maildlp.com (Postfix) with ESMTPS id D8FB84058C;
+	Tue, 25 Aug 2026 17:53:44 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by dggpemf500011.china.huawei.com
+ (7.185.36.131) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 25 Aug
+ 2026 17:53:42 +0800
+From: Jinjie Ruan <ruanjinjie@huawei.com>
+To: <viro@zeniv.linux.org.uk>, <brauner@kernel.org>, <jack@suse.cz>,
+	<bcrl@kvack.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<libaokun@linux.alibaba.com>, <ojaswin@linux.ibm.com>,
+	<ritesh.list@gmail.com>, <yi.zhang@huawei.com>, <pmladek@suse.com>,
+	<rostedt@goodmis.org>, <andriy.shevchenko@linux.intel.com>,
+	<linux@rasmusvillemoes.dk>, <senozhatsky@chromium.org>,
+	<akpm@linux-foundation.org>, <davem@davemloft.net>, <edumazet@google.com>,
+	<kuba@kernel.org>, <pabeni@redhat.com>, <horms@kernel.org>,
+	<socketcan@hartkopp.net>, <mkl@pengutronix.de>, <kuniyu@google.com>,
+	<willemb@google.com>, <jhs@mojatatu.com>, <jiri@resnulli.us>,
+	<kees@kernel.org>, <cyphar@cyphar.com>, <tglx@kernel.org>,
+	<liuhangbin@gmail.com>, <sdf@fomichev.me>, <nb@tipi-net.de>,
+	<linux-fsdevel@vger.kernel.org>, <linux-aio@kvack.org>,
+	<linux-kernel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <linux-can@vger.kernel.org>
+CC: <ruanjinjie@huawei.com>
+Subject: [PATCH 02/11] lib/vsprintf: Use acquire/release for ptr_key publication
+Date: Tue, 25 Aug 2026 17:54:13 +0800
+Message-ID: <20260825095422.3166067-3-ruanjinjie@huawei.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20260825095422.3166067-1-ruanjinjie@huawei.com>
+References: <20260825095422.3166067-1-ruanjinjie@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -82,24 +63,56 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
+ dggpemf500011.china.huawei.com (7.185.36.131)
 
-Please disregard my previous reply; I accidentally sent the response to
-the v1 review.
+Replace the smp_wmb() + WRITE_ONCE() and READ_ONCE() + smp_rmb() barrier
+pair with smp_store_release()/smp_load_acquire() on filled_random_ptr_key.
 
-On Mon, Aug 24, 2026 at 09:53:43PM +0000, sashiko-bot@kernel.org wrote:
-> Should there be an additional check to enforce that the returned
-> cmd_len is large enough to contain the extended struct payload?
+This expresses the publish/subscribe pattern more clearly and allows
+architectures with native acquire/release instructions (e.g. arm64's
+STLR/LDAR) to avoid the cost of full one-way barriers (DMB ISHST/ISHLD).
 
-Yes, but this is a pre-existing command-specific structural validation
-issue. Auditing each extended handler's minimum length is outside the scope
-of this patch.
+No functional change intended.
 
-> Does this change break USB stream reassembly for valid fragmented
-> commands?
+Assisted-by: DeepSeek:DeepSeek-V3
+Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
+---
+ lib/vsprintf.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-Yes. An incomplete size field must be buffered rather than treated as a
-format error. I will preserve incomplete fragments, complete an extended
-size field before reading it, and send v3.
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index e285e8bc4712..d6f235e143b7 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -762,9 +762,8 @@ static int fill_ptr_key(struct notifier_block *nb, unsigned long action, void *d
+ {
+ 	get_random_bytes(&ptr_key, sizeof(ptr_key));
+ 
+-	/* Pairs with smp_rmb() before reading ptr_key. */
+-	smp_wmb();
+-	WRITE_ONCE(filled_random_ptr_key, true);
++	/* Pairs with smp_load_acquire() before reading ptr_key. */
++	smp_store_release(&filled_random_ptr_key, true);
+ 	return NOTIFY_DONE;
+ }
+ 
+@@ -781,12 +780,10 @@ static inline int __ptr_to_hashval(const void *ptr, unsigned long *hashval_out)
+ {
+ 	unsigned long hashval;
+ 
+-	if (!READ_ONCE(filled_random_ptr_key))
++	/* Pairs with smp_store_release() after writing ptr_key. */
++	if (!smp_load_acquire(&filled_random_ptr_key))
+ 		return -EBUSY;
+ 
+-	/* Pairs with smp_wmb() after writing ptr_key. */
+-	smp_rmb();
+-
+ #ifdef CONFIG_64BIT
+ 	hashval = (unsigned long)siphash_1u64((u64)ptr, &ptr_key);
+ 	/*
+-- 
+2.34.1
 
-Thanks,
-Cen
