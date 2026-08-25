@@ -1,83 +1,104 @@
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
+Received: from mail-yx1-f44.google.com (mail-yx1-f44.google.com [74.125.224.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA40E380FDD
-	for <linux-can@vger.kernel.org>; Mon, 24 Aug 2026 23:40:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDADC2F8EBC
+	for <linux-can@vger.kernel.org>; Tue, 25 Aug 2026 02:41:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787614849; cv=none; b=L0Ltc78h6bSkLA1R7tsRcS6v2Eji0Q/Inja1E99zcdKdJ9gzVl2Wt+D93f4TZBAaPDRJ/btxYjf2Zo+E99/hKytizcsfW0ENims73vv5lbupxORT0nP/FA9cAPPCU6dfeX/Q92CaDaer/hqZLt8BcHTNt5Zp/Ji9MVcIjfRk5dI=
+	t=1787625676; cv=none; b=hVbHK4CQ7S5W+8w10cCovI59HdSvLqXsGJpRSED69Ie2PsfgSKEERd+smEPCHbbzrLz/tO6I0wmHdMLTXv9ya788KdO/eAxDtS8+LMoEcTdWB4K3o3/+0TSmAljwTFdsXo26mwBRGhMruhp9MZ3up+8e8cMg29rYoGVqtwB7Fco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787614849; c=relaxed/simple;
-	bh=UK3Ka/ym/G0XcukOVsVyV6NnJWs41Sf1ZVaK1C/8CzU=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=ejv2auHBZvFKK8/tIXm0ZDmGRiyNLveXG0OMihsrStYTYcNF39JfqTPAOTX8s/Pr94nVIuoKohoje/OnQH027LxHmSKv1AQRQDLCnHQW1T6Nm+BM0CFfrgcdR2MAspt0LueoPflzbM/a8n2mXWRjBAQdl+KP3EFuuO51r1qTI+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--dwilley.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qLGIWIhQ; arc=none smtp.client-ip=209.85.210.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--dwilley.bounces.google.com
+	s=arc-20240116; t=1787625676; c=relaxed/simple;
+	bh=yWQiJFBQ6Z/CdcZVha4rKQlEjViKMbG4VWIrLOGW3KM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=KZ5lj3AbX4WrVU7YiurIL20G4M3ZWGtj5bJMg4xYFwoBkS4HYS1Vqf2ueHKhFYaTfYyufAA71hoH3DGCdsRzcHFI5RywJL4YECTq609q++A+E+oBkwAvgkMIl1+MjlZm3gJFPSQaqzb7y1xTUmf3eL3UyVn57PY/rHtUQbopJ+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZjdF6e8N; arc=none smtp.client-ip=74.125.224.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qLGIWIhQ"
-Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-7e9e2db9914so452039a34.1
-        for <linux-can@vger.kernel.org>; Mon, 24 Aug 2026 16:40:47 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZjdF6e8N"
+Received: by mail-yx1-f44.google.com with SMTP id 956f58d0204a3-66d0c8d0d6eso1239701d50.1
+        for <linux-can@vger.kernel.org>; Mon, 24 Aug 2026 19:41:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1787614847; x=1788219647; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:from:subject
-         :message-id:references:mime-version:in-reply-to:date:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=UK3Ka/ym/G0XcukOVsVyV6NnJWs41Sf1ZVaK1C/8CzU=;
-        b=qLGIWIhQff+Zn6beqaYsDHrA1QjQSF5xKH6RVedIxK8BifC/WqAW13xuHTO0qvV09b
-         CrTOxiqyS6rbno2Pqz2AboT0sFNtPkQ7XAvpNWtqrY9NKx7/QRCdhn9zuTODOK+/vm6c
-         6fONEzDTBYuBdMTV3oMskaXXjPg8eeoWxZ29Y4VApmH0DadZvxvOEuUIb5ovLipuYTh0
-         wYbAeJ7PawH+jNcR6dZDtou9XLRLQC0iQO8O8IqvxxbMFEe/EW84IfQ/SToDHeSDlYQH
-         IOUj7i8MqmDcHr7s/9LE3koGm4LIJdtLSleztDXf3IlLXcjFcZWZpdFcBIuOUlKvVx40
-         f+sg==
+        d=gmail.com; s=20251104; t=1787625673; x=1788230473; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=yWQiJFBQ6Z/CdcZVha4rKQlEjViKMbG4VWIrLOGW3KM=;
+        b=ZjdF6e8NchYkmti2HUVE6qZi/VDTpBNGxV+J6kXUp0j3c+aNqTOsuUxkC3U7CpVH1D
+         qu5YHduDDHNxKz075TwqAGbXscegFrvImYWiCZQdxNp+BsIcSDorHOEC/rliLUiCt51y
+         QRlWjqUYAaF3wwqb0tZg8vsfo5yggBRqP3ewiy2DYnoLU1hy1GGQhJ+boMIAU8wy3TWv
+         qyaRBjKO4AGGyC+BsUpx13z62OcHZuBO71hw1p5I9OYIKxABrXwkV/cfxMcvot3z/1ut
+         rziM9roXaJ86q21ku0KEw2QVnsOPSjBGlz9CvT/i+BoJyR+izZZZW74w7yWYY8AKTnIb
+         mZZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787614847; x=1788219647;
-        h=content-transfer-encoding:content-type:cc:to:from:subject
-         :message-id:references:mime-version:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=UK3Ka/ym/G0XcukOVsVyV6NnJWs41Sf1ZVaK1C/8CzU=;
-        b=U2yZMNGPhE0CGVGxNYxtOj+jEo8Ln96cFyaXSHjprvZYYXT4D6Ez+acwfRMBofn7Ee
-         KgXDZ9OWDqhihsdkhz99LorOx3oiq9R2dMMe/9x5rAE1W7LEuW5fWEGtLLcMZrRBBRLt
-         1MHw6a//X0u7Q0u6LZVdypg5pwm+xq/XryrZ1UT7PbO423MfgwKBlqp6JVgtKEfAmqvr
-         b/qE4u5piYrNH3s2YWupuTlmS1hXhVhYFrwX9JBqza5HwlJRVwJoKnt1560fUBLxsY0L
-         +z1wfvm+cY/pfzxudD5VZIyniRXOhGEwWjdFh+x85Paxyr9uAnMcShbTjYdFQAs9TA1w
-         GZ3w==
-X-Forwarded-Encrypted: i=1; AHgh+Rop+pe6d3pYoYeN3AEVZRkyfjWhYdL7qyQsm0iE7bmO+dHTN+p6vrUIn3nPlREBgXqfF0rgW0U6cYE=@vger.kernel.org
-X-Gm-Message-State: AFuF++k00SHT+Ehup1SDqIsdr2YjSMCCXW6L+X/ArkK+3MRsAdwqIg0l
-	zFWMbV+AKV5PwGL3LJCATz5RSK79o/5mOuotI0Aq94Nnq1padLRHYRSkLGqLed9GzTkAhpR3VGr
-	Qj9NvGvsP7Q==
-X-Received: from iobip13.prod.google.com ([2002:a05:6602:6e0d:b0:9ab:3339:3966])
- (user=dwilley job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6820:1908:b0:6a3:6f5d:4d6c
- with SMTP id 006d021491bc7-6b18faa5cadmr2046337eaf.6.1787614846566; Mon, 24
- Aug 2026 16:40:46 -0700 (PDT)
-Date: Mon, 24 Aug 2026 23:39:52 +0000
-In-Reply-To: <20260824-alluring-affable-hog-d072e8-mkl@pengutronix.de>
+        d=1e100.net; s=20251104; t=1787625673; x=1788230473;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=yWQiJFBQ6Z/CdcZVha4rKQlEjViKMbG4VWIrLOGW3KM=;
+        b=V6VFh5Qdf7Vdl1e5u4wJ7/tsjkiarI+K+kUClxFUKRZg/KtjKwvNYaScOS8SDk7WJ9
+         EYdrsmuFSRFS0XhhDXx66238SbGv3CpJq+dnWSNN6vI699v8MqVXsxG2FYBVE966THgW
+         hvlUr0NazvFwGWDaAlm1JTEV8wpyQ5Tjo6zo1XGpyandHVG+y9j7vqOi2aAyxLCPMTyG
+         mYD9+pDrpetYYvM1YYD4SF8w0oaI5JWg6urucISG2dQAez0jAz/l9Bkjr+YWVYsL0FUC
+         L7SC5C9S98LEMNQrQnuXSBdJkajf/ATIo+V3qyuoskYiaSSTGkKLBZCDpsJzPGIMClX2
+         /y9A==
+X-Forwarded-Encrypted: i=1; AHgh+RpND+c8EC5t72I9elFcIvMe9UmBDU22RKv/QRaWC7xzcdnC6VMUmvxcc4F2+VUFiCggvHLH7iiDtEM=@vger.kernel.org
+X-Gm-Message-State: AFuF++mJ8ZJg+mAOmuprltz4UtywKn9ZKh//WNyhAdp6AVOmX2izP9OK
+	9IhUgamDGLesFH2g8ZCQsUtNty/oYj+/E/1y5eb1/nOZnLlCAvStxaUC
+X-Gm-Gg: AR+sD12JZTWZ8a4E6aiMhNcJidLAfG08D/2w51041tw0TKmcIjElGTVCrM8v8gaKe5o
+	GwpUUwcjYeLZ60mIfAZljLA5aX1dBRjy6obHf6BtujV/8fcwBsDgCmUbfMW8fGkgz7xm967RDxR
+	gAo273s/4nSeCAvmidgZGP8VWDBC7Opn1SCc2HnwaBSW8yi5bHhweKVEpHVCl8rhqYrJvfoa8pq
+	SjBttEmQeBylA6MPB1Q92nfrKS+Zk2lx3dTp6pbeAymQTGd1HxI0uBc5btWtjw+L00wdrsMpOZg
+	nbBVyWFTVnDhluZthtnH9AemQmUh/SmkislEAgj3fQXZTyvZJCuBBo1zuYtb2Z0m6PgGSbWl8lh
+	L8FB0ND9som1FYJxFsMKmzWNzewWslOna0LC64PpbgTYDM/u6uL3ZyUSCL+IJoaAYlCseta+s4A
+	vO7QJ8mvYUv3+0ck8Ttd3/saOlKxHh/4Ov8Iojup7Zl+Uq/cgiJYWs7MKT0F/3JUaXLdJ4Ecyl8
+	I55YQ==
+X-Received: by 2002:a05:690e:c4b:b0:66d:8ed:844c with SMTP id 956f58d0204a3-66d14a21d4cmr1333832d50.11.1787625673178;
+        Mon, 24 Aug 2026 19:41:13 -0700 (PDT)
+Received: from mac.lan ([136.55.173.105])
+        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-66cf4a2c3c2sm4773224d50.17.2026.08.24.19.41.12
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Mon, 24 Aug 2026 19:41:12 -0700 (PDT)
+From: "Cen Zhang (Microsoft)" <blbllhy@gmail.com>
+To: sashiko-bot@kernel.org
+Cc: blbllhy@gmail.com,
+	linux-can@vger.kernel.org,
+	mailhol@kernel.org,
+	mkl@pengutronix.de,
+	o.rempel@pengutronix.de,
+	sashiko-reviews@lists.linux.dev,
+	socketcan@hartkopp.net,
+	AutonomousCodeSecurity@microsoft.com,
+	xmei5@asu.edu
+Subject: Re: [PATCH net] can: kvaser_usb: validate command format before parsing in hydra receive path
+Date: Mon, 24 Aug 2026 22:41:10 -0400
+Message-ID: <20260825024110.12021-1-blbllhy@gmail.com>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260824215344.6D5751F000E9@smtp.kernel.org>
+References: <20260824215344.6D5751F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20260824-alluring-affable-hog-d072e8-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.55.0.860.g4b6b3295ed-goog
-Message-ID: <20260824233953.2057979-1-dwilley@google.com>
-Subject: Re: [PATCH v2] can: usb: f81604: fix struct f81604_int_data size mismatch
-From: Drew Willey <dwilley@google.com>
-To: mkl@pengutronix.de
-Cc: admin@dynetrex.com, devnull+peter_hong.fintek.com.tw@kernel.org, 
-	gregkh@linuxfoundation.org, linux-can@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, mailhol@kernel.org, peter_hong@fintek.com.tw, 
-	stable@vger.kernel.org, Drew Willey <dwilley@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Tested running ChromeOS, kernel 6.12, rev facaadd, f81604=C2=A0(2c42:1709),=
- the driver hits "f81604_read_int_callback: short int URB: 9 < 12"=C2=A0on =
-the first Tx attempt and stops the Tx queue. Subsequent frames queue up and=
- are not transmitted.
+On Wed, Aug 19, 2026 at 03:10:26PM +0000, sashiko-bot@kernel.org wrote:
+> This is a pre-existing issue, but do these error paths need to reset
+> usb_rx_leftover_len to 0?
 
-Reloaded the f81604 module with this patch. Transmitted several frames over=
- a minute and all succeed.
+Yes. Otherwise the next transfer retries the same malformed leftover and
+fails again. I will clear usb_rx_leftover_len before returning and send
+v2.
 
-Tested-by: Drew Willey <dwilley@google.com>
+> This isn't a bug introduced by this patch, but does the parser loop
+> trust cmd_len without validating that it meets the minimum structural
+> size expected by the command handler?
+
+Yes. The generic parser validates framing, but not each command's minimum
+structural length. That is a separate command-dispatch validation issue
+and is outside the scope of this patch.
+
+Thanks,
+Cen
