@@ -1,62 +1,103 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93A204266B2;
-	Wed, 26 Aug 2026 09:54:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E40013B71C5
+	for <linux-can@vger.kernel.org>; Wed, 26 Aug 2026 11:29:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787738071; cv=none; b=Esa3YUrwkI6NOKMiSEpls/LRzTgqxHTYKsa+PctjDOWYvPHbCKQTVz/q7fTFXJEg7QbKaf2/Qv6/zo88gyCm8YEP8wVIsvY6uZcpWC6rrmDi2kMD4AjI1E3YaOAi3AClJ6AfTRn2/o/+sr8kskTlLbTzSB1xL/THnk70pz2Sfu0=
+	t=1787743744; cv=none; b=IEMd55w8VcBTrP8AhoTWEx2TlG//FGBCwnSPbVSVA7q5wlLQSTDn0lsK6CKScfB9Se6CBRbpM+pnk/jtBl6c1Xfh9ZR2C4KSFJMPFy2VuL3oSDbL37cFoGldU5gSp5NWI9obhHsUYzjEISV6HPa+Dhho4MGSmyIf9xK5frMAGqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787738071; c=relaxed/simple;
-	bh=9FobH37N3FuxvYE5D68n6TeU4/Fl0rEBu1P4dyTqg8E=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=SxZqTI6CVxIQ1XCu6ZC70hrlFzynqaUWcKcT1JvyuvxqM3wnKNli5DuF2L1pB8UEWfEKy+NsS7T3R5yos8OGX1W4fgXboHolij8RUjMYqwi8oEkywZcv9h5Bvx+9LRs9+s5Llr6J8jBzhHmP4m1C/ua7d2V431TJhOLeVVV6E3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m+h+ToTH; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m+h+ToTH"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FDCF1F00A3D;
-	Wed, 26 Aug 2026 09:54:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1787738070;
-	bh=9FobH37N3FuxvYE5D68n6TeU4/Fl0rEBu1P4dyTqg8E=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=m+h+ToTHqpSSLSiAqpxsgyX2RptXBmt4Vj/PIBC/NVMnM3OwtLVq+Nve0KH+TjYMO
-	 4bGUkLeWFtbbG4Z2Y9OFG8rYiLQyrq3huobE7PwEWBr54bpZPaRuvBENqG32fZmnBZ
-	 Oce4j4RTgUSK7dJdvdWWB6eSNDkG5WB29SotOKY1XsNJrqYsiWdZJRv/ekN0ETKyBP
-	 u8exqZbOuW60ZBH8RkIj7hAw7Mii3CqrlrdzEQdYYJFyUfPfTkwSPpWXXPYgPZLlkC
-	 L+ESxBowRG4rp6c/4V974jcD/ktdu/Se4gpTsE2UMqVRUwy/EW0bqiIKulzxc9FXaT
-	 obmKWFXBFiXdA==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH 11/11] can: isotp: publish tx.state with
- smp_store_release()
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Jinjie Ruan" <ruanjinjie@huawei.com>
-Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, tytso@mit.edu, linux-ext4@vger.kernel.org
-In-Reply-To: <20260825095422.3166067-12-ruanjinjie@huawei.com>
-References: <20260825095422.3166067-1-ruanjinjie@huawei.com>
- <20260825095422.3166067-12-ruanjinjie@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 26 Aug 2026 09:54:29 +0000
-Message-Id: <20260826095430.0FDCF1F00A3D@smtp.kernel.org>
+	s=arc-20240116; t=1787743744; c=relaxed/simple;
+	bh=gngcVDIFYymuq7IeP+Bbjggc5iqOqEhAMhROQA69Sno=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LqVltJygz48CgXTLKdeKkvzSHmuUlq0VcsWr7Q5bGdyc8bKAl01FgfNsWsddwgcCDP7MJA4JNNJsNffV5v29NkyaOvNNFS8zKVfMAF7FAVuhNLfs5JnICUaxuzuLBPwlR1rvZN9dfcY2OG5ddHdG5QVzKuPSqtSbQhP98krnM1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 7881E201FA9;
+	Wed, 26 Aug 2026 13:28:52 +0200 (CEST)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1wzBoK-003Ql3-11;
+	Wed, 26 Aug 2026 13:28:52 +0200
+Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 10DEA58CCB0;
+	Wed, 26 Aug 2026 11:28:52 +0000 (UTC)
+Date: Wed, 26 Aug 2026 13:28:51 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [can-next v2] can: proc: remove pointers from CAN specific proc
+ output
+Message-ID: <20260826-soft-python-of-charisma-e981f4-mkl@pengutronix.de>
+References: <20260815103400.117175-1-socketcan@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="2v4olvcezw72hmf5"
+Content-Disposition: inline
+In-Reply-To: <20260815103400.117175-1-socketcan@hartkopp.net>
 
-> The writer already pairs with the smp_load_acquire() readers
-> in isotp_tx_timeout()/isotp_tx_gen_done(); convert
-> the smp_wmb() + WRITE_ONCE() into a release store.
->=20
-> Assisted-by: DeepSeek:DeepSeek-V3
-> Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
 
-Sashiko has reviewed this patch and found no issues. It looks great!
+--2v4olvcezw72hmf5
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [can-next v2] can: proc: remove pointers from CAN specific proc
+ output
+MIME-Version: 1.0
+
+On 15.08.2026 12:34:00, Oliver Hartkopp wrote:
+> -    receive list 'rx_all':
+> -      (vcan3: no entry)
+> -      (vcan2: no entry)
+> -      (vcan1: no entry)
+> -      device   can_id   can_mask  function  userdata   matches  ident
+> -       vcan0     000    00000000  f88e6370  f6c6f400         0  raw
+> +    receive list 'rx_fil':
+>        (any: no entry)
+> +      device   can_id   can_mask   matches     sock_inode     function
+> +       vcan0  80000123  c00007ff         0  000000000000f862  raw_rcv [c=
+an_raw]
+          ^^^^^         ^                                   ^^^
+            |           |                                    |
+            |          /     do we want to align "sock_inode" to the right?
+            |         /
+            |    do we want to align "can_id" to the right?
+            |
+         do we want to take care of max length of interfaces of
+         IFNAMSIZ =3D=3D 16?
+
+Marc
 
 --=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260825095422.3166=
-067-1-ruanjinjie@huawei.com?part=3D11
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
+--2v4olvcezw72hmf5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCao7N8AAKCRDMOmT6rpmt
+0k7pAQCoIiUUmUAaoTypb2TMftbtMoo1QuDKHRahvS0CdSUefgEA4rxu/mZB6h3c
+/IjsLuSzzGZ1htegurZoENUFTuIvxgA=
+=aLox
+-----END PGP SIGNATURE-----
+
+--2v4olvcezw72hmf5--
