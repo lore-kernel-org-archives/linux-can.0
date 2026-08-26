@@ -1,101 +1,181 @@
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 746AA18DB1A
-	for <linux-can@vger.kernel.org>; Wed, 26 Aug 2026 04:32:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72C9D3537E8
+	for <linux-can@vger.kernel.org>; Wed, 26 Aug 2026 05:00:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787718737; cv=none; b=HbzHetksgjQe1hECshD0638+8si8+b0X73o/QyD/DNtbzwJQT4HDCXSE8CtGhOsDszzhwDqsgstnrdxWafdrVaAX26WKcRcfgvYuOQnIaNWl1rPk9Hr734HOza53XsJNPqqEyWe05HyICFzoyZSYLOuYgX25BhbB5lY5t4YWcPE=
+	t=1787720419; cv=none; b=FO4SIAZzQpMfhF1M4dN+S9cut31/ztPwlOlKCSCojWJRA8OhDfl8NKoQzMV7kRjwLuxw91Gwd17ukUKYiIrV1ZxUc/ifCod2VEPGhzMMWgD8bwtB2BS0ejiNoNlq1jeLOWALebctNzXs6Ju0jAWaNLg7yTPdkTC6L76a08ja+0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787718737; c=relaxed/simple;
-	bh=bP/R0qRwuRYhPdgmtfPE2qJ7BfGoGQBTaSoWyfiZRRE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D1RltFVp8lEAPE4UPPncmypFquBqNhMO0uAr1NCBhie31PT5QV+nyjFLHSmfGKcZlL0elfn+IdNGb1RZeHyM0vZwSu0pfj9+5ULIeK/pAoWfRCwfZ9UNFvI7czZ4Y82Ly4Lo1iqb/wYbmYqj3ecpZC06AVMGlL4EFz2Em2kfx/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IdVOhmZQ; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IdVOhmZQ"
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-81ecf499af9so8554337b3.1
-        for <linux-can@vger.kernel.org>; Tue, 25 Aug 2026 21:32:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1787718735; x=1788323535; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=bP/R0qRwuRYhPdgmtfPE2qJ7BfGoGQBTaSoWyfiZRRE=;
-        b=IdVOhmZQ/BLGb3U6v1DdLUDSuIkk/zG4QDd1wMeGy6J5uZK2JYDGwURfy0AGpa7I1D
-         Mh4THmh7wjd2NvRlWfBZDhMBI1TeYuw4dy70mWJMZXcLJ9f1gc0mEovm3wxvRoGVJcAd
-         MjfKsjE1IfCS9CgRNZ5WjOIjF7bfQL0oQRcNT6qJFK1P6uNsiTVVfJ+RI+F1OCxOkXwf
-         gdJunbQpMV6GVm/hswuyJto0dLfCRMF6sxks3quSsRAp/AZkMUA/+vOjyXO/e97lcPi5
-         o8ALGYvzbmD31htamv2XsF38SDZ5lM3PbQscZRES6kcnU5+hEragAn6Tfrqzcg0F+J/G
-         QJjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787718735; x=1788323535;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=bP/R0qRwuRYhPdgmtfPE2qJ7BfGoGQBTaSoWyfiZRRE=;
-        b=OxITfGsSt48HWkKjezw3+0idOQZTLK7ePLgCgrrtQFvWHYvDvvfI9Hvyl7NjZiPND1
-         kbS+NKRxbPRImjwudixF64LWrCj8hwMvnSIQbgP2pIpd9nH8sr7ql7UVCbtGjA0o0Hwk
-         qq6AhrPpztmhgHULNTYN1Nofskkm4xAj2k64VaE+J9n50YsPu5DcIsN7Q7NsbK62hZr0
-         96Dtqx248oc9pjxVzNX8Y4kf1sHvQ80Pzr5ItPLkSDnnO3eOcEeg3xC8Kcm2o+LnSfDF
-         8cRjr0CngHF5n88l4bL4f+a15Wk04t5DGKhxSNEu6DU1s3IwjVSo8N7U+72JgyOv69pb
-         dt7w==
-X-Forwarded-Encrypted: i=1; AHgh+Rqr0SO3UKhoaz3MdDUPYpb3Px9ILF+hqALabEAGdcW1UkGZaiaB9/t1UAyzViX1n8BlVTquVUjy/YY=@vger.kernel.org
-X-Gm-Message-State: AFuF++nfKHpbNvZBg89wVMpkB7DCHXEHYp0ckzcMNT43wOQMC5WeRc7d
-	qkOJGM3vzgxXKnvwijsfHpNG2LRvx94Dj5UKjfSluRG2fQfFGfe/hySI
-X-Gm-Gg: AR+sD13/AOnlmFv+JUpusar7mKTrmFYEgqpythEdjdC4JmWlX0rGMo5GIob30ZUYRAO
-	LPy1nltfyKf6IjE/+ubBZq39sY06eqPDvkIcynqOtQ0I+2IE6CJWKSJd0TbyUuiTuVpxrJV18/N
-	n/wf0YiRcSSUVigN3QTCIfARE5pSZa1G0RL5ef8eJ5dvmWjdGE55dPIzvfBOI29Yg2rwWIgVit6
-	S7BmCK/WeFi+NdvKfqm2H1bPh9ipZL4WokVx0Joqs4t9cHpY/Vk8Uh6oEyMM/PgdqhvajtkWmGB
-	XC8oIWHQDVze2DOfizi/3mJmr71MgLetPJCk6du985933ZR+GqV4tj0+80z8q4AOUxBqq5LvBrQ
-	JrAPqf3vkP3FM/N2BSZXws6rUpRqsfPGLbejM8l4rNfgdegDq8aI+7sp+lm9fJ8nndCdnptvW3b
-	4d/VFwff/iebTO4sKkZFIBViOj8TqSGrQP7nUHpka4pz4xVxVkFdmtN082AtAv4Yol4FQ=
-X-Received: by 2002:a05:690c:61c1:b0:854:d9d0:46b5 with SMTP id 00721157ae682-8573f8e40f2mr18236597b3.19.1787718735400;
-        Tue, 25 Aug 2026 21:32:15 -0700 (PDT)
-Received: from mac.lan ([136.55.173.105])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-857053853absm10609357b3.3.2026.08.25.21.32.14
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 25 Aug 2026 21:32:14 -0700 (PDT)
-From: "Cen Zhang (Microsoft)" <blbllhy@gmail.com>
-To: sashiko-bot@kernel.org
-Cc: blbllhy@gmail.com,
-	linux-can@vger.kernel.org,
-	mailhol@kernel.org,
-	mkl@pengutronix.de,
-	o.rempel@pengutronix.de,
-	sashiko-reviews@lists.linux.dev,
-	socketcan@hartkopp.net
-Subject: Re: [PATCH net v3] can: kvaser_usb: validate command format before parsing in hydra receive path
-Date: Wed, 26 Aug 2026 00:32:13 -0400
-Message-ID: <20260826043213.49431-1-blbllhy@gmail.com>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260826014955.B9ECE1F000E9@smtp.kernel.org>
-References: <20260826014955.B9ECE1F000E9@smtp.kernel.org>
+	s=arc-20240116; t=1787720419; c=relaxed/simple;
+	bh=UXRmdD8MPLUWuE3hJ4sbIE/ZOI1vBPxw0RSPJKjZ53g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WWoYjrOZubxY4cJycd0XcIIznj5vpoApdT53gF8RXKSslfWhr8d//QTeciE2Zm1o6ADup4dfn2QGTEe+WFMgv0qmzsxUtiAX7b/FNfT+wD9A70ssSx6aQ7cSGwySgvs269KYm0YbZemXi3gzE/EO72oZBrOjeg35QOA/Y5X3lNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 4AC74201923;
+	Wed, 26 Aug 2026 07:00:12 +0200 (CEST)
+Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1wz5kC-003Nmx-0a;
+	Wed, 26 Aug 2026 07:00:12 +0200
+Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.98.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1wz5kC-0000000GEoD-0Aoq;
+	Wed, 26 Aug 2026 07:00:12 +0200
+Date: Wed, 26 Aug 2026 07:00:12 +0200
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: sashiko-reviews@lists.linux.dev
+Cc: Dmitry Antipov <dmantipov@yandex.ru>,
+	Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH] can: j1939: cancel all pending ECUs on device stop
+Message-ID: <ao5y3Mp5yotE1zOY@pengutronix.de>
+References: <20260824155406.246942-1-dmantipov@yandex.ru>
+ <20260824160844.4FBFF1F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260824160844.4FBFF1F000E9@smtp.kernel.org>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
 
-On Wed, Aug 26, 2026 at 01:49:55AM +0000, sashiko-bot@kernel.org wrote:
-> This is a pre-existing issue, but does kvaser_usb_hydra_cmd_size_rx()
-> need to enforce a minimum payload length for the extracted cmd_len based
-> on the command type?
->
-> Can this cause a slab-out-of-bounds read past the end of the USB URB
-> buffer?
+Hi Dmitry,
 
-This pre-existing command-specific structural validation issue was
-discussed in the v2 review [1] and should be handled independently of this
-patch.
+On Mon, Aug 24, 2026 at 04:08:43PM +0000, sashiko-bot@kernel.org wrote:
+> Thank you for your contribution! Sashiko AI review found 3 potential issue(s) to consider:
+> 
+> New issues:
+> - [High] AB-BA deadlock between `priv->lock` and `hrtimer_cancel()` when stopping the device.
+> - [High] Unconditional cancellation of all ECUs on any socket closure breaks address claiming for the entire CAN interface.
 
-No other issues were reported for v3.
+Can you please take a look to this issues.
 
-Thanks,
-Cen
+> Pre-existing issues:
+> - [Critical] Unlocked list deletion in `__j1939_ecu_release()` leads to list corruption.
 
-[1] https://lore.kernel.org/all/20260825025011.13898-1-blbllhy@gmail.com/
+No need to worry about pre-existing, except you wont to.
+
+> --
+> 
+> --- Patch [1]: [PATCH] can: j1939: cancel all pending ECUs on device stop ---
+> commit f80db37c4e58ab7d9daa72ce8c93a7552521ee48
+> Author: Dmitry Antipov <dmantipov@yandex.ru>
+> 
+> can: j1939: cancel all pending ECUs on device stop
+>     
+> This patch modifies the device stop routine to cancel all pending ECU
+> timers to prevent a situation where an ECU continues holding a reference
+> to the private data structure after the device stops processing.
+>     
+> Reported-by: syzbot+489e907b2a026a6f5fa0@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=489e907b2a026a6f5fa0
+> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+> 
+> > diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
+> > --- a/net/can/j1939/bus.c
+> > +++ b/net/can/j1939/bus.c
+> > @@ -96,6 +96,16 @@ void j1939_ecu_unmap(struct j1939_ecu *ecu)
+> >  	write_unlock_bh(&ecu->priv->lock);
+> >  }
+> >  
+> > +void j1939_ecu_cancel_all(struct j1939_priv *priv)
+> > +{
+> > +	struct j1939_ecu *ecu, *tmp;
+> > +
+> > +	write_lock_bh(&priv->lock);
+> > +	list_for_each_entry_safe(ecu, tmp, &priv->ecus, list)
+> > +		j1939_ecu_timer_cancel(ecu);
+> 
+> [Severity: High]
+> Could this introduce an AB-BA deadlock with the timer callback?
+> 
+> The loop holds the lock while cancelling the timer:
+> 
+> write_lock_bh(&priv->lock);
+> list_for_each_entry_safe(ecu, tmp, &priv->ecus, list)
+>         j1939_ecu_timer_cancel(ecu);
+> 
+> If j1939_ecu_timer_handler() is currently executing on another CPU, it
+> will unconditionally attempt to acquire the exact same lock:
+> 
+> net/can/j1939/bus.c:j1939_ecu_timer_handler() {
+>     ...
+>     write_lock_bh(&priv->lock);
+>     ...
+> }
+> 
+> Would this cause hrtimer_cancel() to spin waiting for the callback to
+> finish, while the callback waits for the lock held by this thread?
+> 
+> [Severity: Critical]
+> This isn't a bug introduced by this patch, but iterating this list might
+> expose a pre-existing list corruption issue.
+> 
+> When j1939_ecu_timer_cancel() drops the reference via j1939_ecu_put(), or
+> when a temporary reference is dropped in j1939_ac_recv(), it can trigger
+> the final release:
+> 
+> net/can/j1939/bus.c:__j1939_ecu_release() {
+>     ...
+>     list_del(&ecu->list);
+>     ...
+> }
+> 
+> The list_del() executes without holding priv->lock. If this happens
+> concurrently while another thread is iterating priv->ecus (like the loop
+> introduced here), could it corrupt the list and cause a use-after-free or
+> kernel panic?
+> 
+> > +	write_unlock_bh(&priv->lock);
+> > +}
+> > +
+> >  void j1939_ecu_unmap_all(struct j1939_priv *priv)
+> 
+> [ ... ]
+> 
+> > diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
+> > --- a/net/can/j1939/main.c
+> > +++ b/net/can/j1939/main.c
+> > @@ -306,6 +306,7 @@ struct j1939_priv *j1939_netdev_start(struct net_device *ndev)
+> >  
+> >  void j1939_netdev_stop(struct j1939_priv *priv)
+> >  {
+> > +	j1939_ecu_cancel_all(priv);
+> 
+> [Severity: High]
+> Does unconditionally cancelling all ECUs here break address claiming for
+> the shared interface?
+> 
+> It appears j1939_netdev_stop() is called whenever any local user closes
+> a J1939 socket, but the CAN interface itself might still be in use by
+> other sockets. Calling j1939_ecu_cancel_all() before checking the shared
+> rx_kref count could disrupt network management for those remaining users.
+> 
+> >  	kref_put_mutex(&priv->rx_kref, __j1939_rx_release, &j1939_netdev_lock);
+> >  	j1939_priv_put(priv);
+> >  }
+> 
+> -- 
+> Sashiko AI review · https://sashiko.dev/#/patchset/20260824155406.246942-1-dmantipov@yandex.ru?part=1
+> 
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
