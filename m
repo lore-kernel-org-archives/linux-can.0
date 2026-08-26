@@ -1,49 +1,48 @@
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BF033F8234;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A63A3D9DAA;
 	Wed, 26 Aug 2026 12:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787746245; cv=none; b=JU4EUveUdk/ew8CJYVohOM+iKidnRC0dUEigL593tvjPWD2XenkdZXxqeJffS38RKINLRRgUqKWnehPIzFmMCpF4bNsrajy514w0JA9a6ewrh7WxBvDaYgpoQ7wpe3NY+OkznmEI7PPYInMp1jp4SKFBglmv1GfFIJf7MlJrp+g=
+	t=1787746246; cv=none; b=GRGCx/ajpb+jrU8pFsEELG6LiwkRumYMafgD5N+WrC+PbMOhD3UBkNmB6CBfGRbcIhnzia0WAm8gw1+4UJjl5xEY3BygzP77uz/kZQFpsYJ2S1m2jpH2VhyLwZ1RInqHFxIcIq8QRMTz23a0h6S0nm0AS6U6O64Iug2yexH4D9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787746245; c=relaxed/simple;
-	bh=QhKlgf/q3ebRHvNxUD/jF8GtX5nTL8AIWgz0hjcU1jQ=;
+	s=arc-20240116; t=1787746246; c=relaxed/simple;
+	bh=kaVjVidOO+UxwiGfslctg2HCBUVBZcPtI31zKg3tvgw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gsghljfJe094AT4bug8w7IGkFSMIeCjgjjzAZZPav+kzGMryVJ+tWXOk3JDI3JRQoLJ+d0E0sObcamxsQurKAOE5JePoST0VwIovAKHbXVLcZADNngtcmY/4YmLrcXTv5F1AanamY4GlnZJyDAA1mlOpmeSuwR9a4QweI/1DBQw=
+	 MIME-Version; b=Pbkoagcc4H1mUsdmMGxUbvu+LCjwbK9anGxfIs5K8fedjp3eqZnH24ABYVN/R2NS7bbF8WeM2Lx1HxWuk/y4G8hQQoVhOQABQT5yq29RRI9ofOKxCqeyo5fD/nEsJ8J/YDXt9f9nQG4CXV9YZmi3psHs4aCqvwnly4V422OqT8Y=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 6B3A6202101;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 93CC9202148;
 	Wed, 26 Aug 2026 14:10:38 +0200 (CEST)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1wzCSk-003R8q-10;
+	id 1wzCSk-003R8v-1c;
 	Wed, 26 Aug 2026 14:10:38 +0200
 Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id F3C9958CCF9;
-	Wed, 26 Aug 2026 12:10:37 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 193B258CCFA;
+	Wed, 26 Aug 2026 12:10:38 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Sureshkumar S <ssureshmsd7@gmail.com>,
 	stable@kernel.org,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 02/14] can: convert unreliable ARPHRD_CAN type checks to robust can_get_ml_priv()
-Date: Wed, 26 Aug 2026 14:02:12 +0200
-Message-ID: <20260826121036.2706424-3-mkl@pengutronix.de>
+Subject: [PATCH net 03/14] can: bittiming: fix divide-by-zero in can_calc_bittiming()
+Date: Wed, 26 Aug 2026 14:02:13 +0200
+Message-ID: <20260826121036.2706424-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260826121036.2706424-1-mkl@pengutronix.de>
 References: <20260826121036.2706424-1-mkl@pengutronix.de>
@@ -55,229 +54,74 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Sureshkumar S <ssureshmsd7@gmail.com>
 
-Commit 4e096a18867a ("net: introduce CAN specific pointer in the struct
-net_device") introduced an explicit way to assign the midlayer private
-pointer (dev->ml_priv) to named users like ML_PRIV_CAN.
+can_calc_bittiming() scans the possible time segment combinations and
+computes the prescaler for each of them as:
 
-With this extension the CAN device specific ml_priv assignment became a
-robust indicator to identify a valid CAN device, when can_get_ml_priv()
-returns a valid pointer.
+	brp = priv->clock.freq / (tsegall * bt->bitrate)
 
-This has been used directly by the referenced commit in the CAN specific
-j1939 and proc code but not in the other parts of the CAN subsystem.
+bt->bitrate is supplied by userspace via IFLA_CAN_BITTIMING and
+tsegall * bt->bitrate is a 32 bit multiplication, so the product wraps
+to zero as soon as bt->bitrate carries enough factors of two for the
+tsegall values walked by the loop. The division then faults:
 
-With the TUN/TAP driver a device's ARPHRD type can be controlled by
-userspace independently of its midlayer private data (ml_priv). The
-TUNSETLINK ioctl allows a down TUN/TAP device to overwrite its hardware
-type to become ARPHRD_CAN while dev->ml_priv remains NULL (uninitialized).
+  Oops: divide error: 0000 [#1] SMP KASAN NOPTI
+  RIP: 0010:can_calc_bittiming+0x32e/0xcc0
+  Call Trace:
+   can_changelink+0x8ba/0x2060
+   __rtnl_newlink+0x1013/0x18a0
+   rtnl_newlink+0x6b/0xa0
+   rtnetlink_rcv_msg+0x6f9/0xb70
+   netlink_rcv_skb+0x11f/0x350
+   netlink_unicast+0x5f5/0x860
+   netlink_sendmsg+0x70a/0xba0
 
-Instead of checking dev->type being the unreliable ARPHRD_CAN value convert
-the missing "valid CAN devices" checks to can_get_ml_priv().
+This does not require an absurd bitrate. With the segment limits of a
+typical controller tsegall reaches 256, so a bitrate of 16777216 is
+already enough to wrap the product, and that value is below the
+20 Mbit/s CAN XL data bitrate ceiling. Any CAN driver providing a
+bittiming_const is affected; reproduced on dummy_can. Triggering it
+needs CAP_NET_ADMIN in the netns owning the device.
 
-Fixes: 4e096a18867a ("net: introduce CAN specific pointer in the struct net_device")
+priv->bitrate_max cannot guard against this: it is populated from the
+optional "max-bitrate" device tree property, so it is zero for most
+drivers, and can_changelink() only consults it after can_get_bittiming()
+has already returned.
+
+Compute the product with mul_u32_u32(), as can_fixup_bittiming() already
+does for bt->brp * NSEC_PER_SEC, and divide with div64_u64(). div_u64()
+cannot be used here because its divisor is a u32, which would truncate
+the product back to the faulting value.
+
+Fixes: 39549eef3587 ("can: CAN Network device driver and Netlink interface")
+Signed-off-by: Sureshkumar S <ssureshmsd7@gmail.com>
+Link: https://patch.msgid.link/20260803091426.29050-2-ssureshmsd7@gmail.com
 Cc: stable@kernel.org
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://patch.msgid.link/20260819160822.8256-1-socketcan@hartkopp.net
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/af_can.c | 12 ++++++------
- net/can/bcm.c    |  7 ++++---
- net/can/gw.c     |  7 ++++---
- net/can/isotp.c  |  5 +++--
- net/can/raw.c    |  4 ++--
- 5 files changed, 19 insertions(+), 16 deletions(-)
+ drivers/net/can/dev/calc_bittiming.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index 7bc86b176b4d..ef435f22ac93 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -226,7 +226,7 @@ int can_send(struct sk_buff *skb, int loop)
- 		goto inval_skb;
- 	}
+diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/calc_bittiming.c
+index 42498e9d3f38..4809f5e0c96e 100644
+--- a/drivers/net/can/dev/calc_bittiming.c
++++ b/drivers/net/can/dev/calc_bittiming.c
+@@ -119,8 +119,12 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
+ 	     tseg >= (btc->tseg1_min + btc->tseg2_min) * 2; tseg--) {
+ 		tsegall = CAN_SYNC_SEG + tseg / 2;
  
--	if (unlikely(skb->dev->type != ARPHRD_CAN)) {
-+	if (unlikely(!can_get_ml_priv(skb->dev))) {
- 		err = -EPERM;
- 		goto inval_skb;
- 	}
-@@ -452,7 +452,7 @@ int can_rx_register(struct net *net, struct net_device *dev, canid_t can_id,
+-		/* Compute all possible tseg choices (tseg=tseg1+tseg2) */
+-		brp = priv->clock.freq / (tsegall * bt->bitrate) + tseg % 2;
++		/* Compute all possible tseg choices (tseg=tseg1+tseg2).
++		 * A 32 bit tsegall * bt->bitrate can wrap to zero for large
++		 * userspace bitrates, so compute the product in 64 bit.
++		 */
++		brp = div64_u64(priv->clock.freq,
++				mul_u32_u32(tsegall, bt->bitrate)) + tseg % 2;
  
- 	/* insert new receiver  (dev,canid,mask) -> (func,data) */
- 
--	if (dev && (dev->type != ARPHRD_CAN || !can_get_ml_priv(dev)))
-+	if (dev && !can_get_ml_priv(dev))
- 		return -ENODEV;
- 
- 	if (dev && !net_eq(net, dev_net(dev)))
-@@ -519,7 +519,7 @@ void can_rx_unregister(struct net *net, struct net_device *dev, canid_t can_id,
- 	struct can_rcv_lists_stats *rcv_lists_stats = net->can.rcv_lists_stats;
- 	struct can_dev_rcv_lists *dev_rcv_lists;
- 
--	if (dev && dev->type != ARPHRD_CAN)
-+	if (dev && !can_get_ml_priv(dev))
- 		return;
- 
- 	if (dev && !net_eq(net, dev_net(dev)))
-@@ -687,7 +687,7 @@ static void can_receive(struct sk_buff *skb, struct net_device *dev)
- static int can_rcv(struct sk_buff *skb, struct net_device *dev,
- 		   struct packet_type *pt, struct net_device *orig_dev)
- {
--	if (unlikely(dev->type != ARPHRD_CAN || !can_get_ml_priv(dev) ||
-+	if (unlikely(!can_get_ml_priv(dev) ||
- 		     !can_skb_ext_find(skb) || !can_is_can_skb(skb))) {
- 		pr_warn_once("PF_CAN: dropped non conform CAN skbuff: dev type %d, len %d\n",
- 			     dev->type, skb->len);
-@@ -703,7 +703,7 @@ static int can_rcv(struct sk_buff *skb, struct net_device *dev,
- static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
- 		     struct packet_type *pt, struct net_device *orig_dev)
- {
--	if (unlikely(dev->type != ARPHRD_CAN || !can_get_ml_priv(dev) ||
-+	if (unlikely(!can_get_ml_priv(dev) ||
- 		     !can_skb_ext_find(skb) || !can_is_canfd_skb(skb))) {
- 		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d, len %d\n",
- 			     dev->type, skb->len);
-@@ -719,7 +719,7 @@ static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
- static int canxl_rcv(struct sk_buff *skb, struct net_device *dev,
- 		     struct packet_type *pt, struct net_device *orig_dev)
- {
--	if (unlikely(dev->type != ARPHRD_CAN || !can_get_ml_priv(dev) ||
-+	if (unlikely(!can_get_ml_priv(dev) ||
- 		     !can_skb_ext_find(skb) || !can_is_canxl_skb(skb))) {
- 		pr_warn_once("PF_CAN: dropped non conform CAN XL skbuff: dev type %d, len %d\n",
- 			     dev->type, skb->len);
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 3d637a1e0ac1..60406439a13f 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -54,6 +54,7 @@
- #include <linux/if_arp.h>
- #include <linux/skbuff.h>
- #include <linux/can.h>
-+#include <linux/can/can-ml.h>
- #include <linux/can/core.h>
- #include <linux/can/skb.h>
- #include <linux/can/bcm.h>
-@@ -1719,7 +1720,7 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 				goto out_release;
- 			}
- 
--			if (dev->type != ARPHRD_CAN) {
-+			if (!can_get_ml_priv(dev)) {
- 				dev_put(dev);
- 				ret = -ENODEV;
- 				goto out_release;
-@@ -1867,7 +1868,7 @@ static int bcm_notifier(struct notifier_block *nb, unsigned long msg,
- {
- 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
- 
--	if (dev->type != ARPHRD_CAN)
-+	if (!can_get_ml_priv(dev))
- 		return NOTIFY_DONE;
- 	if (msg != NETDEV_UNREGISTER && msg != NETDEV_DOWN)
- 		return NOTIFY_DONE;
-@@ -2024,7 +2025,7 @@ static int bcm_connect(struct socket *sock, struct sockaddr_unsized *uaddr, int
- 			ret = -ENODEV;
- 			goto fail;
- 		}
--		if (dev->type != ARPHRD_CAN) {
-+		if (!can_get_ml_priv(dev)) {
- 			dev_put(dev);
- 			ret = -ENODEV;
- 			goto fail;
-diff --git a/net/can/gw.c b/net/can/gw.c
-index 0ec99f68aa45..d9912dea738b 100644
---- a/net/can/gw.c
-+++ b/net/can/gw.c
-@@ -52,6 +52,7 @@
- #include <linux/if_arp.h>
- #include <linux/skbuff.h>
- #include <linux/can.h>
-+#include <linux/can/can-ml.h>
- #include <linux/can/core.h>
- #include <linux/can/skb.h>
- #include <linux/can/gw.h>
-@@ -609,7 +610,7 @@ static int cgw_notifier(struct notifier_block *nb,
- 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
- 	struct net *net = dev_net(dev);
- 
--	if (dev->type != ARPHRD_CAN)
-+	if (!can_get_ml_priv(dev))
- 		return NOTIFY_DONE;
- 
- 	if (msg == NETDEV_UNREGISTER) {
-@@ -1160,7 +1161,7 @@ static int cgw_create_job(struct sk_buff *skb,  struct nlmsghdr *nlh,
- 	if (!gwj->src.dev)
- 		goto out;
- 
--	if (gwj->src.dev->type != ARPHRD_CAN)
-+	if (!can_get_ml_priv(gwj->src.dev))
- 		goto out;
- 
- 	gwj->dst.dev = __dev_get_by_index(net, gwj->ccgw.dst_idx);
-@@ -1168,7 +1169,7 @@ static int cgw_create_job(struct sk_buff *skb,  struct nlmsghdr *nlh,
- 	if (!gwj->dst.dev)
- 		goto out;
- 
--	if (gwj->dst.dev->type != ARPHRD_CAN)
-+	if (!can_get_ml_priv(gwj->dst.dev))
- 		goto out;
- 
- 	/* is sending the skb back to the incoming interface intended? */
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 155530aedce2..4560d5a567ec 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -65,6 +65,7 @@
- #include <linux/if_arp.h>
- #include <linux/skbuff.h>
- #include <linux/can.h>
-+#include <linux/can/can-ml.h>
- #include <linux/can/core.h>
- #include <linux/can/skb.h>
- #include <linux/can/isotp.h>
-@@ -1606,7 +1607,7 @@ static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int l
- 		err = -ENODEV;
- 		goto out;
- 	}
--	if (dev->type != ARPHRD_CAN) {
-+	if (!can_get_ml_priv(dev)) {
- 		err = -ENODEV;
- 		goto out_put_dev;
- 	}
-@@ -1893,7 +1894,7 @@ static int isotp_notifier(struct notifier_block *nb, unsigned long msg,
- {
- 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
- 
--	if (dev->type != ARPHRD_CAN)
-+	if (!can_get_ml_priv(dev))
- 		return NOTIFY_DONE;
- 	if (msg != NETDEV_UNREGISTER && msg != NETDEV_DOWN)
- 		return NOTIFY_DONE;
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 82d9c0499c95..8e2e114abcb9 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -344,7 +344,7 @@ static int raw_notifier(struct notifier_block *nb, unsigned long msg,
- {
- 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
- 
--	if (dev->type != ARPHRD_CAN)
-+	if (!can_get_ml_priv(dev))
- 		return NOTIFY_DONE;
- 	if (msg != NETDEV_UNREGISTER && msg != NETDEV_DOWN)
- 		return NOTIFY_DONE;
-@@ -487,7 +487,7 @@ static int raw_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int len
- 			err = -ENODEV;
- 			goto out;
- 		}
--		if (dev->type != ARPHRD_CAN) {
-+		if (!can_get_ml_priv(dev)) {
- 			err = -ENODEV;
- 			goto out_put_dev;
- 		}
+ 		/* choose brp step which is possible in system */
+ 		brp = (brp / btc->brp_inc) * btc->brp_inc;
 -- 
 2.53.0
 
