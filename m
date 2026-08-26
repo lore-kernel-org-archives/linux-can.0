@@ -1,48 +1,48 @@
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A63A3D9DAA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A8143F54A4;
 	Wed, 26 Aug 2026 12:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787746246; cv=none; b=GRGCx/ajpb+jrU8pFsEELG6LiwkRumYMafgD5N+WrC+PbMOhD3UBkNmB6CBfGRbcIhnzia0WAm8gw1+4UJjl5xEY3BygzP77uz/kZQFpsYJ2S1m2jpH2VhyLwZ1RInqHFxIcIq8QRMTz23a0h6S0nm0AS6U6O64Iug2yexH4D9A=
+	t=1787746247; cv=none; b=OUSQPYTDPAryu6rFfDCVceuHFIHWHEVVc01dHlX3lCCA8/mhQRG2uxZH71l/BrHBbEpHi68c7DpSCDZU2irZ3n18mi0x1agVza9LRk5NWFlTN4GajK/D0LCocj0eEyFOEnR4X6a0Zhl4Sso3xTl7MURMGFa07yZCObEzUlprHkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787746246; c=relaxed/simple;
-	bh=kaVjVidOO+UxwiGfslctg2HCBUVBZcPtI31zKg3tvgw=;
+	s=arc-20240116; t=1787746247; c=relaxed/simple;
+	bh=47ML0fv9/VKeVZQwzvmz4E9BTkAzXsyqYNgEkO78fQs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Pbkoagcc4H1mUsdmMGxUbvu+LCjwbK9anGxfIs5K8fedjp3eqZnH24ABYVN/R2NS7bbF8WeM2Lx1HxWuk/y4G8hQQoVhOQABQT5yq29RRI9ofOKxCqeyo5fD/nEsJ8J/YDXt9f9nQG4CXV9YZmi3psHs4aCqvwnly4V422OqT8Y=
+	 MIME-Version; b=cC3kSJtUcxTD540nbwV641dYK1k/GIpVb+G84zQB0jMFhFGEQ2spSYcohJzqyE5w75FO4O/Zm1287VzHu8a81WytABnqlhuGnYdxx1afS+q67S/8Hqo0OvBfmKK3bwurmAWm02eDJpcN1lOTB2QzELkV+on7Aa4ONmi+vUrDUYc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 93CC9202148;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 50C4620203F;
 	Wed, 26 Aug 2026 14:10:38 +0200 (CEST)
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1wzCSk-003R8v-1c;
+	id 1wzCSk-003R8p-0d;
 	Wed, 26 Aug 2026 14:10:38 +0200
 Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 193B258CCFA;
-	Wed, 26 Aug 2026 12:10:38 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id DE17858CCF8;
+	Wed, 26 Aug 2026 12:10:37 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Sureshkumar S <ssureshmsd7@gmail.com>,
+	Vincent Mailhol <mailhol@kernel.org>,
 	stable@kernel.org,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 03/14] can: bittiming: fix divide-by-zero in can_calc_bittiming()
-Date: Wed, 26 Aug 2026 14:02:13 +0200
-Message-ID: <20260826121036.2706424-4-mkl@pengutronix.de>
+Subject: [PATCH net 01/14] can: dev: can_dropped_invalid_skb: drop CAN XL frames on non-CAN XL devices
+Date: Wed, 26 Aug 2026 14:02:11 +0200
+Message-ID: <20260826121036.2706424-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260826121036.2706424-1-mkl@pengutronix.de>
 References: <20260826121036.2706424-1-mkl@pengutronix.de>
@@ -54,74 +54,64 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Sureshkumar S <ssureshmsd7@gmail.com>
+From: Vincent Mailhol <mailhol@kernel.org>
 
-can_calc_bittiming() scans the possible time segment combinations and
-computes the prescaler for each of them as:
+Sending a PF_PACKET bypasses the CAN framework logic and can directly
+reach a CAN driver's xmit() function. The PF_PACKET framework only
+checks that skb->len does not exceed the net_device MTU.
 
-	brp = priv->clock.freq / (tsegall * bt->bitrate)
+For a CAN device that is not CAN XL capable, anything above CANFD_MTU
+(72 bytes) is therefore dropped before it reaches the driver. However,
+CAN XL frames are variable length. can_is_canxl_skb() accepts lengths in
+the range CANXL_HDR_SIZE + CANXL_MIN_DLEN up to CANXL_MTU, i.e. 13 to
+2060 bytes.
 
-bt->bitrate is supplied by userspace via IFLA_CAN_BITTIMING and
-tsegall * bt->bitrate is a 32 bit multiplication, so the product wraps
-to zero as soon as bt->bitrate carries enough factors of two for the
-tsegall values walked by the loop. The division then faults:
+As a result, an ETH_P_CANXL skb with a length between 13 and 72 bytes
+can pass both the MTU and the can_dropped_invalid_skb() checks.
 
-  Oops: divide error: 0000 [#1] SMP KASAN NOPTI
-  RIP: 0010:can_calc_bittiming+0x32e/0xcc0
-  Call Trace:
-   can_changelink+0x8ba/0x2060
-   __rtnl_newlink+0x1013/0x18a0
-   rtnl_newlink+0x6b/0xa0
-   rtnetlink_rcv_msg+0x6f9/0xb70
-   netlink_rcv_skb+0x11f/0x350
-   netlink_unicast+0x5f5/0x860
-   netlink_sendmsg+0x70a/0xba0
+A driver that does not support CAN XL will interpret canxl_frame->flags
+as a length because of the overlap with can_frame->len. And because
+CANXL_XLF is set, the resulting length is between 128 and 255. For
+drivers that do not check can_frame->len before copying can_frame->data,
+as most drivers do, this results in a buffer overflow of up to 247
+bytes.
 
-This does not require an absurd bitrate. With the segment limits of a
-typical controller tsegall reaches 256, so a bitrate of 16777216 is
-already enough to wrap the product, and that value is below the
-20 Mbit/s CAN XL data bitrate ceiling. Any CAN driver providing a
-bittiming_const is affected; reproduced on dummy_can. Triggering it
-needs CAP_NET_ADMIN in the netns owning the device.
+Drop ETH_P_CANXL skbs if the device does not have the CAN_CAP_XL
+capability. Keep can_is_canxl_skb() for the validation of CAN XL skbs.
 
-priv->bitrate_max cannot guard against this: it is populated from the
-optional "max-bitrate" device tree property, so it is zero for most
-drivers, and can_changelink() only consults it after can_get_bittiming()
-has already returned.
-
-Compute the product with mul_u32_u32(), as can_fixup_bittiming() already
-does for bt->brp * NSEC_PER_SEC, and divide with div64_u64(). div_u64()
-cannot be used here because its divisor is a u32, which would truncate
-the product back to the faulting value.
-
-Fixes: 39549eef3587 ("can: CAN Network device driver and Netlink interface")
-Signed-off-by: Sureshkumar S <ssureshmsd7@gmail.com>
-Link: https://patch.msgid.link/20260803091426.29050-2-ssureshmsd7@gmail.com
+Closes: https://sashiko.dev/#/patchset/20260731-master-v5-0-5b27029dee20@qq.com?part=1
+Fixes: fb08cba12b52 ("can: canxl: update CAN infrastructure for CAN XL frames")
+Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
+Link: https://patch.msgid.link/20260731-drop_canxl_frames-v1-1-7387b70353b3@kernel.org
 Cc: stable@kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/calc_bittiming.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/net/can/dev/skb.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/calc_bittiming.c
-index 42498e9d3f38..4809f5e0c96e 100644
---- a/drivers/net/can/dev/calc_bittiming.c
-+++ b/drivers/net/can/dev/calc_bittiming.c
-@@ -119,8 +119,12 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
- 	     tseg >= (btc->tseg1_min + btc->tseg2_min) * 2; tseg--) {
- 		tsegall = CAN_SYNC_SEG + tseg / 2;
+diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
+index 95fcdc1026f8..4f7a189de265 100644
+--- a/drivers/net/can/dev/skb.c
++++ b/drivers/net/can/dev/skb.c
+@@ -4,6 +4,7 @@
+  * Copyright (C) 2008-2009 Wolfgang Grandegger <wg@grandegger.com>
+  */
  
--		/* Compute all possible tseg choices (tseg=tseg1+tseg2) */
--		brp = priv->clock.freq / (tsegall * bt->bitrate) + tseg % 2;
-+		/* Compute all possible tseg choices (tseg=tseg1+tseg2).
-+		 * A 32 bit tsegall * bt->bitrate can wrap to zero for large
-+		 * userspace bitrates, so compute the product in 64 bit.
-+		 */
-+		brp = div64_u64(priv->clock.freq,
-+				mul_u32_u32(tsegall, bt->bitrate)) + tseg % 2;
++#include <linux/can/can-ml.h>
+ #include <linux/can/dev.h>
+ #include <linux/module.h>
+ #include <net/can.h>
+@@ -384,7 +385,7 @@ bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb)
+ 		break;
  
- 		/* choose brp step which is possible in system */
- 		brp = (brp / btc->brp_inc) * btc->brp_inc;
+ 	case ETH_P_CANXL:
+-		if (!can_is_canxl_skb(skb))
++		if (!can_cap_enabled(dev, CAN_CAP_XL) || !can_is_canxl_skb(skb))
+ 			goto inval_skb;
+ 		break;
+ 
+
+base-commit: dc4b95b8fee95113587e93ca116356032d271371
 -- 
 2.53.0
 
