@@ -1,102 +1,124 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F14340D564
-	for <linux-can@vger.kernel.org>; Wed, 26 Aug 2026 14:48:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787755737; cv=none; b=U7uE5U8c8EqvnPD8xG+N9sZqO14rWNCONoAnXl/+5VBWqku0Rywgk+q4HsS4CJDKDCmUSgneTRAAXjsQ2mNfAMML1Ug5XBFOC8ByyiScW+0P/oZE38KIt7/n8qx4XXXYjMVhy3xlYxJMCg1LGHrRzXXrASz2n0Rk7p3/37yESzA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787755737; c=relaxed/simple;
-	bh=N55I4BMbUuGcOMZZMXeZJ/DsSmROMz325Tbsde4+hVY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BuqO8nxsQ043Eu6pZ3KfLlfmDhGDj7VRhrTBdt7D5y+tJUYF2CnCYG0OuOmFTasbq2M7E8TR84E1D7oZJG6cUM0eRg1Ts/TKbcedLvmtI3LrRQ6b5bmTxLx45RVm52B9Fc9pzACSwhU/9CUlCl5N8IpvljOq1uw8teYF2MY4qIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 515EF200FEE;
-	Wed, 26 Aug 2026 16:48:48 +0200 (CEST)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1wzEvo-003SJb-0h;
-	Wed, 26 Aug 2026 16:48:48 +0200
-Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id E718958CF51;
-	Wed, 26 Aug 2026 14:48:47 +0000 (UTC)
-Date: Wed, 26 Aug 2026 16:48:47 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Robin van der Gracht <robin@protonic.nl>, 
-	Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>, 
-	linux-can@vger.kernel.org
-Subject: Re: [PATCH v2] can: j1939: j1939_sk_bind(): fix j1939_ecu leak when
- re-bind failed
-Message-ID: <20260826-hungry-audacious-cat-de184c-mkl@pengutronix.de>
-References: <8063b5c1-6171-4350-a7d1-6ccd079fb0ff@I-love.SAKURA.ne.jp>
- <20260826-zealous-wandering-giraffe-3fb7ce-mkl@pengutronix.de>
- <45b82053-7f32-43fc-b37b-067058a72c98@I-love.SAKURA.ne.jp>
- <20260826-dangerous-keen-cuscus-c51817-mkl@pengutronix.de>
- <d2d59bcf-0c46-44f6-aafc-b5df22fb7b55@I-love.SAKURA.ne.jp>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9031B3B9DA8
+	for <linux-can@vger.kernel.org>; Wed, 26 Aug 2026 19:26:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.21
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1787772387; cv=pass; b=gQg32oafpw4ciaK4IcbLVz+n1omWHxjx+iPyEZW9tESFPaMm2hC8IpcXnM/J3O1oGPG26Alru3bIqJSpsH+YwjmklPLMYltG6PeZxSbVxJKpnJnhIhiryAUL1bvuA+WFheGSMY2bXeyw3dsZ+01Bp9XyTCurav+0ksCO5KS4FBA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1787772387; c=relaxed/simple;
+	bh=XVBeYUcQYCRjwKDm6UWvf120rU66PVYgiKHSEwuw5Fw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ntJg3tvrI7kK3TA7X+vJ4TwQTS9GhT8+GAp8GOUZjHN/6VVBtiEVQcdSUJweiBEnD7CLeYb2nogPuQ8XqFjFtWNe2E8KKm5hN+p+tb3cdZcJOfYK0aUHWGeekOXAzQtog8iU/HWW3TqAVXrIYwssTtNbCVrHssh47gkbEucuM4A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=L8NNvcqN; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=xFBp/TPI; arc=pass smtp.client-ip=85.215.255.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="L8NNvcqN";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="xFBp/TPI"
+ARC-Seal: i=1; a=rsa-sha256; t=1787772346; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=QoWUsjes+OBteMQODdw3thCntC7VXgxfRqRGcejxs4Uvilgc8Mwd0PXlFJihG8f/aC
+    5u9k+2rXCTc6Go7saarqFvylqbrmbgqrIjb1OSD1wJz86wH1Hok/CEJxttX2uqJePEUS
+    SUeeB6xMMckFLzimjPTSlnZRieUbTk1zFlSmRZB7Wppkd+aaKHxfh+s+rkmfIyrGLGaB
+    VPeNGmveFKD33Kj98GN9KJ6zZCGARzY+PlWq4mScgq8xai1omzvGzEHNgBbn+PYXJlQE
+    ciBtaCWtzliKa0mo2YovWmfn6lMTelT6DW8ke4Z16DAyu5r6pLHaqf191yxY9bjfpgF5
+    gnNA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1787772346;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=dl0ziYHTLixggZ2laKahyYDGgyGeiIENyaACk7ZUCkk=;
+    b=WwofAKBDz6qN6qShpYpJljOawA0wKKxWz3UveNQWJTiUdWAsl6bxZsOIxshqT5uucC
+    AMOcuRSANhr+Omn/ghnTGbTtdbcF6DD/1uJLK/M9kkQt9097dEEWpoM/ml4IVDkPTxNi
+    DZRMD06n/72nQL+iFWXHejc+wGL1wm4ECmrOxCp+o2M0794vtblAkLptA3OhiWZxTZi4
+    MGkn+AYX8CQDnyEzzyGVHVNWhm2Y2qfnyLFrbPxpljRNPrpYubXXIxdqoeojiuAotG8O
+    B0VcVubfnx4ch1BjGzbb9jVnBoL1Vnoo0Y3U9RSVNDvWV2yzf+748Yj08D6LfKh2J0Wr
+    g0OQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1787772346;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=dl0ziYHTLixggZ2laKahyYDGgyGeiIENyaACk7ZUCkk=;
+    b=L8NNvcqNk3Cqn+CN5PvK+0Odriipt+/vvC2zX4ysy8xJIlyPKQTURnSir1Y5CDoC4z
+    uH9tTTH+y3Z3el0t/sCrFHAJ2FXP/9UWX626WbEN/O15EXr1YdzR+4Nnz72Pm1WqaUlf
+    yKeT0Bbp0bx3dpQwOinOm4s8JeSfLaNPeZrT7c2iObW4h6y8AhAJSHTPxjQcgsnsTrXx
+    mR1Q20oZ2wQhBUlG3BMNAWOjetXsxXtqI5mYR+0b/AnIUQuqXkJjzSM03S+LeKDDB404
+    2n79mjMB8wcJdpM5mKI/R0U9w9AFbdM/VD2bDKCZtA7avjocVjQt8r68pvAubAuk1r87
+    w+1Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1787772346;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=dl0ziYHTLixggZ2laKahyYDGgyGeiIENyaACk7ZUCkk=;
+    b=xFBp/TPISnnmjN71rOGjtqn33fYw7Cw0qxgtLhk+DOg0L462Z35KnVTz2lkHAuJuAN
+    zubqDX/srpMpOewO7xBQ==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::989]
+    by smtp.strato.de (RZmta 55.6.2 AUTH)
+    with ESMTPSA id K171b727QJPkwFd
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Wed, 26 Aug 2026 21:25:46 +0200 (CEST)
+Message-ID: <497c9c8d-743a-4ccf-8de8-81a89b94b07a@hartkopp.net>
+Date: Wed, 26 Aug 2026 21:25:40 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ipjyuce3eruirlig"
-Content-Disposition: inline
-In-Reply-To: <d2d59bcf-0c46-44f6-aafc-b5df22fb7b55@I-love.SAKURA.ne.jp>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [can-next v2] can: proc: remove pointers from CAN specific proc
+ output
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+References: <20260815103400.117175-1-socketcan@hartkopp.net>
+ <20260826-soft-python-of-charisma-e981f4-mkl@pengutronix.de>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <20260826-soft-python-of-charisma-e981f4-mkl@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
---ipjyuce3eruirlig
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v2] can: j1939: j1939_sk_bind(): fix j1939_ecu leak when
- re-bind failed
-MIME-Version: 1.0
 
-On 26.08.2026 23:39:56, Tetsuo Handa wrote:
-> On 2026/08/26 23:26, Marc Kleine-Budde wrote:
-> > - consider using "b4"
-> >   You can use the b4 "web submission" instead of using Thunderbird.
-> >   It bypasses all mail system completely.
-> >   https://b4.docs.kernel.org/en/latest/contributor/send.html
->
-> I have a question. I use Thunderbird over "git send-email" for later sear=
-ching what I sent.
-> How do developers archive what they sent in local environment when using =
-b4? Do they Bcc: self?
+On 26.08.26 13:28, Marc Kleine-Budde wrote:
+> On 15.08.2026 12:34:00, Oliver Hartkopp wrote:
+>> -    receive list 'rx_all':
+>> -      (vcan3: no entry)
+>> -      (vcan2: no entry)
+>> -      (vcan1: no entry)
+>> -      device   can_id   can_mask  function  userdata   matches  ident
+>> -       vcan0     000    00000000  f88e6370  f6c6f400         0  raw
+>> +    receive list 'rx_fil':
+>>         (any: no entry)
+>> +      device   can_id   can_mask   matches     sock_inode     function
+>> +       vcan0  80000123  c00007ff         0  000000000000f862  raw_rcv [can_raw]
+>            ^^^^^         ^                                   ^^^
+>              |           |                                    |
+>              |          /     do we want to align "sock_inode" to the right?
+>              |         /
+>              |    do we want to align "can_id" to the right?
+>              |
+>           do we want to take care of max length of interfaces of
+>           IFNAMSIZ == 16?
 
-With the "b4.send-series-cc" config option you can automatically add
-yourself to Cc.
+The headline is fixed and most CAN interfaces like can0 or vcan14 are 
+between 4 and 6 bytes of size.
 
-Marc
+The can_id can be 3 or 8 bytes and it looked best to render them 
+centered. Same applies to sock_inode. Only "function" has to be left 
+aligned as the functions can have very different name lengths.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+Please check it with your real setup. The output looks really good and 
+stylish to me now.
 
---ipjyuce3eruirlig
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCao78zQAKCRDMOmT6rpmt
-0tV5AP9dpmX0FTMuAymKAPkXbxbrbYW6CdpO+UqtJQmx8iG+qQD/fkzjvbWOmkLg
-Y5DKdyJL7ei5CzcUoNeoP3/s4HAvXwY=
-=0ero
------END PGP SIGNATURE-----
-
---ipjyuce3eruirlig--
+Best regards,
+Oliver
