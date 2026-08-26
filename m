@@ -1,336 +1,268 @@
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+Received: from mail-yx1-f51.google.com (mail-yx1-f51.google.com [74.125.224.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D5832C94A
-	for <linux-can@vger.kernel.org>; Tue, 25 Aug 2026 18:35:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9131248F7C
+	for <linux-can@vger.kernel.org>; Wed, 26 Aug 2026 01:31:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787682927; cv=none; b=C/N/vivUKW1XDs5iV+qC3Z1wegDr4tQB2wD4QbHo8Iwbw9Zp6n/LwLLUsnngl+Oiw8Bmz0ZtvaYNoi/BJb5RQcMGm7bjl5ATJNyrop+ykvdfgjobbZGC5AVQcv6W0aYW8uunUwAUBKTO0h2STEPL7S6uPQzxrVEAurOWf1Ky2w0=
+	t=1787707863; cv=none; b=mLfQy5wTyCaXti/1noza822aocoXOocc4n8S2xkdkgbTMIbuyw7quroaXGkz7CgbupOzrnnaLzj16f8MFA35yzU6u2NmDxY26Ac9xHqTjPoWvEgTJMdBs9m79gruFCw+YLAt/1VWy8mWi4/AiQcvlVzS1kxtoDZRuRp4XXMOSjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787682927; c=relaxed/simple;
-	bh=w77ZhTQ1OYzkQxPAK6iHFhy9Po+gRfKB93CRgC7BHs8=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=dW0LLIvLY0zag20gwVEt8Q27KytAQ0RSRjCwzSthUIYcp8tdXLybgnwpszyRuSaBHG6zblp++C2LqluJ6aDGiLi7EoveYwW2rRiYJ9GMNeRUYYyuh/GqgpTT1CGRJ18TZO0vyspqr+4dNNUiUz46y9LOBNy7CXKRLzCShZkCmbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=K7GZsQ0L; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+	s=arc-20240116; t=1787707863; c=relaxed/simple;
+	bh=VP41uxKw0FfekXFnJJHh+Pnw8byZRbNHP92L5bGOph4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bVhiiGeRSb385Dcv3h93Zdh5q8nf9om26U30W/jeWApg0oFXIb1+h0FSLLQBzr2+J8BJ7ICatlHpKJSXbyGo3dkGlk5rA2eqx+f+OZen5HE0L/iCwTshc8Rtdz3dkC0hYraB/zjG6x2qQDgk+MYlcvzK6ghhiLlR552amCUct4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HqTiEo/H; arc=none smtp.client-ip=74.125.224.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="K7GZsQ0L"
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-6a0de062db5so128610a12.1
-        for <linux-can@vger.kernel.org>; Tue, 25 Aug 2026 11:35:23 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HqTiEo/H"
+Received: by mail-yx1-f51.google.com with SMTP id 956f58d0204a3-66ceaade3f1so393485d50.1
+        for <linux-can@vger.kernel.org>; Tue, 25 Aug 2026 18:31:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre.com; s=google; t=1787682922; x=1788287722; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-type:mime-version:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=fUvuJij7ETShzBsffPqHrVIMC/JpC6SOB9Cs5CuXefM=;
-        b=K7GZsQ0Ld19gHMsiyY/E6jISlT9yNuAq4OaXdj3W8i73atOSPrZS2lckkyrx4/8E6g
-         3qRAMR+crd056V9HuDOH6muQDgpOP7NPGUU43kFFl3APK7/lbwOsxRQRSBoLicLEsjea
-         D7yvNwEM5FkOHH1s3eiPloaERt937GFskas8bHa4muszISdeuBSIm1B1iXpQepx9sa+4
-         Zg2g17UkkN9/k1N9OJYXtko/T5/Rd6asXznjFsX/kQTI7D/MGpj1ZxyreXFK/kNHzye7
-         TjbQ76pebvJxuIcYCkyw9nkAx8W52KOZy/l2XWbN6lRA/ZCUA1Y7sJgGAJaGzYLrhLua
-         Ob0w==
+        d=gmail.com; s=20251104; t=1787707859; x=1788312659; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=jYeUoTrvVE/9BjwtXesGs0vbqmsGKZw2+esTghaIakE=;
+        b=HqTiEo/HJ5hsfjrFphjQ34Zc7hSE5KsitrhCNoYbgVQpfuZJDy9oWRplqt2vAXASnN
+         XD9FZuLbalBJTZWzhNiaC6XivrONVnaN1krpw9t6wUJa+hwx99t1M29M1kZHVdYsv41U
+         G6/WcI1lazj/dDfJaq70VgrYA8cpYUrOJol0F4FXz6HCZqEOhTVEdgW69mXNRX0vzBdU
+         5//DQA3x1POmt8i8XNWtvdtcw/lBINEI1r4Noss142S0g27uoJE6odsOj1YL/rvRjTs4
+         IWCTn/0+bvJhpo0p1ieNMlanFr2FDkGrj2YHoavIY6Tui3hb1E0rSRdLEAX/V9OKZN6A
+         +JQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787682922; x=1788287722;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-type:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=fUvuJij7ETShzBsffPqHrVIMC/JpC6SOB9Cs5CuXefM=;
-        b=C2vhKeQkayHuFslLpuUCxQPlL/2T4mz9dZpvbJBMvGeOnawngFQiy1D5HXB1AbldZC
-         ykEKPZY0nQ9OVKw15mDZ9Nj4ySQtNDFHdsG6bqIaJv2nN6qoE55mPW51glYtC+EHB2vH
-         VggecANvwTCoFOPkf9vCwOnapSTyfZfkY8PpSRkwYI054a34E5owqgGWdavrGYjzQAbN
-         +me700wPIQEbJ4ylZHSlMj1g+jky3Rr8sMedYY3S3a4gu8tVYYZTkSKkjG6jq3ArtBe1
-         z2RYBBRioRc+9m7zzh5XvZNC6HWcJmmGEH3YtmKqI/g6uvu0tyWjlmLSFaeTC64/8wtq
-         CVuw==
-X-Gm-Message-State: AFuF++mxiVPNdDORwaITM5mrW8g4x4r5Q/1nE44LvxQT5sZRv2v4V4Yr
-	7dgnWqsLRfTYwdxK0Fc5naM0tT6iFdf1m2hZ/QsV5LrbWt6VdD6sPCA7s2vEsyFwMaC80E3HvVg
-	ZNlwK
-X-Gm-Gg: AR+sD10zlw5eDH98G6PjFiEssWJxoafnXBYEXDB2ILHkDcohADSt5bVATPCNu13/798
-	jsoROeuVJTj7JUP0io3I+5Z4pFFkTFNUuFlDtD8woxvPMA9HqYu+ykIWLBcgnqtKhV1h88LNAJg
-	1BZ/9nvhyJwXmqW4gTiBGlbiYSJZbSwbYIn3HC4cryocgtf6XZ5cIDSswTjNuhgLChulVzrtrpC
-	VgOO8gTmTyWFqbf1JSbnGvh25eFnTVqsP5pM74+mv3Xa3uLjKJPBSIoBveBPml0WXXDHMJRdKQS
-	zkTOmjvvz7ht7f+71f1IG6D9tWwtSJbSPwhjV4Gd1u+G3A+8nCUO1guIOokhRSjUY68uGg6QuE3
-	gL04ZrjNLSc3PhHr1YJ2Qj5AW0qZn4GtOzlsxoWxLdORG3I1JkHMyaoZ3gQL5WwHSyjVLSr2mt3
-	Pql3/32rXFdXBWKkIwmVKz0ulrItsLOTDbGXdy8W4LjmgL467iswYraDS1
-X-Received: by 2002:a17:906:ee88:b0:c12:83da:7eeb with SMTP id a640c23a62f3a-c250c3add0dmr67239366b.19.1787682921966;
-        Tue, 25 Aug 2026 11:35:21 -0700 (PDT)
-Received: from localhost ([2001:4090:a244:80d4:489b:7642:1b32:84d6])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c250a5d68f9sm78905766b.1.2026.08.25.11.35.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2026 11:35:21 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1787707859; x=1788312659;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=jYeUoTrvVE/9BjwtXesGs0vbqmsGKZw2+esTghaIakE=;
+        b=D6HOA3LvaECS+3iNSw/UuHiGvr+keFINnKDku5qfC+uKTyG7/NS2anwTq8ZO/orHzf
+         GPgKMPO1bD152giH4W9LQkok6J26kDYazKu4W757aSiAnjrZ009XQ4vif4tmYXUSHXSW
+         Xnqx5b8MdUgCjauglLfZ1VEgxtIch05VWSnKBU6r1tJH+0852BYPo4V/AzZn6JPrRPIf
+         sM6AV12jy5ig7r6T6e60msh/tiVMl9nRP1SGgOOYknkekrqmR0DhR2vkPjkHy8p5NVAU
+         2HLuYFk6MsK8gkDOBkrtrvuBmfs0wySwR9NC/wddF0Kdiu3UuIKHjC8pDr2vwnYNFGPA
+         0k4w==
+X-Forwarded-Encrypted: i=1; AHgh+RrlIUnzJL1ChpjYILRf4Dx3ozLzgDlkGmc+4EEyXyqf7ZYylc6KlQrgnEkGvJPjiPl5yhcNrc+/XD0=@vger.kernel.org
+X-Gm-Message-State: AFuF++kGIuFzd3J0ekOQ0kTuH3vjkPAEEA2WmVflUVhjlTnmjX8wZz7/
+	NXfv7AQQ8dY10TTGhPpMEt/fjvDG0Hp24bxk4ZZcO+lD4IC/FZhjsoMN
+X-Gm-Gg: AR+sD10lFxfBB/5Q5Lyx+PLwa2djHqFUgXD4AjL3tyBk8wuZ/rF4kJ5UEDB5x/VGHrV
+	QrHsVmn2AJWuXvXkCej2t0hH58PjpoijX5W3LQkfTVnGYwkX3g8RwPO+jS/02x8lF0gzYXmwn5l
+	hCNe6yLj97MO5UeoWu+fy5aNi1xPh6iXCjRUn4oDhEBs8JO/8r8hvDttP/a5UY4Tf9gxt6Pzyy7
+	KhaOFJo4CL3XhBqhrnaDHESet8dFyNfzpNM06KIInXb3qxneOozZsctuwvEgIImUm9aNIENvoBp
+	A0nyyVWrBP8AbqqQDO0QtlLX4buXEONQvSw9LOzUy7c3WKTQGVgewaLY97tp1Jwina8zYAYFGBx
+	9CDnPoHSZtXkJLxnMgA1z1c/HmmZ8Ppn0bx3twRNNrYrpaS8Ik5DoCJNAj2UNwbLVSmvqeJd+gB
+	uEVu4NK7eF4/rJRUhjJzLVicbivIfniopy0bm3UNZm4Jpzf6amM8KviBqumlkJosTCu1k=
+X-Received: by 2002:a53:4903:0:b0:66c:d36f:d2ef with SMTP id 956f58d0204a3-66d2575b4cemr760121d50.32.1787707859198;
+        Tue, 25 Aug 2026 18:30:59 -0700 (PDT)
+Received: from mac.lan ([136.55.173.105])
+        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-66d2457c083sm783271d50.5.2026.08.25.18.30.58
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Tue, 25 Aug 2026 18:30:58 -0700 (PDT)
+From: "Cen Zhang (Microsoft)" <blbllhy@gmail.com>
+To: mkl@pengutronix.de,
+	mailhol@kernel.org
+Cc: nb@tipi-net.de,
+	nihaal@cse.iitm.ac.in,
+	eritque-arcus@ikuyo.dev,
+	kees@kernel.org,
+	pabeni@redhat.com,
+	enrico.pozzobon@dissecto.com,
+	extnj@kvaser.com,
+	chbe@kvaser.com,
+	extja@kvaser.com,
+	mh@kvaser.com,
+	linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	AutonomousCodeSecurity@microsoft.com,
+	xmei5@asu.edu,
+	tgopinath@linux.microsoft.com,
+	kys@microsoft.com,
+	blbllhy@gmail.com
+Subject: [PATCH net v3] can: kvaser_usb: validate command format before parsing in hydra receive path
+Date: Tue, 25 Aug 2026 21:30:37 -0400
+Message-ID: <20260826013037.6933-1-blbllhy@gmail.com>
+X-Mailer: git-send-email 2.55.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed;
- boundary=d407ca66d98b85128ab7a30a28c98bbbb58ea2ec79301d91fc16fe4a723b;
- micalg=pgp-sha512; protocol="application/pgp-signature"
-Date: Tue, 25 Aug 2026 20:35:15 +0200
-Message-Id: <DKY8PDR3FJVG.1YW4D2UJPR4OH@baylibre.com>
-Cc: <linux-can@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <kernel@pengutronix.de>
-Subject: Re: [PATCH can-next v2] can: m_can: switch to rx-offload
- implementation
-From: "Markus Schneider-Pargmann" <msp@baylibre.com>
-To: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Markus Schneider-Pargmann"
- <msp@baylibre.com>, "Vincent Mailhol" <mailhol@kernel.org>
-X-Mailer: aerc 0.21.0-146-gb5c16ebe1835
-References: <20260710-m_can-rx-offload-v2-1-aa6597eb194e@pengutronix.de>
-In-Reply-To: <20260710-m_can-rx-offload-v2-1-aa6597eb194e@pengutronix.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
---d407ca66d98b85128ab7a30a28c98bbbb58ea2ec79301d91fc16fe4a723b
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+The receive-path command parsers (kvaser_usb_hydra_wait_cmd and
+kvaser_usb_hydra_read_bulk_callback) call kvaser_usb_hydra_cmd_size()
+without verifying that enough buffer remains.  For CMD_EXTENDED,
+kvaser_usb_hydra_cmd_size() unconditionally reads a 2-byte len field
+at offset 4 (kvaser_usb_hydra.c:532).  A malicious USB device can place
+a CMD_EXTENDED header at the end of a 3072-byte bulk transfer such that
+only 4 bytes remain, causing a 2-byte slab-out-of-bounds read.
 
-Hi Marc,
+  BUG: KASAN: slab-out-of-bounds in kvaser_usb_hydra_wait_cmd+0x3f1/0x480
+    [kvaser_usb_hydra.c:678]
+  Read of size 2 at addr ffff888013f7ec00 by task kworker/0:0/9
+   kvaser_usb_hydra_wait_cmd+0x3f1/0x480
+   kvaser_usb_hydra_get_software_details+0x1c7/0x5d0
+   kvaser_usb_probe+0x36a/0x1240
 
-sorry for the delay, I was on summer vacation.
+Additionally, if the device sends CMD_EXTENDED with len=0,
+kvaser_usb_hydra_cmd_size() returns 0 and the parser loops forever
+(pos += 0), permanently burning one CPU core.
 
-On Fri Jul 10, 2026 at 1:50 PM CEST, Marc Kleine-Budde wrote:
-> The current m_can driver uses NAPI for mmio devices to handle RX'ed CAN
-> frames, the RX IRQ is disabled and a NAPI poll is scheduled. Then in
-> m_can_poll() the RX'ed CAN frames are read from the device.
->
-> The driver already uses rx-offload for SPI devices like the tcan4x5x,
-> indicated by struct m_can_classdev::is_peripheral being set.
->
-> This approach has 2 drawbacks:
->
-> - Under high system load it might take too long from the initial RX IRQ t=
-o
->   the NAPI poll function to run. This causes RX buffer overflows.
-> - The driver contains several checks if it handles a peripheral or a memo=
-ry
->   mapped device, that makes maintenance harder.
->
-> Convert the driver to unconditionally call m_can_rx_handler() from the IR=
-Q
-> handler (m_can_interrupt_handler()), which reads the RX'ed CAN frames fro=
-m
-> the hardware and adds it to a list sorted by RX timestamp. This list of
-> RX'ed SKBs is then passed to the networking stack in a later NAPI context=
-.
->
-> Remove all manual napi handling from the driver and keep the
-> can_rx_offload_*().
+Fix by adding kvaser_usb_hydra_cmd_size_rx(), which checks whether the
+size field is complete before reading it and rejects zero command lengths.
+The asynchronous receive path preserves incomplete headers in the leftover
+buffer and completes them from the following transfer.  Clear malformed
+leftover state before returning so later transfers do not retry it.
 
-Thanks for your work, this is a nice improvement. Comments below.
+Fixes: aec5fb2268b7 ("can: kvaser_usb: Add support for Kvaser USB hydra family")
+Reported-by: AutonomousCodeSecurity@microsoft.com
+Reported-by: Xiang Mei (Microsoft) <xmei5@asu.edu>
+Link: https://lore.kernel.org/all/20260819145658.29872-1-blbllhy@gmail.com
+Signed-off-by: Cen Zhang (Microsoft) <blbllhy@gmail.com>
+---
+v3:
+ - Preserve fragmented command headers by distinguishing incomplete size
+   fields from invalid zero lengths.
+ - Complete a fragmented extended size field before reading it, using the
+   actual valid leftover length.
+ - Link: https://lore.kernel.org/all/20260824214058.44948-1-blbllhy@gmail.com/
 
->
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> ---
-> Changes in v2:
-> - m_can_receive_skb(): remove double accounting of RX packets (found by s=
-ashiko)
-> - remove obsolete struct m_can_classdev::napi (found by sashiko)
-> - m_can_do_rx_poll(): remove quota, read all RX'ed messages (found by sas=
-hiko)
-> - Link to v1: https://patch.msgid.link/20260709-m_can-rx-offload-v1-1-af3=
-efa8e4272@pengutronix.de
->
-> To: Markus Schneider-Pargmann <msp@baylibre.com>
-> To: Marc Kleine-Budde <mkl@pengutronix.de>
-> To: Vincent Mailhol <mailhol@kernel.org>
-> Cc: linux-can@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  drivers/net/can/m_can/m_can.c | 151 +++++++++++-------------------------=
-------
->  drivers/net/can/m_can/m_can.h |   2 -
->  2 files changed, 38 insertions(+), 115 deletions(-)
->
-> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.=
-c
-> index eb856547ae7d..866c4b501dad 100644
-> --- a/drivers/net/can/m_can/m_can.c
-> +++ b/drivers/net/can/m_can/m_can.c
-> @@ -530,26 +530,17 @@ static void m_can_clean(struct net_device *net)
->  	spin_unlock_irqrestore(&cdev->tx_handling_spinlock, irqflags);
->  }
-> =20
-> -/* For peripherals, pass skb to rx-offload, which will push skb from
-> - * napi. For non-peripherals, RX is done in napi already, so push
-> - * directly. timestamp is used to ensure good skb ordering in
-> - * rx-offload and is ignored for non-peripherals.
-> - */
->  static void m_can_receive_skb(struct m_can_classdev *cdev,
->  			      struct sk_buff *skb,
->  			      u32 timestamp)
->  {
-> -	if (cdev->is_peripheral) {
-> -		struct net_device_stats *stats =3D &cdev->net->stats;
-> -		int err;
-> +	struct net_device_stats *stats =3D &cdev->net->stats;
-> +	int err;
-> =20
-> -		err =3D can_rx_offload_queue_timestamp(&cdev->offload, skb,
-> -						     timestamp);
-> -		if (err)
-> -			stats->rx_fifo_errors++;
-> -	} else {
-> -		netif_receive_skb(skb);
-> -	}
-> +	err =3D can_rx_offload_queue_timestamp(&cdev->offload, skb,
-> +					     timestamp);
+v2:
+ - Clear malformed leftover state before returning.
+ - Reject command lengths shorter than the buffered prefix.
 
-An AI noticed (and I checked) in can_rx_offload_queue_timestamp() it
-checks the queue length of skb_queue and drops packets if that queue is
-already full. But the function actually adds it to the skb_irq_queue
-which length is not checked at all in this function. skb_irq_queue is
-only much later added to the skb_queue, at which point it doesn't drop
-any packets over the limit. Shouldn't it be checking the sum of the
-lengths of both queues? Or is this intentional?
+v1:
+ - The zero-length command loop is also addressed by:
+    https://lore.kernel.org/linux-can/20260815-can-esd-hydra-fixes-v1-2-de644cbeaec2@ikuyo.dev/
+ - This patch additionally handles truncated command headers in the
+    synchronous wait and asynchronous receive paths, including the
+    leftover-buffer path.
 
-> +	if (err)
-> +		stats->rx_fifo_errors++;
->  }
-> =20
->  static int m_can_read_fifo(struct net_device *dev, u32 fgi)
-> @@ -600,10 +591,7 @@ static int m_can_read_fifo(struct net_device *dev, u=
-32 fgi)
->  				      cf->data, DIV_ROUND_UP(cf->len, 4));
->  		if (err)
->  			goto out_free_skb;
-> -
-> -		stats->rx_bytes +=3D cf->len;
->  	}
-> -	stats->rx_packets++;
-> =20
->  	timestamp =3D FIELD_GET(RX_BUF_RXTS_MASK, fifo_header.dlc) << 16;
-> =20
-> @@ -618,10 +606,9 @@ static int m_can_read_fifo(struct net_device *dev, u=
-32 fgi)
->  	return err;
->  }
-> =20
-> -static int m_can_do_rx_poll(struct net_device *dev, int quota)
-> +static int m_can_do_rx_poll(struct net_device *dev)
+ .../net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 70 ++++++++++++++++---
+ 1 file changed, 62 insertions(+), 8 deletions(-)
 
-This function doesn't have anything to do with polling anymore. Maybe it
-would better to rename this?
-
->  {
->  	struct m_can_classdev *cdev =3D netdev_priv(dev);
-> -	u32 pkts =3D 0;
->  	u32 rxfs;
->  	u32 rx_count;
->  	u32 fgi;
-> @@ -638,13 +625,11 @@ static int m_can_do_rx_poll(struct net_device *dev,=
- int quota)
->  	rx_count =3D FIELD_GET(RXFS_FFL_MASK, rxfs);
->  	fgi =3D FIELD_GET(RXFS_FGI_MASK, rxfs);
-> =20
-> -	for (i =3D 0; i < rx_count && quota > 0; ++i) {
-> +	for (i =3D 0; i < rx_count; ++i) {
-
-If I understand correctly you are removing any limit on how much is
-retrieved and you are doing this in the main irq handler now, not
-threaded. Did you measure how long the non-threaded irq-handler actually
-takes with this change and if the CAN bus is under pressure? Would it
-make sense to do this in a threaded irq handler?
-
->  		err =3D m_can_read_fifo(dev, fgi);
->  		if (err)
->  			break;
-> =20
-> -		quota--;
-> -		pkts++;
-
-You are not counting or returning the number of packets anymore but use
-it in the calling code. Is this intended?
-
->  		ack_fgi =3D fgi;
->  		fgi =3D (++fgi >=3D cdev->mcfg[MRAM_RXF0].num ? 0 : fgi);
->  	}
-> @@ -652,10 +637,7 @@ static int m_can_do_rx_poll(struct net_device *dev, =
-int quota)
->  	if (ack_fgi !=3D -1)
->  		m_can_write(cdev, M_CAN_RXF0A, ack_fgi);
-> =20
-> -	if (err)
-> -		return err;
-> -
-> -	return pkts;
-> +	return err;
->  }
-> =20
->  static int m_can_handle_lost_msg(struct net_device *dev)
-> @@ -678,8 +660,7 @@ static int m_can_handle_lost_msg(struct net_device *d=
-ev)
->  	frame->can_id |=3D CAN_ERR_CRTL;
->  	frame->data[1] =3D CAN_ERR_CRTL_RX_OVERFLOW;
-> =20
-> -	if (cdev->is_peripheral)
-> -		timestamp =3D m_can_get_timestamp(cdev);
-> +	timestamp =3D m_can_get_timestamp(cdev);
-> =20
->  	m_can_receive_skb(cdev, skb, timestamp);
-> =20
-> @@ -750,8 +731,7 @@ static int m_can_handle_lec_err(struct net_device *de=
-v,
->  	if (unlikely(!skb))
->  		return 0;
-> =20
-> -	if (cdev->is_peripheral)
-> -		timestamp =3D m_can_get_timestamp(cdev);
-> +	timestamp =3D m_can_get_timestamp(cdev);
-> =20
->  	m_can_receive_skb(cdev, skb, timestamp);
-> =20
-> @@ -883,8 +863,7 @@ static int m_can_handle_state_change(struct net_devic=
-e *dev,
->  		break;
->  	}
-> =20
-> -	if (cdev->is_peripheral)
-> -		timestamp =3D m_can_get_timestamp(cdev);
-> +	timestamp =3D m_can_get_timestamp(cdev);
-> =20
->  	m_can_receive_skb(cdev, skb, timestamp);
-> =20
-> @@ -973,8 +952,7 @@ static int m_can_handle_protocol_error(struct net_dev=
-ice *dev, u32 irqstatus)
->  		return 0;
->  	}
-> =20
-> -	if (cdev->is_peripheral)
-> -		timestamp =3D m_can_get_timestamp(cdev);
-> +	timestamp =3D m_can_get_timestamp(cdev);
-> =20
->  	m_can_receive_skb(cdev, skb, timestamp);
-> =20
-> @@ -1055,7 +1033,7 @@ static int m_can_rx_handler(struct net_device *dev,=
- int quota, u32 irqstatus)
-
-This function still has the argument quota but it seems unused now.
-
->  						     m_can_read(cdev, M_CAN_PSR));
-> =20
->  	if (irqstatus & IR_RF0N) {
-> -		rx_work_or_err =3D m_can_do_rx_poll(dev, (quota - work_done));
-> +		rx_work_or_err =3D m_can_do_rx_poll(dev);
-
-You are only returning error from m_can_do_rx_poll now. work_done will
-always be 0 now. The work_done +=3D line is not useful anymore.
-
-Looking more closely I think work_done in m_can_rx_handler is completely
-useless now and could be removed here and in the called functions?
-
-Best
-Markus
-
---d407ca66d98b85128ab7a30a28c98bbbb58ea2ec79301d91fc16fe4a723b
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKMEABYKAEsWIQSJYVVm/x+5xmOiprOFwVZpkBVKUwUCao3gYxsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMiwyLDIRHG1zcEBiYXlsaWJyZS5jb20ACgkQhcFWaZAVSlP9
-sAEAz0xPTT5ksGS4OFUIcJCX7vfmUCBou+sjgDkRHShs1rQA+gIjs85PRSRWzJGR
-jZxRojCbNQUoTkJ1R3kxdQMfcBgA
-=7AtJ
------END PGP SIGNATURE-----
-
---d407ca66d98b85128ab7a30a28c98bbbb58ea2ec79301d91fc16fe4a723b--
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+index efbb7bed34c9..eddd207ee8da 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+@@ -536,6 +536,24 @@ static size_t kvaser_usb_hydra_cmd_size(struct kvaser_cmd *cmd)
+ 	return ret;
+ }
+ 
++/* -EAGAIN means incomplete; -EINVAL rejects zero to ensure progress. */
++static int kvaser_usb_hydra_cmd_size_rx(struct kvaser_cmd *cmd,
++					size_t remaining, size_t *cmd_len)
++{
++	if (remaining < sizeof(cmd->header.cmd_no))
++		return -EAGAIN;
++
++	if (cmd->header.cmd_no == CMD_EXTENDED &&
++	    remaining < offsetof(struct kvaser_cmd_ext, cmd_no_ext))
++		return -EAGAIN;
++
++	*cmd_len = kvaser_usb_hydra_cmd_size(cmd);
++	if (!*cmd_len)
++		return -EINVAL;
++
++	return 0;
++}
++
+ static struct kvaser_usb_net_priv *
+ kvaser_usb_hydra_net_priv_from_cmd(const struct kvaser_usb *dev,
+ 				   const struct kvaser_cmd *cmd)
+@@ -675,8 +693,10 @@ static int kvaser_usb_hydra_wait_cmd(const struct kvaser_usb *dev, u8 cmd_no,
+ 			size_t cmd_len;
+ 
+ 			tmp_cmd = buf + pos;
+-			cmd_len = kvaser_usb_hydra_cmd_size(tmp_cmd);
+-			if (pos + cmd_len > actual_len) {
++			err = kvaser_usb_hydra_cmd_size_rx(tmp_cmd,
++							   actual_len - pos,
++							   &cmd_len);
++			if (err || pos + cmd_len > actual_len) {
+ 				dev_err_ratelimited(&dev->intf->dev,
+ 						    "Format error\n");
+ 				break;
+@@ -2110,6 +2130,7 @@ static void kvaser_usb_hydra_read_bulk_callback(struct kvaser_usb *dev,
+ {
+ 	unsigned long irq_flags;
+ 	struct kvaser_cmd *cmd;
++	int err;
+ 	int pos = 0;
+ 	size_t cmd_len;
+ 	struct kvaser_usb_dev_card_data_hydra *card_data =
+@@ -2120,24 +2141,53 @@ static void kvaser_usb_hydra_read_bulk_callback(struct kvaser_usb *dev,
+ 	spin_lock_irqsave(usb_rx_leftover_lock, irq_flags);
+ 	usb_rx_leftover_len = card_data->usb_rx_leftover_len;
+ 	if (usb_rx_leftover_len) {
++		const size_t cmd_size_field_end =
++			offsetof(struct kvaser_cmd_ext, cmd_no_ext);
+ 		int remaining_bytes;
+ 
+ 		cmd = (struct kvaser_cmd *)card_data->usb_rx_leftover;
+ 
+-		cmd_len = kvaser_usb_hydra_cmd_size(cmd);
++		if (cmd->header.cmd_no == CMD_EXTENDED &&
++		    usb_rx_leftover_len < cmd_size_field_end) {
++			remaining_bytes = min_t(int, len,
++						cmd_size_field_end -
++						usb_rx_leftover_len);
+ 
+-		remaining_bytes = min_t(unsigned int, len,
++			memcpy(card_data->usb_rx_leftover + usb_rx_leftover_len,
++			       buf, remaining_bytes);
++			usb_rx_leftover_len += remaining_bytes;
++			card_data->usb_rx_leftover_len = usb_rx_leftover_len;
++			pos += remaining_bytes;
++
++			if (usb_rx_leftover_len < cmd_size_field_end) {
++				spin_unlock_irqrestore(usb_rx_leftover_lock,
++						       irq_flags);
++				return;
++			}
++		}
++
++		err = kvaser_usb_hydra_cmd_size_rx(cmd, usb_rx_leftover_len,
++						   &cmd_len);
++		if (err || cmd_len < usb_rx_leftover_len) {
++			dev_err(&dev->intf->dev, "Format error\n");
++			card_data->usb_rx_leftover_len = 0;
++			spin_unlock_irqrestore(usb_rx_leftover_lock, irq_flags);
++			return;
++		}
++
++		remaining_bytes = min_t(unsigned int, len - pos,
+ 					cmd_len - usb_rx_leftover_len);
+ 		/* Make sure we do not overflow usb_rx_leftover */
+ 		if (remaining_bytes + usb_rx_leftover_len >
+ 						KVASER_USB_HYDRA_MAX_CMD_LEN) {
+ 			dev_err(&dev->intf->dev, "Format error\n");
++			card_data->usb_rx_leftover_len = 0;
+ 			spin_unlock_irqrestore(usb_rx_leftover_lock, irq_flags);
+ 			return;
+ 		}
+ 
+-		memcpy(card_data->usb_rx_leftover + usb_rx_leftover_len, buf,
+-		       remaining_bytes);
++		memcpy(card_data->usb_rx_leftover + usb_rx_leftover_len,
++		       buf + pos, remaining_bytes);
+ 		pos += remaining_bytes;
+ 
+ 		if (remaining_bytes + usb_rx_leftover_len == cmd_len) {
+@@ -2154,9 +2204,13 @@ static void kvaser_usb_hydra_read_bulk_callback(struct kvaser_usb *dev,
+ 	while (pos < len) {
+ 		cmd = buf + pos;
+ 
+-		cmd_len = kvaser_usb_hydra_cmd_size(cmd);
++		err = kvaser_usb_hydra_cmd_size_rx(cmd, len - pos, &cmd_len);
++		if (err && err != -EAGAIN) {
++			dev_err(&dev->intf->dev, "Format error\n");
++			return;
++		}
+ 
+-		if (pos + cmd_len > len) {
++		if (err == -EAGAIN || pos + cmd_len > len) {
+ 			/* We got first part of a command */
+ 			int leftover_bytes;
+ 
+-- 
+2.55.0
