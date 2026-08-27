@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDEC03F105E;
-	Thu, 27 Aug 2026 19:44:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22B413F104A;
+	Thu, 27 Aug 2026 19:44:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787859852; cv=none; b=relmwNT5MVHIiF7I7K30kq+G+eruwYzHlFMQIk5JrwMV2KzVEM+1pa4kRjJbdo1ZO2+c4Tv5+VsGwp7zpcL5+d5hT59PdwNVl1kdW6Yumnb4qsv8OW90N/gTg0UWdSTluR+iMF19lzfJTYOO1XrBZe5LVKnku2aDrDmDZ49G6oo=
+	t=1787859853; cv=none; b=JR2s7v8btCzIEZsm4aLlLq2WNOsWrqJD/+ARJNkbeF07lhnefqPnOEiVYjEjsnvtWvPQgxlC7V8Ppkm6FEPOC3by9Kz7Q8YF8AjykeFN145cZqKB7iQDoPxsAwBxVYVh9o9x3acozGE+bmcKDQxCoqVNxcQHhJqRPk0jUdlzELk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787859852; c=relaxed/simple;
-	bh=vth3qTAeDmjgEF3tK+3zhddF/nyfxvOHd9P+4ecyujI=;
+	s=arc-20240116; t=1787859853; c=relaxed/simple;
+	bh=SPeJ/Y9+cE5dWIQ2wKGN/2wp6ge6udqfcasKBCOoyjg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=b/MatLLWH5vJw7PQyCBF/JUk2w0/CmWnQtNqXlNpTV1NsParmno8X07cJ8WCvOLKvTP2ebKZ0k07HsV1FsWcjdj/S0LKEgxOOn932TRq+tIzOe0J/l/E4aYJ3DXBDpCcj4BgrOLHL1HKuSxdlr+m4Omay3fDVWwfJvmIFZNBJD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XxS9cCAV; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=V64myYDOW5304IGKJzAVcPmbZRUmJ0NLIvGzgD/nHDOnlhUd/y57xF7K0Mry61LNcCCrLVNf8oeYEZt0Xy7Xaim8VvQR1QyxLcpe8exp49oluZ8z/f0R4+dE96p4atkH8y9uhal455WUa8mKigO3atDuioYDJQXvF7i3q1uKYcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=czEY1u/B; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XxS9cCAV"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 688301F000E9;
-	Thu, 27 Aug 2026 19:44:10 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="czEY1u/B"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E6061F00A3A;
+	Thu, 27 Aug 2026 19:44:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1787859850;
-	bh=Oo3RvhMBNE+iKya/grTAmR8nALOBEurSiP3LnvgMo8s=;
+	s=k20260515; t=1787859851;
+	bh=wspUJIv80awpWSpcUAXc5rAlIEMC4jNZRfPSgq4q1s0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=XxS9cCAVtHZ78XEkD+ntCQEENiI8brKKObrWBzKxpfaoVd9c4Yyd2C+IUGIanf0B3
-	 ETENyW471FDgTEh/pLzJZo8ESpdQ8raAimvFmBnXpYFRRcjh1nhgl3KdPPHQRz74bw
-	 PI8hOHkYmAB37SXXfQKUOh4ftnseXnVsoXFRYxrG7wwdcMj7WiSUci02Km5bsdIXip
-	 I7Hm93M2KH3Z0vDmRWz6uEMPrtFF+AHG1jl6S9FnFO0dKayKgnjWLlz+vF8S8o+E3s
-	 KmWbXl0TzSQ+Z3NA3Il9FrNzUTiidMnOZ+z0Qqg+3CEzvO7kYqDQ5J5drShb/r5KB0
-	 KjvVw1q6D3gSw==
+	b=czEY1u/BGiD2+RwEy0NviNURwBQnkMVWz3EX6zjFKwpSFSgSH3f1RhNAvc2ZD+/a2
+	 EMEimfmCTjrDwfYayjGIJt4FBtnRUU7MInJ8wE/vSz5xtbWoLupNpN9cDYSFBFYr0F
+	 iim84iRnX5bVrMuV3fkymfIa35frmxVZx9zw4VkzC64gjIHEdltcDoamvRUZUyxwRn
+	 nAncIA3dkkFQ5pQbC52xAXZnereSK+fBGzOBuiy8Y8JXsJftnsumnCRDEMH2HBoxQg
+	 q+ccuolBEm5v5UTWjIRWl6EJ/4oa85exkRy6eONv1uofbs/FLJu1FW6+T+T1r/iAKg
+	 jydLWUCcoJ8Eg==
 From: Jakub Kicinski <kuba@kernel.org>
 To: mkl@pengutronix.de
 Cc: Jakub Kicinski <kuba@kernel.org>,
@@ -36,12 +36,12 @@ Cc: Jakub Kicinski <kuba@kernel.org>,
 	blbllhy@gmail.com,
 	AutonomousCodeSecurity@microsoft.com,
 	xmei5@asu.edu
-Subject: Re: [PATCH net 07/14] can: rockchip_canfd: serialize TX state and command writes
-Date: Thu, 27 Aug 2026 12:44:09 -0700
-Message-ID: <20260827194409.4023765-1-kuba@kernel.org>
+Subject: Re: [PATCH net 12/14] can: kvaser_usb: validate command format before parsing in hydra receive path
+Date: Thu, 27 Aug 2026 12:44:10 -0700
+Message-ID: <20260827194410.4023800-1-kuba@kernel.org>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260826121036.2706424-8-mkl@pengutronix.de>
-References: <20260826121036.2706424-8-mkl@pengutronix.de>
+In-Reply-To: <20260826121036.2706424-13-mkl@pengutronix.de>
+References: <20260826121036.2706424-13-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -53,231 +53,204 @@ Content-Transfer-Encoding: 8bit
 This is an AI-generated review of your patch. The human sending this
 email has considered the AI review valid, or at least plausible.
 ---
-can: rockchip_canfd: serialize TX state and command writes
+can: kvaser_usb: validate command format before parsing in hydra receive path
 
-This adds a new spinlock priv->tx_lock to the rockchip_canfd driver and uses
-it to serialize tx_head, tx_tail and the echo skb ring between the transmit
-path and the RX/completion path.  The same lock is also taken around the
-erratum 12 MODE/CMD/MODE register sequence, and lockdep_assert_held() is
-added to the helpers that now require it.
+This adds kvaser_usb_hydra_cmd_size_rx() so the hydra receive paths check
+that the CMD_EXTENDED 2-byte length field is fully present before reading
+it, and rejects a declared length of zero to keep the parse loop making
+progress.  The asynchronous path now keeps a partial extended header in the
+leftover buffer and completes it from the next transfer.
 
-Link: https://patch.msgid.link/tencent_AF224EFBC9343DD238C80824AC8CA805480A@qq.com
+Link: https://patch.msgid.link/20260826013037.6933-1-blbllhy@gmail.com
 
-> diff --git a/drivers/net/can/rockchip/rockchip_canfd-rx.c b/drivers/net/can/rockchip/rockchip_canfd-rx.c
-> index 24e87daa1df00..59420233c9184 100644
-> --- a/drivers/net/can/rockchip/rockchip_canfd-rx.c
-> +++ b/drivers/net/can/rockchip/rockchip_canfd-rx.c
-> @@ -100,14 +100,25 @@ static int rkcanfd_rxstx_filter(struct rkcanfd_priv *priv,
->  	const struct canfd_frame *cfd_nominal;
->  	const struct sk_buff *skb;
->  	unsigned int tx_tail;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&priv->tx_lock, flags);
-> +
-> +	if (!rkcanfd_get_tx_pending(priv))
-> +		goto out_unlock;
->  
->  	tx_tail = rkcanfd_get_tx_tail(priv);
->  	skb = priv->can.echo_skb[tx_tail];
->  	if (!skb) {
-> +		const unsigned int tx_head_unmasked = priv->tx_head;
-> +		const unsigned int tx_tail_unmasked = priv->tx_tail;
-> +
-> +		spin_unlock_irqrestore(&priv->tx_lock, flags);
-> +
->  		netdev_err(priv->ndev,
->  			   "%s: echo_skb[%u]=NULL tx_head=0x%08x tx_tail=0x%08x\n",
->  			   __func__, tx_tail,
-> -			   priv->tx_head, priv->tx_tail);
-> +			   tx_head_unmasked, tx_tail_unmasked);
->  
->  		return -ENOMSG;
->  	}
-
-[ ... ]
-
-> diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/can/rockchip/rockchip_canfd-tx.c
-> index fc338ea865feb..b367341dd0aeb 100644
-> --- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
-> +++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
-
-[ ... ]
-
-> @@ -60,6 +71,8 @@ void rkcanfd_xmit_retry(struct rkcanfd_priv *priv)
->  	const unsigned int tx_tail = rkcanfd_get_tx_tail(priv);
->  	const u32 reg_cmd = RKCANFD_REG_CMD_TX_REQ(tx_tail);
->  
-> +	lockdep_assert_held(&priv->tx_lock);
-> +
->  	rkcanfd_start_xmit_write_cmd(priv, reg_cmd);
+> diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+> index efbb7bed34c9d..efe7b3ef489bf 100644
+> --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+> +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+> @@ -536,6 +536,24 @@ static size_t kvaser_usb_hydra_cmd_size(struct kvaser_cmd *cmd)
+>  	return ret;
 >  }
-
-[ ... ]
-
-> @@ -88,10 +102,13 @@ netdev_tx_t rkcanfd_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->  		return NETDEV_TX_BUSY;
->  	}
 >  
-> +	spin_lock_irqsave(&priv->tx_lock, flags);
->  	tx_head = rkcanfd_get_tx_head(priv);
->  	frame_len = can_skb_get_frame_len(skb);
->  	err = can_put_echo_skb(skb, ndev, tx_head, frame_len);
->  	if (err) {
-> +		spin_unlock_irqrestore(&priv->tx_lock, flags);
+> +/* -EAGAIN means incomplete; -EINVAL rejects zero to ensure progress. */
+> +static int kvaser_usb_hydra_cmd_size_rx(struct kvaser_cmd *cmd,
+> +					size_t remaining, size_t *cmd_len)
+> +{
+> +	if (remaining < sizeof(cmd->header.cmd_no))
+> +		return -EAGAIN;
 > +
->  		ndev->stats.tx_dropped++;
->  		return NETDEV_TX_OK;
->  	}
-
-[Severity: Low]
-The last paragraph of the changelog says:
-
-    "Install the echo skb before loading the hardware TX buffer so
-     an echo setup failure cannot desynchronize the hardware and software TX
-     state."
-
-Is that part of this change?  In the hunk above, the can_put_echo_skb()
-call and its error return are unmodified context; only the two
-spin_lock_irqsave()/spin_unlock_irqrestore() lines are added.  That
-reordering came from the preceding commit 4a223c132464 ("can:
-rockchip_canfd: prevent TX stall on echo skb failure"), which itself
-depends on the can_put_echo_skb() ownership change that landed later in the
-same series as "can: dev: can_put_echo_skb(): free skb on invalid echo
-index".
-
-The same applies to rkcanfd_xmit_retry() above: selecting the retry slot
-with tx_tail instead of tx_head comes from 0b345ad5c3d3 ("can:
-rockchip_canfd: retry the outstanding TX buffer"), and this patch only adds
-lockdep_assert_held() there.
-
-Since this commit carries Cc: stable and two Fixes: tags, could the message
-name those prerequisites so a backport into a tree without 4a223c132464 and
-0b345ad5c3d3 is not attempted as a standalone cherry-pick?
-
-> @@ -136,6 +153,7 @@ netdev_tx_t rkcanfd_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->  	WRITE_ONCE(priv->tx_head, priv->tx_head + 1);
->  
->  	rkcanfd_start_xmit_write_cmd(priv, reg_cmd);
-> +	spin_unlock_irqrestore(&priv->tx_lock, flags);
+> +	if (cmd->header.cmd_no == CMD_EXTENDED &&
+> +	    remaining < offsetof(struct kvaser_cmd_ext, cmd_no_ext))
+> +		return -EAGAIN;
+> +
+> +	*cmd_len = kvaser_usb_hydra_cmd_size(cmd);
+> +	if (!*cmd_len)
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
 
 [Severity: High]
-Does tx_lock really make the erratum 12 sequence atomic against all MODE
-writers?  The protected sequence is:
+Should this helper also reject a declared length that is smaller than the
+fields the extended-command consumers dereference?
 
-  rkcanfd_start_xmit_write_cmd()
-      rkcanfd_write(priv, RKCANFD_REG_MODE, priv->reg_mode_default | RKCANFD_REG_MODE_SPACE_RX_MODE);
-      rkcanfd_write(priv, RKCANFD_REG_CMD, reg_cmd);
-      rkcanfd_write(priv, RKCANFD_REG_MODE, priv->reg_mode_default);
+Right now the only constraint on the device-supplied length is that it is
+non-zero, but struct kvaser_cmd_ext is 96 bytes with cmd_no_ext at offset 6,
+rx_can.flags at 8, kcan_header at 20, timestamp at 24 and kcan_payload at
+32..95:
 
-Two other RKCANFD_REG_MODE writers in rockchip_canfd-core.c do not take
-tx_lock:
+	struct kvaser_cmd_ext {
+		struct kvaser_cmd_header header;
+		__le16 len;
+		u8 cmd_no_ext;
+		u8 reserved;
+		union {
+			struct kvaser_cmd_ext_rx_can rx_can;
+			...
+	} __packed;
 
-  rkcanfd_chip_set_reset_mode()
-      reset_control_assert(priv->reset);
-      udelay(2);
-      reset_control_deassert(priv->reset);
-      rkcanfd_write(priv, RKCANFD_REG_MODE, 0x0);
+kvaser_usb_hydra_handle_cmd_ext() reads cmd->cmd_no_ext and then
+kvaser_usb_hydra_rx_msg_ext() reads all the way up to kcan_payload,
+without any relation to cmd->len:
 
-  rkcanfd_chip_set_work_mode()
-      rkcanfd_write(priv, RKCANFD_REG_MODE, priv->reg_mode_default);
+	drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c:kvaser_usb_hydra_rx_msg_ext() {
+		...
+		memcpy(cf->data, cmd->rx_can.kcan_payload, cf->len);
+		...
+	}
 
-rkcanfd_chip_set_reset_mode() is reachable from hard interrupt context:
+The sibling leaf driver already enforces per-command minimums before
+dispatch via kvaser_usb_leaf_verify_size() in
+kvaser_usb_leaf_handle_command().  Would it make sense to require
+cmd_len >= offsetof(struct kvaser_cmd_ext, cmd_no_ext) + 2 here, or better a
+per-cmd_no_ext minimum up to sizeof(struct kvaser_cmd_ext), instead of only
+rejecting zero?
 
-  rkcanfd_irq() -> rkcanfd_handle_state_error_int() ->
-    rkcanfd_chip_stop(priv, CAN_STATE_BUS_OFF) -> __rkcanfd_chip_stop() ->
-      rkcanfd_chip_set_reset_mode()
-
-spin_lock_irqsave() masks interrupts only on the local CPU, so on SMP that
-handler can run on another CPU between the three writes above.  If
-MODE = 0x0 lands between the SPACE_RX_MODE write and the CMD write, does CMD
-not then execute with SPACE_RX_MODE cleared, which is exactly the erratum 12
-bypass that Fixes: 83f9bd6bf39d is meant to close?
-
-If the reset lands just before the trailing restore instead, the transmit
-path writes MODE = priv->reg_mode_default (which includes
-RKCANFD_REG_MODE_WORK_MODE) after the bus-off handler reset the controller
-and after rkcanfd_chip_interrupts_disable() masked all interrupts.  Can that
-leave the hardware running in work mode while priv->can.state is
-CAN_STATE_BUS_OFF, with no interrupt left to recover the interface?
-
-Can the two paths really overlap?  can_bus_off() only calls
-netif_carrier_off() and schedules restart_work, and the TX queue is
-deactivated asynchronously through linkwatch, so a frame already queued in
-the qdisc can still enter rkcanfd_start_xmit() on another CPU while the
-bus-off interrupt resets the chip.
-
-Would it make sense to have these MODE writers take tx_lock as well, or to
-document why they are exempt?
-
-[ ... ]
-
-> diff --git a/drivers/net/can/rockchip/rockchip_canfd.h b/drivers/net/can/rockchip/rockchip_canfd.h
-> index 95bea9bfd8a2f..2dc3a41afe32d 100644
-> --- a/drivers/net/can/rockchip/rockchip_canfd.h
-> +++ b/drivers/net/can/rockchip/rockchip_canfd.h
-
-[ ... ]
-
-> @@ -474,6 +475,7 @@ struct rkcanfd_priv {
->  	struct can_rx_offload offload;
->  	struct net_device *ndev;
+> @@ -675,8 +693,8 @@ static int kvaser_usb_hydra_wait_cmd(const struct kvaser_usb *dev, u8 cmd_no,
+>  			size_t cmd_len;
 >  
-> +	spinlock_t tx_lock; /* protects tx_head, tx_tail and echo_skb */
->  	void __iomem *regs;
->  	unsigned int tx_head;
->  	unsigned int tx_tail;
+>  			tmp_cmd = buf + pos;
+> -			cmd_len = kvaser_usb_hydra_cmd_size(tmp_cmd);
+> -			if (pos + cmd_len > actual_len) {
+> +			err = kvaser_usb_hydra_cmd_size_rx(tmp_cmd, actual_len - pos, &cmd_len);
+> +			if (err || pos + cmd_len > actual_len) {
+>  				dev_err_ratelimited(&dev->intf->dev,
+>  						    "Format error\n");
+>  				break;
 
-[Severity: Medium]
-The new comment states that tx_lock protects tx_head, tx_tail and echo_skb,
-and the patch enforces that with lockdep_assert_held() in
-rkcanfd_tx_tail_is_eff(), rkcanfd_xmit_retry() and
-rkcanfd_handle_tx_done_one().  Should rkcanfd_chip_fifo_setup() in
-rockchip_canfd-core.c take the lock too?  It writes both counters with no
-lock held:
+[Severity: High]
+In kvaser_usb_hydra_wait_cmd(), a CMD_EXTENDED declaring a small positive
+length (say 1) still returns 0 from the helper, and cmd_len is then used as
+the stride:
 
-	WRITE_ONCE(priv->tx_head, 0);
-	WRITE_ONCE(priv->tx_tail, 0);
-	netdev_reset_queue(priv->ndev);
+			pos += cmd_len;
 
-It runs on the bus-off restart and "ip link ... type can restart" path:
+Does this leave the parser resynchronising from the middle of the malformed
+extended header for the rest of the buffer?  The accesses stay inside the
+kzalloc'd buffer here, but the interpretation of the following bytes is
+attacker-chosen.
 
-  can_restart() -> netif_carrier_on() -> priv->do_set_mode(CAN_MODE_START)
-    -> rkcanfd_set_mode() -> rkcanfd_chip_start() -> rkcanfd_chip_fifo_setup()
+> @@ -2120,23 +2138,47 @@ static void kvaser_usb_hydra_read_bulk_callback(struct kvaser_usb *dev,
+>  	spin_lock_irqsave(usb_rx_leftover_lock, irq_flags);
+>  	usb_rx_leftover_len = card_data->usb_rx_leftover_len;
+>  	if (usb_rx_leftover_len) {
+> +		const size_t cmd_size_field_end = offsetof(struct kvaser_cmd_ext, cmd_no_ext);
+>  		int remaining_bytes;
+> +		int err;
+>  
+>  		cmd = (struct kvaser_cmd *)card_data->usb_rx_leftover;
+>  
+> -		cmd_len = kvaser_usb_hydra_cmd_size(cmd);
+> +		if (cmd->header.cmd_no == CMD_EXTENDED &&
+> +		    usb_rx_leftover_len < cmd_size_field_end) {
+> +			remaining_bytes = min_t(int, len, cmd_size_field_end - usb_rx_leftover_len);
+> +
+> +			memcpy(card_data->usb_rx_leftover + usb_rx_leftover_len, buf, remaining_bytes);
+> +			usb_rx_leftover_len += remaining_bytes;
+> +			card_data->usb_rx_leftover_len = usb_rx_leftover_len;
+> +			pos += remaining_bytes;
+>  
+> -		remaining_bytes = min_t(unsigned int, len,
+> +			if (usb_rx_leftover_len < cmd_size_field_end) {
+> +				spin_unlock_irqrestore(usb_rx_leftover_lock, irq_flags);
+> +				return;
+> +			}
+> +		}
+> +
+> +		err = kvaser_usb_hydra_cmd_size_rx(cmd, usb_rx_leftover_len, &cmd_len);
+> +		if (err || cmd_len < usb_rx_leftover_len) {
+> +			dev_err(&dev->intf->dev, "Format error\n");
+> +			card_data->usb_rx_leftover_len = 0;
+> +			spin_unlock_irqrestore(usb_rx_leftover_lock, irq_flags);
+> +			return;
+> +		}
+> +
+> +		remaining_bytes = min_t(unsigned int, len - pos,
+>  					cmd_len - usb_rx_leftover_len);
 
-can_restart() turns the carrier on before calling do_set_mode(), and carrier
-changes only queue linkwatch work, so dev_activate() can re-arm the qdisc
-while rkcanfd_chip_fifo_setup() is still zeroing the counters.
+[Severity: High]
+On the reassembly path, once the top-up above has filled exactly the 6 bytes
+up to cmd_size_field_end, a device-declared cmd_len of 6, 7 or 8 passes the
+helper and then satisfies the completion test straight away:
 
-Can this interleave?
+		if (remaining_bytes + usb_rx_leftover_len == cmd_len) {
+			kvaser_usb_hydra_handle_cmd(dev, cmd);
 
-CPU0 rkcanfd_start_xmit() (holds tx_lock)
-    tx_head = rkcanfd_get_tx_head();          /* N */
-    can_put_echo_skb(skb, ndev, tx_head, frame_len);
-    ... hardware TX buffer writes ...
-    WRITE_ONCE(priv->tx_head, N + 1);
+Does this dispatch an extended command whose cmd_no_ext and payload bytes
+come from whatever was previously left in the 128-byte
+card_data->usb_rx_leftover array, since only the first 6 bytes have been
+written by this transfer?
 
-CPU1 rkcanfd_chip_fifo_setup()
-    WRITE_ONCE(priv->tx_head, 0);
-    WRITE_ONCE(priv->tx_tail, 0);
-    netdev_reset_queue(priv->ndev);
+> @@ -2152,11 +2194,17 @@ static void kvaser_usb_hydra_read_bulk_callback(struct kvaser_usb *dev,
+>  	spin_unlock_irqrestore(usb_rx_leftover_lock, irq_flags);
+>  
+>  	while (pos < len) {
+> +		int err;
+> +
+>  		cmd = buf + pos;
+>  
+> -		cmd_len = kvaser_usb_hydra_cmd_size(cmd);
+> +		err = kvaser_usb_hydra_cmd_size_rx(cmd, len - pos, &cmd_len);
+> +		if (err && err != -EAGAIN) {
+> +			dev_err(&dev->intf->dev, "Format error\n");
+> +			return;
+> +		}
+>  
+> -		if (pos + cmd_len > len) {
+> +		if (err == -EAGAIN || pos + cmd_len > len) {
+>  			/* We got first part of a command */
+>  			int leftover_bytes;
+>  
 
-Afterwards the head/tail pair describes neither the echo ring nor the
-hardware FIFO, which looks like it can produce the "echo_skb[%u]=NULL"
-errors and a stopped TX queue with no completion left to wake it.  The same
-restart path also frees echo skbs through can_flush_echo_skb() without
-tx_lock, and netdev_reset_queue() there races netdev_sent_queue() in the
-transmit path.
+[Severity: High]
+Can a crafted transfer still reach the same class of out-of-bounds read that
+this commit describes?
 
-Two smaller inconsistencies with the documented rule: the diagnostic in
-rkcanfd_rxstx_filter() is now taken from a locked snapshot, while the
-identical one in rkcanfd_start_xmit() still reads both fields unlocked:
+Here err == 0 together with pos + cmd_len <= len is the complete gate before
+kvaser_usb_hydra_handle_cmd(), and pos is advanced by the device's own
+declared lengths, so pos can be placed anywhere in the 3072-byte URB buffer
+allocated in kvaser_usb_setup_rx_urbs():
 
-		netdev_info(priv->ndev,
-			    "Stopping tx-queue (tx_head=0x%08x, tx_tail=0x%08x, tx_pending=%d)\n",
-			    priv->tx_head, priv->tx_tail,
-			    rkcanfd_get_tx_pending(priv));
+	buf = usb_alloc_coherent(dev->udev, KVASER_USB_RX_BUFFER_SIZE,
+				 GFP_KERNEL, &buf_dma);
 
-and rkcanfd_handle_rx_int_one() still gates entry into the now
-lock-protected rkcanfd_rxstx_filter() on an unlocked
-rkcanfd_get_tx_pending().  Were both left out on purpose?
+For a full 3072-byte transfer holding a CMD_EXTENDED with len 3064, followed
+at pos 3064 by a CMD_EXTENDED with len 8 and cmd_no_ext CMD_RX_MESSAGE_FD:
+
+  remaining is 8, which is >= offsetof(struct kvaser_cmd_ext, cmd_no_ext)
+  cmd_len is 8, so the zero check passes
+  pos + cmd_len == 3072 == len, so the truncation check passes
+
+kvaser_usb_hydra_handle_cmd() -> kvaser_usb_hydra_handle_cmd_ext() ->
+kvaser_usb_hydra_rx_msg_ext() then reads rx_can.flags, kcan_header and
+timestamp past the end of the transfer buffer and finishes with:
+
+		memcpy(cf->data, cmd->rx_can.kcan_payload, cf->len);
+
+with cf->len up to 64 taken from the device-supplied DLC, i.e. up to roughly
+88 bytes beyond the 3072-byte allocation.  On host controllers where
+hcd_uses_dma() is false (dummy_hcd, vhci) hcd_buffer_alloc() falls back to
+kmalloc(3072), so KASAN would report a slab-out-of-bounds read here, and the
+bytes read are then handed to netif_rx() inside a CAN FD frame.
+
+Would adding the minimum-length check inside kvaser_usb_hydra_cmd_size_rx()
+close this as well, rather than leaving it for a follow-up?
