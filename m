@@ -1,107 +1,153 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41B56447807
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D44FA448394
 	for <linux-can@vger.kernel.org>; Thu, 27 Aug 2026 12:10:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787832654; cv=none; b=IQKCNSatd1rgLGhLfFX7s5C40KVnn4u7jZ//6GTHnxQXNOo6gdafYr6Njqmz58f1yxo/5On1MkuB9KgLg0Ur8SHcTwOewIGn7yRANxgoXnlPpshiCXRDNnPXathv1y8GV2xTpDZ6a5NHeRMbaF2GIOjx9e8s2/XoVmC48KOS1mA=
+	t=1787832655; cv=none; b=riGacTXCxyeEXLFw0ta3eIod9LkL25Zj9HD9TuPqlJWu31VQzs4XOTIy0yIdTRCdlT1AvyIm4gRzsGB7XZ9I0GhWWGEHkXdS7R+KjdeQEYcO3LMjTYLPP4K2MamPUk0uipUryWEfOp1qGobde6L2nJBD8yDlGQDfZDSlN3FS12I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787832654; c=relaxed/simple;
-	bh=YS3QdjyGSfyYUfTjxchncXWdb5iYba/jiZPljLnnd7w=;
+	s=arc-20240116; t=1787832655; c=relaxed/simple;
+	bh=prCAIEs4TuDktOt79oAseS1flBhsJbwDSIxpPsTkoOA=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=GwGP2TBIWkU6KlFmghtKBIWciX5PwxpclGZjB18oLkZxRbd4i8JCjpMjHnDBXZq5Sq8t3lPiD/xcBS//F5XnKYMZBC9gErwvV0DXAXPAJ4EZOgcsaIDqyu+MXK3+Lcb7TB4XtzyvEmukUX0hm3QtPieSApxJCi+BYpo9HG2eNjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VJoWuONM; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=o6J9WgAxsoC0FF4hXQKvzqBZuHQ+7+PQ60gHbEeUM2khsdOQCTWj7BKuPrWNqXQj+I2iftJu+Gsh+rvQav4TWVkBbxg/mdcx4AaJ/rOreylZRW7a4kXaOku4Iw64yGIu1AFE2QOftyTwlmfzvXUyTUFC0VQN8WAnaUaMT1eITOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mym135aN; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VJoWuONM"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 975831F00A3D;
-	Thu, 27 Aug 2026 12:10:52 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mym135aN"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D2671F000E9;
+	Thu, 27 Aug 2026 12:10:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1787832652;
-	bh=uNLvJQ1zhMrfqAvrZg2KaF7ZCfP6QXfiCm8gpOdkjuI=;
+	s=k20260515; t=1787832653;
+	bh=1K9TkxBpQR/ZuBIsERdb90lsjTZWNsC7MGt6mcb/yNM=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=VJoWuONMMZ2fOKbTl1XoTOqHiSxSHFvKAc3fm67QXtPRs1OxRiyNO/FZbxh6lT+Sr
-	 Uym9l7LuMUJ00uly0V/kSc9767sXRuAyi5pT24D2jdzMf92AoDCNUuyGbh4czOqWTr
-	 jMMbPB73yQ2nxe7qlws56xa3eNPGHHSujuRoRcQ68zMR0Nxdz1FWzxzcL9/y3xD7p9
-	 4IutCoywO2rRkz1mVeN0BfMGHTlKdt4doqs68llpW7fwHC0W41HR+4y7OrGqOVJAN+
-	 e8TkaBxLIdSTqeNL/+ApB3RWNZl98vQ8txu2o3Lb3SGpAm6EWz1Qw3WVaTNBJ1/Uas
-	 89XFhSHv6ePMA==
+	b=mym135aNCuExNyqj2tjYBPfv3cuhH0ztK7j6knCo8EJNdDGSoB/6NdCRLsNOsI7TW
+	 LiTH/CK8QSQyaED0k4NDI3+uxV4CK1GcLLsV/79lLQbEIldtlNBCTZd1INlklt7ra7
+	 pgLEbAW10lNTbC27W9wsFyw5lMs0Y3Efy6Y99dNgFdVQwRfy4x7X9u1yF8c+FzqYsb
+	 6uNRFzb9Cauhw6bJp1KZ0XymVj3fFf1OqlR583CygVLRNrsc7L/LjozmITozXOZpIN
+	 feY+PTn9wx9wiv4w1Un/gHH8pjEZ4gj52fzUD2O5WSnhlQ6a3+7O7i6bZ/tjgHVR/b
+	 Zk48CAvz0ScIg==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net 10/14] can: dev: can_put_echo_skb(): free skb on
- invalid echo index
+Subject: Re: [PATCH net 11/14] can: kvaser_pciefd: fix use-after-free in bec
+ poll timer
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Marc Kleine-Budde" <mkl@pengutronix.de>
-Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent
+Cc: linux-can@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Vincent
  Mailhol" <mailhol@kernel.org>
-In-Reply-To: <20260826121036.2706424-11-mkl@pengutronix.de>
+In-Reply-To: <20260826121036.2706424-12-mkl@pengutronix.de>
 References: <20260826121036.2706424-1-mkl@pengutronix.de>
- <20260826121036.2706424-11-mkl@pengutronix.de>
+ <20260826121036.2706424-12-mkl@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 27 Aug 2026 12:10:52 +0000
-Message-Id: <20260827121052.975831F00A3D@smtp.kernel.org>
+Date: Thu, 27 Aug 2026 12:10:53 +0000
+Message-Id: <20260827121053.6D2671F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+Thank you for your contribution! Sashiko AI review found 2 potential issue(=
 s) to consider:
 
 Pre-existing issues:
-- [High] Modifying SKB payload in can_skb_init_valid() without unsharing ca=
-uses data corruption for concurrent observers.
+- [Critical] Missing dma_rmb() when reading packets from coherent DMA memor=
+y.
+- [High] Incomplete timer teardown and missing state checks in ndo_stop (kv=
+aser_pciefd_stop) causes a polling loop leak, state corruption, and potenti=
+al spurious netif_rx calls when the interface is brought down.
 --
 
-commit 6a48fe2d96b6f1ca706da34b2f7bdd872d06941f
-Author: Cunhao Lu <1579567540@qq.com>
-can: dev: can_put_echo_skb(): free skb on invalid echo index
+commit d6148cc43f3a9adbcbc3d9812cbf816bc0ffca1f
+Author: Fan Wu <fanwu01@zju.edu.cn>
 
-This patch fixes a potential leak in can_put_echo_skb() when the echo index
-is out of bounds. It ensures the socket buffer is freed before returning
--EINVAL so that all error paths correctly consume the SKB.
+can: kvaser_pciefd: fix use-after-free in bec poll timer
 
-Link: https://patch.msgid.link/tencent_683AA16E643DE00211CD2FB62991264DC605=
-@qq.com
+This commit addresses a use-after-free by switching to timer_shutdown_sync()
+in kvaser_pciefd_remove() and kvaser_pciefd_teardown_can_ctrls(). It ensures
+the bec_poll_timer callback completes before freeing the CAN device during
+module removal or probe errors.
 
-> diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-> index c7be21ed70ddf..faafb1033d423 100644
-> --- a/drivers/net/can/dev/skb.c
-> +++ b/drivers/net/can/dev/skb.c
+Link: https://patch.msgid.link/20260818063832.383829-1-fanwu01@zju.edu.cn
+
+> diff --git a/drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c b/drivers=
+/net/can/kvaser_pciefd/kvaser_pciefd_core.c
+> index d8c9bfb202304..a0597db720864 100644
+> --- a/drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c
+> +++ b/drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c
 
 [ ... ]
 
+> @@ -1879,7 +1880,7 @@ static void kvaser_pciefd_remove(struct pci_dev *pd=
+ev)
+>  		struct kvaser_pciefd_can *can =3D pcie->can[i];
+> =20
+>  		unregister_candev(can->can.dev);
+> -		timer_delete(&can->bec_poll_timer);
+> +		timer_shutdown_sync(&can->bec_poll_timer);
+
 [Severity: High]
-This isn't a bug introduced by this patch, but already existed in the
-codebase. Does can_skb_init_valid() in this same file modify shared memory
-without unsharing it first?
+This is a pre-existing issue, but since you are fixing the timer teardown h=
+ere,
+does the timer also need to be synced during ndo_stop?
 
-drivers/net/can/dev/skb.c:can_skb_init_valid() {
-        ...
-        /* set CANFD_FDF flag for CAN FD frames */
-        if (can_is_canfd_skb(skb)) {
-            struct canfd_frame *cfd;
+In kvaser_pciefd_stop(), the code uses the non-sync timer_delete:
 
-            cfd =3D (struct canfd_frame *)skb->data;
-            cfd->flags |=3D CANFD_FDF;
-        }
-        ...
+	iowrite32(0, can->reg_base + KVASER_PCIEFD_KCAN_IEN_REG);
+	timer_delete(&can->bec_poll_timer);
+	can->can.state =3D CAN_STATE_STOPPED;
+
+Because this does not wait for the callback to finish, couldn't a pending s=
+tatus
+request be issued to the hardware right as the interface is brought down?
+
+Furthermore, if a status response arrives via the shared PCIe interrupt aft=
+er
+the interface is stopped, kvaser_pciefd_handle_status_packet() and
+kvaser_pciefd_handle_status_resp() do not seem to check if the device was
+intentionally stopped. They overwrite the state to an active state and
+unconditionally re-arm the timer:
+
+drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c:kvaser_pciefd_handle_sta=
+tus_packet() {
+    ...
+	if (can->can.state !=3D CAN_STATE_BUS_OFF &&
+	    can->can.state !=3D CAN_STATE_ERROR_ACTIVE) {
+		mod_timer(&can->bec_poll_timer, KVASER_PCIEFD_BEC_POLL_FREQ);
+	}
+    ...
 }
 
-If a user with CAP_NET_RAW injects a CAN FD frame via an AF_PACKET socket,
-the packet goes to dev_queue_xmit() where it may be cloned for packet
-sniffers like tcpdump.
+Could this lead to an infinite polling loop leak and potential spurious
+netif_rx calls on a stopped interface?
 
-When the original SKB reaches the driver's transmit function and calls
-can_dev_dropped_skb() -> can_dropped_invalid_skb() -> can_skb_init_valid(),
-it modifies the payload (cfd->flags |=3D CANFD_FDF) without verifying
-skb_cloned(skb) or calling skb_unshare().
+[Severity: Critical]
+This is also a pre-existing issue, but I noticed a potential memory ordering
+issue in kvaser_pciefd_read_packet().
 
-Can this cause data corruption for concurrent observers receiving the clone=
-s?
+When reading from the coherent DMA buffer:
+
+drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c:kvaser_pciefd_read_packe=
+t() {
+    ...
+	size =3D le32_to_cpu(buffer[pos++]);
+	if (!size) {
+		*start_pos =3D 0;
+		return 0;
+	}
+
+	p->header[0] =3D le32_to_cpu(buffer[pos++]);
+    ...
+}
+
+Is a dma_rmb() needed before reading the packet contents?=20
+
+Without a read memory barrier, weakly ordered CPU architectures might
+speculatively read the header and payload before the size read completes.
+If the hardware is actively updating the buffer, couldn't the CPU see the
+new size but process stale header or payload data that was speculatively
+prefetched?
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260826121036.2706=
-424-1-mkl@pengutronix.de?part=3D10
+424-1-mkl@pengutronix.de?part=3D11
