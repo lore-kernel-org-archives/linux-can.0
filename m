@@ -1,150 +1,146 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.24])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7135240F756
-	for <linux-can@vger.kernel.org>; Thu, 27 Aug 2026 17:02:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.24
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787850133; cv=pass; b=SvWjKMJZ7SCW/WOQyyolPBqFlN96G6hnj43ib1RlWiLEbU961IsPAvkUdOfN5DYFjbBX6PhCwziZN+pRIR2hazkUZKjQRit3v4hu6+a4wVvKo3MWws4dMstfC4RJX34Aq4M6x/XiP857GfXhqgtdZN6acR+CSm1vrgzCFR16jm8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787850133; c=relaxed/simple;
-	bh=0rsCnwel9LvZsUcpCHlRHr/3V7TF2eV7fdDbCyrMo/c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Eo3Jf/rT8DSZqH0KwqcxbrxFZ3EX/HvZXwnhceUk9XrFK9GL0b5KZT1XOU6h0F9auB8dNan7aKIqNtalqhvj4J0SUdnePHfRuhRR6xSpK4nNiNGnZ77vHbOfMg2DBopZpdrrlvNS1PcSKF6qH6UCIB/2OYBom4U2VbZ22hWMAAA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=sCMpVgU3; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=cyruwPtr; arc=pass smtp.client-ip=85.215.255.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09473F1048;
+	Thu, 27 Aug 2026 19:44:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1787859850; cv=none; b=Q/sfvcHIUzmarPiolE/GHqXr1ut/vK0Y1i/7+TUpN0LTJ4uHtPqWNkcqukql/JfYnZCDDbV7Yl8mc3p7Mj8cyz19d4aZWbs98Ru889k5tH/QNA5B+2N9sGqnoqgZN/01a2uDvu6cDGGxRT5AWJwSadXnumSFrZNgMKGbgdp0dgA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1787859850; c=relaxed/simple;
+	bh=n32Qlo4L45srtPya355Y6fLhtB+KRyjW284H9D4TYC4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=JFDVWbNNupSNH1bt88T++J5ZSj9dUbF0JxOGEZall53dukwxnIjLHEwX1OHetsq7TwuXWYTB+x8mQ2eMfueSYlWYM0yltyi/Ruu5LEPw31m5ePUR4wDm+Mexp9Hf+obFGBso3sTbUERrEe+BbADyaT2UWN2xDEmPhb5pr2JfsEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fWEOKx18; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="sCMpVgU3";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="cyruwPtr"
-ARC-Seal: i=1; a=rsa-sha256; t=1787850112; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=XHWpSsyhHCJR7wmYNCnaR8uTYKLYXs5z0RBjFid5DpawJEuPfS1P6Ca/DBKY3SSAtA
-    KW/QQAf9UOT5ECVYTTkVgReXevrgT6nReH/qzWWJvUbsAZHADiZkHmlp1TdonH14G1yZ
-    o/Bv+lhu9EWxw0TgJucRJ7URVQmPwbzbDumfAjg+uUiBn1CBiCgPHCq4dCLrPGXYgzkT
-    SDltOARdBKD8+8Rz+bTBHpMmYP5ajezD32AIixkaWC4yAT9Zu15PkqV47WW5JSxqtCFi
-    uAMkNdUxezB3w0jpF4z30Sjk3Pzk8xC1BHNy3a7zv9Os5Y75F/ChU3jtcN1m8G5AgNPv
-    0UUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1787850112;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=BlR77JsNVZOZaqMIIuyfx4w9MoUhgUy42ggcI/AkgR0=;
-    b=HvKw+UrrCG4kGv2EG9hQPi9BUUpnCluvrFayREUjTYF3WM3yAIUNN901NARP5HWoxP
-    rlvebQrHGoebBj+9yDjy7wRYSMdXQsW14ljgSAOn8I1e2smFsfc+uRbdf8nZOkAWR9VR
-    NYo1B0Hi4FwAyrJmwVu+80HiaLTWurZWAWbxfdE+H4Zoxc3s1Okh5H96+AKNNsz4PEIi
-    YhJf3hOwdlOmx9VlGWKiIbIKjyuV8L+KDjYYVtnnHbugQqnAMc+gq5Rv1Z8Ybmzi8++w
-    ixurXck5VckxUgHlAdcDEbFZQ3YN85QabZ1M4JnE+ancweg1pEgF4LnTgvyC+tHEJCDR
-    QDIA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1787850112;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=BlR77JsNVZOZaqMIIuyfx4w9MoUhgUy42ggcI/AkgR0=;
-    b=sCMpVgU3Ulhi1afGB3lLMfeYV5eaBeh8k2wn4lOgAkRf0Do82ciXyKHnw33eoqKgPj
-    +OwdlzpkFB2fQUeSvopbr6mz/snG3td/tfU14Vnb71oFc3X4GFvjfcHga3vlhZtyzhlg
-    3yAfmYLT8zpYh5PtrMPxonSZO8k/FrPvcKTB1SdNyTwVM6da0FxVq/AyFPd/5FvUMTEo
-    W+HcjEjDVqlfpi9lgDWZnz/bW6GP4a/PjkmFHlX/ZXsYtY4cdWbXhgttwF894ThkpBhe
-    nA418KzTi3vZFqopNWhL1+xIhEJghI2P8U3dQtBIbHAmUr19+0jni5rETXrsHLCd+txl
-    HUeg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1787850112;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=BlR77JsNVZOZaqMIIuyfx4w9MoUhgUy42ggcI/AkgR0=;
-    b=cyruwPtr1xfq+XqZSVYKWlABN8z9yeQ8yXdmwYYcu1NZDL+JOKyR2jZY1jD3CZlVsd
-    SfnY/L7sucTamFMSqiDA==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.2 AUTH)
-    with ESMTPSA id K171b727RH1q2IS
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Thu, 27 Aug 2026 19:01:52 +0200 (CEST)
-Message-ID: <54a3cc01-abcf-4a33-b932-39bb1f68cdd5@hartkopp.net>
-Date: Thu, 27 Aug 2026 19:01:46 +0200
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fWEOKx18"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4877D1F000E9;
+	Thu, 27 Aug 2026 19:44:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1787859848;
+	bh=tDItCvpQjvDZXrWuwzycSQXkJDT+b5MMWRd5CiXGxCo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=fWEOKx18u1F111jB5OHX8dVWV989vbt13UOSUxzbybaGLvAKeBGmeyNNR2cuS9ZV3
+	 UG+DaNU7+PHEbkQr0tbxsB1gEkKbPamOJbrXMesziVqMKfkboYfUtEGC4aMzNAkkWL
+	 GhzUwBsAfEMtCompaeQgR56xJ0tIE3mO9dfG2NZRFX/aVnf+zlBSwdDRVbF9nmc2NY
+	 ts1UGq/8qr6gWJXGVNF3u9Dr/ZUJ0jWLQbJ5qUUl4QKDs5S7xQ3acKM6pdQzW8OC3A
+	 5Jc2On6oxAzGevMWSQATfAiRhh6ZBDa0Au7I3wbwDbLl47Qt9DYhHCNKpcd8caU5EU
+	 RRmtDXOk4426g==
+From: Jakub Kicinski <kuba@kernel.org>
+To: mkl@pengutronix.de
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	netdev@vger.kernel.org,
+	davem@davemloft.net,
+	linux-can@vger.kernel.org,
+	kernel@pengutronix.de,
+	blbllhy@gmail.com,
+	AutonomousCodeSecurity@microsoft.com,
+	xmei5@asu.edu
+Subject: Re: [PATCH net 03/14] can: bittiming: fix divide-by-zero in can_calc_bittiming()
+Date: Thu, 27 Aug 2026 12:44:07 -0700
+Message-ID: <20260827194407.4023691-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260826121036.2706424-4-mkl@pengutronix.de>
+References: <20260826121036.2706424-4-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 10/14] can: dev: can_put_echo_skb(): free skb on
- invalid echo index
-To: sashiko-reviews@lists.linux.dev, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>,
- Vincent Mailhol <mailhol@kernel.org>
-References: <20260826121036.2706424-1-mkl@pengutronix.de>
- <20260826121036.2706424-11-mkl@pengutronix.de>
- <20260827121052.975831F00A3D@smtp.kernel.org>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20260827121052.975831F00A3D@smtp.kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+This is an AI-generated review of your patch. The human sending this
+email has considered the AI review valid, or at least plausible.
+---
+can: bittiming: fix divide-by-zero in can_calc_bittiming()
 
+can_calc_bittiming() computed the prescaler as priv->clock.freq /
+(tsegall * bt->bitrate), where the product is a 32 bit multiplication that
+wraps to zero for large userspace supplied bitrates. The fix computes the
+product with mul_u32_u32() and divides with div64_u64().
 
-On 27.08.26 14:10, sashiko-bot@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 1 potential issue(s) to consider:
-> 
-> Pre-existing issues:
-> - [High] Modifying SKB payload in can_skb_init_valid() without unsharing causes data corruption for concurrent observers.
-> --
-> 
-> commit 6a48fe2d96b6f1ca706da34b2f7bdd872d06941f
-> Author: Cunhao Lu <1579567540@qq.com>
-> can: dev: can_put_echo_skb(): free skb on invalid echo index
-> 
-> This patch fixes a potential leak in can_put_echo_skb() when the echo index
-> is out of bounds. It ensures the socket buffer is freed before returning
-> -EINVAL so that all error paths correctly consume the SKB.
-> 
-> Link: https://patch.msgid.link/tencent_683AA16E643DE00211CD2FB62991264DC605@qq.com
-> 
->> diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
->> index c7be21ed70ddf..faafb1033d423 100644
->> --- a/drivers/net/can/dev/skb.c
->> +++ b/drivers/net/can/dev/skb.c
-> 
-> [ ... ]
-> 
-> [Severity: High]
-> This isn't a bug introduced by this patch, but already existed in the
-> codebase. Does can_skb_init_valid() in this same file modify shared memory
-> without unsharing it first?
-> 
-> drivers/net/can/dev/skb.c:can_skb_init_valid() {
->          ...
->          /* set CANFD_FDF flag for CAN FD frames */
->          if (can_is_canfd_skb(skb)) {
->              struct canfd_frame *cfd;
-> 
->              cfd = (struct canfd_frame *)skb->data;
->              cfd->flags |= CANFD_FDF;
->          }
->          ...
-> }
-> 
-> If a user with CAP_NET_RAW injects a CAN FD frame via an AF_PACKET socket,
-> the packet goes to dev_queue_xmit() where it may be cloned for packet
-> sniffers like tcpdump.
-> 
-> When the original SKB reaches the driver's transmit function and calls
-> can_dev_dropped_skb() -> can_dropped_invalid_skb() -> can_skb_init_valid(),
-> it modifies the payload (cfd->flags |= CANFD_FDF) without verifying
-> skb_cloned(skb) or calling skb_unshare().
-> 
-> Can this cause data corruption for concurrent observers receiving the clones?
-> 
+Link: https://patch.msgid.link/20260803091426.29050-2-ssureshmsd7@gmail.com
 
-No.
+> diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/calc_bittiming.c
+> index 42498e9d3f38d..4809f5e0c96e9 100644
+> --- a/drivers/net/can/dev/calc_bittiming.c
+> +++ b/drivers/net/can/dev/calc_bittiming.c
+> @@ -119,8 +119,12 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
+>  	     tseg >= (btc->tseg1_min + btc->tseg2_min) * 2; tseg--) {
+>  		tsegall = CAN_SYNC_SEG + tseg / 2;
+>  
+> -		/* Compute all possible tseg choices (tseg=tseg1+tseg2) */
+> -		brp = priv->clock.freq / (tsegall * bt->bitrate) + tseg % 2;
+> +		/* Compute all possible tseg choices (tseg=tseg1+tseg2).
+> +		 * A 32 bit tsegall * bt->bitrate can wrap to zero for large
+> +		 * userspace bitrates, so compute the product in 64 bit.
+> +		 */
+> +		brp = div64_u64(priv->clock.freq,
+> +				mul_u32_u32(tsegall, bt->bitrate)) + tseg % 2;
+>  
+>  		/* choose brp step which is possible in system */
+>  		brp = (brp / btc->brp_inc) * btc->brp_inc;
 
-https://lore.kernel.org/linux-can/ac22b59e-129b-4883-b9c6-da5e69e4078d@hartkopp.net/
+[Severity: High]
 
+This is a pre-existing issue and not something introduced by this patch, but
+can the same input class the commit message describes still end in a divide
+error two statements later?
 
+With the 64 bit product, a bitrate large enough that clock.freq is smaller
+than tsegall * bt->bitrate now yields brp == 0 for even tseg (tseg % 2 == 0)
+instead of faulting in the patched expression. The only thing that stops
+brp == 0 from reaching the next division is the range guard:
+
+drivers/net/can/dev/calc_bittiming.c:can_calc_bittiming() {
+	...
+	brp = (brp / btc->brp_inc) * btc->brp_inc;
+	if (brp < btc->brp_min || brp > btc->brp_max)
+		continue;
+
+	bitrate = priv->clock.freq / (brp * tsegall);
+	...
+}
+
+so it relies on btc->brp_min being at least 1, and the first of those two
+statements relies on btc->brp_inc being non-zero.
+
+Are those two fields validated anywhere in the core? The only core
+validator of struct can_bittiming_const, can_bittiming_const_valid() in
+drivers/net/can/dev/dev.c called from register_candev(), only rejects a
+zero sjw_max:
+
+drivers/net/can/dev/dev.c:can_bittiming_const_valid() {
+	if (!btc)
+		return true;
+
+	if (!btc->sjw_max)
+		return false;
+
+	return true;
+}
+
+All statically initialised in-tree constants use brp_min = 1 and
+brp_inc >= 1, but gs_make_candev() in drivers/net/can/usb/gs_usb.c fills
+the struct from a device reply without any range check:
+
+	dev->bt_const.brp_min = le32_to_cpu(bt_const.brp_min);
+	dev->bt_const.brp_max = le32_to_cpu(bt_const.brp_max);
+	dev->bt_const.brp_inc = le32_to_cpu(bt_const.brp_inc);
+
+and the identical copy of bt_const_extended.dbrp_* into
+dev->data_bt_const for the CAN FD data const. Both are then handed to
+can_calc_bittiming() through can_changelink() -> can_get_bittiming(),
+which is entered when bt->bitrate is set and bt->tq is 0.
+
+For a device reporting brp_inc == 0, does brp / btc->brp_inc fault on the
+first loop iteration for any bitrate? And for a device reporting
+brp_min == 0 with a small fclk_can, does the freq / (brp * tsegall)
+division fault with brp == 0 for the same wrapping-class bitrate this
+patch targets?
+
+Since can_changelink() runs with rtnl_lock held, would the resulting oops
+leave rtnl_lock held permanently? Would it make sense to extend
+can_bittiming_const_valid() to also reject brp_inc == 0 and brp_min == 0,
+or to add a brp check before those divisions?
