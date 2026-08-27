@@ -1,66 +1,82 @@
-Received: from forward500d.mail.yandex.net (forward500d.mail.yandex.net [178.154.239.208])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A1E21B4223
-	for <linux-can@vger.kernel.org>; Thu, 27 Aug 2026 06:05:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 574E72931FF
+	for <linux-can@vger.kernel.org>; Thu, 27 Aug 2026 06:22:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787810759; cv=none; b=ttvMAg5csq5/7MdvRkFF+PMTVVRl2bjCszT72oEG8PeejM95OIfPlXP7Jvtrp3ZluxaVrXeNlGvTpXmqNd0B7fitaM2tpuVRvdfvniBI7g8ZgZam1IZypjpTOnGpbrHbJR3Ur6RxMajJ91tPJhotyrBaoOi80v0a9ythWjtt3mI=
+	t=1787811735; cv=none; b=Nf50yMYY0M/SQjMLn7uQl5FJ6nMfyQ4J00K+5DiRZODuyBJEDIcXZD7tx2Dt74RlZFURTaBOzlwaGUEdctTniAiWO1hojYkdxtWMKEkqscrUtDr0zsSn+MFWbX0Qouhinawlt9fn5OS8Gstg8NtcvB2adWSA8eNFp2tqSp1a55s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787810759; c=relaxed/simple;
-	bh=wz0QWMRQKg4OnRErALbmyJggv7TZGILU3iOTa874PG4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=S+dlF7Ma+vAQjaBRSBLcX/ZOcr3O9OqZJvSd7Lqn8X6K/8FDO7PpsOvmkHeXPlDzfgGnnM/oBwiivf/BulqvqpJkZp06H9d7eeVY53B/NOEvJzIjcsxVF9rLviIArdlsz6BiBcnBG/VhfpuZC4pb1FCDtE3wkTg3nzk40SXE39M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=o/HY8OQW; arc=none smtp.client-ip=178.154.239.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
+	s=arc-20240116; t=1787811735; c=relaxed/simple;
+	bh=stUXlIB+qK2+o/GUxL38c9X1QQHiTeU/9jvWS9abksI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bxJWQ+tFuAc1RoAbuVI8QKMqI245Q+X49bi+iGddx83mJLVBElbTjysgiwEBe82JUBFBUBxYyZlkumswgRpZgY84Fy+FGG6btfd5TvADTu/uLw0sxZ3SjWgWWpOyk3yRVA7N34W2pdSq4pAtTLCHkLTJnXYzASoEV0bTv3dWnA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=og6b4WCa; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=arD8yrgb; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="o/HY8OQW"
-Received: from mail-nwsmtp-smtp-production-main-58.iva.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-58.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:8b0f:0:640:dbc5:0])
-	by forward500d.mail.yandex.net (postfix) with ESMTPS id EF16C82058;
-	Thu, 27 Aug 2026 08:58:47 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-58.iva.yp-c.yandex.net (smtp) with ESMTPSA id iwWcbN5dBOs0-RnkgyIP2;
-	Thu, 27 Aug 2026 08:58:47 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1787810327; bh=wz0QWMRQKg4OnRErALbmyJggv7TZGILU3iOTa874PG4=;
-	h=From:In-Reply-To:Cc:Date:References:To:Subject:Message-ID;
-	b=o/HY8OQWL/y8iTv0zE1oq0mZ26p9bYnU9qwCTvp2w67J0ulBeDiuXvxoj4FIJRqFB
-	 8+p9cOOAeleHZLB7QXZKAuePvtoIrZaIdDEsd5q9t17fHedJli2DAdiOv13KkpuLeX
-	 HJRlF8tlsp3wc51PqGfW8jbyaCTc9OQfvWyaUtVU=
-Authentication-Results: mail-nwsmtp-smtp-production-main-58.iva.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-Message-ID: <e6a2025c-6c98-49c7-99da-7219dedc185f@yandex.ru>
-Date: Thu, 27 Aug 2026 08:58:44 +0300
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="og6b4WCa";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="arD8yrgb"
+Date: Thu, 27 Aug 2026 08:22:08 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1787811729;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cXvhBLYEW7G+7dbbvanaCDrT0KOvkBWDV0pOyfqPV4A=;
+	b=og6b4WCazxG7vYcogLuulLMmq/2ZBgBqS1930HWHxlQDU7CnRzHP3TMXEXdopBAIQf/7iJ
+	QdIqCWdiXs4YlTxp2FA0DvopTMCxHxg5y+PKOS/Mgmx+1ldglJTyg1ryzac2SzEgFFH4vS
+	CdVCjPEbYiDg/5jOvMfMXeeoTPqNrLAnOWfOSNqodL1R/y6IoMmjLIJyAhnVnKZ5TPWUe9
+	uaApFrY+P/MVA95D54kuXzzMMS+XWmprYb5dxac6NZFyqcDQIy7hAPLEEasw0d6Tzj2mhU
+	0hrOv5lX2kwIJNpwNCRa20qq+XjtL0bmM/sRmRNPoOdXGsUJHKTVaSvTq3PbUw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1787811729;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cXvhBLYEW7G+7dbbvanaCDrT0KOvkBWDV0pOyfqPV4A=;
+	b=arD8yrgbvXIWJIwTPc6m9eE8eEVLYRrTlU7HpT/BnGzknzCHFgC6dZnV2QcB4fsz+kngoQ
+	frkYVoMREwrG5wCA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Subject: Re: [PATCH] can: convert unreliable ARPHRD_CAN type checks to robust
+ can_get_ml_priv()
+Message-ID: <20260827062208.HLewnUEH@linutronix.de>
+References: <20260819160822.8256-1-socketcan@hartkopp.net>
+ <c3fc21b4-db28-4323-b182-eeeb646e64da@hartkopp.net>
+ <20260826-loutish-cinnamon-macaw-e340a9-mkl@pengutronix.de>
+ <574090ae-dbe8-4b06-bb6e-7e0cdadeace9@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] can: j1939: cancel all pending ECUs on device stop
-To: Oleksij Rempel <o.rempel@pengutronix.de>, sashiko-reviews@lists.linux.dev
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
- Vincent Mailhol <mailhol@kernel.org>,
- Oliver Hartkopp <socketcan@hartkopp.net>
-References: <20260824155406.246942-1-dmantipov@yandex.ru>
- <20260824160844.4FBFF1F000E9@smtp.kernel.org>
- <ao5y3Mp5yotE1zOY@pengutronix.de>
-Content-Language: en-US
-From: Dmitry Antipov <dmantipov@yandex.ru>
-In-Reply-To: <ao5y3Mp5yotE1zOY@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <574090ae-dbe8-4b06-bb6e-7e0cdadeace9@hartkopp.net>
 
-On 8/26/26 8:00 AM, Oleksij Rempel wrote:
+On 2026-08-26 21:34:19 [+0200], Oliver Hartkopp wrote:
+> Hi Sebastian,
+Hi,
 
->> - [High] AB-BA deadlock between `priv->lock` and `hrtimer_cancel()` when stopping the device.
+> On 26.08.26 13:43, Marc Kleine-Budde wrote:
+> > On 25.08.2026 16:55:39, Oliver Hartkopp wrote:
+> 
+> > 
+> > "net" or "net-next"?
+> > 
+> > > [can-next v2] can: proc: remove pointers from CAN specific proc output
+> > > https://lore.kernel.org/linux-can/20260815103400.117175-1-socketcan@hartkopp.net/
+> > 
+> what's your plan with your other %ps and pointer hiding changes?
+> 
+> Are you going for 7.3 or -next ?
 
-Will likely resend with an extra quirk, see https://syzkaller.appspot.com/text?tag=Patch&x=14fe5625580000.
+-next, https://lore.kernel.org/all/20260821152614.2202196-1-bigeasy@linutronix.de/
 
->> - [High] Unconditional cancellation of all ECUs on any socket closure breaks address claiming for the entire CAN interface.
+> Best regards,
+> Oliver
 
-Sure it breaks address claiming. But, and this is the question for real
-(not like me) CAN experts: if the device is forced to stop, what else we can do?
-
-Dmitry
+Sebastian
