@@ -1,219 +1,150 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 543B835CBC3
-	for <linux-can@vger.kernel.org>; Thu, 27 Aug 2026 12:57:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787835453; cv=none; b=BaKR2qBecnVEwFS7ROFyxKyvmlV+roOrBO6MBWMo87H2ATgJaPMliHzGyAQC0VN/TnA1MHhRndO5QOShC2dse59SVOIO20TugAu2dqjh3X1ijdW75X1M4IkhC5E0I7ssicLfPUgEoItxOk/6PSMlXwjniRiKt4192U6/7FaJjbg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787835453; c=relaxed/simple;
-	bh=EolrZ81pOqq+ai7e3dZqT87ge9Euuwha9tOivwAwTBc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eUWO8pTCG5UBIIX5+dVIZmVRa5XnI+TS9FsUKlUDBNe/fAHflf2YROnsfpg8XUgdvMxVpowr5n9jKckQnPwEWiY+AchU1iuNiS4O32UzqD3m8wKHBylNevqDZlF7l/7NSR6Ujgdx4S/ik11eMKseEjxg1iekhQO1O7o4wr7cCXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id CF20C200F45;
-	Thu, 27 Aug 2026 14:57:06 +0200 (CEST)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1wzZfG-003bey-2N;
-	Thu, 27 Aug 2026 14:57:06 +0200
-Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 815F358D8BC;
-	Thu, 27 Aug 2026 12:57:06 +0000 (UTC)
-Date: Thu, 27 Aug 2026 14:57:06 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: sashiko-bot@kernel.org, Cen Zhang <blbllhy@gmail.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
-	Vincent Mailhol <mailhol@kernel.org>, Oleksij Rempel <o.rempel@pengutronix.de>, 
-	linux-can@vger.kernel.org
-Subject: Re: [PATCH net 12/14] can: kvaser_usb: validate command format
- before parsing in hydra receive path
-Message-ID: <20260827-berserk-dynamic-bustard-961b90-mkl@pengutronix.de>
-References: <20260826121036.2706424-1-mkl@pengutronix.de>
- <20260826121036.2706424-13-mkl@pengutronix.de>
- <20260827121055.E1EF51F000E9@smtp.kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7135240F756
+	for <linux-can@vger.kernel.org>; Thu, 27 Aug 2026 17:02:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.24
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1787850133; cv=pass; b=SvWjKMJZ7SCW/WOQyyolPBqFlN96G6hnj43ib1RlWiLEbU961IsPAvkUdOfN5DYFjbBX6PhCwziZN+pRIR2hazkUZKjQRit3v4hu6+a4wVvKo3MWws4dMstfC4RJX34Aq4M6x/XiP857GfXhqgtdZN6acR+CSm1vrgzCFR16jm8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1787850133; c=relaxed/simple;
+	bh=0rsCnwel9LvZsUcpCHlRHr/3V7TF2eV7fdDbCyrMo/c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Eo3Jf/rT8DSZqH0KwqcxbrxFZ3EX/HvZXwnhceUk9XrFK9GL0b5KZT1XOU6h0F9auB8dNan7aKIqNtalqhvj4J0SUdnePHfRuhRR6xSpK4nNiNGnZ77vHbOfMg2DBopZpdrrlvNS1PcSKF6qH6UCIB/2OYBom4U2VbZ22hWMAAA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=sCMpVgU3; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=cyruwPtr; arc=pass smtp.client-ip=85.215.255.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="sCMpVgU3";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="cyruwPtr"
+ARC-Seal: i=1; a=rsa-sha256; t=1787850112; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=XHWpSsyhHCJR7wmYNCnaR8uTYKLYXs5z0RBjFid5DpawJEuPfS1P6Ca/DBKY3SSAtA
+    KW/QQAf9UOT5ECVYTTkVgReXevrgT6nReH/qzWWJvUbsAZHADiZkHmlp1TdonH14G1yZ
+    o/Bv+lhu9EWxw0TgJucRJ7URVQmPwbzbDumfAjg+uUiBn1CBiCgPHCq4dCLrPGXYgzkT
+    SDltOARdBKD8+8Rz+bTBHpMmYP5ajezD32AIixkaWC4yAT9Zu15PkqV47WW5JSxqtCFi
+    uAMkNdUxezB3w0jpF4z30Sjk3Pzk8xC1BHNy3a7zv9Os5Y75F/ChU3jtcN1m8G5AgNPv
+    0UUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1787850112;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=BlR77JsNVZOZaqMIIuyfx4w9MoUhgUy42ggcI/AkgR0=;
+    b=HvKw+UrrCG4kGv2EG9hQPi9BUUpnCluvrFayREUjTYF3WM3yAIUNN901NARP5HWoxP
+    rlvebQrHGoebBj+9yDjy7wRYSMdXQsW14ljgSAOn8I1e2smFsfc+uRbdf8nZOkAWR9VR
+    NYo1B0Hi4FwAyrJmwVu+80HiaLTWurZWAWbxfdE+H4Zoxc3s1Okh5H96+AKNNsz4PEIi
+    YhJf3hOwdlOmx9VlGWKiIbIKjyuV8L+KDjYYVtnnHbugQqnAMc+gq5Rv1Z8Ybmzi8++w
+    ixurXck5VckxUgHlAdcDEbFZQ3YN85QabZ1M4JnE+ancweg1pEgF4LnTgvyC+tHEJCDR
+    QDIA==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1787850112;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=BlR77JsNVZOZaqMIIuyfx4w9MoUhgUy42ggcI/AkgR0=;
+    b=sCMpVgU3Ulhi1afGB3lLMfeYV5eaBeh8k2wn4lOgAkRf0Do82ciXyKHnw33eoqKgPj
+    +OwdlzpkFB2fQUeSvopbr6mz/snG3td/tfU14Vnb71oFc3X4GFvjfcHga3vlhZtyzhlg
+    3yAfmYLT8zpYh5PtrMPxonSZO8k/FrPvcKTB1SdNyTwVM6da0FxVq/AyFPd/5FvUMTEo
+    W+HcjEjDVqlfpi9lgDWZnz/bW6GP4a/PjkmFHlX/ZXsYtY4cdWbXhgttwF894ThkpBhe
+    nA418KzTi3vZFqopNWhL1+xIhEJghI2P8U3dQtBIbHAmUr19+0jni5rETXrsHLCd+txl
+    HUeg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1787850112;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=BlR77JsNVZOZaqMIIuyfx4w9MoUhgUy42ggcI/AkgR0=;
+    b=cyruwPtr1xfq+XqZSVYKWlABN8z9yeQ8yXdmwYYcu1NZDL+JOKyR2jZY1jD3CZlVsd
+    SfnY/L7sucTamFMSqiDA==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::989]
+    by smtp.strato.de (RZmta 55.6.2 AUTH)
+    with ESMTPSA id K171b727RH1q2IS
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Thu, 27 Aug 2026 19:01:52 +0200 (CEST)
+Message-ID: <54a3cc01-abcf-4a33-b932-39bb1f68cdd5@hartkopp.net>
+Date: Thu, 27 Aug 2026 19:01:46 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="47tyunpu232hveq3"
-Content-Disposition: inline
-In-Reply-To: <20260827121055.E1EF51F000E9@smtp.kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net 10/14] can: dev: can_put_echo_skb(): free skb on
+ invalid echo index
+To: sashiko-reviews@lists.linux.dev, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>,
+ Vincent Mailhol <mailhol@kernel.org>
+References: <20260826121036.2706424-1-mkl@pengutronix.de>
+ <20260826121036.2706424-11-mkl@pengutronix.de>
+ <20260827121052.975831F00A3D@smtp.kernel.org>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <20260827121052.975831F00A3D@smtp.kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
---47tyunpu232hveq3
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH net 12/14] can: kvaser_usb: validate command format
- before parsing in hydra receive path
-MIME-Version: 1.0
 
-Hello Cen Zhang,
-
-On 27.08.2026 12:10:55, sashiko-bot@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 2 potential issu=
-e(s) to consider:
->
-> New issues:
-> - [High] The patch prevents a specific out-of-bounds read of `cmd->len` b=
-y verifying at least 6 bytes are available, but it fails to enforce a safe =
-minimum structural length for extended commands. A malicious USB device can=
- provide a trivially small `cmd->len` (e.g., 8), bypassing the buffer bound=
-ary checks in the parser and leading to severe slab-out-of-bounds reads in =
-downstream command handlers.
-
-can you comment on this one?
-
-regards,
-Marc
-
->
+On 27.08.26 14:10, sashiko-bot@kernel.org wrote:
+> Thank you for your contribution! Sashiko AI review found 1 potential issue(s) to consider:
+> 
 > Pre-existing issues:
-> - [Critical] Missing validation of the `echo_index` sentinel value allows=
- a malicious USB device to trigger a slab-out-of-bounds read and an arbitra=
-ry kernel pointer write, leading to potential privilege escalation.
+> - [High] Modifying SKB payload in can_skb_init_valid() without unsharing causes data corruption for concurrent observers.
 > --
->
-> commit 36da6d5bcb0fd8b842d165066e47c1ff8b40c308
-> Author: Cen Zhang (Microsoft) <blbllhy@gmail.com>
->
-> can: kvaser_usb: validate command format before parsing in hydra receive =
-path
->
-> This commit adds bounds checking for command formats in the kvaser_usb hy=
-dra
-> receive path. It aims to prevent a slab-out-of-bounds read caused by mali=
-cious
-> USB devices sending truncated headers or zero-length commands.
->
-> Link: https://patch.msgid.link/20260826013037.6933-1-blbllhy@gmail.com
->
-> > diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/driver=
-s/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-> > index efbb7bed34c9d..efe7b3ef489bf 100644
-> > --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-> > +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-> > @@ -536,6 +536,24 @@ static size_t kvaser_usb_hydra_cmd_size(struct kva=
-ser_cmd *cmd)
-> >  	return ret;
-> >  }
-> >
-> > +/* -EAGAIN means incomplete; -EINVAL rejects zero to ensure progress. =
-*/
-> > +static int kvaser_usb_hydra_cmd_size_rx(struct kvaser_cmd *cmd,
-> > +					size_t remaining, size_t *cmd_len)
-> > +{
-> > +	if (remaining < sizeof(cmd->header.cmd_no))
-> > +		return -EAGAIN;
-> > +
-> > +	if (cmd->header.cmd_no =3D=3D CMD_EXTENDED &&
-> > +	    remaining < offsetof(struct kvaser_cmd_ext, cmd_no_ext))
-> > +		return -EAGAIN;
-> > +
-> > +	*cmd_len =3D kvaser_usb_hydra_cmd_size(cmd);
-> > +	if (!*cmd_len)
-> > +		return -EINVAL;
->
-> [Severity: High]
-> Does this length validation allow maliciously small extended commands?
->
-> While this prevents cmd_len from being 0, it allows trivially small values
-> (e.g., 8 bytes). If a malicious device places an 8-byte extended command =
-at
-> the very end of a 3072-byte USB bulk transfer, kvaser_usb_hydra_cmd_size_=
-rx()
-> will return 0 and set cmd_len to 8. Because pos + 8 =3D=3D len, the overa=
-rching
-> boundary check in the parser will pass, handing the 8-byte command to
-> kvaser_usb_hydra_handle_cmd().
->
-> Downstream handlers like kvaser_usb_hydra_rx_msg_ext() then blindly access
-> payload fields extending far beyond 8 bytes (such as cmd->rx_can.kcan_hea=
-der
-> at offset 20). Does this code read out-of-bounds of the 3072-byte heap
-> allocation?
->
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  static struct kvaser_usb_net_priv *
-> >  kvaser_usb_hydra_net_priv_from_cmd(const struct kvaser_usb *dev,
-> >  				   const struct kvaser_cmd *cmd)
->
+> 
+> commit 6a48fe2d96b6f1ca706da34b2f7bdd872d06941f
+> Author: Cunhao Lu <1579567540@qq.com>
+> can: dev: can_put_echo_skb(): free skb on invalid echo index
+> 
+> This patch fixes a potential leak in can_put_echo_skb() when the echo index
+> is out of bounds. It ensures the socket buffer is freed before returning
+> -EINVAL so that all error paths correctly consume the SKB.
+> 
+> Link: https://patch.msgid.link/tencent_683AA16E643DE00211CD2FB62991264DC605@qq.com
+> 
+>> diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
+>> index c7be21ed70ddf..faafb1033d423 100644
+>> --- a/drivers/net/can/dev/skb.c
+>> +++ b/drivers/net/can/dev/skb.c
+> 
 > [ ... ]
->
-> [Severity: Critical]
-> This isn't a bug introduced by this patch, but while reviewing this file I
-> noticed a pre-existing issue where an unvalidated echo_index can lead to
-> an out-of-bounds read and arbitrary memory corruption.
->
-> In kvaser_usb_hydra_tx_acknowledge():
->
-> 	u16 transid =3D kvaser_usb_hydra_get_cmd_transid(cmd);
-> 	...
-> 	context =3D &priv->tx_contexts[transid % dev->max_tx_urbs];
-> 	...
-> 	skb =3D priv->can.echo_skb[context->echo_index];
-> 	if (skb)
-> 		skb_hwtstamps(skb)->hwtstamp =3D kvaser_usb_hydra_ktime_from_cmd(dev->c=
-fg, cmd);
->
-> When a TX context is free (or newly initialized), context->echo_index is
-> set to the sentinel value dev->max_tx_urbs:
->
-> 	context->echo_index =3D dev->max_tx_urbs;
->
-> If a malicious USB device sends a spoofed CMD_TX_ACKNOWLEDGE with a trans=
-id
-> matching a free TX context, this code directly indexes priv->can.echo_skb
-> using dev->max_tx_urbs.
->
-> Since echo_skb is placed exactly at the end of the net_device memory block
-> (via alloc_candev_mqs), an index of max_tx_urbs reads 8 bytes of garbage
-> from the subsequent kernel slab object.
->
-> If the read value is non-NULL, the driver dereferences it and writes a
-> 64-bit timestamp derived from the attacker-controlled USB packet into mem=
-ory.
-> Can this be triggered by a malicious USB device?
->
-> --
-> Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260826121036.27=
-06424-1-mkl@pengutronix.de?part=3D12
->
->
+> 
+> [Severity: High]
+> This isn't a bug introduced by this patch, but already existed in the
+> codebase. Does can_skb_init_valid() in this same file modify shared memory
+> without unsharing it first?
+> 
+> drivers/net/can/dev/skb.c:can_skb_init_valid() {
+>          ...
+>          /* set CANFD_FDF flag for CAN FD frames */
+>          if (can_is_canfd_skb(skb)) {
+>              struct canfd_frame *cfd;
+> 
+>              cfd = (struct canfd_frame *)skb->data;
+>              cfd->flags |= CANFD_FDF;
+>          }
+>          ...
+> }
+> 
+> If a user with CAP_NET_RAW injects a CAN FD frame via an AF_PACKET socket,
+> the packet goes to dev_queue_xmit() where it may be cloned for packet
+> sniffers like tcpdump.
+> 
+> When the original SKB reaches the driver's transmit function and calls
+> can_dev_dropped_skb() -> can_dropped_invalid_skb() -> can_skb_init_valid(),
+> it modifies the payload (cfd->flags |= CANFD_FDF) without verifying
+> skb_cloned(skb) or calling skb_unshare().
+> 
+> Can this cause data corruption for concurrent observers receiving the clones?
+> 
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+No.
 
---47tyunpu232hveq3
-Content-Type: application/pgp-signature; name="signature.asc"
+https://lore.kernel.org/linux-can/ac22b59e-129b-4883-b9c6-da5e69e4078d@hartkopp.net/
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCapA0IAAKCRDMOmT6rpmt
-0i10AQDLGoohF7rIlJ4o/bF61K1vn7CbmGYJc6I3co+likp6QgEAo7ihAUJuY90w
-Z0KCj9+xnDPerUaWIg7WjZ+2SybSTQ0=
-=3Ge4
------END PGP SIGNATURE-----
-
---47tyunpu232hveq3--
