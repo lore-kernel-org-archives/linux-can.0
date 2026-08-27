@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09473F1048;
-	Thu, 27 Aug 2026 19:44:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B55F3F1053;
+	Thu, 27 Aug 2026 19:44:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787859850; cv=none; b=Q/sfvcHIUzmarPiolE/GHqXr1ut/vK0Y1i/7+TUpN0LTJ4uHtPqWNkcqukql/JfYnZCDDbV7Yl8mc3p7Mj8cyz19d4aZWbs98Ru889k5tH/QNA5B+2N9sGqnoqgZN/01a2uDvu6cDGGxRT5AWJwSadXnumSFrZNgMKGbgdp0dgA=
+	t=1787859851; cv=none; b=KnNR6N8wB1xn6HGSphdr0bOaMxM3CPIeMFXiMGLbWl6D0d+NVq/uhTHbM+KrKZYZugvN8hmnDpowLnl4IBfT0oGhNMWUDI5cIIDnRgKOMHcpYTtGaTdT37JlTqEP5J3aUoSM1fSmZOmaa2LvMkddSk1v3Gz0sGcSNWgh+W6ORWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787859850; c=relaxed/simple;
-	bh=n32Qlo4L45srtPya355Y6fLhtB+KRyjW284H9D4TYC4=;
+	s=arc-20240116; t=1787859851; c=relaxed/simple;
+	bh=L4wNEHcY4aozfnc66ZnzRVtjh/XKdkgAn95LY0H5wFQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JFDVWbNNupSNH1bt88T++J5ZSj9dUbF0JxOGEZall53dukwxnIjLHEwX1OHetsq7TwuXWYTB+x8mQ2eMfueSYlWYM0yltyi/Ruu5LEPw31m5ePUR4wDm+Mexp9Hf+obFGBso3sTbUERrEe+BbADyaT2UWN2xDEmPhb5pr2JfsEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fWEOKx18; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version; b=c+/+UoePDg8CeGoy8l73wWTUkA4WAk2sbLMjAlitc+MMhl0CMrzduMMnH5L9znThEEQrKokQsIcloqHun1nmoZ9JCpLoW7PU6EQdCYEg5NytexPM1IeggZz/fRbTqOiTKnxLlDMAitDoyS4Knk2e3GViKM5e+p6Z2dsVnorJWmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VBji4+ba; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fWEOKx18"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4877D1F000E9;
-	Thu, 27 Aug 2026 19:44:08 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VBji4+ba"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 578121F00A3A;
+	Thu, 27 Aug 2026 19:44:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1787859848;
-	bh=tDItCvpQjvDZXrWuwzycSQXkJDT+b5MMWRd5CiXGxCo=;
+	s=k20260515; t=1787859849;
+	bh=XzW/WWM0ZHd9+/8mNzs5NYwdbZjrG+OVeS9mFKyQJ/I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=fWEOKx18u1F111jB5OHX8dVWV989vbt13UOSUxzbybaGLvAKeBGmeyNNR2cuS9ZV3
-	 UG+DaNU7+PHEbkQr0tbxsB1gEkKbPamOJbrXMesziVqMKfkboYfUtEGC4aMzNAkkWL
-	 GhzUwBsAfEMtCompaeQgR56xJ0tIE3mO9dfG2NZRFX/aVnf+zlBSwdDRVbF9nmc2NY
-	 ts1UGq/8qr6gWJXGVNF3u9Dr/ZUJ0jWLQbJ5qUUl4QKDs5S7xQ3acKM6pdQzW8OC3A
-	 5Jc2On6oxAzGevMWSQATfAiRhh6ZBDa0Au7I3wbwDbLl47Qt9DYhHCNKpcd8caU5EU
-	 RRmtDXOk4426g==
+	b=VBji4+baIVLGHnVhzVdo0WsoIuMGfaPDN5F59V/f1MxhjPXTeGYygBGiNeDyfwf+B
+	 8egj+3Ufl9Io5bbEeGLnP1c2Kpp1Hd7PNrnelHOlnTTYFHcBgZzT2j+PnY8XUPb318
+	 vZdi+NUxOHTkGnUtx75tdN8sfsFDMQFCQpHarE3SFrabElecJIYCSvCZGNhNko/Nsc
+	 JifpXTTfWB8W7obE68NiR0bXdBh+r/spsBdCNJeMYHjd30L17JNVfvth27M40Il4+v
+	 htbmBz98JTqpPqvxLl3pd0OqKrQZg6ToBecqL47akpzK6ED4op4Oh0OKJgeNy8m+OF
+	 YFs39mJT882jg==
 From: Jakub Kicinski <kuba@kernel.org>
 To: mkl@pengutronix.de
 Cc: Jakub Kicinski <kuba@kernel.org>,
@@ -36,12 +36,12 @@ Cc: Jakub Kicinski <kuba@kernel.org>,
 	blbllhy@gmail.com,
 	AutonomousCodeSecurity@microsoft.com,
 	xmei5@asu.edu
-Subject: Re: [PATCH net 03/14] can: bittiming: fix divide-by-zero in can_calc_bittiming()
-Date: Thu, 27 Aug 2026 12:44:07 -0700
-Message-ID: <20260827194407.4023691-1-kuba@kernel.org>
+Subject: Re: [PATCH net 06/14] can: rockchip_canfd: retry the outstanding TX buffer
+Date: Thu, 27 Aug 2026 12:44:08 -0700
+Message-ID: <20260827194408.4023732-1-kuba@kernel.org>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260826121036.2706424-4-mkl@pengutronix.de>
-References: <20260826121036.2706424-4-mkl@pengutronix.de>
+In-Reply-To: <20260826121036.2706424-7-mkl@pengutronix.de>
+References: <20260826121036.2706424-7-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -53,94 +53,88 @@ Content-Transfer-Encoding: 8bit
 This is an AI-generated review of your patch. The human sending this
 email has considered the AI review valid, or at least plausible.
 ---
-can: bittiming: fix divide-by-zero in can_calc_bittiming()
+can: rockchip_canfd: retry the outstanding TX buffer
 
-can_calc_bittiming() computed the prescaler as priv->clock.freq /
-(tsegall * bt->bitrate), where the product is a 32 bit multiplication that
-wraps to zero for large userspace supplied bitrates. The fix computes the
-product with mul_u32_u32() and divides with div64_u64().
+This changes rkcanfd_xmit_retry() to use rkcanfd_get_tx_tail() instead of
+rkcanfd_get_tx_head() when building the TX_REQ command, so that the
+erratum 6 workaround re-requests the buffer that is actually outstanding
+now that the TX FIFO depth is two.
 
-Link: https://patch.msgid.link/20260803091426.29050-2-ssureshmsd7@gmail.com
+Link: https://patch.msgid.link/tencent_2CCE005FC440BF8026599A6999EC04BE1107@qq.com
 
-> diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/calc_bittiming.c
-> index 42498e9d3f38d..4809f5e0c96e9 100644
-> --- a/drivers/net/can/dev/calc_bittiming.c
-> +++ b/drivers/net/can/dev/calc_bittiming.c
-> @@ -119,8 +119,12 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
->  	     tseg >= (btc->tseg1_min + btc->tseg2_min) * 2; tseg--) {
->  		tsegall = CAN_SYNC_SEG + tseg / 2;
+> diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/can/rockchip/rockchip_canfd-tx.c
+> index 86fa8f2e1c8ba..fc338ea865feb 100644
+> --- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
+> +++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
+> @@ -57,8 +57,8 @@ static void rkcanfd_start_xmit_write_cmd(const struct rkcanfd_priv *priv,
 >  
-> -		/* Compute all possible tseg choices (tseg=tseg1+tseg2) */
-> -		brp = priv->clock.freq / (tsegall * bt->bitrate) + tseg % 2;
-> +		/* Compute all possible tseg choices (tseg=tseg1+tseg2).
-> +		 * A 32 bit tsegall * bt->bitrate can wrap to zero for large
-> +		 * userspace bitrates, so compute the product in 64 bit.
-> +		 */
-> +		brp = div64_u64(priv->clock.freq,
-> +				mul_u32_u32(tsegall, bt->bitrate)) + tseg % 2;
+>  void rkcanfd_xmit_retry(struct rkcanfd_priv *priv)
+>  {
+> -	const unsigned int tx_head = rkcanfd_get_tx_head(priv);
+> -	const u32 reg_cmd = RKCANFD_REG_CMD_TX_REQ(tx_head);
+> +	const unsigned int tx_tail = rkcanfd_get_tx_tail(priv);
+> +	const u32 reg_cmd = RKCANFD_REG_CMD_TX_REQ(tx_tail);
 >  
->  		/* choose brp step which is possible in system */
->  		brp = (brp / btc->brp_inc) * btc->brp_inc;
+>  	rkcanfd_start_xmit_write_cmd(priv, reg_cmd);
+>  }
 
-[Severity: High]
+[Severity: Medium]
 
-This is a pre-existing issue and not something introduced by this patch, but
-can the same input class the commit message describes still end in a divide
-error two statements later?
+This isn't a bug introduced by this patch, but with rkcanfd_xmit_retry()
+now aiming at the tx_tail buffer, is the buffer it re-requests the same
+one that rkcanfd_start_xmit() may be arming at that moment?
 
-With the 64 bit product, a bitrate large enough that clock.freq is smaller
-than tsegall * bt->bitrate now yields brp == 0 for even tseg (tseg % 2 == 0)
-instead of faulting in the patched expression. The only thing that stops
-brp == 0 from reaching the next division is the range guard:
+rkcanfd_xmit_retry() is reached from the hard-IRQ handler, since
+rkcanfd_open() registers it non-threaded:
 
-drivers/net/can/dev/calc_bittiming.c:can_calc_bittiming() {
-	...
-	brp = (brp / btc->brp_inc) * btc->brp_inc;
-	if (brp < btc->brp_min || brp > btc->brp_max)
-		continue;
+	err = request_irq(ndev->irq, rkcanfd_irq, IRQF_SHARED, ndev->name, priv);
 
-	bitrate = priv->clock.freq / (brp * tsegall);
-	...
-}
+and rkcanfd_irq()->rkcanfd_handle_rx_int()->rkcanfd_rxstx_filter() calls
+rkcanfd_xmit_retry() for the erratum 6 case. At this commit there is no
+lock covering priv->tx_head, priv->tx_tail or the register writes.
 
-so it relies on btc->brp_min being at least 1, and the first of those two
-statements relies on btc->brp_inc being non-zero.
+Two interleavings look possible.
 
-Are those two fields validated anywhere in the core? The only core
-validator of struct can_bittiming_const, can_bittiming_const_valid() in
-drivers/net/can/dev/dev.c called from register_candev(), only rejects a
-zero sjw_max:
+First, rkcanfd_start_xmit_write_cmd() is not atomic:
 
-drivers/net/can/dev/dev.c:can_bittiming_const_valid() {
-	if (!btc)
-		return true;
+	if (priv->devtype_data.quirks & RKCANFD_QUIRK_RK3568_ERRATUM_12)
+		rkcanfd_write(priv, RKCANFD_REG_MODE, priv->reg_mode_default |
+			      RKCANFD_REG_MODE_SPACE_RX_MODE);
 
-	if (!btc->sjw_max)
-		return false;
+	rkcanfd_write(priv, RKCANFD_REG_CMD, reg_cmd);
 
-	return true;
-}
+	if (priv->devtype_data.quirks & RKCANFD_QUIRK_RK3568_ERRATUM_12)
+		rkcanfd_write(priv, RKCANFD_REG_MODE, priv->reg_mode_default);
 
-All statically initialised in-tree constants use brp_min = 1 and
-brp_inc >= 1, but gs_make_candev() in drivers/net/can/usb/gs_usb.c fills
-the struct from a device reply without any range check:
+If the interrupt path runs this sequence while the transmit path is
+between its own MODE and CMD writes, the restore of reg_mode_default
+lands before the other context's CMD write. Does that silently drop the
+erratum 12 workaround for that frame? rk3568v2 carries both
+RKCANFD_QUIRK_RK3568_ERRATUM_6 and RKCANFD_QUIRK_RK3568_ERRATUM_12.
 
-	dev->bt_const.brp_min = le32_to_cpu(bt_const.brp_min);
-	dev->bt_const.brp_max = le32_to_cpu(bt_const.brp_max);
-	dev->bt_const.brp_inc = le32_to_cpu(bt_const.brp_inc);
+Second, rkcanfd_start_xmit() publishes the new head before issuing the
+command:
 
-and the identical copy of bt_const_extended.dbrp_* into
-dev->data_bt_const for the CAN FD data const. Both are then handed to
-can_calc_bittiming() through can_changelink() -> can_get_bittiming(),
-which is entered when bt->bitrate is set and bt->tq is 0.
+	WRITE_ONCE(priv->tx_head, priv->tx_head + 1);
 
-For a device reporting brp_inc == 0, does brp / btc->brp_inc fault on the
-first loop iteration for any bitrate? And for a device reporting
-brp_min == 0 with a small fclk_can, does the freq / (brp * tsegall)
-division fault with brp == 0 for the same wrapping-class bitrate this
-patch targets?
+	rkcanfd_start_xmit_write_cmd(priv, reg_cmd);
 
-Since can_changelink() runs with rtnl_lock held, would the resulting oops
-leave rtnl_lock held permanently? Would it make sense to extend
-can_bittiming_const_valid() to also reject brp_inc == 0 and brp_min == 0,
-or to add a brp check before those divisions?
+If the interrupt path completes the previous frame (advancing tx_tail)
+in that window, rkcanfd_xmit_retry() now selects the buffer whose CMD
+write has not been issued yet. Can that produce a second TX request for
+the same buffer, a duplicated frame on the wire, and a desynchronized
+echo ring, with rkcanfd_tx_tail_is_eff() then hitting the
+
+	"%s: echo_skb[%u]=NULL tx_head=0x%08x tx_tail=0x%08x\n"
+
+path?
+
+For what it is worth, this appears to be addressed later in the same
+series by the change that adds "spinlock_t tx_lock; /* protects tx_head,
+tx_tail and echo_skb */" to struct rkcanfd_priv, wraps the
+rkcanfd_start_xmit() echo/register/command sequence in
+spin_lock_irqsave()/spin_unlock_irqrestore(), takes the same lock in
+rkcanfd_rxstx_filter() and adds lockdep_assert_held(&priv->tx_lock) to
+rkcanfd_xmit_retry(). Given that ordering, would it be worth noting the
+dependency in this patch so that a standalone stable backport of this
+change does not land without the locking?
