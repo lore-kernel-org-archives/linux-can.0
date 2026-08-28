@@ -1,199 +1,174 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D423CD8BB
-	for <linux-can@vger.kernel.org>; Fri, 28 Aug 2026 07:08:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA9537F328
+	for <linux-can@vger.kernel.org>; Fri, 28 Aug 2026 07:09:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787900907; cv=none; b=Le+cX37lzho+F5RU8C4wfs/zdVpabWJUh2Qxfv9RYY6wQV8O9Tzu9dzXsE+9HVuWb4DgWPJ2Sif5CjaD7sJh6Ig+LATzWs2EwlBLaovDV49Hafytd94J0WNAt5rEamktqVtoU3yTO7Y5EMtpYM9yrIyn5XfrfHbq7Ya+hqPu/c8=
+	t=1787900943; cv=none; b=cq/t0SMl4vLit/Qiel1486VencFTTS/cKk4Qg0PNvoebB5ZQLL3ji8N9JKmr7XE/FusMnwyQwmdycdvTWON16yhzjODsxnaQ4TuNCB0HOiirRHxaWrKtPjGD2T3kAYUFeB2ruyWj3kDyRyqCy3Nzy68Nc+1V2dHOjVB1vMp6Ppo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787900907; c=relaxed/simple;
-	bh=4aiJmXn9yXFrIB17oLYSdAElWT/Vqqq7ieU3Z6TBn3g=;
+	s=arc-20240116; t=1787900943; c=relaxed/simple;
+	bh=HgiI2EAWZ8xZY0jM+i/yOOVh/aOmmja9Eb9GAO6dPHM=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=uScH14FtyFrS558OHsGEW+aU6Hw505FsWe3M4CBBOUUVhFTh5rjmFrJQYYpp6lKJ7I7k+5l/HTecLvoJYXM/vlnOrohQe/1XbDp56Ld/8fM+bbIntU507qHcObrx23+awkr8BpnNbAJpqBa0/yqS5+5Y84z5exgXxn2/6N/E0pg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XG/B6+XY; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=qn7C2kX9EdoLd8pRDJBWyxg+xP0SDm5t0vnxdniL8WShIJZ0KfPZkMDLmaF8PFqxVQVdv3p6mocU0mJ9KSy2PrUar/l6dEgGucO8QLaHxMSm2+gRiQq8HdHNjanrN7eamTOesC6hc2MddNioOi03mUH099ZwgilOzUosxX/rFn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FSEglVKt; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XG/B6+XY"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 559901F00A3A;
-	Fri, 28 Aug 2026 07:08:25 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FSEglVKt"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C2CC1F000E9;
+	Fri, 28 Aug 2026 07:09:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1787900905;
-	bh=R7sZ6b0GGywpjdP35DGt587mZJEcPuEiwc+XZ166O8I=;
+	s=k20260515; t=1787900941;
+	bh=gyOxtcfM5AXTvM2HwludKPLWN5EDEvKvXVhHrQBK+L8=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=XG/B6+XYSkHgdt0zSSZF6n9W70XTRliapg24HOayRjzsP1xqo0jaAQphHsLWLkm24
-	 yWFiyvzP1rt1hzSUnw0YOp2dMg2sx+G8bfDdXMZx7qAZ6mVNjlPUzofv0ZQGRYqdDe
-	 NKZGO856zuYfj/hJeuOlDZL/IOC+UM8dIKqP9gmSnxzuWGj0eWJznSckDzseg2fvaR
-	 i123vE2XstIs0VMmanUKBCqQY6vJWeYhsQyQ9HuuZQWa5XCt7o6sko+uzaAO8kDsdY
-	 E43OKSsR3YaI2K5B3an5TMHVRc9HE5Q3fysIMJW20UjFMv3697HNKTTJcLUUVYwvbn
-	 ZlE31eWNYh2ow==
+	b=FSEglVKtFrMPd1DBqTvr4zg3KFnKQ/N0xnkU2zol3EHt3hPRnyIi0cRP7m1rewRc/
+	 h+Y9jiwU1Tpy9b24ySumHO5EBjei9/XmTgQc+EeSfVnu7i+ToPCrCuhUjdVmCZooDP
+	 Wq2kuVKZr0JL/oK0yfpTvHD9/aNrrRNLKDR5EViZEZTqXcfvVelY5kRThYkV5RaB5t
+	 J15gVPSpMl6ken4R8Fj4nPQrdK0/8t+DEkU8egmzwSxMDybehelqfydACGpcPrAy9A
+	 7D5UllDvLfTjCF6tdRxj9GMcBKYxCVmcU197W4gusvBws34LYQW+Ty2GAV1qHxtQz2
+	 rWp4QtpCtX8nw==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v3 1/2] can: j1939: make hrtimer callback lockless and
- free ECUs asyncronously
+Subject: Re: [PATCH v3 2/2] can: j1939: cancel all pending ECUs on device
+ stop
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Dmitry Antipov" <dmantipov@yandex.ru>
-Cc: linux-can@vger.kernel.org, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent
- Mailhol" <mailhol@kernel.org>
-In-Reply-To: <20260828064621.91364-1-dmantipov@yandex.ru>
+Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>
+In-Reply-To: <20260828064621.91364-2-dmantipov@yandex.ru>
 References: <20260828064621.91364-1-dmantipov@yandex.ru>
+ <20260828064621.91364-2-dmantipov@yandex.ru>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Fri, 28 Aug 2026 07:08:24 +0000
-Message-Id: <20260828070825.559901F00A3A@smtp.kernel.org>
+Date: Fri, 28 Aug 2026 07:09:00 +0000
+Message-Id: <20260828070901.3C2CC1F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
-Thank you for your contribution! Sashiko AI review found 5 potential issue(=
+Thank you for your contribution! Sashiko AI review found 4 potential issue(=
 s) to consider:
-- [High] Missing bottom-half disable in __j1939_ecu_work() causes a deadloc=
-k with softirq RX handlers.
-- [High] Lockless read-modify-write of ent->nusers in j1939_ecu_map_atomic(=
-) causes lost updates and accounting corruption.
-- [High] Asynchronous ECU removal work is not flushed on module unload, cau=
-sing use-after-free panics.
-- [High] Publish-before-initialize TOCTOU race in j1939_ecu_map_atomic() ex=
-poses the ECU pointer before taking a reference.
-- [High] Delayed removal from the ECU list causes concurrent list traversal=
-s to encounter an ECU with a zero reference count.
+
+New issues:
+- [High] Unconditional cancellation of ECU timers in j1939_netdev_stop() br=
+eaks address claiming for all sockets.
+- [High] Race condition allows ECU and priv memory leak because timers are =
+cancelled before the RX path is disabled.
+
+Pre-existing issues:
+- [High] Deadlock in __j1939_ecu_work due to acquiring write_lock(&priv->lo=
+ck) without disabling softirqs.
+- [High] Module unload while asynchronous ECU workqueue items are still pen=
+ding causes an Execution-After-Free panic.
 --
 
-commit ff05e907d647c94fe0051f49164f837f1fa99aa5
+commit 5eb4b9f58ccbd7c9b7e110c01dfe98b7a95acee8
 Author: Dmitry Antipov <dmantipov@yandex.ru>
 
-can: j1939: make hrtimer callback lockless and free ECUs asyncronously
+can: j1939: cancel all pending ECUs on device stop
 
-This patch removes the lock from j1939_ecu_timer_handler() and uses cmpxchg=
-()=20
-to map the device. It also defers removal to a workqueue to avoid concurren=
-t=20
-modification of the list.
+This commit cancels all pending ECUs in j1939_netdev_stop() to prevent
+a situation where a stopped device no longer processes ECUs. This
+ensures the ECU and its reference to the j1939_priv structure are
+properly freed.
 
-> diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
-> index cdc3c0a719379..a347594b8c1c5 100644
-> --- a/net/can/j1939/bus.c
-> +++ b/net/can/j1939/bus.c
-> @@ -14,17 +14,27 @@
-> =20
->  #include "j1939-priv.h"
-> =20
-> -static void __j1939_ecu_release(struct kref *kref)
-> +static void __j1939_ecu_work(struct work_struct *work)
->  {
-> -	struct j1939_ecu *ecu =3D container_of(kref, struct j1939_ecu, kref);
-> +	struct j1939_ecu *ecu =3D container_of(work, struct j1939_ecu, work);
->  	struct j1939_priv *priv =3D ecu->priv;
-> =20
-> +	write_lock(&priv->lock);
-
-[Severity: High]
-Does this code expose the lock to deadlocks with softirqs?
-
-Because __j1939_ecu_work() runs in process context and uses write_lock(), a
-network softirq could interrupt this and try to acquire the same priv->lock=
- via
-read_lock_bh() or write_lock_bh() during frame reception.
-
-Should this use write_lock_bh() instead?
-
->  	list_del(&ecu->list);
->  	netdev_put(priv->ndev, &ecu->priv_dev_tracker);
->  	kfree(ecu);
-> +	write_unlock(&priv->lock);
-> +
->  	j1939_priv_put(priv);
->  }
-> =20
-> +static void __j1939_ecu_release(struct kref *kref)
-> +{
-> +	struct j1939_ecu *ecu =3D container_of(kref, struct j1939_ecu, kref);
-> +
-> +	schedule_work(&ecu->work);
-
-[Severity: High]
-Does scheduling the removal work leave the object on the priv->ecus list wi=
-th a
-zero reference count?
-
-Concurrent network paths traversing the list under read_lock_bh() might
-find this zero-refcount object and call j1939_ecu_get(), triggering a
-kref_get() on a zero refcount and causing refcount saturation.
-
-Should the object be removed from the list synchronously before scheduling =
-the
-work?
-
-[Severity: High]
-Does this deferral create a use-after-free regression during module unload?
-
-If the last socket is closed, dropping references and scheduling this
-work, and the module is immediately unloaded via rmmod, the workqueue might=
-=20
-execute __j1939_ecu_work() after the module's memory is freed.
-
-Is there a missing flush of the scheduled work in the j1939_module_exit() p=
-ath?
-
-> +}
-> +
->  void j1939_ecu_put(struct j1939_ecu *ecu)
+Link: https://syzkaller.appspot.com/bug?extid=3D489e907b2a026a6f5fa0
 
 [ ... ]
 
-> @@ -46,26 +56,23 @@ static bool j1939_ecu_is_mapped_locked(struct j1939_e=
-cu *ecu)
+> diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
+> index 5e5e6c228f225..1f68ba8037004 100644
+> --- a/net/can/j1939/main.c
+> +++ b/net/can/j1939/main.c
+> @@ -306,6 +306,7 @@ struct j1939_priv *j1939_netdev_start(struct net_devi=
+ce *ndev)
 > =20
->  /* ECU device interface */
->  /* map ECU to a bus address space */
-> -static void j1939_ecu_map_locked(struct j1939_ecu *ecu)
-> +static void j1939_ecu_map_atomic(struct j1939_ecu *ecu)
+>  void j1939_netdev_stop(struct j1939_priv *priv)
 >  {
->  	struct j1939_priv *priv =3D ecu->priv;
->  	struct j1939_addr_ent *ent;
-> =20
-> -	lockdep_assert_held(&priv->lock);
-> -
->  	if (!j1939_address_is_unicast(ecu->addr))
->  		return;
-> =20
->  	ent =3D &priv->ents[ecu->addr];
-> =20
-> -	if (ent->ecu) {
-> +	if (cmpxchg(&ent->ecu, NULL, ecu)) {
+> +	j1939_ecu_cancel_all(priv);
+>  	kref_put_mutex(&priv->rx_kref, __j1939_rx_release, &j1939_netdev_lock);
 
 [Severity: High]
-Does this cmpxchg expose the pointer to concurrent threads before its
-reference count is incremented?
+Does unconditionally cancelling all ECU timers here break address claiming
+for all sockets?
 
-If another thread concurrently unmaps the object and calls j1939_ecu_put(),=
- it
-could drop a reference that this mapping thread has not yet acquired. If the
-refcount drops to zero, the object would be queued for deletion, and the
-subsequent j1939_ecu_get() here would increment a zero refcount.
+When any single socket closes, it invokes j1939_netdev_stop(), which
+unconditionally cancels all ECU timers for the shared priv structure.
 
-Should j1939_ecu_get() be called before the cmpxchg?
+Does this forcefully abort pending address claim timers for every other
+active socket on the interface, leaving those ECUs unmapped permanently?
 
->  		netdev_warn(priv->ndev, "Trying to map already mapped ECU, addr: 0x%02=
-x, name: 0x%016llx. Skip it.\n",
->  			    ecu->addr, ecu->name);
->  		return;
->  	}
-> =20
->  	j1939_ecu_get(ecu);
-> -	ent->ecu =3D ecu;
->  	ent->nusers +=3D ecu->nusers;
+Should the timer cancellation be properly scoped to the destruction of the
+last socket in the __j1939_rx_release callback instead?
+
 
 [Severity: High]
-Does this unprotected arithmetic race with other threads?
+Can this sequence race and cause an ECU memory leak?
 
-Since the update to ent->nusers is no longer protected by priv->lock,
-concurrent threads could perform read-modify-write operations on ent->nusers
-simultaneously, causing lost updates to the user accounting.
+If a socket is closed, initiating j1939_netdev_stop(), j1939_ecu_cancel_all=
+()
+runs. If a new AC frame is received on the bus before __j1939_rx_release()
+disables CAN RX, it triggers j1939_ac_process() which starts a new ECU time=
+r.
 
+Since j1939_ecu_unmap_all() already ran synchronously during teardown, the
+new ECU timer will fire later, taking a reference and leaving the new ECU
+permanently unmapped.=20
+
+Does this permanently leak both the ECU and its referenced j1939_priv?
+
+>  	j1939_priv_put(priv);
 >  }
+
+[ ... ]
+
+
+This is a pre-existing issue, but I noticed a potential deadlock here:
+
+    net/can/j1939/bus.c:__j1939_ecu_work() {
+        ...
+        write_lock(&priv->lock);
+        list_del(&ecu->list);
+        ...
+    }
+
+[Severity: High]
+Does acquiring write_lock(&priv->lock) without disabling softirqs cause a
+deadlock?
+
+Because write_lock() disables preemption but not softirqs, the workqueue
+thread can be preempted by the CAN RX softirq on the same CPU.=20
+
+If a CAN RX interrupt arrives and triggers j1939_ac_process() in softirq
+context, it will spin on write_lock_bh(&priv->lock), resulting in a lock
+inversion deadlock.=20
+
+Should this use write_lock_bh() instead?
+
+
+This is a pre-existing issue, but I also noticed a missing synchronization
+here:
+
+    net/can/j1939/main.c:j1939_module_exit() {
+        can_proto_unregister(&j1939_can_proto);
+        unregister_netdevice_notifier(&j1939_netdev_notifier);
+    }
+
+[Severity: High]
+Can unloading the module while asynchronous ECU workqueue items are still
+pending cause an Execution-After-Free panic?
+
+When a socket closes, __j1939_ecu_release defers freeing the ECU via
+schedule_work(&ecu->work).=20
+
+Because j1939_module_exit() lacks a flush_scheduled_work() or similar
+synchronization call, the module memory can be freed before the workqueue
+executes __j1939_ecu_work.=20
+
+Does this crash the kernel when the worker thread branches to the unmapped
+function?
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260828064621.9136=
-4-1-dmantipov@yandex.ru?part=3D1
+4-1-dmantipov@yandex.ru?part=3D2
