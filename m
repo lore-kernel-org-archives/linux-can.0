@@ -1,104 +1,199 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 772C53CC33F;
-	Fri, 28 Aug 2026 06:58:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D423CD8BB
+	for <linux-can@vger.kernel.org>; Fri, 28 Aug 2026 07:08:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787900316; cv=none; b=DtdM5oYSR6E2WJgULaT0g8+c6pY96WxdgfFFn9PmIROcW8gCFoVB8kFc/sN6oPDb9n1pClatoRm276mLuCK1aCaX6qj9W4p6xWoAHfFWHY5JSnqAd9GPyKtzKmNs0uXh9ihq0qZSsr3MWNua1vMddlwDEll2N32N7KXzjPlYfHA=
+	t=1787900907; cv=none; b=Le+cX37lzho+F5RU8C4wfs/zdVpabWJUh2Qxfv9RYY6wQV8O9Tzu9dzXsE+9HVuWb4DgWPJ2Sif5CjaD7sJh6Ig+LATzWs2EwlBLaovDV49Hafytd94J0WNAt5rEamktqVtoU3yTO7Y5EMtpYM9yrIyn5XfrfHbq7Ya+hqPu/c8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787900316; c=relaxed/simple;
-	bh=WLich3nu80IVX9m5emvNtJAK1D2PGDaua4ENX/232vs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fjPT7s6odtSfEmAbmhFLodYBgLuQIq1vDw8zanK8d8Eg7OsfXDB7CTXP/14M11OhIMIgPvPeqzJgh1OGMWDdg5Ytnhbtm8TzUBRnkkOIMlTJaCKSYy/J4aXSxjOt/TTQkKOwmuHli/wq8iHk8jlA+DRZ7K9qdEyNzI0Wp85fvzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 17549200FE5;
-	Fri, 28 Aug 2026 08:58:30 +0200 (CEST)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1wzqXl-003j3K-38;
-	Fri, 28 Aug 2026 08:58:30 +0200
-Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id A16C058DFE4;
-	Fri, 28 Aug 2026 06:58:29 +0000 (UTC)
-Date: Fri, 28 Aug 2026 08:58:29 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Farhad Alemi <farhad.alemi@berkeley.edu>
-Cc: Vincent Mailhol <mailhol@kernel.org>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, falemi@asu.edu, linux-can@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [BUG] can: kvaser_usb: WARN_ON(!dev->cfg) in kvaser_usb_probe()
- from an unhandled clock-frequency encoding
-Message-ID: <20260828-sassy-ammonite-of-focus-b2f17c-mkl@pengutronix.de>
-References: <CA+0ovCjbbonrZ-eWsjT6r7VhBaO7t8M_HCYwWzU5XJDettsd8w@mail.gmail.com>
+	s=arc-20240116; t=1787900907; c=relaxed/simple;
+	bh=4aiJmXn9yXFrIB17oLYSdAElWT/Vqqq7ieU3Z6TBn3g=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=uScH14FtyFrS558OHsGEW+aU6Hw505FsWe3M4CBBOUUVhFTh5rjmFrJQYYpp6lKJ7I7k+5l/HTecLvoJYXM/vlnOrohQe/1XbDp56Ld/8fM+bbIntU507qHcObrx23+awkr8BpnNbAJpqBa0/yqS5+5Y84z5exgXxn2/6N/E0pg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XG/B6+XY; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XG/B6+XY"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 559901F00A3A;
+	Fri, 28 Aug 2026 07:08:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1787900905;
+	bh=R7sZ6b0GGywpjdP35DGt587mZJEcPuEiwc+XZ166O8I=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=XG/B6+XYSkHgdt0zSSZF6n9W70XTRliapg24HOayRjzsP1xqo0jaAQphHsLWLkm24
+	 yWFiyvzP1rt1hzSUnw0YOp2dMg2sx+G8bfDdXMZx7qAZ6mVNjlPUzofv0ZQGRYqdDe
+	 NKZGO856zuYfj/hJeuOlDZL/IOC+UM8dIKqP9gmSnxzuWGj0eWJznSckDzseg2fvaR
+	 i123vE2XstIs0VMmanUKBCqQY6vJWeYhsQyQ9HuuZQWa5XCt7o6sko+uzaAO8kDsdY
+	 E43OKSsR3YaI2K5B3an5TMHVRc9HE5Q3fysIMJW20UjFMv3697HNKTTJcLUUVYwvbn
+	 ZlE31eWNYh2ow==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v3 1/2] can: j1939: make hrtimer callback lockless and
+ free ECUs asyncronously
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Dmitry Antipov" <dmantipov@yandex.ru>
+Cc: linux-can@vger.kernel.org, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent
+ Mailhol" <mailhol@kernel.org>
+In-Reply-To: <20260828064621.91364-1-dmantipov@yandex.ru>
+References: <20260828064621.91364-1-dmantipov@yandex.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 28 Aug 2026 07:08:24 +0000
+Message-Id: <20260828070825.559901F00A3A@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="a2cgurjaq4zq7vlf"
-Content-Disposition: inline
-In-Reply-To: <CA+0ovCjbbonrZ-eWsjT6r7VhBaO7t8M_HCYwWzU5XJDettsd8w@mail.gmail.com>
 
+Thank you for your contribution! Sashiko AI review found 5 potential issue(=
+s) to consider:
+- [High] Missing bottom-half disable in __j1939_ecu_work() causes a deadloc=
+k with softirq RX handlers.
+- [High] Lockless read-modify-write of ent->nusers in j1939_ecu_map_atomic(=
+) causes lost updates and accounting corruption.
+- [High] Asynchronous ECU removal work is not flushed on module unload, cau=
+sing use-after-free panics.
+- [High] Publish-before-initialize TOCTOU race in j1939_ecu_map_atomic() ex=
+poses the ECU pointer before taking a reference.
+- [High] Delayed removal from the ECU list causes concurrent list traversal=
+s to encounter an ECU with a zero reference count.
+--
 
---a2cgurjaq4zq7vlf
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [BUG] can: kvaser_usb: WARN_ON(!dev->cfg) in kvaser_usb_probe()
- from an unhandled clock-frequency encoding
-MIME-Version: 1.0
+commit ff05e907d647c94fe0051f49164f837f1fa99aa5
+Author: Dmitry Antipov <dmantipov@yandex.ru>
 
-Hello Farhad Alemi,
+can: j1939: make hrtimer callback lockless and free ECUs asyncronously
 
-for future reports please include the whole crash report in your mail.
+This patch removes the lock from j1939_ecu_timer_handler() and uses cmpxchg=
+()=20
+to map the device. It also defers removal to a workqueue to avoid concurren=
+t=20
+modification of the list.
 
-On 28.08.2026 03:15:44, Farhad Alemi wrote:
-> As part of the kernel research at ASU's SEFCOM
-> lab, we hit the crash below. Crash reports can be found here:
->
->   https://github.com/farhad-alemi/public_bug_reports/tree/main/123-can-kv=
-aser-warn-null-dev-cfg-kvaser_usb_probe/
->
->   WARNING: drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c:989
->            at kvaser_usb_probe+0x14a9/0x15e0
->
-> Our reproducer.c is available upon request.
+> diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
+> index cdc3c0a719379..a347594b8c1c5 100644
+> --- a/net/can/j1939/bus.c
+> +++ b/net/can/j1939/bus.c
+> @@ -14,17 +14,27 @@
+> =20
+>  #include "j1939-priv.h"
+> =20
+> -static void __j1939_ecu_release(struct kref *kref)
+> +static void __j1939_ecu_work(struct work_struct *work)
+>  {
+> -	struct j1939_ecu *ecu =3D container_of(kref, struct j1939_ecu, kref);
+> +	struct j1939_ecu *ecu =3D container_of(work, struct j1939_ecu, work);
+>  	struct j1939_priv *priv =3D ecu->priv;
+> =20
+> +	write_lock(&priv->lock);
 
-Please post the reproducer.
+[Severity: High]
+Does this code expose the lock to deadlocks with softirqs?
 
-regards,
-Marc
+Because __j1939_ecu_work() runs in process context and uses write_lock(), a
+network softirq could interrupt this and try to acquire the same priv->lock=
+ via
+read_lock_bh() or write_lock_bh() during frame reception.
+
+Should this use write_lock_bh() instead?
+
+>  	list_del(&ecu->list);
+>  	netdev_put(priv->ndev, &ecu->priv_dev_tracker);
+>  	kfree(ecu);
+> +	write_unlock(&priv->lock);
+> +
+>  	j1939_priv_put(priv);
+>  }
+> =20
+> +static void __j1939_ecu_release(struct kref *kref)
+> +{
+> +	struct j1939_ecu *ecu =3D container_of(kref, struct j1939_ecu, kref);
+> +
+> +	schedule_work(&ecu->work);
+
+[Severity: High]
+Does scheduling the removal work leave the object on the priv->ecus list wi=
+th a
+zero reference count?
+
+Concurrent network paths traversing the list under read_lock_bh() might
+find this zero-refcount object and call j1939_ecu_get(), triggering a
+kref_get() on a zero refcount and causing refcount saturation.
+
+Should the object be removed from the list synchronously before scheduling =
+the
+work?
+
+[Severity: High]
+Does this deferral create a use-after-free regression during module unload?
+
+If the last socket is closed, dropping references and scheduling this
+work, and the module is immediately unloaded via rmmod, the workqueue might=
+=20
+execute __j1939_ecu_work() after the module's memory is freed.
+
+Is there a missing flush of the scheduled work in the j1939_module_exit() p=
+ath?
+
+> +}
+> +
+>  void j1939_ecu_put(struct j1939_ecu *ecu)
+
+[ ... ]
+
+> @@ -46,26 +56,23 @@ static bool j1939_ecu_is_mapped_locked(struct j1939_e=
+cu *ecu)
+> =20
+>  /* ECU device interface */
+>  /* map ECU to a bus address space */
+> -static void j1939_ecu_map_locked(struct j1939_ecu *ecu)
+> +static void j1939_ecu_map_atomic(struct j1939_ecu *ecu)
+>  {
+>  	struct j1939_priv *priv =3D ecu->priv;
+>  	struct j1939_addr_ent *ent;
+> =20
+> -	lockdep_assert_held(&priv->lock);
+> -
+>  	if (!j1939_address_is_unicast(ecu->addr))
+>  		return;
+> =20
+>  	ent =3D &priv->ents[ecu->addr];
+> =20
+> -	if (ent->ecu) {
+> +	if (cmpxchg(&ent->ecu, NULL, ecu)) {
+
+[Severity: High]
+Does this cmpxchg expose the pointer to concurrent threads before its
+reference count is incremented?
+
+If another thread concurrently unmaps the object and calls j1939_ecu_put(),=
+ it
+could drop a reference that this mapping thread has not yet acquired. If the
+refcount drops to zero, the object would be queued for deletion, and the
+subsequent j1939_ecu_get() here would increment a zero refcount.
+
+Should j1939_ecu_get() be called before the cmpxchg?
+
+>  		netdev_warn(priv->ndev, "Trying to map already mapped ECU, addr: 0x%02=
+x, name: 0x%016llx. Skip it.\n",
+>  			    ecu->addr, ecu->name);
+>  		return;
+>  	}
+> =20
+>  	j1939_ecu_get(ecu);
+> -	ent->ecu =3D ecu;
+>  	ent->nusers +=3D ecu->nusers;
+
+[Severity: High]
+Does this unprotected arithmetic race with other threads?
+
+Since the update to ent->nusers is no longer protected by priv->lock,
+concurrent threads could perform read-modify-write operations on ent->nusers
+simultaneously, causing lost updates to the user accounting.
+
+>  }
 
 --=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---a2cgurjaq4zq7vlf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCapExjwAKCRDMOmT6rpmt
-0qqzAQC7ms7M4mxL8xFmTVgdPqn5buqthVvxcJJNXbOvhiiGXgEAn1BPovikRkDc
-+3ftalwkgnZ/Qn8AxMdISVqBv/q43ws=
-=oYMD
------END PGP SIGNATURE-----
-
---a2cgurjaq4zq7vlf--
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260828064621.9136=
+4-1-dmantipov@yandex.ru?part=3D1
