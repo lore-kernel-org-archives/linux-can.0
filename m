@@ -1,174 +1,108 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA9537F328
-	for <linux-can@vger.kernel.org>; Fri, 28 Aug 2026 07:09:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C8A23F1048;
+	Fri, 28 Aug 2026 09:07:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787900943; cv=none; b=cq/t0SMl4vLit/Qiel1486VencFTTS/cKk4Qg0PNvoebB5ZQLL3ji8N9JKmr7XE/FusMnwyQwmdycdvTWON16yhzjODsxnaQ4TuNCB0HOiirRHxaWrKtPjGD2T3kAYUFeB2ruyWj3kDyRyqCy3Nzy68Nc+1V2dHOjVB1vMp6Ppo=
+	t=1787908054; cv=none; b=KHcpww6+OPvy3M+Eo66RyR+QZ5wT+JhuESoI8ImwTzhDQExLJwLpNfGC5UlokrKfiObeGDVrNuWrK0/hDwdb/6X0TA8TKwRdyRZgVRSdp59VGYJKUVhceS0oBES1sucroOSIfWWWizGGTeeHNUa4hk9d5Ri0QpbTP6xq3G+mTAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787900943; c=relaxed/simple;
-	bh=HgiI2EAWZ8xZY0jM+i/yOOVh/aOmmja9Eb9GAO6dPHM=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=qn7C2kX9EdoLd8pRDJBWyxg+xP0SDm5t0vnxdniL8WShIJZ0KfPZkMDLmaF8PFqxVQVdv3p6mocU0mJ9KSy2PrUar/l6dEgGucO8QLaHxMSm2+gRiQq8HdHNjanrN7eamTOesC6hc2MddNioOi03mUH099ZwgilOzUosxX/rFn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FSEglVKt; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1787908054; c=relaxed/simple;
+	bh=86sz1V3bKxZpfGEL5e4mwUOaBK+GG5lZdCd22DPwfCA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ewRifEZgrOF+oSqGVv36rSGHt7l71M+U6opfEOka9s8pmVvyTjqVtQ22S0LX5JdQCPIo9zF6Cg00AmjZvgu2gs+BSJRqTDuWLNv9LqKvaqkBouVY4VJ5GgE/dMZBzro9uRK4dmYZjAUIcq6eKg9czqliFYBTKP+gN55DtBDOSMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lU5n6Ryd; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FSEglVKt"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C2CC1F000E9;
-	Fri, 28 Aug 2026 07:09:01 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lU5n6Ryd"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F12291F000E9;
+	Fri, 28 Aug 2026 09:07:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1787900941;
-	bh=gyOxtcfM5AXTvM2HwludKPLWN5EDEvKvXVhHrQBK+L8=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=FSEglVKtFrMPd1DBqTvr4zg3KFnKQ/N0xnkU2zol3EHt3hPRnyIi0cRP7m1rewRc/
-	 h+Y9jiwU1Tpy9b24ySumHO5EBjei9/XmTgQc+EeSfVnu7i+ToPCrCuhUjdVmCZooDP
-	 Wq2kuVKZr0JL/oK0yfpTvHD9/aNrrRNLKDR5EViZEZTqXcfvVelY5kRThYkV5RaB5t
-	 J15gVPSpMl6ken4R8Fj4nPQrdK0/8t+DEkU8egmzwSxMDybehelqfydACGpcPrAy9A
-	 7D5UllDvLfTjCF6tdRxj9GMcBKYxCVmcU197W4gusvBws34LYQW+Ty2GAV1qHxtQz2
-	 rWp4QtpCtX8nw==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v3 2/2] can: j1939: cancel all pending ECUs on device
- stop
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Dmitry Antipov" <dmantipov@yandex.ru>
-Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>
-In-Reply-To: <20260828064621.91364-2-dmantipov@yandex.ru>
-References: <20260828064621.91364-1-dmantipov@yandex.ru>
- <20260828064621.91364-2-dmantipov@yandex.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 28 Aug 2026 07:09:00 +0000
-Message-Id: <20260828070901.3C2CC1F000E9@smtp.kernel.org>
+	s=k20260515; t=1787908053;
+	bh=lkvdRT0VDXFsl27OQ7S/vcWtfXEbK5/fJY0aWx/dxYA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=lU5n6RydZGeD1grRZs2xyKOafmZv5KHQ7yvW6fssIyqb81HSrpoa5Jwn1h3nsJRqE
+	 ii+1yaGLNykyvawIyLVykFvAbkX13tAPHLcUMn8rOQ+Gl5eguhb5q36a7auDtOw8g9
+	 d3yxe9Rq8Q0OEIohHuiulzwvT220uLmaVYMQN/XJuAIIvqHuaR5FvO5GKxoN3NwBTz
+	 2cWTC9DNLjktC4Jm12rD4GONL3OQQoyH58m1CEPBcQfspyvvPJhbAxegdSefEGjryp
+	 Gu7IUW/OfyY7K9wf3KDlybPsETrBkXNypUSP6QXODSdcMkX+E18AsJEqmHdUVH4PdD
+	 WLVnoHh/GA8aA==
+Date: Fri, 28 Aug 2026 11:07:29 +0200
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Conor Dooley <conor@kernel.org>
+Cc: Kendall Willis <k-willis@ti.com>, 
+	Markus Schneider-Pargmann <msp@baylibre.com>, Marc Kleine-Budde <mkl@pengutronix.de>, 
+	Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Chandrasekar Ramakrishnan <rcsekar@samsung.com>, s-kochidanadu@ti.com, a-kaur@ti.com, s-tripathi1@ti.com, 
+	vishalm@ti.com, linux-can@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: can: m_can: add out-band-wakeup
+ property
+Message-ID: <20260828-antique-lumpy-donkey-51ff42@quoll>
+References: <20260821-temp-v3-0-9ac1f8806929@ti.com>
+ <20260821-temp-v3-1-9ac1f8806929@ti.com>
+ <20260821-regulate-recharger-2e984e9591ef@spud>
+ <20260821190511.jwdgox4uocbf4brd@uda0506412>
+ <20260824-public-mashing-252473f928c3@spud>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260824-public-mashing-252473f928c3@spud>
 
-Thank you for your contribution! Sashiko AI review found 4 potential issue(=
-s) to consider:
+On Mon, Aug 24, 2026 at 05:50:20PM +0100, Conor Dooley wrote:
+> On Fri, Aug 21, 2026 at 02:05:11PM -0500, Kendall Willis wrote:
+> > On 17:45-20260821, Conor Dooley wrote:
+> > > On Fri, Aug 21, 2026 at 11:07:00AM -0500, Kendall Willis wrote:
+> > > > Add the out-band-wakeup property as a possible property. The property
+> > > > indicates that the device can wakeup the system even when its power
+> > > > domain is off.
+> > > > 
+> > > > Signed-off-by: Kendall Willis <k-willis@ti.com>
+> > > > ---
+> > > >  Documentation/devicetree/bindings/net/can/bosch,m_can.yaml | 2 ++
+> > > >  1 file changed, 2 insertions(+)
+> > > > 
+> > > > diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+> > > > index 2c9d37975bedd652b3060ab11ba75c37565edaad..0663beaa532bcc4a71cd6ad01520a4dfea294d0c 100644
+> > > > --- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+> > > > +++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+> > > > @@ -150,6 +150,8 @@ properties:
+> > > >      description:
+> > > >        List of phandles to system idle states in which mcan can wakeup the system.
+> > > >  
+> > > > +  out-band-wakeup: true
+> > > 
+> > > Where is "-wakeup" defined genericly, or out-band-wakeup defined that
+> > > you're getting the property definition from?
+> > 
+> > I sent a PR to define out-band-wakeup in the wakeup-source.yaml binding
+> > in dt-schema repo. I figured it made more sense to be defined in the
+> > wakeup-source.yaml binding to allow other drivers the option to use it.
+> > 
+> > dt-schema PR:
+> > https://github.com/devicetree-org/dt-schema/pull/205
+> 
+> This sounds like something you should be able to determine from
+> device specific compatibles for these platforms. Not sure why they are
+> not used for this particular device, but this is an indication to me
+> that that is a mistake.
 
-New issues:
-- [High] Unconditional cancellation of ECU timers in j1939_netdev_stop() br=
-eaks address claiming for all sockets.
-- [High] Race condition allows ECU and priv memory leak because timers are =
-cancelled before the RX path is disabled.
+Yeah, it looks a bit too much replicating Linux PM detail. I can imagine
+that some devices on some board are capable of waking up the system even
+when power domain is off, but this does not look like a capability of
+the actual device, but power domain. Device does not have different
+wakeups. (by device I mean this individual schema - Bosch CAN)
 
-Pre-existing issues:
-- [High] Deadlock in __j1939_ecu_work due to acquiring write_lock(&priv->lo=
-ck) without disabling softirqs.
-- [High] Module unload while asynchronous ECU workqueue items are still pen=
-ding causes an Execution-After-Free panic.
---
+Happy to see some bigger picture through DTS or board layouts. Actually
+DTS, showing same Bosch CAN devices which are different on a board -
+some are wakeups and some out of band wakeups - would illustrate it
+better.
 
-commit 5eb4b9f58ccbd7c9b7e110c01dfe98b7a95acee8
-Author: Dmitry Antipov <dmantipov@yandex.ru>
+Best regards,
+Krzysztof
 
-can: j1939: cancel all pending ECUs on device stop
-
-This commit cancels all pending ECUs in j1939_netdev_stop() to prevent
-a situation where a stopped device no longer processes ECUs. This
-ensures the ECU and its reference to the j1939_priv structure are
-properly freed.
-
-Link: https://syzkaller.appspot.com/bug?extid=3D489e907b2a026a6f5fa0
-
-[ ... ]
-
-> diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
-> index 5e5e6c228f225..1f68ba8037004 100644
-> --- a/net/can/j1939/main.c
-> +++ b/net/can/j1939/main.c
-> @@ -306,6 +306,7 @@ struct j1939_priv *j1939_netdev_start(struct net_devi=
-ce *ndev)
-> =20
->  void j1939_netdev_stop(struct j1939_priv *priv)
->  {
-> +	j1939_ecu_cancel_all(priv);
->  	kref_put_mutex(&priv->rx_kref, __j1939_rx_release, &j1939_netdev_lock);
-
-[Severity: High]
-Does unconditionally cancelling all ECU timers here break address claiming
-for all sockets?
-
-When any single socket closes, it invokes j1939_netdev_stop(), which
-unconditionally cancels all ECU timers for the shared priv structure.
-
-Does this forcefully abort pending address claim timers for every other
-active socket on the interface, leaving those ECUs unmapped permanently?
-
-Should the timer cancellation be properly scoped to the destruction of the
-last socket in the __j1939_rx_release callback instead?
-
-
-[Severity: High]
-Can this sequence race and cause an ECU memory leak?
-
-If a socket is closed, initiating j1939_netdev_stop(), j1939_ecu_cancel_all=
-()
-runs. If a new AC frame is received on the bus before __j1939_rx_release()
-disables CAN RX, it triggers j1939_ac_process() which starts a new ECU time=
-r.
-
-Since j1939_ecu_unmap_all() already ran synchronously during teardown, the
-new ECU timer will fire later, taking a reference and leaving the new ECU
-permanently unmapped.=20
-
-Does this permanently leak both the ECU and its referenced j1939_priv?
-
->  	j1939_priv_put(priv);
->  }
-
-[ ... ]
-
-
-This is a pre-existing issue, but I noticed a potential deadlock here:
-
-    net/can/j1939/bus.c:__j1939_ecu_work() {
-        ...
-        write_lock(&priv->lock);
-        list_del(&ecu->list);
-        ...
-    }
-
-[Severity: High]
-Does acquiring write_lock(&priv->lock) without disabling softirqs cause a
-deadlock?
-
-Because write_lock() disables preemption but not softirqs, the workqueue
-thread can be preempted by the CAN RX softirq on the same CPU.=20
-
-If a CAN RX interrupt arrives and triggers j1939_ac_process() in softirq
-context, it will spin on write_lock_bh(&priv->lock), resulting in a lock
-inversion deadlock.=20
-
-Should this use write_lock_bh() instead?
-
-
-This is a pre-existing issue, but I also noticed a missing synchronization
-here:
-
-    net/can/j1939/main.c:j1939_module_exit() {
-        can_proto_unregister(&j1939_can_proto);
-        unregister_netdevice_notifier(&j1939_netdev_notifier);
-    }
-
-[Severity: High]
-Can unloading the module while asynchronous ECU workqueue items are still
-pending cause an Execution-After-Free panic?
-
-When a socket closes, __j1939_ecu_release defers freeing the ECU via
-schedule_work(&ecu->work).=20
-
-Because j1939_module_exit() lacks a flush_scheduled_work() or similar
-synchronization call, the module memory can be freed before the workqueue
-executes __j1939_ecu_work.=20
-
-Does this crash the kernel when the worker thread branches to the unmapped
-function?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260828064621.9136=
-4-1-dmantipov@yandex.ru?part=3D2
