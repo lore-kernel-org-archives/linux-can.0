@@ -1,114 +1,183 @@
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from forward102b.mail.yandex.net (forward102b.mail.yandex.net [178.154.239.149])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FB0E38D407
-	for <linux-can@vger.kernel.org>; Fri, 28 Aug 2026 03:15:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.214.174
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787886957; cv=pass; b=gEhY3Cl9PolF5d4vfUw+hecsDKP0gTbQe98Z4OCZz/hXrDiCig4oWNoLsZhDfE/pPoyqPTWGu8xy77u2HaZx2qKzuEMeIcjNx5syl3rF/mi8AH6MFnj8mbN5MlWfIkcaeaWRKHG+YOTn0ewFNxCa9rUXT213ENTJ1/NvidhTnmo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787886957; c=relaxed/simple;
-	bh=1miJQ3XU67QGxzaMp89AvZFl+Okgcn5d5LRthW/MVn0=;
-	h=From:MIME-Version:Date:Message-ID:Subject:To:Cc:Content-Type; b=ghw+UOslhOkxSiTSgP7wkRdctOAtJar92qKQZtfghbuCOAJ4MBLN+VhS6RKP2gzELl1z+Y3KfaSkV/wUE8GhD3eRYtIs48FidhAELjsD7GpIyJUt2tfFw5cCOfBuUVQRz1LcsPX+jgKK73WnLnhOHEZX3aqxlPTbqSGsHdXciMQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=berkeley.edu; spf=pass smtp.mailfrom=berkeley.edu; dkim=pass (2048-bit key) header.d=berkeley.edu header.i=@berkeley.edu header.b=neBLinKC; arc=pass smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=berkeley.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=berkeley.edu
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0704353A60
+	for <linux-can@vger.kernel.org>; Fri, 28 Aug 2026 06:46:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.149
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1787899599; cv=none; b=J0rqu25tqVg+ohES5vKHdcGYdwIiIoh5C2VuLog3K8CJujTDt/OGYRYy31ji7dGE+27FdWh9GUbaDSMULre37vvNx94Pa0lyB92B5jMJw21ctCOGIvyNM8rhoTSgvw1icEeZoEr/DTnDuqVg6KZMJIhtBkGTGAxVrK0zS70pZKk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1787899599; c=relaxed/simple;
+	bh=TKhYtYBZYsAUYz6AEDz34wRSM36MHYBNyHzeaJMwNEI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=R2eISfOCyzbPhSPToV+l8kOK6w3FRN4JA0AtwZHpCyDOt9CYgLO/MTNZu+hPmHG7WO1rKuylhjqXeoWD+FMSBdiTzndZKqfIRvew8ERP39dR6ejJevzlouP4B5DrRwUeCWYi7e39D9sl+SG1TjGabTQyXcLElEhX33O+Y3res0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=rs8D3m3H; arc=none smtp.client-ip=178.154.239.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=berkeley.edu header.i=@berkeley.edu header.b="neBLinKC"
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2d6fe26ef1cso3675365ad.2
-        for <linux-can@vger.kernel.org>; Thu, 27 Aug 2026 20:15:48 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1787886946; cv=none;
-        d=google.com; s=arc-20260327;
-        b=moE4k8rUosGSugRZcZ6cUTcRbGObhx8sDOC2sTW3KbKFARfTrEXlgEIXEavTuQR1Rz
-         vWTOtKSp+UbwEvDrwcpBGsSEA4iquWH8wJE0CxW1wjDVp4x/sRzdlcb+yUQiewWi1/so
-         lB2o+1WjDcuk4Kx39b6IsFF2/9pjqQ+Dlb1YyTS8sdkxtb0hGunEMINEP3WQ6cUF+pPz
-         ADzJloggdAZXCDmJX0M3UZE2+E8TuxiINhdKoYe267KVxrPj3YuAo+tcSwqfTwzEL8O3
-         s3kfbrKzMtad8sIqF3cBXff26mpDujN8KHSlzLkQvB0o38TTa/utALD3+l3icV6NF7fW
-         xtXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=cc:to:subject:message-id:date:mime-version:from:dkim-signature;
-        bh=GVDaim1d9W/nazmbFLIR9MFq39kGfUIj6rnd22ExSQs=;
-        fh=suITxOd12k9TP1X4j/6sOHU9SCsTvb4DzpdfQKrfPIE=;
-        b=mIHE07kCeOuUot4PoKI28aLgJI1gZSB6FHtwaw+CbUA6RCxexioUtUIHB2N0FvwnJg
-         rG7sJaRDvYLSZjxbNCi5axqz2n6cZh80V/tJ8jSgLIKA7TLNRWDss3pp3C3zWVFIrNc5
-         +6SqMMOu3mOsiffQYyhsRnYMdcdK4MoP1GF13wgC0kV5Nk+25BpqeWX7mtnAdq4YX4Uz
-         Gf8lQMpAnkobi9B1K7+Wum6sej7FS2IXj1eHPuy800hAxMvjTVV1EivcRhDpkLcRc7eo
-         5/K+5I/HS7tqLv1z1HhOVrFAu2VxABZb5jUbMxe/fC0lYxx8Ai/q1sgV7aW8AIrYy6gD
-         dAYg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=berkeley.edu; s=google; t=1787886946; x=1788491746; darn=vger.kernel.org;
-        h=content-type:cc:to:subject:message-id:date:mime-version:from:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=GVDaim1d9W/nazmbFLIR9MFq39kGfUIj6rnd22ExSQs=;
-        b=neBLinKCAT+MANInucguTZWim03AHHpj+bO5hrp1IvLBqrDqUNUFIi3HnOaTacaN0A
-         BSzXklUQ4ZkMuoCQMMC1lMD6Z9kUCHgKc42RAoR5TFpM1yoO7fcRWDUrNPjBVTM6DZgS
-         f9pR736ovN7AgX4QHJLr/jIy/9n3RuQMjXyoBiC0FAfBQ4XDeHTPVwFpKTfJZm9Uhmyl
-         oSZSmRPMDpfNEx+H81fNBdQJlHL6B6x4qrzwEziyIcS3ATYAE0coIpFpwVV1vQaCoQGy
-         VWPdTrA5jhiBIyYE7+jTp+yJZKCVNcByX+LTUgxVRmyjjNtdtjNwNNEi9gNioNv1otMp
-         5d6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787886946; x=1788491746;
-        h=content-type:cc:to:subject:message-id:date:mime-version:from
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=GVDaim1d9W/nazmbFLIR9MFq39kGfUIj6rnd22ExSQs=;
-        b=IwO4cZQkxDAbELCma+2dSG+p/WXI0PDhlwZEJiCzND+2/V2lRYFqAKs96mo5nPzHoN
-         F4Rm3a0EZ+kNzP3EoXMZ1Ck68DeZ8/UJSDCwDMOLd0gJBGtCUwoSjt26lw/26ZpQetsZ
-         jiV50yfrrJNcotHscc+WCblqmBss1NDhypbsv6u16bTxHSC5NKoNAfEYt3+wLUBmkdV0
-         SSBOfCuqdd1zokvKwiv4bjPWCSwwcqO3dVHMWIAaPPyU3+skZIMj7gW7unQWjM2+FKFm
-         QVEpWAsAwLrQmXgRtzOiE0qDW7CFpPZH3oXEytlBdyHjGd8TWARYpyLe4mo7fvS4Qf7f
-         tuyw==
-X-Forwarded-Encrypted: i=1; AHgh+RqKYa0mCD1Fs/5Z4tOh+zgG/V7bgMqxUa5XxMeSO5m2sGhTD/4eDUjs8LK+Al7m4KUnvkm6ETo4M58=@vger.kernel.org
-X-Gm-Message-State: AFuF++ky58A2g1wEjTdVOoAYaKDjbz/dI2i7FUowmS2qCavCGTvS8f8B
-	OivmnrASyAjvUeVe9vl+wz+dTBL8EURoeXHibXllTftGtaDUW8kcOJlLa7MTntqp1rfJF4J0RCS
-	GMO9z3ejuIBM1yLD07Li6OvkLCQYCvT+eYdsRmaDk
-X-Gm-Gg: AR+sD11xSTB0q+HH8Xkaf20u+N2dmkKH1Zjxl+mj42KqgsREdDpL/WiVWKVMTlTD1IJ
-	7LZtTV+hFC66ZI3rQcOhBL21l2efuz2cPaChrwlXD5C54biNWll04CQjTbrWEFybaLvVmjapUHU
-	NoNRaZx5HPgsNLRFrjUsJnydvWG5byoMrSvIDO7f6tDzl7pf3b/Xk+XIOEGFksx07gL1RcBjoGd
-	+umD2r93eUOfzv+klEBVOFdrUtweZNOTn+oGtOYtBKUG5aTLZpFar6IvbBMiDy6oE9B22jWQKTH
-	MX4OuG/BAf+vpELy94UzpL0MtXj8ybJpXQpkZcx0QtGx0+pC4H88mYs5ZNz21rbumTzxztPqx1H
-	fgzPQlMswPmtK3G2WwIB+EqKUdU7UU7kQ
-X-Received: by 2002:a17:903:8cc:b0:2d1:1a18:4d0a with SMTP id
- d9443c01a7336-2d74ddc4043mr72395145ad.9.1787886945097; Thu, 27 Aug 2026
- 20:15:45 -0700 (PDT)
-Received: from 474444807712 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 28 Aug 2026 03:15:44 +0000
-Received: from 474444807712 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 28 Aug 2026 03:15:44 +0000
-From: Farhad Alemi <farhad.alemi@berkeley.edu>
-X-Mailer: git-send-email 2.53.0
+	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="rs8D3m3H"
+Received: from mail-nwsmtp-smtp-production-main-60.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-60.sas.yp-c.yandex.net [IPv6:2a02:6b8:c24:25c9:0:640:b4bd:0])
+	by forward102b.mail.yandex.net (postfix) with ESMTPS id 09DCEC03ED;
+	Fri, 28 Aug 2026 09:46:32 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-60.sas.yp-c.yandex.net (smtp) with ESMTPSA id UkYJTrHfKmI0-mdmtgdEh;
+	Fri, 28 Aug 2026 09:46:31 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1787899591; bh=bxoQHMfpMxjQHIwqs9gyUhXJ9gcAAQSVy6NMRG7/W7A=;
+	h=Message-ID:Date:Cc:Subject:To:From;
+	b=rs8D3m3HcLZFh7eYY8L3voRS2b7xN+IhVQxYiUSP8rw2P9K0JLEIHwqKggSc6MOjg
+	 jK3xwig9qgzTvj0aFjh26+QTBPW7BbzjHOFcxV+/LqEFWRzKa/w9nBjXapagJjLjxB
+	 izslBGk1zv3m1i9jFt2t4GvEBqX/Hfk+VdipBvtI=
+Authentication-Results: mail-nwsmtp-smtp-production-main-60.sas.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+From: Dmitry Antipov <dmantipov@yandex.ru>
+To: Robin van der Gracht <robin@protonic.nl>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org,
+	lvc-project@linuxtesting.org,
+	Dmitry Antipov <dmantipov@yandex.ru>
+Subject: [PATCH v3 1/2] can: j1939: make hrtimer callback lockless and free ECUs asyncronously
+Date: Fri, 28 Aug 2026 09:46:20 +0300
+Message-ID: <20260828064621.91364-1-dmantipov@yandex.ru>
+X-Mailer: git-send-email 2.55.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Fri, 28 Aug 2026 03:15:44 +0000
-X-Gm-Features: AcwNN1XK4N9AZ5nSdtzZJJ7gOvoMbccpDuyxz4tcgDKwL6eXRIcA7BljFOFKVRY
-Message-ID: <CA+0ovCjbbonrZ-eWsjT6r7VhBaO7t8M_HCYwWzU5XJDettsd8w@mail.gmail.com>
-Subject: [BUG] can: kvaser_usb: WARN_ON(!dev->cfg) in kvaser_usb_probe() from
- an unhandled clock-frequency encoding
-To: Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: falemi@asu.edu, linux-can@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+In j1939_ecu_map_locked(), it is not needed to lock 'struct j1939_priv'
+just to claim ECU slot. This may be accomplished by using cmpxchg() on
+ECU slot pointer. This way, convert j1939_ecu_map_locked() to
+j1939_ecu_map_atomic() and make j1939_ecu_timer_handler() lockless.
 
-As part of the kernel research at ASU's SEFCOM
-lab, we hit the crash below. Crash reports can be found here:
+Now, if hrtimer handler is lockless, the following calls from multiple
+handlers may trigger concurrent modifications of ECU list:
 
-  https://github.com/farhad-alemi/public_bug_reports/tree/main/123-can-kvaser-warn-null-dev-cfg-kvaser_usb_probe/
+-> j1939_ecu_timer_handler()
+   -> j1939_ecu_put()
+      -> __j1939_ecu_release()
+         -> list_del()
 
-  WARNING: drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c:989
-           at kvaser_usb_probe+0x14a9/0x15e0
+To avoid this, offload actual ECU removal to schedule_work(). Since
+the work handler runs in process context, this is a way better place
+to perform an operation which requires 'struct j1939_priv' locking
+(and suits PREEMPT_RT better as well).
 
-Our reproducer.c is available upon request.
+Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+---
+v3: initial version to join the series
+---
+ net/can/j1939/bus.c        | 27 ++++++++++++++++-----------
+ net/can/j1939/j1939-priv.h |  1 +
+ 2 files changed, 17 insertions(+), 11 deletions(-)
 
-Happy to test a patch if that would help.
+diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
+index cdc3c0a71937..a347594b8c1c 100644
+--- a/net/can/j1939/bus.c
++++ b/net/can/j1939/bus.c
+@@ -14,17 +14,27 @@
+ 
+ #include "j1939-priv.h"
+ 
+-static void __j1939_ecu_release(struct kref *kref)
++static void __j1939_ecu_work(struct work_struct *work)
+ {
+-	struct j1939_ecu *ecu = container_of(kref, struct j1939_ecu, kref);
++	struct j1939_ecu *ecu = container_of(work, struct j1939_ecu, work);
+ 	struct j1939_priv *priv = ecu->priv;
+ 
++	write_lock(&priv->lock);
+ 	list_del(&ecu->list);
+ 	netdev_put(priv->ndev, &ecu->priv_dev_tracker);
+ 	kfree(ecu);
++	write_unlock(&priv->lock);
++
+ 	j1939_priv_put(priv);
+ }
+ 
++static void __j1939_ecu_release(struct kref *kref)
++{
++	struct j1939_ecu *ecu = container_of(kref, struct j1939_ecu, kref);
++
++	schedule_work(&ecu->work);
++}
++
+ void j1939_ecu_put(struct j1939_ecu *ecu)
+ {
+ 	kref_put(&ecu->kref, __j1939_ecu_release);
+@@ -46,26 +56,23 @@ static bool j1939_ecu_is_mapped_locked(struct j1939_ecu *ecu)
+ 
+ /* ECU device interface */
+ /* map ECU to a bus address space */
+-static void j1939_ecu_map_locked(struct j1939_ecu *ecu)
++static void j1939_ecu_map_atomic(struct j1939_ecu *ecu)
+ {
+ 	struct j1939_priv *priv = ecu->priv;
+ 	struct j1939_addr_ent *ent;
+ 
+-	lockdep_assert_held(&priv->lock);
+-
+ 	if (!j1939_address_is_unicast(ecu->addr))
+ 		return;
+ 
+ 	ent = &priv->ents[ecu->addr];
+ 
+-	if (ent->ecu) {
++	if (cmpxchg(&ent->ecu, NULL, ecu)) {
+ 		netdev_warn(priv->ndev, "Trying to map already mapped ECU, addr: 0x%02x, name: 0x%016llx. Skip it.\n",
+ 			    ecu->addr, ecu->name);
+ 		return;
+ 	}
+ 
+ 	j1939_ecu_get(ecu);
+-	ent->ecu = ecu;
+ 	ent->nusers += ecu->nusers;
+ }
+ 
+@@ -129,19 +136,16 @@ static enum hrtimer_restart j1939_ecu_timer_handler(struct hrtimer *hrtimer)
+ {
+ 	struct j1939_ecu *ecu =
+ 		container_of(hrtimer, struct j1939_ecu, ac_timer);
+-	struct j1939_priv *priv = ecu->priv;
+ 
+-	write_lock_bh(&priv->lock);
+ 	/* TODO: can we test if ecu->addr is unicast before starting
+ 	 * the timer?
+ 	 */
+-	j1939_ecu_map_locked(ecu);
++	j1939_ecu_map_atomic(ecu);
+ 
+ 	/* The corresponding j1939_ecu_get() is in
+ 	 * j1939_ecu_timer_start().
+ 	 */
+ 	j1939_ecu_put(ecu);
+-	write_unlock_bh(&priv->lock);
+ 
+ 	return HRTIMER_NORESTART;
+ }
+@@ -156,6 +160,7 @@ struct j1939_ecu *j1939_ecu_create_locked(struct j1939_priv *priv, name_t name)
+ 	if (!ecu)
+ 		return ERR_PTR(-ENOMEM);
+ 	kref_init(&ecu->kref);
++	INIT_WORK(&ecu->work, __j1939_ecu_work);
+ 	netdev_hold(priv->ndev, &ecu->priv_dev_tracker, gfp_any());
+ 	ecu->addr = J1939_IDLE_ADDR;
+ 	ecu->name = name;
+diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
+index cf26352d1d8c..080d5b4c8c23 100644
+--- a/net/can/j1939/j1939-priv.h
++++ b/net/can/j1939/j1939-priv.h
+@@ -37,6 +37,7 @@ struct j1939_ecu {
+ 	/* indicates that this ecu successfully claimed @sa as its address */
+ 	struct hrtimer ac_timer;
+ 	struct kref kref;
++	struct work_struct work;
+ 	struct j1939_priv *priv;
+ 	netdevice_tracker priv_dev_tracker;
+ 
+-- 
+2.55.0
 
-Regards,
