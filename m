@@ -1,218 +1,189 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.220])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0D94371076
-	for <linux-can@vger.kernel.org>; Fri, 28 Aug 2026 17:58:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.220
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787939889; cv=pass; b=g+gln+A44Y/TcII4NvRj8cWKie8fhLNssrvEavSDo4s9D1s3P/KCEh7znR0rGXOxc38vPYKQ5g1fl5HFxjydH9txfogIrUL6rU6v2FfnbsCJypuqxzJRycWZTKF056MZKbxP9IFZET3Cuog67nJcP+FQmc1lQyRURDD3VctDTcg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787939889; c=relaxed/simple;
-	bh=Gx9hpN8EegttVV7XEPKVfZghG6a43LRlYdP47Fhr57U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JzVMMwR6eeuPCpaHI7Qs/M4UKsWL2oErUZd7bZ13nnAOuw2+eKbFeI20v+ochFEWyd9JNG1eqplArDnVGgkxBtdpiRwg/oK/5J/oRDO2q/qi6LbdUgszo4cmat1ShfmNUDiaZyqDKw2tqYX0XxSYzPoWE36MD6G1PXd/XpHrh0I=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=Q511Lk01; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=enQ2/XgH; arc=pass smtp.client-ip=81.169.146.220
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A267834E741
+	for <linux-can@vger.kernel.org>; Fri, 28 Aug 2026 18:43:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1787942624; cv=none; b=hKdUyKnW9jLNSJcJl4jtT/ONgk7mzzPmhDtzode8m5DZsxcMvIPATwdp0XsL9J/FZIS+NNVUQye7psI0Tts1i+jZmNILvPkENIfVRU4oDaYpvNkW0cFixghWhffitZ5XhFXK0xtfj0/g0KD+kQ+R1gyshIw5Oo7XTAUJEjPggNI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1787942624; c=relaxed/simple;
+	bh=uFKQ0s8xluJy9Zpcg8C1QnUtvrA1YtXx82Hhup22bbg=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=maV/fx+E1z0yjKbjXTKUTfBxWIeI9d4kIhobWlWEP5qldoNEupiCJdk533JmaRfCKRVVXROhx1rRMDqP9Yy+jpq7gO8hs64EzYAmXbf/O9ukSl3MPBBBeyqxvApW1QQ9m6y8y0qGZ98qHyZIbICpFFBz4bQWOuq9Kw2L1j3thu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=FhXnOduq; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="Q511Lk01";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="enQ2/XgH"
-ARC-Seal: i=1; a=rsa-sha256; t=1787939885; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=WnxUn2lasRhqTfVBtAPtuhxzpVzVpQGvk7pFok3LElzpeHSa5dczvsyl8EPpdimZEu
-    EFJirst/QSfQ43yKbIpa0HfJf3c+ETqcSsNJXrnWdyAzSvcDeQzv/ff7oc6fuOM49cQx
-    EXRBzxbTfWLbd1zXZcBJIRf/HKAT3cf34k9QnMYHx+5FEUT4rDtSEetclHQ7PVBNiVge
-    3o25y8M4xwxA8fyBfm6qCSVcpkuEtNbjN69nxeNeMoYdlQXWn1fa+eK3neny4wmYhM2B
-    oDNRhWGoyKxynqGuI4HbtOuhdRHHirTLpobhrxHZYuKY2r++8KsCd1ktI2Oe4L7JDtal
-    4BHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1787939885;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=j5mUMTaUVBFntIQLb+xa79EmpZvkHQfxbWGSjFPvL0E=;
-    b=h3ygm08HBpbo9d6PcCSPc6wpTtP559U7Jc4Z203N2xyFXHmKpw6m6tWnHyO8wiCMSJ
-    wJQJRB2kivNrVjhfozcMbowGvooS8IWg7jHD4wUKgry+J6yNN4fUgL7VFJ+rit106Khg
-    Amt6c7nVYTOSp/ycMdEwmCzDi7ZY4bQ2lqkLZdHwBPao+UIgwhmWp5lVmf2T6kaMcwzN
-    trOLKgAfIUECUUr7NPBl7DiIt+01V7Ajaq1Q4Z0ick1xKn98raZEgPXXONzRmTXGfSgX
-    WqZMfCBUJFGfMZpSTKeOcHtBzzPvPtTjiH+r4bMnhvTIg8VsN6btYNyD4xKA3LMzy+F1
-    wM7Q==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1787939885;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=j5mUMTaUVBFntIQLb+xa79EmpZvkHQfxbWGSjFPvL0E=;
-    b=Q511Lk01pnkV+qd7siC3Zuix7uhDCNvZWSSw/pOlBRamXFM+8YmGVccj2YbipMS0Xi
-    fPzy8G+QRqtYci76bzELtsQdroKBE7OU2lCZKPsrcDLQJTnUJHLpswlu3DJ/SASPWulf
-    5DqB9PyP8AfSh/hsrFt9ngyepv3daLSRj1OK19U7jbrB7eybyRdE6nROzOSrckiP3q3M
-    yERm3F/p30W7jzqhlWjdQaSwQN5GlYgimU29NPdU1TkjTASBvgUx3K4hEKNnZYL4/c6y
-    dbyp7qbpVhbFoaoNs9SWMEFWyy9Paf9nex27cqXXFfOrxCu7RRr/9efccB2zKiEjKZSG
-    PX5Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1787939885;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=j5mUMTaUVBFntIQLb+xa79EmpZvkHQfxbWGSjFPvL0E=;
-    b=enQ2/XgHk1ecl6irNb2F1QG42w2lKeKffIrsUTqWtiYG62EO7vCdRoaHKgzyUj7uJq
-    o2S7mSg3tOYM82LzrYCQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTRoMrpo2Pns16vpAmsoU3b36JePbQdxLV17iz30DG9myEfZ52Ao="
-Received: from [IPV6:2003:d5:5703:e700:49e9:5410:25cc:de9c]
-    by smtp.strato.de (RZmta 55.6.2 AUTH)
-    with ESMTPSA id K171b727SHw59nL
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Fri, 28 Aug 2026 19:58:05 +0200 (CEST)
-Message-ID: <11b5411b-5ea3-42f2-a870-5f3baf1b320d@hartkopp.net>
-Date: Fri, 28 Aug 2026 19:57:59 +0200
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="FhXnOduq"
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-482db627cd8so866005f8f.1
+        for <linux-can@vger.kernel.org>; Fri, 28 Aug 2026 11:43:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre.com; s=google; t=1787942621; x=1788547421; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-type:mime-version:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=94qIvbYZT++RxO/2P31L+sX5StAbNx1nSTIfspZGHEQ=;
+        b=FhXnOduqEF3YvJD0kvRFTHXn8KfpF4aUICteto21b+KRBJBlQyW6lpF0NBgFMkp1B4
+         Mcx+yydNQ9G/Y9Z5GPVVQF3fbWxv4NqWkSOt81gvmosJMO3Y1NbzSrx70gHuFxJAzlzU
+         EwGojidVnyIJdFQatgeFX7jXylxPa76U2cgF0Y+/cexULQdG7AYJNHkefVNtisctJEU1
+         Ax2QGUsaIah7F/llgnimZ+hK1CuXmO2UC+PQp7NgbNrM5Uk89W9LMyfAbweQQMtmmSWH
+         A/DeaDbyTYWoTojGe/CF0pyWRC8qoBnUhdFr4cJAqOlLMnrMqDDj/YDXfOesHUK02SGN
+         M8BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787942621; x=1788547421;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-type:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=94qIvbYZT++RxO/2P31L+sX5StAbNx1nSTIfspZGHEQ=;
+        b=Qn3/UF/BT/UU5JtU9D4eASARtN7Tjao1o4i+ZJJ5KcsOpUXscLlO1uVEv97WMMaXeD
+         7qs8dfLGSSvDCPOCDGFzfounVY3WTBTKXkl02qI0WpTtnY5J8inYZwojDQ7jrxa9NM4H
+         /usd69Xyk1lgtyvkJZhP7UbEC+Hvn0OFK8d+H/CAxyRz+LapY4r35QRPfdLcdvfGl9+M
+         2tz+u9OQKiwMeNbY2UkGX1/J7fs74QpnKSnVeBvZbOBFjLhxKXNpgyFLlfAFBd8eG2Qm
+         BP/up8ApXnOm8fugYXa/2nzCC72ugBKktOsEzEdiWBj1OqjSI24zTSNYQQjc9t8S4DSS
+         Yozg==
+X-Forwarded-Encrypted: i=1; AHgh+RpUHiTsAV/qSGN2eZyeGh23fDkJOK7b3XP1VdT/YBN661GHkY3fQHYWh2W6p/mvErr05jZGGBnB12E=@vger.kernel.org
+X-Gm-Message-State: AFuF++knx3itt5ivICIbFIVQRAB7hRN+OtkVBuIJsBJwAH2n8CeCr0JB
+	b4Le+/x/gBYw2mrDpgxN4CjBlvg02WpUcyUcQ5D/UjU2r/0gTmr/mNHfTWCOoUiXIGE=
+X-Gm-Gg: AR+sD10DVxmDx6XDmPWiralLQHPtVmSMqklEcMRUsIFi0X0wVlozBslStqGAow9bLO2
+	vMUsJrOiWnRwRg22w8E29E+Qm+4aORa3ymX+Gyd0nryOKgFYgkF/wnKUSbJHAR0ArV0qlIZ8N1K
+	ZqjY7dcUjPc0jcoL8kbCkpfMajkrCZoXjcyc9QCPyZj8HkdURxCQADRPt0djQJEGq9b6mLzj/Od
+	g0UAQRAfi/1C3Ko9s4Xp9F5f5OfpBXcGlATm/t6rPKfWTChUGKAoBfIb3mHLklftNkNsry1d1OM
+	6Q/5X6LOUbBGASthSkbgynlV978rBM7XSPtGrbjqrJVZbFnIOzYOOh8INoSfxWPvQuhdUEknUX/
+	gc7EICNcUvsecJ0jXmYZQGSjvj+pDzMMOjsmoV5FmxMfTICTO90bc7Xc4+r0OYLSpf/J71Qts3M
+	P+AYqmqM5n379j8On+m1oYEKvlvBsIbQAuLdn1OaASg/HirGHl1gEZDplJ
+X-Received: by 2002:a05:600c:1992:b0:499:593b:a15b with SMTP id 5b1f17b1804b1-49b91c1fc56mr135192265e9.1.1787942620290;
+        Fri, 28 Aug 2026 11:43:40 -0700 (PDT)
+Received: from localhost ([2001:4090:a244:80d4:489b:7642:1b32:84d6])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49b945816f2sm85816455e9.8.2026.08.28.11.43.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Aug 2026 11:43:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/4] can: automate IFF_ECHO flag for generic echo skbs
-To: Vincent Mailhol <mailhol@kernel.org>,
- Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
-References: <20260804-automate_iff_echo_flag-v1-0-26f06ff0f8bc@kernel.org>
- <395d9b68-2527-47d6-a6a0-74569d27b734@hartkopp.net>
- <6800934d-2da2-4eeb-8514-3978f4c7b307@kernel.org>
- <c487793e-df15-4b32-9cfd-dd72648a8af2@hartkopp.net>
- <95290e92-68c4-4ce7-8a1a-7d23b0a268d5@kernel.org>
- <d045b536-efd0-40a6-8357-e04c9db9236b@hartkopp.net>
- <40d8a352-2bfa-417a-bb20-5d28df90069a@kernel.org>
- <721fe2dd-9f42-41e2-a040-3575fb65613e@hartkopp.net>
- <854c0428-b317-429a-9054-67d467a3d817@kernel.org>
- <607de787-e0f2-4872-8021-05431b0e106c@hartkopp.net>
- <5ff4d3ca-0c28-4c8b-8122-f7f6c782fb62@kernel.org>
- <5c08e210-9982-4f0e-a213-058739da0134@hartkopp.net>
- <4ab6f83e-f28f-4882-981b-80ae51afa010@kernel.org>
- <1b0806a1-c21e-44e8-91f6-9db16f3e8bd3@hartkopp.net>
- <1f59b3e6-36fc-490c-bd9f-24ad0c65d80b@kernel.org>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <1f59b3e6-36fc-490c-bd9f-24ad0c65d80b@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: multipart/signed;
+ boundary=a7aa0324e835eeeaba0f23eb03b67331f6e5a492435f41d33f1303199557;
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+Date: Fri, 28 Aug 2026 20:43:30 +0200
+Message-Id: <DL0SRC0352S9.2VXHSPLXP6QZR@baylibre.com>
+Cc: "Kendall Willis" <k-willis@ti.com>, "Markus Schneider-Pargmann"
+ <msp@baylibre.com>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Rob Herring" <robh@kernel.org>, "Krzysztof
+ Kozlowski" <krzk+dt@kernel.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Chandrasekar Ramakrishnan" <rcsekar@samsung.com>, <s-kochidanadu@ti.com>,
+ <a-kaur@ti.com>, <s-tripathi1@ti.com>, <vishalm@ti.com>,
+ <linux-can@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/2] dt-bindings: can: m_can: add out-band-wakeup
+ property
+From: "Markus Schneider-Pargmann" <msp@baylibre.com>
+To: "Conor Dooley" <conor@kernel.org>, "Krzysztof Kozlowski"
+ <krzk@kernel.org>
+X-Mailer: aerc 0.21.0-146-gb5c16ebe1835
+References: <20260821-temp-v3-0-9ac1f8806929@ti.com>
+ <20260821-temp-v3-1-9ac1f8806929@ti.com>
+ <20260821-regulate-recharger-2e984e9591ef@spud>
+ <20260821190511.jwdgox4uocbf4brd@uda0506412>
+ <20260824-public-mashing-252473f928c3@spud>
+ <20260828-antique-lumpy-donkey-51ff42@quoll>
+ <20260828-ladle-hurry-d6f63c45fd19@spud>
+In-Reply-To: <20260828-ladle-hurry-d6f63c45fd19@spud>
 
+--a7aa0324e835eeeaba0f23eb03b67331f6e5a492435f41d33f1303199557
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
+Hi,
 
-On 28.08.26 16:04, Vincent Mailhol wrote:
-> On 28/08/2026 at 14:56, Oliver Hartkopp wrote:
->> On 28.08.26 11:22, Vincent Mailhol wrote:
->>> On 14/08/2026 at 15:27, Oliver Hartkopp wrote:
->>>> On 12.08.26 22:23, Vincent Mailhol wrote:
->>>>> On 10/08/2026 at 20:07, Oliver Hartkopp wrote:
->>>>
->>>>>
->>>>> I am still not convinced. If the goal is transparency, I would
->>>>> rather do
->>>>> it through explicit comments.
->>>>>
->>>>> In can327 and slcan:
->>>>>
->>>>>      /* No echo skb: the device has no TX completion handler. Rely on
->>>>> the
->>>>>       * PF_CAN core for the echo */
->>>>>      alloc_candev(sizeof(..), 0);
->>>>>
->>>>> In grcan and janz-ican3:
->>>>>
->>>>>      /* The device has it own echo skb mechanism, don't use the
->>>>> framework
->>>>>       * echo skb. */
->>>>>      alloc_candev(sizeof(..), 0);
->>>>>      dev->flags |= IFF_ECHO;
->>>>>
->>>>> And that is what I would call transparent.
->>>>
->>>> No. This is modifying bit values where you don't know where any why they
->>>> have been set. We need some top level function naming that makes
->>>> transparent what's going on.
->>>
->>> But this is exactly my point: IFF_ECHO should be set next to where the
->>> echo mechanism is set up, so that we know why the flag is set.
->>
->> The grcan example above shows that alloc_candev(sizeof(..), 0) is
->> underspecified when you want to "automate" things that can not be
->> automated based on the echo skb number.
-> 
-> My point is precisely that grcan's echo handling can not be automated by
-> alloc_candev(). It allocates its echo skb array manually in grcan_open():
-> 
->    priv->echo_skb = kzalloc_objs(*priv->echo_skb, dma->tx.size);
-> 
-> So, because the echo skb setup can not be automated, let's automate
-> *nothing*: neither the skb allocation nor IFF_ECHO.
-> 
-> The rule is simple: does the driver want the framework echo handling?
-> 
->    - yes: we do everything
->    - no: we do nothing
-> 
+On Fri Aug 28, 2026 at 5:46 PM CEST, Conor Dooley wrote:
+> On Fri, Aug 28, 2026 at 11:07:29AM +0200, Krzysztof Kozlowski wrote:
+>> On Mon, Aug 24, 2026 at 05:50:20PM +0100, Conor Dooley wrote:
+>> > On Fri, Aug 21, 2026 at 02:05:11PM -0500, Kendall Willis wrote:
+>> > > On 17:45-20260821, Conor Dooley wrote:
+>> > > > On Fri, Aug 21, 2026 at 11:07:00AM -0500, Kendall Willis wrote:
+>> > > > > Add the out-band-wakeup property as a possible property. The pro=
+perty
+>> > > > > indicates that the device can wakeup the system even when its po=
+wer
+>> > > > > domain is off.
+>> > > > >=20
+>> > > > > Signed-off-by: Kendall Willis <k-willis@ti.com>
+>> > > > > ---
+>> > > > >  Documentation/devicetree/bindings/net/can/bosch,m_can.yaml | 2 =
+++
+>> > > > >  1 file changed, 2 insertions(+)
+>> > > > >=20
+>> > > > > diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_c=
+an.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+>> > > > > index 2c9d37975bedd652b3060ab11ba75c37565edaad..0663beaa532bcc4a=
+71cd6ad01520a4dfea294d0c 100644
+>> > > > > --- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+>> > > > > +++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+>> > > > > @@ -150,6 +150,8 @@ properties:
+>> > > > >      description:
+>> > > > >        List of phandles to system idle states in which mcan can =
+wakeup the system.
+>> > > > > =20
+>> > > > > +  out-band-wakeup: true
+>> > > >=20
+>> > > > Where is "-wakeup" defined genericly, or out-band-wakeup defined t=
+hat
+>> > > > you're getting the property definition from?
+>> > >=20
+>> > > I sent a PR to define out-band-wakeup in the wakeup-source.yaml bind=
+ing
+>> > > in dt-schema repo. I figured it made more sense to be defined in the
+>> > > wakeup-source.yaml binding to allow other drivers the option to use =
+it.
+>> > >=20
+>> > > dt-schema PR:
+>> > > https://github.com/devicetree-org/dt-schema/pull/205
+>> >=20
+>> > This sounds like something you should be able to determine from
+>> > device specific compatibles for these platforms. Not sure why they are
+>> > not used for this particular device, but this is an indication to me
+>> > that that is a mistake.
+>>=20
+>> Yeah, it looks a bit too much replicating Linux PM detail. I can imagine
+>> that some devices on some board are capable of waking up the system even
+>> when power domain is off, but this does not look like a capability of
+>> the actual device, but power domain. Device does not have different
+>> wakeups. (by device I mean this individual schema - Bosch CAN)
+>>=20
+>> Happy to see some bigger picture through DTS or board layouts. Actually
+>> DTS, showing same Bosch CAN devices which are different on a board -
+>> some are wakeups and some out of band wakeups - would illustrate it
+>> better.
+>
+> As far as I could make out when I looked at the patch, "Bosch CAN" is an
+> IP that can be integrated on an SoC rather than a device on the board,
+> so I'm doubting that there's any difference in capability to wake up the
+> device caused by the board at all. If there is, it's between different
+> power domains on the SoC, as you say.
 
-You wanted to have boilerplate code. And now you create a mix of 
-boilerplate code and open coding that likely creates more confusion and 
-errors.
+m_can is an IP that can be integrated on an SoC. But it is also
+built into external chips, like the TI tcan chips that connect via SPI.
+There is also a PCI connected one. Also some SoC integrated m_can
+devices are coupled to the mcu and not the main processor and can't be
+fully accessed from the main processor, e.g. they are missing
+interrupts.
 
->> And this "common" -vs- "special" case breaks the transparency and
->> cleanliness about what is to be configured under the hood of
->> alloc_candev().
->>
->> Maybe we simply need to extend alloc_candev():
->>
->> alloc_candev(int sizeof_priv, unsigned int echo_skb_max, bool echo_mode)
->>
->> This would make clear, what is enabled and allocated without dubious
->> implications nobody can follow easily.
-> 
-> This makes the individual arguments explicit, but it also makes invalid
-> combinations possible. In particular,
-> 
->    alloc_candev(sizeof_priv, n, false)
-> 
+Best
+Markus
 
-First: We all review the newly contributed code - and this is a semantic 
-problem that is easy to identify. In the conversion of the existing 
-drivers there will be no problem, right?
+--a7aa0324e835eeeaba0f23eb03b67331f6e5a492435f41d33f1303199557
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Second: Where is the problem to return NULL in this invalid case? This 
-is not a hot path. But IMO this kind of runtime paranoia checks are not 
-needed as we make reviews ...
+-----BEGIN PGP SIGNATURE-----
 
-> with n non-zero is incorrect. This is the same class of issue we have
-> today, where a driver can call:
-> 
->    alloc_candev(sizeof_priv, n);
-> 
-> and forget to set IFF_ECHO. The extra boolean does not resolve the
-> problem, it just moves it from one place to another.
-> 
-> We have tried several API shapes to cover the grcan and janz-ican3
-> special case, and each of them had its own drawback. To me, this points
-> in one direction: this edge case does not fit naturally in the common
-> API and should remain explicit in the drivers.
+iKMEABYKAEsWIQSJYVVm/x+5xmOiprOFwVZpkBVKUwUCapHW0hsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMiwyLDIRHG1zcEBiYXlsaWJyZS5jb20ACgkQhcFWaZAVSlPK
+jQD8DHnq+T1G9nCDq2EMC6Svj7CjJU7Mv5RnfGSyRke5RHsA/jG7hRjq7u2Ym8Y2
+DkeSrpmFP4mDOYR5dccQlapP16UB
+=hadu
+-----END PGP SIGNATURE-----
 
-When the "edge case does not fit naturally in the common API" your 
-"common API" is just bad.
-
-alloc_candev(int sizeof_priv, unsigned int echo_skb_max, bool echo_mode)
-
-is very clear in the options and features it offers.
-
-So every CAN driver *must* use it. And you can see exactly what it is 
-doing for you when looking at the options. And you can also clearly see 
-the edge cases where we also can add some comment that tells about the 
-different setup.
-
-That is MUCH better than pushing driver developers to open-code the priv 
-allocation or other supported features just because they don't need the 
-entire bundle.
-
-Best regards,
-Oliver
-
+--a7aa0324e835eeeaba0f23eb03b67331f6e5a492435f41d33f1303199557--
