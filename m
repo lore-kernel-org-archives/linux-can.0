@@ -1,30 +1,30 @@
 Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
 	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB5841DED4C;
-	Sun, 30 Aug 2026 12:43:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14E192DEA8F;
+	Sun, 30 Aug 2026 12:53:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788093809; cv=none; b=l34i7NJZ/Qt6BqWNCKDG+D3RdKz5CHcnp60UjY1XV024bEM2nuFg6b61v7aPxE6LlipK7WgGFGOQtNFC7s2njtJego0/XWqHITsESMZ7BMsaaWIjrTWEGBblCH4Wh9qIPf9irUx5HFjOU+fJcpfd5BVtQqRo3S/F8xOZXyo8BII=
+	t=1788094409; cv=none; b=sWvSSyaSnVTcrcRII6u+1apycxvISmf/JpDrdS/Z546icJ1Y/7T98xXeIpMAUz1mMdEvjyl5sWXBrkzjYOvckPftASKRJeY6M4vrDeFtgzzHF7b0kYvjLhy1iQKCxgbsucfXgIBxd/drGHPn6x+TFOKDd3VioIyVpu8iuKG5irs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788093809; c=relaxed/simple;
-	bh=WOPVwHazyUPnvQyAQJZJFZH8rYLme33Mpw49oj2mo/I=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bod2wOoXD6tv30QVX1jipqsy6NlEmbQLtA6+dSkekbkQsna+9Y9Z8nRercDW9BqMOU1vqxYfkEBieKWfC+mAOwP9D92j2MJ3q3yH8Cv/OmluG9be8dQcaSykrsOJr7dv7Vm/ey+rz/uCVuIm9phm5ZVJyyF0OaqCzxKvO75a23M=
+	s=arc-20240116; t=1788094409; c=relaxed/simple;
+	bh=EPd5ms3w1RzfQvz6ciYloATZy/TSHx2EIgphDmbyJos=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rZ2ctKYjT5sAjl2qfdDg6lboq/yRUBJon+J1EhcJ1UJC7pmz1+oLS9Nb5CGtNd4Uc18SqE5ojeuS+VBMcy9uELUIDSMqEZcaWeFT49NwAdPxEgP9HR+3/wH8/9ZjMU7kdydHAb/7djPEOxroUsnajC8I6Bx5I7bCIR8wjPI6/jA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.81
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
 Received: from localhost.localdomain (unknown [111.196.241.250])
-	by APP-03 (Coremail) with SMTP id rQCowAAHED5qJZRq1oiaBg--.39702S2;
-	Sun, 30 Aug 2026 20:43:23 +0800 (CST)
+	by APP-03 (Coremail) with SMTP id rQCowABHUD7EJ5RqfKuaBg--.40012S2;
+	Sun, 30 Aug 2026 20:53:24 +0800 (CST)
 From: Pengpeng Hou <pengpeng@iscas.ac.cn>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: Pengpeng Hou <pengpeng@iscas.ac.cn>,
 	Vincent Mailhol <mailhol@kernel.org>,
 	linux-can@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] can: kvaser_pciefd: validate DMA packet extents
-Date: Sun, 30 Aug 2026 20:43:11 +0800
-Message-ID: <20260830124320.96232-1-pengpeng@iscas.ac.cn>
+Subject: [PATCH] can: kvaser_usb: hydra: validate command prefixes before parsing
+Date: Sun, 30 Aug 2026 20:53:22 +0800
+Message-ID: <20260830125322.98199-1-pengpeng@iscas.ac.cn>
 X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
@@ -33,102 +33,157 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:rQCowAAHED5qJZRq1oiaBg--.39702S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAr45Aw1kKw48Zry8Zr48Crg_yoW5Cw4fpw
-	45KFWYyrZ8tw1avw1xuFs8AryYv3ZxAr1093yIq34FvwnIyr1DW3W093W3KFW0krWIvFyY
-	y34UCrn7GFs5A3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:rQCowABHUD7EJ5RqfKuaBg--.40012S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAryrJFW8uryrZry5CF43GFg_yoWrur4xpa
+	47WFs8tr13Jr45J3ykGrs7Z345W3Z7Gay0v3yru3s3X3WUt3yj9ay0gr1FqFWakry3AFW2
+	ya1jvF90kF1DCFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUkC14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+	1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
 	6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
 	0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
 	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
 	JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
 	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIY
-	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
+	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
 	v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8
-	JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU5oGQDU
+	JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUeKsjUU
 	UUU
 X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
 
-The RX parser reads a packet header and payload before checking the packet
-size. It also compares its word index against the DMA buffer size in bytes,
-allowing the loop index to pass the end of the 4 KiB buffer.
+The Hydra receive paths derive a command length from the current buffer
+before
+checking that a complete command header is available. For an extended
+command
+this also reads the extended length field before proving that field is in
+the
+current USB transfer or saved fragment.
 
-Bound the word index, require the fixed packet header, validate the
-declared packet span, and prove a CAN payload fits before passing it to the
-packet handler.
+Validate the header and extended-length prefix before decoding a command
+length. Keep partial prefixes in the existing leftover buffer until enough
+bytes arrive to establish the command extent, and reject invalid extents.
 
-Fixes: 26ad340e582d ("can: kvaser_pciefd: Add driver for Kvaser PCIEcan devices")
+Fixes: aec5fb2268b7 ("can: kvaser_usb: Add support for Kvaser USB hydra family")
 Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
 ---
- drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 76 +++++++++++++++++++++--
+ 1 file changed, 70 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c b/drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c
-index d8c9bfb202304..354a9e29a056e 100644
---- a/drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c
-+++ b/drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c
-@@ -1552,6 +1552,7 @@ static int kvaser_pciefd_read_packet(struct kvaser_pciefd *pcie, int *start_pos,
- 				     int dma_buf)
- {
- 	__le32 *buffer = pcie->dma_data[dma_buf];
-+	const int buffer_words = KVASER_PCIEFD_DMA_SIZE / sizeof(*buffer);
- 	__le64 timestamp;
- 	struct kvaser_pciefd_rx_packet packet;
- 	struct kvaser_pciefd_rx_packet *p = &packet;
-@@ -1560,11 +1561,16 @@ static int kvaser_pciefd_read_packet(struct kvaser_pciefd *pcie, int *start_pos,
- 	int size;
- 	int ret = 0;
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+index efbb7bed34c9d..92c78fa690281 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+@@ -536,6 +536,30 @@ static size_t kvaser_usb_hydra_cmd_size(struct kvaser_cmd *cmd)
+ 	return ret;
+ }
  
-+	if (*start_pos < 0 || *start_pos >= buffer_words)
-+		return -EIO;
++static int kvaser_usb_hydra_cmd_len(const void *buf, size_t len,
++				    size_t *cmd_len)
++{
++	const struct kvaser_cmd *cmd = buf;
 +
- 	size = le32_to_cpu(buffer[pos++]);
- 	if (!size) {
- 		*start_pos = 0;
- 		return 0;
- 	}
-+	if (size < 5 || size > buffer_words - *start_pos)
-+		return -EIO;
++	if (len < sizeof(cmd->header))
++		return -EMSGSIZE;
++
++	if (cmd->header.cmd_no != CMD_EXTENDED) {
++		*cmd_len = sizeof(*cmd);
++		return 0;
++	}
++
++	if (len < offsetofend(struct kvaser_cmd_ext, len))
++		return -EMSGSIZE;
++
++	*cmd_len = le16_to_cpu(((const struct kvaser_cmd_ext *)cmd)->len);
++	if (*cmd_len < offsetofend(struct kvaser_cmd_ext, cmd_no_ext) ||
++	    *cmd_len > KVASER_USB_HYDRA_MAX_CMD_LEN)
++		return -EINVAL;
++
++	return 0;
++}
++
+ static struct kvaser_usb_net_priv *
+ kvaser_usb_hydra_net_priv_from_cmd(const struct kvaser_usb *dev,
+ 				   const struct kvaser_cmd *cmd)
+@@ -675,8 +699,10 @@ static int kvaser_usb_hydra_wait_cmd(const struct kvaser_usb *dev, u8 cmd_no,
+ 			size_t cmd_len;
  
- 	p->header[0] = le32_to_cpu(buffer[pos++]);
- 	p->header[1] = le32_to_cpu(buffer[pos++]);
-@@ -1577,13 +1583,22 @@ static int kvaser_pciefd_read_packet(struct kvaser_pciefd *pcie, int *start_pos,
- 	type = FIELD_GET(KVASER_PCIEFD_PACKET_TYPE_MASK, p->header[1]);
- 	switch (type) {
- 	case KVASER_PCIEFD_PACK_TYPE_DATA:
-+		if (!(p->header[0] & KVASER_PCIEFD_RPACKET_RTR)) {
-+			u8 data_len, data_words;
+ 			tmp_cmd = buf + pos;
+-			cmd_len = kvaser_usb_hydra_cmd_size(tmp_cmd);
+-			if (pos + cmd_len > actual_len) {
++			err = kvaser_usb_hydra_cmd_len(tmp_cmd, actual_len - pos,
++						       &cmd_len);
++			if (err || cmd_len > actual_len - pos ||
++			    cmd_len > sizeof(*cmd)) {
+ 				dev_err_ratelimited(&dev->intf->dev,
+ 						    "Format error\n");
+ 				break;
+@@ -2121,12 +2147,44 @@ static void kvaser_usb_hydra_read_bulk_callback(struct kvaser_usb *dev,
+ 	usb_rx_leftover_len = card_data->usb_rx_leftover_len;
+ 	if (usb_rx_leftover_len) {
+ 		int remaining_bytes;
++		int err;
++		size_t needed;
+ 
+ 		cmd = (struct kvaser_cmd *)card_data->usb_rx_leftover;
+ 
+-		cmd_len = kvaser_usb_hydra_cmd_size(cmd);
++		while (true) {
++			err = kvaser_usb_hydra_cmd_len(cmd, usb_rx_leftover_len,
++						       &cmd_len);
++			if (err != -EMSGSIZE)
++				break;
 +
-+			data_len = can_fd_dlc2len(FIELD_GET(KVASER_PCIEFD_RPACKET_DLC_MASK,
-+							    p->header[1]));
-+			data_words = DIV_ROUND_UP(data_len, sizeof(*buffer));
-+			if (data_words > *start_pos + size - pos)
-+				return -EIO;
++			needed = sizeof(cmd->header);
++			if (usb_rx_leftover_len >= needed &&
++			    cmd->header.cmd_no == CMD_EXTENDED)
++				needed = offsetofend(struct kvaser_cmd_ext, len);
++
++			remaining_bytes = min_t(unsigned int, len - pos,
++						needed - usb_rx_leftover_len);
++			memcpy(card_data->usb_rx_leftover + usb_rx_leftover_len,
++			       buf + pos, remaining_bytes);
++			usb_rx_leftover_len += remaining_bytes;
++			pos += remaining_bytes;
++
++			if (remaining_bytes == 0) {
++				card_data->usb_rx_leftover_len = usb_rx_leftover_len;
++				spin_unlock_irqrestore(usb_rx_leftover_lock, irq_flags);
++				return;
++			}
 +		}
- 		ret = kvaser_pciefd_handle_data_packet(pcie, p, &buffer[pos]);
- 		if (!(p->header[0] & KVASER_PCIEFD_RPACKET_RTR)) {
- 			u8 data_len;
  
- 			data_len = can_fd_dlc2len(FIELD_GET(KVASER_PCIEFD_RPACKET_DLC_MASK,
- 							    p->header[1]));
--			pos += DIV_ROUND_UP(data_len, 4);
-+			pos += DIV_ROUND_UP(data_len, sizeof(*buffer));
- 		}
- 		break;
+-		remaining_bytes = min_t(unsigned int, len,
++		if (err) {
++			dev_err(&dev->intf->dev, "Format error\n");
++			card_data->usb_rx_leftover_len = 0;
++			spin_unlock_irqrestore(usb_rx_leftover_lock, irq_flags);
++			return;
++		}
++
++		remaining_bytes = min_t(unsigned int, len - pos,
+ 					cmd_len - usb_rx_leftover_len);
+ 		/* Make sure we do not overflow usb_rx_leftover */
+ 		if (remaining_bytes + usb_rx_leftover_len >
+@@ -2152,11 +2210,17 @@ static void kvaser_usb_hydra_read_bulk_callback(struct kvaser_usb *dev,
+ 	spin_unlock_irqrestore(usb_rx_leftover_lock, irq_flags);
  
-@@ -1640,7 +1655,8 @@ static int kvaser_pciefd_read_buffer(struct kvaser_pciefd *pcie, int dma_buf)
+ 	while (pos < len) {
++		int err;
++
+ 		cmd = buf + pos;
  
- 	do {
- 		res = kvaser_pciefd_read_packet(pcie, &pos, dma_buf);
--	} while (!res && pos > 0 && pos < KVASER_PCIEFD_DMA_SIZE);
-+	} while (!res && pos > 0 &&
-+		 pos < KVASER_PCIEFD_DMA_SIZE / sizeof(__le32));
+-		cmd_len = kvaser_usb_hydra_cmd_size(cmd);
++		err = kvaser_usb_hydra_cmd_len(cmd, len - pos, &cmd_len);
++		if (err == -EINVAL) {
++			dev_err(&dev->intf->dev, "Format error\n");
++			return;
++		}
  
- 	/* Report ACKs in this buffer to BQL en masse for correct periods */
- 	for (i = 0; i < pcie->nr_channels; ++i) {
+-		if (pos + cmd_len > len) {
++		if (err == -EMSGSIZE || cmd_len > len - pos) {
+ 			/* We got first part of a command */
+ 			int leftover_bytes;
 
 base-commit: 08dbfad3f5040f5bdb6c529da20d6d4e81fefd72
 -- 
