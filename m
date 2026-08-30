@@ -1,148 +1,135 @@
-Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A49C03B14A2;
-	Sun, 30 Aug 2026 12:56:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B068C19049B
+	for <linux-can@vger.kernel.org>; Sun, 30 Aug 2026 13:02:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788094610; cv=none; b=ur1uQ/C3QnU9Onw5OAW8CcvaDnToqh57YgWFhQR8pE2tjTAObaP62OFkDcdEiQPXBh7ODCpyLxMoAyaea5h/byYFd9/NwxVE+RomofRlIY9LxUEQ3K7cn3ulM0KDZmaMykUrEvwfzV80sp+1mCNX7nXPX0skvL2rPDaV+8DokbI=
+	t=1788094975; cv=none; b=SbBbuJNia6KKKO96KHkyFnJHYWCD/JfXjEQq2pa+9YEzpbW3eQ1XTZog4+mFWJ5c/vAsVUqgP+qj3DRF2KiLjpBAdN1+1/VJmAxvELP7NKP8VQQ0Mxh53glGu6Us4fBHJOu5T9JfJt4r2gUMY34zpWytt/hcg6pa2aiDGvDAsQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788094610; c=relaxed/simple;
-	bh=EYqv2UdLoOpfRHOPMtK7q1k4fVrA4/Y0nigXs2sCR8o=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=B5MomV84ilI0BVPhTTEBkkvblc95OA+zYIZUieP+BhDFor1WLnSkR2dpUa12OD7RHuPSW9pEjR6BLEc7b+ju2FsC5NyDx0l0hc6AHGaGwoUBc02Focfsdjn/sCwQYVkDARLy+mPFOnbZO8Qzy6mxf6c9MBmJwuSKdcGnziGDnpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from localhost.localdomain (unknown [111.196.241.250])
-	by APP-03 (Coremail) with SMTP id rQCowAC3wT+JKJRqd7WaBg--.22668S2;
-	Sun, 30 Aug 2026 20:56:42 +0800 (CST)
-From: Pengpeng Hou <pengpeng@iscas.ac.cn>
-To: Frank Jungclaus <frank.jungclaus@esd.eu>
-Cc: Pengpeng Hou <pengpeng@iscas.ac.cn>,
-	socketcan@esd.eu,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>,
-	linux-can@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] can: esd_usb: validate receive message extents
-Date: Sun, 30 Aug 2026 20:56:40 +0800
-Message-ID: <20260830125640.98787-1-pengpeng@iscas.ac.cn>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1788094975; c=relaxed/simple;
+	bh=AuOibtML9SEnNddmZVyOZLBo8leksJMcLN/88FmowOs=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=dcAgNgMwHNlN+sj1lPG8votb3AV84r+uKxQ0I7T1P/YMVuON8Ag4eThufjky450vsArJOMOjFvqm4EJucikvso1FlO7AZhXuvKYrJS60Vi+oSqeBoCHutrZammoObN2Z5bWdv23PrBAIDkP9zuN/yjwFouQQYwTFt7feXDVkJfo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kz4SjQ0N; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kz4SjQ0N"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16A051F000E9;
+	Sun, 30 Aug 2026 13:02:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788094973;
+	bh=DnZHKqCw8niGefvhtM/gI9Qp2+82DXwaUyKZrIBEDH0=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=kz4SjQ0NUYtEBXUnD+vGkspNLYRFBuM9f36N9B0Aw1BD3LgVITw+Dtu1it3cGofhp
+	 m5oet+qhgydZw+LF2+K5iPdi2NnbMDIpIomaWQAzzJ21PPiCzVvyfJnwWvtZCkrSyx
+	 H+CQgNySpFOnmOhlSqgmXUWcFlnimudpV00kdb0T9OeMfbJA9z9QVv5Ckigh6osvR3
+	 IH4g6ELJ09d/1oCgKvxykgt+jZ5KSyUg/vU7WlnwCe3lxpr+xD4fdwrqa14CniZqev
+	 vqhyIuGtE/BP2rPWvmx06Ny/kl5WptznZ2rwn3xNw+1a2JHluL1PLa7BbcnYC5l7kJ
+	 ekAn9y70uPohA==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH] can: kvaser_usb: hydra: validate command prefixes
+ before parsing
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Pengpeng Hou" <pengpeng@iscas.ac.cn>
+Cc: "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Marc Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org
+In-Reply-To: <20260830125322.98199-1-pengpeng@iscas.ac.cn>
+References: <20260830125322.98199-1-pengpeng@iscas.ac.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Sun, 30 Aug 2026 13:02:52 +0000
+Message-Id: <20260830130253.16A051F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:rQCowAC3wT+JKJRqd7WaBg--.22668S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxuF1xKrW5Gr4xWr4DWr1UGFg_yoW5Wry5pF
-	WxAF15trs8tFZxA39xZw4kAw15A3Z7Ja4xKryfG3Z3C3sIq3WUW34DKFy2qFyvkr4ak34a
-	qFW7tFWUur4DJrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-	6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-	0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
-	JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
-	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIY
-	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
-	v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8
-	JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUO73vUU
-	UUU
-X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
 
-The bulk callback reads the message command before proving that the current
-URB remainder contains a header and dispatches CAN messages before checking
-the declared message span. Short records can therefore be consumed before
-the later position check.
+Thank you for your contribution! Sashiko AI review found 2 potential issue(=
+s) to consider:
+- [High] Incorrect command length check in `kvaser_usb_hydra_wait_cmd` inco=
+rrectly drops valid extended commands.
+- [High] Incorrect memory copy source pointer corrupts fragmented command a=
+ssembly.
+--
 
-Validate the common header, declared record extent, and command-specific
-payload before dispatch.
+commit 1cbbe99543052600da4f97d992d3e51a35e561aa
+Author: Pengpeng Hou <pengpeng@iscas.ac.cn>
 
-Fixes: 96d8e90382dc ("can: Add driver for esd CAN-USB/2 device")
-Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
----
- drivers/net/can/usb/esd_usb.c | 46 +++++++++++++++++++++++++++++++++++++------
- 1 file changed, 40 insertions(+), 6 deletions(-)
+can: kvaser_usb: hydra: validate command prefixes before parsing
 
-diff --git a/drivers/net/can/usb/esd_usb.c b/drivers/net/can/usb/esd_usb.c
-index f41d4a0d140f7..1112af5d41d9c 100644
---- a/drivers/net/can/usb/esd_usb.c
-+++ b/drivers/net/can/usb/esd_usb.c
-@@ -482,6 +482,33 @@ static void esd_usb_tx_done_msg(struct esd_usb_net_priv *priv,
- 	netif_wake_queue(netdev);
- }
- 
-+static bool esd_usb_rx_msg_valid(const union esd_usb_msg *msg, size_t len)
-+{
-+	size_t data_offset = offsetof(struct esd_usb_rx_msg, data);
-+	u32 id;
-+	u8 data_len;
-+
-+	if (msg->hdr.cmd == ESD_USB_CMD_CAN_TX)
-+		return len >= sizeof(struct esd_usb_tx_done_msg);
-+	if (msg->hdr.cmd != ESD_USB_CMD_CAN_RX)
-+		return true;
-+	if (len < data_offset)
-+		return false;
-+
-+	id = le32_to_cpu(msg->rx.id);
-+	if (id & ESD_USB_EVENT)
-+		return len >= data_offset + sizeof(msg->rx.ev_can_err_ext);
-+
-+	if (msg->rx.dlc & ESD_USB_FD)
-+		data_len = can_fd_dlc2len(msg->rx.dlc);
-+	else if (msg->rx.dlc & ESD_USB_RTR)
-+		data_len = 0;
-+	else
-+		data_len = can_cc_dlc2len(msg->rx.dlc);
-+
-+	return len >= data_offset + data_len;
-+}
-+
- static void esd_usb_read_bulk_callback(struct urb *urb)
- {
- 	struct esd_usb *dev = urb->context;
-@@ -507,8 +534,20 @@ static void esd_usb_read_bulk_callback(struct urb *urb)
- 
- 	while (pos < urb->actual_length) {
- 		union esd_usb_msg *msg;
-+		size_t msg_len;
-+		int remaining = urb->actual_length - pos;
- 
-+		if (remaining < sizeof(msg->hdr)) {
-+			dev_err(dev->udev->dev.parent, "format error\n");
-+			break;
-+		}
- 		msg = (union esd_usb_msg *)(urb->transfer_buffer + pos);
-+		msg_len = msg->hdr.len * sizeof(u32);
-+		if (msg_len < sizeof(msg->hdr) || msg_len > remaining ||
-+		    !esd_usb_rx_msg_valid(msg, msg_len)) {
-+			dev_err(dev->udev->dev.parent, "format error\n");
-+			break;
-+		}
- 
- 		switch (msg->hdr.cmd) {
- 		case ESD_USB_CMD_CAN_RX:
-@@ -531,12 +570,7 @@ static void esd_usb_read_bulk_callback(struct urb *urb)
- 			break;
- 		}
- 
--		pos += msg->hdr.len * sizeof(u32); /* convert to # of bytes */
--
--		if (pos > urb->actual_length) {
--			dev_err(dev->udev->dev.parent, "format error\n");
--			break;
--		}
-+		pos += msg_len;
- 	}
- 
- resubmit_urb:
+The Hydra receive paths derive a command length from the current buffer
+before checking that a complete command header is available. This commit
+validates the header and extended-length prefix before decoding a command
+length.
 
-base-commit: 08dbfad3f5040f5bdb6c529da20d6d4e81fefd72
--- 
-2.50.1
+> diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/=
+net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+> --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+> +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
 
+[ ... ]
+
+> @@ -675,8 +699,10 @@ static int kvaser_usb_hydra_wait_cmd(const struct kv=
+aser_usb *dev, u8 cmd_no,
+>  			size_t cmd_len;
+> =20
+>  			tmp_cmd =3D buf + pos;
+> -			cmd_len =3D kvaser_usb_hydra_cmd_size(tmp_cmd);
+> -			if (pos + cmd_len > actual_len) {
+> +			err =3D kvaser_usb_hydra_cmd_len(tmp_cmd, actual_len - pos,
+> +						       &cmd_len);
+> +			if (err || cmd_len > actual_len - pos ||
+> +			    cmd_len > sizeof(*cmd)) {
+
+[Severity: High]
+Does this cmd_len > sizeof(*cmd) check unintentionally reject valid
+extended commands?
+
+Since kvaser_usb_hydra_cmd_len() correctly calculates the length of extended
+commands (which can be larger than sizeof(struct kvaser_cmd)), it seems this
+check will evaluate to true and trigger a format error when an extended
+command arrives, terminating buffer processing prematurely.
+
+>  				dev_err_ratelimited(&dev->intf->dev,
+>  						    "Format error\n");
+>  				break;
+
+[ ... ]
+
+> @@ -2121,12 +2147,44 @@ static void kvaser_usb_hydra_read_bulk_callback(s=
+truct kvaser_usb *dev,
+
+[ ... ]
+
+> +		if (err) {
+> +			dev_err(&dev->intf->dev, "Format error\n");
+> +			card_data->usb_rx_leftover_len =3D 0;
+> +			spin_unlock_irqrestore(usb_rx_leftover_lock, irq_flags);
+> +			return;
+> +		}
+> +
+> +		remaining_bytes =3D min_t(unsigned int, len - pos,
+>  					cmd_len - usb_rx_leftover_len);
+>  		/* Make sure we do not overflow usb_rx_leftover */
+>  		if (remaining_bytes + usb_rx_leftover_len >
+
+[Severity: High]
+Does the leftover command assembly copy from the wrong source pointer?
+
+The new while loop added just above this snippet can advance pos as it
+consumes bytes to complete the command header. However, looking slightly
+further down in kvaser_usb_hydra_read_bulk_callback(), the memcpy() copying
+the remaining payload still reads directly from buf rather than buf + pos:
+
+    memcpy(card_data->usb_rx_leftover + usb_rx_leftover_len, buf,
+           remaining_bytes);
+    pos +=3D remaining_bytes;
+
+If pos was advanced by the header completion loop, won't this copy duplicate
+header bytes from the beginning of the USB transfer instead of the actual
+remainder of the command payload?
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260830125322.9819=
+9-1-pengpeng@iscas.ac.cn?part=3D1
