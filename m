@@ -1,70 +1,70 @@
-Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazon11012028.outbound.protection.outlook.com [52.101.66.28])
+Received: from DU2PR03CU002.outbound.protection.outlook.com (mail-northeuropeazon11011015.outbound.protection.outlook.com [52.101.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 357CC3E025C;
-	Mon, 31 Aug 2026 08:36:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.66.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 581532FBDE0;
+	Mon, 31 Aug 2026 08:51:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.65.15
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788165396; cv=fail; b=a+G3QHcSw+18t6v0ImTfld2iZL+z7jlxhF/gfkpkPP14z7lFBtdhv7cTazNBrpvsHTB4gxMmUeiNjHf/vrUdbC3VhU6RBuUm+b3akOKxv6HvDZcpvS2UrLxkcq0UC8tQPv9LQr1iJKebGq5dX4WID5v0JyQKGPXPklcpAQD4N/w=
+	t=1788166308; cv=fail; b=DIl7hlcdb4coTv/5hBOVIbVDJhqpxEcxlagxycn5SDpLFUKyqxAkGiZMNG3lhrf6MAWGU4Obmcu/i4GG8ruzIDMMT9gdKw4IVZ9L++0sezaisnZ1gWsfRe5kikSwylVAktg7KLN3TXcYUfkdaDc+CJ4DmBZKgx3wOBMC1E7rU3U=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788165396; c=relaxed/simple;
-	bh=wyB2WDaOgRZK9lVHWt2oPoQbnnM7MIX40zkztphMy78=;
+	s=arc-20240116; t=1788166308; c=relaxed/simple;
+	bh=6ifz7vQ++bj6xJPc9OTcXsFmKJp53blZxrNRPvvleIo=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=kbNQmcwqP0aECI/DeU6N0m0jGzNsCOU1od3oajvd1FcXnez9jlvPmEJiCWQx7GmTLU1YvWkGH0xKwGzwPHWJH9mob3Xi8PnnG2hXUO2iEkVG9B1lCkkJVeO/lCEZXISHnjIL775QhBc+qPz4gfTiyy4otttQpyafR495qYx0IEI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (2048-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=lCJtJq1j; arc=fail smtp.client-ip=52.101.66.28
+	 Content-Type:MIME-Version; b=g/vfrOQy5H5czYfWH8vjNbNJx3gFvpyt6awl/seBQOUJSnMDzXw/N5zrY8QuEuEHSuG1K21EPvgeV8meVJCkOV/HPvxJOhGqX+/wy/wqtU5H6doLoh42oqTC1EIipcmOmPHG5Di7xFYSfs+3m0rzu2oTRPh+KNqz11UJQaYTdDY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (2048-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=HQgy3Pv/; arc=fail smtp.client-ip=52.101.65.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="lCJtJq1j"
+	dkim=pass (2048-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="HQgy3Pv/"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=XwQVRBp74jpgWtS5XLjgvjEJT7h5iTPwUMY2eon4lheWe2FNXccplBVI6VXTCrL+nRVcVLw2jwW5WsV5fgLV9+WLcmOSoFey9pcZelEjzg63oy9WeMMCH554E+DQxnsQKpRQGvfaiYRboHxpeEiMR6FrclBXlKTfGxbpGgXKfSf3hULVsHvPaFI2XR3T35xCAFlU6CTPq3kpUr05WQojIr+IrvJBSg4j+b4DmmsecYcM5hWA6COOpbtg1ndXeZvQMEhmn4SsAcvKeHHPoJgLx2b9EOhpMz7jANsTI6hExnVWb3cezuD0nQUFECM9K/I1MPUopcBDCL/aEok7iDz80Q==
+ b=Z7G9XzG8ect4KhJDWkSZffGUqyha03hzoXTGHKfl/2/0tfW2/407yxgQxDvZfWs6K2i5wKGgvU+PUYz/2dIf4T+FR3dVrMcKdkIJ1DPJL6kgadg4QdrZYVX/VgiICgh/0E0Ii+LQnCjc3X6cX4OAXdYdbXQA2N6V42LkIU+5OGrW46lbP5rSae6AE7SV7adQE6P3CUYHW7+mwLIBxxoMxcoycrb08DoHoXltJblCMSAuBVS6UPWIDbQ3sHoaji0mZPBeT6fsGWXvBSdygVonK6rlvVCg0ArMhxHyZVUFswpzTkwQvl+xXR2sxc18lzF16B/bx8KRtPbG81PXOaq8xg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3cv5k6A3l8RfPBF6NTBAlkfVnr5OzCMVvF2XAa36s50=;
- b=ZX0cpz/Zbm6gqXOMn/F9N2JawrEJksoxNIz/BAJLRvf9O8qzN0EL3ZD15oqUyRvJWj6E9r+RQkXcQMzGPhL0unjG7hSVZRd7NOi3ckLZug/uVjvRXpHg/paU+9ypF3en0yLzC5BAudnwd1aOyqhJHPddqrzEY+OrpNwF6UmgKF/jA7ggUREvW0qMLqdWA29fbRnDcY/mrYa+mbRK2Pv+SZXxTZg/X308y3RAaEQyYn3JqjbTxvdwtxpTAmlzh4hdfZRXSeFaF58BKvIdAqJjUsTxUl+uuY5kGJdS32teILCTrlDKSpwnpvCJuD85prjKtTyfEjKmxZGjhWKe/ZKAeg==
+ bh=PhacesnqQl1WiqjaUV1wauuGmBSB6RCk7RgM7wkjplw=;
+ b=rZFaL/UxSTHF4VZqRlzKPIWjkv6B+Gqn/uyM6yoYv5FTxL0Wmf/avmIic9s/hf5muWJMZHs0p2VWfsl1/xNP1RGZHyQIJ0UQjjuKc/lw2zncaxO16SrQrutMdtfdhNiiPCG4FmM/teG9b7rPZXRzQpf3GqILnJzqhWfVJ5MynFn4qT/B+DlhiHOO385HHHDDiIIgHIRSereabrWvqUkakf3QZh7UekPAiLhbCrARv+Cqd5mnCAmDRamhEpmMi/EXOSwxnh8Z3y+40FZGx3CqzV+UkjyggPkJAuxdT9xBv35eRokaNJNXHolQuSjLwts11d7HukgslMXVj6x5HJzidg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector1-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3cv5k6A3l8RfPBF6NTBAlkfVnr5OzCMVvF2XAa36s50=;
- b=lCJtJq1jqDuEuQoWdB+gYrmfH2u0nPiDJDQJlpeB1eRg7sHDOWTrkCT+cggKkRv1R9L344TLNaUjSFDVY+a6YJgeb0KuC3AV7eEe5JBKus2Mecq5dKS6bc9RkQiC5bl4ELlzrHJTBXANGSxtkTRm7StebtDz3wMc1Oa6IwaGQF2npj5Xgrf54JfH/HuQ0LpIMQc04Sn6pzuFMgE7oLXltYUtL+VTgiaVLChafzf2ZkCwfNOzBTSG+cjF/5ZniJWxc9sEcS61ixEYmUgpmeWRTqAf5xey8JB9UgFV/skeWEXYCtOQS8dI6+gHan4mRhRlJaf93Tm8VlE/6y9RNTPVpw==
+ bh=PhacesnqQl1WiqjaUV1wauuGmBSB6RCk7RgM7wkjplw=;
+ b=HQgy3Pv/l41QbdQ4fO/A9hwQPAok02hEcnOmbz1vVA80p6+Up1LDhh2nzQu0qAfFsJyW57j4mZ1IJfGjISz8VOmt/X5jUm8HidZzB7cwBwPMV80i8MuWLjPwXmXpqcm+2C2SIUg/3prumWQsk3VF/mRqdP6AH1r8mrE3/LlsAecCRKGzY2fQK+BO/07ZBeHPck2+lhuJBjPC4NsS3nQsNjL5uX1HWFP9MRu9epS1RKgr99hRVno0g8ToIXzP4rQUFCG3zCb8OON68QVejVD2PD7c12sp+msefrF4PZWj1TBPbMq5nrjZ0V+y/ZXg4NgVkpm6gNjmeHPVg6jp7oJJVA==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=oss.nxp.com;
 Received: from AM0PR04MB5858.eurprd04.prod.outlook.com (2603:10a6:208:132::23)
- by DU6PR04MB11157.eurprd04.prod.outlook.com (2603:10a6:10:5c2::19) with
+ by DU4PR04MB12151.eurprd04.prod.outlook.com (2603:10a6:10:640::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.360.13; Mon, 31 Aug
- 2026 08:36:02 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.360.8; Mon, 31 Aug
+ 2026 08:51:42 +0000
 Received: from AM0PR04MB5858.eurprd04.prod.outlook.com
  ([fe80::bdf4:c9d1:4e3f:68c6]) by AM0PR04MB5858.eurprd04.prod.outlook.com
  ([fe80::bdf4:c9d1:4e3f:68c6%3]) with mapi id 15.21.0360.008; Mon, 31 Aug 2026
- 08:36:01 +0000
-Message-ID: <b55b79a1-a20d-4c61-b02f-dac64d1d32a6@oss.nxp.com>
-Date: Mon, 31 Aug 2026 11:35:52 +0300
+ 08:51:42 +0000
+Message-ID: <0bf5e10a-a3f6-4f71-a23b-d065cc5681a4@oss.nxp.com>
+Date: Mon, 31 Aug 2026 11:51:39 +0300
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 1/6] can: flexcan: use dedicated IRQ handlers for
- multi-IRQ platforms
+Subject: Re: [PATCH v6 2/6] can: flexcan: disable all IRQ lines in
+ flexcan_chip_interrupts_enable()
 To: Bough Chen <haibo.chen@oss.nxp.com>, sashiko-reviews@lists.linux.dev
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, devicetree@vger.kernel.org,
- Frank.Li@kernel.org, imx@lists.linux.dev, linux-can@vger.kernel.org,
- robh@kernel.org, conor+dt@kernel.org,
- Oliver Hartkopp <socketcan@hartkopp.net>,
- Vincent Mailhol <mailhol@kernel.org>,
- Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: linux-can@vger.kernel.org, imx@lists.linux.dev, robh@kernel.org,
+ Frank.Li@kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+ Vincent Mailhol <mailhol@kernel.org>, conor+dt@kernel.org,
+ Oleksij Rempel <o.rempel@pengutronix.de>,
+ Oliver Hartkopp <socketcan@hartkopp.net>, devicetree@vger.kernel.org,
+ s32@nxp.com
 References: <20260713085306.2643794-1-ciprianmarian.costea@oss.nxp.com>
- <20260713085306.2643794-2-ciprianmarian.costea@oss.nxp.com>
- <20260713090746.D2B4B1F000E9@smtp.kernel.org>
- <20260824083241.4spcdohbsot6x4wc@shlinux89>
+ <20260713085306.2643794-3-ciprianmarian.costea@oss.nxp.com>
+ <20260713090705.9F7671F000E9@smtp.kernel.org>
+ <20260824085716.ejrveo5udehy4ijc@shlinux89>
 Content-Language: en-US
 From: Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>
-In-Reply-To: <20260824083241.4spcdohbsot6x4wc@shlinux89>
+In-Reply-To: <20260824085716.ejrveo5udehy4ijc@shlinux89>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM0PR02CA0177.eurprd02.prod.outlook.com
- (2603:10a6:20b:28e::14) To AM0PR04MB5858.eurprd04.prod.outlook.com
+X-ClientProxiedBy: FR4P281CA0246.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:f5::15) To AM0PR04MB5858.eurprd04.prod.outlook.com
  (2603:10a6:208:132::23)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
@@ -74,275 +74,163 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB5858:EE_|DU6PR04MB11157:EE_
-X-MS-Office365-Filtering-Correlation-Id: b21cde15-5415-446b-26de-08df073ae381
+X-MS-TrafficTypeDiagnostic: AM0PR04MB5858:EE_|DU4PR04MB12151:EE_
+X-MS-Office365-Filtering-Correlation-Id: 11cdd3bc-2664-4562-3763-08df073d1403
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|366016|19092799006|1800799024|376014|23010399003|18002099003|22082099003|56012099006|4143699003|11063799006|5023799004|6133799003|10067099003;
+	BCL:0;ARA:13230040|19092799006|376014|7416014|366016|23010399003|1800799024|10067099003|6133799003|18002099003|22082099003|11063799006|56012099006|4143699003;
 X-Microsoft-Antispam-Message-Info:
-	xHt7nu8t2oWqxwxVRhMFq0kkgL181fvK/OPX2bvPvbizntdZDuX1D2CvoSJfGSQFYwCzo3y+kZUHj0/U2pEo6DI5ElWoV6uqEYlRBMBLYCeltZK0cTOBhLPucgZe0SGFDWZzJ8P7oPYglMNsYVoYX0v9wK8DDOc0vByT0s+aXFpsTBKg/pnbfzstlT/lYtvi93p0bREzdtXwbrWZz09smEa3mW5/JUnG4Xv0ZwYzQVg/khsYkC4QLgCE6jVCFISsjLFV5uFc6vXcLtM9vvDQVVV2ndHyFbs+94y2L3ukyyH2BE4OJZI3QgKMp3pz+89+IuuII7enEkncDpshwH/d2tCUUg5pl1zK7Woj1tQy/NyrGZx7kf+YEbEWh2g0UHchRDG+dXJwMXSUcUlP1GXl8nAex4pov9D4PqI86mo5suwOzIunZ/y6riIe1ot2k8iEJAz4EiQvx1CUeI506iaUydZ31t8hZO+u1GMLQdHV80NfRVoolENKqYmGFxk14TrIjs4HJsZCD+QQ2TS8ADuYc0ITqKIbuToWngrjR+AnpYcHjt9eUOpz58sd4asNvz3f4320khI2HWBrOfbn1273eFGZ8TSTVAqDcyfO1ywqTPM=
+	x30x1JeQLq2nGwrXC8JZzk75htCX+hr2+nkEO9SFl5LUKyXbSpjrRyV0CofcuDoyQcAecdetFREccDSCimZAh7LCy7b2RicDBSdDaev69fE+jqpzXTqlTN55d/PtFi9LsWsHAFmDvp6x0HYVK0HPk2/0SX5XfAMin5N9LQhHAY1EfDZ5flyfxAAabmwaES2iyQcLy3F+UvNueXwa9CGAbGz+xgjW7bq/JPP97bY6bkoAQKrFB59jmVdAxPXC04UqWurU1Od9W9NjBJaDQTfevMyDtfwnwBwg/EtCKMRuvI2jOAF3X3NgMcSVTFqtNoxi5wUeXWZyrF48rP4MmbMh8/YCP+Gm9LqwvXz3x+4Cp5TvE0wg0UCh1ZwvTzSMsJk/99GY/PtpDBJv48a6NED7HiTpM89EqF72gdTlG3CRXl8Zx6uXIzhyT4DPbC0LKistVCeLDKLTy5mBe1iClQYzI4YI8PbfCagshaoY5YCjh5jIVRmMIMkIWo0ew/7IJjHtvWntx736Mi1WQXXbjf4k/ENnfhD8HtBHtoptZCgKLpIeyD5aoKY5pi1n6JDLmUWcLpUuZ++kK8vEdTsF4u1VgHsGAAhU5ytWj+ICsR5bu/c=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5858.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(366016)(19092799006)(1800799024)(376014)(23010399003)(18002099003)(22082099003)(56012099006)(4143699003)(11063799006)(5023799004)(6133799003)(10067099003);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5858.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(376014)(7416014)(366016)(23010399003)(1800799024)(10067099003)(6133799003)(18002099003)(22082099003)(11063799006)(56012099006)(4143699003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?TmV0bGJyVEd4eTlrUnZ6RnVreDdrNHNUSURPaU5MVGNUWUNFZDRibEd0WUpF?=
- =?utf-8?B?SUJIcW1QRlA3cEhGbnByTTZ3eDQvOEhsbVNRcmVHQWI1eHo0OVpRRE03UHhq?=
- =?utf-8?B?U25KWUxSNDBPbDIrQWdIa3IvcHF5c2srR0JMaUpXR21rUGw1a1hPdXp4UUYv?=
- =?utf-8?B?amx6TUlFOXhRY3Z5cVVoNjBSa2Zsb3FBcytlQ2s3OVlTdnJsaTRBQnY0NU94?=
- =?utf-8?B?UFI3U1Zaem1TbEV0VHFTVXdWOVNCSlV0Y3N6UWFJSU8wQ1RDZGRHd0xPUlp0?=
- =?utf-8?B?M1V5ZlJNU3NkMEpQTmREajNycUVqUU9LS0FkaWp0L3NpQU1pRGlEWjB5azFy?=
- =?utf-8?B?b01tMFVRKzR0T0pIVlBoTGF2bkdPWlBUc2JrSWc1Y3l4c3NFSTViZHVEeTcw?=
- =?utf-8?B?Qk1leDBnU0QraWhRbUdVU2tqM21xNnhYbi80eTFVaXpoODd3ZUxZQmNFZVQr?=
- =?utf-8?B?MzBQS2ZIblVoYmZTMklPdFdmMlU4LzZSbDI4ellMaHNEVzBHY0t1MFV5aUg4?=
- =?utf-8?B?WlpEL1htdXIxYUVYeEQwdHNHS2p1UHBmNzdFR2FuVURjN3JjMWQ0WU5ZalA1?=
- =?utf-8?B?NVh3cnJsL1pYNDk3djVRZm1JdUJ3RTlsd296UDRLb3JUOG40cVBhVlg4SGcv?=
- =?utf-8?B?U3pkZjJrbG4zTWRUeXdFdGRwb2xmWi9hY0dpMTZqVGQ5Zzk2enFNMDhoazgy?=
- =?utf-8?B?NGR2R1g2cEFmOTk5SnRQN1pPcndwUFM2VXhKUW5abTVkVkgrdTVYOXFyWEx5?=
- =?utf-8?B?MjZ2cmNPVlVBS3I3Y3d4SnNrZDcwR2RGcnpNK3hYbWpYbUxKSjJjWEkzOWJW?=
- =?utf-8?B?NXVMYkl2bHVUTisxc3VQU0N3bTQvY01xZDlNQmFxaFVZY1J6ZW9xRy9TNHJU?=
- =?utf-8?B?SjdXcU1TREVHS0VkcUNLRWU3N0I4VDFIZXRGSk5WY0k4ekYxN2l6VWpPR24z?=
- =?utf-8?B?cDdvMzcvZzF0R0hDTEIzQzRMdUZpcFluZFlCNHUwT2p0YUFKS0w3OURiRTlj?=
- =?utf-8?B?ZXJ5NGN5bXkxVzdmcWpjSVFqbHJtaWdsNHpUTlhpbW12RXhsVm81ZkhZNi9l?=
- =?utf-8?B?OFlMUU5PNUhINzFYOEUxdDdhMTNJVmtJTFQ2dTBzZEFrcm82S1A2d3FpZE11?=
- =?utf-8?B?YnBqSEsxTUN6Y1hPYWkzVllKdDhheThmV1dBajZTQVgrVTdkVktCQnorZ254?=
- =?utf-8?B?bzl0Uk9nR1ZJM093MDdEeGtIRGwzcHpBR0VUd3BVMWVoT1BRbVNSc1B6aHBC?=
- =?utf-8?B?a3NNRGRZK1lYMGY1OXEvVjVBREszMmc0R1ZtRnRucU12QXRqeXh4N2U2V1Fl?=
- =?utf-8?B?ZGN2QkRjRng2dWtSaXU0bHNKcVJQOXRXOHlxcE1LV3BhbmhMbTh4UENIdDBJ?=
- =?utf-8?B?VmhzSmMxZjVnRWZEZ0dWODY2MUZYK3lxYnljNW5ndGw1Z1JzaytzZFVnUndM?=
- =?utf-8?B?cWo4MTdwdHkvdkFHRUJobENSZ08zUUNzb3JPUVUxVGQzaUJhOFNIYnl6OUlY?=
- =?utf-8?B?RlBYT3BDRzRtNTB0QXRlWitiT3lpTGtZcG1QUldaUkEzR2NqdmtvQ21vV0lq?=
- =?utf-8?B?ei9ISEIvVW1NZlRhVVhxbUVSTDk2c3NySFByVVFoMUNhQ2ZXQW1qTFFWa05R?=
- =?utf-8?B?NnVIbFFnNjRjVi9uSGV3UUZ2UWgxQlBxMFNVWnhDSFl4dUlCYnNmaVZrd2dF?=
- =?utf-8?B?eW9kbmZocG1XSm91SzVORElwNkE3Q1BZcWtQKzZvMXBKSytJSGI5OWFHbmtj?=
- =?utf-8?B?Y3JZY1AzUm12NE5VaTFKVWwyYlVDbE5MMFVFSmRESlVCTm55dHVic3JoQVJa?=
- =?utf-8?B?TmlxSGhYSmJIa0hpUGtOYUxhd3FzSm5sM2NNcC9acVU0clRBQXgvR09USEhC?=
- =?utf-8?B?ZFhvc01LNHpQZFVoYzgrMTNaNXRNZFR5TjVDRXVrNEc5NHI1TTAzekIwVnV3?=
- =?utf-8?B?SzV4L0FvcVJXRjk3b0lxRGlTZ0hYNllpa21DWTRnRzl5Z0VWbzB3cUM0ZXZI?=
- =?utf-8?B?NmcxWG1NYnY3dWlycmY4K1Q0V3NOdFoxSStrcG1rRXNKOXdTTU1DQU1od2xr?=
- =?utf-8?B?NVhHYy9oL1F2MGx5STVEWlNoc3BYQmdLVTNhekdjQmpkY3k0QVNVRUFSZEto?=
- =?utf-8?B?ditQbk9LTjBmVlRYcHBMcXN3VFBnYmJPQTU5VWIrTEovNEROVkxHUmtoQ2hS?=
- =?utf-8?B?M1N4YWtsTXdLT1k0OEtsd0hIeloyLzNJZHFWS2RUOS90Y0VzbEczemZFRGMy?=
- =?utf-8?B?SVNzbnZWd3ZQbXFSRGptQjB4STcveFZiQ0c4Z0pyVHNCUzdKWExoZUFXeTZH?=
- =?utf-8?B?eEZRUm9qMU13U0FtSUJvVENkMVJwOVNuTURBVzc2MUgwMy8yVmtyQjRuRUdC?=
- =?utf-8?Q?YP8LSoPf3tP2WHvI=3D?=
+	=?utf-8?B?TXFjTVo3WnhwdlQ1VllCK2hvQkxwWGhBWFdBTHM3TGNlQ2RjS0tCbGY3UC9x?=
+ =?utf-8?B?N3pmZkhCdGZYa082MmJYeHRQOGFpems3MTZLazJ1bTBDWURkekg5cHcrREw0?=
+ =?utf-8?B?T0dVd3R2MENtbWM0M3ZOSmxNaitrdUxvcmVETXhrRHlqdmFzTlk0aFl1N0ZV?=
+ =?utf-8?B?cGtFQXM5R0kwZWV5Mmc5a1lqbUJMd1Jvd2ZYSkNyblVUQXEzTzE4Q3hGbXkz?=
+ =?utf-8?B?L25XSFMzOGIyMTliNFZ1a3lBQzljckZmWFZYYmVERG1KVmZuYzQ5N0x1ZHhT?=
+ =?utf-8?B?MDk1dVZqeFNHN0xpK1V2OFpoa1JsS29Eb2llRzJ4Q0oreGhoTGJLdDhxMmpT?=
+ =?utf-8?B?WG4xYTBSZW1QUFJjalRUV0tod0VkK1Y0K3VvRiszc0xjUVpQTXB2MWhSU0lh?=
+ =?utf-8?B?TmlwSmNvMzFINE93V0JuNEcvYkM1RlNrL21tRkNuMnZSRDVHeUdXaTVQcGow?=
+ =?utf-8?B?TmpZVmkxZCtJbWlrVlEvVjJzcFZoSk9pbExVT3lrVE9oa0I1NGorMy8wL2lQ?=
+ =?utf-8?B?Tzk3NDhSM3hRRDBmSjk3NlhacEIva09JZEkxNVhxZWZrOUpDenpya0d3aTRQ?=
+ =?utf-8?B?US9CNlhCbmNCVWxqSjZ1ZzNXZW1yejlTVk5MYlN1TTNMQVdLeHVROWNEUm9I?=
+ =?utf-8?B?UitpVE5NK0Jja0YwbTQ2bUpza3VtSjhVWnRlSTc5aGhpV1loZlplUXNhV0pI?=
+ =?utf-8?B?K1l1amdpclNrNkdIdU9SSndWRklPSXJqZzNrZS91UGtmRldaalN1bEVZZFps?=
+ =?utf-8?B?L2lMNWRNNEtCeVR1Tmxpd1NyTUJFa0lkS2tVbGgwVXh1Q3JiUGxjS2piYVRS?=
+ =?utf-8?B?ZjlCRXdLVW50SXVjbWJ0VnZXaXBFaXE3WlpSZVFKam1kc0p6aTRoVmVmZER5?=
+ =?utf-8?B?STBjK2NnNzIzaE5DUmVGRDQ0ODRjeFA2MEs5MHg1aHBUODZ2K3V2OWNaTng5?=
+ =?utf-8?B?aGlVcFlMZ3Nod1dyeTBMak91NC9uRjB3ZjlKb3Fya0w3K0ZkTzNhSVBxL1VJ?=
+ =?utf-8?B?Qk9tZVVzbm1yNlRGNDF2eWNNSWsxTFBuOFhkckRWS05vb1h1K0o2em1NZ0Ra?=
+ =?utf-8?B?UmRxckJ6YkpsUk5zTEJVc0FOZU9vNG9wTVpvUFF0SnpBUWM5b1ZmYzY0Q01E?=
+ =?utf-8?B?R2M3bno0OU1GQTBOZitlMWdpZENOTEJYeVVkVWpEbmlmM21URFF2dlFDQXJ1?=
+ =?utf-8?B?dDFQbTQwVTllMDZtOTBiLzcvcEJqL3Q4MytYYjMreXluRTJiQ0tzUk11QXla?=
+ =?utf-8?B?RXBaZ1ZOaElLVHhsek93ODVEemJXUFBXREU5cG5scHRnclVXVFZBaW96Skk0?=
+ =?utf-8?B?a2lYTXNvUGJrbGZ6alhSRU9Nb3RXcnBxSjZKdC85OWJicmxVWnJGdWJDNWtR?=
+ =?utf-8?B?TVY4NjBxejdTZVB2NGdDSDJPQ2VkODlaWTh6cytSQjVnTndSU21qVHFvaDRs?=
+ =?utf-8?B?d2hucjRwblBqUXZUYWx0R2NIdGI0NmlZcm1FS0srMHVWL0pTdldwdEptTDVu?=
+ =?utf-8?B?T1RQQ0F2ZkgzU0ZOQ244cmpIais2aUNFQkZqcEJIZTZ6aEZIT1M5Ri9HL0VO?=
+ =?utf-8?B?TzhRTnJRbnFxMmZVWXg4emkzMi93Q2dsS2VRNHVMMGVYOUhGZ0xHQ2prSFJT?=
+ =?utf-8?B?aTVjTzBIOEVCUTFmQjViRWt6ZUszQlNwd01YWFJiWFVpQWE1ZE9zLzFXbDRl?=
+ =?utf-8?B?bnB4OTZONlRnRXJQU09LRFJXNHdHSWpENDEvUUU3V3RnNDhHVUR2NUlXRGl3?=
+ =?utf-8?B?RFJVWVVpT1UzSXVScktCV01KOTM0OTJPZVRYS1BHUk5BRFZvMUZGNmQzb2RN?=
+ =?utf-8?B?djZLRVJmWDRMOEtRZHV3Q3NOV3djSlREdjNZS3haQk5MMVZTUzJPY2R4dURL?=
+ =?utf-8?B?a2RCSkNrNk9SQndFaDR5dEdpQ2ZTOFluMVlRVlZwQ21GQ2hoNVRTQ240dURF?=
+ =?utf-8?B?U3JFRk5MR0FNZVNIUnBnMnhvUkpXdUJiMzViNWtwc0F0YVVMak14WUM1VVh5?=
+ =?utf-8?B?TzZIUFNoeUNqZFBjWkpZTm5FR0EvQWhtd3RlY1RRNUdDVnVvdGV5eTdGL3hC?=
+ =?utf-8?B?ZzEyb3VhaDZyb29LS1ZCdUhkZlI2SUpDM0RhdzdRK3poelUwMlF3WDI1allF?=
+ =?utf-8?B?dVM3V3UybGtPOU1maDZkVmRmUFJwOGtwaDhBOEw3ZVhGVlp3NjloR1E2N1BG?=
+ =?utf-8?B?M25Oa2pOa3Y5RGJmODZJOXhudzc0WmhscDVuTVJabTNHQkJHV3JEVlVyY0pD?=
+ =?utf-8?B?ZDR0b1pDTi9wWWdHSG9oamFOaEhCL0oyL2dSV2xwT2dBTWhWWDkyK3dBZG5s?=
+ =?utf-8?B?aExxa2Q1aTBET0l5VVNRajkyMlRaRGVOTGN2WlExMDE0cHZuUThOTkt6VGNG?=
+ =?utf-8?Q?6pKUb1d/YmCZQXFc=3D?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b21cde15-5415-446b-26de-08df073ae381
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11cdd3bc-2664-4562-3763-08df073d1403
 X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5858.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2026 08:36:01.8937
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2026 08:51:42.1473
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ugqfwy+IAy1MLHA9S9Av8iG5osbuW3KLoEV8hhaTlqvzXUVT6njsQ0hrhlVTzOEFJcrYtQWCZh/yT1OKcAFsSgjvQjioCa7pPJ/LWGwUc70=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU6PR04MB11157
+X-MS-Exchange-CrossTenant-UserPrincipalName: oe9UXyIdMZVPd06+vkC7SIVoNw+nG7Gd8tigAs3m5ghbjqmr/7pKV17BaDO3WTmmKCvvn0a9WP7Z+yDqlujaywmtgC3I0mVt3IOelQ0GKTY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU4PR04MB12151
 
-On 8/24/2026 11:32 AM, Bough Chen wrote:
-> On Mon, Jul 13, 2026 at 09:07:46AM +0000, sashiko-bot@kernel.org wrote:
->> Thank you for your contribution! Sashiko AI review found 3 potential issue(s) to consider:
->>
->> New issues:
->> - [High] Splitting the IRQ handler breaks the FLEXCAN_QUIRK_BROKEN_PERR_STATE workaround on multi-IRQ platforms.
+On 8/24/2026 11:57 AM, Bough Chen wrote:
+> On Mon, Jul 13, 2026 at 09:07:04AM +0000, sashiko-bot@kernel.org wrote:
+>> Thank you for your contribution! Sashiko AI review found 2 potential issue(s) to consider:
 >>
 >> Pre-existing issues:
->> - [Critical] Concurrent lockless modifications of `skb_irq_queue` by multiple IRQ handlers causes list corruption.
->> - [High] Incomplete fix for duplicate frame processing on platforms with secondary mailbox IRQs.
+>> - [High] On multi-IRQ platforms, Wake-on-CAN is broken because `flexcan_suspend` only arms the primary IRQ (`dev->irq`) for wakeup, completely ignoring the state/BOFF interrupt (`priv->irq_boff`) which actually handles the wakeup event.
+>> - [High] In `flexcan_resume`, the network queue is restarted (`netif_device_attach` and `netif_start_queue`) before the hardware is initialized (`flexcan_chip_start`). This creates a race condition where a packet can be queued for transmission just before the hardware undergoes a soft reset, leading to a permanent TX stall.
 >> --
 >>
->> --- Patch [1]: [PATCH v6 1/6] can: flexcan: use dedicated IRQ handlers for multi-IRQ platforms ---
->> commit b6f6f5d373c333a28a06c2ed84ea386f9dc5b122
+>> --- Patch [2]: [PATCH v6 2/6] can: flexcan: disable all IRQ lines in flexcan_chip_interrupts_enable() ---
+>> commit ca7ea75d45df1ecf13f11dcec0bd19377eccf3c6
 >> Author: Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>
 >>
->> can: flexcan: use dedicated IRQ handlers for multi-IRQ platforms
->>      
->> On platforms with multiple IRQ lines (S32G2, MCF5441X), all lines are
->> registered to the same flexcan_irq() handler. Since these are distinct IRQ
->> numbers, they can be dispatched concurrently on different CPUs. Both
->> instances then read the same iflag and ESR registers unconditionally,
->> leading to duplicate frame processing.
+>> can: flexcan: disable all IRQ lines in flexcan_chip_interrupts_enable()
 >>
->> Fix this by splitting the monolithic handler into focused parts:
->> - flexcan_do_mb(): processes mailbox events
->> - flexcan_do_state(): processes device state change events
->> - flexcan_do_berr(): processes bus error events
->>      
->> Introduce dedicated IRQ handlers for multi-IRQ platforms:
->> - flexcan_irq_mb(): mailbox-only, used for mb-0, mb-1 IRQ lines
->> - flexcan_irq_boff(): state-change-only, used for boff/state IRQ line
->> - flexcan_irq_berr(): bus-error-only, used for berr IRQ line
->>      
->> The combined flexcan_irq() handler is preserved for single-IRQ
->> platforms with no functional change.
->>
->> Fixes: d9cead75b1c6 ("can: flexcan: add mcf5441x support")
->> Signed-off-by: Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>
->> Reviewed-by: Vincent Mailhol <mailhol@kernel.org>
->> Reviewed-and-tested-by: Haibo Chen <haibo.chen@nxp.com>
->> Tested-by: Enric Balletbo i Serra <eballetb@redhat.com>
+>> flexcan_chip_interrupts_enable() disables only the primary IRQ line while
+>> writing to the IMASK and CTRL registers. On multi-IRQ platforms, the
+>> additional IRQ lines remain active so their handlers can fire while registers
+>> are inconsistent. This commit disables all registered IRQ lines around the
+>> IMASK/CTRL writes.
 >>
 >>> diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
->>> index f5d22c61503fa..f73ff442d5304 100644
+>>> index f73ff442d5304..7dde2e623defe 100644
 >>> --- a/drivers/net/can/flexcan/flexcan-core.c
 >>> +++ b/drivers/net/can/flexcan/flexcan-core.c
->>> @@ -1188,6 +1218,65 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
->>>   		}
->>>   	}
+>>> @@ -1519,14 +1519,28 @@ static void flexcan_chip_interrupts_enable(const struct net_device *dev)
+>>>   {
+>>>   	const struct flexcan_priv *priv = netdev_priv(dev);
+>>>   	struct flexcan_regs __iomem *regs = priv->regs;
+>>> +	u32 quirks = priv->devtype_data.quirks;
+>>>   	u64 reg_imask;
 >>>   
->>> +	return handled;
->>> +}
->>> +
->>> +/* Combined IRQ handler for single-IRQ platforms */
->>> +static irqreturn_t flexcan_irq(int irq, void *dev_id)
->>> +{
->>> +	struct net_device *dev = dev_id;
->>> +	struct flexcan_priv *priv = netdev_priv(dev);
->>> +	irqreturn_t handled;
->>> +
->>> +	handled = flexcan_do_mb(dev);
->>> +	handled |= flexcan_do_state(dev);
->>> +	handled |= flexcan_do_berr(dev);
->>> +
->>> +	if (handled)
->>> +		can_rx_offload_irq_finish(&priv->offload);
->>> +
->>> +	return handled;
->>> +}
->>> +
->>> +/* Mailbox IRQ handler for multi-IRQ platforms */
->>> +static irqreturn_t flexcan_irq_mb(int irq, void *dev_id)
->>> +{
->>> +	struct net_device *dev = dev_id;
->>> +	struct flexcan_priv *priv = netdev_priv(dev);
->>> +	irqreturn_t handled;
->>> +
->>> +	handled = flexcan_do_mb(dev);
+>>>   	disable_irq(dev->irq);
+>>> +	if (quirks & FLEXCAN_QUIRK_NR_IRQ_3) {
+>>> +		disable_irq(priv->irq_boff);
 >>
 >> [Severity: High]
->> Does isolating mailbox handling into flexcan_irq_mb() break the
->> FLEXCAN_QUIRK_BROKEN_PERR_STATE workaround?
+>> This is a pre-existing issue, but on multi-IRQ platforms, is Wake-on-CAN
+>> broken because we only arm the primary IRQ during suspend?
 >>
->> On multi-IRQ platforms with this quirk (such as MCF5441X and S32G2), the
->> hardware fails to trigger a state change interrupt, meaning flexcan_irq_boff()
->> won't fire. The baseline driver worked around this by polling the state via
->> flexcan_do_state() during every mailbox interrupt in the monolithic handler.
+>> In drivers/net/can/flexcan/flexcan-core.c:flexcan_suspend(), we see:
 >>
->> Since flexcan_irq_mb() completely bypasses flexcan_do_state(), could this cause
->> the driver to silently miss CAN error state transitions (e.g., Error Passive)
->> when the error rate increases?
+>> 	if (device_may_wakeup(device)) {
+>> 		enable_irq_wake(dev->irq);
+>> 		err = flexcan_enter_stop_mode(priv);
+>>
+>> Since the hardware asserts irq_boff (which handles FLEXCAN_ESR_WAK_INT) for
+>> wakeup events, doesn't irq_boff need to be armed with enable_irq_wake() as
+>> well? Otherwise, the system might fail to wake from suspend since the
+>> interrupt controller won't treat the asserted IRQ line as a wakeup source.
 > 
-> AI is correct, need to fix this in next version.
+> Yes, this need to be addressed.
 > 
-
-Hello Haibo Chen,
-
-Thank you for providing review on this patchset.
-
-I'll fix this in V7 by having the bus-error handler also invoke
-'flexcan_do_state' when the 'BROKEN_PERR_STATE' quirk is set.
-
->>
->>> +
->>> +	if (handled)
->>> +		can_rx_offload_irq_finish(&priv->offload);
->>> +
->>> +	return handled;
->>> +}
->>> +
->>> +/* Bus error IRQ handler for multi-IRQ platforms */
->>> +static irqreturn_t flexcan_irq_berr(int irq, void *dev_id)
->>> +{
->>> +	struct net_device *dev = dev_id;
->>> +	struct flexcan_priv *priv = netdev_priv(dev);
->>> +	irqreturn_t handled;
->>> +
->>> +	handled = flexcan_do_berr(dev);
->>
->> [Severity: Critical]
->> This is a pre-existing issue, but does having dedicated IRQ handlers
->> running concurrently on different CPUs cause a race condition in the rx offload
->> framework?
->>
->> If flexcan_irq_mb() and flexcan_irq_berr() fire simultaneously, both will
->> eventually call into the CAN rx offload framework (e.g., via
->> can_rx_offload_queue_timestamp()):
->>
->> drivers/net/can/dev/rx-offload.c:can_rx_offload_queue_timestamp() {
->>      ...
->>      __skb_queue_add_sort(&offload->skb_irq_queue, skb,
->>                           can_rx_offload_compare);
->>      ...
->> }
->>
->> Since __skb_queue_add_sort() locklessly modifies skb_irq_queue, could
->> concurrent execution of these handlers corrupt the sk_buff linked lists?
-> 
-> Yes, should be handled in another patch.
-> 
-
-I want to target this fix separate from this patchset since it is a 
-pre-existing issue and the fix will most likely touch shared rx-offload 
-core.
-
->>
->>> +
->>> +	if (handled)
->>> +		can_rx_offload_irq_finish(&priv->offload);
->>> +
->>> +	return handled;
->>> +}
->>> +
->>> +/* Device state change IRQ handler for multi-IRQ platforms */
->>> +static irqreturn_t flexcan_irq_boff(int irq, void *dev_id)
->>> +{
->>
->> [ ... ]
->>
->>> @@ -1761,25 +1850,30 @@ static int flexcan_open(struct net_device *dev)
->>>   
->>>   	can_rx_offload_enable(&priv->offload);
->>>   
->>> -	err = request_irq(dev->irq, flexcan_irq, IRQF_SHARED, dev->name, dev);
->>> +	if (priv->devtype_data.quirks & FLEXCAN_QUIRK_NR_IRQ_3)
->>> +		err = request_irq(dev->irq, flexcan_irq_mb,
->>> +				  IRQF_SHARED, dev->name, dev);
->>> +	else
->>> +		err = request_irq(dev->irq, flexcan_irq,
->>> +				  IRQF_SHARED, dev->name, dev);
->>
->> [ ... ]
->>
->>>   	if (priv->devtype_data.quirks & FLEXCAN_QUIRK_SECONDARY_MB_IRQ) {
->>>   		err = request_irq(priv->irq_secondary_mb,
->>> -				  flexcan_irq, IRQF_SHARED, dev->name, dev);
->>> +				  flexcan_irq_mb, IRQF_SHARED, dev->name, dev);
 >>
 >> [Severity: High]
->> This isn't a bug introduced by this patch, but does registering the same
->> flexcan_irq_mb() handler for both primary and secondary MB IRQ lines leave the
->> duplicate frame processing bug unfixed on platforms with secondary mailboxes?
+>> This is also a pre-existing issue, but does flexcan_resume() restart the
+>> network queue prematurely?
 >>
->> If both IRQ lines fire concurrently on S32G2, flexcan_irq_mb() is dispatched to
->> both CPUs. Since flexcan_do_mb() doesn't check which IRQ line triggered it,
->> won't both CPUs unconditionally process all mailboxes, resulting in every
->> frame being processed twice?
+>> In drivers/net/can/flexcan/flexcan-core.c:flexcan_resume(), the queue is
+>> restarted before hardware initialization:
+>>
+>> 	if (netif_running(dev)) {
+>> 		netif_device_attach(dev);
+>> 		netif_start_queue(dev);
+>> 		if (device_may_wakeup(device)) {
+>> 			...
+>> 		} else {
+>> 			...
+>> 			err = flexcan_chip_start(dev);
+>>
+>> If netif_start_queue() is called before flexcan_chip_start() reinitializes
+>> the hardware, could the networking stack concurrently call ndo_start_xmit
+>> (flexcan_start_xmit) and queue a packet?
+>>
+>> If so, would the subsequent flexcan_chip_start() soft reset wipe out the
+>> freshly populated message buffers, aborting the transmission and leading to a
+>> permanent TX stall since the completion interrupt will never fire?
 > 
-> I think this is fixed by PATCH3.
+> Good catch, those two findings should be addressed in another patch set.
 > 
 > Regards
 > Haibo Chen
 
-Yes. It is covered.
+Agree. Since these two findings are pre-existing I will target them in a 
+new patchset separate from S32N79 Flexcan enablement.
 
 Best Regards,
 Ciprian
 
 >>
->>>   		if (err)
->>>   			goto out_free_irq_err;
->>>   	}
+>> [ ... ]
 >>
 >> -- 
->> Sashiko AI review · https://sashiko.dev/#/patchset/20260713085306.2643794-1-ciprianmarian.costea@oss.nxp.com?part=1
+>> Sashiko AI review · https://sashiko.dev/#/patchset/20260713085306.2643794-1-ciprianmarian.costea@oss.nxp.com?part=2
 
