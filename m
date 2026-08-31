@@ -1,183 +1,122 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.22])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 196A3399036;
-	Mon, 31 Aug 2026 18:57:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.22
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788202649; cv=pass; b=m9fimNzuYK1xLpPsmNZYtx8AHMPqBfMWXIzWuZE02BHnCByIvJHTNIpob3psO0uOmg3IzNWTUl8QqFZUfpzZ+lZM4YxPsDSoA5go8YxGM3r5K6XIOmFKTH+gpNtIAQMVwsMGa7c/YspaPOXnVcdjwsZqrdRN92wG9+XjhtIgcWQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788202649; c=relaxed/simple;
-	bh=f3Vov1yrELMaB5NjQEgxe4ObbSF9XDS50zy016awYfs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UFwWvWlqGuyA25/rjuCX4NfHgRVJixiy7Ku75bcyCP50Yr9Dbg3zwBPwzZMErcwn9H7tDM7m/WY1w4ggq55M6umzRakvhj5HF40dg51pQ1jXSpbFoO2YZ88m2Lk4+YubcWPsQ6ZgvBlrIDtSJ8RgAUSPIyO7CFmfIKsbytjoHI4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=gL01OWXQ; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=I5+PGKIr; arc=pass smtp.client-ip=85.215.255.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5033257845;
+	Mon, 31 Aug 2026 19:01:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1788202883; cv=none; b=Sx5nqUqXGujQGqn2uJXi6WiCfHKRJtbeJaoqeopJ6e3iDndcOhRmm32rTygBWUZYIS3b/textI7wUbKaBAcQn0rXw64Ij8mAB0aZqqd5VQ/NpUjMlkCKgtFvFeEX3uRGIR7T0QuN7Wq1o0mFDBQp+WTTJp9hP4EG10jRZfHcFW4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1788202883; c=relaxed/simple;
+	bh=CmPmXkP0Ip2iHtYWuvtItjd9SF8ZpDuowY4wdSFUSQs=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=p7cuQPuD/LFp4or9eO5HGkBYaDxm+KQtrlsRiuDrpBZP3QfRzy91cTzPCdrh5kCGuGKL0VWK0Os6QL/LBjyhJW7fYsnHT++hmYJJVx9FhRVX7JZ/4WeMgkWtX0it5fGI7U4xlx5F5VcE0KgBjt3DxuPzc/UGnwgvKMO4VD6xbcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ze7I92pM; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="gL01OWXQ";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="I5+PGKIr"
-ARC-Seal: i=1; a=rsa-sha256; t=1788202638; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=DduHMcnQRURMmf+gXwEHiKM4gyPtd6TjfPUES60fSjd3CslSWigk0RJ05Mir8YNWMr
-    aiqGVrVHBaUxt1QgOAuqM2lj5cqeSRLoTKUsTNwHRuWsJ/qIKRlt79s11YBNS59rus8w
-    ilu4B1TdP2Xc/wV/YQOAfcVoXeP5sBVTtVQsK6sGxuwMO1vWUtPZT2djYkpUDV/ZNU6c
-    pgP3ObBSGuZABvmDxW1CuUcJYkvxHv18kMsUXptu14iXNbQq+9HfgwsewYiagQaENY+d
-    HqnW8G3NtSIR1GErGNCVkPd0UsvfeSkH84LDGWP7Eub0K82pALNXXl5BwOW11yKTPZAa
-    9W3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1788202638;
-    s=strato-dkim-0002; d=strato.com;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=aTwqB4hj2CT83EeNEBwcKj+q7VZdfe2AHFxuZuF4PaQ=;
-    b=hE1Q/47uQXconIZeaUJsaLbO3ANLeRbwXLyYSdwf8bBzQSLo5BDLqtygxAF2MJi+Bh
-    JAZRfhIqf+upC7NN+xK76lsjvTj0gEccxLtxhDYaNQYlybWFDtoTFx6yMOCsglUBCNJN
-    YO2HmwjVj632SjykFlxhjVRGA8dOGtdtat9opM+qafwXBJ2pxtUIS8N+s1kvKSy/Z3qG
-    WTReqW2oZ2OOjnHYTLbC6uCndNnfqawI+CSxgl2XqMwvVCa+nEGKquFMa2BwpswhHZSO
-    MIhF9MCjFT0Zo6dqlq9EL5mSiqHjV2fg8/r0GmtOJk3bWvUNfZSiuVKyiU8pLlxXRqva
-    lQ4g==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1788202638;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=aTwqB4hj2CT83EeNEBwcKj+q7VZdfe2AHFxuZuF4PaQ=;
-    b=gL01OWXQ1jgx+OAiNa2gvgxEDG0Ehc4ggkCuMIRsdF8V2LDKhaMv/L0GtPrOA/gdRi
-    A9gKRB1jGE+yE2+wcFbRlhonww314St0jdsdL5bz8c2tckDpNe34oLpyVnqAD5iER98l
-    L6HCStKaTlWuTWRE+nAIBOOwEARoNio0B/XDIKCLRq+cJNIN19fFSSvDf29A9cXu+INt
-    FCwe1oW85cmjv5XjaMLsGtiUgsp+hjieUTy/Ihg+anOB8DsSwhmv+yMnqbtN1jtUqd/o
-    yooeiNtqkxocHzAcFwiMJlG2oUyUH9aEhgTP3BeqXhA37k++Q/+FZFOb2HcqtEvUd5uC
-    ni1A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1788202638;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=aTwqB4hj2CT83EeNEBwcKj+q7VZdfe2AHFxuZuF4PaQ=;
-    b=I5+PGKIrXCpbTF4MGx29NoC3IRmsnZrtX7a1Dnn7z8Oq0EGKmrP2gDzPmWLOyftI5M
-    cducE+XeQ67WbBAFr0CQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from vivo.lan
-    by smtp.strato.de (RZmta 55.6.2 AUTH)
-    with ESMTPSA id K171b727VIvIN60
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Mon, 31 Aug 2026 20:57:18 +0200 (CEST)
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
-	Norbert Szetei <norbert@doyensec.com>,
-	stable@vger.kernel.org
-Subject: [PATCH] can: notifiers: remove CAN filters independent from namespace
-Date: Mon, 31 Aug 2026 20:56:53 +0200
-Message-ID: <20260831185654.16701-1-socketcan@hartkopp.net>
-X-Mailer: git-send-email 2.53.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ze7I92pM"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8D441F000E9;
+	Mon, 31 Aug 2026 19:01:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788202881;
+	bh=o96m+FIcfRlGtxKDxqqqbjKUXxNmqXppM3fFUwG5Eyw=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=Ze7I92pMUmJ8y7VhgM3Vyowc2/B2MxKvHC4pxCDrLvQkV4Aiivzuq7I8zAAEjVNdu
+	 1cir/VLQ5lMWWT244msTQOPmIspD8wFju1Wq/54juk9Ukfo/f1JXSNAa2WjC6LKKZu
+	 hovaR4WHu+Vb1SjYqxzABVTzQ+XAb7Q7boKRPBwWXGK6YUEGfKRKb9IgAviaBmeima
+	 VMIjCVXtmBfbqUrIHWpaelTYXyHLhBk1NbsxMMMWUl2W8KvZwchkIN/ar1V1NSfbR5
+	 79d+L8RDEt/m3Efad1I9kScW+BgFW1ZIWSShtnDhlrpwS/giLkjbzpMpni5FUcHYQq
+	 aUl0JTsGj0svA==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v7 6/6] can: flexcan: add NXP S32N79 SoC support
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Ciprian Costea" <ciprianmarian.costea@oss.nxp.com>
+Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>, Frank.Li@kernel.org, conor+dt@kernel.org, robh@kernel.org, imx@lists.linux.dev, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <20260831143449.12828-7-ciprianmarian.costea@oss.nxp.com>
+References: <20260831143449.12828-1-ciprianmarian.costea@oss.nxp.com>
+ <20260831143449.12828-7-ciprianmarian.costea@oss.nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 31 Aug 2026 19:01:20 +0000
+Message-Id: <20260831190120.B8D441F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="us-ascii"
 
-Remove the namespace equality check in the netdev notifiers for BCM,
-ISOTP, and RAW sockets.
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+s) to consider:
 
-When the devices namespace is changed the socket namespace and the device
-namespace might differ. The net_eq(dev_net(dev), sock_net(sk)) check
-therefore skipped the removal of the CAN filters from the (ns changed)
-CAN device.
+Pre-existing issues:
+- [High] Incorrect interrupt line enabled for system wakeup in flexcan_susp=
+end() on multi-IRQ platforms.
+--
 
-Since the `struct net_device` pointer is globally unique, the notifier
-should always process the unregister event and remove the CAN filters if
-it matches the socket's bound device, regardless of the device's current
-network namespace.
+commit cee5e83ffcddcb89ac8051e51286d9d24014fc17
+Author: Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>
 
-Change all can_rx_unregister() calling sites to use dev_net(dev) instead
-of sock_net(sk) to retrieve the namespace (only missing in isotp.c).
+can: flexcan: add NXP S32N79 SoC support
 
-Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
-Reported-by: Norbert Szetei <norbert@doyensec.com>
-Link: https://lore.kernel.org/linux-can/CEA6A38A-2646-4ADA-95B4-CBAE2F301A8E@doyensec.com/
-Cc: stable@vger.kernel.org
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- net/can/bcm.c   | 3 ---
- net/can/isotp.c | 7 ++-----
- net/can/raw.c   | 3 ---
- 3 files changed, 2 insertions(+), 11 deletions(-)
+This commit adds device data and compatible strings for the NXP S32N79 SoC
+to the flexcan driver.
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 3d637a1e0ac1..aaa5163c46cc 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -1792,13 +1792,10 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
- {
- 	struct sock *sk = &bo->sk;
- 	struct bcm_op *op;
- 	int notify_enodev = 0;
- 
--	if (!net_eq(dev_net(dev), sock_net(sk)))
--		return;
--
- 	switch (msg) {
- 
- 	case NETDEV_UNREGISTER:
- 		lock_sock(sk);
- 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 155530aedce2..0835a4758a72 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -1490,15 +1490,15 @@ static int isotp_release(struct socket *sock)
- 	/* remove current filters & unregister
- 	 * tracked reference so->dev is taken at bind() time with rtnl_lock
- 	 */
- 	if (so->bound && so->dev) {
- 		if (isotp_register_rxid(so))
--			can_rx_unregister(net, so->dev, so->rxid,
-+			can_rx_unregister(dev_net(so->dev), so->dev, so->rxid,
- 					  SINGLE_MASK(so->rxid),
- 					  isotp_rcv, sk);
- 
--		can_rx_unregister(net, so->dev, so->txid,
-+		can_rx_unregister(dev_net(so->dev), so->dev, so->txid,
- 				  SINGLE_MASK(so->txid),
- 				  isotp_rcv_echo, sk);
- 		netdev_put(so->dev, &so->dev_tracker);
- 	}
- 
-@@ -1846,13 +1846,10 @@ static int isotp_getsockopt(struct socket *sock, int level, int optname,
- static void isotp_notify(struct isotp_sock *so, unsigned long msg,
- 			 struct net_device *dev)
- {
- 	struct sock *sk = &so->sk;
- 
--	if (!net_eq(dev_net(dev), sock_net(sk)))
--		return;
--
- 	if (so->dev != dev)
- 		return;
- 
- 	switch (msg) {
- 	case NETDEV_UNREGISTER:
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 82d9c0499c95..c5596fc9aac5 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -300,13 +300,10 @@ static int raw_enable_allfilters(struct net *net, struct net_device *dev,
- static void raw_notify(struct raw_sock *ro, unsigned long msg,
- 		       struct net_device *dev)
- {
- 	struct sock *sk = &ro->sk;
- 
--	if (!net_eq(dev_net(dev), sock_net(sk)))
--		return;
--
- 	if (ro->dev != dev)
- 		return;
- 
- 	switch (msg) {
- 	case NETDEV_UNREGISTER:
--- 
-2.53.0
+> diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/fle=
+xcan/flexcan-core.c
+> index 601d88bfcfeb2..0533cdf969b2c 100644
+> --- a/drivers/net/can/flexcan/flexcan-core.c
+> +++ b/drivers/net/can/flexcan/flexcan-core.c
+> @@ -403,6 +403,15 @@ static const struct flexcan_devtype_data nxp_s32g2_d=
+evtype_data =3D {
+>  		FLEXCAN_QUIRK_SECONDARY_MB_IRQ,
+>  };
+> =20
+> +static const struct flexcan_devtype_data nxp_s32n_devtype_data =3D {
+> +	.quirks =3D FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS=
+ |
+> +		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_USE_RX_MAILBOX |
+> +		FLEXCAN_QUIRK_BROKEN_PERR_STATE | FLEXCAN_QUIRK_SUPPORT_FD |
+> +		FLEXCAN_QUIRK_SUPPORT_ECC | FLEXCAN_QUIRK_SUPPORT_RX_MAILBOX |
+> +		FLEXCAN_QUIRK_SUPPORT_RX_MAILBOX_RTR |
+> +		FLEXCAN_QUIRK_IRQ_BERR,
 
+[Severity: High]
+This is a pre-existing issue, but adding FLEXCAN_QUIRK_IRQ_BERR for the new
+S32N79 SoC exposes an existing problem with system wakeup.
+
+On multi-IRQ platforms that use FLEXCAN_QUIRK_IRQ_BERR or
+FLEXCAN_QUIRK_NR_IRQ_3, dev->irq is dedicated exclusively to mailbox events.
+The FlexCAN Wake-Up Interrupt (FLEXCAN_ESR_WAK_INT) triggers a state change
+event, which is routed to the dedicated state change interrupt line
+(priv->irq_err or priv->irq_boff).
+
+However, when the system goes to sleep with Wake-on-CAN enabled, does
+flexcan_suspend() enable the wrong interrupt line for wakeup?
+
+drivers/net/can/flexcan/flexcan-core.c:flexcan_suspend() {
+    ...
+    if (device_may_wakeup(device)) {
+        ...
+        enable_irq_wake(dev->irq);
+        ...
+    }
+    ...
+}
+
+Since enable_irq_wake() configures the irqchip to listen to the mailbox
+interrupt instead of the state change interrupt, will the system fail to wa=
+ke
+up from suspend on CAN network activity?
+
+The same incorrectly assigned wakeup interrupt is subsequently disabled in
+flexcan_resume() by calling disable_irq_wake(dev->irq).
+
+> +};
+> +
+>  static const struct can_bittiming_const flexcan_bittiming_const =3D {
+
+[ ... ]
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260831143449.1282=
+8-1-ciprianmarian.costea@oss.nxp.com?part=3D6
