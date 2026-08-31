@@ -1,133 +1,159 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC85E443AB0;
-	Mon, 31 Aug 2026 18:37:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB0C738D402;
+	Mon, 31 Aug 2026 18:51:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788201451; cv=none; b=nXHrKByACnaNheit/i+kN6iOJ4uNsb6ISur4N2t7Ob9mLvwov2WoFSLTQ0Svqx1mn2Q+rIHPC2KvNkdgMh5m/OxfViL+JgVyM2Q67qyeGx5hplfrH07DdLGgEfhnzWXlLNKN1HGL6pj0wl/Arl1SGR9YC6MCYcseXeeIz0uCWVI=
+	t=1788202285; cv=none; b=TozOQGSkMwrHAMWSPZ8b5yEK7sQ1UIjLiTSXIfPEzRtsVC8xBhhFoMVTgF3/uofwBb0AXWqvBGDp9RFDRsmNrhqGT3XTVLoF/CpfoNdzCZxtvYbRO+RK6ayxXYS0Kt8keMBjCd7DEqvDQZPX14zZQrQzsDSId8AR6fvOStu3V6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788201451; c=relaxed/simple;
-	bh=Lh4APJvTv8reX8Q87TX1Rl6zasg7VMXLUYBK3kUgfP4=;
+	s=arc-20240116; t=1788202285; c=relaxed/simple;
+	bh=nOJzcAf+JwTqb9EpZGc6AUW4ADlBtYQYFFENrhrSzQc=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=U9QWZzN3GDbhcN2Ohpzoo+IpbOaUXj4fheywVjVG4NrvOP3ZChbDl9ypVuyNyNmkOLt+UNdRHK1bhQk/9JclLRGBfKeNVpMnpGsJm12Pz0oEbVC/z0jkvqv/spw/chITLifBgLzruHSZEVuh8/91+QDhSrYz+p17EZF5x1sS/0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PdY7d/3A; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=d6wiGNoDgIfy4Np2yqCyeQAhMjny2ch+R65I7BDYZJ6m+KV7doc+bY73FgadhhVbStEWblhvwj+Cs7g1uhYH/AhkI4Vr9rPqtKcERelj6oFMEXKrK2WfG6fZ3k16pgF66L7Vpf1ChI0nhEizljSIrTUrG2Aa9URYeQFqxppDSmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nOf+v/pZ; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PdY7d/3A"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C40A71F000E9;
-	Mon, 31 Aug 2026 18:37:29 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nOf+v/pZ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 165B21F000E9;
+	Mon, 31 Aug 2026 18:51:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788201450;
-	bh=HREneAFRBlMW9u/Le7CHGfsKDjVf0NPfW/FmhX4GLcY=;
+	s=k20260515; t=1788202283;
+	bh=SrIQmO2TqJQoSY8OIPAeq5rXYbmCOjzKNqsaH0Y3k7o=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=PdY7d/3AvZ2JFw0gLUQvutP1cK7dQC0PG8p4bbxQEG+KItS6nMbi2AZA4eiPw5IDG
-	 JQ3uhrAVF1Dfei94eRRx59Hf5u25E659CIEUXT/dZglsxkQFhv2UkPkjEQWYIbHuib
-	 +rQqZcfPc/jGQMcp6pcQeFeyyvr9Wp0JM5wwLaYdIGSnpfrpZjM+DNIsyW9Td1f2Uq
-	 hVqx5DRJHVVeIeKZCIfhaUeAXkUB2UAEBSLwYHhAPUe2xGLVoAJZLUqG6JsfsRsHnK
-	 bqrmSKNlloWH7/BZmiiaXG9PaJVrm91Ef1XdWMnVBhIRZHpnFdfOe47Y//xUU6aIjr
-	 1umZG53XonxJA==
+	b=nOf+v/pZSQOTzM/iyaXT8p37+ONPFponvLkLNgiT+VFDdrEJZflGnobUS89X9PsZB
+	 xDxshAHz5dk/4e4eHpMISNfNMo3s8+oZp5WpA4Rmd4oOlJ7Zno1w6Zkx/5Vjg/uLY6
+	 kn2jXRX2Z2sWGjzx87HPkjQnYBKqgwlU58QaiNJ2XTionBSgZB2Wa5KqX6pZxSHw3V
+	 fb8L7yCsIKLs3Ewxm044B5SrJBeahWo2wVzkNhi2X4gPe8E25WTnJPWsA1uHL19HGf
+	 0LO204EpjICNXtddHNVbeeMiOTiwmRMBVU9Gh/UTN9g3wwZBRZfJEfKr+XPF+A+qxb
+	 h9sRUb32sASxw==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v7 4/6] dt-bindings: can: fsl,flexcan: add NXP S32N79
- SoC support
+Subject: Re: [PATCH v7 5/6] can: flexcan: add FLEXCAN_QUIRK_IRQ_BERR quirk
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Ciprian Costea" <ciprianmarian.costea@oss.nxp.com>
-Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, conor+dt@kernel.org, Frank.Li@kernel.org, imx@lists.linux.dev, linux-can@vger.kernel.org, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, robh@kernel.org, devicetree@vger.kernel.org, "Oleksij
+Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, Frank.Li@kernel.org, imx@lists.linux.dev, robh@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org, "Oleksij
  Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20260831143449.12828-5-ciprianmarian.costea@oss.nxp.com>
+In-Reply-To: <20260831143449.12828-6-ciprianmarian.costea@oss.nxp.com>
 References: <20260831143449.12828-1-ciprianmarian.costea@oss.nxp.com>
- <20260831143449.12828-5-ciprianmarian.costea@oss.nxp.com>
+ <20260831143449.12828-6-ciprianmarian.costea@oss.nxp.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Mon, 31 Aug 2026 18:37:29 +0000
-Message-Id: <20260831183729.C40A71F000E9@smtp.kernel.org>
+Date: Mon, 31 Aug 2026 18:51:22 +0000
+Message-Id: <20260831185123.165B21F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+Thank you for your contribution! Sashiko AI review found 2 potential issue(=
 s) to consider:
 
+New issues:
+- [Medium] Wakeup interrupt is not configured for the new dedicated ESR IRQ=
+ during suspend.
+
 Pre-existing issues:
-- [High] Concurrent execution of split IRQ handlers corrupts rx-offload skb=
-_irq_queue and CAN state.
+- [Critical] Concurrent execution of separate IRQ handlers corrupts the loc=
+kless rx-offload SKB queue.
 --
 
-commit c8453ab295dd4a8e4e7831e7734d0b2de7b63259
+commit 53e92dd64634f7bc681782eddd379791f6533960
 Author: Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>
 
-dt-bindings: can: fsl,flexcan: add NXP S32N79 SoC support
+can: flexcan: add FLEXCAN_QUIRK_IRQ_BERR quirk
 
-Add NXP S32N79 SoC compatible string and interrupt properties.
-On S32N79, FlexCAN IP is integrated with two interrupt lines:
-one for the mailbox interrupts (0-127) and one for signaling
-bus errors and device state changes.
+This commit introduces the FLEXCAN_QUIRK_IRQ_BERR quirk for platforms where=
+ bus
+errors and state changes share a dedicated IRQ line. It adds a combined IRQ
+handler flexcan_irq_esr() and updates interrupt setup and teardown to manage
+the new line.
 
-> diff --git a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml b=
-/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-> index f81d56f7c12a5..d098a44c2b9c2 100644
-> --- a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-> +++ b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
+> diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/fle=
+xcan/flexcan-core.c
+> index f28ff0e95b74f..601d88bfcfeb2 100644
+> --- a/drivers/net/can/flexcan/flexcan-core.c
+> +++ b/drivers/net/can/flexcan/flexcan-core.c
 
 [ ... ]
 
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: nxp,s32n79-flexcan
-> +    then:
-> +      properties:
-> +        interrupts:
-> +          items:
-> +            - description: Message Buffer interrupt for mailboxes 0-127
-> +            - description: Bus Error and Device state change interrupt
+> @@ -1303,6 +1303,22 @@ static irqreturn_t flexcan_irq_boff(int irq, void =
+*dev_id)
+>  	return handled;
+>  }
+> =20
+> +/* Combined bus error and state change IRQ handler */
+> +static irqreturn_t flexcan_irq_esr(int irq, void *dev_id)
+> +{
+> +	struct net_device *dev =3D dev_id;
+> +	struct flexcan_priv *priv =3D netdev_priv(dev);
+> +	irqreturn_t handled;
+> +
+> +	handled =3D flexcan_do_state(dev);
+> +	handled |=3D flexcan_do_berr(dev);
+> +
+> +	if (handled)
+> +		can_rx_offload_irq_finish(&priv->offload);
+> +
+> +	return handled;
+> +}
 
-[Severity: High]
-This is a pre-existing issue, but this multi-IRQ configuration exposes a
-concurrent execution bug in the split IRQ handlers.
+[Severity: Critical]
+This is a pre-existing issue, but adding this separate IRQ handler highligh=
+ts
+a race condition. Can this new handler and the main mailbox IRQ handler
+execute concurrently on different CPUs?
 
-When multiple interrupt events (e.g., mailbox processing and bus error) fire
-simultaneously, the handlers mapped to different IRQ numbers on multi-IRQ
-platforms (like S32G2 or S32N79) can be dispatched concurrently on different
-CPU cores.
+If dev->irq and priv->irq_err are dispatched to different CPUs simultaneous=
+ly,
+both handlers can call into the Rx offload functions in rx-offload.c. For
+example:
 
-For example, in drivers/net/can/flexcan/flexcan-core.c, flexcan_irq_mb()
-calls flexcan_do_mb():
+CPU1 (in flexcan_irq_mb):
+  can_rx_offload_irq_offload_timestamp()
+    __skb_queue_add_sort(&offload->skb_irq_queue, ...)
 
-	handled =3D flexcan_do_mb(dev, mb_mask);
+CPU2 (in flexcan_irq_esr):
+  handled |=3D flexcan_do_berr(dev);
+    flexcan_irq_bus_err()
+      can_rx_offload_queue_timestamp()
+        __skb_queue_add_sort(&offload->skb_irq_queue, ...)
 
-	if (handled)
-		can_rx_offload_irq_finish(&priv->offload);
+Since the Rx offload queue manipulation in __skb_queue_add_sort() is lockle=
+ss,
+could this concurrent execution corrupt the skb_irq_queue list and crash the
+kernel? Similarly, both paths call can_rx_offload_irq_finish() which splices
+the queue locklessly from the IRQ queue side without adequate mutual exclus=
+ion
+against other HardIRQs.
 
-This can run concurrently with the state change interrupt in flexcan_do_sta=
-te():
+[ ... ]
 
-	/* state change interrupt or broken error state quirk fix is enabled */
-	if ((reg_esr & FLEXCAN_ESR_ERR_STATE) ||
-	    (priv->devtype_data.quirks &
-	    (FLEXCAN_QUIRK_BROKEN_WERR_STATE | FLEXCAN_QUIRK_BROKEN_PERR_STATE)))
-		flexcan_irq_state(dev, reg_esr);
+> @@ -1905,6 +1922,13 @@ static int flexcan_open(struct net_device *dev)
+>  			goto out_free_irq_boff;
+>  	}
+> =20
+> +	if (priv->devtype_data.quirks & FLEXCAN_QUIRK_IRQ_BERR) {
+> +		err =3D request_irq(priv->irq_err,
+> +				  flexcan_irq_esr, IRQF_SHARED, dev->name, dev);
+> +		if (err)
+> +			goto out_free_irq_boff;
+> +	}
+> +
 
-These concurrent handlers invoke can_rx_offload_irq_offload_timestamp() and
-can_rx_offload_queue_timestamp(), which use the lockless
-__skb_queue_add_sort() API to insert SKBs into offload->skb_irq_queue.
+[Severity: Medium]
+Since this quirk routes the wakeup event (WAK_INT) to this new dedicated ESR
+IRQ line, should priv->irq_err be configured for wakeup during suspend?
 
-Since these list insertion APIs omit locking (relying on a single-IRQ
-execution context), can this concurrent execution corrupt the doubly-linked
-list pointers and lead to a kernel panic during normal CAN traffic?
+Currently, flexcan_suspend() calls enable_irq_wake(dev->irq), but it does
+not arm priv->irq_err. Will the system fail to wake up from sleep upon CAN
+activity on platforms using this quirk because the interrupt controller isn=
+'t
+armed for the correct line?
 
-Additionally, with the FLEXCAN_QUIRK_BROKEN_PERR_STATE quirk, both
-flexcan_irq_berr() and flexcan_irq_boff() can concurrently execute
-flexcan_do_state(), causing data races in can_change_state().
-
-This issue was introduced by the earlier commit "can: flexcan: use dedicated
-IRQ handlers for multi-IRQ platforms" in this patchset, and it was not
-resolved by the end of the series. Should locking be introduced to protect
-the CAN state and offload queues?
+Should flexcan_suspend() and flexcan_resume() be updated to handle
+priv->irq_err as well?
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260831143449.1282=
-8-1-ciprianmarian.costea@oss.nxp.com?part=3D4
+8-1-ciprianmarian.costea@oss.nxp.com?part=3D5
