@@ -1,46 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCBAF476074;
-	Tue,  1 Sep 2026 08:49:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9816C4749E9;
+	Tue,  1 Sep 2026 08:56:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788252573; cv=none; b=dTpesL+MY+q+sZbasS4BoIiDIKeQXAOto9xTgeH6FT1xJbBt7amCpfEjbuOX6aETdc+kNJgsoP5W+AbLmoVT8D/skyWOeF1LkFxOtnWpHaURb1fmwbDZd9oJpKurpD8zjJjC3ZKNeWuXLKL9lOZPaZuvewPm24railzx8OALUf8=
+	t=1788252992; cv=none; b=aidXZYbgJ4Jr4EmZAZvMw1WyCRnztruNs3LWmw5vExqiGp81HL6YnyxxsBHyxWMddb4XfSPZ/BqFjgZgyt1peHfZJ4BuFgV/dn+kqa+amkJ7EgfI0YXqP3LlKj+9KqYaosrrVWmXM5zLvsj/5bYtHzg5azDxxnRZIKROw5MZnaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788252573; c=relaxed/simple;
-	bh=Xyl+z8W3uION4WLwHnP01eQ0JM79vrYj7GF9oqbglH0=;
+	s=arc-20240116; t=1788252992; c=relaxed/simple;
+	bh=OuIUGY75OApIKQfIjHZ/PUCVyK4fQk7nYNKRx2B/66o=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=Z8WWbuYqq7KhsKpmlDkNVEpRZbV1+gl1n6rTuPK3rbsKfbR/vbtYA6ze2p4VDBtcf5wrNi//2YyMX5ToQW5S5QEN++5Tz81Gr+1q89TWmZZrhXI1ISIED5DUNhi6hYSlFgk2uEAd/GUlUJARJ/ND0y10Q+l2gopzIMFKFtQnRUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UfsUe1hL; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=Mtpo4i3YiDRlV3jsSdcGohIJbdY9UWqK4VRoFrVOK2xBvkrOhlmV4DCS/sHYib1FxqzuDB2xn30cK3sof55jwAeNm+/y0WlBWEbcJ1mi55prfIvQJyOF3wHcdjQY3tFgI6FaixeczruuRFKNOykG/XNuKKNCMePhwJTu5976fOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VIIOxh5U; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UfsUe1hL"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AB111F00A3D;
-	Tue,  1 Sep 2026 08:49:30 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VIIOxh5U"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09F2B1F000E9;
+	Tue,  1 Sep 2026 08:56:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788252571;
-	bh=jMF3OsMuDbTbk9sfGK2vA6KA7SRVSRFiafEyCsXfkbs=;
+	s=k20260515; t=1788252990;
+	bh=t2guQPw3hnUsc8Uns/0gSmAitpqoVRH+IpdpmGkUBkA=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=UfsUe1hLZNhKgZNaXqiSlFEEQsj5ozqMa2YRDQCzgheg7vxiPI6/2X1qqwrNgZRDU
-	 eelICXURs17SROmwQfds9ck6xLTpotGJzRJMJPuW7h6WC1jVQuUfiGtTWzw/CalNKd
-	 Q8HUjN3OvtufDEoGkoM0N7G2UxtMeNNoS4w5QbJODIqL94feHhWoOxHTqE8cZZUXoj
-	 mOjZ2QpOl46SCampasuvzJ5BwZ3eBza+68+9ox58pIusxfQ1LTW1VpjzfFkRXpT1n6
-	 RIOKDS0nMW+Z91lnhzD6968UgMLSNCkpD7RsOh5WSud4LnGMjkgHnEgUFzDNjpIq+e
-	 HkGJJMQ5xc0Sw==
+	b=VIIOxh5UYlBixKwV2pdMhxb1lg2/ZMiAGm4Rm4DPF8bqxJNnKqbwONoOVscpDGCBc
+	 SAaqnow11EyY8uvZglfHy3LrKtRs+TJ/iAtEbrCttUfQ/q+kKFJgMvjM0CIfzyvapT
+	 DVkXMRamMxDZqXEGZCCXS3fFGfPlLRKx71vi8/IxvYZVahOnezi8DpuXvLrJq5/fmX
+	 V3JpddcphQ+3ZcGMUZXPxqxQUc0hoC+PO9tjkE+10mRq10WXkvepgzGIIhl4YXi9EH
+	 Byn8hDz0lOjdgYzdMPKg4+xLSsE+1jpH+84inYsDhDbPsnM8jPhN02n3/csIl+/kl4
+	 dpyn9Vp0PNDvA==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v2 2/2] can: at91_can: add missing can_rx_offload_del()
- in at91_can_remove()
+Subject: Re: [PATCH v2 1/2] can: rx-offload: make skb_irq_queue per-CPU
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Ciprian Costea" <ciprianmarian.costea@oss.nxp.com>
-Cc: "Vincent Mailhol" <mailhol@kernel.org>, imx@lists.linux.dev, Frank.Li@kernel.org, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-In-Reply-To: <20260901083927.316283-3-ciprianmarian.costea@oss.nxp.com>
+Cc: "Vincent Mailhol" <mailhol@kernel.org>, imx@lists.linux.dev, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>, Frank.Li@kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>
+In-Reply-To: <20260901083927.316283-2-ciprianmarian.costea@oss.nxp.com>
 References: <20260901083927.316283-1-ciprianmarian.costea@oss.nxp.com>
- <20260901083927.316283-3-ciprianmarian.costea@oss.nxp.com>
+ <20260901083927.316283-2-ciprianmarian.costea@oss.nxp.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 01 Sep 2026 08:49:30 +0000
-Message-Id: <20260901084931.0AB111F00A3D@smtp.kernel.org>
+Date: Tue, 01 Sep 2026 08:56:29 +0000
+Message-Id: <20260901085630.09F2B1F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -49,85 +48,77 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
 Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
-
-Pre-existing issues:
-- [High] The driver ignores the return value of `can_rx_offload_add_timesta=
-mp()`, leading to a kernel panic upon allocation failure, and also misses c=
-leanup in the probe error path.
+- [High] Thread migration during threaded IRQ handling and sequential per-C=
+PU queue splicing destroys global CAN frame chronological ordering.
 --
 
-commit 480793d438a773b528d044a7ee532ec7fbf0bc18
+commit d1de02ef27f2f1f783bb25ca00d6ff687c0ada66
 Author: Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>
 
-can: at91_can: add missing can_rx_offload_del() in at91_can_remove()
+can: rx-offload: make skb_irq_queue per-CPU
 
-at91_can_probe() sets up rx-offload via can_rx_offload_add_timestamp(),
-but at91_can_remove() never calls can_rx_offload_del(). The NAPI
-instance added by can_rx_offload_add_timestamp() is therefore never
-removed on unbind.
+This commit allocates skb_irq_queue per-CPU to prevent lockless queue
+corruption when multiple mailbox IRQ lines are affined to different CPUs.
+It removes cross-CPU timestamp sorting, instead sorting frames only within
+each per-CPU queue and appending them across CPUs on splice.
+
+> diff --git a/drivers/net/can/dev/rx-offload.c b/drivers/net/can/dev/rx-of=
+fload.c
+> index 46e7b6db4a1ef..649bfda08b654 100644
+> --- a/drivers/net/can/dev/rx-offload.c
+> +++ b/drivers/net/can/dev/rx-offload.c
 
 [ ... ]
 
-> diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-> index 58da323f14d7c..3ee908817add8 100644
-> --- a/drivers/net/can/at91_can.c
-> +++ b/drivers/net/can/at91_can.c
-> @@ -1165,6 +1165,8 @@ static void at91_can_remove(struct platform_device =
-*pdev)
-> =20
->  	unregister_netdev(dev);
-> =20
-> +	can_rx_offload_del(&priv->offload);
+> @@ -330,15 +354,29 @@ void can_rx_offload_threaded_irq_finish(struct can_=
+rx_offload *offload)
+>  {
+>  	unsigned long flags;
+>  	int queue_len;
+> -
+> -	if (skb_queue_empty_lockless(&offload->skb_irq_queue))
+> -		return;
+> -
+> +	int cpu;
 > +
+> +	/*
+> +	 * Splice every CPU's queue: unlike the non-threaded
+> +	 * can_rx_offload_irq_finish(), a threaded handler may be migrated
+> +	 * between the enqueue and this splice, so the frames may sit on a
+> +	 * different CPU's queue. This is only safe because a given per-CPU
+> +	 * queue has a single producer (the enqueue on that CPU is
+> +	 * non-preemptible), so no producer can race this splice.
+> +	 */
+>  	spin_lock_irqsave(&offload->skb_queue.lock, flags);
+> -	skb_queue_splice_tail_init(&offload->skb_irq_queue, &offload->skb_queue=
+);
+> +	for_each_possible_cpu(cpu) {
+> +		struct sk_buff_head *irq_queue;
+> +
+> +		irq_queue =3D per_cpu_ptr(offload->skb_irq_queue, cpu);
+> +		skb_queue_splice_tail_init(irq_queue, &offload->skb_queue);
+> +	}
+        ^^^^
 
 [Severity: High]
-This isn't a bug introduced by this patch, but while fixing this missing
-cleanup in at91_can_remove(), is there a similar leak in the at91_can_probe=
-()
-error path?
+Does splicing the per-CPU queues in fixed numerical order destroy the
+chronological ordering of CAN frames if the threaded IRQ handler migrates?
 
-If register_candev() fails during probe, the exit_free error path is taken
-but it misses calling can_rx_offload_del(). Could this leave a dangling NAPI
-instance and leak the per-CPU queues?
+In CAN drivers using threaded IRQ handlers (like mcp251xfd), bursts of
+frames are processed in a loop. Because can_rx_offload_queue_timestamp()
+and can_rx_offload_queue_tail() only disable preemption locally during the
+actual enqueue operation, the kernel thread can be preempted and migrated
+to a different CPU between processing frames.
 
-drivers/net/can/at91_can.c:at91_can_probe() {
-	...
-	err =3D register_candev(dev);
-	if (err) {
-		dev_err(&pdev->dev, "registering netdev failed\n");
-		goto exit_free;
-	}
-	...
- exit_free:
-	free_candev(dev);
-	...
-}
+This distributes sequential frames from the exact same CAN interface across
+multiple per-CPU queues. By blindly splicing them into the global skb_queue
+in strict numerical CPU order, if the thread migrated from a higher CPU
+(e.g., CPU 1) to a lower CPU (e.g., CPU 0), the later frames on CPU 0 are
+spliced before the earlier frames on CPU 1.=20
 
-Additionally, the return value of can_rx_offload_add_timestamp() in
-at91_can_probe() is ignored.
-
-If the allocation fails under memory pressure and returns an error like
--ENOMEM, the probe continues without allocating the per-CPU queues. When a
-hardware interrupt eventually fires:
-
-drivers/net/can/dev/rx-offload.c:can_rx_offload_irq_offload_timestamp() {
-	...
-	irq_queue =3D get_cpu_ptr(offload->skb_irq_queue);
-	...
-	__skb_queue_add_sort(irq_queue, skb, can_rx_offload_compare);
-}
-
-Could this result in passing an uninitialized NULL skb_irq_queue pointer to
-get_cpu_ptr(), producing an invalid memory address and causing a fatal page
-fault when dereferenced by __skb_queue_add_sort()?
-
-Does at91_can_probe() need to check the return value of
-can_rx_offload_add_timestamp() and handle the allocation error?
-
->  	iounmap(priv->reg_base);
-> =20
->  	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+Could this permanently invert their order and violate the strict FIFO
+chronological ordering required by CAN bus protocols?
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260901083927.3162=
-83-1-ciprianmarian.costea@oss.nxp.com?part=3D2
+83-1-ciprianmarian.costea@oss.nxp.com?part=3D1
