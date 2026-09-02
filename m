@@ -1,18 +1,19 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D65F6353A72;
-	Wed,  2 Sep 2026 14:15:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D164A2059;
+	Wed,  2 Sep 2026 14:15:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788358553; cv=none; b=OgsfVC1PFhthsrHn6LgdTgr+JBajNH4+wrhnI53oZmpJqFeOu+pu9Oi4E9jx+h48txZ6jLMFvyx5+elUig3VUIIEtP4nPImw1JKF9PhoO+66DlYLVzJwNGi3NR9jYVN4AWrpFJWJ5jlOuy7gKmtwqPxw9g3uKym8TzFsECL4wOs=
+	t=1788358557; cv=none; b=KtfirX+IrM9iJxSAKcqIb+pqlUha1HJn/hhyFqgTAmmlP5HY67oFjnjhn0j29gLTydktwobt2tCt/vcFGoPiTg0R0LLE/3fnAXnJep5AwOcRwsCH1fnA/AO9B5hFqCHZA69bE5QE3qhota6UhevWzathVZqg3oMAqjyOT5srcJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788358553; c=relaxed/simple;
-	bh=9uwyIoafWmTBh7WAeYvtNgKZDHIM9jQDiG0P7YAztX0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DKcmFJT7Zr2ZgHIisULgARmmGd/h2FSRSQE/2DVYDNfTpPyu5aMu6OrWvaSYT84ET99RI8Ee5MZGBfWRtGq70bjCQzdTs6fBVi2XBh1o9wPGjN0B3NmM1u6g0BEjAginO+8i4aO3/8b+3U+/tpMRpT16F0UeAIfWKYXGPsH4fTQ=
+	s=arc-20240116; t=1788358557; c=relaxed/simple;
+	bh=8arOEbtJu5ORo5zQIIDaftBo1oaLkMB3HysazdGv5Y8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=BvxJC/ypM6keNJ3EYHkYjw54CSs9hNus7AhCXE/dG6hVsJgE3VQ+CXo3gEk2BAP0rc05ZFpl/hMAuW3GBxql71tzFmAZzqGtAS4ACNXr9CsVVviKz99H8zF8BFTn7u6dgMpMwYSgs5Av9UNy+ZnwEmSlO072CipKGaS+NPbmBGc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03A3F1F00A3A;
-	Wed,  2 Sep 2026 14:15:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 112811F000E9;
+	Wed,  2 Sep 2026 14:15:51 +0000 (UTC)
 From: Claudiu Beznea <claudiu.beznea+renesas@tuxon.dev>
 To: mkl@pengutronix.de,
 	mailhol@kernel.org,
@@ -29,10 +30,12 @@ Cc: claudiu.beznea@tuxon.dev,
 	linux-renesas-soc@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH v4 0/7] can: rcar_canfd: Add support for Renesas RZ/G3S
-Date: Wed,  2 Sep 2026 17:15:37 +0300
-Message-ID: <20260902141544.565763-1-claudiu.beznea+renesas@tuxon.dev>
+Subject: [PATCH v4 1/7] dt-bindings: can: renesas,rcar-canfd: Document RZ/G3S SoC
+Date: Wed,  2 Sep 2026 17:15:38 +0300
+Message-ID: <20260902141544.565763-2-claudiu.beznea+renesas@tuxon.dev>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260902141544.565763-1-claudiu.beznea+renesas@tuxon.dev>
+References: <20260902141544.565763-1-claudiu.beznea+renesas@tuxon.dev>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -43,49 +46,122 @@ Content-Transfer-Encoding: 8bit
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Hi,
+The CAN FD controller found on the Renesas RZ/G3S SoC is largely compatible
+with the variant present on the RZ/G3E SoC. The main differences are:
+- the RZ/G3S provides only two CAN FD channels
+- the RZ/G3S supports only CAN FD operation; the Channel n CAN FD
+  Configuration Register does not implement the bits used to select
+  classical CAN-only mode (bit 30) or CAN FD-only mode (bit 28);
+  consequently, bit 31 (CAN FD Frame Distinction Enable) of the same
+  register is also not implemented
+- some bits in several registers (mainly reserved or status bits) are
+  read-write on the RZ/G3S but read-only on the RZ/G3E; their behavior is
+  otherwise identical: the bits read back as 0 on both SoCs and software
+  is allowed to write only 0 to them on the RZ/G3S
+- the RZ/G3S provides 256 acceptance filters, compared to 768 on the
+  RZ/G3E
+- the RZ/G3S can use PCLK clock as the CAN FD clock source through an
+  internal clock divider, while also supporting an external CAN FD clock
+  source
 
-Series adds CAN support for the Renesas RZ/G3S SoC. Along with it a typo
-fix patch was added on the CAN driver.
+Since:
+- the SoC clock generator provides to the CAN IP only the peripheral and
+  the RAM clocks
+- when sourced from the peripheral clock, the CAN-FD clock is obtained
+  inside the IP itself by dividing the peripheral clock
+- the assigned-clocks and assigned-clock-rates properties are specific to
+  the CAN-FD clock
+the assigned-clocks and assigned-clock-rates properties were dropped from
+the required properties list of the Renesas RZ/G3S SoC.
 
-Merge strategy:
-- patches 1-5/7 should go though the CAN tree
-- patches 6-7/7 should go though Renesas tree
+Add documentation for the Renesas RZ/G3S SoC.
 
-Thank you,
-Claudiu
+Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+---
 
 Changes in v4:
-- dropped patch "clk: r9a08g045-cpg: Add clocks and resets for CAN-FD"
-  since it was applied
 - collected tags
-- s/mode_select_na/fixed_canfd in patch 4/7
-- used TCAN1046 compatible in patch 7/7 and adjusted the standby-gpios
-  property
 
 Changes in v3:
-- addressed sashiko review comments
+- updated the patch description to reflect RZ/G3S has 256 acceptance
+  filters and RZ/G3E has 768 acceptance filters
+- kept compatibles alphanumerically sorted
 
 Changes in v2:
-- collected tags
-- addressed sashiko review comments
+- forbid renesas,no-can-fd and renesas,fd-only since the IP supports
+  only CAN-FD; for this didn't collect Biju's tag
 
-Claudiu Beznea (7):
-  dt-bindings: can: renesas,rcar-canfd: Document RZ/G3S SoC
-  can: rcar_canfd: Fix typos in macro names
-  can: rcar_canfd: Allow the CAN FD clock to be sourced from fck
-  can: rcar_canfd: Do not set registers selecting the CAN mode
-  can: rcar_canfd: Add support for Renesas RZ/G3S
-  arm64: dts: renesas: r9a08g045: Add CAN-FD node
-  arm64: dts: renesas: rzg3s-smarc: Enable CAN-FD
+ .../bindings/net/can/renesas,rcar-canfd.yaml  | 20 +++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
- .../bindings/net/can/renesas,rcar-canfd.yaml  | 20 +++++-
- arch/arm64/boot/dts/renesas/r9a08g045.dtsi    | 39 +++++++++++
- .../boot/dts/renesas/rzg3s-smarc-switches.h   | 12 ++++
- arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi  | 45 +++++++++++++
- drivers/net/can/rcar/rcar_canfd.c             | 65 +++++++++++++++----
- 5 files changed, 168 insertions(+), 13 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+index b9d9dd7a7967..bbaaef8f4282 100644
+--- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
++++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+@@ -13,6 +13,7 @@ properties:
+   compatible:
+     oneOf:
+       - enum:
++          - renesas,r9a08g045-canfd        # RZ/G3S
+           - renesas,r9a09g047-canfd        # RZ/G3E
+           - renesas,r9a09g077-canfd        # RZ/T2H
+ 
+@@ -185,8 +186,6 @@ required:
+   - clocks
+   - clock-names
+   - power-domains
+-  - assigned-clocks
+-  - assigned-clock-rates
+   - channel0
+   - channel1
+ 
+@@ -198,6 +197,7 @@ allOf:
+         compatible:
+           contains:
+             enum:
++              - renesas,r9a08g045-canfd
+               - renesas,rzg2l-canfd
+     then:
+       properties:
+@@ -266,6 +266,7 @@ allOf:
+         compatible:
+           contains:
+             enum:
++              - renesas,r9a08g045-canfd
+               - renesas,r9a09g077-canfd
+               - renesas,rcar-gen3-canfd
+               - renesas,rzg2l-canfd
+@@ -330,6 +331,7 @@ allOf:
+         compatible:
+           contains:
+             enum:
++              - renesas,r9a08g045-canfd
+               - renesas,r9a09g047-canfd
+               - renesas,rzg2l-canfd
+     then:
+@@ -350,6 +352,20 @@ allOf:
+       properties:
+         reset-names: false
+ 
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: renesas,r9a08g045-canfd
++    then:
++      properties:
++        renesas,no-can-fd: false
++        renesas,fd-only: false
++    else:
++      required:
++        - assigned-clocks
++        - assigned-clock-rates
++
+ unevaluatedProperties: false
+ 
+ examples:
 -- 
 2.43.0
 
