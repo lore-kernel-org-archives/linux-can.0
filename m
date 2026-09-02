@@ -1,114 +1,91 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70800476CF0;
-	Wed,  2 Sep 2026 13:35:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D65F6353A72;
+	Wed,  2 Sep 2026 14:15:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788356129; cv=none; b=SW/yD6ntg9vY+2ZKsv1mkEnPs/y9lzAziICmB44jMIOTwWHhvvmGtUcc74hjnEn+Dy5mXDVCMV12dIUfQ8r37IPJOzfIP6NWoW0lq1gI+CzNwYHijtfDpJi8m2EUJ7C3rwTDfvazf9RUBr7llYoj3OrVXTxMY+Y+qibnv8veeek=
+	t=1788358553; cv=none; b=OgsfVC1PFhthsrHn6LgdTgr+JBajNH4+wrhnI53oZmpJqFeOu+pu9Oi4E9jx+h48txZ6jLMFvyx5+elUig3VUIIEtP4nPImw1JKF9PhoO+66DlYLVzJwNGi3NR9jYVN4AWrpFJWJ5jlOuy7gKmtwqPxw9g3uKym8TzFsECL4wOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788356129; c=relaxed/simple;
-	bh=LasyqCyaY4KjfMpvNPz82L67wfUPTzmc4z+mDW0nqzo=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=txV6N6Kp3Kz8h3T6YWLuAvJcXV0q195eHJyt6BVxfZBeOqbkFXFtj+13OrAwZOpbjR+0k8vNcz7hO8zJpXVfs/ECbx7MqPjqyXnrFb+W616jY/9ogC4zykwJY1RGx5EWs65cfXAYBc7B1Yxs8PpkCiELiWI2iYNgyariiPELqQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S1BZ39oa; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S1BZ39oa"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E22DE1F000E9;
-	Wed,  2 Sep 2026 13:35:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788356126;
-	bh=BGuIznCv9PUDEBDkw/pQ/InrE0j7ZosksJqwh4KPsMM=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=S1BZ39oaogdM2I1AE3RSZkU3cFwXZgVOlugezO1Bzyybx1qYZd7RQzSZ4yOqKCS6I
-	 p6XjGIlrJ6Gv18frbwe3Zxf9L9NV0zyAmUVuTxpI/zNfWslLzpZLYRHefMHSQ9PcRQ
-	 JzHngr/BtMslX+DllSH+uJ02N6oDNzybG3NCnUPnVexYo/2OjZ2x3UbZdxD0wtRJ5T
-	 NnZZQL1F+nMIG7899AbjTGCC+RvLcCvIYUCr4zJGW17E4EXRbi7wqhQObY52KBWlE+
-	 DGSMnDkpWeBfe+tTRwxQi/H3FCx4fdm2XBlFfLkn7JhLgVOHppHXHJRWQ/fBA91Wdy
-	 cuQJApxU3j3Bw==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH V3 2/3] dt-bindings: phy: ti,tcan104x-can: Document
- Microchip MCP2542
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Stefan Wahren" <wahrenst@gmx.net>
-Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, devicetree@vger.kernel.org, "Vincent
- Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>, conor+dt@kernel.org, linux-can@vger.kernel.org, Frank.Li@kernel.org, imx@lists.linux.dev, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, vkoul@kernel.org, olteanv@gmail.com, linux-phy@lists.infradead.org, neil.armstrong@linaro.org, robh@kernel.org
-In-Reply-To: <20260902132801.22056-3-wahrenst@gmx.net>
-References: <20260902132801.22056-1-wahrenst@gmx.net>
- <20260902132801.22056-3-wahrenst@gmx.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 02 Sep 2026 13:35:24 +0000
-Message-Id: <20260902133525.E22DE1F000E9@smtp.kernel.org>
+	s=arc-20240116; t=1788358553; c=relaxed/simple;
+	bh=9uwyIoafWmTBh7WAeYvtNgKZDHIM9jQDiG0P7YAztX0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DKcmFJT7Zr2ZgHIisULgARmmGd/h2FSRSQE/2DVYDNfTpPyu5aMu6OrWvaSYT84ET99RI8Ee5MZGBfWRtGq70bjCQzdTs6fBVi2XBh1o9wPGjN0B3NmM1u6g0BEjAginO+8i4aO3/8b+3U+/tpMRpT16F0UeAIfWKYXGPsH4fTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03A3F1F00A3A;
+	Wed,  2 Sep 2026 14:15:47 +0000 (UTC)
+From: Claudiu Beznea <claudiu.beznea+renesas@tuxon.dev>
+To: mkl@pengutronix.de,
+	mailhol@kernel.org,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	geert+renesas@glider.be,
+	magnus.damm@gmail.com,
+	biju.das.jz@bp.renesas.com,
+	fabrizio.castro.jz@renesas.com
+Cc: claudiu.beznea@tuxon.dev,
+	linux-can@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH v4 0/7] can: rcar_canfd: Add support for Renesas RZ/G3S
+Date: Wed,  2 Sep 2026 17:15:37 +0300
+Message-ID: <20260902141544.565763-1-claudiu.beznea+renesas@tuxon.dev>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
-- [Medium] The newly added `microchip,mcp2542` compatible string bypasses s=
-chema validation hardware constraints because its fallback conditional bloc=
-k uses a strict `enum` match rather than `contains`.
---
+From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-commit c5426cb50d1b23a21e92a69a5197ccb523f72e8b
-Author: Stefan Wahren <wahrenst@gmx.net>
+Hi,
 
-dt-bindings: phy: ti,tcan104x-can: Document Microchip MCP2542
-   =20
-The Microchip MCP2542 High-speed CAN transceiver with Sleep mode is a
-pin-compatible alternative for the TI TCAN1042.
+Series adds CAN support for the Renesas RZ/G3S SoC. Along with it a typo
+fix patch was added on the CAN driver.
 
-> diff --git a/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml b=
-/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
-> index 9f5c37ca6496a..3ed4ce2191201 100644
-> --- a/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
-> +++ b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
-> @@ -18,6 +18,7 @@ properties:
->        - items:
->            - enum:
->                - microchip,ata6561
-> +              - microchip,mcp2542
+Merge strategy:
+- patches 1-5/7 should go though the CAN tree
+- patches 6-7/7 should go though Renesas tree
 
-[Severity: Medium]
-Will this newly added compatible string bypass the hardware constraints enf=
-orced
-later in the schema?
+Thank you,
+Claudiu
 
-When a device tree defines compatible =3D "microchip,mcp2542", "ti,tcan1042=
-", the
-schema parses it as a string array. However, the allOf conditional block fu=
-rther
-down in the file checks for ti,tcan1042 using a strict scalar enum match:
+Changes in v4:
+- dropped patch "clk: r9a08g045-cpg: Add clocks and resets for CAN-FD"
+  since it was applied
+- collected tags
+- s/mode_select_na/fixed_canfd in patch 4/7
+- used TCAN1046 compatible in patch 7/7 and adjusted the standby-gpios
+  property
 
-allOf:
-  - if:
-      properties:
-        compatible:
-          enum:
-            - nxp,tjr1443
-            - ti,tcan1042
-            - ti,tcan1043
-    then:
+Changes in v3:
+- addressed sashiko review comments
 
-Since the array fails the strict enum match, the then constraints are skipp=
-ed,
-which allows a microchip,mcp2542 device node with an invalid configuration =
-to
-silently pass dt_binding_check.
+Changes in v2:
+- collected tags
+- addressed sashiko review comments
 
-Should the allOf block be updated to use contains instead of enum, or should
-microchip,mcp2542 be explicitly added to the enum list, to ensure these dev=
-ices
-are properly validated?
+Claudiu Beznea (7):
+  dt-bindings: can: renesas,rcar-canfd: Document RZ/G3S SoC
+  can: rcar_canfd: Fix typos in macro names
+  can: rcar_canfd: Allow the CAN FD clock to be sourced from fck
+  can: rcar_canfd: Do not set registers selecting the CAN mode
+  can: rcar_canfd: Add support for Renesas RZ/G3S
+  arm64: dts: renesas: r9a08g045: Add CAN-FD node
+  arm64: dts: renesas: rzg3s-smarc: Enable CAN-FD
 
->                - ti,tcan1051
->            - const: ti,tcan1042
->        - items:
+ .../bindings/net/can/renesas,rcar-canfd.yaml  | 20 +++++-
+ arch/arm64/boot/dts/renesas/r9a08g045.dtsi    | 39 +++++++++++
+ .../boot/dts/renesas/rzg3s-smarc-switches.h   | 12 ++++
+ arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi  | 45 +++++++++++++
+ drivers/net/can/rcar/rcar_canfd.c             | 65 +++++++++++++++----
+ 5 files changed, 168 insertions(+), 13 deletions(-)
 
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260902132801.2205=
-6-1-wahrenst@gmx.net?part=3D2
+-- 
+2.43.0
+
