@@ -1,79 +1,107 @@
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07CA1472796;
-	Wed,  2 Sep 2026 11:11:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+Received: from qmail.kvaser.se (static-195-22-86-94.cust.tele2.se [195.22.86.94])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E16AB46F4AD
+	for <linux-can@vger.kernel.org>; Wed,  2 Sep 2026 11:14:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.22.86.94
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788347500; cv=none; b=oHUh3onqnXe7xqLFAuzlW52rhb1UI1L6ewsBUswSZK9ydXEduufUcXhsePC0wnB0sMLMVm8uvv6xoZIFvR7TaObGun1XZ9DRvfgZxk6IYvl8Np4KUq9Gl/ME3+6gq+yE779QRBudThttzPbfyO0yTZrWamWjY9vXi+CGHjsnYqY=
+	t=1788347651; cv=none; b=TUEMNNpBSIek89Aa+4AUITrpr0asTx7fcr7Tnjceu8LXcxMth/tVQSQFUx++qaWIBkdZfvEqpwAUVjfVxntVXKN/D2HCbqL2utBThalleZEDqvmz6FnLikKXmg+dPLIntzeEgC6ze3XunK6n+Bs/Ud72Q+Rhq9lbftULZcr5kf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788347500; c=relaxed/simple;
-	bh=WSdzyMZuWcmtOLgej9ONorjM7VnDq3klj1YSChAasP8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=esnBt+Rrqcow2mTJ9AJ3NKTg53BR6LGrHndj0ZoO/SEa64YAePGVhpT3kSI0fxwR2Qx6PmFm8jYTfBIjPsyripmyPiFENMGarOnQnksxWEfm4njWyyb0vg0ytCnfBbEOc8+9UFW3lJ/ovd8df7aYybcyawFmumOXaIci/I4IXO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; dkim=pass (2048-bit key) header.d=sntech.de header.i=@sntech.de header.b=H0QaVw5Q; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+	s=arc-20240116; t=1788347651; c=relaxed/simple;
+	bh=HGM65cv719ZC+1R/xgbGdoc20DgVqLAw64S+TznTSfA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Sa5T9Ejgpl1FrTvkMZ1Cl/9xmArBKt2qbs/J7uTDFcmxmq6Gz7aPWuq61kVae2vcd6aPLY9vO7RPKSvUlGRrQ3gKf68C5p6QZ6Ozc+VeyGB8pTaSHxkYE7tGLwT6Sm6mrI/uooynWCBtGPbxlfphpwJcsrl/6/eSsoQ6d2IHg8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com; spf=pass smtp.mailfrom=kvaser.com; dkim=pass (2048-bit key) header.d=kvaser.com header.i=@kvaser.com header.b=m8JT2f5w; arc=none smtp.client-ip=195.22.86.94
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kvaser.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kvaser.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sntech.de header.i=@sntech.de header.b="H0QaVw5Q"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=sntech.de;
-	s=gloria202408; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Reply-To;
-	bh=e13hcDNI+tjK7ZYito3EK+F+gJpiQQy7yUGftOidPTo=; b=H0QaVw5Qja/LxL3EoDTsZSAWu+
-	DK9KFWSCKqQug6/BxhFEznFPH/fb8uU+FKbmdcmGIJI8l7KZxIVVAK9cnRtqjmT1StRVezLK4ows1
-	ax/aQocKpxQzM0sEV5+ZW1RnbtyO4lylYn+Ot1lL1LQY/I4dktFtVXXuWMv/ScYt71xnXh+/+Wgyt
-	NFxV2Wxct9H+/9xCIV/NoXgBsy3vRKRrSpitX1seuym0/ZoHxX3pLC/RpNUJgSnkOaTQFEwE2qtMl
-	wFnO0cNlZeu84wAPHLH8uFgJSBSEKC9TghfFt8sA78yOqRwkC+svXiAi9OLpcoe6+w71YkDZOUcsz
-	A6FYh+qQ==;
-From: Heiko Stuebner <heiko@sntech.de>
-To: Marc Kleine-Budde <mkl@pengutronix.de>,
-	kernel@pengutronix.de,
-	Vincent Mailhol <mailhol@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Cunhao Lu <1579567540@qq.com>
-Cc: Heiko Stuebner <heiko@sntech.de>,
-	linux-can@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
-Subject: Re: (subset) [PATCH v6 1/4] dt-bindings: can: rockchip: add rk3588 CAN-FD compatible
-Date: Wed,  2 Sep 2026 13:11:12 +0200
-Message-ID: <178834747221.2268650.16431820094445507549.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <tencent_AE1A1199FC8C9ADC680C6458134A46B40309@qq.com>
-References: <tencent_AE1A1199FC8C9ADC680C6458134A46B40309@qq.com>
+	dkim=pass (2048-bit key) header.d=kvaser.com header.i=@kvaser.com header.b="m8JT2f5w"
+Received: from ATHENA.kvaser.se (ATHENA.kvaser.se [10.0.3.118])
+	by qmail.kvaser.se (Postfix) with ESMTP id DD177E3015;
+	Wed,  2 Sep 2026 13:06:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kvaser.com; s=qmail;
+	t=1788347191; bh=HGM65cv719ZC+1R/xgbGdoc20DgVqLAw64S+TznTSfA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=m8JT2f5wwgF6AcRfI0m85zz06JxHjOffvgT8YHtVhyUg7j4Ag4wKoU9dLuFX4Wd4w
+	 pS7mqKT7RXiYMmCLKm6It7616boQJ/rv12Qykl4nl7mUCEr8CvBogLGONvPoK20/KK
+	 FfdqvXN1Oe/D29mTF0Nvn9SDD/VkoTkYFgoOEpA9+XN5hZWI7wP6aYvu+zQz0SWP/S
+	 bjs4Yr1MDGX0BkIqt1AiXVFhBniCmxfyVuVfMVHzOjthkUCJvZEz/1HtGzAVWp5PT+
+	 kLsFOPP4BSZB7gHEMAcZsQG9Sgr+YPg1moFtgQ/EQ+mGYVf/1mZG8rDCIa/qg0jns5
+	 6Cpm6v+Bb6b5Q==
+From: Anton Olsson <anol@kvaser.com>
+To: linux-can@vger.kernel.org
+Cc: Anton Olsson <anol@kvaser.com>,
+	Farhad Alemi <farhad.alemi@berkeley.edu>,
+	Jimmy Assarsson <extja@kvaser.com>
+Subject: [PATCH] can: kvaser_usb: fix potential crash in probe
+Date: Wed,  2 Sep 2026 13:06:11 +0200
+Message-ID: <20260902110611.2426535-1-anol@kvaser.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
+The leaf driver does not return any errors when no clock configuration
+can be found, and instead it emits a null-check warning. Add default
+cases to return an error when no matching clock configuration can be
+found.
 
-On Thu, 30 Jul 2026 22:34:02 +0800, Cunhao Lu wrote:
-> RK3588 integrates a Rockchip CAN-FD controller variant that is not
-> fully compatible with RK3568v2. The RX FIFO count register field is
-> encoded in bits 7:5 on RK3588, while RK3568v2 uses bits 6:4.
-> 
-> Add a dedicated rockchip,rk3588-canfd compatible to describe this
-> variant. Do not use rockchip,rk3568v2-canfd as a fallback, because that
-> would describe a register layout that does not match the hardware.
-> 
-> [...]
+Signed-off-by: Anton Olsson <anol@kvaser.com>
+Reported-by: Farhad Alemi <farhad.alemi@berkeley.edu>
+Link: https://lore.kernel.org/linux-can/20260828-sassy-ammonite-of-focus-b2f17c-mkl@pengutronix.de/T/#t
+Reviewed-by: Jimmy Assarsson <extja@kvaser.com>
+---
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-Applied, thanks!
-
-[3/4] arm64: dts: rockchip: add CAN-FD nodes for RK3588
-      commit: 685b81f8c717b0f7ec7219f35ead626758ef3aec
-[4/4] arm64: dts: rockchip: Enable CAN controller on RK3588-Tiger-Haikou
-      commit: 0fb792388d2d39e35b7b366f491f846a7ebd8630
-
-Best regards,
+diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
+index a876c7819b81..2091de2e4f8f 100644
+--- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
++++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
+@@ -747,8 +747,8 @@ static int kvaser_usb_leaf_send_simple_cmd(const struct kvaser_usb *dev,
+ 	return rc;
+ }
+ 
+-static void kvaser_usb_leaf_get_software_info_leaf(struct kvaser_usb *dev,
+-						   const struct leaf_cmd_softinfo *softinfo)
++static int kvaser_usb_leaf_get_software_info_leaf(struct kvaser_usb *dev,
++						  const struct leaf_cmd_softinfo *softinfo)
+ {
+ 	u32 fw_version;
+ 	u32 sw_options = le32_to_cpu(softinfo->sw_options);
+@@ -777,6 +777,8 @@ static void kvaser_usb_leaf_get_software_info_leaf(struct kvaser_usb *dev,
+ 		case KVASER_USB_LEAF_SWOPTION_FREQ_32_MHZ_CLK:
+ 			dev->cfg = &kvaser_usb_leaf_m32c_dev_cfg_32mhz;
+ 			break;
++		default:
++			return -ENODEV;
+ 		}
+ 	} else {
+ 		switch (sw_options & KVASER_USB_LEAF_SWOPTION_FREQ_MASK) {
+@@ -789,8 +791,11 @@ static void kvaser_usb_leaf_get_software_info_leaf(struct kvaser_usb *dev,
+ 		case KVASER_USB_LEAF_SWOPTION_FREQ_32_MHZ_CLK:
+ 			dev->cfg = &kvaser_usb_leaf_imx_dev_cfg_32mhz;
+ 			break;
++		default:
++			return -ENODEV;
+ 		}
+ 	}
++	return 0;
+ }
+ 
+ static int kvaser_usb_leaf_get_software_info_inner(struct kvaser_usb *dev)
+@@ -809,7 +814,9 @@ static int kvaser_usb_leaf_get_software_info_inner(struct kvaser_usb *dev)
+ 
+ 	switch (dev->driver_info->family) {
+ 	case KVASER_LEAF:
+-		kvaser_usb_leaf_get_software_info_leaf(dev, &cmd.u.leaf.softinfo);
++		err = kvaser_usb_leaf_get_software_info_leaf(dev, &cmd.u.leaf.softinfo);
++		if (err)
++			return err;
+ 		break;
+ 	case KVASER_USBCAN:
+ 		fw_version = le32_to_cpu(cmd.u.usbcan.softinfo.fw_version);
 -- 
-Heiko Stuebner <heiko@sntech.de>
+2.43.0
+
