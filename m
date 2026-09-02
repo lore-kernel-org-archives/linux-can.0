@@ -1,363 +1,225 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.163])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1006A4A4825;
-	Wed,  2 Sep 2026 18:29:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.163
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788373782; cv=pass; b=k90sLJT05PaLyONlXy/3OXe7p4JfXZW56OrsBi4dwn6y8nPnq1aldV61QUO7C4cfEUqLpIWuQi7u3CDEbubBCp48JHGGh/HTF0wYL1DJGc+d35/wc+cpvOZ9cVikb8NkPloKvRR5PHj63pEp/pCPwOgl4kNCR+0MZSXIhjDBYkI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788373782; c=relaxed/simple;
-	bh=0gf50Ie11pYcibMsDu1FYVOo3r71hv2wEzHyXFD5d2w=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gUECs8SKn+D52WHBt2I78jR8cqrUQ0jAkO1u8HBT1lAkWSsG5gt2FaNbHTFkdlB699VbXP9k8Z0DQOd2l93ETGU+ITkfWKnBvWDH+9qTQn2chBunLNqfLuw6DcVyDfRP40mdCKGtdTlaOXF+x32e5O24LXrw4Bp6y375VUe9kUg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=pGVDO4/j; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=jl59Pgeb; arc=pass smtp.client-ip=81.169.146.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ECAD306D2A
+	for <linux-can@vger.kernel.org>; Wed,  2 Sep 2026 18:52:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1788375176; cv=none; b=aIdEdg/+EcPLJLTn0lTSPLMGc+WNR7gG54Dz7UJTBeTZHLeAtbCPYlKW5R8JwjPGpOzQ/299/cP6S+DEW+nebOBw9VKCmngLHuYe8Bs2PN9w+QII3mCQpCgunFMQeb2dVPX6eGLFdrnRIvljKA3cqNFITeZEbkdVvQq2XjSVP9I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1788375176; c=relaxed/simple;
+	bh=YiwagfLSP73YYInL95BMf0knu44fdjJ2fPjKuFjbG4A=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=PHfAGoggSp0pBklNxjynJGFU5RgvnpVyBlz3KPBDi3inxEr8eoJu60OvK6M8IxhCxNtYrTkrvLZfJAowkE9ctFFLc9jxHR5PcnAzVvrML/XP/a3ngyRsDpJXNTb7gygQv7jkBg7VqipuTalux+TudXzRxBh7HLBewJOAJ7cvRRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FbChT9AY; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="pGVDO4/j";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="jl59Pgeb"
-ARC-Seal: i=1; a=rsa-sha256; t=1788373771; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=R4/RiUdvshLLQA46laXHzyIU1toSJBQ6NsauAirqHtcV/NKa5GNCQ1Ut9VMrTQySUZ
-    rL2yX3q7nxaMhDWoBw5VTZj8HWj04ByXQntOZqmUnX9xgQZKQ/8xWMXzpFQOgr4Fyvxc
-    G2fVYzmfEEZacicNoXA1OC7JV/1ptQV0+y7cK8H1Y5cvl4Ah+ChEcOkrc1ouEu/AZw65
-    Qlor5MVTfiscmpGPOYcAfSnwlgXdTgjYv2U4XveEdh61OKWeHzRyyxng16MpdHLMSWSH
-    h6SnaK79/AUJbt2i4kid7ycWUCtxe781RZ5/WiefTy8Yaq4X3Gy8UawdBtmLcdemhDUD
-    oPvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1788373771;
-    s=strato-dkim-0002; d=strato.com;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=J182XAhFPVeK0c9Uhpuo9qkZC6iiwoP5K+jCESH9oLo=;
-    b=ZLUV2NdZVeJyoGGlmATppOGszX/UKkJwr9lVoqbbX7QL32vHtbHf5Uwm3X+aNUAGwF
-    UsX3ioPSkOPZSQs8ohonXACDA0HEfHufCyqVjzKkSMK/2fTZxp94C2Nk8GoFgm0hHH5g
-    Uwe5H+Q7296Nfp3YoVPHxb86v5bIgmqtH+4m10r77YAGJp1SRGd89IqUO3Q05M40gUUq
-    WuCFT+AOSJqa0uBWRiLhNPBWkESUSfBPRkwwbrAhYk983ww89v0n4u6qVPQBUzubBKoz
-    dDRz0L6NB2ia3IyPTgRBTPt8Y7eEj5/qxmmbfqLELDpSTZr45znNGs9QqvXyaJVOB7WB
-    F/IQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1788373771;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=J182XAhFPVeK0c9Uhpuo9qkZC6iiwoP5K+jCESH9oLo=;
-    b=pGVDO4/jBk4BRUaP0+i0P9YSsgoWvNh80EUESxjU7kqhk0U8vRQDk1e8pjhTMGBBik
-    ZQkah+fdcaUsXMI2QlhB4Mxn19/4tfcnTgi1fJTOobQFA4n30sMw/3/6NtixXLKnFRLT
-    W5ol2CpJyFbu9BERsAbV8vlwrvNnOzVzg4r+HUcuJvpdsUc6jr32ecpYWZMgnGtDo5ba
-    a9HGo5nGTRT4sPD5IcuZ0hB9SXA2vVnKupV+c1g9UYyIqic1xxOzRsfApheESEPwNo9V
-    B2cKpHdfL2y/d25h8txxLCUrncUExrP97a43Ekk5M1LvOV9scLrWsGdLtAJ3UQyvNGus
-    3hWg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1788373771;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=J182XAhFPVeK0c9Uhpuo9qkZC6iiwoP5K+jCESH9oLo=;
-    b=jl59PgebtjhpPF0/xvt8pAwoaCpzVj7H5TKmTh7q03w6JMg13guyJrB2xp1vCn54a4
-    PiCx4zJCya0vFndwdxAw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from vivo.lan
-    by smtp.strato.de (RZmta 55.6.2 AUTH)
-    with ESMTPSA id K171b7282ITVxe6
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Wed, 2 Sep 2026 20:29:31 +0200 (CEST)
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
-	Norbert Szetei <norbert@doyensec.com>,
-	stable@vger.kernel.org
-Subject: [PATCH] can: remove CAN filters independent from namespace
-Date: Wed,  2 Sep 2026 20:29:15 +0200
-Message-ID: <20260902182915.19486-1-socketcan@hartkopp.net>
-X-Mailer: git-send-email 2.53.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FbChT9AY"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 877981F000E9;
+	Wed,  2 Sep 2026 18:52:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788375174;
+	bh=shCCnthOEoGh/8SXaXYmjy1gyth24VAUd86/AqMzWBI=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=FbChT9AYgj2ZX9DwmHC4C1omJNxiy6G9MwRvq6P60+RkuXXs+11UN/myA1ilIHiyi
+	 2rag/9daXHCeQWS96Rm8vnh148HrbkXNO1PrHv03gsp51Zp/DruAus94rDMIfW6H6o
+	 i4j/ewlV3ct4XioyZdXEkqPsrQF+9o3nG1paghxz+V0R6q/qOkFypF5VxoOvr/PZx3
+	 4UDJqE8vaL9TcRX7P2FlwSxTGV6Egr8112/wSi0nAczj5GlNG3TchVAI/IL6Wrk9ym
+	 Yja+R9Bs+tq+ExZ4r7EKESKmH9CeOpM28E0CLIb+s2U+60GtQPLqzObnZimNf+gFOE
+	 9KobZesiIytYg==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH] can: remove CAN filters independent from namespace
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Oliver Hartkopp" <socketcan@hartkopp.net>
+Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>
+In-Reply-To: <20260902182915.19486-1-socketcan@hartkopp.net>
+References: <20260902182915.19486-1-socketcan@hartkopp.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 02 Sep 2026 18:52:54 +0000
+Message-Id: <20260902185254.877981F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="us-ascii"
 
-When the devices namespace is changed the socket namespace and the device
-namespace might differ. The net_eq(dev_net(dev), sock_net(sk)) check in
-the CAN protocols netdev notifiers therefore led to skipping the required
-removal of the CAN filters from the (namespace changed) CAN devices.
+Thank you for your contribution! Sashiko AI review found 4 potential issue(=
+s) to consider:
+- [High] Permanent struct net_device reference leak on error path in bcm_co=
+nnect().
+- [Medium] Cross-namespace data corruption in BCM ANYDEV receive operations.
+- [Medium] Timer cancellation regression leading to leaked BCM TX timers.
+- [Medium] Per-namespace CAN receive list statistics leak in isotp_release(=
+).
+--
+
+commit 510b2a0288244edb9bcc3905c8c1576ae80db01f
+Author: Oliver Hartkopp <socketcan@hartkopp.net>
+
+can: remove CAN filters independent from namespace
 
 This patch removes the namespace equality check in the netdev notifiers for
-BCM, ISOTP and RAW sockets. Since the struct net_device pointer is globally
-unique, the notifier should always process the unregister event and remove
-the CAN filters if it matches the original socket's bound device pointer.
+BCM, ISOTP and RAW sockets to ensure CAN filters are removed even when the
+device's namespace changes. It also introduces tracked netdevice pointers
+for BCM and converts isotp.c to use the device's namespace during
+unregistration.
 
-In bcm.c netdevice comparisons were performed by checking the interface
-index (bo->ifindex and op->ifindex) which is not namespace-safe either.
-Introduce tracked netdevice pointers (bo->dev and op->tx_dev) for these
-referenced devices to enable namespace-save device comparisons.
+Link: https://lore.kernel.org/linux-can/CEA6A38A-2646-4ADA-95B4-CBAE2F301A8=
+E@doyensec.com/
 
-In isotp.c the two missing can_rx_unregister() calling sites are converted
-to use dev_net(dev) instead of sock_net(sk) to get the correct namespace.
+> diff --git a/net/can/bcm.c b/net/can/bcm.c
+> index 3d637a1e0ac1a..42851d37cc9ae 100644
+> --- a/net/can/bcm.c
+> +++ b/net/can/bcm.c
+[ ... ]
+> @@ -1223,6 +1246,12 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_h=
+ead, struct msghdr *msg,
+>  		op->sk =3D sk;
+>  		sock_hold(sk);
+>  		op->ifindex =3D ifindex;
+> +		tx_dev =3D dev_get_by_index(sock_net(sk), ifindex);
+> +		if (tx_dev) {
+> +			op->tx_dev =3D tx_dev;
+> +			netdev_hold(tx_dev, &op->tx_dev_tracker, GFP_KERNEL);
+> +			dev_put(tx_dev);
+> +		}
+> =20
+>  		/* initialize uninitialized (kzalloc) structure */
+>  		hrtimer_setup(&op->timer, bcm_tx_timeout_handler, CLOCK_MONOTONIC,
 
-Fixes: 8e8cda6d737d ("can: initial support for network namespaces")
-Reported-by: Norbert Szetei <norbert@doyensec.com>
-Link: https://lore.kernel.org/linux-can/CEA6A38A-2646-4ADA-95B4-CBAE2F301A8E@doyensec.com/
-Cc: stable@vger.kernel.org
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- net/can/bcm.c   | 52 ++++++++++++++++++++++++++++++++++++++++++-------
- net/can/isotp.c |  7 ++-----
- net/can/raw.c   |  3 ---
- 3 files changed, 47 insertions(+), 15 deletions(-)
+[Severity: Medium]
+If dev_get_by_index() returns NULL here because the interface does not exist
+yet, op->tx_dev remains NULL but the timer is still armed below.
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 3d637a1e0ac1..42851d37cc9a 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -128,18 +128,22 @@ struct bcm_op {
- 	struct canfd_frame sframe;
- 	struct canfd_frame last_sframe;
- 	struct sock *sk;
- 	struct net_device *rx_reg_dev;
- 	netdevice_tracker rx_reg_dev_tracker;
-+	struct net_device *tx_dev;
-+	netdevice_tracker tx_dev_tracker;
- 	spinlock_t bcm_tx_lock; /* protect tx data and timer updates */
- 	spinlock_t bcm_rx_update_lock; /* protect filter/timer data updates */
- };
- 
- struct bcm_sock {
- 	struct sock sk;
- 	int bound;
- 	int ifindex;
-+	struct net_device *dev;
-+	netdevice_tracker dev_tracker;
- 	struct list_head notifier;
- 	struct list_head rx_ops;
- 	struct list_head tx_ops;
- 	unsigned long dropped_usr_msgs;
- 	struct proc_dir_entry *bcm_proc_read;
-@@ -933,10 +937,13 @@ static void bcm_free_op_work(struct work_struct *work)
- 		kfree(op->frames);
- 
- 	if ((op->last_frames) && (op->last_frames != &op->last_sframe))
- 		kfree(op->last_frames);
- 
-+	if (op->tx_dev)
-+		netdev_put(op->tx_dev, &op->tx_dev_tracker);
-+
- 	/* the last possible access to op->timer/op->thrtimer has now
- 	 * happened above via hrtimer_cancel() - op->sk is no longer
- 	 * needed by any pending timer callback, so drop our reference
- 	 */
- 	sock_put(op->sk);
-@@ -1072,10 +1079,11 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 			int ifindex, struct sock *sk)
- {
- 	struct bcm_sock *bo = bcm_sk(sk);
- 	struct bcm_op *op;
- 	struct canfd_frame *cf;
-+	struct net_device *tx_dev;
- 	bool add_op_to_list = false;
- 	unsigned int i;
- 	int err;
- 
- 	/* we need a real device to send frames */
-@@ -1103,10 +1111,25 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 		 * therefore (complexity / locking) it is not supported.
- 		 */
- 		if (msg_head->nframes > op->nframes)
- 			return -E2BIG;
- 
-+		/* Re-resolve and re-hold the target device if a concurrent
-+		 * NETDEV_UNREGISTER already cleared it (see bcm_notify()).
-+		 * op->ifindex is unchanged - bcm_find_op() above only
-+		 * matches ops with this exact ifindex.
-+		 */
-+		if (!op->tx_dev) {
-+			tx_dev = dev_get_by_index(sock_net(sk), ifindex);
-+			if (tx_dev) {
-+				op->tx_dev = tx_dev;
-+				netdev_hold(tx_dev, &op->tx_dev_tracker,
-+					    GFP_KERNEL);
-+				dev_put(tx_dev);
-+			}
-+		}
-+
- 		/* get new CAN frames content into a staging buffer before
- 		 * locking: validate and normalize the frames there so that
- 		 * bcm_can_tx() / bcm_tx_timeout_handler() never observe a
- 		 * partially updated or unvalidated frame in op->frames
- 		 */
-@@ -1221,10 +1244,16 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 
- 		/* bcm_can_tx / bcm_tx_timeout_handler needs this */
- 		op->sk = sk;
- 		sock_hold(sk);
- 		op->ifindex = ifindex;
-+		tx_dev = dev_get_by_index(sock_net(sk), ifindex);
-+		if (tx_dev) {
-+			op->tx_dev = tx_dev;
-+			netdev_hold(tx_dev, &op->tx_dev_tracker, GFP_KERNEL);
-+			dev_put(tx_dev);
-+		}
- 
- 		/* initialize uninitialized (kzalloc) structure */
- 		hrtimer_setup(&op->timer, bcm_tx_timeout_handler, CLOCK_MONOTONIC,
- 			      HRTIMER_MODE_REL_SOFT);
- 
-@@ -1792,13 +1821,10 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
- {
- 	struct sock *sk = &bo->sk;
- 	struct bcm_op *op;
- 	int notify_enodev = 0;
- 
--	if (!net_eq(dev_net(dev), sock_net(sk)))
--		return;
--
- 	switch (msg) {
- 
- 	case NETDEV_UNREGISTER:
- 		lock_sock(sk);
- 
-@@ -1817,19 +1843,22 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
- 				spin_unlock_bh(&op->bcm_rx_update_lock);
- 			}
- 		}
- 
- 		/* tx_ops: stop device specific cyclic transmissions on the
--		 * vanishing ifindex. Cancelling the timer is enough to stop
-+		 * vanishing device. Cancelling the timer is enough to stop
- 		 * cyclic bcm_can_tx() calls as there is no re-arming.
- 		 */
- 		list_for_each_entry(op, &bo->tx_ops, list)
--			if (op->ifindex == dev->ifindex)
-+			if (op->tx_dev == dev) {
- 				hrtimer_cancel(&op->timer);
-+				netdev_put(op->tx_dev, &op->tx_dev_tracker);
-+				op->tx_dev = NULL;
-+			}
- 
- 		/* remove device reference, if this is our bound device */
--		if (bo->bound && bo->ifindex == dev->ifindex) {
-+		if (bo->bound && bo->dev == dev) {
- #if IS_ENABLED(CONFIG_PROC_FS)
- 			if (sock_net(sk)->can.bcmproc_dir && bo->bcm_proc_read) {
- 				remove_proc_entry(bo->procname, sock_net(sk)->can.bcmproc_dir);
- 				bo->bcm_proc_read = NULL;
- 			}
-@@ -1839,10 +1868,12 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
- 			 * accessed under lock_sock() so it needs no
- 			 * annotation.
- 			 */
- 			WRITE_ONCE(bo->bound, 0);
- 			bo->ifindex = 0;
-+			netdev_put(bo->dev, &bo->dev_tracker);
-+			bo->dev = NULL;
- 			notify_enodev = 1;
- 		}
- 
- 		release_sock(sk);
- 
-@@ -1852,11 +1883,11 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
- 				sk_error_report(sk);
- 		}
- 		break;
- 
- 	case NETDEV_DOWN:
--		if (bo->bound && bo->ifindex == dev->ifindex) {
-+		if (bo->bound && bo->dev == dev) {
- 			sk->sk_err = ENETDOWN;
- 			if (!sock_flag(sk, SOCK_DEAD))
- 				sk_error_report(sk);
- 		}
- 	}
-@@ -1982,10 +2013,14 @@ static int bcm_release(struct socket *sock)
- 
- 	/* remove device reference */
- 	if (bo->bound) {
- 		WRITE_ONCE(bo->bound, 0);
- 		bo->ifindex = 0;
-+		if (bo->dev) {
-+			netdev_put(bo->dev, &bo->dev_tracker);
-+			bo->dev = NULL;
-+		}
- 	}
- 
- 	sock_orphan(sk);
- 	sock->sk = NULL;
- 
-@@ -2029,15 +2064,18 @@ static int bcm_connect(struct socket *sock, struct sockaddr_unsized *uaddr, int
- 			ret = -ENODEV;
- 			goto fail;
- 		}
- 
- 		bo->ifindex = dev->ifindex;
-+		bo->dev = dev;
-+		netdev_hold(dev, &bo->dev_tracker, GFP_KERNEL);
- 		dev_put(dev);
- 
- 	} else {
- 		/* no interface reference for ifindex = 0 ('any' CAN device) */
- 		bo->ifindex = 0;
-+		bo->dev = NULL;
- 	}
- 
- #if IS_ENABLED(CONFIG_PROC_FS)
- 	if (net->can.bcmproc_dir) {
- 		/* unique socket address as filename */
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 155530aedce2..0835a4758a72 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -1490,15 +1490,15 @@ static int isotp_release(struct socket *sock)
- 	/* remove current filters & unregister
- 	 * tracked reference so->dev is taken at bind() time with rtnl_lock
- 	 */
- 	if (so->bound && so->dev) {
- 		if (isotp_register_rxid(so))
--			can_rx_unregister(net, so->dev, so->rxid,
-+			can_rx_unregister(dev_net(so->dev), so->dev, so->rxid,
- 					  SINGLE_MASK(so->rxid),
- 					  isotp_rcv, sk);
- 
--		can_rx_unregister(net, so->dev, so->txid,
-+		can_rx_unregister(dev_net(so->dev), so->dev, so->txid,
- 				  SINGLE_MASK(so->txid),
- 				  isotp_rcv_echo, sk);
- 		netdev_put(so->dev, &so->dev_tracker);
- 	}
- 
-@@ -1846,13 +1846,10 @@ static int isotp_getsockopt(struct socket *sock, int level, int optname,
- static void isotp_notify(struct isotp_sock *so, unsigned long msg,
- 			 struct net_device *dev)
- {
- 	struct sock *sk = &so->sk;
- 
--	if (!net_eq(dev_net(dev), sock_net(sk)))
--		return;
--
- 	if (so->dev != dev)
- 		return;
- 
- 	switch (msg) {
- 	case NETDEV_UNREGISTER:
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 82d9c0499c95..c5596fc9aac5 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -300,13 +300,10 @@ static int raw_enable_allfilters(struct net *net, struct net_device *dev,
- static void raw_notify(struct raw_sock *ro, unsigned long msg,
- 		       struct net_device *dev)
- {
- 	struct sock *sk = &ro->sk;
- 
--	if (!net_eq(dev_net(dev), sock_net(sk)))
--		return;
--
- 	if (ro->dev != dev)
- 		return;
- 
- 	switch (msg) {
- 	case NETDEV_UNREGISTER:
--- 
-2.53.0
+If the device is created later, bcm_can_tx() dynamically resolves it and
+succeeds. However, if the device is then unregistered, bcm_notify() skips
+cancelling the timer because it strictly checks op->tx_dev =3D=3D dev:
 
+    list_for_each_entry(op, &bo->tx_ops, list)
+        if (op->tx_dev =3D=3D dev) {
+            hrtimer_cancel(&op->timer);
+            ...
+        }
+
+Will this leave the hrtimer permanently leaked and firing indefinitely,
+repeatedly failing device lookups?
+
+[ ... ]
+> @@ -1794,9 +1823,6 @@ static void bcm_notify(struct bcm_sock *bo, unsigne=
+d long msg,
+>  	struct bcm_op *op;
+>  	int notify_enodev =3D 0;
+> =20
+> -	if (!net_eq(dev_net(dev), sock_net(sk)))
+> -		return;
+> -
+>  	switch (msg) {
+> =20
+>  	case NETDEV_UNREGISTER:
+
+[Severity: Medium]
+Since this namespace check was removed, bcm_notify() now processes events
+across all network namespaces.
+
+For ANYDEV sockets, the code later in this function handles NETDEV_UNREGIST=
+ER
+like this:
+
+    if (!op->ifindex) {
+        spin_lock_bh(&op->bcm_rx_update_lock);
+        if (op->if_detected =3D=3D dev->ifindex)
+            op->if_detected =3D 0;
+        spin_unlock_bh(&op->bcm_rx_update_lock);
+    }
+
+Because ifindexes are only unique per-namespace, deleting a CAN interface
+in one namespace triggers this globally.
+
+Can this cause an ifindex collision that spuriously clears the if_detected
+state of an ANYDEV socket operating in a completely different namespace,
+causing it to drop active frame assembly or mismanage timers?
+
+[ ... ]
+> @@ -2031,11 +2066,14 @@ static int bcm_connect(struct socket *sock, struc=
+t sockaddr_unsized *uaddr, int
+>  		}
+> =20
+>  		bo->ifindex =3D dev->ifindex;
+> +		bo->dev =3D dev;
+> +		netdev_hold(dev, &bo->dev_tracker, GFP_KERNEL);
+>  		dev_put(dev);
+> =20
+>  	} else {
+>  		/* no interface reference for ifindex =3D 0 ('any' CAN device) */
+>  		bo->ifindex =3D 0;
+> +		bo->dev =3D NULL;
+>  	}
+
+[Severity: High]
+Does this error path leak the acquired net_device reference?
+
+If the subsequent proc_create_net_single() allocation fails, the function
+jumps to the fail label and returns without calling netdev_put():
+
+    if (!bo->bcm_proc_read) {
+        ret =3D -ENOMEM;
+        goto fail;
+    }
+
+The cleanup also skips setting WRITE_ONCE(bo->bound, 1). When the socket
+is later closed, bcm_release() skips the release because bo->bound is 0:
+
+    if (bo->bound) {
+        WRITE_ONCE(bo->bound, 0);
+        bo->ifindex =3D 0;
+        if (bo->dev) {
+            netdev_put(bo->dev, &bo->dev_tracker);
+            bo->dev =3D NULL;
+        }
+    }
+
+Could this permanently leak the net_device and tracker, preventing the
+interface from ever being cleanly unregistered?
+
+> diff --git a/net/can/isotp.c b/net/can/isotp.c
+> index 155530aedce2e..0835a4758a72f 100644
+> --- a/net/can/isotp.c
+> +++ b/net/can/isotp.c
+> @@ -1492,11 +1492,11 @@ static int isotp_release(struct socket *sock)
+>  	 */
+>  	if (so->bound && so->dev) {
+>  		if (isotp_register_rxid(so))
+> -			can_rx_unregister(net, so->dev, so->rxid,
+> +			can_rx_unregister(dev_net(so->dev), so->dev, so->rxid,
+>  					  SINGLE_MASK(so->rxid),
+>  					  isotp_rcv, sk);
+> =20
+> -		can_rx_unregister(net, so->dev, so->txid,
+> +		can_rx_unregister(dev_net(so->dev), so->dev, so->txid,
+>  				  SINGLE_MASK(so->txid),
+>  				  isotp_rcv_echo, sk);
+>  		netdev_put(so->dev, &so->dev_tracker);
+
+[Severity: Medium]
+Does this leak the per-namespace receive list statistics in the socket's
+original namespace?
+
+If the device was moved to a different network namespace, this now passes
+the new namespace (dev_net(so->dev)) to can_rx_unregister().
+
+When can_rx_unregister() runs, it decrements the statistic in the
+provided namespace:
+
+    if (rcv_lists_stats->rcv_entries > 0)
+        rcv_lists_stats->rcv_entries--;
+
+Because can_rx_register() incremented the counter in the socket's original
+namespace (sock_net(sk)), does decrementing it in the new namespace permane=
+ntly
+leak the count in the old one, while inappropriately decrementing the new o=
+ne?
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260902182915.1948=
+6-1-socketcan@hartkopp.net?part=3D1
