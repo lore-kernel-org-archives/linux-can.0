@@ -1,258 +1,191 @@
-Received: from mx0b-0002e601.pphosted.com (mx0b-0002e601.pphosted.com [148.163.154.28])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A49476CC1;
-	Wed,  2 Sep 2026 21:04:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=148.163.154.28
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788383084; cv=fail; b=gkVlEQxpR8shECuAB01nZk+cJOp5jWfDlz8Kfhlhpmf1QwWekMHmHhsuDzkxTj/k17+inTz/D4wYGdyYN8PjKoyeg92r5PmA+Xl6W+KCVavgA4v4VZn8cRcH8hslEL34zHWPZjPdpM4gjc8OczvcEAx97ssiktXRWe1FgPcdUTo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788383084; c=relaxed/simple;
-	bh=aVedX7Tw4IhGJOqU3RidkoaGLENDgNV3MzaMMouxS3k=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=kgYirvtOghNiWH13PCVhanbX810l9Qk2qSxI316r+LHRdZUuyigrH+0Kd81me/2wvt+QY6ThpgANS+l3beMXXKv6SWYFzmGVfH3kJFV6UxB/cHR4XanpvP0hvubIMHo+hHysg76NZVHicauPv1Cb2sonvrgHE20t5THoKCvyoJI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (2048-bit key) header.d=ti.com header.i=@ti.com header.b=IjQej8zK; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=CautvphX; arc=fail smtp.client-ip=148.163.154.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D707D424649;
+	Wed,  2 Sep 2026 22:10:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1788387032; cv=none; b=bx8JtQReb1ACPaXcLA2SjJzbRa2NOsKTa05IwjPjaBDKY8rYyd7LrPmZV1vTr4uAmJDpAsgOb+vSclQs3Ghg0fAm3OPmKwRvOTSgKbvrh3R9RvNIOX57LJ6kxw+dLYECAwj8S1gFfNOWCoGuAYROz8Ak78PItRrCJ2vCCYpnkp0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1788387032; c=relaxed/simple;
+	bh=K0a7UCSTlR5TQ0bfImvIwbLW4H0HJIEmdBKpG3wev2Q=;
+	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=h1Kv78XauI7gumtK8vCI/FbaIds9aV518+RRRYK6/Qc0aB0nCUnBUEDRgbMCKpzWjaeOzW2mnQcMIV9DFBZmLixFx9mH0N9x6ZBUcEOS4Bq7Jo1+tmiduNfrBqPb7o7uRU1GMWVShUqp0Q7iPhbESP8pbf4nlYexMSsm2mxXcOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qukjg1EA; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ti.com header.i=@ti.com header.b="IjQej8zK";
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="CautvphX"
-Received: from pps.filterd (m0374955.ppops.net [127.0.0.1])
-	by mx0b-0002e601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 682KISOc3395880;
-	Wed, 2 Sep 2026 16:04:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	proofpoint-05-2026; bh=hPJw28oEc6I/YL0dQBPZj30yTLsNhRGXp4uDT1KId
-	kg=; b=IjQej8zK9jUOXrp2EhdQqyKk5RYXOyKbV8/TsP+/OfRK1p5KJv/NygjEX
-	0Ofs0eqvHxaAGfq+/qOhfq6XoXyOvMMcpChUG9/24aGYnb+jk9fx2GjdH6wqcDN2
-	LE8D5/Jk2CzhoNDRGL/hqrmf7Kl708/IfXnHc1p/In6YR95GLl6XNwBONdWFgNjp
-	QPXh9nEFyMAqj6+jYNA0NoRmZ/TZpOmGw1/8bThoPvQ4/N7HsBk1kjZVprcsnWei
-	wA6s2kiUjW7Ap7gS5aL+6bFvNOrH1iv7OZRLaK8KYSRfQAERg8a6rd2WTjrQKJpB
-	hn0FLxg0IbxeXGx6FetfytUNea2Zg==
-Received: from sa9pr02cu001.outbound.protection.outlook.com (mail-southcentralusazon11013033.outbound.protection.outlook.com [40.93.196.33])
-	by mx0b-0002e601.pphosted.com (PPS) with ESMTPS id 4gen86jxty-1
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Wed, 02 Sep 2026 16:04:29 -0500 (CDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=QYIFS0p+3aS6BggkfVniU1YX1O7S5ZDAfmnZgNlqNDquqKCSaCDTasdMmzVFf6Pr1aS/uIwwcwVsNF9Mjh5zWipxK2WOcQ2wxVybU9s74cD+qpJQ695fHChFw4OvmpcggeXJ5dztJEQm4HueMP8kXqiI+u7IT1OdotG8Gh2sDJkQqiUaKLs+Y7eMj+EcraonPItLXLqNCDW58R/FhVOA5fyBJVX0dQn8R32iadgJVwh7uApejjRnDTH6oSp+GdHOUrReLRupEEZGiRE1ii9SA+dlD2+7YLvb/eHeYb71RB4CNlVx2VSCRetMZTAQse1FkROQnZwhAu04WRlgNP1k2Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hPJw28oEc6I/YL0dQBPZj30yTLsNhRGXp4uDT1KIdkg=;
- b=a9eZ0jN2RaPpX3ORvWptSdsawCvCteX1SeKEB+MHLobTJA4tK64Mx4mybqpwWbl2xH7a/7b8WjsZfwN601yWVPuizhdxL90PboZIiVu6kvEMCyAnuInUUR6iS7FH3LGMlAuzxm5B8TK5PQ4xgYFv6stHoXYggM/6akRbzDAJHuPhyUH+1XzigNDp0IG1wDs9eEHsYIin/jd8/XgR2/BhB9afQZevfNIS90vQNUgH1/b0s6AgLt4lWRjQgEznV9YG5Sd37PrZGuZxhw5SsxVx9aPRMt2BHHQkWWgT4dLFXwoOTTPPH5Eu3+kQcdBfO4iUyeBeSDeErxZRXwPqvJE0xg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 198.47.21.194) smtp.rcpttodomain=baylibre.com smtp.mailfrom=ti.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hPJw28oEc6I/YL0dQBPZj30yTLsNhRGXp4uDT1KIdkg=;
- b=CautvphXLQPzrCJo2Bzf0XvkvFuIMnlbPNCpRL8f1k+lttV8YAOeierLuvGVz/nei1YeS60Td8C08vH7ENWKnOAbLG7E2TvnJDnivIzVyeRSIPaZs0LwjX3Is9rJO6grNNKhb4aqDbfFIdTZn9g+4tdMuXbIRGi2hrDM2u7TLn4=
-Received: from CH0PR04CA0089.namprd04.prod.outlook.com (2603:10b6:610:74::34)
- by PH0PR10MB997688.namprd10.prod.outlook.com (2603:10b6:510:384::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.382.10; Wed, 2 Sep
- 2026 21:04:26 +0000
-Received: from BL6PEPF0001AB73.namprd02.prod.outlook.com
- (2603:10b6:610:74:cafe::80) by CH0PR04CA0089.outlook.office365.com
- (2603:10b6:610:74::34) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.382.11 via Frontend Transport; Wed, 2
- Sep 2026 21:04:26 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.194)
- smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
- action=none header.from=ti.com;
-Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
- 198.47.21.194 as permitted sender) receiver=protection.outlook.com;
- client-ip=198.47.21.194; helo=flwvzet200.ext.ti.com; pr=C
-Received: from flwvzet200.ext.ti.com (198.47.21.194) by
- BL6PEPF0001AB73.mail.protection.outlook.com (10.167.242.166) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.382.8 via Frontend Transport; Wed, 2 Sep 2026 21:04:24 +0000
-Received: from DFLE204.ent.ti.com (10.64.6.62) by flwvzet200.ext.ti.com
- (10.248.192.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Wed, 2 Sep
- 2026 16:03:32 -0500
-Received: from DFLE211.ent.ti.com (10.64.6.69) by DFLE204.ent.ti.com
- (10.64.6.62) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Wed, 2 Sep
- 2026 16:03:32 -0500
-Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE211.ent.ti.com
- (10.64.6.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45 via Frontend
- Transport; Wed, 2 Sep 2026 16:03:32 -0500
-Received: from [127.0.1.1] (uda0506412.dhcp.ti.com [128.247.81.196])
-	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 682L3WUM267827;
-	Wed, 2 Sep 2026 16:03:32 -0500
-From: Kendall Willis <k-willis@ti.com>
-Date: Wed, 2 Sep 2026 16:03:28 -0500
-Subject: [PATCH v4 2/2] can: m_can: add ti,am62-m_can compatible with
- out-of-band wakeup support
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qukjg1EA"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 273EC1F000E9;
+	Wed,  2 Sep 2026 22:10:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788387026;
+	bh=ZHxKxx1+VQVcsR9PoWaPh1Uk1GeVkL+9iDr0NhHJZz0=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=Qukjg1EAk73liBi8FkNRZjYuLw+KwYrPDhPO5ordTwLdACrozNPfvcC9Cim5awhpD
+	 C6naHQLp+fvEvckCRmVjWnh6Y10NgfNYEfR8/B+fUO6NMCyfXrATdxx4dvX9fc+/hy
+	 XyvtqrMqNAzlbjdW132IYfUm4blsn7woUBIsbhQ+uatBEwb1EBsdiUKXG/vxXObTl6
+	 fx09dQHqUg/ZYSpwm5x6wfFYVL0tOs2gRqtfqLkiB7HKrjLI16XdU2HqRhcsM+Q4xg
+	 kQqMlL7Vf9XzYELbrlThyxoGgc9Ss95dUGNQwJzYDrlaS4ydnZX811kUP/KsNDsF3b
+	 M9Wp9cfOx8xiw==
+Subject: Re: [net-next,real,v4] net: Replace %pK output with 0
+From: netdev-bot+sashiko@kernel.org
+To: bigeasy@linutronix.de
+Cc: socketcan@hartkopp.net, linux-atm-general@lists.sourceforge.net,
+ linux-can@vger.kernel.org, linux-sctp@vger.kernel.org, netdev@vger.kernel.org,
+ davem@davemloft.net, edumazet@google.com, herbert@gondor.apana.org.au,
+ kuba@kernel.org, kuniyu@google.com, mkl@pengutronix.de,
+ marcelo.leitner@gmail.com, ncardwell@google.com, pabeni@redhat.com,
+ courmisch@gmail.com, horms@kernel.org, steffen.klassert@secunet.com,
+ willemdebruijn.kernel@gmail.com, lucien.xin@gmail.com, pmladek@suse.com,
+ thomas.weissschuh@linutronix.de, kees@kernel.org
+Date: Wed, 02 Sep 2026 22:10:24 +0000
+Message-ID: <178838702467.3394541.6607347117257503033@kernel.org>
+In-Reply-To: <20260901160345.eeknHmY2@linutronix.de>
+References: <20260901160345.eeknHmY2@linutronix.de>
+X-sashiko-severity: Medium
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20260902-temp-v4-2-3896f7d16ce8@ti.com>
-References: <20260902-temp-v4-0-3896f7d16ce8@ti.com>
-In-Reply-To: <20260902-temp-v4-0-3896f7d16ce8@ti.com>
-To: Markus Schneider-Pargmann <msp@baylibre.com>,
-        Marc Kleine-Budde
-	<mkl@pengutronix.de>,
-        Vincent Mailhol <mailhol@kernel.org>, Rob Herring
-	<robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>
-CC: <s-kochidanadu@ti.com>, <a-kaur@ti.com>, <s-tripathi1@ti.com>,
-        <vishalm@ti.com>, <k-willis@ti.com>, <linux-can@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788383012; l=3135;
- i=k-willis@ti.com; s=20251230; h=from:subject:message-id;
- bh=aVedX7Tw4IhGJOqU3RidkoaGLENDgNV3MzaMMouxS3k=;
- b=5U0vvLPEpkHUVtNhqHeCFX3dxGuB77ocgddoE0XtjRDSI1/M4nihMeAgP5LVtcOSzThifhB5q
- 6KFMbtmzW1xAviJBWRFgfnMdz/0wv4T3mBqCMJtANhGhh6y2nDVC5EV
-X-Developer-Key: i=k-willis@ti.com; a=ed25519;
- pk=fQiPVFwmogfDAKdaAKq163RWSfgHZVE/MrsDzp0Xo1k=
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB73:EE_|PH0PR10MB997688:EE_
-X-MS-Office365-Filtering-Correlation-Id: 58256f65-0f4c-43ae-d129-08df0935c497
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|82310400026|7416014|376014|23010399003|1800799024|36860700016|22082099003|10067099003|56012099006|18002099003;
-X-Microsoft-Antispam-Message-Info:
-	X136b8Zz4QJOepsqCTYQuszqeTuZ+wtzyCYkp0ZLgtrQAvgWYcOj4s++QI+NgkKvlqLSFP7bV2shnRHu1Z225GEpenlWN65445wxDgL63TNNS0vlz1868QJpjRi/6C+bj0e767czn+U/+bHTAV6rG00NWiVR7HIKq42HtfxIKMhVsOeXFswRdZKMXuIpjsw7sS+BBnEtG37zE7L4ottimI7POOtZaojt4jxM7jP6Y9xObXMDOxG5nx47NhwblA+yy/t9qWvDZtwuLXGpBFpieAjTz7RfM/OnfEGfDRfRp1BWx41+qBoFpGMjDG0Qhe06v4GUcPtSXFoMOSHG1Siwcn5xs03O3TTij4Pi0hyYQ6zAu5YElfEmD0bboE/DOFu2Wm3rvxXfmUxKL+iH4tpQwpe1iqOhhydhFv+4QNOA8EYlT+zQ3dAEAaIxcon8+HlKGSwpbp6NeOOK+uIuWdfGNfezO4v8MiIBbOPa4NrQUmH9J61epeoJvjQcjM45TLO8ZGsY9OYZ2M+KAD3qGBAtt/73CHXU3UPZaBGcFEk/B5L+9set41MQUG2/xZd213whNw75Sa6WSXdCEPPr8f/gUtjlf33bk5ikCVIcGyG3y/5DwkvrFrezZteZRWwIafuSp9P+l0r9JAi21/7gjGuu19gqEeBRHIyR97INfzq8kp9p26VpmXS24JLv5wjn4ZgJF60gjx2ZE1nZfmoj/29ZWw==
-X-Forefront-Antispam-Report:
-	CIP:198.47.21.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet200.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(82310400026)(7416014)(376014)(23010399003)(1800799024)(36860700016)(22082099003)(10067099003)(56012099006)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	LbMug7THV7/45uCa9PPct1kcrW/hZ1jL4bwiKSfxKi8D0EHD3Y72yAY+MPKc9GAg/bDefLeLN5p/lSsSiOlbyDOFh3KLe/NT3CE8amdczyAZvZO46sr8/y1QWWL7gaDNsv8DRk/PoL3JXd8huNbMXm6cK3Al0rz9i4qRO5bUYmlQnsl8b4kvQIfaDIk7Iyo9Y8tmzOby6r+hB+VDwFCnvS/7u6QuATaKCmX81yQlf8/3e3rLjtZ1K7K0DQlalj7DaRbCJZE/TRY3xc/DKErR1pTwoRSGGaSdS7mVyxleY0ivk1RjNhkNB5ogAIt3DNdVkUC88TrgP82C2nRaITj4KNy7oFmfRB/PAV0N5UevCv/qnH/PYwM9EzYtUIxo7YjnuBR1TIyGISayfdQ60Xv/wpVFGXzVbyOsmFpqHmg5DevvzPDCBvXzjrG9fMeRkJks
-X-Exchange-RoutingPolicyChecked:
-	TAWVdbe3qFJ5YFlo67LtC7Xl04VqdasXEENwqLn8DQ0ldfSuULqIF0jM6GsVGH48c4eBvkAnk/vVWipzDpz29fBOliiUkO3iQ5ikSUDRtnHgio0/BMtH8uK2tiIsSmH+5FTq9ZnMju4xJXB5tENjPXNQXjkkzjav+m7RU5dMouKJSuMjjBQZqyOaSAkJW4cxOXpCcSg2pmOjPOPxPbwW8OV8dkfAmXLG/pZyW3AO0FAxg19xIKKmtrEYnQL2xsU2AtXJbrTcnXWooY6qdOHpJr6YPx7obTHD3sHHbBv7tLw852BALydB6Dv/IVGnYkISyi3CFHmlrUEdaR55bgfUkg==
-X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2026 21:04:24.4925
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 58256f65-0f4c-43ae-d129-08df0935c497
-X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.194];Helo=[flwvzet200.ext.ti.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BL6PEPF0001AB73.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB997688
-X-Proofpoint-GUID: BG8-fJeAgGxmK34Vms58Moim8WTW6pSh
-X-Proofpoint-ORIG-GUID: BG8-fJeAgGxmK34Vms58Moim8WTW6pSh
-X-Proofpoint-Spam-Info: AW1haW4tMjYwOTAyMDE4NyBTYWx0ZWRfXxo4EMFrafNoO
- B3mHhlB3m+LEnAIwuFVc3/3tc2iFTT+lMRThXQPLeuAuMfJ5FWNxU7H9sFbCsgvDn50ZuWtMZeV
- 0/+bCr2ADqR3HXyBCFh5crLQarHpKlY=
-X-Authority-Analysis: v=2.4 cv=HcMkiCE8 c=1 sm=1 tr=0 ts=6a988f5d cx=c_pps
- a=uZgmHucj+isDzLb5E5/Wlw==:117 a=iwqwCZQqcuTv3JOpYdM7/Q==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=IkcTkHD0fZMA:10 a=VdqzKS8jKosA:10
- a=V5UXEbMT0ywA:10 a=VkNPw1HP01LnGYTKEx00:22 a=Z8NIEmU8O1QQgoT56wFK:22
- a=fPAWb5peG099m5CrUpKH:22 a=sozttTNsAAAA:8 a=xGkXNJDq2qBzU6obw8kA:9
- a=QEXdDO2ut3YA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTAyMDE4NyBTYWx0ZWRfX7PcF0RqVcWzW
- fnwQBJTvTref+oyfcKJNm3P4HlWBUGgG6+8h+PhTsm/xhXUhB2tzTW1rhNnUSCTK+ddZP0JNhi/
- CUoixm4XFWcbQf/B7o55iwoag3voWIwYhHei6a6sd9YBOpjS7dhgW7JUW5MoVvV6z+9qR0PYVc7
- nhJQFuFL7wTmaXyWyZ0f8SQMpr2C/lUfNSipRVyQq+mXvJqMS4znZk8tcZqltHC3Cm/rW8Xo/6u
- qN5DJ0/qbmnwA2+px3dJT22B8DgKUdR/laWXO1SZE14VxwKGctHXFcMtsFobZbWh6ysR9pLmpg/
- Ppeo8ernujl0+83qm9WL2PoAmZgAGzmiimAx2vj+IWjbiNgf1e+nvUrp1+fJT/1/lVGaWpRetQn
- fResMgclS75osBaQScBORFxRCYOXjAs3FjHdhdHroqptqUUIXB2dZDL0/mKNpR1TJ8M94++EM2/
- LYu33haAoqT7ex3d1Rg==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-09-02_05,2026-09-02_04,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 malwarescore=0 spamscore=0 lowpriorityscore=0 phishscore=0
- adultscore=0 impostorscore=0 bulkscore=0 clxscore=1015 priorityscore=1501
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2609020187
 
-In TI AM62X, AM62A, and AM62P SoCs, the M_CAN controller is a part of
-the MCU power domain which is OFF in the deepest low power states.
-However, the m_can pins are able to wakeup the system from states where
-the MCU domain is OFF through its out-of-band wakeup functionality.
+Thank you for your contribution! Sashiko AI review found 2 potential
+issue(s) to consider:
 
-Introduce the ti,am62-m_can compatible with match data to identify the
-out-of-band wakeup capability for TI AM62 SoCs. During suspend, set the
-out-of-band wakeup flag when the device is configured as a wakeup
-source, the "wakeup" pinctrl state is present, and the match data
-indicates out-of-band wakeup support.
+Critical: 0 · High: 0 · Medium: 1 · Low: 1
 
-Signed-off-by: Kendall Willis <k-willis@ti.com>
----
- drivers/net/can/m_can/m_can.c          | 7 ++++++-
- drivers/net/can/m_can/m_can.h          | 4 ++++
- drivers/net/can/m_can/m_can_platform.c | 5 +++++
- 3 files changed, 15 insertions(+), 1 deletion(-)
+- [Medium] Incomplete conversion relative to the commit's stated scope:
+  after this patch net/ still contains %pK socket/object-pointer output.
+- [Low] The updated /proc/net/tcp example in
+  Documentation/networking/proc_net_tcp.rst does not match the…
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 16f80607e150e2ca2950616ff2c39b7aa13710b4..0788816d881ef8ba84ad5a84a6d2d3e60517ea7a 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -2598,6 +2598,7 @@ int m_can_class_suspend(struct device *dev)
- {
- 	struct m_can_classdev *cdev = dev_get_drvdata(dev);
- 	struct net_device *ndev = cdev->net;
-+	const struct m_can_pdata *pdata = of_device_get_match_data(dev);
- 	int ret = 0;
- 
- 	if (netif_running(ndev)) {
-@@ -2622,8 +2623,12 @@ int m_can_class_suspend(struct device *dev)
- 		cdev->can.state = CAN_STATE_SLEEPING;
- 	}
- 
--	if (!m_can_class_wakeup_pinctrl_enabled(cdev))
-+	if (m_can_class_wakeup_pinctrl_enabled(cdev)) {
-+		if (pdata && pdata->out_band_wakeup)
-+			device_set_out_band_wakeup(dev);
-+	} else {
- 		pinctrl_pm_select_sleep_state(dev);
-+	}
- 
- 	return ret;
- }
-diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
-index 4743342b2fba3823819b9e2bc5b085cc0fe6d1e2..486d808bc677482acf446b1450c3a9b6b7405178 100644
---- a/drivers/net/can/m_can/m_can.h
-+++ b/drivers/net/can/m_can/m_can.h
-@@ -134,6 +134,10 @@ struct m_can_classdev {
- 	struct pinctrl_state *pinctrl_state_wakeup;
- };
- 
-+struct m_can_pdata {
-+	bool out_band_wakeup;
-+};
-+
- struct m_can_classdev *m_can_class_allocate_dev(struct device *dev, int sizeof_priv);
- void m_can_class_free_dev(struct net_device *net);
- int m_can_class_register(struct m_can_classdev *cdev);
-diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
-index 56da411878af0185ff9cc512e325137428a68255..ae2d89b65fe8da65b1ca73cbf80cd8ee8483e2e8 100644
---- a/drivers/net/can/m_can/m_can_platform.c
-+++ b/drivers/net/can/m_can/m_can_platform.c
-@@ -218,8 +218,13 @@ static const struct dev_pm_ops m_can_pmops = {
- 	SET_SYSTEM_SLEEP_PM_OPS(m_can_suspend, m_can_resume)
- };
- 
-+static const struct m_can_pdata m_can_plat_am62 = {
-+	.out_band_wakeup = true,
-+};
-+
- static const struct of_device_id m_can_of_table[] = {
- 	{ .compatible = "bosch,m_can", .data = NULL },
-+	{ .compatible = "ti,am62-m_can", .data = &m_can_plat_am62 },
- 	{ /* sentinel */ },
- };
- MODULE_DEVICE_TABLE(of, m_can_of_table);
+--
+
+net: Replace %pK output with 0
+
+This replaces the %pK pointer output in the various /proc/net seq_file
+printers with a literal 0, adjusting field spacing and header strings so
+the column layout stays intact. Documentation/networking/proc_net_tcp.rst
+is updated to describe the field as always 0.
+
+> net: Replace %pK output with 0
+[ ... ]
+>     Replace the %pK annotation with 0 value. Correct the spacing for the
+>     cases where pointer is at the beginning.
+
+[Severity: Medium]
+The subject and this sentence read as if net/ no longer emits pointers,
+but three files under net/ still use %pK after this commit:
+
+  net/bluetooth/af_bluetooth.c:bt_seq_show()
+	seq_printf(seq,
+		   "%pK %-6d %-6u %-6u %-6u %-6llu %-6llu",
+		   sk,
+
+  net/can/proc.c:can_print_rcvlist()
+	char *fmt = (r->can_id & CAN_EFF_FLAG)?
+		"   %-5s  %08x  %08x  %pK  %pK  %8ld  %s\n" :
+		"   %-5s     %03x    %08x  %pK  %pK  %8ld  %s\n";
+
+  net/can/bcm.c:bcm_proc_show()
+	seq_printf(m, ">>> socket %pK", sk->sk_socket);
+	seq_printf(m, " / sk %pK", sk);
+	seq_printf(m, " / bo %pK", bo);
+
+bt_seq_show() is installed by bt_procfs_init() for every Bluetooth
+protocol, so /proc/net/l2cap, /proc/net/sco, /proc/net/rfcomm*,
+/proc/net/hci*, /proc/net/iso, /proc/net/bnep and /proc/net/hidp keep
+printing the struct sock pointer.
+
+The changelog below the '---' line says the CAN changes were dropped on
+purpose, but that text is discarded when the patch is applied, and the
+Bluetooth site is not mentioned at all. Could the commit message name the
+remaining sites so git log does not suggest net/ was fully converted?
+
+> diff --git a/Documentation/networking/proc_net_tcp.rst b/Documentation/networking/proc_net_tcp.rst
+> index 7d9dfe36af45b..4fa2e58429b95 100644
+> --- a/Documentation/networking/proc_net_tcp.rst
+> +++ b/Documentation/networking/proc_net_tcp.rst
+> @@ -30,16 +30,16 @@ up into 3 parts because of the length of the line)::
+>        |        |----------------------> receive-queue
+>        |-------------------------------> transmit-queue
+>  
+> -   1000        0 54165785 4 cd1e6040 25 4 27 3 -1
+> -    |          |    |     |    |     |  | |  | |--> slow start size threshold,
+> -    |          |    |     |    |     |  | |  |      or -1 if the threshold
+> -    |          |    |     |    |     |  | |  |      is >= 0xFFFF
+> -    |          |    |     |    |     |  | |  |----> sending congestion window
+> -    |          |    |     |    |     |  | |-------> (ack.quick<<1)|ack.pingpong
+> -    |          |    |     |    |     |  |---------> Predicted tick of soft clock
+> -    |          |    |     |    |     |              (delayed ACK control data)
+> -    |          |    |     |    |     |------------> retransmit timeout
+> -    |          |    |     |    |------------------> location of socket in memory
+> +   1000        0 54165785 4  0  25 4 27 3 -1
+
+[Severity: Low]
+Does the example still match what the kernel prints? The example shows two
+spaces on each side of the new always-zero field, while get_tcp4_sock() in
+net/ipv4/tcp_ipv4.c and get_tcp6_sock() in net/ipv6/tcp_ipv6.c both emit a
+single space on each side:
+
+	"%08X %5u %8d %llu %d 0 %lu %lu %u %u %d"
+
+so the real line is:
+
+   1000        0 54165785 4 0 25 4 27 3 -1
+
+Should the example (and the arrow alignment below it) use the single-space
+spacing, or should the format strings pad the field if the wider column is
+intended?
+
+> +    |          |    |     |  |  |  | |  | |-------> slow start size threshold,
+> +    |          |    |     |  |  |  | |  |           or -1 if the threshold
+> +    |          |    |     |  |  |  | |  |           is >= 0xFFFF
+> +    |          |    |     |  |  |  | |  |---------> sending congestion window
+> +    |          |    |     |  |  |  | |------------> (ack.quick<<1)|ack.pingpong
+> +    |          |    |     |  |  |  |--------------> Predicted tick of soft clock
+> +    |          |    |     |  |  |                   (delayed ACK control data)
+> +    |          |    |     |  |  |-----------------> retransmit timeout
+> +    |          |    |     |  |--------------------> always 0 (was memory location).
+>      |          |    |     |-----------------------> socket reference count
+>      |          |    |-----------------------------> inode
+>      |          |----------------------------------> unanswered 0-window probes
+
+[ ... ]
+
+> diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+> index 9f053eb8b46e2..142e7b048229e 100644
+> --- a/net/ipv4/tcp_ipv4.c
+> +++ b/net/ipv4/tcp_ipv4.c
+> @@ -2811,7 +2810,7 @@ static void get_tcp4_sock(struct sock *sk, struct seq_file *f, int i)
+>  				      READ_ONCE(tp->copied_seq), 0);
+>  
+>  	seq_printf(f, "%4d: %08X:%04X %08X:%04X %02X %08X:%08X %02X:%08lX "
+> -			"%08X %5u %8d %llu %d %pK %lu %lu %u %u %d",
+> +			"%08X %5u %8d %llu %d 0 %lu %lu %u %u %d",
+>  		i, src, srcp, dest, destp, state,
+>  		READ_ONCE(tp->write_seq) - tp->snd_una,
+>  		rx_queue,
+
+[ ... ]
+
+> diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+> index df9c29eb5c1f4..b55d036c7f4da 100644
+> --- a/net/ipv6/tcp_ipv6.c
+> +++ b/net/ipv6/tcp_ipv6.c
+> @@ -2171,7 +2171,7 @@ static void get_tcp6_sock(struct seq_file *seq, struct sock *sp, int i)
+>  
+>  	seq_printf(seq,
+>  		   "%4d: %08X%08X%08X%08X:%04X %08X%08X%08X%08X:%04X "
+> -		   "%02X %08X:%08X %02X:%08lX %08X %5u %8d %llu %d %pK %lu %lu %u %u %d\n",
+> +		   "%02X %08X:%08X %02X:%08lX %08X %5u %8d %llu %d 0 %lu %lu %u %u %d\n",
+>  		   i,
+>  		   src->s6_addr32[0], src->s6_addr32[1],
+>  		   src->s6_addr32[2], src->s6_addr32[3], srcp,
+
+[ ... ]
 
 -- 
-2.34.1
-
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20260901160345.eeknHmY2%40linutronix.de
