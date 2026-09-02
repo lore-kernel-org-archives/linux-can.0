@@ -1,173 +1,148 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0392E4A2635;
-	Wed,  2 Sep 2026 14:16:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A0AE2D5412;
+	Wed,  2 Sep 2026 14:29:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788358579; cv=none; b=F2lBj5Ob4B4+NNgTJvoL7Pg/ydINia3vaFTl9WBY4Nya61dWtw44k0ks8POs5tSRodqQMQpPKZmoDs0Pv5PHu2rallfORPheFHUZ0jaiiiM7kP3XabfPFtTyF2t7+b1TznvRIWyz8/EhHrptboHVhDxtFge+g6iUqPH9t/QF4J0=
+	t=1788359354; cv=none; b=gTBTLuzs3fAtCZapbfwKh5k1B8TjLEFMj7omCgwmhTlREDDR+cxp2QyperZpKgpTriy7YEsANr4BMZdMLayKEtz2xXJQn+yNWApOIyUZ7O4Fs4RNl+6ywGqsrHmGvjFfYWFhjHuBlMqWV13hJs40YjS5af4aR28oT6FvW6oZB48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788358579; c=relaxed/simple;
-	bh=tC7VaQNN9hlI33al52NTfppaebOFNfYClbwSPR+Khas=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=S/fvdmCrlmQM/CKrcuxhzZJoZhzDAWhQNqmYYmihKmu0ZN8IuoDninKSV/XwKYluNSwiOT67W5xxf1Hy2Y1nrHSMUsjPdWzW1oExOreyH75Fg1pRIgsmPQdvQkddGitdVucnati4SECF2SVbdvaFMMNSkzOrIm2eBpViERkoKPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69B0B1F000E9;
-	Wed,  2 Sep 2026 14:16:14 +0000 (UTC)
-From: Claudiu Beznea <claudiu.beznea+renesas@tuxon.dev>
-To: mkl@pengutronix.de,
-	mailhol@kernel.org,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	geert+renesas@glider.be,
-	magnus.damm@gmail.com,
-	biju.das.jz@bp.renesas.com,
-	fabrizio.castro.jz@renesas.com
-Cc: claudiu.beznea@tuxon.dev,
-	linux-can@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH v4 7/7] arm64: dts: renesas: rzg3s-smarc: Enable CAN-FD
-Date: Wed,  2 Sep 2026 17:15:44 +0300
-Message-ID: <20260902141544.565763-8-claudiu.beznea+renesas@tuxon.dev>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260902141544.565763-1-claudiu.beznea+renesas@tuxon.dev>
+	s=arc-20240116; t=1788359354; c=relaxed/simple;
+	bh=xuDP02Px1wtVQ8TR1pyIT0kW4Zo8spYwVrtWwoqVGr4=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=LVkwvbAqgsb/2Ps6W7eMQqIzTI8hYEcQpUb6FuscHdMLkeCeQnDx1s5qAYSxYEGld7/WDiHp6Aexk/va2lgSyn6CXxsngYoqy72OQzU/yYvN3fjGU0kxzpZhiTCyWaVotesrUge0iHTf3vcCQ8qVrcBxCEfjSGdLr5F4kbTFOmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TyQOHqvf; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TyQOHqvf"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97F9A1F000E9;
+	Wed,  2 Sep 2026 14:29:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788359353;
+	bh=/xu01tvCt2yl8YXKeQsYRoEBAE/HT8vfSXf2rBG16pI=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=TyQOHqvfOoy2kyvUIAyomJM1WqGuQnn45hF7yst0Fv2gt+isc0fqFJRf7gwbCe602
+	 x9BdPeQYXlUC3aYW7kRJSlRxPoqCQ0GkuG/7DK8R4rn8LQvmtIyJZadwUEpW7ot2ay
+	 GmMnd6E+MhFFw9SdfZTEDTjxTulpb2qmJF33G+FMvN/SNDNYFTuVGw6JmSsqRGNhA+
+	 J92J3k3oRyj+hFASF9bxm5H2Yb5chVdOBGvQvFxFHSNwJ4xqr70jjfW5JOHIrYUK/a
+	 Vhe1Ke65JL8TCa8yQtTaOQ/9DbrU16UyjdqOS2Tov/o20Y3bo/fbgaXF+rkpKTpmvC
+	 nSl7DC6wcGY9A==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v4 4/7] can: rcar_canfd: Do not set registers selecting
+ the CAN mode
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Claudiu Beznea" <claudiu.beznea+renesas@tuxon.dev>
+Cc: conor+dt@kernel.org, robh@kernel.org, "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, wsa+renesas@sang-engineering.com, devicetree@vger.kernel.org, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>
+In-Reply-To: <20260902141544.565763-5-claudiu.beznea+renesas@tuxon.dev>
 References: <20260902141544.565763-1-claudiu.beznea+renesas@tuxon.dev>
+ <20260902141544.565763-5-claudiu.beznea+renesas@tuxon.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 02 Sep 2026 14:29:12 +0000
+Message-Id: <20260902142912.97F9A1F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Thank you for your contribution! Sashiko AI review found 2 potential issue(=
+s) to consider:
 
-The two CAN FD channels available on the Renesas RZ/G3S SoC are routed
-through the Renesas SMARC Carrier II board when used with the Renesas
-RZ/G3S SMARC Module.
+New issues:
+- [High] Software state diverges from fixed hardware capabilities due to un=
+validated device tree overrides, causing silent data corruption and CAN pro=
+tocol violations.
 
-The CAN transceiver on the Carrier II board has its standby pins connected
-to GPIOs that are selected through the SW_GPIO_CAN_PMOD switches. By
-default, these switches route the GPIOs to the PMOD interfaces.
+Pre-existing issues:
+- [High] Race condition on write-0-to-clear status register causes lost TX =
+completion interrupts and permanently frozen TX queues.
+--
 
-Enable the CAN FD controller and its two available channels.
+commit f5c5dd93cfcd4bdec86a8b0c4bc20cba21d7f4dc
+Author: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
----
+can: rcar_canfd: Do not set registers selecting the CAN mode
 
-Changes in v4:
-- collected tags
-- used ti,tcan1046 compatible
-- adjusted the standby-gpio property along with CAN PHY node name and label
-- adjusted the CAN channels phy phandles
+This commit adds a fixed_canfd flag to struct rcar_canfd_hw_info to handle
+hardware like the Renesas RZ/G3S SoC that only supports CAN-FD mode. It ski=
+ps
+writing to unavailable CAN mode configuration bits during the reset control=
+ler
+sequence.
 
-Changes in v3:
-- none
+Link: https://lore.kernel.org/all/1d9719e3-10ff-4cd8-b729-55fea93c37ce@wana=
+doo.fr
 
-Changes in v2:
-- collected tags
+> diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rca=
+r_canfd.c
+> index 2e84dc5dfa34d..bed7cde1aa01b 100644
+> --- a/drivers/net/can/rcar/rcar_canfd.c
+> +++ b/drivers/net/can/rcar/rcar_canfd.c
 
- .../boot/dts/renesas/rzg3s-smarc-switches.h   | 12 +++++
- arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi  | 45 +++++++++++++++++++
- 2 files changed, 57 insertions(+)
+[ ... ]
 
-diff --git a/arch/arm64/boot/dts/renesas/rzg3s-smarc-switches.h b/arch/arm64/boot/dts/renesas/rzg3s-smarc-switches.h
-index 9cccc87da057..d3fd18626773 100644
---- a/arch/arm64/boot/dts/renesas/rzg3s-smarc-switches.h
-+++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc-switches.h
-@@ -41,4 +41,16 @@
-  */
- #define SW_OPT_MUX4	SW_ON
- 
-+/*
-+ * SW_GPIO_CAN_PMOD[x] switches' states:
-+ * @SW_GPIO_CAN_PMOD1:
-+ *	SW_OFF - GPIO8 connected to CAN0_STB (position 1-2)
-+ *	SW_ON  - GPIO8 connected to PMOD1 (position 2-3)
-+ * @SW_GPIO_CAN_PMOD2:
-+ *	SW_OFF - GPIO9 connected to CAN1_STB (position 4-5)
-+ *	SW_ON  - GPIO9 connected to PMOD1 (position 5-6)
-+ */
-+#define SW_GPIO_CAN_PMOD1	SW_ON
-+#define SW_GPIO_CAN_PMOD2	SW_ON
-+
- #endif /* __RZG3S_SMARC_SWITCHES_H__ */
-diff --git a/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi b/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
-index e3821d8c01e3..ef24b6cbd690 100644
---- a/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
-+++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
-@@ -68,6 +68,23 @@ codec_dai: simple-audio-card,codec {
- 		};
- 	};
- 
-+	can_transceiver: can-phy {
-+		compatible = "ti,tcan1046", "nxp,tja1048";
-+		#phy-cells = <1>;
-+		max-bitrate = <8000000>;
-+		standby-gpios =
-+#if SW_GPIO_CAN_PMOD1 == SW_OFF
-+				<&pinctrl RZG2L_GPIO(13, 0) GPIO_ACTIVE_HIGH>,
-+#else
-+				<0>,
-+#endif
-+#if SW_GPIO_CAN_PMOD2 == SW_OFF
-+				<&pinctrl RZG2L_GPIO(13, 1) GPIO_ACTIVE_HIGH>;
-+#else
-+				<0>;
-+#endif
-+	};
-+
- 	vcc_sdhi1: regulator-vcc-sdhi1 {
- 		compatible = "regulator-fixed";
- 		regulator-name = "SDHI1 Vcc";
-@@ -92,6 +109,22 @@ &audio_clk2 {
- 	clock-frequency = <12288000>;
- };
- 
-+&canfd {
-+	pinctrl-0 = <&canfd_pins>;
-+	pinctrl-names = "default";
-+	status = "okay";
-+
-+	channel0 {
-+		phys = <&can_transceiver 0>;
-+		status = "okay";
-+	};
-+
-+	channel1 {
-+		phys = <&can_transceiver 1>;
-+		status = "okay";
-+	};
-+};
-+
- &ehci0 {
- 	dr_mode = "otg";
- 	status = "okay";
-@@ -171,6 +204,18 @@ audio_clock_pins: audio-clock {
- 		input-enable;
- 	};
- 
-+	canfd_pins: canfd {
-+		can0_pins: can0 {
-+			pinmux = <RZG2L_PORT_PINMUX(6, 1, 3)>, /* CAN0_TX */
-+				 <RZG2L_PORT_PINMUX(6, 2, 3)>; /* CAN0_RX */
-+		};
-+
-+		can1_pins: can1 {
-+			pinmux = <RZG2L_PORT_PINMUX(17, 0, 3)>, /* CAN1_TX */
-+				 <RZG2L_PORT_PINMUX(17, 1, 3)>; /* CAN1_RX */
-+		};
-+	};
-+
- 	key-1-gpio-hog {
- 		gpio-hog;
- 		gpios = <RZG2L_GPIO(18, 0) GPIO_ACTIVE_LOW>;
--- 
-2.43.0
+> @@ -846,6 +852,9 @@ static int rcar_canfd_reset_controller(struct rcar_ca=
+nfd_global *gpriv)
+>  		}
+> =20
+>  		/* Set the controller into appropriate mode */
+> +		if (gpriv->info->fixed_canfd)
+> +			continue;
+> +
 
+[Severity: High]
+Does bypassing the hardware mode setup here create a state mismatch if
+the software interface is forced into Classical CAN mode?
+
+If the device tree contains the "renesas,no-can-fd" property, the probe
+function sets fdmode =3D false in rcar_canfd_probe():
+
+drivers/net/can/rcar/rcar_canfd.c:rcar_canfd_probe() {
+    ...
+	if (of_property_read_bool(dev->of_node, "renesas,no-can-fd"))
+		fdmode =3D false;			/* Classical CAN only mode */
+    ...
+}
+
+With this patch, if a device with fixed_canfd uses that DT override, the
+hardware remains fixed in CAN-FD mode but the software expects Classical CA=
+N.
+Could this cause the driver to silently truncate 64-byte CAN-FD frames to
+8 bytes while acknowledging CAN-FD frames on the bus?
+
+>  		if (gpriv->info->ch_interface_mode) {
+>  			/* Do not set CLOE and FDOE simultaneously */
+>  			if (!gpriv->fdmode) {
+
+[ ... ]
+
+This isn't a bug introduced by this patch, but I also noticed a pre-existing
+issue in the transmit completion path:
+
+[Severity: High]
+Can writing back the stale status mask unintentionally clear newly asserted
+interrupt flags?
+
+In rcar_canfd_tx_done():
+
+drivers/net/can/rcar/rcar_canfd.c:rcar_canfd_tx_done() {
+    ...
+	/* Clear interrupt */
+	rcar_canfd_write(priv->base, RCANFD_CFSTS(gpriv, ch, RCANFD_CFFIFO_IDX),
+			 sts & ~RCANFD_CFSTS_CFTXIF);
+    ...
+}
+
+If a new interrupt (like another TX completion or message lost flag) is
+asserted by the hardware immediately after the status register is read but
+before this write-back, writing the stale sts value with a bitwise AND to
+a write-0-to-clear register will write '0' to the newly asserted flag.
+
+Could this cause lost TX completion interrupts and permanently frozen
+TX queues?
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260902141544.5657=
+63-1-claudiu.beznea+renesas@tuxon.dev?part=3D4
