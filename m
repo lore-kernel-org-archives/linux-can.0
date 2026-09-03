@@ -1,104 +1,135 @@
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B010B411660
-	for <linux-can@vger.kernel.org>; Thu,  3 Sep 2026 09:55:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7F4246EF7F
+	for <linux-can@vger.kernel.org>; Thu,  3 Sep 2026 10:04:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788429356; cv=none; b=Q1pOM+knSPvIMMrgjdBpGtr5dlIlj2jNk3958bpk6pIxPtGvGtMJxR9osh+VaNNHR0rqQWSEuMJ0ScLAMGxib9jiRXzSptAISHgajUX7vJMuFi8qJDB1MNr1w26yx/sCeFSHEVY1SXmwFlaeDscCwOaR2P9AFl+OMGkci96Tu40=
+	t=1788429890; cv=none; b=bdPmv/Ncxe52bSnq3brgNXg12WZj6y6k/XlXOCefnVQ6CE5w32OVwYSB4Nulo/c8eCGPEBUR9P3aHCLTgP/cyCxfr0c14zUQ6tTNV0AIWjKczlUvPkGCSG4CAfI/7wxycUZjwOMcdd5LpCabhqhW2Zrcsy5syv8P7+F2BID/gds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788429356; c=relaxed/simple;
-	bh=FxSE0ftZwobdenuKclseLK1NyrAH4QAW42Gahf10Gg0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CSSAUI52FoR+mLEfPSqIYSvbKaGuONA46qvm+QfDREivxSJ+0jbxG+Wumor2aogiRp/2JjYL28fHAuPvn6YLiMMQpXELLFVte5p61jFl50DYXRAOvsLcGVjZ73zZ/7rZ7yaJbR8TF3i7kjfbbWeCXjVehayOq4m1ys7ZtFfGRZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=gp4JNHMi; arc=none smtp.client-ip=220.197.31.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+	s=arc-20240116; t=1788429890; c=relaxed/simple;
+	bh=aYDcvYGlJz8b2C3OwnhZegR9RdPmtIi0rPBz8u7UIH0=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=GwHzZOZ7L77yppEOOqlCw6HmR7P+ELC+/cVTU2/TWvZZDr16Nj9chgCiW3+gUwFqW9uo3CfgtzFD6nTu5WVHzNgRJ61zKDI/GfJy2GpYjjdeAkPwXgWZgLboEZPzRMNMH0RZC5n41Z3sax0Pb1IpLHoxJMamSR9xWSARq8TiAqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lfaA8NUH; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="gp4JNHMi"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=CI
-	NcGimKjkqa/6nlkn0DE3c+vmrNtQ7+LapJpVCkJIk=; b=gp4JNHMiTaqBJQb8N4
-	7BKjDBoeICWeabsQT3RWpuwL7TedZn9OUmjcvAl68ILk5wpe7EGVDMom3lfsSxb/
-	zvtI7GNqJA7jhnijkw+HmAA1YBlHJRIu7TixqdpTueujTJJbH61j104xX7nSW43I
-	Lq3QUJZn0JuZ6dHPZS3osHRvs=
-Received: from kylin-ERAZER-H610M.. (unknown [])
-	by gzga-smtp-mtada-g0-1 (Coremail) with SMTP id _____wA3DJLkQ5lqpS9qAQ--.62791S2;
-	Thu, 03 Sep 2026 17:54:45 +0800 (CST)
-From: Yun Lu <luyun_611@163.com>
-To: mkl@pengutronix.de,
-	mailhol@kernel.org,
-	m.tretter@pengutronix.de,
-	pkshih@realtek.com,
-	tmuehlbacher@posteo.net,
-	socketcan@hartkopp.net
-Cc: enelsonmoore@gmail.com,
-	davem@davemloft.net,
-	wg@grandegger.com,
-	linux-can@vger.kernel.org
-Subject: [PATCH] can: sja1000: drop RX frame when skb allocation fails
-Date: Thu,  3 Sep 2026 17:54:44 +0800
-Message-ID: <20260903095444.495807-1-luyun_611@163.com>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lfaA8NUH"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D7E41F000E9;
+	Thu,  3 Sep 2026 10:04:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788429889;
+	bh=+qSYu6HCYk0yJgP7m8Rg91nZ8gtP9anGxoQx6OUVgcg=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=lfaA8NUHbNceuln8XTrmsOpnlFAvSNMwzdhmw4rJT5XXmabAtE0C6wuLYpLdksquu
+	 +Gg/VqVxjatx8RpsdawUVC5QV+9nyhDMNev2pzzPN8dBvFatf8JLRJL8rDjgr9MXW7
+	 r8iAsrPjNj5r16rgrYro0fzJ0S5yTPmBxVDyUMm0rJX8BmURgwYYkIOPbd2S1nsL5Y
+	 IBrtne9hKKVOza3peoe7m7YiBFSzAJKmzTFfoQOkIxYV34H+xWN7hgvs3XQBiTF4xW
+	 IxU08ji+zcVA+eIZsDtqJd8Qyy/q9y/D/mVpgJGckG2vJZfWR1P7xDfesds0yOYyDF
+	 Xsrj1qG4CyMeQ==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH] can: sja1000: drop RX frame when skb allocation fails
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Yun Lu" <luyun_611@163.com>
+Cc: "Vincent Mailhol" <mailhol@kernel.org>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org
+In-Reply-To: <20260903095444.495807-1-luyun_611@163.com>
+References: <20260903095444.495807-1-luyun_611@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 03 Sep 2026 10:04:48 +0000
+Message-Id: <20260903100449.0D7E41F000E9@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wA3DJLkQ5lqpS9qAQ--.62791S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Zr15Zw48tFWfXryxJr48Xrb_yoW8Wr18pr
-	ZYyF10yr1kXF45X3Wqv3W8ury5tan7WrW5CFZ2v3W5Zr13AFnIvr1fKrWjq3yDZrWxJFW3
-	uF1YyF17GF4DGaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jjCJQUUUUU=
-X-CM-SenderInfo: pox130jbwriqqrwthudrp/xtbC7AYL2WqZQ+YUCwAA3x
 
-From: Yun Lu <luyun@kylinos.cn>
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+s) to consider:
 
-When alloc_can_skb() fails, sja1000_rx() returns without reading
-the frame and without releasing the receive buffer (CMD_RRB), so
-SR_RBS stays set. The interrupt handler's inner RX loop
+Pre-existing issues:
+- [High] In sja1000_err(), an SKB allocation failure returns -ENOMEM, disca=
+rding IRQ_WAKE_THREAD requests and causing the interrupt handler to erroneo=
+usly return IRQ_NONE.
+--
 
-	while (status & SR_RBS) {
-		sja1000_rx(dev);
-		status = priv->read_reg(priv, SJA1000_SR);
-		/* check for absent controller */
-		if (status == 0xFF && sja1000_is_absent(priv))
-			goto out;
-	}
+commit 6507d559134b8295113fac43d6ce819e79885772
+Author: Yun Lu <luyun@kylinos.cn>
 
-has no iteration limit, so under sustained memory pressure every
-retry fails the same way and the loop never exits, livelocking the
-CPU in hard IRQ context until the hard lockup detector fires.
+can: sja1000: drop RX frame when skb allocation fails
 
-Release the receive buffer and count the drop instead, as other
-CAN drivers do on allocation failure, so the interrupt handler
-always makes progress.
+This patch prevents a lockup in sja1000_rx() by dropping the frame and
+releasing the receive buffer if SKB allocation fails.
 
-Fixes: 429da1cc841b ("can: Driver for the SJA1000 CAN controller")
-Signed-off-by: Yun Lu <luyun@kylinos.cn>
----
- drivers/net/can/sja1000/sja1000.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+> diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/=
+sja1000.c
+> index 3cdb583ee3e50..da107feb22af7 100644
+> --- a/drivers/net/can/sja1000/sja1000.c
+> +++ b/drivers/net/can/sja1000/sja1000.c
+> @@ -348,8 +348,12 @@ static void sja1000_rx(struct net_device *dev)
+> =20
+>  	/* create zero'ed CAN frame buffer */
+>  	skb =3D alloc_can_skb(dev, &cf);
+> -	if (skb =3D=3D NULL)
+> +	if (!skb) {
+> +		/* drop the frame to guarantee forward progress of the ISR */
+> +		sja1000_write_cmdreg(priv, CMD_RRB);
+> +		stats->rx_dropped++;
+>  		return;
+> +	}
+> =20
+>  	fi =3D priv->read_reg(priv, SJA1000_FI);
 
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index 3cdb583ee3e5..da107feb22af 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -348,8 +348,12 @@ static void sja1000_rx(struct net_device *dev)
- 
- 	/* create zero'ed CAN frame buffer */
- 	skb = alloc_can_skb(dev, &cf);
--	if (skb == NULL)
-+	if (!skb) {
-+		/* drop the frame to guarantee forward progress of the ISR */
-+		sja1000_write_cmdreg(priv, CMD_RRB);
-+		stats->rx_dropped++;
- 		return;
-+	}
- 
- 	fi = priv->read_reg(priv, SJA1000_FI);
- 
--- 
-2.43.0
+[Severity: High]
+This is a pre-existing issue, but while looking at SKB allocation failures
+in the interrupt handler, does a similar allocation failure in
+sja1000_err() lead to the IRQ line being permanently disabled?
 
+Under memory pressure, if the SKB allocation fails in sja1000_err():
+
+drivers/net/can/sja1000/sja1000.c:sja1000_err() {
+    ...
+	if (!skb)
+		return -ENOMEM;
+
+	netif_rx(skb);
+
+	return ret;
+}
+
+This unconditionally returns -ENOMEM, which discards any IRQ_WAKE_THREAD
+requests needed for overrun recovery like SJA1000_QUIRK_RESET_ON_OVERRUN.
+
+This error propagates to sja1000_interrupt(), causing the loop to break
+before incrementing n:
+
+drivers/net/can/sja1000/sja1000.c:sja1000_interrupt() {
+    ...
+			err =3D sja1000_err(dev, isrc, status);
+			if (err =3D=3D IRQ_WAKE_THREAD)
+				ret =3D err;
+			if (err)
+				break;
+		}
+		n++;
+    ...
+}
+
+If this happens on the first loop iteration where n is 0, the handler
+returns IRQ_NONE despite having successfully acknowledged the interrupt in
+hardware:
+
+drivers/net/can/sja1000/sja1000.c:sja1000_interrupt() {
+    ...
+out:
+	if (!ret)
+		ret =3D (n) ? IRQ_HANDLED : IRQ_NONE;
+    ...
+}
+
+Could repeated IRQ_NONE returns under sustained memory pressure cause the
+core IRQ subsystem to permanently disable the device's IRQ line?
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260903095444.4958=
+07-1-luyun_611@163.com?part=3D1
