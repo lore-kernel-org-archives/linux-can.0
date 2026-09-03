@@ -1,63 +1,63 @@
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8DFB3164C5
-	for <linux-can@vger.kernel.org>; Thu,  3 Sep 2026 08:29:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2AB0428470
+	for <linux-can@vger.kernel.org>; Thu,  3 Sep 2026 08:55:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788424145; cv=none; b=soLED3DJxFbJ/rYruXu9dNeT/C54zTV/EJLhMldlvuTRVSl47/Ax5S9rIQb8UnFUhBOejqtDWJqzauvBoejWtLhI7IXbPepCEy1WVySqWHMcZrAlmmegyflhiZTgPCdm8t0FHyr4w8J7sgo1KTuvFacCDLze80I0stgFzuGR6Xc=
+	t=1788425739; cv=none; b=QMiGUjb6mJrIkobur3XieDPP1abZAnHbqSui9JgCrKGBl+x4yfgitXQZ7GNV+tUccNrR/AwZqJMLck/EFiyURYraw7MBS4doonfwomPieDeVjElmPZvuIsc0G/Z8bsYQxKC8dGT13Q6kggWPNySsHtTChgcb9ZWLIVC7+XfqWFA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788424145; c=relaxed/simple;
-	bh=j/YkXCRb+DA7nNO9q31K7pBUxD0nnB4tRARb3P9panw=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=l9NYxxWs3Yc4YXjiL45WGPACNnb/pOdVtpRCDjUgSaS+Nn56iwPGoscVeuxcxJwxJR4yTephZDnukdpCiVQpuCEkCRqgRNOD5W/9DANppjVeEwlvvGRyp5k1I5tL2v4haaeRVi35GHP5uO0ef5j4TNsBZ1ehZF9V2lKM31T9q40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=mRFGQaQd; arc=none smtp.client-ip=209.85.221.43
+	s=arc-20240116; t=1788425739; c=relaxed/simple;
+	bh=YKJfUdy5n6ffaKk39SK9sft7LcFnAbfH3T12ej/97pA=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=PuyLfLhmHWOoFil3OYOpc5DLiYw1EBg23Cj89hNuVJK/BO/Lql5alc5phjjM6KBok/gCii1vkmzZ2nWmxzXRub7O+kjSy6bvpl5b8eHUbOW153zaJWHeEOecVno0tDOOmQdEYMF6cuIEdtmK8LNd/UQZJ6LUf3/JWYICQbn2/7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=UjRro5D9; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="mRFGQaQd"
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-47de0093c42so2101671f8f.3
-        for <linux-can@vger.kernel.org>; Thu, 03 Sep 2026 01:29:02 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="UjRro5D9"
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-49b0d78a801so17117115e9.2
+        for <linux-can@vger.kernel.org>; Thu, 03 Sep 2026 01:55:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre.com; s=google; t=1788424141; x=1789028941; darn=vger.kernel.org;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
+        d=baylibre.com; s=google; t=1788425735; x=1789030535; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
          :content-type:mime-version:from:to:cc:subject:date:message-id
          :reply-to:content-type;
-        bh=G4vKdHGO8+zOlAPBdoXMqgNoiUhAKGdphTDuXcL4XSA=;
-        b=mRFGQaQde7qdWnv+c98cI5KLyy/7vLcC8qeD9geIQc+8meImGBg7E2P6M+RiM5FP8Y
-         znQoySRkWarZkGMDGV93PPL6m4iXWuy74nkscUMmRYaaTpY35QUwXa2vm+ovvm1fCnU3
-         k+0mLyNheymZn6BYr7bg1qZwpX5vFSy815omfyPycxGMyrhQ91pcVFIocR9NWZQdLE/a
-         1+zbTYsgEl6M60qQeXjBhd7eo8fQQmA2D5cOaBPEhAVFg1t1Pxov+pcwCChLqMLPkaA1
-         3LRKwntbu4qUyV5VOZeL1Tbh45EgGZN2d9zLp5qAeVbV8OfCZDy0w04WP9ktkTpc2wQZ
-         ohWA==
+        bh=lSve4FkJxmYJyxkKw1zIr74/VC3uYwUbpdZi1aoEPL4=;
+        b=UjRro5D9SFd8INEOr126MoDwl1jtOvp+E6FiNzMcrqm5KFD18HPXnw1KPYtyx4Zo1J
+         H7RAAnW14vekCbko1DLx1/pxCkY7V5JW5b3CTNuFT4dAVw1SJIc+ANtdEIiqBMnUUu1F
+         ah0sSHXZ0JaxB4BrFjMnoEEmek6vNAufCdwgh40/jpsJFSHQ5gT8UYEqzOMA8NAqFwDp
+         oYIBEQe+gVW4zkK3PYjtfEvF/PJNhIkYCTzQnAe1y/zH2mJxbP0cR+1EnS4L+Z4M1SzA
+         Vw8FkxeW2bpctaruOlBmaOIRm3NAARvaIoYzo8NvboOB4m3ubLuRedpVR9C0YimaJkhO
+         ToDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788424141; x=1789028941;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
+        d=1e100.net; s=20251104; t=1788425735; x=1789030535;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
          :content-type:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=G4vKdHGO8+zOlAPBdoXMqgNoiUhAKGdphTDuXcL4XSA=;
-        b=g6gA41CN9vjolNzCvFJOSDy4bZEMyPaCxL6wI75cb4KlnEETuw81WG4BAjZQH1D1SN
-         WOhSTJFZ/uWtpS78kCRmPHNURtghbV6hJ9OeYZIdqpa3JcoOzmguwSi3LE8KVXddG3v5
-         v6B0QscVv7BAJwcP+UKO59aJSPsWfIFX+fa8T166R3VA8RUfV8pEQiSnMvniLCIvzij2
-         1ebF48bxb8XmKwTvGjC95kjUDBO6r9LLjskuYOaHLerBT7goJ603EFVXm0qZJp9DGU4A
-         Gi2fRV1oJsJ3L2AYpvCeiWeEUCOo0T0MRTUorN+lqB9y+LOtPRVcbD68fqfqd92EUnpt
-         9jvg==
-X-Forwarded-Encrypted: i=1; AKwUvBzWUP8OsvsBWjfQVBAIootncRHUmhEvV1Vv0Xu6lxPDvSYS0eprdjvYdPl37k8S2rBYFdZBPdquAOA=@vger.kernel.org
-X-Gm-Message-State: AFuF++ltD+qPewrjc917SPnmBu/0K5ZD3QhKixB2aXyppTFSzta3vFpn
-	9Aq7s+c9ev1jBoi1R4iViX4Ph5JPC7RAjMLA7+oO2aUMSflArQtE0kR8OHIZkvyyFco=
-X-Gm-Gg: AYBFou3HY+UzFDni/rheKuoUB71v3JnwVNXAwekvSFhAvJ5uQPamx8saUSXPFKm+248
-	vOL8WZDKTZyufaTxW0ssCP6Wn+T61Kj5N8DfDmDtzKzzG2oyUlI39ovY6gdNBh4tcxgVPqzRD6z
-	ysBj1KN+fVV1EqFzVW69wNjFsupDWkKeubrmBaJF3GGHmcTfxYa1d6xsvxhrmIzeKn8FxuavJO2
-	gT6FSpUQ7jvlfO9iaEF90deavYx45ZQqYIZWcHYXfaLfnZyCXmg9hKpD+QDx3fgZGKtRjOrXolr
-	KwCQepqhTpK4U0z34gBS1Uw5NWfTH7qaxyk0vl69z/WdrqqF7MYy8d7oE2CTnGgxdJyyNSzHF5g
-	DgAHpk8RZbGUkgOeZSrwyERB5AU6BzIQU9eUkD1AVA1I88ROvQ4EWdsZj9OPN5VKXEMYn2KwFDB
-	6Dvzbpm6ydS1rnpO4c8P2q2eco9FUmoNUafmMIB5e5SnpbzlmLc9tVE28h
-X-Received: by 2002:a05:6000:186e:b0:47f:8b24:ef01 with SMTP id ffacd0b85a97d-48488deedd2mr18283862f8f.1.1788424140416;
-        Thu, 03 Sep 2026 01:29:00 -0700 (PDT)
+        bh=lSve4FkJxmYJyxkKw1zIr74/VC3uYwUbpdZi1aoEPL4=;
+        b=YWOd6UQogEIlMaEU5pazCU7tE7P7WpLZLM6IeAiBOmIg655EW66WBRuO9xbpJ7BMx1
+         B0laQ8Nu4T5BjPOLbErTUtVmWkI6y3Zip36YciCpPgkaen3KIci6LLhzrT9ZjgulPNjx
+         YjHbkouE8R9vI6ph/9Lc/u5WmflJTzfteCZYRZ/xr1Z9/dEhcdPc0xy/gTytszRad+GB
+         ZVlwomQaBJrleBklbBj2hmPJGhwlI5Msk9U1ZqVqtLVGaVv/XFwlBa2pnofAF3wKsn/z
+         Au/gPAoieQsHJNijJeJ17YAWIlzEn7HLcSWgArdHID1j0h6hqwjMY8du5c+Zxp+cR13l
+         4o0w==
+X-Forwarded-Encrypted: i=1; AKwUvBy3iwBkhtCD4AuP2hNhWUpzCPbT0BEjVmmYv2Ng8YqQbd7WTJB1QTqCXbyUAnXMUOIVgnU6BIgZ4Cg=@vger.kernel.org
+X-Gm-Message-State: AFuF++mIfhMTxRiisYs0/jhO2D2A3POxYbDqmU6MdwT6G7Kr+n+vUKAp
+	V/6yZXp8326mOXl+lbFmdjWYQ8jg4GvH/OxO0ULzsnHK3A1cZ6213s8pa00Iwq5ZALY=
+X-Gm-Gg: AYBFou1dI8v/nAyGYLjRtk2iXqElwDe/3EycUywz6jGhxQ793rQYn7rGHTAipfxsVxh
+	cwaNzMkcRb0H7XVD4l2xrzpV/FsaDKhToP3FmGghnfybBwWGuZFbC353t7zWOQuTXIuSrHAFDtK
+	tToaylmuHRgFvzopUcmlX+U3UZakyudeMqwCa3wKiQtWanNDMjk7njcbsY9IoDa8DLJw1EgOb8X
+	VDCj8UD686q7vFaVhWJCNqindwjcdFupgNK8y8CSqGbNv7ruQNMeD92SdUO3UDviLqWZLdIuhtt
+	/JL20ghthgGyF3SjuWeMwXgLyfFIK8zKDDotZ4zQgtuzvUTA6wCM7epwWrXxeAz9v2c8uasqUaJ
+	F5AB51OQyWwO5MsoIxKlX3ptj2uX2xyfJCvmMBBxx15/uyZDFMiXViJbPO5FHonkoX+ME++O+Kr
+	B1TBftVh+y3TFQnv8kmP4+ScVYmB21IkZurG7sK+VeYVpp/TAGdUkatSH5
+X-Received: by 2002:a05:600c:a00a:b0:49c:f4e1:3135 with SMTP id 5b1f17b1804b1-49cf4e13cb7mr4646545e9.14.1788425734899;
+        Thu, 03 Sep 2026 01:55:34 -0700 (PDT)
 Received: from localhost ([2001:4090:a244:80d4:489b:7642:1b32:84d6])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48448eea5b4sm12497978f8f.27.2026.09.03.01.28.59
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49cee5dec54sm65075855e9.12.2026.09.03.01.55.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2026 01:28:59 -0700 (PDT)
+        Thu, 03 Sep 2026 01:55:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -65,74 +65,139 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed;
- boundary=a15e01d85f8a611c40ff4ae9385bc153f1f9fa83a0571b2a8a2491377b30;
+ boundary=5beb2c8dd38bb5ac7bdc9d94a1236578ac7d8d30c9e1c9ad030b45675f0b;
  micalg=pgp-sha512; protocol="application/pgp-signature"
-Date: Thu, 03 Sep 2026 10:28:51 +0200
-Message-Id: <DL5JFZPXGYZF.2JXFWOJHEMWAF@baylibre.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: can: m_can: add ti,am62-m_can
- compatible
+Date: Thu, 03 Sep 2026 10:55:27 +0200
+Message-Id: <DL5K0CZS9PDB.1HD8YBEQOUABU@baylibre.com>
+Cc: <s-kochidanadu@ti.com>, <a-kaur@ti.com>, <s-tripathi1@ti.com>,
+ <vishalm@ti.com>, <linux-can@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 2/2] can: m_can: add ti,am62-m_can compatible with
+ out-of-band wakeup support
 From: "Markus Schneider-Pargmann" <msp@baylibre.com>
 To: "Kendall Willis" <k-willis@ti.com>, "Markus Schneider-Pargmann"
  <msp@baylibre.com>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent
  Mailhol" <mailhol@kernel.org>, "Rob Herring" <robh@kernel.org>, "Krzysztof
  Kozlowski" <krzk+dt@kernel.org>, "Conor Dooley" <conor+dt@kernel.org>,
  "Chandrasekar Ramakrishnan" <rcsekar@samsung.com>
-Cc: <s-kochidanadu@ti.com>, <a-kaur@ti.com>, <s-tripathi1@ti.com>,
- <vishalm@ti.com>, <linux-can@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 X-Mailer: aerc 0.21.0-146-gb5c16ebe1835
 References: <20260902-temp-v4-0-3896f7d16ce8@ti.com>
- <20260902-temp-v4-1-3896f7d16ce8@ti.com>
-In-Reply-To: <20260902-temp-v4-1-3896f7d16ce8@ti.com>
+ <20260902-temp-v4-2-3896f7d16ce8@ti.com>
+In-Reply-To: <20260902-temp-v4-2-3896f7d16ce8@ti.com>
 
---a15e01d85f8a611c40ff4ae9385bc153f1f9fa83a0571b2a8a2491377b30
+--5beb2c8dd38bb5ac7bdc9d94a1236578ac7d8d30c9e1c9ad030b45675f0b
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
 
-Hi Kendall,
-
 On Wed Sep 2, 2026 at 11:03 PM CEST, Kendall Willis wrote:
-> Add "ti,am62-m_can" to the list of compatible strings for the M_CAN
-> controller binding. This compatible identifies TI AM62 SoCs which
-> support out-of-band wakeup capability.
+> In TI AM62X, AM62A, and AM62P SoCs, the M_CAN controller is a part of
+> the MCU power domain which is OFF in the deepest low power states.
+> However, the m_can pins are able to wakeup the system from states where
+> the MCU domain is OFF through its out-of-band wakeup functionality.
+
+There are m_can devices in the main domain as well. Does this apply to
+these as well?
+
+>
+> Introduce the ti,am62-m_can compatible with match data to identify the
+> out-of-band wakeup capability for TI AM62 SoCs. During suspend, set the
+> out-of-band wakeup flag when the device is configured as a wakeup
+> source, the "wakeup" pinctrl state is present, and the match data
+> indicates out-of-band wakeup support.
 >
 > Signed-off-by: Kendall Willis <k-willis@ti.com>
 > ---
->  Documentation/devicetree/bindings/net/can/bosch,m_can.yaml | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  drivers/net/can/m_can/m_can.c          | 7 ++++++-
+>  drivers/net/can/m_can/m_can.h          | 4 ++++
+>  drivers/net/can/m_can/m_can_platform.c | 5 +++++
+>  3 files changed, 15 insertions(+), 1 deletion(-)
 >
-> diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b=
-/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
-> index 2c9d37975bedd652b3060ab11ba75c37565edaad..89e5a44453372c57506e9cf3a=
-009b55a70cc4446 100644
-> --- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
-> +++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
-> @@ -16,7 +16,9 @@ allOf:
+> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.=
+c
+> index 16f80607e150e2ca2950616ff2c39b7aa13710b4..0788816d881ef8ba84ad5a84a=
+6d2d3e60517ea7a 100644
+> --- a/drivers/net/can/m_can/m_can.c
+> +++ b/drivers/net/can/m_can/m_can.c
+> @@ -2598,6 +2598,7 @@ int m_can_class_suspend(struct device *dev)
+>  {
+>  	struct m_can_classdev *cdev =3D dev_get_drvdata(dev);
+>  	struct net_device *ndev =3D cdev->net;
+> +	const struct m_can_pdata *pdata =3D of_device_get_match_data(dev);
+
+The core m_can driver works for all m_can forms, tcan, platform and pci.
+I think it would be cleaner if you parse this in the platform driver and
+set it in m_can_classdev instead. Otherwise of_match_data has to be the
+same for all drivers which is not obvious when you are editing tcan for
+example.
+
+>  	int ret =3D 0;
 > =20
->  properties:
->    compatible:
-> -    const: bosch,m_can
-> +    enum:
-> +      - bosch,m_can
-> +      - ti,am62-m_can
+>  	if (netif_running(ndev)) {
+> @@ -2622,8 +2623,12 @@ int m_can_class_suspend(struct device *dev)
+>  		cdev->can.state =3D CAN_STATE_SLEEPING;
+>  	}
+> =20
+> -	if (!m_can_class_wakeup_pinctrl_enabled(cdev))
+> +	if (m_can_class_wakeup_pinctrl_enabled(cdev)) {
+> +		if (pdata && pdata->out_band_wakeup)
+> +			device_set_out_band_wakeup(dev);
+> +	} else {
+>  		pinctrl_pm_select_sleep_state(dev);
+> +	}
 
-I think you should use oneOf here to allow the use of
+I just noticed these are called even if ret is not 0, so suspend failed.
+This shouldn't happen, but not a problem of your patch. But you could
+add a fix for that.
 
-  compatible =3D "ti,am62-m_can", "bosch,m_can";
+> =20
+>  	return ret;
+>  }
+> diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.=
+h
+> index 4743342b2fba3823819b9e2bc5b085cc0fe6d1e2..486d808bc677482acf446b145=
+0c3a9b6b7405178 100644
+> --- a/drivers/net/can/m_can/m_can.h
+> +++ b/drivers/net/can/m_can/m_can.h
+> @@ -134,6 +134,10 @@ struct m_can_classdev {
+>  	struct pinctrl_state *pinctrl_state_wakeup;
+>  };
+> =20
+> +struct m_can_pdata {
+> +	bool out_band_wakeup;
+> +};
+> +
+>  struct m_can_classdev *m_can_class_allocate_dev(struct device *dev, int =
+sizeof_priv);
+>  void m_can_class_free_dev(struct net_device *net);
+>  int m_can_class_register(struct m_can_classdev *cdev);
+> diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_c=
+an/m_can_platform.c
+> index 56da411878af0185ff9cc512e325137428a68255..ae2d89b65fe8da65b1ca73cbf=
+80cd8ee8483e2e8 100644
+> --- a/drivers/net/can/m_can/m_can_platform.c
+> +++ b/drivers/net/can/m_can/m_can_platform.c
+> @@ -218,8 +218,13 @@ static const struct dev_pm_ops m_can_pmops =3D {
+>  	SET_SYSTEM_SLEEP_PM_OPS(m_can_suspend, m_can_resume)
+>  };
+> =20
+> +static const struct m_can_pdata m_can_plat_am62 =3D {
+
+I don't like the pdata name here, this suggests to be platform data, but
+this is of match data instead. Maybe of_data?
 
 Best
 Markus
 
---a15e01d85f8a611c40ff4ae9385bc153f1f9fa83a0571b2a8a2491377b30
+--5beb2c8dd38bb5ac7bdc9d94a1236578ac7d8d30c9e1c9ad030b45675f0b
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iKMEABYKAEsWIQSJYVVm/x+5xmOiprOFwVZpkBVKUwUCapkvwxsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMiwyLDIRHG1zcEBiYXlsaWJyZS5jb20ACgkQhcFWaZAVSlMr
-dwD+KU6CuPk9zJ8NzOMyi92mXbApr4jbJz7igogpPtqaSJMBAOSyx5B9ln3sgQco
-EmRUOaRu3BgZAwDtaQM5wfBkUNEF
-=6Jsh
+iKMEABYKAEsWIQSJYVVm/x+5xmOiprOFwVZpkBVKUwUCapk1/xsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMiwyLDIRHG1zcEBiYXlsaWJyZS5jb20ACgkQhcFWaZAVSlOE
+MgEA8suKsDAHr3gSYHcmzdKhgj4B1EP8BSKlE5dnGrdEz5IBAPey/srPEYR3ifbs
+3kCo0FftLDoUSFKkYXGhEArbs10O
+=uRnq
 -----END PGP SIGNATURE-----
 
---a15e01d85f8a611c40ff4ae9385bc153f1f9fa83a0571b2a8a2491377b30--
+--5beb2c8dd38bb5ac7bdc9d94a1236578ac7d8d30c9e1c9ad030b45675f0b--
