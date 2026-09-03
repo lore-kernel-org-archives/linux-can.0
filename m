@@ -1,135 +1,179 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.161])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7F4246EF7F
-	for <linux-can@vger.kernel.org>; Thu,  3 Sep 2026 10:04:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788429890; cv=none; b=bdPmv/Ncxe52bSnq3brgNXg12WZj6y6k/XlXOCefnVQ6CE5w32OVwYSB4Nulo/c8eCGPEBUR9P3aHCLTgP/cyCxfr0c14zUQ6tTNV0AIWjKczlUvPkGCSG4CAfI/7wxycUZjwOMcdd5LpCabhqhW2Zrcsy5syv8P7+F2BID/gds=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788429890; c=relaxed/simple;
-	bh=aYDcvYGlJz8b2C3OwnhZegR9RdPmtIi0rPBz8u7UIH0=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=GwHzZOZ7L77yppEOOqlCw6HmR7P+ELC+/cVTU2/TWvZZDr16Nj9chgCiW3+gUwFqW9uo3CfgtzFD6nTu5WVHzNgRJ61zKDI/GfJy2GpYjjdeAkPwXgWZgLboEZPzRMNMH0RZC5n41Z3sax0Pb1IpLHoxJMamSR9xWSARq8TiAqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lfaA8NUH; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BD83480346;
+	Thu,  3 Sep 2026 10:12:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.161
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1788430352; cv=pass; b=dRhtI4DWEOdLdfKmemMrF8DDOydHyOWnWUHHR8spCCyG874Am8tM/+BfDS/3in4/zapsqzmzumr9o8Aaj7JcbbpdKZt6Ond2bSrS6Yr6DQieYzYCJFOC2a7Rl9CF3qWBUp/jMdXx8uD+w3EUKfOW8jz3+zIun3DN8batT1cB/kM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1788430352; c=relaxed/simple;
+	bh=mwTFjoIgf8sqFt9apBZc0tzxCLwrRddrq6K4Jpc1m4c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JJf68CK0e10Gv+pOAV2exLCyD4pdtjXteFYB++lCsF+MvLATElwM+lZz50fMVp6XOSnAdztRqtj5UjhEwEMToFFZJ0H7ZpRx/eBgvcSJmGErTwsr9U5EsDQN/D0B0xaXS3bqq6pFi7E0za3xR96/JWs0gs7L6k+hss1odRrmS+4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=HhGvRRmu; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=cA+JpdCA; arc=pass smtp.client-ip=81.169.146.161
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lfaA8NUH"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D7E41F000E9;
-	Thu,  3 Sep 2026 10:04:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788429889;
-	bh=+qSYu6HCYk0yJgP7m8Rg91nZ8gtP9anGxoQx6OUVgcg=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=lfaA8NUHbNceuln8XTrmsOpnlFAvSNMwzdhmw4rJT5XXmabAtE0C6wuLYpLdksquu
-	 +Gg/VqVxjatx8RpsdawUVC5QV+9nyhDMNev2pzzPN8dBvFatf8JLRJL8rDjgr9MXW7
-	 r8iAsrPjNj5r16rgrYro0fzJ0S5yTPmBxVDyUMm0rJX8BmURgwYYkIOPbd2S1nsL5Y
-	 IBrtne9hKKVOza3peoe7m7YiBFSzAJKmzTFfoQOkIxYV34H+xWN7hgvs3XQBiTF4xW
-	 IxU08ji+zcVA+eIZsDtqJd8Qyy/q9y/D/mVpgJGckG2vJZfWR1P7xDfesds0yOYyDF
-	 Xsrj1qG4CyMeQ==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH] can: sja1000: drop RX frame when skb allocation fails
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Yun Lu" <luyun_611@163.com>
-Cc: "Vincent Mailhol" <mailhol@kernel.org>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org
-In-Reply-To: <20260903095444.495807-1-luyun_611@163.com>
-References: <20260903095444.495807-1-luyun_611@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 03 Sep 2026 10:04:48 +0000
-Message-Id: <20260903100449.0D7E41F000E9@smtp.kernel.org>
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="HhGvRRmu";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="cA+JpdCA"
+ARC-Seal: i=1; a=rsa-sha256; t=1788430151; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=ODk/QYCQt2YUy7HihRFPOSXMl7mFu7yVFcWOPo0wgsvbr5OjMOXsGRfRIKfOVxiLa7
+    DJeE0BFKJCcGuoU9V1r8vYfaJEaa2hIK5zDGUaZNRgSBIIuzzPKeQXSCA7VZxJZq1vZY
+    CucogDLaDK4S1KjXLFLvnM4y5a8qx1W/23fDkYlKeEYG06Q7nAK11QpxCxlZvIruDtGo
+    UHyhLiaj3s74nCmN8A7Rr7QlRix5IpO2wSbt5MFKUMD+/G5U1VqcnHcbT3Zv0qnzhne6
+    m2c+9wu+eekSKGC5JAaNyWAODP5l3jaOQ1mz0ILbCuPIT4LicnsaHuCnRVqTa1rWqi1u
+    BFCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1788430151;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=lhRWoZDMoaf8nnUg/Y8/ei90nF7avPayq8dOMIGkEC8=;
+    b=dFPGbHn2ifNFPNM1NEr6H8zzTBKTRZJ4ukm1AmnEXyO2wS1RagT8mX/x/v2B7OP4Ut
+    dD0Ta2xu2VPknJDBRhqODWsOm5A0JDuskyK6Ny/BinxvyrtkEaCr6G/CtyCzm4eN1M5F
+    auPqL3g1uRQe5iMVFv+bPVwOYSPfqKY3xjMbaIpKQMiu5wA+aIwoUfHKGxtK0MyP3Oen
+    WaXMbzhPSdx02LHaGxTafpAsSfZUedJXDB+jBSPadtUIMYjwoY8Sxh3L4LQYNM2SwgWK
+    mgTfWOS18iOPNiqyL1kBiqsosVwNcX0zNm2HBak73aC+KWVJiBYWt4YMEi5/2FFyVIvX
+    Rvpw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1788430151;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=lhRWoZDMoaf8nnUg/Y8/ei90nF7avPayq8dOMIGkEC8=;
+    b=HhGvRRmuTxd1f/K3prQwQQfBdkqMz/vvoomfdzNbICSMU21b/tyVxQAIIefw7AwzRa
+    XnkkqcVHVsTFZAC/WcDaqNyGNDmW7RXaxVDWQmtLS12n//5LciJV6C+bJPLTFrtoCR2E
+    UNBlfIHVALpD7yJqIAiRtAFDxvQk4vZNlnkHuaKwwYtvqVfRKEMUF529V6VXskk6x4jc
+    4vJ0P8ptxvURpXFSWTsHdHk36hlNd5WVH5mQF9kfZrlBs6zGZvOtnpgARG+wSyrIy4fl
+    nDj4Z8817kie+abvNoAuYK5NbE+FNe9l5zCH6GGIbEdix4UfmTQCO9SDIkAvsmQRU4c+
+    s/hg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1788430151;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=lhRWoZDMoaf8nnUg/Y8/ei90nF7avPayq8dOMIGkEC8=;
+    b=cA+JpdCALIJ2uL9CXetKN5yq8V2kynfoQEVPxkpR4kCraOJbtAtYj5puqRWVwniDnT
+    99l24GaSaGS15Puk1VAg==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::989]
+    by smtp.strato.de (RZmta 55.6.2 AUTH)
+    with ESMTPSA id K171b7283A9BVZX
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Thu, 3 Sep 2026 12:09:11 +0200 (CEST)
+Message-ID: <6ca3c6f6-91c4-4f0b-9136-9345dbaac1e0@hartkopp.net>
+Date: Thu, 3 Sep 2026 12:09:06 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] can: isotp: implement N_Ar timeout handling for FC
+ transmission
+To: yewentian395 <yewentian395@gmail.com>,
+ Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <eb5e9618-3dbf-42cb-a635-752ff9fbcb99@hartkopp.net>
+ <20260903093809.1894919-1-yewentian395@gmail.com>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <20260903093809.1894919-1-yewentian395@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
+Hi Wentian,
 
-Pre-existing issues:
-- [High] In sja1000_err(), an SKB allocation failure returns -ENOMEM, disca=
-rding IRQ_WAKE_THREAD requests and causing the interrupt handler to erroneo=
-usly return IRQ_NONE.
---
+On 03.09.26 11:38, yewentian395 wrote:
 
-commit 6507d559134b8295113fac43d6ce819e79885772
-Author: Yun Lu <luyun@kylinos.cn>
+> Just a gentle ping on the frame_txtime addition to rxtimer you
+> mentioned. Happy to help with a patch if that saves you time.
 
-can: sja1000: drop RX frame when skb allocation fails
+This is my current patch which is sitting on my dev machine:
 
-This patch prevents a lockup in sja1000_rx() by dropping the frame and
-releasing the receive buffer if SKB allocation fails.
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index 130a0dbec78c..5119afc2f67d 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -125,10 +125,11 @@ MODULE_PARM_DESC(max_pdu_size, "maximum isotp pdu 
+size (default "
+  #define ISOTP_FC_WT 1		/* wait */
+  #define ISOTP_FC_OVFLW 2	/* overflow */
 
-> diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/=
-sja1000.c
-> index 3cdb583ee3e50..da107feb22af7 100644
-> --- a/drivers/net/can/sja1000/sja1000.c
-> +++ b/drivers/net/can/sja1000/sja1000.c
-> @@ -348,8 +348,12 @@ static void sja1000_rx(struct net_device *dev)
-> =20
->  	/* create zero'ed CAN frame buffer */
->  	skb =3D alloc_can_skb(dev, &cf);
-> -	if (skb =3D=3D NULL)
-> +	if (!skb) {
-> +		/* drop the frame to guarantee forward progress of the ISR */
-> +		sja1000_write_cmdreg(priv, CMD_RRB);
-> +		stats->rx_dropped++;
->  		return;
-> +	}
-> =20
->  	fi =3D priv->read_reg(priv, SJA1000_FI);
+  #define ISOTP_FC_TIMEOUT 1	/* 1 sec */
+  #define ISOTP_ECHO_TIMEOUT 2	/* 2 secs */
++#define ISOTP_MAX_FRAME_TXTIME_NS (100 * NSEC_PER_MSEC) /* max N_Ar/N_As */
 
-[Severity: High]
-This is a pre-existing issue, but while looking at SKB allocation failures
-in the interrupt handler, does a similar allocation failure in
-sja1000_err() lead to the IRQ line being permanently disabled?
+  /* so->tx_result[so->tx_gen % ISOTP_TX_RESULT_SLOTS] holds the packed 
+value
+   * (err << ISOTP_TX_RESULT_GEN_BITS | gen) for each tx generation 
+slot, so it
+   * can be handled with a single READ_ONCE()/WRITE_ONCE() access.
+   */
+@@ -346,11 +347,12 @@ static int isotp_send_fc(struct sock *sk, int ae, 
+u8 flowstatus)
 
-Under memory pressure, if the SKB allocation fails in sja1000_err():
+  	/* reset last CF frame rx timestamp for rx stmin enforcement */
+  	so->lastrxcf_tstamp = ktime_set(0, 0);
 
-drivers/net/can/sja1000/sja1000.c:sja1000_err() {
-    ...
-	if (!skb)
-		return -ENOMEM;
+  	/* start rx timeout watchdog */
+-	hrtimer_start(&so->rxtimer, ktime_set(ISOTP_FC_TIMEOUT, 0),
++	hrtimer_start(&so->rxtimer,
++		      ktime_set(ISOTP_FC_TIMEOUT, so->frame_txtime),
+  		      HRTIMER_MODE_REL_SOFT);
+  	return 0;
+  }
 
-	netif_rx(skb);
+  static void isotp_rcv_skb(struct sk_buff *skb, struct sock *sk)
+@@ -1304,11 +1306,11 @@ static int isotp_sendmsg(struct socket *sock, 
+struct msghdr *msg, size_t size)
+  		wake_up_interruptible(&so->wait);
+  		return -EADDRNOTAVAIL;
+  	}
+  	/* WAIT_FIRST_FC for standard FF, else stays ISOTP_SENDING */
+  	WRITE_ONCE(so->tx.state, new_state);
+-	hrtimer_start(tx_hrt, ktime_set(hrtimer_sec, 0),
++	hrtimer_start(tx_hrt, ktime_set(hrtimer_sec, so->frame_txtime),
+  		      HRTIMER_MODE_REL_SOFT);
+  	spin_unlock_bh(&so->rx_lock);
 
-	return ret;
-}
+  	/* send the first or only CAN frame */
+  	cf->flags = so->ll.tx_flags;
+@@ -1711,10 +1713,12 @@ static int isotp_setsockopt_locked(struct socket 
+*sock, int level, int optname,
 
-This unconditionally returns -ENOMEM, which discards any IRQ_WAKE_THREAD
-requests needed for overrun recovery like SJA1000_QUIRK_RESET_ON_OVERRUN.
+  		/* check for frame_txtime changes (0 => no changes) */
+  		if (so->opt.frame_txtime) {
+  			if (so->opt.frame_txtime == CAN_ISOTP_FRAME_TXTIME_ZERO)
+  				so->frame_txtime = 0;
++			else if (so->opt.frame_txtime > ISOTP_MAX_FRAME_TXTIME_NS)
++				return -EINVAL;
+  			else
+  				so->frame_txtime = so->opt.frame_txtime;
+  		}
+  		break;
 
-This error propagates to sja1000_interrupt(), causing the loop to break
-before incrementing n:
 
-drivers/net/can/sja1000/sja1000.c:sja1000_interrupt() {
-    ...
-			err =3D sja1000_err(dev, isrc, status);
-			if (err =3D=3D IRQ_WAKE_THREAD)
-				ret =3D err;
-			if (err)
-				break;
-		}
-		n++;
-    ...
-}
+But this patch will be part of a big chunk of patches to introduce the 
+CAN XL support for ISO 15765-2 Ed.5 here:
 
-If this happens on the first loop iteration where n is 0, the handler
-returns IRQ_NONE despite having successfully acknowledged the interrupt in
-hardware:
+https://github.com/hartkopp/canxl-isotp
 
-drivers/net/can/sja1000/sja1000.c:sja1000_interrupt() {
-    ...
-out:
-	if (!ret)
-		ret =3D (n) ? IRQ_HANDLED : IRQ_NONE;
-    ...
-}
+And the latest patch set is here:
+https://github.com/hartkopp/xl-isotp/tree/claude/can-isotp-patches-rebase-v3
 
-Could repeated IRQ_NONE returns under sustained memory pressure cause the
-core IRQ subsystem to permanently disable the device's IRQ line?
+There are currently stable fixes on the fly that always have impacts on 
+the isotp code. An it is really annoying to rebase and rebase and 
+rebase. Especially the code split(!) into different .c and .h files 
+always has to be checked by hand. Therefore I'll wait for all the 
+current stable patches to be landed in mainline and stable and then add 
+this patch here to the series of cleanup and enhancement patches.
 
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260903095444.4958=
-07-1-luyun_611@163.com?part=3D1
+Best regards,
+Oliver
+
