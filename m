@@ -1,165 +1,138 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C6C742A792;
-	Thu,  3 Sep 2026 08:21:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8DFB3164C5
+	for <linux-can@vger.kernel.org>; Thu,  3 Sep 2026 08:29:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788423688; cv=none; b=FeaszroxvMBCEm9dGhKpirb+dBc94ylZXoy/dWsiddfjsI9OT5iIwzaWfUwZfyeDhvvtGNOGK9w+0p2OZIlDtVyXqEqbjEnM64/8yDE9g7/lND5TjJKFw/CRbE46Kq51dJcpRTVrLr0HpByeeXGgQm1Y2b6B79xlKCtTExbD7V0=
+	t=1788424145; cv=none; b=soLED3DJxFbJ/rYruXu9dNeT/C54zTV/EJLhMldlvuTRVSl47/Ax5S9rIQb8UnFUhBOejqtDWJqzauvBoejWtLhI7IXbPepCEy1WVySqWHMcZrAlmmegyflhiZTgPCdm8t0FHyr4w8J7sgo1KTuvFacCDLze80I0stgFzuGR6Xc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788423688; c=relaxed/simple;
-	bh=kajeAGdoWkgV89zinwd1Ru8wPQWZW7H5K4eMkT6sI3g=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=LC8DaBrcyZTDQ7o8bINbAGJftV5+28RH2T6Dtl7AmZRjgGwGEDWrtN2dAR8dH8RjtyjubJbSDz4RQB/mlLiuydR20VGvFCEYvx+gKo2RLXTVbjRA2bfnqqUwuxSOxcbKBP1hwWw0Jw0O7rUpAL0jXOzZHPWVcvioi0VISp7AmS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mOKOn26p; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1788424145; c=relaxed/simple;
+	bh=j/YkXCRb+DA7nNO9q31K7pBUxD0nnB4tRARb3P9panw=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
+	 References:In-Reply-To; b=l9NYxxWs3Yc4YXjiL45WGPACNnb/pOdVtpRCDjUgSaS+Nn56iwPGoscVeuxcxJwxJR4yTephZDnukdpCiVQpuCEkCRqgRNOD5W/9DANppjVeEwlvvGRyp5k1I5tL2v4haaeRVi35GHP5uO0ef5j4TNsBZ1ehZF9V2lKM31T9q40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=mRFGQaQd; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mOKOn26p"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A777C1F000E9;
-	Thu,  3 Sep 2026 08:21:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788423683;
-	bh=GDoTGdygZN9md3euE+c9LSWt2cQjxDq0+S+S2g4wB6A=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=mOKOn26pMRRAOuFyMAX547S0Ddak8/F7AbzM2BN28luHcQLfYvuzZrpy8jDMv2IgH
-	 HQu7vvJsXBi0xFCKtd6EFRZb+NTAc/JTZ1ql0s+a3ukwIkbINgcnlDIUT6k/zdlzIf
-	 CGKweq82eD8leyvFQPqCUreICD3YhnxPFAkumuDrItSLO0vnpN1EiNDXBD/n8e5FI2
-	 vTjCzmpR0MVNsvKaS3EbgPad9v/gJXsdsSf1NqBeb4o67mru7s96yQoYJjuzGVvd7H
-	 SF0sr6cTKXZIKrsGr3OLAC1/xYd92tG1uAnyRUm58iZTNa5cgvWYI0nQUrHyDte07T
-	 wMytlvt0aAu5A==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH V4 4/4] arm64: dts: freescale: Add chargebyte Charge
- Control Y
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Stefan Wahren" <wahrenst@gmx.net>
-Cc: robh@kernel.org, devicetree@vger.kernel.org, imx@lists.linux.dev, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, neil.armstrong@linaro.org, conor+dt@kernel.org, linux-can@vger.kernel.org, Frank.Li@kernel.org, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, olteanv@gmail.com, linux-phy@lists.infradead.org, vkoul@kernel.org
-In-Reply-To: <20260903080427.6103-5-wahrenst@gmx.net>
-References: <20260903080427.6103-1-wahrenst@gmx.net>
- <20260903080427.6103-5-wahrenst@gmx.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 03 Sep 2026 08:21:22 +0000
-Message-Id: <20260903082122.A777C1F000E9@smtp.kernel.org>
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="mRFGQaQd"
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-47de0093c42so2101671f8f.3
+        for <linux-can@vger.kernel.org>; Thu, 03 Sep 2026 01:29:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre.com; s=google; t=1788424141; x=1789028941; darn=vger.kernel.org;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :content-type:mime-version:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=G4vKdHGO8+zOlAPBdoXMqgNoiUhAKGdphTDuXcL4XSA=;
+        b=mRFGQaQde7qdWnv+c98cI5KLyy/7vLcC8qeD9geIQc+8meImGBg7E2P6M+RiM5FP8Y
+         znQoySRkWarZkGMDGV93PPL6m4iXWuy74nkscUMmRYaaTpY35QUwXa2vm+ovvm1fCnU3
+         k+0mLyNheymZn6BYr7bg1qZwpX5vFSy815omfyPycxGMyrhQ91pcVFIocR9NWZQdLE/a
+         1+zbTYsgEl6M60qQeXjBhd7eo8fQQmA2D5cOaBPEhAVFg1t1Pxov+pcwCChLqMLPkaA1
+         3LRKwntbu4qUyV5VOZeL1Tbh45EgGZN2d9zLp5qAeVbV8OfCZDy0w04WP9ktkTpc2wQZ
+         ohWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1788424141; x=1789028941;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :content-type:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=G4vKdHGO8+zOlAPBdoXMqgNoiUhAKGdphTDuXcL4XSA=;
+        b=g6gA41CN9vjolNzCvFJOSDy4bZEMyPaCxL6wI75cb4KlnEETuw81WG4BAjZQH1D1SN
+         WOhSTJFZ/uWtpS78kCRmPHNURtghbV6hJ9OeYZIdqpa3JcoOzmguwSi3LE8KVXddG3v5
+         v6B0QscVv7BAJwcP+UKO59aJSPsWfIFX+fa8T166R3VA8RUfV8pEQiSnMvniLCIvzij2
+         1ebF48bxb8XmKwTvGjC95kjUDBO6r9LLjskuYOaHLerBT7goJ603EFVXm0qZJp9DGU4A
+         Gi2fRV1oJsJ3L2AYpvCeiWeEUCOo0T0MRTUorN+lqB9y+LOtPRVcbD68fqfqd92EUnpt
+         9jvg==
+X-Forwarded-Encrypted: i=1; AKwUvBzWUP8OsvsBWjfQVBAIootncRHUmhEvV1Vv0Xu6lxPDvSYS0eprdjvYdPl37k8S2rBYFdZBPdquAOA=@vger.kernel.org
+X-Gm-Message-State: AFuF++ltD+qPewrjc917SPnmBu/0K5ZD3QhKixB2aXyppTFSzta3vFpn
+	9Aq7s+c9ev1jBoi1R4iViX4Ph5JPC7RAjMLA7+oO2aUMSflArQtE0kR8OHIZkvyyFco=
+X-Gm-Gg: AYBFou3HY+UzFDni/rheKuoUB71v3JnwVNXAwekvSFhAvJ5uQPamx8saUSXPFKm+248
+	vOL8WZDKTZyufaTxW0ssCP6Wn+T61Kj5N8DfDmDtzKzzG2oyUlI39ovY6gdNBh4tcxgVPqzRD6z
+	ysBj1KN+fVV1EqFzVW69wNjFsupDWkKeubrmBaJF3GGHmcTfxYa1d6xsvxhrmIzeKn8FxuavJO2
+	gT6FSpUQ7jvlfO9iaEF90deavYx45ZQqYIZWcHYXfaLfnZyCXmg9hKpD+QDx3fgZGKtRjOrXolr
+	KwCQepqhTpK4U0z34gBS1Uw5NWfTH7qaxyk0vl69z/WdrqqF7MYy8d7oE2CTnGgxdJyyNSzHF5g
+	DgAHpk8RZbGUkgOeZSrwyERB5AU6BzIQU9eUkD1AVA1I88ROvQ4EWdsZj9OPN5VKXEMYn2KwFDB
+	6Dvzbpm6ydS1rnpO4c8P2q2eco9FUmoNUafmMIB5e5SnpbzlmLc9tVE28h
+X-Received: by 2002:a05:6000:186e:b0:47f:8b24:ef01 with SMTP id ffacd0b85a97d-48488deedd2mr18283862f8f.1.1788424140416;
+        Thu, 03 Sep 2026 01:29:00 -0700 (PDT)
+Received: from localhost ([2001:4090:a244:80d4:489b:7642:1b32:84d6])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48448eea5b4sm12497978f8f.27.2026.09.03.01.28.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2026 01:28:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: multipart/signed;
+ boundary=a15e01d85f8a611c40ff4ae9385bc153f1f9fa83a0571b2a8a2491377b30;
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+Date: Thu, 03 Sep 2026 10:28:51 +0200
+Message-Id: <DL5JFZPXGYZF.2JXFWOJHEMWAF@baylibre.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: can: m_can: add ti,am62-m_can
+ compatible
+From: "Markus Schneider-Pargmann" <msp@baylibre.com>
+To: "Kendall Willis" <k-willis@ti.com>, "Markus Schneider-Pargmann"
+ <msp@baylibre.com>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Rob Herring" <robh@kernel.org>, "Krzysztof
+ Kozlowski" <krzk+dt@kernel.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Chandrasekar Ramakrishnan" <rcsekar@samsung.com>
+Cc: <s-kochidanadu@ti.com>, <a-kaur@ti.com>, <s-tripathi1@ti.com>,
+ <vishalm@ti.com>, <linux-can@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+X-Mailer: aerc 0.21.0-146-gb5c16ebe1835
+References: <20260902-temp-v4-0-3896f7d16ce8@ti.com>
+ <20260902-temp-v4-1-3896f7d16ce8@ti.com>
+In-Reply-To: <20260902-temp-v4-1-3896f7d16ce8@ti.com>
 
-Thank you for your contribution! Sashiko AI review found 3 potential issue(=
-s) to consider:
-- [Medium] Mismatched drive strengths on USDHC2 data lines within the same =
-interface speed mode.
-- [Medium] The reset GPIO polarity for the Ethernet PHY (DP83825) is config=
-ured as active-high, but the PHY natively requires an active-low reset.
-- [Low] Incorrect node name used in `/delete-node/` for heartbeat LED pinct=
-rl.
---
+--a15e01d85f8a611c40ff4ae9385bc153f1f9fa83a0571b2a8a2491377b30
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-commit 228da9fe4e969182ceef8105169e14b5de5949a5
-Author: Stefan Wahren <wahrenst@gmx.net>
+Hi Kendall,
 
-arm64: dts: freescale: Add chargebyte Charge Control Y
+On Wed Sep 2, 2026 at 11:03 PM CEST, Kendall Willis wrote:
+> Add "ti,am62-m_can" to the list of compatible strings for the M_CAN
+> controller binding. This compatible identifies TI AM62 SoCs which
+> support out-of-band wakeup capability.
+>
+> Signed-off-by: Kendall Willis <k-willis@ti.com>
+> ---
+>  Documentation/devicetree/bindings/net/can/bosch,m_can.yaml | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b=
+/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+> index 2c9d37975bedd652b3060ab11ba75c37565edaad..89e5a44453372c57506e9cf3a=
+009b55a70cc4446 100644
+> --- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+> +++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+> @@ -16,7 +16,9 @@ allOf:
+> =20
+>  properties:
+>    compatible:
+> -    const: bosch,m_can
+> +    enum:
+> +      - bosch,m_can
+> +      - ti,am62-m_can
 
-This adds device tree support for the chargebyte Charge Control Y, an
-Electrical Vehicle Supply Equipment (EVSE) based on the phyCORE-i.MX 93
-SOM.
+I think you should use oneOf here to allow the use of
 
-> diff --git a/arch/arm64/boot/dts/freescale/imx93-charge-control-y.dts b/a=
-rch/arm64/boot/dts/freescale/imx93-charge-control-y.dts
-> new file mode 100644
-> index 0000000000000..ba240f528f9b9
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx93-charge-control-y.dts
-[ ... ]
-> +/* Ethernet 2 PHY */
-> +&mdio {
-> +	ethphy2: ethernet-phy@2 {
-> +		reg =3D <2>;
-> +		compatible =3D "ethernet-phy-id2000.a140";
-> +		clocks =3D <&clk IMX93_CLK_ENET_REF_PHY>;
-> +		reset-gpios =3D <&gpio4 13 GPIO_ACTIVE_HIGH>;
+  compatible =3D "ti,am62-m_can", "bosch,m_can";
 
-[Severity: Medium]
-Will this hold the Ethernet PHY in reset? The DP83825 PHY natively expects
-an active-low reset signal. By specifying GPIO_ACTIVE_HIGH here, the kernel
-will assert reset by driving the GPIO high, and normal operation will drive
-it low. This could potentially keep the PHY in reset permanently, preventing
-Ethernet link establishment, unless there is a physical hardware inverter
-between the GPIO and the PHY.
+Best
+Markus
 
-> +		reset-assert-us =3D <30>;
-> +		reset-deassert-us =3D <50000>;
-> +	};
-> +};
-[ ... ]
-> +&iomuxc {
-> +
-> +	// Heartbeat LED of phyCore is not populated
-> +	/delete-node/ pinctrl_leds;
+--a15e01d85f8a611c40ff4ae9385bc153f1f9fa83a0571b2a8a2491377b30
+Content-Type: application/pgp-signature; name="signature.asc"
 
-[Severity: Low]
-Will the device tree compiler process this delete-node directive correctly?
-In imx93-phycore-som.dtsi, the node is defined with the name ledsgrp and
-the label pinctrl_leds.
+-----BEGIN PGP SIGNATURE-----
 
-The delete-node syntax expects the exact node name, like:
-	/delete-node/ ledsgrp;
+iKMEABYKAEsWIQSJYVVm/x+5xmOiprOFwVZpkBVKUwUCapkvwxsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMiwyLDIRHG1zcEBiYXlsaWJyZS5jb20ACgkQhcFWaZAVSlMr
+dwD+KU6CuPk9zJ8NzOMyi92mXbApr4jbJz7igogpPtqaSJMBAOSyx5B9ln3sgQco
+EmRUOaRu3BgZAwDtaQM5wfBkUNEF
+=6Jsh
+-----END PGP SIGNATURE-----
 
-Or alternatively, using the phandle label at the root level:
-/delete-node/ &pinctrl_leds;
-
-Using just the label name inside &iomuxc might result in a "Node not found"
-compiler error or a silent failure that leaves unused pinmux data in the
-binary.
-
-> +
-> +	pinctrl_eqos: eqosgrp {
-[ ... ]
-> +	/* need to config the SION for data and cmd pad, refer to ERR052021 */
-> +	pinctrl_usdhc2_default: usdhc2grp {
-> +		fsl,pins =3D <
-> +			MX93_PAD_SD2_CLK__USDHC2_CLK		0x119e
-> +			MX93_PAD_SD2_CMD__USDHC2_CMD		0x4000139e
-> +			MX93_PAD_SD2_DATA0__USDHC2_DATA0	0x4000138e
-> +			MX93_PAD_SD2_DATA1__USDHC2_DATA1	0x4000138e
-> +			MX93_PAD_SD2_DATA2__USDHC2_DATA2	0x4000138e
-> +			MX93_PAD_SD2_DATA3__USDHC2_DATA3	0x4000139e
-
-[Severity: Medium]
-Are these drive strength settings intended to be different across the data
-lines?
-
-In this default mode configuration, DATA0-2 use 0x4000138e (DSE bit 4 =3D 0=
-),
-while DATA3 uses 0x4000139e (DSE bit 4 =3D 1). Mismatched drive strengths on
-the same SDIO bus can introduce signal skew and degrade signal integrity.
-
-> +			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT	0x51e
-> +		>;
-> +	};
-> +
-> +	/* need to config the SION for data and cmd pad, refer to ERR052021 */
-> +	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
-> +		fsl,pins =3D <
-> +			MX93_PAD_SD2_CLK__USDHC2_CLK		0x119e
-> +			MX93_PAD_SD2_CMD__USDHC2_CMD		0x4000139e
-> +			MX93_PAD_SD2_DATA0__USDHC2_DATA0	0x4000138e
-> +			MX93_PAD_SD2_DATA1__USDHC2_DATA1	0x4000138e
-> +			MX93_PAD_SD2_DATA2__USDHC2_DATA2	0x4000139e
-> +			MX93_PAD_SD2_DATA3__USDHC2_DATA3	0x4000139e
-
-[Severity: Medium]
-Similarly, in the 100mhz configuration, DATA0-1 are set to 0x4000138e and
-DATA2-3 are set to 0x4000139e. Could this mismatch cause high-frequency
-enumeration or data corruption issues on the SD bus?
-
-> +			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT	0x51e
-> +		>;
-> +	};
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260903080427.6103=
--1-wahrenst@gmx.net?part=3D4
+--a15e01d85f8a611c40ff4ae9385bc153f1f9fa83a0571b2a8a2491377b30--
