@@ -1,454 +1,194 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.162])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 094403F58E9;
-	Thu,  3 Sep 2026 06:59:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.162
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788418802; cv=pass; b=huGZDAV2iAucfIfCbQ3rxcfh8ZJcRqoM4V8c+uiciO0MTxe29fY3IW5gofHAI6w5EGr5Q6EcKndYWQyS/pGPcFTTyQrqMzN56+yS6lmQXx0Y2kpkYevseI0jucKYXg8t9AdogyNqkCiSMSGExLtFyAzQygEtcYo9kPIB6xddIhw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788418802; c=relaxed/simple;
-	bh=YYhB1EVFejnTViDwsZG8ATkWxoBBd8IR+Kc17mBJSFI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MJs1PEqX7pBdgM2WjdQ0TL7cV6EDr2K0M0V0oHRJRy/gsbNjCqnA6nPpPqZLHanh/t6T0547O4u9uypZCpG6722SZN+9lyfbAH49vJzBY1+NTFSPvDNi3iXaE4QXRLfZxTlYkMqLaR4OdAYgiBxn954HuX058LYS/W6Gek8/hwM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=EVr/J2Oa; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=2kiTmomQ; arc=pass smtp.client-ip=81.169.146.162
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75F2E3A5E65;
+	Thu,  3 Sep 2026 08:04:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1788422679; cv=none; b=HtTluQJqaT4oIQopcCR8A70kKuJPgBfILp+huEuWWYRGaQKBKJ1nLEby7qdokyitTMfHi+zXBced+yUlVMgzHlI8wRwzNEK195qAYNhXYUdg3HnXLzuez1eXJEPmc9CdNCf2i6+sKTMWc7PsYKeX8iQ8bDn+uYovyqalZomgFX4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1788422679; c=relaxed/simple;
+	bh=YoXuY+0EibLgk1NnSC+F/fGnf4dfQgmWLjwckWrmdUE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=SiPPjORBwm7XiWcUQrMy1PqwBwww9ngwYEbkU0e5eVVIHoeFN4F5JPcaaVeBm6f9G/AIXXpwKEybbr5FwVFMRGCszLL5T7GpUucyEYkTOpHd8jlNhclLmFAfikaY9+gbLTTblmqcTZNb2lJPrvdpEo8jY+gs64+WQS0edzy0ssc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=kiRLlGm7; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="EVr/J2Oa";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="2kiTmomQ"
-ARC-Seal: i=1; a=rsa-sha256; t=1788418795; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=kCGovMgVLEdOAbGJ58DusoTVvoD0wOUOtdV6SUJ4ljwzu7Kgsi4Pk/04p3IWoTwMwT
-    wnFMthOyqNYuFd5vvPLVFqBe3ZseZR+KTu+ZOkELDeQ7LOQl3qldlubjqXKeN8chnNmF
-    rXPGtkk2i9KuDM+93x1IGd0aiZbVoQjHbZZSPuM5vz6mylYl+YGuwh55W0R7T1g9B1nW
-    PwVcqWhXC3FxcKqKvuEig00OhsNAjqEqv8aCG9LNWeqE5LAO0i9a2a2L4s1TbmUbQldJ
-    KVnJwFab1v21ug0/MI0SQY7YLXDA+FHBQz2ciIhtLPwADiYoaGKdWpWJqyUqS5ygMTaY
-    TWww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1788418795;
-    s=strato-dkim-0002; d=strato.com;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=mZDlckBCDzMVfgDat9vuz7w1rkXowJ1nHD1g0y/WteE=;
-    b=darf2V0Umobvif9hClnO4WZjsipOSwYULHQSAN7XJ3+pQPXXCSep35M9yC1f6Jj2kA
-    bHP9zFt0sD5F2IPmWwpUvJID5V3WodJRlEtds0oOLIKVxFiJSKhQSNUE2oyopMhlwIuD
-    ZXNX97ZJQMb1WPhzUwwrZg3/fL1GDf8kORXpAE7zZpMEhQNrI5dvWjrmJFtGOursrjov
-    MWAIxM7KUAWRer9Q/zhVVl/xgPlyBI+838sSyZ7yGFq17sV5bOrQCVdC7/P8heh2Zc22
-    /FfKYXrnNGZCQji/CLiqHjryok/YyXIIl/eUXR4YsZIeBGFERyf3mQ4lQ/hbkoMKjOhQ
-    oVtA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1788418795;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=mZDlckBCDzMVfgDat9vuz7w1rkXowJ1nHD1g0y/WteE=;
-    b=EVr/J2OaC+qs9096IZpZ01YnyD5KEO3yot9XJJson2Jp6z4VIhPqzyaJeqfsEnhKJA
-    woEo7zHLR/TeGBD8ZMJfyH1WkCzekH5EQ/6W+oD9wjoCTMWmq2lxSCwOTEgQs6gCBiQy
-    y1/kAcZ+3vLR2mOvCN/KrSVquPESIR21qtlRRVVVMI1/qGkozS3sB3J0a63XXyjbvUSv
-    +T2RXRPGFuuBNMyJaU70/0jel0sctPzaqdz/ThEfbMLIgyMdq/DToVm1tRruEtnGOLX2
-    Npl34rXZ1zwnFvskLWKILE9gE39rSTQgokFRWka6s7vSLC4oVy4FREBdzCHQwpVRkXVf
-    0MMQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1788418795;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=mZDlckBCDzMVfgDat9vuz7w1rkXowJ1nHD1g0y/WteE=;
-    b=2kiTmomQFvqmsAOPDy83evmMCI4BLYCiHEPaXsdu6fBKrQuWSs4SABvl8usXYNRm3S
-    tP9c6U2T/tc+Hh/qSHCw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from vivo.lan
-    by smtp.strato.de (RZmta 55.6.2 AUTH)
-    with ESMTPSA id K171b72836xtAIn
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Thu, 3 Sep 2026 08:59:55 +0200 (CEST)
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
-	Norbert Szetei <norbert@doyensec.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v2] can: remove CAN filters independent from namespace
-Date: Thu,  3 Sep 2026 08:59:47 +0200
-Message-ID: <20260903065947.7718-1-socketcan@hartkopp.net>
-X-Mailer: git-send-email 2.53.0
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="kiRLlGm7"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
+	s=s31663417; t=1788422673; x=1789027473; i=wahrenst@gmx.net;
+	bh=d0+IN+3vWEwMwURYP0YJG7RoE/FnY0FFKtN3xNNLels=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:In-Reply-To:
+	 References:MIME-Version:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=kiRLlGm7O3dK6DRb202MUKOgQcymrBEqnn6ggY2XYhwIn0BCqV2+I92DYJU1b6TM
+	 J5s7nAjXmxQ3XZZ+y//eJC17Y64x9b/WGT7Jng9Plmt5u/T7IQK6qzvHAIyC1rBWz
+	 vpQuxAw9vMfJtNRJhgm9wPGGTAsQYKYv3wrtVgphJaFa4kug/UKVjjB14IdfXFxxg
+	 JVeTCQhNx+VCRA95Drvqj8HXL4+9OW6jLYuXmI9sAW5MBAGo3/nFy+0+k9jUmEMAn
+	 IW5KADZPHQgbkuAWHx2Tcm7Xh4zTRz3lXUAR1mvDpCt7Kob3fTwRfSIXjfhaIxuPW
+	 zCSUFdVxhnsO+iR1FQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from client.hidden.invalid by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MLzFr-1xJQrQ02Tp-00ImUk; Thu, 03
+ Sep 2026 10:04:33 +0200
+From: Stefan Wahren <wahrenst@gmx.net>
+To: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Frank Li <Frank.Li@nxp.com>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Aswath Govindraju <a-govindraju@ti.com>
+Cc: Christoph Stoidner <c.stoidner@phytec.de>,
+	linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-can@vger.kernel.org,
+	linux-phy@lists.infradead.org,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	Stefan Wahren <wahrenst@gmx.net>,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH V4 3/4] dt-bindings: phy: ti,tcan104x-can: Document Microchip MCP2542
+Date: Thu,  3 Sep 2026 10:04:26 +0200
+Message-ID: <20260903080427.6103-4-wahrenst@gmx.net>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260903080427.6103-1-wahrenst@gmx.net>
+References: <20260903080427.6103-1-wahrenst@gmx.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:YWB/GHsvgz3l8U3i+QrIrysss1B/0Mk8RWuwEMb4fLrSulAdPwr
+ Y6we37Ur5KYiyQF7YQGp+gqXz9N+uZcieXIvB0CNB45c+KatQTIavpbjZy6tXCOwhug4qvW
+ VpKsjeHliEYoDJlbNjyFkhy3E1uNo5ogWzpAK/R3XpDqaln7SxWDvjupcSGREdp8mzjKcA2
+ ZXp3TEK8xtRDooOmUS0Jw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:cb/PL8l8jpY=;/cAfKBifXgfdv74zKad2hUZEHHL
+ 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
 
-When the devices namespace is changed the socket namespace and the device
-namespace might differ. The net_eq(dev_net(dev), sock_net(sk)) check in
-the CAN protocols netdev notifiers therefore led to skipping the required
-removal of the CAN filters from the (namespace changed) CAN devices.
+The Microchip MCP2542 High-speed CAN transceiver with Sleep mode is a
+pin-compatible alternative for the TI TCAN1042.
 
-This patch removes the namespace equality check in the netdev notifiers for
-BCM, ISOTP and RAW sockets. Since the struct net_device pointer is globally
-unique, the notifier should always process the unregister event and remove
-the CAN filters if it matches the original socket's bound device pointer.
+Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+=2D--
+ Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-In bcm.c netdevice comparisons were performed by checking the interface
-index (bo->ifindex and op->ifindex) which is not namespace-safe either.
-Introduce tracked netdevice pointers (bo->dev and op->tx_dev) for these
-referenced devices to enable namespace-save device comparisons.
-Additional put all bo->dev accesses in bcm_notify() under lock_sock().
-
-In isotp.c the two missing can_rx_unregister() calling sites are converted
-to use dev_net(dev) instead of sock_net(sk) to get the correct namespace.
-
-Fixes: 8e8cda6d737d ("can: initial support for network namespaces")
-Reported-by: Norbert Szetei <norbert@doyensec.com>
-Link: https://lore.kernel.org/linux-can/CEA6A38A-2646-4ADA-95B4-CBAE2F301A8E@doyensec.com/
-Cc: stable@vger.kernel.org
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
-changes in v2:
-- re-introduce the net_eq() check for ANYDEV case handling of op->ifdetected
-- drop bo->dev reference tracking when procfs initialization fails
-- add error handling for dev_get_by_index() of tx_dev in bcm_tx_setup()
-- put all bo->dev accesses in bcm_notify() under lock_sock()
----
- net/can/bcm.c   | 100 ++++++++++++++++++++++++++++++++++++------------
- net/can/isotp.c |   7 +---
- net/can/raw.c   |   3 --
- 3 files changed, 78 insertions(+), 32 deletions(-)
-
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 3d637a1e0ac1..cd3522ec32c0 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -128,18 +128,22 @@ struct bcm_op {
- 	struct canfd_frame sframe;
- 	struct canfd_frame last_sframe;
- 	struct sock *sk;
- 	struct net_device *rx_reg_dev;
- 	netdevice_tracker rx_reg_dev_tracker;
-+	struct net_device *tx_dev;
-+	netdevice_tracker tx_dev_tracker;
- 	spinlock_t bcm_tx_lock; /* protect tx data and timer updates */
- 	spinlock_t bcm_rx_update_lock; /* protect filter/timer data updates */
- };
- 
- struct bcm_sock {
- 	struct sock sk;
- 	int bound;
- 	int ifindex;
-+	struct net_device *dev;
-+	netdevice_tracker dev_tracker;
- 	struct list_head notifier;
- 	struct list_head rx_ops;
- 	struct list_head tx_ops;
- 	unsigned long dropped_usr_msgs;
- 	struct proc_dir_entry *bcm_proc_read;
-@@ -933,10 +937,13 @@ static void bcm_free_op_work(struct work_struct *work)
- 		kfree(op->frames);
- 
- 	if ((op->last_frames) && (op->last_frames != &op->last_sframe))
- 		kfree(op->last_frames);
- 
-+	if (op->tx_dev)
-+		netdev_put(op->tx_dev, &op->tx_dev_tracker);
-+
- 	/* the last possible access to op->timer/op->thrtimer has now
- 	 * happened above via hrtimer_cancel() - op->sk is no longer
- 	 * needed by any pending timer callback, so drop our reference
- 	 */
- 	sock_put(op->sk);
-@@ -1072,10 +1079,11 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 			int ifindex, struct sock *sk)
- {
- 	struct bcm_sock *bo = bcm_sk(sk);
- 	struct bcm_op *op;
- 	struct canfd_frame *cf;
-+	struct net_device *tx_dev;
- 	bool add_op_to_list = false;
- 	unsigned int i;
- 	int err;
- 
- 	/* we need a real device to send frames */
-@@ -1103,10 +1111,26 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 		 * therefore (complexity / locking) it is not supported.
- 		 */
- 		if (msg_head->nframes > op->nframes)
- 			return -E2BIG;
- 
-+		/* Re-resolve and re-hold the target device if a concurrent
-+		 * NETDEV_UNREGISTER already cleared it (see bcm_notify()).
-+		 * op->ifindex and sock_net(sk) is unchanged.
-+		 */
-+		if (!op->tx_dev) {
-+			tx_dev = dev_get_by_index(sock_net(sk), ifindex);
-+			if (tx_dev) {
-+				op->tx_dev = tx_dev;
-+				netdev_hold(tx_dev, &op->tx_dev_tracker,
-+					    GFP_KERNEL);
-+				dev_put(tx_dev);
-+			} else {
-+				return -ENODEV;
-+			}
-+		}
-+
- 		/* get new CAN frames content into a staging buffer before
- 		 * locking: validate and normalize the frames there so that
- 		 * bcm_can_tx() / bcm_tx_timeout_handler() never observe a
- 		 * partially updated or unvalidated frame in op->frames
- 		 */
-@@ -1169,10 +1193,22 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 
- 		op = kzalloc(OPSIZ, GFP_KERNEL);
- 		if (!op)
- 			return -ENOMEM;
- 
-+		tx_dev = dev_get_by_index(sock_net(sk), ifindex);
-+		if (tx_dev) {
-+			op->tx_dev = tx_dev;
-+			netdev_hold(tx_dev, &op->tx_dev_tracker, GFP_KERNEL);
-+			dev_put(tx_dev);
-+		} else {
-+			/* prepare op->frames for goto free_op */
-+			op->frames = &op->sframe;
-+			err = -ENODEV;
-+			goto free_op;
-+		}
-+
- 		spin_lock_init(&op->bcm_tx_lock);
- 		op->can_id = msg_head->can_id;
- 		op->cfsiz = CFSIZ(msg_head->flags);
- 		op->flags = msg_head->flags;
- 		op->nframes = msg_head->nframes;
-@@ -1184,12 +1220,14 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 		if (msg_head->nframes > 1) {
- 			op->frames = kmalloc_array(msg_head->nframes,
- 						   op->cfsiz,
- 						   GFP_KERNEL);
- 			if (!op->frames) {
--				kfree(op);
--				return -ENOMEM;
-+				/* prepare op->frames for goto free_op */
-+				op->frames = &op->sframe;
-+				err = -ENOMEM;
-+				goto free_op;
- 			}
- 		} else
- 			op->frames = &op->sframe;
- 
- 		for (i = 0; i < msg_head->nframes; i++) {
-@@ -1267,10 +1305,13 @@ static int bcm_tx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 		bcm_tx_start_timer(op);
- 
- 	return msg_head->nframes * op->cfsiz + MHSIZ;
- 
- free_op:
-+	if (op->tx_dev)
-+		netdev_put(op->tx_dev, &op->tx_dev_tracker);
-+
- 	if (op->frames != &op->sframe)
- 		kfree(op->frames);
- 	kfree(op);
- 	return err;
- }
-@@ -1790,46 +1831,47 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
- 		       struct net_device *dev)
- {
- 	struct sock *sk = &bo->sk;
- 	struct bcm_op *op;
--	int notify_enodev = 0;
-+	int sk_err = 0;
- 
--	if (!net_eq(dev_net(dev), sock_net(sk)))
--		return;
-+	lock_sock(sk);
- 
- 	switch (msg) {
- 
- 	case NETDEV_UNREGISTER:
--		lock_sock(sk);
- 
- 		/* rx_ops: remove device specific receive entries */
- 		list_for_each_entry(op, &bo->rx_ops, list) {
- 			if (op->rx_reg_dev == dev)
- 				bcm_rx_unreg(dev, op);
- 
- 			/* release an ANYDEV op's claim (see bcm_rx_handler())
- 			 * on this now confirmed-gone interface.
- 			 */
--			if (!op->ifindex) {
-+			if (!op->ifindex && net_eq(dev_net(dev), sock_net(sk))) {
- 				spin_lock_bh(&op->bcm_rx_update_lock);
- 				if (op->if_detected == dev->ifindex)
- 					op->if_detected = 0;
- 				spin_unlock_bh(&op->bcm_rx_update_lock);
- 			}
- 		}
- 
- 		/* tx_ops: stop device specific cyclic transmissions on the
--		 * vanishing ifindex. Cancelling the timer is enough to stop
-+		 * vanishing device. Cancelling the timer is enough to stop
- 		 * cyclic bcm_can_tx() calls as there is no re-arming.
- 		 */
- 		list_for_each_entry(op, &bo->tx_ops, list)
--			if (op->ifindex == dev->ifindex)
-+			if (op->tx_dev == dev) {
- 				hrtimer_cancel(&op->timer);
-+				netdev_put(op->tx_dev, &op->tx_dev_tracker);
-+				op->tx_dev = NULL;
-+			}
- 
- 		/* remove device reference, if this is our bound device */
--		if (bo->bound && bo->ifindex == dev->ifindex) {
-+		if (bo->bound && bo->dev == dev) {
- #if IS_ENABLED(CONFIG_PROC_FS)
- 			if (sock_net(sk)->can.bcmproc_dir && bo->bcm_proc_read) {
- 				remove_proc_entry(bo->procname, sock_net(sk)->can.bcmproc_dir);
- 				bo->bcm_proc_read = NULL;
- 			}
-@@ -1839,28 +1881,27 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
- 			 * accessed under lock_sock() so it needs no
- 			 * annotation.
- 			 */
- 			WRITE_ONCE(bo->bound, 0);
- 			bo->ifindex = 0;
--			notify_enodev = 1;
--		}
--
--		release_sock(sk);
--
--		if (notify_enodev) {
--			sk->sk_err = ENODEV;
--			if (!sock_flag(sk, SOCK_DEAD))
--				sk_error_report(sk);
-+			netdev_put(bo->dev, &bo->dev_tracker);
-+			bo->dev = NULL;
-+			sk_err = ENODEV;
- 		}
- 		break;
- 
- 	case NETDEV_DOWN:
--		if (bo->bound && bo->ifindex == dev->ifindex) {
--			sk->sk_err = ENETDOWN;
--			if (!sock_flag(sk, SOCK_DEAD))
--				sk_error_report(sk);
--		}
-+		if (bo->bound && bo->dev == dev)
-+			sk_err = ENETDOWN;
-+	}
-+
-+	release_sock(sk);
-+
-+	if (sk_err) {
-+		sk->sk_err = sk_err;
-+		if (!sock_flag(sk, SOCK_DEAD))
-+			sk_error_report(sk);
- 	}
- }
- 
- static int bcm_notifier(struct notifier_block *nb, unsigned long msg,
- 			void *ptr)
-@@ -1982,10 +2023,14 @@ static int bcm_release(struct socket *sock)
- 
- 	/* remove device reference */
- 	if (bo->bound) {
- 		WRITE_ONCE(bo->bound, 0);
- 		bo->ifindex = 0;
-+		if (bo->dev) {
-+			netdev_put(bo->dev, &bo->dev_tracker);
-+			bo->dev = NULL;
-+		}
- 	}
- 
- 	sock_orphan(sk);
- 	sock->sk = NULL;
- 
-@@ -2029,25 +2074,32 @@ static int bcm_connect(struct socket *sock, struct sockaddr_unsized *uaddr, int
- 			ret = -ENODEV;
- 			goto fail;
- 		}
- 
- 		bo->ifindex = dev->ifindex;
-+		bo->dev = dev;
-+		netdev_hold(dev, &bo->dev_tracker, GFP_KERNEL);
- 		dev_put(dev);
- 
- 	} else {
- 		/* no interface reference for ifindex = 0 ('any' CAN device) */
- 		bo->ifindex = 0;
-+		bo->dev = NULL;
- 	}
- 
- #if IS_ENABLED(CONFIG_PROC_FS)
- 	if (net->can.bcmproc_dir) {
- 		/* unique socket address as filename */
- 		sprintf(bo->procname, "%llu", sock_i_ino(sk));
- 		bo->bcm_proc_read = proc_create_net_single(bo->procname, 0644,
- 						     net->can.bcmproc_dir,
- 						     bcm_proc_show, sk);
- 		if (!bo->bcm_proc_read) {
-+			if (bo->dev) {
-+				netdev_put(bo->dev, &bo->dev_tracker);
-+				bo->dev = NULL;
-+			}
- 			ret = -ENOMEM;
- 			goto fail;
- 		}
- 	}
- #endif /* CONFIG_PROC_FS */
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 155530aedce2..0835a4758a72 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -1490,15 +1490,15 @@ static int isotp_release(struct socket *sock)
- 	/* remove current filters & unregister
- 	 * tracked reference so->dev is taken at bind() time with rtnl_lock
- 	 */
- 	if (so->bound && so->dev) {
- 		if (isotp_register_rxid(so))
--			can_rx_unregister(net, so->dev, so->rxid,
-+			can_rx_unregister(dev_net(so->dev), so->dev, so->rxid,
- 					  SINGLE_MASK(so->rxid),
- 					  isotp_rcv, sk);
- 
--		can_rx_unregister(net, so->dev, so->txid,
-+		can_rx_unregister(dev_net(so->dev), so->dev, so->txid,
- 				  SINGLE_MASK(so->txid),
- 				  isotp_rcv_echo, sk);
- 		netdev_put(so->dev, &so->dev_tracker);
- 	}
- 
-@@ -1846,13 +1846,10 @@ static int isotp_getsockopt(struct socket *sock, int level, int optname,
- static void isotp_notify(struct isotp_sock *so, unsigned long msg,
- 			 struct net_device *dev)
- {
- 	struct sock *sk = &so->sk;
- 
--	if (!net_eq(dev_net(dev), sock_net(sk)))
--		return;
--
- 	if (so->dev != dev)
- 		return;
- 
- 	switch (msg) {
- 	case NETDEV_UNREGISTER:
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 82d9c0499c95..c5596fc9aac5 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -300,13 +300,10 @@ static int raw_enable_allfilters(struct net *net, struct net_device *dev,
- static void raw_notify(struct raw_sock *ro, unsigned long msg,
- 		       struct net_device *dev)
- {
- 	struct sock *sk = &ro->sk;
- 
--	if (!net_eq(dev_net(dev), sock_net(sk)))
--		return;
--
- 	if (ro->dev != dev)
- 		return;
- 
- 	switch (msg) {
- 	case NETDEV_UNREGISTER:
--- 
-2.53.0
+diff --git a/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml b/=
+Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+index 0cf5fa21106b..1a0dc9bbe6c9 100644
+=2D-- a/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
++++ b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+@@ -18,6 +18,7 @@ properties:
+       - items:
+           - enum:
+               - microchip,ata6561
++              - microchip,mcp2542
+               - ti,tcan1051
+           - const: ti,tcan1042
+       - items:
+=2D-=20
+2.43.0
 
