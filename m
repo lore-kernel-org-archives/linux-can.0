@@ -1,117 +1,123 @@
-Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F1504AA41F;
-	Fri,  4 Sep 2026 14:21:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C18763F3292
+	for <linux-can@vger.kernel.org>; Fri,  4 Sep 2026 14:26:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788531672; cv=none; b=LXK5Cv5I2Tn5sEYZpGfRzm56T9UAx5Ht4Vd0BNmZuo/i6fynJTf2pPWrPPV5s4c1gazVhLKYNpRlNbQmRwhGXr7P5X3hqRjMqwP3aI66A69IHa4B8jAR5Uzr8oV/50Fmt837G3wXmbDlC+gEe8unLglCOvNDmS3jvwFd7GCJvjU=
+	t=1788531969; cv=none; b=YaCO1Jh6gLLk7R8QtxCGTxA3IQHwENcUjydouDJnNMgYX2GDrFT/veYhuZt6S5g1ON1m1r3c/E2yZuBcxofNfzQkaS1ea+U/VZ8s4e5cVARBu1RGqXc5vxUXWdZvxxp3XNaYX6Eb75ww4igXT/ZbEUZVr13m6BfipXWtDHdGEw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788531672; c=relaxed/simple;
-	bh=NMqR8rOzZ9pIXQI46p/r7yGV/Ufqh7GeI8P/WtA7WK8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TUR2TFZV6srcYhBJoEK4jRQy9Dg/+56rNs5IjSM2l5WYo7ENMp6SHpY914sXDQXEbcmhoPVhpgOhg0v45Yynv7gR2AWZJfZMa8Tl75+4oGh4YKucPsrdzVM9znG+sMhKCIfE6iMD9rdW5JCTb+YC20V/6pwzkg1jZnnDqXRC4Gw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from [192.168.0.113] (unknown [123.118.210.34])
-	by APP-01 (Coremail) with SMTP id qwCowAB3Se1v05pqrLYrBw--.65223S2;
-	Fri, 04 Sep 2026 22:19:28 +0800 (CST)
-Message-ID: <da1da563-1011-4b0c-a480-9d3d3acb6441@iscas.ac.cn>
-Date: Fri, 4 Sep 2026 22:19:27 +0800
+	s=arc-20240116; t=1788531969; c=relaxed/simple;
+	bh=JQuefiiFxWpcCRFQyKhkugLdH9OtVjXnVs2TQmhRzag=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=LuRFoLqBfy1oxSmJlGNi7Ruv79UO1jC5qY033b5Ff/mpUakOIn3rxsj7tA9u10ty9tRYZ/3R9933jQFm/1Wjno/CncRyLjJ1tKChxbjLfbvSVS/SnMziat0f6EOikylaFV4JfnbWHVqjRU4wArX1jDkQxRodlycYkvdeGplYrWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lKYWNuA5; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lKYWNuA5"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FB371F00A3D;
+	Fri,  4 Sep 2026 14:26:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788531966;
+	bh=reN6pTx9bu3qULnBgyVleRjNCBgABgaoHOngYGg12yo=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=lKYWNuA50CePfrbVRakNDdli6zIxlbXLLMKWKEcI1FLpsl2Unw42nWsqIBTEBg1a4
+	 qke+PaeUtO2Wk1gi7XFa2xPZZzm82W/dkCQzi6+/hjnHJWGdyITPGTp10vnVmI6TKJ
+	 o0UxwemlYJeKg6HtrGLJRBfUdVxdke7Gmhy9eNswNgGT/yzzcRedehSLMUbZenYFKO
+	 nx0OXyxlk77SnbstqmWtWab8hzZv/NWVxIjt35HXq/R2/LHYGtNVZOZCsf6EPrqTJ7
+	 7qA0w23ofvfIhJ7BFDiYdXMjNW9/K3IdGnRULH+v0un5hZy9muuHVG3oHIfMP68UZu
+	 w64JNMDQqMTsQ==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH can-next v3 3/3] can: add can diag interface
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Filippo Storniolo" <fstornio@redhat.com>
+Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+In-Reply-To: <20260904-feat-can-diag-v3-3-bdcebf07b373@redhat.com>
+References: <20260904-feat-can-diag-v3-0-bdcebf07b373@redhat.com>
+ <20260904-feat-can-diag-v3-3-bdcebf07b373@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 04 Sep 2026 14:26:05 +0000
+Message-Id: <20260904142606.6FB371F00A3D@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 25/33] net: spacemit: k1_emac: Remove comma after
- sentinel-entry in match-table
-To: Siddharth Vadapalli <s-vadapalli@ti.com>,
- dario.binacchi@amarulasolutions.com, mkl@pengutronix.de, mailhol@kernel.org,
- msp@baylibre.com, florian.fainelli@broadcom.com, jonas.gorski@gmail.com,
- andrew@lunn.ch, olteanv@gmail.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, kurt@linutronix.de, hauke@hauke-m.de,
- chester.a.unal@arinc9.com, daniel@makrotopia.org, matthias.bgg@gmail.com,
- angelogioacchino.delregno@collabora.com, ansuelsmth@gmail.com,
- linusw@kernel.org, luizluca@gmail.com, alvin.sipraga@analog.com,
- clement.leger@bootlin.com, justin.chen@broadcom.com, dlan@kernel.org,
- rogerq@kernel.org, hkallweit1@gmail.com, linux@armlinux.org.uk,
- rjui@broadcom.com, sbranden@broadcom.com,
- bcm-kernel-feedback-list@broadcom.com, opendmb@gmail.com,
- andrei.botila@oss.nxp.com, amadeus@jmu.edu.cn, kees@kernel.org,
- tmshlvck@gmail.com, c-vankar@ti.com, horms@kernel.org,
- vadim.fedorenko@linux.dev, daniel.zahka@gmail.com,
- nora.schiffer@ew.tq-group.com, v-singh1@ti.com, oss@vassilevski.com,
- haokexin@gmail.com, alex@sverdlin.org, aleksandr.loktionov@intel.com,
- lgs201920130244@gmail.com
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
- linux-riscv@lists.infradead.org, spacemit@lists.linux.dev,
- linux-omap@vger.kernel.org
-References: <20260904043724.2955444-1-s-vadapalli@ti.com>
- <20260904043724.2955444-26-s-vadapalli@ti.com>
-Content-Language: en-US
-From: Vivian Wang <wangruikang@iscas.ac.cn>
-In-Reply-To: <20260904043724.2955444-26-s-vadapalli@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:qwCowAB3Se1v05pqrLYrBw--.65223S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruFW5ur1kJFyxAr18Xr1UZFb_yoWkKrbE9r
-	1fXas3Jr4DCryv9a4akF1avrWkKrs8Xr48Was7KrW3ZasrWr1kArWkCF97t34furWrXFZ3
-	GrnxKF48Aw17KjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbsAYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I
-	6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-	8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0
-	cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
-	A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-	w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMc
-	vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY
-	1x0262kKe7AKxVWrXVW3AwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-	C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-	wI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-	IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
-	z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
-	UI43ZEXa7IUnGZX7UUUUU==
-X-CM-SenderInfo: pzdqw2pxlnt03j6l2u1dvotugofq/
 
-On 9/4/26 12:36, Siddharth Vadapalli wrote:
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+s) to consider:
+- [Medium] Index-based resumption in can_diag_dump() causes skipped or repe=
+ated sockets without notifying userspace via NLM_F_DUMP_INTR.
+--
 
-> Since sentinel is the last entry and we do not expect further entries
-> following it, remove the comma.
->
-> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-> ---
->  drivers/net/ethernet/spacemit/k1_emac.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/net/ethernet/spacemit/k1_emac.c b/drivers/net/ethernet/spacemit/k1_emac.c
-> index f7f16397a2c2..29385d78fc4b 100644
-> --- a/drivers/net/ethernet/spacemit/k1_emac.c
-> +++ b/drivers/net/ethernet/spacemit/k1_emac.c
-> @@ -1161,7 +1161,7 @@ static const struct ethtool_rmon_hist_range emac_rmon_hist_ranges[] = {
->  	{  512, 1023 },
->  	{ 1024, 1518 },
->  	{ 1519, 4096 },
-> -	{ /* sentinel */ },
-> +	{ /* sentinel */ }
->  };
->  
->  /* Like dev_fetch_dstats(), but we only use tx_drops */
-> @@ -2066,7 +2066,7 @@ static const struct dev_pm_ops emac_pm_ops = {
->  
->  static const struct of_device_id emac_of_match[] = {
->  	{ .compatible = "spacemit,k1-emac" },
-> -	{ /* sentinel */ },
-> +	{ /* sentinel */ }
->  };
->  MODULE_DEVICE_TABLE(of, emac_of_match);
->  
+commit 8ae9bc3a24d9d75317a64a778b0ca0dc88c6a32a
+Author: Filippo Storniolo <fstornio@redhat.com>
 
-Acked-by: Vivian Wang <wangruikang@iscas.ac.cn>
+can: add can diag interface
+   =20
+Add the can_diag interface for querying sockets from userspace. The ss(8)
+tool can use this interface to list open sockets. The userspace ABI includes
+netlink request and response structs with socket information fields.
 
-Regards,
-Vivian "dramforever" Wang
+> diff --git a/net/can/diag.c b/net/can/diag.c
+> new file mode 100644
+> index 0000000000000..647a94636a548
+> --- /dev/null
+> +++ b/net/can/diag.c
 
+[ ... ]
+
+> +static int can_diag_dump(struct sk_buff *skb, struct netlink_callback *c=
+b)
+> +{
+> +	int num =3D 0, s_num =3D cb->args[0];
+> +	struct can_diag_req *req;
+> +	struct net *net;
+> +	struct sock *sk;
+> +
+> +	net =3D sock_net(skb->sk);
+> +	req =3D nlmsg_data(cb->nlh);
+> +
+> +	lock_can_diag_mutex(net);
+> +	sk_for_each(sk, &net->can.sklist) {
+> +		if (num < s_num)
+> +			goto next;
+> +
+> +		if (sk_diag_fill(sk, skb, req,
+
+[Severity: Medium]
+Will this simple index-based resumption (num < s_num) cause skipped or
+repeated sockets without notifying userspace if the list is modified between
+dump iterations?
+
+A netlink dump of CAN sockets can require multiple messages, forcing
+can_diag_dump() to return and resume later. If a concurrent thread creates
+or destroys a CAN socket, altering the layout of net->can.sklist while the
+mutex is dropped, iteration by index becomes inaccurate.
+
+According to the Netlink uAPI guidelines, if iteration during a dump may sk=
+ip
+or repeat objects, NLM_F_DUMP_INTR must be set on the affected messages. Th=
+is
+is normally implemented by maintaining a generation counter and recording it
+in cb->seq to detect list modifications.
+
+> +				 sk_user_ns(NETLINK_CB(cb->skb).sk),
+> +				 NETLINK_CB(cb->skb).portid,
+> +				 cb->nlh->nlmsg_seq, NLM_F_MULTI,
+> +				 sock_i_ino(sk)) < 0)
+> +			goto done;
+> +next:
+> +		num++;
+> +	}
+> +done:
+> +	unlock_can_diag_mutex(net);
+> +	cb->args[0] =3D num;
+> +
+> +	return skb->len;
+> +}
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260904-feat-can-d=
+iag-v3-0-bdcebf07b373@redhat.com?part=3D3
