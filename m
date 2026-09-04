@@ -1,149 +1,167 @@
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC8B4A2A40
-	for <linux-can@vger.kernel.org>; Fri,  4 Sep 2026 13:55:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.44
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788530139; cv=pass; b=YRJ16FOcNCyzDWIo0kAAhgFj+ozt0cgNdzXsh9i1PtF+66+6aqakpxkf4+SKqeiiitYjpInvjiZPBTQPMGxUCB06srbf+Z+MP3bfCSSF7hcTxclPT2KR+scvcrL38+bSvObtzj3IibgHJIH90JboC8scsviLvR9nTPEbCSDSv/k=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788530139; c=relaxed/simple;
-	bh=aYGTw43PGiruYrbCRK8lrDyOCcUgVMqsAo0cR/fDfeY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uwz05copn2EozITHlwsphONAsAFUidTUqDTFgGxPLACXpin8EROGypKBJnxyLqNgL1f9MZ8oKoFYdYeCQgoFsDx8tsriOzrwzaqXwCnj6WknbnoOjwtnAd9Cn2Cxn8BlkOoLK5E4Ec0LGImF7glWXu2jsCIpMVl7lFpZ5Bka33g=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kCxxW9q4; arc=pass smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D0AE4AF682
+	for <linux-can@vger.kernel.org>; Fri,  4 Sep 2026 14:13:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1788531238; cv=none; b=uvRnefQW3klYAsql6Uyt1KA9gCsBvB4xZhBdwxjPx5xVPBJnQCu3dRPTJpPlyUxB2Mu0N6QAW0k5R1PfrryTihvbNu3nwc6V7Wjvlsek7aSF3yLmfXM1QQcW2KGDVOe93Rd7mXW2KOn25clBLitAc7TVkyup1T/Z260dzh0WM2E=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1788531238; c=relaxed/simple;
+	bh=zB1N/lmHN1ujtJwc+SHK+2NtyuO3vAQCWkJXJkhC6yU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=Gj/wS/dAcCM8buTFRGAO59ECiWZNjbrp7L1UsJ01CvMtyOAPp8Oj+fQxNB+UOcKxqGORLm1VFq32KeccKGxt41Wb9+bNDvhK1moXoIjl0pjc5uT4wPHqcKqYx9h5O5Xh1sezVkQOPbNhnrlKhiDiMQZb4cA2thgAEY/mrr7lLH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cuu0mUfG; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=t9KdXJyv; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kCxxW9q4"
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-6a5ded53570so1362724a12.3
-        for <linux-can@vger.kernel.org>; Fri, 04 Sep 2026 06:55:36 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1788530134; cv=none;
-        d=google.com; s=arc-20260327;
-        b=lqtN0bX/B64q7wG7EnvaoEbLx0ehYdPCU+Qv9Va5zi5+Z9+XtqpWyuORgCU2UQC1iq
-         0NOW5MsZU55CDgUCAn1Yzh80frAfVfE1x2AAAt/2x68UJ6s+Um0RYT/QmvM2jKb/Xswd
-         tAy2uestQw+urVKhbJo1YDvNPQc2nL4v8KmQkG23UIEDkz4dEFUmxHvXeS6aRLZsHd7L
-         qM775H47OeVwriu5wwPCl1lohRZIRBmEeQl/1u30MvVGlxw6gN96pjcEQgp4fx8uFlAY
-         y0WdNo2kyvnGFEV98/EmFsrjsi47SElA+/l7ADjr4OUOMwfF8488rwR+glLE/RU7NioM
-         C7ZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=pkjDjgzDaw86AXoG1909ddrRynkL4ufeKlwmjCrQJhQ=;
-        fh=XTBrAAEah5VClCrvEh04KOwrxW+6aAwMmITrFheFP0E=;
-        b=qFPgY33Fb+OZzwACeNko9jy4Tfo1rI+gVR7nZIHAHzoXL3NIXrfYFcCuaZUW4RvD4C
-         liBvK3uSkgvrqWHxD6wynkwlMkin2T8tJxBJjFnV55RAyizLUDxPdZYZWf02vwLzdXFz
-         6Nq/T8VtQ8EDmXku/zH6HVR8CLHDVHsgpTLsNRHI66Ht1yUmyiuukcwrbgW8VjITnQQH
-         doWciF9M4z5jrG2wWpI5Q/WvMEOlXbyG9NuZGIEy97FjWnwfvwyKIHBoFuTp6inXQFHC
-         kSX3q5RxsqHAkLNybYFF6g0XJ4QNbg5eHEZbDYADqb6u+fuUr6Hw4VlsWN0RMPse59o9
-         Kg6Q==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cuu0mUfG";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="t9KdXJyv"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1788531236;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+Awai38MWrY1vEnecOIfsO7NyqZq1zeBlPLHLuAUTnE=;
+	b=cuu0mUfGHSpUbog9Zh4JFOkWTHYtVz2ROZCgLrWeD0xb4zz2iTIe4fRY0gSQoBu6OMabQO
+	9umg56Q13A5z1r2znRXqBNb3ioldJQCgCHZEnTAugajA+1n34lDgTuTiI/ncxdfvSVVCM6
+	anPFLK2KJO2263GDVQ632uxngJUh3fs=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-584-W_pyU97ONTis5ceR3j0kPA-1; Fri, 04 Sep 2026 10:13:53 -0400
+X-MC-Unique: W_pyU97ONTis5ceR3j0kPA-1
+X-Mimecast-MFC-AGG-ID: W_pyU97ONTis5ceR3j0kPA_1788531233
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4994cf6cdb9so7367365e9.3
+        for <linux-can@vger.kernel.org>; Fri, 04 Sep 2026 07:13:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788530134; x=1789134934; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=pkjDjgzDaw86AXoG1909ddrRynkL4ufeKlwmjCrQJhQ=;
-        b=kCxxW9q41x6acDRBBZDVjfyTyqKRt/evee3/RMJ64zlf6SHrFgHtykPwYzwvAi3wVJ
-         ZRIv7vOTkQh2Lr2n+smSk6EZDeGERL2XnUVdkdmbijX3sIq8nHQIT4bwdKQG9VlBvxBC
-         8naCTVcUFcfSQHMrBLpJQGzu74JQ2aIQws7AXtvIxc14zHervNOo4KbpAp1FFOqd1BDh
-         8sOIjGi6BVaoHydFmTO+nYefEIeAAEsXLvyc/0L2/jipTutRInYXfOINnr0YZQVJnXHl
-         C2LFuM/tqHwSMwJQDQ8c+FIBz7PMpJ9MUu/9P80i1Y2oORNVkVuubgrLsPndLlRYakJI
-         4DdQ==
+        d=redhat.com; s=google; t=1788531232; x=1789136032; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=+Awai38MWrY1vEnecOIfsO7NyqZq1zeBlPLHLuAUTnE=;
+        b=t9KdXJyvQ7Z7RXS6mX+dp3BE8JzA16SLh4dZ5illtfHVR0ixYLMXJKIYiHIYtEXBl2
+         OMiTuugUnFYG3LMyspdkvLe3O1rvXCSVwZeaVobOlFNaO729E9qddgs6+2p+JA/Mu34n
+         hS36VXQHHlnuXHIeJPlTZT0DOCGjEI6KuktFRe8CprCiu8VQ/rE13bpxRJEwhjhO7GaK
+         zvpm2kGalgjNuJX5pC8V8ZZSk5xKfQTLPAZUNcenQ+2MxOzNe4BZrsF46Er2Q5JETahW
+         epN0KY/4UPO37pYBeau/BrzOEYE8p72ZAMk4BFvQqoPy/EgDieCoj3gV7z/SO6MNXi2i
+         CtKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788530134; x=1789134934;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
+        d=1e100.net; s=20251104; t=1788531232; x=1789136032;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=pkjDjgzDaw86AXoG1909ddrRynkL4ufeKlwmjCrQJhQ=;
-        b=qttlNfZKFtcxVKleSEsKGpHLZ/eE/czvNot/7wlib9AKTwKW6Kbp6EQunggU3ek25C
-         mzQ9DXWcp2Z5AbodPomc+PBidLiDLdfsiuWOkH0ebKVhN17bl393+0iAxEpKaYoPwp+M
-         ukZ6wA0evD7iFwP40SjjVzEJSgkvS+FEk7/qGC0HO7tGNFMmFPqYRvTIUn/GMcunkaEl
-         n7vfW19vS9acYcuOqgCeBsc7E5YwJ/CGb37EX9m7lhNJM1uvCQZ/E3D6DizEci0qGnkH
-         9CQ6ye8waWb8lQTG7EzTDCGIXE/dDlvsnr2kSICTPp1eX0ufOq6DTtCRqJy4NoFMI8Ne
-         wAxg==
-X-Forwarded-Encrypted: i=1; AKwUvBxo0/afwJ7gZL0gzg2FSoh7+mOecFqswG96C6iVd5GSX7YAq3CR8V9A8uO3o/kxU/ucV0j3F+g1V1s=@vger.kernel.org
-X-Gm-Message-State: AFuF++ljg8Ph9bRtTUE+SWuz/qP4veoUuRIbw2Y3Rlg9RVh5zCAb9Pn5
-	qU3lWXCc40hzkheYFPdPSljBulE0TmbxahcqmrSxD8bvKYIsY9E4eXSLxxDSI2cN6CsyXtfZSys
-	FOeyPIpb8twmxN+aHnNKgZ/c8nv8cXNw=
-X-Gm-Gg: AYBFou1lFL8GYErzfnjwOia6YwHE/KjzTsgfKVgrAuDprydBKaDQdQhNVGPVSEJrz26
-	gkEaFS4EyDAlj7oY905hlvFEsa1UEwy8RNl05XHowx/CMtoNjtWIoelwK9nVYN1J4Qlz9gOlpcY
-	5csTr9i9KqTE+qEPuwZPqwwOy3TVrmudJkBAvj4myU3OW62kGnGnIfPNpjNgkXcYUMETrWR7DC0
-	Vul71JlgzOy8Rplp1i8R1zOMEhOywRvyhEB72RbNIBtjRztW4o2L+teEk7Cjq0/Jn4CDFX2RXFd
-	MrSXV3c8zME6u7Z50o67J51v2aveUI2YcZ0Ts/SwJ3X0aRSfkUIQ++9xyufn
-X-Received: by 2002:a17:907:720f:b0:c25:5d2:acf0 with SMTP id
- a640c23a62f3a-c260c8c21d3mr311924666b.8.1788530134042; Fri, 04 Sep 2026
- 06:55:34 -0700 (PDT)
+        bh=+Awai38MWrY1vEnecOIfsO7NyqZq1zeBlPLHLuAUTnE=;
+        b=R0Mrdtqkekpdv2x/L8I7oAGCvBGVSeLnEz4WzaueTAwQ6sFWum1ZntW53pOqJBkt6T
+         5JmARHDSM8yLcmYmt7IPcrCZU0815kEgUQj3Z8GPwq9R22H2A58Ak2IaaxqxE8/ymwAb
+         GFd0uPtiQpZ57E3d44fssaN/Jp0KV7aIGMdaMHvPC58DDhKI70v6xgDQEymx2EIPMo35
+         YU3O0hpbr16CrkgEA1Q8snopTeDrqktfyOOg5wPLt1NzB/ujl7kxs7gXNNfefhNFsF+1
+         Z8Yda8e2nuqBSaHPyUcMTAjyygT1+fZrFjgzPSmkspiGWujfnHmUTF5CyNi2uBgrxqFS
+         v3oA==
+X-Gm-Message-State: AFuF++kxQvufwHeryP3uXm9D3UToleqxT8zV/DbVzV8hMh6X40WnORTG
+	KPhAHDkLtJbalaft2k/7p6UjELvNklqJciVI3l1JmIhjaLk1TzckPdCeLYHETg9rOAgw5AhPaqh
+	M0N/1SUB0dELIV6pTgqm2CSZ1IJuprdz67GCgFo8wxvZxTeSYA9WZVHcJRz6nfg==
+X-Gm-Gg: AYBFou0PtSpH1YVxKo5AF1ZRYM5qjF+7vpRPwJEA1S90Aptvajxf12jw+MoXqjyjILg
+	9D7gKRHKv8SF1EJz0XPY3f2nbyvMkG1v3iwJVux416V3SgUQRl7zsHyMT5V7p/mK8KaNE2KHTiO
+	doChj5J9N2+Xek/p9rmwtZYonpTiLp1catAy9e1hyAcxBVvQK8JpzMJfbLYrwrSyR3kIycl7cy/
+	xC4m0ZW5XLJRzMyYtNlYrvZLN4urMxyypBMwdeIO/zCekj5wHiIqe1VTrCN56O+kWjGN21Ea+hA
+	gr9O1CwZ6yt2y7xbRUvqVoAarZqNiNycUN94Z4IxmR4tEFFkyKO2bQvp6HqtX134KKtcQBpyt7d
+	hYabBSMJsgrySNVCtZvGHfsJZ
+X-Received: by 2002:a05:600c:8b6b:b0:49c:e1cd:536 with SMTP id 5b1f17b1804b1-49cf826be5bmr62019735e9.12.1788531232581;
+        Fri, 04 Sep 2026 07:13:52 -0700 (PDT)
+X-Received: by 2002:a05:600c:8b6b:b0:49c:e1cd:536 with SMTP id 5b1f17b1804b1-49cf826be5bmr62019155e9.12.1788531232084;
+        Fri, 04 Sep 2026 07:13:52 -0700 (PDT)
+Received: from fstornio-thinkpadx1carbongen11.remote.csb ([130.25.253.135])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49cf7703cefsm99744845e9.5.2026.09.04.07.13.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2026 07:13:51 -0700 (PDT)
+From: Filippo Storniolo <fstornio@redhat.com>
+Date: Fri, 04 Sep 2026 16:12:55 +0200
+Subject: [PATCH can-next v3 1/3] af_can: ensure sk_protocol is always set
+ on socket creation
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260904043724.2955444-1-s-vadapalli@ti.com> <20260904043724.2955444-21-s-vadapalli@ti.com>
-In-Reply-To: <20260904043724.2955444-21-s-vadapalli@ti.com>
-From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Date: Fri, 4 Sep 2026 10:55:19 -0300
-X-Gm-Features: AcwNN1WkMLBcSKjjx-549nVRZ1ZETkJHm5sDyQYa7o61EdbIDExabOintEMeFfo
-Message-ID: <CAJq09z44PfcEKsoH9eP+c5rxmzQ52hQO33k8sO-e6po1bpE6rQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 20/33] net: dsa: realtek: rtl8365mb: Remove comma
- after sentinel-entry in match-table
-To: Siddharth Vadapalli <s-vadapalli@ti.com>
-Cc: dario.binacchi@amarulasolutions.com, mkl@pengutronix.de, 
-	mailhol@kernel.org, msp@baylibre.com, florian.fainelli@broadcom.com, 
-	jonas.gorski@gmail.com, andrew@lunn.ch, olteanv@gmail.com, 
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	kurt@linutronix.de, hauke@hauke-m.de, chester.a.unal@arinc9.com, 
-	daniel@makrotopia.org, matthias.bgg@gmail.com, 
-	angelogioacchino.delregno@collabora.com, ansuelsmth@gmail.com, 
-	linusw@kernel.org, alvin.sipraga@analog.com, clement.leger@bootlin.com, 
-	justin.chen@broadcom.com, dlan@kernel.org, rogerq@kernel.org, 
-	hkallweit1@gmail.com, linux@armlinux.org.uk, rjui@broadcom.com, 
-	sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com, 
-	opendmb@gmail.com, andrei.botila@oss.nxp.com, wangruikang@iscas.ac.cn, 
-	amadeus@jmu.edu.cn, kees@kernel.org, tmshlvck@gmail.com, c-vankar@ti.com, 
-	horms@kernel.org, vadim.fedorenko@linux.dev, daniel.zahka@gmail.com, 
-	nora.schiffer@ew.tq-group.com, v-singh1@ti.com, oss@vassilevski.com, 
-	haokexin@gmail.com, alex@sverdlin.org, aleksandr.loktionov@intel.com, 
-	lgs201920130244@gmail.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, spacemit@lists.linux.dev, 
-	linux-omap@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260904-feat-can-diag-v3-1-bdcebf07b373@redhat.com>
+References: <20260904-feat-can-diag-v3-0-bdcebf07b373@redhat.com>
+In-Reply-To: <20260904-feat-can-diag-v3-0-bdcebf07b373@redhat.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>, 
+ Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Robin van der Gracht <robin@protonic.nl>, 
+ Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de, 
+ Urs Thuermann <urs.thuermann@volkswagen.de>, 
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>
+Cc: linux-can@vger.kernel.org, Davide Caratti <dcaratti@redhat.com>
+X-Mailer: b4 0.14.3
 
-Em sex., 4 de set. de 2026 =C3=A0s 01:39, Siddharth Vadapalli
-<s-vadapalli@ti.com> escreveu:
->
-> Since sentinel is the last entry and we do not expect further entries
-> following it, remove the comma.
->
-> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-> ---
->  drivers/net/dsa/realtek/rtl8365mb_main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/dsa/realtek/rtl8365mb_main.c b/drivers/net/dsa/r=
-ealtek/rtl8365mb_main.c
-> index 4c305756116c..f8220d832e46 100644
-> --- a/drivers/net/dsa/realtek/rtl8365mb_main.c
-> +++ b/drivers/net/dsa/realtek/rtl8365mb_main.c
-> @@ -3352,7 +3352,7 @@ const struct realtek_variant rtl8365mb_variant =3D =
-{
->
->  static const struct of_device_id rtl8365mb_of_match[] =3D {
->         { .compatible =3D "realtek,rtl8365mb", .data =3D &rtl8365mb_varia=
-nt, },
-> -       { /* sentinel */ },
-> +       { /* sentinel */ }
->  };
->  MODULE_DEVICE_TABLE(of, rtl8365mb_of_match);
->
-> --
-> 2.51.1
->
+From: Davide Caratti <dcaratti@redhat.com>
 
-Reviewed-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Currently, only j1939 assigns a value to 'sk_protocol'. As a prerequisite
+for the implementation of CAN sockets diagnostics, AF_CAN sockets need an
+easy way to determine which protocol is on top of an existing socket.
+
+POC test using can-tests:
+
+ | # perf probe -m can_j1939 --add "j1939_sk_recvmsg sock->sk->sk_protocol"
+ | # perf record -e probe:j1939_sk_recvmsg -aR -- ./j1939/tst-j1939-ac
+ | [...]
+ | # perf script
+ | tst-j1939-ac  5807 [002] 322767.312599: probe:j1939_sk_recvmsg: (ffffffffc0b29a14) sk_protocol=0x7
+ |  ^^^ 0x7, that's CAN_J1939
+
+ | # perf probe -m can_raw --add "raw_recvmsg sock->sk->sk_protocol"
+ | # perf record -e probe:raw_recvmsg -aR ./netlayer/tst-rcv-own-msgs vcan0
+ | # perf script
+ | [...]
+ | tst-rcv-own-msg  5816 [001] 323173.651122: probe:raw_recvmsg: (ffffffffc0b20154) sk_protocol=0x1
+ |  ^^^ 0x1, that's CAN_RAW. It was 0x0 on unpatched kernel
+
+Storing the "protocol" value in can_create() fixes the problem. This also
+fixes AF_CAN support for the following system call:
+
+ | getsockopt(..., SOL_SOCKET, SO_PROTOCOL, &proto, sizeof(proto))
+
+that was assigning 0 to 'proto' since the earliest kernel versions.
+
+Fixes: 0d66548a10cb ("[CAN]: Add PF_CAN core module")
+Signed-off-by: Davide Caratti <dcaratti@redhat.com>
+---
+ net/can/af_can.c       | 1 +
+ net/can/j1939/socket.c | 1 -
+ 2 files changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index 7bc86b176b4d..65af25946985 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -162,6 +162,7 @@ static int can_create(struct net *net, struct socket *sock, int protocol,
+ 	}
+ 
+ 	sock_init_data(sock, sk);
++	sk->sk_protocol = protocol;
+ 	sk->sk_destruct = can_sock_destruct;
+ 
+ 	if (sk->sk_prot->init)
+diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+index 50a598ef5fd4..ccd43ff5519c 100644
+--- a/net/can/j1939/socket.c
++++ b/net/can/j1939/socket.c
+@@ -420,7 +420,6 @@ static int j1939_sk_init(struct sock *sk)
+ 	/* j1939_sk_sock_destruct() depends on SOCK_RCU_FREE flag */
+ 	sock_set_flag(sk, SOCK_RCU_FREE);
+ 	sk->sk_destruct = j1939_sk_sock_destruct;
+-	sk->sk_protocol = CAN_J1939;
+ 
+ 	return 0;
+ }
+
+-- 
+2.55.0
+
