@@ -1,101 +1,120 @@
-Received: from out203-205-221-173.mail.qq.com (out203-205-221-173.mail.qq.com [203.205.221.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53C834CB8C4;
-	Fri,  4 Sep 2026 16:21:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30E133E5A1D
+	for <linux-can@vger.kernel.org>; Fri,  4 Sep 2026 16:28:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788538879; cv=none; b=XySc6qFgWGuGYFLdfhfSFYM3RJkMr7uiaPcFLpje32ggJ/dKNOoWFfGf3Maqu+8z7dESPNMJFHig9gBy0lr3Vm1o1vWV0r0m+xh9q1iDO+/kU50JxLH5mz4/VY2jmKHCrcWjoMjT81bwt17h0wN9tAzyLPjSYWOFwCrLBJ7uCBE=
+	t=1788539330; cv=none; b=izYiMXXVELe4lI0zX5+B+nykLmqkYqCQ+dyOsQCDXqvMwgWISJiXe3Ay7kJ2DefUVuPDlDxu+CTGJKEvT/2XW+N6RmDBO6I2pHa+4lQ6DNaeSESnY2PSgoHwkbR7hER1xHhZkLsZtddFApc6k7Gi6rnRwqeqeMbY2QVCxtWytE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788538879; c=relaxed/simple;
-	bh=N7HXUlxgT+PwrqkX+rdX69GAhdbSoHp7PQ5xKuoczrw=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=kWM5VOdOujUGY88w2bEeRJIme6lnnFjWYZChlRvorv4nwWrEsHT1XeLdl0a55cFqRkOc444rNkcAD18OuCT0XUTXJe18Uf3nPj0CveoVF1dE+i0kGQTqmpiJhW9isqb+Fh5vnMWBRTpIaISFpe9SBcrLpPJKY46zoR6ECGJpAcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=D1rfOdVC; arc=none smtp.client-ip=203.205.221.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	s=arc-20240116; t=1788539330; c=relaxed/simple;
+	bh=K7HCdygcfuxD0i7X1ku+pxuKaOfxVYCDD9gsnbeLI0U=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=TncQYoTgrJu5O8kBjhgqBYYXV8huIHWULXYNOJ5sRYUQcvgULUpKk+0cMkFQTA9vLb0wNUsi51YeooVtjQZo4Dni2izrJzaW2y7N0pXGav3KY+x2e9O2I7bLExUG21BEQEk/ylc2l/4iSCWMDoBEH6Ib7luWMrJkZxKxoZMGTdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nzmCu1aT; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="D1rfOdVC"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1788538869; bh=vxTXE7HOEBi2t5JWj1r5UaidcWmJ6DtV7Ta6E6ywxz4=;
-	h=From:To:Cc:Subject:Date;
-	b=D1rfOdVCWSKktOIArCksp3K3wWmpNMJScldTmj9ALLIWqqjt1Y/sc1rXt3XCulMc7
-	 dfF3qyPOVK2eHn4p2glN2Kmj+PAi6rQTTmDDjPjmfCEASPtHCWTPLgwLRE8fhzgCwb
-	 +UFjqe+ZX0lApeTJ4z4KFqwQH8V5ppYvojGkv/mk=
-Received: from xgyy.localdomain ([2408:8352:603:550:7022:3b83:9f7:e2a7])
-	by newxmesmtplogicsvrszc50-0.qq.com (NewEsmtp) with SMTP
-	id 5432E695; Sat, 05 Sep 2026 00:21:03 +0800
-X-QQ-mid: xmsmtpt1788538863tb5f60adh
-Message-ID: <tencent_D1C873B86B0E92011A264B0E196B911D5308@qq.com>
-X-QQ-XMAILINFO: MDbayGdXPuoeAktxJbu/jBXgAJ9QqmqP3b6oM3oKpaHEuCmCF+REkSlHarxE4u
-	 g+v576zskM03OhwwB5I2v4DX1ct0KCwAjQphvh2+HWuV41/Eqn3iA1R2pMcKSnwgPwmafEE96tAS
-	 wQH00ObKWqzaHOTEUdqOulDU8hxKQXQjBrOUWZwRfBth9MdQMBm1K293Ahw1MhJvxMLHso8GAxt5
-	 bOVjDg5IxNWI7t0+l9d1If7g82kKys+tIPcZfddAb3+E+1WTM44WHkXGcVglv2YupbgOpwFc4L0k
-	 9g1tU7vbiZoJU27wbrS9fjTxWgrbSbaKOAZF6YxV2sA7g2WwMBfSBU4AzTf84ditgfV3hNuz9Mjn
-	 9+gZJR3NQcUv9f9XgBavmXd9XVRMEP73w70qVBtXrIzFkvcVuaB74RJBjbRp3JewtquEpKGlkXWo
-	 ZCMNLyFBeyQroe4NS+gDv4GkklwAmUo1u9LncWD6e2Afa0Xs1RWUV1QwBnNRAGz2tkczpvk8JF0L
-	 jASnfT0pWuX8q8GCr+bXQ8B6S5H5XmEcUiwFVWY8MrkNkvO0ca1fmkpVvDYZl3KjYw9sMOXRA3/V
-	 XS0oBr1MRetC0rqxCcCQfM5Dtpigwqenj9Ej2f5xxCT+aF1766CtPK8VTQGEMz4edifVr2c1h/Jk
-	 MqwRWUZeonQ5XAYLFBNw1mJOVcydwacmhd/eB2u5z0pp4/+LTtQf67P6z5WrC/lxO1fGtX+QMuW+
-	 QJpjNknFsWS51vSDSl7fGUyAtvM/UcQUrQgkkjYPfNcbXw7+YklWGMVZ5I1mgsMLPOB7uObzpf36
-	 jGUIVciHKmfIVbhdZqSmAAnHUDnQQwFVWnaXIZAiJ6td63mUeau4N4JM6he0LTvXDdDhR82kzeEX
-	 PkE8sw3m8AxE5tDGTbN4jAXzxkwRxwruCAfs2p38SFjEnqRODKeiZMLJhjFVh/WtqiEbN02wsU5W
-	 DLM0ZQHn3ft3fbynSZkjaEWMvjhJDjzvCstJCEwcpPqJhfEjD7+GtfB3TT+bynKH9gBTL6vvCkdj
-	 BdvmCnEzd4gzd6UJwJKhuVUk2Xyei1hDSQLdgFqDn4Gm4klNSyQg8XAFsjWEWoZZkW2PNvfu7eMT
-	 NUN8amraSY/djPJoFqwBhfi3qcID4tM/2tXZ94
-X-QQ-XMRINFO: NyFYKkN4Ny6FuXrnB5Ye7Aabb3ujjtK+gg==
-From: Zhu Ling <zhuling0805@qq.com>
-To: linux-can@vger.kernel.org
-Cc: mkl@pengutronix.de,
-	mailhol@kernel.org,
-	nsekhar@ti.com,
-	faiz_abbas@ti.com,
-	s-anna@ti.com,
-	fcooper@ti.com,
-	linux-kernel@vger.kernel.org,
-	Zhu Ling <zhuling0805@qq.com>,
-	stable@vger.kernel.org
-Subject: [PATCH net] can: netlink: fix IFLA_CAN_BITRATE_MAX attribute sizing
-Date: Sat,  5 Sep 2026 00:20:58 +0800
-X-OQ-MSGID: <20260904162100.13674-1-zhuling0805@qq.com>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nzmCu1aT"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5831E1F00A3D;
+	Fri,  4 Sep 2026 16:28:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788539328;
+	bh=16d+lV4gT1UtaUNij1siiNnTn0hOqiD7JGT339Z6y6o=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=nzmCu1aTde/3LmRYTzzDs2D2yO5xsPfXe/vU6uMmMYjVXKReJO2RyzXBFr0tyPkQl
+	 MV7p8m+kNPVjs/QjTHlvPDszuU4vf7zf9aX6C0bNdEgbr/OW1egC8lQDXbVUYPJlrQ
+	 qATx5UoSfLD/oHBvSeoOr2KViju45MMFuBhpfrU6SyOFkhD1ZG1WLzOwfQ86+hrvVr
+	 e/Jq9eWgAquOjvoCrfiylrJrHbMXXGAOXWbKiyQ9FqhsiWsLeyLT9f/06j1RzfsD2j
+	 qM5vxwPTr/CvJhPguZFQljd70oKla9MJ2MN41LJ7kbtj5TtYWMLTcr2slzzxUwvhaw
+	 9gejrOwbUoE8Q==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH net] can: netlink: fix IFLA_CAN_BITRATE_MAX attribute
+ sizing
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Zhu Ling" <zhuling0805@qq.com>
+Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>
+In-Reply-To: <tencent_D1C873B86B0E92011A264B0E196B911D5308@qq.com>
+References: <tencent_D1C873B86B0E92011A264B0E196B911D5308@qq.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 04 Sep 2026 16:28:47 +0000
+Message-Id: <20260904162848.5831E1F00A3D@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-can_fill_info() emits IFLA_CAN_BITRATE_MAX with nla_put(), which consumes
-space for both the attribute header and its aligned payload. However,
-can_get_size() accounts for the payload only. The resulting underestimate
-can make filling the netlink response fail with -EMSGSIZE when the skb has
-no remaining slack.
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+s) to consider:
 
-Use nla_total_size() to account for the complete attribute.
+Pre-existing issues:
+- [High] Pre-existing netlink payload size underestimation in `can_pwm_get_=
+size()` when PWM capabilities exist but `CAN_CTRLMODE_XL_TMS` is disabled, =
+leading to `-EMSGSIZE` when filling the response.
+--
 
-Fixes: 2290aefa2e90 ("can: dev: Add support for limiting configured bitrate")
-Cc: stable@vger.kernel.org
-Signed-off-by: Zhu Ling <zhuling0805@qq.com>
----
- drivers/net/can/dev/netlink.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+commit 9a3cf7f66d6ea7a9d4aba48ff7c5376d72db7fe3
+Author: Zhu Ling <zhuling0805@qq.com>
 
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 766d455950f5..ba26c61a82c2 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -822,7 +822,7 @@ static size_t can_get_size(const struct net_device *dev)
- 	if (priv->bitrate_const)				/* IFLA_CAN_BITRATE_CONST */
- 		size += nla_total_size(sizeof(*priv->bitrate_const) *
- 				       priv->bitrate_const_cnt);
--	size += sizeof(priv->bitrate_max);			/* IFLA_CAN_BITRATE_MAX */
-+	size += nla_total_size(sizeof(priv->bitrate_max));	/* IFLA_CAN_BITRATE_MAX */
- 	size += can_ctrlmode_ext_get_size();			/* IFLA_CAN_CTRLMODE_EXT */
- 
- 	size += can_data_bittiming_get_size(&priv->fd,
+can: netlink: fix IFLA_CAN_BITRATE_MAX attribute sizing
 
-base-commit: 641d03105cc0d2437e32fdeec164f91a4ccef6c4
--- 
-2.43.0
+This commit fixes an issue in can_get_size() where the size for
+IFLA_CAN_BITRATE_MAX was missing the netlink attribute header overhead. By
+using nla_total_size(), it prevents -EMSGSIZE errors when the skb has no sl=
+ack
+left.
 
+> diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+> index 766d455950f55..ba26c61a82c2f 100644
+> --- a/drivers/net/can/dev/netlink.c
+> +++ b/drivers/net/can/dev/netlink.c
+> @@ -822,7 +822,7 @@ static size_t can_get_size(const struct net_device *d=
+ev)
+>  	if (priv->bitrate_const)				/* IFLA_CAN_BITRATE_CONST */
+>  		size +=3D nla_total_size(sizeof(*priv->bitrate_const) *
+>  				       priv->bitrate_const_cnt);
+> -	size +=3D sizeof(priv->bitrate_max);			/* IFLA_CAN_BITRATE_MAX */
+> +	size +=3D nla_total_size(sizeof(priv->bitrate_max));	/* IFLA_CAN_BITRAT=
+E_MAX */
+>  	size +=3D can_ctrlmode_ext_get_size();			/* IFLA_CAN_CTRLMODE_EXT */
+> =20
+>  	size +=3D can_data_bittiming_get_size(&priv->fd,
+
+[Severity: High]
+This isn't a bug introduced by this patch, but while looking at
+can_get_size(), I noticed another potential size underestimation just below
+this diff in can_pwm_get_size():
+
+drivers/net/can/dev/netlink.c:can_pwm_get_size() {
+	if (!pwm_const || !pwm_on)
+		return 0;
+	...
+}
+
+If a CAN interface has hardware PWM support (pwm_const is non-NULL) but PWM=
+ is
+currently disabled (pwm_on is false), can_pwm_get_size() returns 0.
+
+However, can_pwm_fill_info() only checks pwm_const:
+
+drivers/net/can/dev/netlink.c:can_pwm_fill_info() {
+	if (!pwm_const)
+		return 0;
+
+	nest =3D nla_nest_start(skb, IFLA_CAN_XL_PWM);
+	...
+}
+
+Could this mismatch cause can_pwm_fill_info() to write 52 bytes that were n=
+ot
+accounted for by can_get_size() when CAN_CTRLMODE_XL_TMS is disabled?
+
+If so, could this also overflow the skb and cause nla_put() to fail with
+-EMSGSIZE, breaking interface notifications and queries like 'ip link show'
+for such devices?
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/tencent_D1C873B86B0=
+E92011A264B0E196B911D5308@qq.com?part=3D1
