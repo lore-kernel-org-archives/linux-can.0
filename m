@@ -1,120 +1,138 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30E133E5A1D
-	for <linux-can@vger.kernel.org>; Fri,  4 Sep 2026 16:28:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3E3E4746C1
+	for <linux-can@vger.kernel.org>; Fri,  4 Sep 2026 17:08:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788539330; cv=none; b=izYiMXXVELe4lI0zX5+B+nykLmqkYqCQ+dyOsQCDXqvMwgWISJiXe3Ay7kJ2DefUVuPDlDxu+CTGJKEvT/2XW+N6RmDBO6I2pHa+4lQ6DNaeSESnY2PSgoHwkbR7hER1xHhZkLsZtddFApc6k7Gi6rnRwqeqeMbY2QVCxtWytE4=
+	t=1788541688; cv=none; b=OIafp96MxDNHsFfof0xTI0baiBekkwrDlysBvkCaSwYD83ruFMWtyKyIEczXJg7Agfliql9AooDLdpwq71PXCOFtscJ8WtMwy/scL3d9uicQxYftrUjkGcHIJ1aRBdaSN9BGUIkXnCyuIBhKXqP1QFhG8sD9RHFgGYwV1VYdWFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788539330; c=relaxed/simple;
-	bh=K7HCdygcfuxD0i7X1ku+pxuKaOfxVYCDD9gsnbeLI0U=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=TncQYoTgrJu5O8kBjhgqBYYXV8huIHWULXYNOJ5sRYUQcvgULUpKk+0cMkFQTA9vLb0wNUsi51YeooVtjQZo4Dni2izrJzaW2y7N0pXGav3KY+x2e9O2I7bLExUG21BEQEk/ylc2l/4iSCWMDoBEH6Ib7luWMrJkZxKxoZMGTdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nzmCu1aT; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1788541688; c=relaxed/simple;
+	bh=Y3F2BY8tywWp+xEJCyblMsva6BBMmuyetlg60qfX6uE=;
+	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
+	 References:In-Reply-To; b=Ew8M2AU5HMVTcRU9JPK4iSHCm2p1HjEZP8cpM8mM47zQ7uaNERMpAnAU4GaBIaA/Obn76bFBogJhuUekuaOnJMedQe7m6RQezRu295v9SpJwRhy+aOkl68LKLft672Wu6Z4abHf27DkuFQI5XKCpU64I37PH3KcMT6YL/FlAfxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=ojnIyqfS; arc=none smtp.client-ip=162.62.58.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nzmCu1aT"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5831E1F00A3D;
-	Fri,  4 Sep 2026 16:28:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788539328;
-	bh=16d+lV4gT1UtaUNij1siiNnTn0hOqiD7JGT339Z6y6o=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=nzmCu1aTde/3LmRYTzzDs2D2yO5xsPfXe/vU6uMmMYjVXKReJO2RyzXBFr0tyPkQl
-	 MV7p8m+kNPVjs/QjTHlvPDszuU4vf7zf9aX6C0bNdEgbr/OW1egC8lQDXbVUYPJlrQ
-	 qATx5UoSfLD/oHBvSeoOr2KViju45MMFuBhpfrU6SyOFkhD1ZG1WLzOwfQ86+hrvVr
-	 e/Jq9eWgAquOjvoCrfiylrJrHbMXXGAOXWbKiyQ9FqhsiWsLeyLT9f/06j1RzfsD2j
-	 qM5vxwPTr/CvJhPguZFQljd70oKla9MJ2MN41LJ7kbtj5TtYWMLTcr2slzzxUwvhaw
-	 9gejrOwbUoE8Q==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net] can: netlink: fix IFLA_CAN_BITRATE_MAX attribute
- sizing
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Zhu Ling" <zhuling0805@qq.com>
-Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org, "Oleksij
- Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <tencent_D1C873B86B0E92011A264B0E196B911D5308@qq.com>
-References: <tencent_D1C873B86B0E92011A264B0E196B911D5308@qq.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 04 Sep 2026 16:28:47 +0000
-Message-Id: <20260904162848.5831E1F00A3D@smtp.kernel.org>
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="ojnIyqfS"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1788541680; bh=Y3F2BY8tywWp+xEJCyblMsva6BBMmuyetlg60qfX6uE=;
+	h=From:To:Cc:Subject:Date:References:In-Reply-To;
+	b=ojnIyqfSSKn0jEvXUGfgiCf2IvOwAZMZcHqnvbdKT2t96wnSFdleFqHNydJ3Ie3C1
+	 p+Je/6ikge/KmInbOHk/V59ykp+Zm12xd2n3WNv0uQlCN2JisGT9LA07G7Nyng9HQV
+	 SbcOgb6lbNBVhSQyXuIbDK+YKcmedPhITvHYwb0k=
+X-QQ-XMRINFO: NS+P29fieYNwZYHNm0AtW8rJSr/CvvEk4Q==
+X-QQ-XMAILINFO: OMwX7W5oJqOBeGxI75QpWKqbhXdskQehOewM0byXgzvjSCGCuB877t7eG1Nnnp
+	 NVf/rvbAoRJrkVJjnh3fGRGKFWDAD5Q9DEDy0YngFzMJXK2p7gLploVVm42NQxW53kKsRiYw+NiXA
+	 k6Hbqu/1MXuu9Zt0+g3hGYSyelvBVe+SdHlt9eIssAc6pXmut35x9N9fUQ+nxbyYMx3vxGjkv9VXf
+	 pTV7vMKzqsQ5ki5iuxex76d63qv9Ly54My88osMVLlSU8x3/MBdckeoGOhuX0Z6E5KV2gLdLIZWAQ
+	 dl/LRiYoSjePjZfa8tV11HyvAdjdRhE95a1judck8V5QSqSoTEGu/Prw15HlgQp7eF2x5uOVXYc+K
+	 BcCuLLbWBbuCsIGVijY0ME5AxwzgXca7Dqfu7VjoSiKytmKxYrrbGtbbf8CGvfHvdyTZpuZ7Y1d0B
+	 xDn7Q/83RohqO2VBVbsefM0g8qVdypcEgiONcIloKwx2IobwjjtkOsL9mCaQNUdipe3KhKOvXWKi/
+	 qZkUEykK2tp5kkcoUJAM2FY2lj9nDBt42wzJMqHF8HnYtWxoq9GrJX5z9+7j79ZoGJQhqBgTTJQf/
+	 sQro7+L36krNaw0MoxGvYWQe35o/ImcfF2NuTjmMnytW8bch8E1JYJl6OsKKhk6OFWx2p6SvKuTSG
+	 n0i5Bc8XhrGHa4doL/PA2TMFM5UEmKHVgrGsFsbxRl+FMkkpT4pdnzz6qeWn71viVTkoJwq2vytG7
+	 DW5khaXnPhiMMm9gO2IAKyYNZqGP1J3pnWHYRGt8kqFSa1xNcT/rndfgHtJPnMRL5mU8my75TTdFm
+	 zw03nh/+oTk8OawEIjVacsQVGivxOfnfRzLaqgAivJhXKWPXDd7gP7n1QMh/V3nNtGUpkWBVecplc
+	 Rjywb2YdxlZpjKuB/HQHjUXurU/o2RRbGDL50xMi4lZS5uTPMblbKYBjXzsCSfAP3LbeHULAXSBsZ
+	 yN/GgrsPG8oFJ1dr9C+JkUoNWwUO8cTpp9VCVzPaL6po2ZQxjJpRiXvs5Z0UiA1X4wv7MIyq0Dl2a
+	 gK7lxQDnziRk98AVUNMF2tgow9VckeijpDlypJfZjknp2EXltOEXG9mvjxAGVJwyl6wi/fWAx5oyY
+	 E8ckJV7Xpcu4LY0lJqD5xe3R
+From: "=?utf-8?B?emh1bGluZzA4MDU=?=" <zhuling0805@qq.com>
+To: "=?utf-8?B?c2FzaGlrby1yZXZpZXdz?=" <sashiko-reviews@lists.linux.dev>
+Cc: "=?utf-8?B?T2xpdmVyIEhhcnRrb3Bw?=" <socketcan@hartkopp.net>, "=?utf-8?B?VmluY2VudCBNYWlsaG9s?=" <mailhol@kernel.org>, "=?utf-8?B?T2xla3NpaiBSZW1wZWw=?=" <o.rempel@pengutronix.de>, "=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?=" <mkl@pengutronix.de>, "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>
+Subject: Re: [PATCH net] can: netlink: fix static FD-NON-ISO mode validation
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Date: Sat, 5 Sep 2026 01:07:59 +0800
+X-Priority: 3
+Message-ID: <tencent_4339953572497F8D81A5B18CB1C8A229D407@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
+References: <tencent_B5154AEA68C02E81646C47664F2DCCB5AD0A@qq.com>
+	<20260904154238.32DF71F00A3D@smtp.kernel.org>
+In-Reply-To: <20260904154238.32DF71F00A3D@smtp.kernel.org>
+X-QQ-mid: xmsezb58-0t1788541679t00hh2l9h
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
+VGhhbmtzIGZvciBjYXRjaGluZyB0aGlzLiBZb3UgYXJlIHJpZ2h0LgoKU3RhdGljIGNvbnRy
+b2wgbW9kZXMgYXJlIGRlcml2ZWQgZnJvbSBwcml2LT5jdHJsbW9kZSwgc28gdGhlIHYxIGNo
+YW5nZQpjb3VsZCBhbGxvdyBDQU5fQ1RSTE1PREVfRkRfTk9OX0lTTyB0byBiZSBjbGVhcmVk
+IHBlcm1hbmVudGx5LgoKSSBoYXZlIGFkZHJlc3NlZCB0aGlzIGJ5IHByZXNlcnZpbmcgdGhl
+IG9yaWdpbmFsIHN0YXRpYyBtb2RlIG1hc2sgd2hlbgphcHBseWluZyB0aGUgdXNlcnNwYWNl
+IHJlcXVlc3QuIFRoZSBmaXggaGFzIGJlZW4gcG9zdGVkIGFzOgoKW1BBVENIIG5ldCB2Ml0g
+Y2FuOiBuZXRsaW5rOiBmaXggc3RhdGljIEZELU5PTi1JU08gbW9kZSB2YWxpZGF0aW9uCgpS
+ZWdhcmRzLApaaHUKCgoK5Y6f5aeL6YKu5Lu2CuWPkeS7tuS6uu+8mnNhc2hpa28tYm90IDxz
+YXNoaWtvLWJvdEBrZXJuZWwub3JnPgrlj5Hku7bml7bpl7TvvJoyMDI25bm0OeaciDTml6Ug
+MjM6NDIK5pS25Lu25Lq677yaWmh1IExpbmcgPHpodWxpbmcwODA1QHFxLmNvbT4K5oqE6YCB
+77yaT2xpdmVyIEhhcnRrb3BwIDxzb2NrZXRjYW5AaGFydGtvcHAubmV0PiwgVmluY2VudCBN
+YWlsaG9sIDxtYWlsaG9sQGtlcm5lbC5vcmc+LCBPbGVrc2lqIFJlbXBlbCA8by5yZW1wZWxA
+cGVuZ3V0cm9uaXguZGU+LCBNYXJjIEtsZWluZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRl
+PiwgbGludXgtY2FuIDxsaW51eC1jYW5Admdlci5rZXJuZWwub3JnPgrkuLvpopjvvJpSZTog
+W1BBVENIIG5ldF0gY2FuOiBuZXRsaW5rOiBmaXggc3RhdGljIEZELU5PTi1JU08gbW9kZSB2
+YWxpZGF0aW9uCgoKVGhhbmvCoHlvdcKgZm9ywqB5b3VywqBjb250cmlidXRpb24hwqBTYXNo
+aWtvwqBBScKgcmV2aWV3wqBmb3VuZMKgMcKgcG90ZW50aWFswqBpc3N1ZShzKcKgdG/CoGNv
+bnNpZGVyOgoKUHJlLWV4aXN0aW5nwqBpc3N1ZXM6Ci3CoFtIaWdoXcKgUmVzdG9yaW5nwqB0
+aGXCoG9sZMKgYGN0cmxzdGF0aWNfbWlzc2luZ2DCoGV2YWx1YXRpb27CoG9yZGVywqByZS1p
+bnRyb2R1Y2VzwqBhwqBsb29waG9sZcKgdGhhdMKgYWxsb3dzwqB1c2Vyc3BhY2XCoHRvwqBw
+ZXJtYW5lbnRsecKgd2lwZcKgdGhlwqBzdGF0aWPCoGBDQU5fQ1RSTE1PREVfRkRfTk9OX0lT
+T2DCoGNhcGFiaWxpdHnCoGZyb23CoHRoZcKgZGV2aWNlLgotLQoKY29tbWl0wqA3MTAyNTA3
+YTgyOTc5MTRkOWJiNzA3ZTgzZjAzMGJmZDdmODgyNzgyCkF1dGhvcjrCoFpodcKgTGluZ8Kg
+PHpodWxpbmcwODA1QHFxLmNvbT4KCmNhbjrCoG5ldGxpbms6wqBmaXjCoHN0YXRpY8KgRkQt
+Tk9OLUlTT8KgbW9kZcKgdmFsaWRhdGlvbgoKVGhpc8KgY29tbWl0wqBhZGp1c3RzwqB0aGXC
+oGNhbGN1bGF0aW9uwqBvZsKgY3RybHN0YXRpY19taXNzaW5nwqBpbgpjYW5fY3RybG1vZGVf
+Y2hhbmdlbGluaygpLsKgSXTCoGV2YWx1YXRlc8KgdGhlwqB2YXJpYWJsZcKgYWZ0ZXLCoHJl
+bW92aW5nCkNBTl9DVFJMTU9ERV9GRF9OT05fSVNPwqBmcm9twqB0aGXCoHN0YXRpY8KgY29u
+dHJvbMKgbW9kZXPCoHdoZW7CoENBTsKgRkTCoGlzCmRpc2FibGVkLMKgd2hpY2jCoHJlc3Rv
+cmVzwqB0aGXCoGJlaGF2aW9ywqBmcm9twqBiZWZvcmXCoHRoZcKgb2ZmZW5kaW5nwqBjb21t
+aXQuCgo+wqBkaWZmwqAtLWdpdMKgYS9kcml2ZXJzL25ldC9jYW4vZGV2L25ldGxpbmsuY8Kg
+Yi9kcml2ZXJzL25ldC9jYW4vZGV2L25ldGxpbmsuYwo+wqBpbmRleMKgNzY2ZDQ1NTk1MGY1
+NS4uMjY5ODNmMWI0MDc3OcKgMTAwNjQ0Cj7CoC0tLcKgYS9kcml2ZXJzL25ldC9jYW4vZGV2
+L25ldGxpbmsuYwo+wqArKyvCoGIvZHJpdmVycy9uZXQvY2FuL2Rldi9uZXRsaW5rLmMKPsKg
+QEDCoC0zMjEsN8KgKzMyMSw2wqBAQMKgc3RhdGljwqBpbnTCoGNhbl9jdHJsbW9kZV9jaGFu
+Z2VsaW5rKHN0cnVjdMKgbmV0X2RldmljZcKgKmRldiwKPsKgwqAgbWFza2VkZmxhZ3PCoD3C
+oGNtLT5mbGFnc8KgJsKgY20tPm1hc2s7Cj7CoMKgIGRlYWN0aXZhdGVkwqA9wqB+Y20tPmZs
+YWdzwqAmwqBjbS0+bWFzazsKPsKgwqAgbm90c3VwcMKgPcKgbWFza2VkZmxhZ3PCoCbCoH4o
+cHJpdi0+Y3RybG1vZGVfc3VwcG9ydGVkwqB8wqBjdHJsc3RhdGljKTsKPsKgLSBjdHJsc3Rh
+dGljX21pc3NpbmfCoD3CoChtYXNrZWRmbGFnc8KgJsKgY3RybHN0YXRpYynCoF7CoGN0cmxz
+dGF0aWM7Cj7CoMKgCj7CoMKgIGlmwqAobm90c3VwcCnCoHsKPsKgwqAgTkxfU0VUX0VSUl9N
+U0dfRk1UKGV4dGFjaywKPsKgQEDCoC0zMzQsNsKgKzMzMyw3wqBAQMKgc3RhdGljwqBpbnTC
+oGNhbl9jdHJsbW9kZV9jaGFuZ2VsaW5rKHN0cnVjdMKgbmV0X2RldmljZcKgKmRldiwKPsKg
+wqAgaWbCoCghKG1hc2tlZGZsYWdzwqAmwqBDQU5fQ1RSTE1PREVfRkQpKQo+wqDCoCBjdHJs
+c3RhdGljwqAmPcKgfkNBTl9DVFJMTU9ERV9GRF9OT05fSVNPOwo+wqDCoAo+wqArIGN0cmxz
+dGF0aWNfbWlzc2luZ8KgPcKgKG1hc2tlZGZsYWdzwqAmwqBjdHJsc3RhdGljKcKgXsKgY3Ry
+bHN0YXRpYzsKPsKgwqAgaWbCoChjdHJsc3RhdGljX21pc3NpbmcpwqB7CgpbU2V2ZXJpdHk6
+wqBIaWdoXQpUaGlzwqBpc24ndMKgYcKgYnVnwqBpbnRyb2R1Y2VkwqBiecKgdGhpc8KgcGF0
+Y2gswqBidXTCoHJlc3RvcmluZ8KgdGhlwqBvbGTCoGV2YWx1YXRpb24Kb3JkZXLCoGhlcmXC
+oHJlLWludHJvZHVjZXPCoGHCoGxvb3Bob2xlwqB0aGF0wqBhbGxvd3PCoHVzZXJzcGFjZcKg
+dG/CoHBlcm1hbmVudGx5wqB3aXBlCnRoZcKgc3RhdGljwqBDQU5fQ1RSTE1PREVfRkRfTk9O
+X0lTT8KgY2FwYWJpbGl0ecKgZnJvbcKgdGhlwqBkZXZpY2UuCgpJZsKgYcKgdXNlcsKgd2l0
+aMKgQ0FQX05FVF9BRE1JTsKgaW7CoHRoZcKgbmV0d29ya8KgbmFtZXNwYWNlwqBzZW5kc8Kg
+YcKgTmV0bGlua8KgbWVzc2FnZQp0b8KgbW9kaWZ5wqBJRkxBX0NBTl9DVFJMTU9ERcKgd2l0
+aMKgY20tPm1hc2vCoD3CoENBTl9DVFJMTU9ERV9GRMKgfApDQU5fQ1RSTE1PREVfRkRfTk9O
+X0lTT8KgYW5kwqBjbS0+ZmxhZ3PCoD3CoDA6CgotwqAhKG1hc2tlZGZsYWdzwqAmwqBDQU5f
+Q1RSTE1PREVfRkQpwqBldmFsdWF0ZXPCoHRvwqB0cnVlLgotwqBjdHJsc3RhdGljwqBpc8Kg
+dGhlbsKgbWFza2VkwqB0b8KgY2xlYXLCoENBTl9DVFJMTU9ERV9GRF9OT05fSVNPLgotwqBU
+aGXCoG5ld8KgY3RybHN0YXRpY19taXNzaW5nwqBjaGVja8KgZXZhbHVhdGVzwqB0b8KgMMKg
+XsKgMMKgPcKgMCzCoHdoaWNowqBieXBhc3NlcwrCoMKgdGhlwqBwcm90ZWN0aW9uLgotwqBM
+YXRlcsKgaW7CoGNhbl9jdHJsbW9kZV9jaGFuZ2VsaW5rKCkswqBwcml2LT5jdHJsbW9kZcKg
+Jj3CoH5jbS0+bWFza8KgcGVybWFuZW50bHkKwqDCoGNsZWFyc8KgQ0FOX0NUUkxNT0RFX0ZE
+X05PTl9JU0/CoGZyb23CoHRoZcKgZGV2aWNlJ3PCoGludGVybmFswqBzdGF0ZS4KCldoZW7C
+oENBTl9DVFJMTU9ERV9GRMKgaXPCoHN1YnNlcXVlbnRsecKgcmUtZW5hYmxlZCzCoHRoZcKg
+Y29udHJvbGxlcsKgd2lsbMKgYmUKY29uZmlndXJlZMKgaW7CoElTT8KgbW9kZcKgZGVzcGl0
+ZcKgcGh5c2ljYWxsecKgcmVxdWlyaW5nwqBOT04tSVNPwqBtb2RlwqBzdGF0aWNhbGx5LgpD
+b3VsZMKgdGhpc8KgbGVhZMKgdG/CoENBTsKgYnVzwqBtaXNjb25maWd1cmF0aW9uwqBhbmTC
+oHRyYWZmaWPCoGZhaWx1cmU/Cgo+wqDCoCBOTF9TRVRfRVJSX01TR19GTVQoZXh0YWNrLAo+
+wqDCoCDCoMKgwqAibWlzc2luZ8KgcmVxdWlyZWTCoCVzwqBzdGF0aWPCoGNvbnRyb2zCoG1v
+ZGUiLAoKLS3CoApTYXNoaWtvwqBBScKgcmV2aWV3wqDCt8KgaHR0cHM6Ly9zYXNoaWtvLmRl
+di8jL3BhdGNoc2V0L3RlbmNlbnRfQjUxNTRBRUE2OEMwMkU4MTY0NkM0NzY2NEYyRENDQjVB
+RDBBQHFxLmNvbT9wYXJ0PTEKCg==
 
-Pre-existing issues:
-- [High] Pre-existing netlink payload size underestimation in `can_pwm_get_=
-size()` when PWM capabilities exist but `CAN_CTRLMODE_XL_TMS` is disabled, =
-leading to `-EMSGSIZE` when filling the response.
---
-
-commit 9a3cf7f66d6ea7a9d4aba48ff7c5376d72db7fe3
-Author: Zhu Ling <zhuling0805@qq.com>
-
-can: netlink: fix IFLA_CAN_BITRATE_MAX attribute sizing
-
-This commit fixes an issue in can_get_size() where the size for
-IFLA_CAN_BITRATE_MAX was missing the netlink attribute header overhead. By
-using nla_total_size(), it prevents -EMSGSIZE errors when the skb has no sl=
-ack
-left.
-
-> diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-> index 766d455950f55..ba26c61a82c2f 100644
-> --- a/drivers/net/can/dev/netlink.c
-> +++ b/drivers/net/can/dev/netlink.c
-> @@ -822,7 +822,7 @@ static size_t can_get_size(const struct net_device *d=
-ev)
->  	if (priv->bitrate_const)				/* IFLA_CAN_BITRATE_CONST */
->  		size +=3D nla_total_size(sizeof(*priv->bitrate_const) *
->  				       priv->bitrate_const_cnt);
-> -	size +=3D sizeof(priv->bitrate_max);			/* IFLA_CAN_BITRATE_MAX */
-> +	size +=3D nla_total_size(sizeof(priv->bitrate_max));	/* IFLA_CAN_BITRAT=
-E_MAX */
->  	size +=3D can_ctrlmode_ext_get_size();			/* IFLA_CAN_CTRLMODE_EXT */
-> =20
->  	size +=3D can_data_bittiming_get_size(&priv->fd,
-
-[Severity: High]
-This isn't a bug introduced by this patch, but while looking at
-can_get_size(), I noticed another potential size underestimation just below
-this diff in can_pwm_get_size():
-
-drivers/net/can/dev/netlink.c:can_pwm_get_size() {
-	if (!pwm_const || !pwm_on)
-		return 0;
-	...
-}
-
-If a CAN interface has hardware PWM support (pwm_const is non-NULL) but PWM=
- is
-currently disabled (pwm_on is false), can_pwm_get_size() returns 0.
-
-However, can_pwm_fill_info() only checks pwm_const:
-
-drivers/net/can/dev/netlink.c:can_pwm_fill_info() {
-	if (!pwm_const)
-		return 0;
-
-	nest =3D nla_nest_start(skb, IFLA_CAN_XL_PWM);
-	...
-}
-
-Could this mismatch cause can_pwm_fill_info() to write 52 bytes that were n=
-ot
-accounted for by can_get_size() when CAN_CTRLMODE_XL_TMS is disabled?
-
-If so, could this also overflow the skb and cause nla_put() to fail with
--EMSGSIZE, breaking interface notifications and queries like 'ip link show'
-for such devices?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/tencent_D1C873B86B0=
-E92011A264B0E196B911D5308@qq.com?part=3D1
