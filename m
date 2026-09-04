@@ -1,44 +1,43 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A675A36D500
-	for <linux-can@vger.kernel.org>; Fri,  4 Sep 2026 15:40:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C52454FECD5
+	for <linux-can@vger.kernel.org>; Fri,  4 Sep 2026 15:42:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788536447; cv=none; b=GlNev4+7CRV29DnzHYDeMnqRy1BBLpI1PP/xthjUEPGpIIYdIsCgnhCTlhWlNxbL3JMftA9/guixVrqjN6ZEfJRVLIqNrHnuZp2jqas6lT+oDU1U3CMQqHvyJhHLaWMgggrpETgQwV7EyayBwvLRbPwEdSjtdjcpIsSJdQlEx8k=
+	t=1788536577; cv=none; b=bps1SIUbf6BBHQpBnF0wIfJT4K9mOoRC4sM/WHH98Wew4zE6IvvV2ZWsDZBhPSILjPzsIojGNnGctIfUT5Fw+ml2DadWL6YjM0NerLptnqxQe25+ENS2vtikuENDbgdO5SWWN/a+N/6I+y0uLt+rG+6STEKyYE0QUd9wHfkwLi4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788536447; c=relaxed/simple;
-	bh=qMH8BnzvXF6SF2Q392dMQR0qlkk6CWw1Ynk2U4uk+WY=;
+	s=arc-20240116; t=1788536577; c=relaxed/simple;
+	bh=sRNZEF4e3R5JUpQphGrO/tNSaFFnPUbNIoB9ZukkOkc=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=pSMWCsQGdtmH9pVCfMIfLBXxFRsJTykm6iXdUWbFIdxVQNzxwiqx9LE+L7F4oncQbW9Gk7owhwHPxd+LUMTuKpac82CvEro66FAue+egHgNgy5J+FCzTjHgRrhl9aHNzjSrlCDy8UDWQg+mhdvvzYjc/toJmjiODVa5/4YhB6Fw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gekFWrYh; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=K9QMFsfsCzkCrkl4ywcvgLMCAFjF+4m9hyTU4MDy/2EjJZqUWsPbZAYoM5y8hOQXFpVA/KokzmileD7RHkpLSNlu6L4Yajl2DIAhBBMGg1KpEFYLms91kucsTMlBv+/OflcWsHRM7ut8WKdqUGFDgWrHw/zxYNZk2SAv0QdCux0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eK2SuEZI; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gekFWrYh"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E548A1F00A3D;
-	Fri,  4 Sep 2026 15:40:45 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eK2SuEZI"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32DF71F00A3D;
+	Fri,  4 Sep 2026 15:42:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788536446;
-	bh=rNrUoCply4YCRVum1Qe0eA0BZuIm66uH5jLWwc5kxJk=;
+	s=k20260515; t=1788536558;
+	bh=O5AUq4mGDUOFtlQ4Rte8JLZsCKJT7V7kitVuod1MTao=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=gekFWrYhYn74YXdWrnVpqSmfM85wwDabbU2bfvvAfCZsF0b4vUM65rXjpmk5ZELxp
-	 tO2nubvVsaOCeitmcAAcUjupSJVnfdSCAd4wrPQXAuWn6bCMwOG4OOT6KhZhS1dK82
-	 Jb1NJNXgov3r/ZGSij44jcdzTNozdsiPotG2sikFYs0QySlf92Y6Dg/PXxxGUirPgz
-	 8HgFbGiZJiTkkXrQWH1m728RtJG2TCIOChHg+VaVj3vMr4BpNjTJE+Y8+uVS5HeGpA
-	 KHNofzsHafqBi34FltfT4NPuJGjt9YcmlIIG2zYsBtltQEIXMpqp+yHmyw1BNXP9XH
-	 pgXz+ePm98HQQ==
+	b=eK2SuEZIRbALCyG9P5Vx+qpQl3xIVL0bsUhZ8WbA1uD+DtcCHoJVlPetS5N0FJU+j
+	 Fb3omyZC7qnpraARz2zWLXBRuhSnmGxDzu4BkDmUjvDewfArRsBSH/ToE8gjpSvtVR
+	 vebQ87GrCfUc9TY7y/4P8ZRNEmNrwiCufaFzriSEXpdSJx0BsEJrlzE3bOljZWBTgj
+	 +qYoCjgCa8fUvZF+ZVKafmFzQiI2ErcklgavAxB42oq6uC6z0oWj+Y52/gRhndo+Ht
+	 TwPAjXeE7mrchLuj1NA8moyjD6jiT1V1jVXPiA562m32N+aHhyX0xLqX0ejlR68XXO
+	 6M3qA8Z+rc8Iw==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net] can: netlink: fix CAN XL PWM attribute sizing
+Subject: Re: [PATCH net] can: netlink: fix static FD-NON-ISO mode validation
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Zhu Ling" <zhuling0805@qq.com>
-Cc: "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org, "Oliver
- Hartkopp" <socketcan@hartkopp.net>
-In-Reply-To: <tencent_9A525E0656A4F7D4CA9CFA1AB1A4BFC6D706@qq.com>
-References: <tencent_9A525E0656A4F7D4CA9CFA1AB1A4BFC6D706@qq.com>
+Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>, "Marc Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org
+In-Reply-To: <tencent_B5154AEA68C02E81646C47664F2DCCB5AD0A@qq.com>
+References: <tencent_B5154AEA68C02E81646C47664F2DCCB5AD0A@qq.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Fri, 04 Sep 2026 15:40:45 +0000
-Message-Id: <20260904154045.E548A1F00A3D@smtp.kernel.org>
+Date: Fri, 04 Sep 2026 15:42:37 +0000
+Message-Id: <20260904154238.32DF71F00A3D@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -49,83 +48,68 @@ Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
 
 Pre-existing issues:
-- [High] can_get_size() underestimates the netlink message size by not usin=
-g nla_total_size() for the IFLA_CAN_BITRATE_MAX attribute.
+- [High] Restoring the old `ctrlstatic_missing` evaluation order re-introdu=
+ces a loophole that allows userspace to permanently wipe the static `CAN_CT=
+RLMODE_FD_NON_ISO` capability from the device.
 --
 
-commit 65a98e250b77c16c65b20dbe5d32fe88f1c06e1b
+commit 7102507a8297914d9bb707e83f030bfd7f882782
 Author: Zhu Ling <zhuling0805@qq.com>
 
-can: netlink: fix CAN XL PWM attribute sizing
+can: netlink: fix static FD-NON-ISO mode validation
 
-can_pwm_fill_info() emits the PWM capability limits whenever pwm_const is
-present, regardless of whether TMS is enabled. In contrast,
-can_pwm_get_size() currently returns zero when TMS is disabled. It
-therefore underestimates the required netlink message size by the nested
-attribute header and six u32 attributes.
-
-Always account for the PWM capability attributes when pwm_const is
-present, and account for the three runtime PWM values only when TMS is
-enabled.
+This commit adjusts the calculation of ctrlstatic_missing in
+can_ctrlmode_changelink(). It evaluates the variable after removing
+CAN_CTRLMODE_FD_NON_ISO from the static control modes when CAN FD is
+disabled, which restores the behavior from before the offending commit.
 
 > diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-> index 766d455950f55..0eac5a3f577ec 100644
+> index 766d455950f55..26983f1b40779 100644
 > --- a/drivers/net/can/dev/netlink.c
 > +++ b/drivers/net/can/dev/netlink.c
-> @@ -780,7 +780,7 @@ static size_t can_pwm_get_size(const struct can_pwm_c=
-onst *pwm_const,
->  {
->  	size_t size;
+> @@ -321,7 +321,6 @@ static int can_ctrlmode_changelink(struct net_device =
+*dev,
+>  	maskedflags =3D cm->flags & cm->mask;
+>  	deactivated =3D ~cm->flags & cm->mask;
+>  	notsupp =3D maskedflags & ~(priv->ctrlmode_supported | ctrlstatic);
+> -	ctrlstatic_missing =3D (maskedflags & ctrlstatic) ^ ctrlstatic;
 > =20
-> -	if (!pwm_const || !pwm_on)
-> +	if (!pwm_const)
->  		return 0;
+>  	if (notsupp) {
+>  		NL_SET_ERR_MSG_FMT(extack,
+> @@ -334,6 +333,7 @@ static int can_ctrlmode_changelink(struct net_device =
+*dev,
+>  	if (!(maskedflags & CAN_CTRLMODE_FD))
+>  		ctrlstatic &=3D ~CAN_CTRLMODE_FD_NON_ISO;
 > =20
->  	size =3D nla_total_size(0);			/* nest IFLA_CAN_PWM */
-
-[ ... ]
-
-> @@ -792,9 +792,11 @@ static size_t can_pwm_get_size(const struct can_pwm_=
-const *pwm_const,
->  	size +=3D nla_total_size(sizeof(u32));		/* IFLA_CAN_PWM_PWMO_MIN */
->  	size +=3D nla_total_size(sizeof(u32));		/* IFLA_CAN_PWM_PWMO_MAX */
-> =20
-> -	size +=3D nla_total_size(sizeof(u32));		/* IFLA_CAN_PWM_PWMS */
-> -	size +=3D nla_total_size(sizeof(u32));		/* IFLA_CAN_PWM_PWML */
-> -	size +=3D nla_total_size(sizeof(u32));		/* IFLA_CAN_PWM_PWMO */
-> +	if (pwm_on) {
-> +		size +=3D nla_total_size(sizeof(u32));	/* IFLA_CAN_PWM_PWMS */
-> +		size +=3D nla_total_size(sizeof(u32));	/* IFLA_CAN_PWM_PWML */
-> +		size +=3D nla_total_size(sizeof(u32));	/* IFLA_CAN_PWM_PWMO */
-> +	}
-> =20
->  	return size;
->  }
+> +	ctrlstatic_missing =3D (maskedflags & ctrlstatic) ^ ctrlstatic;
+>  	if (ctrlstatic_missing) {
 
 [Severity: High]
-This is a pre-existing issue, but while looking at the netlink message size
-calculations, I noticed a potential under-allocation in the caller:
+This isn't a bug introduced by this patch, but restoring the old evaluation
+order here re-introduces a loophole that allows userspace to permanently wi=
+pe
+the static CAN_CTRLMODE_FD_NON_ISO capability from the device.
 
-drivers/net/can/dev/netlink.c:can_get_size() {
-	...
-	if (priv->bitrate_const)				/* IFLA_CAN_BITRATE_CONST */
-		size +=3D nla_total_size(sizeof(*priv->bitrate_const) *
-				       priv->bitrate_const_cnt);
-	size +=3D sizeof(priv->bitrate_max);			/* IFLA_CAN_BITRATE_MAX */
-	size +=3D can_ctrlmode_ext_get_size();			/* IFLA_CAN_CTRLMODE_EXT */
-	...
-}
+If a user with CAP_NET_ADMIN in the network namespace sends a Netlink messa=
+ge
+to modify IFLA_CAN_CTRLMODE with cm->mask =3D CAN_CTRLMODE_FD |
+CAN_CTRLMODE_FD_NON_ISO and cm->flags =3D 0:
 
-Does the IFLA_CAN_BITRATE_MAX size calculation underestimate the required
-netlink message size? It appears to add only the payload size instead of
-wrapping it in nla_total_size() to account for the NLA header.
+- !(maskedflags & CAN_CTRLMODE_FD) evaluates to true.
+- ctrlstatic is then masked to clear CAN_CTRLMODE_FD_NON_ISO.
+- The new ctrlstatic_missing check evaluates to 0 ^ 0 =3D 0, which bypasses
+  the protection.
+- Later in can_ctrlmode_changelink(), priv->ctrlmode &=3D ~cm->mask permane=
+ntly
+  clears CAN_CTRLMODE_FD_NON_ISO from the device's internal state.
 
-If the allocation doesn't happen to have enough slack to cover the calculat=
-ion
-error, couldn't this cause userspace netlink requests (like `ip link show`)=
- to
-randomly fail with -EMSGSIZE and truncate the response?
+When CAN_CTRLMODE_FD is subsequently re-enabled, the controller will be
+configured in ISO mode despite physically requiring NON-ISO mode statically.
+Could this lead to CAN bus misconfiguration and traffic failure?
+
+>  		NL_SET_ERR_MSG_FMT(extack,
+>  				   "missing required %s static control mode",
 
 --=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/tencent_9A525E0656A=
-4F7D4CA9CFA1AB1A4BFC6D706@qq.com?part=3D1
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/tencent_B5154AEA68C=
+02E81646C47664F2DCCB5AD0A@qq.com?part=3D1
