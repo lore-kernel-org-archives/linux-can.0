@@ -1,92 +1,119 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from out203-205-221-240.mail.qq.com (out203-205-221-240.mail.qq.com [203.205.221.240])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E6824F052D;
-	Fri,  4 Sep 2026 15:58:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50CCD3E3DAB;
+	Fri,  4 Sep 2026 16:20:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.240
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788537494; cv=none; b=Lx1skuFPWQWOPbx/aFwTPUvipdUb/8Z3+nVC3JP/wGfxyHFCjDgMuEFhBOzz84748WiHFo32nWuQ0C2lHiOtc+O1/daGgT1XhwEh/xMu3vb4a0qGAPLB9nyQl849IMzdSgdIxBjrsW765sATXvopTSQEp4D5+KivL8LakIx6Mzk=
+	t=1788538852; cv=none; b=g1Zwz+A2qgK/KZvHrOwuD1AgpXhiutWmdSJHMwZFOn7duB54deatMGfY4K7W+BRghQMA3KtRYoctOlM9Q729pJ5mEyC9h0waW0zg3BB1Q/+QL2hKht/WmUXz9etMLvu7LHXWrxZfoGv8Jo3HjIev4MWF3OgyD1HYyNs4N0hr77U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788537494; c=relaxed/simple;
-	bh=MAMHc3lcCEx7Gz9i6NwKaBAiqbW/7oSEolLbycKUbPU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HymG4gMpbjuwtdR5sHZXfp/PRlIuWCP6TuKhoTqEx9PoqwAKmC2TWgAbR3/VqdZToXdPuevvh1FDK4u2e/cSfHe5JCspUC76TV51XVIcoZ47rdxFK1mS6oGnPtkE+TXmen6rWYY2RTx0JT5M3OHuJ5XxcT53yDx4Ha/o/szKoA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YeoORvmH; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1788538852; c=relaxed/simple;
+	bh=0cwGCt6hrRq8xg9wyN+h9VmZMCk/bmEBDFWVngdzaGY=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=AmpqH6r9OwgaxOBOLaujDYnhLMQxYIEBc+ZDOXSu3dgZ2nGErF56UpsISI5YYxP8wAb8IuB5TB+shUskDYuWPKPvYzqlNLciCZHS30il09y8ssyZL8kAFo45d4wKzCDNPuSSqSMDpO+FuhpNf9BoXrSnUmIQB/j1nMeF5sq78pI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=RMVX3uEt; arc=none smtp.client-ip=203.205.221.240
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YeoORvmH"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92D661F00A3D;
-	Fri,  4 Sep 2026 15:58:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788537493;
-	bh=xFBkR9T0SQCtUDwL8PQObCORwH0zWTKutCjB4dzETP4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=YeoORvmHxqLmUVtXYpglFo8Xgu1ji5AKGIXIO6Mm8N5xIm4dXmqXD+clgqcWKLeY3
-	 TQXS47+v9ZKtzRnB9bwcmz/xuaotwZQZt+msSrow1xFdWHhWuZI7rpSimHlnU7ercc
-	 qq8732lFwY9ju3z4VMdciwyPv6/45agXQqEHVc/j1wIeyMWtwmURw6TnxLOh6kUjXE
-	 qt2RQj1/NpPKFcBnXJsX+gLYdYGuK6yw7/7pPoiKZQlxG6bMMx5OD2cxw6yQjanA0O
-	 l6mxQekLsEfYk02DnMQQtBWF+b1uSpc35BoRUjFKJ/MvNqfSS5szwk94rmCJUfqbjD
-	 pTinIofYxQYWg==
-Date: Fri, 4 Sep 2026 08:58:11 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Siddharth Vadapalli <s-vadapalli@ti.com>
-Cc: <dario.binacchi@amarulasolutions.com>, <mkl@pengutronix.de>,
- <mailhol@kernel.org>, <msp@baylibre.com>, <florian.fainelli@broadcom.com>,
- <jonas.gorski@gmail.com>, <andrew@lunn.ch>, <olteanv@gmail.com>,
- <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
- <kurt@linutronix.de>, <hauke@hauke-m.de>, <chester.a.unal@arinc9.com>,
- <daniel@makrotopia.org>, <matthias.bgg@gmail.com>,
- <angelogioacchino.delregno@collabora.com>, <ansuelsmth@gmail.com>,
- <linusw@kernel.org>, <luizluca@gmail.com>, <alvin.sipraga@analog.com>,
- <clement.leger@bootlin.com>, <justin.chen@broadcom.com>, <dlan@kernel.org>,
- <rogerq@kernel.org>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
- <rjui@broadcom.com>, <sbranden@broadcom.com>,
- <bcm-kernel-feedback-list@broadcom.com>, <opendmb@gmail.com>,
- <andrei.botila@oss.nxp.com>, <wangruikang@iscas.ac.cn>,
- <amadeus@jmu.edu.cn>, <kees@kernel.org>, <tmshlvck@gmail.com>,
- <c-vankar@ti.com>, <horms@kernel.org>, <vadim.fedorenko@linux.dev>,
- <daniel.zahka@gmail.com>, <nora.schiffer@ew.tq-group.com>,
- <v-singh1@ti.com>, <oss@vassilevski.com>, <haokexin@gmail.com>,
- <alex@sverdlin.org>, <aleksandr.loktionov@intel.com>,
- <lgs201920130244@gmail.com>, <linux-can@vger.kernel.org>,
- <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <linux-renesas-soc@vger.kernel.org>,
- <linux-riscv@lists.infradead.org>, <spacemit@lists.linux.dev>,
- <linux-omap@vger.kernel.org>
-Subject: Re: [PATCH net-next 00/33] Remove comma after sentinel entries in
- match table
-Message-ID: <20260904085811.7e2c2db6@kernel.org>
-In-Reply-To: <20260904043724.2955444-1-s-vadapalli@ti.com>
-References: <20260904043724.2955444-1-s-vadapalli@ti.com>
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="RMVX3uEt"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1788538846; bh=pQhTt8C1RqJwYOxWHzW/WHRbox3l1hLIdTRTAGI6ghk=;
+	h=From:To:Cc:Subject:Date;
+	b=RMVX3uEtCsg/8dy021tGiWhNwU8+GVNfrtySttM4qozQaWgzX8I5X3wjzlp3sLVf7
+	 5eJlw3Te+aL6dcMr/PYJ8MPXscJmex2XJcf0Jm+0lQJbevdVAnI6ZAVXBr+w84GQ7G
+	 hFwJSqb018AocYHJZQYueydGrmS00eEXEv3fwKmE=
+Received: from xgyy.localdomain ([2408:8352:603:550:7022:3b83:9f7:e2a7])
+	by newxmesmtplogicsvrszb51-1.qq.com (NewEsmtp) with SMTP
+	id 5248FCAA; Sat, 05 Sep 2026 00:20:36 +0800
+X-QQ-mid: xmsmtpt1788538836ty70909dc
+Message-ID: <tencent_3A964832542399A780E646D6A6246335C409@qq.com>
+X-QQ-XMAILINFO: NVJ0hJNx7N5S5wA3es0TOFpevCas9KqmgAfUL3rdRKShuGwPlRlASVByNv1h1c
+	 KkNZ4QRag8HZVIIHkTQsQrtQ6DBayHRQxKEOGA+ex6X5AaZj22NwSa52UWFW8UdXk0SPrRvFQ77f
+	 +w+nsbi9FX6phOyPLJlCnkPQ+JW/oHiyQQpUFOPViVvr7MR0tr4Ej2fVj6/RvwMf4hNt18RgrESD
+	 DPhCqK0nFGW0BxiHvZZgJhYMbKnUN0AK5p95qdSbRNX+fPXGR9oZm/es7N/o5khcbsEmpuol/stY
+	 RVbQOSEjx1nOqxa9OQty4b9UWYE5jmg7mkUjvCL6FN07GEvfjeoNOAyIDVOPJHFyvhwv9ccSm2hf
+	 g7HY6hjQjIuaRsaBaGT1R/bD7pH9ZkL8q2MRIZBjn6Lnn/xKf7PfTqzNSqDmFLtKXAx8nGm4v87q
+	 n4x4rfQqX4T+lXNgien+MZLlxbRVKGMtvfe8OaLKlhUyuobcN7lVwTDADDTKKz5zAYAM3o1tzeeo
+	 05pf0ytQZ9Z3iwQxU3B2UsuVSz4haKxySxIl60G5hucFhMqDM2y4f4gl2dW46tOU1UhWam4adrQk
+	 mfqpB+BndSNpYSfjkmnUeCO15K85Tc9ovbx293TvArqvpngrSzW1K7X81JjR9yKIPKikgoLMfnCi
+	 J0BricKd+J9vDWf+pw29YX2AgjEswPui6UjuITTdqWyAbzZkGPi/IdmjYMrX2YeMaH7p/P/w1Cnq
+	 AdOnnnkYXPUmEqMoSg+pFX8n5OTBCoaOF0f9CmRMfPnklUUUxlzqYps9yw5KKS1MQnIM8VBAfBgL
+	 XUuQO/dtRHpr2kIl8PW9ivK/n6T1YaCsFew2z2R3tODIejQfW1fMAT8oDDiyRR5PnMcl3jYhHMMM
+	 pLn/qKbEV/vXewXchiah9Pltch1YKWsXZI6goM3T/zCrc+fZACUa/8qcAriJNALepHGCwWwXiwxW
+	 xrEGPBVt3uIbWD47BP4u5a4cDCWGGmLAigy+nI3PoZ//hKPniqZk8vqnc8lteZpIsxaBfWpqyYny
+	 iGTXwZC/yYkUsiwHR7sigpDbfqXFTKRDpJrkglW0/3h894VEM6rta1beLcJEKjWSv9SHr1g4xZLv
+	 71gdDOaqxl+sqT4ZMUNO7E/7WM3A==
+X-QQ-XMRINFO: Nq+8W0+stu50tPAe92KXseR0ZZmBTk3gLg==
+From: Zhu Ling <zhuling0805@qq.com>
+To: linux-can@vger.kernel.org
+Cc: mkl@pengutronix.de,
+	mailhol@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Zhu Ling <zhuling0805@qq.com>,
+	stable@vger.kernel.org
+Subject: [PATCH net v2] can: netlink: fix static FD-NON-ISO mode validation
+Date: Sat,  5 Sep 2026 00:20:31 +0800
+X-OQ-MSGID: <20260904162033.13431-1-zhuling0805@qq.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Fri, 4 Sep 2026 10:06:06 +0530 Siddharth Vadapalli wrote:
-> This series removes the comma present after sentinel entries in the match
-> tables across all networking subsystem drivers, with the exception of the
-> davinci_mdio.c driver, for which, the patch posted by Geert at:
-> https://lore.kernel.org/r/e481b6de46cecc6ea604ae165272c667274cc621.1788437140.git.geert+renesas@glider.be/
-> does the same.
-> 
-> Since I inquired about a cleanup across the entire networking subsystem but
-> didn't get a response:
-> https://lore.kernel.org/r/b3d19098-eccd-4619-b667-ad3b7e0a4422@ti.com/
-> I decided to post this series. Given that Andrew Lunn acknowledged the
-> cleanup of the davinci_mdio driver:
-> https://lore.kernel.org/r/abec6831-d344-489d-b70c-1e5dd4d43c2d@lunn.ch/
-> and I don't see why the cleanup is specific to davinci_mdio driver alone,
-> I am hoping that this series is treated identically to the patch that
-> Geert had posted for the davinci_mdio driver.
-> 
-> Series is based on commit
-> 6ebcf5074cff net: openvswitch: don't schedule rebalancing if there are no datapaths
-> of the 'main' branch of the net-next tree.
+The static CAN_CTRLMODE_FD_NON_ISO mode does not have to be specified when
+CAN FD is disabled. Since commit 6742ca18cb41 ("can: netlink: add userland
+error messages"), ctrlstatic_missing is calculated before applying this
+exception. Disabling CAN FD on a controller with static FD-NON-ISO mode
+therefore fails with -EOPNOTSUPP.
 
-You failed to specify why this "cleanup" makes a difference.
-have you ever seen the sentinel not be the last entry?
+Apply the exception to ctrlstatic_missing instead of modifying ctrlstatic.
+Keep the original static mode mask and restore it after applying the
+userspace mask, so a request that disables CAN FD cannot remove
+CAN_CTRLMODE_FD_NON_ISO from priv->ctrlmode.
+
+Fixes: 6742ca18cb41 ("can: netlink: add userland error messages")
+Cc: stable@vger.kernel.org
+Signed-off-by: Zhu Ling <zhuling0805@qq.com>
+---
+v2:
+  - Apply the FD-disabled exception to ctrlstatic_missing while keeping the
+    original static mode mask intact.
+  - Restore the static modes after applying the userspace mask so they cannot
+    be cleared from priv->ctrlmode.
+v1: https://lore.kernel.org/all/tencent_B5154AEA68C02E81646C47664F2DCCB5AD0A@qq.com/
+
+ drivers/net/can/dev/netlink.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index 766d455950f5..1f67871020a5 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -332,7 +332,7 @@ static int can_ctrlmode_changelink(struct net_device *dev,
+ 
+ 	/* do not check for static fd-non-iso if 'fd' is disabled */
+ 	if (!(maskedflags & CAN_CTRLMODE_FD))
+-		ctrlstatic &= ~CAN_CTRLMODE_FD_NON_ISO;
++		ctrlstatic_missing &= ~CAN_CTRLMODE_FD_NON_ISO;
+ 
+ 	if (ctrlstatic_missing) {
+ 		NL_SET_ERR_MSG_FMT(extack,
+@@ -357,9 +357,9 @@ static int can_ctrlmode_changelink(struct net_device *dev,
+ 		priv->ctrlmode &= ~(CAN_CTRLMODE_XL_TDC_MASK |
+ 				    CAN_CTRLMODE_XL_TMS);
+ 
+-	/* clear bits to be modified and copy the flag values */
++	/* clear bits to be modified, copy flags and restore static modes */
+ 	priv->ctrlmode &= ~cm->mask;
+-	priv->ctrlmode |= maskedflags;
++	priv->ctrlmode |= maskedflags | ctrlstatic;
+ 
+ 	/* Wipe potential leftovers from previous CAN FD/XL config */
+ 	if (!(priv->ctrlmode & CAN_CTRLMODE_FD)) {
+
+base-commit: 641d03105cc0d2437e32fdeec164f91a4ccef6c4
+-- 
+2.43.0
+
