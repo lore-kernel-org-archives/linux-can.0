@@ -1,59 +1,60 @@
-Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.48])
+Received: from out162-62-57-137.mail.qq.com (out162-62-57-137.mail.qq.com [162.62.57.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A1553F4827;
-	Fri,  4 Sep 2026 15:27:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C37444F472E;
+	Fri,  4 Sep 2026 15:28:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.137
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788535672; cv=none; b=TTZhduBlax8BifXSkSVm6Dd8NqiDcc1XlWTT4bH+bKY3dD94H/mDx3OSY8rV/zBQtvcG2DBdtRnRD7sJY0VU2X0kxsVs3OV4Fg6wN/fBb19vUBNC/SuFg1n1Yvw/JdTxq42Q7e0QvUb4DyuGXjIBxKkT4mXEIxXZqG1SB75Vlvg=
+	t=1788535689; cv=none; b=UN6zkDmen8Q+N72G9WcxPUH+1mA3jitXC1UJNWFT24cPZzT91WQSrgho7OLhirDpLYKID4zm/Rnx5B/mWiGKgC7nae2AkoUpK9v0fVjfwZ/JYV4eKDn2b9XQ5AYvOrM0D6t4gw01WPAJHzZih1/F5t+oGBPYJ/6VbC3hQT6HMGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788535672; c=relaxed/simple;
-	bh=QQ8diKhFHWJAtIfnEYnoYfmqFG689W2ITKxC2kRfle8=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=bGahnDCFrZogzqoHZGxgTlCUdvmSalB6Gz5vFg70nk5WcajlLfnI9Q4JoOgy0aglQ4XeAn+cEPo/BtgAHaZvWve2AiUxgLpiW+4LV67jT/hR8UXpuIy3ki9oWyWupFf9H6t7dgCF1USdFHUSK9tnEmafxnRrche8zBgJRXIGSaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=NkMb9aZ4; arc=none smtp.client-ip=43.163.128.48
+	s=arc-20240116; t=1788535689; c=relaxed/simple;
+	bh=gDTOAP4aopR+lt51OjSkHEb3w6VUP1ti5rerP6KFqAQ=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=sMuPEf7LM3nDGhxB3Wo0zLpeEPokZQKiSnd544p1gkzUklZBCbH+WZ7bV00+eqZNIR9NmJ4H4GCE1wN4ssSVxKJMQk84Jyb6/BlvwJ9qcFvcS09TOsU33saf0Jye8K/JPF/JHQYEkSXNI194B2xgwNZbc6eOjvC8isG1k9LEHDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=zyYTGwQ5; arc=none smtp.client-ip=162.62.57.137
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="NkMb9aZ4"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="zyYTGwQ5"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1788535665; bh=p6YT/VL9q0sGuJwdEwSfwmPVh6F1cIy5Cuf+I+1m3tU=;
+	t=1788535681; bh=Rv1dxfBRU/2ymYEmCjY2rrUT6woVMRWj+38UuA5GtEE=;
 	h=From:To:Cc:Subject:Date;
-	b=NkMb9aZ4Uo9h20yRv0PVotH630F/z8jzd9XjL8NZk65KeJ+US/STEItOF8cPoPfnG
-	 Yvm6tuDMjffwP8C6Pe9cZa0vJT8VA+i9uAV4ZJfLJ43oZ3R8BnhdOIwRTXjYKkdvGJ
-	 Gb/pGGpubeyB3WSQAxCX1LOwwMl99cpAOmxNc37E=
+	b=zyYTGwQ5th7g29vp6CLFWMuyDPVrTXD7NCcfWWjBa36BzIoGPxRNT3KR1r3cXRSf3
+	 1y+zNUAbW+m7Pn3mnFC9XUkJ4RLjT7c4iv2dDM+AqQ3GJNeDZxaALUOtn5fadJCzMV
+	 JzqO6rD6SO5SABLoEZDTs/S3Mp5qYu6D3Prfor9k=
 Received: from xgyy.localdomain ([2408:8352:603:550:ac27:2fd0:a691:b668])
-	by newxmesmtplogicsvrszb51-0.qq.com (NewEsmtp) with SMTP
-	id 69A3BE9E; Fri, 04 Sep 2026 23:26:26 +0800
-X-QQ-mid: xmsmtpt1788535586txwovzsal
-Message-ID: <tencent_B5154AEA68C02E81646C47664F2DCCB5AD0A@qq.com>
-X-QQ-XMAILINFO: MPcqOQWpcFrmJuKMPTvtbXjGodpt6d+d7SviPalG30iDXb48r+pVjbpHJRdI2v
-	 K1GoT2F2rnc6PmJjuO83odnHf1lDpKVUCamhV3hI3OrEOglXWzqAL0BzN+KBOLkCBJUON5a2Kujk
-	 UHgkMob5VYyWH12KV6TYHpTQYJzPzoNHCvh5fOL3x1XQjlPHZdQkUKvuEr1Yd1pRM32BHYjX/m9p
-	 fAYjYpa+SQUIlAtQORNarMkYAfeSBlPvaXY+liUZTe7qKMR1WIj+XeoI1Egtpnb+75wfv3i5Onjj
-	 OXDM7CpzqxUKdXScLjK7/25KoVw5GItQe2O62oudn4/dfZfqDt0DIlW2QCtA9KfPufar14O2e7h4
-	 STRy4Uc46O53jc8yk2ylfBZhnP1nEvQR+0BfCfeFVATa1Oo5CZuWLCSM/M8TigutBuF+nOXH2snC
-	 NHprylyZ9rfZIIza7UJWhiCItfZjQ94khiKMlk040c9ipjJB/dgY96JCnFTal68YWIvJl3tJXORy
-	 jr2xQN22GS7lOP60m5Qdaq2cfabrcCtB+4xrntkWyYpKNDiZV7Jvb7RY2EaHP+bd2l/QrWy9fuWN
-	 TdURmnbxP6OIK2eb11Nvt9qMTTeLc2xFo4RD7NmhwXBdlBQV29hRQA7LRtpiURAF1ixdmX8O6P3E
-	 MNpUHTWpXgCfb8zhxXePRS8dCqI91L32g2Q/UBST2a9Kux6nvT4tQ/YbKS+sa60278rGc+9z6SGM
-	 7nZAtL5HBSpggMjEXjHf3ISBrupYeLiOg1Y/VNG36dgErg9laCx06F5JyGLWoNdDT21oX18fWQLk
-	 FZHX5MME4KE2PrLjKqxgwFdlGpqWQkdOWjqSBvYGblbQjSwz0MxJBoc/pLy5wQpOLRyU//kAdIqf
-	 Q4E0Jk0gxddAl/TMdbyr/t5DPQ1iuhsT3l1SxkiD426ZY9pnQhtFgz1K/JseKb1Ox08raMMT2+yj
-	 9YigaPNqjrnBCo46N3pfMTQI/5LrrELES5OT2VI0klYBKwUAk+6xCFw50Jalhr2FHCYRl8QKrdiu
-	 SI4G4SR3vIIPoLeCOqJ/XYMUMDWnPgxRdFrbTLTaErm7yKYU5+Mkx8D6fBBotsxZyoGsIy+VGrkL
-	 TH41ii6DKMHBLDhuxr1+GiTew7WfFwM/0iiRy4cxgwDAzJMhMx5HPdnrT1P6mKYvgRiWLBA0zO/B
-	 oFKXAT/NAINrzJUA==
-X-QQ-XMRINFO: NI4Ajvh11aEjEMj13RCX7UuhPEoou2bs1g==
+	by newxmesmtplogicsvrszc43-0.qq.com (NewEsmtp) with SMTP
+	id 6ACA42A6; Fri, 04 Sep 2026 23:26:44 +0800
+X-QQ-mid: xmsmtpt1788535604twqa0vjmm
+Message-ID: <tencent_9A525E0656A4F7D4CA9CFA1AB1A4BFC6D706@qq.com>
+X-QQ-XMAILINFO: Md0EpfRTqfgWOA/YCY48b0rpW9CK12nMfBNbllc8o3ISlpNPeN6jo2JQDJG2x/
+	 0sa9aDa6/lG4mNwa2Jpos3xembuYxfEpoxPYaMPMdWxYRGrbcBQNQjle0xImxnhRTooEeo4B/DsP
+	 4vXaJbmZW8tdIlLO8He37UbzokexRnqjYBQ076BuI96MQUMtWjysBQtBTrVCe96hWJ0dza9fkulK
+	 G4fMHHYdWJm8PaJJbJi34EpSWqOVmUwH5Otg9x1L9Nu9xbO3NnRTCVEQ8EpQqiwXzSLArj7e9veU
+	 FvbFJddga2Qv6cJgZ7kk41EV+TxvVKnifCCMRxoQl9CAW7vsa0gsOSp7hN5KxhdwyR/JlT/fpstp
+	 Rq0ZC7Ra8PHmWyv5nC4FE6iSE8A/w52knHSeKhydvALdVfRwp+GYvtuPQIjcFhjmOl+dXStpUVmB
+	 FoA9q4DKaa+hXwOnXPUEyWUFMpESdJLt4I+DmXmV8jEoDBUCXNXjbevZVcZWEY0VVS5y9aZCr3p3
+	 CwTNud9ziES/N84RlgBgMatZR+ix5/pfl0jQhL1c0ZBgcvyrWgFxdRMZwtHwbGKLz/gqV9pj+5C+
+	 YrzQlOGmEwFpyYVg+HUdaxCyu5CEAz9YT/Ms2Xi9X+P8XpuUDBzE0jllEjtSEjvCsxwRPAhbj7Gc
+	 Gtrbvy2T/llW5agvTCnJNThM2G54BEC/hy7L4jnS98e2FtpCsnI8CgLGseirEbiEXJLWi/LP+6cW
+	 2STXwltXu92pYfwJJw232JAFCBHWtJG4uLVGDPnAUIvrfDfJr4y+WgvYHBPvwNdPO667ezxvTPdf
+	 R5s4lJ7NshUWhAxF4n4E2j/7nrqqB4yYmw5ehwJEE0yVGu04t+Otkasn00h28vyOiiIvdEgvaYty
+	 K1DVhBwFoMw+/sBWvxBWPsAwmXGt95WXu3d2mZmWCoCqn1Osnqk49lRKvpnWLj1YKPad9BKgYrhO
+	 ZNO+9gyoORfEcAywbDwUJhN+qUzI9j4cx64GMr5b6ArSBscYAA5gMIFeT0LYErdPwf7yrXtovL6i
+	 oyEyvZRuKOMlWs1boY58f68PKfW4Q8+WWhS8hV2MPmmFksIHtbHkz3CPIAnWjEgIqlJ4kCfSRXIM
+	 qSks5uFiDfSLrjmBhwwbTxGcEMVAEUOwAPL1vtiq+AjU7Z0Ubns6Rpb+YwEr4vPIGZuoA2KvQOq9
+	 WBx4HK6kIFeTEi8A==
+X-QQ-XMRINFO: Nq+8W0+stu50tPAe92KXseR0ZZmBTk3gLg==
 From: Zhu Ling <zhuling0805@qq.com>
 To: linux-can@vger.kernel.org
 Cc: mkl@pengutronix.de,
 	mailhol@kernel.org,
+	socketcan@hartkopp.net,
 	linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org,
 	Zhu Ling <zhuling0805@qq.com>
-Subject: [PATCH net] can: netlink: fix static FD-NON-ISO mode validation
-Date: Fri,  4 Sep 2026 23:26:20 +0800
-X-OQ-MSGID: <20260904152622.40779-1-zhuling0805@qq.com>
+Subject: [PATCH net] can: netlink: fix CAN XL PWM attribute sizing
+Date: Fri,  4 Sep 2026 23:26:40 +0800
+X-OQ-MSGID: <20260904152641.40965-1-zhuling0805@qq.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
@@ -63,41 +64,51 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-can_ctrlmode_changelink() calculates ctrlstatic_missing before removing
-CAN_CTRLMODE_FD_NON_ISO from the static control modes when CAN FD is
-disabled. Consequently, the exception has no effect and disabling CAN FD
-on a controller with a static FD-NON-ISO mode fails with -EOPNOTSUPP.
+can_pwm_fill_info() emits the PWM capability limits whenever pwm_const is
+present, regardless of whether TMS is enabled. In contrast,
+can_pwm_get_size() currently returns zero when TMS is disabled. It
+therefore underestimates the required netlink message size by the nested
+attribute header and six u32 attributes.
 
-Calculate ctrlstatic_missing after adjusting ctrlstatic, restoring the
-behavior from before the offending commit.
+Always account for the PWM capability attributes when pwm_const is
+present, and account for the three runtime PWM values only when TMS is
+enabled.
 
-Fixes: 6742ca18cb41 ("can: netlink: add userland error messages")
+Fixes: 46552323fa67 ("can: netlink: add PWM netlink interface")
 Cc: stable@vger.kernel.org
 Signed-off-by: Zhu Ling <zhuling0805@qq.com>
 ---
- drivers/net/can/dev/netlink.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/dev/netlink.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 766d455950f5..26983f1b4077 100644
+index 766d455950f5..0eac5a3f577e 100644
 --- a/drivers/net/can/dev/netlink.c
 +++ b/drivers/net/can/dev/netlink.c
-@@ -321,7 +321,6 @@ static int can_ctrlmode_changelink(struct net_device *dev,
- 	maskedflags = cm->flags & cm->mask;
- 	deactivated = ~cm->flags & cm->mask;
- 	notsupp = maskedflags & ~(priv->ctrlmode_supported | ctrlstatic);
--	ctrlstatic_missing = (maskedflags & ctrlstatic) ^ ctrlstatic;
+@@ -780,7 +780,7 @@ static size_t can_pwm_get_size(const struct can_pwm_const *pwm_const,
+ {
+ 	size_t size;
  
- 	if (notsupp) {
- 		NL_SET_ERR_MSG_FMT(extack,
-@@ -334,6 +333,7 @@ static int can_ctrlmode_changelink(struct net_device *dev,
- 	if (!(maskedflags & CAN_CTRLMODE_FD))
- 		ctrlstatic &= ~CAN_CTRLMODE_FD_NON_ISO;
+-	if (!pwm_const || !pwm_on)
++	if (!pwm_const)
+ 		return 0;
  
-+	ctrlstatic_missing = (maskedflags & ctrlstatic) ^ ctrlstatic;
- 	if (ctrlstatic_missing) {
- 		NL_SET_ERR_MSG_FMT(extack,
- 				   "missing required %s static control mode",
+ 	size = nla_total_size(0);			/* nest IFLA_CAN_PWM */
+@@ -792,9 +792,11 @@ static size_t can_pwm_get_size(const struct can_pwm_const *pwm_const,
+ 	size += nla_total_size(sizeof(u32));		/* IFLA_CAN_PWM_PWMO_MIN */
+ 	size += nla_total_size(sizeof(u32));		/* IFLA_CAN_PWM_PWMO_MAX */
+ 
+-	size += nla_total_size(sizeof(u32));		/* IFLA_CAN_PWM_PWMS */
+-	size += nla_total_size(sizeof(u32));		/* IFLA_CAN_PWM_PWML */
+-	size += nla_total_size(sizeof(u32));		/* IFLA_CAN_PWM_PWMO */
++	if (pwm_on) {
++		size += nla_total_size(sizeof(u32));	/* IFLA_CAN_PWM_PWMS */
++		size += nla_total_size(sizeof(u32));	/* IFLA_CAN_PWM_PWML */
++		size += nla_total_size(sizeof(u32));	/* IFLA_CAN_PWM_PWMO */
++	}
+ 
+ 	return size;
+ }
 
 base-commit: 641d03105cc0d2437e32fdeec164f91a4ccef6c4
 -- 
