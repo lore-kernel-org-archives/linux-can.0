@@ -1,115 +1,92 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C52454FECD5
-	for <linux-can@vger.kernel.org>; Fri,  4 Sep 2026 15:42:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E6824F052D;
+	Fri,  4 Sep 2026 15:58:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788536577; cv=none; b=bps1SIUbf6BBHQpBnF0wIfJT4K9mOoRC4sM/WHH98Wew4zE6IvvV2ZWsDZBhPSILjPzsIojGNnGctIfUT5Fw+ml2DadWL6YjM0NerLptnqxQe25+ENS2vtikuENDbgdO5SWWN/a+N/6I+y0uLt+rG+6STEKyYE0QUd9wHfkwLi4=
+	t=1788537494; cv=none; b=Lx1skuFPWQWOPbx/aFwTPUvipdUb/8Z3+nVC3JP/wGfxyHFCjDgMuEFhBOzz84748WiHFo32nWuQ0C2lHiOtc+O1/daGgT1XhwEh/xMu3vb4a0qGAPLB9nyQl849IMzdSgdIxBjrsW765sATXvopTSQEp4D5+KivL8LakIx6Mzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788536577; c=relaxed/simple;
-	bh=sRNZEF4e3R5JUpQphGrO/tNSaFFnPUbNIoB9ZukkOkc=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=K9QMFsfsCzkCrkl4ywcvgLMCAFjF+4m9hyTU4MDy/2EjJZqUWsPbZAYoM5y8hOQXFpVA/KokzmileD7RHkpLSNlu6L4Yajl2DIAhBBMGg1KpEFYLms91kucsTMlBv+/OflcWsHRM7ut8WKdqUGFDgWrHw/zxYNZk2SAv0QdCux0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eK2SuEZI; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1788537494; c=relaxed/simple;
+	bh=MAMHc3lcCEx7Gz9i6NwKaBAiqbW/7oSEolLbycKUbPU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=HymG4gMpbjuwtdR5sHZXfp/PRlIuWCP6TuKhoTqEx9PoqwAKmC2TWgAbR3/VqdZToXdPuevvh1FDK4u2e/cSfHe5JCspUC76TV51XVIcoZ47rdxFK1mS6oGnPtkE+TXmen6rWYY2RTx0JT5M3OHuJ5XxcT53yDx4Ha/o/szKoA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YeoORvmH; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eK2SuEZI"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32DF71F00A3D;
-	Fri,  4 Sep 2026 15:42:38 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YeoORvmH"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92D661F00A3D;
+	Fri,  4 Sep 2026 15:58:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788536558;
-	bh=O5AUq4mGDUOFtlQ4Rte8JLZsCKJT7V7kitVuod1MTao=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=eK2SuEZIRbALCyG9P5Vx+qpQl3xIVL0bsUhZ8WbA1uD+DtcCHoJVlPetS5N0FJU+j
-	 Fb3omyZC7qnpraARz2zWLXBRuhSnmGxDzu4BkDmUjvDewfArRsBSH/ToE8gjpSvtVR
-	 vebQ87GrCfUc9TY7y/4P8ZRNEmNrwiCufaFzriSEXpdSJx0BsEJrlzE3bOljZWBTgj
-	 +qYoCjgCa8fUvZF+ZVKafmFzQiI2ErcklgavAxB42oq6uC6z0oWj+Y52/gRhndo+Ht
-	 TwPAjXeE7mrchLuj1NA8moyjD6jiT1V1jVXPiA562m32N+aHhyX0xLqX0ejlR68XXO
-	 6M3qA8Z+rc8Iw==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net] can: netlink: fix static FD-NON-ISO mode validation
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Zhu Ling" <zhuling0805@qq.com>
-Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, "Marc Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org
-In-Reply-To: <tencent_B5154AEA68C02E81646C47664F2DCCB5AD0A@qq.com>
-References: <tencent_B5154AEA68C02E81646C47664F2DCCB5AD0A@qq.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 04 Sep 2026 15:42:37 +0000
-Message-Id: <20260904154238.32DF71F00A3D@smtp.kernel.org>
+	s=k20260515; t=1788537493;
+	bh=xFBkR9T0SQCtUDwL8PQObCORwH0zWTKutCjB4dzETP4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=YeoORvmHxqLmUVtXYpglFo8Xgu1ji5AKGIXIO6Mm8N5xIm4dXmqXD+clgqcWKLeY3
+	 TQXS47+v9ZKtzRnB9bwcmz/xuaotwZQZt+msSrow1xFdWHhWuZI7rpSimHlnU7ercc
+	 qq8732lFwY9ju3z4VMdciwyPv6/45agXQqEHVc/j1wIeyMWtwmURw6TnxLOh6kUjXE
+	 qt2RQj1/NpPKFcBnXJsX+gLYdYGuK6yw7/7pPoiKZQlxG6bMMx5OD2cxw6yQjanA0O
+	 l6mxQekLsEfYk02DnMQQtBWF+b1uSpc35BoRUjFKJ/MvNqfSS5szwk94rmCJUfqbjD
+	 pTinIofYxQYWg==
+Date: Fri, 4 Sep 2026 08:58:11 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Siddharth Vadapalli <s-vadapalli@ti.com>
+Cc: <dario.binacchi@amarulasolutions.com>, <mkl@pengutronix.de>,
+ <mailhol@kernel.org>, <msp@baylibre.com>, <florian.fainelli@broadcom.com>,
+ <jonas.gorski@gmail.com>, <andrew@lunn.ch>, <olteanv@gmail.com>,
+ <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+ <kurt@linutronix.de>, <hauke@hauke-m.de>, <chester.a.unal@arinc9.com>,
+ <daniel@makrotopia.org>, <matthias.bgg@gmail.com>,
+ <angelogioacchino.delregno@collabora.com>, <ansuelsmth@gmail.com>,
+ <linusw@kernel.org>, <luizluca@gmail.com>, <alvin.sipraga@analog.com>,
+ <clement.leger@bootlin.com>, <justin.chen@broadcom.com>, <dlan@kernel.org>,
+ <rogerq@kernel.org>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+ <rjui@broadcom.com>, <sbranden@broadcom.com>,
+ <bcm-kernel-feedback-list@broadcom.com>, <opendmb@gmail.com>,
+ <andrei.botila@oss.nxp.com>, <wangruikang@iscas.ac.cn>,
+ <amadeus@jmu.edu.cn>, <kees@kernel.org>, <tmshlvck@gmail.com>,
+ <c-vankar@ti.com>, <horms@kernel.org>, <vadim.fedorenko@linux.dev>,
+ <daniel.zahka@gmail.com>, <nora.schiffer@ew.tq-group.com>,
+ <v-singh1@ti.com>, <oss@vassilevski.com>, <haokexin@gmail.com>,
+ <alex@sverdlin.org>, <aleksandr.loktionov@intel.com>,
+ <lgs201920130244@gmail.com>, <linux-can@vger.kernel.org>,
+ <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <linux-renesas-soc@vger.kernel.org>,
+ <linux-riscv@lists.infradead.org>, <spacemit@lists.linux.dev>,
+ <linux-omap@vger.kernel.org>
+Subject: Re: [PATCH net-next 00/33] Remove comma after sentinel entries in
+ match table
+Message-ID: <20260904085811.7e2c2db6@kernel.org>
+In-Reply-To: <20260904043724.2955444-1-s-vadapalli@ti.com>
+References: <20260904043724.2955444-1-s-vadapalli@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
+On Fri, 4 Sep 2026 10:06:06 +0530 Siddharth Vadapalli wrote:
+> This series removes the comma present after sentinel entries in the match
+> tables across all networking subsystem drivers, with the exception of the
+> davinci_mdio.c driver, for which, the patch posted by Geert at:
+> https://lore.kernel.org/r/e481b6de46cecc6ea604ae165272c667274cc621.1788437140.git.geert+renesas@glider.be/
+> does the same.
+> 
+> Since I inquired about a cleanup across the entire networking subsystem but
+> didn't get a response:
+> https://lore.kernel.org/r/b3d19098-eccd-4619-b667-ad3b7e0a4422@ti.com/
+> I decided to post this series. Given that Andrew Lunn acknowledged the
+> cleanup of the davinci_mdio driver:
+> https://lore.kernel.org/r/abec6831-d344-489d-b70c-1e5dd4d43c2d@lunn.ch/
+> and I don't see why the cleanup is specific to davinci_mdio driver alone,
+> I am hoping that this series is treated identically to the patch that
+> Geert had posted for the davinci_mdio driver.
+> 
+> Series is based on commit
+> 6ebcf5074cff net: openvswitch: don't schedule rebalancing if there are no datapaths
+> of the 'main' branch of the net-next tree.
 
-Pre-existing issues:
-- [High] Restoring the old `ctrlstatic_missing` evaluation order re-introdu=
-ces a loophole that allows userspace to permanently wipe the static `CAN_CT=
-RLMODE_FD_NON_ISO` capability from the device.
---
-
-commit 7102507a8297914d9bb707e83f030bfd7f882782
-Author: Zhu Ling <zhuling0805@qq.com>
-
-can: netlink: fix static FD-NON-ISO mode validation
-
-This commit adjusts the calculation of ctrlstatic_missing in
-can_ctrlmode_changelink(). It evaluates the variable after removing
-CAN_CTRLMODE_FD_NON_ISO from the static control modes when CAN FD is
-disabled, which restores the behavior from before the offending commit.
-
-> diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-> index 766d455950f55..26983f1b40779 100644
-> --- a/drivers/net/can/dev/netlink.c
-> +++ b/drivers/net/can/dev/netlink.c
-> @@ -321,7 +321,6 @@ static int can_ctrlmode_changelink(struct net_device =
-*dev,
->  	maskedflags =3D cm->flags & cm->mask;
->  	deactivated =3D ~cm->flags & cm->mask;
->  	notsupp =3D maskedflags & ~(priv->ctrlmode_supported | ctrlstatic);
-> -	ctrlstatic_missing =3D (maskedflags & ctrlstatic) ^ ctrlstatic;
-> =20
->  	if (notsupp) {
->  		NL_SET_ERR_MSG_FMT(extack,
-> @@ -334,6 +333,7 @@ static int can_ctrlmode_changelink(struct net_device =
-*dev,
->  	if (!(maskedflags & CAN_CTRLMODE_FD))
->  		ctrlstatic &=3D ~CAN_CTRLMODE_FD_NON_ISO;
-> =20
-> +	ctrlstatic_missing =3D (maskedflags & ctrlstatic) ^ ctrlstatic;
->  	if (ctrlstatic_missing) {
-
-[Severity: High]
-This isn't a bug introduced by this patch, but restoring the old evaluation
-order here re-introduces a loophole that allows userspace to permanently wi=
-pe
-the static CAN_CTRLMODE_FD_NON_ISO capability from the device.
-
-If a user with CAP_NET_ADMIN in the network namespace sends a Netlink messa=
-ge
-to modify IFLA_CAN_CTRLMODE with cm->mask =3D CAN_CTRLMODE_FD |
-CAN_CTRLMODE_FD_NON_ISO and cm->flags =3D 0:
-
-- !(maskedflags & CAN_CTRLMODE_FD) evaluates to true.
-- ctrlstatic is then masked to clear CAN_CTRLMODE_FD_NON_ISO.
-- The new ctrlstatic_missing check evaluates to 0 ^ 0 =3D 0, which bypasses
-  the protection.
-- Later in can_ctrlmode_changelink(), priv->ctrlmode &=3D ~cm->mask permane=
-ntly
-  clears CAN_CTRLMODE_FD_NON_ISO from the device's internal state.
-
-When CAN_CTRLMODE_FD is subsequently re-enabled, the controller will be
-configured in ISO mode despite physically requiring NON-ISO mode statically.
-Could this lead to CAN bus misconfiguration and traffic failure?
-
->  		NL_SET_ERR_MSG_FMT(extack,
->  				   "missing required %s static control mode",
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/tencent_B5154AEA68C=
-02E81646C47664F2DCCB5AD0A@qq.com?part=3D1
+You failed to specify why this "cleanup" makes a difference.
+have you ever seen the sentinel not be the last entry?
