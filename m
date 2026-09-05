@@ -1,126 +1,101 @@
-Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53E1330CD81
-	for <linux-can@vger.kernel.org>; Sat,  5 Sep 2026 14:04:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B14352E7391;
+	Sat,  5 Sep 2026 18:03:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788617070; cv=none; b=e529bTNhP6cy0dkiwoxLc7slwEXg4ojD+AE7gngCT6BTNyAPqb0F3YvMQEVm2XJgZzrpJg/cE9bDSZr2/VHVSZARJYnPJLKxPM7SeTDztWnL6uXZX6mDijJhXJ+KEjdCv6IQs7aN/MmI3WAoCrmL5sNSCnFtblgVwuodMV8VM7Q=
+	t=1788631383; cv=none; b=Xv0iS6wNEuspbxH7L+i7s9hDA4KY/pso3MXTebXl6H9zMs67wXS6Y3O6jBm7hM9B1U0Q2TPeAsGIP0//zyWaoNxxM6/YiTRIFwjGq2r+NEFcqqJ9Qg1Z0G+fbqtZM0esABRfyRqZhccfAhBhwpAKlGPFNHDC3s1X4nFomq4CExM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788617070; c=relaxed/simple;
-	bh=2EF8hQX2715PddwJ9oCsxzncsn7a4W2DF/R/kkGyUeM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y9EsDzCT1vbGr7DkoLLKr+yA3EbaudsM/CjOzAAppeGMiSL6d1OgCj1qM0Vnz/CgUw2GsNNUtsy31VjS14LGzL9h11XLAXBq8vabQ35LafbIfgJ3hh2xgqzvYoGSBAf0df3XXnVyYkEH6Fm2dVvSj1oIM4+FVeF9hHSBCfAjDGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-5c6559620e3so869970e0c.1
-        for <linux-can@vger.kernel.org>; Sat, 05 Sep 2026 07:04:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788617067; x=1789221867;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=mmU5FMAneHXfUtApnTl4gKdMaEZfbVGE87dIbOYTEoc=;
-        b=EPpYi+sbTpkunSNs9hIghcoZYROh4EwTO0RfiUd8GvKecHj30whU+er1/iEXXo6iOt
-         AxGKFfwn2lEizkbY6PaeDFw8jRG0xbMWWFQ9wTK2AKE43aKxpeSaUIRUG4ZRF9pCmFEF
-         R2DDzs2vqr0mZXNH1m6V5f+TdCOQfjNIAytsikIY2aK7vwm9hals1I4uTgeONTQ1FnD9
-         fknb4J7l0KACFAItNUYjUMYMCtg3LZQ7NT267QJi/4Y0U5lp988Z6v8lQDwfhRdmbugF
-         LtMPT7vwwVXR57aeXCw4mpqkiwsz+/jYq5M01pvgDXVUUwccmdgGPJmXX+dEjURB7U78
-         4OGg==
-X-Gm-Message-State: AFuF++k9ess0JkVYRcKbKhKQVzFApFzFWxbnEIMTbplgMec/iiO27AbX
-	jJrFSvr46790RGzkCBmGqn+DKNPbMKHk4wvz/vy2cM2TysS2JF+ZtgmoXk+lCxUX
-X-Gm-Gg: AYBFou2pO/S0XC+kv5aKYIixG/wIxs3ICbhy9Ar9VyR+9ZkXrf29Poj9XWkYoAJyG8n
-	1+Tb2r8wI3PxLidM5TIu/aO/36WL+B5sD5cfY7dS+o3kafecmJu0AYVW1/GLA+MWDWfBySVYrZB
-	g8H7DyLk0Y9Zd2Tc4ThIpM/FfWmVPhwvvK3RbszJ3qF1CCD52F0ncqA9qZRU3qRsuNfORq5Bac+
-	4SBSo465ZlU6LZ2ggJeDZWtdsnwlIz+tUex+J4FO23Lh65B3XckWPOTrL9gqNCwawzp0JXjfyWj
-	iNxNJGM8r0IAtCmw0SFxWYWrZTW93XQBpDbsUfhj8ddL5ui6AvoTQmsRTB9oMQcB6xI3hLc8vSV
-	z8Cucd9xDCZJ2147a91409HIx68t7NBb9eg1M9MPzADSZmMdPCPkdgzxUpshGkm88Kb3N/04t55
-	lVdRM1FqTk92oSxRgd0o83nyLuSsurbByopCCkrKgfLJafVjMRWj9JYXuT8Im7+JJw2cfq347uW
-	GYbRLt9w985lBa9zuL/I2QY+FDsDRAP9aSr
-X-Received: by 2002:a05:6122:4f83:b0:5a1:fbbd:6bd0 with SMTP id 71dfb90a1353d-5c7ed45ea59mr5265555e0c.5.1788617067143;
-        Sat, 05 Sep 2026 07:04:27 -0700 (PDT)
-Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com. [209.85.217.43])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5c7ec3b36cbsm4281891e0c.17.2026.09.05.07.04.21
-        for <linux-can@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Sep 2026 07:04:22 -0700 (PDT)
-Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-765c077b5c1so675624137.3
-        for <linux-can@vger.kernel.org>; Sat, 05 Sep 2026 07:04:21 -0700 (PDT)
-X-Received: by 2002:a05:6102:6d6:b0:737:783d:1916 with SMTP id
- ada2fe7eead31-78a4aa56803mr4238100137.11.1788617060541; Sat, 05 Sep 2026
- 07:04:20 -0700 (PDT)
+	s=arc-20240116; t=1788631383; c=relaxed/simple;
+	bh=b4i1HvmYC+QCvkWjfP58W8bQ1OnikECCoFtWUyduYoc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=KqEUuNXhbrs9j2uB9TYmNADAr/yPGSUWxZjJgXfsO6kZwvtqwNRus1H+1eYeKV1Vw8DGHCpJyc7n1lQh+Yxlwtv33msYazsOppKAGNJ7VU7tqI5KlRJtN9v8kv21OCgkMmwamYDz8Kk3F5+o0sKjxXP+Qk0q/lEZ53SQzA2B1hQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MNEexEVG; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MNEexEVG"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7AF01F00A3A;
+	Sat,  5 Sep 2026 18:03:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788631382;
+	bh=b4i1HvmYC+QCvkWjfP58W8bQ1OnikECCoFtWUyduYoc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=MNEexEVGh1RTnMaHT4+kKNk2D3jGJ2LiY1adZUzswWAxj/Lu3Dvmsx4rdCHWxTeIb
+	 zuj+DcHdYm9lOmbshmvWY8wukdE7NX4amMJKiPnCPU3fu0Xud6rXCByZQ/7P4Jpp1+
+	 rpGCbRWRvvkHto/QMITNm7jl9x+SiWoazoyy1xEu3ttOO7CikqsuL7NA/NLR45A5SE
+	 qX12DApvPD3hUQSXxojNo12Plf0eARi8xpKq7AVrgWSGV3mfvqT1UuE14VIGsSfE4J
+	 +0M+jXixgPCrD+fbzxu7hi2TWdN8kHwVDi1shNJ3bAmyhz5ymAW+2oI6/1JyDByfR6
+	 O79OuJAZSsB1Q==
+Date: Sat, 5 Sep 2026 11:03:00 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Siddharth Vadapalli <s-vadapalli@ti.com>
+Cc: <dario.binacchi@amarulasolutions.com>, <mkl@pengutronix.de>,
+ <mailhol@kernel.org>, <msp@baylibre.com>, <florian.fainelli@broadcom.com>,
+ <jonas.gorski@gmail.com>, <andrew@lunn.ch>, <olteanv@gmail.com>,
+ <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+ <kurt@linutronix.de>, <hauke@hauke-m.de>, <chester.a.unal@arinc9.com>,
+ <daniel@makrotopia.org>, <matthias.bgg@gmail.com>,
+ <angelogioacchino.delregno@collabora.com>, <ansuelsmth@gmail.com>,
+ <linusw@kernel.org>, <luizluca@gmail.com>, <alvin.sipraga@analog.com>,
+ <clement.leger@bootlin.com>, <justin.chen@broadcom.com>, <dlan@kernel.org>,
+ <rogerq@kernel.org>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+ <rjui@broadcom.com>, <sbranden@broadcom.com>,
+ <bcm-kernel-feedback-list@broadcom.com>, <opendmb@gmail.com>,
+ <andrei.botila@oss.nxp.com>, <wangruikang@iscas.ac.cn>,
+ <amadeus@jmu.edu.cn>, <kees@kernel.org>, <tmshlvck@gmail.com>,
+ <c-vankar@ti.com>, <horms@kernel.org>, <vadim.fedorenko@linux.dev>,
+ <daniel.zahka@gmail.com>, <nora.schiffer@ew.tq-group.com>,
+ <v-singh1@ti.com>, <oss@vassilevski.com>, <haokexin@gmail.com>,
+ <alex@sverdlin.org>, <aleksandr.loktionov@intel.com>,
+ <lgs201920130244@gmail.com>, <linux-can@vger.kernel.org>,
+ <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <linux-renesas-soc@vger.kernel.org>,
+ <linux-riscv@lists.infradead.org>, <spacemit@lists.linux.dev>,
+ <linux-omap@vger.kernel.org>
+Subject: Re: [PATCH net-next 00/33] Remove comma after sentinel entries in
+ match table
+Message-ID: <20260905110300.2b4825d5@kernel.org>
+In-Reply-To: <cc1f9d12-e853-4000-8236-9e7f5a9ed314@ti.com>
+References: <20260904043724.2955444-1-s-vadapalli@ti.com>
+	<20260904085811.7e2c2db6@kernel.org>
+	<cc1f9d12-e853-4000-8236-9e7f5a9ed314@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <upsCxxaJjg2FJWhfCx6KjFXLlh8o4IhaHKJi@bugs.sh>
-In-Reply-To: <upsCxxaJjg2FJWhfCx6KjFXLlh8o4IhaHKJi@bugs.sh>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Sat, 5 Sep 2026 16:04:09 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVVqfqvueX-jk_XfM5tE9XScZPe1OLqGw1MUC=Kd2reBQ@mail.gmail.com>
-X-Gm-Features: AcwNN1Vfd3xEhZZ7PrZAi9kkNEISK6U0ldP6Y81De9Zfs-x-Bx4rSr-QXAnQulU
-Message-ID: <CAMuHMdVVqfqvueX-jk_XfM5tE9XScZPe1OLqGw1MUC=Kd2reBQ@mail.gmail.com>
-Subject: Re: [BUG] drivers/net: out-of-bounds in pcan_usb_decode_buf()
-To: co <co+5e2bcf11e7027510@bugs.sh>
-Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, 
-	Vincent Mailhol <mailhol@kernel.org>, Petr Mladek <pmladek@suse.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, =?UTF-8?Q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>, 
-	Oleg Nesterov <oleg@redhat.com>, Biju Das <biju.das.jz@bp.renesas.com>, Song Liu <song@kernel.org>, 
-	linux-kernel@vger.kernel.org, cedalion@bugs.sh
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Co,
+On Sat, 5 Sep 2026 11:09:54 +0530 Siddharth Vadapalli wrote:
+> > You failed to specify why this "cleanup" makes a difference.
+> > have you ever seen the sentinel not be the last entry? =20
+>=20
+> The 'cleanup' in a way 'guarantees'/'enforces' sentinel being the last=20
+> entry, by catching 'copy-paste' errors at compile-time rather than being=
+=20
+> a silent bug that shows up at runtime. If a new entry were to be=20
+> accidentally added after the sentinel entry in the current drivers, it=20
+> will not cause any compile-time error, but will fail silently at=20
+> runtime. This series 'cleans up' the drivers by making it a compile-time=
+=20
+> error going forward (adding a new entry below sentinel will cause a=20
+> build error with the comma removed after the sentinel entry). I do not=20
+> doubt the review process on the mailing lists where such errors will=20
+> certainly be caught, but isn't it better if they are caught at=20
+> build-time instead, thereby saving reviewers the trouble of pointing out=
+=20
+> such trivial mistakes?
 
-On Fri, 4 Sept 2026 at 23:17, co <co+5e2bcf11e7027510@bugs.sh> wrote:
-> We found a bug reachable in:
->
->     path    drivers/net/can/usb/peak_usb
->     crash   out-of-bounds in pcan_usb_decode_buf()
->     commit  2f1baf1fc892 ("Merge tag 'trace-v7.2-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace")
->
-> Config, environment, the sanitizer report and a C reproducer follow.
->
-> == Notes ===============================================================
->     If you patch the bug based on our artifacts, a tag would be
->     appreciated:
->
-> Reported-by: co+5e2bcf11e7027510@bugs.sh
->
->     Everything in this mail is validated by the reproducer below.
->
->     We also hold an LLM-generated root-cause analysis and a candidate
->     patch. The patch passes an A/B test: the same reproducer panics the
->     unpatched kernel and runs clean on the patched one. Neither has had
->     human review, so both still require validation before you send or
->     apply them. Available on:
->
->         patch.diff  https://bugs.sh/b/5e2bcf11e7027510/patch.diff
->         report.md   https://bugs.sh/b/5e2bcf11e7027510/report.md
->
->     This is an open science project. The code and the full set of PoCs
->     are not public at this moment, as we intend to disclose our findings
->     in an ethical way.
->
->     Happy to test patches. Complaints and suggestions about our work
->     are welcome at:
->
->         cedalion@bugs.sh
+Is it polite to answer a question with a question? =F0=9F=A7=90=EF=B8=8F
 
-Please read Documentation/process/submitting-patches.rst, especially
-https://elixir.bootlin.com/linux/v7.2.2/source/Documentation/process/submitting-patches.rst#L928
+Please be mindful of maintainer's time going forward.
 
-Thanks a lot!
+> Trailing commas are an indication of 'scope-for-extension' in the=20
+> future, which holds true for 'enums' or other structures where newer=20
+> entires are added towards the end rather than being inserted in the=20
+> middle. Since that isn't the case here, this series makes it clear by=20
+> removing the trailing comma.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
