@@ -1,128 +1,126 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F8783B777C
-	for <linux-can@vger.kernel.org>; Sat,  5 Sep 2026 09:58:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53E1330CD81
+	for <linux-can@vger.kernel.org>; Sat,  5 Sep 2026 14:04:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788602338; cv=none; b=tR2KwWiCudBd4Q150UEW1zerU7nqED6ghJhPW5AuYGHzrS4n0ont8RMu5FgxZ5WY+ZBSpARa8vYA8cMU4usWs9OCGzhcisEiXIuntVzyX8b7Zel+B49VnpL9ns2Hhy8/GDS2vSS3dJqc8ZSP7tu2ntW++GDZ7m/OfG5XwXStJNo=
+	t=1788617070; cv=none; b=e529bTNhP6cy0dkiwoxLc7slwEXg4ojD+AE7gngCT6BTNyAPqb0F3YvMQEVm2XJgZzrpJg/cE9bDSZr2/VHVSZARJYnPJLKxPM7SeTDztWnL6uXZX6mDijJhXJ+KEjdCv6IQs7aN/MmI3WAoCrmL5sNSCnFtblgVwuodMV8VM7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788602338; c=relaxed/simple;
-	bh=C6Cfr8I9+GMqBLk7AHidt3735occ4UWvvNZxD7jT30c=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=YH2qOEBJKbrnUDBbRheY+DJ5uLdzWTPtAUnRKjCZjSLBQZTyjQfi8iqGAizUMZZc6fmkpF6gY99zRRjNK5cCG52AzFLJDgdVZhBPxtviyldkFRJYvJ2gNUctCMoCBb1XQSULXbhmtKxLN/B1UnZ9iKaE6KimSCF1Fp6ip+uVyp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vs3I6eEh; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vs3I6eEh"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 510841F00A3D;
-	Sat,  5 Sep 2026 09:58:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788602336;
-	bh=vkTxFhRLlf4cXmrcY0sh4YRe11c85Tgpflf5M/jgkgE=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=Vs3I6eEhci5BTDMIEFs59+k2K+WQ3rMkyqiULg036BWWqyDEgYEkR7zcW2+nk1T48
-	 0epMsDSAshM1uvz4xamjs5TPmCnYMxNO+N81/4cwOOQCKdeq6t+bSTvetvKzhJZJfw
-	 LOJ5kMqvHldMpXDkgxizfEbBRsoSALwvM7bccb3bkkUbExv4zamxUmtL3pFXgu2KKo
-	 cpFjg73gIWSaQvkAP27q9EB9eEuLTEd2WPeNfVqf8tgJMHqACvWTdlfAPMhvPoD11O
-	 JbMw/yRjrmL/N0Tqbr31JxsOAzgxWdhks+lrO1ZmPXnoiUoqLdqnj70k4mJt0dWEh/
-	 elaQduoRgVfTg==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v2 (repost)] can: j1939: j1939_sk_bind(): fix j1939_ecu
- leak when re-bind failed
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Tetsuo Handa" <penguin-kernel@I-love.SAKURA.ne.jp>
-Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Oliver
- Hartkopp" <socketcan@hartkopp.net>
-In-Reply-To: <deb3ac27-5eaf-406a-9bf4-733cc43ecaba@I-love.SAKURA.ne.jp>
-References: <deb3ac27-5eaf-406a-9bf4-733cc43ecaba@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Sat, 05 Sep 2026 09:58:55 +0000
-Message-Id: <20260905095856.510841F00A3D@smtp.kernel.org>
+	s=arc-20240116; t=1788617070; c=relaxed/simple;
+	bh=2EF8hQX2715PddwJ9oCsxzncsn7a4W2DF/R/kkGyUeM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y9EsDzCT1vbGr7DkoLLKr+yA3EbaudsM/CjOzAAppeGMiSL6d1OgCj1qM0Vnz/CgUw2GsNNUtsy31VjS14LGzL9h11XLAXBq8vabQ35LafbIfgJ3hh2xgqzvYoGSBAf0df3XXnVyYkEH6Fm2dVvSj1oIM4+FVeF9hHSBCfAjDGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-5c6559620e3so869970e0c.1
+        for <linux-can@vger.kernel.org>; Sat, 05 Sep 2026 07:04:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1788617067; x=1789221867;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=mmU5FMAneHXfUtApnTl4gKdMaEZfbVGE87dIbOYTEoc=;
+        b=EPpYi+sbTpkunSNs9hIghcoZYROh4EwTO0RfiUd8GvKecHj30whU+er1/iEXXo6iOt
+         AxGKFfwn2lEizkbY6PaeDFw8jRG0xbMWWFQ9wTK2AKE43aKxpeSaUIRUG4ZRF9pCmFEF
+         R2DDzs2vqr0mZXNH1m6V5f+TdCOQfjNIAytsikIY2aK7vwm9hals1I4uTgeONTQ1FnD9
+         fknb4J7l0KACFAItNUYjUMYMCtg3LZQ7NT267QJi/4Y0U5lp988Z6v8lQDwfhRdmbugF
+         LtMPT7vwwVXR57aeXCw4mpqkiwsz+/jYq5M01pvgDXVUUwccmdgGPJmXX+dEjURB7U78
+         4OGg==
+X-Gm-Message-State: AFuF++k9ess0JkVYRcKbKhKQVzFApFzFWxbnEIMTbplgMec/iiO27AbX
+	jJrFSvr46790RGzkCBmGqn+DKNPbMKHk4wvz/vy2cM2TysS2JF+ZtgmoXk+lCxUX
+X-Gm-Gg: AYBFou2pO/S0XC+kv5aKYIixG/wIxs3ICbhy9Ar9VyR+9ZkXrf29Poj9XWkYoAJyG8n
+	1+Tb2r8wI3PxLidM5TIu/aO/36WL+B5sD5cfY7dS+o3kafecmJu0AYVW1/GLA+MWDWfBySVYrZB
+	g8H7DyLk0Y9Zd2Tc4ThIpM/FfWmVPhwvvK3RbszJ3qF1CCD52F0ncqA9qZRU3qRsuNfORq5Bac+
+	4SBSo465ZlU6LZ2ggJeDZWtdsnwlIz+tUex+J4FO23Lh65B3XckWPOTrL9gqNCwawzp0JXjfyWj
+	iNxNJGM8r0IAtCmw0SFxWYWrZTW93XQBpDbsUfhj8ddL5ui6AvoTQmsRTB9oMQcB6xI3hLc8vSV
+	z8Cucd9xDCZJ2147a91409HIx68t7NBb9eg1M9MPzADSZmMdPCPkdgzxUpshGkm88Kb3N/04t55
+	lVdRM1FqTk92oSxRgd0o83nyLuSsurbByopCCkrKgfLJafVjMRWj9JYXuT8Im7+JJw2cfq347uW
+	GYbRLt9w985lBa9zuL/I2QY+FDsDRAP9aSr
+X-Received: by 2002:a05:6122:4f83:b0:5a1:fbbd:6bd0 with SMTP id 71dfb90a1353d-5c7ed45ea59mr5265555e0c.5.1788617067143;
+        Sat, 05 Sep 2026 07:04:27 -0700 (PDT)
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com. [209.85.217.43])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5c7ec3b36cbsm4281891e0c.17.2026.09.05.07.04.21
+        for <linux-can@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 05 Sep 2026 07:04:22 -0700 (PDT)
+Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-765c077b5c1so675624137.3
+        for <linux-can@vger.kernel.org>; Sat, 05 Sep 2026 07:04:21 -0700 (PDT)
+X-Received: by 2002:a05:6102:6d6:b0:737:783d:1916 with SMTP id
+ ada2fe7eead31-78a4aa56803mr4238100137.11.1788617060541; Sat, 05 Sep 2026
+ 07:04:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <upsCxxaJjg2FJWhfCx6KjFXLlh8o4IhaHKJi@bugs.sh>
+In-Reply-To: <upsCxxaJjg2FJWhfCx6KjFXLlh8o4IhaHKJi@bugs.sh>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Sat, 5 Sep 2026 16:04:09 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVVqfqvueX-jk_XfM5tE9XScZPe1OLqGw1MUC=Kd2reBQ@mail.gmail.com>
+X-Gm-Features: AcwNN1Vfd3xEhZZ7PrZAi9kkNEISK6U0ldP6Y81De9Zfs-x-Bx4rSr-QXAnQulU
+Message-ID: <CAMuHMdVVqfqvueX-jk_XfM5tE9XScZPe1OLqGw1MUC=Kd2reBQ@mail.gmail.com>
+Subject: Re: [BUG] drivers/net: out-of-bounds in pcan_usb_decode_buf()
+To: co <co+5e2bcf11e7027510@bugs.sh>
+Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, 
+	Vincent Mailhol <mailhol@kernel.org>, Petr Mladek <pmladek@suse.com>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, =?UTF-8?Q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>, 
+	Oleg Nesterov <oleg@redhat.com>, Biju Das <biju.das.jz@bp.renesas.com>, Song Liu <song@kernel.org>, 
+	linux-kernel@vger.kernel.org, cedalion@bugs.sh
+Content-Type: text/plain; charset="UTF-8"
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
+Hi Co,
 
-Pre-existing issues:
-- [High] Race condition between socket re-bind and netdevice unregister lea=
-ds to a permanent netdevice refcount leak and indefinite hang.
---
+On Fri, 4 Sept 2026 at 23:17, co <co+5e2bcf11e7027510@bugs.sh> wrote:
+> We found a bug reachable in:
+>
+>     path    drivers/net/can/usb/peak_usb
+>     crash   out-of-bounds in pcan_usb_decode_buf()
+>     commit  2f1baf1fc892 ("Merge tag 'trace-v7.2-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace")
+>
+> Config, environment, the sanitizer report and a C reproducer follow.
+>
+> == Notes ===============================================================
+>     If you patch the bug based on our artifacts, a tag would be
+>     appreciated:
+>
+> Reported-by: co+5e2bcf11e7027510@bugs.sh
+>
+>     Everything in this mail is validated by the reproducer below.
+>
+>     We also hold an LLM-generated root-cause analysis and a candidate
+>     patch. The patch passes an A/B test: the same reproducer panics the
+>     unpatched kernel and runs clean on the patched one. Neither has had
+>     human review, so both still require validation before you send or
+>     apply them. Available on:
+>
+>         patch.diff  https://bugs.sh/b/5e2bcf11e7027510/patch.diff
+>         report.md   https://bugs.sh/b/5e2bcf11e7027510/report.md
+>
+>     This is an open science project. The code and the full set of PoCs
+>     are not public at this moment, as we intend to disclose our findings
+>     in an ethical way.
+>
+>     Happy to test patches. Complaints and suggestions about our work
+>     are welcome at:
+>
+>         cedalion@bugs.sh
 
-commit b8691a5ee88f84f344aebc052218bc8abf2cba8a
-Author: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Please read Documentation/process/submitting-patches.rst, especially
+https://elixir.bootlin.com/linux/v7.2.2/source/Documentation/process/submitting-patches.rst#L928
 
-can: j1939: j1939_sk_bind(): fix j1939_ecu leak when re-bind failed
+Thanks a lot!
 
-This commit defers the removal and release of the old ECU references during
-a socket re-bind operation until after successfully acquiring new resources.
-This resolves a netdevice refcount leak that occurred when
-j1939_local_ecu_get() failed during the bind process.
+Gr{oetje,eeting}s,
 
-> diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-> index 50a598ef5fd4a..24efb25c58c3f 100644
-> --- a/net/can/j1939/socket.c
-> +++ b/net/can/j1939/socket.c
-[ ... ]
-> @@ -519,22 +517,31 @@ static int j1939_sk_bind(struct socket *sock, struc=
-t sockaddr_unsized *uaddr, in
-[ ... ]
-> +	/* drop old references after re-bind() succeeded */
-> +	if (was_bound) {
-> +		j1939_jsk_del(priv, jsk);
-> +		j1939_local_ecu_put(priv, jsk->addr.src_name, jsk->addr.sa);
-> +	}
-> +
->  	/* set default transmit pgn */
->  	if (j1939_pgn_is_valid(addr->can_addr.j1939.pgn))
->  		jsk->pgn_rx_filter =3D addr->can_addr.j1939.pgn;
->  	jsk->addr.src_name =3D addr->can_addr.j1939.name;
->  	jsk->addr.sa =3D addr->can_addr.j1939.addr;
-> =20
-> -	/* get new references */
-> -	ret =3D j1939_local_ecu_get(priv, jsk->addr.src_name, jsk->addr.sa);
-> -	if (ret) {
-> -		j1939_netdev_stop(priv);
-> -		jsk->priv =3D NULL;
-> -		synchronize_rcu();
-> -		j1939_priv_put(priv);
-> -		goto out_release_sock;
-> -	}
-> -
->  	j1939_jsk_add(priv, jsk);
+                        Geert
 
-[Severity: High]
-This isn't a bug introduced by this patch, but does this sequence leave a r=
-ace
-window between socket re-bind and netdevice unregister?
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-When the socket is temporarily unlinked via j1939_jsk_del() and then added
-back via j1939_jsk_add() in j1939_sk_bind(), can a concurrent netdevice
-unregister operation completely miss the socket?
-
-If an interface is being unregistered (e.g. via ip link del) while a socket
-is re-binding to the same interface, j1939_sk_netdev_event_unregister()
-could scan the priv->j1939_socks list during this gap:
-
-net/can/j1939/socket.c:j1939_sk_netdev_event_unregister() {
-    ...
-    read_lock_bh(&priv->j1939_socks_lock);
-    list_for_each_entry(jsk, &priv->j1939_socks, list) {
-    ...
-}
-
-If the unregister notifier iterates the list while the socket is removed,
-doesn't the unregister process bypass cleaning up this socket?
-
-Could this result in the socket permanently holding a reference to the
-net_device via j1939_priv, causing an indefinite hang in
-netdev_wait_allrefs()?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/deb3ac27-5eaf-406a-=
-9bf4-733cc43ecaba@I-love.SAKURA.ne.jp?part=3D1
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
