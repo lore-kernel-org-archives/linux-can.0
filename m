@@ -1,82 +1,82 @@
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1260538B7B0
-	for <linux-can@vger.kernel.org>; Sun,  6 Sep 2026 11:19:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 940D472621
+	for <linux-can@vger.kernel.org>; Sun,  6 Sep 2026 22:19:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.214.173
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788693574; cv=pass; b=MprN4Fm7gTptNfNRmodi013IZvKkZ3BbE20+rsa+wteGBGmt7hhnDywaIVUQdIJhlXn8X7G4lZz8micLSvKVU10TP6pj1w3AmOewCIP+pcaqjAw8rUNFWuYT0RCOhTXJOPi4LnBSEKbXR65DZhGFJXgUzCFQeAby1C3UX9RjB0k=
+	t=1788733182; cv=pass; b=hDNZ+NxQOCUsnXOm9a1wSCR5W5d6HYhgMGbLk132gu+b5J3iTyh2Ygz5pWNhFZ15xcSfJWiTN04vLtjDIYdQ1/DZCD8r2fdedmVchA52CJhW0Fc39fXGdebdfMdwd+/D9hGSN9nygIcsGB3iYDOrhtjGDuUC6d6MFImyU+XqvyQ=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788693574; c=relaxed/simple;
-	bh=Giupk0J1ZNfcLTZqdMpQz4eJAmUP1rE7vrmVirAraPY=;
+	s=arc-20240116; t=1788733182; c=relaxed/simple;
+	bh=TYQn8U4IyeaYeTAKZpJ29Jiy5z5Xq4OGVqWutqQzq/Y=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h/qLd3o7L3ZnwxX1AXMtHLaZtnwgURhou5SU+CxbFSYXBHLawqD9963dQeYFmqnvTP4awz1pNPXT9oCQ5KrOUtXueT/P7T5w1RtkZAofzil/hkVad5+brjfYgQFzv/ztX7CwzM5GJJB8eSqB3lilcYYA8mY4u0vkSKNHaSVHirM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asu.edu; spf=pass smtp.mailfrom=asu.edu; dkim=pass (2048-bit key) header.d=asu.edu header.i=@asu.edu header.b=A1bL9ZKz; arc=pass smtp.client-ip=209.85.214.169
+	 To:Cc:Content-Type; b=mrDxgUerjXVqtdaFdC+p2fusz0u+80w7kpo+yHe85nX9KWcBi5MVoN89r2ZTJZQ0LRDSFL9VxQwy6emTdRXP/+VLaySCpC5I8ByrDiAWMF4qBqeZ484MOMBrJy8annHsBmfU1Z9Lziz4pMKm3N+B7llcX07XHhly4lQtUe6FaCk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asu.edu; spf=pass smtp.mailfrom=asu.edu; dkim=pass (2048-bit key) header.d=asu.edu header.i=@asu.edu header.b=EGy5YOJS; arc=pass smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asu.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=asu.edu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=asu.edu header.i=@asu.edu header.b="A1bL9ZKz"
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2d5cad1a6baso22270805ad.3
-        for <linux-can@vger.kernel.org>; Sun, 06 Sep 2026 04:19:31 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1788693571; cv=none;
+	dkim=pass (2048-bit key) header.d=asu.edu header.i=@asu.edu header.b="EGy5YOJS"
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2d6f9e2f681so31825705ad.3
+        for <linux-can@vger.kernel.org>; Sun, 06 Sep 2026 15:19:40 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1788733180; cv=none;
         d=google.com; s=arc-20260327;
-        b=CYAfxKxskcUpv6iwpkYADK8nGQYj20LLMqBLgW5tTcjoHMq4ICQBO7WojY6RkncD6C
-         KBzFqtuLH36tjSQPFRJgodDk4ADemwyCiDkJ3MtFvbUk7JtPRtVH/RzZZefz/rZyn+bN
-         bDPjk3Qdh1lWyUxFJyB+E9DW+ScVm6HraIO7xTKMxgfECiM2+CVpXu8zdO+Jq8SygYJr
-         YtzVSBgngIJdV/xLnfgV0SKsquaug0a4ZspjFxi2G/OeuDFZpu2yO4LzOLOmnWiciTwU
-         49xbxHScIyvGRMdCxbRcLZPW/bOx5Y20UAohQ/b2RhNM0dUozQu+6cXh+dM9nTGp5kCj
-         Df2Q==
+        b=NC8jEZJ+2aTFqkIPLSHeXd6tqlna/9PUjyql3PEX7g22KMsXlrmetqmas2Sz7HKGAl
+         NpUAoP7jtfO6VhEkVwjjmBgjJHTBk/bJ9/3H8t7rfAsVHJ9SZWvJH+W4sF6D98Fn5YQu
+         nqw+ECWbFzws+G8qa0LFYmq6wSAJJgliCZJlDlXwi0cDvmNnAsfMICEuJ+hEKbsOOUii
+         NaNh66cEXBTiwtHvyn7PcvGofHYwKGsIANXBhbSXOiU5SmOkqlguwuy+tOnvkv39BW6H
+         QWxQBP6XCos25C6pdln39b75edfiTR4BmCtSMR24OjEYTN3Z/LdcZKxpUZmD1fjhIMkc
+         a6aA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=XTgCA64EfXR/PGZNkFArmuKTqa5lqNd9HTFkrYCnwOg=;
-        fh=6fBJWBs97Nny18HqEfCg7yCSKeu/MzLW/VnBzhQ6hbo=;
-        b=oNcefc6d6GSpGBFNQy7lvU3rn/Tlh5VOvFyrg1S2Uk2ksp+Og6fJ9OIxjzZj/kQh4D
-         2FctlMKFBdyK5LOVYQBdNjUGjyhonUVxiwfXzilkffXEZ+SexleaZ2orguHSk4GcsnQv
-         qFRSwtmFi85LRiqfi5qv3X6XI1CDelc8OVTN0fOSLmQ2UZWCZLaBdeOE3gUSlqE5OU16
-         GsuZxlfnQHKfDP3jARrLuVdz1kfBMqijH0jGGLTQNcrNRpkZegx8sXeOfRGFLbUqLL3l
-         zHSJ+/b2mtR3Qd3Ol1dhEnoOz9O9fklMLNQq1KGJjWcZna4+Y8OviQzHOnuKqdRUsPcf
-         dcOA==;
+        bh=j5H7v1iDtpUxbbmGGJnlO1vSD1KFA2YvCAej4f/7MTs=;
+        fh=CKdXdwa06jGGGPA38e+IvEfgEvjHlSPJ8fLBZMcAjK4=;
+        b=HslyboC17Hh3V2hSjGclG7VPiYNE7psrxIdfUgaAb/LY7sQ519w/jIuZI0QiAya2BC
+         agiVUAugG5wYPJ3tf2/pG9Otz3JNJW4OYG8WB3FMEYFfXfSz58TNqP7E2TNXQsx32/B5
+         axDOYDRtRB6/l9S/RdcC8WmQiwqbnUfCcu8UwQRM0Fo40s4b1LXQTq2MOjpzvXKUfGq5
+         QGmdbmHLEsMLnWurFjAwNLlat4WFfckciecI0wq7bYl+ZcivZP4FHOb/VnlRzqPmCWUA
+         rpDkd8tv0lxSXQ7ZbCWZjUhPefKgnmGZzccgkkz7fKOQxgt5OmpOAKj+jj13j6EXmP5c
+         s4tA==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=asu.edu; s=google; t=1788693571; x=1789298371; darn=vger.kernel.org;
+        d=asu.edu; s=google; t=1788733180; x=1789337980; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=XTgCA64EfXR/PGZNkFArmuKTqa5lqNd9HTFkrYCnwOg=;
-        b=A1bL9ZKzb7548j3SG8IvKUw8uu5Cv8yStzLDV5IU2k3rYh5gqplkpxABa+PC2u5bSk
-         rtgZ0LDXKmL5xE8hw+fy/H48oTeUOTTuPCPbza/wZZmGKVLx33/v3R6Pd4Ht4cCrhJ1k
-         V/DSEqmfKGGP7P4mRGDWmOUegU9yHpPwi2SSjrhQCD8W8Nzn+GK6HjoaUPR/VBGmPQ2e
-         YmF8K6Y/N3NhQIDnqcs9CEBMp6DXM7MBtARGkR8LPm3AMUfKQwQ15xVFGkZorbaHqa0+
-         uiGIhqFv0ZCExOztgd1hZeYFa/5a7hr+DmpCnNvmg32i4TfUPwGJYG/oNQCYgT80OE+d
-         vQ8g==
+        bh=j5H7v1iDtpUxbbmGGJnlO1vSD1KFA2YvCAej4f/7MTs=;
+        b=EGy5YOJSvuFB8jyT6w92SG5LSKLR5woX2n8cO/0tAdxRYC9J2UivdFLyA+VN1ixp17
+         gq9XGar5jgGIvMJKjAmd8DISkg0nQDO6jyO0i6N63cWrQIVALSKmtp+BVeIDNrnKD9AY
+         2md+AoQxJOG9ghsP8+/FGwWBslsNkoj6hzVjT+QQEubtIGJL7xN1v1VBbIdVvRWjGR7q
+         rXBxftr/ArIUkx++E7LlIqOstoDt3DbbWVQmePtGgAJWeJh1DhABtDrzs225q2pBbsBP
+         DKY1QZ9/jXhQeCHI1Rk75L7x5v9mtgrfL1rqiDVgz8iTK3nI1moppHmclk46XCRRZNJM
+         DwnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788693571; x=1789298371;
+        d=1e100.net; s=20251104; t=1788733180; x=1789337980;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=XTgCA64EfXR/PGZNkFArmuKTqa5lqNd9HTFkrYCnwOg=;
-        b=KoQqMi4PSEH5soGeK7mKKXqx/ea/fvSubI/IBB/c2rrTl+JJ7jAKq65h87lpaGWMIf
-         AeOZjouiBqu9DXRx7EdDNgydjF0ikcqGKSfUH7aOEGovs0nrlxkS61nIa+M+ouDmNOxw
-         LXwlSJ458pU7DnRNSntLKTNmAReNHaYIxPWoZACMLnf81sOuPmYGl6R/yI8o1UQKD2Kx
-         WsrznRf3QRszf6EXdgJBhgVPUg3azn9Gfx+B9LBPig/nP30PXG8+FxZ2FE/+xxt+kWoN
-         6JVAWEw8xuVho0SD/ogkmpR68vvE+QI6c6agv6AU957isS8iYvD551G1Tw8cG0XX7u1q
-         e+1g==
-X-Forwarded-Encrypted: i=1; AKwUvBxovgxR2kdYojfIM4RuykiRiKrrKzzqFmt7hARiRE0gt8a5xjRcMk/V0Y+tgLGfC3djbGv1XOmwyjQ=@vger.kernel.org
-X-Gm-Message-State: AFuF++lzHq5kHlrgO1ULIsVtHVa3lC7GEHLpLzk922lRWAbd/1u09E/l
-	WHgHtgT3mI4GGWmYVXUv/CLsyeJ+CKE2jU3ggwMrjba2a8cQZ6qIq3JlAnI6MvXX37bAnARaeS2
-	s8MA8mPzjrb7ObQ29ah1pLUXabveqBlsXz2GfJv97
-X-Gm-Gg: AYBFou04+z4G9oxgwW9/9wg0ABS+TCdLrjBbj91DuGNW6Vz1jFYSYd5vKMXkbgszZrm
-	Gvicv2SKu9XPV8xOo046X+XOK8ilc7YfWt9/+DtWNmbLzOwmUkyVv8bXIuoVOKf94zV/BZA+g2j
-	6D+cyp68XRIk8/yqG21A/upX/3HB1f6Rw1NlzkQUu3Bl6RYQmIZaJHCz/BOopOdSPaGFAk/cpS/
-	FA81RA5gz2f0wF4Ud5Tx1DutEZv56bAAA2W9DS/Z2wAT83YBnaCBBjbbgsZaMImGsvk9fTZtWoo
-	n1UKzK2NfGqpLgIDtqtIStXx7EOvx9G9NWAgkO27NBoZCGltRcOwYm+yCuUJelAvt3Pl62qRJ5+
-	YC/rIf8O42ifwVGRaULsH/CwrzqBb9kwkwt0=
-X-Received: by 2002:a17:902:f68b:b0:2cc:864b:539 with SMTP id
- d9443c01a7336-2db12495a80mr248860175ad.6.1788693571315; Sun, 06 Sep 2026
- 04:19:31 -0700 (PDT)
+        bh=j5H7v1iDtpUxbbmGGJnlO1vSD1KFA2YvCAej4f/7MTs=;
+        b=igpq8uqYa2QtdlZzmKARSgkBPI22HevyXbTusQB8jfd3WprNc9qY4Gru2fnLcDVRWK
+         NA4ZxxHA3gBWU/G6xUYrlW1YuKef+1CqLg2gn7cWconNcMCWKgXArcOvCTYicQZN1+a6
+         T2hGlyvFeSEkuAQvNWN1g15cmzkS5GKsJ2FGm628/WJ42k1KooycZqdv/hvF9+VY+tPf
+         i1PmbsJejsSw70sRKM4I14hjQEaKwAFh7v768YI2m+SZepr/vMFDsq8QiTxvdCFwvvVY
+         XP52GWMh/Mm3Zh4McixuFtxwzM/vbxaoKv/+29nx93mzIA9kUFQBQA5ty8TKft6ZYPN4
+         l1Xg==
+X-Forwarded-Encrypted: i=1; AKwUvBww7JL9R5+gKhgypPAF6Vuz+SPI6rfYM4okPFw4tciQnBbQ2N+TU2pSTb6bA6qbF3URMRT0xm3Le8U=@vger.kernel.org
+X-Gm-Message-State: AFuF++kan02Cc3NMGrLfRus5DdgiP0lpyCgiQbZcfpIW+Gd7yk+QSoDN
+	QSR2PI8w5j/GcssxG3EKAEKdG9XDVuB8knlHTBTFHXp88LW8pLC++I5JMp4DwgA+yjHdJAQKlUq
+	fz7e87OM8x5o2427dAXOwG4Ejk2fe7gMxYwDEJNAv
+X-Gm-Gg: AYBFou0Z3B2aAl468fYeqp2JRolSJ3pTXK7+qnZHmA6wB2CsPDVoReyoS3JSUKTpApC
+	7HfZkOIyyw/wBrW2RQrYVXwbwnpOrISCSEtHZ1ntlZ5Sce/T/fm1/IML9J4huVSP5tV9wd7pR99
+	G7BMMJTTpyAx0K4aqTMcuj73Bf0oF6UF+oPQf2zk801yy7bsCU5/uFq7wLoK5GuvjrKIvruy6a+
+	0xUX3rPbn89MDE2O4Yssp2o9KDh8jj36A3uLfBv2FXE+in4tAdna289tPo0gzleP4V5jF3OQNPs
+	bSBmHgh4elPcQurYNXN/C8pie1d0DtH44BGuE4HZVNVEufVUkQ6BeOp9lUtpgfl0FRUy5dccIcs
+	=
+X-Received: by 2002:a17:902:930a:b0:2d6:e074:9cad with SMTP id
+ d9443c01a7336-2db1236f4femr196043825ad.6.1788733179884; Sun, 06 Sep 2026
+ 15:19:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -86,16 +86,17 @@ MIME-Version: 1.0
 References: <upsCxxaJjg2FJWhfCx6KjFXLlh8o4IhaHKJi@bugs.sh> <CAMuHMdVVqfqvueX-jk_XfM5tE9XScZPe1OLqGw1MUC=Kd2reBQ@mail.gmail.com>
 In-Reply-To: <CAMuHMdVVqfqvueX-jk_XfM5tE9XScZPe1OLqGw1MUC=Kd2reBQ@mail.gmail.com>
 From: Xiang Mei <xmei5@asu.edu>
-Date: Sun, 6 Sep 2026 04:19:20 -0700
-X-Gm-Features: AcwNN1VwRPW3yMBdTVYbJmlJsVs_CJngzLBHUrX4gAO4o_iesE3RGTS14IgLAxg
-Message-ID: <CAPpSM+R_EH-grYvEs3QFCsi-tej4yhUqrAib2XcDLh5TKKeh-Q@mail.gmail.com>
+Date: Sun, 6 Sep 2026 15:19:28 -0700
+X-Gm-Features: AcwNN1Vz2MmGcMLkBJ7T2ybLOOTijDZznSrnrJaeR0QSfMiYaCeeiqBLLSIaztw
+Message-ID: <CAPpSM+TXw-BGgpdZtx-bH5GEQvzYHxj_wDkdPfUT3Tcn=mtmEw@mail.gmail.com>
 Subject: Re: [BUG] drivers/net: out-of-bounds in pcan_usb_decode_buf()
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: co <co+5e2bcf11e7027510@bugs.sh>, linux-can@vger.kernel.org, 
-	Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>, Petr Mladek <pmladek@suse.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, =?UTF-8?Q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>, 
+Cc: co <co+5e2bcf11e7027510@bugs.sh>, Vincent Mailhol <mailhol@kernel.org>, 
+	Petr Mladek <pmladek@suse.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	=?UTF-8?Q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>, 
 	Oleg Nesterov <oleg@redhat.com>, Biju Das <biju.das.jz@bp.renesas.com>, Song Liu <song@kernel.org>, 
-	linux-kernel@vger.kernel.org, cedalion@bugs.sh
+	linux-kernel@vger.kernel.org, cedalion@bugs.sh, linux-can@vger.kernel.org, 
+	Marc Kleine-Budde <mkl@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
@@ -149,10 +150,18 @@ itting-patches.rst#L928
 >
 > Thanks a lot!
 >
-Hi Geert, thanks for the reminder.
-We'll learn the documents and make sure we follow the documents.
+Hi Geert,
 
+I checked the document and the related files, and I apologize for our
+mistake. This email should not have been sent to you, as our system
+failed to identify the correct maintainers for this submodule.
+
+We have fixed the issue. Thank you for bringing it to our attention.
+If you meant other issues, please let us know.
+
+Thanks,
 Xiang
+
 > Gr{oetje,eeting}s,
 >
 >                         Geert
