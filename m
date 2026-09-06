@@ -1,129 +1,219 @@
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B225272621
-	for <linux-can@vger.kernel.org>; Sun,  6 Sep 2026 22:21:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E93347505
+	for <linux-can@vger.kernel.org>; Sun,  6 Sep 2026 22:36:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788733299; cv=none; b=q+VsIpr6KxUhlbHXiE8blG52n9Go+VZjluJSSy1+Z1/UAml9mo/s+3qN5b5LsqwewPI8BrPuOnjmsfJYiszllI30jAmKb9wrkVW/lnaeDklXi3K7BjmA2u88o96Q+AnzE0f6IAh+wYa/6mpdhdQvITyhk+E1ahx8Fk/1/CnYZlU=
+	t=1788734176; cv=none; b=h4LcHt5C2oG46hzAKw5FnUI0JdpWr8GxB4ZqxB6tHWPsnxJnmsSUKVSJQqTg16lZMSlmDAz6QOo32Sl5TsCwK0O04KU16c5V5vsSlGAS4+84UlHDiMq9wnYrvX7PRGYtVhlbSTffjeSkv0JaqnBdeAST3WmDQTpH5wkBpSWl7vA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788733299; c=relaxed/simple;
-	bh=D6hNfgDto5D5sV8zVfuhQ3ZnGglLgYLwa5e8Cn5i140=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Iy/gfWIzn9vc2nLOWomflwpqimLRzMFQW01xcgCVBJwLGCaPLBdyPhJyUxWMEl7xqwXrm8VIK/vssGGu9iBhuqbt0GvLRDlbTjzmSQpt+cF/gH8uxCOaUvRLa185RtM7wM8AJqVokKmxC1a4z/tjzOUyk9HG5LCwuW2/xRfGOnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asu.edu; spf=pass smtp.mailfrom=asu.edu; dkim=pass (2048-bit key) header.d=asu.edu header.i=@asu.edu header.b=mO5Svym7; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asu.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=asu.edu
+	s=arc-20240116; t=1788734176; c=relaxed/simple;
+	bh=bkLeCWX+TxCMf1WAMT1uuip9b7yHUHtNGjuLkAQuUBQ=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=cfbdBhWRhqVK/AGEp6uWryi1Bcyx7/XvHcH5zDVjz4TPt/M92/03Szu8+SEfYTMWyZmFKACfj3qCEG+ns9+PUFOO76twJB2g3O3un5CWDPAwE5E9Yq30HA3RQouu/UID224C0eOxa7CcfoHj1O3qoL1YGrEy8loFtn+/BL8fa9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=adFd/jiK; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=asu.edu header.i=@asu.edu header.b="mO5Svym7"
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-39647aa9d52so2848147a91.0
-        for <linux-can@vger.kernel.org>; Sun, 06 Sep 2026 15:21:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=asu.edu; s=google; t=1788733297; x=1789338097; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=eHT6Xnp87xDPp5heJQWaTbtcxxsKUy15SETr/oDGMQM=;
-        b=mO5Svym7H0V+1ZYHP6IqUT/xD92VSiPoQNYoBFR+xumGRA41HDn0gKDr/ZceSTx5tB
-         TT3Cp+rThM/0gwd7uo3v0+v0z0rru83i6DMH8lBetDvsAr8B+FQjwV7CjOjUqM9Ze0Ee
-         lChHQYzqzH3k8Gw/XQcC+xvqFQoGi0cTwPOVT8hsyOrCjexn4nm0swJlmObEvb3JX551
-         ERRyp56vT+S+drZ05rpQUGHuMJ+yOkI57lhRp01pzOkcyo0/xzSnPXUtsTRXiRKuWjB8
-         nGN2ycGPLxsm9Tcjcvimx5y5JLy2+2ojQS8TyAeHM9WZEoKFqGYELGN0bSoM+CyhiR77
-         WkXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788733297; x=1789338097;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=eHT6Xnp87xDPp5heJQWaTbtcxxsKUy15SETr/oDGMQM=;
-        b=Y5Io+zqemu7ZkoUFO1tLja/2S9gKCPeeVDEdpBxwcH/c7c1iFrFHdvtXP19ZBMI40o
-         TaMPAgQkhmQdDW6QabBugMJXp/u6Q0fVFb6/dYGW57NhINryXARf2w5NCWYa+npSVx+F
-         DVxZJeIAnx6d7JG2P+l7p1CL/tR+fMRzt4bCULzUnV31GjHBwUu56XZUJGpxfLUs0u++
-         Z2ea/PqD+TnC9ldlN6f9AUPzi3SJN8vOyMTRlwKODZ1CetUVb1qe8Ogrirg6TCes1EAB
-         an4qj7t7Jir/QPBD1v1Y9HF35VP/1c6zzycb0SwtqvhmiPUeYQT84ukTGnSLkDxuMu4n
-         DhIA==
-X-Forwarded-Encrypted: i=1; AKwUvByr2Wek5ob3xUoWmkFb/HW4qiad5wbA+BKEIO3QcTsg+7+jaEac5pOfCploaS4whQfg3vKdSvel09Y=@vger.kernel.org
-X-Gm-Message-State: AFuF++kSLAXhuA7BNGatb+AucJagEo5U9lq2Mu/WWKThDrHwMYbn1x+p
-	gtGDFpgoYX+nSOJVBMn6oBrZCnBgHXds3zmcSg6yJxnbZVVOfL3sGcv1NefsKXMMRA==
-X-Gm-Gg: AYBFou3Tv84jln+PLB87gJiyMhYguwMAiCr83k6pgIjF+MaLHWu7cWBUxjWN4TPWEZz
-	URVoedl/4GXulSkqmOwvFWu+n/5vRPcFIpx4G96ZV0pncn9EHTWjopoU/gP3hDs4pxaS/MMckpN
-	Nx4t9za+7+CNrGCE7VEOuUIzMbatGzdHkELfjQ1pKo6fsMVFCBeMJytEbXPXnsvtHQxTP1EJI7C
-	vscg3fXIcwU3xltPfnrNzi1K3unBQWmjFsifKNF5e0zuvy9mP0vsP1qmaNvV2tVYoHleV4rfLEb
-	L6YYJ/Ncp/uLo4sTuJ6zWdiO45gKNM4nvOk/7AQJWWRiD9y/eOkGc800haNnxedJBL10aEz9jEe
-	1Wd7aHFYd4oiyyzMs8d+/TgOiJEA7Y1fLWL9t3QaUk2GXWuu+ZQqGo52ZaTDRdLkorJJJ+V6rS4
-	axiXRHM+XBTj7mP4sDmSHwEM2+E0/T+SE4gQGho4NGRbDsRyS15QeFRDMGEEFZeb/RXWTZuZSjO
-	m5cXPeqFcWGd6FYMraTVnkY
-X-Received: by 2002:a17:90b:2e46:b0:38f:a81:15b1 with SMTP id 98e67ed59e1d1-39b08653554mr31657500a91.19.1788733297001;
-        Sun, 06 Sep 2026 15:21:37 -0700 (PDT)
-Received: from p1.. (129-219-8-31.nat.asu.edu. [129.219.8.31])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3339b314cfcsm22805334eec.19.2026.09.06.15.21.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Sep 2026 15:21:36 -0700 (PDT)
-From: Xiang Mei <xmei5@asu.edu>
-To: mkl@pengutronix.de,
-	mailhol@kernel.org,
-	linux-can@vger.kernel.org
-Cc: s.grosjean@peak-system.fr,
-	co+5e2bcf11e7027510@bugs.sh,
-	Xiang Mei <xmei5@asu.edu>
-Subject: [PATCH net] can: peak_usb: fix slab-out-of-bounds read in pcan_usb_handle_bus_evt()
-Date: Sun,  6 Sep 2026 15:21:31 -0700
-Message-ID: <20260906222132.3850994-1-xmei5@asu.edu>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="adFd/jiK"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC1CD1F00A3A;
+	Sun,  6 Sep 2026 22:36:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788734172;
+	bh=Mrm4KtAGOeAZfzRw7z9M9RXioa0GgY1z7gruUP07SQo=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=adFd/jiK+891fjM5+k+yQzNMa74TGiVVrXx9IxzT5N3WBUmqRWnvIlmLQgjZ+FOLS
+	 uY71yRNmr2P9CjgZXYg/OnfiYULkZb7yK5jWfGGl43Frw0cMV28NRorcOSLwUvix3A
+	 WdhMH5j8+WYMyrFZkdZX4IQssl+xYiUL0+dhTWEEG3PgadiXKtpQmFd7I+6RXg8KRf
+	 a7bspbySg6Qkl7TRDUjwLlL1GB6HSo2F6XS7MZAQa9roq4p9bQiICeQH4ibClLCG5p
+	 A7rvpRGT7wNf5bMdFYp65XoHW/FBmBE4glf6CNa+nR4Qi0dD+Ldl2M0/vv7/+a7q9Y
+	 boPVWhs1+gbqA==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH net] can: peak_usb: fix slab-out-of-bounds read in
+ pcan_usb_handle_bus_evt()
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Xiang Mei" <xmei5@asu.edu>
+Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, "Marc Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Oliver Hartkopp" <socketcan@hartkopp.net>
+In-Reply-To: <20260906222132.3850994-1-xmei5@asu.edu>
+References: <20260906222132.3850994-1-xmei5@asu.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Sun, 06 Sep 2026 22:36:11 +0000
+Message-Id: <20260906223611.CC1CD1F00A3A@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-pcan_usb_handle_bus_evt() reads mc->ptr[1] and mc->ptr[2] without checking
-them against mc->end. On entry mc->ptr may already equal mc->end, and the
-rx buffer is an exact kmalloc(64), so a device sending a full 64-byte
-transfer reads past the slab object.
+Thank you for your contribution! Sashiko AI review found 5 potential issue(=
+s) to consider:
 
-The two bytes end up in pdev->bec, which user space can read back via
-IFLA_CAN_BERR_COUNTER.
+Pre-existing issues:
+- [High] The main message decoding loop in `pcan_usb_decode_msg()` and the =
+data decoding in `pcan_usb_decode_data()` lack proper bounds checks, leadin=
+g to slab-out-of-bounds reads on maliciously crafted or malformed USB packe=
+ts.
+- [High] The decoding loop in `pcan_usb_pro_decode_buf()` is vulnerable to =
+an out-of-bounds read because it dereferences `rec_ptr` before verifying th=
+at the pointer is within the buffer boundaries.
+- [High] The `restart_timer` and unanchored restart URB are not cancelled d=
+uring device disconnect, leading to a Use-After-Free.
+- [High] Uninitialized kernel stack memory is sent to the USB device in `pc=
+an_usb_set_bittiming` and `pcan_usb_set_can_channel_id`.
+- [High] Casting a byte array on the stack to `__le32 *` can cause unaligne=
+d memory access exceptions on some architectures.
+--
 
-Bail out unless both bytes are within the buffer.
+commit 5da73d58a5b6f6aab2dab8be2879ad21991bb88d
+Author: Xiang Mei <xmei5@asu.edu>
 
-  BUG: KASAN: slab-out-of-bounds in pcan_usb_decode_buf (drivers/net/can/usb/peak_usb/pcan_usb.c:563)
-  Read of size 1 at addr ffff8880100921c1 by task swapper/1/0
-  Call Trace:
-   <IRQ>
-   kasan_report (mm/kasan/report.c:595)
-   pcan_usb_decode_buf (drivers/net/can/usb/peak_usb/pcan_usb.c:563)
-   peak_usb_read_bulk_callback (drivers/net/can/usb/peak_usb/pcan_usb_core.c:267)
-   __usb_hcd_giveback_urb (drivers/usb/core/hcd.c:1657)
-   dummy_timer (drivers/usb/gadget/udc/dummy_hcd.c:2019)
-   __hrtimer_run_queues (kernel/time/hrtimer.c:2067)
-   handle_softirqs (kernel/softirq.c:645)
-   </IRQ>
+can: peak_usb: fix slab-out-of-bounds read in pcan_usb_handle_bus_evt()
 
-  The buggy address is located 1 bytes to the right of
-   allocated 64-byte region [ffff888010092180, ffff8880100921c0)
+This commit fixes a slab-out-of-bounds read in pcan_usb_handle_bus_evt() by
+checking that mc->ptr + 3 does not exceed mc->end before accessing the rxerr
+and txerr counters.
 
-Fixes: ea8b33bde76c ("can: pcan_usb: add support of rxerr/txerr counters")
-Reported-by: co+5e2bcf11e7027510@bugs.sh
-Closes: https://lore.kernel.org/linux-can/upsCxxaJjg2FJWhfCx6KjFXLlh8o4IhaHKJi@bugs.sh/
-Assisted-by: Claude:claude-opus-4-8
-Signed-off-by: Xiang Mei <xmei5@asu.edu>
----
- drivers/net/can/usb/peak_usb/pcan_usb.c | 2 ++
- 1 file changed, 2 insertions(+)
+Closes: https://lore.kernel.org/linux-can/upsCxxaJjg2FJWhfCx6KjFXLlh8o4IhaH=
+KJi@bugs.sh/
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index 8fd058c32856..e87ed7657cc1 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -558,6 +558,8 @@ static int pcan_usb_handle_bus_evt(struct pcan_usb_msg_context *mc, u8 ir)
- 	switch (ir) {
- 	case PCAN_USB_ERR_CNT_DEC:
- 	case PCAN_USB_ERR_CNT_INC:
-+		if ((mc->ptr + 3) > mc->end)
-+			return -EINVAL;
- 
- 		/* save rx/tx error counters from in the device context */
- 		pdev->bec.rxerr = mc->ptr[1];
--- 
-2.43.0
+> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/us=
+b/peak_usb/pcan_usb.c
+> index 8fd058c328564..e87ed7657cc1b 100644
+> --- a/drivers/net/can/usb/peak_usb/pcan_usb.c
+> +++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+> @@ -558,6 +558,8 @@ static int pcan_usb_handle_bus_evt(struct pcan_usb_ms=
+g_context *mc, u8 ir)
+>  	switch (ir) {
+>  	case PCAN_USB_ERR_CNT_DEC:
+>  	case PCAN_USB_ERR_CNT_INC:
+> +		if ((mc->ptr + 3) > mc->end)
+> +			return -EINVAL;
+> =20
+>  		/* save rx/tx error counters from in the device context */
+>  		pdev->bec.rxerr =3D mc->ptr[1];
 
+While reviewing this patch, I noticed some other pre-existing issues in this
+driver.
+
+This is a pre-existing issue, but does pcan_usb_decode_msg() also lack prop=
+er
+bounds checks when reading from mc.ptr?
+
+drivers/net/can/usb/peak_usb/pcan_usb.c:pcan_usb_decode_msg() {
+	...
+	for (err =3D 0; mc.rec_idx < mc.rec_cnt && !err; mc.rec_idx++) {
+		u8 sl =3D *mc.ptr++;
+	...
+}
+
+[Severity: High]
+Does this code dereference mc.ptr without verifying that it has not exceeded
+mc.end? If a malicious USB device sends a packet with rec_cnt set larger th=
+an
+the available data, could this lead to a slab-out-of-bounds read?
+
+Similarly, in pcan_usb_decode_data():
+
+drivers/net/can/usb/peak_usb/pcan_usb.c:pcan_usb_decode_data() {
+	...
+		/* Ignore next byte (client private id) if SRR bit is set */
+		if (can_id_flags & PCAN_USB_TX_SRR)
+			mc->ptr++;
+	...
+}
+
+[Severity: High]
+Can this pointer increment bypass previous bounds checks and push the point=
+er
+past the buffer's end for the next iteration?
+
+This is a pre-existing issue, but does pcan_usb_pro_decode_buf() have a
+similar out-of-bounds read vulnerability?
+
+drivers/net/can/usb/peak_usb/pcan_usb_pro.c:pcan_usb_pro_decode_buf() {
+	...
+	for (; rec_cnt > 0; rec_cnt--) {
+		union pcan_usb_pro_rec *pr =3D (union pcan_usb_pro_rec *)rec_ptr;
+		u16 sizeof_rec =3D pcan_usb_pro_sizeof_rec[pr->data_type];
+	...
+}
+
+[Severity: High]
+Could this read the data_type field from memory before checking if rec_ptr =
+is
+within msg_end? If previous records exactly consume the buffer, could this
+read past the end of the buffer?
+
+This is a pre-existing issue, but is the restart_timer and unanchored resta=
+rt
+URB properly cancelled during device disconnect?
+
+drivers/net/can/usb/peak_usb/pcan_usb.c:pcan_usb_restart_async() {
+	...
+	return usb_submit_urb(urb, GFP_ATOMIC);
+}
+
+drivers/net/can/usb/peak_usb/pcan_usb.c:pcan_usb_restart_pending() {
+	...
+	mod_timer(&pdev->restart_timer,
+			jiffies + msecs_to_jiffies(PCAN_USB_STARTUP_TIMEOUT));
+	...
+}
+
+drivers/net/can/usb/peak_usb/pcan_usb.c:pcan_usb_restart() {
+	...
+	struct pcan_usb *pdev =3D timer_container_of(pdev, t, restart_timer);
+	...
+}
+
+[Severity: High]
+Does this unanchored URB and uncancelled timer lead to a Use-After-Free if
+the device is disconnected? Since the URB is not anchored to
+dev->tx_submitted, the disconnect path won't kill it, and the timer could
+fire and access freed memory.
+
+This is a pre-existing issue, but do pcan_usb_set_bittiming() and
+pcan_usb_set_can_channel_id() leak uninitialized stack memory to the USB
+device?
+
+drivers/net/can/usb/peak_usb/pcan_usb.c:pcan_usb_set_bittiming() {
+	u8 args[PCAN_USB_CMD_ARGS_LEN];
+	...
+	args[0] =3D btr1;
+	args[1] =3D btr0;
+
+	return pcan_usb_send_cmd(dev, PCAN_USB_CMD_BITRATE, PCAN_USB_SET, args);
+}
+
+drivers/net/can/usb/peak_usb/pcan_usb.c:pcan_usb_set_can_channel_id() {
+	u8 args[PCAN_USB_CMD_ARGS_LEN];
+	...
+	args[0] =3D can_ch_id;
+	return pcan_usb_send_cmd(dev, PCAN_USB_CMD_DEVID, PCAN_USB_SET, args);
+}
+
+[Severity: High]
+Are these args arrays passed to pcan_usb_send_cmd() without being fully
+zero-initialized? Could this leak up to 13 bytes of uninitialized kernel
+stack memory per command?
+
+This is a pre-existing issue, but does pcan_usb_get_serial() cast an
+unaligned byte array to a 4-byte integer pointer?
+
+drivers/net/can/usb/peak_usb/pcan_usb.c:pcan_usb_get_serial() {
+	u8 args[PCAN_USB_CMD_ARGS_LEN];
+	...
+	err =3D pcan_usb_wait_rsp(dev, PCAN_USB_CMD_SN, PCAN_USB_GET, args);
+	if (err)
+		return err;
+	*serial_number =3D le32_to_cpup((__le32 *)args);
+	...
+}
+
+[Severity: High]
+Does casting this 1-byte aligned stack array to an unaligned __le32 pointer
+cause alignment traps on architectures with strict alignment requirements?
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260906222132.3850=
+994-1-xmei5@asu.edu?part=3D1
