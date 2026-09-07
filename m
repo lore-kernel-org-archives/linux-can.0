@@ -1,127 +1,89 @@
-Received: from smtpbgsg2.qq.com (smtpbgsg2.qq.com [54.254.200.128])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1202761FCE;
-	Mon,  7 Sep 2026 02:35:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.254.200.128
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CCB43E51E8
+	for <linux-can@vger.kernel.org>; Mon,  7 Sep 2026 03:05:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788748512; cv=none; b=IQA7t2SSBnH/rw6zNrJ13erUXTyzQ/w7M+l6JkC0EHUBbfPf8/mTRK7ix1F7MK4+k/x9chbaRodTbR8sFXjnyMd843y2w58507x/eTQHtWDoGl86vP+EcZVhmJGaFQo0qSk+/1SHKPuvwFe76WwR0cwS0deizyabwtgceoBgWFg=
+	t=1788750309; cv=none; b=HzDRVYr73VrPLAvnY1oPO1RovMVSuaHI4t15P6OERYaumtB5HnYHAYjWztG0xLmuhHzKsT0K7F32YH0PaAEnUSsijIWrjIsopgBn7C8VukCusevH29SlG2mtGsriknsNjw7E9Wh7zTvvYoIyMsBKWQitBVkLcys3fZUnq5zyJYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788748512; c=relaxed/simple;
-	bh=/n3xihmU93G11KDPuXpxUGjTF/aZtrqDlguEa+obsXQ=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=dYWPRRvKZCjr7BvOaSj/COVItThgcKi19y1DocWtCsjv9bly1SAVbtePH8Xj96vPdiAdqDQdjffcIsCecv9sTaQK3IP4VdH2QmU7CdkV/UKfMVf7yoKSk2eGFfN11sxv306t3cbJdUqrI+s4nRS9i38ANhEmabxIABiDRJ7VF4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.spacemit.com; spf=none smtp.mailfrom=linux.spacemit.com; dkim=pass (1024-bit key) header.d=linux.spacemit.com header.i=@linux.spacemit.com header.b=GxCkksjY; arc=none smtp.client-ip=54.254.200.128
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.spacemit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.spacemit.com
+	s=arc-20240116; t=1788750309; c=relaxed/simple;
+	bh=jDwGIeZSxmQ+QLCqAsPbZtWRi3JWDzSBa7tgxRNC8D4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ArJxlX98QgAdPaUOKYuT5tPbjPZUVWzsrSbdDtRmLa6kKhVM1KmijGuU/2MorfN7pNlEUE6GYXXa2ppwO3Tw0AmupG0Y62EzDbglqDmOjG0VFjAUytgdXwT72FrlFSm+UsSuC9Njof7K5aDFxnLRCBiYKYLBS9vDhqV1lr+39IU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M7lKvrTD; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.spacemit.com header.i=@linux.spacemit.com header.b="GxCkksjY"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.spacemit.com;
-	s=mxsw2412; t=1788748492;
-	bh=/n3xihmU93G11KDPuXpxUGjTF/aZtrqDlguEa+obsXQ=;
-	h=Mime-Version:Date:Message-Id:Subject:From:To;
-	b=GxCkksjY9QSu1j724vj4L5cIYhn+weJWoDDJfKVb4du5oPW3kXx+NoGp/fgmQUrco
-	 4v3nL11D+YIgUqyHnTVcgWZ+s8uNLUbk5Rp5bcD0xQJzpX9C3yX/9dPQqDDxWlsF9O
-	 dgWnCipG60qs6j2b93klLpr4qnwiZhotHcqPG9c0=
-X-QQ-mid: zesmtpgz3t1788748484t9bf26c94
-X-QQ-Originating-IP: 7jcO50RqRIZxPHY/moH8hgYnotivvrpyVTcywJ9C5gY=
-Received: from = ( [120.237.158.181])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Mon, 07 Sep 2026 10:34:39 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 9707735077275929228
-EX-QQ-RecipientCnt: 59
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M7lKvrTD"
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2d944747d41so32177425ad.0
+        for <linux-can@vger.kernel.org>; Sun, 06 Sep 2026 20:05:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1788750307; x=1789355107; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=jDwGIeZSxmQ+QLCqAsPbZtWRi3JWDzSBa7tgxRNC8D4=;
+        b=M7lKvrTDwucm7XxMywJCfAx5ed/rSba4V81Ds6CFJBLKVX7RAnZSk/3bvl6J7xMvnw
+         BnV5n2XiG+eYVSHIJHy5Ikb9pWTEMpdmGqVbkJMJDoIWrYs8RAiFPB1BVgB7psexciIH
+         eKUnaCTnTMTEOZpjRGNt2pbi866ALd4mDGw9CxvAGDIwYjVe78XHrARzsYY74Js4Y+zx
+         iYik848iU08B+3ziFaHF1GIwag7s2ixNOrQPFk6M7TD+Se/TpJr0c8rvqTvaz05EFdp9
+         LYCLyez9O5VDi1DCqyMqAyN/g6N4D0tVimc+D2t1xkd8RQRSTcIeSRuqprt/2mI23Av8
+         CnQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1788750307; x=1789355107;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=jDwGIeZSxmQ+QLCqAsPbZtWRi3JWDzSBa7tgxRNC8D4=;
+        b=QsdV+5gVrsCxJ/L+F4shAdd+17k7LKgnHJkY/bzNnpybNf8dgEiPY5m1jANBIwB5Eg
+         GHXh7WR+l7cUWxCMzM5u6+0CtPSBKC+NeCzyuPVpmjtiP2KklS/D5D3sDuSkWvrzKhWV
+         k98ZkF210BpRqyOc5+Y3LtiUcMU/+k1xsjG4ky6oIjwDjPYeIYo9Ml2Em3JsolyCGbzQ
+         3XcESta/Y7mddFhc1aelYh87Is+B+NA3TCOGXv0Lud6r1RvUXkYd1RQGOWp+dud1NkD+
+         Oc+L5V7HhKobGND2dQVki7HpUcUH/Jj0L+QiUpS8pGt621hAH3CAXiEVzID6ffzmLaUL
+         oyLQ==
+X-Forwarded-Encrypted: i=1; AKwUvByUuthLLfrpka+rwJogUK0YAH9xPUcCt6ky0hanXUhuyBA1buY1qTsu2rfZuX8YB24E8PW+jeviGWY=@vger.kernel.org
+X-Gm-Message-State: AFuF++kDIJvAIYt0ZVZFibXBrm42rGG1nvy1XMIez002ZXRADZfg+AMb
+	RzooZJNiOFcHnxn54wJlMnM0ettnX9NnNh7fCqvFmi5Be4B1qrt/YibR
+X-Gm-Gg: AYBFou0g0Ec4Ph8Dho2P8ETgTkd8YL6cHQAoT3GJWv1tb9ae1aLWXTOd+087f5nGGyW
+	hXh5Bo0FBFNj7Kifby/IUpoOZil9/wU5siCYzc2v937W00huPjLeIWeLSTBywrJShRIT6RThG4N
+	3Fzdrrl2gMhSEu4+07FqMRH2UjbRH8GWLieJjB3I7mraj6xgKSrvt39I2EwpvVlyhq95B0YW6cW
+	QhRXCVXFt68XlrN9dkVHjCa/QiSI21oSsGlJL9tJ1H6GjrywxDQNcVRZ5zpcsmSSY0WjaQPzqnw
+	4ZIxMhG2N/7imuVw92aqStjw0udKP/HIfoDS1YkZvqwYyJkxIJ+64TH1y1jayBKuo70mTz0DOV0
+	pdq5djq/t0n/kvdKW8ce7BJcPM0faPgYbNrkfiCA/6uqbSRup+8WhvyL12SHPoHn0uevGAcGKA3
+	h8r0IPakmOLPGrJU9iyz3gdSgD8fE3oMDLlaJ/HgrVjU9pwPWQ0XiEHkmsxi2ui/5NACJeg4KCF
+	Q+I3P3hUnG584c=
+X-Received: by 2002:a17:902:930a:b0:2d6:e074:9cad with SMTP id d9443c01a7336-2db1236f4femr206645485ad.6.1788750307334;
+        Sun, 06 Sep 2026 20:05:07 -0700 (PDT)
+Received: from mi-ThinkStation-K.mioffice.cn ([43.224.245.235])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2db148404b8sm38593825ad.2.2026.09.06.20.05.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Sep 2026 20:05:06 -0700 (PDT)
+From: yewentian395 <yewentian395@gmail.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: yewentian395 <yewentian395@gmail.com>,
+	linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] can: isotp: implement N_Ar timeout handling for FC transmission
+Date: Mon,  7 Sep 2026 11:05:02 +0800
+Message-Id: <20260907030502.3049789-1-yewentian395@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <6ca3c6f6-91c4-4f0b-9136-9345dbaac1e0@hartkopp.net>
+References: <6ca3c6f6-91c4-4f0b-9136-9345dbaac1e0@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed;
- boundary=c3446b7a882d909a1fb5e6c3d06e6abafc7af191330f8ccc8edf46454865;
- micalg=pgp-sha512; protocol="application/pgp-signature"
-Date: Mon, 07 Sep 2026 10:34:37 +0800
-Message-Id: <DL8QEYABXVMN.2CF6XXBXZ1X6U@linux.spacemit.com>
-Cc: <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <linux-renesas-soc@vger.kernel.org>,
- <linux-riscv@lists.infradead.org>, <spacemit@lists.linux.dev>,
- <linux-omap@vger.kernel.org>, "Troy Mitchell"
- <troy.mitchell@linux.spacemit.com>
-Subject: Re: [PATCH net-next 25/33] net: spacemit: k1_emac: Remove comma
- after sentinel-entry in match-table
-From: "Troy Mitchell" <troy.mitchell@linux.spacemit.com>
-To: "Siddharth Vadapalli" <s-vadapalli@ti.com>,
- <dario.binacchi@amarulasolutions.com>, <mkl@pengutronix.de>,
- <mailhol@kernel.org>, <msp@baylibre.com>, <florian.fainelli@broadcom.com>,
- <jonas.gorski@gmail.com>, <andrew@lunn.ch>, <olteanv@gmail.com>,
- <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
- <pabeni@redhat.com>, <kurt@linutronix.de>, <hauke@hauke-m.de>,
- <chester.a.unal@arinc9.com>, <daniel@makrotopia.org>,
- <matthias.bgg@gmail.com>, <angelogioacchino.delregno@collabora.com>,
- <ansuelsmth@gmail.com>, <linusw@kernel.org>, <luizluca@gmail.com>,
- <alvin.sipraga@analog.com>, <clement.leger@bootlin.com>,
- <justin.chen@broadcom.com>, <dlan@kernel.org>, <rogerq@kernel.org>,
- <hkallweit1@gmail.com>, <linux@armlinux.org.uk>, <rjui@broadcom.com>,
- <sbranden@broadcom.com>, <bcm-kernel-feedback-list@broadcom.com>,
- <opendmb@gmail.com>, <andrei.botila@oss.nxp.com>,
- <wangruikang@iscas.ac.cn>, <amadeus@jmu.edu.cn>, <kees@kernel.org>,
- <tmshlvck@gmail.com>, <c-vankar@ti.com>, <horms@kernel.org>,
- <vadim.fedorenko@linux.dev>, <daniel.zahka@gmail.com>,
- <nora.schiffer@ew.tq-group.com>, <v-singh1@ti.com>, <oss@vassilevski.com>,
- <haokexin@gmail.com>, <alex@sverdlin.org>, <aleksandr.loktionov@intel.com>,
- <lgs201920130244@gmail.com>
-X-Mailer: aerc 0.21.0-0-g5549850facc2
-References: <20260904043724.2955444-1-s-vadapalli@ti.com>
- <20260904043724.2955444-26-s-vadapalli@ti.com>
-In-Reply-To: <20260904043724.2955444-26-s-vadapalli@ti.com>
-X-QQ-SENDSIZE: 520
-Feedback-ID: zesmtpgz:linux.spacemit.com:qybglogicsvrgz:qybglogicsvrgz3a-0
-X-QQ-XMAILINFO: MMgPz8MirN77HIyzHp1ahfW3FEkNnOOVFbJ5/WFX1TRhdcNMqGuBvXYc
-	JZ+G+7a/pUpoInAiMLi2eBtOasfCpvN3trpZGOajyLKAhi4srDsz+cLzbQ0LsvrBB6l9nTX
-	VO1ZggVEft0dcSq2Tw+GIzci2TgAXSaJsbPhpXxtLd98VQYINWREGy3DDPOdOVpwupVmdGA
-	ymQ6bXCX4i1lwSKvZKVAkObe/ZSo6w8ERtzIgGz7Ci5pfVsTxtsXR81WFC4FZ8/qQgQWD1q
-	76TIZuBU+3lwluYzrtWdGULsFpS+ZiQMSOb14J1iuouDYkLOwW0+aiEWavie4rWjgFajEBC
-	I4wUQCZPKPDdtgcVHvvoOaGXHj2IQgFLigQmsITuWoOQ+E2Y1SYxINPyb9SQf7ap7xCULgz
-	OL4JG3fzfCOfsx8kf47d6tpMqrLyCqeeW8sT3J5mcSXfo6bJNQxS8QiZwKGN58mmHmX3VHn
-	+o8tGsygyVX+y2OFQSpsr40MnnB/lwVHK7OcxG/OPFzf+hr4yKhwmp64v9nVLoWGJO2KsLD
-	5YPLQcGTpWGGHe2B94qDaERmLRozgGGIWwWxU8ZmKziTmu05n+/ZHSVvS0i2VX4FuYpTtd/
-	SpcbxGI8i+GVExaxBqCQoriL+3HbVEJMlerDfILtXnoJNaWgjyZWAq9uBRkRB9PgGTYH9TD
-	tAbtOiItPD1aA6KTmuvdMqu4K0F6kBZ2oRizc4mbJyxVrK0pSFdHHdYyZUTjLtdzIqsbGKl
-	LUAeKkUNJVGgWRzsgNgPeeZY/zcQadq+jxD7oE55YLw4pFLHGAUKYFWrIZ7eLHK0F1n+jPs
-	3cK9nZ8OHKk9OmXBL5saY/YLwry+mkuGUBSeCpU3zfCcsfpr7NHtBEq/k0ODe1xMwDRspJ1
-	rk3BWOXkqoqG/siWL+Zg2zQgynFiy8TRbwki1wTFNWO8UlqRnd8y69pc7H2geeHKW4Kh1ha
-	53vOEck3i5QUz/Y/gIBMTfKSMy/NT5hi2FhwIk3cUNgkrdfXa3NNtMHcfLawTD/tP/W6use
-	RUDo3Cu75myzOE+h0GCY7NsO+UULlwRsAngH/ib6qhPq18KzsTaXjUzjQFHZdxh2V+kv/aj
-	16vGbMw2WnV
-X-QQ-XMRINFO: NyFYKkN4Ny6FuXrnB5Ye7Aabb3ujjtK+gg==
-X-QQ-RECHKSPAM: 0
-
---c3446b7a882d909a1fb5e6c3d06e6abafc7af191330f8ccc8edf46454865
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri Sep 4, 2026 at 12:36 PM +08, Siddharth Vadapalli wrote:
-> Since sentinel is the last entry and we do not expect further entries
-> following it, remove the comma.
->
-> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-Reviewed-by: Troy Mitchell <troy.mitchell@linux.spacemit.com>
+Hi Oliver,
 
---=20
-Troy Mitchell
+Thanks for sharing the patch and the context. Understood.
 
-
---c3446b7a882d909a1fb5e6c3d06e6abafc7af191330f8ccc8edf46454865
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iIMEABYKACsWIQSL4Ay2cExaPXAQcU2YCe+A+TM0LwUCap4ivQ0caUB0cm95LXku
-b3JnAAoJEJgJ74D5MzQvrKoA/jq66no0m3AM6WPip5A8SiOQeVPyie/PjbmRqO4w
-PamfAQCtuus+o1dOGS/PPW44oBGtqifxJT5WcMspAw/AJH0KCQ==
-=xCA3
------END PGP SIGNATURE-----
-
---c3446b7a882d909a1fb5e6c3d06e6abafc7af191330f8ccc8edf46454865--
+Best regards,
+Wentian
