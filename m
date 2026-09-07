@@ -1,299 +1,127 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B1AB463B94;
-	Mon,  7 Sep 2026 13:43:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAB464EE858;
+	Mon,  7 Sep 2026 13:52:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788788625; cv=none; b=mltlsw7xnKl20OUElwTi0c2f1CPsFdhlV8f6wmxUhtvx8BTHgpEulmamGYzLOp4Fnkg53T+FhPPgH4Z40AXc055aBCv7V2iyCGvi4BoC0XMpUlgEKqhpQ3iwuHKG4Ipoh4KuAV93BpCLkwvZtr6NF8PcvYG1JTsRq45afF2Tn60=
+	t=1788789165; cv=none; b=c39cfsA+Wq2Bqa0knAbgNeCJ17ZHJk973TbItYdpxCYPeZA8qOHGDpBGQUZfd25cTSqeK5P8Kv5YTAjnZGwoAEmctaI68hLXFoqd2krv2632Tals85clhPktQsTtJ+wRjFg8BIA6OfUOhXkXt0A3n8y3ZsGSlm2ibwL9/aPUMWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788788625; c=relaxed/simple;
-	bh=YZ8FA5JL6PMill5gcWmIwEDZT1PtVMuLuMDMyIsfqPA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bEi1lplJXYHBlQDLzuJymRvFY7Qe1sIwXWWIOxlWgvEMDFxhtQM5LJvqSa6Ug1YriTP277aw3ny81HaR2RA94esUeAObfqU29DlhNPwNqW2abHBs1L4znfxlslFtpxJq3clWUzHqPn4rKxhyek3V01VSwht9EWJSBXPSBP0vpwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE1F21F00A3A;
-	Mon,  7 Sep 2026 13:43:33 +0000 (UTC)
-From: Greg Ungerer <gerg@linux-m68k.org>
-To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org,
-	arnd@kernel.org,
-	wei.fang@nxp.com,
-	frank.li@nxp.com,
-	shenwei.wang@nxp.com,
-	imx@lists.linux.dev,
-	netdev@vger.kernel.org,
-	nico@fluxnic.net,
-	linux-can@vger.kernel.org,
-	linux-spi@vger.kernel.org,
-	olteanv@gmail.com,
-	Greg Ungerer <gerg@linux-m68k.org>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Frank Li <Frank.Li@nxp.com>
-Subject: [PATCHv3 3/3] m68k: coldfire: fix non-standard readX()/writeX() functions
-Date: Mon,  7 Sep 2026 23:37:11 +1000
-Message-ID: <20260907134037.1855408-4-gerg@linux-m68k.org>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260907134037.1855408-1-gerg@linux-m68k.org>
-References: <20260907134037.1855408-1-gerg@linux-m68k.org>
+	s=arc-20240116; t=1788789165; c=relaxed/simple;
+	bh=0bjz/3k0ABD846dQQr54nF2Hj7OJ2PwtD4QZHf9wCbw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=unHCUKfD2l5d89cnajqNSVNjtTGA4dggaScrAynC0ceRQF8VO69i3O4bWwjcvKcOw9XufjYRBnd9nkhhjE3V5fSFUjsN1/6A+shNh4oaksHy1iBTufGJ82mb9xRtJ3wIvm9RV+o8vA8tEodOKGgDoWP4pfr698l3uXTNBsfUWMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+X-PTX-Original-Recipient: alexandre.belloni@bootlin.com
+X-PTX-Original-Recipient: mailhol@kernel.org
+X-PTX-Original-Recipient: linux-arm-kernel@lists.infradead.org
+X-PTX-Original-Recipient: imx@lists.linux.dev
+X-PTX-Original-Recipient: nicolas.ferre@microchip.com
+X-PTX-Original-Recipient: s32@nxp.com
+X-PTX-Original-Recipient: ciprianmarian.costea@oss.nxp.com
+X-PTX-Original-Recipient: claudiu.beznea@tuxon.dev
+X-PTX-Original-Recipient: dev.kurt@vandijck-laurijssen.be
+X-PTX-Original-Recipient: linux-can@vger.kernel.org
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id B59B32018B6;
+	Mon, 07 Sep 2026 15:52:26 +0200 (CEST)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1x3Zlq-000Xy5-21;
+	Mon, 07 Sep 2026 15:52:26 +0200
+Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id C8492596948;
+	Mon, 07 Sep 2026 13:49:24 +0000 (UTC)
+Date: Mon, 7 Sep 2026 15:49:24 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Ciprian Costea <ciprianmarian.costea@oss.nxp.com>
+Cc: Vincent Mailhol <mailhol@kernel.org>, 
+	Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>, Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, 
+	linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, imx@lists.linux.dev, NXP S32 Linux Team <s32@nxp.com>
+Subject: Re: [PATCH v5 0/3] can_rx_offload keeps a lockless irq_queue that
+ the IRQ handlers fill and that is later spliced under skb_queue.lock into
+ the NAPI-facing skb_queue. This works as long as a single context fills the
+ irq_queue. flexcan with FLEXCAN_QUIRK_SECONDARY_MB_IRQ and mcf5441x use two
+ mailbox IRQ lines. When those are affined to different CPUs the two handlers
+ can enqueue into the same list at the same time and corrupt it.
+Message-ID: <20260907-lively-easygoing-groundhog-51cdd3-mkl@pengutronix.de>
+References: <20260907104942.17089-1-ciprianmarian.costea@oss.nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="z3ydzlstb6mz4j6c"
+Content-Disposition: inline
+In-Reply-To: <20260907104942.17089-1-ciprianmarian.costea@oss.nxp.com>
 
-Remove the local ColdFire definitions of readb()/readw()/readl() and
-writeb()/writew()/writel() and use the asm-generic versions of them.
 
-The implementation of the readX()/writeX() family of IO access functions
-is non-standard on ColdFire platforms. They either return big-endian (that
-is native endian) data, or on platforms with PCI bus support check the
-supplied address and return either big or little endian data based on that
-check. This is non-standard, they are expected to always return
-little-endian byte ordered data. Unfortunately this behavior also means
-that ioreadX()/iowroteX() and their big-endian counter parts
-ioreadXbe()/iowriteXbe() are currently broken because they are implemented
-using the readX()/writeX() functions.
+--z3ydzlstb6mz4j6c
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v5 0/3] can_rx_offload keeps a lockless irq_queue that
+ the IRQ handlers fill and that is later spliced under skb_queue.lock into
+ the NAPI-facing skb_queue. This works as long as a single context fills the
+ irq_queue. flexcan with FLEXCAN_QUIRK_SECONDARY_MB_IRQ and mcf5441x use two
+ mailbox IRQ lines. When those are affined to different CPUs the two handlers
+ can enqueue into the same list at the same time and corrupt it.
+MIME-Version: 1.0
 
-The change to use the asm-generic versions of readX()/writeX() itself is
-quite straight forward, just remove the ColdFire local versions of them. But
-this of course has implications for any remaining drivers that use any of
-these IO access functions. A number of drivers can be independently fixed,
-before this final fix to readX()/writeX() for ColdFire. A small number of
-drivers cannot easily be independently fixed and remain in a working
-state. Those drivers are fixed here as well:
+On 07.09.2026 12:49:39, Ciprian Costea wrote:
+> From: Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>
+>
+> This series:
+>   1. Makes the irq_queue per-CPU so the handlers no longer share a list.
 
-drivers/dma/mcf-edma-main.c
-  Supports big-endian access by setting the big-endian flag of
-  the drivers struct fsl_edma_engine. But locally should be using
-  ioread32be() and iowrite32be() instead of ioread32() and iowrite32().
+As sashiko pointed out, using per-CPU variables in a preemptible context
+doesn't work. When proposing to use per-CPU variables I haven't thought
+that far. So in hindsight this approach is not good.
 
-drivers/net/can/flexcan/flexcan-core.c
-  Setting the driver quirks flag for big-endian access will force
-  driver to use correct access functions.
+What about following what NAPI does. Have a dedicated data structure per
+IRQ. I think these ones are needed:
 
-drivers/spi/spi-fsl-dspi.c
-  Setting the regmap format_endian flags to use native endian will
-  force driver to use appropriate big or little endian access on
-  whatever platform it is built for.
+| 	struct sk_buff_head skb_irq_queue;
+| 	u32 skb_queue_len_max;
+|
+| 	unsigned int mb_first;
+| 	unsigned int mb_last;
 
-These drivers have only been compile tested.
+And pass them to can_rx_offload_queue_timestamp() and
+can_rx_offload_irq_finish().
 
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # for drivers/net/can/flexcan
-Reviewed-by: Frank Li <Frank.Li@nxp.com>
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
----
-v2: changed from RFC to PATCH
-    use separate regmap config for mcf5441x (spi-fsl-dspi.c)
-    reorder quirks for mcf5441x (flexcan-core.c)
-v3: no change
+regards,
+Marc
 
- arch/m68k/include/asm/io_no.h          | 68 +++-----------------------
- drivers/dma/mcf-edma-main.c            | 14 +++---
- drivers/net/can/flexcan/flexcan-core.c |  1 +
- drivers/spi/spi-fsl-dspi.c             | 14 +++++-
- 4 files changed, 27 insertions(+), 70 deletions(-)
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-diff --git a/arch/m68k/include/asm/io_no.h b/arch/m68k/include/asm/io_no.h
-index 4f0f34b06e37..2f12f4ed0da5 100644
---- a/arch/m68k/include/asm/io_no.h
-+++ b/arch/m68k/include/asm/io_no.h
-@@ -3,15 +3,10 @@
- #define _M68KNOMMU_IO_H
- 
- /*
-- * Convert a physical memory address into a IO memory address.
-- * For us this is trivially a type cast.
-- */
--#define iomem(a)	((void __iomem *) (a))
--
--/*
-- * The non-MMU m68k and ColdFire IO and memory mapped hardware access
-- * functions have always worked in CPU native endian. We need to define
-- * that behavior here first before we include asm-generic/io.h.
-+ * Historically the raw native endian IO access macros for non-MMU m68k and
-+ * ColdFire have accepted any integral value as the address argument.
-+ * The asm-generic versions of these expect "void __iomem *" for the address,
-+ * so define local permissive versions here.
-  */
- #define __raw_readb(addr) \
-     ({ u8 __v = (*(__force volatile u8 *) (addr)); __v; })
-@@ -45,66 +40,15 @@
-  * applies just the same of there is no MMU but something like a PCI bus
-  * is present.
-  */
--static int __cf_internalio(unsigned long addr)
-+static inline int __cf_internalio(unsigned long addr)
- {
- 	return (addr >= IOMEMBASE) && (addr <= IOMEMBASE + IOMEMSIZE - 1);
- }
- 
--static int cf_internalio(const volatile void __iomem *addr)
-+static inline int cf_internalio(const volatile void __iomem *addr)
- {
- 	return __cf_internalio((unsigned long) addr);
- }
--
--/*
-- * We need to treat built-in peripherals and bus based address ranges
-- * differently. Local built-in peripherals (and the ColdFire SoC parts
-- * have quite a lot of them) are always native endian - which is big
-- * endian on m68k/ColdFire. Bus based address ranges, like the PCI bus,
-- * are accessed little endian - so we need to byte swap those.
-- */
--#define readw readw
--static inline u16 readw(const volatile void __iomem *addr)
--{
--	if (cf_internalio(addr))
--		return __raw_readw(addr);
--	return swab16(__raw_readw(addr));
--}
--
--#define readl readl
--static inline u32 readl(const volatile void __iomem *addr)
--{
--	if (cf_internalio(addr))
--		return __raw_readl(addr);
--	return swab32(__raw_readl(addr));
--}
--
--#define writew writew
--static inline void writew(u16 value, volatile void __iomem *addr)
--{
--	if (cf_internalio(addr))
--		__raw_writew(value, addr);
--	else
--		__raw_writew(swab16(value), addr);
--}
--
--#define writel writel
--static inline void writel(u32 value, volatile void __iomem *addr)
--{
--	if (cf_internalio(addr))
--		__raw_writel(value, addr);
--	else
--		__raw_writel(swab32(value), addr);
--}
--
--#else
--
--#define readb __raw_readb
--#define readw __raw_readw
--#define readl __raw_readl
--#define writeb __raw_writeb
--#define writew __raw_writew
--#define writel __raw_writel
--
- #endif /* IOMEMBASE */
- 
- #if defined(CONFIG_COLDFIRE)
-diff --git a/drivers/dma/mcf-edma-main.c b/drivers/dma/mcf-edma-main.c
-index 9e1c6400c77b..4ed0ce644e37 100644
---- a/drivers/dma/mcf-edma-main.c
-+++ b/drivers/dma/mcf-edma-main.c
-@@ -21,9 +21,9 @@ static irqreturn_t mcf_edma_tx_handler(int irq, void *dev_id)
- 	unsigned int ch;
- 	u64 intmap;
- 
--	intmap = ioread32(regs->inth);
-+	intmap = ioread32be(regs->inth);
- 	intmap <<= 32;
--	intmap |= ioread32(regs->intl);
-+	intmap |= ioread32be(regs->intl);
- 	if (!intmap)
- 		return IRQ_NONE;
- 
-@@ -43,7 +43,7 @@ static irqreturn_t mcf_edma_err_handler(int irq, void *dev_id)
- 	struct edma_regs *regs = &mcf_edma->regs;
- 	unsigned int err, ch;
- 
--	err = ioread32(regs->errl);
-+	err = ioread32be(regs->errl);
- 	if (!err)
- 		return IRQ_NONE;
- 
-@@ -55,7 +55,7 @@ static irqreturn_t mcf_edma_err_handler(int irq, void *dev_id)
- 		}
- 	}
- 
--	err = ioread32(regs->errh);
-+	err = ioread32be(regs->errh);
- 	if (!err)
- 		return IRQ_NONE;
- 
-@@ -203,8 +203,8 @@ static int mcf_edma_probe(struct platform_device *pdev)
- 		edma_write_tcdreg(mcf_chan, cpu_to_le32(0), csr);
- 	}
- 
--	iowrite32(~0, regs->inth);
--	iowrite32(~0, regs->intl);
-+	iowrite32be(~0, regs->inth);
-+	iowrite32be(~0, regs->intl);
- 
- 	ret = mcf_edma->drvdata->setup_irq(pdev, mcf_edma);
- 	if (ret)
-@@ -248,7 +248,7 @@ static int mcf_edma_probe(struct platform_device *pdev)
- 	}
- 
- 	/* Enable round robin arbitration */
--	iowrite32(EDMA_CR_ERGA | EDMA_CR_ERCA, regs->cr);
-+	iowrite32be(EDMA_CR_ERGA | EDMA_CR_ERCA, regs->cr);
- 
- 	return 0;
- }
-diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index f5d22c61503f..f0571b97817b 100644
---- a/drivers/net/can/flexcan/flexcan-core.c
-+++ b/drivers/net/can/flexcan/flexcan-core.c
-@@ -295,6 +295,7 @@ static_assert(sizeof(struct flexcan_regs) ==  0x4 * 18 + 0xfb8);
- 
- static const struct flexcan_devtype_data fsl_mcf5441x_devtype_data = {
- 	.quirks = FLEXCAN_QUIRK_BROKEN_PERR_STATE |
-+		FLEXCAN_QUIRK_DEFAULT_BIG_ENDIAN |
- 		FLEXCAN_QUIRK_NR_IRQ_3 | FLEXCAN_QUIRK_NR_MB_16 |
- 		FLEXCAN_QUIRK_SUPPORT_RX_MAILBOX |
- 		FLEXCAN_QUIRK_SUPPORT_RX_FIFO,
-diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
-index 23e6bc5f202e..5fb5f5dd1b0d 100644
---- a/drivers/spi/spi-fsl-dspi.c
-+++ b/drivers/spi/spi-fsl-dspi.c
-@@ -192,6 +192,7 @@ enum {
- 	DSPI_XSPI_REGMAP,
- 	S32G_DSPI_XSPI_REGMAP,
- 	DSPI_PUSHR,
-+	MCF5441X_DSPI_REGMAP,
- };
- 
- static const struct regmap_config dspi_regmap_config[] = {
-@@ -238,6 +239,17 @@ static const struct regmap_config dspi_regmap_config[] = {
- 		.reg_stride	= 2,
- 		.max_register	= 0x2,
- 	},
-+	[MCF5441X_DSPI_REGMAP] = {
-+		.reg_bits	= 32,
-+		.val_bits	= 32,
-+		.reg_stride	= 4,
-+		.max_register	= SPI_RXFR3,
-+		.volatile_table	= &dspi_volatile_table,
-+		.rd_table	= &dspi_access_table,
-+		.wr_table	= &dspi_access_table,
-+		.reg_format_endian = REGMAP_ENDIAN_BIG,
-+		.val_format_endian = REGMAP_ENDIAN_BIG,
-+	},
- };
- 
- static const struct fsl_dspi_devtype_data devtype_data[] = {
-@@ -303,7 +315,7 @@ static const struct fsl_dspi_devtype_data devtype_data[] = {
- 		.trans_mode		= DSPI_DMA_MODE,
- 		.max_clock_factor	= 8,
- 		.fifo_size		= 16,
--		.regmap			= &dspi_regmap_config[DSPI_REGMAP],
-+		.regmap			= &dspi_regmap_config[MCF5441X_DSPI_REGMAP],
- 	},
- 	[S32G] = {
- 		.trans_mode	  = DSPI_XSPI_MODE,
--- 
-2.55.0
+--z3ydzlstb6mz4j6c
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCap7A4gAKCRDMOmT6rpmt
+0tuZAQCogFQ+QoWQNO6hDtuUMx9jES7Eaf1siU6qm8CmFEtYUgEAjL4yL5o2L/jP
+fDbWTNDMHBDKnrwVfBb55SMkxq6uAA0=
+=gQZJ
+-----END PGP SIGNATURE-----
+
+--z3ydzlstb6mz4j6c--
